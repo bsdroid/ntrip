@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: RTCM.h,v 1.1.1.1 2006/01/11 09:34:31 mervart Exp $
+// $Id: RTCM.h,v 1.1.1.1 2006/05/30 11:05:27 mervart Exp $
 
 #if defined(__GNUC__)
 using namespace std;
@@ -192,7 +192,7 @@ class RTCM : public GPSDecoder {
 	  op->SVPRN= i->first;
 	  op->GPSWeek=  timeTag / Date::SECONDS_PER_WEEK;
 	  op->GPSWeeks= timeTag % Date::SECONDS_PER_WEEK;
-          op->sec = obsMapTimeTagMod3600;
+          op->sec = obsMapTimeTagMod3600!=3600.0 ? obsMapTimeTagMod3600 : 0.0;
 	  op->C1= i->second.C1;
 	  op->P2= i->second.P2;
           op->pCodeIndicator = i->second.pCodeIndicator;
