@@ -1,0 +1,13 @@
+
+fileName="bnc`date +%y%m%d`"
+
+tar -cvf ${fileName}.tar bnc.bck    \
+                         *.cpp      \
+                         *.h        \
+                         *.pro      \
+                         RTCM/*.cpp \
+                         RTCM/*.h
+
+gzip      ${fileName}.tar
+mv        ${fileName}.tar.gz ${fileName}.tgz
+chmod 440 ${fileName}.tgz
