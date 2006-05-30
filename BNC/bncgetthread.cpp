@@ -131,7 +131,8 @@ void bncGetThread::run() {
 
   // Instantiate the filter
   // ----------------------
-  RTCM rtcmFilter('A',true);
+  GPSDecoder* rtcmFilter;
+  rtcmFilter = new RTCM('A',true);
 
   // Read Incoming Data
   // ------------------
@@ -141,19 +142,20 @@ void bncGetThread::run() {
     if (nBytes > 0) {
       char* data = new char[nBytes];
       _socket->read(data, nBytes);
-      rtcmFilter.Decode(data, nBytes);
+      rtcmFilter->Decode(data, nBytes);
       delete data;
-      for (list<Observation*>::iterator it = rtcmFilter.m_lObsList.begin(); 
-           it != rtcmFilter.m_lObsList.end(); it++) {
+      for (list<Observation*>::iterator it = rtcmFilter->m_lObsList.begin(); 
+           it != rtcmFilter->m_lObsList.end(); it++) {
         emit newObs(_mountPoint, *it);
       }
-      rtcmFilter.m_lObsList.clear();
+      rtcmFilter->m_lObsList.clear();
     }
     else {
       qWarning("Data Timeout");
       return exit(1);
     }
   }
+  delete rtcmFilter;
 }
 
 // Exit
