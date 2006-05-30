@@ -1,0 +1,7 @@
+.cvsignore
+Makefile
+bnc
+moc_bnccaster.cpp
+moc_bncgetthread.cpp
+moc_bnctabledlg.cpp
+moc_bncwindow.cpp
