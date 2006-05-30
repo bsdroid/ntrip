@@ -1,0 +1,48 @@
+
+#ifndef BNCCASTER_H
+#define BNCCASTER_H
+
+#include <QFile>
+#include <QThread>
+#include <QtNetwork>
+#include <QMultiMap>
+
+#include "RTCM/GPSDecoder.h"
+
+class bncGetThread;
+
+class bncCaster : public QThread {
+ Q_OBJECT
+
+ public:
+   bncCaster(const QString& outFileName, int port);
+   ~bncCaster();
+   void addGetThread(bncGetThread* getThread);
+
+ signals:
+   void getThreadErrors();   
+
+ public slots:
+   void slotNewObs(const QByteArray& mountPoint, Observation* obs);
+
+ private slots:
+   void slotNewConnection();
+   void slotGetThreadError(const QByteArray& mountPoint);
+
+ protected:
+   virtual void run();
+
+ private:
+   void dumpEpochs(long minTime, long maxTime);
+
+   QFile*                         _outFile;
+   int                            _port;
+   QTextStream*                   _out;
+   QMultiMap<long, Observation*>* _epochs;
+   long                           _lastDumpSec;
+   QTcpServer*                    _server;
+   QList<QTcpSocket*>*            _sockets;
+   QList<QByteArray>              _mountPoints;
+};
+
+#endif
