@@ -108,7 +108,6 @@ public:
   short          CA_Extract(char * CAStr, double &CA_Rng);                 //done
   short          P1_P2_Block_Extract(char * P1P2Str, double CA, double &Rng , double &Phase, double &RngF2Delta,short decode_F1orF2Flag );//done
   unsigned long  JPL_xtractLongVal (unsigned startBitNbr, unsigned xtractNbrBits, const char *msg);        //done
-  void           SwitchBytes( char *Start, int Size );
   inline void    SwitchIGS_Sta_HdrBytes( RTIGSS_T *StaHdr);
   inline void    SwitchIGS_Obs_HdrBytes( RTIGSO_T *ObsHdr);
   inline void    SwitchIGS_Eph_HdrBytes( RTIGSE_T *EphHdr);

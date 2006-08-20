@@ -1,6 +1,16 @@
 #include "rtigs.h"
 
-#define MAXSTREAM 2048
+#define MAXSTREAM 10000
+
+////////////////////////////////////////////////////////////////////////////
+void SwitchBytes( char *Start, int Size ) {
+  char Tmp;
+  char *End = Start + Size - 1;
+  for( Tmp = *Start; Start < End; Tmp = *Start ){
+    *Start++ = *End;
+    *End-- = Tmp;
+  }
+}
 
 int main() {
 
@@ -19,27 +29,67 @@ int main() {
   memset(data_stream , 0, sizeof(data_stream));
 
   // use something like recvfrom 
+  FILE* inpFile = fopen("RTIGS.txt", "rb");
 
-  messType = GPSTrans.GetRTIGSHdrRecType(data_stream);
-  numbytes = GPSTrans.GetRTIGSHdrRecBytes(data_stream);
-  statID   = GPSTrans.GetRTIGSHdrStaID(data_stream);
+  while (true) {
+    size_t nr = 0;
+   if (inpFile) {
+     nr = fread(data_stream, sizeof(unsigned char), MAXSTREAM, inpFile);
+     if (nr == 0) exit(0);
+     cout << "Number of bytes read: " << nr << endl;
+   }
+   else {
+     exit(1);
+   }
+  
+   // Find the beginning of the message
+   // ---------------------------------
+   size_t sz = sizeof(unsigned short);
+   bool   found = false;
+   size_t ii;
+   for (ii = 0; ii < nr - sz; ii += sz) {
+     unsigned short xx;
+     memcpy( (void*) &xx, &data_stream[ii], sz);
+     SwitchBytes( (char*) &xx, sz);
+     if (xx == 200) {
+       found = true;
+       break;
+     }
+   }
+   if (! found) {
+     cout << "Message not found\n";
+     exit(0);
+   }
+   else {
+     cout << "Message found at " << ii << endl;
+   }
 
-  switch (messType) {
-  case 100:
-    GPSTrans.Decode_RTIGS_Sta(data_stream, numbytes , rtigs_sta);
-    break;
-  case 200:
-    retval = GPSTrans.Decode_RTIGS_Obs(data_stream, numbytes , rtigs_obs);
-    if (retval >= 1) {
-      GPSTrans.print_CMEAS();
-    }
-    break;
-  case 300:
-    retval = GPSTrans.Decode_RTIGS_Eph(data_stream, numbytes , rtigs_eph, PRN);
-    break;
-  case 400:
-    retval = GPSTrans.Decode_RTIGS_Met(data_stream, numbytes , &rtigs_met); 
-    break;
+
+   messType = GPSTrans.GetRTIGSHdrRecType(&data_stream[ii]);
+   numbytes = GPSTrans.GetRTIGSHdrRecBytes(&data_stream[ii]);
+   statID   = GPSTrans.GetRTIGSHdrStaID(&data_stream[ii]);
+
+   cout << "messType " << messType << endl;
+   cout << "numbytes " << numbytes << endl;
+   cout << "statID "   << statID   << endl;
+
+   switch (messType) {
+   case 100:
+     GPSTrans.Decode_RTIGS_Sta(&data_stream[ii], numbytes , rtigs_sta);
+     break;
+   case 200:
+     retval = GPSTrans.Decode_RTIGS_Obs(&data_stream[ii], numbytes , rtigs_obs);
+     if (retval >= 1) {
+       GPSTrans.print_CMEAS();
+     }
+     break;
+   case 300:
+     retval = GPSTrans.Decode_RTIGS_Eph(&data_stream[ii], numbytes , rtigs_eph, PRN);
+     break;
+   case 400:
+     retval = GPSTrans.Decode_RTIGS_Met(&data_stream[ii], numbytes , &rtigs_met); 
+     break;
+   }
   }
 
   return 0;
@@ -124,16 +174,6 @@ void CGPS_Transform::InitEndianFlag() {
   }
 }
 
-// 
-////////////////////////////////////////////////////////////////////////////
-void CGPS_Transform::SwitchBytes( char *Start, int Size ) {
-  char Tmp;
-  char *End = Start + Size - 1;
-  for( Tmp = *Start; Start < End; Tmp = *Start ){
-    *Start++ = *End;
-    *End-- = Tmp;
-  }
-}
 
 // 
 ////////////////////////////////////////////////////////////////////////////
@@ -555,6 +595,8 @@ memset((void *)&DecObs.Obs[0], 0 , sizeof(ARR_OBS_T) );
 
   StrPos = IGSObsMinusPtr = sizeof(RTIGSO_T) - sizeof (rtigs_obs.data);
 
+  cout << "StrPos " << StrPos << endl;
+
   memcpy ((void *)&rtigs_obs.rec_id, RTIGSO_Str, IGSObsMinusPtr);
 
   if (f_IsLittleEndian)
@@ -563,7 +605,8 @@ memset((void *)&DecObs.Obs[0], 0 , sizeof(ARR_OBS_T) );
   }
 
 
-//      printf("RecNumber : %hd Station ID %hd Num Obs %hd NumBytes %hd\n",rtigs_obs.rec_id, rtigs_obs.sta_id, rtigs_obs.num_obs, rtigs_obs.num_bytes);
+  printf("RecNumber : %hd Station ID %hd Num Obs %hd NumBytes %hd\n",rtigs_obs.rec_id, rtigs_obs.sta_id, rtigs_obs.num_obs, rtigs_obs.num_bytes);
+
   if((rtigs_obs.rec_id == 200) && (rtigs_obs.num_obs <= MAXCHANNELS_FOR_SOCKETS_TYPE1))
   {
     for (i = 0 ; i < rtigs_obs.num_obs;i++)
