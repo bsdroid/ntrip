@@ -605,7 +605,7 @@ memset((void *)&DecObs.Obs[0], 0 , sizeof(ARR_OBS_T) );
   }
 
 
-  printf("RecNumber : %hd Station ID %hd Num Obs %hd NumBytes %hd\n",rtigs_obs.rec_id, rtigs_obs.sta_id, rtigs_obs.num_obs, rtigs_obs.num_bytes);
+  // printf("RecNumber : %hd Station ID %hd Num Obs %hd NumBytes %hd\n",rtigs_obs.rec_id, rtigs_obs.sta_id, rtigs_obs.num_obs, rtigs_obs.num_bytes);
 
   if((rtigs_obs.rec_id == 200) && (rtigs_obs.num_obs <= MAXCHANNELS_FOR_SOCKETS_TYPE1))
   {
