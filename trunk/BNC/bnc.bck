@@ -1,12 +1,16 @@
 
 fileName="bnc`date +%y%m%d`"
 
-tar -cvf ${fileName}.tar bnc.bck    \
-                         *.cpp      \
-                         *.h        \
-                         *.pro      \
-                         RTCM/*.cpp \
-                         RTCM/*.h
+tar -cvf ${fileName}.tar bnc.bck     \
+                         *.cpp       \
+                         *.h         \
+                         *.pro       \
+                         RTCM/*.cpp  \
+                         RTCM/*.h    \
+                         RTCM3/*.cpp \
+                         RTCM3/*.h   \
+                         RTIGS/*.cpp \
+                         RTIGS/*.h
 
 gzip      ${fileName}.tar
 mv        ${fileName}.tar.gz ${fileName}.tgz
