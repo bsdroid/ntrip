@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.4 2006/05/08 09:25:11 stoecker Exp $
+  $Id: rtcm3.cpp,v 1.1 2006/08/20 13:35:39 mervart Exp $
 
   Program written bei
   Dirk Stoecker
@@ -57,8 +57,8 @@
 #define MAXDATASIZE 1000 /* max number of bytes we can get at once */
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.4 $";
-static char datestr[]     = "$Date: 2006/05/08 09:25:11 $";
+static char revisionstr[] = "$Revision: 1.1 $";
+static char datestr[]     = "$Date: 2006/08/20 13:35:39 $";
 static int stop = 0;
 
 /* unimportant, only for approx. time needed */
@@ -730,7 +730,7 @@ static void HandleHeader(struct RTCM3ParserData *Parser)
   {
     struct converttimeinfo cti;
     converttime(&cti, Parser->Data.week,
-    floor(Parser->Data.timeofweek/1000.0));
+                int(floor(Parser->Data.timeofweek/1000.0)));
     hdata.data.named.timeoffirstobs = buffer;
       i = 1+snprintf(buffer, buffersize,
     "  %4d    %2d    %2d    %2d    %2d   %10.7f     GPS         "
@@ -845,13 +845,7 @@ static void signalhandler(int sig)
   }
 }
 
-/* for some reason we had to abort hard (maybe waiting for data */
-#ifdef __GNUC__
-static __attribute__ ((noreturn)) void signalhandler_alarm(
-int sig __attribute__((__unused__)))
-#else /* __GNUC__ */
 static void signalhandler_alarm(int sig)
-#endif /* __GNUC__ */
 {
   fprintf(stderr, "Programm forcefully terminated.\n");
   exit(1);
