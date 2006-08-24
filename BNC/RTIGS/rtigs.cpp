@@ -33,41 +33,54 @@ rtigs::~rtigs() {
 ////////////////////////////////////////////////////////////////////////////
 void rtigs::Decode(char* buffer, int bufLen) {
 
-  unsigned char* lBuffer = (unsigned char*) buffer;
+  // Append the incomming data to the internal buffer
+  // ------------------------------------------------
+  _buffer.append( QByteArray(buffer, bufLen) );
 
   // Find the beginning of the message
   // ---------------------------------
-  size_t sz = sizeof(unsigned short);
-  bool   found = false;
-  size_t ii;
-
-  for (ii = 0; bufLen > sz && ii < bufLen - sz; ii += sz) {
+  bool found = false;
+  for (int ii = 0; ii < _buffer.size(); ii++) { 
     unsigned short xx;
-    memcpy( (void*) &xx, &lBuffer[ii], sz);
-    SwitchBytes( (char*) &xx, sz);
+    memcpy( (void*) &xx, &_buffer.data()[ii], sizeof(xx) );
+    SwitchBytes( (char*) &xx, sizeof(xx) );
     if (xx == 200) {
+      _buffer = _buffer.mid(ii);
+      cout << "Message found at " << ii << endl;
       found = true;
       break;
     }
   }
   if (! found) {
     cout << "Message not found\n";
+    _buffer.clear();
     return;
   }
-  else {
-    cout << "Message found at " << ii << endl;
-  }
 
-  unsigned short messType = _GPSTrans.GetRTIGSHdrRecType(&lBuffer[ii]);
-  unsigned short numbytes = _GPSTrans.GetRTIGSHdrRecBytes(&lBuffer[ii]);
-  unsigned short statID   = _GPSTrans.GetRTIGSHdrStaID(&lBuffer[ii]);
+  unsigned char* p_buf = (unsigned char*) _buffer.data();  
+
+  unsigned short messType = _GPSTrans.GetRTIGSHdrRecType(p_buf);
+  unsigned short numbytes = _GPSTrans.GetRTIGSHdrRecBytes(p_buf);
+  ////  unsigned short statID   = _GPSTrans.GetRTIGSHdrStaID(p_buf);
+
+  cout << "numbytes = " << numbytes << endl;
+
+  // Not enough new data, store it into the internal buffer and return
+  // -----------------------------------------------------------------
+  if (_buffer.size() < numbytes) {
+    return;
+  }
 
   if (messType == 200) {
     RTIGSO_T       rtigs_obs;
-    short retval = _GPSTrans.Decode_RTIGS_Obs(&lBuffer[ii], numbytes , 
+    short retval = _GPSTrans.Decode_RTIGS_Obs(p_buf, numbytes , 
                                               rtigs_obs);
     if (retval >= 1) {
       _GPSTrans.print_CMEAS();
     }
   }
+
+  // Unprocessed bytes remain in buffer
+  // ----------------------------------
+  _buffer = _buffer.mid(numbytes);
 }
