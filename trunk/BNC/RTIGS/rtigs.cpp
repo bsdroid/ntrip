@@ -40,7 +40,8 @@ void rtigs::Decode(char* buffer, int bufLen) {
   size_t sz = sizeof(unsigned short);
   bool   found = false;
   size_t ii;
-  for (ii = 0; ii < bufLen - sz; ii += sz) {
+
+  for (ii = 0; bufLen > sz && ii < bufLen - sz; ii += sz) {
     unsigned short xx;
     memcpy( (void*) &xx, &lBuffer[ii], sz);
     SwitchBytes( (char*) &xx, sz);
