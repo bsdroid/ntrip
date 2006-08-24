@@ -148,7 +148,6 @@ void bncGetThread::run() {
   else if (_format.indexOf("RTIGS") != -1) {
     qWarning("Get Data: " + _mountPoint + " in RTIGS format");
     decoder = new rtigs();
-    return exit(1);
   }
   else {
     qWarning(_mountPoint + " Unknown data format " + _format);
