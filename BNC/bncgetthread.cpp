@@ -21,6 +21,7 @@
 
 #include "bncgetthread.h"
 #include "RTCM/RTCM.h"
+#include "RTIGS/rtigs.h"
 
 using namespace std;
 
@@ -133,11 +134,11 @@ void bncGetThread::run() {
 
   // Instantiate the filter
   // ----------------------
-  GPSDecoder* rtcmFilter;
+  GPSDecoder* decoder;
 
   if      (_format.indexOf("RTCM_2") != -1) {
     qWarning("Get Data: " + _mountPoint + " in RTCM 2.x format");
-    rtcmFilter = new RTCM('A',true);
+    decoder = new RTCM('A',true);
   }
   else if (_format.indexOf("RTCM_3") != -1) {
     qWarning("Get Data: " + _mountPoint + " in RTCM 3.0 format");
@@ -146,11 +147,11 @@ void bncGetThread::run() {
   }
   else if (_format.indexOf("RTIGS") != -1) {
     qWarning("Get Data: " + _mountPoint + " in RTIGS format");
-    qWarning("Not yet implemented");
+    decoder = new rtigs();
     return exit(1);
   }
   else {
-    qWarning("Unknown data format");
+    qWarning(_mountPoint + " Unknown data format " + _format);
     return exit(1);
   }
 
@@ -162,20 +163,20 @@ void bncGetThread::run() {
     if (nBytes > 0) {
       char* data = new char[nBytes];
       _socket->read(data, nBytes);
-      rtcmFilter->Decode(data, nBytes);
+      decoder->Decode(data, nBytes);
       delete data;
-      for (list<Observation*>::iterator it = rtcmFilter->m_lObsList.begin(); 
-           it != rtcmFilter->m_lObsList.end(); it++) {
+      for (list<Observation*>::iterator it = decoder->m_lObsList.begin(); 
+           it != decoder->m_lObsList.end(); it++) {
         emit newObs(_mountPoint, *it);
       }
-      rtcmFilter->m_lObsList.clear();
+      decoder->m_lObsList.clear();
     }
     else {
       qWarning("Data Timeout");
       return exit(1);
     }
   }
-  delete rtcmFilter;
+  delete decoder;
 }
 
 // Exit

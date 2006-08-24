@@ -12,6 +12,7 @@ void SwitchBytes( char *Start, int Size ) {
   }
 }
 
+#ifdef CGPS_TRANSFORM_MAIN
 int main() {
 
   unsigned char  data_stream[MAXSTREAM];
@@ -94,6 +95,7 @@ int main() {
 
   return 0;
 }
+#endif
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
