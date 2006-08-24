@@ -1,6 +1,7 @@
 .cvsignore
 Makefile
 bnc
+anlagen
 moc_bnccaster.cpp
 moc_bncgetthread.cpp
 moc_bnctabledlg.cpp

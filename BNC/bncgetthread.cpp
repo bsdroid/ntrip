@@ -20,7 +20,9 @@
 #include <QtNetwork>
 
 #include "bncgetthread.h"
+
 #include "RTCM/RTCM.h"
+#include "RTCM3/rtcm3.h"
 #include "RTIGS/rtigs.h"
 
 using namespace std;
@@ -142,8 +144,7 @@ void bncGetThread::run() {
   }
   else if (_format.indexOf("RTCM_3") != -1) {
     qWarning("Get Data: " + _mountPoint + " in RTCM 3.0 format");
-    qWarning("Not yet implemented");
-    return exit(1);
+    decoder = new rtcm3();
   }
   else if (_format.indexOf("RTIGS") != -1) {
     qWarning("Get Data: " + _mountPoint + " in RTIGS format");
