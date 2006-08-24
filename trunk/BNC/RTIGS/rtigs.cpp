@@ -46,7 +46,6 @@ void rtigs::Decode(char* buffer, int bufLen) {
     SwitchBytes( (char*) &xx, sizeof(xx) );
     if (xx == 200) {
       _buffer = _buffer.mid(ii);
-      cout << "Message found at " << ii << endl;
       found = true;
       break;
     }
@@ -61,20 +60,18 @@ void rtigs::Decode(char* buffer, int bufLen) {
 
   unsigned short messType = _GPSTrans.GetRTIGSHdrRecType(p_buf);
   unsigned short numbytes = _GPSTrans.GetRTIGSHdrRecBytes(p_buf);
-  ////  unsigned short statID   = _GPSTrans.GetRTIGSHdrStaID(p_buf);
 
-  cout << "numbytes = " << numbytes << endl;
-
-  // Not enough new data, store it into the internal buffer and return
-  // -----------------------------------------------------------------
+  // Not enough new data, return
+  // ---------------------------
   if (_buffer.size() < numbytes) {
     return;
   }
 
+  // Decode the epoch
+  // ----------------
   if (messType == 200) {
     RTIGSO_T       rtigs_obs;
-    short retval = _GPSTrans.Decode_RTIGS_Obs(p_buf, numbytes , 
-                                              rtigs_obs);
+    short retval = _GPSTrans.Decode_RTIGS_Obs(p_buf, numbytes, rtigs_obs);
     if (retval >= 1) {
       _GPSTrans.print_CMEAS();
     }
