@@ -82,12 +82,15 @@ int main(int argc, char *argv[]) {
     
     QListIterator<QString> it(settings.value("mountPoints").toStringList());
     while (it.hasNext()) {
-      QUrl url(it.next());
+      QStringList hlp = it.next().split(" ");
+      QUrl url(hlp[0]);
       QByteArray mountPoint = url.path().mid(1).toAscii();
+      QByteArray format     = hlp[1].toAscii();
 
       bncGetThread* getThread = new bncGetThread(url.host(), url.port(),
                                                  proxyHost, proxyPort, 
-                                                 mountPoint, user, password);
+                                                 mountPoint, user, password,
+                                                 format);
       caster->addGetThread(getThread);
 
       getThread->start();

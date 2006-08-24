@@ -32,7 +32,8 @@ bncGetThread::bncGetThread(const QString& host, int port,
                            const QString& proxyHost, int proxyPort,
                            const QByteArray& mountPoint,
                            const QByteArray& user, 
-                           const QByteArray& password) {
+                           const QByteArray& password,
+                           const QByteArray& format) {
   _host       = host;
   _port       = port;
   _proxyHost  = proxyHost;
@@ -40,6 +41,7 @@ bncGetThread::bncGetThread(const QString& host, int port,
   _mountPoint = mountPoint;
   _user       = user;
   _password   = password;
+  _format     = format;
   _socket     = 0;
 }
 
@@ -133,6 +135,8 @@ void bncGetThread::run() {
   // ----------------------
   GPSDecoder* rtcmFilter;
   rtcmFilter = new RTCM('A',true);
+
+  qWarning("Get Data: " + _mountPoint + " " + _format);
 
   // Read Incoming Data
   // ------------------
