@@ -134,9 +134,25 @@ void bncGetThread::run() {
   // Instantiate the filter
   // ----------------------
   GPSDecoder* rtcmFilter;
-  rtcmFilter = new RTCM('A',true);
 
-  qWarning("Get Data: " + _mountPoint + " " + _format);
+  if      (_format.indexOf("RTCM_2") != -1) {
+    qWarning("Get Data: " + _mountPoint + " in RTCM 2.x format");
+    rtcmFilter = new RTCM('A',true);
+  }
+  else if (_format.indexOf("RTCM_3") != -1) {
+    qWarning("Get Data: " + _mountPoint + " in RTCM 3.0 format");
+    qWarning("Not yet implemented");
+    return exit(1);
+  }
+  else if (_format.indexOf("RTIGS") != -1) {
+    qWarning("Get Data: " + _mountPoint + " in RTIGS format");
+    qWarning("Not yet implemented");
+    return exit(1);
+  }
+  else {
+    qWarning("Unknown data format");
+    return exit(1);
+  }
 
   // Read Incoming Data
   // ------------------
