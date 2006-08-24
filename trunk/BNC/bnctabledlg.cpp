@@ -164,13 +164,16 @@ void bncTableDlg::accept() {
 
   if (_table) {
     for (int ir = 0; ir < _table->rowCount(); ir++) {
-      QTableWidgetItem* item = _table->item(ir,0);
+      QTableWidgetItem* item   = _table->item(ir,0);
+      QString           format = _table->item(ir,2)->text();
+      format.replace(" ", "_");
       if (_table->isItemSelected(item)) {
         QUrl url;
         url.setHost(_casterHostLineEdit->text());
         url.setPort(_casterPortLineEdit->text().toInt());
         url.setPath(item->text());
-        mountPoints->push_back(url.toString());
+
+        mountPoints->push_back(url.toString() + " " + format);
       }
     }
   }

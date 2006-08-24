@@ -15,7 +15,8 @@ class bncGetThread : public QThread {
                 const QString& proxyHost, int proxyPort,
                 const QByteArray& mountPoint,
                 const QByteArray& user, 
-                const QByteArray& password);
+                const QByteArray& password,
+                const QByteArray& format);
    ~bncGetThread();
    static QTcpSocket* bncGetThread::request(const QString& host, int port,
                                       const QString& proxyHost, int proxyPort,
@@ -40,6 +41,7 @@ class bncGetThread : public QThread {
    QByteArray  _mountPoint;
    QByteArray  _user;
    QByteArray  _password;
+   QByteArray  _format;
 };
 
 #endif

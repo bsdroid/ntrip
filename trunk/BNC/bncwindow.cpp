@@ -91,7 +91,7 @@ bncWindow::bncWindow() {
   _passwordLineEdit->setEchoMode(QLineEdit::Password);
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
   _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
-  _mountPointsTable   = new QTableWidget(0,1);
+  _mountPointsTable   = new QTableWidget(0,2);
   _mountPointsTable->setMaximumHeight(100);
   _mountPointsTable->horizontalHeader()->hide();
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
@@ -105,9 +105,12 @@ bncWindow::bncWindow() {
   }
   int iRow = 0;
   while (it.hasNext()) {
-    QString mPoint = it.next();
+    QStringList hlp = it.next().split(" ");
+    QString mPoint = hlp[0];
+    QString format = hlp[1];
     _mountPointsTable->insertRow(iRow);
     _mountPointsTable->setItem(iRow, 0, new QTableWidgetItem(mPoint));
+    _mountPointsTable->setItem(iRow, 1, new QTableWidgetItem(format));
     iRow++;
   }
 
@@ -160,9 +163,12 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
   int iRow = 0;
   QListIterator<QString> it(*mountPoints);
   while (it.hasNext()) {
-    QString mPoint = it.next();
+    QStringList hlp = it.next().split(" ");
+    QString mPoint = hlp[0];
+    QString format = hlp[1];
     _mountPointsTable->insertRow(iRow);
     _mountPointsTable->setItem(iRow, 0, new QTableWidgetItem(mPoint));
+    _mountPointsTable->setItem(iRow, 1, new QTableWidgetItem(format));
     iRow++;
   }
   if (mountPoints->count() > 0) {
@@ -183,7 +189,8 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("outPort",     _outPortLineEdit->text());
   QStringList mountPoints;
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
-    mountPoints.append(_mountPointsTable->item(iRow, 0)->text());
+    mountPoints.append(_mountPointsTable->item(iRow, 0)->text() + 
+                       " " + _mountPointsTable->item(iRow, 1)->text());
   }
   settings.setValue("mountPoints", mountPoints);
 }
@@ -220,10 +227,12 @@ void bncWindow::slotGetData() {
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
     QUrl url(_mountPointsTable->item(iRow, 0)->text());
     QByteArray mountPoint = url.path().mid(1).toAscii();
+    QByteArray format     = _mountPointsTable->item(iRow, 1)->text().toAscii();
 
     bncGetThread* getThread = new bncGetThread(url.host(), url.port(),
                                                proxyHost, proxyPort, 
-                                               mountPoint, user, password);
+                                               mountPoint, user, password,
+                                               format);
     _bncCaster->addGetThread(getThread);
 
     getThread->start();
