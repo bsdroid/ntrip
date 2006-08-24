@@ -33,23 +33,16 @@ rtigs::~rtigs() {
 ////////////////////////////////////////////////////////////////////////////
 void rtigs::Decode(char* buffer, int bufLen) {
 
-  RTIGSS_T       rtigs_sta;
-  RTIGSO_T       rtigs_obs;
-  RTIGSM_T       rtigs_met;
-  RTIGSE_T       rtigs_eph;
-  short          PRN;
-  short          retval;
-  unsigned short statID;
-  unsigned short messType;
+  unsigned char* lBuffer = (unsigned char*) buffer;
 
   // Find the beginning of the message
   // ---------------------------------
   size_t sz = sizeof(unsigned short);
   bool   found = false;
   size_t ii;
-  for (ii = 0; ii < nr - sz; ii += sz) {
+  for (ii = 0; ii < bufLen - sz; ii += sz) {
     unsigned short xx;
-    memcpy( (void*) &xx, &buffer[ii], sz);
+    memcpy( (void*) &xx, &lBuffer[ii], sz);
     SwitchBytes( (char*) &xx, sz);
     if (xx == 200) {
       found = true;
@@ -64,29 +57,16 @@ void rtigs::Decode(char* buffer, int bufLen) {
     cout << "Message found at " << ii << endl;
   }
 
-  messType = _GPSTrans.GetRTIGSHdrRecType(&buffer[ii]);
-  numbytes = _GPSTrans.GetRTIGSHdrRecBytes(&buffer[ii]);
-  statID   = _GPSTrans.GetRTIGSHdrStaID(&buffer[ii]);
+  unsigned short messType = _GPSTrans.GetRTIGSHdrRecType(&lBuffer[ii]);
+  unsigned short numbytes = _GPSTrans.GetRTIGSHdrRecBytes(&lBuffer[ii]);
+  unsigned short statID   = _GPSTrans.GetRTIGSHdrStaID(&lBuffer[ii]);
 
-  cout << "messType " << messType << endl;
-  cout << "numbytes " << numbytes << endl;
-  cout << "statID "   << statID   << endl;
-
-  switch (messType) {
-  case 100:
-    _GPSTrans.Decode_RTIGS_Sta(&buffer[ii], numbytes , rtigs_sta);
-    break;
-  case 200:
-    retval = _GPSTrans.Decode_RTIGS_Obs(&buffer[ii], numbytes , rtigs_obs);
+  if (messType == 200) {
+    RTIGSO_T       rtigs_obs;
+    short retval = _GPSTrans.Decode_RTIGS_Obs(&lBuffer[ii], numbytes , 
+                                              rtigs_obs);
     if (retval >= 1) {
       _GPSTrans.print_CMEAS();
     }
-    break;
-  case 300:
-    retval = _GPSTrans.Decode_RTIGS_Eph(&buffer[ii], numbytes , rtigs_eph, PRN);
-    break;
-  case 400:
-    retval = _GPSTrans.Decode_RTIGS_Met(&buffer[ii], numbytes , &rtigs_met); 
-    break;
   }
 }
