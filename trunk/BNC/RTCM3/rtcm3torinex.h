@@ -55,6 +55,10 @@
 /* unimportant, only for approx. time needed */
 #define LEAPSECONDS 14
 
+/* Additional flags for the data field, which tell us more. */
+#define GNSSDF_LOCKLOSSL1     (1<<29)  /* lost lock on L1 */
+#define GNSSDF_LOCKLOSSL2     (1<<30)  /* lost lock on L2 */
+
 struct gnssdata {
   int    flags;              /* GPSF_xxx */
   int    week;               /* week number of GPS date */
@@ -86,5 +90,17 @@ struct RTCM3ParserData {
   const char * headerfile;
 };
 
+struct converttimeinfo {
+  int second;    /* seconds of GPS time [0..59] */
+  int minute;    /* minutes of GPS time [0..59] */
+  int hour;      /* hour of GPS time [0..24] */
+  int day;       /* day of GPS time [1..28..30(31)*/
+  int month;     /* month of GPS time [1..12]*/
+  int year;      /* year of GPS time [1980..] */
+};
+
+void HandleHeader(struct RTCM3ParserData *Parser);
+int RTCM3Parser(struct RTCM3ParserData *handle);
 void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte);
+void converttime(struct converttimeinfo *c, int week, int tow);
 
