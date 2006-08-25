@@ -86,6 +86,7 @@ typedef struct {
 } ARR_OBS_T ;
 
 class CGPS_Transform {
+friend class rtigs;
 private:
   ARR_OBS_T     DecObs;
   ARR_TNAV_T    TNAV_Eph;
