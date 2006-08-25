@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.cpp,v 1.1 2006/08/24 13:24:14 mervart Exp $
+  $Id: rtcm3torinex.cpp,v 1.2 2006/08/24 13:56:49 mervart Exp $
 
   Program written bei
   Dirk Stoecker
@@ -57,25 +57,14 @@
 #define MAXDATASIZE 1000 /* max number of bytes we can get at once */
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.1 $";
-static char datestr[]     = "$Date: 2006/08/24 13:24:14 $";
+static char revisionstr[] = "$Revision: 1.2 $";
+static char datestr[]     = "$Date: 2006/08/24 13:56:49 $";
 static int stop = 0;
 
 
-struct converttimeinfo {
-  int second;    /* seconds of GPS time [0..59] */
-  int minute;    /* minutes of GPS time [0..59] */
-  int hour;      /* hour of GPS time [0..24] */
-  int day;       /* day of GPS time [1..28..30(31)*/
-  int month;     /* month of GPS time [1..12]*/
-  int year;      /* year of GPS time [1980..] */
-};
 
 #include "rtcm3torinex.h"
 
-/* Additional flags for the data field, which tell us more. */
-#define GNSSDF_LOCKLOSSL1     (1<<29)  /* lost lock on L1 */
-#define GNSSDF_LOCKLOSSL2     (1<<30)  /* lost lock on L2 */
 
 struct Args
 {
@@ -310,7 +299,7 @@ static int GetMessage(struct RTCM3ParserData *handle)
 
 #define SKIPBITS(b) { LOADBITS(b) numbits -= (b); }
 
-static int RTCM3Parser(struct RTCM3ParserData *handle)
+int RTCM3Parser(struct RTCM3ParserData *handle)
 {
   int ret=0;
 
@@ -483,7 +472,7 @@ static int longyear(int year, int month)
   return 0;
 }
 
-static void converttime(struct converttimeinfo *c, int week, int tow)
+void converttime(struct converttimeinfo *c, int week, int tow)
 {
   /* static variables */
   static const int months[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
@@ -533,7 +522,7 @@ struct HeaderData
   int  numheaders;
 };
 
-static void HandleHeader(struct RTCM3ParserData *Parser)
+void HandleHeader(struct RTCM3ParserData *Parser)
 {
   struct HeaderData hdata;
   char thebuffer[MAXHEADERBUFFERSIZE];
@@ -861,7 +850,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
   }
 }
 
-#ifdef CGPS_TRANSFORM_MAIN
+#ifdef RTCM_TRANSFORM_MAIN
 int main(int argc, char **argv)
 {
   struct Args args;
