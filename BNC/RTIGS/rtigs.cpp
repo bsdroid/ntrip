@@ -75,12 +75,17 @@ void rtigs::Decode(char* buffer, int bufLen) {
   if (messType == 200) {
     RTIGSO_T  rtigs_obs;
     short numObs = _GPSTrans.Decode_RTIGS_Obs(p_buf, numbytes, rtigs_obs);
+
+////    if (numObs > 0) {
+////      _GPSTrans.print_CMEAS();
+////    }
+
     for (short ii = 0; ii < numObs; ii++) {
       Observation* obs = new Observation();
 
 ////  obs->statID         =
       obs->SVPRN          = _GPSTrans.DecObs.Obs[ii].sat_prn;
-      obs->GPSWeek        = _GPSTrans.DecObs.Obs[ii].GPSTime / 7;
+      obs->GPSWeek        = _GPSTrans.DecObs.Obs[ii].GPSTime / 7 / 86400;
       obs->GPSWeeks       = _GPSTrans.DecObs.Obs[ii].GPSTime - 
                                                    obs->GPSWeek * 7 * 86400;
 ////  obs->sec            = 

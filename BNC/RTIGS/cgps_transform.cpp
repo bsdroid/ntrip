@@ -597,7 +597,7 @@ memset((void *)&DecObs.Obs[0], 0 , sizeof(ARR_OBS_T) );
 
   StrPos = IGSObsMinusPtr = sizeof(RTIGSO_T) - sizeof (rtigs_obs.data);
 
-  cout << "StrPos " << StrPos << endl;
+  ////  cout << "StrPos " << StrPos << endl;
 
   memcpy ((void *)&rtigs_obs.rec_id, RTIGSO_Str, IGSObsMinusPtr);
 
