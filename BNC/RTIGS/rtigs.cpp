@@ -85,10 +85,9 @@ void rtigs::Decode(char* buffer, int bufLen) {
 
 ////  obs->statID         =
       obs->SVPRN          = _GPSTrans.DecObs.Obs[ii].sat_prn;
-      obs->GPSWeek        = _GPSTrans.DecObs.Obs[ii].GPSTime / 7 / 86400;
-      obs->GPSWeeks       = _GPSTrans.DecObs.Obs[ii].GPSTime - 
-                                                   obs->GPSWeek * 7 * 86400;
-////  obs->sec            = 
+      obs->GPSWeek        = _GPSTrans.DecObs.Obs[ii].GPSTime / (7 * 86400);
+      obs->GPSWeeks       = _GPSTrans.DecObs.Obs[ii].GPSTime % (7 * 86400);
+      obs->sec            = _GPSTrans.DecObs.Obs[ii].GPSTime % 3600;
       obs->C1             = _GPSTrans.DecObs.Obs[ii].l1_pseudo_range;
 ////  obs->P1             = _GPSTrans.DecObs.Obs[ii].p1_pseudo_range;
       obs->P2             = _GPSTrans.DecObs.Obs[ii].p2_pseudo_range;
