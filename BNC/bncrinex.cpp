@@ -73,7 +73,7 @@ void bncRinex::dumpEpoch() {
   while (it.hasNext()) {
     iSat++;
     Observation* ob = it.next();
-    cout << " " << setw(2) << ob->SVPRN;
+    cout << " " << setw(2) << int(ob->SVPRN);
     if (iSat == 12 && it.hasNext()) {
       cout << endl << "                                ";
       iSat = 0;
