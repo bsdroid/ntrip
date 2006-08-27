@@ -17,7 +17,7 @@ class bncRinex {
    void dumpEpoch();
 
  private:
-   void writeHeader();
+   void writeHeader(struct converttimeinfo& cti, double second);
 
    QByteArray          _statID;
    QList<Observation*> _obs;
