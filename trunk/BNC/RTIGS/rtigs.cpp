@@ -76,27 +76,22 @@ void rtigs::Decode(char* buffer, int bufLen) {
     RTIGSO_T  rtigs_obs;
     short numObs = _GPSTrans.Decode_RTIGS_Obs(p_buf, numbytes, rtigs_obs);
 
-////    if (numObs > 0) {
-////      _GPSTrans.print_CMEAS();
-////    }
-
     for (short ii = 0; ii < numObs; ii++) {
       Observation* obs = new Observation();
 
-////  obs->statID         =
       obs->SVPRN          = _GPSTrans.DecObs.Obs[ii].sat_prn;
       obs->GPSWeek        = _GPSTrans.DecObs.Obs[ii].GPSTime / (7 * 86400);
       obs->GPSWeeks       = _GPSTrans.DecObs.Obs[ii].GPSTime % (7 * 86400);
       obs->sec            = _GPSTrans.DecObs.Obs[ii].GPSTime % 3600;
-      obs->C1             = _GPSTrans.DecObs.Obs[ii].l1_pseudo_range;
-////  obs->P1             = _GPSTrans.DecObs.Obs[ii].p1_pseudo_range;
+////  obs->C1             = _GPSTrans.DecObs.Obs[ii].l1_pseudo_range;
+      obs->C1             = _GPSTrans.DecObs.Obs[ii].p1_pseudo_range;
+      obs->pCodeIndicator = 1;
       obs->P2             = _GPSTrans.DecObs.Obs[ii].p2_pseudo_range;
       obs->L1             = _GPSTrans.DecObs.Obs[ii].p1_phase;
       obs->L2             = _GPSTrans.DecObs.Obs[ii].p2_phase;
       obs->SNR1           = (short) _GPSTrans.DecObs.Obs[ii].l1_sn * 10;
       obs->SNR2           = (short) _GPSTrans.DecObs.Obs[ii].l2_sn * 10;
-////  obs->pCodeIndicator =
-////  obs->cumuLossOfCont =
+      obs->cumuLossOfCont = 0;
 
       m_lObsList.push_back(obs);
     }
