@@ -87,8 +87,8 @@ void rtigs::Decode(char* buffer, int bufLen) {
       obs->C1             = _GPSTrans.DecObs.Obs[ii].p1_pseudo_range;
       obs->pCodeIndicator = 1;
       obs->P2             = _GPSTrans.DecObs.Obs[ii].p2_pseudo_range;
-      obs->L1             = _GPSTrans.DecObs.Obs[ii].p1_phase;
-      obs->L2             = _GPSTrans.DecObs.Obs[ii].p2_phase;
+      obs->L1             = _GPSTrans.DecObs.Obs[ii].l1_phase * (C / F1);
+      obs->L2             = _GPSTrans.DecObs.Obs[ii].l2_phase * (C / F1);
       obs->SNR1           = (short) _GPSTrans.DecObs.Obs[ii].l1_sn * 10;
       obs->SNR2           = (short) _GPSTrans.DecObs.Obs[ii].l2_sn * 10;
       obs->cumuLossOfCont = 0;
