@@ -15,7 +15,13 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iomanip>
+
 #include "bncrinex.h"
+
+#include "RTCM3/rtcm3torinex.h"
+
+using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -40,22 +46,53 @@ void bncRinex::deepCopy(const Observation* obs) {
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::dumpEpoch() {
 
-  QListIterator<Observation*> it(_obs);
-  while (it.hasNext()) {
-    Observation* obs = it.next();
-    cout <<       obs->StatID    << " "
-         << (int) obs->SVPRN     << " "
-         << (int) obs->GPSWeek   << " "
-         <<       obs->GPSWeeks  << " "
-         <<       obs->sec       << " "
-         <<       obs->pCodeIndicator << " "
-         <<       obs->cumuLossOfCont << " "
-         <<       obs->C1        << " "
-         <<       obs->P2        << " "
-         <<       obs->L1        << " "
-         <<       obs->L2        << endl;
-    delete obs;
+  // Easy Return
+  // -----------
+  if (_obs.isEmpty()) {
+    return;
   }
+
+  // Time of Epoch
+  // -------------
+  struct converttimeinfo cti;
+  Observation* firstObs = *_obs.begin();
+  converttime(&cti, firstObs->GPSWeek, firstObs->GPSWeeks);
+
+  cout.setf(std::ios::fixed);
+
+  cout << setw(3)  << cti.year%100
+       << setw(3)  << cti.month
+       << setw(3)  << cti.day
+       << setw(3)  << cti.hour
+       << setw(3)  << cti.minute
+       << setw(11) << setprecision(7) 
+       << cti.second + fmod(firstObs->sec, 1.0)
+       << "  " << 0 << setw(3)  << _obs.size();
+
+  QListIterator<Observation*> it(_obs); int iSat = 0;
+  while (it.hasNext()) {
+    iSat++;
+    Observation* ob = it.next();
+    cout << " " << setw(2) << ob->SVPRN;
+    if (iSat == 12 && it.hasNext()) {
+      cout << endl << "                                ";
+      iSat = 0;
+    }
+  }
+  cout << endl;
+
+  cout.precision(3);
+
+  it.toFront();
+  while (it.hasNext()) {
+    Observation* ob = it.next();
+    cout << setw(14) << ob->C1
+         << setw(14) << ob->P2
+         << setw(14) << ob->L1
+         << setw(14) << ob->L2 << endl;
+    delete ob;
+  }
+
   _obs.clear();
 }
 
