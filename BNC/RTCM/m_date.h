@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: m_date.h,v 1.1.1.1 2006/01/11 09:34:31 mervart Exp $
+// $Id: m_date.h,v 1.1.1.1 2006/05/30 11:05:27 mervart Exp $
 //
 
 #if !defined(__m_date_h__)
@@ -174,7 +174,7 @@ public:
   int month() const {
     return tms.tm_mon+1; 
   }
-  const static char *_monthNames[];
+  static const char *_monthNames[];
   const char *monthStr();
 
   int year4() const {

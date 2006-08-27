@@ -182,9 +182,27 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
         }
       }
 
+      // Prepare RINEX Output
+      // --------------------
+      if (1) {
+        if (_rinexWriters.find(obs->StatID) == _rinexWriters.end()) {
+          _rinexWriters.insert(obs->StatID, new bncRinex(obs->StatID));
+        }
+        bncRinex* rnx = _rinexWriters.find(obs->StatID).value();
+        rnx->deepCopy(obs);
+      }
+
       delete obs;
       _epochs->remove(sec);
       first = false;
+    }
+
+    // Write RINEX Files
+    // -----------------
+    QMapIterator<QString, bncRinex*> ir(_rinexWriters);
+    while (ir.hasNext()) {
+      bncRinex* rnx = ir.next().value();
+      rnx->dumpEpoch();
     }
   }
 }

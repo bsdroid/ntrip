@@ -8,6 +8,7 @@
 #include <QMultiMap>
 
 #include "RTCM/GPSDecoder.h"
+#include "bncrinex.h"
 
 class bncGetThread;
 
@@ -43,6 +44,7 @@ class bncCaster : public QThread {
    QTcpServer*                    _server;
    QList<QTcpSocket*>*            _sockets;
    QList<QByteArray>              _mountPoints;
+   QMap<QString, bncRinex*>       _rinexWriters;
 };
 
 #endif

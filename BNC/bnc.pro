@@ -1,6 +1,6 @@
 
 HEADERS =             bncgetthread.h    bncwindow.h   bnctabledlg.h   \
-          bnccaster.h                                                 \
+          bnccaster.h bncrinex.h                                      \
           RTCM/format.h RTCM/GPSDecoder.h RTCM/m_data.h RTCM/RTCM.h   \
           RTCM3/rtcm3.h RTCM3/rtcm3torinex.h                          \
           RTIGS/rtigs.h RTIGS/cgps_transform.h RTIGS/rtacp.h          \
@@ -8,7 +8,7 @@ HEADERS =             bncgetthread.h    bncwindow.h   bnctabledlg.h   \
 
 
 SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
-          bnccaster.cpp                                               \
+          bnccaster.cpp bncrinex.cpp                                  \
           RTCM/m_date.cpp RTCM/RTCM.cpp                               \
           RTCM3/rtcm3.cpp RTCM3/rtcm3torinex.cpp                      \
           RTIGS/rtigs.cpp RTIGS/cgps_transform.cpp
