@@ -38,13 +38,50 @@ bncRinex::~bncRinex() {
 
 // Write RINEX Header
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::writeHeader() {
+void bncRinex::writeHeader(struct converttimeinfo& cti, double second) {
 
   // Open the Output File
   // --------------------
   QByteArray fname = _statID + ".RXO";
   _out.open(fname.data());
 
+  // Write mandatory Records
+  // -----------------------
+  _out.setf(ios::fixed);
+  _out.setf(ios::left);
+
+  double approxPos[3];  approxPos[0]  = approxPos[1]  = approxPos[2]  = 0.0;
+  double antennaNEU[3]; antennaNEU[0] = antennaNEU[1] = antennaNEU[2] = 0.0;
+
+  _out << "     2.10           OBSERVATION DATA    G (GPS)             RINEX VERSION / TYPE" << endl;
+  _out << "BNC                 LM                  27-Aug-2006         PGM / RUN BY / DATE"  << endl;
+  _out << setw(60) << _statID.data()                               << "MARKER NAME"          << endl;
+  _out << setw(60) << "BKG"                                        << "OBSERVER / AGENCY"    << endl;
+  _out << setw(20) << "unknown"    
+       << setw(20) << "unknown"
+       << setw(20) << "unknown"                                    << "REC # / TYPE / VERS"  << endl;
+  _out << setw(20) << "unknown"
+       << setw(20) << "unknown"
+       << setw(20) << " "                                          << "ANT # / TYPE"         << endl;
+  _out.unsetf(ios::left);
+  _out << setw(14) << setprecision(4) << approxPos[0]
+       << setw(14) << setprecision(4) << approxPos[1]
+       << setw(14) << setprecision(4) << approxPos[2] 
+       << "                  "                                     << "APPROX POSITION XYZ"  << endl;
+  _out << setw(14) << setprecision(4) << antennaNEU[0]
+       << setw(14) << setprecision(4) << antennaNEU[1]
+       << setw(14) << setprecision(4) << antennaNEU[2] 
+       << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
+  _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
+  _out << "     4    P1    P2    L1    L2                              # / TYPES OF OBSERV"  << endl;
+  _out << setw(6) << cti.year
+       << setw(6) << cti.month
+       << setw(6) << cti.day
+       << setw(6) << cti.hour
+       << setw(6) << cti.minute
+       << setw(13) << setprecision(7) << second 
+       << "                 "                                      << "TIME OF FIRST OBS"    << endl;
+  _out << "                                                            END OF HEADER"        << endl;
 
   _headerWritten = true;
 }
@@ -67,17 +104,17 @@ void bncRinex::dumpEpoch() {
     return;
   }
 
-  // Write RINEX Header
-  // ------------------
-  if (!_headerWritten) {
-    writeHeader();
-  }
-
   // Time of Epoch
   // -------------
   struct converttimeinfo cti;
   Observation* firstObs = *_obs.begin();
   converttime(&cti, firstObs->GPSWeek, firstObs->GPSWeeks);
+
+  // Write RINEX Header
+  // ------------------
+  if (!_headerWritten) {
+    writeHeader(cti, cti.second + fmod(firstObs->sec, 1.0));
+  }
 
   _out.setf(std::ios::fixed);
 
