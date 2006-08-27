@@ -2,7 +2,7 @@
 #ifndef BNCRINEX_H
 #define BNCRINEX_H
 
-#include <QString>
+#include <QByteArray>
 #include <QList>
 
 #include "RTCM/GPSDecoder.h"
@@ -15,7 +15,7 @@ class bncRinex {
    void dumpEpoch();
 
  private:
-   QString             _statID;
+   QByteArray          _statID;
    QList<Observation*> _obs;
 };
 
