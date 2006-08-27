@@ -5,6 +5,8 @@
 #include <QByteArray>
 #include <QList>
 
+#include <fstream>
+
 #include "RTCM/GPSDecoder.h"
 
 class bncRinex {
@@ -15,8 +17,12 @@ class bncRinex {
    void dumpEpoch();
 
  private:
+   void writeHeader();
+
    QByteArray          _statID;
    QList<Observation*> _obs;
+   ofstream            _out;
+   bool                _headerWritten;
 };
 
 #endif
