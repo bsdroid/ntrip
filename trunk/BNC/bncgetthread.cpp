@@ -60,7 +60,10 @@ QTcpSocket* bncGetThread::request(const QString& host, int port,
                                   const QString& proxyHost, int proxyPort,
                                   const QByteArray& mountPoint,
                                   const QByteArray& user, 
-                                  const QByteArray& password) {
+                                  const QByteArray& password,
+                                  QString& msg) {
+
+  msg.clear();
 
   QTcpSocket* socket = new QTcpSocket();
 
@@ -81,7 +84,7 @@ QTcpSocket* bncGetThread::request(const QString& host, int port,
   }
 
   if (!socket->waitForConnected(timeOut)) {
-    qWarning("Connect timeout");
+    msg += "Connect timeout\n";
     delete socket;
     return 0;
   }
@@ -94,12 +97,12 @@ QTcpSocket* bncGetThread::request(const QString& host, int port,
                       "Authorization: Basic " + userAndPwd.toBase64() + 
                       "\r\n\r\n";
 
-  qWarning(reqStr);
+  msg += reqStr;
 
   socket->write(reqStr, reqStr.length());
 
   if (!socket->waitForBytesWritten(timeOut)) {
-    qWarning("Write timeout");
+    msg += "Write timeout\n";
     delete socket;
     return 0;
   }
@@ -113,8 +116,11 @@ void bncGetThread::run() {
 
   // Send the Request
   // ----------------
+  QString msg;
   _socket = bncGetThread::request(_host, _port, _proxyHost, _proxyPort, 
-                                  _mountPoint, _user, _password);
+                                  _mountPoint, _user, _password, msg);
+  emit(newMessage(msg.toAscii()));
+
   if (!_socket) {
     return exit(1);
   }
@@ -125,12 +131,12 @@ void bncGetThread::run() {
   if (_socket->canReadLine()) {
     QString line = _socket->readLine();
     if (line.indexOf("ICY 200 OK") != 0) {
-      qWarning(("Wrong Caster Response:\n" + line).toAscii());
+      emit(newMessage(("Wrong Caster Response:\n" + line).toAscii()));
       return exit(1);
     }
   }
   else {
-    qWarning("Response Timeout");
+    emit(newMessage("Response Timeout"));
     return exit(1);
   }
 
@@ -139,19 +145,19 @@ void bncGetThread::run() {
   GPSDecoder* decoder;
 
   if      (_format.indexOf("RTCM_2") != -1) {
-    qWarning("Get Data: " + _mountPoint + " in RTCM 2.x format");
+    emit(newMessage("Get Data: " + _mountPoint + " in RTCM 2.x format"));
     decoder = new RTCM('A',true);
   }
   else if (_format.indexOf("RTCM_3") != -1) {
-    qWarning("Get Data: " + _mountPoint + " in RTCM 3.0 format");
+    emit(newMessage("Get Data: " + _mountPoint + " in RTCM 3.0 format"));
     decoder = new rtcm3();
   }
   else if (_format.indexOf("RTIGS") != -1) {
-    qWarning("Get Data: " + _mountPoint + " in RTIGS format");
+    emit(newMessage("Get Data: " + _mountPoint + " in RTIGS format"));
     decoder = new rtigs();
   }
   else {
-    qWarning(_mountPoint + " Unknown data format " + _format);
+    emit(newMessage(_mountPoint + " Unknown data format " + _format));
     return exit(1);
   }
 
@@ -172,7 +178,7 @@ void bncGetThread::run() {
       decoder->m_lObsList.clear();
     }
     else {
-      qWarning("Data Timeout");
+      emit(newMessage("Data Timeout"));
       return exit(1);
     }
   }
@@ -187,3 +193,4 @@ void bncGetThread::exit(int exitCode) {
   }
   QThread::exit(exitCode);
 }
+

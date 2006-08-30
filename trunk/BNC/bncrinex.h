@@ -17,11 +17,15 @@ class bncRinex {
    void dumpEpoch();
 
  private:
+   void resolveFileName(struct converttimeinfo& cti);
+   void readSkeleton();
    void writeHeader(struct converttimeinfo& cti, double second);
 
    QByteArray          _statID;
+   QByteArray          _fName;
    QList<Observation*> _obs;
    ofstream            _out;
+   QStringList         _headerLines;
    bool                _headerWritten;
 };
 

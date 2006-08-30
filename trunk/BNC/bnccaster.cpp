@@ -119,9 +119,10 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::slotGetThreadError(const QByteArray& mountPoint) {
   _mountPoints.removeAll(mountPoint);
-  qWarning("Mountpoint size %d", _mountPoints.size());
+  emit( newMessage(
+           QString("Mountpoint size %1").arg(_mountPoints.size()).toAscii()) );
   if (_mountPoints.size() == 0) {
-    qWarning("bncCaster:: last get thread terminated\n");
+    emit(newMessage("bncCaster:: last get thread terminated"));
     emit getThreadErrors();
   }
 }

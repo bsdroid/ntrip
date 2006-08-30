@@ -22,16 +22,19 @@ class bncGetThread : public QThread {
                                       const QString& proxyHost, int proxyPort,
                                       const QByteArray& mountPoint,
                                       const QByteArray& user, 
-                                      const QByteArray& password);
+                                      const QByteArray& password,
+                                      QString& msg);
    QByteArray mountPoint() {return _mountPoint;}
 
  signals:
    void newObs(const QByteArray& mountPoint, Observation* obs);
    void error(const QByteArray& mountPoint);
+   void newMessage(const QByteArray& msg);
 
  protected:
    virtual void run();
  private:
+   void message(const QString&);
    void exit(int exitCode = 0);
    QTcpSocket* _socket;
    QString     _host;

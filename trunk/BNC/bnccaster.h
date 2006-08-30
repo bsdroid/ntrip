@@ -19,9 +19,11 @@ class bncCaster : public QThread {
    bncCaster(const QString& outFileName, int port);
    ~bncCaster();
    void addGetThread(bncGetThread* getThread);
+   int  nMountPoints() const {return _mountPoints.size();}
 
  signals:
    void getThreadErrors();   
+   void newMessage(const QByteArray& msg);
 
  public slots:
    void slotNewObs(const QByteArray& mountPoint, Observation* obs);

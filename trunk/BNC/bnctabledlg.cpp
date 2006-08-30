@@ -88,10 +88,12 @@ void bncTableDlg::slotGetTable() {
 
   // Send the Request
   // ----------------
+  QString msg;
   QTcpSocket* socket = bncGetThread::request(host, port, _proxyHost, 
                                              _proxyPort, mountPoint, 
-                                             user, password);
+                                             user, password, msg);
   if (!socket) {
+    QMessageBox::warning(0, "BNC", msg);
     return;
   }
 
