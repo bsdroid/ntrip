@@ -12,7 +12,10 @@ class bncWindow : public QMainWindow {
 
   public:
     bncWindow();
-    ~bncWindow();  
+    ~bncWindow();
+  
+  public slots:  
+    void slotMessage(const QByteArray& msg);
 
   private slots:
     void slotSaveOptions();
@@ -21,6 +24,10 @@ class bncWindow : public QMainWindow {
     void slotNewMountPoints(QStringList* mountPoints);
     void slotDeleteMountPoints();
     void slotGetThreadErrors();
+    void slotSelectionChanged();
+
+  protected:
+    virtual void closeEvent(QCloseEvent *);
 
   private:
     QMenu*     _menuHlp;
@@ -37,9 +44,13 @@ class bncWindow : public QMainWindow {
     QLabel*    _proxyPortLabel;
     QLabel*    _userLabel;
     QLabel*    _passwordLabel;
+    QLabel*    _rnxPathLabel;
+    QLabel*    _rnxSkelLabel;
+    QLabel*    _rnxIntrLabel;
     QLabel*    _mountPointsLabel;
     QLabel*    _outFileLabel;
     QLabel*    _outPortLabel;
+    QLabel*    _logLabel;
 
     QLineEdit* _proxyHostLineEdit;
     QLineEdit* _proxyPortLineEdit;
@@ -47,10 +58,14 @@ class bncWindow : public QMainWindow {
     QLineEdit* _passwordLineEdit;
     QLineEdit* _outFileLineEdit;
     QLineEdit* _outPortLineEdit;
+    QLineEdit* _rnxPathLineEdit;
+    QLineEdit* _rnxSkelLineEdit;
+    QSpinBox*  _rnxIntrSpinBox;
+    QTableWidget* _mountPointsTable;
+
+    QTextEdit*  _log;
 
     QWidget*   _canvas;
-
-    QTableWidget* _mountPointsTable;
 
     bncCaster* _bncCaster;
 };
