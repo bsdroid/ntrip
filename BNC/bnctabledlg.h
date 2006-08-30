@@ -13,7 +13,7 @@ class bncTableDlg : public QDialog {
 
   signals:
     void newMountPoints(QStringList* mountPoints);
-
+ 
   private slots:
     virtual void accept();
     void slotGetTable();

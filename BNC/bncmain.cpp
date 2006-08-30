@@ -15,32 +15,17 @@
  *
  * -----------------------------------------------------------------------*/
 
-#ifdef WIN32
-#include <windows.h>
-#endif
-
 #include <QApplication>
 #include <QFile>
 #include <iostream>
 
+#include "bncapp.h"
 #include "bncwindow.h"
 
 using namespace std;
 
-#ifdef WIN32
-QFile       logFile("BNC.LOG");
-QTextStream logStream;
-#endif
-
-void myMessageOutput(QtMsgType, const char *msg) {
-#ifdef WIN32
-  logStream << msg << endl;
-  logStream.flush();
-#else
-  cerr << msg << endl;
-#endif
-}
-
+// Main Program
+/////////////////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[]) {
 
   bool GUIenabled = true;
@@ -48,22 +33,14 @@ int main(int argc, char *argv[]) {
     GUIenabled = false;
   }
 
-  QApplication app(argc, argv, GUIenabled);
-
-#ifdef WIN32
-  logFile.open(QIODevice::WriteOnly);
-  logStream.setDevice(&logFile);
-#endif
-  qInstallMsgHandler(myMessageOutput);
+  bncApp app(argc, argv, GUIenabled);
 
   QCoreApplication::setOrganizationName("AIUB");
   QCoreApplication::setOrganizationDomain("www.aiub.unibe.ch");
   QCoreApplication::setApplicationName("Bernese NTRIP Client");
 
-  bncWindow* bncWin = 0;
-
   if (GUIenabled) {
-    bncWin = new bncWindow();
+    bncWindow* bncWin = new bncWindow();
     bncWin->show();
   }
   else {
@@ -77,12 +54,15 @@ int main(int argc, char *argv[]) {
                                       settings.value("outPort").toInt());
 
     app.connect(caster, SIGNAL(getThreadErrors()), &app, SLOT(quit()));
+    app.connect(caster, SIGNAL(newMessage(const QByteArray&)), 
+                &app, SLOT(slotMessage(const QByteArray&)));
 
     caster->start();
     
     QListIterator<QString> it(settings.value("mountPoints").toStringList());
     while (it.hasNext()) {
       QStringList hlp = it.next().split(" ");
+      if (hlp.size() <= 1) continue;
       QUrl url(hlp[0]);
       QByteArray mountPoint = url.path().mid(1).toAscii();
       QByteArray format     = hlp[1].toAscii();
@@ -91,9 +71,15 @@ int main(int argc, char *argv[]) {
                                                  proxyHost, proxyPort, 
                                                  mountPoint, user, password,
                                                  format);
+      app.connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
+                  &app, SLOT(slotMessage(const QByteArray&)));
+
       caster->addGetThread(getThread);
 
       getThread->start();
+    }
+    if (caster->nMountPoints() == 0) {
+      return 0;
     }
   }
   return app.exec();

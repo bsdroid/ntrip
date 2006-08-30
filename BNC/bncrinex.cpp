@@ -15,10 +15,15 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <QSettings>
+#include <QDir>
+#include <QDate>
+#include <QFile>
+#include <QTextStream>
 #include <iomanip>
 
 #include "bncrinex.h"
-
+#include "bncutils.h"
 #include "RTCM3/rtcm3torinex.h"
 
 using namespace std;
@@ -28,6 +33,7 @@ using namespace std;
 bncRinex::bncRinex(const char* StatID) {
   _statID        = StatID;
   _headerWritten = false;
+  readSkeleton();
 }
 
 // Destructor
@@ -36,52 +42,131 @@ bncRinex::~bncRinex() {
   _out.close();
 }
 
+// Read Skeleton Header File
+////////////////////////////////////////////////////////////////////////////
+void bncRinex::readSkeleton() {
+
+  // Resolve Skeleton File Name
+  // --------------------------
+  QSettings settings;
+  QString sklName = settings.value("rnxPath").toString();
+  expandEnvVar(sklName);
+  if ( sklName[sklName.length()-1] != QDir::separator() ) {
+    sklName += QDir::separator();
+  }
+  sklName += _statID.left(4) + "." + settings.value("rnxSkel").toString();
+
+  // Read the File
+  // -------------
+  QFile skl(sklName);
+  if ( skl.exists() && skl.open(QIODevice::ReadOnly) ) {
+    QTextStream in(&skl);
+    while ( !in.atEnd() ) {
+      _headerLines.append( in.readLine() );
+      if (_headerLines.last().indexOf("END OF HEADER") != -1) {
+        break;
+      }
+    }
+  }
+}
+
+// File Name according to RINEX Standards
+////////////////////////////////////////////////////////////////////////////
+void bncRinex::resolveFileName(struct converttimeinfo& cti) {
+
+  QSettings settings;
+  QString path = settings.value("rnxPath").toString();
+  expandEnvVar(path);
+
+  if ( path[path.length()-1] != QDir::separator() ) {
+    path += QDir::separator();
+  }
+
+  QDate date(cti.year, cti.month, cti.day);
+
+  QChar ch = '0';
+
+  path += _statID.left(4) +
+          QString("%1%2.%3O").arg(date.dayOfYear(), 3, 10, QChar('0'))
+                             .arg(ch)
+                             .arg(date.year() % 100, 2, 10, QChar('0'));
+
+  _fName = path.toAscii();
+}
+
 // Write RINEX Header
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::writeHeader(struct converttimeinfo& cti, double second) {
 
   // Open the Output File
   // --------------------
-  QByteArray fname = _statID + ".RXO";
-  _out.open(fname.data());
-
-  // Write mandatory Records
-  // -----------------------
+  resolveFileName(cti);
+  _out.open(_fName.data());
   _out.setf(ios::fixed);
   _out.setf(ios::left);
+    
 
-  double approxPos[3];  approxPos[0]  = approxPos[1]  = approxPos[2]  = 0.0;
-  double antennaNEU[3]; antennaNEU[0] = antennaNEU[1] = antennaNEU[2] = 0.0;
+  // Copy Skeleton Header
+  // --------------------
+  if (_headerLines.size() > 0) {
+    QStringListIterator it(_headerLines);
+    while (it.hasNext()) {
+      QString line = it.next();
+      if      (line.indexOf("# / TYPES OF OBSERV") != -1) {
+        _out << "     4    P1    P2    L1    L2"
+                "                              # / TYPES OF OBSERV"  << endl;
+      }
+      else if (line.indexOf("TIME OF FIRST OBS") != -1) {
+        _out << setw(6) << cti.year
+             << setw(6) << cti.month
+             << setw(6) << cti.day
+             << setw(6) << cti.hour
+             << setw(6) << cti.minute
+             << setw(13) << setprecision(7) << second 
+             << "                 TIME OF FIRST OBS"    << endl;
+      }
+      else {
+        _out << line.toAscii().data() << endl;
+      }
+    }
+  }
 
-  _out << "     2.10           OBSERVATION DATA    G (GPS)             RINEX VERSION / TYPE" << endl;
-  _out << "BNC                 LM                  27-Aug-2006         PGM / RUN BY / DATE"  << endl;
-  _out << setw(60) << _statID.data()                               << "MARKER NAME"          << endl;
-  _out << setw(60) << "BKG"                                        << "OBSERVER / AGENCY"    << endl;
-  _out << setw(20) << "unknown"    
-       << setw(20) << "unknown"
-       << setw(20) << "unknown"                                    << "REC # / TYPE / VERS"  << endl;
-  _out << setw(20) << "unknown"
-       << setw(20) << "unknown"
-       << setw(20) << " "                                          << "ANT # / TYPE"         << endl;
-  _out.unsetf(ios::left);
-  _out << setw(14) << setprecision(4) << approxPos[0]
-       << setw(14) << setprecision(4) << approxPos[1]
-       << setw(14) << setprecision(4) << approxPos[2] 
-       << "                  "                                     << "APPROX POSITION XYZ"  << endl;
-  _out << setw(14) << setprecision(4) << antennaNEU[0]
-       << setw(14) << setprecision(4) << antennaNEU[1]
-       << setw(14) << setprecision(4) << antennaNEU[2] 
-       << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
-  _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
-  _out << "     4    P1    P2    L1    L2                              # / TYPES OF OBSERV"  << endl;
-  _out << setw(6) << cti.year
-       << setw(6) << cti.month
-       << setw(6) << cti.day
-       << setw(6) << cti.hour
-       << setw(6) << cti.minute
-       << setw(13) << setprecision(7) << second 
-       << "                 "                                      << "TIME OF FIRST OBS"    << endl;
-  _out << "                                                            END OF HEADER"        << endl;
+  // Write Dummy Header
+  // ------------------
+  else {
+    double approxPos[3];  approxPos[0]  = approxPos[1]  = approxPos[2]  = 0.0;
+    double antennaNEU[3]; antennaNEU[0] = antennaNEU[1] = antennaNEU[2] = 0.0;
+    
+    _out << "     2.10           OBSERVATION DATA    G (GPS)             RINEX VERSION / TYPE" << endl;
+    _out << "BNC                 LM                  27-Aug-2006         PGM / RUN BY / DATE"  << endl;
+    _out << setw(60) << _statID.data()                               << "MARKER NAME"          << endl;
+    _out << setw(60) << "BKG"                                        << "OBSERVER / AGENCY"    << endl;
+    _out << setw(20) << "unknown"    
+         << setw(20) << "unknown"
+         << setw(20) << "unknown"                                    << "REC # / TYPE / VERS"  << endl;
+    _out << setw(20) << "unknown"
+         << setw(20) << "unknown"
+         << setw(20) << " "                                          << "ANT # / TYPE"         << endl;
+    _out.unsetf(ios::left);
+    _out << setw(14) << setprecision(4) << approxPos[0]
+         << setw(14) << setprecision(4) << approxPos[1]
+         << setw(14) << setprecision(4) << approxPos[2] 
+         << "                  "                                     << "APPROX POSITION XYZ"  << endl;
+    _out << setw(14) << setprecision(4) << antennaNEU[0]
+         << setw(14) << setprecision(4) << antennaNEU[1]
+         << setw(14) << setprecision(4) << antennaNEU[2] 
+         << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
+    _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
+    _out << "     4    P1    P2    L1    L2                              # / TYPES OF OBSERV"  << endl;
+    _out << setw(6) << cti.year
+         << setw(6) << cti.month
+         << setw(6) << cti.day
+         << setw(6) << cti.hour
+         << setw(6) << cti.minute
+         << setw(13) << setprecision(7) << second 
+         << "                 "                                      << "TIME OF FIRST OBS"    << endl;
+    _out << "                                                            END OF HEADER"        << endl;
+  }
 
   _headerWritten = true;
 }
