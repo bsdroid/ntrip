@@ -25,7 +25,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::bncWindow() {
 
-  setMinimumSize(600,400);
+  setMinimumSize(400,600);
 
   // Create Actions
   // --------------
@@ -43,6 +43,7 @@ bncWindow::bncWindow() {
 
   _actDeleteMountPoints = new QAction(tr("&Delete Mount Points"),this);
   connect(_actDeleteMountPoints, SIGNAL(triggered()), SLOT(slotDeleteMountPoints()));
+  _actDeleteMountPoints->setEnabled(false);
 
   _actGetData = new QAction(tr("&Get Data"),this);
   connect(_actGetData, SIGNAL(triggered()), SLOT(slotGetData()));
@@ -74,27 +75,46 @@ bncWindow::bncWindow() {
   QGridLayout* layout = new QGridLayout;
   _canvas->setLayout(layout);
 
-  _proxyHostLabel     = new QLabel("proxy host");
-  _proxyPortLabel     = new QLabel("proxy port");
   _userLabel          = new QLabel("user");
   _passwordLabel      = new QLabel("password");
-  _outFileLabel       = new QLabel("output file");
-  _outPortLabel       = new QLabel("output port");
+  _proxyHostLabel     = new QLabel("proxy host");
+  _proxyPortLabel     = new QLabel("proxy port");
+  _outFileLabel       = new QLabel("ASCII output file (full path)");
+  _outPortLabel       = new QLabel("port for binary output");
+  _rnxPathLabel       = new QLabel("RINEX path");
+  _rnxSkelLabel       = new QLabel("RINEX skeleton extension");
+  _rnxIntrLabel       = new QLabel("RINEX file interval");
   _mountPointsLabel   = new QLabel("mount points");
+  _logLabel           = new QLabel("log");
 
   QSettings settings;
 
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
+  int ww = QFontMetrics(_proxyHostLineEdit->font()).width('w');
+  _proxyHostLineEdit->setMaximumWidth(12*ww);
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
+  _proxyPortLineEdit->setMaximumWidth(9*ww);
   _userLineEdit       = new QLineEdit(settings.value("user").toString());
+  _userLineEdit->setMaximumWidth(9*ww);
   _passwordLineEdit   = new QLineEdit(settings.value("password").toString());
+  _passwordLineEdit->setMaximumWidth(9*ww);
   _passwordLineEdit->setEchoMode(QLineEdit::Password);
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
   _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
+  _outPortLineEdit->setMaximumWidth(9*ww);
+  _rnxPathLineEdit    = new QLineEdit(settings.value("rnxPath").toString());
+  _rnxSkelLineEdit    = new QLineEdit(settings.value("rnxSkel").toString());
+  _rnxSkelLineEdit->setMaximumWidth(5*ww);
+  _rnxIntrSpinBox     = new QSpinBox();
+  _rnxIntrSpinBox->setMaximumWidth(12*ww);
+  _rnxIntrSpinBox->setValue(settings.value("rnxIntr").toInt());
+  _rnxIntrSpinBox->setSuffix("  hour");
+  _rnxIntrSpinBox->setRange(1,24);
+  _rnxIntrSpinBox->setSingleStep(23);
   _mountPointsTable   = new QTableWidget(0,2);
-  _mountPointsTable->setMaximumHeight(100);
-  _mountPointsTable->horizontalHeader()->hide();
+  _mountPointsTable->setMaximumHeight(140);
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+  _mountPointsTable->horizontalHeader()->hide();
   _mountPointsTable->verticalHeader()->hide();
   _mountPointsTable->setGridStyle(Qt::NoPen);
   _mountPointsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -106,6 +126,7 @@ bncWindow::bncWindow() {
   int iRow = 0;
   while (it.hasNext()) {
     QStringList hlp = it.next().split(" ");
+    if (hlp.size() <= 1) continue;
     QString mPoint = hlp[0];
     QString format = hlp[1];
     _mountPointsTable->insertRow(iRow);
@@ -113,22 +134,37 @@ bncWindow::bncWindow() {
     _mountPointsTable->setItem(iRow, 1, new QTableWidgetItem(format));
     iRow++;
   }
+  _mountPointsTable->sortItems(0);
 
-  layout->addWidget(_proxyHostLabel,     0, 0);
-  layout->addWidget(_proxyHostLineEdit,  0, 1);
-  layout->addWidget(_proxyPortLabel,     0, 2);
-  layout->addWidget(_proxyPortLineEdit,  0, 3);
-  layout->addWidget(_userLabel,          1, 0);
-  layout->addWidget(_userLineEdit,       1, 1);
-  layout->addWidget(_passwordLabel,      1, 2);
-  layout->addWidget(_passwordLineEdit,   1, 3);
-  layout->addWidget(_outFileLabel,       2, 0);
-  layout->addWidget(_outFileLineEdit,    2, 1);
-  layout->addWidget(_outPortLabel,       2, 2);
-  layout->addWidget(_outPortLineEdit,    2, 3);
+  connect(_mountPointsTable, SIGNAL(itemSelectionChanged()), 
+          SLOT(slotSelectionChanged()));
 
-  layout->addWidget(_mountPointsLabel,   3, 0);
-  layout->addWidget(_mountPointsTable,   3, 1, 1, 3);
+  _log = new QTextEdit();
+  _log->setMaximumHeight(120);
+  _log->setReadOnly(true);
+
+  layout->addWidget(_userLabel,          0, 0);
+  layout->addWidget(_userLineEdit,       0, 1);
+  layout->addWidget(_passwordLabel,      0, 2);
+  layout->addWidget(_passwordLineEdit,   0, 3);
+  layout->addWidget(_proxyHostLabel,     1, 0);
+  layout->addWidget(_proxyHostLineEdit,  1, 1);
+  layout->addWidget(_proxyPortLabel,     1, 2);
+  layout->addWidget(_proxyPortLineEdit,  1, 3);
+  layout->addWidget(_outFileLabel,       2, 1);
+  layout->addWidget(_outFileLineEdit,    2, 2, 1, 2);
+  layout->addWidget(_outPortLabel,       3, 1);
+  layout->addWidget(_outPortLineEdit,    3, 2);
+  layout->addWidget(_rnxPathLabel,       4, 1);
+  layout->addWidget(_rnxPathLineEdit,    4, 2, 1, 2);
+  layout->addWidget(_rnxSkelLabel,       5, 1);
+  layout->addWidget(_rnxSkelLineEdit,    5, 2);
+  layout->addWidget(_rnxIntrLabel,       6, 1);
+  layout->addWidget(_rnxIntrSpinBox,     6, 2);
+  layout->addWidget(_mountPointsLabel,   7, 0);
+  layout->addWidget(_mountPointsTable,   7, 1, 1, 3);
+  layout->addWidget(_logLabel,           8, 0);
+  layout->addWidget(_log,                8, 1, 1, 3);
 
   _bncCaster = 0;
 }
@@ -143,6 +179,7 @@ bncWindow::~bncWindow() {
 void bncWindow::slotAddMountPoints() {
   bncTableDlg* dlg = new bncTableDlg(this, _proxyHostLineEdit->text(),
                                      _proxyPortLineEdit->text().toInt());
+  dlg->move(this->pos().x()+50, this->pos().y()+50);
   connect(dlg, SIGNAL(newMountPoints(QStringList*)), 
           this, SLOT(slotNewMountPoints(QStringList*)));
   dlg->exec();
@@ -153,8 +190,20 @@ void bncWindow::slotAddMountPoints() {
 // Delete Selected Mount Points
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotDeleteMountPoints() {
-  _mountPointsTable->clear();
-  _mountPointsTable->setRowCount(0);
+  while(1) {
+    bool itemRemoved = false;
+    for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
+      if (_mountPointsTable->isItemSelected(_mountPointsTable->item(iRow,0))) {
+        _mountPointsTable->removeRow(iRow);
+        itemRemoved = true;
+        break;
+      }
+    }
+    if (!itemRemoved) {
+      break;
+    }
+  }
+  _actDeleteMountPoints->setEnabled(false);
 }
 
 // New Mount Points Selected
@@ -171,6 +220,7 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
     _mountPointsTable->setItem(iRow, 1, new QTableWidgetItem(format));
     iRow++;
   }
+  _mountPointsTable->sortItems(0);
   if (mountPoints->count() > 0) {
     _actGetData->setEnabled(true);
   }
@@ -187,6 +237,9 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("password",    _passwordLineEdit->text());
   settings.setValue("outFile",     _outFileLineEdit->text());
   settings.setValue("outPort",     _outPortLineEdit->text());
+  settings.setValue("rnxPath",     _rnxPathLineEdit->text());
+  settings.setValue("rnxIntr",     _rnxIntrSpinBox->value());
+  settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
   QStringList mountPoints;
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
     mountPoints.append(_mountPointsTable->item(iRow, 0)->text() + 
@@ -198,9 +251,8 @@ void bncWindow::slotSaveOptions() {
 // All get slots terminated
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotGetThreadErrors() {
-  QMessageBox::warning(0, "BNC", "All Get Threads Terminated");
+  slotMessage("All Get Threads Terminated");
   _actAddMountPoints->setEnabled(true);
-  _actDeleteMountPoints->setEnabled(true);
   _actGetData->setEnabled(true);
 }
 
@@ -222,6 +274,9 @@ void bncWindow::slotGetData() {
   connect(_bncCaster, SIGNAL(getThreadErrors()), 
           this, SLOT(slotGetThreadErrors()));
 
+  connect(_bncCaster, SIGNAL(newMessage(const QByteArray&)), 
+          this, SLOT(slotMessage(const QByteArray&)));
+
   _bncCaster->start();
 
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
@@ -233,8 +288,54 @@ void bncWindow::slotGetData() {
                                                proxyHost, proxyPort, 
                                                mountPoint, user, password,
                                                format);
+
+    connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
+            this, SLOT(slotMessage(const QByteArray&)));
+
     _bncCaster->addGetThread(getThread);
 
     getThread->start();
   }
 }
+
+// Close Application gracefully
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::closeEvent(QCloseEvent* event) {
+
+  int iRet = QMessageBox::question(this, "Close", "Save Options?", 
+                                   QMessageBox::Yes, QMessageBox::No,
+                                   QMessageBox::Cancel);
+
+  if      (iRet == QMessageBox::Cancel) {
+    event->ignore();
+    return;
+  }
+  else if (iRet == QMessageBox::Yes) {
+    slotSaveOptions();
+  }
+
+  return QMainWindow::closeEvent(event);
+}
+
+// User changed the selection of mountPoints
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotSelectionChanged() {
+  if (_mountPointsTable->selectedItems().isEmpty()) {
+    _actDeleteMountPoints->setEnabled(false);
+  }
+  else {
+    _actDeleteMountPoints->setEnabled(true);
+  }
+}
+
+// Display Program Messages 
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotMessage(const QByteArray& msg) {
+
+  const int maxBufferSize = 10000;
+ 
+  QString txt = _log->toPlainText() + "\n" + msg;
+  _log->clear();
+  _log->append(txt.right(maxBufferSize));
+}  
+

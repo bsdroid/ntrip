@@ -151,6 +151,7 @@ void bncTableDlg::slotGetTable() {
         _table->setItem(nRow, ic, new QTableWidgetItem(columns[ic+1]));
       }
     }
+    _table->sortItems(0);
   }
 }
 
