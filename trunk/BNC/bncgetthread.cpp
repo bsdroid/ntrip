@@ -71,7 +71,14 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint, QString& msg) {
   // ------------
   QByteArray userAndPwd = mountPoint.userName().toAscii() + ":" + 
                           mountPoint.password().toAscii();
-  QByteArray  reqStr = "GET " + mountPoint.path().toAscii() + 
+
+  QUrl hlp;
+  hlp.setScheme("http");
+  hlp.setHost(mountPoint.host());
+  hlp.setPort(mountPoint.port());
+  hlp.setPath(mountPoint.path());
+
+  QByteArray  reqStr = "GET " + hlp.toEncoded() + 
                        " HTTP/1.0\r\n"
                        "User-Agent: NTRIP BNC 1.0\r\n"
                        "Authorization: Basic " +
