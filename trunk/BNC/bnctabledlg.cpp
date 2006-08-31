@@ -20,11 +20,7 @@
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncTableDlg::bncTableDlg(QWidget* parent, const QString& proxyHost,
-                         int proxyPort) : QDialog(parent) {
-
-  _proxyHost = proxyHost;
-  _proxyPort = proxyPort;
+bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   setMinimumSize(600,400);
 

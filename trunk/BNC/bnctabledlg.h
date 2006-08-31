@@ -8,7 +8,7 @@ class bncTableDlg : public QDialog {
   Q_OBJECT
 
   public:
-    bncTableDlg(QWidget* parent, const QString& proxyHost, int proxyPort);
+    bncTableDlg(QWidget* parent);
     ~bncTableDlg();
 
   signals:
@@ -19,9 +19,6 @@ class bncTableDlg : public QDialog {
     void slotGetTable();
 
   private:
-    QString      _proxyHost;
-    int          _proxyPort;
-
     QLabel*      _casterHostLabel;
     QLabel*      _casterPortLabel;
     QLineEdit*   _casterHostLineEdit;

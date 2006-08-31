@@ -34,10 +34,7 @@ const int timeOut = 300*1000;
 bncGetThread::bncGetThread(const QUrl& mountPoint, const QByteArray& format) {
   _mountPoint = mountPoint;
   _staID      = mountPoint.path().mid(1).toAscii();
-
-  cout << ">" << _staID.data() << "<" << endl;
   _format     = format;
-  cout << ">" << _format.data() << "<" << endl;
   _socket     = 0;
 }
 
