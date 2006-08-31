@@ -27,7 +27,7 @@
 
 using namespace std;
 
-const int timeOut = 30*1000;
+const int timeOut = 300*1000;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
