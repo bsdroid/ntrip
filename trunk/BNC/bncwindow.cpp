@@ -75,8 +75,7 @@ bncWindow::bncWindow() {
   QGridLayout* layout = new QGridLayout;
   _canvas->setLayout(layout);
 
-  _userLabel          = new QLabel("user");
-  _passwordLabel      = new QLabel("password");
+  _timeOutLabel       = new QLabel("timeout (sec)");
   _proxyHostLabel     = new QLabel("proxy host");
   _proxyPortLabel     = new QLabel("proxy port");
   _outFileLabel       = new QLabel("ASCII output file (full path)");
@@ -94,11 +93,8 @@ bncWindow::bncWindow() {
   _proxyHostLineEdit->setMaximumWidth(12*ww);
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
   _proxyPortLineEdit->setMaximumWidth(9*ww);
-  _userLineEdit       = new QLineEdit(settings.value("user").toString());
-  _userLineEdit->setMaximumWidth(9*ww);
-  _passwordLineEdit   = new QLineEdit(settings.value("password").toString());
-  _passwordLineEdit->setMaximumWidth(9*ww);
-  _passwordLineEdit->setEchoMode(QLineEdit::Password);
+  _timeOutLineEdit    = new QLineEdit(settings.value("timeOut").toString());
+  _timeOutLineEdit->setMaximumWidth(9*ww);
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
   _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
   _outPortLineEdit->setMaximumWidth(9*ww);
@@ -143,14 +139,12 @@ bncWindow::bncWindow() {
   _log->setMaximumHeight(120);
   _log->setReadOnly(true);
 
-  layout->addWidget(_userLabel,          0, 0);
-  layout->addWidget(_userLineEdit,       0, 1);
-  layout->addWidget(_passwordLabel,      0, 2);
-  layout->addWidget(_passwordLineEdit,   0, 3);
-  layout->addWidget(_proxyHostLabel,     1, 0);
-  layout->addWidget(_proxyHostLineEdit,  1, 1);
-  layout->addWidget(_proxyPortLabel,     1, 2);
-  layout->addWidget(_proxyPortLineEdit,  1, 3);
+  layout->addWidget(_proxyHostLabel,     0, 0);
+  layout->addWidget(_proxyHostLineEdit,  0, 1);
+  layout->addWidget(_proxyPortLabel,     0, 2);
+  layout->addWidget(_proxyPortLineEdit,  0, 3);
+  layout->addWidget(_timeOutLabel,       1, 1);
+  layout->addWidget(_timeOutLineEdit,    1, 2);
   layout->addWidget(_outFileLabel,       2, 1);
   layout->addWidget(_outFileLineEdit,    2, 2, 1, 2);
   layout->addWidget(_outPortLabel,       3, 1);
@@ -233,8 +227,7 @@ void bncWindow::slotSaveOptions() {
   QSettings settings;
   settings.setValue("proxyHost",   _proxyHostLineEdit->text());
   settings.setValue("proxyPort",   _proxyPortLineEdit->text());
-  settings.setValue("user",        _userLineEdit->text());
-  settings.setValue("password",    _passwordLineEdit->text());
+  settings.setValue("timeOut",     _timeOutLineEdit->text());
   settings.setValue("outFile",     _outFileLineEdit->text());
   settings.setValue("outPort",     _outPortLineEdit->text());
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());
@@ -263,11 +256,6 @@ void bncWindow::slotGetData() {
   _actDeleteMountPoints->setEnabled(false);
   _actGetData->setEnabled(false);
 
-  QString    proxyHost = _proxyHostLineEdit->text();
-  int        proxyPort = _proxyPortLineEdit->text().toInt();
-  QByteArray user      = _userLineEdit->text().toAscii();
-  QByteArray password  = _passwordLineEdit->text().toAscii();
-
   _bncCaster = new bncCaster(_outFileLineEdit->text(), 
                              _outPortLineEdit->text().toInt());
 
@@ -281,13 +269,9 @@ void bncWindow::slotGetData() {
 
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
     QUrl url(_mountPointsTable->item(iRow, 0)->text());
-    QByteArray mountPoint = url.path().mid(1).toAscii();
     QByteArray format     = _mountPointsTable->item(iRow, 1)->text().toAscii();
 
-    bncGetThread* getThread = new bncGetThread(url.host(), url.port(),
-                                               proxyHost, proxyPort, 
-                                               mountPoint, user, password,
-                                               format);
+    bncGetThread* getThread = new bncGetThread(url, format);
 
     connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
             this, SLOT(slotMessage(const QByteArray&)));

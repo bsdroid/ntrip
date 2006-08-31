@@ -45,11 +45,6 @@ int main(int argc, char *argv[]) {
   }
   else {
     QSettings settings;
-    QString    proxyHost = settings.value("proxyHost").toString();
-    int        proxyPort = settings.value("proxyPort").toInt();
-    QByteArray user      = settings.value("user").toString().toAscii();
-    QByteArray password  = settings.value("password").toString().toAscii();
-    
     bncCaster* caster = new bncCaster(settings.value("outFile").toString(),
                                       settings.value("outPort").toInt());
 
@@ -64,13 +59,8 @@ int main(int argc, char *argv[]) {
       QStringList hlp = it.next().split(" ");
       if (hlp.size() <= 1) continue;
       QUrl url(hlp[0]);
-      QByteArray mountPoint = url.path().mid(1).toAscii();
-      QByteArray format     = hlp[1].toAscii();
-
-      bncGetThread* getThread = new bncGetThread(url.host(), url.port(),
-                                                 proxyHost, proxyPort, 
-                                                 mountPoint, user, password,
-                                                 format);
+      QByteArray format = hlp[1].toAscii();
+      bncGetThread* getThread = new bncGetThread(url, format);
       app.connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
                   &app, SLOT(slotMessage(const QByteArray&)));
 
@@ -78,7 +68,7 @@ int main(int argc, char *argv[]) {
 
       getThread->start();
     }
-    if (caster->nMountPoints() == 0) {
+    if (caster->numStations() == 0) {
       return 0;
     }
   }

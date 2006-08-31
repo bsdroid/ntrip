@@ -30,17 +30,32 @@ bncTableDlg::bncTableDlg(QWidget* parent, const QString& proxyHost,
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
-  _casterHostLabel    = new QLabel(tr("caster host"));
-  _casterPortLabel    = new QLabel(tr("caster port"));
+  _casterHostLabel     = new QLabel(tr("caster host"));
+  _casterPortLabel     = new QLabel(tr("caster port"));
+  _casterUserLabel     = new QLabel(tr("user"));
+  _casterPasswordLabel = new QLabel(tr("password"));
   QSettings settings;
-  _casterHostLineEdit = new QLineEdit(settings.value("casterHost").toString());
-  _casterPortLineEdit = new QLineEdit(settings.value("casterPort").toString());
+  _casterHostLineEdit     = new QLineEdit(settings.value("casterHost").toString());
+  int ww = QFontMetrics(_casterHostLineEdit->font()).width('w');
+  _casterHostLineEdit->setMaximumWidth(18*ww);
+  _casterPortLineEdit     = new QLineEdit(settings.value("casterPort").toString());
+  _casterPortLineEdit->setMaximumWidth(9*ww);
+  _casterUserLineEdit     = new QLineEdit(settings.value("casterUser").toString());
+  _casterUserLineEdit->setMaximumWidth(9*ww);
+  _casterPasswordLineEdit = new QLineEdit(settings.value("casterPassword").toString());
+  _casterPasswordLineEdit->setMaximumWidth(9*ww);
+  _casterPasswordLineEdit->setEchoMode(QLineEdit::Password);
 
-  QHBoxLayout* editLayout = new QHBoxLayout;
-  editLayout->addWidget(_casterHostLabel);
-  editLayout->addWidget(_casterHostLineEdit);
-  editLayout->addWidget(_casterPortLabel);
-  editLayout->addWidget(_casterPortLineEdit);
+  QGridLayout* editLayout = new QGridLayout;
+  editLayout->addWidget(_casterHostLabel, 0, 0);
+  editLayout->addWidget(_casterHostLineEdit, 0, 1);
+  editLayout->addWidget(_casterPortLabel, 0, 2);
+  editLayout->addWidget(_casterPortLineEdit, 0, 3);
+  editLayout->addWidget(_casterUserLabel, 1, 0);
+  editLayout->addWidget(_casterUserLineEdit, 1, 1);
+  editLayout->addWidget(_casterPasswordLabel, 1, 2);
+  editLayout->addWidget(_casterPasswordLineEdit, 1, 3);
+
   mainLayout->addLayout(editLayout);
 
   _table = new QTableWidget(this);
@@ -80,18 +95,15 @@ bncTableDlg::~bncTableDlg() {
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::slotGetTable() {
 
-  QString    host       = _casterHostLineEdit->text();
-  int        port       = _casterPortLineEdit->text().toInt();
-  QByteArray mountPoint = "/";
-  QByteArray user;
-  QByteArray password;
+  QUrl url;
+  url.setHost(_casterHostLineEdit->text());
+  url.setPort(_casterPortLineEdit->text().toInt());
 
   // Send the Request
   // ----------------
   QString msg;
-  QTcpSocket* socket = bncGetThread::request(host, port, _proxyHost, 
-                                             _proxyPort, mountPoint, 
-                                             user, password, msg);
+  QTcpSocket* socket = bncGetThread::request(url, msg);
+
   if (!socket) {
     QMessageBox::warning(0, "BNC", msg);
     return;
@@ -162,6 +174,8 @@ void bncTableDlg::accept() {
   QSettings settings;
   settings.setValue("casterHost", _casterHostLineEdit->text());
   settings.setValue("casterPort", _casterPortLineEdit->text());
+  settings.setValue("casterUser", _casterUserLineEdit->text());
+  settings.setValue("casterPassword", _casterPasswordLineEdit->text());
 
   QStringList* mountPoints = new QStringList;
 
@@ -172,6 +186,8 @@ void bncTableDlg::accept() {
       format.replace(" ", "_");
       if (_table->isItemSelected(item)) {
         QUrl url;
+        url.setUserName(_casterUserLineEdit->text());
+        url.setPassword(_casterPasswordLineEdit->text());
         url.setHost(_casterHostLineEdit->text());
         url.setPort(_casterPortLineEdit->text().toInt());
         url.setPath(item->text());
