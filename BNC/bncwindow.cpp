@@ -171,8 +171,7 @@ bncWindow::~bncWindow() {
 // Retrieve Table
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotAddMountPoints() {
-  bncTableDlg* dlg = new bncTableDlg(this, _proxyHostLineEdit->text(),
-                                     _proxyPortLineEdit->text().toInt());
+  bncTableDlg* dlg = new bncTableDlg(this); 
   dlg->move(this->pos().x()+50, this->pos().y()+50);
   connect(dlg, SIGNAL(newMountPoints(QStringList*)), 
           this, SLOT(slotNewMountPoints(QStringList*)));
