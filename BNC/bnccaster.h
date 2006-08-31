@@ -19,18 +19,18 @@ class bncCaster : public QThread {
    bncCaster(const QString& outFileName, int port);
    ~bncCaster();
    void addGetThread(bncGetThread* getThread);
-   int  nMountPoints() const {return _mountPoints.size();}
+   int  numStations() const {return _staIDs.size();}
 
  signals:
    void getThreadErrors();   
    void newMessage(const QByteArray& msg);
 
  public slots:
-   void slotNewObs(const QByteArray& mountPoint, Observation* obs);
+   void slotNewObs(const QByteArray& staID, Observation* obs);
 
  private slots:
    void slotNewConnection();
-   void slotGetThreadError(const QByteArray& mountPoint);
+   void slotGetThreadError(const QByteArray& staID);
 
  protected:
    virtual void run();
@@ -45,7 +45,7 @@ class bncCaster : public QThread {
    long                           _lastDumpSec;
    QTcpServer*                    _server;
    QList<QTcpSocket*>*            _sockets;
-   QList<QByteArray>              _mountPoints;
+   QList<QByteArray>              _staIDs;
    QMap<QString, bncRinex*>       _rinexWriters;
 };
 

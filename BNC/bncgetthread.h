@@ -11,24 +11,17 @@ class bncGetThread : public QThread {
  Q_OBJECT
 
  public:
-   bncGetThread(const QString& host, int port,
-                const QString& proxyHost, int proxyPort,
-                const QByteArray& mountPoint,
-                const QByteArray& user, 
-                const QByteArray& password,
-                const QByteArray& format);
+   bncGetThread(const QUrl& mountPoint, const QByteArray& format);
    ~bncGetThread();
-   static QTcpSocket* bncGetThread::request(const QString& host, int port,
-                                      const QString& proxyHost, int proxyPort,
-                                      const QByteArray& mountPoint,
-                                      const QByteArray& user, 
-                                      const QByteArray& password,
-                                      QString& msg);
-   QByteArray mountPoint() {return _mountPoint;}
+
+   static QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
+                                            QString& msg);
+
+   QByteArray staID() const {return _staID;}
 
  signals:
-   void newObs(const QByteArray& mountPoint, Observation* obs);
-   void error(const QByteArray& mountPoint);
+   void newObs(const QByteArray& staID, Observation* obs);
+   void error(const QByteArray& staID);
    void newMessage(const QByteArray& msg);
 
  protected:
@@ -37,13 +30,8 @@ class bncGetThread : public QThread {
    void message(const QString&);
    void exit(int exitCode = 0);
    QTcpSocket* _socket;
-   QString     _host;
-   int         _port;
-   QString     _proxyHost;
-   int         _proxyPort;
-   QByteArray  _mountPoint;
-   QByteArray  _user;
-   QByteArray  _password;
+   QUrl        _mountPoint;
+   QByteArray  _staID;
    QByteArray  _format;
 };
 

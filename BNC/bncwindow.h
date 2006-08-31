@@ -42,8 +42,7 @@ class bncWindow : public QMainWindow {
 
     QLabel*    _proxyHostLabel;
     QLabel*    _proxyPortLabel;
-    QLabel*    _userLabel;
-    QLabel*    _passwordLabel;
+    QLabel*    _timeOutLabel;
     QLabel*    _rnxPathLabel;
     QLabel*    _rnxSkelLabel;
     QLabel*    _rnxIntrLabel;
@@ -54,8 +53,7 @@ class bncWindow : public QMainWindow {
 
     QLineEdit* _proxyHostLineEdit;
     QLineEdit* _proxyPortLineEdit;
-    QLineEdit* _userLineEdit;
-    QLineEdit* _passwordLineEdit;
+    QLineEdit* _timeOutLineEdit;
     QLineEdit* _outFileLineEdit;
     QLineEdit* _outPortLineEdit;
     QLineEdit* _rnxPathLineEdit;

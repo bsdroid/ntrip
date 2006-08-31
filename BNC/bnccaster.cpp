@@ -68,7 +68,7 @@ void bncCaster::run() {
 
 // New Observations
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::slotNewObs(const QByteArray& mountPoint, Observation* obs) {
+void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
 
   long newTime = obs->GPSWeek * 7*24*3600 + obs->GPSWeeks;
 
@@ -87,7 +87,7 @@ void bncCaster::slotNewObs(const QByteArray& mountPoint, Observation* obs) {
 
   // Rename the station and save the observation
   // -------------------------------------------
-  strncpy(obs->StatID, mountPoint.constData(),sizeof(obs->StatID));
+  strncpy(obs->StatID, staID.constData(),sizeof(obs->StatID));
   _epochs->insert(newTime, obs);
 
   // Dump older epochs
@@ -112,16 +112,16 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
   connect(getThread, SIGNAL(error(const QByteArray&)), 
           this, SLOT(slotGetThreadError(const QByteArray&)));
 
-  _mountPoints.push_back(getThread->mountPoint());
+  _staIDs.push_back(getThread->staID());
 }
 
 // Error in get thread
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::slotGetThreadError(const QByteArray& mountPoint) {
-  _mountPoints.removeAll(mountPoint);
+void bncCaster::slotGetThreadError(const QByteArray& staID) {
+  _staIDs.removeAll(staID);
   emit( newMessage(
-           QString("Mountpoint size %1").arg(_mountPoints.size()).toAscii()) );
-  if (_mountPoints.size() == 0) {
+           QString("Mountpoint size %1").arg(_staIDs.size()).toAscii()) );
+  if (_staIDs.size() == 0) {
     emit(newMessage("bncCaster:: last get thread terminated"));
     emit getThreadErrors();
   }
