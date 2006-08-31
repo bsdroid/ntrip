@@ -25,7 +25,9 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::bncWindow() {
 
-  setMinimumSize(400,600);
+  int ww = QFontMetrics(this->font()).width('w');
+
+  setMinimumSize(80*ww, 80*ww);
 
   // Create Actions
   // --------------
@@ -89,7 +91,6 @@ bncWindow::bncWindow() {
   QSettings settings;
 
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
-  int ww = QFontMetrics(_proxyHostLineEdit->font()).width('w');
   _proxyHostLineEdit->setMaximumWidth(12*ww);
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
   _proxyPortLineEdit->setMaximumWidth(9*ww);
@@ -108,7 +109,8 @@ bncWindow::bncWindow() {
   _rnxIntrSpinBox->setRange(1,24);
   _rnxIntrSpinBox->setSingleStep(23);
   _mountPointsTable   = new QTableWidget(0,2);
-  _mountPointsTable->setMaximumHeight(140);
+  _mountPointsTable->setMinimumWidth(70*ww);
+  _mountPointsTable->setMaximumHeight(20*ww);
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
   _mountPointsTable->horizontalHeader()->hide();
   _mountPointsTable->verticalHeader()->hide();
