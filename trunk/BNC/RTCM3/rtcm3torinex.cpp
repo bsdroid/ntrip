@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.cpp,v 1.2 2006/08/24 13:56:49 mervart Exp $
+  $Id: rtcm3torinex.cpp,v 1.3 2006/08/25 11:50:34 mervart Exp $
 
   Program written bei
   Dirk Stoecker
@@ -57,8 +57,8 @@
 #define MAXDATASIZE 1000 /* max number of bytes we can get at once */
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.2 $";
-static char datestr[]     = "$Date: 2006/08/24 13:56:49 $";
+static char revisionstr[] = "$Revision: 1.3 $";
+static char datestr[]     = "$Date: 2006/08/25 11:50:34 $";
 static int stop = 0;
 
 
@@ -731,10 +731,12 @@ void HandleHeader(struct RTCM3ParserData *Parser)
     }
   }
 
+#ifdef RTCM_TRANSFORM_MAIN
   for(i = 0; i < hdata.numheaders; ++i)
     printf("%s\n", hdata.data.unnamed[i]);
   printf("                                                            "
   "END OF HEADER\n");
+#endif
 }
 
 /* let the output complete a block if necessary */

@@ -54,7 +54,6 @@ void rtigs::Decode(char* buffer, int bufLen) {
     }
   }
   if (! found) {
-    cout << "Message not found\n";
     _buffer.clear();
     return;
   }

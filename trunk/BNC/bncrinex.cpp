@@ -137,6 +137,7 @@ void bncRinex::writeHeader(struct converttimeinfo& cti, double second) {
     
     _out << "     2.10           OBSERVATION DATA    G (GPS)             RINEX VERSION / TYPE" << endl;
     _out << "BNC                 LM                  27-Aug-2006         PGM / RUN BY / DATE"  << endl;
+    _out.setf(ios::left);
     _out << setw(60) << _statID.data()                               << "MARKER NAME"          << endl;
     _out << setw(60) << "BKG"                                        << "OBSERVER / AGENCY"    << endl;
     _out << setw(20) << "unknown"    
@@ -145,6 +146,7 @@ void bncRinex::writeHeader(struct converttimeinfo& cti, double second) {
     _out << setw(20) << "unknown"
          << setw(20) << "unknown"
          << setw(20) << " "                                          << "ANT # / TYPE"         << endl;
+    _out.unsetf(ios::left);
     _out << setw(14) << setprecision(4) << approxPos[0]
          << setw(14) << setprecision(4) << approxPos[1]
          << setw(14) << setprecision(4) << approxPos[2] 
