@@ -102,9 +102,7 @@ void bncRinex::writeHeader(struct converttimeinfo& cti, double second) {
   // --------------------
   resolveFileName(cti);
   _out.open(_fName.data());
-  _out.setf(ios::fixed);
-  _out.setf(ios::left);
-    
+  _out.setf(ios::showpoint | ios::fixed);
 
   // Copy Skeleton Header
   // --------------------
@@ -147,7 +145,6 @@ void bncRinex::writeHeader(struct converttimeinfo& cti, double second) {
     _out << setw(20) << "unknown"
          << setw(20) << "unknown"
          << setw(20) << " "                                          << "ANT # / TYPE"         << endl;
-    _out.unsetf(ios::left);
     _out << setw(14) << setprecision(4) << approxPos[0]
          << setw(14) << setprecision(4) << approxPos[1]
          << setw(14) << setprecision(4) << approxPos[2] 
@@ -200,8 +197,6 @@ void bncRinex::dumpEpoch() {
   if (!_headerWritten) {
     writeHeader(cti, cti.second + fmod(firstObs->sec, 1.0));
   }
-
-  _out.setf(std::ios::fixed);
 
   _out << setw(3)  << cti.year%100
        << setw(3)  << cti.month
