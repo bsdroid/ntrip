@@ -1,6 +1,6 @@
 
 /* -------------------------------------------------------------------------
- * Bernese NTRIP Client
+ * BKG NTRIP Client
  * -------------------------------------------------------------------------
  *
  * Class:      main
@@ -35,9 +35,9 @@ int main(int argc, char *argv[]) {
 
   bncApp app(argc, argv, GUIenabled);
 
-  QCoreApplication::setOrganizationName("AIUB");
-  QCoreApplication::setOrganizationDomain("www.aiub.unibe.ch");
-  QCoreApplication::setApplicationName("Bernese NTRIP Client");
+  QCoreApplication::setOrganizationName("BKG");
+  QCoreApplication::setOrganizationDomain("www.ifag.de");
+  QCoreApplication::setApplicationName("BKG_NTRIP_Client");
 
   if (GUIenabled) {
     bncWindow* bncWin = new bncWindow();
