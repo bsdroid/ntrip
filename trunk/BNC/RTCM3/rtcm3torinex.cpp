@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.cpp,v 1.3 2006/08/25 11:50:34 mervart Exp $
+  $Id: rtcm3torinex.cpp,v 1.4 2006/08/31 09:20:09 mervart Exp $
 
   Program written bei
   Dirk Stoecker
@@ -35,14 +35,17 @@
   or read http://www.gnu.org/licenses/gpl.txt
 */
 
+#ifndef NO_RTCM3_MAIN
+#include <stdint.h>
+#include <getopt.h>
+#endif
+
 #include <ctype.h>
 #include <errno.h>
-#include <getopt.h>
 #include <math.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <signal.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,20 +54,21 @@
 #include <time.h>
 #include <unistd.h>
 
+
+
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
 
 #define MAXDATASIZE 1000 /* max number of bytes we can get at once */
 
-/* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.3 $";
-static char datestr[]     = "$Date: 2006/08/25 11:50:34 $";
-static int stop = 0;
-
-
-
 #include "rtcm3torinex.h"
 
+/* CVS revision and version */
+static char revisionstr[] = "$Revision: 1.4 $";
+static char datestr[]     = "$Date: 2006/08/31 09:20:09 $";
+static int stop = 0;
+
+#ifndef NO_RTCM3_MAIN
 
 struct Args
 {
@@ -156,6 +160,8 @@ static int getargs(int argc, char **argv, struct Args *args)
   }
   return res;
 }
+#endif
+
 
 static const char encodingTable [64] = {
   'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',
@@ -731,13 +737,14 @@ void HandleHeader(struct RTCM3ParserData *Parser)
     }
   }
 
-#ifdef RTCM_TRANSFORM_MAIN
+
   for(i = 0; i < hdata.numheaders; ++i)
     printf("%s\n", hdata.data.unnamed[i]);
   printf("                                                            "
   "END OF HEADER\n");
-#endif
 }
+
+#ifndef NO_RTCM3_MAIN
 
 /* let the output complete a block if necessary */
 static void signalhandler(int sig)
@@ -852,7 +859,6 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
   }
 }
 
-#ifdef RTCM_TRANSFORM_MAIN
 int main(int argc, char **argv)
 {
   struct Args args;
@@ -994,5 +1000,5 @@ int main(int argc, char **argv)
   }
   return 0;
 }
-#endif
 
+#endif   // NO_RTCM3_MAIN
