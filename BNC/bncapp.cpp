@@ -15,6 +15,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <QFile>
+#include <QTextStream>
 #include <iostream>
 
 #include "bncapp.h" 
