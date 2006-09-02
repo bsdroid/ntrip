@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.cpp,v 1.4 2006/08/31 09:20:09 mervart Exp $
+  $Id: rtcm3torinex.cpp,v 1.5 2006/09/01 07:36:54 mervart Exp $
 
   Program written bei
   Dirk Stoecker
@@ -36,20 +36,20 @@
 */
 
 #ifndef NO_RTCM3_MAIN
-#include <stdint.h>
 #include <getopt.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
 #endif
 
+#include <stdint.h>
 #include <ctype.h>
 #include <errno.h>
 #include <math.h>
-#include <netdb.h>
-#include <netinet/in.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
@@ -64,8 +64,8 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.4 $";
-static char datestr[]     = "$Date: 2006/08/31 09:20:09 $";
+static char revisionstr[] = "$Revision: 1.5 $";
+static char datestr[]     = "$Date: 2006/09/01 07:36:54 $";
 static int stop = 0;
 
 #ifndef NO_RTCM3_MAIN
