@@ -46,13 +46,16 @@ void rtigs::Decode(char* buffer, int bufLen) {
   for (int ii = 0; ii < _buffer.size(); ii++) { 
     unsigned short xx;
     memcpy( (void*) &xx, &_buffer.data()[ii], sizeof(xx) );
-    SwitchBytes( (char*) &xx, sizeof(xx) );
+    if (_GPSTrans.f_IsLittleEndian) {
+      SwitchBytes( (char*) &xx, sizeof(xx) );
+    }
     if (xx == 200) {
       _buffer = _buffer.mid(ii);
       found = true;
       break;
     }
   }
+
   if (! found) {
     _buffer.clear();
     return;
