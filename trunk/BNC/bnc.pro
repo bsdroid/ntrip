@@ -1,4 +1,6 @@
 
+CONFIG += release
+
 DEFINES += NO_RTCM3_MAIN
 
 HEADERS =             bncgetthread.h    bncwindow.h   bnctabledlg.h   \
