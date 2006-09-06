@@ -166,6 +166,7 @@ void bncTableDlg::slotGetTable() {
     }
     _table->sortItems(0);
     _table->setHorizontalHeaderLabels(labels);
+    _table->setSortingEnabled(true);
   }
 }
 
