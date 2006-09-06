@@ -179,7 +179,7 @@ void bncWindow::slotAddMountPoints() {
   int     proxyPort = settings.value("proxyPort").toInt();
   if (proxyHost != _proxyHostLineEdit->text()         ||
       proxyPort != _proxyPortLineEdit->text().toInt()) {
-    int iRet = QMessageBox::question(this, "Question", "Proxy options"
+    int iRet = QMessageBox::question(this, "Question", "Proxy options "
                                      "changed. Use the new ones?", 
                                      QMessageBox::Yes, QMessageBox::No,
                                      QMessageBox::NoButton);
