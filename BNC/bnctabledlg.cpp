@@ -142,6 +142,11 @@ void bncTableDlg::slotGetTable() {
   }
   delete socket;
 
+  static const QStringList labels = QString("mountpoint,identifier,format,"
+    "format-details,carrier,nav-system,network,country,latitude,longitude,"
+    "nmea,solution,generator,compression,authentication,fee,bitrate,"
+    "misc").split(",");
+
   if (allLines.size() > 0) {
     _table->setSelectionMode(QAbstractItemView::ExtendedSelection);
     _table->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -160,6 +165,7 @@ void bncTableDlg::slotGetTable() {
       }
     }
     _table->sortItems(0);
+    _table->setHorizontalHeaderLabels(labels);
   }
 }
 
