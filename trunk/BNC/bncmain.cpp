@@ -29,8 +29,11 @@ using namespace std;
 int main(int argc, char *argv[]) {
 
   bool GUIenabled = true;
-  if (argc > 1 && QString(argv[1]) == "-nw") {
-    GUIenabled = false;
+  for (int ii = 1; ii < argc; ii++) {
+    if (QString(argv[ii]) == "-nw") {
+      GUIenabled = false;
+      break;
+    }
   }
 
   bncApp app(argc, argv, GUIenabled);
