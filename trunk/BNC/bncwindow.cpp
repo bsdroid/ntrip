@@ -173,6 +173,22 @@ bncWindow::~bncWindow() {
 // Retrieve Table
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotAddMountPoints() {
+
+  QSettings settings;
+  QString proxyHost = settings.value("proxyHost").toString();
+  int     proxyPort = settings.value("proxyPort").toInt();
+  if (proxyHost != _proxyHostLineEdit->text()         ||
+      proxyPort != _proxyPortLineEdit->text().toInt()) {
+    int iRet = QMessageBox::question(this, "Question", "Proxy options"
+                                     "changed. Use the new ones?", 
+                                     QMessageBox::Yes, QMessageBox::No,
+                                     QMessageBox::NoButton);
+    if      (iRet == QMessageBox::Yes) {
+      settings.setValue("proxyHost",   _proxyHostLineEdit->text());
+      settings.setValue("proxyPort",   _proxyPortLineEdit->text());
+    }
+  }
+
   bncTableDlg* dlg = new bncTableDlg(this); 
   dlg->move(this->pos().x()+50, this->pos().y()+50);
   connect(dlg, SIGNAL(newMountPoints(QStringList*)), 
