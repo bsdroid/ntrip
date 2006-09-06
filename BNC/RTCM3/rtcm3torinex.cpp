@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.cpp,v 1.5 2006/09/01 07:36:54 mervart Exp $
+  $Id: rtcm3torinex.cpp,v 1.6 2006/09/02 12:23:05 mervart Exp $
 
   Program written bei
   Dirk Stoecker
@@ -42,7 +42,10 @@
 #include <sys/socket.h>
 #endif
 
+#ifndef sparc
 #include <stdint.h>
+#endif
+
 #include <ctype.h>
 #include <errno.h>
 #include <math.h>
@@ -54,8 +57,6 @@
 #include <time.h>
 #include <unistd.h>
 
-
-
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
 
@@ -64,8 +65,8 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.5 $";
-static char datestr[]     = "$Date: 2006/09/01 07:36:54 $";
+static char revisionstr[] = "$Revision: 1.6 $";
+static char datestr[]     = "$Date: 2006/09/02 12:23:05 $";
 static int stop = 0;
 
 #ifndef NO_RTCM3_MAIN
