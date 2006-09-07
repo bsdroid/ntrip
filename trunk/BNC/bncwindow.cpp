@@ -423,6 +423,8 @@ void bncWindow::slotHelp() {
   dlgLayout->addWidget(tb);
 
   dlg->setLayout(dlgLayout);
+  int ww = QFontMetrics(font()).width('w');
+  dlg->resize(60*ww, 40*ww);
   dlg->show();
 }
 
