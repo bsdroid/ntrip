@@ -2,6 +2,7 @@
 #ifndef BNCRINEX_H
 #define BNCRINEX_H
 
+#include <QProcess>
 #include <QByteArray>
 #include <QDateTime>
 #include <QList>
@@ -30,6 +31,8 @@ class bncRinex {
    QStringList         _headerLines;
    bool                _headerWritten;
    QDateTime           _nextCloseEpoch;
+   QString             _rnxScriptName;
+   QProcess            _rnxScript;
 };
 
 #endif

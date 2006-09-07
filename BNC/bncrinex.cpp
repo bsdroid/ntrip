@@ -34,6 +34,10 @@ bncRinex::bncRinex(const char* StatID) {
   _statID        = StatID;
   _headerWritten = false;
   readSkeleton();
+
+  QSettings settings;
+  _rnxScriptName = settings.value("rnxScript").toString();
+  expandEnvVar(_rnxScriptName);
 }
 
 // Destructor
@@ -88,14 +92,14 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
   QTime nextTime;
   QDate nextDate;
 
-////  //// beg test
-////  if (1) {
-////    hlpStr = datTim.toString("_hh_mm_ss");
-////    nextDate = datTim.date();
-////    nextTime = datTim.time().addSecs(10);
-////  } else
-////  //// end test
-  if   (intStr == "15 min") {
+//  //// beg test
+//  if (1) {
+//    hlpStr = datTim.toString("_hh_mm_ss");
+//    nextDate = datTim.date();
+//    nextTime = datTim.time().addSecs(10);
+//  } else
+//  //// end test
+  if (intStr == "15 min") {
     char ch = 'A' + datTim.time().hour();
     hlpStr = ch;
     if      (datTim.time().minute() < 15) {
@@ -297,4 +301,7 @@ void bncRinex::dumpEpoch() {
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::closeFile() {
   _out.close();
+  if (!_rnxScriptName.isEmpty()) {
+    _rnxScript.start(_rnxScriptName, QStringList() << _fName);
+  }
 }
