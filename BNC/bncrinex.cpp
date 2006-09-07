@@ -88,7 +88,14 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
   QTime nextTime;
   QDate nextDate;
 
-  if      (intStr == "15 min") {
+////  //// beg test
+////  if (1) {
+////    hlpStr = datTim.toString("_hh_mm_ss");
+////    nextDate = datTim.date();
+////    nextTime = datTim.time().addSecs(10);
+////  } else
+////  //// end test
+  if   (intStr == "15 min") {
     char ch = 'A' + datTim.time().hour();
     hlpStr = ch;
     if      (datTim.time().minute() < 15) {
@@ -252,7 +259,8 @@ void bncRinex::dumpEpoch() {
     writeHeader(datTim);
   }
 
-  _out << datTim.toString(" yy MM dd hh mm ss.zzz0000").toAscii().data(); 
+  _out << datTim.toString(" yy MM dd hh mm ss.zzz0000").toAscii().data()
+       << "  " << 0 << setw(3)  << _obs.size();
 
   QListIterator<Observation*> it(_obs); int iSat = 0;
   while (it.hasNext()) {
