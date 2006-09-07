@@ -5,6 +5,7 @@ tar -cvf ${fileName}.tar bnc.bck     \
                          *.cpp       \
                          *.h         \
                          *.pro       \
+                         *.html      \
                          RTCM/*.cpp  \
                          RTCM/*.h    \
                          RTCM3/*.cpp \
