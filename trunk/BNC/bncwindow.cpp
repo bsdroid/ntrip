@@ -120,6 +120,8 @@ bncWindow::bncWindow() {
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
   _mountPointsTable->horizontalHeader()->hide();
   _mountPointsTable->verticalHeader()->hide();
+  _mountPointsTable->setGridStyle(Qt::NoPen);
+  _mountPointsTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   _mountPointsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _mountPointsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
@@ -139,15 +141,14 @@ bncWindow::bncWindow() {
 
     QTableWidgetItem* it;
     it = new QTableWidgetItem(url.userInfo());
-    it->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
     _mountPointsTable->setItem(iRow, 0, it);
 
     it = new QTableWidgetItem(fullPath);
-    it->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
     _mountPointsTable->setItem(iRow, 1, it);
 
     it = new QTableWidgetItem(format);
-    it->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
     _mountPointsTable->setItem(iRow, 2, it);
     iRow++;
   }
@@ -259,15 +260,14 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
 
     QTableWidgetItem* it;
     it = new QTableWidgetItem(url.userInfo());
-    it->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
     _mountPointsTable->setItem(iRow, 0, it);
 
     it = new QTableWidgetItem(fullPath);
-    it->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
     _mountPointsTable->setItem(iRow, 1, it);
 
     it = new QTableWidgetItem(format);
-    it->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
     _mountPointsTable->setItem(iRow, 2, it);
     iRow++;
   }
