@@ -239,6 +239,13 @@ void bncRinex::dumpEpoch() {
                                              firstObs->GPSWeeks + 
                                              fmod(firstObs->sec, 1.0) );
 
+  // Close the file
+  // --------------
+  if (_nextCloseEpoch.isValid() && datTim >= _nextCloseEpoch) {
+    closeFile();
+    _headerWritten = false;
+  }
+
   // Write RINEX Header
   // ------------------
   if (!_headerWritten) {
@@ -278,3 +285,8 @@ void bncRinex::dumpEpoch() {
   _obs.clear();
 }
 
+// Close the Old RINEX File
+////////////////////////////////////////////////////////////////////////////
+void bncRinex::closeFile() {
+  _out.close();
+}
