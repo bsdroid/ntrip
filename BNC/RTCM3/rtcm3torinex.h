@@ -99,7 +99,6 @@ struct converttimeinfo {
   int year;      /* year of GPS time [1980..] */
 };
 
-void HandleHeader(struct RTCM3ParserData *Parser);
 int RTCM3Parser(struct RTCM3ParserData *handle);
 void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte);
 void converttime(struct converttimeinfo *c, int week, int tow);

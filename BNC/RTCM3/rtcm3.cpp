@@ -45,11 +45,6 @@ rtcm3::~rtcm3() {
 void rtcm3::Decode(char* buffer, int bufLen) {
   for (int ii = 0; ii < bufLen; ii++) {
 
-#if 0
-    HandleByte(&_Parser, buffer[ii]);
-    continue;
-#endif
-
     _Parser.Message[_Parser.MessageSize++] = buffer[ii];
     if (_Parser.MessageSize >= _Parser.NeedBytes) {
 
@@ -64,6 +59,8 @@ void rtcm3::Decode(char* buffer, int bufLen) {
           Observation* obs = new Observation();
           
 ////      obs->statID   =
+////      obs->cumuLossOfCont =
+
           obs->SVPRN    = _Parser.Data.satellites[ii];
           obs->GPSWeek  = _Parser.Data.week;
           obs->GPSWeeks = (int) (_Parser.Data.timeofweek / 1000.0);
@@ -97,9 +94,6 @@ void rtcm3::Decode(char* buffer, int bufLen) {
               obs->SNR2 = _Parser.Data.snrL2[ii];
             }
           }
-
-////      obs->cumuLossOfCont =
-          
           m_lObsList.push_back(obs);
         }
       }
