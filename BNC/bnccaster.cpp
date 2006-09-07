@@ -51,6 +51,9 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
   _epochs = new QMultiMap<long, Observation*>;
 
   _lastDumpSec   = 0; 
+
+  QSettings settings;
+  _samplingRate = settings.value("rnxSampl").toInt();
 }
 
 // Destructor
@@ -83,6 +86,15 @@ void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
   if (newTime <= _lastDumpSec) {
     delete obs;
     return;
+  }
+
+  // Check the sampling rate
+  // -----------------------
+  if (_samplingRate != 0) {
+    if ( newTime % _samplingRate ) {
+      delete obs;
+      return;
+    }
   }
 
   // Rename the station and save the observation
