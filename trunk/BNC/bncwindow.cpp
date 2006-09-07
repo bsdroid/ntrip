@@ -40,10 +40,10 @@ bncWindow::bncWindow() {
   _actQuit  = new QAction(tr("&Quit"),this);
   connect(_actQuit, SIGNAL(triggered()), SLOT(close()));
 
-  _actAddMountPoints = new QAction(tr("&Add Mount Points"),this);
+  _actAddMountPoints = new QAction(tr("&Add Mountpoints"),this);
   connect(_actAddMountPoints, SIGNAL(triggered()), SLOT(slotAddMountPoints()));
 
-  _actDeleteMountPoints = new QAction(tr("&Delete Mount Points"),this);
+  _actDeleteMountPoints = new QAction(tr("&Delete Mountpoints"),this);
   connect(_actDeleteMountPoints, SIGNAL(triggered()), SLOT(slotDeleteMountPoints()));
   _actDeleteMountPoints->setEnabled(false);
 
@@ -76,17 +76,6 @@ bncWindow::bncWindow() {
 
   QGridLayout* layout = new QGridLayout;
   _canvas->setLayout(layout);
-
-  _timeOutLabel       = new QLabel("timeout (sec)");
-  _proxyHostLabel     = new QLabel("proxy host");
-  _proxyPortLabel     = new QLabel("proxy port");
-  _outFileLabel       = new QLabel("ASCII output file (full path)");
-  _outPortLabel       = new QLabel("port for binary output");
-  _rnxPathLabel       = new QLabel("RINEX path");
-  _rnxSkelLabel       = new QLabel("RINEX skeleton extension");
-  _rnxIntrLabel       = new QLabel("RINEX file interval");
-  _mountPointsLabel   = new QLabel("mount points");
-  _logLabel           = new QLabel("log");
 
   QSettings settings;
 
@@ -141,26 +130,26 @@ bncWindow::bncWindow() {
   _log->setMaximumHeight(120);
   _log->setReadOnly(true);
 
-  layout->addWidget(_proxyHostLabel,     0, 0);
-  layout->addWidget(_proxyHostLineEdit,  0, 1);
-  layout->addWidget(_proxyPortLabel,     0, 2);
-  layout->addWidget(_proxyPortLineEdit,  0, 3);
-  layout->addWidget(_timeOutLabel,       1, 1);
-  layout->addWidget(_timeOutLineEdit,    1, 2);
-  layout->addWidget(_outFileLabel,       2, 1);
-  layout->addWidget(_outFileLineEdit,    2, 2, 1, 2);
-  layout->addWidget(_outPortLabel,       3, 1);
-  layout->addWidget(_outPortLineEdit,    3, 2);
-  layout->addWidget(_rnxPathLabel,       4, 1);
-  layout->addWidget(_rnxPathLineEdit,    4, 2, 1, 2);
-  layout->addWidget(_rnxSkelLabel,       5, 1);
-  layout->addWidget(_rnxSkelLineEdit,    5, 2);
-  layout->addWidget(_rnxIntrLabel,       6, 1);
-  layout->addWidget(_rnxIntrSpinBox,     6, 2);
-  layout->addWidget(_mountPointsLabel,   7, 0);
-  layout->addWidget(_mountPointsTable,   7, 1, 1, 3);
-  layout->addWidget(_logLabel,           8, 0);
-  layout->addWidget(_log,                8, 1, 1, 3);
+  layout->addWidget(new QLabel("Proxy host"),                    0, 0);
+  layout->addWidget(_proxyHostLineEdit,                          0, 2);
+  layout->addWidget(new QLabel("Proxy port"),                    0, 3);
+  layout->addWidget(_proxyPortLineEdit,                          0, 4);
+  layout->addWidget(new QLabel("timeout (sec)"),                 1, 2);
+  layout->addWidget(_timeOutLineEdit,                            1, 3);
+  layout->addWidget(new QLabel("ASCII output file (full path)"), 2, 2);
+  layout->addWidget(_outFileLineEdit,                            2, 3, 1, 2);
+  layout->addWidget(new QLabel("port for binary output"),        3, 2);
+  layout->addWidget(_outPortLineEdit,                            3, 3);
+  layout->addWidget(new QLabel("RINEX path"),                    4, 2);
+  layout->addWidget(_rnxPathLineEdit,                            4, 3, 1, 2);
+  layout->addWidget(new QLabel("RINEX skeleton extension"),      5, 2);
+  layout->addWidget(_rnxSkelLineEdit,                            5, 3);
+  layout->addWidget(new QLabel("RINEX file interval"),           6, 2);
+  layout->addWidget(_rnxIntrSpinBox,                             6, 3);
+  layout->addWidget(new QLabel("Mountpoints"),                   7, 1);
+  layout->addWidget(_mountPointsTable,                           7, 2, 1, 3);
+  layout->addWidget(new QLabel("Log"),                           8, 1);
+  layout->addWidget(_log,                                        8, 2, 1, 3);
 
   _bncCaster = 0;
 }

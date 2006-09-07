@@ -19,12 +19,8 @@ class bncTableDlg : public QDialog {
     void slotGetTable();
 
   private:
-    QLabel*      _casterHostLabel;
-    QLabel*      _casterPortLabel;
     QLineEdit*   _casterHostLineEdit;
     QLineEdit*   _casterPortLineEdit;
-    QLabel*      _casterUserLabel;
-    QLabel*      _casterPasswordLabel;
     QLineEdit*   _casterUserLineEdit;
     QLineEdit*   _casterPasswordLineEdit;
 
