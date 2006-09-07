@@ -24,6 +24,7 @@
 
 #include "bncrinex.h"
 #include "bncutils.h"
+#include "bncconst.h"
 
 using namespace std;
 
@@ -205,12 +206,6 @@ void bncRinex::dumpEpoch() {
   }
   _out << endl;
 
-  static const double const_c       = 299792458.0;
-  static const double const_freq1   = 1575420000.0;
-  static const double const_freq2   = 1227600000.0;
-  static const double const_lambda1 = const_c / const_freq1;
-  static const double const_lambda2 = const_c / const_freq2;
-
   it.toFront();
   while (it.hasNext()) {
     Observation* ob = it.next();
@@ -219,8 +214,8 @@ void bncRinex::dumpEpoch() {
     char snr = ' ';
     _out << setw(14) << setprecision(3) << ob->C1 << lli << snr;
     _out << setw(14) << setprecision(3) << ob->P2 << lli << snr; 
-    _out << setw(14) << setprecision(3) << ob->L1 / const_lambda1 << lli << snr; 
-    _out << setw(14) << setprecision(3) << ob->L2 / const_lambda2 << lli << snr; 
+    _out << setw(14) << setprecision(3) << ob->L1 / t_CST::lambda1 << lli << snr; 
+    _out << setw(14) << setprecision(3) << ob->L2 / t_CST::lambda2 << lli << snr; 
     _out << endl;
 
     delete ob;
