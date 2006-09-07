@@ -158,7 +158,7 @@ void bncTableDlg::slotGetTable() {
       ++nRow;
       for (int ic = 0; ic < columns.size()-1; ic++) {
         QTableWidgetItem* it = new QTableWidgetItem(columns[ic+1]);
-        it->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        it->setFlags(it->flags() & ~Qt::ItemIsEditable);
         _table->setItem(nRow, ic, it);
       }
     }
