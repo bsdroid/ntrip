@@ -50,6 +50,11 @@ void rtcm3::Decode(char* buffer, int bufLen) {
 
       while(int rr = RTCM3Parser(&_Parser)) {
 
+        if (!_Parser.init) {
+          HandleHeader(&_Parser);
+          _Parser.init = 1;
+        }
+
         if (rr == 2) {
           cerr << "No valid RINEX! All values are modulo 299792.458!\n";
           exit(1);

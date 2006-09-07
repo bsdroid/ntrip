@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.cpp,v 1.6 2006/09/02 12:23:05 mervart Exp $
+  $Id: rtcm3torinex.cpp,v 1.7 2006/09/06 16:13:16 mervart Exp $
 
   Program written bei
   Dirk Stoecker
@@ -65,8 +65,8 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.6 $";
-static char datestr[]     = "$Date: 2006/09/02 12:23:05 $";
+static char revisionstr[] = "$Revision: 1.7 $";
+static char datestr[]     = "$Date: 2006/09/06 16:13:16 $";
 static int stop = 0;
 
 #ifndef NO_RTCM3_MAIN
@@ -739,10 +739,12 @@ void HandleHeader(struct RTCM3ParserData *Parser)
   }
 
 
+#ifndef NO_RTCM3_MAIN
   for(i = 0; i < hdata.numheaders; ++i)
     printf("%s\n", hdata.data.unnamed[i]);
   printf("                                                            "
   "END OF HEADER\n");
+#endif
 }
 
 #ifndef NO_RTCM3_MAIN
