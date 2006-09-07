@@ -42,12 +42,21 @@ int main(int argc, char *argv[]) {
   QCoreApplication::setOrganizationDomain("www.ifag.de");
   QCoreApplication::setApplicationName("BKG_NTRIP_Client");
 
+  QSettings settings;
   if (GUIenabled) {
+
+    QString fontString = settings.value("font").toString();
+    if ( !fontString.isEmpty() ) {
+      QFont newFont;
+      if (newFont.fromString(fontString)) {
+        QApplication::setFont(newFont);
+      }
+    }
+
     bncWindow* bncWin = new bncWindow();
     bncWin->show();
   }
   else {
-    QSettings settings;
     bncCaster* caster = new bncCaster(settings.value("outFile").toString(),
                                       settings.value("outPort").toInt());
 

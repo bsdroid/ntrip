@@ -87,7 +87,6 @@ bncWindow::bncWindow() {
   _canvas->setLayout(layout);
 
   QSettings settings;
-
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
   _proxyHostLineEdit->setMaximumWidth(12*ww);
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
@@ -438,6 +437,10 @@ void bncWindow::slotFontSel() {
   bool ok;
   QFont newFont = QFontDialog::getFont(&ok, this->font(), this); 
   if (ok) {
+    QSettings settings;
+    settings.setValue("font", newFont.toString());
     QApplication::setFont(newFont);
+    int ww = QFontMetrics(newFont).width('w');
+    setMinimumSize(90*ww, 80*ww);
   }
 }
