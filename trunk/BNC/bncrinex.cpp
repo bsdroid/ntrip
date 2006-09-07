@@ -82,12 +82,36 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
     path += QDir::separator();
   }
 
-  QChar ch = '0';
+  QString intStr = settings.value("rnxIntr").toString();
+  QString hlpStr;
+  if      (intStr == "15 min") {
+    char ch = 'A' + datTim.time().hour();
+    hlpStr = ch;
+    if      (datTim.time().minute() < 15) {
+      hlpStr += "00";
+    }
+    else if (datTim.time().minute() < 30) {
+      hlpStr += "15";
+    }
+    else if (datTim.time().minute() < 45) {
+      hlpStr += "30";
+    }
+    else {
+      hlpStr += "45";
+    }
+  }
+  else if (intStr == "1 hour") {
+    char ch = 'A' + datTim.time().hour();
+    hlpStr = ch;
+  }
+  else {
+    hlpStr = "0";
+  }
 
   path += _statID.left(4) +
-          QString("%1%2.%3O").arg(datTim.date().dayOfYear(), 3, 10, QChar('0'))
-                             .arg(ch)
-                             .arg(datTim.date().year() % 100,2,10, QChar('0'));
+          QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
+          hlpStr +
+          datTim.toString(".yyO");
 
   _fName = path.toAscii();
 }
