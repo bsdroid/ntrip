@@ -17,6 +17,7 @@
 
 #include "bnccaster.h"
 #include "bncgetthread.h"
+#include "bncutils.h"
 #include "RTCM/RTCM.h"
 
 // Constructor
@@ -24,7 +25,9 @@
 bncCaster::bncCaster(const QString& outFileName, int port) {
 
   if ( !outFileName.isEmpty() ) {
-    _outFile = new QFile(outFileName); 
+    QString lName = outFileName;
+    expandEnvVar(lName);
+    _outFile = new QFile(lName); 
     _outFile->open(QIODevice::WriteOnly);
     _out = new QTextStream(_outFile);
     _out->setRealNumberNotation(QTextStream::FixedNotation);
