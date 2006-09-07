@@ -104,6 +104,7 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setMinimum(0);
   _rnxSamplSpinBox->setMaximum(60);
   _rnxSamplSpinBox->setSingleStep(5);
+  _rnxSamplSpinBox->setMaximumWidth(9*ww);
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
   _mountPointsTable   = new QTableWidget(0,2);
   _mountPointsTable->setMinimumWidth(60*ww);
@@ -150,7 +151,7 @@ bncWindow::bncWindow() {
   layout->addWidget(_outPortLineEdit,                            3, 2);
   layout->addWidget(new QLabel("RINEX path"),                    4, 1);
   layout->addWidget(_rnxPathLineEdit,                            4, 2, 1, 3);
-  layout->addWidget(new QLabel("RINEX script"),                  5, 1);
+  layout->addWidget(new QLabel("RINEX script (full path)"),      5, 1);
   layout->addWidget(_rnxScrpLineEdit,                            5, 2, 1, 3);
   layout->addWidget(new QLabel("RINEX file interval"),           6, 1);
   layout->addWidget(_rnxIntrComboBox,                            6, 2);
