@@ -43,6 +43,7 @@ int main(int argc, char *argv[]) {
   QCoreApplication::setApplicationName("BKG_NTRIP_Client");
 
   QSettings settings;
+
   if (GUIenabled) {
 
     QString fontString = settings.value("font").toString();

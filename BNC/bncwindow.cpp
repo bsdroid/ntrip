@@ -442,5 +442,6 @@ void bncWindow::slotFontSel() {
     QApplication::setFont(newFont);
     int ww = QFontMetrics(newFont).width('w');
     setMinimumSize(90*ww, 80*ww);
+    resize(90*ww, 80*ww);
   }
 }
