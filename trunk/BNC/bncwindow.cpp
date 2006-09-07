@@ -31,8 +31,11 @@ bncWindow::bncWindow() {
 
   // Create Actions
   // --------------
-  _actAbout = new QAction(tr("&About"),this);
-  _actAbout->setEnabled(false);
+  _actHelp = new QAction(tr("&Help Contents"),this);
+  connect(_actHelp, SIGNAL(triggered()), SLOT(slotHelp()));
+
+  _actAbout = new QAction(tr("&About BNC"),this);
+  connect(_actAbout, SIGNAL(triggered()), SLOT(slotAbout()));
 
   _actSaveOpt = new QAction(tr("&Save Options"),this);
   connect(_actSaveOpt, SIGNAL(triggered()), SLOT(slotSaveOptions()));
@@ -58,6 +61,7 @@ bncWindow::bncWindow() {
   _menuFile->addAction(_actQuit);
 
   _menuHlp = menuBar()->addMenu(tr("&Help"));
+  _menuHlp->addAction(_actHelp);
   _menuHlp->addAction(_actAbout);
 
   // Tool (Command) Bar
@@ -347,3 +351,43 @@ void bncWindow::slotMessage(const QByteArray& msg) {
   _log->append(txt.right(maxBufferSize));
 }  
 
+// About Message
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotAbout() {
+
+  QString str("BKG NTRIP Client\n"
+              "Author: L. Mervart\n"
+              "Version 1.0");
+
+  QMessageBox::information(this, "About", str, QMessageBox::Ok);
+}
+
+// Help Window
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotHelp() {
+
+  QString str("<h3>BNC Help</h3>"
+              "<p>"
+              "Program bnc can be used in interactive mode or "
+              "in a non-interactive mode."
+              "</p>"
+              "<p>"
+              "Non-interactive mode is invoked by -nw switch."
+              "On Unix (Linux) the standard X-window switches "
+              "like -fn 10x20 work. Program appearance can "
+              "be changed by e.g. -style motif switch."
+              "</p>");
+
+  QTextBrowser* tb = new QTextBrowser;
+  tb->setHtml(str);
+  tb->setReadOnly(true);
+  tb->show();
+
+  QDialog* dlg = new QDialog(this);
+
+  QVBoxLayout* dlgLayout = new QVBoxLayout();
+  dlgLayout->addWidget(tb);
+
+  dlg->setLayout(dlgLayout);
+  dlg->show();
+}
