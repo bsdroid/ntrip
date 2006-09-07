@@ -84,29 +84,58 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
 
   QString intStr = settings.value("rnxIntr").toString();
   QString hlpStr;
+
+  QTime nextTime;
+  QDate nextDate;
+
   if      (intStr == "15 min") {
     char ch = 'A' + datTim.time().hour();
     hlpStr = ch;
     if      (datTim.time().minute() < 15) {
       hlpStr += "00";
+      nextTime.setHMS(datTim.time().hour(), 15, 0);
+      nextDate = datTim.date();
     }
     else if (datTim.time().minute() < 30) {
       hlpStr += "15";
+      nextTime.setHMS(datTim.time().hour(), 30, 0);
+      nextDate = datTim.date();
     }
     else if (datTim.time().minute() < 45) {
       hlpStr += "30";
+      nextTime.setHMS(datTim.time().hour(), 45, 0);
+      nextDate = datTim.date();
     }
     else {
       hlpStr += "45";
+      if (datTim.time().hour() < 23) {
+        nextTime.setHMS(datTim.time().hour() + 1 , 0, 0);
+        nextDate = datTim.date();
+      }
+      else {
+        nextTime.setHMS(0, 0, 0);
+        nextDate = datTim.date().addDays(1);
+      }
     }
   }
   else if (intStr == "1 hour") {
     char ch = 'A' + datTim.time().hour();
     hlpStr = ch;
+    if (datTim.time().hour() < 23) {
+      nextTime.setHMS(datTim.time().hour() + 1 , 0, 0);
+      nextDate = datTim.date();
+    }
+    else {
+      nextTime.setHMS(0, 0, 0);
+      nextDate = datTim.date().addDays(1);
+    }
   }
   else {
     hlpStr = "0";
+    nextTime.setHMS(0, 0, 0);
+    nextDate = datTim.date().addDays(1);
   }
+  _nextCloseEpoch = QDateTime(nextDate, nextTime);
 
   path += _statID.left(4) +
           QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
