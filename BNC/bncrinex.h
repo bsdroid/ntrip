@@ -28,6 +28,7 @@ class bncRinex {
    ofstream            _out;
    QStringList         _headerLines;
    bool                _headerWritten;
+   QDateTime           _nextCloseEpoch;
 };
 
 #endif
