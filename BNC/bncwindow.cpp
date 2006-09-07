@@ -27,7 +27,7 @@ bncWindow::bncWindow() {
 
   int ww = QFontMetrics(this->font()).width('w');
 
-  setMinimumSize(80*ww, 80*ww);
+  setMinimumSize(90*ww, 80*ww);
 
   // Create Actions
   // --------------
@@ -89,16 +89,24 @@ bncWindow::bncWindow() {
   _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
   _outPortLineEdit->setMaximumWidth(9*ww);
   _rnxPathLineEdit    = new QLineEdit(settings.value("rnxPath").toString());
+  _rnxScrpLineEdit    = new QLineEdit(settings.value("rnxScript").toString());
   _rnxSkelLineEdit    = new QLineEdit(settings.value("rnxSkel").toString());
   _rnxSkelLineEdit->setMaximumWidth(5*ww);
-  _rnxIntrSpinBox     = new QSpinBox();
-  _rnxIntrSpinBox->setMaximumWidth(12*ww);
-  _rnxIntrSpinBox->setValue(settings.value("rnxIntr").toInt());
-  _rnxIntrSpinBox->setSuffix("  hour");
-  _rnxIntrSpinBox->setRange(1,24);
-  _rnxIntrSpinBox->setSingleStep(23);
+  _rnxIntrComboBox    = new QComboBox();
+  _rnxIntrComboBox->setMaximumWidth(9*ww);
+  _rnxIntrComboBox->setEditable(false);
+  _rnxIntrComboBox->addItems(QString("15 min,1 hour,1 day").split(","));
+  int ii = _rnxIntrComboBox->findText(settings.value("rnxIntr").toString());
+  if (ii != -1) {
+    _rnxIntrComboBox->setCurrentIndex(ii);
+  }
+  _rnxSamplSpinBox    = new QSpinBox();
+  _rnxSamplSpinBox->setMinimum(0);
+  _rnxSamplSpinBox->setMaximum(60);
+  _rnxSamplSpinBox->setSingleStep(5);
+  _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
   _mountPointsTable   = new QTableWidget(0,2);
-  _mountPointsTable->setMinimumWidth(70*ww);
+  _mountPointsTable->setMinimumWidth(60*ww);
   _mountPointsTable->setMaximumHeight(20*ww);
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
   _mountPointsTable->horizontalHeader()->hide();
@@ -131,25 +139,32 @@ bncWindow::bncWindow() {
   _log->setReadOnly(true);
 
   layout->addWidget(new QLabel("Proxy host"),                    0, 0);
-  layout->addWidget(_proxyHostLineEdit,                          0, 2);
-  layout->addWidget(new QLabel("Proxy port"),                    0, 3);
-  layout->addWidget(_proxyPortLineEdit,                          0, 4);
-  layout->addWidget(new QLabel("timeout (sec)"),                 1, 2);
-  layout->addWidget(_timeOutLineEdit,                            1, 3);
-  layout->addWidget(new QLabel("ASCII output file (full path)"), 2, 2);
-  layout->addWidget(_outFileLineEdit,                            2, 3, 1, 2);
-  layout->addWidget(new QLabel("port for binary output"),        3, 2);
-  layout->addWidget(_outPortLineEdit,                            3, 3);
-  layout->addWidget(new QLabel("RINEX path"),                    4, 2);
-  layout->addWidget(_rnxPathLineEdit,                            4, 3, 1, 2);
-  layout->addWidget(new QLabel("RINEX skeleton extension"),      5, 2);
-  layout->addWidget(_rnxSkelLineEdit,                            5, 3);
-  layout->addWidget(new QLabel("RINEX file interval"),           6, 2);
-  layout->addWidget(_rnxIntrSpinBox,                             6, 3);
-  layout->addWidget(new QLabel("Mountpoints"),                   7, 1);
-  layout->addWidget(_mountPointsTable,                           7, 2, 1, 3);
-  layout->addWidget(new QLabel("Log"),                           8, 1);
-  layout->addWidget(_log,                                        8, 2, 1, 3);
+  layout->addWidget(_proxyHostLineEdit,                          0, 1);
+  layout->addWidget(new QLabel("Proxy port"),                    0, 2);
+  layout->addWidget(_proxyPortLineEdit,                          0, 3);
+  layout->addWidget(new QLabel("timeout (sec)"),                 1, 1);
+  layout->addWidget(_timeOutLineEdit,                            1, 2);
+  layout->addWidget(new QLabel("ASCII output file (full path)"), 2, 1);
+  layout->addWidget(_outFileLineEdit,                            2, 2, 1, 3);
+  layout->addWidget(new QLabel("port for binary output"),        3, 1);
+  layout->addWidget(_outPortLineEdit,                            3, 2);
+  layout->addWidget(new QLabel("RINEX path"),                    4, 1);
+  layout->addWidget(_rnxPathLineEdit,                            4, 2, 1, 3);
+  layout->addWidget(new QLabel("RINEX script"),                  5, 1);
+  layout->addWidget(_rnxScrpLineEdit,                            5, 2, 1, 3);
+  layout->addWidget(new QLabel("RINEX file interval"),           6, 1);
+  layout->addWidget(_rnxIntrComboBox,                            6, 2);
+
+  layout->addWidget(new QLabel("sampling (sec)"),                6, 3);
+  layout->addWidget(_rnxSamplSpinBox,                            6, 4);
+
+
+  layout->addWidget(new QLabel("RINEX skeleton extension"),      7, 1);
+  layout->addWidget(_rnxSkelLineEdit,                            7, 2);
+  layout->addWidget(new QLabel("Mountpoints"),                   8, 0);
+  layout->addWidget(_mountPointsTable,                           8, 1, 1, 4);
+  layout->addWidget(new QLabel("Log"),                           9, 0);
+  layout->addWidget(_log,                                        9, 1, 1, 4);
 
   _bncCaster = 0;
 }
@@ -237,7 +252,9 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("outFile",     _outFileLineEdit->text());
   settings.setValue("outPort",     _outPortLineEdit->text());
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());
-  settings.setValue("rnxIntr",     _rnxIntrSpinBox->value());
+  settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
+  settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
+  settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
   QStringList mountPoints;
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
