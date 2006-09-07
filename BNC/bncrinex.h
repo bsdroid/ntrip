@@ -3,6 +3,7 @@
 #define BNCRINEX_H
 
 #include <QByteArray>
+#include <QDateTime>
 #include <QList>
 
 #include <fstream>
@@ -17,9 +18,9 @@ class bncRinex {
    void dumpEpoch();
 
  private:
-   void resolveFileName(struct converttimeinfo& cti);
+   void resolveFileName(const QDateTime& datTim);
    void readSkeleton();
-   void writeHeader(struct converttimeinfo& cti, double second);
+   void writeHeader(const QDateTime& datTim);
 
    QByteArray          _statID;
    QByteArray          _fName;
