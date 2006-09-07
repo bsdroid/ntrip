@@ -24,7 +24,6 @@
 
 #include "bncrinex.h"
 #include "bncutils.h"
-#include "RTCM3/rtcm3torinex.h"
 
 using namespace std;
 
@@ -72,7 +71,7 @@ void bncRinex::readSkeleton() {
 
 // File Name according to RINEX Standards
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::resolveFileName(struct converttimeinfo& cti) {
+void bncRinex::resolveFileName(const QDateTime& datTim) {
 
   QSettings settings;
   QString path = settings.value("rnxPath").toString();
@@ -82,25 +81,23 @@ void bncRinex::resolveFileName(struct converttimeinfo& cti) {
     path += QDir::separator();
   }
 
-  QDate date(cti.year, cti.month, cti.day);
-
   QChar ch = '0';
 
   path += _statID.left(4) +
-          QString("%1%2.%3O").arg(date.dayOfYear(), 3, 10, QChar('0'))
+          QString("%1%2.%3O").arg(datTim.date().dayOfYear(), 3, 10, QChar('0'))
                              .arg(ch)
-                             .arg(date.year() % 100, 2, 10, QChar('0'));
+                             .arg(datTim.date().year() % 100,2,10, QChar('0'));
 
   _fName = path.toAscii();
 }
 
 // Write RINEX Header
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::writeHeader(struct converttimeinfo& cti, double second) {
+void bncRinex::writeHeader(const QDateTime& datTim) {
 
   // Open the Output File
   // --------------------
-  resolveFileName(cti);
+  resolveFileName(datTim);
   _out.open(_fName.data());
   _out.setf(ios::showpoint | ios::fixed);
 
@@ -115,13 +112,9 @@ void bncRinex::writeHeader(struct converttimeinfo& cti, double second) {
                 "                              # / TYPES OF OBSERV"  << endl;
       }
       else if (line.indexOf("TIME OF FIRST OBS") != -1) {
-        _out << setw(6) << cti.year
-             << setw(6) << cti.month
-             << setw(6) << cti.day
-             << setw(6) << cti.hour
-             << setw(6) << cti.minute
-             << setw(13) << setprecision(7) << second 
-             << "                 TIME OF FIRST OBS"    << endl;
+        _out << datTim.toString("  yyyy    MM    dd"
+                                "    hh    mm   ss.zzz0000").toAscii().data();
+        _out << "                 TIME OF FIRST OBS"    << endl;
       }
       else {
         _out << line.toAscii().data() << endl;
@@ -157,13 +150,9 @@ void bncRinex::writeHeader(struct converttimeinfo& cti, double second) {
          << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
     _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
     _out << "     4    P1    P2    L1    L2                              # / TYPES OF OBSERV"  << endl;
-    _out << setw(6) << cti.year
-         << setw(6) << cti.month
-         << setw(6) << cti.day
-         << setw(6) << cti.hour
-         << setw(6) << cti.minute
-         << setw(13) << setprecision(7) << second 
-         << "                 "                                      << "TIME OF FIRST OBS"    << endl;
+        _out << datTim.toString("  yyyy    MM    dd"
+                                "    hh    mm   ss.zzz0000").toAscii().data();
+    _out << "                 "                                      << "TIME OF FIRST OBS"    << endl;
     _out << "                                                            END OF HEADER"        << endl;
   }
 
@@ -190,24 +179,19 @@ void bncRinex::dumpEpoch() {
 
   // Time of Epoch
   // -------------
-  struct converttimeinfo cti;
   Observation* firstObs = *_obs.begin();
-  converttime(&cti, firstObs->GPSWeek, firstObs->GPSWeeks);
+
+  QDateTime datTim = dateAndTimeFromGPSweek( firstObs->GPSWeek,
+                                             firstObs->GPSWeeks + 
+                                             fmod(firstObs->sec, 1.0) );
 
   // Write RINEX Header
   // ------------------
   if (!_headerWritten) {
-    writeHeader(cti, cti.second + fmod(firstObs->sec, 1.0));
+    writeHeader(datTim);
   }
 
-  _out << setw(3)  << cti.year%100
-       << setw(3)  << cti.month
-       << setw(3)  << cti.day
-       << setw(3)  << cti.hour
-       << setw(3)  << cti.minute
-       << setw(11) << setprecision(7) 
-       << cti.second + fmod(firstObs->sec, 1.0)
-       << "  " << 0 << setw(3)  << _obs.size();
+  _out << datTim.toString(" yy MM dd hh mm ss.zzz0000").toAscii().data(); 
 
   QListIterator<Observation*> it(_obs); int iSat = 0;
   while (it.hasNext()) {
