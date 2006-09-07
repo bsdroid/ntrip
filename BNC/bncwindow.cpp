@@ -37,6 +37,9 @@ bncWindow::bncWindow() {
   _actAbout = new QAction(tr("&About BNC"),this);
   connect(_actAbout, SIGNAL(triggered()), SLOT(slotAbout()));
 
+  _actFontSel = new QAction(tr("Select &Fonts"),this);
+  connect(_actFontSel, SIGNAL(triggered()), SLOT(slotFontSel()));
+
   _actSaveOpt = new QAction(tr("&Save Options"),this);
   connect(_actSaveOpt, SIGNAL(triggered()), SLOT(slotSaveOptions()));
 
@@ -56,6 +59,8 @@ bncWindow::bncWindow() {
   // Create Menus
   // ------------
   _menuFile = menuBar()->addMenu(tr("&File"));
+  _menuFile->addAction(_actFontSel);
+  _menuFile->addSeparator();
   _menuFile->addAction(_actSaveOpt);
   _menuFile->addSeparator();
   _menuFile->addAction(_actQuit);
@@ -110,13 +115,12 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setSingleStep(5);
   _rnxSamplSpinBox->setMaximumWidth(9*ww);
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
-  _mountPointsTable   = new QTableWidget(0,2);
+  _mountPointsTable   = new QTableWidget(0,3);
   _mountPointsTable->setMinimumWidth(60*ww);
   _mountPointsTable->setMaximumHeight(20*ww);
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
   _mountPointsTable->horizontalHeader()->hide();
   _mountPointsTable->verticalHeader()->hide();
-  _mountPointsTable->setGridStyle(Qt::NoPen);
   _mountPointsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _mountPointsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
@@ -127,14 +131,29 @@ bncWindow::bncWindow() {
   while (it.hasNext()) {
     QStringList hlp = it.next().split(" ");
     if (hlp.size() <= 1) continue;
-    QString mPoint = hlp[0];
-    QString format = hlp[1];
     _mountPointsTable->insertRow(iRow);
-    _mountPointsTable->setItem(iRow, 0, new QTableWidgetItem(mPoint));
-    _mountPointsTable->setItem(iRow, 1, new QTableWidgetItem(format));
+
+    QUrl    url(hlp[0]);
+
+    QString fullPath = url.host() + QString(":%1").arg(url.port()) + url.path();
+    QString format(hlp[1]);
+
+    QTableWidgetItem* it;
+    it = new QTableWidgetItem(url.userInfo());
+    it->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    _mountPointsTable->setItem(iRow, 0, it);
+
+    it = new QTableWidgetItem(fullPath);
+    it->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    _mountPointsTable->setItem(iRow, 1, it);
+
+    it = new QTableWidgetItem(format);
+    it->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 2, it);
     iRow++;
   }
-  _mountPointsTable->sortItems(0);
+  ///  _mountPointsTable->hideColumn(0);
+  _mountPointsTable->sortItems(1);
 
   connect(_mountPointsTable, SIGNAL(itemSelectionChanged()), 
           SLOT(slotSelectionChanged()));
@@ -213,7 +232,7 @@ void bncWindow::slotDeleteMountPoints() {
   while(1) {
     bool itemRemoved = false;
     for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
-      if (_mountPointsTable->isItemSelected(_mountPointsTable->item(iRow,0))) {
+      if (_mountPointsTable->isItemSelected(_mountPointsTable->item(iRow,1))) {
         _mountPointsTable->removeRow(iRow);
         itemRemoved = true;
         break;
@@ -233,14 +252,28 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
   QListIterator<QString> it(*mountPoints);
   while (it.hasNext()) {
     QStringList hlp = it.next().split(" ");
-    QString mPoint = hlp[0];
-    QString format = hlp[1];
+    QUrl    url(hlp[0]);
+    QString fullPath = url.host() + QString(":%1").arg(url.port()) + url.path();
+    QString format(hlp[1]);
+
     _mountPointsTable->insertRow(iRow);
-    _mountPointsTable->setItem(iRow, 0, new QTableWidgetItem(mPoint));
-    _mountPointsTable->setItem(iRow, 1, new QTableWidgetItem(format));
+
+    QTableWidgetItem* it;
+    it = new QTableWidgetItem(url.userInfo());
+    it->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    _mountPointsTable->setItem(iRow, 0, it);
+
+    it = new QTableWidgetItem(fullPath);
+    it->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    _mountPointsTable->setItem(iRow, 1, it);
+
+    it = new QTableWidgetItem(format);
+    it->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 2, it);
     iRow++;
   }
-  _mountPointsTable->sortItems(0);
+  ///  _mountPointsTable->hideColumn(0);
+  _mountPointsTable->sortItems(1);
   if (mountPoints->count() > 0) {
     _actGetData->setEnabled(true);
   }
@@ -261,10 +294,15 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
+
   QStringList mountPoints;
+
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
-    mountPoints.append(_mountPointsTable->item(iRow, 0)->text() + 
-                       " " + _mountPointsTable->item(iRow, 1)->text());
+    QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + "@" +
+              _mountPointsTable->item(iRow, 1)->text() );
+
+    mountPoints.append(url.toString() + " " + 
+                       _mountPointsTable->item(iRow, 2)->text());
   }
   settings.setValue("mountPoints", mountPoints);
 }
@@ -296,7 +334,9 @@ void bncWindow::slotGetData() {
   _bncCaster->start();
 
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
-    QUrl url(_mountPointsTable->item(iRow, 0)->text());
+    QUrl url( _mountPointsTable->item(iRow, 0)->text() + "@" +
+              _mountPointsTable->item(iRow, 1)->text() );
+
     QByteArray format     = _mountPointsTable->item(iRow, 1)->text().toAscii();
 
     bncGetThread* getThread = new bncGetThread(url, format);
@@ -390,4 +430,14 @@ void bncWindow::slotHelp() {
 
   dlg->setLayout(dlgLayout);
   dlg->show();
+}
+
+// Select Fonts
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotFontSel() {
+  bool ok;
+  QFont newFont = QFontDialog::getFont(&ok, this->font(), this); 
+  if (ok) {
+    QApplication::setFont(newFont);
+  }
 }
