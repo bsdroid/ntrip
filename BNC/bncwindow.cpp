@@ -408,17 +408,9 @@ void bncWindow::slotAbout() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotHelp() {
 
-  QString str("<h3>BNC Help</h3>"
-              "<p>"
-              "Program bnc can be used in interactive mode or "
-              "in a non-interactive mode."
-              "</p>"
-              "<p>"
-              "Non-interactive mode is invoked by -nw switch."
-              "On Unix (Linux) the standard X-window switches "
-              "like -fn 10x20 work. Program appearance can "
-              "be changed by e.g. -style motif switch."
-              "</p>");
+  QString str(
+#include "bnchelp.html"
+              );
 
   QTextBrowser* tb = new QTextBrowser;
   tb->setHtml(str);

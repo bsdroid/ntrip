@@ -3,7 +3,7 @@ CONFIG += release
 
 DEFINES += NO_RTCM3_MAIN
 
-HEADERS =             bncgetthread.h    bncwindow.h   bnctabledlg.h   \
+HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h   \
           bnccaster.h bncrinex.h bncapp.h bncutils.h                  \
           RTCM/format.h RTCM/GPSDecoder.h RTCM/m_data.h RTCM/RTCM.h   \
           RTCM3/rtcm3.h RTCM3/rtcm3torinex.h                          \
