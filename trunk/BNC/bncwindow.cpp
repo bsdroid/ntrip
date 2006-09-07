@@ -229,8 +229,19 @@ void bncWindow::slotAddMountPoints() {
 // Delete Selected Mount Points
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotDeleteMountPoints() {
-  for (int iRow = _mountPointsTable->rowCount()-1; iRow >= 0; iRow--) {
+
+  int nRows = _mountPointsTable->rowCount();
+  bool flg[nRows];
+  for (int iRow = 0; iRow < nRows; iRow++) {
     if (_mountPointsTable->isItemSelected(_mountPointsTable->item(iRow,1))) {
+      flg[iRow] = true;
+    }
+    else {
+      flg[iRow] = false;
+    }
+  }
+  for (int iRow = nRows-1; iRow >= 0; iRow--) {
+    if (flg[iRow]) {
       _mountPointsTable->removeRow(iRow);
     }
   }
