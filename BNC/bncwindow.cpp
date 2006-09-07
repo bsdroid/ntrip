@@ -152,7 +152,7 @@ bncWindow::bncWindow() {
     _mountPointsTable->setItem(iRow, 2, it);
     iRow++;
   }
-  ///  _mountPointsTable->hideColumn(0);
+  _mountPointsTable->hideColumn(0);
   _mountPointsTable->sortItems(1);
 
   connect(_mountPointsTable, SIGNAL(itemSelectionChanged()), 
@@ -272,7 +272,7 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
     _mountPointsTable->setItem(iRow, 2, it);
     iRow++;
   }
-  ///  _mountPointsTable->hideColumn(0);
+  _mountPointsTable->hideColumn(0);
   _mountPointsTable->sortItems(1);
   if (mountPoints->count() > 0) {
     _actGetData->setEnabled(true);
@@ -337,7 +337,7 @@ void bncWindow::slotGetData() {
     QUrl url( _mountPointsTable->item(iRow, 0)->text() + "@" +
               _mountPointsTable->item(iRow, 1)->text() );
 
-    QByteArray format     = _mountPointsTable->item(iRow, 1)->text().toAscii();
+    QByteArray format = _mountPointsTable->item(iRow, 2)->text().toAscii();
 
     bncGetThread* getThread = new bncGetThread(url, format);
 

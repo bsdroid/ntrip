@@ -20,6 +20,7 @@ class bncWindow : public QMainWindow {
   private slots:
     void slotHelp();
     void slotAbout();
+    void slotFontSel();
     void slotSaveOptions();
     void slotAddMountPoints();
     void slotGetData();
@@ -37,6 +38,7 @@ class bncWindow : public QMainWindow {
 
     QAction*   _actHelp;
     QAction*   _actAbout;
+    QAction*   _actFontSel;
     QAction*   _actSaveOpt;
     QAction*   _actQuit; 
     QAction*   _actGetData;
