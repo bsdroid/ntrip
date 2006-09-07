@@ -18,6 +18,8 @@ class bncWindow : public QMainWindow {
     void slotMessage(const QByteArray& msg);
 
   private slots:
+    void slotHelp();
+    void slotAbout();
     void slotSaveOptions();
     void slotAddMountPoints();
     void slotGetData();
@@ -33,6 +35,7 @@ class bncWindow : public QMainWindow {
     QMenu*     _menuHlp;
     QMenu*     _menuFile;
 
+    QAction*   _actHelp;
     QAction*   _actAbout;
     QAction*   _actSaveOpt;
     QAction*   _actQuit; 
