@@ -15,8 +15,6 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <QFile>
-#include <QTextStream>
 #include <iostream>
 
 #include "bncapp.h" 
@@ -27,28 +25,34 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncApp::bncApp(int argc, char* argv[], bool GUIenabled) : 
   QApplication(argc, argv, GUIenabled) {
+
+  _logFile   = 0;
+  _logStream = 0;
+  for (int ii = 1; ii < argc; ii++) {
+    if (QString(argv[ii]) == "-o" && ii+1 < argc) {
+      _logFile = new QFile(argv[ii+1]);
+      _logFile->open(QIODevice::WriteOnly);
+      _logStream = new QTextStream();
+      _logStream->setDevice(_logFile);
+    }
+  }
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncApp::~bncApp() {
+  delete _logStream;
+  delete _logFile;
 }
 
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::slotMessage(const QByteArray msg) {
-#ifndef WIN32
-  cerr << msg.data() << endl;
-#else
-  static bool        first = true;
-  static QFile       logFile("BNC.LOG");
-  static QTextStream logStream;
-  if (first) {
-    first = false;
-    logFile.open(QIODevice::WriteOnly);
-    logStream.setDevice(&logFile);
+  if (_logStream) {
+    *_logStream << msg.data() << endl;
+    _logStream->flush();
   }
-  logStream << msg.data() << endl;
-  logStream.flush();
-#endif
+  else {
+    cerr << msg.data() << endl;
+  }
 }
