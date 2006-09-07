@@ -15,10 +15,14 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
+
 #include <QRegExp>
 #include <QStringList>
 
 #include "bncutils.h"
+
+using namespace std;
 
 void expandEnvVar(QString& str) {
 
@@ -33,4 +37,18 @@ void expandEnvVar(QString& str) {
     }
   }
 
+}
+
+QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks) {
+
+  static const QDate zeroEpoch(1980, 1, 6);
+ 
+  QDate date(zeroEpoch);
+  QTime time(0,0,0,0);
+
+  int weekDays = int(GPSWeeks) / 86400;
+  date = date.addDays( GPSWeek * 7 + weekDays );
+  time = time.addMSecs( int( (GPSWeeks - 86400 * weekDays) * 1e3 ) );
+
+  return QDateTime(date,time);
 }
