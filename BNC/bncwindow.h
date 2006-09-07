@@ -40,17 +40,6 @@ class bncWindow : public QMainWindow {
     QAction*   _actAddMountPoints;
     QAction*   _actDeleteMountPoints;
 
-    QLabel*    _proxyHostLabel;
-    QLabel*    _proxyPortLabel;
-    QLabel*    _timeOutLabel;
-    QLabel*    _rnxPathLabel;
-    QLabel*    _rnxSkelLabel;
-    QLabel*    _rnxIntrLabel;
-    QLabel*    _mountPointsLabel;
-    QLabel*    _outFileLabel;
-    QLabel*    _outPortLabel;
-    QLabel*    _logLabel;
-
     QLineEdit* _proxyHostLineEdit;
     QLineEdit* _proxyPortLineEdit;
     QLineEdit* _timeOutLineEdit;

@@ -26,10 +26,6 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
-  _casterHostLabel     = new QLabel(tr("caster host"));
-  _casterPortLabel     = new QLabel(tr("caster port"));
-  _casterUserLabel     = new QLabel(tr("user"));
-  _casterPasswordLabel = new QLabel(tr("password"));
   QSettings settings;
   _casterHostLineEdit     = new QLineEdit(settings.value("casterHost").toString());
   int ww = QFontMetrics(_casterHostLineEdit->font()).width('w');
@@ -43,14 +39,14 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _casterPasswordLineEdit->setEchoMode(QLineEdit::Password);
 
   QGridLayout* editLayout = new QGridLayout;
-  editLayout->addWidget(_casterHostLabel, 0, 0);
-  editLayout->addWidget(_casterHostLineEdit, 0, 1);
-  editLayout->addWidget(_casterPortLabel, 0, 2);
-  editLayout->addWidget(_casterPortLineEdit, 0, 3);
-  editLayout->addWidget(_casterUserLabel, 1, 0);
-  editLayout->addWidget(_casterUserLineEdit, 1, 1);
-  editLayout->addWidget(_casterPasswordLabel, 1, 2);
-  editLayout->addWidget(_casterPasswordLineEdit, 1, 3);
+  editLayout->addWidget(new QLabel(tr("Caster host")), 0, 0);
+  editLayout->addWidget(_casterHostLineEdit,           0, 1);
+  editLayout->addWidget(new QLabel(tr("Caster port")), 0, 2);
+  editLayout->addWidget(_casterPortLineEdit,           0, 3);
+  editLayout->addWidget(new QLabel(tr("User")),        1, 0);
+  editLayout->addWidget(_casterUserLineEdit,           1, 1);
+  editLayout->addWidget(new QLabel(tr("Password")),    1, 2);
+  editLayout->addWidget(_casterPasswordLineEdit,       1, 3);
 
   mainLayout->addLayout(editLayout);
 
