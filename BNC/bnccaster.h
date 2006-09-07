@@ -47,6 +47,7 @@ class bncCaster : public QThread {
    QList<QTcpSocket*>*            _sockets;
    QList<QByteArray>              _staIDs;
    QMap<QString, bncRinex*>       _rinexWriters;
+   int                            _samplingRate;
 };
 
 #endif
