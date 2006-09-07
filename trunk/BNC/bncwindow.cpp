@@ -298,8 +298,8 @@ void bncWindow::slotSaveOptions() {
   QStringList mountPoints;
 
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
-    QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + "@" +
-              _mountPointsTable->item(iRow, 1)->text() );
+    QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
+              "@"  + _mountPointsTable->item(iRow, 1)->text() );
 
     mountPoints.append(url.toString() + " " + 
                        _mountPointsTable->item(iRow, 2)->text());
@@ -334,8 +334,8 @@ void bncWindow::slotGetData() {
   _bncCaster->start();
 
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
-    QUrl url( _mountPointsTable->item(iRow, 0)->text() + "@" +
-              _mountPointsTable->item(iRow, 1)->text() );
+    QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
+              "@"  + _mountPointsTable->item(iRow, 1)->text() );
 
     QByteArray format = _mountPointsTable->item(iRow, 2)->text().toAscii();
 
