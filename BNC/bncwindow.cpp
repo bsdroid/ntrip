@@ -320,6 +320,8 @@ void bncWindow::slotGetThreadErrors() {
 // Retrieve Data
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotGetData() {
+  slotSaveOptions();
+
   _actAddMountPoints->setEnabled(false);
   _actDeleteMountPoints->setEnabled(false);
   _actGetData->setEnabled(false);
