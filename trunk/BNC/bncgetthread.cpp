@@ -121,6 +121,10 @@ t_irc bncGetThread::initRun() {
   _socket->waitForReadyRead(_timeOut);
   if (_socket->canReadLine()) {
     QString line = _socket->readLine();
+    if (line.indexOf("Unauthorized") != -1) {
+      emit(newMessage(("Caster Response:\n" + line).toAscii()));
+      exit(1);
+    }
     if (line.indexOf("ICY 200 OK") != 0) {
       emit(newMessage(("Wrong Caster Response:\n" + line).toAscii()));
       return failure;
@@ -198,6 +202,7 @@ void bncGetThread::exit(int exitCode) {
   if (exitCode!= 0) {
     emit error(_staID);
   }
+  blockSignals(true);
   QThread::exit(exitCode);
 }
 
