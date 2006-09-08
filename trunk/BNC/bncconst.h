@@ -1,6 +1,8 @@
 #ifndef BNCCONST_H
 #define BNCCONST_H
 
+enum t_irc {failure = -1, success}; // return code
+
 class t_CST {
   public:
     static const double c      ;
