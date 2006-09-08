@@ -16,6 +16,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+#include <QSettings>
 
 #include "bncapp.h" 
 
@@ -28,13 +29,13 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
 
   _logFile   = 0;
   _logStream = 0;
-  for (int ii = 1; ii < argc; ii++) {
-    if (QString(argv[ii]) == "-o" && ii+1 < argc) {
-      _logFile = new QFile(argv[ii+1]);
-      _logFile->open(QIODevice::WriteOnly);
-      _logStream = new QTextStream();
-      _logStream->setDevice(_logFile);
-    }
+  QSettings settings;
+  QString logFileName = settings.value("logFile").toString();
+  if ( !logFileName.isEmpty() ) {
+    _logFile = new QFile(logFileName);
+    _logFile->open(QIODevice::WriteOnly);
+    _logStream = new QTextStream();
+    _logStream->setDevice(_logFile);
   }
 }
 

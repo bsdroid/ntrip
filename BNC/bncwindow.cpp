@@ -16,6 +16,7 @@
  * -----------------------------------------------------------------------*/
 
 #include "bncwindow.h" 
+#include "bncapp.h" 
 #include "bncgetthread.h" 
 #include "bnctabledlg.h" 
 
@@ -325,6 +326,7 @@ void bncWindow::slotSaveOptions() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotGetThreadErrors() {
   slotMessage("All Get Threads Terminated");
+  ((bncApp*)qApp)->slotMessage("All Get Threads Terminated");
   _actAddMountPoints->setEnabled(true);
   _actGetData->setEnabled(true);
 }
@@ -346,6 +348,8 @@ void bncWindow::slotGetData() {
 
   connect(_bncCaster, SIGNAL(newMessage(const QByteArray&)), 
           this, SLOT(slotMessage(const QByteArray&)));
+  connect(_bncCaster, SIGNAL(newMessage(const QByteArray&)), 
+          (bncApp*)qApp, SLOT(slotMessage(const QByteArray&)));
 
   _bncCaster->start();
 
@@ -359,6 +363,8 @@ void bncWindow::slotGetData() {
 
     connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
             this, SLOT(slotMessage(const QByteArray&)));
+    connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
+            (bncApp*)qApp, SLOT(slotMessage(const QByteArray&)));
 
     _bncCaster->addGetThread(getThread);
 
