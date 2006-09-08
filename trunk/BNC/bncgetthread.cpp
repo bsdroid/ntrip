@@ -123,7 +123,7 @@ t_irc bncGetThread::initRun() {
     QString line = _socket->readLine();
     if (line.indexOf("ICY 200 OK") != 0) {
       emit(newMessage(("Wrong Caster Response:\n" + line).toAscii()));
-      exit(1);
+      return failure;
     }
   }
   else {
