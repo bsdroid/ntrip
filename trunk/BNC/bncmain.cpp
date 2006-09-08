@@ -53,6 +53,8 @@ int main(int argc, char *argv[]) {
         QApplication::setFont(newFont);
       }
     }
+   
+    app.setWindowIcon(QPixmap(":ntrip-logo-grau.bmp"));
 
     bncWindow* bncWin = new bncWindow();
     bncWin->show();

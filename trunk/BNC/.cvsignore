@@ -2,6 +2,7 @@
 Makefile
 bnc
 anlagen
+qrc_bnc.cpp
 moc_bnccaster.cpp
 moc_bncgetthread.cpp
 moc_bnctabledlg.cpp
