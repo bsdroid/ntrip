@@ -3,6 +3,8 @@ CONFIG += release
 
 DEFINES += NO_RTCM3_MAIN
 
+RESOURCES += bnc.qrc
+
 HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bnccaster.h bncrinex.h bncapp.h bncutils.h                  \
           bncconst.h                                                  \

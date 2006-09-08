@@ -1,6 +1,6 @@
 // -*- C++ -*-
 // RTCM.C
-// $Id: RTCM.cpp,v 1.1.1.1 2006/01/11 09:34:31 mervart Exp $
+// $Id: RTCM.cpp,v 1.1.1.1 2006/05/30 11:05:27 mervart Exp $
 // 2005/04/11: counter 'iPCode' for indicating CA or P Code on L1 (BKG)
 
 #include "RTCM.h"
@@ -871,7 +871,7 @@ void RTCM::new_byte(u_char b) {
 
     case 0:
     case 2:
-#if 0
+#if 1
 #ifdef DEBUG
 	fprintf(stderr, "unknown byte type %d (%d 0x%0x)\n", b >> DATA_SHIFT,
 		b, b);

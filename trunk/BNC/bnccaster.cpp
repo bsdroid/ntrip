@@ -82,6 +82,8 @@ void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
 
   long newTime = obs->GPSWeek * 7*24*3600 + obs->GPSWeeks;
 
+  cout << "newTime " << newTime << endl;
+
   // First time, set the _lastDumpSec immediately
   // --------------------------------------------
   if (_lastDumpSec == 0) {
@@ -104,6 +106,7 @@ void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
 
   // Dump older epochs
   // -----------------
+  cout << "dump " << _lastDumpSec << "  " << newTime - _waitTime << endl;
   dumpEpochs(_lastDumpSec + 1, newTime - _waitTime);
   _lastDumpSec = newTime - _waitTime;
 }
