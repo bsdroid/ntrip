@@ -15,7 +15,7 @@ class bncGetThread : public QThread {
    ~bncGetThread();
 
    static QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
-                                            QString& msg);
+                                            int timeOut, QString& msg);
 
    QByteArray staID() const {return _staID;}
 
@@ -27,12 +27,16 @@ class bncGetThread : public QThread {
  protected:
    virtual void run();
  private:
+   void initRun();
+   void tryReconnect();
    void message(const QString&);
    void exit(int exitCode = 0);
+   GPSDecoder* _decoder;
    QTcpSocket* _socket;
    QUrl        _mountPoint;
    QByteArray  _staID;
    QByteArray  _format;
+   int         _timeOut;
 };
 
 #endif
