@@ -97,15 +97,6 @@ void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
     return;
   }
 
-  // Check the sampling rate
-  // -----------------------
-  if (_samplingRate != 0) {
-    if ( newTime % _samplingRate ) {
-      delete obs;
-      return;
-    }
-  }
-
   // Rename the station and save the observation
   // -------------------------------------------
   strncpy(obs->StatID, staID.constData(),sizeof(obs->StatID));
@@ -156,56 +147,57 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
   const char endEpoch = 'C';
 
   for (long sec = minTime; sec <= maxTime; sec++) {
-   
+
     bool first = true;
     QList<Observation*> allObs = _epochs->values(sec);
     QListIterator<Observation*> it(allObs);
     while (it.hasNext()) {
       Observation* obs = it.next();
 
-      // Output into the file
-      // --------------------
-      if (_out) {
-        if (first) {
-          *_out << begEpoch << endl;;
-        }
-        *_out <<       obs->StatID    << " "
-              << (int) obs->SVPRN     << " "
-              << (int) obs->GPSWeek   << " "
-              <<       obs->GPSWeeks  << " "
-              <<       obs->sec       << " "
-              <<       obs->pCodeIndicator << " "
-              <<       obs->cumuLossOfCont << " "
-              <<       obs->C1        << " "
-              <<       obs->P2        << " "
-              <<       obs->L1        << " "
-              <<       obs->L2        << endl;
-        if (!it.hasNext()) {
-          *_out << endEpoch << endl;
-        }
-      }
-
-      // Output into the socket
-      // ----------------------
-      if (_sockets) {
-        int numBytes = sizeof(*obs); 
-        QListIterator<QTcpSocket*> is(*_sockets);
-        while (is.hasNext()) {
-          QTcpSocket* sock = is.next();
+      if (_samplingRate == 0 || sec % _samplingRate == 0) {
+   
+        // Output into the file
+        // --------------------
+        if (_out) {
           if (first) {
-            sock->write(&begEpoch, 1);
+            *_out << begEpoch << endl;;
           }
-          sock->write(&begObs, 1);
-          sock->write((char*) obs, numBytes);
+          *_out <<       obs->StatID    << " "
+                << (int) obs->SVPRN     << " "
+                << (int) obs->GPSWeek   << " "
+                <<       obs->GPSWeeks  << " "
+                <<       obs->sec       << " "
+                <<       obs->pCodeIndicator << " "
+                <<       obs->cumuLossOfCont << " "
+                <<       obs->C1        << " "
+                <<       obs->P2        << " "
+                <<       obs->L1        << " "
+                <<       obs->L2        << endl;
           if (!it.hasNext()) {
-            sock->write(&endEpoch, 1);
+            *_out << endEpoch << endl;
           }
         }
-      }
-
-      // Prepare RINEX Output
-      // --------------------
-      if (1) {
+        
+        // Output into the socket
+        // ----------------------
+        if (_sockets) {
+          int numBytes = sizeof(*obs); 
+          QListIterator<QTcpSocket*> is(*_sockets);
+          while (is.hasNext()) {
+            QTcpSocket* sock = is.next();
+            if (first) {
+              sock->write(&begEpoch, 1);
+            }
+            sock->write(&begObs, 1);
+            sock->write((char*) obs, numBytes);
+            if (!it.hasNext()) {
+              sock->write(&endEpoch, 1);
+            }
+          }
+        }
+        
+        // Prepare RINEX Output
+        // --------------------
         if (_rinexWriters.find(obs->StatID) == _rinexWriters.end()) {
           _rinexWriters.insert(obs->StatID, new bncRinex(obs->StatID));
         }
