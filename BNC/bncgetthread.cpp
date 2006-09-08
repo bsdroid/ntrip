@@ -36,6 +36,7 @@ bncGetThread::bncGetThread(const QUrl& mountPoint, const QByteArray& format) {
   _format     = format;
   _socket     = 0;
   _timeOut    = 10*1000;  // 10 seconds
+  _nextSleep  =  1;       //  1 second
 }
 
 // Destructor
@@ -101,7 +102,7 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint, int timeOut,
 
 // Init Run
 ////////////////////////////////////////////////////////////////////////////
-void bncGetThread::initRun() {
+t_irc bncGetThread::initRun() {
 
   // Send the Request
   // ----------------
@@ -112,7 +113,7 @@ void bncGetThread::initRun() {
   emit(newMessage(msg.toAscii()));
 
   if (!_socket) {
-    return exit(1);
+    return failure;
   }
 
   // Read Caster Response
@@ -122,12 +123,12 @@ void bncGetThread::initRun() {
     QString line = _socket->readLine();
     if (line.indexOf("ICY 200 OK") != 0) {
       emit(newMessage(("Wrong Caster Response:\n" + line).toAscii()));
-      return exit(1);
+      exit(1);
     }
   }
   else {
     emit(newMessage("Response Timeout"));
-    return exit(1);
+    return failure;
   }
 
   // Instantiate the filter
@@ -147,16 +148,20 @@ void bncGetThread::initRun() {
     }
     else {
       emit(newMessage(_staID + " Unknown data format " + _format));
-      return exit(1);
+      exit(1);
     }
   }
+  return success;
 }
 
 // Run
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::run() {
 
-  initRun();
+  if ( initRun() != success ) {
+    emit(newMessage("initRun failed, reconnecting"));
+    tryReconnect();
+  }
 
   // Read Incoming Data
   // ------------------
@@ -193,5 +198,15 @@ void bncGetThread::exit(int exitCode) {
 // Try Re-Connect 
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::tryReconnect() {
-
+  while (1) {
+    delete _socket; _socket = 0;
+    sleep(_nextSleep);
+    if ( initRun() == success ) {
+      break;
+    }
+    else {
+      _nextSleep *= 2;
+    }
+  }
+  _nextSleep = 1;
 }

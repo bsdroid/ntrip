@@ -6,6 +6,7 @@
 #include <QtNetwork>
 
 #include "RTCM/GPSDecoder.h"
+#include "bncconst.h"
 
 class bncGetThread : public QThread {
  Q_OBJECT
@@ -26,17 +27,19 @@ class bncGetThread : public QThread {
 
  protected:
    virtual void run();
+
  private:
-   void initRun();
-   void tryReconnect();
-   void message(const QString&);
-   void exit(int exitCode = 0);
+   t_irc initRun();
+   void  message(const QString&);
+   void  exit(int exitCode = 0);
+   void  tryReconnect();
    GPSDecoder* _decoder;
    QTcpSocket* _socket;
    QUrl        _mountPoint;
    QByteArray  _staID;
    QByteArray  _format;
    int         _timeOut;
+   int         _nextSleep;
 };
 
 #endif
