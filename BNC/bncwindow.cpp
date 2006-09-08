@@ -409,7 +409,15 @@ void bncWindow::slotAbout() {
               "Author: L. Mervart\n"
               "Version 1.0");
 
-  QMessageBox::information(this, "About", str, QMessageBox::Ok);
+  QMessageBox mb("BNC", str,
+                 QMessageBox::Information,
+                 QMessageBox::Ok | QMessageBox::Default,
+                 QMessageBox::NoButton,
+                 QMessageBox::NoButton);
+
+  mb.setIconPixmap(QPixmap(":ntrip-logo-blau.bmp"));
+
+  mb.exec();
 }
 
 // Help Window
