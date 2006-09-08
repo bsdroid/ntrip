@@ -92,7 +92,7 @@ bncWindow::bncWindow() {
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
   _proxyPortLineEdit->setMaximumWidth(9*ww);
   _waitTimeSpinBox   = new QSpinBox();
-  _waitTimeSpinBox->setMinimum(2);
+  _waitTimeSpinBox->setMinimum(1);
   _waitTimeSpinBox->setMaximum(30);
   _waitTimeSpinBox->setSingleStep(1);
   _waitTimeSpinBox->setSuffix(" sec");
