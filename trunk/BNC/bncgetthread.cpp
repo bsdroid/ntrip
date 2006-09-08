@@ -204,8 +204,8 @@ void bncGetThread::exit(int exitCode) {
   if (exitCode!= 0) {
     emit error(_staID);
   }
-  blockSignals(true);
   QThread::exit(exitCode);
+  terminate();
 }
 
 // Try Re-Connect 
