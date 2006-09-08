@@ -48,6 +48,7 @@ class bncCaster : public QThread {
    QList<QByteArray>              _staIDs;
    QMap<QString, bncRinex*>       _rinexWriters;
    int                            _samplingRate;
+   long                           _waitTime;
 };
 
 #endif

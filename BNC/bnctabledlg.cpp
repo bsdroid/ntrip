@@ -93,8 +93,9 @@ void bncTableDlg::slotGetTable() {
 
   // Send the Request
   // ----------------
+  const int timeOut = 10*1000;
   QString msg;
-  QTcpSocket* socket = bncGetThread::request(url, msg);
+  QTcpSocket* socket = bncGetThread::request(url, timeOut, msg);
 
   if (!socket) {
     QMessageBox::warning(0, "BNC", msg);
@@ -125,7 +126,6 @@ void bncTableDlg::slotGetTable() {
       }
     }
     else {
-      const int timeOut = 10*1000;
       socket->waitForReadyRead(timeOut);
       if (socket->bytesAvailable() > 0) {
         continue;

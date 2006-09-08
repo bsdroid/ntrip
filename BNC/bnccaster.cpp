@@ -57,6 +57,10 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
 
   QSettings settings;
   _samplingRate = settings.value("rnxSampl").toInt();
+  _waitTime     = settings.value("waitTime").toInt();
+  if (_waitTime < 2) {
+    _waitTime = 2;
+  }
 }
 
 // Destructor
@@ -108,9 +112,8 @@ void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
 
   // Dump older epochs
   // -----------------
-  const long waitTime = 2;
-  dumpEpochs(_lastDumpSec + 1, newTime - waitTime);
-  _lastDumpSec = newTime - waitTime;
+  dumpEpochs(_lastDumpSec + 1, newTime - _waitTime);
+  _lastDumpSec = newTime - _waitTime;
 }
 
 // New Connection

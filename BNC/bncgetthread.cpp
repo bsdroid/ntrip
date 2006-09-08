@@ -27,26 +27,28 @@
 
 using namespace std;
 
-const int timeOut = 300*1000;
-
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncGetThread::bncGetThread(const QUrl& mountPoint, const QByteArray& format) {
+  _decoder    = 0;
   _mountPoint = mountPoint;
   _staID      = mountPoint.path().mid(1).toAscii();
   _format     = format;
   _socket     = 0;
+  _timeOut    = 10*1000;  // 10 seconds
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncGetThread::~bncGetThread() {
   delete _socket;
+  delete _decoder;
 }
 
 // Connect to Caster, send the Request (static)
 ////////////////////////////////////////////////////////////////////////////
-QTcpSocket* bncGetThread::request(const QUrl& mountPoint, QString& msg) {
+QTcpSocket* bncGetThread::request(const QUrl& mountPoint, int timeOut, 
+                                  QString& msg) {
 
   // Connect the Socket
   // ------------------
@@ -97,15 +99,15 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint, QString& msg) {
   return socket;
 }
 
-// Run
+// Init Run
 ////////////////////////////////////////////////////////////////////////////
-void bncGetThread::run() {
+void bncGetThread::initRun() {
 
   // Send the Request
   // ----------------
   QString msg;
 
-  _socket = bncGetThread::request(_mountPoint, msg);
+  _socket = bncGetThread::request(_mountPoint, _timeOut, msg);
 
   emit(newMessage(msg.toAscii()));
 
@@ -115,7 +117,7 @@ void bncGetThread::run() {
 
   // Read Caster Response
   // --------------------
-  _socket->waitForReadyRead(timeOut);
+  _socket->waitForReadyRead(_timeOut);
   if (_socket->canReadLine()) {
     QString line = _socket->readLine();
     if (line.indexOf("ICY 200 OK") != 0) {
@@ -130,47 +132,53 @@ void bncGetThread::run() {
 
   // Instantiate the filter
   // ----------------------
-  GPSDecoder* decoder;
+  if (!_decoder) { 
+    if      (_format.indexOf("RTCM_2") != -1) {
+      emit(newMessage("Get Data: " + _staID + " in RTCM 2.x format"));
+      _decoder = new RTCM('A',true);
+    }
+    else if (_format.indexOf("RTCM_3") != -1) {
+      emit(newMessage("Get Data: " + _staID + " in RTCM 3.0 format"));
+      _decoder = new rtcm3();
+    }
+    else if (_format.indexOf("RTIGS") != -1) {
+      emit(newMessage("Get Data: " + _staID + " in RTIGS format"));
+      _decoder = new rtigs();
+    }
+    else {
+      emit(newMessage(_staID + " Unknown data format " + _format));
+      return exit(1);
+    }
+  }
+}
 
-  if      (_format.indexOf("RTCM_2") != -1) {
-    emit(newMessage("Get Data: " + _staID + " in RTCM 2.x format"));
-    decoder = new RTCM('A',true);
-  }
-  else if (_format.indexOf("RTCM_3") != -1) {
-    emit(newMessage("Get Data: " + _staID + " in RTCM 3.0 format"));
-    decoder = new rtcm3();
-  }
-  else if (_format.indexOf("RTIGS") != -1) {
-    emit(newMessage("Get Data: " + _staID + " in RTIGS format"));
-    decoder = new rtigs();
-  }
-  else {
-    emit(newMessage(_staID + " Unknown data format " + _format));
-    return exit(1);
-  }
+// Run
+////////////////////////////////////////////////////////////////////////////
+void bncGetThread::run() {
+
+  initRun();
 
   // Read Incoming Data
   // ------------------
   while (true) {
-    _socket->waitForReadyRead(timeOut);
+    _socket->waitForReadyRead(_timeOut);
     qint64 nBytes = _socket->bytesAvailable();
     if (nBytes > 0) {
       char* data = new char[nBytes];
       _socket->read(data, nBytes);
-      decoder->Decode(data, nBytes);
+      _decoder->Decode(data, nBytes);
       delete data;
-      for (list<Observation*>::iterator it = decoder->m_lObsList.begin(); 
-           it != decoder->m_lObsList.end(); it++) {
+      for (list<Observation*>::iterator it = _decoder->m_lObsList.begin(); 
+           it != _decoder->m_lObsList.end(); it++) {
         emit newObs(_staID, *it);
       }
-      decoder->m_lObsList.clear();
+      _decoder->m_lObsList.clear();
     }
     else {
-      emit(newMessage("Data Timeout"));
-      return exit(1);
+      emit(newMessage("Data Timeout, reconnecting"));
+      tryReconnect();
     }
   }
-  delete decoder;
 }
 
 // Exit
@@ -182,3 +190,8 @@ void bncGetThread::exit(int exitCode) {
   QThread::exit(exitCode);
 }
 
+// Try Re-Connect 
+////////////////////////////////////////////////////////////////////////////
+void bncGetThread::tryReconnect() {
+
+}
