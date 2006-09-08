@@ -124,9 +124,11 @@ t_irc bncGetThread::initRun() {
     if (line.indexOf("Unauthorized") != -1) {
       emit(newMessage(("Caster Response:\n" + line).toAscii()));
       exit(1);
+      return failure;
     }
     if (line.indexOf("ICY 200 OK") != 0) {
       emit(newMessage(("Wrong Caster Response:\n" + line).toAscii()));
+      exit(1);
       return failure;
     }
   }
