@@ -47,7 +47,6 @@ class bncWindow : public QMainWindow {
 
     QLineEdit* _proxyHostLineEdit;
     QLineEdit* _proxyPortLineEdit;
-    QLineEdit* _timeOutLineEdit;
     QLineEdit* _outFileLineEdit;
     QLineEdit* _outPortLineEdit;
     QLineEdit* _rnxPathLineEdit;
@@ -55,6 +54,7 @@ class bncWindow : public QMainWindow {
     QLineEdit* _rnxScrpLineEdit;
     QComboBox* _rnxIntrComboBox;
     QSpinBox*  _rnxSamplSpinBox;
+    QSpinBox*  _waitTimeSpinBox;
     QTableWidget* _mountPointsTable;
 
     QTextEdit*  _log;

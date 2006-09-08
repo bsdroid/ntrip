@@ -87,6 +87,7 @@ void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
   // An old observation - throw it away
   // ----------------------------------
   if (newTime <= _lastDumpSec) {
+    emit( newMessage("Old Epochs thrown away: " + staID) );
     delete obs;
     return;
   }
@@ -107,7 +108,7 @@ void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
 
   // Dump older epochs
   // -----------------
-  const long waitTime = 5;
+  const long waitTime = 2;
   dumpEpochs(_lastDumpSec + 1, newTime - waitTime);
   _lastDumpSec = newTime - waitTime;
 }

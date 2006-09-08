@@ -91,8 +91,13 @@ bncWindow::bncWindow() {
   _proxyHostLineEdit->setMaximumWidth(12*ww);
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
   _proxyPortLineEdit->setMaximumWidth(9*ww);
-  _timeOutLineEdit    = new QLineEdit(settings.value("timeOut").toString());
-  _timeOutLineEdit->setMaximumWidth(9*ww);
+  _waitTimeSpinBox   = new QSpinBox();
+  _waitTimeSpinBox->setMinimum(2);
+  _waitTimeSpinBox->setMaximum(30);
+  _waitTimeSpinBox->setSingleStep(1);
+  _waitTimeSpinBox->setSuffix(" sec");
+  _waitTimeSpinBox->setMaximumWidth(9*ww);
+  _waitTimeSpinBox->setValue(settings.value("waitTime").toInt());
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
   _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
   _outPortLineEdit->setMaximumWidth(9*ww);
@@ -114,6 +119,7 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setSingleStep(5);
   _rnxSamplSpinBox->setMaximumWidth(9*ww);
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
+  _rnxSamplSpinBox->setSuffix(" sec");
   _mountPointsTable   = new QTableWidget(0,3);
   _mountPointsTable->setMinimumWidth(60*ww);
   _mountPointsTable->setMaximumHeight(20*ww);
@@ -166,8 +172,8 @@ bncWindow::bncWindow() {
   layout->addWidget(_proxyHostLineEdit,                          0, 1);
   layout->addWidget(new QLabel("Proxy port"),                    0, 2);
   layout->addWidget(_proxyPortLineEdit,                          0, 3);
-  layout->addWidget(new QLabel("timeout (sec)"),                 1, 1);
-  layout->addWidget(_timeOutLineEdit,                            1, 2);
+  layout->addWidget(new QLabel("Wait for full epoch"),           1, 1);
+  layout->addWidget(_waitTimeSpinBox,                            1, 2);
   layout->addWidget(new QLabel("ASCII output file (full path)"), 2, 1);
   layout->addWidget(_outFileLineEdit,                            2, 2, 1, 3);
   layout->addWidget(new QLabel("port for binary output"),        3, 1);
@@ -179,7 +185,7 @@ bncWindow::bncWindow() {
   layout->addWidget(new QLabel("RINEX file interval"),           6, 1);
   layout->addWidget(_rnxIntrComboBox,                            6, 2);
 
-  layout->addWidget(new QLabel("sampling (sec)"),                6, 3);
+  layout->addWidget(new QLabel("sampling"),                      6, 3);
   layout->addWidget(_rnxSamplSpinBox,                            6, 4);
 
 
@@ -288,7 +294,7 @@ void bncWindow::slotSaveOptions() {
   QSettings settings;
   settings.setValue("proxyHost",   _proxyHostLineEdit->text());
   settings.setValue("proxyPort",   _proxyPortLineEdit->text());
-  settings.setValue("timeOut",     _timeOutLineEdit->text());
+  settings.setValue("waitTime",    _waitTimeSpinBox->value());
   settings.setValue("outFile",     _outFileLineEdit->text());
   settings.setValue("outPort",     _outPortLineEdit->text());
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());
