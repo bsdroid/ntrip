@@ -20,6 +20,7 @@
 #include <QMessageBox>
 
 #include "bncapp.h" 
+#include "bncutils.h" 
 
 using namespace std;
 
@@ -51,6 +52,7 @@ void bncApp::slotMessage(const QByteArray msg) {
     QSettings settings;
     QString logFileName = settings.value("logFile").toString();
     if ( !logFileName.isEmpty() ) {
+      expandEnvVar(logFileName);
       _logFile = new QFile(logFileName);
       _logFile->open(QIODevice::WriteOnly);
       _logStream = new QTextStream();
