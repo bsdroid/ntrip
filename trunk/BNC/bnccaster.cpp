@@ -58,8 +58,8 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
   QSettings settings;
   _samplingRate = settings.value("rnxSampl").toInt();
   _waitTime     = settings.value("waitTime").toInt();
-  if (_waitTime < 2) {
-    _waitTime = 2;
+  if (_waitTime < 1) {
+    _waitTime = 1;
   }
 }
 
