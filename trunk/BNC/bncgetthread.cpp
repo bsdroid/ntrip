@@ -166,6 +166,12 @@ void bncGetThread::run() {
   // Read Incoming Data
   // ------------------
   while (true) {
+
+    if (_socket->state() != QAbstractSocket::ConnectedState) {
+      emit(newMessage("Socket not connected, reconnecting"));
+      tryReconnect();
+    }
+
     _socket->waitForReadyRead(_timeOut);
     qint64 nBytes = _socket->bytesAvailable();
     if (nBytes > 0) {
