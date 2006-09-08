@@ -52,6 +52,7 @@ class bncWindow : public QMainWindow {
     QLineEdit* _rnxPathLineEdit;
     QLineEdit* _rnxSkelLineEdit;
     QLineEdit* _rnxScrpLineEdit;
+    QLineEdit* _logFileLineEdit;
     QComboBox* _rnxIntrComboBox;
     QSpinBox*  _rnxSamplSpinBox;
     QSpinBox*  _waitTimeSpinBox;

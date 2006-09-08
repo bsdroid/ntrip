@@ -27,7 +27,7 @@ bncWindow::bncWindow() {
 
   int ww = QFontMetrics(this->font()).width('w');
 
-  setMinimumSize(90*ww, 80*ww);
+  setMinimumSize(60*ww, 80*ww);
 
   // Create Actions
   // --------------
@@ -120,9 +120,8 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setMaximumWidth(9*ww);
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
   _rnxSamplSpinBox->setSuffix(" sec");
+  _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
   _mountPointsTable   = new QTableWidget(0,3);
-  _mountPointsTable->setMinimumWidth(60*ww);
-  _mountPointsTable->setMaximumHeight(20*ww);
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
   _mountPointsTable->horizontalHeader()->hide();
   _mountPointsTable->verticalHeader()->hide();
@@ -165,36 +164,42 @@ bncWindow::bncWindow() {
           SLOT(slotSelectionChanged()));
 
   _log = new QTextEdit();
-  _log->setMaximumHeight(120);
   _log->setReadOnly(true);
 
   layout->addWidget(new QLabel("Proxy host"),                    0, 0);
   layout->addWidget(_proxyHostLineEdit,                          0, 1);
   layout->addWidget(new QLabel("Proxy port"),                    0, 2);
   layout->addWidget(_proxyPortLineEdit,                          0, 3);
-  layout->addWidget(new QLabel("Wait for full epoch"),           1, 1);
-  layout->addWidget(_waitTimeSpinBox,                            1, 2);
-  layout->addWidget(new QLabel("ASCII output file (full path)"), 2, 1);
-  layout->addWidget(_outFileLineEdit,                            2, 2, 1, 3);
-  layout->addWidget(new QLabel("port for binary output"),        3, 1);
-  layout->addWidget(_outPortLineEdit,                            3, 2);
-  layout->addWidget(new QLabel("RINEX path"),                    4, 1);
-  layout->addWidget(_rnxPathLineEdit,                            4, 2, 1, 3);
-  layout->addWidget(new QLabel("RINEX script (full path)"),      5, 1);
-  layout->addWidget(_rnxScrpLineEdit,                            5, 2, 1, 3);
-  layout->addWidget(new QLabel("RINEX file interval"),           6, 1);
-  layout->addWidget(_rnxIntrComboBox,                            6, 2);
 
-  layout->addWidget(new QLabel("sampling"),                      6, 3);
+  layout->addWidget(new QLabel("Wait for full epoch"),           1, 0, 1, 2);
+  layout->addWidget(_waitTimeSpinBox,                            1, 2);
+
+  layout->addWidget(new QLabel("ASCII output file (full path)"), 2, 0, 1, 2);
+  layout->addWidget(_outFileLineEdit,                            2, 2, 1, 3);
+
+  layout->addWidget(new QLabel("Port for binary output"),        3, 0, 1, 2);
+  layout->addWidget(_outPortLineEdit,                            3, 2);
+
+  layout->addWidget(new QLabel("RINEX path"),                    4, 0, 1, 2);
+  layout->addWidget(_rnxPathLineEdit,                            4, 2, 1, 3);
+
+  layout->addWidget(new QLabel("RINEX script (full path)"),      5, 0, 1, 2);
+  layout->addWidget(_rnxScrpLineEdit,                            5, 2, 1, 3);
+
+  layout->addWidget(new QLabel("RINEX file interval"),           6, 0, 1, 2);
+  layout->addWidget(_rnxIntrComboBox,                            6, 2);
+  layout->addWidget(new QLabel("Sampling"),                      6, 3);
   layout->addWidget(_rnxSamplSpinBox,                            6, 4);
 
-
-  layout->addWidget(new QLabel("RINEX skeleton extension"),      7, 1);
+  layout->addWidget(new QLabel("RINEX skeleton extension"),      7, 0, 1, 2);
   layout->addWidget(_rnxSkelLineEdit,                            7, 2);
-  layout->addWidget(new QLabel("Mountpoints"),                   8, 0);
-  layout->addWidget(_mountPointsTable,                           8, 1, 1, 4);
-  layout->addWidget(new QLabel("Log"),                           9, 0);
-  layout->addWidget(_log,                                        9, 1, 1, 4);
+
+  layout->addWidget(new QLabel("Mountpoints"),                   8, 0, 1, 2);
+  layout->addWidget(_mountPointsTable,                           9, 0, 1, 5);
+
+  layout->addWidget(new QLabel("Log (full path)"),              10, 0, 1, 2);
+  layout->addWidget(_logFileLineEdit,                           10, 2, 1, 3);
+  layout->addWidget(_log,                                       11, 0, 1, 5);
 
   _bncCaster = 0;
 }
@@ -302,6 +307,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
+  settings.setValue("logFile",     _logFileLineEdit->text());
 
   QStringList mountPoints;
 
