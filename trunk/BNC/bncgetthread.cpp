@@ -128,7 +128,6 @@ t_irc bncGetThread::initRun() {
     }
     if (line.indexOf("ICY 200 OK") != 0) {
       emit(newMessage(("Wrong Caster Response:\n" + line).toAscii()));
-      exit(1);
       return failure;
     }
   }
@@ -219,6 +218,9 @@ void bncGetThread::tryReconnect() {
     }
     else {
       _nextSleep *= 2;
+      if (_nextSleep > 60) {
+        _nextSleep = 60;
+      }
     }
   }
   _nextSleep = 1;

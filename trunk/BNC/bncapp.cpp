@@ -32,6 +32,8 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
   _logFileFlag = 0;
   _logFile     = 0;
   _logStream   = 0;
+
+  _bncVersion  = "BNC 1.0";
 }
 
 // Destructor

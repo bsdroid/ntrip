@@ -17,5 +17,6 @@ class bncApp : public QApplication {
     QFile*       _logFile;
     QTextStream* _logStream;
     int          _logFileFlag;
+    QString      _bncVersion;
 };
 #endif
