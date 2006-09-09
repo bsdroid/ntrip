@@ -452,7 +452,7 @@ void bncWindow::slotHelp() {
 
   dlg->setLayout(dlgLayout);
   int ww = QFontMetrics(font()).width('w');
-  dlg->resize(80*ww, 60*ww);
+  dlg->resize(60*ww, 60*ww);
   dlg->show();
 }
 
@@ -466,7 +466,7 @@ void bncWindow::slotFontSel() {
     settings.setValue("font", newFont.toString());
     QApplication::setFont(newFont);
     int ww = QFontMetrics(newFont).width('w');
-    setMinimumSize(90*ww, 80*ww);
-    resize(90*ww, 80*ww);
+    setMinimumSize(60*ww, 80*ww);
+    resize(60*ww, 80*ww);
   }
 }
