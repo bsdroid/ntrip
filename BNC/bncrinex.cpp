@@ -38,6 +38,17 @@ bncRinex::bncRinex(const char* StatID) {
   QSettings settings;
   _rnxScriptName = settings.value("rnxScript").toString();
   expandEnvVar(_rnxScriptName);
+
+  // Find the corresponding mountPoint
+  // ---------------------------------
+  QListIterator<QString> it(settings.value("mountPoints").toStringList());
+  while (it.hasNext()) {
+    QString hlp = it.next();
+    if (hlp.indexOf(_statID) != -1) {
+      _mountPoint = hlp;
+      break;
+    }
+  }
 }
 
 // Destructor

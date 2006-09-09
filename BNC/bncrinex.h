@@ -33,6 +33,7 @@ class bncRinex {
    QDateTime           _nextCloseEpoch;
    QString             _rnxScriptName;
    QProcess            _rnxScript;
+   QString             _mountPoint;
 };
 
 #endif
