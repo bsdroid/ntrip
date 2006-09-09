@@ -17,6 +17,7 @@
 
 #include <QSettings>
 #include <QDir>
+#include <QUrl>
 #include <QDate>
 #include <QFile>
 #include <QTextStream>
@@ -45,7 +46,8 @@ bncRinex::bncRinex(const char* StatID) {
   while (it.hasNext()) {
     QString hlp = it.next();
     if (hlp.indexOf(_statID) != -1) {
-      _mountPoint = hlp;
+      QUrl url(hlp);
+      _mountPoint = url.host() + url.path();
       break;
     }
   }
@@ -184,8 +186,9 @@ void bncRinex::writeHeader(const QDateTime& datTim) {
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
         _out << "                 TIME OF FIRST OBS"    << endl;
-        _out << QString("GENERATED FROM STREAM %1")
-              .arg(_mountPoint, 38, ' ').toAscii().data() << "COMMENT" << endl;
+        QString hlp = QString("GENERATED FROM STREAM %1").arg(_mountPoint)
+                             .leftJustified(60, ' ', true);
+        _out << hlp.toAscii().data() << "COMMENT" << endl;
       }
       else {
         _out << line.toAscii().data() << endl;
@@ -224,8 +227,9 @@ void bncRinex::writeHeader(const QDateTime& datTim) {
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
     _out << "                 "                                      << "TIME OF FIRST OBS"    << endl;
-    _out << QString("GENERATED FROM STREAM %1")
-              .arg(_mountPoint, 38, ' ').toAscii().data() << "COMMENT" << endl;
+    QString hlp = QString("GENERATED FROM STREAM %1").arg(_mountPoint)
+                         .leftJustified(60, ' ', true);
+    _out << hlp.toAscii().data() << "COMMENT" << endl;
     _out << "                                                            END OF HEADER"        << endl;
   }
 
