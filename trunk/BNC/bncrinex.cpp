@@ -54,8 +54,9 @@ bncRinex::bncRinex(const char* StatID) {
   }
 
   _pgmName  = ((bncApp*)qApp)->bncVersion().leftJustified(20, ' ', true);
-  _userName = QString("${USER}").leftJustified(20, ' ', true);
+  _userName = QString("${USER}");
   expandEnvVar(_userName);
+  _userName = _userName.leftJustified(20, ' ', true);
 }
 
 // Destructor
