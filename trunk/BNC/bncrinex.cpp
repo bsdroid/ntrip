@@ -103,13 +103,6 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
   QTime nextTime;
   QDate nextDate;
 
-//  //// beg test
-//  if (1) {
-//    hlpStr = datTim.toString("_hh_mm_ss");
-//    nextDate = datTim.date();
-//    nextTime = datTim.time().addSecs(10);
-//  } else
-//  //// end test
   if (intStr == "15 min") {
     char ch = 'A' + datTim.time().hour();
     hlpStr = ch;
@@ -191,6 +184,9 @@ void bncRinex::writeHeader(const QDateTime& datTim) {
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
         _out << "                 TIME OF FIRST OBS"    << endl;
+        QString hlp =  "GENERATED FROM STREAM" + _mountPoint; 
+        hlp.fill(' ', 59);
+        _out << hlp.toAscii().data() << "COMMENT" << endl;
       }
       else {
         _out << line.toAscii().data() << endl;
@@ -229,6 +225,9 @@ void bncRinex::writeHeader(const QDateTime& datTim) {
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
     _out << "                 "                                      << "TIME OF FIRST OBS"    << endl;
+    QString hlp =  "GENERATED FROM STREAM" + _mountPoint; 
+    hlp.fill(' ', 59);
+    _out << hlp.toAscii().data() << "COMMENT" << endl;
     _out << "                                                            END OF HEADER"        << endl;
   }
 
