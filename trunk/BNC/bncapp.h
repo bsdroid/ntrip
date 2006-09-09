@@ -11,6 +11,7 @@ class bncApp : public QApplication {
   public:
     bncApp(int argc, char* argv[], bool GUIenabled);
     virtual ~bncApp();  
+    QString bncVersion() const {return _bncVersion;}
   public slots:
     void slotMessage(const QByteArray msg);
   private:

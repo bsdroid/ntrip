@@ -24,6 +24,7 @@
 #include <iomanip>
 
 #include "bncrinex.h"
+#include "bncapp.h"
 #include "bncutils.h"
 #include "bncconst.h"
 
@@ -51,6 +52,10 @@ bncRinex::bncRinex(const char* StatID) {
       break;
     }
   }
+
+  _pgmName  = ((bncApp*)qApp)->bncVersion().leftJustified(20, ' ', true);
+  _userName = QString("${USER}").leftJustified(20, ' ', true);
+  expandEnvVar(_userName);
 }
 
 // Destructor
@@ -178,7 +183,12 @@ void bncRinex::writeHeader(const QDateTime& datTim) {
     QStringListIterator it(_headerLines);
     while (it.hasNext()) {
       QString line = it.next();
-      if      (line.indexOf("# / TYPES OF OBSERV") != -1) {
+      if      (line.indexOf("PGM / RUN BY / DATE") != -1) {
+        QString hlp = QDate::currentDate().toString("dd-MMM-yyyy         ");
+        _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
+             << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
+      }
+      else if (line.indexOf("# / TYPES OF OBSERV") != -1) {
         _out << "     4    P1    P2    L1    L2"
                 "                              # / TYPES OF OBSERV"  << endl;
       }
@@ -203,7 +213,9 @@ void bncRinex::writeHeader(const QDateTime& datTim) {
     double antennaNEU[3]; antennaNEU[0] = antennaNEU[1] = antennaNEU[2] = 0.0;
     
     _out << "     2.10           OBSERVATION DATA    G (GPS)             RINEX VERSION / TYPE" << endl;
-    _out << "BNC                 LM                  27-Aug-2006         PGM / RUN BY / DATE"  << endl;
+    QString hlp = QDate::currentDate().toString("dd-MMM-yyyy         ");
+    _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
+         << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
     _out.setf(ios::left);
     _out << setw(60) << _statID.data()                               << "MARKER NAME"          << endl;
     _out << setw(60) << "BKG"                                        << "OBSERVER / AGENCY"    << endl;
@@ -227,8 +239,8 @@ void bncRinex::writeHeader(const QDateTime& datTim) {
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
     _out << "                 "                                      << "TIME OF FIRST OBS"    << endl;
-    QString hlp = QString("GENERATED FROM STREAM %1").arg(_mountPoint)
-                         .leftJustified(60, ' ', true);
+    hlp = QString("GENERATED FROM STREAM %1").arg(_mountPoint)
+                                             .leftJustified(60, ' ', true);
     _out << hlp.toAscii().data() << "COMMENT" << endl;
     _out << "                                                            END OF HEADER"        << endl;
   }
