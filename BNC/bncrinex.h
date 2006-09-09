@@ -34,6 +34,8 @@ class bncRinex {
    QString             _rnxScriptName;
    QProcess            _rnxScript;
    QString             _mountPoint;
+   QString             _pgmName;
+   QString             _userName;
 };
 
 #endif
