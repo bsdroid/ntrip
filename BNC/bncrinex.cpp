@@ -184,9 +184,8 @@ void bncRinex::writeHeader(const QDateTime& datTim) {
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
         _out << "                 TIME OF FIRST OBS"    << endl;
-        QString hlp =  "GENERATED FROM STREAM" + _mountPoint; 
-        hlp.fill(' ', 59);
-        _out << hlp.toAscii().data() << "COMMENT" << endl;
+        _out << QString("GENERATED FROM STREAM %1")
+              .arg(_mountPoint, 38, ' ').toAscii().data() << "COMMENT" << endl;
       }
       else {
         _out << line.toAscii().data() << endl;
@@ -225,9 +224,8 @@ void bncRinex::writeHeader(const QDateTime& datTim) {
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
     _out << "                 "                                      << "TIME OF FIRST OBS"    << endl;
-    QString hlp =  "GENERATED FROM STREAM" + _mountPoint; 
-    hlp.fill(' ', 59);
-    _out << hlp.toAscii().data() << "COMMENT" << endl;
+    _out << QString("GENERATED FROM STREAM %1")
+              .arg(_mountPoint, 38, ' ').toAscii().data() << "COMMENT" << endl;
     _out << "                                                            END OF HEADER"        << endl;
   }
 
