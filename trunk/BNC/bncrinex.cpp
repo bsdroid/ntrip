@@ -259,17 +259,29 @@ void bncRinex::deepCopy(const Observation* obs) {
 
 // Write One Epoch into the RINEX File
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::dumpEpoch() {
+void bncRinex::dumpEpoch(long maxTime) {
+
+  // Select observations older than maxTime
+  // --------------------------------------
+  QList<Observation*> dumpList;
+  QMutableListIterator<Observation*> mIt(_obs);
+  while (mIt.hasNext()) {
+    Observation* ob = mIt.next();
+    if (ob->GPSWeek * 7*24*3600 + ob->GPSWeeks < maxTime) {
+      dumpList.push_back(ob);
+      mIt.remove();
+    }
+  }
 
   // Easy Return
   // -----------
-  if (_obs.isEmpty()) {
+  if (dumpList.isEmpty()) {
     return;
   }
 
   // Time of Epoch
   // -------------
-  Observation* firstObs = *_obs.begin();
+  Observation* firstObs = *dumpList.begin();
 
   QDateTime datTim = dateAndTimeFromGPSweek( firstObs->GPSWeek,
                                              firstObs->GPSWeeks + 
@@ -289,9 +301,9 @@ void bncRinex::dumpEpoch() {
   }
 
   _out << datTim.toString(" yy MM dd hh mm ss.zzz0000").toAscii().data()
-       << "  " << 0 << setw(3)  << _obs.size();
+       << "  " << 0 << setw(3)  << dumpList.size();
 
-  QListIterator<Observation*> it(_obs); int iSat = 0;
+  QListIterator<Observation*> it(dumpList); int iSat = 0;
   while (it.hasNext()) {
     iSat++;
     Observation* ob = it.next();
@@ -319,7 +331,6 @@ void bncRinex::dumpEpoch() {
   }
 
   _out.flush();
-  _obs.clear();
 }
 
 // Close the Old RINEX File

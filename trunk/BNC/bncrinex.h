@@ -16,7 +16,7 @@ class bncRinex {
    bncRinex(const char* StatID);
    ~bncRinex();
    void deepCopy(const Observation* obs);
-   void dumpEpoch();
+   void dumpEpoch(long maxTime);
 
  private:
    void resolveFileName(const QDateTime& datTim);
