@@ -428,8 +428,12 @@ void bncWindow::slotAbout() {
 
   QDialog dlg(this);
 
-  QVBoxLayout* dlgLayout = new QVBoxLayout();
-  dlgLayout->addWidget(tb);
+  QGridLayout* dlgLayout = new QGridLayout();
+  QLabel* img = new QLabel();
+  img->setPixmap(QPixmap(":ntrip-logo-grau.bmp"));
+  dlgLayout->addWidget(img, 0,0);
+  dlgLayout->addWidget(new QLabel("BKG NTRIP Client (BNC), Version 1.0"), 0,1);
+  dlgLayout->addWidget(tb,1,0,1,2);
 
   dlg.setLayout(dlgLayout);
   int ww = QFontMetrics(font()).width('w');
