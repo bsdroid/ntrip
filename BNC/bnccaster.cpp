@@ -92,7 +92,9 @@ void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
     _rinexWriters.insert(obs->StatID, new bncRinex(obs->StatID));
   }
   bncRinex* rnx = _rinexWriters.find(obs->StatID).value();
-  rnx->deepCopy(obs);
+  if (_samplingRate == 0 || obs->GPSWeeks % _samplingRate == 0) {
+    rnx->deepCopy(obs);
+  }
   rnx->dumpEpoch(newTime);
 
   // First time, set the _lastDumpSec immediately
