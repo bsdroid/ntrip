@@ -417,19 +417,24 @@ void bncWindow::slotMessage(const QByteArray& msg) {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotAbout() {
 
-  QString str("BKG NTRIP Client\n"
-              "Author: L. Mervart\n"
-              "Version 1.0");
+  QString str(
+#include "bncabout.html"
+              );
 
-  QMessageBox mb("BNC", str,
-                 QMessageBox::Information,
-                 QMessageBox::Ok | QMessageBox::Default,
-                 QMessageBox::NoButton,
-                 QMessageBox::NoButton);
+  QTextBrowser* tb = new QTextBrowser;
+  tb->setHtml(str);
+  tb->setReadOnly(true);
+  tb->show();
 
-  mb.setIconPixmap(QPixmap(":ntrip-logo-blau.bmp"));
+  QDialog dlg(this);
 
-  mb.exec();
+  QVBoxLayout* dlgLayout = new QVBoxLayout();
+  dlgLayout->addWidget(tb);
+
+  dlg.setLayout(dlgLayout);
+  int ww = QFontMetrics(font()).width('w');
+  dlg.resize(60*ww, 60*ww);
+  dlg.exec();
 }
 
 // Help Window
