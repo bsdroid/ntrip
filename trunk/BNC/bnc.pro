@@ -5,9 +5,12 @@ DEFINES += NO_RTCM3_MAIN
 
 RESOURCES += bnc.qrc
 
+QMAKE_CFLAGS_RELEASE   -= -O2
+QMAKE_CXXFLAGS_RELEASE -= -O2
+
 HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bnccaster.h bncrinex.h bncapp.h bncutils.h                  \
-          bncconst.h                                                  \
+          bncconst.h bnchelp.html bncabout.html                       \
           RTCM/format.h RTCM/GPSDecoder.h RTCM/m_data.h RTCM/RTCM.h   \
           RTCM3/rtcm3.h RTCM3/rtcm3torinex.h                          \
           RTIGS/rtigs.h RTIGS/cgps_transform.h RTIGS/rtacp.h          \
