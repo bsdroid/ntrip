@@ -5,8 +5,10 @@ DEFINES += NO_RTCM3_MAIN
 
 RESOURCES += bnc.qrc
 
-QMAKE_CFLAGS_RELEASE   -= -O2
-QMAKE_CXXFLAGS_RELEASE -= -O2
+unix:QMAKE_CFLAGS_RELEASE   -= -O2
+unix:QMAKE_CXXFLAGS_RELEASE -= -O2
+
+win32:QMAKE_LFLAGS -= -mthreads
 
 HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bnccaster.h bncrinex.h bncapp.h bncutils.h                  \
