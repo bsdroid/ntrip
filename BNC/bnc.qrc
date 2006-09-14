@@ -1,5 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
+    <file>ntrip-logo.png</file>
     <file>ntrip-logo-grau.bmp</file>
     <file>ntrip-logo-blau.bmp</file>
     <file>bnchelp.html</file>
