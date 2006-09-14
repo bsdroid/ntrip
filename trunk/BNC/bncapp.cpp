@@ -66,7 +66,4 @@ void bncApp::slotMessage(const QByteArray msg) {
     *_logStream << msg.data() << endl;
     _logStream->flush();
   }
-  else {
-    cerr << msg.data() << endl;
-  }
 }
