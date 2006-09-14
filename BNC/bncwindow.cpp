@@ -19,6 +19,7 @@
 #include "bncapp.h" 
 #include "bncgetthread.h" 
 #include "bnctabledlg.h" 
+#include "bnchtml.h" 
 
 using namespace std;
 
@@ -424,7 +425,6 @@ void bncWindow::slotAbout() {
   QTextBrowser* tb = new QTextBrowser;
   tb->setHtml(str);
   tb->setReadOnly(true);
-  tb->show();
 
   QDialog dlg(this);
 
@@ -449,10 +449,9 @@ void bncWindow::slotHelp() {
 #include "bnchelp.html"
               );
 
-  QTextBrowser* tb = new QTextBrowser;
+  bncHtml* tb = new bncHtml;
   tb->setHtml(str);
   tb->setReadOnly(true);
-  tb->show();
 
   QDialog* dlg = new QDialog(this);
 
