@@ -7,11 +7,13 @@ The BKG Ntrip Client (BNC) is a program for simultaneously retrieving real-time 
 
 <p>
 <h3>Contents</h3>
-<h4><a href=#purpose>A - Purpose<br>
+<h4>
+<a href=#purpose>A - Purpose<br>
 <a href=#options>B - Options<br>
 <a href=#limits>C - Limitations<br>
 <a href=#authors>D - Authors<br>
-<a href=#annex>E - Annex</h4>
+<a href=#annex>E - Annex<br>
+</h4>
 </p>
 <br>
 
@@ -29,13 +31,13 @@ BNC decodes and converts streams carrying phase data coming in
 </p>
 <ul>
 <li> RTCM <a href=#rtcm2>Version 2.x</a> Format containing message types 18 and 19, </li> 
-<li> RTCM <a href=#rtcm3>Version 3</a> Format containing message types 1001, 1002, 1003, and 1004, and</li>
+<li> RTCM <a href=#rtcm3>Version 3</a> Format containing message types 1001, 1002, 1003, and 1004,</li>
 <li> <a href=#rtigs>RTIGS</a> Format.</li> 
 </ul>
 </p>
 
 <p>
-BNC is available for Windows, Linux, and Solarix systems. It has been developed under GNU General Public License.
+BNC is available for Windows, Linux, and Solaris systems. It has been developed under GNU General Public License.
 </p>
 
 <br>
@@ -96,7 +98,7 @@ Close the 'About BNC' window to continuing with BNC.
 </li> 
 <li>
 Help Contents.<br>
-You may keep the 'Help Contens' window open while setting BNC options.
+You may keep the 'Help Contents' window open while setting BNC options.
 </li> 
 </ul>
 </p>
@@ -105,9 +107,9 @@ You may keep the 'Help Contens' window open while setting BNC options.
 <p><h4>B - 3. Proxy</h4></p>
 
 <p>
-You may like to run BNC on a host in a Local Area Network (LAN). LAN's are often protected by a proxy server. Enter your proxy server IP and port number in case one is operated in front of you. In case you don't know the IP and port of your proxy server, check out the proxy server settings of your Windows browser or ask your network administator.</p>
+You may like to run BNC on a host in a Local Area Network (LAN). LAN's are often protected by a proxy server. Enter your proxy server IP and port number in case one is operated in front of you. In case you don't know the IP and port of your proxy server, check out the proxy server settings of your Windows browser or ask your network administrator.</p>
 <p>
-Note that IP-streaming may be generally denied in a LAN. In such a case you need to contact your network administator for an appropriate modification of your security policy or the installation of a TCP relay to involved NTRIP broadcasters. If that doesn't work out, run BNC on a host that is connected to the Internet through an Internet Service Provider (ISP).
+Note that IP-streaming may be generally denied in a LAN. In such a case you need to contact your network administrator for an appropriate modification of your security policy or the installation of a TCP relay to involved NTRIP broadcasters. If that doesn't work out, run BNC on a host that is connected to the Internet through an Internet Service Provider (ISP).
 </p>
 
 <a name="output"> <p><h4>B - 4. Synchronized Output</h4></p>
@@ -119,7 +121,7 @@ StatID, SVPRN, GPSWeek, GPSWeeks, sec, C1, P2, L1, L2, SNR1, SNR2, pCodeIndicato
 <a name="wait">
 <p><h4>B - 4.1 Wait for Full Epoch</h4></p>
 <p>
-When feeding a real-time GNSS engine waiting for input epoch by epoch, BNC ignores whatever is received latern then 'Wait for full epoch' seconds. A value of 2 to 5 seconds may be an appropriate choise for that, depending on the delay you can accept for your real-time product. Note that 'Wait for full epoch' does not influence the RINEX file contents. Observations coming in later than 'Wait for full epoch' will still be included there.
+When feeding a real-time GNSS engine waiting for input epoch by epoch, BNC ignores whatever is received later then 'Wait for full epoch' seconds. A value of 2 to 5 seconds may be an appropriate choice for that, depending on the delay you can accept for your real-time product. Note that 'Wait for full epoch' does not influence the RINEX file contents. Observations coming in later than 'Wait for full epoch' will still be included there.
 </p> 
 
 <a name="ascii">
@@ -131,7 +133,7 @@ BNC lets you save synchronized observations in plain ASCII format in a file. Ent
 <a name="binary">
 <p><h4>B - 4.3 Port for Binary Output</h4></p>
 <p>
-BNC outputs synchronized observations in a binary format through an IP port with the following format: ..... Souce code of an example program 'test_bnc.cpp' that reads the binary data to feed real-time GNSS applications is available.
+BNC outputs synchronized observations in a binary format through an IP port with the following format: ..... Source code of an example program 'test_bnc.cpp' that reads the binary data to feed real-time GNSS applications is available.
 </p> 
 
 <a name="rinex">
@@ -139,7 +141,7 @@ BNC outputs synchronized observations in a binary format through an IP port with
 <p>
 Observations are converted to RINEX format version 2.1. Note that RINEX file names are derived by BNC from the first 4 characters of the corresponding mountpoint (4Char Station ID). Thus, retrieving data from mounpoints FFMJ1 and KARL0 leads to RINEX files named FFMJ*.* and KARL*.*.</p>
 <p>
-In case you retrieve straeams that show mountpoints with an identical 4Char Station ID, the full mountpoint string will become part of the RINEX file name. Example: When simultaneously retrieving mountpoints FFMJ1 and FFMJ3, there RINEX file names will be FFMJ*_1.* and FFMJ*_3.*.
+In case you retrieve streams that show mountpoints with an identical 4Char Station ID, the full mountpoint string will become part of the RINEX file name. Example: When simultaneously retrieving mountpoints FFMJ1 and FFMJ3, there RINEX file names will be FFMJ*_1.* and FFMJ*_3.*.
 </p>
 
 <a name="rnxpath">
@@ -151,7 +153,7 @@ Enther a path for saving the RINEX files in a directory. If this directory does 
 <a name="rnxscript">
 <p><h4>B - 5.2 RINEX Script</h4></p>
 <p>
-Whenever a RINEX file is generated, you may like to compress, copy, or upload it immediately. For that you enter the full path of a script or bach file carrying out these operations. The RINEX file name will be passed to the script as a command line parameter. Note the following example for a 'RINEX Script' file: ${HOME}/upload_script
+Whenever a RINEX file is generated, you may like to compress, copy, or upload it immediately. For that you enter the full path of a script or batch file carrying out these operations. The RINEX file name will be passed to the script as a command line parameter. Note the following example for a 'RINEX Script' file: ${HOME}/upload_script
 </p> 
 
 <a name="rnxinterval">
@@ -178,13 +180,13 @@ Header records can only represent data, which is known after receiving the very 
 The number of observables cannot change during the program runtime. Only the observables, which exist in the first epoch are outputted. If there are new observables later on, these are ignored.
 </li>
 <li>
-Concerning RTCM Version 3 streams: If the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458. A COMMENT line will tell you, when this happens. It would be necessary to approximately calculate the range to fix the ambiguity (needing ephemeris/alamanac and easy positioning algorithm).
+Concerning RTCM Version 3 streams: If the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458. A COMMENT line will tell you, when this happens. It would be necessary to approximately calculate the range to fix the ambiguity (needing ephemeris/almanac and easy positioning algorithm).
 </li>
 </ul>
 To overcome the problem BNC lets you introduce RINEX skeleton files that contain the header records you would like to see instead of the default header. You may like to derive RINEX skeleton files from the information given in sitelogs. Any file in the 'RINEX Directory Path' with the 'RINEX skeleton extension' is understood by BNC as a RINEX skeleton file.
 </p>
 <p>
-Example: Moutpoints FFMJ1 and KARL0 lead to the generation of RINEX files FFMJ*.* and KARL*.*. The header part of these files would be overwritten by the content of the skeleton files FFMJ.skl and KARL.skl in case 'RINEX skeletion extension" is set to 'skl' .
+Example: Moutpoints FFMJ1 and KARL0 lead to the generation of RINEX files FFMJ*.* and KARL*.*. The header part of these files would be overwritten by the content of the skeleton files FFMJ.skl and KARL.skl in case 'RINEX skeleton extensionis set to 'skl' .
 </p> 
 
 <a name="mountpoints">
@@ -196,7 +198,7 @@ Each stream on an NTRIP broadcaster is defined through a unique source ID called
 <a name="AddMounts">
 <p><h4>B - 6.1 Add Mountpoints</h4></p>
 <p>
-Buttone 'Add Mountpoints' opens a window that lets you select data streams by their mountpoint.
+Button 'Add Mountpoints' opens a window that lets you select data streams by their mountpoint.
 </p> 
 
 <a name="HostPort">
@@ -220,15 +222,15 @@ Hit button 'Get Table' to request a sourcetable from the NTRIP broadcaster. Vari
 <a name="delete">
 <p><h4>B - 7. Delete Mountpoints</h4></p>
 <p>
-To delete a stream shown under 'Mountpoints' in BNC's main windows select it by mouse click and hit 'Delete Mountpoints'. You may tag more than one stream for simultaneous delition through using +Shift and +Strg.</p>
+To delete a stream shown under 'Mountpoints' in BNC's main windows select it by mouse click and hit 'Delete Mountpoints'. You may tag more than one stream for simultaneous deletion through using +Shift and +Strg.</p>
 <p>
-BNC automatically selectes the decoder for a stream based on the 'format' and 'format-details' given in the sourcetable. It may happen that you need to overrule this decoder selection because of sourcetable setup deficiencies. Therefore BNC allows to edit the decoder part for each stream shown under 'Mountpoints'. Accepted decoder strings are are 'RTCM 2.x', 'RTCM 3', and 'RTIGS'.
+BNC automatically selects the decoder for a stream based on the 'format' and 'format-details' given in the sourcetable. It may happen that you need to overrule this decoder selection because of sourcetable setup deficiencies. Therefore BNC allows to edit the decoder part for each stream shown under 'Mountpoints'. Accepted decoder strings are are 'RTCM 2.x', 'RTCM 3', and 'RTIGS'.
 </p> 
 
 <a name="log">
 <p><h4>B - 8. Log File</h4></p>
 <p>
-BNC's comments its activities in the 'Log file' section on the main windows. All comments can be saved and concatinated in a file through entering the full path of 'Log file'. Information is given about the dialog with the NTRIP broadcaster as well as any problem that might occure concering communication, stream availability, stream delay, stream conversion etc.
+BNC's comments its activities in the 'Log file' section on the main windows. All comments can be saved and concatenated in a file through entering the full path of 'Log file'. Information is given about the dialog with the NTRIP broadcaster as well as any problem that might occur concerning communication, stream availability, stream delay, stream conversion etc.
 </p>
 <p>
 Note that a connection to the NTRIP broadcaster may break or a stream requested may be temporarily unavailable. When this happens, a reconnect is tried with decreasing frequency. BNC frst tries to reconnect with 1 second delay, if unsuccessful, tries again in 2 seconds from the last attempt, if still unsuccessful tries with 4 seconds from the last attempt etc. Each attempt doubles the delay from the previous attempt. The maximum delay between attempts is limited to 60 seconds. The reconnection process is documented in 'Log File'.
@@ -263,7 +265,7 @@ So far BNC only handles GPS data while ignoring GLONASS and Galileo observations
 <a name="authors">
 <p><h3>D - Authors</h3></p>
 <p>
-Based on a Qt Graphic User Inferface (GUI) developed for BKG by Leos Mervart (TU Prague), BNC integrates the following already existing GNU GPL software components: 
+Based on a Qt Graphic User Interface (GUI) developed for BKG by Leos Mervart (TU Prague), BNC integrates the following already existing GNU GPL software components: 
 <ul>
 <li> RTCM 2.x decoder, written by John Sager with contributions from Carsten Becker (DLR)</li> 
 <li> RTCM 3 decoder, written by Dirk Stoecker (Euronik) for BKG</li> 
@@ -302,7 +304,7 @@ Networked Transport of RTCM via Internet Protocol 'Networked Transport of RTCM v
 </p>
 
 <p>
-NTRIP is an RTCM standard designed for disseminating differential correction data (e.g in the RTCM-104 format) or otherkinds of GNSS streaming data to stationary or mobile users over the Internet, allowing simultaneous PC, Laptop, PDA, orreceiver connections to a broadcasting host. NTRIP supports wireless Internet access through Mobile IP Networks like GSM, GPRS, EDGE, or UMTS.
+NTRIP is an RTCM standard designed for disseminating differential correction data (e.g in the RTCM-104 format) or other kinds of GNSS streaming data to stationary or mobile users over the Internet, allowing simultaneous PC, Laptop, PDA, or receiver connections to a broadcasting host. NTRIP supports wireless Internet access through Mobile IP Networks like GSM, GPRS, EDGE, or UMTS.
 </p>
 
 <p>
@@ -315,7 +317,7 @@ NTRIP is an open none-proprietary protocol. Major characteristics of NTRIP's dis
 <li>Based on the popular HTTP streaming standard; comparatively easy to implement when having limited client and server platform resources available.</li>
 <li>Application not limited to one particular plain or coded stream content; ability to distribute any kind of GNSS data.</li>
 <li>Potential to support mass usage; disseminating hundreds of streams simultaneously for up to thousand users possible when applying modified Internet Radio broadcasting software.</li>
-<li>Considering security needs; stream providers and users don't necessarily get into contact, streams often not blocked by firewalls or proxyservers protecting Local Area Networks.</li>
+<li>Considering security needs; stream providers and users don't necessarily get into contact, streams often not blocked by firewalls or proxy servers protecting Local Area Networks.</li>
 <li>Enables streaming over any mobile IP network because of using TCP/IP.</li>
 </ul>
 </p><br>
@@ -327,7 +329,7 @@ NTRIP is an open none-proprietary protocol. Major characteristics of NTRIP's dis
 The NTRIP broadcaster maintains a sourcetable containing information on available NTRIP sources, networks of NTRIP sources, and NTRIP broadcasters. The sourcetable is sent to an NTRIP client on request. Sourcetable records are dedicated to one of the following: Data STReams (record type STR), CASters (record type CAS), or NETworks of data streams (record type NET).
 </p>
 
-<p>Records of type STR contain the following data fields: mountpoint, identifier, format, format-details,  carrier, nav-system, network, country,  latitude, longitude, nmea, solution, generator, compr-encryp, authentication, fee, bitrate, misc. Note that BNC's 'Get Table' only shows STR records of a sourcetable. You may like to use a Windows broswer to retrieve the full sourcetable content entering the URL http://host:port/dummy.
+<p>Records of type STR contain the following data fields: mountpoint, identifier, format, format-details,  carrier, nav-system, network, country,  latitude, longitude, nmea, solution, generator, compr-encryp, authentication, fee, bitrate, misc. Note that BNC's 'Get Table' only shows STR records of a sourcetable. You may like to use a Windows browser to retrieve the full sourcetable content entering the URL http://host:port/dummy.
 </p>
 
 <a name="rtcm">
@@ -351,7 +353,7 @@ Type 1 message is the range correction message and is the primay message in code
 Type 2 message is automatically generated when a new set of satellite ephemeris is downloaded to the base receiver. It is the computed difference between the old ephemeris and the new ephemeris. Type 2 messages are used when the base station is transmitting Type 1 messages.
 </li>
 <li>
-Tpye 3 and 22 messages are the base station position and the antenna offset. Type 3 and 22 are used in RTK processing to perform antenna reduction.
+Type 3 and 22 messages are the base station position and the antenna offset. Type 3 and 22 are used in RTK processing to perform antenna reduction.
 </li>
 <li>
 Type 6 message is a null frame filler message that is provided for data links that require continuous transmission of data, even if there are no corrections to send. As many Type 6 messages are sent as required to fill in the gap between two correction messages (type 1). Message 6 is not sent in burst mode.
@@ -407,7 +409,7 @@ Type 1007 message carries the Antenna descriptor and ID.
 Type 1008 message carries the Antenna serial number.
 </li>
 <li>
-Type 1009 message carres GLONASS L1 code and phase.
+Type 1009 message carries GLONASS L1 code and phase.
 </li>
 <li>
 Type 1010 message carries GLONASS L1 code and phase and ambiguities and carrier to noise ratio.
@@ -419,7 +421,7 @@ Type 1011 message carries GLONASS L1 and L1 code and phase.
 Type 1012 message carries GLONASS L1 and L2 code and phase and ambiguities and carrier to noise ratio.
 </li>
 <li>
-Type 1013 message carries Modified julian date, leep second, configured message types and intervall.
+Type 1013 message carries Modified julian date, leap second, configured message types and interval.
 </li>
 <li>
 Type 1014 and 1017 messages carry Network RTK (MAK) messages (under development).
@@ -441,9 +443,12 @@ Note that this version of BNC handles only RTCM Version 3 message types 1001, 10
 <a name="rtigs">
 <p><h4>E - 3. RTIGS</h4></p>
 <p>
+Input from by Ken?
 </p>
 
 <a name="soc">
 <p><h4>E - 3.1 SOC</h4></p>
 <p>
+Input from by Ken?
 </p>
+
