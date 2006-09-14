@@ -39,5 +39,10 @@ bncHtml::~bncHtml() {
 ////////////////////////////////////////////////////////////////////////////
 void bncHtml::slotAnchorClicked(const QUrl& url) {
 
-  cout << "A>" << url.toString().toAscii().data() << "<B" << endl;
+ 
+  QString href = url.toString();
+  if (href.indexOf(':') != 0) {
+    QUrl urlNew; urlNew.setPath(":bnchelp.html" + href);
+    setSource(url);
+  }
 }
