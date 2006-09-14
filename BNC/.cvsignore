@@ -8,3 +8,4 @@ moc_bncgetthread.cpp
 moc_bnctabledlg.cpp
 moc_bncwindow.cpp
 moc_bncapp.cpp
+moc_bnchtml.cpp
