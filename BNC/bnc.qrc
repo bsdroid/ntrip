@@ -2,5 +2,7 @@
 <qresource>
     <file>ntrip-logo-grau.bmp</file>
     <file>ntrip-logo-blau.bmp</file>
+    <file>bnchelp.html</file>
+    <file>bncabout.html</file>
 </qresource>
 </RCC>
