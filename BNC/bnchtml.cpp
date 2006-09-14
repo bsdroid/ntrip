@@ -38,4 +38,6 @@ bncHtml::~bncHtml() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncHtml::slotAnchorClicked(const QUrl& url) {
+
+  cout << "A>" << url.toString().toAscii().data() << "<B" << endl;
 }
