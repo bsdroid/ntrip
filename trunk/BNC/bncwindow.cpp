@@ -418,12 +418,9 @@ void bncWindow::slotMessage(const QByteArray& msg) {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotAbout() {
 
-  QString str(
-#include "bncabout.html"
-              );
-
   QTextBrowser* tb = new QTextBrowser;
-  tb->setHtml(str);
+  QUrl url; url.setPath(":bncabout.html");
+  tb->setSource(url);
   tb->setReadOnly(true);
 
   QDialog dlg(this);
@@ -445,12 +442,9 @@ void bncWindow::slotAbout() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotHelp() {
 
-  QString str(
-#include "bnchelp.html"
-              );
-
   bncHtml* tb = new bncHtml;
-  tb->setHtml(str);
+  QUrl url; url.setPath(":bnchelp.html");
+  tb->setSource(url);
   tb->setReadOnly(true);
 
   QDialog* dlg = new QDialog(this);

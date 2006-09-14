@@ -38,11 +38,4 @@ bncHtml::~bncHtml() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncHtml::slotAnchorClicked(const QUrl& url) {
-  
-  QString str(
-#include "bnchelp.html"
-              );
-  setHtml(str);
-
-  scrollToAnchor(url.toString().mid(1));
 }
