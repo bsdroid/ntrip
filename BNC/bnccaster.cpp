@@ -106,8 +106,12 @@ void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
   // An old observation - throw it away
   // ----------------------------------
   if (newTime <= _lastDumpSec) {
-    emit( newMessage(QString("Station %1: old epoch %2 thrown away")
-                     .arg(staID.data()).arg(obs->GPSWeeks).toAscii()) );
+    QSettings settings;
+    if ( !settings.value("outFile").toString().isEmpty() || 
+         !settings.value("outPort").toString().isEmpty() ) { 
+      emit( newMessage(QString("Station %1: old epoch %2 thrown away")
+                       .arg(staID.data()).arg(obs->GPSWeeks).toAscii()) );
+    }
     delete obs;
     return;
   }

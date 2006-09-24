@@ -35,7 +35,7 @@ bncGetThread::bncGetThread(const QUrl& mountPoint, const QByteArray& format) {
   _staID      = mountPoint.path().mid(1).toAscii();
   _format     = format;
   _socket     = 0;
-  _timeOut    = 10*1000;  // 10 seconds
+  _timeOut    = 20*1000;  // 20 seconds
   _nextSleep  =  1;       //  1 second
 }
 
@@ -218,8 +218,8 @@ void bncGetThread::tryReconnect() {
     }
     else {
       _nextSleep *= 2;
-      if (_nextSleep > 60) {
-        _nextSleep = 60;
+      if (_nextSleep > 128) {
+        _nextSleep = 128;
       }
     }
   }
