@@ -265,6 +265,10 @@ void bncWindow::slotDeleteMountPoints() {
     }
   }
   _actDeleteMountPoints->setEnabled(false);
+
+  if (_mountPointsTable->rowCount() == 0) {
+    _actGetData->setEnabled(false);
+  }
 }
 
 // New Mount Points Selected
@@ -393,6 +397,7 @@ void bncWindow::slotStop() {
     _bncCaster = 0;
     _actGetData->setEnabled(true);
     _actStop->setEnabled(false);
+    _actAddMountPoints->setEnabled(true);
   }
 }
 

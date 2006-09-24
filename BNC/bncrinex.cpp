@@ -160,9 +160,26 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
   }
   _nextCloseEpoch = QDateTime(nextDate, nextTime);
 
-  path += _statID.left(4) +
+  QString ID4 = _statID.left(4);
+
+  // Check name conflict
+  // -------------------
+  QString distStr;
+  int num = 0;
+  QListIterator<QString> it(settings.value("mountPoints").toStringList());
+  while (it.hasNext()) {
+    QString mp = it.next();
+    if (mp.indexOf(ID4) != -1) {
+      ++num;
+    }
+  }
+  if (num > 1) {
+    distStr = "_" + _statID.mid(4);
+  }
+
+  path += ID4 +
           QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
-          hlpStr +
+          hlpStr + distStr +
           datTim.toString(".yyO");
 
   _fName = path.toAscii();
