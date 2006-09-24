@@ -15,16 +15,14 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream.h>
-
 #include "bnctableitem.h"
 #include "RTCM/GPSDecoder.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncTableItem::bncTableItem() : QTableWidgetItem() {
-  _bytesRead = 0;
-  setText(QString("%1 byte(s)").arg(_bytesRead));
+  _bytesRead = 0.0;
+  setText(QString("%1 byte(s)").arg(0));
 }
 
 // Destructor
@@ -36,8 +34,15 @@ bncTableItem::~bncTableItem() {
 ////////////////////////////////////////////////////////////////////////////
 void bncTableItem::slotNewObs(const QByteArray&, Observation* obs) {
 
-  cout << "haha\n";
-
   _bytesRead += sizeof(*obs);
-  setText(QString("%1 byte(s)").arg(_bytesRead));
+
+  if      (_bytesRead < 1e3) {
+    setText(QString("%1 byte(s)").arg((int)_bytesRead));
+  }
+  else if (_bytesRead < 1e6) {
+    setText(QString("%1 kb").arg(_bytesRead/1.e3));
+  }
+  else {
+    setText(QString("%1 Mb").arg(_bytesRead/1.e6));
+  }
 }

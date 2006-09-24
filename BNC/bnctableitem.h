@@ -20,7 +20,7 @@ class bncTableItem : public QObject, public QTableWidgetItem {
     void slotNewObs(const QByteArray& staID, Observation* obs);
 
   private:
-    unsigned long _bytesRead;
+    double _bytesRead;
 };
 
 #endif
