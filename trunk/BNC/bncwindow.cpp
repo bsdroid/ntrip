@@ -49,15 +49,19 @@ bncWindow::bncWindow() {
   _actQuit  = new QAction(tr("&Quit"),this);
   connect(_actQuit, SIGNAL(triggered()), SLOT(close()));
 
-  _actAddMountPoints = new QAction(tr("&Add Mountpoints"),this);
+  _actAddMountPoints = new QAction(tr("Add &Mountpoints"),this);
   connect(_actAddMountPoints, SIGNAL(triggered()), SLOT(slotAddMountPoints()));
 
   _actDeleteMountPoints = new QAction(tr("&Delete Mountpoints"),this);
   connect(_actDeleteMountPoints, SIGNAL(triggered()), SLOT(slotDeleteMountPoints()));
   _actDeleteMountPoints->setEnabled(false);
 
-  _actGetData = new QAction(tr("&Get Data"),this);
+  _actGetData = new QAction(tr("Sta&rt"),this);
   connect(_actGetData, SIGNAL(triggered()), SLOT(slotGetData()));
+
+  _actStop = new QAction(tr("Sto&p"),this);
+  connect(_actStop, SIGNAL(triggered()), SLOT(slotStop()));
+  _actStop->setEnabled(false);
 
   // Create Menus
   // ------------
@@ -80,6 +84,7 @@ bncWindow::bncWindow() {
   toolBar->addAction(_actAddMountPoints);
   toolBar->addAction(_actDeleteMountPoints);
   toolBar->addAction(_actGetData);
+  toolBar->addAction(_actStop);
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -341,6 +346,7 @@ void bncWindow::slotGetData() {
   _actAddMountPoints->setEnabled(false);
   _actDeleteMountPoints->setEnabled(false);
   _actGetData->setEnabled(false);
+  _actStop->setEnabled(true);
 
   _bncCaster = new bncCaster(_outFileLineEdit->text(), 
                              _outPortLineEdit->text().toInt());
@@ -371,6 +377,22 @@ void bncWindow::slotGetData() {
     _bncCaster->addGetThread(getThread);
 
     getThread->start();
+  }
+}
+
+// Retrieve Data
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotStop() {
+  int iRet = QMessageBox::question(this, "Stop", "Stop retrieving data?", 
+                                   QMessageBox::Yes, QMessageBox::No,
+                                   QMessageBox::NoButton);
+  if (iRet == QMessageBox::Yes) {
+    _bncCaster->terminate();
+    _bncCaster->wait(1000);
+    delete _bncCaster; 
+    _bncCaster = 0;
+    _actGetData->setEnabled(true);
+    _actStop->setEnabled(false);
   }
 }
 
