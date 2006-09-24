@@ -15,8 +15,6 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
-
 #include "bnchtml.h" 
 
 using namespace std;

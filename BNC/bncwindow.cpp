@@ -19,6 +19,7 @@
 #include "bncapp.h" 
 #include "bncgetthread.h" 
 #include "bnctabledlg.h" 
+#include "bnchlpdlg.h" 
 #include "bnchtml.h" 
 
 using namespace std;
@@ -441,21 +442,9 @@ void bncWindow::slotAbout() {
 // Help Window
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotHelp() {
-
-  bncHtml* tb = new bncHtml;
-  QUrl url; url.setPath(":bnchelp.html");
-  tb->setSource(url);
-  tb->setReadOnly(true);
-
-  QDialog* dlg = new QDialog(this);
-
-  QVBoxLayout* dlgLayout = new QVBoxLayout();
-  dlgLayout->addWidget(tb);
-
-  dlg->setLayout(dlgLayout);
-  int ww = QFontMetrics(font()).width('w');
-  dlg->resize(60*ww, 60*ww);
-  dlg->show();
+  QUrl url; 
+  url.setPath(":bnchelp.html");
+  new bncHlpDlg(this, url);
 }
 
 // Select Fonts
