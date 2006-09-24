@@ -20,6 +20,7 @@
 #include <QtNetwork>
 
 #include "bncgetthread.h"
+#include "bnctabledlg.h"
 
 #include "RTCM/RTCM.h"
 #include "RTCM3/rtcm3.h"
@@ -122,9 +123,37 @@ t_irc bncGetThread::initRun() {
   if (_socket->canReadLine()) {
     QString line = _socket->readLine();
     if (line.indexOf("Unauthorized") != -1) {
-      emit(newMessage((_staID + ": Caster Response:\n" + line).toAscii()));
-      exit(1);
-      return failure;
+      QStringList table;
+      bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), table);
+      QString net;
+      QStringListIterator it(table);
+      while (it.hasNext()) {
+        QString line = it.next();
+        if (line.indexOf("STR") == 0) {
+          QStringList tags = line.split(";");
+          if (tags.at(1) == _staID) {
+            net = tags.at(7);
+            break;
+          }
+        }
+      }
+
+      QString reg;
+      it.toFront();
+      while (it.hasNext()) {
+        QString line = it.next();
+        if (line.indexOf("NET") == 0) {
+          QStringList tags = line.split(";");
+          if (tags.at(1) == net) {
+            reg = tags.at(7);
+            break;
+          }          
+        }
+      }
+      emit(newMessage((_staID + ": Caster Response:\n" + line + 
+                       "\nAdjust User-ID and Password Register through\n" + 
+                       reg).toAscii()));
+      return fatal;
     }
     if (line.indexOf("ICY 200 OK") != 0) {
       emit(newMessage((_staID + ": Wrong Caster Response:\n" + line).toAscii()));
@@ -163,7 +192,11 @@ t_irc bncGetThread::initRun() {
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::run() {
 
-  if ( initRun() != success ) {
+  if      (initRun() == fatal) {
+    QThread::exit(1);
+    return;
+  }
+  else if ( initRun() != success ) {
     emit(newMessage(_staID + ": initRun failed, reconnecting"));
     tryReconnect();
   }
