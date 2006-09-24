@@ -450,7 +450,8 @@ void bncWindow::slotMessage(const QByteArray& msg) {
 
   const int maxBufferSize = 10000;
  
-  QString txt = _log->toPlainText() + "\n" + msg;
+  QString txt = _log->toPlainText() + "\n" + 
+     QTime::currentTime().toString("hh:mm:ss ") + msg;
   _log->clear();
   _log->append(txt.right(maxBufferSize));
 }  
