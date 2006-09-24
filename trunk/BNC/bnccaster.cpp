@@ -66,6 +66,11 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncCaster::~bncCaster() {
+  QListIterator<bncGetThread*> it(_threads);
+  while(it.hasNext()){
+    bncGetThread* thread = it.next();
+    thread->terminate();
+  }
   delete _out;
   delete _outFile;
 }
@@ -142,6 +147,7 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
           this, SLOT(slotGetThreadError(const QByteArray&)));
 
   _staIDs.push_back(getThread->staID());
+  _threads.push_back(getThread);
 }
 
 // Error in get thread
