@@ -2,7 +2,10 @@
 #ifndef BNCTABLEDLG_H
 #define BNCTABLEDLG_H
 
+#include <QtCore>
 #include <QtGui>
+
+#include "bncconst.h"
 
 class bncTableDlg : public QDialog {
   Q_OBJECT
@@ -10,10 +13,12 @@ class bncTableDlg : public QDialog {
   public:
     bncTableDlg(QWidget* parent);
     ~bncTableDlg();
+    static t_irc getFullTable(const QString& casterHost, int casterPort,
+                              QStringList& allLines);
 
   signals:
     void newMountPoints(QStringList* mountPoints);
- 
+
   private slots:
     virtual void accept();
     void slotGetTable();
