@@ -10,3 +10,4 @@ moc_bncwindow.cpp
 moc_bncapp.cpp
 moc_bnchtml.cpp
 moc_bnchlpdlg.cpp
+moc_bnctableitem.cpp
