@@ -150,9 +150,9 @@ t_irc bncGetThread::initRun() {
           }          
         }
       }
-      emit(newMessage((_staID + ": Caster Response:\n" + line + 
-                       "Adjust User-ID and Password Register through\n" + 
-                       reg).toAscii()));
+      emit(newMessage((_staID + ": Caster Response: " + line + 
+                       "          Adjust User-ID and Password Register through"
+                       "\n          " + reg).toAscii()));
       return fatal;
     }
     if (line.indexOf("ICY 200 OK") != 0) {
