@@ -70,9 +70,14 @@ bncCaster::~bncCaster() {
   while(it.hasNext()){
     bncGetThread* thread = it.next();
     thread->terminate();
+    thread->wait(1000);
+    delete thread;
   }
   delete _out;
   delete _outFile;
+  delete _server;
+  delete _sockets;
+  delete _epochs;
 }
 
 // Run
