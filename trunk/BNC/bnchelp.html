@@ -1,5 +1,4 @@
 
-<a name="back_contents">
 <p><h3>BKG Ntrip Client (BNC)</h3></p>
 
 <p>
@@ -44,11 +43,9 @@ BNC decodes and converts GNSS data streams carrying phase data coming in
 
 <p>
 BNC has been developed under GNU General Public License (GPL). Binaries for BNC are available for Windows, Linux, and Solaris systems. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4 are available.
-&nbsp; [<a href=#back_contents>Back</a>]<br>
 </p>
 
 <br>
-<a name="back_options">
 <a name="options">
 <p><h3>B - Options</h3></p>
 <p>
@@ -75,7 +72,6 @@ B - 7. <a href=#log>Log File</a><br>
 B - 8. <a href=#start>Start</a><br>
 B - 9. <a href=#stop>Stop</a><br>
 B - 10. <a href=#nw>No Window</a>
-&nbsp; [<a href=#back_contents>Back</a>]<br>
 </p>
 
 <a name="file">
@@ -93,7 +89,6 @@ Note that on Windows systems options are saved in registers. On UNIX/Linux syste
 </li>
 <li>
 Quit the execution of BNC.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </li> 
 </ul>
 </p>
@@ -111,7 +106,6 @@ Close the 'About BNC' window to continue with BNC.
 <li>
 Help contents.<br>
 You may keep the 'Help Contents' window open while setting BNC options.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </li> 
 </ul>
 </p>
@@ -123,14 +117,12 @@ You may keep the 'Help Contents' window open while setting BNC options.
 You may like to run BNC in a Local Area Network (LAN) environment. LAN's are often protected by a proxy server. Enter your proxy server IP and port number in case one is operated in front of BNC. If you don't know the IP and port of your proxy server, check out the proxy server settings of your Windows browser or ask your network administrator.</p>
 <p>
 Note that IP streaming may be generally denied in a LAN. In such a case you need to request an appropriate modification of the security policy from your network administrator or ask for the installation of a TCP relay to involved NTRIP broadcasters. If that doesn't work out, run BNC on a host that is connected to the Internet through an Internet Service Provider (ISP).
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p>
 
 <a name="output"> <p><h4>B - 4. Synchronized Output</h4></p>
 <p>
 BNC lets you output synchronized observations epoch by epoch. This output is made available in ASCII format and in binary format. The output comprises the following observations if available:</p>
 StatID, SVPRN, GPSWeek, GPSWeeks, sec, C1, P2, L1, L2, SNR1, SNR2, pCodeIndicator, cumuLossOfCont.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p>
 
 <a name="wait">
@@ -140,24 +132,56 @@ When feeding a real-time GNSS engine waiting for input from BNC epoch by epoch, 
 </p>
 <p>
 Note that 'Wait for full epoch' does not influence the RINEX file contents. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX files.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="ascii">
 <p><h4>B - 4.2 ASCII Output File - optional</h4></p>
 <p>
 Enter the full path for a file to save synchronized observations in plain ASCII format. Default value is an empty option field, meaning that no ASCII output file is generated.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p>
 
 <a name="binary">
 <p><h4>B - 4.3 Port for Binary Output - optional</h4></p>
 <p>
-BNC makes synchronized observations available in a binary format through an IP port. Enter the port number to activate this function. Default is an empty option field, meaning that no binary output is generated.
+BNC makes synchronized observations available in a binary format through an IP
+port. Enter the port number to activate this function. Default is an empty
+option field, meaning that no binary output is generated.
 </p>
-<p>The binary output is provided in the following format:<br>
-Input from Leos?
-&nbsp; [<a href=#back_options>Back</a>]<br>
+<p>The binary output is provided as a continuous stream
+<pre>
+begEpoch
+begObs  
+Observation
+begObs  
+Observation
+begObs  
+Observation
+...
+endEpoch
+begEpoch
+...
+</pre>
+where the corresponding structures are defined as
+<pre>
+const char begEpoch = 'A';
+const char begObs   = 'B';
+const char endEpoch = 'C';
+struct Observation {
+  char     StatID[5+1];    // Station ID
+  char     SVPRN;          // Satellite PRN
+  short    GPSWeek;        // Week of GPS-Time
+  int      GPSWeeks;       // Second of Week (GPS-Time)
+  double   sec;            // second 
+  double   C1;             // CA or P1-code pseudorange (meters)
+  double   P2;             // P2-code pseudorange (meters)
+  double   L1;             // L1-carrier phase (meters)
+  double   L2;             // L2-carrier phase (meters)
+  short    SNR1;           // Signal-to noise ratio (0.1 dB)
+  short    SNR2;           // Signal-to noise ratio (0.1 dB)
+  int      pCodeIndicator; // 0 ... CA Code, 1 ... P Code
+  unsigned cumuLossOfCont; // Loss of lock indicator (0 to 31)
+} ;
+</pre>
 </p> 
 
 <a name="rinex">
@@ -166,35 +190,30 @@ Input from Leos?
 Observations are converted to RINEX Version 2.1. RINEX file names are derived by BNC from the first 4 characters of the corresponding mountpoint (4Char Station ID) while truncating the residual part of the mountpoint string. Thus, retrieving data from mountpoints FRANKFURT and WETTZELL leads to RINEX files named FRAN*.* and WETT*.*.</p>
 <p>
 In case you retrieve streams that show mountpoints with an identical 4Char Station ID (same first 4 characters), the mountpoint string is split in two sub-strings and both become part of the RINEX file name. Example: When simultaneously retrieving data from mountpoints FRANKFURT and FRANCE, there RINEX file names are defined as FRAN*_KFURT.* and FRAN*_CE.*.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p>
 
 <a name="rnxpath">
 <p><h4>B - 5.1 RINEX Directory Path - optional</h4></p>
 <p>
 Enter a path for saving the RINEX files in a directory. If this directory does not exist, BNC will not generate RINEX files. Default value for 'RINEX directory path' is an empty option field, meaning that streams are not converted to RINEX.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="rnxscript">
 <p><h4>B - 5.2 RINEX Script</h4></p>
 <p>
 Whenever a RINEX file is generated, you may like to compress, copy, or upload it immediately. For that you enter the full path of a script or batch file carrying out these operations. The RINEX file name will be passed to the script as a command line parameter.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="rnxinterval">
 <p><h4>B - 5.3 RINEX File Interval - mandatory if 'RINEX directory path' set</h4></p>
 <p>
 Select the interval for RINEX file generation. Default for 'RINEX file interval' is 15 minutes.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="rnxsample">
 <p><h4>B - 5.4 RINEX Sampling - mandatory if 'RINEX directory path' set </h4></p>
 <p>
 Select the RINEX sample interval in seconds. Zero '0' stands for converting all incoming epochs to RINEX. Default for 'RINEX sampling' is '0'.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="rnxskeleton">
@@ -204,42 +223,36 @@ BNC lets you introduce RINEX skeleton files that contain the header records you 
 </p>
 <p>
 Example: Mountpoint FRAN0 leads to the generation of RINEX files FRAN*.*. The header part of this files would be overwritten by the content of an existing skeleton file FRAN.skl in case 'RINEX skeleton extension' is set to 'skl' .
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="mountpoints">
 <p><h4>B - 6. Mountpoints</h4></p>
 <p>
 Each stream on an NTRIP broadcaster is defined through a unique source ID called mountpoint. An NTRIP client like BNC can access the data of a desired stream by its mountpoint. Information about mountpoints is available through the sourcetable maintained by the NTRIP broadcaster.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="AddMounts">
 <p><h4>B - 6.1 Add Mountpoints</h4></p>
 <p>
 Button 'Add Mountpoints' opens a window that lets you select data streams by their mountpoints.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="HostPort">
 <p><h4>B - 6.2 Broadcaster Host and Port - mandatory</h4></p>
 <p>
 Enter the NTRIP broadcaster host IP and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="account">
 <p><h4>B - 6.3 Broadcaster User and Password - mandatory for protected streams</h4></p>
 <p>
 Streams on NTRIP broadcasters may be password protected. Enter a valid User ID and Password for access to protected NTRIP broadcaster streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="GetTable">
 <p><h4>B - 6.4 Get Table</h4></p>
 <p>
 Hit button 'Get Table' to download a sourcetable from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Remember that BNC can only decode and convert streams that come in RTCM 2.x, RTCM 3, or RTIGS format. RTCM 2.x streams must contain message types 18 and 19 while RTCM 3 streams must contain message types 1001 or 1003, better 1003 or 1004, see data field 'format-details' for available message types and their repetition rates in brackets. Select your streams line by line, use +Shift and +Ctrl when necessary. Hit 'OK' to return to the main window.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="delete">
@@ -248,7 +261,6 @@ Hit button 'Get Table' to download a sourcetable from the NTRIP broadcaster. Pay
 To delete a stream shown under 'Mountpoints' in the main window select it by mouse click and then hit 'Delete Mountpoints'. For simultaneous deletion of several streams single them out through using +Shift and +Ctrl.</p>
 <p>
 BNC automatically selects one out of several internal decoders for a stream based on its 'format' and 'format-details' as given in the sourcetable. It may happen that you need to overrule the automated decoder selection because of sourcetable setup deficiencies. Therefore BNC allows to edit the decoder part for each stream shown under 'Mountpoints'. Accepted decoder strings allowed to be introduced are 'RTCM_2.x', 'RTCM_3', and 'RTIGS'.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="log">
@@ -258,21 +270,18 @@ BNC's comments its activities in the 'Log file' section on the main windows. Com
 </p>
 <p>
 Note that a connection to the NTRIP broadcaster may break or a stream requested may be temporarily unavailable. When this happens, a reconnect is tried with decreasing frequency. BNC first tries to reconnect with 1 second delay, if unsuccessful, tries again in 2 seconds from the last attempt, if still unsuccessful tries with 4 seconds from the last attempt etc. Each attempt doubles the delay from the previous attempt. The maximum delay between attempts is limited to 60 seconds. The reconnection process is documented in 'Log file'.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="start">
 <p><h4>B - 8. Start</h4></p>
 <p>
 Hit 'Start' to start retrieving, decoding, and converting GNSS data streams in real-time.
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="stop">
 <p><h4>B - 9. Stop</h4></p>
 <p>
 Hit the 'Stop' button to stop BNC. 
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 
 <a name="nw">
@@ -282,7 +291,6 @@ On UNIX/Linux systems you may like to use BNC with the command line option -nw. 
 </p>
 <p>
 Note that the self-explaining contents of the configuration file can easily be edited and option -nw is not available under Windows. 
-&nbsp; [<a href=#back_options>Back</a>]<br>
 </p> 
 <br>
 <a name="limits">
@@ -313,7 +321,6 @@ BNC's 'Get Table' function only informs about the STR records of a sourcetable. 
 </li>
 <li>
 EUREF as well as IGS follow an open data policy. Streams are made available through NTRIP broadcasters at <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u> free of charge to anybody for any purpose. It is not clear today how many users will have to be supported simultaneously. The situation may develop in a way that it becomes difficult to serve all registered users at any time.  In case limited dissemination resources on the NTRIP broadcaster side (software restrictions, bandwidth limitation etc.) make it necessary, first priority in stream provision will be given to stream providers, real-time analysis centres, and re-broadcasting activities while access for others may be temporarily denied. 
-&nbsp; [<a href=#back_contents>Back</a>]<br>
 </li>
 </ul>
 <br>
@@ -335,7 +342,6 @@ Georg Weber<br>
 Federal Agency for Cartography and Geodesy (BKG)<br>
 Frankfurt, Germany<br>
 euref-ip@bkg.bund.de 
-&nbsp; [<a href=#back_contents>Back</a>]<br>
 </p>
 <br>
 
@@ -348,11 +354,9 @@ euref-ip@bkg.bund.de
 <tr><td>NTRIP broadcaster overview &nbsp;</td><td><u>http://www.rtcm-ntrip.org/home</u></td></tr>
 <tr><td>EUREF-IP Pilot Project &nbsp;</td><td><u>http://www.epncb.oma.be/euref_IP</u></td></tr>
 <tr><td>Real-Time IGS Working Group &nbsp;</td><td><u>http://igscb.jpl.nasa.gov/projects/rtwg/index.html</u>
-&nbsp; [<a href=#back_contents>Back</a>]<br>
 </table>
 <br><br>
 
-<a name="back_annex">
 <a name="annex">
 <p><h3>F - Annex</h3></p>
 <p>
@@ -363,7 +367,6 @@ F - 2. <a href=#rtcm>RTCM</a><br>
 &nbsp; &nbsp; &nbsp; F - 2.2 RTCM <a href=#rtcm3> Version 3</a><br>
 F - 3. <a href=#rtigs>RTIGS</a><br>
 &nbsp; &nbsp; &nbsp; F - 3.1 <a href=#soc>SOC</a>
-&nbsp; [<a href=#back_contents>Back</a>]<br>
 </p>
 <br>
 
@@ -390,7 +393,6 @@ NTRIP is an open none-proprietary protocol. Major characteristics of NTRIP's dis
 <li>Potential to support mass usage; disseminating hundreds of streams simultaneously for up to thousand users possible when applying modified Internet Radio broadcasting software.</li>
 <li>Considering security needs; stream providers and users don't necessarily get into contact, streams often not blocked by firewalls or proxy servers protecting Local Area Networks.</li>
 <li>Enables streaming over mobile IP networks because of using TCP/IP.</li>
-&nbsp; [<a href=#back_annex>Back</a>]<br>
 </ul>
 </p><br>
 
@@ -406,7 +408,6 @@ Sourcetable records of type STR contain the following data fields: 'mountpoint',
 </p>
 <p>
 Sourcetable records of type NET contain the following data fields: 'identifiey', 'operator', 'authentication', 'fee', 'web-net', 'web-str', 'web-reg', 'misc'.
-&nbsp; [<a href=#back_annex>Back</a>]<br>
 </p>
 
 <a name="rtcm">
@@ -416,7 +417,6 @@ Sourcetable records of type NET contain the following data fields: 'identifiey',
 The Radio Technical Commission for Maritime Services (RTCM) is an international non-profit scientific, professional and educational organization. Special Committees provide a forum in which government and non-government members work together to develop technical standards and consensus recommendations in regard to issues of particular concern. RTCM is engaged in the development of international standards for maritime radionavigation and radiocommunication systems. The output documents and reports prepared by RTCM Committees are published as RTCM Recommended Standards. Topics concerning Differential Global Navigation Satellite Systems (DGNSS) and handled by the Special Committee SC 104.
 <p>
 Copies of RTCM Recommended Standards can be ordered through <u>http://www.rtcm.org/orderinfo.php</u>.
-&nbsp; [<a href=#back_annex>Back</a>]<br>
 </p>
 <br>
 
@@ -450,7 +450,6 @@ Type 18 and 20 messages are RTK uncorrected carrier phase data and carrier phase
 </li>
 <li>
 Type 19 and 21 messages are the uncorrected pseudo-range measurements and pseudo-range corrections used in RTK.
-&nbsp; [<a href=#back_annex>Back</a>]<br>
 </li>
 </ul>
 
@@ -480,7 +479,6 @@ RTCM Version 3 defines a number of message types. Among them are the following:
 <li>Type 1019, GPS Ephemeris (under development).</li>
 <li>Type 1020, GLONASS Ephemeris (under development).</li>
 <li>Type 4088 and 4095, Proprietary messages (under development).
-&nbsp; [<a href=#back_annex>Back</a>]<br>
 </li>
 </ul>
 
@@ -488,17 +486,14 @@ RTCM Version 3 defines a number of message types. Among them are the following:
 <p><h4>F - 3. RTIGS</h4></p>
 <p>
 Input from Ken?
-&nbsp; [<a href=#back_annex>Back</a>]<br>
 </p>
 
 <a name="soc">
 <p><h4>F - 3.1 SOC</h4></p>
 <p>
 Input from Ken?
-&nbsp; [<a href=#back_annex>Back</a>]<br>
 </p>
 <p>
-&nbsp; [<a href=#back_contents>Back</a>]<br>
 </p>
 
 
