@@ -128,7 +128,11 @@ StatID, SVPRN, GPSWeek, GPSWeeks, sec, C1, P2, L1, L2, SNR1, SNR2, pCodeIndicato
 <a name="wait">
 <p><h4>B - 4.1 Wait for Full Epoch - optional</h4></p>
 <p>
-When feeding a real-time GNSS engine waiting for input from BNC epoch by epoch, BNC ignores whatever is received later then 'Wait for full epoch' seconds. A value of 2 to 5 seconds may be an appropriate choice for that, depending on the delay you can accept for your real-time product. Default value for 'Wait for full ecpch' is zero  '0', meaning that no synchronized output is generated.
+When feeding a real-time GNSS engine waiting for input from BNC epoch by
+epoch, BNC ignores whatever is received later then 'Wait for full epoch'
+seconds. A value of 2 to 5 seconds may be an appropriate choice for that,
+depending on the delay you can accept for your real-time product. Default
+value for 'Wait for full ecpch' is 1 second.
 </p>
 <p>
 Note that 'Wait for full epoch' does not influence the RINEX file contents. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX files.

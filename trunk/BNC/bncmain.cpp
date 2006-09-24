@@ -42,8 +42,19 @@ int main(int argc, char *argv[]) {
   QCoreApplication::setOrganizationDomain("www.ifag.de");
   QCoreApplication::setApplicationName("BKG_NTRIP_Client");
 
+  // Default Settings
+  // ----------------
   QSettings settings;
+  if (settings.allKeys().size() == 0) {
+    settings.setValue("casterHost", "www.euref-ip.net");
+    settings.setValue("casterPort", 80);
+    settings.setValue("rnxIntr",    "15 min");
+    settings.setValue("rnxSkel",    "SKL");
+    settings.setValue("waitTime",   2);
+  }
 
+  // Interactive Mode - open the main window
+  // ---------------------------------------
   if (GUIenabled) {
 
     QString fontString = settings.value("font").toString();
@@ -59,6 +70,9 @@ int main(int argc, char *argv[]) {
     bncWindow* bncWin = new bncWindow();
     bncWin->show();
   }
+
+  // Non-Interactive (Batch) Mode
+  // ----------------------------
   else {
     bncCaster* caster = new bncCaster(settings.value("outFile").toString(),
                                       settings.value("outPort").toInt());
@@ -87,5 +101,8 @@ int main(int argc, char *argv[]) {
       return 0;
     }
   }
+
+  // Start the application
+  // ---------------------
   return app.exec();
 }
