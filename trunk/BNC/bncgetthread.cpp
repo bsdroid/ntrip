@@ -111,7 +111,7 @@ t_irc bncGetThread::initRun() {
 
   _socket = bncGetThread::request(_mountPoint, _timeOut, msg);
 
-  emit(newMessage(msg.toAscii()));
+  ////  emit(newMessage(msg.toAscii()));
 
   if (!_socket) {
     return failure;
@@ -151,7 +151,7 @@ t_irc bncGetThread::initRun() {
         }
       }
       emit(newMessage((_staID + ": Caster Response:\n" + line + 
-                       "\nAdjust User-ID and Password Register through\n" + 
+                       "Adjust User-ID and Password Register through\n" + 
                        reg).toAscii()));
       return fatal;
     }
