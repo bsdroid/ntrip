@@ -40,9 +40,9 @@ void bncTableItem::slotNewObs(const QByteArray&, Observation* obs) {
     setText(QString("%1 byte(s)").arg((int)_bytesRead));
   }
   else if (_bytesRead < 1e6) {
-    setText(QString("%1 kb").arg(_bytesRead/1.e3));
+    setText(QString("%1 kb").arg(_bytesRead/1.e3, 5));
   }
   else {
-    setText(QString("%1 Mb").arg(_bytesRead/1.e6));
+    setText(QString("%1 Mb").arg(_bytesRead/1.e6, 5));
   }
 }

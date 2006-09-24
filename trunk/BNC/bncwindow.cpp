@@ -405,7 +405,7 @@ void bncWindow::slotStop() {
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
     _bncCaster->terminate();
-    _bncCaster->wait(1000);
+    _bncCaster->wait();
     delete _bncCaster; 
     _bncCaster = 0;
     _actGetData->setEnabled(true);
