@@ -21,6 +21,7 @@
 #include "bnctabledlg.h" 
 #include "bnchlpdlg.h" 
 #include "bnchtml.h" 
+#include "bnctableitem.h" 
 
 using namespace std;
 
@@ -129,7 +130,7 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
   _rnxSamplSpinBox->setSuffix(" sec");
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
-  _mountPointsTable   = new QTableWidget(0,3);
+  _mountPointsTable   = new QTableWidget(0,4);
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
   _mountPointsTable->horizontalHeader()->hide();
   _mountPointsTable->verticalHeader()->hide();
@@ -163,6 +164,10 @@ bncWindow::bncWindow() {
 
     it = new QTableWidgetItem(format);
     _mountPointsTable->setItem(iRow, 2, it);
+
+    bncTableItem* bncIt = new bncTableItem();
+    _mountPointsTable->setItem(iRow, 3, bncIt);
+
     iRow++;
   }
   _mountPointsTable->hideColumn(0);
@@ -295,6 +300,10 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
 
     it = new QTableWidgetItem(format);
     _mountPointsTable->setItem(iRow, 2, it);
+
+    bncTableItem* bncIt = new bncTableItem();
+    _mountPointsTable->setItem(iRow, 3, bncIt);
+
     iRow++;
   }
   _mountPointsTable->hideColumn(0);
@@ -377,6 +386,10 @@ void bncWindow::slotGetData() {
             this, SLOT(slotMessage(const QByteArray&)));
     connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
             (bncApp*)qApp, SLOT(slotMessage(const QByteArray&)));
+
+    connect(getThread, SIGNAL(newObs(const QByteArray&, Observation*)),
+            (bncTableItem*) _mountPointsTable->item(iRow, 3), 
+            SLOT(slotNewObs(const QByteArray&, Observation*)));
 
     _bncCaster->addGetThread(getThread);
 
