@@ -122,17 +122,17 @@ t_irc bncGetThread::initRun() {
   if (_socket->canReadLine()) {
     QString line = _socket->readLine();
     if (line.indexOf("Unauthorized") != -1) {
-      emit(newMessage(("Caster Response:\n" + line).toAscii()));
+      emit(newMessage((_staID + ": Caster Response:\n" + line).toAscii()));
       exit(1);
       return failure;
     }
     if (line.indexOf("ICY 200 OK") != 0) {
-      emit(newMessage(("Wrong Caster Response:\n" + line).toAscii()));
+      emit(newMessage((_staID + ": Wrong Caster Response:\n" + line).toAscii()));
       return failure;
     }
   }
   else {
-    emit(newMessage("Response Timeout"));
+    emit(newMessage(_staID + ": Response Timeout"));
     return failure;
   }
 
@@ -152,7 +152,7 @@ t_irc bncGetThread::initRun() {
       _decoder = new rtigs();
     }
     else {
-      emit(newMessage(_staID + " Unknown data format " + _format));
+      emit(newMessage(_staID + ": Unknown data format " + _format));
       exit(1);
     }
   }
@@ -164,7 +164,7 @@ t_irc bncGetThread::initRun() {
 void bncGetThread::run() {
 
   if ( initRun() != success ) {
-    emit(newMessage("initRun failed, reconnecting"));
+    emit(newMessage(_staID + ": initRun failed, reconnecting"));
     tryReconnect();
   }
 
@@ -173,7 +173,7 @@ void bncGetThread::run() {
   while (true) {
 
     if (_socket->state() != QAbstractSocket::ConnectedState) {
-      emit(newMessage("Socket not connected, reconnecting"));
+      emit(newMessage(_staID + ": Socket not connected, reconnecting"));
       tryReconnect();
     }
 
@@ -191,7 +191,7 @@ void bncGetThread::run() {
       _decoder->m_lObsList.clear();
     }
     else {
-      emit(newMessage("Data Timeout, reconnecting"));
+      emit(newMessage(_staID + ": Data Timeout, reconnecting"));
       tryReconnect();
     }
   }
