@@ -83,13 +83,16 @@ bncTableDlg::~bncTableDlg() {
   }
 }
 
-// Read Table from Caster
+// Read Table the caster (static)
 ////////////////////////////////////////////////////////////////////////////
-void bncTableDlg::slotGetTable() {
+t_irc bncTableDlg::getFullTable(const QString& casterHost, 
+                                int casterPort, QStringList& allLines) {
+
+  allLines.clear();
 
   QUrl url;
-  url.setHost(_casterHostLineEdit->text());
-  url.setPort(_casterPortLineEdit->text().toInt());
+  url.setHost(casterHost);
+  url.setPort(casterPort);
 
   // Send the Request
   // ----------------
@@ -98,30 +101,25 @@ void bncTableDlg::slotGetTable() {
   QTcpSocket* socket = bncGetThread::request(url, timeOut, msg);
 
   if (!socket) {
-    QMessageBox::warning(0, "BNC", msg);
-    return;
+    return failure;
   }
 
   // Read Caster Response
   // --------------------
-  QStringList allLines;
   bool first = true;
   while (true) {
     if (socket->canReadLine()) {
       QString line = socket->readLine();
+      allLines.push_back(line);
       if (first) {
         first = false;
         if (line.indexOf("SOURCETABLE 200 OK") != 0) {
-	  QMessageBox::warning(0, "BNC", "Wrong Caster Response:\n" + line);
           break;
         }
       }
       else {
         if (line.indexOf("ENDSOURCETABLE") == 0) {
           break;
-        }
-        if (line.indexOf("STR") == 0) {
-          allLines.push_back(line);
         }
       }
     }
@@ -131,27 +129,51 @@ void bncTableDlg::slotGetTable() {
         continue;
       }
       else {
-	QMessageBox::warning(0, "BNC", "Data Timeout");
         break;
       }
     }
   }
   delete socket;
 
+  return success;
+}
+
+// Read Table from Caster
+////////////////////////////////////////////////////////////////////////////
+void bncTableDlg::slotGetTable() {
+
+  QStringList allLines;
+
+  if ( getFullTable(_casterHostLineEdit->text(),
+                    _casterPortLineEdit->text().toInt(),
+                    allLines) != success ) {
+    QMessageBox::warning(0, "BNC", "Cannot retrieve table of data");
+    return;
+  }
+
+  QStringList lines;
+  QStringListIterator it(allLines);
+  while (it.hasNext()) {
+    QString line = it.next();
+    if (line.indexOf("STR") == 0) {
+      lines.push_back(line);
+    }
+  }
+
   static const QStringList labels = QString("mountpoint,identifier,format,"
     "format-details,carrier,nav-system,network,country,latitude,longitude,"
     "nmea,solution,generator,compression,authentication,fee,bitrate,"
     "misc").split(",");
 
-  if (allLines.size() > 0) {
+  if (lines.size() > 0) {
     _table->setSelectionMode(QAbstractItemView::ExtendedSelection);
     _table->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-    QStringList hlp = allLines[0].split(";");
+    QStringList hlp = lines[0].split(";");
     _table->setColumnCount(hlp.size()-1);
-    _table->setRowCount(allLines.size());
+    _table->setRowCount(lines.size());
 
-    QListIterator<QString> it(allLines);
+    QListIterator<QString> it(lines);
     int nRow = -1;
     while (it.hasNext()) {
       QStringList columns = it.next().split(";");
