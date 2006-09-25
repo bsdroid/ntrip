@@ -22,6 +22,8 @@ class bncTableDlg : public QDialog {
   private slots:
     virtual void accept();
     void slotGetTable();
+    void slotSkl();
+    void slotSelectionChanged();
 
   private:
     QLineEdit*   _casterHostLineEdit;
@@ -29,6 +31,7 @@ class bncTableDlg : public QDialog {
     QLineEdit*   _casterUserLineEdit;
     QLineEdit*   _casterPasswordLineEdit;
 
+    QPushButton* _buttonSkl;
     QPushButton* _buttonGet;
     QPushButton* _buttonCancel;
     QPushButton* _buttonOK;
