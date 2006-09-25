@@ -151,17 +151,17 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::slotGetTable() {
 
-  QStringList allLines;
+  _allLines.clear();
 
   if ( getFullTable(_casterHostLineEdit->text(),
                     _casterPortLineEdit->text().toInt(),
-                    allLines) != success ) {
+                    _allLines) != success ) {
     QMessageBox::warning(0, "BNC", "Cannot retrieve table of data");
     return;
   }
 
   QStringList lines;
-  QStringListIterator it(allLines);
+  QStringListIterator it(_allLines);
   while (it.hasNext()) {
     QString line = it.next();
     if (line.indexOf("STR") == 0) {
@@ -244,12 +244,34 @@ void bncTableDlg::slotSelectionChanged() {
   }
 }
 
-// 
+// Create RINEX skeleton header
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::slotSkl() {
-  QStringList fullTable;
-  bncTableDlg::getFullTable("www.euref-ip.net", 80, fullTable);
 
-  cout << fullTable.join("").toAscii().data() << endl;
+  int nRows = _table->rowCount();
+  for (int iRow = 0; iRow < nRows; iRow++) {
+    if (_table->isItemSelected(_table->item(iRow,1))) {
+      QString staID = _table->item(iRow,0)->text();
+      QString net   = _table->item(iRow,6)->text();
+
+      cout << (staID + " " + net).toAscii().data() << endl;
+
+      QString ftpDir;
+      QStringListIterator it(_allLines);
+      while (it.hasNext()) {
+        QString line = it.next();
+        if (line.indexOf("NET") == 0) {
+          QStringList tags = line.split(';');
+          if (tags.at(1) == net) {
+            ftpDir = tags.at(6);
+            break;
+          }
+        }
+      }
+
+      cout << ftpDir.toAscii().data() << endl;
+
+    }
+  }
 
 }
