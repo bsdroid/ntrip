@@ -37,6 +37,7 @@ class bncTableDlg : public QDialog {
     QPushButton* _buttonOK;
 
     QTableWidget* _table;
+    QStringList   _allLines;
 };
 
 #endif
