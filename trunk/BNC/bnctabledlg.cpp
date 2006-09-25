@@ -15,8 +15,6 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream.h>
-
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
 
@@ -254,8 +252,6 @@ void bncTableDlg::slotSkl() {
       QString staID = _table->item(iRow,0)->text();
       QString net   = _table->item(iRow,6)->text();
 
-      cout << (staID + " " + net).toAscii().data() << endl;
-
       QString ftpDir;
       QStringListIterator it(_allLines);
       while (it.hasNext()) {
@@ -269,9 +265,12 @@ void bncTableDlg::slotSkl() {
         }
       }
 
-      cout << ftpDir.toAscii().data() << endl;
-
+      if (!ftpDir.isEmpty()) {
+        QUrl url(ftpDir);
+        QMessageBox::warning(0, "Warning", url.host() + "\n" + url.path() + 
+                             "\nnot yet implemented");
+      }
     }
   }
-
 }
+
