@@ -1,0 +1,63 @@
+(1 Muss) Beim ersten Start von BNC sollte das Programm mit den
+         Default-Optionen beginnen, die in bnchelp.html genannt sind.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+
+(2 Muss) Problem: Mehr als ein Datenstrom haben den selben 4CharID Mountpoint.
+         Problem: Keine eindeutige Möglichkeit zur Vergabe von
+         RINEX-Dateinamen.  Beispiel: Mountpoints FRANKFURT und
+         FRANCE. Mögliche Lösung: Siehe Vorschlag in "bnchelp.html".
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+
+(4 Muss) Eigenes Timeout in BNC auf 20sec festsetzen.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+
+(6 Muss) Maximum des Reconnect-Delays auf 128 sec festsetzen
+         (1,2,4,8,16,32,64,128).
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+
+(10) Muss) Im Datenfeld Nummber 7 der NET-Records steht das FTP-Verzeichnis
+           für die Sitelogs.  Aus den Sitelogs kann optional ein RINEX-Header
+           generiert werden. Das erscheint mir so wichtig, dass ich hierfür
+           ein "Muss" gewählt habe. was denkst Du dazu? Ist das mit
+           vertretbarem Aufwand machbar?
+
+(5 Kann) Die Orientierung im Logfile wäre einfacher, wenn vor jede
+         Ausgabezeile eine Zeitmarke und der zugehörige Mountpoint geschrieben
+         werden könnten.  Das mit der Zeitmarke ist sicher machbar. Das mit
+         dem zugehörigen Mountpoint könnte ein Problem sein. Wenn es ein
+         größeres Problem ist, dann bitte weglassen.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+
+(8 Kann) Falls Rückmeldung vom Caster:
+
+               Caster Response: HTTP/1.1 401 Unauthorized
+
+               dann die Sourcetable nochmals anfordern und das Datenfeld
+               Nummer 8 des zugehörigen NET-Records im Logfile mit ausgeben
+               damit der Nutzer weiss, wo er sich registrieren lassen muss für
+               User-ID und Password. Die Zeile im Logfile könnte z.B. lauten:
+
+               Adjust User-ID and Password Register through
+               http://igs.bkg.bund.de/index_ntrip_reg.htm
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+
+(9 Kann) Im Default-RINEX-Header die Zeile:
+
+         GENERATED FROM RTCM 2.x STREAM ON www.igs-ip.net            COMMENT
+         ändern in
+         RTCM 2.x STREAM ON www.igs-ip.net                           COMMENT
+
+         Begründung: bei langen IP-Adressen wird Platz gebraucht, deshalb
+         "generated from" einfach weglassen.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+
+(3, Luxus) "Get Data" durch zwei Buttons "Start" und "Stop" unten auf dem
+           Hauptfenster ersetzen.  Den jetzigen Button "Quit" so lassen wie er
+           ist.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+
+(7 Absoluter Luxus) Ladebalken aus sich bewegendem graphischen Element
+                    einführen um dem Nutzer zu bestätigen, dass BNC am
+                    Arbeiten ist.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+
