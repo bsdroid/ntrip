@@ -15,6 +15,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream.h>
+
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
 
@@ -51,9 +53,15 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(editLayout);
 
   _table = new QTableWidget(this);
+  connect(_table, SIGNAL(itemSelectionChanged()),
+          this, SLOT(slotSelectionChanged()));
   mainLayout->addWidget(_table);
 
-  _buttonGet = new QPushButton(tr("Get Table"), this);
+  _buttonSkl = new QPushButton(tr("Create skeleton headers"), this);
+  _buttonSkl->setEnabled(false);
+  connect(_buttonSkl, SIGNAL(clicked()), this, SLOT(slotSkl()));
+
+  _buttonGet = new QPushButton(tr("Get table"), this);
   connect(_buttonGet, SIGNAL(clicked()), this, SLOT(slotGetTable()));
 
   _buttonCancel = new QPushButton(tr("Cancel"), this);
@@ -63,6 +71,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   connect(_buttonOK, SIGNAL(clicked()), this, SLOT(accept()));
 
   QHBoxLayout* buttonLayout = new QHBoxLayout;
+  buttonLayout->addWidget(_buttonSkl);
   buttonLayout->addStretch(1);
   buttonLayout->addWidget(_buttonGet);
   buttonLayout->addWidget(_buttonCancel);
@@ -222,4 +231,25 @@ void bncTableDlg::accept() {
   emit newMountPoints(mountPoints);
 
   QDialog::accept();
+}
+
+// User changed the selection of mountPoints
+////////////////////////////////////////////////////////////////////////////
+void bncTableDlg::slotSelectionChanged() {
+  if (_table->selectedItems().isEmpty()) {
+    _buttonSkl->setEnabled(false);
+  }
+  else {
+    _buttonSkl->setEnabled(true);
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncTableDlg::slotSkl() {
+  QStringList fullTable;
+  bncTableDlg::getFullTable("www.euref-ip.net", 80, fullTable);
+
+  cout << fullTable.join("").toAscii().data() << endl;
+
 }
