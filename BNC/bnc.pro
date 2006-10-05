@@ -26,5 +26,7 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           RTCM3/rtcm3.cpp RTCM3/rtcm3torinex.cpp                      \
           RTIGS/rtigs.cpp RTIGS/cgps_transform.cpp
 
+RC_FILE = bnc.rc
+
 QT += network
 
