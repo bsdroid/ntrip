@@ -111,7 +111,117 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
   QTime nextTime;
   QDate nextDate;
 
-  if (intStr == "15 min") {
+  if (intStr == "5 min") {
+    char ch = 'A' + datTim.time().hour();
+    hlpStr = ch;
+    if      (datTim.time().minute() < 5) {
+      hlpStr += "00";
+      nextTime.setHMS(datTim.time().hour(), 5, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 10) {
+      hlpStr += "5";
+      nextTime.setHMS(datTim.time().hour(), 10, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 15) {
+      hlpStr += "10";
+      nextTime.setHMS(datTim.time().hour(), 15, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 20) {
+      hlpStr += "15";
+      nextTime.setHMS(datTim.time().hour(), 20, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 25) {
+      hlpStr += "20";
+      nextTime.setHMS(datTim.time().hour(), 25, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 30) {
+      hlpStr += "25";
+      nextTime.setHMS(datTim.time().hour(), 30, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 35) {
+      hlpStr += "30";
+      nextTime.setHMS(datTim.time().hour(), 35, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 40) {
+      hlpStr += "35";
+      nextTime.setHMS(datTim.time().hour(), 40, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 45) {
+      hlpStr += "40";
+      nextTime.setHMS(datTim.time().hour(), 45, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 50) {
+      hlpStr += "45";
+      nextTime.setHMS(datTim.time().hour(), 50, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 55) {
+      hlpStr += "50";
+      nextTime.setHMS(datTim.time().hour(), 55, 0);
+      nextDate = datTim.date();
+    }
+    else {
+      hlpStr += "55";
+      if (datTim.time().hour() < 23) {
+        nextTime.setHMS(datTim.time().hour() + 1 , 0, 0);
+        nextDate = datTim.date();
+      }
+      else {
+        nextTime.setHMS(0, 0, 0);
+        nextDate = datTim.date().addDays(1);
+      }
+    }
+  }
+  else if (intStr == "10 min") {
+    char ch = 'A' + datTim.time().hour();
+    hlpStr = ch;
+    if      (datTim.time().minute() < 10) {
+      hlpStr += "00";
+      nextTime.setHMS(datTim.time().hour(), 10, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 20) {
+      hlpStr += "10";
+      nextTime.setHMS(datTim.time().hour(), 20, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 30) {
+      hlpStr += "20";
+      nextTime.setHMS(datTim.time().hour(), 30, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 40) {
+      hlpStr += "30";
+      nextTime.setHMS(datTim.time().hour(), 40, 0);
+      nextDate = datTim.date();
+    }
+    else if (datTim.time().minute() < 50) {
+      hlpStr += "40";
+      nextTime.setHMS(datTim.time().hour(), 50, 0);
+      nextDate = datTim.date();
+    }
+    else {
+      hlpStr += "50";
+      if (datTim.time().hour() < 23) {
+        nextTime.setHMS(datTim.time().hour() + 1 , 0, 0);
+        nextDate = datTim.date();
+      }
+      else {
+        nextTime.setHMS(0, 0, 0);
+        nextDate = datTim.date().addDays(1);
+      }
+    }
+  }
+  else if (intStr == "15 min") {
     char ch = 'A' + datTim.time().hour();
     hlpStr = ch;
     if      (datTim.time().minute() < 15) {
@@ -131,6 +241,26 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
     }
     else {
       hlpStr += "45";
+      if (datTim.time().hour() < 23) {
+        nextTime.setHMS(datTim.time().hour() + 1 , 0, 0);
+        nextDate = datTim.date();
+      }
+      else {
+        nextTime.setHMS(0, 0, 0);
+        nextDate = datTim.date().addDays(1);
+      }
+    }
+  }
+  else if (intStr == "30 min") {
+    char ch = 'A' + datTim.time().hour();
+    hlpStr = ch;
+    if      (datTim.time().minute() < 30) {
+      hlpStr += "00";
+      nextTime.setHMS(datTim.time().hour(), 30, 0);
+      nextDate = datTim.date();
+    }
+    else {
+      hlpStr += "30";
       if (datTim.time().hour() < 23) {
         nextTime.setHMS(datTim.time().hour() + 1 , 0, 0);
         nextDate = datTim.date();

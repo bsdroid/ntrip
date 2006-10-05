@@ -30,6 +30,9 @@ using namespace std;
 bncWindow::bncWindow() {
 
   int ww = QFontMetrics(this->font()).width('w');
+  
+  static const QStringList labels = QString("account,mountpoint,"
+    "decoder,bytes").split(",");
 
   setMinimumSize(60*ww, 80*ww);
 
@@ -117,7 +120,7 @@ bncWindow::bncWindow() {
   _rnxIntrComboBox    = new QComboBox();
   _rnxIntrComboBox->setMaximumWidth(9*ww);
   _rnxIntrComboBox->setEditable(false);
-  _rnxIntrComboBox->addItems(QString("15 min,1 hour,1 day").split(","));
+  _rnxIntrComboBox->addItems(QString("5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
   int ii = _rnxIntrComboBox->findText(settings.value("rnxIntr").toString());
   if (ii != -1) {
     _rnxIntrComboBox->setCurrentIndex(ii);
@@ -131,8 +134,9 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setSuffix(" sec");
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
   _mountPointsTable   = new QTableWidget(0,4);
-  _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-  _mountPointsTable->horizontalHeader()->hide();
+  _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+  _mountPointsTable->setHorizontalHeaderLabels(labels);
+//  _mountPointsTable->horizontalHeader()->hide();
   _mountPointsTable->verticalHeader()->hide();
   _mountPointsTable->setGridStyle(Qt::NoPen);
   _mountPointsTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -179,10 +183,10 @@ bncWindow::bncWindow() {
   _log = new QTextEdit();
   _log->setReadOnly(true);
 
-  layout->addWidget(new QLabel("Proxy host"),                    0, 0);
-  layout->addWidget(_proxyHostLineEdit,                          0, 1);
-  layout->addWidget(new QLabel("Proxy port"),                    0, 2);
-  layout->addWidget(_proxyPortLineEdit,                          0, 3);
+  layout->addWidget(new QLabel("Proxy host"),                    0, 0, 1, 2);
+  layout->addWidget(_proxyHostLineEdit,                          0, 2);
+  layout->addWidget(new QLabel("Proxy port"),                    0, 3);
+  layout->addWidget(_proxyPortLineEdit,                          0, 4);
 
   layout->addWidget(new QLabel("Wait for full epoch"),           1, 0, 1, 2);
   layout->addWidget(_waitTimeSpinBox,                            1, 2);
@@ -193,7 +197,7 @@ bncWindow::bncWindow() {
   layout->addWidget(new QLabel("Port for binary output"),        3, 0, 1, 2);
   layout->addWidget(_outPortLineEdit,                            3, 2);
 
-  layout->addWidget(new QLabel("RINEX path"),                    4, 0, 1, 2);
+  layout->addWidget(new QLabel("RINEX directory path"),          4, 0, 1, 2);
   layout->addWidget(_rnxPathLineEdit,                            4, 2, 1, 3);
 
   layout->addWidget(new QLabel("RINEX script (full path)"),      5, 0, 1, 2);
@@ -210,7 +214,7 @@ bncWindow::bncWindow() {
   layout->addWidget(new QLabel("Mountpoints"),                   8, 0, 1, 2);
   layout->addWidget(_mountPointsTable,                           9, 0, 1, 5);
 
-  layout->addWidget(new QLabel("Log (full path)"),              10, 0, 1, 2);
+  layout->addWidget(new QLabel("Log file (full path)"),          10, 0, 1, 2);
   layout->addWidget(_logFileLineEdit,                           10, 2, 1, 3);
   layout->addWidget(_log,                                       11, 0, 1, 5);
 
