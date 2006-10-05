@@ -162,7 +162,7 @@ t_irc bncGetThread::initRun() {
         }
       }
       emit(newMessage((_staID + ": Caster Response: " + line + 
-                       "          Adjust User-ID and Password Register through"
+                       "          Adjust User-ID and Password Register, see"
                        "\n          " + reg).toAscii()));
       return fatal;
     }
