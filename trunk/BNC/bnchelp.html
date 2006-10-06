@@ -52,7 +52,7 @@ B - 4. <a href=#output>Synchronized Output</a><br>
 &nbsp; &nbsp; &nbsp; B - 4.2. <a href=#ascii>ASCII Output File</a><br>
 &nbsp; &nbsp; &nbsp; B - 4.3. <a href=#binary>Port for Binary Output</a><br>
 B - 5. <a href=#rinex>RINEX</a><br>
-&nbsp; &nbsp; &nbsp; B - 5.1. <a href=#rnxpath>RINEX Directory Path</a><br>
+&nbsp; &nbsp; &nbsp; B - 5.1. <a href=#rnxpath>RINEX Directory</a><br>
 &nbsp; &nbsp; &nbsp; B - 5.2. <a href=#rnxscript>RINEX Script</a><br>
 &nbsp; &nbsp; &nbsp; B - 5.3. <a href=#rnxinterval>RINEX File Interval</a><br>
 &nbsp; &nbsp; &nbsp; B - 5.4. <a href=#rnxsample>RINEX Sampling</a><br>
@@ -188,9 +188,9 @@ Note that RINEX file names for all intervals less than 1 hour are created follow
 </p>
 
 <a name="rnxpath">
-<p><h4>B - 5.1 RINEX Directory Path - optional</h4></p>
+<p><h4>B - 5.1 RINEX Directory - optional</h4></p>
 <p>
-Enter a path for saving the RINEX files in a directory. If this directory does not exist, BNC will not create RINEX files. Default value for 'RINEX directory path' is an empty option field, meaning that streams are not converted to RINEX.
+Enter a path for saving the RINEX files in a directory. If this directory does not exist, BNC will not create RINEX files. Default value for 'RINEX directory' is an empty option field, meaning that streams are not converted to RINEX.
 </p> 
 
 <a name="rnxscript">
@@ -200,13 +200,13 @@ Whenever a RINEX file is generated, you may like to compress, copy, or upload it
 </p> 
 
 <a name="rnxinterval">
-<p><h4>B - 5.3 RINEX File Interval - mandatory if 'RINEX directory path' set</h4></p>
+<p><h4>B - 5.3 RINEX File Interval - mandatory if 'RINEX directory' set</h4></p>
 <p>
 Select the interval for RINEX file generation. Default for 'RINEX file interval' is 15 minutes.
 </p> 
 
 <a name="rnxsample">
-<p><h4>B - 5.4 RINEX Sampling - mandatory if 'RINEX directory path' set </h4></p>
+<p><h4>B - 5.4 RINEX Sampling - mandatory if 'RINEX directory' set </h4></p>
 <p>
 Select the RINEX sample interval in seconds. Zero '0' stands for converting all incoming epochs to RINEX. Default for RINEX 'Sampling' is '0'.
 </p> 
@@ -214,7 +214,7 @@ Select the RINEX sample interval in seconds. Zero '0' stands for converting all 
 <a name="rnxskeleton">
 <p><h4>B - 5.5 RINEX Skeleton Extension - optional</h4></p>
 <p>
-BNC lets you introduce RINEX header skeleton files that contain the header records you would like to see instead of a default header. You may like to derive RINEX skeleton files from the information given in sitelogs. A file in the 'RINEX directory path' with the 'RINEX skeleton extension' is understood by BNC as a RINEX header skeleton file for the affected stream.
+BNC lets you introduce RINEX header skeleton files that contain the header records you would like to see instead of a default header. You may like to derive RINEX skeleton files from the information given in sitelogs. A file in the 'RINEX directory' with the 'RINEX skeleton extension' is understood by BNC as a RINEX header skeleton file for the affected stream.
 </p>
 <p>
 Example: Mountpoint FRAN0 leads to the generation of RINEX file FRAN*.*. The header part of this file would be overwritten by the content of an existing skeleton file named FRAN.skl if 'RINEX skeleton extension' is set to 'skl' .
@@ -343,7 +343,7 @@ EUREF as well as IGS follow an open data policy. Streams are made available thro
 <p>
 The BKG Ntrip Client (BNC) Qt Graphic User Interface (GUI) has been developed for the Federal Agency for Cartography and Geodesy (BKG) by Leos Mervart, Czech Technical University Prague, Department of Advanced Geodesy. BNC integrates the following GNU GPL software components: 
 <ul>
-<li> RTCM 2.x decoder, written by John Sager with contributions from Carsten Becker, German Aerospace Center, DLR, Neustrelitz</li> 
+<li> RTCM 2.x decoder, written by Oliver Montenbruck, German Space Operations Center, DLR, Oberpfaffenhofen, with contributions from Leos Mervart</li> 
 <li> RTCM 3 decoder, written for BKG by Dirk Stoecker, Euronik GmbH, Schoenefeld</li> 
 <li> RTIGS decoder, written by Ken MacLeod, Natural Resources Canada, NRCan</li> 
 </ul>
@@ -482,7 +482,7 @@ RTCM Version 3 defines a number of message types. Messages that may be of intere
 <ul>
 <li>Tpye 1001, GPS L1 code and phase.</li>
 <li>Type 1002, GPS L1 code and phase and ambiguities and carrier to noise ratio.</li>
-<li>Type 1003, GPS L1 and L1 code and phase.</li>
+<li>Type 1003, GPS L1 and L2 code and phase.</li>
 <li>Type 1004, GPS L1 and L2 code and phase and ambiguities and carrier to noise ratio.</li>
 <li>Type 1005, Station coordinates XZY for antenna reference point.</li>
 <li>Type 1006, Station coordinates XYZ for antenna reference point and antenna height.</li>
@@ -490,7 +490,7 @@ RTCM Version 3 defines a number of message types. Messages that may be of intere
 <li>Type 1008, Antenna serial number.</li>
 <li>Type 1009, GLONASS L1 code and phase.</li>
 <li>Type 1010, GLONASS L1 code and phase and ambiguities and carrier to noise ratio.</li>
-<li>Type 1011, GLONASS L1 and L1 code and phase.</li>
+<li>Type 1011, GLONASS L1 and L2 code and phase.</li>
 <li>Type 1012, GLONASS L1 and L2 code and phase and ambiguities and carrier to noise ratio.</li>
 <li>Type 1013, Modified julian date, leap second, configured message types and interval.</li>
 <li>Type 1014 and 1017, Network RTK (MAK) messages (under development).</li>
@@ -509,7 +509,10 @@ Input from Ken?
 <a name="soc">
 <p><h4>F - 3.1 SOC</h4></p>
 <p>
-Input from Ken?
+The SOC format has been designed in July 1999 by the Jet Propulsion Laboratory (JPL) and the California Institute of Technology (CalTech) to transport 1Hz GPS data with minimal bandwidth over the open Internet. SOC follows the 'little-endian' byte order meaning that the low-order byte of a number is stored in memory at the lowest address, and the high-order byte at the highest address. (The little end comes first.) Because the transport layer is UDP, the format does not include sync bits, a checksum or cyclic redundancy checksum (CRC). SOC allows to transport the GPS observable CA, P1, P2, L1, and L2, efficiently compressed down to 14 bytes with 1 mm range resolution and 0.02 mm phase resolution. SOC contains epochs for cycle slips, a stand-alone time-tag per epoch, a minimum representation of the receiver's clock solution, 3 SNR numbers, a unique site id, a modulo 12 hour sequence number and flags for receiver type and GPS health. SOC's simple structure comprises an 8 byte header, a 9 byte overhead for timetag, number of gps, etc., plus 21 data bytes per gps.
+</p>
+<p>
+Visit <u>http://gipsy.jpl.nasa.gov/igdg/papers/SOC_FORMAT.ppt</u> for further details.
 </p>
 <p>
 </p>
