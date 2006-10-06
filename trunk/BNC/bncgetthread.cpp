@@ -82,22 +82,11 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint, int timeOut,
   hlp.setPort(mountPoint.port());
   hlp.setPath(mountPoint.path());
 
-  QByteArray reqStr;
-  if ( proxyHost.isEmpty() ) {
-  if (hlp.path().indexOf("/") != 0) hlp.setPath("/");
-  reqStr = "GET " + hlp.path().toAscii() + 
-           " HTTP/1.0\r\n"
-           "User-Agent: NTRIP BNC 1.0\r\n"
-           "Authorization: Basic " +
-           userAndPwd.toBase64() + "\r\n\r\n";
-                             } else 
-                             {
-  reqStr = "GET " + hlp.toEncoded() + 
-           " HTTP/1.0\r\n"
-           "User-Agent: NTRIP BNC 1.0\r\n"
-           "Authorization: Basic " +
-           userAndPwd.toBase64() + "\r\n\r\n";
-                             }
+  QByteArray  reqStr = "GET " + hlp.path().toAscii() + 
+                       " HTTP/1.0\r\n"
+                       "User-Agent: NTRIP BNC 1.0\r\n"
+                       "Authorization: Basic " +
+                       userAndPwd.toBase64() + "\r\n\r\n";
 
   msg += reqStr;
 
