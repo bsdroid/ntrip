@@ -22,7 +22,7 @@
 #include "bncgetthread.h"
 #include "bnctabledlg.h"
 
-#include "RTCM/RTCM.h"
+#include "RTCM/RTCM2.h"
 #include "RTCM3/rtcm3.h"
 #include "RTIGS/rtigs.h"
 
@@ -174,7 +174,7 @@ t_irc bncGetThread::initRun() {
   if (!_decoder) { 
     if      (_format.indexOf("RTCM_2") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTCM 2.x format"));
-      _decoder = new RTCM('A',true);
+      _decoder = new RTCM2();
     }
     else if (_format.indexOf("RTCM_3") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTCM 3.0 format"));

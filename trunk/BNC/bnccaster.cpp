@@ -18,7 +18,7 @@
 #include "bnccaster.h"
 #include "bncgetthread.h"
 #include "bncutils.h"
-#include "RTCM/RTCM.h"
+#include "RTCM/GPSDecoder.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
