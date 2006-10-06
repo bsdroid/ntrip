@@ -6,8 +6,9 @@ tar -cvf ${fileName}.tar bnc.bck     \
                          *.h         \
                          *.pro       \
                          *.html      \
-                         *.bmp       \
+                         *.png       \
                          *.qrc       \
+                         *.rc        \
                          RTCM/*.cpp  \
                          RTCM/*.h    \
                          RTCM3/*.cpp \
@@ -17,4 +18,4 @@ tar -cvf ${fileName}.tar bnc.bck     \
 
 gzip      ${fileName}.tar
 mv        ${fileName}.tar.gz ${fileName}.tgz
-chmod 440 ${fileName}.tgz
+chmod 400 ${fileName}.tgz

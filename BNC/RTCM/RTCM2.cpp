@@ -1059,6 +1059,9 @@ RTCM2::~RTCM2() {
 void RTCM2::Decode(char* buffer, int bufLen) {
 
   _buffer.append(buffer, bufLen);
+  int    refWeek;
+  double refSecs;
+  currentGPSWeeks(refWeek, refSecs);
 
   while(true) {
     _PP.getPacket(_buffer);
@@ -1072,9 +1075,6 @@ void RTCM2::Decode(char* buffer, int bufLen) {
 
       if (_ObsBlock.valid()) {
 
-        int    refWeek;
-        double refSecs;
-        currentGPSWeeks(refWeek, refSecs);
         int    epochWeek;
         double epochSecs;
         _ObsBlock.resolveEpoch(refWeek, refSecs, epochWeek, epochSecs);
@@ -1085,7 +1085,7 @@ void RTCM2::Decode(char* buffer, int bufLen) {
         
             obs->SVPRN          = _ObsBlock.PRN[iSat];
             obs->GPSWeek        = epochWeek;
-            obs->GPSWeeks       = int(floor(epochSecs+0.5));
+            obs->GPSWeeks       = int(epochSecs);
             obs->sec            = _ObsBlock.secs;
             obs->pCodeIndicator = 0;
             obs->C1 = _ObsBlock.rng_C1[iSat];
