@@ -37,17 +37,17 @@
 #include <string>
 #include <vector>
 
-// begin added by LM 
+// ---------------- begin added by LM --------------------------------------
 #include "GPSDecoder.h"
 class RTCM2 : public GPSDecoder {
-public:
-  RTCM2();
-  ~RTCM2();
-  void Decode(char* buffer = 0, int bufLen = 0);
-private:
-  string _buffer;
-} ;
-// end added by LM 
+  public:
+    RTCM2();
+    ~RTCM2();
+    void Decode(char* buffer = 0, int bufLen = 0);
+  private:
+    string _buffer;
+};
+// ----------------- end added by LM ---------------------------------------
 
 //
 // namespace rtcm2

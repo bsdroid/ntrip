@@ -1038,3 +1038,45 @@ void RTCM2_Obs::resolveEpoch (int  refWeek,   double  refSecs,
 };
 
 }; // End of namespace rtcm2
+
+// ---------------- begin added by LM --------------------------------------
+
+// Constructor
+////////////////////////////////////////////////////////////////////////////
+RTCM2::RTCM2() {
+
+}
+
+// Destructor
+////////////////////////////////////////////////////////////////////////////
+RTCM2::~RTCM2() {
+
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void RTCM2::Decode(char* buffer, int bufLen) {
+
+  rtcm2::RTCM2packet PP;
+  rtcm2::RTCM2_Obs   ObsBlock;
+  
+  _buffer.append(buffer, bufLen);
+
+  while(true) {
+    PP.getPacket(_buffer);
+    if (!PP.valid()) break;
+
+    if ( PP.ID()==18 || PP.ID()==19 ) {   
+      ObsBlock.extract(PP);
+      if (!ObsBlock.valid()) continue;
+        
+      for (int iSat=0;iSat<ObsBlock.nSat;iSat++) {
+        cout << iSat << " " << ObsBlock.resolvedPhase_L1(iSat) << endl;
+      }
+
+      ObsBlock.clear();
+    }
+  }
+}
+
+// ----------------- end added by LM ---------------------------------------

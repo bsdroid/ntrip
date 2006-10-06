@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: GPSDecoder.h,v 1.1.1.1 2006/01/11 09:34:31 mervart Exp $
+// $Id: GPSDecoder.h,v 1.1.1.1 2006/05/30 11:05:27 mervart Exp $
 // 2005/04/11: include 'int iPCode' into class 'GPSDecoder' (BKG)
 #if !defined(__GPSDecoder_h__)
 #define __GPSDecoder_h__
@@ -9,9 +9,6 @@
 #include <iostream>
 
 using namespace std;
-
-
-#include "format.h"
 
 //
 // One Code/Phase - Measurement
@@ -72,16 +69,6 @@ struct Observation {
     short SNR2;    //<  signal-to noise ration (0.1 dB)
     int   pCodeIndicator;  // 0 ... CA Code, 1 ... P Code
     u_int cumuLossOfCont;  // 0 to 31
-
-    // Operator to write ascii formatted members of Observation to an outstream
-    friend ostream& operator<<(ostream& os, const Observation & o) {
-	os <<format("%3d%3d",(int) o.StatID,(int) o.SVPRN)
-	   <<format(" %4d %10d",(int)o.GPSWeek, o.GPSWeeks)
-	   <<format("\t%15.3f\t%15.3f\t%15.3f\t%15.3f\t%15.3f\t%15.3f"
-		    ,o.C1, o.P2, o.L1, o.L2, 0.1*o.SNR1, 0.1*o.SNR2)
-	   <<endl;
-	return os;
-    }
 } ;
 
 //
