@@ -16,6 +16,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+#include <ctime>
 
 #include <QRegExp>
 #include <QStringList>
@@ -53,18 +54,42 @@ QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks) {
   return QDateTime(date,time);
 }
 
+double MJD(int year, int month, double day) {
+  if( month <= 2 ) {
+    year = year - 1;
+    month = month + 12;
+  }  
+  int ii   = year/100;
+  int kk   = 2 - ii + ii/4;
+  double mjd = (365.25*year - fmod( 365.25*year, 1.0 )) - 679006.0
+                + floor( 30.6001*(month + 1) ) + day + kk;
+  return mjd;
+} 
 
-void gpsWeekAndSec(int& week, double& sec) {
+void MJD_GPSWeeks(double mjd, int& week, double& sec) {
+  double deltat = mjd - 44244.0 ;
+  week = (long) floor(deltat/7.0);
+  sec = (deltat - (week)*7.0)*86400.0;
+}
 
-  QDate date = QDate::currentDate();
-  QTime time = QTime::currentTime();
+void currentGPSWeeks(int& week, double& sec) {
 
-  double deltat = double(date.toJulianDay()) - 2444244.0 +
-           ((( time.msec() / 1000.0 
-             + time.second() ) / 60.0
-             + time.minute()  ) / 60.0
-             + time.hour()     ) / 24.0;
+  time_t    ltime;
+  struct tm *gmt;
 
-  week = (int) floor(deltat/7.0);
-  sec  = (deltat - (week)*7.0)*86400.0;
+  time(&ltime);
+  gmt = gmtime(&ltime);
+
+  double dayFrac = ((  gmt->tm_sec  / 60.0
+                     + gmt->tm_min ) / 60.0
+                     + gmt->tm_hour ) / 24.0;
+
+  double mjd = MJD(1900+gmt->tm_year, gmt->tm_mon+1, gmt->tm_mday+1+dayFrac);
+
+  cout << 1900+gmt->tm_year << " " << gmt->tm_mon+1 << " " << gmt->tm_mday+1 
+       << " " << gmt->tm_hour
+       << " " << gmt->tm_min
+       << " " << gmt->tm_sec << endl;
+
+  MJD_GPSWeeks(mjd, week, sec);
 }

@@ -1074,7 +1074,7 @@ void RTCM2::Decode(char* buffer, int bufLen) {
 
         int    refWeek;
         double refSecs;
-        gpsWeekAndSec(refWeek, refSecs);
+        currentGPSWeeks(refWeek, refSecs);
         int    epochWeek;
         double epochSecs;
         _ObsBlock.resolveEpoch(refWeek, refSecs, epochWeek, epochSecs);
