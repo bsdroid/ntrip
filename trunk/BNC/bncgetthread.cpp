@@ -82,6 +82,10 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint, int timeOut,
   hlp.setPort(mountPoint.port());
   hlp.setPath(mountPoint.path());
 
+  if (hlp.path().isEmpty()) {
+    hlp.setPath("/");
+  }
+
   QByteArray  reqStr = "GET " + hlp.path().toAscii() + 
                        " HTTP/1.0\r\n"
                        "User-Agent: NTRIP BNC 1.0\r\n"
