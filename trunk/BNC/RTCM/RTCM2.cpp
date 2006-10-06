@@ -29,6 +29,7 @@
 
 #include "RTCM2.h"
 
+#include "../bncutils.h"
 
 using namespace std;
 
@@ -1062,6 +1063,10 @@ void RTCM2::Decode(char* buffer, int bufLen) {
   
   _buffer.append(buffer, bufLen);
 
+  int    refWeek;
+  double refSecs;
+  gpsWeekAndSec(refWeek, refSecs);
+
   while(true) {
     PP.getPacket(_buffer);
     if (!PP.valid()) break;
@@ -1069,14 +1074,18 @@ void RTCM2::Decode(char* buffer, int bufLen) {
     if ( PP.ID()==18 || PP.ID()==19 ) {   
       ObsBlock.extract(PP);
       if (!ObsBlock.valid()) continue;
+
+      int    epochWeek;
+      double epochSecs;
+      ObsBlock.resolveEpoch(refWeek, refSecs, epochWeek, epochSecs);
         
       for (int iSat=0; iSat < ObsBlock.nSat; iSat++) {
         if (ObsBlock.PRN[iSat] <= 32) {
           Observation* obs = new Observation();
 
           obs->SVPRN          = ObsBlock.PRN[iSat];
-          obs->GPSWeek        = 1390;
-          obs->GPSWeeks       = ObsBlock.secs;
+          obs->GPSWeek        = epochWeek;
+          obs->GPSWeeks       = (int) epochSecs;
           obs->sec            = ObsBlock.secs;
           obs->pCodeIndicator = 0;
           obs->C1 = ObsBlock.rng_C1[iSat];
