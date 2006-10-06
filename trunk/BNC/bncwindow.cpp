@@ -135,6 +135,7 @@ bncWindow::bncWindow() {
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
   _mountPointsTable   = new QTableWidget(0,4);
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+  _mountPointsTable->horizontalHeader()->setStretchLastSection(true);
   _mountPointsTable->setHorizontalHeaderLabels(labels);
 //  _mountPointsTable->horizontalHeader()->hide();
   _mountPointsTable->verticalHeader()->hide();
