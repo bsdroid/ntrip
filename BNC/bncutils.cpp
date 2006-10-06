@@ -52,3 +52,19 @@ QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks) {
 
   return QDateTime(date,time);
 }
+
+
+void gpsWeekAndSec(int& week, double& sec) {
+
+  QDate date = QDate::currentDate();
+  QTime time = QTime::currentTime();
+
+  double deltat = date.toJulianDay() - 2400000.5 - 44244.0 +
+           ((( time.msec() / 1000.0 
+             + time.second() ) / 60.0
+             + time.minute()  ) / 60.0
+             + time.hour()     ) / 24.0;
+
+  week = (int) floor(deltat/7.0);
+  sec  = (deltat - (week)*7.0)*86400.0;
+}

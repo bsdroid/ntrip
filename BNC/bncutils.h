@@ -9,4 +9,6 @@ void expandEnvVar(QString& str);
 
 QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks);
 
+void gpsWeekAndSec(int& week, double& sec);
+
 #endif
