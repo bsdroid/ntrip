@@ -1058,9 +1058,6 @@ RTCM2::~RTCM2() {
 ////////////////////////////////////////////////////////////////////////////
 void RTCM2::Decode(char* buffer, int bufLen) {
 
-  rtcm2::RTCM2packet PP;
-  rtcm2::RTCM2_Obs   ObsBlock;
-  
   _buffer.append(buffer, bufLen);
 
   int    refWeek;
@@ -1068,36 +1065,36 @@ void RTCM2::Decode(char* buffer, int bufLen) {
   gpsWeekAndSec(refWeek, refSecs);
 
   while(true) {
-    PP.getPacket(_buffer);
-    if (!PP.valid()) break;
+    _PP.getPacket(_buffer);
+    if (!_PP.valid()) break;
 
-    if ( PP.ID()==18 || PP.ID()==19 ) {   
-      ObsBlock.extract(PP);
-      if (!ObsBlock.valid()) continue;
+    if ( _PP.ID()==18 || _PP.ID()==19 ) {   
+      _ObsBlock.extract(_PP);
+      if (!_ObsBlock.valid()) continue;
 
       int    epochWeek;
       double epochSecs;
-      ObsBlock.resolveEpoch(refWeek, refSecs, epochWeek, epochSecs);
+      _ObsBlock.resolveEpoch(refWeek, refSecs, epochWeek, epochSecs);
         
-      for (int iSat=0; iSat < ObsBlock.nSat; iSat++) {
-        if (ObsBlock.PRN[iSat] <= 32) {
+      for (int iSat=0; iSat < _ObsBlock.nSat; iSat++) {
+        if (_ObsBlock.PRN[iSat] <= 32) {
           Observation* obs = new Observation();
 
-          obs->SVPRN          = ObsBlock.PRN[iSat];
+          obs->SVPRN          = _ObsBlock.PRN[iSat];
           obs->GPSWeek        = epochWeek;
           obs->GPSWeeks       = (int) epochSecs;
-          obs->sec            = ObsBlock.secs;
+          obs->sec            = _ObsBlock.secs;
           obs->pCodeIndicator = 0;
-          obs->C1 = ObsBlock.rng_C1[iSat];
-          obs->P2 = ObsBlock.rng_P2[iSat];
-          obs->L1 = ObsBlock.resolvedPhase_L1(iSat);
-          obs->L2 = ObsBlock.resolvedPhase_L2(iSat);
+          obs->C1 = _ObsBlock.rng_C1[iSat];
+          obs->P2 = _ObsBlock.rng_P2[iSat];
+          obs->L1 = _ObsBlock.resolvedPhase_L1(iSat);
+          obs->L2 = _ObsBlock.resolvedPhase_L2(iSat);
 
           m_lObsList.push_back(obs);
         }
       }
 
-      ObsBlock.clear();
+      _ObsBlock.clear();
     }
   }
 }

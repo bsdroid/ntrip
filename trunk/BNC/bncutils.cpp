@@ -59,7 +59,7 @@ void gpsWeekAndSec(int& week, double& sec) {
   QDate date = QDate::currentDate();
   QTime time = QTime::currentTime();
 
-  double deltat = date.toJulianDay() - 2400000.5 - 44244.0 +
+  double deltat = double(date.toJulianDay()) - 2444244.0 +
            ((( time.msec() / 1000.0 
              + time.second() ) / 60.0
              + time.minute()  ) / 60.0
