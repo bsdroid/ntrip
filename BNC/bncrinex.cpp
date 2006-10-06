@@ -22,6 +22,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <iomanip>
+#include <math.h>
 
 #include "bncrinex.h"
 #include "bncapp.h"

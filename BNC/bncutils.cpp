@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <ctime>
+#include <math.h>
 
 #include <QRegExp>
 #include <QStringList>
