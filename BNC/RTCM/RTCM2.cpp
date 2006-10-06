@@ -1070,8 +1070,22 @@ void RTCM2::Decode(char* buffer, int bufLen) {
       ObsBlock.extract(PP);
       if (!ObsBlock.valid()) continue;
         
-      for (int iSat=0;iSat<ObsBlock.nSat;iSat++) {
-        cout << iSat << " " << ObsBlock.resolvedPhase_L1(iSat) << endl;
+      for (int iSat=0; iSat < ObsBlock.nSat; iSat++) {
+        if (ObsBlock.PRN[iSat] <= 32) {
+          Observation* obs = new Observation();
+
+          obs->SVPRN          = ObsBlock.PRN[iSat];
+          obs->GPSWeek        = 1390;
+          obs->GPSWeeks       = ObsBlock.secs;
+          obs->sec            = ObsBlock.secs;
+          obs->pCodeIndicator = 0;
+          obs->C1 = ObsBlock.rng_C1[iSat];
+          obs->P2 = ObsBlock.rng_P2[iSat];
+          obs->L1 = ObsBlock.resolvedPhase_L1(iSat);
+          obs->L2 = ObsBlock.resolvedPhase_L2(iSat);
+
+          m_lObsList.push_back(obs);
+        }
       }
 
       ObsBlock.clear();
