@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: GPSDecoder.h,v 1.1.1.1 2006/05/30 11:05:27 mervart Exp $
+// $Id: GPSDecoder.h,v 1.2 2006/10/06 10:51:43 mervart Exp $
 // 2005/04/11: include 'int iPCode' into class 'GPSDecoder' (BKG)
 #if !defined(__GPSDecoder_h__)
 #define __GPSDecoder_h__
@@ -41,7 +41,7 @@ struct Observation {
 		,short _SNR1
 		,short _SNR2
 		,int _pCodeIndicator
-		,u_int _cumuLossOfCont)
+		,unsigned _cumuLossOfCont)
     :SVPRN(_svprn)
     ,GPSWeek(_GPSWeek)
     ,GPSWeeks(_GPSWeeks)
@@ -68,7 +68,7 @@ struct Observation {
     short SNR1;    //<  signal-to noise ration (0.1 dB)
     short SNR2;    //<  signal-to noise ration (0.1 dB)
     int   pCodeIndicator;  // 0 ... CA Code, 1 ... P Code
-    u_int cumuLossOfCont;  // 0 to 31
+    unsigned cumuLossOfCont;  // 0 to 31
 } ;
 
 //

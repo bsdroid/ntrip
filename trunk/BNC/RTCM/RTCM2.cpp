@@ -1060,15 +1060,16 @@ void RTCM2::Decode(char* buffer, int bufLen) {
 
   _buffer.append(buffer, bufLen);
 
-  int    refWeek;
-  double refSecs;
-  gpsWeekAndSec(refWeek, refSecs);
-
   while(true) {
     _PP.getPacket(_buffer);
     if (!_PP.valid()) break;
 
     if ( _PP.ID()==18 || _PP.ID()==19 ) {   
+
+      int    refWeek;
+      double refSecs;
+      gpsWeekAndSec(refWeek, refSecs);
+
       _ObsBlock.extract(_PP);
       if (!_ObsBlock.valid()) continue;
 
