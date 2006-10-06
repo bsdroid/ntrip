@@ -37,18 +37,6 @@
 #include <string>
 #include <vector>
 
-// ---------------- begin added by LM --------------------------------------
-#include "GPSDecoder.h"
-class RTCM2 : public GPSDecoder {
-  public:
-    RTCM2();
-    ~RTCM2();
-    void Decode(char* buffer = 0, int bufLen = 0);
-  private:
-    string _buffer;
-};
-// ----------------- end added by LM ---------------------------------------
-
 //
 // namespace rtcm2
 //
@@ -335,5 +323,19 @@ class RTCM2_Obs {
 
 
 }; // End of namespace rtcm2
+
+// ---------------- begin added by LM --------------------------------------
+#include "GPSDecoder.h"
+class RTCM2 : public GPSDecoder {
+  public:
+    RTCM2();
+    ~RTCM2();
+    void Decode(char* buffer = 0, int bufLen = 0);
+  private:
+    string _buffer;
+    rtcm2::RTCM2_Obs   _ObsBlock;
+    rtcm2::RTCM2packet _PP;
+};
+// ----------------- end added by LM ---------------------------------------
 
 #endif  // include blocker
