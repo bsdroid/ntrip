@@ -1062,40 +1062,42 @@ void RTCM2::Decode(char* buffer, int bufLen) {
 
   while(true) {
     _PP.getPacket(_buffer);
-    if (!_PP.valid()) break;
+    if (!_PP.valid()) {
+      return;
+    }
 
     if ( _PP.ID()==18 || _PP.ID()==19 ) {   
 
-      int    refWeek;
-      double refSecs;
-      gpsWeekAndSec(refWeek, refSecs);
-
       _ObsBlock.extract(_PP);
-      if (!_ObsBlock.valid()) continue;
 
-      int    epochWeek;
-      double epochSecs;
-      _ObsBlock.resolveEpoch(refWeek, refSecs, epochWeek, epochSecs);
+      if (_ObsBlock.valid()) {
+
+        int    refWeek;
+        double refSecs;
+        gpsWeekAndSec(refWeek, refSecs);
+        int    epochWeek;
+        double epochSecs;
+        _ObsBlock.resolveEpoch(refWeek, refSecs, epochWeek, epochSecs);
+          
+        for (int iSat=0; iSat < _ObsBlock.nSat; iSat++) {
+          if (_ObsBlock.PRN[iSat] <= 32) {
+            Observation* obs = new Observation();
         
-      for (int iSat=0; iSat < _ObsBlock.nSat; iSat++) {
-        if (_ObsBlock.PRN[iSat] <= 32) {
-          Observation* obs = new Observation();
-
-          obs->SVPRN          = _ObsBlock.PRN[iSat];
-          obs->GPSWeek        = epochWeek;
-          obs->GPSWeeks       = (int) epochSecs;
-          obs->sec            = _ObsBlock.secs;
-          obs->pCodeIndicator = 0;
-          obs->C1 = _ObsBlock.rng_C1[iSat];
-          obs->P2 = _ObsBlock.rng_P2[iSat];
-          obs->L1 = _ObsBlock.resolvedPhase_L1(iSat);
-          obs->L2 = _ObsBlock.resolvedPhase_L2(iSat);
-
-          m_lObsList.push_back(obs);
+            obs->SVPRN          = _ObsBlock.PRN[iSat];
+            obs->GPSWeek        = epochWeek;
+            obs->GPSWeeks       = (int) epochSecs;
+            obs->sec            = _ObsBlock.secs;
+            obs->pCodeIndicator = 0;
+            obs->C1 = _ObsBlock.rng_C1[iSat];
+            obs->P2 = _ObsBlock.rng_P2[iSat];
+            obs->L1 = _ObsBlock.resolvedPhase_L1(iSat);
+            obs->L2 = _ObsBlock.resolvedPhase_L2(iSat);
+        
+            m_lObsList.push_back(obs);
+          }
         }
+        _ObsBlock.clear();
       }
-
-      _ObsBlock.clear();
     }
   }
 }
