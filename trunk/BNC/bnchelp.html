@@ -263,7 +263,7 @@ Streams on NTRIP broadcasters may be password protected. Enter a valid User ID a
 Hit button 'Get Table' to download the sourcetable from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Have in mind that BNC can only decode and convert streams that come in RTCM 2.x, RTCM 3, or RTIGS format. RTCM 2.x streams must contain message types 18 and 19 while RTCM 3 streams must contain message types 1001 or 1003, better 1003 or 1004, see data field 'format-details' for available message types and their repetition rates in brackets. Select your streams line by line, use +Shift and +Ctrl when necessary.
 </p> 
 <p>
-Hit 'OK' to return to the main window. You may like to further 'Add Mountpoints' from another NTRIP broadcaster as necessary.
+Hit 'OK' to return to the main window. You may like to 'Add Mountpoints' from another NTRIP broadcaster when necessary.
 </p> 
 
 <a name="delete">
@@ -274,7 +274,7 @@ To delete a stream shown under 'Mountpoints' in the main window select it by mou
 <a name="edit">
 <p><h4>B - 6.6 Edit Mountpoints</h4></p>
 <p>
-BNC automatically selects one out of several internal decoders for a stream based on its 'format' and 'format-details' as given in the sourcetable. It may happen that you need to overrule the automated decoder selection because of sourcetable setup deficiencies. Therefore BNC allows to edit the decoder string for each stream shown under 'Mountpoints'. Accepted decoder strings allowed to be introduced are 'RTCM_2.x', 'RTCM_3', and 'RTIGS'.
+BNC automatically selects one out of several internal decoders for a stream based on its 'format' and 'format-details' as given in the sourcetable. It may happen that you need to overrule the automated decoder selection because of sourcetable setup deficiencies. Therefore BNC allows to edit the decoder string (double-click) for each stream shown under 'Mountpoints'. Accepted decoder strings allowed to be introduced are 'RTCM_2.x', 'RTCM_3', and 'RTIGS'.
 </p> 
 
 <a name="log">
@@ -308,7 +308,7 @@ Note that the self-explaining contents of the configuration file or the Windows 
 <p><h3>C - Limitations</h3></p>
 <ul>
 <li>
-A connection to the NTRIP broadcaster may break or a stream requested may be temporarily unavailable. Furthermore, a connection is interpreted by BNC to be broken if no data is coming in for a period of 20 seconds. When this happens, a reconnect is tried with decreasing frequency. BNC first tries to reconnect with ~1 second delay, if unsuccessful, tries again in ~2 seconds from the last attempt, if still unsuccessful tries with ~4 seconds from the last attempt etc. Each attempt doubles the delay from the previous attempt. The maximum delay between attempts is limited to ~128 seconds. The reconnection process is documented in 'Log file'.
+The connection to an NTRIP broadcaster may break or a stream requested may be temporarily unavailable. Furthermore, a connection is interpreted by BNC to be broken if no data is coming in for a period of 20 seconds. When this happens, a reconnect is tried with decreasing frequency. BNC first tries to reconnect with ~1 second delay, if unsuccessful, tries again in ~2 seconds from the last attempt, if still unsuccessful tries with ~4 seconds from the last attempt etc. Each attempt doubles the delay from the previous attempt. The maximum delay between attempts is limited to ~128 seconds. The reconnection process is documented in 'Log file'.
 </li> 
 <li>
 So far BNC only handles GPS data while ignoring GLONASS and Galileo observations. Furthermore, its function is limited today to processing L1, L2, P1, and P2 observations only.
@@ -415,7 +415,7 @@ NTRIP is an open none-proprietary protocol. Major characteristics of NTRIP's dis
 <p><h4>F - 1.1 Sourcetable</h4></p>
 
 <p>
-The NTRIP broadcaster maintains a sourcetable containing information on available NTRIP streams, networks of NTRIP streams, and NTRIP broadcasters. The sourcetable is sent to an NTRIP client on request. Sourcetable records are dedicated to one of the following: Data STReams (record type STR), CASters (record type CAS), or NETworks of streams (record type NET).
+The NTRIP broadcaster maintains a sourcetable containing information on available NTRIP streams, networks of NTRIP streams, and NTRIP broadcasters. The sourcetable is sent to an NTRIP client on request. Sourcetable records are dedicated to one of the following: Data Streams (record type STR), Casters (record type CAS), or Networks of streams (record type NET).
 </p>
 
 <p>
