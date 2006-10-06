@@ -81,7 +81,7 @@ Select an appropriate font.<br>
 Use a small font size if the BNC main window exceeds the size of your screen.
 </li> 
 <li> Save selected options.<br>
-Note that on Windows systems options are saved in registers. On UNIX/Linux systems options are saved in ${HOME}/.config/BKG/BKG_NTRIP_Client.conf.
+Note that on Windows systems options are saved in register BKG_NTRIP_Client. On Unix/Linux systems options are saved in ${HOME}/.config/BKG/BKG_NTRIP_Client.conf.
 </li>
 <li>
 Quit the execution of BNC.
@@ -118,7 +118,7 @@ Note that IP streaming may be generally denied in a LAN. In such a case you need
 <a name="output"> <p><h4>B - 4. Synchronized Output</h4></p>
 <p>
 BNC lets you output synchronized observations epoch by epoch. This output is made available in ASCII format and in a binary format. The output comprises the following observations if available:</p>
-StatID, SVPRN, GPSWeek, GPSWeeks, sec, C1, P2, L1, L2, SNR1, SNR2, pCodeIndicator, cumuLossOfCont.
+StatID, SVPRN, GPSWeek, GPSWeeks, sec, C1 or P1, P2, L1, L2, SNR1, SNR2, pCodeIndicator, cumuLossOfCont.
 </p>
 
 <a name="wait">
@@ -133,13 +133,13 @@ Note that 'Wait for full epoch' does not influence the RINEX file contents. Obse
 <a name="ascii">
 <p><h4>B - 4.2 ASCII Output File - optional</h4></p>
 <p>
-Enter the full path for a file to save synchronized observations in plain ASCII format. Default value is an empty option field, meaning that no ASCII output file is created.
+Enter the full path for a file to save synchronized observations in a plain ASCII format. Default value is an empty option field, meaning that no ASCII output file is created.
 </p>
 
 <a name="binary">
 <p><h4>B - 4.3 Port for Binary Output - optional</h4></p>
 <p>
-BNC makes synchronized observations available in a binary format through an IP port on your local host IP 127.0.0.1. Enter the port number to activate this function. Default is an empty option field, meaning that no binary output is generated.</p>
+BNC makes synchronized observations available in a binary format on your local host IP 127.0.0.1 through an IP port. Enter an IP port number to activate this function. Default is an empty option field, meaning that no binary output is generated.</p>
 <p>The binary output is provided as a continuous stream in the order</p>
 <pre>
 begEpoch
@@ -184,7 +184,7 @@ Observations are converted to RINEX Version 2.1. RINEX file names are derived by
 If you retrieve streams that show mountpoints with an identical 4Char Station ID (same first 4 characters), the mountpoint string is split in two sub-strings and both become part of the RINEX file name. Example: When simultaneously retrieving data from mountpoints FRANKFURT and FRANCE, there RINEX file names are defined as FRAN*_KFURT.* and FRAN*_CE.*.
 </p>
 <p>
-Note that RINEX file names for file intervals less than 1 hour are created following the file name convention for 15 minute RINEX files.
+Note that RINEX file names for all intervals less than 1 hour are created following the file name convention for 15 minute RINEX files.
 </p>
 
 <a name="rnxpath">
@@ -196,7 +196,7 @@ Enter a path for saving the RINEX files in a directory. If this directory does n
 <a name="rnxscript">
 <p><h4>B - 5.2 RINEX Script - optional</h4></p>
 <p>
-Whenever a RINEX file is generated, you may like to compress, copy, or upload it immediately. For that you enter the full path of a script or batch file carrying out these operations. The RINEX file path and name will be passed to the script as a command line parameter (%1 on Windows systems, $1 on UNIX/Linux systems).
+Whenever a RINEX file is generated, you may like to compress, copy, or upload it immediately via FTP. For that you enter the full path of a script or batch file carrying out these operations. The RINEX file path will be passed to the script as a command line parameter (%1 on Windows systems, $1 on Unix/Linux systems).
 </p> 
 
 <a name="rnxinterval">
@@ -208,7 +208,7 @@ Select the interval for RINEX file generation. Default for 'RINEX file interval'
 <a name="rnxsample">
 <p><h4>B - 5.4 RINEX Sampling - mandatory if 'RINEX directory path' set </h4></p>
 <p>
-Select the RINEX sample interval in seconds. Zero '0' stands for converting all incoming epochs to RINEX. Default for 'RINEX sampling' is '0'.
+Select the RINEX sample interval in seconds. Zero '0' stands for converting all incoming epochs to RINEX. Default for RINEX 'Sampling' is '0'.
 </p> 
 
 <a name="rnxskeleton">
@@ -217,7 +217,7 @@ Select the RINEX sample interval in seconds. Zero '0' stands for converting all 
 BNC lets you introduce RINEX header skeleton files that contain the header records you would like to see instead of a default header. You may like to derive RINEX skeleton files from the information given in sitelogs. A file in the 'RINEX directory path' with the 'RINEX skeleton extension' is understood by BNC as a RINEX header skeleton file for the affected stream.
 </p>
 <p>
-Example: Mountpoint FRAN0 leads to the generation of RINEX files FRAN*.*. The header part of this files would be overwritten by the content of an existing skeleton file named FRAN.skl if 'RINEX skeleton extension' is set to 'skl' .
+Example: Mountpoint FRAN0 leads to the generation of RINEX file FRAN*.*. The header part of this file would be overwritten by the content of an existing skeleton file named FRAN.skl if 'RINEX skeleton extension' is set to 'skl' .
 </p> 
 <p> 
 Note the following conditions regarding RINEX header skeleton files.
@@ -260,7 +260,10 @@ Streams on NTRIP broadcasters may be password protected. Enter a valid User ID a
 <a name="GetTable">
 <p><h4>B - 6.4 Get Table</h4></p>
 <p>
-Hit button 'Get Table' to download the sourcetable from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Have in mind that BNC can only decode and convert streams that come in RTCM 2.x, RTCM 3, or RTIGS format. RTCM 2.x streams must contain message types 18 and 19 while RTCM 3 streams must contain message types 1001 or 1003, better 1003 or 1004, see data field 'format-details' for available message types and their repetition rates in brackets. Select your streams line by line, use +Shift and +Ctrl when necessary. Hit 'OK' to return to the main window.
+Hit button 'Get Table' to download the sourcetable from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Have in mind that BNC can only decode and convert streams that come in RTCM 2.x, RTCM 3, or RTIGS format. RTCM 2.x streams must contain message types 18 and 19 while RTCM 3 streams must contain message types 1001 or 1003, better 1003 or 1004, see data field 'format-details' for available message types and their repetition rates in brackets. Select your streams line by line, use +Shift and +Ctrl when necessary.
+</p> 
+<p>
+Hit 'OK' to return to the main window. You may like to further 'Add Mountpoints' from another NTRIP broadcaster as necessary.
 </p> 
 
 <a name="delete">
@@ -271,7 +274,7 @@ To delete a stream shown under 'Mountpoints' in the main window select it by mou
 <a name="edit">
 <p><h4>B - 6.6 Edit Mountpoints</h4></p>
 <p>
-BNC automatically selects one out of several internal decoders for a stream based on its 'format' and 'format-details' as given in the sourcetable. It may happen that you need to overrule the automated decoder selection because of sourcetable setup deficiencies. Therefore BNC allows to edit the decoder part for each stream shown under 'Mountpoints'. Accepted decoder strings allowed to be introduced are 'RTCM_2.x', 'RTCM_3', and 'RTIGS'.
+BNC automatically selects one out of several internal decoders for a stream based on its 'format' and 'format-details' as given in the sourcetable. It may happen that you need to overrule the automated decoder selection because of sourcetable setup deficiencies. Therefore BNC allows to edit the decoder string for each stream shown under 'Mountpoints'. Accepted decoder strings allowed to be introduced are 'RTCM_2.x', 'RTCM_3', and 'RTIGS'.
 </p> 
 
 <a name="log">
@@ -295,7 +298,7 @@ Hit the 'Stop' button to stop BNC.
 <a name="nw">
 <p><h4>B - 10. No Window - optional</h4></p>
 <p>
-You can use BNC in batch mode with the command line option -nw. BNC then runs in 'no window' mode, reading options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Client (Unix/Linux) or from the registers (Windows).
+You can use BNC in batch mode with the command line option -nw. BNC then runs in 'no window' mode, reading options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Client.conf (Unix/Linux) or from the registers (Windows).
 </p>
 <p>
 Note that the self-explaining contents of the configuration file or the Windows registers can easily be edited.
