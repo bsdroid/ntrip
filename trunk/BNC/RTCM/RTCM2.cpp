@@ -1085,7 +1085,7 @@ void RTCM2::Decode(char* buffer, int bufLen) {
         
             obs->SVPRN          = _ObsBlock.PRN[iSat];
             obs->GPSWeek        = epochWeek;
-            obs->GPSWeeks       = (int) epochSecs;
+            obs->GPSWeeks       = int(floor(epochSecs+0.5));
             obs->sec            = _ObsBlock.secs;
             obs->pCodeIndicator = 0;
             obs->C1 = _ObsBlock.rng_C1[iSat];

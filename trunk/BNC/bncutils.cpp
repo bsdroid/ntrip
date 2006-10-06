@@ -84,12 +84,7 @@ void currentGPSWeeks(int& week, double& sec) {
                      + gmt->tm_min ) / 60.0
                      + gmt->tm_hour ) / 24.0;
 
-  double mjd = MJD(1900+gmt->tm_year, gmt->tm_mon+1, gmt->tm_mday+1+dayFrac);
-
-  cout << 1900+gmt->tm_year << " " << gmt->tm_mon+1 << " " << gmt->tm_mday+1 
-       << " " << gmt->tm_hour
-       << " " << gmt->tm_min
-       << " " << gmt->tm_sec << endl;
+  double mjd = MJD(1900+gmt->tm_year, gmt->tm_mon+1, gmt->tm_mday+dayFrac);
 
   MJD_GPSWeeks(mjd, week, sec);
 }
