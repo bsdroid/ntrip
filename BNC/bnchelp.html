@@ -503,7 +503,55 @@ RTCM Version 3 defines a number of message types. Messages that may be of intere
 <a name="rtigs">
 <p><h4>F - 3. RTIGS</h4></p>
 <p>
-Input from Ken?
+RTIGS is a data format and transport protocol for GPS observable. It has been definde by the Real-Time IGS Working Group (RTIGS WG). Its definition is based on the SOC format. Every RTIGS record has one of the following numbers:
+</p>
+<p>
+Station record number 100<br>
+Observation record number 200<br>
+Ephemeris record number 300<br>
+Meteorological record number 400
+</p>
+<p>
+Every station has one of the following unique numbers:
+</p>
+<p>
+1-99 reserved for JPL<br>
+100-199 reserved for NRCan<br>
+200-299 reserved for NGS<br>
+300-399 reserved for ESOC<br>
+400-499 reserved for GFZ<br>
+500-599 reserved for BKG<br>
+600-699 reserved for GEOSCIENCE AUS<br>
+700-799 others<br>
+etc
+</p>
+<p>
+The number of bytes in each real time message includes the header as well as the data content, but NOT the pointer. 
+</p>
+<p>
+For example:
+</p>
+<ul>
+<li>A station message is output once per hour and is 20 bytes.</li>
+<li>An observation message is output once per second. The header is 12 bytes long and the SOC data is 21 bytes per PRN. So a typical RTIGSO_T message will be 390 bytes if 8 sats are being tracked.</li>
+<li>An ephemeris message is output when the ephemeris is decoded by the GPS receiver. The time in the Ephemeris header is the collected time. Only one ephemeris can be bundled in a RTIGSE_T message.<br>
+A RTIGSE_T message contains one eph. The  message consists of 12 header bytes and 72 ephemeris bytes, for a total of 84 bytes.</li>
+<li>The RTIGSM_T  (met) message should be issues once every 15 minutes. A basic met message consists of a 12 byte header and 3 longs (temp, press and relative humidity) for a total of 24 bytes.</li>
+</ul>
+<p>
+All records are related to a station configuration indicated by the Issue of Data Station (IODS). The IODS will enable the user to identify the equipment and software that was used to derive the observation data.
+</p>
+<p>
+Each record header contains the GPS Time in seconds which is continuous from 6 Jan-1980.
+</p>
+<p>
+The data payload of each record consists of observations. The structures indicate a pointer to data but in fact the broadcast messages do not contain the pointer, only the data. Users will have to manage the data and the pointer is shown to illustrate where the data is located in the message and one possible data management option.
+</p>
+<p>
+All record data are in network byte order (Big Endian), i.e. IA32 users have to swap bytes.
+</p>
+<p>
+Visit <u>http://igscb.jpl.nasa.gov/mail/igs-rtwg/2004/msg00001.html</u> for further details.
 </p>
 
 <a name="soc">
