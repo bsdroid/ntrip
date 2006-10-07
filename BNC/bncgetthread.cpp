@@ -202,11 +202,13 @@ t_irc bncGetThread::initRun() {
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::run() {
 
-  if      (initRun() == fatal) {
+  t_irc irc = initRun();
+
+  if      (irc == fatal) {
     QThread::exit(1);
     return;
   }
-  else if ( initRun() != success ) {
+  else if (irc != success) {
     emit(newMessage(_staID + ": initRun failed, reconnecting"));
     tryReconnect();
   }
