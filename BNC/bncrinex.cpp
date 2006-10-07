@@ -28,6 +28,7 @@
 #include "bncapp.h"
 #include "bncutils.h"
 #include "bncconst.h"
+#include "RTCM3/rtcm3torinex.h"
 
 using namespace std;
 
@@ -320,7 +321,16 @@ void bncRinex::dumpEpoch(long maxTime) {
   while (it.hasNext()) {
     iSat++;
     Observation* ob = it.next();
-    _out << " " << setw(2) << int(ob->SVPRN);
+    int prn = ob->SVPRN;
+    if        (prn <= PRN_GPS_END) {
+      _out << "G" << setw(2) << prn;
+    }
+    else if (prn >= PRN_GLONASS_START && prn <= PRN_GLONASS_END) {
+      _out << "R" << setw(2) << prn - PRN_GLONASS_START + 1;
+    }
+    else {
+      _out << setw(3) << prn;
+    }
     if (iSat == 12 && it.hasNext()) {
       _out << endl << "                                ";
       iSat = 0;

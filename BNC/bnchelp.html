@@ -160,19 +160,18 @@ const char begEpoch = 'A';
 const char begObs   = 'B';
 const char endEpoch = 'C';
 struct Observation {
-  char     StatID[5+1];    // Station ID
-  char     SVPRN;          // Satellite PRN
-  short    GPSWeek;        // Week of GPS-Time
-  int      GPSWeeks;       // Second of Week (GPS-Time)
-  double   sec;            // second 
-  double   C1;             // CA or P1-code pseudorange (meters)
-  double   P2;             // P2-code pseudorange (meters)
-  double   L1;             // L1-carrier phase (meters)
-  double   L2;             // L2-carrier phase (meters)
-  short    SNR1;           // Signal-to noise ratio (0.1 dB)
-  short    SNR2;           // Signal-to noise ratio (0.1 dB)
-  int      pCodeIndicator; // 0 ... CA Code, 1 ... P Code
-  unsigned cumuLossOfCont; // Loss of lock indicator (0 to 31)
+  int    flags;
+  char   StatID[5+1]; // Station ID
+  int    SVPRN;       // Satellite PRN
+  int    GPSWeek;     // Week of GPS-Time
+  double GPSWeeks;    // Second of Week (GPS-Time)
+  double C1;          // CA-code pseudorange (meters)
+  double P1;          // P1-code pseudorange (meters)
+  double P2;          // P2-code pseudorange (meters)
+  double L1;          // L1 carrier phase (cycles)
+  double L2;          // L2 carrier phase (cycles)
+  int    SNR1;        // L1 signal-to noise ratio (0.1 dB)
+  int    SNR2;        // L2 signal-to noise ratio (0.1 dB)
 } ;
 </pre>
 
