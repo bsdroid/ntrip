@@ -73,7 +73,7 @@ bncCaster::~bncCaster() {
     bncGetThread* thread = it.next();
     thread->terminate();
     thread->wait();
-    ////    delete thread;
+    delete thread;
   }
   delete _out;
   delete _outFile;
