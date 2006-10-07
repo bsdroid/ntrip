@@ -500,12 +500,14 @@ unsigned int RTCM2packet::getUnsignedBits ( unsigned int start,
   if (n>32) {
     cerr << "Error: can't handle >32 bits in RTCM2packet::getUnsignedBits" 
          << endl;
-    exit(-1);
+    ///    exit(-1);
+    return 0;
   };
   
   if ( 24*DW.size() < start+n-1 ) {
     cerr << "Error: Packet too short in RTCM2packet::getUnsignedBits" << endl;
-    exit(-1);
+    ////    exit(-1);
+    return 0;
   }
 
   // Handle initial data word
@@ -552,12 +554,13 @@ int RTCM2packet::getBits ( unsigned int start,
   if (n>32) {
     cerr << "Error: can't handle >32 bits in RTCM2packet::getBits" 
          << endl;
-    exit(-1);
+    ////    exit(-1);
+    return 0;
   };
   
   if ( 24*DW.size() < start+n-1 ) {
     cerr << "Error: Packet too short in RTCM2packet::getBits" << endl;
-    exit(-1);
+    return 0;
   }
 
   return ((int)(getUnsignedBits(start,n)<<(32-n))>>(32-n));
