@@ -29,8 +29,6 @@
 
 #include "RTCM2.h"
 
-#include "../bncutils.h"
-
 using namespace std;
 
 
@@ -994,6 +992,7 @@ double RTCM2_Obs::resolvedPhase_L1(int i){
   if (!valid() || i<0 || i>nSat-1) return 0.0;
 
   rng = rng_C1[i]; 
+  if (rng==0.0) rng = rng_P1[i];
   if (rng==0.0) return 0.0;
   
   n = floor( (rng/lambda_L1-cph_L1[i]) / ambig + 0.5 );
@@ -1013,6 +1012,7 @@ double RTCM2_Obs::resolvedPhase_L2(int i){
   if (!valid() || i<0 || i>nSat-1) return 0.0;
   
   rng = rng_C1[i]; 
+  if (rng==0.0) rng = rng_P1[i];
   if (rng==0.0) return 0.0;
   
   n = floor( (rng/lambda_L2-cph_L2[i]) / ambig + 0.5 );
@@ -1041,6 +1041,8 @@ void RTCM2_Obs::resolveEpoch (int  refWeek,   double  refSecs,
 }; // End of namespace rtcm2
 
 // ---------------- begin added by LM --------------------------------------
+
+#include "../bncutils.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -1090,7 +1092,7 @@ void RTCM2::Decode(char* buffer, int bufLen) {
           obs->P2       = _ObsBlock.rng_P2[iSat];
           obs->L1       = _ObsBlock.resolvedPhase_L1(iSat);
           obs->L2       = _ObsBlock.resolvedPhase_L2(iSat);
-        
+
           _obsList.push_back(obs);
         }
         _ObsBlock.clear();
