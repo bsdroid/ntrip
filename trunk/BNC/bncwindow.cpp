@@ -476,7 +476,7 @@ void bncWindow::slotAbout() {
   QLabel* img = new QLabel();
   img->setPixmap(QPixmap(":ntrip-logo.png"));
   dlgLayout->addWidget(img, 0,0);
-  dlgLayout->addWidget(new QLabel("BKG NTRIP Client (BNC), Version 1.0"), 0,1);
+  dlgLayout->addWidget(new QLabel("BKG NTRIP Client (BNC), Version 1.0b"), 0,1);
   dlgLayout->addWidget(tb,1,0,1,2);
 
   dlg.setLayout(dlgLayout);
