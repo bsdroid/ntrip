@@ -15,6 +15,7 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
 #include <math.h>
 
 #include "rtcm3.h"
@@ -56,20 +57,15 @@ void rtcm3::Decode(char* buffer, int bufLen) {
         }
 
         if (rr == 2) {
-          cerr << "No valid RINEX! All values are modulo 299792.458!\n";
+          std::cerr << "No valid RINEX! All values are modulo 299792.458!\n";
           exit(1);
         }
 
         for (int ii = 0; ii < _Parser.Data.numsats; ii++) {
           Observation* obs = new Observation();
-          
-////      obs->statID   =
-////      obs->cumuLossOfCont =
-
           obs->SVPRN    = _Parser.Data.satellites[ii];
           obs->GPSWeek  = _Parser.Data.week;
-          obs->GPSWeeks = (int) (_Parser.Data.timeofweek / 1000.0);
-          obs->sec      = fmod(_Parser.Data.timeofweek / 1000.0, 3600.0);
+          obs->GPSWeeks = _Parser.Data.timeofweek / 1000.0;
 
           for (int jj = 0; jj < _Parser.numdatatypes; jj++) {
 
@@ -81,11 +77,9 @@ void rtcm3::Decode(char* buffer, int bufLen) {
               
             if      (_Parser.dataflag[jj] & GNSSDF_C1DATA) {
               obs->C1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
-              obs->pCodeIndicator = 0;
             }
             else if (_Parser.dataflag[jj] & GNSSDF_P1DATA) {
-              obs->C1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
-              obs->pCodeIndicator = 1;
+              obs->P1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
             }
             else if (_Parser.dataflag[jj] & GNSSDF_P2DATA) {
               obs->P2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
@@ -99,7 +93,7 @@ void rtcm3::Decode(char* buffer, int bufLen) {
               obs->SNR2 = _Parser.Data.snrL2[ii];
             }
           }
-          m_lObsList.push_back(obs);
+          _obsList.push_back(obs);
         }
       }
     }

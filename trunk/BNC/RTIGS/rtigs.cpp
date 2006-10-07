@@ -81,20 +81,18 @@ void rtigs::Decode(char* buffer, int bufLen) {
     for (short ii = 0; ii < numObs; ii++) {
       Observation* obs = new Observation();
 
-      obs->SVPRN          = _GPSTrans.DecObs.Obs[ii].sat_prn;
-      obs->GPSWeek        = _GPSTrans.DecObs.Obs[ii].GPSTime / (7 * 86400);
-      obs->GPSWeeks       = _GPSTrans.DecObs.Obs[ii].GPSTime % (7 * 86400);
-      obs->sec            = _GPSTrans.DecObs.Obs[ii].GPSTime % 3600;
-      obs->pCodeIndicator = 1;
-      obs->C1             = _GPSTrans.DecObs.Obs[ii].p1_pseudo_range;
-      obs->P2             = _GPSTrans.DecObs.Obs[ii].p2_pseudo_range;
-      obs->L1             = _GPSTrans.DecObs.Obs[ii].p1_phase * (C / F1); // ok
-      obs->L2             = _GPSTrans.DecObs.Obs[ii].l1_phase * (C / F1); // strange, probably bug in RTIGS converter
-      obs->SNR1           = (short) _GPSTrans.DecObs.Obs[ii].l1_sn * 10;
-      obs->SNR2           = (short) _GPSTrans.DecObs.Obs[ii].l2_sn * 10;
-      obs->cumuLossOfCont = 0;
+      obs->SVPRN    = _GPSTrans.DecObs.Obs[ii].sat_prn;
+      obs->GPSWeek  = _GPSTrans.DecObs.Obs[ii].GPSTime / (7 * 86400);
+      obs->GPSWeeks = _GPSTrans.DecObs.Obs[ii].GPSTime % (7 * 86400);
+      obs->C1       = _GPSTrans.DecObs.Obs[ii].l1_pseudo_range;
+      obs->P1       = _GPSTrans.DecObs.Obs[ii].p1_pseudo_range;
+      obs->P2       = _GPSTrans.DecObs.Obs[ii].p2_pseudo_range;
+      obs->L1       = _GPSTrans.DecObs.Obs[ii].p1_phase;
+      obs->L2       = _GPSTrans.DecObs.Obs[ii].p2_phase;
+      obs->SNR1     = _GPSTrans.DecObs.Obs[ii].l1_sn * 10;
+      obs->SNR2     = _GPSTrans.DecObs.Obs[ii].l2_sn * 10;
 
-      m_lObsList.push_back(obs);
+      _obsList.push_back(obs);
     }
   }
 

@@ -332,7 +332,7 @@ class RTCM2 : public GPSDecoder {
     ~RTCM2();
     void Decode(char* buffer = 0, int bufLen = 0);
   private:
-    string _buffer;
+    std::string        _buffer;
     rtcm2::RTCM2_Obs   _ObsBlock;
     rtcm2::RTCM2packet _PP;
 };

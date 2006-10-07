@@ -297,11 +297,8 @@ void bncRinex::dumpEpoch(long maxTime) {
 
   // Time of Epoch
   // -------------
-  Observation* firstObs = *dumpList.begin();
-
-  QDateTime datTim = dateAndTimeFromGPSweek( firstObs->GPSWeek,
-                                             firstObs->GPSWeeks + 
-                                             fmod(firstObs->sec, 1.0) );
+  Observation* fObs = *dumpList.begin();
+  QDateTime datTim = dateAndTimeFromGPSweek(fObs->GPSWeek, fObs->GPSWeeks);
 
   // Close the file
   // --------------
@@ -339,8 +336,8 @@ void bncRinex::dumpEpoch(long maxTime) {
     char snr = ' ';
     _out << setw(14) << setprecision(3) << ob->C1 << lli << snr;
     _out << setw(14) << setprecision(3) << ob->P2 << lli << snr; 
-    _out << setw(14) << setprecision(3) << ob->L1 / t_CST::lambda1 << lli << snr; 
-    _out << setw(14) << setprecision(3) << ob->L2 / t_CST::lambda2 << lli << snr; 
+    _out << setw(14) << setprecision(3) << ob->L1 << lli << snr; 
+    _out << setw(14) << setprecision(3) << ob->L2 << lli << snr; 
     _out << endl;
 
     delete ob;
