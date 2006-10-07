@@ -329,7 +329,7 @@ void bncRinex::dumpEpoch(long maxTime) {
       _out << "R" << setw(2) << prn - PRN_GLONASS_START + 1;
     }
     else {
-      _out << setw(3) << prn;
+      _out << "R" << setw(2) << prn % 100;
     }
     if (iSat == 12 && it.hasNext()) {
       _out << endl << "                                ";
