@@ -16,6 +16,7 @@
  * -----------------------------------------------------------------------*/
 
 #include "rtigs.h"
+#include "bncconst.h"
 
 using namespace std;
 
@@ -87,10 +88,10 @@ void rtigs::Decode(char* buffer, int bufLen) {
       obs->C1       = _GPSTrans.DecObs.Obs[ii].l1_pseudo_range;
       obs->P1       = _GPSTrans.DecObs.Obs[ii].p1_pseudo_range;
       obs->P2       = _GPSTrans.DecObs.Obs[ii].p2_pseudo_range;
-      obs->L1       = _GPSTrans.DecObs.Obs[ii].p1_phase;
-      obs->L2       = _GPSTrans.DecObs.Obs[ii].p2_phase;
-      obs->SNR1     = _GPSTrans.DecObs.Obs[ii].l1_sn * 10;
-      obs->SNR2     = _GPSTrans.DecObs.Obs[ii].l2_sn * 10;
+      obs->L1       = _GPSTrans.DecObs.Obs[ii].p1_phase / t_CST::lambda1;
+      obs->L2       = _GPSTrans.DecObs.Obs[ii].p2_phase / t_CST::lambda2;
+      obs->SNR1     = int(_GPSTrans.DecObs.Obs[ii].l1_sn * 10);
+      obs->SNR2     = int(_GPSTrans.DecObs.Obs[ii].l2_sn * 10);
 
       _obsList.push_back(obs);
     }
