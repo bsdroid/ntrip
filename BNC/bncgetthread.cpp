@@ -227,11 +227,11 @@ void bncGetThread::run() {
       _socket->read(data, nBytes);
       _decoder->Decode(data, nBytes);
       delete data;
-      for (list<Observation*>::iterator it = _decoder->m_lObsList.begin(); 
-           it != _decoder->m_lObsList.end(); it++) {
+      for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
+           it != _decoder->_obsList.end(); it++) {
         emit newObs(_staID, *it);
       }
-      _decoder->m_lObsList.clear();
+      _decoder->_obsList.clear();
     }
     else {
       emit(newMessage(_staID + ": Data Timeout, reconnecting"));

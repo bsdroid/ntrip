@@ -15,6 +15,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <math.h>
+
 #include "bnccaster.h"
 #include "bncgetthread.h"
 #include "bncutils.h"
@@ -90,7 +92,8 @@ void bncCaster::run() {
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
 
-  long newTime = obs->GPSWeek * 7*24*3600 + obs->GPSWeeks;
+  long iSec    = long(floor(obs->GPSWeeks+0.5));
+  long newTime = obs->GPSWeek * 7*24*3600 + iSec;
 
   // Rename the Station
   // ------------------
@@ -102,7 +105,7 @@ void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
     _rinexWriters.insert(obs->StatID, new bncRinex(obs->StatID));
   }
   bncRinex* rnx = _rinexWriters.find(obs->StatID).value();
-  if (_samplingRate == 0 || obs->GPSWeeks % _samplingRate == 0) {
+  if (_samplingRate == 0 || iSec % _samplingRate == 0) {
     rnx->deepCopy(obs);
   }
   rnx->dumpEpoch(newTime);
@@ -120,7 +123,7 @@ void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
     if ( !settings.value("outFile").toString().isEmpty() || 
          !settings.value("outPort").toString().isEmpty() ) { 
       emit( newMessage(QString("Station %1: old epoch %2 thrown away")
-                       .arg(staID.data()).arg(obs->GPSWeeks).toAscii()) );
+                       .arg(staID.data()).arg(iSec).toAscii()) );
     }
     delete obs;
     return;
@@ -191,17 +194,15 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
           if (first) {
             *_out << begEpoch << endl;;
           }
-          *_out <<       obs->StatID    << " "
-                << (int) obs->SVPRN     << " "
-                << (int) obs->GPSWeek   << " "
-                <<       obs->GPSWeeks  << " "
-                <<       obs->sec       << " "
-                <<       obs->pCodeIndicator << " "
-                <<       obs->cumuLossOfCont << " "
-                <<       obs->C1        << " "
-                <<       obs->P2        << " "
-                <<       obs->L1        << " "
-                <<       obs->L2        << endl;
+          *_out <<  obs->StatID    << " "
+                <<  obs->SVPRN     << " "
+                <<  obs->GPSWeek   << " "
+                <<  obs->GPSWeeks  << " "
+                <<  obs->C1        << " "
+                <<  obs->P1        << " "
+                <<  obs->P2        << " "
+                <<  obs->L1        << " "
+                <<  obs->L2        << endl;
           if (!it.hasNext()) {
             *_out << endEpoch << endl;
           }

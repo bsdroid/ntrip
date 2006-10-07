@@ -27,7 +27,7 @@ class bncRinex {
    QByteArray          _statID;
    QByteArray          _fName;
    QList<Observation*> _obs;
-   ofstream            _out;
+   std::ofstream       _out;
    QStringList         _headerLines;
    bool                _headerWritten;
    QDateTime           _nextCloseEpoch;
