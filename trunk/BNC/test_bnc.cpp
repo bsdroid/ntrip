@@ -1,4 +1,5 @@
 
+// MinGW: g++ test_bnc.cpp -lws2_32
 
 #include <iostream>
 #include <iomanip>
