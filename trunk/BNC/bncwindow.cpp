@@ -134,6 +134,7 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setSuffix(" sec");
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
   _mountPointsTable   = new QTableWidget(0,4);
+  _mountPointsTable->horizontalHeader()->resizeSection(1,25*ww);
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
   _mountPointsTable->horizontalHeader()->setStretchLastSection(true);
   _mountPointsTable->setHorizontalHeaderLabels(labels);
