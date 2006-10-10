@@ -23,6 +23,7 @@
 bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   setMinimumSize(600,400);
+  setWindowTitle(tr("Add Mountpoints"));
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
 

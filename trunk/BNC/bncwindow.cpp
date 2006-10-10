@@ -35,6 +35,7 @@ bncWindow::bncWindow() {
     "decoder,bytes").split(",");
 
   setMinimumSize(60*ww, 80*ww);
+  setWindowTitle(tr("BKG Ntrip Client (BNC), Version 1.0b"));
 
   // Create Actions
   // --------------
