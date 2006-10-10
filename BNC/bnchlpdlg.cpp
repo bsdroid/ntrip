@@ -26,6 +26,7 @@ bncHlpDlg::bncHlpDlg(QWidget* parent, const QUrl& url) :
   const int ww = QFontMetrics(font()).width('w');
 
   bncHtml* _tb = new bncHtml;
+  setWindowTitle("Help Contents");
   _tb->setSource(url);
   _tb->setReadOnly(true);
   connect(_tb, SIGNAL(backwardAvailable(bool)),
