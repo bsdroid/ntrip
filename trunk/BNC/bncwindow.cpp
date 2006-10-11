@@ -140,7 +140,7 @@ bncWindow::bncWindow() {
   _mountPointsTable->horizontalHeader()->setStretchLastSection(true);
   _mountPointsTable->setHorizontalHeaderLabels(labels);
 //  _mountPointsTable->horizontalHeader()->hide();
-  _mountPointsTable->verticalHeader()->hide();
+//  _mountPointsTable->verticalHeader()->hide();
   _mountPointsTable->setGridStyle(Qt::NoPen);
   _mountPointsTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   _mountPointsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
