@@ -200,7 +200,7 @@ bncWindow::bncWindow() {
   layout->addWidget(new QLabel("Port for binary output"),        3, 0, 1, 2);
   layout->addWidget(_outPortLineEdit,                            3, 2);
 
-  layout->addWidget(new QLabel("RINEX directory path"),          4, 0, 1, 2);
+  layout->addWidget(new QLabel("RINEX directory"),               4, 0, 1, 2);
   layout->addWidget(_rnxPathLineEdit,                            4, 2, 1, 3);
 
   layout->addWidget(new QLabel("RINEX script (full path)"),      5, 0, 1, 2);
@@ -217,7 +217,7 @@ bncWindow::bncWindow() {
   layout->addWidget(new QLabel("Mountpoints"),                   8, 0, 1, 2);
   layout->addWidget(_mountPointsTable,                           9, 0, 1, 5);
 
-  layout->addWidget(new QLabel("Log file (full path)"),          10, 0, 1, 2);
+  layout->addWidget(new QLabel("Log (full path)"),              10, 0, 1, 2);
   layout->addWidget(_logFileLineEdit,                           10, 2, 1, 3);
   layout->addWidget(_log,                                       11, 0, 1, 5);
 
