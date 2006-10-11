@@ -284,7 +284,7 @@ void bncRinex::dumpEpoch(long maxTime) {
   QMutableListIterator<Observation*> mIt(_obs);
   while (mIt.hasNext()) {
     Observation* ob = mIt.next();
-    if (ob->GPSWeek * 7*24*3600 + ob->GPSWeeks < maxTime) {
+    if (ob->GPSWeek * 7*24*3600 + ob->GPSWeeks < maxTime - 0.05) {
       dumpList.push_back(ob);
       mIt.remove();
     }
