@@ -30,6 +30,7 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 rtcm3::rtcm3() : GPSDecoder() {
+  QMutexLocker locker(&_mutex);
   memset(&_Parser, 0, sizeof(_Parser));
   time_t tim;
   tim = time(0) - ((10*365+2+5)*24*60*60 + LEAPSECONDS);
@@ -45,6 +46,7 @@ rtcm3::~rtcm3() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void rtcm3::Decode(char* buffer, int bufLen) {
+  QMutexLocker locker(&_mutex);
   for (int ii = 0; ii < bufLen; ii++) {
 
     _Parser.Message[_Parser.MessageSize++] = buffer[ii];

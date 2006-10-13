@@ -2,6 +2,8 @@
 #ifndef GPSDECODER_H
 #define GPSDECODER_H
 
+#include <QMutexLocker>
+
 #include <list>
 
 class Observation {
@@ -39,6 +41,8 @@ class GPSDecoder {
     virtual void Decode(char* buffer, int bufLen) = 0;
     virtual ~GPSDecoder() {}
     std::list<Observation*> _obsList;
+  protected:
+    QMutex _mutex;
 };
 
 #endif
