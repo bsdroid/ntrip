@@ -276,15 +276,13 @@ void ThirtyBitWord::get(istream& inp) {
 
 void ThirtyBitWord::getHeader(string& buf) {
 
-  if (buf.length() == 0) return;
-
   unsigned int W_old = W;
   unsigned int i;
   
   i=0;
   while (!isHeader() || i<5 ) {
     // Check if string is long enough; if not restore old word and exit
-    if (buf.size()-1<i) {
+    if (buf.size() == 0 || buf.size()-1<i) {
       W = W_old;
       failure = true;
       return;
