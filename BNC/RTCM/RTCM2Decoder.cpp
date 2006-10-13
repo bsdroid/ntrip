@@ -6,7 +6,7 @@
 
 #include "../bncutils.h"
 #include "GPSDecoder.h"
-#include "RTCM2.h"
+#include "RTCM2Decoder.h"
 
 using namespace std;
 

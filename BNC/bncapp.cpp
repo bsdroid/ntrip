@@ -47,6 +47,8 @@ bncApp::~bncApp() {
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::slotMessage(const QByteArray msg) {
 
+  QMutexLocker locker(&_mutex);
+
   // First time resolve the log file name
   // ------------------------------------
   if (_logFileFlag == 0) {

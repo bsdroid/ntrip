@@ -6,6 +6,10 @@
 #include <QFile>
 #include <QTextStream>
 
+#include "bnccaster.h"
+
+extern bncCaster* _global_caster;
+
 class bncApp : public QApplication {
   Q_OBJECT
   public:
@@ -19,5 +23,6 @@ class bncApp : public QApplication {
     QTextStream* _logStream;
     int          _logFileFlag;
     QString      _bncVersion;
+    QMutex       _mutex;
 };
 #endif

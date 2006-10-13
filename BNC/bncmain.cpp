@@ -24,6 +24,8 @@
 
 using namespace std;
 
+bncCaster* _global_caster = 0;
+
 // Main Program
 /////////////////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[]) {
@@ -74,15 +76,13 @@ int main(int argc, char *argv[]) {
   // Non-Interactive (Batch) Mode
   // ----------------------------
   else {
-    bncCaster* caster = new bncCaster(settings.value("outFile").toString(),
-                                      settings.value("outPort").toInt());
+    _global_caster = new bncCaster(settings.value("outFile").toString(),
+                                   settings.value("outPort").toInt());
 
-    app.connect(caster, SIGNAL(getThreadErrors()), &app, SLOT(quit()));
-    app.connect(caster, SIGNAL(newMessage(const QByteArray&)), 
+    app.connect(_global_caster, SIGNAL(getThreadErrors()), &app, SLOT(quit()));
+    app.connect(_global_caster, SIGNAL(newMessage(const QByteArray&)), 
                 &app, SLOT(slotMessage(const QByteArray&)));
 
-    caster->start();
-    
     QListIterator<QString> it(settings.value("mountPoints").toStringList());
     while (it.hasNext()) {
       QStringList hlp = it.next().split(" ");
@@ -93,11 +93,11 @@ int main(int argc, char *argv[]) {
       app.connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
                   &app, SLOT(slotMessage(const QByteArray&)));
 
-      caster->addGetThread(getThread);
+      _global_caster->addGetThread(getThread);
 
       getThread->start();
     }
-    if (caster->numStations() == 0) {
+    if (_global_caster->numStations() == 0) {
       return 0;
     }
   }
