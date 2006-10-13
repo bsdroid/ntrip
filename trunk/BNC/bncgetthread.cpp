@@ -21,8 +21,9 @@
 
 #include "bncgetthread.h"
 #include "bnctabledlg.h"
+#include "bncapp.h"
 
-#include "RTCM/RTCM2.h"
+#include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/rtcm3.h"
 #include "RTIGS/rtigs.h"
 
@@ -180,7 +181,7 @@ t_irc bncGetThread::initRun() {
   if (!_decoder) { 
     if      (_format.indexOf("RTCM_2") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTCM 2.x format"));
-      _decoder = new RTCM2();
+      _decoder = new RTCM2Decoder();
     }
     else if (_format.indexOf("RTCM_3") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTCM 3.0 format"));
@@ -231,7 +232,7 @@ void bncGetThread::run() {
       delete data;
       for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
            it != _decoder->_obsList.end(); it++) {
-        emit newObs(_staID, *it);
+        _global_caster->newObs(_staID, *it);
       }
       _decoder->_obsList.clear();
     }

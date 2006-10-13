@@ -14,7 +14,7 @@ class RTCM2Decoder: public GPSDecoder {
 
   public:
     RTCM2Decoder();
-    ~RTCMDecoder2();
+    ~RTCM2Decoder();
     virtual void Decode(char* buffer, int bufLen);
 
   private:

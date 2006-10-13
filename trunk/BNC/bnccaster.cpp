@@ -82,15 +82,11 @@ bncCaster::~bncCaster() {
   delete _epochs;
 }
 
-// Run
-////////////////////////////////////////////////////////////////////////////
-void bncCaster::run() {
-  exec();
-}
-
 // New Observations
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::slotNewObs(const QByteArray& staID, Observation* obs) {
+void bncCaster::newObs(const QByteArray& staID, Observation* obs) {
+
+  QMutexLocker locker(&_mutex);
 
   long iSec    = long(floor(obs->GPSWeeks+0.5));
   long newTime = obs->GPSWeek * 7*24*3600 + iSec;
@@ -148,9 +144,6 @@ void bncCaster::slotNewConnection() {
 // Add New Thread
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::addGetThread(bncGetThread* getThread) {
-  connect(getThread, SIGNAL(newObs(const QByteArray&, Observation*)),
-          this, SLOT(slotNewObs(const QByteArray&, Observation*)));
-
   connect(getThread, SIGNAL(error(const QByteArray&)), 
           this, SLOT(slotGetThreadError(const QByteArray&)));
 
@@ -161,6 +154,7 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
 // Error in get thread
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::slotGetThreadError(const QByteArray& staID) {
+  QMutexLocker locker(&_mutex);
   _staIDs.removeAll(staID);
   emit( newMessage(
            QString("Mountpoint size %1").arg(_staIDs.size()).toAscii()) );

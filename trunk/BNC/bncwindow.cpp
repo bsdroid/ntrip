@@ -220,8 +220,6 @@ bncWindow::bncWindow() {
   layout->addWidget(new QLabel("Log (full path)"),              10, 0, 1, 2);
   layout->addWidget(_logFileLineEdit,                           10, 2, 1, 3);
   layout->addWidget(_log,                                       11, 0, 1, 5);
-
-  _bncCaster = 0;
 }
 
 // Destructor
@@ -368,18 +366,16 @@ void bncWindow::slotGetData() {
   _actGetData->setEnabled(false);
   _actStop->setEnabled(true);
 
-  _bncCaster = new bncCaster(_outFileLineEdit->text(), 
+  _global_caster = new bncCaster(_outFileLineEdit->text(), 
                              _outPortLineEdit->text().toInt());
 
-  connect(_bncCaster, SIGNAL(getThreadErrors()), 
+  connect(_global_caster, SIGNAL(getThreadErrors()), 
           this, SLOT(slotGetThreadErrors()));
 
-  connect(_bncCaster, SIGNAL(newMessage(const QByteArray&)), 
+  connect(_global_caster, SIGNAL(newMessage(const QByteArray&)), 
           this, SLOT(slotMessage(const QByteArray&)));
-  connect(_bncCaster, SIGNAL(newMessage(const QByteArray&)), 
+  connect(_global_caster, SIGNAL(newMessage(const QByteArray&)), 
           (bncApp*)qApp, SLOT(slotMessage(const QByteArray&)));
-
-  _bncCaster->start();
 
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
     QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
@@ -398,7 +394,7 @@ void bncWindow::slotGetData() {
             (bncTableItem*) _mountPointsTable->item(iRow, 3), 
             SLOT(slotNewObs(const QByteArray&, Observation*)));
 
-    _bncCaster->addGetThread(getThread);
+    _global_caster->addGetThread(getThread);
 
     getThread->start();
   }
@@ -411,10 +407,7 @@ void bncWindow::slotStop() {
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
-    _bncCaster->terminate();
-    _bncCaster->wait();
-    delete _bncCaster; 
-    _bncCaster = 0;
+    delete _global_caster; _global_caster = 0;
     _actGetData->setEnabled(true);
     _actStop->setEnabled(false);
     _actAddMountPoints->setEnabled(true);

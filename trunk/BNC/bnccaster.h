@@ -3,7 +3,6 @@
 #define BNCCASTER_H
 
 #include <QFile>
-#include <QThread>
 #include <QtNetwork>
 #include <QMultiMap>
 
@@ -12,7 +11,7 @@
 
 class bncGetThread;
 
-class bncCaster : public QThread {
+class bncCaster : public QObject {
  Q_OBJECT
 
  public:
@@ -20,20 +19,16 @@ class bncCaster : public QThread {
    ~bncCaster();
    void addGetThread(bncGetThread* getThread);
    int  numStations() const {return _staIDs.size();}
+   void newObs(const QByteArray& staID, Observation* obs);
+
 
  signals:
    void getThreadErrors();   
    void newMessage(const QByteArray& msg);
 
- public slots:
-   void slotNewObs(const QByteArray& staID, Observation* obs);
-
  private slots:
    void slotNewConnection();
    void slotGetThreadError(const QByteArray& staID);
-
- protected:
-   virtual void run();
 
  private:
    void dumpEpochs(long minTime, long maxTime);
@@ -50,6 +45,7 @@ class bncCaster : public QThread {
    QList<bncGetThread*>           _threads;
    int                            _samplingRate;
    long                           _waitTime;
+   QMutex                         _mutex;
 };
 
 #endif
