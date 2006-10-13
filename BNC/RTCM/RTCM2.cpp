@@ -276,6 +276,8 @@ void ThirtyBitWord::get(istream& inp) {
 
 void ThirtyBitWord::getHeader(string& buf) {
 
+  if (buf.length() == 0) return;
+
   unsigned int W_old = W;
   unsigned int i;
   
