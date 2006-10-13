@@ -15,6 +15,8 @@
 //   2006/09/17  OMO  Created
 //   2006/09/19  OMO  Fixed getHeader() methods
 //   2006/09/21  OMO  Reduced phase ambiguity to 2^23 cycles
+//   2006/10/05  OMO  Specified const'ness of various member functions
+//   2006/10/13  LMV  Fixed resolvedPhase to handle missing C1 range
 //
 // (c) DLR/GSOC
 //
@@ -28,6 +30,7 @@
 #include <vector>
 
 #include "RTCM2.h"
+
 
 using namespace std;
 
@@ -500,14 +503,12 @@ unsigned int RTCM2packet::getUnsignedBits ( unsigned int start,
   if (n>32) {
     cerr << "Error: can't handle >32 bits in RTCM2packet::getUnsignedBits" 
          << endl;
-    ///    exit(-1);
-    return 0;
+    exit(-1);
   };
   
   if ( 24*DW.size() < start+n-1 ) {
     cerr << "Error: Packet too short in RTCM2packet::getUnsignedBits" << endl;
-    ////    exit(-1);
-    return 0;
+    exit(-1);
   }
 
   // Handle initial data word
@@ -554,13 +555,12 @@ int RTCM2packet::getBits ( unsigned int start,
   if (n>32) {
     cerr << "Error: can't handle >32 bits in RTCM2packet::getBits" 
          << endl;
-    ////    exit(-1);
-    return 0;
+    exit(-1);
   };
   
   if ( 24*DW.size() < start+n-1 ) {
     cerr << "Error: Packet too short in RTCM2packet::getBits" << endl;
-    return 0;
+    exit(-1);
   }
 
   return ((int)(getUnsignedBits(start,n)<<(32-n))>>(32-n));
@@ -734,7 +734,7 @@ void RTCM2_Obs::clear() {
 
 // Availability checks
 
-bool RTCM2_Obs::anyGPS() {
+bool RTCM2_Obs::anyGPS() const {
 
   return  availability.test(bit_L1rngGPS) ||
           availability.test(bit_L2rngGPS) ||
@@ -743,7 +743,7 @@ bool RTCM2_Obs::anyGPS() {
     
 };
 
-bool RTCM2_Obs::anyGLONASS() {
+bool RTCM2_Obs::anyGLONASS() const {
 
   return  availability.test(bit_L1rngGLO) ||
           availability.test(bit_L2rngGLO) ||
@@ -752,7 +752,7 @@ bool RTCM2_Obs::anyGLONASS() {
     
 };
 
-bool RTCM2_Obs::allGPS() {
+bool RTCM2_Obs::allGPS() const {
 
   return  availability.test(bit_L1rngGPS) &&
           availability.test(bit_L2rngGPS) &&
@@ -761,7 +761,7 @@ bool RTCM2_Obs::allGPS() {
     
 };
 
-bool RTCM2_Obs::allGLONASS() {
+bool RTCM2_Obs::allGLONASS() const {
 
   return  availability.test(bit_L1rngGLO) &&
           availability.test(bit_L2rngGLO) &&
@@ -772,7 +772,7 @@ bool RTCM2_Obs::allGLONASS() {
 
 // Validity
 
-bool RTCM2_Obs::valid() {
+bool RTCM2_Obs::valid() const {
 
   return ( allGPS() && (allGLONASS() || !anyGLONASS()) && !pendingMsg );
   
@@ -984,7 +984,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
 //  A reduced ambiguity of 2^23 cy appears compatible with both cases.
 //
 
-double RTCM2_Obs::resolvedPhase_L1(int i){
+double RTCM2_Obs::resolvedPhase_L1(int i) const {
 
 //const double  ambig = pow(2.0,24);   // as per RTCM2 spec
   const double  ambig = pow(2.0,23);   // used by many receivers 
@@ -1004,7 +1004,7 @@ double RTCM2_Obs::resolvedPhase_L1(int i){
   
 }; 
 
-double RTCM2_Obs::resolvedPhase_L2(int i){
+double RTCM2_Obs::resolvedPhase_L2(int i) const {
 
 //const double  ambig = pow(2.0,24);   // as per RTCM2 spec
   const double  ambig = pow(2.0,23);   // used by many receivers 
@@ -1029,7 +1029,7 @@ double RTCM2_Obs::resolvedPhase_L2(int i){
 //  
 
 void RTCM2_Obs::resolveEpoch (int  refWeek,   double  refSecs,  
-                              int& epochWeek, double& epochSecs   ) {
+                              int& epochWeek, double& epochSecs   ) const {
 
   const double secsPerWeek = 604800.0;                            
 
@@ -1042,67 +1042,3 @@ void RTCM2_Obs::resolveEpoch (int  refWeek,   double  refSecs,
 };
 
 }; // End of namespace rtcm2
-
-// ---------------- begin added by LM --------------------------------------
-
-#include "../bncutils.h"
-
-// Constructor
-////////////////////////////////////////////////////////////////////////////
-RTCM2::RTCM2() {
-
-}
-
-// Destructor
-////////////////////////////////////////////////////////////////////////////
-RTCM2::~RTCM2() {
-
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void RTCM2::Decode(char* buffer, int bufLen) {
-
-  _buffer.append(buffer, bufLen);
-  int    refWeek;
-  double refSecs;
-  currentGPSWeeks(refWeek, refSecs);
-
-  while(true) {
-    _PP.getPacket(_buffer);
-    if (!_PP.valid()) {
-      return;
-    }
-
-    if ( _PP.ID()==18 || _PP.ID()==19 ) {   
-
-      _ObsBlock.extract(_PP);
-
-      if (_ObsBlock.valid()) {
-
-        int    epochWeek;
-        double epochSecs;
-        _ObsBlock.resolveEpoch(refWeek, refSecs, epochWeek, epochSecs);
-          
-        for (int iSat=0; iSat < _ObsBlock.nSat; iSat++) {
-          ////          if (_ObsBlock.PRN[iSat] > 32) continue;   // Glonass not (yet) wanted
-          Observation* obs = new Observation();
-        
-          obs->SVPRN    = _ObsBlock.PRN[iSat];
-          obs->GPSWeek  = epochWeek;
-          obs->GPSWeeks = epochSecs;
-          obs->C1       = _ObsBlock.rng_C1[iSat];
-          obs->P1       = _ObsBlock.rng_P1[iSat];
-          obs->P2       = _ObsBlock.rng_P2[iSat];
-          obs->L1       = _ObsBlock.resolvedPhase_L1(iSat);
-          obs->L2       = _ObsBlock.resolvedPhase_L2(iSat);
-
-          _obsList.push_back(obs);
-        }
-        _ObsBlock.clear();
-      }
-    }
-  }
-}
-
-// ----------------- end added by LM ---------------------------------------

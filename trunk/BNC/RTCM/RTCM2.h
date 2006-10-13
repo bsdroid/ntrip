@@ -24,6 +24,7 @@
 // Last modified:
 //
 //   2006/09/17  OMO  Created
+//   2006/10/05  OMO  Specified const'ness of various member functions
 //
 // (c) DLR/GSOC
 //
@@ -282,16 +283,16 @@ class RTCM2_Obs {
     
     void   extract(const RTCM2packet& P);  // Packet handler
     void   clear();                        // Initialization
-    bool   valid();                        // Check for complete obs block 
+    bool   valid() const;                  // Check for complete obs block 
 
-    double resolvedPhase_L1(int i);         // L1 & L2 carrier phase of i-th sat
-    double resolvedPhase_L2(int i);         // with resolved 2^24 cy ambiguity 
+    double resolvedPhase_L1(int i) const;  // L1 & L2 carrier phase of i-th sat
+    double resolvedPhase_L2(int i) const;  // with resolved 2^24 cy ambiguity 
                                            // (based on rng_C1)
 
     void   resolveEpoch (int     refWeek,  // Resolve epoch using reference
                          double  refSecs,  // epoch (GPS week and secs)
                          int&    epochWeek,
-                         double& epochSecs  );
+                         double& epochSecs  ) const;
     
                                                
   public: 
@@ -307,10 +308,10 @@ class RTCM2_Obs {
 
   private:
 
-    bool anyGPS();
-    bool anyGLONASS();
-    bool allGPS();
-    bool allGLONASS();
+    bool anyGPS() const;
+    bool anyGLONASS() const;
+    bool allGPS() const;
+    bool allGLONASS() const;
 
   private:
 
@@ -323,19 +324,5 @@ class RTCM2_Obs {
 
 
 }; // End of namespace rtcm2
-
-// ---------------- begin added by LM --------------------------------------
-#include "GPSDecoder.h"
-class RTCM2 : public GPSDecoder {
-  public:
-    RTCM2();
-    ~RTCM2();
-    virtual void Decode(char* buffer, int bufLen);
-  private:
-    std::string        _buffer;
-    rtcm2::RTCM2_Obs   _ObsBlock;
-    rtcm2::RTCM2packet _PP;
-};
-// ----------------- end added by LM ---------------------------------------
 
 #endif  // include blocker
