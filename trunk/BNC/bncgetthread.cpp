@@ -232,6 +232,7 @@ void bncGetThread::run() {
       delete data;
       for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
            it != _decoder->_obsList.end(); it++) {
+        emit newObs(_staID, *it);
         _global_caster->newObs(_staID, *it);
       }
       _decoder->_obsList.clear();
