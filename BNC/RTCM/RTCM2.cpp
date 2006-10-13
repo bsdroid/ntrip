@@ -1085,7 +1085,7 @@ void RTCM2::Decode(char* buffer, int bufLen) {
         _ObsBlock.resolveEpoch(refWeek, refSecs, epochWeek, epochSecs);
           
         for (int iSat=0; iSat < _ObsBlock.nSat; iSat++) {
-          if (_ObsBlock.PRN[iSat] > 32) continue;   // Glonass not (yet) wanted
+          ////          if (_ObsBlock.PRN[iSat] > 32) continue;   // Glonass not (yet) wanted
           Observation* obs = new Observation();
         
           obs->SVPRN    = _ObsBlock.PRN[iSat];
