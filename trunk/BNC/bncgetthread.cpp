@@ -217,28 +217,34 @@ void bncGetThread::run() {
   // Read Incoming Data
   // ------------------
   while (true) {
-
-    if (_socket->state() != QAbstractSocket::ConnectedState) {
-      emit(newMessage(_staID + ": Socket not connected, reconnecting"));
-      tryReconnect();
-    }
-
-    _socket->waitForReadyRead(_timeOut);
-    qint64 nBytes = _socket->bytesAvailable();
-    if (nBytes > 0) {
-      char* data = new char[nBytes];
-      _socket->read(data, nBytes);
-      _decoder->Decode(data, nBytes);
-      delete data;
-      for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
-           it != _decoder->_obsList.end(); it++) {
-        emit newObs(_staID, *it);
-        _global_caster->newObs(_staID, *it);
+    try {
+      if (_socket->state() != QAbstractSocket::ConnectedState) {
+        emit(newMessage(_staID + ": Socket not connected, reconnecting"));
+        tryReconnect();
       }
-      _decoder->_obsList.clear();
+      
+      
+      _socket->waitForReadyRead(_timeOut);
+      qint64 nBytes = _socket->bytesAvailable();
+      if (nBytes > 0) {
+        char* data = new char[nBytes];
+        _socket->read(data, nBytes);
+        _decoder->Decode(data, nBytes);
+        delete data;
+        for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
+             it != _decoder->_obsList.end(); it++) {
+          emit newObs(_staID, *it);
+          _global_caster->newObs(_staID, *it);
+        }
+        _decoder->_obsList.clear();
+      }
+      else {
+        emit(newMessage(_staID + ": Data Timeout, reconnecting"));
+        tryReconnect();
+      }
     }
-    else {
-      emit(newMessage(_staID + ": Data Timeout, reconnecting"));
+    catch (const char* msg) {
+      emit(newMessage(_staID + msg));
       tryReconnect();
     }
   }
