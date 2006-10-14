@@ -282,7 +282,7 @@ void ThirtyBitWord::getHeader(string& buf) {
   i=0;
   while (!isHeader() || i<5 ) {
     // Check if string is long enough; if not restore old word and exit
-    if (buf.size() == 0 || buf.size()-1<i) {
+    if (buf.size()<i+1) {
       W = W_old;
       failure = true;
       return;

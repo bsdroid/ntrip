@@ -4,8 +4,6 @@
 // 
 //------------------------------------------------------------------------------
 
-#include <QMutexLocker>
-
 #include "../bncutils.h"
 #include "GPSDecoder.h"
 #include "RTCM2Decoder.h"
@@ -33,8 +31,6 @@ RTCM2Decoder::~RTCM2Decoder() {
 //
 
 void RTCM2Decoder::Decode(char* buffer, int bufLen) {
-
-  QMutexLocker locker(&_mutex);
 
   _buffer.append(buffer, bufLen);
   int    refWeek;

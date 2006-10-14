@@ -37,8 +37,6 @@ rtigs::~rtigs() {
 ////////////////////////////////////////////////////////////////////////////
 void rtigs::Decode(char* buffer, int bufLen) {
 
-  QMutexLocker locker(&_mutex);
-
   // Append the incomming data to the internal buffer
   // ------------------------------------------------
   _buffer.append( QByteArray(buffer, bufLen) );
