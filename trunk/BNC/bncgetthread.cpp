@@ -193,7 +193,7 @@ t_irc bncGetThread::initRun() {
     }
     else {
       emit(newMessage(_staID + ": Unknown data format " + _format));
-      exit(1);
+      return fatal;
     }
   }
   return success;
