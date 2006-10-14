@@ -118,8 +118,9 @@ void bncCaster::newObs(const QByteArray& staID, Observation* obs) {
     QSettings settings;
     if ( !settings.value("outFile").toString().isEmpty() || 
          !settings.value("outPort").toString().isEmpty() ) { 
-      emit( newMessage(QString("Station %1: old epoch %2 thrown away")
-                       .arg(staID.data()).arg(iSec).toAscii()) );
+      emit( newMessage(QString("Station %1: old epoch %2 thrown away"
+                               "(newTime = %3 lastDump = %4)")
+      .arg(staID.data()).arg(iSec).arg(newTime).arg(_lastDumpSec).toAscii()) );
     }
     delete obs;
     return;
