@@ -133,7 +133,10 @@ void bncCaster::newObs(const QByteArray& staID, Observation* obs) {
   // Dump older epochs
   // -----------------
   dumpEpochs(_lastDumpSec + 1, newTime - _waitTime);
-  _lastDumpSec = newTime - _waitTime;
+
+  if (_lastDumpSec < newTime - _waitTime) {
+    _lastDumpSec = newTime - _waitTime;
+  }
 }
 
 // New Connection
