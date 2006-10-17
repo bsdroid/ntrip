@@ -17,6 +17,9 @@
 //   2006/09/21  OMO  Reduced phase ambiguity to 2^23 cycles
 //   2006/10/05  OMO  Specified const'ness of various member functions
 //   2006/10/13  LMV  Fixed resolvedPhase to handle missing C1 range
+//   2006/10/14  LMV  Fixed loop cunter in ThirtyBitWord
+//   2006/10/14  LMV  Exception handling
+//   2006/10/17  OMO  Removed obsolete check of multiple message indicator
 //
 // (c) DLR/GSOC
 //
@@ -722,7 +725,6 @@ void RTCM2_Obs::clear() {
   cph_L2.resize(0);        // Carrier phase [m]
   
   availability.reset();    // Message status flags
-  pendingMsg = true;       // Multiple message indicator
   
 };
 
@@ -768,7 +770,7 @@ bool RTCM2_Obs::allGLONASS() const {
 
 bool RTCM2_Obs::valid() const {
 
-  return ( allGPS() && (allGLONASS() || !anyGLONASS()) && !pendingMsg );
+  return ( allGPS() && (allGLONASS() || !anyGLONASS())  );
   
 };
 
@@ -812,7 +814,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     isGPS = ( P.getUnsignedBits(26,1)==0 );
 
     // Multiple Message Indicator (only checked for first satellite)
-    pendingMsg = ( P.getUnsignedBits(24,1)==1 );
+    // pendingMsg = ( P.getUnsignedBits(24,1)==1 );
     
     // Handle epoch: store epoch of first GPS message and 
     // check consistency of subsequent messages. GLONASS time tags
@@ -900,7 +902,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     isGPS = ( P.getUnsignedBits(26,1)==0 );
 
     // Multiple Message Indicator (only checked for first satellite)
-    pendingMsg = ( P.getUnsignedBits(24,1)==1 );
+    // pendingMsg = ( P.getUnsignedBits(24,1)==1 );
     
     // Handle epoch: store epoch of first GPS message and 
     // check consistency of subsequent messages. GLONASS time tags
