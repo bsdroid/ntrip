@@ -17,7 +17,7 @@
 //   Jensen M.; RTCM2ASC Documentation;
 //     URL http://kom.aau.dk/~borre/masters/receiver/rtcm2asc.htm;
 //     last accessed 17 Sep. 2006
-//   Sager J.;Decoder for RTCM SC-104 data from a DGPS beacon receiver;
+//   Sager J.; Decoder for RTCM SC-104 data from a DGPS beacon receiver;
 //     URL http://www.wsrcc.com/wolfgang/ftp/rtcm-0.3.tar.gz;
 //     last accessed 17 Sep. 2006
 //

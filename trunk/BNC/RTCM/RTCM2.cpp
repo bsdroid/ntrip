@@ -6,6 +6,21 @@
 //
 //   Module for extraction of RTCM2 messages
 //
+// References:
+//
+//   RTCM 10402.3 Recommended Standards for Differential GNSS (Global
+//     Navigation Satellite Systems) Service; RTCM Paper 136-2001/SC104-STD,
+//     Version 2.3, 20 Aug. 2001; Radio Technical Commission For Maritime 
+//     Services, Alexandria, Virgina (2001).
+//   ICD-GPS-200; Navstar GPS Space Segment / Navigation User Interfaces;
+//     Revison C; 25 Sept. 1997; Arinc Research Corp., El Segundo (1997).
+//   Jensen M.; RTCM2ASC Documentation;
+//     URL http://kom.aau.dk/~borre/masters/receiver/rtcm2asc.htm;
+//     last accessed 17 Sep. 2006
+//   Sager J.; Decoder for RTCM SC-104 data from a DGPS beacon receiver;
+//     URL http://www.wsrcc.com/wolfgang/ftp/rtcm-0.3.tar.gz;
+//     last accessed 17 Sep. 2006
+//
 // Notes: 
 //
 // - The host computer is assumed to use little endian (Intel) byte order
@@ -20,11 +35,13 @@
 //   2006/10/14  LMV  Fixed loop cunter in ThirtyBitWord
 //   2006/10/14  LMV  Exception handling
 //   2006/10/17  OMO  Removed obsolete check of multiple message indicator
+//   2006/10/17  OMO  Fixed parity handling 
 //
 // (c) DLR/GSOC
 //
 //------------------------------------------------------------------------------
 
+#include <bitset>
 #include <cmath>
 #include <fstream>
 #include <iomanip>
@@ -34,6 +51,10 @@
 
 #include "RTCM2.h"
 
+// Activate (1) or deactivate (0) debug output for tracing parity errors and
+// undersized packets in get(Unsigned)Bits
+
+#define DEBUG 0    
 
 using namespace std;
 
@@ -165,7 +186,7 @@ bool ThirtyBitWord::validParity() const {
       ( byteParity[t      &0xff] ^ byteParity[(t>> 8)&0xff] ^
         byteParity[(t>>16)&0xff] ^ byteParity[(t>>24)     ]   );
 
-  return ( (W!=0) && ((W &0x3f) == p));
+  return ( (W & 0x3f) == p);
 
 };
 
@@ -255,6 +276,12 @@ void ThirtyBitWord::get(string& buf) {
   for (int i=0; i<5; i++) append(buf[i]);
   buf.erase(0,5);
 
+#if (DEBUG>0) 
+  if (!validParity()) {
+    cout << "Parity error " 
+         << bitset<32>(all()) << endl;
+  };
+#endif
   failure = false;
 
 };
@@ -271,6 +298,12 @@ void ThirtyBitWord::get(istream& inp) {
     append(b);
   };
 
+#if (DEBUG>0) 
+  if (!validParity()) {
+    cout << "Parity error " 
+         << bitset<32>(all()) << endl;
+  };
+#endif
   failure = false;
 
 };
@@ -298,6 +331,12 @@ void ThirtyBitWord::getHeader(string& buf) {
   
   buf.erase(0,i);
 
+#if (DEBUG>0) 
+  if (!validParity()) {
+    cout << "Parity error " 
+         << bitset<32>(all()) << endl;
+  };
+#endif
   failure = false;
 
 };
@@ -316,6 +355,12 @@ void ThirtyBitWord::getHeader(istream& inp) {
     append(b); i++;
   };
 
+#if (DEBUG>0) 
+  if (!validParity()) {
+    cout << "Parity error " 
+         << bitset<32>(all()) << endl;
+  };
+#endif
   failure = false;
 
 };
@@ -382,18 +427,21 @@ void RTCM2packet::getPacket(std::string& buf) {
    
   W.getHeader(buf); 
   H1 = W.value(); 
-  if (W.fail()) { clear(); W=W_old; buf=buf_old; return; }
+  if (W.fail()) { clear(); W=W_old; buf=buf_old; return; };
+  if (!W.validParity()) { clear(); return; };
   
   W.get(buf);       
   H2 = W.value(); 
-  if (W.fail()) { clear(); W=W_old; buf=buf_old; return; }
+  if (W.fail()) { clear(); W=W_old; buf=buf_old; return; };
+  if (!W.validParity()) { clear(); return; };
 
   n = nDataWords();
   DW.resize(n);
   for (int i=0; i<n; i++) {
     W.get(buf); 
     DW[i] = W.value(); 
-    if (W.fail()) { clear(); W=W_old; buf=buf_old; return; }
+    if (W.fail()) { clear(); W=W_old; buf=buf_old; return; };
+    if (!W.validParity()) { clear(); return; };
   };
 
   return;
@@ -411,18 +459,18 @@ void RTCM2packet::getPacket(std::istream& inp) {
   
   W.getHeader(inp); 
   H1 = W.value(); 
-  if (W.fail()) { clear(); return; }
+  if (W.fail() || !W.validParity()) { clear(); return; }
   
   W.get(inp);       
   H2 = W.value(); 
-  if (W.fail()) { clear(); return; }
+  if (W.fail() || !W.validParity()) { clear(); return; }
 
   n = nDataWords();
   DW.resize(n);
   for (int i=0; i<n; i++) {
     W.get(inp); 
     DW[i] = W.value(); 
-    if (W.fail()) { clear(); return; }
+    if (W.fail() || !W.validParity()) { clear(); return; }
   };
 
   return;
@@ -432,7 +480,7 @@ void RTCM2packet::getPacket(std::istream& inp) {
 //
 // Input operator
 //
-// Reads an RTCM3 packet from the input stream. 
+// Reads an RTCM2 packet from the input stream. 
 //
 
 istream& operator >> (istream& is, RTCM2packet& p) {
@@ -508,6 +556,17 @@ unsigned int RTCM2packet::getUnsignedBits ( unsigned int start,
   };
   
   if ( 24*DW.size() < start+n-1 ) {
+#if (DEBUG>0)
+    cerr << "Debug output RTCM2packet::getUnsignedBits" << endl
+         << "  P.msgType:    " << setw(5) << msgType()    << endl
+         << "  P.nDataWords: " << setw(5) << nDataWords() << endl
+         << "  start:        " << setw(5) << start        << endl
+         << "  n:            " << setw(5) << n            << endl
+         << "  P.H1:         " << setw(5) << bitset<32>(H1) << endl
+         << "  P.H2:         " << setw(5) << bitset<32>(H2) << endl
+         << endl
+         << flush;
+#endif
     throw("Error: Packet too short in RTCM2packet::getUnsignedBits");
   }
 
@@ -557,6 +616,17 @@ int RTCM2packet::getBits ( unsigned int start,
   };
   
   if ( 24*DW.size() < start+n-1 ) {
+#if (DEBUG>0)
+    cerr << "Debug output RTCM2packet::getUnsignedBits" << endl
+         << "  P.msgType:    " << setw(5) << msgType()    << endl
+         << "  P.nDataWords: " << setw(5) << nDataWords() << endl
+         << "  start:        " << setw(5) << start        << endl
+         << "  n:            " << setw(5) << n            << endl
+         << "  P.H1:         " << setw(5) << bitset<32>(H1) << endl
+         << "  P.H2:         " << setw(5) << bitset<32>(H2) << endl
+         << endl
+         << flush;
+#endif
     throw("Error: Packet too short in RTCM2packet::getBits");
   }
 
