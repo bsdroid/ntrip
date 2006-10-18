@@ -84,7 +84,8 @@ bncCaster::~bncCaster() {
 
 // New Observations
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::newObs(const QByteArray& staID, Observation* obs) {
+void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
+                       Observation* obs) {
 
   QMutexLocker locker(&_mutex);
 
@@ -98,7 +99,7 @@ void bncCaster::newObs(const QByteArray& staID, Observation* obs) {
   // Prepare RINEX Output
   // --------------------
   if (_rinexWriters.find(obs->StatID) == _rinexWriters.end()) {
-    _rinexWriters.insert(obs->StatID, new bncRinex(obs->StatID));
+    _rinexWriters.insert(obs->StatID, new bncRinex(obs->StatID, mountPoint));
   }
   bncRinex* rnx = _rinexWriters.find(obs->StatID).value();
   if (_samplingRate == 0 || iSec % _samplingRate == 0) {

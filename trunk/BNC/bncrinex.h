@@ -13,7 +13,7 @@
 
 class bncRinex {
  public:
-   bncRinex(const char* StatID);
+   bncRinex(const char* StatID, const QUrl& mountPoint);
    ~bncRinex();
    void deepCopy(const Observation* obs);
    void dumpEpoch(long maxTime);
@@ -33,7 +33,7 @@ class bncRinex {
    QDateTime           _nextCloseEpoch;
    QString             _rnxScriptName;
    QProcess            _rnxScript;
-   QString             _mountPoint;
+   QUrl                _mountPoint;
    QString             _pgmName;
    QString             _userName;
 };
