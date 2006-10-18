@@ -34,26 +34,15 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncRinex::bncRinex(const char* StatID) {
+bncRinex::bncRinex(const char* StatID, const QUrl& mountPoint) {
   _statID        = StatID;
+  _mountPoint = mountPoint;
   _headerWritten = false;
   readSkeleton();
 
   QSettings settings;
   _rnxScriptName = settings.value("rnxScript").toString();
   expandEnvVar(_rnxScriptName);
-
-  // Find the corresponding mountPoint
-  // ---------------------------------
-  QListIterator<QString> it(settings.value("mountPoints").toStringList());
-  while (it.hasNext()) {
-    QString hlp = it.next();
-    if (hlp.indexOf(_statID) != -1) {
-      QUrl url(hlp);
-      _mountPoint = url.host() + url.path();
-      break;
-    }
-  }
 
   _pgmName  = ((bncApp*)qApp)->bncVersion().leftJustified(20, ' ', true);
   _userName = QString("${USER}");
@@ -214,7 +203,7 @@ void bncRinex::writeHeader(const QDateTime& datTim) {
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
         _out << "                 TIME OF FIRST OBS"    << endl;
-        QString hlp = QString("STREAM %1").arg(_mountPoint)
+        QString hlp = QString("STREAM %1").arg(_mountPoint.host() + _mountPoint.path())
                              .leftJustified(60, ' ', true);
         _out << hlp.toAscii().data() << "COMMENT" << endl;
       }
@@ -257,7 +246,7 @@ void bncRinex::writeHeader(const QDateTime& datTim) {
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
     _out << "                 "                                      << "TIME OF FIRST OBS"    << endl;
-    hlp = QString("STREAM %1").arg(_mountPoint)
+    hlp = QString("STREAM %1").arg(_mountPoint.host() + _mountPoint.path())
                                              .leftJustified(60, ' ', true);
     _out << hlp.toAscii().data() << "COMMENT" << endl;
     _out << "                                                            END OF HEADER"        << endl;
