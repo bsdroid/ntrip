@@ -181,6 +181,19 @@ void bncRinex::writeHeader(const QDateTime& datTim) {
   // Open the Output File
   // --------------------
   resolveFileName(datTim);
+
+  // Append to existing file and return
+  // ----------------------------------
+  if ( QFile::exists(_fName) ) {
+    QSettings settings;
+    if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
+      _out.open(_fName.data(), ios::app);
+      _out.setf(ios::showpoint | ios::fixed);
+      _headerWritten = true;
+      return;
+    }
+  }
+
   _out.open(_fName.data());
   _out.setf(ios::showpoint | ios::fixed);
 
