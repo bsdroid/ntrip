@@ -35,10 +35,32 @@ bncGetThread::bncGetThread(const QUrl& mountPoint, const QByteArray& format) {
   _decoder    = 0;
   _mountPoint = mountPoint;
   _staID      = mountPoint.path().mid(1).toAscii();
+  _staID_orig = _staID;
   _format     = format;
   _socket     = 0;
   _timeOut    = 20*1000;  // 20 seconds
   _nextSleep  =  1;       //  1 second
+
+  // Check name conflict
+  // -------------------
+  QSettings settings;
+  QListIterator<QString> it(settings.value("mountPoints").toStringList());
+  int num = 0;
+  int ind = 0;
+  while (it.hasNext()) {
+    QStringList hlp = it.next().split(" ");
+    if (hlp.size() <= 1) continue;
+    QUrl url(hlp[0]);
+    if (_mountPoint.path() == url.path()) {
+      ++num;
+      if (_mountPoint.host() == url.host()) {
+        ind = num - 1;
+      }
+    }
+  }
+  if (num > 1) {
+    _staID = _staID.left(_staID.length()-1) + QString("%1").arg(ind).toAscii();
+  }    
 }
 
 // Destructor
@@ -142,7 +164,7 @@ t_irc bncGetThread::initRun() {
         QString line = it.next();
         if (line.indexOf("STR") == 0) {
           QStringList tags = line.split(";");
-          if (tags.at(1) == _staID) {
+          if (tags.at(1) == _staID_orig) {
             net = tags.at(7);
             break;
           }

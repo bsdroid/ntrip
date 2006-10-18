@@ -230,7 +230,7 @@ void bncRinex::writeHeader(const QDateTime& datTim) {
     double approxPos[3];  approxPos[0]  = approxPos[1]  = approxPos[2]  = 0.0;
     double antennaNEU[3]; antennaNEU[0] = antennaNEU[1] = antennaNEU[2] = 0.0;
     
-    _out << "     2.10           OBSERVATION DATA    G (GPS)             RINEX VERSION / TYPE" << endl;
+    _out << "     2.10           OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE" << endl;
     QString hlp = QDate::currentDate().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
     _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
          << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
