@@ -85,7 +85,7 @@ bncCaster::~bncCaster() {
 // New Observations
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
-                       Observation* obs) {
+                       bool firstObs, Observation* obs) {
 
   QMutexLocker locker(&_mutex);
 
@@ -116,12 +116,14 @@ void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
   // An old observation - throw it away
   // ----------------------------------
   if (newTime <= _lastDumpSec) {
-    QSettings settings;
-    if ( !settings.value("outFile").toString().isEmpty() || 
-         !settings.value("outPort").toString().isEmpty() ) { 
-      emit( newMessage(QString("Station %1: old epoch %2 thrown away"
-                               "(newTime = %3 lastDump = %4)")
-      .arg(staID.data()).arg(iSec).arg(newTime).arg(_lastDumpSec).toAscii()) );
+    if (firstObs) {
+      QSettings settings;
+      if ( !settings.value("outFile").toString().isEmpty() || 
+           !settings.value("outPort").toString().isEmpty() ) { 
+        emit( newMessage(QString("Station %1: old epoch %2 thrown away"
+                                 "(newTime = %3 lastDump = %4)")
+        .arg(staID.data()).arg(iSec).arg(newTime).arg(_lastDumpSec).toAscii()) );
+      }
     }
     delete obs;
     return;
