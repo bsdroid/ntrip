@@ -118,6 +118,9 @@ bncWindow::bncWindow() {
   _rnxScrpLineEdit    = new QLineEdit(settings.value("rnxScript").toString());
   _rnxSkelLineEdit    = new QLineEdit(settings.value("rnxSkel").toString());
   _rnxSkelLineEdit->setMaximumWidth(5*ww);
+  _rnxAppendCheckBox  = new QCheckBox();
+  _rnxAppendCheckBox->setCheckState(Qt::CheckState(
+                                    settings.value("rnxAppend").toInt()));
   _rnxIntrComboBox    = new QComboBox();
   _rnxIntrComboBox->setMaximumWidth(9*ww);
   _rnxIntrComboBox->setEditable(false);
@@ -213,6 +216,9 @@ bncWindow::bncWindow() {
 
   layout->addWidget(new QLabel("RINEX skeleton extension"),      7, 0, 1, 2);
   layout->addWidget(_rnxSkelLineEdit,                            7, 2);
+
+  layout->addWidget(new QLabel("Append files"),                  7, 3);
+  layout->addWidget(_rnxAppendCheckBox,                          7, 4);
 
   layout->addWidget(new QLabel("Mountpoints"),                   8, 0, 1, 2);
   layout->addWidget(_mountPointsTable,                           9, 0, 1, 5);
@@ -333,6 +339,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
+  settings.setValue("rnxAppend",   _rnxAppendCheckBox->checkState());
   settings.setValue("logFile",     _logFileLineEdit->text());
 
   QStringList mountPoints;
