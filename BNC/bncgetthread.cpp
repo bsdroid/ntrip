@@ -256,7 +256,8 @@ void bncGetThread::run() {
         for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
              it != _decoder->_obsList.end(); it++) {
           emit newObs(_staID, *it);
-          _global_caster->newObs(_staID, _mountPoint, *it);
+          bool firstObs = (it == _decoder->_obsList.begin());
+          _global_caster->newObs(_staID, _mountPoint, firstObs, *it);
         }
         _decoder->_obsList.clear();
       }
