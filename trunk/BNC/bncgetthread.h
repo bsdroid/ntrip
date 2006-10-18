@@ -37,6 +37,7 @@ class bncGetThread : public QThread {
    QTcpSocket* _socket;
    QUrl        _mountPoint;
    QByteArray  _staID;
+   QByteArray  _staID_orig;
    QByteArray  _format;
    int         _timeOut;
    int         _nextSleep;
