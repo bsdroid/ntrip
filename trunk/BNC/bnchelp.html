@@ -57,6 +57,7 @@ B - 5. <a href=#rinex>RINEX</a><br>
 &nbsp; &nbsp; &nbsp; B - 5.3. <a href=#rnxinterval>RINEX File Interval</a><br>
 &nbsp; &nbsp; &nbsp; B - 5.4. <a href=#rnxsample>RINEX Sampling</a><br>
 &nbsp; &nbsp; &nbsp; B - 5.5. <a href=#rnxskeleton>RINEX Skeleton Extension</a><br>
+&nbsp; &nbsp; &nbsp; B - 5.6. <a href=#rnxappend>Append Files</a><br>
 B - 6. <a href=#mountpoints>Mountpoints</a><br>
 &nbsp; &nbsp; &nbsp; B - 6.1. <a href=#AddMounts>Add Mountpoints</a><br>
 &nbsp; &nbsp; &nbsp; B - 6.2. <a href=#HostPort>Broadcaster Host and Port</a><br>
@@ -231,6 +232,12 @@ Note the following conditions regarding RINEX header skeleton files.
 <li>They may contain any other complete header record as defined in the RINEX Version 2.1 documentation. Its contents may be derived from sitelog files.</li>
 </ul>
 <p> 
+
+<a name="rnxappend">
+<p><h4>B - 5.6 Append Files</h4></p>
+<p>
+When starting BNC, new RINEX files are created by default. Probably existing files are overwritten. However, it may be desirable to append observations to already existing RINEX files following a restart of BNC after an intentional 'Stop', a system crash, or a crash BNC. Hit 'Append files' to continue with alread existing files and thus save what has been recorded so far.
+</p> 
 
 <a name="mountpoints">
 <p><h4>B - 6. Mountpoints</h4></p>
