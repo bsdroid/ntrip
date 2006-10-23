@@ -131,7 +131,7 @@ In case an observable is unavailable, its value is set to zero '0.000'.
 <a name="wait">
 <p><h4>B - 4.1 Wait for Full Epoch - optional</h4></p>
 <p>
-When feeding a real-time GNSS engine waiting for input epoch by epoch, BNC ignores whatever is received later then 'Wait for full epoch' seconds. A value of 3 to 5 seconds may be an appropriate choice for that, depending on the latency of the incoming streams and the delay you can accept for your real-time GNSS product. Default value for 'Wait for full ecpch' is 1 second.
+When feeding a real-time GNSS engine waiting for input epoch by epoch, BNC ignores whatever is received later then 'Wait for full epoch' seconds. A value of 3 to 5 seconds may be an appropriate choice for that, depending on the latency of the incoming streams and the delay you can accept for your real-time GNSS product. Default value for 'Wait for full epoch' is 1 second.
 </p>
 <p>
 Note that 'Wait for full epoch' does not influence the RINEX file contents. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX files.
@@ -184,32 +184,32 @@ struct Observation {
 <a name="rinex">
 <p><h4>B - 5. RINEX</h4></p>
 <p>
-Observations are converted to RINEX Version 2.1. RINEX file names are derived by BNC from the first 4 characters of the corresponding mountpoint (4Char Station ID) while ommitting the residual part of the mountpoint string. Thus, retrieving data from mountpoints FRANKFURT and WETTZELL leads to hourly RINEX observation files named<br>
-<pre>
-FRAN{ddd}{h}.{yy}O
+Observations are converted to RINEX Version 2.1. RINEX file names are derived by BNC from the first 4 characters of the corresponding mountpoint (4Char Station ID) while omitting the residual part of the mountpoint string. Thus, retrieving data from mountpoints FRANKFURT and WETTZELL leads to hourly RINEX observation files named</p>
+<p>
+FRAN{ddd}{h}.{yy}O<br>
 WETT{ddd}{h}.{yy}O
-</pre>
+</p>
+<p>
 where 'ddd' is the day of year, 'h' is a letter which corresponds to an hour long UTC time block and 'yy' is the year. 
 </p>
 <p>
-For those streams that show mountpoints with an identical 4Char Station ID (same first 4 characters), the mountpoint strings are split in two sub-strings and both become part of the RINEX file name. Example: When simultaneously retrieving data from mountpoints FRANKFURT and FRANCE, their hourly RINEX observation file names are defined as<br>
-<pre>
-FRAN{ddd}{h}_KFURT.{yy}O
+For those streams that show mountpoints with an identical 4Char Station ID (same first 4 characters), the mountpoint strings are split in two sub-strings and both become part of the RINEX file name. Example: When simultaneously retrieving data from mountpoints FRANKFURT and FRANCE, their hourly RINEX observation file names are defined as</p>
+<p>
+FRAN{ddd}{h}_KFURT.{yy}<br>
 FRAN{ddd}{h}_CE.{yy}O
-</pre>
 </p>
 <p>
-If several streams show exactly the same mountpoint (example: BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u>), BNC adds an integer number to the file name leading i.e. to hourly RINEX observation files like
-<pre>
-BRUS{ddd}{h}_0.{yy}O
+If several streams show exactly the same mountpoint (example: BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u>), BNC adds an integer number to the file name leading i.e. to hourly RINEX observation files like</p>
+<p>
+BRUS{ddd}{h}_0.{yy}O<br>
 BRUS{ddd}{h}_1.{yy}O
-</pre>
 </p>
 <p>
-Note that RINEX file names for all intervals less than 1 hour follow the file name convention for 15 minutes RINEX observation files i.e.
-<pre>
+Note that RINEX file names for all intervals less than 1 hour follow the file name convention for 15 minutes RINEX observation files i.e.</p>
+<p>
 FRAN{ddd}{h}{mm}.{yy}O
-</pre>
+</p>
+<p>
 where 'mm' is the starting minute within the hour.
 </p>
 <p>
@@ -246,14 +246,14 @@ Select the RINEX sample interval in seconds. Zero '0' stands for converting all 
 BNC lets you introduce RINEX header skeleton files that contain the header records you would like to see instead of a default header. You may like to derive RINEX skeleton files from the information given in sitelogs. A file in the 'RINEX directory' with the 'RINEX skeleton extension' is understood by BNC as a RINEX header skeleton file for the affected stream.
 </p>
 <p>
-Example: RINEX files for mountpoints WETTZELL, FRANKFURT and FRANCE (same 4Char Station ID), BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u> (same 4Char Station ID, identical mountpoint stings) would accept skeleton files named
-<pre>
-WETT.skl
-FRAN_KFURT.skl
-FRAN_CE.skl
-BRUS_0.skl
-BRUS_1.skl
-</pre>
+Example: RINEX files for mountpoints WETTZELL, FRANKFURT and FRANCE (same 4Char Station ID), BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u> (same 4Char Station ID, identical mountpoint stings) would accept skeleton files named</p>
+<p>
+WETT.skl<br>
+FRAN_KFURT.skl<br>
+FRAN_CE.skl<br>
+BRUS_0.skl<br>
+BRUS_1.skl</p>
+<p>
 if 'RINEX skeleton extension' is set to 'skl'.
 </p> 
 <p> 
@@ -273,13 +273,13 @@ Note the following conditions regarding RINEX header skeleton files:
 <a name="rnxappend">
 <p><h4>B - 5.6 Append Files</h4></p>
 <p>
-When starting BNC, new RINEX files are created by default. Probably existing files are overwritten. However, it may be desirable to append observations to already existing RINEX files following a restart of BNC after an intentional 'Stop', a system crash, or a crash of BNC. Hit 'Append files' to continue with alread existing files and thus save what has been recorded so far. Note that the option 'Append files' also concerns the 'ASCII output file' and the 'Log' file.
+When starting BNC, new RINEX files are created by default. Probably existing files are overwritten. However, it may be desirable to append observations to already existing RINEX files following a restart of BNC after an intentional 'Stop', a system crash, or a crash of BNC. Hit 'Append files' to continue with already existing files and thus save what has been recorded so far. Note that the option 'Append files' also concerns the 'ASCII output file' and the 'Log' file.
 </p> 
 
 <a name="mountpoints">
 <p><h4>B - 6. Mountpoints</h4></p>
 <p>
-Each stream on an NTRIP broadcaster is defined through a unique source ID called mountpoint. An NTRIP client like BNC can access the data of a desired stream by its mountpoint. Information about mountpoints is available through the sourcetable maintained by the NTRIP broadcaster. Note that it may happen that mountpoints show up in BNC more than once when retrieving strams from several NTRIP broadcasters.
+Each stream on an NTRIP broadcaster is defined through a unique source ID called mountpoint. An NTRIP client like BNC can access the data of a desired stream by its mountpoint. Information about mountpoints is available through the sourcetable maintained by the NTRIP broadcaster. Note that it may happen that mountpoints show up in BNC more than once when retrieving streams from several NTRIP broadcasters.
 </p> 
 
 <a name="AddMounts">
@@ -317,7 +317,7 @@ To delete a stream shown under 'Mountpoints' in the main window select it by mou
 <a name="edit">
 <p><h4>B - 6.6 Edit Mountpoints</h4></p>
 <p>
-BNC automatically selects one out of several incoporated decoders for a stream based on its 'format' and 'format-details' as given in the sourcetable. It may happen that you need to overrule the automated decoder selection because of sourcetable setup deficiencies. Therefore BNC allows to edit (double-click) the decoder string for each stream shown under 'Mountpoints'. Accepted decoder strings allowed to be introduced are 'RTCM_2.x', 'RTCM_3', and 'RTIGS'.
+BNC automatically selects one out of several incorporated decoders for a stream based on its 'format' and 'format-details' as given in the sourcetable. It may happen that you need to overrule the automated decoder selection because of sourcetable setup deficiencies. Therefore BNC allows to edit (double-click) the decoder string for each stream shown under 'Mountpoints'. Accepted decoder strings allowed to be introduced are 'RTCM_2.x', 'RTCM_3', and 'RTIGS'.
 </p> 
 
 <a name="log">
@@ -372,7 +372,7 @@ The generated RINEX is somewhat limited due to the streaming character of the co
 Header records can only represent data, which is known after receiving the very first epoch. Data rate, position, number of observations and any such additional fields cannot be provided.
 </li>
 <li>
-The number of observables cannot change during the program runtime. Only the observables, which exist in the first epoch are outputted. If there are new observables later on, these are ignored.
+The number of observable cannot change during the program runtime. Only the observable, which exist in the first epoch are outputted. If there are new observable later on, these are ignored.
 </li>
 </ul>
 </li>
@@ -380,7 +380,7 @@ The number of observables cannot change during the program runtime. Only the obs
 BNC's 'Get Table' function only informs about the STR records of a sourcetable. Note that you can use an Internet browser to download the full sourcetable contents of any NTRIP broadcaster by simply entering its URL plus a dummy string in the form http://host:port/dummy. Data field number 8 of the NET records that may show up may provide information about where to register for an NTRIP broadcaster account.
 </li>
 <li>
-EUREF as well as IGS follow an open data policy. Streams are made available through NTRIP broadcasters at <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u> free of charge to anybody for any purpose. It is not clear today how many users will have to be supported simultaneously. The situation may develop in a way that it becomes difficult to serve all registered users at any time.  In case limited dissemination resources on the NTRIP broadcaster side (software restrictions, bandwidth limitation etc.) make it necessary, first priority in stream provision will be given to stream providers, re-broadcasting activities, and real-time analysis centres while access for others may be temporarily denied.
+EUREF as well as IGS follow an open data policy. Streams are made available through NTRIP broadcasters at <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u> free of charge to anybody for any purpose. It is not clear today how many users will have to be supported simultaneously. The situation may develop in a way that it becomes difficult to serve all registered users at any time.  In case limited dissemination resources on the NTRIP broadcaster side (software restrictions, bandwidth limitation etc.) make it necessary, first priority in stream provision will be given to stream providers, re-broadcasting activities, and real-time analysis centers while access for others may be temporarily denied.
 </li>
 <br>
 </ul>
@@ -395,7 +395,7 @@ The BKG Ntrip Client (BNC) Qt Graphic User Interface (GUI) has been developed fo
 </ul>
 </p>
 <p>
-Note that this is a betta version of BNC provided for test and evaluation. Make sure you installed the latest version available from <u>http://igs.bkg.bund.de/index_ntrip_down.htm</u>. We are still working on the program and would appreciate if you could send your comments, suggestions, or bug reports to:
+Note that this is a beta version of BNC provided for test and evaluation. Make sure you installed the latest version available from <u>http://igs.bkg.bund.de/index_ntrip_down.htm</u>. We are still working on the program and would appreciate if you could send your comments, suggestions, or bug reports to:
 </p>
 <p>
 Georg Weber<br>
@@ -439,7 +439,7 @@ F - 3. <a href=#rtigs>RTIGS</a><br>
 </p>
 
 <p>
-NTRIP Version 1.0 is an RTCM standard designed for disseminating differential correction data (e.g in the RTCM-104 format) or other kinds of GNSS streaming data to stationary or mobile users over the Internet, allowing simultaneous PC, Laptop, PDA, or receiver connections to a broadcasting host. NTRIP supports wireless Internet access through Mobile IP Networks like GSM, GPRS, EDGE, or UMTS.
+NTRIP Version 1.0 is an RTCM standard designed for disseminating differential correction data (e.g. in the RTCM-104 format) or other kinds of GNSS streaming data to stationary or mobile users over the Internet, allowing simultaneous PC, Laptop, PDA, or receiver connections to a broadcasting host. NTRIP supports wireless Internet access through Mobile IP Networks like GSM, GPRS, EDGE, or UMTS.
 </p>
 
 <p>
@@ -492,7 +492,7 @@ Transmitting GNSS carrier phase data can be done through RTCM Version 2.x messag
 
 <ul>
 <li>
-Type 1 message is the range correction message and is the primay message in code-phase differential positioning (DGPS). It is computed in the base receiver by computing the error in the range measurement for each tracked SV.
+Type 1 message is the range correction message and is the primary message in code-phase differential positioning (DGPS). It is computed in the base receiver by computing the error in the range measurement for each tracked SV.
 </li>
 <li>
 Type 2 message is automatically generated when a new set of satellite ephemeris is downloaded to the base receiver. It is the computed difference between the old ephemeris and the new ephemeris. Type 2 messages are used when the base station is transmitting Type 1 messages.
