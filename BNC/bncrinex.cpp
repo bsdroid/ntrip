@@ -147,7 +147,11 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
     nextTime.setHMS(0, 0, 0);
     nextDate = datTim.date().addDays(1);
   }
-  _nextCloseEpoch = QDateTime(nextDate, nextTime);
+  QTime nextTime2 = nextTime.addMSecs(-100);
+  if (nextTime2 > nextTime) {
+    nextDate = nextDate.addDays(-1);
+  }
+  _nextCloseEpoch = QDateTime(nextDate, nextTime2);
 
   QString ID4 = _statID.left(4);
 
