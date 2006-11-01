@@ -1100,7 +1100,16 @@ void RTCM2_Obs::resolveEpoch (int  refWeek,   double  refSecs,
   const double secsPerWeek = 604800.0;                            
 
   epochWeek = refWeek;
-  epochSecs = secs + 3600.0*(floor((refSecs-secs)/3600.0+0.5));
+
+  epochSecs = secs;
+  while (epochSecs < refSecs - 1800) {
+    epochSecs += 3600;
+  }
+  while (epochSecs > refSecs + 1800) {
+    epochSecs -= 3600;
+  }
+
+  ////  epochSecs = secs + 3600.0*(floor((refSecs-secs)/3600.0+0.5));
   
   if (epochSecs<0          ) { epochWeek--; epochSecs+=secsPerWeek; };
   if (epochSecs>secsPerWeek) { epochWeek++; epochSecs-=secsPerWeek; };
