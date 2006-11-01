@@ -147,11 +147,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
     nextTime.setHMS(0, 0, 0);
     nextDate = datTim.date().addDays(1);
   }
-  QTime nextTime2 = nextTime.addMSecs(-100);
-  if (nextTime2 > nextTime) {
-    nextDate = nextDate.addDays(-1);
-  }
-  _nextCloseEpoch = QDateTime(nextDate, nextTime2);
+  _nextCloseEpoch = QDateTime(nextDate, nextTime);
 
   QString ID4 = _statID.left(4);
 
@@ -180,11 +176,12 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
 
 // Write RINEX Header
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::writeHeader(const QDateTime& datTim) {
+void bncRinex::writeHeader(const QDateTime& datTim, 
+                           const QDateTime& datTimNom) {
 
   // Open the Output File
   // --------------------
-  resolveFileName(datTim);
+  resolveFileName(datTimNom);
 
   // Append to existing file and return
   // ----------------------------------
@@ -305,11 +302,13 @@ void bncRinex::dumpEpoch(long maxTime) {
   // Time of Epoch
   // -------------
   Observation* fObs = *dumpList.begin();
-  QDateTime datTim = dateAndTimeFromGPSweek(fObs->GPSWeek, fObs->GPSWeeks);
+  QDateTime datTim    = dateAndTimeFromGPSweek(fObs->GPSWeek, fObs->GPSWeeks);
+  QDateTime datTimNom = dateAndTimeFromGPSweek(fObs->GPSWeek, 
+                                               floor(fObs->GPSWeeks+0.5));
 
   // Close the file
   // --------------
-  if (_nextCloseEpoch.isValid() && datTim >= _nextCloseEpoch) {
+  if (_nextCloseEpoch.isValid() && datTimNom >= _nextCloseEpoch) {
     closeFile();
     _headerWritten = false;
   }
@@ -317,7 +316,7 @@ void bncRinex::dumpEpoch(long maxTime) {
   // Write RINEX Header
   // ------------------
   if (!_headerWritten) {
-    writeHeader(datTim);
+    writeHeader(datTim, datTimNom);
   }
 
   _out << datTim.toString(" yy MM dd hh mm ss.zzz0000").toAscii().data()
