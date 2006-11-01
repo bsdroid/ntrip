@@ -21,7 +21,7 @@ class bncRinex {
  private:
    void resolveFileName(const QDateTime& datTim);
    void readSkeleton();
-   void writeHeader(const QDateTime& datTim);
+   void writeHeader(const QDateTime& datTim, const QDateTime& datTimNom);
    void closeFile();
 
    QByteArray          _statID;
