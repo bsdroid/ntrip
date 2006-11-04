@@ -21,6 +21,7 @@
 
 #include <QRegExp>
 #include <QStringList>
+#include <QDateTime>
 
 #include "bncutils.h"
 
@@ -55,37 +56,17 @@ QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks) {
   return QDateTime(date,time);
 }
 
-double MJD(int year, int month, double day) {
-  if( month <= 2 ) {
-    year = year - 1;
-    month = month + 12;
-  }  
-  int ii   = year/100;
-  int kk   = 2 - ii + ii/4;
-  double mjd = (365.25*year - fmod( 365.25*year, 1.0 )) - 679006.0
-                + floor( 30.6001*(month + 1) ) + day + kk;
-  return mjd;
-} 
-
-void MJD_GPSWeeks(double mjd, int& week, double& sec) {
-  double deltat = mjd - 44244.0 ;
-  week = (long) floor(deltat/7.0);
-  sec = (deltat - (week)*7.0)*86400.0;
-}
-
 void currentGPSWeeks(int& week, double& sec) {
 
-  time_t    ltime;
-  struct tm *gmt;
+  QDateTime currDateTime = QDateTime::currentDateTime().toUTC();
+  QDate     currDate = currDateTime.date();
+  QTime     currTime = currDateTime.time();
 
-  time(&ltime);
-  gmt = gmtime(&ltime);
+  week = int( (double(currDate.toJulianDay()) - 2444244.5) / 7 );
 
-  double dayFrac = ((  gmt->tm_sec  / 60.0
-                     + gmt->tm_min ) / 60.0
-                     + gmt->tm_hour ) / 24.0;
-
-  double mjd = MJD(1900+gmt->tm_year, gmt->tm_mon+1, gmt->tm_mday+dayFrac);
-
-  MJD_GPSWeeks(mjd, week, sec);
+  sec = (currDate.dayOfWeek() % 7) * 24.0 * 3600.0 + 
+        currTime.hour()                   * 3600.0 + 
+        currTime.minute()                 *   60.0 + 
+        currTime.second()                          +
+        currTime.msec()                   / 1000.0;
 }
