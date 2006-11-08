@@ -15,6 +15,7 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <unistd.h>
 #include <QApplication>
 #include <QFile>
 #include <iostream>
@@ -96,6 +97,8 @@ int main(int argc, char *argv[]) {
       _global_caster->addGetThread(getThread);
 
       getThread->start();
+
+      usleep(100000);  // sleep 0.1 sec
     }
     if (_global_caster->numStations() == 0) {
       return 0;

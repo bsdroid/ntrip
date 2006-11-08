@@ -15,6 +15,7 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <unistd.h>
 #include "bncwindow.h" 
 #include "bncapp.h" 
 #include "bncgetthread.h" 
@@ -404,6 +405,7 @@ void bncWindow::slotGetData() {
     _global_caster->addGetThread(getThread);
 
     getThread->start();
+    usleep(100000);  // sleep 0.1 sec
   }
 }
 
