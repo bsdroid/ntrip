@@ -1,3 +1,27 @@
+#ifndef RTCM3TORINEX_H
+#define RTCM3TORINES_H
+
+/*
+  Converter for RTCM3 data to RINEX.
+  $Id: rtcm3torinex.h,v 1.1 2006/11/02 13:34:00 stoecker Exp $
+  Copyright (C) 2005-2006 by Dirk Stoecker <stoecker@euronik.eu>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  or read http://www.gnu.org/licenses/gpl.txt
+*/
+
 #define PRN_GPS_START             1
 #define PRN_GPS_END               32
 #define PRN_GLONASS_START         38
@@ -52,6 +76,12 @@
 #define RINEXENTRY_S2DATA     9
 #define RINEXENTRY_NUMBER     10
 
+#define LIGHTSPEED         2.99792458e8    /* m/sec                                           */
+#define GPS_FREQU_L1       1575420000.0  /* Hz */
+#define GPS_FREQU_L2       1227600000.0  /* Hz */
+#define GPS_WAVELENGTH_L1  (LIGHTSPEED / GPS_FREQU_L1) /* m */
+#define GPS_WAVELENGTH_L2  (LIGHTSPEED / GPS_FREQU_L2) /* m */
+
 /* unimportant, only for approx. time needed */
 #define LEAPSECONDS 14
 
@@ -104,3 +134,4 @@ int RTCM3Parser(struct RTCM3ParserData *handle);
 void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte);
 void converttime(struct converttimeinfo *c, int week, int tow);
 
+#endif /* RTCM3TORINEX_H */

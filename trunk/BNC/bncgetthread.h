@@ -40,8 +40,8 @@ class bncGetThread : public QThread {
                 const QByteArray& format, int iMount);
    ~bncGetThread();
 
-   static QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
-                                            int timeOut, QString& msg);
+   static QTcpSocket* request(const QUrl& mountPoint,
+                              int timeOut, QString& msg);
 
    QByteArray staID() const {return _staID;}
 
