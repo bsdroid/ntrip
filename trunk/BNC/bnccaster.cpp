@@ -202,7 +202,9 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
                 <<  obs->P1        << " "
                 <<  obs->P2        << " "
                 <<  obs->L1        << " "
-                <<  obs->L2        << endl;
+                <<  obs->L2        << " "
+                <<  obs->SNR1      << " "
+                <<  obs->SNR2      << endl;
           if (!it.hasNext()) {
             *_out << endEpoch << endl;
           }
