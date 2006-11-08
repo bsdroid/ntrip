@@ -15,6 +15,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <stdlib.h>
+
 #include <QFile>
 #include <QTextStream>
 #include <QtNetwork>
@@ -297,6 +299,7 @@ void bncGetThread::tryReconnect() {
       if (_nextSleep > 128) {
         _nextSleep = 128;
       }
+      _nextSleep += rand() % 6;
     }
   }
   _nextSleep = 1;
