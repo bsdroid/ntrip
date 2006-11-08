@@ -58,7 +58,12 @@ void bncApp::slotMessage(const QByteArray msg) {
     if ( !logFileName.isEmpty() ) {
       expandEnvVar(logFileName);
       _logFile = new QFile(logFileName);
-      _logFile->open(QIODevice::WriteOnly);
+      if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
+        _logFile->open(QIODevice::WriteOnly | QIODevice::Append);
+      }
+      else {
+        _logFile->open(QIODevice::WriteOnly);
+      }
       _logStream = new QTextStream();
       _logStream->setDevice(_logFile);
     }
