@@ -163,6 +163,7 @@
     30.000                                                  INTERVAL
     fuer 30sec Sampling. Die Kollegen sagen mir, dass die Berner Software
     einen solchen Record erwartet.
+^^^^^^^^^^ CANCELED ^^^^^^^^
 
 (9) Sollten wir in die Routinen irgendwie eine Datei Copyright.cpp aufnehmen
     mit Hinweis auf GNU GPL?  Der RTIGS-Konverter hat schon einen
