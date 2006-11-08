@@ -38,7 +38,6 @@ bncRinex::bncRinex(const char* StatID, const QUrl& mountPoint) {
   _statID        = StatID;
   _mountPoint = mountPoint;
   _headerWritten = false;
-  readSkeleton();
 
   QSettings settings;
   _rnxScriptName = settings.value("rnxScript").toString();
@@ -60,19 +59,11 @@ bncRinex::~bncRinex() {
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::readSkeleton() {
 
-  // Resolve Skeleton File Name
-  // --------------------------
-  QSettings settings;
-  QString sklName = settings.value("rnxPath").toString();
-  expandEnvVar(sklName);
-  if ( sklName[sklName.length()-1] != QDir::separator() ) {
-    sklName += QDir::separator();
-  }
-  sklName += _statID.left(4) + "." + settings.value("rnxSkel").toString();
+  _headerLines.clear();
 
   // Read the File
   // -------------
-  QFile skl(sklName);
+  QFile skl(_sklName);
   if ( skl.exists() && skl.open(QIODevice::ReadOnly) ) {
     QTextStream in(&skl);
     while ( !in.atEnd() ) {
@@ -166,10 +157,14 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
     distStr = "_" + _statID.mid(4);
   }
 
+  QString sklExt = settings.value("rnxSkel").toString();
+  if (!sklExt.isEmpty()) {
+    _sklName = path + ID4 + distStr + "." + sklExt;
+  }
+
   path += ID4 +
           QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
-          hlpStr + distStr +
-          datTim.toString(".yyO");
+          hlpStr + distStr + datTim.toString(".yyO");
 
   _fName = path.toAscii();
 }
@@ -200,6 +195,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
 
   // Copy Skeleton Header
   // --------------------
+  readSkeleton();
   if (_headerLines.size() > 0) {
     QStringListIterator it(_headerLines);
     while (it.hasNext()) {

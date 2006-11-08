@@ -177,6 +177,7 @@ bncWindow::bncWindow() {
     _mountPointsTable->setItem(iRow, 2, it);
 
     bncTableItem* bncIt = new bncTableItem();
+    bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
     _mountPointsTable->setItem(iRow, 3, bncIt);
 
     iRow++;
