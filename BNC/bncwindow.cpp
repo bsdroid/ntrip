@@ -392,7 +392,7 @@ void bncWindow::slotGetData() {
 
     QByteArray format = _mountPointsTable->item(iRow, 2)->text().toAscii();
 
-    bncGetThread* getThread = new bncGetThread(url, format);
+    bncGetThread* getThread = new bncGetThread(url, format, iRow);
 
     connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
             this, SLOT(slotMessage(const QByteArray&)));

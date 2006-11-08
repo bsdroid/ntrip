@@ -12,7 +12,8 @@ class bncGetThread : public QThread {
  Q_OBJECT
 
  public:
-   bncGetThread(const QUrl& mountPoint, const QByteArray& format);
+   bncGetThread(const QUrl& mountPoint, 
+                const QByteArray& format, int iMount);
    ~bncGetThread();
 
    static QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
@@ -41,6 +42,7 @@ class bncGetThread : public QThread {
    QByteArray  _format;
    int         _timeOut;
    int         _nextSleep;
+   int         _iMount;
 };
 
 #endif

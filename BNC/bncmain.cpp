@@ -84,13 +84,15 @@ int main(int argc, char *argv[]) {
     app.connect(_global_caster, SIGNAL(newMessage(const QByteArray&)), 
                 &app, SLOT(slotMessage(const QByteArray&)));
 
+    int iMount = -1;
     QListIterator<QString> it(settings.value("mountPoints").toStringList());
     while (it.hasNext()) {
+      ++iMount;
       QStringList hlp = it.next().split(" ");
       if (hlp.size() <= 1) continue;
       QUrl url(hlp[0]);
       QByteArray format = hlp[1].toAscii();
-      bncGetThread* getThread = new bncGetThread(url, format);
+      bncGetThread* getThread = new bncGetThread(url, format, iMount);
       app.connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
                   &app, SLOT(slotMessage(const QByteArray&)));
 
