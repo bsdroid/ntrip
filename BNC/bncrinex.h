@@ -36,6 +36,7 @@ class bncRinex {
    QUrl                _mountPoint;
    QString             _pgmName;
    QString             _userName;
+   QString             _sklName;
 };
 
 #endif
