@@ -26,11 +26,18 @@
 ////////////////////////////////////////////////////////////////////////////
 bncCaster::bncCaster(const QString& outFileName, int port) {
 
+  QSettings settings;
+
   if ( !outFileName.isEmpty() ) {
     QString lName = outFileName;
     expandEnvVar(lName);
     _outFile = new QFile(lName); 
-    _outFile->open(QIODevice::WriteOnly);
+    if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
+      _outFile->open(QIODevice::WriteOnly | QIODevice::Append);
+    }
+    else {
+      _outFile->open(QIODevice::WriteOnly);
+    }
     _out = new QTextStream(_outFile);
     _out->setRealNumberNotation(QTextStream::FixedNotation);
     _out->setRealNumberPrecision(5);
@@ -57,7 +64,6 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
 
   _lastDumpSec   = 0; 
 
-  QSettings settings;
   _samplingRate = settings.value("rnxSampl").toInt();
   _waitTime     = settings.value("waitTime").toInt();
   if (_waitTime < 1) {
