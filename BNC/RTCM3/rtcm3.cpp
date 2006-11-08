@@ -86,13 +86,11 @@ void rtcm3::Decode(char* buffer, int bufLen) {
               obs->P2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
             }
             else if (_Parser.dataflag[jj] & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
-              obs->L1   = _Parser.Data.measdata[ii][_Parser.datapos[jj]] / 
-                                                                t_CST::lambda1;
+              obs->L1   = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
               obs->SNR1 = _Parser.Data.snrL1[ii];
             }
             else if (_Parser.dataflag[jj] & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
-              obs->L2   = _Parser.Data.measdata[ii][_Parser.datapos[jj]] /
-                                                                t_CST::lambda2;
+              obs->L2   = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
               obs->SNR2 = _Parser.Data.snrL2[ii];
             }
           }

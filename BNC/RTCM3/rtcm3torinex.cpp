@@ -1,23 +1,12 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.cpp,v 1.7 2006/09/06 16:13:16 mervart Exp $
+  $Id: rtcm3torinex.c,v 1.7 2006/11/02 13:54:43 stoecker Exp $
+  Copyright (C) 2005-2006 by Dirk Stoecker <stoecker@euronik.eu>
 
-  Program written bei
-  Dirk Stoecker
-  Euronik GmbH
-  http://www.euronik.eu/
-
-  for
-
-  Federal Agency for Cartography and Geodesy (BKG)
-  Richard-Strauss-Allee 11
-  D-60598 Frankfurt
-  http://igs.bkg.bund.de/index_ntrip.htm
-
-  Contact Dirk Stoecker [stoecker@euronik.eu] or [euref-ip@bkg.bund.de]
-  with your comments, suggestions, improvements, patches.
-
-  Copyright (C) 2005-2006 by German Federal Agency for Cartography and Geodesy
+  This software is a complete NTRIP-RTCM3 to RINEX converter as well as
+  a module of the BNC tool for multiformat conversion. Contact Dirk
+  Stöcker for suggestions and bug reports related to the RTCM3 to RINEX
+  conversion problems and the author of BNC for all the other problems.
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -35,17 +24,6 @@
   or read http://www.gnu.org/licenses/gpl.txt
 */
 
-#ifndef NO_RTCM3_MAIN
-#include <getopt.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#endif
-
-#ifndef sparc
-#include <stdint.h>
-#endif
-
 #include <ctype.h>
 #include <errno.h>
 #include <math.h>
@@ -57,161 +35,21 @@
 #include <time.h>
 #include <unistd.h>
 
-/* The string, which is send as agent in HTTP request */
-#define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
+#ifndef NO_RTCM3_MAIN
+#include <getopt.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#endif
 
-#define MAXDATASIZE 1000 /* max number of bytes we can get at once */
+#ifndef sparc
+#include <stdint.h>
+#endif
 
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
 static char revisionstr[] = "$Revision: 1.7 $";
-static char datestr[]     = "$Date: 2006/09/06 16:13:16 $";
-static int stop = 0;
-
-#ifndef NO_RTCM3_MAIN
-
-struct Args
-{
-  const char *server;
-  int         port;
-  const char *user;
-  const char *password;
-  const char *data;
-  const char *headerfile;
-};
-
-/* option parsing */
-#ifdef NO_LONG_OPTS
-#define LONG_OPT(a)
-#else
-#define LONG_OPT(a) a
-static struct option opts[] = {
-{ "data",       required_argument, 0, 'd'},
-{ "server",     required_argument, 0, 's'},
-{ "password",   required_argument, 0, 'p'},
-{ "port",       required_argument, 0, 'r'},
-{ "header",     required_argument, 0, 'f'},
-{ "user",       required_argument, 0, 'u'},
-{ "help",       no_argument,       0, 'h'},
-{0,0,0,0}};
-#endif
-#define ARGOPT "d:hp:r:s:u:f:"
-
-static int getargs(int argc, char **argv, struct Args *args)
-{
-  int res = 1;
-  int getoptr;
-  int help = 0;
-  char *t;
-
-  args->server = "www.euref-ip.net";
-  args->port = 80;
-  args->user = "";
-  args->password = "";
-  args->data = 0;
-  args->headerfile = 0;
-  help = 0;
-
-  do
-  {
-#ifdef NO_LONG_OPTS
-    switch((getoptr = getopt(argc, argv, ARGOPT)))
-#else
-    switch((getoptr = getopt_long(argc, argv, ARGOPT, opts, 0)))
-#endif
-    {
-    case 's': args->server = optarg; break;
-    case 'u': args->user = optarg; break;
-    case 'p': args->password = optarg; break;
-    case 'd': args->data = optarg; break;
-    case 'f': args->headerfile = optarg; break;
-    case 'h': help=1; break;
-    case 'r': 
-      args->port = strtoul(optarg, &t, 10);
-      if((t && *t) || args->port < 1 || args->port > 65535)
-        res = 0;
-      break;
-    case -1: break;
-    }
-  } while(getoptr != -1 || !res);
-
-  datestr[0] = datestr[7];
-  datestr[1] = datestr[8];
-  datestr[2] = datestr[9];
-  datestr[3] = datestr[10];
-  datestr[5] = datestr[12];
-  datestr[6] = datestr[13];
-  datestr[8] = datestr[15];
-  datestr[9] = datestr[16];
-  datestr[4] = datestr[7] = '-';
-  datestr[10] = 0;
-
-  if(!res || help)
-  {
-    fprintf(stderr, "Version %s (%s) GPL\nUsage: %s -s server -u user ...\n"
-    " -d " LONG_OPT("--data       ") "the requested data set\n"
-    " -f " LONG_OPT("--headerfile ") "file for RINEX header information\n"
-    " -s " LONG_OPT("--server     ") "the server name or address\n"
-    " -p " LONG_OPT("--password   ") "the login password\n"
-    " -r " LONG_OPT("--port       ") "the server port number (default 80)\n"
-    " -u " LONG_OPT("--user       ") "the user name\n"
-    , revisionstr, datestr, argv[0]);
-    exit(1);
-  }
-  return res;
-}
-#endif
-
-
-static const char encodingTable [64] = {
-  'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',
-  'Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f',
-  'g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
-  'w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/'
-};
-
-/* does not buffer overrun, but breaks directly after an error */
-/* returns the number of required bytes */
-static int encode(char *buf, int size, const char *user, const char *pwd)
-{
-  unsigned char inbuf[3];
-  char *out = buf;
-  int i, sep = 0, fill = 0, bytes = 0;
-
-  while(*user || *pwd)
-  {
-    i = 0;
-    while(i < 3 && *user) inbuf[i++] = *(user++);
-    if(i < 3 && !sep)    {inbuf[i++] = ':'; ++sep; }
-    while(i < 3 && *pwd)  inbuf[i++] = *(pwd++);
-    while(i < 3)         {inbuf[i++] = 0; ++fill; }
-    if(out-buf < size-1)
-      *(out++) = encodingTable[(inbuf [0] & 0xFC) >> 2];
-    if(out-buf < size-1)
-      *(out++) = encodingTable[((inbuf [0] & 0x03) << 4)
-               | ((inbuf [1] & 0xF0) >> 4)];
-    if(out-buf < size-1)
-    {
-      if(fill == 2)
-        *(out++) = '=';
-      else
-        *(out++) = encodingTable[((inbuf [1] & 0x0F) << 2)
-                 | ((inbuf [2] & 0xC0) >> 6)];
-    }
-    if(out-buf < size-1)
-    {
-      if(fill >= 1)
-        *(out++) = '=';
-      else
-        *(out++) = encodingTable[inbuf [2] & 0x3F];
-    }
-    bytes += 4;
-  }
-  if(out-buf < size)
-    *out = 0;
-  return bytes;
-}
 
 static uint32_t CRC24(long size, const unsigned char *buf)
 {
@@ -404,6 +242,7 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
               gnss->snrL1[num] = i;
             }
           }
+          gnss->measdata[num][le] /= GPS_WAVELENGTH_L1;
           if(type == 1003 || type == 1004)
           {
             /* L2 */
@@ -451,6 +290,7 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
                 gnss->snrL2[num] = i;
               }
             }
+            gnss->measdata[num][le] /= GPS_WAVELENGTH_L2;
           }
         }
         for(i = 0; i < 64; ++i)
@@ -545,6 +385,17 @@ void HandleHeader(struct RTCM3ParserData *Parser)
     const char *str;
     time_t t;
     struct tm * t2;
+
+#ifdef NO_RTCM3_MAIN
+    if(revisionstr[0] == '$')
+    {
+      char *a;
+      int i=0;
+      for(a = revisionstr+11; *a && *a != ' '; ++a)
+        revisionstr[i++] = *a;
+      revisionstr[i] = 0;
+    }
+#endif
 
     str = getenv("USER");
     if(!str) str = "";
@@ -641,7 +492,7 @@ void HandleHeader(struct RTCM3ParserData *Parser)
   {
     struct converttimeinfo cti;
     converttime(&cti, Parser->Data.week,
-                int(floor(Parser->Data.timeofweek/1000.0)));
+    (int)floor(Parser->Data.timeofweek/1000.0));
     hdata.data.named.timeoffirstobs = buffer;
       i = 1+snprintf(buffer, buffersize,
     "  %4d    %2d    %2d    %2d    %2d   %10.7f     GPS         "
@@ -738,33 +589,10 @@ void HandleHeader(struct RTCM3ParserData *Parser)
     }
   }
 
-
-#ifndef NO_RTCM3_MAIN
   for(i = 0; i < hdata.numheaders; ++i)
     printf("%s\n", hdata.data.unnamed[i]);
   printf("                                                            "
   "END OF HEADER\n");
-#endif
-}
-
-#ifndef NO_RTCM3_MAIN
-
-/* let the output complete a block if necessary */
-static void signalhandler(int sig)
-{
-  if(!stop)
-  {
-    fprintf(stderr, "Stop signal number %d received. "
-    "Trying to terminate gentle.\n", sig);
-    stop = 1;
-    alarm(1);
-  }
-}
-
-static void signalhandler_alarm(int sig)
-{
-  fprintf(stderr, "Programm forcefully terminated.\n");
-  exit(1);
 }
 
 void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
@@ -791,7 +619,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
       }
 
       converttime(&cti, Parser->Data.week,
-      floor(Parser->Data.timeofweek/1000.0));
+      (int)floor(Parser->Data.timeofweek/1000.0));
       printf(" %02d %2d %2d %2d %2d %10.7f  0%3d",
       cti.year%100, cti.month, cti.day, cti.hour, cti.minute, cti.second
       + fmod(Parser->Data.timeofweek/1000.0,1.0), Parser->Data.numsats);
@@ -860,6 +688,180 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
       }
     }
   }
+}
+
+#ifndef NO_RTCM3_MAIN
+static char datestr[]     = "$Date: 2006/11/02 13:54:43 $";
+
+/* The string, which is send as agent in HTTP request */
+#define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
+
+#define MAXDATASIZE 1000 /* max number of bytes we can get at once */
+
+static const char encodingTable [64] = {
+  'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',
+  'Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f',
+  'g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
+  'w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/'
+};
+
+/* does not buffer overrun, but breaks directly after an error */
+/* returns the number of required bytes */
+static int encode(char *buf, int size, const char *user, const char *pwd)
+{
+  unsigned char inbuf[3];
+  char *out = buf;
+  int i, sep = 0, fill = 0, bytes = 0;
+
+  while(*user || *pwd)
+  {
+    i = 0;
+    while(i < 3 && *user) inbuf[i++] = *(user++);
+    if(i < 3 && !sep)    {inbuf[i++] = ':'; ++sep; }
+    while(i < 3 && *pwd)  inbuf[i++] = *(pwd++);
+    while(i < 3)         {inbuf[i++] = 0; ++fill; }
+    if(out-buf < size-1)
+      *(out++) = encodingTable[(inbuf [0] & 0xFC) >> 2];
+    if(out-buf < size-1)
+      *(out++) = encodingTable[((inbuf [0] & 0x03) << 4)
+               | ((inbuf [1] & 0xF0) >> 4)];
+    if(out-buf < size-1)
+    {
+      if(fill == 2)
+        *(out++) = '=';
+      else
+        *(out++) = encodingTable[((inbuf [1] & 0x0F) << 2)
+                 | ((inbuf [2] & 0xC0) >> 6)];
+    }
+    if(out-buf < size-1)
+    {
+      if(fill >= 1)
+        *(out++) = '=';
+      else
+        *(out++) = encodingTable[inbuf [2] & 0x3F];
+    }
+    bytes += 4;
+  }
+  if(out-buf < size)
+    *out = 0;
+  return bytes;
+}
+
+static int stop = 0;
+
+struct Args
+{
+  const char *server;
+  int         port;
+  const char *user;
+  const char *password;
+  const char *data;
+  const char *headerfile;
+};
+
+/* option parsing */
+#ifdef NO_LONG_OPTS
+#define LONG_OPT(a)
+#else
+#define LONG_OPT(a) a
+static struct option opts[] = {
+{ "data",       required_argument, 0, 'd'},
+{ "server",     required_argument, 0, 's'},
+{ "password",   required_argument, 0, 'p'},
+{ "port",       required_argument, 0, 'r'},
+{ "header",     required_argument, 0, 'f'},
+{ "user",       required_argument, 0, 'u'},
+{ "help",       no_argument,       0, 'h'},
+{0,0,0,0}};
+#endif
+#define ARGOPT "d:hp:r:s:u:f:"
+
+static int getargs(int argc, char **argv, struct Args *args)
+{
+  int res = 1;
+  int getoptr;
+  int help = 0;
+  char *t;
+
+  args->server = "www.euref-ip.net";
+  args->port = 80;
+  args->user = "";
+  args->password = "";
+  args->data = 0;
+  args->headerfile = 0;
+  help = 0;
+
+  do
+  {
+#ifdef NO_LONG_OPTS
+    switch((getoptr = getopt(argc, argv, ARGOPT)))
+#else
+    switch((getoptr = getopt_long(argc, argv, ARGOPT, opts, 0)))
+#endif
+    {
+    case 's': args->server = optarg; break;
+    case 'u': args->user = optarg; break;
+    case 'p': args->password = optarg; break;
+    case 'd': args->data = optarg; break;
+    case 'f': args->headerfile = optarg; break;
+    case 'h': help=1; break;
+    case 'r': 
+      args->port = strtoul(optarg, &t, 10);
+      if((t && *t) || args->port < 1 || args->port > 65535)
+        res = 0;
+      break;
+    case -1: break;
+    }
+  } while(getoptr != -1 || !res);
+
+  datestr[0] = datestr[7];
+  datestr[1] = datestr[8];
+  datestr[2] = datestr[9];
+  datestr[3] = datestr[10];
+  datestr[5] = datestr[12];
+  datestr[6] = datestr[13];
+  datestr[8] = datestr[15];
+  datestr[9] = datestr[16];
+  datestr[4] = datestr[7] = '-';
+  datestr[10] = 0;
+
+  if(!res || help)
+  {
+    fprintf(stderr, "Version %s (%s) GPL\nUsage: %s -s server -u user ...\n"
+    " -d " LONG_OPT("--data       ") "the requested data set\n"
+    " -f " LONG_OPT("--headerfile ") "file for RINEX header information\n"
+    " -s " LONG_OPT("--server     ") "the server name or address\n"
+    " -p " LONG_OPT("--password   ") "the login password\n"
+    " -r " LONG_OPT("--port       ") "the server port number (default 80)\n"
+    " -u " LONG_OPT("--user       ") "the user name\n"
+    , revisionstr, datestr, argv[0]);
+    exit(1);
+  }
+  return res;
+}
+
+/* let the output complete a block if necessary */
+static void signalhandler(int sig)
+{
+  if(!stop)
+  {
+    fprintf(stderr, "Stop signal number %d received. "
+    "Trying to terminate gentle.\n", sig);
+    stop = 1;
+    alarm(1);
+  }
+}
+
+/* for some reason we had to abort hard (maybe waiting for data */
+#ifdef __GNUC__
+static __attribute__ ((noreturn)) void signalhandler_alarm(
+int sig __attribute__((__unused__)))
+#else /* __GNUC__ */
+static void signalhandler_alarm(int sig)
+#endif /* __GNUC__ */
+{
+  fprintf(stderr, "Programm forcefully terminated.\n");
+  exit(1);
 }
 
 int main(int argc, char **argv)
@@ -1003,5 +1005,4 @@ int main(int argc, char **argv)
   }
   return 0;
 }
-
-#endif   // NO_RTCM3_MAIN
+#endif /* NO_RTCM3_MAIN */
