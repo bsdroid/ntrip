@@ -20,7 +20,6 @@
            generiert werden. Das erscheint mir so wichtig, dass ich hierfür
            ein "Muss" gewählt habe. was denkst Du dazu? Ist das mit
            vertretbarem Aufwand machbar?
-^^^^^^^^^^ CANCELED ^^^^^^^^^^^^^
 
 (5 Kann) Die Orientierung im Logfile wäre einfacher, wenn vor jede
          Ausgabezeile eine Zeitmarke und der zugehörige Mountpoint geschrieben
@@ -63,114 +62,73 @@
 ^^^^^^^^^^ DONE ^^^^^^^^^^^^^
 
 
-(1) Als ASCII-Output werden SNR1 und SNR2 nicht mit ausgegeben. Da der binaere
-    Output SNR1 und SNR2 jedoch mit ausgibt schlage ich vor, diese beiden
-    Parameter auch beim ASCII-Output mit auszugeben.
-^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+(1 kann) Als ASCII-Output werden SNR1 und SNR2 nicht mit ausgegeben. Da der binaere Output SNR1 und SNR2 jedoch mit ausgibt schlage ich vor, diese beiden Parameter auch beim ASCII-Output mit auszugeben.
 
-(2) Ich habe Tests mit 300..400 Datenstroemen gemacht. (Der NTRIP Broadcaster
-    macht das mit. Fuer BNC scheint die Grenze mit der Hauptspeichergroesse in
-    Verbindung zu stehen - bei 300..400 Datenstroemen ist auf dem
-    Linux-Rechner "gref-ip" Schluss.) Ein kleines Problem kann die quasi
-    zeitgleiche Anforderung aller Datenstroeme fuer den NTRIP Broadcaster
-    darstellen. Wir koennten ihm die Situation erleichtern, wenn wir nach
-    jedem "GET" fuer eine Datenstromanforderung etwa 0.1sec warten bis zum
-    naechsten "GET". Laesst sich z.B. ein 'usleep' an passender Stelle
-    hinzufuergen? Bei 100 Datenstoemen mueüsste man dann etwa 10 sec warten
-    bis alles angelaufen ist - da sehe ich aber kein Problem.
-^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+(2 kann) Ich habe Tests mit 300..400 Datenstroemen gemacht. (Der NTRIP Broadcaster macht das mit. Fuer BNC scheint die Grenze mit der Hauptspeichergroesse in Verbindung zu stehen - bei 300..400 Datenstroemen ist auf dem Linux-Rechner "gref-ip" Schluss.) Ein kleines Problem kann die quasi zeitgleiche Anforderung aller Datenstroeme fuer den NTRIP Broadcaster darstellen. Wir koennten ihm die Situation erleichtern, wenn wir nach jedem "GET" fuer eine Datenstromanforderung etwa 0.1sec warten bis zum naechsten "GET". Laesst sich z.B. ein 'usleep' an passender Stelle hinzufuergen? Bei 100 Datenstoemen mueüsste man dann etwa 10 sec warten bis alles angelaufen ist - da sehe ich aber kein Problem.
 
-(3) 'Append files' wirkt im Augenblick nur fueür die RINEX-Files. Ich schlage
-    vor, dieses auchfuer "Log-file" und "ASCII-Output" einzufueühren. Wenn BNC
-    wirklich einmal nach einem Programmabsturz neu gestartet werden muss, dann
-    ist es sicher gut einen Blick in das alte Log-file werfen zu koennen.
-^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+(3 kann) 'Append files' wirkt im Augenblick nur fueür die RINEX-Files. Ich schlage vor, dieses auchfuer "Log-file" und "ASCII-Output" einzufueühren. Wenn BNC wirklich einmal nach einem Programmabsturz neu gestartet werden muss, dann ist es sicher gut einen Blick in das alte Log-file werfen zu koennen.
 
-(4) Das mit den Skeleton-Files funktioniert prima - mit einer kleinen
-    Ausnahme. Die Mountpoints:
+(4 kann) Das mit den Skeleton-Files funktioniert prima - mit einer kleinen Ausnahme. Die Mountpoints:
 
-    WETTZELL
-    FRANKFURT
-    FRANCE
-    BRUS0
-    BRUS0
-    
-    weürden im Augenblick folgende Skeleton-Files suchen
-    
-    WETT.skl
-    FRAN.skl
-    BRUS.skl
-    
-    Ich denke wir sollten das so einstellen, dass nach Skeleton-Files des
-    endgültigen Dateinamens gesucht wird, also:
-    
-    WETT.skl
-    FRAN_KFURT.skl
-    FRAN_CE.skl
-    BRUS_0.skl
-    BRUS_1.skl
-    
-    Ich hoffe, das ist nicht zu kompliziert einzurichten.
-^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+WETTZELL
+FRANKFURT
+FRANCE
+BRUS0
+BRUS0
 
-(5) Ebenso wie die Strings "decoder" sind im Mountpoint-Bereich im Augenblick
-    auch die Strings "bytes" editierbar. Das muss allerdings nicht
-    sein. Editiert braucht nur der "decoder" String zu sein.
-^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+weürden im Augenblick folgende Skeleton-Files suchen
 
-(6) Was das Re-connect betrifft, so hat RTCM darum gebeten eine
-    Random-Variable einzufuehren zusaetzlich zu dem "sleep:
-    2,4,8,16,32,64,128". Dieser Zufallsgroesse sollt zwischen 0 und 5 sec
-    liegen. Man muesste dazu also so eine sleep-Reihenfolge einrichten wie
+WETT.skl
+FRAN.skl
+BRUS.skl
 
-    sleep: 2+rand,4+rand,8+rand,16+rand,32+rand,64+rand,128+rand
+Ich denke wir sollten das so einstellen, dass nach Skeleton-Files des endgültigen Dateinamens gesucht wird, also:
 
-    wobei "rand" eine Zufallszahl zwischen 0 und 5 ist.
-    Ich denke, dass das einfach ist (ueber den Sinn kann man streiten).
-^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+WETT.skl
+FRAN_KFURT.skl
+FRAN_CE.skl
+BRUS_0.skl
+BRUS_1.skl
 
-(7) BNC laesst es zu, dass ein Datenstrom zweifach vom selben NTRIP
-    Broadcaster angefordert wird. Beispiel:
+Ich hoffe, das ist nicht zu kompliziert einzurichten.
 
-    www.igs-ip.net:2101/ALBH0
-    www.igs-ip.net:2101/ALBH0
-    
-    Das macht keinen Sinn - ist aber ausgezeichnet zum Testen! Ich kann beliebig
-    viel "Workload" fuer BNC und insbesondere auch fuer den NTRIP Broadcaster
-    erzeugen!
-    
-    Leider ist in der RINEX-Ausgabe bei dieser Situation ein Bug drin: Beide
-    RINEX-Daten werden in der selben Datei "ALBH*_1.* abgelegt. Tatsaechlich
-    muessen sie aber in den beiden Dateien
-    
-    ALBH*_0.*
-    ALBH*_1.*
-    
-    getrennt abgelegt werden. Das klappt auch schon in dem Fall, in dem ein
-    identischer Mountpoint bei zwei verschiedenen Broadcastern vorliegt. Beispiel
-    www.euref-ip.net:2101/BRUS0 und www.igs-ip.net:2101/BRUS0. Dann werden korrekt
-    die Dateien
-    
-    BRUS*_0.*
-    BRUS*_1.*
-    
-    angelegt. Ich hoffe, Du kannst das Problem mit www.igs-ip.net:2101/ALBH0 plus
-    www.igs-ip.net:2101/ALBH0 finden.
-^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+(5 kann) Ebenso wie die Strings "decoder" sind im Mountpoint-Bereich im Augenblick auch die Strings "bytes" editierbar. Das muss allerdings nicht sein. Editiert braucht nur der "decoder" String zu sein.
 
-(8) Kannst Du im RINEX-Header noch einen Record fuer das Sampling mit
-    ausgeben? Z.B.:
+(6 kann) Was das Re-connect betrifft, so hat RTCM darum gebeten eine Random-Variable einzufuehren zusaetzlich zu dem "sleep: 2,4,8,16,32,64,128". Dieser Zufallsgroesse sollt zwischen 0 und 5 sec liegen. Man muesste dazu also so eine sleep-Reihenfolge einrichten wie
+
+sleep: 2+rand,4+rand,8+rand,16+rand,32+rand,64+rand,128+rand
+
+wobei "rand" eine Zufallszahl zwischen 0 und 5 ist.
+Ich denke, dass das einfach ist (ueber den Sinn kann man streiten).
+
+(7 muss) BNC laesst es zu, dass ein Datenstrom zweifach vom selben NTRIP Broadcaster angefordert wird. Beispiel:
+
+www.igs-ip.net:2101/ALBH0
+www.igs-ip.net:2101/ALBH0
+
+Das macht keinen Sinn - ist aber ausgezeichnet zum Testen! Ich kann beliebig viel "Workload" fuer BNC und insbesondere auch fuer den NTRIP Broadcaster erzeugen!
+
+Leider ist in der RINEX-Ausgabe bei dieser Situation ein Bug drin: Beide RINEX-Daten werden in der selben Datei "ALBH*_1.* abgelegt. Tatsaechlich muessen sie aber in den beiden Dateien
+
+ALBH*_0.*
+ALBH*_1.*
+
+getrennt abgelegt werden. Das klappt auch schon in dem Fall, in dem ein identischer Mountpoint bei zwei verschiedenen Broadcastern vorliegt. Beispiel www.euref-ip.net:2101/BRUS0 und www.igs-ip.net:2101/BRUS0. Dann werden korrekt die Dateien
+
+BRUS*_0.*
+BRUS*_1.*
+
+angelegt. Ich hoffe, Du kannst das Problem mit www.igs-ip.net:2101/ALBH0 plus www.igs-ip.net:2101/ALBH0 finden.
+
+(8 kann) Kannst Du im RINEX-Header noch einen Record fuer das Sampling mit ausgeben? Z.B.:
     30.000                                                  INTERVAL
-    fuer 30sec Sampling. Die Kollegen sagen mir, dass die Berner Software
-    einen solchen Record erwartet.
-^^^^^^^^^^ CANCELED ^^^^^^^^
+fuer 30sec Sampling. Die Kollegen sagen mir, dass die Berner Software einen solchen Record erwartet.
 
-(9) Sollten wir in die Routinen irgendwie eine Datei Copyright.cpp aufnehmen
-    mit Hinweis auf GNU GPL?  Der RTIGS-Konverter hat schon einen
-    Copyright-Hinweis von Ken MacLeod drin, ebenso der Konverter fuer RTCM
-    3. Beim RTCM 2 Konverter muesste man noch einen Copyright-Hinweis fuer
-    Oliver Montenbruck aufnehmen. In Deine Programmteile koennte man
-    schreiben:
+(9 kann) Sollten wir in die Routinen irgendwie eine Datei Copyright.cpp aufnehmen
+mit Hinweis auf GNU GPL?
+Der RTIGS-Konverter hat schon einen Copyright-Hinweis von Ken MacLeod drin, ebenso der
+Konverter fuer RTCM 3. Beim RTCM 2 Konverter muesste man noch einen Copyright-Hinweis
+fuer Oliver Montenbruck aufnehmen. In Deine Programmteile koennte man schreiben:
 
 // Part of BNC, a utility for retrieving decoding and
 // converting GNSS data streams from NTRIP broadcasters,
@@ -196,5 +154,4 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-^^^^^^^^^^ DONE ^^^^^^^^^^^^^
 
