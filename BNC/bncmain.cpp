@@ -123,8 +123,9 @@ int main(int argc, char *argv[]) {
       _global_caster->addGetThread(getThread);
 
       getThread->start();
-
+#ifndef WIN32
       usleep(100000);  // sleep 0.1 sec
+#endif
     }
     if (_global_caster->numStations() == 0) {
       return 0;
