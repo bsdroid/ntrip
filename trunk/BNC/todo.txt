@@ -63,10 +63,13 @@
 
 
 (1 kann) Als ASCII-Output werden SNR1 und SNR2 nicht mit ausgegeben. Da der binaere Output SNR1 und SNR2 jedoch mit ausgibt schlage ich vor, diese beiden Parameter auch beim ASCII-Output mit auszugeben.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
 
 (2 kann) Ich habe Tests mit 300..400 Datenstroemen gemacht. (Der NTRIP Broadcaster macht das mit. Fuer BNC scheint die Grenze mit der Hauptspeichergroesse in Verbindung zu stehen - bei 300..400 Datenstroemen ist auf dem Linux-Rechner "gref-ip" Schluss.) Ein kleines Problem kann die quasi zeitgleiche Anforderung aller Datenstroeme fuer den NTRIP Broadcaster darstellen. Wir koennten ihm die Situation erleichtern, wenn wir nach jedem "GET" fuer eine Datenstromanforderung etwa 0.1sec warten bis zum naechsten "GET". Laesst sich z.B. ein 'usleep' an passender Stelle hinzufuergen? Bei 100 Datenstoemen mueüsste man dann etwa 10 sec warten bis alles angelaufen ist - da sehe ich aber kein Problem.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
 
 (3 kann) 'Append files' wirkt im Augenblick nur fueür die RINEX-Files. Ich schlage vor, dieses auchfuer "Log-file" und "ASCII-Output" einzufueühren. Wenn BNC wirklich einmal nach einem Programmabsturz neu gestartet werden muss, dann ist es sicher gut einen Blick in das alte Log-file werfen zu koennen.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
 
 (4 kann) Das mit den Skeleton-Files funktioniert prima - mit einer kleinen Ausnahme. Die Mountpoints:
 
@@ -91,8 +94,10 @@ BRUS_0.skl
 BRUS_1.skl
 
 Ich hoffe, das ist nicht zu kompliziert einzurichten.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
 
 (5 kann) Ebenso wie die Strings "decoder" sind im Mountpoint-Bereich im Augenblick auch die Strings "bytes" editierbar. Das muss allerdings nicht sein. Editiert braucht nur der "decoder" String zu sein.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
 
 (6 kann) Was das Re-connect betrifft, so hat RTCM darum gebeten eine Random-Variable einzufuehren zusaetzlich zu dem "sleep: 2,4,8,16,32,64,128". Dieser Zufallsgroesse sollt zwischen 0 und 5 sec liegen. Man muesste dazu also so eine sleep-Reihenfolge einrichten wie
 
@@ -100,6 +105,7 @@ sleep: 2+rand,4+rand,8+rand,16+rand,32+rand,64+rand,128+rand
 
 wobei "rand" eine Zufallszahl zwischen 0 und 5 ist.
 Ich denke, dass das einfach ist (ueber den Sinn kann man streiten).
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
 
 (7 muss) BNC laesst es zu, dass ein Datenstrom zweifach vom selben NTRIP Broadcaster angefordert wird. Beispiel:
 
@@ -119,10 +125,12 @@ BRUS*_0.*
 BRUS*_1.*
 
 angelegt. Ich hoffe, Du kannst das Problem mit www.igs-ip.net:2101/ALBH0 plus www.igs-ip.net:2101/ALBH0 finden.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
 
 (8 kann) Kannst Du im RINEX-Header noch einen Record fuer das Sampling mit ausgeben? Z.B.:
     30.000                                                  INTERVAL
 fuer 30sec Sampling. Die Kollegen sagen mir, dass die Berner Software einen solchen Record erwartet.
+-> Geht technisch nicht, wird also nicht gemacht.
 
 (9 kann) Sollten wir in die Routinen irgendwie eine Datei Copyright.cpp aufnehmen
 mit Hinweis auf GNU GPL?
@@ -154,4 +162,17 @@ fuer Oliver Montenbruck aufnehmen. In Deine Programmteile koennte man schreiben:
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
+
+(10 kann) Im Log-Bereich des Hauptfensters sowie gegebenenfalls im Log-File
+sollte, sobald BNC neu gestartet wird oder nach einem Re-Start, also noch 
+vor dem GET fuer die Datenstroeme, eine Meldung erscheinen wie:
+
+15:49:33 ============ Start BNC ============
+
+Begruendung: Wenn viele Datenstroeme angefordert werden (z.B. 100), dann
+passiert auf dem Bildschirm zunaechst nichts, weil ja etwa 100 x 0.1 = 10sec
+gebraucht werden, um die Verbindungen zum Caster herzustellen. Die Meldung
+'Start BNC' macht dem Nutzer sofort klar, dass BNC korrekt angelaufen ist
+obwohl im Log-Bereich nocht nichts weiter zu sehen ist.
 
