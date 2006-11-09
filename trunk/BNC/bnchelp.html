@@ -259,14 +259,16 @@ if 'RINEX skeleton extension' is set to 'skl'.
 <p> 
 Note the following conditions regarding RINEX header skeleton files:
 <ul>
-<li>They should contain empty header records of type</li>
-<br>&nbsp; &nbsp; PGM / RUN BY / DATE
-<br>&nbsp; &nbsp; # / TYPES OF OBSERVATIONS
-<br>&nbsp; &nbsp; TIME OF FIRST OBS
+<li>They should contain in the first place a complete header record of type</li>
+<br>&nbsp; &nbsp; &nbsp; RINEX VERSION / TYPE
+<li>They should further contain empty header records of type</li>
+<br>&nbsp; &nbsp; &nbsp; PGM / RUN BY / DATE
+<br>&nbsp; &nbsp; &nbsp; # / TYPES OF OBSERVATIONS
+<br>&nbsp; &nbsp; &nbsp; TIME OF FIRST OBS
 <br>The existence of these empty records force BNC to include such lines in the final RINEX file header together with an additional COMMENT line quoting the source of the stream.
 <li>They must contain an empty header record of type</li>
-<br>&nbsp; &nbsp; END OF HEADER
-<li>They may contain any other complete header record as defined in the RINEX Version 2.1 documentation. Their contents may be derived from sitelog files.</li>
+<br>&nbsp; &nbsp; &nbsp; END OF HEADER
+<li>They may contain any other complete header record (correct format) as defined in the RINEX Version 2.1 documentation. Their contents may be derived from sitelog files.</li>
 </ul>
 <p> 
 
