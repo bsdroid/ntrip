@@ -56,7 +56,6 @@ class bncRinex {
    bool                _headerWritten;
    QDateTime           _nextCloseEpoch;
    QString             _rnxScriptName;
-   QProcess            _rnxScript;
    QUrl                _mountPoint;
    QString             _pgmName;
    QString             _userName;

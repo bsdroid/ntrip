@@ -39,6 +39,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <stdlib.h>
+
 #include <QSettings>
 #include <QDir>
 #include <QUrl>
@@ -387,6 +389,6 @@ void bncRinex::dumpEpoch(long maxTime) {
 void bncRinex::closeFile() {
   _out.close();
   if (!_rnxScriptName.isEmpty()) {
-    _rnxScript.start(_rnxScriptName, QStringList() << _fName);
+    system( QString(_rnxScriptName + " " + _fName + " &").toAscii().data() );
   }
 }
