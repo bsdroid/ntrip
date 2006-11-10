@@ -174,5 +174,12 @@ Begruendung: Wenn viele Datenstroeme angefordert werden (z.B. 100), dann
 passiert auf dem Bildschirm zunaechst nichts, weil ja etwa 100 x 0.1 = 10sec
 gebraucht werden, um die Verbindungen zum Caster herzustellen. Die Meldung
 'Start BNC' macht dem Nutzer sofort klar, dass BNC korrekt angelaufen ist
-obwohl im Log-Bereich nocht nichts weiter zu sehen ist.
+obwohl im Log-Bereich nocht nichts weiter zu sehen ist. (Psychologisches
+Problem, wenn der Nutzer nach ein paar Sekunden auf dem Bildschirm nichts
+sieht dann glaubt er, etwas sei nicht korrekt.)
+
+(11 kann) Skeleton Files von EUREF einbauen, Datenfeld Nummber 8 im
+NET-Record von www.euref-ip.net zeigt bereits auf das richtige HTTP-Verzeichnis,
+Beispiel fuer ein Skeleton-File dort:
+http://www.epncb.oma.be/stations/log/skl/GOPE.skl.
 
