@@ -121,7 +121,10 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
                                 int casterPort, QStringList& allLines,
                                 bool alwaysRead) {
 
+  static QMutex mutex;
   static QMap<QString, QStringList> allTables;
+
+  QMutexLocker locker(&mutex);
 
   if (!alwaysRead && allTables.find(casterHost) != allTables.end()) {
     allLines = allTables.find(casterHost).value();
