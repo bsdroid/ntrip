@@ -39,18 +39,14 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream.h>
-
 #include <stdlib.h>
-
-#include <QSettings>
-#include <QDir>
-#include <QUrl>
-#include <QDate>
-#include <QFile>
-#include <QTextStream>
+#include <iostream>
 #include <iomanip>
 #include <math.h>
+
+#include <QtCore>
+#include <QUrl>
+#include <QString>
 
 #include "bncrinex.h"
 #include "bncapp.h"
@@ -128,12 +124,14 @@ void bncRinex::readSkeleton() {
       if (line.indexOf("NET") == 0) {
         QStringList tags = line.split(";");
         if (tags.at(1) == net) {
-          sklDir = tags.at(6);
-          cout << _mountPoint.path().mid(1).toAscii().data() << " "
-               << sklDir.toAscii().data() << endl;
+          sklDir = tags.at(6).trimmed();
           break;
         }          
       }
+    }
+    if (!sklDir.isEmpty() && sklDir != "none") {
+      cout << _mountPoint.path().mid(1).toAscii().data() << " "
+           << sklDir.toAscii().data() << endl;
     }
   }
 }
