@@ -53,6 +53,7 @@
 #include "bncutils.h"
 #include "bncconst.h"
 #include "bnctabledlg.h"
+#include "bncgetthread.h"
 #include "RTCM3/rtcm3torinex.h"
 
 using namespace std;
@@ -130,8 +131,37 @@ void bncRinex::readSkeleton() {
       }
     }
     if (!sklDir.isEmpty() && sklDir != "none") {
-      cout << _mountPoint.path().mid(1).toAscii().data() << " "
-           << sklDir.toAscii().data() << endl;
+      QUrl url(sklDir + "/" + _mountPoint.path().mid(1,4) + ".skl");
+      url.setPort(80);
+
+      cout << url.toString().toAscii().data() << endl;
+
+      const int timeOut = 10*1000;
+      QString msg;
+      QTcpSocket* socket = bncGetThread::request(url, timeOut, msg);
+
+      cout << msg.toAscii().data() << endl;
+
+      if (socket) {
+
+        cout << "haha" << endl;
+        while (true) {
+          if (socket->canReadLine()) {
+            QString line = socket->readLine();
+            cout << line.toAscii().data() << endl;
+          }
+          else {
+            socket->waitForReadyRead(timeOut);
+            if (socket->bytesAvailable() > 0) {
+              continue;
+            }
+            else {
+              break;
+            }
+          }
+        }
+        delete socket;
+      }
     }
   }
 }
