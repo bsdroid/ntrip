@@ -134,21 +134,17 @@ void bncRinex::readSkeleton() {
       QUrl url(sklDir + "/" + _mountPoint.path().mid(1,4) + ".skl");
       url.setPort(80);
 
-      cout << url.toString().toAscii().data() << endl;
+      ///      cout << url.toString().toAscii().data() << endl;
 
       const int timeOut = 10*1000;
       QString msg;
       QTcpSocket* socket = bncGetThread::request(url, timeOut, msg);
 
-      cout << msg.toAscii().data() << endl;
-
       if (socket) {
-
-        cout << "haha" << endl;
         while (true) {
           if (socket->canReadLine()) {
             QString line = socket->readLine();
-            cout << line.toAscii().data() << endl;
+            ////            cout << line.toAscii().data() << endl;
           }
           else {
             socket->waitForReadyRead(timeOut);
