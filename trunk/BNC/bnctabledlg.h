@@ -38,7 +38,7 @@ class bncTableDlg : public QDialog {
     bncTableDlg(QWidget* parent);
     ~bncTableDlg();
     static t_irc getFullTable(const QString& casterHost, int casterPort,
-                              QStringList& allLines);
+                              QStringList& allLines, bool alwaysRead = true);
 
   signals:
     void newMountPoints(QStringList* mountPoints);
