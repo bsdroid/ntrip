@@ -51,7 +51,7 @@
 
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/rtcm3.h"
-#include "RTIGS/rtigs.h"
+#include "RTIGS/RTIGSDecoder.h"
 
 using namespace std;
 
@@ -240,7 +240,7 @@ t_irc bncGetThread::initRun() {
     }
     else if (_format.indexOf("RTIGS") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTIGS format"));
-      _decoder = new rtigs();
+      _decoder = new RTIGSDecoder();
     }
     else {
       emit(newMessage(_staID + ": Unknown data format " + _format));
