@@ -39,6 +39,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream.h>
+
 #include <stdlib.h>
 
 #include <QSettings>
@@ -54,6 +56,7 @@
 #include "bncapp.h"
 #include "bncutils.h"
 #include "bncconst.h"
+#include "bnctabledlg.h"
 #include "RTCM3/rtcm3torinex.h"
 
 using namespace std;
@@ -96,6 +99,40 @@ void bncRinex::readSkeleton() {
       _headerLines.append( in.readLine() );
       if (_headerLines.last().indexOf("END OF HEADER") != -1) {
         break;
+      }
+    }
+  }
+
+  // Try to download the skeleton file
+  // ---------------------------------
+  else {
+    QStringList table;
+    bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), 
+                              table, false);
+    QString net;
+    QStringListIterator it(table);
+    while (it.hasNext()) {
+      QString line = it.next();
+      if (line.indexOf("STR") == 0) {
+        QStringList tags = line.split(";");
+        if (tags.at(1) == _mountPoint.path().mid(1).toAscii()) {
+          net = tags.at(7);
+          break;
+        }
+      }
+    }
+    QString sklDir;
+    it.toFront();
+    while (it.hasNext()) {
+      QString line = it.next();
+      if (line.indexOf("NET") == 0) {
+        QStringList tags = line.split(";");
+        if (tags.at(1) == net) {
+          sklDir = tags.at(6);
+          cout << _mountPoint.path().mid(1).toAscii().data() << " "
+               << sklDir.toAscii().data() << endl;
+          break;
+        }          
       }
     }
   }
