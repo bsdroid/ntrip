@@ -107,6 +107,8 @@ int main(int argc, char *argv[]) {
     app.connect(_global_caster, SIGNAL(getThreadErrors()), &app, SLOT(quit()));
     app.connect(_global_caster, SIGNAL(newMessage(const QByteArray&)), 
                 &app, SLOT(slotMessage(const QByteArray&)));
+  
+    ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
 
     int iMount = -1;
     QListIterator<QString> it(settings.value("mountPoints").toStringList());

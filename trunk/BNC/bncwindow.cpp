@@ -410,6 +410,9 @@ void bncWindow::slotGetData() {
   connect(_global_caster, SIGNAL(newMessage(const QByteArray&)), 
           (bncApp*)qApp, SLOT(slotMessage(const QByteArray&)));
 
+  slotMessage("============ Start BNC ============");
+  ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
+
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
     QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
               "@"  + _mountPointsTable->item(iRow, 1)->text() );
