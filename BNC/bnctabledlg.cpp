@@ -118,7 +118,15 @@ bncTableDlg::~bncTableDlg() {
 // Read Table the caster (static)
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncTableDlg::getFullTable(const QString& casterHost, 
-                                int casterPort, QStringList& allLines) {
+                                int casterPort, QStringList& allLines,
+                                bool alwaysRead) {
+
+  static QMap<QString, QStringList> allTables;
+
+  if (!alwaysRead && allTables.find(casterHost) != allTables.end()) {
+    allLines = allTables.find(casterHost).value();
+    return success;
+  }
 
   allLines.clear();
 
@@ -167,6 +175,7 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
   }
   delete socket;
 
+  allTables.insert(casterHost, allLines);
   return success;
 }
 
