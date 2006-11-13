@@ -152,9 +152,15 @@ void bncRinex::readSkeleton() {
               firstLineRead = true;
 	    }
             if (firstLineRead) {
-              _headerLines.append( line );
               if (line.indexOf("END OF HEADER") != -1) {
+                _headerLines.append("PGM / RUN BY / DATE");
+                _headerLines.append("# / TYPES OF OBSERV");
+                _headerLines.append("TIME OF FIRST OBS");
+                _headerLines.append( line );
                 break;
+	      }
+              else {
+                _headerLines.append( line );
 	      }
 	    }
           }
