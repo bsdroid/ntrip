@@ -183,4 +183,5 @@ sieht dann glaubt er, etwas sei nicht korrekt.)
 NET-Record von www.euref-ip.net zeigt bereits auf das richtige HTTP-Verzeichnis,
 Beispiel fuer ein Skeleton-File dort:
 http://www.epncb.oma.be/stations/log/skl/GOPE.skl.
+^^^^^^^^^^ DONE ^^^^^^^^^^^^^
 
