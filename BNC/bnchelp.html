@@ -243,10 +243,13 @@ Select the RINEX sample interval in seconds. Zero '0' stands for converting all 
 <a name="rnxskeleton">
 <p><h4>B - 5.5 RINEX Skeleton Extension - optional</h4></p>
 <p>
-BNC lets you introduce RINEX header skeleton files that contain the header records you would like to see instead of a default header. You may like to derive RINEX skeleton files from the information given in sitelogs. A file in the 'RINEX directory' with the 'RINEX skeleton extension' is interpreted by BNC as a RINEX header skeleton file for the affected stream.
+BNC retrieves information needed for RINEX headers from so-called public RINEX header skeleton files as derived from sitelogs. An HTTP link to a directory containing these skeleton files may be available through data field number 7 of the affected NET record in the source-table. See <u>http://www.epncb.oma.be:80/stations/log/skl/BRUS.skl</u> for an example for a public RINEX header skeleton file concerning the EPN station Brussels. 
 </p>
 <p>
-Example: RINEX files for mountpoints WETTZELL, FRANKFURT and FRANCE (same 4Char Station ID), BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u> (same 4Char Station ID, identical mountpoint stings) would accept skeleton files named</p>
+However, it may happen that public RINEX header skeleton files are not available, its contents is not up to date or you need to have additional/optional records in the RINEX header. For that BNC lets you introduce personal skeleton files that contain the header records you would like to see. You may derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the 'RINEX directory' with the 'RINEX skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the affected stream.
+</p>
+<p>
+Example for file name convention: RINEX files for mountpoints WETTZELL, FRANKFURT and FRANCE (same 4Char Station ID), BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u> (same 4Char Station ID, identical mountpoint stings) would accept personal skeleton files named</p>
 <p>
 WETT.skl<br>
 FRAN_KFURT.skl<br>
@@ -257,17 +260,27 @@ BRUS_1.skl</p>
 if 'RINEX skeleton extension' is set to 'skl'.
 </p> 
 <p> 
-Note the following conditions regarding RINEX header skeleton files:
+Note the following conditions regarding personal RINEX header skeleton files:
 <ul>
-<li>They should contain in the first place a complete header record of type</li>
-<br>&nbsp; &nbsp; &nbsp; RINEX VERSION / TYPE
-<li>They should further contain empty header records of type</li>
+<li>If such a file appear appears in the 'RINEX directory', a probably existing public RINEX header skeleton file is ignored. The RINEX header is generated solely from the contents of the personal skeleton.</li>
+<li>They should contain <u>complete</u> header record of type</li>
+<br>&nbsp; &nbsp; &nbsp; RINEX VERSION / TYPE (first record)
+<br>&nbsp; &nbsp; &nbsp; MARKER NAME
+<br>&nbsp; &nbsp; &nbsp; OBSERVER / AGENCY
+<br>&nbsp; &nbsp; &nbsp; REC # / TYPE / VERS
+<br>&nbsp; &nbsp; &nbsp; ANT # / TYPE
+<br>&nbsp; &nbsp; &nbsp; APPROX POSITION XYZ
+<br>&nbsp; &nbsp; &nbsp; ANTENNA: DELTA H/E/N
+<br>&nbsp; &nbsp; &nbsp; WAVELENGTH FACT L1/2
+<li>They should further contain <u>empty</u> header records of type</li>
 <br>&nbsp; &nbsp; &nbsp; PGM / RUN BY / DATE
 <br>&nbsp; &nbsp; &nbsp; # / TYPES OF OBSERVATIONS
 <br>&nbsp; &nbsp; &nbsp; TIME OF FIRST OBS
-<br>The existence of these empty records force BNC to include such lines in the final RINEX file header together with an additional COMMENT line quoting the source of the stream.
+<br>The existence of these empty records force BNC to include such lines in the final RINEX file header together with an additional
+<br>&nbsp; &nbsp; &nbsp; COMMENT 
+<br>line quoting the source of the stream.
 <li>They must contain an empty header record of type</li>
-<br>&nbsp; &nbsp; &nbsp; END OF HEADER
+<br>&nbsp; &nbsp; &nbsp; END OF HEADER (last record)
 <li>They may contain any other complete header record (correct format) as defined in the RINEX Version 2.1 documentation. Their contents may be derived from sitelog files.</li>
 </ul>
 <p> 
