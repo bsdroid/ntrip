@@ -141,10 +141,22 @@ void bncRinex::readSkeleton() {
       QTcpSocket* socket = bncGetThread::request(url, timeOut, msg);
 
       if (socket) {
+        bool firstLineRead = false;
         while (true) {
           if (socket->canReadLine()) {
             QString line = socket->readLine();
-            ////            cout << line.toAscii().data() << endl;
+            line.chop(1);
+            if (line.indexOf("RINEX VERSION") != -1) {
+              line = "     2.10           OBSERVATION DATA    M (MIXED)"
+                     "           RINEX VERSION / TYPE";
+              firstLineRead = true;
+	    }
+            if (firstLineRead) {
+              _headerLines.append( line );
+              if (line.indexOf("END OF HEADER") != -1) {
+                break;
+	      }
+	    }
           }
           else {
             socket->waitForReadyRead(timeOut);
