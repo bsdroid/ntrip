@@ -132,9 +132,9 @@ void bncRinex::readSkeleton() {
     }
     if (!sklDir.isEmpty() && sklDir != "none") {
       QUrl url(sklDir + "/" + _mountPoint.path().mid(1,4) + ".skl");
-      url.setPort(80);
-
-      ///      cout << url.toString().toAscii().data() << endl;
+      if (url.port() == -1) {
+        url.setPort(80);
+      }
 
       const int timeOut = 10*1000;
       QString msg;
