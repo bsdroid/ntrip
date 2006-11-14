@@ -246,7 +246,7 @@ Select the RINEX sample interval in seconds. Zero '0' stands for converting all 
 BNC retrieves information needed for RINEX headers from so-called public RINEX header skeleton files as derived from sitelogs. An HTTP link to a directory containing these skeleton files may be available through data field number 7 of the affected NET record in the source-table. See <u>http://www.epncb.oma.be:80/stations/log/skl/BRUS.skl</u> for an example for a public RINEX header skeleton file concerning the EPN station Brussels. 
 </p>
 <p>
-However, it may happen that public RINEX header skeleton files are not available, its contents is not up to date or you need to have additional/optional records in the RINEX header. For that BNC lets you introduce personal skeleton files that contain the header records you would like to see. You may derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the 'RINEX directory' with the 'RINEX skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the affected stream.
+However, it may happen that public RINEX header skeleton files are not available, its contents is not up to date, or you need to have additional/optional records in the RINEX header. For that BNC lets you introduce personal skeleton files that contain the header records you would like to see. You may derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the 'RINEX directory' with the 'RINEX skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the affected stream.
 </p>
 <p>
 Example for file name convention: RINEX files for mountpoints WETTZELL, FRANKFURT and FRANCE (same 4Char Station ID), BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u> (same 4Char Station ID, identical mountpoint stings) would accept personal skeleton files named</p>
@@ -262,8 +262,8 @@ if 'RINEX skeleton extension' is set to 'skl'.
 <p> 
 Note the following conditions regarding personal RINEX header skeleton files:
 <ul>
-<li>If such a file appear appears in the 'RINEX directory', a probably existing public RINEX header skeleton file is ignored. The RINEX header is generated solely from the contents of the personal skeleton.</li>
-<li>They should contain <u>complete</u> header record of type</li>
+<li>If such a file appears in the 'RINEX directory', a corresponding public RINEX header skeleton file is ignored. The RINEX header is generated solely from the contents of the personal skeleton.</li>
+<li>Personal skeletons should contain complete header records of type</li>
 <br>&nbsp; &nbsp; &nbsp; RINEX VERSION / TYPE (first record)
 <br>&nbsp; &nbsp; &nbsp; MARKER NAME
 <br>&nbsp; &nbsp; &nbsp; OBSERVER / AGENCY
@@ -272,7 +272,7 @@ Note the following conditions regarding personal RINEX header skeleton files:
 <br>&nbsp; &nbsp; &nbsp; APPROX POSITION XYZ
 <br>&nbsp; &nbsp; &nbsp; ANTENNA: DELTA H/E/N
 <br>&nbsp; &nbsp; &nbsp; WAVELENGTH FACT L1/2
-<li>They should further contain <u>empty</u> header records of type</li>
+<li>They should further contain empty header records of type</li>
 <br>&nbsp; &nbsp; &nbsp; PGM / RUN BY / DATE
 <br>&nbsp; &nbsp; &nbsp; # / TYPES OF OBSERVATIONS
 <br>&nbsp; &nbsp; &nbsp; TIME OF FIRST OBS
