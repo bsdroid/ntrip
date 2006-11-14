@@ -246,7 +246,7 @@ Select the RINEX sample interval in seconds. Zero '0' stands for converting all 
 BNC retrieves information needed for RINEX headers from so-called public RINEX header skeleton files as derived from sitelogs. An HTTP link to a directory containing these skeleton files may be available through data field number 7 of the affected NET record in the source-table. See <u>http://www.epncb.oma.be:80/stations/log/skl/BRUS.skl</u> for an example for a public RINEX header skeleton file concerning the EPN station Brussels. 
 </p>
 <p>
-However, it may happen that public RINEX header skeleton files are not available, its contents is not up to date, or you need to have additional/optional records in the RINEX header. For that BNC lets you introduce personal skeleton files that contain the header records you would like to see. You may derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the 'RINEX directory' with the 'RINEX skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the affected stream.
+It may happen that public RINEX header skeleton files are not available, its contents is not up to date, or you need to have additional/optional records in the RINEX header. For that BNC lets you introduce personal skeleton files that contain the header records you would like to see. You may derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the 'RINEX directory' with the 'RINEX skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the affected stream.
 </p>
 <p>
 Example for file name convention: RINEX files for mountpoints WETTZELL, FRANKFURT and FRANCE (same 4Char Station ID), BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u> (same 4Char Station ID, identical mountpoint stings) would accept personal skeleton files named</p>
@@ -276,7 +276,7 @@ Note the following conditions regarding personal RINEX header skeleton files:
 <br>&nbsp; &nbsp; &nbsp; PGM / RUN BY / DATE
 <br>&nbsp; &nbsp; &nbsp; # / TYPES OF OBSERVATIONS
 <br>&nbsp; &nbsp; &nbsp; TIME OF FIRST OBS
-<br>The existence of these empty records force BNC to include such lines in the final RINEX file header together with an additional
+<br>The existence of these empty records lead BNC to include such lines in the final RINEX file header together with an additional
 <br>&nbsp; &nbsp; &nbsp; COMMENT 
 <br>line quoting the source of the stream.
 <li>They must contain an empty header record of type</li>
