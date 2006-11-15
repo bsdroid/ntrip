@@ -260,28 +260,31 @@ BRUS_1.skl</p>
 if 'RINEX skeleton extension' is set to 'skl'.
 </p> 
 <p> 
-Note the following conditions regarding personal RINEX header skeleton files:
+Note the following regulations regarding personal RINEX header skeleton files:
 <ul>
 <li>If such a file appears in the 'RINEX directory', a corresponding public RINEX header skeleton file is ignored. The RINEX header is generated solely from the contents of the personal skeleton.</li>
-<li>Personal skeletons should contain complete header records of type</li>
-<br>&nbsp; &nbsp; &nbsp; RINEX VERSION / TYPE (first record)
-<br>&nbsp; &nbsp; &nbsp; MARKER NAME
-<br>&nbsp; &nbsp; &nbsp; OBSERVER / AGENCY
-<br>&nbsp; &nbsp; &nbsp; REC # / TYPE / VERS
-<br>&nbsp; &nbsp; &nbsp; ANT # / TYPE
-<br>&nbsp; &nbsp; &nbsp; APPROX POSITION XYZ
-<br>&nbsp; &nbsp; &nbsp; ANTENNA: DELTA H/E/N
-<br>&nbsp; &nbsp; &nbsp; WAVELENGTH FACT L1/2
-<li>They should further contain empty header records of type</li>
-<br>&nbsp; &nbsp; &nbsp; PGM / RUN BY / DATE
-<br>&nbsp; &nbsp; &nbsp; # / TYPES OF OBSERVATIONS
-<br>&nbsp; &nbsp; &nbsp; TIME OF FIRST OBS
-<br>The existence of these empty records lead BNC to include such lines in the final RINEX file header together with an additional
-<br>&nbsp; &nbsp; &nbsp; COMMENT 
-<br>line quoting the source of the stream.
-<li>They must contain an empty header record of type</li>
-<br>&nbsp; &nbsp; &nbsp; END OF HEADER (last record)
-<li>They may contain any other complete header record (correct format) as defined in the RINEX Version 2.1 documentation. Their contents may be derived from sitelog files.</li>
+<li>Personal skeletons should contain a complete first header record of type</li>
+<br>- &nbsp; RINEX VERSION / TYPE
+<li>They should then contain an empty header record of type</li>
+<br>- &nbsp; PGM / RUN BY / DATE
+<br>The existence of this empty records leads BNC to complete this line and include it in the final RINEX file header.
+<li>They should further contain complete header records of type</li>
+<br>- &nbsp; MARKER NAME
+<br>- &nbsp; OBSERVER / AGENCY
+<br>- &nbsp; REC # / TYPE / VERS
+<br>- &nbsp; ANT # / TYPE
+<br>- &nbsp; APPROX POSITION XYZ
+<br>- &nbsp; ANTENNA: DELTA H/E/N
+<br>- &nbsp; WAVELENGTH FACT L1/2
+<li>They may contain any other optional complete header record as defined in the RINEX documentation.</li>
+<li>They should then contain empty header records of type</li>
+<br>- &nbsp; # / TYPES OF OBSERVATIONS
+<br>- &nbsp; TIME OF FIRST OBS
+<br>The existence of these empty records leads BNC to include such lines in the final RINEX file header together with an additional
+<br>- &nbsp; COMMENT 
+<br>line describing the source of the stream.
+<li>They should finally contain an empty header record of type</li>
+<br>- &nbsp; END OF HEADER (last record)
 </ul>
 <p>
 If neither a public nor a personal RINEX header skeleton file is available for BNC, a default header is generated for the affected RINEX file.
