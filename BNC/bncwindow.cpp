@@ -433,9 +433,12 @@ void bncWindow::slotGetData() {
     _global_caster->addGetThread(getThread);
 
     getThread->start();
-#ifndef WIN32
-    usleep(100000);  // sleep 0.1 sec
-#endif
+//Start Ergaenzung Perlt
+//#ifndef WIN32
+//    usleep(100000);  // sleep 0.1 sec
+//#endif
+// verschoben nach bncgetthread.cpp
+// Ende Ergaenzung Perlt
   }
 }
 
