@@ -90,6 +90,9 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   if (num > 0) {
     _staID = _staID.left(_staID.length()-1) + QString("%1").arg(num).toAscii();
   }    
+// Start Ergaenzung Perlt
+  msleep(100); //sleep 0.1 sec
+//Ende Ergaenzung Perlt
 }
 
 // Destructor

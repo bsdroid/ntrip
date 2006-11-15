@@ -70,7 +70,13 @@ bncRinex::bncRinex(const char* StatID, const QUrl& mountPoint) {
   expandEnvVar(_rnxScriptName);
 
   _pgmName  = ((bncApp*)qApp)->bncVersion().leftJustified(20, ' ', true);
+// Start Ergaenzung Perlt
+#ifdef WIN32
+  _userName = QString("${USERNAME}");
+#else
   _userName = QString("${USER}");
+#endif
+//Ende Ergaenzung Perlt
   expandEnvVar(_userName);
   _userName = _userName.leftJustified(20, ' ', true);
 }
