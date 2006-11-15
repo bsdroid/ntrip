@@ -147,14 +147,21 @@ void bncRinex::readSkeleton() {
             QString line = socket->readLine();
             line.chop(1);
             if (line.indexOf("RINEX VERSION") != -1) {
-              line = "     2.10           OBSERVATION DATA    M (MIXED)"
-                     "           RINEX VERSION / TYPE";
+              _headerLines.append("     2.10           OBSERVATION DATA"
+                                  "    M (MIXED)"
+                                  "           RINEX VERSION / TYPE");
+              _headerLines.append("PGM / RUN BY / DATE");
+              _headerLines.append(
+                           QString("unknown").leftJustified(60, ' ', true) +
+                           "OBSERVER / AGENCY");
               firstLineRead = true;
 	    }
-            if (firstLineRead) {
+            else if (firstLineRead) {
               if (line.indexOf("END OF HEADER") != -1) {
-                _headerLines.append("PGM / RUN BY / DATE");
                 _headerLines.append("# / TYPES OF OBSERV");
+                _headerLines.append(
+                      QString("     1     1").leftJustified(60, ' ', true) +
+                      "WAVELENGTH FACT L1/2");
                 _headerLines.append("TIME OF FIRST OBS");
                 _headerLines.append( line );
                 break;
