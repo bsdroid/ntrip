@@ -114,8 +114,8 @@ void RTIGSDecoder::Decode(char* buffer, int bufLen) {
       obs->P2       = _GPSTrans.DecObs.Obs[ii].p2_pseudo_range;
       obs->L1       = _GPSTrans.DecObs.Obs[ii].p1_phase;
       obs->L2       = _GPSTrans.DecObs.Obs[ii].p2_phase;
-      obs->SNR1     = int(_GPSTrans.DecObs.Obs[ii].l1_sn * 10);
-      obs->SNR2     = int(_GPSTrans.DecObs.Obs[ii].l2_sn * 10);
+////      obs->SNR1     = int(_GPSTrans.DecObs.Obs[ii].l1_sn * 10);
+////      obs->SNR2     = int(_GPSTrans.DecObs.Obs[ii].l2_sn * 10);
 
       _obsList.push_back(obs);
     }
