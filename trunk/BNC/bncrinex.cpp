@@ -157,9 +157,9 @@ void bncRinex::readSkeleton() {
                                   "    M (MIXED)"
                                   "           RINEX VERSION / TYPE");
               _headerLines.append("PGM / RUN BY / DATE");
-              _headerLines.append(
-                           QString("unknown").leftJustified(60, ' ', true) +
-                           "OBSERVER / AGENCY");
+//            _headerLines.append(
+//                         QString("unknown").leftJustified(60, ' ', true) +
+//                         "OBSERVER / AGENCY");
               firstLineRead = true;
 	    }
             else if (firstLineRead) {
