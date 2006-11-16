@@ -466,8 +466,10 @@ void bncRinex::dumpEpoch(long maxTime) {
     _out << setw(14) << setprecision(3) << ob->C1 << lli << snr;
     _out << setw(14) << setprecision(3) << ob->P1 << lli << snr;
     _out << setw(14) << setprecision(3) << ob->P2 << lli << snr; 
-    _out << setw(14) << setprecision(3) << ob->L1 << lli << snr; 
-    _out << setw(14) << setprecision(3) << ob->L2 << lli << snr; 
+    _out << setw(14) << setprecision(3) << ob->L1 << lli 
+         << setw(1) << ob->SNR1;
+    _out << setw(14) << setprecision(3) << ob->L2 << lli
+         << setw(1) << ob->SNR2;
     _out << endl;
 
     delete ob;
