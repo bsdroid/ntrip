@@ -243,10 +243,10 @@ Select the RINEX sample interval in seconds. Zero '0' stands for converting all 
 <a name="rnxskeleton">
 <p><h4>B - 5.5 RINEX Skeleton Extension - optional</h4></p>
 <p>
-BNC retrieves information needed for RINEX headers from so-called public RINEX header skeleton files as derived from sitelogs. An HTTP link to a directory containing these skeleton files may be available through data field number 7 of the affected NET record in the source-table. See <u>http://www.epncb.oma.be:80/stations/log/skl/BRUS.skl</u> for an example for a public RINEX header skeleton file concerning the EPN station Brussels. 
+Whenever BNC generates a new RINEX file, it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. An HTTP link to a directory containing these skeleton files may be available through data field number 7 of the affected NET record in the source-table. See <u>http://www.epncb.oma.be:80/stations/log/skl/BRUS.skl</u> for an example for a public RINEX header skeleton file concerning the EPN station Brussels. 
 </p>
 <p>
-It may happen that public RINEX header skeleton files are not available, its contents is not up to date, or you need to have additional/optional records in the RINEX header. For that BNC lets you introduce personal skeleton files that contain the header records you would like to see. You may derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the 'RINEX directory' with the 'RINEX skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the affected stream.
+However, it may happen that public RINEX header skeleton files are not available, its contents is not up to date, or you need to have additional/optional records in the RINEX header. For that BNC allows to introduce personal skeleton files that contain the header records you would like to see. You may derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the 'RINEX directory' with the 'RINEX skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the affected stream.
 </p>
 <p>
 Example for file name convention: RINEX files for mountpoints WETTZELL, FRANKFURT and FRANCE (same 4Char Station ID), BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u> (same 4Char Station ID, identical mountpoint stings) would accept personal skeleton files named</p>
