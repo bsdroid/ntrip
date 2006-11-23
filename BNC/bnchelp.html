@@ -22,7 +22,7 @@ BNC has been written under GNU General Public License (GPL). Binaries for BNC ar
 </p>
 <br>
 
-<a name="purpose">
+<p><a name="purpose">
 <p><h3>A - Purpose</h3></p>
 
 <p> The purpose of BNC is to
@@ -45,7 +45,7 @@ BNC decodes and converts GNSS data streams carrying code and phase data coming i
 BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. Please be aware that it is a powerful tool that may generate a heavy workload on the NTRIP broadcaster side depending on the number of streams it requests. We suggest to limited the number of streams where possible to avoid unnecessary workload.
 </p>
 <p>
-<a name="options">
+<p><a name="options">
 <p><h3>B - Options</h3></p>
 <p>
 B - 1. <a href=#file>File</a><br>
@@ -75,7 +75,7 @@ B - 9. <a href=#stop>Stop</a><br>
 B - 10. <a href=#nw>No Window</a>
 </p>
 
-<a name="file">
+<p><a name="file">
 <p><h4>B - 1. File</h4></p>
 
 <p>
@@ -94,7 +94,7 @@ quit the execution of BNC.
 </ul>
 </p>
 
-<a name="help">
+<p><a name="help">
 <p><h4>B - 2. Help</h4></p>
 
 <p>
@@ -111,7 +111,7 @@ You may keep the 'Help Contents' window open while setting BNC options.
 </ul>
 </p>
 
-<a name="proxy">
+<p><a name="proxy">
 <p><h4>B - 3. Proxy - mandatory if BNC is operated in a protected LAN</h4></p>
 
 <p>
@@ -120,7 +120,7 @@ You may like to run BNC in a Local Area Network (LAN). LANs are often protected 
 Note that IP streaming may generally be denied in a LAN. In such a case you need to ask for an appropriate modification of the security policy from your network administrator or for the installation of a TCP relay to involved NTRIP broadcasters. If that doesn't work, run BNC outside your LAN on a host that is connected to the Internet through an Internet Service Provider (ISP).
 </p>
 
-<a name="output"> <p><h4>B - 4. Synchronized Output</h4></p>
+<p><a name="output"> <p><h4>B - 4. Synchronized Output</h4></p>
 <p>
 BNC lets you output synchronized observations epoch by epoch. This output is made available in a plain ASCII format and in a binary format. The output comprises the following observations if available:</p>
 StatID, SVPRN, GPSWeek, GPSWeeks, C1, P1, P2, L1, L2, SNR1, SNR2.
@@ -128,7 +128,7 @@ StatID, SVPRN, GPSWeek, GPSWeeks, C1, P1, P2, L1, L2, SNR1, SNR2.
 <p>
 In case an observation is unavailable, its value is set to zero '0.000'.
 </p>
-<a name="wait">
+<p><a name="wait">
 <p><h4>B - 4.1 Wait for Full Epoch - optional</h4></p>
 <p>
 When feeding a real-time GNSS engine waiting for input epoch by epoch, BNC ignores whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming streams and the delay you would accept for your real-time GNSS product. Default value for 'Wait for full epoch' is 1 second.
@@ -137,13 +137,13 @@ When feeding a real-time GNSS engine waiting for input epoch by epoch, BNC ignor
 Note that 'Wait for full epoch' does not influence the RINEX file contents. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX files.
 </p> 
 
-<a name="ascii">
+<p><a name="ascii">
 <p><h4>B - 4.2 ASCII Output File - optional</h4></p>
 <p>
 Enter the full path for a file to save synchronized observations in a plain ASCII format. Default value is an empty option field, meaning that no ASCII output file is created.
 </p>
 
-<a name="binary">
+<p><a name="binary">
 <p><h4>B - 4.3 Port for Binary Output - optional</h4></p>
 <p>
 BNC makes synchronized observations available in a binary format on your local host (IP 127.0.0.1) through an IP port. Enter an IP port number to activate this function. Default is an empty option field, meaning that no binary output is generated.</p>
@@ -181,7 +181,7 @@ struct Observation {
 } ;
 </pre>
 
-<a name="rinex">
+<p><a name="rinex">
 <p><h4>B - 5. RINEX</h4></p>
 <p>
 Observations are converted to RINEX Version 2.1. RINEX file names are derived by BNC from the first 4 characters of the corresponding mountpoint (4Char Station ID) while omitting the residual part of the mountpoint string. Thus, retrieving data from mountpoints FRANKFURT and WETTZELL leads to hourly RINEX observation files named</p>
@@ -216,31 +216,31 @@ where 'mm' is the starting minute within the hour.
 BNC's RINEX observation files generally contain C1, P1, P2, L1, and L2 observations. In case an observation is unavailable, its value is set to zero '0.000'. Note that even if a RINEX file does not contain GLONASS data, the 'RINEX TYPE' field in the RINEX file header is set to 'M (MIXED)'.
 </p>
 
-<a name="rnxpath">
+<p><a name="rnxpath">
 <p><h4>B - 5.1 RINEX Directory - optional</h4></p>
 <p>
 Enter a path for saving the RINEX files in a directory. If this directory does not exist, BNC will not create RINEX files. Default value for 'RINEX directory' is an empty option field, meaning that streams are not converted to RINEX.
 </p> 
 
-<a name="rnxscript">
+<p><a name="rnxscript">
 <p><h4>B - 5.2 RINEX Script - optional</h4></p>
 <p>
 Whenever a RINEX file is saved, you may like to compress, copy or upload it immediately via FTP. For that you enter the full path of a script or batch file carrying out these operations. The RINEX file path will be passed to the script as a command line parameter (%1 on Windows systems, $1 on Unix/Linux systems).
 </p> 
 
-<a name="rnxinterval">
+<p><a name="rnxinterval">
 <p><h4>B - 5.3 RINEX File Interval - mandatory if 'RINEX directory' set</h4></p>
 <p>
 Select the interval for the RINEX file generation. Default for 'RINEX file interval' is 15 minutes.
 </p> 
 
-<a name="rnxsample">
+<p><a name="rnxsample">
 <p><h4>B - 5.4 RINEX Sampling - mandatory if 'RINEX directory' set </h4></p>
 <p>
 Select the RINEX sample interval in seconds. Zero '0' stands for converting all incoming epochs to RINEX. Default for RINEX 'Sampling' is '0'.
 </p> 
 
-<a name="rnxskeleton">
+<p><a name="rnxskeleton">
 <p><h4>B - 5.5 RINEX Skeleton Extension - optional</h4></p>
 <p>
 Whenever BNC generates a new RINEX file, it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. An HTTP link to a directory containing these skeleton files may be available through data field number 7 of the affected NET record in the source-table. See <u>http://www.epncb.oma.be:80/stations/log/skl/BRUS.skl</u> for an example for a public RINEX header skeleton file concerning the EPN station Brussels. 
@@ -292,37 +292,37 @@ If neither a public nor a personal RINEX header skeleton file is available for B
 
 <p> 
 
-<a name="rnxappend">
+<p><a name="rnxappend">
 <p><h4>B - 5.6 Append Files</h4></p>
 <p>
 When starting BNC, new RINEX files are created by default. Probably existing files will be overwritten. However, it may be desirable to append observations to already existing RINEX files following a restart of BNC after an intentional 'Stop', a system crash or a crash of BNC. Hit 'Append files' to continue with already existing files and thus save what has been recorded so far. Note that the option 'Append files' also concerns the 'ASCII output file' and the 'Log' file.
 </p> 
 
-<a name="mountpoints">
+<p><a name="mountpoints">
 <p><h4>B - 6. Mountpoints</h4></p>
 <p>
 Each stream on an NTRIP broadcaster is defined through a unique source ID called mountpoint. An NTRIP client like BNC can access the data of a desired stream by its mountpoint. Information about mountpoints is available through the source-table maintained by the NTRIP broadcaster. Note that mountpoints could show up in BNC more than once when retrieving streams from several NTRIP broadcasters.
 </p> 
 
-<a name="AddMounts">
+<p><a name="AddMounts">
 <p><h4>B - 6.1 Add Mountpoints</h4></p>
 <p>
 Button 'Add Mountpoints' opens a window that allows you to select data streams from an NTRIP broadcaster by their mountpoints.
 </p> 
 
-<a name="HostPort">
+<p><a name="HostPort">
 <p><h4>B - 6.2 Broadcaster Host and Port - mandatory</h4></p>
 <p>
 Enter the NTRIP broadcaster host IP and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.
 </p> 
 
-<a name="account">
+<p><a name="account">
 <p><h4>B - 6.3 Broadcaster User and Password - mandatory for protected streams</h4></p>
 <p>
 Streams on NTRIP broadcasters might be protected by password. Enter a valid 'User' ID and 'Password' for access to protected NTRIP broadcaster streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.
 </p> 
 
-<a name="GetTable">
+<p><a name="GetTable">
 <p><h4>B - 6.4 Get Table</h4></p>
 <p>
 Hit button 'Get Table' to download the source-table from the NTRIP broadcaster. Please pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM 2.x, RTCM 3, or RTIGS formats. RTCM 2.x streams must contain message types 18 and 19 while RTCM 3 streams must contain message types 1001 or 1003, better 1003 or 1004 (GPS), 1009 or 1010, even better 1011 or 1012 (GLONASS), see data field 'format-details' for available message types and their repetition rates in brackets. Select your streams line by line, use +Shift and +Ctrl when necessary.
@@ -331,36 +331,36 @@ Hit button 'Get Table' to download the source-table from the NTRIP broadcaster. 
 Hit 'OK' to return to the main window. You may like to 'Add Mountpoints' from another NTRIP broadcaster when necessary.
 </p> 
 
-<a name="delete">
+<p><a name="delete">
 <p><h4>B - 6.5 Delete Mountpoints</h4></p>
 <p>
 To delete a stream shown under 'Mountpoints' in the main window, select it by mouse click and hit 'Delete Mountpoints'. For a simultaneous deletion of several streams highlight them using +Shift and +Ctrl.</p>
 
-<a name="edit">
+<p><a name="edit">
 <p><h4>B - 6.6 Edit Mountpoints</h4></p>
 <p>
 BNC automatically selects one out of several incorporated decoders for a stream based on its 'format' and 'format-details' as given in the source-table. It may happen that you need to overrule the automated decoder selection because of source-table setup deficiencies. Therefore BNC allows to edit (double-click) the decoder string for each stream shown under 'Mountpoints'. Accepted decoder strings allowed to be introduced are 'RTCM_2.x', 'RTCM_3', and 'RTIGS'.
 </p> 
 
-<a name="log">
+<p><a name="log">
 <p><h4>B - 7. Log - optional</h4></p>
 <p>
 BNC comments its activities in the 'Log' section on the main windows. Comments can be saved in a file when entering a full path for 'Log' file. Information is given on the communication between BNC and the NTRIP broadcaster as well as on problems that may occur concerning communication link, stream availability, stream delay, stream conversion etc. Default value for 'Log' is an empty option field, meaning that BNC comments are not saved in a file.
 </p>
 
-<a name="start">
+<p><a name="start">
 <p><h4>B - 8. Start</h4></p>
 <p>
 Hit 'Start' to start retrieving, decoding, and converting GNSS data streams in real-time. Note that 'Start' generally forces BNC to begin with fresh RINEX files and thus overwrite probably existing files when necessary unless option 'Append files' is set.
 </p> 
 
-<a name="stop">
+<p><a name="stop">
 <p><h4>B - 9. Stop</h4></p>
 <p>
 Hit the 'Stop' button in order to stop BNC. 
 </p> 
 
-<a name="nw">
+<p><a name="nw">
 <p><h4>B - 10. No Window - optional</h4></p>
 <p>
 You can use BNC on all systems in batch mode with the command line option -nw. BNC then runs in 'no window' mode, reading options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Client.conf (Unix/Linux) or from the register BKC_NTRIP_Client (Windows).
@@ -369,7 +369,7 @@ You can use BNC on all systems in batch mode with the command line option -nw. B
 Note that the self-explaining contents of the configuration file or the Windows register can easily be edited. Terminate BNC using the Windows Task Manager when running it in 'no window' mode on Windows systems.
 </p> 
 <br>
-<a name="limits">
+<p><a name="limits">
 <p><h3>C - Limitations</h3></p>
 <ul>
 <li>
@@ -406,7 +406,8 @@ EUREF as well as IGS follow an open data policy. Streams are made available thro
 </li>
 <br>
 </ul>
-<a name="authors">
+<p>
+<p><a name="authors">
 <p><h3>D - Authors</h3></p>
 <p>
 The BKG Ntrip Client (BNC) Qt Graphic User Interface (GUI) has been developed for the Federal Agency for Cartography and Geodesy (BKG) by Leos Mervart, Czech Technical University Prague, Department of Advanced Geodesy. BNC integrates the following GNU GPL software components: 
@@ -427,7 +428,7 @@ euref-ip@bkg.bund.de
 </p>
 <br>
 
-<a name="links">
+<p><a name="links">
 <p><h3>E - Links</h3></p>
 <table>
 <tr></tr>
@@ -440,7 +441,7 @@ euref-ip@bkg.bund.de
 </table>
 <br>
 
-<a name="annex">
+<p><a name="annex">
 <p><h3>F - Annex</h3></p>
 <p>
 F - 1. <a href=#ntrip>NTRIP</a><br>
@@ -453,7 +454,7 @@ F - 3. <a href=#rtigs>RTIGS</a><br>
 </p>
 <br>
 
-<a name="ntrip">
+<p><a name="ntrip">
 <p><h4>F - 1. NTRIP</h4></p>
 
 <p>
@@ -479,7 +480,7 @@ NTRIP is an open none-proprietary protocol. Major characteristics of NTRIP's dis
 </ul>
 </p>
 
-<a name="source">
+<p><a name="source">
 <p><h4>F - 1.1 Source-table</h4></p>
 
 <p>
@@ -496,7 +497,7 @@ Source-table records of type NET contain the following data fields: 'identifiey'
 Source-table records of type CAS contain the following data fields: 'host', 'port', 'identifier', 'operator', 'nmea', 'country', 'latitude', 'longitude', 'misc'.
 </p>
 
-<a name="rtcm">
+<p><a name="rtcm">
 <p><h4>F - 2. RTCM</h4></p>
 
 <p>
@@ -506,7 +507,7 @@ Copies of RTCM Recommended Standards can be ordered through <u>http://www.rtcm.o
 </p>
 <br>
 
-<a name="rtcm2">
+<p><a name="rtcm2">
 <p><h4>F - 2.1 RTCM Version 2.x</h4></p>
 <p>
 Transmitting GNSS carrier phase data can be done through RTCM Version 2.x messages. Please note that only RTCM Version 2.3 streams may include GLONASS data. Messages that may be of interest here are of type 1, 2, 3, 6, 9, 16,18/19, 20/21, and 22.
@@ -539,7 +540,7 @@ Type 19 and 21 messages are the uncorrected pseudo-range measurements and pseudo
 </li>
 </ul>
 
-<a name="rtcm3">
+<p><a name="rtcm3">
 <p><h4>F - 2.2 RTCM Version 3</h4></p>
 <p>
 RTCM Version 3 has been developed  as a more efficient alternative to RTCM 2.x.  Service providers and vendors have asked for a standard that would be more efficient, easy to use, and more easily adaptable to new situations.  The main complaint was that the Version 2 parity scheme was wasteful of bandwidth. Another complaint was that the parity is not independent from word to word. Still another was that even with so many bits devoted to parity, the actual integrity of the message was not as high as it should be. Plus, 30-bit words are awkward to handle. The Version 3 standard is intended to correct these weaknesses.
@@ -568,7 +569,7 @@ RTCM Version 3 defines a number of message types. Messages that may be of intere
 </li>
 </ul>
 
-<a name="rtigs">
+<p><a name="rtigs">
 <p><h4>F - 3. RTIGS</h4></p>
 <p>
 RTIGS stands for a data format and transport protocol for GPS observations (no GLONASS). It was defined by the Real-Time IGS Working Group (RTIGS WG). Its definition is based on the SOC format. Every RTIGS record has one of the following numbers:
@@ -622,7 +623,7 @@ All record data are in network byte order (Big Endian), i.e. IA32 users have to 
 Visit <u>http://igscb.jpl.nasa.gov/mail/igs-rtwg/2004/msg00001.html</u> for further details.
 </p>
 
-<a name="soc">
+<p><a name="soc">
 <p><h4>F - 3.1 SOC</h4></p>
 <p>
 The SOC format has been designed in July 1999 by the Jet Propulsion Laboratory (JPL) and the California Institute of Technology (CalTech) to transport 1Hz GPS data (no GLONASS) with minimal bandwidth over the open Internet. SOC follows the 'little-endian' byte order meaning that the low-order byte of a number is stored in memory at the lowest address, and the high-order byte at the highest address. Because the transport layer is UDP, the format does not include sync bits, a checksum, or cyclic redundancy checksum (CRC). SOC allows to transport the GPS observable CA, P1, P2, L1, and L2, efficiently compressed down to 14 bytes with 1 mm range resolution and 0.02 mm phase resolution. SOC contains epochs for cycle slips, a stand-alone time-tag per epoch, a minimum representation of the receiver's clock solution, 3 SNR numbers, a unique site id, a modulo 12 hour sequence number and flags for receiver type and GPS health. SOC's simple structure comprises an 8 byte header, a 9 byte overhead for timetag, number of gps, etc., plus 21 data bytes per gps.
