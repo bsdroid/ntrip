@@ -284,7 +284,7 @@ void bncGetThread::run() {
         char* data = new char[nBytes];
         _socket->read(data, nBytes);
         _decoder->Decode(data, nBytes);
-        delete data[];
+        delete [] data;
         for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
              it != _decoder->_obsList.end(); it++) {
           emit newObs(_staID, *it);
