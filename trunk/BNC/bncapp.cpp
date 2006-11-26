@@ -94,6 +94,7 @@ void bncApp::slotMessage(const QByteArray msg) {
   }
 
   if (_logStream) {
+    *_logStream << QDate::currentDate().toString("yy:MM:dd ").toAscii().data();
     *_logStream << QTime::currentTime().toString("hh:mm:ss ").toAscii().data();
     *_logStream << msg.data() << endl;
     _logStream->flush();
