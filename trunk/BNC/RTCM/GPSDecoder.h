@@ -45,7 +45,7 @@ class Observation {
     SNR2      = 0;
   }
   int    flags;
-  char   StatID[5+1]; // Station ID
+  char   StatID[29+1];// Station ID
   int    SVPRN;       // Satellite PRN
   int    GPSWeek;     // Week of GPS-Time
   double GPSWeeks;    // Second of Week (GPS-Time)
