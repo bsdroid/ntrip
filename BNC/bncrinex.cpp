@@ -64,7 +64,7 @@ bncRinex::bncRinex(const char* StatID, const QUrl& mountPoint,
                    const QByteArray& format) {
   _statID        = StatID;
   _mountPoint    = mountPoint;
-  _format        = format;
+  _format        = format.left(6);
   _headerWritten = false;
 
   QSettings settings;
@@ -333,8 +333,8 @@ void bncRinex::writeHeader(const QDateTime& datTim,
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
         _out << "                 TIME OF FIRST OBS"    << endl;
-        QString hlp = QString("STREAM %1").arg(_mountPoint.host() + _mountPoint.path())
-                             .leftJustified(60, ' ', true);
+        QString hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
+                      _mountPoint.path())).leftJustified(60, ' ', true);
         _out << hlp.toAscii().data() << "COMMENT" << endl;
       }
       else {
@@ -376,8 +376,8 @@ void bncRinex::writeHeader(const QDateTime& datTim,
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
     _out << "                 "                                      << "TIME OF FIRST OBS"    << endl;
-    hlp = QString("STREAM %1").arg(_mountPoint.host() + _mountPoint.path())
-                                             .leftJustified(60, ' ', true);
+    hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
+          _mountPoint.path())).leftJustified(60, ' ', true);
     _out << hlp.toAscii().data() << "COMMENT" << endl;
     _out << "                                                            END OF HEADER"        << endl;
   }
