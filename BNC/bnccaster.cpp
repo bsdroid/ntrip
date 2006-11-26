@@ -125,6 +125,7 @@ void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
   // Rename the Station
   // ------------------
   strncpy(obs->StatID, staID.constData(),sizeof(obs->StatID));
+  obs->StatID[sizeof(obs->StatID)-1] = '\0';
         
   // Prepare RINEX Output
   // --------------------
