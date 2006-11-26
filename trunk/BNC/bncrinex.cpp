@@ -60,9 +60,11 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncRinex::bncRinex(const char* StatID, const QUrl& mountPoint) {
+bncRinex::bncRinex(const char* StatID, const QUrl& mountPoint, 
+                   const QByteArray& format) {
   _statID        = StatID;
-  _mountPoint = mountPoint;
+  _mountPoint    = mountPoint;
+  _format        = format;
   _headerWritten = false;
 
   QSettings settings;

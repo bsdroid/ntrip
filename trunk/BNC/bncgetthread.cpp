@@ -289,7 +289,7 @@ void bncGetThread::run() {
              it != _decoder->_obsList.end(); it++) {
           emit newObs(_staID, *it);
           bool firstObs = (it == _decoder->_obsList.begin());
-          _global_caster->newObs(_staID, _mountPoint, firstObs, *it);
+          _global_caster->newObs(_staID, _mountPoint, firstObs, *it, _format);
         }
         _decoder->_obsList.clear();
       }
