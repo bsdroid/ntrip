@@ -36,6 +36,8 @@
 //   2006/10/14  LMV  Exception handling
 //   2006/10/17  OMO  Removed obsolete check of multiple message indicator
 //   2006/10/17  OMO  Fixed parity handling 
+//   2006/10/18  OMO  Improved screening of bad data in RTCM2_Obs::extract
+//   2006/11/25  OMO  Revised check for presence of GLONASS data
 //
 // (c) DLR/GSOC
 //
@@ -278,7 +280,7 @@ void ThirtyBitWord::get(string& buf) {
 
 #if (DEBUG>0) 
   if (!validParity()) {
-    cout << "Parity error " 
+    cerr << "Parity error " 
          << bitset<32>(all()) << endl;
   };
 #endif
@@ -300,7 +302,7 @@ void ThirtyBitWord::get(istream& inp) {
 
 #if (DEBUG>0) 
   if (!validParity()) {
-    cout << "Parity error " 
+    cerr << "Parity error " 
          << bitset<32>(all()) << endl;
   };
 #endif
@@ -333,7 +335,7 @@ void ThirtyBitWord::getHeader(string& buf) {
 
 #if (DEBUG>0) 
   if (!validParity()) {
-    cout << "Parity error " 
+    cerr << "Parity error " 
          << bitset<32>(all()) << endl;
   };
 #endif
@@ -357,7 +359,7 @@ void ThirtyBitWord::getHeader(istream& inp) {
 
 #if (DEBUG>0) 
   if (!validParity()) {
-    cout << "Parity error " 
+    cerr << "Parity error " 
          << bitset<32>(all()) << endl;
   };
 #endif
@@ -778,6 +780,7 @@ void RTCM2_24::extract(const RTCM2packet& P) {
 RTCM2_Obs::RTCM2_Obs() {
 
   clear();
+  GPSonly = true;
 
 };
 
@@ -840,7 +843,7 @@ bool RTCM2_Obs::allGLONASS() const {
 
 bool RTCM2_Obs::valid() const {
 
-  return ( allGPS() && (allGLONASS() || !anyGLONASS())  );
+  return ( allGPS() && ( GPSonly || allGLONASS() ) );
   
 };
 
@@ -858,7 +861,9 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
 
   // Check validity and packet type
   
-  if (!P.valid()) return;
+  if ( ! ( P.valid() && 
+           (P.ID()==18 || P.ID()==19) && 
+           P.nDataWords()>1              ) ) return;
 
   // Clear previous data if block was already complete
 
@@ -882,7 +887,8 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
      
     // Constellation (for first satellite in message)
     isGPS = ( P.getUnsignedBits(26,1)==0 );
-
+    GPSonly = GPSonly && isGPS;
+    
     // Multiple Message Indicator (only checked for first satellite)
     // pendingMsg = ( P.getUnsignedBits(24,1)==1 );
     
@@ -898,7 +904,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
       };
     };
 
-    // Discard GLONASS obseravtions if no prior GPS observations 
+    // Discard GLONASS observations if no prior GPS observations 
     // are available 
     if (!isGPS && !anyGPS() ) return;
         
@@ -970,6 +976,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
      
     // Constellation (for first satellite in message)
     isGPS = ( P.getUnsignedBits(26,1)==0 );
+    GPSonly = GPSonly && isGPS;
 
     // Multiple Message Indicator (only checked for first satellite)
     // pendingMsg = ( P.getUnsignedBits(24,1)==1 );
@@ -986,7 +993,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
       };
     };
 
-    // Discard GLONASS obseravtions if nor prior GPS observations 
+    // Discard GLONASS observations if no prior GPS observations 
     // are available 
     if (!isGPS && !anyGPS() ) return;
         
@@ -1100,16 +1107,7 @@ void RTCM2_Obs::resolveEpoch (int  refWeek,   double  refSecs,
   const double secsPerWeek = 604800.0;                            
 
   epochWeek = refWeek;
-
-  epochSecs = secs;
-  while (epochSecs < refSecs - 1800) {
-    epochSecs += 3600;
-  }
-  while (epochSecs > refSecs + 1800) {
-    epochSecs -= 3600;
-  }
-
-  ////  epochSecs = secs + 3600.0*(floor((refSecs-secs)/3600.0+0.5));
+  epochSecs = secs + 3600.0*(floor((refSecs-secs)/3600.0+0.5));
   
   if (epochSecs<0          ) { epochWeek--; epochSecs+=secsPerWeek; };
   if (epochSecs>secsPerWeek) { epochWeek++; epochSecs-=secsPerWeek; };

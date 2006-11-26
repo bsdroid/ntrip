@@ -26,6 +26,7 @@
 //   2006/09/17  OMO  Created
 //   2006/10/05  OMO  Specified const'ness of various member functions
 //   2006/10/17  OMO  Removed obsolete check of multiple message indicator
+//   2006/11/25  OMO  Revised check for presence of GLONASS data
 //
 // (c) DLR/GSOC
 //
@@ -319,7 +320,8 @@ class RTCM2_Obs {
     typedef std::bitset<8> msgflags;
     
     msgflags             availability;      // Msg availability flags
-    
+    bool                 GPSonly;           // Flag for GPS-only station
+
 }; 
 
 
