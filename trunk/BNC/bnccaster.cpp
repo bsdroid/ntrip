@@ -228,7 +228,9 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
           }
           _out->setFieldWidth(0); *_out << obs->StatID; 
           _out->setFieldWidth(1); *_out << " " << obs->satSys;
+          _out->setPadChar('0');
           _out->setFieldWidth(2); *_out << obs->satNum; 
+          _out->setPadChar(' ');
           _out->setFieldWidth(1); *_out << " ";
           _out->setFieldWidth(2); *_out << obs->slot; 
           _out->setFieldWidth(1); *_out << " ";
