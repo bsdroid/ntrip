@@ -226,19 +226,27 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
           if (first) {
             _out->setFieldWidth(1); *_out << begEpoch << endl;;
           }
-          _out->setFieldWidth(sizeof(obs->StatID)); 
-          *_out << obs->StatID << " " << obs->satSys;
-          _out->setFieldWidth(2); *_out << obs->satNum  << " ";
-          _out->setFieldWidth(1); *_out << obs->slot    << " ";
-          _out->setFieldWidth(4); *_out << obs->GPSWeek << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(7); *_out << obs->GPSWeeks << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->C1       << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->P1       << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->P2       << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->L1       << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->L2       << " ";
-          _out->setFieldWidth(1); *_out << obs->SNR1 << " ";
-          _out->setFieldWidth(1); *_out << obs->SNR2 << endl;
+          _out->setFieldWidth(sizeof(obs->StatID)); *_out << obs->StatID; 
+          _out->setFieldWidth(1); *_out << " " << obs->satSys;
+          _out->setFieldWidth(2); *_out << obs->satNum; 
+          _out->setFieldWidth(1); *_out << " ";
+          _out->setFieldWidth(2); *_out << obs->slot; 
+          _out->setFieldWidth(1); *_out << " ";
+          _out->setFieldWidth(4); *_out << obs->GPSWeek; 
+          _out->setFieldWidth(1); *_out << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(7); *_out << obs->GPSWeeks; 
+          _out->setFieldWidth(1); *_out << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->C1; 
+          _out->setFieldWidth(1); *_out << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->P1; 
+          _out->setFieldWidth(1); *_out << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->P2; 
+          _out->setFieldWidth(1); *_out << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->L1; 
+          _out->setFieldWidth(1); *_out << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->L2; 
+          _out->setFieldWidth(1); 
+          *_out << " " << obs->SNR1 << " " << obs->SNR2 << endl;
           if (!it.hasNext()) {
             _out->setFieldWidth(1); *_out << endEpoch << endl;
           }
