@@ -93,7 +93,7 @@ int main(int argc, char* argv[]) {
       if (flag == begObs) {
         bytesRecv = recv( ConnectSocket, (char*) &obs, sizeof(obs), 0);
         cout << setw(5)                     << obs.StatID         << " "
-             << setw(2)                     << obs.SVPRN          << " "
+             << obs.satSys << setw(2)       << obs.satNum         << " "
              << setw(4)                     << obs.GPSWeek        << " "
              << setw(10) << setprecision(2) << obs.GPSWeeks       << " "
              << setw(14) << setprecision(4) << obs.C1             << " "
