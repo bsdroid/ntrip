@@ -442,16 +442,7 @@ void bncRinex::dumpEpoch(long maxTime) {
   while (it.hasNext()) {
     iSat++;
     Observation* ob = it.next();
-    int prn = ob->SVPRN;
-    if        (prn <= PRN_GPS_END) {
-      _out << "G" << setw(2) << prn;
-    }
-    else if (prn >= PRN_GLONASS_START && prn <= PRN_GLONASS_END) {
-      _out << "R" << setw(2) << prn - PRN_GLONASS_START + 1;
-    }
-    else {
-      _out << "R" << setw(2) << prn % 100;
-    }
+    _out << ob->satSys << setw(2) << ob->satNum;
     if (iSat == 12 && it.hasNext()) {
       _out << endl << "                                ";
       iSat = 0;

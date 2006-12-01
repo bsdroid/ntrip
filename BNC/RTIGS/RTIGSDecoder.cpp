@@ -105,8 +105,8 @@ void RTIGSDecoder::Decode(char* buffer, int bufLen) {
 
     for (short ii = 0; ii < numObs; ii++) {
       Observation* obs = new Observation();
-
-      obs->SVPRN    = _GPSTrans.DecObs.Obs[ii].sat_prn;
+      obs->satSys   = 'G';
+      obs->satNum   = _GPSTrans.DecObs.Obs[ii].sat_prn;
       obs->GPSWeek  = _GPSTrans.DecObs.Obs[ii].GPSTime / (7 * 86400);
       obs->GPSWeeks = _GPSTrans.DecObs.Obs[ii].GPSTime % (7 * 86400);
       obs->C1       = _GPSTrans.DecObs.Obs[ii].l1_pseudo_range;

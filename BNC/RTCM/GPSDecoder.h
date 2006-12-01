@@ -33,7 +33,9 @@ class Observation {
   Observation() {
     flags     = 0;
     StatID[0] = '\0';
-    SVPRN     = 0;
+    satSys    = 'G';
+    satNum    = 0;
+    slot      = 0;
     GPSWeek   = 0;
     GPSWeeks  = 0.0;
     C1        = 0.0;
@@ -45,8 +47,10 @@ class Observation {
     SNR2      = 0;
   }
   int    flags;
-  char   StatID[29+1];// Station ID
-  int    SVPRN;       // Satellite PRN
+  char   StatID[20+1];// Station ID
+  char   satSys;      // Satellite System ('G' or 'R')
+  int    satNum;      // Satellite Number (PRN for GPS NAVSTAR)
+  int    slot;        // Slot Number (for Glonass)
   int    GPSWeek;     // Week of GPS-Time
   double GPSWeeks;    // Second of Week (GPS-Time)
   double C1;          // CA-code pseudorange (meters)
@@ -54,8 +58,8 @@ class Observation {
   double P2;          // P2-code pseudorange (meters)
   double L1;          // L1 carrier phase (cycles)
   double L2;          // L2 carrier phase (cycles)
-  int    SNR1;        // L1 signal-to noise ratio (0.1 dB)
-  int    SNR2;        // L2 signal-to noise ratio (0.1 dB)
+  int    SNR1;        // L1 signal-to noise ratio (RINEX convention)
+  int    SNR2;        // L2 signal-to noise ratio (RINEX convention)
 };
 
 class GPSDecoder {

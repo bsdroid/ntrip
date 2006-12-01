@@ -64,7 +64,6 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
     }
     _out = new QTextStream(_outFile);
     _out->setRealNumberNotation(QTextStream::FixedNotation);
-    _out->setRealNumberPrecision(5);
   }
   else {
     _outFile = 0;
@@ -225,21 +224,23 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
         // --------------------
         if (_out) {
           if (first) {
-            *_out << begEpoch << endl;;
+            _out->setFieldWidth(1); *_out << begEpoch << endl;;
           }
-          *_out <<  obs->StatID    << " "
-                <<  obs->SVPRN     << " "
-                <<  obs->GPSWeek   << " "
-                <<  obs->GPSWeeks  << " "
-                <<  obs->C1        << " "
-                <<  obs->P1        << " "
-                <<  obs->P2        << " "
-                <<  obs->L1        << " "
-                <<  obs->L2        << " "
-                <<  obs->SNR1      << " "
-                <<  obs->SNR2      << endl;
+          _out->setFieldWidth(sizeof(obs->StatID)); 
+          *_out << obs->StatID << " " << obs->satSys;
+          _out->setFieldWidth(2); *_out << obs->satNum  << " ";
+          _out->setFieldWidth(1); *_out << obs->slot    << " ";
+          _out->setFieldWidth(4); *_out << obs->GPSWeek << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(7); *_out << obs->GPSWeeks << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->C1       << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->P1       << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->P2       << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->L1       << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->L2       << " ";
+          _out->setFieldWidth(1); *_out << obs->SNR1 << " ";
+          _out->setFieldWidth(1); *_out << obs->SNR2 << endl;
           if (!it.hasNext()) {
-            *_out << endEpoch << endl;
+            _out->setFieldWidth(1); *_out << endEpoch << endl;
           }
         }
         
