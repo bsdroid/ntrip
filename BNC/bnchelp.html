@@ -203,7 +203,7 @@ FRAN{ddd}{h}{mm}.{yy}O
 where 'mm' is the starting minute within the hour.
 </p>
 <p>
-BNC's RINEX observation files generally contain C1, P1, P2, L1, and L2 observations. In case an observation is unavailable, its value is set to zero '0.000'. Note that even if a RINEX file does not contain GLONASS data, the 'RINEX TYPE' field in the RINEX file header is set to 'M (MIXED)'.
+BNC's RINEX observation files generally contain C1, P1, P2, L1, and L2 observations. In case an observation is unavailable, its value is set to zero '0.000'. Note that even if a RINEX file does not contain GLONASS data, the 'RINEX TYPE' field in the RINEX file header may be set to 'M (MIXED)'.
 </p>
 
 <p><a name="rnxpath"><h4>B - 5.1 RINEX Directory - optional</h4></p>
@@ -321,7 +321,7 @@ BNC automatically selects one out of several incorporated decoders for a stream 
 
 <p><a name="log"><h4>B - 7. Log - optional</h4></p>
 <p>
-BNC comments its activities in the 'Log' section on the main windows. Comments can be saved in a file when entering a full path for 'Log' file. Information is given on the communication between BNC and the NTRIP broadcaster as well as on problems that may occur concerning communication link, stream availability, stream delay, stream conversion etc. Default value for 'Log' is an empty option field, meaning that BNC comments are not saved in a file.
+BNC comments its activities in the 'Log' section on the main windows. Comments can be saved in a file when entering a full path for a 'Log' file. Information is given on the communication between BNC and the NTRIP broadcaster as well as on problems that may occur concerning communication link, stream availability, stream delay, stream conversion etc. Default value for 'Log' is an empty option field, meaning that BNC comments are not saved in a file.
 </p>
 
 <p><a name="start"><h4>B - 8. Start</h4></p>
@@ -377,7 +377,7 @@ BNC's 'Get Table' function only informs about the STR records of a source-table.
 EUREF as well as IGS follow an open data policy. Streams are made available through NTRIP broadcasters at <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u> free of charge to anyone for any purpose. Up to now it is not clear how many users will have to be supported simultaneously. The given situation may develop in a way that becomes difficult to serve all registered users at all times.  In case limited dissemination resources on the NTRIP broadcaster side (software restrictions, bandwidth limitation etc.) make it necessary, first priority in stream provision will be given to stream providers, re-broadcasting activities, and real-time analysis centers while access for others might be temporarily denied.
 </li>
 <li>
-We experienced a limitation of the Standard Windows Operating Systems concerning socket communication. Sockets are not always closed at the end of a communication. As BNC makes intensive use of communication through sockets, we suggest to use the Server Version of Windows Operating Systems when running BNC continuously for a long time on a Windows platform.
+We experienced a limitation of the Standard Windows Operating Systems concerning socket communication. Sockets are not always handled properly. As BNC makes intensive use of communication through sockets, we suggest to use the Server Version of Windows Operating Systems when running BNC continuously for a long time on a Windows platform.
 </li>
 <br>
 </ul>
@@ -385,7 +385,7 @@ We experienced a limitation of the Standard Windows Operating Systems concerning
 <p>
 The BKG Ntrip Client (BNC) Qt Graphic User Interface (GUI) has been developed for the Federal Agency for Cartography and Geodesy (BKG) by Leos Mervart, Czech Technical University Prague, Department of Advanced Geodesy. BNC integrates the following GNU GPL software components: 
 <ul>
-<li> RTCM 2.x decoder, written by Oliver Montenbruck, German Space Operations Center, DLR, Oberpfaffenhofen, with contributions from Leos Mervart</li> 
+<li> RTCM 2.x decoder, written by Oliver Montenbruck, German Space Operations Center, DLR, Oberpfaffenhofen</li> 
 <li> RTCM 3 decoder, written for BKG by Dirk Stoecker, Euronik GmbH, Schoenefeld</li> 
 <li> RTIGS decoder, written by Ken MacLeod, Natural Resources, Canada.</li> 
 </ul>
