@@ -41,7 +41,7 @@ BNC decodes and converts GNSS data streams carrying code and phase data coming i
 </ul>
 </p>
 <p><b>Warning</b><br>
-BNC needs access to the Internet with a minimum of about 2 to 6 kbits/second per stream depending on the stream format. You need to make sure that you have always the necessary bandwidth available. BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. Please be aware that it is a powerful tool that may generate a heavy workload on the NTRIP broadcaster side depending on the number of streams it requests. We suggest to limited the number of streams where possible to avoid unnecessary workload.
+BNC needs access to the Internet with a minimum of about 2 to 6 kbits/sec per stream depending on the stream format. You need to make sure that you have always the necessary bandwidth available. BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. Please be aware that it is a powerful tool that may generate a heavy workload on the NTRIP broadcaster side depending on the number of streams it requests. We suggest to limited the number of streams where possible to avoid unnecessary workload.
 </p>
 <p><a name="options"><h3>B - Options</h3></p>
 <p>
@@ -375,6 +375,9 @@ BNC's 'Get Table' function only informs about the STR records of a source-table.
 </li>
 <li>
 EUREF as well as IGS follow an open data policy. Streams are made available through NTRIP broadcasters at <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u> free of charge to anyone for any purpose. Up to now it is not clear how many users will have to be supported simultaneously. The given situation may develop in a way that becomes difficult to serve all registered users at all times.  In case limited dissemination resources on the NTRIP broadcaster side (software restrictions, bandwidth limitation etc.) make it necessary, first priority in stream provision will be given to stream providers, re-broadcasting activities, and real-time analysis centers while access for others might be temporarily denied.
+</li>
+<li>
+We experienced a limitation of the Standard Windows Operating Systems concerning socket communication. Sockets are not always closed at the end of a communication. As BNC makes intensive use of communication through sockets, we suggest to use the Server Version of Windows Operating Systems when running BNC continuously for a long time on a Windows platform.
 </li>
 <br>
 </ul>
