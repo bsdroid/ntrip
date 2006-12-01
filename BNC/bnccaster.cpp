@@ -226,7 +226,7 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
           if (first) {
             _out->setFieldWidth(1); *_out << begEpoch << endl;;
           }
-          _out->setFieldWidth(sizeof(obs->StatID)); *_out << obs->StatID; 
+          _out->setFieldWidth(0); *_out << obs->StatID; 
           _out->setFieldWidth(1); *_out << " " << obs->satSys;
           _out->setFieldWidth(2); *_out << obs->satNum; 
           _out->setFieldWidth(1); *_out << " ";
