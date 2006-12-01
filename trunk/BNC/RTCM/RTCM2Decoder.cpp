@@ -74,8 +74,14 @@ void RTCM2Decoder::Decode(char* buffer, int bufLen) {
           
         for (int iSat=0; iSat < _ObsBlock.nSat; iSat++) {
           Observation* obs = new Observation();
-        
-          obs->SVPRN    = _ObsBlock.PRN[iSat];
+          if (_ObsBlock.PRN[iSat] > 100) {
+            obs->satNum = _ObsBlock.PRN[iSat] % 100;
+            obs->satSys = 'R';
+	  }
+	  else {
+            obs->satNum = _ObsBlock.PRN[iSat];
+            obs->satSys = 'G';
+	  }
           obs->GPSWeek  = epochWeek;
           obs->GPSWeeks = epochSecs;
           obs->C1       = _ObsBlock.rng_C1[iSat];
