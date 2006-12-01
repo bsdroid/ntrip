@@ -250,6 +250,7 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
           if (!it.hasNext()) {
             _out->setFieldWidth(1); *_out << endEpoch << endl;
           }
+          _out->flush();
         }
         
         // Output into the socket
