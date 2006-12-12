@@ -48,6 +48,7 @@
 #include "bncgetthread.h"
 #include "bnctabledlg.h"
 #include "bncapp.h"
+#include "bncutils.h"
 
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
@@ -59,15 +60,16 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncGetThread::bncGetThread(const QUrl& mountPoint, 
                            const QByteArray& format, int iMount) {
-  _decoder    = 0;
-  _mountPoint = mountPoint;
-  _staID      = mountPoint.path().mid(1).toAscii();
-  _staID_orig = _staID;
-  _format     = format;
-  _socket     = 0;
-  _timeOut    = 20*1000;  // 20 seconds
-  _nextSleep  =  1;       //  1 second
-  _iMount     = iMount;   // index in mountpoints array
+  _decoder     = 0;
+  _mountPoint  = mountPoint;
+  _staID       = mountPoint.path().mid(1).toAscii();
+  _staID_orig  = _staID;
+  _format      = format;
+  _socket      = 0;
+  _timeOut     = 20*1000;  // 20 seconds
+  _nextSleep   =  1;       //  1 second
+  _iMount      = iMount;   // index in mountpoints array
+  _rinexWriter = 0;
 
   // Check name conflict
   // -------------------
@@ -86,6 +88,8 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
       }
     }
   }
+
+  _samplingRate = settings.value("rnxSampl").toInt();
 
   if (num > 0) {
     _staID = _staID.left(_staID.length()-1) + QString("%1").arg(num).toAscii();
@@ -287,9 +291,49 @@ void bncGetThread::run() {
         delete [] data;
         for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
              it != _decoder->_obsList.end(); it++) {
+
+          // Check observation epoch
+          // -----------------------
+          int    week;
+          double sec;
+          currentGPSWeeks(week, sec);
+          
+          const double secPerWeek = 7.0 * 24.0 * 3600.0;
+          const double maxDt      = 600.0;            
+
+          if (week < (*it)->GPSWeek) {
+            week += 1;
+            sec  -= secPerWeek;
+          }
+          if (week > (*it)->GPSWeek) {
+            week -= 1;
+            sec  += secPerWeek;
+          }
+          double dt = fabs(sec - (*it)->GPSWeeks);
+          if (week != (*it)->GPSWeek || dt > maxDt) {
+            emit( newMessage("Wrong observation epoch") );
+            delete (*it);
+            continue;
+          }
+
           emit newObs(_staID, *it);
           bool firstObs = (it == _decoder->_obsList.begin());
-          _global_caster->newObs(_staID, _mountPoint, firstObs, *it, _format);
+          if ( _global_caster->newObs(_staID, firstObs, *it) == 0 ) {
+
+            if (_rinexWriter == 0) {
+              _rinexWriter = new bncRinex((*it)->StatID, _mountPoint, _format);
+            }
+
+            long iSec    = long(floor((*it)->GPSWeeks+0.5));
+            long newTime = (*it)->GPSWeek * 7*24*3600 + iSec;
+
+            if (_samplingRate == 0 || iSec % _samplingRate == 0) {
+              _rinexWriter->deepCopy(*it);
+            }
+            _rinexWriter->dumpEpoch(newTime);
+          }
+
+
         }
         _decoder->_obsList.clear();
       }

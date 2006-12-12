@@ -113,9 +113,8 @@ bncCaster::~bncCaster() {
 
 // New Observations
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
-                       bool firstObs, Observation* obs,
-                       const QByteArray& format) {
+int bncCaster::newObs(const QByteArray& staID,
+                       bool firstObs, Observation* obs) {
 
   QMutexLocker locker(&_mutex);
 
@@ -127,18 +126,6 @@ void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
   strncpy(obs->StatID, staID.constData(),sizeof(obs->StatID));
   obs->StatID[sizeof(obs->StatID)-1] = '\0';
         
-  // Prepare RINEX Output
-  // --------------------
-  if (_rinexWriters.find(obs->StatID) == _rinexWriters.end()) {
-    _rinexWriters.insert(obs->StatID, new bncRinex(obs->StatID, 
-                                                   mountPoint, format));
-  }
-  bncRinex* rnx = _rinexWriters.find(obs->StatID).value();
-  if (_samplingRate == 0 || iSec % _samplingRate == 0) {
-    rnx->deepCopy(obs);
-  }
-  rnx->dumpEpoch(newTime);
-
   // First time, set the _lastDumpSec immediately
   // --------------------------------------------
   if (_lastDumpSec == 0) {
@@ -157,7 +144,7 @@ void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
       }
     }
     delete obs;
-    return;
+    return 1;
   }
 
   // Save the observation
@@ -171,6 +158,8 @@ void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
   if (_lastDumpSec < newTime - _waitTime) {
     _lastDumpSec = newTime - _waitTime;
   }
+
+  return 0;
 }
 
 // New Connection
