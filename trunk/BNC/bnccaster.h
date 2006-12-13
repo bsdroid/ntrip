@@ -31,6 +31,7 @@
 #include <QMultiMap>
 
 #include "RTCM/GPSDecoder.h"
+#include "bncrinex.h"
 
 class bncGetThread;
 
@@ -42,7 +43,8 @@ class bncCaster : public QObject {
    ~bncCaster();
    void addGetThread(bncGetThread* getThread);
    int  numStations() const {return _staIDs.size();}
-   int  newObs(const QByteArray& staID, bool firstObs, Observation* obs);
+   void newObs(const QByteArray& staID, const QUrl& mountPoint,
+               bool firstObs, Observation* obs, const QByteArray& format);
 
  signals:
    void getThreadErrors();   
@@ -63,6 +65,7 @@ class bncCaster : public QObject {
    QTcpServer*                    _server;
    QList<QTcpSocket*>*            _sockets;
    QList<QByteArray>              _staIDs;
+   QMap<QString, bncRinex*>       _rinexWriters;
    QList<bncGetThread*>           _threads;
    int                            _samplingRate;
    long                           _waitTime;
