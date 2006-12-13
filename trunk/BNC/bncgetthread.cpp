@@ -287,6 +287,31 @@ void bncGetThread::run() {
         delete [] data;
         for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
              it != _decoder->_obsList.end(); it++) {
+
+          // Check observation epoch
+          // -----------------------
+          int    week;
+          double sec;
+          currentGPSWeeks(week, sec);
+          
+          const double secPerWeek = 7.0 * 24.0 * 3600.0;
+          const double maxDt      = 600.0;            
+
+          if (week < (*it)->GPSWeek) {
+            week += 1;
+            sec  -= secPerWeek;
+          }
+          if (week > (*it)->GPSWeek) {
+            week -= 1;
+            sec  += secPerWeek;
+          }
+          double dt = fabs(sec - (*it)->GPSWeeks);
+          if (week != (*it)->GPSWeek || dt > maxDt) {
+            emit( newMessage("Wrong observation epoch") );
+            delete (*it);
+            continue;
+          }
+
           emit newObs(_staID, *it);
           bool firstObs = (it == _decoder->_obsList.begin());
           _global_caster->newObs(_staID, _mountPoint, firstObs, *it, _format);
