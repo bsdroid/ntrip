@@ -48,6 +48,7 @@
 #include "bncgetthread.h"
 #include "bnctabledlg.h"
 #include "bncapp.h"
+#include "bncutils.h"
 
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
