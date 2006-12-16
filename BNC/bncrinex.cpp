@@ -435,7 +435,9 @@ void bncRinex::dumpEpoch(long maxTime) {
     writeHeader(datTim, datTimNom);
   }
 
-  _out << datTim.toString(" yy MM dd hh mm ss.zzz0000").toAscii().data()
+  double sec = double(datTim.time().second()) + fmod(fObs->GPSWeeks,1.0);
+  _out << datTim.toString(" yy MM dd hh mm ").toAscii().data()
+       << setw(10) << setprecision(7) << sec
        << "  " << 0 << setw(3)  << dumpList.size();
 
   QListIterator<Observation*> it(dumpList); int iSat = 0;
