@@ -355,7 +355,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
          << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
     _out.setf(ios::left);
     _out << setw(60) << _statID.data()                               << "MARKER NAME"          << endl;
-    _out << setw(60) << "unknown"                                    << "OBSERVER / AGENCY"    << endl;
+    _out << setw(60) << "unknown             unknown"                << "OBSERVER / AGENCY"    << endl;
     _out << setw(20) << "unknown"    
          << setw(20) << "unknown"
          << setw(20) << "unknown"                                    << "REC # / TYPE / VERS"  << endl;

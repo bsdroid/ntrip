@@ -1035,13 +1035,15 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
       
       // Store measurement
       if (isL1) {
-        if (isCAcode) rng_C1[idx] = rng;
+        if (isCAcode) {
+	  rng_C1[idx] = rng;
+      } else {
         rng_P1[idx] = rng; 
-      }
+      } }
       else {
         rng_P2[idx] = rng;
       };
-           
+
     };
   
   };
