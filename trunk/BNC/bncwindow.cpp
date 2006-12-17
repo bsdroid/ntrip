@@ -60,7 +60,7 @@ bncWindow::bncWindow() {
     "decoder,bytes").split(",");
 
   setMinimumSize(60*ww, 60*ww);
-  setWindowTitle(tr("BKG Ntrip Client (BNC), Version 1.0b"));
+  setWindowTitle(tr("BKG Ntrip Client (BNC), Version 1.1b"));
 
   // Create Actions
   // --------------
@@ -514,7 +514,7 @@ void bncWindow::slotAbout() {
   QLabel* img = new QLabel();
   img->setPixmap(QPixmap(":ntrip-logo.png"));
   dlgLayout->addWidget(img, 0,0);
-  dlgLayout->addWidget(new QLabel("BKG NTRIP Client (BNC), Version 1.0b"), 0,1);
+  dlgLayout->addWidget(new QLabel("BKG NTRIP Client (BNC), Version 1.1b"), 0,1);
   dlgLayout->addWidget(tb,1,0,1,2);
 
   dlg.setLayout(dlgLayout);
