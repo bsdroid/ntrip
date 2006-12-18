@@ -139,7 +139,7 @@ void bncRinex::readSkeleton() {
       }
     }
     if (!sklDir.isEmpty() && sklDir != "none") {
-      QUrl url(sklDir + "/" + _mountPoint.path().mid(1,4) + ".skl");
+      QUrl url(sklDir + "/" + _mountPoint.path().mid(1,4).toLower() + ".skl"); 
       if (url.port() == -1) {
         url.setPort(80);
       }
