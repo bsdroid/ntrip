@@ -162,6 +162,10 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
   _rnxSamplSpinBox->setSuffix(" sec");
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
+  _LatLineEdit     = new QLineEdit(settings.value("approxLat").toString());
+  _LatLineEdit->setMaximumWidth(9*ww);
+  _LonLineEdit     = new QLineEdit(settings.value("approxLon").toString());
+  _LonLineEdit->setMaximumWidth(9*ww);
   _mountPointsTable   = new QTableWidget(0,4);
   _mountPointsTable->horizontalHeader()->resizeSection(1,25*ww);
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
@@ -247,6 +251,11 @@ bncWindow::bncWindow() {
   layout->addWidget(_rnxAppendCheckBox,                          7, 4);
 
   layout->addWidget(new QLabel("Mountpoints"),                   8, 0, 1, 2);
+
+  layout->addWidget(new QLabel(tr("Approx. Lat./Lon.")),         8, 2);
+  layout->addWidget(_LatLineEdit,                                8, 3);
+  layout->addWidget(_LonLineEdit,                                8, 4);
+
   layout->addWidget(_mountPointsTable,                           9, 0, 1, 5);
 
   layout->addWidget(new QLabel("Log (full path)"),              10, 0, 1, 2);
@@ -367,8 +376,10 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
   settings.setValue("rnxAppend",   _rnxAppendCheckBox->checkState());
   settings.setValue("logFile",     _logFileLineEdit->text());
-
-  QStringList mountPoints;
+  settings.setValue("approxLat",   _LatLineEdit->text());
+  settings.setValue("approxLon",   _LonLineEdit->text());
+  
+QStringList mountPoints;
 
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
     QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
@@ -433,12 +444,6 @@ void bncWindow::slotGetData() {
     _global_caster->addGetThread(getThread);
 
     getThread->start();
-//Start Ergaenzung Perlt
-//#ifndef WIN32
-//    usleep(100000);  // sleep 0.1 sec
-//#endif
-// verschoben nach bncgetthread.cpp
-// Ende Ergaenzung Perlt
   }
 }
 

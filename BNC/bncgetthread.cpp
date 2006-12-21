@@ -44,6 +44,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QtNetwork>
+#include <QTime>
 
 #include "bncgetthread.h"
 #include "bnctabledlg.h"
@@ -91,9 +92,7 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   if (num > 0) {
     _staID = _staID.left(_staID.length()-1) + QString("%1").arg(num).toAscii();
   }    
-// Start Ergaenzung Perlt
   msleep(100); //sleep 0.1 sec
-//Ende Ergaenzung Perlt
 }
 
 // Destructor
@@ -153,6 +152,52 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint, int timeOut,
             "Authorization: Basic " +
             userAndPwd.toBase64() + "\r\n\r\n";
   }
+
+//////////////////////////////////////////////////////////////////
+// Additional NMEA String in request to handle VRS data streams //
+// will be ignored from standard casters                        //
+//////////////////////////////////////////////////////////////////
+
+  double lat, lon;
+  lat = settings.value("approxLat", 0).toDouble();
+  lon = settings.value("approxLon", 0).toDouble();
+  if ((lat != 0.0) && (lon != 0.0)) {
+    const char* flagN="N";
+    const char* flagE="E";
+    if (lon >180.) {lon=(lon-360.)*(-1.); flagE="W";}
+    if ((lon < 0.) && (lon >= -180.))  {lon=lon*(-1.); flagE="W";}
+    if (lon < -180.)  {lon=(lon+360.); flagE="E";}
+    if (lat < 0.)  {lat=lat*(-1.); flagN="S";}
+    QTime ttime(QTime::currentTime());
+    int lat_deg = (int)lat;  
+    double lat_min=(lat-lat_deg)*60.;
+    int lon_deg = (int)lon;  
+    double lon_min=(lon-lon_deg)*60.;
+    int hh = 0 , mm = 0;
+    double ss = 0.0;
+    hh=ttime.hour();
+    mm=ttime.minute();
+    ss=(double)ttime.second()+0.001*ttime.msec();
+    QString gga;
+    gga += "GPGGA,";
+    gga += QString("%1%2%3,").arg((int)hh, 2, 10, QLatin1Char('0')).arg((int)mm, 2, 10, QLatin1Char('0')).arg((int)ss, 2, 10, QLatin1Char('0'));
+    gga += QString("%1%2,").arg((int)lat_deg,2, 10, QLatin1Char('0')).arg(lat_min, 7, 'f', 4, QLatin1Char('0'));
+    gga += flagN;
+    gga += QString(",%1%2,").arg((int)lon_deg,3, 10, QLatin1Char('0')).arg(lon_min, 7, 'f', 4, QLatin1Char('0'));
+    gga += flagE + QString(",1,05,1.00,+00100,M,10.000,M,,");
+    int xori;
+    char XOR = 0;
+    char *Buff =gga.toAscii().data();
+    int iLen = strlen(Buff);
+    for (xori = 0; xori < iLen; xori++) {
+      XOR ^= (char)Buff[xori];
+    }
+    gga += QString("*%1").arg(XOR, 2, 16, QLatin1Char('0'));
+    reqStr += "$";
+    reqStr += gga;
+    reqStr += "\r\n";
+  }
+////////////////////////////////////////////////////////////////
 
   msg += reqStr;
 
