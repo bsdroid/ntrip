@@ -72,13 +72,11 @@ bncRinex::bncRinex(const char* StatID, const QUrl& mountPoint,
   expandEnvVar(_rnxScriptName);
 
   _pgmName  = ((bncApp*)qApp)->bncVersion().leftJustified(20, ' ', true);
-// Start Ergaenzung Perlt
 #ifdef WIN32
   _userName = QString("${USERNAME}");
 #else
   _userName = QString("${USER}");
 #endif
-//Ende Ergaenzung Perlt
   expandEnvVar(_userName);
   _userName = _userName.leftJustified(20, ' ', true);
 }
@@ -294,6 +292,13 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
 void bncRinex::writeHeader(const QDateTime& datTim, 
                            const QDateTime& datTimNom) {
 
+  QSettings settings;
+//  double lat, lon;
+//  int vrsstream = 0;
+//  lat = settings.value("approxLat", 0).toDouble();
+//  lon = settings.value("approxLon", 0).toDouble();
+//  if ((lat != 0.0) && (lon != 0.0)) {vrsstream=1;}
+
   // Open the Output File
   // --------------------
   resolveFileName(datTimNom);
@@ -301,7 +306,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
   // Append to existing file and return
   // ----------------------------------
   if ( QFile::exists(_fName) ) {
-    QSettings settings;
+//    QSettings settings;
     if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
       _out.open(_fName.data(), ios::app);
       _out.setf(ios::showpoint | ios::fixed);
@@ -336,6 +341,8 @@ void bncRinex::writeHeader(const QDateTime& datTim,
         QString hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
                       _mountPoint.path())).leftJustified(60, ' ', true);
         _out << hlp.toAscii().data() << "COMMENT" << endl;
+//        hlp = QString("Approx VRS Position %1%2").arg(lat, -20, 'f', 4).arg(lon, -20, 'f', 4);
+//        _out << hlp.toAscii().data() << "COMMENT" << endl;
       }
       else {
         _out << line.toAscii().data() << endl;
@@ -379,6 +386,8 @@ void bncRinex::writeHeader(const QDateTime& datTim,
     hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
           _mountPoint.path())).leftJustified(60, ' ', true);
     _out << hlp.toAscii().data() << "COMMENT" << endl;
+//    hlp = QString("Approx VRS Position %1%2").arg(lat, -20, 'f', 4).arg(lon, -20, 'f', 4);
+//    _out << hlp.toAscii().data() << "COMMENT" << endl;
     _out << "                                                            END OF HEADER"        << endl;
   }
 

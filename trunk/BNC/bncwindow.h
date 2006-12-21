@@ -84,6 +84,9 @@ class bncWindow : public QMainWindow {
     QSpinBox*  _waitTimeSpinBox;
     QTableWidget* _mountPointsTable;
 
+    QLineEdit*   _LatLineEdit;
+    QLineEdit*   _LonLineEdit;
+
     QTextEdit*  _log;
 
     QWidget*   _canvas;
