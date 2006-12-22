@@ -369,17 +369,6 @@ Concerning RTCM Version 2.x, BNC handles only message types 18 and 19. Concernin
 If the ambiguity field is not set in RTCM Version 3 streams, the BNC output will be no valid RINEX. All values will be stored modulo 299792.458. A COMMENT line will tell you, when this happens. It would be necessary to approximately calculate the range to fix the ambiguity (needing ephemeris/almanac and easy positioning algorithm).
 </li>
 <li>
-The generated RINEX is somewhat limited due to the streaming character of the conversion.
-<ul>
-<li>
-Header records can only represent data, which are known after receiving the very first epoch. Data rate, position, number of observations and any such additional fields cannot be provided.
-</li>
-<li>
-The number of observable cannot change during the program runtime. Only the observable, which exist in the first epoch are outputted. If there are new observable later on, these are being ignored.
-</li>
-</ul>
-</li>
-<li>
 BNC's 'Get Table' function only informs about the STR records of a source-table. Note that you can use an Internet browser to download the full source-table contents of any NTRIP broadcaster by simply entering its URL plus a dummy string in the form http://host:port/dummy. Data field number 8 of the NET records that may show up may provide information about where to register for an NTRIP broadcaster account.
 </li>
 <li>
