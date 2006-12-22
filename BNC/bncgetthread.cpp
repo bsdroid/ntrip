@@ -161,7 +161,6 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint, int timeOut,
   double lat, lon;
   lat = settings.value("approxLat", 0).toDouble();
   lon = settings.value("approxLon", 0).toDouble();
-  printf("%s\n",reqStr.data());
   if ((lat != 0.0) && (lon != 0.0) && (hlp.path().length() > 2) && (hlp.path().indexOf(".skl") < 0)) {
     const char* flagN="N";
     const char* flagE="E";
