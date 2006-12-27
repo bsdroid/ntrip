@@ -879,7 +879,8 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     // Current epoch (mod 3600 sec) 
     t = 0.6*P.modZCount() 
         + P.getUnsignedBits(4,20)*1.0e-6;
-    t = floor(t*1000.+0.5)/1000.; //weber
+    // Round t to 5 milliseconds
+    t = floor(t*200.+0.5)/200.; // g. weber
     
     // Frequency (exit if neither L1 nor L2)
     isL1  = ( P.getUnsignedBits(0,1)==0 );
@@ -969,7 +970,8 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     // Current epoch (mod 3600 sec) 
     t = 0.6*P.modZCount() 
         + P.getUnsignedBits(4,20)*1.0e-6;
-    t = floor(t*1000.+0.5)/1000.; //weber
+    // Round t to 5 milliseconds
+    t = floor(t*200.+0.5)/200.; // g. weber
     
     // Frequency (exit if neither L1 nor L2)
     isL1  = ( P.getUnsignedBits(0,1)==0 );
