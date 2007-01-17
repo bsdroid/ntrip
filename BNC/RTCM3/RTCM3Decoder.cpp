@@ -89,7 +89,7 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
 
         if (rr == 2) {
           std::cerr << "No valid RINEX! All values are modulo 299792.458!\n";
-          exit(1);
+//        exit(1); 
         }
 
         for (int ii = 0; ii < _Parser.Data.numsats; ii++) {
@@ -106,15 +106,32 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
           obs->GPSWeeks = _Parser.Data.timeofweek / 1000.0;
 
           for (int jj = 0; jj < _Parser.numdatatypes; jj++) {
-
-            if ( !(_Parser.Data.dataflags[ii] & _Parser.dataflag[jj])
-                 || isnan(_Parser.Data.measdata[ii][_Parser.datapos[jj]])
-                 || isinf(_Parser.Data.measdata[ii][_Parser.datapos[jj]]) ) {
-              continue;
+            int v = 0;
+            int df = _Parser.dataflag[jj];
+            int pos = _Parser.datapos[jj];
+            if ( (_Parser.Data.dataflags[ii] & df)
+                 && !isnan(_Parser.Data.measdata[ii][pos])
+                 && !isinf(_Parser.Data.measdata[ii][pos])) {
+              v = 1;
             }
-              
+            else {
+              df = _Parser.dataflag2[jj];
+              pos = _Parser.datapos2[jj];
+              if ( (_Parser.Data.dataflags[ii] & df)
+                   && !isnan(_Parser.Data.measdata[ii][pos])
+                   && !isinf(_Parser.Data.measdata[ii][pos])) {
+              v = 1;
+              }
+            }
+          if(!v)
+          { continue; }
+          else
+          {
             if      (_Parser.dataflag[jj] & GNSSDF_C1DATA) {
               obs->C1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+            }
+            else if (_Parser.dataflag[jj] & GNSSDF_C2DATA) {
+              obs->C2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
             }
             else if (_Parser.dataflag[jj] & GNSSDF_P1DATA) {
               obs->P1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
@@ -122,14 +139,15 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
             else if (_Parser.dataflag[jj] & GNSSDF_P2DATA) {
               obs->P2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
             }
-            else if (_Parser.dataflag[jj] & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
-              obs->L1   = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+            else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
+              obs->L1   = _Parser.Data.measdata[ii][pos];
               obs->SNR1 = _Parser.Data.snrL1[ii];
             }
-            else if (_Parser.dataflag[jj] & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
-              obs->L2   = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+            else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
+              obs->L2   = _Parser.Data.measdata[ii][pos];
               obs->SNR2 = _Parser.Data.snrL2[ii];
             }
+          }
           }
           _obsList.push_back(obs);
         }

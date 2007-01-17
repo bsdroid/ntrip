@@ -86,7 +86,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   _buttonGet = new QPushButton(tr("Get table"), this);
   connect(_buttonGet, SIGNAL(clicked()), this, SLOT(slotGetTable()));
-
+ 
   _buttonCancel = new QPushButton(tr("Cancel"), this);
   connect(_buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
 
@@ -141,7 +141,10 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
   // ----------------
   const int timeOut = 10*1000;
   QString msg;
-  QTcpSocket* socket = bncGetThread::request(url, timeOut, msg);
+  QByteArray _latitude;
+  QByteArray _longitude;
+  QByteArray _nmea;
+  QTcpSocket* socket = bncGetThread::request(url, _latitude, _longitude, _nmea, timeOut, msg);
 
   if (!socket) {
     return failure;
@@ -206,7 +209,7 @@ void bncTableDlg::slotGetTable() {
 
   static const QStringList labels = QString("mountpoint,identifier,format,"
     "format-details,carrier,nav-system,network,country,latitude,longitude,"
-    "nmea,solution,generator,compression,authentication,fee,bitrate,"
+    "type,solution,generator,compression,authentication,fee,bitrate,"
     "misc").split(",");
 
   if (lines.size() > 0) {
@@ -223,6 +226,9 @@ void bncTableDlg::slotGetTable() {
       QStringList columns = it.next().split(";");
       ++nRow;
       for (int ic = 0; ic < columns.size()-1; ic++) {
+
+        if (ic+1 == 11) { if (columns[ic+1] == "0") { columns[ic+1] = "RS"; } else { columns[ic+1] = "VRS"; }}
+
         QTableWidgetItem* it = new QTableWidgetItem(columns[ic+1]);
         it->setFlags(it->flags() & ~Qt::ItemIsEditable);
         _table->setItem(nRow, ic, it);
@@ -250,6 +256,9 @@ void bncTableDlg::accept() {
     for (int ir = 0; ir < _table->rowCount(); ir++) {
       QTableWidgetItem* item   = _table->item(ir,0);
       QString           format = _table->item(ir,2)->text();
+      QString         latitude = _table->item(ir,8)->text();
+      QString        longitude = _table->item(ir,9)->text();
+      QString             nmea = _table->item(ir,10)->text();
       format.replace(" ", "_");
       if (_table->isItemSelected(item)) {
         QUrl url;
@@ -259,7 +268,7 @@ void bncTableDlg::accept() {
         url.setPort(_casterPortLineEdit->text().toInt());
         url.setPath(item->text());
 
-        mountPoints->push_back(url.toString() + " " + format);
+        mountPoints->push_back(url.toString() + " " + format + " " + latitude + " " + longitude + " " + nmea);
       }
     }
   }

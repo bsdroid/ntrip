@@ -39,6 +39,7 @@ class Observation {
     GPSWeek   = 0;
     GPSWeeks  = 0.0;
     C1        = 0.0;
+    C2        = 0.0;
     P1        = 0.0;
     P2        = 0.0;
     L1        = 0.0;
@@ -54,6 +55,7 @@ class Observation {
   int    GPSWeek;     // Week of GPS-Time
   double GPSWeeks;    // Second of Week (GPS-Time)
   double C1;          // CA-code pseudorange (meters)
+  double C2;          // CA-code pseudorange (meters)
   double P1;          // P1-code pseudorange (meters)
   double P2;          // P2-code pseudorange (meters)
   double L1;          // L1 carrier phase (cycles)

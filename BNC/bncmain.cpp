@@ -118,7 +118,10 @@ int main(int argc, char *argv[]) {
       if (hlp.size() <= 1) continue;
       QUrl url(hlp[0]);
       QByteArray format = hlp[1].toAscii();
-      bncGetThread* getThread = new bncGetThread(url, format, iMount);
+      QByteArray latitude = hlp[2].toAscii();
+      QByteArray longitude = hlp[3].toAscii();
+      QByteArray nmea = hlp[4].toAscii();
+      bncGetThread* getThread = new bncGetThread(url, format, latitude, longitude, nmea, iMount);
       app.connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
                   &app, SLOT(slotMessage(const QByteArray&)));
 

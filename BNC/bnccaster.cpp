@@ -115,7 +115,10 @@ bncCaster::~bncCaster() {
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
                        bool firstObs, Observation* obs,
-                       const QByteArray& format) {
+                       const QByteArray& format,
+                       const QByteArray& latitude,
+                       const QByteArray& longitude,
+                       const QByteArray& nmea) {
 
   QMutexLocker locker(&_mutex);
 
@@ -131,7 +134,7 @@ void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
   // --------------------
   if (_rinexWriters.find(obs->StatID) == _rinexWriters.end()) {
     _rinexWriters.insert(obs->StatID, new bncRinex(obs->StatID, 
-                                                   mountPoint, format));
+                                                   mountPoint, format, latitude, longitude, nmea));
   }
   bncRinex* rnx = _rinexWriters.find(obs->StatID).value();
   if (_samplingRate == 0 || iSec % _samplingRate == 0) {
@@ -237,6 +240,8 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
           _out->setFieldWidth(14); _out->setRealNumberPrecision(7); *_out << obs->GPSWeeks; 
           _out->setFieldWidth(1); *_out << " ";
           _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->C1; 
+          _out->setFieldWidth(1); *_out << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->C2; 
           _out->setFieldWidth(1); *_out << " ";
           _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->P1; 
           _out->setFieldWidth(1); *_out << " ";

@@ -37,11 +37,14 @@ class bncGetThread : public QThread {
 
  public:
    bncGetThread(const QUrl& mountPoint, 
-                const QByteArray& format, int iMount);
+                const QByteArray& format,
+                const QByteArray& latitude,
+                const QByteArray& longitude,
+                const QByteArray& nmea, int iMount);
    ~bncGetThread();
 
-   static QTcpSocket* request(const QUrl& mountPoint,
-                              int timeOut, QString& msg);
+   static QTcpSocket* request(const QUrl& mountPoint, QByteArray& latitude, QByteArray& longitude,
+                              QByteArray& nmea, int timeOut, QString& msg);
 
    QByteArray staID() const {return _staID;}
 
@@ -64,6 +67,9 @@ class bncGetThread : public QThread {
    QByteArray  _staID;
    QByteArray  _staID_orig;
    QByteArray  _format;
+   QByteArray  _latitude;
+   QByteArray  _longitude;
+   QByteArray  _nmea;
    int         _timeOut;
    int         _nextSleep;
    int         _iMount;

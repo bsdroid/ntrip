@@ -44,7 +44,9 @@ class bncCaster : public QObject {
    void addGetThread(bncGetThread* getThread);
    int  numStations() const {return _staIDs.size();}
    void newObs(const QByteArray& staID, const QUrl& mountPoint,
-               bool firstObs, Observation* obs, const QByteArray& format);
+               bool firstObs, Observation* obs, const QByteArray& format,
+               const QByteArray& latitude, const QByteArray& longitude,
+               const QByteArray& nmea);
 
  signals:
    void getThreadErrors();   

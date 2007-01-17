@@ -38,7 +38,8 @@
 class bncRinex {
  public:
    bncRinex(const char* StatID, const QUrl& mountPoint, 
-            const QByteArray& format);
+            const QByteArray& format, const QByteArray& latitude,
+            const QByteArray& longitude, const QByteArray& nmea);
    ~bncRinex();
    void deepCopy(const Observation* obs);
    void dumpEpoch(long maxTime);
@@ -62,6 +63,9 @@ class bncRinex {
    QString             _userName;
    QString             _sklName;
    QByteArray          _format;
+   QByteArray          _latitude;
+   QByteArray          _longitude;
+   QByteArray          _nmea;
 };
 
 #endif

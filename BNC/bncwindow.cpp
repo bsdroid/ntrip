@@ -46,7 +46,7 @@
 #include "bnctabledlg.h" 
 #include "bnchlpdlg.h" 
 #include "bnchtml.h" 
-#include "bnctableitem.h" 
+#include "bnctableitem.h"
 
 using namespace std;
 
@@ -56,10 +56,9 @@ bncWindow::bncWindow() {
 
   int ww = QFontMetrics(this->font()).width('w');
   
-  static const QStringList labels = QString("account,mountpoint,"
-    "decoder,bytes").split(",");
+  static const QStringList labels = QString("account,mountpoint,decoder,lat,long,type,bytes").split(",");
 
-  setMinimumSize(60*ww, 60*ww);
+  setMinimumSize(77*ww, 60*ww);
   setWindowTitle(tr("BKG Ntrip Client (BNC), Version 1.1b"));
 
   // Create Actions
@@ -162,12 +161,12 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
   _rnxSamplSpinBox->setSuffix(" sec");
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
-  _LatLineEdit     = new QLineEdit(settings.value("approxLat").toString());
-  _LatLineEdit->setMaximumWidth(9*ww);
-  _LonLineEdit     = new QLineEdit(settings.value("approxLon").toString());
-  _LonLineEdit->setMaximumWidth(9*ww);
-  _mountPointsTable   = new QTableWidget(0,4);
+  _mountPointsTable   = new QTableWidget(0,7);
   _mountPointsTable->horizontalHeader()->resizeSection(1,25*ww);
+  _mountPointsTable->horizontalHeader()->resizeSection(2,9*ww);
+  _mountPointsTable->horizontalHeader()->resizeSection(3,7*ww); 
+  _mountPointsTable->horizontalHeader()->resizeSection(4,7*ww); 
+  _mountPointsTable->horizontalHeader()->resizeSection(5,5*ww); 
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
   _mountPointsTable->horizontalHeader()->setStretchLastSection(true);
   _mountPointsTable->setHorizontalHeaderLabels(labels);
@@ -185,12 +184,14 @@ bncWindow::bncWindow() {
   while (it.hasNext()) {
     QStringList hlp = it.next().split(" ");
     if (hlp.size() <= 1) continue;
+    if (hlp.size() == 2) continue; // For downward compatibility
     _mountPointsTable->insertRow(iRow);
 
     QUrl    url(hlp[0]);
 
     QString fullPath = url.host() + QString(":%1").arg(url.port()) + url.path();
-    QString format(hlp[1]);
+    QString format(hlp[1]); QString latitude(hlp[2]); QString longitude(hlp[3]);
+    QString nmea(hlp[4]);
 
     QTableWidgetItem* it;
     it = new QTableWidgetItem(url.userInfo());
@@ -204,9 +205,27 @@ bncWindow::bncWindow() {
     it = new QTableWidgetItem(format);
     _mountPointsTable->setItem(iRow, 2, it);
 
+    if      (nmea == "VRS") {
+    it = new QTableWidgetItem(latitude);
+    _mountPointsTable->setItem(iRow, 3, it);
+    it = new QTableWidgetItem(longitude);
+    _mountPointsTable->setItem(iRow, 4, it);
+    } else {
+    it = new QTableWidgetItem(latitude);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 3, it);
+    it = new QTableWidgetItem(longitude);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 4, it);
+    }
+
+    it = new QTableWidgetItem(nmea);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 5, it);
+
     bncTableItem* bncIt = new bncTableItem();
     bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 3, bncIt);
+    _mountPointsTable->setItem(iRow, 6, bncIt);
 
     iRow++;
   }
@@ -251,10 +270,6 @@ bncWindow::bncWindow() {
   layout->addWidget(_rnxAppendCheckBox,                          7, 4);
 
   layout->addWidget(new QLabel("Mountpoints"),                   8, 0, 1, 2);
-
-  layout->addWidget(new QLabel(tr("Approx. Lat./Lon.")),         8, 2);
-  layout->addWidget(_LatLineEdit,                                8, 3);
-  layout->addWidget(_LonLineEdit,                                8, 4);
 
   layout->addWidget(_mountPointsTable,                           9, 0, 1, 5);
 
@@ -331,7 +346,8 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
     QStringList hlp = it.next().split(" ");
     QUrl    url(hlp[0]);
     QString fullPath = url.host() + QString(":%1").arg(url.port()) + url.path();
-    QString format(hlp[1]);
+    QString format(hlp[1]); QString latitude(hlp[2]); QString longitude(hlp[3]);
+    QString nmea(hlp[4]);
 
     _mountPointsTable->insertRow(iRow);
 
@@ -347,8 +363,26 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
     it = new QTableWidgetItem(format);
     _mountPointsTable->setItem(iRow, 2, it);
 
+    if      (nmea == "VRS") {
+    it = new QTableWidgetItem(latitude);
+    _mountPointsTable->setItem(iRow, 3, it);
+    it = new QTableWidgetItem(longitude);
+    _mountPointsTable->setItem(iRow, 4, it);
+    } else {
+    it = new QTableWidgetItem(latitude);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 3, it);
+    it = new QTableWidgetItem(longitude);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 4, it);
+    }
+
+    it = new QTableWidgetItem(nmea);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 5, it);
+
     bncTableItem* bncIt = new bncTableItem();
-    _mountPointsTable->setItem(iRow, 3, bncIt);
+    _mountPointsTable->setItem(iRow, 6, bncIt);
 
     iRow++;
   }
@@ -376,8 +410,6 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
   settings.setValue("rnxAppend",   _rnxAppendCheckBox->checkState());
   settings.setValue("logFile",     _logFileLineEdit->text());
-  settings.setValue("approxLat",   _LatLineEdit->text());
-  settings.setValue("approxLon",   _LonLineEdit->text());
   
 QStringList mountPoints;
 
@@ -386,7 +418,10 @@ QStringList mountPoints;
               "@"  + _mountPointsTable->item(iRow, 1)->text() );
 
     mountPoints.append(url.toString() + " " + 
-                       _mountPointsTable->item(iRow, 2)->text());
+                       _mountPointsTable->item(iRow, 2)->text()
+               + " " + _mountPointsTable->item(iRow, 3)->text()
+               + " " + _mountPointsTable->item(iRow, 4)->text()
+               + " " + _mountPointsTable->item(iRow, 5)->text());
   }
   settings.setValue("mountPoints", mountPoints);
 }
@@ -430,7 +465,11 @@ void bncWindow::slotGetData() {
 
     QByteArray format = _mountPointsTable->item(iRow, 2)->text().toAscii();
 
-    bncGetThread* getThread = new bncGetThread(url, format, iRow);
+    QByteArray latitude = _mountPointsTable->item(iRow, 3)->text().toAscii();
+    QByteArray longitude = _mountPointsTable->item(iRow, 4)->text().toAscii();
+    QByteArray nmea = _mountPointsTable->item(iRow, 5)->text().toAscii();
+
+    bncGetThread* getThread = new bncGetThread(url, format, latitude, longitude, nmea, iRow);
 
     connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
             this, SLOT(slotMessage(const QByteArray&)));
@@ -438,7 +477,7 @@ void bncWindow::slotGetData() {
             (bncApp*)qApp, SLOT(slotMessage(const QByteArray&)));
 
     connect(getThread, SIGNAL(newObs(const QByteArray&, Observation*)),
-            (bncTableItem*) _mountPointsTable->item(iRow, 3), 
+            (bncTableItem*) _mountPointsTable->item(iRow, 6), 
             SLOT(slotNewObs(const QByteArray&, Observation*)));
 
     _global_caster->addGetThread(getThread);

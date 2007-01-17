@@ -1,9 +1,9 @@
 #ifndef RTCM3TORINEX_H
-#define RTCM3TORINES_H
+#define RTCM3TORINEX_H
 
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.h,v 1.3 2006/11/15 12:31:31 stoecker Exp $
+  $Id: rtcm3torinex.h,v 1.5 2007/01/11 14:10:13 stoecker Exp $
   Copyright (C) 2005-2006 by Dirk Stoecker <stoecker@euronik.eu>
 
   This program is free software; you can redistribute it and/or modify
@@ -93,12 +93,11 @@
 #define GLO_WAVELENGTH_L1(a) (LIGHTSPEED / GLO_FREQU_L1(a)) /* m */
 #define GLO_WAVELENGTH_L2(a) (LIGHTSPEED / GLO_FREQU_L2(a)) /* m */
 
-/* unimportant, only for approx. time needed */
-#define LEAPSECONDS 14
-
 /* Additional flags for the data field, which tell us more. */
 #define GNSSDF_LOCKLOSSL1     (1<<29)  /* lost lock on L1 */
 #define GNSSDF_LOCKLOSSL2     (1<<30)  /* lost lock on L2 */
+
+#define LEAPSECONDS     14 /* only needed for approx. time */
 
 struct gnssdata {
   int    flags;              /* GPSF_xxx */
@@ -126,6 +125,8 @@ struct RTCM3ParserData {
   int    lastlockl2[64];
   int    datapos[RINEXENTRY_NUMBER];
   int    dataflag[RINEXENTRY_NUMBER];
+  int    datapos2[RINEXENTRY_NUMBER];
+  int    dataflag2[RINEXENTRY_NUMBER];
   int    numdatatypes;
   int    validwarning;
   int    init;
