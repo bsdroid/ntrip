@@ -60,12 +60,18 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncGetThread::bncGetThread(const QUrl& mountPoint, 
-                           const QByteArray& format, int iMount) {
+                           const QByteArray& format,
+                           const QByteArray& latitude,
+                           const QByteArray& longitude,
+                           const QByteArray& nmea, int iMount) {
   _decoder    = 0;
   _mountPoint = mountPoint;
   _staID      = mountPoint.path().mid(1).toAscii();
   _staID_orig = _staID;
   _format     = format;
+  _latitude   = latitude;
+  _longitude  = longitude;
+  _nmea       = nmea;
   _socket     = 0;
   _timeOut    = 20*1000;  // 20 seconds
   _nextSleep  =  1;       //  1 second
@@ -104,7 +110,9 @@ bncGetThread::~bncGetThread() {
 
 // Connect to Caster, send the Request (static)
 ////////////////////////////////////////////////////////////////////////////
-QTcpSocket* bncGetThread::request(const QUrl& mountPoint, int timeOut, 
+QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
+                                  QByteArray& latitude, QByteArray& longitude,
+                                  QByteArray& nmea, int timeOut, 
                                   QString& msg) {
 
   // Connect the Socket
@@ -159,9 +167,11 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint, int timeOut,
 //////////////////////////////////////////////////////////////////
 
   double lat, lon;
-  lat = settings.value("approxLat", 0).toDouble();
-  lon = settings.value("approxLon", 0).toDouble();
-  if ((lat != 0.0) && (lon != 0.0) && (hlp.path().length() > 2) && (hlp.path().indexOf(".skl") < 0)) {
+
+  lat = strtod(latitude,NULL);
+  lon = strtod(longitude,NULL);
+
+  if ((nmea == "VRS") && (hlp.path().length() > 2) && (hlp.path().indexOf(".skl") < 0)) {
     const char* flagN="N";
     const char* flagE="E";
     if (lon >180.) {lon=(lon-360.)*(-1.); flagE="W";}
@@ -220,7 +230,7 @@ t_irc bncGetThread::initRun() {
   // ----------------
   QString msg;
 
-  _socket = bncGetThread::request(_mountPoint, _timeOut, msg);
+  _socket = bncGetThread::request(_mountPoint, _latitude, _longitude, _nmea, _timeOut, msg);
 
   ////  emit(newMessage(msg.toAscii()));
 
@@ -360,7 +370,7 @@ void bncGetThread::run() {
 
           emit newObs(_staID, *it);
           bool firstObs = (it == _decoder->_obsList.begin());
-          _global_caster->newObs(_staID, _mountPoint, firstObs, *it, _format);
+          _global_caster->newObs(_staID, _mountPoint, firstObs, *it, _format, _latitude, _longitude, _nmea);
         }
         _decoder->_obsList.clear();
       }

@@ -61,10 +61,14 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncRinex::bncRinex(const char* StatID, const QUrl& mountPoint, 
-                   const QByteArray& format) {
+                   const QByteArray& format, const QByteArray& latitude,
+                   const QByteArray& longitude, const QByteArray& nmea) {
   _statID        = StatID;
   _mountPoint    = mountPoint;
   _format        = format.left(6);
+  _latitude      = latitude;
+  _longitude     = longitude;
+  _nmea          = nmea;
   _headerWritten = false;
 
   QSettings settings;
@@ -144,7 +148,10 @@ void bncRinex::readSkeleton() {
 
       const int timeOut = 10*1000;
       QString msg;
-      QTcpSocket* socket = bncGetThread::request(url, timeOut, msg);
+      QByteArray _latitude;
+      QByteArray _longitude;
+      QByteArray _nmea;
+      QTcpSocket* socket = bncGetThread::request(url, _latitude, _longitude, _nmea, timeOut, msg);
 
       if (socket) {
         bool firstLineRead = false;
@@ -153,7 +160,7 @@ void bncRinex::readSkeleton() {
             QString line = socket->readLine();
             line.chop(1);
             if (line.indexOf("RINEX VERSION") != -1) {
-              _headerLines.append("     2.10           OBSERVATION DATA"
+              _headerLines.append("     2.11           OBSERVATION DATA"
                                   "    M (MIXED)"
                                   "           RINEX VERSION / TYPE");
               _headerLines.append("PGM / RUN BY / DATE");
@@ -293,11 +300,6 @@ void bncRinex::writeHeader(const QDateTime& datTim,
                            const QDateTime& datTimNom) {
 
   QSettings settings;
-//  double lat, lon;
-//  int vrsstream = 0;
-//  lat = settings.value("approxLat", 0).toDouble();
-//  lon = settings.value("approxLon", 0).toDouble();
-//  if ((lat != 0.0) && (lon != 0.0)) {vrsstream=1;}
 
   // Open the Output File
   // --------------------
@@ -331,8 +333,8 @@ void bncRinex::writeHeader(const QDateTime& datTim,
              << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
       }
       else if (line.indexOf("# / TYPES OF OBSERV") != -1) {
-        _out << "     5    C1    P1    P2    L1    L2"
-                "                        # / TYPES OF OBSERV"  << endl;
+        _out << "     6    C1    C2    P1    P2    L1    L2"
+                "                  # / TYPES OF OBSERV"  << endl;
       }
       else if (line.indexOf("TIME OF FIRST OBS") != -1) {
         _out << datTim.toString("  yyyy    MM    dd"
@@ -341,8 +343,6 @@ void bncRinex::writeHeader(const QDateTime& datTim,
         QString hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
                       _mountPoint.path())).leftJustified(60, ' ', true);
         _out << hlp.toAscii().data() << "COMMENT" << endl;
-//        hlp = QString("Approx VRS Position %1%2").arg(lat, -20, 'f', 4).arg(lon, -20, 'f', 4);
-//        _out << hlp.toAscii().data() << "COMMENT" << endl;
       }
       else {
         _out << line.toAscii().data() << endl;
@@ -356,7 +356,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
     double approxPos[3];  approxPos[0]  = approxPos[1]  = approxPos[2]  = 0.0;
     double antennaNEU[3]; antennaNEU[0] = antennaNEU[1] = antennaNEU[2] = 0.0;
     
-    _out << "     2.10           OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE" << endl;
+    _out << "     2.11           OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE" << endl;
     QString hlp = QDate::currentDate().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
     _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
          << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
@@ -379,15 +379,18 @@ void bncRinex::writeHeader(const QDateTime& datTim,
          << setw(14) << setprecision(4) << antennaNEU[2] 
          << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
     _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
-    _out << "     5    C1    P1    P2    L1    L2                        # / TYPES OF OBSERV"  << endl;
+    _out << "     6    C1    C2    P1    P2    L1    L2                  # / TYPES OF OBSERV"  << endl;
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
     _out << "                 "                                      << "TIME OF FIRST OBS"    << endl;
     hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
           _mountPoint.path())).leftJustified(60, ' ', true);
     _out << hlp.toAscii().data() << "COMMENT" << endl;
-//    hlp = QString("Approx VRS Position %1%2").arg(lat, -20, 'f', 4).arg(lon, -20, 'f', 4);
-//    _out << hlp.toAscii().data() << "COMMENT" << endl;
+
+    if (_nmea == "VRS") {
+    hlp = ("VRS LAT=" + _latitude + " " + "LONG=" + _longitude).leftJustified(60, ' ',true);
+    _out << hlp.toAscii().data() << "COMMENT" << endl; }
+
     _out << "                                                            END OF HEADER"        << endl;
   }
 
@@ -468,10 +471,11 @@ void bncRinex::dumpEpoch(long maxTime) {
     char lli = ' ';
     char snr = ' ';
     _out << setw(14) << setprecision(3) << ob->C1 << lli << snr;
+    _out << setw(14) << setprecision(3) << ob->C2 << lli << snr;
     _out << setw(14) << setprecision(3) << ob->P1 << lli << snr;
     _out << setw(14) << setprecision(3) << ob->P2 << lli << snr; 
     _out << setw(14) << setprecision(3) << ob->L1 << lli 
-         << setw(1) << ob->SNR1;
+         << setw(1) << ob->SNR1 << endl;
     _out << setw(14) << setprecision(3) << ob->L2 << lli
          << setw(1) << ob->SNR2;
     _out << endl;

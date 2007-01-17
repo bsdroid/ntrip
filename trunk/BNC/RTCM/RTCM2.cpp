@@ -879,8 +879,10 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     // Current epoch (mod 3600 sec) 
     t = 0.6*P.modZCount() 
         + P.getUnsignedBits(4,20)*1.0e-6;
-    // Round t to 5 milliseconds
-    t = floor(t*200.+0.5)/200.; // g. weber
+    // SC-104 V2.3 4-42 Note 1 4. Assume measurements at hard edges
+    // of receiver clock with minimum divisions of 10ms
+    // and clock error less then recommended 1.1ms
+    t = floor(t*100.+0.5)/100.;
     
     // Frequency (exit if neither L1 nor L2)
     isL1  = ( P.getUnsignedBits(0,1)==0 );
@@ -970,8 +972,10 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     // Current epoch (mod 3600 sec) 
     t = 0.6*P.modZCount() 
         + P.getUnsignedBits(4,20)*1.0e-6;
-    // Round t to 5 milliseconds
-    t = floor(t*200.+0.5)/200.; // g. weber
+    // SC-104 V2.3 4-42 Note 1 4. Assume measurements at hard edges
+    // of receiver clock with minimum divisions of 10ms
+    // and clock error less then recommended 1.1ms
+    t = floor(t*100.+0.5)/100.;
     
     // Frequency (exit if neither L1 nor L2)
     isL1  = ( P.getUnsignedBits(0,1)==0 );

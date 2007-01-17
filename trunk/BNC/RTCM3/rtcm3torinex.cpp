@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.11 2006/11/21 08:27:35 stoecker Exp $
+  $Id: rtcm3torinex.c,v 1.16 2007/01/11 15:32:26 stoecker Exp $
   Copyright (C) 2005-2006 by Dirk Stoecker <stoecker@euronik.eu>
 
   This software is a complete NTRIP-RTCM3 to RINEX converter as well as
@@ -50,7 +50,7 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.11 $";
+static char revisionstr[] = "$Revision: 1.16 $";
 
 static uint32_t CRC24(long size, const unsigned char *buf)
 {
@@ -331,7 +331,7 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
             {
               gnss->dataflags[num] |= s;
               gnss->measdata[num][se] = i*0.25;
-              i /= 4*4;
+              i /= 4*6;
               if(i > 9) i = 9;
               else if(i < 1) i = 1;
               gnss->snrL1[num] = i;
@@ -379,7 +379,7 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
               {
                 gnss->dataflags[num] |= s;
                 gnss->measdata[num][se] = i*0.25;
-                i /= 4*4;
+                i /= 4*6;
                 if(i > 9) i = 9;
                 else if(i < 1) i = 1;
                 gnss->snrL2[num] = i;
@@ -494,7 +494,7 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
             {
               gnss->dataflags[num] |= s;
               gnss->measdata[num][se] = i*0.25;
-              i /= 4*4;
+              i /= 4*6;
               if(i > 9) i = 9;
               else if(i < 1) i = 1;
               gnss->snrL1[num] = i;
@@ -542,7 +542,7 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
               {
                 gnss->dataflags[num] |= s;
                 gnss->measdata[num][se] = i*0.25;
-                i /= 4*4;
+                i /= 4*6;
                 if(i > 9) i = 9;
                 else if(i < 1) i = 1;
                 gnss->snrL2[num] = i;
@@ -653,233 +653,76 @@ void RTCM3Text(const char *fmt, ...)
   va_end(v);
 }
 
-#define NUMSTARTSKIP 3
+#define NUMSTARTSKIP 1
+
+////////////////////////////////////////////////////////////////////
+// Aenderung Perlt - kein check auf vorhandene Daten 
+// Abgefragt werden : C1 C2 L1 L2 P1 P2 S1 S2
+
 void HandleHeader(struct RTCM3ParserData *Parser)
 {
-  struct HeaderData hdata;
-  char thebuffer[MAXHEADERBUFFERSIZE];
-  char *buffer = thebuffer;
-  size_t buffersize = sizeof(thebuffer);
   int i;
-
-  hdata.data.named.version =
-  "     2.11           OBSERVATION DATA    M (Mixed)"
-  "           RINEX VERSION / TYPE";
-
-  {
-    const char *str;
-    time_t t;
-    struct tm * t2;
-
-#ifdef NO_RTCM3_MAIN
-    if(revisionstr[0] == '$')
-    {
-      char *a;
-      int i=0;
-      for(a = revisionstr+11; *a && *a != ' '; ++a)
-        revisionstr[i++] = *a;
-      revisionstr[i] = 0;
-    }
-#endif
-
-    str = getenv("USER");
-    if(!str) str = "";
-    t = time(&t);
-    t2 = gmtime(&t);
-    hdata.data.named.pgm = buffer;
-    i = 1+snprintf(buffer, buffersize,
-    "RTCM3TORINEX %-7.7s%-20.20s%04d-%02d-%02d %02d:%02d    "
-    "PGM / RUN BY / DATE",
-    revisionstr, str, 1900+t2->tm_year, t2->tm_mon+1, t2->tm_mday, t2->tm_hour,
-    t2->tm_min);
-    buffer += i; buffersize -= i;
-
-    hdata.data.named.observer = buffer;
-    i = 1+snprintf(buffer, buffersize,
-    "%-20.20s                                        "
-    "OBSERVER / AGENCY", str);
-    buffer += i; buffersize -= i;
-  }
-
-  hdata.data.named.marker =
-  "RTCM3TORINEX                                                "
-  "MARKER NAME";
-
-  hdata.data.named.receiver =
-  "                                                            "
-  "REC # / TYPE / VERS";
-
-  hdata.data.named.antenna =
-  "                                                            "
-  "ANT # / TYPE";
-
-  hdata.data.named.position =
-  "         .0000         .0000         .0000                  "
-  "APPROX POSITION XYZ";
-
-  hdata.data.named.antennaposition =
-  "         .0000         .0000         .0000                  "
-  "ANTENNA: DELTA H/E/N";
-  
-  hdata.data.named.wavelength =
-  "     1     1                                                "
-  "WAVELENGTH FACT L1/2";
-
-  {
-#define CHECKFLAGS(a, b) \
-    if(flags & GNSSDF_##a##DATA \
-    && !data[RINEXENTRY_##b##DATA]) \
-    { \
-      Parser->dataflag[Parser->numdatatypes] = GNSSDF_##a##DATA; \
-      Parser->datapos[Parser->numdatatypes++] = data[RINEXENTRY_##b##DATA] \
-      = GNSSENTRY_##a##DATA; \
-      snprintf(tbuffer+tbufferpos, sizeof(tbuffer)-tbufferpos, "    "#b); \
-      tbufferpos += 6; \
-    }
-
     int flags = Parser->startflags;
     int data[RINEXENTRY_NUMBER];
-    char tbuffer[6*RINEXENTRY_NUMBER+1];
-    int tbufferpos = 0;
     for(i = 0; i < RINEXENTRY_NUMBER; ++i)
       data[i] = 0;
     for(i = 0; i < Parser->Data.numsats; ++i)
       flags |= Parser->Data.dataflags[i];
 
-    CHECKFLAGS(C1,C1)
-    CHECKFLAGS(C2,C2)
-    CHECKFLAGS(P1,P1)
-    CHECKFLAGS(P2,P2)
-    CHECKFLAGS(L1C,L1)
-    CHECKFLAGS(L1P,L1)
-    CHECKFLAGS(L2C,L2)
-    CHECKFLAGS(L2P,L2)
-    CHECKFLAGS(D1C,D1)
-    CHECKFLAGS(D1P,D1)
-    CHECKFLAGS(D2C,D2)
-    CHECKFLAGS(D2P,D2)
-    CHECKFLAGS(S1C,S1)
-    CHECKFLAGS(S1P,S1)
-    CHECKFLAGS(S2C,S2)
-    CHECKFLAGS(S2P,S2)
+Parser->dataflag[Parser->numdatatypes] = GNSSDF_C1DATA; 
+Parser->datapos[Parser->numdatatypes] = GNSSENTRY_C1DATA; 
+data[RINEXENTRY_C1DATA] = ++Parser->numdatatypes; 
 
-    hdata.data.named.typesofobs = buffer;
-    i = 1+snprintf(buffer, buffersize,
-    "%6i%-54.54s# / TYPES OF OBSERV", Parser->numdatatypes, tbuffer);
-    if(Parser->numdatatypes>9)
-    {
-      i += snprintf(buffer+i-1, buffersize,
-      "\n      %-54.54s# / TYPES OF OBSERV", tbuffer+9*6);
-    }
-    buffer += i; buffersize -= i;
-  }
+Parser->dataflag[Parser->numdatatypes] = GNSSDF_C2DATA; 
+Parser->datapos[Parser->numdatatypes] = GNSSENTRY_C2DATA; 
+data[RINEXENTRY_C2DATA] = ++Parser->numdatatypes; 
 
-  {
-    struct converttimeinfo cti;
-    converttime(&cti, Parser->Data.week,
-    (int)floor(Parser->Data.timeofweek/1000.0));
-    hdata.data.named.timeoffirstobs = buffer;
-      i = 1+snprintf(buffer, buffersize,
-    "  %4d    %2d    %2d    %2d    %2d   %10.7f     GPS         "
-    "TIME OF FIRST OBS", cti.year%100, cti.month, cti.day, cti.hour,
-    cti.minute, cti.second + fmod(Parser->Data.timeofweek/1000.0,1.0));
+Parser->dataflag[Parser->numdatatypes] = GNSSDF_P1DATA; 
+Parser->datapos[Parser->numdatatypes] = GNSSENTRY_P1DATA; 
+data[RINEXENTRY_P1DATA] = ++Parser->numdatatypes; 
 
-    buffer += i; buffersize -= i;
-  }
+Parser->dataflag[Parser->numdatatypes] = GNSSDF_P2DATA; 
+Parser->datapos[Parser->numdatatypes] = GNSSENTRY_P2DATA; 
+data[RINEXENTRY_P2DATA] = ++Parser->numdatatypes; 
 
-  hdata.numheaders = 11;
+Parser->dataflag[Parser->numdatatypes] = GNSSDF_L1CDATA; 
+Parser->datapos[Parser->numdatatypes] = GNSSENTRY_L1CDATA; 
+data[RINEXENTRY_L1DATA] = ++Parser->numdatatypes; 
+Parser->dataflag2[data[RINEXENTRY_L1DATA]-1] = GNSSDF_L1PDATA; 
+Parser->datapos2[data[RINEXENTRY_L1DATA]-1] = GNSSENTRY_L1PDATA; 
 
-  if(Parser->headerfile)
-  {
-    FILE *fh;
-    if((fh = fopen(Parser->headerfile, "r")))
-    {
-      size_t siz;
-      char *lastblockstart;
-      if((siz = fread(buffer, 1, buffersize-1, fh)) > 0)
-      {
-        buffer[siz] = '\n';
-        if(siz == buffersize)
-        {
-          RTCM3Error("Header file is too large. Only %d bytes read.",
-          siz);
-        }
-        /* scan the file line by line and enter the entries in the list */
-        /* warn for "# / TYPES OF OBSERV" and "TIME OF FIRST OBS" */
-        /* overwrites entries, except for comments */
-        lastblockstart = buffer;
-        for(i = 0; i < (int)siz; ++i)
-        {
-          if(buffer[i] == '\n')
-          { /* we found a line */
-            char *end;
-            while(buffer[i+1] == '\r')
-              ++i; /* skip \r in case there are any */
-            end = buffer+i;
-            while(*end == '\t' || *end == ' ' || *end == '\r' || *end == '\n')
-              *(end--) = 0;
-            if(end-lastblockstart < 60+5) /* short line */
-              RTCM3Error("Short Header line '%s' ignored.\n", lastblockstart);
-            else
-            {
-              int pos;
-              if(!strcmp("COMMENT", lastblockstart+60))
-                pos = hdata.numheaders;
-              else
-              {
-                for(pos = 0; pos < hdata.numheaders; ++pos)
-                {
-                  if(!strcmp(hdata.data.unnamed[pos]+60, lastblockstart+60))
-                    break;
-                }
-                if(!strcmp("# / TYPES OF OBSERV", lastblockstart+60)
-                || !strcmp("TIME OF FIRST OBS", lastblockstart+60))
-                {
-                  RTCM3Error("Overwriting header '%s' is dangerous.\n",
-                  lastblockstart+60);
-                }
-              }
-              if(pos >= MAXHEADERLINES)
-              {
-                RTCM3Error("Maximum number of header lines of %d reached.\n",
-                MAXHEADERLINES);
-              }
-              else if(!strcmp("END OF HEADER", lastblockstart+60))
-              {
-                RTCM3Error("End of header ignored.\n");
-              }
-              else
-              {
-                hdata.data.unnamed[pos] = lastblockstart;
-                if(pos == hdata.numheaders)
-                  ++hdata.numheaders;
-              }
-            }
-            lastblockstart = buffer+i+1;
-          }
-        }
-      }
-      else
-      {
-        RTCM3Error("Could not read data from headerfile '%s'.\n",
-        Parser->headerfile);
-      }
-      fclose(fh);
-    }
-    else
-    {
-      RTCM3Error("Could not open header datafile '%s'.\n",
-      Parser->headerfile);
-    }
-  }
+Parser->dataflag[Parser->numdatatypes] = GNSSDF_L2CDATA; 
+Parser->datapos[Parser->numdatatypes] = GNSSENTRY_L2CDATA; 
+data[RINEXENTRY_L2DATA] = ++Parser->numdatatypes; 
+Parser->dataflag2[data[RINEXENTRY_L2DATA]-1] = GNSSDF_L2PDATA; 
+Parser->datapos2[data[RINEXENTRY_L2DATA]-1] = GNSSENTRY_L2PDATA; 
 
-#ifndef NO_RTCM3_MAIN
-  for(i = 0; i < hdata.numheaders; ++i)
-    RTCM3Text("%s\n", hdata.data.unnamed[i]);
-  RTCM3Text("                                                            "
-  "END OF HEADER\n");
-#endif
+Parser->dataflag[Parser->numdatatypes] = GNSSDF_S1CDATA; 
+Parser->datapos[Parser->numdatatypes] = GNSSENTRY_S1CDATA; 
+data[RINEXENTRY_S1DATA] = ++Parser->numdatatypes; 
+Parser->dataflag2[data[RINEXENTRY_S1DATA]-1] = GNSSDF_S1PDATA; 
+Parser->datapos2[data[RINEXENTRY_S1DATA]-1] = GNSSENTRY_S1PDATA; 
+
+Parser->dataflag[Parser->numdatatypes] = GNSSDF_S2CDATA; 
+Parser->datapos[Parser->numdatatypes] = GNSSENTRY_S2CDATA; 
+data[RINEXENTRY_S2DATA] = ++Parser->numdatatypes; 
+Parser->dataflag2[data[RINEXENTRY_S2DATA]-1] = GNSSDF_S2PDATA; 
+Parser->datapos2[data[RINEXENTRY_S2DATA]-1] = GNSSENTRY_S2PDATA; 
+
+Parser->dataflag[Parser->numdatatypes] = GNSSDF_D1CDATA; 
+Parser->datapos[Parser->numdatatypes] = GNSSENTRY_D1CDATA; 
+data[RINEXENTRY_D1DATA] = ++Parser->numdatatypes; 
+Parser->dataflag2[data[RINEXENTRY_D1DATA]-1] = GNSSDF_D1PDATA; 
+Parser->datapos2[data[RINEXENTRY_D1DATA]-1] = GNSSENTRY_D1PDATA; 
+
+Parser->dataflag[Parser->numdatatypes] = GNSSDF_D2CDATA; 
+Parser->datapos[Parser->numdatatypes] = GNSSENTRY_D2CDATA; 
+data[RINEXENTRY_D2DATA] = ++Parser->numdatatypes; 
+Parser->dataflag2[data[RINEXENTRY_D2DATA]-1] = GNSSDF_D2PDATA; 
+Parser->datapos2[data[RINEXENTRY_D2DATA]-1] = GNSSENTRY_D2PDATA; 
 }
+// Ende Aenderung Perlt - kein check auf vorhandene Daten 
+
 
 void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 {
@@ -954,9 +797,29 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
       {
         for(j = 0; j < Parser->numdatatypes; ++j)
         {
-          if(!(Parser->Data.dataflags[i] & Parser->dataflag[j])
-          || isnan(Parser->Data.measdata[i][Parser->datapos[j]])
-          || isinf(Parser->Data.measdata[i][Parser->datapos[j]]))
+          int v = 0;
+          int df = Parser->dataflag[j];
+          int pos = Parser->datapos[j];
+          if((Parser->Data.dataflags[i] & df)
+          && !isnan(Parser->Data.measdata[i][pos])
+          && !isinf(Parser->Data.measdata[i][pos]))
+          {
+            v = 1;
+          }
+          else
+          {
+            df = Parser->dataflag2[j];
+            pos = Parser->datapos2[j];
+
+            if((Parser->Data.dataflags[i] & df)
+            && !isnan(Parser->Data.measdata[i][pos])
+            && !isinf(Parser->Data.measdata[i][pos]))
+            {
+              v = 1;
+            }
+          }
+
+          if(!v)
           { /* no or illegal data */
             RTCM3Text("                ");
           }
@@ -964,20 +827,20 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
           {
             char lli = ' ';
             char snr = ' ';
-            if(Parser->dataflag[j] & (GNSSDF_L1CDATA|GNSSDF_L1PDATA))
+            if(df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA))
             {
               if(Parser->Data.dataflags[i] & GNSSDF_LOCKLOSSL1)
                 lli = '1';
               snr = '0'+Parser->Data.snrL1[i];
             }
-            if(Parser->dataflag[j] & (GNSSDF_L2CDATA|GNSSDF_L2PDATA))
+            if(df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA))
             {
               if(Parser->Data.dataflags[i] & GNSSDF_LOCKLOSSL2)
                 lli = '1';
               snr = '0'+Parser->Data.snrL2[i];
             }
             RTCM3Text("%14.3f%c%c",
-            Parser->Data.measdata[i][Parser->datapos[j]],lli,snr);
+            Parser->Data.measdata[i][pos],lli,snr);
           }
           if(j%5 == 4 || j == Parser->numdatatypes-1)
             RTCM3Text("\n");
@@ -988,7 +851,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 }
 
 #ifndef NO_RTCM3_MAIN
-static char datestr[]     = "$Date: 2006/11/21 08:27:35 $";
+static char datestr[]     = "$Date: 2007/01/11 15:32:26 $";
 
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
@@ -1285,12 +1148,12 @@ int main(int argc, char **argv)
 
     if(!(he=gethostbyname(args.server)))
     {
-      perror("gethostbyname");
+      RTCM3Error("Function gethostbyname: %s\n", strerror(errno));
       exit(1);
     }
     if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     {
-      perror("socket");
+      RTCM3Error("Function socket: %s\n", strerror(errno));
       exit(1);
     }
     their_addr.sin_family = AF_INET;    /* host byte order */
@@ -1300,7 +1163,7 @@ int main(int argc, char **argv)
     if(connect(sockfd, (struct sockaddr *)&their_addr,
     sizeof(struct sockaddr)) == -1)
     {
-      perror("connect");
+      RTCM3Error("Function connect: %s\n", strerror(errno));
       exit(1);
     }
 
@@ -1338,12 +1201,14 @@ int main(int argc, char **argv)
         RTCM3Error("Username and/or password too long\n");
         exit(1);
       }
-      snprintf(buf+i, 5, "\r\n\r\n");
-      i += 5;
+      buf[i++] = '\r';
+      buf[i++] = '\n';
+      buf[i++] = '\r';
+      buf[i++] = '\n';
     }
     if(send(sockfd, buf, (size_t)i, 0) != i)
     {
-      perror("send");
+      RTCM3Error("Function send: %s\n", strerror(errno));
       exit(1);
     }
     if(args.data)
