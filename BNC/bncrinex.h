@@ -43,6 +43,7 @@ class bncRinex {
    ~bncRinex();
    void deepCopy(const Observation* obs);
    void dumpEpoch(long maxTime);
+   void setReconnectFlag(bool flag){_reconnectFlag = flag;}
 
  private:
    void resolveFileName(const QDateTime& datTim);
@@ -66,6 +67,7 @@ class bncRinex {
    QByteArray          _latitude;
    QByteArray          _longitude;
    QByteArray          _nmea;
+   bool                _reconnectFlag;
 };
 
 #endif

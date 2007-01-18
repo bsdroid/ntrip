@@ -47,6 +47,7 @@ class bncCaster : public QObject {
                bool firstObs, Observation* obs, const QByteArray& format,
                const QByteArray& latitude, const QByteArray& longitude,
                const QByteArray& nmea);
+   void reconnecting(const QByteArray& staID);
 
  signals:
    void getThreadErrors();   
