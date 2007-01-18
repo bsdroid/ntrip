@@ -333,8 +333,8 @@ void bncRinex::writeHeader(const QDateTime& datTim,
              << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
       }
       else if (line.indexOf("# / TYPES OF OBSERV") != -1) {
-        _out << "     6    C1    C2    P1    P2    L1    L2"
-                "                  # / TYPES OF OBSERV"  << endl;
+        _out << "     8    C1    C2    P1    P2    L1    L2    S1    S2"
+                "      # / TYPES OF OBSERV"  << endl;
       }
       else if (line.indexOf("TIME OF FIRST OBS") != -1) {
         _out << datTim.toString("  yyyy    MM    dd"
@@ -379,7 +379,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
          << setw(14) << setprecision(4) << antennaNEU[2] 
          << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
     _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
-    _out << "     6    C1    C2    P1    P2    L1    L2                  # / TYPES OF OBSERV"  << endl;
+    _out << "     8    C1    C2    P1    P2    L1    L2    S1    S2      # / TYPES OF OBSERV"  << endl;
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
     _out << "                 "                                      << "TIME OF FIRST OBS"    << endl;
@@ -478,6 +478,8 @@ void bncRinex::dumpEpoch(long maxTime) {
          << setw(1) << ob->SNR1 << endl;
     _out << setw(14) << setprecision(3) << ob->L2 << lli
          << setw(1) << ob->SNR2;
+    _out << setw(14) << setprecision(3) << ob->S1 ;
+    _out << setw(16) << setprecision(3) << ob->S2 ;
     _out << endl;
 
     delete ob;

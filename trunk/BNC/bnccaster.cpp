@@ -250,6 +250,10 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
           _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->L1; 
           _out->setFieldWidth(1); *_out << " ";
           _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->L2; 
+          _out->setFieldWidth(1); *_out << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->S1; 
+          _out->setFieldWidth(1); *_out << " ";
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->S2;
           _out->setFieldWidth(1); 
           *_out << " " << obs->SNR1 << " " << obs->SNR2 << endl;
           if (!it.hasNext()) {

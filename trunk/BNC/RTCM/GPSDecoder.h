@@ -44,6 +44,8 @@ class Observation {
     P2        = 0.0;
     L1        = 0.0;
     L2        = 0.0;
+    S1        = 0.0;
+    S2        = 0.0;
     SNR1      = 0;
     SNR2      = 0;
   }
@@ -60,8 +62,10 @@ class Observation {
   double P2;          // P2-code pseudorange (meters)
   double L1;          // L1 carrier phase (cycles)
   double L2;          // L2 carrier phase (cycles)
-  int    SNR1;        // L1 signal-to noise ratio (RINEX convention)
-  int    SNR2;        // L2 signal-to noise ratio (RINEX convention)
+  double S1;          // L1 signal-to noise ratio
+  double S2;          // L2 signal-to noise ratio
+  int    SNR1;        // L1 signal-to noise ratio (mapped to integer)
+  int    SNR2;        // L2 signal-to noise ratio (mapped to integer)
 };
 
 class GPSDecoder {

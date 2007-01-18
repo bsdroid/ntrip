@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.16 2007/01/11 15:32:26 stoecker Exp $
+  $Id: rtcm3torinex.cpp,v 1.13 2007/01/17 15:17:20 mervart Exp $
   Copyright (C) 2005-2006 by Dirk Stoecker <stoecker@euronik.eu>
 
   This software is a complete NTRIP-RTCM3 to RINEX converter as well as
@@ -50,7 +50,7 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.16 $";
+static char revisionstr[] = "$Revision: 1.13 $";
 
 static uint32_t CRC24(long size, const unsigned char *buf)
 {
@@ -248,7 +248,9 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
     GETBITS(type,12)
     switch(type)
     {
-    case 1001: case 1002: case 1003: case 1004:
+    // Modification of RTCM3TORINEX for BNC: ignore 1001 and 1003
+    //case 1001: case 1002: case 1003: case 1004:
+    case 1002:  case 1004:
       if(handle->GPSWeek)
       {
         int lastlockl1[64];
@@ -407,7 +409,9 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
         }
       }
       break;
-    case 1009: case 1010: case 1011: case 1012:
+    // Modification of RTCM3TORINEX for BNC: ignore 1009 and 1010
+    //case 1009: case 1010: case 1011: case 1012:
+    case 1010: case 1012:
       {
         int lastlockl1[64];
         int lastlockl2[64];
@@ -655,9 +659,7 @@ void RTCM3Text(const char *fmt, ...)
 
 #define NUMSTARTSKIP 1
 
-////////////////////////////////////////////////////////////////////
-// Aenderung Perlt - kein check auf vorhandene Daten 
-// Abgefragt werden : C1 C2 L1 L2 P1 P2 S1 S2
+// Modification of RTCM3TORINEX for BNC
 
 void HandleHeader(struct RTCM3ParserData *Parser)
 {
@@ -721,7 +723,7 @@ data[RINEXENTRY_D2DATA] = ++Parser->numdatatypes;
 Parser->dataflag2[data[RINEXENTRY_D2DATA]-1] = GNSSDF_D2PDATA; 
 Parser->datapos2[data[RINEXENTRY_D2DATA]-1] = GNSSENTRY_D2PDATA; 
 }
-// Ende Aenderung Perlt - kein check auf vorhandene Daten 
+// End of RTCM3TORINEX modification for BNC
 
 
 void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
@@ -851,7 +853,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 }
 
 #ifndef NO_RTCM3_MAIN
-static char datestr[]     = "$Date: 2007/01/11 15:32:26 $";
+static char datestr[]     = "$Date: 2007/01/17 15:17:20 $";
 
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"

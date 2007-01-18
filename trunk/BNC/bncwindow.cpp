@@ -183,8 +183,7 @@ bncWindow::bncWindow() {
   int iRow = 0;
   while (it.hasNext()) {
     QStringList hlp = it.next().split(" ");
-    if (hlp.size() <= 1) continue;
-    if (hlp.size() == 2) continue; // For downward compatibility
+    if (hlp.size() < 5) continue; // Check number of parameters saved per mountpoint
     _mountPointsTable->insertRow(iRow);
 
     QUrl    url(hlp[0]);
