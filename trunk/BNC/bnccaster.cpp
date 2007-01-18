@@ -111,6 +111,15 @@ bncCaster::~bncCaster() {
   delete _epochs;
 }
 
+// Reconnecting
+////////////////////////////////////////////////////////////////////////////
+void bncCaster::reconnecting(const QByteArray& staID) {
+  if (_rinexWriters.find(staID) != _rinexWriters.end()) {
+    bncRinex* rnx = _rinexWriters.find(staID).value();
+    rnx->setReconnectFlag(true);
+  }
+}
+
 // New Observations
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,

@@ -399,6 +399,7 @@ void bncGetThread::exit(int exitCode) {
 // Try Re-Connect 
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::tryReconnect() {
+  _global_caster->reconnecting(_staID);
   while (1) {
     delete _socket; _socket = 0;
     sleep(_nextSleep);

@@ -70,6 +70,7 @@ bncRinex::bncRinex(const char* StatID, const QUrl& mountPoint,
   _longitude     = longitude;
   _nmea          = nmea;
   _headerWritten = false;
+  _reconnectFlag = false;
 
   QSettings settings;
   _rnxScriptName = settings.value("rnxScript").toString();
@@ -308,11 +309,12 @@ void bncRinex::writeHeader(const QDateTime& datTim,
   // Append to existing file and return
   // ----------------------------------
   if ( QFile::exists(_fName) ) {
-//    QSettings settings;
-    if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
+    if (_reconnectFlag ||
+        Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
       _out.open(_fName.data(), ios::app);
       _out.setf(ios::showpoint | ios::fixed);
       _headerWritten = true;
+      _reconnectFlag = false;
       return;
     }
   }
