@@ -97,10 +97,13 @@ int main(int argc, char* argv[]) {
              << setw(4)                     << obs.GPSWeek        << " "
              << setw(10) << setprecision(2) << obs.GPSWeeks       << " "
              << setw(14) << setprecision(4) << obs.C1             << " "
+             << setw(14) << setprecision(4) << obs.C2             << " "
              << setw(14) << setprecision(4) << obs.P1             << " "
              << setw(14) << setprecision(4) << obs.P2             << " "
              << setw(14) << setprecision(4) << obs.L1             << " "
              << setw(14) << setprecision(4) << obs.L2             << " "
+             << setw(14) << setprecision(4) << obs.S1             << " "
+             << setw(14) << setprecision(4) << obs.S2             << " "
              << setw(4)                     << obs.SNR1           << " "
              << setw(4)                     << obs.SNR2           << endl;
       }

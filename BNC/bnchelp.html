@@ -36,7 +36,7 @@ BNC decodes and converts GNSS data streams carrying code and phase data coming i
 </p>
 <ul>
 <li>RTCM Version 2.x format containing message types 18 and 19 (GPS and GLONASS), </li> 
-<li>RTCM Version 3 format containing message types 1001, 1002, 1003, 1004 (GPS), and 1009, 1010, 1011, 1012 (GLONASS),</li>
+<li>RTCM Version 3 format containing message types 1002 or 1004 (GPS), and 1010 or 1012 (GLONASS),</li>
 <li>RTIGS format (only GPS).</li> 
 </ul>
 </p>
@@ -116,8 +116,8 @@ Note that IP streaming may generally be denied in a LAN. In such a case you need
 
 <p><a name="output"><h4>B - 4. Synchronized Output</h4></p>
 <p>
-BNC lets you output synchronized observations epoch by epoch. This output is made available in a plain ASCII format and in a binary format. The output comprises the following observations if available:</p>
-StatID, SVPRN, GPSWeek, GPSWeeks, C1, C2, P1, P2, L1, L2, SNR1, SNR2.
+BNC lets you output synchronized observations epoch by epoch. This output is made available in a plain ASCII format and in a binary format. The output comprises the following observations if available where SNR is the signal-to-noise ratio S mapped to integer numbers 1 to 9:</p>
+StatID, SVPRN, GPSWeek, GPSWeeks, C1, C2, P1, P2, L1, L2, S1, S2, SNR1, SNR2.
 </p>
 <p>
 In case an observation is unavailable, its value is set to zero '0.000'.
@@ -168,8 +168,10 @@ struct Observation {
   double P2;          // P2-code pseudorange (meters)
   double L1;          // L1 carrier phase (cycles)
   double L2;          // L2 carrier phase (cycles)
-  int    SNR1;        // L1 signal-to noise ratio (0.1 dB)
-  int    SNR2;        // L2 signal-to noise ratio (0.1 dB)
+  double S1;          // L1 signal-to noise ratio (dB-Hz)
+  double S2;          // L2 signal-to noise ratio (db-Hz)
+  int    SNR1;        // S1 mapped to integer numbers 1 to 9
+  int    SNR2;        // S2 mapped to integer numbers 1 to 9
 } ;
 </pre>
 
@@ -204,7 +206,7 @@ FRAN{ddd}{h}{mm}.{yy}O
 where 'mm' is the starting minute within the hour.
 </p>
 <p>
-BNC's RINEX observation files generally contain C1, C2, P1, P2, L1, L2, SNR1, and SNR3 observations. In case an observation is unavailable, its value is set to zero '0.000'. Note that even if a RINEX file does not contain GLONASS data, the 'RINEX TYPE' field in the RINEX file header may be set to 'M (MIXED)'.
+BNC's RINEX observation files generally contain C1, C2, P1, P2, L1, L2, S1, and S2 observations. In case an observation is unavailable, its value is set to zero '0.000'. Note that even if a RINEX file does not contain GLONASS data, the 'RINEX TYPE' field in the RINEX file header may be set to 'M (MIXED)'.
 </p>
 
 <p><a name="rnxpath"><h4>B - 5.1 RINEX Directory - optional</h4></p>
@@ -316,7 +318,7 @@ Streams on NTRIP broadcasters might be protected by password. Enter a valid 'Use
 
 <p><a name="GetTable"><h4>B - 6.4 Get Table</h4></p>
 <p>
-Hit button 'Get Table' to download the source-table from the NTRIP broadcaster. Please pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM 2.x, RTCM 3, or RTIGS formats. RTCM 2.x streams must contain message types 18 and 19 while RTCM 3 streams must contain message types 1001 or 1003, better 1003 or 1004 (GPS), 1009 or 1010, even better 1011 or 1012 (GLONASS), see data field 'format-details' for available message types and their repetition rates in brackets. Select your streams line by line, use +Shift and +Ctrl when necessary.
+Hit button 'Get Table' to download the source-table from the NTRIP broadcaster. Please pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM 2.x, RTCM 3, or RTIGS formats. RTCM 2.x streams must contain message types 18 and 19 while RTCM 3 streams must contain GPS message types 1002 or 1004 and may contain GLONASS message types 1010 or 1012, see data field 'format-details' for available message types and their repetition rates in brackets. Select your streams line by line, use +Shift and +Ctrl when necessary.
 </p> 
 <p>
 Hit 'OK' to return to the main window. You may like to 'Add Mountpoints' from another NTRIP broadcaster when necessary.
@@ -368,13 +370,10 @@ The connection to an NTRIP broadcaster may possibly break or a stream requested 
 So far BNC only handles GPS and GLONASS data while ignoring Galileo.
 </li>
 <li>
-BNC's function is limited today to processing C1, C2, P1, P2, L1, L2, SNR1, and SNR2 observations. Which observables become available through a specific stream depends on the setup of the affected receiver and the applied data format. Note that RTCM Version 2.x streams can not transport signal-to-noise ratios (SNR) and RTCM Version 3 streams can only transport one code observable per frequency. Note further that signal-to-noise ratios SNR1 and SNR2 are mapped to integer numbers 1 to 9.
+BNC's function is limited today to processing C1, C2, P1, P2, L1, L2, S1, and S2 observations. Which observables become available through a specific stream depends on the setup of the affected receiver and the applied data format. Note that RTCM Version 2.x streams can not transport signal-to-noise ratios (S) and RTCM Version 3 streams can only transport one code observable per frequency. Note further that signal-to-noise ratios (S) are also made available mapped to integer numbers 1 to 9.
 </li>
 <li>
-Concerning RTCM Version 2.x, BNC handles only message types 18 and 19. Concerning RTCM Version 3, BNC handles only message types 1001, 1002, 1003, 1004, 1009, 1010, 1011, and 1012.
-</li>
-<li>
-If the ambiguity field is not set in RTCM Version 3 streams (i.e. when sending message type 1003 but no 1004), the BNC output will be no valid RINEX. All values will be stored modulo 299792.458. (It would be necessary to approximately calculate the range to fix the ambiguity, needing ephemeris/almanac and an easy positioning algorithm).
+Concerning RTCM Version 2.x, BNC handles only message types 18 and 19. Concerning RTCM Version 3, BNC handles only message types 1002, 1004, 1010, and 1012.
 </li>
 <li>
 As a consequence of the current implementation of the RTIGS format and transport protocol, streams coming in that format contain only GPS data.

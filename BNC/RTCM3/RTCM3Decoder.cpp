@@ -89,7 +89,7 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
 
         if (rr == 2) {
           std::cerr << "No valid RINEX! All values are modulo 299792.458!\n";
-//        exit(1); 
+          exit(1);
         }
 
         for (int ii = 0; ii < _Parser.Data.numsats; ii++) {
@@ -146,6 +146,12 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
             else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
               obs->L2   = _Parser.Data.measdata[ii][pos];
               obs->SNR2 = _Parser.Data.snrL2[ii];
+            }
+            else if (df & (GNSSDF_S1CDATA|GNSSDF_S1PDATA)) {
+              obs->S1   = _Parser.Data.measdata[ii][pos];
+            }
+            else if (df & (GNSSDF_S2CDATA|GNSSDF_S2PDATA)) {
+              obs->S2   = _Parser.Data.measdata[ii][pos];
             }
           }
           }
