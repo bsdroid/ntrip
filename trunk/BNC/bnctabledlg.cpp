@@ -208,8 +208,8 @@ void bncTableDlg::slotGetTable() {
   }
 
   static const QStringList labels = QString("mountpoint,identifier,format,"
-    "format-details,carrier,nav-system,network,country,latitude,longitude,"
-    "type,solution,generator,compression,authentication,fee,bitrate,"
+    "format-details,carrier,system,network,country,latitude,longitude,"
+    "type,solution,generator,compress.,authentic.,fee,bitrate,"
     "misc").split(",");
 
   if (lines.size() > 0) {
@@ -237,6 +237,25 @@ void bncTableDlg::slotGetTable() {
     _table->sortItems(0);
     _table->setHorizontalHeaderLabels(labels);
     _table->setSortingEnabled(true);
+
+    int ww = QFontMetrics(this->font()).width('w');
+    _table->horizontalHeader()->resizeSection(0,9*ww);
+    _table->horizontalHeader()->resizeSection(2,8*ww);
+    _table->horizontalHeader()->resizeSection(3,15*ww);
+    _table->horizontalHeader()->resizeSection(4,8*ww);
+    _table->horizontalHeader()->resizeSection(5,8*ww);
+    _table->horizontalHeader()->resizeSection(6,8*ww);
+    _table->horizontalHeader()->resizeSection(7,8*ww);
+    _table->horizontalHeader()->resizeSection(8,8*ww);
+    _table->horizontalHeader()->resizeSection(9,8*ww);
+    _table->horizontalHeader()->resizeSection(10,8*ww);
+    _table->horizontalHeader()->resizeSection(11,8*ww);
+    _table->horizontalHeader()->resizeSection(12,15*ww);
+    _table->horizontalHeader()->resizeSection(13,8*ww);
+    _table->horizontalHeader()->resizeSection(14,8*ww);
+    _table->horizontalHeader()->resizeSection(15,8*ww);
+    _table->horizontalHeader()->resizeSection(16,8*ww);
+    _table->horizontalHeader()->resizeSection(17,15*ww);
   }
 }
 
