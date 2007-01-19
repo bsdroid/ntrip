@@ -58,7 +58,7 @@ bncWindow::bncWindow() {
   
   static const QStringList labels = QString("account,mountpoint,decoder,lat,long,type,bytes").split(",");
 
-  setMinimumSize(77*ww, 65*ww); // weber
+  setMinimumSize(77*ww, 65*ww);
   setWindowTitle(tr("BKG Ntrip Client (BNC), Version 1.1b"));
 
   // Create Actions
