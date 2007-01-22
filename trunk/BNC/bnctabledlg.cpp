@@ -55,13 +55,17 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _casterHostLineEdit     = new QLineEdit(settings.value("casterHost").toString());
   int ww = QFontMetrics(_casterHostLineEdit->font()).width('w');
   _casterHostLineEdit->setMaximumWidth(18*ww);
+  _casterHostLineEdit->setWhatsThis(tr("Enter the NTRIP broadcaster host IP name or number and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>."));
   _casterPortLineEdit     = new QLineEdit(settings.value("casterPort").toString());
   _casterPortLineEdit->setMaximumWidth(9*ww);
+  _casterPortLineEdit->setWhatsThis(tr("Enter the NTRIP broadcaster host IP name or number and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>."));
   _casterUserLineEdit     = new QLineEdit(settings.value("casterUser").toString());
   _casterUserLineEdit->setMaximumWidth(9*ww);
+  _casterUserLineEdit->setWhatsThis(tr("Streams on NTRIP broadcasters might be protected by password. Enter a valid 'User' ID and 'Password' for access to protected NTRIP broadcaster streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>."));
   _casterPasswordLineEdit = new QLineEdit(settings.value("casterPassword").toString());
   _casterPasswordLineEdit->setMaximumWidth(9*ww);
   _casterPasswordLineEdit->setEchoMode(QLineEdit::Password);
+  _casterPasswordLineEdit->setWhatsThis(tr("Streams on NTRIP broadcasters might be protected by password. Enter a valid 'User' ID and 'Password' for access to protected NTRIP broadcaster streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>."));
 
   QGridLayout* editLayout = new QGridLayout;
   editLayout->addWidget(new QLabel(tr("Caster host")), 0, 0);
@@ -76,6 +80,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(editLayout);
 
   _table = new QTableWidget(this);
+  _table->setWhatsThis(tr("<p>Hit button 'Get Table' to download the source-table from the NTRIP broadcaster. Select your streams line by line, use +Shift and +Ctrl when necessary. Hit 'OK' to return to the main window.</p><p>Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM 2.x, RTCM 3, or RTIGS formats. RTCM 2.x streams must contain message types 18 and 19 while RTCM 3 streams must contain GPS message types 1002 or 1004 and may contain GLONASS message types 1010 or 1012, see data field 'format-details' for available message types and their repetition rates in brackets.</p><p>The contents of data field 'type' tells you whether a stream comes from a physical Reference Station (RS) or a Virtual Reference Station (VRS).</p>"));
   connect(_table, SIGNAL(itemSelectionChanged()),
           this, SLOT(slotSelectionChanged()));
   mainLayout->addWidget(_table);
@@ -239,7 +244,7 @@ void bncTableDlg::slotGetTable() {
     _table->setSortingEnabled(true);
 
     int ww = QFontMetrics(this->font()).width('w');
-    _table->horizontalHeader()->resizeSection(0,9*ww);
+    _table->horizontalHeader()->resizeSection(0,10*ww);
     _table->horizontalHeader()->resizeSection(2,8*ww);
     _table->horizontalHeader()->resizeSection(3,15*ww);
     _table->horizontalHeader()->resizeSection(4,8*ww);
