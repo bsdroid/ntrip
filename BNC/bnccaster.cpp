@@ -92,6 +92,11 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
   if (_waitTime < 1) {
     _waitTime = 1;
   }
+
+  // Start dump epoch loop
+  // ---------------------
+  _newTime = 0;
+  dumpEpochSlot();
 }
 
 // Destructor
@@ -132,7 +137,7 @@ void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
   QMutexLocker locker(&_mutex);
 
   long iSec    = long(floor(obs->GPSWeeks+0.5));
-  long newTime = obs->GPSWeek * 7*24*3600 + iSec;
+  _newTime = obs->GPSWeek * 7*24*3600 + iSec;
 
   // Rename the Station
   // ------------------
@@ -149,17 +154,17 @@ void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
   if (_samplingRate == 0 || iSec % _samplingRate == 0) {
     rnx->deepCopy(obs);
   }
-  rnx->dumpEpoch(newTime);
+  rnx->dumpEpoch(_newTime);
 
   // First time, set the _lastDumpSec immediately
   // --------------------------------------------
   if (_lastDumpSec == 0) {
-    _lastDumpSec = newTime - 1;
+    _lastDumpSec = _newTime - 1;
   }
 
   // An old observation - throw it away
   // ----------------------------------
-  if (newTime <= _lastDumpSec) {
+  if (_newTime <= _lastDumpSec) {
     if (firstObs) {
       QSettings settings;
       if ( !settings.value("outFile").toString().isEmpty() || 
@@ -174,15 +179,20 @@ void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
 
   // Save the observation
   // --------------------
-  _epochs->insert(newTime, obs);
+  _epochs->insert(_newTime, obs);
+}
 
-  // Dump older epochs
-  // -----------------
-  dumpEpochs(_lastDumpSec + 1, newTime - _waitTime);
+// Dump Loop Event
+////////////////////////////////////////////////////////////////////////////
+void bncCaster::dumpEpochSlot() {
+  if (_newTime != 0 && _epochs->size() > 0) {
+    dumpEpochs(_lastDumpSec + 1, _newTime - _waitTime);
 
-  if (_lastDumpSec < newTime - _waitTime) {
-    _lastDumpSec = newTime - _waitTime;
+    if (_lastDumpSec < _newTime - _waitTime) {
+      _lastDumpSec = _newTime - _waitTime;
+    }
   }
+  QTimer::singleShot(100, this, SLOT(dumpEpochSlot()));
 }
 
 // New Connection
@@ -281,11 +291,11 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
             if (first) {
               sock->write(&begEpoch, 1);
             }
-            sock->write(&begObs, 1);
-            sock->write((char*) obs, numBytes);
-            if (!it.hasNext()) {
-              sock->write(&endEpoch, 1);
-            }
+////            sock->write(&begObs, 1);
+////            sock->write((char*) obs, numBytes);
+////            if (!it.hasNext()) {
+////              sock->write(&endEpoch, 1);
+////            }
           }
         }
       }
