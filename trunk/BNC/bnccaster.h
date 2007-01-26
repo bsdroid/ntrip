@@ -56,6 +56,7 @@ class bncCaster : public QObject {
  private slots:
    void slotNewConnection();
    void slotGetThreadError(const QByteArray& staID);
+   void dumpEpochSlot();
 
  private:
    void dumpEpochs(long minTime, long maxTime);
@@ -73,6 +74,7 @@ class bncCaster : public QObject {
    int                            _samplingRate;
    long                           _waitTime;
    QMutex                         _mutex;
+   long                           _newTime;
 };
 
 #endif
