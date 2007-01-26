@@ -28,12 +28,10 @@ int main(int /* argc */, char** /* argv */) {
   cout.setf(ios::showpoint | ios::fixed);
 
   while (true) {
-    socket.waitForReadyRead(1000);
     if ( socket.bytesAvailable() ) {
       int bytesRecv = socket.read(&flag, 1);
       if (flag == begObs) {
-        socket.waitForReadyRead(1000);
-        if ( socket.bytesAvailable() ) {
+        if ( socket.bytesAvailable() >= sizeof(obs) ) {
           bytesRecv = socket.read((char*) &obs, sizeof(obs));
           cout << setw(5)                     << obs.StatID         << " "
                << obs.satSys << setw(2)       << obs.satNum         << " "
@@ -51,6 +49,9 @@ int main(int /* argc */, char** /* argv */) {
                << setw(4)                     << obs.SNR2           << endl;
         }
       }
+    }
+    else {
+      socket.waitForReadyRead(100);
     }
   }
 
