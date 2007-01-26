@@ -291,11 +291,11 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
             if (first) {
               sock->write(&begEpoch, 1);
             }
-////            sock->write(&begObs, 1);
-////            sock->write((char*) obs, numBytes);
-////            if (!it.hasNext()) {
-////              sock->write(&endEpoch, 1);
-////            }
+            sock->write(&begObs, 1);
+            sock->write((char*) obs, numBytes);
+            if (!it.hasNext()) {
+              sock->write(&endEpoch, 1);
+            }
           }
         }
       }

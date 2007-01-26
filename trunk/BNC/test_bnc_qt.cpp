@@ -30,7 +30,6 @@ int main(int /* argc */, char** /* argv */) {
   while (true) {
     if ( socket.bytesAvailable() ) {
       int bytesRecv = socket.read(&flag, 1);
-      cout << flag << endl;
       if (flag == begObs) {
         if ( socket.bytesAvailable() >= sizeof(obs) ) {
           bytesRecv = socket.read((char*) &obs, sizeof(obs));
