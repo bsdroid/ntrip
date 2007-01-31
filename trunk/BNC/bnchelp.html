@@ -373,7 +373,7 @@ Hit the 'Stop' button in order to stop BNC.
 
 <p><a name="nw"><h4>B - 10. No Window - optional</h4></p>
 <p>
-You can use BNC on all systems in batch mode with the command line option '-nw'. BNC then runs in 'no window' mode, reading options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Client.conf (Unix/Linux) or from the register BKC_NTRIP_Client (Windows).
+You can use BNC on all systems in batch mode with the command line option '-nw'. BNC then runs in 'no window' mode, reading options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Client.conf (Unix/Linux) or from the register BNC_NTRIP_Client (Windows).
 </p>
 <p>
 Note that the self-explaining contents of the configuration file or the Windows register can easily be edited. Terminate BNC using the Windows Task Manager when running it in 'no window' mode on Windows systems.
@@ -434,7 +434,6 @@ euref-ip@bkg.bund.de
 <tr><td>EUREF-IP NTRIP broadcaster &nbsp;</td><td><u>http://www.euref-ip.net/home</u></td></tr>
 <tr><td>IGS-IP NTRIP broadcaster &nbsp;</td><td><u>http://www.igs-ip.net/home</u></td></tr>
 <tr><td>NTRIP broadcaster overview &nbsp;</td><td><u>http://www.rtcm-ntrip.org/home</u></td></tr>
-<tr><td>EUREF-IP Pilot Project &nbsp;</td><td><u>http://www.epncb.oma.be/euref_IP</u></td></tr>
 <tr><td>EUREF-IP Pilot Project &nbsp;</td><td><u>http://www.epncb.oma.be/euref_IP</u></td></tr>
 <tr><td>Radio Technical Commission<br>for Maritime Services &nbsp;</td><td><u>http://www.rtcm.org</u>
 </table>
@@ -504,7 +503,7 @@ Copies of RTCM Recommended Standards can be ordered through <u>http://www.rtcm.o
 
 <p><a name="rtcm2"><h4>F - 2.1 RTCM Version 2.x</h4></p>
 <p>
-Transmitting GNSS carrier phase data can be done through RTCM Version 2.x messages. Please note that only RTCM Version 2.3 streams may include GLONASS data. Messages that may be of interest here are of type 1, 2, 3, 6, 9, 16,18/19, 20/21, and 22.
+Transmitting GNSS carrier phase data can be done through RTCM Version 2.x messages. Please note that only RTCM Version 2.2 and 2.3 streams may include GLONASS data. Messages that may be of some interest here are:
 </p>
 
 <ul>
@@ -532,6 +531,12 @@ Type 18 and 20 messages are RTK uncorrected carrier phase data and carrier phase
 <li>
 Type 19 and 21 messages are the uncorrected pseudo-range measurements and pseudo-range corrections used in RTK.
 </li>
+<li>
+Type 23 message provides the information on the antenna type used on the reference station. 
+</li>
+<li>
+Type 24 message carries the coordinates of the installed antenna's ARP in the GNSS coordinate system coordinates.
+</li>
 </ul>
 
 <p><a name="rtcm3"><h4>F - 2.2 RTCM Version 3</h4></p>
@@ -542,7 +547,7 @@ RTCM Version 3 has been developed as a more efficient alternative to RTCM 2.x. S
 RTCM Version 3 defines a number of message types. Messages that may be of interest here are:
 </p>
 <ul>
-<li>Tpye 1001, GPS L1 code and phase.</li>
+<li>Type 1001, GPS L1 code and phase.</li>
 <li>Type 1002, GPS L1 code and phase and ambiguities and carrier to noise ratio.</li>
 <li>Type 1003, GPS L1 and L2 code and phase.</li>
 <li>Type 1004, GPS L1 and L2 code and phase and ambiguities and carrier to noise ratio.</li>
