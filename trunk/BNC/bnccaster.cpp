@@ -119,7 +119,6 @@ bncCaster::~bncCaster() {
 // Reconnecting
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::reconnecting(const QByteArray& staID) {
-  QMutexLocker locker(&_mutex);
   if (_rinexWriters.find(staID) != _rinexWriters.end()) {
     bncRinex* rnx = _rinexWriters.find(staID).value();
     rnx->setReconnectFlag(true);
@@ -200,14 +199,12 @@ void bncCaster::dumpEpochSlot() {
 // New Connection
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::slotNewConnection() {
-  QMutexLocker locker(&_mutex);
   _sockets->push_back( _server->nextPendingConnection() );
 }
 
 // Add New Thread
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::addGetThread(bncGetThread* getThread) {
-  QMutexLocker locker(&_mutex);
   connect(getThread, SIGNAL(error(const QByteArray&)), 
           this, SLOT(slotGetThreadError(const QByteArray&)));
 
@@ -231,7 +228,6 @@ void bncCaster::slotGetThreadError(const QByteArray& staID) {
 // Dump Complete Epochs
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::dumpEpochs(long minTime, long maxTime) {
-  QMutexLocker locker(&_mutex);
 
   const char begEpoch = 'A';
   const char begObs   = 'B';
