@@ -45,6 +45,7 @@ class bncTableItem : public QObject, public QTableWidgetItem {
 
   private:
     double _bytesRead;
+    QMutex _mutex;
 };
 
 #endif

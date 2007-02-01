@@ -58,6 +58,8 @@ bncTableItem::~bncTableItem() {
 ////////////////////////////////////////////////////////////////////////////
 void bncTableItem::slotNewObs(const QByteArray&, Observation* obs) {
 
+  QMutexLocker locker(&_mutex);
+
   _bytesRead += sizeof(*obs);
 
   if      (_bytesRead < 1e3) {

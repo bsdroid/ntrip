@@ -119,6 +119,8 @@ bncCaster::~bncCaster() {
 // Reconnecting
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::reconnecting(const QByteArray& staID) {
+  QMutexLocker locker(&_mutex);
+
   if (_rinexWriters.find(staID) != _rinexWriters.end()) {
     bncRinex* rnx = _rinexWriters.find(staID).value();
     rnx->setReconnectFlag(true);
