@@ -19,6 +19,7 @@ int main(int /* argc */, char** /* argv */) {
   socket.connectToHost("127.0.0.1", 1968);
   if (!socket.waitForConnected(10000)) {
     cout << "not connected" << endl;
+    exit(1);
   }
 
   // Receive Data
