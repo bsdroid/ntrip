@@ -93,6 +93,13 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
     _waitTime = 1;
   }
 
+  if ( settings.value("rnxPath").toString().isEmpty() ) { 
+    _rinexWriters = 0;
+  }
+  else {
+    _rinexWriters = new QMap<QString, bncRinex*>;
+  }
+
   // Start dump epoch loop
   // ---------------------
   _newTime = 0;
@@ -114,6 +121,7 @@ bncCaster::~bncCaster() {
   delete _server;
   delete _sockets;
   delete _epochs;
+  delete _rinexWriters;
 }
 
 // Reconnecting
@@ -121,8 +129,8 @@ bncCaster::~bncCaster() {
 void bncCaster::reconnecting(const QByteArray& staID) {
   QMutexLocker locker(&_mutex);
 
-  if (_rinexWriters.find(staID) != _rinexWriters.end()) {
-    bncRinex* rnx = _rinexWriters.find(staID).value();
+  if (_rinexWriters && _rinexWriters->find(staID) != _rinexWriters->end()) {
+    bncRinex* rnx = _rinexWriters->find(staID).value();
     rnx->setReconnectFlag(true);
   }
 }
@@ -148,15 +156,17 @@ void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
         
   // Prepare RINEX Output
   // --------------------
-  if (_rinexWriters.find(obs->StatID) == _rinexWriters.end()) {
-    _rinexWriters.insert(obs->StatID, new bncRinex(obs->StatID, 
-                                                   mountPoint, format, latitude, longitude, nmea));
+  if (_rinexWriters) {
+    if (_rinexWriters->find(obs->StatID) == _rinexWriters->end()) {
+      _rinexWriters->insert(obs->StatID, new bncRinex(obs->StatID, mountPoint, 
+                                           format, latitude, longitude, nmea));
+    }
+    bncRinex* rnx = _rinexWriters->find(obs->StatID).value();
+    if (_samplingRate == 0 || iSec % _samplingRate == 0) {
+      rnx->deepCopy(obs);
+    }
+    rnx->dumpEpoch(_newTime);
   }
-  bncRinex* rnx = _rinexWriters.find(obs->StatID).value();
-  if (_samplingRate == 0 || iSec % _samplingRate == 0) {
-    rnx->deepCopy(obs);
-  }
-  rnx->dumpEpoch(_newTime);
 
   // First time, set the _lastDumpSec immediately
   // --------------------------------------------

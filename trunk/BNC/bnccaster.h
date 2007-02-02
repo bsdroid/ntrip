@@ -69,7 +69,7 @@ class bncCaster : public QObject {
    QTcpServer*                    _server;
    QList<QTcpSocket*>*            _sockets;
    QList<QByteArray>              _staIDs;
-   QMap<QString, bncRinex*>       _rinexWriters;
+   QMap<QString, bncRinex*>*      _rinexWriters;
    QList<bncGetThread*>           _threads;
    int                            _samplingRate;
    long                           _waitTime;
