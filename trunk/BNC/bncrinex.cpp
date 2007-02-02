@@ -209,7 +209,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
   QString path = settings.value("rnxPath").toString();
   expandEnvVar(path);
 
-  if ( path[path.length()-1] != QDir::separator() ) {
+  if ( path.length() > 0 && path[path.length()-1] != QDir::separator() ) {
     path += QDir::separator();
   }
 
