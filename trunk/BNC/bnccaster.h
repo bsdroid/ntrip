@@ -75,6 +75,7 @@ class bncCaster : public QObject {
    long                           _waitTime;
    QMutex                         _mutex;
    long                           _newTime;
+   bool                           _newObsRunning;
 };
 
 #endif
