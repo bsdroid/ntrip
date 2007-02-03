@@ -102,6 +102,7 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
 
   // Start dump epoch loop
   // ---------------------
+  _newObsRunning = false;
   _newTime = 0;
   dumpEpochSlot();
 }
@@ -145,6 +146,7 @@ void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
                        const QByteArray& nmea) {
 
   QMutexLocker locker(&_mutex);
+  _newObsRunning = true;
 
   long iSec    = long(floor(obs->GPSWeeks+0.5));
   _newTime = obs->GPSWeek * 7*24*3600 + iSec;
@@ -192,17 +194,20 @@ void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
   // Save the observation
   // --------------------
   _epochs->insert(_newTime, obs);
+
+  _newObsRunning = false;
 }
 
 // Dump Loop Event
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::dumpEpochSlot() {
-  QMutexLocker locker(&_mutex);
-  if (_newTime != 0 && _epochs->size() > 0) {
-    dumpEpochs(_lastDumpSec + 1, _newTime - _waitTime);
-
-    if (_lastDumpSec < _newTime - _waitTime) {
-      _lastDumpSec = _newTime - _waitTime;
+  if (!_newObsRunning) {
+    if (_newTime != 0 && _epochs->size() > 0) {
+      dumpEpochs(_lastDumpSec + 1, _newTime - _waitTime);
+    
+      if (_lastDumpSec < _newTime - _waitTime) {
+        _lastDumpSec = _newTime - _waitTime;
+      }
     }
   }
   QTimer::singleShot(100, this, SLOT(dumpEpochSlot()));
