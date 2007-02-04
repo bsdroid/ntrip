@@ -1,6 +1,6 @@
 
-###CONFIG += release
-CONFIG += debug
+CONFIG += release
+###CONFIG += debug
 
 DEFINES += NO_RTCM3_MAIN
 
