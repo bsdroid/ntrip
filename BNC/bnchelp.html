@@ -13,7 +13,7 @@ BNC has been written under GNU General Public License (GPL). Binaries for BNC ar
 <tr><td><b>History</b></td></tr>
 <tr><td>Dec 1, 2006 &nbsp;</td><td>Version 1.0b &nbsp;</td><td>Binaries of first beta version published.</td></tr>
 <tr><td>Jan 20, 2007 &nbsp;</td><td>Version 1.1b &nbsp;</td><td>[Add] Observables C2, S1, and S2<br>[Add] Full VRS capability<br>[Bug] RTCM2 decoder time tag fixed<br>[Mod] Small letters for public RINEX skeleton files<br>[Add] Online help through Shift+F1</td></tr>
-<tr><td>Feb 1, 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td><td>[Bug] Output through IP port<br>[Bug] Method 'reconnecting' now thread-save
+<tr><td>Feb 1, 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td><td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save
 </table>
 </p>
 <h3>Contents</h3>
@@ -126,7 +126,7 @@ Note that IP streaming may generally be denied in a LAN. In such a case you need
 
 <p><a name="output"><h4>B - 4. Synchronized Output</h4></p>
 <p>
-BNC lets you output synchronized observations epoch by epoch. This output is made available in a plain ASCII format and in binary format. The output comprises the following observations if available:</p>
+BNC lets you output synchronized observations from all stations and satellites epoch by epoch. This output is made available in a plain ASCII format and/or a binary format. The output comprises the following observations if available:</p>
 <p>
 StatID, SVPRN, GPSWeek, GPSWeeks, C1, C2, P1, P2, L1, L2, S1, S2, SNR1, SNR2
 </p>
