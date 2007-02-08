@@ -314,6 +314,9 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
             if (!it.hasNext()) {
               sock->write(&endEpoch, 1);
             }
+            if ( !sock->waitForBytesWritten(100) ) {
+              emit(newMessage("bncCaster:: socket write timeout"));
+            }
           }
         }
       }
