@@ -306,16 +306,15 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
           QListIterator<QTcpSocket*> is(*_sockets);
           while (is.hasNext()) {
             QTcpSocket* sock = is.next();
-            if (first) {
-              sock->write(&begEpoch, 1);
-            }
-            sock->write(&begObs, 1);
-            sock->write((char*) obs, numBytes);
-            if (!it.hasNext()) {
-              sock->write(&endEpoch, 1);
-            }
-            if ( !sock->waitForBytesWritten(100) ) {
-              emit(newMessage("bncCaster:: socket write timeout"));
+            if (sock->state() == QAbstractSocket::ConnectedState) {
+              if (first) {
+                sock->write(&begEpoch, 1);
+              }
+              sock->write(&begObs, 1);
+              sock->write((char*) obs, numBytes);
+              if (!it.hasNext()) {
+                sock->write(&endEpoch, 1);
+              }
             }
           }
         }
