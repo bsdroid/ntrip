@@ -89,7 +89,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   //  _buttonSkl->setEnabled(false);
   //  connect(_buttonSkl, SIGNAL(clicked()), this, SLOT(slotSkl()));
 
-  _buttonWhatsThis = new QPushButton(tr("What's this?"), this);
+  _buttonWhatsThis = new QPushButton(tr("What's this? Shift+F1"), this);
   connect(_buttonWhatsThis, SIGNAL(clicked()), this, SLOT(slotWhatsThis()));
 
   _buttonGet = new QPushButton(tr("Get table"), this);
