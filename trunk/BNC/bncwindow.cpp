@@ -165,6 +165,7 @@ _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX file is saved, you may li
                                     settings.value("rnxAppend").toInt()));
   _rnxAppendCheckBox->setWhatsThis(tr("<p>When starting BNC, new RINEX files are created by default. Probably existing files will be overwritten. However, it may be desirable to append observations to already existing RINEX files following a restart of BNC after an intentional 'Stop', a system crash or a crash of BNC. Hit 'Append files' to continue with already existing files and thus save what has been recorded so far.</p><p>Note that option 'Append files' also concerns the 'ASCII output file' and the 'Log' file.</p>"));
   _rnxIntrComboBox    = new QComboBox();
+  _rnxIntrComboBox->setWhatsThis(tr("<p>Select an interval for the RINEX file generation.</p><p>Default for 'RINEX file interval' is '15 min', meaning that a new RINEX file is generated every 15 minutes.</p>"));
   _rnxIntrComboBox->setMaximumWidth(9*ww);
   _rnxIntrComboBox->setEditable(false);
   _rnxIntrComboBox->addItems(QString("5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
