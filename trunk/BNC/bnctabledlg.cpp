@@ -89,7 +89,11 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   //  _buttonSkl->setEnabled(false);
   //  connect(_buttonSkl, SIGNAL(clicked()), this, SLOT(slotSkl()));
 
+  _buttonWhatsThis = new QPushButton(tr("What's this?"), this);
+  connect(_buttonWhatsThis, SIGNAL(clicked()), this, SLOT(slotWhatsThis()));
+
   _buttonGet = new QPushButton(tr("Get table"), this);
+  _buttonGet->setDefault(true);
   connect(_buttonGet, SIGNAL(clicked()), this, SLOT(slotGetTable()));
  
   _buttonCancel = new QPushButton(tr("Cancel"), this);
@@ -100,6 +104,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   //  buttonLayout->addWidget(_buttonSkl);
+  buttonLayout->addWidget(_buttonWhatsThis);
   buttonLayout->addStretch(1);
   buttonLayout->addWidget(_buttonGet);
   buttonLayout->addWidget(_buttonCancel);
@@ -343,4 +348,10 @@ void bncTableDlg::slotSkl() {
     }
   }
 }
+
+// Whats This Help
+void bncTableDlg::slotWhatsThis() {
+QWhatsThis::enterWhatsThisMode();
+}
+
 

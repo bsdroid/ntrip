@@ -27,6 +27,7 @@
 #define BNCWINDOW_H
 
 #include <QtGui>
+#include <QWhatsThis>
 
 #include "bncgetthread.h"
 
@@ -52,6 +53,7 @@ class bncWindow : public QMainWindow {
     void slotDeleteMountPoints();
     void slotGetThreadErrors();
     void slotSelectionChanged();
+    void slotWhatsThis();
 
   protected:
     virtual void closeEvent(QCloseEvent *);
@@ -69,6 +71,8 @@ class bncWindow : public QMainWindow {
     QAction*   _actStop;
     QAction*   _actAddMountPoints;
     QAction*   _actDeleteMountPoints;
+    QAction*   _actwhatsthis;
+    QAction*   _actwhatsthismenu;
 
     QLineEdit* _proxyHostLineEdit;
     QLineEdit* _proxyPortLineEdit;
