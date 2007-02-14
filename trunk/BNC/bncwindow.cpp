@@ -93,11 +93,11 @@ bncWindow::bncWindow() {
   connect(_actStop, SIGNAL(triggered()), SLOT(slotStop()));
   _actStop->setEnabled(false);
 
-  _actwhatsthis= new QAction(tr("What's this? Shift+F1"),this);
+  _actwhatsthis= new QAction(tr("Help=Shift+F1"),this);
   connect(_actwhatsthis, SIGNAL(triggered()), SLOT(slotWhatsThis()));
 
-  _actwhatsthismenu= new QAction(tr("What's this?\tShift+F1"),this);
-  connect(_actwhatsthismenu, SIGNAL(triggered()), SLOT(slotWhatsThis()));
+//_actwhatsthismenu= new QAction(tr("Help\tShift+F1"),this);
+//connect(_actwhatsthismenu, SIGNAL(triggered()), SLOT(slotWhatsThis()));
 
   // Create Menus
   // ------------
@@ -110,7 +110,7 @@ bncWindow::bncWindow() {
 
   _menuHlp = menuBar()->addMenu(tr("&Help"));
   _menuHlp->addAction(_actHelp);
-  _menuHlp->addAction(_actwhatsthismenu);
+//_menuHlp->addAction(_actwhatsthismenu);
   _menuHlp->addAction(_actAbout);
 
   // Tool (Command) Bar
