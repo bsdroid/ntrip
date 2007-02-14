@@ -93,6 +93,12 @@ bncWindow::bncWindow() {
   connect(_actStop, SIGNAL(triggered()), SLOT(slotStop()));
   _actStop->setEnabled(false);
 
+  _actwhatsthis= new QAction(tr("What's this?"),this);
+  connect(_actwhatsthis, SIGNAL(triggered()), SLOT(slotWhatsThis()));
+
+  _actwhatsthismenu= new QAction(tr("What's this?\tShift+F1"),this);
+  connect(_actwhatsthismenu, SIGNAL(triggered()), SLOT(slotWhatsThis()));
+
   // Create Menus
   // ------------
   _menuFile = menuBar()->addMenu(tr("&File"));
@@ -104,6 +110,7 @@ bncWindow::bncWindow() {
 
   _menuHlp = menuBar()->addMenu(tr("&Help"));
   _menuHlp->addAction(_actHelp);
+  _menuHlp->addAction(_actwhatsthismenu);
   _menuHlp->addAction(_actAbout);
 
   // Tool (Command) Bar
@@ -115,6 +122,8 @@ bncWindow::bncWindow() {
   toolBar->addAction(_actDeleteMountPoints);
   toolBar->addAction(_actGetData);
   toolBar->addAction(_actStop);
+  toolBar->addWidget(new QLabel("                                   "));
+  toolBar->addAction(_actwhatsthis);
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -248,7 +257,10 @@ _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX file is saved, you may li
   connect(_mountPointsTable, SIGNAL(itemSelectionChanged()), 
           SLOT(slotSelectionChanged()));
 
-  _log = new QTextEdit();
+// Tab changes Focus on Log window Start Perlt
+//  _log = new QTextEdit();
+  _log = new QTextBrowser();
+// Tab changes Focus on Log window Ende Perlt
   _log->setReadOnly(true);
 
   _log->setWhatsThis(tr("BNC comments its activities in the 'Log' section. Information is given on the communication between BNC and the NTRIP broadcaster as well as on problems that may occur concerning communication link, stream availability, stream delay, stream conversion etc."));
@@ -604,3 +616,10 @@ void bncWindow::slotFontSel() {
     resize(60*ww, 80*ww);
   }
 }
+
+// Whats This Help
+void bncWindow::slotWhatsThis() {
+QWhatsThis::enterWhatsThisMode();
+}
+
+

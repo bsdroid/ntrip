@@ -28,6 +28,7 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <QWhatsThis>
 
 #include "bncconst.h"
 
@@ -48,6 +49,7 @@ class bncTableDlg : public QDialog {
     void slotGetTable();
     void slotSkl();
     void slotSelectionChanged();
+    void slotWhatsThis();
 
   private:
     QLineEdit*   _casterHostLineEdit;
@@ -59,6 +61,7 @@ class bncTableDlg : public QDialog {
     QPushButton* _buttonGet;
     QPushButton* _buttonCancel;
     QPushButton* _buttonOK;
+    QPushButton* _buttonWhatsThis;
 
     QTableWidget* _table;
     QStringList   _allLines;
