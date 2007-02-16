@@ -451,7 +451,8 @@ F - 2. <a href=#rtcm>RTCM</a><br>
 &nbsp; &nbsp; &nbsp; F - 2.1 RTCM <a href=#rtcm2> Version 2.x</a><br>
 &nbsp; &nbsp; &nbsp; F - 2.2 RTCM <a href=#rtcm3> Version 3</a><br>
 F - 3. <a href=#rtigs>RTIGS</a><br>
-&nbsp; &nbsp; &nbsp; F - 3.1 <a href=#soc>SOC</a>
+&nbsp; &nbsp; &nbsp; F - 3.1 <a href=#soc>SOC</a><br>
+F - 4. <a href=#config>Config File</a>
 </p>
 <br>
 
@@ -632,5 +633,30 @@ The SOC format has been designed in July 1999 by the Jet Propulsion Laboratory (
 Visit <u>http://gipsy.jpl.nasa.gov/igdg/papers/SOC_FORMAT.ppt</u> for further details.
 </p>
 <p>
+</p>
+<p><a name="config"><h4>F - 4. Config File</h4></p>
+<p>
+The following is an example for the contents of a Unix/Linux configuration file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf. It enables the retrieval of stream HOE20 form www.euref-ip.net and GOPE0 from www.igs-ip.net for the generation of 15 min RINEX files. RINEX files are uploaded to an archive using script 'up2archive' :
+<pre>
+[General]
+casterHost=
+casterPassword=
+casterPort=
+casterUser=
+font="Sans Serif,8,-1,5,50,0,0,0,0,0"
+logFile=${HOME}/bnc.log
+mountPoints=//user:password@www.euref-ip.net:80/HOE20 RTCM_3.0 54.76 8.29 RS, //user:password@www.igs-ip.net:80/GOPE0 RTCM_2.2 49.91 14.79 RS
+outFile=
+outPort=
+proxyHost=proxy.bkg.de
+proxyPort=8000
+rnxAppend=2
+rnxIntr=15 min
+rnxPath=${HOME}/rinex
+rnxSampl=0
+rnxScript=${HOME}/up2archive
+rnxSkel=SKL
+waitTime=5
+</pre>
 </p>
 
