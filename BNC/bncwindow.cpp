@@ -168,7 +168,7 @@ _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX file is saved, you may li
   _rnxIntrComboBox->setWhatsThis(tr("<p>Select an interval for the RINEX file generation.</p><p>Default for 'RINEX file interval' is '15 min', meaning that a new RINEX file is generated every 15 minutes.</p>"));
   _rnxIntrComboBox->setMaximumWidth(9*ww);
   _rnxIntrComboBox->setEditable(false);
-  _rnxIntrComboBox->addItems(QString("5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
+  _rnxIntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
   int ii = _rnxIntrComboBox->findText(settings.value("rnxIntr").toString());
   if (ii != -1) {
     _rnxIntrComboBox->setCurrentIndex(ii);
