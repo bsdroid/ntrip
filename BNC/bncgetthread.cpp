@@ -65,6 +65,7 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
                            const QByteArray& longitude,
                            const QByteArray& nmea, int iMount) {
   _decoder    = 0;
+  _zeroDecoder= false;
   _mountPoint = mountPoint;
   _staID      = mountPoint.path().mid(1).toAscii();
   _staID_orig = _staID;
@@ -288,7 +289,7 @@ t_irc bncGetThread::initRun() {
 
   // Instantiate the filter
   // ----------------------
-  if (!_decoder) { 
+  if (!_decoder && !_zeroDecoder) { 
     if      (_format.indexOf("RTCM_2") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTCM 2.x format"));
       _decoder = new RTCM2Decoder();
@@ -300,6 +301,10 @@ t_irc bncGetThread::initRun() {
     else if (_format.indexOf("RTIGS") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTIGS format"));
       _decoder = new RTIGSDecoder();
+    }
+    else if (_format.indexOf("SP3") != -1) {
+      emit(newMessage("Get Data in SP3 format"));
+      _zeroDecoder = true;
     }
     else {
       emit(newMessage(_staID + ": Unknown data format " + _format));
@@ -339,6 +344,12 @@ void bncGetThread::run() {
       if (nBytes > 0) {
         char* data = new char[nBytes];
         _socket->read(data, nBytes);
+
+        if (_zeroDecoder) {
+          cout.write(data, nBytes);
+          continue;
+        }
+
         _decoder->Decode(data, nBytes);
         delete [] data;
         for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
