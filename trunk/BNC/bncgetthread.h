@@ -73,6 +73,7 @@ class bncGetThread : public QThread {
    int         _timeOut;
    int         _nextSleep;
    int         _iMount;
+   bool        _zeroDecoder;
 };
 
 #endif
