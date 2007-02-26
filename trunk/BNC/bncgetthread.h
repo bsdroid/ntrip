@@ -32,6 +32,8 @@
 #include "RTCM/GPSDecoder.h"
 #include "bncconst.h"
 
+class bncRinex;
+
 class bncGetThread : public QThread {
  Q_OBJECT
 
@@ -74,6 +76,8 @@ class bncGetThread : public QThread {
    int         _nextSleep;
    int         _iMount;
    bool        _zeroDecoder;
+   int         _samplingRate;
+   bncRinex*   _rnx;
 };
 
 #endif

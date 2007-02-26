@@ -37,7 +37,7 @@
 
 class bncRinex {
  public:
-   bncRinex(const char* StatID, const QUrl& mountPoint, 
+   bncRinex(const QByteArray& statID, const QUrl& mountPoint, 
             const QByteArray& format, const QByteArray& latitude,
             const QByteArray& longitude, const QByteArray& nmea);
    ~bncRinex();

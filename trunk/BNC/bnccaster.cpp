@@ -93,13 +93,6 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
     _waitTime = 1;
   }
 
-  if ( settings.value("rnxPath").toString().isEmpty() ) { 
-    _rinexWriters = 0;
-  }
-  else {
-    _rinexWriters = new QMap<QString, bncRinex*>;
-  }
-
   // Start dump epoch loop
   // ---------------------
   _newObsRunning = false;
@@ -122,28 +115,12 @@ bncCaster::~bncCaster() {
   delete _server;
   delete _sockets;
   delete _epochs;
-  delete _rinexWriters;
-}
-
-// Reconnecting
-////////////////////////////////////////////////////////////////////////////
-void bncCaster::reconnecting(const QByteArray& staID) {
-  QMutexLocker locker(&_mutex);
-
-  if (_rinexWriters && _rinexWriters->find(staID) != _rinexWriters->end()) {
-    bncRinex* rnx = _rinexWriters->find(staID).value();
-    rnx->setReconnectFlag(true);
-  }
 }
 
 // New Observations
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
-                       bool firstObs, Observation* obs,
-                       const QByteArray& format,
-                       const QByteArray& latitude,
-                       const QByteArray& longitude,
-                       const QByteArray& nmea) {
+void bncCaster::newObs(const QByteArray& staID, bool firstObs, 
+                       Observation* obs) {
 
   QMutexLocker locker(&_mutex);
   _newObsRunning = true;
@@ -156,20 +133,6 @@ void bncCaster::newObs(const QByteArray& staID, const QUrl& mountPoint,
   strncpy(obs->StatID, staID.constData(),sizeof(obs->StatID));
   obs->StatID[sizeof(obs->StatID)-1] = '\0';
         
-  // Prepare RINEX Output
-  // --------------------
-  if (_rinexWriters) {
-    if (_rinexWriters->find(obs->StatID) == _rinexWriters->end()) {
-      _rinexWriters->insert(obs->StatID, new bncRinex(obs->StatID, mountPoint, 
-                                           format, latitude, longitude, nmea));
-    }
-    bncRinex* rnx = _rinexWriters->find(obs->StatID).value();
-    if (_samplingRate == 0 || iSec % _samplingRate == 0) {
-      rnx->deepCopy(obs);
-    }
-    rnx->dumpEpoch(_newTime);
-  }
-
   // First time, set the _lastDumpSec immediately
   // --------------------------------------------
   if (_lastDumpSec == 0) {

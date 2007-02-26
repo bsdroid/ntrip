@@ -60,10 +60,10 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncRinex::bncRinex(const char* StatID, const QUrl& mountPoint, 
+bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint, 
                    const QByteArray& format, const QByteArray& latitude,
                    const QByteArray& longitude, const QByteArray& nmea) {
-  _statID        = StatID;
+  _statID        = statID;
   _mountPoint    = mountPoint;
   _format        = format.left(6);
   _latitude      = latitude;

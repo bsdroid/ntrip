@@ -50,6 +50,7 @@
 #include "bnctabledlg.h"
 #include "bncapp.h"
 #include "bncutils.h"
+#include "bncrinex.h"
 
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
@@ -99,6 +100,17 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   if (num > 0) {
     _staID = _staID.left(_staID.length()-1) + QString("%1").arg(num).toAscii();
   }    
+
+  // RINEX writer
+  // ------------
+  _samplingRate = settings.value("rnxSampl").toInt();
+  if ( settings.value("rnxPath").toString().isEmpty() ) { 
+    _rnx = 0;
+  }
+  else {
+    _rnx = new bncRinex(_staID, mountPoint, format, latitude, longitude, nmea);
+  }
+
   msleep(100); //sleep 0.1 sec
 }
 
@@ -381,7 +393,19 @@ void bncGetThread::run() {
 
           emit newObs(_staID, *it);
           bool firstObs = (it == _decoder->_obsList.begin());
-          _global_caster->newObs(_staID, _mountPoint, firstObs, *it, _format, _latitude, _longitude, _nmea);
+          _global_caster->newObs(_staID, firstObs, *it);
+
+          // RINEX Output
+          // ------------
+          if (_rnx) {
+             long iSec    = long(floor((*it)->GPSWeeks+0.5));
+             long newTime = (*it)->GPSWeek * 7*24*3600 + iSec;
+            if (_samplingRate == 0 || iSec % _samplingRate == 0) {
+              _rnx->deepCopy(*it);
+            }
+            _rnx->dumpEpoch(newTime);
+          }
+
         }
         _decoder->_obsList.clear();
       }
@@ -410,7 +434,9 @@ void bncGetThread::exit(int exitCode) {
 // Try Re-Connect 
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::tryReconnect() {
-  _global_caster->reconnecting(_staID);
+  if (_rnx) {
+    _rnx->setReconnectFlag(true);
+  }
   while (1) {
     delete _socket; _socket = 0;
     sleep(_nextSleep);
