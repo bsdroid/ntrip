@@ -391,10 +391,6 @@ void bncGetThread::run() {
             continue;
           }
 
-          emit newObs(_staID, *it);
-          bool firstObs = (it == _decoder->_obsList.begin());
-          _global_caster->newObs(_staID, firstObs, *it);
-
           // RINEX Output
           // ------------
           if (_rnx) {
@@ -406,6 +402,9 @@ void bncGetThread::run() {
             _rnx->dumpEpoch(newTime);
           }
 
+          emit newObs(_staID, *it);
+          bool firstObs = (it == _decoder->_obsList.begin());
+          _global_caster->newObs(_staID, firstObs, *it);
         }
         _decoder->_obsList.clear();
       }
