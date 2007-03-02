@@ -184,7 +184,7 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
   lat = strtod(latitude,NULL);
   lon = strtod(longitude,NULL);
 
-  if ((nmea == "VRS") && (hlp.path().length() > 2) && (hlp.path().indexOf(".skl") < 0)) {
+  if ((nmea == "yes") && (hlp.path().length() > 2) && (hlp.path().indexOf(".skl") < 0)) {
     const char* flagN="N";
     const char* flagE="E";
     if (lon >180.) {lon=(lon-360.)*(-1.); flagE="W";}
