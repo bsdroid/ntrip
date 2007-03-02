@@ -56,7 +56,7 @@ bncWindow::bncWindow() {
 
   int ww = QFontMetrics(this->font()).width('w');
   
-  static const QStringList labels = QString("account,mountpoint,decoder,lat,long,type,bytes").split(",");
+  static const QStringList labels = QString("account,mountpoint,decoder,lat,long,nmea,bytes").split(",");
 
   setMinimumSize(77*ww, 65*ww);
 
@@ -184,7 +184,7 @@ _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX file is saved, you may li
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
   _logFileLineEdit->setWhatsThis(tr("<p>BNC's run-time comments as shown in the 'Log' section can be saved in a file through entering the full path for a 'Log' file.</p><p>Default value for 'Log' is an empty option field, meaning that BNC's run-time comments are not saved in a file.</p>"));
   _mountPointsTable   = new QTableWidget(0,7);
-  _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Mountpoints' section. Button 'Add Mountpoints' opens a window that allows to select data streams from an NTRIP broadcaster by their mountpoints. To delete a stream, select it by mouse click and hit 'Delete Mountpoints'. For adding or deleting several streams simultaneously, highlight them using +Shift and +Ctrl.</p><p>BNC automatically selects one out of several internal decoders for a stream based on its 'format' and 'format-details' as given in the source-table. It may happen that you need to overrule the automated decoder selection. Therefore BNC allows to edit the decoder string (first double-click, then edit field 'decoder', then hit Enter). Decoder strings allowed to be introduced are 'RTCM_2.x', 'RTCM_3', and 'RTIGS'.</p><p>BNC allows to retrieve streams from Virtual Reference Stations. Whether a stream comes from a physical Reference Station (RS) or a Virtual Reference Station (VRS) is indicated in column 'type'. For retrieving a VRS stream, an approximate rover position is required to be send in NMEA format to the NTRIP broadcaster. In return, an individual user-specific data stream is generated, usually by a network RTK software. This stream is tailored exactly to the latitude and longitude shown in the 'lat' and 'long' columns. You may change these values (first double-click, then edit fields 'lat' and/or 'long', then hit Enter) according to your needs. The position has to be introduced in northern latitude degrees (example for northern hemisphere: 52.436, example for southern hemisphere: -24.567) and eastern longitude degrees (example: 358.872 or -1.128). Editing the 'lat' and 'long' values is only possible for VRS streams. The position must point to a location within the service area of the affected RTK network.<p>"));
+  _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Mountpoints' section. Button 'Add Mountpoints' opens a window that allows to select data streams from an NTRIP broadcaster by their mountpoints. To delete a stream, select it by mouse click and hit 'Delete Mountpoints'. For adding or deleting several streams simultaneously, highlight them using +Shift and +Ctrl.</p><p>BNC automatically selects one out of several internal decoders for a stream based on its 'format' and 'format-details' as given in the source-table. It may happen that you need to overrule the automated decoder selection. Therefore BNC allows to edit the decoder string (first double-click, then edit field 'decoder', then hit Enter). Decoder strings allowed to be introduced are 'RTCM_2.x', 'RTCM_3', and 'RTIGS'.</p><p>BNC allows to receive streams from virtual reference stations. For accessing these streams, an approximate rover position is required to be send in NMEA format to the NTRIP broadcaster. Whether or not a stream retrieval needs be initiated by BNC through sending an NMEA-GGA string is indicated in column 'nmea'. For those streams showing 'yes' in column 'nmea', an individual user-specific data stream is generated, usually by a network RTK software. This stream is tailored exactly to the latitude and longitude shown in the 'lat' and 'long' columns. You may change these values (first double-click, then edit fields 'lat' and/or 'long', then hit Enter) according to your needs. The position has to be introduced in northern latitude degrees (example for northern hemisphere: 52.436, example for southern hemisphere: -24.567) and eastern longitude degrees (example: 358.872 or -1.128). Editing the 'lat' and 'long' values is only possible for streams that show a 'yes' in column 'nmea'. The position must point to a location within the service area of the affected RTK network.</p>"));
 
   _mountPointsTable->horizontalHeader()->resizeSection(1,25*ww);
   _mountPointsTable->horizontalHeader()->resizeSection(2,9*ww);
@@ -228,7 +228,7 @@ _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX file is saved, you may li
     it = new QTableWidgetItem(format);
     _mountPointsTable->setItem(iRow, 2, it);
 
-    if      (nmea == "VRS") {
+    if      (nmea == "yes") {
     it = new QTableWidgetItem(latitude);
     _mountPointsTable->setItem(iRow, 3, it);
     it = new QTableWidgetItem(longitude);
@@ -391,7 +391,7 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
     it = new QTableWidgetItem(format);
     _mountPointsTable->setItem(iRow, 2, it);
 
-    if      (nmea == "VRS") {
+    if      (nmea == "yes") {
     it = new QTableWidgetItem(latitude);
     _mountPointsTable->setItem(iRow, 3, it);
     it = new QTableWidgetItem(longitude);

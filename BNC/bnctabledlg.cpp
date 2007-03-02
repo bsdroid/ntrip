@@ -80,7 +80,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(editLayout);
 
   _table = new QTableWidget(this);
-  _table->setWhatsThis(tr("<p>Hit button 'Get Table' to download the source-table from the NTRIP broadcaster. Select streams line by line, use +Shift and +Ctrl when necessary. Hit 'OK' to return to the main window.</p><p>Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM 2.x, RTCM 3, or RTIGS formats. RTCM 2.x streams must contain message types 18 and 19 while RTCM 3 streams must contain GPS message types 1002 or 1004 and may contain GLONASS message types 1010 or 1012, see data field 'format-details' for available message types and their repetition rates in brackets.</p><p>The contents of data field 'type' tells you whether a stream comes from a physical Reference Station (RS) or a Virtual Reference Station (VRS).</p>"));
+  _table->setWhatsThis(tr("<p>Hit button 'Get Table' to download the source-table from the NTRIP broadcaster. Select streams line by line, use +Shift and +Ctrl when necessary. Hit 'OK' to return to the main window.</p><p>Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM 2.x, RTCM 3, or RTIGS formats. RTCM 2.x streams must contain message types 18 and 19 while RTCM 3 streams must contain GPS message types 1002 or 1004 and may contain GLONASS message types 1010 or 1012, see data field 'format-details' for available message types and their repetition rates in brackets.</p><p>The contents of data field 'nmea' tells you whether or not a stream retrieval needs to be initiated by BNC through sending an NMEA-GGA string carrying the latitude and longitude parameters.</p>"));
   connect(_table, SIGNAL(itemSelectionChanged()),
           this, SLOT(slotSelectionChanged()));
   mainLayout->addWidget(_table);
@@ -219,7 +219,7 @@ void bncTableDlg::slotGetTable() {
 
   static const QStringList labels = QString("mountpoint,identifier,format,"
     "format-details,carrier,system,network,country,latitude,longitude,"
-    "type,solution,generator,compress.,authentic.,fee,bitrate,"
+    "nmea,solution,generator,compress.,authentic.,fee,bitrate,"
     "misc").split(",");
 
   if (lines.size() > 0) {
@@ -237,7 +237,7 @@ void bncTableDlg::slotGetTable() {
       ++nRow;
       for (int ic = 0; ic < columns.size()-1; ic++) {
 
-        if (ic+1 == 11) { if (columns[ic+1] == "0") { columns[ic+1] = "RS"; } else { columns[ic+1] = "VRS"; }}
+        if (ic+1 == 11) { if (columns[ic+1] == "0") { columns[ic+1] = "no"; } else { columns[ic+1] = "yes"; }}
 
         QTableWidgetItem* it = new QTableWidgetItem(columns[ic+1]);
         it->setFlags(it->flags() & ~Qt::ItemIsEditable);

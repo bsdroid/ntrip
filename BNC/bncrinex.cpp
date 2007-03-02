@@ -389,8 +389,8 @@ void bncRinex::writeHeader(const QDateTime& datTim,
           _mountPoint.path())).leftJustified(60, ' ', true);
     _out << hlp.toAscii().data() << "COMMENT" << endl;
 
-    if (_nmea == "VRS") {
-    hlp = ("VRS LAT=" + _latitude + " " + "LONG=" + _longitude).leftJustified(60, ' ',true);
+    if (_nmea == "yes") {
+    hlp = ("NMEA LAT=" + _latitude + " " + "LONG=" + _longitude).leftJustified(60, ' ',true);
     _out << hlp.toAscii().data() << "COMMENT" << endl; }
 
     _out << "                                                            END OF HEADER"        << endl;
