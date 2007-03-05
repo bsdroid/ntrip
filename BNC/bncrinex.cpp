@@ -497,6 +497,7 @@ void bncRinex::closeFile() {
   if (!_rnxScriptName.isEmpty()) {
     QProcess cmd;
     cmd.start(_rnxScriptName, QStringList() << _fName << "&");
+    cmd.waitForFinished();
     ///    system( QString(_rnxScriptName + " " + _fName + " &").toAscii().data() );
   }
 }
