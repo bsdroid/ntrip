@@ -172,20 +172,23 @@ const char begEpoch = 'A';
 const char begObs   = 'B';
 const char endEpoch = 'C';
 struct Observation {
-  char   StatID[5+1]; // Station ID
-  int    SVPRN;       // Satellite PRN
+  int    flags;
+  char   StatID[20+1];// Station ID
+  char   satSys;      // Satellite System ('G' or 'R')
+  int    satNum;      // Satellite Number (PRN for GPS NAVSTAR)
+  int    slot;        // Slot Number (for Glonass)
   int    GPSWeek;     // Week of GPS-Time
   double GPSWeeks;    // Second of Week (GPS-Time)
-  double C1;          // C1-code pseudorange (meters)
-  double C2;          // C2-code pseudorange (meters)
+  double C1;          // CA-code pseudorange (meters)
+  double C2;          // CA-code pseudorange (meters)
   double P1;          // P1-code pseudorange (meters)
   double P2;          // P2-code pseudorange (meters)
   double L1;          // L1 carrier phase (cycles)
   double L2;          // L2 carrier phase (cycles)
-  double S1;          // L1 signal-to noise ratio (dB-Hz)
-  double S2;          // L2 signal-to noise ratio (db-Hz)
-  int    SNR1;        // S1 mapped to integer numbers 1 to 9
-  int    SNR2;        // S2 mapped to integer numbers 1 to 9
+  double S1;          // L1 signal-to noise ratio
+  double S2;          // L2 signal-to noise ratio
+  int    SNR1;        // L1 signal-to noise ratio (mapped to integer)
+  int    SNR2;        // L2 signal-to noise ratio (mapped to integer)
 } ;
 </pre>
 
