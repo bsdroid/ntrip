@@ -495,9 +495,10 @@ void bncRinex::dumpEpoch(long maxTime) {
 void bncRinex::closeFile() {
   _out.close();
   if (!_rnxScriptName.isEmpty()) {
-    QProcess cmd;
-    cmd.start(_rnxScriptName, QStringList() << _fName << "&");
-    cmd.waitForFinished();
+    QProcess* cmd = new QProcess();
+    cmd->start(_rnxScriptName, QStringList() << _fName << "&");
+    cmd->waitForFinished(-1);
+    delete cmd;
     ///    system( QString(_rnxScriptName + " " + _fName + " &").toAscii().data() );
   }
 }
