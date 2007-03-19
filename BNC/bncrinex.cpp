@@ -496,11 +496,7 @@ void bncRinex::closeFile() {
   _out.close();
   if (!_rnxScriptName.isEmpty()) {
     QProcess* cmd = new QProcess();
-#ifdef WIN32
     cmd->start(_rnxScriptName, QStringList() << _fName << "&");
-#else
-    cmd->start("nohup", QStringList() << _rnxScriptName << _fName << "&");
-#endif
     cmd->waitForFinished(-1);
     delete cmd;
     ///    system( QString(_rnxScriptName + " " + _fName + " &").toAscii().data() );
