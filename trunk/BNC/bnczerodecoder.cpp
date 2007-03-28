@@ -25,22 +25,36 @@
 
 #include <iostream>
 #include "bnczerodecoder.h"
+#include "bncutils.h"
 
 using namespace std;
 
 // Constructor
 //////////////////////////////////////////////////////////////////////// 
-bncZeroDecoder::bncZeroDecoder() {
+bncZeroDecoder::bncZeroDecoder(const QString& fileName) {
+  QSettings settings;
+  QString path = settings.value("rnxPath").toString();
+  expandEnvVar(path);
+
+  if ( path.length() > 0 && path[path.length()-1] != QDir::separator() ) {
+    path += QDir::separator();
+  }
+
+  _fileName = path + fileName;
+
+  _out.open(_fileName.toAscii().data());
 }
 
 // Destructor
 //////////////////////////////////////////////////////////////////////// 
 bncZeroDecoder::~bncZeroDecoder() {
+  _out.close();
 }
 
 // Decode Method
 //////////////////////////////////////////////////////////////////////// 
 void bncZeroDecoder::Decode(char* buffer, int bufLen) {
-  cout.write(buffer, bufLen);
+  _out.write(buffer, bufLen);
+  _out.flush();
 }
 
