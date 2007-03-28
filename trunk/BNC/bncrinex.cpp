@@ -188,12 +188,11 @@ t_irc bncRinex::downloadSkeleton() {
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::readSkeleton() {
 
-  _headerLines.clear();
-
   // Read the local file
   // -------------------
   QFile skl(_sklName);
   if ( skl.exists() && skl.open(QIODevice::ReadOnly) ) {
+    _headerLines.clear();
     QTextStream in(&skl);
     while ( !in.atEnd() ) {
       _headerLines.append( in.readLine() );
@@ -208,6 +207,7 @@ void bncRinex::readSkeleton() {
   else {
     QDate currDate = QDate::currentDate();
     if ( !_skeletonDate.isValid() || _skeletonDate != currDate ) {
+      _headerLines.clear();
       if ( downloadSkeleton() == success) {
         _skeletonDate = currDate;
       }
