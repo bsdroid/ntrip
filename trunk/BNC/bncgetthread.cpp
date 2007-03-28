@@ -315,7 +315,7 @@ t_irc bncGetThread::initRun() {
       _decoder = new RTIGSDecoder();
     }
     else if (_format.indexOf("SP3") != -1 || _format.indexOf("ASCII") != -1) {
-      emit(newMessage("Get Data in ASCII format"));
+      emit(newMessage("Get Data: " + _staID + " in ASCII format"));
       _decoder = new bncZeroDecoder(_staID);
     }
     else {
