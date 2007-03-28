@@ -139,11 +139,34 @@ t_irc bncRinex::downloadSkeleton() {
     QTcpSocket* socket = bncGetThread::request(url, _latitude, _longitude, _nmea, timeOut, msg);
 
     if (socket) {
-      _skeletonLines.clear();
+      _headerLines.clear();
+      bool firstLineRead = false;
       while (true) {
         if (socket->canReadLine()) {
-          _skeletonLines.append( socket->readLine() );
           irc = success;
+          QString line = socket->readLine();
+          line.chop(1);
+          if (line.indexOf("RINEX VERSION") != -1) {
+            _headerLines.append("     2.11           OBSERVATION DATA"
+                                "    M (MIXED)"
+                                "           RINEX VERSION / TYPE");
+            _headerLines.append("PGM / RUN BY / DATE");
+            firstLineRead = true;
+          }
+          else if (firstLineRead) {
+            if (line.indexOf("END OF HEADER") != -1) {
+              _headerLines.append("# / TYPES OF OBSERV");
+              _headerLines.append(
+                    QString("     1     1").leftJustified(60, ' ', true) +
+                    "WAVELENGTH FACT L1/2");
+              _headerLines.append("TIME OF FIRST OBS");
+              _headerLines.append( line );
+              break;
+            }
+            else {
+              _headerLines.append( line );
+            }
+          }
         }
         else {
           socket->waitForReadyRead(timeOut);
@@ -187,33 +210,6 @@ void bncRinex::readSkeleton() {
     if ( !_skeletonDate.isValid() || _skeletonDate != currDate ) {
       if ( downloadSkeleton() == success) {
         _skeletonDate = currDate;
-      }
-    }
-    bool firstLineRead = false;
-    QStringListIterator it(_skeletonLines);
-    while (it.hasNext()) {
-      QString line = it.next();
-      line.chop(1);
-      if (line.indexOf("RINEX VERSION") != -1) {
-        _headerLines.append("     2.11           OBSERVATION DATA"
-                            "    M (MIXED)"
-                            "           RINEX VERSION / TYPE");
-        _headerLines.append("PGM / RUN BY / DATE");
-        firstLineRead = true;
-      }
-      else if (firstLineRead) {
-        if (line.indexOf("END OF HEADER") != -1) {
-          _headerLines.append("# / TYPES OF OBSERV");
-          _headerLines.append(
-                QString("     1     1").leftJustified(60, ' ', true) +
-                "WAVELENGTH FACT L1/2");
-          _headerLines.append("TIME OF FIRST OBS");
-          _headerLines.append( line );
-          break;
-        }
-        else {
-          _headerLines.append( line );
-        }
       }
     }
   }
