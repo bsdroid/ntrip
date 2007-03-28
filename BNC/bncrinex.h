@@ -33,6 +33,7 @@
 
 #include <fstream>
 
+#include "bncconst.h"
 #include "RTCM/GPSDecoder.h"
 
 class bncRinex {
@@ -50,6 +51,7 @@ class bncRinex {
    void readSkeleton();
    void writeHeader(const QDateTime& datTim, const QDateTime& datTimNom);
    void closeFile();
+   t_irc downloadSkeleton();
 
    QByteArray          _statID;
    QByteArray          _fName;
@@ -68,6 +70,8 @@ class bncRinex {
    QByteArray          _longitude;
    QByteArray          _nmea;
    bool                _reconnectFlag;
+   QStringList         _skeletonLines;
+   QDate               _skeletonDate;
 };
 
 #endif
