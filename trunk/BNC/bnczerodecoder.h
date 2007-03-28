@@ -38,7 +38,7 @@ class bncZeroDecoder: public GPSDecoder {
   private:
     void reopen();
     QString        _fileName;
-    std::ofstream  _out;
+    std::ofstream* _out;
     QDate          _fileDate;
 };
 
