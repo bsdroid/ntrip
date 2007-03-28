@@ -92,14 +92,83 @@ bncRinex::~bncRinex() {
   _out.close();
 }
 
+// Download Skeleton Header File
+////////////////////////////////////////////////////////////////////////////
+t_irc bncRinex::downloadSkeleton() {
+
+  t_irc irc = failure;
+
+  QStringList table;
+  bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), 
+                            table, false);
+  QString net;
+  QStringListIterator it(table);
+  while (it.hasNext()) {
+    QString line = it.next();
+    if (line.indexOf("STR") == 0) {
+      QStringList tags = line.split(";");
+      if (tags.at(1) == _mountPoint.path().mid(1).toAscii()) {
+        net = tags.at(7);
+        break;
+      }
+    }
+  }
+  QString sklDir;
+  it.toFront();
+  while (it.hasNext()) {
+    QString line = it.next();
+    if (line.indexOf("NET") == 0) {
+      QStringList tags = line.split(";");
+      if (tags.at(1) == net) {
+        sklDir = tags.at(6).trimmed();
+        break;
+      }          
+    }
+  }
+  if (!sklDir.isEmpty() && sklDir != "none") {
+    QUrl url(sklDir + "/" + _mountPoint.path().mid(1,4).toLower() + ".skl"); 
+    if (url.port() == -1) {
+      url.setPort(80);
+    }
+
+    const int timeOut = 10*1000;
+    QString msg;
+    QByteArray _latitude;
+    QByteArray _longitude;
+    QByteArray _nmea;
+    QTcpSocket* socket = bncGetThread::request(url, _latitude, _longitude, _nmea, timeOut, msg);
+
+    if (socket) {
+      _skeletonLines.clear();
+      while (true) {
+        if (socket->canReadLine()) {
+          _skeletonLines.append( socket->readLine() );
+          irc = success;
+        }
+        else {
+          socket->waitForReadyRead(timeOut);
+          if (socket->bytesAvailable() > 0) {
+            continue;
+          }
+          else {
+            break;
+          }
+        }
+      }
+      delete socket;
+    }
+  }
+  return irc;
+}
+
 // Read Skeleton Header File
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::readSkeleton() {
 
   _headerLines.clear();
 
-  // Read the File
-  // -------------
+  // Read the local file
+  // -------------------
   QFile skl(_sklName);
   if ( skl.exists() && skl.open(QIODevice::ReadOnly) ) {
     QTextStream in(&skl);
@@ -111,91 +180,40 @@ void bncRinex::readSkeleton() {
     }
   }
 
-  // Try to download the skeleton file
-  // ---------------------------------
+  // Read downloaded file
+  // --------------------
   else {
-    QStringList table;
-    bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), 
-                              table, false);
-    QString net;
-    QStringListIterator it(table);
-    while (it.hasNext()) {
-      QString line = it.next();
-      if (line.indexOf("STR") == 0) {
-        QStringList tags = line.split(";");
-        if (tags.at(1) == _mountPoint.path().mid(1).toAscii()) {
-          net = tags.at(7);
-          break;
-        }
+    QDate currDate = QDate::currentDate();
+    if ( !_skeletonDate.isValid() || _skeletonDate != currDate ) {
+      if ( downloadSkeleton() == success) {
+        _skeletonDate = currDate;
       }
     }
-    QString sklDir;
-    it.toFront();
+    bool firstLineRead = false;
+    QStringListIterator it(_skeletonLines);
     while (it.hasNext()) {
       QString line = it.next();
-      if (line.indexOf("NET") == 0) {
-        QStringList tags = line.split(";");
-        if (tags.at(1) == net) {
-          sklDir = tags.at(6).trimmed();
+      line.chop(1);
+      if (line.indexOf("RINEX VERSION") != -1) {
+        _headerLines.append("     2.11           OBSERVATION DATA"
+                            "    M (MIXED)"
+                            "           RINEX VERSION / TYPE");
+        _headerLines.append("PGM / RUN BY / DATE");
+        firstLineRead = true;
+      }
+      else if (firstLineRead) {
+        if (line.indexOf("END OF HEADER") != -1) {
+          _headerLines.append("# / TYPES OF OBSERV");
+          _headerLines.append(
+                QString("     1     1").leftJustified(60, ' ', true) +
+                "WAVELENGTH FACT L1/2");
+          _headerLines.append("TIME OF FIRST OBS");
+          _headerLines.append( line );
           break;
-        }          
-      }
-    }
-    if (!sklDir.isEmpty() && sklDir != "none") {
-      QUrl url(sklDir + "/" + _mountPoint.path().mid(1,4).toLower() + ".skl"); 
-      if (url.port() == -1) {
-        url.setPort(80);
-      }
-
-      const int timeOut = 10*1000;
-      QString msg;
-      QByteArray _latitude;
-      QByteArray _longitude;
-      QByteArray _nmea;
-      QTcpSocket* socket = bncGetThread::request(url, _latitude, _longitude, _nmea, timeOut, msg);
-
-      if (socket) {
-        bool firstLineRead = false;
-        while (true) {
-          if (socket->canReadLine()) {
-            QString line = socket->readLine();
-            line.chop(1);
-            if (line.indexOf("RINEX VERSION") != -1) {
-              _headerLines.append("     2.11           OBSERVATION DATA"
-                                  "    M (MIXED)"
-                                  "           RINEX VERSION / TYPE");
-              _headerLines.append("PGM / RUN BY / DATE");
-//            _headerLines.append(
-//                         QString("unknown").leftJustified(60, ' ', true) +
-//                         "OBSERVER / AGENCY");
-              firstLineRead = true;
-	    }
-            else if (firstLineRead) {
-              if (line.indexOf("END OF HEADER") != -1) {
-                _headerLines.append("# / TYPES OF OBSERV");
-                _headerLines.append(
-                      QString("     1     1").leftJustified(60, ' ', true) +
-                      "WAVELENGTH FACT L1/2");
-                _headerLines.append("TIME OF FIRST OBS");
-                _headerLines.append( line );
-                break;
-	      }
-              else {
-                _headerLines.append( line );
-	      }
-	    }
-          }
-          else {
-            socket->waitForReadyRead(timeOut);
-            if (socket->bytesAvailable() > 0) {
-              continue;
-            }
-            else {
-              break;
-            }
-          }
         }
-        delete socket;
+        else {
+          _headerLines.append( line );
+        }
       }
     }
   }
