@@ -42,7 +42,7 @@ bncZeroDecoder::bncZeroDecoder(const QString& fileName) {
 
   _fileName = path + fileName;
 
-  _out.open(_fileName.toAscii().data());
+  reopen();
 }
 
 // Destructor
@@ -51,9 +51,21 @@ bncZeroDecoder::~bncZeroDecoder() {
   _out.close();
 }
 
+// Reopen Output File
+//////////////////////////////////////////////////////////////////////// 
+void bncZeroDecoder::reopen() {
+  QDate currDate = QDate::currentDate();
+  if (!_fileDate.isValid() || _fileDate != currDate) {
+    _out.close();
+    _out.open( (_fileName + "_" + currDate.toString("yyMMdd")).toAscii().data());
+    _fileDate = currDate;
+  }
+}
+
 // Decode Method
 //////////////////////////////////////////////////////////////////////// 
 void bncZeroDecoder::Decode(char* buffer, int bufLen) {
+  reopen();
   _out.write(buffer, bufLen);
   _out.flush();
 }
