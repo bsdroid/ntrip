@@ -316,7 +316,7 @@ t_irc bncGetThread::initRun() {
     }
     else if (_format.indexOf("SP3") != -1 || _format.indexOf("ASCII") != -1) {
       emit(newMessage("Get Data in ASCII format"));
-      _decoder = new bncZeroDecoder();
+      _decoder = new bncZeroDecoder(_staID);
     }
     else {
       emit(newMessage(_staID + ": Unknown data format " + _format));

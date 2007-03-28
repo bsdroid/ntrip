@@ -26,14 +26,18 @@
 #ifndef INC_BNCZERODECODER_H
 #define INC_BNCZERODECODER_H
 
+#include <fstream>
+#include <QtCore>
 #include "RTCM/GPSDecoder.h"
 
 class bncZeroDecoder: public GPSDecoder {
   public:
-    bncZeroDecoder();
+    bncZeroDecoder(const QString& fileName);
     ~bncZeroDecoder();
     virtual void Decode(char* buffer, int bufLen);
   private:
+    QString        _fileName;
+    std::ofstream  _out;
 };
 
 #endif  // include blocker
