@@ -70,7 +70,6 @@ class bncRinex {
    QByteArray          _longitude;
    QByteArray          _nmea;
    bool                _reconnectFlag;
-   QStringList         _skeletonLines;
    QDate               _skeletonDate;
 };
 
