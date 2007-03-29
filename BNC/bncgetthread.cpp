@@ -314,8 +314,8 @@ t_irc bncGetThread::initRun() {
       emit(newMessage("Get Data: " + _staID + " in RTIGS format"));
       _decoder = new RTIGSDecoder();
     }
-    else if (_format.indexOf("SP3") != -1 || _format.indexOf("ASCII") != -1) {
-      emit(newMessage("Get Data: " + _staID + " in ASCII format"));
+    else if (_format.indexOf("SP3") != -1 || _format.indexOf("ZERO") != -1) {
+      emit(newMessage("Get Data: " + _staID + " in original format"));
       _decoder = new bncZeroDecoder(_staID);
     }
     else {
