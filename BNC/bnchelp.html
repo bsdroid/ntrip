@@ -49,9 +49,13 @@ BNC decodes and converts GNSS data streams carrying code and phase data coming i
 </ul>
 Furthermore, BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
 </p>
-<p><b>Warning</b><br>
+<p><b>Resources</b><br>
 BNC needs access to the Internet with a minimum of about 2 to 6 kbits/sec per stream depending on the stream format. You need to make sure that you have always the necessary bandwidth available. BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. Please be aware that it is a powerful tool that may generate a heavy workload on the NTRIP broadcaster side depending on the number of streams it requests. We suggest to limited the number of streams where possible to avoid unnecessary workload.
 </p>
+<p>
+Note that running BNC requires that the clock of the hosting computer is synchronized.
+</p>
+
 <p><a name="options"><h3>B - Options</h3></p>
 <p>
 B - 1. <a href=#file>File</a><br>
