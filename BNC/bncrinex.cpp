@@ -509,6 +509,10 @@ void bncRinex::dumpEpoch(long maxTime) {
 void bncRinex::closeFile() {
   _out.close();
   if (!_rnxScriptName.isEmpty()) {
-    QProcess::startDetached(_rnxScriptName, QStringList() << _fName);
+#ifdef WIN32
+    QProcess::startDetached(_rnxScriptName, QStringList() << _fName) ;
+#else
+    QProcess::startDetached("sh", QStringList() << _rnxScriptName << _fName) ;
+#endif
   }
 }
