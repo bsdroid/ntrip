@@ -511,9 +511,9 @@ void bncRinex::closeFile() {
   _out.close();
   if (!_rnxScriptName.isEmpty()) {
 
-    cout << "BEG " 
-         << QTime::currentTime().toString("hh:mm:ss.zzz ").toAscii().data()
-         << _statID.data() << endl;
+//    cout << "BEG " 
+//         << QTime::currentTime().toString("hh:mm:ss.zzz ").toAscii().data()
+//         << _statID.data() << endl;
 
 #ifdef WIN32
     QProcess::startDetached(_rnxScriptName, QStringList() << _fName) ;
@@ -521,9 +521,9 @@ void bncRinex::closeFile() {
     QProcess::startDetached("sh", QStringList() << _rnxScriptName << _fName) ;
 #endif
 
-    cout << "END " 
-         << QTime::currentTime().toString("hh:mm:ss.zzz ").toAscii().data()
-         << _statID.data() << endl;
+//    cout << "END " 
+//         << QTime::currentTime().toString("hh:mm:ss.zzz ").toAscii().data()
+//         << _statID.data() << endl;
 
   }
 }
