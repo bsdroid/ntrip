@@ -507,12 +507,23 @@ void bncRinex::dumpEpoch(long maxTime) {
 // Close the Old RINEX File
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::closeFile() {
+  QMutexLocker locker(&_mutex);
   _out.close();
   if (!_rnxScriptName.isEmpty()) {
+
+    cout << "BEG " 
+         << QTime::currentTime().toString("hh:mm:ss.zzz ").toAscii().data()
+         << _statID.data() << endl;
+
 #ifdef WIN32
     QProcess::startDetached(_rnxScriptName, QStringList() << _fName) ;
 #else
     QProcess::startDetached("sh", QStringList() << _rnxScriptName << _fName) ;
 #endif
+
+    cout << "END " 
+         << QTime::currentTime().toString("hh:mm:ss.zzz ").toAscii().data()
+         << _statID.data() << endl;
+
   }
 }
