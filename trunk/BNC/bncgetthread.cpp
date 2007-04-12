@@ -165,14 +165,16 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
             " HTTP/1.0\r\n"
             "User-Agent: NTRIP BNC 1.2b\r\n"
             "Authorization: Basic " +
-            userAndPwd.toBase64() + "\r\n\r\n";
+            userAndPwd.toBase64() + "\r\n";
    } else {
    reqStr = "GET " + hlp.toEncoded() + 
             " HTTP/1.0\r\n"
             "User-Agent: NTRIP BNC 1.2b\r\n"
             "Authorization: Basic " +
-            userAndPwd.toBase64() + "\r\n\r\n";
+            userAndPwd.toBase64() + "\r\n";
   }
+  if (hlp.path().indexOf(".skl") > 0) { reqStr += "Host: " + hlp.host().toAscii() + "\r\n"; }
+  reqStr += "\r\n";
 
 //////////////////////////////////////////////////////////////////
 // Additional NMEA String in request to handle VRS data streams //
