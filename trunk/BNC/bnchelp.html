@@ -13,7 +13,7 @@ BNC has been written under GNU General Public License (GPL). Binaries for BNC ar
 <tr><td><b>History</b></td></tr>
 <tr><td>Dec 2006 &nbsp;</td><td>Version 1.0b &nbsp;</td><td>Binaries of first beta version published.</td></tr>
 <tr><td>Jan 2007 &nbsp;</td><td>Version 1.1b &nbsp;</td><td>[Add] Observables C2, S1, and S2<br>[Add] Virtual reference station access<br>[Bug] RTCM2 decoder time tag fixed<br>[Mod] Small letters for public RINEX skeleton files<br>[Add] Online help through Shift+F1</td></tr>
-<tr><td>Apr 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td><td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save<br> [Add] ZERO decoder added<br> [Mod] Download public RINEX skeletons once per day<br> [Mod] Upgrade to Qt Version 4.2.3<br> [Mod] Replace 'system' call for RINEX script by 'QProcess'<br> [Add] HTTP Host directive for skeleton file download
+<tr><td>Apr 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td><td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save<br> [Add] ZERO decoder added<br> [Mod] Download public RINEX skeletons once per day<br> [Mod] Upgrade to Qt Version 4.2.3<br> [Mod] Replace 'system' call for RINEX script by 'QProcess'<br> [Bug] HTTP Host directive for skeleton file download
 </table>
 </p>
 <h3>Contents</h3>
@@ -423,7 +423,7 @@ EUREF as well as IGS follow an open data policy. Streams are made available thro
 We experienced a limitation of the Standard Windows Operating Systems concerning socket communication. Sockets are not always handled properly. As BNC makes intensive use of communication through sockets, we suggest to use the Server Version of Windows Operating Systems when running BNC continuously for a long time on a Windows platform.
 </li>
 <li>
-The code provided by NRCan for decoding streams coming in RTIGS format is 32-bit sensitive and can not be compiled on 64-bit Linux systems. Thus, the BNC executable provided for Linux has been generated on a 32-bit system. Because of the usual 32-bit/64-bit binary compatibility of Linux systems, the executable should run on both types of machines.
+The source code provided by NRCan for handling streams coming in RTIGS format is 32-bit sensitive and can not be used for 64-bit Linux systems. Thus, the BNC executable provided for Linux has been compiled on a 32-bit system. Because of the usual 32-bit/64-bit binary compatibility of Linux systems, this executable may run on both types of machines.
 </li>
 <br>
 </ul>

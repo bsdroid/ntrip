@@ -442,8 +442,8 @@ void bncGetThread::tryReconnect() {
     }
     else {
       _nextSleep *= 2;
-      if (_nextSleep > 128) {
-        _nextSleep = 128;
+      if (_nextSleep > 256) {
+        _nextSleep = 256;
       }
       _nextSleep += rand() % 6;
     }
