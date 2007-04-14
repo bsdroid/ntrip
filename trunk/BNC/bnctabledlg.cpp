@@ -291,8 +291,8 @@ void bncTableDlg::accept() {
       format.replace(" ", "_");
       if (_table->isItemSelected(item)) {
         QUrl url;
-        url.setUserName(_casterUserLineEdit->text());
-        url.setPassword(_casterPasswordLineEdit->text());
+        url.setUserName(QUrl::toPercentEncoding(_casterUserLineEdit->text()));
+        url.setPassword(QUrl::toPercentEncoding(_casterPasswordLineEdit->text()));
         url.setHost(_casterHostLineEdit->text());
         url.setPort(_casterPortLineEdit->text().toInt());
         url.setPath(item->text());
