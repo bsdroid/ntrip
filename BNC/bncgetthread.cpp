@@ -151,7 +151,7 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
   // ------------
   QString uName = QUrl::fromPercentEncoding(mountPoint.userName().toAscii());
   QString passW = QUrl::fromPercentEncoding(mountPoint.password().toAscii());
-  QByteArray userAndPwd = userName.toAscii() + ":" + passW.toAscii();
+  QByteArray userAndPwd = uName.toAscii() + ":" + passW.toAscii();
 
   QUrl hlp;
   hlp.setScheme("http");
