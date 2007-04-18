@@ -1,5 +1,6 @@
 
-###CONFIG = debug
+###CONFIG -= debug
+###CONFIG += debug
 
 DEFINES += NO_RTCM3_MAIN
 
