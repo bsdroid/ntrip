@@ -207,7 +207,6 @@ void bncRinex::readSkeleton() {
   else {
     QDate currDate = QDate::currentDate();
     if ( !_skeletonDate.isValid() || _skeletonDate != currDate ) {
-      _headerLines.clear();
       if ( downloadSkeleton() == success) {
         _skeletonDate = currDate;
       }
