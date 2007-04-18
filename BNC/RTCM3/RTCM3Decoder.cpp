@@ -89,7 +89,6 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
 
         if (rr == 2) {
           std::cerr << "No valid RINEX! All values are modulo 299792.458!\n";
-          exit(1);
         }
 
         for (int ii = 0; ii < _Parser.Data.numsats; ii++) {
