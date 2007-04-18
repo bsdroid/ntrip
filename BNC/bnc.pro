@@ -11,6 +11,9 @@ unix:QMAKE_CXXFLAGS_RELEASE -= -O2
 
 win32:QMAKE_LFLAGS -= -mthreads
 
+debug:OBJECTS_DIR=.obj/debug
+release:OBJECTS_DIR=.obj/release
+
 HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bnccaster.h bncrinex.h bncapp.h bncutils.h   bnchlpdlg.h    \
           bncconst.h bnchtml.h bnctableitem.h bnczerodecoder.h        \
