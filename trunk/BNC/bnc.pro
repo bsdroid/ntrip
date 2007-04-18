@@ -1,6 +1,8 @@
 
-###CONFIG -= release
-###CONFIG += debug
+# Switch to debug configuration
+# -----------------------------
+CONFIG -= release
+CONFIG += debug
 
 DEFINES += NO_RTCM3_MAIN
 
@@ -12,7 +14,9 @@ unix:QMAKE_CXXFLAGS_RELEASE -= -O2
 win32:QMAKE_LFLAGS -= -mthreads
 
 debug:OBJECTS_DIR=.obj/debug
+debug:MOC_DIR=.moc/debug
 release:OBJECTS_DIR=.obj/release
+release:MOC_DIR=.moc/release
 
 HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bnccaster.h bncrinex.h bncapp.h bncutils.h   bnchlpdlg.h    \
