@@ -63,19 +63,19 @@ void RTIGSDecoder::Decode(char* buffer, int bufLen) {
 
   // Append the incomming data to the internal buffer
   // ------------------------------------------------
-  _buffer.append( QByteArray(buffer, bufLen) );
+  _buffer.append(buffer, bufLen);
 
   // Find the beginning of the message
   // ---------------------------------
   bool found = false;
-  for (int ii = 0; ii < _buffer.size(); ii++) { 
+  for (unsigned ii = 0; ii < _buffer.size(); ii++) { 
     unsigned short xx;
-    memcpy( (void*) &xx, &_buffer.data()[ii], sizeof(xx) );
+    memcpy( (void*) &xx, &_buffer[ii], sizeof(xx) );
     if (_GPSTrans.f_IsLittleEndian) {
       SwitchBytes( (char*) &xx, sizeof(xx) );
     }
     if (xx == 200) {
-      _buffer = _buffer.mid(ii);
+      _buffer = _buffer.substr(ii);
       found = true;
       break;
     }
@@ -125,5 +125,5 @@ void RTIGSDecoder::Decode(char* buffer, int bufLen) {
 
   // Unprocessed bytes remain in buffer
   // ----------------------------------
-  _buffer = _buffer.mid(numbytes);
+  _buffer = _buffer.substr(numbytes);
 }
