@@ -401,7 +401,7 @@ void bncGetThread::run() {
             _rnx->dumpEpoch(newTime);
           }
 
-          emit newObs(_staID, *it);
+          emit newBytes(_staID, sizeof(**it));
           bool firstObs = (it == _decoder->_obsList.begin());
           _global_caster->newObs(_staID, firstObs, *it);
         }
