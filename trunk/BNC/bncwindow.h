@@ -39,7 +39,7 @@ class bncWindow : public QMainWindow {
     ~bncWindow();
   
   public slots:  
-    void slotMessage(const QByteArray& msg);
+    void slotMessage(const QByteArray msg);
 
   private slots:
     void slotHelp();

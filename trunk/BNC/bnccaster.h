@@ -50,7 +50,7 @@ class bncCaster : public QObject {
 
  private slots:
    void slotNewConnection();
-   void slotGetThreadError(const QByteArray& staID);
+   void slotGetThreadError(const QByteArray staID);
    void dumpEpochSlot();
 
  private:
