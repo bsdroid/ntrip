@@ -560,7 +560,7 @@ void bncWindow::slotSelectionChanged() {
 
 // Display Program Messages 
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotMessage(const QByteArray& msg) {
+void bncWindow::slotMessage(const QByteArray msg) {
 
   const int maxBufferSize = 10000;
  

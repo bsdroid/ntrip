@@ -185,8 +185,8 @@ void bncCaster::slotNewConnection() {
 // Add New Thread
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::addGetThread(bncGetThread* getThread) {
-  connect(getThread, SIGNAL(error(const QByteArray&)), 
-          this, SLOT(slotGetThreadError(const QByteArray&)));
+  connect(getThread, SIGNAL(error(const QByteArray)), 
+          this, SLOT(slotGetThreadError(const QByteArray)));
 
   _staIDs.push_back(getThread->staID());
   _threads.push_back(getThread);
@@ -194,7 +194,7 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
 
 // Error in get thread
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::slotGetThreadError(const QByteArray& staID) {
+void bncCaster::slotGetThreadError(const QByteArray staID) {
   QMutexLocker locker(&_mutex);
   _staIDs.removeAll(staID);
   emit( newMessage(
