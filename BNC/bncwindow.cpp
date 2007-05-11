@@ -504,9 +504,9 @@ void bncWindow::slotGetData() {
     connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
             (bncApp*)qApp, SLOT(slotMessage(const QByteArray&)));
 
-    connect(getThread, SIGNAL(newObs(const QByteArray&, Observation*)),
+    connect(getThread, SIGNAL(newBytes(const QByteArray, double)),
             (bncTableItem*) _mountPointsTable->item(iRow, 6), 
-            SLOT(slotNewObs(const QByteArray&, Observation*)));
+            SLOT(slotBytes(const QByteArray, double)));
 
     _global_caster->addGetThread(getThread);
 

@@ -41,7 +41,7 @@ class bncTableItem : public QObject, public QTableWidgetItem {
   signals:
  
   public slots:
-    void slotNewObs(const QByteArray& staID, Observation* obs);
+    void slotNewBytes(const QByteArray staID, double nbyte);
 
   private:
     double _bytesRead;

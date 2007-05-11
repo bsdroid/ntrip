@@ -56,11 +56,11 @@ bncTableItem::~bncTableItem() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncTableItem::slotNewObs(const QByteArray&, Observation* obs) {
+void bncTableItem::slotNewBytes(const QByteArray, double nbyte) {
 
   QMutexLocker locker(&_mutex);
 
-  _bytesRead += sizeof(*obs);
+  _bytesRead += nbyte;
 
   if      (_bytesRead < 1e3) {
     setText(QString("%1 byte(s)").arg((int)_bytesRead));
