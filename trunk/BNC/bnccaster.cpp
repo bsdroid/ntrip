@@ -92,12 +92,6 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
   if (_waitTime < 1) {
     _waitTime = 1;
   }
-
-  // Start dump epoch loop
-  // ---------------------
-  _newObsRunning = false;
-  _newTime = 0;
-  dumpEpochSlot();
 }
 
 // Destructor
@@ -123,10 +117,9 @@ void bncCaster::newObs(const QByteArray& staID, bool firstObs,
                        Observation* obs) {
 
   QMutexLocker locker(&_mutex);
-  _newObsRunning = true;
 
   long iSec    = long(floor(obs->GPSWeeks+0.5));
-  _newTime = obs->GPSWeek * 7*24*3600 + iSec;
+  long newTime = obs->GPSWeek * 7*24*3600 + iSec;
 
   // Rename the Station
   // ------------------
@@ -136,12 +129,12 @@ void bncCaster::newObs(const QByteArray& staID, bool firstObs,
   // First time, set the _lastDumpSec immediately
   // --------------------------------------------
   if (_lastDumpSec == 0) {
-    _lastDumpSec = _newTime - 1;
+    _lastDumpSec = newTime - 1;
   }
 
   // An old observation - throw it away
   // ----------------------------------
-  if (_newTime <= _lastDumpSec) {
+  if (newTime <= _lastDumpSec) {
     if (firstObs) {
       QSettings settings;
       if ( !settings.value("outFile").toString().isEmpty() || 
@@ -156,24 +149,14 @@ void bncCaster::newObs(const QByteArray& staID, bool firstObs,
 
   // Save the observation
   // --------------------
-  _epochs->insert(_newTime, obs);
+  _epochs->insert(newTime, obs);
 
-  _newObsRunning = false;
-}
-
-// Dump Loop Event
-////////////////////////////////////////////////////////////////////////////
-void bncCaster::dumpEpochSlot() {
-  if (!_newObsRunning) {
-    if (_newTime != 0 && _epochs->size() > 0) {
-      dumpEpochs(_lastDumpSec + 1, _newTime - _waitTime);
-    
-      if (_lastDumpSec < _newTime - _waitTime) {
-        _lastDumpSec = _newTime - _waitTime;
-      }
-    }
+  // Dump Epochs
+  // -----------
+  if (newTime - _waitTime > _lastDumpSec) {
+    dumpEpochs(_lastDumpSec + 1, newTime - _waitTime);
+    _lastDumpSec = newTime - _waitTime;
   }
-  QTimer::singleShot(100, this, SLOT(dumpEpochSlot()));
 }
 
 // New Connection
