@@ -56,8 +56,6 @@
 
 #include "bnccaster.h"
 
-extern bncCaster* _global_caster;
-
 class bncApp : public QApplication {
   Q_OBJECT
   public:

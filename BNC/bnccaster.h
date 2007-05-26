@@ -42,7 +42,9 @@ class bncCaster : public QObject {
    ~bncCaster();
    void addGetThread(bncGetThread* getThread);
    int  numStations() const {return _staIDs.size();}
-   void newObs(const QByteArray& staID, bool firstObs, Observation* obs);
+
+ public slots:
+   void newObs(const QByteArray staID, bool firstObs, Observation* obs);
 
  signals:
    void getThreadErrors();   

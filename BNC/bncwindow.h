@@ -30,6 +30,7 @@
 #include <QWhatsThis>
 
 #include "bncgetthread.h"
+#include "bnccaster.h"
 
 class bncWindow : public QMainWindow {
   Q_OBJECT
@@ -94,5 +95,7 @@ class bncWindow : public QMainWindow {
     QTextEdit*  _log;
 
     QWidget*   _canvas;
+
+    bncCaster* _caster;
 };
 #endif
