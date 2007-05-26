@@ -49,8 +49,6 @@
 
 using namespace std;
 
-bncCaster* _global_caster = 0;
-
 // Main Program
 /////////////////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[]) {
@@ -101,11 +99,11 @@ int main(int argc, char *argv[]) {
   // Non-Interactive (Batch) Mode
   // ----------------------------
   else {
-    _global_caster = new bncCaster(settings.value("outFile").toString(),
-                                   settings.value("outPort").toInt());
+    bncCaster* caster = new bncCaster(settings.value("outFile").toString(),
+                                      settings.value("outPort").toInt());
 
-    app.connect(_global_caster, SIGNAL(getThreadErrors()), &app, SLOT(quit()));
-    app.connect(_global_caster, SIGNAL(newMessage(const QByteArray&)), 
+    app.connect(caster, SIGNAL(getThreadErrors()), &app, SLOT(quit()));
+    app.connect(caster, SIGNAL(newMessage(const QByteArray&)), 
                 &app, SLOT(slotMessage(const QByteArray&)));
   
     ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
@@ -125,11 +123,11 @@ int main(int argc, char *argv[]) {
       app.connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
                   &app, SLOT(slotMessage(const QByteArray&)));
 
-      _global_caster->addGetThread(getThread);
+      caster->addGetThread(getThread);
 
       getThread->start();
     }
-    if (_global_caster->numStations() == 0) {
+    if (caster->numStations() == 0) {
       return 0;
     }
   }

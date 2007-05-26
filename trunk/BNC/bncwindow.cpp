@@ -473,15 +473,15 @@ void bncWindow::slotGetData() {
   _actGetData->setEnabled(false);
   _actStop->setEnabled(true);
 
-  _global_caster = new bncCaster(_outFileLineEdit->text(), 
+  _caster = new bncCaster(_outFileLineEdit->text(), 
                              _outPortLineEdit->text().toInt());
 
-  connect(_global_caster, SIGNAL(getThreadErrors()), 
+  connect(_caster, SIGNAL(getThreadErrors()), 
           this, SLOT(slotGetThreadErrors()));
 
-  connect(_global_caster, SIGNAL(newMessage(const QByteArray&)), 
+  connect(_caster, SIGNAL(newMessage(const QByteArray&)), 
           this, SLOT(slotMessage(const QByteArray&)));
-  connect(_global_caster, SIGNAL(newMessage(const QByteArray&)), 
+  connect(_caster, SIGNAL(newMessage(const QByteArray&)), 
           (bncApp*)qApp, SLOT(slotMessage(const QByteArray&)));
 
   slotMessage("============ Start BNC ============");
@@ -508,7 +508,7 @@ void bncWindow::slotGetData() {
             (bncTableItem*) _mountPointsTable->item(iRow, 6), 
             SLOT(slotNewBytes(const QByteArray, double)));
 
-    _global_caster->addGetThread(getThread);
+    _caster->addGetThread(getThread);
 
     getThread->start();
   }
@@ -521,7 +521,7 @@ void bncWindow::slotStop() {
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
-    delete _global_caster; _global_caster = 0;
+    delete _caster; _caster = 0;
     _actGetData->setEnabled(true);
     _actStop->setEnabled(false);
     _actAddMountPoints->setEnabled(true);

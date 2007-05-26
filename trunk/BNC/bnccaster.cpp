@@ -113,7 +113,7 @@ bncCaster::~bncCaster() {
 
 // New Observations
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::newObs(const QByteArray& staID, bool firstObs, 
+void bncCaster::newObs(const QByteArray staID, bool firstObs, 
                        Observation* obs) {
 
   QMutexLocker locker(&_mutex);
@@ -168,6 +168,9 @@ void bncCaster::slotNewConnection() {
 // Add New Thread
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::addGetThread(bncGetThread* getThread) {
+  connect(getThread, SIGNAL(newObs(const QByteArray, bool, Observation*)),
+          this,      SLOT(newObs(const QByteArray, bool, Observation*)));
+
   connect(getThread, SIGNAL(error(const QByteArray)), 
           this, SLOT(slotGetThreadError(const QByteArray)));
 
