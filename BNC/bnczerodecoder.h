@@ -1,11 +1,10 @@
 // Part of BNC, a utility for retrieving decoding and
-// converting GNSS data streams from NTRIP broadcasters,
-// written by Leos Mervart.
+// converting GNSS data streams from NTRIP broadcasters.
 //
-// Copyright (C) 2006
+// Copyright (C) 2007
 // German Federal Agency for Cartography and Geodesy (BKG)
 // http://www.bkg.bund.de
-// Czech Technical University Prague, Department of Advanced Geodesy
+// Czech Technical University Prague, Department of Geodesy
 // http://www.fsv.cvut.cz
 //
 // Email: euref-ip@bkg.bund.de

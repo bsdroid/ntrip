@@ -38,6 +38,7 @@
 //   2006/10/17  OMO  Fixed parity handling 
 //   2006/10/18  OMO  Improved screening of bad data in RTCM2_Obs::extract
 //   2006/11/25  OMO  Revised check for presence of GLONASS data
+//   2007/05/25  GW   Round time tag to 100 ms
 //
 // (c) DLR/GSOC
 //
@@ -882,6 +883,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     // SC-104 V2.3 4-42 Note 1 4. Assume measurements at hard edges
     // of receiver clock with minimum divisions of 10ms
     // and clock error less then recommended 1.1ms
+    // Hence, round time tag to 100 ms
     t = floor(t*100.+0.5)/100.;
     
     // Frequency (exit if neither L1 nor L2)
@@ -975,6 +977,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     // SC-104 V2.3 4-42 Note 1 4. Assume measurements at hard edges
     // of receiver clock with minimum divisions of 10ms
     // and clock error less then recommended 1.1ms
+    // Hence, round time tag to 100 ms
     t = floor(t*100.+0.5)/100.;
     
     // Frequency (exit if neither L1 nor L2)

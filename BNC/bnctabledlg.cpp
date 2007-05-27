@@ -1,11 +1,10 @@
 // Part of BNC, a utility for retrieving decoding and
-// converting GNSS data streams from NTRIP broadcasters,
-// written by Leos Mervart.
+// converting GNSS data streams from NTRIP broadcasters.
 //
-// Copyright (C) 2006
+// Copyright (C) 2007
 // German Federal Agency for Cartography and Geodesy (BKG)
 // http://www.bkg.bund.de
-// Czech Technical University Prague, Department of Advanced Geodesy
+// Czech Technical University Prague, Department of Geodesy
 // http://www.fsv.cvut.cz
 //
 // Email: euref-ip@bkg.bund.de
@@ -85,10 +84,6 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
           this, SLOT(slotSelectionChanged()));
   mainLayout->addWidget(_table);
 
-  //  _buttonSkl = new QPushButton(tr("Create skeleton headers"), this);
-  //  _buttonSkl->setEnabled(false);
-  //  connect(_buttonSkl, SIGNAL(clicked()), this, SLOT(slotSkl()));
-
   _buttonWhatsThis = new QPushButton(tr("Help=Shift+F1"), this);
   connect(_buttonWhatsThis, SIGNAL(clicked()), this, SLOT(slotWhatsThis()));
 
@@ -103,7 +98,6 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   connect(_buttonOK, SIGNAL(clicked()), this, SLOT(accept()));
 
   QHBoxLayout* buttonLayout = new QHBoxLayout;
-  //  buttonLayout->addWidget(_buttonSkl);
   buttonLayout->addWidget(_buttonWhatsThis);
   buttonLayout->addStretch(1);
   buttonLayout->addWidget(_buttonGet);
@@ -310,10 +304,6 @@ void bncTableDlg::accept() {
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::slotSelectionChanged() {
   if (_table->selectedItems().isEmpty()) {
-    //    _buttonSkl->setEnabled(false);
-  }
-  else {
-    //    _buttonSkl->setEnabled(true);
   }
 }
 

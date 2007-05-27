@@ -1,11 +1,10 @@
 // Part of BNC, a utility for retrieving decoding and
-// converting GNSS data streams from NTRIP broadcasters,
-// written by Leos Mervart.
+// converting GNSS data streams from NTRIP broadcasters.
 //
-// Copyright (C) 2006
+// Copyright (C) 2007
 // German Federal Agency for Cartography and Geodesy (BKG)
 // http://www.bkg.bund.de
-// Czech Technical University Prague, Department of Advanced Geodesy
+// Czech Technical University Prague, Department of Geodesy
 // http://www.fsv.cvut.cz
 //
 // Email: euref-ip@bkg.bund.de
@@ -22,6 +21,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+/* -------------------------------------------------------------------------
+ * BKG NTRIP Client
+ * -------------------------------------------------------------------------
+ *
+ * Class:      bncZeroDecoder
+ *
+ * Purpose:    Implementation of zero decoder to by-pass decoding algorithm
+ *
+ * Author:     L. Mervart
+ *
+ * Created:    24-Apr-2007
+ *
+ * Changes:    
+ *
+ * -----------------------------------------------------------------------*/
 
 #include <iostream>
 #include "bnczerodecoder.h"
