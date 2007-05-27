@@ -7,13 +7,14 @@ The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding 
 BNC has been developed for the Federal Agency for Cartography and Geodesy (BKG) within the framework of the EUREF-IP Pilot Project (EUREF-IP, IP for Internet Protocol) and the Real-Time IGS Working Group (RTIGS WG).
 </p>
 <p>
-BNC has been written under GNU General Public License (GPL). Binaries for BNC are available for Windows, 32-bit and 64-bit Linux, and Solaris systems. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.2.3 are installed.
+BNC has been written under GNU General Public License (GPL). Binaries for BNC are available for Windows, 32-bit Linux, 64-bit Linux (compiled using option -m32), and Solaris systems. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.2.3 are installed.
 <table>
 <tr></tr>
 <tr><td><b>History</b></td></tr>
 <tr><td>Dec 2006 &nbsp;</td><td>Version 1.0b &nbsp;</td><td>Binaries of first beta version published.</td></tr>
 <tr><td>Jan 2007 &nbsp;</td><td>Version 1.1b &nbsp;</td><td>[Add] Observables C2, S1, and S2<br>[Add] Virtual reference station access<br>[Bug] RTCM2 decoder time tag fixed<br>[Mod] Small letters for public RINEX skeleton files<br>[Add] Online help through Shift+F1</td></tr>
-<tr><td>Apr 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td><td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save<br> [Add] ZERO decoder added<br> [Mod] Download public RINEX skeletons once per day<br> [Mod] Upgrade to Qt Version 4.2.3<br> [Mod] Replace 'system' call for RINEX script by 'QProcess'<br> [Add] HTTP Host directive for skeleton file download<br> [Add] Percent encoding for user IDs and passwords<br> [Bug] Exit execution of calling thread for RTCM3 streams
+<tr><td>Apr 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td><td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save<br> [Add] ZERO decoder added<br> [Mod] Download public RINEX skeletons once per day<br> [Mod] Upgrade to Qt Version 4.2.3<br> [Mod] Replace 'system' call for RINEX script by 'QProcess'<br> [Add] HTTP Host directive for skeleton file download<br> [Add] Percent encoding for user IDs and passwords<br> [Bug] Exit execution of calling thread for RTCM3 streams<br> [Bug] Signal-slot mechanism for threads</td></tr>
+<tr><td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td><td>Source code published.
 </table>
 </p>
 <h3>Contents</h3>
@@ -423,7 +424,7 @@ EUREF as well as IGS follow an open data policy. Streams are made available thro
 We experienced a limitation of the Standard Windows Operating Systems concerning socket communication. Sockets are not always handled properly. As BNC makes intensive use of communication through sockets, we suggest to use the Server Version of Windows Operating Systems when running BNC continuously for a long time on a Windows platform.
 </li>
 <li>
-The source code provided by NRCan for handling streams coming in RTIGS format is 32-bit sensitive. Thus, the BNC executable provided for 64-bit Linux has been compiled on a 64-bit system using the -m32 compiler option. 
+The source code provided by NRCan for handling streams coming in RTIGS format is 32-bit sensitive. Thus, the BNC executable generated for 64-bit Linux systems could only be compiled using the -m32 compiler option. 
 </li>
 <br>
 </ul>

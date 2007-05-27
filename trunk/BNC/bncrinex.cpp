@@ -1,11 +1,10 @@
 // Part of BNC, a utility for retrieving decoding and
-// converting GNSS data streams from NTRIP broadcasters,
-// written by Leos Mervart.
+// converting GNSS data streams from NTRIP broadcasters.
 //
-// Copyright (C) 2006
+// Copyright (C) 2007
 // German Federal Agency for Cartography and Geodesy (BKG)
 // http://www.bkg.bund.de
-// Czech Technical University Prague, Department of Advanced Geodesy
+// Czech Technical University Prague, Department of Geodesy
 // http://www.fsv.cvut.cz
 //
 // Email: euref-ip@bkg.bund.de
@@ -510,19 +509,11 @@ void bncRinex::closeFile() {
   _out.close();
   if (!_rnxScriptName.isEmpty()) {
 
-//    cout << "BEG " 
-//         << QTime::currentTime().toString("hh:mm:ss.zzz ").toAscii().data()
-//         << _statID.data() << endl;
-
 #ifdef WIN32
     QProcess::startDetached(_rnxScriptName, QStringList() << _fName) ;
 #else
     QProcess::startDetached("sh", QStringList() << _rnxScriptName << _fName) ;
 #endif
-
-//    cout << "END " 
-//         << QTime::currentTime().toString("hh:mm:ss.zzz ").toAscii().data()
-//         << _statID.data() << endl;
 
   }
 }

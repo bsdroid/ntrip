@@ -1,11 +1,10 @@
 // Part of BNC, a utility for retrieving decoding and
-// converting GNSS data streams from NTRIP broadcasters,
-// written by Leos Mervart.
+// converting GNSS data streams from NTRIP broadcasters.
 //
-// Copyright (C) 2006
+// Copyright (C) 2007
 // German Federal Agency for Cartography and Geodesy (BKG)
 // http://www.bkg.bund.de
-// Czech Technical University Prague, Department of Advanced Geodesy
+// Czech Technical University Prague, Department of Geodesy
 // http://www.fsv.cvut.cz
 //
 // Email: euref-ip@bkg.bund.de
@@ -60,7 +59,7 @@ bncWindow::bncWindow() {
 
   setMinimumSize(77*ww, 65*ww);
 
-  setWindowTitle(tr("BKG Ntrip Client (BNC), Version 1.2b"));
+  setWindowTitle(tr("BKG Ntrip Client (BNC), Version 1.3"));
 
   // Create Actions
   // --------------
@@ -96,9 +95,6 @@ bncWindow::bncWindow() {
   _actwhatsthis= new QAction(tr("Help=Shift+F1"),this);
   connect(_actwhatsthis, SIGNAL(triggered()), SLOT(slotWhatsThis()));
 
-//_actwhatsthismenu= new QAction(tr("Help\tShift+F1"),this);
-//connect(_actwhatsthismenu, SIGNAL(triggered()), SLOT(slotWhatsThis()));
-
   // Create Menus
   // ------------
   _menuFile = menuBar()->addMenu(tr("&File"));
@@ -110,7 +106,6 @@ bncWindow::bncWindow() {
 
   _menuHlp = menuBar()->addMenu(tr("&Help"));
   _menuHlp->addAction(_actHelp);
-//_menuHlp->addAction(_actwhatsthismenu);
   _menuHlp->addAction(_actAbout);
 
   // Tool (Command) Bar
@@ -194,8 +189,6 @@ _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX file is saved, you may li
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
   _mountPointsTable->horizontalHeader()->setStretchLastSection(true);
   _mountPointsTable->setHorizontalHeaderLabels(labels);
-//  _mountPointsTable->horizontalHeader()->hide();
-//  _mountPointsTable->verticalHeader()->hide();
   _mountPointsTable->setGridStyle(Qt::NoPen);
   _mountPointsTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   _mountPointsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -207,7 +200,7 @@ _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX file is saved, you may li
   int iRow = 0;
   while (it.hasNext()) {
     QStringList hlp = it.next().split(" ");
-    if (hlp.size() < 5) continue; // Check number of parameters saved per mountpoint
+    if (hlp.size() < 5) continue;
     _mountPointsTable->insertRow(iRow);
 
     QUrl    url(hlp[0]);
@@ -258,10 +251,7 @@ _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX file is saved, you may li
   connect(_mountPointsTable, SIGNAL(itemSelectionChanged()), 
           SLOT(slotSelectionChanged()));
 
-// Tab changes Focus on Log window Start Perlt
-//  _log = new QTextEdit();
   _log = new QTextBrowser();
-// Tab changes Focus on Log window Ende Perlt
   _log->setReadOnly(true);
 
   _log->setWhatsThis(tr("BNC comments its activities in the 'Log' section. Information is given concerning reconnections to the NTRIP broadcaster(s) following outages, stream delays, stream conversion etc."));
@@ -586,7 +576,7 @@ void bncWindow::slotAbout() {
   QLabel* img = new QLabel();
   img->setPixmap(QPixmap(":ntrip-logo.png"));
   dlgLayout->addWidget(img, 0,0);
-  dlgLayout->addWidget(new QLabel("BKG NTRIP Client (BNC), Version 1.2b"), 0,1);
+  dlgLayout->addWidget(new QLabel("BKG NTRIP Client (BNC), Version 1.3"), 0,1);
   dlgLayout->addWidget(tb,1,0,1,2);
 
   dlg.setLayout(dlgLayout);
