@@ -5,7 +5,7 @@
 // Copyright (C) 2006
 // German Federal Agency for Cartography and Geodesy (BKG)
 // http://www.bkg.bund.de
-// Czech Technical University Prague, Department of Advanced Geodesy
+// Czech Technical University Prague, Department of Geodesy
 // http://www.fsv.cvut.cz
 //
 // Email: euref-ip@bkg.bund.de
