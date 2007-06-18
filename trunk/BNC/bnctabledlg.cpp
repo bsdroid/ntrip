@@ -156,10 +156,25 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
 
   // Read Caster Response
   // --------------------
+  bool proxyRespond = false;
   bool first = true;
   while (true) {
     if (socket->canReadLine()) {
       QString line = socket->readLine();
+
+      // Skip messages from proxy server
+      // -------------------------------
+      if (line.indexOf("SOURCETABLE 200 OK") == -1 && 
+          line.indexOf("200 OK")             != -1 ) {
+        proxyRespond = true;
+      }
+      if (proxyRespond) {
+        if (line.trimmed().isEmpty()) {
+          proxyRespond = false;
+        }
+        continue;
+      }
+
       allLines.push_back(line);
       if (first) {
         first = false;
