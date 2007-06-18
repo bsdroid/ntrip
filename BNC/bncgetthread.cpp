@@ -255,6 +255,28 @@ t_irc bncGetThread::initRun() {
   _socket->waitForReadyRead(_timeOut);
   if (_socket->canReadLine()) {
     QString line = _socket->readLine();
+
+    // Skip messages from proxy server
+    // -------------------------------
+    if (line.indexOf("ICY 200 OK") == -1 && 
+        line.indexOf("200 OK")     != -1 ) {
+      bool proxyRespond = true;
+      while (true) {
+        if (_socket->canReadLine()) {
+          line = _socket->readLine();
+          if (!proxyRespond) {
+            break;
+          }
+          if (line.trimmed().isEmpty()) {
+            proxyRespond = false;
+          }
+        }
+        else {
+          _socket->waitForReadyRead(_timeOut);
+        }
+      }
+    }
+
     if (line.indexOf("Unauthorized") != -1) {
       QStringList table;
       bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), table);
