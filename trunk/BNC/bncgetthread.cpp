@@ -273,6 +273,9 @@ t_irc bncGetThread::initRun() {
         }
         else {
           _socket->waitForReadyRead(_timeOut);
+          if (_socket->bytesAvailable() <= 0) {
+            break;
+          }
         }
       }
     }
