@@ -512,7 +512,7 @@ void bncRinex::closeFile() {
 #ifdef WIN32
     QProcess::startDetached(_rnxScriptName, QStringList() << _fName) ;
 #else
-    QProcess::startDetached("sh", QStringList() << _rnxScriptName << _fName) ;
+    QProcess::startDetached("nohup", QStringList() << _rnxScriptName << _fName) ;
 #endif
 
   }
