@@ -163,13 +163,13 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
    if (hlp.path().indexOf("/") != 0) hlp.setPath("/");
    reqStr = "GET " + hlp.path().toAscii() + 
             " HTTP/1.0\r\n"
-            "User-Agent: NTRIP BNC 1.3\r\n"
+            "User-Agent: NTRIP BNC 1.4\r\n"
             "Authorization: Basic " +
             userAndPwd.toBase64() + "\r\n";
    } else {
    reqStr = "GET " + hlp.toEncoded() + 
             " HTTP/1.0\r\n"
-            "User-Agent: NTRIP BNC 1.3\r\n"
+            "User-Agent: NTRIP BNC 1.4\r\n"
             "Authorization: Basic " +
             userAndPwd.toBase64() + "\r\n";
   }
