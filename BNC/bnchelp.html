@@ -15,6 +15,7 @@ BNC has been written under GNU General Public License (GPL). Binaries for BNC ar
 <tr><td>Jan 2007 &nbsp;</td><td>Version 1.1b &nbsp;</td><td>[Add] Observables C2, S1, and S2<br>[Add] Virtual reference station access<br>[Bug] RTCM2 decoder time tag fixed<br>[Mod] Small letters for public RINEX skeleton files<br>[Add] Online help through Shift+F1</td></tr>
 <tr><td>Apr 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td><td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save<br> [Add] ZERO decoder added<br> [Mod] Download public RINEX skeletons once per day<br> [Mod] Upgrade to Qt Version 4.2.3<br> [Mod] Replace 'system' call for RINEX script by 'QProcess'<br> [Add] HTTP Host directive for skeleton file download<br> [Add] Percent encoding for user IDs and passwords<br> [Bug] Exit execution of calling thread for RTCM3 streams<br> [Bug] Signal-slot mechanism for threads</td></tr>
 <tr><td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td><td>Source code published.
+<tr><td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td><td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td></tr>
 </table>
 </p>
 <h3>Contents</h3>
@@ -199,6 +200,7 @@ struct Observation {
   int    SNR2;        // L2 signal-to noise ratio (mapped to integer)
 } ;
 </pre>
+<p>Note that the source code for BNC comes with an example program named 'test_bnc_qt.cpp' that lets you read BNC's binary output from the IP port.</p>
 
 <p><a name="rinex"><h4>B - 5. RINEX</h4></p>
 <p>
@@ -266,7 +268,7 @@ Whenever BNC starts generating RINEX files (and then once every day at midnight)
 However, it may happen that public RINEX header skeleton files are not available, its contents is not up to date, or you need to have additional/optional records in the RINEX header. For that BNC allows to introduce personal skeleton files that contain the header records you would like to see. You may derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the 'RINEX directory' with the extension 'RINEX skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the affected stream.
 </p>
 <p>
-Example for file name convention: RINEX files for mountpoints WETTZELL, FRANKFURT and FRANCE (same 4Char Station ID), BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u> (same 4Char Station ID, identical mountpoint stings) would accept personal skeleton files named</p>
+Examples for file name convention: RINEX files for mountpoints WETTZELL, FRANKFURT and FRANCE (same 4Char Station ID), BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u> (same 4Char Station ID, identical mountpoint stings) would accept personal skeleton files named</p>
 <p>
 WETT.skl<br>
 FRAN_KFURT.skl<br>
@@ -342,7 +344,7 @@ Enter the NTRIP broadcaster host IP and port number. <u>http://www.rtcm-ntrip.or
 
 <p><a name="account"><h4>B - 6.3 Broadcaster User and Password - mandatory for protected streams</h4></p>
 <p>
-Streams on NTRIP broadcasters might be protected by password. Enter a valid 'User' ID and 'Password' for access to protected NTRIP broadcaster streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.
+Streams on NTRIP broadcasters may be protected by password. Enter a valid 'User' ID and 'Password' for access to protected NTRIP broadcaster streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.
 </p> 
 
 <p><a name="GetTable"><h4>B - 6.4 Get Table</h4></p>
@@ -438,7 +440,7 @@ The BKG Ntrip Client (BNC) Qt Graphic User Interface (GUI) has been developed fo
 </ul>
 </p>
 <p>
-Note that this is a beta version of BNC provided for test and evaluation. Please make sure you installed the latest version available from <u>http://igs.bkg.bund.de/index_ntrip_down.htm</u>. We are still working on the program and would appreciate if you sent your comments, suggestions, or bug reports to:
+Please make sure you installed the latest version of BNC available from <u>http://igs.bkg.bund.de/index_ntrip_down.htm</u>. We are still working on the program and would appreciate if you sent your comments, suggestions, or bug reports to:
 </p>
 <p>
 Georg Weber<br>
@@ -516,7 +518,7 @@ Source-table records of type CAS contain the following data fields: 'host', 'por
 <p>
 The Radio Technical Commission for Maritime Services (RTCM) is an international non-profit scientific, professional and educational organization. Special Committees provide a forum in which governmental and non-governmental members work together to develop technical standards and consensus recommendations in regard to issues of particular concern. RTCM is engaged in the development of international standards for maritime radionavigation and radiocommunication systems. The output documents and reports prepared by RTCM Committees are published as RTCM Recommended Standards. Topics concerning Differential Global Navigation Satellite Systems (DGNSS) are handled by the Special Committee SC 104.
 <p>
-Copies of RTCM Recommended Standards can be ordered through <u>http://www.rtcm.org/orderinfo.php</u>.
+Personal copies of RTCM Recommended Standards can be ordered through <u>http://www.rtcm.org/orderinfo.php</u>.
 </p>
 
 <p><a name="rtcm2"><h4>F - 2.1 RTCM Version 2.x</h4></p>
@@ -658,7 +660,7 @@ casterPort=
 casterUser=
 font="Sans Serif,8,-1,5,50,0,0,0,0,0"
 logFile=${HOME}/bnc.log
-mountPoints=//user:password@www.euref-ip.net:80/HOE20 RTCM_3.0 54.76 8.29 RS, //user:password@www.igs-ip.net:80/GOPE0 RTCM_2.2 49.91 14.79 RS
+mountPoints=//user:password@www.euref-ip.net:80/HOE20 RTCM_3.0 54.76 8.29 no, //user:password@www.igs-ip.net:80/GOPE0 RTCM_2.2 49.91 14.79 no
 outFile=
 outPort=
 proxyHost=proxy.bkg.de
