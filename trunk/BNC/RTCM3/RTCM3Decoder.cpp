@@ -50,9 +50,11 @@ using namespace std;
 #  define isinf(x) 0
 #endif
 
+#define LEAPSECONDS     14 /* only needed for approx. time */
+
 // Error Handling
 ////////////////////////////////////////////////////////////////////////////
-void RTCM3Error(const char *fmt, ...) {
+void RTCM3Error(const char*, ...) {
 
 }
 
@@ -103,7 +105,7 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
           obs->GPSWeek  = _Parser.Data.week;
           obs->GPSWeeks = _Parser.Data.timeofweek / 1000.0;
 
-          for (int jj = 0; jj < _Parser.numdatatypes; jj++) {
+          for (int jj = 0; jj < _Parser.numdatatypesGPS; jj++) {
             int v = 0;
             int df = _Parser.dataflag[jj];
             int pos = _Parser.datapos[jj];
@@ -113,8 +115,8 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
               v = 1;
             }
             else {
-              df = _Parser.dataflag2[jj];
-              pos = _Parser.datapos2[jj];
+              df = _Parser.dataflagGPS[jj];
+              pos = _Parser.dataposGPS[jj];
               if ( (_Parser.Data.dataflags[ii] & df)
                    && !isnan(_Parser.Data.measdata[ii][pos])
                    && !isinf(_Parser.Data.measdata[ii][pos])) {

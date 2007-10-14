@@ -26,7 +26,10 @@
 #define RTCM3DECODER_H
 
 #include "../RTCM/GPSDecoder.h"
+
+extern "C" {
 #include "rtcm3torinex.h"
+}
 
 class RTCM3Decoder : public GPSDecoder {
 public:
