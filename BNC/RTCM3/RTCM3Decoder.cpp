@@ -50,22 +50,39 @@ using namespace std;
 #  define isinf(x) 0
 #endif
 
-#define LEAPSECONDS     14 /* only needed for approx. time */
-
 // Error Handling
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3Error(const char*, ...) {
+}
 
+// Standard Output
+////////////////////////////////////////////////////////////////////////////
+void RTCM3Text(const char*, ...) {
 }
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 RTCM3Decoder::RTCM3Decoder() : GPSDecoder() {
-  memset(&_Parser, 0, sizeof(_Parser));
+
+  const int LEAPSECONDS = 14; /* only needed for approx. time */
+
   time_t tim;
   tim = time(0) - ((10*365+2+5)*24*60*60 + LEAPSECONDS);
+
+  memset(&_Parser, 0, sizeof(_Parser));
   _Parser.GPSWeek = tim/(7*24*60*60);
   _Parser.GPSTOW  = tim%(7*24*60*60);
+
+  // _Parser2 is used for direct file output
+  // ---------------------------------------
+  memset(&_Parser2, 0, sizeof(_Parser2));
+  _Parser2.GPSWeek = tim/(7*24*60*60);
+  _Parser2.GPSTOW  = tim%(7*24*60*60);
+
+  _Parser2.headerfile       = strdup("TEST_HEADERFILE");
+  _Parser2.glonassephemeris = strdup("TEST_GLONASSEPHEMERIS");
+  _Parser2.gpsephemeris     = strdup("TEST_GPSEPHEMERIS");
+  _Parser2.rinex3           = 1;
 }
 
 // Destructor
@@ -77,6 +94,10 @@ RTCM3Decoder::~RTCM3Decoder() {
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3Decoder::Decode(char* buffer, int bufLen) {
   for (int ii = 0; ii < bufLen; ii++) {
+
+    // Direct file output
+    // ------------------
+    HandleByte(&_Parser2, (unsigned int) buffer[ii]);
 
     _Parser.Message[_Parser.MessageSize++] = buffer[ii];
     if (_Parser.MessageSize >= _Parser.NeedBytes) {
