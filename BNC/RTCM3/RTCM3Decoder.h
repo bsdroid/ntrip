@@ -25,6 +25,7 @@
 #ifndef RTCM3DECODER_H
 #define RTCM3DECODER_H
 
+#include <QtCore>
 #include "../RTCM/GPSDecoder.h"
 
 extern "C" {
@@ -33,7 +34,7 @@ extern "C" {
 
 class RTCM3Decoder : public GPSDecoder {
 public:
-  RTCM3Decoder();
+  RTCM3Decoder(const QByteArray& staID);
   ~RTCM3Decoder();
   void Decode(char* buffer = 0, int bufLen = 0);
 private:
