@@ -81,7 +81,7 @@ RTCM3Decoder::RTCM3Decoder(const QByteArray& staID) : GPSDecoder() {
 
   _Parser2.headerfile       = 0;
   _Parser2.glonassephemeris = 0;
-  _Parser2.gpsephemeris     = (staID + ".EPH").data();
+  _Parser2.gpsephemeris     = strdup((staID + ".EPH").data());
   _Parser2.rinex3           = 1;
 }
 
