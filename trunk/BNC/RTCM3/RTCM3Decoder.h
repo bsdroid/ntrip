@@ -38,6 +38,7 @@ public:
   void Decode(char* buffer = 0, int bufLen = 0);
 private:
   struct RTCM3ParserData _Parser;
+  struct RTCM3ParserData _Parser2;
 } ;
 
 #endif
