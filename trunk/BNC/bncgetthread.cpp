@@ -332,7 +332,7 @@ t_irc bncGetThread::initRun() {
     }
     else if (_format.indexOf("RTCM_3") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTCM 3.0 format"));
-      _decoder = new RTCM3Decoder();
+      _decoder = new RTCM3Decoder(_staID);
     }
     else if (_format.indexOf("RTIGS") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTIGS format"));

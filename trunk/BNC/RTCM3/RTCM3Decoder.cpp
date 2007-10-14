@@ -62,7 +62,7 @@ void RTCM3Text(const char*, ...) {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-RTCM3Decoder::RTCM3Decoder() : GPSDecoder() {
+RTCM3Decoder::RTCM3Decoder(const QByteArray& staID) : GPSDecoder() {
 
   const int LEAPSECONDS = 14; /* only needed for approx. time */
 
@@ -79,25 +79,42 @@ RTCM3Decoder::RTCM3Decoder() : GPSDecoder() {
   _Parser2.GPSWeek = tim/(7*24*60*60);
   _Parser2.GPSTOW  = tim%(7*24*60*60);
 
-  _Parser2.headerfile       = strdup("TEST_HEADERFILE");
-  _Parser2.glonassephemeris = strdup("TEST_GLONASSEPHEMERIS");
-  _Parser2.gpsephemeris     = strdup("TEST_GPSEPHEMERIS");
+  _Parser2.headerfile       = 0;
+  _Parser2.glonassephemeris = 0;
+  _Parser2.gpsephemeris     = (staID + ".EPH").data();
   _Parser2.rinex3           = 1;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 RTCM3Decoder::~RTCM3Decoder() {
+  if (_Parser2.glonassfile) {
+    fclose(_Parser2.glonassfile);
+  }
+  if (_Parser2.gpsfile) {
+    fclose(_Parser2.gpsfile);
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3Decoder::Decode(char* buffer, int bufLen) {
-  for (int ii = 0; ii < bufLen; ii++) {
 
-    // Direct file output
-    // ------------------
+  // Direct file output
+  // ------------------
+  for (int ii = 0; ii < bufLen; ii++) {
     HandleByte(&_Parser2, (unsigned int) buffer[ii]);
+    if (_Parser2.glonassfile) {
+      fflush(_Parser2.glonassfile);
+    }
+    if (_Parser2.gpsfile) {
+      fflush(_Parser2.gpsfile);
+    }
+  }
+
+  // Fill the obs structure
+  // ----------------------
+  for (int ii = 0; ii < bufLen; ii++) {
 
     _Parser.Message[_Parser.MessageSize++] = buffer[ii];
     if (_Parser.MessageSize >= _Parser.NeedBytes) {
