@@ -31,7 +31,7 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bncconst.cpp bnchtml.cpp bnchlpdlg.cpp bnctableitem.cpp     \
           bnczerodecoder.cpp                                          \
           RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp                        \
-          RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex.cpp               \
+          RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex.c                 \
           RTIGS/RTIGSDecoder.cpp RTIGS/cgps_transform.cpp
 
 RC_FILE = bnc.rc
