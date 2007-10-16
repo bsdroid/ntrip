@@ -99,3 +99,14 @@ void bncApp::slotMessage(const QByteArray msg) {
     _logStream->flush();
   }
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
+}
+    
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
+}
+

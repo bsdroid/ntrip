@@ -30,6 +30,7 @@
 #include <QTextStream>
 
 #include "bnccaster.h"
+#include "RTCM3/RTCM3Decoder.h"
 
 class bncApp : public QApplication {
   Q_OBJECT
@@ -39,6 +40,8 @@ class bncApp : public QApplication {
     QString bncVersion() const {return _bncVersion;}
   public slots:
     void slotMessage(const QByteArray msg);
+    void slotNewGPSEph(gpsephemeris* gpseph);
+    void slotNewGlonassEph(glonassephemeris* glonasseph);
   private:
     QFile*       _logFile;
     QTextStream* _logStream;

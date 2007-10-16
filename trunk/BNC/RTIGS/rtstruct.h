@@ -19,7 +19,7 @@
 
 /* Purpose : structure definitions for the wide area prototype		   */
 
-/* RCS: $Header: /usr/local/cvsroot/BNC/RTIGS/rtstruct.h,v 1.1 2006/08/20 13:36:49 mervart Exp $ */
+/* RCS: $Header: /usr/local/cvsroot/BNC/RTIGS/rtstruct.h,v 1.3 2006/11/13 11:42:14 mervart Exp $ */
 
 /* Externals :                                                             */
 /*-------------------------------------------------------------------------*/
@@ -79,7 +79,9 @@ typedef rtUInt8         rtBytes256[256];
 /* Our CONS_T structure member names are now lower case to prevent conflict */
 
 #define  MAX_STA     	     (24)		/* maximum stations  	   */
+#ifndef PI
 #define  PI   (3.141592653589793)		/* value of PI		   */
+#endif
 #define  DTR  (0.017453292519943)		/* deg to rad conversion con. */
 #define  C	   (299792458.00)		/* speed of light in vaccuum  */
 #define  F1	    (1575.42E+06)		/* GPS L1 frequency	   */
