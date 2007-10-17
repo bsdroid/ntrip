@@ -103,10 +103,14 @@ void bncApp::slotMessage(const QByteArray msg) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
+  cout << "GPS: " << gpseph->satellite << endl;
+  delete gpseph;
 }
     
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
+  cout << "GLONASS: " << glonasseph->almanac_number << endl;
+  delete glonasseph;
 }
 
