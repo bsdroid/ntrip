@@ -116,7 +116,10 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncGetThread::~bncGetThread() {
-  delete _socket;
+  if (_socket) {
+    _socket->close();
+    ////  delete _socket;  (a bug in Qt?)
+  }
   delete _decoder;
 }
 
