@@ -241,8 +241,6 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
       dd = ceil(10.0*pow(2.0, 1.0+((double)ep->URAindex)/2.0))/10.0;
     else
       dd = ceil(10.0*pow(2.0, ((double)ep->URAindex)/2.0))/10.0;
-    /* 15 indicates not to use satellite. We can't handle this special
-       case, so we create a high "non"-accuracy value. */
     line.sprintf("   %19.12e%19.12e%19.12e%19.12e", dd,
                  ((double) ep->SVhealth), ep->TGD, ((double) ep->IODC));
     *_ephStream << line << endl;
