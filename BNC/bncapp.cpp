@@ -190,8 +190,16 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printEphHeader() {
   if (_ephStream) {
-    *_ephStream << QDate::currentDate().toString("yy-MM-dd ").toAscii().data();
-    *_ephStream << QTime::currentTime().toString("hh:mm:ss ").toAscii().data();
+    QString line;
+
+    line.sprintf(
+          "%9.2f%11sN: GNSS NAV DATA    M: Mixed%12sRINEX VERSION / TYPE\n", 
+          3.0, "", "");
+    *_ephStream << line;
+
+    line.sprintf("%s\n%60sEND OF HEADER\n", "bnc", "");
+    *_ephStream << line;
+
     _ephStream->flush();
   }
 }
