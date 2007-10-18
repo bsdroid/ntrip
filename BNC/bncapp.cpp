@@ -205,9 +205,6 @@ void bncApp::printEphHeader() {
     line.sprintf("%s\n%60sEND OF HEADER\n", buffer, "");
     *_ephStream << line;
 
-    line.sprintf("%s\n%60sEND OF HEADER\n", "bnc", "");
-    *_ephStream << line;
-
     _ephStream->flush();
   }
 }
