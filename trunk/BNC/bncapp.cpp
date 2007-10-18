@@ -139,15 +139,18 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
 
   QMutexLocker locker(&_mutex);
 
+  if (!_ephStream) {
+    delete gpseph;
+    return;
+  }
+
   gpsephemeris** ee = &_gpsEph[gpseph->satellite-PRN_GPS_START];
   if ( *ee == 0 || (*ee)->IODE != gpseph->IODE ) { 
-    cout << "new GPS: " << gpseph->satellite << endl;
     delete *ee;
     *ee = gpseph;
     printGPSEph(gpseph);
   }
   else {
-    cout << "GPS: " << gpseph->satellite << endl;
     delete gpseph;
   }
 }
@@ -158,24 +161,38 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
 
   QMutexLocker locker(&_mutex);
 
-  cout << "GLONASS: " << glonasseph->almanac_number << endl;
+  if (!_ephStream) {
+    delete glonasseph;
+    return;
+  }
+
   delete glonasseph;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printEphHeader() {
-
+  if (_ephStream) {
+    *_ephStream << QDate::currentDate().toString("yy-MM-dd ").toAscii().data();
+    *_ephStream << QTime::currentTime().toString("hh:mm:ss ").toAscii().data();
+    _ephFile->flush();
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGPSEph(gpsephemeris* ep) {
-
+  if (_ephStream) {
+    *_ephStream << "GPS: "  << ep->satellite << endl;
+    _ephFile->flush();
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGlonassEph(glonassephemeris* ep) {
-
+  if (_ephStream) {
+    *_ephStream << "GLONASS: "  << ep->almanac_number << endl;
+    _ephFile->flush();
+  }
 }
