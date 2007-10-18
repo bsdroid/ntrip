@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.24 2007/10/08 13:29:45 stoecker Exp $
+  $Id: rtcm3torinex.c,v 1.5 2007/10/17 06:12:00 mervart Exp $
   Copyright (C) 2005-2006 by Dirk Stoecker <stoecker@alberding.eu>
 
   This software is a complete NTRIP-RTCM3 to RINEX converter as well as
@@ -50,7 +50,7 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.24 $";
+static char revisionstr[] = "$Revision: 1.5 $";
 
 #ifndef COMPILEDATE
 #define COMPILEDATE " built " __DATE__
@@ -235,7 +235,7 @@ static int gnumleap(int year, int month, int day)
   return ls;
 }
 
-static void updatetime(int *week, int *tow, int tk, int fixnumleap)
+void updatetime(int *week, int *tow, int tk, int fixnumleap)
 {
   int y,m,d,k,l, nul;
   unsigned int j = *week*(7*24*60*60) + *tow + 5*24*60*60+3*60*60;
@@ -775,7 +775,7 @@ struct converttimeinfo {
   int year;      /* year of GPS time [1980..] */
 };
 
-static void converttime(struct converttimeinfo *c, int week, int tow)
+void converttime(struct converttimeinfo *c, int week, int tow)
 {
   int i, k, doy, j; /* temporary variables */
   j = week*(7*24*60*60) + tow + 5*24*60*60;
@@ -1533,7 +1533,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 }
 
 #ifndef NO_RTCM3_MAIN
-static char datestr[]     = "$Date: 2007/10/08 13:29:45 $";
+static char datestr[]     = "$Date: 2007/10/17 06:12:00 $";
 
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
