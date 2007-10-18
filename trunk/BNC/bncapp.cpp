@@ -204,24 +204,21 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
 
   if (_ephStream) {
 
-    QDateTime datTim = dateAndTimeFromGPSweek(ep->GPSweek, ep->TOC);
-
     QString line;
 
+    struct converttimeinfo cti;
+    converttime(&cti, ep->GPSweek, ep->TOC);
+
     if (RINEX_3) {
-      line.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e",
-                   ep->satellite, datTim.date().year(), 
-                   datTim.date().month(), datTim.date().day(), 
-                   datTim.time().hour(), datTim.time().minute(), 
-                   datTim.time().second(), ep->clock_bias, 
-                   ep->clock_drift, ep->clock_driftrate);
+      line.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
+                   ep->satellite, cti.year, cti.month, cti.day, cti.hour,
+                   cti.minute, cti.second, ep->clock_bias, ep->clock_drift,
+                   ep->clock_driftrate);
     }
     else {
-      line.sprintf("%02d %02d %02d %02d %02d %02d%05.1f%19.12e%19.12e%19.12e",
-                   ep->satellite, datTim.date().year()%100, 
-                   datTim.date().month(), datTim.date().day(), 
-                   datTim.time().hour(), datTim.time().minute(), 
-                   (double) datTim.time().second(), ep->clock_bias, 
+      line.sprintf("%02d %02d %02d %02d %02d %02d%05.1f%19.12e%19.12e%19.12e\n",
+                   ep->satellite, cti.year%100, cti.month, cti.day, cti.hour,
+                   cti.minute, (double) cti.second, ep->clock_bias, 
                    ep->clock_drift, ep->clock_driftrate);
     }
     *_ephStream << line << endl;
@@ -273,11 +270,6 @@ void bncApp::printGlonassEph(glonassephemeris* ep) {
 
   if (_ephStream) {
 
-    int w = ep->GPSWeek, tow = ep->GPSTOW, i;
-    struct converttimeinfo cti;
-
-    updatetime(&w, &tow, ep->tb*1000, 1);
-    converttime(&cti, w, tow);
 
     _ephStream->flush();
   }
