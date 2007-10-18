@@ -111,15 +111,18 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   }
 
   msleep(100); //sleep 0.1 sec
+
+  // Initialize Socket
+  // -----------------
+  QString msg;
+  _socket = bncGetThread::request(_mountPoint, _latitude, _longitude, 
+                                  _nmea, _timeOut, msg);
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncGetThread::~bncGetThread() {
-  if (_socket) {
-    _socket->close();
-    ////  delete _socket;  (a bug in Qt?)
-  }
+  delete _socket;
   delete _decoder;
 }
 
@@ -240,14 +243,6 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
 // Init Run
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncGetThread::initRun() {
-
-  // Send the Request
-  // ----------------
-  QString msg;
-
-  _socket = bncGetThread::request(_mountPoint, _latitude, _longitude, _nmea, _timeOut, msg);
-
-  ////  emit(newMessage(msg.toAscii()));
 
   if (!_socket) {
     return failure;
