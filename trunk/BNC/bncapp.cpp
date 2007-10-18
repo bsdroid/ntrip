@@ -210,13 +210,13 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
     converttime(&cti, ep->GPSweek, ep->TOC);
 
     if (RINEX_3) {
-      line.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
+      line.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e",
                    ep->satellite, cti.year, cti.month, cti.day, cti.hour,
                    cti.minute, cti.second, ep->clock_bias, ep->clock_drift,
                    ep->clock_driftrate);
     }
     else {
-      line.sprintf("%02d %02d %02d %02d %02d %02d%05.1f%19.12e%19.12e%19.12e\n",
+      line.sprintf("%02d %02d %02d %02d %02d %02d%05.1f%19.12e%19.12e%19.12e",
                    ep->satellite, cti.year%100, cti.month, cti.day, cti.hour,
                    cti.minute, (double) cti.second, ep->clock_bias, 
                    ep->clock_drift, ep->clock_driftrate);
