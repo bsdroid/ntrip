@@ -186,7 +186,18 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
     return;
   }
 
-  delete glonasseph;
+  glonassephemeris** ee = 
+                   &_glonassEph[glonasseph->almanac_number-PRN_GLONASS_START];
+
+  if ( *ee == 0 || (*ee)->GPSWeek != glonasseph->GPSWeek || 
+      (*ee)->GPSTOW != glonasseph->GPSTOW ) { 
+    delete *ee;
+    *ee = glonasseph;
+    printGlonassEph(glonasseph);
+  }
+  else {
+    delete glonasseph;
+  }
 }
 
 // 
