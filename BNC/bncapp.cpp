@@ -196,11 +196,11 @@ void bncApp::printEphHeader() {
   }
 }
 
+const int RINEX_3 = 1;
+
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGPSEph(gpsephemeris* ep) {
-
-  const int RINEX_3 = 1;
 
   if (_ephStream) {
 
@@ -269,7 +269,42 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
 void bncApp::printGlonassEph(glonassephemeris* ep) {
 
   if (_ephStream) {
+    int w = ep->GPSWeek, tow = ep->GPSTOW, i;
+    struct converttimeinfo cti;
 
+    updatetime(&w, &tow, ep->tb*1000, 1);
+    converttime(&cti, w, tow);
+
+    i = ep->tk-3*60*60; if(i < 0) i += 86400;
+
+    QString line;
+
+    if (RINEX_3) {
+      line.sprintf("R%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e",
+                   ep->almanac_number, cti.year, cti.month, cti.day, cti.hour, 
+                   cti.minute, cti.second, -ep->tau, ep->gamma, (double) i);
+    }
+    else {
+      line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e",
+                   ep->almanac_number, cti.year%100, cti.month, cti.day, 
+                   cti.hour, cti.minute, (double) cti.second, -ep->tau, 
+                   ep->gamma, (double) i);
+    }
+    *_ephStream << line << endl;
+    
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->x_pos,
+                 ep->x_velocity, ep->x_acceleration, 
+                 (ep->flags & GLOEPHF_UNHEALTHY) ? 1.0 : 0.0);
+    *_ephStream << line << endl;
+     
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->y_pos,
+                 ep->y_velocity, ep->y_acceleration, 
+                 (double) ep->frequency_number);
+    *_ephStream << line << endl;
+    
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->z_pos,
+                 ep->z_velocity, ep->z_acceleration, (double) ep->E);
+    *_ephStream << line << endl;
 
     _ephStream->flush();
   }
