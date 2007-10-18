@@ -194,7 +194,7 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
     QString line;
 
     if (RINEX_3) {
-      line.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
+      line.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e",
                    ep->satellite, datTim.date().year(), 
                    datTim.date().month(), datTim.date().day(), 
                    datTim.time().hour(), datTim.time().minute(), 
@@ -202,7 +202,7 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
                    ep->clock_drift, ep->clock_driftrate);
     }
     else {
-      line.sprintf("%02d %02d %02d %02d %02d %02d%05.1f%19.12e%19.12e%19.12e\n",
+      line.sprintf("%02d %02d %02d %02d %02d %02d%05.1f%19.12e%19.12e%19.12e",
                    ep->satellite, datTim.date().year()%100, 
                    datTim.date().month(), datTim.date().day(), 
                    datTim.time().hour(), datTim.time().minute(), 
@@ -211,19 +211,19 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
     }
     *_ephStream << line << endl;
 
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", (double)ep->IODE,
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", (double)ep->IODE,
                  ep->Crs, ep->Delta_n, ep->M0);
     *_ephStream << line << endl;
     
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->Cuc,
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->Cuc,
                  ep->e, ep->Cus, ep->sqrt_A);
     *_ephStream << line << endl;
 
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n",
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e",
                  (double) ep->TOE, ep->Cic, ep->OMEGA0, ep->Cis);
     *_ephStream << line << endl;
     
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->i0,
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->i0,
                  ep->Crc, ep->omega, ep->OMEGADOT);
     *_ephStream << line << endl;
 
@@ -233,7 +233,7 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
       dd += 2.0;
     if(ii & GPSEPHF_L2PCODE)
       dd += 1.0;
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->IDOT, dd,
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->IDOT, dd,
                  (double) ep->GPSweek, ii & GPSEPHF_L2PCODEDATA ? 1.0 : 0.0);
     *_ephStream << line << endl;
 
@@ -243,11 +243,11 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
       dd = ceil(10.0*pow(2.0, ((double)ep->URAindex)/2.0))/10.0;
     /* 15 indicates not to use satellite. We can't handle this special
        case, so we create a high "non"-accuracy value. */
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", dd,
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", dd,
                  ((double) ep->SVhealth), ep->TGD, ((double) ep->IODC));
     *_ephStream << line << endl;
 
-    line.sprintf("   %19.12e%19.12e\n", ((double)ep->TOW), 0.0);
+    line.sprintf("   %19.12e%19.12e", ((double)ep->TOW), 0.0);
     *_ephStream << line << endl;
 
     _ephStream->flush();
