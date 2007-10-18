@@ -48,6 +48,8 @@
 
 using namespace std;
 
+const int RINEX_3 = 1;
+
 struct converttimeinfo {
   int second;    /* seconds of GPS time [0..59] */
   int minute;    /* minutes of GPS time [0..59] */
@@ -60,6 +62,7 @@ struct converttimeinfo {
 extern "C" {
   void converttime(struct converttimeinfo *c, int week, int tow);
   void updatetime(int *week, int *tow, int tk, int fixnumleap);
+  int  HandleRunBy(char *buffer, int buffersize, const char **u, int rinex3);
 }
 
 
@@ -197,6 +200,11 @@ void bncApp::printEphHeader() {
           3.0, "", "");
     *_ephStream << line;
 
+    char buffer[100];
+    HandleRunBy(buffer, sizeof(buffer), 0, RINEX_3);
+    line.sprintf("%s\n%60sEND OF HEADER\n", buffer, "");
+    *_ephStream << line;
+
     line.sprintf("%s\n%60sEND OF HEADER\n", "bnc", "");
     *_ephStream << line;
 
@@ -204,7 +212,6 @@ void bncApp::printEphHeader() {
   }
 }
 
-const int RINEX_3 = 1;
 
 // 
 ////////////////////////////////////////////////////////////////////////////
