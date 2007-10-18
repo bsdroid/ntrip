@@ -48,6 +48,21 @@
 
 using namespace std;
 
+struct converttimeinfo {
+  int second;    /* seconds of GPS time [0..59] */
+  int minute;    /* minutes of GPS time [0..59] */
+  int hour;      /* hour of GPS time [0..24] */
+  int day;       /* day of GPS time [1..28..30(31)*/
+  int month;     /* month of GPS time [1..12]*/
+  int year;      /* year of GPS time [1980..] */
+};
+
+extern "C" {
+  void converttime(struct converttimeinfo *c, int week, int tow);
+  void updatetime(int *week, int *tow, int tk, int fixnumleap);
+}
+
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncApp::bncApp(int argc, char* argv[], bool GUIenabled) : 
@@ -255,8 +270,15 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGlonassEph(glonassephemeris* ep) {
+
   if (_ephStream) {
-    *_ephStream << "GLONASS: "  << ep->almanac_number << endl;
+
+    int w = ep->GPSWeek, tow = ep->GPSTOW, i;
+    struct converttimeinfo cti;
+
+    updatetime(&w, &tow, ep->tb*1000, 1);
+    converttime(&cti, w, tow);
+
     _ephStream->flush();
   }
 }
