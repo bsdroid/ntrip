@@ -41,6 +41,7 @@
 #include <iostream>
 #include <QSettings>
 #include <QMessageBox>
+#include <cmath>
 
 #include "bncapp.h" 
 #include "bncutils.h" 
@@ -57,6 +58,7 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
   _logStream   = 0;
 
   _bncVersion  = "BNC 1.4";
+
   // Lists of Ephemeris
   // ------------------
   _ephFile     = 0;
@@ -182,8 +184,58 @@ void bncApp::printEphHeader() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGPSEph(gpsephemeris* ep) {
+
+  const int RINEX_3 = 1;
+
   if (_ephStream) {
-    *_ephStream << "GPS: "  << ep->satellite << endl;
+
+    QDateTime datTim = dateAndTimeFromGPSweek(ep->GPSweek, ep->TOC);
+
+    QString line;
+
+    if (RINEX_3) {
+      line.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
+                   ep->satellite, datTim.date().year(), 
+                   datTim.date().month(), datTim.date().day(), 
+                   datTim.time().hour(), datTim.time().minute(), 
+                   datTim.time().second(), ep->clock_bias, 
+                   ep->clock_drift, ep->clock_driftrate);
+    }
+    else {
+      line.sprintf("%02d %02d %02d %02d %02d %02d%05.1f%19.12e%19.12e%19.12e\n",
+                   ep->satellite, datTim.date().year()%100, 
+                   datTim.date().month(), datTim.date().day(), 
+                   datTim.time().hour(), datTim.time().minute(), 
+                   (double) datTim.time().second(), ep->clock_bias, 
+                   ep->clock_drift, ep->clock_driftrate);
+    }
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", (double)ep->IODE,
+    ep->Crs, ep->Delta_n, ep->M0);
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->Cuc,
+    ep->e, ep->Cus, ep->sqrt_A);
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n",
+    (double) ep->TOE, ep->Cic, ep->OMEGA0, ep->Cis);
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->i0,
+    ep->Crc, ep->omega, ep->OMEGADOT);
+    double dd = 0;
+    unsigned long ii = ep->flags;
+    if(ii & GPSEPHF_L2CACODE)
+      dd += 2.0;
+    if(ii & GPSEPHF_L2PCODE)
+      dd += 1.0;
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->IDOT, dd,
+    (double) ep->GPSweek, ii & GPSEPHF_L2PCODEDATA ? 1.0 : 0.0);
+    if(ep->URAindex <= 6) /* URA index */
+      dd = ceil(10.0*pow(2.0, 1.0+((double)ep->URAindex)/2.0))/10.0;
+    else
+      dd = ceil(10.0*pow(2.0, ((double)ep->URAindex)/2.0))/10.0;
+    /* 15 indicates not to use satellite. We can't handle this special
+       case, so we create a high "non"-accuracy value. */
+    line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", dd,
+    ((double) ep->SVhealth), ep->TGD, ((double) ep->IODC));
+
+    line.sprintf("   %19.12e%19.12e\n", ((double)ep->TOW), 0.0);
+
     _ephStream->flush();
   }
 }
