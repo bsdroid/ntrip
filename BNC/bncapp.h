@@ -43,10 +43,18 @@ class bncApp : public QApplication {
     void slotNewGPSEph(gpsephemeris* gpseph);
     void slotNewGlonassEph(glonassephemeris* glonasseph);
   private:
-    QFile*       _logFile;
-    QTextStream* _logStream;
-    int          _logFileFlag;
-    QString      _bncVersion;
-    QMutex       _mutex;
+    void printEphHeader();
+    void printGPSEph(gpsephemeris* ep);
+    void printGlonassEph(glonassephemeris* ep);
+
+    QFile*            _logFile;
+    QTextStream*      _logStream;
+    int               _logFileFlag;
+    QString           _bncVersion;
+    QMutex            _mutex;
+    QFile*            _ephFile;
+    QTextStream*      _ephStream;
+    gpsephemeris*     _gpsEph[PRN_GPS_END - PRN_GPS_START + 1];
+    glonassephemeris* _glonassEph[PRN_GLONASS_END - PRN_GLONASS_START + 1];
 };
 #endif

@@ -57,6 +57,31 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
   _logStream   = 0;
 
   _bncVersion  = "BNC 1.4";
+  // Lists of Ephemeris
+  // ------------------
+  _ephFile     = 0;
+  _ephStream   = 0;
+  for (int ii = PRN_GPS_START; ii <= PRN_GPS_END; ii++) {
+    _gpsEph[ii-PRN_GPS_START] = 0;
+  }
+  for (int ii = PRN_GLONASS_START; ii <= PRN_GLONASS_END; ii++) {
+    _glonassEph[ii-PRN_GLONASS_START] = 0;
+  }
+
+  // Eph file
+  // --------
+  _ephFile   = 0;
+  _ephStream = 0;
+  QString ephFileName = "TEST.EPH";
+  ////  QString ephFileName = settings.value("ephFile").toString();
+  if ( !ephFileName.isEmpty() ) {
+    expandEnvVar(ephFileName);
+    _ephFile = new QFile(ephFileName);
+    _ephFile->open(QIODevice::WriteOnly);
+    _ephStream = new QTextStream();
+    _ephStream->setDevice(_ephFile);
+    printEphHeader();
+  }
 }
 
 // Destructor
@@ -64,6 +89,14 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
 bncApp::~bncApp() {
   delete _logStream;
   delete _logFile;
+  delete _ephStream;
+  delete _ephFile;
+  for (int ii = PRN_GPS_START; ii <= PRN_GPS_END; ii++) {
+    delete _gpsEph[ii-PRN_GPS_START];
+  }
+  for (int ii = PRN_GLONASS_START; ii <= PRN_GLONASS_END; ii++) {
+    delete _glonassEph[ii-PRN_GLONASS_START];
+  }
 }
 
 // Write a Program Message
@@ -103,14 +136,46 @@ void bncApp::slotMessage(const QByteArray msg) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
-  cout << "GPS: " << gpseph->satellite << endl;
-  delete gpseph;
+
+  QMutexLocker locker(&_mutex);
+
+  gpsephemeris** ee = &_gpsEph[gpseph->satellite-PRN_GPS_START];
+  if ( *ee == 0 || (*ee)->IODE != gpseph->IODE ) { 
+    cout << "new GPS: " << gpseph->satellite << endl;
+    delete *ee;
+    *ee = gpseph;
+    printGPSEph(gpseph);
+  }
+  else {
+    cout << "GPS: " << gpseph->satellite << endl;
+    delete gpseph;
+  }
 }
     
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
+
+  QMutexLocker locker(&_mutex);
+
   cout << "GLONASS: " << glonasseph->almanac_number << endl;
   delete glonasseph;
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncApp::printEphHeader() {
+
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncApp::printGPSEph(gpsephemeris* ep) {
+
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncApp::printGlonassEph(glonassephemeris* ep) {
+
+}
