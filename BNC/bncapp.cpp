@@ -269,26 +269,30 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
 void bncApp::printGlonassEph(glonassephemeris* ep) {
 
   if (_ephStream) {
-    int w = ep->GPSWeek, tow = ep->GPSTOW, i;
+    int ww  = ep->GPSWeek;
+    int tow = ep->GPSTOW; 
     struct converttimeinfo cti;
 
-    updatetime(&w, &tow, ep->tb*1000, 1);
-    converttime(&cti, w, tow);
+    updatetime(&ww, &tow, ep->tb*1000, 1);
+    converttime(&cti, ww, tow);
 
-    i = ep->tk-3*60*60; if(i < 0) i += 86400;
+    int ii = ep->tk-3*60*60; 
+    if (ii < 0) {
+      ii += 86400;
+    }
 
     QString line;
 
     if (RINEX_3) {
       line.sprintf("R%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e",
                    ep->almanac_number, cti.year, cti.month, cti.day, cti.hour, 
-                   cti.minute, cti.second, -ep->tau, ep->gamma, (double) i);
+                   cti.minute, cti.second, -ep->tau, ep->gamma, (double) ii);
     }
     else {
       line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e",
                    ep->almanac_number, cti.year%100, cti.month, cti.day, 
                    cti.hour, cti.minute, (double) cti.second, -ep->tau, 
-                   ep->gamma, (double) i);
+                   ep->gamma, (double) ii);
     }
     *_ephStream << line << endl;
     
