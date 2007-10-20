@@ -54,7 +54,7 @@ class bncApp : public QApplication {
     QMutex            _mutex;
     QString           _ephPath;
     QString           _ephFileNameGPS;
-    int               _rinex3;
+    int               _rinexVers;
     QFile*            _ephFileGPS;
     QTextStream*      _ephStreamGPS;
     QFile*            _ephFileGlonass;

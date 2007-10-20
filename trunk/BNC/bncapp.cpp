@@ -86,7 +86,7 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
 
   // Eph file(s)
   // -----------
-  _rinex3 = -1;
+  _rinexVers        = 0;
   _ephFileGPS       = 0;
   _ephStreamGPS     = 0;
   _ephFileGlonass   = 0;
@@ -100,7 +100,7 @@ bncApp::~bncApp() {
   delete _logFile;
   delete _ephStreamGPS;
   delete _ephFileGPS;
-  if (_rinex3 == 0) {
+  if (_rinexVers == 2) {
     delete _ephStreamGlonass;
     delete _ephFileGlonass;
   }
@@ -152,6 +152,8 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
 
   QMutexLocker locker(&_mutex);
 
+  printEphHeader();
+
   if (!_ephStreamGPS) {
     delete gpseph;
     return;
@@ -173,6 +175,8 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
 void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
 
   QMutexLocker locker(&_mutex);
+
+  printEphHeader();
 
   if (!_ephStreamGlonass) {
     delete glonasseph;
@@ -196,14 +200,16 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printEphHeader() {
 
-  if (_rinex3 == -1) {
+  // Initialization
+  // --------------
+  if (_rinexVers == 0) {
     QSettings settings;
 
     if ( Qt::CheckState(settings.value("ephV3").toInt()) == Qt::Checked) {
-      _rinex3 = 1;    
+      _rinexVers = 3;    
     }
     else {
-      _rinex3 = 0;
+      _rinexVers = 2;
     }
 
     _ephPath = settings.value("ephPath").toString();
@@ -216,6 +222,8 @@ void bncApp::printEphHeader() {
     }
   }
 
+  // (Re-)Open output File(s)
+  // ------------------------
   if (!_ephPath.isEmpty()) {
 
     QDate date = QDate::currentDate();
@@ -223,8 +231,6 @@ void bncApp::printEphHeader() {
     QString ephFileNameGPS = _ephPath + "GPS_" +
           QString("%1").arg(date.dayOfYear(), 3, 10, QChar('0')) +
                             date.toString("0.yyN");
-
-    cout << ephFileNameGPS.toAscii().data() << endl;
 
     if (_ephFileNameGPS == ephFileNameGPS) {
       return;
@@ -241,16 +247,14 @@ void bncApp::printEphHeader() {
     _ephStreamGPS = new QTextStream();
     _ephStreamGPS->setDevice(_ephFileGPS);
 
-    if      (_rinex3 == 1) {
+    if      (_rinexVers == 3) {
       _ephFileGlonass   = _ephFileGPS;
       _ephStreamGlonass = _ephStreamGPS;
     }
-    else if (_rinex3 == 0) {
+    else if (_rinexVers == 2) {
       QString ephFileNameGlonass = _ephPath + "GLO_" +
           QString("%1").arg(date.dayOfYear(), 3, 10, QChar('0')) +
                             date.toString("0.yyN");
-
-      cout << ephFileNameGlonass.toAscii().data() << endl;
 
       delete _ephStreamGlonass;
       delete _ephFileGlonass;
@@ -259,11 +263,11 @@ void bncApp::printEphHeader() {
       _ephFileGlonass->open(QIODevice::WriteOnly);
       _ephStreamGlonass = new QTextStream();
       _ephStreamGlonass->setDevice(_ephFileGlonass);
-
     }
 
-
-    if (_rinex3 == 1) {
+    // Header - RINEX Version 3
+    // ------------------------
+    if (_rinexVers == 3) {
       QString line;
 
       line.sprintf(
@@ -272,24 +276,24 @@ void bncApp::printEphHeader() {
       *_ephStreamGPS << line;
 
       char buffer[100];
-      HandleRunBy(buffer, sizeof(buffer), 0, _rinex3);
+      HandleRunBy(buffer, sizeof(buffer), 0, 1);
       line.sprintf("%s\n%60sEND OF HEADER\n", buffer, "");
       *_ephStreamGPS << line;
 
       _ephStreamGPS->flush();
     }
-    else if (_rinex3 == 0) {
+
+    // Header - RINEX Version 2
+    // ------------------------
+    else if (_rinexVers == 2) {
 
     }
   }
 }
 
-
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGPSEph(gpsephemeris* ep) {
-
-  printEphHeader();
 
   if (_ephStreamGPS) {
 
@@ -298,13 +302,13 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
     struct converttimeinfo cti;
     converttime(&cti, ep->GPSweek, ep->TOC);
 
-    if      (_rinex3 == 1) {
+    if      (_rinexVers == 3) {
       line.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e",
                    ep->satellite, cti.year, cti.month, cti.day, cti.hour,
                    cti.minute, cti.second, ep->clock_bias, ep->clock_drift,
                    ep->clock_driftrate);
     }
-    else if (_rinex3 == 0) {
+    else if (_rinexVers == 2) {
       line.sprintf("%02d %02d %02d %02d %02d %02d%05.1f%19.12e%19.12e%19.12e",
                    ep->satellite, cti.year%100, cti.month, cti.day, cti.hour,
                    cti.minute, (double) cti.second, ep->clock_bias, 
@@ -357,8 +361,6 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGlonassEph(glonassephemeris* ep) {
 
-  printEphHeader();
-
   if (_ephStreamGlonass) {
     int ww  = ep->GPSWeek;
     int tow = ep->GPSTOW; 
@@ -374,12 +376,12 @@ void bncApp::printGlonassEph(glonassephemeris* ep) {
 
     QString line;
 
-    if      (_rinex3 == 1) {
+    if      (_rinexVers == 3) {
       line.sprintf("R%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e",
                    ep->almanac_number, cti.year, cti.month, cti.day, cti.hour, 
                    cti.minute, cti.second, -ep->tau, ep->gamma, (double) ii);
     }
-    else if (_rinex3 == 0) {
+    else if (_rinexVers == 2) {
       line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e",
                    ep->almanac_number, cti.year%100, cti.month, cti.day, 
                    cti.hour, cti.minute, (double) cti.second, -ep->tau, 
