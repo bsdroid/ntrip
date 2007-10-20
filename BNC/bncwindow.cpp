@@ -149,9 +149,15 @@ bncWindow::bncWindow() {
   _outPortLineEdit->setMaximumWidth(9*ww);
   _outPortLineEdit->setWhatsThis(tr("<p>BNC makes synchronized observations available in a binary format on your local host (IP 127.0.0.1) through an IP port. Enter an IP port number to activate this function.</p><p>Default is an empty option field, meaning that no binary output is generated.</p>"));
   _rnxPathLineEdit    = new QLineEdit(settings.value("rnxPath").toString());
-_rnxPathLineEdit->setWhatsThis(tr("<p>Observations can be converted to RINEX Version 2.11. Enter a path for saving the RINEX files in a directory. If this directory does not exist, BNC will not create RINEX files.</p><p>Default value for 'RINEX directory' is an empty option field, meaning that streams are not converted to RINEX.</p>"));
+  _rnxPathLineEdit->setWhatsThis(tr("<p>Observations can be converted to RINEX Version 2.11. Enter a path for saving the RINEX files in a directory. If this directory does not exist, BNC will not create RINEX files.</p><p>Default value for 'RINEX directory' is an empty option field, meaning that streams are not converted to RINEX.</p>"));
+  _ephPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
+  _ephPathLineEdit->setWhatsThis(tr("<p>Navigation messages can be converted to RINEX files. Enter a path for saving the files in a directory.</p>"));
+  _rnxV3CheckBox = new QCheckBox();
+  _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
+  _ephV3CheckBox = new QCheckBox();
+  _ephV3CheckBox->setCheckState(Qt::CheckState(settings.value("ephV3").toInt()));
   _rnxScrpLineEdit    = new QLineEdit(settings.value("rnxScript").toString());
-_rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX file is saved, you may like to compress, copy or upload it immediately via FTP. For that you enter the full path of a script or batch file which is then called to carry out these operations. The full RINEX file path will be passed to the script as a command line parameter (%1 on Windows systems, $1 on Unix/Linux systems).</p><p>The triggering event for calling the script or batch file is the end of the 'RINEX file interval'. If that is superposed by a stream outage, the triggering event is the stream reconnect.</p><p>Default value for 'RINEX script' is an empty option field, meaning that no script or batch file shall be called."));
+  _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX file is saved, you may like to compress, copy or upload it immediately via FTP. For that you enter the full path of a script or batch file which is then called to carry out these operations. The full RINEX file path will be passed to the script as a command line parameter (%1 on Windows systems, $1 on Unix/Linux systems).</p><p>The triggering event for calling the script or batch file is the end of the 'RINEX file interval'. If that is superposed by a stream outage, the triggering event is the stream reconnect.</p><p>Default value for 'RINEX script' is an empty option field, meaning that no script or batch file shall be called."));
   _rnxSkelLineEdit    = new QLineEdit(settings.value("rnxSkel").toString());
   _rnxSkelLineEdit->setMaximumWidth(5*ww);
   _rnxSkelLineEdit->setWhatsThis(tr("<p>Whenever BNC starts generating RINEX files (and then once every day at midnight), it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. However, it may happen that public RINEX header skeleton files are not available, its contents is not up to date, or you need to have additional/optional records in the RINEX header.</p><p>For that BNC allows to introduce personal skeleton files that contain the header records you would like to see. You may derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the 'RINEX directory' with the extension 'RINEX skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the affected stream.</p><p>Default value for 'RINEX skeleton extension' is 'SKL', meaning that BNC will include the contents of probably existing files with this extension into the affected RINEX file headers.</p>"));
@@ -271,7 +277,10 @@ _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX file is saved, you may li
   layout->addWidget(_outPortLineEdit,                            3, 2);
 
   layout->addWidget(new QLabel("RINEX directory"),               4, 0, 1, 2);
-  layout->addWidget(_rnxPathLineEdit,                            4, 2, 1, 3);
+  layout->addWidget(_rnxPathLineEdit,                            4, 2);
+
+  layout->addWidget(new QLabel("RINEX v3"),                      4, 3, 1, 2);
+  layout->addWidget(_rnxV3CheckBox,                              4, 4);
 
   layout->addWidget(new QLabel("RINEX script (full path)"),      5, 0, 1, 2);
   layout->addWidget(_rnxScrpLineEdit,                            5, 2, 1, 3);
@@ -287,13 +296,19 @@ _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX file is saved, you may li
   layout->addWidget(new QLabel("Append files"),                  7, 3);
   layout->addWidget(_rnxAppendCheckBox,                          7, 4);
 
-  layout->addWidget(new QLabel("Mountpoints"),                   8, 0, 1, 2);
+  layout->addWidget(new QLabel("Ephemeris directory"),           8, 0, 1, 2);
+  layout->addWidget(_ephPathLineEdit,                            8, 2);
 
-  layout->addWidget(_mountPointsTable,                           9, 0, 1, 5);
+  layout->addWidget(new QLabel("RINEX v3"),                      8, 3, 1, 2);
+  layout->addWidget(_ephV3CheckBox,                              8, 4);
 
-  layout->addWidget(new QLabel("Log (full path)"),              10, 0, 1, 2);
-  layout->addWidget(_logFileLineEdit,                           10, 2, 1, 3);
-  layout->addWidget(_log,                                       11, 0, 1, 5);
+  layout->addWidget(new QLabel("Mountpoints"),                   9, 0, 1, 2);
+
+  layout->addWidget(_mountPointsTable,                          10, 0, 1, 5);
+
+  layout->addWidget(new QLabel("Log (full path)"),              11, 0, 1, 2);
+  layout->addWidget(_logFileLineEdit,                           11, 2, 1, 3);
+  layout->addWidget(_log,                                       12, 0, 1, 5);
 }
 
 // Destructor
@@ -422,11 +437,14 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("outFile",     _outFileLineEdit->text());
   settings.setValue("outPort",     _outPortLineEdit->text());
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());
+  settings.setValue("ephPath",     _ephPathLineEdit->text());
   settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
   settings.setValue("rnxAppend",   _rnxAppendCheckBox->checkState());
+  settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
+  settings.setValue("ephV3",       _ephV3CheckBox->checkState());
   settings.setValue("logFile",     _logFileLineEdit->text());
   
 QStringList mountPoints;

@@ -52,8 +52,13 @@ class bncApp : public QApplication {
     int               _logFileFlag;
     QString           _bncVersion;
     QMutex            _mutex;
-    QFile*            _ephFile;
-    QTextStream*      _ephStream;
+    QString           _ephPath;
+    QString           _ephFileNameGPS;
+    int               _rinex3;
+    QFile*            _ephFileGPS;
+    QTextStream*      _ephStreamGPS;
+    QFile*            _ephFileGlonass;
+    QTextStream*      _ephStreamGlonass;
     gpsephemeris*     _gpsEph[PRN_GPS_END - PRN_GPS_START + 1];
     glonassephemeris* _glonassEph[PRN_GLONASS_END - PRN_GLONASS_START + 1];
 };

@@ -60,8 +60,6 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  bncApp app(argc, argv, GUIenabled);
-
   QCoreApplication::setOrganizationName("BKG");
   QCoreApplication::setOrganizationDomain("www.ifag.de");
   QCoreApplication::setApplicationName("BKG_NTRIP_Client");
@@ -76,6 +74,8 @@ int main(int argc, char *argv[]) {
     settings.setValue("rnxSkel",    "SKL");
     settings.setValue("waitTime",   2);
   }
+
+  bncApp app(argc, argv, GUIenabled);
 
   // Interactive Mode - open the main window
   // ---------------------------------------
