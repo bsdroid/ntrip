@@ -245,6 +245,8 @@ void bncApp::printEphHeader() {
     delete _ephFileGPS;
 
     QFlags<QIODevice::OpenModeFlag> appendFlagGPS;
+    QFlags<QIODevice::OpenModeFlag> appendFlagGlonass;
+
     if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked &&
          QFile::exists(ephFileNameGPS) ) {
       appendFlagGPS = QIODevice::Append;
@@ -267,7 +269,6 @@ void bncApp::printEphHeader() {
       delete _ephStreamGlonass;
       delete _ephFileGlonass;
 
-      QFlags<QIODevice::OpenModeFlag> appendFlagGlonass;
       if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked &&
            QFile::exists(ephFileNameGlonass) ) {
         appendFlagGlonass = QIODevice::Append;
@@ -302,10 +303,31 @@ void bncApp::printEphHeader() {
       _ephStreamGPS->flush();
     }
 
-    // Header - RINEX Version 2
-    // ------------------------
+    // Headers - RINEX Version 2
+    // -------------------------
     else if (_rinexVers == 2) {
-
+      if (! (appendFlagGPS & QIODevice::Append)) {
+        QString line;
+        line.sprintf(
+          "%9.2f%11sN: GPS NAV DATA%25sRINEX VERSION / TYPE\n", 2.1, "", "");
+        *_ephStreamGPS << line;
+         
+        char buffer[100];
+        HandleRunBy(buffer, sizeof(buffer), 0, 0);
+        line.sprintf("%s\n%60sEND OF HEADER\n", buffer, "");
+        *_ephStreamGPS << line;
+      }
+      if (! (appendFlagGlonass & QIODevice::Append)) {
+        QString line;
+        line.sprintf(
+          "%9.2f%11sG: GLONASS NAV DATA%21sRINEX VERSION / TYPE\n",2.1,"","");
+        *_ephStreamGlonass << line;
+        
+        char buffer[100];
+        HandleRunBy(buffer, sizeof(buffer), 0, 0);
+        line.sprintf("%s\n%60sEND OF HEADER\n", buffer, "");
+        *_ephStreamGlonass << line;
+      }
     }
   }
 }
