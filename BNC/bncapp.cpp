@@ -146,7 +146,7 @@ void bncApp::slotMessage(const QByteArray msg) {
   }
 }
 
-// 
+// New GPS Ephemeris 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
 
@@ -170,7 +170,7 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
   }
 }
     
-// 
+// New Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
 
@@ -196,14 +196,15 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
   }
 }
 
-// 
+// Print Header of the output File(s)
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printEphHeader() {
+
+  QSettings settings;
 
   // Initialization
   // --------------
   if (_rinexVers == 0) {
-    QSettings settings;
 
     if ( Qt::CheckState(settings.value("ephV3").toInt()) == Qt::Checked) {
       _rinexVers = 3;    
@@ -228,7 +229,8 @@ void bncApp::printEphHeader() {
 
     QDate date = QDate::currentDate();
 
-    QString ephFileNameGPS = _ephPath + "GPS_" +
+    QString hlp = (_rinexVers == 3) ? "MIX_" : "GPS_";
+    QString ephFileNameGPS = _ephPath + hlp +
           QString("%1").arg(date.dayOfYear(), 3, 10, QChar('0')) +
                             date.toString("0.yyN");
 
@@ -242,8 +244,14 @@ void bncApp::printEphHeader() {
     delete _ephStreamGPS;
     delete _ephFileGPS;
 
+    QFlags<QIODevice::OpenModeFlag> appendFlagGPS;
+    if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked &&
+         QFile::exists(ephFileNameGPS) ) {
+      appendFlagGPS = QIODevice::Append;
+    }
+
     _ephFileGPS = new QFile(ephFileNameGPS);
-    _ephFileGPS->open(QIODevice::WriteOnly);
+    _ephFileGPS->open(QIODevice::WriteOnly | appendFlagGPS);
     _ephStreamGPS = new QTextStream();
     _ephStreamGPS->setDevice(_ephFileGPS);
 
@@ -259,8 +267,14 @@ void bncApp::printEphHeader() {
       delete _ephStreamGlonass;
       delete _ephFileGlonass;
 
+      QFlags<QIODevice::OpenModeFlag> appendFlagGlonass;
+      if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked &&
+           QFile::exists(ephFileNameGlonass) ) {
+        appendFlagGlonass = QIODevice::Append;
+      }
+
       _ephFileGlonass = new QFile(ephFileNameGlonass);
-      _ephFileGlonass->open(QIODevice::WriteOnly);
+      _ephFileGlonass->open(QIODevice::WriteOnly | appendFlagGlonass);
       _ephStreamGlonass = new QTextStream();
       _ephStreamGlonass->setDevice(_ephFileGlonass);
     }
@@ -268,6 +282,11 @@ void bncApp::printEphHeader() {
     // Header - RINEX Version 3
     // ------------------------
     if (_rinexVers == 3) {
+
+      if (appendFlagGPS & QIODevice::Append) {
+        return;
+      }
+
       QString line;
 
       line.sprintf(
@@ -291,7 +310,7 @@ void bncApp::printEphHeader() {
   }
 }
 
-// 
+// Print One GPS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGPSEph(gpsephemeris* ep) {
 
@@ -357,7 +376,7 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
   }
 }
 
-// 
+// Print One Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGlonassEph(glonassephemeris* ep) {
 
