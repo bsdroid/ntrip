@@ -160,7 +160,9 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
   }
 
   gpsephemeris** ee = &_gpsEph[gpseph->satellite-1];
-  if ( *ee == 0 || (*ee)->IODE != gpseph->IODE ) { 
+  if ( *ee == 0                         || 
+       gpseph->GPSweek > (*ee)->GPSweek ||
+       gpseph->TOW     > (*ee)->TOW     ) {
     delete *ee;
     *ee = gpseph;
     printGPSEph(gpseph);
@@ -185,8 +187,9 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
 
   glonassephemeris** ee = &_glonassEph[glonasseph->almanac_number-1];
 
-  if ( *ee == 0 || (*ee)->GPSWeek != glonasseph->GPSWeek || 
-      (*ee)->GPSTOW != glonasseph->GPSTOW ) { 
+  if ( *ee == 0                             || 
+       glonasseph->GPSWeek > (*ee)->GPSWeek ||
+       glonasseph->GPSTOW  > (*ee)->GPSTOW  ) {
     delete *ee;
     *ee = glonasseph;
     printGlonassEph(glonasseph);
