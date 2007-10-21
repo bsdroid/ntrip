@@ -283,24 +283,20 @@ void bncApp::printEphHeader() {
     // Header - RINEX Version 3
     // ------------------------
     if (_rinexVers == 3) {
-
-      if (appendFlagGPS & QIODevice::Append) {
-        return;
+      if ( ! (appendFlagGPS & QIODevice::Append)) {
+        QString line;
+        line.sprintf(
+          "%9.2f%11sN: GNSS NAV DATA    M: Mixed%12sRINEX VERSION / TYPE\n", 
+          3.0, "", "");
+        *_ephStreamGPS << line;
+        
+        char buffer[100];
+        HandleRunBy(buffer, sizeof(buffer), 0, 1);
+        line.sprintf("%s\n%60sEND OF HEADER\n", buffer, "");
+        *_ephStreamGPS << line;
+        
+        _ephStreamGPS->flush();
       }
-
-      QString line;
-
-      line.sprintf(
-            "%9.2f%11sN: GNSS NAV DATA    M: Mixed%12sRINEX VERSION / TYPE\n", 
-            3.0, "", "");
-      *_ephStreamGPS << line;
-
-      char buffer[100];
-      HandleRunBy(buffer, sizeof(buffer), 0, 1);
-      line.sprintf("%s\n%60sEND OF HEADER\n", buffer, "");
-      *_ephStreamGPS << line;
-
-      _ephStreamGPS->flush();
     }
 
     // Headers - RINEX Version 2
@@ -316,6 +312,8 @@ void bncApp::printEphHeader() {
         HandleRunBy(buffer, sizeof(buffer), 0, 0);
         line.sprintf("%s\n%60sEND OF HEADER\n", buffer, "");
         *_ephStreamGPS << line;
+
+        _ephStreamGPS->flush();
       }
       if (! (appendFlagGlonass & QIODevice::Append)) {
         QString line;
@@ -327,6 +325,8 @@ void bncApp::printEphHeader() {
         HandleRunBy(buffer, sizeof(buffer), 0, 0);
         line.sprintf("%s\n%60sEND OF HEADER\n", buffer, "");
         *_ephStreamGlonass << line;
+
+        _ephStreamGlonass->flush();
       }
     }
   }
