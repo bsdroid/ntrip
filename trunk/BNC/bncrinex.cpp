@@ -480,7 +480,8 @@ void bncRinex::dumpEpoch(long maxTime) {
     QListIterator<Observation*> it(dumpList);
     while (it.hasNext()) {
       Observation* ob = it.next();
-      _out << ob->satSys << setw(2) << ob->satNum
+      _out << ob->satSys 
+           << setw(2) << setfill('0') << ob->satNum << setfill(' ')
            << setw(14) << setprecision(3) << ob->C1 << "  "  
            << setw(14) << setprecision(3) << ob->L1 << " " 
            << setw(1)                     << ob->SNR1
