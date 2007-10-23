@@ -70,6 +70,7 @@ class bncRinex {
    bool                _reconnectFlag;
    QDate               _skeletonDate;
    QMutex              _mutex;
+   int                 _rinexVers;
 };
 
 #endif
