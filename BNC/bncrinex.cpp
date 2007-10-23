@@ -153,9 +153,16 @@ t_irc bncRinex::downloadSkeleton() {
           QString line = socket->readLine();
           line.chop(1);
           if (line.indexOf("RINEX VERSION") != -1) {
-            _headerLines.append("     2.11           OBSERVATION DATA"
-                                "    M (MIXED)"
-                                "           RINEX VERSION / TYPE");
+            if (_rinexVers == 3) {
+              _headerLines.append("     3.00           OBSERVATION DATA"
+                                  "    M (MIXED)"
+                                  "           RINEX VERSION / TYPE");
+            }
+            else {
+              _headerLines.append("     2.11           OBSERVATION DATA"
+                                  "    M (MIXED)"
+                                  "           RINEX VERSION / TYPE");
+            }
             _headerLines.append("PGM / RUN BY / DATE");
             firstLineRead = true;
           }
@@ -354,8 +361,14 @@ void bncRinex::writeHeader(const QDateTime& datTim,
              << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
       }
       else if (line.indexOf("# / TYPES OF OBSERV") != -1) {
-        _out << "     8    C1    C2    P1    P2    L1    L2    S1    S2"
-                "      # / TYPES OF OBSERV"  << endl;
+        if (_rinexVers == 3) {
+          _out << "G    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
+          _out << "R    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
+        }
+        else { 
+          _out << "     8    C1    C2    P1    P2    L1    L2    S1    S2"
+                  "      # / TYPES OF OBSERV"  << endl;
+        }
       }
       else if (line.indexOf("TIME OF FIRST OBS") != -1) {
         _out << datTim.toString("  yyyy    MM    dd"
@@ -377,7 +390,12 @@ void bncRinex::writeHeader(const QDateTime& datTim,
     double approxPos[3];  approxPos[0]  = approxPos[1]  = approxPos[2]  = 0.0;
     double antennaNEU[3]; antennaNEU[0] = antennaNEU[1] = antennaNEU[2] = 0.0;
     
-    _out << "     2.11           OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE" << endl;
+    if (_rinexVers == 3) {
+      _out << "     3.00           OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE" << endl;
+    }
+    else {
+      _out << "     2.11           OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE" << endl;
+    }
     QString hlp = QDate::currentDate().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
     _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
          << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
