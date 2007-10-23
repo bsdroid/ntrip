@@ -399,9 +399,16 @@ void bncRinex::writeHeader(const QDateTime& datTim,
          << setw(14) << setprecision(4) << antennaNEU[1]
          << setw(14) << setprecision(4) << antennaNEU[2] 
          << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
-    _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
-    _out << "     8    C1    C2    P1    P2    L1    L2    S1    S2      # / TYPES OF OBSERV"  << endl;
-        _out << datTim.toString("  yyyy    MM    dd"
+    if (_rinexVers == 3) {
+      _out << "G    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
+      _out << "R    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
+
+    }
+    else {
+      _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
+      _out << "     8    C1    C2    P1    P2    L1    L2    S1    S2      # / TYPES OF OBSERV"  << endl;
+    }
+    _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
     _out << "                 "                                      << "TIME OF FIRST OBS"    << endl;
     hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
