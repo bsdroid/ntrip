@@ -169,9 +169,11 @@ t_irc bncRinex::downloadSkeleton() {
           else if (firstLineRead) {
             if (line.indexOf("END OF HEADER") != -1) {
               _headerLines.append("# / TYPES OF OBSERV");
-              _headerLines.append(
-                    QString("     1     1").leftJustified(60, ' ', true) +
-                    "WAVELENGTH FACT L1/2");
+              if (_rinexVers == 2) {
+                _headerLines.append(
+                      QString("     1     1").leftJustified(60, ' ', true) +
+                      "WAVELENGTH FACT L1/2");
+              }
               _headerLines.append("TIME OF FIRST OBS");
               _headerLines.append( line );
               break;
