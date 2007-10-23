@@ -469,43 +469,68 @@ void bncRinex::dumpEpoch(long maxTime) {
   }
 
   double sec = double(datTim.time().second()) + fmod(fObs->GPSWeeks,1.0);
-  _out << datTim.toString(" yy MM dd hh mm ").toAscii().data()
-       << setw(10) << setprecision(7) << sec
-       << "  " << 0 << setw(3)  << dumpList.size();
 
-  QSettings settings;
+  // RINEX Version 3
+  // ---------------
+  if (_rinexVers == 3) {
+    _out << datTim.toString("> yyyy MM dd hh mm ").toAscii().data()
+         << setw(10) << setprecision(7) << sec
+         << "  " << 0 << setw(3)  << dumpList.size() << endl;
 
-  QListIterator<Observation*> it(dumpList); int iSat = 0;
-  while (it.hasNext()) {
-    iSat++;
-    Observation* ob = it.next();
-    _out << ob->satSys << setw(2) << ob->satNum;
-    if (iSat == 12 && it.hasNext()) {
-      _out << endl << "                                ";
-      iSat = 0;
+    QListIterator<Observation*> it(dumpList);
+    while (it.hasNext()) {
+      Observation* ob = it.next();
+      _out << ob->satSys << setw(2) << ob->satNum << "  "
+           << setw(14) << setprecision(3) << ob->P1 
+           << setw(14) << setprecision(3) << ob->L1 
+           << setw(14) << setprecision(3) << ob->S1 
+           << setw(14) << setprecision(3) << ob->P2 
+           << setw(14) << setprecision(3) << ob->L2 
+           << setw(14) << setprecision(3) << ob->S2
+           << endl;
+      delete ob;
     }
   }
-  _out << endl;
 
-  it.toFront();
-  while (it.hasNext()) {
-    Observation* ob = it.next();
-
-    char lli = ' ';
-    char snr = ' ';
-    _out << setw(14) << setprecision(3) << ob->C1 << lli << snr;
-    _out << setw(14) << setprecision(3) << ob->C2 << lli << snr;
-    _out << setw(14) << setprecision(3) << ob->P1 << lli << snr;
-    _out << setw(14) << setprecision(3) << ob->P2 << lli << snr; 
-    _out << setw(14) << setprecision(3) << ob->L1 << lli 
-         << setw(1) << ob->SNR1 << endl;
-    _out << setw(14) << setprecision(3) << ob->L2 << lli
-         << setw(1) << ob->SNR2;
-    _out << setw(14) << setprecision(3) << ob->S1 ;
-    _out << setw(16) << setprecision(3) << ob->S2 ;
+  // RINEX Version 2
+  // ---------------
+  else {
+    _out << datTim.toString(" yy MM dd hh mm ").toAscii().data()
+         << setw(10) << setprecision(7) << sec
+         << "  " << 0 << setw(3)  << dumpList.size();
+    
+    QListIterator<Observation*> it(dumpList); int iSat = 0;
+    while (it.hasNext()) {
+      iSat++;
+      Observation* ob = it.next();
+      _out << ob->satSys << setw(2) << ob->satNum;
+      if (iSat == 12 && it.hasNext()) {
+        _out << endl << "                                ";
+        iSat = 0;
+      }
+    }
     _out << endl;
-
-    delete ob;
+    
+    it.toFront();
+    while (it.hasNext()) {
+      Observation* ob = it.next();
+    
+      char lli = ' ';
+      char snr = ' ';
+      _out << setw(14) << setprecision(3) << ob->C1 << lli << snr;
+      _out << setw(14) << setprecision(3) << ob->C2 << lli << snr;
+      _out << setw(14) << setprecision(3) << ob->P1 << lli << snr;
+      _out << setw(14) << setprecision(3) << ob->P2 << lli << snr; 
+      _out << setw(14) << setprecision(3) << ob->L1 << lli 
+           << setw(1) << ob->SNR1 << endl;
+      _out << setw(14) << setprecision(3) << ob->L2 << lli
+           << setw(1) << ob->SNR2;
+      _out << setw(14) << setprecision(3) << ob->S1 ;
+      _out << setw(16) << setprecision(3) << ob->S2 ;
+      _out << endl;
+    
+      delete ob;
+    }
   }
 
   _out.flush();
