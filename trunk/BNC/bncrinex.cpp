@@ -482,10 +482,12 @@ void bncRinex::dumpEpoch(long maxTime) {
       Observation* ob = it.next();
       _out << ob->satSys << setw(2) << ob->satNum
            << setw(14) << setprecision(3) << ob->C1 << "  "  
-           << setw(14) << setprecision(3) << ob->L1 << " 9" 
+           << setw(14) << setprecision(3) << ob->L1 << " " 
+           << setw(1)                     << ob->SNR1
            << setw(14) << setprecision(3) << ob->S1 << "  " 
            << setw(14) << setprecision(3) << ob->P2 << "  " 
-           << setw(14) << setprecision(3) << ob->L2 << " 9" 
+           << setw(14) << setprecision(3) << ob->L2 << " " 
+           << setw(1)                     << ob->SNR2
            << setw(14) << setprecision(3) << ob->S2
            << endl;
       delete ob;
