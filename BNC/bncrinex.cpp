@@ -149,9 +149,11 @@ t_irc bncRinex::downloadSkeleton() {
       bool firstLineRead = false;
       while (true) {
         if (socket->canReadLine()) {
-          irc = success;
           QString line = socket->readLine();
           line.chop(1);
+          if (line.indexOf("MARKER NAME") != -1) {
+            irc = success;
+          }
           if (line.indexOf("RINEX VERSION") != -1) {
             if (_rinexVers == 3) {
               _headerLines.append("     3.00           OBSERVATION DATA"
