@@ -382,7 +382,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
       else if (line.indexOf("TIME OF FIRST OBS") != -1) {
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
-        _out << "                 TIME OF FIRST OBS"    << endl;
+        _out << "     GPS         TIME OF FIRST OBS"    << endl;
         QString hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
                       _mountPoint.path())).leftJustified(60, ' ', true);
         _out << hlp.toAscii().data() << "COMMENT" << endl;
@@ -440,7 +440,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
     }
     _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
-    _out << "                 "                                      << "TIME OF FIRST OBS"    << endl;
+    _out << "     GPS         TIME OF FIRST OBS"    << endl;
     QString hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
           _mountPoint.path())).leftJustified(60, ' ', true);
     _out << hlp.toAscii().data() << "COMMENT" << endl;
