@@ -373,6 +373,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
         if (_rinexVers == 3) {
           _out << "G    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
           _out << "R    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
+          _out << "S    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
         }
         else { 
           _out << "     8    C1    C2    P1    P2    L1    L2    S1    S2"
@@ -432,6 +433,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
     if (_rinexVers == 3) {
       _out << "G    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
       _out << "R    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
+      _out << "S    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
 
     }
     else {

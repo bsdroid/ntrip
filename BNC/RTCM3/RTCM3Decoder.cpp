@@ -110,13 +110,17 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
           
           for (int ii = 0; ii < _Parser.Data.numsats; ii++) {
             Observation* obs = new Observation();
-            if (_Parser.Data.satellites[ii] <= PRN_GPS_END) {
+            if      (_Parser.Data.satellites[ii] <= PRN_GPS_END) {
               obs->satSys = 'G';
               obs->satNum = _Parser.Data.satellites[ii];
 	    }
-	    else {
+	    else if (_Parser.Data.satellites[ii] <= PRN_GLONASS_END) {
               obs->satSys = 'R';
               obs->satNum = _Parser.Data.satellites[ii] - PRN_GLONASS_START + 1;
+	    }
+	    else {
+              obs->satSys = 'S';
+              obs->satNum = _Parser.Data.satellites[ii] - PRN_WAAS_START + 20;
 	    }
             obs->GPSWeek  = _Parser.Data.week;
             obs->GPSWeeks = _Parser.Data.timeofweek / 1000.0;
