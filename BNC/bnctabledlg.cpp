@@ -208,6 +208,8 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::slotGetTable() {
 
+  _buttonGet->setEnabled(false);
+
   _allLines.clear();
 
   if ( getFullTable(_casterHostLineEdit->text(),
