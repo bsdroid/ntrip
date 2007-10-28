@@ -358,9 +358,16 @@ void bncRinex::writeHeader(const QDateTime& datTim,
     while (it.hasNext()) {
       QString line = it.next();
       if      (line.indexOf("PGM / RUN BY / DATE") != -1) {
-        QString hlp = QDate::currentDate().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
-        _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
-             << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
+        if (_rinexVers == 3) {
+          QString hlp = QDateTime::currentDateTime().toString("yyyyMMdd hhmmss UTC").leftJustified(20, ' ', true);
+          _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
+               << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
+        }
+        else {
+          QString hlp = QDate::currentDate().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
+          _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
+               << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
+        }
       }
       else if (line.indexOf("# / TYPES OF OBSERV") != -1) {
         if (_rinexVers == 3) {
@@ -394,13 +401,16 @@ void bncRinex::writeHeader(const QDateTime& datTim,
     
     if (_rinexVers == 3) {
       _out << "     3.00           OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE" << endl;
+      QString hlp = QDateTime::currentDateTime().toString("yyyyMMdd hhmmss UTC").leftJustified(20, ' ', true);
+      _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
+           << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
     }
     else {
       _out << "     2.11           OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE" << endl;
+      QString hlp = QDate::currentDate().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
+      _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
+           << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
     }
-    QString hlp = QDate::currentDate().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
-    _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
-         << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
     _out.setf(ios::left);
     _out << setw(60) << _statID.data()                               << "MARKER NAME"          << endl;
     _out << setw(60) << "unknown             unknown"                << "OBSERVER / AGENCY"    << endl;
@@ -431,7 +441,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
     _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
     _out << "                 "                                      << "TIME OF FIRST OBS"    << endl;
-    hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
+    QString hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
           _mountPoint.path())).leftJustified(60, ' ', true);
     _out << hlp.toAscii().data() << "COMMENT" << endl;
 
