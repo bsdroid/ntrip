@@ -25,6 +25,7 @@
 #ifndef RTIGSDECODER_H
 #define RTIGSDECODER_H
 
+#include <string>
 #include "../RTCM/GPSDecoder.h"
 #include "cgps_transform.h"
 
