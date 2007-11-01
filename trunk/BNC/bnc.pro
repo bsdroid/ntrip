@@ -11,7 +11,11 @@ RESOURCES += bnc.qrc
 unix:QMAKE_CFLAGS_RELEASE   -= -O2
 unix:QMAKE_CXXFLAGS_RELEASE -= -O2
 
-win32:QMAKE_LFLAGS -= -mthreads
+# Get rid of mingwm10.dll
+# -----------------------
+win32:QMAKE_LFLAGS                 -= -mthreads
+win32:QMAKE_CXXFLAGS_EXCEPTIONS_ON -= -mthreads
+win32:QMAKE_LFLAGS_EXCEPTIONS_ON   -= -mthreads
 
 debug:OBJECTS_DIR=.obj/debug
 debug:MOC_DIR=.moc/debug
