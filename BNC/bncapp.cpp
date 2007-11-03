@@ -60,9 +60,7 @@ struct converttimeinfo {
 extern "C" {
   void converttime(struct converttimeinfo *c, int week, int tow);
   void updatetime(int *week, int *tow, int tk, int fixnumleap);
-  int  HandleRunBy(char *buffer, int buffersize, const char **u, int rinex3);
 }
-
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -91,6 +89,15 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
   _ephStreamGPS     = 0;
   _ephFileGlonass   = 0;
   _ephStreamGlonass = 0;
+
+  _pgmName  = _bncVersion.leftJustified(20, ' ', true);
+#ifdef WIN32
+  _userName = QString("${USERNAME}");
+#else
+  _userName = QString("${USER}");
+#endif
+  expandEnvVar(_userName);
+  _userName = _userName.leftJustified(20, ' ', true);
 }
 
 // Destructor
@@ -293,9 +300,13 @@ void bncApp::printEphHeader() {
           3.0, "", "");
         *_ephStreamGPS << line;
         
-        char buffer[100];
-        HandleRunBy(buffer, sizeof(buffer), 0, 1);
-        line.sprintf("%s\n%60sEND OF HEADER\n", buffer, "");
+        QString hlp = QDateTime::currentDateTime().toString("yyyyMMdd hhmmss UTC").leftJustified(20, ' ', true);
+        *_ephStreamGPS << _pgmName.toAscii().data() 
+                       << _userName.toAscii().data() 
+                       << hlp.toAscii().data() 
+                       << "PGM / RUN BY / DATE" << endl;
+
+        line.sprintf("%60sEND OF HEADER\n", "");
         *_ephStreamGPS << line;
         
         _ephStreamGPS->flush();
@@ -311,9 +322,13 @@ void bncApp::printEphHeader() {
           "%9.2f%11sN: GPS NAV DATA%25sRINEX VERSION / TYPE\n", 2.1, "", "");
         *_ephStreamGPS << line;
          
-        char buffer[100];
-        HandleRunBy(buffer, sizeof(buffer), 0, 0);
-        line.sprintf("%s\n%60sEND OF HEADER\n", buffer, "");
+        QString hlp = QDate::currentDate().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
+        *_ephStreamGPS << _pgmName.toAscii().data() 
+                       << _userName.toAscii().data() 
+                       << hlp.toAscii().data() 
+                       << "PGM / RUN BY / DATE" << endl;
+
+        line.sprintf("%60sEND OF HEADER\n", "");
         *_ephStreamGPS << line;
 
         _ephStreamGPS->flush();
@@ -324,9 +339,13 @@ void bncApp::printEphHeader() {
           "%9.2f%11sG: GLONASS NAV DATA%21sRINEX VERSION / TYPE\n",2.1,"","");
         *_ephStreamGlonass << line;
         
-        char buffer[100];
-        HandleRunBy(buffer, sizeof(buffer), 0, 0);
-        line.sprintf("%s\n%60sEND OF HEADER\n", buffer, "");
+        QString hlp = QDate::currentDate().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
+        *_ephStreamGlonass << _pgmName.toAscii().data() 
+                           << _userName.toAscii().data() 
+                           << hlp.toAscii().data() 
+                           << "PGM / RUN BY / DATE" << endl;
+
+        line.sprintf("%60sEND OF HEADER\n", "");
         *_ephStreamGlonass << line;
 
         _ephStreamGlonass->flush();

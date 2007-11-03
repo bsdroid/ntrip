@@ -61,5 +61,7 @@ class bncApp : public QApplication {
     QTextStream*      _ephStreamGlonass;
     gpsephemeris*     _gpsEph[PRN_GPS_END - PRN_GPS_START + 1];
     glonassephemeris* _glonassEph[PRN_GLONASS_END - PRN_GLONASS_START + 1];
+    QString           _userName;
+    QString           _pgmName;
 };
 #endif
