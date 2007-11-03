@@ -298,8 +298,10 @@ bncWindow::bncWindow() {
 
   QBoxLayout* bl = new QBoxLayout(QBoxLayout::LeftToRight);
   bl->addWidget(_rnxIntrComboBox);
+  bl->addWidget(new QLabel("RINEX"));
   bl->addWidget(_ephIntrComboBox);
-  layout->addLayout(bl, 6, 2, 1, 2);
+  bl->addWidget(new QLabel("EPH"));
+  layout->addLayout(bl, 6, 2, 1, 1);
 
   layout->addWidget(new QLabel("Sampling"),                      6, 3);
   layout->addWidget(_rnxSamplSpinBox,                            6, 4);
