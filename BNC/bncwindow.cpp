@@ -174,6 +174,15 @@ bncWindow::bncWindow() {
   if (ii != -1) {
     _rnxIntrComboBox->setCurrentIndex(ii);
   }
+  _ephIntrComboBox    = new QComboBox();
+  _ephIntrComboBox->setWhatsThis(tr("<p>Select an interval for the ephemeris file generation."));
+  _ephIntrComboBox->setMaximumWidth(9*ww);
+  _ephIntrComboBox->setEditable(false);
+  _ephIntrComboBox->addItems(QString("1 hour,1 day").split(","));
+  int jj = _ephIntrComboBox->findText(settings.value("ephIntr").toString());
+  if (jj != -1) {
+    _ephIntrComboBox->setCurrentIndex(jj);
+  }
   _rnxSamplSpinBox    = new QSpinBox();
   _rnxSamplSpinBox->setWhatsThis(tr("<p>Select the RINEX sample interval in seconds. Zero '0' stands for converting all incoming epochs to RINEX.</p><p>Default for RINEX 'Sampling' is '0'.</p>"));
   _rnxSamplSpinBox->setMinimum(0);
@@ -285,8 +294,13 @@ bncWindow::bncWindow() {
   layout->addWidget(new QLabel("RINEX script (full path)"),      5, 0, 1, 2);
   layout->addWidget(_rnxScrpLineEdit,                            5, 2, 1, 3);
 
-  layout->addWidget(new QLabel("RINEX file interval"),           6, 0, 1, 2);
-  layout->addWidget(_rnxIntrComboBox,                            6, 2);
+  layout->addWidget(new QLabel("File interval"),                 6, 0, 1, 2);
+
+  QBoxLayout* bl = new QBoxLayout(QBoxLayout::LeftToRight);
+  bl->addWidget(_rnxIntrComboBox);
+  bl->addWidget(_ephIntrComboBox);
+  layout->addLayout(bl, 6, 2, 1, 2);
+
   layout->addWidget(new QLabel("Sampling"),                      6, 3);
   layout->addWidget(_rnxSamplSpinBox,                            6, 4);
 
@@ -440,6 +454,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("ephPath",     _ephPathLineEdit->text());
   settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
+  settings.setValue("ephIntr",     _ephIntrComboBox->currentText());
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
   settings.setValue("rnxAppend",   _rnxAppendCheckBox->checkState());
