@@ -237,12 +237,38 @@ void bncApp::printEphHeader() {
   // ------------------------
   if (!_ephPath.isEmpty()) {
 
-    QDate date = QDate::currentDate();
+    QDateTime datTim = QDateTime::currentDateTime();
 
     QString hlp = (_rinexVers == 3) ? "MIX_" : "GPS_";
-    QString ephFileNameGPS = _ephPath + hlp +
-          QString("%1").arg(date.dayOfYear(), 3, 10, QChar('0')) +
-                            date.toString("0.yyN");
+    QString ephFileNameGPS = _ephPath + hlp + 
+               QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0'));
+
+    QString hlpStr;
+    QString intStr = settings.value("ephIntr").toString();
+    if      (intStr == "1 day") {
+      hlpStr = "0";
+    }
+    else if (intStr == "1 hour") {
+      char ch = 'A' + datTim.time().hour();
+      hlpStr = ch;
+    }
+    else {
+      char ch = 'A' + datTim.time().hour();
+      hlpStr = ch;
+      if      (datTim.time().minute() < 15) {
+        hlpStr += "00";
+      }
+      else if (datTim.time().minute() < 30) {
+        hlpStr += "15";
+      }
+      else if (datTim.time().minute() < 45) {
+        hlpStr += "30";
+      }
+      else {
+        hlpStr += "45";
+      }
+    }
+    ephFileNameGPS += hlpStr + datTim.toString(".yyN");
 
     if (_ephFileNameGPS == ephFileNameGPS) {
       return;
@@ -273,8 +299,8 @@ void bncApp::printEphHeader() {
     }
     else if (_rinexVers == 2) {
       QString ephFileNameGlonass = _ephPath + "GLO_" +
-          QString("%1").arg(date.dayOfYear(), 3, 10, QChar('0')) +
-                            date.toString("0.yyN");
+          QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
+          hlpStr + datTim.toString(".yyN");
 
       delete _ephStreamGlonass;
       delete _ephFileGlonass;

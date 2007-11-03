@@ -178,7 +178,7 @@ bncWindow::bncWindow() {
   _ephIntrComboBox->setWhatsThis(tr("<p>Select an interval for the ephemeris file generation."));
   _ephIntrComboBox->setMaximumWidth(9*ww);
   _ephIntrComboBox->setEditable(false);
-  _ephIntrComboBox->addItems(QString("15 min,30 min,1 hour,1 day").split(","));
+  _ephIntrComboBox->addItems(QString("15 min,1 hour,1 day").split(","));
   int jj = _ephIntrComboBox->findText(settings.value("ephIntr").toString());
   if (jj != -1) {
     _ephIntrComboBox->setCurrentIndex(jj);
