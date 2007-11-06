@@ -67,7 +67,7 @@ extern "C" {
 bncApp::bncApp(int argc, char* argv[], bool GUIenabled) : 
   QApplication(argc, argv, GUIenabled) {
 
-  _bncVersion  = "BNC 1.4";
+  _bncVersion  = "BNC 1.5";
 
   _logFileFlag = 0;
   _logFile     = 0;
@@ -345,7 +345,7 @@ void bncApp::printEphHeader() {
       if (! (appendFlagGPS & QIODevice::Append)) {
         QString line;
         line.sprintf(
-          "%9.2f%11sN: GPS NAV DATA%25sRINEX VERSION / TYPE\n", 2.1, "", "");
+          "%9.2f%11sN: GPS NAV DATA%25sRINEX VERSION / TYPE\n", 2.11, "", "");
         *_ephStreamGPS << line;
          
         QString hlp = QDate::currentDate().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);

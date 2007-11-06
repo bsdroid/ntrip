@@ -59,7 +59,7 @@ bncWindow::bncWindow() {
 
   setMinimumSize(77*ww, 65*ww);
 
-  setWindowTitle(tr("BKG Ntrip Client (BNC), Version 1.4"));
+  setWindowTitle(tr("BKG Ntrip Client (BNC), Version 1.5"));
 
   // Create Actions
   // --------------
@@ -149,9 +149,10 @@ bncWindow::bncWindow() {
   _outPortLineEdit->setMaximumWidth(9*ww);
   _outPortLineEdit->setWhatsThis(tr("<p>BNC makes synchronized observations available in a binary format on your local host (IP 127.0.0.1) through an IP port. Enter an IP port number to activate this function.</p><p>Default is an empty option field, meaning that no binary output is generated.</p>"));
   _rnxPathLineEdit    = new QLineEdit(settings.value("rnxPath").toString());
-  _rnxPathLineEdit->setWhatsThis(tr("<p>Observations can be converted to RINEX Version 2.11. Enter a path for saving the RINEX files in a directory. If this directory does not exist, BNC will not create RINEX files.</p><p>Default value for 'RINEX directory' is an empty option field, meaning that streams are not converted to RINEX.</p>"));
+  _rnxPathLineEdit->setWhatsThis(tr("<p>Observations can be converted to RINEX. Enter a path for saving the RINEX files in a directory. If this directory does not exist, BNC will not create RINEX files.</p><p>Default value for 'RINEX directory' is an empty option field, meaning that streams are not converted to RINEX.</p>"));
   _ephPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
-  _ephPathLineEdit->setWhatsThis(tr("<p>Navigation messages can be converted to RINEX files. Enter a path for saving the files in a directory.</p>"));
+  _ephPathLineEdit->setWhatsThis(tr("<p>Ephemeris data from RTCM Version 3 streams can be converted to RINEX. Enter a path for saving the RINEX Navigation files in a directory. If this directory does not exist, BNC will not create RINEX Navigation files.</p><p>Default value for 'Ephemeris directory' is an empty option field, meaning that no RINEX Navigation files will be created.</p>"));
+
   _rnxV3CheckBox = new QCheckBox();
   _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
   _ephV3CheckBox = new QCheckBox();
@@ -175,7 +176,7 @@ bncWindow::bncWindow() {
     _rnxIntrComboBox->setCurrentIndex(ii);
   }
   _ephIntrComboBox    = new QComboBox();
-  _ephIntrComboBox->setWhatsThis(tr("<p>Select an interval for the ephemeris file generation."));
+  _ephIntrComboBox->setWhatsThis(tr("<p>Select an interval for the ephemeris file generation.</p><p>Default for 'Ephemeris file interval' is '1 day', meaning that a new Ephemeris file is generated every day.</p>"));
   _ephIntrComboBox->setMaximumWidth(9*ww);
   _ephIntrComboBox->setEditable(false);
   _ephIntrComboBox->addItems(QString("15 min,1 hour,1 day").split(","));
@@ -290,6 +291,7 @@ bncWindow::bncWindow() {
 
   layout->addWidget(new QLabel("RINEX v3"),                      4, 3, 1, 2);
   layout->addWidget(_rnxV3CheckBox,                              4, 4);
+  _rnxV3CheckBox->setWhatsThis(tr("<p>Select the RINEX Observation file output format.</p><p>Default is RINEX Version 2.11 format. Output in RINEX Version 3 (RINEX v3) format is optional.</p>"));
 
   layout->addWidget(new QLabel("RINEX script (full path)"),      5, 0, 1, 2);
   layout->addWidget(_rnxScrpLineEdit,                            5, 2, 1, 3);
@@ -300,7 +302,7 @@ bncWindow::bncWindow() {
   bl->addWidget(_rnxIntrComboBox);
   bl->addWidget(new QLabel("RINEX"));
   bl->addWidget(_ephIntrComboBox);
-  bl->addWidget(new QLabel("EPH"));
+  bl->addWidget(new QLabel("Ephemeris"));
   layout->addLayout(bl, 6, 2, 1, 1);
 
   layout->addWidget(new QLabel("Sampling"),                      6, 3);
@@ -317,6 +319,7 @@ bncWindow::bncWindow() {
 
   layout->addWidget(new QLabel("RINEX v3"),                      8, 3, 1, 2);
   layout->addWidget(_ephV3CheckBox,                              8, 4);
+  _ephV3CheckBox->setWhatsThis(tr("<p>Select the RINEX Ephemeris file output format.</p><p>Default is RINEX Version 2.11 format. Output in RINEX Version 3 (RINEX v3) format is optional.</p>"));
 
   layout->addWidget(new QLabel("Mountpoints"),                   9, 0, 1, 2);
 
@@ -611,7 +614,7 @@ void bncWindow::slotAbout() {
   QLabel* img = new QLabel();
   img->setPixmap(QPixmap(":ntrip-logo.png"));
   dlgLayout->addWidget(img, 0,0);
-  dlgLayout->addWidget(new QLabel("BKG NTRIP Client (BNC), Version 1.4"), 0,1);
+  dlgLayout->addWidget(new QLabel("BKG NTRIP Client (BNC), Version 1.5"), 0,1);
   dlgLayout->addWidget(tb,1,0,1,2);
 
   dlg.setLayout(dlgLayout);
