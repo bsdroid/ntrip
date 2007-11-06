@@ -71,6 +71,7 @@ int main(int argc, char *argv[]) {
     settings.setValue("casterHost", "www.euref-ip.net");
     settings.setValue("casterPort", 80);
     settings.setValue("rnxIntr",    "15 min");
+    settings.setValue("ephIntr",    "1 day");
     settings.setValue("rnxSkel",    "SKL");
     settings.setValue("waitTime",   2);
   }
