@@ -378,6 +378,8 @@ void bncGetThread::run() {
       _socket->waitForReadyRead(_timeOut);
       qint64 nBytes = _socket->bytesAvailable();
       if (nBytes > 0) {
+        emit newBytes(_staID, nBytes);
+
         char* data = new char[nBytes];
         _socket->read(data, nBytes);
 
@@ -422,7 +424,6 @@ void bncGetThread::run() {
             _rnx->dumpEpoch(newTime);
           }
 
-          emit newBytes(_staID, sizeof(**it));
           bool firstObs = (it == _decoder->_obsList.begin());
           emit newObs(_staID, firstObs, *it);
         }
