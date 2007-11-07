@@ -70,7 +70,7 @@ bncZeroDecoder::~bncZeroDecoder() {
 // Reopen Output File
 //////////////////////////////////////////////////////////////////////// 
 void bncZeroDecoder::reopen() {
-  QDate currDate = QDate::currentDate();
+  QDate currDate = QDateTime::currentDateTime().toUTC().date();
   if (!_out || _fileDate != currDate) {
     delete _out;
     _out = new ofstream( (_fileName + "_" + 
