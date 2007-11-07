@@ -194,7 +194,7 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
     if ((lon < 0.) && (lon >= -180.))  {lon=lon*(-1.); flagE="W";}
     if (lon < -180.)  {lon=(lon+360.); flagE="E";}
     if (lat < 0.)  {lat=lat*(-1.); flagN="S";}
-    QTime ttime(QTime::currentTime());
+    QTime ttime(QDateTime::currentDateTime().toUTC().time());
     int lat_deg = (int)lat;  
     double lat_min=(lat-lat_deg)*60.;
     int lon_deg = (int)lon;  

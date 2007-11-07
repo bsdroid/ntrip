@@ -146,8 +146,7 @@ void bncApp::slotMessage(const QByteArray msg) {
   }
 
   if (_logStream) {
-    *_logStream << QDate::currentDate().toString("yy-MM-dd ").toAscii().data();
-    *_logStream << QTime::currentTime().toString("hh:mm:ss ").toAscii().data();
+    *_logStream << QDateTime::currentDateTime().toUTC().toString("yy-MM-dd hh:mm:ss ").toAscii().data();
     *_logStream << msg.data() << endl;
     _logStream->flush();
   }
@@ -237,7 +236,7 @@ void bncApp::printEphHeader() {
   // ------------------------
   if (!_ephPath.isEmpty()) {
 
-    QDateTime datTim = QDateTime::currentDateTime();
+    QDateTime datTim = QDateTime::currentDateTime().toUTC();
 
     QString hlp = (_rinexVers == 3) ? "MIX_" : "GPS_";
     QString ephFileNameGPS = _ephPath + hlp + 
@@ -326,7 +325,7 @@ void bncApp::printEphHeader() {
           3.0, "", "");
         *_ephStreamGPS << line;
         
-        QString hlp = QDateTime::currentDateTime().toString("yyyyMMdd hhmmss UTC").leftJustified(20, ' ', true);
+        QString hlp = QDateTime::currentDateTime().toUTC().toString("yyyyMMdd hhmmss UTC").leftJustified(20, ' ', true);
         *_ephStreamGPS << _pgmName.toAscii().data() 
                        << _userName.toAscii().data() 
                        << hlp.toAscii().data() 
@@ -348,7 +347,7 @@ void bncApp::printEphHeader() {
           "%9.2f%11sN: GPS NAV DATA%25sRINEX VERSION / TYPE\n", 2.11, "", "");
         *_ephStreamGPS << line;
          
-        QString hlp = QDate::currentDate().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
+        QString hlp = QDateTime::currentDateTime().toUTC().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
         *_ephStreamGPS << _pgmName.toAscii().data() 
                        << _userName.toAscii().data() 
                        << hlp.toAscii().data() 
@@ -365,7 +364,7 @@ void bncApp::printEphHeader() {
           "%9.2f%11sG: GLONASS NAV DATA%21sRINEX VERSION / TYPE\n",2.1,"","");
         *_ephStreamGlonass << line;
         
-        QString hlp = QDate::currentDate().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
+        QString hlp = QDateTime::currentDateTime().toUTC().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
         *_ephStreamGlonass << _pgmName.toAscii().data() 
                            << _userName.toAscii().data() 
                            << hlp.toAscii().data() 
