@@ -151,7 +151,7 @@ bncWindow::bncWindow() {
   _rnxPathLineEdit    = new QLineEdit(settings.value("rnxPath").toString());
   _rnxPathLineEdit->setWhatsThis(tr("<p>Observations can be converted to RINEX. Enter a path for saving the RINEX files in a directory. If this directory does not exist, BNC will not create RINEX files.</p><p>Default value for 'RINEX directory' is an empty option field, meaning that streams are not converted to RINEX.</p>"));
   _ephPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
-  _ephPathLineEdit->setWhatsThis(tr("<p>Ephemeris data from RTCM Version 3 streams can be converted to RINEX. Enter a path for saving the RINEX Navigation files in a directory. If this directory does not exist, BNC will not create RINEX Navigation files.</p><p>Default value for 'Ephemeris directory' is an empty option field, meaning that no RINEX Navigation files will be created.</p>"));
+  _ephPathLineEdit->setWhatsThis(tr("<p>Ephemeris data from RTCM Version 3.x streams can be converted to RINEX. Enter a path for saving the RINEX Navigation files in a directory. If this directory does not exist, BNC will not create RINEX Navigation files.</p><p>Default value for 'Ephemeris directory' is an empty option field, meaning that no RINEX Navigation files will be created.</p>"));
 
   _rnxV3CheckBox = new QCheckBox();
   _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
