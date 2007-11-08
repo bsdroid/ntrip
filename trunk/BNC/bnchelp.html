@@ -16,7 +16,7 @@ BNC has been written under GNU General Public License (GPL). Binaries for BNC ar
 <tr><td>Apr 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td><td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save<br> [Add] ZERO decoder added<br> [Mod] Download public RINEX skeletons once per day<br> [Mod] Upgrade to Qt Version 4.2.3<br> [Mod] Replace 'system' call for RINEX script by 'QProcess'<br> [Add] HTTP Host directive for skeleton file download<br> [Add] Percent encoding for user IDs and passwords<br> [Bug] Exit execution of calling thread for RTCM3 streams<br> [Bug] Signal-slot mechanism for threads</td></tr>
 <tr><td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td><td>Source code published.
 <tr><td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td><td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td></tr>
-<tr><td>Nov 2007 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Save Ephemeris from RTCM Version 3 streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support</td></tr>
+<tr><td>Nov 2007 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Save Ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support</td></tr>
 </table>
 </p>
 <h3>Contents</h3>
@@ -47,10 +47,10 @@ BNC decodes and converts GNSS data streams carrying code and phase data coming i
 <p>
 <ul>
 <li>RTCM Version 2.x format containing message types 18 and 19 (GPS and GLONASS), </li> 
-<li>RTCM Version 3 format containing message types 1002 (GPS, SBAS) or 1004 (GPS), and 1010 or 1012 (GLONASS), </li>
+<li>RTCM Version 3.x format containing message types 1002 (GPS, SBAS) or 1004 (GPS), and 1010 or 1012 (GLONASS), </li>
 <li>RTIGS format (only GPS).</li>
 </ul>
-BNC also handles RTCM Version 3 message types 1019 and 1029 carrying Broadcast Ephemeris data.
+BNC also handles RTCM Version 3.x message types 1019 and 1029 carrying Broadcast Ephemeris data.
 Furthermore, BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
 </p>
 <p><b>Resources</b><br>
@@ -211,7 +211,7 @@ struct Observation {
 
 <p><a name="rinex"><h4>B - 5. RINEX</h4></p>
 <p>
-Observations will be converted to RINEX if they come in either RTCM Version 2.x, RTCM Version 3, or RTIGS format. BNC's RINEX Observation files generally contain C1, C2, P1, P2, L1, L2, S1, and S2 observations. In case an observation is unavailable, its value is set to zero '0.000'. Note that even if a RINEX Observation file does not contain GLONASS or SBAS data, the 'RINEX TYPE' field in the RINEX Observation file header may be set to 'M (MIXED)'.
+Observations will be converted to RINEX if they come in either RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. BNC's RINEX Observation files generally contain C1, C2, P1, P2, L1, L2, S1, and S2 observations. In case an observation is unavailable, its value is set to zero '0.000'. Note that even if a RINEX Observation file does not contain GLONASS or SBAS data, the 'RINEX TYPE' field in the RINEX Observation file header may be set to 'M (MIXED)'.
 </p> 
 <p><a name="rnxname"><h4>B - 5.1 RINEX File Names</h4></p>
 <p>
@@ -332,7 +332,7 @@ When starting BNC, new RINEX Observation files are created by default. Probably 
 </p> 
 <p><a name="mountpoints"><h4>B - 6. Ephemeris</h4></p>
 <p>
-Broadcast Ephemeris can be saved in RINEX Navigation files if received in RTCM Version 3 as message types 1019 (GPS) and 1020 (GLONASS). The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'GPS_' and 'GLO_' for RINEX Version 2.11 Navigation files and 'MIX_' for RINEX Version 3 Navigation files.
+Broadcast Ephemeris can be saved in RINEX Navigation files if received in RTCM Version 3.x as message types 1019 (GPS) and 1020 (GLONASS). The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'GPS_' and 'GLO_' for RINEX Version 2.11 Navigation files and 'MIX_' for RINEX Version 3 Navigation files.
 </p> 
 
 <p><a name="ephpath"><h4>B - 6.1 Ephemeris Directory - optional</h4></p>
@@ -401,7 +401,7 @@ To delete a stream shown under 'Mountpoints' in the main window, select it by mo
 <p><a name="edit"><h4>B - 7.6 Edit Mountpoints</h4></p>
 <ul>
 <li>
-BNC automatically selects one out of several internal decoders for a stream based on its 'format' and 'format-details' as given in the source-table. It may happen that you need to overrule the automated decoder selection because of source-table setup deficiencies. Therefore BNC allows to edit the decoder string (first double-click, then edit field 'decoder', then hit Enter) for the streams shown under 'Mountpoints'. Accepted decoder strings allowed to be introduced for stream decoding and conversion are 'RTCM_2.x', 'RTCM_3', and 'RTIGS'.
+BNC automatically selects one out of several internal decoders for a stream based on its 'format' and 'format-details' as given in the source-table. It may happen that you need to overrule the automated decoder selection because of source-table setup deficiencies. Therefore BNC allows to edit the decoder string (first double-click, then edit field 'decoder', then hit Enter) for the streams shown under 'Mountpoints'. Accepted decoder strings allowed to be introduced for stream decoding and conversion are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.
 </li>
 <li>
 BNC allows to by-pass its stream decoding and conversion algorithms, leave whatever is received untouched and save it in daily named files. To activate this functionality you need to enter the decoder string 'ZERO'. The generated file names are build from the characters of the affected mountpoints plus the two-digit numbers for year, month, and day. Example: Setting the 'decoder' string for mountpoint WTZZ0 to 'ZERO' and running BNC on March 29, 2007 to save incoming data untouched in a file would lead to a file name WTZZ0_070329.
@@ -444,10 +444,10 @@ The connection to an NTRIP broadcaster may possibly break or a stream requested 
 So far BNC only handles GPS, SBAS and GLONASS data while ignoring Galileo.
 </li>
 <li>
-BNC's function is limited today to processing C1, C2, P1, P2, L1, L2, S1, and S2 observations. Which observables become available through a specific stream depends on the setup of the affected receiver and the applied data format. Note that RTCM Version 2.x streams can not transport signal-to-noise ratios (S) and RTCM Version 3 streams can only transport one code observable per frequency. Note further that signal-to-noise ratios (S) are also made available mapped to integer numbers 1 to 9.
+BNC's function is limited today to processing C1, C2, P1, P2, L1, L2, S1, and S2 observations. Which observables become available through a specific stream depends on the setup of the affected receiver and the applied data format. Note that RTCM Version 2.x streams can not transport signal-to-noise ratios (S) and RTCM Version 3.x streams can only transport one code observable per frequency. Note further that signal-to-noise ratios (S) are also made available mapped to integer numbers 1 to 9.
 </li>
 <li>
-Concerning RTCM Version 2.x, BNC handles only message types 18 and 19. Concerning RTCM Version 3, BNC correctly handles the message types 1002, 1004, 1010, and 1012. Note that when handling message types 1003 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458.
+Concerning RTCM Version 2.x, BNC handles only message types 18 and 19. Concerning RTCM Version 3.x, BNC correctly handles the message types 1002, 1004, 1010, and 1012. Note that when handling message types 1003 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458.
 </li>
 <li>
 Streams coming in RTIGS format carry only GPS data.
@@ -595,12 +595,12 @@ Type 24 message carries the coordinates of the installed antenna's ARP in the GN
 </li>
 </ul>
 
-<p><a name="rtcm3"><h4>F - 2.2 RTCM Version 3</h4></p>
+<p><a name="rtcm3"><h4>F - 2.2 RTCM Version 3.x</h4></p>
 <p>
-RTCM Version 3 has been developed as a more efficient alternative to RTCM 2.x. Service providers and vendors have asked for a standard that would be more efficient, easy to use, and more easily adaptable to new situations. The main complaint was that the Version 2 parity scheme was wasteful of bandwidth. Another complaint was that the parity is not independent from word to word. Still another was that even with so many bits devoted to parity, the actual integrity of the message was not as high as it should be. Plus, 30-bit words are awkward to handle. The Version 3 standard is intended to correct these weaknesses.
+RTCM Version 3.x has been developed as a more efficient alternative to RTCM 2.x. Service providers and vendors have asked for a standard that would be more efficient, easy to use, and more easily adaptable to new situations. The main complaint was that the Version 2 parity scheme was wasteful of bandwidth. Another complaint was that the parity is not independent from word to word. Still another was that even with so many bits devoted to parity, the actual integrity of the message was not as high as it should be. Plus, 30-bit words are awkward to handle. The Version 3 standard is intended to correct these weaknesses.
 </p>
 <p>
-RTCM Version 3 defines a number of message types. Messages that may be of interest here are:
+RTCM Version 3.x defines a number of message types. Messages that may be of interest here are:
 </p>
 <ul>
 <li>Type 1001, GPS L1 code and phase.</li>
