@@ -447,7 +447,7 @@ So far BNC only handles GPS, SBAS and GLONASS data while ignoring Galileo.
 BNC's function is limited today to processing C1, C2, P1, P2, L1, L2, S1, and S2 observations. Which observables become available through a specific stream depends on the setup of the affected receiver and the applied data format. Note that RTCM Version 2.x streams can not transport signal-to-noise ratios (S) and RTCM Version 3 streams can only transport one code observable per frequency. Note further that signal-to-noise ratios (S) are also made available mapped to integer numbers 1 to 9.
 </li>
 <li>
-Concerning RTCM Version 2.x, BNC handles only message types 18 and 19. Concerning RTCM Version 3, BNC handles only message types 1002, 1004, 1010, and 1012.
+Concerning RTCM Version 2.x, BNC handles only message types 18 and 19. Concerning RTCM Version 3, BNC correctly handles the message types 1002, 1004, 1010, and 1012. Note that when handling message types 1003 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458.
 </li>
 <li>
 Streams coming in RTIGS format carry only GPS data.
