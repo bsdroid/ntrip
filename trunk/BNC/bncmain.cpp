@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
     settings.setValue("rnxIntr",    "15 min");
     settings.setValue("ephIntr",    "1 day");
     settings.setValue("rnxSkel",    "SKL");
-    settings.setValue("waitTime",   2);
+    settings.setValue("waitTime",   5);
   }
 
   bncApp app(argc, argv, GUIenabled);
