@@ -481,13 +481,12 @@ euref-ip@bkg.bund.de or igs-ip@bkg.bund.de
 </p>
 
 <p><a name="history"><h3>6. History</h3></p>
-<p>
 <table>
 <tr></tr>
-<tr><td>Dec 2006 &nbsp;</td><td>Version 1.0b &nbsp;</td><td>Binaries of first beta version published.</td></tr>
+<tr><td>Dec 2006 &nbsp;</td><td>Version 1.0b &nbsp;</td><td>[Add] First Beta Binaries published based on Qt 4.2.3.</td></tr>
 <tr><td>Jan 2007 &nbsp;</td><td>Version 1.1b &nbsp;</td><td>[Add] Observables C2, S1, and S2<br>[Add] Virtual reference station access<br>[Bug] RTCM2 decoder time tag fixed<br>[Mod] Small letters for public RINEX skeleton files<br>[Add] Online help through Shift+F1</td></tr>
 <tr><td>Apr 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td><td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save<br> [Add] ZERO decoder added<br> [Mod] Download public RINEX skeletons once per day<br> [Mod] Upgrade to Qt Version 4.2.3<br> [Mod] Replace 'system' call for RINEX script by 'QProcess'<br> [Add] HTTP Host directive for skeleton file download<br> [Add] Percent encoding for user IDs and passwords<br> [Bug] Exit execution of calling thread for RTCM3 streams<br> [Bug] Signal-slot mechanism for threads</td></tr>
-<tr><td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td><td>Source code published.
+<tr><td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td><td>[Add] Source code published.
 <tr><td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td><td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td></tr>
 <tr><td>Nov 2007 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Save Ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support</td></tr>
 </table>
@@ -511,7 +510,7 @@ euref-ip@bkg.bund.de or igs-ip@bkg.bund.de
 &nbsp; &nbsp; &nbsp; 8.1.1 <a href=#source>Source-table</a><br>
 8.2. <a href=#rtcm>RTCM</a><br>
 &nbsp; &nbsp; &nbsp; 8.2.1 RTCM <a href=#rtcm2> Version 2.x</a><br>
-&nbsp; &nbsp; &nbsp; 8.2.2 RTCM <a href=#rtcm3> Version 3</a><br>
+&nbsp; &nbsp; &nbsp; 8.2.2 RTCM <a href=#rtcm3> Version 3.x</a><br>
 8.3. <a href=#rtigs>RTIGS</a><br>
 &nbsp; &nbsp; &nbsp; 8.3.1 <a href=#soc>SOC</a><br>
 8.4. <a href=#config>Config File</a>
@@ -606,7 +605,7 @@ Type 24 message carries the coordinates of the installed antenna's ARP in the GN
 
 <p><a name="rtcm3"><h4>8.2.2 RTCM Version 3.x</h4></p>
 <p>
-RTCM Version 3.x has been developed as a more efficient alternative to RTCM Version 2.x. Service providers and vendors have asked for a standard that would be more efficient, easy to use, and more easily adaptable to new situations. The main complaint was that the Version 2 parity scheme was wasteful of bandwidth. Another complaint was that the parity is not independent from word to word. Still another was that even with so many bits devoted to parity, the actual integrity of the message was not as high as it should be. Plus, 30-bit words are awkward to handle. The Version 3 standard is intended to correct these weaknesses.
+RTCM Version 3.x has been developed as a more efficient alternative to RTCM Version 2.x. Service providers and vendors have asked for a standard that would be more efficient, easy to use, and more easily adaptable to new situations. The main complaint was that the Version 2 parity scheme was wasteful of bandwidth. Another complaint was that the parity is not independent from word to word. Still another was that even with so many bits devoted to parity, the actual integrity of the message was not as high as it should be. Plus, 30-bit words are awkward to handle. The Version 3.x standard is intended to correct these weaknesses.
 </p>
 <p>
 RTCM Version 3.x defines a number of message types. Messages that may be of interest here are:
