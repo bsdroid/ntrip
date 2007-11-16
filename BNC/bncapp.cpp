@@ -238,8 +238,7 @@ void bncApp::printEphHeader() {
 
     QDateTime datTim = QDateTime::currentDateTime().toUTC();
 
-    QString hlp = (_rinexVers == 3) ? "MIX_" : "GPS_";
-    QString ephFileNameGPS = _ephPath + hlp + 
+    QString ephFileNameGPS = _ephPath + "BNC_" + 
                QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0'));
 
     QString hlpStr;
@@ -267,13 +266,27 @@ void bncApp::printEphHeader() {
         hlpStr += "45";
       }
     }
-    ephFileNameGPS += hlpStr + datTim.toString(".yyN");
+    if (_rinexVers == 3) {
+      ephFileNameGPS += hlpStr + datTim.toString(".yyP");
+    }
+    else {
+      ephFileNameGPS += hlpStr + datTim.toString(".yyN");
+    }
 
     if (_ephFileNameGPS == ephFileNameGPS) {
       return;
     }
     else {
       _ephFileNameGPS = ephFileNameGPS;
+    }
+
+    for (int ii = PRN_GPS_START; ii <= PRN_GPS_END; ii++) {
+      delete _gpsEph[ii-PRN_GPS_START];
+      _gpsEph[ii-PRN_GPS_START] = 0;
+    }
+    for (int ii = PRN_GLONASS_START; ii <= PRN_GLONASS_END; ii++) {
+      delete _glonassEph[ii-PRN_GLONASS_START];
+      _glonassEph[ii-PRN_GLONASS_START] = 0;
     }
 
     delete _ephStreamGPS;
@@ -297,9 +310,9 @@ void bncApp::printEphHeader() {
       _ephStreamGlonass = _ephStreamGPS;
     }
     else if (_rinexVers == 2) {
-      QString ephFileNameGlonass = _ephPath + "GLO_" +
+      QString ephFileNameGlonass = _ephPath + "BNC_" +
           QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
-          hlpStr + datTim.toString(".yyN");
+          hlpStr + datTim.toString(".yyG");
 
       delete _ephStreamGlonass;
       delete _ephFileGlonass;
