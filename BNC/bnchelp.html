@@ -328,8 +328,12 @@ When starting BNC, new RINEX Observation files are created by default. Probably 
 </p> 
 <p><a name="mountpoints"><h4>3.6. Ephemeris</h4></p>
 <p>
-Broadcast Ephemeris can be saved in RINEX Navigation files if received in RTCM Version 3.x as message types 1019 (GPS) and 1020 (GLONASS). The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'GPS_' and 'GLO_' for RINEX Version 2.11 Navigation files and 'MIX_' for RINEX Version 3 Navigation files.
-</p> 
+Broadcast Ephemeris can be saved in RINEX Navigation files if received in RTCM Version 3.x as message types 1019 (GPS) and 1020 (GLONASS). The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BNC_' and the last character is
+</p>
+<ul>
+<li>'N' or 'G' for GPS or GLONASS ephemeris in two separate RINEX Version 2.11 Navigation files, or</li>
+<li>'P' for GPS plus GLONASS ephemeris saved together in one RINEX Version 3 Navigation file.
+</ul> 
 
 <p><a name="ephpath"><h4>3.6.1 Ephemeris Directory - optional</h4></p>
 <p>
