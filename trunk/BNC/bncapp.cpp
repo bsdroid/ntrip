@@ -168,7 +168,7 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
   gpsephemeris** ee = &_gpsEph[gpseph->satellite-1];
   if ( *ee == 0                         || 
        gpseph->GPSweek > (*ee)->GPSweek ||
-       gpseph->TOW     > (*ee)->TOW     ) {
+       (gpseph->GPSweek == (*ee)->GPSweek && gpseph->TOW > (*ee)->TOW) ) {
     delete *ee;
     *ee = gpseph;
     printGPSEph(gpseph);
@@ -193,28 +193,20 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
 
   glonassephemeris** ee = &_glonassEph[glonasseph->almanac_number-1];
 
-  struct converttimeinfo ctiOld;
-  struct converttimeinfo ctiNew;
+  int wwOld, towOld, wwNew, towNew;
   if (*ee != 0) {
-    int ww  = (*ee)->GPSWeek;
-    int tow = (*ee)->GPSTOW; 
-    updatetime(&ww, &tow, (*ee)->tb*1000, 1);
-    converttime(&ctiOld, ww, tow);
+    wwOld  = (*ee)->GPSWeek;
+    towOld = (*ee)->GPSTOW; 
+    updatetime(&wwOld, &towOld, (*ee)->tb*1000, 1);
 
-    ww  = glonasseph->GPSWeek;
-    tow = glonasseph->GPSTOW; 
-    updatetime(&ww, &tow, glonasseph->tb*1000, 1);
-    converttime(&ctiNew, ww, tow);
+    wwNew  = glonasseph->GPSWeek;
+    towNew = glonasseph->GPSTOW; 
+    updatetime(&wwNew, &towNew, glonasseph->tb*1000, 1);
   }
 
-  if ( *ee == 0                       ||
-       ctiOld.second != ctiNew.second ||
-       ctiOld.minute != ctiNew.minute ||
-       ctiOld.hour   != ctiNew.hour   ||
-       ctiOld.day    != ctiNew.day    ||
-       ctiOld.month  != ctiNew.month  ||
-       ctiOld.year   != ctiNew.year   ) {
-
+  if ( *ee == 0      || 
+       wwNew > wwOld ||
+       (wwNew == wwOld && towNew > towOld) ) {
     delete *ee;
     *ee = glonasseph;
     printGlonassEph(glonasseph);
