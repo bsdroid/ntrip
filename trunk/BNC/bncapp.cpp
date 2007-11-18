@@ -193,9 +193,28 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
 
   glonassephemeris** ee = &_glonassEph[glonasseph->almanac_number-1];
 
-  if ( *ee == 0                             || 
-       glonasseph->GPSWeek > (*ee)->GPSWeek ||
-       glonasseph->GPSTOW  > (*ee)->GPSTOW  ) {
+  struct converttimeinfo ctiOld;
+  struct converttimeinfo ctiNew;
+  if (*ee != 0) {
+    int ww  = (*ee)->GPSWeek;
+    int tow = (*ee)->GPSTOW; 
+    updatetime(&ww, &tow, (*ee)->tb*1000, 1);
+    converttime(&ctiOld, ww, tow);
+
+    ww  = glonasseph->GPSWeek;
+    tow = glonasseph->GPSTOW; 
+    updatetime(&ww, &tow, glonasseph->tb*1000, 1);
+    converttime(&ctiNew, ww, tow);
+  }
+
+  if ( *ee == 0                       ||
+       ctiOld.second != ctiNew.second ||
+       ctiOld.minute != ctiNew.minute ||
+       ctiOld.hour   != ctiNew.hour   ||
+       ctiOld.day    != ctiNew.day    ||
+       ctiOld.month  != ctiNew.month  ||
+       ctiOld.year   != ctiNew.year   ) {
+
     delete *ee;
     *ee = glonasseph;
     printGlonassEph(glonasseph);
