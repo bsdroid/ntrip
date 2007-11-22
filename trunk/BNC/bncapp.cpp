@@ -385,7 +385,7 @@ void bncApp::printEphHeader() {
       if (! (appendFlagGlonass & QIODevice::Append)) {
         QString line;
         line.sprintf(
-          "%9.2f%11sG: GLONASS NAV DATA%21sRINEX VERSION / TYPE\n",2.1,"","");
+          "%9.2f%11sG: GLONASS NAV DATA%21sRINEX VERSION / TYPE\n",2.11,"","");
         *_ephStreamGlonass << line;
         
         QString hlp = QDateTime::currentDateTime().toUTC().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
