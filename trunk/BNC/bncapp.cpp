@@ -421,7 +421,7 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
                    ep->clock_driftrate);
     }
     else if (_rinexVers == 2) {
-      line.sprintf("%02d %02d %02d %02d %02d %02d%05.1f%19.12e%19.12e%19.12e",
+      line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e",
                    ep->satellite, cti.year%100, cti.month, cti.day, cti.hour,
                    cti.minute, (double) cti.second, ep->clock_bias, 
                    ep->clock_drift, ep->clock_driftrate);
