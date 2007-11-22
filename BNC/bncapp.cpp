@@ -249,7 +249,7 @@ void bncApp::printEphHeader() {
 
     QDateTime datTim = QDateTime::currentDateTime().toUTC();
 
-    QString ephFileNameGPS = _ephPath + "BNC_" + 
+    QString ephFileNameGPS = _ephPath + "BRDC" + 
                QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0'));
 
     QString hlpStr;
@@ -321,7 +321,7 @@ void bncApp::printEphHeader() {
       _ephStreamGlonass = _ephStreamGPS;
     }
     else if (_rinexVers == 2) {
-      QString ephFileNameGlonass = _ephPath + "BNC_" +
+      QString ephFileNameGlonass = _ephPath + "BRDC" +
           QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
           hlpStr + datTim.toString(".yyG");
 
