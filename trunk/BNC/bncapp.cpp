@@ -261,7 +261,7 @@ void bncApp::printEphHeader() {
       char ch = 'A' + datTim.time().hour();
       hlpStr = ch;
     }
-    else {
+    else if (intStr == "15 min") {
       char ch = 'A' + datTim.time().hour();
       hlpStr = ch;
       if      (datTim.time().minute() < 15) {
@@ -277,6 +277,47 @@ void bncApp::printEphHeader() {
         hlpStr += "45";
       }
     }
+    else {
+      char ch = 'A' + datTim.time().hour();
+      hlpStr = ch;
+      if      (datTim.time().minute() <  5) {
+        hlpStr += "00";
+      }
+      else if (datTim.time().minute() < 10) {
+        hlpStr += "05";
+      }
+      else if (datTim.time().minute() < 15) {
+        hlpStr += "10";
+      }
+      else if (datTim.time().minute() < 20) {
+        hlpStr += "15";
+      }
+      else if (datTim.time().minute() < 25) {
+        hlpStr += "20";
+      }
+      else if (datTim.time().minute() < 30) {
+        hlpStr += "25";
+      }
+      else if (datTim.time().minute() < 35) {
+        hlpStr += "30";
+      }
+      else if (datTim.time().minute() < 40) {
+        hlpStr += "35";
+      }
+      else if (datTim.time().minute() < 45) {
+        hlpStr += "40";
+      }
+      else if (datTim.time().minute() < 50) {
+        hlpStr += "45";
+      }
+      else if (datTim.time().minute() < 55) {
+        hlpStr += "50";
+      }
+      else {
+        hlpStr += "55";
+      }
+    }
+
     if (_rinexVers == 3) {
       ephFileNameGPS += hlpStr + datTim.toString(".yyP");
     }
