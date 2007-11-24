@@ -148,9 +148,9 @@ bncWindow::bncWindow() {
   _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
   _outPortLineEdit->setMaximumWidth(9*ww);
   _outPortLineEdit->setWhatsThis(tr("<p>BNC makes synchronized observations available in a binary format on your local host (IP 127.0.0.1) through an IP port. Enter an IP port number to activate this function.</p><p>Default is an empty option field, meaning that no binary output is generated.</p>"));
-  _outPortEphLineEdit    = new QLineEdit(settings.value("outEphPort").toString());
-  _outPortEphLineEdit->setMaximumWidth(9*ww);
-  _outPortEphLineEdit->setWhatsThis(tr("<p>BNC makes broadcast ephemeris available in ASCII format on your local host through an IP port</p>"));
+  _outEphPortLineEdit    = new QLineEdit(settings.value("outEphPort").toString());
+  _outEphPortLineEdit->setMaximumWidth(9*ww);
+  _outEphPortLineEdit->setWhatsThis(tr("<p>BNC makes broadcast ephemeris available in ASCII format on your local host through an IP port</p>"));
   _rnxPathLineEdit    = new QLineEdit(settings.value("rnxPath").toString());
   _rnxPathLineEdit->setWhatsThis(tr("<p>Observations can be converted to RINEX. Enter a path for saving the RINEX files in a directory. If this directory does not exist, BNC will not create RINEX files.</p><p>Default value for 'RINEX directory' is an empty option field, meaning that streams are not converted to RINEX.</p>"));
   _ephPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
@@ -291,7 +291,7 @@ bncWindow::bncWindow() {
   bl1->addWidget(_outPortLineEdit);
   bl1->addWidget(new QLabel("Observations (binary)"));
   bl1->addStretch();
-  bl1->addWidget(_outPortEphLineEdit);
+  bl1->addWidget(_outEphPortLineEdit);
   bl1->addWidget(new QLabel("Ephemeris (ascii)"));
   layout->addLayout(bl1, 3, 2, 1, 2);
 
@@ -464,7 +464,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("waitTime",    _waitTimeSpinBox->value());
   settings.setValue("outFile",     _outFileLineEdit->text());
   settings.setValue("outPort",     _outPortLineEdit->text());
-  settings.setValue("outEphPort",  _outPortEphLineEdit->text());
+  settings.setValue("outEphPort",  _outEphPortLineEdit->text());
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());
   settings.setValue("ephPath",     _ephPathLineEdit->text());
   settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
