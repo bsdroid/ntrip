@@ -513,7 +513,7 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
   // Output into file
   // ----------------
   if (_ephStreamGPS) {
-    *_ephStreamGPS << allLines << endl;
+    *_ephStreamGPS << allLines;
     _ephStreamGPS->flush();
   }
 
@@ -579,7 +579,7 @@ void bncApp::printGlonassEph(glonassephemeris* ep) {
   // Output into file
   // ----------------
   if (_ephStreamGlonass) {
-    *_ephStreamGlonass << allLines << endl;
+    *_ephStreamGlonass << allLines;
     _ephStreamGlonass->flush();
   }
 
