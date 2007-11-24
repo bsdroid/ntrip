@@ -78,7 +78,7 @@ class bncWindow : public QMainWindow {
     QLineEdit* _proxyPortLineEdit;
     QLineEdit* _outFileLineEdit;
     QLineEdit* _outPortLineEdit;
-    QLineEdit* _outPortEphLineEdit;
+    QLineEdit* _outEphPortLineEdit;
     QLineEdit* _rnxPathLineEdit;
     QLineEdit* _ephPathLineEdit;
     QCheckBox* _rnxV3CheckBox;
