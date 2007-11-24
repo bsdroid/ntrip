@@ -148,6 +148,9 @@ bncWindow::bncWindow() {
   _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
   _outPortLineEdit->setMaximumWidth(9*ww);
   _outPortLineEdit->setWhatsThis(tr("<p>BNC makes synchronized observations available in a binary format on your local host (IP 127.0.0.1) through an IP port. Enter an IP port number to activate this function.</p><p>Default is an empty option field, meaning that no binary output is generated.</p>"));
+  _outPortEphLineEdit    = new QLineEdit(settings.value("outEphPort").toString());
+  _outPortEphLineEdit->setMaximumWidth(9*ww);
+  _outPortEphLineEdit->setWhatsThis(tr("<p>BNC makes broadcast ephemeris available in ASCII format on your local host through an IP port</p>"));
   _rnxPathLineEdit    = new QLineEdit(settings.value("rnxPath").toString());
   _rnxPathLineEdit->setWhatsThis(tr("<p>Observations can be converted to RINEX. Enter a path for saving the RINEX files in a directory. If this directory does not exist, BNC will not create RINEX files.</p><p>Default value for 'RINEX directory' is an empty option field, meaning that streams are not converted to RINEX.</p>"));
   _ephPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
@@ -283,8 +286,14 @@ bncWindow::bncWindow() {
   layout->addWidget(new QLabel("ASCII output file (full path)"), 2, 0, 1, 2);
   layout->addWidget(_outFileLineEdit,                            2, 2, 1, 3);
 
-  layout->addWidget(new QLabel("Port for binary output"),        3, 0, 1, 2);
-  layout->addWidget(_outPortLineEdit,                            3, 2);
+  layout->addWidget(new QLabel("Port for output"),               3, 0, 1, 2);
+  QBoxLayout* bl1 = new QBoxLayout(QBoxLayout::LeftToRight);
+  bl1->addWidget(_outPortLineEdit);
+  bl1->addWidget(new QLabel("Observation (binary)"));
+  bl1->addStretch();
+  bl1->addWidget(_outPortEphLineEdit);
+  bl1->addWidget(new QLabel("Ephemeris (ascii)"));
+  layout->addLayout(bl1, 3, 2, 1, 2);
 
   layout->addWidget(new QLabel("RINEX directory"),               4, 0, 1, 2);
   layout->addWidget(_rnxPathLineEdit,                            4, 2);
@@ -455,6 +464,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("waitTime",    _waitTimeSpinBox->value());
   settings.setValue("outFile",     _outFileLineEdit->text());
   settings.setValue("outPort",     _outPortLineEdit->text());
+  settings.setValue("outEphPort",  _outPortEphLineEdit->text());
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());
   settings.setValue("ephPath",     _ephPathLineEdit->text());
   settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
