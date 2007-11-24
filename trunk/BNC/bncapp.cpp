@@ -90,6 +90,7 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
   _ephFileGlonass   = 0;
   _ephStreamGlonass = 0;
 
+  _port    = 0;
   _server  = 0;
   _sockets = 0;
 
@@ -245,16 +246,6 @@ void bncApp::printEphHeader() {
         _ephPath += QDir::separator();
       }
       expandEnvVar(_ephPath);
-    }
-
-    // Socket Output
-    // -------------
-    _port = settings.value("outEphPort").toInt();
-    if (_port != 0) {
-      _server = new QTcpServer;
-      _server->listen(QHostAddress::Any, _port);
-      connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
-      _sockets = new QList<QTcpSocket*>;
     }
   }
 
@@ -602,6 +593,18 @@ void bncApp::printGlonassEph(glonassephemeris* ep) {
         sock->write(allLines);
       }
     }
+  }
+}
+
+// Set Port Number
+////////////////////////////////////////////////////////////////////////////
+void bncApp::setPort(int port) {
+  _port = port;
+  if (_port != 0) {
+    _server = new QTcpServer;
+    _server->listen(QHostAddress::Any, _port);
+    connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
+    _sockets = new QList<QTcpSocket*>;
   }
 }
 
