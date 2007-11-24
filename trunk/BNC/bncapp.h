@@ -38,6 +38,7 @@ class bncApp : public QApplication {
     bncApp(int argc, char* argv[], bool GUIenabled);
     virtual ~bncApp();  
     QString bncVersion() const {return _bncVersion;}
+    void    setPort(int port);
   public slots:
     void slotMessage(const QByteArray msg);
     void slotNewGPSEph(gpsephemeris* gpseph);

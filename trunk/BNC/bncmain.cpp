@@ -102,6 +102,8 @@ int main(int argc, char *argv[]) {
     bncCaster* caster = new bncCaster(settings.value("outFile").toString(),
                                       settings.value("outPort").toInt());
 
+    app.setPort(settings.value("outEphPort").toInt());
+
     app.connect(caster, SIGNAL(getThreadErrors()), &app, SLOT(quit()));
     app.connect(caster, SIGNAL(newMessage(const QByteArray&)), 
                 &app, SLOT(slotMessage(const QByteArray&)));

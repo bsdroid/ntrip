@@ -512,7 +512,9 @@ void bncWindow::slotGetData() {
   _actStop->setEnabled(true);
 
   _caster = new bncCaster(_outFileLineEdit->text(), 
-                             _outPortLineEdit->text().toInt());
+                          _outPortLineEdit->text().toInt());
+
+  ((bncApp*)qApp)->setPort(_outEphPortLineEdit->text().toInt());
 
   connect(_caster, SIGNAL(getThreadErrors()), 
           this, SLOT(slotGetThreadErrors()));
