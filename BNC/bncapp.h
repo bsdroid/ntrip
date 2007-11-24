@@ -42,6 +42,8 @@ class bncApp : public QApplication {
     void slotMessage(const QByteArray msg);
     void slotNewGPSEph(gpsephemeris* gpseph);
     void slotNewGlonassEph(glonassephemeris* glonasseph);
+ private slots:
+   void slotNewConnection();
   private:
     void printEphHeader();
     void printGPSEph(gpsephemeris* ep);
@@ -63,5 +65,8 @@ class bncApp : public QApplication {
     glonassephemeris* _glonassEph[PRN_GLONASS_END - PRN_GLONASS_START + 1];
     QString           _userName;
     QString           _pgmName;
+    int                 _port;
+    QTcpServer*         _server;
+    QList<QTcpSocket*>* _sockets;
 };
 #endif

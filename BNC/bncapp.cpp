@@ -90,6 +90,9 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
   _ephFileGlonass   = 0;
   _ephStreamGlonass = 0;
 
+  _server  = 0;
+  _sockets = 0;
+
   _pgmName  = _bncVersion.leftJustified(20, ' ', true);
 #ifdef WIN32
   _userName = QString("${USERNAME}");
@@ -107,6 +110,8 @@ bncApp::~bncApp() {
   delete _logFile;
   delete _ephStreamGPS;
   delete _ephFileGPS;
+  delete _server;
+  delete _sockets;
   if (_rinexVers == 2) {
     delete _ephStreamGlonass;
     delete _ephFileGlonass;
@@ -240,6 +245,16 @@ void bncApp::printEphHeader() {
         _ephPath += QDir::separator();
       }
       expandEnvVar(_ephPath);
+    }
+
+    // Socket Output
+    // -------------
+    _port = settings.value("outEphPort").toInt();
+    if (_port != 0) {
+      _server = new QTcpServer;
+      _server->listen(QHostAddress::Any, _port);
+      connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
+      _sockets = new QList<QTcpSocket*>;
     }
   }
 
@@ -455,13 +470,14 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
     struct converttimeinfo cti;
     converttime(&cti, ep->GPSweek, ep->TOC);
 
-    if      (_rinexVers == 3) {
-      line.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e",
-                   ep->satellite, cti.year, cti.month, cti.day, cti.hour,
-                   cti.minute, cti.second, ep->clock_bias, ep->clock_drift,
-                   ep->clock_driftrate);
-    }
-    else if (_rinexVers == 2) {
+    QByteArray stream;
+
+    line.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e",
+                 ep->satellite, cti.year, cti.month, cti.day, cti.hour,
+                 cti.minute, cti.second, ep->clock_bias, ep->clock_drift,
+                 ep->clock_driftrate);
+    stream += line;
+    if (_rinexVers == 2) {
       line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e",
                    ep->satellite, cti.year%100, cti.month, cti.day, cti.hour,
                    cti.minute, (double) cti.second, ep->clock_bias, 
@@ -471,18 +487,22 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
 
     line.sprintf("   %19.12e%19.12e%19.12e%19.12e", (double)ep->IODE,
                  ep->Crs, ep->Delta_n, ep->M0);
+    stream += line;
     *_ephStreamGPS << line << endl;
     
     line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->Cuc,
                  ep->e, ep->Cus, ep->sqrt_A);
+    stream += line;
     *_ephStreamGPS << line << endl;
 
     line.sprintf("   %19.12e%19.12e%19.12e%19.12e",
                  (double) ep->TOE, ep->Cic, ep->OMEGA0, ep->Cis);
+    stream += line;
     *_ephStreamGPS << line << endl;
     
     line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->i0,
                  ep->Crc, ep->omega, ep->OMEGADOT);
+    stream += line;
     *_ephStreamGPS << line << endl;
 
     double dd = 0;
@@ -493,6 +513,7 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
       dd += 1.0;
     line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->IDOT, dd,
                  (double) ep->GPSweek, ii & GPSEPHF_L2PCODEDATA ? 1.0 : 0.0);
+    stream += line;
     *_ephStreamGPS << line << endl;
 
     if(ep->URAindex <= 6) /* URA index */
@@ -501,12 +522,26 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
       dd = ceil(10.0*pow(2.0, ((double)ep->URAindex)/2.0))/10.0;
     line.sprintf("   %19.12e%19.12e%19.12e%19.12e", dd,
                  ((double) ep->SVhealth), ep->TGD, ((double) ep->IODC));
+    stream += line;
     *_ephStreamGPS << line << endl;
 
     line.sprintf("   %19.12e%19.12e", ((double)ep->TOW), 0.0);
+    stream += line;
     *_ephStreamGPS << line << endl;
 
     _ephStreamGPS->flush();
+
+    // Output into the socket
+    // ----------------------
+    if (_sockets) {
+      QListIterator<QTcpSocket*> is(*_sockets);
+      while (is.hasNext()) {
+        QTcpSocket* sock = is.next();
+        if (sock->state() == QAbstractSocket::ConnectedState) {
+          sock->write(stream);
+        }
+      }
+    }
   }
 }
 
@@ -559,3 +594,10 @@ void bncApp::printGlonassEph(glonassephemeris* ep) {
     _ephStreamGlonass->flush();
   }
 }
+
+// New Connection
+////////////////////////////////////////////////////////////////////////////
+void bncApp::slotNewConnection() {
+  _sockets->push_back( _server->nextPendingConnection() );
+}
+
