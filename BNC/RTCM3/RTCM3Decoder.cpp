@@ -40,6 +40,7 @@
 
 #include <iostream>
 #include <math.h>
+#include <string.h>
 
 #include "RTCM3Decoder.h"
 #include "bncconst.h"
