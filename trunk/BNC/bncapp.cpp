@@ -463,83 +463,77 @@ void bncApp::printEphHeader() {
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGPSEph(gpsephemeris* ep) {
 
-  if (_ephStreamGPS) {
+  QString line;
+  QByteArray allLines;
 
-    QString line;
-
-    struct converttimeinfo cti;
-    converttime(&cti, ep->GPSweek, ep->TOC);
-
-    QByteArray stream;
-
-    line.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e",
+  struct converttimeinfo cti;
+  converttime(&cti, ep->GPSweek, ep->TOC);
+  if      (_rinexVers == 3) {
+    line.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
                  ep->satellite, cti.year, cti.month, cti.day, cti.hour,
                  cti.minute, cti.second, ep->clock_bias, ep->clock_drift,
                  ep->clock_driftrate);
-    stream += line;
-    if (_rinexVers == 2) {
-      line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e",
-                   ep->satellite, cti.year%100, cti.month, cti.day, cti.hour,
-                   cti.minute, (double) cti.second, ep->clock_bias, 
-                   ep->clock_drift, ep->clock_driftrate);
-    }
-    *_ephStreamGPS << line << endl;
+  }
+  else if (_rinexVers == 2) {
+    line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e\n",
+                 ep->satellite, cti.year%100, cti.month, cti.day, cti.hour,
+                 cti.minute, (double) cti.second, ep->clock_bias, 
+                 ep->clock_drift, ep->clock_driftrate);
+  }
+  allLines += line;
 
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", (double)ep->IODE,
-                 ep->Crs, ep->Delta_n, ep->M0);
-    stream += line;
-    *_ephStreamGPS << line << endl;
-    
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->Cuc,
-                 ep->e, ep->Cus, ep->sqrt_A);
-    stream += line;
-    *_ephStreamGPS << line << endl;
+  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", (double)ep->IODE,
+               ep->Crs, ep->Delta_n, ep->M0);
+  allLines += line;
+  
+  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->Cuc,
+               ep->e, ep->Cus, ep->sqrt_A);
+  allLines += line;
 
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e",
-                 (double) ep->TOE, ep->Cic, ep->OMEGA0, ep->Cis);
-    stream += line;
-    *_ephStreamGPS << line << endl;
-    
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->i0,
-                 ep->Crc, ep->omega, ep->OMEGADOT);
-    stream += line;
-    *_ephStreamGPS << line << endl;
+  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n",
+               (double) ep->TOE, ep->Cic, ep->OMEGA0, ep->Cis);
+  allLines += line;
+  
+  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->i0,
+               ep->Crc, ep->omega, ep->OMEGADOT);
+  allLines += line;
 
-    double dd = 0;
-    unsigned long ii = ep->flags;
-    if(ii & GPSEPHF_L2CACODE)
-      dd += 2.0;
-    if(ii & GPSEPHF_L2PCODE)
-      dd += 1.0;
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->IDOT, dd,
-                 (double) ep->GPSweek, ii & GPSEPHF_L2PCODEDATA ? 1.0 : 0.0);
-    stream += line;
-    *_ephStreamGPS << line << endl;
+  double dd = 0;
+  unsigned long ii = ep->flags;
+  if(ii & GPSEPHF_L2CACODE)
+    dd += 2.0;
+  if(ii & GPSEPHF_L2PCODE)
+    dd += 1.0;
+  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->IDOT, dd,
+               (double) ep->GPSweek, ii & GPSEPHF_L2PCODEDATA ? 1.0 : 0.0);
+  allLines += line;
 
-    if(ep->URAindex <= 6) /* URA index */
-      dd = ceil(10.0*pow(2.0, 1.0+((double)ep->URAindex)/2.0))/10.0;
-    else
-      dd = ceil(10.0*pow(2.0, ((double)ep->URAindex)/2.0))/10.0;
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", dd,
-                 ((double) ep->SVhealth), ep->TGD, ((double) ep->IODC));
-    stream += line;
-    *_ephStreamGPS << line << endl;
+  if(ep->URAindex <= 6) /* URA index */
+    dd = ceil(10.0*pow(2.0, 1.0+((double)ep->URAindex)/2.0))/10.0;
+  else
+    dd = ceil(10.0*pow(2.0, ((double)ep->URAindex)/2.0))/10.0;
+  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", dd,
+               ((double) ep->SVhealth), ep->TGD, ((double) ep->IODC));
+  allLines += line;
 
-    line.sprintf("   %19.12e%19.12e", ((double)ep->TOW), 0.0);
-    stream += line;
-    *_ephStreamGPS << line << endl;
+  line.sprintf("   %19.12e%19.12e\n", ((double)ep->TOW), 0.0);
+  allLines += line;
 
+  // Output into file
+  // ----------------
+  if (_ephStreamGPS) {
+    *_ephStreamGPS << allLines << endl;
     _ephStreamGPS->flush();
+  }
 
-    // Output into the socket
-    // ----------------------
-    if (_sockets) {
-      QListIterator<QTcpSocket*> is(*_sockets);
-      while (is.hasNext()) {
-        QTcpSocket* sock = is.next();
-        if (sock->state() == QAbstractSocket::ConnectedState) {
-          sock->write(stream);
-        }
+  // Output into the socket
+  // ----------------------
+  if (_sockets) {
+    QListIterator<QTcpSocket*> is(*_sockets);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->state() == QAbstractSocket::ConnectedState) {
+        sock->write(allLines);
       }
     }
   }
@@ -549,49 +543,65 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGlonassEph(glonassephemeris* ep) {
 
+  QString line;
+  QByteArray allLines;
+
+  int ww  = ep->GPSWeek;
+  int tow = ep->GPSTOW; 
+  struct converttimeinfo cti;
+
+  updatetime(&ww, &tow, ep->tb*1000, 1);
+  converttime(&cti, ww, tow);
+
+  int ii = ep->tk-3*60*60; 
+  if (ii < 0) {
+    ii += 86400;
+  }
+
+  if      (_rinexVers == 3) {
+    line.sprintf("R%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
+                 ep->almanac_number, cti.year, cti.month, cti.day, cti.hour, 
+                 cti.minute, cti.second, -ep->tau, ep->gamma, (double) ii);
+  }
+  else if (_rinexVers == 2) {
+    line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e\n",
+                 ep->almanac_number, cti.year%100, cti.month, cti.day, 
+                 cti.hour, cti.minute, (double) cti.second, -ep->tau, 
+                 ep->gamma, (double) ii);
+  }
+  allLines += line;
+  
+  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->x_pos,
+               ep->x_velocity, ep->x_acceleration, 
+               (ep->flags & GLOEPHF_UNHEALTHY) ? 1.0 : 0.0);
+  allLines += line;
+   
+  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->y_pos,
+               ep->y_velocity, ep->y_acceleration, 
+               (double) ep->frequency_number);
+  allLines += line;
+  
+  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->z_pos,
+               ep->z_velocity, ep->z_acceleration, (double) ep->E);
+  allLines += line;
+
+  // Output into file
+  // ----------------
   if (_ephStreamGlonass) {
-    int ww  = ep->GPSWeek;
-    int tow = ep->GPSTOW; 
-    struct converttimeinfo cti;
-
-    updatetime(&ww, &tow, ep->tb*1000, 1);
-    converttime(&cti, ww, tow);
-
-    int ii = ep->tk-3*60*60; 
-    if (ii < 0) {
-      ii += 86400;
-    }
-
-    QString line;
-
-    if      (_rinexVers == 3) {
-      line.sprintf("R%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e",
-                   ep->almanac_number, cti.year, cti.month, cti.day, cti.hour, 
-                   cti.minute, cti.second, -ep->tau, ep->gamma, (double) ii);
-    }
-    else if (_rinexVers == 2) {
-      line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e",
-                   ep->almanac_number, cti.year%100, cti.month, cti.day, 
-                   cti.hour, cti.minute, (double) cti.second, -ep->tau, 
-                   ep->gamma, (double) ii);
-    }
-    *_ephStreamGlonass << line << endl;
-    
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->x_pos,
-                 ep->x_velocity, ep->x_acceleration, 
-                 (ep->flags & GLOEPHF_UNHEALTHY) ? 1.0 : 0.0);
-    *_ephStreamGlonass << line << endl;
-     
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->y_pos,
-                 ep->y_velocity, ep->y_acceleration, 
-                 (double) ep->frequency_number);
-    *_ephStreamGlonass << line << endl;
-    
-    line.sprintf("   %19.12e%19.12e%19.12e%19.12e", ep->z_pos,
-                 ep->z_velocity, ep->z_acceleration, (double) ep->E);
-    *_ephStreamGlonass << line << endl;
-
+    *_ephStreamGlonass << allLines << endl;
     _ephStreamGlonass->flush();
+  }
+
+  // Output into the socket
+  // ----------------------
+  if (_sockets) {
+    QListIterator<QTcpSocket*> is(*_sockets);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->state() == QAbstractSocket::ConnectedState) {
+        sock->write(allLines);
+      }
+    }
   }
 }
 
