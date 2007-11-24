@@ -289,7 +289,7 @@ bncWindow::bncWindow() {
   layout->addWidget(new QLabel("Port for output"),               3, 0, 1, 2);
   QBoxLayout* bl1 = new QBoxLayout(QBoxLayout::LeftToRight);
   bl1->addWidget(_outPortLineEdit);
-  bl1->addWidget(new QLabel("Observation (binary)"));
+  bl1->addWidget(new QLabel("Observations (binary)"));
   bl1->addStretch();
   bl1->addWidget(_outPortEphLineEdit);
   bl1->addWidget(new QLabel("Ephemeris (ascii)"));
