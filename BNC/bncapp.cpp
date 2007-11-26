@@ -174,7 +174,7 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
   gpsephemeris** ee = &_gpsEph[gpseph->satellite-1];
   if ( *ee == 0                         || 
        gpseph->GPSweek > (*ee)->GPSweek ||
-       (gpseph->GPSweek == (*ee)->GPSweek && gpseph->TOW > (*ee)->TOW) ) {
+       (gpseph->GPSweek == (*ee)->GPSweek && gpseph->TOW > (*ee)->TOC) ) {
     delete *ee;
     *ee = gpseph;
     printGPSEph(gpseph);
