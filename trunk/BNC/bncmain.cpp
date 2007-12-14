@@ -54,7 +54,7 @@ bncCaster* _caster = 0;
 void catch_signal(int) {
   delete _caster;
   cout << "Program Interrupted by Ctrl-C" << endl;
-  exit(0);
+  ((bncApp*)qApp)->quit();
 }
 
 // Main Program
