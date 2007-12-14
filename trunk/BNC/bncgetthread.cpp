@@ -118,7 +118,7 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
 bncGetThread::~bncGetThread() {
   if (_socket) {
     _socket->close();
-    // delete _socket; // not allowed in Qt - created in different thread
+    delete _socket; // not allowed in Qt - created in different thread
   }
   delete _decoder;
 }
@@ -244,8 +244,8 @@ t_irc bncGetThread::initRun() {
   // Initialize Socket
   // -----------------
   QString msg;
-  _socket = bncGetThread::request(_mountPoint, _latitude, _longitude, 
-                                  _nmea, _timeOut, msg);
+  _socket = this->request(_mountPoint, _latitude, _longitude, 
+                          _nmea, _timeOut, msg);
   if (!_socket) {
     return failure;
   }
