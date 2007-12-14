@@ -107,7 +107,13 @@ bncCaster::~bncCaster() {
   delete _outFile;
   delete _server;
   delete _sockets;
-  delete _epochs;
+  if (_epochs) {
+    QListIterator<Observation*> it(_epochs->values());
+    while (it.hasNext()) {
+      delete it.next();
+    }
+    delete _epochs;
+  }
 }
 
 // New Observations

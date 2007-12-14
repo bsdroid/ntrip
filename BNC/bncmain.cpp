@@ -39,6 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <unistd.h>
+#include <signal.h>
 #include <QApplication>
 #include <QFile>
 #include <iostream>
@@ -47,6 +48,14 @@
 #include "bncwindow.h"
 
 using namespace std;
+
+bncCaster* _caster = 0;
+
+void catch_signal(int) {
+  delete _caster;
+  cout << "Program Interrupted by Ctrl-C" << endl;
+  exit(0);
+}
 
 // Main Program
 /////////////////////////////////////////////////////////////////////////////
@@ -99,13 +108,17 @@ int main(int argc, char *argv[]) {
   // Non-Interactive (Batch) Mode
   // ----------------------------
   else {
-    bncCaster* caster = new bncCaster(settings.value("outFile").toString(),
-                                      settings.value("outPort").toInt());
+    // Ctrl-C Signal Handling
+    // ----------------------
+    signal(SIGINT, catch_signal);
 
+    _caster = new bncCaster(settings.value("outFile").toString(),
+                            settings.value("outPort").toInt());
+    
     app.setPort(settings.value("outEphPort").toInt());
 
-    app.connect(caster, SIGNAL(getThreadErrors()), &app, SLOT(quit()));
-    app.connect(caster, SIGNAL(newMessage(const QByteArray&)), 
+    app.connect(_caster, SIGNAL(getThreadErrors()), &app, SLOT(quit()));
+    app.connect(_caster, SIGNAL(newMessage(const QByteArray&)), 
                 &app, SLOT(slotMessage(const QByteArray&)));
   
     ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
@@ -125,11 +138,11 @@ int main(int argc, char *argv[]) {
       app.connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
                   &app, SLOT(slotMessage(const QByteArray&)));
 
-      caster->addGetThread(getThread);
+      _caster->addGetThread(getThread);
 
       getThread->start();
     }
-    if (caster->numStations() == 0) {
+    if (_caster->numStations() == 0) {
       return 0;
     }
   }
