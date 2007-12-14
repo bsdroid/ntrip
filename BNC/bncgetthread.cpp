@@ -65,6 +65,9 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
                            const QByteArray& latitude,
                            const QByteArray& longitude,
                            const QByteArray& nmea, int iMount) {
+
+  setTerminationEnabled(true);
+
   _decoder    = 0;
   _mountPoint = mountPoint;
   _staID      = mountPoint.path().mid(1).toAscii();
