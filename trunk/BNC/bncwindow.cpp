@@ -53,6 +53,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::bncWindow() {
 
+  _caster = 0;
+
   int ww = QFontMetrics(this->font()).width('w');
   
   static const QStringList labels = QString("account,mountpoint,decoder,lat,long,nmea,bytes").split(",");
@@ -342,6 +344,7 @@ bncWindow::bncWindow() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::~bncWindow() {
+  delete _caster;
 }
 
 // Retrieve Table
