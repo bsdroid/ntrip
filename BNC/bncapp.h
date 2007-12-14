@@ -47,8 +47,8 @@ class bncApp : public QApplication {
    void slotNewConnection();
   private:
     void printEphHeader();
-    void printGPSEph(gpsephemeris* ep);
-    void printGlonassEph(glonassephemeris* ep);
+    void printGPSEph(gpsephemeris* ep, bool printFile);
+    void printGlonassEph(glonassephemeris* ep, bool printFile);
 
     QFile*            _logFile;
     QTextStream*      _logStream;

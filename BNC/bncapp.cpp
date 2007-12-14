@@ -177,9 +177,10 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
        (gpseph->GPSweek == (*ee)->GPSweek && gpseph->TOC > (*ee)->TOC) ) {
     delete *ee;
     *ee = gpseph;
-    printGPSEph(gpseph);
+    printGPSEph(gpseph, true);
   }
   else {
+    printGPSEph(gpseph, false);
     delete gpseph;
   }
 }
@@ -215,9 +216,10 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
        (wwNew == wwOld && towNew > towOld) ) {
     delete *ee;
     *ee = glonasseph;
-    printGlonassEph(glonasseph);
+    printGlonassEph(glonasseph, true);
   }
   else {
+    printGlonassEph(glonasseph, false);
     delete glonasseph;
   }
 }
@@ -452,7 +454,7 @@ void bncApp::printEphHeader() {
 
 // Print One GPS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::printGPSEph(gpsephemeris* ep) {
+void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
 
   QString line;
   QByteArray allLines;
@@ -512,7 +514,7 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
 
   // Output into file
   // ----------------
-  if (_ephStreamGPS) {
+  if (printFile && _ephStreamGPS) {
     *_ephStreamGPS << allLines;
     _ephStreamGPS->flush();
   }
@@ -532,7 +534,7 @@ void bncApp::printGPSEph(gpsephemeris* ep) {
 
 // Print One Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::printGlonassEph(glonassephemeris* ep) {
+void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
 
   QString line;
   QByteArray allLines;
@@ -578,7 +580,7 @@ void bncApp::printGlonassEph(glonassephemeris* ep) {
 
   // Output into file
   // ----------------
-  if (_ephStreamGlonass) {
+  if (printFile && _ephStreamGlonass) {
     *_ephStreamGlonass << allLines;
     _ephStreamGlonass->flush();
   }
