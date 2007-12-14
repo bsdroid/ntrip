@@ -100,7 +100,7 @@ bncCaster::~bncCaster() {
   while(it.hasNext()){
     bncGetThread* thread = it.next();
     thread->terminate();
-    thread->wait();
+    ///    thread->wait();
     delete thread;
   }
   delete _out;
