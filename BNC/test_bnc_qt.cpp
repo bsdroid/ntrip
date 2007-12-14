@@ -89,8 +89,6 @@ int main(int /* argc */, char** /* argv */) {
   cout.setf(ios::showpoint | ios::fixed);
 
   while (true) {
-    bool somethingRead = false;
-
     if (socketObs.state() != QAbstractSocket::ConnectedState) {
       cout << "socketObs: disconnected" << endl;
       exit(0);
@@ -101,7 +99,6 @@ int main(int /* argc */, char** /* argv */) {
     }
 
     if ( socketObs.bytesAvailable() ) {
-      somethingRead = true;
       int bytesRecv = socketObs.read(&flag, 1);
       if (flag == begObs) {
         if ( socketObs.bytesAvailable() >= sizeof(obs) ) {
@@ -123,15 +120,16 @@ int main(int /* argc */, char** /* argv */) {
         }
       }
     }
+    else {
+      socketObs.waitForReadyRead(50);
+    }
 
     if ( socketEph.bytesAvailable() ) {
-      somethingRead = true;
       QByteArray eph = socketEph.readAll();
       outEph << eph.data() << endl;
     }
-
-    if (!somethingRead) {
-      socketObs.waitForReadyRead(100);
+    else {
+      socketEph.waitForReadyRead(50);
     }
   }
 
