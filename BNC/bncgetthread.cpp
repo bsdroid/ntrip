@@ -121,9 +121,10 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
 bncGetThread::~bncGetThread() {
   if (_socket) {
     _socket->close();
-    delete _socket; // not allowed in Qt - created in different thread
+    delete _socket;
   }
   delete _decoder;
+  delete _rnx;    
 }
 
 // Connect to Caster, send the Request (static)
