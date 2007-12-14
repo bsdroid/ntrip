@@ -95,6 +95,10 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncRinex::~bncRinex() {
+  QListIterator<Observation*> it(_obs);
+  while (it.hasNext()) {
+    delete it.next();
+  }
   _out.close();
 }
 
