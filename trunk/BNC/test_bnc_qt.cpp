@@ -43,6 +43,8 @@
 
 #include "RTCM/GPSDecoder.h"
 
+#include <QFile>
+#include <QTextStream>
 #include <QTcpSocket>
 
 using namespace std;
@@ -53,13 +55,32 @@ const char endEpoch = 'C';
 
 int main(int /* argc */, char** /* argv */) {
 
-  QTcpSocket socket;
+  QTcpSocket socketObs;
+  QTcpSocket socketEph;
+
+  QFile obsFile("obs.txt");
+  QFile ephFile("eph.txt");
   
-  socket.connectToHost("127.0.0.1", 1968);
-  if (!socket.waitForConnected(10000)) {
-    cout << "not connected" << endl;
+  socketObs.connectToHost("127.0.0.1", 1968);
+  if (!socketObs.waitForConnected(10000)) {
+    cout << "socketObs: not connected" << endl;
     exit(1);
   }
+
+  socketEph.connectToHost("127.0.0.1", 1969);
+  if (!socketEph.waitForConnected(10000)) {
+    cout << "socketEph: not connected" << endl;
+    exit(1);
+  }
+
+  obsFile.open(QIODevice::WriteOnly | QIODevice::Unbuffered);
+  ephFile.open(QIODevice::WriteOnly | QIODevice::Unbuffered);
+
+  QTextStream outObs(&obsFile); 
+  outObs.setRealNumberNotation(QTextStream::FixedNotation);
+
+  QTextStream outEph(&ephFile);
+  outEph.setRealNumberNotation(QTextStream::FixedNotation);
 
   // Receive Data
   // ------------
@@ -68,30 +89,49 @@ int main(int /* argc */, char** /* argv */) {
   cout.setf(ios::showpoint | ios::fixed);
 
   while (true) {
-    if ( socket.bytesAvailable() ) {
-      int bytesRecv = socket.read(&flag, 1);
+    bool somethingRead = false;
+
+    if (socketObs.state() != QAbstractSocket::ConnectedState) {
+      cout << "socketObs: disconnected" << endl;
+      exit(0);
+    }
+    if (socketEph.state() != QAbstractSocket::ConnectedState) {
+      cout << "socketEph: disconnected" << endl;
+      exit(0);
+    }
+
+    if ( socketObs.bytesAvailable() ) {
+      somethingRead = true;
+      int bytesRecv = socketObs.read(&flag, 1);
       if (flag == begObs) {
-        if ( socket.bytesAvailable() >= sizeof(obs) ) {
-          bytesRecv = socket.read((char*) &obs, sizeof(obs));
-          cout << setw(5)                     << obs.StatID         << " "
-               << obs.satSys << setw(2)       << obs.satNum         << " "
-               << setw(4)                     << obs.GPSWeek        << " "
-               << setw(10) << setprecision(2) << obs.GPSWeeks       << " "
-               << setw(14) << setprecision(4) << obs.C1             << " "
-               << setw(14) << setprecision(4) << obs.C2             << " "
-               << setw(14) << setprecision(4) << obs.P1             << " "
-               << setw(14) << setprecision(4) << obs.P2             << " "
-               << setw(14) << setprecision(4) << obs.L1             << " "
-               << setw(14) << setprecision(4) << obs.L2             << " "
-               << setw(14) << setprecision(4) << obs.S1             << " "
-               << setw(14) << setprecision(4) << obs.S2             << " "
-               << setw(4)                     << obs.SNR1           << " "
-               << setw(4)                     << obs.SNR2           << endl;
+        if ( socketObs.bytesAvailable() >= sizeof(obs) ) {
+          bytesRecv = socketObs.read((char*) &obs, sizeof(obs));
+          outObs << obs.StatID                                 << " "
+                 << obs.satSys << obs.satNum                   << " "
+                 << obs.GPSWeek                                << " "
+                 << qSetRealNumberPrecision(2) << obs.GPSWeeks << " "
+                 << qSetRealNumberPrecision(4) << obs.C1       << " "
+                 << qSetRealNumberPrecision(4) << obs.C2       << " "
+                 << qSetRealNumberPrecision(4) << obs.P1       << " "
+                 << qSetRealNumberPrecision(4) << obs.P2       << " "
+                 << qSetRealNumberPrecision(4) << obs.L1       << " "
+                 << qSetRealNumberPrecision(4) << obs.L2       << " "
+                 << qSetRealNumberPrecision(4) << obs.S1       << " "
+                 << qSetRealNumberPrecision(4) << obs.S2       << " "
+                 <<                               obs.SNR1     << " "
+                 <<                               obs.SNR2     << endl;
         }
       }
     }
-    else {
-      socket.waitForReadyRead(100);
+
+    if ( socketEph.bytesAvailable() ) {
+      somethingRead = true;
+      QByteArray eph = socketEph.readAll();
+      outEph << eph.data() << endl;
+    }
+
+    if (!somethingRead) {
+      socketObs.waitForReadyRead(100);
     }
   }
 
