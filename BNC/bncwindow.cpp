@@ -584,7 +584,8 @@ void bncWindow::closeEvent(QCloseEvent* event) {
     slotSaveOptions();
   }
 
-  return QMainWindow::closeEvent(event);
+  QMainWindow::closeEvent(event);
+  delete this;
 }
 
 // User changed the selection of mountPoints
