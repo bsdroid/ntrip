@@ -121,8 +121,11 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
 bncGetThread::~bncGetThread() {
   if (_socket) {
     _socket->close();
-    ///    delete _socket; // problem in Qt 4.3.2 
+#if QT_VERSION == 0x040203
+    delete _socket;
+#else
     _socket->deleteLater();
+#endif
   }
   delete _decoder;
   delete _rnx;    
