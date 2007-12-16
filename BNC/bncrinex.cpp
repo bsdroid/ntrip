@@ -95,7 +95,7 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncRinex::~bncRinex() {
-  QListIterator<Observation*> it(_obs);
+  QListIterator<p_obs> it(_obs);
   while (it.hasNext()) {
     delete it.next();
   }
@@ -465,8 +465,8 @@ void bncRinex::writeHeader(const QDateTime& datTim,
 
 // Stores Observation into Internal Array
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::deepCopy(const Observation* obs) {
-  Observation* newObs = new Observation();
+void bncRinex::deepCopy(const p_obs obs) {
+  p_obs newObs = new t_obs();
   memcpy(newObs, obs, sizeof(*obs));
   _obs.push_back(newObs);
 }
@@ -477,12 +477,12 @@ void bncRinex::dumpEpoch(long maxTime) {
 
   // Select observations older than maxTime
   // --------------------------------------
-  QList<Observation*> dumpList;
-  QMutableListIterator<Observation*> mIt(_obs);
+  QList<p_obs> dumpList;
+  QMutableListIterator<p_obs> mIt(_obs);
   while (mIt.hasNext()) {
-    Observation* ob = mIt.next();
-    if (ob->GPSWeek * 7*24*3600 + ob->GPSWeeks < maxTime - 0.05) {
-      dumpList.push_back(ob);
+    p_obs obs = mIt.next();
+    if (obs->_o.GPSWeek * 7*24*3600 + obs->_o.GPSWeeks < maxTime - 0.05) {
+      dumpList.push_back(obs);
       mIt.remove();
     }
   }
@@ -495,10 +495,10 @@ void bncRinex::dumpEpoch(long maxTime) {
 
   // Time of Epoch
   // -------------
-  Observation* fObs = *dumpList.begin();
-  QDateTime datTim    = dateAndTimeFromGPSweek(fObs->GPSWeek, fObs->GPSWeeks);
-  QDateTime datTimNom = dateAndTimeFromGPSweek(fObs->GPSWeek, 
-                                               floor(fObs->GPSWeeks+0.5));
+  p_obs fObs = *dumpList.begin();
+  QDateTime datTim    = dateAndTimeFromGPSweek(fObs->_o.GPSWeek, fObs->_o.GPSWeeks);
+  QDateTime datTimNom = dateAndTimeFromGPSweek(fObs->_o.GPSWeek, 
+                                               floor(fObs->_o.GPSWeeks+0.5));
 
   // Close the file
   // --------------
@@ -513,7 +513,7 @@ void bncRinex::dumpEpoch(long maxTime) {
     writeHeader(datTim, datTimNom);
   }
 
-  double sec = double(datTim.time().second()) + fmod(fObs->GPSWeeks,1.0);
+  double sec = double(datTim.time().second()) + fmod(fObs->_o.GPSWeeks,1.0);
 
   // RINEX Version 3
   // ---------------
@@ -522,21 +522,21 @@ void bncRinex::dumpEpoch(long maxTime) {
          << setw(10) << setprecision(7) << sec
          << "  " << 0 << setw(3)  << dumpList.size() << endl;
 
-    QListIterator<Observation*> it(dumpList);
+    QListIterator<p_obs> it(dumpList);
     while (it.hasNext()) {
-      Observation* ob = it.next();
-      _out << ob->satSys 
-           << setw(2) << setfill('0') << ob->satNum << setfill(' ')
-           << setw(14) << setprecision(3) << ob->C1 << "  "  
-           << setw(14) << setprecision(3) << ob->L1 << " " 
-           << setw(1)                     << ob->SNR1
-           << setw(14) << setprecision(3) << ob->S1 << "  " 
-           << setw(14) << setprecision(3) << ob->P2 << "  " 
-           << setw(14) << setprecision(3) << ob->L2 << " " 
-           << setw(1)                     << ob->SNR2
-           << setw(14) << setprecision(3) << ob->S2
+      p_obs obs = it.next();
+      _out << obs->_o.satSys 
+           << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
+           << setw(14) << setprecision(3) << obs->_o.C1 << "  "  
+           << setw(14) << setprecision(3) << obs->_o.L1 << " " 
+           << setw(1)                     << obs->_o.SNR1
+           << setw(14) << setprecision(3) << obs->_o.S1 << "  " 
+           << setw(14) << setprecision(3) << obs->_o.P2 << "  " 
+           << setw(14) << setprecision(3) << obs->_o.L2 << " " 
+           << setw(1)                     << obs->_o.SNR2
+           << setw(14) << setprecision(3) << obs->_o.S2
            << endl;
-      delete ob;
+      delete obs;
     }
   }
 
@@ -547,11 +547,11 @@ void bncRinex::dumpEpoch(long maxTime) {
          << setw(10) << setprecision(7) << sec
          << "  " << 0 << setw(3)  << dumpList.size();
     
-    QListIterator<Observation*> it(dumpList); int iSat = 0;
+    QListIterator<p_obs> it(dumpList); int iSat = 0;
     while (it.hasNext()) {
       iSat++;
-      Observation* ob = it.next();
-      _out << ob->satSys << setw(2) << ob->satNum;
+      p_obs obs = it.next();
+      _out << obs->_o.satSys << setw(2) << obs->_o.satNum;
       if (iSat == 12 && it.hasNext()) {
         _out << endl << "                                ";
         iSat = 0;
@@ -561,23 +561,23 @@ void bncRinex::dumpEpoch(long maxTime) {
     
     it.toFront();
     while (it.hasNext()) {
-      Observation* ob = it.next();
+      p_obs obs = it.next();
     
       char lli = ' ';
       char snr = ' ';
-      _out << setw(14) << setprecision(3) << ob->C1 << lli << snr;
-      _out << setw(14) << setprecision(3) << ob->C2 << lli << snr;
-      _out << setw(14) << setprecision(3) << ob->P1 << lli << snr;
-      _out << setw(14) << setprecision(3) << ob->P2 << lli << snr; 
-      _out << setw(14) << setprecision(3) << ob->L1 << lli 
-           << setw(1) << ob->SNR1 << endl;
-      _out << setw(14) << setprecision(3) << ob->L2 << lli
-           << setw(1) << ob->SNR2;
-      _out << setw(14) << setprecision(3) << ob->S1 ;
-      _out << setw(16) << setprecision(3) << ob->S2 ;
+      _out << setw(14) << setprecision(3) << obs->_o.C1 << lli << snr;
+      _out << setw(14) << setprecision(3) << obs->_o.C2 << lli << snr;
+      _out << setw(14) << setprecision(3) << obs->_o.P1 << lli << snr;
+      _out << setw(14) << setprecision(3) << obs->_o.P2 << lli << snr; 
+      _out << setw(14) << setprecision(3) << obs->_o.L1 << lli 
+           << setw(1) << obs->_o.SNR1 << endl;
+      _out << setw(14) << setprecision(3) << obs->_o.L2 << lli
+           << setw(1) << obs->_o.SNR2;
+      _out << setw(14) << setprecision(3) << obs->_o.S1 ;
+      _out << setw(16) << setprecision(3) << obs->_o.S2 ;
       _out << endl;
     
-      delete ob;
+      delete obs;
     }
   }
 

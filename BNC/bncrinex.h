@@ -40,7 +40,7 @@ class bncRinex {
             const QByteArray& format, const QByteArray& latitude,
             const QByteArray& longitude, const QByteArray& nmea);
    ~bncRinex();
-   void deepCopy(const Observation* obs);
+   void deepCopy(const p_obs obs);
    void dumpEpoch(long maxTime);
    void setReconnectFlag(bool flag){_reconnectFlag = flag;}
 
@@ -51,26 +51,26 @@ class bncRinex {
    void closeFile();
    t_irc downloadSkeleton();
 
-   QByteArray          _statID;
-   QByteArray          _fName;
-   QList<Observation*> _obs;
-   std::ofstream       _out;
-   QStringList         _headerLines;
-   bool                _headerWritten;
-   QDateTime           _nextCloseEpoch;
-   QString             _rnxScriptName;
-   QUrl                _mountPoint;
-   QString             _pgmName;
-   QString             _userName;
-   QString             _sklName;
-   QByteArray          _format;
-   QByteArray          _latitude;
-   QByteArray          _longitude;
-   QByteArray          _nmea;
-   bool                _reconnectFlag;
-   QDate               _skeletonDate;
-   QMutex              _mutex;
-   int                 _rinexVers;
+   QByteArray    _statID;
+   QByteArray    _fName;
+   QList<p_obs>  _obs;
+   std::ofstream _out;
+   QStringList   _headerLines;
+   bool          _headerWritten;
+   QDateTime     _nextCloseEpoch;
+   QString       _rnxScriptName;
+   QUrl          _mountPoint;
+   QString       _pgmName;
+   QString       _userName;
+   QString       _sklName;
+   QByteArray    _format;
+   QByteArray    _latitude;
+   QByteArray    _longitude;
+   QByteArray    _nmea;
+   bool          _reconnectFlag;
+   QDate         _skeletonDate;
+   QMutex        _mutex;
+   int           _rinexVers;
 };
 
 #endif

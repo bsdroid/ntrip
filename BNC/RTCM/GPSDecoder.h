@@ -28,27 +28,8 @@
 #include <QPointer>
 #include <QList>
 
-class Observation : public QObject{
-  public:
-  Observation() {
-    flags     = 0;
-    StatID[0] = '\0';
-    satSys    = 'G';
-    satNum    = 0;
-    slot      = 0;
-    GPSWeek   = 0;
-    GPSWeeks  = 0.0;
-    C1        = 0.0;
-    C2        = 0.0;
-    P1        = 0.0;
-    P2        = 0.0;
-    L1        = 0.0;
-    L2        = 0.0;
-    S1        = 0.0;
-    S2        = 0.0;
-    SNR1      = 0;
-    SNR2      = 0;
-  }
+class t_obsInternal {
+ public:
   int    flags;
   char   StatID[20+1];// Station ID
   char   satSys;      // Satellite System ('G' or 'R')
@@ -68,13 +49,46 @@ class Observation : public QObject{
   int    SNR2;        // L2 signal-to noise ratio (mapped to integer)
 };
 
-typedef QPointer<Observation> p_obs;
+class t_obs : public QObject{
+ public:
+
+  t_obs() {
+    _o.flags     = 0;
+    _o.StatID[0] = '\0';
+    _o.satSys    = 'G';
+    _o.satNum    = 0;
+    _o.slot      = 0;
+    _o.GPSWeek   = 0;
+    _o.GPSWeeks  = 0.0;
+    _o.C1        = 0.0;
+    _o.C2        = 0.0;
+    _o.P1        = 0.0;
+    _o.P2        = 0.0;
+    _o.L1        = 0.0;
+    _o.L2        = 0.0;
+    _o.S1        = 0.0;
+    _o.S2        = 0.0;
+    _o.SNR1      = 0;
+    _o.SNR2      = 0;
+  }
+
+  t_obsInternal _o;
+};
+
+typedef QPointer<t_obs> p_obs;
 
 class GPSDecoder {
-  public:
-    virtual void Decode(char* buffer, int bufLen) = 0;
-    virtual ~GPSDecoder() {}
-    QList<p_obs> _obsList;
+ public:
+  virtual void Decode(char* buffer, int bufLen) = 0;
+
+  virtual ~GPSDecoder() {
+    QListIterator<p_obs> it(_obsList);
+    while (it.hasNext()) {
+      delete it.next();
+    }
+  }
+
+  QList<p_obs> _obsList;
 };
 
 #endif

@@ -43,7 +43,7 @@ class bncCaster : public QObject {
    int  numStations() const {return _staIDs.size();}
 
  public slots:
-   void newObs(const QByteArray staID, bool firstObs, Observation* obs);
+   void newObs(const QByteArray staID, bool firstObs, p_obs obs);
 
  signals:
    void getThreadErrors();   
@@ -56,18 +56,18 @@ class bncCaster : public QObject {
  private:
    void dumpEpochs(long minTime, long maxTime);
 
-   QFile*                         _outFile;
-   int                            _port;
-   QTextStream*                   _out;
-   QMultiMap<long, Observation*>* _epochs;
-   long                           _lastDumpSec;
-   QTcpServer*                    _server;
-   QList<QTcpSocket*>*            _sockets;
-   QList<QByteArray>              _staIDs;
-   QList<bncGetThread*>           _threads;
-   int                            _samplingRate;
-   long                           _waitTime;
-   QMutex                         _mutex;
+   QFile*                  _outFile;
+   int                     _port;
+   QTextStream*            _out;
+   QMultiMap<long, p_obs>* _epochs;
+   long                    _lastDumpSec;
+   QTcpServer*             _server;
+   QList<QTcpSocket*>*     _sockets;
+   QList<QByteArray>       _staIDs;
+   QList<bncGetThread*>    _threads;
+   int                     _samplingRate;
+   long                    _waitTime;
+   QMutex                  _mutex;
 };
 
 #endif
