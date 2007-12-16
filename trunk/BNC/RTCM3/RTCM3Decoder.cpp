@@ -83,11 +83,6 @@ RTCM3Decoder::RTCM3Decoder() : GPSDecoder() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 RTCM3Decoder::~RTCM3Decoder() {
-  QListIterator<p_obs> it(_obsList);
-  while (it.hasNext()) {
-    delete it.next();
-  }
-  _obsList.clear();
 }
 
 // 
@@ -115,21 +110,21 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
           }
           
           for (int ii = 0; ii < _Parser.Data.numsats; ii++) {
-            Observation* obs = new Observation();
+            p_obs obs = new t_obs();
             if      (_Parser.Data.satellites[ii] <= PRN_GPS_END) {
-              obs->satSys = 'G';
-              obs->satNum = _Parser.Data.satellites[ii];
+              obs->_o.satSys = 'G';
+              obs->_o.satNum = _Parser.Data.satellites[ii];
 	    }
 	    else if (_Parser.Data.satellites[ii] <= PRN_GLONASS_END) {
-              obs->satSys = 'R';
-              obs->satNum = _Parser.Data.satellites[ii] - PRN_GLONASS_START + 1;
+              obs->_o.satSys = 'R';
+              obs->_o.satNum = _Parser.Data.satellites[ii] - PRN_GLONASS_START + 1;
 	    }
 	    else {
-              obs->satSys = 'S';
-              obs->satNum = _Parser.Data.satellites[ii] - PRN_WAAS_START + 20;
+              obs->_o.satSys = 'S';
+              obs->_o.satNum = _Parser.Data.satellites[ii] - PRN_WAAS_START + 20;
 	    }
-            obs->GPSWeek  = _Parser.Data.week;
-            obs->GPSWeeks = _Parser.Data.timeofweek / 1000.0;
+            obs->_o.GPSWeek  = _Parser.Data.week;
+            obs->_o.GPSWeeks = _Parser.Data.timeofweek / 1000.0;
           
             for (int jj = 0; jj < _Parser.numdatatypesGPS; jj++) {
               int v = 0;
@@ -154,30 +149,30 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
             else
             {
               if      (_Parser.dataflag[jj] & GNSSDF_C1DATA) {
-                obs->C1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+                obs->_o.C1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
               }
               else if (_Parser.dataflag[jj] & GNSSDF_C2DATA) {
-                obs->C2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+                obs->_o.C2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
               }
               else if (_Parser.dataflag[jj] & GNSSDF_P1DATA) {
-                obs->P1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+                obs->_o.P1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
               }
               else if (_Parser.dataflag[jj] & GNSSDF_P2DATA) {
-                obs->P2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+                obs->_o.P2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
               }
               else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
-                obs->L1   = _Parser.Data.measdata[ii][pos];
-                obs->SNR1 = _Parser.Data.snrL1[ii];
+                obs->_o.L1   = _Parser.Data.measdata[ii][pos];
+                obs->_o.SNR1 = _Parser.Data.snrL1[ii];
               }
               else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
-                obs->L2   = _Parser.Data.measdata[ii][pos];
-                obs->SNR2 = _Parser.Data.snrL2[ii];
+                obs->_o.L2   = _Parser.Data.measdata[ii][pos];
+                obs->_o.SNR2 = _Parser.Data.snrL2[ii];
               }
               else if (df & (GNSSDF_S1CDATA|GNSSDF_S1PDATA)) {
-                obs->S1   = _Parser.Data.measdata[ii][pos];
+                obs->_o.S1   = _Parser.Data.measdata[ii][pos];
               }
               else if (df & (GNSSDF_S2CDATA|GNSSDF_S2PDATA)) {
-                obs->S2   = _Parser.Data.measdata[ii][pos];
+                obs->_o.S2   = _Parser.Data.measdata[ii][pos];
               }
             }
             }

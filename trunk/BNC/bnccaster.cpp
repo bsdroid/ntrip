@@ -82,7 +82,7 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
     _sockets = 0;
   }
 
-  _epochs = new QMultiMap<long, Observation*>;
+  _epochs = new QMultiMap<long, p_obs>;
 
   _lastDumpSec   = 0; 
 
@@ -108,7 +108,7 @@ bncCaster::~bncCaster() {
   delete _server;
   delete _sockets;
   if (_epochs) {
-    QListIterator<Observation*> it(_epochs->values());
+    QListIterator<p_obs> it(_epochs->values());
     while (it.hasNext()) {
       delete it.next();
     }
@@ -118,18 +118,17 @@ bncCaster::~bncCaster() {
 
 // New Observations
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::newObs(const QByteArray staID, bool firstObs, 
-                       Observation* obs) {
+void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
 
   QMutexLocker locker(&_mutex);
 
-  long iSec    = long(floor(obs->GPSWeeks+0.5));
-  long newTime = obs->GPSWeek * 7*24*3600 + iSec;
+  long iSec    = long(floor(obs->_o.GPSWeeks+0.5));
+  long newTime = obs->_o.GPSWeek * 7*24*3600 + iSec;
 
   // Rename the Station
   // ------------------
-  strncpy(obs->StatID, staID.constData(),sizeof(obs->StatID));
-  obs->StatID[sizeof(obs->StatID)-1] = '\0';
+  strncpy(obs->_o.StatID, staID.constData(),sizeof(obs->_o.StatID));
+  obs->_o.StatID[sizeof(obs->_o.StatID)-1] = '\0';
         
   // First time, set the _lastDumpSec immediately
   // --------------------------------------------
@@ -173,8 +172,8 @@ void bncCaster::slotNewConnection() {
 // Add New Thread
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::addGetThread(bncGetThread* getThread) {
-  connect(getThread, SIGNAL(newObs(const QByteArray, bool, Observation*)),
-          this,      SLOT(newObs(const QByteArray, bool, Observation*)));
+  connect(getThread, SIGNAL(newObs(const QByteArray, bool, p_obs)),
+          this,      SLOT(newObs(const QByteArray, bool, p_obs)));
 
   connect(getThread, SIGNAL(error(const QByteArray)), 
           this, SLOT(slotGetThreadError(const QByteArray)));
@@ -207,10 +206,10 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
   for (long sec = minTime; sec <= maxTime; sec++) {
 
     bool first = true;
-    QList<Observation*> allObs = _epochs->values(sec);
-    QListIterator<Observation*> it(allObs);
+    QList<p_obs> allObs = _epochs->values(sec);
+    QListIterator<p_obs> it(allObs);
     while (it.hasNext()) {
-      Observation* obs = it.next();
+      p_obs obs = it.next();
 
       if (_samplingRate == 0 || sec % _samplingRate == 0) {
    
@@ -220,33 +219,33 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
           if (first) {
             _out->setFieldWidth(1); *_out << begEpoch << endl;;
           }
-          _out->setFieldWidth(0); *_out << obs->StatID; 
-          _out->setFieldWidth(1); *_out << " " << obs->satSys;
+          _out->setFieldWidth(0); *_out << obs->_o.StatID; 
+          _out->setFieldWidth(1); *_out << " " << obs->_o.satSys;
           _out->setPadChar('0');
-          _out->setFieldWidth(2); *_out << obs->satNum; 
+          _out->setFieldWidth(2); *_out << obs->_o.satNum; 
           _out->setPadChar(' ');
           _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(4); *_out << obs->GPSWeek; 
+          _out->setFieldWidth(4); *_out << obs->_o.GPSWeek; 
           _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(7); *_out << obs->GPSWeeks; 
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(7); *_out << obs->_o.GPSWeeks; 
           _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->C1; 
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.C1; 
           _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->C2; 
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.C2; 
           _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->P1; 
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.P1; 
           _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->P2; 
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.P2; 
           _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->L1; 
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.L1; 
           _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->L2; 
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.L2; 
           _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->S1; 
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.S1; 
           _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->S2;
+          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.S2;
           _out->setFieldWidth(1); 
-          *_out << " " << obs->SNR1 << " " << obs->SNR2 << endl;
+          *_out << " " << obs->_o.SNR1 << " " << obs->_o.SNR2 << endl;
           if (!it.hasNext()) {
             _out->setFieldWidth(1); *_out << endEpoch << endl;
           }
@@ -256,7 +255,7 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
         // Output into the socket
         // ----------------------
         if (_sockets) {
-          int numBytes = sizeof(*obs); 
+          int numBytes = sizeof(obs->_o); 
           QListIterator<QTcpSocket*> is(*_sockets);
           while (is.hasNext()) {
             QTcpSocket* sock = is.next();
@@ -265,7 +264,7 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
                 sock->write(&begEpoch, 1);
               }
               sock->write(&begObs, 1);
-              sock->write((char*) obs, numBytes);
+              sock->write((char*) &obs->_o, numBytes);
               if (!it.hasNext()) {
                 sock->write(&endEpoch, 1);
               }

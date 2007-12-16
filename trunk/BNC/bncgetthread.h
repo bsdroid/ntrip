@@ -51,7 +51,7 @@ class bncGetThread : public QThread {
 
  signals:
    void newBytes(const QByteArray staID, double nbyte);
-   void newObs(const QByteArray staID, bool firstObs, Observation* obs);
+   void newObs(const QByteArray staID, bool firstObs, p_obs obs);
    void error(const QByteArray staID);
    void newMessage(const QByteArray msg);
 

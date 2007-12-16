@@ -57,11 +57,6 @@ RTCM2Decoder::RTCM2Decoder() {
 // 
 
 RTCM2Decoder::~RTCM2Decoder() {
-  QListIterator<p_obs> it(_obsList);
-  while (it.hasNext()) {
-    delete it.next();
-  }
-  _obsList.clear();
 }
 
 //
@@ -90,22 +85,22 @@ void RTCM2Decoder::Decode(char* buffer, int bufLen) {
         _ObsBlock.resolveEpoch(refWeek, refSecs, epochWeek, epochSecs);
           
         for (int iSat=0; iSat < _ObsBlock.nSat; iSat++) {
-          Observation* obs = new Observation();
+          p_obs obs = new t_obs();
           if (_ObsBlock.PRN[iSat] > 100) {
-            obs->satNum = _ObsBlock.PRN[iSat] % 100;
-            obs->satSys = 'R';
+            obs->_o.satNum = _ObsBlock.PRN[iSat] % 100;
+            obs->_o.satSys = 'R';
 	  }
 	  else {
-            obs->satNum = _ObsBlock.PRN[iSat];
-            obs->satSys = 'G';
+            obs->_o.satNum = _ObsBlock.PRN[iSat];
+            obs->_o.satSys = 'G';
 	  }
-          obs->GPSWeek  = epochWeek;
-          obs->GPSWeeks = epochSecs;
-          obs->C1       = _ObsBlock.rng_C1[iSat];
-          obs->P1       = _ObsBlock.rng_P1[iSat];
-          obs->P2       = _ObsBlock.rng_P2[iSat];
-          obs->L1       = _ObsBlock.resolvedPhase_L1(iSat);
-          obs->L2       = _ObsBlock.resolvedPhase_L2(iSat);
+          obs->_o.GPSWeek  = epochWeek;
+          obs->_o.GPSWeeks = epochSecs;
+          obs->_o.C1       = _ObsBlock.rng_C1[iSat];
+          obs->_o.P1       = _ObsBlock.rng_P1[iSat];
+          obs->_o.P2       = _ObsBlock.rng_P2[iSat];
+          obs->_o.L1       = _ObsBlock.resolvedPhase_L1(iSat);
+          obs->_o.L2       = _ObsBlock.resolvedPhase_L2(iSat);
 
           _obsList.push_back(obs);
         }

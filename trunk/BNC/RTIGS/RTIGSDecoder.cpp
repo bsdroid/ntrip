@@ -54,11 +54,6 @@ RTIGSDecoder::RTIGSDecoder() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 RTIGSDecoder::~RTIGSDecoder() {
-  QListIterator<p_obs> it(_obsList);
-  while (it.hasNext()) {
-    delete it.next();
-  }
-  _obsList.clear();
 }
 
 // 
@@ -108,20 +103,20 @@ void RTIGSDecoder::Decode(char* buffer, int bufLen) {
     short numObs = _GPSTrans.Decode_RTIGS_Obs(p_buf, numbytes, rtigs_obs);
 
     for (short ii = 0; ii < numObs; ii++) {
-      Observation* obs = new Observation();
-      obs->satSys   = 'G';
-      obs->satNum   = _GPSTrans.DecObs.Obs[ii].sat_prn;
-      obs->GPSWeek  = _GPSTrans.DecObs.Obs[ii].GPSTime / (7 * 86400);
-      obs->GPSWeeks = _GPSTrans.DecObs.Obs[ii].GPSTime % (7 * 86400);
-      obs->C1       = _GPSTrans.DecObs.Obs[ii].l1_pseudo_range;
-      obs->P1       = _GPSTrans.DecObs.Obs[ii].p1_pseudo_range;
-      obs->P2       = _GPSTrans.DecObs.Obs[ii].p2_pseudo_range;
-      obs->L1       = _GPSTrans.DecObs.Obs[ii].p1_phase;
-      obs->L2       = _GPSTrans.DecObs.Obs[ii].p2_phase;
-      obs->S1       = _GPSTrans.DecObs.Obs[ii].l1_sn;
-      obs->S2       = _GPSTrans.DecObs.Obs[ii].l2_sn;
-      obs->SNR1     = int(ceil(_GPSTrans.DecObs.Obs[ii].l1_sn / 60.0 * 9.0));
-      obs->SNR2     = int(ceil(_GPSTrans.DecObs.Obs[ii].l2_sn / 60.0 * 9.0));
+      p_obs obs = new t_obs();
+      obs->_o.satSys   = 'G';
+      obs->_o.satNum   = _GPSTrans.DecObs.Obs[ii].sat_prn;
+      obs->_o.GPSWeek  = _GPSTrans.DecObs.Obs[ii].GPSTime / (7 * 86400);
+      obs->_o.GPSWeeks = _GPSTrans.DecObs.Obs[ii].GPSTime % (7 * 86400);
+      obs->_o.C1       = _GPSTrans.DecObs.Obs[ii].l1_pseudo_range;
+      obs->_o.P1       = _GPSTrans.DecObs.Obs[ii].p1_pseudo_range;
+      obs->_o.P2       = _GPSTrans.DecObs.Obs[ii].p2_pseudo_range;
+      obs->_o.L1       = _GPSTrans.DecObs.Obs[ii].p1_phase;
+      obs->_o.L2       = _GPSTrans.DecObs.Obs[ii].p2_phase;
+      obs->_o.S1       = _GPSTrans.DecObs.Obs[ii].l1_sn;
+      obs->_o.S2       = _GPSTrans.DecObs.Obs[ii].l2_sn;
+      obs->_o.SNR1     = int(ceil(_GPSTrans.DecObs.Obs[ii].l1_sn / 60.0 * 9.0));
+      obs->_o.SNR2     = int(ceil(_GPSTrans.DecObs.Obs[ii].l2_sn / 60.0 * 9.0));
 
       _obsList.push_back(obs);
     }
