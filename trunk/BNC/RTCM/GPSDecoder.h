@@ -25,6 +25,7 @@
 #ifndef GPSDECODER_H
 #define GPSDECODER_H
 
+#include <iostream>
 #include <QPointer>
 #include <QList>
 
@@ -75,6 +76,8 @@ class t_obs : public QObject{
     _o.SNR2      = 0;
   }
 
+  ~t_obs() {std::cout << "delete " << _o.StatID << " " << _status << std::endl;}
+
   t_obsInternal _o;
   t_obs_status  _status;
 };
@@ -89,7 +92,7 @@ class GPSDecoder {
     QListIterator<p_obs> it(_obsList);
     while (it.hasNext()) {
       p_obs obs = it.next();
-      if (obs->_status == t_obs::initial) {
+      if (!obs.isNull() && obs->_status == t_obs::initial) {
         delete obs;
       }
     }
