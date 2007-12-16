@@ -177,11 +177,11 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
 
   qRegisterMetaType<p_obs>("p_obs");
 
-  connect(getThread, SIGNAL(newObs(const QByteArray, bool, p_obs)),
-          this,      SLOT(newObs(const QByteArray, bool, p_obs)));
+  connect(getThread, SIGNAL(newObs(QByteArray, bool, p_obs)),
+          this,      SLOT(newObs(QByteArray, bool, p_obs)));
 
-  connect(getThread, SIGNAL(error(const QByteArray)), 
-          this, SLOT(slotGetThreadError(const QByteArray)));
+  connect(getThread, SIGNAL(error(QByteArray)), 
+          this, SLOT(slotGetThreadError(QByteArray)));
 
   _staIDs.push_back(getThread->staID());
   _threads.push_back(getThread);
@@ -189,7 +189,7 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
 
 // Error in get thread
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::slotGetThreadError(const QByteArray staID) {
+void bncCaster::slotGetThreadError(QByteArray staID) {
   QMutexLocker locker(&_mutex);
   _staIDs.removeAll(staID);
   emit( newMessage(

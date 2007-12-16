@@ -522,10 +522,10 @@ void bncWindow::slotGetData() {
   connect(_caster, SIGNAL(getThreadErrors()), 
           this, SLOT(slotGetThreadErrors()));
 
-  connect(_caster, SIGNAL(newMessage(const QByteArray&)), 
-          this, SLOT(slotMessage(const QByteArray&)));
-  connect(_caster, SIGNAL(newMessage(const QByteArray&)), 
-          (bncApp*)qApp, SLOT(slotMessage(const QByteArray&)));
+  connect(_caster, SIGNAL(newMessage(QByteArray)), 
+          this, SLOT(slotMessage(QByteArray)));
+  connect(_caster, SIGNAL(newMessage(QByteArray)), 
+          (bncApp*)qApp, SLOT(slotMessage(QByteArray)));
 
   slotMessage("============ Start BNC ============");
   ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
@@ -542,14 +542,14 @@ void bncWindow::slotGetData() {
 
     bncGetThread* getThread = new bncGetThread(url, format, latitude, longitude, nmea, iRow);
 
-    connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
-            this, SLOT(slotMessage(const QByteArray&)));
-    connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
-            (bncApp*)qApp, SLOT(slotMessage(const QByteArray&)));
+    connect(getThread, SIGNAL(newMessage(QByteArray)), 
+            this, SLOT(slotMessage(QByteArray)));
+    connect(getThread, SIGNAL(newMessage(QByteArray)), 
+            (bncApp*)qApp, SLOT(slotMessage(QByteArray)));
 
-    connect(getThread, SIGNAL(newBytes(const QByteArray, double)),
+    connect(getThread, SIGNAL(newBytes(QByteArray, double)),
             (bncTableItem*) _mountPointsTable->item(iRow, 6), 
-            SLOT(slotNewBytes(const QByteArray, double)));
+            SLOT(slotNewBytes(QByteArray, double)));
 
     _caster->addGetThread(getThread);
 

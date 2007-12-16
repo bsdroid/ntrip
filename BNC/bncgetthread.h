@@ -50,10 +50,10 @@ class bncGetThread : public QThread {
    QByteArray staID() const {return _staID;}
 
  signals:
-   void newBytes(const QByteArray staID, double nbyte);
-   void newObs(const QByteArray staID, bool firstObs, p_obs obs);
-   void error(const QByteArray staID);
-   void newMessage(const QByteArray msg);
+   void newBytes(QByteArray staID, double nbyte);
+   void newObs(QByteArray staID, bool firstObs, p_obs obs);
+   void error(QByteArray staID);
+   void newMessage(QByteArray msg);
 
  protected:
    virtual void run();

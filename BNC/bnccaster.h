@@ -43,15 +43,15 @@ class bncCaster : public QObject {
    int  numStations() const {return _staIDs.size();}
 
  public slots:
-   void newObs(const QByteArray staID, bool firstObs, p_obs obs);
+   void newObs(QByteArray staID, bool firstObs, p_obs obs);
 
  signals:
    void getThreadErrors();   
-   void newMessage(const QByteArray& msg);
+   void newMessage(QByteArray msg);
 
  private slots:
    void slotNewConnection();
-   void slotGetThreadError(const QByteArray staID);
+   void slotGetThreadError(QByteArray staID);
 
  private:
    void dumpEpochs(long minTime, long maxTime);
