@@ -381,12 +381,6 @@ void bncGetThread::run() {
         emit(newMessage(_staID + ": Socket not connected, reconnecting"));
         tryReconnect();
       }
-      
-      for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
-           it != _decoder->_obsList.end(); it++) {
-        delete *it;
-      }
-      _decoder->_obsList.clear();
 
       _socket->waitForReadyRead(_timeOut);
       qint64 nBytes = _socket->bytesAvailable();
