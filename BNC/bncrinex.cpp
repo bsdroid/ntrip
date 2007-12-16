@@ -467,7 +467,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::deepCopy(const p_obs obs) {
   p_obs newObs = new t_obs();
-  memcpy(newObs, obs, sizeof(*obs));
+  memcpy(&newObs->_o, &obs->_o, sizeof(t_obsInternal));
   _obs.push_back(newObs);
 }
 
