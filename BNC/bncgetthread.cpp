@@ -127,13 +127,7 @@ bncGetThread::~bncGetThread() {
     _socket->deleteLater();
 #endif
   }
-  if (_decoder) {
-    for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
-         it != _decoder->_obsList.end(); it++) {
-      delete *it;
-    }
-    delete _decoder;
-  }
+  delete _decoder;
   delete _rnx;    
 }
 
