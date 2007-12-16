@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
     signal(SIGINT, catch_signal);
 
     //// beg test
-    QTimer::singleShot(30000, &app, SLOT(slotQuit()));
+    ////    QTimer::singleShot(30000, &app, SLOT(slotQuit()));
     //// end test
 
     app.setPort(settings.value("outEphPort").toInt());
