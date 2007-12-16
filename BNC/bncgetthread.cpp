@@ -382,7 +382,12 @@ void bncGetThread::run() {
         tryReconnect();
       }
       
-      
+      for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
+           it != _decoder->_obsList.end(); it++) {
+        delete *it;
+      }
+      _decoder->_obsList.clear();
+
       _socket->waitForReadyRead(_timeOut);
       qint64 nBytes = _socket->bytesAvailable();
       if (nBytes > 0) {
@@ -462,15 +467,6 @@ void bncGetThread::exit(int exitCode) {
 // Try Re-Connect 
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::tryReconnect() {
-
-  if (_decoder) {
-    for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
-         it != _decoder->_obsList.end(); it++) {
-      delete *it;
-    }
-    _decoder->_obsList.clear();
-  }
-
   if (_rnx) {
     _rnx->setReconnectFlag(true);
   }
