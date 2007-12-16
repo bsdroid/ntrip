@@ -51,8 +51,11 @@ class t_obsInternal {
 
 class t_obs : public QObject{
  public:
+  enum t_obs_status {initial, posted, received};
 
   t_obs() {
+    _status = initial;
+
     _o.flags     = 0;
     _o.StatID[0] = '\0';
     _o.satSys    = 'G';
@@ -72,7 +75,14 @@ class t_obs : public QObject{
     _o.SNR2      = 0;
   }
 
+  ~t_obs() {
+    if (_status == posted) {
+      return;
+    }
+  }
+
   t_obsInternal _o;
+  t_obs_status  _status;
 };
 
 typedef QPointer<t_obs> p_obs;
