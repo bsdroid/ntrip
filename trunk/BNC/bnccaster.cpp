@@ -122,6 +122,8 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
 
   QMutexLocker locker(&_mutex);
 
+  obs->_status = t_obs::received;
+
   long iSec    = long(floor(obs->_o.GPSWeeks+0.5));
   long newTime = obs->_o.GPSWeek * 7*24*3600 + iSec;
 
@@ -172,6 +174,9 @@ void bncCaster::slotNewConnection() {
 // Add New Thread
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::addGetThread(bncGetThread* getThread) {
+
+  qRegisterMetaType<p_obs>("p_obs");
+
   connect(getThread, SIGNAL(newObs(const QByteArray, bool, p_obs)),
           this,      SLOT(newObs(const QByteArray, bool, p_obs)));
 
