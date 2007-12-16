@@ -54,6 +54,11 @@ RTIGSDecoder::RTIGSDecoder() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 RTIGSDecoder::~RTIGSDecoder() {
+  QListIterator<p_obs> it(_obsList);
+  while (it.hasNext()) {
+    delete it.next();
+  }
+  _obsList.clear();
 }
 
 // 

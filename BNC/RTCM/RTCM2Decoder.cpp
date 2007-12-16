@@ -57,7 +57,11 @@ RTCM2Decoder::RTCM2Decoder() {
 // 
 
 RTCM2Decoder::~RTCM2Decoder() {
-
+  QListIterator<p_obs> it(_obsList);
+  while (it.hasNext()) {
+    delete it.next();
+  }
+  _obsList.clear();
 }
 
 //

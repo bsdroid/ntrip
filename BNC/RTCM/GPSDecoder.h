@@ -25,9 +25,10 @@
 #ifndef GPSDECODER_H
 #define GPSDECODER_H
 
-#include <list>
+#include <QPointer>
+#include <QList>
 
-class Observation {
+class Observation : public QObject{
   public:
   Observation() {
     flags     = 0;
@@ -67,11 +68,13 @@ class Observation {
   int    SNR2;        // L2 signal-to noise ratio (mapped to integer)
 };
 
+typedef QPointer<Observation> p_obs;
+
 class GPSDecoder {
   public:
     virtual void Decode(char* buffer, int bufLen) = 0;
     virtual ~GPSDecoder() {}
-    std::list<Observation*> _obsList;
+    QList<p_obs> _obsList;
 };
 
 #endif
