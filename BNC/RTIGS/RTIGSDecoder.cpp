@@ -104,6 +104,7 @@ void RTIGSDecoder::Decode(char* buffer, int bufLen) {
 
     for (short ii = 0; ii < numObs; ii++) {
       p_obs obs = new t_obs();
+      _obsList.push_back(obs);
       obs->_o.satSys   = 'G';
       obs->_o.satNum   = _GPSTrans.DecObs.Obs[ii].sat_prn;
       obs->_o.GPSWeek  = _GPSTrans.DecObs.Obs[ii].GPSTime / (7 * 86400);
@@ -117,8 +118,6 @@ void RTIGSDecoder::Decode(char* buffer, int bufLen) {
       obs->_o.S2       = _GPSTrans.DecObs.Obs[ii].l2_sn;
       obs->_o.SNR1     = int(ceil(_GPSTrans.DecObs.Obs[ii].l1_sn / 60.0 * 9.0));
       obs->_o.SNR2     = int(ceil(_GPSTrans.DecObs.Obs[ii].l2_sn / 60.0 * 9.0));
-
-      _obsList.push_back(obs);
     }
   }
 

@@ -84,7 +84,7 @@ int main(int /* argc */, char** /* argv */) {
 
   // Receive Data
   // ------------
-  Observation obs;
+  t_obsInternal obs;
   char flag = ' ';
   cout.setf(ios::showpoint | ios::fixed);
 
