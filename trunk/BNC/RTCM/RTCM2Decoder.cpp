@@ -86,6 +86,7 @@ void RTCM2Decoder::Decode(char* buffer, int bufLen) {
           
         for (int iSat=0; iSat < _ObsBlock.nSat; iSat++) {
           p_obs obs = new t_obs();
+          _obsList.push_back(obs);
           if (_ObsBlock.PRN[iSat] > 100) {
             obs->_o.satNum = _ObsBlock.PRN[iSat] % 100;
             obs->_o.satSys = 'R';
@@ -101,8 +102,6 @@ void RTCM2Decoder::Decode(char* buffer, int bufLen) {
           obs->_o.P2       = _ObsBlock.rng_P2[iSat];
           obs->_o.L1       = _ObsBlock.resolvedPhase_L1(iSat);
           obs->_o.L2       = _ObsBlock.resolvedPhase_L2(iSat);
-
-          _obsList.push_back(obs);
         }
         _ObsBlock.clear();
       }

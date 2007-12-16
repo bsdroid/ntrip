@@ -1,7 +1,7 @@
 #/bin/bash
 if [ "$1" == "start" ]
 then
-  valgrind --leak-check=full --show-reachable=yes ./bnc -nw 2> valgrind.txt &
+  valgrind --leak-check=full ./bnc -nw 2> valgrind.txt &
 elif [ "$1" == "stop" ]
 then
   kill -SIGINT `ps | grep memcheck | cut -b 1-6`

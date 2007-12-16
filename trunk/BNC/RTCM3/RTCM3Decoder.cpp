@@ -111,6 +111,7 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
           
           for (int ii = 0; ii < _Parser.Data.numsats; ii++) {
             p_obs obs = new t_obs();
+            _obsList.push_back(obs);
             if      (_Parser.Data.satellites[ii] <= PRN_GPS_END) {
               obs->_o.satSys = 'G';
               obs->_o.satNum = _Parser.Data.satellites[ii];
@@ -144,39 +145,39 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
                 v = 1;
                 }
               }
-            if(!v)
-            { continue; }
-            else
-            {
-              if      (_Parser.dataflag[jj] & GNSSDF_C1DATA) {
-                obs->_o.C1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+              if (!v) { 
+                continue; 
               }
-              else if (_Parser.dataflag[jj] & GNSSDF_C2DATA) {
-                obs->_o.C2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
-              }
-              else if (_Parser.dataflag[jj] & GNSSDF_P1DATA) {
-                obs->_o.P1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
-              }
-              else if (_Parser.dataflag[jj] & GNSSDF_P2DATA) {
-                obs->_o.P2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
-              }
-              else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
-                obs->_o.L1   = _Parser.Data.measdata[ii][pos];
-                obs->_o.SNR1 = _Parser.Data.snrL1[ii];
-              }
-              else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
-                obs->_o.L2   = _Parser.Data.measdata[ii][pos];
-                obs->_o.SNR2 = _Parser.Data.snrL2[ii];
-              }
-              else if (df & (GNSSDF_S1CDATA|GNSSDF_S1PDATA)) {
-                obs->_o.S1   = _Parser.Data.measdata[ii][pos];
-              }
-              else if (df & (GNSSDF_S2CDATA|GNSSDF_S2PDATA)) {
-                obs->_o.S2   = _Parser.Data.measdata[ii][pos];
+              else
+              {
+                if      (_Parser.dataflag[jj] & GNSSDF_C1DATA) {
+                  obs->_o.C1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+                }
+                else if (_Parser.dataflag[jj] & GNSSDF_C2DATA) {
+                  obs->_o.C2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+                }
+                else if (_Parser.dataflag[jj] & GNSSDF_P1DATA) {
+                  obs->_o.P1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+                }
+                else if (_Parser.dataflag[jj] & GNSSDF_P2DATA) {
+                  obs->_o.P2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+                }
+                else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
+                  obs->_o.L1   = _Parser.Data.measdata[ii][pos];
+                  obs->_o.SNR1 = _Parser.Data.snrL1[ii];
+                }
+                else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
+                  obs->_o.L2   = _Parser.Data.measdata[ii][pos];
+                  obs->_o.SNR2 = _Parser.Data.snrL2[ii];
+                }
+                else if (df & (GNSSDF_S1CDATA|GNSSDF_S1PDATA)) {
+                  obs->_o.S1   = _Parser.Data.measdata[ii][pos];
+                }
+                else if (df & (GNSSDF_S2CDATA|GNSSDF_S2PDATA)) {
+                  obs->_o.S2   = _Parser.Data.measdata[ii][pos];
+                }
               }
             }
-            }
-            _obsList.push_back(obs);
           }
         }
 
