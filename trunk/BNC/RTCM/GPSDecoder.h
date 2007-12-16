@@ -76,7 +76,7 @@ class t_obs : public QObject{
     _o.SNR2      = 0;
   }
 
-  ~t_obs() {std::cout << "delete " << _o.StatID << " " << _status << std::endl;}
+  ~t_obs() {}
 
   t_obsInternal _o;
   t_obs_status  _status;
