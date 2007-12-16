@@ -122,8 +122,8 @@ int main(int argc, char *argv[]) {
     app.setPort(settings.value("outEphPort").toInt());
 
     app.connect(caster, SIGNAL(getThreadErrors()), &app, SLOT(quit()));
-    app.connect(caster, SIGNAL(newMessage(const QByteArray&)), 
-                &app, SLOT(slotMessage(const QByteArray&)));
+    app.connect(caster, SIGNAL(newMessage(QByteArray)), 
+                &app, SLOT(slotMessage(QByteArray)));
   
     ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
 
@@ -139,8 +139,8 @@ int main(int argc, char *argv[]) {
       QByteArray longitude = hlp[3].toAscii();
       QByteArray nmea = hlp[4].toAscii();
       bncGetThread* getThread = new bncGetThread(url, format, latitude, longitude, nmea, iMount);
-      app.connect(getThread, SIGNAL(newMessage(const QByteArray&)), 
-                  &app, SLOT(slotMessage(const QByteArray&)));
+      app.connect(getThread, SIGNAL(newMessage(QByteArray)), 
+                  &app, SLOT(slotMessage(const QByteArray)));
 
       caster->addGetThread(getThread);
 
