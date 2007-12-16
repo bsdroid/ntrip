@@ -462,6 +462,15 @@ void bncGetThread::exit(int exitCode) {
 // Try Re-Connect 
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::tryReconnect() {
+
+  if (_decoder) {
+    for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
+         it != _decoder->_obsList.end(); it++) {
+      delete *it;
+    }
+    _decoder->_obsList.clear();
+  }
+
   if (_rnx) {
     _rnx->setReconnectFlag(true);
   }
