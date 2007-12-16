@@ -72,6 +72,7 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
   _logFileFlag = 0;
   _logFile     = 0;
   _logStream   = 0;
+  _caster      = 0;
 
   // Lists of Ephemeris
   // ------------------
@@ -615,4 +616,13 @@ void bncApp::setPort(int port) {
 void bncApp::slotNewConnection() {
   _sockets->push_back( _server->nextPendingConnection() );
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncApp::slotQuit() {
+  cout << "bncApp::slotQuit" << endl;
+  delete _caster;
+  quit();
+}
+
 

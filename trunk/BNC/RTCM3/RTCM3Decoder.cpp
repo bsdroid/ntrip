@@ -83,6 +83,11 @@ RTCM3Decoder::RTCM3Decoder() : GPSDecoder() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 RTCM3Decoder::~RTCM3Decoder() {
+  QListIterator<p_obs> it(_obsList);
+  while (it.hasNext()) {
+    delete it.next();
+  }
+  _obsList.clear();
 }
 
 // 

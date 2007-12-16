@@ -376,6 +376,15 @@ void bncGetThread::run() {
   // Read Incoming Data
   // ------------------
   while (true) {
+
+    if (_decoder) {
+      QListIterator<p_obs> it(_decoder->_obsList);
+      while (it.hasNext()) {
+        delete it.next();
+      }
+      _decoder->_obsList.clear();
+    }
+
     try {
       if (_socket->state() != QAbstractSocket::ConnectedState) {
         emit(newMessage(_staID + ": Socket not connected, reconnecting"));
@@ -393,8 +402,10 @@ void bncGetThread::run() {
         _decoder->Decode(data, nBytes);
         delete [] data;
         
-        for (list<Observation*>::iterator it = _decoder->_obsList.begin(); 
-             it != _decoder->_obsList.end(); it++) {
+
+        QListIterator<p_obs> it(_decoder->_obsList);
+        while (it.hasNext()) {
+          p_obs obs = it.next();
 
           // Check observation epoch
           // -----------------------
@@ -405,34 +416,34 @@ void bncGetThread::run() {
           const double secPerWeek = 7.0 * 24.0 * 3600.0;
           const double maxDt      = 600.0;            
 
-          if (week < (*it)->GPSWeek) {
+          if (week < obs->GPSWeek) {
             week += 1;
             sec  -= secPerWeek;
           }
-          if (week > (*it)->GPSWeek) {
+          if (week > obs->GPSWeek) {
             week -= 1;
             sec  += secPerWeek;
           }
-          double dt = fabs(sec - (*it)->GPSWeeks);
-          if (week != (*it)->GPSWeek || dt > maxDt) {
+          double dt = fabs(sec - obs->GPSWeeks);
+          if (week != obs->GPSWeek || dt > maxDt) {
             emit( newMessage("Wrong observation epoch") );
-            delete (*it);
+            delete obs;
             continue;
           }
 
           // RINEX Output
           // ------------
           if (_rnx) {
-             long iSec    = long(floor((*it)->GPSWeeks+0.5));
-             long newTime = (*it)->GPSWeek * 7*24*3600 + iSec;
+             long iSec    = long(floor(obs->GPSWeeks+0.5));
+             long newTime = obs->GPSWeek * 7*24*3600 + iSec;
             if (_samplingRate == 0 || iSec % _samplingRate == 0) {
-              _rnx->deepCopy(*it);
+              _rnx->deepCopy(obs);
             }
             _rnx->dumpEpoch(newTime);
           }
 
-          bool firstObs = (it == _decoder->_obsList.begin());
-          emit newObs(_staID, firstObs, *it);
+          bool firstObs = (obs == _decoder->_obsList.first());
+          emit newObs(_staID, firstObs, obs);
         }
         _decoder->_obsList.clear();
       }
