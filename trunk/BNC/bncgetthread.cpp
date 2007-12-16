@@ -376,20 +376,17 @@ void bncGetThread::run() {
   // Read Incoming Data
   // ------------------
   while (true) {
-
-    if (_decoder) {
-      QListIterator<p_obs> it(_decoder->_obsList);
-      while (it.hasNext()) {
-        delete it.next();
-      }
-      _decoder->_obsList.clear();
-    }
-
     try {
       if (_socket->state() != QAbstractSocket::ConnectedState) {
         emit(newMessage(_staID + ": Socket not connected, reconnecting"));
         tryReconnect();
       }
+
+      QListIterator<p_obs> it(_decoder->_obsList);
+      while (it.hasNext()) {
+        delete it.next();
+      }
+      _decoder->_obsList.clear();
 
       _socket->waitForReadyRead(_timeOut);
       qint64 nBytes = _socket->bytesAvailable();
@@ -402,7 +399,6 @@ void bncGetThread::run() {
         _decoder->Decode(data, nBytes);
         delete [] data;
         
-
         QListIterator<p_obs> it(_decoder->_obsList);
         while (it.hasNext()) {
           p_obs obs = it.next();
