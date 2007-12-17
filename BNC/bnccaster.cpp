@@ -271,12 +271,7 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
                 sock->putChar(begEpoch);
               }
               sock->putChar(begObs);
-              char* bytes = new char[numBytes];
-              memcpy(bytes, &obs->_o, numBytes);
-              for (int ii = 0; ii < numBytes; ii++) {
-                sock->putChar(bytes[ii]);
-              }
-              delete [] bytes;
+              sock->write((const char*) &obs->_o, numBytes);
               if (!it.hasNext()) {
                 sock->putChar(endEpoch);
               }
