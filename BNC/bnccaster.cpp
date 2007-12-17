@@ -45,6 +45,7 @@
 #include "bncutils.h"
 #include "RTCM/GPSDecoder.h"
 
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncCaster::bncCaster(const QString& outFileName, int port) {
@@ -267,17 +268,15 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
           while (is.hasNext()) {
             QTcpSocket* sock = is.next();
             if (sock->state() == QAbstractSocket::ConnectedState) {
+              int fd = sock->socketDescriptor();
               if (first) {
-                sock->putChar(begEpoch);
+                ::write(fd, &begEpoch, 1);
               }
-              sock->putChar(begObs);
-              sock->write((const char*) &obs->_o, numBytes);
+              ::write(fd, &begObs, 1);
+              ::write(fd, &obs->_o, numBytes);
               if (!it.hasNext()) {
-                sock->putChar(endEpoch);
+                ::write(fd, &endEpoch, 1);
               }
-              sock->flush();
-              sock->waitForBytesWritten(-1);
-              sock->reset();
             }
           }
         }
