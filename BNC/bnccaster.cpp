@@ -106,7 +106,13 @@ bncCaster::~bncCaster() {
   delete _out;
   delete _outFile;
   delete _server;
-  delete _sockets;
+  if (_sockets) {
+    QListIterator<QTcpSocket*> is(*_sockets);
+    while (is.hasNext()) {
+      delete is.next();
+    }
+    delete _sockets;
+  }
   if (_epochs) {
     QListIterator<p_obs> it(_epochs->values());
     while (it.hasNext()) {
@@ -169,6 +175,8 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::slotNewConnection() {
   _sockets->push_back( _server->nextPendingConnection() );
+  emit( newMessage(QString("New Connection # %1")
+                   .arg(_sockets->size()).toAscii()) );
 }
 
 // Add New Thread
