@@ -38,6 +38,7 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
 #include <math.h>
 #include <unistd.h>
 
@@ -265,19 +266,36 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
         // ----------------------
         if (_sockets) {
           int numBytes = sizeof(obs->_o); 
-          QListIterator<QTcpSocket*> is(*_sockets);
+          QMutableListIterator<QTcpSocket*> is(*_sockets);
           while (is.hasNext()) {
             QTcpSocket* sock = is.next();
             if (sock->state() == QAbstractSocket::ConnectedState) {
+              bool ok = true;
               int fd = sock->socketDescriptor();
               if (first) {
-                ::write(fd, &begEpoch, 1);
+                if (::write(fd, &begEpoch, 1) != 1) {
+                  ok = false;
+                }
               }
-              ::write(fd, &begObs, 1);
-              ::write(fd, &obs->_o, numBytes);
+              if (::write(fd, &begObs, 1) != 1) {
+                ok = false;
+              }
+              if (::write(fd, &obs->_o, numBytes) != numBytes) {
+                ok = false;
+              }
               if (!it.hasNext()) {
-                ::write(fd, &endEpoch, 1);
+                if (::write(fd, &endEpoch, 1) != 1) {
+                  ok = false;
+                }
               }
+              if (!ok) {
+                delete sock;
+                is.remove();
+              }
+            }
+            else if (sock->state() != QAbstractSocket::ConnectingState) {
+              delete sock;
+              is.remove();
             }
           }
         }
