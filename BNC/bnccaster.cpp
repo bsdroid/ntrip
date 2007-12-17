@@ -282,6 +282,7 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
               }
               sock->flush();
               sock->waitForBytesWritten(-1);
+              sock->reset();
             }
           }
         }
