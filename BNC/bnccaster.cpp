@@ -39,6 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <math.h>
+#include <unistd.h>
 
 #include "bnccaster.h"
 #include "bncgetthread.h"
