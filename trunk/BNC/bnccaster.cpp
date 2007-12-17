@@ -106,13 +106,7 @@ bncCaster::~bncCaster() {
   delete _out;
   delete _outFile;
   delete _server;
-  if (_sockets) {
-    QListIterator<QTcpSocket*> is(*_sockets);
-    while (is.hasNext()) {
-      delete is.next();
-    }
-    delete _sockets;
-  }
+  delete _sockets;
   if (_epochs) {
     QListIterator<p_obs> it(_epochs->values());
     while (it.hasNext()) {
