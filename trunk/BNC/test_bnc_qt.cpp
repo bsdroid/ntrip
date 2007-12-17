@@ -121,7 +121,7 @@ int main(int /* argc */, char** /* argv */) {
       }
     }
     else {
-      socketObs.waitForReadyRead(50);
+      socketObs.waitForReadyRead(1);
     }
 
     if ( socketEph.bytesAvailable() ) {
@@ -129,7 +129,7 @@ int main(int /* argc */, char** /* argv */) {
       outEph << eph.data() << endl;
     }
     else {
-      socketEph.waitForReadyRead(50);
+      socketEph.waitForReadyRead(1);
     }
   }
 
