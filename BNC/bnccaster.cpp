@@ -268,13 +268,20 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
             QTcpSocket* sock = is.next();
             if (sock->state() == QAbstractSocket::ConnectedState) {
               if (first) {
-                sock->write(&begEpoch, 1);
+                sock->putChar(begEpoch);
               }
-              sock->write(&begObs, 1);
-              sock->write((char*) &obs->_o, numBytes);
+              sock->putChar(begObs);
+              char* bytes = new char[numBytes];
+              memcpy(bytes, &obs->_o, numBytes);
+              for (int ii = 0; ii < numBytes; ii++) {
+                sock->putChar(bytes[ii]);
+              }
+              delete [] bytes;
               if (!it.hasNext()) {
-                sock->write(&endEpoch, 1);
+                sock->putChar(endEpoch);
               }
+              sock->flush();
+              sock->waitForBytesWritten(-1);
             }
           }
         }
