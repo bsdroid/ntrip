@@ -201,11 +201,13 @@ struct Observation {
   int    SNR2;        // L2 signal-to noise ratio (mapped to integer)
 } ;
 </pre>
-<p>The source code for BNC comes with an example program called 'test_bnc_qt.cpp' that allows you to read BNC's binary output from the IP port.</p>
+<p>The source code for BNC comes with an example program called 'test_bnc_qt.cpp' that allows you to read BNC's binary observation output from the IP port.</p>
 
 <p><a name="ephascii"><h4>3.4.4 Port for ASCII Ephemeris Output - optional</h4></p>
-BNC can output broadcast ephemeris in binary format on your local host (IP 127.0.0.1) through an IP port. Specify an IP port number to activate this function. The default is an empty option field, meaning that no ASCII ephemeris output via IP port is generated.</p>
+<p>
+BNC can output broadcast ephemeris in binary format on your local host (IP 127.0.0.1) through an IP port. Specify an IP port number to activate this function. The default is an empty option field, meaning that no ASCII ephemeris output via IP port is generated.
 </p>
+<p>The source code for BNC comes with an example perl script called 'test_bnc_eph.pl' that allows you to read BNC's ASCII ephemeris output from the IP port.</p>
 <p><a name="rinex"><h4>3.5. RINEX</h4></p>
 <p>
 Observations will be converted to RINEX if they come in either RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. BNC's RINEX Observation files generally contain C1, C2, P1, P2, L1, L2, S1, and S2 observations. In case an observation is unavailable, its value is set to zero '0.000'. Note that the 'RINEX TYPE' field in the RINEX Observation file header is always set to 'M(MIXED)' even if the file does not contain any GLONASS or SABAS data.
