@@ -133,10 +133,10 @@ bncWindow::bncWindow() {
   QSettings settings;
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
   _proxyHostLineEdit->setMaximumWidth(12*ww);
-  _proxyHostLineEdit->setWhatsThis(tr("<p>You may want to run BNC in a Local Area Network (LAN). LANs are often protected by a proxy server. Enter your proxy server host IP name or number and port number in case one is operated in front of BNC. If you don't know the IP and port of your proxy server, check out the proxy server settings of your Internet browser or ask your network administrator.</p><p>Note that IP streaming may generally be denied in a LAN. In such a case you need to ask your network administrator for an appropriate modification of his security policy or for the installation of a TCP relay to involved NTRIP broadcasters. If that doesn't work out, run BNC outside your LAN on a host that is connected to the Internet through an Internet Service Provider (ISP).</p><p>Default values for 'Proxy host' and 'Proxy port' are empty option fields, assuming that no proxy server is operated in front of BNC.</p>"));
+  _proxyHostLineEdit->setWhatsThis(tr("<p>If you are running BNC within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you don't know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is often not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNC outside your LAN on a host that has unobstructed connection to the Internet.</p>"));
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
   _proxyPortLineEdit->setMaximumWidth(9*ww);
-  _proxyPortLineEdit->setWhatsThis(tr("<p>You may want to run BNC in a Local Area Network (LAN). LANs are often protected by a proxy server. Enter your proxy server host IP name or number and port number in case one is operated in front of BNC. If you don't know the IP and port of your proxy server, check out the proxy server settings of your Internet browser or ask your network administrator.</p><p>Note that IP streaming may generally be denied in a LAN. In such a case you need to ask your network administrator for an appropriate modification of his security policy or for the installation of a TCP relay to involved NTRIP broadcasters. If that doesn't work out, run BNC outside your LAN on a host that is connected to the Internet through an Internet Service Provider (ISP).</p><p>Default values for 'Proxy host' and 'Proxy port' are empty option fields, assuming that no proxy server is operated in front of BNC.</p>"));
+  _proxyPortLineEdit->setWhatsThis(tr("<p>If you are running BNC within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you don't know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is often not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNC outside your LAN on a host that has unobstructed connection to the Internet.</p>"));
   _waitTimeSpinBox   = new QSpinBox();
   _waitTimeSpinBox->setMinimum(1);
   _waitTimeSpinBox->setMaximum(30);
@@ -144,35 +144,35 @@ bncWindow::bncWindow() {
   _waitTimeSpinBox->setSuffix(" sec");
   _waitTimeSpinBox->setMaximumWidth(9*ww);
   _waitTimeSpinBox->setValue(settings.value("waitTime").toInt());
-  _waitTimeSpinBox->setWhatsThis(tr("<p>BNC lets you output synchronized observations epoch by epoch. When feeding a real-time GNSS engine waiting for input, BNC ignores whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming streams and the delay you can accept for your real-time GNSS product.</p><p>Note that 'Wait for full epoch' only concerns the ASCII output and the binary output and does not influence the RINEX file contents. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX files.</p>"));
+  _waitTimeSpinBox->setWhatsThis(tr("<p>When feeding a real-time GNSS engine waiting for input epoch by epoch, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming streams and the delay acceptable for your real-time GNSS product.</p><p>Note that 'Wait for full epoch' does not effect the RINEX Observation file content. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX Observation files.</p>"));
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
-  _outFileLineEdit->setWhatsThis(tr("<p>Enter the full path for a file to save synchronized observations in a plain ASCII format.</p><p>Note that the size of this file rapidly increases, mainly depending on the number of incoming streams. Thus, this output option is primarily meant for test and evaluation purposes. Devault value for 'ASCII output file' is an empty option field, meaning that no ASCII output file is created.</p>"));
+  _outFileLineEdit->setWhatsThis(tr("<p>Specify the full path to a file where synchrozined observations are saved in plain ASCII format. Beware that the size of this file can rapidly increase depending on the number of incoming streams.</p>"));
   _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
   _outPortLineEdit->setMaximumWidth(9*ww);
-  _outPortLineEdit->setWhatsThis(tr("<p>BNC makes synchronized observations available in a binary format on your local host (IP 127.0.0.1) through an IP port. Enter an IP port number to activate this function.</p><p>Default is an empty option field, meaning that no binary output is generated.</p>"));
+  _outPortLineEdit->setWhatsThis(tr("<p>BNC can produce synchronized observations in binary format on your local host through an IP port. Specify an IP port number here to activate this function.</p>"));
   _outEphPortLineEdit    = new QLineEdit(settings.value("outEphPort").toString());
   _outEphPortLineEdit->setMaximumWidth(9*ww);
-  _outEphPortLineEdit->setWhatsThis(tr("<p>BNC makes broadcast ephemeris available in ASCII format on your local host through an IP port</p>"));
+  _outEphPortLineEdit->setWhatsThis(tr("<p>BNC can produce ephemeris data in ASCII format on your local host through an IP port. Specify an IP port number here to activate this function.</p>"));
   _rnxPathLineEdit    = new QLineEdit(settings.value("rnxPath").toString());
-  _rnxPathLineEdit->setWhatsThis(tr("<p>Observations can be converted to RINEX. Enter a path for saving the RINEX files in a directory. If this directory does not exist, BNC will not create RINEX files.</p><p>Default value for 'RINEX directory' is an empty option field, meaning that streams are not converted to RINEX.</p>"));
+  _rnxPathLineEdit->setWhatsThis(tr("<p>Here you specify the path to where the RINEX Observation files will be stored. If the specified directory does not exist, BNC will not create RINEX Observation files.</p>")); 
   _ephPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
-  _ephPathLineEdit->setWhatsThis(tr("<p>Ephemeris data from RTCM Version 3.x streams can be converted to RINEX. Enter a path for saving the RINEX Navigation files in a directory. If this directory does not exist, BNC will not create RINEX Navigation files.</p><p>Default value for 'Ephemeris directory' is an empty option field, meaning that no RINEX Navigation files will be created.</p>"));
+  _ephPathLineEdit->setWhatsThis(tr("<p>Specify the path for saving Broadcast Ephemeris data as RINEX Navigation files. If the specified directory does not exist, BNC will not create RINEX Navigation files.</p>"));
 
   _rnxV3CheckBox = new QCheckBox();
   _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
   _ephV3CheckBox = new QCheckBox();
   _ephV3CheckBox->setCheckState(Qt::CheckState(settings.value("ephV3").toInt()));
   _rnxScrpLineEdit    = new QLineEdit(settings.value("rnxScript").toString());
-  _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX file is saved, you may like to compress, copy or upload it immediately via FTP. For that you enter the full path of a script or batch file which is then called to carry out these operations. The full RINEX file path will be passed to the script as a command line parameter (%1 on Windows systems, $1 on Unix/Linux systems).</p><p>The triggering event for calling the script or batch file is the end of the 'RINEX file interval'. If that is superposed by a stream outage, the triggering event is the stream reconnect.</p><p>Default value for 'RINEX script' is an empty option field, meaning that no script or batch file shall be called."));
+  _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX Observation file is saved, you might want to compress, copy or upload it immediately via FTP. BNC allows you to execute a script/batch file to carry out these operations. To do that specify the full path of the script/batch file here. BNC will pass the RINEX Observation file path to the script as a command line parameter (%1 on Windows systems, $1 onUnix/Linux systems).</p><p>The triggering event for calling the script or batchfile is the end of a RINEX Observation 'File interval'. If that is overridden by a stream outage, the triggering event is the stream reconnection.</p>"));
   _rnxSkelLineEdit    = new QLineEdit(settings.value("rnxSkel").toString());
   _rnxSkelLineEdit->setMaximumWidth(5*ww);
-  _rnxSkelLineEdit->setWhatsThis(tr("<p>Whenever BNC starts generating RINEX files (and then once every day at midnight), it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. However, it may happen that public RINEX header skeleton files are not available, its contents is not up to date, or you need to have additional/optional records in the RINEX header.</p><p>For that BNC allows to introduce personal skeleton files that contain the header records you would like to see. You may derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the 'RINEX directory' with the extension 'RINEX skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the affected stream.</p><p>Default value for 'RINEX skeleton extension' is 'SKL', meaning that BNC will include the contents of probably existing files with this extension into the affected RINEX file headers.</p>"));
+  _rnxSkelLineEdit->setWhatsThis(tr("<p>Whenever BNC starts generating RINEX Observation files (and then once every day at midnight), it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs.However, sometimes public RINEX header skeleton files are not available, its contents is not up to date, or you need to put additional/optional records in the RINEX header.</p><p>For that BNC allows using personal skeleton files that contain the header records you would like to include. You can derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the 'RINEX directory' with the extension 'RINEX skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream.</p>"));
   _rnxAppendCheckBox  = new QCheckBox();
   _rnxAppendCheckBox->setCheckState(Qt::CheckState(
                                     settings.value("rnxAppend").toInt()));
-  _rnxAppendCheckBox->setWhatsThis(tr("<p>When starting BNC, new RINEX files are created by default. Probably existing files will be overwritten. However, it may be desirable to append observations to already existing RINEX files following a restart of BNC after an intentional 'Stop', a system crash or a crash of BNC. Hit 'Append files' to continue with already existing files and thus save what has been recorded so far.</p><p>Note that option 'Append files' also concerns the 'ASCII output file' and the 'Log' file.</p>"));
+  _rnxAppendCheckBox->setWhatsThis(tr("<p>When BNC is started, new RINEX Observation files are created by default and any existing files with the same name will be overwritten. However, users might want to append observations and ephemeris to existing RINEX files following a restart of BNC, a system crash or when BNC crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far.</p>"));
   _rnxIntrComboBox    = new QComboBox();
-  _rnxIntrComboBox->setWhatsThis(tr("<p>Select an interval for the RINEX file generation.</p><p>Default for 'RINEX file interval' is '15 min', meaning that a new RINEX file is generated every 15 minutes.</p>"));
+  _rnxIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Observation file generated.</p>"));
   _rnxIntrComboBox->setMaximumWidth(9*ww);
   _rnxIntrComboBox->setEditable(false);
   _rnxIntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
@@ -181,7 +181,7 @@ bncWindow::bncWindow() {
     _rnxIntrComboBox->setCurrentIndex(ii);
   }
   _ephIntrComboBox    = new QComboBox();
-  _ephIntrComboBox->setWhatsThis(tr("<p>Select an interval for the ephemeris file generation.</p><p>Default for 'Ephemeris file interval' is '1 day', meaning that a new Ephemeris file is generated every day.</p>"));
+  _ephIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Navigation file generated.</p>"));
   _ephIntrComboBox->setMaximumWidth(9*ww);
   _ephIntrComboBox->setEditable(false);
   _ephIntrComboBox->addItems(QString("5 min,15 min,1 hour,1 day").split(","));
@@ -190,7 +190,7 @@ bncWindow::bncWindow() {
     _ephIntrComboBox->setCurrentIndex(jj);
   }
   _rnxSamplSpinBox    = new QSpinBox();
-  _rnxSamplSpinBox->setWhatsThis(tr("<p>Select the RINEX sample interval in seconds. Zero '0' stands for converting all incoming epochs to RINEX.</p><p>Default for RINEX 'Sampling' is '0'.</p>"));
+  _rnxSamplSpinBox->setWhatsThis(tr("<p>Select the RINEX Observation sampling interval in seconds. A value of zero '0' tells BNC to store all received epochs into RINEX.</p>"));
   _rnxSamplSpinBox->setMinimum(0);
   _rnxSamplSpinBox->setMaximum(60);
   _rnxSamplSpinBox->setSingleStep(5);
@@ -198,9 +198,9 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
   _rnxSamplSpinBox->setSuffix(" sec");
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
-  _logFileLineEdit->setWhatsThis(tr("<p>BNC's run-time comments as shown in the 'Log' section can be saved in a file through entering the full path for a 'Log' file.</p><p>Default value for 'Log' is an empty option field, meaning that BNC's run-time comments are not saved in a file.</p>"));
+  _logFileLineEdit->setWhatsThis(tr("<p>Records of BNC's activities are shown in the 'Log' section below. They can be saved into a file when a valid path is specified in the 'Log (full path)' field.</p>"));
   _mountPointsTable   = new QTableWidget(0,7);
-  _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Mountpoints' section. Button 'Add Mountpoints' opens a window that allows to select data streams from an NTRIP broadcaster by their mountpoints. To delete a stream, select it by mouse click and hit 'Delete Mountpoints'. For adding or deleting several streams simultaneously, highlight them using +Shift and +Ctrl.</p><p>BNC automatically selects one out of several internal decoders for a stream based on its 'format' and 'format-details' as given in the source-table. It may happen that you need to overrule the automated decoder selection. Therefore BNC allows to edit the decoder string (first double-click, then edit field 'decoder', then hit Enter). Decoder strings allowed to be introduced for stream decoding and conversion are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.</p><p> BNC allows to by-pass its stream decoding and conversion algorithms, leave whatever is received untouched and save it in daily named files. To activate this functionality you need to enter the decoder string 'ZERO'. <p>BNC allows to receive streams from virtual reference stations. For accessing these streams, an approximate rover position is required to be send in NMEA format to the NTRIP broadcaster. Whether or not a stream retrieval needs be initiated by BNC through sending an NMEA-GGA string is indicated in column 'nmea'. For those streams showing 'yes' in column 'nmea', an individual user-specific data stream is generated, usually by a network RTK software. This stream is tailored exactly to the latitude and longitude shown in the 'lat' and 'long' columns. You may change these values (first double-click, then edit fields 'lat' and/or 'long', then hit Enter) according to your needs. The position has to be introduced in northern latitude degrees (example for northern hemisphere: 52.436, example for southern hemisphere: -24.567) and eastern longitude degrees (example: 358.872 or -1.128). Editing the 'lat' and 'long' values is only possible for streams that show a 'yes' in column 'nmea'. The position must point to a location within the service area of the affected RTK network.</p>"));
+  _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Mountpoints' section. Button 'Add Mountpoints' opens a window that allows the user to select data streams from an NTRIP broadcaster according to their mountpoints. To remove a stream from the 'Mountpoints' list, highlight it by clicking on it and hit the 'Delete Mountpoints' button. You can also remove multiple mountpoints simultaneously by highlighting them using +Shift and +Ctrl.</p><p>BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Doubleclick on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.</p><p>In case you need to log the raw data as is, BNC allows users to by-pass its decoders and and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'.</p><p>BNC can also retrieve streams from virtual reference stations (VRS). To initiate these streams, an approximate rover position needs to be sent in NMEA format to the NTRIP broadcaster. In return, a user-specific data stream is generated, typically by a Network-RTK software. This stream is customized to the exact latitude and longitude as shown in the 'lat' and 'long' columns under 'Mountpoints'. These VRS streams are indicated by a 'yes' in the 'nmea' column under 'Mountpoints' as well as in the source-table. The default 'lat' and 'long' values are taken from the source-table. However, in most cases you would probably want to change this according to your requirement. Double-click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter. The format is in positive north latitude degrees (e.g. for northern hemisphere: 52.436, for southern hemisphere: -24.567) and eastern longitude degrees (example: 358.872 or -1.128). Only mountpoints with a 'yes' in its 'nmea' column can be edited. The position must preferably be a point within the service area of the network.</p>"));
 
   _mountPointsTable->horizontalHeader()->resizeSection(1,25*ww);
   _mountPointsTable->horizontalHeader()->resizeSection(2,9*ww);
@@ -275,7 +275,7 @@ bncWindow::bncWindow() {
   _log = new QTextBrowser();
   _log->setReadOnly(true);
 
-  _log->setWhatsThis(tr("BNC comments its activities in the 'Log' section. Information is given concerning reconnections to the NTRIP broadcaster(s) following outages, stream delays, stream conversion etc."));
+  _log->setWhatsThis(tr("Records of BNC's activities are shown in the 'Log' section. The message log covers the communication status between BNC and the NTRIP broadcaster as well as problems that may occur in the communication link, stream availability, stream delay, stream conversion etc."));
 
   layout->addWidget(new QLabel("Proxy host"),                    0, 0, 1, 2);
   layout->addWidget(_proxyHostLineEdit,                          0, 2);
@@ -302,7 +302,7 @@ bncWindow::bncWindow() {
 
   layout->addWidget(new QLabel("RINEX v3"),                      4, 3, 1, 2);
   layout->addWidget(_rnxV3CheckBox,                              4, 4);
-  _rnxV3CheckBox->setWhatsThis(tr("<p>Select the RINEX Observation file output format.</p><p>Default is RINEX Version 2.11 format. Output in RINEX Version 3 (RINEX v3) format is optional.</p>"));
+  _rnxV3CheckBox->setWhatsThis(tr("<p>Default format for RINEX Observation files is RINEX Version 2.11. Select 'RINEX v3' if you want to save the observations in RINEX Version 3 format.</p>"));
 
   layout->addWidget(new QLabel("RINEX script (full path)"),      5, 0, 1, 2);
   layout->addWidget(_rnxScrpLineEdit,                            5, 2, 1, 3);
@@ -330,7 +330,7 @@ bncWindow::bncWindow() {
 
   layout->addWidget(new QLabel("RINEX v3"),                      8, 3, 1, 2);
   layout->addWidget(_ephV3CheckBox,                              8, 4);
-  _ephV3CheckBox->setWhatsThis(tr("<p>Select the RINEX Ephemeris file output format.</p><p>Default is RINEX Version 2.11 format. Output in RINEX Version 3 (RINEX v3) format is optional.</p>"));
+  _ephV3CheckBox->setWhatsThis(tr("<p>Default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'RINEX v3' if you want to save the ephemeris in RINEX Version 3 format.</p>"));
 
   layout->addWidget(new QLabel("Mountpoints"),                   9, 0, 1, 2);
 
