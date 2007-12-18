@@ -42,6 +42,7 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <cmath>
+#include <unistd.h>
 
 #include "bncapp.h" 
 #include "bncutils.h" 
@@ -523,11 +524,19 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
   // Output into the socket
   // ----------------------
   if (_sockets) {
-    QListIterator<QTcpSocket*> is(*_sockets);
+    QMutableListIterator<QTcpSocket*> is(*_sockets);
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
       if (sock->state() == QAbstractSocket::ConnectedState) {
-        sock->write(allLines);
+        int fd = sock->socketDescriptor();
+        if (::write(fd, allLines.data(), allLines.size()) != allLines.size()) {
+          delete sock;
+          is.remove();
+        }
+      }
+      else if (sock->state() != QAbstractSocket::ConnectingState) {
+        delete sock;
+        is.remove();
       }
     }
   }
@@ -589,11 +598,19 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
   // Output into the socket
   // ----------------------
   if (_sockets) {
-    QListIterator<QTcpSocket*> is(*_sockets);
+    QMutableListIterator<QTcpSocket*> is(*_sockets);
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
       if (sock->state() == QAbstractSocket::ConnectedState) {
-        sock->write(allLines);
+        int fd = sock->socketDescriptor();
+        if (::write(fd, allLines.data(), allLines.size()) != allLines.size()) {
+          delete sock;
+          is.remove();
+        }
+      }
+      else if (sock->state() != QAbstractSocket::ConnectingState) {
+        delete sock;
+        is.remove();
       }
     }
   }
