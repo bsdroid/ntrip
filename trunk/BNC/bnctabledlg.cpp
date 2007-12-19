@@ -216,6 +216,7 @@ void bncTableDlg::slotGetTable() {
                     _casterPortLineEdit->text().toInt(),
                     _allLines) != success ) {
     QMessageBox::warning(0, "BNC", "Cannot retrieve table of data");
+    _buttonGet->setEnabled(true);
     return;
   }
 
