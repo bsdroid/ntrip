@@ -131,6 +131,7 @@ bncGetThread::~bncGetThread() {
   delete _rnx;    
 }
 
+#define AGENTVERSION "1.5"
 // Connect to Caster, send the Request (static)
 ////////////////////////////////////////////////////////////////////////////
 QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
@@ -161,7 +162,13 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
   // ------------
   QString uName = QUrl::fromPercentEncoding(mountPoint.userName().toAscii());
   QString passW = QUrl::fromPercentEncoding(mountPoint.password().toAscii());
-  QByteArray userAndPwd = uName.toAscii() + ":" + passW.toAscii();
+  QByteArray userAndPwd;
+
+  if(!uName.isEmpty() || !passW.isEmpty())
+  {
+    userAndPwd = "Authorization: Basic " + (uName.toAscii() + ":" +
+    passW.toAscii()).toBase64() + "\r\n";
+  }
 
   QUrl hlp;
   hlp.setScheme("http");
@@ -172,20 +179,13 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
   QByteArray reqStr;
   if ( proxyHost.isEmpty() ) {
    if (hlp.path().indexOf("/") != 0) hlp.setPath("/");
-   reqStr = "GET " + hlp.path().toAscii() + 
-            " HTTP/1.0\r\n"
-            "User-Agent: NTRIP BNC 1.5\r\n"
-            "Authorization: Basic " +
-            userAndPwd.toBase64() + "\r\n";
+     reqStr = "GET " + hlp.path().toAscii() + " HTTP/1.0\r\n";
    } else {
-   reqStr = "GET " + hlp.toEncoded() + 
-            " HTTP/1.0\r\n"
-            "User-Agent: NTRIP BNC 1.5\r\n"
-            "Authorization: Basic " +
-            userAndPwd.toBase64() + "\r\n";
+     reqStr = "GET " + hlp.toEncoded() + " HTTP/1.0\r\n";
   }
-  if (hlp.path().indexOf(".skl") > 0) { reqStr += "Host: " + hlp.host().toAscii() + "\r\n"; }
-  reqStr += "\r\n";
+  reqStr += "User-Agent: NTRIP BNC/" AGENTVERSION "\r\n"
+  "Host: " + hlp.host().toAscii() + "\r\n"
+  + userAndPwd + "\r\n";
 
 // NMEA string to handle VRS stream
 // --------------------------------

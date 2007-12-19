@@ -32,8 +32,8 @@
 class RTIGSDecoder : public GPSDecoder {
 public:
   RTIGSDecoder();
-  ~RTIGSDecoder();
-  void Decode(char* buffer = 0, int bufLen = 0);
+  virtual ~RTIGSDecoder();
+  virtual void Decode(char* buffer = 0, int bufLen = 0);
 private:
   CGPS_Transform _GPSTrans;
   std::string    _buffer;
