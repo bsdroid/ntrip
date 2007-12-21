@@ -235,20 +235,12 @@ void bncRinex::readSkeleton() {
   }
 }
 
-// File Name according to RINEX Standards
+// Next File Epoch (static)
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::resolveFileName(const QDateTime& datTim) {
+QString bncRinex::nextEpochStr(const QDateTime& datTim, 
+                               const QString& intStr, QDateTime* nextEpoch) {
 
-  QSettings settings;
-  QString path = settings.value("rnxPath").toString();
-  expandEnvVar(path);
-
-  if ( path.length() > 0 && path[path.length()-1] != QDir::separator() ) {
-    path += QDir::separator();
-  }
-
-  QString intStr = settings.value("rnxIntr").toString();
-  QString hlpStr;
+  QString epoStr;
 
   QTime nextTime;
   QDate nextDate;
@@ -258,9 +250,9 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
   if ( indHlp != -1) {
     int step = intStr.left(indHlp-1).toInt();
     char ch = 'A' + datTim.time().hour();
-    hlpStr = ch;
+    epoStr = ch;
     if (datTim.time().minute() >= 60-step) {
-      hlpStr += QString("%1").arg(60-step, 2, 10, QChar('0'));
+      epoStr += QString("%1").arg(60-step, 2, 10, QChar('0'));
       if (datTim.time().hour() < 23) {
         nextTime.setHMS(datTim.time().hour() + 1 , 0, 0);
         nextDate = datTim.date();
@@ -273,7 +265,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
     else {
       for (int limit = step; limit <= 60-step; limit += step) {
         if (datTim.time().minute() < limit) {
-          hlpStr += QString("%1").arg(limit-step, 2, 10, QChar('0'));
+          epoStr += QString("%1").arg(limit-step, 2, 10, QChar('0'));
           nextTime.setHMS(datTim.time().hour(), limit, 0);
           nextDate = datTim.date();
           break;
@@ -283,7 +275,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
   }
   else if (intStr == "1 hour") {
     char ch = 'A' + datTim.time().hour();
-    hlpStr = ch;
+    epoStr = ch;
     if (datTim.time().hour() < 23) {
       nextTime.setHMS(datTim.time().hour() + 1 , 0, 0);
       nextDate = datTim.date();
@@ -294,11 +286,32 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
     }
   }
   else {
-    hlpStr = "0";
+    epoStr = "0";
     nextTime.setHMS(0, 0, 0);
     nextDate = datTim.date().addDays(1);
   }
-  _nextCloseEpoch = QDateTime(nextDate, nextTime);
+
+  if (nextEpoch) {
+   *nextEpoch = QDateTime(nextDate, nextTime);
+  }
+
+  return epoStr;
+}
+
+// File Name according to RINEX Standards
+////////////////////////////////////////////////////////////////////////////
+void bncRinex::resolveFileName(const QDateTime& datTim) {
+
+  QSettings settings;
+  QString path = settings.value("rnxPath").toString();
+  expandEnvVar(path);
+
+  if ( path.length() > 0 && path[path.length()-1] != QDir::separator() ) {
+    path += QDir::separator();
+  }
+
+  QString hlpStr = nextEpochStr(datTim, settings.value("rnxIntr").toString(), 
+                                &_nextCloseEpoch);
 
   QString ID4 = _statID.left(4);
 
