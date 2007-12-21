@@ -46,6 +46,7 @@
 
 #include "bncapp.h" 
 #include "bncutils.h" 
+#include "bncrinex.h" 
 
 using namespace std;
 
@@ -262,71 +263,8 @@ void bncApp::printEphHeader() {
     QString ephFileNameGPS = _ephPath + "BRDC" + 
                QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0'));
 
-    QString hlpStr;
-    QString intStr = settings.value("ephIntr").toString();
-    if      (intStr == "1 day") {
-      hlpStr = "0";
-    }
-    else if (intStr == "1 hour") {
-      char ch = 'A' + datTim.time().hour();
-      hlpStr = ch;
-    }
-    else if (intStr == "15 min") {
-      char ch = 'A' + datTim.time().hour();
-      hlpStr = ch;
-      if      (datTim.time().minute() < 15) {
-        hlpStr += "00";
-      }
-      else if (datTim.time().minute() < 30) {
-        hlpStr += "15";
-      }
-      else if (datTim.time().minute() < 45) {
-        hlpStr += "30";
-      }
-      else {
-        hlpStr += "45";
-      }
-    }
-    else {
-      char ch = 'A' + datTim.time().hour();
-      hlpStr = ch;
-      if      (datTim.time().minute() <  5) {
-        hlpStr += "00";
-      }
-      else if (datTim.time().minute() < 10) {
-        hlpStr += "05";
-      }
-      else if (datTim.time().minute() < 15) {
-        hlpStr += "10";
-      }
-      else if (datTim.time().minute() < 20) {
-        hlpStr += "15";
-      }
-      else if (datTim.time().minute() < 25) {
-        hlpStr += "20";
-      }
-      else if (datTim.time().minute() < 30) {
-        hlpStr += "25";
-      }
-      else if (datTim.time().minute() < 35) {
-        hlpStr += "30";
-      }
-      else if (datTim.time().minute() < 40) {
-        hlpStr += "35";
-      }
-      else if (datTim.time().minute() < 45) {
-        hlpStr += "40";
-      }
-      else if (datTim.time().minute() < 50) {
-        hlpStr += "45";
-      }
-      else if (datTim.time().minute() < 55) {
-        hlpStr += "50";
-      }
-      else {
-        hlpStr += "55";
-      }
-    }
+    QString hlpStr = bncRinex::nextEpochStr(datTim, 
+                         settings.value("ephIntr").toString());
 
     if (_rinexVers == 3) {
       ephFileNameGPS += hlpStr + datTim.toString(".yyP");

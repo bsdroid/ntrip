@@ -184,7 +184,7 @@ bncWindow::bncWindow() {
   _ephIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Navigation file generated.</p>"));
   _ephIntrComboBox->setMaximumWidth(9*ww);
   _ephIntrComboBox->setEditable(false);
-  _ephIntrComboBox->addItems(QString("5 min,15 min,1 hour,1 day").split(","));
+  _ephIntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
   int jj = _ephIntrComboBox->findText(settings.value("ephIntr").toString());
   if (jj != -1) {
     _ephIntrComboBox->setCurrentIndex(jj);

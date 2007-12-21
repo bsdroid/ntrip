@@ -43,6 +43,9 @@ class bncRinex {
    void deepCopy(const p_obs obs);
    void dumpEpoch(long maxTime);
    void setReconnectFlag(bool flag){_reconnectFlag = flag;}
+   static QString bncRinex::nextEpochStr(const QDateTime& datTim,
+                                         const QString& intStr, 
+                                         QDateTime* nextEpoch = 0);
 
  private:
    void resolveFileName(const QDateTime& datTim);
