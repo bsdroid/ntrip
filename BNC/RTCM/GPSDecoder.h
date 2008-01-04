@@ -29,6 +29,8 @@
 #include <QPointer>
 #include <QList>
 
+#include "bncconst.h"
+
 class t_obsInternal {
  public:
   int    flags;
@@ -86,7 +88,7 @@ typedef QPointer<t_obs> p_obs;
 
 class GPSDecoder {
  public:
-  virtual void Decode(char* buffer, int bufLen) = 0;
+  virtual t_irc Decode(char* buffer, int bufLen) = 0;
 
   virtual ~GPSDecoder() {
     QListIterator<p_obs> it(_obsList);

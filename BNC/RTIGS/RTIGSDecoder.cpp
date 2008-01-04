@@ -58,7 +58,7 @@ RTIGSDecoder::~RTIGSDecoder() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void RTIGSDecoder::Decode(char* buffer, int bufLen) {
+t_irc RTIGSDecoder::Decode(char* buffer, int bufLen) {
 
   // Append the incomming data to the internal buffer
   // ------------------------------------------------
@@ -82,7 +82,7 @@ void RTIGSDecoder::Decode(char* buffer, int bufLen) {
 
   if (! found) {
     _buffer.clear();
-    return;
+    return failure;
   }
 
   unsigned char* p_buf = (unsigned char*) _buffer.data();  
@@ -93,7 +93,7 @@ void RTIGSDecoder::Decode(char* buffer, int bufLen) {
   // Not enough new data, return
   // ---------------------------
   if (_buffer.size() < numbytes) {
-    return;
+    return failure;
   }
 
   // Decode the epoch
@@ -124,4 +124,6 @@ void RTIGSDecoder::Decode(char* buffer, int bufLen) {
   // Unprocessed bytes remain in buffer
   // ----------------------------------
   _buffer = _buffer.substr(numbytes);
+
+  return success;
 }

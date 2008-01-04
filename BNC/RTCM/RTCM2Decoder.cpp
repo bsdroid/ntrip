@@ -61,7 +61,7 @@ RTCM2Decoder::~RTCM2Decoder() {
 
 //
 
-void RTCM2Decoder::Decode(char* buffer, int bufLen) {
+t_irc RTCM2Decoder::Decode(char* buffer, int bufLen) {
 
   _buffer.append(buffer, bufLen);
   int    refWeek;
@@ -71,7 +71,7 @@ void RTCM2Decoder::Decode(char* buffer, int bufLen) {
   while(true) {
     _PP.getPacket(_buffer);
     if (!_PP.valid()) {
-      return;
+      return failure;
     }
 
     if ( _PP.ID()==18 || _PP.ID()==19 ) {   
@@ -107,5 +107,6 @@ void RTCM2Decoder::Decode(char* buffer, int bufLen) {
       }
     }
   }
+  return success;
 }
 

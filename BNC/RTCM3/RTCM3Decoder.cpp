@@ -87,7 +87,7 @@ RTCM3Decoder::~RTCM3Decoder() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void RTCM3Decoder::Decode(char* buffer, int bufLen) {
+t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
 
   for (int ii = 0; ii < bufLen; ii++) {
 
@@ -197,4 +197,5 @@ void RTCM3Decoder::Decode(char* buffer, int bufLen) {
       }
     }
   }
+  return success;
 }
