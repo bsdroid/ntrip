@@ -27,6 +27,7 @@
 
 #include <QThread>
 #include <QtNetwork>
+#include <QDateTime>
 
 #include "RTCM/GPSDecoder.h"
 #include "bncconst.h"
@@ -77,6 +78,7 @@ class bncGetThread : public QThread {
    int         _iMount;
    int         _samplingRate;
    bncRinex*   _rnx;
+   QDateTime   _decodeFailure;
 };
 
 #endif
