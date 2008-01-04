@@ -396,7 +396,13 @@ void bncGetThread::run() {
         char* data = new char[nBytes];
         _socket->read(data, nBytes);
 
-        _decoder->Decode(data, nBytes);
+        if ( !_decodeFailure.isValid() || 
+             _decodeFailure.secsTo(QDateTime::currentDateTime()) > 10 ) {
+          if ( !_decoder->Decode(data, nBytes) == success ) {
+            _decodeFailure = QDateTime::currentDateTime();
+          }
+        }
+
         delete [] data;
         
         QListIterator<p_obs> it(_decoder->_obsList);
