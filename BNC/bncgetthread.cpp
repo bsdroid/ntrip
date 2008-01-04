@@ -398,7 +398,11 @@ void bncGetThread::run() {
 
         if ( !_decodeFailure.isValid() || 
              _decodeFailure.secsTo(QDateTime::currentDateTime()) > 10 ) {
-          if ( _decoder->Decode(data, nBytes) != success ) {
+          if ( _decoder->Decode(data, nBytes) == success ) {
+            _decodeFailure.setDate(QDate());
+            _decodeFailure.setTime(QTime());
+          }
+          else {
             _decodeFailure = QDateTime::currentDateTime();
           }
         }

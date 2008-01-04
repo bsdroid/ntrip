@@ -93,7 +93,7 @@ t_irc RTIGSDecoder::Decode(char* buffer, int bufLen) {
   // Not enough new data, return
   // ---------------------------
   if (_buffer.size() < numbytes) {
-    return failure;
+    return success;
   }
 
   // Decode the epoch
