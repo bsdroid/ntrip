@@ -70,6 +70,8 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
   _nmea          = nmea;
   _headerWritten = false;
   _reconnectFlag = false;
+  _reloadTable   = false;
+  _reloadDone    = false;
 
   QSettings settings;
   _rnxScriptName = settings.value("rnxScript").toString();
@@ -110,7 +112,7 @@ t_irc bncRinex::downloadSkeleton() {
 
   QStringList table;
   bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), 
-                            table, false);
+                            table, _reloadTable);
   QString net;
   QStringListIterator it(table);
   while (it.hasNext()) {
@@ -230,6 +232,17 @@ void bncRinex::readSkeleton() {
     if ( !_skeletonDate.isValid() || _skeletonDate != currDate ) {
       if ( downloadSkeleton() == success) {
         _skeletonDate = currDate;
+        _reloadDone = false;
+      }
+      else {
+        if(!_reloadDone) {
+          _reloadTable = true;
+          if ( downloadSkeleton() == success) {
+            _skeletonDate = currDate;
+          }
+          _reloadTable = false;
+          _reloadDone = true;
+        }
       }
     }
   }
