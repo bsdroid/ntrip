@@ -397,13 +397,21 @@ void bncGetThread::run() {
         _socket->read(data, nBytes);
 
         if ( !_decodeFailure.isValid() || 
-             _decodeFailure.secsTo(QDateTime::currentDateTime()) > 10 ) {
+             _decodeFailure.secsTo(QDateTime::currentDateTime()) > 60 ) {
           if ( _decoder->Decode(data, nBytes) == success ) {
             _decodeFailure.setDate(QDate());
             _decodeFailure.setTime(QTime());
           }
           else {
             _decodeFailure = QDateTime::currentDateTime();
+          }
+        }
+        else {
+          if ( _decodeFailure.isValid() &&
+               _decodeFailure.secsTo(QDateTime::currentDateTime()) < 5 &&
+               _decoder->Decode(data, nBytes) == success ) {
+               _decodeFailure.setDate(QDate());
+               _decodeFailure.setTime(QTime());
           }
         }
 
