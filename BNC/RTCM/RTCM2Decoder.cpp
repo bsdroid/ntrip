@@ -104,6 +104,7 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen) {
           obs->_o.L2       = _ObsBlock.resolvedPhase_L2(iSat);
         }
         _ObsBlock.clear();
+        return success;
       }
     }
   }
