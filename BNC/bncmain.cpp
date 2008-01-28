@@ -80,6 +80,9 @@ int main(int argc, char *argv[]) {
     settings.setValue("ephIntr",    "1 day");
     settings.setValue("rnxSkel",    "SKL");
     settings.setValue("waitTime",   5);
+    settings.setValue("inspSegm",   "15");
+    settings.setValue("noticeFail", "15");
+    settings.setValue("noticeReco", "5");
   }
 
   bncApp app(argc, argv, GUIenabled);

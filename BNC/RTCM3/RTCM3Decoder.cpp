@@ -89,6 +89,8 @@ RTCM3Decoder::~RTCM3Decoder() {
 ////////////////////////////////////////////////////////////////////////////
 t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
 
+  bool decoded = false;
+
   for (int ii = 0; ii < bufLen; ii++) {
 
     _Parser.Message[_Parser.MessageSize++] = buffer[ii];
@@ -99,6 +101,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
         // GNSS Observations
         // -----------------
         if (rr == 1 || rr == 2) {
+                decoded = true;
 
           if (!_Parser.init) {
             HandleHeader(&_Parser);
@@ -184,6 +187,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
         // GPS Ephemeris
         // -------------
         else if (rr == 1019) {
+          decoded = true;
           gpsephemeris* ep = new gpsephemeris(_Parser.ephemerisGPS);
           emit _ephSender.newGPSEph(ep);
         }
@@ -191,11 +195,17 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
         // GLONASS Ephemeris
         // -----------------
         else if (rr == 1020) {
+          decoded = true;
           glonassephemeris* ep = new glonassephemeris(_Parser.ephemerisGLONASS);
           emit _ephSender.newGlonassEph(ep);
         }
       }
     }
   }
+  if (!decoded) {
+  return failure;
+  }
+  else {
   return success;
+  }
 }

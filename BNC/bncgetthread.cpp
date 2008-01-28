@@ -103,6 +103,14 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
     _staID = _staID.left(_staID.length()-1) + QString("%1").arg(num).toAscii();
   }    
 
+  // Notice threshold
+  // ----------------
+  _inspSegm = settings.value("inspSegm").toInt();
+  _noticeFail = settings.value("noticeFail").toInt();
+  _noticeReco = settings.value("noticeReco").toInt();
+  _noticeScript = settings.value("noticeScript").toString();
+  expandEnvVar(_noticeScript);
+
   // RINEX writer
   // ------------
   _samplingRate = settings.value("rnxSampl").toInt();
@@ -373,6 +381,24 @@ void bncGetThread::run() {
     tryReconnect();
   }
 
+  bool decode = true;
+  int numSucc = 0;
+  int secSucc = 0;
+  int secFail = 0;
+  int initPause = 30;
+  int currPause = 0;
+  bool begCorrupt = false;
+  bool endCorrupt = false;
+  _decodeTime = QDateTime::currentDateTime();
+ 
+  if (initPause < _inspSegm) {
+    initPause = _inspSegm;
+  }
+  if ( _noticeFail < 1 && _noticeReco < 1 ) {
+    initPause = 0;
+  }
+  currPause = initPause;
+
   // Read Incoming Data
   // ------------------
   while (true) {
@@ -396,24 +422,94 @@ void bncGetThread::run() {
         char* data = new char[nBytes];
         _socket->read(data, nBytes);
 
-        if ( !_decodeFailure.isValid() || 
-             _decodeFailure.secsTo(QDateTime::currentDateTime()) > 60 ) {
-          if ( _decoder->Decode(data, nBytes) == success ) {
-            _decodeFailure.setDate(QDate());
-            _decodeFailure.setTime(QTime());
+      if (_inspSegm<1) {
+        _decoder->Decode(data, nBytes);
+      }
+      else {
+
+        // Decode data
+        // -----------
+        if (!_decodePause.isValid() || 
+          _decodePause.secsTo(QDateTime::currentDateTime()) >= currPause )  {
+
+          if (decode) { 
+            if ( _decoder->Decode(data, nBytes) == success ) { 
+              numSucc += 1;
+            } 
+            if ( _decodeTime.secsTo(QDateTime::currentDateTime()) > _inspSegm ) {
+              decode = false;
+            }
           }
-          else {
-            _decodeFailure = QDateTime::currentDateTime();
+
+          // Check - once per inspect segment
+          // --------------------------------
+          if (!decode) {
+            _decodeTime = QDateTime::currentDateTime();
+            if (numSucc>0) {
+              secSucc += _inspSegm;
+              if (secSucc > _noticeReco * 60) {
+                secSucc = _noticeReco * 60 + 1;
+              }
+              numSucc = 0;
+              currPause = initPause;
+              _decodePause.setDate(QDate());
+              _decodePause.setTime(QTime());
+            }
+            else {
+              secFail += _inspSegm;
+              secSucc = 0;
+              if (secFail > _noticeFail * 60) { 
+                secFail = _noticeFail * 60 + 1;
+              }
+              if (!_decodePause.isValid()) {
+                _decodePause = QDateTime::currentDateTime();
+              }
+              else {
+                _decodePause.setDate(QDate());
+                _decodePause.setTime(QTime());
+                secFail = secFail + currPause - _inspSegm;
+                currPause = currPause * 2;
+                if (currPause > 960) {
+                currPause = 960;
+                }
+              }
+            }
+
+            // End corrupt threshold
+            // ---------------------
+            if ( begCorrupt && !endCorrupt && secSucc > _noticeReco * 60 ) {
+              emit(newMessage(_staID + ": End_Corrupted threshold exceeded"));
+              callScript("End_Corrupted");
+              endCorrupt = true;
+              begCorrupt = false;
+              secFail = 0;
+            } 
+            else {
+
+              // Begin corrupt threshold
+              // -----------------------
+              if ( !begCorrupt && secFail > _noticeFail * 60 ) {
+                emit(newMessage(_staID + ": Begin_Corrupted threshold exceeded"));
+                callScript("Begin_Corrupted");
+                begCorrupt = true;
+                endCorrupt = false;
+                secSucc = 0;
+                numSucc = 0;
+              }
+            }
+            decode = true;
           }
         }
-        else {
-          if ( _decodeFailure.isValid() &&
-               _decodeFailure.secsTo(QDateTime::currentDateTime()) < 5 &&
-               _decoder->Decode(data, nBytes) == success ) {
-               _decodeFailure.setDate(QDate());
-               _decodeFailure.setTime(QTime());
-          }
-        }
+      }
+
+      // End outage threshold
+      // --------------------
+      if ( _decodeStart.isValid() && _decodeStart.secsTo(QDateTime::currentDateTime()) > _noticeReco * 60 ) {
+        _decodeStart.setDate(QDate());
+        _decodeStart.setTime(QTime());
+        emit(newMessage(_staID + ": End_Outage threshold exceeded"));
+        callScript("End_Outage");
+      }
 
         delete [] data;
         
@@ -424,6 +520,7 @@ void bncGetThread::run() {
           // Check observation epoch
           // -----------------------
           int    week;
+          bool   wrongEpoch = false;
           double sec;
           currentGPSWeeks(week, sec);
           
@@ -440,9 +537,15 @@ void bncGetThread::run() {
           }
           double dt = fabs(sec - obs->_o.GPSWeeks);
           if (week != obs->_o.GPSWeek || dt > maxDt) {
-            emit( newMessage("Wrong observation epoch") );
+            if  (!wrongEpoch) {
+              emit( newMessage(_staID + ": Wrong observation epoch") );
+              wrongEpoch = true;
+            }
             delete obs;
             continue;
+          }
+          else {
+            wrongEpoch = false;
           }
 
           // RINEX Output
@@ -490,13 +593,28 @@ void bncGetThread::tryReconnect() {
   if (_rnx) {
     _rnx->setReconnectFlag(true);
   }
+  if ( !_decodeStart.isValid()) {
+    _decodeStop = QDateTime::currentDateTime();
+  }
   while (1) {
     delete _socket; _socket = 0;
     sleep(_nextSleep);
     if ( initRun() == success ) {
+      if ( !_decodeStop.isValid()) {
+        _decodeStart = QDateTime::currentDateTime();
+      }
       break;
     }
     else {
+
+      // Begin outage threshold
+      // ----------------------
+      if ( _decodeStop.isValid() && _decodeStop.secsTo(QDateTime::currentDateTime()) > _noticeFail * 60 ) {
+        _decodeStop.setDate(QDate());
+        _decodeStop.setTime(QTime());
+        emit(newMessage(_staID + ": Begin_Outage threshold exceeded"));
+        callScript("Begin_Outage");
+      }
       _nextSleep *= 2;
       if (_nextSleep > 256) {
         _nextSleep = 256;
@@ -505,4 +623,16 @@ void bncGetThread::tryReconnect() {
     }
   }
   _nextSleep = 1;
+}
+
+// Call notice advisory script    
+////////////////////////////////////////////////////////////////////////////
+void bncGetThread::callScript(const char* _comment) {
+  if (!_noticeScript.isEmpty()) {
+#ifdef WIN32
+    QProcess::startDetached(_noticeScript, QStringList() << _staID << _comment) ;
+#else
+    QProcess::startDetached("nohup", QStringList() << _noticeScript << _staID << _comment) ;
+#endif
+  }
 }

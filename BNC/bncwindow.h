@@ -91,6 +91,10 @@ class bncWindow : public QMainWindow {
     QSpinBox*  _rnxSamplSpinBox;
     QCheckBox* _rnxAppendCheckBox;
     QSpinBox*  _waitTimeSpinBox;
+    QSpinBox*  _inspSegmSpinBox;
+    QSpinBox*  _noticeFailSpinBox;
+    QSpinBox*  _noticeRecoSpinBox;
+    QLineEdit* _noticeScriptLineEdit;
     QTableWidget* _mountPointsTable;
 
     QLineEdit*   _LatLineEdit;
