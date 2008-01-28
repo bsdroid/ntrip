@@ -213,7 +213,7 @@ bncWindow::bncWindow() {
   _noticeRecoSpinBox->setSuffix(" min");
   _noticeRecoSpinBox->setMaximumWidth(9*ww);
   _noticeRecoSpinBox->setValue(settings.value("noticeReco").toInt());
-  _noticeRecoSpinBox->setWhatsThis(tr("<p>Following a stream outage or a longer series of corrupted observations, a Notice advisory is generated when at least one valid observation is received again within the 'Recovery' threshold time span defined here. A value of about 5min (default) is recommendable. A valu of zero '0' means that BNC immediately informs about any stream recovery. </p><p>Note that using this function for corrupted streams needs an 'Inspect segment' greater zero '0'.</p>"));
+  _noticeRecoSpinBox->setWhatsThis(tr("<p>Following a stream outage or a longer series of corrupted observations, a Notice advisory is generated when at least one valid observation is received again within the 'Recovery' threshold time span defined here. A value of about 5min (default) is recommendable.</p><p>A valu of zero '0' means that BNC immediately informs about any stream recovery!</p><p>Note that using this function for corrupted streams needs an 'Inspect segment' greater zero '0'.</p>"));
   _noticeFailSpinBox = new QSpinBox();
   _noticeFailSpinBox->setMinimum(0);
   _noticeFailSpinBox->setMaximum(60);
@@ -221,7 +221,7 @@ bncWindow::bncWindow() {
   _noticeFailSpinBox->setSuffix(" min");
   _noticeFailSpinBox->setMaximumWidth(9*ww);
   _noticeFailSpinBox->setValue(settings.value("noticeFail").toInt());
-  _noticeFailSpinBox->setWhatsThis(tr("<p>A Notice advisory is generated when no (or corrupted) observations are received throughout the 'Failure' threshold time span defined here. A value of about 15 min (default) is recommendable. A value of zero '0' means that BNC immediately informs about any stream failure.</p><p>Note that using this function forcorrupted streams needs an 'Inspect segment' greater zero '0'.</p>"));
+  _noticeFailSpinBox->setWhatsThis(tr("<p>A Notice advisory is generated when no (or corrupted) observations are received throughout the 'Failure' threshold time span defined here. A value of about 15 min (default) is recommendable.</p><p>A value of zero '0' means that BNC immediately informs about any stream failure!</p><p>Note that using this function forcorrupted streams needs an 'Inspect segment' greater zero '0'.</p>"));
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
   _logFileLineEdit->setWhatsThis(tr("<p>Records of BNC's activities are shown in the 'Log' section below. They can be saved into a file when a valid path is specified in the 'Log (full path)' field.</p>"));
   _noticeScriptLineEdit    = new QLineEdit(settings.value("noticeScript").toString());
