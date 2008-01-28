@@ -64,6 +64,7 @@ class bncGetThread : public QThread {
    void  message(const QString&);
    void  exit(int exitCode = 0);
    void  tryReconnect();
+   void  callScript(const char* _comment);
    GPSDecoder* _decoder;
    QTcpSocket* _socket;
    QUrl        _mountPoint;
@@ -73,12 +74,20 @@ class bncGetThread : public QThread {
    QByteArray  _latitude;
    QByteArray  _longitude;
    QByteArray  _nmea;
+   QString     _noticeScript;
+   int         _inspSegm;
+   int         _noticeFail;
+   int         _noticeReco;
    int         _timeOut;
    int         _nextSleep;
    int         _iMount;
    int         _samplingRate;
    bncRinex*   _rnx;
    QDateTime   _decodeFailure;
+   QDateTime   _decodeStart;
+   QDateTime   _decodeStop;
+   QDateTime   _decodePause;
+   QDateTime   _decodeTime;
 };
 
 #endif
