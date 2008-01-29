@@ -759,3 +759,425 @@ short i;
         }
 }
 
+// 2/1/2008 SPG Start
+
+//*****************************************************************************************
+//
+
+// Function/Method : CGPS_Transform::SwitchEphBytes()
+//
+// Purpose :
+//
+// Returns :
+//
+// Author  : 	Created By KML 2002/06
+//
+// Description:
+//
+//
+
+//
+// Parameters:	
+
+//
+//
+//
+//
+//
+//
+// Revision :
+
+//*****************************************************************************************
+
+void CGPS_Transform::SwitchEphBytes( TNAV_T *rnav ) 
+
+{
+   unsigned long *word;
+   int i, j;
+	SwitchBytes( (char *)&rnav->GPSCollectedTime, sizeof(long) );
+	SwitchBytes( (char *)&rnav->Satellite, sizeof(long) );
+
+      word = (unsigned long *)rnav->SubFrame1;
+
+      for( i = 0; i < 3; i++ ) {
+         for( j = 1; j <= 6; j++, word++ ) {
+
+            SwitchBytes( (char *)word, sizeof(long) );
+         }
+      }
+}
+//*****************************************************************************************
+//
+
+// Function/Method : CGPS_Transform::TNAV_To_BEPH
+//
+// Purpose :
+//
+// Returns :
+//
+// Author  : 	Created By Mark Caissy Modified and put in class by KML 2002/06
+//
+// Description:
+//
+//
+//
+// Parameters:	
+
+//
+//
+//
+
+//
+//
+//
+// Revision : KML June 9/2005 added check for PRN num, switch bytes and return
+//*****************************************************************************************
+
+
+short  CGPS_Transform::TNAV_To_BEPH( TNAV_T *rtcurrent_eph, BEPH_T *new_eph)
+{
+      TNAV_T temp_eph,
+	     *tnav_t_ptr;
+
+      long word,
+           tmp_word1,
+           tmp_word2;
+
+
+      double issue_of_data_clock,
+             issue_of_data_eph1,
+             issue_of_data_eph2,
+             clock_ref_time;
+
+      double svacrcy[] = { 2.0, 2.8, 4.0, 5.7, 8.0, 11.3, 1.6e01, 3.2e01,
+	 6.4e01, 1.28e02, 2.56e02, 5.12e02, 1.024e03, 2.048e03, 4.096e03, -1.0 };
+
+	short retval = 1;
+
+				//copy into local variable KML
+      memcpy( &temp_eph, rtcurrent_eph, sizeof(TNAV_T) );
+
+
+      tnav_t_ptr = &temp_eph;
+
+	if (f_IsLittleEndian)								//KML	Added June 9/2005
+	{																//KML	
+		SwitchEphBytes( tnav_t_ptr );		//KML
+	}																//KML	
+
+					//****************************************
+					// Verify that prn of in expected range
+					//****************************************
+	if (((short)tnav_t_ptr->Satellite > 0) && ((short)tnav_t_ptr->Satellite <= 32))		//KML June 9/2005
+	{
+
+		new_eph->transmit_time = GPSEC_UNROLL((tnav_t_ptr->GPSCollectedTime - 18L));
+               /* 18L is used since each subframe takes 6
+				 * seconds and there are 3 of them.
+				*/
+					/*
+					c     process subframe 1
+					c
+					c     new_eph[1] = satellite prn number
+					c     new_eph[2] = gps week of navigation mesage
+					c     new_eph[3] = l2 codes, bits 11-12, + l2pflag*256
+					c     new_eph[4] = user range accuracy b13-16 (m)
+
+					c     new_eph[5] = navigation health, bit 1
+					c     new_eph[6] = l1, l2 correction term (s), scale 2^-31
+					c     new_eph->clock_ref_time = aodc (age of data clock)
+					c     new_eph[8] = clock reference time
+					c     new_eph[9] = clock acceleration (s^-1),  scale 2^-55
+					c     new_eph[10]= clock  rate, (s/s),	   scale 2^-43
+					c     new_eph[11]= clock offset (s) 	   scale 2^-31
+					*/
+		tnav_t_ptr->SubFrame1[5] >>= 2; /* shift off 2 lsbs of 6th word */
+		word =  tnav_t_ptr->SubFrame1[5] & 0x3fffff; /* 22 bits for Af0 */
+		if( word & 0x200000 ) word -= 0x400000; /* 2's complement */
+		new_eph->a0 = (double)word / 2.147483648e9;  /* apply scale factor */
+
+		tnav_t_ptr->SubFrame1[5] >>= 22; /* shift off Af0 bits */
+		tmp_word1 =  tnav_t_ptr->SubFrame1[5] & 0xff;/*  Af1's 8 LSB's */
+		word = tnav_t_ptr->SubFrame1[4] & 0xff; /* Af1's 8 MSB's */
+		word <<= 8; /* shift for proper alignment of bits */
+		word += tmp_word1;
+		if( word & 0x8000 ) word -= 0x010000; /* 2's complement */
+		new_eph->a1 = (double)word/8.796093022208e12;  /* apply scale factor */
+
+
+		tnav_t_ptr->SubFrame1[4] >>= 8; /* shift off Af1's MSB's */
+		word =  tnav_t_ptr->SubFrame1[4] & 0xff; /* 8 bits for Af2 */
+
+		if (word & 0x80) word -= 0x0100; /* 2's compliment */
+		new_eph->a2 = (double)word/3.6028797018963968e16;  /* apply scale factor */
+
+		tnav_t_ptr->SubFrame1[4]>>= 8; /* shift off Af2 bits */
+
+
+		word = tnav_t_ptr->SubFrame1[4] & 0xffff; /* Toc bits */
+		clock_ref_time = (double)word*16; /* apply scale factor */
+		new_eph->clock_ref_time = clock_ref_time;
+
+		tmp_word1 = tnav_t_ptr->SubFrame1[3] & 0xff; /* LSB's for IODC */
+		tnav_t_ptr->SubFrame1[3] >>= 8; /* shift off IODC LSB's */
+
+		word = tnav_t_ptr->SubFrame1[3] & 0xff; /* next 8 are TGD */
+		if (word & 0x80) word -= 0x0100; /* 2's compliment */
+		new_eph->group_delay = (double)word/2.147483648e9; /* apply scale factor */
+
+		tnav_t_ptr->SubFrame1[0] >>= 7; /* shift off spare bits */
+		tmp_word2 = tnav_t_ptr->SubFrame1[0] & 0x01; /* L2PFlag bit */
+
+
+		new_eph->l2pflag = (double)tmp_word2;
+		tnav_t_ptr->SubFrame1[0] >>= 1; /* shift off L2PFlag bit */
+		word = tnav_t_ptr->SubFrame1[0] & 0x03; /* 2 MSB's for IODC */
+		word <<= 8; /* shift MSB's for proper alignment */
+		issue_of_data_clock = (double)(word + tmp_word1);  /* combine 2 + 8 bits */
+		new_eph->issue_of_clock = issue_of_data_clock;
+
+		tnav_t_ptr->SubFrame1[0] >>= 2; /* shift off IODC MSB's */
+		word = tnav_t_ptr->SubFrame1[0] & 0x3f; /* 6 health bits */
+
+
+                    /* set only the MSB of the 6 health bits */
+		new_eph->sat_health = (double) ( (word & 0x20) >> 5 );
+
+		tnav_t_ptr->SubFrame1[0] >>= 6; /* shift off the health bits */
+		word = tnav_t_ptr->SubFrame1[0] & 0x0f; /* next 4 are URA bits */
+		new_eph->user_range_acc = (double)svacrcy[ (int)word ];
+
+		tnav_t_ptr->SubFrame1[0] >>= 4; /* shift off URA bits */
+		word = tnav_t_ptr->SubFrame1[0] & 0x03; /* 2 bits for L2code */
+		new_eph->l2code = (double)word; /* L2code */
+
+		tmp_word2 = tmp_word1; /* LSB's of IODC for comparison with IODE */
+
+		tnav_t_ptr->SubFrame1[0] >>= 2; /* shift off L2code bits */
+                                    /* 10 bits for week number */
+		new_eph->gps_week = GPSWK_UNROLL((double)(tnav_t_ptr->SubFrame1[0] & 0x3ff));
+
+		new_eph->satellite = (double)(tnav_t_ptr->Satellite & 0xff);
+
+					/*
+					c     process subframe 2
+					c
+					c     new_eph[12)  = issue of new_ephemeris data
+					c     new_eph[13)  = crs (meters), scale  2^-5
+					c     new_eph[14)  = offset rate (rad/s), scale 2^-43
+					c     new_eph[15)  = mean anomaly at ref. time (rad), scale 2^-31
+					c     new_eph[16)  = cuc (rad), scale 2^-29
+					c     new_eph[17)  = eccentricity, scale 2^-33
+					c     new_eph[18)  = cus (rad), scale 2^-29
+					c     new_eph[19)  = sqrt of sma (m^0.5), scale 2^-19
+					c     new_eph[20)  = new_eph. ref. time ~ start gps week (s), scale 2^4
+
+					c     new_eph[21)  = curve fit interval (in hrs)
+					*/
+
+		tnav_t_ptr->SubFrame2[5] >>= 7; /* shift off 7 lsbs of 6th word */
+		word =  tnav_t_ptr->SubFrame2[5] & 0x01; /*fit interval 1 bit */
+		new_eph->fit_interval = (double)word;  /* see below for further processing */
+
+
+
+		tnav_t_ptr->SubFrame2[5] >>= 1; /* shift off fit bit */
+		word = tnav_t_ptr->SubFrame2[5] & 0xffff; /* toe 16 bits */
+		new_eph->eph_ref_time = (double)word * 16.0; /* scale toe */
+
+				/*      if ( new_eph->eph_ref_time != clock_ref_time ) return(-1);  */
+
+		tnav_t_ptr->SubFrame2[5] >>= 16; /* shift off toe bits */
+
+		tmp_word1 = tnav_t_ptr->SubFrame2[5] & 0xff; /* 8 LSB's for semi-axis */
+		word = tnav_t_ptr->SubFrame2[4] & 0xffffff; /* 24 MSB's for semi-axis*/
+		word <<= 8; /* shift left 8 for proper alignment */
+		word += tmp_word1; /* assemble the 32 bits */
+
+		new_eph->orbit_semimaj = (double)word/5.24288e5; /* scale the semimajor axis */
+		if (new_eph->orbit_semimaj < 0.0e0)  new_eph->orbit_semimaj += 8192.0e0;
+
+
+		tnav_t_ptr->SubFrame2[4] >>= 24; /* shift off semi axis MSB's */
+		tmp_word1 = tnav_t_ptr->SubFrame2[4] & 0xff; /* 8 LsB's for Cus */
+		word = tnav_t_ptr->SubFrame2[3] & 0xff; /* 8 MSB's for Cus */
+		word <<= 8; /* shift left 8 for proper alignment */
+		word += tmp_word1; /* assemble the 16 bits */
+		if( word & 0x8000 ) word -= 0x010000; /* apply 2's complement */
+		new_eph->lat_sin_corr = (double)word/5.36870912e8;
+
+		tnav_t_ptr->SubFrame2[3] >>= 8; /* shift off Cus MSB's */
+		tmp_word1 = tnav_t_ptr->SubFrame2[3] & 0xffffff; /* 24 LsB's for Ecc */
+		word = tnav_t_ptr->SubFrame2[2] & 0xff; /* 8 MSB's for Ecc */
+		word <<= 24; /* shift left 24 for proper alignment */
+		word += tmp_word1; /* assemble the 32 bits */
+		new_eph->orbit_ecc = (double)word/8.589934592e9;
+		if(new_eph->orbit_ecc < 0.0) new_eph->orbit_ecc += 0.5;
+
+		tnav_t_ptr->SubFrame2[2] >>= 8; /* shift off Ecc MSB's */
+		word = tnav_t_ptr->SubFrame2[2] & 0xffff; /* 16 Cuc bits */
+		if( word & 0x8000 ) word -= 0x010000; /* apply 2's complement */
+		new_eph->lat_cos_corr = (double)word/5.36870912e8;
+
+		tnav_t_ptr->SubFrame2[2] >>= 16; /* shift off Cuc bits*/
+		tmp_word1 = tnav_t_ptr->SubFrame2[2] & 0xff; /* 8 LsB's for MO */
+		word = tnav_t_ptr->SubFrame2[1] & 0xffffff; /* 24 MSB's for MO */
+		word <<= 8; /* shift left 8 for proper alignment */
+		word += tmp_word1; /* assemble the 32 bits */
+		new_eph->ref_mean_anmly = (double)word*(PI/2.147483648e9);
+
+		tnav_t_ptr->SubFrame2[1] >>= 24; /* shift off MO MSB's */
+		tmp_word1 = tnav_t_ptr->SubFrame2[1] & 0xff; /* 8 LsB's for dN */
+		word = tnav_t_ptr->SubFrame2[0] & 0xff; /* 8 MSB's for dN */
+
+		word <<= 8; /* shift left 8 for proper alignment */
+		word += tmp_word1; /* assemble the 16 bits */
+
+		if( word & 0x8000 ) word -= 0x010000; /* apply 2's complement */
+		new_eph->mean_mot_diff = (double)word*(PI/8.796093022208e12);
+
+		tnav_t_ptr->SubFrame2[0] >>= 8; /* shift off dN MSB's */
+		word = tnav_t_ptr->SubFrame2[0] & 0xffff; /* 16 bit for Crs */
+		if( word & 0x8000 ) word -= 0x010000; /* apply 2's complement */
+		new_eph->orbit_sin_corr = (double)word / 32.0;
+
+		tnav_t_ptr->SubFrame2[0] >>= 16; /* shift off Crs bits */
+		issue_of_data_eph1 = tnav_t_ptr->SubFrame2[0] & 0xff;/*8 bits for IODE1*/
+                                       /* compare IODC with IODE1 */
+
+					/*      if( issue_of_data_eph1 != tmp_word2 ) return(-2);  */
+
+		if (issue_of_data_eph1 < 240.0) {
+			if (new_eph->fit_interval == 0.0) new_eph->fit_interval = 4.e0;
+			if (new_eph->fit_interval == 1.0) new_eph->fit_interval = 6.e0;
+		}
+		else  if (issue_of_data_clock < 248.e0)
+		{
+			new_eph->fit_interval = 8.e0;
+		}
+		else  if (issue_of_data_clock < 497.e0)
+		{
+			new_eph->fit_interval = 14.e0;
+		}
+		else  if (issue_of_data_clock < 504.e0)
+		{
+			new_eph->fit_interval = 26.e0;
+		}
+		else  if (issue_of_data_clock < 511.e0)
+		{
+			new_eph->fit_interval = 50.e0;
+		}
+		else  if (issue_of_data_clock < 757.e0)
+		{
+			new_eph->fit_interval = 74.e0;
+		}
+		else if (issue_of_data_clock < 764.e0)
+		{
+			new_eph->fit_interval = 98.e0;
+		}
+		else if (issue_of_data_clock < 1011.e0)
+		{
+			new_eph->fit_interval = 122.e0;
+		}
+		else if (issue_of_data_clock < 1021.e0)
+		{
+			new_eph->fit_interval = 146.e0;
+		}
+						/*
+
+						c     process subframe 3
+						c
+						c     new_eph[22)  = cic (rad), scale 2^-29
+						c     new_eph[23)  = right ascension at ref. time (rad), 2^-31
+						c     new_eph[24)  = cis (rad), scale 2^-29
+						c     new_eph[25)  = inclination (rad), scale 2^-31
+						c     new_eph[26)  = crc (m), scale 2^-5
+						c     new_eph[27)  = argument of perigee (rad), scale 2^-31
+						c     new_eph[28)  = rate of right ascension (rad/s) scale 2^-43
+						c     new_eph[29)  = issue of new_ephemeris data
+						c     new_eph[30)  = inclination rate (rad/s) scale 2^-43
+						*/
+		tnav_t_ptr->SubFrame3[5] >>= 2; /* shift off 2 lsbs of 6th word */
+		word =  tnav_t_ptr->SubFrame3[5] & 0x3fff; /*IDOT 14 bits */
+
+		if( word & 0x2000 ) word -= 0x4000; /* apply 2's complement */
+		new_eph->incl_rate = (double)word*(PI/8.796093022208e12);
+
+		tnav_t_ptr->SubFrame3[5] >>= 14; /* shift off 14 IDOT bits */
+		word =  tnav_t_ptr->SubFrame3[5] & 0xff; /*IODE2 bits */
+
+		issue_of_data_eph2 = (double)word;
+
+		tnav_t_ptr->SubFrame3[5] >>= 8; /* shift off IODE2 bits */
+		tmp_word1 = tnav_t_ptr->SubFrame3[5] & 0xff; /* 8 LsB's for DOmega */
+		word = tnav_t_ptr->SubFrame3[4] & 0xffff; /* 16 MSB's for DOmega */
+		word <<= 8; /* shift left 8 for proper alignment */
+		word += tmp_word1; /* assemble the 24 bits */
+
+		if( word & 0x800000 ) word -= 0x01000000; /* apply 2's complement */
+			new_eph->right_asc_rate = (double)word*(PI/8.796093022208e12);
+
+		tnav_t_ptr->SubFrame3[4] >>= 16; /* shift off DOmega MSB's */
+		tmp_word1 = tnav_t_ptr->SubFrame3[4] & 0xffff; /* 16 LsB's for w */
+		word = tnav_t_ptr->SubFrame3[3] & 0xffff; /* 16 MSB's for w */
+		word <<= 16; /* shift left 16 for proper alignment */
+
+		word += tmp_word1; /* assemble the 32 bits */
+		new_eph->arg_of_perigee = (double)word*(PI/2.147483648e9);
+
+		tnav_t_ptr->SubFrame3[3] >>= 16; /* shift off w MSB's */
+		word = tnav_t_ptr->SubFrame3[3] & 0xffff; /* 16 Crc bits */
+		if( word & 0x8000 ) word -= 0x010000; /* apply 2's complement */
+
+		new_eph->orbit_cos_corr = (double)word/32.0e0;
+                                            /* IO 32 bits */
+		new_eph->orbit_incl = (double)tnav_t_ptr->SubFrame3[2] * (PI/2.147483648e9);
+
+
+
+
+		word = tnav_t_ptr->SubFrame3[1] & 0xffff; /* 16 Cis bits */
+		if( word & 0x8000 ) word -= 0x010000; /* apply 2's complement */
+		new_eph->incl_sin_corr = (double)word/5.36870912e8;
+
+		tnav_t_ptr->SubFrame3[1] >>= 16; /* shift off Cis bits */
+		tmp_word1 = tnav_t_ptr->SubFrame3[1] & 0xffff; /* 16 LsB's for OmegaO */
+		word = tnav_t_ptr->SubFrame3[0] & 0xffff; /* 16 MSB's for OmegaO*/
+		word <<= 16; /* shift left 16 for proper alignment */
+
+		word += tmp_word1; /* assemble the 32 bits */
+		new_eph->right_asc = (double)word*(PI/2.147483648e9);
+
+		tnav_t_ptr->SubFrame3[0] >>= 16; /* shift off OmegaO bits */
+		word = tnav_t_ptr->SubFrame3[0] & 0xffff; /* 16 Cic bits */
+		if( word & 0x8000 ) word -= 0x010000; /* apply 2's complement */
+
+
+		new_eph->incl_cos_corr = (double)word/5.36870912e8;
+						/*
+						c     issue of clock data (subframe 1) & the 2 versions
+						c     of the issue of new_ephemeris data (subframes 2 & 3)
+						c     are not consistent: return error code -2
+						*/
+				/*      if( issue_of_data_eph1   != issue_of_data_eph2 ) return( -3 );  */
+		new_eph->issue_of_eph = issue_of_data_eph2;
+
+
+						/*
+						c     correct GPS week value when validity interval crosses end of week
+						c     in this case the week decoded is the week of transmission and the
+						c     reference time could be in the subsequent week
+						c     the condition tested is:
+						c            sec_of_week(transmit) - sec_of week(eph_reference) > +302400
+						*/
+		if( ((long)new_eph->transmit_time)%604800 - new_eph->eph_ref_time > 302400. )
+		new_eph->gps_week += 1.0;
+	}							//KML June 9/2005
+	else						//KML June 9/2005
+	{							//KML June 9/2005
+		retval = -1;		//KML June 9/2005
+	}							//KML June 9/2005
+return retval;			//KML June 9/2005
+}
+// 2/1/2008 SPG End
+
