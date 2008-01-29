@@ -37,8 +37,8 @@ BNC supports the following GNSS data formats:
 <p>
 <ul>
 <li>RTCM Version 2.x containing message types 18 and 19 (GPS and GLONASS), </li> 
-<li>RTCM Version 3.x containing message types 1002 (GPS, SBAS) or 1004 (GPS), 1010 or 1012 (GLONASS), 1019 or 1020 (Broadcast Ephemeris)</li>
-<li>RTIGS (GPS only).</li>
+<li>RTCM Version 3.x containing message types 1002 (GPS, SBAS) or 1004 (GPS), 1010 or 1012 (GLONASS), 1019 or 1020 (broadcast ephemeris)</li>
+<li>RTIGS containing GPS record types 200 (observations) and 300 (ephemeris).</li>
 </ul>
 Furthermore, BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
 </p>
@@ -336,7 +336,7 @@ When BNC is started, new RINEX Observation files are created by default and any 
 </p> 
 <p><a name="mountpoints"><h4>3.6. Ephemeris</h4></p>
 <p>
-Broadcast Ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3.x as message types 1019 (GPS) and 1020 (GLONASS). The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BNC_' and the last character is
+Broadcast ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3.x as message types 1019 (GPS) and 1020 (GLONASS) or via RTIGS records type 300. The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BNC_' and the last character is
 </p>
 <ul>
 <li>'N' or 'G' for GPS or GLONASS ephemeris in two separate RINEX Version 2.11 Navigation files, or</li>
@@ -345,12 +345,12 @@ Broadcast Ephemeris can be saved as RINEX Navigation files when received via RTC
 
 <p><a name="ephpath"><h4>3.6.1 Ephemeris Directory - optional</h4></p>
 <p>
-Specify the path for saving Broadcast Ephemeris data as RINEX Navigation files. If the specified directory does not exist, BNC will not create RINEX Navigation files. Default value for 'Ephemeris directory' is an empty option field, meaning that no RINEX Navigation files will be created.
+Specify the path for saving broadcast ephemeris data as RINEX Navigation files. If the specified directory does not exist, BNC will not create RINEX Navigation files. Default value for 'Ephemeris directory' is an empty option field, meaning that no RINEX Navigation files will be created.
 </p> 
 
 <p><a name="ephvers"><h4>3.6.2 RINEX Version - optional</h4></p>
 <p>
-Default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'RINEX v3' if you want to save the ephemeris in RINEX Version 3 format.
+Default format for RINEX Navigation files containing broadcast ephemeris is RINEX Version 2.11. Select 'RINEX v3' if you want to save the ephemeris in RINEX Version 3 format.
 </p> 
 
 <p><a name="ephinterval"><h4>3.6.3 Ephemeris Interval - mandatory if 'Ephemeris directory' is set</h4></p>
@@ -406,6 +406,17 @@ Specifying a value of zero '0' means that you by-pass BNC's corruption check. Ho
 Specify the full path to a script or batch file to handle Notice advisories generated in case of outages or currupted streams. The affected mountpoint and of a comment 'Begin_Outage', 'End_Outage', 'Begin_Currupted', or 'End_Corrupted' are transfered to the script as command line parameters (%1 and %2 on Windows systems, $1 and $2 on Unix/Linux systems).
 </p><p>The script may contain commands to archive outage/corrupt information or to send an email to BNC's operator and/or to the affected stream provider. An empty option field or invalid path means that you don't want to use this option.
 </p> 
+<p> 
+Notice script example for Unix/Linux systems:
+</p> 
+<pre>
+#!/bin/bash
+cat | mail -s "BNC: $2 Stream $1" email@address &lt;&lt;!
+Notice Advisory to BNC User,
+Please note a ${2} advisory from BNC for stream $1 dated `date`.
+Regards, BNC
+!
+</pre>
 
 <p><a name="mountpoints"><h4>3.8. Mountpoints</h4></p>
 <p>
@@ -565,7 +576,7 @@ Scott Glazier, OmniSTAR Australia, has been helpful in finding BNC's bugs.<br>
 <tr><td>Apr 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td><td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save<br> [Add] ZERO decoder added<br> [Mod] Download public RINEX skeletons once per day<br> [Mod] Upgrade to Qt Version 4.2.3<br> [Mod] Replace 'system' call for RINEX script by 'QProcess'<br> [Add] HTTP Host directive for skeleton file download<br> [Add] Percent encoding for user IDs and passwords<br> [Bug] Exit execution of calling thread for RTCM3 streams<br> [Bug] Signal-slot mechanism for threads</td></tr>
 <tr><td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td><td>[Add] Source code published.
 <tr><td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td><td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td></tr>
-<tr><td>Dec 2007 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Handle Ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support</td></tr>
+<tr><td>Feb 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Handle ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Notice advisories following stream failure/recovery</td></tr>
 </table>
 </p>
 
@@ -678,8 +689,8 @@ RTCM Version 3.x defines a number of message types. Messages that may be of inte
 <li>Type 1012, GLONASS L1 and L2 code and phase and ambiguities and carrier to noise ratio.</li>
 <li>Type 1013, Modified julian date, leap second, configured message types and interval.</li>
 <li>Type 1014 and 1017, Network RTK (MAK) messages (under development).</li>
-<li>Type 1019, GPS Ephemeris.</li>
-<li>Type 1020, GLONASS Ephemeris.</li>
+<li>Type 1019, GPS ephemeris.</li>
+<li>Type 1020, GLONASS ephemeris.</li>
 <li>Type 4088 and 4095, Proprietary messages (under development).
 </li>
 </ul>
@@ -717,7 +728,7 @@ For example:
 <ul>
 <li>A station message is output once per hour and is 20 bytes.</li>
 <li>An observation message is output once per second. The header is 12 bytes long and the SOC data is 21 bytes per PRN. So a typical RTIGSO_T message will be 390 bytes if 8 sats are being tracked.</li>
-<li>An ephemeris message is output when the ephemeris is decoded by the GPS receiver. The time in the Ephemeris header is the collected time. Only one ephemeris can be bundled in a RTIGSE_T message.<br>
+<li>An ephemeris message is output when the ephemeris is decoded by the GPS receiver. The time in the ephemeris header is the collected time. Only one ephemeris can be bundled in a RTIGSE_T message.<br>
 A RTIGSE_T message contains one eph. The message consists of 12 header bytes and 72 ephemeris bytes, for a total of 84 bytes.</li>
 <li>The RTIGSM_T (met) message should be issued once every 15 minutes. A basic met message consists of a 12 byte header and 3 longs (temp, press and relative humidity) for a total of 24 bytes.</li>
 </ul>
@@ -758,8 +769,11 @@ casterUser=user
 ephIntr=1 day
 ephPath=/home/user/rinex
 ephV3=2
+inspSegm=15
 logFile=/home/user/log.txt
 mountPoints=//user:pass@www.euref-ip.net:2101/ACOR0 RTCM_2.3 43.36 351.60 no, //user:pass@www.igs-ip.net:2101/FFMJ3 RTCM_3.0 41.58 1.40 no
+noticeFail=15
+noticeReco=5
 outEphPort=2102
 outFile=/home/user/ascii
 outPort=2101
