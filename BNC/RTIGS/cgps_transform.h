@@ -13,6 +13,7 @@ using namespace std;
 #include "rtacp.h"
 #include "rtstruct.h"
 #include "rtigs_records.h"
+#include "gpswro.h"
 
 #define MAXCHANNELS_FOR_SOCKETS_TYPE1 12
 #define MAXSV        32
@@ -122,6 +123,9 @@ public:
   short          Decode_RTIGS_Eph(unsigned char *RTIGS_Str,  unsigned  short RTIGS_Bytes, RTIGSE_T &rtigs_eph, short arrPRN[]);    // stores eph in class container
   short          Decode_RTIGS_Eph(unsigned char *RTIGS_Str,  unsigned  short RTIGS_Bytes, RTIGSE_T &rtigs_eph, short &PRN); //stors in class and returns prn
   short          Decode_RTIGS_Met(unsigned char *RTIGS_Str,   unsigned short RTIGS_Bytes, RTIGSM_T *rtigs_met);    // contents of record contain all info.
+  short TNAV_To_BEPH( TNAV_T *rtcurrent_eph, BEPH_T *new_eph); // 2/1/2008 SPG
+  void SwitchEphBytes( TNAV_T *rnav ); // 2/1/2008 SPG
 };
+
 
 #endif

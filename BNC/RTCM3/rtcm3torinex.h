@@ -3,7 +3,7 @@
 
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.h,v 1.7 2007/10/08 12:51:24 stoecker Exp $
+  $Id: rtcm3torinex.h,v 1.9 2007/10/17 06:12:00 mervart Exp $
   Copyright (C) 2005-2006 by Dirk Stoecker <stoecker@alberding.eu>
 
   This program is free software; you can redistribute it and/or modify
@@ -114,7 +114,9 @@ struct gnssdata {
 #define GPSEPHF_L2CACODE       (1<<2) /* set, if CA-code available, s1w3b11 */
 #define GPSEPHF_VALIDATED      (1<<3) /* data is completely valid */
 
-#define PI          3.1415926535898
+#ifndef PI
+        #define PI          3.1415926535898
+#endif
 
 struct gpsephemeris {
   int    flags;            /* GPSEPHF_xxx */

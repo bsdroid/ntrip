@@ -26,8 +26,25 @@
 #define RTIGSDECODER_H
 
 #include <string>
+#include <QtCore>   // 2/1/2008 SPG
 #include "../RTCM/GPSDecoder.h"
 #include "cgps_transform.h"
+
+// 2/1/2008 SPG Start
+extern "C" {
+	#include "../RTCM3/rtcm3torinex.h"
+}
+
+class ephSenderRTIGS : public QObject {
+Q_OBJECT
+public:
+  ephSenderRTIGS();
+  friend class RTIGSDecoder;
+signals:
+  void newGPSEph(gpsephemeris* gpseph);
+ //void newGlonassEph(glonassephemeris* glonasseph);
+} ;
+// 2/1/2008 SPG End
 
 class RTIGSDecoder : public GPSDecoder {
 public:
@@ -37,6 +54,7 @@ public:
 private:
   CGPS_Transform _GPSTrans;
   std::string    _buffer;
+  ephSenderRTIGS _ephSender;
 } ;
 
 #endif

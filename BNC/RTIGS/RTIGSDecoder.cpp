@@ -40,11 +40,21 @@
 
 #include "RTIGSDecoder.h"
 #include "bncconst.h"
+#include "bncapp.h"
 
 using namespace std;
 
 #undef L1
 #undef L2
+
+// 
+////////////////////////////////////////////////////////////////////////////
+ephSenderRTIGS::ephSenderRTIGS() {
+  connect(this, SIGNAL(newGPSEph(gpsephemeris*)), 
+          (bncApp*) qApp, SLOT(slotNewGPSEph(gpsephemeris*)));
+  //connect(this, SIGNAL(newGlonassEph(glonassephemeris*)), 
+  //        (bncApp*) qApp, SLOT(slotNewGlonassEph(glonassephemeris*)));
+}
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -73,7 +83,7 @@ t_irc RTIGSDecoder::Decode(char* buffer, int bufLen) {
     if (_GPSTrans.f_IsLittleEndian) {
       SwitchBytes( (char*) &xx, sizeof(xx) );
     }
-    if (xx == 200) {
+    if (xx == 200 || xx == 300 ) { // 2/1/2008 SPG
       _buffer = _buffer.substr(ii);
       found = true;
       break;
@@ -96,9 +106,11 @@ t_irc RTIGSDecoder::Decode(char* buffer, int bufLen) {
     return success;
   }
 
+  // 2/1/2008 SPG Start
   // Decode the epoch
   // ----------------
   if (messType == 200) {
+  // Decode Obs
     RTIGSO_T  rtigs_obs;
     short numObs = _GPSTrans.Decode_RTIGS_Obs(p_buf, numbytes, rtigs_obs);
 
@@ -120,10 +132,63 @@ t_irc RTIGSDecoder::Decode(char* buffer, int bufLen) {
       obs->_o.SNR2     = int(ceil(_GPSTrans.DecObs.Obs[ii].l2_sn / 60.0 * 9.0));
     }
   }
+  if(messType==300){
+  // Decode Ephemeris
+    RTIGSE_T rtigs_eph;
+    BEPH_T new_eph;
+    short PRN;
+    // To TNAV_T
+    // ---------
+    short retval = _GPSTrans.Decode_RTIGS_Eph(p_buf, numbytes , rtigs_eph, PRN);
+    // Ensure it was decoded ok.
+    // ------------------------
+    if(retval==1){	
+    // TNAV To BEPH (decodes subframes)
+    // --------------------------------
+      _GPSTrans.TNAV_To_BEPH(&_GPSTrans.TNAV_Eph.Eph[PRN-1],&new_eph);
+      gpsephemeris* ep = new gpsephemeris();
+      // Match datatypes
+      // ---------------
+      ep->flags            = (int)new_eph.l2pflag;
+      ep->satellite        = (int)new_eph.satellite;
+      ep->IODE             = (int)new_eph.issue_of_eph;
+      ep->URAindex         = (int)new_eph.user_range_acc;
+      ep->SVhealth         = (int)new_eph.sat_health;
+      ep->GPSweek          = (int)new_eph.gps_week;
+      ep->IODC             = (int)new_eph.issue_of_clock;
+      ep->TOW              = (int)new_eph.transmit_time;
+      ep->TOC              = (int)new_eph.clock_ref_time;
+      ep->TOE              = (int)new_eph.eph_ref_time;
+      ep->clock_bias       = new_eph.a0;
+      ep->clock_drift      = new_eph.a1;
+      ep->clock_driftrate  = new_eph.a2;
+      ep->Crs              = new_eph.orbit_sin_corr;
+      ep->Delta_n          = new_eph.mean_mot_diff ;
+      ep->M0               = new_eph.ref_mean_anmly;
+      ep->Cuc              = new_eph.lat_cos_corr;
+      ep->e                = new_eph.orbit_ecc;
+      ep->Cus              = new_eph.lat_sin_corr;
+      ep->sqrt_A           = new_eph.orbit_semimaj;
+      ep->Cic              = new_eph.incl_cos_corr;
+      ep->OMEGA0           = new_eph.right_asc;
+      ep->Cis              = new_eph.incl_sin_corr;
+      ep->i0               = new_eph.orbit_incl;
+      ep->Crc              = new_eph.orbit_cos_corr;
+      ep->omega            = new_eph.arg_of_perigee;
+      ep->OMEGADOT         = new_eph.right_asc_rate;
+      ep->IDOT             = new_eph.incl_rate;
+      ep->TGD              = new_eph.group_delay;
+
+      // Pass back to parent class
+      // --------------------
+      emit _ephSender.newGPSEph(ep);
+    }   
+  }
+
+  // 2/1/2008 SPG End
 
   // Unprocessed bytes remain in buffer
   // ----------------------------------
   _buffer = _buffer.substr(numbytes);
-
   return success;
 }
