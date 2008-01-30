@@ -206,26 +206,26 @@ bncWindow::bncWindow() {
   _inspSegmSpinBox->setValue(settings.value("inspSegm").toInt());
   _inspSegmSpinBox->setSuffix(" sec");
   _inspSegmSpinBox->setWhatsThis(tr("<p>BNC can collect all returns (success or failure) coming from a decoder within a certain short time span (Inspect segment) to then decide whether a stream content is corrupted or not. When a continuous problem is detected, BNC can inform its operator about this event through an Advisory note. A value of about 15 sec (default) as 'Inspect segment' is recommended when handling 1Hz data.</p><p>A value of zero '0' means that you don't want BNC to inform you about incoming data that can not be decoded.</p>"));
-  _noticeRecoSpinBox = new QSpinBox();
-  _noticeRecoSpinBox->setMinimum(0);
-  _noticeRecoSpinBox->setMaximum(60);
-  _noticeRecoSpinBox->setSingleStep(1);
-  _noticeRecoSpinBox->setSuffix(" min");
-  _noticeRecoSpinBox->setMaximumWidth(9*ww);
-  _noticeRecoSpinBox->setValue(settings.value("noticeReco").toInt());
-  _noticeRecoSpinBox->setWhatsThis(tr("<p>Following a stream outage or a longer series of corrupted observations, an Advisory note is generated when at least one valid observation is received again within the 'Recovery' threshold time span defined here. A value of about 5min (default) is recommendable.</p><p>A value of zero '0' means that for any stream recovery BNC immediately generates an Advisory note!</p><p>Note that using this function for corrupted streams needs an 'Inspect segment' greater zero '0'.</p>"));
-  _noticeFailSpinBox = new QSpinBox();
-  _noticeFailSpinBox->setMinimum(0);
-  _noticeFailSpinBox->setMaximum(60);
-  _noticeFailSpinBox->setSingleStep(1);
-  _noticeFailSpinBox->setSuffix(" min");
-  _noticeFailSpinBox->setMaximumWidth(9*ww);
-  _noticeFailSpinBox->setValue(settings.value("noticeFail").toInt());
-  _noticeFailSpinBox->setWhatsThis(tr("<p>An Advisory note is generated when no (or corrupted) observations are received throughout the 'Failure' threshold time span defined here. A value of about 15 min (default) is recommendable.</p><p>A value of zero '0' means that for any stream failure BNC immediately generates an Advisory note!</p><p>Note that using this function for corrupted streams needs an 'Inspect segment' greater zero '0'.</p>"));
+  _adviseRecoSpinBox = new QSpinBox();
+  _adviseRecoSpinBox->setMinimum(0);
+  _adviseRecoSpinBox->setMaximum(60);
+  _adviseRecoSpinBox->setSingleStep(1);
+  _adviseRecoSpinBox->setSuffix(" min");
+  _adviseRecoSpinBox->setMaximumWidth(9*ww);
+  _adviseRecoSpinBox->setValue(settings.value("asviseReco").toInt());
+  _adviseRecoSpinBox->setWhatsThis(tr("<p>Following a stream outage or a longer series of corrupted observations, an Advisory note is generated when at least one valid observation is received again within the 'Recovery' threshold time span defined here. A value of about 5min (default) is recommendable.</p><p>A value of zero '0' means that for any stream recovery BNC immediately generates an Advisory note!</p><p>Note that using this function for corrupted streams needs an 'Inspect segment' greater zero '0'.</p>"));
+  _adviseFailSpinBox = new QSpinBox();
+  _adviseFailSpinBox->setMinimum(0);
+  _adviseFailSpinBox->setMaximum(60);
+  _adviseFailSpinBox->setSingleStep(1);
+  _adviseFailSpinBox->setSuffix(" min");
+  _adviseFailSpinBox->setMaximumWidth(9*ww);
+  _adviseFailSpinBox->setValue(settings.value("asviseFail").toInt());
+  _adviseFailSpinBox->setWhatsThis(tr("<p>An Advisory note is generated when no (or corrupted) observations are received throughout the 'Failure' threshold time span defined here. A value of about 15 min (default) is recommendable.</p><p>A value of zero '0' means that for any stream failure BNC immediately generates an Advisory note!</p><p>Note that using this function for corrupted streams needs an 'Inspect segment' greater zero '0'.</p>"));
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
   _logFileLineEdit->setWhatsThis(tr("<p>Records of BNC's activities are shown in the 'Log' section below. They can be saved into a file when a valid path is specified in the 'Log (full path)' field.</p>"));
-  _noticeScriptLineEdit    = new QLineEdit(settings.value("noticeScript").toString());
-  _noticeScriptLineEdit->setWhatsThis(tr("<p>Specify the full path to a script or batch file to handle Advisory notes generated in case of corrupted streams of stream outages. The affected mountpoint and one of the comments 'Begin_Outage', 'End_Outage', 'Begin_Currupted', or 'End_Corrupted' are passed on to the script as two command line parameters.</p><p>The script may be used to send an email to BNC's operator and/or to the affected streamprovider. An empty option field or invalid path means that you don't want to use this option.</p>"));
+  _adviseScriptLineEdit    = new QLineEdit(settings.value("asviseScript").toString());
+  _adviseScriptLineEdit->setWhatsThis(tr("<p>Specify the full path to a script or batch file to handle Advisory notes generated in case of corrupted streams of stream outages. The affected mountpoint and one of the comments 'Begin_Outage', 'End_Outage', 'Begin_Currupted', or 'End_Corrupted' are passed on to the script as two command line parameters.</p><p>The script may be used to send an email to BNC's operator and/or to the affected streamprovider. An empty option field or invalid path means that you don't want to use this option.</p>"));
   _mountPointsTable   = new QTableWidget(0,7);
   _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Mountpoints' section. Button 'Add Mountpoints' opens a window that allows the user to select data streams from an NTRIP broadcaster according to their mountpoints. To remove a stream from the 'Mountpoints' list, highlight it by clicking on it and hit the 'Delete Mountpoints' button. You can also remove multiple mountpoints simultaneously by highlighting them using +Shift and +Ctrl.</p><p>BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Doubleclick on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.</p><p>In case you need to log the raw data as is, BNC allows users to by-pass its decoders and and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'.</p><p>BNC can also retrieve streams from virtual reference stations (VRS). To initiate these streams, an approximate rover position needs to be sent in NMEA format to the NTRIP broadcaster. In return, a user-specific data stream is generated, typically by a Network-RTK software. This stream is customized to the exact latitude and longitude as shown in the 'lat' and 'long' columns under 'Mountpoints'. These VRS streams are indicated by a 'yes' in the 'nmea' column under 'Mountpoints' as well as in the source-table. The default 'lat' and 'long' values are taken from the source-table. However, in most cases you would probably want to change this according to your requirement. Double-click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter. The format is in positive north latitude degrees (e.g. for northern hemisphere: 52.436, for southern hemisphere: -24.567) and eastern longitude degrees (example: 358.872 or -1.128). Only mountpoints with a 'yes' in its 'nmea' column can be edited. The position must preferably be a point within the service area of the network.</p>"));
 
@@ -361,16 +361,16 @@ bncWindow::bncWindow() {
 
   layout->addWidget(new QLabel("Advisory thresholds"),           9, 0, 1, 2);
   QBoxLayout* bl2 = new QBoxLayout(QBoxLayout::LeftToRight);
-  bl2->addWidget(_noticeFailSpinBox);
+  bl2->addWidget(_adviseFailSpinBox);
   bl2->addWidget(new QLabel("Failure"));
-  bl2->addWidget(_noticeRecoSpinBox);
+  bl2->addWidget(_adviseRecoSpinBox);
   bl2->addWidget(new QLabel("Recovery"));
   bl2->addWidget(new QLabel("Inspect segment"));
   bl2->addWidget(_inspSegmSpinBox);
   layout->addLayout(bl2, 9, 2, 1, 3);
 
   layout->addWidget(new QLabel("Advisory script (full path)"),  10, 0, 1, 2);
-  layout->addWidget(_noticeScriptLineEdit,                      10, 2, 1, 3);
+  layout->addWidget(_adviseScriptLineEdit,                      10, 2, 1, 3);
 
   layout->addWidget(new QLabel("Mountpoints"),                  11, 0, 1, 2);
 
@@ -506,8 +506,8 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("proxyPort",   _proxyPortLineEdit->text());
   settings.setValue("waitTime",    _waitTimeSpinBox->value());
   settings.setValue("inspSegm",    _inspSegmSpinBox->value());
-  settings.setValue("noticeFail",  _noticeFailSpinBox->value());
-  settings.setValue("noticeReco",  _noticeRecoSpinBox->value());
+  settings.setValue("adviseFail",  _adviseFailSpinBox->value());
+  settings.setValue("adviseReco",  _adviseRecoSpinBox->value());
   settings.setValue("outFile",     _outFileLineEdit->text());
   settings.setValue("outPort",     _outPortLineEdit->text());
   settings.setValue("outEphPort",  _outEphPortLineEdit->text());
@@ -522,7 +522,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
   settings.setValue("ephV3",       _ephV3CheckBox->checkState());
   settings.setValue("logFile",     _logFileLineEdit->text());
-  settings.setValue("noticeScript",_noticeScriptLineEdit->text());
+  settings.setValue("adviseScript",_adviseScriptLineEdit->text());
   
 QStringList mountPoints;
 

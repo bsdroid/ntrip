@@ -769,6 +769,9 @@ Visit <u>http://gipsy.jpl.nasa.gov/igdg/papers/SOC_FORMAT.ppt</u> for further de
 The following is an example for the contents of a Unix/Linux configuration file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf. It enables the retrieval of stream ACOR0 form www.euref-ip.net and FFMJ3 from www.igs-ip.net for the generation of 15 min RINEX files. RINEX files are uploaded to an archive using script 'up2archive' :
 <pre>
 [General]
+adviseFail=15
+adviseReco=5
+adviseScript=
 casterHost=www.euref-ip.net
 casterPassword=pass
 casterPort=80
@@ -779,9 +782,6 @@ ephV3=2
 inspSegm=15
 logFile=/home/user/log.txt
 mountPoints=//user:pass@www.euref-ip.net:2101/ACOR0 RTCM_2.3 43.36 351.60 no, //user:pass@www.igs-ip.net:2101/FFMJ3 RTCM_3.0 41.58 1.40 no
-noticeFail=15
-noticeReco=5
-noticeScript=
 outEphPort=2102
 outFile=/home/user/ascii
 outPort=2101
