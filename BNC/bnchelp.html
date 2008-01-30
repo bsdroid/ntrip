@@ -76,11 +76,11 @@ BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. P
 &nbsp; &nbsp; &nbsp; 3.6.1. <a href=#ephpath>Ephemeris Directory</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.2. <a href=#ephvers>RINEX Version</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.3. <a href=#ephinterval>Ephemeris File Interval</a><br>
-3.7. <a href=#thresholds>Notice Advisories</a><br>
+3.7. <a href=#thresholds>Advisory Note</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.1. <a href=#threshFail>Failure Threshold</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.2. <a href=#threshReco>Recovery Threshold</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.3. <a href=#inspectSegm>Inspect Segment</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.4. <a href=#noteScript>Notice Script</a><br>
+&nbsp; &nbsp; &nbsp; 3.7.4. <a href=#noteScript>Advisory Script</a><br>
 3.8. <a href=#mountpoints>Mountpoints</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.1. <a href=#AddMounts>Add Mountpoints</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.2. <a href=#HostPort>Broadcaster Host and Port</a><br>
@@ -358,22 +358,23 @@ Default format for RINEX Navigation files containing broadcast ephemeris is RINE
 Select the length of the RINEX Navigation file generated. The default value is 1 day.
 </p> 
 
-<p><a name="thresholds"><h4>3.7. Notice Advisories</h4></p>
+<p><a name="thresholds"><h4>3.7. Advisory Note</h4></p>
+
 <p>
-It may happen at any time that a stream becomes unavailable or corrupted. Understanding problem situations is of importance for BNC's operator as well as for the affected stream providers so that maintenance efforts can be initiated. Furthermore, continuously trying to decode a corrupted stream can generate an unnecessary workload for BNC.
+At various times, the incoming stream might become unavailable or get corrupted. In such cases, it is important that the BNC operator and/or the stream providers become aware of the situation so that necessary measures can be initiated to restore the stream. Furthermore, continuous attempts to decode corrupted streams can generate an unnecessary significant workload for BNC.
 </p>
 <p>
-<u>Stream outages:</u> Connection to an NTRIP broadcaster can sometimes be disrupted or a stream requested may temporarily be unavailable. Connection is defined by BNC as broken if no data is coming in for a period of 20 seconds. When this occurs, reconnects are attempted at decreasing rate. BNC first attempts to reconnect with ~1 second lag, if unsuccessful, again in ~2 seconds since the previous attempt. If it is still unsuccessful, it will attempt to reconnect within ~4 seconds since the previous attempt etc. Each attempt doubles the wait time from the previous attempt. The maximum delay between attempts is limited to ~256 seconds. This reconnection process is documented in the 'Log' file/section.
+<u>Stream outages:</u> BNC considers a connection to be broken when there are no incoming data detected for more than 20 seconds. When this occurs, BNC will attempt to reconnect at a decreasing rate. It will first try to reconnect with 1 second delay, and again in 2 seconds if the previous attempt failed. If the attempt is still unsuccessful, it will try to reconnect within 4 seconds after the previous attempt and so on. The wait time doubles each time with a maximum wait time of 256 seconds. This reconnection process is documented in the 'Log' file/section.
 </p>
 <p>
-<u>Stream corruption:</u> Not each transfer of a chunk of bits (as received) to BNC's internal decoders necessarily results in the return of valid observations. It may need several chunks till the next observation can be derived. Hence BNC collects all returns (success or failure) coming from a decoder within a certain short 'Inspect segment' time span to then decide whether a stream content is okay or not. When a stream is corrupted, the decoding process can be stopped temporarily. Decodings are tried again at decreasing rate. BNC first attempts to decode again after a 30 second lag, if unsuccessful, again in 60 seconds since the previous attempt. If it is still unsuccessful, it will attempt to decode after 120 seconds since the previous attempt etc. Each decoding attempt doubles the wait time from the previous attempt. The maximum delay between attempts is limited to 960 seconds. 
+<u>Stream corruption:</u> Not any bits chunk transfer to BNC's internal decoders returns valid observations. Sometimes several chunks might be needed before the next observation can be properly decoded. BNC collects all the outputs (valid or invalid) from the decoder within a specified short 'Inspect Segment' time span and then determine whether the stream's content is valid or corrupted. If it is corrupted, the decoding process is paused and decodings are then attempted again at decreasing rate. BNC will first attempt to decode again after a 30 second lag and if unsuccessful, make another attempt within 60 seconds after the previous attempt. If it is still unsuccessful, it will make another attempt to decode within 120 seconds after the previous attempt and so on. Each decoding attempt doubles the wait time since the previous attempt. The maximum wait time between attempts is limited to 960 seconds.
 </p>
 <p>
-If a persistent stream failure or recovery caused by a stream outage or corruption exceeds the 'Failure' or 'Recovery' threshold, BNC can inform its users about this event. The information becomes available in the 'Log' file/section as a 'Begin_Outage', 'End_Outage', 'Begin_Corrupted', or 'End_Corrupted' message. It can also be passed on as a Notice advisory to a 'Notice script' or batch file to keep BNC's operator or affected stream providers up-to-date by email. This functionality lets you use BNC as a real-time performance monitor and alarm system for the network of GNSS reference stations in use.
+If the stream failures or recoveries caused by an outage or corrupted data exceed the 'Failure' or 'Recovery' thresholds, BNC can inform its users about this event. The information becomes available in the 'Log' file/section as a 'Begin_Outage', 'End_Outage', 'Begin_Corrupted', or 'End_Corrupted' message. It can also be passed on as an Advisory note to an 'Advisory script' or batch file to keep BNC's operator or affected stream providers up-to-date by email. This functionality lets you use BNC as a real-time performance monitor and alarm system for the network of GNSS reference stations in use.
 </p>
 
 <p><a name="threshFail"><h4>3.7.1 Failure Threshold - optional</h4></p>
-<p>A Notice advisory is generated if no or only corrupted observations are received throughout the 'Failure' threshold time span. Specifying a value of 15 min (default) is recommendable to not bother a BNC user with too much information.
+<p>An Advisory note is generated if no or only corrupted observations are received throughout the 'Failure' threshold time span. Specifying a value of 15 min (default) is recommendable to not bother a BNC user with too much information.
 </p>
 <p>
 Note that specifying a value of zero '0' for both, the 'Failure' and the 'Recovery' threshold means that BNC immediately informs about any failure/recovery and that decoding efforts shall never pause.
@@ -384,10 +385,10 @@ Note further that using this function for corrupted streams needs an 'Inspect se
 
 <p><a name="threshReco"><h4>3.7.2 Recovery Threshold - optional</h4></p>
 <p>
-Following a longer lasting stream outage or series of completely corrupted observations, a Notice advisory is generated as soon as a valid observation is received again at least once within the 'Recovery' threshold time span. Specifying a value of 5 min (default) is recommendable to not bother a BNC user with too much information.
+Following a prolonged stream outage or series of completely corrupted observations, an event report is triggered as soon as a valid observation is received again at least once within the 'Recovery' threshold time span. Specifying a value of 5 minutes (default) is recommendable to not bother a BNC user with too much information.
 </p>
 <p>
-Note that specifying a value of zero '0' for both, the 'Failure' and the 'Recovery' threshold means that BNC immediately informs about any failure/recovery and that decoding efforts shall never pause.
+Note that specifying a value of zero '0' for both, the 'Failure' and the 'Recovery' threshold means that BNC immediately informs about any fail-ure/recovery and that decoding efforts shall never pause.
 </p> 
 <p>
 Note further that using this function for corrupted streams needs an 'Inspect segment' greater zero '0'.
@@ -395,28 +396,34 @@ Note further that using this function for corrupted streams needs an 'Inspect se
 
 <p><a name="inspectSegm"><h4>3.7.3 Inspect Segment - mandatory for 'Failure' and 'Recovery' thresholds</h4></p>
 <p>
-BNC can collect all returns (failure or success) coming from a decoder within a short 'Inspect segment' time span to then decide whether a stream content is corrupted or not. If a continuous problem (or recovery) is detected, BNC informs about this event. A value of about 15 sec (default) as 'Inspect segment' is recommended when handling 1Hz data. If this value is specified too small, temporary communication bottlenecks my lead to an additional loss of some data of the affected stream.
+BNC collects all the results (both valid and invalid) from the decoder within a short Inspect Segment time and then decides whether the stream is cor-rupted or not. If a continuous problem (or recovery) is detected, BNC informs about this event. A value of 15 sec (default) as 'Inspect segment' is recommended when handling 1Hz data. If the value specified is too small, temporary communication bottlenecks my lead to an additional loss of some data of the affected stream.
 </p>
 <p>
-Specifying a value of zero '0' means that you by-pass BNC's corruption check. However, this may result in an additional workload in case of long-lasting stream corruptions. Note that specifying an 'Inspect segment' greater zero '0' is mandatory to generate Notice advisories informing about corrupted streams.
+Specifying a value of zero '0' means that you by-pass BNC's corruption check. However, this may result in an additional workload in case of long-lasting stream corruptions. Note that specifying an 'Inspect segment' greater zero '0' is mandatory to generate Advisory notes informing about corrupted streams.
 </p> 
 
-<p><a name="noteScript"><h4>3.7.4 Notice Script - optional </h4></p>
+<p><a name="noteScript"><h4>3.7.4 Advisory Script - optional </h4></p>
 <p>
-Specify the full path to a script or batch file to handle Notice advisories generated in case of outages or currupted streams. The affected mountpoint and of a comment 'Begin_Outage', 'End_Outage', 'Begin_Currupted', or 'End_Corrupted' are transfered to the script as command line parameters (%1 and %2 on Windows systems, $1 and $2 on Unix/Linux systems).
-</p><p>The script may contain commands to archive outage/corrupt information or to send an email to BNC's operator and/or to the affected stream provider. An empty option field or invalid path means that you don't want to use this option.
+Specify the full path to a script or batch file to handle Advisory notes generated in case of outages or currupted streams. The affected mountpoint and a comment 'Begin_Outage', 'End_Outage', 'Begin_Corrupted', or 'End_Corrupted' are passed on to the script as command line parameters (%1 and %2 on Windows systems, $1 and $2 on UNIX/Linux systems).
+</p>
+<p>
+The script may contain commands to archive outage/corrupt information or to send an email to BNC's operator and/or to the affected stream provider. An empty option field or invalid path means that you don't want to use this option.
 </p> 
 <p> 
-Notice script example for Unix/Linux systems:
+Sample script for Unix/Linux systems:
 </p> 
 <pre>
 #!/bin/bash
+sleep $((60*RANDOM/32767))
 cat | mail -s "BNC: $2 Stream $1" email@address &lt;&lt;!
-Notice Advisory to BNC User,
-Please note a ${2} advisory from BNC for stream $1 dated `date`.
+Advisory Note to BNC User,
+Please note a $2 advisory from BNC for stream $1 dated `date`.
 Regards, BNC
 !
 </pre>
+<p> 
+Note the sleep command in this script which causes the system to wait for a random period of up to 60 seconds before sending the email. This should avoids overloading your mail server in case of a simultaneous outage of many streams.
+</p> 
 
 <p><a name="mountpoints"><h4>3.8. Mountpoints</h4></p>
 <p>
@@ -576,7 +583,7 @@ Scott Glazier, OmniSTAR Australia, has been helpful in finding BNC's bugs.<br>
 <tr><td>Apr 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td><td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save<br> [Add] ZERO decoder added<br> [Mod] Download public RINEX skeletons once per day<br> [Mod] Upgrade to Qt Version 4.2.3<br> [Mod] Replace 'system' call for RINEX script by 'QProcess'<br> [Add] HTTP Host directive for skeleton file download<br> [Add] Percent encoding for user IDs and passwords<br> [Bug] Exit execution of calling thread for RTCM3 streams<br> [Bug] Signal-slot mechanism for threads</td></tr>
 <tr><td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td><td>[Add] Source code published.
 <tr><td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td><td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td></tr>
-<tr><td>Feb 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Handle ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Notice advisories following stream failure/recovery</td></tr>
+<tr><td>Feb 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Handle ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Advisory notes following stream failure/recovery</td></tr>
 </table>
 </p>
 
@@ -774,6 +781,7 @@ logFile=/home/user/log.txt
 mountPoints=//user:pass@www.euref-ip.net:2101/ACOR0 RTCM_2.3 43.36 351.60 no, //user:pass@www.igs-ip.net:2101/FFMJ3 RTCM_3.0 41.58 1.40 no
 noticeFail=15
 noticeReco=5
+noticeScript=
 outEphPort=2102
 outFile=/home/user/ascii
 outPort=2101
