@@ -106,10 +106,10 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   // Notice threshold
   // ----------------
   _inspSegm = settings.value("inspSegm").toInt();
-  _noticeFail = settings.value("noticeFail").toInt();
-  _noticeReco = settings.value("noticeReco").toInt();
-  _noticeScript = settings.value("noticeScript").toString();
-  expandEnvVar(_noticeScript);
+  _adviseFail = settings.value("adviseFail").toInt();
+  _adviseReco = settings.value("adviseReco").toInt();
+  _adviseScript = settings.value("adviseScript").toString();
+  expandEnvVar(_adviseScript);
 
   // RINEX writer
   // ------------
@@ -394,7 +394,7 @@ void bncGetThread::run() {
   if (initPause < _inspSegm) {
     initPause = _inspSegm;
   }
-  if ( _noticeFail < 1 && _noticeReco < 1 ) {
+  if ( _adviseFail < 1 && _adviseReco < 1 ) {
     initPause = 0;
   }
   currPause = initPause;
@@ -447,8 +447,8 @@ void bncGetThread::run() {
             _decodeTime = QDateTime::currentDateTime();
             if (numSucc>0) {
               secSucc += _inspSegm;
-              if (secSucc > _noticeReco * 60) {
-                secSucc = _noticeReco * 60 + 1;
+              if (secSucc > _adviseReco * 60) {
+                secSucc = _adviseReco * 60 + 1;
               }
               numSucc = 0;
               currPause = initPause;
@@ -458,8 +458,8 @@ void bncGetThread::run() {
             else {
               secFail += _inspSegm;
               secSucc = 0;
-              if (secFail > _noticeFail * 60) { 
-                secFail = _noticeFail * 60 + 1;
+              if (secFail > _adviseFail * 60) { 
+                secFail = _adviseFail * 60 + 1;
               }
               if (!_decodePause.isValid()) {
                 _decodePause = QDateTime::currentDateTime();
@@ -477,7 +477,7 @@ void bncGetThread::run() {
 
             // End corrupt threshold
             // ---------------------
-            if ( begCorrupt && !endCorrupt && secSucc > _noticeReco * 60 ) {
+            if ( begCorrupt && !endCorrupt && secSucc > _adviseReco * 60 ) {
               emit(newMessage(_staID + ": End_Corrupted, Recovery threshold exceeded"));
               callScript("End_Corrupted");
               endCorrupt = true;
@@ -488,7 +488,7 @@ void bncGetThread::run() {
 
               // Begin corrupt threshold
               // -----------------------
-              if ( !begCorrupt && secFail > _noticeFail * 60 ) {
+              if ( !begCorrupt && secFail > _adviseFail * 60 ) {
                 emit(newMessage(_staID + ": Begin_Corrupted, Failure threshold exceeded"));
                 callScript("Begin_Corrupted");
                 begCorrupt = true;
@@ -504,7 +504,7 @@ void bncGetThread::run() {
 
       // End outage threshold
       // --------------------
-      if ( _decodeStart.isValid() && _decodeStart.secsTo(QDateTime::currentDateTime()) > _noticeReco * 60 ) {
+      if ( _decodeStart.isValid() && _decodeStart.secsTo(QDateTime::currentDateTime()) > _adviseReco * 60 ) {
         _decodeStart.setDate(QDate());
         _decodeStart.setTime(QTime());
         emit(newMessage(_staID + ": End_Outage, Recovery threshold exceeded"));
@@ -609,7 +609,7 @@ void bncGetThread::tryReconnect() {
 
       // Begin outage threshold
       // ----------------------
-      if ( _decodeStop.isValid() && _decodeStop.secsTo(QDateTime::currentDateTime()) > _noticeFail * 60 ) {
+      if ( _decodeStop.isValid() && _decodeStop.secsTo(QDateTime::currentDateTime()) > _adviseFail * 60 ) {
         _decodeStop.setDate(QDate());
         _decodeStop.setTime(QTime());
         emit(newMessage(_staID + ": Begin_Outage, Failure threshold exceeded"));
@@ -625,14 +625,14 @@ void bncGetThread::tryReconnect() {
   _nextSleep = 1;
 }
 
-// Call notice advisory script    
+// Call advisory notice script    
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::callScript(const char* _comment) {
-  if (!_noticeScript.isEmpty()) {
+  if (!_adviseScript.isEmpty()) {
 #ifdef WIN32
-    QProcess::startDetached(_noticeScript, QStringList() << _staID << _comment) ;
+    QProcess::startDetached(_adviseScript, QStringList() << _staID << _comment) ;
 #else
-    QProcess::startDetached("nohup", QStringList() << _noticeScript << _staID << _comment) ;
+    QProcess::startDetached("nohup", QStringList() << _adviseScript << _staID << _comment) ;
 #endif
   }
 }
