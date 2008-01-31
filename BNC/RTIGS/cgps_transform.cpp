@@ -331,7 +331,7 @@ return retval;
 short CGPS_Transform::P1_P2_Block_Extract(char * P1P2Str, double CA, double &Rng , double &Phase, double &RngF2Delta,short decode_F1orF2Flag )
 {
 short retval =0;
-short PhaseOverFlowFlag;
+short PhaseOverFlowFlag = -1;
 long SignFlag,temp;
 
 double RngDelta, PhaseDelta;
