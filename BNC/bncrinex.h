@@ -25,6 +25,7 @@
 #ifndef BNCRINEX_H
 #define BNCRINEX_H
 
+#include <QThread>
 #include <QByteArray>
 #include <QDateTime>
 #include <QList>
@@ -34,7 +35,7 @@
 #include "bncconst.h"
 #include "RTCM/GPSDecoder.h"
 
-class bncRinex {
+class bncRinex : public QThread {
  public:
    bncRinex(const QByteArray& statID, const QUrl& mountPoint, 
             const QByteArray& format, const QByteArray& latitude,
@@ -46,6 +47,9 @@ class bncRinex {
    static QString nextEpochStr(const QDateTime& datTim,
                                const QString& intStr, 
                                QDateTime* nextEpoch = 0);
+
+ protected:
+   virtual void run() {};
 
  private:
    void resolveFileName(const QDateTime& datTim);
