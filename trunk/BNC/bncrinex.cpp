@@ -616,6 +616,7 @@ void bncRinex::closeFile() {
   QMutexLocker locker(&_mutex);
   _out.close();
   if (!_rnxScriptName.isEmpty()) {
+    msleep(1);
 #ifdef WIN32
     QProcess::startDetached(_rnxScriptName, QStringList() << _fName) ;
 #else
