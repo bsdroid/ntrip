@@ -628,7 +628,9 @@ void bncGetThread::tryReconnect() {
 // Call advisory notice script    
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::callScript(const char* _comment) {
+  QMutexLocker locker(&_mutex);
   if (!_adviseScript.isEmpty()) {
+    msleep(1);
 #ifdef WIN32
     QProcess::startDetached(_adviseScript, QStringList() << _staID << _comment) ;
 #else
