@@ -46,6 +46,7 @@
 #include <QtCore>
 #include <QUrl>
 #include <QString>
+#include <QThread>
 
 #include "bncrinex.h"
 #include "bncapp.h"
@@ -616,7 +617,7 @@ void bncRinex::closeFile() {
   QMutexLocker locker(&_mutex);
   _out.close();
   if (!_rnxScriptName.isEmpty()) {
-
+    msleep(1);
 #ifdef WIN32
     QProcess::startDetached(_rnxScriptName, QStringList() << _fName) ;
 #else
