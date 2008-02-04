@@ -687,7 +687,7 @@ void bncWindow::slotAbout() {
 void bncWindow::slotHelp() {
   QUrl url; 
   url.setPath(":bnchelp.html");
-  new bncHlpDlg(this, url);
+  new bncHlpDlg(0, url);
 }
 
 // Select Fonts
