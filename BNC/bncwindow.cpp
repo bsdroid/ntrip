@@ -667,7 +667,7 @@ void bncWindow::slotAbout() {
   tb->setSource(url);
   tb->setReadOnly(true);
 
-  QDialog dlg(this);
+  QDialog dlg(0);
 
   QGridLayout* dlgLayout = new QGridLayout();
   QLabel* img = new QLabel();
