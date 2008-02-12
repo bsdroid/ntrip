@@ -31,12 +31,22 @@
 #include "bncgetthread.h"
 #include "bnccaster.h"
 
-class bncWindow : public QMainWindow {
+  class bncAboutDlg : public QDialog {
+  Q_OBJECT
+
+  public:
+    bncAboutDlg(QWidget* parent);
+    ~bncAboutDlg();
+};
+
+  class bncWindow : public QMainWindow {
   Q_OBJECT
 
   public:
     bncWindow();
     ~bncWindow();
+    void CreateMenu();
+    void AddToolbar();
   
   public slots:  
     void slotMessage(const QByteArray msg);
@@ -103,6 +113,7 @@ class bncWindow : public QMainWindow {
     QTextEdit*  _log;
 
     QWidget*   _canvas;
+    QTabWidget* aogroup;
 
     bncCaster* _caster;
 };
