@@ -381,6 +381,7 @@ void bncGetThread::run() {
     tryReconnect();
   }
 
+  bool   wrongEpoch = false;
   bool decode = true;
   int numSucc = 0;
   int secSucc = 0;
@@ -520,7 +521,6 @@ void bncGetThread::run() {
           // Check observation epoch
           // -----------------------
           int    week;
-          bool   wrongEpoch = false;
           double sec;
           currentGPSWeeks(week, sec);
           
