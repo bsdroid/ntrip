@@ -302,7 +302,7 @@ bncWindow::bncWindow() {
   pLayout->addWidget(_proxyHostLineEdit,0, 1);
   pLayout->addWidget(new QLabel("Proxy port"),1,0, Qt::AlignLeft);
   pLayout->addWidget(_proxyPortLineEdit,1,1);
-  pLayout->addWidget(new QLabel("Settings for the Proxy, leave the boxes blank if none."),2, 0, 1, 2, Qt::AlignLeft);
+  pLayout->addWidget(new QLabel("Settings for the proxy in protected networks, leave the boxes blank if none."),2, 0, 1, 2, Qt::AlignLeft);
   pLayout->addWidget(new QLabel("    "),3,0);
   pLayout->addWidget(new QLabel("    "),4,0);
   pLayout->addWidget(new QLabel("    "),5,0);
@@ -335,12 +335,12 @@ bncWindow::bncWindow() {
 
   QGridLayout* eLayout = new QGridLayout;
   eLayout->setColumnMinimumWidth(0,12*ww);
-  eLayout->addWidget(new QLabel("Interval"),                      0, 0);
-  eLayout->addWidget(_ephIntrComboBox,                            0, 1);
-  eLayout->addWidget(new QLabel("Port"),                          1, 0);
-  eLayout->addWidget(_outEphPortLineEdit,                         1, 1);
-  eLayout->addWidget(new QLabel("Directory"),                     2, 0);
-  eLayout->addWidget(_ephPathLineEdit,                            2, 1);
+  eLayout->addWidget(new QLabel("Directory"),                     0, 0);
+  eLayout->addWidget(_ephPathLineEdit,                            0, 1);
+  eLayout->addWidget(new QLabel("Interval"),                      1, 0);
+  eLayout->addWidget(_ephIntrComboBox,                            1, 1);
+  eLayout->addWidget(new QLabel("Port"),                          2, 0);
+  eLayout->addWidget(_outEphPortLineEdit,                         2, 1);
   eLayout->addWidget(new QLabel("Version 3"),                     3, 0);
   eLayout->addWidget(_ephV3CheckBox,                              3, 1);
   _ephV3CheckBox->setWhatsThis(tr("<p>Default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format.</p>"));
@@ -350,15 +350,15 @@ bncWindow::bncWindow() {
 
   QGridLayout* aLayout = new QGridLayout;
   aLayout->setColumnMinimumWidth(0,12*ww);
-  aLayout->addWidget(new QLabel("Failure"),                       0, 0);
-  aLayout->addWidget(_adviseFailSpinBox,                          0, 1);
-  aLayout->addWidget(new QLabel("Recovery"),                      1, 0);
-  aLayout->addWidget(_adviseRecoSpinBox,                          1, 1);
-  aLayout->addWidget(new QLabel("Script (full path)"),            2, 0);
-  aLayout->addWidget(_adviseScriptLineEdit,                       2, 1);
-  aLayout->addWidget(new QLabel("Inspect segment"),               3, 0);
-  aLayout->addWidget(_inspSegmSpinBox,                            3, 1);
-  aLayout->addWidget(new QLabel("Advisory notes, handling of corrupted streams."),4,0,1,2,Qt::AlignLeft);
+  aLayout->addWidget(new QLabel("Inspect segment"),               0, 0);
+  aLayout->addWidget(_inspSegmSpinBox,                            0, 1);
+  aLayout->addWidget(new QLabel("Failure"),                       1, 0);
+  aLayout->addWidget(_adviseFailSpinBox,                          1, 1);
+  aLayout->addWidget(new QLabel("Recovery"),                      2, 0);
+  aLayout->addWidget(_adviseRecoSpinBox,                          2, 1);
+  aLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
+  aLayout->addWidget(_adviseScriptLineEdit,                       3, 1);
+  aLayout->addWidget(new QLabel("Advisory notice, handling of corrupted streams."),4,0,1,2,Qt::AlignLeft);
   aLayout->addWidget(new QLabel("    "),5,0);
   agroup->setLayout(aLayout);
 
@@ -367,12 +367,12 @@ bncWindow::bncWindow() {
   oLayout->setColumnMinimumWidth(1,8*ww);
   oLayout->setColumnMinimumWidth(2,12*ww);
   oLayout->setColumnMinimumWidth(3,40*ww);
-  oLayout->addWidget(new QLabel("Interval"),                      0, 0);
-  oLayout->addWidget(_rnxIntrComboBox,                            0, 1);
-  oLayout->addWidget(new QLabel("Sampling"),                      0, 2, Qt::AlignRight);
-  oLayout->addWidget(_rnxSamplSpinBox,                            0, 3, Qt::AlignLeft);
-  oLayout->addWidget(new QLabel("Directory"),                     1, 0);
-  oLayout->addWidget(_rnxPathLineEdit,                            1, 1,1,3);
+  oLayout->addWidget(new QLabel("Directory"),                     0, 0);
+  oLayout->addWidget(_rnxPathLineEdit,                            0, 1,1,3);
+  oLayout->addWidget(new QLabel("Interval"),                      1, 0);
+  oLayout->addWidget(_rnxIntrComboBox,                            1, 1);
+  oLayout->addWidget(new QLabel("Sampling"),                      1, 2, Qt::AlignRight);
+  oLayout->addWidget(_rnxSamplSpinBox,                            1, 3, Qt::AlignLeft);
   oLayout->addWidget(new QLabel("Skeleton"),                      2, 0);
   oLayout->addWidget(_rnxSkelLineEdit,                            2, 1);
   oLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
