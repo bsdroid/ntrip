@@ -54,16 +54,19 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _casterHostLineEdit     = new QLineEdit(settings.value("casterHost").toString());
   int ww = QFontMetrics(_casterHostLineEdit->font()).width('w');
   _casterHostLineEdit->setMaximumWidth(18*ww);
-  _casterHostLineEdit->setWhatsThis(tr("Enter the NTRIP broadcaster hostname or IP number and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>."));
   _casterPortLineEdit     = new QLineEdit(settings.value("casterPort").toString());
   _casterPortLineEdit->setMaximumWidth(9*ww);
-  _casterPortLineEdit->setWhatsThis(tr("Enter the NTRIP broadcaster hostname or IP number and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>."));
   _casterUserLineEdit     = new QLineEdit(settings.value("casterUser").toString());
   _casterUserLineEdit->setMaximumWidth(9*ww);
-  _casterUserLineEdit->setWhatsThis(tr("Access to some streams on NTRIP broadcasters may be restricted. You'll need to enter a valid 'User ID' and 'Password' for access to these protected streams. Accounts are usually provided per NTRIP broadcaster through a registration process. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>."));
   _casterPasswordLineEdit = new QLineEdit(settings.value("casterPassword").toString());
   _casterPasswordLineEdit->setMaximumWidth(9*ww);
   _casterPasswordLineEdit->setEchoMode(QLineEdit::Password);
+
+  // WhatsThis
+  // ---------
+  _casterUserLineEdit->setWhatsThis(tr("Access to some streams on NTRIP broadcasters may be restricted. You'll need to enter a valid 'User ID' and 'Password' for access to these protected streams. Accounts are usually provided per NTRIP broadcaster through a registration process. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>."));
+  _casterPortLineEdit->setWhatsThis(tr("Enter the NTRIP broadcaster hostname or IP number and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>."));
+  _casterHostLineEdit->setWhatsThis(tr("Enter the NTRIP broadcaster hostname or IP number and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>."));
   _casterPasswordLineEdit->setWhatsThis(tr("Access to some streams on NTRIP broadcasters may be restricted. You'll need to enter a valid 'User ID' and 'Password' for access to these protected streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>."));
 
   QGridLayout* editLayout = new QGridLayout;
