@@ -381,7 +381,7 @@ void bncGetThread::run() {
     tryReconnect();
   }
 
-  bool   wrongEpoch = false;
+  bool wrongEpoch = false;
   bool decode = true;
   int numSucc = 0;
   int secSucc = 0;
