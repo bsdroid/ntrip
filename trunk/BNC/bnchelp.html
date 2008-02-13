@@ -78,7 +78,7 @@ BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. P
 &nbsp; &nbsp; &nbsp; 3.7.1. <a href=#syncport>Output Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.2. <a href=#syncwait>Wait for Full Epoch</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.3. <a href=#syncfile>Output File</a><br>
-3.8. <a href=#advnote>Advisory Notice</a><br>
+3.8. <a href=#advnote>Advisory Note</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.1. <a href=#advsegm>Inspect Segment</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.2. <a href=#advfail>Failure Threshold</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.3. <a href=#advreco>Recovery Threshold</a><br>
@@ -371,7 +371,7 @@ Specifies the full path to a file where synchronized observations are saved in p
 Beware that the size of this file can rapidly increase depending on the number of incoming streams. This option is primarily meant for testing and evaluation.
 </p>
 
-<p><a name="advnote"><h4>3.8. Advisory Notice</h4></p>
+<p><a name="advnote"><h4>3.8. Advisory Note</h4></p>
 
 <p>
 At various times, the incoming stream might become unavailable or corrupted. In such cases, it is important that the BNC operator and/or the stream providers become aware of the situation so that necessary measures can be taken to restore the stream. Furthermore, continuous attempts to decode corrupted stream(s) can generate unnecessary workload for BNC.
@@ -408,12 +408,12 @@ Note that specifying a value of zero '0' for both the 'Failure' and 'Recovery' t
 Also note that using this function for corrupted streams requires the 'Inspect segment' value to be set to greater than zero '0'.
 </p>
 <p>
-All the events are reported in the Log file/section. They can also be passed on as parameters to a shell script or batch file to generate an advisory notice to BNC operator or affected stream providers. This functionality lets users utilise BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
+All the events are reported in the Log file/section. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilise BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
 </p>
 
 <p><a name="advscript"><h4>3.8.4 Advisory Script - optional </h4></p>
 <p>
-As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory notice to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (\%1 and \%2 on Windows systems or \$1 and \$2 on UNIX/Linuxsystems).
+As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (\%1 and \%2 on Windows systems or \$1 and \$2 on UNIX/Linuxsystems).
 </p>
 <p>
 Leave this field empty if you do not wish to use this option. An invalid path will also disable this option.
@@ -425,7 +425,7 @@ Sample script for Unix/Linux systems:
 #!/bin/bash
 sleep $((60*RANDOM/32767))
 cat | mail -s "BNC: $2 Stream $1" email@address &lt;&lt;!
-Advisory Notice to BNC User,
+Advisory Note to BNC User,
 Please note a $2 advisory from BNC for stream $1 dated `date`.
 Regards, BNC
 !
@@ -541,6 +541,9 @@ We experienced a limitation of the Standard Version of Microsoft Windows related
 </li>
 <li>
 The source code provided by NRCan for decoding RTIGS streams is 32-bit dependent. Hence the BNC executable generated for 64-bit Linux systems would only run when compiled using the -m32 compiler option. 
+</li>
+<li>
+Once BNC has been started, its configuration can not be changed as long as it is stopped. A reconfiguration on-the-fly is not implemented.
 </li>
 <br>
 </ul>

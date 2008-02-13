@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
   }
 
   QCoreApplication::setOrganizationName("BKG");
-  QCoreApplication::setOrganizationDomain("www.ifag.de");
+  QCoreApplication::setOrganizationDomain("www.bkg.bund.de");
   QCoreApplication::setApplicationName("BKG_NTRIP_Client");
 
   // Default Settings
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
   QSettings settings;
   if (settings.allKeys().size() == 0) {
     settings.setValue("casterHost", "www.euref-ip.net");
-    settings.setValue("casterPort", 80);
+    settings.setValue("casterPort", 2101);
     settings.setValue("rnxIntr",    "15 min");
     settings.setValue("ephIntr",    "1 day");
     settings.setValue("rnxSkel",    "SKL");
