@@ -207,7 +207,7 @@ Select the RINEX Observation sampling interval in seconds. A value of zero '0' t
 Whenever BNC starts generating RINEX Observation files (and then once every day at midnight), it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. A HTTP link to a directory containing these skeleton files may be available through data field number 7 of the affected NET record in the source-table. See <u>http://www.epncb.oma.be:80/stations/log/skl/brus.skl</u> for an example of a public RINEX header skeleton file for the Brussels EPN station. 
 </p>
 <p>
-However, sometimes public RINEX header skeleton files are not available, its contents is not up to date, or you need to put additional/optional records in the RINEX header. For that BNC allows using personal skeleton files that contain the header records you would like to include. You can derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the RINEX 'Directory' with the extension 'Skeleton' is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream.
+However, sometimes public RINEX header skeleton files are not available, its contents is not up to date, or you need to put additional/optional records in the RINEX header. For that BNC allows using personal skeleton files that contain the header records you would like to include. You can derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the RINEX 'Directory' with a 'Skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream.
 </p>
 <p>
 Examples for personal skeleton file name convention: RINEX Observation files for mountpoints WETTZELL, FRANKFURT and FRANCE (same 4Char Station ID), BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u> (same 4Char Station ID, identical mountpoint stings) would accept personal skeleton files named</p>
@@ -218,7 +218,7 @@ FRAN_CE.skl<br>
 BRUS_0.skl<br>
 BRUS_1.skl</p>
 <p>
-if RINEX 'Skeleton' extension is set to 'skl'.
+if RINEX 'Skeleton extension' is set to 'skl'.
 </p> 
 <p> 
 Note the following regulations regarding personal RINEX header skeleton files:
