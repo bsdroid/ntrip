@@ -75,6 +75,7 @@ class bncGetThread : public QThread {
    QByteArray  _longitude;
    QByteArray  _nmea;
    QString     _adviseScript;
+   int         _obsRate;
    int         _inspSegm;
    int         _adviseFail;
    int         _adviseReco;

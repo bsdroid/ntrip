@@ -101,7 +101,7 @@
     QSpinBox*  _rnxSamplSpinBox;
     QCheckBox* _rnxAppendCheckBox;
     QSpinBox*  _waitTimeSpinBox;
-    QSpinBox*  _inspSegmSpinBox;
+    QComboBox* _obsRateComboBox;
     QSpinBox*  _adviseFailSpinBox;
     QSpinBox*  _adviseRecoSpinBox;
     QLineEdit* _adviseScriptLineEdit;
