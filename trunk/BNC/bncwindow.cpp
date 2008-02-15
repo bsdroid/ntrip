@@ -606,7 +606,6 @@ void bncWindow::slotGetData() {
     _caster->addGetThread(getThread);
 
     getThread->start();
-    _mountPointsTable->setSortingEnabled(true);
   }
 }
 

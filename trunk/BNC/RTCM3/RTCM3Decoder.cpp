@@ -72,6 +72,9 @@ RTCM3Decoder::RTCM3Decoder() : GPSDecoder() {
 
   const int LEAPSECONDS = 14; /* only needed for approx. time */
 
+// Ensure, that the Decoder uses the "old" convention for the data structure for Rinex2. Perlt
+  _Parser.rinex3 = 0;
+
   time_t tim;
   tim = time(0) - ((10*365+2+5)*24*60*60 + LEAPSECONDS);
 
@@ -132,8 +135,11 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
           
             for (int jj = 0; jj < _Parser.numdatatypesGPS; jj++) {
               int v = 0;
-              int df = _Parser.dataflag[jj];
-              int pos = _Parser.datapos[jj];
+// sepearated declaration and initalization of df and pos. Perlt
+              int df;
+              int pos;
+              df = _Parser.dataflag[jj];
+              pos = _Parser.datapos[jj];
               if ( (_Parser.Data.dataflags[ii] & df)
                    && !isnan(_Parser.Data.measdata[ii][pos])
                    && !isinf(_Parser.Data.measdata[ii][pos])) {
@@ -153,17 +159,18 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
               }
               else
               {
-                if      (_Parser.dataflag[jj] & GNSSDF_C1DATA) {
-                  obs->_o.C1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+// variables df and pos are used consequently. Perlt
+                if      (df & GNSSDF_C1DATA) {
+                  obs->_o.C1 = _Parser.Data.measdata[ii][pos];
                 }
-                else if (_Parser.dataflag[jj] & GNSSDF_C2DATA) {
-                  obs->_o.C2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+                else if (df & GNSSDF_C2DATA) {
+                  obs->_o.C2 = _Parser.Data.measdata[ii][pos];
                 }
-                else if (_Parser.dataflag[jj] & GNSSDF_P1DATA) {
-                  obs->_o.P1 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+                else if (df & GNSSDF_P1DATA) {
+                  obs->_o.P1 = _Parser.Data.measdata[ii][pos];
                 }
-                else if (_Parser.dataflag[jj] & GNSSDF_P2DATA) {
-                  obs->_o.P2 = _Parser.Data.measdata[ii][_Parser.datapos[jj]];
+                else if (df & GNSSDF_P2DATA) {
+                  obs->_o.P2 = _Parser.Data.measdata[ii][pos];
                 }
                 else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
                   obs->_o.L1   = _Parser.Data.measdata[ii][pos];
