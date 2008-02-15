@@ -28,7 +28,8 @@ BNC has been written under GNU General Public License (GPL). Binaries for BNC ar
 <ul>
 <li>retrieve real-time GNSS data streams available through NTRIP transport protocol,</li> 
 <li>generate high-rate RINEX Observation and Navigation files to support near real-time GNSS post-processing applications, and/or</li> 
-<li>generate synchronized observations epoch by epoch through an IP port to support real-time GNSS engines.</li> 
+<li>generate ephemeris and synchronized observations epoch by epoch through an IP port to support real-time GNSS engines, and/or</li> 
+<li>monitor the performance of a network of real-time GNSS reference stations to generate advisory notes.</li>
 </ul>
 </p>
 <p>
@@ -40,7 +41,7 @@ BNC supports the following GNSS data formats:
 <li>RTCM Version 3.x containing message types 1002 (GPS, SBAS) or 1004 (GPS), 1010 or 1012 (GLONASS), 1019 or 1020 (broadcast ephemeris)</li>
 <li>RTIGS containing GPS record types 200 (observations) and 300 (ephemeris).</li>
 </ul>
-Furthermore, BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
+BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
 </p>
 <p><a name="resources"><h3>2. Resources</h3></p>
 <p>
@@ -388,7 +389,7 @@ Outage and corruption events are reported in the Log file/section. They can also
 
 <p><a name="obsrate"><h4>3.8.1 Observation Rate - mandatory for 'Failure threshold' and 'Recovery threshold'</h4></p>
 <p>
-BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is bypassed (decoding attempt will never get paused).
+BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is by-passed (decoding attempt will never get paused).
 </p> 
 
 <p><a name="advfail"><h4>3.8.2 Failure Threshold - optional</h4></p>
