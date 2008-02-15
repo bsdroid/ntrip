@@ -107,10 +107,12 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   // ----------------
   _inspSegm = 50;
   if ( settings.value("obsRate").toString().isEmpty() ) { _inspSegm = 0; }
+  if ( settings.value("obsRate").toString().indexOf("5 Hz") != -1 ) { _inspSegm = 2; }
   if ( settings.value("obsRate").toString().indexOf("1 Hz") != -1 ) { _inspSegm = 10; }
   if ( settings.value("obsRate").toString().indexOf("0.5 Hz") != -1 ) { _inspSegm = 20; }
   if ( settings.value("obsRate").toString().indexOf("0.2 Hz") != -1 ) { _inspSegm = 40; }
   if ( settings.value("obsRate").toString().indexOf("0.1 Hz") != -1 ) { _inspSegm = 50; }
+  printf("%d\n",_inspSegm);
   _adviseFail = settings.value("adviseFail").toInt();
   _adviseReco = settings.value("adviseReco").toInt();
   _adviseScript = settings.value("adviseScript").toString();
