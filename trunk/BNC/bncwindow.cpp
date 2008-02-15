@@ -152,13 +152,14 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setMaximumWidth(9*ww);
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
   _rnxSamplSpinBox->setSuffix(" sec");
-  _inspSegmSpinBox    = new QSpinBox();
-  _inspSegmSpinBox->setMinimum(0);
-  _inspSegmSpinBox->setMaximum(60);
-  _inspSegmSpinBox->setSingleStep(1);
-  _inspSegmSpinBox->setMaximumWidth(9*ww);
-  _inspSegmSpinBox->setValue(settings.value("inspSegm").toInt());
-  _inspSegmSpinBox->setSuffix(" sec");
+  _obsRateComboBox    = new QComboBox();
+  _obsRateComboBox->setMaximumWidth(9*ww);
+  _obsRateComboBox->setEditable(false);
+  _obsRateComboBox->addItems(QString(",0.1 Hz,0.2 Hz,0.5 Hz,1 Hz").split(","));
+  int kk = _obsRateComboBox->findText(settings.value("obsRate").toString());
+  if (kk != -1) {
+    _obsRateComboBox->setCurrentIndex(kk);
+  }
   _adviseRecoSpinBox = new QSpinBox();
   _adviseRecoSpinBox->setMinimum(0);
   _adviseRecoSpinBox->setMaximum(60);
@@ -266,11 +267,11 @@ bncWindow::bncWindow() {
   _rnxIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Observation file.</p>"));
   _ephIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Navigation file.</p>"));
   _rnxSamplSpinBox->setWhatsThis(tr("<p>Select the RINEX Observation sampling interval in seconds. A value of zero '0' tells BNC to store all received epochs into RINEX.</p>"));
-  _inspSegmSpinBox->setWhatsThis(tr("<p>BNC can collect all returns (success or failure) coming from a decoder within a certain short time span (Inspect segment) to then decide whether the stream content of that segment is corrupted or not. When a continuous problem is detected in consecutive segments, BNC can inform its operator about this event through an Advisory note. A value of about 15 sec (default) as 'Inspect segment' is recommended when handling 1Hz data.</p><p>A value of zero '0' means that you don't want BNC to inform you about incoming data that can not be decoded and that the special handling of corrupted streams is bypassed.</p>"));
-  _adviseRecoSpinBox->setWhatsThis(tr("<p>Following a stream outage or a longer series of bad 'Inspect segments', an Advisory note is generated when valid 'Inspect segments' are received again throughout the 'Recovery' threshold time span. A value of about 5min (default) is recommended.</p><p>A value of zero '0' means that for any stream recovery BNC immediately generates an Advisory note.</p><p>Note that using this function for corrupted streams needs an 'Inspect segment' greater zero '0'.</p>"));
-  _adviseFailSpinBox->setWhatsThis(tr("<p>An Advisory note is generated when no (or only corrupted) observations are seen in all 'Inspect segments' throughout the 'Failure' threshold time span. A value of 15 min (default) is recommended.</p><p>A value of zero '0' means that for any stream failure BNC immediately generates an Advisory note!</p><p>Note that using this function for corrupted streams needs an 'Inspect segment' greater zero '0'.</p>"));
+  _obsRateComboBox->setWhatsThis(tr("<p>BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. The procedure needs a rough estimate of the expected observation rate of the incoming streams. When a continuous problem is detected, BNC can inform its operator about this event through an Advisory note.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is bypassed.</p>"));
+  _adviseRecoSpinBox->setWhatsThis(tr("<p>Following a stream outage or a longer series of bad observations, an Advisory note is generated when valid observations are received again throughout the 'Recovery threshold' time span. A value of about 5min (default) is recommended.</p><p>A value of zero '0' means that for any stream recovery BNC immediately generates an Advisory note.</p><p>Note that for using this function you need to specify the 'Observation rate'.</p>"));
+  _adviseFailSpinBox->setWhatsThis(tr("<p>An Advisory note is generated when no (or only corrupted) observations are seen throughout the 'Failure threshold' time span. A value of 15 min (default) is recommended.</p><p>A value of zero '0' means that for any stream failure BNC immediately generates an Advisory note!</p><p>Note that for using this function you need to specify the 'Observation rate'.</p>"));
   _logFileLineEdit->setWhatsThis(tr("Records of BNC's activities are shown in the Log section on the bottom of this window. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field."));
-  _adviseScriptLineEdit->setWhatsThis(tr("<p>Specify the full path to a script or batch file to handle Advisory notes generated in the event of corrupted streams or stream outages. The affected mountpoint and one of the comments 'Begin_Outage', 'End_Outage', 'Begin_Corrupted', or 'End_Corrupted' are passed on to the script as command line parameters.</p><p>The script can be configured to send an email to BNC's operator and/or to the affected stream provider. An empty option field or invalid path means that you don't want to use this option.</p>"));
+  _adviseScriptLineEdit->setWhatsThis(tr("<p>Specify the full path to a script or batch file to handle Advisory notes generated in the event of corrupted streams or stream outages. The affected mountpoint and one of the comments 'Begin_Outage', 'End_Outage', 'Begin_Corrupted', or 'End_Corrupted' are passed on to the script as command line parameters.</p><p>The script can be configured to send an email to BNC's operator and/or to the affected stream provider. An empty option field (default) or invalid path means that you don't want to use this option.</p>"));
   _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Mountpoints' section. Clicking on 'Add Mountpoints' button will open a window that allows the user to select data streams from an NTRIP broadcaster according to their mountpoints. To remove a stream from the 'Mountpoints' list, highlight it by clicking on it and hit the 'Delete Mountpoints' button. You can also remove multiple mountpoints by highlighting them using +Shift and +Ctrl.</p><p>BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the sourcetable. However, there might be cases where you need to override the automatic selection due to incorrect sourcetable for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.</p><p>In case you need to log the raw data as is, BNC allows users to by-pass its decoders and and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'.</p><p>BNC can also retrieve streams from virtual reference stations (VRS). To initiate these streams, an approximate rover position needs to be sent in NMEA GGA message to the NTRIP broadcaster. In return, a user-specific data stream is generated, typically by a Network-RTK software. This stream is customized to the exact latitude and longitude as shown in the 'lat' and 'long' columns under 'Mountpoints'. These VRS streams are indicated by a 'yes' in the 'nmea' column under 'Mountpoints' as well as in the sourcetable. The default 'lat' and 'long' values are taken from the sourcetable. However, in most cases you would probably want to change this according to your requirement. Double click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter. The format is in positive north latitude degrees (e.g. for northern hemisphere: 52.436, for southern hemisphere: -24.567) and eastern longitude degrees (e.g.: 358.872 or -1.128). Only mountpoints with a 'yes' in its 'nmea' column can be edited. The position should preferably be a point within the coverage of the network.</p>"));
   _log->setWhatsThis(tr("Records of BNC's activities are shown in the Log section. The message log covers the communication status between BNC and the NTRIP broadcaster as well as any problems that occur in the communication link, stream availability, stream delay, stream conversion etc."));
   _ephV3CheckBox->setWhatsThis(tr("The default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format."));
@@ -293,7 +294,7 @@ bncWindow::bncWindow() {
   aogroup->addTab(ogroup,tr("RINEX - Observations"));
   aogroup->addTab(egroup,tr("RINEX - Ephemeris"));
   aogroup->addTab(sgroup,tr("Synchronized Observations"));
-  aogroup->addTab(agroup,tr("Advisory"));
+  aogroup->addTab(agroup,tr("Advisory Note"));
 
   QGridLayout* pLayout = new QGridLayout;
   pLayout->setColumnMinimumWidth(0,12*ww);
@@ -348,11 +349,11 @@ bncWindow::bncWindow() {
 
   QGridLayout* aLayout = new QGridLayout;
   aLayout->setColumnMinimumWidth(0,12*ww);
-  aLayout->addWidget(new QLabel("Inspect segment"),               0, 0);
-  aLayout->addWidget(_inspSegmSpinBox,                            0, 1);
-  aLayout->addWidget(new QLabel("Failure"),                       1, 0);
+  aLayout->addWidget(new QLabel("Observation Rate"),              0, 0);
+  aLayout->addWidget(_obsRateComboBox,                            0, 1);
+  aLayout->addWidget(new QLabel("Failure threshold"),             1, 0);
   aLayout->addWidget(_adviseFailSpinBox,                          1, 1);
-  aLayout->addWidget(new QLabel("Recovery"),                      2, 0);
+  aLayout->addWidget(new QLabel("Recovery threshold"),            2, 0);
   aLayout->addWidget(_adviseRecoSpinBox,                          2, 1);
   aLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
   aLayout->addWidget(_adviseScriptLineEdit,                       3, 1);
@@ -512,7 +513,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("proxyHost",   _proxyHostLineEdit->text());
   settings.setValue("proxyPort",   _proxyPortLineEdit->text());
   settings.setValue("waitTime",    _waitTimeSpinBox->value());
-  settings.setValue("inspSegm",    _inspSegmSpinBox->value());
+  settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("adviseFail",  _adviseFailSpinBox->value());
   settings.setValue("adviseReco",  _adviseRecoSpinBox->value());
   settings.setValue("outFile",     _outFileLineEdit->text());
@@ -605,6 +606,7 @@ void bncWindow::slotGetData() {
     _caster->addGetThread(getThread);
 
     getThread->start();
+    _mountPointsTable->setSortingEnabled(true);
   }
 }
 

@@ -105,7 +105,12 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
 
   // Notice threshold
   // ----------------
-  _inspSegm = settings.value("inspSegm").toInt();
+  _inspSegm = 50;
+  if ( settings.value("obsRate").toString().isEmpty() ) { _inspSegm = 0; }
+  if ( settings.value("obsRate").toString().indexOf("1 Hz") != -1 ) { _inspSegm = 10; }
+  if ( settings.value("obsRate").toString().indexOf("0.5 Hz") != -1 ) { _inspSegm = 20; }
+  if ( settings.value("obsRate").toString().indexOf("0.2 Hz") != -1 ) { _inspSegm = 40; }
+  if ( settings.value("obsRate").toString().indexOf("0.1 Hz") != -1 ) { _inspSegm = 50; }
   _adviseFail = settings.value("adviseFail").toInt();
   _adviseReco = settings.value("adviseReco").toInt();
   _adviseScript = settings.value("adviseScript").toString();
@@ -508,8 +513,10 @@ void bncGetThread::run() {
       if ( _decodeStart.isValid() && _decodeStart.secsTo(QDateTime::currentDateTime()) > _adviseReco * 60 ) {
         _decodeStart.setDate(QDate());
         _decodeStart.setTime(QTime());
-        emit(newMessage(_staID + ": Outage recovery threshold exceeded"));
-        callScript("End_Outage");
+        if (_inspSegm>0) {
+          emit(newMessage(_staID + ": Outage recovery threshold exceeded"));
+          callScript("End_Outage");
+        }
       }
 
         delete [] data;
@@ -612,8 +619,10 @@ void bncGetThread::tryReconnect() {
       if ( _decodeStop.isValid() && _decodeStop.secsTo(QDateTime::currentDateTime()) > _adviseFail * 60 ) {
         _decodeStop.setDate(QDate());
         _decodeStop.setTime(QTime());
-        emit(newMessage(_staID + ": Outage failure threshold exceeded"));
-        callScript("Begin_Outage");
+        if (_inspSegm>0) {
+          emit(newMessage(_staID + ": Outage failure threshold exceeded"));
+          callScript("Begin_Outage");
+        }
       }
       _nextSleep *= 2;
       if (_nextSleep > 256) {
