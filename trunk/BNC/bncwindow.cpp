@@ -267,7 +267,7 @@ bncWindow::bncWindow() {
   _rnxIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Observation file.</p>"));
   _ephIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Navigation file.</p>"));
   _rnxSamplSpinBox->setWhatsThis(tr("<p>Select the RINEX Observation sampling interval in seconds. A value of zero '0' tells BNC to store all received epochs into RINEX.</p>"));
-  _obsRateComboBox->setWhatsThis(tr("<p>BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. The procedure needs a rough estimate of the expected observation rate of the incoming streams. When a continuous problem is detected, BNC can inform its operator about this event through an Advisory note.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is bypassed.</p>"));
+  _obsRateComboBox->setWhatsThis(tr("<p>BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. The procedure needs a rough estimate of the expected 'Observation rate' of the incoming streams. When a continuous problem is detected, BNC can inform its operator about this event through an Advisory note.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is bypassed.</p>"));
   _adviseRecoSpinBox->setWhatsThis(tr("<p>Following a stream outage or a longer series of bad observations, an Advisory note is generated when valid observations are received again throughout the 'Recovery threshold' time span. A value of about 5min (default) is recommended.</p><p>A value of zero '0' means that for any stream recovery BNC immediately generates an Advisory note.</p><p>Note that for using this function you need to specify the 'Observation rate'.</p>"));
   _adviseFailSpinBox->setWhatsThis(tr("<p>An Advisory note is generated when no (or only corrupted) observations are seen throughout the 'Failure threshold' time span. A value of 15 min (default) is recommended.</p><p>A value of zero '0' means that for any stream failure BNC immediately generates an Advisory note!</p><p>Note that for using this function you need to specify the 'Observation rate'.</p>"));
   _logFileLineEdit->setWhatsThis(tr("Records of BNC's activities are shown in the Log section on the bottom of this window. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field."));
@@ -349,7 +349,7 @@ bncWindow::bncWindow() {
 
   QGridLayout* aLayout = new QGridLayout;
   aLayout->setColumnMinimumWidth(0,12*ww);
-  aLayout->addWidget(new QLabel("Observation Rate"),              0, 0);
+  aLayout->addWidget(new QLabel("Observation rate"),              0, 0);
   aLayout->addWidget(_obsRateComboBox,                            0, 1);
   aLayout->addWidget(new QLabel("Failure threshold"),             1, 0);
   aLayout->addWidget(_adviseFailSpinBox,                          1, 1);
