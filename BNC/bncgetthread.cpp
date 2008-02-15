@@ -400,9 +400,6 @@ void bncGetThread::run() {
   if (initPause < _inspSegm) {
     initPause = _inspSegm;
   }
-  if ( _adviseFail < 1 && _adviseReco < 1 ) {
-    initPause = 0;
-  }
   currPause = initPause;
 
   // Read Incoming Data
