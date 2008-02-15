@@ -388,7 +388,7 @@ Outage and corruption events are reported in the Log file/section. They can also
 
 <p><a name="obsrate"><h4>3.8.1 Observation Rate - mandatory for 'Failure threshold' and 'Recovery threshold'</h4></p>
 <p>
-BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is bypassed.
+BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is bypassed (decoding attempt will never get paused).
 </p> 
 
 <p><a name="advfail"><h4>3.8.2 Failure Threshold - optional</h4></p>
