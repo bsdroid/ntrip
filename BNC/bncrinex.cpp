@@ -403,9 +403,10 @@ void bncRinex::writeHeader(const QDateTime& datTim,
       }
       else if (line.indexOf("# / TYPES OF OBSERV") != -1) {
         if (_rinexVers == 3) {
-          _out << "G    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
-          _out << "R    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
-          _out << "S    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
+// Changed declaration of data types, consistent with Rinex3 Perlt  
+          _out << "G   10 C1C C1P L1C S1C C2X C2P L2X S2X L2P S2P              SYS / # / OBS TYPES" << endl;
+          _out << "R   10 C1C C1P L1C S1C C2C C2P L2C S2C L2P S2P              SYS / # / OBS TYPES" << endl;
+          _out << "S    3 C1C L1C S1C                                          SYS / # / OBS TYPES" << endl;
         }
         else { 
           _out << "     8    C1    C2    P1    P2    L1    L2    S1    S2"
@@ -419,6 +420,17 @@ void bncRinex::writeHeader(const QDateTime& datTim,
         QString hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
                       _mountPoint.path())).leftJustified(60, ' ', true);
         _out << hlp.toAscii().data() << "COMMENT" << endl;
+      }
+// Added header line for Rinex3 regarding mandatory MARKER TYPE field Perlt
+      else if (line.indexOf("MARKER NAME") != -1) {
+        if (_rinexVers == 3) {
+          _out << line.toAscii().data() << endl;
+          _out << setw(71) << "GEODETIC                                                    MARKER TYPE" << endl;
+        } 
+        else {
+          _out << line.toAscii().data() << endl;
+        }
+// End
       }
       else {
         _out << line.toAscii().data() << endl;
@@ -446,6 +458,11 @@ void bncRinex::writeHeader(const QDateTime& datTim,
     }
     _out.setf(ios::left);
     _out << setw(60) << _statID.data()                               << "MARKER NAME"          << endl;
+// Added header line for Rinex3 regarding mandatory MARKER TYPE field Perlt
+    if (_rinexVers == 3) {
+      _out << setw(60) << "unknown"                                  << "MARKER TYPE      "    << endl;
+    }
+// End
     _out << setw(60) << "unknown             unknown"                << "OBSERVER / AGENCY"    << endl;
     _out << setw(20) << "unknown"    
          << setw(20) << "unknown"
@@ -463,9 +480,10 @@ void bncRinex::writeHeader(const QDateTime& datTim,
          << setw(14) << setprecision(4) << antennaNEU[2] 
          << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
     if (_rinexVers == 3) {
-      _out << "G    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
-      _out << "R    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
-      _out << "S    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES" << endl;
+// Changed declaration of data types, consistent with Rinex3 Perlt  
+      _out << "G   10 C1C C1P L1C S1C C2X C2P L2X S2X L2P S2P              SYS / # / OBS TYPES" << endl;
+      _out << "R   10 C1C C1P L1C S1C C2C C2P L2C S2C L2P S2P              SYS / # / OBS TYPES" << endl;
+      _out << "S    3 C1C L1C S1C                                          SYS / # / OBS TYPES" << endl;
 
     }
     else {
@@ -544,6 +562,7 @@ void bncRinex::dumpEpoch(long maxTime) {
   // RINEX Version 3
   // ---------------
   if (_rinexVers == 3) {
+    char sbasflag = 'S';
     _out << datTim.toString("> yyyy MM dd hh mm ").toAscii().data()
          << setw(10) << setprecision(7) << sec
          << "  " << 0 << setw(3)  << dumpList.size() << endl;
@@ -551,17 +570,40 @@ void bncRinex::dumpEpoch(long maxTime) {
     QListIterator<p_obs> it(dumpList);
     while (it.hasNext()) {
       p_obs obs = it.next();
+// Changed data output, C1P, C2C|X, L2C|X, S2C|X added. Changed Output for SBAS Perlt  
+      if (sbasflag != obs->_o.satSys) {
       _out << obs->_o.satSys 
            << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
            << setw(14) << setprecision(3) << obs->_o.C1 << "  "  
+           << setw(14) << setprecision(3) << obs->_o.P1 << "  "  
            << setw(14) << setprecision(3) << obs->_o.L1 << " " 
            << setw(1)                     << obs->_o.SNR1
            << setw(14) << setprecision(3) << obs->_o.S1 << "  " 
-           << setw(14) << setprecision(3) << obs->_o.P2 << "  " 
-           << setw(14) << setprecision(3) << obs->_o.L2 << " " 
-           << setw(1)                     << obs->_o.SNR2
-           << setw(14) << setprecision(3) << obs->_o.S2
-           << endl;
+           << setw(14) << setprecision(3) << obs->_o.C2 << "  "  
+           << setw(14) << setprecision(3) << obs->_o.P2 << "  " ;
+      if ((obs->_o.C2 != 0.0) && (obs->_o.P2 == 0.0)) {
+       _out << setw(14) << setprecision(3) << obs->_o.L2 << " " 
+            << setw(1)                     << obs->_o.SNR2
+            << setw(14) << setprecision(3) << obs->_o.S2 << "  "
+            << "                              ";
+      }
+      else {
+       _out << "                                " 
+            << setw(14) << setprecision(3) << obs->_o.L2 << " " 
+            << setw(1)                     << obs->_o.SNR2
+            << setw(14) << setprecision(3) << obs->_o.S2;
+      } 
+      _out << endl;
+      }
+      else {
+      _out << obs->_o.satSys 
+           << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
+           << setw(14) << setprecision(3) << obs->_o.C1 << "  "  
+           << setw(14) << setprecision(3) << obs->_o.P1 << "  "  
+           << setw(14) << setprecision(3) << obs->_o.L1 << " " 
+           << setw(1)                     << obs->_o.SNR1
+           << setw(14) << setprecision(3) << obs->_o.S1 << endl; 
+      }
       delete obs;
     }
   }
