@@ -155,7 +155,7 @@ bncWindow::bncWindow() {
   _obsRateComboBox    = new QComboBox();
   _obsRateComboBox->setMaximumWidth(9*ww);
   _obsRateComboBox->setEditable(false);
-  _obsRateComboBox->addItems(QString(",0.1 Hz,0.2 Hz,0.5 Hz,1 Hz").split(","));
+  _obsRateComboBox->addItems(QString(",0.1 Hz,0.2 Hz,0.5 Hz,1 Hz,5 Hz").split(","));
   int kk = _obsRateComboBox->findText(settings.value("obsRate").toString());
   if (kk != -1) {
     _obsRateComboBox->setCurrentIndex(kk);
