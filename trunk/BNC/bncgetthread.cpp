@@ -482,8 +482,10 @@ void bncGetThread::run() {
             // End corrupt threshold
             // ---------------------
             if ( begCorrupt && !endCorrupt && secSucc > _adviseReco * 60 ) {
+              _endDateCor = QDateTime::currentDateTime().toUTC().date().toString("dd-MM-yy");
+              _endTimeCor = QDateTime::currentDateTime().toUTC().time().toString("hh:mm:ss");
               emit(newMessage(_staID + ": Corrupted recovery threshold exceeded"));
-              callScript("End_Corrupted");
+              callScript(("End_Corrupted " + _endDateCor + " " + _endTimeCor + " Begin was " + _begDateCor + " " + _begTimeCor).toAscii());
               endCorrupt = true;
               begCorrupt = false;
               secFail = 0;
@@ -493,8 +495,10 @@ void bncGetThread::run() {
               // Begin corrupt threshold
               // -----------------------
               if ( !begCorrupt && secFail > _adviseFail * 60 ) {
+                _begDateCor = QDateTime::currentDateTime().toUTC().date().toString("dd-MM-yy");
+                _begTimeCor = QDateTime::currentDateTime().toUTC().time().toString("hh:mm:ss");
                 emit(newMessage(_staID + ": Corrupted failure threshold exceeded"));
-                callScript("Begin_Corrupted");
+                callScript(("Begin_Corrupted " + _begDateCor + " " + _begTimeCor).toAscii());
                 begCorrupt = true;
                 endCorrupt = false;
                 secSucc = 0;
@@ -512,8 +516,10 @@ void bncGetThread::run() {
         _decodeStart.setDate(QDate());
         _decodeStart.setTime(QTime());
         if (_inspSegm>0) {
+          _endDateOut = QDateTime::currentDateTime().toUTC().date().toString("dd-MM-yy");
+          _endTimeOut = QDateTime::currentDateTime().toUTC().time().toString("hh:mm:ss");
           emit(newMessage(_staID + ": Outage recovery threshold exceeded"));
-          callScript("End_Outage");
+          callScript(("End_Outage " + _endDateOut + " " + _endTimeOut + " Begin was " + _begDateOut + " " + _begTimeOut).toAscii());
         }
       }
 
@@ -618,8 +624,10 @@ void bncGetThread::tryReconnect() {
         _decodeStop.setDate(QDate());
         _decodeStop.setTime(QTime());
         if (_inspSegm>0) {
+          _begDateOut = QDateTime::currentDateTime().toUTC().date().toString("dd-MM-yy");
+          _begTimeOut = QDateTime::currentDateTime().toUTC().time().toString("hh:mm:ss");
           emit(newMessage(_staID + ": Outage failure threshold exceeded"));
-          callScript("Begin_Outage");
+          callScript(("Begin_Outage " + _begDateOut + " " + _begTimeOut).toAscii());
         }
       }
       _nextSleep *= 2;

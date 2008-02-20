@@ -410,7 +410,7 @@ Note that specifying a value of zero '0' for the 'Recovery threshold' will force
 
 <p><a name="advscript"><h4>3.8.4 Advisory Script - optional </h4></p>
 <p>
-As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (\%1 and \%2 on Windows systems or \$1 and \$2 on UNIX/Linuxsystems).
+As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (\%1 and \%2 on Windows systems or \$1 and \$2 on Unix/Linux systems).
 </p>
 <p>
 Leave this field empty if you do not wish to use this option. An invalid path will also disable this option.
@@ -421,9 +421,10 @@ Sample script for Unix/Linux systems:
 <pre>
 #!/bin/bash
 sleep $((60*RANDOM/32767))
-cat | mail -s "BNC: $2 Stream $1" email@address &lt;&lt;!
+cat | mail -s "NABU: $1" email@address &lt;&lt;!
 Advisory Note to BNC User,
-Please note a $2 advisory from BNC for stream $1 dated `date`.
+Please note the following advisory received from BNC.
+Stream: $*
 Regards, BNC
 !
 </pre>
