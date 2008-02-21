@@ -410,14 +410,18 @@ Note that specifying a value of zero '0' for the 'Recovery threshold' will force
 
 <p><a name="advscript"><h4>3.8.4 Advisory Script - optional </h4></p>
 <p>
-As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (\%1 and \%2 on Windows systems or \$1 and \$2 on Unix/Linux systems).
+As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (%1 and %2 on Windows systems or $1 and $2 on Unix/Linux systems) together with date and time information.
 </p>
 <p>
-Leave this field empty if you do not wish to use this option. An invalid path will also disable this option.
+Leave the 'Script' field empty if you do not wish to use this option. An invalid path will also disable this option.
 </p> 
-<p> 
+<p>
+Examples for command line parameter strings passed on to the advisory 'Script' are:
+<pre>
+FFMJ0 Begin_Outage 21-02-08 09:25:59
+FFMJ0 End_Outage 21-02-08 11:36:02 Begin was 21-02-08 09:25:59
+</pre>
 Sample script for Unix/Linux systems:
-</p> 
 <pre>
 #!/bin/bash
 sleep $((60*RANDOM/32767))
@@ -428,6 +432,7 @@ Stream: $*
 Regards, BNC
 !
 </pre>
+</p> 
 <p> 
 Note the sleep command in this script which causes the system to wait for a random period of up to 60 seconds before sending the email. This should avoids overloading your mail server in case of a simultaneous failure of many streams.
 </p> 
