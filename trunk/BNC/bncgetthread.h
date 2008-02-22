@@ -97,6 +97,7 @@ class bncGetThread : public QThread {
    QDateTime   _decodeStop;
    QDateTime   _decodePause;
    QDateTime   _decodeTime;
+   QDateTime   _decodeSucc;
    QMutex      _mutex;
 };
 
