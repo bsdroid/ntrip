@@ -101,6 +101,10 @@ bncRinex::~bncRinex() {
   while (it.hasNext()) {
     delete it.next();
   }
+  QSettings settings;
+  if ((_rinexVers == 3) && ( Qt::CheckState(settings.value("rnxAppend").toInt()) != Qt::Checked) ) {
+    _out << "END OF FILE" << endl;
+  }
   _out.close();
 }
 
@@ -656,6 +660,9 @@ void bncRinex::dumpEpoch(long maxTime) {
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::closeFile() {
   QMutexLocker locker(&_mutex);
+  if (_rinexVers == 3) {
+    _out << "END OF FILE" << endl;
+  }
   _out.close();
   if (!_rnxScriptName.isEmpty()) {
     msleep(1);
