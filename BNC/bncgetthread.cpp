@@ -486,7 +486,7 @@ void bncGetThread::run() {
             if ( begCorrupt && !endCorrupt && secSucc > _adviseReco * 60 ) {
               _endDateCor = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().date().toString("yy-MM-dd");
               _endTimeCor = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().time().toString("hh:mm:ss");
-              emit(newMessage((_staID + ": Corrupted recovery threshold exceeded at " + _endDateCor + " " + _endTimeCor).toAscii()));
+              emit(newMessage((_staID + ": Recovery threshold exceeded, corruption ended " + _endDateCor + " " + _endTimeCor).toAscii()));
               callScript(("End_Corrupted " + _endDateCor + " " + _endTimeCor + " Begin was " + _begDateCor + " " + _begTimeCor).toAscii());
               endCorrupt = true;
               begCorrupt = false;
@@ -499,7 +499,7 @@ void bncGetThread::run() {
               if ( !begCorrupt && secFail > _adviseFail * 60 ) {
                 _begDateCor = _decodeSucc.toUTC().date().toString("yy-MM-dd");
                 _begTimeCor = _decodeSucc.toUTC().time().toString("hh:mm:ss");
-                emit(newMessage((_staID + ": Corrupted failure threshold exceeded at " + _begDateCor + " " + _begTimeCor).toAscii()));
+                emit(newMessage((_staID + ": Failure threshold exceeded, corrupted since " + _begDateCor + " " + _begTimeCor).toAscii()));
                 callScript(("Begin_Corrupted " + _begDateCor + " " + _begTimeCor).toAscii());
                 begCorrupt = true;
                 endCorrupt = false;
@@ -520,7 +520,7 @@ void bncGetThread::run() {
         if (_inspSegm>0) {
           _endDateOut = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().date().toString("yy-MM-dd");
           _endTimeOut = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().time().toString("hh:mm:ss");
-          emit(newMessage((_staID + ": Outage recovery threshold exceeded at " + _endDateOut + " " + _endTimeOut).toAscii()));
+          emit(newMessage((_staID + ": Recovery threshold exceeded, outage ended " + _endDateOut + " " + _endTimeOut).toAscii()));
           callScript(("End_Outage " + _endDateOut + " " + _endTimeOut + " Begin was " + _begDateOut + " " + _begTimeOut).toAscii());
         }
       }
@@ -628,7 +628,7 @@ void bncGetThread::tryReconnect() {
         if (_inspSegm>0) {
           _begDateOut = _decodeTime.toUTC().date().toString("yy-MM-dd");
           _begTimeOut = _decodeTime.toUTC().time().toString("hh:mm:ss");
-          emit(newMessage((_staID + ": Outage failure threshold exceeded at " + _begDateOut + " " + _begTimeOut).toAscii()));
+          emit(newMessage((_staID + ": Failure threshold exceeded, outage since " + _begDateOut + " " + _begTimeOut).toAscii()));
           callScript(("Begin_Outage " + _begDateOut + " " + _begTimeOut).toAscii());
         }
       }

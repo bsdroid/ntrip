@@ -291,8 +291,8 @@ bncWindow::bncWindow() {
   QWidget* ogroup = new QWidget();
   aogroup->addTab(pgroup,tr("Proxy"));
   aogroup->addTab(ggroup,tr("General"));
-  aogroup->addTab(ogroup,tr("RINEX - Observations"));
-  aogroup->addTab(egroup,tr("RINEX - Ephemeris"));
+  aogroup->addTab(ogroup,tr("RINEX Observations"));
+  aogroup->addTab(egroup,tr("RINEX Ephemeris"));
   aogroup->addTab(sgroup,tr("Synchronized Observations"));
   aogroup->addTab(agroup,tr("Advisory Note"));
 
