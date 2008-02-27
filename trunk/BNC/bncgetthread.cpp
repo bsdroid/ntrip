@@ -486,7 +486,7 @@ void bncGetThread::run() {
             if ( begCorrupt && !endCorrupt && secSucc > _adviseReco * 60 ) {
               _endDateCor = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().date().toString("yy-MM-dd");
               _endTimeCor = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().time().toString("hh:mm:ss");
-              emit(newMessage(_staID + ": Recovery threshold exceeded, corruption ended"));
+              emit(newMessage((_staID + ": Recovery threshold exceeded, corruption ended " + _endDateCor + " " + _endTimeCor).toAscii()));
               callScript(("End_Corrupted " + _endDateCor + " " + _endTimeCor + " Begin was " + _begDateCor + " " + _begTimeCor).toAscii());
               endCorrupt = true;
               begCorrupt = false;
@@ -520,7 +520,7 @@ void bncGetThread::run() {
         if (_inspSegm>0) {
           _endDateOut = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().date().toString("yy-MM-dd");
           _endTimeOut = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().time().toString("hh:mm:ss");
-          emit(newMessage(_staID + ": Recovery threshold exceeded, outage ended"));
+          emit(newMessage((_staID + ": Recovery threshold exceeded, outage ended " + _endDateOut + " " + _endTimeOut).toAscii()));
           callScript(("End_Outage " + _endDateOut + " " + _endTimeOut + " Begin was " + _begDateOut + " " + _begTimeOut).toAscii());
         }
       }
