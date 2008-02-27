@@ -67,11 +67,16 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen) {
   int    refWeek;
   double refSecs;
   currentGPSWeeks(refWeek, refSecs);
+  bool decoded = false;
 
   while(true) {
     _PP.getPacket(_buffer);
     if (!_PP.valid()) {
-      return failure;
+      if (decoded) {
+        return success;
+      } else {
+        return failure;
+      }
     }
 
     if ( _PP.ID()==18 || _PP.ID()==19 ) {   
@@ -79,6 +84,7 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen) {
       _ObsBlock.extract(_PP);
 
       if (_ObsBlock.valid()) {
+        decoded = true;
 
         int    epochWeek;
         double epochSecs;
@@ -104,7 +110,6 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen) {
           obs->_o.L2       = _ObsBlock.resolvedPhase_L2(iSat);
         }
         _ObsBlock.clear();
-        return success;
       }
     }
   }
