@@ -79,7 +79,7 @@ BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. P
 &nbsp; &nbsp; &nbsp; 3.7.1. <a href=#syncport>Output Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.2. <a href=#syncwait>Wait for Full Epoch</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.3. <a href=#syncfile>Output File</a><br>
-3.8. <a href=#advnote>Advisory Note</a><br>
+3.8. <a href=#advnote>Monitor</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.1. <a href=#obsrate>Observation Rate</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.2. <a href=#advfail>Failure Threshold</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.3. <a href=#advreco>Recovery Threshold</a><br>
@@ -372,7 +372,7 @@ Specifies the full path to a file where synchronized observations are saved in p
 Beware that the size of this file can rapidly increase depending on the number of incoming streams. This option is primarily meant for testing and evaluation.
 </p>
 
-<p><a name="advnote"><h4>3.8. Advisory Note</h4></p>
+<p><a name="advnote"><h4>3.8. Monitor</h4></p>
 
 <p>
 At various times, the incoming stream might become unavailable or corrupted. In such cases, it is important that the BNC operator and/or the stream providers become aware of the situation so that necessary measures can be taken to restore the stream. Furthermore, continuous attempts to decode corrupted stream(s) can generate unnecessary workload for BNC. Outages and corruptions are handled by BNC as follows:
