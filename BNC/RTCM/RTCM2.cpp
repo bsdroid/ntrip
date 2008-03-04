@@ -39,6 +39,10 @@
 //   2006/10/18  OMO  Improved screening of bad data in RTCM2_Obs::extract
 //   2006/11/25  OMO  Revised check for presence of GLONASS data
 //   2007/05/25  GW   Round time tag to 100 ms
+//   2007/12/11  AHA  Changed handling of C/A- and P-Code on L1 
+//   2007/12/13  AHA  Changed epoch comparison in packet extraction 
+//   2008/03/01  OMO  Compilation flag for epoch rounding
+//   2008/03/04  AHA  Fixed problems with PRN 32
 //
 // (c) DLR/GSOC
 //
@@ -58,6 +62,17 @@
 // undersized packets in get(Unsigned)Bits
 
 #define DEBUG 0    
+
+// Activate (1) or deactivate (0) rounding of measurement epochs to 100ms
+//
+// Note: A need to round the measurement epoch to integer tenths of a second was
+// noted by BKG in the processing of RTCM2 data from various receivers in NTRIP
+// real-time networks. It is unclear at present, whether this is due to an 
+// improper implementation of the RTCM2 standard in the respective receivers
+// or an unclear formulation of the standard. 
+
+#define ROUND_EPOCH 1  
+
 
 using namespace std;
 
@@ -880,12 +895,15 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     // Current epoch (mod 3600 sec) 
     t = 0.6*P.modZCount() 
         + P.getUnsignedBits(4,20)*1.0e-6;
+    
+#if (ROUND_EPOCH==1)
     // SC-104 V2.3 4-42 Note 1 4. Assume measurements at hard edges
     // of receiver clock with minimum divisions of 10ms
     // and clock error less then recommended 1.1ms
     // Hence, round time tag to 100 ms
-    t = floor(t*100.+0.5)/100.;
-    
+    t = floor(t*100.0+0.5)/100.0;
+#endif
+
     // Frequency (exit if neither L1 nor L2)
     isL1  = ( P.getUnsignedBits(0,1)==0 );
     isOth = ( P.getUnsignedBits(1,1)==1 );
@@ -905,7 +923,8 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
       if ( nSat==0 ) {
         secs = t; // Store epoch 
       }
-      else if (t!=secs) {
+//    else if (t!=secs) {
+      else if (abs(t-secs)>1e-6) {
         clear(); secs = t; // Clear all data, then store epoch 
       };
     };
@@ -930,6 +949,8 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
       
       // Satellite 
       sid = P.getUnsignedBits(iSat*48+27,5);
+      if(sid==0) sid=32;
+      
       prn = (isGPS? sid : sid+200 );
       
       // Carrier phase measurement (mod 2^23 [cy]; sign matched to range)
@@ -974,12 +995,15 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     // Current epoch (mod 3600 sec) 
     t = 0.6*P.modZCount() 
         + P.getUnsignedBits(4,20)*1.0e-6;
+    
+#if (ROUND_EPOCH==1)
     // SC-104 V2.3 4-42 Note 1 4. Assume measurements at hard edges
     // of receiver clock with minimum divisions of 10ms
     // and clock error less then recommended 1.1ms
     // Hence, round time tag to 100 ms
-    t = floor(t*100.+0.5)/100.;
-    
+    t = floor(t*100.0+0.5)/100.0;
+#endif
+
     // Frequency (exit if neither L1 nor L2)
     isL1  = ( P.getUnsignedBits(0,1)==0 );
     isOth = ( P.getUnsignedBits(1,1)==1 );
@@ -999,7 +1023,8 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
       if ( nSat==0 ) {
         secs = t; // Store epoch 
       }
-      else if (t!=secs) {
+//    else if (t!=secs) {
+      else if (abs(t-secs)>1e-6) {
         clear(); secs = t; // Clear all data, then store epoch 
       };
     };
@@ -1023,6 +1048,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
       
       // Satellite 
       sid = P.getUnsignedBits(iSat*48+27,5);
+      if(sid==0) sid=32;
       prn = (isGPS? sid : sid+200 );
       
       // Pseudorange measurement [m]
@@ -1047,14 +1073,16 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
       // Store measurement
       if (isL1) {
         if (isCAcode) {
-	  rng_C1[idx] = rng;
-      } else {
-        rng_P1[idx] = rng; 
-      } }
+          rng_C1[idx] = rng;
+        }
+        else {
+          rng_P1[idx] = rng; 
+        }
+      }
       else {
         rng_P2[idx] = rng;
       };
-
+           
     };
   
   };
