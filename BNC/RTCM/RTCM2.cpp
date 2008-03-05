@@ -43,6 +43,7 @@
 //   2007/12/13  AHA  Changed epoch comparison in packet extraction 
 //   2008/03/01  OMO  Compilation flag for epoch rounding
 //   2008/03/04  AHA  Fixed problems with PRN 32
+//   2008/03/05  AHA  Implemeted fix for Trimble 4000SSI receivers
 //
 // (c) DLR/GSOC
 //
@@ -71,8 +72,16 @@
 // improper implementation of the RTCM2 standard in the respective receivers
 // or an unclear formulation of the standard. 
 
-#define ROUND_EPOCH 1  
+#define ROUND_EPOCH  1
 
+// Fix for data streams originating from TRIMBLE_4000SSI receivers.
+// GPS PRN32 is erroneously flagged as GLONASS satellite in the C/A
+// pseudorange messages. We therefore use a majority voting to 
+// determine the true constellation for this message.
+// This fix is only required for Trimble4000SSI receivers but can also
+// be used with all other known receivers.
+
+#define FIX_TRIMBLE_4000SSI 1
 
 using namespace std;
 
@@ -1009,9 +1018,24 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     isOth = ( P.getUnsignedBits(1,1)==1 );
     if (isOth) return;
      
+#if (FIX_TRIMBLE_4000SSI==1)
+    // Fix for data streams originating from TRIMBLE_4000SSI receivers.
+    // GPS PRN32 is erroneously flagged as GLONASS satellite in the C/A
+    // pseudorange messages. We therefore use a majority voting to 
+    // determine the true constellation for this message.
+    // This fix is only required for Trimble4000SSI receivers but can also
+    // be used with all other known receivers.
+    int nGPS=0;
+    for(int iSat=0; iSat<NSat; iSat++){
+      // Constellation (for each satellite in message)
+      isGPS = ( P.getUnsignedBits(iSat*48+26,1)==0 );
+      if(isGPS) nGPS++;
+    };
+    isGPS = (2*nGPS>NSat);  
+#else
     // Constellation (for first satellite in message)
     isGPS = ( P.getUnsignedBits(26,1)==0 );
-    GPSonly = GPSonly && isGPS;
+#endif
 
     // Multiple Message Indicator (only checked for first satellite)
     // pendingMsg = ( P.getUnsignedBits(24,1)==1 );
