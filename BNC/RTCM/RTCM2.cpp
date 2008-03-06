@@ -958,7 +958,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
       
       // Satellite 
       sid = P.getUnsignedBits(iSat*48+27,5);
-      if(sid==0) sid=32;
+      if (sid==0) sid=32;
       
       prn = (isGPS? sid : sid+200 );
       
@@ -1036,6 +1036,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     // Constellation (for first satellite in message)
     isGPS = ( P.getUnsignedBits(26,1)==0 );
 #endif
+    GPSonly = GPSonly && isGPS;
 
     // Multiple Message Indicator (only checked for first satellite)
     // pendingMsg = ( P.getUnsignedBits(24,1)==1 );
@@ -1072,7 +1073,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
       
       // Satellite 
       sid = P.getUnsignedBits(iSat*48+27,5);
-      if(sid==0) sid=32;
+      if (sid==0) sid=32;
       prn = (isGPS? sid : sid+200 );
       
       // Pseudorange measurement [m]
