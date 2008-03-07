@@ -84,6 +84,7 @@ BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. P
 &nbsp; &nbsp; &nbsp; 3.8.2. <a href=#advfail>Failure Threshold</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.3. <a href=#advreco>Recovery Threshold</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.4. <a href=#advscript>Advisory Script</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.5. <a href=#meanlate>Mean Latency</a><br>
 3.9. <a href=#mountpoints>Mountpoints</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.1. <a href=#mountadd>Add Mountpoints</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.2. <a href=#mounthost>Broadcaster Host and Port</a><br>
@@ -436,6 +437,18 @@ Regards, BNC
 <p> 
 Note the sleep command in this script which causes the system to wait for a random period of up to 60 seconds before sending the email. This should avoids overloading your mail server in case of a simultaneous failure of many streams.
 </p> 
+
+<p><a name="meanlate"><h4>3.8.5 Mean Latency - optional </h4></p>
+<p>
+Latency is defined here through the following equation:
+</p>
+<p>
+(a) UTC time provided by BNC's host, minus<br>
+(b) GPS time of currently processed epoch, plus<br>
+(c) Number of leap seconds between UTC and GPS time (hard-coded to 14).
+</p>
+<p>BNC can average all latencies per stream over a certain period. The resulting mean latencies are recorded in the Log file/section at the end of each 'Mean latency' interval. Select a 'Mean latency' interval or select the empty option field if you do not want BNC to log latency information.
+</p>
 
 <p><a name="mountpoints"><h4>3.9. Mountpoints</h4></p>
 <p>
