@@ -44,6 +44,8 @@
 //   2008/03/01  OMO  Compilation flag for epoch rounding
 //   2008/03/04  AHA  Fixed problems with PRN 32
 //   2008/03/05  AHA  Implemeted fix for Trimble 4000SSI receivers
+//   2008/03/07  AHA  Major revision of input buffer handling 
+//   2008/03/07  AHA  Removed unnecessary failure flag
 //
 // (c) DLR/GSOC
 //
@@ -62,7 +64,7 @@
 // Activate (1) or deactivate (0) debug output for tracing parity errors and
 // undersized packets in get(Unsigned)Bits
 
-#define DEBUG 0    
+#define DEBUG 0
 
 // Activate (1) or deactivate (0) rounding of measurement epochs to 100ms
 //
@@ -135,12 +137,6 @@ ThirtyBitWord::ThirtyBitWord() : W(0) {
 
 void ThirtyBitWord::clear() {
   W = 0;
-};
-
-// Failure indicator for input operations
-
-bool ThirtyBitWord::fail() const {
-  return failure; 
 };
 
 // Parity check
@@ -258,7 +254,6 @@ unsigned int ThirtyBitWord::value() const {
 };
 
 
-
 // Append a byte with six data bits
 
 void ThirtyBitWord::append(unsigned char b) {
@@ -274,7 +269,7 @@ void ThirtyBitWord::append(unsigned char b) {
     
   // Bits 7 and 6 (of 0..7) must be "01" for valid data bytes
   if ( (b & 0x40) != 0x40 ) {
-    failure = true;
+    // We simply skip the invalid input byte and leave the word unchanged
     return;
   };
   
@@ -289,27 +284,25 @@ void ThirtyBitWord::append(unsigned char b) {
 
 // Get next 30bit word from string
 
-void ThirtyBitWord::get(string& buf) {
+void ThirtyBitWord::get(const string& buf) {
 
   // Check if string is long enough
    
   if (buf.size()<5) {
-    failure = true;
+    // Ignore; users should avoid this case prior to calling get()
     return;
   };
   
   // Process 5 bytes and remove them from the input
   
   for (int i=0; i<5; i++) append(buf[i]);
-  buf.erase(0,5);
 
 #if (DEBUG>0) 
   if (!validParity()) {
-    cerr << "Parity error " 
+    cerr << "Parity error in get()" 
          << bitset<32>(all()) << endl;
   };
 #endif
-  failure = false;
 
 };
 
@@ -327,11 +320,10 @@ void ThirtyBitWord::get(istream& inp) {
 
 #if (DEBUG>0) 
   if (!validParity()) {
-    cerr << "Parity error " 
+    cerr << "Parity error in get()" 
          << bitset<32>(all()) << endl;
   };
 #endif
-  failure = false;
 
 };
 
@@ -339,33 +331,30 @@ void ThirtyBitWord::get(istream& inp) {
 
 void ThirtyBitWord::getHeader(string& buf) {
 
-  unsigned int W_old = W;
+  const int wordLen = 5; // Number of bytes representing a 30-bit word
+  const int spare   = 1; // Number of spare words for resync of parity
+                         // (same value as inRTCM2packet::getPacket()) 
   unsigned int i;
   
   i=0;
-  while (!isHeader() || i<5 ) {
-    // Check if string is long enough; if not restore old word and exit
-    if (buf.size()<i+1) {
-      W = W_old;
-      failure = true;
-      return;
-    };
+  while (!isHeader() && i<buf.size() ) {
     // Process byte
-    append(buf[i]); i++;
+    append(buf[i]);
+    // Increment count
+    i++;
   };
 
-  // Remove processed bytes from buffer
-  
-  buf.erase(0,i);
+  // Remove processed bytes from buffer. Retain also the previous word to
+  // allow a resync if getHeader() is called repeatedly on the same buffer.
+  if (i>=(1+spare)*wordLen) buf.erase(0,i-(1+spare)*wordLen);
 
 #if (DEBUG>0) 
   if (!validParity()) {
-    cerr << "Parity error " 
+    cerr << "Parity error in getHeader()" 
          << bitset<32>(all()) << endl;
   };
 #endif
-  failure = false;
-
+  
 };
 
 // Get next header word from file
@@ -384,11 +373,10 @@ void ThirtyBitWord::getHeader(istream& inp) {
 
 #if (DEBUG>0) 
   if (!validParity()) {
-    cerr << "Parity error " 
+    cerr << "Parity error in getHeader()" 
          << bitset<32>(all()) << endl;
   };
 #endif
-  failure = false;
 
 };
 
@@ -442,35 +430,71 @@ bool RTCM2packet::valid() const {
 
 void RTCM2packet::getPacket(std::string& buf) {
 
-  int           n;
-  ThirtyBitWord W_old = W;
-  string        buf_old = buf;
+  const int wordLen = 5; // Number of bytes representing a 30-bit word
+  const int spare   = 1; // Number of spare words for resync of parity
+                         // (same value as used in ThirtyBitWord::getHeader)
+  unsigned int n;
   
-  // Try to read a full packet. If the input buffer is too short
-  // clear all data and restore the latest 30-bit word prior to 
-  // the getPacket call. The empty header word will indicate
-  // an invalid message, which signals an unsuccessful getPacket()
-  // call.
-   
-  W.getHeader(buf); 
-  H1 = W.value(); 
-  if (W.fail()) { clear(); W=W_old; buf=buf_old; return; };
-  if (!W.validParity()) { clear(); return; };
+  // Try to read a full packet. Processed bytes are removed from the input 
+  // buffer except for the latest spare*wordLen bytes to restore the parity 
+  // bytes upon subseqeunt calls of getPAcket().
   
-  W.get(buf);       
-  H2 = W.value(); 
-  if (W.fail()) { clear(); W=W_old; buf=buf_old; return; };
-  if (!W.validParity()) { clear(); return; };
-
-  n = nDataWords();
-  DW.resize(n);
-  for (int i=0; i<n; i++) {
-    W.get(buf); 
-    DW[i] = W.value(); 
-    if (W.fail()) { clear(); W=W_old; buf=buf_old; return; };
-    if (!W.validParity()) { clear(); return; };
+  // Locate and read the first header word
+  W.getHeader(buf);
+  if (!W.isHeader()) { 
+    // No header found; try again next time. buf retains only the spare
+    // words. The packet contents is cleared to indicate an unsuccessful
+    // termination of getPacket().
+    clear();
+    return; 
+  };
+  H1 = W.value();
+  
+  // Do we have enough bytes to read the next word? If not, the packet 
+  // contents is cleared to indicate an unsuccessful termination. The
+  // previously read spare and header bytes are retained in the buffer
+  // for use in the next call of getPacket().
+  if (buf.size()<(spare+2)*wordLen) { clear(); return; };
+  
+  // Read the second header word
+  W.get(buf.substr((spare+1)*wordLen,buf.size()-1-(spare+1)*wordLen));  
+  H2 = W.value();
+  if (!W.validParity()) { 
+    // Invalid H2 word; delete first buffer byte and try to resynch next time.
+    // The packet contents is cleared to indicate an unsuccessful termination.
+    clear(); 
+    buf.erase(0,1); 
+    return; 
   };
 
+  n = nDataWords();
+  
+  // Do we have enough bytes to read the next word? If not, the packet 
+  // contents is cleared to indicate an unsuccessful termination. The
+  // previously read spare and header bytes are retained in the buffer
+  // for use in the next call of getPacket().
+  if (buf.size()<(spare+2+n)*wordLen) { clear(); return; };
+  
+  DW.resize(n);
+  for (unsigned int i=0; i<n; i++) {
+    W.get(buf.substr((spare+2+i)*wordLen,buf.size()-1-(spare+2+i)*wordLen)); 
+    DW[i] = W.value();
+    if (!W.validParity()) { 
+      // Invalid data word; delete first byte and try to resynch next time.
+      // The packet contents is cleared to indicate an unsuccessful termination.
+      clear(); 
+      buf.erase(0,1); 
+      return; 
+    };
+  };
+
+  // Successful packet extraction; delete total number of message bytes 
+  // from buffer. 
+  // Note: a total of "spare" words remain in the buffer to enable a
+  // parity resynchronization when searching the next header.
+  
+  buf.erase(0,(n+2)*wordLen);
+  
   return;
   
 };
@@ -486,18 +510,18 @@ void RTCM2packet::getPacket(std::istream& inp) {
   
   W.getHeader(inp); 
   H1 = W.value(); 
-  if (W.fail() || !W.validParity()) { clear(); return; }
+  if (inp.fail() || !W.isHeader()) { clear(); return; }
   
   W.get(inp);       
   H2 = W.value(); 
-  if (W.fail() || !W.validParity()) { clear(); return; }
+  if (inp.fail() || !W.validParity()) { clear(); return; }
 
   n = nDataWords();
   DW.resize(n);
   for (int i=0; i<n; i++) {
     W.get(inp); 
     DW[i] = W.value(); 
-    if (W.fail() || !W.validParity()) { clear(); return; }
+    if (inp.fail() || !W.validParity()) { clear(); return; }
   };
 
   return;

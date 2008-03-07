@@ -117,6 +117,17 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   _adviseScript = settings.value("adviseScript").toString();
   expandEnvVar(_adviseScript);
 
+  // Latency interval/average
+  // ------------------------
+  _latIntr = 86400;
+  if ( settings.value("latIntr").toString().isEmpty() ) { _latIntr = 0; }
+  if ( settings.value("latIntr").toString().indexOf("1 min") != -1 ) { _latIntr = 60; }
+  if ( settings.value("latIntr").toString().indexOf("5 min") != -1 ) { _latIntr = 300; }
+  if ( settings.value("latIntr").toString().indexOf("15 min") != -1 ) { _latIntr = 900; }
+  if ( settings.value("latIntr").toString().indexOf("1 hour") != -1 ) { _latIntr = 3600; }
+  if ( settings.value("latIntr").toString().indexOf("6 hours") != -1 ) { _latIntr = 21600; }
+  if ( settings.value("latIntr").toString().indexOf("1 day") != -1 ) { _latIntr = 86400; }
+
   // RINEX writer
   // ------------
   _samplingRate = settings.value("rnxSampl").toInt();
@@ -376,15 +387,24 @@ t_irc bncGetThread::initRun() {
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::run() {
 
+  const double maxDt = 600.0;  // Check observation epoch
   bool wrongEpoch = false;
   bool decode = true;
   int numSucc = 0;
   int secSucc = 0;
   int secFail = 0;
-  int initPause = 30;
+  int initPause = 30;  // Initial pause for corrupted streams
   int currPause = 0;
   bool begCorrupt = false;
   bool endCorrupt = false;
+  int oldSec= 0;
+  int newSec = 0;
+  int numLat = 0;
+  double sumLat = 0.;
+  double minLat = maxDt;
+  double maxLat = -maxDt;
+  double curLat = 0.;
+  double leapsec = 14.;  // Leap second for latency estimation
 
   _decodeTime = QDateTime::currentDateTime();
   _decodeSucc = QDateTime::currentDateTime();
@@ -538,7 +558,6 @@ void bncGetThread::run() {
           currentGPSWeeks(week, sec);
           
           const double secPerWeek = 7.0 * 24.0 * 3600.0;
-          const double maxDt      = 600.0;            
 
           if (week < obs->_o.GPSWeek) {
             week += 1;
@@ -559,6 +578,34 @@ void bncGetThread::run() {
           }
           else {
             wrongEpoch = false;
+
+            // Latency
+            // -------
+            if (_latIntr>0) {
+              newSec = static_cast<int>(sec);
+              if (newSec != oldSec) {
+                if (newSec % _latIntr < oldSec % _latIntr) {
+                  if (numLat>0) {
+                    emit( newMessage(QString("%1: %2 sec mean latency, min %3, max %4")
+                      .arg(_staID.data())
+                      .arg(int(sumLat/numLat*100)/100.)
+                      .arg(int(minLat*100)/100.)
+                      .arg(int(maxLat*100)/100.)
+                      .toAscii()) );
+                  }
+                  sumLat = 0.;
+                  numLat = 0;
+                  minLat = maxDt;
+                  maxLat = -maxDt;
+                }
+                curLat = sec - obs->_o.GPSWeeks + leapsec;
+                sumLat += curLat;
+                if (curLat < minLat) minLat = curLat;
+                if (curLat >= maxLat) maxLat = curLat;
+                numLat += 1;
+                oldSec = newSec;
+              }
+            }
           }
 
           // RINEX Output
