@@ -585,7 +585,7 @@ void bncGetThread::run() {
               if (newSec != oldSec) {
                 if (newSec % _latIntr < oldSec % _latIntr) {
                   if (numLat>0) {
-                    emit( newMessage(QString("%1: %2 sec mean latency, min %3, max %4")
+                    emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4")
                       .arg(_staID.data())
                       .arg(int(sumLat/numLat*100)/100.)
                       .arg(int(minLat*100)/100.)
@@ -598,7 +598,6 @@ void bncGetThread::run() {
                   maxLat = -maxDt;
                 }
                 curLat = sec - obs->_o.GPSWeeks + leapsec;
-                printf("curLat %f\n",curLat);
                 sumLat += curLat;
                 if (curLat < minLat) minLat = curLat;
                 if (curLat >= maxLat) maxLat = curLat;
