@@ -581,7 +581,7 @@ void bncGetThread::run() {
             // Latency
             // -------
             if (_latIntr>0) {
-              newSec = static_cast<int>(sec);
+              newSec = static_cast<int>(obs->_o.GPSWeeks);
               if (newSec != oldSec) {
                 if (newSec % _latIntr < oldSec % _latIntr) {
                   if (numLat>0) {
