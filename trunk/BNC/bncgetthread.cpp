@@ -405,8 +405,6 @@ void bncGetThread::run() {
   double maxLat = -maxDt;
   double curLat = 0.;
   double leapsec = 14.;  // Leap second for latency estimation
-  int week;
-  double sec;
 
   _decodeTime = QDateTime::currentDateTime();
   _decodeSucc = QDateTime::currentDateTime();
@@ -448,7 +446,6 @@ void bncGetThread::run() {
 
         char* data = new char[nBytes];
         _socket->read(data, nBytes);
-        currentGPSWeeks(week, sec);
 
       if (_inspSegm<1) {
         _decoder->Decode(data, nBytes);
@@ -556,6 +553,9 @@ void bncGetThread::run() {
 
           // Check observation epoch
           // -----------------------
+          int week;
+          double sec;
+          currentGPSWeeks(week, sec);
           const double secPerWeek = 7.0 * 24.0 * 3600.0;
 
           if (week < obs->_o.GPSWeek) {
