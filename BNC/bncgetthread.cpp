@@ -584,8 +584,8 @@ void bncGetThread::run() {
             // -------
             if (_latIntr>0) {
               newSecGPS = static_cast<int>(obs->_o.GPSWeeks);
-              newSecUTC = static_cast<int>(sec);
               if (newSecGPS != oldSecGPS) {
+                newSecUTC = static_cast<int>(sec);
                 if (newSecUTC % _latIntr < oldSecUTC % _latIntr) {
                   if (numLat>0) {
                     emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4")
