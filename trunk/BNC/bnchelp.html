@@ -442,11 +442,13 @@ Note the sleep command in this script which causes the system to wait for a rand
 <p>
 Latency is defined here through the following equation:
 </p>
-<p>
-(a) UTC time provided by BNC's host, minus<br>
-(b) GPS time of currently processed epoch, plus<br>
-(c) Number of leap seconds between UTC and GPS time (hard-coded to 14).
-</p>
+<pre>
+    UTC time provided by BNC's host
+  - GPS time of currently processed epoch
+  + Leap seconds between UTC and GPS time, hard-coded to 14
+  --------------
+  = Latency
+</pre>
 <p>BNC can average all latencies per stream over a certain period. The resulting mean latencies are recorded in the Log file/section at the end of each 'Latency logging' interval. Select a 'Latency logging' interval or select the empty option field if you do not want BNC to log latency information. Note that computing correct latencies requires the clock of the host computer to be properly synchronized.
 </p>
 
@@ -585,6 +587,7 @@ euref-ip@bkg.bund.de or igs-ip@bkg.bund.de
 <b>Acknowledgements</b><br>
 BNC's Help Contents has been proofread by Thomas Yan, University of New South Wales, Australia.<br>
 Scott Glazier, OmniSTAR Australia, included the decoding of broadcast ephemeris from RTIGS streams and has been helpful in finding BNC's bugs.<br>
+James Perlt, BKG, helped fixing bugs and redesigned BNC's main window.
 </p>
 
 <p><a name="annex"><h3>8. Annex</h3></p>
@@ -609,7 +612,7 @@ Scott Glazier, OmniSTAR Australia, included the decoding of broadcast ephemeris 
 <tr><td>Apr 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td><td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save<br> [Add] ZERO decoder added<br> [Mod] Download public RINEX skeletons once per day<br> [Mod] Upgrade to Qt Version 4.2.3<br> [Mod] Replace 'system' call for RINEX script by 'QProcess'<br> [Add] HTTP Host directive for skeleton file download<br> [Add] Percent encoding for user IDs and passwords<br> [Bug] Exit execution of calling thread for RTCM3 streams<br> [Bug] Signal-slot mechanism for threads</td></tr>
 <tr><td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td><td>[Add] Source code published.
 <tr><td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td><td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td></tr>
-<tr><td>Feb 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Handle ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Advisory notes following stream failure/recovery<br> [Mod] Main window layout<br> [Bug] Freezing of About window on Mac systems</td></tr>
+<tr><td>Mar 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Handle ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Advisory notes following stream failure/recovery<br> [Mod] Redesign of main window<br> [Bug] Freezing of About window on Mac systems<br> [Bug] Fixed problem with PRN 32 in RTCMv2 decoder<br> [Bug] Fix for Trimble 4000SSI receivers in RTCMv2 decoder<br> [Mod] Major revision of input buffer in RTCMv2 decoder</td></tr>
 </table>
 </p>
 
