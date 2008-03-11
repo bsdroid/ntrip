@@ -114,6 +114,8 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   if ( settings.value("obsRate").toString().indexOf("0.1 Hz") != -1 ) { _inspSegm = 50; }
   _adviseFail = settings.value("adviseFail").toInt();
   _adviseReco = settings.value("adviseReco").toInt();
+  _makePause = false;
+  if ( Qt::CheckState(settings.value("makePause").toInt()) == Qt::Checked) {_makePause = true; }
   _adviseScript = settings.value("adviseScript").toString();
   expandEnvVar(_adviseScript);
 
@@ -457,8 +459,9 @@ void bncGetThread::run() {
         // Decode data
         // -----------
         if (!_decodePause.isValid() || 
-          _decodePause.secsTo(QDateTime::currentDateTime()) >= currPause )  {
+          _decodePause.secsTo(QDateTime::currentDateTime()) >= currPause || !_makePause )  {
 
+printf("Hier\n");
           if (decode) { 
             if ( _decoder->Decode(data, nBytes) == success ) { 
               numSucc += 1;
