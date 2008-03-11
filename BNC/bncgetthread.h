@@ -83,6 +83,7 @@ class bncGetThread : public QThread {
    QString     _endTimeCor;
    QString     _endDateOut;
    QString     _endTimeOut;
+   bool        _makePause;
    int         _obsRate;
    int         _inspSegm;
    int         _adviseFail;
