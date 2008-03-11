@@ -401,8 +401,6 @@ void bncGetThread::run() {
   bool endCorrupt = false;
   int oldSecGPS= 0;
   int newSecGPS = 0;
-  int oldSecUTC= 0;
-  int newSecUTC = 0;
   int numLat = 0;
   double sumLat = 0.;
   double minLat = maxDt;
@@ -587,14 +585,14 @@ void bncGetThread::run() {
             if (_latIntr>0) {
               newSecGPS = static_cast<int>(obs->_o.GPSWeeks);
               if (newSecGPS != oldSecGPS) {
-                newSecUTC = static_cast<int>(sec);
-                if (newSecUTC % _latIntr < oldSecUTC % _latIntr) {
+                if (newSecGPS % _latIntr < oldSecGPS % _latIntr) {
                   if (numLat>0) {
-                    emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4")
+                    emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, %5 epochs")
                       .arg(_staID.data())
                       .arg(int(sumLat/numLat*100)/100.)
                       .arg(int(minLat*100)/100.)
                       .arg(int(maxLat*100)/100.)
+                      .arg(numLat)
                       .toAscii()) );
                   }
                   sumLat = 0.;
@@ -608,7 +606,6 @@ void bncGetThread::run() {
                 if (curLat >= maxLat) maxLat = curLat;
                 numLat += 1;
                 oldSecGPS = newSecGPS;
-                oldSecUTC = newSecUTC;
               }
             }
           }
