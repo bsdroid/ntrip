@@ -461,7 +461,6 @@ void bncGetThread::run() {
         if (!_decodePause.isValid() || 
           _decodePause.secsTo(QDateTime::currentDateTime()) >= currPause || !_makePause )  {
 
-printf("Hier\n");
           if (decode) { 
             if ( _decoder->Decode(data, nBytes) == success ) { 
               numSucc += 1;

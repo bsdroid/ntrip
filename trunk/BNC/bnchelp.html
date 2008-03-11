@@ -83,8 +83,9 @@ BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. P
 &nbsp; &nbsp; &nbsp; 3.8.1. <a href=#obsrate>Observation Rate</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.2. <a href=#advfail>Failure Threshold</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.3. <a href=#advreco>Recovery Threshold</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.4. <a href=#advscript>Advisory Script</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.5. <a href=#latelog>Latency Logging</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.4. <a href=#pause>Pause</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.5. <a href=#advscript>Advisory Script</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.6. <a href=#latelog>Latency Logging</a><br>
 3.9. <a href=#mountpoints>Mountpoints</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.1. <a href=#mountadd>Add Mountpoints</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.2. <a href=#mounthost>Broadcaster Host and Port</a><br>
@@ -382,7 +383,7 @@ At various times, the incoming stream might become unavailable or corrupted. In 
 <u>Stream outages:</u> BNC considers a connection to be broken when there are no incoming data detected for more than 20 seconds. When this occurs, BNC will attempt to reconnect at a decreasing rate. It will first try to reconnect with 1 second delay, and again in 2 seconds if the previous attempt failed. If the attempt is still unsuccessful, it will try to reconnect within 4 seconds after the previous attempt and so on. The wait time doubles each time with a maximum wait time of 256 seconds.
 </p>
 <p>
-<u>Stream corruption:</u> Not all bits chunk transfers to BNC's internal decoders return valid observations. Sometimes several chunks might be needed before the next observation can be properly decoded. BNC buffers all the outputs (both valid and invalid) from the decoder for a short time span (size derived from the expected 'Observation rate') and then determines whether a stream is valid or corrupted. In case of a corrupted stream, the decoding process is paused and decodings are then attempted again at decreasing rate. BNC will first attempt to decode again after a 30 second lag and if unsuccessful, make another attempt within 60 seconds after the previous attempt. If it is still unsuccessful, it will make another attempt to decode within 120 seconds after the previous attempt and so on. Each decoding attempt doubles the wait time since the previous attempt. The maximum wait time between attempts is limited to 960 seconds.
+<u>Stream corruption:</u> Not all bits chunk transfers to BNC's internal decoders return valid observations. Sometimes several chunks might be needed before the next observation can be properly decoded. BNC buffers all the outputs (both valid and invalid) from the decoder for a short time span (size derived from the expected 'Observation rate') and then determines whether a stream is valid or corrupted.
 </p>
 <p>
 Outage and corruption events are reported in the Log file/section. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilise BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
@@ -409,7 +410,15 @@ Once a 'Begin_Failure' or 'Begin_Corrupted' event has been reported, BNC will ch
 Note that specifying a value of zero '0' for the 'Recovery threshold' will force BNC to report any stream recovery immediately. Note also that for using this function you need to specify the 'Observation rate'.
 </p>
 
-<p><a name="advscript"><h4>3.8.4 Advisory Script - optional </h4></p>
+<p><a name="pause"><h4>3.8.4 Pause - optional</h4></p>
+<p>
+In case of a corrupted stream, the decoding process can be paused and decodings are then attempted again at decreasing rate. BNC will first attempt to decode again after a 30 second lag and if unsuccessful, make another attempt within 60 seconds after the previous attempt. If it is still unsuccessful, it will make another attempt to decode within 120 seconds after the previous attempt and so on. Each decoding attempt doubles the wait time since the previous attempt. The maximum wait time between attempts is limited to 960 seconds. Tick 'Pause' to activate this function. Note that it is only effective if an 'Observation rate' is specified.
+</p>
+<p>
+Do not tick 'Pause' if you want to prevent BNC from making any decoding pause. Be aware that this may incur an unnecessary workload.
+</p>
+
+<p><a name="advscript"><h4>3.8.5 Advisory Script - optional </h4></p>
 <p>
 As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (%1 and %2 on Windows systems or $1 and $2 on Unix/Linux systems) together with date and time information.
 </p>
@@ -438,7 +447,7 @@ Regards, BNC
 Note the sleep command in this script which causes the system to wait for a random period of up to 60 seconds before sending the email. This should avoids overloading your mail server in case of a simultaneous failure of many streams.
 </p> 
 
-<p><a name="latelog"><h4>3.8.5 Latency Logging - optional </h4></p>
+<p><a name="latelog"><h4>3.8.6 Latency Logging - optional </h4></p>
 <p>
 Latency is defined here by the following equation:
 </p>
@@ -810,6 +819,7 @@ ephPath=/home/user/rinex
 ephV3=2
 latIntr=
 logFile=/home/user/log.txt
+makePause=0
 mountPoints=//user:pass@www.euref-ip.net:2101/ACOR0 RTCM_2.3 43.36 351.60 no, //user:pass@www.igs-ip.net:2101/FFMJ3 RTCM_3.0 41.58 1.40 no
 obsRate=
 outEphPort=2102
