@@ -27,6 +27,7 @@
 //   2006/10/05  OMO  Specified const'ness of various member functions
 //   2006/10/17  OMO  Removed obsolete check of multiple message indicator
 //   2006/11/25  OMO  Revised check for presence of GLONASS data
+//   2008/03/07  AHA  Removed unnecessary failure flag
 //
 // (c) DLR/GSOC
 //
@@ -80,7 +81,7 @@ class ThirtyBitWord {
     
     // Input
     
-    void         get(std::string& buf);
+    void         get(const std::string& buf);
     void         get(std::istream& inp);
     void         getHeader(std::string& buf);
     void         getHeader(std::istream& inp);
@@ -93,7 +94,7 @@ class ThirtyBitWord {
 
   private:
 
-    bool         failure;
+//    bool         failure;
 
     //
     // A 32-bit integer is used to store the 30-bit RTCM word as well as 2
