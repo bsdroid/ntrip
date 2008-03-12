@@ -424,6 +424,7 @@ void bncGetThread::run() {
   if (initPause < _inspSegm) {
     initPause = _inspSegm;
   }
+  if(!_makePause) {initPause = 0;}
   currPause = initPause;
 
   // Read Incoming Data
@@ -457,7 +458,7 @@ void bncGetThread::run() {
         // Decode data
         // -----------
         if (!_decodePause.isValid() || 
-          _decodePause.secsTo(QDateTime::currentDateTime()) >= currPause || !_makePause )  {
+          _decodePause.secsTo(QDateTime::currentDateTime()) >= currPause )  {
 
           if (decode) { 
             if ( _decoder->Decode(data, nBytes) == success ) { 
@@ -489,7 +490,7 @@ void bncGetThread::run() {
               if (secFail > _adviseFail * 60) { 
                 secFail = _adviseFail * 60 + 1;
               }
-              if (!_decodePause.isValid()) {
+              if (!_decodePause.isValid() || !_makePause) {
                 _decodePause = QDateTime::currentDateTime();
               }
               else {
@@ -571,7 +572,7 @@ void bncGetThread::run() {
           double dt = fabs(sec - obs->_o.GPSWeeks);
           if (week != obs->_o.GPSWeek || dt > maxDt) {
             if  (!wrongEpoch) {
-              emit( newMessage(_staID + ": Wrong observation epoch") );
+              emit( newMessage(_staID + ": Wrong observation epoch(s)") );
               wrongEpoch = true;
             }
             delete obs;
