@@ -106,7 +106,7 @@
     QSpinBox*  _adviseFailSpinBox;
     QSpinBox*  _adviseRecoSpinBox;
     QLineEdit* _adviseScriptLineEdit;
-    QComboBox* _latIntrComboBox;
+    QComboBox* _perfIntrComboBox;
     QTableWidget* _mountPointsTable;
 
     QLineEdit*   _LatLineEdit;

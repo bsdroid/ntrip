@@ -85,7 +85,7 @@ BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. P
 &nbsp; &nbsp; &nbsp; 3.8.3. <a href=#advreco>Recovery Threshold</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.4. <a href=#pause>Pause</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.5. <a href=#advscript>Advisory Script</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.6. <a href=#latelog>Latency Logging</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.6. <a href=#perflog>Performance Logging</a><br>
 3.9. <a href=#mountpoints>Mountpoints</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.1. <a href=#mountadd>Add Mountpoints</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.2. <a href=#mounthost>Broadcaster Host and Port</a><br>
@@ -447,9 +447,9 @@ Regards, BNC
 Note the sleep command in this script which causes the system to wait for a random period of up to 60 seconds before sending the email. This should avoids overloading your mail server in case of a simultaneous failure of many streams.
 </p> 
 
-<p><a name="latelog"><h4>3.8.6 Latency Logging - optional </h4></p>
+<p><a name="perflog"><h4>3.8.6 Performance Logging - optional </h4></p>
 <p>
-Latency is defined here by the following equation:
+<u>Latency:</u> Latency is defined in BNC by the following equation:
 </p>
 <pre>
     UTC time provided by BNC's host
@@ -458,7 +458,14 @@ Latency is defined here by the following equation:
   --------------
   = Latency
 </pre>
-<p>BNC can average the latencies per stream over a certain period of GPS time. Mean latencies are calculated from the individual latencies of at most one (first incoming) observation per second. Mean latencies are recorded in the Log file/section at the end of each 'Latency logging' interval. Select a 'Latency logging' interval or select the empty option field if you do not want BNC to log latency information. Note that computing correct latencies requires the clock of the host computer to be properly synchronized.
+<p>
+ BNC can average the latencies per stream over a certain period of GPS time, the 'Performance logging' interval. Mean latencies are calculated from the individual latencies of at most one (first incoming) observation per second. Note that computing correct latencies requires the clock of the host computer to be properly synchronized.
+</p>
+<p>
+<u>Statistics:</u> BNC counts the number of GPS seconds covered by at least one observation. It also estimates an observation rate from all observations received throughout the first full 'Performance logging' interval. Based on this rate, BNC estimates the number of data gaps when appearing in subsequent intervals. 
+</p>
+<p>
+Latencies and statistical information can be recorded in the Log file/section at the end of each 'Performance logging' interval. Select a 'Performance logging' interval to activate this function or select the empty option field if you do not want BNC to log latencies and statistical information.
 </p>
 
 <p><a name="mountpoints"><h4>3.9. Mountpoints</h4></p>

@@ -48,8 +48,8 @@
 //   2008/03/07  AHA  Removed unnecessary failure flag
 //   2008/03/10  AHA  Corrected extraction of antenna serial number
 //   2008/03/10  AHA  Corrected buffer length check in getPacket()
-//   2008/03/11  AHA  Added checks for data consistency in extraction routines
 //   2008/03/11  AHA  isGPS-flag in RTCM2_Obs is now set to false on clear()
+//   2008/03/13  AHA  Added checks for data consistency in extraction routines
 //
 // (c) DLR/GSOC
 //
@@ -295,10 +295,12 @@ void ThirtyBitWord::get(const string& buf) {
   // Check if string is long enough
    
   if (buf.size()<5) {
-    // Ignore; users should avoid this case prior to calling get()    
+    // Ignore; users should avoid this case prior to calling get()
+    
 #if ( DEBUG > 0 )    
     cerr << "Error in get(): packet too short (" << buf.size() <<")" << endl;
 #endif
+        
     return;
   };
   
@@ -340,12 +342,21 @@ void ThirtyBitWord::get(istream& inp) {
 
 void ThirtyBitWord::getHeader(string& buf) {
 
-  const int wordLen = 5; // Number of bytes representing a 30-bit word
-  const int spare   = 1; // Number of spare words for resync of parity
-                         // (same value as inRTCM2packet::getPacket()) 
+  const unsigned int wordLen = 5; // Number of bytes representing a 30-bit word
+  const unsigned int spare   = 1; // Number of spare words for resync of parity
+                                  // (same value as inRTCM2packet::getPacket()) 
   unsigned int i;
   
   i=0;
+  // append spare word (to get correct parity) and first consecutive word  
+  while (i<(spare+1)*wordLen) {
+    // Process byte
+    append(buf[i]);
+    // Increment count
+    i++;
+  };
+  
+  // start searching for preamble in first word after spare word
   while (!isHeader() && i<buf.size() ) {
     // Process byte
     append(buf[i]);
@@ -444,9 +455,15 @@ void RTCM2packet::getPacket(std::string& buf) {
                          // (same value as used in ThirtyBitWord::getHeader)
   unsigned int n;
   
+  // Does the package content at least spare bytes and first header byte?
+  if (buf.size()<(spare+1)*wordLen) { 
+      clear();       
+      return;
+  };
+    
   // Try to read a full packet. Processed bytes are removed from the input 
   // buffer except for the latest spare*wordLen bytes to restore the parity 
-  // bytes upon subseqeunt calls of getPAcket().
+  // bytes upon subseqeunt calls of getPacket().
   
   // Locate and read the first header word
   W.getHeader(buf);
@@ -455,9 +472,11 @@ void RTCM2packet::getPacket(std::string& buf) {
     // words. The packet contents is cleared to indicate an unsuccessful
     // termination of getPacket().
     clear();
+    
 #if ( DEBUG > 0 )
     cerr << "Error in getPacket(): W.isHeader() = false  for H1" << endl;
 #endif
+    
     return; 
   };
   H1 = W.value();
@@ -468,9 +487,11 @@ void RTCM2packet::getPacket(std::string& buf) {
   // for use in the next call of getPacket().
   if (buf.size()<(spare+2)*wordLen) { 
     clear(); 
+    
 #if ( DEBUG > 0 )    
     cerr << "Error in getPacket(): buffer too short for complete H2" << endl;
 #endif
+    
     return;
   };
   
@@ -482,24 +503,28 @@ void RTCM2packet::getPacket(std::string& buf) {
     // The packet contents is cleared to indicate an unsuccessful termination.
     clear(); 
     buf.erase(0,1); 
+    
 #if ( DEBUG > 0 )    
     cerr << "Error in getPacket(): W.validParity() = false for H2" << endl;
 #endif
+        
     return; 
   };
 
   n = nDataWords();
-
+  
   // Do we have enough bytes to read the next word? If not, the packet 
   // contents is cleared to indicate an unsuccessful termination. The
   // previously read spare and header bytes are retained in the buffer
   // for use in the next call of getPacket().
   if (buf.size()<(spare+2+n)*wordLen) { 
-    clear();     
+    clear(); 
+    
 #if ( DEBUG > 0 )    
     cerr << "Error in getPacket(): buffer too short for complete " << n
          << " DWs" << endl;
 #endif
+    
     return; 
   };
   
@@ -512,10 +537,12 @@ void RTCM2packet::getPacket(std::string& buf) {
       // The packet contents is cleared to indicate an unsuccessful termination.
       clear(); 
       buf.erase(0,1); 
+      
 #if ( DEBUG > 0 )    
     cerr << "Error in getPacket(): W.validParity() = false for DW"
          << i << endl;
 #endif
+        
       return; 
     };
   };
@@ -526,7 +553,7 @@ void RTCM2packet::getPacket(std::string& buf) {
   // parity resynchronization when searching the next header.
   
   buf.erase(0,(n+2)*wordLen);
-  
+    
   return;
   
 };
@@ -761,28 +788,61 @@ void RTCM2_03::extract(const RTCM2packet& P) {
 
 void RTCM2_23::extract(const RTCM2packet& P) {
 
-  int  nad, nas;
+  unsigned int       nad, nas;
   
-  // Check validity and packet type
+  const unsigned int nF1  = 8; // bits in first field (R,AF,SF,NAD)
+  const unsigned int nF2  =16; // bits in second field (SETUP ID,R,NAS)
+  const unsigned int nBits=24; // data bits in  30bit word
+  
+  // Check validity, packet type and number of data words
   
   validMsg = (P.valid()); 
   if (!validMsg) return;
 
   validMsg = (P.ID()==23);  
   if (!validMsg) return;
+
+  // Check number of data words (can nad be read in?)
   
+  validMsg = (P.nDataWords()>=1);  
+  if (!validMsg){
+    cerr << "RTCM2_23::extract: P.nDataWords()>=1" << endl;
+    return;
+  }
+
   // Antenna descriptor 
   antType = "";
   nad = P.getUnsignedBits(3,5);
-  for (int i=0;i<nad;i++) 
-    antType += (char)P.getUnsignedBits(8+i*8,8);
+  
+  // Check number of data words (can antenna description be read in?) 
+  validMsg = ( P.nDataWords() >= 
+               (unsigned int)ceil((nF1+nad*8)/(double)nBits) );
+
+  if (!validMsg) return;
+  
+  for (unsigned int i=0;i<nad;i++) 
+    antType += (char)P.getUnsignedBits(nF1+i*8,8);
 
   // Optional antenna serial numbers
   if (P.getUnsignedBits(2,1)==1) {
+
+    // Check number of data words (can nas be read in?)
+    
+    validMsg = ( P.nDataWords() >=
+                 (unsigned int)ceil((nF1+nad*8+nF2)/(double)nBits) );
+    if (!validMsg) return;
+    
     nas = P.getUnsignedBits(19+8*nad,5);
+
+    // Check number of data words (can antenna serial number be read in?)
+    
+    validMsg = ( P.nDataWords() >=
+                 (unsigned int)ceil((nF1+nad*8+nF2+nas*8)/(double)nBits) );
+    if (!validMsg) return;
+
     antSN = "";
-    for (int i=0;i<nas;i++) 
-      antSN += (char)P.getUnsignedBits(24+8*nad+i*8,8);
+    for (unsigned int i=0;i<nas;i++) 
+      antSN += (char)P.getUnsignedBits(nF1+8*nad+nF2+i*8,8);
   };
 
 };
@@ -961,6 +1021,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     cerr << "Error in RTCM2_Obs::extract(): less than 3 DW ("
          << P.nDataWords() << ") detected" << endl;
 #endif
+    
     return;
   };
   
@@ -971,6 +1032,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     cerr << "Error in RTCM2_Obs::extract(): odd number of DW ("
          << P.nDataWords() << ") detected" << endl;
 #endif
+    
     return;
   };
   
@@ -1032,6 +1094,12 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     if (!isL1 &&  isGPS) availability.set(bit_L2cphGPS);
     if ( isL1 && !isGPS) availability.set(bit_L1cphGLO);
     if (!isL1 && !isGPS) availability.set(bit_L2cphGLO);
+    
+#if ( DEBUG > 0 )
+    cerr << "RTCM2_Obs::extract(): availability " 
+         << bitset<8>(availability) << endl;  
+#endif
+    
     
     // Process all satellites
     
@@ -1147,6 +1215,11 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
     if (!isL1 &&  isGPS) availability.set(bit_L2rngGPS);
     if ( isL1 && !isGPS) availability.set(bit_L1rngGLO);
     if (!isL1 && !isGPS) availability.set(bit_L2rngGLO);
+
+#if ( DEBUG > 0 )
+    cerr << "RTCM2_Obs::extract(): availability " 
+         << bitset<8>(availability) << endl;  
+#endif
 
     // Process all satellites
     
