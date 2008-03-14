@@ -180,13 +180,13 @@ bncWindow::bncWindow() {
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
   _adviseScriptLineEdit    = new QLineEdit(settings.value("adviseScript").toString());
 
-  _latIntrComboBox    = new QComboBox();
-  _latIntrComboBox->setMaximumWidth(9*ww);
-  _latIntrComboBox->setEditable(false);
-  _latIntrComboBox->addItems(QString(",1 min,5 min,15 min,1 hour,6 hours,1 day").split(","));
-  int ll = _latIntrComboBox->findText(settings.value("latIntr").toString());
+  _perfIntrComboBox    = new QComboBox();
+  _perfIntrComboBox->setMaximumWidth(9*ww);
+  _perfIntrComboBox->setEditable(false);
+  _perfIntrComboBox->addItems(QString(",1 min,5 min,15 min,1 hour,6 hours,1 day").split(","));
+  int ll = _perfIntrComboBox->findText(settings.value("perfIntr").toString());
   if (ll != -1) {
-    _latIntrComboBox->setCurrentIndex(ll);
+    _perfIntrComboBox->setCurrentIndex(ll);
   }
 
   _mountPointsTable   = new QTableWidget(0,7);
@@ -286,7 +286,7 @@ bncWindow::bncWindow() {
   _makePauseCheckBox->setWhatsThis(tr("<p>In case of a continuously corrupted stream, the decoding process can be paused and decodings are then attempted again at decreasing rate till the stream hopefully recovers. Tick 'Pause' to activate this function.</p><p>Do not tick 'Pause' (default) in order to prevent BNC from making any decoding pause. Be aware that this may incur an unnecessary workload.</p><p>Note that this function is only effective if an 'Observation rate' is specified.</p>"));
   _logFileLineEdit->setWhatsThis(tr("Records of BNC's activities are shown in the Log section on the bottom of this window. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field."));
   _adviseScriptLineEdit->setWhatsThis(tr("<p>Specify the full path to a script or batch file to handle advisory notes generated in the event of corrupted streams or stream outages. The affected mountpoint and one of the comments 'Begin_Outage', 'End_Outage', 'Begin_Corrupted', or 'End_Corrupted' are passed on to the script as command line parameters.</p><p>The script can be configured to send an email to BNC's operator and/or to the affected stream provider. An empty option field (default) or invalid path means that you don't want to use this option.</p><p> Note that for using this function you need to specify the 'Observation rate'.</p>"));
-  _latIntrComboBox->setWhatsThis(tr("<p>BNC can average all latencies per stream over a certain period of GPS time. The resulting mean latencies are recorded in the Log file/section at the end of each 'Latency logging' interval.</p><p>Select a 'Latency logging' interval or select the empty option field if you do not want BNC to log latency information.</p>"));
+  _perfIntrComboBox->setWhatsThis(tr("<p>BNC can average all latencies per stream over a certain period of GPS time. The resulting mean latencies are recorded in the Log file/section at the end of each 'Performance logging' interval together with results of a statistical evaluation (number of covered epochs, data gaps).</p><p>Select a 'Performance logging' interval or select the empty option field if you do not want BNC to log latencies and statistical information.</p>"));
   _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Mountpoints' section. Clicking on 'Add Mountpoints' button will open a window that allows the user to select data streams from an NTRIP broadcaster according to their mountpoints. To remove a stream from the 'Mountpoints' list, highlight it by clicking on it and hit the 'Delete Mountpoints' button. You can also remove multiple mountpoints by highlighting them using +Shift and +Ctrl.</p><p>BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the sourcetable. However, there might be cases where you need to override the automatic selection due to incorrect sourcetable for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.</p><p>In case you need to log the raw data as is, BNC allows users to by-pass its decoders and and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'.</p><p>BNC can also retrieve streams from virtual reference stations (VRS). To initiate these streams, an approximate rover position needs to be sent in NMEA GGA message to the NTRIP broadcaster. In return, a user-specific data stream is generated, typically by a Network-RTK software. This stream is customized to the exact latitude and longitude as shown in the 'lat' and 'long' columns under 'Mountpoints'. These VRS streams are indicated by a 'yes' in the 'nmea' column under 'Mountpoints' as well as in the sourcetable. The default 'lat' and 'long' values are taken from the sourcetable. However, in most cases you would probably want to change this according to your requirement. Double click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter. The format is in positive north latitude degrees (e.g. for northern hemisphere: 52.436, for southern hemisphere: -24.567) and eastern longitude degrees (e.g.: 358.872 or -1.128). Only mountpoints with a 'yes' in its 'nmea' column can be edited. The position should preferably be a point within the coverage of the network.</p>"));
   _log->setWhatsThis(tr("Records of BNC's activities are shown in the Log section. The message log covers the communication status between BNC and the NTRIP broadcaster as well as any problems that occur in the communication link, stream availability, stream delay, stream conversion etc."));
   _ephV3CheckBox->setWhatsThis(tr("The default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format."));
@@ -377,9 +377,9 @@ bncWindow::bncWindow() {
   aLayout->addWidget(_makePauseCheckBox,                          2, 3, Qt::AlignLeft);
   aLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
   aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,3);
-  aLayout->addWidget(new QLabel("Latency logging"),               4, 0);
-  aLayout->addWidget(_latIntrComboBox,                            4, 1);
-  aLayout->addWidget(new QLabel("Network monitoring, outages, handling of corrupted streams, mean latency."),5,0,1,4,Qt::AlignLeft);
+  aLayout->addWidget(new QLabel("Performance logging"),           4, 0);
+  aLayout->addWidget(_perfIntrComboBox,                           4, 1);
+  aLayout->addWidget(new QLabel("Network monitoring, outages, handling of corrupted streams, latencies, statistics."),5,0,1,4,Qt::AlignLeft);
   agroup->setLayout(aLayout);
 
   QGridLayout* oLayout = new QGridLayout;
@@ -539,7 +539,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("adviseReco",  _adviseRecoSpinBox->value());
   settings.setValue("makePause",   _makePauseCheckBox->checkState());
   settings.setValue("outFile",     _outFileLineEdit->text());
-  settings.setValue("latIntr",     _latIntrComboBox->currentText());
+  settings.setValue("perfIntr",    _perfIntrComboBox->currentText());
   settings.setValue("outPort",     _outPortLineEdit->text());
   settings.setValue("outEphPort",  _outEphPortLineEdit->text());
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());

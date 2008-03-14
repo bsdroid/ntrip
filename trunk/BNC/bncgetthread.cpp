@@ -121,14 +121,14 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
 
   // Latency interval/average
   // ------------------------
-  _latIntr = 86400;
-  if ( settings.value("latIntr").toString().isEmpty() ) { _latIntr = 0; }
-  if ( settings.value("latIntr").toString().indexOf("1 min") != -1 ) { _latIntr = 60; }
-  if ( settings.value("latIntr").toString().indexOf("5 min") != -1 ) { _latIntr = 300; }
-  if ( settings.value("latIntr").toString().indexOf("15 min") != -1 ) { _latIntr = 900; }
-  if ( settings.value("latIntr").toString().indexOf("1 hour") != -1 ) { _latIntr = 3600; }
-  if ( settings.value("latIntr").toString().indexOf("6 hours") != -1 ) { _latIntr = 21600; }
-  if ( settings.value("latIntr").toString().indexOf("1 day") != -1 ) { _latIntr = 86400; }
+  _perfIntr = 86400;
+  if ( settings.value("perfIntr").toString().isEmpty() ) { _perfIntr = 0; }
+  if ( settings.value("perfIntr").toString().indexOf("1 min") != -1 ) { _perfIntr = 60; }
+  if ( settings.value("perfIntr").toString().indexOf("5 min") != -1 ) { _perfIntr = 300; }
+  if ( settings.value("perfIntr").toString().indexOf("15 min") != -1 ) { _perfIntr = 900; }
+  if ( settings.value("perfIntr").toString().indexOf("1 hour") != -1 ) { _perfIntr = 3600; }
+  if ( settings.value("perfIntr").toString().indexOf("6 hours") != -1 ) { _perfIntr = 21600; }
+  if ( settings.value("perfIntr").toString().indexOf("1 day") != -1 ) { _perfIntr = 86400; }
 
   // RINEX writer
   // ------------
@@ -399,10 +399,14 @@ void bncGetThread::run() {
   int currPause = 0;
   bool begCorrupt = false;
   bool endCorrupt = false;
+  bool followSec = false;
   int oldSecGPS= 0;
   int newSecGPS = 0;
+  int numGaps = 0;
+  int diffSecGPS = 0;
   int numLat = 0;
   double sumLat = 0.;
+  double meanDiff = 0.;
   double minLat = maxDt;
   double maxLat = -maxDt;
   double curLat = 0.;
@@ -581,25 +585,47 @@ void bncGetThread::run() {
           else {
             wrongEpoch = false;
 
-            // Latency
-            // -------
-            if (_latIntr>0) {
+            // Latency and completeness
+            // ------------------------
+            if (_perfIntr>0) {
               newSecGPS = static_cast<int>(obs->_o.GPSWeeks);
               if (newSecGPS != oldSecGPS) {
-                if (newSecGPS % _latIntr < oldSecGPS % _latIntr) {
+                if (newSecGPS % _perfIntr < oldSecGPS % _perfIntr) {
                   if (numLat>0) {
-                    emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, %5 epochs")
-                      .arg(_staID.data())
-                      .arg(int(sumLat/numLat*100)/100.)
-                      .arg(int(minLat*100)/100.)
-                      .arg(int(maxLat*100)/100.)
-                      .arg(numLat)
-                      .toAscii()) );
+                    if (meanDiff>0.) {
+                      emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, %5 epochs, %6 gaps")
+                        .arg(_staID.data())
+                        .arg(int(sumLat/numLat*100)/100.)
+                        .arg(int(minLat*100)/100.)
+                        .arg(int(maxLat*100)/100.)
+                        .arg(numLat)
+                        .arg(numGaps)
+                        .toAscii()) );
+                    } else {
+                      emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, %5 epochs")
+                        .arg(_staID.data())
+                        .arg(int(sumLat/numLat*100)/100.)
+                        .arg(int(minLat*100)/100.)
+                        .arg(int(maxLat*100)/100.)
+                        .arg(numLat)
+                        .toAscii()) );
+                    }
                   }
+                  meanDiff = diffSecGPS/numLat;
+                  diffSecGPS = 0;
+                  numGaps = 0;
                   sumLat = 0.;
                   numLat = 0;
                   minLat = maxDt;
                   maxLat = -maxDt;
+                }
+                if (followSec) {
+                  diffSecGPS += newSecGPS - oldSecGPS;
+                  if (meanDiff>0.) {
+                    if (newSecGPS - oldSecGPS > 1.5 * meanDiff) {
+                      numGaps += 1;
+                    }
+                  }
                 }
                 curLat = sec - obs->_o.GPSWeeks + leapsec;
                 sumLat += curLat;
@@ -607,6 +633,7 @@ void bncGetThread::run() {
                 if (curLat >= maxLat) maxLat = curLat;
                 numLat += 1;
                 oldSecGPS = newSecGPS;
+                followSec = true;
               }
             }
           }

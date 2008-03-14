@@ -88,7 +88,7 @@ class bncGetThread : public QThread {
    int         _inspSegm;
    int         _adviseFail;
    int         _adviseReco;
-   int         _latIntr;
+   int         _perfIntr;
    int         _timeOut;
    int         _nextSleep;
    int         _iMount;

@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
     settings.setValue("obsRate",    "");
     settings.setValue("adviseFail", "15");
     settings.setValue("adviseReco", "5");
-    settings.setValue("latIntr",    "");
+    settings.setValue("perfIntr",   "");
   }
 
   bncApp app(argc, argv, GUIenabled);
