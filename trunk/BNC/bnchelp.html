@@ -389,7 +389,7 @@ At various times, the incoming stream might become unavailable or corrupted. In 
 Outage and corruption events are reported in the Log file/section. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilise BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
 </p>
 
-<p><a name="obsrate"><h4>3.8.1 Observation Rate - mandatory for 'Failure threshold' and 'Recovery threshold'</h4></p>
+<p><a name="obsrate"><h4>3.8.1 Observation Rate - mandatory for 'Failure threshold', 'Recovery threshold', 'Pause' and 'Advisory Script'</h4></p>
 <p>
 BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is by-passed (decoding attempt will never get paused).
 </p> 
