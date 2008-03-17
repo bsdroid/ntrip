@@ -465,7 +465,13 @@ Note the sleep command in this script which causes the system to wait for a rand
 <u>Statistics:</u> BNC counts the number of GPS seconds covered by at least one observation. It also estimates an observation rate from all observations received throughout the first full 'Performance log' interval. Based on this rate, BNC estimates the number of data gaps when appearing in subsequent intervals. 
 </p>
 <p>
-Latencies and statistical information can be recorded in the Log file/section at the end of each 'Performance log' interval. Select a 'Performance log' interval to activate this function or select the empty option field if you do not want BNC to log latencies and statistical information.
+Latencies and statistical information can be recorded in the Log file/section at the end of each 'Performance log' interval. A typical output from a 1 hour 'Performance log' interval would be:
+</p>
+<pre>
+08-03-17 15:59:47 BRUS0: Mean latency 1.47 sec, min 0.66, max 3.02, 3585 epochs, 15 gaps
+</pre>
+<p>
+Select a 'Performance log' interval to activate this function or select the empty option field if you do not want BNC to log latencies and statistical information.
 </p>
 
 <p><a name="mountpoints"><h4>3.9. Mountpoints</h4></p>
