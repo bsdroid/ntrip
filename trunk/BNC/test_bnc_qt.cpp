@@ -56,10 +56,10 @@ const char endEpoch = 'C';
 int main(int /* argc */, char** /* argv */) {
 
   QTcpSocket socketObs;
-  QTcpSocket socketEph;
+  ////  QTcpSocket socketEph;
 
   QFile obsFile("obs.txt");
-  QFile ephFile("eph.txt");
+  ////  QFile ephFile("eph.txt");
   
   socketObs.connectToHost("127.0.0.1", 1968);
   if (!socketObs.waitForConnected(10000)) {
@@ -67,20 +67,20 @@ int main(int /* argc */, char** /* argv */) {
     exit(1);
   }
 
-  socketEph.connectToHost("127.0.0.1", 1969);
-  if (!socketEph.waitForConnected(10000)) {
-    cout << "socketEph: not connected" << endl;
-    exit(1);
-  }
+  ////  socketEph.connectToHost("127.0.0.1", 1969);
+  ////  if (!socketEph.waitForConnected(10000)) {
+  ////    cout << "socketEph: not connected" << endl;
+  ////    exit(1);
+  ////  }
 
   obsFile.open(QIODevice::WriteOnly | QIODevice::Unbuffered);
-  ephFile.open(QIODevice::WriteOnly | QIODevice::Unbuffered);
+  ////  ephFile.open(QIODevice::WriteOnly | QIODevice::Unbuffered);
 
   QTextStream outObs(&obsFile); 
   outObs.setRealNumberNotation(QTextStream::FixedNotation);
 
-  QTextStream outEph(&ephFile);
-  outEph.setRealNumberNotation(QTextStream::FixedNotation);
+  ////  QTextStream outEph(&ephFile);
+  ////  outEph.setRealNumberNotation(QTextStream::FixedNotation);
 
   // Receive Data
   // ------------
@@ -93,10 +93,10 @@ int main(int /* argc */, char** /* argv */) {
       cout << "socketObs: disconnected" << endl;
       exit(0);
     }
-    if (socketEph.state() != QAbstractSocket::ConnectedState) {
-      cout << "socketEph: disconnected" << endl;
-      exit(0);
-    }
+    ////  if (socketEph.state() != QAbstractSocket::ConnectedState) {
+    ////    cout << "socketEph: disconnected" << endl;
+    ////    exit(0);
+    ////  }
 
     if ( socketObs.bytesAvailable() ) {
       int bytesRecv = socketObs.read(&flag, 1);
@@ -124,13 +124,13 @@ int main(int /* argc */, char** /* argv */) {
       socketObs.waitForReadyRead(1);
     }
 
-    if ( socketEph.bytesAvailable() ) {
-      QByteArray eph = socketEph.readAll();
-      outEph << eph.data() << endl;
-    }
-    else {
-      socketEph.waitForReadyRead(1);
-    }
+    ////  if ( socketEph.bytesAvailable() ) {
+    ////    QByteArray eph = socketEph.readAll();
+    ////    outEph << eph.data() << endl;
+    ////  }
+    ////  else {
+    ////    socketEph.waitForReadyRead(1);
+    ////  }
   }
 
   return 0;
