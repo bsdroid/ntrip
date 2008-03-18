@@ -391,7 +391,7 @@ Outage and corruption events are reported in the Log file/section. They can also
 
 <p><a name="obsrate"><h4>3.8.1 Observation Rate - mandatory for 'Failure threshold', 'Recovery threshold', 'Pause' and 'Advisory Script'</h4></p>
 <p>
-BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is by-passed (decoding attempt will never get paused).
+BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough a priory estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is by-passed (decoding attempt will never get paused).
 </p> 
 
 <p><a name="advfail"><h4>3.8.2 Failure Threshold - optional</h4></p>
@@ -462,7 +462,7 @@ Note the sleep command in this script which causes the system to wait for a rand
  BNC can average the latencies per stream over a certain period of GPS time, the 'Performance log' interval. Mean latencies are calculated from the individual latencies of at most one (first incoming) observation per second. Note that computing correct latencies requires the clock of the host computer to be properly synchronized.
 </p>
 <p>
-<u>Statistics:</u> BNC counts the number of GPS seconds covered by at least one observation. It also estimates an observation rate from all observations received throughout the first full 'Performance log' interval. Based on this rate, BNC estimates the number of data gaps when appearing in subsequent intervals. 
+<u>Statistics:</u> BNC counts the number of GPS seconds covered by at least one observation. It also estimates an observation rate (independent from the a priory specified 'Observation rate') from all observations received throughout the first full 'Performance log' interval. Based on this rate, BNC estimates the number of data gaps when appearing in subsequent intervals. 
 </p>
 <p>
 Latencies and statistical information can be recorded in the Log file/section at the end of each 'Performance log' interval. A typical output from a 1 hour 'Performance log' interval would be:
