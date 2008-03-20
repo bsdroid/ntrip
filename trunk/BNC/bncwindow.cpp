@@ -152,6 +152,15 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setMaximumWidth(9*ww);
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
   _rnxSamplSpinBox->setSuffix(" sec");
+
+  _binSamplSpinBox    = new QSpinBox();
+  _binSamplSpinBox->setMinimum(0);
+  _binSamplSpinBox->setMaximum(60);
+  _binSamplSpinBox->setSingleStep(5);
+  _binSamplSpinBox->setMaximumWidth(9*ww);
+  _binSamplSpinBox->setValue(settings.value("binSampl").toInt());
+  _binSamplSpinBox->setSuffix(" sec");
+
   _obsRateComboBox    = new QComboBox();
   _obsRateComboBox->setMaximumWidth(9*ww);
   _obsRateComboBox->setEditable(false);
@@ -280,6 +289,7 @@ bncWindow::bncWindow() {
   _rnxIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Observation file.</p>"));
   _ephIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Navigation file.</p>"));
   _rnxSamplSpinBox->setWhatsThis(tr("<p>Select the RINEX Observation sampling interval in seconds. A value of zero '0' tells BNC to store all received epochs into RINEX.</p>"));
+  _binSamplSpinBox->setWhatsThis(tr("<p>Select the Observation sampling interval in seconds. A value of zero '0' tells BNC to send/store all received epochs.</p>"));
   _obsRateComboBox->setWhatsThis(tr("<p>BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. The procedure needs a rough estimate of the expected 'Observation rate' of the incoming streams. When a continuous problem is detected, BNC can inform its operator about this event through an advisory note.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is bypassed.</p>"));
   _adviseRecoSpinBox->setWhatsThis(tr("<p>Following a stream outage or a longer series of bad observations, an advisory note is generated when valid observations are received again throughout the 'Recovery threshold' time span. A value of about 5min (default) is recommended.</p><p>A value of zero '0' means that for any stream recovery, however short, BNC immediately generates an advisory note.</p><p>Note that for using this function you need to specify the 'Observation rate'.</p>"));
   _adviseFailSpinBox->setWhatsThis(tr("<p>An advisory note is generated when no (or only corrupted) observations are seen throughout the 'Failure threshold' time span. A value of 15 min (default) is recommended.</p><p>A value of zero '0' means that for any stream failure, however short, BNC immediately generates an advisory note.</p><p>Note that for using this function you need to specify the 'Observation rate'.</p>"));
@@ -343,9 +353,11 @@ bncWindow::bncWindow() {
   sLayout->addWidget(_waitTimeSpinBox,                            1, 1);
   sLayout->addWidget(new QLabel("File (full path)"),              2, 0);
   sLayout->addWidget(_outFileLineEdit,                            2, 1);
-  sLayout->addWidget(new QLabel("Output synchronized observations epoch by epoch."),3,0,1,2,Qt::AlignLeft);
-  sLayout->addWidget(new QLabel("    "),4,0);
+  sLayout->addWidget(new QLabel("Sampling"),                      3, 0, Qt::AlignLeft);
+  sLayout->addWidget(_binSamplSpinBox,                            3, 1, Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("Output synchronized observations epoch by epoch."),4,0,1,2,Qt::AlignLeft);
   sLayout->addWidget(new QLabel("    "),5,0);
+  sLayout->addWidget(new QLabel("    "),6,0);
   sgroup->setLayout(sLayout);
 
   QGridLayout* eLayout = new QGridLayout;
@@ -548,6 +560,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
   settings.setValue("ephIntr",     _ephIntrComboBox->currentText());
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
+  settings.setValue("binSampl",    _binSamplSpinBox->value());
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
   settings.setValue("rnxAppend",   _rnxAppendCheckBox->checkState());
   settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
