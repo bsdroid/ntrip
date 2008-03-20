@@ -99,6 +99,7 @@
     QComboBox* _rnxIntrComboBox;
     QComboBox* _ephIntrComboBox;
     QSpinBox*  _rnxSamplSpinBox;
+    QSpinBox*  _binSamplSpinBox;
     QCheckBox* _rnxAppendCheckBox;
     QCheckBox* _makePauseCheckBox;
     QSpinBox*  _waitTimeSpinBox;
