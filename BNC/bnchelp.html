@@ -76,9 +76,10 @@ BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. P
 &nbsp; &nbsp; &nbsp; 3.6.2. <a href=#ephport>Output Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.4. <a href=#ephvers>Version</a><br>
 3.7. <a href=#syncout>Synchronized Observations</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.1. <a href=#syncport>Output Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.7.1. <a href=#syncport>Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.2. <a href=#syncwait>Wait for Full Epoch</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.3. <a href=#syncfile>Output File</a><br>
+&nbsp; &nbsp; &nbsp; 3.7.3. <a href=#syncfile>File</a><br>
+&nbsp; &nbsp; &nbsp; 3.7.4. <a href=#syncsample>Sampling</a><br>
 3.8. <a href=#advnote>Monitor</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.1. <a href=#obsrate>Observation Rate</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.2. <a href=#advfail>Failure Threshold</a><br>
@@ -312,9 +313,9 @@ StatID, SVPRN, GPSWeek, GPSWeeks, C1, C2, P1, P2, L1, L2, S1, S2, SNR1, SNR2
 Note that SNR stands for the signal-to-noise ratio 'S' mapped to integer numbers 1 to 9. In case an observation is not available, its value is set to zero '0.000'.
 </p>
 
-<p><a name="syncport"><h4>3.7.1 Output Port - optional</h4></p>
+<p><a name="syncport"><h4>3.7.1 Port - optional</h4></p>
 <p>
-BNC can produce synchronized observations in binary format on your local host (IP 127.0.0.1) through an IP port. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary output is generated.</p>
+BNC can produce synchronized observations in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary output is generated.</p>
 <p>The binary output is a continuous stream in the following order:</p>
 <pre>
 begEpoch
@@ -355,10 +356,10 @@ struct Observation {
 } ;
 </pre>
 <p>
-The source code for BNC comes with an example program called 'test_bnc_qt.cpp' that allows you to read BNC's binary observation output from the IP port (hard-coded to 1968) and saves the observations in file 'obs.txt'.
+The source code for BNC comes with an example program called 'test_bnc_qt.cpp' that allows you to read BNC's binary observation output from the IP port (hard-coded to 1968) and save the observations in file 'obs.txt'.
 </p>
 
-<p><a name="syncwait"><h4>3.7.2 Wait for Full Epoch - optional</h4></p>
+<p><a name="syncwait"><h4>3.7.2 Wait for Full Epoch - mandatory if 'File' or 'Port' is set</h4></p>
 <p>
 When feeding a real-time GNSS engine waiting for input epoch by epoch, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming streams and the delay acceptable for your real-time GNSS product. Default value for 'Wait for full epoch' is 5 seconds.
 </p>
@@ -366,13 +367,18 @@ When feeding a real-time GNSS engine waiting for input epoch by epoch, BNC drops
 Note that 'Wait for full epoch' does not effect the RINEX Observation file content. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX Observation files.
 </p> 
 
-<p><a name="syncfile"><h4>3.7.3 Output File - optional</h4></p>
+<p><a name="syncfile"><h4>3.7.3 File - optional</h4></p>
 <p>
-Specifies the full path to a file where synchronized observations are saved in plain ASCII format. The default value is an empty option field, meaning that no ASCII output file is created.
+Specifies the full path to a 'File' where synchronized observations are saved in plain ASCII format. The default value is an empty option field, meaning that no ASCII output file is created.
 </p>
 <p>
 Beware that the size of this file can rapidly increase depending on the number of incoming streams. This option is primarily meant for testing and evaluation.
 </p>
+
+<p><a name="syncsample"><h4>3.7.4 Sampling - mandatory if 'File' or 'Port' is set</h4></p>
+<p>
+Select the observation output sampling interval in seconds. A value of zero '0' tells BNC to send/store all received epochs. This is the default value.
+<p>
 
 <p><a name="advnote"><h4>3.8. Monitor</h4></p>
 
@@ -389,7 +395,7 @@ At various times, the incoming stream might become unavailable or corrupted. In 
 Outage and corruption events are reported in the Log file/section. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilise BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
 </p>
 
-<p><a name="obsrate"><h4>3.8.1 Observation Rate - mandatory for 'Failure threshold', 'Recovery threshold', 'Pause' and 'Advisory Script'</h4></p>
+<p><a name="obsrate"><h4>3.8.1 Observation Rate - mandatory if 'Failure threshold', 'Recovery threshold', 'Pause' and 'Advisory Script' is set</h4></p>
 <p>
 BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough a priory estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is by-passed (decoding attempt will never get paused).
 </p> 
