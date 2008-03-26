@@ -1,11 +1,11 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.8 2007/10/28 08:50:37 mervart Exp $
-  Copyright (C) 2005-2006 by Dirk Stoecker <stoecker@alberding.eu>
+  $Id: rtcm3torinex.c,v 1.27 2008/03/25 15:10:48 stoecker Exp $
+  Copyright (C) 2005-2008 by Dirk Stöcker <stoecker@alberding.eu>
 
   This software is a complete NTRIP-RTCM3 to RINEX converter as well as
   a module of the BNC tool for multiformat conversion. Contact Dirk
-  St�cker for suggestions and bug reports related to the RTCM3 to RINEX
+  Stöcker for suggestions and bug reports related to the RTCM3 to RINEX
   conversion problems and the author of BNC for all the other problems.
 
   This program is free software; you can redistribute it and/or modify
@@ -50,7 +50,7 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.8 $";
+static char revisionstr[] = "$Revision: 1.27 $";
 
 #ifndef COMPILEDATE
 #define COMPILEDATE " built " __DATE__
@@ -109,7 +109,7 @@ static int GetMessage(struct RTCM3ParserData *handle)
   }
   if(e-m < 3)
     handle->NeedBytes = 3;
-  
+
   /* copy buffer to front */
   i = m - handle->Message;
   if(i && m < e)
@@ -181,7 +181,7 @@ struct leapseconds { /* specify the day of leap second */
   int month;      /* not the next day! */
   int year;
   int taicount;
-}; 
+};
 static const int months[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
 static const struct leapseconds leap[] = {
 /*{31, 12, 1971, 11},*/
@@ -458,15 +458,11 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
             s = GNSSDF_S1CDATA; se = GNSSENTRY_S1CDATA;
           }
           GETBITS(l1range, 24);
-          if((l1range&((1<<24)-1)) != 0x80000)
-          {
-            gnss->dataflags[num] |= c;
-            gnss->measdata[num][ce] = l1range*0.02;
-          }
           GETBITSSIGN(i, 20);
           if((i&((1<<20)-1)) != 0x80000)
           {
-            gnss->dataflags[num] |= l;
+            gnss->dataflags[num] |= (c|l);
+            gnss->measdata[num][ce] = l1range*0.02;
             gnss->measdata[num][le] = l1range*0.02+i*0.0005;
           }
           GETBITS(i, 7);
@@ -621,15 +617,14 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
             s = GNSSDF_S1CDATA; se = GNSSENTRY_S1CDATA;
           }
           GETBITS(l1range, 25)
-          if((l1range&((1<<25)-1)) != 0x80000)
-          {
-            gnss->dataflags[num] |= c;
-            gnss->measdata[num][ce] = l1range*0.02;
-          }
           GETBITSSIGN(i, 20)
           if((i&((1<<20)-1)) != 0x80000)
           {
-            gnss->dataflags[num] |= l;
+            /* Handle this like GPS. Actually for GLONASS L1 range is always
+               valid. To be on the save side, we handle it as invalid like we
+               do for GPS and also remove range in case of 0x80000. */
+            gnss->dataflags[num] |= (c|l);
+            gnss->measdata[num][ce] = l1range*0.02;
             gnss->measdata[num][le] = l1range*0.02+i*0.0005;
           }
           GETBITS(i, 7)
@@ -813,7 +808,7 @@ void RTCM3Text(const char *fmt, ...)
   va_end(v);
 }
 
-int HandleRunBy(char *buffer, int buffersize, const char **u,
+static int HandleRunBy(char *buffer, int buffersize, const char **u,
 int rinex3)
 {
   const char *user;
@@ -845,102 +840,9 @@ int rinex3)
   t2->tm_mon+1, t2->tm_mday, t2->tm_hour, t2->tm_min, t2->tm_sec);
 }
 
-// Inserted parts for BNC Perlt
-#ifdef NO_RTCM3_MAIN
-#define NUMSTARTSKIP 1
-#else
 #define NUMSTARTSKIP 3
-#endif
-
 void HandleHeader(struct RTCM3ParserData *Parser)
 {
-#ifdef NO_RTCM3_MAIN
-// Part of Handle Header for data request for BNC (independently on actually delivered data), original is commented out by ifndef NO_RTCM3_MAIN. Perlt
-  int i;
-  if(Parser->rinex3)
-  {
-#define CHECKFLAGSNEW(a, b, c) \
-    { \
-      Parser->dataflag##a[Parser->numdatatypes##a] = GNSSDF_##b##DATA; \
-      Parser->datapos##a[Parser->numdatatypes##a] = GNSSENTRY_##b##DATA; \
-      ++Parser->numdatatypes##a; \
-    }
-
-    CHECKFLAGSNEW(GPS, C1,  C1C)
-    CHECKFLAGSNEW(GPS, L1C, L1C)
-    CHECKFLAGSNEW(GPS, D1C, D1C)
-    CHECKFLAGSNEW(GPS, S1C, S1C)
-    CHECKFLAGSNEW(GPS, P1,  C1P)
-    CHECKFLAGSNEW(GPS, L1P, L1P)
-    CHECKFLAGSNEW(GPS, D1P, D1P)
-    CHECKFLAGSNEW(GPS, S1P, S1P)
-    CHECKFLAGSNEW(GPS, P2,  C2P)
-    CHECKFLAGSNEW(GPS, L2P, L2P)
-    CHECKFLAGSNEW(GPS, D2P, D2P)
-    CHECKFLAGSNEW(GPS, S2P, S2P)
-    CHECKFLAGSNEW(GPS, C2,  C2X)
-    CHECKFLAGSNEW(GPS, L2C, L2X)
-    CHECKFLAGSNEW(GPS, D2C, D2X)
-    CHECKFLAGSNEW(GPS, S2C, S2X)
-    CHECKFLAGSNEW(GLO, C1,  C1C)
-    CHECKFLAGSNEW(GLO, L1C, L1C)
-    CHECKFLAGSNEW(GLO, D1C, D1C)
-    CHECKFLAGSNEW(GLO, S1C, S1C)
-    CHECKFLAGSNEW(GLO, P1,  C1P)
-    CHECKFLAGSNEW(GLO, L1P, L1P)
-    CHECKFLAGSNEW(GLO, D1P, D1P)
-    CHECKFLAGSNEW(GLO, S1P, S1P)
-    CHECKFLAGSNEW(GLO, P2,  C2P)
-    CHECKFLAGSNEW(GLO, L2P, L2P)
-    CHECKFLAGSNEW(GLO, D2P, D2P)
-    CHECKFLAGSNEW(GLO, S2P, S2P)
-    CHECKFLAGSNEW(GLO, C2,  C2C)
-    CHECKFLAGSNEW(GLO, L2C, L2C)
-    CHECKFLAGSNEW(GLO, D2C, D2C)
-    CHECKFLAGSNEW(GLO, S2C, S2C)
-
-  }
-  else
-  {
-#define CHECKFLAGS(a, b) \
-    { \
-      if(data[RINEXENTRY_##b##DATA]) \
-      { \
-        Parser->dataflagGPS[data[RINEXENTRY_##b##DATA]-1] = GNSSDF_##a##DATA; \
-        Parser->dataposGPS[data[RINEXENTRY_##b##DATA]-1] = GNSSENTRY_##a##DATA; \
-      } \
-      else \
-      { \
-        Parser->dataflag[Parser->numdatatypesGPS] = GNSSDF_##a##DATA; \
-        Parser->datapos[Parser->numdatatypesGPS] = GNSSENTRY_##a##DATA; \
-        data[RINEXENTRY_##b##DATA] = ++Parser->numdatatypesGPS; \
-      } \
-    }
-
-    int data[RINEXENTRY_NUMBER];
-    for(i = 0; i < RINEXENTRY_NUMBER; ++i) data[i] = 0;
-
-    CHECKFLAGS(C1,C1)
-    CHECKFLAGS(C2,C2)
-    CHECKFLAGS(P1,P1)
-    CHECKFLAGS(P2,P2)
-    CHECKFLAGS(L1C,L1)
-    CHECKFLAGS(L1P,L1)
-    CHECKFLAGS(L2C,L2)
-    CHECKFLAGS(L2P,L2)
-    CHECKFLAGS(D1C,D1)
-    CHECKFLAGS(D1P,D1)
-    CHECKFLAGS(D2C,D2)
-    CHECKFLAGS(D2P,D2)
-    CHECKFLAGS(S1C,S1)
-    CHECKFLAGS(S1P,S1)
-    CHECKFLAGS(S2C,S2)
-    CHECKFLAGS(S2P,S2)
-  }
-// End Part of Handle Header for BNC Perlt
-#endif
-
-#ifndef NO_RTCM3_MAIN
   struct HeaderData hdata;
   char thebuffer[MAXHEADERBUFFERSIZE];
   char *buffer = thebuffer;
@@ -990,7 +892,7 @@ void HandleHeader(struct RTCM3ParserData *Parser)
   hdata.data.named.antennaposition =
   "         .0000         .0000         .0000                  "
   "ANTENNA: DELTA H/E/N";
-  
+
   hdata.data.named.wavelength = Parser->rinex3 ? 0 :
   "     1     1                                                "
   "WAVELENGTH FACT L1/2";
@@ -1231,6 +1133,7 @@ void HandleHeader(struct RTCM3ParserData *Parser)
     }
   }
 
+#ifndef NO_RTCM3_MAIN
   for(i = 0; i < hdata.numheaders; ++i)
   {
     if(hdata.data.unnamed[i] && hdata.data.unnamed[i][0])
@@ -1627,7 +1530,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 }
 
 #ifndef NO_RTCM3_MAIN
-static char datestr[]     = "$Date: 2007/10/28 08:50:37 $";
+static char datestr[]     = "$Date: 2008/03/25 15:10:48 $";
 
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
@@ -2188,7 +2091,7 @@ int main(int argc, char **argv)
       if((numbytes=recv(sockfd, buf, MAXDATASIZE-1, 0)) != -1)
       {
         if(numbytes >= 17 && !strncmp(buf, "RTSP/1.0 200 OK\r\n", 17))
-	{
+        {
           int serverport = 0, session = 0;
           const char *portcheck = "server_port=";
           const char *sessioncheck = "session: ";
@@ -2356,6 +2259,7 @@ int main(int argc, char **argv)
         "GET %s%s%s%s/ HTTP/1.0\r\n"
         "Host: %s\r\n%s"
         "User-Agent: %s/%s\r\n"
+        "Connection: close\r\n"
         "\r\n"
         , proxyserver ? "http://" : "", proxyserver ? proxyserver : "",
         proxyserver ? ":" : "", proxyserver ? proxyport : "",
@@ -2368,6 +2272,7 @@ int main(int argc, char **argv)
         "GET %s%s%s%s/%s HTTP/1.0\r\n"
         "Host: %s\r\n%s"
         "User-Agent: %s/%s\r\n"
+        "Connection: close\r\n"
         "Authorization: Basic "
         , proxyserver ? "http://" : "", proxyserver ? proxyserver : "",
         proxyserver ? ":" : "", proxyserver ? proxyport : "",
@@ -2422,7 +2327,7 @@ int main(int argc, char **argv)
           {
             if(numbytes > 17 && (!strncmp(buf, "HTTP/1.1 200 OK\r\n", 17)
             || !strncmp(buf, "HTTP/1.0 200 OK\r\n", 17)))
-	    {
+            {
               const char *datacheck = "Content-Type: gnss/data\r\n";
               const char *chunkycheck = "Transfer-Encoding: chunked\r\n";
               int l = strlen(datacheck)-1;
@@ -2488,6 +2393,7 @@ int main(int argc, char **argv)
                   else if(i >= 'a' && i <= 'f') chunksize = chunksize*16+i-'a'+10;
                   else if(i >= 'A' && i <= 'F') chunksize = chunksize*16+i-'A'+10;
                   else if(i == '\r') ++chunkymode;
+                  else if(i == ';') chunkymode = 5;
                   else stop = 1;
                   break;
                 case 3: /* scanning for return */
@@ -2507,6 +2413,9 @@ int main(int argc, char **argv)
                   pos += i;
                   if(!chunksize)
                     chunkymode = 1;
+                  break;
+                case 5:
+                  if(i == '\r') chunkymode = 3;
                   break;
                 }
               }
