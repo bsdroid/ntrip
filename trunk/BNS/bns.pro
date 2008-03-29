@@ -1,8 +1,8 @@
 
 # Switch to debug configuration
 # -----------------------------
-CONFIG = release
-###CONFIG = debug
+###CONFIG += release
+###CONFIG -= debug
 
 RESOURCES += bns.qrc
 
@@ -20,9 +20,9 @@ debug:MOC_DIR=.moc/debug
 release:OBJECTS_DIR=.obj/release
 release:MOC_DIR=.moc/release
 
-HEADERS = 
+HEADERS =             bnsapp.h   bnswindow.h
 
-SOURCES = bnsmain.cpp
+SOURCES = bnsmain.cpp bnsapp.cpp bnswindow.cpp
 
 RC_FILE = bns.rc
 

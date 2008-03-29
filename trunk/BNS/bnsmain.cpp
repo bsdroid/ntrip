@@ -14,13 +14,19 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <unistd.h>
+#include <signal.h>
 #include <QApplication>
+#include <iostream>
+
+#include "bnsapp.h"
+#include "bnswindow.h"
 
 using namespace std;
 
 void catch_signal(int) {
   cout << "Program Interrupted by Ctrl-C" << endl;
-  ((bncApp*)qApp)->slotQuit();
+  ((bnsApp*)qApp)->slotQuit();
 }
 
 // Main Program
@@ -47,7 +53,7 @@ int main(int argc, char *argv[]) {
     settings.setValue("casterPort", 2101);
   }
 
-  bncApp app(argc, argv, GUIenabled);
+  bnsApp app(argc, argv, GUIenabled);
 
   // Interactive Mode - open the main window
   // ---------------------------------------
@@ -63,8 +69,8 @@ int main(int argc, char *argv[]) {
    
     app.setWindowIcon(QPixmap(":ntrip-logo.png"));
 
-    bncWindow* bncWin = new bncWindow();
-    bncWin->show();
+    bnsWindow* bnsWin = new bnsWindow();
+    bnsWin->show();
   }
 
   // Non-Interactive (Batch) Mode
