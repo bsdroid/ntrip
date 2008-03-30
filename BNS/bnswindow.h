@@ -4,6 +4,8 @@
 #include <QtGui>
 #include <QWhatsThis>
 
+#include "bns.h"
+
 class bnsAboutDlg : public QDialog {
  Q_OBJECT
  public:
@@ -15,7 +17,7 @@ class bnsWindow : public QMainWindow {
 Q_OBJECT
 
  public:
-  bnsWindow();
+  bnsWindow(t_bns* bns);
   ~bnsWindow();
 
  public slots:  
@@ -57,5 +59,7 @@ Q_OBJECT
   QLineEdit* _proxyPortLineEdit;
 
   QTextEdit*  _log;
+
+  t_bns*      _bns;
 };
 #endif

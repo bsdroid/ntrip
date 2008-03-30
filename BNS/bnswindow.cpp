@@ -57,7 +57,12 @@ bnsAboutDlg::~bnsAboutDlg() {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bnsWindow::bnsWindow() {
+bnsWindow::bnsWindow(t_bns* bns) {
+
+  _bns = bns;
+
+  connect(bns, SIGNAL(newMessage(QByteArray)),
+          this, SLOT(slotMessage(const QByteArray)));
 
   QSettings settings;
 
@@ -297,6 +302,5 @@ void bnsWindow::slotStart() {
   _actStart->setEnabled(false);
   _actStop->setEnabled(true);
 
-  slotMessage("============ Start BNS ============");
-
+  _bns->start();
 }
