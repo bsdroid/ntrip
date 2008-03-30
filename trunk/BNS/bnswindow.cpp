@@ -18,6 +18,7 @@
 #include <iostream>
 
 #include "bnswindow.h" 
+#include "bnsapp.h" 
 #include "bnshlpdlg.h" 
 
 using namespace std;
@@ -58,8 +59,15 @@ bnsWindow::bnsWindow() {
   _actQuit  = new QAction(tr("&Quit"),this);
   connect(_actQuit, SIGNAL(triggered()), SLOT(close()));
 
-  _actwhatsthis= new QAction(tr("Help=Shift+F1"),this);
-  connect(_actwhatsthis, SIGNAL(triggered()), SLOT(slotWhatsThis()));
+  _actWhatsThis= new QAction(tr("Help=Shift+F1"),this);
+  connect(_actWhatsThis, SIGNAL(triggered()), SLOT(slotWhatsThis()));
+
+  _actStart = new QAction(tr("Sta&rt"),this);
+  connect(_actStart, SIGNAL(triggered()), SLOT(slotStart()));
+
+  _actStop = new QAction(tr("Sto&p"),this);
+  connect(_actStop, SIGNAL(triggered()), SLOT(slotStop()));
+  _actStop->setEnabled(false);
 
   CreateMenu();
   AddToolbar();
@@ -209,8 +217,10 @@ void bnsWindow::AddToolbar() {
   QToolBar* toolBar = new QToolBar;
   addToolBar(Qt::BottomToolBarArea, toolBar); 
   toolBar->setMovable(false);
+  toolBar->addAction(_actStart);
+  toolBar->addAction(_actStop);
   toolBar->addWidget(new QLabel("                                   "));
-  toolBar->addAction(_actwhatsthis);
+  toolBar->addAction(_actWhatsThis);
 }
 
 // Save Options
@@ -267,3 +277,29 @@ void bnsWindow::slotMessage(const QByteArray msg) {
   _log->clear();
   _log->append(txt.right(maxBufferSize));
 }  
+
+// Stop 
+////////////////////////////////////////////////////////////////////////////
+void bnsWindow::slotStop() {
+  int iRet = QMessageBox::question(this, "Stop", "Do you want to stop?", 
+                                   QMessageBox::Yes, QMessageBox::No,
+                                   QMessageBox::NoButton);
+  if (iRet == QMessageBox::Yes) {
+    _actStart->setEnabled(true);
+    _actStop->setEnabled(false);
+  }
+}
+
+// Start
+////////////////////////////////////////////////////////////////////////////
+void bnsWindow::slotStart() {
+  slotSaveOptions();
+
+  _actStart->setEnabled(false);
+  _actStop->setEnabled(true);
+
+
+  slotMessage("============ Start BNS ============");
+  ((bnsApp*)qApp)->slotMessage("============ Start BNS ============");
+
+}
