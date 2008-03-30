@@ -289,6 +289,7 @@ void bnsWindow::slotStop() {
   if (iRet == QMessageBox::Yes) {
     _actStart->setEnabled(true);
     _actStop->setEnabled(false);
+    ((bnsApp*)qApp)->stop();
   }
 }
 
@@ -301,4 +302,6 @@ void bnsWindow::slotStart() {
   _actStop->setEnabled(true);
 
   slotMessage("============ Start BNS ============");
+
+  ((bnsApp*)qApp)->start();
 }
