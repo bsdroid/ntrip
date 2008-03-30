@@ -285,7 +285,7 @@ void bnsWindow::deleteBns() {
   _actStart->setEnabled(true);
   _actStop->setEnabled(false);
   _bns->terminate();
-  _bns->wait();
+  _bns->wait(100);
   delete _bns; 
   _bns = 0;
 }  
