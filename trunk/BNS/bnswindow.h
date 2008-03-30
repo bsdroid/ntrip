@@ -47,6 +47,8 @@ Q_OBJECT
 
   QWidget*   _canvas;
 
+  QLineEdit* _ephHostLineEdit;
+  QLineEdit* _ephPortLineEdit;
   QLineEdit* _proxyHostLineEdit;
   QLineEdit* _proxyPortLineEdit;
 

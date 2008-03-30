@@ -16,7 +16,6 @@
 
 #include <unistd.h>
 #include <signal.h>
-#include <QApplication>
 #include <iostream>
 
 #include "bnsapp.h"
@@ -49,8 +48,6 @@ int main(int argc, char *argv[]) {
   // ----------------
   QSettings settings;
   if (settings.allKeys().size() == 0) {
-    settings.setValue("casterHost", "www.euref-ip.net");
-    settings.setValue("casterPort", 2101);
   }
 
   bnsApp app(argc, argv, GUIenabled);
@@ -58,17 +55,6 @@ int main(int argc, char *argv[]) {
   // Interactive Mode - open the main window
   // ---------------------------------------
   if (GUIenabled) {
-
-    QString fontString = settings.value("font").toString();
-    if ( !fontString.isEmpty() ) {
-      QFont newFont;
-      if (newFont.fromString(fontString)) {
-        QApplication::setFont(newFont);
-      }
-    }
-   
-    app.setWindowIcon(QPixmap(":ntrip-logo.png"));
-
     bnsWindow* bnsWin = new bnsWindow();
     bnsWin->show();
   }
