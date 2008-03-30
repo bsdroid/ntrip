@@ -279,6 +279,22 @@ void bnsWindow::slotMessage(const QByteArray msg) {
   _log->append(txt.right(maxBufferSize));
 }  
 
+// Delete bns
+////////////////////////////////////////////////////////////////////////////
+void bnsWindow::deleteBns() {
+  _actStart->setEnabled(true);
+  _actStop->setEnabled(false);
+  delete _bns; 
+  _bns = 0;
+}  
+
+// Error in bns
+////////////////////////////////////////////////////////////////////////////
+void bnsWindow::slotError(const QByteArray msg) {
+  slotMessage(msg);
+  deleteBns();
+}  
+
 // Stop 
 ////////////////////////////////////////////////////////////////////////////
 void bnsWindow::slotStop() {
@@ -286,10 +302,7 @@ void bnsWindow::slotStop() {
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
-    _actStart->setEnabled(true);
-    _actStop->setEnabled(false);
-    delete _bns; 
-    _bns = 0;
+    deleteBns();
   }
 }
 
@@ -302,7 +315,12 @@ void bnsWindow::slotStart() {
   _actStop->setEnabled(true);
 
   _bns = new t_bns(0);
+
   connect(_bns, SIGNAL(newMessage(QByteArray)),
           this, SLOT(slotMessage(const QByteArray)));
+
+  connect(_bns, SIGNAL(error(QByteArray)),
+          this, SLOT(slotError(const QByteArray)));
+
   _bns->start();
 }
