@@ -23,6 +23,39 @@
 
 using namespace std;
 
+// About Dialog - Constructor
+////////////////////////////////////////////////////////////////////////////
+bnsAboutDlg::bnsAboutDlg(QWidget* parent) : 
+   QDialog(parent) {
+
+  QTextBrowser* tb = new QTextBrowser;
+  QUrl url; url.setPath(":bnsabout.html");
+  tb->setSource(url);
+  tb->setReadOnly(true);
+
+  int ww = QFontMetrics(font()).width('w');
+  QPushButton* _closeButton = new QPushButton("Close");
+  _closeButton->setMaximumWidth(10*ww);
+  connect(_closeButton, SIGNAL(clicked()), this, SLOT(close()));
+
+  QGridLayout* dlgLayout = new QGridLayout();
+  QLabel* img = new QLabel();
+  img->setPixmap(QPixmap(":ntrip-logo.png"));
+  dlgLayout->addWidget(img, 0,0);
+  dlgLayout->addWidget(new QLabel("BKG NTRIP Server (BNS) Version 1.0"), 0,1);
+  dlgLayout->addWidget(tb,1,0,1,2);
+  dlgLayout->addWidget(_closeButton,2,1,Qt::AlignRight);  
+
+  setLayout(dlgLayout);
+  resize(60*ww, 60*ww);
+  show();
+}
+
+// About Dialog - Destructor
+////////////////////////////////////////////////////////////////////////////
+bnsAboutDlg::~bnsAboutDlg() {
+}; 
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bnsWindow::bnsWindow() {
@@ -233,42 +266,11 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("proxyPort",   _proxyPortLineEdit->text());
 }
 
-// About Dialog - Constructor
-////////////////////////////////////////////////////////////////////////////
-bnsAboutDlg::bnsAboutDlg(QWidget* parent) : 
-   QDialog(parent) {
-
-  QTextBrowser* tb = new QTextBrowser;
-  QUrl url; url.setPath(":bnsabout.html");
-  tb->setSource(url);
-  tb->setReadOnly(true);
-
-  int ww = QFontMetrics(font()).width('w');
-  QPushButton* _closeButton = new QPushButton("Close");
-  _closeButton->setMaximumWidth(10*ww);
-  connect(_closeButton, SIGNAL(clicked()), this, SLOT(close()));
-
-  QGridLayout* dlgLayout = new QGridLayout();
-  QLabel* img = new QLabel();
-  img->setPixmap(QPixmap(":ntrip-logo.png"));
-  dlgLayout->addWidget(img, 0,0);
-  dlgLayout->addWidget(new QLabel("BKG NTRIP Server (BNS) Version 1.0"), 0,1);
-  dlgLayout->addWidget(tb,1,0,1,2);
-  dlgLayout->addWidget(_closeButton,2,1,Qt::AlignRight);  
-
-  setLayout(dlgLayout);
-  resize(60*ww, 60*ww);
-  show();
-}
-
-// About Dialog - Constructor
-////////////////////////////////////////////////////////////////////////////
-bnsAboutDlg::~bnsAboutDlg() {
-}; 
-
 // Display Program Messages 
 ////////////////////////////////////////////////////////////////////////////
 void bnsWindow::slotMessage(const QByteArray msg) {
+
+  ((bnsApp*)qApp)->slotMessage(msg);
 
   const int maxBufferSize = 10000;
  
@@ -298,8 +300,5 @@ void bnsWindow::slotStart() {
   _actStart->setEnabled(false);
   _actStop->setEnabled(true);
 
-
   slotMessage("============ Start BNS ============");
-  ((bnsApp*)qApp)->slotMessage("============ Start BNS ============");
-
 }
