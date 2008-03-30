@@ -19,6 +19,7 @@ Q_OBJECT
   ~bnsWindow();
 
  public slots:  
+  void slotMessage(const QByteArray msg);
 
  private slots:
   void slotHelp();
@@ -45,5 +46,10 @@ Q_OBJECT
   QAction*   _actwhatsthis;
 
   QWidget*   _canvas;
+
+  QLineEdit* _proxyHostLineEdit;
+  QLineEdit* _proxyPortLineEdit;
+
+  QTextEdit*  _log;
 };
 #endif

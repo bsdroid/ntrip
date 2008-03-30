@@ -60,12 +60,55 @@ bnsWindow::bnsWindow() {
   _canvas = new QWidget;
   setCentralWidget(_canvas);
 
+  QSettings settings;
+  _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
+  _proxyHostLineEdit->setWhatsThis(tr("<p>If you are running BNS within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you do not know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is sometimes not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNC outside your LAN on a network that has unobstructed connection to the Internet.</p>"));
+  _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
+  _proxyPortLineEdit->setWhatsThis(tr("<p>If you are running BNS within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you do not know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is sometimes not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNC outside your LAN on a network that has unobstructed connection to the Internet.</p>"));
+  _proxyPortLineEdit->setMaximumWidth(9*ww);
+
+  // TabWidget
+  // ---------
+  QTabWidget* tabs = new QTabWidget();
+  QWidget* tab_proxy = new QWidget();
+  QWidget* tab_opt   = new QWidget();
+  QWidget* tab_res   = new QWidget();
+  tabs->addTab(tab_proxy,tr("Proxy"));
+  tabs->addTab(tab_opt,  tr("Options"));
+  tabs->addTab(tab_res,  tr("Results"));
+
+  // Proxy-Tab
+  // ---------
+  QGridLayout* pLayout = new QGridLayout;
+  pLayout->setColumnMinimumWidth(0,12*ww);
+  pLayout->addWidget(new QLabel("Proxy host"),0,0, Qt::AlignLeft);
+  pLayout->addWidget(_proxyHostLineEdit,0, 1);
+  pLayout->addWidget(new QLabel("Proxy port"),1,0, Qt::AlignLeft);
+  pLayout->addWidget(_proxyPortLineEdit,1,1);
+  pLayout->addWidget(new QLabel("Settings for the proxy in protected networks, leave the boxes blank if none."),2, 0, 1, 2, Qt::AlignLeft);
+  pLayout->addWidget(new QLabel("    "),3,0);
+  pLayout->addWidget(new QLabel("    "),4,0);
+  pLayout->addWidget(new QLabel("    "),5,0);
+  tab_proxy->setLayout(pLayout);
+
+  // Log
+  // ---
+  _log = new QTextBrowser();
+  _log->setReadOnly(true);
+  _log->setWhatsThis(tr("Records of BNS's activities are shown in the Log section."));
+
+  // Main Layout
+  // -----------
+  QVBoxLayout* mainLayout = new QVBoxLayout;
+  mainLayout->addWidget(tabs);
+  mainLayout->addWidget(_log);
+
+  _canvas->setLayout(mainLayout);
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bnsWindow::~bnsWindow() {
-  cout << "destructor" << endl;
 }
 
 // Close Application gracefully
@@ -152,6 +195,9 @@ void bnsWindow::AddToolbar() {
 // Save Options
 ////////////////////////////////////////////////////////////////////////////
 void bnsWindow::slotSaveOptions() {
+  QSettings settings;
+  settings.setValue("proxyHost",   _proxyHostLineEdit->text());
+  settings.setValue("proxyPort",   _proxyPortLineEdit->text());
 }
 
 // About Dialog - Constructor
@@ -187,3 +233,14 @@ bnsAboutDlg::bnsAboutDlg(QWidget* parent) :
 bnsAboutDlg::~bnsAboutDlg() {
 }; 
 
+// Display Program Messages 
+////////////////////////////////////////////////////////////////////////////
+void bnsWindow::slotMessage(const QByteArray msg) {
+
+  const int maxBufferSize = 10000;
+ 
+  QString txt = _log->toPlainText() + "\n" + 
+     QDateTime::currentDateTime().toUTC().toString("yy-MM-dd hh:mm:ss ") + msg;
+  _log->clear();
+  _log->append(txt.right(maxBufferSize));
+}  
