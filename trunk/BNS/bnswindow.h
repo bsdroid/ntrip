@@ -17,7 +17,7 @@ class bnsWindow : public QMainWindow {
 Q_OBJECT
 
  public:
-  bnsWindow(t_bns* bns);
+  bnsWindow();
   ~bnsWindow();
 
  public slots:  
