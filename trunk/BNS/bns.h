@@ -5,21 +5,18 @@
 #include <QThread>
 #include <QMutex>
 
-class bns : public QThread {
-  Q_OBJECT
+class t_bns : public QThread {
+ Q_OBJECT
  public:
-  bns(QObject* parent = 0);
-  virtual ~bns();  
+  t_bns(QObject* parent = 0);
+  virtual ~t_bns();  
   virtual void run();  
 
- protected:
-
- public slots:
-  void slotMessage(const QByteArray msg);
-    
- private slots:
+ signals:
+  void newMessage(const QByteArray msg);
  
  private:
+  void message(const QByteArray msg);
   QMutex _mutex;
 };
 #endif

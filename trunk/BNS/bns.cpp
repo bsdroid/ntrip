@@ -22,24 +22,24 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bns::bns(QObject* parent) : QThread(parent) {
+t_bns::t_bns(QObject* parent) : QThread(parent) {
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-bns::~bns() {
+t_bns::~t_bns() {
 }
 
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
-void bns::slotMessage(const QByteArray msg) {
-  QMutexLocker locker(&_mutex);
+void t_bns::message(const QByteArray msg) {
   cout << msg.data() << endl;
+  emit(newMessage(msg));
 }
 
 // Start 
 ////////////////////////////////////////////////////////////////////////////
-void bns::run() {
-  slotMessage("============ Start BNS ============");
+void t_bns::run() {
+  message("============ Start BNS ============");
 }
 
