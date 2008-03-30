@@ -2,7 +2,7 @@
 #define BNSEPH_H
 
 #include <QThread>
-#include <QMutex>
+#include <QtNetwork>
 
 class t_bnseph : public QThread {
  Q_OBJECT
@@ -15,6 +15,6 @@ class t_bnseph : public QThread {
   void newMessage(const QByteArray msg);
  
  private:
-  QMutex _mutex;
+  QTcpSocket* _socket;
 };
 #endif
