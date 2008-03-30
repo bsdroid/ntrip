@@ -26,11 +26,20 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bnsWindow::bnsWindow() {
 
-  int ww = QFontMetrics(this->font()).width('w');
-  
-  setMinimumSize(77*ww, 65*ww);
+  QSettings settings;
 
+  QString fontString = settings.value("font").toString();
+  if ( !fontString.isEmpty() ) {
+    QFont newFont;
+    if (newFont.fromString(fontString)) {
+      this->setFont(newFont);
+    }
+  }
+  
+  int ww = QFontMetrics(this->font()).width('w');
+  setMinimumSize(77*ww, 65*ww);
   setWindowTitle(tr("BKG Ntrip Server (BNS) Version 1.0"));
+  setWindowIcon(QPixmap(":ntrip-logo.png"));
 
   // Create Actions
   // --------------
@@ -60,7 +69,12 @@ bnsWindow::bnsWindow() {
   _canvas = new QWidget;
   setCentralWidget(_canvas);
 
-  QSettings settings;
+  _ephHostLineEdit  = new QLineEdit(settings.value("ephHost").toString());
+  _ephHostLineEdit->setWhatsThis(tr("Host for broadcast ephemeris (from BNC)"));
+  _ephPortLineEdit  = new QLineEdit(settings.value("ephPort").toString());
+  _ephPortLineEdit->setWhatsThis(tr("Port for broadcast ephemeris (from BNC)"));
+  _ephPortLineEdit->setMaximumWidth(9*ww);
+
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
   _proxyHostLineEdit->setWhatsThis(tr("<p>If you are running BNS within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you do not know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is sometimes not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNC outside your LAN on a network that has unobstructed connection to the Internet.</p>"));
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
@@ -70,25 +84,33 @@ bnsWindow::bnsWindow() {
   // TabWidget
   // ---------
   QTabWidget* tabs = new QTabWidget();
+  QWidget* tab_inp   = new QWidget();
+  QWidget* tab_out   = new QWidget();
   QWidget* tab_proxy = new QWidget();
-  QWidget* tab_opt   = new QWidget();
-  QWidget* tab_res   = new QWidget();
+  tabs->addTab(tab_inp,  tr("Input"));
+  tabs->addTab(tab_out,  tr("Output"));
   tabs->addTab(tab_proxy,tr("Proxy"));
-  tabs->addTab(tab_opt,  tr("Options"));
-  tabs->addTab(tab_res,  tr("Results"));
+
+  // Input-Tab
+  // ---------
+  QGridLayout* iLayout = new QGridLayout;
+  ///  iLayout->setColumnMinimumWidth(0,12*ww);
+  iLayout->addWidget(new QLabel("Input Options"),0, 0, 1, 2, Qt::AlignLeft);
+  iLayout->addWidget(new QLabel("Host (Ephemeris)"),1,0, Qt::AlignLeft);
+  iLayout->addWidget(_ephHostLineEdit,1, 1);
+  iLayout->addWidget(new QLabel("Port (Ephemeris)"),2,0, Qt::AlignLeft);
+  iLayout->addWidget(_ephPortLineEdit,2, 1);
+  tab_inp->setLayout(iLayout);
 
   // Proxy-Tab
   // ---------
   QGridLayout* pLayout = new QGridLayout;
   pLayout->setColumnMinimumWidth(0,12*ww);
-  pLayout->addWidget(new QLabel("Proxy host"),0,0, Qt::AlignLeft);
-  pLayout->addWidget(_proxyHostLineEdit,0, 1);
-  pLayout->addWidget(new QLabel("Proxy port"),1,0, Qt::AlignLeft);
-  pLayout->addWidget(_proxyPortLineEdit,1,1);
-  pLayout->addWidget(new QLabel("Settings for the proxy in protected networks, leave the boxes blank if none."),2, 0, 1, 2, Qt::AlignLeft);
-  pLayout->addWidget(new QLabel("    "),3,0);
-  pLayout->addWidget(new QLabel("    "),4,0);
-  pLayout->addWidget(new QLabel("    "),5,0);
+  pLayout->addWidget(new QLabel("Settings for the proxy in protected networks, leave the boxes blank if none."),0, 0, 1, 2, Qt::AlignLeft);
+  pLayout->addWidget(new QLabel("Proxy host"),1,0, Qt::AlignLeft);
+  pLayout->addWidget(_proxyHostLineEdit,1, 1);
+  pLayout->addWidget(new QLabel("Proxy port"),2,0, Qt::AlignLeft);
+  pLayout->addWidget(_proxyPortLineEdit,2,1);
   tab_proxy->setLayout(pLayout);
 
   // Log
@@ -156,8 +178,7 @@ void bnsWindow::slotFontSel() {
     settings.setValue("font", newFont.toString());
     QApplication::setFont(newFont);
     int ww = QFontMetrics(newFont).width('w');
-    setMinimumSize(60*ww, 80*ww);
-    resize(60*ww, 80*ww);
+    setMinimumSize(77*ww, 65*ww);
   }
 }
 
@@ -196,6 +217,8 @@ void bnsWindow::AddToolbar() {
 ////////////////////////////////////////////////////////////////////////////
 void bnsWindow::slotSaveOptions() {
   QSettings settings;
+  settings.setValue("ephHost",     _ephHostLineEdit->text());
+  settings.setValue("ephPort",     _ephPortLineEdit->text());
   settings.setValue("proxyHost",   _proxyHostLineEdit->text());
   settings.setValue("proxyPort",   _proxyPortLineEdit->text());
 }
