@@ -76,6 +76,7 @@ int main(int argc, char *argv[]) {
   // Non-Interactive (Batch) Mode
   // ----------------------------
   else {
+    cerr << "non-interactive mode not yet implemented" << endl;
     exit(0);
   }
 
