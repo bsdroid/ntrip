@@ -18,7 +18,6 @@
 #include <iostream>
 
 #include "bnswindow.h" 
-#include "bnsapp.h" 
 #include "bnshlpdlg.h" 
 
 using namespace std;
@@ -270,8 +269,6 @@ void bnsWindow::slotSaveOptions() {
 ////////////////////////////////////////////////////////////////////////////
 void bnsWindow::slotMessage(const QByteArray msg) {
 
-  ((bnsApp*)qApp)->slotMessage(msg);
-
   const int maxBufferSize = 10000;
  
   QString txt = _log->toPlainText() + "\n" + 
@@ -289,7 +286,6 @@ void bnsWindow::slotStop() {
   if (iRet == QMessageBox::Yes) {
     _actStart->setEnabled(true);
     _actStop->setEnabled(false);
-    ((bnsApp*)qApp)->stop();
   }
 }
 
@@ -303,5 +299,4 @@ void bnsWindow::slotStart() {
 
   slotMessage("============ Start BNS ============");
 
-  ((bnsApp*)qApp)->start();
 }

@@ -14,19 +14,12 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <unistd.h>
-#include <signal.h>
 #include <iostream>
 
-#include "bnsapp.h"
+#include "bns.h"
 #include "bnswindow.h"
 
 using namespace std;
-
-void catch_signal(int) {
-  cout << "Program Interrupted by Ctrl-C" << endl;
-  ((bnsApp*)qApp)->slotQuit();
-}
 
 // Main Program
 /////////////////////////////////////////////////////////////////////////////
@@ -40,17 +33,11 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  QCoreApplication::setOrganizationName("BKG");
-  QCoreApplication::setOrganizationDomain("www.bkg.bund.de");
-  QCoreApplication::setApplicationName("BKG_NTRIP_Server");
+  QApplication app(argc, argv, GUIenabled);
 
-  // Default Settings
-  // ----------------
-  QSettings settings;
-  if (settings.allKeys().size() == 0) {
-  }
-
-  bnsApp app(argc, argv, GUIenabled);
+  app.setOrganizationName("BKG");
+  app.setOrganizationDomain("www.bkg.bund.de");
+  app.setApplicationName("BKG_NTRIP_Server");
 
   // Interactive Mode - open the main window
   // ---------------------------------------
@@ -62,11 +49,8 @@ int main(int argc, char *argv[]) {
   // Non-Interactive (Batch) Mode
   // ----------------------------
   else {
-    cerr << "non-interactive mode not yet implemented" << endl;
-    exit(0);
+
   }
 
-  // Start the application
-  // ---------------------
   return app.exec();
 }

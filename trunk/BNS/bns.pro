@@ -20,9 +20,9 @@ debug:MOC_DIR=.moc/debug
 release:OBJECTS_DIR=.obj/release
 release:MOC_DIR=.moc/release
 
-HEADERS =             bnsapp.h   bnswindow.h   bnshlpdlg.h   bnshtml.h
+HEADERS =             bns.h   bnswindow.h   bnshlpdlg.h   bnshtml.h
 
-SOURCES = bnsmain.cpp bnsapp.cpp bnswindow.cpp bnshlpdlg.cpp bnshtml.cpp
+SOURCES = bnsmain.cpp bns.cpp bnswindow.cpp bnshlpdlg.cpp bnshtml.cpp
 
 RC_FILE = bns.rc
 
