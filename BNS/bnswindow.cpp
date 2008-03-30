@@ -284,6 +284,8 @@ void bnsWindow::slotMessage(const QByteArray msg) {
 void bnsWindow::deleteBns() {
   _actStart->setEnabled(true);
   _actStop->setEnabled(false);
+  _bns->terminate();
+  _bns->wait();
   delete _bns; 
   _bns = 0;
 }  
