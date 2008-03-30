@@ -36,6 +36,8 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_bns::~t_bns() {
+  _bnseph->terminate();
+  _bnseph->wait();
   delete _bnseph;
 }
 
