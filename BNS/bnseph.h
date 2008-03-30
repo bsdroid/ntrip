@@ -13,6 +13,7 @@ class t_bnseph : public QThread {
 
  signals:
   void newMessage(const QByteArray msg);
+  void error(const QByteArray msg);
  
  private:
   QTcpSocket* _socket;

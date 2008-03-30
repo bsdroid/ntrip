@@ -15,9 +15,11 @@ class t_bns : public QThread {
 
  signals:
   void newMessage(const QByteArray msg);
+  void error(const QByteArray msg);
  
  private slots:
   void slotMessage(const QByteArray msg);
+  void slotError(const QByteArray msg);
 
  private:
   t_bnseph* _bnseph;

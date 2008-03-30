@@ -22,6 +22,7 @@ Q_OBJECT
 
  public slots:  
   void slotMessage(const QByteArray msg);
+  void slotError(const QByteArray msg);
 
  private slots:
   void slotHelp();
@@ -38,6 +39,7 @@ Q_OBJECT
  private:
   void CreateMenu();
   void AddToolbar();
+  void deleteBns();
 
   QMenu*     _menuHlp;
   QMenu*     _menuFile;

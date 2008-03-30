@@ -45,20 +45,19 @@ void t_bnseph::run() {
   _socket = new QTcpSocket();
   _socket->connectToHost(host, port);
 
-  const int timeOut = 10*1000;  // 10 seconds
+  const int timeOut = 3*1000;  // 3 seconds
   if (!_socket->waitForConnected(timeOut)) {
-    emit(newMessage("bnseph::run Connect Timeout"));
-    delete _socket; _socket = 0;
-    return;
+    emit(error("bnseph::run Connect Timeout"));
   }
-
-  while (true) {
-    if (_socket->canReadLine()) {
-      QByteArray line = _socket->readLine();
-      emit(newMessage(line));
-    }
-    else {
-      _socket->waitForReadyRead(10);
+  else {
+    while (true) {
+      if (_socket->canReadLine()) {
+        QByteArray line = _socket->readLine();
+        emit(newMessage(line));
+      }
+      else {
+        _socket->waitForReadyRead(10);
+      }
     }
   }
 }
