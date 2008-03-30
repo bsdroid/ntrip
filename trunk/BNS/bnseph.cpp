@@ -14,6 +14,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
+
 #include "bnseph.h" 
 
 using namespace std;
@@ -53,7 +55,7 @@ void t_bnseph::run() {
     while (true) {
       if (_socket->canReadLine()) {
         QByteArray line = _socket->readLine();
-        emit(newMessage(line));
+        cout << line.data();
       }
       else {
         _socket->waitForReadyRead(10);
