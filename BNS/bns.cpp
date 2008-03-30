@@ -24,6 +24,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 t_bns::t_bns(QObject* parent) : QThread(parent) {
 
+  this->setTerminationEnabled(true);
+ 
   _bnseph = new t_bnseph(parent);
 
   connect(_bnseph, SIGNAL(newMessage(QByteArray)),
@@ -44,7 +46,7 @@ t_bns::~t_bns() {
 void t_bns::deleteBnsEph() {
   if (_bnseph) {
     _bnseph->terminate();
-    _bnseph->wait();
+    _bnseph->wait(100);
     delete _bnseph; 
     _bnseph = 0;
   }
