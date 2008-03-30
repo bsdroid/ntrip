@@ -27,6 +27,8 @@ Q_OBJECT
   void slotFontSel();
   void slotSaveOptions();
   void slotWhatsThis();
+  void slotStart();
+  void slotStop();
 
  protected:
   virtual void closeEvent(QCloseEvent *);
@@ -43,7 +45,9 @@ Q_OBJECT
   QAction*   _actFontSel;
   QAction*   _actSaveOpt;
   QAction*   _actQuit; 
-  QAction*   _actwhatsthis;
+  QAction*   _actWhatsThis;
+  QAction*   _actStart;
+  QAction*   _actStop;
 
   QWidget*   _canvas;
 
