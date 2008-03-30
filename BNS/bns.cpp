@@ -36,9 +36,18 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_bns::~t_bns() {
-  _bnseph->terminate();
-  _bnseph->wait();
-  delete _bnseph;
+  deleteBnsEph();
+}
+
+// Delete bns thread
+////////////////////////////////////////////////////////////////////////////
+void t_bns::deleteBnsEph() {
+  if (_bnseph) {
+    _bnseph->terminate();
+    _bnseph->wait();
+    delete _bnseph; 
+    _bnseph = 0;
+  }
 }
 
 // Write a Program Message
@@ -52,6 +61,7 @@ void t_bns::slotMessage(const QByteArray msg) {
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::slotError(const QByteArray msg) {
   cerr << msg.data() << endl;
+  deleteBnsEph();
   emit(error(msg));
 }
 

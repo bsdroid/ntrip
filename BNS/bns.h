@@ -22,6 +22,7 @@ class t_bns : public QThread {
   void slotError(const QByteArray msg);
 
  private:
+  void deleteBnsEph();
   t_bnseph* _bnseph;
   QMutex    _mutex;
 };
