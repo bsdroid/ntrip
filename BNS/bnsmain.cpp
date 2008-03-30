@@ -43,20 +43,17 @@ int main(int argc, char *argv[]) {
   app.setOrganizationDomain("www.bkg.bund.de");
   app.setApplicationName("BKG_NTRIP_Server");
 
-  // Main processing class
-  // ---------------------
-  t_bns* bns = new t_bns();
-
   // Interactive Mode - open the main window
   // ---------------------------------------
   if (GUIenabled) {
-    bnsWindow* bnsWin = new bnsWindow(bns);
+    bnsWindow* bnsWin = new bnsWindow();
     bnsWin->show();
   }
 
   // Non-Interactive (Batch) Mode
   // ----------------------------
   else {
+    t_bns* bns = new t_bns();
     bns->start();
   }
 

@@ -23,16 +23,20 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_bns::t_bns(QObject* parent) : QThread(parent) {
+  _bnseph = new t_bnseph(parent);
+  connect(_bnseph, SIGNAL(newMessage(QByteArray)),
+          this, SLOT(slotMessage(const QByteArray)));
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_bns::~t_bns() {
+  delete _bnseph;
 }
 
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
-void t_bns::message(const QByteArray msg) {
+void t_bns::slotMessage(const QByteArray msg) {
   cout << msg.data() << endl;
   emit(newMessage(msg));
 }
@@ -40,6 +44,7 @@ void t_bns::message(const QByteArray msg) {
 // Start 
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::run() {
-  message("============ Start BNS ============");
+  slotMessage("============ Start BNS ============");
+  _bnseph->start();
 }
 

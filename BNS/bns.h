@@ -1,9 +1,10 @@
 #ifndef BNS_H
 #define BNS_H
 
-#include <QApplication>
 #include <QThread>
 #include <QMutex>
+
+#include "bnseph.h"
 
 class t_bns : public QThread {
  Q_OBJECT
@@ -15,8 +16,11 @@ class t_bns : public QThread {
  signals:
   void newMessage(const QByteArray msg);
  
+ private slots:
+  void slotMessage(const QByteArray msg);
+
  private:
-  void message(const QByteArray msg);
-  QMutex _mutex;
+  t_bnseph* _bnseph;
+  QMutex    _mutex;
 };
 #endif

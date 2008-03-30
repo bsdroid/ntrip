@@ -57,12 +57,9 @@ bnsAboutDlg::~bnsAboutDlg() {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bnsWindow::bnsWindow(t_bns* bns) {
+bnsWindow::bnsWindow() {
 
-  _bns = bns;
-
-  connect(bns, SIGNAL(newMessage(QByteArray)),
-          this, SLOT(slotMessage(const QByteArray)));
+  _bns = 0;
 
   QSettings settings;
 
@@ -291,6 +288,8 @@ void bnsWindow::slotStop() {
   if (iRet == QMessageBox::Yes) {
     _actStart->setEnabled(true);
     _actStop->setEnabled(false);
+    delete _bns; 
+    _bns = 0;
   }
 }
 
@@ -302,5 +301,8 @@ void bnsWindow::slotStart() {
   _actStart->setEnabled(false);
   _actStop->setEnabled(true);
 
+  _bns = new t_bns(0);
+  connect(_bns, SIGNAL(newMessage(QByteArray)),
+          this, SLOT(slotMessage(const QByteArray)));
   _bns->start();
 }
