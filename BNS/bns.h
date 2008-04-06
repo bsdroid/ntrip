@@ -1,8 +1,8 @@
 #ifndef BNS_H
 #define BNS_H
 
+#include <QtNetwork>
 #include <QThread>
-#include <QMutex>
 
 #include "bnseph.h"
 
@@ -18,12 +18,15 @@ class t_bns : public QThread {
   void error(const QByteArray msg);
  
  private slots:
+  void slotNewConnection();
   void slotMessage(const QByteArray msg);
   void slotError(const QByteArray msg);
 
  private:
   void deleteBnsEph();
-  t_bnseph* _bnseph;
-  QMutex    _mutex;
+  QTcpServer* _clkServer;
+  QTcpSocket* _clkSocket;
+  t_bnseph*   _bnseph;
+  QMutex      _mutex;
 };
 #endif
