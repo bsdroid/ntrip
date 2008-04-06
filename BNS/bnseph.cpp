@@ -54,8 +54,7 @@ void t_bnseph::run() {
   else {
     while (true) {
       if (_socket->canReadLine()) {
-        QByteArray line = _socket->readLine();
-        cout << line.data();
+        readEph();
       }
       else {
         _socket->waitForReadyRead(10);
@@ -64,3 +63,51 @@ void t_bnseph::run() {
   }
 }
 
+// Read One Ephemeris 
+////////////////////////////////////////////////////////////////////////////
+void t_bnseph::readEph() {
+
+  gpsephemeris* ep = new gpsephemeris;
+
+  QByteArray line = _socket->readLine();
+  QTextStream in1(line);
+
+  QString prn;
+  int     year, month, day, hour, minute, second;
+
+  in1 >> prn >> year >> month >> day >> hour >> minute >> second
+      >> ep->clock_bias >> ep->clock_drift >> ep->clock_driftrate;
+
+  line = _socket->readLine();
+  QTextStream in2(line);
+  in2 >> ep->IODE >> ep->Crs >> ep->Delta_n >> ep->M0;
+
+  line = _socket->readLine();
+  QTextStream in3(line);
+  in3 >> ep->Cuc >> ep->e >> ep->Cus >> ep->sqrt_A;
+
+  line = _socket->readLine();
+  QTextStream in4(line);
+  in4 >> ep->TOE >> ep->Cic >> ep->OMEGA0 >> ep->Cis;
+
+  line = _socket->readLine();
+  QTextStream in5(line);
+  in5 >> ep->i0 >> ep->Crc >> ep->omega >> ep->OMEGADOT;
+
+  line = _socket->readLine();
+  QTextStream in6(line);
+
+  double dd;
+  int    ii;
+  in6 >>  ep->IDOT >> dd >> ep->GPSweek >> ii;
+
+  line = _socket->readLine();
+  QTextStream in7(line);
+
+  double hlp;
+  in7 >>  hlp >> ep->SVhealth >> ep->TGD >> ep->IODC;
+
+  line = _socket->readLine();
+  QTextStream in8(line);
+  in8 >> ep->TOW;
+}
