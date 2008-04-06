@@ -36,6 +36,8 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   _clkServer = 0;
   _clkSocket = 0;
+
+  _outSocket = 0;
 }
 
 // Destructor
@@ -43,6 +45,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 t_bns::~t_bns() {
   deleteBnsEph();
   delete _clkServer;
+  delete _outSocket;
 }
 
 // Delete bns thread
@@ -77,20 +80,57 @@ void t_bns::slotNewConnection() {
   _clkSocket = _clkServer->nextPendingConnection();
 }
 
+// Start the Communication with NTRIP Caster
+////////////////////////////////////////////////////////////////////////////
+void t_bns::openCaster() {
+  
+  QSettings settings;
+  QString host = settings.value("outHost").toString();
+  int     port = settings.value("outPort").toInt();
+
+  _outSocket = new QTcpSocket();
+  _outSocket->connectToHost(host, port);
+
+  QString mountpoint = settings.value("mountpoint").toString();
+  QString password   = settings.value("password").toString();
+
+  QByteArray msg = "SOURCE " + password.toAscii() + " /" + 
+                   mountpoint.toAscii() + "\r\n" +
+                   "Source-Agent: NTRIP BNS/1.0\r\n\r\n";
+
+  _outSocket->write(msg);
+
+  QByteArray ans = _outSocket->readLine();
+
+  if (ans.indexOf("OK") == -1) {
+    delete _outSocket;
+    _outSocket = 0;
+  }
+}
+
 // Start 
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::run() {
 
   slotMessage("============ Start BNS ============");
+
+  // Start Thread that retrieves broadcast Ephemeris
+  // -----------------------------------------------
   _bnseph->start();
 
+  // Open the connection to NTRIP Caster
+  // -----------------------------------
+  openCaster();
+
+  // Start listening for rtnet results
+  // ---------------------------------
   QSettings settings;
-  int port = settings.value("clkPort").toInt();
-
   _clkServer = new QTcpServer;
-  _clkServer->listen(QHostAddress::Any, port);
-  connect(_clkServer, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
+  _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
+  connect(_clkServer, SIGNAL(newConnection()),this, SLOT(slotNewConnection()));
 
+  // Endless loop
+  // ------------
   while (true) {
     if (_clkSocket) {
 

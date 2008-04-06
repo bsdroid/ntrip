@@ -24,8 +24,10 @@ class t_bns : public QThread {
 
  private:
   void deleteBnsEph();
+  void openCaster();
   QTcpServer* _clkServer;
   QTcpSocket* _clkSocket;
+  QTcpSocket* _outSocket;
   t_bnseph*   _bnseph;
   QMutex      _mutex;
 };
