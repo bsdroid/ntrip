@@ -6,6 +6,22 @@
 
 #include "bnseph.h"
 
+class t_ephPair {
+ public:
+  t_ephPair() {
+    eph    = 0;
+    oldEph = 0;
+  }
+
+  ~t_ephPair() {
+    delete eph;
+    delete oldEph;
+  }
+
+  gpsEph* eph;
+  gpsEph* oldEph;
+};
+
 class t_bns : public QThread {
  Q_OBJECT
  public:
@@ -18,6 +34,7 @@ class t_bns : public QThread {
   void error(const QByteArray msg);
  
  private slots:
+  void slotNewEph(gpsEph* ep);
   void slotNewConnection();
   void slotMessage(const QByteArray msg);
   void slotError(const QByteArray msg);
@@ -25,10 +42,11 @@ class t_bns : public QThread {
  private:
   void deleteBnsEph();
   void openCaster();
-  QTcpServer* _clkServer;
-  QTcpSocket* _clkSocket;
-  QTcpSocket* _outSocket;
-  t_bnseph*   _bnseph;
-  QMutex      _mutex;
+  QTcpServer*               _clkServer;
+  QTcpSocket*               _clkSocket;
+  QTcpSocket*               _outSocket;
+  t_bnseph*                 _bnseph;
+  QMutex                    _mutex;
+  QMap<QString, t_ephPair*> _ephList;
 };
 #endif

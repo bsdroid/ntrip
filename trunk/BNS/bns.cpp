@@ -28,6 +28,8 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
  
   _bnseph = new t_bnseph(parent);
 
+  connect(_bnseph, SIGNAL(newEph(gpsEph*)), this, SLOT(slotNewEph(gpsEph*)));
+
   connect(_bnseph, SIGNAL(newMessage(QByteArray)),
           this, SLOT(slotMessage(const QByteArray)));
 
@@ -141,3 +143,20 @@ void t_bns::run() {
   }
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_bns::slotNewEph(gpsEph* ep) {
+
+  QMutexLocker locker(&_mutex);
+
+  t_ephPair* pair;
+  if ( !_ephList.contains(ep->prn) ) {
+    pair = new t_ephPair();
+    _ephList.insert(ep->prn, pair);
+  }
+  else {
+    pair = _ephList[ep->prn];
+  }
+
+
+}
