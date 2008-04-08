@@ -60,10 +60,11 @@ void t_bnseph::run() {
         break;
       }
       if (_socket->canReadLine()) {
+        cout << "readEph" << endl;
         readEph();
       }
       else {
-        msleep(10);
+        _socket->waitForReadyRead(10);
       }
     }
   }
@@ -82,6 +83,8 @@ void t_bnseph::readEph() {
   for (int ii = 1; ii <= NUMLINES; ii++) {
 
     QByteArray line = _socket->readLine();
+
+    cout << line.data();
 
     if (flagGlonass) {
       if (ii == 4) {
