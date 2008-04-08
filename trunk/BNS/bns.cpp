@@ -179,7 +179,7 @@ void t_bns::run() {
       readEpoch();
     }
     else {
-      msleep(100);
+      msleep(10);
     }
   }
 }

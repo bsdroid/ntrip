@@ -63,7 +63,7 @@ void t_bnseph::run() {
         readEph();
       }
       else {
-        _socket->waitForReadyRead(10);
+        msleep(10);
       }
     }
   }
