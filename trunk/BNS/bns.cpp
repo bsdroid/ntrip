@@ -214,7 +214,8 @@ void t_bns::readEpoch() {
     QString      prn;
     ColumnVector xx(4);
 
-    in >> prn >> xx(1) >> xx(2) >> xx(3) >> xx(4);
+    in >> prn >> xx(1) >> xx(2) >> xx(3) >> xx(4); 
+    xx(4) *= 1e6;
 
     processSatellite(mjd, sec, prn, xx);
   }
@@ -225,4 +226,15 @@ void t_bns::readEpoch() {
 void t_bns::processSatellite(int mjd, double sec, const QString& prn, 
                              const ColumnVector& xx) {
 
+  // No broadcast ephemeris available
+  // --------------------------------
+  if ( !_ephList.contains(prn) ) {
+    return;
+  }
+
+  t_ephPair* pair = _ephList[prn];
+  gpsEph*    ep   = pair->eph;
+
+  cout << "PRN, CLK " << prn.toAscii().data() << " "
+       << ep->clock_bias << " " << xx(4) << endl;
 }
