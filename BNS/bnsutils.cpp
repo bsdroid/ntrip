@@ -64,7 +64,12 @@ QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks) {
 void GPSweekFromDateAndTime(const QDateTime& dateTime, 
                             int& GPSWeek, double& GPSWeeks) {
 
+  static const QDateTime zeroEpoch(QDate(1980, 1, 6));
+ 
+  GPSWeek = zeroEpoch.daysTo(dateTime) / 7;
 
+  GPSWeeks = (dateTime.date().dayOfWeek() - 1) * 86400.0
+             - dateTime.time().msecsTo(QTime()) / 1e3; 
 }
 
 // 
