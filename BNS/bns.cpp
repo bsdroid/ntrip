@@ -54,7 +54,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 t_bns::~t_bns() {
   deleteBnsEph();
   delete _clkServer;
-  delete _clkSocket;
+  ///  delete _clkSocket;
   delete _outSocket;
   QMapIterator<QString, t_ephPair*> it(_ephList);
   while (it.hasNext()) {
