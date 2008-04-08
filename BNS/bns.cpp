@@ -173,13 +173,10 @@ void t_bns::run() {
   // Endless loop
   // ------------
   while (true) {
-    if (_clkSocket && _clkSocket->state() == QAbstractSocket::ConnectedState) {
-      if (!_clkSocket->canReadLine()) {
-        _clkSocket->waitForReadyRead(10);
-      }
-      else {
-        readEpoch();
-      }
+    if (_clkSocket && 
+        _clkSocket->state() == QAbstractSocket::ConnectedState &&
+        _clkSocket->canReadLine()) {
+      readEpoch();
     }
     else {
       msleep(100);
@@ -208,9 +205,6 @@ void t_bns::readEpoch() {
   in >> hlp >> mjd >> sec >> numSat;
 
   for (int ii = 1; ii <= numSat; ii++) {
-    if (!_clkSocket->canReadLine()) {
-      _clkSocket->waitForReadyRead(10);
-    }
     line = _clkSocket->readLine();
 
     cout << line.data();
