@@ -82,7 +82,7 @@ void t_bnseph::readEph() {
   for (int ii = 1; ii <= NUMLINES; ii++) {
 
     if (!_socket->canReadLine()) {
-      _socket->waitForReadyRead();
+      _socket->waitForReadyRead(10);
     }
 
     QByteArray line = _socket->readLine();
