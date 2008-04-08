@@ -169,11 +169,6 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
 
   printEphHeader();
 
-  if (!_ephStreamGPS) {
-    delete gpseph;
-    return;
-  }
-
   gpsephemeris** ee = &_gpsEph[gpseph->satellite-1];
   if ( *ee == 0                         || 
        gpseph->GPSweek > (*ee)->GPSweek ||
@@ -195,11 +190,6 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
   QMutexLocker locker(&_mutex);
 
   printEphHeader();
-
-  if (!_ephStreamGlonass) {
-    delete glonasseph;
-    return;
-  }
 
   glonassephemeris** ee = &_glonassEph[glonasseph->almanac_number-1];
 
