@@ -45,7 +45,7 @@ class t_bns : public QThread {
   void deleteBnsEph();
   void openCaster();
   void readEpoch();
-  void processSatellite(int mjd, double sec, const QString& prn, 
+  void processSatellite(int GPSweek, double GPSweeks, const QString& prn, 
                         const ColumnVector& xx);
 
   QTcpServer*               _clkServer;
