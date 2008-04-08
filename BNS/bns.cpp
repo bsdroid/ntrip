@@ -142,8 +142,6 @@ void t_bns::slotNewEph(gpsEph* ep) {
 
   if (pair->eph == 0) {
     pair->eph = ep;
-    cout << "A: " << ep->prn.toAscii().data() << " " 
-         << ep->GPSweek << " " << ep->TOC << endl;
   }
   else {
     if (ep->GPSweek >  pair->eph->GPSweek ||
@@ -151,8 +149,6 @@ void t_bns::slotNewEph(gpsEph* ep) {
       delete pair->oldEph;
       pair->oldEph = pair->eph;
       pair->eph    = ep;
-      cout << "B: " << ep->prn.toAscii().data() << " " 
-           << ep->GPSweek << " " << ep->TOC << endl;
     }
     else {
       delete ep;
@@ -177,7 +173,6 @@ void t_bns::run() {
   // Endless loop
   // ------------
   while (true) {
-    cout << "_clkSocket = " << _clkSocket << endl;
     if (_clkSocket) {
       if (_clkSocket->state() != QAbstractSocket::ConnectedState) {
         delete _clkSocket;
