@@ -180,7 +180,7 @@ void t_bns::run() {
         continue;
       }
       if (!_clkSocket->canReadLine()) {
-        _clkSocket->waitForReadyRead();
+        _clkSocket->waitForReadyRead(10);
       }
       else {
         readEpoch();
@@ -214,7 +214,7 @@ void t_bns::readEpoch() {
 
   for (int ii = 1; ii <= numSat; ii++) {
     if (!_clkSocket->canReadLine()) {
-      _clkSocket->waitForReadyRead();
+      _clkSocket->waitForReadyRead(10);
     }
     line = _clkSocket->readLine();
   cout << line.data();
