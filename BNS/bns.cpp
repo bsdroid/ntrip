@@ -26,25 +26,26 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   this->setTerminationEnabled(true);
  
+  // Thread that handles broadcast ephemeris
+  // ---------------------------------------
   _bnseph = new t_bnseph(parent);
 
   connect(_bnseph, SIGNAL(newEph(gpsEph*)), this, SLOT(slotNewEph(gpsEph*)));
-
   connect(_bnseph, SIGNAL(newMessage(QByteArray)),
           this, SLOT(slotMessage(const QByteArray)));
-
   connect(_bnseph, SIGNAL(error(QByteArray)),
           this, SLOT(slotError(const QByteArray)));
 
-  // Start listening for rtnet results
-  // ---------------------------------
+  // Server listening for rtnet results
+  // ----------------------------------
   QSettings settings;
   _clkSocket = 0;
   _clkServer = new QTcpServer;
-  /////  _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
-  _clkServer->listen(QHostAddress::Any, 5555);
+  _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
   connect(_clkServer, SIGNAL(newConnection()),this, SLOT(slotNewConnection()));
 
+  // Socket for outputting the results
+  // ---------------------------------
   _outSocket = 0;
 }
 
@@ -53,6 +54,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 t_bns::~t_bns() {
   deleteBnsEph();
   delete _clkServer;
+  delete _clkSocket;
   delete _outSocket;
   QMapIterator<QString, t_ephPair*> it(_ephList);
   while (it.hasNext()) {
@@ -91,6 +93,7 @@ void t_bns::slotError(const QByteArray msg) {
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::slotNewConnection() {
   slotMessage("t_bns::slotNewConnection");
+  delete _clkSocket;
   _clkSocket = _clkServer->nextPendingConnection();
 }
 
