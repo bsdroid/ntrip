@@ -173,10 +173,13 @@ void t_bns::run() {
   // Endless loop
   // ------------
   while (true) {
-    if (_clkSocket && 
-        _clkSocket->state() == QAbstractSocket::ConnectedState &&
-        _clkSocket->canReadLine()) {
-      readEpoch();
+    if (_clkSocket && _clkSocket->state() == QAbstractSocket::ConnectedState) {
+      if ( _clkSocket->canReadLine()) {
+        readEpoch();
+      }
+      else {
+        _clkSocket->waitForReadyRead(10);
+      }
     }
     else {
       msleep(10);
