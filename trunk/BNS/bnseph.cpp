@@ -71,6 +71,8 @@ void t_bnseph::readEph() {
 
   gpsEph* ep = new gpsEph;
 
+  bool flagGlonass = false;
+
   const int NUMLINES = 8;
 
   for (int ii = 1; ii <= NUMLINES; ii++) {
@@ -80,11 +82,29 @@ void t_bnseph::readEph() {
     }
 
     QByteArray line = _socket->readLine();
+
+    if (flagGlonass) {
+      if (ii == 4) {
+        delete ep;
+        return;
+      }
+      else {
+        continue;
+      }
+    }
+
     QTextStream in(line);
 
     if (ii == 1) {
+      in >> ep->prn;
+
+      if (ep->prn.indexOf('R') != -1) {
+        flagGlonass = true;
+        continue;
+      }
+
       int     year, month, day, hour, minute, second;
-      in >> ep->prn >> year >> month >> day >> hour >> minute >> second
+      in >> year >> month >> day >> hour >> minute >> second
          >> ep->clock_bias >> ep->clock_drift >> ep->clock_driftrate;
       
       if (year < 100) year += 2000;
@@ -122,6 +142,9 @@ void t_bnseph::readEph() {
       in >> ep->TOW;
     }
   }
+
+      cout << "before emit: " << ep->prn.toAscii().data() << " "
+           << ep->GPSweek << " " << ep->TOC << endl;
 
   emit(newEph(ep));
 }
