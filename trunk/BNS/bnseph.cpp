@@ -55,6 +55,10 @@ void t_bnseph::run() {
   }
   else {
     while (true) {
+      if (_socket->state() != QAbstractSocket::ConnectedState) {
+        emit(error("bnseph::not connected"));
+        break;
+      }
       if (_socket->canReadLine()) {
         readEph();
       }
@@ -142,9 +146,6 @@ void t_bnseph::readEph() {
       in >> ep->TOW;
     }
   }
-
-      cout << "before emit: " << ep->prn.toAscii().data() << " "
-           << ep->GPSweek << " " << ep->TOC << endl;
 
   emit(newEph(ep));
 }
