@@ -163,5 +163,18 @@ void t_bns::slotNewEph(gpsEph* ep) {
     pair = _ephList[ep->prn];
   }
 
-
+  if (pair->eph == 0) {
+    pair->eph = ep;
+  }
+  else {
+    if (ep->GPSweek >  pair->eph->GPSweek ||
+        (ep->GPSweek == pair->eph->GPSweek && ep->TOC > pair->eph->TOC)) {
+      delete pair->oldEph;
+      pair->oldEph = pair->eph;
+      pair->eph    = ep;
+    }
+    else {
+      delete ep;
+    }
+  }
 }
