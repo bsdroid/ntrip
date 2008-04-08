@@ -17,6 +17,7 @@
 #include <iostream>
 
 #include "bns.h" 
+#include "bnsutils.h" 
 
 using namespace std;
 
@@ -231,6 +232,11 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
   t_ephPair* pair = _ephList[prn];
   gpsEph*    ep   = pair->eph;
 
-  cout << "PRN, CLK " << prn.toAscii().data() << " "
-       << ep->clock_bias << " " << xx(4) << endl;
+  ColumnVector xB(4);
+
+  satellitePosition(GPSweeks, ep, xB(1), xB(2), xB(3), xB(4));
+
+  cout << GPSweek << " " << GPSweeks << " " 
+       << xx(1) << " " << xx(2) << " " << xx(3) << " " <<  xx(4) << " "
+       << xB(1) << " " << xB(2) << " " << xB(3) << " " <<  xB(4) << endl;
 }
