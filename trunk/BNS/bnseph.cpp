@@ -78,8 +78,6 @@ void t_bnseph::readEph() {
   in1 >> prn >> year >> month >> day >> hour >> minute >> second
       >> ep->clock_bias >> ep->clock_drift >> ep->clock_driftrate;
 
-  QDate
-
 
   line = _socket->readLine();
   QTextStream in2(line);
