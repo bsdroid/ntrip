@@ -68,7 +68,10 @@ void GPSweekFromDateAndTime(const QDateTime& dateTime,
  
   GPSWeek = zeroEpoch.daysTo(dateTime) / 7;
 
-  GPSWeeks = (dateTime.date().dayOfWeek() - 1) * 86400.0
+  int weekDay = dateTime.date().dayOfWeek() + 1;  // Qt: Monday = 1
+  if (weekDay > 7) weekDay = 1;
+
+  GPSWeeks = (weekDay - 1) * 86400.0
              - dateTime.time().msecsTo(QTime()) / 1e3; 
 }
 

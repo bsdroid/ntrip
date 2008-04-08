@@ -18,6 +18,7 @@
 
 #include "bns.h"
 #include "bnswindow.h"
+#include "bnsutils.h"
 
 using namespace std;
 
