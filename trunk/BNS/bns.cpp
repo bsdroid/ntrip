@@ -48,6 +48,11 @@ t_bns::~t_bns() {
   deleteBnsEph();
   delete _clkServer;
   delete _outSocket;
+  QMapIterator<QString, t_ephPair*> it(_ephList);
+  while (it.hasNext()) {
+    it.next();
+    delete it.value();
+  }
 }
 
 // Delete bns thread
