@@ -1,6 +1,8 @@
 #ifndef BNS_H
 #define BNS_H
 
+#include <newmat.h>
+
 #include <QtNetwork>
 #include <QThread>
 
@@ -42,6 +44,10 @@ class t_bns : public QThread {
  private:
   void deleteBnsEph();
   void openCaster();
+  void readEpoch();
+  void processSatellite(int mjd, double sec, const QString& prn, 
+                        const ColumnVector& xx);
+
   QTcpServer*               _clkServer;
   QTcpSocket*               _clkSocket;
   QTcpSocket*               _outSocket;
