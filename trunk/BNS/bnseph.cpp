@@ -103,7 +103,7 @@ void t_bnseph::readEph() {
         continue;
       }
 
-      int     year, month, day, hour, minute, second;
+      double  year, month, day, hour, minute, second;
       in >> year >> month >> day >> hour >> minute >> second
          >> ep->clock_bias >> ep->clock_drift >> ep->clock_driftrate;
       
@@ -111,9 +111,9 @@ void t_bnseph::readEph() {
       
       QDateTime dateTime(QDate(year,month,day), QTime(hour, minute, second), 
                          Qt::UTC);
-      double toc;
-      GPSweekFromDateAndTime(dateTime, ep->GPSweek, toc); 
-      ep->TOC = int(floor(toc+0.5));
+      int week;
+      GPSweekFromDateAndTime(dateTime, week, ep->TOC); 
+      ep->GPSweek = week;
     }
     else if (ii == 2) {
       in >> ep->IODE >> ep->Crs >> ep->Delta_n >> ep->M0;
@@ -128,15 +128,11 @@ void t_bnseph::readEph() {
       in >> ep->i0 >> ep->Crc >> ep->omega >> ep->OMEGADOT;
     }
     else if (ii == 6) {
-      double dd;
-      int    GPSweek;
-      int    ii;
-      in >>  ep->IDOT >> dd >> GPSweek >> ii;
+      in >>  ep->IDOT;
     }
     else if (ii == 7) {
-      double hlp;
-      double health;
-      in >>  hlp >> health >> ep->TGD >> ep->IODC;
+      double hlp, health;
+      in >> hlp >> health >> ep->TGD >> ep->IODC;
     }
     else if (ii == 8) {
       in >> ep->TOW;

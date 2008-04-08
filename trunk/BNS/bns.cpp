@@ -15,6 +15,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+#include <newmatio.h>
 
 #include "bns.h" 
 #include "bnsutils.h" 
@@ -236,7 +237,9 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
 
   satellitePosition(GPSweeks, ep, xB(1), xB(2), xB(3), xB(4));
 
-  cout << GPSweek << " " << GPSweeks << " " 
-       << xx(1) << " " << xx(2) << " " << xx(3) << " " <<  xx(4) << " "
-       << xB(1) << " " << xB(2) << " " << xB(3) << " " <<  xB(4) << endl;
+  ColumnVector dx = xx - xB;
+  dx(4) *= 299792458.0; 
+
+  cout << GPSweek << " " << GPSweeks << " " << ep->prn.toAscii().data() << " "
+       << setprecision(3) << dx.t();
 }

@@ -7,12 +7,12 @@
 class gpsEph {
  public:
   QString prn;
-  int    GPSweek;          
-  int    TOW;              //  [s]    
-  int    TOC;              //  [s]    
-  int    TOE;              //  [s]    
-  int    IODE;             
-  int    IODC;             
+  double GPSweek;          
+  double TOW;              //  [s]    
+  double TOC;              //  [s]    
+  double TOE;              //  [s]    
+  double IODE;             
+  double IODC;             
 
   double clock_bias;       //  [s]    
   double clock_drift;      //  [s/s]  
