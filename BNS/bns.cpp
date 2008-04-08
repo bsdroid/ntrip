@@ -36,8 +36,14 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   connect(_bnseph, SIGNAL(error(QByteArray)),
           this, SLOT(slotError(const QByteArray)));
 
-  _clkServer = 0;
+  // Start listening for rtnet results
+  // ---------------------------------
+  QSettings settings;
   _clkSocket = 0;
+  _clkServer = new QTcpServer;
+  /////  _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
+  _clkServer->listen(QHostAddress::Any, 5555);
+  connect(_clkServer, SIGNAL(newConnection()),this, SLOT(slotNewConnection()));
 
   _outSocket = 0;
 }
@@ -84,6 +90,7 @@ void t_bns::slotError(const QByteArray msg) {
 // New Connection
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::slotNewConnection() {
+  slotMessage("t_bns::slotNewConnection");
   _clkSocket = _clkServer->nextPendingConnection();
 }
 
@@ -132,6 +139,8 @@ void t_bns::slotNewEph(gpsEph* ep) {
 
   if (pair->eph == 0) {
     pair->eph = ep;
+    cout << "A: " << ep->prn.toAscii().data() << " " 
+         << ep->GPSweek << " " << ep->TOC << endl;
   }
   else {
     if (ep->GPSweek >  pair->eph->GPSweek ||
@@ -139,6 +148,8 @@ void t_bns::slotNewEph(gpsEph* ep) {
       delete pair->oldEph;
       pair->oldEph = pair->eph;
       pair->eph    = ep;
+      cout << "B: " << ep->prn.toAscii().data() << " " 
+           << ep->GPSweek << " " << ep->TOC << endl;
     }
     else {
       delete ep;
@@ -160,16 +171,10 @@ void t_bns::run() {
   // -----------------------------------
   openCaster();
 
-  // Start listening for rtnet results
-  // ---------------------------------
-  QSettings settings;
-  _clkServer = new QTcpServer;
-  _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
-  connect(_clkServer, SIGNAL(newConnection()),this, SLOT(slotNewConnection()));
-
   // Endless loop
   // ------------
   while (true) {
+    cout << "_clkSocket = " << _clkSocket << endl;
     if (_clkSocket) {
       if (_clkSocket->state() != QAbstractSocket::ConnectedState) {
         delete _clkSocket;
@@ -194,6 +199,9 @@ void t_bns::run() {
 void t_bns::readEpoch() {
 
   QByteArray line = _clkSocket->readLine();
+
+  cout << line.data();
+
   if (line.indexOf('*') == -1) {
     return;
   }
@@ -211,6 +219,7 @@ void t_bns::readEpoch() {
       _clkSocket->waitForReadyRead();
     }
     line = _clkSocket->readLine();
+  cout << line.data();
     QTextStream in(line);
 
     QString      prn;
