@@ -15,8 +15,10 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+#include <math.h>
 
 #include "bnseph.h" 
+#include "bnsutils.h" 
 
 using namespace std;
 
@@ -78,6 +80,11 @@ void t_bnseph::readEph() {
   in1 >> prn >> year >> month >> day >> hour >> minute >> second
       >> ep->clock_bias >> ep->clock_drift >> ep->clock_driftrate;
 
+  QDateTime dateTime(QDate(year,month,day), QTime(hour, minute, second), 
+                     Qt::UTC);
+  double toc;
+  GPSweekFromDateAndTime(dateTime, ep->GPSweek, toc); 
+  ep->TOC = int(floor(toc+0.5));
 
   line = _socket->readLine();
   QTextStream in2(line);
