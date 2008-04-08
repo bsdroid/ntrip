@@ -115,6 +115,37 @@ void t_bns::openCaster() {
   }
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_bns::slotNewEph(gpsEph* ep) {
+
+  QMutexLocker locker(&_mutex);
+
+  t_ephPair* pair;
+  if ( !_ephList.contains(ep->prn) ) {
+    pair = new t_ephPair();
+    _ephList.insert(ep->prn, pair);
+  }
+  else {
+    pair = _ephList[ep->prn];
+  }
+
+  if (pair->eph == 0) {
+    pair->eph = ep;
+  }
+  else {
+    if (ep->GPSweek >  pair->eph->GPSweek ||
+        (ep->GPSweek == pair->eph->GPSweek && ep->TOC > pair->eph->TOC)) {
+      delete pair->oldEph;
+      pair->oldEph = pair->eph;
+      pair->eph    = ep;
+    }
+    else {
+      delete ep;
+    }
+  }
+}
+
 // Start 
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::run() {
@@ -140,7 +171,17 @@ void t_bns::run() {
   // ------------
   while (true) {
     if (_clkSocket) {
-
+      if (_clkSocket->state() != QAbstractSocket::ConnectedState) {
+        delete _clkSocket;
+        _clkSocket = 0;
+        continue;
+      }
+      if (!_clkSocket->canReadLine()) {
+        _clkSocket->waitForReadyRead();
+      }
+      else {
+        readEpoch();
+      }
     }
     else {
       msleep(100);
@@ -150,35 +191,40 @@ void t_bns::run() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_bns::slotNewEph(gpsEph* ep) {
+void t_bns::readEpoch() {
 
-  QMutexLocker locker(&_mutex);
-
-  t_ephPair* pair;
-  if ( !_ephList.contains(ep->prn) ) {
-    pair = new t_ephPair();
-    _ephList.insert(ep->prn, pair);
-  }
-  else {
-    pair = _ephList[ep->prn];
+  QByteArray line = _clkSocket->readLine();
+  if (line.indexOf('*') == -1) {
+    return;
   }
 
-  if (pair->eph == 0) {
-    pair->eph = ep;
-      cout << "A: new eph: " << ep->prn.toAscii().data() << " "
-           << ep->GPSweek << " " << ep->TOC << endl;
-  }
-  else {
-    if (ep->GPSweek >  pair->eph->GPSweek ||
-        (ep->GPSweek == pair->eph->GPSweek && ep->TOC > pair->eph->TOC)) {
-      cout << "B: new eph: " << ep->prn.toAscii().data() << " "
-           << ep->GPSweek << " " << ep->TOC << endl;
-      delete pair->oldEph;
-      pair->oldEph = pair->eph;
-      pair->eph    = ep;
+  QTextStream in(line);
+
+  QString hlp;
+  int     mjd, numSat;
+  double  sec;
+
+  in >> hlp >> mjd >> sec >> numSat;
+
+  for (int ii = 1; ii <= numSat; ii++) {
+    if (!_clkSocket->canReadLine()) {
+      _clkSocket->waitForReadyRead();
     }
-    else {
-      delete ep;
-    }
+    line = _clkSocket->readLine();
+    QTextStream in(line);
+
+    QString      prn;
+    ColumnVector xx(4);
+
+    in >> prn >> xx(1) >> xx(2) >> xx(3) >> xx(4);
+
+    processSatellite(mjd, sec, prn, xx);
   }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_bns::processSatellite(int mjd, double sec, const QString& prn, 
+                             const ColumnVector& xx) {
+
 }

@@ -9,6 +9,11 @@ RESOURCES += bns.qrc
 unix:QMAKE_CFLAGS_RELEASE   -= -O2
 unix:QMAKE_CXXFLAGS_RELEASE -= -O2
 
+# Location of the NewMat Library
+# ------------------------------
+unix:NEWMAT_ROOT = $$(NEWMAT_ROOT)
+win32:NEWMAT_ROOT = ../../Source/newmat
+
 # Get rid of mingwm10.dll
 # -----------------------
 win32:QMAKE_LFLAGS                 -= -mthreads
@@ -19,6 +24,11 @@ debug:OBJECTS_DIR=.obj/debug
 debug:MOC_DIR=.moc/debug
 release:OBJECTS_DIR=.obj/release
 release:MOC_DIR=.moc/release
+
+# Include Path and additional Libraries
+# -------------------------------------
+INCLUDEPATH = . $$NEWMAT_ROOT/include
+LIBS        = -L$$NEWMAT_ROOT/lib -lnewmat
 
 HEADERS =             bns.h   bnswindow.h   bnshlpdlg.h   bnshtml.h   \
           bnseph.h    bnsutils.h
