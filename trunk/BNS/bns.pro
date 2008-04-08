@@ -21,10 +21,10 @@ release:OBJECTS_DIR=.obj/release
 release:MOC_DIR=.moc/release
 
 HEADERS =             bns.h   bnswindow.h   bnshlpdlg.h   bnshtml.h   \
-          bnseph.h
+          bnseph.h    bnsutils.h
 
 SOURCES = bnsmain.cpp bns.cpp bnswindow.cpp bnshlpdlg.cpp bnshtml.cpp \
-          bnseph.cpp
+          bnseph.cpp  bnsutils.cpp
 
 RC_FILE = bns.rc
 
