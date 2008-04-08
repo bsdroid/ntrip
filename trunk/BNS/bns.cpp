@@ -240,6 +240,8 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
   ColumnVector dx = xx - xB;
   dx(4) *= 299792458.0; 
 
-  cout << GPSweek << " " << GPSweeks << " " << ep->prn.toAscii().data() << " "
-       << setprecision(3) << dx.t();
+  cout.setf(ios::showpoint | ios::fixed);
+  cout << GPSweek << " " 
+       << setprecision(1) << GPSweeks << " " << ep->prn.toAscii().data()
+       << setw(8) << setprecision(3) << dx.t();
 }
