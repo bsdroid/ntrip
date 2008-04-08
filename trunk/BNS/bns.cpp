@@ -196,6 +196,10 @@ void t_bns::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::readEpoch() {
 
+  if (_clkSocket->state() != QAbstractSocket::ConnectedState) {
+    return;
+  }
+
   QByteArray line = _clkSocket->readLine();
 
   cout << line.data();
@@ -213,11 +217,18 @@ void t_bns::readEpoch() {
   in >> hlp >> mjd >> sec >> numSat;
 
   for (int ii = 1; ii <= numSat; ii++) {
-    if (!_clkSocket->canReadLine()) {
-      _clkSocket->waitForReadyRead(10);
+    if (_clkSocket->state() != QAbstractSocket::ConnectedState) {
+      return;
     }
-    line = _clkSocket->readLine();
-  cout << line.data();
+    else {
+      if (!_clkSocket->canReadLine()) {
+        _clkSocket->waitForReadyRead(10);
+      }
+      line = _clkSocket->readLine();
+    }
+
+    cout << line.data();
+
     QTextStream in(line);
 
     QString      prn;
