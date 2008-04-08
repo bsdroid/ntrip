@@ -71,56 +71,57 @@ void t_bnseph::readEph() {
 
   gpsEph* ep = new gpsEph;
 
-  QByteArray line = _socket->readLine();
-  QTextStream in1(line);
+  const int NUMLINES = 8;
 
-  int     year, month, day, hour, minute, second;
+  for (int ii = 1; ii <= NUMLINES; ii++) {
 
-  in1 >> ep->prn >> year >> month >> day >> hour >> minute >> second
-      >> ep->clock_bias >> ep->clock_drift >> ep->clock_driftrate;
+    if (!_socket->canReadLine()) {
+      _socket->waitForReadyRead();
+    }
 
-  if (year < 100) year += 2000;
+    QByteArray line = _socket->readLine();
+    QTextStream in(line);
 
-  QDateTime dateTime(QDate(year,month,day), QTime(hour, minute, second), 
-                     Qt::UTC);
-  double toc;
-  GPSweekFromDateAndTime(dateTime, ep->GPSweek, toc); 
-  ep->TOC = int(floor(toc+0.5));
-
-  line = _socket->readLine();
-  QTextStream in2(line);
-  in2 >> ep->IODE >> ep->Crs >> ep->Delta_n >> ep->M0;
-
-  line = _socket->readLine();
-  QTextStream in3(line);
-  in3 >> ep->Cuc >> ep->e >> ep->Cus >> ep->sqrt_A;
-
-  line = _socket->readLine();
-  QTextStream in4(line);
-  in4 >> ep->TOE >> ep->Cic >> ep->OMEGA0 >> ep->Cis;
-
-  line = _socket->readLine();
-  QTextStream in5(line);
-  in5 >> ep->i0 >> ep->Crc >> ep->omega >> ep->OMEGADOT;
-
-  line = _socket->readLine();
-  QTextStream in6(line);
-
-  double dd;
-  int    GPSweek;
-  int    ii;
-  in6 >>  ep->IDOT >> dd >> GPSweek >> ii;
-
-  line = _socket->readLine();
-  QTextStream in7(line);
-
-  double hlp;
-  double health;
-  in7 >>  hlp >> health >> ep->TGD >> ep->IODC;
-
-  line = _socket->readLine();
-  QTextStream in8(line);
-  in8 >> ep->TOW;
+    if (ii == 1) {
+      int     year, month, day, hour, minute, second;
+      in >> ep->prn >> year >> month >> day >> hour >> minute >> second
+         >> ep->clock_bias >> ep->clock_drift >> ep->clock_driftrate;
+      
+      if (year < 100) year += 2000;
+      
+      QDateTime dateTime(QDate(year,month,day), QTime(hour, minute, second), 
+                         Qt::UTC);
+      double toc;
+      GPSweekFromDateAndTime(dateTime, ep->GPSweek, toc); 
+      ep->TOC = int(floor(toc+0.5));
+    }
+    else if (ii == 2) {
+      in >> ep->IODE >> ep->Crs >> ep->Delta_n >> ep->M0;
+    }  
+    else if (ii == 3) {
+      in >> ep->Cuc >> ep->e >> ep->Cus >> ep->sqrt_A;
+    }
+    else if (ii == 4) {
+      in >> ep->TOE >> ep->Cic >> ep->OMEGA0 >> ep->Cis;
+    }  
+    else if (ii == 5) {
+      in >> ep->i0 >> ep->Crc >> ep->omega >> ep->OMEGADOT;
+    }
+    else if (ii == 6) {
+      double dd;
+      int    GPSweek;
+      int    ii;
+      in >>  ep->IDOT >> dd >> GPSweek >> ii;
+    }
+    else if (ii == 7) {
+      double hlp;
+      double health;
+      in >>  hlp >> health >> ep->TGD >> ep->IODC;
+    }
+    else if (ii == 8) {
+      in >> ep->TOW;
+    }
+  }
 
   emit(newEph(ep));
 }
