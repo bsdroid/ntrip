@@ -23,6 +23,7 @@
 #include <QDateTime>
 
 #include "bnsutils.h"
+#include "bnseph.h"
 
 using namespace std;
 
@@ -90,4 +91,54 @@ void currentGPSWeeks(int& week, double& sec) {
         currTime.minute()                 *   60.0 + 
         currTime.second()                          +
         currTime.msec()                   / 1000.0;
+}
+
+//  
+////////////////////////////////////////////////////////////////////////////
+void satellitePosition(double GPSweeks, const gpsEph* ep, 
+                       double& X, double& Y, double& Z, double& dt) {
+
+  const static double omegaEarth = 7292115.1467e-11;
+  const static double gmWGS      = 398.6005e12;
+
+  X = Y = Z = dt = 0.0;
+
+  double a0 = ep->sqrt_A * ep->sqrt_A;
+  if (a0 == 0) {
+    return;
+  }
+
+  double n0 = sqrt(gmWGS/(a0*a0*a0));
+  double tk = GPSweeks - ep->TOE;
+  double n  = n0 + ep->Delta_n;
+  double M  = ep->M0 + n*tk;
+  double E  = M;
+  double E_last;
+  do {
+    E_last = E;
+    E = M + ep->e*sin(E);
+  } while ( fabs(E-E_last)*a0 > 0.001 );
+  double v      = 2.0*atan( sqrt( (1.0 + ep->e)/(1.0 - ep->e) )*tan( E/2 ) );
+  double u0     = v + ep->omega;
+  double sin2u0 = sin(2*u0);
+  double cos2u0 = cos(2*u0);
+  double r      = a0*(1 - ep->e*cos(E)) + ep->Crc*cos2u0 + ep->Crs*sin2u0;
+  double i      = ep->i0 + ep->IDOT*tk + ep->Cic*cos2u0 + ep->Cis*sin2u0;
+  double u      = u0 + ep->Cuc*cos2u0 + ep->Cus*sin2u0;
+  double xp     = r*cos(u);
+  double yp     = r*sin(u);
+  double OM     = ep->OMEGA0 + (ep->OMEGADOT - omegaEarth)*tk - 
+                   omegaEarth*ep->TOE;
+  
+  double sinom = sin(OM);
+  double cosom = cos(OM);
+  double sini  = sin(i);
+  double cosi  = cos(i);
+  X = xp*cosom - yp*cosi*sinom;
+  Y = xp*sinom + yp*cosi*cosom;
+  Z = yp*sini;                 
+  
+  double tc = GPSweeks - ep->TOC;
+  dt = ep->clock_bias + ep->clock_drift*tc + ep->clock_driftrate*tc*tc 
+       - 4.442807633e-10 * ep->e * sqrt(a0) *sin(E);
 }

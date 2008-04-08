@@ -197,10 +197,10 @@ void t_bns::readEpoch() {
   QTextStream in(line);
 
   QString hlp;
-  int     mjd, numSat;
-  double  sec;
+  int     GPSweek, numSat;
+  double  GPSweeks;
 
-  in >> hlp >> mjd >> sec >> numSat;
+  in >> hlp >> GPSweek >> GPSweeks >> numSat;
 
   for (int ii = 1; ii <= numSat; ii++) {
     line = _clkSocket->readLine();
@@ -213,13 +213,13 @@ void t_bns::readEpoch() {
     in >> prn >> xx(1) >> xx(2) >> xx(3) >> xx(4); 
     xx(4) *= 1e-6;
 
-    processSatellite(mjd, sec, prn, xx);
+    processSatellite(GPSweek, GPSweeks, prn, xx);
   }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_bns::processSatellite(int mjd, double sec, const QString& prn, 
+void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn, 
                              const ColumnVector& xx) {
 
   // No broadcast ephemeris available
