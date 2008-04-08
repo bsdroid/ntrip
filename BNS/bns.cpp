@@ -177,9 +177,6 @@ void t_bns::run() {
       if ( _clkSocket->canReadLine()) {
         readEpoch();
       }
-      else {
-        _clkSocket->waitForReadyRead(10);
-      }
     }
     else {
       msleep(10);
@@ -192,8 +189,6 @@ void t_bns::run() {
 void t_bns::readEpoch() {
 
   QByteArray line = _clkSocket->readLine();
-
-  cout << line.data();
 
   if (line.indexOf('*') == -1) {
     return;
@@ -210,15 +205,13 @@ void t_bns::readEpoch() {
   for (int ii = 1; ii <= numSat; ii++) {
     line = _clkSocket->readLine();
 
-    cout << line.data();
-
     QTextStream in(line);
 
     QString      prn;
     ColumnVector xx(4);
 
     in >> prn >> xx(1) >> xx(2) >> xx(3) >> xx(4); 
-    xx(4) *= 1e6;
+    xx(4) *= 1e-6;
 
     processSatellite(mjd, sec, prn, xx);
   }
