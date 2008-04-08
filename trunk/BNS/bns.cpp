@@ -165,10 +165,14 @@ void t_bns::slotNewEph(gpsEph* ep) {
 
   if (pair->eph == 0) {
     pair->eph = ep;
+      cout << "A: new eph: " << ep->prn.toAscii().data() << " "
+           << ep->GPSweek << " " << ep->TOC << endl;
   }
   else {
     if (ep->GPSweek >  pair->eph->GPSweek ||
         (ep->GPSweek == pair->eph->GPSweek && ep->TOC > pair->eph->TOC)) {
+      cout << "B: new eph: " << ep->prn.toAscii().data() << " "
+           << ep->GPSweek << " " << ep->TOC << endl;
       delete pair->oldEph;
       pair->oldEph = pair->eph;
       pair->eph    = ep;
