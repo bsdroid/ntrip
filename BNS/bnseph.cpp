@@ -69,16 +69,17 @@ void t_bnseph::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bnseph::readEph() {
 
-  gpsephemeris* ep = new gpsephemeris;
+  gpsEph* ep = new gpsEph;
 
   QByteArray line = _socket->readLine();
   QTextStream in1(line);
 
-  QString prn;
   int     year, month, day, hour, minute, second;
 
-  in1 >> prn >> year >> month >> day >> hour >> minute >> second
+  in1 >> ep->prn >> year >> month >> day >> hour >> minute >> second
       >> ep->clock_bias >> ep->clock_drift >> ep->clock_driftrate;
+
+  if (year < 100) year += 2000;
 
   QDateTime dateTime(QDate(year,month,day), QTime(hour, minute, second), 
                      Qt::UTC);
@@ -106,16 +107,20 @@ void t_bnseph::readEph() {
   QTextStream in6(line);
 
   double dd;
+  int    GPSweek;
   int    ii;
-  in6 >>  ep->IDOT >> dd >> ep->GPSweek >> ii;
+  in6 >>  ep->IDOT >> dd >> GPSweek >> ii;
 
   line = _socket->readLine();
   QTextStream in7(line);
 
   double hlp;
-  in7 >>  hlp >> ep->SVhealth >> ep->TGD >> ep->IODC;
+  double health;
+  in7 >>  hlp >> health >> ep->TGD >> ep->IODC;
 
   line = _socket->readLine();
   QTextStream in8(line);
   in8 >> ep->TOW;
+
+  emit(newEph(ep));
 }
