@@ -143,6 +143,14 @@ void t_bns::openCaster() {
   _outSocket->connectToHost(settings.value("outHost").toString(),
                             settings.value("outPort").toInt());
 
+  const int timeOut = 100;  // 0.1 seconds
+  if (!_outSocket->waitForConnected(timeOut)) {
+    delete _outSocket;
+    _outSocket = 0;
+    emit(error("bns::openCaster Connect Timeout"));
+  }
+
+
   QString mountpoint = settings.value("mountpoint").toString();
   QString password   = settings.value("password").toString();
 
