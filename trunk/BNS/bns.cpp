@@ -49,6 +49,11 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   // Socket for outputting the results
   // ---------------------------------
   _outSocket = 0;
+  _outFile   = 0;
+  QFile outFile(settings.value("outFile").toString());
+  if (outFile.open(QFile::WriteOnly | QFile::Truncate)) {
+    _outFile = new QTextStream(&outFile);
+  }
 }
 
 // Destructor
@@ -104,11 +109,10 @@ void t_bns::slotNewConnection() {
 void t_bns::openCaster() {
   
   QSettings settings;
-  QString host = settings.value("outHost").toString();
-  int     port = settings.value("outPort").toInt();
 
   _outSocket = new QTcpSocket();
-  _outSocket->connectToHost(host, port);
+  _outSocket->connectToHost(settings.value("outHost").toString(),
+                            settings.value("outPort").toInt());
 
   QString mountpoint = settings.value("mountpoint").toString();
   QString password   = settings.value("password").toString();
@@ -168,15 +172,14 @@ void t_bns::run() {
   // -----------------------------------------------
   _bnseph->start();
 
-  // Open the connection to NTRIP Caster
-  // -----------------------------------
-  openCaster();
-
   // Endless loop
   // ------------
   while (true) {
     if (_clkSocket && _clkSocket->state() == QAbstractSocket::ConnectedState) {
       if ( _clkSocket->canReadLine()) {
+        if (_outSocket == 0) {
+          openCaster();
+        }
         readEpoch();
       }
       else {
@@ -248,10 +251,15 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
 
   XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw);
 
-  cout.setf(ios::showpoint | ios::fixed);
-  cout << GPSweek << " " 
-       << setprecision(1) << GPSweeks << " " << ep->prn.toAscii().data()
-       << "   " << int(ep->IODC) << " " << int(ep->IODE) << "   "
-       << setw(8) << setprecision(3) << dClk << "   "
-       << setw(8) << setprecision(3) << rsw.t();
+  QString line;
+  line.sprintf("%d %.1f %s   %d %d   %8.3f   %8.3f %8.3f %8.3f\n", 
+               GPSweek, GPSweeks, ep->prn.toAscii().data(),
+               int(ep->IODC), int(ep->IODE), dClk, rsw(1), rsw(2), rsw(3));
+ 
+  if (_outFile) {
+    *_outFile << line;
+  }
+  if (_outSocket) {
+    _outSocket->write(line.toAscii());
+  }
 }
