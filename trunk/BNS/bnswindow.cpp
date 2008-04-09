@@ -119,22 +119,55 @@ bnsWindow::bnsWindow() {
   _clkPortLineEdit->setWhatsThis(tr("Port for clock results (from RTNET)"));
   _clkPortLineEdit->setMaximumWidth(9*ww);
 
+  _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
+  _outHostLineEdit    = new QLineEdit(settings.value("outHost").toString());
+  _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
+  _mountpointLineEdit = new QLineEdit(settings.value("mountpoint").toString());
+  _passwordLineEdit   = new QLineEdit(settings.value("password").toString());
+  _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
+
   // TabWidget
   // ---------
-  QTabWidget* tabs = new QTabWidget();
+  QWidget* tabs = new QWidget();
+  QHBoxLayout* layout1 = new QHBoxLayout;
+
   QWidget* tab_inp = new QWidget();
   QWidget* tab_out = new QWidget();
-  tabs->addTab(tab_inp,  tr("INPUT"));
-  tabs->addTab(tab_out,  tr("OUTPUT"));
+  layout1->addWidget(tab_inp);
+  layout1->addSpacing(10);
+  layout1->addWidget(tab_out);
+
+  tabs->setLayout(layout1);
 
   // Input-Tab
   // ---------
   QGridLayout* iLayout = new QGridLayout;
-  iLayout->addWidget(new QLabel("Port (Ephemeris)"), 0, 0, Qt::AlignLeft);
-  iLayout->addWidget(_ephPortLineEdit, 0, 1);
-  iLayout->addWidget(new QLabel("Port (Clocks)"), 1, 0, Qt::AlignLeft);
-  iLayout->addWidget(_clkPortLineEdit, 1, 1);
+  iLayout->addWidget(new QLabel("Input Ports"), 0, 0, Qt::AlignLeft);
+  iLayout->addWidget(new QLabel("Ephemeris"), 1, 0, Qt::AlignLeft);
+  iLayout->addWidget(_ephPortLineEdit, 1, 1);
+  iLayout->addWidget(new QLabel("Clocks"), 2, 0, Qt::AlignLeft);
+  iLayout->addWidget(_clkPortLineEdit, 2, 1);
+  iLayout->addWidget(new QLabel(""), 3, 0, Qt::AlignLeft);
+  iLayout->addWidget(new QLabel(""), 4, 0, Qt::AlignLeft);
+  iLayout->addWidget(new QLabel(""), 5, 0, Qt::AlignLeft);
   tab_inp->setLayout(iLayout);
+
+  // Output-Tab
+  // ----------
+  QGridLayout* oLayout = new QGridLayout;
+  oLayout->addWidget(new QLabel("Log File"), 0, 0, Qt::AlignLeft);
+  oLayout->addWidget(_logFileLineEdit, 0, 1);
+  oLayout->addWidget(new QLabel("Output (Host)"), 1, 0, Qt::AlignLeft);
+  oLayout->addWidget(_outHostLineEdit, 1, 1);
+  oLayout->addWidget(new QLabel("Output (Port)"), 2, 0, Qt::AlignLeft);
+  oLayout->addWidget(_outPortLineEdit, 2, 1);
+  oLayout->addWidget(new QLabel("Mountpoint"),    3, 0, Qt::AlignLeft);
+  oLayout->addWidget(_mountpointLineEdit, 3, 1);
+  oLayout->addWidget(new QLabel("Password"),      4, 0, Qt::AlignLeft);
+  oLayout->addWidget(_passwordLineEdit, 4, 1);
+  oLayout->addWidget(new QLabel("Output (File)"), 5, 0, Qt::AlignLeft);
+  oLayout->addWidget(_outFileLineEdit, 5, 1);
+  tab_out->setLayout(oLayout);
 
   // Log
   // ---
@@ -242,8 +275,14 @@ void bnsWindow::AddToolbar() {
 ////////////////////////////////////////////////////////////////////////////
 void bnsWindow::slotSaveOptions() {
   QSettings settings;
-  settings.setValue("ephPort",     _ephPortLineEdit->text());
-  settings.setValue("clkPort",     _clkPortLineEdit->text());
+  settings.setValue("ephPort",    _ephPortLineEdit->text());
+  settings.setValue("clkPort",    _clkPortLineEdit->text());
+  settings.setValue("logFile",    _logFileLineEdit->text());
+  settings.setValue("outHost",    _outHostLineEdit->text());
+  settings.setValue("outPort",    _outPortLineEdit->text());
+  settings.setValue("mountpoint", _mountpointLineEdit->text());
+  settings.setValue("password",   _passwordLineEdit->text());
+  settings.setValue("outFile",    _outFileLineEdit->text());
 }
 
 // Display Program Messages 
