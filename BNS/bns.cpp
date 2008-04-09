@@ -179,6 +179,9 @@ void t_bns::run() {
       if ( _clkSocket->canReadLine()) {
         readEpoch();
       }
+      else {
+        _clkSocket->waitForReadyRead(10);
+      }
     }
     else {
       msleep(10);
@@ -247,8 +250,8 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
 
   cout.setf(ios::showpoint | ios::fixed);
   cout << GPSweek << " " 
-       << setprecision(1) << GPSweeks << " " << ep->prn.toAscii().data() << " "
-       << setprecision(0) << ep->IODC << " " << ep->IODE << "   "
+       << setprecision(1) << GPSweeks << " " << ep->prn.toAscii().data()
+       << "   " << int(ep->IODC) << " " << int(ep->IODE) << "   "
        << setw(8) << setprecision(3) << dClk << "   "
        << setw(8) << setprecision(3) << rsw.t();
 }
