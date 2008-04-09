@@ -54,6 +54,14 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   if (outFile.open(QFile::WriteOnly | QFile::Truncate)) {
     _outFile = new QTextStream(&outFile);
   }
+
+  // Log File
+  // --------
+  _logFile   = 0;
+  QFile logFile(settings.value("logFile").toString());
+  if (logFile.open(QFile::WriteOnly | QFile::Truncate)) {
+    _logFile = new QTextStream(&logFile);
+  }
 }
 
 // Destructor
@@ -63,6 +71,8 @@ t_bns::~t_bns() {
   delete _clkServer;
   ///  delete _clkSocket;
   delete _outSocket;
+  delete _outFile;
+  delete _logFile;
   QMapIterator<QString, t_ephPair*> it(_ephList);
   while (it.hasNext()) {
     it.next();
@@ -84,14 +94,18 @@ void t_bns::deleteBnsEph() {
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::slotMessage(const QByteArray msg) {
-  cout << msg.data() << endl;
+  if (_logFile) {
+    *_logFile << msg << endl;
+  }
   emit(newMessage(msg));
 }
 
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::slotError(const QByteArray msg) {
-  cerr << msg.data() << endl;
+  if (_logFile) {
+    *_logFile << msg << endl;
+  }
   deleteBnsEph();
   emit(error(msg));
 }
