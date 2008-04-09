@@ -57,6 +57,12 @@ Q_OBJECT
 
   QLineEdit* _ephPortLineEdit;
   QLineEdit* _clkPortLineEdit;
+  QLineEdit* _logFileLineEdit;
+  QLineEdit* _outHostLineEdit;
+  QLineEdit* _outPortLineEdit;
+  QLineEdit* _mountpointLineEdit;
+  QLineEdit* _passwordLineEdit;
+  QLineEdit* _outFileLineEdit;
 
   QTextEdit*  _log;
 
