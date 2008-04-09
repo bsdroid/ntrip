@@ -109,8 +109,8 @@ void t_bnseph::readEph() {
       
       if (year < 100) year += 2000;
       
-      QDateTime dateTime(QDate(year,month,day), QTime(hour, minute, second), 
-                         Qt::UTC);
+      QDateTime dateTime(QDate(int(year), int(month), int(day)), 
+                         QTime(int(hour), int(minute), int(second)), Qt::UTC);
       int week;
       GPSweekFromDateAndTime(dateTime, week, ep->TOC); 
       ep->GPSweek = week;

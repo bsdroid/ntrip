@@ -6,9 +6,6 @@
 
 RESOURCES += bns.qrc
 
-unix:QMAKE_CFLAGS_RELEASE   -= -O2
-unix:QMAKE_CXXFLAGS_RELEASE -= -O2
-
 # Location of the NewMat Library
 # ------------------------------
 unix:NEWMAT_ROOT = $$(NEWMAT_ROOT)
