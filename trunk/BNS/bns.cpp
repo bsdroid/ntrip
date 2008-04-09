@@ -150,7 +150,6 @@ void t_bns::openCaster() {
     emit(error("bns::openCaster Connect Timeout"));
   }
 
-
   QString mountpoint = settings.value("mountpoint").toString();
   QString password   = settings.value("password").toString();
 
@@ -159,10 +158,10 @@ void t_bns::openCaster() {
                    "Source-Agent: NTRIP BNS/1.0\r\n\r\n";
 
   _outSocket->write(msg);
+  _outSocket->waitForBytesWritten();
 
+  _outSocket->waitForReadyRead();
   QByteArray ans = _outSocket->readLine();
-
-  cout << "Ans: >" << ans.data() << "<" << endl;
 
   if (ans.indexOf("OK") == -1) {
     delete _outSocket;
