@@ -17,5 +17,6 @@ void GPSweekFromDateAndTime(const QDateTime& dateTime,
 void currentGPSWeeks(int& week, double& sec);
 
 void satellitePosition(double GPSweeks, const gpsEph* ep, 
-                       double& X, double& Y, double& Z, double& dt);
+                       double& X, double& Y, double& Z, double&,
+                       double& vX, double& vY, double& vZ);
 #endif
