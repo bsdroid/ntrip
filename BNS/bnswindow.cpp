@@ -122,8 +122,10 @@ bnsWindow::bnsWindow() {
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
   _outHostLineEdit    = new QLineEdit(settings.value("outHost").toString());
   _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
+  _outPortLineEdit->setMaximumWidth(9*ww);
   _mountpointLineEdit = new QLineEdit(settings.value("mountpoint").toString());
   _passwordLineEdit   = new QLineEdit(settings.value("password").toString());
+  _passwordLineEdit->setMaximumWidth(9*ww);
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
 
   // TabWidget
