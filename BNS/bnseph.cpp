@@ -43,7 +43,7 @@ void t_bnseph::run() {
   // Connect the Socket
   // ------------------
   QSettings settings;
-  QString host = settings.value("ephHost").toString();
+  QString host = "localhost";
   int     port = settings.value("ephPort").toInt();
 
   _socket = new QTcpSocket();
