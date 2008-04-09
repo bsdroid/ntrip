@@ -109,6 +109,7 @@ void t_bns::deleteBnsEph() {
 void t_bns::slotMessage(const QByteArray msg) {
   if (_logStream) {
     *_logStream << msg << endl;
+    _logStream->flush();
   }
   emit(newMessage(msg));
 }
@@ -118,6 +119,7 @@ void t_bns::slotMessage(const QByteArray msg) {
 void t_bns::slotError(const QByteArray msg) {
   if (_logStream) {
     *_logStream << msg << endl;
+    _logStream->flush();
   }
   deleteBnsEph();
   emit(error(msg));
@@ -287,6 +289,7 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
  
   if (_outStream) {
     *_outStream << line;
+    _outStream->flush();
   }
   if (_outSocket) {
     _outSocket->write(line.toAscii());
