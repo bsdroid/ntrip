@@ -52,6 +52,7 @@ class t_bns : public QThread {
   QTcpSocket*               _clkSocket;
   QTcpSocket*               _outSocket;
   QTextStream*              _outFile;
+  QTextStream*              _logFile;
   t_bnseph*                 _bnseph;
   QMutex                    _mutex;
   QMap<QString, t_ephPair*> _ephList;
