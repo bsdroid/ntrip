@@ -46,21 +46,32 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
   connect(_clkServer, SIGNAL(newConnection()),this, SLOT(slotNewConnection()));
 
-  // Socket for outputting the results
-  // ---------------------------------
+  // Socket and file for outputting the results
+  // -------------------------------------------
   _outSocket = 0;
-  _outFile   = 0;
-  QFile outFile(settings.value("outFile").toString());
-  if (outFile.open(QFile::WriteOnly | QFile::Truncate)) {
-    _outFile = new QTextStream(&outFile);
+
+  QString outFileName = settings.value("outFile").toString();
+  if (outFileName.isEmpty()) {
+    _outFile = 0;
+  }
+  else {
+    _outFile = new QFile(outFileName);
+    if (_outFile->open(QIODevice::WriteOnly)) {
+      _outStream = new QTextStream(_outFile);
+    }
   }
 
   // Log File
   // --------
-  _logFile   = 0;
-  QFile logFile(settings.value("logFile").toString());
-  if (logFile.open(QFile::WriteOnly | QFile::Truncate)) {
-    _logFile = new QTextStream(&logFile);
+  QString logFileName = settings.value("logFile").toString();
+  if (logFileName.isEmpty()) {
+    _logFile = 0;
+  }
+  else {
+    _logFile = new QFile(logFileName);
+    if (_logFile->open(QIODevice::WriteOnly)) {
+      _logStream = new QTextStream(_logFile);
+    }
   }
 }
 
@@ -71,6 +82,8 @@ t_bns::~t_bns() {
   delete _clkServer;
   ///  delete _clkSocket;
   delete _outSocket;
+  delete _outStream;
+  delete _logStream;
   delete _outFile;
   delete _logFile;
   QMapIterator<QString, t_ephPair*> it(_ephList);
@@ -94,8 +107,8 @@ void t_bns::deleteBnsEph() {
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::slotMessage(const QByteArray msg) {
-  if (_logFile) {
-    *_logFile << msg << endl;
+  if (_logStream) {
+    *_logStream << msg << endl;
   }
   emit(newMessage(msg));
 }
@@ -103,8 +116,8 @@ void t_bns::slotMessage(const QByteArray msg) {
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::slotError(const QByteArray msg) {
-  if (_logFile) {
-    *_logFile << msg << endl;
+  if (_logStream) {
+    *_logStream << msg << endl;
   }
   deleteBnsEph();
   emit(error(msg));
@@ -138,6 +151,8 @@ void t_bns::openCaster() {
   _outSocket->write(msg);
 
   QByteArray ans = _outSocket->readLine();
+
+  cout << "Ans: >" << ans.data() << "<" << endl;
 
   if (ans.indexOf("OK") == -1) {
     delete _outSocket;
@@ -270,8 +285,8 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
                GPSweek, GPSweeks, ep->prn.toAscii().data(),
                int(ep->IODC), int(ep->IODE), dClk, rsw(1), rsw(2), rsw(3));
  
-  if (_outFile) {
-    *_outFile << line;
+  if (_outStream) {
+    *_outStream << line;
   }
   if (_outSocket) {
     _outSocket->write(line.toAscii());
