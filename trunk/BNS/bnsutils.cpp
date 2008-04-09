@@ -93,12 +93,13 @@ void currentGPSWeeks(int& week, double& sec) {
         currTime.msec()                   / 1000.0;
 }
 
-//  
+// Satellite Position computed using broadcast ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void satellitePosition(double GPSweeks, const gpsEph* ep, 
+void satellitePosition(int GPSweek, double GPSweeks, const gpsEph* ep, 
                        double& X, double& Y, double& Z, double& dt,
                        double& vX, double& vY, double& vZ) {
 
+  const static double secPerWeek = 7 * 86400.0;
   const static double omegaEarth = 7292115.1467e-11;
   const static double gmWGS      = 398.6005e12;
 
@@ -111,6 +112,9 @@ void satellitePosition(double GPSweeks, const gpsEph* ep,
 
   double n0 = sqrt(gmWGS/(a0*a0*a0));
   double tk = GPSweeks - ep->TOE;
+  if (GPSweek != ep->GPSweek) {  
+    tk += (GPSweek - ep->GPSweek) * secPerWeek;
+  }
   double n  = n0 + ep->Delta_n;
   double M  = ep->M0 + n*tk;
   double E  = M;
@@ -140,6 +144,9 @@ void satellitePosition(double GPSweeks, const gpsEph* ep,
   Z = yp*sini;                 
   
   double tc = GPSweeks - ep->TOC;
+  if (GPSweek != ep->GPSweek) {  
+    tc += (GPSweek - ep->GPSweek) * secPerWeek;
+  }
   dt = ep->clock_bias + ep->clock_drift*tc + ep->clock_driftrate*tc*tc 
        - 4.442807633e-10 * ep->e * sqrt(a0) *sin(E);
 
@@ -166,4 +173,17 @@ void satellitePosition(double GPSweeks, const gpsEph* ep,
                        - yp*sini*cosom*doti;
 
   vZ  = sini    *doty  + yp*cosi      *doti;
+}
+
+// Transformation xyz --> radial, along track, out-of-plane
+////////////////////////////////////////////////////////////////////////////
+void XYZ_to_RSW(const ColumnVector& rr, const ColumnVector& vv,
+                const ColumnVector& xyz, ColumnVector& rsw) {
+
+  ColumnVector cross = crossproduct(rr, vv);
+
+  rsw.ReSize(3);
+  rsw(1) = DotProduct(xyz, rr)    / rr.norm_Frobenius();
+  rsw(2) = DotProduct(xyz, vv)    / vv.norm_Frobenius();
+  rsw(3) = DotProduct(xyz, cross) / cross.norm_Frobenius();
 }
