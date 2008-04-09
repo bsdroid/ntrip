@@ -239,11 +239,15 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
   satellitePosition(GPSweek, GPSweeks, ep, xB(1), xB(2), xB(3), xB(4), 
                     vv(1), vv(2), vv(3));
 
-  ColumnVector dx = xx - xB;
-  dx(4) *= 299792458.0; 
+  ColumnVector dx   = xx.Rows(1,3) - xB.Rows(1,3);
+  double       dClk = (xx(4) - xB(4)) * 299792458.0; 
+  ColumnVector rsw(3);
+
+  XYZ_to_RSW(xB, vv, dx, rsw);
 
   cout.setf(ios::showpoint | ios::fixed);
   cout << GPSweek << " " 
        << setprecision(1) << GPSweeks << " " << ep->prn.toAscii().data()
-       << setw(8) << setprecision(3) << dx.t();
+       << setw(8) << setprecision(3) << dClk
+       << setw(8) << setprecision(3) << rsw.t();
 }
