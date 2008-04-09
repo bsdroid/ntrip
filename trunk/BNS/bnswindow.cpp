@@ -126,6 +126,7 @@ bnsWindow::bnsWindow() {
   _mountpointLineEdit = new QLineEdit(settings.value("mountpoint").toString());
   _passwordLineEdit   = new QLineEdit(settings.value("password").toString());
   _passwordLineEdit->setMaximumWidth(9*ww);
+  _passwordLineEdit->setEchoMode(QLineEdit::Password);
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
 
   // TabWidget
