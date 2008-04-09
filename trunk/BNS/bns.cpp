@@ -236,7 +236,7 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
   ColumnVector xB(4);
   ColumnVector vv(3);
 
-  satellitePosition(GPSweeks, ep, xB(1), xB(2), xB(3), xB(4), 
+  satellitePosition(GPSweek, GPSweeks, ep, xB(1), xB(2), xB(3), xB(4), 
                     vv(1), vv(2), vv(3));
 
   ColumnVector dx = xx - xB;
