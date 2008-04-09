@@ -56,7 +56,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   }
   else {
     _outFile = new QFile(outFileName);
-    if (_outFile->open(QIODevice::WriteOnly)) {
+    if (_outFile->open(QIODevice::WriteOnly | QIODevice::Unbuffered)) {
       _outStream = new QTextStream(_outFile);
     }
   }
@@ -69,7 +69,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   }
   else {
     _logFile = new QFile(logFileName);
-    if (_logFile->open(QIODevice::WriteOnly)) {
+    if (_logFile->open(QIODevice::WriteOnly | QIODevice::Unbuffered)) {
       _logStream = new QTextStream(_logFile);
     }
   }
@@ -281,7 +281,7 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
   XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw);
 
   QString line;
-  line.sprintf("%d %.1f %s   %d %d   %8.3f   %8.3f %8.3f %8.3f\n", 
+  line.sprintf("%d %.1f %s   %3d %3d   %8.3f   %8.3f %8.3f %8.3f\n", 
                GPSweek, GPSweeks, ep->prn.toAscii().data(),
                int(ep->IODC), int(ep->IODE), dClk, rsw(1), rsw(2), rsw(3));
  
