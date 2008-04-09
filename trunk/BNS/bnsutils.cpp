@@ -96,7 +96,8 @@ void currentGPSWeeks(int& week, double& sec) {
 //  
 ////////////////////////////////////////////////////////////////////////////
 void satellitePosition(double GPSweeks, const gpsEph* ep, 
-                       double& X, double& Y, double& Z, double& dt) {
+                       double& X, double& Y, double& Z, double& dt,
+                       double& vX, double& vY, double& vZ) {
 
   const static double omegaEarth = 7292115.1467e-11;
   const static double gmWGS      = 398.6005e12;
@@ -141,4 +142,28 @@ void satellitePosition(double GPSweeks, const gpsEph* ep,
   double tc = GPSweeks - ep->TOC;
   dt = ep->clock_bias + ep->clock_drift*tc + ep->clock_driftrate*tc*tc 
        - 4.442807633e-10 * ep->e * sqrt(a0) *sin(E);
+
+  // Velocity
+  // --------
+  double tanv2 = tan(v/2);
+  double dEdM  = 1 / (1 - ep->e*cos(E));
+  double dotv  = sqrt((1.0 + ep->e)/(1.0 - ep->e)) / cos(E/2)/cos(E/2) / (1 + tanv2*tanv2) 
+               * dEdM * n;
+  double dotu  = dotv + (-ep->Cuc*sin2u0 + ep->Cus*cos2u0)*2*dotv;
+  double dotom = ep->OMEGADOT - omegaEarth;
+  double doti  = ep->IDOT + (-ep->Cic*sin2u0 + ep->Cis*cos2u0)*2*dotv;
+  double dotr  = a0 * ep->e*sin(E) * dEdM * n 
+                + (-ep->Crc*sin2u0 + ep->Crs*cos2u0)*2*dotv;
+  double dotx  = dotr*cos(u) - r*sin(u)*dotu;
+  double doty  = dotr*sin(u) + r*cos(u)*dotu;
+
+  vX  = cosom   *dotx  - cosi*sinom   *doty      // dX / dr
+      - xp*sinom*dotom - yp*cosi*cosom*dotom     // dX / dOMEGA
+                       + yp*sini*sinom*doti;     // dX / di
+
+  vY  = sinom   *dotx  + cosi*cosom   *doty
+      + xp*cosom*dotom - yp*cosi*sinom*dotom
+                       - yp*sini*cosom*doti;
+
+  vZ  = sini    *doty  + yp*cosi      *doti;
 }
