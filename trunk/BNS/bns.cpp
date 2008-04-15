@@ -140,6 +140,7 @@ void t_bns::openCaster() {
   
   QSettings settings;
 
+  delete _outSocket;
   _outSocket = new QTcpSocket();
   _outSocket->connectToHost(settings.value("outHost").toString(),
                             settings.value("outPort").toInt());
