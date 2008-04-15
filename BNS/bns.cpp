@@ -195,21 +195,9 @@ void t_bns::run() {
   // Thread that handles broadcast ephemeris
   // ---------------------------------------
   _bnseph = new t_bnseph(parent());
-
-  // Server listening for rtnet results
-  // ----------------------------------
-  QSettings settings;
-  _clkServer = new QTcpServer;
-  _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
-
-  // Start Thread that retrieves broadcast Ephemeris
-  // -----------------------------------------------
   _bnseph->start();
 
-  // Connect Slots-Signals
-  // ---------------------
-  connect(_bnseph, SIGNAL(newEph(gpsEph*)), 
-          this, SLOT(slotNewEph(gpsEph*)));
+  connect(_bnseph, SIGNAL(newEph(gpsEph*)), this, SLOT(slotNewEph(gpsEph*)));
 
   connect(_bnseph, SIGNAL(newMessage(QByteArray)),
           this, SLOT(slotMessage(const QByteArray)));
@@ -217,8 +205,13 @@ void t_bns::run() {
   connect(_bnseph, SIGNAL(error(QByteArray)),
           this, SLOT(slotError(const QByteArray)));
 
-  connect(_clkServer, SIGNAL(newConnection()),this, 
-          SLOT(slotNewConnection()));
+  // Server listening for rtnet results
+  // ----------------------------------
+  QSettings settings;
+  _clkServer = new QTcpServer;
+  _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
+
+  connect(_clkServer, SIGNAL(newConnection()),this, SLOT(slotNewConnection()));
 
   // Endless loop
   // ------------
