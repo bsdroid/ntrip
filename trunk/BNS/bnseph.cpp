@@ -25,7 +25,18 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_bnseph::t_bnseph(QObject* parent) : QThread(parent) {
-  _socket = 0;
+
+  QSettings settings;
+  QString host = "localhost";
+  int     port = settings.value("ephPort").toInt();
+
+  _socket = new QTcpSocket();
+  _socket->connectToHost(host, port);
+
+  const int timeOut = 3*1000;  // 3 seconds
+  if (!_socket->waitForConnected(timeOut)) {
+    emit(error("bnseph::run Connect Timeout"));
+  }
 }
 
 // Destructor
@@ -40,31 +51,16 @@ void t_bnseph::run() {
 
   emit(newMessage("bnseph::run Start"));
 
-  // Connect the Socket
-  // ------------------
-  QSettings settings;
-  QString host = "localhost";
-  int     port = settings.value("ephPort").toInt();
-
-  _socket = new QTcpSocket();
-  _socket->connectToHost(host, port);
-
-  const int timeOut = 3*1000;  // 3 seconds
-  if (!_socket->waitForConnected(timeOut)) {
-    emit(error("bnseph::run Connect Timeout"));
-  }
-  else {
-    while (true) {
-      if (_socket->state() != QAbstractSocket::ConnectedState) {
-        emit(error("bnseph::not connected"));
-        break;
-      }
-      if (_socket->canReadLine()) {
-        readEph();
-      }
-      else {
-        _socket->waitForReadyRead(10);
-      }
+  while (true) {
+    if (_socket->state() != QAbstractSocket::ConnectedState) {
+      emit(error("bnseph::not connected"));
+      break;
+    }
+    if (_socket->canReadLine()) {
+      readEph();
+    }
+    else {
+      _socket->waitForReadyRead(10);
     }
   }
 }
