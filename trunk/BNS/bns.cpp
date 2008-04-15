@@ -32,21 +32,12 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   // ---------------------------------------
   _bnseph = new t_bnseph(parent);
 
-  connect(_bnseph, SIGNAL(newEph(gpsEph*)), 
-          this, SLOT(slotNewEph(gpsEph*)), Qt::DirectConnection);
-  connect(_bnseph, SIGNAL(newMessage(QByteArray)),
-          this, SLOT(slotMessage(const QByteArray)), Qt::DirectConnection);
-  connect(_bnseph, SIGNAL(error(QByteArray)),
-          this, SLOT(slotError(const QByteArray)), Qt::DirectConnection);
-
   // Server listening for rtnet results
   // ----------------------------------
   QSettings settings;
   _clkSocket = 0;
   _clkServer = new QTcpServer;
   _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
-  connect(_clkServer, SIGNAL(newConnection()),this, 
-          SLOT(slotNewConnection()), Qt::DirectConnection);
 
   // Socket and file for outputting the results
   // -------------------------------------------
@@ -215,6 +206,20 @@ void t_bns::run() {
   // Start Thread that retrieves broadcast Ephemeris
   // -----------------------------------------------
   _bnseph->start();
+
+  // Connect Slots-Signals
+  // ---------------------
+  connect(_bnseph, SIGNAL(newEph(gpsEph*)), 
+          this, SLOT(slotNewEph(gpsEph*)));
+
+  connect(_bnseph, SIGNAL(newMessage(QByteArray)),
+          this, SLOT(slotMessage(const QByteArray)));
+
+  connect(_bnseph, SIGNAL(error(QByteArray)),
+          this, SLOT(slotError(const QByteArray)));
+
+  connect(_clkServer, SIGNAL(newConnection()),this, 
+          SLOT(slotNewConnection()));
 
   // Endless loop
   // ------------
