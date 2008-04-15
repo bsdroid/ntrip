@@ -52,7 +52,8 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   QString outFileName = settings.value("outFile").toString();
   if (outFileName.isEmpty()) {
-    _outFile = 0;
+    _outFile   = 0;
+    _outStream = 0;
   }
   else {
     _outFile = new QFile(outFileName);
