@@ -219,7 +219,8 @@ void t_bns::run() {
   while (true) {
     if (_clkSocket && _clkSocket->state() == QAbstractSocket::ConnectedState) {
       if ( _clkSocket->canReadLine()) {
-        if (_outSocket == 0) {
+        if (_outSocket == 0 || 
+            _outSocket->state() != QAbstractSocket::ConnectedState) {
           openCaster();
         }
         readEpoch();
