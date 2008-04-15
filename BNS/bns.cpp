@@ -27,19 +27,28 @@ using namespace std;
 t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   this->setTerminationEnabled(true);
+ 
+  // Thread that handles broadcast ephemeris
+  // ---------------------------------------
+  _bnseph = new t_bnseph(parent);
 
-  _bnseph    = 0; 
-  _outSocket = 0;
-  _clkSocket = 0;
+  connect(_bnseph, SIGNAL(newEph(gpsEph*)), this, SLOT(slotNewEph(gpsEph*)));
+  connect(_bnseph, SIGNAL(newMessage(QByteArray)),
+          this, SLOT(slotMessage(const QByteArray)));
+  connect(_bnseph, SIGNAL(error(QByteArray)),
+          this, SLOT(slotError(const QByteArray)));
 
   // Server listening for rtnet results
   // ----------------------------------
   QSettings settings;
+  _clkSocket = 0;
   _clkServer = new QTcpServer;
   _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
+  connect(_clkServer, SIGNAL(newConnection()),this, SLOT(slotNewConnection()));
 
-  connect(_clkServer, SIGNAL(newConnection()),
-          this, SLOT(slotNewConnection()), Qt::DirectConnection);
+  // Socket and file for outputting the results
+  // -------------------------------------------
+  _outSocket = 0;
 
   QString outFileName = settings.value("outFile").toString();
   if (outFileName.isEmpty()) {
@@ -157,10 +166,6 @@ void t_bns::openCaster() {
   if (ans.indexOf("OK") == -1) {
     delete _outSocket;
     _outSocket = 0;
-    emit(slotMessage("bns::openCaster socket deleted"));
-  }
-  else {
-    emit(slotMessage("bns::openCaster socket OK"));
   }
 }
 
@@ -201,18 +206,9 @@ void t_bns::run() {
 
   slotMessage("============ Start BNS ============");
 
-  // Thread that handles broadcast ephemeris
-  // ---------------------------------------
-  _bnseph = new t_bnseph(parent());
+  // Start Thread that retrieves broadcast Ephemeris
+  // -----------------------------------------------
   _bnseph->start();
-
-  connect(_bnseph, SIGNAL(newEph(gpsEph*)), this, SLOT(slotNewEph(gpsEph*)));
-
-  connect(_bnseph, SIGNAL(newMessage(QByteArray)),
-          this, SLOT(slotMessage(const QByteArray)));
-
-  connect(_bnseph, SIGNAL(error(QByteArray)),
-          this, SLOT(slotError(const QByteArray)));
 
   // Endless loop
   // ------------
