@@ -166,6 +166,10 @@ void t_bns::openCaster() {
   if (ans.indexOf("OK") == -1) {
     delete _outSocket;
     _outSocket = 0;
+    slotMessage("bns::openCaster socket deleted");
+  }
+  else {
+    slotMessage("bns::openCaster socket OK");
   }
 }
 
@@ -300,5 +304,6 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
   }
   if (_outSocket) {
     _outSocket->write(line.toAscii());
+    _outSocket->flush();
   }
 }
