@@ -28,21 +28,10 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   this->setTerminationEnabled(true);
  
-  // Thread that handles broadcast ephemeris
-  // ---------------------------------------
-  _bnseph = new t_bnseph(parent);
-
-  // Server listening for rtnet results
-  // ----------------------------------
-  QSettings settings;
-  _clkSocket = 0;
-  _clkServer = new QTcpServer;
-  _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
-
-  // Socket and file for outputting the results
-  // -------------------------------------------
   _outSocket = 0;
+  _clkSocket = 0;
 
+  QSettings settings;
   QString outFileName = settings.value("outFile").toString();
   if (outFileName.isEmpty()) {
     _outFile = 0;
@@ -202,6 +191,16 @@ void t_bns::slotNewEph(gpsEph* ep) {
 void t_bns::run() {
 
   slotMessage("============ Start BNS ============");
+
+  // Thread that handles broadcast ephemeris
+  // ---------------------------------------
+  _bnseph = new t_bnseph(parent());
+
+  // Server listening for rtnet results
+  // ----------------------------------
+  QSettings settings;
+  _clkServer = new QTcpServer;
+  _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
 
   // Start Thread that retrieves broadcast Ephemeris
   // -----------------------------------------------
