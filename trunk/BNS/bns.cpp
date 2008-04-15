@@ -166,10 +166,10 @@ void t_bns::openCaster() {
   if (ans.indexOf("OK") == -1) {
     delete _outSocket;
     _outSocket = 0;
-    emit(newMessage("bns::openCaster socket deleted"));
+    emit(slotMessage("bns::openCaster socket deleted"));
   }
   else {
-    emit(newMessage("bns::openCaster socket OK"));
+    emit(slotMessage("bns::openCaster socket OK"));
   }
 }
 
