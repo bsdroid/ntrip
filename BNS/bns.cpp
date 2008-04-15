@@ -27,11 +27,20 @@ using namespace std;
 t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   this->setTerminationEnabled(true);
- 
+
+  _bnseph    = 0; 
   _outSocket = 0;
   _clkSocket = 0;
 
+  // Server listening for rtnet results
+  // ----------------------------------
   QSettings settings;
+  _clkServer = new QTcpServer;
+  _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
+
+  connect(_clkServer, SIGNAL(newConnection()),
+          this, SLOT(slotNewConnection()), Qt::DirectConnection);
+
   QString outFileName = settings.value("outFile").toString();
   if (outFileName.isEmpty()) {
     _outFile = 0;
@@ -204,14 +213,6 @@ void t_bns::run() {
 
   connect(_bnseph, SIGNAL(error(QByteArray)),
           this, SLOT(slotError(const QByteArray)));
-
-  // Server listening for rtnet results
-  // ----------------------------------
-  QSettings settings;
-  _clkServer = new QTcpServer;
-  _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
-
-  connect(_clkServer, SIGNAL(newConnection()),this, SLOT(slotNewConnection()));
 
   // Endless loop
   // ------------
