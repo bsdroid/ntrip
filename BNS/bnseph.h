@@ -50,6 +50,7 @@ class t_bnseph : public QThread {
   void error(const QByteArray msg);
  
  private:
+  void reconnect();
   void readEph();
   QTcpSocket* _socket;
 };
