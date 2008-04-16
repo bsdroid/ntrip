@@ -28,6 +28,9 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   this->setTerminationEnabled(true);
  
+  connect(this, SIGNAL(moveSocket(QThread*)), 
+          this, SLOT(slotMoveSocket(QThread*)));
+
   // Thread that handles broadcast ephemeris
   // ---------------------------------------
   _bnseph = new t_bnseph(parent);
@@ -219,6 +222,11 @@ void t_bns::run() {
   // Endless loop
   // ------------
   while (true) {
+
+    if (_clkSocket && _clkSocket->thread() != currentThread()) {
+      emit(moveSocket(currentThread()));
+    }
+
     if (_clkSocket && _clkSocket->state() == QAbstractSocket::ConnectedState) {
       if ( _clkSocket->canReadLine()) {
         if (_outSocket == 0 || 
@@ -309,4 +317,12 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
     _outSocket->write(line.toAscii());
     _outSocket->flush();
   }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_bns::slotMoveSocket(QThread* tt) {
+  _clkSocket->setParent(0);
+  _clkSocket->moveToThread(tt);
+  slotMessage("bns::slotMoveSocket");
 }
