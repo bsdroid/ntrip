@@ -25,6 +25,9 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_bnseph::t_bnseph(QObject* parent) : QThread(parent) {
+
+  this->setTerminationEnabled(true);
+
   _socket = 0;
 }
 
