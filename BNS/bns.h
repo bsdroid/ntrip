@@ -34,12 +34,14 @@ class t_bns : public QThread {
  signals:
   void newMessage(const QByteArray msg);
   void error(const QByteArray msg);
+  void moveSocket(QThread* tt);
  
  private slots:
   void slotNewEph(gpsEph* ep);
   void slotNewConnection();
   void slotMessage(const QByteArray msg);
   void slotError(const QByteArray msg);
+  void slotMoveSocket(QThread* tt);
 
  private:
   void deleteBnsEph();
