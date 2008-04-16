@@ -34,14 +34,12 @@ t_bnseph::~t_bnseph() {
   delete _socket;
 }
 
-// Start 
+// Connect the Socket
 ////////////////////////////////////////////////////////////////////////////
-void t_bnseph::run() {
+void t_bnseph::reconnect() {
 
-  emit(newMessage("bnseph::run Start"));
+  delete _socket;
 
-  // Connect the Socket
-  // ------------------
   QSettings settings;
   QString host = "localhost";
   int     port = settings.value("ephPort").toInt();
@@ -49,22 +47,32 @@ void t_bnseph::run() {
   _socket = new QTcpSocket();
   _socket->connectToHost(host, port);
 
-  const int timeOut = 3*1000;  // 3 seconds
+  const int timeOut = 10*1000;  // 10 seconds
   if (!_socket->waitForConnected(timeOut)) {
-    emit(error("bnseph::run Connect Timeout"));
+    emit(newMessage("bnseph::run Connect Timeout"));
   }
-  else {
-    while (true) {
-      if (_socket->state() != QAbstractSocket::ConnectedState) {
-        emit(error("bnseph::not connected"));
-        break;
-      }
+}
+
+// Start 
+////////////////////////////////////////////////////////////////////////////
+void t_bnseph::run() {
+
+  emit(newMessage("bnseph::run Start"));
+
+  while (true) {
+    if (_socket == 0 || _socket->state() != QAbstractSocket::ConnectedState) {
+      reconnect();
+    }
+    if (_socket && _socket->state() == QAbstractSocket::ConnectedState) {
       if (_socket->canReadLine()) {
         readEph();
       }
       else {
         _socket->waitForReadyRead(10);
       }
+    }
+    else {
+      msleep(10);
     }
   }
 }
