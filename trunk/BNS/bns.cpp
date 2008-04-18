@@ -153,6 +153,7 @@ void t_bns::openCaster() {
     delete _outSocket;
     _outSocket = 0;
     emit(error("bns::openCaster Connect Timeout"));
+    return;
   }
 
   QString mountpoint = settings.value("mountpoint").toString();
