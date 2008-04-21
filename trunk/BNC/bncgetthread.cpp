@@ -158,7 +158,7 @@ bncGetThread::~bncGetThread() {
   delete _rnx;    
 }
 
-#define AGENTVERSION "1.5"
+#define AGENTVERSION "1.6"
 // Connect to Caster, send the Request (static)
 ////////////////////////////////////////////////////////////////////////////
 QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
