@@ -103,6 +103,7 @@ bncRinex::~bncRinex() {
   }
   QSettings settings;
   if ((_rinexVers == 3) && ( Qt::CheckState(settings.value("rnxAppend").toInt()) != Qt::Checked) ) {
+    _out << ">                              4  1" << endl;
     _out << "END OF FILE" << endl;
   }
   _out.close();
@@ -589,10 +590,10 @@ void bncRinex::dumpEpoch(long maxTime) {
        _out << setw(14) << setprecision(3) << obs->_o.L2 << " " 
             << setw(1)                     << obs->_o.SNR2
             << setw(14) << setprecision(3) << obs->_o.S2 << "  "
-            << "                              ";
+            << "         0.000           0.000  ";
       }
       else {
-       _out << "                                " 
+       _out << "         0.000           0.000  " 
             << setw(14) << setprecision(3) << obs->_o.L2 << " " 
             << setw(1)                     << obs->_o.SNR2
             << setw(14) << setprecision(3) << obs->_o.S2;
@@ -661,6 +662,7 @@ void bncRinex::dumpEpoch(long maxTime) {
 void bncRinex::closeFile() {
   QMutexLocker locker(&_mutex);
   if (_rinexVers == 3) {
+    _out << ">                              4  1" << endl;
     _out << "END OF FILE" << endl;
   }
   _out.close();
