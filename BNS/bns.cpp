@@ -20,6 +20,7 @@
 #include "bns.h" 
 #include "bnsutils.h" 
 #include "bnsrinex.h" 
+#include "bnssp3.h" 
 
 using namespace std;
 
@@ -86,6 +87,15 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   }
   else {
     _rnx = new bnsRinex();
+  }
+
+  // SP3 writer
+  // ----------
+  if ( settings.value("sp3Path").toString().isEmpty() ) { 
+    _sp3 = 0;
+  }
+  else {
+    _sp3 = new bnsSP3();
   }
 }
 
@@ -330,6 +340,9 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
   }
   if (_rnx) {
     _rnx->write(GPSweek, GPSweeks, prn, xx);
+  }
+  if (_sp3) {
+    _sp3->write(GPSweek, GPSweeks, prn, xx);
   }
 }
 

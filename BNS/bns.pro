@@ -22,14 +22,14 @@ release:MOC_DIR=.moc/release
 INCLUDEPATH = . ./newmat
 
 HEADERS =             bns.h   bnswindow.h   bnshlpdlg.h   bnshtml.h   \
-          bnseph.h    bnsutils.h bnsrinex.h
+          bnseph.h    bnsutils.h bnsrinex.h bnssp3.h
 
 HEADERS += newmat/controlw.h newmat/include.h newmat/myexcept.h  \
            newmat/newmatap.h newmat/newmat.h newmat/newmatio.h   \
            newmat/newmatrc.h newmat/newmatrm.h newmat/precisio.h
 
 SOURCES = bnsmain.cpp bns.cpp bnswindow.cpp bnshlpdlg.cpp bnshtml.cpp \
-          bnseph.cpp  bnsutils.cpp bnsrinex.cpp
+          bnseph.cpp  bnsutils.cpp bnsrinex.cpp bnssp3.cpp
 
 SOURCES += newmat/bandmat.cpp newmat/cholesky.cpp newmat/evalue.cpp  \
            newmat/fft.cpp newmat/hholder.cpp newmat/jacobi.cpp       \
