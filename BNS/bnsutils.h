@@ -9,6 +9,8 @@
 
 class gpsEph;
 
+enum t_irc {failure = -1, success}; // return code
+
 void expandEnvVar(QString& str);
 
 QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks);
