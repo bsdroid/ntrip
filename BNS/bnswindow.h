@@ -63,6 +63,12 @@ Q_OBJECT
   QLineEdit* _mountpointLineEdit;
   QLineEdit* _passwordLineEdit;
   QLineEdit* _outFileLineEdit;
+  QLineEdit* _rnxPathLineEdit;
+  QLineEdit* _sp3PathLineEdit;
+  QComboBox* _rnxIntrComboBox;
+  QComboBox* _sp3IntrComboBox;
+  QSpinBox*  _rnxSamplSpinBox;
+  QSpinBox*  _sp3SamplSpinBox;
 
   QTextEdit*  _log;
 

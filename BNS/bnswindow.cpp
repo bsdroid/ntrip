@@ -130,6 +130,14 @@ bnsWindow::bnsWindow() {
   _passwordLineEdit->setEchoMode(QLineEdit::Password);
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
 
+  _rnxPathLineEdit = new QLineEdit;
+  _rnxIntrComboBox = new QComboBox;
+  _rnxSamplSpinBox = new QSpinBox;
+
+  _sp3PathLineEdit = new QLineEdit;
+  _sp3IntrComboBox = new QComboBox;
+  _sp3SamplSpinBox = new QSpinBox;
+
   // TabWidget
   // ---------
   QTabWidget* tabs = new QTabWidget();
@@ -137,40 +145,42 @@ bnsWindow::bnsWindow() {
   // Basic Input/Output Tab
   // ----------------------
   QWidget* tab_bas = new QWidget();
-  tabs->addTab(tab_bas, "Basic");
+  tabs->addTab(tab_bas, "Basic Options");
 
   QGridLayout* layout_bas = new QGridLayout;
-  layout_bas->addWidget(new QLabel("Input Ports"),  0, 0, Qt::AlignLeft);
+  layout_bas->setColumnMinimumWidth(2, 9*ww);
+
+  layout_bas->addWidget(new QLabel("Input Ports"),  0, 0, 1, 2);
+  layout_bas->addWidget(new QLabel("Output Files"), 0, 3, 1, 2);
   layout_bas->addWidget(new QLabel("Ephemeris"),    1, 0, Qt::AlignLeft);
   layout_bas->addWidget(_ephPortLineEdit,           1, 1);
-  layout_bas->addWidget(new QLabel("Clocks"),       2, 0, Qt::AlignLeft);
-  layout_bas->addWidget(_clkPortLineEdit,           2, 1);
-  layout_bas->setColumnMinimumWidth(2, 9*ww);
-  layout_bas->addWidget(new QLabel("Output Files"), 0, 3, Qt::AlignLeft);
   layout_bas->addWidget(new QLabel("Log"),          1, 3, Qt::AlignLeft);
   layout_bas->addWidget(_logFileLineEdit,           1, 4);
+  layout_bas->addWidget(new QLabel("Clocks"),       2, 0, Qt::AlignLeft);
+  layout_bas->addWidget(_clkPortLineEdit,           2, 1);
   layout_bas->addWidget(new QLabel("Data"),         2, 3, Qt::AlignLeft);
-  layout_bas->addWidget(_outFileLineEdit, 2, 4);
-  layout_bas->addWidget(new QLabel(""), 3, 0);
-  layout_bas->addWidget(new QLabel(""), 4, 0);
-  layout_bas->addWidget(new QLabel(""), 5, 0);
+  layout_bas->addWidget(_outFileLineEdit,           2, 4);
+  layout_bas->addWidget(new QLabel(""),             3, 0);
+  layout_bas->addWidget(new QLabel(""),             4, 0);
+  layout_bas->addWidget(new QLabel(""),             5, 0);
 
   tab_bas->setLayout(layout_bas);
 
   // NTRIP Caster Tab
   // ----------------
   QWidget* tab_cas = new QWidget();
-  tabs->addTab(tab_cas, "Caster");
+  tabs->addTab(tab_cas, "NTRIP Caster");
 
   QGridLayout* layout_cas = new QGridLayout;
+  layout_cas->setColumnMinimumWidth(2, 9*ww);
+
   layout_cas->addWidget(new QLabel(""),           0, 0);
   layout_cas->addWidget(new QLabel("Host"),       1, 0, Qt::AlignLeft);
   layout_cas->addWidget(_outHostLineEdit,         1, 1);
-  layout_cas->addWidget(new QLabel("Mountpoint"), 2, 0, Qt::AlignLeft);
-  layout_cas->addWidget(_mountpointLineEdit,      2, 1);
-  layout_cas->setColumnMinimumWidth(2, 9*ww);
   layout_cas->addWidget(new QLabel("Port"),       1, 3, Qt::AlignLeft);
   layout_cas->addWidget(_outPortLineEdit,         1, 4);
+  layout_cas->addWidget(new QLabel("Mountpoint"), 2, 0, Qt::AlignLeft);
+  layout_cas->addWidget(_mountpointLineEdit,      2, 1);
   layout_cas->addWidget(new QLabel("Password"),   2, 3, Qt::AlignLeft);
   layout_cas->addWidget(_passwordLineEdit,        2, 4);
   layout_cas->addWidget(new QLabel(""),           3, 0);
@@ -178,6 +188,31 @@ bnsWindow::bnsWindow() {
   layout_cas->addWidget(new QLabel(""),           5, 0);
 
   tab_cas->setLayout(layout_cas);
+
+  // RINEX and SP3 Tab
+  // -----------------
+  QWidget* tab_rin = new QWidget();
+  tabs->addTab(tab_rin, "RINEX and SP3");
+
+  QGridLayout* layout_rin = new QGridLayout;
+
+  layout_rin->addWidget(new QLabel("Clocks in RINEX Format"),  0, 0, 1, 4);
+  layout_rin->addWidget(new QLabel("Directory"),               1, 0);
+  layout_rin->addWidget(_rnxPathLineEdit,                      1, 1, 1, 3);
+  layout_rin->addWidget(new QLabel("Interval"),                2, 0);
+  layout_rin->addWidget(_rnxIntrComboBox,                      2, 1);
+  layout_rin->addWidget(new QLabel("Sampling"),                2, 2, Qt::AlignRight);
+  layout_rin->addWidget(_rnxSamplSpinBox,                      2, 3, Qt::AlignLeft);
+  layout_rin->addWidget(new QLabel(""),                        3, 0);
+  layout_rin->addWidget(new QLabel("Ephemeris in SP3 Format"), 4, 0, 1, 4);
+  layout_rin->addWidget(new QLabel("Directory"),               5, 0);
+  layout_rin->addWidget(_sp3PathLineEdit,                      5, 1, 1, 3);
+  layout_rin->addWidget(new QLabel("Interval"),                6, 0);
+  layout_rin->addWidget(_sp3IntrComboBox,                      6, 1);
+  layout_rin->addWidget(new QLabel("Sampling"),                6, 2, Qt::AlignRight);
+  layout_rin->addWidget(_sp3SamplSpinBox,                      6, 3, Qt::AlignLeft);
+
+  tab_rin->setLayout(layout_rin);
 
   // Log
   // ---
