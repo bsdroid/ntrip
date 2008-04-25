@@ -18,7 +18,6 @@
 #include <iomanip>
 
 #include "bnsoutf.h"
-#include "bnsutils.h"
 
 using namespace std;
 
@@ -37,9 +36,6 @@ bnsoutf::bnsoutf(const QString& prep, const QString& ext, const QString& path,
   if ( _path.length() > 0 && _path[_path.length()-1] != QDir::separator() ) {
     _path += QDir::separator();
   }
-
-  _lastGPSweek  = 0;
-  _lastGPSweeks = 0.0;
 }
 
 // Destructor
@@ -137,8 +133,8 @@ void bnsoutf::resolveFileName(int GPSweek, const QDateTime& datTim) {
 
 // Write One Epoch
 ////////////////////////////////////////////////////////////////////////////
-void bnsoutf::write(int GPSweek, double GPSweeks, const QString&, 
-                   const ColumnVector&) {
+t_irc bnsoutf::write(int GPSweek, double GPSweeks, const QString&, 
+                     const ColumnVector&) {
 
   QDateTime datTim = dateAndTimeFromGPSweek(GPSweek, GPSweeks);
 
@@ -158,4 +154,6 @@ void bnsoutf::write(int GPSweek, double GPSweeks, const QString&,
     writeHeader(datTim);
     _headerWritten = true;
   }
+
+  return success;
 }
