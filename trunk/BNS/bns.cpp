@@ -86,7 +86,12 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
     _rnx = 0;
   }
   else {
-    _rnx = new bnsRinex();
+    QString prep  = "BNS";
+    QString ext   = ".rnx";
+    QString path  = settings.value("rnxPath").toString();
+    QString intr  = settings.value("rnxIntr").toString();
+    int     sampl = settings.value("rnxSampl").toInt();
+    _rnx = new bnsRinex(prep, ext, path, intr, sampl);
   }
 
   // SP3 writer
@@ -95,7 +100,12 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
     _sp3 = 0;
   }
   else {
-    _sp3 = new bnsSP3();
+    QString prep  = "BNS";
+    QString ext   = ".clk";
+    QString path  = settings.value("sp3Path").toString();
+    QString intr  = settings.value("sp3Intr").toString();
+    int     sampl = settings.value("sp3Sampl").toInt();
+    _sp3 = new bnsSP3(prep, ext, path, intr, sampl);
   }
 }
 

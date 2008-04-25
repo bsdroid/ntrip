@@ -5,31 +5,18 @@
 #include <newmat.h>
 #include <QtCore>
 
-class bnsSP3 {
- public:
-  bnsSP3();
-  ~bnsSP3();
-  void write(int GPSweek, double GPSweeks, const QString& prn, 
-             const ColumnVector& xx);
+#include "bnsoutf.h"
 
-  static QString nextEpochStr(const QDateTime& datTim,
-                              const QString& intStr, 
-                              QDateTime* nextEpoch = 0);
+class bnsSP3 : public bnsoutf {
+ public:
+  bnsSP3(const QString& prep, const QString& ext, const QString& path,
+         const QString& intr, int sampl);
+  virtual ~bnsSP3();
+  virtual void write(int GPSweek, double GPSweeks, const QString& prn, 
+                     const ColumnVector& xx);
 
  private:
-  void resolveFileName(const QDateTime& datTim);
-  void writeHeader(const QDateTime& datTim);
-  void closeFile();
-
-  int           _samplingRate;
-  bool          _headerWritten;
-  QDateTime     _nextCloseEpoch;
-  std::ofstream _out;
-  QString       _path;
-  QString       _intr;
-  QString       _ext;
-  QString       _ID4;
-  QByteArray    _fName;
+  virtual void writeHeader(const QDateTime& datTim);
 };
 
 #endif

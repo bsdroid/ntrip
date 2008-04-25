@@ -5,13 +5,18 @@
 #include <newmat.h>
 #include <QtCore>
 
-class bnsRinex {
+#include "bnsoutf.h"
+
+class bnsRinex : public bnsoutf {
  public:
-   bnsRinex();
-   ~bnsRinex();
-   void write(int GPSweek, double GPSweeks, const QString& prn, 
-              const ColumnVector& xx);
+  bnsRinex(const QString& prep, const QString& ext, const QString& path,
+           const QString& intr, int sampl);
+  virtual ~bnsRinex();
+  virtual void write(int GPSweek, double GPSweeks, const QString& prn, 
+                     const ColumnVector& xx);
+
  private:
+  virtual void writeHeader(const QDateTime& datTim);
 };
 
 #endif
