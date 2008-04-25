@@ -8,6 +8,8 @@
 
 #include "bnseph.h"
 
+class bnsRinex;
+
 class t_ephPair {
  public:
   t_ephPair() {
@@ -60,5 +62,7 @@ class t_bns : public QThread {
   t_bnseph*                 _bnseph;
   QMutex                    _mutex;
   QMap<QString, t_ephPair*> _ephList;
+
+  bnsRinex*                 _rnx;
 };
 #endif
