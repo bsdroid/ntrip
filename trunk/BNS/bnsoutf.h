@@ -5,20 +5,20 @@
 #include <newmat.h>
 #include <QtCore>
 
+#include "bnsutils.h"
+
 class bnsoutf {
  public:
   bnsoutf(const QString& prep, const QString& ext, const QString& path,
           const QString& intr, int sampl);
   virtual ~bnsoutf();
 
-  virtual void write(int GPSweek, double GPSweeks, const QString& prn, 
-                     const ColumnVector& xx);
+  virtual t_irc write(int GPSweek, double GPSweeks, const QString& prn, 
+                      const ColumnVector& xx);
 
  protected:
   virtual void writeHeader(const QDateTime& datTim) = 0;
   std::ofstream _out;
-  int           _lastGPSweek;
-  double        _lastGPSweeks;
 
  private:
   QString nextEpochStr(const QDateTime& datTim,

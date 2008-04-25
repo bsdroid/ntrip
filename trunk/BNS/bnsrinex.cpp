@@ -41,9 +41,14 @@ void bnsRinex::writeHeader(const QDateTime& datTim) {
 
 // Write One Epoch
 ////////////////////////////////////////////////////////////////////////////
-void bnsRinex::write(int GPSweek, double GPSweeks, const QString& prn, 
+t_irc bnsRinex::write(int GPSweek, double GPSweeks, const QString& prn, 
                    const ColumnVector& xx) {
 
-  bnsoutf::write(GPSweek, GPSweeks, prn, xx);
+  if (bnsoutf::write(GPSweek, GPSweeks, prn, xx) == success) {
 
+    return success;
+  }
+  else {
+    return failure;
+  }
 }

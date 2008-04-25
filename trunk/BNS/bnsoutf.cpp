@@ -15,6 +15,7 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <math.h>
 #include <iomanip>
 
 #include "bnsoutf.h"
@@ -135,6 +136,10 @@ void bnsoutf::resolveFileName(int GPSweek, const QDateTime& datTim) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc bnsoutf::write(int GPSweek, double GPSweeks, const QString&, 
                      const ColumnVector&) {
+
+  if (_sampl != 0 && fmod(GPSweeks, _sampl) != 0.0) {
+    return failure;
+  }
 
   QDateTime datTim = dateAndTimeFromGPSweek(GPSweek, GPSweeks);
 
