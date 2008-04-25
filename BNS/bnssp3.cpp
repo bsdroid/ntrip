@@ -16,6 +16,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <iomanip>
+#include <math.h>
 
 #include "bnssp3.h"
 #include "bnsutils.h"
@@ -37,7 +38,7 @@ bnsSP3::~bnsSP3() {
 // Write Header
 ////////////////////////////////////////////////////////////////////////////
 void bnsSP3::writeHeader(const QDateTime& datTim) {
-  _out << "THIS IS A DUMMY HEADER" << endl;
+  _out << "THIS IS A DUMMY SP3 HEADER" << endl;
 }
 
 // Write One Epoch
@@ -47,18 +48,20 @@ void bnsSP3::write(int GPSweek, double GPSweeks, const QString& prn,
 
   bnsoutf::write(GPSweek, GPSweeks, prn, xx);
 
-  int year, month, day, hour, min;
-  double sec;
+  if (_lastGPSweek != GPSweek || _lastGPSweeks != GPSweeks) {
+    _lastGPSweek  = GPSweek;
+    _lastGPSweeks = GPSweeks;
 
-  _out << "*  " << setw(4) << year 
-       << setw(3) << month 
-       << setw(3) << day
-       << setw(3) << hour 
-       << setw(3) << min
-       << setw(12) << setprecision(8) << sec << endl; 
+    QDateTime datTim = dateAndTimeFromGPSweek(GPSweek, GPSweeks);
+    double sec = fmod(GPSweeks, 60.0);
+
+    _out << "*  " 
+         << datTim.toString("yyyy MM dd hh mm").toAscii().data()
+         << setw(12) << setprecision(8) << sec << endl; 
+  }
   _out << "P" << prn.toAscii().data()
        << setw(14) << setprecision(6) << xx(1) / 1000.0
        << setw(14) << setprecision(6) << xx(2) / 1000.0
        << setw(14) << setprecision(6) << xx(3) / 1000.0
-       << " 999999.999999" << endl;
+       << setw(14) << setprecision(6) << xx(4) * 1e6 << endl;
 }

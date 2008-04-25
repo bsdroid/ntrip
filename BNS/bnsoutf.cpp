@@ -37,6 +37,9 @@ bnsoutf::bnsoutf(const QString& prep, const QString& ext, const QString& path,
   if ( _path.length() > 0 && _path[_path.length()-1] != QDir::separator() ) {
     _path += QDir::separator();
   }
+
+  _lastGPSweek  = 0;
+  _lastGPSweeks = 0.0;
 }
 
 // Destructor

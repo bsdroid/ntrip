@@ -17,6 +17,8 @@ class bnsoutf {
  protected:
   virtual void writeHeader(const QDateTime& datTim) = 0;
   std::ofstream _out;
+  int           _lastGPSweek;
+  double        _lastGPSweeks;
 
  private:
   QString nextEpochStr(const QDateTime& datTim,
