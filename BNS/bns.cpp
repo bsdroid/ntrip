@@ -19,6 +19,7 @@
 
 #include "bns.h" 
 #include "bnsutils.h" 
+#include "bnsrinex.h" 
 
 using namespace std;
 
@@ -76,6 +77,15 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
     if (_logFile->open(QIODevice::WriteOnly | QIODevice::Unbuffered)) {
       _logStream = new QTextStream(_logFile);
     }
+  }
+
+  // RINEX writer
+  // ------------
+  if ( settings.value("rnxPath").toString().isEmpty() ) { 
+    _rnx = 0;
+  }
+  else {
+    _rnx = new bnsRinex();
   }
 }
 
@@ -317,6 +327,9 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
   if (_outSocket) {
     _outSocket->write(line.toAscii());
     _outSocket->flush();
+  }
+  if (_rnx) {
+    _rnx->write(GPSweek, GPSweeks, prn, xx);
   }
 }
 
