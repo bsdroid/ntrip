@@ -23,7 +23,9 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bnsRinex::bnsRinex() {
+bnsRinex::bnsRinex(const QString& prep, const QString& ext, const QString& path,
+               const QString& intr, int sampl) 
+  : bnsoutf(prep, ext, path, intr, sampl) {
 }
 
 // Destructor
@@ -31,8 +33,17 @@ bnsRinex::bnsRinex() {
 bnsRinex::~bnsRinex() {
 }
 
-// 
+// Write Header
+////////////////////////////////////////////////////////////////////////////
+void bnsRinex::writeHeader(const QDateTime& datTim) {
+  _out << "THIS IS A DUMMY HEADER" << endl;
+}
+
+// Write One Epoch
 ////////////////////////////////////////////////////////////////////////////
 void bnsRinex::write(int GPSweek, double GPSweeks, const QString& prn, 
-                     const ColumnVector& xx) {
+                   const ColumnVector& xx) {
+
+  bnsoutf::write(GPSweek, GPSweeks, prn, xx);
+
 }
