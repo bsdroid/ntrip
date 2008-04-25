@@ -115,6 +115,8 @@ t_bns::~t_bns() {
     it.next();
     delete it.value();
   }
+  delete _rnx;
+  delete _sp3;
 }
 
 // Delete bns thread
