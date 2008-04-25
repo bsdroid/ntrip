@@ -130,13 +130,39 @@ bnsWindow::bnsWindow() {
   _passwordLineEdit->setEchoMode(QLineEdit::Password);
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
 
-  _rnxPathLineEdit = new QLineEdit;
+  _rnxPathLineEdit = new QLineEdit(settings.value("rnxPath").toString());
   _rnxIntrComboBox = new QComboBox;
+  _rnxIntrComboBox->setMaximumWidth(9*ww);
+  _rnxIntrComboBox->setEditable(false);
+  _rnxIntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
+  int ii = _rnxIntrComboBox->findText(settings.value("rnxIntr").toString());
+  if (ii != -1) {
+    _rnxIntrComboBox->setCurrentIndex(ii);
+  }
   _rnxSamplSpinBox = new QSpinBox;
+  _rnxSamplSpinBox->setMinimum(0);
+  _rnxSamplSpinBox->setMaximum(60);
+  _rnxSamplSpinBox->setSingleStep(5);
+  _rnxSamplSpinBox->setMaximumWidth(9*ww);
+  _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
+  _rnxSamplSpinBox->setSuffix(" sec");
 
-  _sp3PathLineEdit = new QLineEdit;
+  _sp3PathLineEdit = new QLineEdit(settings.value("sp3Path").toString());
   _sp3IntrComboBox = new QComboBox;
+  _sp3IntrComboBox->setMaximumWidth(9*ww);
+  _sp3IntrComboBox->setEditable(false);
+  _sp3IntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
+  ii = _sp3IntrComboBox->findText(settings.value("sp3Intr").toString());
+  if (ii != -1) {
+    _sp3IntrComboBox->setCurrentIndex(ii);
+  }
   _sp3SamplSpinBox = new QSpinBox;
+  _sp3SamplSpinBox->setMinimum(0);
+  _sp3SamplSpinBox->setMaximum(60);
+  _sp3SamplSpinBox->setSingleStep(5);
+  _sp3SamplSpinBox->setMaximumWidth(9*ww);
+  _sp3SamplSpinBox->setValue(settings.value("sp3Sampl").toInt());
+  _sp3SamplSpinBox->setSuffix(" sec");
 
   // TabWidget
   // ---------
@@ -328,6 +354,12 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("mountpoint", _mountpointLineEdit->text());
   settings.setValue("password",   _passwordLineEdit->text());
   settings.setValue("outFile",    _outFileLineEdit->text());
+  settings.setValue("rnxPath",    _rnxPathLineEdit->text());
+  settings.setValue("rnxIntr",    _rnxIntrComboBox->currentText());
+  settings.setValue("rnxSampl",   _rnxSamplSpinBox->value());
+  settings.setValue("sp3Path",    _sp3PathLineEdit->text());
+  settings.setValue("sp3Intr",    _sp3IntrComboBox->currentText());
+  settings.setValue("sp3Sampl",   _sp3SamplSpinBox->value());
 }
 
 // Display Program Messages 
