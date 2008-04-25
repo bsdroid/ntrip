@@ -5,7 +5,7 @@
  *
  * Class:      bnsoutf
  *
- * Purpose:    writes SP3 files
+ * Purpose:    Basis Class for File-Writers
  *
  * Author:     L. Mervart
  *
@@ -66,7 +66,7 @@ QString bnsoutf::nextEpochStr(const QDateTime& datTim,
   if ( indHlp != -1) {
     int step = intStr.left(indHlp-1).toInt();
     char ch = 'A' + datTim.time().hour();
-    epoStr = ch;
+    epoStr = QString("_") + ch;
     if (datTim.time().minute() >= 60-step) {
       epoStr += QString("%1").arg(60-step, 2, 10, QChar('0'));
       if (datTim.time().hour() < 23) {
@@ -91,7 +91,7 @@ QString bnsoutf::nextEpochStr(const QDateTime& datTim,
   }
   else if (intStr == "1 hour") {
     char ch = 'A' + datTim.time().hour();
-    epoStr = ch;
+    epoStr = QString("_") + ch;
     if (datTim.time().hour() < 23) {
       nextTime.setHMS(datTim.time().hour() + 1 , 0, 0);
       nextDate = datTim.date();
@@ -102,7 +102,7 @@ QString bnsoutf::nextEpochStr(const QDateTime& datTim,
     }
   }
   else {
-    epoStr = "0";
+    epoStr = "";
     nextTime.setHMS(0, 0, 0);
     nextDate = datTim.date().addDays(1);
   }
@@ -116,13 +116,19 @@ QString bnsoutf::nextEpochStr(const QDateTime& datTim,
 
 // File Name according to RINEX Standards
 ////////////////////////////////////////////////////////////////////////////
-void bnsoutf::resolveFileName(const QDateTime& datTim) {
+void bnsoutf::resolveFileName(int GPSweek, const QDateTime& datTim) {
 
-  QString hlpStr = nextEpochStr(datTim, _intr, &_nextCloseEpoch);
+  QString epoStr = nextEpochStr(datTim, _intr, &_nextCloseEpoch);
+
+  int dayOfWeek = datTim.date().dayOfWeek();
+  if (dayOfWeek == 7) {
+    dayOfWeek = 0;
+  }
 
   _fName = (_prep
-            + QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0'))
-            + hlpStr 
+            + QString("%1").arg(GPSweek)
+            + QString("%1").arg(dayOfWeek)
+            + epoStr 
             + _ext).toAscii();
 }
 
@@ -143,7 +149,7 @@ void bnsoutf::write(int GPSweek, double GPSweeks, const QString&,
   // Write Header
   // ------------
   if (!_headerWritten) {
-    resolveFileName(datTim);
+    resolveFileName(GPSweek, datTim);
     _out.open(_fName.data());
     _out.setf(ios::showpoint | ios::fixed);
     writeHeader(datTim);

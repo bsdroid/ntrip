@@ -22,7 +22,7 @@ class bnsoutf {
   QString nextEpochStr(const QDateTime& datTim,
                        const QString& intStr, 
                        QDateTime* nextEpoch = 0);
-  void resolveFileName(const QDateTime& datTim);
+  void resolveFileName(int GPSweek, const QDateTime& datTim);
   void closeFile();
 
   int           _sampl;
