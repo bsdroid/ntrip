@@ -158,8 +158,8 @@ bnsWindow::bnsWindow() {
   }
   _sp3SamplSpinBox = new QSpinBox;
   _sp3SamplSpinBox->setMinimum(0);
-  _sp3SamplSpinBox->setMaximum(60);
-  _sp3SamplSpinBox->setSingleStep(5);
+  _sp3SamplSpinBox->setMaximum(900);
+  _sp3SamplSpinBox->setSingleStep(60);
   _sp3SamplSpinBox->setMaximumWidth(9*ww);
   _sp3SamplSpinBox->setValue(settings.value("sp3Sampl").toInt());
   _sp3SamplSpinBox->setSuffix(" sec");

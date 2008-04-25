@@ -58,8 +58,7 @@ t_irc bnsSP3::write(int GPSweek, double GPSweeks, const QString& prn,
       QDateTime datTim = dateAndTimeFromGPSweek(GPSweek, GPSweeks);
       double sec = fmod(GPSweeks, 60.0);
     
-      _out << "*  " 
-           << datTim.toString("yyyy MM dd hh mm").toAscii().data()
+      _out << datTim.toString("*  yyyy MM dd hh mm").toAscii().data()
            << setw(12) << setprecision(8) << sec << endl; 
     }
     _out << "P" << prn.toAscii().data()
