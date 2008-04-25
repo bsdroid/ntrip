@@ -87,7 +87,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   }
   else {
     QString prep  = "BNS";
-    QString ext   = ".rnx";
+    QString ext   = ".clk";
     QString path  = settings.value("rnxPath").toString();
     QString intr  = settings.value("rnxIntr").toString();
     int     sampl = settings.value("rnxSampl").toInt();
@@ -101,7 +101,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   }
   else {
     QString prep  = "BNS";
-    QString ext   = ".clk";
+    QString ext   = ".sp3";
     QString path  = settings.value("sp3Path").toString();
     QString intr  = settings.value("sp3Intr").toString();
     int     sampl = settings.value("sp3Sampl").toInt();

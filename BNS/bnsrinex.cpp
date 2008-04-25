@@ -52,7 +52,7 @@ t_irc bnsRinex::write(int GPSweek, double GPSweeks, const QString& prn,
     
       _out << "AS " << prn.toAscii().data()
            << datTim.toString("  yyyy MM dd hh mm").toAscii().data()
-           << setw(12) << setprecision(8) << sec << "  2  "
+           << fixed      << setw(10) << setprecision(6)  << sec << "  2  "
            << scientific << setw(20) << setprecision(12) << xx(4) 
            << scientific << setw(20) << setprecision(12) << 0.0 << endl;
 
