@@ -78,8 +78,27 @@ void bnsSP3::closeFile() {
 // Write Header
 ////////////////////////////////////////////////////////////////////////////
 void bnsSP3::writeHeader(const QDateTime& datTim) {
-  _out << "#cP2007  7  1  0  0  0.00000000      96 ORBIT IGS05 HLM  IGS"
-       << "## 1434      0.00000000   900.00000000 54282 0.0000000000000"
+
+  int    GPSWeek;
+  double GPSWeeks;
+  GPSweekFromDateAndTime(datTim, GPSWeek, GPSWeeks);
+
+  double sec = fmod(GPSWeeks, 60.0);
+
+  int    mjd;
+  double dayfrac;
+  mjdFromDateAndTime(datTim, mjd, dayfrac);
+
+  _out << "#aP" << datTim.toString("yyyy MM dd hh mm").toAscii().data() 
+       << setw(12) << setprecision(8) << sec
+       << "      96 ORBIT IGS05 HLM  IGS" << endl;
+
+  _out << "## " 
+       << setw(4)  << GPSWeek
+       << setw(16) << setprecision(8) << GPSWeeks
+       << setw(15) << setprecision(8) << double(_sampl)
+       << setw(6)  << mjd
+       << setw(16) << setprecision(13) << dayfrac << endl;
 
   _out << "+   32   G01G02G03G04G05G06G07G08G09G10G11G12G13G14G15G16G17\n"
        << "+        G18G19G20G21G22G23G24G25G26G27G28G29G30G31G32  0  0\n"
