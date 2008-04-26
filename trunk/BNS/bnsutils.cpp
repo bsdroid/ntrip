@@ -97,14 +97,14 @@ void currentGPSWeeks(int& week, double& sec) {
 ////////////////////////////////////////////////////////////////////////////
 void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac) {
 
-  double mjddec = dateTime.date().toJulianDay() - 2400000.5 + 
-                   (dateTime.time().hour() +
-                    (dateTime.time().minute() +
-                     (dateTime.time().second() + 
-                      dateTime.time().msec() / 1000.0) / 60.0) / 60.0) / 24.0;
+  const static QDate zeroDate(1858, 11, 17);
 
-  mjd     = int(mjddec);
-  dayfrac = mjddec - mjd;
+  mjd     = zeroDate.daysTo(dateTime.date());
+
+  dayfrac = (dateTime.time().hour() +
+             (dateTime.time().minute() +
+              (dateTime.time().second() + 
+               dateTime.time().msec() / 1000.0) / 60.0) / 60.0) / 24.0;
 }
 
 // Satellite Position computed using broadcast ephemeris
