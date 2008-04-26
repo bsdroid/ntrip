@@ -56,6 +56,8 @@ class t_bns : public QThread {
   QTcpServer*               _clkServer;
   QTcpSocket*               _clkSocket;
   QTcpSocket*               _outSocket;
+  int                       _outSocketOpenTrial;
+  QDateTime                 _outSocketOpenTime;
   QFile*                    _outFile;
   QFile*                    _logFile;
   QTextStream*              _outStream;

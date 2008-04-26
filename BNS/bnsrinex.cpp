@@ -34,12 +34,6 @@ bnsRinex::bnsRinex(const QString& prep, const QString& ext, const QString& path,
 bnsRinex::~bnsRinex() {
 }
 
-// Write Header
-////////////////////////////////////////////////////////////////////////////
-void bnsRinex::writeHeader(const QDateTime& datTim) {
-  _out << "THIS IS A DUMMY CLOCK RINEX HEADER" << endl;
-}
-
 // Write One Epoch
 ////////////////////////////////////////////////////////////////////////////
 t_irc bnsRinex::write(int GPSweek, double GPSweeks, const QString& prn, 
@@ -62,3 +56,22 @@ t_irc bnsRinex::write(int GPSweek, double GPSweeks, const QString& prn,
     return failure;
   }
 }
+
+// Write Header
+////////////////////////////////////////////////////////////////////////////
+void bnsRinex::writeHeader(const QDateTime& datTim) {
+
+  _out << "     3.00           C                                       "
+       << "RINEX VERSION / TYPE" << endl;
+
+  _out << "BNS                                     " 
+       << datTim.toString("yyyyMMdd hhmmss").leftJustified(20, ' ', true).toAscii().data()
+       << "PGM / RUN BY / DATE" << endl;
+
+  _out << "     1    AS                                                "
+       << "# / TYPES OF DATA" << endl;
+
+  _out << "                                                            "
+       << "END OF HEADER" << endl;
+}
+
