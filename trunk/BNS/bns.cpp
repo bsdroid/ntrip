@@ -14,6 +14,7 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <math.h>
 #include <iostream>
 #include <newmatio.h>
 
@@ -53,7 +54,8 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   // Socket and file for outputting the results
   // -------------------------------------------
-  _outSocket = 0;
+  _outSocket          = 0;
+  _outSocketOpenTrial = 0;
 
   QString outFileName = settings.value("outFile").toString();
   if (outFileName.isEmpty()) {
@@ -172,10 +174,22 @@ void t_bns::slotNewConnection() {
 // Start the Communication with NTRIP Caster
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::openCaster() {
-  
-  QSettings settings;
 
-  delete _outSocket;
+  delete _outSocket; _outSocket = 0;
+
+  double minDt = exp2(_outSocketOpenTrial);
+  if (++_outSocketOpenTrial > 8) {
+    _outSocketOpenTrial = 8;
+  }
+  if (_outSocketOpenTime.isValid() &&
+      _outSocketOpenTime.secsTo(QDateTime::currentDateTime()) < minDt) {
+    return;
+  }
+  else {
+    _outSocketOpenTime = QDateTime::currentDateTime();
+  }
+
+  QSettings settings;
   _outSocket = new QTcpSocket();
   _outSocket->connectToHost(settings.value("outHost").toString(),
                             settings.value("outPort").toInt());
@@ -208,6 +222,7 @@ void t_bns::openCaster() {
   }
   else {
     slotMessage("bns::openCaster socket OK");
+    _outSocketOpenTrial = 0;
   }
 }
 
