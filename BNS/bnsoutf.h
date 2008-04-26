@@ -18,6 +18,7 @@ class bnsoutf {
 
  protected:
   virtual void writeHeader(const QDateTime& datTim) = 0;
+  virtual void closeFile();
   std::ofstream _out;
 
  private:
@@ -25,7 +26,6 @@ class bnsoutf {
                        const QString& intStr, 
                        QDateTime* nextEpoch = 0);
   void resolveFileName(int GPSweek, const QDateTime& datTim);
-  void closeFile();
 
   int           _sampl;
   bool          _headerWritten;

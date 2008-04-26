@@ -17,6 +17,7 @@ class bnsSP3 : public bnsoutf {
 
  private:
   virtual void writeHeader(const QDateTime& datTim);
+  virtual void closeFile();
   int    _lastGPSweek;
   double _lastGPSweeks;
 };
