@@ -22,6 +22,9 @@
 #include "bnsutils.h" 
 #include "bnsrinex.h" 
 #include "bnssp3.h" 
+extern "C" {
+#include "RTCM/clock_orbit_rtcm.h"
+}
 
 using namespace std;
 
@@ -362,8 +365,29 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
     _outStream->flush();
   }
   if (_outSocket) {
-    _outSocket->write(line.toAscii());
-    _outSocket->flush();
+    struct ClockOrbit co;
+    memset(&co, 0, sizeof(co));
+    co.GPSEpochTime = (int)GPSweeks;
+    co.ClockDataSupplied = 1;
+    co.OrbitDataSupplied = 1;
+    co.SatRefPoint       = POINT_CENTER;
+    co.SatRefDatum       = DATUM_ITRF;
+    co.NumberOfGPSSat    = 1;
+
+    struct ClockOrbit::SatData* sd = co.Sat;
+    ///    sd->ID                    = prn;
+    sd->IOD                   = int(ep->IODE);
+    sd->Clock.DeltaA0         = dClk;
+    sd->Orbit.DeltaRadial     = rsw(1);
+    sd->Orbit.DeltaAlongTrack = rsw(2);
+    sd->Orbit.DeltaCrossTrack = rsw(3);
+
+    char obuffer[CLOCKORBIT_BUFFERSIZE];
+    int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+    if (len > 0) {
+      _outSocket->write(obuffer, len);
+      _outSocket->flush();
+    }
   }
   if (_rnx) {
     _rnx->write(GPSweek, GPSweeks, prn, xx);
