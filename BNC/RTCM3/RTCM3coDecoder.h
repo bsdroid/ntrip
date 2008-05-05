@@ -37,8 +37,9 @@ public:
   virtual ~RTCM3coDecoder();
   virtual t_irc Decode(char* buffer = 0, int bufLen = 0);
 private:
-  ClockOrbit _co;
-  Bias       _bias;
+  std::string _buffer;
+  ClockOrbit  _co;
+  Bias        _bias;
 } ;
 
 #endif
