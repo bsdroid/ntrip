@@ -38,6 +38,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <stdio.h>
+
 #include "RTCM3coDecoder.h"
 
 using namespace std;
@@ -55,5 +57,18 @@ RTCM3coDecoder::~RTCM3coDecoder() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
+
+  memset(&_co, 0, sizeof(_co));
+  int irc = GetClockOrbitBias(&_co, &_bias, buffer, bufLen);
+  
+  printf("EPOCH %d %d %d\n", irc, _co.GPSEpochTime, _co.NumberOfGPSSat);
+
+  for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
+    printf("%d G%d %d %f %f %f %f\n", _co.GPSEpochTime,
+           _co.Sat[ii].ID, _co.Sat[ii].IOD, _co.Sat[ii].Clock.DeltaA0,
+           _co.Sat[ii].Orbit.DeltaRadial, _co.Sat[ii].Orbit.DeltaAlongTrack,
+           _co.Sat[ii].Orbit.DeltaCrossTrack);
+  }
+
   return success;
 }

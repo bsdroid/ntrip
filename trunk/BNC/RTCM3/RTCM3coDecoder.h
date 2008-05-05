@@ -38,6 +38,7 @@ public:
   virtual t_irc Decode(char* buffer = 0, int bufLen = 0);
 private:
   ClockOrbit _co;
+  Bias       _bias;
 } ;
 
 #endif
