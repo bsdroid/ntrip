@@ -7,6 +7,9 @@
 #include <QThread>
 
 #include "bnseph.h"
+extern "C" {
+#include "RTCM/clock_orbit_rtcm.h"
+}
 
 class bnsRinex;
 class bnsSP3;
@@ -51,7 +54,7 @@ class t_bns : public QThread {
   void openCaster();
   void readEpoch();
   void processSatellite(int GPSweek, double GPSweeks, const QString& prn, 
-                        const ColumnVector& xx);
+                        const ColumnVector& xx, struct ClockOrbit::SatData* sd);
 
   QTcpServer*               _clkServer;
   QTcpSocket*               _clkSocket;

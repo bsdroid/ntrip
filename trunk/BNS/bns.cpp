@@ -22,9 +22,6 @@
 #include "bnsutils.h" 
 #include "bnsrinex.h" 
 #include "bnssp3.h" 
-extern "C" {
-#include "RTCM/clock_orbit_rtcm.h"
-}
 
 using namespace std;
 
@@ -314,25 +311,56 @@ void t_bns::readEpoch() {
 
   in >> hlp >> GPSweek >> GPSweeks >> numSat;
 
-  for (int ii = 1; ii <= numSat; ii++) {
-    line = _clkSocket->readLine();
+  if (numSat > 0) {
 
-    QTextStream in(line);
+    struct ClockOrbit co;
+    memset(&co, 0, sizeof(co));
+    co.GPSEpochTime = (int)GPSweeks;
+    co.ClockDataSupplied = 1;
+    co.OrbitDataSupplied = 1;
+    co.SatRefPoint       = POINT_CENTER;
+    co.SatRefDatum       = DATUM_ITRF;
 
-    QString      prn;
-    ColumnVector xx(4);
+    for (int ii = 1; ii <= numSat; ii++) {
+      line = _clkSocket->readLine();
+    
+      QTextStream in(line);
+    
+      QString      prn;
+      ColumnVector xx(4);
+    
+      in >> prn >> xx(1) >> xx(2) >> xx(3) >> xx(4); 
+      xx(4) *= 1e-6;
+    
+      struct ClockOrbit::SatData* sd = 0;
+      if      (prn[0] == 'G') {
+        sd = co.Sat + co.NumberOfGPSSat;
+        ++co.NumberOfGPSSat;
+      }
+      else if (prn[0] == 'R') {
+        sd = co.Sat + CLOCKORBIT_NUMGPS + co.NumberOfGLONASSSat;
+        ++co.NumberOfGLONASSSat;
+      }
 
-    in >> prn >> xx(1) >> xx(2) >> xx(3) >> xx(4); 
-    xx(4) *= 1e-6;
+      processSatellite(GPSweek, GPSweeks, prn, xx, sd);
+    }
 
-    processSatellite(GPSweek, GPSweeks, prn, xx);
+    if (_outSocket) {
+      char obuffer[CLOCKORBIT_BUFFERSIZE];
+      int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+      if (len > 0) {
+        _outSocket->write(obuffer, len);
+        _outSocket->flush();
+      }
+    }
   }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn, 
-                             const ColumnVector& xx) {
+                             const ColumnVector& xx, 
+                             struct ClockOrbit::SatData* sd) {
 
   // No broadcast ephemeris available
   // --------------------------------
@@ -355,39 +383,22 @@ void t_bns::processSatellite(int GPSweek, double GPSweeks, const QString& prn,
 
   XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw);
 
-  QString line;
-  line.sprintf("%d %.1f %s   %3d %3d   %8.3f   %8.3f %8.3f %8.3f\n", 
-               GPSweek, GPSweeks, ep->prn.toAscii().data(),
-               int(ep->IODC), int(ep->IODE), dClk, rsw(1), rsw(2), rsw(3));
- 
-  if (_outStream) {
-    *_outStream << line;
-    _outStream->flush();
-  }
-  if (_outSocket) {
-    struct ClockOrbit co;
-    memset(&co, 0, sizeof(co));
-    co.GPSEpochTime = (int)GPSweeks;
-    co.ClockDataSupplied = 1;
-    co.OrbitDataSupplied = 1;
-    co.SatRefPoint       = POINT_CENTER;
-    co.SatRefDatum       = DATUM_ITRF;
-    co.NumberOfGPSSat    = 1;
-
-    struct ClockOrbit::SatData* sd = co.Sat;
-    ///    sd->ID                    = prn;
+  if (sd) {
+    sd->ID                    = prn.mid(1).toInt();
     sd->IOD                   = int(ep->IODE);
     sd->Clock.DeltaA0         = dClk;
     sd->Orbit.DeltaRadial     = rsw(1);
     sd->Orbit.DeltaAlongTrack = rsw(2);
     sd->Orbit.DeltaCrossTrack = rsw(3);
+  }
 
-    char obuffer[CLOCKORBIT_BUFFERSIZE];
-    int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
-    if (len > 0) {
-      _outSocket->write(obuffer, len);
-      _outSocket->flush();
-    }
+  if (_outStream) {
+    QString line;
+    line.sprintf("%d %.1f %s   %3d %3d   %8.3f   %8.3f %8.3f %8.3f\n", 
+                 GPSweek, GPSweeks, ep->prn.toAscii().data(),
+                 int(ep->IODC), int(ep->IODE), dClk, rsw(1), rsw(2), rsw(3));
+     *_outStream << line;
+    _outStream->flush();
   }
   if (_rnx) {
     _rnx->write(GPSweek, GPSweeks, prn, xx);
