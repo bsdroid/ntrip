@@ -59,6 +59,7 @@ RTCM3coDecoder::~RTCM3coDecoder() {
 t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
 
   _buffer.append(buffer, bufLen);
+  printf("BUFFER: %d %d\n", bufLen, _buffer.size());
 
   while (true) {
     memset(&_co, 0, sizeof(_co));
@@ -77,7 +78,12 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
                _co.Sat[ii].Orbit.DeltaRadial, _co.Sat[ii].Orbit.DeltaAlongTrack,
                _co.Sat[ii].Orbit.DeltaCrossTrack);
       }
-      _buffer = _buffer.substr(1);
+      char obuffer[CLOCKORBIT_BUFFERSIZE];
+      int len = MakeClockOrbit(&_co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+      printf("LEN: %d\n", len);
+      if (len > 0) {
+        _buffer = _buffer.substr(len);
+      }
       return success;
     }
     else {
