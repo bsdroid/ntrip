@@ -84,6 +84,9 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
       if (len > 0) {
         _buffer = _buffer.substr(len);
       }
+      else {
+        _buffer = _buffer.substr(1);
+      }
       return success;
     }
     else {
