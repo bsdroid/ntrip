@@ -2,7 +2,7 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id$
+        Version:        $Id: clock_orbit_rtcm.c,v 1.1 2008/05/04 17:38:12 mervart Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -84,6 +84,7 @@ modified variables are:
 
 #define SCALEADDBITS(a, b, c) ADDBITS(a, (int64_t)(b*c))
 
+#if 0
 #define DEBUGSCALEADDBITS(n, a, b, c) \
   { \
     int64_t x = b*c, z; \
@@ -94,6 +95,9 @@ modified variables are:
     c, b, x, y, z, x != z ? "OVERFLOW" : "OK"); \
   } \
   SCALEADDBITS(a,b,c)
+#else
+#define DEBUGSCALEADDBITS(n, a, b, c) SCALEADDBITS(a,b,c)
+#endif
 
 /* standard values */
 #define T_MESSAGE_NUMBER(a)              ADDBITS(12, a) /* DF002 */
