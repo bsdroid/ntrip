@@ -311,8 +311,9 @@ void t_bns::readEpoch() {
 
   in >> hlp >> GPSweek >> GPSweeks >> numSat;
 
-  for (int oldEph = 0; oldEph <= 1; oldEph++) {
-    if (numSat > 0) {
+  if (numSat > 0) {
+
+    for (int oldEph = 0; oldEph <= 1; oldEph++) {
     
       struct ClockOrbit co;
       memset(&co, 0, sizeof(co));

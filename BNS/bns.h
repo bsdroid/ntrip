@@ -19,7 +19,6 @@ class t_ephPair {
   t_ephPair() {
     eph    = 0;
     oldEph = 0;
-    xx.ReSize(4);
   }
 
   ~t_ephPair() {
