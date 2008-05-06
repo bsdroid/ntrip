@@ -30,15 +30,16 @@
 #include "RTCM/GPSDecoder.h"
 
 class bncZeroDecoder: public GPSDecoder {
-  public:
-    bncZeroDecoder(const QString& fileName);
-    ~bncZeroDecoder();
-    virtual t_irc Decode(char* buffer, int bufLen);
-  private:
-    void reopen();
-    QString        _fileName;
-    std::ofstream* _out;
-    QDate          _fileDate;
+ public:
+  bncZeroDecoder(const QString& fileName);
+  ~bncZeroDecoder();
+  virtual t_irc Decode(char* buffer, int bufLen);
+ protected:
+  void reopen();
+  QString        _fileName;
+  std::ofstream* _out;
+ private:
+  QDate          _fileDate;
 };
 
 #endif  // include blocker
