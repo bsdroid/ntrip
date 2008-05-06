@@ -64,16 +64,17 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
   _buffer.append(buffer, bufLen);
 
   while (true) {
+    int bytesused = 0;
     memset(&_co, 0, sizeof(_co));
-    int irc = GetClockOrbitBias(&_co, &_bias, 
-                                _buffer.data(), _buffer.size());
-    if      (irc == -2) {  // not enough data
+    GCOB_RETURN irc = GetClockOrbitBias(&_co, &_bias, _buffer.data(), 
+                                        _buffer.size(), &bytesused);
+
+    if      (irc == GCOBR_SHORTBUFFER ||
+             irc == GCOBR_MESSAGEEXCEEDSBUFFER) {  // not enough data
       return failure;
     }
-    else if (irc == -3) {  // not synchronized
-      _buffer = _buffer.substr(1);
-    }
-    else if (irc == 0) {
+    
+    else if (irc == GCOBR_OK && bytesused > 0) {
       for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
         QString line;
         line.sprintf("%d G%d %d %f %f %f %f\n", _co.GPSEpochTime,
@@ -83,18 +84,12 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
         *_out << line.toAscii().data();
         _out->flush();
       }
-      char obuffer[CLOCKORBIT_BUFFERSIZE];
-      int len = MakeClockOrbit(&_co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
-      if (len > 0) {
-        _buffer = _buffer.substr(len);
-      }
-      else {
-        _buffer = _buffer.substr(1);
-      }
+      _buffer = _buffer.substr(bytesused);
       return success;
     }
+
     else {
-      return failure;
+      _buffer = _buffer.substr(1);
     }
   }
 }
