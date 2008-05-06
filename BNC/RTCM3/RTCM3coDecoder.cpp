@@ -80,8 +80,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
                _co.Sat[ii].ID, _co.Sat[ii].IOD, _co.Sat[ii].Clock.DeltaA0,
                _co.Sat[ii].Orbit.DeltaRadial, _co.Sat[ii].Orbit.DeltaAlongTrack,
                _co.Sat[ii].Orbit.DeltaCrossTrack);
-        _out->write(line.toAscii().data(), line.length());
-        _out->flush();
+        *_out << line.toAscii().data();
       }
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       int len = MakeClockOrbit(&_co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
