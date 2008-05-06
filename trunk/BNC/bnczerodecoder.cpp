@@ -58,7 +58,6 @@ bncZeroDecoder::bncZeroDecoder(const QString& fileName) {
   _fileName = path + fileName;
 
   _out = 0;
-  reopen();
 }
 
 // Destructor
