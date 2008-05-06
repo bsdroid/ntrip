@@ -34,22 +34,25 @@ extern "C" {
 
 class ephSender : public QObject {
 Q_OBJECT
-public:
+ public:
   ephSender();
   friend class RTCM3Decoder;
-signals:
+ signals:
   void newGPSEph(gpsephemeris* gpseph);
   void newGlonassEph(glonassephemeris* glonasseph);
 } ;
 
+class RTCM3coDecoder;
+
 class RTCM3Decoder : public GPSDecoder {
-public:
-  RTCM3Decoder();
+ public:
+  RTCM3Decoder(const QString& fileName);
   virtual ~RTCM3Decoder();
   virtual t_irc Decode(char* buffer = 0, int bufLen = 0);
-private:
+ private:
   struct RTCM3ParserData _Parser;
-  ephSender _ephSender;
+  ephSender              _ephSender;
+  RTCM3coDecoder*        _coDecoder; 
 } ;
 
 #endif

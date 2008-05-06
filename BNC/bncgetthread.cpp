@@ -54,7 +54,6 @@
 
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
-#include "RTCM3/RTCM3coDecoder.h"
 #include "RTIGS/RTIGSDecoder.h"
 
 using namespace std;
@@ -368,15 +367,11 @@ t_irc bncGetThread::initRun() {
     }
     else if (_format.indexOf("RTCM_3") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTCM 3.x format"));
-      _decoder = new RTCM3Decoder();
+      _decoder = new RTCM3Decoder(_staID);
     }
     else if (_format.indexOf("RTIGS") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTIGS format"));
       _decoder = new RTIGSDecoder();
-    }
-    else if (_format.indexOf("SP3") != -1) {
-      emit(newMessage("Get Corrections: " + _staID + " in RTCM 3.x format"));
-      _decoder = new RTCM3coDecoder(_staID);
     }
     else if (_format.indexOf("ZERO") != -1) {
       emit(newMessage("Get Data: " + _staID + " in original format"));

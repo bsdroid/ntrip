@@ -43,6 +43,7 @@
 #include <string.h>
 
 #include "RTCM3Decoder.h"
+#include "RTCM3coDecoder.h"
 #include "bncconst.h"
 #include "bncapp.h"
 
@@ -68,7 +69,7 @@ void RTCM3Error(const char*, ...) {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-RTCM3Decoder::RTCM3Decoder() : GPSDecoder() {
+RTCM3Decoder::RTCM3Decoder(const QString& fileName) : GPSDecoder() {
 
   const int LEAPSECONDS = 14; /* only needed for approx. time */
 
@@ -81,17 +82,28 @@ RTCM3Decoder::RTCM3Decoder() : GPSDecoder() {
   memset(&_Parser, 0, sizeof(_Parser));
   _Parser.GPSWeek = tim/(7*24*60*60);
   _Parser.GPSTOW  = tim%(7*24*60*60);
+
+  // Sub-Decoder for Clock and Orbit Corrections
+  // -------------------------------------------
+  _coDecoder = new RTCM3coDecoder(fileName);
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 RTCM3Decoder::~RTCM3Decoder() {
+  delete _coDecoder;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
 
+  // Try to decode Clock and Orbit Corrections
+  // -----------------------------------------
+  _coDecoder->Decode(buffer, bufLen);
+
+  // Remaining part decodes the Observations
+  // ---------------------------------------
   bool decoded = false;
 
   for (int ii = 0; ii < bufLen; ii++) {
