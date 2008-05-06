@@ -25,15 +25,15 @@
 #ifndef RTCM3CODECODER_H
 #define RTCM3CODECODER_H
 
-#include "../RTCM/GPSDecoder.h"
+#include "bnczerodecoder.h"
 
 extern "C" {
 #include "clock_orbit_rtcm.h"
 }
 
-class RTCM3coDecoder : public GPSDecoder {
+class RTCM3coDecoder : public bncZeroDecoder {
 public:
-  RTCM3coDecoder();
+  RTCM3coDecoder(const QString& fileName);
   virtual ~RTCM3coDecoder();
   virtual t_irc Decode(char* buffer = 0, int bufLen = 0);
 private:

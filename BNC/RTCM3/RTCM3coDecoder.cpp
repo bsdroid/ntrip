@@ -46,7 +46,8 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-RTCM3coDecoder::RTCM3coDecoder() : GPSDecoder() {
+RTCM3coDecoder::RTCM3coDecoder(const QString& fileName) 
+  : bncZeroDecoder(fileName) {
 }
 
 // Destructor
@@ -58,8 +59,9 @@ RTCM3coDecoder::~RTCM3coDecoder() {
 ////////////////////////////////////////////////////////////////////////////
 t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
 
+  reopen();
+  
   _buffer.append(buffer, bufLen);
-  printf("BUFFER: %d %d\n", bufLen, _buffer.size());
 
   while (true) {
     memset(&_co, 0, sizeof(_co));
@@ -73,14 +75,16 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
     }
     else if (irc == 0) {
       for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
-        printf("%d G%d %d %f %f %f %f\n", _co.GPSEpochTime,
+        QString line;
+        line.sprintf("%d G%d %d %f %f %f %f\n", _co.GPSEpochTime,
                _co.Sat[ii].ID, _co.Sat[ii].IOD, _co.Sat[ii].Clock.DeltaA0,
                _co.Sat[ii].Orbit.DeltaRadial, _co.Sat[ii].Orbit.DeltaAlongTrack,
                _co.Sat[ii].Orbit.DeltaCrossTrack);
+        _out->write(line.toAscii().data(), line.length());
+        _out->flush();
       }
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       int len = MakeClockOrbit(&_co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
-      printf("LEN: %d\n", len);
       if (len > 0) {
         _buffer = _buffer.substr(len);
       }

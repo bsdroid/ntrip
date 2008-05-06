@@ -376,7 +376,7 @@ t_irc bncGetThread::initRun() {
     }
     else if (_format.indexOf("SP3") != -1) {
       emit(newMessage("Get Corrections: " + _staID + " in RTCM 3.x format"));
-      _decoder = new RTCM3coDecoder();
+      _decoder = new RTCM3coDecoder(_staID);
     }
     else if (_format.indexOf("ZERO") != -1) {
       emit(newMessage("Get Data: " + _staID + " in original format"));
