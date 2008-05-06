@@ -101,16 +101,31 @@ size_t MakeClockOrbit(const struct ClockOrbit *co, enum ClockOrbitType type,
 size_t MakeBias(const struct Bias *b, enum BiasType type,
        int moremessagesfollow, char *buffer, size_t size);
 
-/* returns 0 if all ok and < 0 in case of an error, a value of 1 means
-   multiple data flags was found and there probably is at least one more block
-   for same epoch */
-/* buffer should point to a RTCM3 block. The functions does not check if the
-   block is valid, but assumes it has already been checked.
-   As a result either co or b are filled with data.
-   NOTE: data is not overwritten, but appended. You get an error if the dataset
-   do not match (i.e. mismatch in time).
-*/
-int GetClockOrbitBias(struct ClockOrbit *co, struct Bias *b,
-       const char *buffer, size_t size);
+enum GCOB_RETURN {
+  /* all well */
+  GCOBR_MESSAGEFOLLOWS = 1,
+  GCOBR_OK = 0,
+  /* unknown data, a warning */
+  GCOBR_UNKNOWNTYPE = -1,
+  GCOBR_UNKNOWNDATA = -2,
+  GCOBR_CRCMISMATCH = -3,
+  /* failed to do the work */
+  GCOBR_NOCLOCKORBITPARAMETER = -10,
+  GCOBR_NOBIASPARAMETER = -11,
+  /* data mismatch - data in storage does not match new data */
+  GCOBR_TIMEMISMATCH = -20,
+  GCOBR_DATAMISMATCH = -21,
+  /* not enough data - can decode the block completely */
+  GCOBR_SHORTBUFFER = -30,
+  GCOBR_MISSINGBITS = -31,
+  GCOBR_MESSAGEEXCEEDSBUFFER = -32
+};
+
+/* NOTE: When an error message has been emitted, the output structures may have been modified. Make a copy of the previous variant before calling the
+function to have a clean state. */
+
+/* buffer should point to a RTCM3 block */
+enum GCOB_RETURN GetClockOrbitBias(struct ClockOrbit *co, struct Bias *b,
+       const char *buffer, size_t size, int *bytesused);
 
 #endif /* RTCM3_CLOCK_ORBIT_RTCM_H */
