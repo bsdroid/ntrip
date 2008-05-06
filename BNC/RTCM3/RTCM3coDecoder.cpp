@@ -59,8 +59,6 @@ RTCM3coDecoder::~RTCM3coDecoder() {
 ////////////////////////////////////////////////////////////////////////////
 t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
 
-  reopen();
-  
   _buffer.append(buffer, bufLen);
 
   while (true) {
@@ -75,6 +73,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
     }
     
     else if (irc == GCOBR_OK && bytesused > 0) {
+      reopen();
       for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
         QString line;
         line.sprintf("%d G%d %d %f %f %f %f\n", _co.GPSEpochTime,
