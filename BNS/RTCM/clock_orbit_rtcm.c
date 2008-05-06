@@ -2,7 +2,7 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.1 2008/05/04 17:38:12 mervart Exp $
+        Version:        $Id$
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -396,7 +396,7 @@ int moremessagesfollow, char *buffer, size_t size)
 { \
   while((a) > numbits) \
   { \
-    if(!size--) return -2; \
+    if(!size--) return GCOBR_SHORTBUFFER; \
     bitbuffer = (bitbuffer<<8)|((unsigned char)*(buffer++)); \
     numbits += 8; \
   } \
@@ -423,19 +423,26 @@ int moremessagesfollow, char *buffer, size_t size)
 #define SKIPBITS(b) { LOADBITS(b) numbits -= (b); }
 
 /* standard values */
-#define G_HEADER                         SKIPBITS(8+6+10)
+#define G_HEADER(a)                      GETBITS(a,8)
+#define G_RESERVEDH(a)                   GETBITS(a,6)
+#define G_SIZE(a)                        GETBITS(a, 10)
 #define G_MESSAGE_NUMBER(a)              GETBITS(a, 12) /* DF002 */
 #define G_RESERVED6                      SKIPBITS(6)    /* DF001 */
-#define G_GPS_SATELLITE_ID(a)            GETBITS(a, 6)  /* DF068 */
+#define G_GPS_SATELLITE_ID(a)            {int temp; GETBITS(temp, 6) \
+ if(a && a != temp) return GCOBR_DATAMISMATCH; a = temp;}  /* DF068 */
 #define G_GPS_IODE(a)                    GETBITS(a, 8)  /* DF071 */
 #define G_GLONASS_IOD(a)                 GETBITS(a, 8)  /* DF237 */
 
 /* defined values */
 #define G_MULTIPLE_MESSAGE_INDICATOR(a)  GETBITS(a, 1)
-#define G_GPS_EPOCH_TIME(a)              GETBITS(a, 20)
-#define G_GLONASS_EPOCH_TIME(a)          GETBITS(a, 17)
-#define G_GLONASS_SATELLITE_ID(a)        GETBITS(a, 6)
-#define G_NO_OF_SATELLITES(a)            GETBITS(a, 5)
+#define G_GPS_EPOCH_TIME(a, b)           {int temp; GETBITS(temp, 20) \
+ if(b && a != temp) return GCOBR_TIMEMISMATCH; a = temp;}
+#define G_GLONASS_EPOCH_TIME(a, b)       {int temp; GETBITS(temp, 17) \
+ if(b && a != temp) return GCOBR_TIMEMISMATCH; a = temp;}
+#define G_GLONASS_SATELLITE_ID(a)        {int temp; GETBITS(temp, 6) \
+ if(a && a != temp) return GCOBR_DATAMISMATCH; a = temp;}
+#define G_NO_OF_SATELLITES(a)            {int temp; GETBITS(temp, 5) \
+ if(a && a != temp) return GCOBR_DATAMISMATCH; a = temp;}
 #define G_SATELLITE_REFERENCE_POINT(a)   GETBITS(a, 1)
 #define G_SATELLITE_REFERENCE_DATUM(a)   GETBITS(a, 1)
 #define G_NO_OF_CODE_BIASES(a)           GETBITS(a, 5)
@@ -457,26 +464,41 @@ int moremessagesfollow, char *buffer, size_t size)
 #define G_DELTA_A2(a)                    GETFLOATSIGN(a, 20, 1/5000000.0)
 #define G_CODE_BIAS(a)                   GETFLOATSIGN(a, 20, 1/100.0)
 
-/* FIXME: Joining data does no care for satellite numbers, dates and so on.
-It will only work with data, which is stored and the same order and number as
-the previos blocks! */
-
-int GetClockOrbitBias(struct ClockOrbit *co, struct Bias *b,
-const char *buffer, size_t size)
+enum GCOB_RETURN GetClockOrbitBias(struct ClockOrbit *co, struct Bias *b,
+const char *buffer, size_t size, int *bytesused)
 {
-  int type, mmi=0, i, j;
+  int type, mmi=0, i, j, h, rs, sizeofrtcmblock;
+  const char *blockstart = buffer;
   DECODESTART
 
-  G_HEADER
+  if(size < 7)
+    return GCOBR_SHORTBUFFER;
+
+  G_HEADER(h)
+  G_RESERVEDH(rs)
+  G_SIZE(sizeofrtcmblock);
+
+  if((unsigned char)h != 0xD3 || rs)
+    return GCOBR_UNKNOWNDATA;
+  if(size < sizeofrtcmblock + 3) /* 3 header bytes already removed */
+    return GCOBR_MESSAGEEXCEEDSBUFFER;
+  if(CRC24(sizeofrtcmblock+3, (const unsigned char *) blockstart) !=
+  ((((unsigned char)buffer[sizeofrtcmblock])<<16)|
+   (((unsigned char)buffer[sizeofrtcmblock+1])<<8)|
+   (((unsigned char)buffer[sizeofrtcmblock+2]))))
+    return GCOBR_CRCMISMATCH;
+
   G_MESSAGE_NUMBER(type)
   switch(type)
   {
   case COTYPE_GPSORBIT:
-    if(!co) return -5;
-    G_GPS_EPOCH_TIME(co->GPSEpochTime)
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
+    if(co->OrbitDataSupplied)
+      return GCOBR_DATAMISMATCH;
     co->OrbitDataSupplied = 1;
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
@@ -496,11 +518,13 @@ const char *buffer, size_t size)
     }
     break;
   case COTYPE_GPSCLOCK:
-    if(!co) return -5;
-    G_GPS_EPOCH_TIME(co->GPSEpochTime)
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
+    if(co->ClockDataSupplied)
+      return GCOBR_DATAMISMATCH;
     co->ClockDataSupplied = 1;
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
@@ -513,10 +537,12 @@ const char *buffer, size_t size)
     break;
   case COTYPE_GPSCOMBINED:
     if(!co) return -5;
-    G_GPS_EPOCH_TIME(co->GPSEpochTime)
+    G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
+    if(co->ClockDataSupplied || co->OrbitDataSupplied)
+      return GCOBR_DATAMISMATCH;
     co->OrbitDataSupplied = 1;
     co->ClockDataSupplied = 1;
     for(i = 0; i < co->NumberOfGPSSat; ++i)
@@ -540,11 +566,13 @@ const char *buffer, size_t size)
     }
     break;
   case COTYPE_GLONASSORBIT:
-    if(!co) return -5;
-    G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime)
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
+    if(co->OrbitDataSupplied)
+      return GCOBR_DATAMISMATCH;
     co->OrbitDataSupplied = 1;
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
@@ -565,11 +593,13 @@ const char *buffer, size_t size)
     }
     break;
   case COTYPE_GLONASSCLOCK:
-    if(!co) return -5;
-    G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime)
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
+    if(co->ClockDataSupplied)
+      return GCOBR_DATAMISMATCH;
     co->ClockDataSupplied = 1;
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
@@ -582,11 +612,13 @@ const char *buffer, size_t size)
     }
     break;
   case COTYPE_GLONASSCOMBINED:
-    if(!co) return -5;
-    G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime)
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
+    if(co->ClockDataSupplied || co->OrbitDataSupplied)
+      return GCOBR_DATAMISMATCH;
     co->OrbitDataSupplied = 1;
     co->ClockDataSupplied = 1;
     for(i = CLOCKORBIT_NUMGPS;
@@ -611,8 +643,8 @@ const char *buffer, size_t size)
     }
     break;
   case BTYPE_GPS:
-    if(!b) return -4;
-    G_GPS_EPOCH_TIME(b->GPSEpochTime)
+    if(!b) return GCOBR_NOBIASPARAMETER;
+    G_GPS_EPOCH_TIME(b->GPSEpochTime, co->NumberOfGPSSat)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(b->NumberOfGPSSat)
@@ -628,8 +660,8 @@ const char *buffer, size_t size)
     }
     break;
   case BTYPE_GLONASS:
-    if(!b) return -4;
-    G_GPS_EPOCH_TIME(b->GLONASSEpochTime)
+    if(!b) return GCOBR_NOBIASPARAMETER;
+    G_GPS_EPOCH_TIME(b->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(b->NumberOfGLONASSSat)
@@ -646,8 +678,10 @@ const char *buffer, size_t size)
     }
     break;
   default:
-    return -3;
+    return GCOBR_UNKNOWNTYPE;
   }
-  return mmi ? 1 : 0;
+  if(bytesused)
+    *bytesused = sizeofrtcmblock+6;
+  return mmi ? GCOBR_MESSAGEFOLLOWS : GCOBR_OK;
 }
 #endif /* NODECODE */
