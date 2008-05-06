@@ -323,24 +323,28 @@ void t_bns::readEpoch() {
       co.SatRefDatum       = DATUM_ITRF;
     
       for (int ii = 1; ii <= numSat; ii++) {
-        line = _clkSocket->readLine();
-      
-        QTextStream in(line);
-      
+
         QString      prn;
         ColumnVector xx(4);
-      
-        in >> prn >> xx(1) >> xx(2) >> xx(3) >> xx(4); 
-        xx(4) *= 1e-6;
+        gpsEph*      ep = 0;
 
-        gpsEph* ep   = 0;
-        if ( _ephList.contains(prn) ) {
-          t_ephPair* pair = _ephList[prn];
-          if (oldEph == 1) {
-            ep = pair->oldEph;
-          }
-          else {
+        if (oldEph == 0) {
+          line = _clkSocket->readLine();
+          QTextStream in(line);
+          in >> prn;
+          if ( _ephList.contains(prn) ) {
+            in >> xx(1) >> xx(2) >> xx(3) >> xx(4); xx(4) *= 1e-6;
+            t_ephPair* pair = _ephList[prn];
+            pair->xx = xx;
             ep = pair->eph;
+          }
+        }
+        else {
+          if ( _ephList.contains(prn) ) {
+            t_ephPair* pair = _ephList[prn];
+            prn = pair->eph->prn;
+            xx  = pair->xx;
+            ep  = pair->oldEph;
           }
         }
 
