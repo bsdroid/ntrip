@@ -296,7 +296,8 @@ void t_ephGlo::read(const QStringList& lines) {
 
   // Initialize status vector
   // ------------------------
-  _tt = _GPSweeks;
+  static const double gps_utc = 14.0;
+  _tt = _GPSweeks + gps_utc;
 
   _xv(1) = _x_pos * 1.e3; 
   _xv(2) = _y_pos * 1.e3; 
