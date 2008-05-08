@@ -389,6 +389,6 @@ void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
   if (GPSweek != _GPSweek) {  
     dtClk += (GPSweek - _GPSweek) * secPerWeek;
   }
-  xc(4) = _tau + _gamma * dtClk / 86400.0;
+  xc(4) = -_tau + _gamma * dtClk / 86400.0;
 }
 
