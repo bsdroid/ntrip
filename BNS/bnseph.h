@@ -34,25 +34,26 @@ class t_ephGlo : public t_eph {
   virtual void read(const QStringList& lines);
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const;
-  virtual int  IOD() const;
+  virtual int  IOD() const {return int(_GPSweeks);}
  private:
   static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv);
-  ColumnVector _xv;
+  double       _tt;  // time in seconds of GPSweek
+  ColumnVector _xv;  // status vector (position, velocity) at time _tt
 
-  double _E;                  /* [days]   */
-  double _tau;                /* [s]      */
-  double _gamma;              /*          */
-  double _x_pos;              /* [km]     */
-  double _x_velocity;         /* [km/s]   */
-  double _x_acceleration;     /* [km/s^2] */
-  double _y_pos;              /* [km]     */
-  double _y_velocity;         /* [km/s]   */
-  double _y_acceleration;     /* [km/s^2] */
-  double _z_pos;              /* [km]     */
-  double _z_velocity;         /* [km/s]   */
-  double _z_acceleration;     /* [km/s^2] */
-  double _health;             /* 0 = O.K. */
-  double _frequency_number;   /* ICD-GLONASS data position */
+  double _E;                  // [days]   
+  double _tau;                // [s]      
+  double _gamma;              //          
+  double _x_pos;              // [km]     
+  double _x_velocity;         // [km/s]   
+  double _x_acceleration;     // [km/s^2] 
+  double _y_pos;              // [km]     
+  double _y_velocity;         // [km/s]   
+  double _y_acceleration;     // [km/s^2] 
+  double _z_pos;              // [km]     
+  double _z_velocity;         // [km/s]   
+  double _z_acceleration;     // [km/s^2] 
+  double _health;             // 0 = O.K. 
+  double _frequency_number;   // ICD-GLONASS data position 
 };
 
 
