@@ -347,5 +347,33 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv) {
 void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const {
 
+  const static double secPerWeek = 7 * 86400.0;
+
+  double dt = GPSweeks - _tt;
+  if (GPSweek != _GPSweek) {  
+    dt += (GPSweek - _GPSweek) * secPerWeek;
+  }
+
+  const static double maxStep = 10.0;
+
+  double tt = 0.0;
+  while (tt < dt) {
+    double step = maxStep;
+    if (tt + step > dt) {
+      step = dt - tt;
+    }
+    _xv = rungeKutta4(tt, _xv, step, glo_deriv);
+    tt += step;
+  }
+
+  xc(1) = _xv(1);
+  xc(2) = _xv(2);
+  xc(3) = _xv(3);
+
+  xc(4) = 0.0;
+  
+  vv(1) = _xv(4);
+  vv(2) = _xv(5);
+  vv(3) = _xv(6);
 }
 
