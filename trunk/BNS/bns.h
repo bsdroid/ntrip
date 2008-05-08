@@ -27,8 +27,8 @@ class t_ephPair {
   }
 
   ColumnVector xx;
-  gpsEph* eph;
-  gpsEph* oldEph;
+  t_eph* eph;
+  t_eph* oldEph;
 };
 
 class t_bns : public QThread {
@@ -44,7 +44,7 @@ class t_bns : public QThread {
   void moveSocket(QThread* tt);
  
  private slots:
-  void slotNewEph(gpsEph* ep);
+  void slotNewEph(t_eph* ep);
   void slotNewConnection();
   void slotMessage(const QByteArray msg);
   void slotError(const QByteArray msg);
@@ -54,7 +54,7 @@ class t_bns : public QThread {
   void deleteBnsEph();
   void openCaster();
   void readEpoch();
-  void processSatellite(gpsEph* ep, int GPSweek, double GPSweeks, 
+  void processSatellite(t_eph* ep, int GPSweek, double GPSweeks, 
                         const QString& prn, const ColumnVector& xx, 
                         struct ClockOrbit::SatData* sd);
 
