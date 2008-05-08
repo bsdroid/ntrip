@@ -37,8 +37,8 @@ class t_ephGlo : public t_eph {
   virtual int  IOD() const {return int(_GPSweeks);}
  private:
   static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv);
-  double       _tt;  // time in seconds of GPSweek
-  ColumnVector _xv;  // status vector (position, velocity) at time _tt
+  mutable double       _tt;  // time in seconds of GPSweek
+  mutable ColumnVector _xv;  // status vector (position, velocity) at time _tt
 
   double _E;                  // [days]   
   double _tau;                // [s]      
