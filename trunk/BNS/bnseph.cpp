@@ -262,7 +262,7 @@ void t_ephGPS::position(int GPSweek, double GPSweeks, ColumnVector& xc,
   vv(3)  = sini    *doty  + yp*cosi      *doti;
 }
 
-// 
+// Read Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGlo::read(const QStringList& lines) {
 
@@ -342,7 +342,7 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv) {
   return va;
 }
 
-// 
+// Compute Glonass Satellite Position
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const {
