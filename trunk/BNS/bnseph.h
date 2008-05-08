@@ -11,14 +11,18 @@
 class t_eph {
  public:
   virtual ~t_eph() {};
+
+  bool    isNewerThan(const t_eph* eph) const;
+  QString prn() const {return _prn;}
+
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const = 0;
   virtual void read(const QStringList& lines) = 0;
-  virtual bool isNewerThan(const t_eph* ep) const = 0;
   virtual int  IOD() const = 0;
-  QString prn() const {return _prn;}
  protected:  
   QString _prn;
+  int     _GPSweek;
+  double  _GPSweeks;
 };
 
 class t_ephGlo : public t_eph {
@@ -30,14 +34,11 @@ class t_ephGlo : public t_eph {
   virtual void read(const QStringList& lines);
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const;
-  virtual bool isNewerThan(const t_eph* ep) const;
   virtual int  IOD() const;
  private:
   static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv);
   ColumnVector _xv;
 
-  double _GPSweek;
-  double _GPSTOW;
   double _E;                  /* [days]   */
   double _tau;                /* [s]      */
   double _gamma;              /*          */
@@ -50,8 +51,8 @@ class t_ephGlo : public t_eph {
   double _z_pos;              /* [km]     */
   double _z_velocity;         /* [km/s]   */
   double _z_acceleration;     /* [km/s^2] */
-  int    _flags;              /* GLOEPHF_xxx */
-  int    _frequency_number;   /* ICD-GLONASS data position */
+  double _health;             /* 0 = O.K. */
+  double _frequency_number;   /* ICD-GLONASS data position */
 };
 
 
@@ -66,7 +67,6 @@ class t_ephGPS : public t_eph {
   virtual int  IOD() const {return int(_IODE);}
 
  private:
-  double  _GPSweek;          
   double  _TOW;              //  [s]    
   double  _TOC;              //  [s]    
   double  _TOE;              //  [s]    

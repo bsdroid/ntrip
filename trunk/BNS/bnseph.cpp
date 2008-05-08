@@ -116,6 +116,18 @@ void t_bnseph::readEph() {
   emit(newEph(eph));
 }
 
+// Compare Time
+////////////////////////////////////////////////////////////////////////////
+bool t_eph::isNewerThan(const t_eph* eph) const {
+  if (_GPSweek >  eph->_GPSweek ||
+      (_GPSweek == eph->_GPSweek && _GPSweeks > eph->_GPSweeks)) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 // Read GPS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGPS::read(const QStringList& lines) {
@@ -132,9 +144,9 @@ void t_ephGPS::read(const QStringList& lines) {
       
       QDateTime dateTime(QDate(int(year), int(month), int(day)), 
                          QTime(int(hour), int(minute), int(second)), Qt::UTC);
-      int week;
-      GPSweekFromDateAndTime(dateTime, week, _TOC); 
-      _GPSweek = week;
+
+      GPSweekFromDateAndTime(dateTime, _GPSweek, _GPSweeks); 
+      _TOC = _GPSweeks;
     }
     else if (ii == 2) {
       in >> _IODE >> _Crs >> _Delta_n >> _M0;
@@ -250,24 +262,6 @@ void t_ephGPS::position(int GPSweek, double GPSweeks, ColumnVector& xc,
   vv(3)  = sini    *doty  + yp*cosi      *doti;
 }
 
-// Compare Time
-////////////////////////////////////////////////////////////////////////////
-bool t_ephGPS::isNewerThan(const t_eph* ep) const {
-
-  const t_ephGPS* eph = dynamic_cast<const t_ephGPS*>(ep);
-  if (!eph) {
-    return false;
-  } 
-
-  if (_GPSweek >  eph->_GPSweek ||
-      (_GPSweek == eph->_GPSweek && _TOC > eph->_TOC)) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGlo::read(const QStringList& lines) {
@@ -279,17 +273,18 @@ void t_ephGlo::read(const QStringList& lines) {
       double  year, month, day, hour, minute, second;
       in >> _prn >> year >> month >> day >> hour >> minute >> second
          >> _tau >> _gamma;
+
+      _tau = -_tau;
       
       if (year < 100) year += 2000;
       
       QDateTime dateTime(QDate(int(year), int(month), int(day)), 
                          QTime(int(hour), int(minute), int(second)), Qt::UTC);
-      int week;
-      GPSweekFromDateAndTime(dateTime, week, _GPSTOW); 
-      _GPSweek = week;
+
+      GPSweekFromDateAndTime(dateTime, _GPSweek, _GPSweeks); 
     }
     else if (ii == 2) {
-      in >>_x_pos >> _x_velocity >> _x_acceleration >> _flags;
+      in >>_x_pos >> _x_velocity >> _x_acceleration >> _health;
     }
     else if (ii == 3) {
       in >>_y_pos >> _y_velocity >> _y_acceleration >> _frequency_number;
@@ -298,12 +293,6 @@ void t_ephGlo::read(const QStringList& lines) {
       in >>_z_pos >> _z_velocity >> _z_acceleration >> _E;
     }
   }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-bool t_ephGlo::isNewerThan(const t_eph* ep) const {
-  return false;
 }
 
 // 
