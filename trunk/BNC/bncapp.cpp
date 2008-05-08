@@ -484,21 +484,21 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
   updatetime(&ww, &tow, ep->tb*1000, 1);
   converttime(&cti, ww, tow);
 
-  int ii = ep->tk-3*60*60; 
-  if (ii < 0) {
-    ii += 86400;
+  int tk = ep->tk-3*60*60; 
+  if (tk < 0) {
+    tk += 86400;
   }
 
   if      (_rinexVers == 3) {
     line.sprintf("R%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
                  ep->almanac_number, cti.year, cti.month, cti.day, cti.hour, 
-                 cti.minute, cti.second, -ep->tau, ep->gamma, (double) ii);
+                 cti.minute, cti.second, -ep->tau, ep->gamma, (double) tk);
   }
   else if (_rinexVers == 2) {
     line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e\n",
                  ep->almanac_number, cti.year%100, cti.month, cti.day, 
                  cti.hour, cti.minute, (double) cti.second, -ep->tau, 
-                 ep->gamma, (double) ii);
+                 ep->gamma, (double) tk);
   }
   allLines += line;
   
