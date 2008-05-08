@@ -366,14 +366,22 @@ void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
     tt += step;
   }
 
+  // Position and Velocity
+  // ---------------------
   xc(1) = _xv(1);
   xc(2) = _xv(2);
   xc(3) = _xv(3);
 
-  xc(4) = 0.0;
-  
   vv(1) = _xv(4);
   vv(2) = _xv(5);
   vv(3) = _xv(6);
+
+  // Clock Correction
+  // ----------------
+  double dtClk = GPSweeks - _GPSweeks;
+  if (GPSweek != _GPSweek) {  
+    dtClk += (GPSweek - _GPSweek) * secPerWeek;
+  }
+  xc(4) = _tau + _gamma * dtClk / 86400.0;
 }
 
