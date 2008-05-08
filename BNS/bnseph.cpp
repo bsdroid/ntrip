@@ -354,6 +354,11 @@ void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
     dt += (GPSweek - _GPSweek) * secPerWeek;
   }
 
+  cout << _prn.toAscii().data() << "   " 
+       << GPSweek  << " " << _GPSweek << "   "
+       << GPSweeks << " " <<  _GPSweeks << " " << _tt << "    "
+       << dt << endl;
+
   const static double maxStep = 10.0;
 
   double tt = 0.0;
@@ -365,6 +370,8 @@ void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
     _xv = rungeKutta4(tt, _xv, step, glo_deriv);
     tt += step;
   }
+
+  _tt = GPSweeks;
 
   // Position and Velocity
   // ---------------------
