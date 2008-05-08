@@ -350,29 +350,31 @@ void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
 
   const static double secPerWeek = 7 * 86400.0;
 
-  double dt = GPSweeks - _tt;
+  double dtPos = GPSweeks - _tt;
   if (GPSweek != _GPSweek) {  
-    dt += (GPSweek - _GPSweek) * secPerWeek;
+    dtPos += (GPSweek - _GPSweek) * secPerWeek;
   }
 
   cout << _prn.toAscii().data() << "   " 
        << GPSweek  << " " << _GPSweek << "   "
        << GPSweeks << " " <<  _GPSweeks << " " << _tt << "    "
-       << dt << endl;
+       << dtPos << endl;
 
   const static double maxStep = 10.0;
 
   double tt = 0.0;
-  while (tt < dt) {
-    double step = maxStep;
-    if (tt + step > dt) {
-      step = dt - tt;
+  while (fabs(tt) < fabs(dtPos)) {
+    double step = dtPos > 0.0 ?  maxStep : -maxStep;
+    if (fabs(tt + step) > fabs(dtPos)) {
+      step = dtPos - tt;
     }
     _xv = rungeKutta4(tt, _xv, step, glo_deriv);
     tt += step;
   }
 
-  _tt = GPSweeks;
+  // Next Time Start Integration from Current Epoch
+  // ----------------------------------------------
+  _tt += dtPos;
 
   // Position and Velocity
   // ---------------------
