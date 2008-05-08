@@ -293,12 +293,17 @@ void t_ephGlo::read(const QStringList& lines) {
       in >>_z_pos >> _z_velocity >> _z_acceleration >> _E;
     }
   }
-}
 
-// 
-////////////////////////////////////////////////////////////////////////////
-int  t_ephGlo::IOD() const {
-  return 0;
+  // Initialize status vector
+  // ------------------------
+  _tt = _GPSweeks;
+
+  _xv(1) = _x_pos; 
+  _xv(2) = _y_pos; 
+  _xv(3) = _z_pos; 
+  _xv(4) = _x_velocity; 
+  _xv(5) = _y_velocity; 
+  _xv(6) = _z_velocity; 
 }
 
 // Derivative of the state vector using a simple force model (static)
