@@ -107,88 +107,6 @@ void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac) {
                dateTime.time().msec() / 1000.0) / 60.0) / 60.0) / 24.0;
 }
 
-// Satellite Position computed using broadcast ephemeris
-////////////////////////////////////////////////////////////////////////////
-void satellitePosition(int GPSweek, double GPSweeks, const gpsEph* ep, 
-                       double& X, double& Y, double& Z, double& dt,
-                       double& vX, double& vY, double& vZ) {
-
-  const static double secPerWeek = 7 * 86400.0;
-  const static double omegaEarth = 7292115.1467e-11;
-  const static double gmWGS      = 398.6005e12;
-
-  X = Y = Z = dt = 0.0;
-
-  double a0 = ep->sqrt_A * ep->sqrt_A;
-  if (a0 == 0) {
-    return;
-  }
-
-  double n0 = sqrt(gmWGS/(a0*a0*a0));
-  double tk = GPSweeks - ep->TOE;
-  if (GPSweek != ep->GPSweek) {  
-    tk += (GPSweek - ep->GPSweek) * secPerWeek;
-  }
-  double n  = n0 + ep->Delta_n;
-  double M  = ep->M0 + n*tk;
-  double E  = M;
-  double E_last;
-  do {
-    E_last = E;
-    E = M + ep->e*sin(E);
-  } while ( fabs(E-E_last)*a0 > 0.001 );
-  double v      = 2.0*atan( sqrt( (1.0 + ep->e)/(1.0 - ep->e) )*tan( E/2 ) );
-  double u0     = v + ep->omega;
-  double sin2u0 = sin(2*u0);
-  double cos2u0 = cos(2*u0);
-  double r      = a0*(1 - ep->e*cos(E)) + ep->Crc*cos2u0 + ep->Crs*sin2u0;
-  double i      = ep->i0 + ep->IDOT*tk + ep->Cic*cos2u0 + ep->Cis*sin2u0;
-  double u      = u0 + ep->Cuc*cos2u0 + ep->Cus*sin2u0;
-  double xp     = r*cos(u);
-  double yp     = r*sin(u);
-  double OM     = ep->OMEGA0 + (ep->OMEGADOT - omegaEarth)*tk - 
-                   omegaEarth*ep->TOE;
-  
-  double sinom = sin(OM);
-  double cosom = cos(OM);
-  double sini  = sin(i);
-  double cosi  = cos(i);
-  X = xp*cosom - yp*cosi*sinom;
-  Y = xp*sinom + yp*cosi*cosom;
-  Z = yp*sini;                 
-  
-  double tc = GPSweeks - ep->TOC;
-  if (GPSweek != ep->GPSweek) {  
-    tc += (GPSweek - ep->GPSweek) * secPerWeek;
-  }
-  dt = ep->clock_bias + ep->clock_drift*tc + ep->clock_driftrate*tc*tc 
-       - 4.442807633e-10 * ep->e * sqrt(a0) *sin(E);
-
-  // Velocity
-  // --------
-  double tanv2 = tan(v/2);
-  double dEdM  = 1 / (1 - ep->e*cos(E));
-  double dotv  = sqrt((1.0 + ep->e)/(1.0 - ep->e)) / cos(E/2)/cos(E/2) / (1 + tanv2*tanv2) 
-               * dEdM * n;
-  double dotu  = dotv + (-ep->Cuc*sin2u0 + ep->Cus*cos2u0)*2*dotv;
-  double dotom = ep->OMEGADOT - omegaEarth;
-  double doti  = ep->IDOT + (-ep->Cic*sin2u0 + ep->Cis*cos2u0)*2*dotv;
-  double dotr  = a0 * ep->e*sin(E) * dEdM * n 
-                + (-ep->Crc*sin2u0 + ep->Crs*cos2u0)*2*dotv;
-  double dotx  = dotr*cos(u) - r*sin(u)*dotu;
-  double doty  = dotr*sin(u) + r*cos(u)*dotu;
-
-  vX  = cosom   *dotx  - cosi*sinom   *doty      // dX / dr
-      - xp*sinom*dotom - yp*cosi*cosom*dotom     // dX / dOMEGA
-                       + yp*sini*sinom*doti;     // dX / di
-
-  vY  = sinom   *dotx  + cosi*cosom   *doty
-      + xp*cosom*dotom - yp*cosi*sinom*dotom
-                       - yp*sini*cosom*doti;
-
-  vZ  = sini    *doty  + yp*cosi      *doti;
-}
-
 // Transformation xyz --> radial, along track, out-of-plane
 ////////////////////////////////////////////////////////////////////////////
 void XYZ_to_RSW(const ColumnVector& rr, const ColumnVector& vv,
@@ -200,4 +118,25 @@ void XYZ_to_RSW(const ColumnVector& rr, const ColumnVector& vv,
   rsw(1) = DotProduct(xyz, rr)    / rr.norm_Frobenius();
   rsw(2) = DotProduct(xyz, vv)    / vv.norm_Frobenius();
   rsw(3) = DotProduct(xyz, cross) / cross.norm_Frobenius();
+}
+
+// Fourth order Runge-Kutta numerical integrator for ODEs
+////////////////////////////////////////////////////////////////////////////
+ColumnVector rungeKutta4(
+  double xi,              // the initial x-value
+  const ColumnVector& yi, // vector of the initial y-values
+  double dx,              // the step size for the integration
+  ColumnVector (*der)(double x, const ColumnVector& y)
+                          // A pointer to a function that computes the 
+                          // derivative of a function at a point (x,y)
+                         ) {
+
+  ColumnVector k1 = der(xi       , yi       ) * dx;
+  ColumnVector k2 = der(xi+dx/2.0, yi+k1/2.0) * dx;
+  ColumnVector k3 = der(xi+dx/2.0, yi+k2/2.0) * dx;
+  ColumnVector k4 = der(xi+dx    , yi+k3    ) * dx;
+
+  ColumnVector yf = yi + k1/6.0 + k2/3.0 + k3/3.0 + k4/6.0;
+  
+  return yf;
 }

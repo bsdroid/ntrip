@@ -22,10 +22,10 @@ void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac);
 
 void currentGPSWeeks(int& week, double& sec);
 
-void satellitePosition(int GPSweek, double GPSweeks, const gpsEph* ep, 
-                       double& X, double& Y, double& Z, double&,
-                       double& vX, double& vY, double& vZ);
-
 void XYZ_to_RSW(const ColumnVector& rr, const ColumnVector& vv,
                 const ColumnVector& xyz, ColumnVector& rsw);
+
+ColumnVector rungeKutta4(double xi, const ColumnVector& yi, double dx,
+                         ColumnVector (*der)(double x, const ColumnVector& y));
+
 #endif
