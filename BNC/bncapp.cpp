@@ -392,32 +392,32 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
   struct converttimeinfo cti;
   converttime(&cti, ep->GPSweek, ep->TOC);
   if      (_rinexVers == 3) {
-    line.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
+    line.sprintf("G%02d %04d %02d %02d %02d %02d %02d %18.11e %18.11e %18.11e\n",
                  ep->satellite, cti.year, cti.month, cti.day, cti.hour,
                  cti.minute, cti.second, ep->clock_bias, ep->clock_drift,
                  ep->clock_driftrate);
   }
   else if (_rinexVers == 2) {
-    line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e\n",
+    line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f %18.11e %18.11e %18.11e\n",
                  ep->satellite, cti.year%100, cti.month, cti.day, cti.hour,
                  cti.minute, (double) cti.second, ep->clock_bias, 
                  ep->clock_drift, ep->clock_driftrate);
   }
   allLines += line;
 
-  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", (double)ep->IODE,
+  line.sprintf("    %18.11e %18.11e %18.11e %18.11e\n", (double)ep->IODE,
                ep->Crs, ep->Delta_n, ep->M0);
   allLines += line;
   
-  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->Cuc,
+  line.sprintf("    %18.11e %18.11e %18.11e %18.11e\n", ep->Cuc,
                ep->e, ep->Cus, ep->sqrt_A);
   allLines += line;
 
-  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n",
+  line.sprintf("    %18.11e %18.11e %18.11e %18.11e\n",
                (double) ep->TOE, ep->Cic, ep->OMEGA0, ep->Cis);
   allLines += line;
   
-  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->i0,
+  line.sprintf("    %18.11e %18.11e %18.11e %18.11e\n", ep->i0,
                ep->Crc, ep->omega, ep->OMEGADOT);
   allLines += line;
 
@@ -427,7 +427,7 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
     dd += 2.0;
   if(ii & GPSEPHF_L2PCODE)
     dd += 1.0;
-  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->IDOT, dd,
+  line.sprintf("    %18.11e %18.11e %18.11e %18.11e\n", ep->IDOT, dd,
                (double) ep->GPSweek, ii & GPSEPHF_L2PCODEDATA ? 1.0 : 0.0);
   allLines += line;
 
@@ -435,11 +435,11 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
     dd = ceil(10.0*pow(2.0, 1.0+((double)ep->URAindex)/2.0))/10.0;
   else
     dd = ceil(10.0*pow(2.0, ((double)ep->URAindex)/2.0))/10.0;
-  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", dd,
+  line.sprintf("    %18.11e %18.11e %18.11e %18.11e\n", dd,
                ((double) ep->SVhealth), ep->TGD, ((double) ep->IODC));
   allLines += line;
 
-  line.sprintf("   %19.12e%19.12e\n", ((double)ep->TOW), 0.0);
+  line.sprintf("    %18.11e %18.11e\n", ((double)ep->TOW), 0.0);
   allLines += line;
 
   // Output into file
@@ -490,29 +490,29 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
   }
 
   if      (_rinexVers == 3) {
-    line.sprintf("R%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
+    line.sprintf("R%02d %04d %02d %02d %02d %02d %02d %18.11e %18.11e %18.11e\n",
                  ep->almanac_number, cti.year, cti.month, cti.day, cti.hour, 
                  cti.minute, cti.second, -ep->tau, ep->gamma, (double) tk);
   }
   else if (_rinexVers == 2) {
-    line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e\n",
+    line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f %18.11e %18.11e %18.11e\n",
                  ep->almanac_number, cti.year%100, cti.month, cti.day, 
                  cti.hour, cti.minute, (double) cti.second, -ep->tau, 
                  ep->gamma, (double) tk);
   }
   allLines += line;
   
-  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->x_pos,
+  line.sprintf("    %18.11e %18.11e %18.11e %18.11e\n", ep->x_pos,
                ep->x_velocity, ep->x_acceleration, 
                (ep->flags & GLOEPHF_UNHEALTHY) ? 1.0 : 0.0);
   allLines += line;
    
-  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->y_pos,
+  line.sprintf("    %18.11e %18.11e %18.11e %18.11e\n", ep->y_pos,
                ep->y_velocity, ep->y_acceleration, 
                (double) ep->frequency_number);
   allLines += line;
   
-  line.sprintf("   %19.12e%19.12e%19.12e%19.12e\n", ep->z_pos,
+  line.sprintf("    %18.11e %18.11e %18.11e %18.11e\n", ep->z_pos,
                ep->z_velocity, ep->z_acceleration, (double) ep->E);
   allLines += line;
 
