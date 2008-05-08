@@ -298,12 +298,12 @@ void t_ephGlo::read(const QStringList& lines) {
   // ------------------------
   _tt = _GPSweeks;
 
-  _xv(1) = _x_pos / 1.e3; 
-  _xv(2) = _y_pos / 1.e3; 
-  _xv(3) = _z_pos / 1.e3; 
-  _xv(4) = _x_velocity / 1.e3; 
-  _xv(5) = _y_velocity / 1.e3; 
-  _xv(6) = _z_velocity / 1.e3; 
+  _xv(1) = _x_pos * 1.e3; 
+  _xv(2) = _y_pos * 1.e3; 
+  _xv(3) = _z_pos * 1.e3; 
+  _xv(4) = _x_velocity * 1.e3; 
+  _xv(5) = _y_velocity * 1.e3; 
+  _xv(6) = _z_velocity * 1.e3; 
 }
 
 // Derivative of the state vector using a simple force model (static)
