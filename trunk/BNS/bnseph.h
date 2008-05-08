@@ -63,7 +63,6 @@ class t_ephGPS : public t_eph {
   virtual void read(const QStringList& lines);
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const;
-  virtual bool isNewerThan(const t_eph* ep) const;
   virtual int  IOD() const {return int(_IODE);}
 
  private:
