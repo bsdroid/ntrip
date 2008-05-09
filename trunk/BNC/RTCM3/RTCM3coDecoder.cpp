@@ -81,8 +81,17 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
                _co.Sat[ii].Orbit.DeltaRadial, _co.Sat[ii].Orbit.DeltaAlongTrack,
                _co.Sat[ii].Orbit.DeltaCrossTrack);
         *_out << line.toAscii().data();
-        _out->flush();
       }
+      for(int ii = CLOCKORBIT_NUMGPS; 
+          ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
+        QString line;
+        line.sprintf("%d R%d %d %f %f %f %f\n", _co.GPSEpochTime,
+               _co.Sat[ii].ID, _co.Sat[ii].IOD, _co.Sat[ii].Clock.DeltaA0,
+               _co.Sat[ii].Orbit.DeltaRadial, _co.Sat[ii].Orbit.DeltaAlongTrack,
+               _co.Sat[ii].Orbit.DeltaCrossTrack);
+        *_out << line.toAscii().data();
+      }
+      _out->flush();
       _buffer = _buffer.substr(bytesused);
       return success;
     }
