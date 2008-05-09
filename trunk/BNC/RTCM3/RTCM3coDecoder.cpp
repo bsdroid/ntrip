@@ -48,7 +48,6 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 RTCM3coDecoder::RTCM3coDecoder(const QString& fileName) 
   : bncZeroDecoder(fileName) {
-  _mmi = 0;
 }
 
 // Destructor
@@ -63,25 +62,12 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
   _buffer.append(buffer, bufLen);
 
   while (true) {
-
-    if (_mmi == 0) {
-      memset(&_co, 0, sizeof(_co));
-    }
+   
+    memset(&_co, 0, sizeof(_co));
 
     int bytesused = 0;
     GCOB_RETURN irc = GetClockOrbitBias(&_co, &_bias, _buffer.data(), 
                                         _buffer.size(), &bytesused);
-
-    // Multiple Message Flag
-    // ---------------------
-    if (irc == GCOBR_MESSAGEFOLLOWS) {
-      _mmi = 1;
-      _buffer = _buffer.substr(bytesused);
-      return success;
-    }
-    else {
-      _mmi = 0;
-    }
 
     // Not enough Data
     // ---------------
@@ -92,7 +78,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
     
     // Message correctly decoded
     // -------------------------
-    else if (irc == GCOBR_OK && bytesused > 0) {
+    else if ( (irc == GCOBR_OK || irc == GCOBR_MESSAGEFOLLOWS) && 
+              bytesused > 0) {
       reopen();
       for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
         QString line;
@@ -105,7 +92,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
       for(int ii = CLOCKORBIT_NUMGPS; 
           ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
         QString line;
-        line.sprintf("%d R%d %d %f %f %f %f\n", _co.GPSEpochTime,
+        line.sprintf("%d R%d %d %f %f %f %f\n", _co.GLONASSEpochTime,
                _co.Sat[ii].ID, _co.Sat[ii].IOD, _co.Sat[ii].Clock.DeltaA0,
                _co.Sat[ii].Orbit.DeltaRadial, _co.Sat[ii].Orbit.DeltaAlongTrack,
                _co.Sat[ii].Orbit.DeltaCrossTrack);
