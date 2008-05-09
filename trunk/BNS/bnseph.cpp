@@ -360,11 +360,6 @@ void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
   int nSteps  = int(fabs(dtPos) / nominalStep) + 1;
   double step = dtPos / nSteps;
 
-  cout << _prn.toAscii().data() << "   " 
-       << GPSweek  << " " << _GPSweek << "   "
-       << GPSweeks << " " <<  _GPSweeks << " " << _tt << "    "
-       << dtPos << endl;
-
   for (int ii = 1; ii <= nSteps; ii++) { 
     _xv = rungeKutta4(_tt, _xv, step, glo_deriv);
     _tt += step;
