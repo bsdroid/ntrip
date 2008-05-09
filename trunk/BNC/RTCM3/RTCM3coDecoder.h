@@ -40,6 +40,7 @@ private:
   std::string _buffer;
   ClockOrbit  _co;
   Bias        _bias;
+  int         _mmi;
 } ;
 
 #endif
