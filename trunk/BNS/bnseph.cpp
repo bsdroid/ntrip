@@ -348,33 +348,26 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv) {
 void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const {
 
-  const static double secPerWeek = 7 * 86400.0;
+  const static double secPerWeek  = 7 * 86400.0;
+  const static double nominalStep = 10.0;
 
   double dtPos = GPSweeks - _tt;
   if (GPSweek != _GPSweek) {  
     dtPos += (GPSweek - _GPSweek) * secPerWeek;
   }
 
+  int nSteps  = int(fabs(dtPos) / nominalStep) + 1;
+  double step = dtPos / nSteps;
+
   cout << _prn.toAscii().data() << "   " 
        << GPSweek  << " " << _GPSweek << "   "
        << GPSweeks << " " <<  _GPSweeks << " " << _tt << "    "
-       << dtPos << endl;
+       << dtPos << " " << nSteps << " " << " " << step << endl;
 
-  const static double maxStep = 10.0;
-
-  double tt = 0.0;
-  while (fabs(tt) < fabs(dtPos)) {
-    double step = dtPos > 0.0 ?  maxStep : -maxStep;
-    if (fabs(tt + step) > fabs(dtPos)) {
-      step = dtPos - tt;
-    }
-    _xv = rungeKutta4(tt, _xv, step, glo_deriv);
-    tt += step;
+  for (int ii = 1; ii <= nSteps; ii++) { 
+    _tt += step;
+    _xv = rungeKutta4(_tt, _xv, step, glo_deriv);
   }
-
-  // Next Time Start Integration from Current Epoch
-  // ----------------------------------------------
-  _tt += dtPos;
 
   // Position and Velocity
   // ---------------------
