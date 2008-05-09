@@ -316,7 +316,8 @@ void t_bns::readEpoch() {
     
       struct ClockOrbit co;
       memset(&co, 0, sizeof(co));
-      co.GPSEpochTime = (int)GPSweeks;
+      co.GPSEpochTime      = (int)GPSweeks;
+      co.GLONASSEpochTime  = (int)GPSweeks;
       co.ClockDataSupplied = 1;
       co.OrbitDataSupplied = 1;
       co.SatRefPoint       = POINT_CENTER;
