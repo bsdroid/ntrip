@@ -362,11 +362,11 @@ void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
   cout << _prn.toAscii().data() << "   " 
        << GPSweek  << " " << _GPSweek << "   "
        << GPSweeks << " " <<  _GPSweeks << " " << _tt << "    "
-       << dtPos << " " << nSteps << " " << " " << step << endl;
+       << dtPos << endl;
 
   for (int ii = 1; ii <= nSteps; ii++) { 
-    _tt += step;
     _xv = rungeKutta4(_tt, _xv, step, glo_deriv);
+    _tt += step;
   }
 
   // Position and Velocity
