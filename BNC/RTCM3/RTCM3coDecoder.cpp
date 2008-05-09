@@ -48,6 +48,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 RTCM3coDecoder::RTCM3coDecoder(const QString& fileName) 
   : bncZeroDecoder(fileName) {
+  _mmi = 0;
 }
 
 // Destructor
@@ -62,16 +63,35 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
   _buffer.append(buffer, bufLen);
 
   while (true) {
+
+    if (_mmi == 0) {
+      memset(&_co, 0, sizeof(_co));
+    }
+
     int bytesused = 0;
-    memset(&_co, 0, sizeof(_co));
     GCOB_RETURN irc = GetClockOrbitBias(&_co, &_bias, _buffer.data(), 
                                         _buffer.size(), &bytesused);
 
+    // Multiple Message Flag
+    // ---------------------
+    if (irc == GCOBR_MESSAGEFOLLOWS) {
+      _mmi = 1;
+      _buffer = _buffer.substr(bytesused);
+      return success;
+    }
+    else {
+      _mmi = 0;
+    }
+
+    // Not enough Data
+    // ---------------
     if      (irc == GCOBR_SHORTBUFFER ||
-             irc == GCOBR_MESSAGEEXCEEDSBUFFER) {  // not enough data
+             irc == GCOBR_MESSAGEEXCEEDSBUFFER) {
       return failure;
     }
     
+    // Message correctly decoded
+    // -------------------------
     else if (irc == GCOBR_OK && bytesused > 0) {
       reopen();
       for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
@@ -96,6 +116,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
       return success;
     }
 
+    // All other Cases
+    // ---------------
     else {
       _buffer = _buffer.substr(1);
     }
