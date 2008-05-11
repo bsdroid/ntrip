@@ -282,6 +282,8 @@ void t_ephGlo::read(const QStringList& lines) {
                          QTime(int(hour), int(minute), int(second)), Qt::UTC);
 
       GPSweekFromDateAndTime(dateTime, _GPSweek, _GPSweeks); 
+ 
+      _GPSweeks += _gps_utc;
     }
     else if (ii == 2) {
       in >>_x_pos >> _x_velocity >> _x_acceleration >> _health;
@@ -296,9 +298,7 @@ void t_ephGlo::read(const QStringList& lines) {
 
   // Initialize status vector
   // ------------------------
-  ////  static const double gps_utc = 14.0;
   _tt = _GPSweeks;
-  //// _tt = _GPSweeks + gps_utc;
 
   _xv(1) = _x_pos * 1.e3; 
   _xv(2) = _y_pos * 1.e3; 
@@ -381,6 +381,6 @@ void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
   if (GPSweek != _GPSweek) {  
     dtClk += (GPSweek - _GPSweek) * secPerWeek;
   }
-  xc(4) = -_tau + _gamma * dtClk / 86400.0;
+  xc(4) = -_tau + _gamma * dtClk;
 }
 
