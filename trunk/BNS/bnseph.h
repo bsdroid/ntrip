@@ -28,6 +28,7 @@ class t_eph {
 class t_ephGlo : public t_eph {
  public:
   t_ephGlo() {
+    _gps_utc = 0.0;
     _xv.ReSize(6); 
   };
   virtual ~t_ephGlo() {};
@@ -39,6 +40,7 @@ class t_ephGlo : public t_eph {
   static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv);
   mutable double       _tt;  // time in seconds of GPSweek
   mutable ColumnVector _xv;  // status vector (position, velocity) at time _tt
+  double  _gps_utc;          // GPS - UTC in seconds      
 
   double _E;                  // [days]   
   double _tau;                // [s]      
