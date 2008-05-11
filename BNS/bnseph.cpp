@@ -283,6 +283,10 @@ void t_ephGlo::read(const QStringList& lines) {
 
       GPSweekFromDateAndTime(dateTime, _GPSweek, _GPSweeks); 
  
+      //// beg test
+      _gps_utc = 14.0;
+      //// end test
+
       _GPSweeks += _gps_utc;
     }
     else if (ii == 2) {
@@ -382,5 +386,7 @@ void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
     dtClk += (GPSweek - _GPSweek) * secPerWeek;
   }
   xc(4) = -_tau + _gamma * dtClk;
+
+  cout << _tau << " " << _gamma << " " << dtClk << " " << xc(4) << endl;
 }
 
