@@ -98,14 +98,16 @@ RTCM3Decoder::~RTCM3Decoder() {
 ////////////////////////////////////////////////////////////////////////////
 t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
 
+  bool decoded = false;
+
   // Try to decode Clock and Orbit Corrections
   // -----------------------------------------
-  _coDecoder->Decode(buffer, bufLen);
+  if ( _coDecoder->Decode(buffer, bufLen) == success ) {
+    decoded = true;
+  }
 
   // Remaining part decodes the Observations
   // ---------------------------------------
-  bool decoded = false;
-
   for (int ii = 0; ii < bufLen; ii++) {
 
     _Parser.Message[_Parser.MessageSize++] = buffer[ii];
