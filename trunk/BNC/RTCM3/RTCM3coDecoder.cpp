@@ -39,6 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <math.h>
 
 #include "RTCM3coDecoder.h"
 #include "bncutils.h"
