@@ -676,7 +676,6 @@ void bncWindow::closeEvent(QCloseEvent* event) {
   }
 
   QMainWindow::closeEvent(event);
-  delete this;
 }
 
 // User changed the selection of mountPoints
