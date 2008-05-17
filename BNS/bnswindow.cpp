@@ -277,8 +277,6 @@ int iRet = QMessageBox::question(this, "Close", "Save Options?",
   }
 
   QMainWindow::closeEvent(event);
-
-  delete this;
 }
 
 // About Message
