@@ -86,17 +86,39 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
       int    GPSweek;
       double GPSweeks;
       currentGPSWeeks(GPSweek, GPSweeks);
-      if      (GPSweeks > _co.GPSEpochTime + 86400.0) {
-        GPSweek += 1;
+
+      if (_co.NumberOfGPSSat > 0) {
+        if      (GPSweeks > _co.GPSEpochTime + 86400.0) {
+          GPSweek += 1;
+        }
+        else if (GPSweeks < _co.GPSEpochTime - 86400.0) {
+          GPSweek -= 1;
+        }
+        GPSweeks = _co.GPSEpochTime;
       }
-      else if (GPSweeks < _co.GPSEpochTime - 86400.0) {
-        GPSweek -= 1;
+      else {
+        double GPSdaysec = fmod(GPSweeks, 86400.0);
+        int    weekDay   = int((GPSweeks - GPSdaysec) / 86400.0);
+        if      (GPSdaysec > _co.GLONASSEpochTime + 3600.0) {
+          weekDay += 1;
+          if (weekDay > 6) {
+            weekDay = 0;
+            GPSweek += 1;
+          }
+        }
+        else if (GPSdaysec < _co.GLONASSEpochTime - 3600.0) {
+          weekDay -= 1;
+          if (weekDay < 0) {
+            weekDay = 6;
+            GPSweek -= 1;
+          }
+        }
+        GPSweeks = weekDay * 86400.0 + _co.GLONASSEpochTime;
       }
-      GPSweeks = _co.GPSEpochTime;
 
       for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
         QString line;
-        line.sprintf("%d %.1f R%d   %3d   %8.3f   %8.3f %8.3f %8.3f\n", 
+        line.sprintf("%d %.1f G%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f\n", 
                GPSweek, GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
                _co.Sat[ii].Clock.DeltaA0,
                _co.Sat[ii].Orbit.DeltaRadial, 
@@ -107,7 +129,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
       for(int ii = CLOCKORBIT_NUMGPS; 
           ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
         QString line;
-        line.sprintf("%d %.1f R%d   %3d   %8.3f   %8.3f %8.3f %8.3f\n", 
+        line.sprintf("%d %.1f R%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f\n", 
                GPSweek, GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
                _co.Sat[ii].Clock.DeltaA0, 
                _co.Sat[ii].Orbit.DeltaRadial, 
