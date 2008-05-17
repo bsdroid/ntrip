@@ -41,6 +41,7 @@
 #include <stdio.h>
 
 #include "RTCM3coDecoder.h"
+#include "bncutils.h"
 
 using namespace std;
 
@@ -81,20 +82,36 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
     else if ( (irc == GCOBR_OK || irc == GCOBR_MESSAGEFOLLOWS) && 
               bytesused > 0) {
       reopen();
+
+      int    GPSweek;
+      double GPSweeks;
+      currentGPSWeeks(GPSweek, GPSweeks);
+      if      (GPSweeks > _co.GPSEpochTime + 86400.0) {
+        GPSweek += 1;
+      }
+      else if (GPSweeks < _co.GPSEpochTime - 86400.0) {
+        GPSweek -= 1;
+      }
+      GPSweeks = _co.GPSEpochTime;
+
       for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
         QString line;
-        line.sprintf("%d G%d %d %f %f %f %f\n", _co.GPSEpochTime,
-               _co.Sat[ii].ID, _co.Sat[ii].IOD, _co.Sat[ii].Clock.DeltaA0,
-               _co.Sat[ii].Orbit.DeltaRadial, _co.Sat[ii].Orbit.DeltaAlongTrack,
+        line.sprintf("%d %.1f R%d   %3d   %8.3f   %8.3f %8.3f %8.3f\n", 
+               GPSweek, GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
+               _co.Sat[ii].Clock.DeltaA0,
+               _co.Sat[ii].Orbit.DeltaRadial, 
+               _co.Sat[ii].Orbit.DeltaAlongTrack,
                _co.Sat[ii].Orbit.DeltaCrossTrack);
         *_out << line.toAscii().data();
       }
       for(int ii = CLOCKORBIT_NUMGPS; 
           ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
         QString line;
-        line.sprintf("%d R%d %d %f %f %f %f\n", _co.GLONASSEpochTime,
-               _co.Sat[ii].ID, _co.Sat[ii].IOD, _co.Sat[ii].Clock.DeltaA0,
-               _co.Sat[ii].Orbit.DeltaRadial, _co.Sat[ii].Orbit.DeltaAlongTrack,
+        line.sprintf("%d %.1f R%d   %3d   %8.3f   %8.3f %8.3f %8.3f\n", 
+               GPSweek, GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
+               _co.Sat[ii].Clock.DeltaA0, 
+               _co.Sat[ii].Orbit.DeltaRadial, 
+               _co.Sat[ii].Orbit.DeltaAlongTrack,
                _co.Sat[ii].Orbit.DeltaCrossTrack);
         *_out << line.toAscii().data();
       }
