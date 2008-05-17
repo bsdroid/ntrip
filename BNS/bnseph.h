@@ -1,6 +1,7 @@
 #ifndef BNSEPH_H
 #define BNSEPH_H
 
+#include <math.h>
 #include <newmat.h>
 
 #include <QtCore>
