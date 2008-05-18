@@ -314,7 +314,8 @@ void t_bns::readEpoch() {
 
     QStringList prns;
 
-    for (int oldEph = 0; oldEph <= 1; oldEph++) {
+    ///    for (int oldEph = 0; oldEph <= 1; oldEph++) {
+    for (int oldEph = 0; oldEph <= 0; oldEph++) {
     
       struct ClockOrbit co;
       memset(&co, 0, sizeof(co));
