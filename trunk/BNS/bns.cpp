@@ -312,6 +312,8 @@ void t_bns::readEpoch() {
 
   if (numSat > 0) {
 
+    QStringList prns;
+
     for (int oldEph = 0; oldEph <= 1; oldEph++) {
     
       struct ClockOrbit co;
@@ -333,6 +335,7 @@ void t_bns::readEpoch() {
           line = _clkSocket->readLine();
           QTextStream in(line);
           in >> prn;
+          prns << prn;
           if ( _ephList.contains(prn) ) {
             in >> xx(1) >> xx(2) >> xx(3) >> xx(4); xx(4) *= 1e-6;
             t_ephPair* pair = _ephList[prn];
@@ -341,6 +344,7 @@ void t_bns::readEpoch() {
           }
         }
         else {
+          prn = prns[ii-1];
           if ( _ephList.contains(prn) ) {
             t_ephPair* pair = _ephList[prn];
             prn = pair->eph->prn();
