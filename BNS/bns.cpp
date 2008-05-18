@@ -364,7 +364,7 @@ void t_bns::readEpoch() {
             ++co.NumberOfGLONASSSat;
           }
           if (sd) {
-            processSatellite(ep, GPSweek, GPSweeks, prn, xx, sd);
+            processSatellite(oldEph, ep, GPSweek, GPSweeks, prn, xx, sd);
           }
         }
       }
@@ -384,7 +384,7 @@ void t_bns::readEpoch() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_bns::processSatellite(t_eph* ep, int GPSweek, double GPSweeks, 
+void t_bns::processSatellite(int oldEph, t_eph* ep, int GPSweek, double GPSweeks, 
                              const QString& prn, const ColumnVector& xx, 
                              struct ClockOrbit::SatData* sd) {
 
@@ -410,17 +410,20 @@ void t_bns::processSatellite(t_eph* ep, int GPSweek, double GPSweeks,
 
   if (_outStream) {
     QString line;
-    line.sprintf("%d %.1f %s   %3d   %8.3f   %8.3f %8.3f %8.3f\n", 
-                 GPSweek, GPSweeks, ep->prn().toAscii().data(),
+    char oldCh = (oldEph ? '!' : ' ');
+    line.sprintf("%c %d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n", 
+                 oldCh, GPSweek, GPSweeks, ep->prn().toAscii().data(),
                  ep->IOD(), dClk, rsw(1), rsw(2), rsw(3));
     *_outStream << line;
     _outStream->flush();
   }
-  if (_rnx) {
-    _rnx->write(GPSweek, GPSweeks, prn, xx);
-  }
-  if (_sp3) {
-    _sp3->write(GPSweek, GPSweeks, prn, xx);
+  if (!oldEph) {
+    if (_rnx) {
+      _rnx->write(GPSweek, GPSweeks, prn, xx);
+    }
+    if (_sp3) {
+      _sp3->write(GPSweek, GPSweeks, prn, xx);
+    }
   }
 }
 
