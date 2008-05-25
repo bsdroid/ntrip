@@ -140,3 +140,25 @@ ColumnVector rungeKutta4(
   
   return yf;
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+QByteArray waitForLine(QTcpSocket* socket) {
+
+  QByteArray  line;
+
+  while (true) {
+    char ch;
+    if (socket->getChar(&ch)) {
+      line += ch;
+      if (ch == '\n') {
+        break;
+      }
+    }
+    else {
+      socket->waitForReadyRead(10);
+    }
+  }
+  return line;
+}
+

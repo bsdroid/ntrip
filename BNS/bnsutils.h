@@ -6,6 +6,7 @@
 
 #include <QString>
 #include <QDateTime>
+#include <QTcpSocket>
 
 class gpsEph;
 
@@ -27,5 +28,7 @@ void XYZ_to_RSW(const ColumnVector& rr, const ColumnVector& vv,
 
 ColumnVector rungeKutta4(double xi, const ColumnVector& yi, double dx,
                          ColumnVector (*der)(double x, const ColumnVector& y));
+
+QByteArray waitForLine(QTcpSocket* socket);
 
 #endif
