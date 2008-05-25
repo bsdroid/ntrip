@@ -329,7 +329,7 @@ void t_bns::readEpoch() {
       for (int ii = 1; ii <= numSat; ii++) {
     
         QString      prn;
-        ColumnVector xx(4);
+        ColumnVector xx(5);
         t_eph*       ep = 0;
     
         if (oldEph == 0) {
@@ -338,7 +338,12 @@ void t_bns::readEpoch() {
           in >> prn;
           prns << prn;
           if ( _ephList.contains(prn) ) {
-            in >> xx(1) >> xx(2) >> xx(3) >> xx(4); xx(4) *= 1e-6;
+            in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5); xx(4) *= 1e-6;
+
+            //// beg test (zero clock correction for Gerhard Wuebbena)
+            xx(4) -= xx(5) / 299792458.0;
+            //// end test
+
             t_ephPair* pair = _ephList[prn];
             pair->xx = xx;
             ep = pair->eph;
@@ -395,6 +400,7 @@ void t_bns::processSatellite(int oldEph, t_eph* ep, int GPSweek, double GPSweeks
   ep->position(GPSweek, GPSweeks, xB, vv);
 
   ColumnVector dx   = xx.Rows(1,3) - xB.Rows(1,3);
+
   double       dClk = (xx(4) - xB(4)) * 299792458.0; 
   ColumnVector rsw(3);
 
