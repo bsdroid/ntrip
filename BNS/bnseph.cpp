@@ -385,7 +385,9 @@ void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
 ////////////////////////////////////////////////////////////////////////////
 int t_ephGlo::IOD() const {
   ////  return int(fmod(_GPSweeks,86400.0)) / 600;
-  unsigned int tb  = int(fmod(_GPSweeks,86400.0)) * 1000; // msec of day
+
+  //// unsigned int tb  = int(fmod(_GPSweeks,86400.0)) * 1000; // msec of day
+  unsigned int tb  = int(fmod(_GPSweeks,86400.0)); //sec of day
 
   // 5 LSBs of iod are equal to 5 LSBs of tb, remaining bits are zero
   // ----------------------------------------------------------------
