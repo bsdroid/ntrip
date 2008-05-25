@@ -66,12 +66,7 @@ void t_bnseph::run() {
       reconnect();
     }
     if (_socket && _socket->state() == QAbstractSocket::ConnectedState) {
-      if (_socket->canReadLine()) {
-        readEph();
-      }
-      else {
-        _socket->waitForReadyRead(10);
-      }
+      readEph();
     }
     else {
       msleep(10);
@@ -83,10 +78,9 @@ void t_bnseph::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bnseph::readEph() {
 
-
   t_eph* eph = 0;
+  QByteArray line = waitForLine(_socket);
 
-  QByteArray  line = _socket->readLine();
   QTextStream in(line);
   QString     prn;
    
@@ -106,7 +100,7 @@ void t_bnseph::readEph() {
   lines << line;
 
   for (int ii = 2; ii <= numlines; ii++) {
-    QByteArray line = _socket->readLine();
+    QByteArray line = waitForLine(_socket);
     lines << line;
   }
 
@@ -130,6 +124,10 @@ bool t_eph::isNewerThan(const t_eph* eph) const {
 // Read GPS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGPS::read(const QStringList& lines) {
+
+  for (int ii = 1; ii <= lines.size(); ii++) {
+    cout << lines.at(ii-1).toAscii().data();
+  }
 
   for (int ii = 1; ii <= lines.size(); ii++) {
     QTextStream in(lines.at(ii-1).toAscii());
@@ -264,6 +262,10 @@ void t_ephGPS::position(int GPSweek, double GPSweeks, ColumnVector& xc,
 // Read Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGlo::read(const QStringList& lines) {
+
+  for (int ii = 1; ii <= lines.size(); ii++) {
+    cout << lines.at(ii-1).toAscii().data();
+  }
 
   for (int ii = 1; ii <= lines.size(); ii++) {
     QTextStream in(lines.at(ii-1).toAscii());
