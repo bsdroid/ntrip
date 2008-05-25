@@ -1,8 +1,8 @@
 
 # Switch to debug configuration
 # -----------------------------
-CONFIG -= release
-CONFIG += debug
+CONFIG += release
+#CONFIG += debug
 
 RESOURCES += bns.qrc
 
