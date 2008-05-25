@@ -126,10 +126,6 @@ bool t_eph::isNewerThan(const t_eph* eph) const {
 void t_ephGPS::read(const QStringList& lines) {
 
   for (int ii = 1; ii <= lines.size(); ii++) {
-    cout << lines.at(ii-1).toAscii().data();
-  }
-
-  for (int ii = 1; ii <= lines.size(); ii++) {
     QTextStream in(lines.at(ii-1).toAscii());
 
     if (ii == 1) {
@@ -262,10 +258,6 @@ void t_ephGPS::position(int GPSweek, double GPSweeks, ColumnVector& xc,
 // Read Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGlo::read(const QStringList& lines) {
-
-  for (int ii = 1; ii <= lines.size(); ii++) {
-    cout << lines.at(ii-1).toAscii().data();
-  }
 
   for (int ii = 1; ii <= lines.size(); ii++) {
     QTextStream in(lines.at(ii-1).toAscii());
