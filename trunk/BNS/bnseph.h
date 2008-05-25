@@ -36,7 +36,7 @@ class t_ephGlo : public t_eph {
   virtual void read(const QStringList& lines);
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const;
-  virtual int  IOD() const {return int(fmod(_GPSweeks,86400.0)) / 600;}
+  virtual int  IOD() const;
  private:
   static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv);
   mutable double       _tt;  // time in seconds of GPSweek

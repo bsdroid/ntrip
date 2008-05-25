@@ -387,3 +387,13 @@ void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
   xc(4) = -_tau + _gamma * dtClk;
 }
 
+// Glonass IOD
+////////////////////////////////////////////////////////////////////////////
+int t_ephGlo::IOD() const {
+  ////  return int(fmod(_GPSweeks,86400.0)) / 600;
+  unsigned int tb  = int(fmod(_GPSweeks,86400.0)) * 1000; // msec of day
+
+  // 5 LSBs of iod are equal to 5 LSBs of tb, remaining bits are zero
+  unsigned int iod = tb << 3;
+  return (iod >> 3);
+}
