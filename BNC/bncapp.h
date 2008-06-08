@@ -38,7 +38,8 @@ class bncApp : public QApplication {
     bncApp(int argc, char* argv[], bool GUIenabled);
     virtual ~bncApp();  
     QString bncVersion() const {return _bncVersion;}
-    void    setPort(int port);
+    void setPort(int port);
+    void setPortCorr(int port);
     void setCaster(bncCaster* caster) {_caster = caster;}
   public slots:
     void slotMessage(const QByteArray msg);
@@ -49,6 +50,7 @@ class bncApp : public QApplication {
     
  private slots:
    void slotNewConnection();
+   void slotNewConnectionCorr();
   private:
     void printEphHeader();
     void printGPSEph(gpsephemeris* ep, bool printFile);
@@ -73,6 +75,9 @@ class bncApp : public QApplication {
     int                 _port;
     QTcpServer*         _server;
     QList<QTcpSocket*>* _sockets;
+    int                 _portCorr;
+    QTcpServer*         _serverCorr;
+    QList<QTcpSocket*>* _socketsCorr;
     bncCaster*          _caster;
 };
 #endif
