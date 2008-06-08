@@ -47,6 +47,7 @@ using namespace std;
 // Constructor
 //////////////////////////////////////////////////////////////////////// 
 bncZeroDecoder::bncZeroDecoder(const QString& fileName) {
+
   QSettings settings;
   QString path = settings.value("rnxPath").toString();
   expandEnvVar(path);

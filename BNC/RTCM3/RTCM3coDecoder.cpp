@@ -43,18 +43,80 @@
 
 #include "RTCM3coDecoder.h"
 #include "bncutils.h"
+#include "bncrinex.h"
 
 using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-RTCM3coDecoder::RTCM3coDecoder(const QString& fileName) 
-  : bncZeroDecoder(fileName) {
+RTCM3coDecoder::RTCM3coDecoder(const QString& fileName) {
+
+  // File Output
+  // -----------
+  QSettings settings;
+  QString path = settings.value("corrPath").toString();
+  if (!path.isEmpty()) {
+    expandEnvVar(path);
+    if ( path.length() > 0 && path[path.length()-1] != QDir::separator() ) {
+      path += QDir::separator();
+    }
+    _fileNameSkl = path + fileName;
+  }
+  _out = 0;
+
+  // Socket Server
+  // -------------
+  int port = settings.value("corrPort").toInt();
+  if (port != 0) {
+    _server = new QTcpServer;
+    _server->listen(QHostAddress::Any, port);
+    connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
+    _sockets = new QList<QTcpSocket*>;
+  }
+  else {
+    delete _sockets;
+    delete _server;
+  }
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 RTCM3coDecoder::~RTCM3coDecoder() {
+}
+
+// Reopen Output File
+//////////////////////////////////////////////////////////////////////// 
+void RTCM3coDecoder::reopen() {
+
+  if (!_fileNameSkl.isEmpty()) {
+
+    QSettings settings;
+
+    QDateTime datTim = QDateTime::currentDateTime().toUTC();
+
+    QString hlpStr = bncRinex::nextEpochStr(datTim,
+                                      settings.value("corrIntr").toString());
+
+    QString fileName = _fileNameSkl 
+      + QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0'))
+      + datTim.toString(".yyC");
+
+    if (_fileName == fileName) {
+      return;
+    }
+    else {
+      _fileName = fileName;
+    }
+
+    delete _out;
+    _out = new ofstream( _fileName.toAscii().data() );
+  }
+}
+
+// New Connection
+////////////////////////////////////////////////////////////////////////////
+void RTCM3coDecoder::slotNewConnection() {
+  _sockets->push_back( _server->nextPendingConnection() );
 }
 
 // 
@@ -125,7 +187,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
                _co.Sat[ii].Orbit.DeltaRadial, 
                _co.Sat[ii].Orbit.DeltaAlongTrack,
                _co.Sat[ii].Orbit.DeltaCrossTrack);
-        *_out << line.toAscii().data();
+        printLine(line);
       }
       for(int ii = CLOCKORBIT_NUMGPS; 
           ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
@@ -136,9 +198,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
                _co.Sat[ii].Orbit.DeltaRadial, 
                _co.Sat[ii].Orbit.DeltaAlongTrack,
                _co.Sat[ii].Orbit.DeltaCrossTrack);
-        *_out << line.toAscii().data();
+        printLine(line);
       }
-      _out->flush();
       _buffer = _buffer.substr(bytesused);
       return success;
     }
@@ -147,6 +208,33 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
     // ---------------
     else {
       _buffer = _buffer.substr(1);
+    }
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void RTCM3coDecoder::printLine(const QString& line) {
+
+  if (_out) {
+    *_out << line.toAscii().data();
+    _out->flush();
+  }
+
+  if (_sockets) {
+    QMutableListIterator<QTcpSocket*> is(*_sockets);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->state() == QAbstractSocket::ConnectedState) {
+        if (sock->write(line.toAscii()) == -1) {
+          delete sock;
+          is.remove();
+        }
+      }
+      else if (sock->state() != QAbstractSocket::ConnectingState) {
+        delete sock;
+        is.remove();
+      }
     }
   }
 }

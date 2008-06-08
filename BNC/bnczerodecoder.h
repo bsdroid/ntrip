@@ -34,11 +34,10 @@ class bncZeroDecoder: public GPSDecoder {
   bncZeroDecoder(const QString& fileName);
   ~bncZeroDecoder();
   virtual t_irc Decode(char* buffer, int bufLen);
- protected:
+ private:
   void reopen();
   QString        _fileName;
   std::ofstream* _out;
- private:
   QDate          _fileDate;
 };
 

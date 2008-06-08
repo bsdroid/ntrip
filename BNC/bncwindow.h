@@ -89,8 +89,10 @@
     QLineEdit* _outFileLineEdit;
     QLineEdit* _outPortLineEdit;
     QLineEdit* _outEphPortLineEdit;
+    QLineEdit* _corrPortLineEdit;
     QLineEdit* _rnxPathLineEdit;
     QLineEdit* _ephPathLineEdit;
+    QLineEdit* _corrPathLineEdit;
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;
     QLineEdit* _rnxSkelLineEdit;
@@ -98,6 +100,7 @@
     QLineEdit* _logFileLineEdit;
     QComboBox* _rnxIntrComboBox;
     QComboBox* _ephIntrComboBox;
+    QComboBox* _corrIntrComboBox;
     QSpinBox*  _rnxSamplSpinBox;
     QSpinBox*  _binSamplSpinBox;
     QCheckBox* _rnxAppendCheckBox;
