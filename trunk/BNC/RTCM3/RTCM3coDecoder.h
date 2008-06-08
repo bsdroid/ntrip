@@ -25,21 +25,39 @@
 #ifndef RTCM3CODECODER_H
 #define RTCM3CODECODER_H
 
-#include "bnczerodecoder.h"
+#include <fstream>
+
+#include <QtCore>
+#include <QtNetwork>
+
+#include "RTCM/GPSDecoder.h"
 
 extern "C" {
 #include "clock_orbit_rtcm.h"
 }
 
-class RTCM3coDecoder : public bncZeroDecoder {
-public:
+class RTCM3coDecoder : public QObject, public GPSDecoder {
+Q_OBJECT
+ public:
   RTCM3coDecoder(const QString& fileName);
   virtual ~RTCM3coDecoder();
   virtual t_irc Decode(char* buffer = 0, int bufLen = 0);
-private:
-  std::string _buffer;
-  ClockOrbit  _co;
-  Bias        _bias;
-} ;
+
+ private slots:
+  void slotNewConnection();
+
+ private:
+  void reopen();
+  void printLine(const QString& line);
+
+  std::ofstream*      _out;
+  QString             _fileNameSkl;
+  QString             _fileName;
+  std::string         _buffer;
+  ClockOrbit          _co;
+  Bias                _bias;
+  QTcpServer*         _server;
+  QList<QTcpSocket*>* _sockets;
+};
 
 #endif

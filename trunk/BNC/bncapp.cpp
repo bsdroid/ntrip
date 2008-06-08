@@ -456,8 +456,7 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
       if (sock->state() == QAbstractSocket::ConnectedState) {
-        int fd = sock->socketDescriptor();
-        if (::write(fd, allLines.data(), allLines.size()) != allLines.size()) {
+        if (sock->write(allLines) == -1) {
           delete sock;
           is.remove();
         }
@@ -530,8 +529,7 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
       if (sock->state() == QAbstractSocket::ConnectedState) {
-        int fd = sock->socketDescriptor();
-        if (::write(fd, allLines.data(), allLines.size()) != allLines.size()) {
+        if (sock->write(allLines) == -1) {
           delete sock;
           is.remove();
         }

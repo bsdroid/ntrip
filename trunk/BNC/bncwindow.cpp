@@ -116,8 +116,11 @@ bncWindow::bncWindow() {
   _outPortLineEdit->setMaximumWidth(9*ww);
   _outEphPortLineEdit    = new QLineEdit(settings.value("outEphPort").toString());
   _outEphPortLineEdit->setMaximumWidth(9*ww);
+  _corrPortLineEdit    = new QLineEdit(settings.value("corrPort").toString());
+  _corrPortLineEdit->setMaximumWidth(9*ww);
   _rnxPathLineEdit    = new QLineEdit(settings.value("rnxPath").toString());
   _ephPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
+  _corrPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
 
   _rnxV3CheckBox = new QCheckBox();
   _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
@@ -144,6 +147,14 @@ bncWindow::bncWindow() {
   int jj = _ephIntrComboBox->findText(settings.value("ephIntr").toString());
   if (jj != -1) {
     _ephIntrComboBox->setCurrentIndex(jj);
+  }
+  _corrIntrComboBox    = new QComboBox();
+  _corrIntrComboBox->setMaximumWidth(9*ww);
+  _corrIntrComboBox->setEditable(false);
+  _corrIntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
+  int mm = _corrIntrComboBox->findText(settings.value("corrIntr").toString());
+  if (mm != -1) {
+    _corrIntrComboBox->setCurrentIndex(mm);
   }
   _rnxSamplSpinBox    = new QSpinBox();
   _rnxSamplSpinBox->setMinimum(0);
@@ -281,13 +292,16 @@ bncWindow::bncWindow() {
   _outFileLineEdit->setWhatsThis(tr("Specify the full path to a file where synchronized observations are saved in plain ASCII format. Beware that the size of this file can rapidly increase depending on the number of incoming streams."));
   _outPortLineEdit->setWhatsThis(tr("BNC can produce synchronized observations in binary format on your local host through an IP port. Specify a port number here to activate this function."));
   _outEphPortLineEdit->setWhatsThis(tr("BNC can produce ephemeris data in RINEX ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
+  _corrPortLineEdit->setWhatsThis(tr("BNC can produce ephemeris corrections on your local host through an IP port. Specify a port number here to activate this function."));
   _rnxPathLineEdit->setWhatsThis(tr("Here you specify the path to where the RINEX Observation files will be stored. If the specified directory does not exist, BNC will not create RINEX Observation files.")); 
   _ephPathLineEdit->setWhatsThis(tr("Specify the path for saving Broadcast Ephemeris data as RINEX Navigation files. If the specified directory does not exist, BNC will not create RINEX Navigation files."));
+  _corrPathLineEdit->setWhatsThis(tr("Specify the path for saving Broadcast Ephemeris corrections. If the specified directory does not exist, BNC will not create the files."));
   _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX Observation file is saved, you might want to compress, copy or upload it immediately via FTP. BNC allows you to execute a script/batch file to carry out these operations. To do that specify the full path of the script/batch file here. BNC will pass the full RINEX Observation file path to the script as a command line parameter (%1 on Windows systems, $1 onUnix/Linux systems).</p><p>The triggering event for calling the script or batch file is the end of a RINEX Observation file 'Interval'. If that is overridden by a stream outage, the triggering event is the stream reconnection.</p>"));
   _rnxSkelLineEdit->setWhatsThis(tr("<p>Whenever BNC starts generating RINEX Observation files (and then once every day at midnight), it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. However, sometimes public RINEX header skeleton files are not available, its contents is not up to date, or you need to put additional/optional records in the RINEX header.</p><p>For that BNC allows using personal skeleton files that contain the header records you would like to include. You can derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the RINEX 'Directory' with the RINEX 'Skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream.</p>"));
   _rnxAppendCheckBox->setWhatsThis(tr("<p>When BNC is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append already existing files following a restart of BNC, a system crash or when BNC crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far.</p>"));
   _rnxIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Observation file.</p>"));
   _ephIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Navigation file.</p>"));
+  _corrIntrComboBox->setWhatsThis(tr("<p>Select the length of the correction file.</p>"));
   _rnxSamplSpinBox->setWhatsThis(tr("<p>Select the RINEX Observation sampling interval in seconds. A value of zero '0' tells BNC to store all received epochs into RINEX.</p>"));
   _binSamplSpinBox->setWhatsThis(tr("<p>Select the Observation sampling interval in seconds. A value of zero '0' tells BNC to send/store all received epochs.</p>"));
   _obsRateComboBox->setWhatsThis(tr("<p>BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. The procedure needs a rough estimate of the expected 'Observation rate' of the incoming streams. When a continuous problem is detected, BNC can inform its operator about this event through an advisory note.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is bypassed.</p>"));
@@ -313,12 +327,14 @@ bncWindow::bncWindow() {
   QWidget* sgroup = new QWidget();
   QWidget* egroup = new QWidget();
   QWidget* agroup = new QWidget();
+  QWidget* cgroup = new QWidget();
   QWidget* ogroup = new QWidget();
   aogroup->addTab(pgroup,tr("Proxy"));
   aogroup->addTab(ggroup,tr("General"));
   aogroup->addTab(ogroup,tr("RINEX Observations"));
   aogroup->addTab(egroup,tr("RINEX Ephemeris"));
   aogroup->addTab(sgroup,tr("Synchronized Observations"));
+  aogroup->addTab(cgroup,tr("Ephemeris Corrections"));
   aogroup->addTab(agroup,tr("Monitor"));
 
   QGridLayout* pLayout = new QGridLayout;
@@ -414,6 +430,18 @@ bncWindow::bncWindow() {
   oLayout->addWidget(new QLabel("Saving RINEX observation files."),5,0,1,4, Qt::AlignLeft);
   ogroup->setLayout(oLayout);
  
+  QGridLayout* cLayout = new QGridLayout;
+  cLayout->setColumnMinimumWidth(0,12*ww);
+  cLayout->addWidget(new QLabel("Directory"),                     0, 0);
+  cLayout->addWidget(_corrPathLineEdit,                           0, 1);
+  cLayout->addWidget(new QLabel("Interval"),                      1, 0);
+  cLayout->addWidget(_corrIntrComboBox,                           1, 1);
+  cLayout->addWidget(new QLabel("Port"),                          2, 0);
+  cLayout->addWidget(_corrPortLineEdit,                           2, 1);
+  cLayout->addWidget(new QLabel("Saving ephemeris correction files and correction output through IP port."),3,0,1,2,Qt::AlignLeft);
+  cLayout->addWidget(new QLabel("    "),4,0);
+  cgroup->setLayout(cLayout);
+
   QVBoxLayout* mLayout = new QVBoxLayout;
   mLayout->addWidget(aogroup);
   mLayout->addWidget(_mountPointsTable);
@@ -554,11 +582,14 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("perfIntr",    _perfIntrComboBox->currentText());
   settings.setValue("outPort",     _outPortLineEdit->text());
   settings.setValue("outEphPort",  _outEphPortLineEdit->text());
+  settings.setValue("corrPort",    _corrPortLineEdit->text());
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());
   settings.setValue("ephPath",     _ephPathLineEdit->text());
+  settings.setValue("corrPath",    _corrPathLineEdit->text());
   settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
   settings.setValue("ephIntr",     _ephIntrComboBox->currentText());
+  settings.setValue("corrIntr",    _corrIntrComboBox->currentText());
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
   settings.setValue("binSampl",    _binSamplSpinBox->value());
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
