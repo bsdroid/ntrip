@@ -64,30 +64,35 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& fileName) {
   }
   _out = 0;
 
-  // Socket Server
-  // -------------
-  int port = settings.value("corrPort").toInt();
-  if (port != 0) {
-    _server = new QTcpServer;
-    _server->listen(QHostAddress::Any, port);
-    connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
-    _sockets = new QList<QTcpSocket*>;
-  }
-  else {
-    delete _sockets;
-    delete _server;
-  }
+  _port = settings.value("corrPort").toInt();
+  _server = 0;
+  _sockets = 0;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 RTCM3coDecoder::~RTCM3coDecoder() {
+  delete _out;
+  delete _server;
+  delete _sockets;
 }
 
 // Reopen Output File
 //////////////////////////////////////////////////////////////////////// 
 void RTCM3coDecoder::reopen() {
 
+  // Socket Server
+  // -------------
+  if (_port != 0 && _server == 0) {
+    _server = new QTcpServer;
+    _server->listen(QHostAddress::Any, _port);
+    QObject::connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
+    _sockets = new QList<QTcpSocket*>;
+    cout << "new port = " << _port << endl;
+  }
+
+  // Output File
+  // ----------- 
   if (!_fileNameSkl.isEmpty()) {
 
     QSettings settings;
@@ -116,6 +121,7 @@ void RTCM3coDecoder::reopen() {
 // New Connection
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3coDecoder::slotNewConnection() {
+  cout << "slotNewConnection" << endl;
   _sockets->push_back( _server->nextPendingConnection() );
 }
 

@@ -50,6 +50,7 @@ Q_OBJECT
   void reopen();
   void printLine(const QString& line);
 
+  int                 _port;
   std::ofstream*      _out;
   QString             _fileNameSkl;
   QString             _fileName;
