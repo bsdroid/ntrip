@@ -44,6 +44,7 @@ class bncApp : public QApplication {
     void slotMessage(const QByteArray msg);
     void slotNewGPSEph(gpsephemeris* gpseph);
     void slotNewGlonassEph(glonassephemeris* glonasseph);
+    void slotNewCorrLine(QString line);
     void slotQuit();
     
  private slots:

@@ -569,3 +569,8 @@ void bncApp::slotQuit() {
 }
 
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncApp::slotNewCorrLine(QString line) {
+  cout << line.toAscii().data() << endl;
+}

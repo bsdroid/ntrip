@@ -44,6 +44,7 @@
 #include "RTCM3coDecoder.h"
 #include "bncutils.h"
 #include "bncrinex.h"
+#include "bncapp.h"
 
 using namespace std;
 
@@ -64,35 +65,20 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& fileName) {
   }
   _out = 0;
 
-  _port = settings.value("corrPort").toInt();
-  _server = 0;
-  _sockets = 0;
+  connect(this, SIGNAL(newCorrLine(QString)), 
+          (bncApp*) qApp, SLOT(slotNewCorrLine(QString)));
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 RTCM3coDecoder::~RTCM3coDecoder() {
   delete _out;
-  delete _server;
-  delete _sockets;
 }
 
 // Reopen Output File
 //////////////////////////////////////////////////////////////////////// 
 void RTCM3coDecoder::reopen() {
 
-  // Socket Server
-  // -------------
-  if (_port != 0 && _server == 0) {
-    _server = new QTcpServer;
-    _server->listen(QHostAddress::Any, _port);
-    QObject::connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
-    _sockets = new QList<QTcpSocket*>;
-    cout << "new port = " << _port << endl;
-  }
-
-  // Output File
-  // ----------- 
   if (!_fileNameSkl.isEmpty()) {
 
     QSettings settings;
@@ -116,13 +102,6 @@ void RTCM3coDecoder::reopen() {
     delete _out;
     _out = new ofstream( _fileName.toAscii().data() );
   }
-}
-
-// New Connection
-////////////////////////////////////////////////////////////////////////////
-void RTCM3coDecoder::slotNewConnection() {
-  cout << "slotNewConnection" << endl;
-  _sockets->push_back( _server->nextPendingConnection() );
 }
 
 // 
@@ -221,26 +200,10 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3coDecoder::printLine(const QString& line) {
-
   if (_out) {
     *_out << line.toAscii().data();
     _out->flush();
   }
 
-  if (_sockets) {
-    QMutableListIterator<QTcpSocket*> is(*_sockets);
-    while (is.hasNext()) {
-      QTcpSocket* sock = is.next();
-      if (sock->state() == QAbstractSocket::ConnectedState) {
-        if (sock->write(line.toAscii()) == -1) {
-          delete sock;
-          is.remove();
-        }
-      }
-      else if (sock->state() != QAbstractSocket::ConnectingState) {
-        delete sock;
-        is.remove();
-      }
-    }
-  }
+  emit newCorrLine(line);
 }
