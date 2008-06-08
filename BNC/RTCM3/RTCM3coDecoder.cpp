@@ -90,7 +90,7 @@ void RTCM3coDecoder::reopen() {
 
     QString fileName = _fileNameSkl 
       + QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0'))
-      + datTim.toString(".yyC");
+      + hlpStr + datTim.toString(".yyC");
 
     if (_fileName == fileName) {
       return;
