@@ -43,8 +43,8 @@ Q_OBJECT
   virtual ~RTCM3coDecoder();
   virtual t_irc Decode(char* buffer = 0, int bufLen = 0);
 
- private slots:
-  void slotNewConnection();
+ signals:
+  void newCorrLine(QString line);
 
  private:
   void reopen();
@@ -57,8 +57,6 @@ Q_OBJECT
   std::string         _buffer;
   ClockOrbit          _co;
   Bias                _bias;
-  QTcpServer*         _server;
-  QList<QTcpSocket*>* _sockets;
 };
 
 #endif
