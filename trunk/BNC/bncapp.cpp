@@ -97,6 +97,10 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
   _server  = 0;
   _sockets = 0;
 
+  _portCorr    = 0;
+  _serverCorr  = 0;
+  _socketsCorr = 0;
+
   _pgmName  = _bncVersion.leftJustified(20, ' ', true);
 #ifdef WIN32
   _userName = QString("${USERNAME}");
@@ -116,6 +120,8 @@ bncApp::~bncApp() {
   delete _ephFileGPS;
   delete _server;
   delete _sockets;
+  delete _serverCorr;
+  delete _socketsCorr;
   if (_rinexVers == 2) {
     delete _ephStreamGlonass;
     delete _ephFileGlonass;
@@ -554,10 +560,28 @@ void bncApp::setPort(int port) {
   }
 }
 
+// Set Port Number
+////////////////////////////////////////////////////////////////////////////
+void bncApp::setPortCorr(int port) {
+  _portCorr = port;
+  if (_portCorr != 0) {
+    _serverCorr = new QTcpServer;
+    _serverCorr->listen(QHostAddress::Any, _portCorr);
+    connect(_serverCorr, SIGNAL(newConnection()), this, SLOT(slotNewConnectionCorr()));
+    _socketsCorr = new QList<QTcpSocket*>;
+  }
+}
+
 // New Connection
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::slotNewConnection() {
   _sockets->push_back( _server->nextPendingConnection() );
+}
+
+// New Connection
+////////////////////////////////////////////////////////////////////////////
+void bncApp::slotNewConnectionCorr() {
+  _socketsCorr->push_back( _serverCorr->nextPendingConnection() );
 }
 
 // 
@@ -568,9 +592,23 @@ void bncApp::slotQuit() {
   quit();
 }
 
-
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::slotNewCorrLine(QString line) {
-  cout << line.toAscii().data() << endl;
+  if (_socketsCorr) {
+    QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->state() == QAbstractSocket::ConnectedState) {
+        if (sock->write(line.toAscii()) == -1) {
+          delete sock;
+          is.remove();
+        }
+      }
+      else if (sock->state() != QAbstractSocket::ConnectingState) {
+        delete sock;
+        is.remove();
+      }
+    }
+  }
 }

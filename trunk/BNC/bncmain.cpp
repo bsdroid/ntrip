@@ -125,6 +125,7 @@ int main(int argc, char *argv[]) {
     //// end test
 
     app.setPort(settings.value("outEphPort").toInt());
+    app.setPortCorr(settings.value("corrPort").toInt());
 
     app.connect(caster, SIGNAL(getThreadErrors()), &app, SLOT(quit()));
     app.connect(caster, SIGNAL(newMessage(QByteArray)), 

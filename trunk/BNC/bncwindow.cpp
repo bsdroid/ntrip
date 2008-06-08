@@ -637,6 +637,7 @@ void bncWindow::slotGetData() {
                           _outPortLineEdit->text().toInt());
 
   ((bncApp*)qApp)->setPort(_outEphPortLineEdit->text().toInt());
+  ((bncApp*)qApp)->setPortCorr(_corrPortLineEdit->text().toInt());
 
   connect(_caster, SIGNAL(getThreadErrors()), 
           this, SLOT(slotGetThreadErrors()));
