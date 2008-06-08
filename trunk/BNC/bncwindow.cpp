@@ -120,7 +120,7 @@ bncWindow::bncWindow() {
   _corrPortLineEdit->setMaximumWidth(9*ww);
   _rnxPathLineEdit    = new QLineEdit(settings.value("rnxPath").toString());
   _ephPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
-  _corrPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
+  _corrPathLineEdit    = new QLineEdit(settings.value("corrPath").toString());
 
   _rnxV3CheckBox = new QCheckBox();
   _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
