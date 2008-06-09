@@ -448,7 +448,7 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
   line.sprintf("    %18.11e %18.11e\n", ((double)ep->TOW), 0.0);
   allLines += line;
 
-  printOutput(printFile, lineV2, lineV3, allLines);
+  printOutput(printFile, _ephStreamGPS, lineV2, lineV3, allLines);
 }
 
 // Print One Glonass Ephemeris
@@ -496,25 +496,26 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
                ep->z_velocity, ep->z_acceleration, (double) ep->E);
   allLines += line;
 
-  printOutput(printFile, lineV2, lineV3, allLines);
+  printOutput(printFile, _ephStreamGlonass, lineV2, lineV3, allLines);
 }
 
 // Output
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::printOutput(bool printFile, const QString& lineV2, 
+void bncApp::printOutput(bool printFile, QTextStream* stream,
+                         const QString& lineV2, 
                          const QString& lineV3,
                          const QByteArray& allLines) {
   // Output into file
   // ----------------
-  if (printFile && _ephStreamGPS) {
+  if (printFile && stream) {
     if (_rinexVers == 2) {
-      *_ephStreamGPS << lineV2.toAscii();
+      *stream << lineV2.toAscii();
     }
     else {
-      *_ephStreamGPS << lineV3.toAscii();
+      *stream << lineV3.toAscii();
     }
-    *_ephStreamGPS << allLines;
-    _ephStreamGPS->flush();
+    *stream << allLines;
+    stream->flush();
   }
 
   // Output into the socket
