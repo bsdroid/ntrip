@@ -55,7 +55,8 @@ class bncApp : public QApplication {
     void printEphHeader();
     void printGPSEph(gpsephemeris* ep, bool printFile);
     void printGlonassEph(glonassephemeris* ep, bool printFile);
-    void printOutput(bool printFile, const QString& lineV2, 
+    void printOutput(bool printFile, QTextStream* stream, 
+                     const QString& lineV2, 
                      const QString& lineV3,
                      const QByteArray& allLines);
 
