@@ -454,103 +454,103 @@ void bncGetThread::run() {
         char* data = new char[nBytes];
         _socket->read(data, nBytes);
 
-      if (_inspSegm<1) {
-        _decoder->Decode(data, nBytes);
-      }
-      else {
-
-        // Decode data
-        // -----------
-        if (!_decodePause.isValid() || 
-          _decodePause.secsTo(QDateTime::currentDateTime()) >= currPause )  {
-
-          if (decode) { 
-            if ( _decoder->Decode(data, nBytes) == success ) { 
-              numSucc += 1;
-            } 
-            if ( _decodeTime.secsTo(QDateTime::currentDateTime()) > _inspSegm ) {
-              decode = false;
+        if (_inspSegm<1) {
+          _decoder->Decode(data, nBytes);
+        }
+        else {
+        
+          // Decode data
+          // -----------
+          if (!_decodePause.isValid() || 
+            _decodePause.secsTo(QDateTime::currentDateTime()) >= currPause )  {
+        
+            if (decode) { 
+              if ( _decoder->Decode(data, nBytes) == success ) { 
+                numSucc += 1;
+              } 
+              if ( _decodeTime.secsTo(QDateTime::currentDateTime()) > _inspSegm ) {
+                decode = false;
+              }
             }
-          }
-
-          // Check - once per inspect segment
-          // --------------------------------
-          if (!decode) {
-            _decodeTime = QDateTime::currentDateTime();
-            if (numSucc>0) {
-              secSucc += _inspSegm;
-              _decodeSucc = QDateTime::currentDateTime();
-              if (secSucc > _adviseReco * 60) {
-                secSucc = _adviseReco * 60 + 1;
-              }
-              numSucc = 0;
-              currPause = initPause;
-              _decodePause.setDate(QDate());
-              _decodePause.setTime(QTime());
-            }
-            else {
-              secFail += _inspSegm;
-              secSucc = 0;
-              if (secFail > _adviseFail * 60) { 
-                secFail = _adviseFail * 60 + 1;
-              }
-              if (!_decodePause.isValid() || !_makePause) {
-                _decodePause = QDateTime::currentDateTime();
-              }
-              else {
+        
+            // Check - once per inspect segment
+            // --------------------------------
+            if (!decode) {
+              _decodeTime = QDateTime::currentDateTime();
+              if (numSucc>0) {
+                secSucc += _inspSegm;
+                _decodeSucc = QDateTime::currentDateTime();
+                if (secSucc > _adviseReco * 60) {
+                  secSucc = _adviseReco * 60 + 1;
+                }
+                numSucc = 0;
+                currPause = initPause;
                 _decodePause.setDate(QDate());
                 _decodePause.setTime(QTime());
-                secFail = secFail + currPause - _inspSegm;
-                currPause = currPause * 2;
-                if (currPause > 960) {
-                currPause = 960;
+              }
+              else {
+                secFail += _inspSegm;
+                secSucc = 0;
+                if (secFail > _adviseFail * 60) { 
+                  secFail = _adviseFail * 60 + 1;
+                }
+                if (!_decodePause.isValid() || !_makePause) {
+                  _decodePause = QDateTime::currentDateTime();
+                }
+                else {
+                  _decodePause.setDate(QDate());
+                  _decodePause.setTime(QTime());
+                  secFail = secFail + currPause - _inspSegm;
+                  currPause = currPause * 2;
+                  if (currPause > 960) {
+                  currPause = 960;
+                  }
                 }
               }
-            }
-
-            // End corrupt threshold
-            // ---------------------
-            if ( begCorrupt && !endCorrupt && secSucc > _adviseReco * 60 ) {
-              _endDateCor = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().date().toString("yy-MM-dd");
-              _endTimeCor = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().time().toString("hh:mm:ss");
-              emit(newMessage((_staID + ": Recovery threshold exceeded, corruption ended " + _endDateCor + " " + _endTimeCor).toAscii()));
-              callScript(("End_Corrupted " + _endDateCor + " " + _endTimeCor + " Begin was " + _begDateCor + " " + _begTimeCor).toAscii());
-              endCorrupt = true;
-              begCorrupt = false;
-              secFail = 0;
-            } 
-            else {
-
-              // Begin corrupt threshold
-              // -----------------------
-              if ( !begCorrupt && secFail > _adviseFail * 60 ) {
-                _begDateCor = _decodeSucc.toUTC().date().toString("yy-MM-dd");
-                _begTimeCor = _decodeSucc.toUTC().time().toString("hh:mm:ss");
-                emit(newMessage((_staID + ": Failure threshold exceeded, corrupted since " + _begDateCor + " " + _begTimeCor).toAscii()));
-                callScript(("Begin_Corrupted " + _begDateCor + " " + _begTimeCor).toAscii());
-                begCorrupt = true;
-                endCorrupt = false;
-                secSucc = 0;
-                numSucc = 0;
+        
+              // End corrupt threshold
+              // ---------------------
+              if ( begCorrupt && !endCorrupt && secSucc > _adviseReco * 60 ) {
+                _endDateCor = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().date().toString("yy-MM-dd");
+                _endTimeCor = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().time().toString("hh:mm:ss");
+                emit(newMessage((_staID + ": Recovery threshold exceeded, corruption ended " + _endDateCor + " " + _endTimeCor).toAscii()));
+                callScript(("End_Corrupted " + _endDateCor + " " + _endTimeCor + " Begin was " + _begDateCor + " " + _begTimeCor).toAscii());
+                endCorrupt = true;
+                begCorrupt = false;
+                secFail = 0;
+              } 
+              else {
+        
+                // Begin corrupt threshold
+                // -----------------------
+                if ( !begCorrupt && secFail > _adviseFail * 60 ) {
+                  _begDateCor = _decodeSucc.toUTC().date().toString("yy-MM-dd");
+                  _begTimeCor = _decodeSucc.toUTC().time().toString("hh:mm:ss");
+                  emit(newMessage((_staID + ": Failure threshold exceeded, corrupted since " + _begDateCor + " " + _begTimeCor).toAscii()));
+                  callScript(("Begin_Corrupted " + _begDateCor + " " + _begTimeCor).toAscii());
+                  begCorrupt = true;
+                  endCorrupt = false;
+                  secSucc = 0;
+                  numSucc = 0;
+                }
               }
+              decode = true;
             }
-            decode = true;
           }
         }
-      }
-
-      // End outage threshold
-      // --------------------
-      if ( _decodeStart.isValid() && _decodeStart.secsTo(QDateTime::currentDateTime()) > _adviseReco * 60 ) {
-        _decodeStart.setDate(QDate());
-        _decodeStart.setTime(QTime());
-        if (_inspSegm>0) {
-          _endDateOut = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().date().toString("yy-MM-dd");
-          _endTimeOut = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().time().toString("hh:mm:ss");
-          emit(newMessage((_staID + ": Recovery threshold exceeded, outage ended " + _endDateOut + " " + _endTimeOut).toAscii()));
-          callScript(("End_Outage " + _endDateOut + " " + _endTimeOut + " Begin was " + _begDateOut + " " + _begTimeOut).toAscii());
+        
+        // End outage threshold
+        // --------------------
+        if ( _decodeStart.isValid() && _decodeStart.secsTo(QDateTime::currentDateTime()) > _adviseReco * 60 ) {
+          _decodeStart.setDate(QDate());
+          _decodeStart.setTime(QTime());
+          if (_inspSegm>0) {
+            _endDateOut = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().date().toString("yy-MM-dd");
+            _endTimeOut = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().time().toString("hh:mm:ss");
+            emit(newMessage((_staID + ": Recovery threshold exceeded, outage ended " + _endDateOut + " " + _endTimeOut).toAscii()));
+            callScript(("End_Outage " + _endDateOut + " " + _endTimeOut + " Begin was " + _begDateOut + " " + _begTimeOut).toAscii());
+          }
         }
-      }
 
         delete [] data;
         
