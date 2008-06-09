@@ -53,15 +53,6 @@ using namespace std;
 #  define isinf(x) 0
 #endif
 
-// 
-////////////////////////////////////////////////////////////////////////////
-ephSender::ephSender() {
-  connect(this, SIGNAL(newGPSEph(gpsephemeris*)), 
-          (bncApp*) qApp, SLOT(slotNewGPSEph(gpsephemeris*)));
-  connect(this, SIGNAL(newGlonassEph(glonassephemeris*)), 
-          (bncApp*) qApp, SLOT(slotNewGlonassEph(glonassephemeris*)));
-}
-
 // Error Handling
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3Error(const char*, ...) {
@@ -82,6 +73,11 @@ RTCM3Decoder::RTCM3Decoder(const QString& fileName) : GPSDecoder() {
   memset(&_Parser, 0, sizeof(_Parser));
   _Parser.GPSWeek = tim/(7*24*60*60);
   _Parser.GPSTOW  = tim%(7*24*60*60);
+
+  connect(this, SIGNAL(newGPSEph(gpsephemeris*)), 
+          (bncApp*) qApp, SLOT(slotNewGPSEph(gpsephemeris*)));
+  connect(this, SIGNAL(newGlonassEph(glonassephemeris*)), 
+          (bncApp*) qApp, SLOT(slotNewGlonassEph(glonassephemeris*)));
 
   // Sub-Decoder for Clock and Orbit Corrections
   // -------------------------------------------
@@ -210,7 +206,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
         else if (rr == 1019) {
           decoded = true;
           gpsephemeris* ep = new gpsephemeris(_Parser.ephemerisGPS);
-          emit _ephSender.newGPSEph(ep);
+          emit newGPSEph(ep);
         }
 
         // GLONASS Ephemeris
@@ -218,7 +214,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
         else if (rr == 1020) {
           decoded = true;
           glonassephemeris* ep = new glonassephemeris(_Parser.ephemerisGLONASS);
-          emit _ephSender.newGlonassEph(ep);
+          emit newGlonassEph(ep);
         }
       }
     }

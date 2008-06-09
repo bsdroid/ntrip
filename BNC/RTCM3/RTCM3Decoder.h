@@ -32,26 +32,19 @@ extern "C" {
 #include "rtcm3torinex.h"
 }
 
-class ephSender : public QObject {
-Q_OBJECT
- public:
-  ephSender();
-  friend class RTCM3Decoder;
- signals:
-  void newGPSEph(gpsephemeris* gpseph);
-  void newGlonassEph(glonassephemeris* glonasseph);
-} ;
-
 class RTCM3coDecoder;
 
-class RTCM3Decoder : public GPSDecoder {
+class RTCM3Decoder : public QObject, public GPSDecoder {
+Q_OBJECT
  public:
   RTCM3Decoder(const QString& fileName);
   virtual ~RTCM3Decoder();
   virtual t_irc Decode(char* buffer = 0, int bufLen = 0);
+ signals:
+  void newGPSEph(gpsephemeris* gpseph);
+  void newGlonassEph(glonassephemeris* glonasseph);
  private:
   struct RTCM3ParserData _Parser;
-  ephSender              _ephSender;
   RTCM3coDecoder*        _coDecoder; 
 } ;
 
