@@ -543,9 +543,11 @@ void bncApp::printOutput(bool printFile, const QString& lineV2,
 void bncApp::setPort(int port) {
   _port = port;
   if (_port != 0) {
+    delete _server;
     _server = new QTcpServer;
     _server->listen(QHostAddress::Any, _port);
     connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
+    delete _sockets;
     _sockets = new QList<QTcpSocket*>;
   }
 }
@@ -555,9 +557,11 @@ void bncApp::setPort(int port) {
 void bncApp::setPortCorr(int port) {
   _portCorr = port;
   if (_portCorr != 0) {
+    delete _serverCorr;
     _serverCorr = new QTcpServer;
     _serverCorr->listen(QHostAddress::Any, _portCorr);
     connect(_serverCorr, SIGNAL(newConnection()), this, SLOT(slotNewConnectionCorr()));
+    delete _socketsCorr;
     _socketsCorr = new QList<QTcpSocket*>;
   }
 }
