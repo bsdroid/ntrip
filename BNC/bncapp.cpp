@@ -542,7 +542,6 @@ void bncApp::printOutput(bool printFile, QTextStream* stream,
 // Set Port Number
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::setPort(int port) {
-  _rinexVers= 0;
   _port = port;
   if (_port != 0) {
     delete _server;
