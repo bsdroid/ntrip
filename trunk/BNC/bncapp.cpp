@@ -392,24 +392,24 @@ void bncApp::printEphHeader() {
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
 
-  QString line;
-  QByteArray allLines;
+  QString lineV2;
+  QString lineV3;
 
   struct converttimeinfo cti;
   converttime(&cti, ep->GPSweek, ep->TOC);
-  if      (_rinexVers == 3) {
-    line.sprintf("G%02d %04d %02d %02d %02d %02d %02d %18.11e %18.11e %18.11e\n",
+
+  lineV3.sprintf("G%02d %04d %02d %02d %02d %02d %02d %18.11e %18.11e %18.11e\n",
                  ep->satellite, cti.year, cti.month, cti.day, cti.hour,
                  cti.minute, cti.second, ep->clock_bias, ep->clock_drift,
                  ep->clock_driftrate);
-  }
-  else if (_rinexVers == 2) {
-    line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f %18.11e %18.11e %18.11e\n",
+
+  lineV2.sprintf("%02d %02d %02d %02d %02d %02d%5.1f %18.11e %18.11e %18.11e\n",
                  ep->satellite, cti.year%100, cti.month, cti.day, cti.hour,
                  cti.minute, (double) cti.second, ep->clock_bias, 
                  ep->clock_drift, ep->clock_driftrate);
-  }
-  allLines += line;
+
+  QString    line;
+  QByteArray allLines;
 
   line.sprintf("    %18.11e %18.11e %18.11e %18.11e\n", (double)ep->IODE,
                ep->Crs, ep->Delta_n, ep->M0);
@@ -448,39 +448,12 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
   line.sprintf("    %18.11e %18.11e\n", ((double)ep->TOW), 0.0);
   allLines += line;
 
-  // Output into file
-  // ----------------
-  if (printFile && _ephStreamGPS) {
-    *_ephStreamGPS << allLines;
-    _ephStreamGPS->flush();
-  }
-
-  // Output into the socket
-  // ----------------------
-  if (_sockets) {
-    QMutableListIterator<QTcpSocket*> is(*_sockets);
-    while (is.hasNext()) {
-      QTcpSocket* sock = is.next();
-      if (sock->state() == QAbstractSocket::ConnectedState) {
-        if (sock->write(allLines) == -1) {
-          delete sock;
-          is.remove();
-        }
-      }
-      else if (sock->state() != QAbstractSocket::ConnectingState) {
-        delete sock;
-        is.remove();
-      }
-    }
-  }
+  printOutput(printFile, lineV2, lineV3, allLines);
 }
 
 // Print One Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
-
-  QString line;
-  QByteArray allLines;
 
   int ww  = ep->GPSWeek;
   int tow = ep->GPSTOW; 
@@ -494,19 +467,21 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
     tk += 86400;
   }
 
-  if      (_rinexVers == 3) {
-    line.sprintf("R%02d %04d %02d %02d %02d %02d %02d %18.11e %18.11e %18.11e\n",
+  QString lineV2;
+  QString lineV3;
+
+  lineV3.sprintf("R%02d %04d %02d %02d %02d %02d %02d %18.11e %18.11e %18.11e\n",
                  ep->almanac_number, cti.year, cti.month, cti.day, cti.hour, 
                  cti.minute, cti.second, -ep->tau, ep->gamma, (double) tk);
-  }
-  else if (_rinexVers == 2) {
-    line.sprintf("%02d %02d %02d %02d %02d %02d%5.1f %18.11e %18.11e %18.11e\n",
+
+  lineV2.sprintf("%02d %02d %02d %02d %02d %02d%5.1f %18.11e %18.11e %18.11e\n",
                  ep->almanac_number, cti.year%100, cti.month, cti.day, 
                  cti.hour, cti.minute, (double) cti.second, -ep->tau, 
                  ep->gamma, (double) tk);
-  }
-  allLines += line;
   
+  QString    line;
+  QByteArray allLines;
+
   line.sprintf("    %18.11e %18.11e %18.11e %18.11e\n", ep->x_pos,
                ep->x_velocity, ep->x_acceleration, 
                (ep->flags & GLOEPHF_UNHEALTHY) ? 1.0 : 0.0);
@@ -521,11 +496,25 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
                ep->z_velocity, ep->z_acceleration, (double) ep->E);
   allLines += line;
 
+  printOutput(printFile, lineV2, lineV3, allLines);
+}
+
+// Output
+////////////////////////////////////////////////////////////////////////////
+void bncApp::printOutput(bool printFile, const QString& lineV2, 
+                         const QString& lineV3,
+                         const QByteArray& allLines) {
   // Output into file
   // ----------------
-  if (printFile && _ephStreamGlonass) {
-    *_ephStreamGlonass << allLines;
-    _ephStreamGlonass->flush();
+  if (printFile && _ephStreamGPS) {
+    if (_rinexVers == 2) {
+      *_ephStreamGPS << lineV2.toAscii();
+    }
+    else {
+      *_ephStreamGPS << lineV3.toAscii();
+    }
+    *_ephStreamGPS << allLines;
+    _ephStreamGPS->flush();
   }
 
   // Output into the socket
@@ -535,7 +524,8 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
       if (sock->state() == QAbstractSocket::ConnectedState) {
-        if (sock->write(allLines) == -1) {
+        if (sock->write(lineV3.toAscii())   == -1 ||
+            sock->write(allLines)           == -1) {
           delete sock;
           is.remove();
         }
