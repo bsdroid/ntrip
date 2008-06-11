@@ -341,7 +341,7 @@ void t_bns::readEpoch() {
             in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5); xx(4) *= 1e-6;
 
             //// beg test (zero clock correction for Gerhard Wuebbena)
-            xx(4) -= xx(5) / 299792458.0;
+            ////            xx(4) -= xx(5) / 299792458.0;
             //// end test
 
             t_ephPair* pair = _ephList[prn];
