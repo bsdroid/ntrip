@@ -81,6 +81,9 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
     if (_logFile->open(QIODevice::WriteOnly | QIODevice::Unbuffered)) {
       _logStream = new QTextStream(_logFile);
     }
+    else {
+      _logStream = 0;
+    }
   }
 
   // RINEX writer
