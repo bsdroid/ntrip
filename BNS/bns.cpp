@@ -73,7 +73,8 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   // --------
   QString logFileName = settings.value("logFile").toString();
   if (logFileName.isEmpty()) {
-    _logFile = 0;
+    _logFile   = 0;
+    _logStream = 0;
   }
   else {
     _logFile = new QFile(logFileName);
