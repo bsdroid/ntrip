@@ -80,23 +80,28 @@ BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. P
 &nbsp; &nbsp; &nbsp; 3.7.2. <a href=#syncwait>Wait for Full Epoch</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.3. <a href=#syncfile>File</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.4. <a href=#syncsample>Sampling</a><br>
-3.8. <a href=#advnote>Monitor</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.1. <a href=#obsrate>Observation Rate</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.2. <a href=#advfail>Failure Threshold</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.3. <a href=#advreco>Recovery Threshold</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.4. <a href=#pause>Pause</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.5. <a href=#advscript>Advisory Script</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.6. <a href=#perflog>Performance Log</a><br>
-3.9. <a href=#mountpoints>Mountpoints</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.1. <a href=#mountadd>Add Mountpoints</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.2. <a href=#mounthost>Broadcaster Host and Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.3. <a href=#mountuser>Broadcaster User and Password</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.4. <a href=#mounttable>Get Table</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.5. <a href=#mountdelete>Delete Mountpoints</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.6. <a href=#mountedit>Edit Mountpoints</a><br>
-3.10. <a href=#start>Start</a><br>
-3.11. <a href=#stop>Stop</a><br>
-3.12. <a href=#nw>No Window</a>
+3.8. <a href=#correct>Ephemeris Corrections</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.1. <a href=#corrdir>Directory</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.2. <a href=#corrint>Interval</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.3. <a href=#corrport>Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.4. <a href=#corrwait>Wait for Full Epoch</a><br>
+3.9. <a href=#advnote>Monitor</a><br>
+&nbsp; &nbsp; &nbsp; 3.9.1. <a href=#obsrate>Observation Rate</a><br>
+&nbsp; &nbsp; &nbsp; 3.9.2. <a href=#advfail>Failure Threshold</a><br>
+&nbsp; &nbsp; &nbsp; 3.9.3. <a href=#advreco>Recovery Threshold</a><br>
+&nbsp; &nbsp; &nbsp; 3.9.4. <a href=#pause>Pause</a><br>
+&nbsp; &nbsp; &nbsp; 3.9.5. <a href=#advscript>Advisory Script</a><br>
+&nbsp; &nbsp; &nbsp; 3.9.6. <a href=#perflog>Performance Log</a><br>
+3.10. <a href=#mountpoints>Mountpoints</a><br>
+&nbsp; &nbsp; &nbsp; 3.10.1. <a href=#mountadd>Add Mountpoints</a><br>
+&nbsp; &nbsp; &nbsp; 3.10.2. <a href=#mounthost>Broadcaster Host and Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.10.3. <a href=#mountuser>Broadcaster User and Password</a><br>
+&nbsp; &nbsp; &nbsp; 3.10.4. <a href=#mounttable>Get Table</a><br>
+&nbsp; &nbsp; &nbsp; 3.10.5. <a href=#mountdelete>Delete Mountpoints</a><br>
+&nbsp; &nbsp; &nbsp; 3.10.6. <a href=#mountedit>Edit Mountpoints</a><br>
+3.11. <a href=#start>Start</a><br>
+3.12. <a href=#stop>Stop</a><br>
+3.13. <a href=#nw>No Window</a>
 </p>
 
 <p><a name="file"><h4>3.1. File</h4></p>
@@ -380,7 +385,24 @@ Beware that the size of this file can rapidly increase depending on the number o
 Select the observation output sampling interval in seconds. A value of zero '0' tells BNC to send/store all received epochs. This is the default value.
 <p>
 
-<p><a name="advnote"><h4>3.8. Monitor</h4></p>
+<p><a name="correct"><h4>3.8. Ephemeris Corrections</h4></p>
+<p>
+</p>
+RTCM is in the process of developing new Version 3 messages to transport satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following tentative messages currently under discussion in RTCM have in implemented in BNC:
+<ul>
+<li>Message type 4050: GPS orbit corrections to Broadcast Ephemeris</li>
+<li>Message type 4051: GPS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 4052: GPS code bias</li>
+<li>Message type 4053: GLONASS orbit corrections to Broadcast Ephemeris</li>
+<li>Message type 4054: GLONASS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 4055: GLONASS code bias</li>
+<li>Message type 4056: Combined GPS and GLONASS orbit corrections to Broadcast Ephemeris</li>
+<li>Message type 4057: Combined GPS and GLONASS clock corrections to Broadcast Ephemeris</li>
+</ul>
+<p> Note that orbit corrections are provided through radial, along-track, and cross-track components of the satellite position.
+</p>
+
+<p><a name="advnote"><h4>3.9. Monitor</h4></p>
 
 <p>
 At various times, the incoming stream might become unavailable or corrupted. In such cases, it is important that the BNC operator and/or the stream providers become aware of the situation so that necessary measures can be taken to restore the stream. Furthermore, continuous attempts to decode corrupted stream(s) can generate unnecessary workload for BNC. Outages and corruptions are handled by BNC as follows:
@@ -395,12 +417,12 @@ At various times, the incoming stream might become unavailable or corrupted. In 
 Outage and corruption events are reported in the Log file/section. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilise BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
 </p>
 
-<p><a name="obsrate"><h4>3.8.1 Observation Rate - mandatory if 'Failure threshold', 'Recovery threshold', 'Pause' and 'Advisory Script' is set</h4></p>
+<p><a name="obsrate"><h4>3.9.1 Observation Rate - mandatory if 'Failure threshold', 'Recovery threshold', 'Pause' and 'Advisory Script' is set</h4></p>
 <p>
 BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough a priory estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is by-passed (decoding attempt will never get paused).
 </p> 
 
-<p><a name="advfail"><h4>3.8.2 Failure Threshold - optional</h4></p>
+<p><a name="advfail"><h4>3.9.2 Failure Threshold - optional</h4></p>
 <p>
 Event 'Begin_Failure' will be reported if no data is received continuously for longer than the 'Failure threshold' time. Similarly, event 'Begin_Corrupted' will be reported when corrupted data is detected by the decoder continuously for longer than this 'Failure threshold' time. The default value is set to 15 minutes and is recommended so not to innundate user with too many event reports.
 </p>
@@ -408,7 +430,7 @@ Event 'Begin_Failure' will be reported if no data is received continuously for l
 Note that specifying a value of zero '0' for the 'Failure threshold' will force BNC to report any stream failure immediately. Note also that for using this function you need to specify the 'Observation rate'.
 </p>
 
-<p><a name="advreco"><h4>3.8.3 Recovery Threshold - optional</h4></p>
+<p><a name="advreco"><h4>3.9.3 Recovery Threshold - optional</h4></p>
 <p>
 Once a 'Begin_Failure' or 'Begin_Corrupted' event has been reported, BNC will check for when the stream again becomes available or uncorrupted. Event 'End_Failure' or 'End_Corrupted' will be reported as soon as valid observations are again detected continuously throughout the 'Recovery threshold' time span. The default value is set to 5 minutes and is recommended so not to innundate users with too many event reports.  
 </p>
@@ -416,7 +438,7 @@ Once a 'Begin_Failure' or 'Begin_Corrupted' event has been reported, BNC will ch
 Note that specifying a value of zero '0' for the 'Recovery threshold' will force BNC to report any stream recovery immediately. Note also that for using this function you need to specify the 'Observation rate'.
 </p>
 
-<p><a name="pause"><h4>3.8.4 Pause - optional</h4></p>
+<p><a name="pause"><h4>3.9.4 Pause - optional</h4></p>
 <p>
 In case of a corrupted stream, the decoding process can be paused and decodings are then attempted again at decreasing rate. BNC will first attempt to decode again after a 30 second lag and if unsuccessful, make another attempt within 60 seconds after the previous attempt. If it is still unsuccessful, it will make another attempt to decode within 120 seconds after the previous attempt and so on. Each decoding attempt doubles the wait time since the previous attempt. The maximum wait time between attempts is limited to 960 seconds. Tick 'Pause' to activate this function. Note that it is only effective if an 'Observation rate' is specified.
 </p>
@@ -424,7 +446,7 @@ In case of a corrupted stream, the decoding process can be paused and decodings 
 Do not tick 'Pause' if you want to prevent BNC from making any decoding pause. Be aware that this may incur an unnecessary workload.
 </p>
 
-<p><a name="advscript"><h4>3.8.5 Advisory Script - optional </h4></p>
+<p><a name="advscript"><h4>3.9.5 Advisory Script - optional </h4></p>
 <p>
 As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (%1 and %2 on Windows systems or $1 and $2 on Unix/Linux systems) together with date and time information.
 </p>
@@ -453,7 +475,7 @@ Regards, BNC
 Note the sleep command in this script which causes the system to wait for a random period of up to 60 seconds before sending the email. This should avoids overloading your mail server in case of a simultaneous failure of many streams.
 </p> 
 
-<p><a name="perflog"><h4>3.8.6 Performance Log - optional </h4></p>
+<p><a name="perflog"><h4>3.9.6 Performance Log - optional </h4></p>
 <p>
 <u>Latency:</u> Latency is defined in BNC by the following equation:
 </p>
@@ -480,7 +502,7 @@ Latencies and statistical information can be recorded in the Log file/section at
 Select a 'Performance log' interval to activate this function or select the empty option field if you do not want BNC to log latencies and statistical information.
 </p>
 
-<p><a name="mountpoints"><h4>3.9. Mountpoints</h4></p>
+<p><a name="mountpoints"><h4>3.10. Mountpoints</h4></p>
 <p>
 Each stream on an NTRIP broadcaster is defined using a unique source ID called mountpoint. An NTRIP client like BNC access the desired data stream by referring to its mountpoint. Information about mountpoints is available through the source-table maintained by the NTRIP broadcaster. Note that mountpoints could show up in BNC more than once when retrieving streams from several NTRIP broadcasters.
 </p>
@@ -497,22 +519,22 @@ Streams selected for retrieval are listed under the 'Mountpoints' section on BNC
 <tr><td>'bytes' &nbsp;</td><td>Number of bytes retrieved.
 </table>
 
-<p><a name="mountadd"><h4>3.9.1 Add Mountpoints</h4></p>
+<p><a name="mountadd"><h4>3.10.1 Add Mountpoints</h4></p>
 <p>
 Button 'Add Mountpoints' opens a window that allows user to select data streams from an NTRIP broadcaster according to their mountpoints.
 </p> 
 
-<p><a name="mounthost"><h4>3.9.2 Broadcaster Host and Port - required</h4></p>
+<p><a name="mounthost"><h4>3.10.2 Broadcaster Host and Port - required</h4></p>
 <p>
 Enter the NTRIP broadcaster host IP and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.
 </p> 
 
-<p><a name="mountuser"><h4>3.9.3 Broadcaster User and Password - required for protected streams</h4></p>
+<p><a name="mountuser"><h4>3.10.3 Broadcaster User and Password - required for protected streams</h4></p>
 <p>
 Some streams on NTRIP broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.
 </p> 
 
-<p><a name="mounttable"><h4>3.9.4 Get Table</h4></p>
+<p><a name="mounttable"><h4>3.10.4 Get Table</h4></p>
 <p>
 Use the 'Get Table' button to download the source-table from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. RTCM Version 2.x streams must contain message types 18 and 19 while RTCM Version 3.x streams must contain GPS or SBAS message types 1002 or 1004 and may contain GLONASS message types 1010 or 1012, see data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3.x streams containing message types 1019 (GPS) and 1020 (GLONASS) are required. Select your streams line by line, use +Shift and +Ctrl when necessary.
 </p> 
@@ -523,11 +545,11 @@ The contents of data field 'nmea' tells you whether a stream retrieval needs to 
 Hit 'OK' to return to the main window. If you wish you can click on 'Add Mountpoints' and repeat the process again to retrieve mountpoints from different casters.
 </p> 
 
-<p><a name="mountdelete"><h4>3.9.5 Delete Mountpoints</h4></p>
+<p><a name="mountdelete"><h4>3.10.5 Delete Mountpoints</h4></p>
 <p>
 To remove a stream from the 'Mountpoints' list in the main window, highlight it by clicking on it and hit the 'Delete Mountpoints' button. You can also remove multiple mountpoints simultaneously by highlighting them using +Shift and +Ctrl.</p>
 
-<p><a name="mountedit"><h4>3.9.6 Edit Mountpoints</h4></p>
+<p><a name="mountedit"><h4>3.10.6 Edit Mountpoints</h4></p>
 <ul>
 <li>
 BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.
@@ -542,17 +564,17 @@ BNC can also retrieve streams from virtual reference stations (VRS). To initiate
 </li>
 </ul> 
 
-<p><a name="start"><h4>3.10. Start</h4></p>
+<p><a name="start"><h4>3.11. Start</h4></p>
 <p>
 Hit 'Start' to start retrieving, decoding, and converting GNSS data streams in real-time. Note that 'Start' generally forces BNC to begin with fresh RINEX which might overwrite existing files when necessary unless the option 'Append files' is ticked.
 </p> 
 
-<p><a name="stop"><h4>3.11. Stop</h4></p>
+<p><a name="stop"><h4>3.12. Stop</h4></p>
 <p>
 Hit the 'Stop' button in order to stop BNC. 
 </p> 
 
-<p><a name="nw"><h4>3.12. No Window - optional</h4></p>
+<p><a name="nw"><h4>3.13. No Window - optional</h4></p>
 <p>
 On all systems BNC can be started in batch mode with the command line option '-nw'. BNC will then run in 'no window' mode, using options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Client.conf (Unix/Linux, see Config File example in the Annex) or from the register BKG_NTRIP_Client (Windows).
 </p>
