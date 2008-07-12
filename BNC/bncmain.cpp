@@ -78,6 +78,7 @@ int main(int argc, char *argv[]) {
     settings.setValue("casterPort", 2101);
     settings.setValue("rnxIntr",    "15 min");
     settings.setValue("ephIntr",    "1 day");
+    settings.setValue("corrIntr",   "1 day");
     settings.setValue("rnxSkel",    "SKL");
     settings.setValue("waitTime",   5);
     settings.setValue("makePause",  0);
