@@ -71,9 +71,9 @@ BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. P
 &nbsp; &nbsp; &nbsp; 3.5.6. <a href=#rnxscript>Script</a><br>
 &nbsp; &nbsp; &nbsp; 3.5.7. <a href=#rnxvers>Version</a><br>
 3.6. <a href=#ephemeris>RINEX - Ephemeris</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.3. <a href=#ephdir>Directory</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.1. <a href=#ephint>File Interval</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.2. <a href=#ephport>Output Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.1. <a href=#ephdir>Directory</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.2. <a href=#ephint>Interval</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.3. <a href=#ephport>Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.4. <a href=#ephvers>Version</a><br>
 3.7. <a href=#syncout>Synchronized Observations</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.1. <a href=#syncport>Port</a><br>
@@ -290,17 +290,17 @@ Broadcast ephemeris can be saved as RINEX Navigation files when received via RTC
 Specify the path for saving broadcast ephemeris data as RINEX Navigation files. If the specified directory does not exist, BNC will not create RINEX Navigation files. Default value for Ephemeris 'Directory' is an empty option field, meaning that no RINEX Navigation files will be created.
 </p> 
 
-<p><a name="ephint"><h4>3.6.2 File Interval - mandatory if Ephemeris 'Directory' is set</h4></p>
+<p><a name="ephint"><h4>3.6.2 Interval - mandatory if 'Directory' is set</h4></p>
 <p>
 Select the length of the RINEX Navigation file generated. The default value is 1 day.
 </p> 
 
-<p><a name="ephport"><h4>3.6.3 Output Port - optional</h4></p>
+<p><a name="ephport"><h4>3.6.3 Port - optional</h4></p>
 <p>
-BNC can output broadcast ephemeris in RINEX ASCII format on your local host (IP 127.0.0.1) through an IP port. Specify an IP port number to activate this function. The default is an empty option field, meaning that no ASCII ephemeris output via IP port is generated.
+BNC can output broadcast ephemeris in RINEX ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number to activate this function. The default is an empty option field, meaning that no ASCII ephemeris output via IP port is generated.
 </p>
 <p>
-The source code for BNC comes with an example perl script called 'test_bnc_eph.pl' that allows you to read BNC's ASCII ephemeris output from the IP port.
+The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that allows you to read BNC's ASCII ephemeris output from the IP port.
 </p>
 
 <p><a name="ephvers"><h4>3.6.4 Version - optional</h4></p>
@@ -364,7 +364,7 @@ struct Observation {
 The source code for BNC comes with an example program called 'test_bnc_qt.cpp' that allows you to read BNC's binary observation output from the IP port (hard-coded to 1968) and save the observations in file 'obs.txt'.
 </p>
 
-<p><a name="syncwait"><h4>3.7.2 Wait for Full Epoch - mandatory if 'File' or 'Port' is set</h4></p>
+<p><a name="syncwait"><h4>3.7.2 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
 <p>
 When feeding a real-time GNSS engine waiting for input epoch by epoch, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming streams and the delay acceptable for your real-time GNSS product. Default value for 'Wait for full epoch' is 5 seconds.
 </p>
@@ -388,18 +388,75 @@ Select the observation output sampling interval in seconds. A value of zero '0' 
 <p><a name="correct"><h4>3.8. Ephemeris Corrections</h4></p>
 <p>
 </p>
-RTCM is in the process of developing new Version 3 messages to transport satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following tentative messages currently under discussion in RTCM have in implemented in BNC:
+RTCM is in the process of developing new Version 3 messages to transport satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following tentative messages currently under discussion have been implemented in BNC:
 <ul>
 <li>Message type 4050: GPS orbit corrections to Broadcast Ephemeris</li>
 <li>Message type 4051: GPS clock corrections to Broadcast Ephemeris</li>
-<li>Message type 4052: GPS code bias</li>
+<li>Message type 4052: GPS code biases</li>
 <li>Message type 4053: GLONASS orbit corrections to Broadcast Ephemeris</li>
 <li>Message type 4054: GLONASS clock corrections to Broadcast Ephemeris</li>
-<li>Message type 4055: GLONASS code bias</li>
+<li>Message type 4055: GLONASS code biases</li>
 <li>Message type 4056: Combined GPS and GLONASS orbit corrections to Broadcast Ephemeris</li>
 <li>Message type 4057: Combined GPS and GLONASS clock corrections to Broadcast Ephemeris</li>
 </ul>
-<p> Note that orbit corrections are provided through radial, along-track, and cross-track components of the satellite position.
+<p>
+RTCM Version 3 streams carrying these messages may be used i.e. to support real-time Precise Point Positioning (PPP) applications. 
+</p>
+
+<p><a name="corrdir"><h4>3.8.1 Directory - optional</h4></p>
+<p>
+Specify a directory for saving Ephemeris Corrections in files. If the specified directory does not exist, BNC will not create Ephemeris Correction files. Default value for Ephemeris Corrections 'Directory' is an empty option field, meaning that no Ephemeris Correction files will be created.
+</p>
+
+<p><a name="corrint"><h4>3.8.2 Interval - mandatory if 'Directory' is set</h4></p>
+<p>
+Select the length of the Ephemeris Correction files. The default value is 1 day.
+</p>
+
+<p><a name="corrport"><h4>3.8.3 Port - optional</h4></p>
+<p>
+BNC can output Ephemeris Corrections in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number to activate this function. The default is an empty option field, meaning that no Ephemeris Correction output via IP port is generated.
+</p>
+<p>
+The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that allows you to read BNC's Ephemeris Corrections from the IP port. Its ASCII output display comprises records carrying the following set of parameters:
+</p>
+<p>
+<ul>
+<li>Mountpoint</li>
+<li>GPS Week</li>
+<li>Second in GPS Week</li>
+<li>PRN</li>
+<li>Broadcast Ephemeris IOD</li>
+<li>Clock Correction to Broadcast Ephemeris [m]</li>
+<li>Radial Component of Orbit Correction to Broadcast Ephemeris [m]</li>
+<li>Along-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
+<li>Cross-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
+</ul>
+</p>
+<p>
+The output is synchronized epoch by epoch with a leading "A" indicating the begin of an epoch and a trailing "C" indicating the end of an epoch. The following is an example output from two RTCM Version 3 streams (CLCK1 and CLCK4) containing message types 4056 and 4057:
+<pre>
+A
+CLCK1 1487 547554.0 G27    57     12.219      1.241    0.495    0.002
+CLCK1 1487 547554.0 G29   101     -0.086      0.008   -0.429    0.675
+CLCK1 1487 461154.0 R06    18      5.192      2.390   -1.915   -6.734
+CLCK1 1487 461154.0 R07    18     -1.619      2.827    0.901    0.280
+CLCK4 1487 547554.0 G27    57     12.218      1.242    0.496    0.003
+CLCK4 1487 547554.0 G29   101     -0.087      0.007   -0.427    0.673
+CLCK4 1487 461154.0 R06    18      5.191      2.389   -1.914   -6.735
+CLCK4 1487 461154.0 R07    18     -1.618      2.826    0.900    0.281
+C
+A
+CLCK1 1487 547555.0 G27    57     12.216      1.241    0.494    0.003
+CLCK1 1487 547555.0 G29   101     -0.084      0.009   -0.428    0.675
+...
+...
+</pre>
+</p>
+
+<p><a name="corrwait"><h4>3.8.4 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
+<p>
+When feeding a real-time GNSS engine waiting for Ephemeris Corrections, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Ephemeris Corrections stream and the delay acceptable by your application. Default value for 'Wait for full epoch' is 5 seconds.
 </p>
 
 <p><a name="advnote"><h4>3.9. Monitor</h4></p>
