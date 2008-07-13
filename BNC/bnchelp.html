@@ -363,6 +363,9 @@ struct Observation {
 <p>
 The source code for BNC comes with an example program called 'test_bnc_qt.cpp' that allows you to read BNC's binary observation output from the IP port (hard-coded to 1968) and save the observations in file 'obs.txt'.
 </p>
+<p>
+Note that any socket connection of an application to BNC's Synchronized Observations Port is recorded in the Log section on the bottom of the main window together with a connection counter, leading to log records like 'New Connection # 1'.
+</p>
 
 <p><a name="syncwait"><h4>3.7.2 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
 <p>
