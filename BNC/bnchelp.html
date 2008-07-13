@@ -407,6 +407,9 @@ RTCM Version 3 streams carrying these messages may be used i.e. to support real-
 <p>
 Specify a directory for saving Ephemeris Corrections in files. If the specified directory does not exist, BNC will not create Ephemeris Correction files. Default value for Ephemeris Corrections 'Directory' is an empty option field, meaning that no Ephemeris Correction files will be created.
 </p>
+<p>
+The file name convention for Ephemeris Correction files follows the convention for RINEX files except for the last character of the file name suffix which is set to "C".
+</p>
 
 <p><a name="corrint"><h4>3.8.2 Interval - mandatory if 'Directory' is set</h4></p>
 <p>
@@ -418,15 +421,15 @@ Select the length of the Ephemeris Correction files. The default value is 1 day.
 BNC can output Ephemeris Corrections in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number to activate this function. The default is an empty option field, meaning that no Ephemeris Correction output via IP port is generated.
 </p>
 <p>
-The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that allows you to read BNC's Ephemeris Corrections from the IP port. Its ASCII output display comprises records carrying the following set of parameters:
+The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that allows you to read BNC's Ephemeris Corrections from the IP port. In case of a stream carrying message types 4056 and 4057, the script produces ASCII records containing the following set of parameters:
 </p>
 <p>
 <ul>
 <li>Mountpoint</li>
 <li>GPS Week</li>
 <li>Second in GPS Week</li>
-<li>PRN</li>
-<li>Broadcast Ephemeris IOD</li>
+<li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
+<li>IOD refering to Broadcast Ephemeris set</li>
 <li>Clock Correction to Broadcast Ephemeris [m]</li>
 <li>Radial Component of Orbit Correction to Broadcast Ephemeris [m]</li>
 <li>Along-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
@@ -434,7 +437,7 @@ The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that
 </ul>
 </p>
 <p>
-The output is synchronized epoch by epoch with a leading "A" indicating the begin of an epoch and a trailing "C" indicating the end of an epoch. The following is an example output from two RTCM Version 3 streams (CLCK1 and CLCK4) containing message types 4056 and 4057:
+The output is synchronized epoch by epoch with a leading "A" indicating the begin and a trailing "C" indicating the end of an epoch. The following is an example output from two RTCM Version 3 streams (CLCK1 and CLCK4) containing message types 4056 and 4057:
 <pre>
 A
 CLCK1 1487 547554.0 G27    57     12.219      1.241    0.495    0.002
