@@ -297,7 +297,7 @@ Select the length of the RINEX Navigation file generated. The default value is 1
 
 <p><a name="ephport"><h4>3.6.3 Port - optional</h4></p>
 <p>
-BNC can output broadcast ephemeris in RINEX ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number to activate this function. The default is an empty option field, meaning that no ASCII ephemeris output via IP port is generated.
+BNC can output broadcast ephemeris in RINEX Version 3 ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number to activate this function. The default is an empty option field, meaning that no ASCII ephemeris output via IP port is generated.
 </p>
 <p>
 The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that allows you to read BNC's ASCII ephemeris output from the IP port.
@@ -306,6 +306,9 @@ The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that
 <p><a name="ephvers"><h4>3.6.4 Version - optional</h4></p>
 <p>
 Default format for RINEX Navigation files containing broadcast ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format.
+</p>
+<p>
+Note that this does not concern the broadcast ephemeris output throug IP port which is always in RINEX Version 3 format.
 </p> 
 
 <p><a name="syncout"><h4>3.7. Synchronized Observations</h4></p>
