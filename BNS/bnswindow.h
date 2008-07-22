@@ -55,8 +55,13 @@ Q_OBJECT
 
   QWidget*   _canvas;
 
+  QLineEdit* _proxyHostLineEdit;
+  QLineEdit* _proxyPortLineEdit;
+  QLineEdit* _ephHostLineEdit;
   QLineEdit* _ephPortLineEdit;
+  QLineEdit* _clkHostLineEdit;
   QLineEdit* _clkPortLineEdit;
+  QLineEdit* _clkFileLineEdit;
   QLineEdit* _logFileLineEdit;
   QLineEdit* _outHostLineEdit;
   QLineEdit* _outPortLineEdit;
@@ -67,8 +72,13 @@ Q_OBJECT
   QLineEdit* _sp3PathLineEdit;
   QComboBox* _rnxIntrComboBox;
   QComboBox* _sp3IntrComboBox;
+  QComboBox* _refSysComboBox;
   QSpinBox*  _rnxSamplSpinBox;
   QSpinBox*  _sp3SamplSpinBox;
+  QCheckBox* _fileAppendCheckBox;
+  QCheckBox* _outProxyCheckBox;
+  QCheckBox* _ephProxyCheckBox;
+  QCheckBox* _clkProxyCheckBox;
 
   QTextEdit*  _log;
 
