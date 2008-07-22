@@ -1,23 +1,31 @@
 <h3>BKG Ntrip Server (BNS) Version 1.0</h3>
 
 <p>
-The BKG Ntrip Server (BNS) is a program for generating real-time GNSS clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format and upload the resulting stream to NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home</u>.
+The BKG Ntrip Server (BNS) is a program for generating real-time GNSS clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format and upload the resulting stream to NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home.</u> It is meant as a tool for service providers with real-time access to a continental or global distributet GNSS reference station network.
 </p>
+
 <p>
 BNS has been developed for the Federal Agency for Cartography and Geodesy (BKG) within the framework of EUREF's Real-time GNSS Project (EUREF-IP, IP for Internet Protocol) and the Real-Time IGS Pilot Project (RTIGS).
 </p>
+
 <p>
 BNS has been written under GNU General Public License (GPL). Binaries for BNS are available for Windows, 32-bit Linux, 64-bit Linux (compiled using option -m32), Solaris, and Mac systems. We used the MinGW Version 5.3.1 compiler to create the Windows binary. It is likely that BNS can be compiled on other systems where a GNU compiler and Qt Version 4.3.2 are installed.
 </p>
+
+<p>
+Please ensure that you have installed the latest version of BNS available from <u>http://igs.bkg.bund.de/index_ntrip_down.htm</u>. We are continuously working on the program and would appreciate if you could send any comments, suggestions, or bug reports to [euref-ip@bkg.bund.de] or [igs-ip@bkg.bund.de].
+</p>
+
 <h3>Contents</h3>
 <p>
 <h4>
 <a href=#purpose>1. Purpose</a><br>
-<a href=#resources>2. Resources</a><br>
-<a href=#options>3. Options</a><br>
-<a href=#limits>4. Limitations</a><br>
-<a href=#authors>5. Authors</a><br>
-<a href=#annex>8. Annex</a><br>
+<a href=#function>2. Functioning</a><br>
+<a href=#resources>3. Resources</a><br>
+<a href=#options>4. Options</a><br>
+<a href=#limits>5. Limitations</a><br>
+<a href=#authors>6. Authors</a><br>
+<a href=#annex>7. Annex</a><br>
 </h4>
 </p>
 
@@ -26,10 +34,10 @@ BNS has been written under GNU General Public License (GPL). Binaries for BNS ar
 <p> The purpose of BNS is to
 
 <ul>
-<li>read GNSS clock and orbit corrections in a plain ASCII format from an IP port of your local host. These corrections can be provided by a real-time GNSS engine like RTNet. They are expected to refer to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system.</li> 
-<li>read GNSS Broadcast Ephemeris in RINEX Navigation file format from an IP port of your local host. This information can be provided in real-time by the 'BKG Ntrip Client' (BNC) program.</li>
-<li>convert the IGS Earth-Centered-Earth-Fixed clock and and orbit corrections into corrections to Broadcast Ephemeris with radial, along-track and cross-track components.</li>
-<li>upload the stream of cock and orbit Broadcast Ephemeris corrections to an Ntrip Broadcaster.</li>
+<li>read GNSS clocks and orbits in a plain ASCII format from an IP port. They can be provided by a real-time GNSS engine like RTNet and are expected to refer to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system.</li> 
+<li>read GNSS Broadcast Ephemeris in RINEX Navigation file format from an IP port. This information can be provided in real-time by the 'BKG Ntrip Client' (BNC) program.</li>
+<li>convert the IGS Earth-Centered-Earth-Fixed clocks and and orbits into corrections to Broadcast Ephemeris with radial, along-track and cross-track components.</li>
+<li>upload the stream of cock and orbit corrections to Broadcast Ephemeris to an Ntrip Broadcaster.</li>
 <li>save the Broadcast Ephemeris clock corrections in Clock RINEX files.</li>
 <li>save the Broadcast Ephemeris orbit corrections in SP3 files.</li>
 </ul>
@@ -38,7 +46,33 @@ BNS has been written under GNU General Public License (GPL). Binaries for BNS ar
 Note that BNS so far only generates the tentative RTCM Version 3.x message types 4056 for Combined GPS and GLONASS orbit corrections and 4057 for Combined GPS and GLONASS clock corrections to Broadcast Ephemeris.
 </p>
 
-<p><a name="resources"><h3>2. Resources</h3></p>
+<p><a name="function"><h3>2. Functioning</h3></p>
+<p>
+The BNS procedure for generating RTCM Version 3 clock and orbit corrections to Broadcast ephemeris in radial, along-track and cross-track components is the following:
+</p>
+<p>
+<ul> 
+<li>Continuously receive up to date Broadcast Ephemeris carrying approximate orbits and clocks for all satellites. Receive them in RINEX Version 3 Navigation file format. Read new Broadcast Ephemeris immediately whenever they become available. Tools like the 'BKG Ntrip Client' (BNC) provide this information.</li>
+<li>Continuously receive best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS05 reference system. Receive them every epoch in a plain ASCII format as provided by a real-time GNSS engine like RTNet.</li>
+</ul> 
+<p>Then, once per epoch:</p>
+<ul> 
+<li>Calculate X,Y,Z coordinates from Broadcast Ephemeris orbits.</li>
+<li>Calculate differences dX,dY,dZ between Broadcast Ephemeris orbits and IGS05 orbits.</li>
+<li>Model orbit differences through polynomial of low degree.</li>
+<li>Derive model-based estimation of corrections to Broadcast Ephemeris orbits.
+<li>Tranform model-based orbit corrections into radial, along-track and cross-track components.</li>
+<br><br>
+<li>Calculate differences dC between clocks from Broadcast Ephemeris and IGS05 clocks.</li>
+<li>Model clock differences through polynomial of low degree.</li>
+<li>Derive model-based estimation of corrections to Broadcast Ephemeris clocks.</li>
+<br><br>
+<li>Encode Broadcast Ephemeris clock and orbit corrections in RTCM Version 3 format.</li>
+<li>Upload corrections in RTCM Verion 3 format to NTRIP Broadcaster.</li>
+</ul>
+<p>
+
+<p><a name="resources"><h3>3. Resources</h3></p>
 <p>
 BNS requires access to the Internet with a minimum of about 2 to 3 kbits/sec for stream upload to an Ntrip Broadcaster depending on the number of visible satellites. You need to make sure that the connection can sustain the required bandwidth.
 </p>
@@ -46,38 +80,40 @@ BNS requires access to the Internet with a minimum of about 2 to 3 kbits/sec for
 Running BNS requires the clock of the host computer to be properly synchronized.
 </p>
 
-<p><a name="options"><h3>3. Options</h3></p>
+<p><a name="options"><h3>4. Options</h3></p>
 <p>
-3.1. <a href=#file>File</a><br>
-3.2. <a href=#help>Help</a><br>
-3.3. <a href=#proxy>Proxy</a><br>
-3.4. <a href=#general>General</a><br>
-&nbsp; &nbsp; &nbsp; 3.4.1. <a href=#logfile>Logfile</a><br>
-&nbsp; &nbsp; &nbsp; 3.4.2. <a href=#appfile>Append Files</a><br>
-3.5. <a href=#input>Input</a><br>
-&nbsp; &nbsp; &nbsp; 3.5.1. <a href=#ephemeris>Ephemeris</a><br>
-&nbsp; &nbsp; &nbsp; 3.5.2. <a href=#clocks>Clocks</a><br>
-3.6. <a href=#caster>NTRIP Caster</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.1. <a href=#cashost>Host</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.2. <a href=#casport>Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.3. <a href=#casproxy>Use Proxy</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.4. <a href=#casmount>Mountpoint</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.5. <a href=#caspass>Password</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.6. <a href=#casdata>Data</a><br>
-3.7. <a href=#clocks>RINEX Clocks</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.1. <a href=#clkdir>Directory</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.2. <a href=#clkint>Interval</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.3. <a href=#clksamp>Sampling</a><br>
-3.8. <a href=#orbits>SP3 Orbits</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.1. <a href=#orbdir>Directory</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.2. <a href=#orbint>Interval</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.3. <a href=#orbsamp>Sampling</a><br>
-3.9 <a href=#start>Start</a><br>
-3.10. <a href=#stop>Stop</a><br>
-3.11. <a href=#nw>No Window</a>
+4.1. <a href=#file>File</a><br>
+4.2. <a href=#help>Help</a><br>
+4.3. <a href=#proxy>Proxy</a><br>
+4.4. <a href=#general>General</a><br>
+&nbsp; &nbsp; &nbsp; 4.4.1. <a href=#logfile>Logfile</a><br>
+&nbsp; &nbsp; &nbsp; 4.4.2. <a href=#appfile>Append Files</a><br>
+&nbsp; &nbsp; &nbsp; 4.4.3. <a href=#refsystem>Reference System</a><br>
+4.5. <a href=#input>Input</a><br>
+&nbsp; &nbsp; &nbsp; 4.5.1. <a href=#ephemeris>Ephemeris</a><br>
+&nbsp; &nbsp; &nbsp; 4.5.2. <a href=#clocks>Clocks & Orbits</a><br>
+&nbsp; &nbsp; &nbsp; 4.5.3. <a href=#saveclk>Save Clocks & Orbits</a><br>
+4.6. <a href=#caster>NTRIP Caster</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.1. <a href=#cashost>Host</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.2. <a href=#casport>Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.3. <a href=#casmount>Mountpoint</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.4. <a href=#caspass>Password</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.5. <a href=#casproxy>Use Proxy</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.6. <a href=#casstream>Save Stream</a><br>
+4.7. <a href=#rnxclk>RINEX Clocks</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.1. <a href=#clkdir>Directory</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.2. <a href=#clkint>Interval</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.3. <a href=#clksamp>Sampling</a><br>
+4.8. <a href=#orbits>SP3 Orbits</a><br>
+&nbsp; &nbsp; &nbsp; 4.8.1. <a href=#orbdir>Directory</a><br>
+&nbsp; &nbsp; &nbsp; 4.8.2. <a href=#orbint>Interval</a><br>
+&nbsp; &nbsp; &nbsp; 4.8.3. <a href=#orbsamp>Sampling</a><br>
+4.9 <a href=#start>Start</a><br>
+4.10. <a href=#stop>Stop</a><br>
+4.11. <a href=#nw>No Window</a>
 </p>
 
-<p><a name="file"><h4>3.1. File</h4></p>
+<p><a name="file"><h4>4.1. File</h4></p>
 
 <p>
 The 'File' button lets you
@@ -95,7 +131,7 @@ quit the BNS program.
 </ul>
 </p>
 
-<p><a name="help"><h4>3.2. Help</h4></p>
+<p><a name="help"><h4>4.2. Help</h4></p>
 
 <p>
 The 'Help' button provides access to
@@ -114,76 +150,173 @@ Close the 'About BNS' window to continue working with BNS.
 BNS comes with a help system providing online information about its functionality and usage. Short descriptions are available for any widget. Focus to the relevant widget and press Shift+F1 to request help information. A help text appears immediately; it disappears as soon as the user does something else. The dialogs on some operating systems may provide a "?" button that users can click; they then click the relevant widget to pop up the help text.
 </p>
 
-<p><a name="proxy"><h4>3.3. Proxy - for usage in a protected LAN</h4></p>
+<p><a name="proxy"><h4>4.3. Proxy - for usage in a protected LAN</h4></p>
 
 <p>
 If you are running BNS within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you don't know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p>
 <p>
 Note that IP streaming is often not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNS outside your LAN on a host that has unobstructed connection to the Internet.
 </p>
-<p><a name="general"><h4>3.4. General Options</h4></p>
+<p><a name="general"><h4>4.4. General Options</h4></p>
 
-<p><a name="logfile"><h4>3.4.1 Logfile - optional</h4></p>
+<p><a name="logfile"><h4>4.4.1 Logfile - optional</h4></p>
 <p>
 Records of BNC's activities are shown in the Log section on the bottom of the main window. These logs can be saved into a file when a valid path is specified in the 'Log (full path)' field. The message log covers the communication status between BNC and the NTRIP broadcaster as well as problems that may occur in the communication link, stream availability, stream delay, stream conversion etc. All times are given in UTC. The default value for 'Log (full path)' is an empty option field, meaning that BNC logs will not saved into a file.
 </p>
 
-<p><a name="appfile"><h4>3.4.2 Append Files</h4></p>
+<p><a name="appfile"><h4>4.4.2 Append Files</h4></p>
 <p>
 When BNS is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append existing files following a restart of BNS, a system crash or when BNS crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far. Note that option 'Append files' affects all types of files created by BNS.
 </p> 
 
-<p><a name="input"><h4>3.5. Input</h4></p>
+<p><a name="refsystem"><h4>4.4.3 Reference System - mandatory</h4></p>
 <p>
-BNS needs GNSS clock and orbit corrections in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and Broadcast Ephemeris in RINEX Navigation file format.
+BNS refers its final clock and orbit corrections to a specific reference system. Available options are
+<p>
+<ul>
+<li>IGS05 which stands for the GNSS-based IGS realization of the International Terrestrial Reference System (ITRS), and</li>
+<li>ETRS89 which stands for the European Terrestrial Reference System 1989 adopted by EUREF.</li>
+</ul>
+</p>
+<p>
+As the clocks and orbits coming from real-time GNSS engin are expected in the 'IGS05' reference system (X,Y,Z ECEF), in fact no transformation is carried out if you select this option.
+</p>
+<p>
+The implemented formulas for transformation from ITRS (IGS05) to ETRS89 are taken from 'Boucher and Altamimi 2007: Specifications for reference frame fixing in the analysis of EUREF GPS campaign', see <u>http://etrs89.ensg.ign.fr/memo2007.pdf</u>.
 </p>
 
-<p><a name="ephemeris"><h4>3.5.1 Ephemeris - mandatory</h4></p>
+<p><a name="input"><h4>4.5. Input</h4></p>
 <p>
-BNS reads GNSS Broadcast Ephemeris in RINEX Version3 Navigation file format from an IP address and port. This information can be provided in real-time by the 'BKG Ntrip Client' (BNC) program. Enter the respective servers IP address and port number. Make sure that this server is up and running before you start BNS. If a prosy server is operated between BNS and the server providing the Broadcast Ephemeris, you may need to use the proxy server settings you have specified. Tick 'Use proxy' to use it for stream upload.
+BNS needs GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and Broadcast Ephemeris in RINEX Navigation file format.
 </p>
 
-<p><a name="clocks"><h4>3.5.2 Clocks - mandatory</h4></p>
+<p><a name="ephemeris"><h4>4.5.1 Ephemeris - mandatory</h4></p>
 <p>
-BNS reads GNSS clock and orbit corrections in a plain ASCII format from an IP address and port. These corrections can be provided by a real-time GNSS engine like RTNet. They are expected to refer to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. Enter the respective servers IP address and port number. Make sure that this server is up and running. If a prosy server is operated between BNS and the server providing the clock and orbit corrections, you may need to use the proxy server settings you have specified. Tick 'Use proxy' to use it for stream upload.
+BNS reads GNSS Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address and port. This information can be provided in real-time by the 'BKG Ntrip Client' (BNC) program through a persistent socket connection. Note that whenever a new set of Broadcast Ephemeris becomes availabe, it has to be transmitted immediately. Enter the respective servers IP address and port number. If BNS runs (advantageously) on the same host which provides the Broadcast Ephemeris, 127.0.0.1 has to be introduced as the servers IP address. Make sure that this server is up and running before you start BNS.
+</p>
+<p>
+If a proxy server is operated between BNS and the server providing the Broadcast Ephemeris, you may need to use the proxy server settings you have specified. Tick 'Use proxy' to use it for stream download.
+</p>
+<p>
+The following is an example for Broadcast Ephemeris records in RINEX Version 3 Navigation file format concerning GPS PRN32 and GLONASS PRN04:
+</p>
+<p>
+<pre>
+G32 2008 07 22 12 00 00  3.08818183839e-04  2.72848410532e-12  0.00000000000e+00
+     1.10000000000e+01 -4.00312500000e+01  4.63269297026e-09  9.74027926504e-01
+    -2.19419598579e-06  1.39143558918e-02  8.25151801109e-06  5.15381674576e+03
+     2.16000000000e+05 -8.56816768646e-08 -3.26801342873e-02 -2.94297933578e-07
+     9.68688494953e-01  2.30468750000e+02 -1.30607654294e+00 -8.26105839196e-09
+    -3.62872257943e-10  1.00000000000e+00  1.48900000000e+03  0.00000000000e+00
+     2.00000000000e+00  0.00000000000e+00 -2.79396772385e-09  1.10000000000e+01
+     0.00000000000e+00  0.00000000000e+00
+R04 2008 07 22 08 15 14  4.76110726595e-05  0.00000000000e+00  2.88600000000e+04
+    -1.76267827148e+04 -4.64202880859e-01  1.86264514923e-09  0.00000000000e+00
+    -1.79631489258e+04 -3.41343879700e-01 -2.79396772385e-09  6.00000000000e+00
+    -4.20270556641e+03  3.50097942352e+00  0.00000000000e+00  0.00000000000e+00
+</pre>
 </p>
 
-<p><a name="caster"><h4>3.6. NTRIP Caster</h4></p>
+<p><a name="clocks"><h4>4.5.2 Clocks & Orbits - mandatory</h4></p>
 <p>
-BNS can upload the resulting stream of cock and orbit corrections (refering to Broadcast Ephemeris) to an Ntrip Broadcaster. For that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which might be used for stream upload. The stream format follows RTCM Version 3 currently transmitting thentative message types 4056 and 4057.
+BNS reads GNSS clocks and orbits in a plain ASCII format from an IP address and port. They can be provided by a real-time GNSS engine like RTNet and are expected to refer to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. Enter the respective servers IP address and port number to establish a persistent socket connection. If BNS runs (advantageously) on the same host which provides the clocks and orbits, 127.0.0.1 has to be introduced as the servers IP address. Make sure that this server is up and running before you start BNS.
+</p>
+<p>
+If a proxy server is operated between BNS and the server providing the clocks and orbits, you may need to use the proxy server settings you have specified. Tick 'Use proxy' to use them for stream download.
+</p>
+
+<p>
+Below you find an example for precise clocks and orbits coming in plain ASCII format from a real-time GNSS engine. Each epoch starts with an asterisk character followed by GPS Week, Second in GPS Week and Number of satellites. Subsequent records provide the following set of parameters for each satellite:
+</p>
+
+<p>
+<ul>
+<li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
+<li>X,Y,Z coordinates in Earth-Centered-Earth-Fixed system [m]</li>
+<li>Satellite clock error [ns]</li>
+<li>Standard deviation of satellite clock error [ns]</li>
+</ul>
+</p>
+
+</p>
+<p>
+<pre>
+*  1489  218527.000000 13
+G08    -76413.307  24866966.637   8527190.979     -162.790607     0.375
+G09  13547198.314 -14993483.355  16521052.798        6.462891    -0.335
+G12  23546505.279 -11419650.825  -4126405.941     -356.488306    -0.103
+G15  20671877.676   1926153.017  16592944.847     -147.015776    -0.216
+G17  14584397.556  20610108.909   8557082.997       38.709284    -0.081
+G18   8169428.184 -16862693.369  18872507.835     -153.553965    -0.149
+G22  -6624646.069 -14262545.420  21565075.194      211.479778    -0.089
+G26  21424721.760   7905958.802  13511083.183      296.893434     0.413
+G28   5220247.539  14404808.121  22087340.167      -21.263655     0.184
+R04  14087836.321 -12766880.844  16904727.671       47.601404    -0.302
+R13   9968458.843   4774687.770  22964489.920     -205.604626     0.526
+R14  11765674.558 -13533158.122  18154217.335     -142.409508     0.093
+R23  15142315.506  19152857.044   7329580.240     -111.465205    -0.316
+*  1489  218528.000000 13
+G08    -76893.521  24867989.053   8524186.937     -162.790606     0.376
+G09  13547066.674 -14991254.946  16523118.186        6.462896    -0.334
+G12  23547101.712 -11419571.961  -4123272.866     -356.488305    -0.102
+G15  20673380.091   1927636.846  16590899.052     -147.015776    -0.215
+G17  14583421.795  20609591.381   8559990.870       38.709276    -0.083
+G18   8171742.449 -16863250.285  18870956.178     -153.553959    -0.148
+G22  -6622069.142 -14263374.211  21565314.170      211.479771    -0.091
+G26  21425938.906   7907253.545  13508540.885      296.893448     0.415
+G28   5217668.842  14405642.686  22087373.519      -21.263659     0.183
+R04  14090047.809 -12767642.452  16902327.088       47.601401    -0.303
+R13   9967725.004   4777752.821  22964170.268     -205.604617     0.529
+R14  11764988.257 -13530761.727  18156438.374     -142.409512     0.091
+R23  15141704.650  19152042.802   7332976.247     -111.465201    -0.316
+</pre>
+</p>
+
+
+<p><a name="clocks"><h4>4.5.3 Save Clocks & Orbits - optional</h4></p>
+<p>
+Specify the full path to a file where incoming clocks and orbits are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved.
+</p>
+
+<p><a name="caster"><h4>4.6. NTRIP Caster</h4></p>
+<p>
+BNS can upload the resulting stream of cock and orbit corrections to Broadcast Ephemeris to an Ntrip Broadcaster. For that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which might be used for stream upload. The stream's format is RTCM Version 3. Note that it only carries the thentative message types 4056 and 4057 for combined GPS and GLONASS clock and orbit corrections.
 </p> 
 
-<p><a name="cashost"><h4>3.6.1 Host - optional</h4></p>
+<p><a name="cashost"><h4>4.6.1 Host - optional</h4></p>
 Enter the NTRIP broadcaster 'Host' IP name or number for stream upload. 
 </p>
 
-<p><a name="casport"><h4>3.6.2 Port - mandatory if 'Host' is set</h4></p>
+<p><a name="casport"><h4>4.6.2 Port - mandatory if 'Host' is set</h4></p>
 <p>
 Enter the NTRIP broadcaster IP 'Port' number for stream upload. Note that NTRIP Broadcaster installations often provide access through more than one port, usually ports 80 and 2101. In case you experience communication problems on port 80, you may like to use the alternative port(s).
 </p>
 
-<p><a name="casproxy"><h4>3.6.3 Use Proxy - optional if 'Host' and 'Proxy' is set</h4></p>
+<p><a name="casmount"><h4>4.6.3 Mountpoint - mandatory if 'Host' is set</h4></p>
 <p>
-In case BNS is operated in a protected LAN, you may need to use the proxy server protecting your network. Once you have specified your proxies host and port, you can tick 'Use proxy' to use it for stream upload.
+Each stream on an NTRIP broadcaster is defined using a unique source ID called mountpoint. An NTRIP server like BNS can upload its stream to the broadcaster by referring to a dedicated mountpoint established by the broadcaster operator. Specify the mountpoint you receive from the operator for your stream. Note that it usually is a four character ID (capital letters) plus an integer number.
 </p>
 
-<p><a name="casmount"><h4>3.6.4 Mountpoint - mandatory if 'Host' is set</h4></p>
+<p><a name="caspass"><h4>4.6.4 Password - mandatory if 'Host' is set</h4></p>
 <p>
-Each stream on an NTRIP broadcaster is defined using a unique source ID called mountpoint. An NTRIP server like BNS can upload its stream to the broadcaster by referring to a specific mountpoint established by the broadcaster operator. Specify the mountpoint you receive from the operator for your stream. Note that it usually is a four character ID (capital letters) plus an integer number.
+In NTRIP Version 1.0 stream upload is only protected through a generic upload 'Password'. Enter the password you received from the broadcaster operator along with the mounpoint.
 </p>
 
-<p><a name="caspass"><h4>3.6.5 Password - mandatory if 'Host' is set</h4></p>
+<p><a name="casproxy"><h4>4.6.5 Use Proxy - optional if 'Host' and 'Proxy' is set</h4></p>
 <p>
-In NTRIP Version 1.0 stream upload ist protected through a generic upload 'Password'. Enter the password you received from the broadcaster operator along with the mounpoint.
+In case BNS is operated in a protected LAN, you may need to communicate through a proxy server protecting your network. Once you have specified your proxies host and port, you can tick 'Use proxy' to use it for stream upload.
 </p>
 
-<p><a name="casdata"><h4>3.6.6 Data - optional</h4></p>
+<p><a name="casstream"><h4>4.6.6 Save Stream - optional</h4></p>
 <p>
-The clock and orbit corrections streamed by BNS to an NTRIP broadcaster can recorded. Specify the full 'Data' path here to save this information in a local file. Default value for 'Data' path is an empty option field, meaning that the upload stream contents will not be saved locally.
+The clock and orbit corrections streamed by BNS to an NTRIP broadcaster can be recorded. Specify a full 'Save stream' path here to save this information in a local file. Default value for 'Save stream' is an empty option field, meaning that the upload stream contents will not be saved locally.
 </p>
+<p>
+The file contents will be plain ASCII comprising records carrying the following set of parameters:
+</p>
+
 <p>
 <ul>
-<li>Mountpoint</li>
 <li>GPS Week</li>
 <li>Second in GPS Week</li>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
@@ -193,6 +326,9 @@ The clock and orbit corrections streamed by BNS to an NTRIP broadcaster can reco
 <li>Along-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
 <li>Cross-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
 </ul>
+</p>
+<p>
+The following is an example file contents based on combined GPS and GLONASS clock and orbit corrections carried in RTCM Version 3 message types 4056 and 4057:
 </p>
 <p>
 <pre>
@@ -207,70 +343,70 @@ The clock and orbit corrections streamed by BNS to an NTRIP broadcaster can reco
 </pre>
 </p>
 
-<p><a name="rinex"><h4>3.7. RINEX Clocks</h4></p>
+<p><a name="rnxclk"><h4>4.7. RINEX Clocks</h4></p>
 <p>
 The clock corrections generated by BNS can be saved in Clock RINEX files. The file names follow the RINEX convention.
 </p>
 
-<p><a name="clkdir"><h4>3.7.1 Directory - optional</h4></p>
+<p><a name="clkdir"><h4>4.7.1 Directory - optional</h4></p>
 <p>
-Here you can specify the path to where the Clock RINEX files will be stored. If the specified directory does not exist, BNC will not create Clock RINEX files. Default value for 'Directory' is an empty option field, meaning that no Clock RINEX files will be written.
+Here you can specify the path to where the Clock RINEX files will be stored. If the specified directory does not exist, BNS will not create Clock RINEX files. Default value for 'Directory' is an empty option field, meaning that no Clock RINEX files will be written.
 </p>
 
-<p><a name="clkint"><h4>3.7.2 Interval - mandatory if 'Directory' is set</h4></p>
+<p><a name="clkint"><h4>4.7.2 Interval - mandatory if 'Directory' is set</h4></p>
 <p>
 Select the length of the Clock RINEX file generated. The default value is 1 day.
 </p>
 
-<p><a name="clksamp"><h4>3.7.3 Sampling - mandatory if 'Directory' is set</h4></p>
+<p><a name="clksamp"><h4>4.7.3 Sampling - mandatory if 'Directory' is set</h4></p>
 <p>
 Select the Clock RINEX sampling interval in seconds. A value of zero '0' tells BNS to store all received epochs into Clock RINEX. This is the default value.
 </p>
 
-<p><a name="orbits"><h4>3.8. SP3 Orbits</h4></p>
+<p><a name="orbits"><h4>4.8. SP3 Orbits</h4></p>
 <p>
-The orbit corrections generated by BNS can be saved in SP3 orbit files. The file names follow the RINEX convention.
+The orbit corrections generated by BNS can be saved in SP3 Orbit files. The file names follow the RINEX convention.
 </p>
 
-<p><a name="orbdir"><h4>3.8.1 Directory - optional</h4></p>
+<p><a name="orbdir"><h4>4.8.1 Directory - optional</h4></p>
 <p>
-Here you can specify the path to where the SP3 orbit files will be stored. If the specified directory does not exist, BNC will not create SP3 orbit files. Default value for 'Directory' is an empty option field, meaning that no SP3 orbit files will be written.
+Here you can specify the path to where the SP3 Orbit files will be stored. If the specified directory does not exist, BNS will not create SP3 Orbit files. Default value for 'Directory' is an empty option field, meaning that no SP3 Orbit files will be written.
 </p>
 
-<p><a name="orbint"><h4>3.8.2 Interval - mandatory if 'Directory' is set</h4></p>
+<p><a name="orbint"><h4>4.8.2 Interval - mandatory if 'Directory' is set</h4></p>
 <p>
-Select the length of the SP3 orbit file generated. The default value is 1 day.
+Select the length of the SP3 Orbit file generated. The default value is 1 day.
 </p>
 
-<p><a name="orbsamp"><h4>3.8.3 Sampling - mandatory if 'Directory' is set</h4></p>
+<p><a name="orbsamp"><h4>4.8.3 Sampling - mandatory if 'Directory' is set</h4></p>
 <p>
-Select the SP3 orbit file sampling interval in seconds. A value of zero '0' tells BNS to store all received epochs into SP3 orbit files. This is the default value.
+Select the SP3 Orbit file sampling interval in seconds. A value of zero '0' tells BNS to store all received epochs into SP3 Orbit files. This is the default value.
 </p>
 
-<p><a name="start"><h4>3.9. Start</h4></p>
+<p><a name="start"><h4>4.9. Start</h4></p>
 <p>
-Hit 'Start' to start receiving IGS corbit and clock corrections and convert them into corrections to Broadcast Ephemeris. Note that 'Start' generally forces BNS to begin with fresh files which might overwrite existing files when necessary unless the option 'Append files' is ticked.
+Hit 'Start' to start receiving IGS orbits and clocks and convert them into corrections to Broadcast Ephemeris. Note that 'Start' generally forces BNS to begin with fresh files which might overwrite existing files when necessary unless the option 'Append files' is ticked.
 </p> 
 
-<p><a name="stop"><h4>3.10. Stop</h4></p>
+<p><a name="stop"><h4>4.10. Stop</h4></p>
 <p>
 Hit the 'Stop' button in order to stop BNS. 
 </p> 
 
-<p><a name="nw"><h4>3.11. No Window - optional</h4></p>
+<p><a name="nw"><h4>4.11. No Window - optional</h4></p>
 <p>
 On all systems BNS can be started in batch mode with the command line option '-nw'. BNS will then run in 'no window' mode, using options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Server.conf (Unix/Linux, see Config File example in the Annex) or from the register BKG_NTRIP_Server (Windows).
 </p>
 <p>
 Note that the self-explaining contents of the configuration file or the Windows register can easily be edited. Terminate BNS using Windows Task Manager when running it in 'no window' mode on Windows systems.
 </p> 
-<p><a name="limits"><h3>4. Limitations</h3></p>
+<p><a name="limits"><h3>5. Limitations</h3></p>
 <ul>
 <li>
 In Qt-based desktop environments (like KDE) on Unix/Linux platforms it may happen that you experience a crash of BNS at startup even when running the program in the background using the '-nw' option. This is a known bug most likely resulting from an incompatibility of Qt libraries in the environment and in BNS. Entering the command 'unset SESSION_MANAGER' before running BNS may help as a work-around. 
 </li>
 <li>
-Currently BNS will only generate the tentative RTCM Version 3.x message types 4056 and 4057.
+Currently BNS can only generate the tentative RTCM Version 3 message types 4056 and 4057 for combined GPS and GLONASS orbit and clock corrections.
 </li>
 <li>
 We experienced a limitation of the Standard Version of Microsoft Windows related to socket communication where sockets are not always handled properly. Since BNS makes intensive use of communication through sockets, we recommend to use the Server Version of Microsoft Windows when running BNS continuously for extended on a Windows platform.
@@ -280,38 +416,44 @@ Once BNS has been started, its configuration can not be changed as long as it is
 </li>
 <br>
 </ul>
-<p><a name="authors"><h3>5. Authors</h3></p>
+<p><a name="authors"><h3>6. Authors</h3></p>
 <p>
 The BKG Ntrip Server (BNS) Qt Graphic User Interface (GUI) has been developed for the Federal Agency for Cartography and Geodesy (BKG) by Leos Mervart, Czech Technical University Prague, Department of Geodesy. BNS includes a GNU GPL open source RTCM 3.x encoder, written for BKG by Dirk Stoecker, Alberding GmbH, Schoenefeld.
-</p>
-<p>
-Please ensure that you have installed the latest version of BNS available from <u>http://igs.bkg.bund.de/index_ntrip_down.htm</u>. We are continuously working on the program and would appreciate if you could send any comments, suggestions, or bug reports to:
 </p>
 <p>
 Georg Weber<br>
 Federal Agency for Cartography and Geodesy (BKG)<br>
 Frankfurt, Germany<br>
-euref-ip@bkg.bund.de or igs-ip@bkg.bund.de
+[euref-ip@bkg.bund.de] or [igs-ip@bkg.bund.de]
 </p>
 
-<p><a name="annex"><h3>6. Annex</h3></p>
+<p><a name="annex"><h3>7. Annex</h3></p>
 <p>
-6.1. <a href=#history>History</a><br>
-6.2. <a href=#ntrip>NTRIP</a><br>
-6.3. <a href=#rtcm>RTCM</a><br>
-&nbsp; &nbsp; &nbsp; 6.3.1 RTCM <a href=#rtcm3> Version 3.x</a><br>
-6.4. <a href=#config>Config File</a><br>
-6.5. <a href=#links>Links</a><br>
+7.1. <a href=#history>History</a><br>
+7.2. <a href=#rtcm>RTCM</a><br>
+&nbsp; &nbsp; &nbsp; 7.2.1 RTCM <a href=#ntrip>NTRIP</a><br>
+&nbsp; &nbsp; &nbsp; 7.2.2 RTCM <a href=#rtcm3>Version 3.x</a><br>
+7.3. <a href=#config>Config File</a><br>
+7.4. <a href=#links>Links</a><br>
 </p>
 
-<p><a name=history><h3>6.1 History</h3></p>
+<p><a name=history><h4>7.1 History</h4></p>
+</p>
 <table>
 <tr></tr>
-<tr><td>August 2008 &nbsp;</td><td>Version 1.0 &nbsp;</td><td>[Add] First Beta Binaries published based on Qt 4.2.3.</td></tr>
+<tr><td>August 2008 &nbsp;</td><td>Version 1.0 &nbsp;</td><td>[Add] First Beta Binaries published.</td></tr>
 </table>
 </p>
 
-<p><a name="ntrip"><h4>6.2. NTRIP</h4></p>
+<p><a name="rtcm"><h4>7.2. RTCM</h4></p>
+
+<p>
+The Radio Technical Commission for Maritime Services (RTCM) is an international non-profit scientific, professional and educational organization. Special Committees provide a forum in which governmental and non-governmental members work together to develop technical standards and consensus recommendations in regard to issues of particular concern. RTCM is engaged in the development of international standards for maritime radionavigation and radiocommunication systems. The output documents and reports prepared by RTCM Committees are published as RTCM Recommended Standards. Topics concerning Differential Global Navigation Satellite Systems (DGNSS) are handled by the Special Committee SC 104.
+<p>
+Personal copies of RTCM Recommended Standards can be ordered through <u>http://www.rtcm.org/orderinfo.php</u>.
+</p>
+
+<p><a name="ntrip"><h4>7.2.1 NTRIP</h4></p>
 
 <p>
 'Networked Transport of RTCM via Internet Protocol' Version 1.0 (NTRIP) stands for an application-level protocol streaming Global Navigation Satellite System (GNSS) data over the Internet. NTRIP is a generic, stateless protocol based on the Hypertext Transfer Protocol HTTP/1.1. The HTTP objects are enhanced to GNSS data streams.
@@ -336,24 +478,13 @@ NTRIP is an open none-proprietary protocol. Major characteristics of NTRIP's dis
 </ul>
 </p>
 
-<p>
-</p>
-
-<p><a name="rtcm"><h4>6.3. RTCM</h4></p>
-
-<p>
-The Radio Technical Commission for Maritime Services (RTCM) is an international non-profit scientific, professional and educational organization. Special Committees provide a forum in which governmental and non-governmental members work together to develop technical standards and consensus recommendations in regard to issues of particular concern. RTCM is engaged in the development of international standards for maritime radionavigation and radiocommunication systems. The output documents and reports prepared by RTCM Committees are published as RTCM Recommended Standards. Topics concerning Differential Global Navigation Satellite Systems (DGNSS) are handled by the Special Committee SC 104.
-<p>
-Personal copies of RTCM Recommended Standards can be ordered through <u>http://www.rtcm.org/orderinfo.php</u>.
-</p>
-
-<p><a name="rtcm3"><h4>6.3.1 RTCM Version 3.x</h4></p>
+<p><a name="rtcm3"><h4>7.2.2 RTCM Version 3.x</h4></p>
 <p>
 RTCM Version 3.x has been developed as a stream format alternative to RTCM Version 2.x. Service providers and vendors have asked for a standard that would be efficient, easy to use, and easily adaptable to new situations. 
 </p>
 
 <p>
-RTCM is in the process of developing new Version 3 messages types to transport satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following tentative messages currently under discussion are of interest here:
+RTCM is in the process of developing new Version 3 message types to transport satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following tentative messages currently under discussion are of interest here:
 <ul>
 <li>Message type 4050: GPS orbit corrections to Broadcast Ephemeris</li>
 <li>Message type 4051: GPS clock corrections to Broadcast Ephemeris</li>
@@ -369,29 +500,41 @@ RTCM is in the process of developing new Version 3 messages types to transport s
 RTCM Version 3 streams carrying these messages may be used i.e. to support real-time Precise Point Positioning (PPP) applications following the 'state space' approach.
 </p>
 
-<p><a name="config"><h4>6.4. Config File</h4></p>
+<p><a name="config"><h4>7.3. Config File</h4></p>
 <p>
-The following is an example for the contents of a Unix/Linux configuration file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf. It enables the upload of stream CLCK1 to www.euref-ip.net. Clock RINEX files and SP3 orbit files are uploaded to a directory /home/weber/rinex :
+The following is an example for the contents of a Unix/Linux configuration file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf. It enables the upload of stream CLCK1 to www.euref-ip.net. Clock RINEX files and SP3 Orbit files are uploaded to a directory /home/weber/rinex :
 <pre>
 [General]
+clkFile=/home/weber/clocks.txt
+clkHost=142.71.30.12
 clkPort=2067
+clkProxy=2
+ephHost=141.71.30.13
 ephPort=2066
+ephProxy=2
+fileAppend=0
+font="Andale Sans,9,-1,5,75,0,0,0,0,0"
 logFile=/home/weber/rinex/log.txt
 mountpoint=CLCK1
-outFile=/home/weber/rinex/data.txt
+outFile=/home/weber/rinex/CLCK1.txt
 outHost=www.igs-ip.net
 outPort=2101
-password=uploadpass
+outProxy=2
+password=uploadPass
+proxyHost=gate-f
+proxyPort=8000
+refSys=IGS05
+rnxAppend=2
 rnxIntr=1 day
 rnxPath=/home/weber/rinex
-rnxSampl=0
-sp3Intr=1 day
-sp3Path=/home/weber/rinex
+rnxSampl=30
+sp3Intr=1 hour
+sp3Path=/home/weber/sp3
 sp3Sampl=0
 </pre>
 </p>
 
-<p><a name="links"><h3>6.5 Links</h3></p>
+<p><a name="links"><h4>7.4 Links</h4></p>
 <table>
 <tr></tr>
 <tr><td>NTRIP &nbsp;</td><td><u>http://igs.bkg.bund.de/index_ntrip.htm</u></td></tr>
@@ -402,5 +545,4 @@ sp3Sampl=0
 <tr><td>Real-time IGS Pilot Project &nbsp;</td><td><u>http://www.rtigs.net/pilot</u></td></tr>
 <tr><td>Radio Technical Commission<br>for Maritime Services &nbsp;</td><td><u>http://www.rtcm.org</u>
 </table>
-
 
