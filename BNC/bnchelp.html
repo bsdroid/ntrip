@@ -432,7 +432,7 @@ Select the length of the Ephemeris Correction files. The default value is 1 day.
 
 <p><a name="corrport"><h4>3.8.3 Port - optional</h4></p>
 <p>
-BNC can output Ephemeris Corrections in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number to activate this function. The default is an empty option field, meaning that no Ephemeris Correction output via IP port is generated.
+BNC can output Ephemeris Corrections in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. This function is introduced in order to support i.e. the 'BKG Ntrip Server' (BNS) which transforms IGS clocks and orbits into corrections to broadcast ephemeris. Specify an IP port number to activate this function. The default is an empty option field, meaning that no Ephemeris Correction output via IP port is generated.
 </p>
 <p>
 The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that allows you to read BNC's Ephemeris Corrections from the IP port. In case of a stream carrying message types 4056 and 4057, the script produces ASCII records containing the following set of parameters:
@@ -473,7 +473,7 @@ CLCK1 1487 547555.0 G29   101     -0.084      0.009   -0.428    0.675
 
 <p><a name="corrwait"><h4>3.8.4 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
 <p>
-When feeding a real-time GNSS engine waiting for Ephemeris Corrections, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Ephemeris Corrections stream and the delay acceptable by your application. Default value for 'Wait for full epoch' is 5 seconds.
+When feeding a real-time GNSS engine waiting for Ephemeris Corrections, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Ephemeris Corrections stream and the delay acceptable by your application. Default value for 'Wait for full epoch' is '0' seconds meaning that BNC will output whatever becomes available immediately and not drop any Ephemeris Correction.
 </p>
 
 <p><a name="advnote"><h4>3.9. Monitor</h4></p>
