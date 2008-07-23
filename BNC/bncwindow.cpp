@@ -438,7 +438,7 @@ bncWindow::bncWindow() {
   cLayout->addWidget(_corrIntrComboBox,                           1, 1);
   cLayout->addWidget(new QLabel("Port"),                          2, 0);
   cLayout->addWidget(_corrPortLineEdit,                           2, 1);
-  cLayout->addWidget(new QLabel("Saving ephemeris correction files and correction output through IP port."),3,0,1,2,Qt::AlignLeft);
+  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),3,0,1,2,Qt::AlignLeft);
   cLayout->addWidget(new QLabel("    "),4,0);
   cgroup->setLayout(cLayout);
 
