@@ -1,7 +1,7 @@
 <h3>BKG Ntrip Server (BNS) Version 1.0</h3>
 
 <p>
-The BKG Ntrip Server (BNS) is a program for transforming GNSS satellite clocks and orbits into corrections to Broadcast Ephemeris. These corrections are then encode in RTCM Version 3 format and uploaded to NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home.</u> BNS is meant as a tool for service providers with real-time access to a network of continentally or globally distributet GNSS reference stations.
+The BKG Ntrip Server (BNS) is a program for transforming GNSS satellite clocks and orbits into corrections to Broadcast Ephemeris. These corrections are then encode in RTCM Version 3.x format and uploaded to NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home.</u> BNS is meant as a tool for service providers with real-time access to a network of continentally or globally distributet GNSS reference stations.
 </p>
 
 <p>
@@ -48,29 +48,32 @@ Note that BNS so far only generates the tentative RTCM Version 3.x message types
 
 <p><a name="function"><h3>2. Functioning</h3></p>
 <p>
-The BNS procedure for generating RTCM Version 3 clock and orbit corrections to Broadcast ephemeris in radial, along-track and cross-track components is the following:
+The BNS procedure for generating RTCM Version 3.x clock and orbit corrections to Broadcast ephemeris in radial, along-track and cross-track components is the following:
 </p>
 <p>
 <ul> 
 <li>Continuously receive up to date Broadcast Ephemeris carrying approximate orbits and clocks for all satellites. Receive them in RINEX Version 3 Navigation file format. Read new Broadcast Ephemeris immediately whenever they become available. Tools like the 'BKG Ntrip Client' (BNC) provide this information.</li>
-<li>Continuously receive best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS05 reference system. Receive them every epoch in a plain ASCII format as provided by a real-time GNSS engine like RTNet.</li>
 </ul> 
-<p>Then, once per epoch:</p>
+</p>
+<p>
+Then, epoch by epoch:
 <ul> 
+<li>Continuously receive best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS05 reference system. Receive them every epoch in a plain ASCII format as provided by a real-time GNSS engine like RTNet.</li>
 <li>Calculate X,Y,Z coordinates from Broadcast Ephemeris orbits.</li>
 <li>Calculate differences dX,dY,dZ between Broadcast Ephemeris orbits and IGS05 orbits.</li>
 <li>Model orbit differences through polynomial of low degree.</li>
 <li>Derive model-based estimation of corrections to Broadcast Ephemeris orbits.
 <li>Tranform model-based orbit corrections into radial, along-track and cross-track components.</li>
-<br><br>
 <li>Calculate differences dC between clocks from Broadcast Ephemeris and IGS05 clocks.</li>
 <li>Model clock differences through polynomial of low degree.</li>
 <li>Derive model-based estimation of corrections to Broadcast Ephemeris clocks.</li>
-<br><br>
-<li>Encode Broadcast Ephemeris clock and orbit corrections in RTCM Version 3 format.</li>
+<li>Encode Broadcast Ephemeris clock and orbit corrections in RTCM Version 3.x format.</li>
 <li>Upload corrections in RTCM Verion 3 format to NTRIP Broadcaster.</li>
 </ul>
+</p>
 <p>
+Because BNS is quite demanding concerning communication links, is is recommended to run the three software components BNS, the Broadcast Ephemeris server (i.e. BNC), and the server providing orbits and clocks (i.e. RTNet) on the same host. However, this is not a must.
+</p>
 
 <p><a name="resources"><h3>3. Resources</h3></p>
 <p>
@@ -280,7 +283,7 @@ Specify the full path to a file where incoming clocks and orbits are saved. Bewa
 
 <p><a name="caster"><h4>4.6. NTRIP Caster</h4></p>
 <p>
-BNS can upload the resulting stream of cock and orbit corrections to Broadcast Ephemeris to an Ntrip Broadcaster. For that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which might be used for stream upload. The stream's format is RTCM Version 3. Note that it only carries the thentative message types 4056 and 4057 for combined GPS and GLONASS clock and orbit corrections.
+BNS can upload the resulting stream of cock and orbit corrections to Broadcast Ephemeris to an Ntrip Broadcaster. For that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which might be used for stream upload. The stream's format is RTCM Version 3.x. Note that it only carries the thentative message types 4056 and 4057 for combined GPS and GLONASS clock and orbit corrections.
 </p> 
 
 <p><a name="cashost"><h4>4.6.1 Host - optional</h4></p>
@@ -328,7 +331,7 @@ The file contents will be plain ASCII comprising records carrying the following 
 </ul>
 </p>
 <p>
-The following is an example file contents based on combined GPS and GLONASS clock and orbit corrections carried in RTCM Version 3 message types 4056 and 4057:
+The following is an example file contents based on combined GPS and GLONASS clock and orbit corrections carried in RTCM Version 3.x message types 4056 and 4057:
 </p>
 <p>
 <pre>
@@ -406,7 +409,7 @@ Note that the self-explaining contents of the configuration file or the Windows 
 In Qt-based desktop environments (like KDE) on Unix/Linux platforms it may happen that you experience a crash of BNS at startup even when running the program in the background using the '-nw' option. This is a known bug most likely resulting from an incompatibility of Qt libraries in the environment and in BNS. Entering the command 'unset SESSION_MANAGER' before running BNS may help as a work-around. 
 </li>
 <li>
-Currently BNS can only generate the tentative RTCM Version 3 message types 4056 and 4057 for combined GPS and GLONASS orbit and clock corrections.
+Currently BNS can only generate the tentative RTCM Version 3.x message types 4056 and 4057 for combined GPS and GLONASS orbit and clock corrections.
 </li>
 <li>
 We experienced a limitation of the Standard Version of Microsoft Windows related to socket communication where sockets are not always handled properly. Since BNS makes intensive use of communication through sockets, we recommend to use the Server Version of Microsoft Windows when running BNS continuously for extended on a Windows platform.
@@ -497,7 +500,7 @@ RTCM is in the process of developing new Version 3 message types to transport sa
 </ul>
 </p>
 <p>
-RTCM Version 3 streams carrying these messages may be used i.e. to support real-time Precise Point Positioning (PPP) applications following the 'state space' approach.
+RTCM Version 3.x streams carrying these messages may be used i.e. to support real-time Precise Point Positioning (PPP) applications following the 'state space' approach.
 </p>
 
 <p><a name="config"><h4>7.3. Config File</h4></p>
