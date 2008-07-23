@@ -131,7 +131,7 @@ bnsWindow::bnsWindow() {
   if (ii != -1) {
     _refSysComboBox->setCurrentIndex(ii);
   }
-  _refSysComboBox->setWhatsThis(tr("Select the target reference system for outgoing orbit and clock corrections."));
+  _refSysComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
 
   _ephHostLineEdit  = new QLineEdit(settings.value("ephHost").toString());
   _ephHostLineEdit->setWhatsThis(tr("BNS reads Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address. Specify the host IP e.g. of a BNC installation providing this information."));
@@ -143,14 +143,14 @@ bnsWindow::bnsWindow() {
   _ephPortLineEdit->setMaximumWidth(9*ww);
 
   _clkHostLineEdit  = new QLineEdit(settings.value("clkHost").toString());
-  _clkHostLineEdit->setWhatsThis(tr("BNS reads Clock and Orbit corrections referring to the IGS system (X,Y,Z, ECEF) from an IP address. Specify the host IP e.g. of an RTNet installation providing this information."));
+  _clkHostLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in plain ASCII format from an IP address. Specify the host IP e.g. of an RTNet installation providing this information."));
   _clkPortLineEdit  = new QLineEdit(settings.value("clkPort").toString());
-  _clkPortLineEdit->setWhatsThis(tr("BNS reads Clock and Orbit corrections referring to the IGS system (X,Y,Z, ECEF) from an IP address. Specify the IP port e.g. of a RTNet installation providing this information."));
+  _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in plain ASCII format from an IP address. Specify the IP port e.g. of a RTNet installation providing this information."));
   _clkProxyCheckBox  = new QCheckBox();
   _clkProxyCheckBox->setCheckState(Qt::CheckState(settings.value("clkProxy").toInt()));
-  _clkProxyCheckBox->setWhatsThis(tr("If a proxy server is operated between BNS and the server providing Clock and Orbit corrections, you may need to use the proxy server settings you have specified. Tick 'Use proxy' to activate them for stream access."));
+  _clkProxyCheckBox->setWhatsThis(tr("If a proxy server is operated between BNS and the server providing Clocks & Orbits, you may need to use the proxy server settings you have specified. Tick 'Use proxy' to activate them for stream access."));
   _clkFileLineEdit    = new QLineEdit(settings.value("clkFile").toString());
-  _clkFileLineEdit->setWhatsThis(tr("Specify the full path to a file where incoming IGS Clock and Orbit corrections are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that incoming corrections are not saved."));
+  _clkFileLineEdit->setWhatsThis(tr("Specify the full path to a file where incoming IGS Clocks & Orbits are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that incoming Clocks & Orbits corrections are not saved."));
   _clkPortLineEdit->setMaximumWidth(9*ww);
 
   _outHostLineEdit    = new QLineEdit(settings.value("outHost").toString());
@@ -169,7 +169,7 @@ bnsWindow::bnsWindow() {
   _outProxyCheckBox->setCheckState(Qt::CheckState(settings.value("outProxy").toInt()));
   _outProxyCheckBox->setWhatsThis(tr("If a proxy server is operated between BNS and the NTRIP Broadcaster, you may need to use the proxy server settings you have specified. Tick 'Use proxy' to activate them for stream upload."));
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
-  _outFileLineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing Clock and Orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
+  _outFileLineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
 
   _rnxPathLineEdit = new QLineEdit(settings.value("rnxPath").toString());
   _rnxPathLineEdit->setWhatsThis(tr("Specify the path for saving the generated clock corrections as Clock RINEX files. If the specified directory does not exist, BNS will not create Clock RINEX files."));
@@ -192,7 +192,7 @@ bnsWindow::bnsWindow() {
   _rnxSamplSpinBox->setWhatsThis(tr("Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNS to store all available samples into Clock RINEX files."));
 
   _sp3PathLineEdit = new QLineEdit(settings.value("sp3Path").toString());
-  _sp3PathLineEdit->setWhatsThis(tr("Specify the path for saving the generatec orbit corrections as SP3 orbit files. If the specified directory does not exist, BNS will not create Clock RINEX files."));
+  _sp3PathLineEdit->setWhatsThis(tr("Specify the path for saving the generated orbit corrections as SP3 orbit files. If the specified directory does not exist, BNS will not create Clock RINEX files."));
   _sp3IntrComboBox = new QComboBox;
   _sp3IntrComboBox->setMaximumWidth(9*ww);
   _sp3IntrComboBox->setEditable(false);
