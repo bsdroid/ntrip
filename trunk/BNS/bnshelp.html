@@ -72,7 +72,7 @@ Then, epoch by epoch:
 </ul>
 </p>
 <p>
-Because BNS is quite demanding concerning stable communication links, it is recommended to run the three software components BNS, the Broadcast Ephemeris server (i.e. BNC), and the server providing orbits and clocks (i.e. RTNet) on the same host. However, this is not a must.
+Because BNS is quite demanding concerning communication links, is is recommended to run the three software components BNS, the Broadcast Ephemeris server (i.e. BNC), and the server providing orbits and clocks (i.e. RTNet) on the same host. However, this is not a must.
 </p>
 
 <p><a name="resources"><h3>3. Resources</h3></p>
@@ -97,20 +97,16 @@ Running BNS requires the clock of the host computer to be properly synchronized.
 &nbsp; &nbsp; &nbsp; 4.5.2. <a href=#clocks>Clocks & Orbits</a><br>
 &nbsp; &nbsp; &nbsp; 4.5.3. <a href=#saveclk>Save Clocks & Orbits</a><br>
 4.6. <a href=#caster>NTRIP Caster</a><br>
-&nbsp; &nbsp; &nbsp; 4.6.1. <a href=#cashost>Host</a><br>
-&nbsp; &nbsp; &nbsp; 4.6.2. <a href=#casport>Port</a><br>
-&nbsp; &nbsp; &nbsp; 4.6.3. <a href=#casmount>Mountpoint</a><br>
-&nbsp; &nbsp; &nbsp; 4.6.4. <a href=#caspass>Password</a><br>
-&nbsp; &nbsp; &nbsp; 4.6.5. <a href=#casproxy>Use Proxy</a><br>
-&nbsp; &nbsp; &nbsp; 4.6.6. <a href=#casstream>Save Stream</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.1. <a href=#cashost>Host & Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.2. <a href=#casmount>Mountpoint & Password</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.3. <a href=#casproxy>Use Proxy</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.4. <a href=#casstream>Save Stream</a><br>
 4.7. <a href=#rnxclk>RINEX Clocks</a><br>
 &nbsp; &nbsp; &nbsp; 4.7.1. <a href=#clkdir>Directory</a><br>
-&nbsp; &nbsp; &nbsp; 4.7.2. <a href=#clkint>Interval</a><br>
-&nbsp; &nbsp; &nbsp; 4.7.3. <a href=#clksamp>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.2. <a href=#clkint>Interval & Sampling</a><br>
 4.8. <a href=#orbits>SP3 Orbits</a><br>
 &nbsp; &nbsp; &nbsp; 4.8.1. <a href=#orbdir>Directory</a><br>
-&nbsp; &nbsp; &nbsp; 4.8.2. <a href=#orbint>Interval</a><br>
-&nbsp; &nbsp; &nbsp; 4.8.3. <a href=#orbsamp>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; 4.8.2. <a href=#orbint>Interval & Sampling</a><br>
 4.9 <a href=#start>Start</a><br>
 4.10. <a href=#stop>Stop</a><br>
 4.11. <a href=#nw>No Window</a>
@@ -286,31 +282,29 @@ Specify the full path to a file where incoming clocks and orbits are saved. Bewa
 BNS can upload the resulting stream of cock and orbit corrections to Broadcast Ephemeris to an Ntrip Broadcaster. For that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which might be used for stream upload. The stream's format is RTCM Version 3.x. Note that it only carries the thentative message types 4056 and 4057 for combined GPS and GLONASS clock and orbit corrections.
 </p> 
 
-<p><a name="cashost"><h4>4.6.1 Host - optional</h4></p>
+<p><a name="cashost"><h4>4.6.1 Host & Port - optional</h4></p>
 Enter the NTRIP broadcaster 'Host' IP name or number for stream upload. 
 </p>
 
-<p><a name="casport"><h4>4.6.2 Port - mandatory if 'Host' is set</h4></p>
 <p>
 Enter the NTRIP broadcaster IP 'Port' number for stream upload. Note that NTRIP Broadcaster installations often provide access through more than one port, usually ports 80 and 2101. In case you experience communication problems on port 80, you may like to use the alternative port(s).
 </p>
 
-<p><a name="casmount"><h4>4.6.3 Mountpoint - mandatory if 'Host' is set</h4></p>
+<p><a name="casmount"><h4>4.6.2 Mountpoint & Password - mandatory if 'Host' is set</h4></p>
 <p>
 Each stream on an NTRIP broadcaster is defined using a unique source ID called mountpoint. An NTRIP server like BNS can upload its stream to the broadcaster by referring to a dedicated mountpoint established by the broadcaster operator. Specify the mountpoint you receive from the operator for your stream. Note that it usually is a four character ID (capital letters) plus an integer number.
 </p>
 
-<p><a name="caspass"><h4>4.6.4 Password - mandatory if 'Host' is set</h4></p>
 <p>
 In NTRIP Version 1.0 stream upload is only protected through a generic upload 'Password'. Enter the password you received from the broadcaster operator along with the mounpoint.
 </p>
 
-<p><a name="casproxy"><h4>4.6.5 Use Proxy - optional if 'Host' and 'Proxy' is set</h4></p>
+<p><a name="casproxy"><h4>4.6.3 Use Proxy - optional if 'Host' and 'Proxy' is set</h4></p>
 <p>
 In case BNS is operated in a protected LAN, you may need to communicate through a proxy server protecting your network. Once you have specified your proxies host and port, you can tick 'Use proxy' to use it for stream upload.
 </p>
 
-<p><a name="casstream"><h4>4.6.6 Save Stream - optional</h4></p>
+<p><a name="casstream"><h4>4.6.4 Save Stream - optional</h4></p>
 <p>
 The clock and orbit corrections streamed by BNS to an NTRIP broadcaster can be recorded. Specify a full 'Save stream' path here to save this information in a local file. Default value for 'Save stream' is an empty option field, meaning that the upload stream contents will not be saved locally.
 </p>
@@ -335,14 +329,17 @@ The following is an example file contents based on combined GPS and GLONASS cloc
 </p>
 <p>
 <pre>
-1487 547554.0 G27    57     12.219      1.241    0.495    0.002
-1487 547554.0 G29   101     -0.086      0.008   -0.429    0.675
-1487 461154.0 R06    18      5.192      2.390   -1.915   -6.734
-1487 461154.0 R07    18     -1.619      2.827    0.901    0.280
-1487 547554.0 G27    57     12.218      1.242    0.496    0.003
-1487 547554.0 G29   101     -0.087      0.007   -0.427    0.673
-1487 461154.0 R06    18      5.191      2.389   -1.914   -6.735
-1487 461154.0 R07    18     -1.618      2.826    0.900    0.281
+...
+1489 325606.0 G30    80      6.023      0.591   -0.317    0.022
+1489 325606.0 G31    18     -1.021      0.110   -1.308   -0.120
+1489 412006.0 R10    18      7.342      1.393    4.858   -2.634
+1489 412006.0 R19    18      4.696      2.358    1.707   -2.907
+...
+1489 325607.0 G30    80      6.022      0.591   -0.318    0.022
+1489 325607.0 G31    18     -1.022      0.110   -1.308   -0.120
+1489 412007.0 R10    18      7.341      1.390    4.860   -2.636
+1489 412007.0 R19    18      4.698      2.356    1.706   -2.906
+...
 </pre>
 </p>
 
@@ -356,12 +353,11 @@ The clock corrections generated by BNS can be saved in Clock RINEX files. The fi
 Here you can specify the path to where the Clock RINEX files will be stored. If the specified directory does not exist, BNS will not create Clock RINEX files. Default value for 'Directory' is an empty option field, meaning that no Clock RINEX files will be written.
 </p>
 
-<p><a name="clkint"><h4>4.7.2 Interval - mandatory if 'Directory' is set</h4></p>
+<p><a name="clkint"><h4>4.7.2 Interval & Sampling - mandatory if 'Directory' is set</h4></p>
 <p>
 Select the length of the Clock RINEX file generated. The default value is 1 day.
 </p>
 
-<p><a name="clksamp"><h4>4.7.3 Sampling - mandatory if 'Directory' is set</h4></p>
 <p>
 Select the Clock RINEX sampling interval in seconds. A value of zero '0' tells BNS to store all received epochs into Clock RINEX. This is the default value.
 </p>
@@ -376,12 +372,11 @@ The orbit corrections generated by BNS can be saved in SP3 Orbit files. The file
 Here you can specify the path to where the SP3 Orbit files will be stored. If the specified directory does not exist, BNS will not create SP3 Orbit files. Default value for 'Directory' is an empty option field, meaning that no SP3 Orbit files will be written.
 </p>
 
-<p><a name="orbint"><h4>4.8.2 Interval - mandatory if 'Directory' is set</h4></p>
+<p><a name="orbint"><h4>4.8.2 Interval & Sampling - mandatory if 'Directory' is set</h4></p>
 <p>
 Select the length of the SP3 Orbit file generated. The default value is 1 day.
 </p>
 
-<p><a name="orbsamp"><h4>4.8.3 Sampling - mandatory if 'Directory' is set</h4></p>
 <p>
 Select the SP3 Orbit file sampling interval in seconds. A value of zero '0' tells BNS to store all received epochs into SP3 Orbit files. This is the default value.
 </p>
@@ -505,7 +500,7 @@ RTCM Version 3.x streams carrying these messages may be used i.e. to support rea
 
 <p><a name="config"><h4>7.3. Config File</h4></p>
 <p>
-The following is an example for the contents of a Unix/Linux configuration file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf. It enables the upload of stream CLCK1 to www.euref-ip.net. Clock RINEX files and SP3 Orbit files are uploaded to a directory /home/weber/rinex :
+The following is an example for the contents of a Unix/Linux configuration file ${HOME}/.config/BKG/BKG_NTRIP_Server.conf. It enables the upload of stream CLCK1 to www.euref-ip.net. Clock RINEX files and SP3 Orbit files are uploaded to a directory /home/weber/rinex :
 <pre>
 [General]
 clkFile=/home/weber/clocks.txt
