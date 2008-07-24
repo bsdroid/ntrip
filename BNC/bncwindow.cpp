@@ -156,6 +156,13 @@ bncWindow::bncWindow() {
   if (mm != -1) {
     _corrIntrComboBox->setCurrentIndex(mm);
   }
+  _corrTimeSpinBox   = new QSpinBox();
+  _corrTimeSpinBox->setMinimum(0);
+  _corrTimeSpinBox->setMaximum(30);
+  _corrTimeSpinBox->setSingleStep(1);
+  _corrTimeSpinBox->setSuffix(" sec");
+  _corrTimeSpinBox->setMaximumWidth(9*ww);
+  _corrTimeSpinBox->setValue(settings.value("corrTime").toInt());
   _rnxSamplSpinBox    = new QSpinBox();
   _rnxSamplSpinBox->setMinimum(0);
   _rnxSamplSpinBox->setMaximum(60);
@@ -293,6 +300,7 @@ bncWindow::bncWindow() {
   _outPortLineEdit->setWhatsThis(tr("BNC can produce synchronized observations in binary format on your local host through an IP port. Specify a port number here to activate this function."));
   _outEphPortLineEdit->setWhatsThis(tr("BNC can produce ephemeris data in RINEX ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
   _corrPortLineEdit->setWhatsThis(tr("BNC can produce Broadcast Ephemeris Corrections on your local host through an IP port. Specify a port number here to activate this function."));
+  _corrTimeSpinBox->setWhatsThis(tr("Wait for full correction epoch."));
   _rnxPathLineEdit->setWhatsThis(tr("Here you specify the path to where the RINEX Observation files will be stored. If the specified directory does not exist, BNC will not create RINEX Observation files.")); 
   _ephPathLineEdit->setWhatsThis(tr("Specify the path for saving Broadcast Ephemeris data as RINEX Navigation files. If the specified directory does not exist, BNC will not create RINEX Navigation files."));
   _corrPathLineEdit->setWhatsThis(tr("Specify a directory for saving Broadcast Ephemeris correction files. If the specified directory does not exist, BNC will not create the files."));
@@ -438,8 +446,10 @@ bncWindow::bncWindow() {
   cLayout->addWidget(_corrIntrComboBox,                           1, 1);
   cLayout->addWidget(new QLabel("Port"),                          2, 0);
   cLayout->addWidget(_corrPortLineEdit,                           2, 1);
-  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),3,0,1,2,Qt::AlignLeft);
-  cLayout->addWidget(new QLabel("    "),4,0);
+  cLayout->addWidget(new QLabel("Wait for full epoch"),           3, 0);
+  cLayout->addWidget(_corrTimeSpinBox,                            3, 1);
+  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),4,0,1,2,Qt::AlignLeft);
+  cLayout->addWidget(new QLabel("    "),5,0);
   cgroup->setLayout(cLayout);
 
   QVBoxLayout* mLayout = new QVBoxLayout;
@@ -583,6 +593,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("outPort",     _outPortLineEdit->text());
   settings.setValue("outEphPort",  _outEphPortLineEdit->text());
   settings.setValue("corrPort",    _corrPortLineEdit->text());
+  settings.setValue("corrTime",    _corrTimeSpinBox->value());
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());
   settings.setValue("ephPath",     _ephPathLineEdit->text());
   settings.setValue("corrPath",    _corrPathLineEdit->text());
