@@ -106,6 +106,7 @@
     QCheckBox* _rnxAppendCheckBox;
     QCheckBox* _makePauseCheckBox;
     QSpinBox*  _waitTimeSpinBox;
+    QSpinBox*  _corrTimeSpinBox;
     QComboBox* _obsRateComboBox;
     QSpinBox*  _adviseFailSpinBox;
     QSpinBox*  _adviseRecoSpinBox;
