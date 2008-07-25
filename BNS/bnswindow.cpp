@@ -192,7 +192,7 @@ bnsWindow::bnsWindow() {
   _rnxSamplSpinBox->setWhatsThis(tr("Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNS to store all available samples into Clock RINEX files."));
 
   _sp3PathLineEdit = new QLineEdit(settings.value("sp3Path").toString());
-  _sp3PathLineEdit->setWhatsThis(tr("Specify the path for saving the generated orbit corrections as SP3 orbit files. If the specified directory does not exist, BNS will not create Clock RINEX files."));
+  _sp3PathLineEdit->setWhatsThis(tr("Specify the path for saving the generated orbit corrections as SP3 orbit files. If the specified directory does not exist, BNS will not create SP3 orbit files."));
   _sp3IntrComboBox = new QComboBox;
   _sp3IntrComboBox->setMaximumWidth(9*ww);
   _sp3IntrComboBox->setEditable(false);
