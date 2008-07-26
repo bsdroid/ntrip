@@ -76,9 +76,6 @@ Q_OBJECT
   QSpinBox*  _rnxSamplSpinBox;
   QSpinBox*  _sp3SamplSpinBox;
   QCheckBox* _fileAppendCheckBox;
-  QCheckBox* _outProxyCheckBox;
-  QCheckBox* _ephProxyCheckBox;
-  QCheckBox* _clkProxyCheckBox;
 
   QTextEdit*  _log;
 
