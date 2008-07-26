@@ -43,7 +43,10 @@ void t_bnseph::reconnect() {
   delete _socket;
 
   QSettings settings;
-  QString host = "localhost";
+  QString host = settings.value("ephHost").toString();
+  if (host.isEmpty()) {
+    host = "localhost";
+  }
   int     port = settings.value("ephPort").toInt();
 
   _socket = new QTcpSocket();

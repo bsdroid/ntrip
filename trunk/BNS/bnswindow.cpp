@@ -139,8 +139,6 @@ bnsWindow::bnsWindow() {
   _ephPortLineEdit->setWhatsThis(tr("BNS reads Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address. Specify the IP port e.g. of a BNC installation providing this information."));
   _ephPortLineEdit->setMaximumWidth(9*ww);
 
-  _clkHostLineEdit  = new QLineEdit(settings.value("clkHost").toString());
-  _clkHostLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in plain ASCII format from an IP address. Specify the host IP e.g. of an RTNet installation providing this information."));
   _clkPortLineEdit  = new QLineEdit(settings.value("clkPort").toString());
   _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in plain ASCII format from an IP address. Specify the IP port e.g. of a RTNet installation providing this information."));
   _clkFileLineEdit    = new QLineEdit(settings.value("clkFile").toString());
@@ -258,9 +256,7 @@ bnsWindow::bnsWindow() {
   layout_inp->addWidget(new QLabel("Port"),            0, 3, Qt::AlignLeft);
   layout_inp->addWidget(_ephPortLineEdit,              0, 4);
   layout_inp->addWidget(new QLabel("Clocks & Orbits"), 1, 0, Qt::AlignLeft);
-  layout_inp->addWidget(new QLabel("Host"),            1, 1, Qt::AlignRight);
-  layout_inp->addWidget(_clkHostLineEdit,              1, 2);
-  layout_inp->addWidget(new QLabel("Port"),            1, 3, Qt::AlignLeft);
+  layout_inp->addWidget(new QLabel("Server listening on Port"), 1, 1, 1, 3, Qt::AlignRight);
   layout_inp->addWidget(_clkPortLineEdit,              1, 4);
   layout_inp->addWidget(new QLabel("Save Clocks & Orbits"), 2, 0, Qt::AlignLeft);
   layout_inp->addWidget(new QLabel("(full path)"), 2, 1, Qt::AlignRight);
@@ -441,7 +437,6 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("refSys",     _refSysComboBox->currentText());
   settings.setValue("ephHost",    _ephHostLineEdit->text());
   settings.setValue("ephPort",    _ephPortLineEdit->text());
-  settings.setValue("clkHost",    _clkHostLineEdit->text());
   settings.setValue("clkPort",    _clkPortLineEdit->text());
   settings.setValue("clkFile",    _clkFileLineEdit->text());
   settings.setValue("outHost",    _outHostLineEdit->text());
