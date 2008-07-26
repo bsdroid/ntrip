@@ -396,13 +396,19 @@ void t_bns::readEpoch() {
         }
       }
     
-      if ( _outSocket && 
+      if ( (_outSocket || _outFile) && 
            (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
         char obuffer[CLOCKORBIT_BUFFERSIZE];
         int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
         if (len > 0) {
-          _outSocket->write(obuffer, len);
-          _outSocket->flush();
+          if (_outSocket) {
+            _outSocket->write(obuffer, len);
+            _outSocket->flush();
+          }
+          if (_outFile) {
+            _outFile->write(obuffer, len);
+            _outFile->flush();
+          }
         }
       }
     }
