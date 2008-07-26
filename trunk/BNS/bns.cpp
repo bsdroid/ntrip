@@ -40,13 +40,17 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   // ----------------------------
   QString proxyHost = settings.value("proxyHost").toString();
   int     proxyPort = settings.value("proxyPort").toInt();
-  if (!proxyHost.isEmpty()) {
-    QNetworkProxy proxy;
+
+  QNetworkProxy proxy;
+  if (proxyHost.isEmpty()) {
+    proxy.setType(QNetworkProxy::NoProxy);
+  }
+  else {
     proxy.setType(QNetworkProxy::Socks5Proxy);
     proxy.setHostName(proxyHost);
     proxy.setPort(proxyPort);
-    QNetworkProxy::setApplicationProxy(proxy);
   }
+  QNetworkProxy::setApplicationProxy(proxy);
 
   // Thread that handles broadcast ephemeris
   // ---------------------------------------
