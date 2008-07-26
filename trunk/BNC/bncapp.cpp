@@ -596,21 +596,32 @@ void bncApp::slotQuit() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::slotNewCorrLine(QString line, QString staID) {
-  if (_socketsCorr) {
-    QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
-    while (is.hasNext()) {
-      QTcpSocket* sock = is.next();
-      if (sock->state() == QAbstractSocket::ConnectedState) {
-        if (sock->write(QString(line + " " + staID + "\n").toAscii()) == -1) {
-          delete sock;
-          is.remove();
-        }
-      }
-      else if (sock->state() != QAbstractSocket::ConnectingState) {
+void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
+
+  QMutexLocker locker(&_mutex);
+
+  if (!_socketsCorr) {
+    return;
+  }
+
+  // First time, set the _lastDumpSec immediately
+  // --------------------------------------------
+  if (_lastDumpCoSec == 0) {
+    _lastDumpCoSec = coTime - 1;
+  }
+
+  QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
+  while (is.hasNext()) {
+    QTcpSocket* sock = is.next();
+    if (sock->state() == QAbstractSocket::ConnectedState) {
+      if (sock->write(QString(line + " " + staID + "\n").toAscii()) == -1) {
         delete sock;
         is.remove();
       }
+    }
+    else if (sock->state() != QAbstractSocket::ConnectingState) {
+      delete sock;
+      is.remove();
     }
   }
 }

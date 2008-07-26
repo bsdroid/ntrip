@@ -44,11 +44,11 @@ Q_OBJECT
   virtual t_irc Decode(char* buffer = 0, int bufLen = 0);
 
  signals:
-  void newCorrLine(QString line, QString staID);
+  void newCorrLine(QString line, QString staID, long coTime);
 
  private:
   void reopen();
-  void printLine(const QString& line);
+  void printLine(const QString& line, long coTime);
 
   int                 _port;
   std::ofstream*      _out;

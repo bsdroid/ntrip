@@ -67,8 +67,8 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
   }
   _out = 0;
 
-  connect(this, SIGNAL(newCorrLine(QString, QString)), 
-          (bncApp*) qApp, SLOT(slotNewCorrLine(QString, QString)));
+  connect(this, SIGNAL(newCorrLine(QString, QString, long)), 
+          (bncApp*) qApp, SLOT(slotNewCorrLine(QString, QString, long)));
 }
 
 // Destructor
@@ -174,7 +174,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
                _co.Sat[ii].Orbit.DeltaRadial, 
                _co.Sat[ii].Orbit.DeltaAlongTrack,
                _co.Sat[ii].Orbit.DeltaCrossTrack);
-        printLine(line);
+        long coTime = GPSweek * 7*24*3600 + long(floor(GPSweeks+0.5));
+        printLine(line, coTime);
       }
       for(int ii = CLOCKORBIT_NUMGPS; 
           ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
@@ -185,7 +186,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
                _co.Sat[ii].Orbit.DeltaRadial, 
                _co.Sat[ii].Orbit.DeltaAlongTrack,
                _co.Sat[ii].Orbit.DeltaCrossTrack);
-        printLine(line);
+        long coTime = GPSweek * 7*24*3600 + long(floor(GPSweeks+0.5));
+        printLine(line, coTime);
       }
       _buffer = _buffer.substr(bytesused);
       return success;
@@ -201,11 +203,11 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void RTCM3coDecoder::printLine(const QString& line) {
+void RTCM3coDecoder::printLine(const QString& line, long coTime) {
   if (_out) {
     *_out << line.toAscii().data() << endl;
     _out->flush();
   }
 
-  emit newCorrLine(line, _staID);
+  emit newCorrLine(line, _staID, coTime);
 }
