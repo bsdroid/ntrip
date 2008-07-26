@@ -116,6 +116,8 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
   if (_waitCoTime < 1) {
     _waitCoTime = 1;
   }
+
+  _corrs = new QMultiMap<long, QString>;
 }
 
 // Destructor
@@ -139,6 +141,8 @@ bncApp::~bncApp() {
   for (int ii = PRN_GLONASS_START; ii <= PRN_GLONASS_END; ii++) {
     delete _glonassEph[ii-PRN_GLONASS_START];
   }
+
+  delete _corrs;
 }
 
 // Write a Program Message
@@ -609,6 +613,14 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
   if (_lastDumpCoSec == 0) {
     _lastDumpCoSec = coTime - 1;
   }
+
+  // An old correction - throw it away
+  // ---------------------------------
+  if (coTime <= _lastDumpCoSec) {
+    return;
+  }
+
+  _corrs->insert(coTime, QString(line + " " + staID));
 
   QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
   while (is.hasNext()) {

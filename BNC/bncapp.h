@@ -85,5 +85,6 @@ class bncApp : public QApplication {
     bncCaster*          _caster;
     long                _lastDumpCoSec;
     long                _waitCoTime;
+    QMultiMap<long, QString>* _corrs;
 };
 #endif
