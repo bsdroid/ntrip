@@ -141,8 +141,6 @@ bnsWindow::bnsWindow() {
 
   _clkPortLineEdit  = new QLineEdit(settings.value("clkPort").toString());
   _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in plain ASCII format from an IP address. Specify the IP port e.g. of a RTNet installation providing this information."));
-  _clkFileLineEdit    = new QLineEdit(settings.value("clkFile").toString());
-  _clkFileLineEdit->setWhatsThis(tr("Specify the full path to a file where incoming IGS Clocks & Orbits are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that incoming Clocks & Orbits corrections are not saved."));
   _clkPortLineEdit->setMaximumWidth(9*ww);
 
   _outHostLineEdit    = new QLineEdit(settings.value("outHost").toString());
@@ -258,11 +256,8 @@ bnsWindow::bnsWindow() {
   layout_inp->addWidget(new QLabel("Clocks & Orbits"), 1, 0, Qt::AlignLeft);
   layout_inp->addWidget(new QLabel("Server listening on Port"), 1, 1, 1, 3, Qt::AlignRight);
   layout_inp->addWidget(_clkPortLineEdit,              1, 4);
-  layout_inp->addWidget(new QLabel("Save Clocks & Orbits"), 2, 0, Qt::AlignLeft);
-  layout_inp->addWidget(new QLabel("(full path)"), 2, 1, Qt::AlignRight);
-  layout_inp->addWidget(_clkFileLineEdit,         2, 2);
-  layout_inp->addWidget(new QLabel("Read broadcast ephemeris and IGS clocks and orbits."), 3, 0, 1, 6, Qt::AlignLeft);
-  layout_inp->addWidget(new QLabel(""),                4, 0);
+  layout_inp->addWidget(new QLabel("Read broadcast ephemeris and IGS clocks and orbits."), 2, 0, 1, 6, Qt::AlignLeft);
+  layout_inp->addWidget(new QLabel(""),                3, 0);
 
   tab_inp->setLayout(layout_inp);
 
@@ -438,7 +433,6 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("ephHost",    _ephHostLineEdit->text());
   settings.setValue("ephPort",    _ephPortLineEdit->text());
   settings.setValue("clkPort",    _clkPortLineEdit->text());
-  settings.setValue("clkFile",    _clkFileLineEdit->text());
   settings.setValue("outHost",    _outHostLineEdit->text());
   settings.setValue("outPort",    _outPortLineEdit->text());
   settings.setValue("mountpoint", _mountpointLineEdit->text());

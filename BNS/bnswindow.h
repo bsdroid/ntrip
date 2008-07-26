@@ -60,7 +60,6 @@ Q_OBJECT
   QLineEdit* _ephHostLineEdit;
   QLineEdit* _ephPortLineEdit;
   QLineEdit* _clkPortLineEdit;
-  QLineEdit* _clkFileLineEdit;
   QLineEdit* _logFileLineEdit;
   QLineEdit* _outHostLineEdit;
   QLineEdit* _outPortLineEdit;
