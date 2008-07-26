@@ -622,18 +622,39 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
 
   _corrs->insert(coTime, QString(line + " " + staID));
 
-  QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
-  while (is.hasNext()) {
-    QTcpSocket* sock = is.next();
-    if (sock->state() == QAbstractSocket::ConnectedState) {
-      if (sock->write(QString(line + " " + staID + "\n").toAscii()) == -1) {
-        delete sock;
-        is.remove();
+  // Dump Corrections
+  // ----------------
+  if (coTime - _waitCoTime > _lastDumpCoSec) {
+    dumpCorrs(_lastDumpCoSec + 1, coTime - _waitCoTime);
+    _lastDumpCoSec = coTime - _waitCoTime;
+  }
+}
+
+// Dump Complete Correction Epochs
+////////////////////////////////////////////////////////////////////////////
+void bncApp::dumpCorrs(long minTime, long maxTime) {
+
+  for (long sec = minTime; sec <= maxTime; sec++) {
+    QList<QString> allCorrs = _corrs->values(sec);
+    QListIterator<QString> it(allCorrs);
+    while (it.hasNext()) {
+      QString corrLine = it.next() + "\n";
+
+      QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
+      while (is.hasNext()) {
+        QTcpSocket* sock = is.next();
+        if (sock->state() == QAbstractSocket::ConnectedState) {
+          if (sock->write(corrLine.toAscii()) == -1) {
+            delete sock;
+            is.remove();
+          }
+        }
+        else if (sock->state() != QAbstractSocket::ConnectingState) {
+          delete sock;
+          is.remove();
+        }
       }
     }
-    else if (sock->state() != QAbstractSocket::ConnectingState) {
-      delete sock;
-      is.remove();
-    }
+    _corrs->remove(sec);
   }
 }
