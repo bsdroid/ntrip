@@ -34,6 +34,20 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   connect(this, SIGNAL(moveSocket(QThread*)), 
           this, SLOT(slotMoveSocket(QThread*)));
 
+  QSettings settings;
+
+  // Set Proxy (application-wide)
+  // ----------------------------
+  QString proxyHost = settings.value("proxyHost").toString();
+  int     proxyPort = settings.value("proxyPort").toInt();
+  if (!proxyHost.isEmpty()) {
+    QNetworkProxy proxy;
+    proxy.setType(QNetworkProxy::Socks5Proxy);
+    proxy.setHostName(proxyHost);
+    proxy.setPort(proxyPort);
+    QNetworkProxy::setApplicationProxy(proxy);
+  }
+
   // Thread that handles broadcast ephemeris
   // ---------------------------------------
   _bnseph = new t_bnseph(parent);
@@ -46,7 +60,6 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   // Server listening for rtnet results
   // ----------------------------------
-  QSettings settings;
   _clkSocket = 0;
   _clkServer = new QTcpServer;
   _clkServer->listen(QHostAddress::Any, settings.value("clkPort").toInt());
