@@ -74,6 +74,14 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   _outSocket          = 0;
   _outSocketOpenTrial = 0;
 
+  QIODevice::OpenMode oMode;
+  if (Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked) {
+    oMode = QIODevice::WriteOnly | QIODevice::Unbuffered | QIODevice::Append;
+  }
+  else {
+    oMode = QIODevice::WriteOnly | QIODevice::Unbuffered;
+  }
+
   QString outFileName = settings.value("outFile").toString();
   if (outFileName.isEmpty()) {
     _outFile   = 0;
@@ -81,7 +89,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   }
   else {
     _outFile = new QFile(outFileName);
-    if (_outFile->open(QIODevice::WriteOnly | QIODevice::Unbuffered)) {
+    if (_outFile->open(oMode)) {
       _outStream = new QTextStream(_outFile);
     }
   }
@@ -95,7 +103,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   }
   else {
     _logFile = new QFile(logFileName);
-    if (_logFile->open(QIODevice::WriteOnly | QIODevice::Unbuffered)) {
+    if (_logFile->open(oMode)) {
       _logStream = new QTextStream(_logFile);
     }
     else {
