@@ -138,6 +138,13 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
     int     sampl = settings.value("sp3Sampl").toInt();
     _sp3 = new bnsSP3(prep, ext, path, intr, sampl);
   }
+
+  // Reference frame
+  // ---------------
+  _crdTrafo = false;
+  if (settings.value("refSys").toString() == "ETRS89") {
+    _crdTrafo = true;
+  }
 }
 
 // Destructor
@@ -434,7 +441,12 @@ void t_bns::processSatellite(int oldEph, t_eph* ep, int GPSweek, double GPSweeks
 
   ep->position(GPSweek, GPSweeks, xB, vv);
 
-  ColumnVector dx   = xx.Rows(1,3) - xB.Rows(1,3);
+  ColumnVector xyz = xx.Rows(1,3);
+  if (_crdTrafo) {
+    crdTrafo(xyz);
+  }
+
+  ColumnVector dx   = xyz - xB.Rows(1,3);
 
   double       dClk = (xx(4) - xB(4)) * 299792458.0; 
   ColumnVector rsw(3);
@@ -475,4 +487,11 @@ void t_bns::slotMoveSocket(QThread* tt) {
   _clkSocket->setParent(0);
   _clkSocket->moveToThread(tt);
   slotMessage("bns::slotMoveSocket");
+}
+
+// Transform Coordinates IGS -> ETRF
+////////////////////////////////////////////////////////////////////////////
+void t_bns::crdTrafo(ColumnVector& xyz) {
+
+
 }
