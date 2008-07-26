@@ -595,7 +595,7 @@ void bncApp::slotNewCorrLine(QString line, QString staID) {
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
       if (sock->state() == QAbstractSocket::ConnectedState) {
-        if (sock->write(line.toAscii()) == -1) {
+        if (sock->write(QString(line + " " + staID + "\n").toAscii()) == -1) {
           delete sock;
           is.remove();
         }
