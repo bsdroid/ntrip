@@ -154,9 +154,16 @@ t_irc bnsoutf::write(int GPSweek, double GPSweeks, const QString&,
   // ------------
   if (!_headerWritten) {
     resolveFileName(GPSweek, datTim);
-    _out.open(_fName.data());
     _out.setf(ios::showpoint | ios::fixed);
-    writeHeader(datTim);
+    QSettings settings;
+    if (QFile::exists(_fName) &&
+        Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked) {
+      _out.open(_fName.data(), ios::out | ios::app);
+    }
+    else {
+      _out.open(_fName.data());
+      writeHeader(datTim);
+    }
     _headerWritten = true;
   }
 
