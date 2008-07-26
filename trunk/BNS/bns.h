@@ -57,6 +57,7 @@ class t_bns : public QThread {
   void processSatellite(int oldEph, t_eph* ep, int GPSweek, double GPSweeks, 
                         const QString& prn, const ColumnVector& xx, 
                         struct ClockOrbit::SatData* sd);
+  void crdTrafo(ColumnVector& xyz);
 
   QTcpServer*               _clkServer;
   QTcpSocket*               _clkSocket;
@@ -72,5 +73,6 @@ class t_bns : public QThread {
   QMap<QString, t_ephPair*> _ephList;
   bnsRinex*                 _rnx;
   bnsSP3*                   _sp3;
+  bool                      _crdTrafo;
 };
 #endif
