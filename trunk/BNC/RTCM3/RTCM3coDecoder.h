@@ -44,7 +44,7 @@ Q_OBJECT
   virtual t_irc Decode(char* buffer = 0, int bufLen = 0);
 
  signals:
-  void newCorrLine(QString line);
+  void newCorrLine(QString line, QString staID);
 
  private:
   void reopen();

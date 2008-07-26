@@ -589,7 +589,7 @@ void bncApp::slotQuit() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::slotNewCorrLine(QString line) {
+void bncApp::slotNewCorrLine(QString line, QString staID) {
   if (_socketsCorr) {
     QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
     while (is.hasNext()) {
