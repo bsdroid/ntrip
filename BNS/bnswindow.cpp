@@ -137,18 +137,12 @@ bnsWindow::bnsWindow() {
   _ephHostLineEdit->setWhatsThis(tr("BNS reads Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address. Specify the host IP e.g. of a BNC installation providing this information."));
   _ephPortLineEdit  = new QLineEdit(settings.value("ephPort").toString());
   _ephPortLineEdit->setWhatsThis(tr("BNS reads Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address. Specify the IP port e.g. of a BNC installation providing this information."));
-  _ephProxyCheckBox  = new QCheckBox();
-  _ephProxyCheckBox->setCheckState(Qt::CheckState(settings.value("ephProxy").toInt()));
-  _ephProxyCheckBox->setWhatsThis(tr("If a proxy server is operated between BNS and the server providing Broadcast Ephemeris, you may need to use the proxy server settings you have specified. Tick 'Use proxy' to activate them for stream access."));
   _ephPortLineEdit->setMaximumWidth(9*ww);
 
   _clkHostLineEdit  = new QLineEdit(settings.value("clkHost").toString());
   _clkHostLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in plain ASCII format from an IP address. Specify the host IP e.g. of an RTNet installation providing this information."));
   _clkPortLineEdit  = new QLineEdit(settings.value("clkPort").toString());
   _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in plain ASCII format from an IP address. Specify the IP port e.g. of a RTNet installation providing this information."));
-  _clkProxyCheckBox  = new QCheckBox();
-  _clkProxyCheckBox->setCheckState(Qt::CheckState(settings.value("clkProxy").toInt()));
-  _clkProxyCheckBox->setWhatsThis(tr("If a proxy server is operated between BNS and the server providing Clocks & Orbits, you may need to use the proxy server settings you have specified. Tick 'Use proxy' to activate them for stream access."));
   _clkFileLineEdit    = new QLineEdit(settings.value("clkFile").toString());
   _clkFileLineEdit->setWhatsThis(tr("Specify the full path to a file where incoming IGS Clocks & Orbits are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that incoming Clocks & Orbits corrections are not saved."));
   _clkPortLineEdit->setMaximumWidth(9*ww);
@@ -165,9 +159,6 @@ bnsWindow::bnsWindow() {
   _passwordLineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _passwordLineEdit->setMaximumWidth(9*ww);
   _passwordLineEdit->setEchoMode(QLineEdit::Password);
-  _outProxyCheckBox  = new QCheckBox();
-  _outProxyCheckBox->setCheckState(Qt::CheckState(settings.value("outProxy").toInt()));
-  _outProxyCheckBox->setWhatsThis(tr("If a proxy server is operated between BNS and the NTRIP Broadcaster, you may need to use the proxy server settings you have specified. Tick 'Use proxy' to activate them for stream upload."));
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
   _outFileLineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
 
@@ -266,15 +257,11 @@ bnsWindow::bnsWindow() {
   layout_inp->addWidget(_ephHostLineEdit,              0, 2);
   layout_inp->addWidget(new QLabel("Port"),            0, 3, Qt::AlignLeft);
   layout_inp->addWidget(_ephPortLineEdit,              0, 4);
-  layout_inp->addWidget(new QLabel("Use proxy"),       0, 5, Qt::AlignLeft);
-  layout_inp->addWidget(_ephProxyCheckBox,             0, 6); 
   layout_inp->addWidget(new QLabel("Clocks & Orbits"), 1, 0, Qt::AlignLeft);
   layout_inp->addWidget(new QLabel("Host"),            1, 1, Qt::AlignRight);
   layout_inp->addWidget(_clkHostLineEdit,              1, 2);
   layout_inp->addWidget(new QLabel("Port"),            1, 3, Qt::AlignLeft);
   layout_inp->addWidget(_clkPortLineEdit,              1, 4);
-  layout_inp->addWidget(new QLabel("Use proxy"),       1, 5, Qt::AlignLeft);
-  layout_inp->addWidget(_clkProxyCheckBox,             1, 6); 
   layout_inp->addWidget(new QLabel("Save Clocks & Orbits"), 2, 0, Qt::AlignLeft);
   layout_inp->addWidget(new QLabel("(full path)"), 2, 1, Qt::AlignRight);
   layout_inp->addWidget(_clkFileLineEdit,         2, 2);
@@ -299,10 +286,8 @@ bnsWindow::bnsWindow() {
   layout_cas->addWidget(_mountpointLineEdit,      1, 1);
   layout_cas->addWidget(new QLabel("Password"),   1, 3, Qt::AlignLeft);
   layout_cas->addWidget(_passwordLineEdit,        1, 4);
-  layout_cas->addWidget(new QLabel("Use proxy"),  2, 0, Qt::AlignLeft);
-  layout_cas->addWidget(_outProxyCheckBox,        2, 1); 
-  layout_cas->addWidget(new QLabel("Save stream (full path)"), 3, 0, Qt::AlignLeft);
-  layout_cas->addWidget(_outFileLineEdit,         3, 1);
+  layout_cas->addWidget(new QLabel("Save stream (full path)"), 2, 0, Qt::AlignLeft);
+  layout_cas->addWidget(_outFileLineEdit,         2, 1);
   layout_cas->addWidget(new QLabel("Stream upload of clock and orbit corrections to NTRIP broadcaster."),4, 0, 1, 2, Qt::AlignLeft);
 
   tab_cas->setLayout(layout_cas);
@@ -456,14 +441,11 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("refSys",     _refSysComboBox->currentText());
   settings.setValue("ephHost",    _ephHostLineEdit->text());
   settings.setValue("ephPort",    _ephPortLineEdit->text());
-  settings.setValue("ephProxy",   _ephProxyCheckBox->checkState());
   settings.setValue("clkHost",    _clkHostLineEdit->text());
   settings.setValue("clkPort",    _clkPortLineEdit->text());
-  settings.setValue("clkProxy",   _clkProxyCheckBox->checkState());
   settings.setValue("clkFile",    _clkFileLineEdit->text());
   settings.setValue("outHost",    _outHostLineEdit->text());
   settings.setValue("outPort",    _outPortLineEdit->text());
-  settings.setValue("outProxy",   _outProxyCheckBox->checkState());
   settings.setValue("mountpoint", _mountpointLineEdit->text());
   settings.setValue("outFile",    _outFileLineEdit->text());
   settings.setValue("password",   _passwordLineEdit->text());
