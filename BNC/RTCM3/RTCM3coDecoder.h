@@ -39,7 +39,7 @@ extern "C" {
 class RTCM3coDecoder : public QObject, public GPSDecoder {
 Q_OBJECT
  public:
-  RTCM3coDecoder(const QString& fileName);
+  RTCM3coDecoder(const QString& staID);
   virtual ~RTCM3coDecoder();
   virtual t_irc Decode(char* buffer = 0, int bufLen = 0);
 
@@ -52,6 +52,7 @@ Q_OBJECT
 
   int                 _port;
   std::ofstream*      _out;
+  QString             _staID;
   QString             _fileNameSkl;
   QString             _fileName;
   std::string         _buffer;

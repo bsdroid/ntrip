@@ -60,7 +60,7 @@ void RTCM3Error(const char*, ...) {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-RTCM3Decoder::RTCM3Decoder(const QString& fileName) : GPSDecoder() {
+RTCM3Decoder::RTCM3Decoder(const QString& staID) : GPSDecoder() {
 
   const int LEAPSECONDS = 14; /* only needed for approx. time */
 
@@ -81,7 +81,7 @@ RTCM3Decoder::RTCM3Decoder(const QString& fileName) : GPSDecoder() {
 
   // Sub-Decoder for Clock and Orbit Corrections
   // -------------------------------------------
-  _coDecoder = new RTCM3coDecoder(fileName);
+  _coDecoder = new RTCM3coDecoder(staID);
 }
 
 // Destructor

@@ -50,7 +50,9 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-RTCM3coDecoder::RTCM3coDecoder(const QString& fileName) {
+RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
+
+  _staID = staID;
 
   // File Output
   // -----------
@@ -61,7 +63,7 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& fileName) {
     if ( path.length() > 0 && path[path.length()-1] != QDir::separator() ) {
       path += QDir::separator();
     }
-    _fileNameSkl = path + fileName;
+    _fileNameSkl = path + staID;
   }
   _out = 0;
 
