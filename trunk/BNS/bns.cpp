@@ -443,7 +443,7 @@ void t_bns::processSatellite(int oldEph, t_eph* ep, int GPSweek, double GPSweeks
 
   ColumnVector xyz = xx.Rows(1,3);
   if (_crdTrafo) {
-    crdTrafo(xyz);
+    crdTrafo(GPSweek, xyz);
   }
 
   ColumnVector dx   = xyz - xB.Rows(1,3);
@@ -491,7 +491,28 @@ void t_bns::slotMoveSocket(QThread* tt) {
 
 // Transform Coordinates IGS -> ETRF
 ////////////////////////////////////////////////////////////////////////////
-void t_bns::crdTrafo(ColumnVector& xyz) {
+void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz) {
 
+  ColumnVector dx(3);
+  dx(1) =  0.054;
+  dx(2) =  0.051;
+  dx(3) = -0.048;
+  const static double arcSec = 180.0 * 3600.0 / M_PI;
+  const static double ox = 0.000081 / arcSec;
+  const static double oy = 0.000490 / arcSec;
+  const static double oz = 0.000792 / arcSec;
 
+  Matrix rMat(3,3); rMat = 0.0;
+  rMat(1,2) = -oz;
+  rMat(1,3) =  oy;
+  rMat(2,1) =  oz;
+  rMat(2,3) = -ox;
+  rMat(3,1) = -oy;
+  rMat(3,2) =  ox;
+
+  // Current epoch minus 1989.0 in years
+  // ------------------------------------
+  double dt = (GPSWeek - 469.0) / 365.2422 * 7.0;
+
+  xyz += dx + dt * rMat * xyz;
 }
