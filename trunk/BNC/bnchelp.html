@@ -439,7 +439,6 @@ The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that
 </p>
 <p>
 <ul>
-<li>Mountpoint</li>
 <li>GPS Week</li>
 <li>Second in GPS Week</li>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
@@ -448,25 +447,22 @@ The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that
 <li>Radial Component of Orbit Correction to Broadcast Ephemeris [m]</li>
 <li>Along-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
 <li>Cross-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
+<li>Mountpoint</li>
 </ul>
 </p>
 <p>
-The output is synchronized epoch by epoch with a leading "A" indicating the begin and a trailing "C" indicating the end of an epoch. The following is an example output from two RTCM Version 3 streams (CLCK1 and CLCK4) containing message types 4056 and 4057:
+The following is an example output from two RTCM Version 3 streams (CLCK1 and CLCK4) containing message types 4056 and 4057:
 <pre>
-A
-CLCK1 1487 547554.0 G27    57     12.219      1.241    0.495    0.002
-CLCK1 1487 547554.0 G29   101     -0.086      0.008   -0.429    0.675
-CLCK1 1487 461154.0 R06    18      5.192      2.390   -1.915   -6.734
-CLCK1 1487 461154.0 R07    18     -1.619      2.827    0.901    0.280
-CLCK4 1487 547554.0 G27    57     12.218      1.242    0.496    0.003
-CLCK4 1487 547554.0 G29   101     -0.087      0.007   -0.427    0.673
-CLCK4 1487 461154.0 R06    18      5.191      2.389   -1.914   -6.735
-CLCK4 1487 461154.0 R07    18     -1.618      2.826    0.900    0.281
-C
-A
-CLCK1 1487 547555.0 G27    57     12.216      1.241    0.494    0.003
-CLCK1 1487 547555.0 G29   101     -0.084      0.009   -0.428    0.675
 ...
+1490 115710.0 R17    18     -1.903      2.348   -1.343   -1.403 CLCK1
+1490 115710.0 R10    18     -4.131      2.416   -0.646   -1.054 CLCK1
+1490 115710.0 G27    97      5.291      1.201   -1.964    0.821 CLCK4
+1490 115710.0 G26    14    -11.247      1.003   -1.168    0.074 CLCK4
+...
+1490 115711.0 R17    18     -1.902      2.349   -1.342   -1.403 CLCK1
+1490 115711.0 R10    18     -4.131      2.415   -0.647   -1.052 CLCK1
+1490 115711.0 G27    97      5.288      1.200   -1.964    0.820 CLCK4
+1490 115711.0 G26    14    -11.246      1.004   -1.168    0.074 CLCK4
 ...
 </pre>
 </p>
