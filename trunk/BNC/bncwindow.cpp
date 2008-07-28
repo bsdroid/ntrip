@@ -71,6 +71,9 @@ bncWindow::bncWindow() {
   _actAbout = new QAction(tr("&About BNC"),this);
   connect(_actAbout, SIGNAL(triggered()), SLOT(slotAbout()));
 
+  _actFlowchart = new QAction(tr("&Flowchart"),this);
+  connect(_actFlowchart, SIGNAL(triggered()), SLOT(slotFlowchart()));
+
   _actFontSel = new QAction(tr("Select &Font"),this);
   connect(_actFontSel, SIGNAL(triggered()), SLOT(slotFontSel()));
 
@@ -750,6 +753,12 @@ void bncWindow::slotAbout() {
  new bncAboutDlg(0);
 }
 
+//Flowchart
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotFlowchart() {
+ new bncFlowchartDlg(0);
+}
+
 // Help Window
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotHelp() {
@@ -790,8 +799,8 @@ void bncWindow::CreateMenu() {
 
   _menuHlp = menuBar()->addMenu(tr("&Help"));
   _menuHlp->addAction(_actHelp);
+  _menuHlp->addAction(_actFlowchart);
   _menuHlp->addAction(_actAbout);
-
 }
 
 void bncWindow::AddToolbar() {
@@ -836,4 +845,26 @@ bncAboutDlg::bncAboutDlg(QWidget* parent) :
 
 bncAboutDlg::~bncAboutDlg() {
 }; 
+
+bncFlowchartDlg::bncFlowchartDlg(QWidget* parent) :
+   QDialog(parent) {
+
+  int ww = QFontMetrics(font()).width('w');
+  QPushButton* _closeButton = new QPushButton("Close");
+  _closeButton->setMaximumWidth(10*ww);
+  connect(_closeButton, SIGNAL(clicked()), this, SLOT(close()));
+
+  QGridLayout* dlgLayout = new QGridLayout();
+  QLabel* img = new QLabel();
+  img->setPixmap(QPixmap(":flowchart.png"));
+  dlgLayout->addWidget(img, 0,0);
+  dlgLayout->addWidget(_closeButton,1,0,Qt::AlignLeft);
+
+  setLayout(dlgLayout);
+ /* resize(50*ww, 35*ww); */
+  show();
+}
+
+bncFlowchartDlg::~bncFlowchartDlg() {
+};
 
