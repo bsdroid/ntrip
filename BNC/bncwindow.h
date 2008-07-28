@@ -39,6 +39,14 @@
     ~bncAboutDlg();
 };
 
+  class bncFlowchartDlg : public QDialog {
+  Q_OBJECT
+
+  public:
+    bncFlowchartDlg(QWidget* parent);
+    ~bncFlowchartDlg();
+};
+
   class bncWindow : public QMainWindow {
   Q_OBJECT
 
@@ -54,6 +62,7 @@
   private slots:
     void slotHelp();
     void slotAbout();
+    void slotFlowchart();
     void slotFontSel();
     void slotSaveOptions();
     void slotAddMountPoints();
@@ -74,6 +83,7 @@
 
     QAction*   _actHelp;
     QAction*   _actAbout;
+    QAction*   _actFlowchart;
     QAction*   _actFontSel;
     QAction*   _actSaveOpt;
     QAction*   _actQuit; 
