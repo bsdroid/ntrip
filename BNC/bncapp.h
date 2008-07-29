@@ -47,6 +47,9 @@ class bncApp : public QApplication {
     void slotNewGlonassEph(glonassephemeris* glonasseph);
     void slotNewCorrLine(QString line, QString staID, long coTime);
     void slotQuit();
+
+ signals:
+   void newMessage(QByteArray msg);
     
  private slots:
    void slotNewConnection();
