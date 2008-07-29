@@ -71,7 +71,7 @@ bncWindow::bncWindow() {
   _actAbout = new QAction(tr("&About BNC"),this);
   connect(_actAbout, SIGNAL(triggered()), SLOT(slotAbout()));
 
-  _actFlowchart = new QAction(tr("&Flowchart"),this);
+  _actFlowchart = new QAction(tr("&Flow Chart"),this);
   connect(_actFlowchart, SIGNAL(triggered()), SLOT(slotFlowchart()));
 
   _actFontSel = new QAction(tr("Select &Font"),this);
