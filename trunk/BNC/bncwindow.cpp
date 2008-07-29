@@ -858,7 +858,7 @@ bncFlowchartDlg::bncFlowchartDlg(QWidget* parent) :
 
   QGridLayout* dlgLayout = new QGridLayout();
   QLabel* img = new QLabel();
-  img->setPixmap(QPixmap(":flowchart.png"));
+  img->setPixmap(QPixmap(":bncflowchart.png"));
   dlgLayout->addWidget(img, 0,0);
   dlgLayout->addWidget(_closeButton,1,0,Qt::AlignLeft);
 
