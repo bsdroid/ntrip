@@ -13,6 +13,14 @@ class bnsAboutDlg : public QDialog {
   ~bnsAboutDlg();
 };
 
+class bnsFlowchartDlg : public QDialog {
+ Q_OBJECT
+
+ public:
+  bnsFlowchartDlg(QWidget* parent);
+  ~bnsFlowchartDlg();
+};
+
 class bnsWindow : public QMainWindow {
 Q_OBJECT
 
@@ -27,6 +35,7 @@ Q_OBJECT
  private slots:
   void slotHelp();
   void slotAbout();
+  void slotFlowchart();
   void slotFontSel();
   void slotSaveOptions();
   void slotWhatsThis();
@@ -46,6 +55,7 @@ Q_OBJECT
 
   QAction*   _actHelp;
   QAction*   _actAbout;
+  QAction*   _actFlowchart;
   QAction*   _actFontSel;
   QAction*   _actSaveOpt;
   QAction*   _actQuit; 

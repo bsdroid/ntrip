@@ -55,6 +55,31 @@ bnsAboutDlg::bnsAboutDlg(QWidget* parent) :
 bnsAboutDlg::~bnsAboutDlg() {
 }; 
 
+// Flowchart Dialog - Constructor
+////////////////////////////////////////////////////////////////////////////
+bnsFlowchartDlg::bnsFlowchartDlg(QWidget* parent) :
+   QDialog(parent) {
+
+  int ww = QFontMetrics(font()).width('w');
+  QPushButton* _closeButton = new QPushButton("Close");
+  _closeButton->setMaximumWidth(10*ww);
+  connect(_closeButton, SIGNAL(clicked()), this, SLOT(close()));
+
+  QGridLayout* dlgLayout = new QGridLayout();
+  QLabel* img = new QLabel();
+  img->setPixmap(QPixmap(":bnsflowchart.png"));
+  dlgLayout->addWidget(img, 0,0);
+  dlgLayout->addWidget(_closeButton,1,0,Qt::AlignLeft);
+
+  setLayout(dlgLayout);
+  show();
+}
+
+// Flowchart Dialog - Destructor
+////////////////////////////////////////////////////////////////////////////
+bnsFlowchartDlg::~bnsFlowchartDlg() {
+};
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bnsWindow::bnsWindow() {
@@ -83,6 +108,9 @@ bnsWindow::bnsWindow() {
 
   _actAbout = new QAction(tr("&About BNS"),this);
   connect(_actAbout, SIGNAL(triggered()), SLOT(slotAbout()));
+
+  _actFlowchart = new QAction(tr("&Flow Chart"),this);
+  connect(_actFlowchart, SIGNAL(triggered()), SLOT(slotFlowchart()));
 
   _actFontSel = new QAction(tr("Select &Font"),this);
   connect(_actFontSel, SIGNAL(triggered()), SLOT(slotFontSel()));
@@ -366,6 +394,12 @@ void bnsWindow::slotAbout() {
  new bnsAboutDlg(0);
 }
 
+//Flowchart
+////////////////////////////////////////////////////////////////////////////
+void bnsWindow::slotFlowchart() {
+ new bnsFlowchartDlg(0);
+}
+
 // Help Window
 ////////////////////////////////////////////////////////////////////////////
 void bnsWindow::slotHelp() {
@@ -406,6 +440,7 @@ void bnsWindow::CreateMenu() {
 
   _menuHlp = menuBar()->addMenu(tr("&Help"));
   _menuHlp->addAction(_actHelp);
+  _menuHlp->addAction(_actFlowchart);
   _menuHlp->addAction(_actAbout);
 }
 
