@@ -60,6 +60,7 @@ class bncApp : public QApplication {
                      const QString& lineV3,
                      const QByteArray& allLines);
     void dumpCorrs(long minTime, long maxTime);
+    void messagePrivate(const QByteArray& msg);
 
     QFile*            _logFile;
     QTextStream*      _logStream;
