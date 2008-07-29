@@ -1,7 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
     <file>ntrip-logo.png</file>
-    <file>flowchart.png</file>
+    <file>bncflowchart.png</file>
     <file>bnchelp.html</file>
     <file>bncabout.html</file>
 </qresource>
