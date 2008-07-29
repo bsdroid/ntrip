@@ -151,6 +151,13 @@ void bncApp::slotMessage(const QByteArray msg) {
 
   QMutexLocker locker(&_mutex);
 
+  messagePrivate(msg);
+}
+
+// Write a Program Message (private, no lock)
+////////////////////////////////////////////////////////////////////////////
+void bncApp::messagePrivate(const QByteArray& msg) {
+
   // First time resolve the log file name
   // ------------------------------------
   if (_logFileFlag == 0) {
@@ -617,6 +624,9 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
   // An old correction - throw it away
   // ---------------------------------
   if (coTime <= _lastDumpCoSec) {
+    QString line = "old correction: " + staID +
+                    QString().sprintf(" age %ld", 
+                    _lastDumpCoSec - coTime + _waitCoTime);
     return;
   }
 
