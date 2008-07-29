@@ -660,6 +660,8 @@ void bncWindow::slotGetData() {
           this, SLOT(slotMessage(QByteArray)));
   connect(_caster, SIGNAL(newMessage(QByteArray)), 
           (bncApp*)qApp, SLOT(slotMessage(QByteArray)));
+  connect((bncApp*)qApp, SIGNAL(newMessage(QByteArray)), 
+          this, SLOT(slotMessage(QByteArray)));
 
   slotMessage("============ Start BNC ============");
   ((bncApp*)qApp)->slotMessage("============ Start BNC ============");

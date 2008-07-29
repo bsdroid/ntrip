@@ -615,6 +615,12 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
     return;
   }
 
+  QSettings settings;
+  _waitCoTime    = settings.value("corrTime").toInt();
+  if (_waitCoTime < 1) {
+    _waitCoTime = 1;
+  }
+
   // First time, set the _lastDumpSec immediately
   // --------------------------------------------
   if (_lastDumpCoSec == 0) {
