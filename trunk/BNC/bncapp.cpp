@@ -627,6 +627,7 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
     QString line = "old correction: " + staID +
                     QString().sprintf(" age %ld", 
                     _lastDumpCoSec - coTime + _waitCoTime);
+    messagePrivate(line.toAscii());
     return;
   }
 
