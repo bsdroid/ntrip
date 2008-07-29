@@ -863,7 +863,6 @@ bncFlowchartDlg::bncFlowchartDlg(QWidget* parent) :
   dlgLayout->addWidget(_closeButton,1,0,Qt::AlignLeft);
 
   setLayout(dlgLayout);
- /* resize(50*ww, 35*ww); */
   show();
 }
 
