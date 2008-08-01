@@ -190,7 +190,17 @@ BNS refers its final clock and orbit corrections to a specific reference system.
 As the clocks and orbits coming from real-time GNSS engine are expected to be in the 'IGS05' reference system (X,Y,Z ECEF), no transformation is carried out if this option is selected.
 </p>
 <p>
-The implemented formulas for transformation from ITRS (IGS05) to ETRS89 are taken from 'Boucher and Altamimi 2007: Specifications for reference frame fixing in the analysis of EUREF GPS campaign', see <u>http://etrs89.ensg.ign.fr/memo2007.pdf</u>.
+The implemented formulas for transformation from ITRS (IGS05) to ETRS89 are taken from 'Boucher and Altamimi 2007: Specifications for reference frame fixing in the analysis of EUREF GPS campaign', see <u>http://etrs89.ensg.ign.fr/memo2007.pdf</u>. The following Helmert transformation parameters have been introduced:
+</p>
+<p>
+<pre>
+Translation in X:  0.056 m
+Translation in Y:  0.048 m
+Translation in Z: -0.037 m
+Rotation in X:  0.054 mas/y
+Rotation in Y:  0.518 mas/y
+Rotation in Z: -0.781 mas/y
+</pre>
 </p>
 
 <p><a name="input"><h4>4.5. Input</h4></p>
