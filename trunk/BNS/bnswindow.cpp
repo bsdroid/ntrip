@@ -286,6 +286,7 @@ bnsWindow::bnsWindow() {
   layout_inp->addWidget(_clkPortLineEdit,              1, 4);
   layout_inp->addWidget(new QLabel("Read broadcast ephemeris and IGS clocks and orbits."), 2, 0, 1, 6, Qt::AlignLeft);
   layout_inp->addWidget(new QLabel(""),                3, 0);
+  layout_inp->addWidget(new QLabel(""),                4, 0);
 
   tab_inp->setLayout(layout_inp);
 
@@ -307,7 +308,8 @@ bnsWindow::bnsWindow() {
   layout_cas->addWidget(_passwordLineEdit,        1, 4);
   layout_cas->addWidget(new QLabel("Save stream (full path)"), 2, 0, Qt::AlignLeft);
   layout_cas->addWidget(_outFileLineEdit,         2, 1);
-  layout_cas->addWidget(new QLabel("Stream upload of clock and orbit corrections to NTRIP broadcaster."),3, 0, 1, 2, Qt::AlignLeft);
+  layout_cas->addWidget(new QLabel("Stream upload of clock and orbit corrections to NTRIP broadcaster."), 3, 0, 1, 4, Qt::AlignLeft);
+  layout_cas->addWidget(new QLabel(""),           4, 0);
 
   tab_cas->setLayout(layout_cas);
 
