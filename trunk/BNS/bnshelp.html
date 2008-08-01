@@ -1,7 +1,7 @@
 <h3>BKG Ntrip State Space Server (BNS) Version 1.0</h3>
 
 <p>
-The BKG Ntrip State Space Server (BNS) is a program for transforming GNSS satellite clocks and orbits into corrections to Broadcast Ephemeris. These corrections are then encode in RTCM Version 3.x format and uploaded to NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home.</u> BNS. is created as a tool for service providers with real-time access to a network of continentally or globally distributed GNSS reference stations.
+The BKG Ntrip State Space Server (BNS) is a program for transforming GNSS satellite clocks and orbits into corrections to Broadcast Ephemeris. These corrections are then encode in RTCM Version 3.x format and uploaded to NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home.</u> BNS is created as a tool for service providers with real-time access to a network of continentally or globally distributed GNSS reference stations.
 </p>
 
 <p>
@@ -34,18 +34,18 @@ Before running, please ensure that you have installed the latest version availab
 Differential GNSS and RTK operation using RTCM is currently based on corrections and/or raw measurements from single or multiple reference stations. This approach to differential positioning is using 'observation space' information. The representation with the RTCM standard can be called 'Observation Space Representation' (OSR). 
 </p>
 <p>
-An alternative to the observation space approach is the so called 'sate space' approach. The principle here is to provide information on individual error sources, i.e. 'State Space Representation' (SSR). For a rover position state space information concerning satellite clock and orbit corrections, ionospheric and tropospheric corrections et cetera can be converted into observation space and used to correct the rover observables for more accurate positioning. Alternatively the state information can directly be used in the rover's processing or adjustment model.
+An alternative to the observation space approach is the so called 'sate space' approach. The principle here is to provide information on individual error sources and can be called 'State Space Representation' (SSR). For a rover position, state space information concerning precise satellite clocks, orbits, ionosphere, troposphere et cetera can be converted into observation space and used to correct the rover observables for more accurate positioning. Alternatively the state information can directly be used in the rover's processing or adjustment model.
 </p>
 
 <p>In order to support applications following the state space approach, the purpose of BNS is to
 
 <ul>
-<li>read GNSS clocks and orbits in plain ASCII format from an IP port. They can be produced by a real-time GNSS engine such as RTNet and are should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system.</li> 
-<li>read GNSS broadcast ephemeris in RINEX Navigation file format from an IP port. This information can be provided in real-time by the 'BKG Ntrip Client' (BNC) program.</li>
-<li>convert the IGS Earth-Centered-Earth-Fixed clocks and and orbits into corrections to broadcast ephemeris with radial, along-track and cross-track components.</li>
+<li>read GNSS clocks and orbits in plain ASCII format from an IP port. They can be produced by a real-time GNSS engine such as RTNet and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system.</li> 
+<li>read GNSS Broadcast Ephemeris in RINEX Navigation file format from an IP port. This information can be provided in real-time by the 'BKG Ntrip Client' (BNC) program.</li>
+<li>convert the IGS Earth-Centered-Earth-Fixed clocks and and orbits into corrections to Broadcast Ephemeris with radial, along-track and cross-track components.</li>
 <li>upload the clock and orbit corrections as a stream to an NTRIP Broadcaster.</li>
-<li>log the broadcast ephemeris clock corrections as files in Clock RINEX files.</li>
-<li>log the broadcast ephemeris orbit corrections as files in SP3 files.</li>
+<li>log the Broadcast Ephemeris clock corrections as files in Clock RINEX files.</li>
+<li>log the Broadcast Ephemeris orbit corrections as files in SP3 files.</li>
 </ul>
 </p>
 <p>
@@ -54,17 +54,17 @@ Note that BNS currently only generates the tentative RTCM Version 3.x message ty
 
 <p><a name="function"><h3>2. Functioning</h3></p>
 <p>
-The procedures taken by BNS to generate clock and orbit corrections to broadcast ephemeris in radial, along-track and cross-track components are as follow:
+The procedures taken by BNS to generate clock and orbit corrections to Broadcast Ephemeris in radial, along-track and cross-track components are as follow:
 </p>
 <p>
 <ul> 
-<li>Continuously receive up-to-date broadcast ephemeris carrying approximate orbits and clocks for all satellites. Receive them in RINEX Version 3 Navigation file format. Read new Broadcast Ephemeris immediately whenever they become available. Tools like the 'BKG Ntrip Client' (BNC) provide this information.</li>
+<li>Continuously receive up-to-date Broadcast Ephemeris carrying approximate orbits and clocks for all satellites. Receive them in RINEX Version 3 Navigation file format. Read new Broadcast Ephemeris immediately whenever they become available. Tools like the 'BKG Ntrip Client' (BNC) provide this information.</li>
 </ul> 
 </p>
 <p>
 Then, epoch by epoch:
 <ul> 
-<li>Continuously receive the best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS05 reference system. Receive them every epoch in a plain ASCII format as provided by a real-time GNSS engine like RTNet.</li>
+<li>Continuously receive the best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS05 reference system. Receive them every epoch in a plain ASCII format as provided by a real-time GNSS engine such as RTNet.</li>
 <li>Calculate X,Y,Z coordinates from Broadcast Ephemeris orbits.</li>
 <li>Calculate differences dX,dY,dZ between Broadcast Ephemeris orbits and IGS05 orbits.</li>
 <li>Model orbit differences through low degree polynomial.</li>
@@ -145,7 +145,7 @@ help contents.<br>
 You may keep the 'Help Contents' window open while configuring BNS.
 </li> 
 <li>
-a 'Flow Chart' showing BNS linked to tools like BNC and a real-time GNSS engine like RTNet.
+a 'Flow Chart' showing BNS linked to tools like BNC and a real-time GNSS engine such as RTNet.
 </li> 
 <li>
 general information about BNS.<br>
@@ -187,7 +187,7 @@ BNS refers its final clock and orbit corrections to a specific reference system.
 </ul>
 </p>
 <p>
-As the clocks and orbits coming from real-time GNSS engine are expected to be in the 'IGS05' reference system (X,Y,Z ECEF), no transformation is carried out if this option is selected.
+As the clocks and orbits coming from real-time GNSS engine are expected to be in the 'IGS05' reference system (X,Y,Z, ECEF), no transformation is carried out if this option is selected.
 </p>
 <p>
 The implemented formulas for transformation from ITRS (IGS05) to ETRS89 are taken from 'Boucher and Altamimi 2007: Specifications for reference frame fixing in the analysis of EUREF GPS campaign', see <u>http://etrs89.ensg.ign.fr/memo2007.pdf</u>. The following Helmert transformation parameters have been introduced from there:
@@ -235,7 +235,7 @@ R04 2008 07 22 08 15 14  4.76110726595e-05  0.00000000000e+00  2.88600000000e+04
 
 <p><a name="clocks"><h4>4.5.2 Clocks & Orbits - mandatory</h4></p>
 <p>
-BNS is listening at an IP port for incoming GNSS clocks and orbits in a plain ASCII format. They can be provided by a real-time GNSS engine like RTNet and are expected to refer to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. Enter the respective IP port number to setup a persistent server socket, see section 'Flow Chart' under 'Help' for socket communication details. Make sure that the software providing clocks and orbits is up and running before you start BNS.
+BNS is listening at an IP port for incoming GNSS clocks and orbits in a plain ASCII format. They can be provided by a real-time GNSS engine such as RTNet and are expected to refer to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. Enter the respective IP port number to setup a server socket for incoming data, see section 'Flow Chart' under 'Help' for socket communication details. Make sure that the software providing clocks and orbits is up and running before you start BNS.
 </p>
 <p>
 Below you will find an example of precise clocks and orbits coming in plain ASCII format from a real-time GNSS engine. Each epoch starts with an asterisk character followed by GPS Week, Second in GPS Week and Number of satellites. Subsequent records provide the following set of parameters for each satellite:
@@ -366,7 +366,7 @@ Select the Clock RINEX sampling interval in seconds. A value of zero '0' tells B
 
 <p><a name="orbits"><h4>4.8. SP3 Orbits</h4></p>
 <p>
-The orbit corrections generated by BNS can be logged separately in SP3 Orbit files. The file naming follow the RINEX convention.
+The orbit corrections generated by BNS can be logged separately in SP3 Orbit files. The file naming follows the IGS convention.
 </p>
 
 <p><a name="orbdir"><h4>4.8.1 Directory - optional</h4></p>
