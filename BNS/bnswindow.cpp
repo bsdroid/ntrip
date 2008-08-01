@@ -41,7 +41,7 @@ bnsAboutDlg::bnsAboutDlg(QWidget* parent) :
   QLabel* img = new QLabel();
   img->setPixmap(QPixmap(":ntrip-logo.png"));
   dlgLayout->addWidget(img, 0,0);
-  dlgLayout->addWidget(new QLabel("BKG Ntrip Server (BNS) Version 1.0"), 0,1);
+  dlgLayout->addWidget(new QLabel("BKG Ntrip State Space Server (BNS) Version 1.0"), 0,1);
   dlgLayout->addWidget(tb,1,0,1,2);
   dlgLayout->addWidget(_closeButton,2,1,Qt::AlignRight);  
 
@@ -98,7 +98,7 @@ bnsWindow::bnsWindow() {
   
   int ww = QFontMetrics(this->font()).width('w');
   setMinimumSize(77*ww, 65*ww);
-  setWindowTitle(tr("BKG Ntrip Server (BNS) Version 1.0"));
+  setWindowTitle(tr("BKG Ntrip State Space Server (BNS) Version 1.0"));
   setWindowIcon(QPixmap(":ntrip-logo.png"));
 
   // Create Actions
