@@ -168,7 +168,7 @@ bnsWindow::bnsWindow() {
   _ephPortLineEdit->setMaximumWidth(9*ww);
 
   _clkPortLineEdit  = new QLineEdit(settings.value("clkPort").toString());
-  _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in plain ASCII format from an IP address. Specify the IP port e.g. of a RTNet installation providing this information."));
+  _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in plain ASCII format from an IP port. Specify a local IP port e.g. for an RTNet installation to provide this information."));
   _clkPortLineEdit->setMaximumWidth(9*ww);
 
   _outHostLineEdit    = new QLineEdit(settings.value("outHost").toString());
@@ -307,7 +307,7 @@ bnsWindow::bnsWindow() {
   layout_cas->addWidget(_passwordLineEdit,        1, 4);
   layout_cas->addWidget(new QLabel("Save stream (full path)"), 2, 0, Qt::AlignLeft);
   layout_cas->addWidget(_outFileLineEdit,         2, 1);
-  layout_cas->addWidget(new QLabel("Stream upload of clock and orbit corrections to NTRIP broadcaster."),4, 0, 1, 2, Qt::AlignLeft);
+  layout_cas->addWidget(new QLabel("Stream upload of clock and orbit corrections to NTRIP broadcaster."),3, 0, 1, 2, Qt::AlignLeft);
 
   tab_cas->setLayout(layout_cas);
 
