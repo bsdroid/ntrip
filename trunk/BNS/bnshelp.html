@@ -1,7 +1,7 @@
-<h3>BKG Ntrip Server (BNS) Version 1.0</h3>
+<h3>BKG Ntrip State Space Server (BNS) Version 1.0</h3>
 
 <p>
-The BKG Ntrip Server (BNS) is a program for transforming GNSS satellite clocks and orbits into corrections to Broadcast Ephemeris. These corrections are then encode in RTCM Version 3.x format and uploaded to NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home.</u> BNS. is created as a tool for service providers with real-time access to a network of continentally or globally distributed GNSS reference stations.
+The BKG Ntrip State Space Server (BNS) is a program for transforming GNSS satellite clocks and orbits into corrections to Broadcast Ephemeris. These corrections are then encode in RTCM Version 3.x format and uploaded to NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home.</u> BNS. is created as a tool for service providers with real-time access to a network of continentally or globally distributed GNSS reference stations.
 </p>
 
 <p>
@@ -30,8 +30,14 @@ Before running, please ensure that you have installed the latest version availab
 </p>
 
 <p><a name="purpose"><h3>1. Purpose</h3></p>
+<p>
+Differential GNSS and RTK operation using RTCM is currently based on corrections and/or raw measurements from single or multiple reference stations. This approach to differential positioning is using 'observation space' information. The representation with the RTCM standard can be called 'Observation Space Representation' (OSR). 
+</p>
+<p>
+An alternative to the observation space approach is the so called 'sate space' approach. The principle here is to provide information on individual error sources, i.e. 'State Space Representation' (SSR). For a rover position state space information concerning satellite clock and orbit corrections, ionospheric and tropospheric corrections et cetera can be converted into observation space and used to correct the rover observables for more accurate positioning. Alternatively the state information can directly be used in the rover's processing or adjustment model.
+</p>
 
-<p> The purpose of BNS is to
+<p>In order to support applications following the state space approach, the purpose of BNS is to
 
 <ul>
 <li>read GNSS clocks and orbits in plain ASCII format from an IP port. They can be produced by a real-time GNSS engine such as RTNet and are should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system.</li> 
@@ -99,8 +105,7 @@ Running BNS requires the clock of the host computer to be properly synchronized.
 4.6. <a href=#caster>NTRIP Caster</a><br>
 &nbsp; &nbsp; &nbsp; 4.6.1. <a href=#cashost>Host & Port</a><br>
 &nbsp; &nbsp; &nbsp; 4.6.2. <a href=#casmount>Mountpoint & Password</a><br>
-&nbsp; &nbsp; &nbsp; 4.6.3. <a href=#casproxy>Use Proxy</a><br>
-&nbsp; &nbsp; &nbsp; 4.6.4. <a href=#casstream>Save Stream</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.3. <a href=#casstream>Save Stream</a><br>
 4.7. <a href=#rnxclk>RINEX Clocks</a><br>
 &nbsp; &nbsp; &nbsp; 4.7.1. <a href=#clkdir>Directory</a><br>
 &nbsp; &nbsp; &nbsp; 4.7.2. <a href=#clkint>Interval & Sampling</a><br>
@@ -138,6 +143,9 @@ The 'Help' button provides access to
 <li>
 help contents.<br>
 You may keep the 'Help Contents' window open while configuring BNS.
+</li> 
+<li>
+a 'Flow Chart' showing BNS linked to tools like BNC and a real-time GNSS engine like RTNet.
 </li> 
 <li>
 general information about BNS.<br>
@@ -192,11 +200,8 @@ BNS requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF)
 
 <p><a name="ephemeris"><h4>4.5.1 Ephemeris - mandatory</h4></p>
 <p>
-BNS reads GNSS Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address and port. This information can be provided in real-time by the 'BKG Ntrip Client' (BNC) program through a persistent socket connection. Note that whenever a new set of Broadcast Ephemeris becomes available, it has to be transmitted immediately. Enter the respective servers IP address and port number. If BNS runs on the same host as BNC, 127.0.0.1 should be used as the server's IP address. Make sure that this server is up and running before you start BNS.
+BNS reads GNSS Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address and port. This information can be provided in real-time by the 'BKG Ntrip Client' (BNC) program. Note that whenever a new set of Broadcast Ephemeris becomes available, it has to be transmitted immediately. Enter the respective servers IP address and port number to establish a persistent socket connection, see section 'Flow Chart' under 'Help' for socket communication details. If BNS runs on the same host as BNC, 127.0.0.1 should be used as the server's IP address. Make sure that this server is up and running before you start BNS.
 </p>
-<p>
-If a proxy server is operated between BNS and the server providing the Broadcast Ephemeris, you may need to use the proxy server settings you have specified. Tick 'Use proxy' to use it for stream download.
-<p>
 </p>
 The following is an example of Broadcast Ephemeris records in RINEX Version 3 Navigation file format for satellite GPS PRN32 and GLONASS PRN04:
 </p>
@@ -220,10 +225,7 @@ R04 2008 07 22 08 15 14  4.76110726595e-05  0.00000000000e+00  2.88600000000e+04
 
 <p><a name="clocks"><h4>4.5.2 Clocks & Orbits - mandatory</h4></p>
 <p>
-BNS reads GNSS clocks and orbits in a plain ASCII format from an IP address and port. They can be provided by a real-time GNSS engine like RTNet and are expected to refer to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. Enter the respective servers IP address and port number to establish a persistent socket connection. If BNS runs (advantageously) on the same host which provides the clocks and orbits, 127.0.0.1 has to be introduced as the servers IP address. Make sure that this server is up and running before you start BNS.
-</p>
-<p>
-If a proxy server is operated between BNS and the server providing the clocks and orbits, you may need to use the proxy server settings you have specified. Tick 'Use proxy' to use them for stream download.
+BNS is listening at an IP port for incoming GNSS clocks and orbits in a plain ASCII format. They can be provided by a real-time GNSS engine like RTNet and are expected to refer to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. Enter the respective IP port number to setup a persistent server socket, see section 'Flow Chart' under 'Help' for socket communication details. Make sure that the software providing clocks and orbits is up and running before you start BNS.
 </p>
 <p>
 Below you will find an example of precise clocks and orbits coming in plain ASCII format from a real-time GNSS engine. Each epoch starts with an asterisk character followed by GPS Week, Second in GPS Week and Number of satellites. Subsequent records provide the following set of parameters for each satellite:
@@ -272,7 +274,7 @@ R23  15141704.650  19152042.802   7332976.247     -111.465201    -0.316
 </pre>
 </p>
 
-<p><a name="clocks"><h4>4.5.3 Save Clocks & Orbits - optional</h4></p>
+<p><a name="saveclk"><h4>4.5.3 Save Clocks & Orbits - optional</h4></p>
 <p>
 Specify the full path to a file where received clocks and orbits from a real-time engine will logged. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that logging is disabled.</p>
 
@@ -296,12 +298,7 @@ Each stream on an NTRIP Caster is defined using a unique source ID called mountp
 In NTRIP Version 1.0 stream upload is only protected through a generic upload 'Password'. Enter the password you received from the Caster operator along with the mountpoint.
 </p>
 
-<p><a name="casproxy"><h4>4.6.3 Use Proxy - optional if 'Host' and 'Proxy' is set</h4></p>
-<p>
-In case BNS runs within a protected LAN, you may need to communicate to the outside world through a proxy server. Once you have specified your proxies host and port, you can tick 'Use proxy' to use it for stream upload.
-</p>
-
-<p><a name="casstream"><h4>4.6.4 Save Stream - optional</h4></p>
+<p><a name="casstream"><h4>4.6.3 Save Stream - optional</h4></p>
 <p>
 The clock and orbit corrections streamed by BNS to the NTRIP Caster can be logged locally. Specify a full 'Save stream' path here to save this information to a local file. Default value for 'Save stream' is an empty option field, meaning that logging is disabled.
 </p>
@@ -325,7 +322,7 @@ The file is in plain ASCII format comprising records containing the following se
 The following is an example file contents based on combined GPS and GLONASS clock and orbit corrections carried in RTCM Version 3.x message Type 4056 and 4057:
 </p>
 <p>
-</pre>
+<pre>
 1489 325606.0 G31    18     -1.021      0.110   -1.308   -0.120
 1489 412006.0 R10    18      7.342      1.393    4.858   -2.634
 1489 412006.0 R19    18      4.696      2.358    1.707   -2.907
@@ -410,7 +407,7 @@ Once BNS has been started, its configuration can not be changed unless without a
 </ul>
 <p><a name="authors"><h3>6. Authors</h3></p>
 <p>
-The BKG Ntrip Server (BNS) Qt Graphic User Interface (GUI) has been developed for the Federal Agency for Cartography and Geodesy (BKG) by Leos Mervart, Czech Technical University Prague, Department of Geodesy. BNS includes a GNU GPL open source RTCM 3.x encoder, written for BKG by Dirk Stoecker, Alberding GmbH, Schoenefeld.
+The BKG Ntrip State Space Server (BNS) Qt Graphic User Interface (GUI) has been developed for the Federal Agency for Cartography and Geodesy (BKG) by Leos Mervart, Czech Technical University Prague, Department of Geodesy. BNS includes a GNU GPL open source RTCM 3.x encoder, written for BKG by Dirk Stoecker, Alberding GmbH, Schoenefeld.
 </p>
 <p>
 Georg Weber<br>
