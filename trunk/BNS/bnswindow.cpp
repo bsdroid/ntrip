@@ -282,7 +282,7 @@ bnsWindow::bnsWindow() {
   layout_inp->addWidget(new QLabel("Port"),            0, 3, Qt::AlignLeft);
   layout_inp->addWidget(_ephPortLineEdit,              0, 4);
   layout_inp->addWidget(new QLabel("Clocks & Orbits"), 1, 0, Qt::AlignLeft);
-  layout_inp->addWidget(new QLabel("Server listening on Port"), 1, 1, 1, 3, Qt::AlignRight);
+  layout_inp->addWidget(new QLabel("BNS listening on Port"), 1, 1, 1, 3, Qt::AlignRight);
   layout_inp->addWidget(_clkPortLineEdit,              1, 4);
   layout_inp->addWidget(new QLabel("Read broadcast ephemeris and IGS clocks and orbits."), 2, 0, 1, 6, Qt::AlignLeft);
   layout_inp->addWidget(new QLabel(""),                3, 0);
