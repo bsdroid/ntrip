@@ -494,13 +494,13 @@ void t_bns::slotMoveSocket(QThread* tt) {
 void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz) {
 
   ColumnVector dx(3);
-  dx(1) =  0.056;
-  dx(2) =  0.048;
-  dx(3) = -0.037;
+  dx(1) =  0.054;
+  dx(2) =  0.051;
+  dx(3) = -0.048;
   const static double arcSec = 180.0 * 3600.0 / M_PI;
-  const static double ox =  0.000054 / arcSec;
-  const static double oy =  0.000518 / arcSec;
-  const static double oz = -0.000781 / arcSec;
+  const static double ox =  0.000081 / arcSec;
+  const static double oy =  0.000490 / arcSec;
+  const static double oz = -0.000792 / arcSec;
 
   Matrix rMat(3,3); rMat = 0.0;
   rMat(1,2) = -oz;
