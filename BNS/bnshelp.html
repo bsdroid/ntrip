@@ -182,26 +182,31 @@ When BNS is started, new files are created by default and any existing files wit
 BNS refers its final clock and orbit corrections to a specific reference system. Available options are
 <p>
 <ul>
-<li>IGS05 which stands for the GNSS-based IGS realization of the International Terrestrial Reference System (ITRS), and</li>
+<li>IGS05 which stands for the GNSS-based IGS realization of the International Terrestrial Reference Frame (ITRF2005), and</li>
 <li>ETRS89 which stands for the European Terrestrial Reference System 1989 adopted by EUREF.</li>
 </ul>
 </p>
 <p>
-As the clocks and orbits coming from real-time GNSS engine are expected to be in the 'IGS05' reference system (X,Y,Z, ECEF), no transformation is carried out if this option is selected.
+<u>Concerning 'IGS05';</u>
+As the clocks and orbits coming from real-time GNSS engine are expected to be in the 'IGS05' system, no transformation is carried out if this option is selected.
 </p>
 <p>
-The implemented formulas for transformation from ITRS (IGS05) to ETRS89 are taken from 'Boucher and Altamimi 2007: Specifications for reference frame fixing in the analysis of EUREF GPS campaign', see <u>http://etrs89.ensg.ign.fr/memo2007.pdf</u>. The following Helmert transformation parameters have been introduced from there:
+<u>Concerning 'ETRS89';</u>
+From the complete transformation chain 'IGS05->ITRF2005->ITRF2000->ETRS89' only the transformation 'ITRF2000->ETRS89' has been implemented. The formulas for that are taken from 'Boucher and Altamimi 2007: Specifications for reference frame fixing in the analysis of EUREF GPS campaign', see <u>http://etrs89.ensg.ign.fr/memo2007.pdf</u>. The following 6 Helmert transformation parameters were introduced:
 </p>
 <p>
 <pre>
-Translation in X:  0.056 m
-Translation in Y:  0.048 m
-Translation in Z: -0.037 m
-Rotation in X:  0.054 mas/y
-Rotation in Y:  0.518 mas/y
-Rotation in Z: -0.781 mas/y
+Translation in X:  0.054 m
+Translation in Y:  0.051 m
+Translation in Z: -0.048 m
+Rotation in X:  0.081 mas/y
+Rotation in Y:  0.490 mas/y
+Rotation in Z: -0.792 mas/y
 </pre>
 </p>
+<p>
+Note that the neglect of transformations 'IGS05->ITRF2005->ITRF2000' in BNS may lead to discrepancies up to 2 centimenters.
+<p>
 
 <p><a name="input"><h4>4.5. Input</h4></p>
 <p>
