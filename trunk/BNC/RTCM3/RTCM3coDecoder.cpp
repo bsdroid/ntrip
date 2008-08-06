@@ -112,6 +112,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
 
   _buffer.append(buffer, bufLen);
 
+  t_irc retCode = failure;
+
   while (true) {
    
     memset(&_co, 0, sizeof(_co));
@@ -124,7 +126,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
     // ---------------
     if      (irc == GCOBR_SHORTBUFFER ||
              irc == GCOBR_MESSAGEEXCEEDSBUFFER) {
-      return failure;
+      return retCode;
     }
     
     // Message correctly decoded
@@ -190,7 +192,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
         printLine(line, coTime);
       }
       _buffer = _buffer.substr(bytesused);
-      return success;
+      retCode = success;
     }
 
     // All other Cases
