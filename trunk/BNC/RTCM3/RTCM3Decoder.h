@@ -41,11 +41,13 @@ Q_OBJECT
   virtual ~RTCM3Decoder();
   virtual t_irc Decode(char* buffer = 0, int bufLen = 0);
  signals:
+  void newMessage(QByteArray msg);
   void newGPSEph(gpsephemeris* gpseph);
   void newGlonassEph(glonassephemeris* glonasseph);
  private:
   enum t_mode{unknown = 0, observations, corrections};
 
+  QString                _staID;
   struct RTCM3ParserData _Parser;
   RTCM3coDecoder*        _coDecoder; 
   t_mode                 _mode;

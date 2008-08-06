@@ -64,7 +64,9 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID) : GPSDecoder() {
 
   const int LEAPSECONDS = 14; /* only needed for approx. time */
 
-// Ensure, that the Decoder uses the "old" convention for the data structure for Rinex2. Perlt
+  _staID = staID;
+
+  // Ensure, that the Decoder uses the "old" convention for the data structure for Rinex2. Perlt
   _Parser.rinex3 = 0;
 
   time_t tim;
@@ -107,6 +109,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
       decoded = true;
       if (_mode == unknown) {
         _mode = corrections;
+        emit(newMessage( (_staID + " : mode set to corrections").toAscii() ));
       }
     }
   }
@@ -231,6 +234,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
     }
     if (_mode == unknown && decoded) {
       _mode = observations;
+      emit(newMessage( (_staID + " : mode set to observations").toAscii() ));
     }
   }
 
