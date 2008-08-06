@@ -44,8 +44,11 @@ Q_OBJECT
   void newGPSEph(gpsephemeris* gpseph);
   void newGlonassEph(glonassephemeris* glonasseph);
  private:
+  enum t_mode{unknown = 0, observations, corrections};
+
   struct RTCM3ParserData _Parser;
   RTCM3coDecoder*        _coDecoder; 
+  t_mode                 _mode;
 } ;
 
 #endif

@@ -82,6 +82,10 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID) : GPSDecoder() {
   // Sub-Decoder for Clock and Orbit Corrections
   // -------------------------------------------
   _coDecoder = new RTCM3coDecoder(staID);
+
+  // Mode can be either observations or corrections
+  // ----------------------------------------------
+  _mode = unknown;
 }
 
 // Destructor
@@ -98,131 +102,142 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
 
   // Try to decode Clock and Orbit Corrections
   // -----------------------------------------
-  if ( _coDecoder->Decode(buffer, bufLen) == success ) {
-    decoded = true;
+  if (_mode == unknown || _mode == corrections) {
+    if ( _coDecoder->Decode(buffer, bufLen) == success ) {
+      decoded = true;
+      if (_mode == unknown) {
+        _mode = corrections;
+      }
+    }
   }
 
   // Remaining part decodes the Observations
   // ---------------------------------------
-  for (int ii = 0; ii < bufLen; ii++) {
-
-    _Parser.Message[_Parser.MessageSize++] = buffer[ii];
-    if (_Parser.MessageSize >= _Parser.NeedBytes) {
-
-      while(int rr = RTCM3Parser(&_Parser)) {
-
-        // GNSS Observations
-        // -----------------
-        if (rr == 1 || rr == 2) {
-                decoded = true;
-
-          if (!_Parser.init) {
-            HandleHeader(&_Parser);
-            _Parser.init = 1;
-          }
-          
-          if (rr == 2) {
-            std::cerr << "No valid RINEX! All values are modulo 299792.458!\n";
-          }
-          
-          for (int ii = 0; ii < _Parser.Data.numsats; ii++) {
-            p_obs obs = new t_obs();
-            _obsList.push_back(obs);
-            if      (_Parser.Data.satellites[ii] <= PRN_GPS_END) {
-              obs->_o.satSys = 'G';
-              obs->_o.satNum = _Parser.Data.satellites[ii];
-	    }
-	    else if (_Parser.Data.satellites[ii] <= PRN_GLONASS_END) {
-              obs->_o.satSys = 'R';
-              obs->_o.satNum = _Parser.Data.satellites[ii] - PRN_GLONASS_START + 1;
-	    }
-	    else {
-              obs->_o.satSys = 'S';
-              obs->_o.satNum = _Parser.Data.satellites[ii] - PRN_WAAS_START + 20;
-	    }
-            obs->_o.GPSWeek  = _Parser.Data.week;
-            obs->_o.GPSWeeks = _Parser.Data.timeofweek / 1000.0;
-          
-            for (int jj = 0; jj < _Parser.numdatatypesGPS; jj++) {
-              int v = 0;
-// sepearated declaration and initalization of df and pos. Perlt
-              int df;
-              int pos;
-              df = _Parser.dataflag[jj];
-              pos = _Parser.datapos[jj];
-              if ( (_Parser.Data.dataflags[ii] & df)
-                   && !isnan(_Parser.Data.measdata[ii][pos])
-                   && !isinf(_Parser.Data.measdata[ii][pos])) {
-                v = 1;
+  if (_mode == unknown || _mode == observations) {
+    for (int ii = 0; ii < bufLen; ii++) {
+    
+      _Parser.Message[_Parser.MessageSize++] = buffer[ii];
+      if (_Parser.MessageSize >= _Parser.NeedBytes) {
+    
+        while(int rr = RTCM3Parser(&_Parser)) {
+    
+          // GNSS Observations
+          // -----------------
+          if (rr == 1 || rr == 2) {
+                  decoded = true;
+    
+            if (!_Parser.init) {
+              HandleHeader(&_Parser);
+              _Parser.init = 1;
+            }
+            
+            if (rr == 2) {
+              std::cerr << "No valid RINEX! All values are modulo 299792.458!\n";
+            }
+            
+            for (int ii = 0; ii < _Parser.Data.numsats; ii++) {
+              p_obs obs = new t_obs();
+              _obsList.push_back(obs);
+              if      (_Parser.Data.satellites[ii] <= PRN_GPS_END) {
+                obs->_o.satSys = 'G';
+                obs->_o.satNum = _Parser.Data.satellites[ii];
+              }
+              else if (_Parser.Data.satellites[ii] <= PRN_GLONASS_END) {
+                obs->_o.satSys = 'R';
+                obs->_o.satNum = _Parser.Data.satellites[ii] - PRN_GLONASS_START + 1;
               }
               else {
-                df = _Parser.dataflagGPS[jj];
-                pos = _Parser.dataposGPS[jj];
+                obs->_o.satSys = 'S';
+                obs->_o.satNum = _Parser.Data.satellites[ii] - PRN_WAAS_START + 20;
+              }
+              obs->_o.GPSWeek  = _Parser.Data.week;
+              obs->_o.GPSWeeks = _Parser.Data.timeofweek / 1000.0;
+            
+              for (int jj = 0; jj < _Parser.numdatatypesGPS; jj++) {
+                int v = 0;
+                // sepearated declaration and initalization of df and pos. Perlt
+                int df;
+                int pos;
+                df = _Parser.dataflag[jj];
+                pos = _Parser.datapos[jj];
                 if ( (_Parser.Data.dataflags[ii] & df)
                      && !isnan(_Parser.Data.measdata[ii][pos])
                      && !isinf(_Parser.Data.measdata[ii][pos])) {
-                v = 1;
+                  v = 1;
                 }
-              }
-              if (!v) { 
-                continue; 
-              }
-              else
-              {
-// variables df and pos are used consequently. Perlt
-                if      (df & GNSSDF_C1DATA) {
-                  obs->_o.C1 = _Parser.Data.measdata[ii][pos];
+                else {
+                  df = _Parser.dataflagGPS[jj];
+                  pos = _Parser.dataposGPS[jj];
+                  if ( (_Parser.Data.dataflags[ii] & df)
+                       && !isnan(_Parser.Data.measdata[ii][pos])
+                       && !isinf(_Parser.Data.measdata[ii][pos])) {
+                  v = 1;
+                  }
                 }
-                else if (df & GNSSDF_C2DATA) {
-                  obs->_o.C2 = _Parser.Data.measdata[ii][pos];
+                if (!v) { 
+                  continue; 
                 }
-                else if (df & GNSSDF_P1DATA) {
-                  obs->_o.P1 = _Parser.Data.measdata[ii][pos];
-                }
-                else if (df & GNSSDF_P2DATA) {
-                  obs->_o.P2 = _Parser.Data.measdata[ii][pos];
-                }
-                else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
-                  obs->_o.L1   = _Parser.Data.measdata[ii][pos];
-                  obs->_o.SNR1 = _Parser.Data.snrL1[ii];
-                }
-                else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
-                  obs->_o.L2   = _Parser.Data.measdata[ii][pos];
-                  obs->_o.SNR2 = _Parser.Data.snrL2[ii];
-                }
-                else if (df & (GNSSDF_S1CDATA|GNSSDF_S1PDATA)) {
-                  obs->_o.S1   = _Parser.Data.measdata[ii][pos];
-                }
-                else if (df & (GNSSDF_S2CDATA|GNSSDF_S2PDATA)) {
-                  obs->_o.S2   = _Parser.Data.measdata[ii][pos];
+                else
+                {
+                  // variables df and pos are used consequently. Perlt
+                  if      (df & GNSSDF_C1DATA) {
+                    obs->_o.C1 = _Parser.Data.measdata[ii][pos];
+                  }
+                  else if (df & GNSSDF_C2DATA) {
+                    obs->_o.C2 = _Parser.Data.measdata[ii][pos];
+                  }
+                  else if (df & GNSSDF_P1DATA) {
+                    obs->_o.P1 = _Parser.Data.measdata[ii][pos];
+                  }
+                  else if (df & GNSSDF_P2DATA) {
+                    obs->_o.P2 = _Parser.Data.measdata[ii][pos];
+                  }
+                  else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
+                    obs->_o.L1   = _Parser.Data.measdata[ii][pos];
+                    obs->_o.SNR1 = _Parser.Data.snrL1[ii];
+                  }
+                  else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
+                    obs->_o.L2   = _Parser.Data.measdata[ii][pos];
+                    obs->_o.SNR2 = _Parser.Data.snrL2[ii];
+                  }
+                  else if (df & (GNSSDF_S1CDATA|GNSSDF_S1PDATA)) {
+                    obs->_o.S1   = _Parser.Data.measdata[ii][pos];
+                  }
+                  else if (df & (GNSSDF_S2CDATA|GNSSDF_S2PDATA)) {
+                    obs->_o.S2   = _Parser.Data.measdata[ii][pos];
+                  }
                 }
               }
             }
           }
-        }
-
-        // GPS Ephemeris
-        // -------------
-        else if (rr == 1019) {
-          decoded = true;
-          gpsephemeris* ep = new gpsephemeris(_Parser.ephemerisGPS);
-          emit newGPSEph(ep);
-        }
-
-        // GLONASS Ephemeris
-        // -----------------
-        else if (rr == 1020) {
-          decoded = true;
-          glonassephemeris* ep = new glonassephemeris(_Parser.ephemerisGLONASS);
-          emit newGlonassEph(ep);
+    
+          // GPS Ephemeris
+          // -------------
+          else if (rr == 1019) {
+            decoded = true;
+            gpsephemeris* ep = new gpsephemeris(_Parser.ephemerisGPS);
+            emit newGPSEph(ep);
+          }
+    
+          // GLONASS Ephemeris
+          // -----------------
+          else if (rr == 1020) {
+            decoded = true;
+            glonassephemeris* ep = new glonassephemeris(_Parser.ephemerisGLONASS);
+            emit newGlonassEph(ep);
+          }
         }
       }
     }
+    if (_mode == unknown && decoded) {
+      _mode = observations;
+    }
   }
-  if (!decoded) {
-  return failure;
+
+  if (decoded) {
+    return success;
   }
   else {
-  return success;
+    return failure;
   }
 }
