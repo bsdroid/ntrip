@@ -369,6 +369,8 @@ t_irc bncGetThread::initRun() {
     else if (_format.indexOf("RTCM_3") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTCM 3.x format"));
       _decoder = new RTCM3Decoder(_staID);
+      connect((RTCM3Decoder*) _decoder, SIGNAL(newMessage(QByteArray)), 
+              this, SIGNAL(newMessage(QByteArray)));
     }
     else if (_format.indexOf("RTIGS") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTIGS format"));
