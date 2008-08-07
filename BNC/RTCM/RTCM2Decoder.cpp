@@ -38,18 +38,23 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <math.h>
+#include <sstream>
+
 #include "../bncutils.h"
+#include "rtcm_utils.h"
 #include "GPSDecoder.h"
 #include "RTCM2Decoder.h"
 
 using namespace std;
+using namespace rtcm2;
 
 // 
 // Constructor
 // 
 
-RTCM2Decoder::RTCM2Decoder() {
-
+RTCM2Decoder::RTCM2Decoder(const std::string& ID) {
+  _ID = ID;
 }
 
 // 
@@ -57,10 +62,27 @@ RTCM2Decoder::RTCM2Decoder() {
 // 
 
 RTCM2Decoder::~RTCM2Decoder() {
+  for (t_pairMap::iterator ii = _ephPair.begin(); ii != _ephPair.end(); ii++) {
+    delete ii->second;
+  }
 }
 
-//
 
+//
+t_irc RTCM2Decoder::getStaCrd(double& xx, double& yy, double& zz) {
+  if ( !_msg03.validMsg ) {
+    return failure;
+  }
+  
+  xx = _msg03.x + (_msg22.validMsg ? _msg22.dL1[0] : 0.0);
+  yy = _msg03.y + (_msg22.validMsg ? _msg22.dL1[1] : 0.0);
+  zz = _msg03.z + (_msg22.validMsg ? _msg22.dL1[2] : 0.0);
+
+  return success;
+}
+
+
+//
 t_irc RTCM2Decoder::Decode(char* buffer, int bufLen) {
 
   _buffer.append(buffer, bufLen);
@@ -94,25 +116,257 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen) {
           p_obs obs = new t_obs();
           _obsList.push_back(obs);
           if (_ObsBlock.PRN[iSat] > 100) {
-            obs->_o.satNum = _ObsBlock.PRN[iSat] % 100;
-            obs->_o.satSys = 'R';
-	  }
-	  else {
-            obs->_o.satNum = _ObsBlock.PRN[iSat];
-            obs->_o.satSys = 'G';
-	  }
-          obs->_o.GPSWeek  = epochWeek;
-          obs->_o.GPSWeeks = epochSecs;
-          obs->_o.C1       = _ObsBlock.rng_C1[iSat];
-          obs->_o.P1       = _ObsBlock.rng_P1[iSat];
-          obs->_o.P2       = _ObsBlock.rng_P2[iSat];
-          obs->_o.L1       = _ObsBlock.resolvedPhase_L1(iSat);
-          obs->_o.L2       = _ObsBlock.resolvedPhase_L2(iSat);
+            obs->_o.satNum    = _ObsBlock.PRN[iSat] % 100;
+            obs->_o.satSys    = 'R';
+	  }		      
+	  else {	      
+            obs->_o.satNum    = _ObsBlock.PRN[iSat];
+            obs->_o.satSys    = 'G';
+	  }		      
+          obs->_o.GPSWeek     = epochWeek;
+          obs->_o.GPSWeeks    = epochSecs;
+          obs->_o.C1          = _ObsBlock.rng_C1[iSat];
+          obs->_o.P1          = _ObsBlock.rng_P1[iSat];
+          obs->_o.P2          = _ObsBlock.rng_P2[iSat];
+          obs->_o.L1          = _ObsBlock.resolvedPhase_L1(iSat);
+          obs->_o.L2          = _ObsBlock.resolvedPhase_L2(iSat);
+	  obs->_o.slip_cnt_L1 = _ObsBlock.slip_L1[iSat];
+	  obs->_o.slip_cnt_L2 = _ObsBlock.slip_L2[iSat];
         }
         _ObsBlock.clear();
       }
+    }
+
+    else if ( _PP.ID() == 20 || _PP.ID() == 21 ) {
+      _msg2021.extract(_PP);
+
+      if (_msg2021.valid()) {
+      	translateCorr2Obs();
+      }	
+    }
+
+    else if ( _PP.ID() == 3 ) {
+      _msg03.extract(_PP);
+    }
+
+    else if ( _PP.ID() == 22 ) {
+      _msg22.extract(_PP);
     }
   }
   return success;
 }
 
+
+
+void RTCM2Decoder::storeEph(const gpsephemeris& gpseph) {
+  t_ephGPS* eph = new t_ephGPS; eph->set(&gpseph);
+
+  string prn = eph->prn();
+
+  t_pairMap::iterator ip = _ephPair.find(prn);
+  if (ip == _ephPair.end() ) {
+    ip = _ephPair.insert(pair<string, t_ephPair*>(prn, new t_ephPair)).first;
+  }
+  t_ephPair* pair = ip->second;
+
+  if ( !pair->eph || eph->isNewerThan(pair->eph) ) {
+    delete pair->oldEph;
+    pair->oldEph = pair->eph;
+    pair->eph    = eph;
+
+    return;
+  }
+
+  delete eph;
+}
+
+
+void RTCM2Decoder::storeEph(const t_ephGPS& gpseph) {
+  t_ephGPS* eph = new t_ephGPS(gpseph);
+
+  string prn = eph->prn();
+
+  t_pairMap::iterator ip = _ephPair.find(prn);
+  if (ip == _ephPair.end() ) {
+    ip = _ephPair.insert(pair<string, t_ephPair*>(prn, new t_ephPair)).first;
+  }
+  t_ephPair* pair = ip->second;
+
+  if ( !pair->eph || eph->isNewerThan(pair->eph) ) {
+    delete pair->oldEph;
+    pair->oldEph = pair->eph;
+    pair->eph    = eph;
+
+    return;
+  }
+
+  delete eph;
+}
+  
+  
+void RTCM2Decoder::translateCorr2Obs() {
+
+  if ( !_msg03.validMsg || !_msg2021.valid() ) {
+    return;
+  }
+
+  double stax = _msg03.x + (_msg22.validMsg ? _msg22.dL1[0] : 0.0);
+  double stay = _msg03.y + (_msg22.validMsg ? _msg22.dL1[1] : 0.0);
+  double staz = _msg03.z + (_msg22.validMsg ? _msg22.dL1[2] : 0.0);
+
+  int    refWeek;
+  double refSecs;
+  currentGPSWeeks(refWeek, refSecs);
+
+  // Resolve receiver time of measurement (see RTCM 2.3, page 4-42, Message 18, Note 1)
+  // ----------------------------------------------------------------------------------
+  double hoursec_est  = _msg2021.hoursec();              // estimated time of measurement
+  double hoursec_rcv  = rint(hoursec_est * 1e2) / 1e2;   // receiver clock reading at hoursec_est  
+  double rcv_clk_bias = (hoursec_est - hoursec_rcv) * c_light;
+
+  int    GPSWeek;
+  double GPSWeeks;
+  resolveEpoch(hoursec_est, refWeek, refSecs,
+	       GPSWeek, GPSWeeks);
+
+  int    GPSWeek_rcv;
+  double GPSWeeks_rcv;
+  resolveEpoch(hoursec_rcv, refWeek, refSecs,
+	       GPSWeek_rcv, GPSWeeks_rcv);
+
+  // Loop over all satellites
+  // ------------------------
+  for (RTCM2_2021::data_iterator icorr = _msg2021.data.begin();
+       icorr != _msg2021.data.end(); icorr++) {
+    const RTCM2_2021::HiResCorr* corr = icorr->second;
+
+    ostringstream oPRN; oPRN.fill('0');
+
+    oPRN <<            (corr->PRN < 200 ? 'G'       : 'R')
+	 << setw(2) << (corr->PRN < 200 ? corr->PRN : corr->PRN - 200);
+
+    string PRN(oPRN.str());
+
+    t_pairMap::const_iterator ieph = _ephPair.find(PRN);
+    const t_eph* eph0 = 0;
+    const t_eph* eph1 = 0;
+
+    if ( ieph != _ephPair.end() ) {
+      eph0 = ieph->second->eph;
+      eph1 = ieph->second->oldEph;
+    }
+
+
+    if ( !eph0 && !eph1 ) {
+      continue;
+    }
+
+    double L1 = 0;
+    double L2 = 0;
+    double P1 = 0;
+    double P2 = 0;
+    string obsT = "";
+
+    // new observation
+    p_obs new_obs = 0;
+
+    for (unsigned ii = 0; ii < 4; ii++) {
+      int          IODcorr = 0;
+      double       corrVal = 0;
+      const t_eph* eph     = 0;
+      double*      obsVal  = 0;
+
+      switch (ii) {
+      case 0: // --- L1 ---
+	IODcorr = corr->IODp1;
+	corrVal = corr->phase1 * LAMBDA_1;
+	obsVal  = &L1;
+	obsT    = "L1";
+	break;
+      case 1: // --- L2 ---
+	IODcorr = corr->IODp2;
+	corrVal = corr->phase2 * LAMBDA_2;
+	obsVal  = &L2;
+	obsT    = "L2";
+	break;
+      case 2: // --- P1 ---
+	IODcorr = corr->IODr1;
+	corrVal = corr->range1;
+	obsVal  = &P1;
+	obsT    = "P1";
+	break;
+      case 3: // --- P2 ---
+	IODcorr = corr->IODr2;
+	corrVal = corr->range2;
+	obsVal  = &P2;
+	obsT    = "P2";
+	break;
+      default:
+	continue;
+      }
+
+      eph = 0;
+      if      ( eph0 && eph0->IOD() == IODcorr ) 
+	eph = eph0;
+      else if ( eph1 && eph1->IOD() == IODcorr ) 
+	eph = eph1;
+      if ( eph && corr ) {
+	int    GPSWeek_tot;
+	double GPSWeeks_tot;
+	double rho, xSat, ySat, zSat, clkSat;
+	cmpRho(eph, stax, stay, staz, 
+	       GPSWeek, GPSWeeks,
+	       rho, GPSWeek_tot, GPSWeeks_tot,
+	       xSat, ySat, zSat, clkSat);
+
+	*obsVal = rho - corrVal + rcv_clk_bias - clkSat;
+
+	if ( *obsVal == 0 )  *obsVal = ZEROVALUE;
+
+	// Allocate new memory
+	// -------------------
+	if ( !new_obs ) {
+	  new_obs = new t_obs();
+
+	  new_obs->_o.StatID[0] = '\x0';
+	  new_obs->_o.satSys    = (corr->PRN < 200 ? 'G'       : 'R');
+	  new_obs->_o.satNum    = (corr->PRN < 200 ? corr->PRN : corr->PRN - 200);
+	  
+	  new_obs->_o.GPSWeek   = GPSWeek_rcv;
+	  new_obs->_o.GPSWeeks  = GPSWeeks_rcv;
+	}
+	
+	// Store estimated measurements
+	// ----------------------------
+	switch (ii) {
+	case 0: // --- L1 ---
+	  new_obs->_o.L1 = *obsVal / LAMBDA_1;
+	  new_obs->_o.slip_cnt_L1 = corr->lock1;
+	  break;
+	case 1: // --- L2 ---
+	  new_obs->_o.L2 = *obsVal / LAMBDA_2;
+	  new_obs->_o.slip_cnt_L2 = corr->lock2;
+	  break;
+	case 2: // --- C1 / P1 ---
+	  if ( corr->Pind1 )
+	    new_obs->_o.P1 = *obsVal;
+	  else
+	    new_obs->_o.C1 = *obsVal;
+	  break;
+	case 3: // --- C2 / P2 ---
+	  if ( corr->Pind2 )
+	    new_obs->_o.P2 = *obsVal;
+	  else
+	    new_obs->_o.C2 = *obsVal;
+	  break;
+	default:
+	  continue;
+	}
+      }
+    } // loop over frequencies
+    
+    if ( new_obs ) {
+      _obsList.push_back( new_obs );
+    }
+  }
+}

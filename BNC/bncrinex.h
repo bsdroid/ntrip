@@ -48,6 +48,12 @@ class bncRinex : public QThread {
                                const QString& intStr, 
                                QDateTime* nextEpoch = 0);
 
+   void setApproxPos(double stax, double stay, double staz) {
+     _approxPos[0] = stax;
+     _approxPos[1] = stay;
+     _approxPos[2] = staz;
+   }
+
  protected:
    virtual void run() {};
 
@@ -80,6 +86,10 @@ class bncRinex : public QThread {
    int           _rinexVers;
    bool          _reloadTable;
    bool          _reloadDone;
+   double        _approxPos[3];
+
+   QMap<int, int> _slip_cnt_L1;
+   QMap<int, int> _slip_cnt_L2;
 };
 
 #endif

@@ -139,6 +139,7 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   else {
     _rnx = new bncRinex(_staID, mountPoint, format, latitude, longitude, nmea);
   }
+  _rnx_set_position = false;
 
   msleep(100); //sleep 0.1 sec
 }
@@ -155,7 +156,7 @@ bncGetThread::~bncGetThread() {
 #endif
   }
   delete _decoder;
-  delete _rnx;    
+  delete _rnx;
 }
 
 #define AGENTVERSION "1.6"
@@ -364,7 +365,7 @@ t_irc bncGetThread::initRun() {
   if (!_decoder) { 
     if      (_format.indexOf("RTCM_2") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTCM 2.x format"));
-      _decoder = new RTCM2Decoder();
+      _decoder = new RTCM2Decoder(_staID.data());
     }
     else if (_format.indexOf("RTCM_3") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTCM 3.x format"));
@@ -556,7 +557,7 @@ void bncGetThread::run() {
         }
 
         delete [] data;
-        
+
         QListIterator<p_obs> it(_decoder->_obsList);
         while (it.hasNext()) {
           p_obs obs = it.next();
@@ -644,14 +645,32 @@ void bncGetThread::run() {
           // RINEX Output
           // ------------
           if (_rnx) {
-             long iSec    = long(floor(obs->_o.GPSWeeks+0.5));
-             long newTime = obs->_o.GPSWeek * 7*24*3600 + iSec;
-            if (_samplingRate == 0 || iSec % _samplingRate == 0) {
-              _rnx->deepCopy(obs);
-            }
-            _rnx->dumpEpoch(newTime);
-          }
+	    bool dump = true;
 
+	    RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
+	    if ( decoder2 && !_rnx_set_position ) {
+	      double stax, stay, staz;
+	      if ( decoder2->getStaCrd(stax, stay, staz) == success ) {
+		_rnx->setApproxPos(stax, stay, staz);
+		_rnx_set_position = true;
+	      }
+	      else {
+		dump = false;
+	      }
+	    }
+	      
+	    if ( dump ) {
+	      long iSec    = long(floor(obs->_o.GPSWeeks+0.5));
+	      long newTime = obs->_o.GPSWeek * 7*24*3600 + iSec;
+	      if (_samplingRate == 0 || iSec % _samplingRate == 0) {
+		_rnx->deepCopy(obs);
+	      }
+	      _rnx->dumpEpoch(newTime);
+	    }
+	  }
+
+	  // Emit new observation signal
+	  // ---------------------------
           bool firstObs = (obs == _decoder->_obsList.first());
           obs->_status = t_obs::posted;
           emit newObs(_staID, firstObs, obs);
@@ -735,3 +754,16 @@ void bncGetThread::callScript(const char* _comment) {
 #endif
   }
 }
+
+//
+//////////////////////////////////////////////////////////////////////////////
+void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
+  RTCM2Decoder* decoder = dynamic_cast<RTCM2Decoder*>(_decoder);
+
+  if ( decoder ) {
+    QMutexLocker locker(&_mutex);
+  
+    decoder->storeEph(gpseph);
+  }
+}
+
