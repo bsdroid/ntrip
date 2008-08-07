@@ -40,6 +40,7 @@
 
 #include <math.h>
 #include <sstream>
+#include <iomanip>
 
 #include "../bncutils.h"
 #include "rtcm_utils.h"
