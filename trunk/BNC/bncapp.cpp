@@ -38,7 +38,6 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
 #include <QSettings>
 #include <QMessageBox>
 #include <cmath>
@@ -189,6 +188,9 @@ void bncApp::messagePrivate(const QByteArray& msg) {
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
 
+  gpsephemeris copy_gpseph = *gpseph;
+  emit newEphGPS(copy_gpseph);
+
   QMutexLocker locker(&_mutex);
 
   printEphHeader();
@@ -205,6 +207,7 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
     printGPSEph(gpseph, false);
     delete gpseph;
   }
+
 }
     
 // New Glonass Ephemeris
@@ -600,7 +603,6 @@ void bncApp::slotNewConnectionCorr() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::slotQuit() {
-  cout << "bncApp::slotQuit" << endl;
   delete _caster;
   quit();
 }

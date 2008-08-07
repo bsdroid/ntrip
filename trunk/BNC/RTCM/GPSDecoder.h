@@ -46,6 +46,8 @@ class t_obsInternal {
   double P2;          // P2-code pseudorange (meters)
   double L1;          // L1 carrier phase (cycles)
   double L2;          // L2 carrier phase (cycles)
+  int    slip_cnt_L1; // L1 cumulative loss of continuity indicator
+  int    slip_cnt_L2; // L2 cumulative loss of continuity indicator
   double S1;          // L1 signal-to noise ratio
   double S2;          // L2 signal-to noise ratio
   int    SNR1;        // L1 signal-to noise ratio (mapped to integer)

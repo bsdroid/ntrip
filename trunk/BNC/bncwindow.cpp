@@ -687,6 +687,9 @@ void bncWindow::slotGetData() {
             (bncTableItem*) _mountPointsTable->item(iRow, 6), 
             SLOT(slotNewBytes(QByteArray, double)));
 
+    connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
+	    getThread, SLOT(slotNewEphGPS(gpsephemeris)));
+
     _caster->addGetThread(getThread);
 
     getThread->start();
