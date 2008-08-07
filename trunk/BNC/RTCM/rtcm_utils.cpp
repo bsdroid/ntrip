@@ -48,7 +48,6 @@ int cmpRho(const t_eph* eph,
 
   // Loop until the correct Time Of Transmission is found
   // ----------------------------------------------------
-  int    niter   = 0;
   double rhoLast = 0;
   do {
     rhoLast = rho;
