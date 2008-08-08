@@ -92,8 +92,6 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
   else {
     _rinexVers = 2;
   }
-
-  _approxPos[0] = _approxPos[1] = _approxPos[2] = 0.0;
 }
 
 // Destructor
@@ -448,6 +446,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
   // Write Dummy Header
   // ------------------
   else {
+    double approxPos[3];  approxPos[0]  = approxPos[1]  = approxPos[2]  = 0.0;
     double antennaNEU[3]; antennaNEU[0] = antennaNEU[1] = antennaNEU[2] = 0.0;
     
     if (_rinexVers == 3) {
@@ -477,9 +476,9 @@ void bncRinex::writeHeader(const QDateTime& datTim,
          << setw(20) << "unknown"
          << setw(20) << " "                                          << "ANT # / TYPE"         << endl;
     _out.unsetf(ios::left);
-    _out << setw(14) << setprecision(4) << _approxPos[0]
-         << setw(14) << setprecision(4) << _approxPos[1]
-         << setw(14) << setprecision(4) << _approxPos[2] 
+    _out << setw(14) << setprecision(4) << approxPos[0]
+         << setw(14) << setprecision(4) << approxPos[1]
+         << setw(14) << setprecision(4) << approxPos[2] 
          << "                  "                                     << "APPROX POSITION XYZ"  << endl;
     _out << setw(14) << setprecision(4) << antennaNEU[0]
          << setw(14) << setprecision(4) << antennaNEU[1]
@@ -565,20 +564,62 @@ void bncRinex::dumpEpoch(long maxTime) {
 
   double sec = double(datTim.time().second()) + fmod(fObs->_o.GPSWeeks,1.0);
 
-  // Epoch header line: RINEX Version 3
-  // ----------------------------------
+  // RINEX Version 3
+  // ---------------
   if (_rinexVers == 3) {
+    char sbasflag = 'S';
     _out << datTim.toString("> yyyy MM dd hh mm ").toAscii().data()
          << setw(10) << setprecision(7) << sec
          << "  " << 0 << setw(3)  << dumpList.size() << endl;
+
+    QListIterator<p_obs> it(dumpList);
+    while (it.hasNext()) {
+      p_obs obs = it.next();
+// Changed data output, C1P, C2C|X, L2C|X, S2C|X added. Changed Output for SBAS Perlt  
+      if (sbasflag != obs->_o.satSys) {
+      _out << obs->_o.satSys 
+           << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
+           << setw(14) << setprecision(3) << obs->_o.C1 << "  "  
+           << setw(14) << setprecision(3) << obs->_o.P1 << "  "  
+           << setw(14) << setprecision(3) << obs->_o.L1 << " " 
+           << setw(1)                     << obs->_o.SNR1
+           << setw(14) << setprecision(3) << obs->_o.S1 << "  " 
+           << setw(14) << setprecision(3) << obs->_o.C2 << "  "  
+           << setw(14) << setprecision(3) << obs->_o.P2 << "  " ;
+      if ((obs->_o.C2 != 0.0) && (obs->_o.P2 == 0.0)) {
+       _out << setw(14) << setprecision(3) << obs->_o.L2 << " " 
+            << setw(1)                     << obs->_o.SNR2
+            << setw(14) << setprecision(3) << obs->_o.S2 << "  "
+            << "         0.000           0.000  ";
+      }
+      else {
+       _out << "         0.000           0.000  " 
+            << setw(14) << setprecision(3) << obs->_o.L2 << " " 
+            << setw(1)                     << obs->_o.SNR2
+            << setw(14) << setprecision(3) << obs->_o.S2;
+      } 
+      _out << endl;
+      }
+      else {
+      _out << obs->_o.satSys 
+           << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
+           << setw(14) << setprecision(3) << obs->_o.C1 << "  "  
+           << setw(14) << setprecision(3) << obs->_o.P1 << "  "  
+           << setw(14) << setprecision(3) << obs->_o.L1 << " " 
+           << setw(1)                     << obs->_o.SNR1
+           << setw(14) << setprecision(3) << obs->_o.S1 << endl; 
+      }
+      delete obs;
+    }
   }
-  // Epoch header line: RINEX Version 2
-  // ----------------------------------
+
+  // RINEX Version 2
+  // ---------------
   else {
     _out << datTim.toString(" yy MM dd hh mm ").toAscii().data()
          << setw(10) << setprecision(7) << sec
          << "  " << 0 << setw(3)  << dumpList.size();
-
+    
     QListIterator<p_obs> it(dumpList); int iSat = 0;
     while (it.hasNext()) {
       iSat++;
@@ -590,93 +631,27 @@ void bncRinex::dumpEpoch(long maxTime) {
       }
     }
     _out << endl;
-  }
-
-  QListIterator<p_obs> it(dumpList);
-  while (it.hasNext()) {
-    p_obs obs = it.next();
-
-    // Cycle slips detection
-    // ---------------------
-    int prn = 0;
-    switch (obs->_o.satSys) {
-    case 'G': prn = obs->_o.satNum;       break;
-    case 'R': prn = obs->_o.satNum + 200; break;
-    default:  prn = obs->_o.satNum;
-    }
-
-    int lli1 = 0;
-    int lli2 = 0;
-    if ( _slip_cnt_L1.find(prn) != _slip_cnt_L1.end() && 
-	 _slip_cnt_L1.find(prn).value() != obs->_o.slip_cnt_L1 ) {
-      lli1 = 1;
-    }
-    if ( _slip_cnt_L2.find(prn) != _slip_cnt_L2.end() && 
-	 _slip_cnt_L2.find(prn).value() != obs->_o.slip_cnt_L2 ) {
-      lli2 = 1;
-    }
-    _slip_cnt_L1[prn]= obs->_o.slip_cnt_L1;
-    _slip_cnt_L2[prn]= obs->_o.slip_cnt_L2;
-
-    // RINEX Version 3
-    // ---------------
-    if (_rinexVers == 3) {
-      char sbasflag = 'S';
-      // Changed data output, C1P, C2C|X, L2C|X, S2C|X added. Changed Output for SBAS Perlt  
-      if (sbasflag != obs->_o.satSys) {
-	_out << obs->_o.satSys 
-	     << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
-	     << setw(14) << setprecision(3) << obs->_o.C1 << "  "  
-	     << setw(14) << setprecision(3) << obs->_o.P1 << "  "  
-	     << setw(14) << setprecision(3) << obs->_o.L1 << lli1
-	     << setw(1)                     << obs->_o.SNR1
-	     << setw(14) << setprecision(3) << obs->_o.S1 << "  " 
-	     << setw(14) << setprecision(3) << obs->_o.C2 << "  "  
-	     << setw(14) << setprecision(3) << obs->_o.P2 << "  " ;
-	if ((obs->_o.C2 != 0.0) && (obs->_o.P2 == 0.0)) {
-	  _out << setw(14) << setprecision(3) << obs->_o.L2 << lli2 
-	       << setw(1)                     << obs->_o.SNR2
-	       << setw(14) << setprecision(3) << obs->_o.S2 << "  "
-	       << "         0.000           0.000  ";
-	}
-	else {
-	  _out << "         0.000           0.000  " 
-	       << setw(14) << setprecision(3) << obs->_o.L2 << " " 
-	       << setw(1)                     << obs->_o.SNR2
-	       << setw(14) << setprecision(3) << obs->_o.S2;
-	} 
-	_out << endl;
-      }
-      else {
-	_out << obs->_o.satSys 
-	     << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
-	     << setw(14) << setprecision(3) << obs->_o.C1 << "  "  
-	     << setw(14) << setprecision(3) << obs->_o.P1 << "  "  
-	     << setw(14) << setprecision(3) << obs->_o.L1 << lli1
-	     << setw(1)                     << obs->_o.SNR1
-	     << setw(14) << setprecision(3) << obs->_o.S1 << endl; 
-      }
-    }
-
-    // RINEX Version 2
-    // ---------------
-    else {
+    
+    it.toFront();
+    while (it.hasNext()) {
+      p_obs obs = it.next();
+    
       char lli = ' ';
       char snr = ' ';
       _out << setw(14) << setprecision(3) << obs->_o.C1 << lli << snr;
       _out << setw(14) << setprecision(3) << obs->_o.C2 << lli << snr;
       _out << setw(14) << setprecision(3) << obs->_o.P1 << lli << snr;
       _out << setw(14) << setprecision(3) << obs->_o.P2 << lli << snr; 
-      _out << setw(14) << setprecision(3) << obs->_o.L1 << lli1 
+      _out << setw(14) << setprecision(3) << obs->_o.L1 << lli 
            << setw(1) << obs->_o.SNR1 << endl;
-      _out << setw(14) << setprecision(3) << obs->_o.L2 << lli2
+      _out << setw(14) << setprecision(3) << obs->_o.L2 << lli
            << setw(1) << obs->_o.SNR2;
       _out << setw(14) << setprecision(3) << obs->_o.S1 ;
       _out << setw(16) << setprecision(3) << obs->_o.S2 ;
       _out << endl;
+    
+      delete obs;
     }
-
-    delete obs;
   }
 
   _out.flush();

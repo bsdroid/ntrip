@@ -308,8 +308,6 @@ class RTCM2_Obs {
     std::vector<double>  rng_P2;           // Pseudorange on L2 [m]
     std::vector<double>  cph_L1;           // Carrier phase on L1 [cy]
     std::vector<double>  cph_L2;           // Carrier phase on L2 [cy]
-    std::vector<int>     slip_L1;          // Carrier phase slip counter, L1
-    std::vector<int>     slip_L2;          // Carrier phase slip counter, L1
 
   private:
 
