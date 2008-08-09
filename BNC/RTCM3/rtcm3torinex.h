@@ -3,7 +3,7 @@
 
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.h,v 1.9 2007/10/17 06:12:00 mervart Exp $
+  $Id: rtcm3torinex.h,v 1.10 2008/01/29 14:53:15 mervart Exp $
   Copyright (C) 2005-2006 by Dirk Stoecker <stoecker@alberding.eu>
 
   This program is free software; you can redistribute it and/or modify
@@ -195,6 +195,8 @@ struct RTCM3ParserData {
   int    size;
   int    lastlockl1[64];
   int    lastlockl2[64];
+  int    typeSize;       /* RTCM message types */
+  int    typeList[101];  /* RTCM message types */
   int    datapos[RINEXENTRY_NUMBER];
   int    dataflag[RINEXENTRY_NUMBER];
   /* for RINEX2 GPS and GLO are both handled in GPS */

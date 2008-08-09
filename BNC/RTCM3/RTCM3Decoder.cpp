@@ -123,6 +123,13 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
       if (_Parser.MessageSize >= _Parser.NeedBytes) {
     
         while(int rr = RTCM3Parser(&_Parser)) {
+
+        // RTCM message types
+        // ------------------
+          for (int kk = 0; kk < _Parser.typeSize; kk++) {
+            _typeList.push_back(_Parser.typeList[kk]);
+          }
+          _Parser.typeSize = 0;
     
           // GNSS Observations
           // -----------------

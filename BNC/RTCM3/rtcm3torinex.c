@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.29 2008/07/22 15:15:51 stoecker Exp $
+  $Id: rtcm3torinex.c,v 1.12 2008/08/01 14:03:28 mervart Exp $
   Copyright (C) 2005-2008 by Dirk Stöcker <stoecker@alberding.eu>
 
   This software is a complete NTRIP-RTCM3 to RINEX converter as well as
@@ -50,7 +50,7 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.29 $";
+static char revisionstr[] = "$Revision: 1.12 $";
 
 #ifndef COMPILEDATE
 #define COMPILEDATE " built " __DATE__
@@ -282,6 +282,8 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
     unsigned char *data = handle->Message+3;
 
     GETBITS(type,12)
+    handle->typeList[handle->typeSize] = type;           /* RTCM message types */
+    if(handle->typeSize < 100) {handle->typeSize += 1;}  /* RTCM message types */
     switch(type)
     {
     case 1019:
@@ -1531,7 +1533,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 }
 
 #ifndef NO_RTCM3_MAIN
-static char datestr[]     = "$Date: 2008/07/22 15:15:51 $";
+static char datestr[]     = "$Date: 2008/08/01 14:03:28 $";
 
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
