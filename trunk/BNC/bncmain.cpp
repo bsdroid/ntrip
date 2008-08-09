@@ -87,6 +87,7 @@ int main(int argc, char *argv[]) {
     settings.setValue("adviseReco", "5");
     settings.setValue("perfIntr",   "");
     settings.setValue("waitCorr",   0);
+    settings.setValue("messTypes",   "");
   }
 
   bncApp app(argc, argv, GUIenabled);

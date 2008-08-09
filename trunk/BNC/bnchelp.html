@@ -100,16 +100,18 @@ BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. P
 &nbsp; &nbsp; &nbsp; 3.9.4. <a href=#pause>Pause</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.5. <a href=#advscript>Advisory Script</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.6. <a href=#perflog>Performance Log</a><br>
-3.10. <a href=#mountpoints>Mountpoints</a><br>
-&nbsp; &nbsp; &nbsp; 3.10.1. <a href=#mountadd>Add Mountpoints</a><br>
-&nbsp; &nbsp; &nbsp; 3.10.2. <a href=#mounthost>Broadcaster Host and Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.10.3. <a href=#mountuser>Broadcaster User and Password</a><br>
-&nbsp; &nbsp; &nbsp; 3.10.4. <a href=#mounttable>Get Table</a><br>
-&nbsp; &nbsp; &nbsp; 3.10.5. <a href=#mountdelete>Delete Mountpoints</a><br>
-&nbsp; &nbsp; &nbsp; 3.10.6. <a href=#mountedit>Edit Mountpoints</a><br>
-3.11. <a href=#start>Start</a><br>
-3.12. <a href=#stop>Stop</a><br>
-3.13. <a href=#nw>No Window</a>
+3.10. <a href=#messtypes>RTCM Message Types</a><br>
+&nbsp; &nbsp; &nbsp; 3.10.1. <a href=#messmount>Mountpoint</a><br>
+3.11. <a href=#mountpoints>Mountpoints</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.1. <a href=#mountadd>Add Mountpoints</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.2. <a href=#mounthost>Broadcaster Host and Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.3. <a href=#mountuser>Broadcaster User and Password</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4. <a href=#mounttable>Get Table</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.5. <a href=#mountdelete>Delete Mountpoints</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.6. <a href=#mountedit>Edit Mountpoints</a><br>
+3.12. <a href=#start>Start</a><br>
+3.13. <a href=#stop>Stop</a><br>
+3.14. <a href=#nw>No Window</a>
 </p>
 
 <p><a name="file"><h4>3.1. File</h4></p>
@@ -572,7 +574,19 @@ Latencies and statistical information can be recorded in the Log file/section at
 Select a 'Performance log' interval to activate this function or select the empty option field if you do not want BNC to log latencies and statistical information.
 </p>
 
-<p><a name="mountpoints"><h4>3.10. Mountpoints</h4></p>
+<p><a name="messtypes"><h4>3.10. RTCM Message Types</h4></p>
+<p>
+When configuring a GNSS receiver for RTCM stream generation, the setup interface may not provide details about RTCM message types. As reliable information concerning stream contents should be available i.e. for NTRIP broadcaster operators to maintain the broadcaster's sourcetable, BNC allows to check RTCM Version 3.x streams for incoming message types and their repetition rates.  
+</p>
+
+<p><a name="messmount"><h4>3.10.1 Mountpoint - optional</h4></p>
+<p>
+Specify the mountpoint of an RTCM Version 3.x stream to log the numbers of incoming message types. Logged time stamps refer to message reception time and allow to understand repetition rates. Enter 'ALL' if you want to log message type numbers of all configured streams. Beware that the size of the logfile can rapidly increase depending on the number of incoming RTCM Version 3.x streams.
+</p>
+<p>This option is primarily meant for testing and evaluation. An empty option field (default) means that you don't want BNC to print the message type numbers carried in RTCM Version 3.x streams.
+</p>
+
+<p><a name="mountpoints"><h4>3.11. Mountpoints</h4></p>
 <p>
 Each stream on an NTRIP broadcaster is defined using a unique source ID called mountpoint. An NTRIP client like BNC access the desired data stream by referring to its mountpoint. Information about mountpoints is available through the source-table maintained by the NTRIP broadcaster. Note that mountpoints could show up in BNC more than once when retrieving streams from several NTRIP broadcasters.
 </p>
@@ -589,22 +603,22 @@ Streams selected for retrieval are listed under the 'Mountpoints' section on BNC
 <tr><td>'bytes' &nbsp;</td><td>Number of bytes retrieved.
 </table>
 
-<p><a name="mountadd"><h4>3.10.1 Add Mountpoints</h4></p>
+<p><a name="mountadd"><h4>3.11.1 Add Mountpoints</h4></p>
 <p>
 Button 'Add Mountpoints' opens a window that allows user to select data streams from an NTRIP broadcaster according to their mountpoints.
 </p> 
 
-<p><a name="mounthost"><h4>3.10.2 Broadcaster Host and Port - required</h4></p>
+<p><a name="mounthost"><h4>3.11.2 Broadcaster Host and Port - required</h4></p>
 <p>
 Enter the NTRIP broadcaster host IP and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.
 </p> 
 
-<p><a name="mountuser"><h4>3.10.3 Broadcaster User and Password - required for protected streams</h4></p>
+<p><a name="mountuser"><h4>3.11.3 Broadcaster User and Password - required for protected streams</h4></p>
 <p>
 Some streams on NTRIP broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.
 </p> 
 
-<p><a name="mounttable"><h4>3.10.4 Get Table</h4></p>
+<p><a name="mounttable"><h4>3.11.4 Get Table</h4></p>
 <p>
 Use the 'Get Table' button to download the source-table from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. RTCM Version 2.x streams must contain message types 18 and 19 while RTCM Version 3.x streams must contain GPS or SBAS message types 1002 or 1004 and may contain GLONASS message types 1010 or 1012, see data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3.x streams containing message types 1019 (GPS) and 1020 (GLONASS) are required. Select your streams line by line, use +Shift and +Ctrl when necessary.
 </p> 
@@ -615,11 +629,11 @@ The contents of data field 'nmea' tells you whether a stream retrieval needs to 
 Hit 'OK' to return to the main window. If you wish you can click on 'Add Mountpoints' and repeat the process again to retrieve mountpoints from different casters.
 </p> 
 
-<p><a name="mountdelete"><h4>3.10.5 Delete Mountpoints</h4></p>
+<p><a name="mountdelete"><h4>3.11.5 Delete Mountpoints</h4></p>
 <p>
 To remove a stream from the 'Mountpoints' list in the main window, highlight it by clicking on it and hit the 'Delete Mountpoints' button. You can also remove multiple mountpoints simultaneously by highlighting them using +Shift and +Ctrl.</p>
 
-<p><a name="mountedit"><h4>3.10.6 Edit Mountpoints</h4></p>
+<p><a name="mountedit"><h4>3.11.6 Edit Mountpoints</h4></p>
 <ul>
 <li>
 BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.
@@ -634,17 +648,17 @@ BNC can also retrieve streams from virtual reference stations (VRS). To initiate
 </li>
 </ul> 
 
-<p><a name="start"><h4>3.11. Start</h4></p>
+<p><a name="start"><h4>3.12. Start</h4></p>
 <p>
 Hit 'Start' to start retrieving, decoding, and converting GNSS data streams in real-time. Note that 'Start' generally forces BNC to begin with fresh RINEX which might overwrite existing files when necessary unless the option 'Append files' is ticked.
 </p> 
 
-<p><a name="stop"><h4>3.12. Stop</h4></p>
+<p><a name="stop"><h4>3.13. Stop</h4></p>
 <p>
 Hit the 'Stop' button in order to stop BNC. 
 </p> 
 
-<p><a name="nw"><h4>3.13. No Window - optional</h4></p>
+<p><a name="nw"><h4>3.14. No Window - optional</h4></p>
 <p>
 On all systems BNC can be started in batch mode with the command line option '-nw'. BNC will then run in 'no window' mode, using options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Client.conf (Unix/Linux, see Config File example in the Annex) or from the register BKG_NTRIP_Client (Windows).
 </p>
@@ -730,7 +744,7 @@ Andre Hauschild, German Space Operations Center, DLR, revised the RTCMv2 decoder
 <tr><td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td><td>[Add] Source code published.
 <tr><td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td><td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td></tr>
 <tr><td>Apr 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Handle ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Monitor stream failure/recovery and latency<br> [Mod] Redesign of main window<br> [Bug] Freezing of About window on Mac systems<br> [Bug] Fixed problem with PRN 32 in RTCMv2 decoder<br> [Bug] Fix for Trimble 4000SSI receivers in RTCMv2 decoder<br> [Mod] Major revision of input buffer in RTCMv2 decoder</td></tr>
-<tr><td>May 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td><td>[Mod] Fill blanc columns in RINEXv3 with 0.000</td></tr>
+<tr><td>August 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td><td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCM v3 decoder for clock&orbit corrections<br>[Add] Check RTCM v3 streams for incoming message types</td></tr>
 </table>
 </p>
 

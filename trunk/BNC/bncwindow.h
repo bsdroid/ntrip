@@ -103,6 +103,7 @@
     QLineEdit* _rnxPathLineEdit;
     QLineEdit* _ephPathLineEdit;
     QLineEdit* _corrPathLineEdit;
+    QLineEdit* _messTypesLineEdit;
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;
     QLineEdit* _rnxSkelLineEdit;

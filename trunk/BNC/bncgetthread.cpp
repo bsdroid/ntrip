@@ -130,6 +130,10 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   if ( settings.value("perfIntr").toString().indexOf("6 hours") != -1 ) { _perfIntr = 21600; }
   if ( settings.value("perfIntr").toString().indexOf("1 day") != -1 ) { _perfIntr = 86400; }
 
+  // RTCM message types
+  // ------------------
+  _checkMountPoint = settings.value("messTypes").toString();
+
   // RINEX writer
   // ------------
   _samplingRate = settings.value("rnxSampl").toInt();
@@ -657,7 +661,24 @@ void bncGetThread::run() {
           emit newObs(_staID, firstObs, obs);
         }
         _decoder->_obsList.clear();
+
+        // RTCM message types
+        // ------------------
+        if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
+          if (0<_decoder->_typeList.size()) {
+            QString type;
+            for (int ii=0;ii<_decoder->_typeList.size();ii++) {
+              type =  QString("%1 ").arg(_decoder->_typeList[ii]);
+              if (type != "") {
+                emit(newMessage(_staID + ": Received message type " + type.toAscii() ));              }
+            }
+          }
+        }
+        _decoder->_typeList.clear();
       }
+
+      // Timeout, reconnect
+      // ------------------
       else {
         emit(newMessage(_staID + ": Data Timeout, reconnecting"));
         tryReconnect();

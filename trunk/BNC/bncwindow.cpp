@@ -107,6 +107,8 @@ bncWindow::bncWindow() {
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
   _proxyPortLineEdit->setMaximumWidth(9*ww);
+  _messTypesLineEdit  = new QLineEdit(settings.value("messTypes").toString());
+  _messTypesLineEdit->setMaximumWidth(9*ww);
   _waitTimeSpinBox   = new QSpinBox();
   _waitTimeSpinBox->setMinimum(1);
   _waitTimeSpinBox->setMaximum(30);
@@ -326,6 +328,7 @@ bncWindow::bncWindow() {
   _log->setWhatsThis(tr("Records of BNC's activities are shown in the Log section. The message log covers the communication status between BNC and the NTRIP broadcaster as well as any problems that occur in the communication link, stream availability, stream delay, stream conversion etc."));
   _ephV3CheckBox->setWhatsThis(tr("The default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format."));
   _rnxV3CheckBox->setWhatsThis(tr("The default format for RINEX Observation files is RINEX Version 2.11. Select 'Version 3' if you want to save the observations in RINEX Version 3 format."));
+  _messTypesLineEdit->setWhatsThis(tr("<p>Specify the mountpoint of an RTCM Version 3.x stream to log the numbers of incoming message types.</p><p>An empty option field (default) means that you don't want BNC to print the message type numbers carried in a specific stream.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -340,6 +343,7 @@ bncWindow::bncWindow() {
   QWidget* agroup = new QWidget();
   QWidget* cgroup = new QWidget();
   QWidget* ogroup = new QWidget();
+  QWidget* rgroup = new QWidget();
   aogroup->addTab(pgroup,tr("Proxy"));
   aogroup->addTab(ggroup,tr("General"));
   aogroup->addTab(ogroup,tr("RINEX Observations"));
@@ -347,6 +351,7 @@ bncWindow::bncWindow() {
   aogroup->addTab(sgroup,tr("Synchronized Observations"));
   aogroup->addTab(cgroup,tr("Ephemeris Corrections"));
   aogroup->addTab(agroup,tr("Monitor"));
+  aogroup->addTab(rgroup,tr("RTCM Message Types"));
 
   QGridLayout* pLayout = new QGridLayout;
   pLayout->setColumnMinimumWidth(0,12*ww);
@@ -420,6 +425,19 @@ bncWindow::bncWindow() {
   aLayout->addWidget(_perfIntrComboBox,                           4, 1);
   aLayout->addWidget(new QLabel("Network monitoring, outages, handling of corrupted streams, latencies, statistics."),5,0,1,4,Qt::AlignLeft);
   agroup->setLayout(aLayout);
+
+  QGridLayout* rLayout = new QGridLayout;
+  rLayout->setColumnMinimumWidth(0,12*ww);
+  rLayout->setColumnMinimumWidth(1,30*ww);
+  rLayout->setColumnMinimumWidth(2,30*ww);
+  rLayout->addWidget(new QLabel("Mountpoint"),0,0, Qt::AlignLeft);
+  rLayout->addWidget(_messTypesLineEdit,0,1);
+  rLayout->addWidget(new QLabel("Log numbers of message types in RTCM Version 3.x stream."),1, 0, 1, 4, Qt::AlignLeft);
+  rLayout->addWidget(new QLabel("    "),2,0);
+  rLayout->addWidget(new QLabel("    "),3,0);
+  rLayout->addWidget(new QLabel("    "),4,0);
+  rLayout->addWidget(new QLabel("    "),5,0);
+  rgroup->setLayout(rLayout);
 
   QGridLayout* oLayout = new QGridLayout;
   oLayout->setColumnMinimumWidth(0,12*ww);
@@ -612,6 +630,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("ephV3",       _ephV3CheckBox->checkState());
   settings.setValue("logFile",     _logFileLineEdit->text());
   settings.setValue("adviseScript",_adviseScriptLineEdit->text());
+  settings.setValue("messTypes",   _messTypesLineEdit->text());
   
 QStringList mountPoints;
 
