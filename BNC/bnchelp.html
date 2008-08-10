@@ -37,7 +37,8 @@ Please ensure that you have installed the latest version of BNC available from <
 <li>generate high-rate RINEX Observation and Navigation files to support near real-time GNSS post-processing applications, and/or</li> 
 <li>generate ephemeris and synchronized observations epoch by epoch through an IP port to support real-time GNSS engines, and/or</li> 
 <li>generate clock and orbit corrections to broadcast ephemeris through an IP port to support real-time Precise Point Positioning on GNSS rovers, and/or</li> 
-<li>monitor the performance of a network of real-time GNSS reference stations to generate advisory notes.</li>
+<li>monitor the performance of a network of real-time GNSS reference stations to generate advisory notes, and/or</li>
+<li>check RTCM streams for incoming message types and their repetition rates.</li>
 </ul>
 </p>
 <p>
@@ -141,6 +142,9 @@ The 'Help' button provides access to
 help contents.<br>
 You may keep the 'Help Contents' window open while configuring BNC.
 </li> 
+<li>
+a 'Flow Chart' showing BNC linked to a real-time GNSS engine such as RTNet.
+</li>
 <li>
 general information about BNC.<br>
 Close the 'About BNC' window to continue working with BNC.
@@ -576,14 +580,14 @@ Select a 'Performance log' interval to activate this function or select the empt
 
 <p><a name="messtypes"><h4>3.10. RTCM Message Types</h4></p>
 <p>
-When configuring a GNSS receiver for RTCM stream generation, the setup interface may not provide details about RTCM message types. As reliable information concerning stream contents should be available i.e. for NTRIP broadcaster operators to maintain the broadcaster's sourcetable, BNC allows to check RTCM Version 3.x streams for incoming message types and their repetition rates.  
+When configuring a GNSS receiver for RTCM stream generation, the setup interface may not provide details about RTCM message types. As reliable information concerning stream contents should be available i.e. for NTRIP broadcaster operators to maintain the broadcaster's sourcetable, BNC allows to check RTCM Version 3.x streams for incoming message types and their repetition rates. The idea for this option arose from 'InspectRTCM', a comprehensive stream analyzing tool written by D. Stoecker.
 </p>
 
 <p><a name="messmount"><h4>3.10.1 Mountpoint - optional</h4></p>
 <p>
 Specify the mountpoint of an RTCM Version 3.x stream to log the numbers of incoming message types. Logged time stamps refer to message reception time and allow to understand repetition rates. Enter 'ALL' if you want to log message type numbers of all configured streams. Beware that the size of the logfile can rapidly increase depending on the number of incoming RTCM Version 3.x streams.
 </p>
-<p>This option is primarily meant for testing and evaluation. An empty option field (default) means that you don't want BNC to print the message type numbers carried in RTCM Version 3.x streams.
+<p>This option is primarily meant for testing and evaluation. Use it to figure out what exactly is produced by a specific GNSS receiver's configuration. An empty option field (default) means that you don't want BNC to print the message type numbers carried in RTCM Version 3.x streams.
 </p>
 
 <p><a name="mountpoints"><h4>3.11. Mountpoints</h4></p>
