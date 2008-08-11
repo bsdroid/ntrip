@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.12 2008/08/01 14:03:28 mervart Exp $
+  $Id: rtcm3torinex.c,v 1.13 2008/08/09 23:58:09 weber Exp $
   Copyright (C) 2005-2008 by Dirk Stöcker <stoecker@alberding.eu>
 
   This software is a complete NTRIP-RTCM3 to RINEX converter as well as
@@ -50,7 +50,7 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.12 $";
+static char revisionstr[] = "$Revision: 1.13 $";
 
 #ifndef COMPILEDATE
 #define COMPILEDATE " built " __DATE__
@@ -843,9 +843,102 @@ int rinex3)
   t2->tm_mon+1, t2->tm_mday, t2->tm_hour, t2->tm_min, t2->tm_sec);
 }
 
+// Inserted parts for BNC Perlt
+#ifdef NO_RTCM3_MAIN
+#define NUMSTARTSKIP 1
+#else
 #define NUMSTARTSKIP 3
+#endif
+
 void HandleHeader(struct RTCM3ParserData *Parser)
 {
+#ifdef NO_RTCM3_MAIN
+// Part of Handle Header for data request for BNC (independently on actually delivered data), original is commented out by ifndef NO_RTCM3_MAIN. Perlt
+  int i;
+  if(Parser->rinex3)
+  {
+#define CHECKFLAGSNEW(a, b, c) \
+    { \
+      Parser->dataflag##a[Parser->numdatatypes##a] = GNSSDF_##b##DATA; \
+      Parser->datapos##a[Parser->numdatatypes##a] = GNSSENTRY_##b##DATA; \
+      ++Parser->numdatatypes##a; \
+    }
+
+    CHECKFLAGSNEW(GPS, C1,  C1C)
+    CHECKFLAGSNEW(GPS, L1C, L1C)
+    CHECKFLAGSNEW(GPS, D1C, D1C)
+    CHECKFLAGSNEW(GPS, S1C, S1C)
+    CHECKFLAGSNEW(GPS, P1,  C1P)
+    CHECKFLAGSNEW(GPS, L1P, L1P)
+    CHECKFLAGSNEW(GPS, D1P, D1P)
+    CHECKFLAGSNEW(GPS, S1P, S1P)
+    CHECKFLAGSNEW(GPS, P2,  C2P)
+    CHECKFLAGSNEW(GPS, L2P, L2P)
+    CHECKFLAGSNEW(GPS, D2P, D2P)
+    CHECKFLAGSNEW(GPS, S2P, S2P)
+    CHECKFLAGSNEW(GPS, C2,  C2X)
+    CHECKFLAGSNEW(GPS, L2C, L2X)
+    CHECKFLAGSNEW(GPS, D2C, D2X)
+    CHECKFLAGSNEW(GPS, S2C, S2X)
+    CHECKFLAGSNEW(GLO, C1,  C1C)
+    CHECKFLAGSNEW(GLO, L1C, L1C)
+    CHECKFLAGSNEW(GLO, D1C, D1C)
+    CHECKFLAGSNEW(GLO, S1C, S1C)
+    CHECKFLAGSNEW(GLO, P1,  C1P)
+    CHECKFLAGSNEW(GLO, L1P, L1P)
+    CHECKFLAGSNEW(GLO, D1P, D1P)
+    CHECKFLAGSNEW(GLO, S1P, S1P)
+    CHECKFLAGSNEW(GLO, P2,  C2P)
+    CHECKFLAGSNEW(GLO, L2P, L2P)
+    CHECKFLAGSNEW(GLO, D2P, D2P)
+    CHECKFLAGSNEW(GLO, S2P, S2P)
+    CHECKFLAGSNEW(GLO, C2,  C2C)
+    CHECKFLAGSNEW(GLO, L2C, L2C)
+    CHECKFLAGSNEW(GLO, D2C, D2C)
+    CHECKFLAGSNEW(GLO, S2C, S2C)
+
+  }
+  else
+  {
+#define CHECKFLAGS(a, b) \
+    { \
+      if(data[RINEXENTRY_##b##DATA]) \
+      { \
+        Parser->dataflagGPS[data[RINEXENTRY_##b##DATA]-1] = GNSSDF_##a##DATA; \
+        Parser->dataposGPS[data[RINEXENTRY_##b##DATA]-1] = GNSSENTRY_##a##DATA; \
+      } \
+      else \
+      { \
+        Parser->dataflag[Parser->numdatatypesGPS] = GNSSDF_##a##DATA; \
+        Parser->datapos[Parser->numdatatypesGPS] = GNSSENTRY_##a##DATA; \
+        data[RINEXENTRY_##b##DATA] = ++Parser->numdatatypesGPS; \
+      } \
+    }
+
+    int data[RINEXENTRY_NUMBER];
+    for(i = 0; i < RINEXENTRY_NUMBER; ++i) data[i] = 0;
+
+    CHECKFLAGS(C1,C1)
+    CHECKFLAGS(C2,C2)
+    CHECKFLAGS(P1,P1)
+    CHECKFLAGS(P2,P2)
+    CHECKFLAGS(L1C,L1)
+    CHECKFLAGS(L1P,L1)
+    CHECKFLAGS(L2C,L2)
+    CHECKFLAGS(L2P,L2)
+    CHECKFLAGS(D1C,D1)
+    CHECKFLAGS(D1P,D1)
+    CHECKFLAGS(D2C,D2)
+    CHECKFLAGS(D2P,D2)
+    CHECKFLAGS(S1C,S1)
+    CHECKFLAGS(S1P,S1)
+    CHECKFLAGS(S2C,S2)
+    CHECKFLAGS(S2P,S2)
+  }
+// End Part of Handle Header for BNC Perlt
+#endif
+
+#ifndef NO_RTCM3_MAIN
   struct HeaderData hdata;
   char thebuffer[MAXHEADERBUFFERSIZE];
   char *buffer = thebuffer;
@@ -1136,7 +1229,6 @@ void HandleHeader(struct RTCM3ParserData *Parser)
     }
   }
 
-#ifndef NO_RTCM3_MAIN
   for(i = 0; i < hdata.numheaders; ++i)
   {
     if(hdata.data.unnamed[i] && hdata.data.unnamed[i][0])
@@ -1533,7 +1625,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 }
 
 #ifndef NO_RTCM3_MAIN
-static char datestr[]     = "$Date: 2008/08/01 14:03:28 $";
+static char datestr[]     = "$Date: 2008/08/09 23:58:09 $";
 
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
