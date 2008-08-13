@@ -64,6 +64,8 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID) : GPSDecoder() {
 
   const int LEAPSECONDS = 14; /* only needed for approx. time */
 
+  QSettings settings;
+  _checkMountPoint = settings.value("messTypes").toString();
   _staID = staID;
 
   // Ensure, that the Decoder uses the "old" convention for the data structure for Rinex2. Perlt
@@ -105,25 +107,25 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
   // Try to decode Clock and Orbit Corrections
   // -----------------------------------------
   if (_mode == unknown || _mode == corrections) {
+    printf("corrections\n");
     if ( _coDecoder->Decode(buffer, bufLen) == success ) {
       decoded = true;
       if (_mode == unknown) {
         _mode = corrections;
-        emit(newMessage( (_staID + " : mode set to corrections").toAscii() ));
+//      emit(newMessage( (_staID + " : mode set to corrections").toAscii() ));
       }
     }
   }
 
   // Remaining part decodes the Observations
   // ---------------------------------------
-  if (_mode == unknown || _mode == observations) {
+  if (_mode == unknown || _mode == observations || _checkMountPoint == _staID || _checkMountPoint == "ALL") {
+    printf("observations\n");
     for (int ii = 0; ii < bufLen; ii++) {
     
       _Parser.Message[_Parser.MessageSize++] = buffer[ii];
       if (_Parser.MessageSize >= _Parser.NeedBytes) {
     
-        while(int rr = RTCM3Parser(&_Parser)) {
-
         // RTCM message types
         // ------------------
           for (int kk = 0; kk < _Parser.typeSize; kk++) {
@@ -131,6 +133,8 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
           }
           _Parser.typeSize = 0;
     
+        while(int rr = RTCM3Parser(&_Parser)) {
+
           // GNSS Observations
           // -----------------
           if (rr == 1 || rr == 2) {
@@ -142,7 +146,8 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
             }
             
             if (rr == 2) {
-              std::cerr << "No valid RINEX! All values are modulo 299792.458!\n";
+//            std::cerr << "No valid RINEX! All values are modulo 299792.458!\n";
+              emit(newMessage( (_staID + ": No valid RINEX! All values are modulo 299792.458!").toAscii() ));
             }
             
             for (int ii = 0; ii < _Parser.Data.numsats; ii++) {
@@ -241,7 +246,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
     }
     if (_mode == unknown && decoded) {
       _mode = observations;
-      emit(newMessage( (_staID + " : mode set to observations").toAscii() ));
+//    emit(newMessage( (_staID + " : mode set to observations").toAscii() ));
     }
   }
 
