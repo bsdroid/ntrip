@@ -107,7 +107,6 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
   // Try to decode Clock and Orbit Corrections
   // -----------------------------------------
   if (_mode == unknown || _mode == corrections) {
-    printf("corrections\n");
     if ( _coDecoder->Decode(buffer, bufLen) == success ) {
       decoded = true;
       if (_mode == unknown) {
@@ -120,7 +119,6 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
   // Remaining part decodes the Observations
   // ---------------------------------------
   if (_mode == unknown || _mode == observations || _checkMountPoint == _staID || _checkMountPoint == "ALL") {
-    printf("observations\n");
     for (int ii = 0; ii < bufLen; ii++) {
     
       _Parser.Message[_Parser.MessageSize++] = buffer[ii];
