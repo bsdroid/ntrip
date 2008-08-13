@@ -48,6 +48,7 @@ Q_OBJECT
   enum t_mode{unknown = 0, observations, corrections};
 
   QString                _staID;
+  QString                _checkMountPoint;
   struct RTCM3ParserData _Parser;
   RTCM3coDecoder*        _coDecoder; 
   t_mode                 _mode;
