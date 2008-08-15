@@ -80,14 +80,15 @@ int main(int argc, char *argv[]) {
     settings.setValue("ephIntr",    "1 day");
     settings.setValue("corrIntr",   "1 day");
     settings.setValue("rnxSkel",    "SKL");
-    settings.setValue("waitTime",   5);
+    settings.setValue("waitTime",   "5");
     settings.setValue("makePause",  0);
     settings.setValue("obsRate",    "");
     settings.setValue("adviseFail", "15");
     settings.setValue("adviseReco", "5");
     settings.setValue("perfIntr",   "");
-    settings.setValue("waitCorr",   0);
-    settings.setValue("messTypes",   "");
+    settings.setValue("corrTime",   "5");
+    settings.setValue("messTypes",  "");
+    settings.setValue("corrLate",   0);
   }
 
   bncApp app(argc, argv, GUIenabled);

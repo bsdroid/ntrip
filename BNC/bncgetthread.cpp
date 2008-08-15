@@ -417,7 +417,6 @@ void bncGetThread::run() {
   double minLat = maxDt;
   double maxLat = -maxDt;
   double curLat = 0.;
-  double leapsec = 14.;  // Leap second for latency estimation
 
   _decodeTime = QDateTime::currentDateTime();
   _decodeSucc = QDateTime::currentDateTime();
@@ -569,7 +568,7 @@ void bncGetThread::run() {
           // -----------------------
           int week;
           double sec;
-          currentGPSWeeks(week, sec);
+          leapsecGPSWeeks(week, sec);
           const double secPerWeek = 7.0 * 24.0 * 3600.0;
 
           if (week < obs->_o.GPSWeek) {
@@ -634,7 +633,7 @@ void bncGetThread::run() {
                     }
                   }
                 }
-                curLat = sec - obs->_o.GPSWeeks + leapsec;
+                curLat = sec - obs->_o.GPSWeeks;
                 sumLat += curLat;
                 if (curLat < minLat) minLat = curLat;
                 if (curLat >= maxLat) maxLat = curLat;
@@ -670,7 +669,8 @@ void bncGetThread::run() {
             for (int ii=0;ii<_decoder->_typeList.size();ii++) {
               type =  QString("%1 ").arg(_decoder->_typeList[ii]);
               if (type != "") {
-                emit(newMessage(_staID + ": Received message type " + type.toAscii() ));              }
+                emit(newMessage(_staID + ": Received message type " + type.toAscii() ));
+              }
             }
           }
         }

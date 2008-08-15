@@ -5,7 +5,7 @@
 
         Name:           clock_orbit_rtcm.h
         Project:        RTCM3
-        Version:        $Id$
+        Version:        $Id: clock_orbit_rtcm.h,v 1.2 2008/05/06 15:07:41 mervart Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -51,6 +51,8 @@ struct ClockOrbit
   int NumberOfGLONASSSat;           /* 0 .. 24 */
   int ClockDataSupplied;            /* boolean */
   int OrbitDataSupplied;            /* boolean */
+  int epochGPS[101];                /* Weber, for latency */
+  int epochSize;                    /* Weber, for latency */
   enum SatelliteReferencePoint SatRefPoint;
   enum SatelliteReferenceDatum SatRefDatum;
   struct SatData {

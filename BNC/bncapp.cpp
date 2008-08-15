@@ -630,8 +630,8 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
   // An old correction - throw it away
   // ---------------------------------
   if (coTime <= _lastDumpCoSec) {
-    QString line = "old correction: " + staID +
-                    QString().sprintf(" age %ld", 
+    QString line = staID + ": Correction overaged by " +
+                    QString().sprintf(" %ld sec",
                     _lastDumpCoSec - coTime + _waitCoTime);
     messagePrivate(line.toAscii());
     emit( newMessage(line.toAscii()) );

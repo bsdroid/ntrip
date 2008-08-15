@@ -139,6 +139,10 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
       double GPSweeks;
       currentGPSWeeks(GPSweek, GPSweeks);
 
+      for (int kk = 0; kk < _co.epochSize; kk++) {
+        _epochList.push_back(_co.epochGPS[kk]);     /* Weber, for latency */
+      }
+
       if (_co.NumberOfGPSSat > 0) {
         if      (GPSweeks > _co.GPSEpochTime + 86400.0) {
           GPSweek += 1;

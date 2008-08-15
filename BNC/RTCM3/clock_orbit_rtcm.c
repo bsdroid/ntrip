@@ -2,7 +2,7 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id$
+        Version:        $Id: clock_orbit_rtcm.c,v 1.2 2008/05/06 15:07:41 mervart Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -494,6 +494,8 @@ const char *buffer, size_t size, int *bytesused)
   case COTYPE_GPSORBIT:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
@@ -520,6 +522,8 @@ const char *buffer, size_t size, int *bytesused)
   case COTYPE_GPSCLOCK:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
@@ -538,6 +542,8 @@ const char *buffer, size_t size, int *bytesused)
   case COTYPE_GPSCOMBINED:
     if(!co) return -5;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
