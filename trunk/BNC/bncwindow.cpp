@@ -108,7 +108,7 @@ bncWindow::bncWindow() {
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
   _proxyPortLineEdit->setMaximumWidth(9*ww);
   _messTypesLineEdit  = new QLineEdit(settings.value("messTypes").toString());
-  _messTypesLineEdit->setMaximumWidth(9*ww);
+//_messTypesLineEdit->setMaximumWidth(20*ww);
   _waitTimeSpinBox   = new QSpinBox();
   _waitTimeSpinBox->setMinimum(1);
   _waitTimeSpinBox->setMaximum(30);
@@ -126,6 +126,9 @@ bncWindow::bncWindow() {
   _rnxPathLineEdit    = new QLineEdit(settings.value("rnxPath").toString());
   _ephPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
   _corrPathLineEdit    = new QLineEdit(settings.value("corrPath").toString());
+  _corrLateCheckBox  = new QCheckBox();
+  _corrLateCheckBox->setCheckState(Qt::CheckState(
+                                    settings.value("corrLate").toInt()));
 
   _rnxV3CheckBox = new QCheckBox();
   _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
@@ -162,7 +165,7 @@ bncWindow::bncWindow() {
     _corrIntrComboBox->setCurrentIndex(mm);
   }
   _corrTimeSpinBox   = new QSpinBox();
-  _corrTimeSpinBox->setMinimum(0);
+  _corrTimeSpinBox->setMinimum(1);
   _corrTimeSpinBox->setMaximum(30);
   _corrTimeSpinBox->setSingleStep(1);
   _corrTimeSpinBox->setSuffix(" sec");
@@ -305,12 +308,13 @@ bncWindow::bncWindow() {
   _outPortLineEdit->setWhatsThis(tr("BNC can produce synchronized observations in binary format on your local host through an IP port. Specify a port number here to activate this function."));
   _outEphPortLineEdit->setWhatsThis(tr("BNC can produce ephemeris data in RINEX ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
   _corrPortLineEdit->setWhatsThis(tr("BNC can produce Broadcast Ephemeris Corrections on your local host through an IP port. Specify a port number here to activate this function."));
-  _corrTimeSpinBox->setWhatsThis(tr("BNC drops Broadcast Ephemeris Corrections received later than 'Wait for full epoch' seconds. Default value is '0' seconds meaning that BNC will output whatever becomes available immediately and not drop any Ephemeris Correction."));
+  _corrTimeSpinBox->setWhatsThis(tr("Concerning output through IP port, BNC drops Broadcast Ephemeris Corrections received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds is recommended, depending on the latency of the incoming correction stream(s) and the delay acceptable to your real-time application."));
   _rnxPathLineEdit->setWhatsThis(tr("Here you specify the path to where the RINEX Observation files will be stored. If the specified directory does not exist, BNC will not create RINEX Observation files.")); 
   _ephPathLineEdit->setWhatsThis(tr("Specify the path for saving Broadcast Ephemeris data as RINEX Navigation files. If the specified directory does not exist, BNC will not create RINEX Navigation files."));
   _corrPathLineEdit->setWhatsThis(tr("Specify a directory for saving Broadcast Ephemeris Correction files. If the specified directory does not exist, BNC will not create the files."));
   _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX Observation file is saved, you might want to compress, copy or upload it immediately via FTP. BNC allows you to execute a script/batch file to carry out these operations. To do that specify the full path of the script/batch file here. BNC will pass the full RINEX Observation file path to the script as a command line parameter (%1 on Windows systems, $1 onUnix/Linux systems).</p><p>The triggering event for calling the script or batch file is the end of a RINEX Observation file 'Interval'. If that is overridden by a stream outage, the triggering event is the stream reconnection.</p>"));
   _rnxSkelLineEdit->setWhatsThis(tr("<p>Whenever BNC starts generating RINEX Observation files (and then once every day at midnight), it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. However, sometimes public RINEX header skeleton files are not available, its contents is not up to date, or you need to put additional/optional records in the RINEX header.</p><p>For that BNC allows using personal skeleton files that contain the header records you would like to include. You can derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the RINEX 'Directory' with the RINEX 'Skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream.</p>"));
+  _corrLateCheckBox->setWhatsThis(tr("<p>Log latency of Broadcast Ephemeris Corrections.</p>"));
   _rnxAppendCheckBox->setWhatsThis(tr("<p>When BNC is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append already existing files following a restart of BNC, a system crash or when BNC crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far.</p>"));
   _rnxIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Observation file.</p>"));
   _ephIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Navigation file.</p>"));
@@ -323,7 +327,7 @@ bncWindow::bncWindow() {
   _makePauseCheckBox->setWhatsThis(tr("<p>In case of a continuously corrupted stream, the decoding process can be paused and decodings are then attempted again at decreasing rate till the stream hopefully recovers. Tick 'Pause' to activate this function.</p><p>Do not tick 'Pause' (default) in order to prevent BNC from making any decoding pause. Be aware that this may incur an unnecessary workload.</p><p>Note that this function is only effective if an 'Observation rate' is specified.</p>"));
   _logFileLineEdit->setWhatsThis(tr("Records of BNC's activities are shown in the Log section on the bottom of this window. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field."));
   _adviseScriptLineEdit->setWhatsThis(tr("<p>Specify the full path to a script or batch file to handle advisory notes generated in the event of corrupted streams or stream outages. The affected mountpoint and one of the comments 'Begin_Outage', 'End_Outage', 'Begin_Corrupted', or 'End_Corrupted' are passed on to the script as command line parameters.</p><p>The script can be configured to send an email to BNC's operator and/or to the affected stream provider. An empty option field (default) or invalid path means that you don't want to use this option.</p><p> Note that for using this function you need to specify the 'Observation rate'.</p>"));
-  _perfIntrComboBox->setWhatsThis(tr("<p>BNC can average all latencies per stream over a certain period of GPS time. The resulting mean latencies are recorded in the Log file/section at the end of each 'Performance log' interval together with results of a statistical evaluation (approximate number of covered epochs, data gaps).</p><p>Select a 'Performance log' interval or select the empty option field if you do not want BNC to log latencies and statistical information.</p>"));
+  _perfIntrComboBox->setWhatsThis(tr("<p>BNC can average all observation latencies per stream over a certain period of GPS time. The resulting mean latencies of observations are recorded in the Log file/section at the end of each 'Performance log' interval together with results of a statistical evaluation (approximate number of covered epochs, data gaps).</p><p>Select a 'Performance log' interval or select the empty option field if you do not want BNC to log latencies and statistical information.</p>"));
   _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Mountpoints' section. Clicking on 'Add Mountpoints' button will open a window that allows the user to select data streams from an NTRIP broadcaster according to their mountpoints. To remove a stream from the 'Mountpoints' list, highlight it by clicking on it and hit the 'Delete Mountpoints' button. You can also remove multiple mountpoints by highlighting them using +Shift and +Ctrl.</p><p>BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the sourcetable. However, there might be cases where you need to override the automatic selection due to incorrect sourcetable for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.</p><p>In case you need to log the raw data as is, BNC allows users to by-pass its decoders and and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'.</p><p>BNC can also retrieve streams from virtual reference stations (VRS). To initiate these streams, an approximate rover position needs to be sent in NMEA GGA message to the NTRIP broadcaster. In return, a user-specific data stream is generated, typically by a Network-RTK software. This stream is customized to the exact latitude and longitude as shown in the 'lat' and 'long' columns under 'Mountpoints'. These VRS streams are indicated by a 'yes' in the 'nmea' column under 'Mountpoints' as well as in the sourcetable. The default 'lat' and 'long' values are taken from the sourcetable. However, in most cases you would probably want to change this according to your requirement. Double click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter. The format is in positive north latitude degrees (e.g. for northern hemisphere: 52.436, for southern hemisphere: -24.567) and eastern longitude degrees (e.g.: 358.872 or -1.128). Only mountpoints with a 'yes' in its 'nmea' column can be edited. The position should preferably be a point within the coverage of the network.</p>"));
   _log->setWhatsThis(tr("Records of BNC's activities are shown in the Log section. The message log covers the communication status between BNC and the NTRIP broadcaster as well as any problems that occur in the communication link, stream availability, stream delay, stream conversion etc."));
   _ephV3CheckBox->setWhatsThis(tr("The default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format."));
@@ -469,8 +473,9 @@ bncWindow::bncWindow() {
   cLayout->addWidget(_corrPortLineEdit,                           2, 1);
   cLayout->addWidget(new QLabel("Wait for full epoch"),           3, 0);
   cLayout->addWidget(_corrTimeSpinBox,                            3, 1);
-  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),4,0,1,2,Qt::AlignLeft);
-  cLayout->addWidget(new QLabel("    "),5,0);
+  cLayout->addWidget(new QLabel("Latency log"),                   4, 0);
+  cLayout->addWidget(_corrLateCheckBox,                           4, 1);
+  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),5,0,1,2,Qt::AlignLeft);
   cgroup->setLayout(cLayout);
 
   QVBoxLayout* mLayout = new QVBoxLayout;
@@ -626,6 +631,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("binSampl",    _binSamplSpinBox->value());
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
   settings.setValue("rnxAppend",   _rnxAppendCheckBox->checkState());
+  settings.setValue("corrLate",    _corrLateCheckBox->checkState());
   settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
   settings.setValue("ephV3",       _ephV3CheckBox->checkState());
   settings.setValue("logFile",     _logFileLineEdit->text());

@@ -49,9 +49,11 @@ Q_OBJECT
 
   QString                _staID;
   QString                _checkMountPoint;
+  int                    _corrLate;
   struct RTCM3ParserData _Parser;
   RTCM3coDecoder*        _coDecoder; 
   t_mode                 _mode;
 } ;
 
 #endif
+

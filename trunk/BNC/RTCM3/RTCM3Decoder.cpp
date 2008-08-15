@@ -46,6 +46,7 @@
 #include "RTCM3coDecoder.h"
 #include "bncconst.h"
 #include "bncapp.h"
+#include "bncutils.h" /* Weber, for latencies */
 
 using namespace std;
 
@@ -66,6 +67,7 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID) : GPSDecoder() {
 
   QSettings settings;
   _checkMountPoint = settings.value("messTypes").toString();
+  _corrLate = settings.value("corrLate").toInt();
   _staID = staID;
 
   // Ensure, that the Decoder uses the "old" convention for the data structure for Rinex2. Perlt
@@ -109,6 +111,35 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
   if (_mode == unknown || _mode == corrections) {
     if ( _coDecoder->Decode(buffer, bufLen) == success ) {
       decoded = true;
+
+      // Latency, Weber
+      // -------
+      if ( _corrLate == 2 ) {
+        if (0<_coDecoder->_epochList.size()) {
+          for (int ii=0;ii<_coDecoder->_epochList.size();ii++) {
+            int week;
+            double sec;
+            double secGPS = _coDecoder->_epochList[ii];
+            leapsecGPSWeeks(week, sec);
+            double dt = fabs(sec - secGPS);
+            const double secPerWeek = 7.0 * 24.0 * 3600.0;
+            if (dt > 0.5 * secPerWeek) {
+              if (sec > secGPS) {
+                sec  -= secPerWeek;
+              } else {
+                sec  += secPerWeek;
+              }
+            }
+            QString late;
+            late = QString("%1 ").arg(int((sec - secGPS)*100.)/100.);
+            if (late != "") {
+              emit(newMessage(QString(_staID + ": Latency " + late + "sec").toAscii() ) );
+            }
+          }
+        }
+      }
+      _coDecoder->_epochList.clear();
+
       if (_mode == unknown) {
         _mode = corrections;
 //      emit(newMessage( (_staID + " : mode set to corrections").toAscii() ));
