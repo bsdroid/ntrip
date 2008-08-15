@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.13 2008/08/09 23:58:09 weber Exp $
+  $Id: rtcm3torinex.c,v 1.14 2008/08/11 14:01:54 weber Exp $
   Copyright (C) 2005-2008 by Dirk Stöcker <stoecker@alberding.eu>
 
   This software is a complete NTRIP-RTCM3 to RINEX converter as well as
@@ -50,7 +50,7 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.13 $";
+static char revisionstr[] = "$Revision: 1.14 $";
 
 #ifndef COMPILEDATE
 #define COMPILEDATE " built " __DATE__
@@ -437,10 +437,12 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
 
         GETBITS(syncf,1) /* sync */
         GETBITS(i,5)
-        gnss->numsats = i;
+    //  gnss->numsats = i;
+        gnss->numsats += i;                                    // If GLONASS observations come first, Weber
         SKIPBITS(4) /* smind, smint */
 
-        for(num = 0; num < gnss->numsats; ++num)
+    //  for(num = 0; num < gnss->numsats; ++num)
+        for(num = gnss->numsats-i; num < gnss->numsats; ++num) // If GLONASS observations come first, Weber
         {
           int sv, code, l1range, c,l,s,ce,le,se,amb=0;
 
@@ -1625,7 +1627,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 }
 
 #ifndef NO_RTCM3_MAIN
-static char datestr[]     = "$Date: 2008/08/09 23:58:09 $";
+static char datestr[]     = "$Date: 2008/08/11 14:01:54 $";
 
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
