@@ -476,7 +476,7 @@ The following is an example output from two RTCM Version 3 streams (CLCK1 and CL
 
 <p><a name="corrwait"><h4>3.8.4 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
 <p>
-When feeding a real-time GNSS engine waiting epoch by epoch for synchronized Ephemeris Corrections, BNC drops (only concering IP port output) whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Ephemeris Corrections stream and the delay acceptable by your application.
+When feeding a real-time GNSS engine waiting epoch by epoch for synchronized Ephemeris Corrections, BNC drops (only concering IP port output) whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Ephemeris Corrections stream and the delay acceptable by your application. A message such as "COCK1: Correction overaged by 5 sec" shows up in BNC's logfile if 'Wait for full epoch' is exceeded.
 </p>
 <p><a name="corrlate"><h4>3.8.5 Latency Log - optional</h4></p>
 <p>
