@@ -424,10 +424,10 @@ bncWindow::bncWindow() {
   aLayout->addWidget(new QLabel("Pause"),                         2, 2, Qt::AlignRight);
   aLayout->addWidget(_makePauseCheckBox,                          2, 3, Qt::AlignLeft);
   aLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
-  aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,12);
+  aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,10);
   aLayout->addWidget(new QLabel("Performance log"),               4, 0);
   aLayout->addWidget(_perfIntrComboBox,                           4, 1);
-  aLayout->addWidget(new QLabel("Network monitoring, outages, handling of corrupted streams, latencies, statistics."),5,0,1,12,Qt::AlignLeft);
+  aLayout->addWidget(new QLabel("Network monitoring, outages, handling of corrupted streams, latencies, statistics."),5,0,1,10,Qt::AlignLeft);
   agroup->setLayout(aLayout);
 
   QGridLayout* rLayout = new QGridLayout;
@@ -447,20 +447,19 @@ bncWindow::bncWindow() {
   oLayout->setColumnMinimumWidth(0,12*ww);
   oLayout->setColumnMinimumWidth(1,8*ww);
   oLayout->setColumnMinimumWidth(2,12*ww);
-  oLayout->setColumnMinimumWidth(3,40*ww);
   oLayout->addWidget(new QLabel("Directory"),                     0, 0);
-  oLayout->addWidget(_rnxPathLineEdit,                            0, 1,1,3);
+  oLayout->addWidget(_rnxPathLineEdit,                            0, 1,1,12);
   oLayout->addWidget(new QLabel("Interval"),                      1, 0);
   oLayout->addWidget(_rnxIntrComboBox,                            1, 1);
   oLayout->addWidget(new QLabel("Sampling"),                      1, 2, Qt::AlignRight);
   oLayout->addWidget(_rnxSamplSpinBox,                            1, 3, Qt::AlignLeft);
   oLayout->addWidget(new QLabel("Skeleton extension"),            2, 0);
-  oLayout->addWidget(_rnxSkelLineEdit,                            2, 1);
+  oLayout->addWidget(_rnxSkelLineEdit,                            2, 1,1,1, Qt::AlignLeft);
   oLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
-  oLayout->addWidget(_rnxScrpLineEdit,                            3, 1, 1, 3);
+  oLayout->addWidget(_rnxScrpLineEdit,                            3, 1,1,12);
   oLayout->addWidget(new QLabel("Version 3"),                     4, 0);
   oLayout->addWidget(_rnxV3CheckBox,                              4, 1);
-  oLayout->addWidget(new QLabel("Saving RINEX observation files."),5,0,1,4, Qt::AlignLeft);
+  oLayout->addWidget(new QLabel("Saving RINEX observation files."),5,0,1,12, Qt::AlignLeft);
   ogroup->setLayout(oLayout);
  
   QGridLayout* cLayout = new QGridLayout;
