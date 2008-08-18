@@ -108,7 +108,7 @@ bncWindow::bncWindow() {
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
   _proxyPortLineEdit->setMaximumWidth(9*ww);
   _messTypesLineEdit  = new QLineEdit(settings.value("messTypes").toString());
-//_messTypesLineEdit->setMaximumWidth(20*ww);
+  _messTypesLineEdit->setMaximumWidth(20*ww);
   _waitTimeSpinBox   = new QSpinBox();
   _waitTimeSpinBox->setMinimum(1);
   _waitTimeSpinBox->setMaximum(30);
@@ -424,10 +424,10 @@ bncWindow::bncWindow() {
   aLayout->addWidget(new QLabel("Pause"),                         2, 2, Qt::AlignRight);
   aLayout->addWidget(_makePauseCheckBox,                          2, 3, Qt::AlignLeft);
   aLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
-  aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,3);
+  aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,12);
   aLayout->addWidget(new QLabel("Performance log"),               4, 0);
   aLayout->addWidget(_perfIntrComboBox,                           4, 1);
-  aLayout->addWidget(new QLabel("Network monitoring, outages, handling of corrupted streams, latencies, statistics."),5,0,1,4,Qt::AlignLeft);
+  aLayout->addWidget(new QLabel("Network monitoring, outages, handling of corrupted streams, latencies, statistics."),5,0,1,12,Qt::AlignLeft);
   agroup->setLayout(aLayout);
 
   QGridLayout* rLayout = new QGridLayout;
@@ -435,7 +435,7 @@ bncWindow::bncWindow() {
   rLayout->setColumnMinimumWidth(1,30*ww);
   rLayout->setColumnMinimumWidth(2,30*ww);
   rLayout->addWidget(new QLabel("Mountpoint"),0,0, Qt::AlignLeft);
-  rLayout->addWidget(_messTypesLineEdit,0,1);
+  rLayout->addWidget(_messTypesLineEdit,0,1,1,15,Qt::AlignLeft);
   rLayout->addWidget(new QLabel("Log numbers of message types in RTCM Version 3.x stream."),1, 0, 1, 4, Qt::AlignLeft);
   rLayout->addWidget(new QLabel("    "),2,0);
   rLayout->addWidget(new QLabel("    "),3,0);
@@ -861,7 +861,7 @@ bncAboutDlg::bncAboutDlg(QWidget* parent) :
   QLabel* img = new QLabel();
   img->setPixmap(QPixmap(":ntrip-logo.png"));
   dlgLayout->addWidget(img, 0,0);
-  dlgLayout->addWidget(new QLabel("BKG NTRIP Client (BNC) Version 1.6"), 0,1);
+  dlgLayout->addWidget(new QLabel("BKG Ntrip Client (BNC) Version 1.6"), 0,1);
   dlgLayout->addWidget(tb,1,0,1,2);
   dlgLayout->addWidget(_closeButton,2,1,Qt::AlignRight);  
 
