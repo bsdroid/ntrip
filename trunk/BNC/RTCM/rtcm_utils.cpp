@@ -37,14 +37,14 @@ int cmpRho(const t_eph* eph,
   rho = 0.0;
   eph->position(GPSWeek, GPSWeeks, xSat, ySat, zSat, clkSat); 
 
-  cout << "----- cmpRho -----\n";
-  eph->print(cout);
-  cout << "  pos " << setw(4)  << GPSWeek 
-       << " "      << setw(14) << setprecision(6) << GPSWeeks
-       << " "      << setw(13) << setprecision(3) << xSat
-       << " "      << setw(13) << setprecision(3) << ySat
-       << " "      << setw(13) << setprecision(3) << zSat
-       << endl;
+  ////cout << "----- cmpRho -----\n";
+  ////eph->print(cout);
+  ////cout << "  pos " << setw(4)  << GPSWeek 
+  ////     << " "      << setw(14) << setprecision(6) << GPSWeeks
+  ////     << " "      << setw(13) << setprecision(3) << xSat
+  ////     << " "      << setw(13) << setprecision(3) << ySat
+  ////     << " "      << setw(13) << setprecision(3) << zSat
+  ////     << endl;
 
   // Loop until the correct Time Of Transmission is found
   // ----------------------------------------------------
@@ -84,20 +84,20 @@ int cmpRho(const t_eph* eph,
 
     rho = sqrt(dx*dx + dy*dy + dz*dz);
 
-    cout << "  scrd "   << setw(4)  << GPSWeek_tot 
-	 << " "         << setw(15) << setprecision(8) << GPSWeeks_tot
-	 << " "         << setw(13) << setprecision(3) << xSat
-	 << " "         << setw(13) << setprecision(3) << ySat
-	 << " "         << setw(13) << setprecision(3) << zSat
-	 << " rcv0 "    << setw(12) << setprecision(3) << stax
-	 << " "         << setw(12) << setprecision(3) << stay
-	 << " "         << setw(12) << setprecision(3) << staz
-	 << " rcv  "    << setw(12) << setprecision(3) << xRec
-	 << " "         << setw(12) << setprecision(3) << yRec
-	 << " "         << setw(12) << setprecision(3) << zRec
-	 << " dPhi "    << scientific << setw(13) << setprecision(10) << dPhi  << fixed
-	 << " rho "     << setw(13) << setprecision(3) << rho
-	 << endl;
+    ////cout << "  scrd "   << setw(4)  << GPSWeek_tot 
+    ////	 << " "         << setw(15) << setprecision(8) << GPSWeeks_tot
+    ////	 << " "         << setw(13) << setprecision(3) << xSat
+    ////	 << " "         << setw(13) << setprecision(3) << ySat
+    ////	 << " "         << setw(13) << setprecision(3) << zSat
+    ////	 << " rcv0 "    << setw(12) << setprecision(3) << stax
+    ////	 << " "         << setw(12) << setprecision(3) << stay
+    ////	 << " "         << setw(12) << setprecision(3) << staz
+    ////	 << " rcv  "    << setw(12) << setprecision(3) << xRec
+    ////	 << " "         << setw(12) << setprecision(3) << yRec
+    ////	 << " "         << setw(12) << setprecision(3) << zRec
+    ////	 << " dPhi "    << scientific << setw(13) << setprecision(10) << dPhi  << fixed
+    ////	 << " rho "     << setw(13) << setprecision(3) << rho
+    ////	 << endl;
     
 
     ////cout.setf(ios::fixed);
@@ -110,8 +110,6 @@ int cmpRho(const t_eph* eph,
   } while ( fabs(rho - rhoLast) > 1e-4);
 
   clkSat *= c_light;  // satellite clock correction in meters
-
-  cout << "***** cmpRho *****\n";
 
   return 0;
 }

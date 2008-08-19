@@ -944,6 +944,8 @@ void RTCM2_Obs::clear() {
   rng_P2.resize(0);        // Pseudorange [m]
   cph_L1.resize(0);        // Carrier phase [m]
   cph_L2.resize(0);        // Carrier phase [m]
+  slip_L1.resize(0);       // Slip counter
+  slip_L2.resize(0);       // Slip counter
   
   availability.reset();    // Message status flags
   
@@ -1004,7 +1006,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
 
   bool    isGPS,isCAcode,isL1,isOth;
   int     NSat,idx;
-  int     sid,prn;
+  int     sid,prn,slip_cnt;
   double  t,rng,cph;
 
   // Check validity and packet type
@@ -1113,9 +1115,12 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
       if (sid==0) sid=32;
       
       prn = (isGPS? sid : sid+200 );
-      
+
       // Carrier phase measurement (mod 2^23 [cy]; sign matched to range)
       cph = -P.getBits(iSat*48+40,32)/256.0;
+
+      // Slip counter
+      slip_cnt = P.getUnsignedBits(iSat*48+35,5);
 
       // Is this a new PRN?
       idx=-1;
@@ -1131,14 +1136,18 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
         rng_P2.push_back(0.0);
         cph_L1.push_back(0.0);
         cph_L2.push_back(0.0);
+	slip_L1.push_back(-1);
+	slip_L2.push_back(-1);
       };
       
       // Store measurement
       if (isL1) {
-        cph_L1[idx] = cph;
+        cph_L1 [idx] = cph;
+	slip_L1[idx] = slip_cnt;
       }
       else {
-        cph_L2[idx] = cph;
+        cph_L2 [idx] = cph;
+	slip_L2[idx] = slip_cnt;
       };
            
     };
@@ -1250,6 +1259,8 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
         rng_P2.push_back(0.0);
         cph_L1.push_back(0.0);
         cph_L2.push_back(0.0);
+	slip_L1.push_back(-1);
+	slip_L2.push_back(-1);
       };
       
       // Store measurement
@@ -1338,3 +1349,6 @@ void RTCM2_Obs::resolveEpoch (int  refWeek,   double  refSecs,
 };
 
 }; // End of namespace rtcm2
+
+
+

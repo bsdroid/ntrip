@@ -25,22 +25,65 @@
 #ifndef INC_RTCM2DECODER_H
 #define INC_RTCM2DECODER_H
 
+#include <map>
+
 #include "GPSDecoder.h"
 #include "RTCM2.h"
+#include "RTCM2_2021.h"
+#include "../RTCM3/rtcm3torinex.h"
+#include "../RTCM3/ephemeris.h"
 
 class RTCM2Decoder: public GPSDecoder {
 
   public:
-    RTCM2Decoder();
+    RTCM2Decoder(const std::string& ID);
     virtual ~RTCM2Decoder();
     virtual t_irc Decode(char* buffer, int bufLen);
 
+    void  storeEph(const gpsephemeris& gpseph);
+    void  storeEph(const t_ephGPS&     gpseph);
+
+    t_irc getStaCrd(double& xx, double& yy, double& zz);
+
+    const rtcm2::RTCM2_2021& msg2021() const { return _msg2021; }
+
+    std::string ID() const { return _ID; }
+
   private:
 
-    std::string        _buffer;
-    rtcm2::RTCM2_Obs   _ObsBlock;
-    rtcm2::RTCM2packet _PP;
+    class t_ephPair {
+    public:
+      t_ephPair() {
+    	eph    = 0;
+    	oldEph = 0;
+      }
+      
+      ~t_ephPair() {
+    	delete eph;
+    	delete oldEph;
+      }
+      
+      t_eph* eph;
+      t_eph* oldEph;
+    };
 
+    void translateCorr2Obs();
+
+    std::string            _ID;
+
+    std::string            _buffer;
+    rtcm2::RTCM2packet     _PP;
+
+    // for messages 18, 19 decoding
+    rtcm2::RTCM2_Obs       _ObsBlock;
+
+    // for messages 20, 21 decoding
+    rtcm2::RTCM2_03           _msg03;
+    rtcm2::RTCM2_22           _msg22;
+    rtcm2::RTCM2_2021         _msg2021;
+    std::map<std::string, t_ephPair*> _ephPair;
+
+    typedef std::map<std::string, t_ephPair*> t_pairMap;
 };
 
 #endif  // include blocker
