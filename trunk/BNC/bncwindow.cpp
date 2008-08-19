@@ -59,7 +59,7 @@ bncWindow::bncWindow() {
   
   static const QStringList labels = QString("account,mountpoint,decoder,lat,long,nmea,bytes").split(",");
 
-  setMinimumSize(77*ww, 65*ww);
+  setMinimumSize(80*ww, 65*ww);
 
   setWindowTitle(tr("BKG Ntrip Client (BNC) Version 1.6"));
 
@@ -358,7 +358,7 @@ bncWindow::bncWindow() {
   aogroup->addTab(rgroup,tr("RTCM Message Types"));
 
   QGridLayout* pLayout = new QGridLayout;
-  pLayout->setColumnMinimumWidth(0,12*ww);
+  pLayout->setColumnMinimumWidth(0,14*ww);
   pLayout->addWidget(new QLabel("Proxy host"),0,0, Qt::AlignLeft);
   pLayout->addWidget(_proxyHostLineEdit,0, 1);
   pLayout->addWidget(new QLabel("Proxy port"),1,0, Qt::AlignLeft);
@@ -370,7 +370,7 @@ bncWindow::bncWindow() {
   pgroup->setLayout(pLayout);
  
   QGridLayout* gLayout = new QGridLayout;
-  gLayout->setColumnMinimumWidth(0,12*ww);
+  gLayout->setColumnMinimumWidth(0,14*ww);
   gLayout->addWidget(new QLabel("Logfile (full path)"), 0,0);
   gLayout->addWidget(_logFileLineEdit,         0,1);
   gLayout->addWidget(new QLabel("Append files")    ,1,0 );
@@ -382,7 +382,7 @@ bncWindow::bncWindow() {
   ggroup->setLayout(gLayout);
 
   QGridLayout* sLayout = new QGridLayout;
-  sLayout->setColumnMinimumWidth(0,12*ww);
+  sLayout->setColumnMinimumWidth(0,14*ww);
   sLayout->addWidget(new QLabel("Port"),                          0, 0);
   sLayout->addWidget(_outPortLineEdit,                            0, 1);
   sLayout->addWidget(new QLabel("Wait for full epoch"),           1, 0);
@@ -397,7 +397,7 @@ bncWindow::bncWindow() {
   sgroup->setLayout(sLayout);
 
   QGridLayout* eLayout = new QGridLayout;
-  eLayout->setColumnMinimumWidth(0,12*ww);
+  eLayout->setColumnMinimumWidth(0,14*ww);
   eLayout->addWidget(new QLabel("Directory"),                     0, 0);
   eLayout->addWidget(_ephPathLineEdit,                            0, 1);
   eLayout->addWidget(new QLabel("Interval"),                      1, 0);
@@ -411,10 +411,7 @@ bncWindow::bncWindow() {
   egroup->setLayout(eLayout);
 
   QGridLayout* aLayout = new QGridLayout;
-  aLayout->setColumnMinimumWidth(0,12*ww);
-  aLayout->setColumnMinimumWidth(1,8*ww);
-  aLayout->setColumnMinimumWidth(2,12*ww);
-  aLayout->setColumnMinimumWidth(3,40*ww);
+  aLayout->setColumnMinimumWidth(0,14*ww);
   aLayout->addWidget(new QLabel("Observation rate"),              0, 0);
   aLayout->addWidget(_obsRateComboBox,                            0, 1);
   aLayout->addWidget(new QLabel("Failure threshold"),             1, 0);
@@ -431,9 +428,7 @@ bncWindow::bncWindow() {
   agroup->setLayout(aLayout);
 
   QGridLayout* rLayout = new QGridLayout;
-  rLayout->setColumnMinimumWidth(0,12*ww);
-  rLayout->setColumnMinimumWidth(1,30*ww);
-  rLayout->setColumnMinimumWidth(2,30*ww);
+  rLayout->setColumnMinimumWidth(0,14*ww);
   rLayout->addWidget(new QLabel("Mountpoint"),0,0, Qt::AlignLeft);
   rLayout->addWidget(_messTypesLineEdit,0,1,1,15,Qt::AlignLeft);
   rLayout->addWidget(new QLabel("Log numbers of message types in RTCM Version 3.x stream."),1, 0, 1, 4, Qt::AlignLeft);
@@ -444,9 +439,7 @@ bncWindow::bncWindow() {
   rgroup->setLayout(rLayout);
 
   QGridLayout* oLayout = new QGridLayout;
-  oLayout->setColumnMinimumWidth(0,12*ww);
-  oLayout->setColumnMinimumWidth(1,8*ww);
-  oLayout->setColumnMinimumWidth(2,12*ww);
+  oLayout->setColumnMinimumWidth(0,14*ww);
   oLayout->addWidget(new QLabel("Directory"),                     0, 0);
   oLayout->addWidget(_rnxPathLineEdit,                            0, 1,1,12);
   oLayout->addWidget(new QLabel("Interval"),                      1, 0);
@@ -463,7 +456,7 @@ bncWindow::bncWindow() {
   ogroup->setLayout(oLayout);
  
   QGridLayout* cLayout = new QGridLayout;
-  cLayout->setColumnMinimumWidth(0,12*ww);
+  cLayout->setColumnMinimumWidth(0,14*ww);
   cLayout->addWidget(new QLabel("Directory"),                     0, 0);
   cLayout->addWidget(_corrPathLineEdit,                           0, 1);
   cLayout->addWidget(new QLabel("Interval"),                      1, 0);
