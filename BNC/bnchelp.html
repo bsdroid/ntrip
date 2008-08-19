@@ -46,7 +46,7 @@ BNC supports the following GNSS data formats:
 </p>
 <p>
 <ul>
-<li>RTCM Version 2.x containing message types 18 and 19 (GPS and GLONASS), </li> 
+<li>RTCM Version 2.x containing message types 18 and 19 or 20 and 21 (GPS and GLONASS), </li> 
 <li>RTCM Version 3.x containing message types 1002 (GPS, SBAS) or 1004 (GPS), 1010 or 1012 (GLONASS), 1019 or 1020 (broadcast ephemeris), 4056 and 4057 (tentative messages for orbit and clock corrections to broadcast ephemeris)</li>
 <li>RTIGS containing GPS record types 200 (observations) and 300 (ephemeris).</li>
 </ul>
@@ -629,7 +629,7 @@ Some streams on NTRIP broadcasters may be restricted. Enter a valid 'User' ID an
 
 <p><a name="mounttable"><h4>3.11.4 Get Table</h4></p>
 <p>
-Use the 'Get Table' button to download the source-table from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. RTCM Version 2.x streams must contain message types 18 and 19 while RTCM Version 3.x streams must contain GPS or SBAS message types 1002 or 1004 and may contain GLONASS message types 1010 or 1012, see data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3.x streams containing message types 1019 (GPS) and 1020 (GLONASS) are required. Select your streams line by line, use +Shift and +Ctrl when necessary.
+Use the 'Get Table' button to download the source-table from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. RTCM Version 2.x streams must contain message types 18 and 19 or 20 and 21 while RTCM Version 3.x streams must contain GPS or SBAS message types 1002 or 1004 and may contain GLONASS message types 1010 or 1012, see data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3.x streams containing message types 1019 (GPS) and 1020 (GLONASS) are required. Select your streams line by line, use +Shift and +Ctrl when necessary.
 </p> 
 <p>
 The contents of data field 'nmea' tells you whether a stream retrieval needs to be initiated by BNC through sending an NMEA-GGA message carrying position coordinates (virtual reference station).
@@ -686,7 +686,7 @@ Currently BNC only handles GPS, SBAS and GLONASS data. Galileo is not yet suppor
 BNC currently will only handle C1, C2, P1, P2, L1, L2, S1, and S2 observations. Which observables are available on a particular stream will depend on the setup of source receiver and the data format used. RTCM Version 2.x streams do not carry signal-to-noise ratio 'S' values while RTCM Version 3.x streams can only transport one code observable per frequency. Note that signal-to-noise ratios 'S' are also logged mapped to integer numbers 1 to 9.
 </li>
 <li>
-Using RTCM Version 2.x, BNC will only handle message types 18 and 19. Using RTCM Version 3.x, BNC will properly handle message types 1002, 1004, 1010, and 1012. Note that when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
+Using RTCM Version 2.x, BNC will only handle message types 18 and 19 or 20 and 21. Using RTCM Version 3.x, BNC will properly handle message types 1002, 1004, 1010, and 1012. Note that when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
 </li>
 <li>
 Streams coming in RTIGS format carry only GPS data.
@@ -728,7 +728,8 @@ Frankfurt, Germany<br>
 BNC's Help Contents has been proofread by Thomas Yan, University of New South Wales, Australia.<br>
 Scott Glazier, OmniSTAR Australia, included the decoding of broadcast ephemeris from RTIGS streams and has been helpful in finding BNC's bugs.<br>
 James Perlt, BKG, helped fixing bugs and redesigned BNC's main window.<br>
-Andre Hauschild, German Space Operations Center, DLR, revised the RTCMv2 decoder.
+Andre Hauschild, German Space Operations Center, DLR, revised the RTCMv2 decoder.<br>
+Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, added a decoder for RTCMv2 message types 20 and 21.<br>
 </p>
 
 <p><a name="annex"><h3>8. Annex</h3></p>
@@ -753,7 +754,7 @@ Andre Hauschild, German Space Operations Center, DLR, revised the RTCMv2 decoder
 <tr><td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td><td>[Add] Source code published.
 <tr><td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td><td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td></tr>
 <tr><td>Apr 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Handle ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Monitor stream failure/recovery and latency<br> [Mod] Redesign of main window<br> [Bug] Freezing of About window on Mac systems<br> [Bug] Fixed problem with PRN 32 in RTCMv2 decoder<br> [Bug] Fix for Trimble 4000SSI receivers in RTCMv2 decoder<br> [Mod] Major revision of input buffer in RTCMv2 decoder</td></tr>
-<tr><td>September 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td><td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCM v3 decoder for clock&orbit corrections<br>[Add] Check RTCM v3 streams for incoming message types</td></tr>
+<tr><td>September 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td><td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCM v3 decoder for clock&orbit corrections<br>[Add] Check RTCM v3 streams for incoming message types<br> [Add] Decoding RTCMv2 message types 20 and 21</td></tr>
 </table>
 </p>
 
