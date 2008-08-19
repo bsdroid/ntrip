@@ -30,6 +30,7 @@
 #include <QDateTime>
 
 #include "RTCM/GPSDecoder.h"
+#include "RTCM3/rtcm3torinex.h"
 #include "bncconst.h"
 
 class bncRinex;
@@ -55,6 +56,9 @@ class bncGetThread : public QThread {
    void newObs(QByteArray staID, bool firstObs, p_obs obs);
    void error(QByteArray staID);
    void newMessage(QByteArray msg);
+
+ public slots:
+   void slotNewEphGPS(gpsephemeris gpseph);
 
  protected:
    virtual void run();
@@ -95,6 +99,7 @@ class bncGetThread : public QThread {
    int         _iMount;
    int         _samplingRate;
    bncRinex*   _rnx;
+   bool        _rnx_set_position;
    QDateTime   _decodeFailure;
    QDateTime   _decodeStart;
    QDateTime   _decodeStop;

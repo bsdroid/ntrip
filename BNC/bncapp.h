@@ -48,8 +48,9 @@ class bncApp : public QApplication {
     void slotNewCorrLine(QString line, QString staID, long coTime);
     void slotQuit();
 
- signals:
-   void newMessage(QByteArray msg);
+  signals:
+    void newMessage(QByteArray msg);
+    void newEphGPS(gpsephemeris gpseph);
     
  private slots:
    void slotNewConnection();

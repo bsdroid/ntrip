@@ -191,6 +191,9 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
 
   QMutexLocker locker(&_mutex);
 
+  gpsephemeris copy_gpseph = *gpseph;
+  emit newEphGPS(copy_gpseph);
+
   printEphHeader();
 
   gpsephemeris** ee = &_gpsEph[gpseph->satellite-1];
