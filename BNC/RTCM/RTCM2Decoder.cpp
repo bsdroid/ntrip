@@ -144,6 +144,7 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen) {
       _msg2021.extract(_PP);
 
       if (_msg2021.valid()) {
+        decoded = true;
       	translateCorr2Obs();
       }	
     }
