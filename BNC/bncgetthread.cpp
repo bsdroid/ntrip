@@ -415,6 +415,7 @@ void bncGetThread::run() {
   int diffSecGPS = 0;
   int numLat = 0;
   double sumLat = 0.;
+  double sumLatQ = 0.;
   double meanDiff = 0.;
   double minLat = maxDt;
   double maxLat = -maxDt;
@@ -601,20 +602,22 @@ void bncGetThread::run() {
                 if (newSecGPS % _perfIntr < oldSecGPS % _perfIntr) {
                   if (numLat>0) {
                     if (meanDiff>0.) {
-                      emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, %5 epochs, %6 gaps")
+                      emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs, %7 gaps")
                         .arg(_staID.data())
                         .arg(int(sumLat/numLat*100)/100.)
                         .arg(int(minLat*100)/100.)
                         .arg(int(maxLat*100)/100.)
+                        .arg(int((sqrt((sumLatQ - sumLat * sumLat / numLat)/numLat))*100)/100.)
                         .arg(numLat)
                         .arg(numGaps)
                         .toAscii()) );
                     } else {
-                      emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, %5 epochs")
+                      emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs")
                         .arg(_staID.data())
                         .arg(int(sumLat/numLat*100)/100.)
                         .arg(int(minLat*100)/100.)
                         .arg(int(maxLat*100)/100.)
+                        .arg(int((sqrt((sumLatQ - sumLat * sumLat / numLat)/numLat))*100)/100.)
                         .arg(numLat)
                         .toAscii()) );
                     }
@@ -623,6 +626,7 @@ void bncGetThread::run() {
                   diffSecGPS = 0;
                   numGaps = 0;
                   sumLat = 0.;
+                  sumLatQ = 0.;
                   numLat = 0;
                   minLat = maxDt;
                   maxLat = -maxDt;
@@ -637,6 +641,7 @@ void bncGetThread::run() {
                 }
                 curLat = sec - obs->_o.GPSWeeks;
                 sumLat += curLat;
+                sumLatQ += curLat * curLat;
                 if (curLat < minLat) minLat = curLat;
                 if (curLat >= maxLat) maxLat = curLat;
                 numLat += 1;
