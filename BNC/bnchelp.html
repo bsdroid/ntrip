@@ -689,7 +689,7 @@ BNC currently will only handle C1, C2, P1, P2, L1, L2, S1, and S2 observations. 
 Using RTCM Version 2.x, BNC will only handle message types 18 and 19 or 20 and 21. Using RTCM Version 3.x, BNC will properly handle message types 1002, 1004, 1010, and 1012. Note that when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
 </li>
 <li>
-For using RTCM Version 2.x streams carrying message types 20 and 21 (carrier phase and pseudo-range corrections), broadcast ephemeris are needed. Hence, whenever dealing with message types 20 and 21, make sure that broadcast ephemeris become availabel for BNC through also retrieving at lease one RTCM Version 3.x stream carrying message types 1019 (GPS ephemeris) and 1020 (GLONASS ephemeris).
+For using RTCM Version 2.x streams carrying message types 20 and 21 (carrier phase and pseudo-range corrections), broadcast ephemeris are needed. Hence, whenever dealing with message types 20 and 21, make sure that broadcast ephemeris become available for BNC through also retrieving at least one RTCM Version 3.x stream carrying message types 1019 (GPS ephemeris) and 1020 (GLONASS ephemeris).
 </li>
 <li>
 Streams coming in RTIGS format carry only GPS data.
