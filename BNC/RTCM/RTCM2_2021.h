@@ -73,4 +73,7 @@ class RTCM2_22 {
   double dL1[3];
   double dL2[3];
 };
+
 }; // end of namespace rtcm2
+
+

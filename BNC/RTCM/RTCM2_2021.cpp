@@ -182,7 +182,7 @@ void RTCM2_2021::HiResCorr::reset() {
   Pind2   = false;
 }
 
-std::ostream& rtcm2::operator << (std::ostream& out, const RTCM2_2021::HiResCorr& cc) {
+std::ostream& operator << (std::ostream& out, const RTCM2_2021::HiResCorr& cc) {
   out.setf(ios::fixed);
   out << setw(8) << setprecision(8) << cc.tt
       << ' ' << setw(2)  << cc.PRN
