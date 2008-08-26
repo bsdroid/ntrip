@@ -420,10 +420,6 @@ void t_bns::readEpoch() {
             _outSocket->write(obuffer, len);
             _outSocket->flush();
           }
-          if (_outFile) {
-            _outFile->write(obuffer, len);
-            _outFile->flush();
-          }
         }
       }
     }
