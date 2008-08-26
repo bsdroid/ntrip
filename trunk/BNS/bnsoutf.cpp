@@ -125,7 +125,7 @@ void bnsoutf::resolveFileName(int GPSweek, const QDateTime& datTim) {
     dayOfWeek = 0;
   }
 
-  _fName = (_prep
+  _fName = (_path + _prep
             + QString("%1").arg(GPSweek)
             + QString("%1").arg(dayOfWeek)
             + epoStr 

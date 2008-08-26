@@ -92,7 +92,7 @@ bnsWindow::bnsWindow() {
   if ( !fontString.isEmpty() ) {
     QFont newFont;
     if (newFont.fromString(fontString)) {
-      this->setFont(newFont);
+      QApplication::setFont(newFont);
     }
   }
   
