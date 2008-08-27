@@ -380,7 +380,7 @@ void t_bns::readEpoch() {
               QString outLine;
               processSatellite(oldEph, _caster.at(ic)->crdTrafo(), ep, GPSweek,
                                GPSweeks, prn, xx, sd, outLine);
-              _caster.at(ic)->printAscii(line);
+              _caster.at(ic)->printAscii(outLine);
             }
           }
         }
