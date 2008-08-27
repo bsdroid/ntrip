@@ -69,6 +69,8 @@ class t_bns : public QThread {
   QList<t_bnscaster*>       _caster;
   QFile*                    _logFile;
   QTextStream*              _logStream;
+  QFile*                    _echoFile;
+  QTextStream*              _echoStream;
   t_bnseph*                 _bnseph;
   QMutex                    _mutex;
   QMap<QString, t_ephPair*> _ephList;
