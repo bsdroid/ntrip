@@ -3,13 +3,14 @@
 
 #include <QtNetwork>
 
-class t_bnscaster {
+class t_bnscaster : public QObject {
  Q_OBJECT
  public:
   t_bnscaster(const QString& mountpoint);
-  ~t_bnscaster();
+  virtual ~t_bnscaster();
   void open();
   void write(char* buffer, unsigned len);
+  bool used() {return _outSocket;}
 
  signals:
   void error(const QByteArray msg);
