@@ -25,12 +25,36 @@ t_bnscaster::t_bnscaster(const QString& mountpoint) {
   _mountpoint         = mountpoint;
   _outSocket          = 0;
   _outSocketOpenTrial = 0;
+
+  QSettings settings;
+
+  QIODevice::OpenMode oMode;
+  if (Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked) {
+    oMode = QIODevice::WriteOnly | QIODevice::Unbuffered | QIODevice::Append;
+  }
+  else {
+    oMode = QIODevice::WriteOnly | QIODevice::Unbuffered;
+  }
+
+  QString outFileName = settings.value("outFile").toString();
+  if (outFileName.isEmpty()) {
+    _outFile   = 0;
+    _outStream = 0;
+  }
+  else {
+    _outFile = new QFile(outFileName);
+    if (_outFile->open(oMode)) {
+      _outStream = new QTextStream(_outFile);
+    }
+  }
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_bnscaster::~t_bnscaster() {
   delete _outSocket;
+  delete _outStream;
+  delete _outFile;
 }
 
 // Start the Communication with NTRIP Caster
@@ -98,5 +122,14 @@ void t_bnscaster::write(char* buffer, unsigned len) {
   if (_outSocket) {
     _outSocket->write(buffer, len);
     _outSocket->flush();
+  }
+}
+
+// Print Ascii Output
+////////////////////////////////////////////////////////////////////////////
+void t_bnscaster::printAscii(const QString& line) {
+  if (_outStream) {
+    *_outStream << line;
+     _outStream->flush();
   }
 }
