@@ -112,6 +112,23 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
     }
   }
 
+  // Echo input from RTNet into a file
+  // ---------------------------------
+  QString echoFileName = settings.value("inpEcho").toString();
+  if (echoFileName.isEmpty()) {
+    _echoFile   = 0;
+    _echoStream = 0;
+  }
+  else {
+    _echoFile = new QFile(echoFileName);
+    if (_echoFile->open(oMode)) {
+      _echoStream = new QTextStream(_echoFile);
+    }
+    else {
+      _echoStream = 0;
+    }
+  }
+
   // RINEX writer
   // ------------
   if ( settings.value("rnxPath").toString().isEmpty() ) { 
@@ -152,6 +169,8 @@ t_bns::~t_bns() {
   }
   delete _logStream;
   delete _logFile;
+  delete _echoStream;
+  delete _echoFile;
   QMapIterator<QString, t_ephPair*> it(_ephList);
   while (it.hasNext()) {
     it.next();
@@ -270,6 +289,11 @@ void t_bns::run() {
 void t_bns::readEpoch() {
 
   QByteArray line = _clkSocket->readLine();
+
+  if (_echoStream) {
+    *_echoStream << line << endl;
+    _echoStream->flush();
+  }
 
   emit(newClkBytes(line.length()));
 
