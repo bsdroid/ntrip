@@ -291,7 +291,7 @@ void t_bns::readEpoch() {
   QByteArray line = _clkSocket->readLine();
 
   if (_echoStream) {
-    *_echoStream << line << endl;
+    *_echoStream << line;
     _echoStream->flush();
   }
 
@@ -335,6 +335,12 @@ void t_bns::readEpoch() {
       
           if (oldEph == 0) {
             line = _clkSocket->readLine();
+
+            if (_echoStream) {
+              *_echoStream << line;
+              _echoStream->flush();
+            }
+
             QTextStream in(line);
             in >> prn;
             prns << prn;
