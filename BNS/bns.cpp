@@ -316,8 +316,6 @@ void t_bns::readEpoch() {
     for (int ic = 0; ic < _caster.size(); ic++) {
       _caster.at(ic)->open();
 
-      cout << "caster number " << ic+1 << endl;
-
       for (int oldEph = 0; oldEph <= 0; oldEph++) { // TODO: handle old ephemeris
       
         struct ClockOrbit co;
@@ -387,7 +385,6 @@ void t_bns::readEpoch() {
               QString outLine;
               processSatellite(oldEph, _caster.at(ic)->crdTrafo(), ep, GPSweek,
                                GPSweeks, prn, xx, sd, outLine);
-              cout << outLine.toAscii().data();
               _caster.at(ic)->printAscii(outLine);
             }
           }
