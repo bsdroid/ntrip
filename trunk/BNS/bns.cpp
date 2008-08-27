@@ -74,10 +74,10 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   // -------------------------------------------
   for (int ic = 1; ic <= 2; ic++) {
 
-    QString mountpoint  = settings.value("mountpoint_%1").toString().arg(ic);
+    QString mountpoint  = settings.value(QString("mountpoint_%1").arg(ic)).toString();
     if (!mountpoint.isEmpty()) {
-      QString outFileName = settings.value("outFile_%1").toString().arg(ic);
-      QString refSys      = settings.value("refSys_%1").toString().arg(ic);
+      QString outFileName = settings.value(QString("outFile_%1").arg(ic)).toString();
+      QString refSys      = settings.value(QString("refSys_%1").arg(ic)).toString();
 
       _caster.push_back(new t_bnscaster(mountpoint, outFileName, refSys));
       connect(_caster.back(), SIGNAL(error(const QByteArray)),
