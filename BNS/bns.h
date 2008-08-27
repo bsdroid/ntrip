@@ -39,12 +39,15 @@ class t_bns : public QThread {
   virtual void run();  
 
  signals:
+  void newClkBytes(int nBytes);
+  void newEphBytes(int nBytes);
+  void newOutBytes(int nBytes);
   void newMessage(const QByteArray msg);
   void error(const QByteArray msg);
   void moveSocket(QThread* tt);
  
  private slots:
-  void slotNewEph(t_eph* ep);
+  void slotNewEph(t_eph* ep, int nBytes);
   void slotNewConnection();
   void slotMessage(const QByteArray msg);
   void slotError(const QByteArray msg);

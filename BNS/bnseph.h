@@ -107,7 +107,7 @@ class t_bnseph : public QThread {
   virtual void run();  
 
  signals:
-  void newEph(t_eph* eph);
+  void newEph(t_eph* eph, int nBytes);
   void newMessage(const QByteArray msg);
   void error(const QByteArray msg);
  

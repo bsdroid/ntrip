@@ -41,6 +41,9 @@ Q_OBJECT
   void slotWhatsThis();
   void slotStart();
   void slotStop();
+  void slotEphBytes(int nBytes);
+  void slotClkBytes(int nBytes);
+  void slotOutBytes(int nBytes);
 
  protected:
   virtual void closeEvent(QCloseEvent *);
@@ -49,6 +52,7 @@ Q_OBJECT
   void CreateMenu();
   void AddToolbar();
   void deleteBns();
+  void updateStatus(int ii, int nBytes);
 
   QMenu*     _menuHlp;
   QMenu*     _menuFile;
@@ -86,6 +90,11 @@ Q_OBJECT
   QCheckBox* _fileAppendCheckBox;
 
   QTextEdit*  _log;
+
+  QWidget*    _status;
+  QLabel*     _statusLbl[6];  
+  double      _statusCnt[3];
+  QMutex      _mutex;
 
   t_bns*      _bns;
 };

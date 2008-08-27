@@ -56,7 +56,8 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   // ---------------------------------------
   _bnseph = new t_bnseph(parent);
 
-  connect(_bnseph, SIGNAL(newEph(t_eph*)), this, SLOT(slotNewEph(t_eph*)));
+  connect(_bnseph, SIGNAL(newEph(t_eph*)), 
+          this, SLOT(slotNewEph(t_eph*, int)));
   connect(_bnseph, SIGNAL(newMessage(QByteArray)),
           this, SLOT(slotMessage(const QByteArray)));
   connect(_bnseph, SIGNAL(error(QByteArray)),
@@ -264,9 +265,11 @@ void t_bns::openCaster() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_bns::slotNewEph(t_eph* ep) {
+void t_bns::slotNewEph(t_eph* ep, int nBytes) {
 
   QMutexLocker locker(&_mutex);
+
+  emit(newEphBytes(nBytes));
 
   t_ephPair* pair;
   if ( !_ephList.contains(ep->prn()) ) {
@@ -333,6 +336,8 @@ void t_bns::run() {
 void t_bns::readEpoch() {
 
   QByteArray line = _clkSocket->readLine();
+
+  emit(newClkBytes(line.length()));
 
   if (line.indexOf('*') == -1) {
     return;
@@ -416,6 +421,7 @@ void t_bns::readEpoch() {
         char obuffer[CLOCKORBIT_BUFFERSIZE];
         int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
         if (len > 0) {
+          emit(newOutBytes(len));
           if (_outSocket) {
             _outSocket->write(obuffer, len);
             _outSocket->flush();
