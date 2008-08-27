@@ -151,16 +151,6 @@ bnsWindow::bnsWindow() {
   _fileAppendCheckBox->setCheckState(Qt::CheckState(settings.value("fileAppend").toInt()));
   _fileAppendCheckBox->setWhatsThis(tr("<p>When BNS is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append already existing files following a restart of BNS, a system crash or when BNS crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far.</p>"));
 
-  _refSysComboBox = new QComboBox;
-  _refSysComboBox->setMaximumWidth(9*ww);
-  _refSysComboBox->setEditable(false);
-  _refSysComboBox->addItems(QString("IGS05,ETRS89").split(","));
-  int ii = _refSysComboBox->findText(settings.value("refSys").toString());
-  if (ii != -1) {
-    _refSysComboBox->setCurrentIndex(ii);
-  }
-  _refSysComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
-
   _ephHostLineEdit  = new QLineEdit(settings.value("ephHost").toString());
   _ephHostLineEdit->setWhatsThis(tr("BNS reads Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address. Specify the host IP e.g. of a BNC installation providing this information."));
   _ephPortLineEdit  = new QLineEdit(settings.value("ephPort").toString());
@@ -176,15 +166,38 @@ bnsWindow::bnsWindow() {
   _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
   _outPortLineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
   _outPortLineEdit->setMaximumWidth(9*ww);
-  _mountpointLineEdit = new QLineEdit(settings.value("mountpoint").toString());
-  _mountpointLineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
-  _mountpointLineEdit->setMaximumWidth(9*ww);
   _passwordLineEdit   = new QLineEdit(settings.value("password").toString());
   _passwordLineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _passwordLineEdit->setMaximumWidth(9*ww);
   _passwordLineEdit->setEchoMode(QLineEdit::Password);
-  _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
-  _outFileLineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
+  _mountpoint_1_LineEdit = new QLineEdit(settings.value("mountpoint_1").toString());
+  _mountpoint_1_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
+  _mountpoint_1_LineEdit->setMaximumWidth(9*ww);
+  _mountpoint_2_LineEdit = new QLineEdit(settings.value("mountpoint_2").toString());
+  _mountpoint_2_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
+  _mountpoint_2_LineEdit->setMaximumWidth(9*ww);
+  _refSys_1_ComboBox = new QComboBox;
+  _refSys_1_ComboBox->setMaximumWidth(9*ww);
+  _refSys_1_ComboBox->setEditable(false);
+  _refSys_1_ComboBox->addItems(QString("IGS05,ETRS89").split(","));
+  int ii = _refSys_1_ComboBox->findText(settings.value("refSys_1").toString());
+  if (ii != -1) {
+    _refSys_1_ComboBox->setCurrentIndex(ii);
+  }
+  _refSys_1_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
+  _refSys_2_ComboBox = new QComboBox;
+  _refSys_2_ComboBox->setMaximumWidth(9*ww);
+  _refSys_2_ComboBox->setEditable(false);
+  _refSys_2_ComboBox->addItems(QString("IGS05,ETRS89").split(","));
+  ii = _refSys_2_ComboBox->findText(settings.value("refSys_2").toString());
+  if (ii != -1) {
+    _refSys_2_ComboBox->setCurrentIndex(ii);
+  }
+  _refSys_2_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
+  _outFile_1_LineEdit    = new QLineEdit(settings.value("outFile_1").toString());
+  _outFile_1_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
+  _outFile_2_LineEdit    = new QLineEdit(settings.value("outFile_2").toString());
+  _outFile_2_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
 
   _rnxPathLineEdit = new QLineEdit(settings.value("rnxPath").toString());
   _rnxPathLineEdit->setWhatsThis(tr("Specify the path for saving the generated clock corrections as Clock RINEX files. If the specified directory does not exist, BNS will not create Clock RINEX files."));
@@ -261,10 +274,8 @@ bnsWindow::bnsWindow() {
   layout_gen->addWidget(_logFileLineEdit,                  0, 1);
   layout_gen->addWidget(new QLabel("Append files"),        1, 0);
   layout_gen->addWidget(_fileAppendCheckBox,               1, 1); 
-  layout_gen->addWidget(new QLabel("Reference System"),    2, 0);
-  layout_gen->addWidget(_refSysComboBox,                   2, 1);
-  layout_gen->addWidget(new QLabel("General settings for logfile, file handling and target reference system."),3, 0, 1, 2, Qt::AlignLeft);
-  layout_gen->addWidget(new QLabel("    "),                4, 0);
+  layout_gen->addWidget(new QLabel("General settings for logfile, file handling and target reference system."), 2, 0, 1, 2, Qt::AlignLeft);
+  layout_gen->addWidget(new QLabel("    "),                3, 0);
 
   tab_gen->setLayout(layout_gen);
 
@@ -300,16 +311,27 @@ bnsWindow::bnsWindow() {
 
   layout_cas->addWidget(new QLabel("Host"),       0, 0, Qt::AlignLeft);
   layout_cas->addWidget(_outHostLineEdit,         0, 1);
-  layout_cas->addWidget(new QLabel("Port"),       0, 3, Qt::AlignLeft);
-  layout_cas->addWidget(_outPortLineEdit,         0, 4);
-  layout_cas->addWidget(new QLabel("Mountpoint"), 1, 0, Qt::AlignLeft);
-  layout_cas->addWidget(_mountpointLineEdit,      1, 1);
-  layout_cas->addWidget(new QLabel("Password"),   1, 3, Qt::AlignLeft);
-  layout_cas->addWidget(_passwordLineEdit,        1, 4);
-  layout_cas->addWidget(new QLabel("Save stream (full path)"), 2, 0, Qt::AlignLeft);
-  layout_cas->addWidget(_outFileLineEdit,         2, 1);
-  layout_cas->addWidget(new QLabel("Stream upload of clock and orbit corrections to NTRIP broadcaster."), 3, 0, 1, 4, Qt::AlignLeft);
-  layout_cas->addWidget(new QLabel(""),           4, 0);
+  layout_cas->addWidget(new QLabel("Port"),       0, 2, Qt::AlignLeft);
+  layout_cas->addWidget(_outPortLineEdit,         0, 3);
+  layout_cas->addWidget(new QLabel("Password"),   0, 4, Qt::AlignLeft);
+  layout_cas->addWidget(_passwordLineEdit,        0, 5);
+
+  layout_cas->addWidget(new QLabel("Mountpoint 1"),            1, 0, Qt::AlignLeft);
+  layout_cas->addWidget(_mountpoint_1_LineEdit,                1, 1);
+  layout_cas->addWidget(new QLabel("Save stream (full path)"), 1, 2, Qt::AlignLeft);
+  layout_cas->addWidget(_outFile_1_LineEdit,                   1, 3);
+  layout_cas->addWidget(new QLabel("System"),                  1, 4);
+  layout_cas->addWidget(_refSys_1_ComboBox,                    1, 5);
+
+  layout_cas->addWidget(new QLabel("Mountpoint 2"),            2, 0, Qt::AlignLeft);
+  layout_cas->addWidget(_mountpoint_2_LineEdit,                2, 1);
+  layout_cas->addWidget(new QLabel("Save stream (full path)"), 2, 2, Qt::AlignLeft);
+  layout_cas->addWidget(_outFile_2_LineEdit,                   2, 3);
+  layout_cas->addWidget(new QLabel("System"),                  2, 4);
+  layout_cas->addWidget(_refSys_2_ComboBox,                    2, 5);
+
+  layout_cas->addWidget(new QLabel("Stream upload of clock and orbit corrections to NTRIP broadcaster."), 4, 0, 1, 4, Qt::AlignLeft);
+  layout_cas->addWidget(new QLabel(""),           5, 0);
 
   tab_cas->setLayout(layout_cas);
 
@@ -487,14 +509,17 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("proxyPort",  _proxyPortLineEdit->text());
   settings.setValue("logFile",    _logFileLineEdit->text());
   settings.setValue("fileAppend", _fileAppendCheckBox->checkState());
-  settings.setValue("refSys",     _refSysComboBox->currentText());
+  settings.setValue("refSys_1",     _refSys_1_ComboBox->currentText());
+  settings.setValue("refSys_2",     _refSys_2_ComboBox->currentText());
   settings.setValue("ephHost",    _ephHostLineEdit->text());
   settings.setValue("ephPort",    _ephPortLineEdit->text());
   settings.setValue("clkPort",    _clkPortLineEdit->text());
   settings.setValue("outHost",    _outHostLineEdit->text());
   settings.setValue("outPort",    _outPortLineEdit->text());
-  settings.setValue("mountpoint", _mountpointLineEdit->text());
-  settings.setValue("outFile",    _outFileLineEdit->text());
+  settings.setValue("mountpoint_1", _mountpoint_1_LineEdit->text());
+  settings.setValue("mountpoint_2", _mountpoint_2_LineEdit->text());
+  settings.setValue("outFile_1",    _outFile_1_LineEdit->text());
+  settings.setValue("outFile_2",    _outFile_2_LineEdit->text());
   settings.setValue("password",   _passwordLineEdit->text());
   settings.setValue("rnxPath",    _rnxPathLineEdit->text());
   settings.setValue("rnxIntr",    _rnxIntrComboBox->currentText());
