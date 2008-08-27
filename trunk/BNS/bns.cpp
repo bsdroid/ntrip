@@ -364,7 +364,12 @@ void t_bns::readEpoch() {
               t_ephPair* pair = _ephList[prn];
               prn = pair->eph->prn();
               xx  = pair->xx;
-              ep  = pair->oldEph;
+              if (oldEph) {
+                ep  = pair->oldEph;
+              }
+              else {
+                ep  = pair->eph;
+              }
             }
           }
       
