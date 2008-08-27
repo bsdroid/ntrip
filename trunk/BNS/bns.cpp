@@ -72,10 +72,10 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   // Socket and file for outputting the results
   // -------------------------------------------
-  _caster = new t_bnscaster(settings.value("mountpoint").toString());
-  connect(_caster, SIGNAL(error(const QByteArray)),
+  _caster.push_back(new t_bnscaster(settings.value("mountpoint").toString()));
+  connect(_caster.back(), SIGNAL(error(const QByteArray)),
           this, SLOT(slotError(const QByteArray)));
-  connect(_caster, SIGNAL(newMessage(const QByteArray)),
+  connect(_caster.back(), SIGNAL(newMessage(const QByteArray)),
           this, SLOT(slotMessage(const QByteArray)));
 
   // Log File
@@ -130,13 +130,6 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
     int     sampl = settings.value("sp3Sampl").toInt();
     _sp3 = new bnsSP3(prep, ext, path, intr, sampl);
   }
-
-  // Reference frame
-  // ---------------
-  _crdTrafo = false;
-  if (settings.value("refSys").toString() == "ETRS89") {
-    _crdTrafo = true;
-  }
 }
 
 // Destructor
@@ -145,7 +138,9 @@ t_bns::~t_bns() {
   deleteBnsEph();
   delete _clkServer;
   delete _clkSocket;
-  delete _caster;
+  for (int ic = 0; ic < _caster.size(); ic++) {
+    delete _caster.at(ic);
+  }
   delete _logStream;
   delete _logFile;
   QMapIterator<QString, t_ephPair*> it(_ephList);
@@ -249,7 +244,6 @@ void t_bns::run() {
 
     if (_clkSocket && _clkSocket->state() == QAbstractSocket::ConnectedState) {
       if ( _clkSocket->canReadLine()) {
-        _caster->open();
         readEpoch();
       }
       else {
@@ -286,77 +280,80 @@ void t_bns::readEpoch() {
 
     QStringList prns;
 
-    ///    for (int oldEph = 0; oldEph <= 1; oldEph++) {
-    for (int oldEph = 0; oldEph <= 0; oldEph++) {
-    
-      struct ClockOrbit co;
-      memset(&co, 0, sizeof(co));
-      co.GPSEpochTime      = (int)GPSweeks;
-      co.GLONASSEpochTime  = (int)fmod(GPSweeks, 86400.0);
-      co.ClockDataSupplied = 1;
-      co.OrbitDataSupplied = 1;
-      co.SatRefPoint       = POINT_CENTER;
-      co.SatRefDatum       = DATUM_ITRF;
-    
-      for (int ii = 1; ii <= numSat; ii++) {
-    
-        QString      prn;
-        ColumnVector xx(5);
-        t_eph*       ep = 0;
-    
-        if (oldEph == 0) {
-          line = _clkSocket->readLine();
-          QTextStream in(line);
-          in >> prn;
-          prns << prn;
-          if ( _ephList.contains(prn) ) {
-            in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5); xx(4) *= 1e-6;
+    for (int ic = 0; ic < _caster.size(); ic++) {
+      _caster.at(ic)->open();
 
-            //// beg test (zero clock correction for Gerhard Wuebbena)
-            ////            xx(4) -= xx(5) / 299792458.0;
-            //// end test
-
-            t_ephPair* pair = _ephList[prn];
-            pair->xx = xx;
-            ep = pair->eph;
+      for (int oldEph = 0; oldEph <= 0; oldEph++) { // TODO: handle old ephemeris
+      
+        struct ClockOrbit co;
+        memset(&co, 0, sizeof(co));
+        co.GPSEpochTime      = (int)GPSweeks;
+        co.GLONASSEpochTime  = (int)fmod(GPSweeks, 86400.0);
+        co.ClockDataSupplied = 1;
+        co.OrbitDataSupplied = 1;
+        co.SatRefPoint       = POINT_CENTER;
+        co.SatRefDatum       = DATUM_ITRF;
+      
+        for (int ii = 1; ii <= numSat; ii++) {
+      
+          QString      prn;
+          ColumnVector xx(5);
+          t_eph*       ep = 0;
+      
+          if (oldEph == 0) {
+            line = _clkSocket->readLine();
+            QTextStream in(line);
+            in >> prn;
+            prns << prn;
+            if ( _ephList.contains(prn) ) {
+              in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5); xx(4) *= 1e-6;
+      
+              //// beg test (zero clock correction for Gerhard Wuebbena)
+              ////            xx(4) -= xx(5) / 299792458.0;
+              //// end test
+      
+              t_ephPair* pair = _ephList[prn];
+              pair->xx = xx;
+              ep = pair->eph;
+            }
+          }
+          else {
+            prn = prns[ii-1];
+            if ( _ephList.contains(prn) ) {
+              t_ephPair* pair = _ephList[prn];
+              prn = pair->eph->prn();
+              xx  = pair->xx;
+              ep  = pair->oldEph;
+            }
+          }
+      
+          if (ep != 0) {
+            struct ClockOrbit::SatData* sd = 0;
+            if      (prn[0] == 'G') {
+              sd = co.Sat + co.NumberOfGPSSat;
+              ++co.NumberOfGPSSat;
+            }
+            else if (prn[0] == 'R') {
+              sd = co.Sat + CLOCKORBIT_NUMGPS + co.NumberOfGLONASSSat;
+              ++co.NumberOfGLONASSSat;
+            }
+            if (sd) {
+              QString outLine;
+              processSatellite(oldEph, _caster.at(ic)->crdTrafo(), ep, GPSweek,
+                               GPSweeks, prn, xx, sd, outLine);
+              _caster.at(ic)->printAscii(line);
+            }
           }
         }
-        else {
-          prn = prns[ii-1];
-          if ( _ephList.contains(prn) ) {
-            t_ephPair* pair = _ephList[prn];
-            prn = pair->eph->prn();
-            xx  = pair->xx;
-            ep  = pair->oldEph;
+      
+        if ( _caster.at(ic)->used() && 
+             (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
+          char obuffer[CLOCKORBIT_BUFFERSIZE];
+          int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+          if (len > 0) {
+            emit(newOutBytes(len));
+            _caster.at(ic)->write(obuffer, len);
           }
-        }
-    
-        if (ep != 0) {
-          struct ClockOrbit::SatData* sd = 0;
-          if      (prn[0] == 'G') {
-            sd = co.Sat + co.NumberOfGPSSat;
-            ++co.NumberOfGPSSat;
-          }
-          else if (prn[0] == 'R') {
-            sd = co.Sat + CLOCKORBIT_NUMGPS + co.NumberOfGLONASSSat;
-            ++co.NumberOfGLONASSSat;
-          }
-          if (sd) {
-            QString outLine;
-            processSatellite(oldEph, ep, GPSweek, GPSweeks, prn, xx, 
-                             sd, outLine);
-            _caster->printAscii(line);
-          }
-        }
-      }
-    
-      if ( _caster->used() && 
-           (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
-        char obuffer[CLOCKORBIT_BUFFERSIZE];
-        int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
-        if (len > 0) {
-          emit(newOutBytes(len));
-          _caster->write(obuffer, len);
         }
       }
     }
@@ -365,8 +362,9 @@ void t_bns::readEpoch() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_bns::processSatellite(int oldEph, t_eph* ep, int GPSweek, double GPSweeks, 
-                             const QString& prn, const ColumnVector& xx, 
+void t_bns::processSatellite(int oldEph, bool trafo, t_eph* ep, int GPSweek, 
+                             double GPSweeks, const QString& prn, 
+                             const ColumnVector& xx, 
                              struct ClockOrbit::SatData* sd,
                              QString& outLine) {
 
@@ -376,7 +374,7 @@ void t_bns::processSatellite(int oldEph, t_eph* ep, int GPSweek, double GPSweeks
   ep->position(GPSweek, GPSweeks, xB, vv);
 
   ColumnVector xyz = xx.Rows(1,3);
-  if (_crdTrafo) {
+  if (trafo) {
     crdTrafo(GPSweek, xyz);
   }
 
