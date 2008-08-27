@@ -78,6 +78,8 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   connect(_caster, SIGNAL(newMessage(const QByteArray)),
           this, SLOT(slotMessage(const QByteArray)));
 
+  // Log File
+  // --------
   QIODevice::OpenMode oMode;
   if (Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked) {
     oMode = QIODevice::WriteOnly | QIODevice::Unbuffered | QIODevice::Append;
@@ -86,20 +88,6 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
     oMode = QIODevice::WriteOnly | QIODevice::Unbuffered;
   }
 
-  QString outFileName = settings.value("outFile").toString();
-  if (outFileName.isEmpty()) {
-    _outFile   = 0;
-    _outStream = 0;
-  }
-  else {
-    _outFile = new QFile(outFileName);
-    if (_outFile->open(oMode)) {
-      _outStream = new QTextStream(_outFile);
-    }
-  }
-
-  // Log File
-  // --------
   QString logFileName = settings.value("logFile").toString();
   if (logFileName.isEmpty()) {
     _logFile   = 0;
@@ -158,9 +146,7 @@ t_bns::~t_bns() {
   delete _clkServer;
   delete _clkSocket;
   delete _caster;
-  delete _outStream;
   delete _logStream;
-  delete _outFile;
   delete _logFile;
   QMapIterator<QString, t_ephPair*> it(_ephList);
   while (it.hasNext()) {
@@ -356,12 +342,15 @@ void t_bns::readEpoch() {
             ++co.NumberOfGLONASSSat;
           }
           if (sd) {
-            processSatellite(oldEph, ep, GPSweek, GPSweeks, prn, xx, sd);
+            QString outLine;
+            processSatellite(oldEph, ep, GPSweek, GPSweeks, prn, xx, 
+                             sd, outLine);
+            _caster->printAscii(line);
           }
         }
       }
     
-      if ( (_caster->used() || _outFile) && 
+      if ( _caster->used() && 
            (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
         char obuffer[CLOCKORBIT_BUFFERSIZE];
         int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
@@ -378,7 +367,8 @@ void t_bns::readEpoch() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::processSatellite(int oldEph, t_eph* ep, int GPSweek, double GPSweeks, 
                              const QString& prn, const ColumnVector& xx, 
-                             struct ClockOrbit::SatData* sd) {
+                             struct ClockOrbit::SatData* sd,
+                             QString& outLine) {
 
   ColumnVector xB(4);
   ColumnVector vv(3);
@@ -406,15 +396,11 @@ void t_bns::processSatellite(int oldEph, t_eph* ep, int GPSweek, double GPSweeks
     sd->Orbit.DeltaCrossTrack = rsw(3);
   }
 
-  if (_outStream) {
-    QString line;
-    char oldCh = (oldEph ? '!' : ' ');
-    line.sprintf("%c %d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n", 
-                 oldCh, GPSweek, GPSweeks, ep->prn().toAscii().data(),
-                 ep->IOD(), dClk, rsw(1), rsw(2), rsw(3));
-    *_outStream << line;
-    _outStream->flush();
-  }
+  char oldCh = (oldEph ? '!' : ' ');
+  outLine.sprintf("%c %d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n", 
+                  oldCh, GPSweek, GPSweeks, ep->prn().toAscii().data(),
+                  ep->IOD(), dClk, rsw(1), rsw(2), rsw(3));
+
   if (!oldEph) {
     if (_rnx) {
       _rnx->write(GPSweek, GPSweeks, prn, xx);

@@ -60,15 +60,13 @@ class t_bns : public QThread {
   void readEpoch();
   void processSatellite(int oldEph, t_eph* ep, int GPSweek, double GPSweeks, 
                         const QString& prn, const ColumnVector& xx, 
-                        struct ClockOrbit::SatData* sd);
+                        struct ClockOrbit::SatData* sd, QString& outLine);
   void crdTrafo(int GPSWeek, ColumnVector& xyz);
 
   QTcpServer*               _clkServer;
   QTcpSocket*               _clkSocket;
   t_bnscaster*              _caster;
-  QFile*                    _outFile;
   QFile*                    _logFile;
-  QTextStream*              _outStream;
   QTextStream*              _logStream;
   t_bnseph*                 _bnseph;
   QMutex                    _mutex;

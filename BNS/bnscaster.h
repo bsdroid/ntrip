@@ -10,17 +10,20 @@ class t_bnscaster : public QObject {
   virtual ~t_bnscaster();
   void open();
   void write(char* buffer, unsigned len);
-  bool used() {return _outSocket;}
+  void printAscii(const QString& line);
+  bool used() {return _outSocket || _outFile;}
 
  signals:
   void error(const QByteArray msg);
   void newMessage(const QByteArray msg);
 
  private:
-  QString     _mountpoint;
-  QTcpSocket* _outSocket;
-  int         _outSocketOpenTrial;
-  QDateTime   _outSocketOpenTime;
+  QString      _mountpoint;
+  QTcpSocket*  _outSocket;
+  int          _outSocketOpenTrial;
+  QDateTime    _outSocketOpenTime;
+  QFile*       _outFile;
+  QTextStream* _outStream;
 };
 
 #endif
