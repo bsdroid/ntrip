@@ -72,8 +72,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   // Socket and file for outputting the results
   // -------------------------------------------
-  _outSocket          = 0;
-  _outSocketOpenTrial = 0;
+  _caster = new t_bnscaster(settings.value("mountpoint").toString());
 
   QIODevice::OpenMode oMode;
   if (Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked) {
@@ -154,7 +153,7 @@ t_bns::~t_bns() {
   deleteBnsEph();
   delete _clkServer;
   delete _clkSocket;
-  delete _outSocket;
+  delete _caster;
   delete _outStream;
   delete _logStream;
   delete _outFile;
@@ -206,61 +205,6 @@ void t_bns::slotNewConnection() {
   slotMessage("t_bns::slotNewConnection");
   delete _clkSocket;
   _clkSocket = _clkServer->nextPendingConnection();
-}
-
-// Start the Communication with NTRIP Caster
-////////////////////////////////////////////////////////////////////////////
-void t_bns::openCaster() {
-
-  delete _outSocket; _outSocket = 0;
-
-  double minDt = exp2(_outSocketOpenTrial);
-  if (++_outSocketOpenTrial > 8) {
-    _outSocketOpenTrial = 8;
-  }
-  if (_outSocketOpenTime.isValid() &&
-      _outSocketOpenTime.secsTo(QDateTime::currentDateTime()) < minDt) {
-    return;
-  }
-  else {
-    _outSocketOpenTime = QDateTime::currentDateTime();
-  }
-
-  QSettings settings;
-  _outSocket = new QTcpSocket();
-  _outSocket->connectToHost(settings.value("outHost").toString(),
-                            settings.value("outPort").toInt());
-
-  const int timeOut = 100;  // 0.1 seconds
-  if (!_outSocket->waitForConnected(timeOut)) {
-    delete _outSocket;
-    _outSocket = 0;
-    emit(error("bns::openCaster Connect Timeout"));
-    return;
-  }
-
-  QString mountpoint = settings.value("mountpoint").toString();
-  QString password   = settings.value("password").toString();
-
-  QByteArray msg = "SOURCE " + password.toAscii() + " /" + 
-                   mountpoint.toAscii() + "\r\n" +
-                   "Source-Agent: NTRIP BNS/1.0\r\n\r\n";
-
-  _outSocket->write(msg);
-  _outSocket->waitForBytesWritten();
-
-  _outSocket->waitForReadyRead();
-  QByteArray ans = _outSocket->readLine();
-
-  if (ans.indexOf("OK") == -1) {
-    delete _outSocket;
-    _outSocket = 0;
-    slotMessage("bns::openCaster socket deleted");
-  }
-  else {
-    slotMessage("bns::openCaster socket OK");
-    _outSocketOpenTrial = 0;
-  }
 }
 
 // 
@@ -315,10 +259,7 @@ void t_bns::run() {
 
     if (_clkSocket && _clkSocket->state() == QAbstractSocket::ConnectedState) {
       if ( _clkSocket->canReadLine()) {
-        if (_outSocket == 0 || 
-            _outSocket->state() != QAbstractSocket::ConnectedState) {
-          openCaster();
-        }
+        _caster->open();
         readEpoch();
       }
       else {
@@ -416,16 +357,13 @@ void t_bns::readEpoch() {
         }
       }
     
-      if ( (_outSocket || _outFile) && 
+      if ( (_caster->used() || _outFile) && 
            (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
         char obuffer[CLOCKORBIT_BUFFERSIZE];
         int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
         if (len > 0) {
           emit(newOutBytes(len));
-          if (_outSocket) {
-            _outSocket->write(obuffer, len);
-            _outSocket->flush();
-          }
+          _caster->write(obuffer, len);
         }
       }
     }
