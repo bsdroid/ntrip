@@ -151,6 +151,8 @@ bnsWindow::bnsWindow() {
   _fileAppendCheckBox->setCheckState(Qt::CheckState(settings.value("fileAppend").toInt()));
   _fileAppendCheckBox->setWhatsThis(tr("<p>When BNS is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append already existing files following a restart of BNS, a system crash or when BNS crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far.</p>"));
 
+  _inpEchoLineEdit  = new QLineEdit(settings.value("inpEcho").toString());
+
   _ephHostLineEdit  = new QLineEdit(settings.value("ephHost").toString());
   _ephHostLineEdit->setWhatsThis(tr("BNS reads Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address. Specify the host IP e.g. of a BNC installation providing this information."));
   _ephPortLineEdit  = new QLineEdit(settings.value("ephPort").toString());
@@ -287,17 +289,18 @@ bnsWindow::bnsWindow() {
   QGridLayout* layout_inp = new QGridLayout;
   layout_inp->setColumnMinimumWidth(0, 9*ww);
 
-  layout_inp->addWidget(new QLabel("Ephemeris"),       0, 0, Qt::AlignLeft);
-  layout_inp->addWidget(new QLabel("Host"),            0, 1, Qt::AlignRight);
-  layout_inp->addWidget(_ephHostLineEdit,              0, 2);
-  layout_inp->addWidget(new QLabel("Port"),            0, 3, Qt::AlignLeft);
-  layout_inp->addWidget(_ephPortLineEdit,              0, 4);
-  layout_inp->addWidget(new QLabel("Clocks & Orbits"), 1, 0, Qt::AlignLeft);
-  layout_inp->addWidget(new QLabel("BNS listening on Port"), 1, 1, 1, 3, Qt::AlignRight);
-  layout_inp->addWidget(_clkPortLineEdit,              1, 4);
+  layout_inp->addWidget(new QLabel("Clocks & Orbits"),        0, 0, Qt::AlignLeft);
+  layout_inp->addWidget(new QLabel("BNS listening on Port"),  0, 3, Qt::AlignRight);
+  layout_inp->addWidget(_clkPortLineEdit,                     0, 4);
+  layout_inp->addWidget(new QLabel("Save"),                   0, 5, Qt::AlignRight);
+  layout_inp->addWidget(_inpEchoLineEdit,                     0, 6);
+  layout_inp->addWidget(new QLabel("Ephemeris"),              1, 0, Qt::AlignLeft);
+  layout_inp->addWidget(new QLabel("Host"),                   1, 1, Qt::AlignRight);
+  layout_inp->addWidget(_ephHostLineEdit,                     1, 2);
+  layout_inp->addWidget(new QLabel("Port"),                   1, 3, Qt::AlignRight);
+  layout_inp->addWidget(_ephPortLineEdit,                     1, 4);
   layout_inp->addWidget(new QLabel("Read broadcast ephemeris and IGS clocks and orbits."), 2, 0, 1, 6, Qt::AlignLeft);
-  layout_inp->addWidget(new QLabel(""),                3, 0);
-  layout_inp->addWidget(new QLabel(""),                4, 0);
+  layout_inp->addWidget(new QLabel(""),                       3, 0);
 
   tab_inp->setLayout(layout_inp);
 
@@ -388,7 +391,7 @@ bnsWindow::bnsWindow() {
   _statusLbl[1] = new QLabel("0 byte(s)"); _statusCnt[1] = 0;
   _statusLbl[2] = new QLabel("0 byte(s)"); _statusCnt[2] = 0;
   _statusLbl[3] = new QLabel("Input Ephemeris");  
-  _statusLbl[4] = new QLabel("Input Clock & Orbits");
+  _statusLbl[4] = new QLabel("Input Clocks & Orbits");
   _statusLbl[5] = new QLabel("Output");  
 
   layout_status->addWidget(_statusLbl[3], 0, 0);
