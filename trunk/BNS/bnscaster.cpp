@@ -23,6 +23,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 t_bnscaster::t_bnscaster(const QString& mountpoint) {
   _mountpoint         = mountpoint;
+  _outSocket          = 0;
   _outSocketOpenTrial = 0;
 }
 
