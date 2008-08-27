@@ -56,7 +56,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   // ---------------------------------------
   _bnseph = new t_bnseph(parent);
 
-  connect(_bnseph, SIGNAL(newEph(t_eph*)), 
+  connect(_bnseph, SIGNAL(newEph(t_eph*, int)), 
           this, SLOT(slotNewEph(t_eph*, int)));
   connect(_bnseph, SIGNAL(newMessage(QByteArray)),
           this, SLOT(slotMessage(const QByteArray)));
