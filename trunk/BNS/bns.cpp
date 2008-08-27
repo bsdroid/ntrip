@@ -73,6 +73,10 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   // Socket and file for outputting the results
   // -------------------------------------------
   _caster = new t_bnscaster(settings.value("mountpoint").toString());
+  connect(_clkServer, SIGNAL(error(const QByteArray)),
+          this, SLOT(slotError(const QByteArray)));
+  connect(_clkServer, SIGNAL(newMessage(const QByteArray)),
+          this, SLOT(slotNewMessage(const QByteArray)));
 
   QIODevice::OpenMode oMode;
   if (Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked) {

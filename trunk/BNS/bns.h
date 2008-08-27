@@ -7,6 +7,7 @@
 #include <QThread>
 
 #include "bnseph.h"
+#include "bnscaster.h"
 extern "C" {
 #include "RTCM/clock_orbit_rtcm.h"
 }
@@ -64,9 +65,7 @@ class t_bns : public QThread {
 
   QTcpServer*               _clkServer;
   QTcpSocket*               _clkSocket;
-  QTcpSocket*               _outSocket;
-  int                       _outSocketOpenTrial;
-  QDateTime                 _outSocketOpenTime;
+  t_bnscaster*              _caster;
   QFile*                    _outFile;
   QFile*                    _logFile;
   QTextStream*              _outStream;
