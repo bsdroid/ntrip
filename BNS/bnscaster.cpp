@@ -47,6 +47,13 @@ t_bnscaster::t_bnscaster(const QString& mountpoint) {
       _outStream = new QTextStream(_outFile);
     }
   }
+
+  // Reference frame
+  // ---------------
+  _crdTrafo = false;
+  if (settings.value("refSys").toString() == "ETRS89") {
+    _crdTrafo = true;
+  }
 }
 
 // Destructor

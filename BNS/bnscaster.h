@@ -11,7 +11,8 @@ class t_bnscaster : public QObject {
   void open();
   void write(char* buffer, unsigned len);
   void printAscii(const QString& line);
-  bool used() {return _outSocket || _outFile;}
+  bool used() const {return _outSocket || _outFile;}
+  bool crdTrafo() const {return _crdTrafo;}
 
  signals:
   void error(const QByteArray msg);
@@ -24,6 +25,7 @@ class t_bnscaster : public QObject {
   QDateTime    _outSocketOpenTime;
   QFile*       _outFile;
   QTextStream* _outStream;
+  bool         _crdTrafo;
 };
 
 #endif
