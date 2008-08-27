@@ -72,11 +72,18 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   // Socket and file for outputting the results
   // -------------------------------------------
-  _caster.push_back(new t_bnscaster(settings.value("mountpoint").toString()));
-  connect(_caster.back(), SIGNAL(error(const QByteArray)),
-          this, SLOT(slotError(const QByteArray)));
-  connect(_caster.back(), SIGNAL(newMessage(const QByteArray)),
-          this, SLOT(slotMessage(const QByteArray)));
+  for (int ic = 1; ic <= 2; ic++) {
+
+    QString mountpoint  = settings.value("mountpoint_%1").toString().arg(ic);
+    QString outFileName = settings.value("outFile_%1").toString().arg(ic);
+    QString refSys      = settings.value("refSys_%1").toString().arg(ic);
+
+    _caster.push_back(new t_bnscaster(mountpoint, outFileName, refSys));
+    connect(_caster.back(), SIGNAL(error(const QByteArray)),
+            this, SLOT(slotError(const QByteArray)));
+    connect(_caster.back(), SIGNAL(newMessage(const QByteArray)),
+            this, SLOT(slotMessage(const QByteArray)));
+  }
 
   // Log File
   // --------
