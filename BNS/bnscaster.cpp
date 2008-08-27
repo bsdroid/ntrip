@@ -21,7 +21,9 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_bnscaster::t_bnscaster(const QString& mountpoint) {
+t_bnscaster::t_bnscaster(const QString& mountpoint, const QString& outFileName,
+                         const QString& refSys) {
+
   _mountpoint         = mountpoint;
   _outSocket          = 0;
   _outSocketOpenTrial = 0;
@@ -36,7 +38,6 @@ t_bnscaster::t_bnscaster(const QString& mountpoint) {
     oMode = QIODevice::WriteOnly | QIODevice::Unbuffered;
   }
 
-  QString outFileName = settings.value("outFile").toString();
   if (outFileName.isEmpty()) {
     _outFile   = 0;
     _outStream = 0;
@@ -51,7 +52,7 @@ t_bnscaster::t_bnscaster(const QString& mountpoint) {
   // Reference frame
   // ---------------
   _crdTrafo = false;
-  if (settings.value("refSys").toString() == "ETRS89") {
+  if (refSys == "ETRS89") {
     _crdTrafo = true;
   }
 }

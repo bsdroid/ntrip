@@ -6,7 +6,8 @@
 class t_bnscaster : public QObject {
  Q_OBJECT
  public:
-  t_bnscaster(const QString& mountpoint);
+  t_bnscaster(const QString& mountpoint, const QString& outFileName, 
+              const QString& refSys);
   virtual ~t_bnscaster();
   void open();
   void write(char* buffer, unsigned len);
