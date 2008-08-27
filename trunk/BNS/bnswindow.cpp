@@ -357,11 +357,32 @@ bnsWindow::bnsWindow() {
   _log->setReadOnly(true);
   _log->setWhatsThis(tr("Records of BNS's activities are shown in the Log section."));
 
+  // Status
+  // ------
+  _status = new QWidget();
+  QGridLayout* layout_status = new QGridLayout;
+
+  _statusLbl[0] = new QLabel("0 byte(s)"); _statusCnt[0] = 0;
+  _statusLbl[1] = new QLabel("0 byte(s)"); _statusCnt[1] = 0;
+  _statusLbl[2] = new QLabel("0 byte(s)"); _statusCnt[2] = 0;
+  _statusLbl[3] = new QLabel("Input Ephemeris");  
+  _statusLbl[4] = new QLabel("Input Clock & Orbits");
+  _statusLbl[5] = new QLabel("Output");  
+
+  layout_status->addWidget(_statusLbl[3], 0, 0);
+  layout_status->addWidget(_statusLbl[0], 0, 1);
+  layout_status->addWidget(_statusLbl[4], 0, 2);
+  layout_status->addWidget(_statusLbl[1], 0, 3);
+  layout_status->addWidget(_statusLbl[5], 1, 2);
+  layout_status->addWidget(_statusLbl[2], 1, 3);
+  _status->setLayout(layout_status);
+
   // Main Layout
   // -----------
   QVBoxLayout* mainLayout = new QVBoxLayout;
   mainLayout->addWidget(tabs);
   mainLayout->addWidget(_log);
+  mainLayout->addWidget(_status);
 
   _canvas->setLayout(mainLayout);
 }
@@ -540,5 +561,37 @@ void bnsWindow::slotStart() {
   connect(_bns, SIGNAL(error(QByteArray)),
           this, SLOT(slotError(const QByteArray)));
 
+  connect(_bns, SIGNAL(newEphBytes(int)), this, SLOT(slotEphBytes(int)));
+  connect(_bns, SIGNAL(newClkBytes(int)), this, SLOT(slotClkBytes(int)));
+  connect(_bns, SIGNAL(newOutBytes(int)), this, SLOT(slotOutBytes(int)));
+
   _bns->start();
+}
+
+// Input and output bytes statistics
+////////////////////////////////////////////////////////////////////////////
+void bnsWindow::slotEphBytes(int nBytes) {
+  updateStatus(0, nBytes);
+}
+void bnsWindow::slotClkBytes(int nBytes) {
+  updateStatus(1, nBytes);
+}
+void bnsWindow::slotOutBytes(int nBytes) {
+  updateStatus(2, nBytes);
+}
+
+void bnsWindow::updateStatus(int ii, int nBytes) {
+  QMutexLocker locker(&_mutex);
+
+  _statusCnt[ii] += nBytes;
+
+  if      (_statusCnt[ii] < 1e3) {
+    _statusLbl[ii]->setText(QString("%1 byte(s)").arg((int)_statusCnt[ii]));
+  }
+  else if (_statusCnt[ii] < 1e6) {
+    _statusLbl[ii]->setText(QString("%1 kb").arg(_statusCnt[ii]/1.e3, 5));
+  }
+  else {
+    _statusLbl[ii]->setText(QString("%1 Mb").arg(_statusCnt[ii]/1.e6, 5));
+  }
 }

@@ -81,8 +81,11 @@ void t_bnseph::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bnseph::readEph() {
 
+  int nBytes = 0;
+
   t_eph* eph = 0;
   QByteArray line = waitForLine(_socket);
+  nBytes += line.length();
 
   QTextStream in(line);
   QString     prn;
@@ -104,12 +107,13 @@ void t_bnseph::readEph() {
 
   for (int ii = 2; ii <= numlines; ii++) {
     QByteArray line = waitForLine(_socket);
+    nBytes += line.length();
     lines << line;
   }
 
   eph->read(lines);
 
-  emit(newEph(eph));
+  emit(newEph(eph, nBytes));
 }
 
 // Compare Time
