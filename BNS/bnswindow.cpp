@@ -290,7 +290,7 @@ bnsWindow::bnsWindow() {
   layout_inp->setColumnMinimumWidth(0, 9*ww);
 
   layout_inp->addWidget(new QLabel("Clocks & Orbits"),        0, 0, Qt::AlignLeft);
-  layout_inp->addWidget(new QLabel("BNS listening on Port"),  0, 3, Qt::AlignRight);
+  layout_inp->addWidget(new QLabel("BNS listening on Port"),  0, 2, 1, 2, Qt::AlignRight);
   layout_inp->addWidget(_clkPortLineEdit,                     0, 4);
   layout_inp->addWidget(new QLabel("Save"),                   0, 5, Qt::AlignRight);
   layout_inp->addWidget(_inpEchoLineEdit,                     0, 6);
@@ -514,6 +514,7 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("fileAppend", _fileAppendCheckBox->checkState());
   settings.setValue("refSys_1",     _refSys_1_ComboBox->currentText());
   settings.setValue("refSys_2",     _refSys_2_ComboBox->currentText());
+  settings.setValue("inpEcho",    _inpEchoLineEdit->text());
   settings.setValue("ephHost",    _ephHostLineEdit->text());
   settings.setValue("ephPort",    _ephPortLineEdit->text());
   settings.setValue("clkPort",    _clkPortLineEdit->text());
