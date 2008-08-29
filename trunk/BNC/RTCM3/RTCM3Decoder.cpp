@@ -67,29 +67,8 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID) : GPSDecoder() {
 
   QSettings settings;
   _checkMountPoint = settings.value("messTypes").toString();
+  _corrLate = settings.value("corrLate").toInt();
   _staID = staID;
-
-  // Latency
-  _numLat = 0;
-  _minLat = 1000.;
-  _maxLat = -1000.;
-  _sumLat = 0.;
-  _sumLatQ = 0.;
-  _followSec = false;
-  _meanDiff = 0.;
-  _diffSecGPS= 0.;
-  _numGaps = 0;
-  _oldSecGPS = 0.;
-  _newSecGPS = 0.;
-  _curLat = 0.;
-  _perfIntr = 86400;
-  if ( settings.value("perfIntr").toString().isEmpty() ) { _perfIntr = 0; }
-  if ( settings.value("perfIntr").toString().indexOf("1 min") != -1 ) { _perfIntr = 60; }
-  if ( settings.value("perfIntr").toString().indexOf("5 min") != -1 ) { _perfIntr = 300; }
-  if ( settings.value("perfIntr").toString().indexOf("15 min") != -1 ) { _perfIntr = 900; }
-  if ( settings.value("perfIntr").toString().indexOf("1 hour") != -1 ) { _perfIntr = 3600; }
-  if ( settings.value("perfIntr").toString().indexOf("6 hours") != -1 ) { _perfIntr = 21600; }
-  if ( settings.value("perfIntr").toString().indexOf("1 day") != -1 ) { _perfIntr = 86400; }
 
   // Ensure, that the Decoder uses the "old" convention for the data structure for Rinex2. Perlt
   _Parser.rinex3 = 0;
@@ -133,72 +112,28 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
     if ( _coDecoder->Decode(buffer, bufLen) == success ) {
       decoded = true;
 
-      // Latency
+      // Latency, Weber
       // -------
-      if (_perfIntr>0) {
+      if ( _corrLate == 2 ) {
         if (0<_coDecoder->_epochList.size()) {
           for (int ii=0;ii<_coDecoder->_epochList.size();ii++) {
             int week;
             double sec;
-            _newSecGPS = _coDecoder->_epochList[ii];
+            double secGPS = _coDecoder->_epochList[ii];
             leapsecGPSWeeks(week, sec);
-            double dt = fabs(sec - _newSecGPS);
+            double dt = fabs(sec - secGPS);
             const double secPerWeek = 7.0 * 24.0 * 3600.0;
             if (dt > 0.5 * secPerWeek) {
-              if (sec > _newSecGPS) {
+              if (sec > secGPS) {
                 sec  -= secPerWeek;
               } else {
                 sec  += secPerWeek;
               }
             }
-            if (_newSecGPS != _oldSecGPS) {
-              if (int(_newSecGPS) % _perfIntr < int(_oldSecGPS) % _perfIntr) {
-                if (_numLat>0) {
-                  QString late;
-                  if (_meanDiff>0.) {
-                    late = QString(": Mean latency %1 sec, min %2, max %3, rms %4, %5 epochs, %6 gaps")
-                    .arg(int(_sumLat/_numLat*100)/100.)
-                    .arg(int(_minLat*100)/100.)
-                    .arg(int(_maxLat*100)/100.)
-                    .arg(int((sqrt((_sumLatQ - _sumLat * _sumLat / _numLat)/_numLat))*100)/100.)
-                    .arg(_numLat)
-                    .arg(_numGaps);
-                    emit(newMessage(QString(_staID + late ).toAscii() ) );
-                  } else {
-                  late = QString(": Mean latency %1 sec, min %2, max %3, rms %4, %5 epochs")
-                    .arg(int(_sumLat/_numLat*100)/100.)
-                    .arg(int(_minLat*100)/100.)
-                    .arg(int(_maxLat*100)/100.)
-                    .arg(int((sqrt((_sumLatQ - _sumLat * _sumLat / _numLat)/_numLat))*100)/100.)
-                    .arg(_numLat);
-                  emit(newMessage(QString(_staID + late ).toAscii() ) );
-                  }
-                }
-                _meanDiff = int(_diffSecGPS)/_numLat;
-                _diffSecGPS = 0.;
-                _numGaps = 0;
-                _sumLat = 0.;
-                _sumLatQ = 0.;
-                _numLat = 0;
-                _minLat = 1000.;
-                _maxLat = -1000.;
-              }
-              if (_followSec) {
-                _diffSecGPS += _newSecGPS - _oldSecGPS;
-                if (_meanDiff>0.) {
-                  if (_newSecGPS - _oldSecGPS > 1.5 * _meanDiff) {
-                    _numGaps += 1;
-                  }
-                }
-              }
-              _curLat = sec - _newSecGPS;
-              _sumLat += _curLat;
-              _sumLatQ += _curLat * _curLat;
-              if (_curLat < _minLat) {_minLat = _curLat;}
-              if (_curLat >= _maxLat) {_maxLat = _curLat;}
-              _numLat += 1;
-              _oldSecGPS = _newSecGPS;
-              _followSec = true;
+            QString late;
+            late = QString("%1 ").arg(int((sec - secGPS)*100.)/100.);
+            if (late != "") {
+              emit(newMessage(QString(_staID + ": Latency " + late + "sec").toAscii() ) );
             }
           }
         }
