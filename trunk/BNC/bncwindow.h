@@ -115,7 +115,6 @@
     QSpinBox*  _rnxSamplSpinBox;
     QSpinBox*  _binSamplSpinBox;
     QCheckBox* _rnxAppendCheckBox;
-    QCheckBox* _corrLateCheckBox;
     QCheckBox* _makePauseCheckBox;
     QSpinBox*  _waitTimeSpinBox;
     QSpinBox*  _corrTimeSpinBox;
