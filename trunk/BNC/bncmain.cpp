@@ -88,6 +88,7 @@ int main(int argc, char *argv[]) {
     settings.setValue("perfIntr",   "");
     settings.setValue("corrTime",   "5");
     settings.setValue("messTypes",  "");
+    settings.setValue("corrLate",   0);
   }
 
   bncApp app(argc, argv, GUIenabled);
