@@ -152,6 +152,7 @@ bnsWindow::bnsWindow() {
   _fileAppendCheckBox->setWhatsThis(tr("<p>When BNS is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append already existing files following a restart of BNS, a system crash or when BNS crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far.</p>"));
 
   _inpEchoLineEdit  = new QLineEdit(settings.value("inpEcho").toString());
+  _inpEchoLineEdit->setWhatsThis(tr("Specify the full path to a file where incoming clocks and orbits are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that incoming clocks and orbits are not saved."));
 
   _ephHostLineEdit  = new QLineEdit(settings.value("ephHost").toString());
   _ephHostLineEdit->setWhatsThis(tr("BNS reads Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address. Specify the host IP e.g. of a BNC installation providing this information."));
@@ -160,7 +161,7 @@ bnsWindow::bnsWindow() {
   _ephPortLineEdit->setMaximumWidth(9*ww);
 
   _clkPortLineEdit  = new QLineEdit(settings.value("clkPort").toString());
-  _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in plain ASCII format from an IP port. Specify a local IP port e.g. for an RTNet installation to provide this information."));
+  _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in plain ASCII format from an IP port. Specify a local IP port e.g. of an RTNet installation to provide this information."));
   _clkPortLineEdit->setMaximumWidth(9*ww);
 
   _outHostLineEdit    = new QLineEdit(settings.value("outHost").toString());
@@ -254,13 +255,12 @@ bnsWindow::bnsWindow() {
   QGridLayout* layout_prx = new QGridLayout;
   layout_prx->setColumnMinimumWidth(0,9*ww);
 
-  layout_prx->addWidget(new QLabel("Proxy host"), 0, 0, Qt::AlignLeft);
+  layout_prx->addWidget(new QLabel("Host"),       0, 0, Qt::AlignLeft);
   layout_prx->addWidget(_proxyHostLineEdit,       0, 1);
-  layout_prx->addWidget(new QLabel("Proxy port"), 1, 0, Qt::AlignLeft);
+  layout_prx->addWidget(new QLabel("Port"),       1, 0, Qt::AlignLeft);
   layout_prx->addWidget(_proxyPortLineEdit,       1, 1);
   layout_prx->addWidget(new QLabel("Settings for the proxy in protected networks, leave boxes blank if none."),2, 0, 1, 2, Qt::AlignLeft);
   layout_prx->addWidget(new QLabel("    "),       3, 0);
-  layout_prx->addWidget(new QLabel("    "),       4, 0);
 
   tab_prx->setLayout(layout_prx);
 
@@ -276,65 +276,76 @@ bnsWindow::bnsWindow() {
   layout_gen->addWidget(_logFileLineEdit,                  0, 1);
   layout_gen->addWidget(new QLabel("Append files"),        1, 0);
   layout_gen->addWidget(_fileAppendCheckBox,               1, 1); 
-  layout_gen->addWidget(new QLabel("General settings for logfile, file handling and target reference system."), 2, 0, 1, 2, Qt::AlignLeft);
+  layout_gen->addWidget(new QLabel("General settings for logfile and file handling."), 2, 0, 1, 2, Qt::AlignLeft);
   layout_gen->addWidget(new QLabel("    "),                3, 0);
 
   tab_gen->setLayout(layout_gen);
 
-  // Input Tab
-  // ---------
-  QWidget* tab_inp = new QWidget();
-  tabs->addTab(tab_inp, "Input");
+  // Ephemeris Tab
+  // -------------
+  QWidget* tab_eph = new QWidget();
+  tabs->addTab(tab_eph, "Ephemeris");
 
-  QGridLayout* layout_inp = new QGridLayout;
-  layout_inp->setColumnMinimumWidth(0, 9*ww);
+  QGridLayout* layout_eph = new QGridLayout;
+  layout_eph->setColumnMinimumWidth(0, 9*ww);
 
-  layout_inp->addWidget(new QLabel("Clocks & Orbits"),        0, 0, Qt::AlignLeft);
-  layout_inp->addWidget(new QLabel("BNS listening on Port"),  0, 2, 1, 2, Qt::AlignRight);
-  layout_inp->addWidget(_clkPortLineEdit,                     0, 4);
-  layout_inp->addWidget(new QLabel("Save"),                   0, 5, Qt::AlignRight);
-  layout_inp->addWidget(_inpEchoLineEdit,                     0, 6);
-  layout_inp->addWidget(new QLabel("Ephemeris"),              1, 0, Qt::AlignLeft);
-  layout_inp->addWidget(new QLabel("Host"),                   1, 1, Qt::AlignRight);
-  layout_inp->addWidget(_ephHostLineEdit,                     1, 2);
-  layout_inp->addWidget(new QLabel("Port"),                   1, 3, Qt::AlignRight);
-  layout_inp->addWidget(_ephPortLineEdit,                     1, 4);
-  layout_inp->addWidget(new QLabel("Read broadcast ephemeris and IGS clocks and orbits."), 2, 0, 1, 6, Qt::AlignLeft);
-  layout_inp->addWidget(new QLabel(""),                       3, 0);
+  layout_eph->addWidget(new QLabel("Host"),                   0, 0);
+  layout_eph->addWidget(_ephHostLineEdit,                     0, 1);
+  layout_eph->addWidget(new QLabel("Port"),                   1, 0);
+  layout_eph->addWidget(_ephPortLineEdit,                     1, 1);
+  layout_eph->addWidget(new QLabel("Read broadcast ephemeris."), 2, 0, 1, 2, Qt::AlignLeft);
+  layout_eph->addWidget(new QLabel(""),                       3, 0);
 
-  tab_inp->setLayout(layout_inp);
+  tab_eph->setLayout(layout_eph);
 
-  // NTRIP Caster Tab
-  // ----------------
+  // Clock & Orbit Tab
+  // -----------------
+  QWidget* tab_co = new QWidget();
+  tabs->addTab(tab_co,"Clocks && Orbits");
+
+
+  QGridLayout* layout_co = new QGridLayout;
+  layout_co->setColumnMinimumWidth(0, 9*ww);
+
+  layout_co->addWidget(new QLabel("Listening port"),                  0, 0);
+  layout_co->addWidget(_clkPortLineEdit,                              0, 1);
+  layout_co->addWidget(new QLabel("Save (full path)"),                1, 0);
+  layout_co->addWidget(_inpEchoLineEdit,                              1, 1);
+  layout_co->addWidget(new QLabel("Read IGS clocks and orbits."),     2, 0, 1, 2, Qt::AlignLeft);
+  layout_co->addWidget(new QLabel(""),                                3, 0);
+
+  tab_co->setLayout(layout_co);
+
+  // Caster Tab
+  // ----------
   QWidget* tab_cas = new QWidget();
-  tabs->addTab(tab_cas, "NTRIP Caster");
+  tabs->addTab(tab_cas, "Corrections");
 
   QGridLayout* layout_cas = new QGridLayout;
   layout_cas->setColumnMinimumWidth(0, 9*ww);
 
   layout_cas->addWidget(new QLabel("Host"),       0, 0, Qt::AlignLeft);
-  layout_cas->addWidget(_outHostLineEdit,         0, 1);
-  layout_cas->addWidget(new QLabel("Port"),       0, 2, Qt::AlignLeft);
-  layout_cas->addWidget(_outPortLineEdit,         0, 3);
-  layout_cas->addWidget(new QLabel("Password"),   0, 4, Qt::AlignLeft);
-  layout_cas->addWidget(_passwordLineEdit,        0, 5);
+  layout_cas->addWidget(_outHostLineEdit,         0, 1, 1, 2);
+  layout_cas->addWidget(new QLabel("Port"),       0, 3, Qt::AlignRight);
+  layout_cas->addWidget(_outPortLineEdit,         0, 4);
+  layout_cas->addWidget(new QLabel("Password"),   0, 5, Qt::AlignRight);
+  layout_cas->addWidget(_passwordLineEdit,        0, 6);
 
   layout_cas->addWidget(new QLabel("Mountpoint 1"),            1, 0, Qt::AlignLeft);
   layout_cas->addWidget(_mountpoint_1_LineEdit,                1, 1);
-  layout_cas->addWidget(new QLabel("Save stream (full path)"), 1, 2, Qt::AlignLeft);
-  layout_cas->addWidget(_outFile_1_LineEdit,                   1, 3);
-  layout_cas->addWidget(new QLabel("System"),                  1, 4);
-  layout_cas->addWidget(_refSys_1_ComboBox,                    1, 5);
+  layout_cas->addWidget(new QLabel("System"),                  1, 2, Qt::AlignRight);
+  layout_cas->addWidget(_refSys_1_ComboBox,                    1, 3);
+  layout_cas->addWidget(new QLabel("Save (full path)"),        1, 4, Qt::AlignRight);
+  layout_cas->addWidget(_outFile_1_LineEdit,                   1, 5, 1, 6);
 
   layout_cas->addWidget(new QLabel("Mountpoint 2"),            2, 0, Qt::AlignLeft);
   layout_cas->addWidget(_mountpoint_2_LineEdit,                2, 1);
-  layout_cas->addWidget(new QLabel("Save stream (full path)"), 2, 2, Qt::AlignLeft);
-  layout_cas->addWidget(_outFile_2_LineEdit,                   2, 3);
-  layout_cas->addWidget(new QLabel("System"),                  2, 4);
-  layout_cas->addWidget(_refSys_2_ComboBox,                    2, 5);
+  layout_cas->addWidget(new QLabel("System"),                  2, 2, Qt::AlignRight);
+  layout_cas->addWidget(_refSys_2_ComboBox,                    2, 3);
+  layout_cas->addWidget(new QLabel("Save (full path)"),        2, 4, Qt::AlignRight);
+  layout_cas->addWidget(_outFile_2_LineEdit,                   2, 5, 1, 6);
 
-  layout_cas->addWidget(new QLabel("Stream upload of clock and orbit corrections to NTRIP broadcaster."), 4, 0, 1, 4, Qt::AlignLeft);
-  layout_cas->addWidget(new QLabel(""),           5, 0);
+  layout_cas->addWidget(new QLabel("Broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 7, Qt::AlignLeft);
 
   tab_cas->setLayout(layout_cas);
 
@@ -353,7 +364,6 @@ bnsWindow::bnsWindow() {
   layout_rin->addWidget(new QLabel("Sampling"),                     2, 0);
   layout_rin->addWidget(_rnxSamplSpinBox,                           2, 1);
   layout_rin->addWidget(new QLabel("Save clock corrections in Clock RINEX file format."),  3, 0, 1, 2, Qt::AlignLeft);
-  layout_rin->addWidget(new QLabel(""),                             4, 0);
 
   tab_rin->setLayout(layout_rin);
 
@@ -372,7 +382,6 @@ bnsWindow::bnsWindow() {
   layout_sp3->addWidget(new QLabel("Sampling"),                  2, 0);
   layout_sp3->addWidget(_sp3SamplSpinBox,                        2, 1);
   layout_sp3->addWidget(new QLabel("Save orbit corrections in SP3 file format."), 3, 0, 1, 2, Qt::AlignLeft);
-  layout_sp3->addWidget(new QLabel(""),                          4, 0);
 
   tab_sp3->setLayout(layout_sp3);
 
@@ -384,22 +393,30 @@ bnsWindow::bnsWindow() {
 
   // Status
   // ------
-  _status = new QWidget();
+//_status = new QWidget();
+  _status = new QGroupBox(tr("Status"));
   QGridLayout* layout_status = new QGridLayout;
 
   _statusLbl[0] = new QLabel("0 byte(s)"); _statusCnt[0] = 0;
   _statusLbl[1] = new QLabel("0 byte(s)"); _statusCnt[1] = 0;
   _statusLbl[2] = new QLabel("0 byte(s)"); _statusCnt[2] = 0;
-  _statusLbl[3] = new QLabel("Input Ephemeris");  
-  _statusLbl[4] = new QLabel("Input Clocks & Orbits");
-  _statusLbl[5] = new QLabel("Output");  
+  _statusLbl[3] = new QLabel("Ephemeris:");  
+  _statusLbl[4] = new QLabel("Clocks & Orbits:");
+  _statusLbl[5] = new QLabel("Corrections:");  
+
+  _statusLbl[0]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
+  _statusLbl[1]->setWhatsThis(tr("Status of incoming stream of clocks and orbits."));
+  _statusLbl[2]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster."));
+  _statusLbl[3]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
+  _statusLbl[4]->setWhatsThis(tr("Status of incoming stream of clocks and orbits."));
+  _statusLbl[5]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster."));
 
   layout_status->addWidget(_statusLbl[3], 0, 0);
   layout_status->addWidget(_statusLbl[0], 0, 1);
-  layout_status->addWidget(_statusLbl[4], 0, 2);
-  layout_status->addWidget(_statusLbl[1], 0, 3);
-  layout_status->addWidget(_statusLbl[5], 1, 2);
-  layout_status->addWidget(_statusLbl[2], 1, 3);
+  layout_status->addWidget(_statusLbl[4], 1, 0);
+  layout_status->addWidget(_statusLbl[1], 1, 1);
+  layout_status->addWidget(_statusLbl[5], 0, 2);
+  layout_status->addWidget(_statusLbl[2], 0, 3);
   _status->setLayout(layout_status);
 
   // Main Layout

@@ -55,6 +55,7 @@ void t_bnseph::reconnect() {
   const int timeOut = 10*1000;  // 10 seconds
   if (!_socket->waitForConnected(timeOut)) {
     emit(newMessage("bnseph::run Connect Timeout"));
+    msleep(1000);
   }
 }
 
