@@ -333,19 +333,19 @@ bnsWindow::bnsWindow() {
 
   layout_cas->addWidget(new QLabel("Mountpoint 1"),            1, 0, Qt::AlignLeft);
   layout_cas->addWidget(_mountpoint_1_LineEdit,                1, 1);
-  layout_cas->addWidget(new QLabel("System"),                  1, 2, Qt::AlignRight);
+  layout_cas->addWidget(new QLabel("  System"),                1, 2, Qt::AlignRight);
   layout_cas->addWidget(_refSys_1_ComboBox,                    1, 3);
-  layout_cas->addWidget(new QLabel("Save (full path)"),        1, 4, Qt::AlignRight);
-  layout_cas->addWidget(_outFile_1_LineEdit,                   1, 5, 1, 6);
+  layout_cas->addWidget(new QLabel("  Save (full path)"),      1, 4, Qt::AlignRight);
+  layout_cas->addWidget(_outFile_1_LineEdit,                   1, 5, 1, 8);
 
   layout_cas->addWidget(new QLabel("Mountpoint 2"),            2, 0, Qt::AlignLeft);
   layout_cas->addWidget(_mountpoint_2_LineEdit,                2, 1);
-  layout_cas->addWidget(new QLabel("System"),                  2, 2, Qt::AlignRight);
+  layout_cas->addWidget(new QLabel("  System"),                2, 2, Qt::AlignRight);
   layout_cas->addWidget(_refSys_2_ComboBox,                    2, 3);
-  layout_cas->addWidget(new QLabel("Save (full path)"),        2, 4, Qt::AlignRight);
-  layout_cas->addWidget(_outFile_2_LineEdit,                   2, 5, 1, 6);
+  layout_cas->addWidget(new QLabel("  Save (full path)"),      2, 4, Qt::AlignRight);
+  layout_cas->addWidget(_outFile_2_LineEdit,                   2, 5, 1, 8);
 
-  layout_cas->addWidget(new QLabel("Broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 7, Qt::AlignLeft);
+  layout_cas->addWidget(new QLabel("Broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 8, Qt::AlignLeft);
 
   tab_cas->setLayout(layout_cas);
 
