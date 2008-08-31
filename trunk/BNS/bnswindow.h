@@ -95,7 +95,8 @@ Q_OBJECT
 
   QTextEdit*  _log;
 
-  QWidget*    _status;
+//QWidget*    _status;
+  QGroupBox*  _status;
   QLabel*     _statusLbl[6];  
   double      _statusCnt[3];
   QMutex      _mutex;
