@@ -284,7 +284,7 @@ bnsWindow::bnsWindow() {
   // Ephemeris Tab
   // -------------
   QWidget* tab_eph = new QWidget();
-  tabs->addTab(tab_eph, "Ephemeris");
+  tabs->addTab(tab_eph, "RINEX Ephemeris");
 
   QGridLayout* layout_eph = new QGridLayout;
   layout_eph->setColumnMinimumWidth(0, 9*ww);
@@ -319,7 +319,7 @@ bnsWindow::bnsWindow() {
   // Caster Tab
   // ----------
   QWidget* tab_cas = new QWidget();
-  tabs->addTab(tab_cas, "Corrections");
+  tabs->addTab(tab_cas, "Ephemeris Corrections");
 
   QGridLayout* layout_cas = new QGridLayout;
   layout_cas->setColumnMinimumWidth(0, 9*ww);
@@ -400,9 +400,9 @@ bnsWindow::bnsWindow() {
   _statusLbl[0] = new QLabel("0 byte(s)"); _statusCnt[0] = 0;
   _statusLbl[1] = new QLabel("0 byte(s)"); _statusCnt[1] = 0;
   _statusLbl[2] = new QLabel("0 byte(s)"); _statusCnt[2] = 0;
-  _statusLbl[3] = new QLabel("Ephemeris:");  
+  _statusLbl[3] = new QLabel("RINEX Ephemeris:");  
   _statusLbl[4] = new QLabel("Clocks & Orbits:");
-  _statusLbl[5] = new QLabel("Corrections:");  
+  _statusLbl[5] = new QLabel("Ephemeris Corrections:");  
 
   _statusLbl[0]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
   _statusLbl[1]->setWhatsThis(tr("Status of incoming stream of clocks and orbits."));
