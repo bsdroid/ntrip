@@ -115,5 +115,7 @@ class t_bnseph : public QThread {
   void reconnect();
   void readEph();
   QTcpSocket* _socket;
+  QFile*                    _echoFile;
+  QTextStream*              _echoStream;
 };
 #endif

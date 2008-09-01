@@ -28,12 +28,41 @@ t_bnseph::t_bnseph(QObject* parent) : QThread(parent) {
   this->setTerminationEnabled(true);
 
   _socket = 0;
+
+  QSettings settings;
+
+  QIODevice::OpenMode oMode;
+  if (Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked) {
+    oMode = QIODevice::WriteOnly | QIODevice::Unbuffered | QIODevice::Append;
+  }
+  else {
+    oMode = QIODevice::WriteOnly | QIODevice::Unbuffered;
+  }
+
+  // Echo ephemeris into a file
+  // ---------------------------
+  QString echoFileName = settings.value("ephEcho").toString();
+  if (echoFileName.isEmpty()) {
+    _echoFile   = 0;
+    _echoStream = 0;
+  }
+  else {
+    _echoFile = new QFile(echoFileName);
+    if (_echoFile->open(oMode)) {
+      _echoStream = new QTextStream(_echoFile);
+    }
+    else {
+      _echoStream = 0;
+    }
+  }
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_bnseph::~t_bnseph() {
   delete _socket;
+  delete _echoStream;
+  delete _echoFile;
 }
 
 // Connect the Socket
@@ -86,6 +115,12 @@ void t_bnseph::readEph() {
 
   t_eph* eph = 0;
   QByteArray line = waitForLine(_socket);
+
+  if (_echoStream) {
+    *_echoStream << line;
+    _echoStream->flush();
+  }
+
   nBytes += line.length();
 
   QTextStream in(line);
@@ -108,6 +143,12 @@ void t_bnseph::readEph() {
 
   for (int ii = 2; ii <= numlines; ii++) {
     QByteArray line = waitForLine(_socket);
+
+    if (_echoStream) {
+      *_echoStream << line;
+      _echoStream->flush();
+    }
+
     nBytes += line.length();
     lines << line;
   }

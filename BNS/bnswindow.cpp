@@ -159,6 +159,8 @@ bnsWindow::bnsWindow() {
   _ephPortLineEdit  = new QLineEdit(settings.value("ephPort").toString());
   _ephPortLineEdit->setWhatsThis(tr("BNS reads Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address. Specify the IP port e.g. of a BNC installation providing this information."));
   _ephPortLineEdit->setMaximumWidth(9*ww);
+  _ephEchoLineEdit  = new QLineEdit(settings.value("ephEcho").toString());
+  _ephEchoLineEdit->setWhatsThis(tr("Specify the full path to a file where incoming Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that incoming Broadcast Ephemeris are not saved."));
 
   _clkPortLineEdit  = new QLineEdit(settings.value("clkPort").toString());
   _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in plain ASCII format from an IP port. Specify a local IP port e.g. of an RTNet installation to provide this information."));
@@ -293,8 +295,10 @@ bnsWindow::bnsWindow() {
   layout_eph->addWidget(_ephHostLineEdit,                     0, 1);
   layout_eph->addWidget(new QLabel("Port"),                   1, 0);
   layout_eph->addWidget(_ephPortLineEdit,                     1, 1);
-  layout_eph->addWidget(new QLabel("Read broadcast ephemeris."), 2, 0, 1, 2, Qt::AlignLeft);
-  layout_eph->addWidget(new QLabel(""),                       3, 0);
+  layout_eph->addWidget(new QLabel("Save (full path)"),       2, 0);
+  layout_eph->addWidget(_ephEchoLineEdit,                     2, 1);
+  layout_eph->addWidget(new QLabel("Read broadcast ephemeris."), 3, 0, 1, 2, Qt::AlignLeft);
+  layout_eph->addWidget(new QLabel(""),                       4, 0);
 
   tab_eph->setLayout(layout_eph);
 
@@ -534,6 +538,7 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("inpEcho",    _inpEchoLineEdit->text());
   settings.setValue("ephHost",    _ephHostLineEdit->text());
   settings.setValue("ephPort",    _ephPortLineEdit->text());
+  settings.setValue("ephEcho",    _ephEchoLineEdit->text());
   settings.setValue("clkPort",    _clkPortLineEdit->text());
   settings.setValue("outHost",    _outHostLineEdit->text());
   settings.setValue("outPort",    _outPortLineEdit->text());
