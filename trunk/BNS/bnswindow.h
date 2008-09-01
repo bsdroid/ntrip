@@ -74,6 +74,7 @@ Q_OBJECT
   QLineEdit* _inpEchoLineEdit;
   QLineEdit* _ephHostLineEdit;
   QLineEdit* _ephPortLineEdit;
+  QLineEdit* _ephEchoLineEdit;
   QLineEdit* _clkPortLineEdit;
   QLineEdit* _logFileLineEdit;
   QLineEdit* _outHostLineEdit;
