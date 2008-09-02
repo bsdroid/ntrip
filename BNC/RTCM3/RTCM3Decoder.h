@@ -49,10 +49,22 @@ Q_OBJECT
 
   QString                _staID;
   QString                _checkMountPoint;
-  int                    _corrLate;
   struct RTCM3ParserData _Parser;
   RTCM3coDecoder*        _coDecoder; 
   t_mode                 _mode;
+  int _perfIntr;
+  int _numLat;
+  int _numGaps;
+  bool _followSec;
+  double _curLat;
+  double _sumLat;
+  double _sumLatQ;
+  double _minLat;
+  double _maxLat;
+  double _newSecGPS;
+  double _oldSecGPS;
+  double _diffSecGPS;
+  double _meanDiff;
 } ;
 
 #endif
