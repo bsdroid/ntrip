@@ -113,9 +113,9 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
 			double* xc,
 			double* vv) const {
 
-  const static double secPerWeek = 7 * 86400.0;
-  const static double omegaEarth = 7292115.1467e-11;
-  const static double gmWGS      = 398.6005e12;
+  static const double secPerWeek = 7 * 86400.0;
+  static const double omegaEarth = 7292115.1467e-11;
+  static const double gmWGS      = 398.6005e12;
 
   memset(xc, 0, 4*sizeof(double));
   memset(vv, 0, 3*sizeof(double));

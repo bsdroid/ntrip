@@ -426,7 +426,7 @@ return retval;
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-short CGPS_Transform::Decode_RTIGS_Sta(unsigned char *RTIGS_Str,  unsigned short RTIGS_Bytes, RTIGSS_T &rtigs_sta)
+short CGPS_Transform::Decode_RTIGS_Sta(unsigned char *RTIGS_Str,  unsigned short /* RTIGS_Bytes */, RTIGSS_T &rtigs_sta)
 {
 short retval = 1;
   memcpy ((void *)&rtigs_sta.rec_id, &RTIGS_Str[0], (sizeof(RTIGSS_T) - sizeof(rtigs_sta.data)));
@@ -656,7 +656,7 @@ return retval;
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-short  CGPS_Transform::Decode_RTIGS_Met(unsigned char *RTIGS_Str,  unsigned short RTIGS_Bytes, RTIGSM_T *rtigs_met)
+short  CGPS_Transform::Decode_RTIGS_Met(unsigned char *RTIGS_Str,  unsigned short /* RTIGS_Bytes */, RTIGSM_T *rtigs_met)
 {
 short retval = 1;
 short numbytes = 0;
@@ -693,7 +693,7 @@ return retval;
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-short CGPS_Transform::Decode_RTIGS_Eph(unsigned char *RTIGS_Str,  unsigned short RTIGS_Bytes, RTIGSE_T &rtigs_eph, short &PRN)
+short CGPS_Transform::Decode_RTIGS_Eph(unsigned char *RTIGS_Str,  unsigned short /* RTIGS_Bytes */, RTIGSE_T &rtigs_eph, short &PRN)
 {
   short retval = 1;//, i;
   short  index = 0;
