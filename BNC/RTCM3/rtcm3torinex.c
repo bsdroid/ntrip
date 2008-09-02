@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.14 2008/08/11 14:01:54 weber Exp $
+  $Id: rtcm3torinex.c,v 1.32 2008/09/02 07:45:48 stoecker Exp $
   Copyright (C) 2005-2008 by Dirk Stöcker <stoecker@alberding.eu>
 
   This software is a complete NTRIP-RTCM3 to RINEX converter as well as
@@ -50,7 +50,7 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.14 $";
+static char revisionstr[] = "$Revision: 1.32 $";
 
 #ifndef COMPILEDATE
 #define COMPILEDATE " built " __DATE__
@@ -282,8 +282,10 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
     unsigned char *data = handle->Message+3;
 
     GETBITS(type,12)
+#ifdef NO_RTCM3_MAIN
     handle->typeList[handle->typeSize] = type;           /* RTCM message types */
     if(handle->typeSize < 100) {handle->typeSize += 1;}  /* RTCM message types */
+#endif /* NO_RTCM3_MAIN */
     switch(type)
     {
     case 1019:
@@ -304,7 +306,7 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
           ge->flags |= GPSEPHF_L2PCODE;
         if(sv & 2)
           ge->flags |= GPSEPHF_L2CACODE;
-        GETFLOATSIGN(ge->IDOT, 14, PI/(double)(1<<30)/(double)(1<<13))
+        GETFLOATSIGN(ge->IDOT, 14, R2R_PI/(double)(1<<30)/(double)(1<<13))
         GETBITS(ge->IODE, 8)
         GETBITS(ge->TOC, 16)
         ge->TOC <<= 4;
@@ -313,8 +315,8 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
         GETFLOATSIGN(ge->clock_bias, 22, 1.0/(double)(1<<30)/(double)(1<<1))
         GETBITS(ge->IODC, 10)
         GETFLOATSIGN(ge->Crs, 16, 1.0/(double)(1<<5))
-        GETFLOATSIGN(ge->Delta_n, 16, PI/(double)(1<<30)/(double)(1<<13))
-        GETFLOATSIGN(ge->M0, 32, PI/(double)(1<<30)/(double)(1<<1))
+        GETFLOATSIGN(ge->Delta_n, 16, R2R_PI/(double)(1<<30)/(double)(1<<13))
+        GETFLOATSIGN(ge->M0, 32, R2R_PI/(double)(1<<30)/(double)(1<<1))
         GETFLOATSIGN(ge->Cuc, 16, 1.0/(double)(1<<29))
         GETFLOAT(ge->e, 32, 1.0/(double)(1<<30)/(double)(1<<3))
         GETFLOATSIGN(ge->Cus, 16, 1.0/(double)(1<<29))
@@ -323,12 +325,12 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
         ge->TOE <<= 4;
 
         GETFLOATSIGN(ge->Cic, 16, 1.0/(double)(1<<29))
-        GETFLOATSIGN(ge->OMEGA0, 32, PI/(double)(1<<30)/(double)(1<<1))
+        GETFLOATSIGN(ge->OMEGA0, 32, R2R_PI/(double)(1<<30)/(double)(1<<1))
         GETFLOATSIGN(ge->Cis, 16, 1.0/(double)(1<<29))
-        GETFLOATSIGN(ge->i0, 32, PI/(double)(1<<30)/(double)(1<<1))
+        GETFLOATSIGN(ge->i0, 32, R2R_PI/(double)(1<<30)/(double)(1<<1))
         GETFLOATSIGN(ge->Crc, 16, 1.0/(double)(1<<5))
-        GETFLOATSIGN(ge->omega, 32, PI/(double)(1<<30)/(double)(1<<1))
-        GETFLOATSIGN(ge->OMEGADOT, 24, PI/(double)(1<<30)/(double)(1<<13))
+        GETFLOATSIGN(ge->omega, 32, R2R_PI/(double)(1<<30)/(double)(1<<1))
+        GETFLOATSIGN(ge->OMEGADOT, 24, R2R_PI/(double)(1<<30)/(double)(1<<13))
         GETFLOATSIGN(ge->TGD, 8, 1.0/(double)(1<<30)/(double)(1<<1))
         GETBITS(ge->SVhealth, 6)
         GETBITS(sv, 1)
@@ -437,12 +439,10 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
 
         GETBITS(syncf,1) /* sync */
         GETBITS(i,5)
-    //  gnss->numsats = i;
-        gnss->numsats += i;                                    // If GLONASS observations come first, Weber
+        gnss->numsats += i;
         SKIPBITS(4) /* smind, smint */
 
-    //  for(num = 0; num < gnss->numsats; ++num)
-        for(num = gnss->numsats-i; num < gnss->numsats; ++num) // If GLONASS observations come first, Weber
+        for(num = gnss->numsats-i; num < gnss->numsats; ++num)
         {
           int sv, code, l1range, c,l,s,ce,le,se,amb=0;
 
@@ -837,7 +837,7 @@ int rinex3)
   t2 = gmtime(&t);
   if(u) *u = user;
   return 1+snprintf(buffer, buffersize,
-  rinex3 ? 
+  rinex3 ?
   "RTCM3TORINEX %-7.7s%-20.20s%04d%02d%02d %02d%02d%02d UTC "
   "PGM / RUN BY / DATE" :
   "RTCM3TORINEX %-7.7s%-20.20s%04d-%02d-%02d %02d:%02d    "
@@ -845,7 +845,6 @@ int rinex3)
   t2->tm_mon+1, t2->tm_mday, t2->tm_hour, t2->tm_min, t2->tm_sec);
 }
 
-// Inserted parts for BNC Perlt
 #ifdef NO_RTCM3_MAIN
 #define NUMSTARTSKIP 1
 #else
@@ -855,7 +854,6 @@ int rinex3)
 void HandleHeader(struct RTCM3ParserData *Parser)
 {
 #ifdef NO_RTCM3_MAIN
-// Part of Handle Header for data request for BNC (independently on actually delivered data), original is commented out by ifndef NO_RTCM3_MAIN. Perlt
   int i;
   if(Parser->rinex3)
   {
@@ -898,7 +896,6 @@ void HandleHeader(struct RTCM3ParserData *Parser)
     CHECKFLAGSNEW(GLO, L2C, L2C)
     CHECKFLAGSNEW(GLO, D2C, D2C)
     CHECKFLAGSNEW(GLO, S2C, S2C)
-
   }
   else
   {
@@ -937,10 +934,7 @@ void HandleHeader(struct RTCM3ParserData *Parser)
     CHECKFLAGS(S2C,S2)
     CHECKFLAGS(S2P,S2)
   }
-// End Part of Handle Header for BNC Perlt
-#endif
-
-#ifndef NO_RTCM3_MAIN
+#else /* NO_RTCM3_MAIN */
   struct HeaderData hdata;
   char thebuffer[MAXHEADERBUFFERSIZE];
   char *buffer = thebuffer;
@@ -1627,7 +1621,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 }
 
 #ifndef NO_RTCM3_MAIN
-static char datestr[]     = "$Date: 2008/08/11 14:01:54 $";
+static char datestr[]     = "$Date: 2008/09/02 07:45:48 $";
 
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
@@ -1982,6 +1976,24 @@ static void signalhandler(int sig)
   }
 }
 
+#ifndef WINDOWSVERSION
+static void WaitMicro(int mic)
+{
+  struct timeval tv;
+  tv.tv_sec = mic/1000000;
+  tv.tv_usec = mic%1000000;
+#ifdef DEBUG
+  fprintf(stderr, "Waiting %d micro seconds\n", mic);
+#endif
+  select(0, 0, 0, 0, &tv);
+}
+#else /* WINDOWSVERSION */
+void WaitMicro(int mic)
+{
+   Sleep(mic/1000);
+}
+#endif /* WINDOWSVERSION */
+
 #define ALARMTIME   (2*60)
 
 /* for some reason we had to abort hard (maybe waiting for data */
@@ -2028,7 +2040,7 @@ int main(int argc, char **argv)
 
   if(getargs(argc, argv, &args))
   {
-    int sockfd, numbytes;  
+    int sockfd, numbytes;
     char buf[MAXDATASIZE];
     struct sockaddr_in their_addr; /* connector's address information */
     struct hostent *he;
@@ -2119,23 +2131,23 @@ int main(int argc, char **argv)
       }
       /* fill structure with local address information for UDP */
       memset(&local, 0, sizeof(local));
-      local.sin_family = AF_INET;  	
+      local.sin_family = AF_INET;
       local.sin_port = htons(0);
-      local.sin_addr.s_addr = htonl(INADDR_ANY); 
+      local.sin_addr.s_addr = htonl(INADDR_ANY);
       len = sizeof(local);
-      /* bind() in order to get a random RTP client_port */ 
+      /* bind() in order to get a random RTP client_port */
       if((bind(sockudp, (struct sockaddr *)&local, len)) < 0)
       {
         perror("bind");
         exit(1);
       }
-      if((getsockname(sockudp, (struct sockaddr*)&local, &len)) != -1) 
+      if((getsockname(sockudp, (struct sockaddr*)&local, &len)) != -1)
       {
-        localport = ntohs(local.sin_port); 
+        localport = ntohs(local.sin_port);
       }
       else
       {
-        perror("local access failed"); 
+        perror("local access failed");
         exit(1);
       }
       if(connect(sockfd, (struct sockaddr *)&their_addr,
@@ -2145,8 +2157,8 @@ int main(int argc, char **argv)
         exit(1);
       }
       i=snprintf(buf, MAXDATASIZE-40, /* leave some space for login */
-      "SETUP rtsp://%s%s%s/%s RTSP/1.0\r\n" 	        
-      "CSeq: %d\r\n"		
+      "SETUP rtsp://%s%s%s/%s RTSP/1.0\r\n"
+      "CSeq: %d\r\n"
       "Ntrip-Version: Ntrip/2.0\r\n"
       "Ntrip-Component: Ntripclient\r\n"
       "User-Agent: %s/%s\r\n"
@@ -2240,10 +2252,10 @@ int main(int argc, char **argv)
           }
 
           i = snprintf(buf, MAXDATASIZE,
-          "PLAY rtsp://%s%s%s/%s RTSP/1.0\r\n"	        
+          "PLAY rtsp://%s%s%s/%s RTSP/1.0\r\n"
           "CSeq: %d\r\n"
           "Session: %d\r\n"
-          "\r\n", 
+          "\r\n",
           args.server, proxyserver ? ":" : "", proxyserver ? args.port : "",
           args.data, cseq++, session);
 
@@ -2264,7 +2276,7 @@ int main(int argc, char **argv)
               struct sockaddr_in addrRTP;
               /* fill structure with caster address information for UDP */
               memset(&addrRTP, 0, sizeof(addrRTP));
-              addrRTP.sin_family = AF_INET;  
+              addrRTP.sin_family = AF_INET;
               addrRTP.sin_port   = htons(serverport);
               their_addr.sin_addr = *((struct in_addr *)he->h_addr);
               len = sizeof(addrRTP);
@@ -2287,6 +2299,7 @@ int main(int argc, char **argv)
 
                   if(init)
                   {
+                    int z;
                     if(u < -30000 && sn > 30000) sn -= 0xFFFF;
                     if(ssrc != w || ts > v)
                     {
@@ -2294,7 +2307,8 @@ int main(int argc, char **argv)
                       exit(1);
                     }
                     if(u > sn) /* don't show out-of-order packets */
-                      fwrite(buf+12, (size_t)i-12, 1, stdout);
+                    for(z = 12; z < i && !stop; ++z)
+                      HandleByte(&Parser, (unsigned int) buf[z]);
                   }
                   sn = u; ts = v; ssrc = w; init = 1;
                 }
@@ -2306,10 +2320,10 @@ int main(int argc, char **argv)
               }
             }
             i = snprintf(buf, MAXDATASIZE,
-            "TEARDOWN rtsp://%s%s%s/%s RTSP/1.0\r\n"	        
+            "TEARDOWN rtsp://%s%s%s/%s RTSP/1.0\r\n"
             "CSeq: %d\r\n"
             "Session: %d\r\n"
-            "\r\n", 
+            "\r\n",
             args.server, proxyserver ? ":" : "", proxyserver ? args.port : "",
             args.data, cseq++, session);
 
@@ -2419,7 +2433,13 @@ int main(int argc, char **argv)
 
         while(!stop && (numbytes=recv(sockfd, buf, MAXDATASIZE-1, 0)) != -1)
         {
-          alarm(ALARMTIME);
+          if(numbytes > 0)
+            alarm(ALARMTIME);
+          else
+          {
+            WaitMicro(100);
+            continue;
+          }
           if(!k)
           {
             if(numbytes > 17 && (!strncmp(buf, "HTTP/1.1 200 OK\r\n", 17)
@@ -2448,7 +2468,7 @@ int main(int argc, char **argv)
               }
               if(i < numbytes-l)
                 chunkymode = 1;
-	    }
+            }
             else if(numbytes < 12 || strncmp("ICY 200 OK\r\n", buf, 12))
             {
               RTCM3Error("Could not get the requested data: ");
