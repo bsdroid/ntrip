@@ -298,7 +298,7 @@ bnsWindow::bnsWindow() {
   layout_eph->addWidget(new QLabel("Save (full path)"),       2, 0);
   layout_eph->addWidget(_ephEchoLineEdit,                     2, 1);
   layout_eph->addWidget(new QLabel("Read broadcast ephemeris."), 3, 0, 1, 2, Qt::AlignLeft);
-  layout_eph->addWidget(new QLabel(""),                       4, 0);
+//layout_eph->addWidget(new QLabel(""),                       4, 0);
 
   tab_eph->setLayout(layout_eph);
 
