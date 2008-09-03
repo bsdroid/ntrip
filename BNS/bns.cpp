@@ -383,8 +383,8 @@ void t_bns::readEpoch() {
             }
             if (sd) {
               QString outLine;
-              processSatellite(oldEph, _caster.at(ic)->crdTrafo(), ep, GPSweek,
-                               GPSweeks, prn, xx, sd, outLine);
+              processSatellite(oldEph, ic, _caster.at(ic)->crdTrafo(), ep, 
+                               GPSweek, GPSweeks, prn, xx, sd, outLine);
               _caster.at(ic)->printAscii(outLine);
             }
           }
@@ -406,8 +406,8 @@ void t_bns::readEpoch() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_bns::processSatellite(int oldEph, bool trafo, t_eph* ep, int GPSweek, 
-                             double GPSweeks, const QString& prn, 
+void t_bns::processSatellite(int oldEph, int iCaster, bool trafo, t_eph* ep, 
+                             int GPSweek, double GPSweeks, const QString& prn, 
                              const ColumnVector& xx, 
                              struct ClockOrbit::SatData* sd,
                              QString& outLine) {
@@ -443,7 +443,7 @@ void t_bns::processSatellite(int oldEph, bool trafo, t_eph* ep, int GPSweek,
                   oldCh, GPSweek, GPSweeks, ep->prn().toAscii().data(),
                   ep->IOD(), dClk, rsw(1), rsw(2), rsw(3));
 
-  if (!oldEph) {
+  if (!oldEph && iCaster == 0) {
     if (_rnx) {
       _rnx->write(GPSweek, GPSweeks, prn, xx);
     }
