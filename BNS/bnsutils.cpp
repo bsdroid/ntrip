@@ -97,7 +97,7 @@ void currentGPSWeeks(int& week, double& sec) {
 ////////////////////////////////////////////////////////////////////////////
 void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac) {
 
-  const static QDate zeroDate(1858, 11, 17);
+  static const QDate zeroDate(1858, 11, 17);
 
   mjd     = zeroDate.daysTo(dateTime.date());
 

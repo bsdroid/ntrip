@@ -220,9 +220,9 @@ void t_ephGPS::read(const QStringList& lines) {
 void t_ephGPS::position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const {
 
-  const static double secPerWeek = 7 * 86400.0;
-  const static double omegaEarth = 7292115.1467e-11;
-  const static double gmWGS      = 398.6005e12;
+  static const double secPerWeek = 7 * 86400.0;
+  static const double omegaEarth = 7292115.1467e-11;
+  static const double gmWGS      = 398.6005e12;
 
   if (xc.Nrows() < 4) {
     xc.ReSize(4);
@@ -365,10 +365,10 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv) {
 
   // Acceleration 
   // ------------
-  const static double GM    = 398.60044e12;
-  const static double AE    = 6378136.0;
-  const static double OMEGA = 7292115.e-11;
-  const static double C20   = -1082.63e-6;
+  static const double GM    = 398.60044e12;
+  static const double AE    = 6378136.0;
+  static const double OMEGA = 7292115.e-11;
+  static const double C20   = -1082.63e-6;
 
   double rho = rr.norm_Frobenius();
   double t1  = -GM/(rho*rho*rho);
@@ -395,8 +395,8 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv) {
 void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const {
 
-  const static double secPerWeek  = 7 * 86400.0;
-  const static double nominalStep = 10.0;
+  static const double secPerWeek  = 7 * 86400.0;
+  static const double nominalStep = 10.0;
 
   double dtPos = GPSweeks - _tt;
   if (GPSweek != _GPSweek) {  
