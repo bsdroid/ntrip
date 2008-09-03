@@ -184,10 +184,13 @@ void t_ephGPS::read(const QStringList& lines) {
       
       if (year < 100) year += 2000;
       
-      QDateTime dateTime(QDate(int(year), int(month), int(day)), 
-                         QTime(int(hour), int(minute), int(second)), Qt::UTC);
+      QDateTime* dateTime = new QDateTime(QDate(int(year), int(month), int(day)), 
+                                          QTime(int(hour), int(minute), int(second)), Qt::UTC);
 
-      GPSweekFromDateAndTime(dateTime, _GPSweek, _GPSweeks); 
+      GPSweekFromDateAndTime(*dateTime, _GPSweek, _GPSweeks); 
+
+      delete dateTime;
+
       _TOC = _GPSweeks;
     }
     else if (ii == 2) {
@@ -320,11 +323,13 @@ void t_ephGlo::read(const QStringList& lines) {
       
       if (year < 100) year += 2000;
       
-      QDateTime dateTime(QDate(int(year), int(month), int(day)), 
-                         QTime(int(hour), int(minute), int(second)), Qt::UTC);
+      QDateTime* dateTime = new QDateTime(QDate(int(year), int(month), int(day)), 
+                                          QTime(int(hour), int(minute), int(second)), Qt::UTC);
 
-      GPSweekFromDateAndTime(dateTime, _GPSweek, _GPSweeks); 
+      GPSweekFromDateAndTime(*dateTime, _GPSweek, _GPSweeks); 
  
+      delete dateTime;
+
       //// beg test
       //// _gps_utc = 14.0;
       //// end test
