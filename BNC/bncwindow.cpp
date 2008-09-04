@@ -57,7 +57,7 @@ bncWindow::bncWindow() {
 
   int ww = QFontMetrics(this->font()).width('w');
   
-  static const QStringList labels = QString("account,mountpoint,decoder,lat,long,nmea,bytes").split(",");
+  static const QStringList labels = QString("account,broadcaster:port / mountpoint,decoder,lat,long,nmea,bytes").split(",");
 
   setMinimumSize(80*ww, 65*ww);
 
