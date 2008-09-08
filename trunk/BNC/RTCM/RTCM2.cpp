@@ -49,7 +49,8 @@
 //   2008/03/10  AHA  Corrected extraction of antenna serial number
 //   2008/03/10  AHA  Corrected buffer length check in getPacket()
 //   2008/03/11  AHA  isGPS-flag in RTCM2_Obs is now set to false on clear()
-//   2008/03/13  AHA  Added checks for data consistency in extraction routines
+//   2008/03/14  AHA  Added checks for data consistency in extraction routines
+//   2008/09/01  AHA  Harmonization with newest BNC version
 //
 // (c) DLR/GSOC
 //
@@ -755,6 +756,14 @@ int RTCM2packet::getBits ( unsigned int start,
 //
 //------------------------------------------------------------------------------
 
+// Constructor
+RTCM2_03::RTCM2_03(){
+  validMsg = false;
+  x = 0.0; 
+  y = 0.0; 
+  z=0.0;
+};
+
 void RTCM2_03::extract(const RTCM2packet& P) {
 
   // Check validity, packet type and number of data words
@@ -1115,7 +1124,7 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
       if (sid==0) sid=32;
       
       prn = (isGPS? sid : sid+200 );
-
+      
       // Carrier phase measurement (mod 2^23 [cy]; sign matched to range)
       cph = -P.getBits(iSat*48+40,32)/256.0;
 
@@ -1136,18 +1145,18 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
         rng_P2.push_back(0.0);
         cph_L1.push_back(0.0);
         cph_L2.push_back(0.0);
-	slip_L1.push_back(-1);
-	slip_L2.push_back(-1);
+        slip_L1.push_back(-1);
+        slip_L2.push_back(-1);
       };
       
       // Store measurement
       if (isL1) {
-        cph_L1 [idx] = cph;
-	slip_L1[idx] = slip_cnt;
+        cph_L1[idx] = cph;
+        slip_L1[idx] = slip_cnt;
       }
       else {
-        cph_L2 [idx] = cph;
-	slip_L2[idx] = slip_cnt;
+        cph_L2[idx] = cph;
+        slip_L2[idx] = slip_cnt;
       };
            
     };
@@ -1259,8 +1268,8 @@ void RTCM2_Obs::extract(const RTCM2packet& P) {
         rng_P2.push_back(0.0);
         cph_L1.push_back(0.0);
         cph_L2.push_back(0.0);
-	slip_L1.push_back(-1);
-	slip_L2.push_back(-1);
+        slip_L1.push_back(-1);
+	      slip_L2.push_back(-1);
       };
       
       // Store measurement
@@ -1349,6 +1358,3 @@ void RTCM2_Obs::resolveEpoch (int  refWeek,   double  refSecs,
 };
 
 }; // End of namespace rtcm2
-
-
-
