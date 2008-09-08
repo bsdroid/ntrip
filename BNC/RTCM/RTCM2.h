@@ -28,6 +28,7 @@
 //   2006/10/17  OMO  Removed obsolete check of multiple message indicator
 //   2006/11/25  OMO  Revised check for presence of GLONASS data
 //   2008/03/07  AHA  Removed unnecessary failure flag
+//   2008/09/01  AHA  Harmonization with newest BNC version
 //
 // (c) DLR/GSOC
 //
@@ -200,15 +201,18 @@ class RTCM2packet {
 //------------------------------------------------------------------------------
 
 class RTCM2_03 {
- public:
   
-  RTCM2_03() : validMsg(false), x(0.0), y(0.0), z(0.0) { }
-  
-  void extract(const RTCM2packet& P);
-  
- public:
-  bool    validMsg;          // Validity flag
-  double  x,y,z;             // Station coordinates
+  public:
+    // Constructor
+    RTCM2_03();
+
+    void extract(const RTCM2packet& P);
+
+  public:
+
+    bool    validMsg;          // Validity flag
+    double  x,y,z;             // Station coordinates
+
 };
 
 
