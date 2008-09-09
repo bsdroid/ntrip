@@ -428,7 +428,7 @@ The self-explanatory contents of the configuration file or the Windows registry 
 In Qt-based desktop environments (such as KDE) on Unix/Linux platforms users may experience a crash at startup even when BNS is run in the background using the '-nw' option. This is a known bug most likely resulting from an incompatibility of Qt libraries in the environment and in BNS. Entering the command 'unset SESSION_MANAGER' before running BNS may help as a work-around.
 </li>
 <li>
-Currently BNS can only generate the tentative RTCM Version 3.x message Type 4056 and 4057 for combined GPS and GLONASS orbit and clock corrections.
+Currently BNS can only generate the tentative RTCM Version 3.x message Type 4056 and 4057 for combined GPS and GLONASS orbit and clock corrections. Note that the length of data fields in these messages is not yet standardized. What's implemented in BNS is just a temporary solutions.
 </li>
 <li>
 We experienced some limitation with the Standard Version of Microsoft Windows related to socket communication where sockets are not always handled properly. Since BNS makes intensive use of communication through sockets, we recommend to use the Server Version of Microsoft Windows when running BNS continuously for extended period on a Windows platform.
