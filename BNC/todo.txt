@@ -1,1 +1,43 @@
-Upgrade to NTRIP Version 2
+BNS 
+=========================
+(*) Allow dummy clock values 999999.999999 coming from RTNet
+Reason: DLR real-time engine (Oliver Montenbruck) uses dummies.
+
+(*) How about clocks and orbits coming in sampling rates .ne. 1sec? 
+Does it make sense to support i.e. 3sec/5sec/10sec?
+Reason: DRL provides clocks and orbits with 30sec sampling.
+
+(*) Outlier in orbit corrections concerning only GLONASS.
+Comment from Georg: I don't have an idea where to look for the problem.
+Does anybody have an idea for a test scenario?
+
+(*) BNS reconnect behavior with respect to caster is sometimes a problem.
+I checked the situation with breaking/re-establishing the Internet
+connection. BNS just stops operation.
+
+(*) BNS reconnect behavior with respect to BNC is sometimes a problem.
+Reason: Once BNC is stopped and restarted, BNS does not continue
+its operation.
+
+BNC
+=========================
+(*) Georg: Keep an eye on www.igs-ip.net/PENC0.
+Reason: Have seen 100% CPU. Dirk Stoecker says he has not seen
+this over a period of several days. He also says the reason
+could actually only be that the decoding function is called
+although no new data available.
+
+(*) Zdenek: Include GLONASS in RTCMv2 20/21 messages.
+
+(*) Zdenek: Include Loss of Lock indicator in socket output for RTNet
+Comment from Georg: Doesn't have this consequences for RTNet?
+
+(*) Concerning the new RTCMv3 clock/orbit messages, it looks like
+RTCM will now exchange input files between manufacturers. Each
+Manufacturer will do the encoding and decoding and results will
+be exchange to check them.
+Leos: BNC can't read from files. Would it be possible to have an
+additional function in BNC which allows that? (It may be, that
+this is not easy to implement.) Input would be the full path
+to the file plus a string describing the expected stream format.
+
