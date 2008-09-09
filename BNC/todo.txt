@@ -19,6 +19,9 @@ connection. BNS just stops operation.
 Reason: Once BNC is stopped and restarted, BNS does not continue
 its operation.
 
+(*) I found line "TODO: handle old ephemeris" in bns.cpp
+
+
 BNC
 =========================
 (*) Georg: Keep an eye on www.igs-ip.net/PENC0.
