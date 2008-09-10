@@ -21,6 +21,14 @@ its operation.
 
 (*) I found line "TODO: handle old ephemeris" in bns.cpp
 
+(*) Just a recommendation: The input format for clocks and orbits
+(from RTNet) very much follows the SP3 format. Would it be 
+difficult to switch to from [m] to [km] as we have it in SP3?
+It would make it easier to argue for the usage of BNS within IGS
+if we can say: input is SP3. This would of course be something which
+would need to be adjusted also in RTNet - and I know that you prefer
+not to change RTNet.
+
 
 BNC
 =========================
