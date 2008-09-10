@@ -182,7 +182,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_2_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
   _mountpoint_2_LineEdit->setMaximumWidth(9*ww);
   _refSys_1_ComboBox = new QComboBox;
-  _refSys_1_ComboBox->setMaximumWidth(9*ww);
+  _refSys_1_ComboBox->setMaximumWidth(10*ww);
   _refSys_1_ComboBox->setEditable(false);
   _refSys_1_ComboBox->addItems(QString("IGS05,ETRS89").split(","));
   int ii = _refSys_1_ComboBox->findText(settings.value("refSys_1").toString());
@@ -191,7 +191,7 @@ bnsWindow::bnsWindow() {
   }
   _refSys_1_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
   _refSys_2_ComboBox = new QComboBox;
-  _refSys_2_ComboBox->setMaximumWidth(9*ww);
+  _refSys_2_ComboBox->setMaximumWidth(10*ww);
   _refSys_2_ComboBox->setEditable(false);
   _refSys_2_ComboBox->addItems(QString("IGS05,ETRS89").split(","));
   ii = _refSys_2_ComboBox->findText(settings.value("refSys_2").toString());
