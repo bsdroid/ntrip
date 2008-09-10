@@ -40,8 +40,8 @@ An alternative to the observation space approach is the so called 'sate space' a
 <p>In order to support applications following the state space approach, the purpose of BNS is to
 
 <ul>
-<li>read GNSS clocks and orbits in plain ASCII format from an IP port. They can be produced by a real-time GNSS engine such as RTNet and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system.</li> 
-<li>read GNSS Broadcast Ephemeris in RINEX Navigation file format from an IP port. This information can be provided in real-time by the 'BKG Ntrip Client' (BNC) program.</li>
+<li>read GNSS clocks and orbits in SP3 format from an IP port. They can be produced by a real-time GNSS engine such as RTNet and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system.</li> 
+<li>read GNSS Broadcast Ephemeris in RINEX Navigation format from an IP port. This information can be provided in real-time by the 'BKG Ntrip Client' (BNC) program.</li>
 <li>convert the IGS Earth-Centered-Earth-Fixed clocks and and orbits into corrections to Broadcast Ephemeris with radial, along-track and cross-track components.</li>
 <li>upload the clock and orbit corrections as a stream to an NTRIP Broadcaster.</li>
 <li>log the Broadcast Ephemeris clock corrections as files in Clock RINEX files.</li>
@@ -64,7 +64,7 @@ The procedures taken by BNS to generate clock and orbit corrections to Broadcast
 <p>
 Then, epoch by epoch:
 <ul> 
-<li>Continuously receive the best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS05 reference system. Receive them every epoch in a plain ASCII format as provided by a real-time GNSS engine such as RTNet.</li>
+<li>Continuously receive the best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS05 reference system. Receive them every epoch in SP3 format as provided by a real-time GNSS engine such as RTNet.</li>
 <li>Calculate X,Y,Z coordinates from Broadcast Ephemeris orbits.</li>
 <li>Calculate differences dX,dY,dZ between Broadcast Ephemeris orbits and IGS05 orbits.</li>
 <li>Model orbit differences through low degree polynomial.</li>
@@ -83,7 +83,7 @@ Although it is not compulsory, because BNS puts a significant load on the commun
 
 <p><a name="resources"><h3>3. Resources</h3></p>
 <p>
-The current size of the real-time stream produced by BNS is in the order 5 kbits/sec depending on the number of visible satellites. When uploading the stream to an NTRIP Broadcaster, user needs to ensure that the connection used can sustain the required bandwidth.
+The current size of the real-time stream produced by BNS is in the order of 5 kbits/sec depending on the number of visible satellites. When uploading the stream to an NTRIP Broadcaster, user needs to ensure that the connection used can sustain the required bandwidth.
 </p>
 <p>
 Running BNS requires the clock of the host computer to be properly synchronized.
@@ -184,15 +184,6 @@ When BNS is started, new files are created by default and any existing files wit
 BNS requires GNSS Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address and port. This information can be provided in real-time by the 'BKG Ntrip Client' (BNC) program. Note that whenever a new set of Broadcast Ephemeris becomes available, BNS needs it immediately.
 </p>
 
-<p><a name="ephserver"><h4>4.5.1 Host & Port - mandatory</h4></p>
-<p>
-Enter the IP address and port number of a Broadcast Ephemeris server like BNC to establish a persistent socket connection, see section 'Flow Chart' under 'Help' for socket communication details. If BNS runs on the same host as BNC, 127.0.0.1 should be used as the server's IP address. Make sure that this server is up and running before you start BNS.
-</p>
-
-<p><a name="ephsave"><h4>4.5.2 Save - optional</h4></p>
-</p>
-Specify the full path to a file where received Broadcast Ephemeris will logged. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that logging is disabled.
-</p>
 <p>
 The following is an example log of Broadcast Ephemeris records in RINEX Version 3 Navigation file format for satellite GPS PRN32 and GLONASS PRN04:
 </p>
@@ -214,23 +205,23 @@ R04 2008 07 22 08 15 14  4.76110726595e-05  0.00000000000e+00  2.88600000000e+04
 </pre>
 </p>
 
+<p><a name="ephserver"><h4>4.5.1 Host & Port - mandatory</h4></p>
+<p>
+Enter the IP address and port number of a Broadcast Ephemeris server like BNC to establish a persistent socket connection, see section 'Flow Chart' under 'Help' for socket communication details. If BNS runs on the same host as BNC, 127.0.0.1 should be used as the server's IP address. Make sure that this server is up and running before you start BNS.
+</p>
+
+<p><a name="ephsave"><h4>4.5.2 Save - optional</h4></p>
+</p>
+Specify the full path to a file where received Broadcast Ephemeris will be logged. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that logging is disabled.
+</p>
+
 <p><a name="co"><h4>4.6. Clocks & Orbits</h4></p>
 <p>
-BNS requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. They can be provided by a real-time GNSS engine such as RTNet and are expected to refer to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. 
-</p>
-
-<p><a name="coport"><h4>4.6.1 Listening Port - mandatory</h4></p>
-<p>
-BNS is listening at an IP port for incoming GNSS clocks and orbits in a plain ASCII format. Enter the respective IP port number to setup a server socket for incoming data, see section 'Flow Chart' under 'Help' for socket communication details. Make sure that the software providing clocks and orbits is up and running before you start BNS.
-</p>
-
-<p><a name="cosave"><h4>4.6.2 Save - optional</h4></p>
-<p>
-Specify the full path to a file where received clocks and orbits from a real-time engine will logged. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that logging is disabled.
+BNS requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system in SP3 format. They can be provided by a real-time GNSS engine such as RTNet and are expected to refer to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. 
 </p>
 
 <p>
-Below you find an example of precise clocks and orbits coming in plain ASCII format from a real-time GNSS engine. Each epoch starts with an asterisk character followed by GPS Week, Second in GPS Week and Number of satellites. Subsequent records provide the following set of parameters for each satellite:
+Below you find an example of precise clocks and orbits coming in SP3 format from a real-time GNSS engine. Each epoch starts with an asterisk character followed by GPS Week, Second in GPS Week and Number of satellites. Subsequent records provide the following set of parameters for each satellite:
 </p>
 
 <p>
@@ -274,6 +265,16 @@ R13   9967725.004   4777752.821  22964170.268     -205.604617     0.529
 R14  11764988.257 -13530761.727  18156438.374     -142.409512     0.091
 R23  15141704.650  19152042.802   7332976.247     -111.465201    -0.316
 </pre>
+</p>
+
+<p><a name="coport"><h4>4.6.1 Listening Port - mandatory</h4></p>
+<p>
+BNS is listening at an IP port for incoming GNSS clocks and orbits in SP3 format. Enter the respective IP port number to setup a server socket for incoming data, see section 'Flow Chart' under 'Help' for socket communication details. Make sure that the software providing clocks and orbits is up and running before you start BNS.
+</p>
+
+<p><a name="cosave"><h4>4.6.2 Save - optional</h4></p>
+<p>
+Specify the full path to a file where received clocks and orbits from a real-time engine will be logged. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that logging is disabled.
 </p>
 
 <p><a name="ephc"><h4>4.7. Ephemeris Corrections</h4></p>
@@ -428,7 +429,7 @@ The self-explanatory contents of the configuration file or the Windows registry 
 In Qt-based desktop environments (such as KDE) on Unix/Linux platforms users may experience a crash at startup even when BNS is run in the background using the '-nw' option. This is a known bug most likely resulting from an incompatibility of Qt libraries in the environment and in BNS. Entering the command 'unset SESSION_MANAGER' before running BNS may help as a work-around.
 </li>
 <li>
-Currently BNS can only generate the tentative RTCM Version 3.x message Type 4056 and 4057 for combined GPS and GLONASS orbit and clock corrections. Note that the length of data fields in these messages is not yet standardized. What's implemented in BNS is just a temporary solutions.
+Currently BNS can only generate the tentative RTCM Version 3.x message Type 4056 and 4057 for combined GPS and GLONASS orbit and clock corrections. Note that the length of data fields in these messages is not yet standardized. What's implemented in BNS is just a temporary solution.
 </li>
 <li>
 We experienced some limitation with the Standard Version of Microsoft Windows related to socket communication where sockets are not always handled properly. Since BNS makes intensive use of communication through sockets, we recommend to use the Server Version of Microsoft Windows when running BNS continuously for extended period on a Windows platform.
@@ -463,7 +464,7 @@ Frankfurt, Germany<br>
 </p>
 <table>
 <tr></tr>
-<tr><td>August 2008 &nbsp;</td><td>Version 1.0 &nbsp;</td><td>[Add] Beta Binaries published.</td></tr>
+<tr><td>Sep 2008 &nbsp;</td><td>Version 1.0 &nbsp;</td><td>[Add] Beta Binaries published.</td></tr>
 </table>
 </p>
 
