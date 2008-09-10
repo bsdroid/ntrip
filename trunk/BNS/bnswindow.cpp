@@ -163,7 +163,7 @@ bnsWindow::bnsWindow() {
   _ephEchoLineEdit->setWhatsThis(tr("Specify the full path to a file where incoming Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that incoming Broadcast Ephemeris are not saved."));
 
   _clkPortLineEdit  = new QLineEdit(settings.value("clkPort").toString());
-  _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in plain ASCII format from an IP port. Specify a local IP port e.g. of an RTNet installation to provide this information."));
+  _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in SP3 format from an IP port. Specify a local IP port e.g. of an RTNet installation to provide this information."));
   _clkPortLineEdit->setMaximumWidth(9*ww);
 
   _outHostLineEdit    = new QLineEdit(settings.value("outHost").toString());
@@ -297,7 +297,7 @@ bnsWindow::bnsWindow() {
   layout_eph->addWidget(_ephPortLineEdit,                     1, 1);
   layout_eph->addWidget(new QLabel("Save (full path)"),       2, 0);
   layout_eph->addWidget(_ephEchoLineEdit,                     2, 1);
-  layout_eph->addWidget(new QLabel("Read broadcast ephemeris."), 3, 0, 1, 2, Qt::AlignLeft);
+  layout_eph->addWidget(new QLabel("Read broadcast ephemeris in RINEX Version 3 Navigation format."), 3, 0, 1, 2, Qt::AlignLeft);
 //layout_eph->addWidget(new QLabel(""),                       4, 0);
 
   tab_eph->setLayout(layout_eph);
@@ -315,7 +315,7 @@ bnsWindow::bnsWindow() {
   layout_co->addWidget(_clkPortLineEdit,                              0, 1);
   layout_co->addWidget(new QLabel("Save (full path)"),                1, 0);
   layout_co->addWidget(_inpEchoLineEdit,                              1, 1);
-  layout_co->addWidget(new QLabel("Read IGS clocks and orbits."),     2, 0, 1, 2, Qt::AlignLeft);
+  layout_co->addWidget(new QLabel("Read clocks and orbits in SP3 format."),     2, 0, 1, 2, Qt::AlignLeft);
   layout_co->addWidget(new QLabel(""),                                3, 0);
 
   tab_co->setLayout(layout_co);
@@ -349,7 +349,7 @@ bnsWindow::bnsWindow() {
   layout_cas->addWidget(new QLabel("  Save (full path)"),      2, 4, Qt::AlignRight);
   layout_cas->addWidget(_outFile_2_LineEdit,                   2, 5, 1, 8);
 
-  layout_cas->addWidget(new QLabel("Broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 8, Qt::AlignLeft);
+  layout_cas->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 8, Qt::AlignLeft);
 
   tab_cas->setLayout(layout_cas);
 
