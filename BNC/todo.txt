@@ -7,7 +7,11 @@ Reason: DLR real-time engine (Oliver Montenbruck) uses dummies.
 Does it make sense to support i.e. 3sec/5sec/10sec?
 Reason: DRL provides clocks and orbits with 30sec sampling.
 
-(*) Outlier in orbit corrections concerning only GLONASS.
+(*) DLR started (and unfortunately meanwhile stopped) sending 30sec
+SP3 in realtime to euref-ip.bkg.bund.de:7777. Andre Hauschild promised
+to restart sending SP3 again after the upcoming ION once he is back in Germany.
+
+(*) Outlier in orbit corrections, concerning only GLONASS.
 Comment from Georg: I don't have an idea where to look for the problem.
 Does anybody have an idea for a test scenario?
 
@@ -20,14 +24,6 @@ Reason: Once BNC is stopped and restarted, BNS does not continue
 its operation.
 
 (*) I found line "TODO: handle old ephemeris" in bns.cpp
-
-(*) Just a recommendation: The input format for clocks and orbits
-(from RTNet) very much follows the SP3 format. Would it be 
-difficult to switch to from [m] to [km] as we have it in SP3?
-It would make it easier to argue for the usage of BNS within IGS
-if we can say: input is SP3. This would of course be something which
-would need to be adjusted also in RTNet - and I know that you prefer
-not to change RTNet.
 
 
 BNC
