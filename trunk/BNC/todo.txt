@@ -38,6 +38,9 @@ Reason: Have seen 100% CPU. Dirk Stoecker says he has not seen
 this over a period of several days. He also says the reason
 could actually only be that the decoding function is called
 although no new data available.
+Georg, observation from 080915: BNC again shows 100% CPU because of PENC0.
+Could it really be that the decoder is called although no new
+data available? I deleted PENC0 from the configuration.
 
 (*) Zdenek: Include GLONASS in RTCMv2 20/21 messages.
 
