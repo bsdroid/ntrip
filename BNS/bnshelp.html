@@ -50,7 +50,7 @@ An alternative to the observation space approach is the so called 'sate space' a
 </ul>
 </p>
 <p>
-Note that BNS currently only generates the tentative RTCM Version 3.x message types 4056 for Combined GPS and GLONASS orbit corrections and 4057 for Combined GPS and GLONASS clock corrections to Broadcast Ephemeris.
+Note that BNS currently only generates premature RTCM Version 3.x message types 4056 for Combined GPS and GLONASS orbit corrections and 4057 for Combined GPS and GLONASS clock corrections to Broadcast Ephemeris.
 </p>
 
 <p><a name="function"><h3>2. Functioning</h3></p>
@@ -430,7 +430,7 @@ The self-explanatory contents of the configuration file or the Windows registry 
 In Qt-based desktop environments (such as KDE) on Unix/Linux platforms users may experience a crash at startup even when BNS is run in the background using the '-nw' option. This is a known bug most likely resulting from an incompatibility of Qt libraries in the environment and in BNS. Entering the command 'unset SESSION_MANAGER' before running BNS may help as a work-around.
 </li>
 <li>
-Currently BNS can only generate the tentative RTCM Version 3.x message Type 4056 and 4057 for combined GPS and GLONASS orbit and clock corrections. Note that the length of data fields in these messages is not yet standardized. What's implemented in BNS is just a temporary solution.
+Currently BNS can only generate premature RTCM Version 3.x message Type 4056 and 4057 for combined GPS and GLONASS orbit and clock corrections. Note that the length of data fields in these messages is not yet standardized. What's implemented in BNS is just a temporary solution.
 </li>
 <li>
 We experienced some limitation with the Standard Version of Microsoft Windows related to socket communication where sockets are not always handled properly. Since BNS makes intensive use of communication through sockets, we recommend to use the Server Version of Microsoft Windows when running BNS continuously for extended period on a Windows platform.
@@ -507,7 +507,7 @@ NTRIP is an open none-proprietary protocol. Major characteristics of NTRIP's dis
 <p>
 RTCM Version 3.x has been developed as a better alternative to RTCM Version 2.x. Service providers and vendors have asked for a standard that would be efficient, easy to use, and easily adaptable to new situations.
 </p>
-RTCM is in the process of developing new Version 3 message types to carry satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following tentative messages currently under discussion of relevance to BNS are listed here:
+RTCM is in the process of developing new Version 3 message types to carry satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following premature messages currently under discussion of relevance to BNS are listed here:
 <p>
 <ul>
 <li>Message type 4050: GPS orbit corrections to Broadcast Ephemeris</li>
