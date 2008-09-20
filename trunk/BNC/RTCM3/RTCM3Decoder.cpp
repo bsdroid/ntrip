@@ -214,24 +214,25 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
   // Remaining part decodes the Observations
   // ---------------------------------------
   if (_mode == unknown || _mode == observations || _checkMountPoint == _staID || _checkMountPoint == "ALL") {
+
     for (int ii = 0; ii < bufLen; ii++) {
-    
       _Parser.Message[_Parser.MessageSize++] = buffer[ii];
+
       if (_Parser.MessageSize >= _Parser.NeedBytes) {
     
         // RTCM message types
         // ------------------
-          for (int kk = 0; kk < _Parser.typeSize; kk++) {
-            _typeList.push_back(_Parser.typeList[kk]);
-          }
-          _Parser.typeSize = 0;
+        for (int kk = 0; kk < _Parser.typeSize; kk++) {
+          _typeList.push_back(_Parser.typeList[kk]);
+        }
+        _Parser.typeSize = 0;
     
         while(int rr = RTCM3Parser(&_Parser)) {
 
           // GNSS Observations
           // -----------------
           if (rr == 1 || rr == 2) {
-                  decoded = true;
+            decoded = true;
     
             if (!_Parser.init) {
               HandleHeader(&_Parser);
