@@ -75,8 +75,8 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   for (int ic = 1; ic <= 2; ic++) {
 
     QString mountpoint  = settings.value(QString("mountpoint_%1").arg(ic)).toString();
-    if (!mountpoint.isEmpty()) {
-      QString outFileName = settings.value(QString("outFile_%1").arg(ic)).toString();
+    QString outFileName = settings.value(QString("outFile_%1").arg(ic)).toString();
+    if (!mountpoint.isEmpty() || !outFileName.isEmpty()) {
       QString refSys      = settings.value(QString("refSys_%1").arg(ic)).toString();
 
       _caster.push_back(new t_bnscaster(mountpoint, outFileName, refSys));
@@ -390,7 +390,7 @@ void t_bns::readEpoch() {
           }
         }
       
-        if ( _caster.at(ic)->used() && 
+        if ( _caster.at(ic)->usedSocket() && 
              (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
           char obuffer[CLOCKORBIT_BUFFERSIZE];
           int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));

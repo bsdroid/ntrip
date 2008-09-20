@@ -69,6 +69,10 @@ t_bnscaster::~t_bnscaster() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bnscaster::open() {
 
+  if (_mountpoint.isEmpty()) {
+    return;
+  }
+
   if (_outSocket != 0 && 
       _outSocket->state() == QAbstractSocket::ConnectedState) {
     return;
