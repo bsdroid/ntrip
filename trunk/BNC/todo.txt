@@ -52,6 +52,10 @@ data available? I deleted PENC0 from the configuration.
 (*) Die BNC-Routine füllt den rtcm3torinex-Puffer byteweise.  Das ist unnötig
 langsam. Der Puffer kann bis zum Rand gefüllt werden.
 
+LM: Das ist doch nicht wahr! Wo? In RTCM3/RTCM3Decoder.cpp fuellt man das
+    "_Parser.Message" mit "_Parser.NeedBytes" und erst dann startet das
+    dekodierung. Oder sprechen wir ueber einer anderen Stelle?
+
 (*) Zdenek: Include GLONASS in RTCMv2 20/21 messages.
 
 (*) Zdenek: Include Loss of Lock indicator in socket output for RTNet
