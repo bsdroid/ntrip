@@ -112,9 +112,13 @@ void t_bnseph::run() {
 void t_bnseph::readEph() {
 
   int nBytes = 0;
-
   t_eph* eph = 0;
+
   QByteArray line = waitForLine(_socket);
+
+  if (line.isEmpty()) {
+    return;
+  }
 
   if (_echoStream) {
     *_echoStream << line;
@@ -143,6 +147,10 @@ void t_bnseph::readEph() {
 
   for (int ii = 2; ii <= numlines; ii++) {
     QByteArray line = waitForLine(_socket);
+    if (line.isEmpty()) {
+      delete eph;
+      return;
+    }
 
     if (_echoStream) {
       *_echoStream << line;
