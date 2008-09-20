@@ -42,6 +42,9 @@ Georg, observation from 080915: BNC again shows 100% CPU because of PENC0.
 Could it really be that the decoder is called although no new
 data available? I deleted PENC0 from the configuration.
 
+(*) Die BNC-Routine füllt den rtcm3torinex-Puffer byteweise.  Das ist unnötig
+langsam. Der Puffer kann bis zum Rand gefüllt werden.
+
 (*) Zdenek: Include GLONASS in RTCMv2 20/21 messages.
 
 (*) Zdenek: Include Loss of Lock indicator in socket output for RTNet
