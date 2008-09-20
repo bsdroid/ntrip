@@ -207,7 +207,6 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
 
       if (_mode == unknown) {
         _mode = corrections;
-//      emit(newMessage( (_staID + " : mode set to corrections").toAscii() ));
       }
     }
   }
@@ -240,7 +239,6 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
             }
             
             if (rr == 2) {
-//            std::cerr << "No valid RINEX! All values are modulo 299792.458!\n";
               emit(newMessage( (_staID + ": No valid RINEX! All values are modulo 299792.458!").toAscii() ));
             }
             
@@ -280,7 +278,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
                   if ( (_Parser.Data.dataflags[ii] & df)
                        && !isnan(_Parser.Data.measdata[ii][pos])
                        && !isinf(_Parser.Data.measdata[ii][pos])) {
-                  v = 1;
+                    v = 1;
                   }
                 }
                 if (!v) { 
@@ -288,10 +286,10 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
                 }
                 else
                 {
-		  int isat = (_Parser.Data.satellites[ii] < 120 
-			      ? _Parser.Data.satellites[ii] 
-			      : _Parser.Data.satellites[ii] - 80);
-		  
+                  int isat = (_Parser.Data.satellites[ii] < 120 
+                              ? _Parser.Data.satellites[ii] 
+                              : _Parser.Data.satellites[ii] - 80);
+                  
                   // variables df and pos are used consequently. Perlt
                   if      (df & GNSSDF_C1DATA) {
                     obs->_o.C1 = _Parser.Data.measdata[ii][pos];
@@ -308,12 +306,12 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
                   else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
                     obs->_o.L1            = _Parser.Data.measdata[ii][pos];
                     obs->_o.SNR1          = _Parser.Data.snrL1[ii];
-		    obs->_o.lock_timei_L1 = _Parser.lastlockl1[isat];
+                    obs->_o.lock_timei_L1 = _Parser.lastlockl1[isat];
                   }
                   else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
                     obs->_o.L2            = _Parser.Data.measdata[ii][pos];
                     obs->_o.SNR2          = _Parser.Data.snrL2[ii];
-		    obs->_o.lock_timei_L2 = _Parser.lastlockl2[isat];
+                    obs->_o.lock_timei_L2 = _Parser.lastlockl2[isat];
                   }
                   else if (df & (GNSSDF_S1CDATA|GNSSDF_S1PDATA)) {
                     obs->_o.S1   = _Parser.Data.measdata[ii][pos];
@@ -346,7 +344,6 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
     }
     if (_mode == unknown && decoded) {
       _mode = observations;
-//    emit(newMessage( (_staID + " : mode set to observations").toAscii() ));
     }
   }
 
