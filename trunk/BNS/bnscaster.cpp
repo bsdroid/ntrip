@@ -97,11 +97,11 @@ void t_bnscaster::open() {
   _outSocket->connectToHost(settings.value("outHost").toString(),
                             settings.value("outPort").toInt());
 
-  const int timeOut = 100;  // 0.1 seconds
+  const int timeOut = 5000;  // 5 seconds
   if (!_outSocket->waitForConnected(timeOut)) {
     delete _outSocket;
     _outSocket = 0;
-    emit(error("bns::openCaster Connect Timeout"));
+    emit(error("t_bnscaster::open Connect Timeout"));
     return;
   }
 
@@ -120,10 +120,10 @@ void t_bnscaster::open() {
   if (ans.indexOf("OK") == -1) {
     delete _outSocket;
     _outSocket = 0;
-    emit(newMessage("bns::openCaster socket deleted"));
+    emit(newMessage("t_bnscaster::open  socket deleted"));
   }
   else {
-    emit(newMessage("bns::openCaster socket OK"));
+    emit(newMessage("t_bnscaster::open  socket OK"));
     _outSocketOpenTrial = 0;
   }
 }
