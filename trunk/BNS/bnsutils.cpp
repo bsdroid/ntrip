@@ -156,6 +156,9 @@ QByteArray waitForLine(QTcpSocket* socket) {
       }
     }
     else {
+      if (socket->state() != QAbstractSocket::ConnectedState) {
+        return "";
+      }
       socket->waitForReadyRead(10);
     }
   }
