@@ -12,7 +12,7 @@ class t_bnscaster : public QObject {
   void open();
   void write(char* buffer, unsigned len);
   void printAscii(const QString& line);
-  bool used() const {return _outSocket || _outFile;}
+  bool usedSocket() const {return _outSocket;}
   bool crdTrafo() const {return _crdTrafo;}
 
  signals:
