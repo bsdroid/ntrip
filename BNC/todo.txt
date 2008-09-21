@@ -5,12 +5,14 @@ I checked the situation with breaking/re-establishing the Internet
 connection. BNS just stops operation.
 
 LM: it should be better now. At least it works fine on my notebook.
+GW: Started BNS on euref-ip with BNC and RTNet on clock-ip.
 
 (*) BNS reconnect behavior with respect to BNC is sometimes a problem.
 Reason: Once BNC is stopped and restarted, BNS does not continue
 its operation.
 
 LM: it should be better now. At least it works fine on my notebook.
+GW: Started BNS on euref-ip with BNC and RTNet on clock-ip.
 
 (*) Outlier in orbit corrections, concerning only GLONASS.
 Comment from Georg: I don't have an idea where to look for the problem.
