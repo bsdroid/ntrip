@@ -226,6 +226,16 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
           _typeList.push_back(_Parser.typeList[kk]);
         }
         _Parser.typeSize = 0;
+
+        // Antenna XYZ-H
+        // -------------
+        for (int kk = 0; kk < _Parser.antSize; kk += 4) {
+          _antList.push_back(_Parser.antList[kk + 0]);
+          _antList.push_back(_Parser.antList[kk + 1]);
+          _antList.push_back(_Parser.antList[kk + 2]);
+          _antList.push_back(_Parser.antList[kk + 3]);
+        }
+        _Parser.antSize = 0;
     
         while(int rr = RTCM3Parser(&_Parser)) {
 

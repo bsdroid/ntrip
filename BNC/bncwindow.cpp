@@ -328,7 +328,7 @@ bncWindow::bncWindow() {
   _log->setWhatsThis(tr("Records of BNC's activities are shown in the Log section. The message log covers the communication status between BNC and the NTRIP broadcaster as well as any problems that occur in the communication link, stream availability, stream delay, stream conversion etc."));
   _ephV3CheckBox->setWhatsThis(tr("The default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format."));
   _rnxV3CheckBox->setWhatsThis(tr("The default format for RINEX Observation files is RINEX Version 2.11. Select 'Version 3' if you want to save the observations in RINEX Version 3 format."));
-  _messTypesLineEdit->setWhatsThis(tr("<p>Specify the mountpoint of an RTCM Version 3.x stream to log the numbers of incoming message types.</p><p>An empty option field (default) means that you don't want BNC to print the message type numbers carried in a specific stream.</p>"));
+  _messTypesLineEdit->setWhatsThis(tr("<p>Specify the mountpoint of an RTCM Version 3.x stream to log the numbers of incoming message types as well as contained antenna coordinates and antenna hight.</p><p>An empty option field (default) means that you don't want BNC to log such information.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -351,7 +351,7 @@ bncWindow::bncWindow() {
   aogroup->addTab(sgroup,tr("Synchronized Observations"));
   aogroup->addTab(cgroup,tr("Ephemeris Corrections"));
   aogroup->addTab(agroup,tr("Monitor"));
-  aogroup->addTab(rgroup,tr("RTCM Message Types"));
+  aogroup->addTab(rgroup,tr("RTCM Scan"));
 
   QGridLayout* pLayout = new QGridLayout;
   pLayout->setColumnMinimumWidth(0,14*ww);
@@ -427,7 +427,7 @@ bncWindow::bncWindow() {
   rLayout->setColumnMinimumWidth(0,14*ww);
   rLayout->addWidget(new QLabel("Mountpoint"),0,0, Qt::AlignLeft);
   rLayout->addWidget(_messTypesLineEdit,0,1,1,15,Qt::AlignLeft);
-  rLayout->addWidget(new QLabel("Log numbers of message types in RTCM Version 3.x stream."),1, 0, 1, 4, Qt::AlignLeft);
+  rLayout->addWidget(new QLabel("Scan RTCM Version 3.x stream to log numbers of message types and antenna information."),1, 0, 1, 4, Qt::AlignLeft);
   rLayout->addWidget(new QLabel("    "),2,0);
   rLayout->addWidget(new QLabel("    "),3,0);
   rLayout->addWidget(new QLabel("    "),4,0);

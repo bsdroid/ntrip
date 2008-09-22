@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.32 2008/09/02 07:45:48 stoecker Exp $
+  $Id: rtcm3torinex.c,v 1.16 2008/09/02 14:14:33 weber Exp $
   Copyright (C) 2005-2008 by Dirk Stöcker <stoecker@alberding.eu>
 
   This software is a complete NTRIP-RTCM3 to RINEX converter as well as
@@ -50,7 +50,7 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.32 $";
+static char revisionstr[] = "$Revision: 1.16 $";
 
 #ifndef COMPILEDATE
 #define COMPILEDATE " built " __DATE__
@@ -288,6 +288,23 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
 #endif /* NO_RTCM3_MAIN */
     switch(type)
     {
+#ifdef NO_RTCM3_MAIN
+    double antX, antY, antZ, antH; /* Antenna XYZ-H */
+    case 1006:
+      {
+        SKIPBITS(22);
+        GETBITSSIGN(antX, 38); SKIPBITS(2);
+        GETBITSSIGN(antY, 38); SKIPBITS(2);
+        GETBITSSIGN(antZ, 38);
+        GETBITS(    antH, 16);
+        handle->antList[handle->antSize + 0] = antX;
+        handle->antList[handle->antSize + 1] = antY;
+        handle->antList[handle->antSize + 2] = antZ;
+        handle->antList[handle->antSize + 3] = antH;
+        if(handle->antSize < 100 - 6 ) {handle->antSize += 4;}
+      }
+      break;
+#endif /* NO_RTCM3_MAIN */
     case 1019:
       {
         struct gpsephemeris *ge;
@@ -1621,7 +1638,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 }
 
 #ifndef NO_RTCM3_MAIN
-static char datestr[]     = "$Date: 2008/09/02 07:45:48 $";
+static char datestr[]     = "$Date: 2008/09/02 14:14:33 $";
 
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
