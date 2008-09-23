@@ -20,6 +20,7 @@ Does anybody have an idea for a test scenario?
 
 LM: I do not see the problem right now (on my notebook). Maybe is is already
     O.K. due to other changes. Georg, could you test it?
+GW: Test is running in euref-ip.
 
 (*) DLR started (and unfortunately meanwhile stopped) sending 30sec
 SP3 in realtime to euref-ip.bkg.bund.de:7777. Andre Hauschild promised
@@ -57,6 +58,7 @@ langsam. Der Puffer kann bis zum Rand gefüllt werden.
 LM: Das ist doch nicht wahr! Wo? In RTCM3/RTCM3Decoder.cpp fuellt man das
     "_Parser.Message" mit "_Parser.NeedBytes" und erst dann startet das
     dekodierung. Oder sprechen wir ueber einer anderen Stelle?
+GW: Dirk Stoecker is informed. I asked him to comment on this.
 
 (*) Zdenek: Include GLONASS in RTCMv2 20/21 messages.
 
