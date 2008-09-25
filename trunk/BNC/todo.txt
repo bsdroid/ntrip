@@ -1,34 +1,5 @@
 BNS 
 =========================
-(*) BNS reconnect behavior with respect to caster is sometimes a problem.
-I checked the situation with breaking/re-establishing the Internet
-connection. BNS just stops operation.
-
-LM: it should be better now. At least it works fine on my notebook.
-GW: Started BNS on euref-ip with BNC and RTNet on clock-ip.
-GW: Likely that reconnet is OK. BNS job moved back to clock-ip.
-
-(*) BNS reconnect behavior with respect to BNC is sometimes a problem.
-Reason: Once BNC is stopped and restarted, BNS does not continue
-its operation.
-
-LM: it should be better now. At least it works fine on my notebook.
-GW: Started BNS on euref-ip with BNC and RTNet on clock-ip.
-GW: Likely that reconnet is OK. BNS job moved back to clock-ip.
-
-(*) Outlier in orbit corrections, concerning only GLONASS.
-GW: I don't have an idea where to look for the problem.
-Does anybody have an idea for a test scenario?
-
-LM: I do not see the problem right now (on my notebook). Maybe is is already
-    O.K. due to other changes. Georg, could you test it?
-GW: Test is running in euref-ip.
-GW: BNS job moved back to clock-ip. I keep an eye on the output.
-
-(*) DLR started (and unfortunately meanwhile stopped) sending 30sec
-SP3 in realtime to euref-ip.bkg.bund.de:7777. Andre Hauschild promised
-to restart sending SP3 again after the upcoming ION once he is back in Germany.
-
 (*) Allow dummy clock values 999999.999999 as input?
 Reason: DLR real-time engine (Oliver Montenbruck) uses dummies.
 The general question behind this is: Could it be done that the
@@ -41,12 +12,11 @@ However, this touches RTNet's output.
 Does it make sense to support i.e. 3sec/5sec/10sec?
 Reason: DRL provides clocks and orbits with 30sec sampling.
 
-GW 08-09-24: DLR again started to send SP3 stream to euref-ip.bkg.bund.de:7777
+DLR started to send SP3 stream to euref-ip.bkg.bund.de:7777.
 BNS can't handle that because of 30sec sampling. DLR promised to switch
 to 10sec within the next 2 months.
 
-(*) I found line "TODO: handle old ephemeris" in bns.cpp
-
+(*) "TODO: handle old ephemeris" in bns.cpp
 
 BNC
 =========================
@@ -59,30 +29,11 @@ GW 08-09-15: BNC again shows 100% CPU because of PENC0.
 Could it really be that the decoder is called although no new
 data available? Deleted PENC0 from the configuration.
 
-(*) Die BNC-Routine füllt den rtcm3torinex-Puffer byteweise.  Das ist unnötig
-langsam. Der Puffer kann bis zum Rand gefüllt werden.
-
-LM: Das ist doch nicht wahr! Wo? In RTCM3/RTCM3Decoder.cpp fuellt man das
-    "_Parser.Message" mit "_Parser.NeedBytes" und erst dann startet das
-    dekodierung. Oder sprechen wir ueber einer anderen Stelle?
-GW: Dirk Stoecker is informed. I asked him to comment on this.
-
 (*) Zdenek: Include GLONASS in RTCMv2 20/21 messages.
 
 (*) Zdenek: Include Loss of Lock indicator in socket output for RTNet
-GW: Doesn't have this consequences for RTNet?
 
-(*) Concerning the new RTCMv3 clock/orbit messages, it looks like
-RTCM will now exchange input files between manufacturers. Each
-Manufacturer will do the encoding and decoding and results will
-be exchange to check them.
-Leos: BNC can't read from files. Would it be possible to have an
-additional function in BNC which allows that? (It may be, that
-this is not easy to implement.) Input would be the full path
-to the file plus a string describing the expected stream format.
+(*) Let BNC read from files.
 
-(*) Re-configuring BNC on-the-fly would be helpful to improve the
-performance. Would it be possible to let BNC just re-read the "mountPoints"
-sting in the config file once every midnight when in "-nw" mode
-when the skeleton checks are done anyway?
+(*) Reconfigure BNC on-the-fly.
 
