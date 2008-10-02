@@ -114,19 +114,12 @@ int main(int argc, char *argv[]) {
   // ----------------------------
   else {
 
+    signal(SIGINT, catch_signal);
+
     bncCaster* caster = new bncCaster(settings.value("outFile").toString(),
                                       settings.value("outPort").toInt());
     
     app.setCaster(caster);
-
-    // Ctrl-C Signal Handling
-    // ----------------------
-    signal(SIGINT, catch_signal);
-
-    //// beg test
-    ////    QTimer::singleShot(30000, &app, SLOT(slotQuit()));
-    //// end test
-
     app.setPort(settings.value("outEphPort").toInt());
     app.setPortCorr(settings.value("corrPort").toInt());
 
@@ -136,27 +129,40 @@ int main(int argc, char *argv[]) {
   
     ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
 
-    int iMount = -1;
-    QListIterator<QString> it(settings.value("mountPoints").toStringList());
-    while (it.hasNext()) {
-      ++iMount;
-      QStringList hlp = it.next().split(" ");
-      if (hlp.size() <= 1) continue;
-      QUrl url(hlp[0]);
-      QByteArray format = hlp[1].toAscii();
-      QByteArray latitude = hlp[2].toAscii();
-      QByteArray longitude = hlp[3].toAscii();
-      QByteArray nmea = hlp[4].toAscii();
-      bncGetThread* getThread = new bncGetThread(url, format, latitude, longitude, nmea, iMount);
+    if (false) {
+      bncGetThread* getThread = new bncGetThread("FFMJ2.raw","RTCM_3");
       app.connect(getThread, SIGNAL(newMessage(QByteArray)), 
                   &app, SLOT(slotMessage(const QByteArray)));
-
+      
       caster->addGetThread(getThread);
-
+      
       getThread->start();
     }
-    if (caster->numStations() == 0) {
-      return 0;
+    else {
+      int iMount = -1;
+      QListIterator<QString> it(settings.value("mountPoints").toStringList());
+      while (it.hasNext()) {
+        ++iMount;
+        QStringList hlp = it.next().split(" ");
+        if (hlp.size() <= 1) continue;
+        QUrl url(hlp[0]);
+        QByteArray format = hlp[1].toAscii();
+        QByteArray latitude = hlp[2].toAscii();
+        QByteArray longitude = hlp[3].toAscii();
+        QByteArray nmea = hlp[4].toAscii();
+      
+        bncGetThread* getThread = new bncGetThread(url, format, latitude, longitude, nmea, iMount);
+      
+        app.connect(getThread, SIGNAL(newMessage(QByteArray)), 
+                    &app, SLOT(slotMessage(const QByteArray)));
+      
+        caster->addGetThread(getThread);
+      
+        getThread->start();
+      }
+      if (caster->numStations() == 0) {
+        return 0;
+      }
     }
   }
 
