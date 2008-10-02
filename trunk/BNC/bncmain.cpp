@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
     ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
 
     if (false) {
-      bncGetThread* getThread = new bncGetThread("FFMJ2.raw","RTCM_3");
+      bncGetThread* getThread = new bncGetThread("SASS0.raw","RTCM_3");
       app.connect(getThread, SIGNAL(newMessage(QByteArray)), 
                   &app, SLOT(slotMessage(const QByteArray)));
       

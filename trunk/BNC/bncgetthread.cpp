@@ -171,9 +171,9 @@ void bncGetThread::initialize() {
 
   // Raw Output
   // ----------
-  QByteArray rawOutFileName = "./" + _staID + ".raw";
-  _rawOutFile = new QFile(rawOutFileName);
-  _rawOutFile->open(QIODevice::WriteOnly);
+  // QByteArray rawOutFileName = "./" + _staID + ".raw";
+  // _rawOutFile = new QFile(rawOutFileName);
+  // _rawOutFile->open(QIODevice::WriteOnly);
 
   msleep(100); //sleep 0.1 sec
 }

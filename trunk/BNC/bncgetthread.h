@@ -67,6 +67,7 @@ class bncGetThread : public QThread {
    virtual void run();
 
  private:
+   void  initialize();
    t_irc initRun();
    void  message(const QString&);
    void  exit(int exitCode = 0);
