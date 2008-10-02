@@ -61,6 +61,18 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
+bncGetThread::bncGetThread(const QByteArray& rawInpFileName, 
+                           const QByteArray& format) {
+
+  _decoder    = 0;
+  _socket     = 0;
+  _rawOutFile = 0;
+  _format     = format;
+  
+  _rawInpFile = new QFile(rawInpFileName);
+  _rawInpFile->open(QIODevice::ReadOnly);
+}
+
 bncGetThread::bncGetThread(const QUrl& mountPoint, 
                            const QByteArray& format,
                            const QByteArray& latitude,
@@ -81,6 +93,7 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   _timeOut    = 20*1000;  // 20 seconds
   _nextSleep  =  1;       //  1 second
   _iMount     = iMount;   // index in mountpoints array
+  _rawInpFile = 0;
 
   // Check name conflict
   // -------------------
@@ -150,12 +163,12 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   // Raw Output
   // ----------
   if (false) {    // special option used for testing
-    QByteArray rawFileName = "./" + _staID + ".raw";
-    _rawFile = new QFile(rawFileName);
-    _rawFile->open(QIODevice::WriteOnly);
+    QByteArray rawOutFileName = "./" + _staID + ".raw";
+    _rawOutFile = new QFile(rawOutFileName);
+    _rawOutFile->open(QIODevice::WriteOnly);
   }
   else {
-    _rawFile = 0;
+    _rawOutFile = 0;
   }
 
   msleep(100); //sleep 0.1 sec
@@ -174,7 +187,8 @@ bncGetThread::~bncGetThread() {
   }
   delete _decoder;
   delete _rnx;
-  delete _rawFile;
+  delete _rawInpFile;
+  delete _rawOutFile;
 }
 
 #define AGENTVERSION "1.6"
@@ -296,86 +310,89 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncGetThread::initRun() {
 
-  // Initialize Socket
-  // -----------------
-  QString msg;
-  _socket = this->request(_mountPoint, _latitude, _longitude, 
-                          _nmea, _timeOut, msg);
-  if (!_socket) {
-    return failure;
-  }
+  if (!_rawInpFile) {
 
-  // Read Caster Response
-  // --------------------
-  _socket->waitForReadyRead(_timeOut);
-  if (_socket->canReadLine()) {
-    QString line = _socket->readLine();
-
-    // Skip messages from proxy server
-    // -------------------------------
-    if (line.indexOf("ICY 200 OK") == -1 && 
-        line.indexOf("200 OK")     != -1 ) {
-      bool proxyRespond = true;
-      while (true) {
-        if (_socket->canReadLine()) {
-          line = _socket->readLine();
-          if (!proxyRespond) {
-            break;
-          }
-          if (line.trimmed().isEmpty()) {
-            proxyRespond = false;
-          }
-        }
-        else {
-          _socket->waitForReadyRead(_timeOut);
-          if (_socket->bytesAvailable() <= 0) {
-            break;
-          }
-        }
-      }
-    }
-
-    if (line.indexOf("Unauthorized") != -1) {
-      QStringList table;
-      bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), table);
-      QString net;
-      QStringListIterator it(table);
-      while (it.hasNext()) {
-        QString line = it.next();
-        if (line.indexOf("STR") == 0) {
-          QStringList tags = line.split(";");
-          if (tags.at(1) == _staID_orig) {
-            net = tags.at(7);
-            break;
-          }
-        }
-      }
-
-      QString reg;
-      it.toFront();
-      while (it.hasNext()) {
-        QString line = it.next();
-        if (line.indexOf("NET") == 0) {
-          QStringList tags = line.split(";");
-          if (tags.at(1) == net) {
-            reg = tags.at(7);
-            break;
-          }          
-        }
-      }
-      emit(newMessage((_staID + ": Caster Response: " + line + 
-                       "          Adjust User-ID and Password Register, see"
-                       "\n          " + reg).toAscii()));
-      return fatal;
-    }
-    if (line.indexOf("ICY 200 OK") != 0) {
-      emit(newMessage((_staID + ": Wrong Caster Response:\n" + line).toAscii()));
+    // Initialize Socket
+    // -----------------
+    QString msg;
+    _socket = this->request(_mountPoint, _latitude, _longitude, 
+                            _nmea, _timeOut, msg);
+    if (!_socket) {
       return failure;
     }
-  }
-  else {
-    emit(newMessage(_staID + ": Response Timeout"));
-    return failure;
+    
+    // Read Caster Response
+    // --------------------
+    _socket->waitForReadyRead(_timeOut);
+    if (_socket->canReadLine()) {
+      QString line = _socket->readLine();
+    
+      // Skip messages from proxy server
+      // -------------------------------
+      if (line.indexOf("ICY 200 OK") == -1 && 
+          line.indexOf("200 OK")     != -1 ) {
+        bool proxyRespond = true;
+        while (true) {
+          if (_socket->canReadLine()) {
+            line = _socket->readLine();
+            if (!proxyRespond) {
+              break;
+            }
+            if (line.trimmed().isEmpty()) {
+              proxyRespond = false;
+            }
+          }
+          else {
+            _socket->waitForReadyRead(_timeOut);
+            if (_socket->bytesAvailable() <= 0) {
+              break;
+            }
+          }
+        }
+      }
+    
+      if (line.indexOf("Unauthorized") != -1) {
+        QStringList table;
+        bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), table);
+        QString net;
+        QStringListIterator it(table);
+        while (it.hasNext()) {
+          QString line = it.next();
+          if (line.indexOf("STR") == 0) {
+            QStringList tags = line.split(";");
+            if (tags.at(1) == _staID_orig) {
+              net = tags.at(7);
+              break;
+            }
+          }
+        }
+    
+        QString reg;
+        it.toFront();
+        while (it.hasNext()) {
+          QString line = it.next();
+          if (line.indexOf("NET") == 0) {
+            QStringList tags = line.split(";");
+            if (tags.at(1) == net) {
+              reg = tags.at(7);
+              break;
+            }          
+          }
+        }
+        emit(newMessage((_staID + ": Caster Response: " + line + 
+                         "          Adjust User-ID and Password Register, see"
+                         "\n          " + reg).toAscii()));
+        return fatal;
+      }
+      if (line.indexOf("ICY 200 OK") != 0) {
+        emit(newMessage((_staID + ": Wrong Caster Response:\n" + line).toAscii()));
+        return failure;
+      }
+    }
+    else {
+      emit(newMessage(_staID + ": Response Timeout"));
+      return failure;
+    }
   }
 
   // Instantiate the filter
@@ -457,7 +474,7 @@ void bncGetThread::run() {
   // ------------------
   while (true) {
     try {
-      if (_socket->state() != QAbstractSocket::ConnectedState) {
+      if (_socket && _socket->state() != QAbstractSocket::ConnectedState) {
         emit(newMessage(_staID + ": Socket not connected, reconnecting"));
         tryReconnect();
       }
@@ -468,17 +485,37 @@ void bncGetThread::run() {
       }
       _decoder->_obsList.clear();
 
-      _socket->waitForReadyRead(_timeOut);
-      qint64 nBytes = _socket->bytesAvailable();
+      qint64 nBytes = 0;
+
+      if      (_socket) {
+        _socket->waitForReadyRead(_timeOut);
+        nBytes = _socket->bytesAvailable();
+      }
+      else if (_rawInpFile) {
+        const qint64 maxBytes = 1024;
+        nBytes = maxBytes;
+      }
+
       if (nBytes > 0) {
         emit newBytes(_staID, nBytes);
 
         char* data = new char[nBytes];
-        _socket->read(data, nBytes);
 
-        if (_rawFile) {
-          _rawFile->write(data, nBytes);
-          _rawFile->flush();
+        if (_socket) {
+          _socket->read(data, nBytes);
+        }
+        else if (_rawInpFile) {
+          nBytes = _rawInpFile->read(data, nBytes);
+          cout << "nBytes = " << nBytes << endl;
+          if (nBytes <= 0) {
+            cout << "no more data" << endl;
+            ::exit(0);
+          }
+        }
+
+        if (_rawOutFile) {
+          _rawOutFile->write(data, nBytes);
+          _rawOutFile->flush();
         }
 
         if (_inspSegm<1) {

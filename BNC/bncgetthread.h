@@ -40,11 +40,13 @@ class bncGetThread : public QThread {
  Q_OBJECT
 
  public:
+   bncGetThread(const QByteArray&  rawInpFileName, const QByteArray& format);
    bncGetThread(const QUrl& mountPoint, 
                 const QByteArray& format,
                 const QByteArray& latitude,
                 const QByteArray& longitude,
                 const QByteArray& nmea, int iMount);
+
    ~bncGetThread();
 
    static QTcpSocket* request(const QUrl& mountPoint, QByteArray& latitude, QByteArray& longitude,
@@ -108,7 +110,8 @@ class bncGetThread : public QThread {
    QDateTime   _decodeTime;
    QDateTime   _decodeSucc;
    QMutex      _mutex;
-   QFile*      _rawFile;
+   QFile*      _rawOutFile;
+   QFile*      _rawInpFile;
 };
 
 #endif
