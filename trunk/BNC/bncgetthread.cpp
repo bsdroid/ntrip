@@ -73,6 +73,11 @@ bncGetThread::bncGetThread(const QByteArray& rawInpFileName,
 
   _rawInpFile = new QFile(rawInpFileName);
   _rawInpFile->open(QIODevice::ReadOnly);
+
+  if (!_rnx) {
+    cerr << "no RINEX path specified" << endl;
+    ::exit(0);
+  }
 }
 
 // Constructor 2
