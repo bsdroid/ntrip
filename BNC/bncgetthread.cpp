@@ -64,13 +64,13 @@ using namespace std;
 bncGetThread::bncGetThread(const QByteArray& rawInpFileName, 
                            const QByteArray& format) {
 
-  _format     = format;
+  _format = format;
+  _staID  = "SASS";  
 
   initialize();
 
   _inspSegm = 0;
 
-  _staID = "SASS";  
   _rawInpFile = new QFile(rawInpFileName);
   _rawInpFile->open(QIODevice::ReadOnly);
 }
