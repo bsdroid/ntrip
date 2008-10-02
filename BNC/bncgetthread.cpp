@@ -628,84 +628,86 @@ void bncGetThread::run() {
 
           // Check observation epoch
           // -----------------------
-          int week;
-          double sec;
-          leapsecGPSWeeks(week, sec);
-          const double secPerWeek = 7.0 * 24.0 * 3600.0;
-
-          if (week < obs->_o.GPSWeek) {
-            week += 1;
-            sec  -= secPerWeek;
-          }
-          if (week > obs->_o.GPSWeek) {
-            week -= 1;
-            sec  += secPerWeek;
-          }
-          double dt = fabs(sec - obs->_o.GPSWeeks);
-          if (week != obs->_o.GPSWeek || dt > maxDt) {
-            if  (!wrongEpoch) {
-              emit( newMessage(_staID + ": Wrong observation epoch(s)") );
-              wrongEpoch = true;
+          if (!_rawInpFile) {
+            int week;
+            double sec;
+            leapsecGPSWeeks(week, sec);
+            const double secPerWeek = 7.0 * 24.0 * 3600.0;
+            
+            if (week < obs->_o.GPSWeek) {
+              week += 1;
+              sec  -= secPerWeek;
             }
-            delete obs;
-            continue;
-          }
-          else {
-            wrongEpoch = false;
-
-            // Latency and completeness
-            // ------------------------
-            if (_perfIntr>0) {
-              newSecGPS = static_cast<int>(obs->_o.GPSWeeks);
-              if (newSecGPS != oldSecGPS) {
-                if (newSecGPS % _perfIntr < oldSecGPS % _perfIntr) {
-                  if (numLat>0) {
+            if (week > obs->_o.GPSWeek) {
+              week -= 1;
+              sec  += secPerWeek;
+            }
+            double dt = fabs(sec - obs->_o.GPSWeeks);
+            if (week != obs->_o.GPSWeek || dt > maxDt) {
+              if  (!wrongEpoch) {
+                emit( newMessage(_staID + ": Wrong observation epoch(s)") );
+                wrongEpoch = true;
+              }
+              delete obs;
+              continue;
+            }
+            else {
+              wrongEpoch = false;
+            
+              // Latency and completeness
+              // ------------------------
+              if (_perfIntr>0) {
+                newSecGPS = static_cast<int>(obs->_o.GPSWeeks);
+                if (newSecGPS != oldSecGPS) {
+                  if (newSecGPS % _perfIntr < oldSecGPS % _perfIntr) {
+                    if (numLat>0) {
+                      if (meanDiff>0.) {
+                        emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs, %7 gaps")
+                          .arg(_staID.data())
+                          .arg(int(sumLat/numLat*100)/100.)
+                          .arg(int(minLat*100)/100.)
+                          .arg(int(maxLat*100)/100.)
+                          .arg(int((sqrt((sumLatQ - sumLat * sumLat / numLat)/numLat))*100)/100.)
+                          .arg(numLat)
+                          .arg(numGaps)
+                          .toAscii()) );
+                      } else {
+                        emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs")
+                          .arg(_staID.data())
+                          .arg(int(sumLat/numLat*100)/100.)
+                          .arg(int(minLat*100)/100.)
+                          .arg(int(maxLat*100)/100.)
+                          .arg(int((sqrt((sumLatQ - sumLat * sumLat / numLat)/numLat))*100)/100.)
+                          .arg(numLat)
+                          .toAscii()) );
+                      }
+                    }
+                    meanDiff = diffSecGPS/numLat;
+                    diffSecGPS = 0;
+                    numGaps = 0;
+                    sumLat = 0.;
+                    sumLatQ = 0.;
+                    numLat = 0;
+                    minLat = maxDt;
+                    maxLat = -maxDt;
+                  }
+                  if (followSec) {
+                    diffSecGPS += newSecGPS - oldSecGPS;
                     if (meanDiff>0.) {
-                      emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs, %7 gaps")
-                        .arg(_staID.data())
-                        .arg(int(sumLat/numLat*100)/100.)
-                        .arg(int(minLat*100)/100.)
-                        .arg(int(maxLat*100)/100.)
-                        .arg(int((sqrt((sumLatQ - sumLat * sumLat / numLat)/numLat))*100)/100.)
-                        .arg(numLat)
-                        .arg(numGaps)
-                        .toAscii()) );
-                    } else {
-                      emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs")
-                        .arg(_staID.data())
-                        .arg(int(sumLat/numLat*100)/100.)
-                        .arg(int(minLat*100)/100.)
-                        .arg(int(maxLat*100)/100.)
-                        .arg(int((sqrt((sumLatQ - sumLat * sumLat / numLat)/numLat))*100)/100.)
-                        .arg(numLat)
-                        .toAscii()) );
+                      if (newSecGPS - oldSecGPS > 1.5 * meanDiff) {
+                        numGaps += 1;
+                      }
                     }
                   }
-                  meanDiff = diffSecGPS/numLat;
-                  diffSecGPS = 0;
-                  numGaps = 0;
-                  sumLat = 0.;
-                  sumLatQ = 0.;
-                  numLat = 0;
-                  minLat = maxDt;
-                  maxLat = -maxDt;
+                  curLat = sec - obs->_o.GPSWeeks;
+                  sumLat += curLat;
+                  sumLatQ += curLat * curLat;
+                  if (curLat < minLat) minLat = curLat;
+                  if (curLat >= maxLat) maxLat = curLat;
+                  numLat += 1;
+                  oldSecGPS = newSecGPS;
+                  followSec = true;
                 }
-                if (followSec) {
-                  diffSecGPS += newSecGPS - oldSecGPS;
-                  if (meanDiff>0.) {
-                    if (newSecGPS - oldSecGPS > 1.5 * meanDiff) {
-                      numGaps += 1;
-                    }
-                  }
-                }
-                curLat = sec - obs->_o.GPSWeeks;
-                sumLat += curLat;
-                sumLatQ += curLat * curLat;
-                if (curLat < minLat) minLat = curLat;
-                if (curLat >= maxLat) maxLat = curLat;
-                numLat += 1;
-                oldSecGPS = newSecGPS;
-                followSec = true;
               }
             }
           }
