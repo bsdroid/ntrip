@@ -58,11 +58,32 @@ void catch_signal(int) {
 /////////////////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[]) {
 
-  bool GUIenabled = true;
+  bool       GUIenabled  = true;
+  bool       fileInput   = false;
+  QByteArray fileName;
+  QByteArray format; 
+
   for (int ii = 1; ii < argc; ii++) {
-    if (QString(argv[ii]) == "-nw") {
+    if (QByteArray(argv[ii]) == "-nw") {
       GUIenabled = false;
       break;
+    }
+  }
+
+  for (int ii = 1; ii < argc; ii++) {
+    if (QByteArray(argv[ii]) == "-file" || QByteArray(argv[ii]) == "--file") {
+      GUIenabled = false;
+      fileInput  = true;
+      if (ii+1 < argc) {
+        fileName = QByteArray(argv[ii+1]);
+      }
+    }
+    if (QByteArray(argv[ii]) == "-format" || QByteArray(argv[ii]) == "--format") {
+      GUIenabled = false;
+      fileInput  = true;
+      if (ii+1 < argc) {
+        format = QByteArray(argv[ii+1]);
+      }
     }
   }
 
@@ -129,8 +150,13 @@ int main(int argc, char *argv[]) {
   
     ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
 
-    if (false) {
-      bncGetThread* getThread = new bncGetThread("SASS0.raw","RTCM_3");
+    if (fileInput) {
+      if (fileName.isEmpty() || format.isEmpty()) {
+        cout << "Usage: bnc --file <fileName> --format <RTIGS | RTCM_2 | RTCM_3>" << endl;
+        exit(0);
+      }
+
+      bncGetThread* getThread = new bncGetThread(fileName, format);
       app.connect(getThread, SIGNAL(newMessage(QByteArray)), 
                   &app, SLOT(slotMessage(const QByteArray)));
       

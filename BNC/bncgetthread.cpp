@@ -506,7 +506,7 @@ void bncGetThread::run() {
         nBytes = _socket->bytesAvailable();
       }
       else if (_rawInpFile) {
-        const qint64 maxBytes = 10000;
+        const qint64 maxBytes = 1024;
         nBytes = maxBytes;
       }
 
@@ -520,7 +520,6 @@ void bncGetThread::run() {
         }
         else if (_rawInpFile) {
           nBytes = _rawInpFile->read(data, nBytes);
-          cout << "nBytes = " << nBytes << endl;
           if (nBytes <= 0) {
             cout << "no more data" << endl;
             ::exit(0);
