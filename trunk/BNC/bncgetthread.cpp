@@ -59,13 +59,13 @@
 
 using namespace std;
 
-// Constructor
+// Constructor 1
 ////////////////////////////////////////////////////////////////////////////
 bncGetThread::bncGetThread(const QByteArray& rawInpFileName, 
                            const QByteArray& format) {
 
   _format = format;
-  _staID  = "SASS";  
+  _staID  = rawInpFileName.left(4);  
 
   initialize();
 
@@ -75,6 +75,8 @@ bncGetThread::bncGetThread(const QByteArray& rawInpFileName,
   _rawInpFile->open(QIODevice::ReadOnly);
 }
 
+// Constructor 2
+////////////////////////////////////////////////////////////////////////////
 bncGetThread::bncGetThread(const QUrl& mountPoint, 
                            const QByteArray& format,
                            const QByteArray& latitude,
@@ -85,7 +87,6 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
 
   _mountPoint = mountPoint;
   _staID      = mountPoint.path().mid(1).toAscii();
-  _staID_orig = _staID;
   _format     = format;
   _latitude   = latitude;
   _longitude  = longitude;
@@ -95,6 +96,8 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   initialize();
 }
 
+// Initialization
+////////////////////////////////////////////////////////////////////////////
 void bncGetThread::initialize() {
 
   _decoder    = 0;
@@ -103,6 +106,7 @@ void bncGetThread::initialize() {
   _nextSleep  = 1;       //  1 second
   _rawInpFile = 0;
   _rawOutFile = 0;
+  _staID_orig = _staID;
 
   // Check name conflict
   // -------------------
