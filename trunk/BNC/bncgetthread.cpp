@@ -146,6 +146,18 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   }
   _rnx_set_position = false;
 
+
+  // Raw Output
+  // ----------
+  if (false) {    // special option used for testing
+    QByteArray rawFileName = "./" + _staID + ".raw";
+    _rawFile = new QFile(rawFileName);
+    _rawFile->open(QIODevice::WriteOnly);
+  }
+  else {
+    _rawFile = 0;
+  }
+
   msleep(100); //sleep 0.1 sec
 }
 
@@ -162,6 +174,7 @@ bncGetThread::~bncGetThread() {
   }
   delete _decoder;
   delete _rnx;
+  delete _rawFile;
 }
 
 #define AGENTVERSION "1.6"
@@ -462,6 +475,11 @@ void bncGetThread::run() {
 
         char* data = new char[nBytes];
         _socket->read(data, nBytes);
+
+        if (_rawFile) {
+          _rawFile->write(data, nBytes);
+          _rawFile->flush();
+        }
 
         if (_inspSegm<1) {
           _decoder->Decode(data, nBytes);

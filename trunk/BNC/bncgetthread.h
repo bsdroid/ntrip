@@ -28,6 +28,7 @@
 #include <QThread>
 #include <QtNetwork>
 #include <QDateTime>
+#include <QFile>
 
 #include "RTCM/GPSDecoder.h"
 #include "RTCM3/rtcm3torinex.h"
@@ -107,6 +108,7 @@ class bncGetThread : public QThread {
    QDateTime   _decodeTime;
    QDateTime   _decodeSucc;
    QMutex      _mutex;
+   QFile*      _rawFile;
 };
 
 #endif
