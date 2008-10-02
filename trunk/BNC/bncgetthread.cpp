@@ -426,7 +426,12 @@ t_irc bncGetThread::initRun() {
     }
     else {
       emit(newMessage(_staID + ": Unknown data format " + _format));
-      return fatal;
+      if (_rawInpFile) {
+        ::exit(0);
+      }
+      else {
+        return fatal;
+      }
     }
   }
   return success;
