@@ -64,11 +64,13 @@ using namespace std;
 bncGetThread::bncGetThread(const QByteArray& rawInpFileName, 
                            const QByteArray& format) {
 
-  _decoder    = 0;
-  _socket     = 0;
-  _rawOutFile = 0;
   _format     = format;
-  
+
+  initialize();
+
+  _inspSegm = 0;
+
+  _staID = "SASS";  
   _rawInpFile = new QFile(rawInpFileName);
   _rawInpFile->open(QIODevice::ReadOnly);
 }
@@ -81,7 +83,6 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
 
   setTerminationEnabled(true);
 
-  _decoder    = 0;
   _mountPoint = mountPoint;
   _staID      = mountPoint.path().mid(1).toAscii();
   _staID_orig = _staID;
@@ -89,11 +90,19 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   _latitude   = latitude;
   _longitude  = longitude;
   _nmea       = nmea;
-  _socket     = 0;
-  _timeOut    = 20*1000;  // 20 seconds
-  _nextSleep  =  1;       //  1 second
   _iMount     = iMount;   // index in mountpoints array
+
+  initialize();
+}
+
+void bncGetThread::initialize() {
+
+  _decoder    = 0;
+  _socket     = 0;
+  _timeOut    = 20*1000; // 20 seconds
+  _nextSleep  = 1;       //  1 second
   _rawInpFile = 0;
+  _rawOutFile = 0;
 
   // Check name conflict
   // -------------------
@@ -155,21 +164,16 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
     _rnx = 0;
   }
   else {
-    _rnx = new bncRinex(_staID, mountPoint, format, latitude, longitude, nmea);
+    _rnx = new bncRinex(_staID, _mountPoint, 
+                        _format, _latitude, _longitude, _nmea);
   }
   _rnx_set_position = false;
 
-
   // Raw Output
   // ----------
-  if (false) {    // special option used for testing
-    QByteArray rawOutFileName = "./" + _staID + ".raw";
-    _rawOutFile = new QFile(rawOutFileName);
-    _rawOutFile->open(QIODevice::WriteOnly);
-  }
-  else {
-    _rawOutFile = 0;
-  }
+  QByteArray rawOutFileName = "./" + _staID + ".raw";
+  _rawOutFile = new QFile(rawOutFileName);
+  _rawOutFile->open(QIODevice::WriteOnly);
 
   msleep(100); //sleep 0.1 sec
 }
@@ -492,7 +496,7 @@ void bncGetThread::run() {
         nBytes = _socket->bytesAvailable();
       }
       else if (_rawInpFile) {
-        const qint64 maxBytes = 1024;
+        const qint64 maxBytes = 10000;
         nBytes = maxBytes;
       }
 
