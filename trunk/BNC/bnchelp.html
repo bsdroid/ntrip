@@ -54,13 +54,12 @@ BNC allows to by-pass its decoding and conversion algorithms, leave whatever is 
 </p>
 <p><a name="resources"><h3>2. Resources</h3></p>
 <p>
-BNC requires access to the Internet with a minimum of about 2 to 6 kbits/sec per stream depending on the stream format and the number of visible satellites. You need to make sure that the connection can sustain the required bandwidth.
-</p>
-<p>
-Note that running BNC requires the clock of the host computer to be properly synchronized.
-</p>
-<p>
-BNC has the capacity to retrieve hundreds of GNSS data streams simultaneously. Please be aware that such usage may incur a heavy load on the NTRIP broadcaster side depending on the number of streams requested. We recommend limiting the number of streams where possible to avoid unnecessary workload.
+Unless in offline mode, BNC
+<ul>
+<li>requires access to the Internet with a minimum of about 2 to 6 kbits/sec per stream depending on the stream format and the number of visible satellites. You need to make sure that the connection can sustain the required bandwidth.<li>
+<li>requires the clock of the host computer to be properly synchronized.</li>
+<li>has the capacity to retrieve hundreds of GNSS data streams simultaneously. Please be aware that such usage may incur a heavy load on the NTRIP broadcaster side depending on the number of streams requested. We recommend limiting the number of streams where possible to avoid unnecessary workload.</li>
+</ul>
 </p>
 
 <p><a name="options"><h3>3. Options</h3></p>
@@ -681,6 +680,10 @@ BNC will then use processing options from the configuration file ${HOME}/.config
 <p>
 On all systems BNC can be started as a batch job with the command line option '-nw'. BNC will then run in 'no window' mode, using processing options from its configuration file. Terminate BNC using Windows Task Manager when running it in 'no window' mode on Windows systems.
 </p> 
+<p> 
+Example:<br><br>
+./bnc -nw
+</p>
 
 <p><a name="post"><h4>3.14.2 Offline - optional</h4></p>
 <p>
@@ -688,7 +691,7 @@ Although BNC is a real-time tool, it can be run in 'offline' mode to read data f
 </p>
 <p>
 <ul>
-<li>'-file &#060;<u>file</u>&#062;' to enter the full path to an input <u>file</u>, and</li>
+<li>'-file &#060;<u>file</u>&#062;' to enter the full path to an input <u>file</u> containing data in RTCM Version 2.x or Version 3.x or RTIGS/SOC format, and</li>
 <li>'-format &#060;<u>format</u>&#062;' to enter one of the file <u>format</u> describing strings 'RTCM_2', 'RTCM_3' or 'RTIGS'.</li>
 </ul>
 <p>
