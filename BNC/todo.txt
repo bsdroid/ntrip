@@ -33,7 +33,5 @@ data available? Deleted PENC0 from the configuration.
 
 (*) Zdenek: Include Loss of Lock indicator in socket output for RTNet
 
-(*) Let BNC read from files.
-
 (*) Reconfigure BNC on-the-fly.
 
