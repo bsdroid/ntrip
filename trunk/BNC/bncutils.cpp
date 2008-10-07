@@ -47,6 +47,7 @@
 #include <QDateTime>
 
 #include "bncutils.h"
+#include "bncapp.h"
 
 using namespace std;
 
@@ -81,12 +82,24 @@ QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks) {
 
 void currentGPSWeeks(int& week, double& sec) {
 
-  QDateTime currDateTime = QDateTime::currentDateTime().toUTC();
+  QDateTime currDateTime;
+  int leapsecond = 0;
+
+  if ( ((bncApp*) qApp)->_currentDateAndTimeGPS ) {
+    currDateTime = *(((bncApp*) qApp)->_currentDateAndTimeGPS);
+  }
+  else {
+    currDateTime = QDateTime::currentDateTime().toUTC();
+    if (currDateTime.date().year() >= 2009) {
+      leapsecond = 15;
+    }
+    else {
+      leapsecond = 14;
+    }
+  }
+
   QDate     currDate = currDateTime.date();
   QTime     currTime = currDateTime.time();
-
-  int leapsecond = 14;
-  if (currDate.year() >= 2009) {leapsecond = 15;}
 
   week = int( (double(currDate.toJulianDay()) - 2444244.5) / 7 );
 
