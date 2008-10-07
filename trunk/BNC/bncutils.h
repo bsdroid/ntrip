@@ -34,4 +34,6 @@ QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks);
 
 void currentGPSWeeks(int& week, double& sec);
 
+QDateTime currentDateAndTimeGPS();
+
 #endif

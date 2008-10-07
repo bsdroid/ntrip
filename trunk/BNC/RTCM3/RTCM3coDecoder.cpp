@@ -85,7 +85,7 @@ void RTCM3coDecoder::reopen() {
 
     QSettings settings;
 
-    QDateTime datTim = QDateTime::currentDateTime().toUTC();
+    QDateTime datTim = currentDateAndTimeGPS();
 
     QString hlpStr = bncRinex::nextEpochStr(datTim,
                                       settings.value("corrIntr").toString());

@@ -235,7 +235,7 @@ void bncRinex::readSkeleton() {
   // Read downloaded file
   // --------------------
   else {
-    QDate currDate = QDateTime::currentDateTime().toUTC().date();
+    QDate currDate = currentDateAndTimeGPS().date();
     if ( !_skeletonDate.isValid() || _skeletonDate != currDate ) {
       if ( downloadSkeleton() == success) {
         _skeletonDate = currDate;
@@ -398,12 +398,12 @@ void bncRinex::writeHeader(const QDateTime& datTim,
       QString line = it.next();
       if      (line.indexOf("PGM / RUN BY / DATE") != -1) {
         if (_rinexVers == 3) {
-          QString hlp = QDateTime::currentDateTime().toUTC().toString("yyyyMMdd hhmmss UTC").leftJustified(20, ' ', true);
+          QString hlp = currentDateAndTimeGPS().toString("yyyyMMdd hhmmss UTC").leftJustified(20, ' ', true);
           _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
                << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
         }
         else {
-          QString hlp = QDateTime::currentDateTime().toUTC().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
+          QString hlp = currentDateAndTimeGPS().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
           _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
                << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
         }
@@ -452,13 +452,13 @@ void bncRinex::writeHeader(const QDateTime& datTim,
     
     if (_rinexVers == 3) {
       _out << "     3.00           OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE" << endl;
-      QString hlp = QDateTime::currentDateTime().toUTC().toString("yyyyMMdd hhmmss UTC").leftJustified(20, ' ', true);
+      QString hlp = currentDateAndTimeGPS().toString("yyyyMMdd hhmmss UTC").leftJustified(20, ' ', true);
       _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
            << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
     }
     else {
       _out << "     2.11           OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE" << endl;
-      QString hlp = QDateTime::currentDateTime().toUTC().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
+      QString hlp = currentDateAndTimeGPS().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
       _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
            << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
     }
