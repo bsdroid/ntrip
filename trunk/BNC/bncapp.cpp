@@ -145,6 +145,8 @@ bncApp::~bncApp() {
   }
 
   delete _corrs;
+
+  delete _currentDateAndTimeGPS;
 }
 
 // Write a Program Message

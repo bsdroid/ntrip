@@ -62,6 +62,8 @@ int main(int argc, char *argv[]) {
   bool       fileInput   = false;
   QByteArray fileName;
   QByteArray format; 
+  QString    dateString;
+  QString    timeString;
 
   for (int ii = 1; ii < argc; ii++) {
     if (QByteArray(argv[ii]) == "-nw") {
@@ -83,6 +85,16 @@ int main(int argc, char *argv[]) {
       fileInput  = true;
       if (ii+1 < argc) {
         format = QByteArray(argv[ii+1]);
+      }
+    }
+    if (QByteArray(argv[ii]) == "-date" || QByteArray(argv[ii]) == "--date") {
+      if (ii+1 < argc) {
+        dateString = QString(argv[ii+1]);
+      }
+    }
+    if (QByteArray(argv[ii]) == "-time" || QByteArray(argv[ii]) == "--time") {
+      if (ii+1 < argc) {
+        timeString = QString(argv[ii+1]);
       }
     }
   }
@@ -151,10 +163,17 @@ int main(int argc, char *argv[]) {
     ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
 
     if (fileInput) {
-      if (fileName.isEmpty() || format.isEmpty()) {
-        cout << "Usage: bnc --file <fileName> --format <RTIGS | RTCM_2 | RTCM_3>" << endl;
+      if ( fileName.isEmpty() || format.isEmpty() || 
+           dateString.isEmpty() || timeString.isEmpty() ) {
+        cout << "Usage: bnc --file <fileName>\n"
+                "           --format <RTIGS | RTCM_2 | RTCM_3>\n" 
+                "           --date YYYY-MM-DD  --time HH:MM:SS" << endl;
         exit(0);
       }
+
+      app._currentDateAndTimeGPS = 
+        new QDateTime(QDate::fromString(dateString), 
+                      QTime::fromString(timeString), Qt::UTC);
 
       bncGetThread* getThread = new bncGetThread(fileName, format);
       app.connect(getThread, SIGNAL(newMessage(QByteArray)), 
