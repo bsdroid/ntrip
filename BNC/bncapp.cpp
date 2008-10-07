@@ -118,6 +118,8 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
   }
 
   _corrs = new QMultiMap<long, QString>;
+
+  _currentDateAndTimeGPS = 0;
 }
 
 // Destructor
