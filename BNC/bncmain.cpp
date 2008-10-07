@@ -172,8 +172,10 @@ int main(int argc, char *argv[]) {
       }
 
       app._currentDateAndTimeGPS = 
-        new QDateTime(QDate::fromString(dateString), 
-                      QTime::fromString(timeString), Qt::UTC);
+        new QDateTime(QDate::fromString(dateString, Qt::ISODate), 
+                      QTime::fromString(timeString, Qt::ISODate), Qt::UTC);
+
+      cout << app._currentDateAndTimeGPS->toString().toAscii().data() << endl;
 
       bncGetThread* getThread = new bncGetThread(fileName, format);
       app.connect(getThread, SIGNAL(newMessage(QByteArray)), 
