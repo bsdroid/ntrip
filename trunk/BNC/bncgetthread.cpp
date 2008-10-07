@@ -65,7 +65,9 @@ bncGetThread::bncGetThread(const QByteArray& rawInpFileName,
                            const QByteArray& format) {
 
   _format = format;
-  _staID  = rawInpFileName.left(4);  
+
+  int iSep = rawInpFileName.lastIndexOf(QDir::separator());
+  _staID   = rawInpFileName.mid(iSep+1,4);  
 
   initialize();
 
