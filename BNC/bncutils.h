@@ -33,6 +33,5 @@ void expandEnvVar(QString& str);
 QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks);
 
 void currentGPSWeeks(int& week, double& sec);
-void leapsecGPSWeeks(int& week, double& sec);
 
 #endif

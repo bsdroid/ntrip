@@ -63,8 +63,6 @@ void RTCM3Error(const char*, ...) {
 ////////////////////////////////////////////////////////////////////////////
 RTCM3Decoder::RTCM3Decoder(const QString& staID) : GPSDecoder() {
 
-  const int LEAPSECONDS = 14; /* only needed for approx. time */
-
   QSettings settings;
   _checkMountPoint = settings.value("messTypes").toString();
   _staID = staID;
@@ -94,12 +92,11 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID) : GPSDecoder() {
   // Ensure, that the Decoder uses the "old" convention for the data structure for Rinex2. Perlt
   _Parser.rinex3 = 0;
 
-  time_t tim;
-  tim = time(0) - ((10*365+2+5)*24*60*60 + LEAPSECONDS);
-
   memset(&_Parser, 0, sizeof(_Parser));
-  _Parser.GPSWeek = tim/(7*24*60*60);
-  _Parser.GPSTOW  = tim%(7*24*60*60);
+
+  double secGPS;
+  currentGPSWeeks(_Parser.GPSWeek, secGPS);
+  _Parser.GPSTOW = int(secGPS);
 
   connect(this, SIGNAL(newGPSEph(gpsephemeris*)), 
           (bncApp*) qApp, SLOT(slotNewGPSEph(gpsephemeris*)));
@@ -141,7 +138,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
             int week;
             double sec;
             _newSecGPS = _coDecoder->_epochList[ii];
-            leapsecGPSWeeks(week, sec);
+            currentGPSWeeks(week, sec);
             double dt = fabs(sec - _newSecGPS);
             const double secPerWeek = 7.0 * 24.0 * 3600.0;
             if (dt > 0.5 * secPerWeek) {
