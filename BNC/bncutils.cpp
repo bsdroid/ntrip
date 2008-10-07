@@ -97,3 +97,11 @@ void currentGPSWeeks(int& week, double& sec) {
         currTime.msec()                   / 1000.0 +
         leapsecond;
 }
+
+QDateTime currentDateAndTimeGPS() {
+  int    GPSWeek;
+  double GPSWeeks;
+  currentGPSWeeks(GPSWeek, GPSWeeks);
+  return dateAndTimeFromGPSweek(GPSWeek, GPSWeeks);
+}
+
