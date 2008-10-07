@@ -85,20 +85,6 @@ void currentGPSWeeks(int& week, double& sec) {
   QDate     currDate = currDateTime.date();
   QTime     currTime = currDateTime.time();
 
-  week = int( (double(currDate.toJulianDay()) - 2444244.5) / 7 );
-
-  sec = (currDate.dayOfWeek() % 7) * 24.0 * 3600.0 + 
-        currTime.hour()                   * 3600.0 + 
-        currTime.minute()                 *   60.0 + 
-        currTime.second()                          +
-        currTime.msec()                   / 1000.0;
-}
-void leapsecGPSWeeks(int& week, double& sec) {
-
-  QDateTime currDateTime = QDateTime::currentDateTime().toUTC();
-  QDate     currDate = currDateTime.date();
-  QTime     currTime = currDateTime.time();
-
   int leapsecond = 14;
   if (currDate.year() >= 2009) {leapsecond = 15;}
 

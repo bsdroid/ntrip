@@ -645,7 +645,7 @@ void bncGetThread::run() {
           if (!_rawInpFile) {
             int week;
             double sec;
-            leapsecGPSWeeks(week, sec);
+            currentGPSWeeks(week, sec);
             const double secPerWeek = 7.0 * 24.0 * 3600.0;
             
             if (week < obs->_o.GPSWeek) {
