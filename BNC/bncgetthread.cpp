@@ -127,7 +127,7 @@ void bncGetThread::initialize() {
     if (hlp.size() <= 1) continue;
     QUrl url(hlp[0]);
     if (_mountPoint.path() == url.path()) {
-      if (_iMount > ind) {
+      if (_iMount > ind || _iMount < 0) {
         ++num;
       }
     }
