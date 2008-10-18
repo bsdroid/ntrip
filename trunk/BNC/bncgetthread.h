@@ -53,6 +53,9 @@ class bncGetThread : public QThread {
                               QByteArray& nmea, int timeOut, QString& msg);
 
    QByteArray staID() const {return _staID;}
+   QUrl       mountPoint() const {return _mountPoint;}
+   QByteArray latitude() const {return _latitude;}
+   QByteArray longitude() const {return _longitude;}
 
  signals:
    void newBytes(QByteArray staID, double nbyte);
