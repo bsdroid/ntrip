@@ -220,6 +220,9 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
 
   QMutexLocker locker(&_mutex);
 
+  glonassephemeris copy_glonasseph = *glonasseph;
+  emit newEphGlonass(copy_glonasseph);
+
   printEphHeader();
 
   glonassephemeris** ee = &_glonassEph[glonasseph->almanac_number-1];
