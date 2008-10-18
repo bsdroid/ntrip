@@ -29,6 +29,7 @@
 #include <QtGui>
 
 struct Observation;
+struct bncGetThread;
 
 class bncTableItem : public QObject, public QTableWidgetItem {
   Q_OBJECT
@@ -36,6 +37,8 @@ class bncTableItem : public QObject, public QTableWidgetItem {
   public:
     bncTableItem();
     ~bncTableItem();
+    void setGetThread(bncGetThread* getThread) {_getThread = getThread;}
+    bncGetThread* getThread() {return _getThread;}
 
   signals:
  
@@ -45,6 +48,7 @@ class bncTableItem : public QObject, public QTableWidgetItem {
   private:
     double _bytesRead;
     QMutex _mutex;
+    bncGetThread* _getThread;
 };
 
 #endif

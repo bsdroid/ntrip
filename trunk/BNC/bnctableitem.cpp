@@ -39,6 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include "bnctableitem.h"
+#include "bncgetthread.h"
 #include "RTCM/GPSDecoder.h"
 
 // Constructor
@@ -46,6 +47,7 @@
 bncTableItem::bncTableItem() : QTableWidgetItem() {
   _bytesRead = 0.0;
   setText(QString("%1 byte(s)").arg(0));
+  _getThread = 0;
 }
 
 // Destructor
