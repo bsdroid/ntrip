@@ -110,12 +110,7 @@ bncApp::bncApp(int argc, char* argv[], bool GUIenabled) :
   expandEnvVar(_userName);
   _userName = _userName.leftJustified(20, ' ', true);
 
-  QSettings settings;
   _lastDumpCoSec = 0;
-  _waitCoTime    = settings.value("corrTime").toInt();
-  if (_waitCoTime < 1) {
-    _waitCoTime = 1;
-  }
 
   _corrs = new QMultiMap<long, QString>;
 

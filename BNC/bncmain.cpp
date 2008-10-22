@@ -125,6 +125,12 @@ int main(int argc, char *argv[]) {
 
   bncApp app(argc, argv, GUIenabled);
 
+  int waitCoTime    = settings.value("corrTime").toInt();
+  if (waitCoTime < 1) {
+    waitCoTime = 1;
+  }
+  app.setWaitCoTime(waitCoTime);
+
   // Interactive Mode - open the main window
   // ---------------------------------------
   if (GUIenabled) {
