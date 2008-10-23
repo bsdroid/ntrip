@@ -222,6 +222,10 @@ void RTCM2_22::extract(const RTCM2packet& P) {
   dL1[0] = P.getBits( 0, 8) * dL1unit;
   dL1[1] = P.getBits( 8, 8) * dL1unit;
   dL1[2] = P.getBits(16, 8) * dL1unit;
+
+  dL2[0] = 0.0;
+  dL2[1] = 0.0;
+  dL2[2] = 0.0;
 }
 
 ///////////////////////////////

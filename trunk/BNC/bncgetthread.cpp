@@ -733,6 +733,33 @@ void bncGetThread::run() {
           if (_rnx) {
 	    bool dump = true;
 
+	    RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
+	    if ( decoder2 && !_rnx_set_position ) {
+	      double stax, stay, staz;
+	      double dL1[3], dL2[3];
+	      if ( decoder2->getStaCrd(stax, stay, staz,
+                                       dL1[0], dL1[1], dL1[2], 
+                                       dL2[0], dL2[1], dL2[2]) == success ) {
+                QByteArray msg;
+                QTextStream out(&msg);
+                out.setRealNumberNotation(QTextStream::FixedNotation);
+                out.setRealNumberPrecision(5);
+                ////	_rnx->setApproxPos(stax, stay, staz);
+                out << "STA " << staID()
+                    << ' '    << qSetFieldWidth(15) << stax
+                    << ' '    << qSetFieldWidth(15) << stay
+                    << ' '    << qSetFieldWidth(15) << staz
+                    << " L1 " << qSetFieldWidth(10) << dL1[0]
+                    << ' '    << qSetFieldWidth(10) << dL1[1]
+                    << ' '    << qSetFieldWidth(10) << dL1[2]
+                    << " L2 " << qSetFieldWidth(10) << dL2[0]
+                    << ' '    << qSetFieldWidth(10) << dL2[1]
+                    << ' '    << qSetFieldWidth(10) << dL2[2] << endl;
+	    	_rnx_set_position = true;
+                emit newMessage(msg);
+              }
+            }
+
 	    ////RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
 	    ////if ( decoder2 && !_rnx_set_position ) {
 	    ////  double stax, stay, staz;
