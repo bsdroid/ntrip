@@ -45,6 +45,10 @@ class RTCM2Decoder: public GPSDecoder {
 
     t_irc getStaCrd(double& xx, double& yy, double& zz);
 
+    t_irc getStaCrd(double& xx, double& yy, double& zz,
+                    double& dx1, double& dy1, double& dz1,
+                    double& dx2, double& dy2, double& dz2);
+
     const rtcm2::RTCM2_2021& msg2021() const { return _msg2021; }
 
     std::string ID() const { return _ID; }

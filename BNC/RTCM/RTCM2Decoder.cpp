@@ -82,6 +82,25 @@ t_irc RTCM2Decoder::getStaCrd(double& xx, double& yy, double& zz) {
   return success;
 }
 
+//
+t_irc RTCM2Decoder::getStaCrd(double& xx, double& yy, double& zz,
+                              double& dx1, double& dy1, double& dz1,
+                              double& dx2, double& dy2, double& dz2) {
+  xx = _msg03.x;
+  yy = _msg03.y;
+  zz = _msg03.z;
+
+  dx1 = (_msg22.validMsg ? _msg22.dL1[0] : 0.0);
+  dy1 = (_msg22.validMsg ? _msg22.dL1[1] : 0.0);
+  dz1 = (_msg22.validMsg ? _msg22.dL1[2] : 0.0);
+
+  dx2 = (_msg22.validMsg ? _msg22.dL2[0] : 0.0);
+  dy2 = (_msg22.validMsg ? _msg22.dL2[1] : 0.0);
+  dz2 = (_msg22.validMsg ? _msg22.dL2[2] : 0.0);
+
+  return success;
+}
+
 
 //
 t_irc RTCM2Decoder::Decode(char* buffer, int bufLen) {
