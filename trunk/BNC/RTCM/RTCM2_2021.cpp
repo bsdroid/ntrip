@@ -105,6 +105,7 @@ void RTCM2_2021::extract(const RTCM2packet& P) {
 
     // Message number 21
     else if ( P.ID() == 21 ) {
+      bool   P_CA_Ind  =   P.getBits        (iSat*48 + 25, 1); 
       double dcorrUnit = ( P.getUnsignedBits(iSat*48 + 32, 1) ? 0.032 : 0.002);
       double  corrUnit = ( P.getUnsignedBits(iSat*48 + 36, 1) ? 0.320 : 0.020);
       unsigned    IOD  =   P.getUnsignedBits(iSat*48 + 40, 8);
@@ -115,11 +116,13 @@ void RTCM2_2021::extract(const RTCM2packet& P) {
 	corr-> range1 = (corrVal ? corrVal : ZEROVALUE);
 	corr->drange1 = dcorrVal;
 	corr->IODr1   = IOD;
+        corr->Pind1   = P_CA_Ind;
       }
       else {
 	corr-> range2 = (corrVal ? corrVal : ZEROVALUE);
 	corr->drange2 = dcorrVal;
 	corr->IODr2   = IOD;
+        corr->Pind2   = P_CA_Ind;
       }
     }
   }
