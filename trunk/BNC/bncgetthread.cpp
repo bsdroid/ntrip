@@ -180,6 +180,9 @@ void bncGetThread::initialize() {
   }
   _rnx_set_position = false;
 
+  connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
+	  this, SLOT(slotNewEphGPS(gpsephemeris)));
+
   // Raw Output
   // ----------
   // QByteArray rawOutFileName = "./" + _staID + ".raw";
