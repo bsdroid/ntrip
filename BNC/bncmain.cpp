@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
     // Normal case - data from Internet
     // --------------------------------
     if (!fileInput) {
-      caster->slotReadMountpoints();
+      caster->slotReadMountPoints();
       if (caster->numStations() == 0) {
         return 0;
       }

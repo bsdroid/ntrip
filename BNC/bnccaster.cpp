@@ -312,7 +312,7 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
 
 // Reread configuration 
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::slotReadMountpoints() {
+void bncCaster::slotReadMountPoints() {
 
   QSettings settings;
 
@@ -393,7 +393,7 @@ void bncCaster::slotReadMountpoints() {
     }
   }
 
-  emit mountPointsRead();
+  emit mountPointsRead(_threads);
   emit( newMessage(QString("Table of Mountpoints (re-)read: new number = %1")
                             .arg(_threads.count()).toAscii()) );
 
@@ -406,7 +406,7 @@ void bncCaster::slotReadMountpoints() {
   }
   else {
     _confTimer = new QTimer();
-    connect(_confTimer, SIGNAL(timeout()), this, SLOT(slotReadMountpoints()));
+    connect(_confTimer, SIGNAL(timeout()), this, SLOT(slotReadMountPoints()));
 
     QTime currTime = currentDateAndTimeGPS().time();
     QTime nextShotTime;
