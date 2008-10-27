@@ -57,6 +57,7 @@
     void AddToolbar();
   
   public slots:  
+    void slotNewGetThread(bncGetThread* thread);
 
   private slots:
     void slotWindowMessage(const QByteArray msg);

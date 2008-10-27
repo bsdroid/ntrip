@@ -192,6 +192,8 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
   _threads.push_back(getThread);
 
   getThread->start();
+
+  emit newGetThread(getThread);
 }
 
 // Error in get thread
