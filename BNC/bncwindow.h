@@ -58,6 +58,7 @@
   
   public slots:  
     void slotNewGetThread(bncGetThread* thread);
+    void slotDeleteGetThread(bncGetThread* thread);
 
   private slots:
     void slotWindowMessage(const QByteArray msg);

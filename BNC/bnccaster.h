@@ -48,6 +48,7 @@ class bncCaster : public QObject {
 
  signals:
    void newGetThread(bncGetThread* thread);
+   void deleteGetThread(bncGetThread* thread);
    void getThreadErrors();   
    void newMessage(QByteArray msg);
 
