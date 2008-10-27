@@ -38,6 +38,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
+
 #include <unistd.h>
 #include "bncwindow.h" 
 #include "bncapp.h" 
@@ -787,11 +789,19 @@ void bncWindow::slotWhatsThis() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotNewGetThread(bncGetThread* thread) {
+  for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
+    QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
+              "@"  + _mountPointsTable->item(iRow, 1)->text() );
+    if (url                                      == thread->mountPoint() &&
+        _mountPointsTable->item(iRow, 3)->text() == thread->latitude()   &&
+        _mountPointsTable->item(iRow, 4)->text() == thread->longitude() ) {
 
-
-//  connect(thread, SIGNAL(newBytes(QByteArray, double)),
-//          (bncTableItem*) _mountPointsTable->item(iRow, 6), 
-//          SLOT(slotNewBytes(QByteArray, double)));
+      connect(thread, SIGNAL(newBytes(QByteArray, double)),
+              (bncTableItem*) _mountPointsTable->item(iRow, 6), 
+              SLOT(slotNewBytes(QByteArray, double)));
+      break;
+    }
+  }
 }
 
 // 
