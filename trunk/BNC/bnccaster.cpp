@@ -395,6 +395,9 @@ void bncCaster::slotReadMountpoints() {
     }
   }
 
+  emit( newMessage(QString("Table of Mountpoints (re-)read: new number = %1")
+                            .arg(_threads.count()).toAscii()) );
+
   // (Re-) Start the configuration timer
   // -----------------------------------
   int ms = 0;
@@ -423,6 +426,9 @@ void bncCaster::slotReadMountpoints() {
     }
 
     ms = currTime.msecsTo(nextShotTime);
+    if (ms < 30000) {
+      ms = 30000;
+    }
   }
 
   _confTimer->start(ms);
