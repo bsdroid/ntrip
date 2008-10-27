@@ -695,10 +695,10 @@ void bncWindow::slotGetData() {
   connect(_caster, SIGNAL(getThreadErrors()), 
           this, SLOT(slotGetThreadErrors()));
 
-  connect (_caster, SIGNAL(mountPointsRead()), 
-           this, SLOT(slotMountPointsRead()));
+  connect (_caster, SIGNAL(mountPointsRead(QList<bncGetThread*>)), 
+           this, SLOT(slotMountPointsRead(QList<bncGetThread*>)));
 
-  _caster->slotReadMountpoints();
+  _caster->slotReadMountPoints();
 
   ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
 }
@@ -801,8 +801,22 @@ void bncWindow::slotWhatsThis() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotMountPointsRead() {
+void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
   populateMountPointsTable();
+  QListIterator<bncGetThread*> iTh(threads);
+  while (iTh.hasNext()) {
+    bncGetThread* thread = iTh.next();
+    for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
+      QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
+                "@"  + _mountPointsTable->item(iRow, 1)->text() );
+      if (url                                      == thread->mountPoint() &&
+          _mountPointsTable->item(iRow, 3)->text() == thread->latitude()   &&
+          _mountPointsTable->item(iRow, 4)->text() == thread->longitude() ) {
+        ((bncTableItem*) _mountPointsTable->item(iRow, 6))->setGetThread(thread);
+        break;
+      }
+    }
+  }
 }
 
 // 
