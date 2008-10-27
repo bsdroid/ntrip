@@ -59,7 +59,7 @@
   public slots:  
 
   private slots:
-    void slotMessage(const QByteArray msg);
+    void slotWindowMessage(const QByteArray msg);
     void slotHelp();
     void slotAbout();
     void slotFlowchart();

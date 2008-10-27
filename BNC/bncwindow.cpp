@@ -64,7 +64,7 @@ bncWindow::bncWindow() {
   setWindowTitle(tr("BKG Ntrip Client (BNC) Version 1.6"));
 
   connect((bncApp*)qApp, SIGNAL(newMessage(QByteArray)), 
-          this, SLOT(slotMessage(QByteArray)));
+          this, SLOT(slotWindowMessage(QByteArray)));
 
   // Create Actions
   // --------------
@@ -731,7 +731,7 @@ void bncWindow::slotSelectionChanged() {
 
 // Display Program Messages 
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotMessage(const QByteArray msg) {
+void bncWindow::slotWindowMessage(const QByteArray msg) {
 
   const int maxBufferSize = 10000;
  
