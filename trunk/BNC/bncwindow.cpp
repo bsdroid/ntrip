@@ -787,6 +787,8 @@ void bncWindow::slotWhatsThis() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotNewGetThread(bncGetThread* thread) {
+
+
 //  connect(thread, SIGNAL(newBytes(QByteArray, double)),
 //          (bncTableItem*) _mountPointsTable->item(iRow, 6), 
 //          SLOT(slotNewBytes(QByteArray, double)));

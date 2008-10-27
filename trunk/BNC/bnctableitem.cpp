@@ -73,3 +73,11 @@ void bncTableItem::slotNewBytes(const QByteArray, double nbyte) {
     setText(QString("%1 Mb").arg(_bytesRead/1.e6, 5));
   }
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncTableItem::setGetThread(bncGetThread* getThread) {
+  _getThread = getThread;
+  connect(_getThread, SIGNAL(newBytes(QByteArray, double)),
+          this, SLOT(slotNewBytes(QByteArray, double)));
+}
