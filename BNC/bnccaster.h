@@ -47,6 +47,7 @@ class bncCaster : public QObject {
    void slotReadMountpoints();
 
  signals:
+   void newGetThread(bncGetThread* thread);
    void getThreadErrors();   
    void newMessage(QByteArray msg);
 

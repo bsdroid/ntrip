@@ -680,6 +680,9 @@ void bncWindow::slotGetData() {
   connect(_caster, SIGNAL(getThreadErrors()), 
           this, SLOT(slotGetThreadErrors()));
 
+  connect (_caster, SIGNAL(newGetThread(bncGetThread*)),
+           this, SLOT(slotNewGetThread(bncGetThread*)));
+
   _caster->slotReadMountpoints();
 
   ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
@@ -778,9 +781,19 @@ void bncWindow::slotFontSel() {
 
 // Whats This Help
 void bncWindow::slotWhatsThis() {
-QWhatsThis::enterWhatsThisMode();
+  QWhatsThis::enterWhatsThisMode();
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotNewGetThread(bncGetThread* thread) {
+//  connect(thread, SIGNAL(newBytes(QByteArray, double)),
+//          (bncTableItem*) _mountPointsTable->item(iRow, 6), 
+//          SLOT(slotNewBytes(QByteArray, double)));
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
 void bncWindow::CreateMenu() {
   // Create Menus
   // ------------
@@ -797,6 +810,8 @@ void bncWindow::CreateMenu() {
   _menuHlp->addAction(_actAbout);
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
 void bncWindow::AddToolbar() {
   // Tool (Command) Bar
   // ------------------
@@ -811,6 +826,8 @@ void bncWindow::AddToolbar() {
   toolBar->addAction(_actwhatsthis);
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
 bncAboutDlg::bncAboutDlg(QWidget* parent) : 
    QDialog(parent) {
 
@@ -837,9 +854,13 @@ bncAboutDlg::bncAboutDlg(QWidget* parent) :
   show();
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
 bncAboutDlg::~bncAboutDlg() {
 }; 
 
+// 
+////////////////////////////////////////////////////////////////////////////
 bncFlowchartDlg::bncFlowchartDlg(QWidget* parent) :
    QDialog(parent) {
 
@@ -858,6 +879,8 @@ bncFlowchartDlg::bncFlowchartDlg(QWidget* parent) :
   show();
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
 bncFlowchartDlg::~bncFlowchartDlg() {
 };
 
