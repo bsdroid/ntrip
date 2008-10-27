@@ -91,6 +91,9 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
   _lastDumpSec   = 0; 
 
   _confTimer = 0;
+
+  connect(this, SIGNAL(newMessage(QByteArray)), 
+          (bncApp*) qApp, SLOT(slotMessage(const QByteArray)));
 }
 
 // Destructor
@@ -357,9 +360,6 @@ void bncCaster::slotReadMountpoints() {
       bncApp* app = (bncApp*) qApp;
       app->connect(getThread, SIGNAL(newMessage(QByteArray)), 
                    app, SLOT(slotMessage(const QByteArray)));
-
-      std::cout << "newThread "  << getThread->staID().data() << std::endl;
-      
       addGetThread(getThread);
     }
   }
@@ -384,7 +384,6 @@ void bncCaster::slotReadMountpoints() {
     }
 
     if (!existFlg) {
-      std::cout << "old Thread "  << thread->staID().data() << std::endl;
       disconnect(thread, 0, 0, 0);
       _staIDs.removeAll(thread->staID());
       _threads.removeAll(thread);

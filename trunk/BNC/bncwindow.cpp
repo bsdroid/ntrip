@@ -63,6 +63,9 @@ bncWindow::bncWindow() {
 
   setWindowTitle(tr("BKG Ntrip Client (BNC) Version 1.6"));
 
+  connect((bncApp*)qApp, SIGNAL(newMessage(QByteArray)), 
+          this, SLOT(slotMessage(QByteArray)));
+
   // Create Actions
   // --------------
   _actHelp = new QAction(tr("&Help Contents"),this);
@@ -653,7 +656,6 @@ QStringList mountPoints;
 // All get slots terminated
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotGetThreadErrors() {
-  slotMessage("All Get Threads Terminated");
   ((bncApp*)qApp)->slotMessage("All Get Threads Terminated");
   _actAddMountPoints->setEnabled(true);
   _actGetData->setEnabled(true);
@@ -678,16 +680,8 @@ void bncWindow::slotGetData() {
   connect(_caster, SIGNAL(getThreadErrors()), 
           this, SLOT(slotGetThreadErrors()));
 
-  connect(_caster, SIGNAL(newMessage(QByteArray)), 
-          this, SLOT(slotMessage(QByteArray)));
-  connect(_caster, SIGNAL(newMessage(QByteArray)), 
-          (bncApp*)qApp, SLOT(slotMessage(QByteArray)));
-  connect((bncApp*)qApp, SIGNAL(newMessage(QByteArray)), 
-          this, SLOT(slotMessage(QByteArray)));
-
   _caster->slotReadMountpoints();
 
-  slotMessage                 ("============ Start BNC ============");
   ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
 }
 

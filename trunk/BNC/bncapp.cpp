@@ -151,6 +151,7 @@ void bncApp::slotMessage(const QByteArray msg) {
   QMutexLocker locker(&_mutex);
 
   messagePrivate(msg);
+  emit newMessage(msg);
 }
 
 // Write a Program Message (private, no lock)
