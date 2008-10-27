@@ -37,7 +37,7 @@ class bncTableItem : public QObject, public QTableWidgetItem {
   public:
     bncTableItem();
     ~bncTableItem();
-    void setGetThread(bncGetThread* getThread) {_getThread = getThread;}
+    void setGetThread(bncGetThread* getThread);
     bncGetThread* getThread() {return _getThread;}
 
   signals:
