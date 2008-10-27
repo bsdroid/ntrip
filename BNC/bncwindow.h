@@ -57,9 +57,9 @@
     void AddToolbar();
   
   public slots:  
-    void slotMessage(const QByteArray msg);
 
   private slots:
+    void slotMessage(const QByteArray msg);
     void slotHelp();
     void slotAbout();
     void slotFlowchart();
