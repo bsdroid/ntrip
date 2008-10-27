@@ -153,7 +153,7 @@ bncWindow::bncWindow() {
   _onTheFlyComboBox = new QComboBox();
   _onTheFlyComboBox->setMaximumWidth(9*ww);
   _onTheFlyComboBox->setEditable(false);
-  _onTheFlyComboBox->addItems(QString("1 min,1 hour,1 day").split(","));
+  _onTheFlyComboBox->addItems(QString("1 day,1 hour,1 min").split(","));
   ii = _onTheFlyComboBox->findText(settings.value("onTheFlyInterval").toString());
   if (ii != -1) {
     _onTheFlyComboBox->setCurrentIndex(ii);
