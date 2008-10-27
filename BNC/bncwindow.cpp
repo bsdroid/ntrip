@@ -803,6 +803,9 @@ void bncWindow::slotWhatsThis() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
   populateMountPointsTable();
+  QSettings settings;
+  _binSamplSpinBox->setValue(settings.value("binSampl").toInt());
+  _waitTimeSpinBox->setValue(settings.value("waitTime").toInt());
   QListIterator<bncGetThread*> iTh(threads);
   while (iTh.hasNext()) {
     bncGetThread* thread = iTh.next();
