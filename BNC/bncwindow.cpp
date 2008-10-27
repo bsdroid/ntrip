@@ -248,63 +248,10 @@ bncWindow::bncWindow() {
   _mountPointsTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   _mountPointsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _mountPointsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-  QListIterator<QString> it(settings.value("mountPoints").toStringList());
-  if (!it.hasNext()) {
-    _actGetData->setEnabled(false);
-  }
-  int iRow = 0;
-  while (it.hasNext()) {
-    QStringList hlp = it.next().split(" ");
-    if (hlp.size() < 5) continue;
-    _mountPointsTable->insertRow(iRow);
-
-    QUrl    url(hlp[0]);
-
-    QString fullPath = url.host() + QString(":%1").arg(url.port()) + url.path();
-    QString format(hlp[1]); QString latitude(hlp[2]); QString longitude(hlp[3]);
-    QString nmea(hlp[4]);
-
-    QTableWidgetItem* it;
-    it = new QTableWidgetItem(url.userInfo());
-    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 0, it);
-
-    it = new QTableWidgetItem(fullPath);
-    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 1, it);
-
-    it = new QTableWidgetItem(format);
-    _mountPointsTable->setItem(iRow, 2, it);
-
-    if      (nmea == "yes") {
-    it = new QTableWidgetItem(latitude);
-    _mountPointsTable->setItem(iRow, 3, it);
-    it = new QTableWidgetItem(longitude);
-    _mountPointsTable->setItem(iRow, 4, it);
-    } else {
-    it = new QTableWidgetItem(latitude);
-    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 3, it);
-    it = new QTableWidgetItem(longitude);
-    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 4, it);
-    }
-
-    it = new QTableWidgetItem(nmea);
-    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 5, it);
-
-    bncTableItem* bncIt = new bncTableItem();
-    bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 6, bncIt);
-
-    iRow++;
-  }
   _mountPointsTable->hideColumn(0);
-  _mountPointsTable->sortItems(1);
-
   connect(_mountPointsTable, SIGNAL(itemSelectionChanged()), 
           SLOT(slotSelectionChanged()));
+  populateMountPointsTable();
 
   _log = new QTextBrowser();
   _log->setReadOnly(true);
@@ -492,6 +439,72 @@ bncWindow::bncWindow() {
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::~bncWindow() {
   delete _caster;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::populateMountPointsTable() {
+
+  for (int iRow = _mountPointsTable->rowCount()-1; iRow >=0; iRow--) {
+    _mountPointsTable->removeRow(iRow);
+  }
+
+  QSettings settings;
+
+  QListIterator<QString> it(settings.value("mountPoints").toStringList());
+  if (!it.hasNext()) {
+    _actGetData->setEnabled(false);
+  }
+  int iRow = 0;
+  while (it.hasNext()) {
+    QStringList hlp = it.next().split(" ");
+    if (hlp.size() < 5) continue;
+    _mountPointsTable->insertRow(iRow);
+
+    QUrl    url(hlp[0]);
+
+    QString fullPath = url.host() + QString(":%1").arg(url.port()) + url.path();
+    QString format(hlp[1]); QString latitude(hlp[2]); QString longitude(hlp[3]);
+    QString nmea(hlp[4]);
+
+    QTableWidgetItem* it;
+    it = new QTableWidgetItem(url.userInfo());
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 0, it);
+
+    it = new QTableWidgetItem(fullPath);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 1, it);
+
+    it = new QTableWidgetItem(format);
+    _mountPointsTable->setItem(iRow, 2, it);
+
+    if      (nmea == "yes") {
+    it = new QTableWidgetItem(latitude);
+    _mountPointsTable->setItem(iRow, 3, it);
+    it = new QTableWidgetItem(longitude);
+    _mountPointsTable->setItem(iRow, 4, it);
+    } else {
+    it = new QTableWidgetItem(latitude);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 3, it);
+    it = new QTableWidgetItem(longitude);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 4, it);
+    }
+
+    it = new QTableWidgetItem(nmea);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 5, it);
+
+    bncTableItem* bncIt = new bncTableItem();
+    bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 6, bncIt);
+
+    iRow++;
+  }
+
+  _mountPointsTable->sortItems(1);
 }
 
 // Retrieve Table
@@ -682,11 +695,8 @@ void bncWindow::slotGetData() {
   connect(_caster, SIGNAL(getThreadErrors()), 
           this, SLOT(slotGetThreadErrors()));
 
-  connect (_caster, SIGNAL(newGetThread(bncGetThread*)),
-           this, SLOT(slotNewGetThread(bncGetThread*)));
-
-  connect (_caster, SIGNAL(deleteGetThread(bncGetThread*)),
-           this, SLOT(slotDeleteGetThread(bncGetThread*)));
+  connect (_caster, SIGNAL(mountPointsRead()), 
+           this, SLOT(slotMountPointsRead()));
 
   _caster->slotReadMountpoints();
 
@@ -791,25 +801,8 @@ void bncWindow::slotWhatsThis() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotNewGetThread(bncGetThread* thread) {
-  for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
-    QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
-              "@"  + _mountPointsTable->item(iRow, 1)->text() );
-    if (url                                      == thread->mountPoint() &&
-        _mountPointsTable->item(iRow, 3)->text() == thread->latitude()   &&
-        _mountPointsTable->item(iRow, 4)->text() == thread->longitude() ) {
-
-      connect(thread, SIGNAL(newBytes(QByteArray, double)),
-              (bncTableItem*) _mountPointsTable->item(iRow, 6), 
-              SLOT(slotNewBytes(QByteArray, double)));
-      break;
-    }
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotDeleteGetThread(bncGetThread* thread) {
+void bncWindow::slotMountPointsRead() {
+  populateMountPointsTable();
 }
 
 // 

@@ -192,8 +192,6 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
   _threads.push_back(getThread);
 
   getThread->start();
-
-  emit newGetThread(getThread);
 }
 
 // Error in get thread
@@ -386,7 +384,6 @@ void bncCaster::slotReadMountpoints() {
     }
 
     if (!existFlg) {
-      emit deleteGetThread(thread);
       disconnect(thread, 0, 0, 0);
       _staIDs.removeAll(thread->staID());
       _threads.removeAll(thread);
@@ -396,6 +393,7 @@ void bncCaster::slotReadMountpoints() {
     }
   }
 
+  emit mountPointsRead();
   emit( newMessage(QString("Table of Mountpoints (re-)read: new number = %1")
                             .arg(_threads.count()).toAscii()) );
 
