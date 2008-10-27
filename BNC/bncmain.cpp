@@ -168,7 +168,18 @@ int main(int argc, char *argv[]) {
   
     ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
 
-    if (fileInput) {
+    // Normal case - data from Internet
+    // --------------------------------
+    if (!fileInput) {
+      caster->slotReadMountpoints();
+      if (caster->numStations() == 0) {
+        return 0;
+      }
+    }
+
+    // Special case - data from file
+    // -----------------------------
+    else {
       if ( fileName.isEmpty() || format.isEmpty() || 
            dateString.isEmpty() || timeString.isEmpty() ) {
         cout << "Usage: bnc --file <fileName>\n"
@@ -186,34 +197,6 @@ int main(int argc, char *argv[]) {
                   &app, SLOT(slotMessage(const QByteArray)));
       
       caster->addGetThread(getThread);
-      
-      getThread->start();
-    }
-    else {
-      int iMount = -1;
-      QListIterator<QString> it(settings.value("mountPoints").toStringList());
-      while (it.hasNext()) {
-        ++iMount;
-        QStringList hlp = it.next().split(" ");
-        if (hlp.size() <= 1) continue;
-        QUrl url(hlp[0]);
-        QByteArray format = hlp[1].toAscii();
-        QByteArray latitude = hlp[2].toAscii();
-        QByteArray longitude = hlp[3].toAscii();
-        QByteArray nmea = hlp[4].toAscii();
-      
-        bncGetThread* getThread = new bncGetThread(url, format, latitude, longitude, nmea, iMount);
-      
-        app.connect(getThread, SIGNAL(newMessage(QByteArray)), 
-                    &app, SLOT(slotMessage(const QByteArray)));
-      
-        caster->addGetThread(getThread);
-      
-        getThread->start();
-      }
-      if (caster->numStations() == 0) {
-        return 0;
-      }
     }
   }
 

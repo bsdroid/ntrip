@@ -128,6 +128,8 @@
     QLineEdit*   _LatLineEdit;
     QLineEdit*   _LonLineEdit;
 
+    QComboBox*  _onTheFlyComboBox;
+
     QTextEdit*  _log;
 
     QWidget*   _canvas;

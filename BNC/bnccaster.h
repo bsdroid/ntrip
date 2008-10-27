@@ -44,6 +44,7 @@ class bncCaster : public QObject {
 
  public slots:
    void newObs(QByteArray staID, bool firstObs, p_obs obs);
+   void slotReadMountpoints();
 
  signals:
    void getThreadErrors();   
@@ -68,6 +69,8 @@ class bncCaster : public QObject {
    int                     _samplingRate;
    long                    _waitTime;
    QMutex                  _mutex;
+   QTimer*                 _confTimer;
+   int                     _confInterval;
 };
 
 #endif
