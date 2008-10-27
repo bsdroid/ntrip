@@ -386,6 +386,7 @@ void bncCaster::slotReadMountpoints() {
     }
 
     if (!existFlg) {
+      emit deleteGetThread(thread);
       disconnect(thread, 0, 0, 0);
       _staIDs.removeAll(thread->staID());
       _threads.removeAll(thread);

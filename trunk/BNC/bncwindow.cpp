@@ -685,6 +685,9 @@ void bncWindow::slotGetData() {
   connect (_caster, SIGNAL(newGetThread(bncGetThread*)),
            this, SLOT(slotNewGetThread(bncGetThread*)));
 
+  connect (_caster, SIGNAL(deleteGetThread(bncGetThread*)),
+           this, SLOT(slotDeleteGetThread(bncGetThread*)));
+
   _caster->slotReadMountpoints();
 
   ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
@@ -802,6 +805,11 @@ void bncWindow::slotNewGetThread(bncGetThread* thread) {
       break;
     }
   }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotDeleteGetThread(bncGetThread* thread) {
 }
 
 // 
