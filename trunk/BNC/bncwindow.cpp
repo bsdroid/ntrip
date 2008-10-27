@@ -145,6 +145,14 @@ bncWindow::bncWindow() {
   if (ii != -1) {
     _rnxIntrComboBox->setCurrentIndex(ii);
   }
+  _onTheFlyComboBox = new QComboBox();
+  _onTheFlyComboBox->setMaximumWidth(9*ww);
+  _onTheFlyComboBox->setEditable(false);
+  _onTheFlyComboBox->addItems(QString("1 min,1 hour,1 day").split(","));
+  ii = _onTheFlyComboBox->findText(settings.value("onTheFlyInterval").toString());
+  if (ii != -1) {
+    _onTheFlyComboBox->setCurrentIndex(ii);
+  }
   _ephIntrComboBox    = new QComboBox();
   _ephIntrComboBox->setMaximumWidth(9*ww);
   _ephIntrComboBox->setEditable(false);
@@ -371,10 +379,12 @@ bncWindow::bncWindow() {
   gLayout->addWidget(_logFileLineEdit,         0,1);
   gLayout->addWidget(new QLabel("Append files")    ,1,0 );
   gLayout->addWidget(_rnxAppendCheckBox,     1,1  );
-  gLayout->addWidget(new QLabel("General settings for logfile and file handling."),2, 0, 1, 2, Qt::AlignLeft);
-  gLayout->addWidget(new QLabel("    "),3,0);
+  gLayout->addWidget(new QLabel("Reread Configuration every")    ,2,0 );
+  gLayout->addWidget(_onTheFlyComboBox,     2,1  );
+  gLayout->addWidget(new QLabel("General settings for logfile and file handling."),3, 0, 1, 2, Qt::AlignLeft);
   gLayout->addWidget(new QLabel("    "),4,0);
   gLayout->addWidget(new QLabel("    "),5,0);
+  gLayout->addWidget(new QLabel("    "),6,0);
   ggroup->setLayout(gLayout);
 
   QGridLayout* sLayout = new QGridLayout;
@@ -612,6 +622,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("corrPath",    _corrPathLineEdit->text());
   settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
+  settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
   settings.setValue("ephIntr",     _ephIntrComboBox->currentText());
   settings.setValue("corrIntr",    _corrIntrComboBox->currentText());
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
@@ -674,34 +685,10 @@ void bncWindow::slotGetData() {
   connect((bncApp*)qApp, SIGNAL(newMessage(QByteArray)), 
           this, SLOT(slotMessage(QByteArray)));
 
-  slotMessage("============ Start BNC ============");
+  _caster->slotReadMountpoints();
+
+  slotMessage                 ("============ Start BNC ============");
   ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
-
-  for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
-    QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
-              "@"  + _mountPointsTable->item(iRow, 1)->text() );
-
-    QByteArray format = _mountPointsTable->item(iRow, 2)->text().toAscii();
-
-    QByteArray latitude = _mountPointsTable->item(iRow, 3)->text().toAscii();
-    QByteArray longitude = _mountPointsTable->item(iRow, 4)->text().toAscii();
-    QByteArray nmea = _mountPointsTable->item(iRow, 5)->text().toAscii();
-
-    bncGetThread* getThread = new bncGetThread(url, format, latitude, longitude, nmea, iRow);
-
-    connect(getThread, SIGNAL(newMessage(QByteArray)), 
-            this, SLOT(slotMessage(QByteArray)));
-    connect(getThread, SIGNAL(newMessage(QByteArray)), 
-            (bncApp*)qApp, SLOT(slotMessage(QByteArray)));
-
-    connect(getThread, SIGNAL(newBytes(QByteArray, double)),
-            (bncTableItem*) _mountPointsTable->item(iRow, 6), 
-            SLOT(slotNewBytes(QByteArray, double)));
-
-    _caster->addGetThread(getThread);
-
-    getThread->start();
-  }
 }
 
 // Retrieve Data

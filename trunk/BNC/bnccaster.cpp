@@ -43,6 +43,7 @@
 #include <unistd.h>
 
 #include "bnccaster.h"
+#include "bncapp.h"
 #include "bncgetthread.h"
 #include "bncutils.h"
 #include "RTCM/GPSDecoder.h"
@@ -89,11 +90,7 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
 
   _lastDumpSec   = 0; 
 
-  _samplingRate = settings.value("binSampl").toInt();
-  _waitTime     = settings.value("waitTime").toInt();
-  if (_waitTime < 1) {
-    _waitTime = 1;
-  }
+  _confTimer = 0;
 }
 
 // Destructor
@@ -190,6 +187,8 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
 
   _staIDs.push_back(getThread->staID());
   _threads.push_back(getThread);
+
+  getThread->start();
 }
 
 // Error in get thread
@@ -306,4 +305,124 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
       first = false;
     }
   }
+}
+
+// Reread configuration 
+////////////////////////////////////////////////////////////////////////////
+void bncCaster::slotReadMountpoints() {
+
+  QSettings settings;
+
+  // Reread several options
+  // ----------------------
+  _samplingRate = settings.value("binSampl").toInt();
+  _waitTime     = settings.value("waitTime").toInt();
+  if (_waitTime < 1) {
+    _waitTime = 1;
+  }
+
+  // Add new mountpoints
+  // -------------------
+  int iMount = -1;
+  QListIterator<QString> it(settings.value("mountPoints").toStringList());
+  while (it.hasNext()) {
+    ++iMount;
+    QStringList hlp = it.next().split(" ");
+    if (hlp.size() <= 1) continue;
+    QUrl url(hlp[0]);
+
+    // Does it already exist?
+    // ----------------------
+    bool existFlg = false;
+    QListIterator<bncGetThread*> iTh(_threads);
+    while (iTh.hasNext()) {
+      bncGetThread* thread = iTh.next();
+      if (thread->mountPoint() == url) {
+        existFlg = true;
+        break;
+      }
+    }
+
+    // New bncGetThread
+    // ----------------
+    if (!existFlg) {
+      QByteArray format    = hlp[1].toAscii();
+      QByteArray latitude  = hlp[2].toAscii();
+      QByteArray longitude = hlp[3].toAscii();
+      QByteArray nmea      = hlp[4].toAscii();
+      
+      bncGetThread* getThread = new bncGetThread(url, format, latitude, 
+                                                 longitude, nmea, iMount);
+      
+      bncApp* app = (bncApp*) qApp;
+      app->connect(getThread, SIGNAL(newMessage(QByteArray)), 
+                   app, SLOT(slotMessage(const QByteArray)));
+
+      std::cout << "newThread "  << getThread->staID().data() << std::endl;
+      
+      addGetThread(getThread);
+    }
+  }
+
+  // Remove mountpoints
+  // ------------------
+  QListIterator<bncGetThread*> iTh(_threads);
+  while (iTh.hasNext()) {
+    bncGetThread* thread = iTh.next();
+
+    bool existFlg = false;
+    QListIterator<QString> it(settings.value("mountPoints").toStringList());
+    while (it.hasNext()) {
+      QStringList hlp = it.next().split(" ");
+      if (hlp.size() <= 1) continue;
+      QUrl url(hlp[0]);
+
+      if (thread->mountPoint() == url) {
+        existFlg = true;
+        break;
+      }
+    }
+
+    if (!existFlg) {
+      std::cout << "old Thread "  << thread->staID().data() << std::endl;
+      disconnect(thread, 0, 0, 0);
+      _staIDs.removeAll(thread->staID());
+      _threads.removeAll(thread);
+      thread->terminate();
+      thread->wait();
+      delete thread;
+    }
+  }
+
+  // (Re-) Start the configuration timer
+  // -----------------------------------
+  int ms = 0;
+
+  if (_confTimer) {
+    ms = 1000 * _confInterval;
+  }
+  else {
+    _confTimer = new QTimer();
+    connect(_confTimer, SIGNAL(timeout()), this, SLOT(slotReadMountpoints()));
+
+    QTime currTime = currentDateAndTimeGPS().time();
+    QTime nextShotTime;
+
+    if      (settings.value("onTheFlyInterval").toString() == "1 min") {
+      _confInterval = 60;
+      nextShotTime = QTime(currTime.hour(), currTime.minute()+1, 0);
+    }
+    else if (settings.value("onTheFlyInterval").toString() == "1 hour") {
+      _confInterval = 3600;
+      nextShotTime = QTime(currTime.hour()+1, 0, 0);
+    }
+    else {
+      _confInterval = 86400;
+      nextShotTime = QTime(23, 59, 59, 999);
+    }
+
+    ms = currTime.msecsTo(nextShotTime);
+  }
+
+  _confTimer->start(ms);
 }
