@@ -57,8 +57,7 @@
     void AddToolbar();
   
   public slots:  
-    void slotNewGetThread(bncGetThread* thread);
-    void slotDeleteGetThread(bncGetThread* thread);
+    void slotMountPointsRead();
 
   private slots:
     void slotWindowMessage(const QByteArray msg);
@@ -80,6 +79,8 @@
     virtual void closeEvent(QCloseEvent *);
 
   private:
+    void populateMountPointsTable();
+
     QMenu*     _menuHlp;
     QMenu*     _menuFile;
 
