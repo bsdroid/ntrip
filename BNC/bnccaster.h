@@ -57,6 +57,7 @@ class bncCaster : public QObject {
 
  private:
    void dumpEpochs(long minTime, long maxTime);
+   static int myWrite(QTcpSocket* sock, const char* buf, int bufLen);
 
    QFile*                  _outFile;
    int                     _port;
