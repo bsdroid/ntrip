@@ -211,9 +211,11 @@ void bncCaster::slotGetThreadError(QByteArray staID) {
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::dumpEpochs(long minTime, long maxTime) {
 
-  const char begEpoch = 'A';
-  const char begObs   = 'B';
-  const char endEpoch = 'C';
+  const char begEpoch[] = "BEGEPOCH";
+  const char endEpoch[] = "ENDEPOCH";
+
+  const int begEpochNBytes = sizeof(begEpoch) - 1;
+  const int endEpochNBytes = sizeof(endEpoch) - 1;
 
   for (long sec = minTime; sec <= maxTime; sec++) {
 
@@ -267,26 +269,26 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
         // Output into the socket
         // ----------------------
         if (_sockets) {
-          int numBytes = sizeof(obs->_o); 
           QMutableListIterator<QTcpSocket*> is(*_sockets);
           while (is.hasNext()) {
             QTcpSocket* sock = is.next();
+            int myFlag = 0;
             if (sock->state() == QAbstractSocket::ConnectedState) {
               bool ok = true;
-              int fd = sock->socketDescriptor();
               if (first) {
-                if (::write(fd, &begEpoch, 1) != 1) {
+                if (myWrite(sock, begEpoch, begEpochNBytes) != begEpochNBytes) {
+                  myFlag = 1;
                   ok = false;
                 }
               }
-              if (::write(fd, &begObs, 1) != 1) {
-                ok = false;
-              }
-              if (::write(fd, &obs->_o, numBytes) != numBytes) {
+              int numBytes = sizeof(obs->_o); 
+              if (myWrite(sock, (const char*)(&obs->_o), numBytes) != numBytes) {
+                myFlag = 2;
                 ok = false;
               }
               if (!it.hasNext()) {
-                if (::write(fd, &endEpoch, 1) != 1) {
+                if (myWrite(sock, endEpoch, endEpochNBytes) != endEpochNBytes) {
+                  myFlag = 3;
                   ok = false;
                 }
               }
@@ -431,4 +433,23 @@ void bncCaster::slotReadMountPoints() {
   }
 
   _confTimer->start(ms);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+int bncCaster::myWrite(QTcpSocket* sock, const char* buf, int bufLen) {
+  int bytesWritten = 0;
+  for (;;) {
+    int newBytes = sock->write(buf+bytesWritten, bufLen-bytesWritten);
+    if (newBytes < 0) {
+      std::cout << "myWrite " << newBytes << "  "  << sock->state() << std::endl;
+      return newBytes;
+    }
+    else {
+      bytesWritten += newBytes;
+    }
+    if (bytesWritten == bufLen) {
+      return bytesWritten;
+    }
+  }
 }
