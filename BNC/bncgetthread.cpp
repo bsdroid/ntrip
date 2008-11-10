@@ -736,8 +736,8 @@ void bncGetThread::run() {
           if (_rnx) {
 	    bool dump = true;
 
-	    RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
-	    if ( decoder2 && !_rnx_set_position ) {
+     RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
+     if ( decoder2 && !_rnx_set_position ) {
 	      double stax, stay, staz;
 	      double dL1[3], dL2[3];
 	      if ( decoder2->getStaCrd(stax, stay, staz,
@@ -795,8 +795,8 @@ void bncGetThread::run() {
 
         if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
 
-          // RTCM message types
-          // ------------------
+          // RTCMv3 message types
+          // --------------------
           if (0<_decoder->_typeList.size()) {
             QString type;
             for (int ii=0;ii<_decoder->_typeList.size();ii++) {
@@ -806,22 +806,48 @@ void bncGetThread::run() {
           }
           _decoder->_typeList.clear();
 
-          // Antenna XYZ & H
-          // ---------------
-          if (0<_decoder->_antList.size()) {
+          // RTCMv3 antenna descriptor
+          // -------------------------
+          if (0<_decoder->_antType.size()) {
+            QString ant1;
+            for (int ii=0;ii<_decoder->_antType.size();ii++) {
+              ant1 =  QString("%1 ").arg(_decoder->_antType[ii]);
+              emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii() ));
+            }
+          }
+          _decoder->_antType.clear();
+
+          // RTCMv3 antenna XYZ
+          // ------------------
+          if (0<_decoder->_antList5.size()) {
+            QString ant1,ant2,ant3;
+            for (int ii=0;ii<_decoder->_antList5.size();ii+=3) {
+              ant1 =  QString("%1 ").arg(_decoder->_antList5[ii+0]*0.0001,0,'f',4);
+              ant2 =  QString("%1 ").arg(_decoder->_antList5[ii+1]*0.0001,0,'f',4);
+              ant3 =  QString("%1 ").arg(_decoder->_antList5[ii+2]*0.0001,0,'f',4);
+              emit(newMessage(_staID + ": ARP (ITRF) X " + ant1.toAscii() + "m" ));
+              emit(newMessage(_staID + ": ARP (ITRF) Y " + ant2.toAscii() + "m"));
+              emit(newMessage(_staID + ": ARP (ITRF) Z " + ant3.toAscii() + "m"));
+            }
+          }
+          _decoder->_antList5.clear();
+
+          // RTCMv3 antenna XYZ-H
+          // --------------------
+          if (0<_decoder->_antList6.size()) {
             QString ant1,ant2,ant3,ant4;
-            for (int ii=0;ii<_decoder->_antList.size();ii+=4) {
-              ant1 =  QString("%1 ").arg(_decoder->_antList[ii+0]*0.0001,0,'f',4);
-              ant2 =  QString("%1 ").arg(_decoder->_antList[ii+1]*0.0001,0,'f',4);
-              ant3 =  QString("%1 ").arg(_decoder->_antList[ii+2]*0.0001,0,'f',4);
-              ant4 =  QString("%1 ").arg(_decoder->_antList[ii+3]*0.0001,0,'f',4);
+            for (int ii=0;ii<_decoder->_antList6.size();ii+=4) {
+              ant1 =  QString("%1 ").arg(_decoder->_antList6[ii+0]*0.0001,0,'f',4);
+              ant2 =  QString("%1 ").arg(_decoder->_antList6[ii+1]*0.0001,0,'f',4);
+              ant3 =  QString("%1 ").arg(_decoder->_antList6[ii+2]*0.0001,0,'f',4);
+              ant4 =  QString("%1 ").arg(_decoder->_antList6[ii+3]*0.0001,0,'f',4);
               emit(newMessage(_staID + ": ARP (ITRF) X " + ant1.toAscii() + "m" ));
               emit(newMessage(_staID + ": ARP (ITRF) Y " + ant2.toAscii() + "m"));
               emit(newMessage(_staID + ": ARP (ITRF) Z " + ant3.toAscii() + "m"));
               emit(newMessage(_staID + ": Antenna height "  + ant4.toAscii() + "m"));
             }
           }
-          _decoder->_antList.clear();
+          _decoder->_antList6.clear();
         }
       }
 

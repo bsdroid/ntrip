@@ -133,9 +133,11 @@ class GPSDecoder {
   }
 
   QList<p_obs> _obsList;
-  QList<int> _typeList; // RTCM message types
+  QList<int> _typeList; // RTCMv3 message types
   QList<int> _epochList; // Broadcast corrections
-  QList<double> _antList; // Antenna XYZ-H
+  QList<char*> _antType; // RTCMv3 antenna descriptor
+  QList<double> _antList5; // RTCMv3 antenna XYZ
+  QList<double> _antList6; // RTCMv3 antenna XYZ & H
 };
 
 #endif
