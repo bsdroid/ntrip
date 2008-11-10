@@ -216,24 +216,40 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
       _Parser.Message[_Parser.MessageSize++] = buffer[ii];
 
       if (_Parser.MessageSize >= _Parser.NeedBytes) {
-    
-        // RTCM message types
-        // ------------------
+
+        // RTCMv3 message types
+        // --------------------
         for (int kk = 0; kk < _Parser.typeSize; kk++) {
           _typeList.push_back(_Parser.typeList[kk]);
         }
         _Parser.typeSize = 0;
 
-        // Antenna XYZ-H
-        // -------------
-        for (int kk = 0; kk < _Parser.antSize; kk += 4) {
-          _antList.push_back(_Parser.antList[kk + 0]);
-          _antList.push_back(_Parser.antList[kk + 1]);
-          _antList.push_back(_Parser.antList[kk + 2]);
-          _antList.push_back(_Parser.antList[kk + 3]);
+        // RTCMv3 antenna descriptor
+        // -------------------------
+        for (int kk = 0; kk < _Parser.antSize; kk++) {
+          _antType.push_back(_Parser.antType[kk]);
         }
         _Parser.antSize = 0;
-    
+
+        // RTCMv3 antenna XYZ
+        // ------------------
+        for (int kk = 0; kk < _Parser.antSize5; kk += 3) {
+          _antList5.push_back(_Parser.antList5[kk + 0]);
+          _antList5.push_back(_Parser.antList5[kk + 1]);
+          _antList5.push_back(_Parser.antList5[kk + 2]);
+        }
+        _Parser.antSize5 = 0;
+
+        // RTCMv3 antenna XYZ-H
+        // --------------------
+        for (int kk = 0; kk < _Parser.antSize6; kk += 4) {
+          _antList6.push_back(_Parser.antList6[kk + 0]);
+          _antList6.push_back(_Parser.antList6[kk + 1]);
+          _antList6.push_back(_Parser.antList6[kk + 2]);
+          _antList6.push_back(_Parser.antList6[kk + 3]);
+        }
+        _Parser.antSize6 = 0;
+ 
         while(int rr = RTCM3Parser(&_Parser)) {
 
           // GNSS Observations
