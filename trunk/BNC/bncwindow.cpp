@@ -272,6 +272,7 @@ bncWindow::bncWindow() {
   _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX Observation file is saved, you might want to compress, copy or upload it immediately via FTP. BNC allows you to execute a script/batch file to carry out these operations. To do that specify the full path of the script/batch file here. BNC will pass the full RINEX Observation file path to the script as a command line parameter (%1 on Windows systems, $1 onUnix/Linux systems).</p><p>The triggering event for calling the script or batch file is the end of a RINEX Observation file 'Interval'. If that is overridden by a stream outage, the triggering event is the stream reconnection.</p>"));
   _rnxSkelLineEdit->setWhatsThis(tr("<p>Whenever BNC starts generating RINEX Observation files (and then once every day at midnight), it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. However, sometimes public RINEX header skeleton files are not available, its contents is not up to date, or you need to put additional/optional records in the RINEX header.</p><p>For that BNC allows using personal skeleton files that contain the header records you would like to include. You can derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the RINEX 'Directory' with the RINEX 'Skeleton extension' is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream.</p>"));
   _rnxAppendCheckBox->setWhatsThis(tr("<p>When BNC is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append already existing files following a restart of BNC, a system crash or when BNC crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far.</p>"));
+  _onTheFlyComboBox->setWhatsThis(tr("<p>When operating BNC in online mode, some configuration parameters can be changed on-the-fly without interrupting the running process. For that BNC rereads parts of its configuration in pre-defined intervals.<p></p>Select '1 min', '1 hour', or '1 day' to let BNC reread its configuration every full minute, hour, or day and thus avoid usage of 'Start', 'Stop', or 'Quit' buttons.</p>"));
   _rnxIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Observation file.</p>"));
   _ephIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Navigation file.</p>"));
   _corrIntrComboBox->setWhatsThis(tr("<p>Select the length of the Broadcast Ephemeris Correction files.</p>"));
@@ -331,9 +332,9 @@ bncWindow::bncWindow() {
   gLayout->addWidget(_logFileLineEdit,         0,1);
   gLayout->addWidget(new QLabel("Append files")    ,1,0 );
   gLayout->addWidget(_rnxAppendCheckBox,     1,1  );
-  gLayout->addWidget(new QLabel("Reread Configuration every")    ,2,0 );
+  gLayout->addWidget(new QLabel("Reread configuration")    ,2,0 );
   gLayout->addWidget(_onTheFlyComboBox,     2,1  );
-  gLayout->addWidget(new QLabel("General settings for logfile and file handling."),3, 0, 1, 2, Qt::AlignLeft);
+  gLayout->addWidget(new QLabel("General settings for logfile, file handling and re-configuration on-the-fly."),3, 0, 1, 2, Qt::AlignLeft);
   gLayout->addWidget(new QLabel("    "),4,0);
   gLayout->addWidget(new QLabel("    "),5,0);
   gLayout->addWidget(new QLabel("    "),6,0);

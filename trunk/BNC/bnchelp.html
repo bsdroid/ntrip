@@ -70,6 +70,7 @@ Unless in offline mode, BNC
 3.4. <a href=#general>General</a><br>
 &nbsp; &nbsp; &nbsp; 3.4.1. <a href=#genlog>Logfile</a><br>
 &nbsp; &nbsp; &nbsp; 3.4.2. <a href=#genapp>Append Files</a><br>
+&nbsp; &nbsp; &nbsp; 3.4.3. <a href=#reconf>Reread Configuration</a><br>
 3.5. <a href=#rinex>RINEX - Observations</a><br>
 &nbsp; &nbsp; &nbsp; 3.5.1. <a href=#rnxname>File Names</a><br>
 &nbsp; &nbsp; &nbsp; 3.5.2. <a href=#rnxdir>Directory</a><br>
@@ -164,15 +165,33 @@ If you are running BNC within a protected Local Area Network (LAN), you might ne
 Note that IP streaming is often not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNC outside your LAN on a host that has unobstructed connection to the Internet.
 </p>
 <p><a name="general"><h4>3.4. General</h4></p>
+<p>
+The following defines general settings for BNC's logfile, file handling and re-configuration on-the-fly.
+</p>
 
 <p><a name="genlog"><h4>3.4.1 Logfile - optional</h4></p>
 <p>
 Records of BNC's activities are shown in the Log section on the bottom of the main window. These logs can be saved into a file when a valid path is specified in the 'Log (full path)' field. The message log covers the communication status between BNC and the NTRIP broadcaster as well as problems that may occur in the communication link, stream availability, stream delay, stream conversion etc. All times are given in UTC. The default value for 'Log (full path)' is an empty option field, meaning that BNC logs will not saved into a file.
 </p>
 
-<p><a name="genapp"><h4>3.4.2 Append Files</h4></p>
+<p><a name="genapp"><h4>3.4.2 Append Files - optional</h4></p>
 <p>
 When BNC is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append existing files following a restart of BNC, a system crash or when BNC crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far. Note that option 'Append files' affects all types of files created by BNC.
+</p> 
+
+<p><a name="reconf"><h4>3.4.3 Reread Configuration - mandatory</h4></p>
+<p>
+When operating BNC in online mode, some configuration parameters can be changed on-the-fly without interrupting the running process. For that BNC rereads parts of its configuration (see section 'Config File') in pre-defined intervals. Configuration parameters that can be changed on-the-fly are
+</p>
+<p>
+<ul>
+<li>'mountPoints' to change the selection of streams to be processed, see section 'Mountpoints',</li>
+<li>'waitTime' to change the 'Wait for full epoch' parameter, see section 'Synchronized Observations', and</li>
+<li>'binSample' to change the 'Sampling' parameter, see section 'Synchronized Observations'.</li>
+</ul> 
+</p> 
+<p> 
+Select '1 min', '1 hour', or '1 day' to let BNC reread the above mentioned configuration parameters every full minute, hour, or day and thus avoid usage of 'Start', 'Stop', or 'Quit' buttons.
 </p> 
 
 <p><a name="rinex"><h4>3.5. RINEX - Observations</h4></p>
@@ -674,7 +693,7 @@ Hit the 'Stop' button in order to stop BNC.
 <p><a name="cmd"><h4>3.14. Command Line</h4></p>
 <p> 
 Command line options are available to run BNC in 'no window' mode or let it read data from a file in 'offline' mode.
-BNC will then use processing options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Client.conf (Unix/Linux, see Config File example in the Annex) or from the register BKG_NTRIP_Client (Windows). Note that the self-explaining contents of the configuration file or the Windows register can easily be edited. 
+BNC will then use processing options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Client.conf (Unix/Linux, see 'Config File' example in the Annex) or from the register BKG_NTRIP_Client (Windows). Note that the self-explaining contents of the configuration file or the Windows register can easily be edited. 
 </p> 
 
 <p><a name="nw"><h4>3.14.1 No Window - optional</h4></p>
@@ -789,7 +808,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 <tr><td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td><td>[Add] Source code published.
 <tr><td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td><td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td></tr>
 <tr><td>Apr 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Handle ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Monitor stream failure/recovery and latency<br> [Mod] Redesign of main window<br> [Bug] Freezing of About window on Mac systems<br> [Bug] Fixed problem with PRN 32 in RTCMv2 decoder<br> [Bug] Fix for Trimble 4000SSI receivers in RTCMv2 decoder<br> [Mod] Major revision of input buffer in RTCMv2 decoder</td></tr>
-<tr><td>Oct 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td><td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCMv3 decoder for clock and orbit corrections<br>[Add] Check RTCMv3 streams for incoming message types<br> [Add] Decode RTCMv2 message types 3, 20, 21, and 22<br> [Add] Loss of lock and lock time indicator in RINEX output<br> [Bug] Rounding error in RTCMv3 decoder concern. GLONASS height<br> [Mod] Accept GLONASS in RTCMv3 when transmitted first<br> [Add] Leap second 1 January 2009<br> [Add] Read data from file, offline mode</td></tr>
+<tr><td>Nov 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td><td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCMv3 decoder for clock and orbit corrections<br>[Add] Check RTCMv3 streams for incoming message types<br> [Add] Decode RTCMv2 message types 3, 20, 21, and 22<br> [Add] Loss of lock and lock time indicator in RINEX output<br> [Bug] Rounding error in RTCMv3 decoder concern. GLONASS height<br> [Mod] Accept GLONASS in RTCMv3 when transmitted first<br> [Add] Leap second 1 January 2009<br> [Add] Read data from file, offline mode</td></tr>
 </table>
 </p>
 
@@ -982,6 +1001,10 @@ casterHost=www.euref-ip.net
 casterPassword=pass
 casterPort=80
 casterUser=user
+corrIntr=1 day
+corrPath=
+corrPort=
+corrTime=5
 ephIntr=1 day
 ephPath=/home/user/rinex
 ephV3=2
@@ -989,6 +1012,7 @@ logFile=/home/user/log.txt
 makePause=0
 mountPoints=//user:pass@www.euref-ip.net:2101/ACOR0 RTCM_2.3 43.36 351.60 no, //user:pass@www.igs-ip.net:2101/FFMJ3 RTCM_3.0 41.58 1.40 no
 obsRate=
+onTheFlyInterval=1 day
 outEphPort=2102
 outFile=/home/user/ascii
 outPort=2101
@@ -997,14 +1021,17 @@ proxyHost=proxyhost
 proxyPort=8001
 rnxAppend=2
 rnxIntr=15 min
-rnxPath=/home/weber/rinex
+rnxPath=/home/user/rinex
 rnxSampl=0
-rnxScript=/home/weber/up2archive
+rnxScript=/home/user/up2archive
 rnxSkel=SKL
 rnxV3=2
 waitTime=5
 </pre>
 </p>
+<p>
+Note that on Windows systems configuration parameters are saved in register BKG_NTRIP_Client.
+<p>
 
 <p><a name="links"><h3>8.5 Links</h3></p>
 <table>

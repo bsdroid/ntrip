@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.16 2008/09/02 14:14:33 weber Exp $
+  $Id: rtcm3torinex.c,v 1.17 2008/09/22 09:39:49 weber Exp $
   Copyright (C) 2005-2008 by Dirk Stöcker <stoecker@alberding.eu>
 
   This software is a complete NTRIP-RTCM3 to RINEX converter as well as
@@ -50,7 +50,7 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.16 $";
+static char revisionstr[] = "$Revision: 1.17 $";
 
 #ifndef COMPILEDATE
 #define COMPILEDATE " built " __DATE__
@@ -289,19 +289,94 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
     switch(type)
     {
 #ifdef NO_RTCM3_MAIN
-    double antX, antY, antZ, antH; /* Antenna XYZ-H */
+    case 1005:
+      {
+        double antX, antY, antZ; /* Antenna XYZ */
+        SKIPBITS(22)
+        GETBITSSIGN(antX, 38)
+        SKIPBITS(2)
+        GETBITSSIGN(antY, 38)
+        SKIPBITS(2)
+        GETBITSSIGN(antZ, 38)
+        handle->antList5[handle->antSize5 + 0] = antX;
+        handle->antList5[handle->antSize5 + 1] = antY;
+        handle->antList5[handle->antSize5 + 2] = antZ;
+        if(handle->antSize5 < 100 - 5 ) {handle->antSize5 += 3;}
+        ret = 1005;
+      }
+      break;
     case 1006:
       {
-        SKIPBITS(22);
-        GETBITSSIGN(antX, 38); SKIPBITS(2);
-        GETBITSSIGN(antY, 38); SKIPBITS(2);
-        GETBITSSIGN(antZ, 38);
-        GETBITS(    antH, 16);
-        handle->antList[handle->antSize + 0] = antX;
-        handle->antList[handle->antSize + 1] = antY;
-        handle->antList[handle->antSize + 2] = antZ;
-        handle->antList[handle->antSize + 3] = antH;
-        if(handle->antSize < 100 - 6 ) {handle->antSize += 4;}
+        double antX, antY, antZ, antH; /* Antenna XYZ-H */
+        SKIPBITS(22)
+        GETBITSSIGN(antX, 38)
+        SKIPBITS(2)
+        GETBITSSIGN(antY, 38)
+        SKIPBITS(2)
+        GETBITSSIGN(antZ, 38)
+        GETBITS(    antH, 16)
+        handle->antList6[handle->antSize6 + 0] = antX;
+        handle->antList6[handle->antSize6 + 1] = antY;
+        handle->antList6[handle->antSize6 + 2] = antZ;
+        handle->antList6[handle->antSize6 + 3] = antH;
+        if(handle->antSize6 < 100 - 6 ) {handle->antSize6 += 4;}
+        ret = 1006;
+      }
+      break;
+    case 1007:
+      {
+        char *antC = '\0'; /* Antenna Descriptor */
+        char *antS = '\0';
+        antC = (char*) malloc(32);   
+        antS  = (char*) malloc(32);   
+        uint32_t antN;
+        uint32_t antD;
+        uint32_t jj;
+
+        SKIPBITS(12)
+        GETBITS(antN, 8)
+        if ((antN>0) && (antN<32)) {
+          for (jj = 0; jj < antN; jj++) {
+            GETBITS(antD, 8)
+            sprintf(antS,"%c",antD);
+            if (jj<1) {
+              strcpy(antC,antS);
+            } else {
+              strcat(antC,antS);
+            }
+          }
+          handle->antType[handle->antSize] = antC;
+          if(handle->antSize < 100) {handle->antSize += 1;}
+        }
+        ret = 1007;
+      }
+      break;
+    case 1008:
+      {
+        char *antC = '\0'; /* Antenna Descriptor */
+        char *antS = '\0';
+        antC = (char*) malloc(32);   
+        antS  = (char*) malloc(32);   
+        uint32_t antN;
+        uint32_t antD;
+        uint32_t jj;
+
+        SKIPBITS(12)
+        GETBITS(antN, 8)
+        if ((antN>0) && (antN<32)) {
+          for (jj = 0; jj < antN; jj++) {
+            GETBITS(antD, 8)
+            sprintf(antS,"%c",antD);
+            if (jj<1) {
+              strcpy(antC,antS);
+            } else {
+              strcat(antC,antS);
+            }
+          }
+          handle->antType[handle->antSize] = antC;
+          if(handle->antSize < 100) {handle->antSize += 1;}
+        }
+        ret = 1008;
       }
       break;
 #endif /* NO_RTCM3_MAIN */
@@ -1638,7 +1713,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 }
 
 #ifndef NO_RTCM3_MAIN
-static char datestr[]     = "$Date: 2008/09/02 14:14:33 $";
+static char datestr[]     = "$Date: 2008/09/22 09:39:49 $";
 
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
