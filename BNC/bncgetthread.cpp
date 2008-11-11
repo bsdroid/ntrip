@@ -736,6 +736,8 @@ void bncGetThread::run() {
           if (_rnx) {
 	    bool dump = true;
 
+/*   // RTCMv2 XYZ
+     // ----------
      RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
      if ( decoder2 && !_rnx_set_position ) {
 	      double stax, stay, staz;
@@ -761,7 +763,7 @@ void bncGetThread::run() {
 	    	_rnx_set_position = true;
                 emit newMessage(msg);
               }
-            }
+            }  */
 
 	    ////RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
 	    ////if ( decoder2 && !_rnx_set_position ) {

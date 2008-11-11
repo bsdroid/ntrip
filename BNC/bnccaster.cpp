@@ -396,7 +396,8 @@ void bncCaster::slotReadMountPoints() {
   }
 
   emit mountPointsRead(_threads);
-  emit( newMessage(QString("Table of Mountpoints (re-)read: new number = %1")
+//emit( newMessage(QString("Table of Mountpoints (re-)read: new number = %1")
+  emit( newMessage(QString("Configuration reread: %1 streams")
                             .arg(_threads.count()).toAscii()) );
 
   // (Re-) Start the configuration timer
