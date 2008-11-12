@@ -153,7 +153,7 @@ bncWindow::bncWindow() {
   _onTheFlyComboBox = new QComboBox();
   _onTheFlyComboBox->setMaximumWidth(9*ww);
   _onTheFlyComboBox->setEditable(false);
-  _onTheFlyComboBox->addItems(QString("1 day,1 hour,1 min").split(","));
+  _onTheFlyComboBox->addItems(QString(",1 day,1 hour,1 min").split(","));
   ii = _onTheFlyComboBox->findText(settings.value("onTheFlyInterval").toString());
   if (ii != -1) {
     _onTheFlyComboBox->setCurrentIndex(ii);
@@ -532,6 +532,7 @@ void bncWindow::slotAddMountPoints() {
   connect(dlg, SIGNAL(newMountPoints(QStringList*)), 
           this, SLOT(slotNewMountPoints(QStringList*)));
   dlg->exec();
+  _actGetData->setEnabled(false); // keep 'Start' button active
   delete dlg;
 
 }
@@ -682,7 +683,7 @@ void bncWindow::slotGetThreadErrors() {
 void bncWindow::slotGetData() {
   slotSaveOptions();
 
-  _actAddMountPoints->setEnabled(false);
+  _actAddMountPoints->setEnabled(true); // keep 'Add Mountpoints' button active
   _actDeleteMountPoints->setEnabled(false);
   _actGetData->setEnabled(false);
   _actStop->setEnabled(true);
@@ -699,9 +700,9 @@ void bncWindow::slotGetData() {
   connect (_caster, SIGNAL(mountPointsRead(QList<bncGetThread*>)), 
            this, SLOT(slotMountPointsRead(QList<bncGetThread*>)));
 
-  _caster->slotReadMountPoints();
-
   ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
+
+  _caster->slotReadMountPoints();
 }
 
 // Retrieve Data
