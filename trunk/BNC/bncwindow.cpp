@@ -532,7 +532,6 @@ void bncWindow::slotAddMountPoints() {
   connect(dlg, SIGNAL(newMountPoints(QStringList*)), 
           this, SLOT(slotNewMountPoints(QStringList*)));
   dlg->exec();
-  _actGetData->setEnabled(false); // keep 'Start' button active
   delete dlg;
 
 }
@@ -683,7 +682,7 @@ void bncWindow::slotGetThreadErrors() {
 void bncWindow::slotGetData() {
   slotSaveOptions();
 
-  _actAddMountPoints->setEnabled(true); // keep 'Add Mountpoints' button active
+  _actAddMountPoints->setEnabled(true); // changed from 'false' to 'true' to keep 'Add Mountpoints' button active
   _actDeleteMountPoints->setEnabled(false);
   _actGetData->setEnabled(false);
   _actStop->setEnabled(true);
