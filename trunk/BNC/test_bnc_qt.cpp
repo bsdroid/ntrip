@@ -93,6 +93,7 @@ int main(int /* argc */, char** /* argv */) {
         }
         else {
           buffer.remove(i1, begEpochNBytes);
+          outObs << endl;
         }
       }
       for (;;) {
@@ -112,8 +113,6 @@ int main(int /* argc */, char** /* argv */) {
 
 
       while (buffer.size() >= obsSize) {
-
-        cout << buffer.size() << " " << obsSize << endl;
 
         obs = (t_obsInternal*) (buffer.left(obsSize).data());
 
