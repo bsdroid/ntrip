@@ -49,10 +49,6 @@
 
 using namespace std;
 
-const char begEpoch = 'A';
-const char begObs   = 'B';
-const char endEpoch = 'C';
-
 int main(int /* argc */, char** /* argv */) {
 
   QTcpSocket socketObs;
@@ -72,9 +68,12 @@ int main(int /* argc */, char** /* argv */) {
 
   // Receive Data
   // ------------
-  t_obsInternal obs;
-  char flag = ' ';
-  cout.setf(ios::showpoint | ios::fixed);
+  const char begEpoch[] = "BEGEPOCH";
+  const char endEpoch[] = "ENDEPOCH";
+  const unsigned begEpochNBytes = sizeof(begEpoch) - 1;
+  const unsigned endEpochNBytes = sizeof(endEpoch) - 1;
+
+  QByteArray buffer;
 
   while (true) {
     if (socketObs.state() != QAbstractSocket::ConnectedState) {
@@ -82,24 +81,58 @@ int main(int /* argc */, char** /* argv */) {
       exit(0);
     }
 
-    if ( socketObs.bytesAvailable() > sizeof(obs) ) {
-      socketObs.read(&flag, 1);
-      if (flag == begObs) {
-        socketObs.read((char*) &obs, sizeof(obs));
-        outObs << obs.StatID                                 << " "
-               << obs.satSys << obs.satNum                   << " "
-               << obs.GPSWeek                                << " "
-               << qSetRealNumberPrecision(2) << obs.GPSWeeks << " "
-               << qSetRealNumberPrecision(4) << obs.C1       << " "
-               << qSetRealNumberPrecision(4) << obs.C2       << " "
-               << qSetRealNumberPrecision(4) << obs.P1       << " "
-               << qSetRealNumberPrecision(4) << obs.P2       << " "
-               << qSetRealNumberPrecision(4) << obs.L1       << " "
-               << qSetRealNumberPrecision(4) << obs.L2       << " "
-               << qSetRealNumberPrecision(4) << obs.S1       << " "
-               << qSetRealNumberPrecision(4) << obs.S2       << " "
-               <<                               obs.SNR1     << " "
-               <<                               obs.SNR2     << endl;
+    if ( socketObs.bytesAvailable() ) {
+      buffer += socketObs.readAll();
+
+      // Skip begEpoch and endEpoch Marks
+      // --------------------------------
+      for (;;) {
+        int i1 = buffer.indexOf(begEpoch);
+        if (i1 == -1) {
+          break;
+        }
+        else {
+          buffer.remove(i1, begEpochNBytes);
+        }
+      }
+      for (;;) {
+        int i2 = buffer.indexOf(endEpoch);
+        if (i2 == -1) {
+          break;
+        }
+        else {
+          buffer.remove(i2, endEpochNBytes);
+        }
+      }
+
+      // Interpret a portion of buffer as observation
+      // --------------------------------------------
+      t_obsInternal* obs;
+      const int obsSize = sizeof(t_obsInternal);
+
+
+      while (buffer.size() >= obsSize) {
+
+        cout << buffer.size() << " " << obsSize << endl;
+
+        obs = (t_obsInternal*) (buffer.left(obsSize).data());
+
+        outObs << obs->StatID                                 << " "
+               << obs->satSys << obs->satNum                   << " "
+               << obs->GPSWeek                                << " "
+               << qSetRealNumberPrecision(2) << obs->GPSWeeks << " "
+               << qSetRealNumberPrecision(4) << obs->C1       << " "
+               << qSetRealNumberPrecision(4) << obs->C2       << " "
+               << qSetRealNumberPrecision(4) << obs->P1       << " "
+               << qSetRealNumberPrecision(4) << obs->P2       << " "
+               << qSetRealNumberPrecision(4) << obs->L1       << " "
+               << qSetRealNumberPrecision(4) << obs->L2       << " "
+               << qSetRealNumberPrecision(4) << obs->S1       << " "
+               << qSetRealNumberPrecision(4) << obs->S2       << " "
+               <<                               obs->SNR1     << " "
+               <<                               obs->SNR2     << endl;
+
+        buffer.remove(0,obsSize);
       }
     }
     else {
