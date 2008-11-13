@@ -20,7 +20,7 @@ Please ensure that you have installed the latest version of BNC available from <
 <p>
 <h4>
 <a href=#purpose>1. Purpose</a><br>
-<a href=#resources>2. Resources</a><br>
+<a href=#resources>2. Modes & Resources</a><br>
 <a href=#options>3. Options</a><br>
 <a href=#limits>4. Limitations</a><br>
 <a href=#authors>5. Authors</a><br>
@@ -37,7 +37,7 @@ Please ensure that you have installed the latest version of BNC available from <
 <li>generate high-rate RINEX Observation and Navigation files to support near real-time GNSS post-processing applications, and/or</li> 
 <li>generate ephemeris and synchronized observations epoch by epoch through an IP port to support real-time GNSS engines, and/or</li> 
 <li>generate clock and orbit corrections to broadcast ephemeris through an IP port to support real-time Precise Point Positioning on GNSS rovers, and/or</li> 
-<li>generate synchronized clock and orbit corrections to broadcast ephemeris epoch by epoch through an IP port to support the combination of such streams coming from various providers, and/or</li> 
+<li>generate synchronized clock and orbit corrections to broadcast ephemeris epoch by epoch through an IP port to support the combination of such streams as coming from various correction providers, and/or</li> 
 <li>monitor the performance of a network of real-time GNSS reference stations to generate advisory notes, and/or</li>
 <li>check RTCM streams for incoming message types and their repetition rates.</li>
 </ul>
@@ -53,9 +53,9 @@ BNC supports the following GNSS data formats:
 </ul>
 BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
 </p>
-<p><a name="resources"><h3>2. Modes and Resources</h3></p>
+<p><a name="resources"><h3>2. Modes & Resources</h3></p>
 <p>
-Although BNC is a real-time tool to be operated in online mode, it can be run offline for post processing of data made availabe from a file. Furthermore, besides its regular window mode, BNC can be started as a batch/background job in a 'no window' mode using processing options from previously saved configuration parameters.
+Although BNC is a real-time tool to be operated in online mode, it can be run offline for post processing of data made availabe from a file. Furthermore, apart from its regular window mode, BNC can be run as a batch/background job in a 'no window' mode using processing options from previously saved configuration.
 </p>
 <p>
 Unless in offline mode, BNC
@@ -68,6 +68,9 @@ Unless in offline mode, BNC
 </p>
 
 <p><a name="options"><h3>3. Options</h3></p>
+<p>
+All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf, see annexed 'Configuration File' example. On Windows systems options are saved in register BKG_NTRIP_Client. The self-explaining contents of the configuration file or the Windows register can easily be edited.
+</p>
 <p>
 3.1. <a href=#file>File</a><br>
 3.2. <a href=#help>Help</a><br>
@@ -117,9 +120,9 @@ Unless in offline mode, BNC
 &nbsp; &nbsp; &nbsp; 3.11.6. <a href=#mountedit>Edit Mountpoints</a><br>
 3.12. <a href=#start>Start</a><br>
 3.13. <a href=#stop>Stop</a><br>
-3.14. <a href=#cmd>Command Line</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.1. <a href=#nw>No Window</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.2. <a href=#post>Offline</a><br>
+3.14. <a href=#cmd>Command Line Options</a><br>
+&nbsp; &nbsp; &nbsp; 3.14.1. <a href=#nw>No Window Mode</a><br>
+&nbsp; &nbsp; &nbsp; 3.14.2. <a href=#post>Offline Mode</a><br>
 </p>
 
 <p><a name="file"><h4>3.1. File</h4></p>
@@ -131,8 +134,7 @@ The 'File' button lets you
 select an appropriate font.<br>
 Use smaller font size if the BNC main window exceeds the size of your screen.
 </li> 
-<li> save selected options.<br>
-Note that on Windows systems options are saved in register BKG_NTRIP_Client. On Unix/Linux systems options are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf.
+<li> save selected options in configuration file resp. Windows register.<br>
 </li>
 <li>
 quit the BNC program.
@@ -184,19 +186,22 @@ Records of BNC's activities are shown in the Log section on the bottom of the ma
 When BNC is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append existing files following a restart of BNC, a system crash or when BNC crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far. Note that option 'Append files' affects all types of files created by BNC.
 </p> 
 
-<p><a name="reconf"><h4>3.4.3 Reread Configuration - mandatory</h4></p>
+<p><a name="reconf"><h4>3.4.3 Reread Configuration - optional</h4></p>
 <p>
-When operating BNC in online mode, some configuration parameters can be changed on-the-fly without interrupting the running process. For that BNC rereads parts of its configuration (see section 'Config File') in pre-defined intervals. Configuration parameters that can be changed on-the-fly are
+When operating BNC online in window or 'no window' mode, some configuration options can be changed on-the-fly without interrupting the running process. Configuration options that can be changed on-the-fly are
 </p>
 <p>
 <ul>
 <li>'mountPoints' to change the selection of streams to be processed, see section 'Mountpoints',</li>
-<li>'waitTime' to change the 'Wait for full epoch' parameter, see section 'Synchronized Observations', and</li>
-<li>'binSample' to change the 'Sampling' parameter, see section 'Synchronized Observations'.</li>
+<li>'waitTime' to change the 'Wait for full epoch' option, see section 'Synchronized Observations', and</li>
+<li>'binSample' to change the 'Sampling' option, see section 'Synchronized Observations'.</li>
 </ul> 
 </p> 
 <p> 
-Select '1 min', '1 hour', or '1 day' to let BNC reread the above mentioned configuration parameters every full minute, hour, or day and thus avoid usage of 'Start', 'Stop', or 'Quit' buttons.
+<u>Window mode:</u> For changes while running BNC in window mode you interactively modify one of the above mentioned options and then hit 'Save Options'. Changes will immediately become effective without interrupting uninvolved threads.
+</p> 
+<p> 
+<u>'No window' mode:</u> For changes while running BNC in 'no window' mode you force the program to rereads parts of its configuration in pre-defined intervals. Select '1 min', '1 hour', or '1 day' to let BNC reread the above mentioned configuration options every full minute, hour, or day. This avoids interrupting BNC through usage of 'Start', 'Stop', or 'Quit' buttons and lets probably edited configuration options become effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration File' for a Unix/Linux/Mac configuration file example. 
 </p> 
 
 <p><a name="rinex"><h4>3.5. RINEX - Observations</h4></p>
@@ -301,7 +306,7 @@ If neither a public nor a personal RINEX header skeleton file is available for B
 
 <p><a name="rnxscript"><h4>3.5.6 Script - optional</h4></p>
 <p>
-Whenever a RINEX Observation file is saved, you might want to compress, copy or upload it immediately via FTP. BNC allows you to execute a script/batch file to carry out these operations. To do that specify the full path of the script/batch file here. BNC will pass the RINEX Observation file path to the script as a command line parameter (%1 on Windows systems, $1 on Unix/Linux systems).
+Whenever a RINEX Observation file is saved, you might want to compress, copy or upload it immediately via FTP. BNC allows you to execute a script/batch file to carry out these operations. To do that specify the full path of the script/batch file here. BNC will pass the RINEX Observation file path to the script as a command line parameter (%1 on Windows systems, $1 on Unix/Linux/Mac systems).
 </p> 
 <p> 
 The triggering event for calling the script or batch file is the end of a RINEX Observation  file 'Interval'. If that is overridden by a stream outage, the triggering event is the stream reconnection.
@@ -549,7 +554,7 @@ Do not tick 'Pause' if you want to prevent BNC from making any decoding pause. B
 
 <p><a name="advscript"><h4>3.9.5 Advisory Script - optional </h4></p>
 <p>
-As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (%1 and %2 on Windows systems or $1 and $2 on Unix/Linux systems) together with date and time information.
+As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (%1 and %2 on Windows systems or $1 and $2 on Unix/Linux/Mac systems) together with date and time information.
 </p>
 <p>
 Leave the 'Script' field empty if you do not wish to use this option. An invalid path will also disable this option.
@@ -560,7 +565,7 @@ Examples for command line parameter strings passed on to the advisory 'Script' a
 FFMJ0 Begin_Outage 08-02-21 09:25:59
 FFMJ0 End_Outage 08-02-21 11:36:02 Begin was 08-02-21 09:25:59
 </pre>
-Sample script for Unix/Linux systems:
+Sample script for Unix/Linux/Mac systems:
 <pre>
 #!/bin/bash
 sleep $((60*RANDOM/32767))
@@ -695,24 +700,23 @@ Hit 'Start' to start retrieving, decoding, and converting GNSS data streams in r
 Hit the 'Stop' button in order to stop BNC. 
 </p> 
 
-<p><a name="cmd"><h4>3.14. Command Line</h4></p>
+<p><a name="cmd"><h4>3.14. Command Line Options</h4></p>
 <p> 
-Command line options are available to run BNC in 'no window' mode or let it read data from a file in 'offline' mode.
-BNC will then use processing options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Client.conf (Unix/Linux, see 'Config File' example in the Annex) or from the register BKG_NTRIP_Client (Windows). Note that the self-explaining contents of the configuration file or the Windows register can easily be edited. 
+Command line options are available to run BNC in 'no window' mode or let it read data from a file in offline mode. BNC will then use processing options from the configuration file (Unix/Linux/Mac) or from the register BKG_NTRIP_Client (Windows). Note that the self-explaining contents of the configuration file or the Windows register can easily be edited. 
 </p> 
 
-<p><a name="nw"><h4>3.14.1 No Window - optional</h4></p>
+<p><a name="nw"><h4>3.14.1 No Window Mode - optional</h4></p>
 <p>
-On all systems BNC can be started as a batch job with the command line option '-nw'. BNC will then run in 'no window' mode, using processing options from its configuration file. Terminate BNC using Windows Task Manager when running it in 'no window' mode on Windows systems.
+Apart from its regular windows mode, BNC can be started on all systems as a background/batch job with command line option '-nw'. BNC will then run in 'no window' mode, using processing options from its configuration file. Terminate BNC using Windows Task Manager when running it in 'no window' mode on Windows systems.
 </p> 
 <p> 
 Example:<br><br>
 bnc.exe -nw
 </p>
 
-<p><a name="post"><h4>3.14.2 Offline - optional</h4></p>
+<p><a name="post"><h4>3.14.2 Offline Mode - optional</h4></p>
 <p>
-Although BNC is a real-time tool, it can be run in 'offline' mode to read data from a file for post processing purposes. Enter the following four command line options for that:
+Although BNC is primarily a real-time online tool, it can be run in offline mode to read data from a file for post processing purposes. Enter the following four command line options for that:
 </p>
 <p>
 <ul>
@@ -726,7 +730,7 @@ Example:<br><br>
 ./bnc --file FFMJ.dat --format RTCM_3 --date 2008-10-27 --time 23:12:56
 </p>
 <p>
-Note that it is necessary to define a date and time for the first epoch because RTCM streams do not contain complete time stamps as needed for RINEX. Note further that when running BNC in 'offline' mode, it will use options for file saving, interval, sampling etc. from its configuration file.
+Note that it is necessary to define a date and time for the first epoch because RTCM streams do not contain complete time stamps as needed for RINEX. Note further that when running BNC in offline mode, it will use options for file saving, interval, sampling etc. from its configuration file.
 </p> 
 
 <p><a name="limits"><h3>4. Limitations</h3></p>
@@ -763,7 +767,7 @@ We experienced a limitation of the Standard Version of Microsoft Windows related
 The source code provided by NRCan for decoding RTIGS streams is 32-bit dependent. Hence the BNC executable generated for 64-bit Linux systems would only run when compiled using the -m32 compiler option. 
 </li>
 <li>
-Once BNC has been started, its configuration can not be changed as long as it is stopped. A reconfiguration on-the-fly is not implemented.
+Once BNC has been started, many of its configuration options can not be changed as long as it is stopped. See chapter 'Reread Configuration' for on-the-fly configuration exceptions.
 </li>
 <br>
 </ul>
@@ -800,7 +804,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 &nbsp; &nbsp; &nbsp; 8.2.3 RTCM <a href=#rtcm3>Version 3.x</a><br>
 8.3. <a href=#rtigs>RTIGS</a><br>
 &nbsp; &nbsp; &nbsp; 8.3.1 <a href=#soc>SOC</a><br>
-8.4. <a href=#config>Config File</a><br>
+8.4. <a href=#config>Configuration File</a><br>
 8.5. <a href=#links>Links</a><br>
 </p>
 
@@ -993,9 +997,9 @@ Visit <u>http://gipsy.jpl.nasa.gov/igdg/papers/SOC_FORMAT.ppt</u> for further de
 </p>
 <p>
 </p>
-<p><a name="config"><h4>8.4. Config File</h4></p>
+<p><a name="config"><h4>8.4. Configuration File</h4></p>
 <p>
-The following is an example for the contents of a Unix/Linux configuration file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf. It enables the retrieval of stream ACOR0 form www.euref-ip.net and FFMJ3 from www.igs-ip.net for the generation of 15 min RINEX files. RINEX files are uploaded to an archive using script 'up2archive' :
+The following is an example for the contents of a Unix/Linux/Mac configuration file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf. It enables the retrieval of stream ACOR0 form www.euref-ip.net and FFMJ3 from www.igs-ip.net for the generation of 15 min RINEX files. RINEX files are uploaded to an archive using script 'up2archive' :
 <pre>
 [General]
 adviseFail=15
@@ -1035,7 +1039,7 @@ waitTime=5
 </pre>
 </p>
 <p>
-Note that on Windows systems configuration parameters are saved in register BKG_NTRIP_Client.
+Note that on Windows systems configuration options are saved in register BKG_NTRIP_Client.
 <p>
 
 <p><a name="links"><h3>8.5 Links</h3></p>
