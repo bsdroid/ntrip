@@ -37,6 +37,7 @@ Please ensure that you have installed the latest version of BNC available from <
 <li>generate high-rate RINEX Observation and Navigation files to support near real-time GNSS post-processing applications, and/or</li> 
 <li>generate ephemeris and synchronized observations epoch by epoch through an IP port to support real-time GNSS engines, and/or</li> 
 <li>generate clock and orbit corrections to broadcast ephemeris through an IP port to support real-time Precise Point Positioning on GNSS rovers, and/or</li> 
+<li>generate synchronized clock and orbit corrections to broadcast ephemeris epoch by epoch through an IP port to support the combination of such streams coming from various providers, and/or</li> 
 <li>monitor the performance of a network of real-time GNSS reference stations to generate advisory notes, and/or</li>
 <li>check RTCM streams for incoming message types and their repetition rates.</li>
 </ul>
@@ -50,13 +51,17 @@ BNC supports the following GNSS data formats:
 <li>RTCM Version 3.x containing message types 1002 (GPS, SBAS) or 1004 (GPS), 1010 or 1012 (GLONASS), 1019 or 1020 (broadcast ephemeris), 4056 and 4057 (premature messages for orbit and clock corrections to broadcast ephemeris)</li>
 <li>RTIGS containing GPS record types 200 (observations) and 300 (ephemeris).</li>
 </ul>
-BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files. Although BNC is a real-time tool, it can be run offline for post processing of data made availabe from a file.
+BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
 </p>
-<p><a name="resources"><h3>2. Resources</h3></p>
+<p><a name="resources"><h3>2. Modes and Resources</h3></p>
+<p>
+Although BNC is a real-time tool to be operated in online mode, it can be run offline for post processing of data made availabe from a file. Furthermore, besides its regular window mode, BNC can be started as a batch/background job in a 'no window' mode using processing options from previously saved configuration parameters.
+</p>
 <p>
 Unless in offline mode, BNC
+</p>
 <ul>
-<li>requires access to the Internet with a minimum of about 2 to 6 kbits/sec per stream depending on the stream format and the number of visible satellites. You need to make sure that the connection can sustain the required bandwidth.<li>
+<li>requires access to the Internet with a minimum of about 2 to 6 kbits/sec per stream depending on the stream format and the number of visible satellites. You need to make sure that the connection can sustain the required bandwidth.</li>
 <li>requires the clock of the host computer to be properly synchronized.</li>
 <li>has the capacity to retrieve hundreds of GNSS data streams simultaneously. Please be aware that such usage may incur a heavy load on the NTRIP broadcaster side depending on the number of streams requested. We recommend limiting the number of streams where possible to avoid unnecessary workload.</li>
 </ul>
