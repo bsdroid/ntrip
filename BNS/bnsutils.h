@@ -19,6 +19,9 @@ QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks);
 void GPSweekFromDateAndTime(const QDateTime& dateTime, 
                             int& GPSWeek, double& GPSWeeks);
 
+void GPSweekFromYMDhms(int year, int month, int day, int hour, int min,
+                       double sec, int& GPSWeek, double& GPSWeeks);
+
 void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac);
 
 void currentGPSWeeks(int& week, double& sec);

@@ -288,28 +288,57 @@ void t_bns::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::readEpoch() {
 
-  QByteArray line = _clkSocket->readLine();
-
-  if (_echoStream) {
-    *_echoStream << line;
-    _echoStream->flush();
+  // Read the first line (if not already read)
+  // -----------------------------------------
+  if (_clkLine.indexOf('*') == -1) {
+    _clkLine = _clkSocket->readLine();
+    if (_echoStream) {
+      *_echoStream << _clkLine;
+      _echoStream->flush();
+    }
+    emit(newClkBytes(_clkLine.length()));
   }
 
-  emit(newClkBytes(line.length()));
-
-  if (line.indexOf('*') == -1) {
+  if (_clkLine.indexOf('*') == -1) {
     return;
   }
 
-  QTextStream in(line);
+  QTextStream in(_clkLine);
 
   QString hlp;
-  int     GPSweek, numSat;
+  int     year, month, day, hour, min;
+  double  sec;
+  in >> hlp >> year >> month >> day >> hour >> min >> sec;
+
+  int     GPSweek;
   double  GPSweeks;
 
-  in >> hlp >> GPSweek >> GPSweeks >> numSat;
+  GPSweekFromYMDhms(year, month, day, hour, min, sec, GPSweek, GPSweeks);
 
-  if (numSat > 0) {
+  QStringList prns;
+
+  // Loop over all satellites
+  // ------------------------
+  QStringList lines;
+  for (;;) {
+    if (!_clkSocket->canReadLine()) {
+      return;
+    }
+    _clkLine = _clkSocket->readLine();
+    if (_echoStream) {
+      *_echoStream << _clkLine;
+      _echoStream->flush();
+    }
+    if (_clkLine[0] == '*') {
+      return;
+    }
+    if (_clkLine[0] == 'P') {
+      _clkLine.remove(0,1);
+      lines.push_back(_clkLine);
+    } 
+  }
+
+  if (lines.size() > 0) {
 
     QStringList prns;
 
@@ -327,29 +356,22 @@ void t_bns::readEpoch() {
         co.SatRefPoint       = POINT_CENTER;
         co.SatRefDatum       = DATUM_ITRF;
       
-        for (int ii = 1; ii <= numSat; ii++) {
-      
+        for (int ii = 0; ii < lines.size(); ii++) {
+
           QString      prn;
           ColumnVector xx(5);
           t_eph*       ep = 0;
       
           if (oldEph == 0 && ic == 0) {
-            line = _clkSocket->readLine();
-
-            if (_echoStream) {
-              *_echoStream << line;
-              _echoStream->flush();
-            }
-
-            QTextStream in(line);
+            QTextStream in(lines[ii].toAscii());
             in >> prn;
             prns << prn;
             if ( _ephList.contains(prn) ) {
-              in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5); xx(4) *= 1e-6;
-      
-              //// beg test (zero clock correction for Gerhard Wuebbena)
-              ////            xx(4) -= xx(5) / 299792458.0;
-              //// end test
+              in >> xx(1) >> xx(2) >> xx(3) >> xx(4);
+              xx(1) *= 1e3;
+              xx(2) *= 1e3;
+              xx(3) *= 1e3;
+              xx(4) *= 1e-6;
       
               t_ephPair* pair = _ephList[prn];
               pair->xx = xx;
@@ -357,7 +379,7 @@ void t_bns::readEpoch() {
             }
           }
           else {
-            prn = prns[ii-1];
+            prn = prns[ii];
             if ( _ephList.contains(prn) ) {
               t_ephPair* pair = _ephList[prn];
               prn = pair->eph->prn();
