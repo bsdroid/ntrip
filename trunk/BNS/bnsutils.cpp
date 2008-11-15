@@ -165,3 +165,45 @@ QByteArray waitForLine(QTcpSocket* socket) {
   return line;
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+double djul(int jj, int mm, double tt) {
+  int    ii, kk;
+  double  djul ;
+
+  if( mm <= 2 ) {
+    jj = jj - 1;
+    mm = mm + 12;
+  }  
+  
+  ii   = jj/100;
+  kk   = 2 - ii + ii/4;
+  djul = (365.25*jj - fmod( 365.25*jj, 1.0 )) - 679006.0;
+  djul = djul + floor( 30.6001*(mm + 1) ) + tt + kk;
+  return djul;
+} 
+
+void jdgp(double tjul, double & second, int & nweek) {
+  double      deltat;
+
+  deltat = tjul - 44244.0 ;
+
+  // current gps week
+
+  nweek = (int) floor(deltat/7.0);
+
+  // seconds past midnight of last weekend
+
+  second = (deltat - (nweek)*7.0)*86400.0;
+
+}
+
+void GPSweekFromYMDhms(int year, int month, int day, int hour, int min,
+                       double sec, int& GPSWeek, double& GPSWeeks) {
+
+  double tt = (min / 60.0 + hour) / 24.0 + day;
+  double mjd = djul(year, month, tt);
+  jdgp(mjd, GPSWeeks, GPSWeek);
+  GPSWeeks += sec;  
+}
+

@@ -76,5 +76,6 @@ class t_bns : public QThread {
   QMap<QString, t_ephPair*> _ephList;
   bnsRinex*                 _rnx;
   bnsSP3*                   _sp3;
+  QByteArray                _clkLine;
 };
 #endif
