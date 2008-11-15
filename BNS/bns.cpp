@@ -322,7 +322,7 @@ void t_bns::readEpoch() {
   QStringList lines;
   for (;;) {
     if (!_clkSocket->canReadLine()) {
-      return;
+      break;
     }
     _clkLine = _clkSocket->readLine();
     if (_echoStream) {
