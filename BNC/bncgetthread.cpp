@@ -846,7 +846,7 @@ void bncGetThread::run() {
               emit(newMessage(_staID + ": ARP (ITRF) X " + ant1.toAscii() + "m" ));
               emit(newMessage(_staID + ": ARP (ITRF) Y " + ant2.toAscii() + "m"));
               emit(newMessage(_staID + ": ARP (ITRF) Z " + ant3.toAscii() + "m"));
-              emit(newMessage(_staID + ": Antenna height "  + ant4.toAscii() + "m"));
+              emit(newMessage(_staID + ": Antenna height above ARP "  + ant4.toAscii() + "m"));
             }
           }
           _decoder->_antList6.clear();
