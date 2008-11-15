@@ -667,6 +667,9 @@ QStringList mountPoints;
                + " " + _mountPointsTable->item(iRow, 5)->text());
   }
   settings.setValue("mountPoints", mountPoints);
+  if (_caster) {
+    _caster->slotReadMountPoints();
+  }
 }
 
 // All get slots terminated
