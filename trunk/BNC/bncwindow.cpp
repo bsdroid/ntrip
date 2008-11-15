@@ -613,7 +613,7 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
   }
   _mountPointsTable->hideColumn(0);
   _mountPointsTable->sortItems(1);
-  if (mountPoints->count() > 0) {
+  if (mountPoints->count() > 0 && !_actStop->isEnabled()) {
     _actGetData->setEnabled(true);
   }
   delete mountPoints;
@@ -673,8 +673,9 @@ QStringList mountPoints;
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotGetThreadErrors() {
   ((bncApp*)qApp)->slotMessage("All Get Threads Terminated");
-  _actAddMountPoints->setEnabled(true);
-  _actGetData->setEnabled(true);
+  if (!_actStop->isEnabled()) {
+    _actGetData->setEnabled(true);
+  }
 }
 
 // Retrieve Data
@@ -682,7 +683,6 @@ void bncWindow::slotGetThreadErrors() {
 void bncWindow::slotGetData() {
   slotSaveOptions();
 
-  _actAddMountPoints->setEnabled(true); // changed from 'false' to 'true' to keep 'Add Mountpoints' button active
   _actDeleteMountPoints->setEnabled(false);
   _actGetData->setEnabled(false);
   _actStop->setEnabled(true);
@@ -714,7 +714,6 @@ void bncWindow::slotStop() {
     delete _caster; _caster = 0;
     _actGetData->setEnabled(true);
     _actStop->setEnabled(false);
-    _actAddMountPoints->setEnabled(true);
   }
 }
 
