@@ -82,7 +82,7 @@ bncWindow::bncWindow() {
   _actFontSel = new QAction(tr("Select &Font"),this);
   connect(_actFontSel, SIGNAL(triggered()), SLOT(slotFontSel()));
 
-  _actSaveOpt = new QAction(tr("&Save Options"),this);
+  _actSaveOpt = new QAction(tr("&Save && Activate Options"),this);
   connect(_actSaveOpt, SIGNAL(triggered()), SLOT(slotSaveOptions()));
 
   _actQuit  = new QAction(tr("&Quit"),this);

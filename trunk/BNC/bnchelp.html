@@ -69,7 +69,7 @@ Unless in offline mode, BNC
 
 <p><a name="options"><h3>3. Options</h3></p>
 <p>
-All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf, see annexed 'Configuration File' example. On Windows systems options are saved in register BKG_NTRIP_Client. The self-explaining contents of the configuration file or the Windows register can easily be edited.
+All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf, see annexed 'Configuration File' example. On Windows systems options are saved in register BKG_NTRIP_Client. The self-explaining contents of the configuration file or the Windows register can easily be edited. Some options can be changed on-the-fly.
 </p>
 <p>
 3.1. <a href=#file>File</a><br>
@@ -134,7 +134,8 @@ The 'File' button lets you
 select an appropriate font.<br>
 Use smaller font size if the BNC main window exceeds the size of your screen.
 </li> 
-<li> save selected options in configuration file resp. Windows register and let them become active.<br>
+<li> save selected options in configuration file resp. Windows register.<br>
+When using 'Save & Activate Options' while BNC is already processing data, some configuration options become immediately effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration File' for a list of on-the-fly changeable configuration options.
 </li>
 <li>
 quit the BNC program.
@@ -188,20 +189,7 @@ When BNC is started, new files are created by default and any existing files wit
 
 <p><a name="reconf"><h4>3.4.3 Reread Configuration - optional</h4></p>
 <p>
-When operating BNC online in window or 'no window' mode, some configuration options can be changed on-the-fly without interrupting the running process. Configuration options that can be changed on-the-fly are
-</p>
-<p>
-<ul>
-<li>'mountPoints' to change the selection of streams to be processed, see section 'Mountpoints',</li>
-<li>'waitTime' to change the 'Wait for full epoch' option, see section 'Synchronized Observations', and</li>
-<li>'binSample' to change the 'Sampling' option, see section 'Synchronized Observations'.</li>
-</ul> 
-</p> 
-<p> 
-<u>'No window' mode:</u> For changes while running BNC in 'no window' mode you force the program to reread parts of its configuration in pre-defined intervals. Select '1 min', '1 hour', or '1 day' to let BNC reread the above mentioned configuration options every full minute, hour, or day. This avoids terminating BNC through usage of 'Stop', or 'Quit' button and lets in between edited configuration options become effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration File' for a Unix/Linux/Mac configuration file example. 
-</p> 
-<p> 
-<u>Window mode:</u> For changes while running BNC in window mode you interactively modify one of the above mentioned options and then hit 'Save Options'. Changes will immediately become effective without terminating uninvolved threads.
+When operating BNC online in 'no window' mode (command line option -nw), some configuration options can nevertheless be changed on-the-fly without interrupting the running process. For that you force the program to reread parts of its configuration in pre-defined intervals. Select '1 min', '1 hour', or '1 day' to let BNC reread on-the-fly changeable configuration options every full minute, hour, or day. This lets in between edited options become effective without interrupting uninvolved threads. See annexed section 'Configuration File' for a Unix/Linux/Mac configuration file example and a list of on-the-fly changeable options.
 </p> 
 
 <p><a name="rinex"><h4>3.5. RINEX - Observations</h4></p>
@@ -1040,7 +1028,17 @@ waitTime=5
 </p>
 <p>
 Note that on Windows systems configuration options are saved in register BKG_NTRIP_Client.
+</p>
 <p>
+Note further that configuration options that can be changed/edited on-the-fly while BNC is already processing data are
+</p>
+<p>
+<ul>
+<li>'mountPoints' to change the selection of streams to be processed, see section 'Mountpoints',</li>
+<li>'waitTime' to change the 'Wait for full epoch' option, see section 'Synchronized Observations', and</li>
+<li>'binSample' to change the 'Sampling' option, see section 'Synchronized Observations'.</li>
+</ul>
+</p>
 
 <p><a name="links"><h3>8.5 Links</h3></p>
 <table>
