@@ -1,7 +1,7 @@
 <h3>BKG Ntrip State Space Server (BNS) Version 1.0</h3>
 
 <p>
-The BKG Ntrip State Space Server (BNS) is a program for transforming GNSS satellite clocks and orbits into corrections to Broadcast Ephemeris. These corrections are then encode in RTCM Version 3.x format and uploaded to NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home.</u> BNS is created as a tool for service providers with real-time access to a network of continentally or globally distributed GNSS reference stations.
+The BKG Ntrip State Space Server (BNS) is a program for transforming GNSS satellite clocks and orbits into corrections to Broadcast Ephemeris. These corrections are then encode in a (premature) RTCM Version 3.x format and uploaded to NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home.</u> BNS is created as a tool for service providers with real-time access to a network of continentally or globally distributed GNSS reference stations.
 </p>
 
 <p>
@@ -13,7 +13,7 @@ BNS is released under the GNU General Public License (GPL). Binaries for BNS are
 </p>
 
 <p>
-Before running, please ensure that you have installed the latest version available. The latest version of BNS can be obtained from <u>http://igs.bkg.bund.de/index_ntrip_down.htm</u>. We are continuously working on the program and would appreciate any comments, suggestions, or bug reports. They can be emailed to [euref-ip@bkg.bund.de] or [igs-ip@bkg.bund.de].
+Before running, please ensure that you have installed the latest version available. This can be obtained from <u>http://igs.bkg.bund.de/index_ntrip_down.htm</u>. We are continuously working on the program and would appreciate any comments, suggestions, or bug reports. They can be emailed to [euref-ip@bkg.bund.de] or [igs-ip@bkg.bund.de].
 </p>
 
 <h3>Contents</h3>
@@ -31,7 +31,7 @@ Before running, please ensure that you have installed the latest version availab
 
 <p><a name="purpose"><h3>1. Purpose</h3></p>
 <p>
-Differential GNSS and RTK operation using RTCM is currently based on corrections and/or raw measurements from single or multiple reference stations. This approach to differential positioning is using 'observation space' information. The representation with the RTCM standard can be called 'Observation Space Representation' (OSR). 
+Differential GNSS and RTK operation using RTCM streams is currently based on corrections and/or raw measurements from single or multiple reference stations. This approach to differential positioning is using 'observation space' information. The representation with the RTCM standard can be called 'Observation Space Representation' (OSR). 
 </p>
 <p>
 An alternative to the observation space approach is the so called 'sate space' approach. The principle here is to provide information on individual error sources and can be called 'State Space Representation' (SSR). For a rover position, state space information concerning precise satellite clocks, orbits, ionosphere, troposphere et cetera can be converted into observation space and used to correct the rover observables for more accurate positioning. Alternatively the state information can directly be used in the rover's processing or adjustment model.
@@ -91,6 +91,11 @@ Running BNS requires the clock of the host computer to be properly synchronized.
 </p>
 
 <p><a name="options"><h3>4. Options</h3></p>
+
+<p>
+All options for running BNS on Unix/Linux/Mac systems are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Server.conf, see annexed 'Configuration File' example. On Windows systems options are saved in register BKG_NTRIP_Server. The self-explaining contents of the configuration file or the Windows register can easily be edited.
+</p>
+
 <p>
 4.1. <a href=#file>File</a><br>
 4.2. <a href=#help>Help</a><br>
@@ -130,7 +135,7 @@ select an appropriate font.<br>
 Use smaller font size if the BNS main window extends beyond the size of your screen.
 </li> 
 <li> save selected options.<br>
-Note that on Windows systems options are saved in register BKG_NTRIP_Server. On Unix/Linux systems options are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Server.conf.
+Note that on Windows systems options are saved in register BKG_NTRIP_Server. On Unix/Linux/Mac systems options are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Server.conf.
 </li>
 <li>
 quit the BNS program.
@@ -218,7 +223,7 @@ Specify the full path to a file where received Broadcast Ephemeris will be logge
 
 <p><a name="co"><h4>4.6. Clocks & Orbits</h4></p>
 <p>
-BNS requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system in SP3 format. They can be provided by a real-time GNSS engine such as RTNet.
+BNS requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system in SP3 format. They can be provided by a real-time GNSS engine such as RTNet. Their sampling rate should not be much greater than 10 sec. Note that otherwise in IP streaming involved tools on the NTRIP Broadcaster or client side may respond with a timeout.
 </p>
 
 <p>
@@ -228,43 +233,36 @@ Below you find an example of precise clocks and orbits coming in SP3 format from
 <p>
 <ul>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
-<li>X,Y,Z coordinates in Earth-Centered-Earth-Fixed system [m]</li>
+<li>X,Y,Z coordinates in Earth-Centered-Earth-Fixed system [km]</li>
 <li>Satellite clock error [microsecond]</li>
-<li>Standard deviation of satellite clock error [microsecond]</li>
 </ul>
 </p>
 
 </p>
 <p>
 <pre>
-*  1489  218527.000000 13
-G08    -76413.307  24866966.637   8527190.979     -162.790607     0.375
-G09  13547198.314 -14993483.355  16521052.798        6.462891    -0.335
-G12  23546505.279 -11419650.825  -4126405.941     -356.488306    -0.103
-G15  20671877.676   1926153.017  16592944.847     -147.015776    -0.216
-G17  14584397.556  20610108.909   8557082.997       38.709284    -0.081
-G18   8169428.184 -16862693.369  18872507.835     -153.553965    -0.149
-G22  -6624646.069 -14262545.420  21565075.194      211.479778    -0.089
-G26  21424721.760   7905958.802  13511083.183      296.893434     0.413
-G28   5220247.539  14404808.121  22087340.167      -21.263655     0.184
-R04  14087836.321 -12766880.844  16904727.671       47.601404    -0.302
-R13   9968458.843   4774687.770  22964489.920     -205.604626     0.526
-R14  11765674.558 -13533158.122  18154217.335     -142.409508     0.093
-R23  15142315.506  19152857.044   7329580.240     -111.465205    -0.316
-*  1489  218528.000000 13
-G08    -76893.521  24867989.053   8524186.937     -162.790606     0.376
-G09  13547066.674 -14991254.946  16523118.186        6.462896    -0.334
-G12  23547101.712 -11419571.961  -4123272.866     -356.488305    -0.102
-G15  20673380.091   1927636.846  16590899.052     -147.015776    -0.215
-G17  14583421.795  20609591.381   8559990.870       38.709276    -0.083
-G18   8171742.449 -16863250.285  18870956.178     -153.553959    -0.148
-G22  -6622069.142 -14263374.211  21565314.170      211.479771    -0.091
-G26  21425938.906   7907253.545  13508540.885      296.893448     0.415
-G28   5217668.842  14405642.686  22087373.519      -21.263659     0.183
-R04  14090047.809 -12767642.452  16902327.088       47.601401    -0.303
-R13   9967725.004   4777752.821  22964170.268     -205.604617     0.529
-R14  11764988.257 -13530761.727  18156438.374     -142.409512     0.091
-R23  15141704.650  19152042.802   7332976.247     -111.465201    -0.316
+*  2008 11 15 23  9  40.00000000
+PG02   9913.526202 -14009.502013  20043.508402    172.954389
+PG04  23093.835904  -6682.421653  11570.857634   -233.598390
+PG07  24249.710621   7319.754680   8146.397178     23.216940
+PG08  26390.024445     40.546316  -4908.638575   -178.106488
+PG10   1835.245663 -21440.492626  15205.319419     -7.272325
+PG13  12906.569448   6704.608105  22108.581216    277.382794
+PG16  -6605.961090  17147.164247  19156.319313     95.078459
+PG20  13676.316680  22650.428992   2457.051428     98.981972
+PG23   6709.764296  15204.810711  20604.601368    380.096453
+PG25  19695.705366   9866.220333  15065.609012     26.781926
+PG27  25598.219004   4571.609372   6357.551439      0.304345
+PG29 -12376.531693  -8988.235685  21818.571434    -29.839454
+PR04   9918.187580  23513.478040    319.847487    151.558351
+PR06   8858.433630  -7341.610546  22646.535467   -244.283462
+PR07  -2285.074648 -21548.431780  13471.401525   -122.300100
+PR14  -4723.060343  10040.375495  22946.780676   -113.677871
+PR15  14469.798068  10358.339867  18230.729298     79.645569
+PR20  17648.744681 -16698.956975  -7876.252525    -62.588294
+PR21  10448.514425 -21096.368284   9681.207096   -122.789091
+PR22  -2707.192952 -13243.085608  21689.194398   -170.976408
+PR23 -14575.573714   2817.925995  20728.130339   -263.187906
 </pre>
 </p>
 
@@ -280,7 +278,7 @@ Specify the full path to a file where received clocks and orbits from a real-tim
 
 <p><a name="ephc"><h4>4.7. Ephemeris Corrections</h4></p>
 <p>
-BNS can upload the resulting stream(s) of clock and orbit corrections to Broadcast Ephemeris to an Ntrip Broadcaster. Both EUREF and IGS operate an NTRIP broadcaster at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which can be used for stream upload. The stream's format is RTCM Version 3.x. Note that it only carries the thentative message Types 4056 and 4057 for combined GPS and GLONASS clock and orbit corrections.
+BNS can upload the resulting stream(s) of clock and orbit corrections to Broadcast Ephemeris to an NTRIP Broadcaster. Both EUREF and IGS operate an NTRIP broadcaster at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which can be used for stream upload. The stream's format is RTCM Version 3.x. Note that it only carries the thentative message Types 4056 and 4057 for combined GPS and GLONASS clock and orbit corrections.
 </p>
 
 <p><a name="ephcserver"><h4>4.7.1 Host & Port, Password - optional</h4></p>
@@ -419,7 +417,7 @@ Hit the 'Stop' button in order to stop BNS.
 
 <p><a name="nw"><h4>4.12. No Window - optional</h4></p>
 <p>
-On all systems BNS can be started in batch mode with the command line option '-nw'. BNS will then run in 'no window' mode, using options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Server.conf (Unix/Linux, see Config File example in the Annex) or from the register BKG_NTRIP_Server (Windows).
+On all systems BNS can be started in batch mode with the command line option '-nw'. BNS will then run in 'no window' mode, using options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Server.conf (Unix/Linux/Mac, see 'Configuration File' example in the Annex) or from the register BKG_NTRIP_Server (Windows).
 </p> 
 <p> 
 The self-explanatory contents of the configuration file or the Windows registry can easily be edited. Before editing, terminate BNS first using Windows Task Manager when running it in 'no window' mode on Windows systems.
@@ -427,7 +425,7 @@ The self-explanatory contents of the configuration file or the Windows registry 
 <p><a name="limits"><h3>5. Limitations</h3></p>
 <ul>
 <li>
-In Qt-based desktop environments (such as KDE) on Unix/Linux platforms users may experience a crash at startup even when BNS is run in the background using the '-nw' option. This is a known bug most likely resulting from an incompatibility of Qt libraries in the environment and in BNS. Entering the command 'unset SESSION_MANAGER' before running BNS may help as a work-around.
+In Qt-based desktop environments (such as KDE) on Unix/Linux/Mac platforms users may experience a crash at startup even when BNS is run in the background using the '-nw' option. This is a known bug most likely resulting from an incompatibility of Qt libraries in the environment and in BNS. Entering the command 'unset SESSION_MANAGER' before running BNS may help as a work-around.
 </li>
 <li>
 Currently BNS can only generate premature RTCM Version 3.x message Type 4056 and 4057 for combined GPS and GLONASS orbit and clock corrections. Note that the length of data fields in these messages is not yet standardized. What's implemented in BNS is just a temporary solution.
@@ -457,7 +455,7 @@ Frankfurt, Germany<br>
 7.2. <a href=#rtcm>RTCM</a><br>
 &nbsp; &nbsp; &nbsp; 7.2.1 RTCM <a href=#ntrip>NTRIP</a><br>
 &nbsp; &nbsp; &nbsp; 7.2.2 RTCM <a href=#rtcm3>Version 3.x</a><br>
-7.3. <a href=#config>Config File</a><br>
+7.3. <a href=#config>Configuration File</a><br>
 7.4. <a href=#links>Links</a><br>
 </p>
 
@@ -465,7 +463,7 @@ Frankfurt, Germany<br>
 </p>
 <table>
 <tr></tr>
-<tr><td>Sep 2008 &nbsp;</td><td>Version 1.0 &nbsp;</td><td>[Add] Beta Binaries published.</td></tr>
+<tr><td>Nov 2008 &nbsp;</td><td>Version 1.0 &nbsp;</td><td>[Add] Source code and binaries published.</td></tr>
 </table>
 </p>
 
@@ -524,9 +522,9 @@ RTCM is in the process of developing new Version 3 message types to carry satell
 RTCM Version 3.x streams carrying these messages may be used for example to support real-time Precise Point Positioning (PPP) applications using the 'state space' approach.
 </p>
 
-<p><a name="config"><h4>7.3. Config File</h4></p>
+<p><a name="config"><h4>7.3. Configuration File</h4></p>
 <p>
-The following is an example of the contents of a Unix/Linux configuration file ${HOME}/.config/BKG/BKG_NTRIP_Server.conf. It enables the upload of streams CLCK1 and CLCK2 to www.igs-ip.net. Clock RINEX files and SP3 Orbit files are saved to a directory /home/weber/rinex :
+The following is an example of the contents of a Unix/Linux/Mac configuration file ${HOME}/.config/BKG/BKG_NTRIP_Server.conf. It enables the upload of streams CLCK1 and CLCK2 to www.igs-ip.net. Clock RINEX files and SP3 Orbit files are saved to a directory /home/weber/rinex :
 </p>
 <p>
 <pre>
@@ -557,6 +555,10 @@ sp3Intr=1 day
 sp3Path=/home/weber/rinex
 sp3Sampl=300
 </pre>
+</p>
+
+<p>
+Note that on Windows systems configuration options are saved in register BKG_NTRIP_Server.
 </p>
 
 <p><a name="links"><h4>7.4 Links</h4></p>
