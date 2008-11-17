@@ -481,7 +481,8 @@ void t_bns::processSatellite(int oldEph, int iCaster, bool trafo, t_eph* ep,
 void t_bns::slotMoveSocket(QThread* tt) {
   _clkSocket->setParent(0);
   _clkSocket->moveToThread(tt);
-  slotMessage("bns::slotMoveSocket");
+//slotMessage("bns::slotMoveSocket");
+  slotMessage("Clocks & orbits port: Socket moved to thread"); // weber
 }
 
 // Transform Coordinates IGS -> ETRF
