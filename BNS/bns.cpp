@@ -215,7 +215,8 @@ void t_bns::slotError(const QByteArray msg) {
 // New Connection
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::slotNewConnection() {
-  slotMessage("t_bns::slotNewConnection");
+//slotMessage("t_bns::slotNewConnection");
+  slotMessage("Clocks & orbits port: Waiting for client to connect"); // weber
   delete _clkSocket;
   _clkSocket = _clkServer->nextPendingConnection();
 }

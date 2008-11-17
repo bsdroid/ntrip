@@ -120,10 +120,12 @@ void t_bnscaster::open() {
   if (ans.indexOf("OK") == -1) {
     delete _outSocket;
     _outSocket = 0;
-    emit(newMessage("t_bnscaster::open  socket deleted"));
+//  emit(newMessage("t_bnscaster::open  socket deleted"));
+    emit(newMessage("Broadcaster: Connection broken")); // weber
   }
   else {
-    emit(newMessage("t_bnscaster::open  socket OK"));
+//  emit(newMessage("t_bnscaster::open  socket OK"));
+    emit(newMessage("Broadcaster: Connection opened")); // weber
     _outSocketOpenTrial = 0;
   }
 }
