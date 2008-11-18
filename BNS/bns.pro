@@ -6,6 +6,10 @@ CONFIG += release
 
 RESOURCES += bns.qrc
 
+# Get rid of wrong warnings with MinGW g++ Version 3.4.5
+# ------------------------------------------------------
+win32:CONFIG += warn_off
+
 # Get rid of mingwm10.dll
 # -----------------------
 win32:QMAKE_LFLAGS                 -= -mthreads
