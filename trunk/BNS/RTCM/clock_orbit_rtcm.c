@@ -2,7 +2,7 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.3 2008/08/15 16:29:40 weber Exp $
+        Version:        $Id: clock_orbit_rtcm.c,v 1.4 2008/11/17 11:50:45 mervart Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -327,7 +327,9 @@ int moremessagesfollow, char *buffer, size_t size)
 size_t MakeBias(const struct Bias *b, enum BiasType type,
 int moremessagesfollow, char *buffer, size_t size)
 {
-  int gps, glo, mmi, i, j;
+  int gps = 0;
+  int glo = 0;
+  int mmi, i, j;
   STARTDATA
 
   if(b->NumberOfGPSSat && (type == BTYPE_AUTO || type == BTYPE_GPS))
