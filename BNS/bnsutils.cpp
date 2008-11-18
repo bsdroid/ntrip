@@ -14,7 +14,6 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
 #include <ctime>
 #include <math.h>
 
@@ -201,9 +200,9 @@ void jdgp(double tjul, double & second, int & nweek) {
 void GPSweekFromYMDhms(int year, int month, int day, int hour, int min,
                        double sec, int& GPSWeek, double& GPSWeeks) {
 
-  double tt = (min / 60.0 + hour) / 24.0 + day;
-  double mjd = djul(year, month, tt);
+  double mjd = djul(year, month, day);
+
   jdgp(mjd, GPSWeeks, GPSWeek);
-  GPSWeeks += sec;  
+  GPSWeeks += hour * 3600.0 + min * 60.0 + sec;  
 }
 
