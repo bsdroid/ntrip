@@ -67,15 +67,11 @@ Then, epoch by epoch:
 <ul> 
 <li>Continuously receive the best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS05 reference system. Receive them every epoch in SP3 format as provided by a real-time GNSS engine such as RTNet.</li>
 <li>Calculate X,Y,Z coordinates from Broadcast Ephemeris orbits.</li>
-<li>Calculate differences dX,dY,dZ between Broadcast Ephemeris orbits and IGS05 orbits.</li>
-<li>Model orbit differences through low degree polynomial.</li>
-<li>Derive model-based estimation of corrections to Broadcast Ephemeris orbits.
-<li>Tranform model-based orbit corrections into radial, along-track and cross-track components.</li>
-<li>Calculate differences dC between clocks from Broadcast Ephemeris and IGS05 clocks.</li>
-<li>Model clock differences through low degree polynomial.</li>
-<li>Derive model-based estimation of corrections to Broadcast Ephemeris clocks.</li>
+<li>Calculate differences dX,dY,dZ between Broadcast Ephemeris and IGS05 orbits.</li>
+<li>Tranform these differences into radial, along-track and cross-track corrections to Broadcast Ephemeris orbits.</li>
+<li>Calculate corrections to Broadcast Ephemeris clocks as differences between Broadcast Ephemeris and IGS05 clocks.</li>
 <li>Encode Broadcast Ephemeris clock and orbit corrections in RTCM Version 3.x format.</li>
-<li>Upload corrections in RTCM Verion 3 format to NTRIP Broadcaster.</li>
+<li>Upload corrections stream to NTRIP Broadcaster.</li>
 </ul>
 </p>
 <p>
