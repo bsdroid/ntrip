@@ -81,7 +81,8 @@ void bncZeroDecoder::reopen() {
 
 // Decode Method
 //////////////////////////////////////////////////////////////////////// 
-t_irc bncZeroDecoder::Decode(char* buffer, int bufLen) {
+t_irc bncZeroDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
+  errmsg.clear();
   reopen();
   _out->write(buffer, bufLen);
   _out->flush();

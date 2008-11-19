@@ -74,6 +74,7 @@ class bncApp : public QApplication {
     int               _logFileFlag;
     QString           _bncVersion;
     QMutex            _mutex;
+    QMutex            _mutexMessage;
     QString           _ephPath;
     QString           _ephFileNameGPS;
     int               _rinexVers;

@@ -108,7 +108,9 @@ void RTCM3coDecoder::reopen() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen) {
+t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
+
+  errmsg.clear();
 
   _buffer.append(buffer, bufLen);
 

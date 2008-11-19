@@ -33,7 +33,7 @@ class bncZeroDecoder: public GPSDecoder {
  public:
   bncZeroDecoder(const QString& fileName);
   ~bncZeroDecoder();
-  virtual t_irc Decode(char* buffer, int bufLen);
+  virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
  private:
   void reopen();
   QString        _fileName;

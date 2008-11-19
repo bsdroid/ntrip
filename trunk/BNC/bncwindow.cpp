@@ -66,7 +66,7 @@ bncWindow::bncWindow() {
   setWindowTitle(tr("BKG Ntrip Client (BNC) Version 1.6"));
 
   connect((bncApp*)qApp, SIGNAL(newMessage(QByteArray)), 
-          this, SLOT(slotWindowMessage(QByteArray)));
+           this, SLOT(slotWindowMessage(QByteArray)));
 
   // Create Actions
   // --------------
@@ -754,7 +754,11 @@ void bncWindow::slotSelectionChanged() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotWindowMessage(const QByteArray msg) {
 
+#ifdef DEBUG_RTCM2_2021  
+  const int maxBufferSize = 1000;
+#else
   const int maxBufferSize = 10000;
+#endif
  
   QString txt = _log->toPlainText() + "\n" + 
      QDateTime::currentDateTime().toUTC().toString("yy-MM-dd hh:mm:ss ") + msg;

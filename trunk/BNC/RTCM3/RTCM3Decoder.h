@@ -39,7 +39,7 @@ Q_OBJECT
  public:
   RTCM3Decoder(const QString& fileName);
   virtual ~RTCM3Decoder();
-  virtual t_irc Decode(char* buffer = 0, int bufLen = 0);
+  virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
  signals:
   void newMessage(QByteArray msg);
   void newGPSEph(gpsephemeris* gpseph);
