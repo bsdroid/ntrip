@@ -1,26 +1,11 @@
-BNS 
-=========================
-(*) Allow dummy clock values 999999.999999 as input?
-Reason: DLR real-time engine (Oliver Montenbruck) uses dummies.
-The general question behind this is: Could it be done that the
-input for BNS(from RTNet) is more closely coming in SP3 format?
-The differences to SP3 we have today are just the 999999.999999
-and the 2i/3i integers for orbit and clock corrections.
-However, this touches RTNet's output.
-
-(*) How about clocks and orbits coming in sampling rates .ne. 1sec? 
-Does it make sense to support i.e. 3sec/5sec/10sec?
-Reason: DRL provides clocks and orbits with 30sec sampling.
-
-DLR started to send SP3 stream to euref-ip.bkg.bund.de:7777.
-BNS can't handle that because of 30sec sampling. DLR promised to switch
-to 10sec within the next 2 months.
-
-(*) "TODO: handle old ephemeris" in bns.cpp
+Todo's sorted by priority:
 
 BNC
 =========================
-(*) GW: Keep an eye on www.igs-ip.net/PENC0.
+(1) LM: Small memory leak in BNC, probably introduced through on-the-fly
+configuration, becomes difficult when running BNC continuously over weeks/months.
+
+(2) GW: Keep an eye on www.igs-ip.net/PENC0.
 Reason: Have seen 100% CPU. Dirk Stoecker says he has not seen
 this over a period of several days. He also says the reason
 could actually only be that the decoding function is called
@@ -29,9 +14,23 @@ GW 08-09-15: BNC again shows 100% CPU because of PENC0.
 Could it really be that the decoder is called although no new
 data available? Deleted PENC0 from the configuration.
 
-(*) Zdenek: Include GLONASS in RTCMv2 20/21 messages.
+(3) ZL: Include GLONASS in RTCMv2 20/21 messages.
 
-(*) Zdenek: Include Loss of Lock indicator in socket output for RTNet
+(4) ZL: Include Loss of Lock indicator in socket output for RTNet
 
-(*) Reconfigure BNC on-the-fly.
+BNS 
+=========================
+(1) LM: Currently implementated 6 transformation parameters are:
+Translations in X,Y,Z, and 
+Rotation rates in X,Y,Z
+
+Needs to be extended to 14 transformation parameters: 
+Translations in X,Y,Z, and
+Translation rates in X,Y,Z, and
+Rotation in X,Z,Z, and
+Rotation rates in X,Y,Z
+Scale,
+Scale rate
+
+(2) LM: "TODO: handle old ephemeris" in bns.cpp
 
