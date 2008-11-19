@@ -120,14 +120,16 @@ RTCM3Decoder::~RTCM3Decoder() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
+t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
+
+  errmsg.clear();
 
   bool decoded = false;
 
   // Try to decode Clock and Orbit Corrections
   // -----------------------------------------
   if (_mode == unknown || _mode == corrections) {
-    if ( _coDecoder->Decode(buffer, bufLen) == success ) {
+    if ( _coDecoder->Decode(buffer, bufLen, errmsg) == success ) {
       decoded = true;
 
       // Latency
@@ -353,6 +355,18 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen) {
           else if (rr == 1019) {
             decoded = true;
             gpsephemeris* ep = new gpsephemeris(_Parser.ephemerisGPS);
+
+#ifdef DEBUG_RTCM2_2021
+            QString msg = QString("%1: got eph %2 IODC %3 GPSweek %4 TOC %5 TOE %6")
+              .arg(_staID)
+              .arg(ep->satellite, 2)
+              .arg(ep->IODC,      4)
+              .arg(ep->GPSweek,   4)
+              .arg(ep->TOC,       6)
+              .arg(ep->TOE,       6);
+            emit(newMessage(msg.toAscii()));
+#endif
+
             emit newGPSEph(ep);
           }
     

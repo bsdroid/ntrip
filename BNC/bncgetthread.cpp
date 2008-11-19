@@ -40,6 +40,7 @@
 
 #include <stdlib.h>
 #include <iomanip>
+#include <sstream>
 
 #include <QFile>
 #include <QTextStream>
@@ -542,7 +543,13 @@ void bncGetThread::run() {
         }
 
         if (_inspSegm<1) {
-          _decoder->Decode(data, nBytes);
+          vector<string> errmsg;
+          _decoder->Decode(data, nBytes, errmsg);
+#ifdef DEBUG_RTCM2_2021
+          for (unsigned ii = 0; ii < errmsg.size(); ii++) {
+            emit newMessage(_staID + ": " + errmsg[ii].c_str());
+          }
+#endif
         }
         else {
         
@@ -552,12 +559,18 @@ void bncGetThread::run() {
             _decodePause.secsTo(QDateTime::currentDateTime()) >= currPause )  {
         
             if (decode) { 
-              if ( _decoder->Decode(data, nBytes) == success ) { 
+              vector<string> errmsg;
+              if ( _decoder->Decode(data, nBytes, errmsg) == success ) { 
                 numSucc += 1;
               } 
               if ( _decodeTime.secsTo(QDateTime::currentDateTime()) > _inspSegm ) {
                 decode = false;
               }
+#ifdef DEBUG_RTCM2_2021
+              for (unsigned ii = 0; ii < errmsg.size(); ii++) {
+                emit newMessage(_staID + ": " + errmsg[ii].c_str());
+              }
+#endif
             }
         
             // Check - once per inspect segment
@@ -736,47 +749,35 @@ void bncGetThread::run() {
           if (_rnx) {
 	    bool dump = true;
 
-/*   // RTCMv2 XYZ
-     // ----------
-     RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
-     if ( decoder2 && !_rnx_set_position ) {
+            // RTCMv2 XYZ
+            // ----------
+            RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
+            if ( decoder2 && !_rnx_set_position ) {
 	      double stax, stay, staz;
 	      double dL1[3], dL2[3];
 	      if ( decoder2->getStaCrd(stax, stay, staz,
                                        dL1[0], dL1[1], dL1[2], 
                                        dL2[0], dL2[1], dL2[2]) == success ) {
-                QByteArray msg;
-                QTextStream out(&msg);
-                out.setRealNumberNotation(QTextStream::FixedNotation);
-                out.setRealNumberPrecision(5);
-                ////	_rnx->setApproxPos(stax, stay, staz);
-                out << "STA " << staID()
-                    << ' '    << qSetFieldWidth(15) << stax
-                    << ' '    << qSetFieldWidth(15) << stay
-                    << ' '    << qSetFieldWidth(15) << staz
-                    << " L1 " << qSetFieldWidth(10) << dL1[0]
-                    << ' '    << qSetFieldWidth(10) << dL1[1]
-                    << ' '    << qSetFieldWidth(10) << dL1[2]
-                    << " L2 " << qSetFieldWidth(10) << dL2[0]
-                    << ' '    << qSetFieldWidth(10) << dL2[1]
-                    << ' '    << qSetFieldWidth(10) << dL2[2] << endl;
-	    	_rnx_set_position = true;
-                emit newMessage(msg);
-              }
-            }  */
 
-	    ////RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
-	    ////if ( decoder2 && !_rnx_set_position ) {
-	    ////  double stax, stay, staz;
-	    ////  if ( decoder2->getStaCrd(stax, stay, staz) == success ) {
-	    ////	_rnx->setApproxPos(stax, stay, staz);
-	    ////	_rnx_set_position = true;
-	    ////  }
-	    ////  else {
-	    ////	dump = false;
-	    ////  }
-	    ////}
-	      
+                ostringstream msg2; msg2.setf(ios::fixed);
+                msg2 << "station coordinates " << staID().data()
+                     << ' ' << setw(14) << setprecision(5) << stax
+                     << ' ' << setw(14) << setprecision(5) << stay
+                     << ' ' << setw(14) << setprecision(5) << staz
+                     << " L1 "
+                     << ' ' << setw(8)  << setprecision(5) << dL1[0]
+                     << ' ' << setw(8)  << setprecision(5) << dL1[1]
+                     << ' ' << setw(8)  << setprecision(5) << dL1[2]
+                     << " L2 "
+                     << ' ' << setw(8)  << setprecision(5) << dL2[0]
+                     << ' ' << setw(8)  << setprecision(5) << dL2[1]
+                     << ' ' << setw(8)  << setprecision(5) << dL2[2] 
+                     << ends;
+	    	_rnx_set_position = true;
+                emit newMessage(QByteArray(msg2.str().c_str()));
+              }
+            }  
+
 	    if ( dump ) {
 	      long iSec    = long(floor(obs->_o.GPSWeeks+0.5));
 	      long newTime = obs->_o.GPSWeek * 7*24*3600 + iSec;
@@ -941,7 +942,20 @@ void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
   if ( decoder ) {
     QMutexLocker locker(&_mutex);
   
-    decoder->storeEph(gpseph);
+    string storedPRN;
+    vector<int> IODs;
+    
+    if ( decoder->storeEph(gpseph, storedPRN, IODs) ) {
+#ifdef DEBUG_RTCM2_2021
+      QString msg = _staID + QString(": stored eph %1 IODs").arg(storedPRN.c_str());
+      
+      for (unsigned ii = 0; ii < IODs.size(); ii++) {
+        msg += QString(" %1").arg(IODs[ii],4);
+      }
+      
+      emit(newMessage(msg.toAscii()));
+#endif
+    }
   }
 }
 

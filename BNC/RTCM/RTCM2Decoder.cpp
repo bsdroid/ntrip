@@ -41,6 +41,7 @@
 #include <math.h>
 #include <sstream>
 #include <iomanip>
+#include <set>
 
 #include "../bncutils.h"
 #include "rtcm_utils.h"
@@ -63,7 +64,7 @@ RTCM2Decoder::RTCM2Decoder(const std::string& ID) {
 // 
 
 RTCM2Decoder::~RTCM2Decoder() {
-  for (t_pairMap::iterator ii = _ephPair.begin(); ii != _ephPair.end(); ii++) {
+  for (t_listMap::iterator ii = _ephList.begin(); ii != _ephList.end(); ii++) {
     delete ii->second;
   }
 }
@@ -103,7 +104,9 @@ t_irc RTCM2Decoder::getStaCrd(double& xx, double& yy, double& zz,
 
 
 //
-t_irc RTCM2Decoder::Decode(char* buffer, int bufLen) {
+t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
+
+  errmsg.clear();
 
   _buffer.append(buffer, bufLen);
   int    refWeek;
@@ -164,7 +167,7 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen) {
 
       if (_msg2021.valid()) {
         decoded = true;
-      	translateCorr2Obs();
+      	translateCorr2Obs(errmsg);
       }	
     }
 
@@ -181,37 +184,39 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen) {
 
 
 
-void RTCM2Decoder::storeEph(const gpsephemeris& gpseph) {
+bool RTCM2Decoder::storeEph(const gpsephemeris& gpseph, string& storedPRN, vector<int>& IODs) {
   t_ephGPS eph; eph.set(&gpseph);
 
-  storeEph(eph);
+  return storeEph(eph, storedPRN, IODs);
 }
 
 
-void RTCM2Decoder::storeEph(const t_ephGPS& gpseph) {
+bool RTCM2Decoder::storeEph(const t_ephGPS& gpseph, string& storedPRN, vector<int>& IODs) {
   t_ephGPS* eph = new t_ephGPS(gpseph);
 
   string prn = eph->prn();
 
-  t_pairMap::iterator ip = _ephPair.find(prn);
-  if (ip == _ephPair.end() ) {
-    ip = _ephPair.insert(pair<string, t_ephPair*>(prn, new t_ephPair)).first;
+  t_listMap::iterator ip = _ephList.find(prn);
+  if (ip == _ephList.end() ) {
+    ip = _ephList.insert(pair<string, t_ephList*>(prn, new t_ephList)).first;
   }
-  t_ephPair* pair = ip->second;
+  t_ephList* ephList = ip->second;
 
-  if ( !pair->eph || eph->isNewerThan(pair->eph) ) {
-    delete pair->oldEph;
-    pair->oldEph = pair->eph;
-    pair->eph    = eph;
+  bool stored = ephList->store(eph);
 
-    return;
+  if ( stored ) {
+    storedPRN = eph->prn();
+    ephList->getIODs(IODs);
+    return true;
   }
 
   delete eph;
+
+  return false;
 }
   
   
-void RTCM2Decoder::translateCorr2Obs() {
+void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
 
   if ( !_msg03.validMsg || !_msg2021.valid() ) {
     return;
@@ -247,6 +252,13 @@ void RTCM2Decoder::translateCorr2Obs() {
        icorr != _msg2021.data.end(); icorr++) {
     const RTCM2_2021::HiResCorr* corr = icorr->second;
 
+    // beg test
+    if ( corr->PRN >= 200 ) {
+      continue;
+    }
+    // end test
+
+
     ostringstream oPRN; oPRN.fill('0');
 
     oPRN <<            (corr->PRN < 200 ? 'G'       : 'R')
@@ -254,16 +266,10 @@ void RTCM2Decoder::translateCorr2Obs() {
 
     string PRN(oPRN.str());
 
-    t_pairMap::const_iterator ieph = _ephPair.find(PRN);
-    const t_eph* eph0 = 0;
-    const t_eph* eph1 = 0;
+    t_listMap::const_iterator ieph = _ephList.find(PRN);
 
-    if ( ieph != _ephPair.end() ) {
-      eph0 = ieph->second->eph;
-      eph1 = ieph->second->oldEph;
-    }
-
-    if ( !eph0 && !eph1 ) {
+    if ( ieph == _ephList.end() ) {
+      errmsg.push_back("missing eph for " + PRN);
       continue;
     }
 
@@ -276,6 +282,9 @@ void RTCM2Decoder::translateCorr2Obs() {
     // new observation
     p_obs new_obs = 0;
 
+    // missing IOD
+    vector<string> missingIOD;
+    vector<string>     hasIOD;
     for (unsigned ii = 0; ii < 4; ii++) {
       int          IODcorr = 0;
       double       corrVal = 0;
@@ -311,12 +320,14 @@ void RTCM2Decoder::translateCorr2Obs() {
 	continue;
       }
 
-      eph = 0;
-      if      ( eph0 && eph0->IOD() == IODcorr ) 
-	eph = eph0;
-      else if ( eph1 && eph1->IOD() == IODcorr ) 
-	eph = eph1;
-      if ( eph && corr ) {
+      eph = ieph->second->getEph(IODcorr);
+
+      if ( eph ) {
+        ostringstream msg;
+        msg << obsT << ':' << setw(3) << eph->IOD();
+        hasIOD.push_back(msg.str());
+
+
 	int    GPSWeek_tot;
 	double GPSWeeks_tot;
 	double rho, xSat, ySat, zSat, clkSat;
@@ -371,10 +382,29 @@ void RTCM2Decoder::translateCorr2Obs() {
 	  continue;
 	}
       }
+      else if ( IODcorr != 0 ) {
+        ostringstream msg;
+        msg << obsT << ':' << setw(3) << IODcorr;
+        missingIOD.push_back(msg.str());
+      }
     } // loop over frequencies
-    
+   
+    // Error report
+    if ( missingIOD.size() ) {
+      ostringstream missingIODstr;
+
+      copy(missingIOD.begin(), missingIOD.end(), ostream_iterator<string>(missingIODstr, "   "));
+
+      errmsg.push_back("missing eph for " + PRN + " , IODs " + missingIODstr.str());
+    }
+
+    // Store new observation
     if ( new_obs ) {
       _obsList.push_back( new_obs );
+
+      ///ostringstream hasIODstr;
+      ///copy(hasIOD.begin(), hasIOD.end(), ostream_iterator<string>(hasIODstr, "    "));
+      ///errmsg.push_back("decoded PRN " + PRN + " : " + hasIODstr.str());
     }
   }
 }

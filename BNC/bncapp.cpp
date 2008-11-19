@@ -148,7 +148,7 @@ bncApp::~bncApp() {
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::slotMessage(const QByteArray msg) {
 
-  QMutexLocker locker(&_mutex);
+  QMutexLocker locker(&_mutexMessage);
 
   messagePrivate(msg);
   emit newMessage(msg);
@@ -197,6 +197,7 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
   printEphHeader();
 
   gpsephemeris** ee = &_gpsEph[gpseph->satellite-1];
+
   if ( *ee == 0                         || 
        gpseph->GPSweek > (*ee)->GPSweek ||
        (gpseph->GPSweek == (*ee)->GPSweek && gpseph->TOC > (*ee)->TOC) ) {

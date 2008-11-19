@@ -26,6 +26,8 @@
 #define GPSDECODER_H
 
 #include <iostream>
+#include <vector>
+#include <string>
 #include <QPointer>
 #include <QList>
 
@@ -120,7 +122,7 @@ typedef QPointer<t_obs> p_obs;
 
 class GPSDecoder {
  public:
-  virtual t_irc Decode(char* buffer, int bufLen) = 0;
+  virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg) = 0;
 
   virtual ~GPSDecoder() {
     QListIterator<p_obs> it(_obsList);

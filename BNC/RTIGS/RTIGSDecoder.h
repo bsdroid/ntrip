@@ -50,7 +50,7 @@ class RTIGSDecoder : public GPSDecoder {
 public:
   RTIGSDecoder();
   virtual ~RTIGSDecoder();
-  virtual t_irc Decode(char* buffer = 0, int bufLen = 0);
+  virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
 private:
   CGPS_Transform _GPSTrans;
   std::string    _buffer;

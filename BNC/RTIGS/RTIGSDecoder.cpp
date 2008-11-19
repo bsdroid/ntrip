@@ -68,7 +68,9 @@ RTIGSDecoder::~RTIGSDecoder() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_irc RTIGSDecoder::Decode(char* buffer, int bufLen) {
+t_irc RTIGSDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
+
+  errmsg.clear();
 
   // Append the incomming data to the internal buffer
   // ------------------------------------------------
