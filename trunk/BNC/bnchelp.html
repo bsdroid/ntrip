@@ -359,42 +359,48 @@ BNC can produce synchronized observations in binary format on your local host (I
 <p>The binary output is a continuous stream in the following order:</p>
 <pre>
 begEpoch
-begObs
-Observation
-begObs
-Observation
-begObs
-Observation
+t_obsInternal
+t_obsInternal
 ...
+t_obsInternal
 endEpoch
 begEpoch
+t_obsInternal
 ...
 </pre>
-<p>with the corresponding structures defined as follow:</p>
+
+<p>The corresponding structures are defined as follow:</p>
 <pre>
-const char begEpoch = 'A';
-const char begObs   = 'B';
-const char endEpoch = 'C';
-struct Observation {
+  const char begEpoch[] = "BEGEPOCH";
+  const char endEpoch[] = "ENDEPOCH";
+...
+...
+class t_obsInternal {
+ public:
   int    flags;
-  char   StatID[20+1];// Station ID
-  char   satSys;      // Satellite System ('G' or 'R')
-  int    satNum;      // Satellite Number (PRN for GPS NAVSTAR)
-  int    slot;        // Slot Number (for Glonass)
-  int    GPSWeek;     // Week of GPS-Time
-  double GPSWeeks;    // Second of Week (GPS-Time)
-  double C1;          // CA-code pseudorange (meters)
-  double C2;          // CA-code pseudorange (meters)
-  double P1;          // P1-code pseudorange (meters)
-  double P2;          // P2-code pseudorange (meters)
-  double L1;          // L1 carrier phase (cycles)
-  double L2;          // L2 carrier phase (cycles)
-  double S1;          // L1 signal-to noise ratio
-  double S2;          // L2 signal-to noise ratio
-  int    SNR1;        // L1 signal-to noise ratio (mapped to integer)
-  int    SNR2;        // L2 signal-to noise ratio (mapped to integer)
-} ;
+  char   StatID[20+1];  // Station ID
+  char   satSys;        // Satellite System ('G' or 'R')
+  int    satNum;        // Satellite Number (PRN for GPS NAVSTAR)
+  int    slot;          // Slot Number (for Glonass)
+  int    GPSWeek;       // Week of GPS-Time
+  double GPSWeeks;      // Second of Week (GPS-Time)
+  double C1;            // CA-code pseudorange (meters)
+  double C2;            // CA-code pseudorange (meters)
+  double P1;            // P1-code pseudorange (meters)
+  double P2;            // P2-code pseudorange (meters)
+  double L1;            // L1 carrier phase (cycles)
+  double L2;            // L2 carrier phase (cycles)
+  int    slip_cnt_L1;   // L1 cumulative loss of continuity indicator (negative value = undefined)
+  int    slip_cnt_L2;   // L2 cumulative loss of continuity indicator (negative value = undefined)
+  int    lock_timei_L1; // L1 last lock time indicator                (negative value = undefined)
+  int    lock_timei_L2; // L2 last lock time indicator                (negative value = undefined)
+  double S1;            // L1 signal-to noise ratio
+  double S2;            // L2 signal-to noise ratio
+  int    SNR1;          // L1 signal-to noise ratio (mapped to integer)
+  int    SNR2;          // L2 signal-to noise ratio (mapped to integer)
+};
 </pre>
+
 <p>
 The source code for BNC comes with an example program called 'test_bnc_qt.cpp' that allows you to read BNC's binary observation output from the IP port (hard-coded to 1968) and save the observations in file 'obs.txt'.
 </p>
