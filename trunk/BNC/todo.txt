@@ -16,8 +16,6 @@ data available? Deleted PENC0 from the configuration.
 
 (3) ZL: Include GLONASS in RTCMv2 20/21 messages.
 
-(4) ZL: Include Loss of Lock indicator in socket output for RTNet
-
 BNS 
 =========================
 (1) LM: Currently implementated 6 transformation parameters are:
