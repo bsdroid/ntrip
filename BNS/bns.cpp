@@ -195,7 +195,8 @@ void t_bns::deleteBnsEph() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::slotMessage(const QByteArray msg) {
   if (_logStream) {
-    *_logStream << msg << endl;
+    QString txt = QDateTime::currentDateTime().toUTC().toString("yy-MM-dd hh:mm:ss ");
+    *_logStream << txt << msg << endl;
     _logStream->flush();
   }
   emit(newMessage(msg));
