@@ -48,7 +48,7 @@ BNC supports the following GNSS data formats:
 <p>
 <ul>
 <li>RTCM Version 2.x containing message types 18 and 19 or 20 and 21 together with 3 and 22 (GPS and GLONASS), </li> 
-<li>RTCM Version 3.x containing message types 1002 (GPS, SBAS) or 1004 (GPS), 1010 or 1012 (GLONASS), 1019 or 1020 (broadcast ephemeris), 4056 and 4057 (premature messages for orbit and clock corrections to broadcast ephemeris)</li>
+<li>RTCM Version 3.x containing message types 1002 (GPS, SBAS) or 1004 (GPS), 1010 or 1012 (GLONASS), 1019 or 1020 (broadcast ephemeris), 4056 and 4057 (premature messages for combined orbit and clock corrections to GPS and GLONASS broadcast ephemeris)</li>
 <li>RTIGS containing GPS record types 200 (observations) and 300 (ephemeris).</li>
 </ul>
 BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
@@ -440,8 +440,8 @@ RTCM is in the process of developing new Version 3 messages to transport satelli
 <li>Message type 4053: GLONASS orbit corrections to Broadcast Ephemeris</li>
 <li>Message type 4054: GLONASS clock corrections to Broadcast Ephemeris</li>
 <li>Message type 4055: GLONASS code biases</li>
-<li>Message type 4056: Combined GPS and GLONASS orbit corrections to Broadcast Ephemeris</li>
-<li>Message type 4057: Combined GPS and GLONASS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 4056: Combined orbit and clock corrections to GPS Broadcast Ephemeris</li>
+<li>Message type 4057: Combined orbit and clock corrections to GLONASS Broadcast Ephemeris</li>
 </ul>
 <p>
 RTCM Version 3 streams carrying these messages may be used i.e. to support real-time Precise Point Positioning (PPP) applications. 
@@ -741,7 +741,7 @@ BNC currently will only handle C1, C2, P1, P2, L1, L2, S1, and S2 observations. 
 <li>
 Using RTCM Version 3.x, BNC will properly handle message types 1002, 1004, 1010, and 1012. Note that when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
 </li>
-Concerning the length of data fields in RTCM Version 3.x premature message types 4056 and 4057 (corrections to Broadcast Ephemeris), a decision is not yet available. Note the what's implemented in BNC is just a temporary solutions.
+Concerning the length of data fields in RTCM Version 3.x premature message types 4056 and 4057 (combined orbit and clock corrections to GPS and GLONASS Broadcast Ephemeris), a decision is not yet available. Note the what's implemented in BNC is just a temporary solutions.
 <li>
 Using RTCM Version 2.x, BNC will only handle message types 18 and 19 or 20 and 21 together with position and the antenna offset information carried in types 3 and 22. Note that processing carrier phase corrections and pseudo-range corrections contained in message types 20 and 21 needs access to broadcast ephemeris. Hence, whenever dealing with message types 20 and 21, make sure that broadcast ephemeris become available for BNC through also retrieving at least one RTCM Version 3.x stream carrying message types 1019 (GPS ephemeris) and 1020 (GLONASS ephemeris).
 </li>
