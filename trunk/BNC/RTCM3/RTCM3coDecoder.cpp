@@ -108,12 +108,11 @@ void RTCM3coDecoder::reopen() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_irc RTCM3coDecoder::Decode(char* buffer, int /* bufLen */, 
-                             vector<string>& errmsg) {
+t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
   errmsg.clear();
 
-  _buffer.append(buffer);
+  _buffer.append(QByteArray(buffer,bufLen));
 
   t_irc retCode = failure;
 
