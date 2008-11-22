@@ -402,10 +402,6 @@ void bncCaster::slotReadMountPoints() {
       
       bncGetThread* getThread = new bncGetThread(url, format, latitude, 
                                                  longitude, nmea, iMount);
-      
-      bncApp* app = (bncApp*) qApp;
-      app->connect(getThread, SIGNAL(newMessage(QByteArray)), 
-                   app, SLOT(slotMessage(const QByteArray)));
       addGetThread(getThread);
     }
   }

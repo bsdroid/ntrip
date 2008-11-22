@@ -163,8 +163,6 @@ int main(int argc, char *argv[]) {
     app.setPortCorr(settings.value("corrPort").toInt());
 
     app.connect(caster, SIGNAL(getThreadErrors()), &app, SLOT(quit()));
-    app.connect(caster, SIGNAL(newMessage(QByteArray)), 
-                &app, SLOT(slotMessage(QByteArray)));
   
     ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
 
@@ -193,9 +191,6 @@ int main(int argc, char *argv[]) {
                       QTime::fromString(timeString, Qt::ISODate), Qt::UTC);
 
       bncGetThread* getThread = new bncGetThread(fileName, format);
-      app.connect(getThread, SIGNAL(newMessage(QByteArray)), 
-                  &app, SLOT(slotMessage(const QByteArray)));
-      
       caster->addGetThread(getThread);
     }
   }
