@@ -124,6 +124,8 @@ bncWindow::bncWindow() {
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
   _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
   _outPortLineEdit->setMaximumWidth(9*ww);
+  _outUPortLineEdit   = new QLineEdit(settings.value("outUPort").toString());
+  _outUPortLineEdit->setMaximumWidth(9*ww);
   _outEphPortLineEdit    = new QLineEdit(settings.value("outEphPort").toString());
   _outEphPortLineEdit->setMaximumWidth(9*ww);
   _corrPortLineEdit    = new QLineEdit(settings.value("corrPort").toString());
@@ -263,6 +265,7 @@ bncWindow::bncWindow() {
   _waitTimeSpinBox->setWhatsThis(tr("<p>When feeding a real-time GNSS engine waiting for input epoch by epoch, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds is recommended, depending on the latency of the incoming streams and the delay acceptable to your real-time GNSS engine or products.</p><p>Note that 'Wait for full epoch' does not effect the RINEX Observation file content. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX Observation files.</p>"));
   _outFileLineEdit->setWhatsThis(tr("Specify the full path to a file where synchronized observations are saved in plain ASCII format. Beware that the size of this file can rapidly increase depending on the number of incoming streams."));
   _outPortLineEdit->setWhatsThis(tr("BNC can produce synchronized observations in binary format on your local host through an IP port. Specify a port number here to activate this function."));
+  _outPortLineEdit->setWhatsThis(tr("Unsynchronized observations in binary format on your local host through an IP port. Specify a port number here to activate this function."));
   _outEphPortLineEdit->setWhatsThis(tr("BNC can produce ephemeris data in RINEX ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
   _corrPortLineEdit->setWhatsThis(tr("BNC can produce Broadcast Ephemeris Corrections on your local host through an IP port. Specify a port number here to activate this function."));
   _corrTimeSpinBox->setWhatsThis(tr("Concerning output through IP port, BNC drops Broadcast Ephemeris Corrections received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds is recommended, depending on the latency of the incoming correction stream(s) and the delay acceptable to your real-time application."));
@@ -344,13 +347,15 @@ bncWindow::bncWindow() {
   sLayout->setColumnMinimumWidth(0,14*ww);
   sLayout->addWidget(new QLabel("Port"),                          0, 0);
   sLayout->addWidget(_outPortLineEdit,                            0, 1);
+  sLayout->addWidget(new QLabel("Port (Unsynchronized)"),         0, 2);
+  sLayout->addWidget(_outUPortLineEdit,                           0, 3);
   sLayout->addWidget(new QLabel("Wait for full epoch"),           1, 0);
   sLayout->addWidget(_waitTimeSpinBox,                            1, 1);
   sLayout->addWidget(new QLabel("File (full path)"),              2, 0);
-  sLayout->addWidget(_outFileLineEdit,                            2, 1);
+  sLayout->addWidget(_outFileLineEdit,                            2, 1, 1, 3);
   sLayout->addWidget(new QLabel("Sampling"),                      3, 0, Qt::AlignLeft);
   sLayout->addWidget(_binSamplSpinBox,                            3, 1, Qt::AlignLeft);
-  sLayout->addWidget(new QLabel("Output synchronized observations epoch by epoch."),4,0,1,2,Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("Output synchronized observations epoch by epoch."),4,0,1,4,Qt::AlignLeft);
   sLayout->addWidget(new QLabel("    "),5,0);
   sLayout->addWidget(new QLabel("    "),6,0);
   sgroup->setLayout(sLayout);
@@ -633,6 +638,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("outFile",     _outFileLineEdit->text());
   settings.setValue("perfIntr",    _perfIntrComboBox->currentText());
   settings.setValue("outPort",     _outPortLineEdit->text());
+  settings.setValue("outUPort",    _outUPortLineEdit->text());
   settings.setValue("outEphPort",  _outEphPortLineEdit->text());
   settings.setValue("corrPort",    _corrPortLineEdit->text());
   settings.setValue("corrTime",    _corrTimeSpinBox->value());

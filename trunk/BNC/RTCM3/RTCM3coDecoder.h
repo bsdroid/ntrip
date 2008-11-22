@@ -55,7 +55,7 @@ Q_OBJECT
   QString             _staID;
   QString             _fileNameSkl;
   QString             _fileName;
-  std::string         _buffer;
+  QByteArray          _buffer;
   ClockOrbit          _co;
   Bias                _bias;
 };

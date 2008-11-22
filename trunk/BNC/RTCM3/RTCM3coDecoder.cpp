@@ -108,11 +108,12 @@ void RTCM3coDecoder::reopen() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
+t_irc RTCM3coDecoder::Decode(char* buffer, int /* bufLen */, 
+                             vector<string>& errmsg) {
 
   errmsg.clear();
 
-  _buffer.append(buffer, bufLen);
+  _buffer.append(buffer);
 
   t_irc retCode = failure;
 
@@ -197,14 +198,14 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         long coTime = GPSweek * 7*24*3600 + long(floor(GPSweeks+0.5));
         printLine(line, coTime);
       }
-      _buffer = _buffer.substr(bytesused);
+      _buffer = _buffer.mid(bytesused);
       retCode = success;
     }
 
     // All other Cases
     // ---------------
     else {
-      _buffer = _buffer.substr(1);
+      _buffer = _buffer.mid(1);
     }
   }
 }
