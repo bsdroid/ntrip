@@ -108,6 +108,11 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::initialize() {
 
+      
+  bncApp* app = (bncApp*) qApp;
+  app->connect(this, SIGNAL(newMessage(QByteArray)), 
+               app, SLOT(slotMessage(const QByteArray)));
+
   _decoder    = 0;
   _socket     = 0;
   _timeOut    = 20*1000; // 20 seconds
