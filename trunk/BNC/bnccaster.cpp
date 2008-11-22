@@ -38,7 +38,6 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
 #include <math.h>
 #include <unistd.h>
 
@@ -47,7 +46,6 @@
 #include "bncgetthread.h"
 #include "bncutils.h"
 #include "RTCM/GPSDecoder.h"
-
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -488,7 +486,6 @@ int bncCaster::myWrite(QTcpSocket* sock, const char* buf, int bufLen) {
   for (;;) {
     int newBytes = sock->write(buf+bytesWritten, bufLen-bytesWritten);
     if (newBytes < 0) {
-      std::cout << "myWrite " << newBytes << "  "  << sock->state() << std::endl;
       return newBytes;
     }
     else {
