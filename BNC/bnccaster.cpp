@@ -482,17 +482,11 @@ void bncCaster::slotReadMountPoints() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 int bncCaster::myWrite(QTcpSocket* sock, const char* buf, int bufLen) {
-  int bytesWritten = 0;
-  for (;;) {
-    int newBytes = sock->write(buf+bytesWritten, bufLen-bytesWritten);
-    if (newBytes < 0) {
-      return newBytes;
-    }
-    else {
-      bytesWritten += newBytes;
-    }
-    if (bytesWritten == bufLen) {
-      return bytesWritten;
+  sock->write(buf, bufLen);
+  for (int ii = 1; ii <= 10; ii++) {
+    if (sock->waitForBytesWritten(10)) {  // wait 10 ms
+      return bufLen;
     }
   }
+  return -1;
 }
