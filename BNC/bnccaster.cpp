@@ -53,6 +53,9 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
 
   QSettings settings;
 
+  connect(this, SIGNAL(newMessage(QByteArray)), 
+          (bncApp*) qApp, SLOT(slotMessage(const QByteArray)));
+
   if ( !outFileName.isEmpty() ) {
     QString lName = outFileName;
     expandEnvVar(lName);
@@ -75,7 +78,9 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
 
   if (_port != 0) {
     _server = new QTcpServer;
-    _server->listen(QHostAddress::Any, _port);
+    if ( !_server->listen(QHostAddress::Any, _port) ) {
+      emit newMessage("bncCaster: cannot listen on sync port");
+    }
     connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
     _sockets = new QList<QTcpSocket*>;
   }
@@ -87,7 +92,9 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
   int uPort = settings.value("outUPort").toInt();
   if (uPort != 0) {
     _uServer = new QTcpServer;
-    _uServer->listen(QHostAddress::Any, uPort);
+    if ( !_uServer->listen(QHostAddress::Any, uPort) ) {
+      emit newMessage("bncCaster: cannot listen on usync port");
+    }
     connect(_uServer, SIGNAL(newConnection()), this, SLOT(slotNewUConnection()));
     _uSockets = new QList<QTcpSocket*>;
   }
@@ -101,9 +108,6 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
   _lastDumpSec   = 0; 
 
   _confTimer = 0;
-
-  connect(this, SIGNAL(newMessage(QByteArray)), 
-          (bncApp*) qApp, SLOT(slotMessage(const QByteArray)));
 }
 
 // Destructor
