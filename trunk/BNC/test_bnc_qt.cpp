@@ -38,6 +38,7 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <stdlib.h>
 #include <iostream>
 #include <iomanip>
 
@@ -49,27 +50,31 @@
 
 using namespace std;
 
-int main(int /* argc */, char** /* argv */) {
+int main(int argc, char** argv) {
 
-  QTcpSocket socketObs;
-
-  QFile obsFile("obs.txt");
-  
-  socketObs.connectToHost("127.0.0.1", 1968);
-  if (!socketObs.waitForConnected(10000)) {
-    cout << "socketObs: not connected" << endl;
+  if (argc != 2) {
+    cerr << "Usage: test_bnc_qt port\n";
     exit(1);
   }
 
-  obsFile.open(QIODevice::WriteOnly | QIODevice::Unbuffered);
+  int port = atoi(argv[1]);
 
-  QTextStream outObs(&obsFile); 
-  outObs.setRealNumberNotation(QTextStream::FixedNotation);
+  QTcpSocket socketObs;
+
+  socketObs.connectToHost("127.0.0.1", port);
+  if (!socketObs.waitForConnected(10000)) {
+    cerr << "socketObs: not connected on port " << port << endl;
+    exit(1);
+  }
+
+  cout.setf(ios::fixed);
 
   // Receive Data
   // ------------
+  const char begObs[] = "BEGOBS";
   const char begEpoch[] = "BEGEPOCH";
   const char endEpoch[] = "ENDEPOCH";
+  const unsigned begObsNBytes   = sizeof(begObs) - 1;
   const unsigned begEpochNBytes = sizeof(begEpoch) - 1;
   const unsigned endEpochNBytes = sizeof(endEpoch) - 1;
 
@@ -77,8 +82,8 @@ int main(int /* argc */, char** /* argv */) {
 
   while (true) {
     if (socketObs.state() != QAbstractSocket::ConnectedState) {
-      cout << "socketObs: disconnected" << endl;
-      exit(0);
+      cerr << "socketObs: disconnected" << endl;
+      exit(1);
     }
 
     if ( socketObs.bytesAvailable() ) {
@@ -93,7 +98,7 @@ int main(int /* argc */, char** /* argv */) {
         }
         else {
           buffer.remove(i1, begEpochNBytes);
-          outObs << endl;
+          cout << endl;
         }
       }
       for (;;) {
@@ -103,6 +108,15 @@ int main(int /* argc */, char** /* argv */) {
         }
         else {
           buffer.remove(i2, endEpochNBytes);
+        }
+      }
+      for (;;) {
+        int i3 = buffer.indexOf(begObs);
+        if (i3 == -1) {
+          break;
+        }
+        else {
+          buffer.remove(i3, begObsNBytes);
         }
       }
 
@@ -116,20 +130,20 @@ int main(int /* argc */, char** /* argv */) {
 
         obs = (t_obsInternal*) (buffer.left(obsSize).data());
 
-        outObs << obs->StatID                                 << " "
-               << obs->satSys << obs->satNum                   << " "
-               << obs->GPSWeek                                << " "
-               << qSetRealNumberPrecision(2) << obs->GPSWeeks << " "
-               << qSetRealNumberPrecision(4) << obs->C1       << " "
-               << qSetRealNumberPrecision(4) << obs->C2       << " "
-               << qSetRealNumberPrecision(4) << obs->P1       << " "
-               << qSetRealNumberPrecision(4) << obs->P2       << " "
-               << qSetRealNumberPrecision(4) << obs->L1       << " "
-               << qSetRealNumberPrecision(4) << obs->L2       << " "
-               << qSetRealNumberPrecision(4) << obs->S1       << " "
-               << qSetRealNumberPrecision(4) << obs->S2       << " "
-               <<                               obs->SNR1     << " "
-               <<                               obs->SNR2     << endl;
+        cout << obs->StatID                      << " "
+             << obs->satSys << obs->satNum       << " "
+             << obs->GPSWeek                     << " "
+             << setprecision(2) << obs->GPSWeeks << " "
+             << setprecision(4) << obs->C1       << " "
+             << setprecision(4) << obs->C2       << " "
+             << setprecision(4) << obs->P1       << " "
+             << setprecision(4) << obs->P2       << " "
+             << setprecision(4) << obs->L1       << " "
+             << setprecision(4) << obs->L2       << " "
+             << setprecision(4) << obs->S1       << " "
+             << setprecision(4) << obs->S2       << " "
+             <<                    obs->SNR1     << " "
+             <<                    obs->SNR2     << endl;
 
         buffer.remove(0,obsSize);
       }
