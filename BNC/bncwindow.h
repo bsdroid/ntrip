@@ -101,6 +101,7 @@
     QLineEdit* _proxyPortLineEdit;
     QLineEdit* _outFileLineEdit;
     QLineEdit* _outPortLineEdit;
+    QLineEdit* _outUPortLineEdit;
     QLineEdit* _outEphPortLineEdit;
     QLineEdit* _corrPortLineEdit;
     QLineEdit* _rnxPathLineEdit;

@@ -86,6 +86,18 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
     _sockets = 0;
   }
 
+  int uPort = settings.value("outUPort").toInt();
+  if (uPort != 0) {
+    _uServer = new QTcpServer;
+    _uServer->listen(QHostAddress::Any, uPort);
+    connect(_uServer, SIGNAL(newConnection()), this, SLOT(slotNewUConnection()));
+    _uSockets = new QList<QTcpSocket*>;
+  }
+  else {
+    _uServer  = 0;
+    _uSockets = 0;
+  }
+
   _epochs = new QMultiMap<long, p_obs>;
 
   _lastDumpSec   = 0; 
@@ -110,6 +122,8 @@ bncCaster::~bncCaster() {
   delete _outFile;
   delete _server;
   delete _sockets;
+  delete _uServer;
+  delete _uSockets;
   if (_epochs) {
     QListIterator<p_obs> it(_epochs->values());
     while (it.hasNext()) {
@@ -135,6 +149,36 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
   strncpy(obs->_o.StatID, staID.constData(),sizeof(obs->_o.StatID));
   obs->_o.StatID[sizeof(obs->_o.StatID)-1] = '\0';
         
+  const char begObs[] = "BEGOBS";
+  const int begObsNBytes = sizeof(begObs) - 1;
+
+  // Output into the socket
+  // ----------------------
+  if (_uSockets) {
+    QMutableListIterator<QTcpSocket*> is(*_uSockets);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->state() == QAbstractSocket::ConnectedState) {
+        bool ok = true;
+        if (myWrite(sock, begObs, begObsNBytes) != begObsNBytes) {
+          ok = false;
+        }
+        int numBytes = sizeof(obs->_o); 
+        if (myWrite(sock, (const char*)(&obs->_o), numBytes) != numBytes) {
+          ok = false;
+        }
+        if (!ok) {
+          delete sock;
+          is.remove();
+        }
+      }
+      else if (sock->state() != QAbstractSocket::ConnectingState) {
+        delete sock;
+        is.remove();
+      }
+    }
+  }
+
   // First time, set the _lastDumpSec immediately
   // --------------------------------------------
   if (_lastDumpSec == 0) {
@@ -174,6 +218,12 @@ void bncCaster::slotNewConnection() {
   _sockets->push_back( _server->nextPendingConnection() );
   emit( newMessage(QString("New Connection # %1")
                    .arg(_sockets->size()).toAscii()) );
+}
+
+void bncCaster::slotNewUConnection() {
+  _uSockets->push_back( _uServer->nextPendingConnection() );
+  emit( newMessage(QString("New Connection (usync) # %1")
+                   .arg(_uSockets->size()).toAscii()) );
 }
 
 // Add New Thread
@@ -272,23 +322,19 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
           QMutableListIterator<QTcpSocket*> is(*_sockets);
           while (is.hasNext()) {
             QTcpSocket* sock = is.next();
-            int myFlag = 0;
             if (sock->state() == QAbstractSocket::ConnectedState) {
               bool ok = true;
               if (first) {
                 if (myWrite(sock, begEpoch, begEpochNBytes) != begEpochNBytes) {
-                  myFlag = 1;
                   ok = false;
                 }
               }
               int numBytes = sizeof(obs->_o); 
               if (myWrite(sock, (const char*)(&obs->_o), numBytes) != numBytes) {
-                myFlag = 2;
                 ok = false;
               }
               if (!it.hasNext()) {
                 if (myWrite(sock, endEpoch, endEpochNBytes) != endEpochNBytes) {
-                  myFlag = 3;
                   ok = false;
                 }
               }
