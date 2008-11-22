@@ -44,8 +44,6 @@
 
 #include "RTCM/GPSDecoder.h"
 
-#include <QFile>
-#include <QTextStream>
 #include <QTcpSocket>
 
 using namespace std;
