@@ -262,10 +262,10 @@ bncWindow::bncWindow() {
   // ---------
   _proxyHostLineEdit->setWhatsThis(tr("<p>If you are running BNC within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you do not know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is sometimes not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNC outside your LAN on a network that has unobstructed connection to the Internet.</p>"));
   _proxyPortLineEdit->setWhatsThis(tr("<p>If you are running BNC within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you do not know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is sometimes not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNC outside your LAN on a network that has unobstructed connection to the Internet.</p>"));
-  _waitTimeSpinBox->setWhatsThis(tr("<p>When feeding a real-time GNSS engine waiting for input epoch by epoch, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds is recommended, depending on the latency of the incoming streams and the delay acceptable to your real-time GNSS engine or products.</p><p>Note that 'Wait for full epoch' does not effect the RINEX Observation file content. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX Observation files.</p>"));
+  _waitTimeSpinBox->setWhatsThis(tr("<p>When feeding a real-time GNSS engine waiting for synchronized input epoch by epoch, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds is recommended, depending on the latency of the incoming streams and the delay acceptable to your real-time GNSS engine or products.</p><p>Note that 'Wait for full epoch' does not effect the RINEX Observation file content. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX Observation files.</p>"));
   _outFileLineEdit->setWhatsThis(tr("Specify the full path to a file where synchronized observations are saved in plain ASCII format. Beware that the size of this file can rapidly increase depending on the number of incoming streams."));
   _outPortLineEdit->setWhatsThis(tr("BNC can produce synchronized observations in binary format on your local host through an IP port. Specify a port number here to activate this function."));
-  _outPortLineEdit->setWhatsThis(tr("Unsynchronized observations in binary format on your local host through an IP port. Specify a port number here to activate this function."));
+  _outUPortLineEdit->setWhatsThis(tr("BNC can produce usynchronized observations in binary format on your local host through an IP port. Specify a port number here to activate this function."));
   _outEphPortLineEdit->setWhatsThis(tr("BNC can produce ephemeris data in RINEX ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
   _corrPortLineEdit->setWhatsThis(tr("BNC can produce Broadcast Ephemeris Corrections on your local host through an IP port. Specify a port number here to activate this function."));
   _corrTimeSpinBox->setWhatsThis(tr("Concerning output through IP port, BNC drops Broadcast Ephemeris Corrections received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds is recommended, depending on the latency of the incoming correction stream(s) and the delay acceptable to your real-time application."));
@@ -312,7 +312,7 @@ bncWindow::bncWindow() {
   aogroup->addTab(ggroup,tr("General"));
   aogroup->addTab(ogroup,tr("RINEX Observations"));
   aogroup->addTab(egroup,tr("RINEX Ephemeris"));
-  aogroup->addTab(sgroup,tr("Synchronized Observations"));
+  aogroup->addTab(sgroup,tr("Feed Engine"));
   aogroup->addTab(cgroup,tr("Ephemeris Corrections"));
   aogroup->addTab(agroup,tr("Monitor"));
   aogroup->addTab(rgroup,tr("RTCM Scan"));
@@ -345,20 +345,37 @@ bncWindow::bncWindow() {
 
   QGridLayout* sLayout = new QGridLayout;
   sLayout->setColumnMinimumWidth(0,14*ww);
-  sLayout->addWidget(new QLabel("Port"),                          0, 0);
+  sLayout->addWidget(new QLabel("Port (synchronized)"),            0, 0);
   sLayout->addWidget(_outPortLineEdit,                            0, 1);
-  sLayout->addWidget(new QLabel("Port (Unsynchronized)"),         0, 2);
-  sLayout->addWidget(_outUPortLineEdit,                           0, 3);
-  sLayout->addWidget(new QLabel("Wait for full epoch"),           1, 0);
-  sLayout->addWidget(_waitTimeSpinBox,                            1, 1);
+  sLayout->addWidget(new QLabel("Wait for full epoch"),           0, 2, Qt::AlignRight);
+  sLayout->addWidget(_waitTimeSpinBox,                            0, 3, Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("Port (unsynchronized)"),         1, 0);
+  sLayout->addWidget(_outUPortLineEdit,                           1, 1);
   sLayout->addWidget(new QLabel("File (full path)"),              2, 0);
-  sLayout->addWidget(_outFileLineEdit,                            2, 1, 1, 3);
-  sLayout->addWidget(new QLabel("Sampling"),                      3, 0, Qt::AlignLeft);
-  sLayout->addWidget(_binSamplSpinBox,                            3, 1, Qt::AlignLeft);
-  sLayout->addWidget(new QLabel("Output synchronized observations epoch by epoch."),4,0,1,4,Qt::AlignLeft);
+  sLayout->addWidget(_outFileLineEdit,                            2, 1, 1, 30);
+  sLayout->addWidget(new QLabel("Sampling"),                      3, 0);
+  sLayout->addWidget(_binSamplSpinBox,                            3, 1,1,1, Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("Output decoded synchronized or unsynchronized observations epoch by epoch to feed an engine."),4,0,1,30);
   sLayout->addWidget(new QLabel("    "),5,0);
-  sLayout->addWidget(new QLabel("    "),6,0);
   sgroup->setLayout(sLayout);
+
+//QGridLayout* oLayout = new QGridLayout;
+//oLayout->setColumnMinimumWidth(0,14*ww);
+//oLayout->addWidget(new QLabel("Directory"),                     0, 0);
+//oLayout->addWidget(_rnxPathLineEdit,                            0, 1,1,12);
+//oLayout->addWidget(new QLabel("Interval"),                      1, 0);
+//oLayout->addWidget(_rnxIntrComboBox,                            1, 1);
+//oLayout->addWidget(new QLabel("Sampling"),                      1, 2, Qt::AlignRight);
+//oLayout->addWidget(_rnxSamplSpinBox,                            1, 3, Qt::AlignLeft);
+//oLayout->addWidget(new QLabel("Skeleton extension"),            2, 0);
+//oLayout->addWidget(_rnxSkelLineEdit,                            2, 1,1,1, Qt::AlignLeft);
+//oLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
+//oLayout->addWidget(_rnxScrpLineEdit,                            3, 1,1,12);
+//oLayout->addWidget(new QLabel("Version 3"),                     4, 0);
+//oLayout->addWidget(_rnxV3CheckBox,                              4, 1);
+//oLayout->addWidget(new QLabel("Saving RINEX observation files."),5,0,1,12, Qt::AlignLeft);
+//ogroup->setLayout(oLayout);
+ 
 
   QGridLayout* eLayout = new QGridLayout;
   eLayout->setColumnMinimumWidth(0,14*ww);

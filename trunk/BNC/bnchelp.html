@@ -35,7 +35,7 @@ Please ensure that you have installed the latest version of BNC available from <
 <ul>
 <li>retrieve real-time GNSS data streams available through NTRIP transport protocol,</li> 
 <li>generate high-rate RINEX Observation and Navigation files to support near real-time GNSS post-processing applications, and/or</li> 
-<li>generate ephemeris and synchronized observations epoch by epoch through an IP port to support real-time GNSS engines, and/or</li> 
+<li>generate ephemeris and synchronized or unsynchronized observations epoch by epoch through an IP port to support real-time GNSS engines, and/or</li> 
 <li>generate clock and orbit corrections to broadcast ephemeris through an IP port to support real-time Precise Point Positioning on GNSS rovers, and/or</li> 
 <li>generate synchronized clock and orbit corrections to broadcast ephemeris epoch by epoch through an IP port to support the combination of such streams as coming simultaneously from various correction providers, and/or</li> 
 <li>monitor the performance of a network of real-time GNSS data streams to generate advisory notes, and/or</li>
@@ -92,11 +92,12 @@ All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/
 &nbsp; &nbsp; &nbsp; 3.6.2. <a href=#ephint>Interval</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.3. <a href=#ephport>Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.4. <a href=#ephvers>Version</a><br>
-3.7. <a href=#syncout>Synchronized Observations</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.1. <a href=#syncport>Port</a><br>
+3.7. <a href=#syncout>Feed Engine</a><br>
+&nbsp; &nbsp; &nbsp; 3.7.1. <a href=#syncport>Port (synchronized)</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.2. <a href=#syncwait>Wait for Full Epoch</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.3. <a href=#syncfile>File</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.4. <a href=#syncsample>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; 3.7.3. <a href=#syncuport>Port (unsynchronized)</a><br>
+&nbsp; &nbsp; &nbsp; 3.7.4. <a href=#syncfile>File</a><br>
+&nbsp; &nbsp; &nbsp; 3.7.5. <a href=#syncsample>Sampling</a><br>
 3.8. <a href=#correct>Ephemeris Corrections</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.1. <a href=#corrdir>Directory</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.2. <a href=#corrint>Interval</a><br>
@@ -343,17 +344,17 @@ Default format for RINEX Navigation files containing broadcast ephemeris is RINE
 Note that this does not concern the broadcast ephemeris output throug IP port which is always in RINEX Version 3 format.
 </p> 
 
-<p><a name="syncout"><h4>3.7. Synchronized Observations</h4></p>
+<p><a name="syncout"><h4>3.7. Feed Engine</h4></p>
 <p>
-BNC can generate synchronized epoch by epoch observations from all stations and satellites. The output can be in either a plain ASCII format and/or a binary format. It comprises the following observations where available:</p>
+BNC can generate synchronized or unsynchronized observations epoch by epoch from all stations and satellites to feed a real-time GNSS engine. The output can be produced in a binary format through an IP port and/or a plain ASCII format to save the observations in a local file. It comprises the following observations where available:</p>
 <p>
-StatID, SVPRN, GPSWeek, GPSWeeks, C1, C2, P1, P2, L1, L2, S1, S2, SNR1, SNR2
+StatID, SVPRN, GPSWeek, GPSWeeks, C1, C2, P1, P2, L1, L2, slip__cnt_L1, slip__cnt_L2, lock__timei_L1, lock__timei_L2, S1, S2, SNR1, SNR2
 </p>
 <p>
-Note that SNR stands for the signal-to-noise ratio 'S' mapped to integer numbers 1 to 9. In case an observation is not available, its value is set to zero '0.000'.
+Note that slip_cnt stands for the cumulative loss of continuity indicator, lock_timei for the lock time indicator, and SNR for the signal-to-noise ratio 'S' mapped to integer numbers 1 to 9. In case an observation is not available, its value is set to zero '0.000'. Loss of continuity indicator and lock time indicator are set to nedative values if undefined.
 </p>
 
-<p><a name="syncport"><h4>3.7.1 Port - optional</h4></p>
+<p><a name="syncport"><h4>3.7.1 Port (synchronized) - optional</h4></p>
 <p>
 BNC can produce synchronized observations in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary output is generated.</p>
 <p>The binary output is a continuous stream in the following order:</p>
@@ -402,29 +403,40 @@ class t_obsInternal {
 </pre>
 
 <p>
-The source code for BNC comes with an example program called 'test_bnc_qt.cpp' that allows you to read BNC's binary observation output from the IP port (hard-coded to 1968) and save the observations in file 'obs.txt'.
+The source code for BNC comes with an example program called 'test_bnc_qt.cpp' that allows you to read BNC's binary observation output from the IP port and print the observations in a plain ASCII format on standard output.
 </p>
 <p>
-Note that any socket connection of an application to BNC's Synchronized Observations Port is recorded in the Log section on the bottom of the main window together with a connection counter, leading to log records like 'New Connection # 1'.
+Note that any socket connection of an application to BNC's synchronized observations 'Port' is recorded in the Log section on the bottom of the main window together with a connection counter, leading to log records like 'New Connection # 1'.
 </p>
 
-<p><a name="syncwait"><h4>3.7.2 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
+<p><a name="syncwait"><h4>3.7.2 Wait for Full Epoch - mandatory if 'Port (synchronized)' is set</h4></p>
 <p>
-When feeding a real-time GNSS engine waiting for input epoch by epoch, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming streams and the delay acceptable for your real-time GNSS product. Default value for 'Wait for full epoch' is 5 seconds.
+When feeding a real-time GNSS engine waiting for synchronized input epoch by epoch, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming streams and the delay acceptable for your real-time GNSS product. Default value for 'Wait for full epoch' is 5 seconds.
 </p>
 <p>
 Note that 'Wait for full epoch' does not effect the RINEX Observation file content. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX Observation files.
 </p> 
 
-<p><a name="syncfile"><h4>3.7.3 File - optional</h4></p>
+<p><a name="syncuport"><h4>3.7.3 Port (unsynchronized) - optional</h4></p>
+An application may want to receive unsynchronized observations from reference stations. If so, BNC can produce such unsynchronized observations in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary unsynchronized output is generated.</p>
+
 <p>
-Specifies the full path to a 'File' where synchronized observations are saved in plain ASCII format. The default value is an empty option field, meaning that no ASCII output file is created.
+The example program 'test_bnc_qt.cpp' allows you to read BNC's unsynchronized binary observation output from the IP port and print the observations in a plain ASCII format on standard output.
+</p>
+<p>
+Note that any socket connection of an application to BNC's unsynchronized observations 'Port' is recorded in the Log section on the bottom of the main window together with a connection counter, leading to log records like 'New Connection # 1'.
+</p>
+
+
+<p><a name="syncfile"><h4>3.7.4 File - optional</h4></p>
+<p>
+Specifies the full path to a 'File' where synchronized or unsynchronized observations are saved in plain ASCII format. The default value is an empty option field, meaning that no ASCII output file is created.
 </p>
 <p>
 Beware that the size of this file can rapidly increase depending on the number of incoming streams. This option is primarily meant for testing and evaluation.
 </p>
 
-<p><a name="syncsample"><h4>3.7.4 Sampling - mandatory if 'File' or 'Port' is set</h4></p>
+<p><a name="syncsample"><h4>3.7.5 Sampling - mandatory if 'File' or 'Port' is set</h4></p>
 <p>
 Select the observation output sampling interval in seconds. A value of zero '0' tells BNC to send/store all received epochs. This is the default value.
 <p>
@@ -811,7 +823,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 <tr><td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td><td>[Add] Source code published.
 <tr><td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td><td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td></tr>
 <tr><td>Apr 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Handle ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Monitor stream failure/recovery and latency<br> [Mod] Redesign of main window<br> [Bug] Freezing of About window on Mac systems<br> [Bug] Fixed problem with PRN 32 in RTCMv2 decoder<br> [Bug] Fix for Trimble 4000SSI receivers in RTCMv2 decoder<br> [Mod] Major revision of input buffer in RTCMv2 decoder</td></tr>
-<tr><td>Nov 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td><td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCMv3 decoder for clock and orbit corrections<br>[Add] Check RTCMv3 streams for incoming message types<br> [Add] Decode RTCMv2 message types 3, 20, 21, and 22<br> [Add] Loss of lock and lock time indicator<br> [Bug] Rounding error in RTCMv3 decoder concerning GLONASS height<br> [Mod] Accept GLONASS in RTCMv3 when transmitted first<br> [Add] Leap second 1 January 2009<br> [Add] Offline mode, read data from file<br> [Add] Output antenna descriptor, coordinates and excentricities from RTCMv3<br> [Add] Re-configuration on-the-fly <br>[Mod] Binary ouput of synchronized observations</td></tr>
+<tr><td>Nov 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td><td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCMv3 decoder for clock and orbit corrections<br>[Add] Check RTCMv3 streams for incoming message types<br> [Add] Decode RTCMv2 message types 3, 20, 21, and 22<br> [Add] Loss of lock and lock time indicator<br> [Bug] Rounding error in RTCMv3 decoder concerning GLONASS height<br> [Mod] Accept GLONASS in RTCMv3 when transmitted first<br> [Add] Leap second 1 January 2009<br> [Add] Offline mode, read data from file<br> [Add] Output antenna descriptor, coordinates and excentricities from RTCMv3<br> [Add] Re-configuration on-the-fly <br>[Mod] Binary ouput of synchronized observations <br> [Add] Binary output of unsynchronized observations</td></tr>
 </table>
 </p>
 
@@ -1019,6 +1031,7 @@ onTheFlyInterval=1 day
 outEphPort=2102
 outFile=/home/user/ascii
 outPort=2101
+outUPort=
 perfIntr=
 proxyHost=proxyhost
 proxyPort=8001
