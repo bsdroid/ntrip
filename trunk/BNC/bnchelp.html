@@ -348,7 +348,7 @@ Note that this does not concern the broadcast ephemeris output throug IP port wh
 <p>
 BNC can generate synchronized or unsynchronized observations epoch by epoch from all stations and satellites to feed a real-time GNSS engine. The output can be produced in a binary format through an IP port and/or a plain ASCII format to save the observations in a local file. It comprises the following observations where available:</p>
 <p>
-StatID, SVPRN, GPSWeek, GPSWeeks, C1, C2, P1, P2, L1, L2, slip__cnt_L1, slip__cnt_L2, lock__timei_L1, lock__timei_L2, S1, S2, SNR1, SNR2
+StatID, SVPRN, GPSWeek, GPSWeeks, C1, C2, P1, P2, L1, L2, slip_cnt_L1, slip_cnt_L2, lock_timei_L1, lock_timei_L2, S1, S2, SNR1, SNR2
 </p>
 <p>
 Note that slip_cnt stands for the cumulative loss of continuity indicator, lock_timei for the lock time indicator, and SNR for the signal-to-noise ratio 'S' mapped to integer numbers 1 to 9. In case an observation is not available, its value is set to zero '0.000'. Loss of continuity indicator and lock time indicator are set to nedative values if undefined.
