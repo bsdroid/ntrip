@@ -265,7 +265,7 @@ bncWindow::bncWindow() {
   _waitTimeSpinBox->setWhatsThis(tr("<p>When feeding a real-time GNSS engine waiting for synchronized input epoch by epoch, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds is recommended, depending on the latency of the incoming streams and the delay acceptable to your real-time GNSS engine or products.</p><p>Note that 'Wait for full epoch' does not effect the RINEX Observation file content. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX Observation files.</p>"));
   _outFileLineEdit->setWhatsThis(tr("Specify the full path to a file where synchronized observations are saved in plain ASCII format. Beware that the size of this file can rapidly increase depending on the number of incoming streams."));
   _outPortLineEdit->setWhatsThis(tr("BNC can produce synchronized observations in binary format on your local host through an IP port. Specify a port number here to activate this function."));
-  _outUPortLineEdit->setWhatsThis(tr("BNC can produce usynchronized observations in binary format on your local host through an IP port. Specify a port number here to activate this function."));
+  _outUPortLineEdit->setWhatsThis(tr("BNC can produce unsynchronized observations in binary format on your local host through an IP port. Specify a port number here to activate this function."));
   _outEphPortLineEdit->setWhatsThis(tr("BNC can produce ephemeris data in RINEX ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
   _corrPortLineEdit->setWhatsThis(tr("BNC can produce Broadcast Ephemeris Corrections on your local host through an IP port. Specify a port number here to activate this function."));
   _corrTimeSpinBox->setWhatsThis(tr("Concerning output through IP port, BNC drops Broadcast Ephemeris Corrections received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds is recommended, depending on the latency of the incoming correction stream(s) and the delay acceptable to your real-time application."));
@@ -312,8 +312,8 @@ bncWindow::bncWindow() {
   aogroup->addTab(ggroup,tr("General"));
   aogroup->addTab(ogroup,tr("RINEX Observations"));
   aogroup->addTab(egroup,tr("RINEX Ephemeris"));
-  aogroup->addTab(sgroup,tr("Feed Engine"));
   aogroup->addTab(cgroup,tr("Ephemeris Corrections"));
+  aogroup->addTab(sgroup,tr("Feed Engine"));
   aogroup->addTab(agroup,tr("Monitor"));
   aogroup->addTab(rgroup,tr("RTCM Scan"));
 
@@ -331,21 +331,20 @@ bncWindow::bncWindow() {
  
   QGridLayout* gLayout = new QGridLayout;
   gLayout->setColumnMinimumWidth(0,14*ww);
-  gLayout->addWidget(new QLabel("Logfile (full path)"), 0,0);
-  gLayout->addWidget(_logFileLineEdit,         0,1);
-  gLayout->addWidget(new QLabel("Append files")    ,1,0 );
-  gLayout->addWidget(_rnxAppendCheckBox,     1,1  );
-  gLayout->addWidget(new QLabel("Reread configuration")    ,2,0 );
-  gLayout->addWidget(_onTheFlyComboBox,     2,1  );
+  gLayout->addWidget(new QLabel("Logfile (full path)"),          0, 0);
+  gLayout->addWidget(_logFileLineEdit,                           0, 1);
+  gLayout->addWidget(new QLabel("Append files"),                 1, 0);
+  gLayout->addWidget(_rnxAppendCheckBox,                         1, 1);
+  gLayout->addWidget(new QLabel("Reread configuration"),         2, 0);
+  gLayout->addWidget(_onTheFlyComboBox,                          2, 1);
   gLayout->addWidget(new QLabel("General settings for logfile, file handling and configuration on-the-fly."),3, 0, 1, 2, Qt::AlignLeft);
   gLayout->addWidget(new QLabel("    "),4,0);
   gLayout->addWidget(new QLabel("    "),5,0);
-  gLayout->addWidget(new QLabel("    "),6,0);
   ggroup->setLayout(gLayout);
 
   QGridLayout* sLayout = new QGridLayout;
   sLayout->setColumnMinimumWidth(0,14*ww);
-  sLayout->addWidget(new QLabel("Port (synchronized)"),            0, 0);
+  sLayout->addWidget(new QLabel("Port (synchronized)"),           0, 0);
   sLayout->addWidget(_outPortLineEdit,                            0, 1);
   sLayout->addWidget(new QLabel("Wait for full epoch"),           0, 2, Qt::AlignRight);
   sLayout->addWidget(_waitTimeSpinBox,                            0, 3, Qt::AlignLeft);
@@ -354,28 +353,10 @@ bncWindow::bncWindow() {
   sLayout->addWidget(new QLabel("File (full path)"),              2, 0);
   sLayout->addWidget(_outFileLineEdit,                            2, 1, 1, 30);
   sLayout->addWidget(new QLabel("Sampling"),                      3, 0);
-  sLayout->addWidget(_binSamplSpinBox,                            3, 1,1,1, Qt::AlignLeft);
-  sLayout->addWidget(new QLabel("Output decoded synchronized or unsynchronized observations epoch by epoch to feed an engine."),4,0,1,30);
+  sLayout->addWidget(_binSamplSpinBox,                            3, 1, Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("Output decoded observations in binary format to feed a real-time GNSS engine."),4,0,1,30);
   sLayout->addWidget(new QLabel("    "),5,0);
   sgroup->setLayout(sLayout);
-
-//QGridLayout* oLayout = new QGridLayout;
-//oLayout->setColumnMinimumWidth(0,14*ww);
-//oLayout->addWidget(new QLabel("Directory"),                     0, 0);
-//oLayout->addWidget(_rnxPathLineEdit,                            0, 1,1,12);
-//oLayout->addWidget(new QLabel("Interval"),                      1, 0);
-//oLayout->addWidget(_rnxIntrComboBox,                            1, 1);
-//oLayout->addWidget(new QLabel("Sampling"),                      1, 2, Qt::AlignRight);
-//oLayout->addWidget(_rnxSamplSpinBox,                            1, 3, Qt::AlignLeft);
-//oLayout->addWidget(new QLabel("Skeleton extension"),            2, 0);
-//oLayout->addWidget(_rnxSkelLineEdit,                            2, 1,1,1, Qt::AlignLeft);
-//oLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
-//oLayout->addWidget(_rnxScrpLineEdit,                            3, 1,1,12);
-//oLayout->addWidget(new QLabel("Version 3"),                     4, 0);
-//oLayout->addWidget(_rnxV3CheckBox,                              4, 1);
-//oLayout->addWidget(new QLabel("Saving RINEX observation files."),5,0,1,12, Qt::AlignLeft);
-//ogroup->setLayout(oLayout);
- 
 
   QGridLayout* eLayout = new QGridLayout;
   eLayout->setColumnMinimumWidth(0,14*ww);
@@ -410,13 +391,13 @@ bncWindow::bncWindow() {
 
   QGridLayout* rLayout = new QGridLayout;
   rLayout->setColumnMinimumWidth(0,14*ww);
-  rLayout->addWidget(new QLabel("Mountpoint"),0,0, Qt::AlignLeft);
-  rLayout->addWidget(_messTypesLineEdit,0,1,1,15,Qt::AlignLeft);
+  rLayout->addWidget(new QLabel("Mountpoint"),                    0, 0, Qt::AlignLeft);
+  rLayout->addWidget(_messTypesLineEdit,                          0, 1,1,15,Qt::AlignLeft);
   rLayout->addWidget(new QLabel("Scan RTCM Version 3.x stream to log numbers of message types and antenna information."),1, 0, 1, 4, Qt::AlignLeft);
-  rLayout->addWidget(new QLabel("    "),2,0);
-  rLayout->addWidget(new QLabel("    "),3,0);
-  rLayout->addWidget(new QLabel("    "),4,0);
-  rLayout->addWidget(new QLabel("    "),5,0);
+  rLayout->addWidget(new QLabel("    "),                          2, 0);
+  rLayout->addWidget(new QLabel("    "),                          3, 0);
+  rLayout->addWidget(new QLabel("    "),                          4, 0);
+  rLayout->addWidget(new QLabel("    "),                          5, 0);
   rgroup->setLayout(rLayout);
 
   QGridLayout* oLayout = new QGridLayout;
