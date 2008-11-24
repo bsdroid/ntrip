@@ -138,6 +138,8 @@ int main(int argc, char** argv) {
              << setprecision(4) << obs->P2       << " "
              << setprecision(4) << obs->L1       << " "
              << setprecision(4) << obs->L2       << " "
+             <<                    obs->slip_cnt_L1 << " "
+             <<                    obs->slip_cnt_L2 << " "
              << setprecision(4) << obs->S1       << " "
              << setprecision(4) << obs->S2       << " "
              <<                    obs->SNR1     << " "
