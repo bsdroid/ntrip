@@ -617,22 +617,33 @@ Select a 'Performance log' interval to activate this function or select the empt
 
 <p><a name="messtypes"><h4>3.10. RTCM Scan</h4></p>
 <p>
-When configuring a GNSS receiver for RTCM stream generation, the setup interface may not provide details about RTCM message types. As reliable information concerning stream contents should be available i.e. for NTRIP broadcaster operators to maintain the broadcaster's sourcetable, BNC allows to scan RTCM Version 3.x streams for incoming message types and printout some of the contained meta-data. The idea for this option arose from 'InspectRTCM', a comprehensive stream analyzing tool written by D. Stoecker.
+When configuring a GNSS receiver for RTCM stream generation, the setup interface may not provide details about RTCM message types. As reliable information concerning stream contents should be available i.e. for NTRIP broadcaster operators to maintain the broadcaster's sourcetable, BNC allows to scan RTCM streams for incoming message types and printout some of the contained meta-data. The idea for this option arose from 'InspectRTCM', a comprehensive stream analyzing tool written by D. Stoecker.
 </p>
 
 <p><a name="messmount"><h4>3.10.1 Mountpoint - optional</h4></p>
 <p>
-Specify the mountpoint of an RTCM Version 3.x stream to scan it and log
+Specify the mountpoint of an RTCM Version 3.x stream to scan it and log all contained
 </p>
 <ul>
 <li>numbers of incoming message types</li>
 <li>Antenna Reference Point (ARP) coordinates in ITRF reference system</li>
-<li>antenna height</li>
+<li>antenna height above ARP</li>
 <li>antenna descriptor.</li>
 </ul>
-<p>Logged time stamps refer to message reception time and allow to understand repetition rates. Enter 'ALL' if you want to log this information from all configured streams. Beware that the size of the logfile can rapidly increase depending on the number of incoming RTCM Version 3.x streams. 
 </p>
-<p>This option is primarily meant for testing and evaluation. Use it to figure out what exactly is produced by a specific GNSS receiver's configuration. An empty option field (default) means that you don't want BNC to print the message type numbers carried in RTCM Version 3.x streams.
+<p>
+Specify the mountpoint of an RTCM Version 2.x stream and the 'RINEX Observations' directory to scan the stream and log the very first incoming
+</p>
+<ul>
+<li>Antenna Reference Point (ARP) coordinates</li>
+<li>ECEF corrections to ARP for the L1 Antenna Phase Center (APC)</li>
+<li>ECEF corrections to ARP for the L2 Antenna Phase Center (APC).</li>
+</ul>
+<p>
+
+<p>Logged time stamps refer to message reception time and - in case of an RTCM Version 3.x stream - allow to understand repetition rates. Enter 'ALL' if you want to log this information from all configured streams. Beware that the size of the logfile can rapidly increase depending on the number of incoming RTCM streams. 
+</p>
+<p>This option is primarily meant for testing and evaluation. Use it to figure out what exactly is produced by a specific GNSS receiver's configuration. An empty option field (default) means that you don't want BNC to print the message type numbers and antenna information carried in RTCM streams.
 </p>
 
 <p><a name="mountpoints"><h4>3.11. Mountpoints</h4></p>
