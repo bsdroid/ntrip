@@ -292,7 +292,7 @@ bncWindow::bncWindow() {
   _log->setWhatsThis(tr("Records of BNC's activities are shown in the Log section. The message log covers the communication status between BNC and the NTRIP broadcaster as well as any problems that occur in the communication link, stream availability, stream delay, stream conversion etc."));
   _ephV3CheckBox->setWhatsThis(tr("The default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format."));
   _rnxV3CheckBox->setWhatsThis(tr("The default format for RINEX Observation files is RINEX Version 2.11. Select 'Version 3' if you want to save the observations in RINEX Version 3 format."));
-  _messTypesLineEdit->setWhatsThis(tr("<p>Specify the mountpoint of an RTCM Version 3.x stream to log the numbers of incoming message types as well as contained antenna coordinates and antenna hight.</p><p>An empty option field (default) means that you don't want BNC to log such information.</p>"));
+  _messTypesLineEdit->setWhatsThis(tr("<p>Specify the mountpoint of an RTCM Version 3.x stream to log the numbers of incoming message types as well as contained antenna coordinates and antenna height.</p><p>Specify the mountpoint of an RTCM Version 2.x stream to log the antenna coordinates and the corrections to L1 and L2 antenna phase centers. Setting the 'RINEX Observations' directory is a precondition.</p><p>An empty option field (default) means that you don't want BNC to log such information.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -354,7 +354,7 @@ bncWindow::bncWindow() {
   sLayout->addWidget(_outFileLineEdit,                            2, 1, 1, 30);
   sLayout->addWidget(new QLabel("Sampling"),                      3, 0);
   sLayout->addWidget(_binSamplSpinBox,                            3, 1, Qt::AlignLeft);
-  sLayout->addWidget(new QLabel("Output decoded observations in binary format to feed a real-time GNSS engine."),4,0,1,30);
+  sLayout->addWidget(new QLabel("Output decoded observations in a binary format to feed a real-time GNSS engine."),4,0,1,30);
   sLayout->addWidget(new QLabel("    "),5,0);
   sgroup->setLayout(sLayout);
 
@@ -393,7 +393,7 @@ bncWindow::bncWindow() {
   rLayout->setColumnMinimumWidth(0,14*ww);
   rLayout->addWidget(new QLabel("Mountpoint"),                    0, 0, Qt::AlignLeft);
   rLayout->addWidget(_messTypesLineEdit,                          0, 1,1,15,Qt::AlignLeft);
-  rLayout->addWidget(new QLabel("Scan RTCM Version 3.x stream to log numbers of message types and antenna information."),1, 0, 1, 4, Qt::AlignLeft);
+  rLayout->addWidget(new QLabel("Scan RTCM stream to log numbers of message types and antenna information."),1, 0, 1, 4, Qt::AlignLeft);
   rLayout->addWidget(new QLabel("    "),                          2, 0);
   rLayout->addWidget(new QLabel("    "),                          3, 0);
   rLayout->addWidget(new QLabel("    "),                          4, 0);

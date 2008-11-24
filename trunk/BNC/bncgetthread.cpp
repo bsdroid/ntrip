@@ -764,22 +764,28 @@ void bncGetThread::run() {
                                        dL1[0], dL1[1], dL1[2], 
                                        dL2[0], dL2[1], dL2[2]) == success ) {
 
-                ostringstream msg2; msg2.setf(ios::fixed);
-                msg2 << "station coordinates " << staID().data()
-                     << ' ' << setw(14) << setprecision(5) << stax
-                     << ' ' << setw(14) << setprecision(5) << stay
-                     << ' ' << setw(14) << setprecision(5) << staz
-                     << " L1 "
-                     << ' ' << setw(8)  << setprecision(5) << dL1[0]
-                     << ' ' << setw(8)  << setprecision(5) << dL1[1]
-                     << ' ' << setw(8)  << setprecision(5) << dL1[2]
-                     << " L2 "
-                     << ' ' << setw(8)  << setprecision(5) << dL2[0]
-                     << ' ' << setw(8)  << setprecision(5) << dL2[1]
-                     << ' ' << setw(8)  << setprecision(5) << dL2[2] 
-                     << ends;
+                if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
+                  QString ant1;
+                  ant1 =  QString("%1 ").arg(stax,0,'f',4);
+                  emit(newMessage(_staID + ": ARP X " + ant1.toAscii() + "m" ));
+                  ant1 =  QString("%1 ").arg(stay,0,'f',4);
+                  emit(newMessage(_staID + ": ARP Y " + ant1.toAscii() + "m" ));
+                  ant1 =  QString("%1 ").arg(staz,0,'f',4);
+                  emit(newMessage(_staID + ": ARP Z " + ant1.toAscii() + "m" ));
+                  ant1 =  QString("%1 ").arg(dL1[0],0,'f',4);
+                  emit(newMessage(_staID + ": L1 APC DX " + ant1.toAscii() + "m" ));
+                  ant1 =  QString("%1 ").arg(dL1[1],0,'f',4);
+                  emit(newMessage(_staID + ": L1 APC DY " + ant1.toAscii() + "m" ));
+                  ant1 =  QString("%1 ").arg(dL1[2],0,'f',4);
+                  emit(newMessage(_staID + ": L1 APC DZ " + ant1.toAscii() + "m" ));
+                  ant1 =  QString("%1 ").arg(dL2[0],0,'f',4);
+                  emit(newMessage(_staID + ": L2 APC DX " + ant1.toAscii() + "m" ));
+                  ant1 =  QString("%1 ").arg(dL2[1],0,'f',4);
+                  emit(newMessage(_staID + ": L2 APC DY " + ant1.toAscii() + "m" ));
+                  ant1 =  QString("%1 ").arg(dL2[2],0,'f',4);
+                  emit(newMessage(_staID + ": L2 APC DZ " + ant1.toAscii() + "m" ));
+                }
 	    	_rnx_set_position = true;
-                emit newMessage(QByteArray(msg2.str().c_str()));
               }
             }  
 
