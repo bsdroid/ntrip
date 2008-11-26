@@ -202,12 +202,13 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           }
         }
       }
-      _coDecoder->_epochList.clear();
+//    _coDecoder->_epochList.clear();
 
       if (_mode == unknown) {
         _mode = corrections;
       }
     }
+    _coDecoder->_epochList.clear();
   }
 
   // Remaining part decodes the Observations
