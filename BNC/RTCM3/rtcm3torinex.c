@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.18 2008/11/10 18:01:41 weber Exp $
+  $Id: rtcm3torinex.c,v 1.34 2008/11/26 10:14:46 stoecker Exp $
   Copyright (C) 2005-2008 by Dirk Stöcker <stoecker@alberding.eu>
 
   This software is a complete NTRIP-RTCM3 to RINEX converter as well as
@@ -50,7 +50,7 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.18 $";
+static char revisionstr[] = "$Revision: 1.34 $";
 
 #ifndef COMPILEDATE
 #define COMPILEDATE " built " __DATE__
@@ -176,6 +176,16 @@ static int GetMessage(struct RTCM3ParserData *handle)
 
 #define SKIPBITS(b) { LOADBITS(b) numbits -= (b); }
 
+/* extract byte-aligned byte from data stream,
+   b = variable to store size, s = variable to store string pointer */
+#define GETSTRING(b, s) \
+{ \
+  b = *(data++); \
+  s = (char *) data; \
+  data += b; \
+  size -= b+1; \
+}
+
 struct leapseconds { /* specify the day of leap second */
   int day;        /* this is the day, where 23:59:59 exists 2 times */
   int month;      /* not the next day! */
@@ -272,7 +282,11 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
 {
   int ret=0;
 
+#ifdef NO_RTCM3_MAIN
+  if(GetMessage(handle)) /* don't repeat */
+#else
   while(!ret && GetMessage(handle))
+#endif /* NO_RTCM3_MAIN */
   {
     /* using 64 bit integer types, as it is much easier than handling
     the long datatypes in 32 bit */
@@ -283,104 +297,37 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
 
     GETBITS(type,12)
 #ifdef NO_RTCM3_MAIN
-    handle->typeList[handle->typeSize] = type;           /* RTCM message types */
-    if(handle->typeSize < 100) {handle->typeSize += 1;}  /* RTCM message types */
+    handle->blocktype = type;
 #endif /* NO_RTCM3_MAIN */
     switch(type)
     {
 #ifdef NO_RTCM3_MAIN
-    case 1005:
+    default:
+      ret = type;
+      break;
+    case 1005: case 1006:
       {
-        double antX, antY, antZ; /* Antenna XYZ */
         SKIPBITS(22)
-        GETBITSSIGN(antX, 38)
+        GETBITSSIGN(handle->antX, 38)
         SKIPBITS(2)
-        GETBITSSIGN(antY, 38)
+        GETBITSSIGN(handle->antY, 38)
         SKIPBITS(2)
-        GETBITSSIGN(antZ, 38)
-        handle->antList5[handle->antSize5 + 0] = antX;
-        handle->antList5[handle->antSize5 + 1] = antY;
-        handle->antList5[handle->antSize5 + 2] = antZ;
-        if(handle->antSize5 < 100 - 5 ) {handle->antSize5 += 3;}
-        ret = 1005;
+        GETBITSSIGN(handle->antZ, 38)
+        if(type == 1006)
+          GETBITS(handle->antH, 16)
+        ret = type;
       }
       break;
-    case 1006:
+    case 1007: case 1008: case 1033:
       {
-        double antX, antY, antZ, antH; /* Antenna XYZ-H */
-        SKIPBITS(22)
-        GETBITSSIGN(antX, 38)
-        SKIPBITS(2)
-        GETBITSSIGN(antY, 38)
-        SKIPBITS(2)
-        GETBITSSIGN(antZ, 38)
-        GETBITS(    antH, 16)
-        handle->antList6[handle->antSize6 + 0] = antX;
-        handle->antList6[handle->antSize6 + 1] = antY;
-        handle->antList6[handle->antSize6 + 2] = antZ;
-        handle->antList6[handle->antSize6 + 3] = antH;
-        if(handle->antSize6 < 100 - 6 ) {handle->antSize6 += 4;}
-        ret = 1006;
-      }
-      break;
-    case 1007:
-      {
-        char *antC = '\0'; /* Antenna Descriptor */
-        char *antS = '\0';
-        antC = (char*) malloc(32);   
-        antS  = (char*) malloc(32);   
-        uint32_t antN;
-        uint32_t antD;
-        uint32_t jj;
+        char *antenna;
+        int antnum;
 
         SKIPBITS(12)
-        GETBITS(antN, 8)
-        if ((antN>0) && (antN<32)) {
-          for (jj = 0; jj < antN; jj++) {
-            GETBITS(antD, 8)
-            sprintf(antS,"%c",antD);
-            if (jj<1) {
-              strcpy(antC,antS);
-            } else {
-              strcat(antC,antS);
-            }
-          }
-          handle->antType[handle->antSize] = antC;
-          if(handle->antSize < 100) {handle->antSize += 1;}
-        }
-        free(antC);
-        free(antS);
-        ret = 1007;
-      }
-      break;
-    case 1008:
-      {
-        char *antC = '\0'; /* Antenna Descriptor */
-        char *antS = '\0';
-        antC = (char*) malloc(32);   
-        antS  = (char*) malloc(32);   
-        uint32_t antN;
-        uint32_t antD;
-        uint32_t jj;
-
-        SKIPBITS(12)
-        GETBITS(antN, 8)
-        if ((antN>0) && (antN<32)) {
-          for (jj = 0; jj < antN; jj++) {
-            GETBITS(antD, 8)
-            sprintf(antS,"%c",antD);
-            if (jj<1) {
-              strcpy(antC,antS);
-            } else {
-              strcat(antC,antS);
-            }
-          }
-          handle->antType[handle->antSize] = antC;
-          if(handle->antSize < 100) {handle->antSize += 1;}
-        }
-        free(antC);
-        free(antS);
-        ret = 1008;
+        GETSTRING(antnum,antenna)
+        memcpy(handle->antenna, antenna, antnum);
+        handle->antenna[antnum] = 0;
+        ret = type;
       }
       break;
 #endif /* NO_RTCM3_MAIN */
@@ -1717,7 +1664,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 }
 
 #ifndef NO_RTCM3_MAIN
-static char datestr[]     = "$Date: 2008/11/10 18:01:41 $";
+static char datestr[]     = "$Date: 2008/11/26 10:14:46 $";
 
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"

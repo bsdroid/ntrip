@@ -1,6 +1,7 @@
 #include <math.h>
 #include <sstream>
 #include <iomanip>
+#include <cstring>
 
 #include "ephemeris.h"
 #include "timeutils.h"

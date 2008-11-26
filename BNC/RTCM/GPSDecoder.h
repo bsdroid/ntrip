@@ -30,6 +30,7 @@
 #include <string>
 #include <QPointer>
 #include <QList>
+#include <QStringList>
 
 #include "bncconst.h"
 
@@ -137,7 +138,7 @@ class GPSDecoder {
   QList<p_obs> _obsList;
   QList<int> _typeList; // RTCMv3 message types
   QList<int> _epochList; // Broadcast corrections
-  QList<char*> _antType; // RTCMv3 antenna descriptor
+  QStringList _antType; // RTCMv3 antenna descriptor
   QList<double> _antList5; // RTCMv3 antenna XYZ
   QList<double> _antList6; // RTCMv3 antenna XYZ & H
 };

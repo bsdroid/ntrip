@@ -219,44 +219,41 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
       if (_Parser.MessageSize >= _Parser.NeedBytes) {
 
-        // RTCMv3 message types
-        // --------------------
-        for (int kk = 0; kk < _Parser.typeSize; kk++) {
-          _typeList.push_back(_Parser.typeList[kk]);
-        }
-        _Parser.typeSize = 0;
-
-        // RTCMv3 antenna descriptor
-        // -------------------------
-        for (int kk = 0; kk < _Parser.antSize; kk++) {
-          _antType.push_back(_Parser.antType[kk]);
-        }
-        _Parser.antSize = 0;
-
-        // RTCMv3 antenna XYZ
-        // ------------------
-        for (int kk = 0; kk < _Parser.antSize5; kk += 3) {
-          _antList5.push_back(_Parser.antList5[kk + 0]);
-          _antList5.push_back(_Parser.antList5[kk + 1]);
-          _antList5.push_back(_Parser.antList5[kk + 2]);
-        }
-        _Parser.antSize5 = 0;
-
-        // RTCMv3 antenna XYZ-H
-        // --------------------
-        for (int kk = 0; kk < _Parser.antSize6; kk += 4) {
-          _antList6.push_back(_Parser.antList6[kk + 0]);
-          _antList6.push_back(_Parser.antList6[kk + 1]);
-          _antList6.push_back(_Parser.antList6[kk + 2]);
-          _antList6.push_back(_Parser.antList6[kk + 3]);
-        }
-        _Parser.antSize6 = 0;
- 
         while(int rr = RTCM3Parser(&_Parser)) {
+
+          // RTCMv3 message types
+          // --------------------
+          _typeList.push_back(_Parser.blocktype);
+
+          // RTCMv3 antenna descriptor
+          // -------------------------
+          if(rr == 1007 || rr == 1008 || rr == 1033)
+          {
+            _antType.push_back(_Parser.antenna); /* correct ? */
+          }
+
+          // RTCMv3 antenna XYZ
+          // ------------------
+          else if(rr == 1005)
+          {
+            _antList5.push_back(_Parser.antX);
+            _antList5.push_back(_Parser.antY);
+            _antList5.push_back(_Parser.antZ);
+          }
+
+          // RTCMv3 antenna XYZ-H
+          // --------------------
+          else if(rr == 1006)
+          {
+            _antList6.push_back(_Parser.antX);
+            _antList6.push_back(_Parser.antY);
+            _antList6.push_back(_Parser.antZ);
+            _antList6.push_back(_Parser.antH);
+          }
 
           // GNSS Observations
           // -----------------
-          if (rr == 1 || rr == 2) {
+          else if (rr == 1 || rr == 2) {
             decoded = true;
     
             if (!_Parser.init) {
