@@ -818,7 +818,6 @@ void bncGetThread::run() {
               emit(newMessage(_staID + ": Received message type " + type.toAscii() ));
             }
           }
-          _decoder->_typeList.clear();
 
           // RTCMv3 antenna descriptor
           // -------------------------
@@ -829,7 +828,6 @@ void bncGetThread::run() {
               emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii() ));
             }
           }
-          _decoder->_antType.clear();
 
           // RTCMv3 antenna XYZ
           // ------------------
@@ -844,7 +842,6 @@ void bncGetThread::run() {
               emit(newMessage(_staID + ": ARP (ITRF) Z " + ant3.toAscii() + "m"));
             }
           }
-          _decoder->_antList5.clear();
 
           // RTCMv3 antenna XYZ-H
           // --------------------
@@ -861,8 +858,11 @@ void bncGetThread::run() {
               emit(newMessage(_staID + ": Antenna height above ARP "  + ant4.toAscii() + "m"));
             }
           }
-          _decoder->_antList6.clear();
         }
+        _decoder->_typeList.clear();
+        _decoder->_antType.clear();
+        _decoder->_antList5.clear();
+        _decoder->_antList6.clear();
       }
 
       // Timeout, reconnect
