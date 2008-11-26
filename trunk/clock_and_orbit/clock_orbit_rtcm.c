@@ -2,7 +2,7 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id$
+        Version:        $Id: clock_orbit_rtcm.c,v 1.4 2008/11/16 00:05:02 weber Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -84,6 +84,7 @@ modified variables are:
 
 #define SCALEADDBITS(a, b, c) ADDBITS(a, (int64_t)(b*c))
 
+#if 0
 #define DEBUGSCALEADDBITS(n, a, b, c) \
   { \
     int64_t x = b*c, z; \
@@ -94,6 +95,9 @@ modified variables are:
     c, b, x, y, z, x != z ? "OVERFLOW" : "OK"); \
   } \
   SCALEADDBITS(a,b,c)
+#else
+#define DEBUGSCALEADDBITS(n, a, b, c) SCALEADDBITS(a,b,c)
+#endif
 
 /* standard values */
 #define T_MESSAGE_NUMBER(a)              ADDBITS(12, a) /* DF002 */
@@ -490,6 +494,8 @@ const char *buffer, size_t size, int *bytesused)
   case COTYPE_GPSORBIT:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
@@ -516,6 +522,8 @@ const char *buffer, size_t size, int *bytesused)
   case COTYPE_GPSCLOCK:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
@@ -534,6 +542,8 @@ const char *buffer, size_t size, int *bytesused)
   case COTYPE_GPSCOMBINED:
     if(!co) return -5;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED6
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
