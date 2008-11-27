@@ -2,10 +2,7 @@ Todo's sorted by priority:
 
 BNC
 =========================
-(1) LM: Small memory leak in BNC, probably introduced through on-the-fly
-configuration, becomes difficult when running BNC continuously over weeks/months.
-
-(2) GW: Keep an eye on www.igs-ip.net/PENC0.
+(1) GW: Keep an eye on www.igs-ip.net/PENC0.
 Reason: Have seen 100% CPU. Dirk Stoecker says he has not seen
 this over a period of several days. He also says the reason
 could actually only be that the decoding function is called
@@ -14,7 +11,7 @@ GW 08-09-15: BNC again shows 100% CPU because of PENC0.
 Could it really be that the decoder is called although no new
 data available? Deleted PENC0 from the configuration.
 
-(3) ZL: Include GLONASS in RTCMv2 20/21 messages.
+(2) ZL: Include GLONASS in RTCMv2 20/21 messages.
 
 BNS 
 =========================
