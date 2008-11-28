@@ -420,14 +420,15 @@ bncWindow::bncWindow() {
   QGridLayout* cLayout = new QGridLayout;
   cLayout->setColumnMinimumWidth(0,14*ww);
   cLayout->addWidget(new QLabel("Directory"),                     0, 0);
-  cLayout->addWidget(_corrPathLineEdit,                           0, 1);
+  cLayout->addWidget(_corrPathLineEdit,                           0, 1,1,30);
   cLayout->addWidget(new QLabel("Interval"),                      1, 0);
   cLayout->addWidget(_corrIntrComboBox,                           1, 1);
   cLayout->addWidget(new QLabel("Port"),                          2, 0);
   cLayout->addWidget(_corrPortLineEdit,                           2, 1);
-  cLayout->addWidget(new QLabel("Wait for full epoch"),           3, 0);
-  cLayout->addWidget(_corrTimeSpinBox,                            3, 1);
-  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),4,0,1,2,Qt::AlignLeft);
+  cLayout->addWidget(new QLabel("Wait for full epoch"),           2, 2, Qt::AlignRight);
+  cLayout->addWidget(_corrTimeSpinBox,                            2, 3, Qt::AlignLeft);
+  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),3,0,1,30);
+  cLayout->addWidget(new QLabel("    "),4,0);
   cLayout->addWidget(new QLabel("    "),5,0);
   cgroup->setLayout(cLayout);
 
