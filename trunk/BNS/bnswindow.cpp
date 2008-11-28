@@ -184,7 +184,7 @@ bnsWindow::bnsWindow() {
   _refSys_1_ComboBox = new QComboBox;
   _refSys_1_ComboBox->setMaximumWidth(10*ww);
   _refSys_1_ComboBox->setEditable(false);
-  _refSys_1_ComboBox->addItems(QString("IGS05,ETRS89").split(","));
+  _refSys_1_ComboBox->addItems(QString("IGS05,ETRF2000").split(","));
   int ii = _refSys_1_ComboBox->findText(settings.value("refSys_1").toString());
   if (ii != -1) {
     _refSys_1_ComboBox->setCurrentIndex(ii);
@@ -193,7 +193,7 @@ bnsWindow::bnsWindow() {
   _refSys_2_ComboBox = new QComboBox;
   _refSys_2_ComboBox->setMaximumWidth(10*ww);
   _refSys_2_ComboBox->setEditable(false);
-  _refSys_2_ComboBox->addItems(QString("IGS05,ETRS89").split(","));
+  _refSys_2_ComboBox->addItems(QString("IGS05,ETRF2000").split(","));
   ii = _refSys_2_ComboBox->findText(settings.value("refSys_2").toString());
   if (ii != -1) {
     _refSys_2_ComboBox->setCurrentIndex(ii);
