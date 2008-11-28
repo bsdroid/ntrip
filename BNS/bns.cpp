@@ -490,14 +490,20 @@ void t_bns::slotMoveSocket(QThread* tt) {
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz) {
 
+  // Current epoch minus 2000.0 in years
+  // ------------------------------------
+  double dt = (GPSWeek - (1042.0+6.0/7.0)) / 365.2422 * 7.0;
+
   ColumnVector dx(3);
-  dx(1) =  0.054;
-  dx(2) =  0.051;
-  dx(3) = -0.048;
+  dx(1) =  0.0541 - dt * 0.0002;
+  dx(2) =  0.0502 + dt * 0.0001;
+  dx(3) = -0.0538 - dt * 0.0018;
+
   static const double arcSec = 180.0 * 3600.0 / M_PI;
-  static const double ox =  0.000081 / arcSec;
-  static const double oy =  0.000490 / arcSec;
-  static const double oz = -0.000792 / arcSec;
+
+  static const double ox = ( 0.000891 + dt * 0.000081) / arcSec;
+  static const double oy = ( 0.005390 + dt * 0.000490) / arcSec;
+  static const double oz = (-0.008712 - dt * 0.000792) / arcSec;
 
   Matrix rMat(3,3); rMat = 0.0;
   rMat(1,2) = -oz;
@@ -507,9 +513,6 @@ void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz) {
   rMat(3,1) = -oy;
   rMat(3,2) =  ox;
 
-  // Current epoch minus 1989.0 in years
-  // ------------------------------------
-  double dt = (GPSWeek - 469.0) / 365.2422 * 7.0;
 
-  xyz += dx + dt * rMat * xyz;
+  xyz += dx + rMat * xyz;
 }

@@ -52,7 +52,7 @@ t_bnscaster::t_bnscaster(const QString& mountpoint, const QString& outFileName,
   // Reference frame
   // ---------------
   _crdTrafo = false;
-  if (refSys == "ETRS89") {
+  if (refSys == "ETRF2000") {
     _crdTrafo = true;
   }
 }
