@@ -15,17 +15,6 @@ data available? Deleted PENC0 from the configuration.
 
 BNS 
 =========================
-(1) LM: Currently implementated 6 transformation parameters are:
-Translations in X,Y,Z, and 
-Rotation rates in X,Y,Z
 
-Needs to be extended to 14 transformation parameters: 
-Translations in X,Y,Z, and
-Translation rates in X,Y,Z, and
-Rotation in X,Z,Z, and
-Rotation rates in X,Y,Z
-Scale,
-Scale rate
-
-(2) LM: "TODO: handle old ephemeris" in bns.cpp
+(1) LM: "TODO: handle old ephemeris" in bns.cpp
 
