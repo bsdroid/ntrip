@@ -500,19 +500,23 @@ void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz) {
   dx(3) = -0.0538 - dt * 0.0018;
 
   static const double arcSec = 180.0 * 3600.0 / M_PI;
+  double ox = ( 0.000891 + dt * 0.000081) / arcSec;
+  double oy = ( 0.005390 + dt * 0.000490) / arcSec;
+  double oz = (-0.008712 - dt * 0.000792) / arcSec;
 
-  static const double ox = ( 0.000891 + dt * 0.000081) / arcSec;
-  static const double oy = ( 0.005390 + dt * 0.000490) / arcSec;
-  static const double oz = (-0.008712 - dt * 0.000792) / arcSec;
+  double sc = 1.0 + 0.4e-9 + dt * 0.08e-9;
 
-  Matrix rMat(3,3); rMat = 0.0;
+  Matrix rMat(3,3);
+  rMat(1,1) = 1.0;
   rMat(1,2) = -oz;
   rMat(1,3) =  oy;
   rMat(2,1) =  oz;
+  rMat(2,2) = 1.0;
   rMat(2,3) = -ox;
   rMat(3,1) = -oy;
   rMat(3,2) =  ox;
+  rMat(3,3) = 1.0;
 
 
-  xyz += dx + rMat * xyz;
+  xyz = sc * rMat * xyz + dx;
 }
