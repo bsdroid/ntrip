@@ -295,35 +295,41 @@ Each stream on an NTRIP Caster is defined using a unique source ID called mountp
 
 <p><a name="ephcsys"><h4>4.7.3 System - mandatory if 'Host' is set</h4></p>
 <p>
-BNS refers its final clock and orbit corrections to a specific reference system. Available options are
+BNS refers its clock and orbit corrections to a specific reference system. Available options are
 <p>
 <ul>
-<li>IGS05 which stands for the GNSS-based IGS realization of the International Terrestrial Reference Frame (ITRF2005), and</li>
-<li>ETRS89 which stands for the European Terrestrial Reference System 1989 adopted by EUREF.</li>
+<li>IGS05 which stands for the GNSS-based IGS realization of the International Terrestrial Reference Frame 2005 (ITRF2005), and</li>
+<li>ETRF2000 which stands for the European Terestrial Reference Frame 2000 adopted by EUREF.</li>
 </ul>
 </p>
 
 <p>
-<u>IGS05:</u>
-As the clocks and orbits coming from real-time GNSS engine are expected to be in the IGS05 system, no transformation is carried out if this option is selected.
+<u>IGS05:</u> As the clocks and orbits coming from real-time GNSS engine are expected to be in the IGS05 system, no transformation is carried out if this option is selected.
 </p>
 <p>
-<u>ETRS89:</u>
-From the complete transformation chain 'IGS05->ITRF2005->ITRF2000->ETRS89' only the transformation 'ITRF2000->ETRS89' has been implemented. The formulas for that are taken from 'Boucher and Altamimi 2007: Specifications for reference frame fixing in the analysis of EUREF GPS campaign', see <u>http://etrs89.ensg.ign.fr/memo2007.pdf</u>. The following 6 Helmert transformation parameters were introduced:
+<u>ETRF2000:</u> The formulars for the transformation 'ITRF2005->ETRF2000' are taken from 'Claude Boucher and Zuheir Altamimi 2008: Specifications for reference frame fixing in the analysis of EUREF GPS campaign'. The following 14 Helmert transformation parameters were introduced:
 </p>
 <p>
 <pre>
-Translation in X:  0.054 m
-Translation in Y:  0.051 m
-Translation in Z: -0.048 m
+Translation in X at epoch To:  0.0541 m
+Translation in Y at epoch To:  0.0502 m
+Translation in Z at epoch To: -0.0538 m
+Translation rate in X: -0.0002 m/y
+Translation rate in Y:  0.0001 m/y
+Translation rate in Z: -0.0018 m/y
+Rotation in X at epoch To:  0.891 mas
+Rotation in Y at epoch To:  5.390 mas
+Rotation in Z at epoch To: -8.712 mas
 Rotation rate in X:  0.081 mas/y 
 Rotation rate in Y:  0.490 mas/y
 Rotation rate in Z: -0.792 mas/y
-T0: 1989
+Scale at epoch To : 0.00000000040
+Scale rate: 0.00000000008 /y
+To: 2000.0
 </pre>
 </p>
 <p>
-Note that the neglect of transformations 'IGS05->ITRF2005->ITRF2000' in BNS may cause discrepancies up to a maximum of 2 centimenters.
+Contact [igs-ip@bkg.bund.de] if you would like to see further transformations implemented in BNS.
 <p>
 
 
@@ -424,7 +430,7 @@ The self-explanatory contents of the configuration file or the Windows registry 
 In Qt-based desktop environments (such as KDE) on Unix/Linux/Mac platforms users may experience a crash at startup even when BNS is run in the background using the '-nw' option. This is a known bug most likely resulting from an incompatibility of Qt libraries in the environment and in BNS. Entering the command 'unset SESSION_MANAGER' before running BNS may help as a work-around.
 </li>
 <li>
-Currently BNS can only generate premature RTCM Version 3.x message Type 4056 and 4057 for combined GPS and GLONASS orbit and clock corrections. Note that the length of data fields in these messages is not yet standardized. What's implemented in BNS is just a temporary solution.
+Currently BNS can only generate premature RTCM Version 3.x message Type 4056 and 4057 for combined GPS and GLONASS orbit and clock corrections, see RTCM document 026-2008-SC104-429 'Version 1 Proposed SSR Messages prepared by Geo++'. Note that the length of data fields in these messages is not yet standardized. What's implemented in BNS is just a temporary solution.
 </li>
 <li>
 We experienced some limitation with the Standard Version of Microsoft Windows related to socket communication where sockets are not always handled properly. Since BNS makes intensive use of communication through sockets, we recommend to use the Server Version of Microsoft Windows when running BNS continuously for extended period on a Windows platform.
@@ -459,7 +465,7 @@ Frankfurt, Germany<br>
 </p>
 <table>
 <tr></tr>
-<tr><td>Nov 2008 &nbsp;</td><td>Version 1.0 &nbsp;</td><td>[Add] Source code and binaries published.</td></tr>
+<tr><td>Dec 2008 &nbsp;</td><td>Version 1.0 &nbsp;</td><td>[Add] Source code and binaries published.</td></tr>
 </table>
 </p>
 
