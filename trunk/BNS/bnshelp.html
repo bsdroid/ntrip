@@ -106,8 +106,8 @@ All options for running BNS on Unix/Linux/Mac systems are saved in file ${HOME}/
 &nbsp; &nbsp; &nbsp; 4.6.1. <a href=#coport>Listening Port</a><br>
 &nbsp; &nbsp; &nbsp; 4.6.2. <a href=#cosave>Save</a><br>
 4.7. <a href=#ephc>Ephemeris Corrections</a><br>
-&nbsp; &nbsp; &nbsp; 4.7.1. <a href=#ephcserver>Host & Port, Password</a><br>
-&nbsp; &nbsp; &nbsp; 4.7.2. <a href=#ephcmount>Mountpoint</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.1. <a href=#ephcserver>Host & Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.2. <a href=#ephcmount>Mountpoint & Password</a><br>
 &nbsp; &nbsp; &nbsp; 4.7.3. <a href=#ephcsys>System</a><br>
 &nbsp; &nbsp; &nbsp; 4.7.4. <a href=#ephcsave>Save</a><br>
 4.8. <a href=#clkrnx>RINEX Clocks</a><br>
@@ -280,21 +280,21 @@ BNS can upload the resulting stream(s) of clock and orbit corrections to Broadca
 BNS allows to configure two Ephemeris Corrections streams refering do different reference systems for upload to different NTRIP broadcasters. You may use this functionality for parallel support of a backup NTRIP broadcaster or for simultaneous support of two reference systems.
 </p>
 
-<p><a name="ephcserver"><h4>4.7.1 Host & Port, Password - optional</h4></p>
+<p><a name="ephcserver"><h4>4.7.1 Host & Port - optional</h4></p>
 <p>
 Enter the NTRIP Caster's 'Host' IP name or number for stream upload.
 </p>
 <p>
 Enter the NTRIP Caster's IP 'Port' number for stream upload. Note that NTRIP Casters are often configured to provide access on more than one port, usually port 80 and 2101. If you experience communication problems on port 80, you should try to use the alternative port(s).
 </p>
-</p>
-In NTRIP Version 1.0 stream upload may be protected through an upload 'Password'. Enter the password you received from the Caster operator along with the mountpoint(s).
-</p>
 
-<p><a name="ephcmount"><h4>4.7.2 Mountpoint - mandatory if 'Host' is set</h4></p>
+<p><a name="ephcmount"><h4>4.7.2 Mountpoint & Password - mandatory if 'Host' is set</h4></p>
 <p>
 Each stream on an NTRIP Caster is defined using a unique source ID called mountpoint. An NTRIP Server like BNS upload a stream to the Caster by referring to a dedicated mountpoint that has been set by the Caster operator. Specify here the mountpoint based on the detail you received from the operator for your stream. It is often a four character ID (capital letters) plus an integer number.
 <p>
+</p>
+In NTRIP Version 1.0 stream upload may be protected through an upload 'Password'. Enter the password you received from the Caster operator along with the mountpoint(s).
+</p>
 
 <p><a name="ephcsys"><h4>4.7.3 System - mandatory if 'Host' is set</h4></p>
 <p>
