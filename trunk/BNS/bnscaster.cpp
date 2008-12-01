@@ -111,7 +111,8 @@ void t_bnscaster::open() {
   if (!_outSocket->waitForConnected(timeOut)) {
     delete _outSocket;
     _outSocket = 0;
-    emit(error("t_bnscaster::open Connect Timeout"));
+  //emit(error("t_bnscaster::open Connect Timeout"));
+    emit(error("Broadcaster; Connect Timeout"));
     return;
   }
 
