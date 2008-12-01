@@ -7,7 +7,7 @@ class t_bnscaster : public QObject {
  Q_OBJECT
  public:
   t_bnscaster(const QString& mountpoint, const QString& outFileName, 
-              const QString& refSys);
+              const QString& refSys, int ic);
   virtual ~t_bnscaster();
   void open();
   void write(char* buffer, unsigned len);
@@ -27,6 +27,7 @@ class t_bnscaster : public QObject {
   QFile*       _outFile;
   QTextStream* _outStream;
   bool         _crdTrafo;
+  int          _ic;
 };
 
 #endif

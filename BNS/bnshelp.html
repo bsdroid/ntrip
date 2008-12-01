@@ -274,7 +274,10 @@ Specify the full path to a file where received clocks and orbits from a real-tim
 
 <p><a name="ephc"><h4>4.7. Ephemeris Corrections</h4></p>
 <p>
-BNS can upload the resulting stream(s) of clock and orbit corrections to Broadcast Ephemeris to an NTRIP Broadcaster. Both EUREF and IGS operate an NTRIP broadcaster at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which can be used for stream upload. The stream's format is RTCM Version 3.x. Note that it only carries the thentative message Types 4056 and 4057 for combined orbit and clock corrections to GPS and GLONASS Broadcast Ephemeris.
+BNS can upload the resulting stream(s) of clock and orbit corrections to Broadcast Ephemeris to an NTRIP Broadcaster. Both EUREF and IGS operate an NTRIP broadcaster at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which can be used for stream upload. The stream's format is RTCM Version 3.x. Note that it only carries the premature message Types 4056 and 4057 for combined orbit and clock corrections to GPS and GLONASS Broadcast Ephemeris.
+</p>
+<p>
+BNS allows to configure two Ephemeris Corrections streams refering do different reference systems for upload to different NTRIP broadcasters. You may use this functionality for parallel support of a backup NTRIP broadcaster or for simultaneous support of two reference systems.
 </p>
 
 <p><a name="ephcserver"><h4>4.7.1 Host & Port, Password - optional</h4></p>
@@ -329,7 +332,7 @@ To: 2000.0
 </pre>
 </p>
 <p>
-Contact [igs-ip@bkg.bund.de] if you would like to see further transformations implemented in BNS.
+Contact [igs-ip@bkg.bund.de] if you would like to see further Helmert transformation parameters implemented in BNS to support other national or regional reference system.
 <p>
 
 

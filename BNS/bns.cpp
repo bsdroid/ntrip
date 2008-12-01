@@ -79,7 +79,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
     if (!mountpoint.isEmpty() || !outFileName.isEmpty()) {
       QString refSys      = settings.value(QString("refSys_%1").arg(ic)).toString();
 
-      _caster.push_back(new t_bnscaster(mountpoint, outFileName, refSys));
+      _caster.push_back(new t_bnscaster(mountpoint, outFileName, refSys, ic));
       connect(_caster.back(), SIGNAL(error(const QByteArray)),
               this, SLOT(slotError(const QByteArray)));
       connect(_caster.back(), SIGNAL(newMessage(const QByteArray)),

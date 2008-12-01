@@ -22,11 +22,12 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_bnscaster::t_bnscaster(const QString& mountpoint, const QString& outFileName,
-                         const QString& refSys) {
+                         const QString& refSys, const int ic) {
 
   _mountpoint         = mountpoint;
   _outSocket          = 0;
   _outSocketOpenTrial = 0;
+  _ic = ic;
 
   QSettings settings;
 
@@ -94,8 +95,17 @@ void t_bnscaster::open() {
 
   QSettings settings;
   _outSocket = new QTcpSocket();
-  _outSocket->connectToHost(settings.value("outHost").toString(),
-                            settings.value("outPort").toInt());
+  QString password;
+  if (_ic == 1) {
+    _outSocket->connectToHost(settings.value("outHost1").toString(),
+                              settings.value("outPort1").toInt());
+    password = settings.value("password1").toString();
+  } 
+  if (_ic == 2) {
+    _outSocket->connectToHost(settings.value("outHost2").toString(),
+                              settings.value("outPort2").toInt());
+    password = settings.value("password2").toString();
+  }
 
   const int timeOut = 5000;  // 5 seconds
   if (!_outSocket->waitForConnected(timeOut)) {
@@ -104,8 +114,6 @@ void t_bnscaster::open() {
     emit(error("t_bnscaster::open Connect Timeout"));
     return;
   }
-
-  QString password   = settings.value("password").toString();
 
   QByteArray msg = "SOURCE " + password.toAscii() + " /" + 
                    _mountpoint.toAscii() + "\r\n" +

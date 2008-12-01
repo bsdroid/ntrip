@@ -166,23 +166,36 @@ bnsWindow::bnsWindow() {
   _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in SP3 format from an IP port. Specify a local IP port e.g. of an RTNet installation to provide this information."));
   _clkPortLineEdit->setMaximumWidth(9*ww);
 
-  _outHostLineEdit    = new QLineEdit(settings.value("outHost").toString());
-  _outHostLineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
-  _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
-  _outPortLineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
-  _outPortLineEdit->setMaximumWidth(9*ww);
-  _passwordLineEdit   = new QLineEdit(settings.value("password").toString());
-  _passwordLineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
-  _passwordLineEdit->setMaximumWidth(9*ww);
-  _passwordLineEdit->setEchoMode(QLineEdit::Password);
+  _outHost_1_LineEdit    = new QLineEdit(settings.value("outHost1").toString());
+  _outHost_1_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+//_outHost_1_LineEdit->setMaximumWidth(9*ww); // weber
+  _outPort_1_LineEdit    = new QLineEdit(settings.value("outPort1").toString());
+  _outPort_1_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
+  _outPort_1_LineEdit->setMaximumWidth(9*ww);
+  _password_1_LineEdit   = new QLineEdit(settings.value("password1").toString());
+  _password_1_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
+  _password_1_LineEdit->setMaximumWidth(9*ww);
+  _password_1_LineEdit->setEchoMode(QLineEdit::Password);
+
+  _outHost_2_LineEdit    = new QLineEdit(settings.value("outHost2").toString());
+  _outHost_2_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+//_outHost_2_LineEdit->setMaximumWidth(9*ww); // weber
+  _outPort_2_LineEdit    = new QLineEdit(settings.value("outPort2").toString());
+  _outPort_2_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
+  _outPort_2_LineEdit->setMaximumWidth(9*ww);
+  _password_2_LineEdit   = new QLineEdit(settings.value("password2").toString());
+  _password_2_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
+  _password_2_LineEdit->setMaximumWidth(9*ww);
+  _password_2_LineEdit->setEchoMode(QLineEdit::Password);
+
   _mountpoint_1_LineEdit = new QLineEdit(settings.value("mountpoint_1").toString());
   _mountpoint_1_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
-  _mountpoint_1_LineEdit->setMaximumWidth(9*ww);
+  _mountpoint_1_LineEdit->setMaximumWidth(12*ww);
   _mountpoint_2_LineEdit = new QLineEdit(settings.value("mountpoint_2").toString());
   _mountpoint_2_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
-  _mountpoint_2_LineEdit->setMaximumWidth(9*ww);
+  _mountpoint_2_LineEdit->setMaximumWidth(12*ww);
   _refSys_1_ComboBox = new QComboBox;
-  _refSys_1_ComboBox->setMaximumWidth(10*ww);
+  _refSys_1_ComboBox->setMaximumWidth(12*ww);
   _refSys_1_ComboBox->setEditable(false);
   _refSys_1_ComboBox->addItems(QString("IGS05,ETRF2000").split(","));
   int ii = _refSys_1_ComboBox->findText(settings.value("refSys_1").toString());
@@ -191,7 +204,7 @@ bnsWindow::bnsWindow() {
   }
   _refSys_1_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
   _refSys_2_ComboBox = new QComboBox;
-  _refSys_2_ComboBox->setMaximumWidth(10*ww);
+  _refSys_2_ComboBox->setMaximumWidth(12*ww);
   _refSys_2_ComboBox->setEditable(false);
   _refSys_2_ComboBox->addItems(QString("IGS05,ETRF2000").split(","));
   ii = _refSys_2_ComboBox->findText(settings.value("refSys_2").toString());
@@ -320,38 +333,55 @@ bnsWindow::bnsWindow() {
 
   tab_co->setLayout(layout_co);
 
-  // Caster Tab
-  // ----------
-  QWidget* tab_cas = new QWidget();
-  tabs->addTab(tab_cas, "Ephemeris Corrections");
+  // Caster Tab I
+  // ------------
+  QWidget* tab_cas1 = new QWidget();
+  tabs->addTab(tab_cas1, "Ephemeris Corrections I");
 
-  QGridLayout* layout_cas = new QGridLayout;
-  layout_cas->setColumnMinimumWidth(0, 9*ww);
+  QGridLayout* layout_cas1 = new QGridLayout;
+  layout_cas1->setColumnMinimumWidth(0, 9*ww);
+  layout_cas1->addWidget(new QLabel("Host"),             0, 0);
+  layout_cas1->addWidget(_outHost_1_LineEdit,            0, 1, 1, 3);
+  layout_cas1->addWidget(new QLabel("Port"),             0, 4, Qt::AlignRight);
+  layout_cas1->addWidget(_outPort_1_LineEdit,            0, 5);
+  layout_cas1->addWidget(new QLabel("Mountpoint"),       1, 0);
+  layout_cas1->addWidget(_mountpoint_1_LineEdit,         1, 1);
+  layout_cas1->addWidget(new QLabel("Password"),         1, 2, Qt::AlignRight);
+  layout_cas1->addWidget(_password_1_LineEdit,           1, 3);
+  layout_cas1->addWidget(new QLabel(" "),                1, 4);
+  layout_cas1->addWidget(new QLabel(" "),                1, 5);
+  layout_cas1->addWidget(new QLabel("System"),           2, 0);
+  layout_cas1->addWidget(_refSys_1_ComboBox,             2, 1);
+  layout_cas1->addWidget(new QLabel("Save (full path)"), 2, 2, Qt::AlignRight);
+  layout_cas1->addWidget(_outFile_1_LineEdit,            2, 3, 1, 10);
+  layout_cas1->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 10);
 
-  layout_cas->addWidget(new QLabel("Host"),       0, 0, Qt::AlignLeft);
-  layout_cas->addWidget(_outHostLineEdit,         0, 1, 1, 2);
-  layout_cas->addWidget(new QLabel("Port"),       0, 3, Qt::AlignRight);
-  layout_cas->addWidget(_outPortLineEdit,         0, 4);
-  layout_cas->addWidget(new QLabel("Password"),   0, 5, Qt::AlignRight);
-  layout_cas->addWidget(_passwordLineEdit,        0, 6);
+  tab_cas1->setLayout(layout_cas1);
 
-  layout_cas->addWidget(new QLabel("Mountpoint 1"),            1, 0, Qt::AlignLeft);
-  layout_cas->addWidget(_mountpoint_1_LineEdit,                1, 1);
-  layout_cas->addWidget(new QLabel("  System"),                1, 2, Qt::AlignRight);
-  layout_cas->addWidget(_refSys_1_ComboBox,                    1, 3);
-  layout_cas->addWidget(new QLabel("  Save (full path)"),      1, 4, Qt::AlignRight);
-  layout_cas->addWidget(_outFile_1_LineEdit,                   1, 5, 1, 8);
+  // Caster Tab II
+  // -------------
+  QWidget* tab_cas2 = new QWidget();
+  tabs->addTab(tab_cas2, "Ephemeris Corrections II");
 
-  layout_cas->addWidget(new QLabel("Mountpoint 2"),            2, 0, Qt::AlignLeft);
-  layout_cas->addWidget(_mountpoint_2_LineEdit,                2, 1);
-  layout_cas->addWidget(new QLabel("  System"),                2, 2, Qt::AlignRight);
-  layout_cas->addWidget(_refSys_2_ComboBox,                    2, 3);
-  layout_cas->addWidget(new QLabel("  Save (full path)"),      2, 4, Qt::AlignRight);
-  layout_cas->addWidget(_outFile_2_LineEdit,                   2, 5, 1, 8);
+  QGridLayout* layout_cas2 = new QGridLayout;
+  layout_cas2->setColumnMinimumWidth(0, 9*ww);
+  layout_cas2->addWidget(new QLabel("Host"),             0, 0);
+  layout_cas2->addWidget(_outHost_2_LineEdit,            0, 1, 1, 3);
+  layout_cas2->addWidget(new QLabel("Port"),             0, 4, Qt::AlignRight);
+  layout_cas2->addWidget(_outPort_2_LineEdit,            0, 5);
+  layout_cas2->addWidget(new QLabel("Mountpoint"),       1, 0);
+  layout_cas2->addWidget(_mountpoint_2_LineEdit,         1, 1);
+  layout_cas2->addWidget(new QLabel("Password"),         1, 2, Qt::AlignRight);
+  layout_cas2->addWidget(_password_2_LineEdit,           1, 3);
+  layout_cas2->addWidget(new QLabel(" "),                1, 4);
+  layout_cas2->addWidget(new QLabel(" "),                1, 5);
+  layout_cas2->addWidget(new QLabel("System"),           2, 0);
+  layout_cas2->addWidget(_refSys_2_ComboBox,             2, 1);
+  layout_cas2->addWidget(new QLabel("Save (full path)"), 2, 2, Qt::AlignRight);
+  layout_cas2->addWidget(_outFile_2_LineEdit,            2, 3, 1, 10);
+  layout_cas2->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 10);
 
-  layout_cas->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 8, Qt::AlignLeft);
-
-  tab_cas->setLayout(layout_cas);
+  tab_cas2->setLayout(layout_cas2);
 
   // RINEX Tab
   // ---------
@@ -529,30 +559,31 @@ void bnsWindow::AddToolbar() {
 ////////////////////////////////////////////////////////////////////////////
 void bnsWindow::slotSaveOptions() {
   QSettings settings;
-  settings.setValue("proxyHost",  _proxyHostLineEdit->text());
-  settings.setValue("proxyPort",  _proxyPortLineEdit->text());
-  settings.setValue("logFile",    _logFileLineEdit->text());
-  settings.setValue("fileAppend", _fileAppendCheckBox->checkState());
-  settings.setValue("refSys_1",     _refSys_1_ComboBox->currentText());
-  settings.setValue("refSys_2",     _refSys_2_ComboBox->currentText());
-  settings.setValue("inpEcho",    _inpEchoLineEdit->text());
-  settings.setValue("ephHost",    _ephHostLineEdit->text());
-  settings.setValue("ephPort",    _ephPortLineEdit->text());
-  settings.setValue("ephEcho",    _ephEchoLineEdit->text());
-  settings.setValue("clkPort",    _clkPortLineEdit->text());
-  settings.setValue("outHost",    _outHostLineEdit->text());
-  settings.setValue("outPort",    _outPortLineEdit->text());
-  settings.setValue("mountpoint_1", _mountpoint_1_LineEdit->text());
-  settings.setValue("mountpoint_2", _mountpoint_2_LineEdit->text());
-  settings.setValue("outFile_1",    _outFile_1_LineEdit->text());
-  settings.setValue("outFile_2",    _outFile_2_LineEdit->text());
-  settings.setValue("password",   _passwordLineEdit->text());
-  settings.setValue("rnxPath",    _rnxPathLineEdit->text());
-  settings.setValue("rnxIntr",    _rnxIntrComboBox->currentText());
-  settings.setValue("rnxSampl",   _rnxSamplSpinBox->value());
-  settings.setValue("sp3Path",    _sp3PathLineEdit->text());
-  settings.setValue("sp3Intr",    _sp3IntrComboBox->currentText());
-  settings.setValue("sp3Sampl",   _sp3SamplSpinBox->value());
+  settings.setValue("proxyHost",   _proxyHostLineEdit->text());
+  settings.setValue("proxyPort",   _proxyPortLineEdit->text());
+  settings.setValue("logFile",     _logFileLineEdit->text());
+  settings.setValue("fileAppend",  _fileAppendCheckBox->checkState());
+  settings.setValue("refSys_1",    _refSys_1_ComboBox->currentText());
+  settings.setValue("refSys_2",    _refSys_2_ComboBox->currentText());
+  settings.setValue("inpEcho",     _inpEchoLineEdit->text());
+  settings.setValue("ephHost",     _ephHostLineEdit->text());
+  settings.setValue("ephPort",     _ephPortLineEdit->text());
+  settings.setValue("ephEcho",     _ephEchoLineEdit->text());
+  settings.setValue("clkPort",     _clkPortLineEdit->text());
+  settings.setValue("outHost1",    _outHost_1_LineEdit->text());
+  settings.setValue("outPort1",    _outPort_1_LineEdit->text());
+  settings.setValue("mountpoint_1",_mountpoint_1_LineEdit->text());
+  settings.setValue("mountpoint_2",_mountpoint_2_LineEdit->text());
+  settings.setValue("outFile_1",   _outFile_1_LineEdit->text());
+  settings.setValue("outFile_2",   _outFile_2_LineEdit->text());
+  settings.setValue("password1",   _password_1_LineEdit->text());
+  settings.setValue("password2",   _password_2_LineEdit->text());
+  settings.setValue("rnxPath",     _rnxPathLineEdit->text());
+  settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
+  settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
+  settings.setValue("sp3Path",     _sp3PathLineEdit->text());
+  settings.setValue("sp3Intr",     _sp3IntrComboBox->currentText());
+  settings.setValue("sp3Sampl",    _sp3SamplSpinBox->value());
 }
 
 // Display Program Messages 
