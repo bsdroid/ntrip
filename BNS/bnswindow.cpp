@@ -436,13 +436,16 @@ bnsWindow::bnsWindow() {
   _statusLbl[4] = new QLabel("Clocks & Orbits:");
   _statusLbl[5] = new QLabel("Ephemeris Corrections I:");  
   _statusLbl[6] = new QLabel("Ephemeris Corrections II:");  
+  _statusLbl[7] = new QLabel("0 byte(s)"); _statusCnt[3] = 0;
 
   _statusLbl[0]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
   _statusLbl[1]->setWhatsThis(tr("Status of incoming stream of clocks and orbits."));
   _statusLbl[2]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster."));
   _statusLbl[3]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
-  _statusLbl[4]->setWhatsThis(tr("Status of incoming stream of clocks and orbits."));
-  _statusLbl[5]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster."));
+  _statusLbl[4]->setWhatsThis(tr("Status of incoming stream of clocks and orbits I."));
+  _statusLbl[5]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster I."));
+  _statusLbl[6]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster II."));
+  _statusLbl[7]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster II."));
 
   layout_status->addWidget(_statusLbl[3], 0, 0);
   layout_status->addWidget(_statusLbl[0], 0, 1);
@@ -451,6 +454,7 @@ bnsWindow::bnsWindow() {
   layout_status->addWidget(_statusLbl[5], 0, 2);
   layout_status->addWidget(_statusLbl[2], 0, 3);
   layout_status->addWidget(_statusLbl[6], 1, 2);
+  layout_status->addWidget(_statusLbl[7], 1, 3);
   _status->setLayout(layout_status);
 
   // Main Layout
@@ -647,7 +651,8 @@ void bnsWindow::slotStart() {
 
   connect(_bns, SIGNAL(newEphBytes(int)), this, SLOT(slotEphBytes(int)));
   connect(_bns, SIGNAL(newClkBytes(int)), this, SLOT(slotClkBytes(int)));
-  connect(_bns, SIGNAL(newOutBytes(int)), this, SLOT(slotOutBytes(int)));
+  connect(_bns, SIGNAL(newOutBytes1(int)), this, SLOT(slotOutBytes1(int)));
+  connect(_bns, SIGNAL(newOutBytes2(int)), this, SLOT(slotOutBytes2(int)));
 
   _bns->start();
 }
@@ -660,8 +665,11 @@ void bnsWindow::slotEphBytes(int nBytes) {
 void bnsWindow::slotClkBytes(int nBytes) {
   updateStatus(1, nBytes);
 }
-void bnsWindow::slotOutBytes(int nBytes) {
+void bnsWindow::slotOutBytes1(int nBytes) {
   updateStatus(2, nBytes);
+}
+void bnsWindow::slotOutBytes2(int nBytes) {
+  updateStatus(3, nBytes);
 }
 
 void bnsWindow::updateStatus(int ii, int nBytes) {
