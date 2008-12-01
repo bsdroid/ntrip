@@ -572,6 +572,8 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("clkPort",     _clkPortLineEdit->text());
   settings.setValue("outHost1",    _outHost_1_LineEdit->text());
   settings.setValue("outPort1",    _outPort_1_LineEdit->text());
+  settings.setValue("outHost2",    _outHost_2_LineEdit->text());
+  settings.setValue("outPort2",    _outPort_2_LineEdit->text());
   settings.setValue("mountpoint_1",_mountpoint_1_LineEdit->text());
   settings.setValue("mountpoint_2",_mountpoint_2_LineEdit->text());
   settings.setValue("outFile_1",   _outFile_1_LineEdit->text());
