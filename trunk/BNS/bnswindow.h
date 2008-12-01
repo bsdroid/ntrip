@@ -43,7 +43,8 @@ Q_OBJECT
   void slotStop();
   void slotEphBytes(int nBytes);
   void slotClkBytes(int nBytes);
-  void slotOutBytes(int nBytes);
+  void slotOutBytes1(int nBytes);
+  void slotOutBytes2(int nBytes);
 
  protected:
   virtual void closeEvent(QCloseEvent *);
@@ -101,8 +102,8 @@ Q_OBJECT
 
 //QWidget*    _status;
   QGroupBox*  _status;
-  QLabel*     _statusLbl[6];  
-  double      _statusCnt[3];
+  QLabel*     _statusLbl[8];  
+  double      _statusCnt[4];
   QMutex      _mutex;
 
   t_bns*      _bns;
