@@ -100,7 +100,7 @@ void t_bnscaster::open() {
     _outSocket->connectToHost(settings.value("outHost1").toString(),
                               settings.value("outPort1").toInt());
     password = settings.value("password1").toString();
-  } 
+  }
   if (_ic == 2) {
     _outSocket->connectToHost(settings.value("outHost2").toString(),
                               settings.value("outPort2").toInt());
@@ -111,8 +111,7 @@ void t_bnscaster::open() {
   if (!_outSocket->waitForConnected(timeOut)) {
     delete _outSocket;
     _outSocket = 0;
-  //emit(error("t_bnscaster::open Connect Timeout"));
-    emit(error("Broadcaster; Connect Timeout"));
+    emit(error("Broadcaster: Connect timeout"));
     return;
   }
 
