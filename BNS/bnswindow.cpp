@@ -168,7 +168,6 @@ bnsWindow::bnsWindow() {
 
   _outHost_1_LineEdit    = new QLineEdit(settings.value("outHost1").toString());
   _outHost_1_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
-//_outHost_1_LineEdit->setMaximumWidth(9*ww); // weber
   _outPort_1_LineEdit    = new QLineEdit(settings.value("outPort1").toString());
   _outPort_1_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
   _outPort_1_LineEdit->setMaximumWidth(9*ww);
@@ -436,6 +435,7 @@ bnsWindow::bnsWindow() {
   _statusLbl[3] = new QLabel("RINEX Ephemeris:");  
   _statusLbl[4] = new QLabel("Clocks & Orbits:");
   _statusLbl[5] = new QLabel("Ephemeris Corrections I:");  
+  _statusLbl[6] = new QLabel("Ephemeris Corrections II:");  
 
   _statusLbl[0]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
   _statusLbl[1]->setWhatsThis(tr("Status of incoming stream of clocks and orbits."));
@@ -450,6 +450,7 @@ bnsWindow::bnsWindow() {
   layout_status->addWidget(_statusLbl[1], 1, 1);
   layout_status->addWidget(_statusLbl[5], 0, 2);
   layout_status->addWidget(_statusLbl[2], 0, 3);
+  layout_status->addWidget(_statusLbl[6], 1, 2);
   _status->setLayout(layout_status);
 
   // Main Layout
