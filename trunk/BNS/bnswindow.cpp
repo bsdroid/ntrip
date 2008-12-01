@@ -179,7 +179,6 @@ bnsWindow::bnsWindow() {
 
   _outHost_2_LineEdit    = new QLineEdit(settings.value("outHost2").toString());
   _outHost_2_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
-//_outHost_2_LineEdit->setMaximumWidth(9*ww); // weber
   _outPort_2_LineEdit    = new QLineEdit(settings.value("outPort2").toString());
   _outPort_2_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
   _outPort_2_LineEdit->setMaximumWidth(9*ww);
