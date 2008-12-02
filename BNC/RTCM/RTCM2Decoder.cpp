@@ -123,6 +123,9 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         return failure;
       }
     }
+    
+    // Store message number
+    _typeList.push_back(_PP.ID());
 
     if ( _PP.ID()==18 || _PP.ID()==19 ) {   
 
@@ -177,6 +180,16 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
     else if ( _PP.ID() == 22 ) {
       _msg22.extract(_PP);
+    }
+
+    // Output for RTCM scan
+    if ( _PP.ID() == 3 ) {
+      _antList.push_back(t_antInfo());
+
+      this->getStaCrd(_antList.back().xx, _antList.back().yy, _antList.back().zz);
+
+      _antList.back().type     = t_antInfo::APC;
+      _antList.back().message  = _PP.ID();
     }
   }
   return success;

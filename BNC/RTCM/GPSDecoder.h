@@ -135,12 +135,30 @@ class GPSDecoder {
     }
   }
 
-  QList<p_obs> _obsList;
-  QList<int> _typeList; // RTCMv3 message types
-  QList<int> _epochList; // Broadcast corrections
-  QStringList _antType; // RTCMv3 antenna descriptor
-  QList<double> _antList5; // RTCMv3 antenna XYZ
-  QList<double> _antList6; // RTCMv3 antenna XYZ & H
+  struct t_antInfo {
+    enum t_type { ARP, APC };
+
+    t_antInfo() {
+      xx = yy = zz = height = 0.0;
+      type = ARP;
+      height_f = false;
+      message  = 0;
+    };
+
+    double xx;
+    double yy;
+    double zz;
+    t_type type;
+    double height;
+    bool   height_f;
+    int    message;
+  };
+
+  QList<p_obs>     _obsList;
+  QList<int>       _typeList;  // RTCM   message types
+  QList<int>       _epochList; // Broadcast corrections
+  QStringList      _antType;   // RTCMv3 antenna descriptor
+  QList<t_antInfo> _antList;   // RTCM   antenna XYZ
 };
 
 #endif

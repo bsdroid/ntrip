@@ -754,40 +754,40 @@ void bncGetThread::run() {
           if (_rnx) {
 	    bool dump = true;
 
-            // RTCMv2 XYZ
-            // ----------
-            RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
-            if ( decoder2 && !_rnx_set_position ) {
-	      double stax, stay, staz;
-	      double dL1[3], dL2[3];
-	      if ( decoder2->getStaCrd(stax, stay, staz,
-                                       dL1[0], dL1[1], dL1[2], 
-                                       dL2[0], dL2[1], dL2[2]) == success ) {
-
-                if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
-                  QString ant1;
-                  ant1 =  QString("%1 ").arg(stax,0,'f',4);
-                  emit(newMessage(_staID + ": ARP X " + ant1.toAscii() + "m" ));
-                  ant1 =  QString("%1 ").arg(stay,0,'f',4);
-                  emit(newMessage(_staID + ": ARP Y " + ant1.toAscii() + "m" ));
-                  ant1 =  QString("%1 ").arg(staz,0,'f',4);
-                  emit(newMessage(_staID + ": ARP Z " + ant1.toAscii() + "m" ));
-                  ant1 =  QString("%1 ").arg(dL1[0],0,'f',4);
-                  emit(newMessage(_staID + ": L1 APC DX " + ant1.toAscii() + "m" ));
-                  ant1 =  QString("%1 ").arg(dL1[1],0,'f',4);
-                  emit(newMessage(_staID + ": L1 APC DY " + ant1.toAscii() + "m" ));
-                  ant1 =  QString("%1 ").arg(dL1[2],0,'f',4);
-                  emit(newMessage(_staID + ": L1 APC DZ " + ant1.toAscii() + "m" ));
-                  ant1 =  QString("%1 ").arg(dL2[0],0,'f',4);
-                  emit(newMessage(_staID + ": L2 APC DX " + ant1.toAscii() + "m" ));
-                  ant1 =  QString("%1 ").arg(dL2[1],0,'f',4);
-                  emit(newMessage(_staID + ": L2 APC DY " + ant1.toAscii() + "m" ));
-                  ant1 =  QString("%1 ").arg(dL2[2],0,'f',4);
-                  emit(newMessage(_staID + ": L2 APC DZ " + ant1.toAscii() + "m" ));
-                }
-	    	_rnx_set_position = true;
-              }
-            }  
+            //// // RTCMv2 XYZ
+            //// // ----------
+            //// RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
+            //// if ( decoder2 && !_rnx_set_position ) {
+	    ////   double stax, stay, staz;
+	    ////   double dL1[3], dL2[3];
+	    ////   if ( decoder2->getStaCrd(stax, stay, staz,
+            ////                            dL1[0], dL1[1], dL1[2], 
+            ////                            dL2[0], dL2[1], dL2[2]) == success ) {
+	    //// 
+            ////     if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
+            ////       QString ant1;
+            ////       ant1 =  QString("%1 ").arg(stax,0,'f',4);
+            ////       emit(newMessage(_staID + ": ARP X " + ant1.toAscii() + "m" ));
+            ////       ant1 =  QString("%1 ").arg(stay,0,'f',4);
+            ////       emit(newMessage(_staID + ": ARP Y " + ant1.toAscii() + "m" ));
+            ////       ant1 =  QString("%1 ").arg(staz,0,'f',4);
+            ////       emit(newMessage(_staID + ": ARP Z " + ant1.toAscii() + "m" ));
+            ////       ant1 =  QString("%1 ").arg(dL1[0],0,'f',4);
+            ////       emit(newMessage(_staID + ": L1 APC DX " + ant1.toAscii() + "m" ));
+            ////       ant1 =  QString("%1 ").arg(dL1[1],0,'f',4);
+            ////       emit(newMessage(_staID + ": L1 APC DY " + ant1.toAscii() + "m" ));
+            ////       ant1 =  QString("%1 ").arg(dL1[2],0,'f',4);
+            ////       emit(newMessage(_staID + ": L1 APC DZ " + ant1.toAscii() + "m" ));
+            ////       ant1 =  QString("%1 ").arg(dL2[0],0,'f',4);
+            ////       emit(newMessage(_staID + ": L2 APC DX " + ant1.toAscii() + "m" ));
+            ////       ant1 =  QString("%1 ").arg(dL2[1],0,'f',4);
+            ////       emit(newMessage(_staID + ": L2 APC DY " + ant1.toAscii() + "m" ));
+            ////       ant1 =  QString("%1 ").arg(dL2[2],0,'f',4);
+            ////       emit(newMessage(_staID + ": L2 APC DZ " + ant1.toAscii() + "m" ));
+            ////     }
+	    //// 	_rnx_set_position = true;
+            ////   }
+            //// }  
 
 	    if ( dump ) {
 	      long iSec    = long(floor(obs->_o.GPSWeeks+0.5));
@@ -829,40 +829,31 @@ void bncGetThread::run() {
             }
           }
 
-          // RTCMv3 antenna XYZ
+          // antenna XYZ
           // ------------------
-          if (0<_decoder->_antList5.size()) {
-            QString ant1,ant2,ant3;
-            for (int ii=0;ii<_decoder->_antList5.size();ii+=3) {
-              ant1 =  QString("%1 ").arg(_decoder->_antList5[ii+0]*0.0001,0,'f',4);
-              ant2 =  QString("%1 ").arg(_decoder->_antList5[ii+1]*0.0001,0,'f',4);
-              ant3 =  QString("%1 ").arg(_decoder->_antList5[ii+2]*0.0001,0,'f',4);
-              emit(newMessage(_staID + ": ARP (ITRF) X " + ant1.toAscii() + "m" ));
-              emit(newMessage(_staID + ": ARP (ITRF) Y " + ant2.toAscii() + "m"));
-              emit(newMessage(_staID + ": ARP (ITRF) Z " + ant3.toAscii() + "m"));
-            }
-          }
-
-          // RTCMv3 antenna XYZ-H
-          // --------------------
-          if (0<_decoder->_antList6.size()) {
-            QString ant1,ant2,ant3,ant4;
-            for (int ii=0;ii<_decoder->_antList6.size();ii+=4) {
-              ant1 =  QString("%1 ").arg(_decoder->_antList6[ii+0]*0.0001,0,'f',4);
-              ant2 =  QString("%1 ").arg(_decoder->_antList6[ii+1]*0.0001,0,'f',4);
-              ant3 =  QString("%1 ").arg(_decoder->_antList6[ii+2]*0.0001,0,'f',4);
-              ant4 =  QString("%1 ").arg(_decoder->_antList6[ii+3]*0.0001,0,'f',4);
-              emit(newMessage(_staID + ": ARP (ITRF) X " + ant1.toAscii() + "m" ));
-              emit(newMessage(_staID + ": ARP (ITRF) Y " + ant2.toAscii() + "m"));
-              emit(newMessage(_staID + ": ARP (ITRF) Z " + ant3.toAscii() + "m"));
-              emit(newMessage(_staID + ": Antenna height above ARP "  + ant4.toAscii() + "m"));
+          if (0<_decoder->_antList.size()) {
+            for (int ii=0;ii<_decoder->_antList.size();++ii) {
+	      QByteArray ant1,ant2,ant3, antT;
+              ant1 = QString("%1 ").arg(_decoder->_antList[ii].xx,0,'f',4).toAscii();
+              ant2 = QString("%1 ").arg(_decoder->_antList[ii].yy,0,'f',4).toAscii();
+              ant3 = QString("%1 ").arg(_decoder->_antList[ii].zz,0,'f',4).toAscii();
+	      switch (_decoder->_antList[ii].type) {
+	      case GPSDecoder::t_antInfo::ARP: antT = "ARP"; break;
+	      case GPSDecoder::t_antInfo::APC: antT = "APC"; break;
+	      }
+              emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m"));
+              emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m"));
+              emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m"));
+	      if (_decoder->_antList[ii].height_f) {
+		QByteArray ant4 = QString("%1 ").arg(_decoder->_antList[ii].height,0,'f',4).toAscii();
+		emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m"));
+	      }
             }
           }
         }
         _decoder->_typeList.clear();
         _decoder->_antType.clear();
-        _decoder->_antList5.clear();
-        _decoder->_antList6.clear();
+        _decoder->_antList.clear();
       }
 
       // Timeout, reconnect
