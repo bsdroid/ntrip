@@ -14,7 +14,6 @@ class t_bnscaster : public QObject {
   void printAscii(const QString& line);
   bool usedSocket() const {return _outSocket;}
   bool crdTrafo() const {return _crdTrafo;}
-  int  ic() const {return _ic;}
 
  signals:
   void error(const QByteArray msg);
