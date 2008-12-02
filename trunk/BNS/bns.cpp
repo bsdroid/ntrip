@@ -419,8 +419,8 @@ void t_bns::readEpoch() {
           char obuffer[CLOCKORBIT_BUFFERSIZE];
           int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
           if (len > 0) {
-            if (ic == 0) { emit(newOutBytes1(len));}
-            if (ic == 1) { emit(newOutBytes2(len));}
+            if (_caster.at(ic)->ic() == 1) { emit(newOutBytes1(len));}
+            if (_caster.at(ic)->ic() == 2) { emit(newOutBytes2(len));}
             _caster.at(ic)->write(obuffer, len);
           }
         }
