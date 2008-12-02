@@ -132,6 +132,8 @@ class RTCM2Decoder: public GPSDecoder {
     // for messages 20, 21 decoding
     rtcm2::RTCM2_03           _msg03;
     rtcm2::RTCM2_22           _msg22;
+    rtcm2::RTCM2_23           _msg23;
+    rtcm2::RTCM2_24           _msg24;
     rtcm2::RTCM2_2021         _msg2021;
     std::map<std::string, t_ephList*> _ephList;
 
