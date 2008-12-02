@@ -182,14 +182,41 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
       _msg22.extract(_PP);
     }
 
+    else if ( _PP.ID() == 23 ) {
+      _msg23.extract(_PP);
+    }
+
+    else if ( _PP.ID() == 24 ) {
+      _msg24.extract(_PP);
+    }
+
     // Output for RTCM scan
-    if ( _PP.ID() == 3 ) {
-      _antList.push_back(t_antInfo());
-
-      this->getStaCrd(_antList.back().xx, _antList.back().yy, _antList.back().zz);
-
-      _antList.back().type     = t_antInfo::APC;
-      _antList.back().message  = _PP.ID();
+    if     ( _PP.ID() == 3 ) {
+      if ( _msg03.validMsg ) {
+	_antList.push_back(t_antInfo());
+	
+	this->getStaCrd(_antList.back().xx, _antList.back().yy, _antList.back().zz);
+	
+	_antList.back().type     = t_antInfo::APC;
+	_antList.back().message  = _PP.ID();
+      }
+    }
+    else if ( _PP.ID() == 23 ) {
+      if ( _msg23.validMsg ) {
+	_antType.push_back(_msg23.antType.c_str());
+      }
+    }
+    else if ( _PP.ID() == 24 ) {
+      if ( _msg24.validMsg ) {
+	_antList.push_back(t_antInfo());
+	
+	_antList.back().xx = _msg24.x;
+	_antList.back().yy = _msg24.y;
+	_antList.back().zz = _msg24.z;
+	
+	_antList.back().type     = t_antInfo::ARP;
+	_antList.back().message  = _PP.ID();
+      }
     }
   }
   return success;

@@ -65,7 +65,9 @@ class RTCM2_2021 {
 
 class RTCM2_22 {
  public:
-  RTCM2_22() { }
+  RTCM2_22() { 
+    validMsg = false;
+  }
   
   void extract(const RTCM2packet& P);
 
