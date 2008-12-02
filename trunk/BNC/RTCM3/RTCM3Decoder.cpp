@@ -235,19 +235,26 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           // ------------------
           else if(rr == 1005)
           {
-            _antList5.push_back(_Parser.antX);
-            _antList5.push_back(_Parser.antY);
-            _antList5.push_back(_Parser.antZ);
+	    _antList.push_back(t_antInfo());
+	    _antList.back().type     = t_antInfo::ARP;
+	    _antList.back().xx       = _Parser.antX * 1e-4;
+	    _antList.back().yy       = _Parser.antY * 1e-4;
+	    _antList.back().zz       = _Parser.antZ * 1e-4;
+	    _antList.back().message  = rr;
           }
 
           // RTCMv3 antenna XYZ-H
           // --------------------
           else if(rr == 1006)
           {
-            _antList6.push_back(_Parser.antX);
-            _antList6.push_back(_Parser.antY);
-            _antList6.push_back(_Parser.antZ);
-            _antList6.push_back(_Parser.antH);
+	    _antList.push_back(t_antInfo());
+	    _antList.back().type     = t_antInfo::ARP;
+	    _antList.back().xx       = _Parser.antX * 1e-4;
+	    _antList.back().yy       = _Parser.antY * 1e-4;
+	    _antList.back().zz       = _Parser.antZ * 1e-4;
+	    _antList.back().height   = _Parser.antH * 1e-4;
+	    _antList.back().height_f = true;
+	    _antList.back().message  = rr;
           }
 
           // GNSS Observations
