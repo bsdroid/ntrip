@@ -771,7 +771,7 @@ In Qt-based desktop environments (like KDE) on Unix/Linux platforms it may happe
 Currently BNC only handles GPS, SBAS and GLONASS data. Galileo is not yet supported.
 </li>
 <li>
-BNC currently will only handle C1, C2, P1, P2, L1, L2, S1, and S2 observations. Which observables are available on a particular stream will depend on the setup of source receiver and the data format used. RTCM Version 2.x streams do not carry signal-to-noise ratio 'S' values while RTCM Version 3.x streams can only transport one code observable per frequency. Note that signal-to-noise ratios 'S' are also logged mapped to integer numbers 1 to 9.
+BNC currently will only handle C1, C2, P1, P2, L1, L2, S1, and S2 observations as well as the cumulative loss of continuity and lock time indicators. Which observables and indicators are available on a particular stream will depend on the setup of source receiver and the data format used. RTCM Version 2.x streams do not carry signal-to-noise ratio 'S' values while RTCM Version 3.x streams can only transport one code observable per frequency. Note that signal-to-noise ratios 'S' are also logged mapped to integer numbers 1 to 9.
 </li>
 <li>
 Using RTCM Version 3.x, BNC will properly handle message types 1002, 1004, 1010, and 1012. Note that when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
@@ -797,6 +797,9 @@ The source code provided by NRCan for decoding RTIGS streams is 32-bit dependent
 </li>
 <li>
 Once BNC has been started, many of its configuration options can not be changed as long as it is stopped. See chapter 'Reread Configuration' for on-the-fly configuration exceptions.
+</li>
+<li>
+On Window systems it is not possible to run several BNC jobs in parallel on the same host because processing options are saved in the Windows register. However, this is possible on Unix/Linux/Mac systems where the configuration is saved in files. You may start several BNC jobs from shell stripts, each with its own definition of $HOME (e.g. export $HOME=/home/user/dir/bnc_test) before calling BNC so that the configuration file is expected at '/home/user/dir/bnc_test/.config/BKG/BKG_NTRIP_client.conf'.
 </li>
 <br>
 </ul>
