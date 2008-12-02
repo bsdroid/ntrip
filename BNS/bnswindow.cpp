@@ -432,29 +432,29 @@ bnsWindow::bnsWindow() {
   _statusLbl[0] = new QLabel("0 byte(s)"); _statusCnt[0] = 0;
   _statusLbl[1] = new QLabel("0 byte(s)"); _statusCnt[1] = 0;
   _statusLbl[2] = new QLabel("0 byte(s)"); _statusCnt[2] = 0;
-  _statusLbl[3] = new QLabel("RINEX Ephemeris:");  
+  _statusLbl[7] = new QLabel("RINEX Ephemeris:");  
   _statusLbl[4] = new QLabel("Clocks & Orbits:");
   _statusLbl[5] = new QLabel("Ephemeris Corrections I:");  
   _statusLbl[6] = new QLabel("Ephemeris Corrections II:");  
-  _statusLbl[7] = new QLabel("0 byte(s)"); _statusCnt[3] = 0;
+  _statusLbl[3] = new QLabel("0 byte(s)"); _statusCnt[3] = 0;
 
   _statusLbl[0]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
   _statusLbl[1]->setWhatsThis(tr("Status of incoming stream of clocks and orbits."));
   _statusLbl[2]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster."));
-  _statusLbl[3]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
+  _statusLbl[7]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
   _statusLbl[4]->setWhatsThis(tr("Status of incoming stream of clocks and orbits I."));
   _statusLbl[5]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster I."));
   _statusLbl[6]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster II."));
-  _statusLbl[7]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster II."));
+  _statusLbl[3]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster II."));
 
-  layout_status->addWidget(_statusLbl[3], 0, 0);
+  layout_status->addWidget(_statusLbl[7], 0, 0);
   layout_status->addWidget(_statusLbl[0], 0, 1);
   layout_status->addWidget(_statusLbl[4], 1, 0);
   layout_status->addWidget(_statusLbl[1], 1, 1);
   layout_status->addWidget(_statusLbl[5], 0, 2);
   layout_status->addWidget(_statusLbl[2], 0, 3);
   layout_status->addWidget(_statusLbl[6], 1, 2);
-  layout_status->addWidget(_statusLbl[7], 1, 3);
+  layout_status->addWidget(_statusLbl[3], 1, 3);
   _status->setLayout(layout_status);
 
   // Main Layout
