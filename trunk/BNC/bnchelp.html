@@ -799,7 +799,7 @@ The source code provided by NRCan for decoding RTIGS streams is 32-bit dependent
 Once BNC has been started, many of its configuration options can not be changed as long as it is stopped. See chapter 'Reread Configuration' for on-the-fly configuration exceptions.
 </li>
 <li>
-On Window systems it is not possible to run several BNC jobs in parallel on the same host because processing options are saved in the Windows register. However, this is possible on Unix/Linux/Mac systems where the configuration is saved in files. You may start several BNC jobs from shell stripts, each with its own definition of $HOME (e.g. export $HOME=/home/user/dir/bnc_test) before calling BNC so that the configuration file is expected at '/home/user/dir/bnc_test/.config/BKG/BKG_NTRIP_client.conf'.
+On Window systems it is not possible to run several BNC jobs in parallel on the same host because processing options are saved in the same Windows register. However, this is possible on Unix/Linux/Mac systems where the configuration is saved in files. You may start several BNC jobs from shell scripts, each script with its own (re-)definition of $HOME directory (e.g. export $HOME=/home/user/bnc_test) before calling BNC so that the configuration file is expected e.g. at '/home/user/bnc_test/.config/BKG/BKG_NTRIP_client.conf'.
 </li>
 <br>
 </ul>
