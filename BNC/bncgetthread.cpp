@@ -704,13 +704,8 @@ void bncGetThread::run() {
 		emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m"));
 	      }
 	      emit(newAntCrd(_staID, 
-			     _decoder->_antList[ii].zz, _decoder->_antList[ii].zz, _decoder->_antList[ii].zz, 
+			     _decoder->_antList[ii].xx, _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
 			     antT));
-	      cout << "new crd " << _staID.data() << fixed << setprecision(3)
-		   << " " << setw(14) << _decoder->_antList[ii].xx
-		   << " " << setw(14) << _decoder->_antList[ii].yy
-		   << " " << setw(14) << _decoder->_antList[ii].zz
-		   << endl;
             }
           }
         }
@@ -722,7 +717,7 @@ void bncGetThread::run() {
 	    case GPSDecoder::t_antInfo::APC: antT = "APC"; break;
 	    }
 	    emit(newAntCrd(_staID, 
-			   _decoder->_antList[ii].zz, _decoder->_antList[ii].zz, _decoder->_antList[ii].zz, 
+			   _decoder->_antList[ii].xx, _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
 			   antT));
 	  }
 	}
