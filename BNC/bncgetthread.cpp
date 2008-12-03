@@ -659,6 +659,80 @@ void bncGetThread::run() {
 
         delete [] data;
 
+	
+	// RTCM scan output
+	// ----------------
+        if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
+
+          // RTCMv3 message types
+          // --------------------
+          if (0<_decoder->_typeList.size()) {
+            QString type;
+            for (int ii=0;ii<_decoder->_typeList.size();ii++) {
+              type =  QString("%1 ").arg(_decoder->_typeList[ii]);
+              emit(newMessage(_staID + ": Received message type " + type.toAscii() ));
+            }
+          }
+
+          // RTCMv3 antenna descriptor
+          // -------------------------
+          if (0<_decoder->_antType.size()) {
+            QString ant1;
+            for (int ii=0;ii<_decoder->_antType.size();ii++) {
+              ant1 =  QString("%1 ").arg(_decoder->_antType[ii]);
+              emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii() ));
+            }
+          }
+
+          // antenna XYZ
+          // ------------------
+          if (0<_decoder->_antList.size()) {
+            for (int ii=0;ii<_decoder->_antList.size();++ii) {
+	      QByteArray ant1,ant2,ant3, antT;
+              ant1 = QString("%1 ").arg(_decoder->_antList[ii].xx,0,'f',4).toAscii();
+              ant2 = QString("%1 ").arg(_decoder->_antList[ii].yy,0,'f',4).toAscii();
+              ant3 = QString("%1 ").arg(_decoder->_antList[ii].zz,0,'f',4).toAscii();
+	      switch (_decoder->_antList[ii].type) {
+	      case GPSDecoder::t_antInfo::ARP: antT = "ARP"; break;
+	      case GPSDecoder::t_antInfo::APC: antT = "APC"; break;
+	      }
+              emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m"));
+              emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m"));
+              emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m"));
+	      if (_decoder->_antList[ii].height_f) {
+		QByteArray ant4 = QString("%1 ").arg(_decoder->_antList[ii].height,0,'f',4).toAscii();
+		emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m"));
+	      }
+	      emit(newAntCrd(_staID, 
+			     _decoder->_antList[ii].zz, _decoder->_antList[ii].zz, _decoder->_antList[ii].zz, 
+			     antT));
+	      cout << "new crd " << _staID.data() << fixed << setprecision(3)
+		   << " " << setw(14) << _decoder->_antList[ii].xx
+		   << " " << setw(14) << _decoder->_antList[ii].yy
+		   << " " << setw(14) << _decoder->_antList[ii].zz
+		   << endl;
+            }
+          }
+        }
+        if ( _checkMountPoint == "ANTCRD_ONLY" && _decoder->_antList.size() ) {
+	  for (int ii=0;ii<_decoder->_antList.size();++ii) {
+	    QByteArray antT;
+	    switch (_decoder->_antList[ii].type) {
+	    case GPSDecoder::t_antInfo::ARP: antT = "ARP"; break;
+	    case GPSDecoder::t_antInfo::APC: antT = "APC"; break;
+	    }
+	    emit(newAntCrd(_staID, 
+			   _decoder->_antList[ii].zz, _decoder->_antList[ii].zz, _decoder->_antList[ii].zz, 
+			   antT));
+	  }
+	}
+	
+        _decoder->_typeList.clear();
+        _decoder->_antType.clear();
+        _decoder->_antList.clear();
+
+	// Loop over all observations (observations output)
+	// ------------------------------------------------
         QListIterator<p_obs> it(_decoder->_obsList);
         while (it.hasNext()) {
           p_obs obs = it.next();
@@ -807,53 +881,6 @@ void bncGetThread::run() {
         }
         _decoder->_obsList.clear();
 
-        if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
-
-          // RTCMv3 message types
-          // --------------------
-          if (0<_decoder->_typeList.size()) {
-            QString type;
-            for (int ii=0;ii<_decoder->_typeList.size();ii++) {
-              type =  QString("%1 ").arg(_decoder->_typeList[ii]);
-              emit(newMessage(_staID + ": Received message type " + type.toAscii() ));
-            }
-          }
-
-          // RTCMv3 antenna descriptor
-          // -------------------------
-          if (0<_decoder->_antType.size()) {
-            QString ant1;
-            for (int ii=0;ii<_decoder->_antType.size();ii++) {
-              ant1 =  QString("%1 ").arg(_decoder->_antType[ii]);
-              emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii() ));
-            }
-          }
-
-          // antenna XYZ
-          // ------------------
-          if (0<_decoder->_antList.size()) {
-            for (int ii=0;ii<_decoder->_antList.size();++ii) {
-	      QByteArray ant1,ant2,ant3, antT;
-              ant1 = QString("%1 ").arg(_decoder->_antList[ii].xx,0,'f',4).toAscii();
-              ant2 = QString("%1 ").arg(_decoder->_antList[ii].yy,0,'f',4).toAscii();
-              ant3 = QString("%1 ").arg(_decoder->_antList[ii].zz,0,'f',4).toAscii();
-	      switch (_decoder->_antList[ii].type) {
-	      case GPSDecoder::t_antInfo::ARP: antT = "ARP"; break;
-	      case GPSDecoder::t_antInfo::APC: antT = "APC"; break;
-	      }
-              emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m"));
-              emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m"));
-              emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m"));
-	      if (_decoder->_antList[ii].height_f) {
-		QByteArray ant4 = QString("%1 ").arg(_decoder->_antList[ii].height,0,'f',4).toAscii();
-		emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m"));
-	      }
-            }
-          }
-        }
-        _decoder->_typeList.clear();
-        _decoder->_antType.clear();
-        _decoder->_antList.clear();
       }
 
       // Timeout, reconnect
