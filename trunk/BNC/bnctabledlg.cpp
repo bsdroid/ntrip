@@ -52,11 +52,18 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   QSettings settings;
   _casterHostLineEdit     = new QComboBox();
+  _casterHostLineEdit->setDuplicatesEnabled(false);
+  _casterHostLineEdit->setEditable(true);
   int ww = QFontMetrics(_casterHostLineEdit->font()).width('w');
   _casterHostLineEdit->setMaximumWidth(20*ww);
+  QStringList casterHostList = settings.value("casterHostList").toStringList();
   _casterHostLineEdit->addItem(settings.value("casterHost").toString());
-  _casterHostLineEdit->addItems(settings.value("casterHostList").toStringList());
-  _casterHostLineEdit->setEditable(true);
+  for (QStringList::const_iterator 
+	 ii = casterHostList.begin(); ii != casterHostList.end(); ii++) {
+    if (_casterHostLineEdit->findText(*ii, Qt::MatchFixedString) < 0) {
+      _casterHostLineEdit->addItem(*ii);
+    }
+  }
   _casterPortLineEdit     = new QLineEdit(settings.value("casterPort").toString());
   _casterPortLineEdit->setMaximumWidth(9*ww);
   _casterUserLineEdit     = new QLineEdit(settings.value("casterUser").toString());
