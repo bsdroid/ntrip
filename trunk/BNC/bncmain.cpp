@@ -108,6 +108,7 @@ int main(int argc, char *argv[]) {
   QSettings settings;
   if (settings.allKeys().size() == 0) {
     settings.setValue("casterHost", "www.euref-ip.net");
+    settings.setValue("casterHostList", QStringList());
     settings.setValue("casterPort", 2101);
     settings.setValue("rnxIntr",    "15 min");
     settings.setValue("ephIntr",    "1 day");

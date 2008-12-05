@@ -51,7 +51,7 @@ class bncTableDlg : public QDialog {
     void slotWhatsThis();
 
   private:
-    QLineEdit*   _casterHostLineEdit;
+    QComboBox*   _casterHostLineEdit;
     QLineEdit*   _casterPortLineEdit;
     QLineEdit*   _casterUserLineEdit;
     QLineEdit*   _casterPasswordLineEdit;
