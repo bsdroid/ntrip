@@ -51,9 +51,12 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
   QSettings settings;
-  _casterHostLineEdit     = new QLineEdit(settings.value("casterHost").toString());
+  _casterHostLineEdit     = new QComboBox();
   int ww = QFontMetrics(_casterHostLineEdit->font()).width('w');
-  _casterHostLineEdit->setMaximumWidth(18*ww);
+  _casterHostLineEdit->setMaximumWidth(20*ww);
+  _casterHostLineEdit->addItem(settings.value("casterHost").toString());
+  _casterHostLineEdit->addItems(settings.value("casterHostList").toStringList());
+  _casterHostLineEdit->setEditable(true);
   _casterPortLineEdit     = new QLineEdit(settings.value("casterPort").toString());
   _casterPortLineEdit->setMaximumWidth(9*ww);
   _casterUserLineEdit     = new QLineEdit(settings.value("casterUser").toString());
@@ -215,7 +218,7 @@ void bncTableDlg::slotGetTable() {
 
   _allLines.clear();
 
-  if ( getFullTable(_casterHostLineEdit->text(),
+  if ( getFullTable(_casterHostLineEdit->currentText(),
                     _casterPortLineEdit->text().toInt(),
                     _allLines) != success ) {
     QMessageBox::warning(0, "BNC", "Cannot retrieve table of data");
@@ -289,7 +292,12 @@ void bncTableDlg::slotGetTable() {
 void bncTableDlg::accept() {
 
   QSettings settings;
-  settings.setValue("casterHost", _casterHostLineEdit->text());
+  settings.setValue("casterHost", _casterHostLineEdit->currentText());
+  QStringList casterHostList;
+  for (int ii = 0; ii < _casterHostLineEdit->count(); ii++) {
+    casterHostList.push_back(_casterHostLineEdit->itemText(ii));
+  } 
+  settings.setValue("casterHostList", casterHostList);
   settings.setValue("casterPort", _casterPortLineEdit->text());
   settings.setValue("casterUser", _casterUserLineEdit->text());
   settings.setValue("casterPassword", _casterPasswordLineEdit->text());
@@ -308,7 +316,7 @@ void bncTableDlg::accept() {
         QUrl url;
         url.setUserName(QUrl::toPercentEncoding(_casterUserLineEdit->text()));
         url.setPassword(QUrl::toPercentEncoding(_casterPasswordLineEdit->text()));
-        url.setHost(_casterHostLineEdit->text());
+        url.setHost(_casterHostLineEdit->currentText());
         url.setPort(_casterPortLineEdit->text().toInt());
         url.setPath(item->text());
 
