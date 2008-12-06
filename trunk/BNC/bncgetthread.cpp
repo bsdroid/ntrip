@@ -260,18 +260,10 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
   hlp.setPort(mountPoint.port());
   hlp.setPath(mountPoint.path());
 
-  QByteArray reqStr;
-  if ( proxyHost.isEmpty() ) {
-    if (hlp.path().indexOf("/") != 0) {
-      hlp.setPath("/");
-    }
-    reqStr = "GET " + hlp.path().toAscii() + " HTTP/1.0\r\n";
-  } else {
-    reqStr = "GET " + hlp.toEncoded() + " HTTP/1.0\r\n";
-  }
-  reqStr += "User-Agent: NTRIP BNC/" AGENTVERSION "\r\n"
-            "Host: " + hlp.host().toAscii() + "\r\n"
-            + userAndPwd + "\r\n";
+  QByteArray reqStr = "GET " + hlp.toEncoded() + " HTTP/1.0\r\n" 
+                    + "User-Agent: NTRIP BNC/" AGENTVERSION "\r\n"
+                      "Host: " + hlp.host().toAscii() + "\r\n"
+                    + userAndPwd + "\r\n";
 
   // NMEA string to handle VRS stream
   // --------------------------------
