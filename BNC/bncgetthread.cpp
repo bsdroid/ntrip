@@ -225,30 +225,21 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
 
   // Connect the Socket
   // ------------------
+  QSettings settings;
+  QString proxyHost = settings.value("proxyHost").toString();
+  int     proxyPort = settings.value("proxyPort").toInt();
+ 
   QTcpSocket* socket = new QTcpSocket();
-
-  socket->connectToHost(mountPoint.host(), mountPoint.port());
-
+  if ( proxyHost.isEmpty() ) {
+    socket->connectToHost(mountPoint.host(), mountPoint.port());
+  }
+  else {
+    socket->connectToHost(proxyHost, proxyPort);
+  }
   if (!socket->waitForConnected(timeOut)) {
     msg += "Connect timeout\n";
     delete socket;
     return 0;
-  }
-
-  // Set Proxy (application-wide)
-  // ----------------------------
-  QSettings settings;
-  QString proxyHost = settings.value("proxyHost").toString();
-
-  if (proxyHost.isEmpty()) {
-    QNetworkProxy proxy(QNetworkProxy::NoProxy);
-    QNetworkProxy::setApplicationProxy(proxy);
-  }
-  else {
-    QNetworkProxy proxy(QNetworkProxy::Socks5Proxy);
-    proxy.setHostName(proxyHost);
-    proxy.setPort(settings.value("proxyPort").toInt());
-    QNetworkProxy::setApplicationProxy(proxy);
   }
 
   // Send Request
@@ -268,14 +259,19 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
   hlp.setHost(mountPoint.host());
   hlp.setPort(mountPoint.port());
   hlp.setPath(mountPoint.path());
-  if (hlp.path().indexOf("/") != 0) {
-    hlp.setPath("/");
+
+  QByteArray reqStr;
+  if ( proxyHost.isEmpty() ) {
+    if (hlp.path().indexOf("/") != 0) {
+      hlp.setPath("/");
+    }
+    reqStr = "GET " + hlp.path().toAscii() + " HTTP/1.0\r\n";
+  } else {
+    reqStr = "GET " + hlp.toEncoded() + " HTTP/1.0\r\n";
   }
-  
-  QByteArray reqStr = "GET " + hlp.path().toAscii() + " HTTP/1.0\r\n" +
-                      "User-Agent: NTRIP BNC/" AGENTVERSION "\r\n"
-                      "Host: " + hlp.host().toAscii() + "\r\n"
-                      + userAndPwd + "\r\n";
+  reqStr += "User-Agent: NTRIP BNC/" AGENTVERSION "\r\n"
+            "Host: " + hlp.host().toAscii() + "\r\n"
+            + userAndPwd + "\r\n";
 
   // NMEA string to handle VRS stream
   // --------------------------------
