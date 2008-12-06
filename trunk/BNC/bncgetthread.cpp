@@ -239,18 +239,17 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
   // ----------------------------
   QSettings settings;
   QString proxyHost = settings.value("proxyHost").toString();
-  int     proxyPort = settings.value("proxyPort").toInt();
 
-  QNetworkProxy proxy;
   if (proxyHost.isEmpty()) {
-    proxy.setType(QNetworkProxy::NoProxy);
+    QNetworkProxy proxy(QNetworkProxy::NoProxy);
+    QNetworkProxy::setApplicationProxy(proxy);
   }
   else {
-    ////    proxy.setType(QNetworkProxy::HttpProxy);
+    QNetworkProxy proxy(QNetworkProxy::Socks5Proxy);
     proxy.setHostName(proxyHost);
-    proxy.setPort(proxyPort);
+    proxy.setPort(settings.value("proxyPort").toInt());
+    QNetworkProxy::setApplicationProxy(proxy);
   }
-  QNetworkProxy::setApplicationProxy(proxy);
 
   // Send Request
   // ------------
