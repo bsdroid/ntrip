@@ -219,7 +219,11 @@ Specify the full path to a file where received Broadcast Ephemeris will be logge
 
 <p><a name="co"><h4>4.6. Clocks & Orbits</h4></p>
 <p>
-BNS requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system in SP3 format. They can be provided by a real-time GNSS engine such as RTNet. Their sampling rate should not be much greater than 10 sec. Note that otherwise in IP streaming involved tools on the NTRIP Broadcaster or client side may respond with a timeout.
+BNS requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system in SP3 format. They can be provided by a real-time GNSS engine such as RTNet. In contrast to SP3 the required clocks have to be corrected for relativistic effects, namely the 2nd-order periodic time correction -2(R * V)c^2.
+</p>
+
+<p>
+The sampling rate should not be much greater than 10 sec. Note that otherwise in IP streaming involved tools on the NTRIP Broadcaster or client side may respond with a timeout.
 </p>
 
 <p>
