@@ -124,6 +124,20 @@ int main(int argc, char *argv[]) {
     settings.setValue("messTypes",  "");
   }
 
+  // Truncate list of casters
+  // ------------------------
+  int maxListSize = 5;
+  QStringList casterHostList = settings.value("casterHostList").toStringList();
+  if ( casterHostList.count() > maxListSize ) {
+    QStringList listCopy;
+    for (int ii = 0; ii < maxListSize; ii++) {
+      listCopy.push_back(casterHostList[ii]);
+    }
+    settings.setValue("casterHostList", listCopy);
+  }
+
+
+
   bncApp app(argc, argv, GUIenabled);
 
   int waitCoTime    = settings.value("corrTime").toInt();
