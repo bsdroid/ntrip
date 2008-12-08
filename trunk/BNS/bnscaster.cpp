@@ -81,7 +81,7 @@ void t_bnscaster::open() {
 
   delete _outSocket; _outSocket = 0;
 
-  double minDt = exp2(_outSocketOpenTrial);
+  double minDt = pow(2.0,_outSocketOpenTrial);
   if (++_outSocketOpenTrial > 8) {
     _outSocketOpenTrial = 8;
   }
