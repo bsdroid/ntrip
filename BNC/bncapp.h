@@ -35,7 +35,7 @@
 class bncApp : public QApplication {
   Q_OBJECT
   public:
-    bncApp(int argc, char* argv[], bool GUIenabled);
+    bncApp(int& argc, char* argv[], bool GUIenabled);
     virtual ~bncApp();  
     QString bncVersion() const {return _bncVersion;}
     void setPort(int port);

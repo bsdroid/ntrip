@@ -66,7 +66,7 @@ extern "C" {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncApp::bncApp(int argc, char* argv[], bool GUIenabled) : 
+bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) : 
   QApplication(argc, argv, GUIenabled) {
 
   _bncVersion  = "BNC 1.6";
