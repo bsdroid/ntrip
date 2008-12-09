@@ -108,7 +108,7 @@ All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/
 &nbsp; &nbsp; &nbsp; 3.9.2. <a href=#advfail>Failure Threshold</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.3. <a href=#advreco>Recovery Threshold</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.4. <a href=#pause>Pause</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.5. <a href=#advscript>Advisory Script</a><br>
+&nbsp; &nbsp; &nbsp; 3.9.5. <a href=#advscript>Script</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.6. <a href=#perflog>Performance Log</a><br>
 3.10. <a href=#messtypes>RTCM Scan</a><br>
 &nbsp; &nbsp; &nbsp; 3.10.1. <a href=#messmount>Mountpoint</a><br>
@@ -530,7 +530,7 @@ At various times, the incoming stream might become unavailable or corrupted. In 
 Outage and corruption events are reported in the Log file/section. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilise BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
 </p>
 
-<p><a name="obsrate"><h4>3.9.1 Observation Rate - mandatory if 'Failure threshold', 'Recovery threshold', 'Pause' and 'Advisory Script' is set</h4></p>
+<p><a name="obsrate"><h4>3.9.1 Observation Rate - mandatory if 'Failure threshold', 'Recovery threshold', 'Pause' and 'Script' is set</h4></p>
 <p>
 BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough a priory estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is by-passed (decoding attempt will never get paused).
 </p> 
@@ -559,7 +559,7 @@ In case of a corrupted stream, the decoding process can be paused and decodings 
 Do not tick 'Pause' if you want to prevent BNC from making any decoding pause. Be aware that this may incur an unnecessary workload.
 </p>
 
-<p><a name="advscript"><h4>3.9.5 Advisory Script - optional </h4></p>
+<p><a name="advscript"><h4>3.9.5 Script - optional </h4></p>
 <p>
 As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (%1 and %2 on Windows systems or $1 and $2 on Unix/Linux/Mac systems) together with date and time information.
 </p>
