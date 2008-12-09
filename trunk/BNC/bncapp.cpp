@@ -69,7 +69,7 @@ extern "C" {
 bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) : 
   QApplication(argc, argv, GUIenabled) {
 
-  _bncVersion  = "BNC 1.6";
+  _bncVersion  = "BNC 1.7";
 
   _logFileFlag = 0;
   _logFile     = 0;
