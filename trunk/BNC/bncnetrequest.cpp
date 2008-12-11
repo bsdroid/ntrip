@@ -106,7 +106,7 @@ t_irc bncNetRequest::request(const QUrl& mountPoint, const QByteArray& ggaStr) {
 ////////////////////////////////////////////////////////////////////////////
 void bncNetRequest::slotReplyFinished(QNetworkReply*) {
   cout << "slotReplyFinished" << endl;
-  delete this;
+  this->deleteLater();
 }
 
 // 
