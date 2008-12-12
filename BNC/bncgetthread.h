@@ -62,7 +62,7 @@ class bncGetThread : public QThread {
    void newObs(QByteArray staID, bool firstObs, p_obs obs);
    void newAntCrd(QByteArray staID, double xx, double yy, double zz, QByteArray antType);
    void error(QByteArray staID);
-   void newMessage(QByteArray msg);
+   void newMessage(QByteArray msg, bool showOnScreen);
 
  public slots:
    void slotNewEphGPS(gpsephemeris gpseph);

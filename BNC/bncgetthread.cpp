@@ -110,8 +110,8 @@ void bncGetThread::initialize() {
 
       
   bncApp* app = (bncApp*) qApp;
-  app->connect(this, SIGNAL(newMessage(QByteArray)), 
-               app, SLOT(slotMessage(const QByteArray)));
+  app->connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+               app, SLOT(slotMessage(const QByteArray,bool)));
 
   _decoder    = 0;
   _socket     = 0;
@@ -405,16 +405,16 @@ t_irc bncGetThread::initRun() {
         }
         emit(newMessage((_staID + ": Caster Response: " + line + 
                          "          Adjust User-ID and Password Register, see"
-                         "\n          " + reg).toAscii()));
+                         "\n          " + reg).toAscii(), true));
         return fatal;
       }
       if (line.indexOf("ICY 200 OK") != 0) {
-        emit(newMessage((_staID + ": Wrong Caster Response:\n" + line).toAscii()));
+        emit(newMessage((_staID + ": Wrong Caster Response:\n" + line).toAscii(), true));
         return failure;
       }
     }
     else {
-      emit(newMessage(_staID + ": Response Timeout"));
+      emit(newMessage(_staID + ": Response Timeout", true));
       return failure;
     }
   }
@@ -423,25 +423,25 @@ t_irc bncGetThread::initRun() {
   // ----------------------
   if (!_decoder) { 
     if      (_format.indexOf("RTCM_2") != -1) {
-      emit(newMessage("Get Data: " + _staID + " in RTCM 2.x format"));
+      emit(newMessage("Get Data: " + _staID + " in RTCM 2.x format", true));
       _decoder = new RTCM2Decoder(_staID.data());
     }
     else if (_format.indexOf("RTCM_3") != -1) {
-      emit(newMessage("Get Data: " + _staID + " in RTCM 3.x format"));
+      emit(newMessage("Get Data: " + _staID + " in RTCM 3.x format", true));
       _decoder = new RTCM3Decoder(_staID);
-      connect((RTCM3Decoder*) _decoder, SIGNAL(newMessage(QByteArray)), 
-              this, SIGNAL(newMessage(QByteArray)));
+      connect((RTCM3Decoder*) _decoder, SIGNAL(newMessage(QByteArray,bool)), 
+              this, SIGNAL(newMessage(QByteArray,bool)));
     }
     else if (_format.indexOf("RTIGS") != -1) {
-      emit(newMessage("Get Data: " + _staID + " in RTIGS format"));
+      emit(newMessage("Get Data: " + _staID + " in RTIGS format", true));
       _decoder = new RTIGSDecoder();
     }
     else if (_format.indexOf("ZERO") != -1) {
-      emit(newMessage("Get Data: " + _staID + " in original format"));
+      emit(newMessage("Get Data: " + _staID + " in original format", true));
       _decoder = new bncZeroDecoder(_staID);
     }
     else {
-      emit(newMessage(_staID + ": Unknown data format " + _format));
+      emit(newMessage(_staID + ": Unknown data format " + _format, true));
       if (_rawInpFile) {
         cerr << "Uknown data format" << endl;
         ::exit(0);
@@ -490,7 +490,7 @@ void bncGetThread::run() {
     return;
   }
   else if (irc != success) {
-    emit(newMessage(_staID + ": initRun failed, reconnecting"));
+    emit(newMessage(_staID + ": initRun failed, reconnecting", true));
     tryReconnect();
   }
 
@@ -505,7 +505,7 @@ void bncGetThread::run() {
   while (true) {
     try {
       if (_socket && _socket->state() != QAbstractSocket::ConnectedState) {
-        emit(newMessage(_staID + ": Socket not connected, reconnecting"));
+        emit(newMessage(_staID + ": Socket not connected, reconnecting", true));
         tryReconnect();
       }
 
@@ -552,7 +552,7 @@ void bncGetThread::run() {
           _decoder->Decode(data, nBytes, errmsg);
 #ifdef DEBUG_RTCM2_2021
           for (unsigned ii = 0; ii < errmsg.size(); ii++) {
-            emit newMessage(_staID + ": " + errmsg[ii].c_str());
+            emit newMessage(_staID + ": " + errmsg[ii].c_str(), false);
           }
 #endif
         }
@@ -573,7 +573,7 @@ void bncGetThread::run() {
               }
 #ifdef DEBUG_RTCM2_2021
               for (unsigned ii = 0; ii < errmsg.size(); ii++) {
-                emit newMessage(_staID + ": " + errmsg[ii].c_str());
+                emit newMessage(_staID + ": " + errmsg[ii].c_str(), false);
               }
 #endif
             }
@@ -618,7 +618,8 @@ void bncGetThread::run() {
               if ( begCorrupt && !endCorrupt && secSucc > _adviseReco * 60 ) {
                 _endDateCor = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().date().toString("yy-MM-dd");
                 _endTimeCor = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().time().toString("hh:mm:ss");
-                emit(newMessage((_staID + ": Recovery threshold exceeded, corruption ended " + _endDateCor + " " + _endTimeCor).toAscii()));
+                emit(newMessage((_staID + ": Recovery threshold exceeded, corruption ended " 
+                                + _endDateCor + " " + _endTimeCor).toAscii(), true));
                 callScript(("End_Corrupted " + _endDateCor + " " + _endTimeCor + " Begin was " + _begDateCor + " " + _begTimeCor).toAscii());
                 endCorrupt = true;
                 begCorrupt = false;
@@ -631,7 +632,8 @@ void bncGetThread::run() {
                 if ( !begCorrupt && secFail > _adviseFail * 60 ) {
                   _begDateCor = _decodeSucc.toUTC().date().toString("yy-MM-dd");
                   _begTimeCor = _decodeSucc.toUTC().time().toString("hh:mm:ss");
-                  emit(newMessage((_staID + ": Failure threshold exceeded, corrupted since " + _begDateCor + " " + _begTimeCor).toAscii()));
+                  emit(newMessage((_staID + ": Failure threshold exceeded, corrupted since " 
+                                  + _begDateCor + " " + _begTimeCor).toAscii(), true));
                   callScript(("Begin_Corrupted " + _begDateCor + " " + _begTimeCor).toAscii());
                   begCorrupt = true;
                   endCorrupt = false;
@@ -652,7 +654,8 @@ void bncGetThread::run() {
           if (_inspSegm>0) {
             _endDateOut = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().date().toString("yy-MM-dd");
             _endTimeOut = QDateTime::currentDateTime().addSecs(- _adviseReco * 60).toUTC().time().toString("hh:mm:ss");
-            emit(newMessage((_staID + ": Recovery threshold exceeded, outage ended " + _endDateOut + " " + _endTimeOut).toAscii()));
+            emit(newMessage((_staID + ": Recovery threshold exceeded, outage ended " 
+                            + _endDateOut + " " + _endTimeOut).toAscii(), true));
             callScript(("End_Outage " + _endDateOut + " " + _endTimeOut + " Begin was " + _begDateOut + " " + _begTimeOut).toAscii());
           }
         }
@@ -670,7 +673,7 @@ void bncGetThread::run() {
             QString type;
             for (int ii=0;ii<_decoder->_typeList.size();ii++) {
               type =  QString("%1 ").arg(_decoder->_typeList[ii]);
-              emit(newMessage(_staID + ": Received message type " + type.toAscii() ));
+              emit(newMessage(_staID + ": Received message type " + type.toAscii(), true));
             }
           }
 
@@ -680,7 +683,7 @@ void bncGetThread::run() {
             QString ant1;
             for (int ii=0;ii<_decoder->_antType.size();ii++) {
               ant1 =  QString("%1 ").arg(_decoder->_antType[ii]);
-              emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii() ));
+              emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii(), true));
             }
           }
 
@@ -696,12 +699,12 @@ void bncGetThread::run() {
 	      case GPSDecoder::t_antInfo::ARP: antT = "ARP"; break;
 	      case GPSDecoder::t_antInfo::APC: antT = "APC"; break;
 	      }
-              emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m"));
-              emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m"));
-              emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m"));
+              emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m", true));
+              emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m", true));
+              emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m", true));
 	      if (_decoder->_antList[ii].height_f) {
 		QByteArray ant4 = QString("%1 ").arg(_decoder->_antList[ii].height,0,'f',4).toAscii();
-		emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m"));
+		emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m", true));
 	      }
 	      emit(newAntCrd(_staID, 
 			     _decoder->_antList[ii].xx, _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
@@ -751,7 +754,7 @@ void bncGetThread::run() {
             double dt = fabs(sec - obs->_o.GPSWeeks);
             if (week != obs->_o.GPSWeek || dt > maxDt) {
               if  (!wrongEpoch) {
-                emit( newMessage(_staID + ": Wrong observation epoch(s)") );
+                emit( newMessage(_staID + ": Wrong observation epoch(s)", true) );
                 wrongEpoch = true;
               }
               delete obs;
@@ -776,7 +779,7 @@ void bncGetThread::run() {
                           .arg(int((sqrt((sumLatQ - sumLat * sumLat / numLat)/numLat))*100)/100.)
                           .arg(numLat)
                           .arg(numGaps)
-                          .toAscii()) );
+                          .toAscii(), true) );
                       } else {
                         emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs")
                           .arg(_staID.data())
@@ -785,7 +788,7 @@ void bncGetThread::run() {
                           .arg(int(maxLat*100)/100.)
                           .arg(int((sqrt((sumLatQ - sumLat * sumLat / numLat)/numLat))*100)/100.)
                           .arg(numLat)
-                          .toAscii()) );
+                          .toAscii(), true) );
                       }
                     }
                     meanDiff = diffSecGPS/numLat;
@@ -881,12 +884,12 @@ void bncGetThread::run() {
       // Timeout, reconnect
       // ------------------
       else {
-        emit(newMessage(_staID + ": Data Timeout, reconnecting"));
+        emit(newMessage(_staID + ": Data Timeout, reconnecting", true));
         tryReconnect();
       }
     }
     catch (const char* msg) {
-      emit(newMessage(_staID + msg));
+      emit(newMessage(_staID + msg, true));
       tryReconnect();
     }
   }
@@ -930,7 +933,8 @@ void bncGetThread::tryReconnect() {
         if (_inspSegm>0) {
           _begDateOut = _decodeTime.toUTC().date().toString("yy-MM-dd");
           _begTimeOut = _decodeTime.toUTC().time().toString("hh:mm:ss");
-          emit(newMessage((_staID + ": Failure threshold exceeded, outage since " + _begDateOut + " " + _begTimeOut).toAscii()));
+          emit(newMessage((_staID + ": Failure threshold exceeded, outage since " 
+                          + _begDateOut + " " + _begTimeOut).toAscii(), true));
           callScript(("Begin_Outage " + _begDateOut + " " + _begTimeOut).toAscii());
         }
       }
@@ -977,7 +981,7 @@ void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
         msg += QString(" %1").arg(IODs[ii],4);
       }
       
-      emit(newMessage(msg.toAscii()));
+      emit(newMessage(msg.toAscii(), false));
 #endif
     }
   }

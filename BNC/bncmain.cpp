@@ -179,7 +179,7 @@ int main(int argc, char *argv[]) {
 
     app.connect(caster, SIGNAL(getThreadErrors()), &app, SLOT(quit()));
   
-    ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
+    ((bncApp*)qApp)->slotMessage("============ Start BNC ============", true);
 
     // Normal case - data from Internet
     // --------------------------------

@@ -53,8 +53,8 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
 
   QSettings settings;
 
-  connect(this, SIGNAL(newMessage(QByteArray)), 
-          (bncApp*) qApp, SLOT(slotMessage(const QByteArray)));
+  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+          (bncApp*) qApp, SLOT(slotMessage(const QByteArray,bool)));
 
   if ( !outFileName.isEmpty() ) {
     QString lName = outFileName;
@@ -79,7 +79,7 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
   if (_port != 0) {
     _server = new QTcpServer;
     if ( !_server->listen(QHostAddress::Any, _port) ) {
-      emit newMessage("bncCaster: cannot listen on sync port");
+      emit newMessage("bncCaster: cannot listen on sync port", true);
     }
     connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
     _sockets = new QList<QTcpSocket*>;
@@ -93,7 +93,7 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
   if (uPort != 0) {
     _uServer = new QTcpServer;
     if ( !_uServer->listen(QHostAddress::Any, uPort) ) {
-      emit newMessage("bncCaster: cannot listen on usync port");
+      emit newMessage("bncCaster: cannot listen on usync port", true);
     }
     connect(_uServer, SIGNAL(newConnection()), this, SLOT(slotNewUConnection()));
     _uSockets = new QList<QTcpSocket*>;
@@ -195,7 +195,7 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
       if ( !settings.value("outFile").toString().isEmpty() || 
            !settings.value("outPort").toString().isEmpty() ) { 
         emit( newMessage(QString("Station %1: old epoch %2 thrown away")
-                                   .arg(staID.data()).arg(iSec).toAscii()) );
+                                   .arg(staID.data()).arg(iSec).toAscii(), true) );
       }
     }
     delete obs;
@@ -219,13 +219,13 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
 void bncCaster::slotNewConnection() {
   _sockets->push_back( _server->nextPendingConnection() );
   emit( newMessage(QString("New Connection # %1")
-                   .arg(_sockets->size()).toAscii()) );
+                   .arg(_sockets->size()).toAscii(), true) );
 }
 
 void bncCaster::slotNewUConnection() {
   _uSockets->push_back( _uServer->nextPendingConnection() );
   emit( newMessage(QString("New Connection (usync) # %1")
-                   .arg(_uSockets->size()).toAscii()) );
+                   .arg(_uSockets->size()).toAscii(), true) );
 }
 
 // Add New Thread
@@ -252,9 +252,9 @@ void bncCaster::slotGetThreadError(QByteArray staID) {
   QMutexLocker locker(&_mutex);
   _staIDs.removeAll(staID);
   emit( newMessage(
-           QString("Mountpoint size %1").arg(_staIDs.size()).toAscii()) );
+           QString("Mountpoint size %1").arg(_staIDs.size()).toAscii(), true) );
   if (_staIDs.size() == 0) {
-    emit(newMessage("bncCaster:: last get thread terminated"));
+    emit(newMessage("bncCaster:: last get thread terminated", true));
     emit getThreadErrors();
   }
 }
@@ -441,7 +441,7 @@ void bncCaster::slotReadMountPoints() {
 
   emit mountPointsRead(_threads);
   emit( newMessage(QString("Configuration read: %1 stream(s)")
-                            .arg(_threads.count()).toAscii()) );
+                            .arg(_threads.count()).toAscii(), true) );
 
   // (Re-) Start the configuration timer
   // -----------------------------------

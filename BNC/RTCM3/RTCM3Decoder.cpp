@@ -162,7 +162,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                     .arg(int((sqrt((_sumLatQ - _sumLat * _sumLat / _numLat)/_numLat))*100)/100.)
                     .arg(_numLat)
                     .arg(_numGaps);
-                    emit(newMessage(QString(_staID + late ).toAscii() ) );
+                    emit(newMessage(QString(_staID + late ).toAscii(), true) );
                   } else {
                   late = QString(": Mean latency %1 sec, min %2, max %3, rms %4, %5 epochs")
                     .arg(int(_sumLat/_numLat*100)/100.)
@@ -170,7 +170,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                     .arg(int(_maxLat*100)/100.)
                     .arg(int((sqrt((_sumLatQ - _sumLat * _sumLat / _numLat)/_numLat))*100)/100.)
                     .arg(_numLat);
-                  emit(newMessage(QString(_staID + late ).toAscii() ) );
+                  emit(newMessage(QString(_staID + late ).toAscii(), true) );
                   }
                 }
                 _meanDiff = int(_diffSecGPS)/_numLat;
@@ -268,7 +268,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
             }
             
             if (rr == 2) {
-              emit(newMessage( (_staID + ": No valid RINEX! All values are modulo 299792.458!").toAscii() ));
+              emit(newMessage( (_staID + ": No valid RINEX! All values are modulo 299792.458!").toAscii(), true));
             }
             
             for (int ii = 0; ii < _Parser.Data.numsats; ii++) {
@@ -367,7 +367,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               .arg(ep->GPSweek,   4)
               .arg(ep->TOC,       6)
               .arg(ep->TOE,       6);
-            emit(newMessage(msg.toAscii()));
+            emit newMessage(msg.toAscii(), false);
 #endif
 
             emit newGPSEph(ep);

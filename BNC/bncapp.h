@@ -44,14 +44,14 @@ class bncApp : public QApplication {
     QDateTime* _currentDateAndTimeGPS;
     void setWaitCoTime(int waitCoTime) {_waitCoTime = waitCoTime;}
   public slots:
-    void slotMessage(const QByteArray msg);
+    void slotMessage(const QByteArray msg, bool showOnScreen);
     void slotNewGPSEph(gpsephemeris* gpseph);
     void slotNewGlonassEph(glonassephemeris* glonasseph);
     void slotNewCorrLine(QString line, QString staID, long coTime);
     void slotQuit();
 
   signals:
-    void newMessage(QByteArray msg);
+    void newMessage(QByteArray msg, bool showOnScreen);
     void newEphGPS(gpsephemeris gpseph);
     void newEphGlonass(glonassephemeris glonasseph);
     

@@ -41,7 +41,7 @@ Q_OBJECT
   virtual ~RTCM3Decoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
  signals:
-  void newMessage(QByteArray msg);
+  void newMessage(QByteArray msg,bool showOnScreen);
   void newGPSEph(gpsephemeris* gpseph);
   void newGlonassEph(glonassephemeris* glonasseph);
  private:
