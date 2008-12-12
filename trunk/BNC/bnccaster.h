@@ -49,7 +49,7 @@ class bncCaster : public QObject {
  signals:
    void mountPointsRead(QList<bncGetThread*>);
    void getThreadErrors();   
-   void newMessage(QByteArray msg);
+   void newMessage(QByteArray msg, bool showOnScreen);
 
  private slots:
    void slotNewConnection();

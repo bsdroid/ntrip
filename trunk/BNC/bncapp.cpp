@@ -146,12 +146,12 @@ bncApp::~bncApp() {
 
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::slotMessage(const QByteArray msg) {
+void bncApp::slotMessage(const QByteArray msg, bool showOnScreen) {
 
   QMutexLocker locker(&_mutexMessage);
 
   messagePrivate(msg);
-  emit newMessage(msg);
+  emit newMessage(msg, showOnScreen);
 }
 
 // Write a Program Message (private, no lock)
@@ -572,7 +572,7 @@ void bncApp::setPort(int port) {
     delete _server;
     _server = new QTcpServer;
     if ( !_server->listen(QHostAddress::Any, _port) ) {
-      slotMessage("bncApp: cannot listen on ephemeris port");
+      slotMessage("bncApp: cannot listen on ephemeris port", true);
     }
     connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
     delete _sockets;
@@ -588,7 +588,7 @@ void bncApp::setPortCorr(int port) {
     delete _serverCorr;
     _serverCorr = new QTcpServer;
     if ( !_serverCorr->listen(QHostAddress::Any, _portCorr) ) {
-      slotMessage("bncApp: cannot listen on correction port");
+      slotMessage("bncApp: cannot listen on correction port", true);
     }
     connect(_serverCorr, SIGNAL(newConnection()), this, SLOT(slotNewConnectionCorr()));
     delete _socketsCorr;
@@ -645,7 +645,7 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
                     QString().sprintf(" %ld sec",
                     _lastDumpCoSec - coTime + _waitCoTime);
     messagePrivate(line.toAscii());
-    emit( newMessage(line.toAscii()) );
+    emit( newMessage(line.toAscii(), true) );
     return;
   }
 

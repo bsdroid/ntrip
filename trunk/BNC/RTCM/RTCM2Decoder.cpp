@@ -308,11 +308,6 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
 
     t_listMap::const_iterator ieph = _ephList.find(PRN);
 
-    if ( ieph == _ephList.end() ) {
-      errmsg.push_back("missing eph for " + PRN);
-      continue;
-    }
-
     double L1 = 0;
     double L2 = 0;
     double P1 = 0;
@@ -360,7 +355,10 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
 	continue;
       }
 
-      eph = ieph->second->getEph(IODcorr);
+      // Select corresponding ephemerides
+      if ( ieph != _ephList.end() ) {
+	eph = ieph->second->getEph(IODcorr);
+      }
 
       if ( eph ) {
         ostringstream msg;
@@ -442,9 +440,9 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
     if ( new_obs ) {
       _obsList.push_back( new_obs );
 
-      ///ostringstream hasIODstr;
-      ///copy(hasIOD.begin(), hasIOD.end(), ostream_iterator<string>(hasIODstr, "    "));
-      ///errmsg.push_back("decoded PRN " + PRN + " : " + hasIODstr.str());
+      ////ostringstream hasIODstr;
+      ////copy(hasIOD.begin(), hasIOD.end(), ostream_iterator<string>(hasIODstr, "    "));
+      ////errmsg.push_back("decoded PRN " + PRN + " : " + hasIODstr.str());
     }
   }
 }

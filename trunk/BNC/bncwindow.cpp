@@ -65,8 +65,8 @@ bncWindow::bncWindow() {
 
   setWindowTitle(tr("BKG Ntrip Client (BNC) Version 1.7"));
 
-  connect((bncApp*)qApp, SIGNAL(newMessage(QByteArray)), 
-           this, SLOT(slotWindowMessage(QByteArray)));
+  connect((bncApp*)qApp, SIGNAL(newMessage(QByteArray,bool)), 
+           this, SLOT(slotWindowMessage(QByteArray,bool)));
 
   // Create Actions
   // --------------
@@ -680,7 +680,7 @@ QStringList mountPoints;
 // All get slots terminated
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotGetThreadErrors() {
-  ((bncApp*)qApp)->slotMessage("All Get Threads Terminated");
+  ((bncApp*)qApp)->slotMessage("All Get Threads Terminated", true);
   if (!_actStop->isEnabled()) {
     _actGetData->setEnabled(true);
   }
@@ -707,7 +707,7 @@ void bncWindow::slotGetData() {
   connect (_caster, SIGNAL(mountPointsRead(QList<bncGetThread*>)), 
            this, SLOT(slotMountPointsRead(QList<bncGetThread*>)));
 
-  ((bncApp*)qApp)->slotMessage("============ Start BNC ============");
+  ((bncApp*)qApp)->slotMessage("============ Start BNC ============", true);
 
   _caster->slotReadMountPoints();
 }
@@ -757,13 +757,17 @@ void bncWindow::slotSelectionChanged() {
 
 // Display Program Messages 
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotWindowMessage(const QByteArray msg) {
+void bncWindow::slotWindowMessage(const QByteArray msg, bool showOnScreen) {
 
 #ifdef DEBUG_RTCM2_2021  
   const int maxBufferSize = 1000;
 #else
   const int maxBufferSize = 10000;
 #endif
+
+  if (! showOnScreen ) {
+    return;
+  }
  
   QString txt = _log->toPlainText() + "\n" + 
      QDateTime::currentDateTime().toUTC().toString("yy-MM-dd hh:mm:ss ") + msg;
