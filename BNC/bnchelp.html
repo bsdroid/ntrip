@@ -625,24 +625,17 @@ When configuring a GNSS receiver for RTCM stream generation, the setup interface
 
 <p><a name="messmount"><h4>3.10.1 Mountpoint - optional</h4></p>
 <p>
-Specify the mountpoint of an RTCM Version 3.x stream to scan it and log all contained
-</p>
-<ul>
-<li>numbers of incoming message types</li>
-<li>Antenna Reference Point (ARP) coordinates</li>
-<li>antenna height above marker</li>
-<li>antenna descriptor.</li>
-</ul>
-</p>
-<p>
-Specify the mountpoint of an RTCM Version 2.x stream to scan it and log all contained
+Specify the mountpoint of an RTCM Version 2.x or 3.x stream to scan it and log all contained
 </p>
 <ul>
 <li>numbers of incoming message types</li>
 <li>Antenna Reference Point (ARP) coordinates</li>
 <li>Antenna Phase Center (APC) coordinates</li>
+<li>antenna height above marker</li>
 <li>antenna descriptor.</li>
 </ul>
+</p>
+
 <p>
 Note that in RTCM Version 2.x the message types 18 and 19 carry only the observables of one frequence. Hence it needs two type 18 and 19 messages per epoch to transport the observations from dual frequency receivers.
 </p>
