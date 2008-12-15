@@ -13,6 +13,8 @@ data available? Deleted PENC0 from the configuration.
 
 (2) ZL: Include GLONASS in RTCMv2 20/21 messages.
 
+(3) LM: NTRIP Version 2.
+
 BNS 
 =========================
 
