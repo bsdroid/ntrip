@@ -114,7 +114,7 @@ class RTCM2Decoder: public GPSDecoder {
         }
       }
 
-      static const unsigned MAXSIZE = 3;
+      static const unsigned MAXSIZE = 5;
 
       std::list<t_eph*> _eph;
     };
