@@ -295,7 +295,7 @@ bncWindow::bncWindow() {
   _log->setWhatsThis(tr("Records of BNC's activities are shown in the Log section. The message log covers the communication status between BNC and the NTRIP broadcaster as well as any problems that occur in the communication link, stream availability, stream delay, stream conversion etc."));
   _ephV3CheckBox->setWhatsThis(tr("The default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format."));
   _rnxV3CheckBox->setWhatsThis(tr("The default format for RINEX Observation files is RINEX Version 2.11. Select 'Version 3' if you want to save the observations in RINEX Version 3 format."));
-  _miscMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint to apply the options shown below. Enter 'ALL' if you want to apply the options to all configured streams.</p><p>An empty option field (default) means that you don't want BNC to apply any of these options.</p>"));
+  _miscMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint to apply the options shown below. Enter 'ALL' if you want to apply these options to all configured streams.</p><p>An empty option field (default) means that you don't want BNC to apply any of these options.</p>"));
   _scanRTCMCheckBox->setWhatsThis(tr("<p>Tick 'Scan RTCM' to log the numbers of incomming message types as well as contained antenna coordinates, antenna heigt, and antenna descriptor.</p><p>An empty option field (default) means that you don't want BNC to log such information.</p>"));
 
   // Canvas with Editable Fields
