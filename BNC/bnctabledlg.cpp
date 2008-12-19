@@ -40,7 +40,7 @@
 
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
-#include "bncnetrequest.h"
+/// #include "bncnetrequest.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -155,11 +155,11 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
   url.setHost(casterHost);
   url.setPort(casterPort);
 
-  //// beg test
-  bncNetRequest* req = new bncNetRequest;
-  req->request(url, "");
-  return success;
-  //// end test
+//  //// beg test
+//  bncNetRequest* req = new bncNetRequest;
+//  req->request(url, "");
+//  return success;
+//  //// end test
 
   // Send the Request
   // ----------------
