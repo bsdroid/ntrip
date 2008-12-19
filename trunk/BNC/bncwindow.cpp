@@ -112,8 +112,11 @@ bncWindow::bncWindow() {
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
   _proxyPortLineEdit->setMaximumWidth(9*ww);
-  _messTypesLineEdit  = new QLineEdit(settings.value("messTypes").toString());
-  _messTypesLineEdit->setMaximumWidth(20*ww);
+  _miscMountLineEdit  = new QLineEdit(settings.value("miscMount").toString());
+  _miscMountLineEdit->setMaximumWidth(20*ww);
+  _scanRTCMCheckBox  = new QCheckBox();
+  _scanRTCMCheckBox->setCheckState(Qt::CheckState(
+                                    settings.value("scanRTCM").toInt()));
   _waitTimeSpinBox   = new QSpinBox();
   _waitTimeSpinBox->setMinimum(1);
   _waitTimeSpinBox->setMaximum(30);
@@ -287,12 +290,13 @@ bncWindow::bncWindow() {
   _makePauseCheckBox->setWhatsThis(tr("<p>In case of a continuously corrupted stream, the decoding process can be paused and decodings are then attempted again at decreasing rate till the stream hopefully recovers. Tick 'Pause' to activate this function.</p><p>Do not tick 'Pause' (default) in order to prevent BNC from making any decoding pause. Be aware that this may incur an unnecessary workload.</p><p>Note that this function is only effective if an 'Observation rate' is specified.</p>"));
   _logFileLineEdit->setWhatsThis(tr("Records of BNC's activities are shown in the Log section on the bottom of this window. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field."));
   _adviseScriptLineEdit->setWhatsThis(tr("<p>Specify the full path to a script or batch file to handle advisory notes generated in the event of corrupted streams or stream outages. The affected mountpoint and one of the comments 'Begin_Outage', 'End_Outage', 'Begin_Corrupted', or 'End_Corrupted' are passed on to the script as command line parameters.</p><p>The script can be configured to send an email to BNC's operator and/or to the affected stream provider. An empty option field (default) or invalid path means that you don't want to use this option.</p><p> Note that for using this function you need to specify the 'Observation rate'.</p>"));
-  _perfIntrComboBox->setWhatsThis(tr("<p>BNC can average latencies per stream over a certain period of GPS time. The resulting mean latencies are recorded in the Log file/section at the end of each 'Performance log' interval together with results of a statistical evaluation (approximate number of covered epochs, data gaps).</p><p>Select a 'Performance log' interval or select the empty option field if you do not want BNC to log latencies and statistical information.</p>"));
+  _perfIntrComboBox->setWhatsThis(tr("<p>BNC can average latencies per stream over a certain period of GPS time. The resulting mean latencies are recorded in the Log file/section at the end of each 'Log latency' interval together with results of a statistical evaluation (approximate number of covered epochs, data gaps).</p><p>Select a 'Log latency' interval or select the empty option field if you do not want BNC to log latencies and statistical information.</p>"));
   _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Mountpoints' section. Clicking on 'Add Mountpoints' button will open a window that allows the user to select data streams from an NTRIP broadcaster according to their mountpoints. To remove a stream from the 'Mountpoints' list, highlight it by clicking on it and hit the 'Delete Mountpoints' button. You can also remove multiple mountpoints by highlighting them using +Shift and +Ctrl.</p><p>BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the sourcetable. However, there might be cases where you need to override the automatic selection due to incorrect sourcetable for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.</p><p>In case you need to log the raw data as is, BNC allows users to by-pass its decoders and and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'.</p><p>BNC can also retrieve streams from virtual reference stations (VRS). To initiate these streams, an approximate rover position needs to be sent in NMEA GGA message to the NTRIP broadcaster. In return, a user-specific data stream is generated, typically by a Network-RTK software. This stream is customized to the exact latitude and longitude as shown in the 'lat' and 'long' columns under 'Mountpoints'. These VRS streams are indicated by a 'yes' in the 'nmea' column under 'Mountpoints' as well as in the sourcetable. The default 'lat' and 'long' values are taken from the sourcetable. However, in most cases you would probably want to change this according to your requirement. Double click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter. The format is in positive north latitude degrees (e.g. for northern hemisphere: 52.436, for southern hemisphere: -24.567) and eastern longitude degrees (e.g.: 358.872 or -1.128). Only mountpoints with a 'yes' in its 'nmea' column can be edited. The position should preferably be a point within the coverage of the network.</p>"));
   _log->setWhatsThis(tr("Records of BNC's activities are shown in the Log section. The message log covers the communication status between BNC and the NTRIP broadcaster as well as any problems that occur in the communication link, stream availability, stream delay, stream conversion etc."));
   _ephV3CheckBox->setWhatsThis(tr("The default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format."));
   _rnxV3CheckBox->setWhatsThis(tr("The default format for RINEX Observation files is RINEX Version 2.11. Select 'Version 3' if you want to save the observations in RINEX Version 3 format."));
-  _messTypesLineEdit->setWhatsThis(tr("<p>Specify the mountpoint of an RTCM Version 2.x or 3.x stream to log the numbers of incoming message types as well as contained antenna coordinates, antenna height, and antenna descriptor.</p><p>An empty option field (default) means that you don't want BNC to log such information.</p>"));
+  _miscMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint to apply the options shown below. Enter 'ALL' if you want to apply the options to all configured streams.</p><p>An empty option field (default) means that you don't want BNC to apply any of these options.</p>"));
+  _scanRTCMCheckBox->setWhatsThis(tr("<p>Tick 'Scan RTCM' to log the numbers of incomming message types as well as contained antenna coordinates, antenna heigt, and antenna descriptor.</p><p>An empty option field (default) means that you don't want BNC to log such information.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -314,8 +318,8 @@ bncWindow::bncWindow() {
   aogroup->addTab(egroup,tr("RINEX Ephemeris"));
   aogroup->addTab(cgroup,tr("Ephemeris Corrections"));
   aogroup->addTab(sgroup,tr("Feed Engine"));
-  aogroup->addTab(agroup,tr("Monitor"));
-  aogroup->addTab(rgroup,tr("RTCM Scan"));
+  aogroup->addTab(agroup,tr("Outages"));
+  aogroup->addTab(rgroup,tr("Miscellaneous"));
 
   QGridLayout* pLayout = new QGridLayout;
   pLayout->setColumnMinimumWidth(0,14*ww);
@@ -384,18 +388,18 @@ bncWindow::bncWindow() {
   aLayout->addWidget(_makePauseCheckBox,                          2, 3, Qt::AlignLeft);
   aLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
   aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,10);
-  aLayout->addWidget(new QLabel("Performance log"),               4, 0);
-  aLayout->addWidget(_perfIntrComboBox,                           4, 1);
-  aLayout->addWidget(new QLabel("Network monitoring, outages, handling of corrupted streams, latencies, statistics."),5,0,1,10,Qt::AlignLeft);
+  aLayout->addWidget(new QLabel("Outage report, handling of corrupted streams."),5,0,1,10,Qt::AlignLeft);
   agroup->setLayout(aLayout);
 
   QGridLayout* rLayout = new QGridLayout;
   rLayout->setColumnMinimumWidth(0,14*ww);
   rLayout->addWidget(new QLabel("Mountpoint"),                    0, 0, Qt::AlignLeft);
-  rLayout->addWidget(_messTypesLineEdit,                          0, 1,1,15,Qt::AlignLeft);
-  rLayout->addWidget(new QLabel("Scan RTCM stream to log numbers of message types and antenna information."),1, 0, 1, 4, Qt::AlignLeft);
-  rLayout->addWidget(new QLabel("    "),                          2, 0);
-  rLayout->addWidget(new QLabel("    "),                          3, 0);
+  rLayout->addWidget(_miscMountLineEdit,                          0, 1,1,15,Qt::AlignLeft);
+  rLayout->addWidget(new QLabel("Log latency"),                   1, 0);
+  rLayout->addWidget(_perfIntrComboBox,                           1, 1);
+  rLayout->addWidget(new QLabel("Scan RTCM"),                     2, 0);
+  rLayout->addWidget(_scanRTCMCheckBox,                           2, 1);
+  rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for numbers of message types and antenna information."),3, 0, 1, 4, Qt::AlignLeft);
   rLayout->addWidget(new QLabel("    "),                          4, 0);
   rLayout->addWidget(new QLabel("    "),                          5, 0);
   rgroup->setLayout(rLayout);
@@ -657,7 +661,8 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("ephV3",       _ephV3CheckBox->checkState());
   settings.setValue("logFile",     _logFileLineEdit->text());
   settings.setValue("adviseScript",_adviseScriptLineEdit->text());
-  settings.setValue("messTypes",   _messTypesLineEdit->text());
+  settings.setValue("miscMount",   _miscMountLineEdit->text());
+  settings.setValue("scanRTCM",    _scanRTCMCheckBox->checkState());
   
 QStringList mountPoints;
 

@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
     settings.setValue("adviseReco", "5");
     settings.setValue("perfIntr",   "");
     settings.setValue("corrTime",   "5");
-    settings.setValue("messTypes",  "");
+    settings.setValue("miscMount",  "");
   }
 
   // Truncate list of casters

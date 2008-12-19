@@ -103,15 +103,16 @@ All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/
 &nbsp; &nbsp; &nbsp; 3.8.2. <a href=#corrint>Interval</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.3. <a href=#corrport>Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.4. <a href=#corrwait>Wait for Full Epoch</a><br>
-3.9. <a href=#advnote>Monitor</a><br>
+3.9. <a href=#advnote>Outages</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.1. <a href=#obsrate>Observation Rate</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.2. <a href=#advfail>Failure Threshold</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.3. <a href=#advreco>Recovery Threshold</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.4. <a href=#pause>Pause</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.5. <a href=#advscript>Script</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.6. <a href=#perflog>Performance Log</a><br>
-3.10. <a href=#messtypes>RTCM Scan</a><br>
-&nbsp; &nbsp; &nbsp; 3.10.1. <a href=#messmount>Mountpoint</a><br>
+3.10. <a href=#misc>Miscellaneous</a><br>
+&nbsp; &nbsp; &nbsp; 3.10.1. <a href=#mountpoint>Mountpoint</a><br>
+&nbsp; &nbsp; &nbsp; 3.10.2. <a href=#perflog>Log Latency</a><br>
+&nbsp; &nbsp; &nbsp; 3.10.3. <a href=#scanrtcm>Scan RTCM</a><br>
 3.11. <a href=#mountpoints>Mountpoints</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.1. <a href=#mountadd>Add Mountpoints</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2. <a href=#mounthost>Broadcaster Host and Port</a><br>
@@ -518,7 +519,7 @@ The following is an example output from two RTCM Version 3 streams (CLCK1 and CL
 When feeding a real-time GNSS engine waiting epoch by epoch for synchronized Ephemeris Corrections, BNC drops (only concering IP port output) whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Ephemeris Corrections stream and the delay acceptable by your application. A message such as "COCK1: Correction overaged by 5 sec" shows up in BNC's logfile if 'Wait for full epoch' is exceeded.
 </p>
 
-<p><a name="advnote"><h4>3.9. Monitor</h4></p>
+<p><a name="advnote"><h4>3.9. Outages</h4></p>
 
 <p>
 At various times, the incoming stream might become unavailable or corrupted. In such cases, it is important that the BNC operator and/or the stream providers become aware of the situation so that necessary measures can be taken to restore the stream. Furthermore, continuous attempts to decode corrupted stream(s) can generate unnecessary workload for BNC. Outages and corruptions are handled by BNC as follows:
@@ -591,7 +592,20 @@ Regards, BNC
 Note the sleep command in this script which causes the system to wait for a random period of up to 60 seconds before sending the email. This should avoids overloading your mail server in case of a simultaneous failure of many streams.
 </p> 
 
-<p><a name="perflog"><h4>3.9.6 Performance Log - optional </h4></p>
+<p><a name="misc"><h4>3.10. Miscellaneous</h4></p>
+<p>
+This section describes a number of miscellaneous options which can be applied per stream (mountpoint) or for all configured streams.
+</p>
+
+<p><a name="mountpoint"><h4>3.10.1 Mountpoint - optional </h4></p>
+<p>
+Specify a mountpoint to apply one or several of the 'Miscellaneous' options to the corresponding stream. Enter 'ALL' if you want to apply these options to all configured streams. An empty option field (default) means that you don't want BNC to apply any of these options.
+</p>
+
+<p><a name="perflog"><h4>3.10.2 Log Latency - optional </h4></p>
+<p>
+ BNC can average latencies per stream over a certain period of GPS time, the 'Performance log' interval. Mean latencies are calculated from the individual latencies of at most one (first incoming) observation or correction to Broadcast Ephemeris per second. Note that computing correct latencies requires the clock of the host computer to be properly synchronized.
+</p>
 <p>
 <u>Latency:</u> Latency is defined in BNC by the following equation:
 </p>
@@ -602,9 +616,6 @@ Note the sleep command in this script which causes the system to wait for a rand
   --------------
   = Latency
 </pre>
-<p>
- BNC can average the latencies per stream over a certain period of GPS time, the 'Performance log' interval. Mean latencies are calculated from the individual latencies of at most one (first incoming) observation or correction to Broadcast Ephemeris per second. Note that computing correct latencies requires the clock of the host computer to be properly synchronized.
-</p>
 <p>
 <u>Statistics:</u> BNC counts the number of GPS seconds covered by at least one observation. It also estimates an observation rate (independent from the a priory specified 'Observation rate') from all observations received throughout the first full 'Performance log' interval. Based on this rate, BNC estimates the number of data gaps when appearing in subsequent intervals. 
 </p>
@@ -618,14 +629,13 @@ Latencies of observations or corrections to Broadcast Ephemeris and statistical 
 Select a 'Performance log' interval to activate this function or select the empty option field if you do not want BNC to log latencies and statistical information.
 </p>
 
-<p><a name="messtypes"><h4>3.10. RTCM Scan</h4></p>
+
+<p><a name="scanrtcm"><h4>3.10.3 Scan RTCM - optional</h4></p>
 <p>
 When configuring a GNSS receiver for RTCM stream generation, the setup interface may not provide details about RTCM message types. As reliable information concerning stream contents should be available i.e. for NTRIP broadcaster operators to maintain the broadcaster's sourcetable, BNC allows to scan RTCM streams for incoming message types and printout some of the contained meta-data. The idea for this option arose from 'InspectRTCM', a comprehensive stream analyzing tool written by D. Stoecker.
 </p>
-
-<p><a name="messmount"><h4>3.10.1 Mountpoint - optional</h4></p>
 <p>
-Specify the mountpoint of an RTCM Version 2.x or 3.x stream to scan it and log all contained
+Tick 'Scan RTCM' to scan RTCM Version 2.x or 3.x streams and log all contained
 </p>
 <ul>
 <li>numbers of incoming message types</li>
