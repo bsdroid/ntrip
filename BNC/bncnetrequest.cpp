@@ -70,34 +70,48 @@ t_irc bncNetRequest::request(const QUrl& mountPoint, const QByteArray& ggaStr) {
 
   // Network Request
   // ---------------
-  QNetworkRequest request;
-  request.setUrl(mountPoint);
-  request.setRawHeader("User-Agent", "NTRIP BNC/" AGENTVERSION);
-  request.setRawHeader("Host", mountPoint.host().toAscii());
+///  QNetworkRequest request;
+///  request.setUrl(mountPoint);
+///  request.setRawHeader("User-Agent", "NTRIP BNC/" AGENTVERSION);
+///  request.setRawHeader("Host", mountPoint.host().toAscii());
+///
+///  QString uName = QUrl::fromPercentEncoding(mountPoint.userName().toAscii());
+///  QString passW = QUrl::fromPercentEncoding(mountPoint.password().toAscii());
+///  if (!uName.isEmpty() || !passW.isEmpty()) {
+///    QByteArray userAndPwd = "Basic " + (uName.toAscii() + ":" +
+///                                        passW.toAscii()).toBase64();
+///    request.setRawHeader("Authorization", userAndPwd);
+///  }
+///  
+///  if (!ggaStr.isEmpty()) {
+///    request.setRawHeader("", ggaStr);
+///  }
 
-  QString uName = QUrl::fromPercentEncoding(mountPoint.userName().toAscii());
-  QString passW = QUrl::fromPercentEncoding(mountPoint.password().toAscii());
-  if (!uName.isEmpty() || !passW.isEmpty()) {
-    QByteArray userAndPwd = "Basic " + (uName.toAscii() + ":" +
-                                        passW.toAscii()).toBase64();
-    request.setRawHeader("Authorization", userAndPwd);
+  QHttpRequestHeader header("GET", "/CBRU0", 1, 1);
+
+  header.addValue("User-Agent", "NTRIP BNC/1.7");
+
+  QByteArray userAndPwd = "Basic " + QByteArray("cvutlukes:monitoring").toBase64();
+  header.addValue("Authorization", userAndPwd);
+
+  QHttp* http = new QHttp("czeposr.cuzk.cz", 2101);
+
+  connect(http, SIGNAL(readyRead(const QHttpResponseHeader&)), 
+          this, SLOT(slotReadyRead()));
+
+  QBuffer buffer;
+  http->request(header, 0, &buffer);
+
+  while (true) {
+    if (buffer.bytesAvailable()) {
+      QByteArray arr = buffer.readAll();
+      cout << arr.data();
+    }
+    else {
+      buffer.waitForReadyRead(1000);
+    }
   }
-  
-  if (!ggaStr.isEmpty()) {
-    request.setRawHeader("", ggaStr);
-  }
 
-  // Submit Request
-  // --------------
-  _reply = _manager->get(request);
-
-  connect(_reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
-
-  connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
-          this, SLOT(slotError(QNetworkReply::NetworkError)));
-
-  connect(_reply, SIGNAL(sslErrors(QList<QSslError>)),
-          this, SLOT(slotSslErrors(QList<QSslError>)));
 
   return success;
 }
