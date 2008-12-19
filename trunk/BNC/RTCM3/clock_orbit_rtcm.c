@@ -2,14 +2,19 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.3 2008/08/15 16:29:40 weber Exp $
+        Version:        $Id: clock_orbit_rtcm.c,v 1.4.2.3 2008/12/19 09:29:13 mervart Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
 
 #include <stdio.h>
 #include <string.h>
+
+#ifndef sparc
 #include <stdint.h>
+#endif
+
+#include <sys/types.h>
 #include "clock_orbit_rtcm.h"
 
 static uint32_t CRC24(long size, const unsigned char *buf)
