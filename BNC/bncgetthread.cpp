@@ -172,7 +172,7 @@ void bncGetThread::initialize() {
 
   // RTCM message types
   // ------------------
-  _checkMountPoint = settings.value("messTypes").toString();
+  _checkMountPoint = settings.value("miscMount").toString();
 
   // RINEX writer
   // ------------
@@ -666,64 +666,67 @@ void bncGetThread::run() {
 	// RTCM scan output
 	// ----------------
         if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
+          QSettings settings;
+          if ( Qt::CheckState(settings.value("scanRTCM").toInt()) == Qt::Checked) {
 
-          // RTCMv3 message types
-          // --------------------
-          if (0<_decoder->_typeList.size()) {
-            QString type;
-            for (int ii=0;ii<_decoder->_typeList.size();ii++) {
-              type =  QString("%1 ").arg(_decoder->_typeList[ii]);
-              emit(newMessage(_staID + ": Received message type " + type.toAscii(), true));
+            // RTCMv3 message types
+            // --------------------
+            if (0<_decoder->_typeList.size()) {
+              QString type;
+              for (int ii=0;ii<_decoder->_typeList.size();ii++) {
+                type =  QString("%1 ").arg(_decoder->_typeList[ii]);
+                emit(newMessage(_staID + ": Received message type " + type.toAscii(), true));
+              }
+            }
+  
+            // RTCMv3 antenna descriptor
+            // -------------------------
+            if (0<_decoder->_antType.size()) {
+              QString ant1;
+              for (int ii=0;ii<_decoder->_antType.size();ii++) {
+                ant1 =  QString("%1 ").arg(_decoder->_antType[ii]);
+                emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii(), true));
+              }
+            }
+  
+            // Antenna XYZ
+            // ------------------
+            if (0<_decoder->_antList.size()) {
+              for (int ii=0;ii<_decoder->_antList.size();++ii) {
+                QByteArray ant1,ant2,ant3, antT;
+                ant1 = QString("%1 ").arg(_decoder->_antList[ii].xx,0,'f',4).toAscii();
+                ant2 = QString("%1 ").arg(_decoder->_antList[ii].yy,0,'f',4).toAscii();
+                ant3 = QString("%1 ").arg(_decoder->_antList[ii].zz,0,'f',4).toAscii();
+                switch (_decoder->_antList[ii].type) {
+	        case GPSDecoder::t_antInfo::ARP: antT = "ARP"; break;
+	        case GPSDecoder::t_antInfo::APC: antT = "APC"; break;
+	        }
+                emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m", true));
+                emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m", true));
+                emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m", true));
+	        if (_decoder->_antList[ii].height_f) {
+		  QByteArray ant4 = QString("%1 ").arg(_decoder->_antList[ii].height,0,'f',4).toAscii();
+		  emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m", true));
+	        }
+	        emit(newAntCrd(_staID, 
+			     _decoder->_antList[ii].xx, _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
+			     antT));
+              }
             }
           }
-
-          // RTCMv3 antenna descriptor
-          // -------------------------
-          if (0<_decoder->_antType.size()) {
-            QString ant1;
-            for (int ii=0;ii<_decoder->_antType.size();ii++) {
-              ant1 =  QString("%1 ").arg(_decoder->_antType[ii]);
-              emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii(), true));
-            }
-          }
-
-          // antenna XYZ
-          // ------------------
-          if (0<_decoder->_antList.size()) {
-            for (int ii=0;ii<_decoder->_antList.size();++ii) {
-	      QByteArray ant1,ant2,ant3, antT;
-              ant1 = QString("%1 ").arg(_decoder->_antList[ii].xx,0,'f',4).toAscii();
-              ant2 = QString("%1 ").arg(_decoder->_antList[ii].yy,0,'f',4).toAscii();
-              ant3 = QString("%1 ").arg(_decoder->_antList[ii].zz,0,'f',4).toAscii();
+          if ( _checkMountPoint == "ANTCRD_ONLY" && _decoder->_antList.size() ) {
+	    for (int ii=0;ii<_decoder->_antList.size();++ii) {
+	      QByteArray antT;
 	      switch (_decoder->_antList[ii].type) {
 	      case GPSDecoder::t_antInfo::ARP: antT = "ARP"; break;
 	      case GPSDecoder::t_antInfo::APC: antT = "APC"; break;
 	      }
-              emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m", true));
-              emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m", true));
-              emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m", true));
-	      if (_decoder->_antList[ii].height_f) {
-		QByteArray ant4 = QString("%1 ").arg(_decoder->_antList[ii].height,0,'f',4).toAscii();
-		emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m", true));
-	      }
 	      emit(newAntCrd(_staID, 
-			     _decoder->_antList[ii].xx, _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
-			     antT));
-            }
-          }
-        }
-        if ( _checkMountPoint == "ANTCRD_ONLY" && _decoder->_antList.size() ) {
-	  for (int ii=0;ii<_decoder->_antList.size();++ii) {
-	    QByteArray antT;
-	    switch (_decoder->_antList[ii].type) {
-	    case GPSDecoder::t_antInfo::ARP: antT = "ARP"; break;
-	    case GPSDecoder::t_antInfo::APC: antT = "APC"; break;
-	    }
-	    emit(newAntCrd(_staID, 
 			   _decoder->_antList[ii].xx, _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
 			   antT));
-	  }
-	}
+	    }
+          }
+        }
 	
         _decoder->_typeList.clear();
         _decoder->_antType.clear();
@@ -766,56 +769,58 @@ void bncGetThread::run() {
               // Latency and completeness
               // ------------------------
               if (_perfIntr>0) {
-                newSecGPS = static_cast<int>(obs->_o.GPSWeeks);
-                if (newSecGPS != oldSecGPS) {
-                  if (newSecGPS % _perfIntr < oldSecGPS % _perfIntr) {
-                    if (numLat>0) {
+                if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
+                  newSecGPS = static_cast<int>(obs->_o.GPSWeeks);
+                  if (newSecGPS != oldSecGPS) {
+                    if (newSecGPS % _perfIntr < oldSecGPS % _perfIntr) {
+                      if (numLat>0) {
+                        if (meanDiff>0.) {
+                          emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs, %7 gaps")
+                            .arg(_staID.data())
+                            .arg(int(sumLat/numLat*100)/100.)
+                            .arg(int(minLat*100)/100.)
+                            .arg(int(maxLat*100)/100.)
+                            .arg(int((sqrt((sumLatQ - sumLat * sumLat / numLat)/numLat))*100)/100.)
+                            .arg(numLat)
+                            .arg(numGaps)
+                            .toAscii(), true) );
+                        } else {
+                          emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs")
+                            .arg(_staID.data())
+                            .arg(int(sumLat/numLat*100)/100.)
+                            .arg(int(minLat*100)/100.)
+                            .arg(int(maxLat*100)/100.)
+                            .arg(int((sqrt((sumLatQ - sumLat * sumLat / numLat)/numLat))*100)/100.)
+                            .arg(numLat)
+                            .toAscii(), true) );
+                        }
+                      }
+                      meanDiff = diffSecGPS/numLat;
+                      diffSecGPS = 0;
+                      numGaps = 0;
+                      sumLat = 0.;
+                      sumLatQ = 0.;
+                      numLat = 0;
+                      minLat = maxDt;
+                      maxLat = -maxDt;
+                    }
+                    if (followSec) {
+                      diffSecGPS += newSecGPS - oldSecGPS;
                       if (meanDiff>0.) {
-                        emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs, %7 gaps")
-                          .arg(_staID.data())
-                          .arg(int(sumLat/numLat*100)/100.)
-                          .arg(int(minLat*100)/100.)
-                          .arg(int(maxLat*100)/100.)
-                          .arg(int((sqrt((sumLatQ - sumLat * sumLat / numLat)/numLat))*100)/100.)
-                          .arg(numLat)
-                          .arg(numGaps)
-                          .toAscii(), true) );
-                      } else {
-                        emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs")
-                          .arg(_staID.data())
-                          .arg(int(sumLat/numLat*100)/100.)
-                          .arg(int(minLat*100)/100.)
-                          .arg(int(maxLat*100)/100.)
-                          .arg(int((sqrt((sumLatQ - sumLat * sumLat / numLat)/numLat))*100)/100.)
-                          .arg(numLat)
-                          .toAscii(), true) );
+                        if (newSecGPS - oldSecGPS > 1.5 * meanDiff) {
+                          numGaps += 1;
+                        }
                       }
                     }
-                    meanDiff = diffSecGPS/numLat;
-                    diffSecGPS = 0;
-                    numGaps = 0;
-                    sumLat = 0.;
-                    sumLatQ = 0.;
-                    numLat = 0;
-                    minLat = maxDt;
-                    maxLat = -maxDt;
+                    curLat = sec - obs->_o.GPSWeeks;
+                    sumLat += curLat;
+                    sumLatQ += curLat * curLat;
+                    if (curLat < minLat) minLat = curLat;
+                    if (curLat >= maxLat) maxLat = curLat;
+                    numLat += 1;
+                    oldSecGPS = newSecGPS;
+                    followSec = true;
                   }
-                  if (followSec) {
-                    diffSecGPS += newSecGPS - oldSecGPS;
-                    if (meanDiff>0.) {
-                      if (newSecGPS - oldSecGPS > 1.5 * meanDiff) {
-                        numGaps += 1;
-                      }
-                    }
-                  }
-                  curLat = sec - obs->_o.GPSWeeks;
-                  sumLat += curLat;
-                  sumLatQ += curLat * curLat;
-                  if (curLat < minLat) minLat = curLat;
-                  if (curLat >= maxLat) maxLat = curLat;
-                  numLat += 1;
-                  oldSecGPS = newSecGPS;
-                  followSec = true;
                 }
               }
             }

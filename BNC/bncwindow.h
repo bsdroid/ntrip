@@ -107,7 +107,7 @@
     QLineEdit* _rnxPathLineEdit;
     QLineEdit* _ephPathLineEdit;
     QLineEdit* _corrPathLineEdit;
-    QLineEdit* _messTypesLineEdit;
+    QLineEdit* _miscMountLineEdit;
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;
     QLineEdit* _rnxSkelLineEdit;
@@ -119,6 +119,7 @@
     QSpinBox*  _rnxSamplSpinBox;
     QSpinBox*  _binSamplSpinBox;
     QCheckBox* _rnxAppendCheckBox;
+    QCheckBox* _scanRTCMCheckBox;
     QCheckBox* _makePauseCheckBox;
     QSpinBox*  _waitTimeSpinBox;
     QSpinBox*  _corrTimeSpinBox;
