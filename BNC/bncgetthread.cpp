@@ -563,6 +563,7 @@ void bncGetThread::run() {
 
         if (_serialPort) {
           _serialPort->write(data, nBytes);
+          _serialPort->flush();
         }
 
         if (_inspSegm<1) {
