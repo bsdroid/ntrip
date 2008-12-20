@@ -59,10 +59,9 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
   if (_mode == MODE_SEARCH) {
     _buffer.clear();
+    _recordSize = 0;
   }
   _buffer.append(data, dataLen);
-
-  EPOCHHEADER   epochHdr;
 
   unsigned offset     = 0;
   for (offset = 0; offset < _buffer.size(); offset++) { 
@@ -108,6 +107,7 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
           errmsg.push_back("Record size too large (B)");
           _mode = MODE_SEARCH;
         } else {
+          EPOCHHEADER epochHdr;
           memcpy(&epochHdr, &_buffer[offset], sizeof(epochHdr));
           offset += sizeof(epochHdr);
           for (int is = 1; is <= epochHdr.n_svs; is++) {

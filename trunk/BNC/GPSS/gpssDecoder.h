@@ -13,7 +13,7 @@ Q_OBJECT
  public:
   gpssDecoder();
   virtual ~gpssDecoder();
-  virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
+  virtual t_irc Decode(char* data, int dataLen, std::vector<std::string>& errmsg);
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
