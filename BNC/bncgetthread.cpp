@@ -57,6 +57,7 @@
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
 #include "RTIGS/RTIGSDecoder.h"
+#include "GPSS/gpssDecoder.h"
 
 using namespace std;
 
@@ -435,6 +436,10 @@ t_irc bncGetThread::initRun() {
     else if (_format.indexOf("RTIGS") != -1) {
       emit(newMessage("Get Data: " + _staID + " in RTIGS format", true));
       _decoder = new RTIGSDecoder();
+    }
+    else if (_format.indexOf("GPSS") != -1) {
+      emit(newMessage("Get Data: " + _staID + " in GPSS format", true));
+      _decoder = new gpssDecoder();
     }
     else if (_format.indexOf("ZERO") != -1) {
       emit(newMessage("Get Data: " + _staID + " in original format", true));

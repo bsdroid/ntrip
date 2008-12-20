@@ -32,7 +32,9 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           RTCM3/RTCM3coDecoder.h RTCM3/clock_orbit_rtcm.h             \
           RTCM3/ephemeris.h RTCM3/timeutils.h                         \
           RTIGS/RTIGSDecoder.h RTIGS/rtigs_records.h                  \
-          RTIGS/cgps_transform.h RTIGS/rtstruct.h RTIGS/rtacp.h RTIGS/gpswro.h
+          RTIGS/cgps_transform.h RTIGS/rtstruct.h                     \
+          RTIGS/rtacp.h RTIGS/gpswro.h                                \
+          GPSS/gpssDecoder.h
 
 SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bnccaster.cpp bncrinex.cpp bncapp.cpp bncutils.cpp          \
@@ -43,7 +45,8 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex.c                 \
           RTCM3/RTCM3coDecoder.cpp RTCM3/clock_orbit_rtcm.c           \
           RTCM3/ephemeris.cpp RTCM3/timeutils.cpp                     \
-          RTIGS/RTIGSDecoder.cpp RTIGS/cgps_transform.cpp
+          RTIGS/RTIGSDecoder.cpp RTIGS/cgps_transform.cpp             \
+          GPSS/gpssDecoder.cpp
 
 RC_FILE = bnc.rc
 
