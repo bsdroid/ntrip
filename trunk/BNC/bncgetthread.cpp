@@ -58,6 +58,7 @@
 #include "RTCM3/RTCM3Decoder.h"
 #include "RTIGS/RTIGSDecoder.h"
 #include "GPSS/gpssDecoder.h"
+#include "serial/qextserialport.h"
 
 using namespace std;
 
@@ -189,6 +190,14 @@ void bncGetThread::initialize() {
 
   connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
 	  this, SLOT(slotNewEphGPS(gpsephemeris)));
+
+  if (settings.value("serial_staID").toString() == _staID) {
+    _serialPort = new QextSerialPort();
+    _serialPort->open();
+  }
+  else {
+    _serialPort = 0;
+  }
 
   // Raw Output
   // ----------
@@ -550,6 +559,10 @@ void bncGetThread::run() {
         if (_rawOutFile) {
           _rawOutFile->write(data, nBytes);
           _rawOutFile->flush();
+        }
+
+        if (_serialPort) {
+          _serialPort->write(data, nBytes);
         }
 
         if (_inspSegm<1) {
