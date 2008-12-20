@@ -9,14 +9,19 @@
 
 class gpssDecoder : public QObject, public GPSDecoder {
 Q_OBJECT
+
  public:
   gpssDecoder();
   virtual ~gpssDecoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
+
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
   void newGPSEph(gpsephemeris* gpseph);
+
  private:
+  int         _mode;
+  std::string _buffer;
 } ;
 
 #endif
