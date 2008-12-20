@@ -6,6 +6,8 @@ CONFIG += release
 
 DEFINES += NO_RTCM3_MAIN 
 ###DEFINES += DEBUG_RTCM2_2021
+unix:DEFINES  += _TTY_POSIX_
+win32:DEFINES += _TTY_WIN_
 
 RESOURCES += bnc.qrc
 
@@ -36,6 +38,10 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           RTIGS/rtacp.h RTIGS/gpswro.h                                \
           GPSS/gpssDecoder.h
 
+HEADERS       += serial/qextserialbase.h serial/qextserialport.h
+unix:HEADERS  += serial/posix_qextserialport.h
+win32:HEADERS += serial/win_qextserialport.h
+
 SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bnccaster.cpp bncrinex.cpp bncapp.cpp bncutils.cpp          \
           bncconst.cpp bnchtml.cpp bnchlpdlg.cpp bnctableitem.cpp     \
@@ -47,6 +53,10 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           RTCM3/ephemeris.cpp RTCM3/timeutils.cpp                     \
           RTIGS/RTIGSDecoder.cpp RTIGS/cgps_transform.cpp             \
           GPSS/gpssDecoder.cpp
+
+SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp
+unix:SOURCES  += serial/posix_qextserialport.cpp
+win32:SOURCES += serial/win_qextserialport.cpp
 
 RC_FILE = bnc.rc
 
