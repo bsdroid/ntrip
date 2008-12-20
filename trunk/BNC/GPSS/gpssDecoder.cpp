@@ -16,6 +16,7 @@
  * -----------------------------------------------------------------------*/
 
 #include "gpssDecoder.h"
+#include "bncapp.h"
 
 #define MODE_SEARCH     0
 #define MODE_TYPE       1
@@ -40,6 +41,9 @@ typedef struct epochHeader {
 gpssDecoder::gpssDecoder() : GPSDecoder() {
   _mode       = MODE_SEARCH;
   _recordSize = 0;
+
+  connect(this, SIGNAL(newGPSEph(gpsephemeris*)), 
+          (bncApp*) qApp, SLOT(slotNewGPSEph(gpsephemeris*)));
 }
 
 // Destructor
@@ -59,7 +63,6 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
   _buffer.append(data, dataLen);
 
   EPOCHHEADER   epochHdr;
-  gpsephemeris  gpsEph;
 
   unsigned offset     = 0;
   for (offset = 0; offset < _buffer.size(); offset++) { 
@@ -123,9 +126,10 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
           errmsg.push_back("Record size too large (C)");
           _mode = MODE_SEARCH;
         } else {
-          memcpy(&gpsEph, &_buffer[offset], sizeof(gpsEph));
-          emit newGPSEph(&gpsEph);
-          offset += sizeof(gpsEph) - 1;
+          gpsephemeris* gpsEph = new gpsephemeris;
+          memcpy(gpsEph, &_buffer[offset], sizeof(gpsephemeris));
+          emit newGPSEph(gpsEph);
+          offset += sizeof(gpsephemeris) - 1;
           _mode = MODE_EPH_CRC;
         }
         continue;
