@@ -35,6 +35,7 @@
 #include "bncconst.h"
 
 class bncRinex;
+class QextSerialPort;
 
 class bncGetThread : public QThread {
  Q_OBJECT
@@ -117,6 +118,7 @@ class bncGetThread : public QThread {
    QMutex      _mutex;
    QFile*      _rawOutFile;
    QFile*      _rawInpFile;
+   QextSerialPort* _serialPort;
 };
 
 #endif
