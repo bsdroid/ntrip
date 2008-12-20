@@ -436,20 +436,24 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
   QString    line;
   QByteArray allLines;
 
-  line.sprintf("     %18.11e %18.11e %18.11e %18.11e\n", (double)ep->IODE,
-               ep->Crs, ep->Delta_n, ep->M0);
+  QByteArray fmt;
+  if (_rinexVers == 2) {
+    fmt = "    %18.11e %18.11e %18.11e %18.11e\n";
+  }
+  else {
+    fmt = "     %18.11e %18.11e %18.11e %18.11e\n";
+  }
+
+  line.sprintf(fmt.data(), (double)ep->IODE, ep->Crs, ep->Delta_n, ep->M0);
   allLines += line;
   
-  line.sprintf("     %18.11e %18.11e %18.11e %18.11e\n", ep->Cuc,
-               ep->e, ep->Cus, ep->sqrt_A);
+  line.sprintf(fmt.data(), ep->Cuc, ep->e, ep->Cus, ep->sqrt_A);
   allLines += line;
 
-  line.sprintf("     %18.11e %18.11e %18.11e %18.11e\n",
-               (double) ep->TOE, ep->Cic, ep->OMEGA0, ep->Cis);
+  line.sprintf(fmt.data(), (double) ep->TOE, ep->Cic, ep->OMEGA0, ep->Cis);
   allLines += line;
   
-  line.sprintf("     %18.11e %18.11e %18.11e %18.11e\n", ep->i0,
-               ep->Crc, ep->omega, ep->OMEGADOT);
+  line.sprintf(fmt.data(), ep->i0, ep->Crc, ep->omega, ep->OMEGADOT);
   allLines += line;
 
   double dd = 0;
@@ -458,19 +462,19 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
     dd += 2.0;
   if(ii & GPSEPHF_L2PCODE)
     dd += 1.0;
-  line.sprintf("    %18.11e %18.11e %18.11e %18.11e\n", ep->IDOT, dd,
-               (double) ep->GPSweek, ii & GPSEPHF_L2PCODEDATA ? 1.0 : 0.0);
+  line.sprintf(fmt.data(), ep->IDOT, dd, (double) ep->GPSweek, 
+               ii & GPSEPHF_L2PCODEDATA ? 1.0 : 0.0);
   allLines += line;
 
   if(ep->URAindex <= 6) /* URA index */
     dd = ceil(10.0*pow(2.0, 1.0+((double)ep->URAindex)/2.0))/10.0;
   else
     dd = ceil(10.0*pow(2.0, ((double)ep->URAindex)/2.0))/10.0;
-  line.sprintf("    %18.11e %18.11e %18.11e %18.11e\n", dd,
-               ((double) ep->SVhealth), ep->TGD, ((double) ep->IODC));
+  line.sprintf(fmt.data(), dd, ((double) ep->SVhealth), ep->TGD, 
+               ((double) ep->IODC));
   allLines += line;
 
-  line.sprintf("    %18.11e %18.11e\n", ((double)ep->TOW), 0.0);
+  line.sprintf(fmt.data(), ((double)ep->TOW), 0.0);
   allLines += line;
 
   printOutput(printFile, _ephStreamGPS, lineV2, lineV3, allLines);
@@ -507,18 +511,24 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
   QString    line;
   QByteArray allLines;
 
-  line.sprintf("     %18.11e %18.11e %18.11e %18.11e\n", ep->x_pos,
-               ep->x_velocity, ep->x_acceleration, 
+  QByteArray fmt;
+  if (_rinexVers == 2) {
+    fmt = "    %18.11e %18.11e %18.11e %18.11e\n";
+  }
+  else {
+    fmt = "     %18.11e %18.11e %18.11e %18.11e\n";
+  }
+
+  line.sprintf(fmt.data(), ep->x_pos, ep->x_velocity, ep->x_acceleration, 
                (ep->flags & GLOEPHF_UNHEALTHY) ? 1.0 : 0.0);
   allLines += line;
    
-  line.sprintf("     %18.11e %18.11e %18.11e %18.11e\n", ep->y_pos,
-               ep->y_velocity, ep->y_acceleration, 
+  line.sprintf(fmt.data(), ep->y_pos, ep->y_velocity, ep->y_acceleration, 
                (double) ep->frequency_number);
   allLines += line;
   
-  line.sprintf("     %18.11e %18.11e %18.11e %18.11e\n", ep->z_pos,
-               ep->z_velocity, ep->z_acceleration, (double) ep->E);
+  line.sprintf(fmt.data(), ep->z_pos, ep->z_velocity, ep->z_acceleration, 
+               (double) ep->E);
   allLines += line;
 
   printOutput(printFile, _ephStreamGlonass, lineV2, lineV3, allLines);
