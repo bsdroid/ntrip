@@ -38,7 +38,8 @@ typedef struct epochHeader {
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 gpssDecoder::gpssDecoder() : GPSDecoder() {
-  _mode = MODE_SEARCH;
+  _mode       = MODE_SEARCH;
+  _recordSize = 0;
 }
 
 // Destructor
@@ -52,12 +53,13 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
   errmsg.clear();
 
+  if (_mode == MODE_SEARCH) {
+    _buffer.clear();
+  }
   _buffer.append(data, dataLen);
 
   EPOCHHEADER   epochHdr;
-  t_obsInternal gpsObs;
   gpsephemeris  gpsEph;
-  int           recordSize;
 
   unsigned offset     = 0;
   for (offset = 0; offset < _buffer.size(); offset++) { 
@@ -83,31 +85,33 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
       case MODE_EPOCH:
       case MODE_EPH:
-        if (offset+sizeof(recordSize) > _buffer.size()) {
+        if (offset+sizeof(_recordSize) > _buffer.size()) {
           errmsg.push_back("Record size too large (A)");
           _mode = MODE_SEARCH;
         } else {
-          memcpy(&recordSize, &_buffer[offset], sizeof(recordSize)); 
+          memcpy(&_recordSize, &_buffer[offset], sizeof(_recordSize)); 
           if (_mode == MODE_EPOCH) {
             _mode = MODE_EPOCH_BODY;
           }
           if (_mode == MODE_EPH) {
             _mode = MODE_EPH_BODY;
           }
-          offset += sizeof(recordSize) - 1;
+          offset += sizeof(_recordSize) - 1;
         }
         continue;
 
       case MODE_EPOCH_BODY:
-        if (offset + recordSize > _buffer.size()) {
+        if (offset + _recordSize > _buffer.size()) {
           errmsg.push_back("Record size too large (B)");
           _mode = MODE_SEARCH;
         } else {
           memcpy(&epochHdr, &_buffer[offset], sizeof(epochHdr));
           offset += sizeof(epochHdr);
           for (int is = 1; is <= epochHdr.n_svs; is++) {
-            memcpy(&gpsObs, &_buffer[offset], sizeof(gpsObs));
-            offset += sizeof(gpsObs);
+            t_obs* obs = new t_obs();
+            memcpy(&(obs->_o), &_buffer[offset], sizeof(obs->_o));
+            _obsList.push_back(obs);
+            offset += sizeof(obs->_o);
           }
           _mode = MODE_EPOCH_CRC;
           --offset;
@@ -115,11 +119,12 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
         continue;
 
       case MODE_EPH_BODY:
-        if (offset + recordSize > _buffer.size()) {
+        if (offset + _recordSize > _buffer.size()) {
           errmsg.push_back("Record size too large (C)");
           _mode = MODE_SEARCH;
         } else {
           memcpy(&gpsEph, &_buffer[offset], sizeof(gpsEph));
+          emit newGPSEph(&gpsEph);
           offset += sizeof(gpsEph) - 1;
           _mode = MODE_EPH_CRC;
         }
@@ -143,5 +148,10 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
     }
   }
 
-  return success;
+  if (errmsg.size() == 0) {
+    return success;
+  }
+  else {
+    return failure;
+  }
 }
