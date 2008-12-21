@@ -437,11 +437,14 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
   QByteArray allLines;
 
   QByteArray fmt;
+  QByteArray fmt2;
   if (_rinexVers == 2) {
-    fmt = "    %18.11e %18.11e %18.11e %18.11e\n";
+    fmt  = "    %18.11e %18.11e %18.11e %18.11e\n";
+    fmt2 = "    %18.11e %18.11e\n";
   }
   else {
-    fmt = "     %18.11e %18.11e %18.11e %18.11e\n";
+    fmt  = "     %18.11e %18.11e %18.11e %18.11e\n";
+    fmt2 = "     %18.11e %18.11e\n";
   }
 
   line.sprintf(fmt.data(), (double)ep->IODE, ep->Crs, ep->Delta_n, ep->M0);
@@ -474,7 +477,7 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
                ((double) ep->IODC));
   allLines += line;
 
-  line.sprintf(fmt.data(), ((double)ep->TOW), 0.0);
+  line.sprintf(fmt2.data(), ((double)ep->TOW), 0.0);
   allLines += line;
 
   printOutput(printFile, _ephStreamGPS, lineV2, lineV3, allLines);
