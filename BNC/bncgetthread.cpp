@@ -759,7 +759,7 @@ void bncGetThread::run() {
 
           // Check observation epoch
           // -----------------------
-          if (!_rawInpFile) {
+          if (!_rawInpFile && !dynamic_cast<gpssDecoder*>(_decoder)) {
             int week;
             double sec;
             currentGPSWeeks(week, sec);
