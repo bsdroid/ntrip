@@ -446,7 +446,7 @@ t_irc bncGetThread::initRun() {
       emit(newMessage("Get Data: " + _staID + " in RTIGS format", true));
       _decoder = new RTIGSDecoder();
     }
-    else if (_format.indexOf("GPSS") != -1) {
+    else if (_format.indexOf("GPSS") != -1 || _format.indexOf("BNC") != -1) {
       emit(newMessage("Get Data: " + _staID + " in GPSS format", true));
       _decoder = new gpssDecoder();
     }
