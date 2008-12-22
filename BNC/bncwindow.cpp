@@ -229,6 +229,8 @@ bncWindow::bncWindow() {
   _adviseFailSpinBox->setValue(settings.value("adviseFail").toInt());
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
   _adviseScriptLineEdit    = new QLineEdit(settings.value("adviseScript").toString());
+  _serialPortNameLineEdit = new QLineEdit(settings.value("serialPortName").toString());
+  _serialMountPointLineEdit = new QLineEdit(settings.value("serialMountPoint").toString());
 
   _perfIntrComboBox    = new QComboBox();
   _perfIntrComboBox->setMaximumWidth(9*ww);
@@ -312,6 +314,7 @@ bncWindow::bncWindow() {
   QWidget* cgroup = new QWidget();
   QWidget* ogroup = new QWidget();
   QWidget* rgroup = new QWidget();
+  QWidget* sergroup = new QWidget();
   aogroup->addTab(pgroup,tr("Proxy"));
   aogroup->addTab(ggroup,tr("General"));
   aogroup->addTab(ogroup,tr("RINEX Observations"));
@@ -320,6 +323,7 @@ bncWindow::bncWindow() {
   aogroup->addTab(sgroup,tr("Feed Engine"));
   aogroup->addTab(agroup,tr("Outages"));
   aogroup->addTab(rgroup,tr("Miscellaneous"));
+  aogroup->addTab(sergroup,tr("Serial"));
 
   QGridLayout* pLayout = new QGridLayout;
   pLayout->setColumnMinimumWidth(0,14*ww);
@@ -435,6 +439,13 @@ bncWindow::bncWindow() {
   cLayout->addWidget(new QLabel("    "),4,0);
   cLayout->addWidget(new QLabel("    "),5,0);
   cgroup->setLayout(cLayout);
+
+  QGridLayout* serLayout = new QGridLayout;
+  serLayout->addWidget(new QLabel("Port Name"),0,0, Qt::AlignLeft);
+  serLayout->addWidget(_serialPortNameLineEdit,0, 1);
+  serLayout->addWidget(new QLabel("MountPoint"),1,0, Qt::AlignLeft);
+  serLayout->addWidget(_serialMountPointLineEdit,1, 1);
+  sergroup->setLayout(serLayout);
 
   QVBoxLayout* mLayout = new QVBoxLayout;
   mLayout->addWidget(aogroup);
@@ -663,8 +674,10 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("adviseScript",_adviseScriptLineEdit->text());
   settings.setValue("miscMount",   _miscMountLineEdit->text());
   settings.setValue("scanRTCM",    _scanRTCMCheckBox->checkState());
+  settings.setValue("serialPortName", _serialPortNameLineEdit->text());
+  settings.setValue("serialMountPoint", _serialMountPointLineEdit->text());
   
-QStringList mountPoints;
+  QStringList mountPoints;
 
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
     QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 

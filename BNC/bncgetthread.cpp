@@ -191,8 +191,9 @@ void bncGetThread::initialize() {
   connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
 	  this, SLOT(slotNewEphGPS(gpsephemeris)));
 
-  if (settings.value("serial_staID").toString() == _staID) {
-    _serialPort = new QextSerialPort( settings.value("serial_name").toString() );
+  if (settings.value("serialMountPoint").toString() == _staID) {
+    _serialPort = new QextSerialPort( 
+                               settings.value("serialPortName").toString() );
     _serialPort->setBaudRate(BAUD9600);   
     _serialPort->setParity(PAR_NONE);    
     _serialPort->setDataBits(DATA_8);   

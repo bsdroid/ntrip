@@ -129,6 +129,8 @@
     QLineEdit* _adviseScriptLineEdit;
     QComboBox* _perfIntrComboBox;
     QTableWidget* _mountPointsTable;
+    QLineEdit* _serialPortNameLineEdit;
+    QLineEdit* _serialMountPointLineEdit;
 
     QLineEdit*   _LatLineEdit;
     QLineEdit*   _LonLineEdit;
