@@ -192,8 +192,13 @@ void bncGetThread::initialize() {
 	  this, SLOT(slotNewEphGPS(gpsephemeris)));
 
   if (settings.value("serial_staID").toString() == _staID) {
-    _serialPort = new QextSerialPort();
-    _serialPort->open();
+    _serialPort = new QextSerialPort( settings.value("serial_name").toString() );
+    _serialPort->setBaudRate(BAUD9600);   
+    _serialPort->setParity(PAR_NONE);    
+    _serialPort->setDataBits(DATA_8);   
+    _serialPort->setStopBits(STOP_1);    
+    _serialPort->open(QIODevice::ReadWrite|QIODevice::Unbuffered);
+    qDebug() << "serial port opened: " << _serialPort->isOpen() << endl;
   }
   else {
     _serialPort = 0;
@@ -562,8 +567,9 @@ void bncGetThread::run() {
         }
 
         if (_serialPort) {
-          _serialPort->write(data, nBytes);
-          _serialPort->flush();
+          int irc = _serialPort->write(data, nBytes);
+	  ////          _serialPort->flush();
+	  qDebug() << nBytes << " " << irc << endl;
         }
 
         if (_inspSegm<1) {
