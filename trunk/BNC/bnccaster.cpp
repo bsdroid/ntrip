@@ -194,7 +194,7 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
       QSettings settings;
       if ( !settings.value("outFile").toString().isEmpty() || 
            !settings.value("outPort").toString().isEmpty() ) { 
-        emit( newMessage(QString("Station %1: old epoch %2 thrown away")
+        emit( newMessage(QString("%1: Old epoch %2 thrown away")
                                    .arg(staID.data()).arg(iSec).toAscii(), true) );
       }
     }
