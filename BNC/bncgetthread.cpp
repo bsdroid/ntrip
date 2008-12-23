@@ -229,6 +229,7 @@ bncGetThread::~bncGetThread() {
   delete _rnx;
   delete _rawInpFile;
   delete _rawOutFile;
+  delete _serialPort;
 }
 
 #define AGENTVERSION "1.7"
