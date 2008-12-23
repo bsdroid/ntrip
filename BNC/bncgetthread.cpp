@@ -262,7 +262,11 @@ void bncGetThread::initialize() {
       _serialPort->setStopBits(STOP_2);    
     }
     _serialPort->open(QIODevice::ReadWrite|QIODevice::Unbuffered);
-    qDebug() << "serial port opened: " << _serialPort->isOpen() << endl;
+    if (!_serialPort->isOpen()) {
+      delete _serialPort;
+      _serialPort = 0;
+      emit(newMessage((_staID + ": Cannot Open Serial Port\n"), true));
+    }
   }
   else {
     _serialPort = 0;
@@ -632,9 +636,8 @@ void bncGetThread::run() {
         }
 
         if (_serialPort) {
-          int irc = _serialPort->write(data, nBytes);
+          _serialPort->write(data, nBytes);
 	  ////          _serialPort->flush();
-	  qDebug() << nBytes << " " << irc << endl;
         }
 
         if (_inspSegm<1) {
