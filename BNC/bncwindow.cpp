@@ -229,8 +229,35 @@ bncWindow::bncWindow() {
   _adviseFailSpinBox->setValue(settings.value("adviseFail").toInt());
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
   _adviseScriptLineEdit    = new QLineEdit(settings.value("adviseScript").toString());
+
   _serialPortNameLineEdit = new QLineEdit(settings.value("serialPortName").toString());
   _serialMountPointLineEdit = new QLineEdit(settings.value("serialMountPoint").toString());
+
+  _serialBaudRateComboBox = new QComboBox();
+  _serialBaudRateComboBox->addItems(QString("110, 300, 600,"
+            "1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200").split(","));
+  kk = _serialBaudRateComboBox->findText(settings.value("serialBaudRate").toString());
+  if (kk != -1) {
+    _serialBaudRateComboBox->setCurrentIndex(kk);
+  }
+  _serialParityComboBox   = new QComboBox();
+  _serialParityComboBox->addItems(QString("NONE, ODD, EVEN, SPACE").split(","));
+  kk = _serialParityComboBox->findText(settings.value("serialParity").toString());
+  if (kk != -1) {
+    _serialParityComboBox->setCurrentIndex(kk);
+  }
+  _serialDataBitsComboBox = new QComboBox();
+  _serialDataBitsComboBox->addItems(QString("5,6,7,8").split(","));
+  kk = _serialDataBitsComboBox->findText(settings.value("serialDataBits").toString());
+  if (kk != -1) {
+    _serialDataBitsComboBox->setCurrentIndex(kk);
+  }
+  _serialStopBitsComboBox = new QComboBox();
+  _serialStopBitsComboBox->addItems(QString("1,2").split(","));
+  kk = _serialStopBitsComboBox->findText(settings.value("serialStopBits").toString());
+  if (kk != -1) {
+    _serialStopBitsComboBox->setCurrentIndex(kk);
+  }
 
   _perfIntrComboBox    = new QComboBox();
   _perfIntrComboBox->setMaximumWidth(9*ww);
@@ -442,9 +469,19 @@ bncWindow::bncWindow() {
 
   QGridLayout* serLayout = new QGridLayout;
   serLayout->addWidget(new QLabel("Port Name"),0,0, Qt::AlignLeft);
-  serLayout->addWidget(_serialPortNameLineEdit,0, 1);
-  serLayout->addWidget(new QLabel("MountPoint"),1,0, Qt::AlignLeft);
-  serLayout->addWidget(_serialMountPointLineEdit,1, 1);
+  serLayout->addWidget(_serialPortNameLineEdit,0,1);
+  serLayout->addWidget(new QLabel("         "),0,2, Qt::AlignLeft);
+  serLayout->addWidget(new QLabel("MountPoint"),0,3, Qt::AlignLeft);
+  serLayout->addWidget(_serialMountPointLineEdit,0,4);
+  serLayout->addWidget(new QLabel("Baud Rate"),1,0, Qt::AlignLeft);
+  serLayout->addWidget(_serialBaudRateComboBox,1,1);
+  serLayout->addWidget(new QLabel("Parity"),1,3, Qt::AlignLeft);
+  serLayout->addWidget(_serialParityComboBox,1,4);
+  serLayout->addWidget(new QLabel("Data Bits"),2,0, Qt::AlignLeft);
+  serLayout->addWidget(_serialDataBitsComboBox,2,1);
+  serLayout->addWidget(new QLabel("Stop Bits"),2,3, Qt::AlignLeft);
+  serLayout->addWidget(_serialStopBitsComboBox,2,4);
+
   sergroup->setLayout(serLayout);
 
   QVBoxLayout* mLayout = new QVBoxLayout;
@@ -676,6 +713,10 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("scanRTCM",    _scanRTCMCheckBox->checkState());
   settings.setValue("serialPortName", _serialPortNameLineEdit->text());
   settings.setValue("serialMountPoint", _serialMountPointLineEdit->text());
+  settings.setValue("serialBaudRate", _serialBaudRateComboBox->currentText());
+  settings.setValue("serialParity",   _serialParityComboBox->currentText());
+  settings.setValue("serialDataBits", _serialDataBitsComboBox->currentText());
+  settings.setValue("serialStopBits", _serialStopBitsComboBox->currentText());
   
   QStringList mountPoints;
 
