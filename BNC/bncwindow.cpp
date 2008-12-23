@@ -234,14 +234,14 @@ bncWindow::bncWindow() {
   _serialMountPointLineEdit = new QLineEdit(settings.value("serialMountPoint").toString());
 
   _serialBaudRateComboBox = new QComboBox();
-  _serialBaudRateComboBox->addItems(QString("110, 300, 600,"
-            "1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200").split(","));
+  _serialBaudRateComboBox->addItems(QString("110,300,600,"
+            "1200,2400,4800,9600,19200,38400,57600,115200").split(","));
   kk = _serialBaudRateComboBox->findText(settings.value("serialBaudRate").toString());
   if (kk != -1) {
     _serialBaudRateComboBox->setCurrentIndex(kk);
   }
   _serialParityComboBox   = new QComboBox();
-  _serialParityComboBox->addItems(QString("NONE, ODD, EVEN, SPACE").split(","));
+  _serialParityComboBox->addItems(QString("NONE,ODD,EVEN,SPACE").split(","));
   kk = _serialParityComboBox->findText(settings.value("serialParity").toString());
   if (kk != -1) {
     _serialParityComboBox->setCurrentIndex(kk);
