@@ -194,10 +194,73 @@ void bncGetThread::initialize() {
   if (settings.value("serialMountPoint").toString() == _staID) {
     _serialPort = new QextSerialPort( 
                                settings.value("serialPortName").toString() );
-    _serialPort->setBaudRate(BAUD9600);   
-    _serialPort->setParity(PAR_NONE);    
-    _serialPort->setDataBits(DATA_8);   
-    _serialPort->setStopBits(STOP_1);    
+    QString hlp = settings.value("serialBaudRate").toString();
+    if      (hlp == "110") {
+      _serialPort->setBaudRate(BAUD110);   
+    }
+    else if (hlp == "300") {
+      _serialPort->setBaudRate(BAUD300);   
+    }
+    else if (hlp == "600") {
+      _serialPort->setBaudRate(BAUD600);   
+    }
+    else if (hlp == "1200") {
+      _serialPort->setBaudRate(BAUD1200);   
+    }
+    else if (hlp == "2400") {
+      _serialPort->setBaudRate(BAUD2400);   
+    }
+    else if (hlp == "4800") {
+      _serialPort->setBaudRate(BAUD4800);   
+    }
+    else if (hlp == "9600") {
+      _serialPort->setBaudRate(BAUD9600);   
+    }
+    else if (hlp == "19200") {
+      _serialPort->setBaudRate(BAUD19200);   
+    }
+    else if (hlp == "38400") {
+      _serialPort->setBaudRate(BAUD38400);   
+    }
+    else if (hlp == "57600") {
+      _serialPort->setBaudRate(BAUD57600);   
+    }
+    else if (hlp == "115200") {
+      _serialPort->setBaudRate(BAUD115200);   
+    }
+    hlp = settings.value("serialParity").toString();
+    if      (hlp == "NONE") {
+      _serialPort->setParity(PAR_NONE);    
+    }
+    else if (hlp == "ODD") {
+      _serialPort->setParity(PAR_ODD);    
+    }
+    else if (hlp == "EVEN") {
+      _serialPort->setParity(PAR_EVEN);    
+    }
+    else if (hlp == "SPACE") {
+      _serialPort->setParity(PAR_SPACE);    
+    }
+    hlp = settings.value("serialDataBits").toString();
+    if      (hlp == "5") {
+      _serialPort->setDataBits(DATA_5);   
+    }
+    else if (hlp == "6") {
+      _serialPort->setDataBits(DATA_6);   
+    }
+    else if (hlp == "7") {
+      _serialPort->setDataBits(DATA_7);   
+    }
+    else if (hlp == "8") {
+      _serialPort->setDataBits(DATA_8);   
+    }
+    hlp = settings.value("serialStopBits").toString();
+    if      (hlp == "1") {
+      _serialPort->setStopBits(STOP_1);    
+    }
+    else if (hlp == "2") {
+      _serialPort->setStopBits(STOP_2);    
+    }
     _serialPort->open(QIODevice::ReadWrite|QIODevice::Unbuffered);
     qDebug() << "serial port opened: " << _serialPort->isOpen() << endl;
   }
