@@ -11,10 +11,11 @@ int main(int argc, char *argv[]) {
 
   QApplication app(argc, argv, false);
 
-  QUrl url;
-  bncNetRequest req;
 
-  req.request(url);
+  bncNetRequest* req = new bncNetRequest();
+
+  QUrl url("http://euref-ip.bkg.bund.de:2111");
+  req->request(url);
 
   return app.exec();
 }
