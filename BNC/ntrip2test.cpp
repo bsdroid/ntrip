@@ -12,10 +12,13 @@ int main(int argc, char *argv[]) {
   QApplication app(argc, argv, false);
 
 
-  bncNetRequest* req = new bncNetRequest();
+  bncNetRequest* req1 = new bncNetRequest();
+  QUrl url1("http://euref-ip.bkg.bund.de:2111/");
+  req1->request(url1);
 
-  QUrl url("http://ntrip2c:rtcm2c@euref-ip.bkg.bund.de:2111");
-  req->request(url);
+  bncNetRequest* req2 = new bncNetRequest();
+  QUrl url2("http://ntrip2c:rtcm2c@euref-ip.bkg.bund.de:2111/TEST1");
+  req2->request(url2);
 
   return app.exec();
 }
