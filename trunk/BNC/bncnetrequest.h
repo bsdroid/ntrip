@@ -10,16 +10,15 @@ class bncNetRequest : public QObject {
  public:
   bncNetRequest();
   ~bncNetRequest();
-
-  t_irc request(const QUrl& mountPoint, const QByteArray& ggaStr);
+  t_irc request(const QUrl& mountPoint);
 
  signals:
 
  private slots:
-  void slotReplyFinished(QNetworkReply* reply);
+  void slotReplyFinished();
   void slotReadyRead();
   void slotError(QNetworkReply::NetworkError);
-  void slotSslErrors(QList<QSslError>);
+  void slotSslErrors();
 
  private:
   QNetworkAccessManager* _manager;
