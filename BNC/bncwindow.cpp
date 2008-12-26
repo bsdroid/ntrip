@@ -237,6 +237,7 @@ bncWindow::bncWindow() {
   _serialMountPointLineEdit = new QLineEdit(settings.value("serialMountPoint").toString());
 
   _serialBaudRateComboBox = new QComboBox();
+  _serialBaudRateComboBox->setMaximumWidth(9*ww);
   _serialBaudRateComboBox->addItems(QString("110,300,600,"
             "1200,2400,4800,9600,19200,38400,57600,115200").split(","));
   kk = _serialBaudRateComboBox->findText(settings.value("serialBaudRate").toString());
@@ -244,18 +245,21 @@ bncWindow::bncWindow() {
     _serialBaudRateComboBox->setCurrentIndex(kk);
   }
   _serialParityComboBox   = new QComboBox();
+  _serialParityComboBox->setMaximumWidth(9*ww);
   _serialParityComboBox->addItems(QString("NONE,ODD,EVEN,SPACE").split(","));
   kk = _serialParityComboBox->findText(settings.value("serialParity").toString());
   if (kk != -1) {
     _serialParityComboBox->setCurrentIndex(kk);
   }
   _serialDataBitsComboBox = new QComboBox();
+  _serialDataBitsComboBox->setMaximumWidth(5*ww);
   _serialDataBitsComboBox->addItems(QString("5,6,7,8").split(","));
   kk = _serialDataBitsComboBox->findText(settings.value("serialDataBits").toString());
   if (kk != -1) {
     _serialDataBitsComboBox->setCurrentIndex(kk);
   }
   _serialStopBitsComboBox = new QComboBox();
+  _serialStopBitsComboBox->setMaximumWidth(5*ww);
   _serialStopBitsComboBox->addItems(QString("1,2").split(","));
   kk = _serialStopBitsComboBox->findText(settings.value("serialStopBits").toString());
   if (kk != -1) {
@@ -354,7 +358,7 @@ bncWindow::bncWindow() {
   aogroup->addTab(sgroup,tr("Feed Engine"));
   aogroup->addTab(agroup,tr("Outages"));
   aogroup->addTab(rgroup,tr("Miscellaneous"));
-  aogroup->addTab(sergroup,tr("Serial"));
+  aogroup->addTab(sergroup,tr("Serial Port"));
 
   QGridLayout* pLayout = new QGridLayout;
   pLayout->setColumnMinimumWidth(0,14*ww);
@@ -473,19 +477,21 @@ bncWindow::bncWindow() {
   cgroup->setLayout(cLayout);
 
   QGridLayout* serLayout = new QGridLayout;
-  serLayout->addWidget(new QLabel("Port Name"),0,0, Qt::AlignLeft);
-  serLayout->addWidget(_serialPortNameLineEdit,0,1);
-  serLayout->addWidget(new QLabel("         "),0,2, Qt::AlignLeft);
-  serLayout->addWidget(new QLabel("MountPoint"),0,3, Qt::AlignLeft);
-  serLayout->addWidget(_serialMountPointLineEdit,0,4);
-  serLayout->addWidget(new QLabel("Baud Rate"),1,0, Qt::AlignLeft);
-  serLayout->addWidget(_serialBaudRateComboBox,1,1);
-  serLayout->addWidget(new QLabel("Parity"),1,3, Qt::AlignLeft);
-  serLayout->addWidget(_serialParityComboBox,1,4);
-  serLayout->addWidget(new QLabel("Data Bits"),2,0, Qt::AlignLeft);
-  serLayout->addWidget(_serialDataBitsComboBox,2,1);
-  serLayout->addWidget(new QLabel("Stop Bits"),2,3, Qt::AlignLeft);
-  serLayout->addWidget(_serialStopBitsComboBox,2,4);
+  serLayout->setColumnMinimumWidth(0,14*ww);
+  serLayout->addWidget(new QLabel("Mountpoint"),                  0,0, Qt::AlignLeft);
+  serLayout->addWidget(_serialMountPointLineEdit,                 0,1,1,2);
+  serLayout->addWidget(new QLabel("Port name"),                   1,0, Qt::AlignLeft);
+  serLayout->addWidget(_serialPortNameLineEdit,                   1,1,1,2);
+  serLayout->addWidget(new QLabel("Baud rate"),                   2,0, Qt::AlignLeft);
+  serLayout->addWidget(_serialBaudRateComboBox,                   2,1);
+  serLayout->addWidget(new QLabel("               Parity  "),     2,2, Qt::AlignRight);
+  serLayout->addWidget(_serialParityComboBox,                     2,3);
+  serLayout->addWidget(new QLabel("Data bits"),                   3,0, Qt::AlignLeft);
+  serLayout->addWidget(_serialDataBitsComboBox,                   3,1);
+  serLayout->addWidget(new QLabel("               Stop bits  "),  3,2, Qt::AlignRight);
+  serLayout->addWidget(_serialStopBitsComboBox,                   3,3);
+  serLayout->addWidget(new QLabel("Serial port settings."),       4,0,1,30);
+  serLayout->addWidget(new QLabel("    "),5,0);
 
   sergroup->setLayout(serLayout);
 
