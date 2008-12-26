@@ -31,6 +31,7 @@ bncNetRequest::bncNetRequest() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncNetRequest::~bncNetRequest() {
+  cout << "~bncNetRequest" << endl;
   delete _reply;
   delete _manager;
 }
