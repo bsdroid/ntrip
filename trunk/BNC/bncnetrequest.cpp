@@ -67,7 +67,7 @@ t_irc bncNetRequest::request(const QUrl& url) {
   connect(_reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
   connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
           this, SLOT(slotError(QNetworkReply::NetworkError)));
-  connect(_reply, SIGNAL(sslErrors()), this, SLOT(slotSslErrors()));
+  ///  connect(_reply, SIGNAL(sslErrors()), this, SLOT(slotSslErrors()));
 
 
   return success;
