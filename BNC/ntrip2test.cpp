@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
 
   bncNetRequest* req = new bncNetRequest();
 
-  QUrl url("http://euref-ip.bkg.bund.de:2111");
+  QUrl url("http://ntrip2c:rtcm2c@euref-ip.bkg.bund.de:2111");
   req->request(url);
 
   return app.exec();
