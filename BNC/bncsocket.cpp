@@ -31,31 +31,21 @@ bncSocket::bncSocket() {
   app->connect(this, SIGNAL(newMessage(QByteArray,bool)), 
                app, SLOT(slotMessage(const QByteArray,bool)));
   _socket = 0;
-#if QT_VERSION >= 0x040400
-  _manager = 0;
-  _reply   = 0;
-#endif
+  _http   = 0;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncSocket::~bncSocket() {
+  cout << "~bncSocket" << endl;
   delete _socket;
-#if QT_VERSION >= 0x040400
-  _reply->deleteLater();
-  _manager->deleteLater();
-#endif
+  delete _http;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSocket::connectToHost(const QString &hostName, quint16 port, 
                               QIODevice::OpenMode mode) {
-#if QT_VERSION >= 0x040400
-  if (_reply) {
-  }
-  else
-#endif
   if (_socket) {
     _socket->connectToHost(hostName, port, mode);
   }
@@ -64,12 +54,6 @@ void bncSocket::connectToHost(const QString &hostName, quint16 port,
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool bncSocket::waitForConnected(int msecs) {
-#if QT_VERSION >= 0x040400
-  if (_reply) {
-    return true;
-  }
-  else
-#endif
   if (_socket) {
     return _socket->waitForConnected(msecs);
   }
@@ -81,12 +65,6 @@ bool bncSocket::waitForConnected(int msecs) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 QAbstractSocket::SocketState bncSocket::state() const {
-#if QT_VERSION >= 0x040400
-  if (_reply) {
-    return QAbstractSocket::ConnectedState;
-  }
-  else
-#endif
   if (_socket) {
     return _socket->state();
   }
@@ -98,12 +76,6 @@ QAbstractSocket::SocketState bncSocket::state() const {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSocket::close() {
-#if QT_VERSION >= 0x040400
-  if (_reply) {
-    _reply->close();
-  }
-  else
-#endif
   if (_socket) {
     _socket->close();
   }
@@ -112,12 +84,6 @@ void bncSocket::close() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 qint64 bncSocket::bytesAvailable() const {
-#if QT_VERSION >= 0x040400
-  if (_reply) {
-    return _reply->bytesAvailable();
-  }
-  else
-#endif
   if (_socket) {
     return _socket->bytesAvailable();
   }
@@ -129,12 +95,6 @@ qint64 bncSocket::bytesAvailable() const {
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool bncSocket::canReadLine() const {
-#if QT_VERSION >= 0x040400
-  if (_reply) {
-    return _reply->canReadLine();
-  }
-  else
-#endif
   if (_socket) {
     return _socket->canReadLine();
   }
@@ -146,12 +106,6 @@ bool bncSocket::canReadLine() const {
 // 
 ////////////////////////////////////////////////////////////////////////////
 QByteArray bncSocket::readLine(qint64 maxlen) {
-#if QT_VERSION >= 0x040400
-  if (_reply) {
-    return _reply->readLine(maxlen);
-  }
-  else
-#endif
   if (_socket) {
     return _socket->readLine(maxlen);
   }
@@ -163,12 +117,6 @@ QByteArray bncSocket::readLine(qint64 maxlen) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool bncSocket::waitForReadyRead(int msecs) {
-#if QT_VERSION >= 0x040400
-  if (_reply) {
-    return _reply->waitForReadyRead(msecs);
-  }
-  else
-#endif
   if (_socket) {
     return _socket->waitForReadyRead(msecs);
   }
@@ -180,12 +128,6 @@ bool bncSocket::waitForReadyRead(int msecs) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 qint64 bncSocket::read(char* data, qint64 maxlen) {
-#if QT_VERSION >= 0x040400
-  if (_reply) {
-    return _reply->read(data, maxlen);
-  }
-  else
-#endif
   if (_socket) {
     return _socket->read(data, maxlen);
   }
@@ -197,12 +139,6 @@ qint64 bncSocket::read(char* data, qint64 maxlen) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 qint64 bncSocket::write(const char* data, qint64 len) {
-#if QT_VERSION >= 0x040400
-  if (_reply) {
-    return -1;
-  }
-  else
-#endif
   if (_socket) {
     return _socket->write(data, len);
   } 
@@ -214,12 +150,6 @@ qint64 bncSocket::write(const char* data, qint64 len) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool bncSocket::waitForBytesWritten(int msecs) {
-#if QT_VERSION >= 0x040400
-  if (_reply) {
-    return _reply->waitForBytesWritten(msecs);
-  }
-  else
-#endif
   if (_socket) {
     return _socket->waitForBytesWritten(msecs);
   }
@@ -360,78 +290,63 @@ t_irc bncSocket::request(const QUrl& mountPoint, const QByteArray& latitude,
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-#if QT_VERSION >= 0x040400
-void bncSocket::slotReplyFinished() {
-  cout << "slotReplyFinished" << endl;
+void bncSocket::slotRequestFinished(int id, bool error) {
+  cout << "slotRequestFinished " << id << " " << error << endl;
   this->deleteLater();
 }
-#endif
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-#if QT_VERSION >= 0x040400
-void bncSocket::slotReadyRead() {
+void bncSocket::slotReadyRead(const QHttpResponseHeader&) {
   cout << "slotReadyRead" << endl;
 }
-#endif
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-#if QT_VERSION >= 0x040400
-void bncSocket::slotError(QNetworkReply::NetworkError) {
-  cout << "slotError " << _reply->error() << endl
-       << _reply->errorString().toAscii().data() << endl;
-}
-#endif
-
-// 
-////////////////////////////////////////////////////////////////////////////
-#if QT_VERSION >= 0x040400
 void bncSocket::slotSslErrors(const QList<QSslError>&) {
   cout << "slotSslError" << endl;
 }
-#endif
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncSocket::slotDone(bool error) {
+  cout << "slotDone " << error << endl;
+}
 
 // Connect to Caster NTRIP Version 2
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncSocket::request2(const QUrl& url, const QByteArray& latitude, 
                          const QByteArray& longitude, const QByteArray& nmea,
                          int timeOut, QString& msg) {
-#if QT_VERSION < 0x040400
-  emit newMessage("NTRIP v2 requires Qt Version 4.4 or higher", "true");
-  return failure;
-#else
-  // Network Access Manager
-  // ----------------------
-  if (_manager == 0) {
-    _manager = new QNetworkAccessManager(this);
-  }
-  else {
-    return failure;
-  }
+
+  delete _socket;
+  _socket = new QTcpSocket();
+
+  delete _http;
+  _http = new QHttp();
+  
+  _http->setSocket(_socket);
 
   // Network Request
   // ---------------
-  QNetworkRequest request;
-  request.setUrl(url);
-  request.setRawHeader("Host"         , url.host().toAscii());
-  request.setRawHeader("Ntrip-Version", "NTRIP/2.0");
-  request.setRawHeader("User-Agent"   , "NTRIP BNC/1.7");
+  QHttpRequestHeader request("GET", url.path());
+  request.addValue("Host"         , url.host().toAscii());
+  request.addValue("Ntrip-Version", "NTRIP/2.0");
+  request.addValue("User-Agent"   , "NTRIP BNC/1.7");
   if (!url.userName().isEmpty()) {
-    request.setRawHeader("Authorization", "Basic " + 
+    request.addValue("Authorization", "Basic " + 
                  (url.userName() + ":" + url.password()).toAscii().toBase64());
   } 
-  request.setRawHeader("Connection"   , "close");
+  request.addValue("Connection"   , "close");
 
-  _reply = _manager->get(request);
 
-  connect(_reply, SIGNAL(finished()), this, SLOT(slotReplyFinished()));
-  connect(_reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
-  connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
-          this, SLOT(slotError(QNetworkReply::NetworkError)));
-  connect(_reply, SIGNAL(sslErrors(const QList<QSslError>&)), 
+  connect(_http, SIGNAL(done(bool)), this, SLOT(slotDone(bool)));
+  connect(_http, SIGNAL(requestFinished(int, bool)), 
+          this, SLOT(slotRequestFinished(int, bool)));
+  connect(_http, SIGNAL(readyRead(const QHttpResponseHeader&)), 
+          this, SLOT(slotReadyRead(const QHttpResponseHeader&)));
+  connect(_http, SIGNAL(sslErrors(const QList<QSslError>&)), 
           this, SLOT(slotSslErrors(const QList<QSslError>&)));
 
   return success;
-#endif
 }

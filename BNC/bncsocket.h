@@ -4,7 +4,7 @@
 #include <QtNetwork>
 #include "bncconst.h"
 
-class bncSocket : public QObject {
+class bncSocket : public QThread {
  Q_OBJECT
 
  public:
@@ -32,23 +32,18 @@ class bncSocket : public QObject {
   void newMessage(QByteArray msg, bool showOnScreen);
 
  private slots:
-#if QT_VERSION >= 0x040400
-  void slotReplyFinished();
-  void slotReadyRead();
-  void slotError(QNetworkReply::NetworkError);
+  void slotDone(bool);
+  void slotRequestFinished(int, bool);
+  void slotReadyRead(const QHttpResponseHeader&);
   void slotSslErrors(const QList<QSslError>&);
-#endif
 
  private:
   t_irc request2(const QUrl& url, const QByteArray& latitude, 
                  const QByteArray& longitude, const QByteArray& nmea, 
                  int timeOut, QString& msg);
 
-  QTcpSocket*            _socket;
-#if QT_VERSION >= 0x040400
-  QNetworkAccessManager* _manager;
-  QNetworkReply*         _reply;
-#endif
+  QTcpSocket* _socket;
+  QHttp*      _http;      
 };
 
 #endif
