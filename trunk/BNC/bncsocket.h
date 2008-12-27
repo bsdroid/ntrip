@@ -34,7 +34,7 @@ class bncSocket : public QThread {
  private slots:
   void slotDone(bool);
   void slotRequestFinished(int, bool);
-  void slotReadyRead(const QHttpResponseHeader&);
+  void slotReadyRead();
   void slotSslErrors(const QList<QSslError>&);
 
  private:
@@ -44,6 +44,7 @@ class bncSocket : public QThread {
 
   QTcpSocket* _socket;
   QHttp*      _http;      
+  QBuffer*    _buffer;
 };
 
 #endif

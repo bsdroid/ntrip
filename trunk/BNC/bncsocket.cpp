@@ -32,6 +32,7 @@ bncSocket::bncSocket() {
                app, SLOT(slotMessage(const QByteArray,bool)));
   _socket = 0;
   _http   = 0;
+  _buffer = 0;
 }
 
 // Destructor
@@ -40,6 +41,7 @@ bncSocket::~bncSocket() {
   cout << "~bncSocket" << endl;
   delete _socket;
   delete _http;
+  delete _buffer;
 }
 
 // 
@@ -84,7 +86,14 @@ void bncSocket::close() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 qint64 bncSocket::bytesAvailable() const {
-  if (_socket) {
+  if      (_http) { 
+    for (int ii = 1; ii < 10; ii++) {
+      cout << "bytesAvailable " << _http->bytesAvailable() << endl;
+      msleep(100);
+    }
+    return _http->bytesAvailable();
+  }
+  else if (_socket) {
     return _socket->bytesAvailable();
   }
   else {
@@ -95,7 +104,10 @@ qint64 bncSocket::bytesAvailable() const {
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool bncSocket::canReadLine() const {
-  if (_socket) {
+  if      (_buffer) {
+    return _buffer->canReadLine();
+  }
+  else if (_socket) {
     return _socket->canReadLine();
   }
   else {
@@ -106,7 +118,10 @@ bool bncSocket::canReadLine() const {
 // 
 ////////////////////////////////////////////////////////////////////////////
 QByteArray bncSocket::readLine(qint64 maxlen) {
-  if (_socket) {
+  if      (_buffer) {
+    return _buffer->readLine(maxlen);
+  }
+  else if (_socket) {
     return _socket->readLine(maxlen);
   }
   else {
@@ -117,7 +132,10 @@ QByteArray bncSocket::readLine(qint64 maxlen) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool bncSocket::waitForReadyRead(int msecs) {
-  if (_socket) {
+  if      (_http) {
+    msleep(10);
+  }
+  else if (_socket) {
     return _socket->waitForReadyRead(msecs);
   }
   else {
@@ -300,10 +318,8 @@ void bncSocket::slotRequestFinished(int id, bool error) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncSocket::slotReadyRead(const QHttpResponseHeader&) {
-  cout << "slotReadyRead" << endl;
-  QByteArray buffer = _http->readAll();
-  cout << buffer.data();
+void bncSocket::slotReadyRead() {
+  cout << "slotReadyRead " << _buffer->size() << endl;
 }
 
 // 
@@ -328,14 +344,9 @@ t_irc bncSocket::request2(const QUrl& url, const QByteArray& latitude,
                          const QByteArray& longitude, const QByteArray& nmea,
                          int timeOut, QString& msg) {
 
-  delete _socket;
-  _socket = new QTcpSocket();
-
   delete _http;
   _http = new QHttp();
   
-  _http->setSocket(_socket);
-
   _http->setHost(url.host());
 
   // Network Request
@@ -358,12 +369,35 @@ t_irc bncSocket::request2(const QUrl& url, const QByteArray& latitude,
   connect(_http, SIGNAL(done(bool)), this, SLOT(slotDone(bool)));
   connect(_http, SIGNAL(requestFinished(int, bool)), 
           this, SLOT(slotRequestFinished(int, bool)));
-  connect(_http, SIGNAL(readyRead(const QHttpResponseHeader&)), 
-          this, SLOT(slotReadyRead(const QHttpResponseHeader&)));
   connect(_http, SIGNAL(sslErrors(const QList<QSslError>&)), 
           this, SLOT(slotSslErrors(const QList<QSslError>&)));
 
-  _http->request(request);
+  _buffer = new QBuffer();
+  _buffer->open(QBuffer::ReadWrite);
+  connect(_buffer, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
+
+  _http->request(request, 0, _buffer);
 
   return success;
 }
+
+// void startQuery(...)
+// {
+// 	m_eventLoop = new QEventLoop(this);
+// 	connect(this, SIGNAL(singleQueryDone()), m_eventLoop, SLOT(quit()));
+// 	connect( qHttp, SIGNAL( requestFinished(int,bool) ), this,
+// 		SLOT( dataDone(int, bool) ) );
+// 	qHttp->request( header, QByteArray(), m_buffer );
+// }
+// 
+// void dataDone( int, bool )
+// {
+// 	emit singleQueryDone();
+// }
+// 
+// void blockingThing()
+// {
+//         startQuery( );
+//         m_eventLoop->exec(QEventLoop::ExcludeUserInputEvents);
+// }
+// 
