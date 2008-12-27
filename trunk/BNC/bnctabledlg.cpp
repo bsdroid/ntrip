@@ -317,6 +317,7 @@ void bncTableDlg::accept() {
   } 
   settings.setValue("casterHostList", casterHostList);
   settings.setValue("casterPort", _casterPortLineEdit->text());
+  settings.setValue("ntripVersion", _ntripVersionComboBox->currentText());
   settings.setValue("casterUser", _casterUserLineEdit->text());
   settings.setValue("casterPassword", _casterPasswordLineEdit->text());
 
@@ -329,6 +330,7 @@ void bncTableDlg::accept() {
       QString         latitude = _table->item(ir,8)->text();
       QString        longitude = _table->item(ir,9)->text();
       QString             nmea = _table->item(ir,10)->text();
+      QString     ntripVersion = _ntripVersionComboBox->currentText();
       format.replace(" ", "_");
       if (_table->isItemSelected(item)) {
         QUrl url;
@@ -338,7 +340,8 @@ void bncTableDlg::accept() {
         url.setPort(_casterPortLineEdit->text().toInt());
         url.setPath(item->text());
 
-        mountPoints->push_back(url.toString() + " " + format + " " + latitude + " " + longitude + " " + nmea);
+        mountPoints->push_back(url.toString() + " " + format + " " + latitude 
+                        + " " + longitude + " " + nmea + " " + ntripVersion);
       }
     }
   }
