@@ -18,6 +18,7 @@
 #include <iomanip>
 
 #include "bncnetrequest.h"
+#include "RTCM3/RTCM3Decoder.h"
 
 using namespace std;
 
@@ -26,6 +27,9 @@ using namespace std;
 bncNetRequest::bncNetRequest() {
   _manager = 0;
   _reply   = 0;
+  _decoder = new RTCM3Decoder("TEST1");
+  connect((RTCM3Decoder*) _decoder, SIGNAL(newMessage(QByteArray,bool)), 
+          this, SIGNAL(slotNewMessage(QByteArray,bool)));
 }
 
 // Destructor
@@ -87,7 +91,17 @@ void bncNetRequest::slotReplyFinished() {
 void bncNetRequest::slotReadyRead() {
   cout << "slotReadyRead" << endl;
   QByteArray buffer = _reply->readAll();
-  cerr << buffer.data();
+
+  vector<string> errmsg;
+  _decoder->Decode(buffer.data(), buffer.length(), errmsg);
+
+  QListIterator<p_obs> it(_decoder->_obsList);
+  while (it.hasNext()) {
+    p_obs obs = it.next();
+    cout << obs->_o.satNum << endl;
+    delete obs;
+  }
+  _decoder->_obsList.clear();
 }
 
 // 
@@ -103,3 +117,8 @@ void bncNetRequest::slotSslErrors(const QList<QSslError>&) {
   cout << "slotSslError" << endl;
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncNetRequest::slotNewMessage(QByteArray msg, bool) {
+  cout << "Message: " << msg.data() << endl;
+}
