@@ -31,12 +31,20 @@ bncSocket::bncSocket() {
   app->connect(this, SIGNAL(newMessage(QByteArray,bool)), 
                app, SLOT(slotMessage(const QByteArray,bool)));
   _socket = 0;
+#if QT_VERSION >= 0x040400
+  _manager = 0;
+  _reply   = 0;
+#endif
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncSocket::~bncSocket() {
   delete _socket;
+#if QT_VERSION >= 0x040400
+  _reply->deleteLater();
+  _manager->deleteLater();
+#endif
 }
 
 // 
@@ -167,7 +175,7 @@ t_irc bncSocket::request(const QUrl& mountPoint, const QByteArray& latitude,
     return failure;
   }
   else if (ntripVersion == "2") {
-
+    return request2(mountPoint, latitude, longitude, nmea, timeOut, msg);
   }
   else if (ntripVersion != "1") {
     emit newMessage("Unknown NTRIP Version " + ntripVersion, "true");
@@ -285,3 +293,49 @@ t_irc bncSocket::request(const QUrl& mountPoint, const QByteArray& latitude,
   return success;
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+#if QT_VERSION >= 0x040400
+void bncSocket::slotReplyFinished() {
+  cout << "slotReplyFinished" << endl;
+  this->deleteLater();
+}
+#endif
+
+// 
+////////////////////////////////////////////////////////////////////////////
+#if QT_VERSION >= 0x040400
+void bncSocket::slotReadyRead() {
+  cout << "slotReadyRead" << endl;
+}
+#endif
+
+// 
+////////////////////////////////////////////////////////////////////////////
+#if QT_VERSION >= 0x040400
+void bncSocket::slotError(QNetworkReply::NetworkError) {
+  cout << "slotError " << _reply->error() << endl
+       << _reply->errorString().toAscii().data() << endl;
+}
+#endif
+
+// 
+////////////////////////////////////////////////////////////////////////////
+#if QT_VERSION >= 0x040400
+void bncSocket::slotSslErrors(const QList<QSslError>&) {
+  cout << "slotSslError" << endl;
+}
+#endif
+
+// Connect to Caster NTRIP Version 2
+////////////////////////////////////////////////////////////////////////////
+t_irc bncSocket::request2(const QUrl& mountPoint, const QByteArray& latitude, 
+                         const QByteArray& longitude, const QByteArray& nmea,
+                         int timeOut, QString& msg) {
+#if QT_VERSION < 0x040400
+  emit newMessage("NTRIP v2 requires Qt Version 4.4 or higher", "true");
+  return failure;
+#else
+
+#endif
+}

@@ -31,8 +31,24 @@ class bncSocket : public QObject {
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
 
+ private slots:
+#if QT_VERSION >= 0x040400
+  void slotReplyFinished();
+  void slotReadyRead();
+  void slotError(QNetworkReply::NetworkError);
+  void slotSslErrors(const QList<QSslError>&);
+#endif
+
  private:
-  QTcpSocket* _socket;
+  t_irc request2(const QUrl& mountPoint, const QByteArray& latitude, 
+                 const QByteArray& longitude, const QByteArray& nmea, 
+                 int timeOut, QString& msg);
+
+  QTcpSocket*            _socket;
+#if QT_VERSION >= 0x040400
+  QNetworkAccessManager* _manager;
+  QNetworkReply*         _reply;
+#endif
 };
 
 #endif
