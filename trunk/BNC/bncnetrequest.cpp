@@ -68,7 +68,8 @@ t_irc bncNetRequest::request(const QUrl& url) {
   connect(_reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
   connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
           this, SLOT(slotError(QNetworkReply::NetworkError)));
-  ///  connect(_reply, SIGNAL(sslErrors()), this, SLOT(slotSslErrors()));
+  connect(_reply, SIGNAL(sslErrors(const QList<QSslError>&)), 
+          this, SLOT(slotSslErrors(const QList<QSslError>&)));
 
 
   return success;
@@ -86,7 +87,7 @@ void bncNetRequest::slotReplyFinished() {
 void bncNetRequest::slotReadyRead() {
   cout << "slotReadyRead" << endl;
   QByteArray buffer = _reply->readAll();
-  cout << buffer.data();
+  cerr << buffer.data();
 }
 
 // 
@@ -98,7 +99,7 @@ void bncNetRequest::slotError(QNetworkReply::NetworkError) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncNetRequest::slotSslErrors() {
+void bncNetRequest::slotSslErrors(const QList<QSslError>&) {
   cout << "slotSslError" << endl;
 }
 
