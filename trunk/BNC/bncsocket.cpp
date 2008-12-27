@@ -38,7 +38,6 @@ bncSocket::bncSocket() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncSocket::~bncSocket() {
-  cout << "~bncSocket" << endl;
   delete _socket;
   delete _http;
 }
@@ -80,7 +79,6 @@ qint64 bncSocket::bytesAvailable() const {
 ////////////////////////////////////////////////////////////////////////////
 bool bncSocket::canReadLine() const {
   if      (_http) {
-    cout << "canReadLine " << _buffer.size() << endl;
     if (_buffer.indexOf('\n') != -1) {
       return true;
     }
@@ -101,10 +99,8 @@ bool bncSocket::canReadLine() const {
 QByteArray bncSocket::readLine() {
   if      (_http) {
     int ind = _buffer.indexOf('\n');
-    cout << "readLine " << ind << endl;
     if (ind != -1) {
       QByteArray ret = _buffer.left(ind+1);
-      cout << ret.data();
       _buffer = _buffer.right(_buffer.size()-ind-1);
       return ret;
     }
@@ -155,14 +151,14 @@ t_irc bncSocket::request(const QUrl& mountPoint, const QByteArray& latitude,
                          int timeOut, QString& msg) {
 
   if      (ntripVersion == "AUTO") {
-    emit newMessage("NTRIP Version AUTO not yet implemented", "true");
+    emit newMessage("NTRIP Version AUTO not yet implemented", true);
     return failure;
   }
   else if (ntripVersion == "2") {
     return request2(mountPoint, latitude, longitude, nmea, timeOut, msg);
   }
   else if (ntripVersion != "1") {
-    emit newMessage("Unknown NTRIP Version " + ntripVersion, "true");
+    emit newMessage("Unknown NTRIP Version " + ntripVersion, true);
     return failure;
   }
 
@@ -279,32 +275,27 @@ t_irc bncSocket::request(const QUrl& mountPoint, const QByteArray& latitude,
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncSocket::slotRequestFinished(int id, bool error) {
-  cout << "slotRequestFinished " << id << endl;
+void bncSocket::slotRequestFinished(int /* id */, bool error) {
   if (error) {
-    cout << "error: " << _http->error() << " " 
-         << _http->errorString().toAscii().data() << endl;
+    emit newMessage("slotRequestFinished " + 
+                    _http->errorString().toAscii(), true);
   }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSocket::slotReadyRead(const QHttpResponseHeader&) {
-  cout << "slotReadyRead " << _buffer.size() << " "
-       << _http->bytesAvailable() << endl;
   _buffer.append(_http->readAll());
-  cout << _buffer.data();
   emit quitEventLoop();
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSocket::slotDone(bool error) {
-  cout << "slotDone " << endl;
   if (error) {
-    cout << "error: " << _http->error() << " " 
-         << _http->errorString().toAscii().data() << endl;
+    emit newMessage("slotDone " + _http->errorString().toAscii(), true);
   }
+  emit quitEventLoop();
 }
 
 // Connect to Caster NTRIP Version 2
@@ -344,6 +335,5 @@ t_irc bncSocket::request2(const QUrl& url, const QByteArray& latitude,
 
   _http->request(request);
 
-  cout << "before return" << endl;
   return success;
 }
