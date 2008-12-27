@@ -32,8 +32,7 @@ bncSocket::bncSocket() {
                app, SLOT(slotMessage(const QByteArray,bool)));
   _socket    = 0;
   _http      = 0;
-  _buffer    = 0;
-  _eventLoop = 0;
+  connect(this, SIGNAL(quitEventLoop()), &_eventLoop, SLOT(quit()));
 }
 
 // Destructor
@@ -42,8 +41,6 @@ bncSocket::~bncSocket() {
   cout << "~bncSocket" << endl;
   delete _socket;
   delete _http;
-  delete _buffer;
-  delete _eventLoop;
 }
 
 // 
@@ -69,7 +66,7 @@ void bncSocket::close() {
 ////////////////////////////////////////////////////////////////////////////
 qint64 bncSocket::bytesAvailable() const {
   if      (_http) { 
-    return _http->bytesAvailable();
+    return _buffer.size();
   }
   else if (_socket) {
     return _socket->bytesAvailable();
@@ -82,8 +79,14 @@ qint64 bncSocket::bytesAvailable() const {
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool bncSocket::canReadLine() const {
-  if      (_buffer) {
-    return _buffer->canReadLine();
+  if      (_http) {
+    cout << "canReadLine " << _buffer.size() << endl;
+    if (_buffer.indexOf('\n') != -1) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
   else if (_socket) {
     return _socket->canReadLine();
@@ -96,8 +99,9 @@ bool bncSocket::canReadLine() const {
 // 
 ////////////////////////////////////////////////////////////////////////////
 QByteArray bncSocket::readLine(qint64 maxlen) {
-  if      (_buffer) {
-    return _buffer->readLine(maxlen);
+  if      (_http) {
+    return "";
+    ///    return _buffer->readLine(maxlen);
   }
   else if (_socket) {
     return _socket->readLine(maxlen);
@@ -109,12 +113,17 @@ QByteArray bncSocket::readLine(qint64 maxlen) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-bool bncSocket::waitForReadyRead(int msecs) {
-  if (_socket) {
-    return _socket->waitForReadyRead(msecs);
+void bncSocket::waitForReadyRead(int msecs) {
+  if      (_http) {
+    if (bytesAvailable() > 0) {
+      return;
+    }
+    else {
+      _eventLoop.exec(QEventLoop::ExcludeUserInputEvents);
+    }
   }
-  else {
-    return false;
+  else if (_socket) {
+    _socket->waitForReadyRead(msecs);
   }
 }
 
@@ -267,13 +276,16 @@ void bncSocket::slotRequestFinished(int id, bool error) {
     cout << "error: " << _http->error() << " " 
          << _http->errorString().toAscii().data() << endl;
   }
-  cout << _buffer->data().data();
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncSocket::slotReadyRead() {
-  cout << "slotReadyRead " << _buffer->size() << endl;
+void bncSocket::slotReadyRead(const QHttpResponseHeader&) {
+  cout << "slotReadyRead " << _buffer.size() << " "
+       << _http->bytesAvailable() << endl;
+  _buffer.append(_http->readAll());
+  cout << _buffer.data();
+  emit quitEventLoop();
 }
 
 // 
@@ -284,7 +296,6 @@ void bncSocket::slotDone(bool error) {
     cout << "error: " << _http->error() << " " 
          << _http->errorString().toAscii().data() << endl;
   }
-  emit quitEventLoop();
 }
 
 // Connect to Caster NTRIP Version 2
@@ -293,8 +304,6 @@ t_irc bncSocket::request2(const QUrl& url, const QByteArray& latitude,
                          const QByteArray& longitude, const QByteArray& nmea,
                          int timeOut, QString& msg) {
 
-  _eventLoop = new QEventLoop();
-  connect(this, SIGNAL(quitEventLoop()), _eventLoop, SLOT(quit()));
 
   delete _http;
   _http = new QHttp();
@@ -321,14 +330,10 @@ t_irc bncSocket::request2(const QUrl& url, const QByteArray& latitude,
   connect(_http, SIGNAL(done(bool)), this, SLOT(slotDone(bool)));
   connect(_http, SIGNAL(requestFinished(int, bool)), 
           this, SLOT(slotRequestFinished(int, bool)));
+  connect(_http, SIGNAL(readyRead(const QHttpResponseHeader&)), 
+          this, SLOT(slotReadyRead(const QHttpResponseHeader&)));
 
-  _buffer = new QBuffer();
-  _buffer->open(QBuffer::ReadWrite);
-  connect(_buffer, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
-
-  _http->request(request, 0, _buffer);
-
-  ///  _eventLoop->exec(QEventLoop::ExcludeUserInputEvents);
+  _http->request(request);
 
   cout << "before return" << endl;
   return success;

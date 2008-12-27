@@ -15,7 +15,7 @@ class bncSocket : public QObject {
   qint64     bytesAvailable() const;
   bool       canReadLine() const;
   QByteArray readLine(qint64 maxlen = 0);
-  bool       waitForReadyRead(int msecs = 30000);
+  void       waitForReadyRead(int msecs = 30000);
   qint64     read(char *data, qint64 maxlen);
   QAbstractSocket::SocketState state() const;
 
@@ -30,7 +30,7 @@ class bncSocket : public QObject {
  private slots:
   void slotDone(bool);
   void slotRequestFinished(int, bool);
-  void slotReadyRead();
+  void slotReadyRead(const QHttpResponseHeader&);
 
  private:
   t_irc request2(const QUrl& url, const QByteArray& latitude, 
@@ -39,8 +39,8 @@ class bncSocket : public QObject {
 
   QTcpSocket* _socket;
   QHttp*      _http;      
-  QBuffer*    _buffer;
-  QEventLoop* _eventLoop;
+  QByteArray  _buffer;
+  QEventLoop  _eventLoop;
 };
 
 #endif
