@@ -338,7 +338,7 @@ bncWindow::bncWindow() {
   _miscMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint to apply any of the options shown below. Enter 'ALL' if you want to apply these options to all configured streams.</p><p>An empty option field (default) means that you don't want BNC to apply any of these options.</p>"));
   _scanRTCMCheckBox->setWhatsThis(tr("<p>Tick 'Scan RTCM' to log the numbers of incomming message types as well as contained antenna coordinates, antenna heigt, and antenna descriptor.</p><p>An empty option field (default) means that you don't want BNC to log such information.</p>"));
   _serialMountPointLineEdit->setWhatsThis(tr("<p>Enter a 'Mountpoint' to forward the corresponding stream to a serial connected device.</p>"));
-  _serialPortNameLineEdit->setWhatsThis(tr("<p>Enter the serial 'Port name' selected for communication with your serial connected device. Valid port names are:</p><p>COM1, COM2 (Windows)<br>/dev/ttyS0, /dev/ttyS1 (Linux)<br>/dev/ttyd0, /dev/ttyd1 (FreeBSD)<br>/dev/tty01, /dev/tty02 (Digital UNIX)<br>/dev/tty1p0, /dev/tty2p0 (HP-UX)<br>/dev/ttyf1, /dev/ttyf2 (SGI/IRIX)<br>/dev/ttya, /dev/ttyb (SunOS/Solaris)</p>"));
+  _serialPortNameLineEdit->setWhatsThis(tr("<p>Enter the serial 'Port name' selected for communication with your serial connected device. Valid port names are</p><pre>Windows:       COM1, COM2<br>Linux:         /dev/ttyS0, /dev/ttyS1<br>FreeBSD:       /dev/ttyd0, /dev/ttyd1<br>Digital Unix:  /dev/tty01, /dev/tty02<br>HP-UX:         /dev/tty1p0, /dev/tty2p0<br>SGI/IRIX:      /dev/ttyf1, /dev/ttyf2<br>SunOS/Solaris: /dev/ttya, /dev/ttyb</pre>"));
   _serialBaudRateComboBox->setWhatsThis(tr("<p>Select a 'Baud rate' for the serial link.</p><p>Note that your selection must equal the baud rate configured to the serial connected device. Note further that using a high baud rate is recommended.</p>"));
   _serialParityComboBox->setWhatsThis(tr("<p>Select the 'Parity' for the serial link.</p><p>Note that your selection must equal the parity selection configured to the serial connected device. Note further that parity is often set to 'NONE'.</p>"));
   _serialDataBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Data bits' for the serial link.</p><p>Note that your selection must equal the number of data bits configured to the serial connected device. Note further that often 8 data bits are used.</p>"));
@@ -366,7 +366,7 @@ bncWindow::bncWindow() {
   aogroup->addTab(egroup,tr("RINEX Ephemeris"));
   aogroup->addTab(cgroup,tr("Ephemeris Corrections"));
   aogroup->addTab(sgroup,tr("Feed Engine"));
-  aogroup->addTab(sergroup,tr("Serial Port"));
+  aogroup->addTab(sergroup,tr("Serial Link"));
   aogroup->addTab(agroup,tr("Outages"));
   aogroup->addTab(rgroup,tr("Miscellaneous"));
 
