@@ -218,7 +218,7 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
       }
     }
   }
-  delete socket;
+  ///  delete socket;
 
   allTables.insert(casterHost, allLines);
   return success;

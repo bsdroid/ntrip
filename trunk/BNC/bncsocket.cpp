@@ -291,14 +291,19 @@ t_irc bncSocket::request(const QUrl& mountPoint, const QByteArray& latitude,
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSocket::slotRequestFinished(int id, bool error) {
-  cout << "slotRequestFinished " << id << " " << error << endl;
-  this->deleteLater();
+  cout << "slotRequestFinished " << id << endl;
+  if (error) {
+    cout << "error: " << _http->error() << " " 
+         << _http->errorString().toAscii().data() << endl;
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSocket::slotReadyRead(const QHttpResponseHeader&) {
   cout << "slotReadyRead" << endl;
+  QByteArray buffer = _http->readAll();
+  cout << buffer.data();
 }
 
 // 
@@ -310,7 +315,11 @@ void bncSocket::slotSslErrors(const QList<QSslError>&) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSocket::slotDone(bool error) {
-  cout << "slotDone " << error << endl;
+  cout << "slotDone " << endl;
+  if (error) {
+    cout << "error: " << _http->error() << " " 
+         << _http->errorString().toAscii().data() << endl;
+  }
 }
 
 // Connect to Caster NTRIP Version 2
@@ -327,12 +336,18 @@ t_irc bncSocket::request2(const QUrl& url, const QByteArray& latitude,
   
   _http->setSocket(_socket);
 
+  _http->setHost(url.host());
+
   // Network Request
   // ---------------
-  QHttpRequestHeader request("GET", url.path());
+  QString path = url.path();
+  if (path.isEmpty()) {
+    path = "/";
+  }
+  QHttpRequestHeader request("GET", path);
   request.addValue("Host"         , url.host().toAscii());
   request.addValue("Ntrip-Version", "NTRIP/2.0");
-  request.addValue("User-Agent"   , "NTRIP BNC/1.7");
+  request.addValue("User-Agent"   , "NTRIP BNC/" BNCVERSION);
   if (!url.userName().isEmpty()) {
     request.addValue("Authorization", "Basic " + 
                  (url.userName() + ":" + url.password()).toAscii().toBase64());
@@ -347,6 +362,8 @@ t_irc bncSocket::request2(const QUrl& url, const QByteArray& latitude,
           this, SLOT(slotReadyRead(const QHttpResponseHeader&)));
   connect(_http, SIGNAL(sslErrors(const QList<QSslError>&)), 
           this, SLOT(slotSslErrors(const QList<QSslError>&)));
+
+  _http->request(request);
 
   return success;
 }
