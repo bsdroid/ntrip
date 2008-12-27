@@ -18,6 +18,7 @@
 #include <iomanip>
 
 #include "bncsocket.h"
+#include "bncapp.h"
 
 using namespace std;
 
@@ -26,6 +27,9 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncSocket::bncSocket() {
+  bncApp* app = (bncApp*) qApp;
+  app->connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+               app, SLOT(slotMessage(const QByteArray,bool)));
   _socket = 0;
 }
 
@@ -157,6 +161,18 @@ t_irc bncSocket::request(const QUrl& mountPoint, const QByteArray& latitude,
                          const QByteArray& longitude, const QByteArray& nmea,
                          const QByteArray& ntripVersion, 
                          int timeOut, QString& msg) {
+
+  if      (ntripVersion == "AUTO") {
+    emit newMessage("NTRIP Version AUTO not yet implemented", "true");
+    return failure;
+  }
+  else if (ntripVersion == "2") {
+
+  }
+  else if (ntripVersion != "1") {
+    emit newMessage("Unknown NTRIP Version " + ntripVersion, "true");
+    return failure;
+  }
 
   delete _socket;
   _socket = new QTcpSocket();
