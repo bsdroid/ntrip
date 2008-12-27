@@ -30,9 +30,10 @@ bncSocket::bncSocket() {
   bncApp* app = (bncApp*) qApp;
   app->connect(this, SIGNAL(newMessage(QByteArray,bool)), 
                app, SLOT(slotMessage(const QByteArray,bool)));
-  _socket = 0;
-  _http   = 0;
-  _buffer = 0;
+  _socket    = 0;
+  _http      = 0;
+  _buffer    = 0;
+  _eventLoop = 0;
 }
 
 // Destructor
@@ -42,6 +43,7 @@ bncSocket::~bncSocket() {
   delete _socket;
   delete _http;
   delete _buffer;
+  delete _eventLoop;
 }
 
 // 

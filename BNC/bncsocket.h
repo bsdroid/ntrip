@@ -4,7 +4,7 @@
 #include <QtNetwork>
 #include "bncconst.h"
 
-class bncSocket : public QThread {
+class bncSocket : public QObject {
  Q_OBJECT
 
  public:
@@ -17,11 +17,6 @@ class bncSocket : public QThread {
   QByteArray readLine(qint64 maxlen = 0);
   bool       waitForReadyRead(int msecs = 30000);
   qint64     read(char *data, qint64 maxlen);
-  qint64     write(const char *data, qint64 len);
-  bool       waitForBytesWritten(int msecs = 30000);
-  void       connectToHost(const QString &hostName, quint16 port, 
-                           QIODevice::OpenMode mode = QIODevice::ReadWrite);
-  bool       waitForConnected(int msecs = 30000);
   QAbstractSocket::SocketState state() const;
 
   t_irc request(const QUrl& mountPoint, const QByteArray& latitude, 
@@ -29,13 +24,13 @@ class bncSocket : public QThread {
                 const QByteArray& ntripVersion, int timeOut, QString& msg);
 
  signals:
+  void quitEventLoop();
   void newMessage(QByteArray msg, bool showOnScreen);
 
  private slots:
   void slotDone(bool);
   void slotRequestFinished(int, bool);
   void slotReadyRead();
-  void slotSslErrors(const QList<QSslError>&);
 
  private:
   t_irc request2(const QUrl& url, const QByteArray& latitude, 
@@ -45,6 +40,7 @@ class bncSocket : public QThread {
   QTcpSocket* _socket;
   QHttp*      _http;      
   QBuffer*    _buffer;
+  QEventLoop* _eventLoop;
 };
 
 #endif
