@@ -203,7 +203,9 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
       if (first) {
         first = false;
         if (line.indexOf("SOURCETABLE 200 OK") != 0) {
-          break;
+          if (ntripVersion == "1") {
+            break;
+          }
         }
       }
       else {

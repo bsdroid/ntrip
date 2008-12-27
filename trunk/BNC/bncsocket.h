@@ -14,7 +14,7 @@ class bncSocket : public QObject {
   void       close();
   qint64     bytesAvailable() const;
   bool       canReadLine() const;
-  QByteArray readLine(qint64 maxlen = 0);
+  QByteArray readLine();
   void       waitForReadyRead(int msecs = 30000);
   qint64     read(char *data, qint64 maxlen);
   QAbstractSocket::SocketState state() const;

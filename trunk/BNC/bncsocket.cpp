@@ -98,13 +98,22 @@ bool bncSocket::canReadLine() const {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-QByteArray bncSocket::readLine(qint64 maxlen) {
+QByteArray bncSocket::readLine() {
   if      (_http) {
-    return "";
-    ///    return _buffer->readLine(maxlen);
+    int ind = _buffer.indexOf('\n');
+    cout << "readLine " << ind << endl;
+    if (ind != -1) {
+      QByteArray ret = _buffer.left(ind+1);
+      cout << ret.data();
+      _buffer = _buffer.right(_buffer.size()-ind-1);
+      return ret;
+    }
+    else {
+      return "";
+    }
   }
   else if (_socket) {
-    return _socket->readLine(maxlen);
+    return _socket->readLine();
   }
   else {
     return "";
