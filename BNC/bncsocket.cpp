@@ -4,7 +4,7 @@
  *
  * Class:      bncSocket
  *
- * Purpose:    Subclass QIODevice (QTcpSocket, QNetworkReply)
+ * Purpose:    Combines QTcpSocket (NTRIP v1) and  QNetworkReply (NTRIP v2)
  *
  * Author:     L. Mervart
  *
@@ -151,7 +151,7 @@ bool bncSocket::waitForBytesWritten(int msecs) {
   }
 }
 
-// Connect to Caster, send the Request (static)
+// Connect to Caster, send the Request
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncSocket::request(const QUrl& mountPoint, const QByteArray& latitude, 
                          const QByteArray& longitude, const QByteArray& nmea,

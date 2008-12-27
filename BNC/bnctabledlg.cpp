@@ -162,9 +162,10 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
   QByteArray _latitude;
   QByteArray _longitude;
   QByteArray _nmea;
-  bncSocket* socket = bncSocket::request(url, _latitude, _longitude, _nmea, timeOut, msg);
-
-  if (!socket) {
+  bncSocket* socket = new bncSocket();
+  if (socket->request(url, _latitude, _longitude, 
+                      _nmea, timeOut, msg) != success) {
+    delete socket;
     return failure;
   }
 
