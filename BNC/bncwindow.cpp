@@ -59,7 +59,7 @@ bncWindow::bncWindow() {
 
   int ww = QFontMetrics(this->font()).width('w');
   
-  static const QStringList labels = QString("account,broadcaster:port / mountpoint,decoder,lat,long,nmea,bytes").split(",");
+  static const QStringList labels = QString("account,broadcaster:port / mountpoint,decoder,lat,long,nmea,ntrip,bytes").split(",");
 
   setMinimumSize(80*ww, 65*ww);
 
@@ -278,13 +278,14 @@ bncWindow::bncWindow() {
     _perfIntrComboBox->setCurrentIndex(ll);
   }
 
-  _mountPointsTable   = new QTableWidget(0,7);
+  _mountPointsTable   = new QTableWidget(0,8);
 
   _mountPointsTable->horizontalHeader()->resizeSection(1,34*ww);
   _mountPointsTable->horizontalHeader()->resizeSection(2,9*ww);
   _mountPointsTable->horizontalHeader()->resizeSection(3,7*ww); 
   _mountPointsTable->horizontalHeader()->resizeSection(4,7*ww); 
   _mountPointsTable->horizontalHeader()->resizeSection(5,5*ww); 
+  _mountPointsTable->horizontalHeader()->resizeSection(6,4*ww); 
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
   _mountPointsTable->horizontalHeader()->setStretchLastSection(true);
   _mountPointsTable->setHorizontalHeaderLabels(labels);
@@ -551,6 +552,10 @@ void bncWindow::populateMountPointsTable() {
     QString fullPath = url.host() + QString(":%1").arg(url.port()) + url.path();
     QString format(hlp[1]); QString latitude(hlp[2]); QString longitude(hlp[3]);
     QString nmea(hlp[4]);
+    QString ntripVersion = "1";
+    if (hlp.size() >= 6) {
+      ntripVersion = (hlp[5]);
+    }
 
     QTableWidgetItem* it;
     it = new QTableWidgetItem(url.userInfo());
@@ -582,9 +587,13 @@ void bncWindow::populateMountPointsTable() {
     it->setFlags(it->flags() & ~Qt::ItemIsEditable);
     _mountPointsTable->setItem(iRow, 5, it);
 
+    it = new QTableWidgetItem(ntripVersion);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 6, it);
+
     bncTableItem* bncIt = new bncTableItem();
     bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 6, bncIt);
+    _mountPointsTable->setItem(iRow, 7, bncIt);
 
     iRow++;
   }
@@ -657,6 +666,10 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
     QString fullPath = url.host() + QString(":%1").arg(url.port()) + url.path();
     QString format(hlp[1]); QString latitude(hlp[2]); QString longitude(hlp[3]);
     QString nmea(hlp[4]);
+    QString ntripVersion = "1";
+    if (hlp.size() >= 6) {
+      ntripVersion = (hlp[5]);
+    }
 
     _mountPointsTable->insertRow(iRow);
 
@@ -690,8 +703,12 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
     it->setFlags(it->flags() & ~Qt::ItemIsEditable);
     _mountPointsTable->setItem(iRow, 5, it);
 
+    it = new QTableWidgetItem(ntripVersion);
+    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 6, it);
+
     bncTableItem* bncIt = new bncTableItem();
-    _mountPointsTable->setItem(iRow, 6, bncIt);
+    _mountPointsTable->setItem(iRow, 7, bncIt);
 
     iRow++;
   }
@@ -758,7 +775,8 @@ void bncWindow::slotSaveOptions() {
                        _mountPointsTable->item(iRow, 2)->text()
                + " " + _mountPointsTable->item(iRow, 3)->text()
                + " " + _mountPointsTable->item(iRow, 4)->text()
-               + " " + _mountPointsTable->item(iRow, 5)->text());
+               + " " + _mountPointsTable->item(iRow, 5)->text()
+               + " " + _mountPointsTable->item(iRow, 6)->text());
   }
   settings.setValue("mountPoints", mountPoints);
   if (_caster) {
@@ -920,7 +938,7 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
       if (url                                      == thread->mountPoint() &&
           _mountPointsTable->item(iRow, 3)->text() == thread->latitude()   &&
           _mountPointsTable->item(iRow, 4)->text() == thread->longitude() ) {
-        ((bncTableItem*) _mountPointsTable->item(iRow, 6))->setGetThread(thread);
+        ((bncTableItem*) _mountPointsTable->item(iRow, 7))->setGetThread(thread);
         break;
       }
     }
