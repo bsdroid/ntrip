@@ -2,11 +2,12 @@
 #define BNCSOCKET_H
 
 #include <QtNetwork>
+#include "bncconst.h"
 
 class bncSocket : public QObject {
 
  public:
-  bncSocket(QTcpSocket* socket);
+  bncSocket();
   ~bncSocket();
 
   void       close();
@@ -22,10 +23,9 @@ class bncSocket : public QObject {
   bool       waitForConnected(int msecs = 30000);
   QAbstractSocket::SocketState state() const;
 
- static bncSocket* request(const QUrl& mountPoint, QByteArray& latitude, 
-                           QByteArray& longitude, QByteArray& nmea, 
-                           int timeOut, QString& msg);
-
+  t_irc request(const QUrl& mountPoint, const QByteArray& latitude, 
+                const QByteArray& longitude, const QByteArray& nmea, 
+                int timeOut, QString& msg);
 
  private:
   QTcpSocket* _socket;
