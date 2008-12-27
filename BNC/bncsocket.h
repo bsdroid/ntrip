@@ -5,6 +5,7 @@
 #include "bncconst.h"
 
 class bncSocket : public QObject {
+ Q_OBJECT
 
  public:
   bncSocket();
@@ -26,6 +27,9 @@ class bncSocket : public QObject {
   t_irc request(const QUrl& mountPoint, const QByteArray& latitude, 
                 const QByteArray& longitude, const QByteArray& nmea, 
                 const QByteArray& ntripVersion, int timeOut, QString& msg);
+
+ signals:
+  void newMessage(QByteArray msg, bool showOnScreen);
 
  private:
   QTcpSocket* _socket;
