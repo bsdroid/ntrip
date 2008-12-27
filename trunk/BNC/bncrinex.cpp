@@ -62,13 +62,15 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint, 
                    const QByteArray& format, const QByteArray& latitude,
-                   const QByteArray& longitude, const QByteArray& nmea) {
+                   const QByteArray& longitude, const QByteArray& nmea,
+                   const QByteArray& ntripVersion) {
   _statID        = statID;
   _mountPoint    = mountPoint;
   _format        = format.left(6);
   _latitude      = latitude;
   _longitude     = longitude;
   _nmea          = nmea;
+  _ntripVersion  = ntripVersion;
   _headerWritten = false;
   _reconnectFlag = false;
   _reloadTable   = false;
@@ -120,7 +122,7 @@ t_irc bncRinex::downloadSkeleton() {
 
   QStringList table;
   bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), 
-                            table, _reloadTable);
+                            _ntripVersion, table, _reloadTable);
   QString net;
   QStringListIterator it(table);
   while (it.hasNext()) {
@@ -158,7 +160,7 @@ t_irc bncRinex::downloadSkeleton() {
     QByteArray _nmea;
     bncSocket* socket = new bncSocket();
     if (socket->request(url, _latitude, _longitude, 
-                        _nmea, timeOut, msg) != success) {
+                        _nmea, _ntripVersion, timeOut, msg) != success) {
       delete socket;
       return failure;
     }

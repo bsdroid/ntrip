@@ -155,6 +155,7 @@ bool bncSocket::waitForBytesWritten(int msecs) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncSocket::request(const QUrl& mountPoint, const QByteArray& latitude, 
                          const QByteArray& longitude, const QByteArray& nmea,
+                         const QByteArray& ntripVersion, 
                          int timeOut, QString& msg) {
 
   delete _socket;
