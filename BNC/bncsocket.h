@@ -40,7 +40,7 @@ class bncSocket : public QObject {
 #endif
 
  private:
-  t_irc request2(const QUrl& mountPoint, const QByteArray& latitude, 
+  t_irc request2(const QUrl& url, const QByteArray& latitude, 
                  const QByteArray& longitude, const QByteArray& nmea, 
                  int timeOut, QString& msg);
 
