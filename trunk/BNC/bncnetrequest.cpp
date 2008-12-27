@@ -91,6 +91,9 @@ void bncNetRequest::slotReplyFinished() {
 void bncNetRequest::slotReadyRead() {
   cout << "slotReadyRead" << endl;
   QByteArray buffer = _reply->readAll();
+<<<<<<< bncnetrequest.cpp
+  cerr << buffer.data();
+=======
 
   vector<string> errmsg;
   _decoder->Decode(buffer.data(), buffer.length(), errmsg);
@@ -110,6 +113,7 @@ void bncNetRequest::slotReadyRead() {
     delete obs;
   }
   _decoder->_obsList.clear();
+>>>>>>> 1.9
 }
 
 // 
