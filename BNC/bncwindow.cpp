@@ -265,6 +265,9 @@ bncWindow::bncWindow() {
   if (kk != -1) {
     _serialStopBitsComboBox->setCurrentIndex(kk);
   }
+  _serialAutoNMEACheckBox  = new QCheckBox();
+  _serialAutoNMEACheckBox->setCheckState(Qt::CheckState(
+                                    settings.value("serialAutoNMEA").toInt()));
 
   _perfIntrComboBox    = new QComboBox();
   _perfIntrComboBox->setMaximumWidth(9*ww);
@@ -332,8 +335,15 @@ bncWindow::bncWindow() {
   _log->setWhatsThis(tr("Records of BNC's activities are shown in the Log section. The message log covers the communication status between BNC and the NTRIP broadcaster as well as any problems that occur in the communication link, stream availability, stream delay, stream conversion etc."));
   _ephV3CheckBox->setWhatsThis(tr("The default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format."));
   _rnxV3CheckBox->setWhatsThis(tr("The default format for RINEX Observation files is RINEX Version 2.11. Select 'Version 3' if you want to save the observations in RINEX Version 3 format."));
-  _miscMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint to apply the options shown below. Enter 'ALL' if you want to apply these options to all configured streams.</p><p>An empty option field (default) means that you don't want BNC to apply any of these options.</p>"));
+  _miscMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint to apply any of the options shown below. Enter 'ALL' if you want to apply these options to all configured streams.</p><p>An empty option field (default) means that you don't want BNC to apply any of these options.</p>"));
   _scanRTCMCheckBox->setWhatsThis(tr("<p>Tick 'Scan RTCM' to log the numbers of incomming message types as well as contained antenna coordinates, antenna heigt, and antenna descriptor.</p><p>An empty option field (default) means that you don't want BNC to log such information.</p>"));
+  _serialMountPointLineEdit->setWhatsThis(tr("<p>Enter a 'Mountpoint' to forward the corresponding stream to a serial connected device.</p>"));
+  _serialPortNameLineEdit->setWhatsThis(tr("<p>Enter the serial 'Port name' selected for communication with your serial connected device. Valid port names are:</p><p>COM1, COM2 (Windows)<br>/dev/ttyS0, /dev/ttyS1 (Linux)<br>/dev/ttyd0, /dev/ttyd1 (FreeBSD)<br>/dev/tty01, /dev/tty02 (Digital UNIX)<br>/dev/tty1p0, /dev/tty2p0 (HP-UX)<br>/dev/ttyf1, /dev/ttyf2 (SGI/IRIX)<br>/dev/ttya, /dev/ttyb (SunOS/Solaris)</p>"));
+  _serialBaudRateComboBox->setWhatsThis(tr("<p>Select a 'Baud rate' for the serial link.</p><p>Note that your selection must equal the baud rate configured to the serial connected device. Note further that using a high baud rate is recommended.</p>"));
+  _serialParityComboBox->setWhatsThis(tr("<p>Select the 'Parity' for the serial link.</p><p>Note that your selection must equal the parity selection configured to the serial connected device. Note further that parity is often set to 'NONE'.</p>"));
+  _serialDataBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Data bits' for the serial link.</p><p>Note that your selection must equal the number of data bits configured to the serial connected device. Note further that often 8 data bits are used.</p>"));
+  _serialStopBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Stop bits' for the serial link.</p><p>Note that your selection must equal the number of stop bits configured to the serial connected device. Note further that often 1 stop bit is used.</p>"));
+  _serialAutoNMEACheckBox->setWhatsThis(tr("<p>Tick 'Auto NMEA' to forward NMEA GGA messages coming from your serial connected device to the NTRIP brodacaster.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -356,9 +366,9 @@ bncWindow::bncWindow() {
   aogroup->addTab(egroup,tr("RINEX Ephemeris"));
   aogroup->addTab(cgroup,tr("Ephemeris Corrections"));
   aogroup->addTab(sgroup,tr("Feed Engine"));
+  aogroup->addTab(sergroup,tr("Serial Port"));
   aogroup->addTab(agroup,tr("Outages"));
   aogroup->addTab(rgroup,tr("Miscellaneous"));
-  aogroup->addTab(sergroup,tr("Serial Port"));
 
   QGridLayout* pLayout = new QGridLayout;
   pLayout->setColumnMinimumWidth(0,14*ww);
@@ -490,8 +500,9 @@ bncWindow::bncWindow() {
   serLayout->addWidget(_serialDataBitsComboBox,                   3,1);
   serLayout->addWidget(new QLabel("               Stop bits  "),  3,2, Qt::AlignRight);
   serLayout->addWidget(_serialStopBitsComboBox,                   3,3);
-  serLayout->addWidget(new QLabel("Serial port settings."),       4,0,1,30);
-  serLayout->addWidget(new QLabel("    "),5,0);
+  serLayout->addWidget(new QLabel("Auto NMEA"),                   4, 0);
+  serLayout->addWidget(_serialAutoNMEACheckBox,                   4, 1);
+  serLayout->addWidget(new QLabel("Serial port settings to feed a serial connected device."),5,0,1,30);
 
   sergroup->setLayout(serLayout);
 
@@ -735,6 +746,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("serialParity",   _serialParityComboBox->currentText());
   settings.setValue("serialDataBits", _serialDataBitsComboBox->currentText());
   settings.setValue("serialStopBits", _serialStopBitsComboBox->currentText());
+  settings.setValue("serialAutoNMEA", _serialAutoNMEACheckBox->checkState());
   
   QStringList mountPoints;
 

@@ -137,6 +137,7 @@
     QComboBox* _serialParityComboBox;
     QComboBox* _serialDataBitsComboBox;
     QComboBox* _serialStopBitsComboBox;
+    QCheckBox* _serialAutoNMEACheckBox;
 
     QLineEdit*   _LatLineEdit;
     QLineEdit*   _LonLineEdit;
