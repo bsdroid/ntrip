@@ -18,7 +18,7 @@ class bncNetRequest : public QObject {
   void slotReplyFinished();
   void slotReadyRead();
   void slotError(QNetworkReply::NetworkError);
-  void slotSslErrors();
+  void slotSslErrors(const QList<QSslError>&);
 
  private:
   QNetworkAccessManager* _manager;
