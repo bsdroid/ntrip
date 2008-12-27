@@ -4,7 +4,7 @@
  *
  * Class:      bncSocket
  *
- * Purpose:    Combines QTcpSocket (NTRIP v1) and  QNetworkReply (NTRIP v2)
+ * Purpose:    Combines QTcpSocket (NTRIP v1) and QHttp (NTRIP v2)
  *
  * Author:     L. Mervart
  *
@@ -16,6 +16,8 @@
 
 #include <iostream>
 #include <iomanip>
+
+#include <string.h>
 
 #include "bncsocket.h"
 #include "bncapp.h"
@@ -45,7 +47,15 @@ bncSocket::~bncSocket() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 QAbstractSocket::SocketState bncSocket::state() const {
-  if (_socket) {
+  if      (_http) {
+    if (_http->state() != QHttp::Unconnected) {
+      return QAbstractSocket::ConnectedState;
+    }
+    else {
+      return QAbstractSocket::UnconnectedState;
+    }
+  }
+  else if (_socket) {
     return _socket->state();
   }
   else {
@@ -135,7 +145,12 @@ void bncSocket::waitForReadyRead(int msecs) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 qint64 bncSocket::read(char* data, qint64 maxlen) {
-  if (_socket) {
+  if      (_http) {
+    strncpy(data, _buffer.data(), maxlen);
+    _buffer = _buffer.right(_buffer.size()-maxlen);
+    return maxlen; 
+  }
+  else if (_socket) {
     return _socket->read(data, maxlen);
   }
   else {
