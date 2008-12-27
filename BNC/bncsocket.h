@@ -25,7 +25,7 @@ class bncSocket : public QObject {
 
   t_irc request(const QUrl& mountPoint, const QByteArray& latitude, 
                 const QByteArray& longitude, const QByteArray& nmea, 
-                int timeOut, QString& msg);
+                const QByteArray& ntripVersion, int timeOut, QString& msg);
 
  private:
   QTcpSocket* _socket;

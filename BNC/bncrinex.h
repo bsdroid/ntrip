@@ -39,7 +39,8 @@ class bncRinex : public QThread {
  public:
    bncRinex(const QByteArray& statID, const QUrl& mountPoint, 
             const QByteArray& format, const QByteArray& latitude,
-            const QByteArray& longitude, const QByteArray& nmea);
+            const QByteArray& longitude, const QByteArray& nmea,
+            const QByteArray& ntripVersion);
    ~bncRinex();
    void deepCopy(const p_obs obs);
    void dumpEpoch(long maxTime);
@@ -80,6 +81,7 @@ class bncRinex : public QThread {
    QByteArray    _latitude;
    QByteArray    _longitude;
    QByteArray    _nmea;
+   QByteArray    _ntripVersion;
    bool          _reconnectFlag;
    QDate         _skeletonDate;
    QMutex        _mutex;

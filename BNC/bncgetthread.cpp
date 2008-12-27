@@ -92,7 +92,8 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
                            const QByteArray& format,
                            const QByteArray& latitude,
                            const QByteArray& longitude,
-                           const QByteArray& nmea, int iMount) {
+                           const QByteArray& nmea, 
+                           const QByteArray& ntripVersion, int iMount) {
 
   setTerminationEnabled(true);
 
@@ -102,6 +103,7 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   _latitude   = latitude;
   _longitude  = longitude;
   _nmea       = nmea;
+  _ntripVersion = ntripVersion;
   _iMount     = iMount;   // index in mountpoints array
 
   initialize();
@@ -184,8 +186,8 @@ void bncGetThread::initialize() {
     _rnx = 0;
   }
   else {
-    _rnx = new bncRinex(_staID, _mountPoint, 
-                        _format, _latitude, _longitude, _nmea);
+    _rnx = new bncRinex(_staID, _mountPoint, _format, _latitude, 
+                        _longitude, _nmea, _ntripVersion);
   }
   _rnx_set_position = false;
 
@@ -312,7 +314,7 @@ t_irc bncGetThread::initRun() {
     delete _socket;
     _socket = new bncSocket;
     if (_socket->request(_mountPoint, _latitude, _longitude, 
-                         _nmea, _timeOut, msg) != success) {
+                         _nmea, _ntripVersion, _timeOut, msg) != success) {
       delete _socket;
       _socket = 0;
       return failure;
@@ -350,7 +352,8 @@ t_irc bncGetThread::initRun() {
     
       if (line.indexOf("Unauthorized") != -1) {
         QStringList table;
-        bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), table);
+        bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), 
+                                  _ntripVersion, table);
         QString net;
         QStringListIterator it(table);
         while (it.hasNext()) {

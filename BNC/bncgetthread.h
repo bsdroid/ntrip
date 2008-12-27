@@ -47,7 +47,8 @@ class bncGetThread : public QThread {
                 const QByteArray& format,
                 const QByteArray& latitude,
                 const QByteArray& longitude,
-                const QByteArray& nmea, int iMount);
+                const QByteArray& nmea, 
+                const QByteArray& ntripVersion, int iMount);
 
    ~bncGetThread();
 
@@ -85,6 +86,7 @@ class bncGetThread : public QThread {
    QByteArray  _latitude;
    QByteArray  _longitude;
    QByteArray  _nmea;
+   QByteArray  _ntripVersion;
    QString     _adviseScript;
    QString     _begDateCor;
    QString     _begTimeCor;
