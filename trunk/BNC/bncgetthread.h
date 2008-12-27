@@ -36,6 +36,7 @@
 
 class bncRinex;
 class QextSerialPort;
+class bncSocket;
 
 class bncGetThread : public QThread {
  Q_OBJECT
@@ -50,8 +51,8 @@ class bncGetThread : public QThread {
 
    ~bncGetThread();
 
-   static QTcpSocket* request(const QUrl& mountPoint, QByteArray& latitude, QByteArray& longitude,
-                              QByteArray& nmea, int timeOut, QString& msg);
+   static bncSocket* request(const QUrl& mountPoint, QByteArray& latitude, QByteArray& longitude,
+                             QByteArray& nmea, int timeOut, QString& msg);
 
    QByteArray staID() const {return _staID;}
    QUrl       mountPoint() const {return _mountPoint;}
@@ -79,7 +80,7 @@ class bncGetThread : public QThread {
    void  tryReconnect();
    void  callScript(const char* _comment);
    GPSDecoder* _decoder;
-   QTcpSocket* _socket;
+   bncSocket*  _socket;
    QUrl        _mountPoint;
    QByteArray  _staID;
    QByteArray  _staID_orig;

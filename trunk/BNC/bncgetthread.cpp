@@ -53,6 +53,7 @@
 #include "bncutils.h"
 #include "bncrinex.h"
 #include "bnczerodecoder.h"
+#include "bncsocket.h"
 
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
@@ -302,10 +303,10 @@ bncGetThread::~bncGetThread() {
 #define AGENTVERSION "1.7"
 // Connect to Caster, send the Request (static)
 ////////////////////////////////////////////////////////////////////////////
-QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
-                                  QByteArray& latitude, QByteArray& longitude,
-                                  QByteArray& nmea, int timeOut, 
-                                  QString& msg) {
+bncSocket* bncGetThread::request(const QUrl& mountPoint,
+                                 QByteArray& latitude, QByteArray& longitude,
+                                 QByteArray& nmea, int timeOut, 
+                                 QString& msg) {
 
   // Connect the Socket
   // ------------------
@@ -313,7 +314,7 @@ QTcpSocket* bncGetThread::request(const QUrl& mountPoint,
   QString proxyHost = settings.value("proxyHost").toString();
   int     proxyPort = settings.value("proxyPort").toInt();
  
-  QTcpSocket* socket = new QTcpSocket();
+  bncSocket* socket = new bncSocket(new QTcpSocket());
   if ( proxyHost.isEmpty() ) {
     socket->connectToHost(mountPoint.host(), mountPoint.port());
   }
