@@ -51,9 +51,6 @@ class bncGetThread : public QThread {
 
    ~bncGetThread();
 
-   static bncSocket* request(const QUrl& mountPoint, QByteArray& latitude, QByteArray& longitude,
-                             QByteArray& nmea, int timeOut, QString& msg);
-
    QByteArray staID() const {return _staID;}
    QUrl       mountPoint() const {return _mountPoint;}
    QByteArray latitude() const {return _latitude;}

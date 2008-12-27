@@ -22,6 +22,11 @@ class bncSocket : public QObject {
   bool       waitForConnected(int msecs = 30000);
   QAbstractSocket::SocketState state() const;
 
+ static bncSocket* request(const QUrl& mountPoint, QByteArray& latitude, 
+                           QByteArray& longitude, QByteArray& nmea, 
+                           int timeOut, QString& msg);
+
+
  private:
   QTcpSocket* _socket;
 };

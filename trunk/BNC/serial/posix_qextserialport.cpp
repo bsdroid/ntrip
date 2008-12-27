@@ -821,9 +821,9 @@ bool Posix_QextSerialPort::open(OpenMode mode)
     if (!isOpen()) {
         /*open the port*/
         Posix_File->setFileName(port);
-        qDebug("Trying to open File");
+        ////        qDebug("Trying to open File");
         if (Posix_File->open(QIODevice::ReadWrite|QIODevice::Unbuffered)) {
-            qDebug("Opened File succesfully");
+          ///            qDebug("Opened File succesfully");
             /*set open mode*/
             QIODevice::open(mode);
 
