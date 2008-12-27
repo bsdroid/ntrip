@@ -156,60 +156,62 @@ t_irc bncRinex::downloadSkeleton() {
     QByteArray _latitude;
     QByteArray _longitude;
     QByteArray _nmea;
-    bncSocket* socket = bncSocket::request(url, _latitude, _longitude, _nmea, timeOut, msg);
+    bncSocket* socket = new bncSocket();
+    if (socket->request(url, _latitude, _longitude, 
+                        _nmea, timeOut, msg) != success) {
+      delete socket;
+      return failure;
+    }
 
-    if (socket) {
-      _headerLines.clear();
-      bool firstLineRead = false;
-      while (true) {
-        if (socket->canReadLine()) {
-          QString line = socket->readLine();
-          line.chop(1);
-          if (line.indexOf("MARKER NAME") != -1) {
-            irc = success;
-          }
-          if (line.indexOf("RINEX VERSION") != -1) {
-            if (_rinexVers == 3) {
-              _headerLines.append("     3.00           OBSERVATION DATA"
-                                  "    M (MIXED)"
-                                  "           RINEX VERSION / TYPE");
-            }
-            else {
-              _headerLines.append("     2.11           OBSERVATION DATA"
-                                  "    M (MIXED)"
-                                  "           RINEX VERSION / TYPE");
-            }
-            _headerLines.append("PGM / RUN BY / DATE");
-            firstLineRead = true;
-          }
-          else if (firstLineRead) {
-            if (line.indexOf("END OF HEADER") != -1) {
-              _headerLines.append("# / TYPES OF OBSERV");
-              if (_rinexVers == 2) {
-                _headerLines.append(
-                      QString("     1     1").leftJustified(60, ' ', true) +
-                      "WAVELENGTH FACT L1/2");
-              }
-              _headerLines.append("TIME OF FIRST OBS");
-              _headerLines.append( line );
-              break;
-            }
-            else {
-              _headerLines.append( line );
-            }
-          }
+    _headerLines.clear();
+    bool firstLineRead = false;
+    while (true) {
+      if (socket->canReadLine()) {
+        QString line = socket->readLine();
+        line.chop(1);
+        if (line.indexOf("MARKER NAME") != -1) {
+          irc = success;
         }
-        else {
-          socket->waitForReadyRead(timeOut);
-          if (socket->bytesAvailable() > 0) {
-            continue;
+        if (line.indexOf("RINEX VERSION") != -1) {
+          if (_rinexVers == 3) {
+            _headerLines.append("     3.00           OBSERVATION DATA"
+                                "    M (MIXED)"
+                                "           RINEX VERSION / TYPE");
           }
           else {
+            _headerLines.append("     2.11           OBSERVATION DATA"
+                                "    M (MIXED)"
+                                "           RINEX VERSION / TYPE");
+          }
+          _headerLines.append("PGM / RUN BY / DATE");
+          firstLineRead = true;
+        }
+        else if (firstLineRead) {
+          if (line.indexOf("END OF HEADER") != -1) {
+            _headerLines.append("# / TYPES OF OBSERV");
+            if (_rinexVers == 2) {
+              _headerLines.append(
+                    QString("     1     1").leftJustified(60, ' ', true) +
+                    "WAVELENGTH FACT L1/2");
+            }
+            _headerLines.append("TIME OF FIRST OBS");
+            _headerLines.append( line );
             break;
+          }
+          else {
+            _headerLines.append( line );
           }
         }
       }
-      delete socket;
+      else {
+        socket->waitForReadyRead(timeOut);
+        if (socket->bytesAvailable() > 0) {
+          continue;
+        }
+        else {
+          break;
+        }
+      }
     }
   }
   return irc;
