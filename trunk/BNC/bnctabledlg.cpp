@@ -38,13 +38,9 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
-
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
 #include "bncsocket.h"
-
-using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -215,10 +211,7 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
       }
     }
     else {
-      cout << "before waitForReadyRead" << endl;
       socket->waitForReadyRead(timeOut);
-      cout << "after waitForReadyRead" << " " 
-           << socket->bytesAvailable() << endl;
       if (socket->bytesAvailable() > 0) {
         continue;
       }
