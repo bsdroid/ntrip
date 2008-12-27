@@ -309,9 +309,12 @@ t_irc bncGetThread::initRun() {
     // Initialize Socket
     // -----------------
     QString msg;
-    _socket = bncSocket::request(_mountPoint, _latitude, _longitude, 
-                                 _nmea, _timeOut, msg);
-    if (!_socket) {
+    delete _socket;
+    _socket = new bncSocket;
+    if (_socket->request(_mountPoint, _latitude, _longitude, 
+                         _nmea, _timeOut, msg) != success) {
+      delete _socket;
+      _socket = 0;
       return failure;
     }
     
@@ -899,7 +902,6 @@ void bncGetThread::tryReconnect() {
     _decodeStop = QDateTime::currentDateTime();
   }
   while (1) {
-    delete _socket; _socket = 0;
     sleep(_nextSleep);
     if ( initRun() == success ) {
       if ( !_decodeStop.isValid()) {

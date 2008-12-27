@@ -25,88 +25,140 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncSocket::bncSocket(QTcpSocket* socket) {
-  _socket = socket;
+bncSocket::bncSocket() {
+  _socket = 0;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncSocket::~bncSocket() {
+  delete _socket;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSocket::connectToHost(const QString &hostName, quint16 port, 
                               QIODevice::OpenMode mode) {
-  _socket->connectToHost(hostName, port, mode);
+  if (_socket) {
+    _socket->connectToHost(hostName, port, mode);
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool bncSocket::waitForConnected(int msecs) {
-  return _socket->waitForConnected(msecs);
+  if (_socket) {
+    return _socket->waitForConnected(msecs);
+  }
+  else {
+    return false;
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 QAbstractSocket::SocketState bncSocket::state() const {
-  return _socket->state();
+  if (_socket) {
+    return _socket->state();
+  }
+  else {
+    return QAbstractSocket::UnconnectedState;
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSocket::close() {
-  _socket->close();
+  if (_socket) {
+    _socket->close();
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 qint64 bncSocket::bytesAvailable() const {
-  return _socket->bytesAvailable();
+  if (_socket) {
+    return _socket->bytesAvailable();
+  }
+  else {
+    return 0;
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool bncSocket::canReadLine() const {
-  return _socket->canReadLine();
+  if (_socket) {
+    return _socket->canReadLine();
+  }
+  else {
+    return false;
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 QByteArray bncSocket::readLine(qint64 maxlen) {
-  return _socket->readLine(maxlen);
+  if (_socket) {
+    return _socket->readLine(maxlen);
+  }
+  else {
+    return "";
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool bncSocket::waitForReadyRead(int msecs) {
-  return _socket->waitForReadyRead(msecs);
+  if (_socket) {
+    return _socket->waitForReadyRead(msecs);
+  }
+  else {
+    return false;
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 qint64 bncSocket::read(char* data, qint64 maxlen) {
-  return _socket->read(data, maxlen);
+  if (_socket) {
+    return _socket->read(data, maxlen);
+  }
+  else {
+    return -1;
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 qint64 bncSocket::write(const char* data, qint64 len) {
-  return _socket->write(data, len);
+  if (_socket) {
+    return _socket->write(data, len);
+  } 
+  else {
+    return -1;
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool bncSocket::waitForBytesWritten(int msecs) {
-  return _socket->waitForBytesWritten(msecs);
+  if (_socket) {
+    return _socket->waitForBytesWritten(msecs);
+  }
+  else {
+    return false;
+  }
 }
 
 // Connect to Caster, send the Request (static)
 ////////////////////////////////////////////////////////////////////////////
-bncSocket* bncSocket::request(const QUrl& mountPoint,
-                              QByteArray& latitude, QByteArray& longitude,
-                              QByteArray& nmea, int timeOut, 
-                              QString& msg) {
+t_irc bncSocket::request(const QUrl& mountPoint, const QByteArray& latitude, 
+                         const QByteArray& longitude, const QByteArray& nmea,
+                         int timeOut, QString& msg) {
+
+  delete _socket;
+  _socket = new QTcpSocket();
 
   // Connect the Socket
   // ------------------
@@ -114,17 +166,17 @@ bncSocket* bncSocket::request(const QUrl& mountPoint,
   QString proxyHost = settings.value("proxyHost").toString();
   int     proxyPort = settings.value("proxyPort").toInt();
  
-  bncSocket* socket = new bncSocket(new QTcpSocket());
   if ( proxyHost.isEmpty() ) {
-    socket->connectToHost(mountPoint.host(), mountPoint.port());
+    _socket->connectToHost(mountPoint.host(), mountPoint.port());
   }
   else {
-    socket->connectToHost(proxyHost, proxyPort);
+    _socket->connectToHost(proxyHost, proxyPort);
   }
-  if (!socket->waitForConnected(timeOut)) {
+  if (!_socket->waitForConnected(timeOut)) {
     msg += "Connect timeout\n";
-    delete socket;
-    return 0;
+    delete _socket; 
+    _socket = 0;
+    return failure;
   }
 
   // Send Request
@@ -204,14 +256,15 @@ bncSocket* bncSocket::request(const QUrl& mountPoint,
 
   msg += reqStr;
 
-  socket->write(reqStr, reqStr.length());
+  _socket->write(reqStr, reqStr.length());
 
-  if (!socket->waitForBytesWritten(timeOut)) {
+  if (!_socket->waitForBytesWritten(timeOut)) {
     msg += "Write timeout\n";
-    delete socket;
-    return 0;
+    delete _socket;
+    _socket = 0;
+    return failure;
   }
 
-  return socket;
+  return success;
 }
 
