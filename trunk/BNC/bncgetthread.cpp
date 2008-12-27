@@ -502,6 +502,7 @@ void bncGetThread::run() {
       if      (_socket) {
         _socket->waitForReadyRead(_timeOut);
         nBytes = _socket->bytesAvailable();
+        cout << "nBytes " << nBytes << endl;
       }
       else if (_rawInpFile) {
         const qint64 maxBytes = 1024;
@@ -511,32 +512,32 @@ void bncGetThread::run() {
       if (nBytes > 0) {
         emit newBytes(_staID, nBytes);
 
-        char* data = new char[nBytes];
+        QByteArray data;
 
         if (_socket) {
-          _socket->read(data, nBytes);
+          data = _socket->read(nBytes);
         }
         else if (_rawInpFile) {
-          nBytes = _rawInpFile->read(data, nBytes);
-          if (nBytes <= 0) {
+          data = _rawInpFile->read(nBytes);
+          if (data.isEmpty()) {
             cout << "no more data" << endl;
             ::exit(0);
           }
         }
 
         if (_rawOutFile) {
-          _rawOutFile->write(data, nBytes);
+          _rawOutFile->write(data);
           _rawOutFile->flush();
         }
 
         if (_serialPort) {
-          _serialPort->write(data, nBytes);
+          _serialPort->write(data);
 	  ////          _serialPort->flush();
         }
 
         if (_inspSegm<1) {
           vector<string> errmsg;
-          _decoder->Decode(data, nBytes, errmsg);
+          _decoder->Decode(data.data(), data.size(), errmsg);
 #ifdef DEBUG_RTCM2_2021
           for (unsigned ii = 0; ii < errmsg.size(); ii++) {
             emit newMessage(_staID + ": " + errmsg[ii].c_str(), false);
@@ -552,7 +553,7 @@ void bncGetThread::run() {
         
             if (decode) { 
               vector<string> errmsg;
-              if ( _decoder->Decode(data, nBytes, errmsg) == success ) { 
+              if ( _decoder->Decode(data.data(), data.size(), errmsg) == success ) { 
                 numSucc += 1;
               } 
               if ( _decodeTime.secsTo(QDateTime::currentDateTime()) > _inspSegm ) {
@@ -647,9 +648,6 @@ void bncGetThread::run() {
           }
         }
 
-        delete [] data;
-
-	
 	// RTCM scan output
 	// ----------------
         if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
