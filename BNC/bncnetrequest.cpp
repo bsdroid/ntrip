@@ -98,7 +98,15 @@ void bncNetRequest::slotReadyRead() {
   QListIterator<p_obs> it(_decoder->_obsList);
   while (it.hasNext()) {
     p_obs obs = it.next();
-    cout << obs->_o.satNum << endl;
+    cout << obs->_o.satSys   << obs->_o.satNum   << " " 
+         << obs->_o.GPSWeek  << " " 
+         << obs->_o.GPSWeeks << " " 
+         << obs->_o.C1       << " " 
+         << obs->_o.C2       << " "
+         << obs->_o.P1       << " " 
+         << obs->_o.P2       << " "
+         << obs->_o.L1       << " " 
+         << obs->_o.L2       << endl;
     delete obs;
   }
   _decoder->_obsList.clear();

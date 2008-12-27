@@ -53,6 +53,7 @@
 #include "bncconst.h"
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
+#include "bncsocket.h"
 #include "RTCM3/rtcm3torinex.h"
 
 using namespace std;
@@ -155,7 +156,7 @@ t_irc bncRinex::downloadSkeleton() {
     QByteArray _latitude;
     QByteArray _longitude;
     QByteArray _nmea;
-    QTcpSocket* socket = bncGetThread::request(url, _latitude, _longitude, _nmea, timeOut, msg);
+    bncSocket* socket = bncGetThread::request(url, _latitude, _longitude, _nmea, timeOut, msg);
 
     if (socket) {
       _headerLines.clear();

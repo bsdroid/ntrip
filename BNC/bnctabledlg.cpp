@@ -40,6 +40,7 @@
 
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
+#include "bncsocket.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -161,7 +162,7 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
   QByteArray _latitude;
   QByteArray _longitude;
   QByteArray _nmea;
-  QTcpSocket* socket = bncGetThread::request(url, _latitude, _longitude, _nmea, timeOut, msg);
+  bncSocket* socket = bncGetThread::request(url, _latitude, _longitude, _nmea, timeOut, msg);
 
   if (!socket) {
     return failure;

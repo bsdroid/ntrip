@@ -35,7 +35,7 @@ bncSocket::~bncSocket() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSocket::connectToHost(const QString &hostName, quint16 port, 
-                              OpenMode mode) {
+                              QIODevice::OpenMode mode) {
   _socket->connectToHost(hostName, port, mode);
 }
 
@@ -53,13 +53,48 @@ QAbstractSocket::SocketState bncSocket::state() const {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-qint64 bncSocket::readData(char* data, qint64 maxSize) {
-  return _socket->read(data, maxSize);
+void bncSocket::close() {
+  _socket->close();
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-qint64 bncSocket::writeData(const char* data, qint64 maxSize) {
-  return _socket->write(data, maxSize);
+qint64 bncSocket::bytesAvailable() const {
+  return _socket->bytesAvailable();
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+bool bncSocket::canReadLine() const {
+  return _socket->canReadLine();
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+QByteArray bncSocket::readLine(qint64 maxlen) {
+  return _socket->readLine(maxlen);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+bool bncSocket::waitForReadyRead(int msecs) {
+  return _socket->waitForReadyRead(msecs);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+qint64 bncSocket::read(char* data, qint64 maxlen) {
+  return _socket->read(data, maxlen);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+qint64 bncSocket::write(const char* data, qint64 len) {
+  return _socket->write(data, len);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+bool bncSocket::waitForBytesWritten(int msecs) {
+  return _socket->waitForBytesWritten(msecs);
+}
