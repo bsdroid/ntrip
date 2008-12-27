@@ -156,7 +156,7 @@ t_irc bncRinex::downloadSkeleton() {
     QByteArray _latitude;
     QByteArray _longitude;
     QByteArray _nmea;
-    bncSocket* socket = bncGetThread::request(url, _latitude, _longitude, _nmea, timeOut, msg);
+    bncSocket* socket = bncSocket::request(url, _latitude, _longitude, _nmea, timeOut, msg);
 
     if (socket) {
       _headerLines.clear();
