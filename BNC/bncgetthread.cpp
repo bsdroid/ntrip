@@ -322,76 +322,78 @@ t_irc bncGetThread::initRun() {
     
     // Read Caster Response
     // --------------------
-    _socket->waitForReadyRead(_timeOut);
-    if (_socket->canReadLine()) {
-      QString line = _socket->readLine();
-    
-      // Skip messages from proxy server
-      // -------------------------------
-      if (line.indexOf("ICY 200 OK") == -1 && 
-          line.indexOf("200 OK")     != -1 ) {
-        bool proxyRespond = true;
-        while (true) {
-          if (_socket->canReadLine()) {
-            line = _socket->readLine();
-            if (!proxyRespond) {
-              break;
+    if (_ntripVersion == "1") {
+      _socket->waitForReadyRead(_timeOut);
+      if (_socket->canReadLine()) {
+        QString line = _socket->readLine();
+      
+        // Skip messages from proxy server
+        // -------------------------------
+        if (line.indexOf("ICY 200 OK") == -1 && 
+            line.indexOf("200 OK")     != -1 ) {
+          bool proxyRespond = true;
+          while (true) {
+            if (_socket->canReadLine()) {
+              line = _socket->readLine();
+              if (!proxyRespond) {
+                break;
+              }
+              if (line.trimmed().isEmpty()) {
+                proxyRespond = false;
+              }
             }
-            if (line.trimmed().isEmpty()) {
-              proxyRespond = false;
+            else {
+              _socket->waitForReadyRead(_timeOut);
+              if (_socket->bytesAvailable() <= 0) {
+                break;
+              }
             }
           }
-          else {
-            _socket->waitForReadyRead(_timeOut);
-            if (_socket->bytesAvailable() <= 0) {
-              break;
+        }
+      
+        if (line.indexOf("Unauthorized") != -1) {
+          QStringList table;
+          bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), 
+                                    _ntripVersion, table);
+          QString net;
+          QStringListIterator it(table);
+          while (it.hasNext()) {
+            QString line = it.next();
+            if (line.indexOf("STR") == 0) {
+              QStringList tags = line.split(";");
+              if (tags.at(1) == _staID_orig) {
+                net = tags.at(7);
+                break;
+              }
             }
           }
+      
+          QString reg;
+          it.toFront();
+          while (it.hasNext()) {
+            QString line = it.next();
+            if (line.indexOf("NET") == 0) {
+              QStringList tags = line.split(";");
+              if (tags.at(1) == net) {
+                reg = tags.at(7);
+                break;
+              }          
+            }
+          }
+          emit(newMessage((_staID + ": Caster Response: " + line + 
+                           "          Adjust User-ID and Password Register, see"
+                           "\n          " + reg).toAscii(), true));
+          return fatal;
+        }
+        if (line.indexOf("ICY 200 OK") != 0) {
+          emit(newMessage((_staID + ": Wrong Caster Response:\n" + line).toAscii(), true));
+          return failure;
         }
       }
-    
-      if (line.indexOf("Unauthorized") != -1) {
-        QStringList table;
-        bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), 
-                                  _ntripVersion, table);
-        QString net;
-        QStringListIterator it(table);
-        while (it.hasNext()) {
-          QString line = it.next();
-          if (line.indexOf("STR") == 0) {
-            QStringList tags = line.split(";");
-            if (tags.at(1) == _staID_orig) {
-              net = tags.at(7);
-              break;
-            }
-          }
-        }
-    
-        QString reg;
-        it.toFront();
-        while (it.hasNext()) {
-          QString line = it.next();
-          if (line.indexOf("NET") == 0) {
-            QStringList tags = line.split(";");
-            if (tags.at(1) == net) {
-              reg = tags.at(7);
-              break;
-            }          
-          }
-        }
-        emit(newMessage((_staID + ": Caster Response: " + line + 
-                         "          Adjust User-ID and Password Register, see"
-                         "\n          " + reg).toAscii(), true));
-        return fatal;
-      }
-      if (line.indexOf("ICY 200 OK") != 0) {
-        emit(newMessage((_staID + ": Wrong Caster Response:\n" + line).toAscii(), true));
+      else {
+        emit(newMessage(_staID + ": Response Timeout", true));
         return failure;
       }
-    }
-    else {
-      emit(newMessage(_staID + ": Response Timeout", true));
-      return failure;
     }
   }
 
