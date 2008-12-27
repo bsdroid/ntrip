@@ -3,6 +3,7 @@
 
 #include <QtNetwork>
 #include "bncconst.h"
+#include "RTCM/GPSDecoder.h"
 
 class bncNetRequest : public QObject {
  Q_OBJECT
@@ -19,10 +20,12 @@ class bncNetRequest : public QObject {
   void slotReadyRead();
   void slotError(QNetworkReply::NetworkError);
   void slotSslErrors(const QList<QSslError>&);
+  void slotNewMessage(QByteArray,bool);
 
  private:
   QNetworkAccessManager* _manager;
   QNetworkReply*         _reply;
+  GPSDecoder*            _decoder;
 };
 
 #endif
