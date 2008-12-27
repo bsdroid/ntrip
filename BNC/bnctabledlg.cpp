@@ -73,6 +73,13 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _casterPasswordLineEdit->setMaximumWidth(9*ww);
   _casterPasswordLineEdit->setEchoMode(QLineEdit::Password);
 
+  _ntripVersionComboBox = new QComboBox();
+  _ntripVersionComboBox->addItems(QString("1,2,AUTO").split(","));
+  int kk = _ntripVersionComboBox->findText(settings.value("ntripVersion").toString());
+  if (kk != -1) {
+    _ntripVersionComboBox->setCurrentIndex(kk);
+  }
+
   // WhatsThis
   // ---------
   _casterUserLineEdit->setWhatsThis(tr("Access to some streams on NTRIP broadcasters may be restricted. You'll need to enter a valid 'User ID' and 'Password' for access to these protected streams. Accounts are usually provided per NTRIP broadcaster through a registration process. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>."));
@@ -85,6 +92,8 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   editLayout->addWidget(_casterHostLineEdit,           0, 1);
   editLayout->addWidget(new QLabel(tr("Caster port")), 0, 2);
   editLayout->addWidget(_casterPortLineEdit,           0, 3);
+  editLayout->addWidget(new QLabel(tr("NTRIP Version")), 0, 4);
+  editLayout->addWidget(_ntripVersionComboBox,           0, 5);
   editLayout->addWidget(new QLabel(tr("User")),        1, 0);
   editLayout->addWidget(_casterUserLineEdit,           1, 1);
   editLayout->addWidget(new QLabel(tr("Password")),    1, 2);

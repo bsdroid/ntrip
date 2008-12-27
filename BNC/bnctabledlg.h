@@ -55,6 +55,7 @@ class bncTableDlg : public QDialog {
     QLineEdit*   _casterPortLineEdit;
     QLineEdit*   _casterUserLineEdit;
     QLineEdit*   _casterPasswordLineEdit;
+    QComboBox*   _ntripVersionComboBox;
 
     QPushButton* _buttonSkl;
     QPushButton* _buttonGet;
