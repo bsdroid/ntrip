@@ -17,8 +17,6 @@
 #include <iostream>
 #include <iomanip>
 
-#include <string.h>
-
 #include "bncsocket.h"
 #include "bncapp.h"
 
@@ -144,17 +142,17 @@ void bncSocket::waitForReadyRead(int msecs) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-qint64 bncSocket::read(char* data, qint64 maxlen) {
+QByteArray bncSocket::read(qint64 maxSize) {
   if      (_http) {
-    strncpy(data, _buffer.data(), maxlen);
-    _buffer = _buffer.right(_buffer.size()-maxlen);
-    return maxlen; 
+    QByteArray ret = _buffer.left(maxSize);
+    _buffer = _buffer.right(_buffer.size()-maxSize);
+    return ret; 
   }
   else if (_socket) {
-    return _socket->read(data, maxlen);
+    return _socket->read(maxSize);
   }
   else {
-    return -1;
+    return "";
   }
 }
 

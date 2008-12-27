@@ -16,7 +16,7 @@ class bncSocket : public QObject {
   bool       canReadLine() const;
   QByteArray readLine();
   void       waitForReadyRead(int msecs = 30000);
-  qint64     read(char *data, qint64 maxlen);
+  QByteArray read(qint64 maxSize);
   QAbstractSocket::SocketState state() const;
 
   t_irc request(const QUrl& mountPoint, const QByteArray& latitude, 
