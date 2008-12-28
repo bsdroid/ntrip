@@ -18,7 +18,9 @@ class bncNetQuery : public QObject {
   void newMessage(QByteArray msg, bool showOnScreen);
 
  private slots:
-   void slotError(QNetworkReply::NetworkError);
+  void slotError(QNetworkReply::NetworkError);
+  void slotReadyRead();
+  void slotFinished();
 
  private:
   t_irc startRequest(const QUrl& url, bool full);
