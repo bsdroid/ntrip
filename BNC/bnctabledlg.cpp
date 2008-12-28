@@ -43,7 +43,6 @@
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
 #include "bncnetquery.h"
-#include "bncsocket.h"
 
 using namespace std;
 
@@ -168,78 +167,25 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
   QUrl url;
   url.setHost(casterHost);
   url.setPort(casterPort);
+  url.setScheme("http");
+  url.setPath("/");
 
-  // Send the Request
-  // ----------------
-  const int timeOut = 10*1000;
-  QString msg;
-  bncSocket* socket = new bncSocket();
-
-  //// beg test
-  bncNetQuery* query = new bncNetQuery();
+  bncNetQuery query;
   QByteArray outData;
-  cout << "before request" << endl;
-  t_irc irc = query->waitForRequestResult(url, outData);
-  cout << "after request " << irc << endl;
-  cout << outData.data();
-  return failure;
-  //// end test
-
-  if (socket->request(url, "", "", "", ntripVersion, timeOut, msg) != success) {
-    delete socket;
+  query.waitForRequestResult(url, outData);
+  if (query.status() == bncNetQuery::finished) {
+    QTextStream in(outData);
+    QString line = in.readLine();
+    while ( !line.isNull() ) {
+      allLines.append(line);
+      line = in.readLine();
+    } 
+    allTables.insert(casterHost, allLines);
+    return success;
+  }
+  else {
     return failure;
   }
-
-  // Read Caster Response
-  // --------------------
-  bool proxyRespond = false;
-  bool first = true;
-  while (true) {
-    if (socket->canReadLine()) {
-      QString line = socket->readLine();
-
-      // Skip messages from proxy server
-      // -------------------------------
-      if (line.indexOf("SOURCETABLE 200 OK") == -1 && 
-          line.indexOf("200 OK")             != -1 ) {
-        proxyRespond = true;
-      }
-      if (proxyRespond) {
-        if (line.trimmed().isEmpty()) {
-          proxyRespond = false;
-        }
-        continue;
-      }
-
-      allLines.push_back(line);
-      if (first) {
-        first = false;
-        if (line.indexOf("SOURCETABLE 200 OK") != 0) {
-          if (ntripVersion == "1") {
-            break;
-          }
-        }
-      }
-      else {
-        if (line.indexOf("ENDSOURCETABLE") == 0) {
-          break;
-        }
-      }
-    }
-    else {
-      socket->waitForReadyRead(timeOut);
-      if (socket->bytesAvailable() > 0) {
-        continue;
-      }
-      else {
-        break;
-      }
-    }
-  }
-  ///  delete socket;
-
-  allTables.insert(casterHost, allLines);
-  return success;
 }
 
 // Read Table from Caster
