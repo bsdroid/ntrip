@@ -36,7 +36,7 @@
 
 class bncRinex;
 class QextSerialPort;
-class bncSocket;
+class bncNetQuery;
 
 class bncGetThread : public QThread {
  Q_OBJECT
@@ -78,7 +78,7 @@ class bncGetThread : public QThread {
    void  tryReconnect();
    void  callScript(const char* _comment);
    GPSDecoder* _decoder;
-   bncSocket*  _socket;
+   bncNetQuery* _query;
    QUrl        _mountPoint;
    QByteArray  _staID;
    QByteArray  _staID_orig;

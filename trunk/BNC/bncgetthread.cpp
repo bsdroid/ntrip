@@ -53,7 +53,7 @@
 #include "bncutils.h"
 #include "bncrinex.h"
 #include "bnczerodecoder.h"
-#include "bncsocket.h"
+#include "bncnetquery.h"
 
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
@@ -119,7 +119,7 @@ void bncGetThread::initialize() {
                app, SLOT(slotMessage(const QByteArray,bool)));
 
   _decoder    = 0;
-  _socket     = 0;
+  _query      = 0;
   _timeOut    = 20*1000; // 20 seconds
   _nextSleep  = 1;       //  1 second
   _rawInpFile = 0;
@@ -287,13 +287,8 @@ void bncGetThread::initialize() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncGetThread::~bncGetThread() {
-  if (_socket) {
-    _socket->close();
-#if QT_VERSION == 0x040203
-    delete _socket;
-#else
-    _socket->deleteLater();
-#endif
+  if (_query) {
+    _query->deleteLater();
   }
   delete _decoder;
   delete _rnx;
@@ -307,94 +302,9 @@ bncGetThread::~bncGetThread() {
 t_irc bncGetThread::initRun() {
 
   if (!_rawInpFile) {
-
-    // Initialize Socket
-    // -----------------
-    QString msg;
-    delete _socket;
-    _socket = new bncSocket;
-    if (_socket->request(_mountPoint, _latitude, _longitude, 
-                         _nmea, _ntripVersion, _timeOut, msg) != success) {
-      delete _socket;
-      _socket = 0;
-      return failure;
-    }
-    
-    // Read Caster Response
-    // --------------------
-    if (_ntripVersion == "1") {
-      _socket->waitForReadyRead(_timeOut);
-      if (_socket->canReadLine()) {
-        QString line = _socket->readLine();
-      
-        // Skip messages from proxy server
-        // -------------------------------
-        if (line.indexOf("ICY 200 OK") == -1 && 
-            line.indexOf("200 OK")     != -1 ) {
-          bool proxyRespond = true;
-          while (true) {
-            if (_socket->canReadLine()) {
-              line = _socket->readLine();
-              if (!proxyRespond) {
-                break;
-              }
-              if (line.trimmed().isEmpty()) {
-                proxyRespond = false;
-              }
-            }
-            else {
-              _socket->waitForReadyRead(_timeOut);
-              if (_socket->bytesAvailable() <= 0) {
-                break;
-              }
-            }
-          }
-        }
-      
-        if (line.indexOf("Unauthorized") != -1) {
-          QStringList table;
-          bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), 
-                                    table);
-          QString net;
-          QStringListIterator it(table);
-          while (it.hasNext()) {
-            QString line = it.next();
-            if (line.indexOf("STR") == 0) {
-              QStringList tags = line.split(";");
-              if (tags.at(1) == _staID_orig) {
-                net = tags.at(7);
-                break;
-              }
-            }
-          }
-      
-          QString reg;
-          it.toFront();
-          while (it.hasNext()) {
-            QString line = it.next();
-            if (line.indexOf("NET") == 0) {
-              QStringList tags = line.split(";");
-              if (tags.at(1) == net) {
-                reg = tags.at(7);
-                break;
-              }          
-            }
-          }
-          emit(newMessage((_staID + ": Caster Response: " + line + 
-                           "          Adjust User-ID and Password Register, see"
-                           "\n          " + reg).toAscii(), true));
-          return fatal;
-        }
-        if (line.indexOf("ICY 200 OK") != 0) {
-          emit(newMessage((_staID + ": Wrong Caster Response:\n" + line).toAscii(), true));
-          return failure;
-        }
-      }
-      else {
-        emit(newMessage(_staID + ": Response Timeout", true));
-        return failure;
-      }
-    }
+    delete _query;
+    _query = new bncNetQuery();
+    _query->startRequest(_mountPoint);
   }
 
   // Instantiate the filter
@@ -486,8 +396,8 @@ void bncGetThread::run() {
   // ------------------
   while (true) {
     try {
-      if (_socket && _socket->state() != QAbstractSocket::ConnectedState) {
-        emit(newMessage(_staID + ": Socket not connected, reconnecting", true));
+      if (_query && _query->status() != bncNetQuery::running) {
+        emit(newMessage(_staID + ": Internet query not running, reconnecting", true));
         tryReconnect();
       }
 
@@ -499,9 +409,11 @@ void bncGetThread::run() {
 
       qint64 nBytes = 0;
 
-      if      (_socket) {
-        _socket->waitForReadyRead(_timeOut);
-        nBytes = _socket->bytesAvailable();
+      QByteArray data;
+
+      if      (_query) {
+        _query->waitForReadyRead(data);
+        nBytes = data.size();
       }
       else if (_rawInpFile) {
         const qint64 maxBytes = 1024;
@@ -511,12 +423,7 @@ void bncGetThread::run() {
       if (nBytes > 0) {
         emit newBytes(_staID, nBytes);
 
-        QByteArray data;
-
-        if (_socket) {
-          data = _socket->read(nBytes);
-        }
-        else if (_rawInpFile) {
+        if (_rawInpFile) {
           data = _rawInpFile->read(nBytes);
           if (data.isEmpty()) {
             cout << "no more data" << endl;
@@ -531,7 +438,6 @@ void bncGetThread::run() {
 
         if (_serialPort) {
           _serialPort->write(data);
-	  ////          _serialPort->flush();
         }
 
         if (_inspSegm<1) {
