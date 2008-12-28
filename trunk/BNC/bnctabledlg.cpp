@@ -38,9 +38,14 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
+
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
+#include "bncnetquery.h"
 #include "bncsocket.h"
+
+using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -169,6 +174,17 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
   const int timeOut = 10*1000;
   QString msg;
   bncSocket* socket = new bncSocket();
+
+  //// beg test
+  bncNetQuery* query = new bncNetQuery();
+  QByteArray outData;
+  cout << "before request" << endl;
+  t_irc irc = query->waitForRequestResult(url, outData);
+  cout << "after request " << irc << endl;
+  cout << outData.data();
+  return failure;
+  //// end test
+
   if (socket->request(url, "", "", "", ntripVersion, timeOut, msg) != success) {
     delete socket;
     return failure;

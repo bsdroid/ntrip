@@ -52,10 +52,18 @@ void bncNetQuery::slotError(QNetworkReply::NetworkError) {
   _eventLoop->quit();
 }
 
+void bncNetQuery::slotFinished() {
+  cout << "slotFinished" << endl;
+}
+
+void bncNetQuery::slotReadyRead() {
+  cout << "slotReadyRead" << endl;
+}
+
 // Start request, block till the next read (public)
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncNetQuery::startRequest(const QUrl& url) {
-  return startRequest(url, false);
+  return startRequest(url, true);
 }
 
 // Start request
@@ -89,6 +97,9 @@ t_irc bncNetQuery::startRequest(const QUrl& url, bool full) {
 
   // Connect Signals
   // ---------------
+  connect(_reply, SIGNAL(finished()), this, SLOT(slotFinished()));
+  connect(_reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
+
   connect(_reply, SIGNAL(finished()), _eventLoop, SLOT(quit()));
   if (!full) {
     connect(_reply, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
