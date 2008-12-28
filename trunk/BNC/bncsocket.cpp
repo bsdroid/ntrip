@@ -31,22 +31,26 @@ bncSocket::bncSocket() {
   app->connect(this, SIGNAL(newMessage(QByteArray,bool)), 
                app, SLOT(slotMessage(const QByteArray,bool)));
   _socket    = 0;
-  _http      = 0;
-  connect(this, SIGNAL(quitEventLoop()), &_eventLoop, SLOT(quit()));
+  _manager   = 0;
+  _reply     = 0;
+  _eventLoop = new QEventLoop();
+  connect(this, SIGNAL(quitEventLoop()), _eventLoop, SLOT(quit()));
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncSocket::~bncSocket() {
+  delete _eventLoop;
+  delete _reply;
+  delete _manager;
   delete _socket;
-  delete _http;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 QAbstractSocket::SocketState bncSocket::state() const {
-  if      (_http) {
-    if (_http->state() != QHttp::Unconnected) {
+  if      (_manager) {
+    if (_reply) {
       return QAbstractSocket::ConnectedState;
     }
     else {
@@ -72,7 +76,7 @@ void bncSocket::close() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 qint64 bncSocket::bytesAvailable() const {
-  if      (_http) { 
+  if      (_manager) { 
     return _buffer.size();
   }
   else if (_socket) {
@@ -86,7 +90,7 @@ qint64 bncSocket::bytesAvailable() const {
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool bncSocket::canReadLine() const {
-  if      (_http) {
+  if      (_manager) {
     if (_buffer.indexOf('\n') != -1) {
       return true;
     }
@@ -105,7 +109,7 @@ bool bncSocket::canReadLine() const {
 // 
 ////////////////////////////////////////////////////////////////////////////
 QByteArray bncSocket::readLine() {
-  if      (_http) {
+  if      (_manager) {
     int ind = _buffer.indexOf('\n');
     if (ind != -1) {
       QByteArray ret = _buffer.left(ind+1);
@@ -127,12 +131,12 @@ QByteArray bncSocket::readLine() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSocket::waitForReadyRead(int msecs) {
-  if      (_http) {
+  if      (_manager) {
     if (bytesAvailable() > 0) {
       return;
     }
     else {
-      _eventLoop.exec(QEventLoop::ExcludeUserInputEvents);
+      _eventLoop->exec(QEventLoop::ExcludeUserInputEvents);
     }
   }
   else if (_socket) {
@@ -143,7 +147,7 @@ void bncSocket::waitForReadyRead(int msecs) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 QByteArray bncSocket::read(qint64 maxSize) {
-  if      (_http) {
+  if      (_manager) {
     QByteArray ret = _buffer.left(maxSize);
     _buffer = _buffer.right(_buffer.size()-maxSize);
     return ret; 
@@ -288,27 +292,27 @@ t_irc bncSocket::request(const QUrl& mountPoint, const QByteArray& latitude,
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncSocket::slotRequestFinished(int /* id */, bool error) {
-  if (error) {
-    emit newMessage("slotRequestFinished " + 
-                    _http->errorString().toAscii(), true);
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncSocket::slotReadyRead(const QHttpResponseHeader&) {
-  _buffer.append(_http->readAll());
+void bncSocket::slotReadyRead() {
+  _buffer.append(_reply->readAll());
   emit quitEventLoop();
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncSocket::slotDone(bool error) {
-  if (error) {
-    emit newMessage("slotDone " + _http->errorString().toAscii(), true);
-  }
+void bncSocket::slotReplyFinished() {
   emit quitEventLoop();
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncSocket::slotError(QNetworkReply::NetworkError) {
+  emit newMessage("slotError " + _reply->errorString().toAscii(), true);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncSocket::slotSslErrors(const QList<QSslError>&) {
+  emit newMessage("slotSslErrors", true);
 }
 
 // Connect to Caster NTRIP Version 2
@@ -317,36 +321,47 @@ t_irc bncSocket::request2(const QUrl& url, const QByteArray& latitude,
                          const QByteArray& longitude, const QByteArray& nmea,
                          int timeOut, QString& msg) {
 
+  // Network Access Manager
+  // ----------------------
+  if (_manager == 0) {
+    _manager = new QNetworkAccessManager(this);
+  }
+  else {
+    return failure;
+  }
 
-  delete _http;
-  _http = new QHttp();
-  
-  _http->setHost(url.host());
+  // Default scheme and path
+  // -----------------------
+  QUrl urlLoc(url);
+  if (urlLoc.scheme().isEmpty()) {
+    urlLoc.setScheme("http");
+  }
+  if (urlLoc.path().isEmpty()) {
+    urlLoc.setPath("/");
+  }
 
   // Network Request
   // ---------------
-  QString path = url.path();
-  if (path.isEmpty()) {
-    path = "/";
-  }
-  QHttpRequestHeader request("GET", path);
-  request.addValue("Host"         , url.host().toAscii());
-  request.addValue("Ntrip-Version", "NTRIP/2.0");
-  request.addValue("User-Agent"   , "NTRIP BNC/" BNCVERSION);
-  if (!url.userName().isEmpty()) {
-    request.addValue("Authorization", "Basic " + 
-                 (url.userName() + ":" + url.password()).toAscii().toBase64());
+  QNetworkRequest request;
+  request.setUrl(urlLoc);
+  request.setRawHeader("Host"         , urlLoc.host().toAscii());
+  request.setRawHeader("Ntrip-Version", "NTRIP/2.0");
+  request.setRawHeader("User-Agent"   , "NTRIP BNC/1.7");
+  if (!urlLoc.userName().isEmpty()) {
+    request.setRawHeader("Authorization", "Basic " + 
+           (urlLoc.userName() + ":" + urlLoc.password()).toAscii().toBase64());
   } 
-  request.addValue("Connection"   , "close");
+  request.setRawHeader("Connection"   , "close");
 
+  _reply = _manager->get(request);
 
-  connect(_http, SIGNAL(done(bool)), this, SLOT(slotDone(bool)));
-  connect(_http, SIGNAL(requestFinished(int, bool)), 
-          this, SLOT(slotRequestFinished(int, bool)));
-  connect(_http, SIGNAL(readyRead(const QHttpResponseHeader&)), 
-          this, SLOT(slotReadyRead(const QHttpResponseHeader&)));
+  connect(_reply, SIGNAL(finished()), this, SLOT(slotReplyFinished()));
+  connect(_reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
+  connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
+          this, SLOT(slotError(QNetworkReply::NetworkError)));
+  connect(_reply, SIGNAL(sslErrors(const QList<QSslError>&)), 
+          this, SLOT(slotSslErrors(const QList<QSslError>&)));
 
-  _http->request(request);
 
   return success;
 }

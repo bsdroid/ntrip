@@ -28,19 +28,21 @@ class bncSocket : public QObject {
   void newMessage(QByteArray msg, bool showOnScreen);
 
  private slots:
-  void slotDone(bool);
-  void slotRequestFinished(int, bool);
-  void slotReadyRead(const QHttpResponseHeader&);
+  void slotReplyFinished();
+  void slotReadyRead();
+  void slotError(QNetworkReply::NetworkError);
+  void slotSslErrors(const QList<QSslError>&);
 
  private:
   t_irc request2(const QUrl& url, const QByteArray& latitude, 
                  const QByteArray& longitude, const QByteArray& nmea, 
                  int timeOut, QString& msg);
 
-  QTcpSocket* _socket;
-  QHttp*      _http;      
-  QByteArray  _buffer;
-  QEventLoop  _eventLoop;
+  QTcpSocket*            _socket;
+  QNetworkAccessManager* _manager;
+  QNetworkReply*         _reply;
+  QEventLoop*            _eventLoop;
+  QByteArray             _buffer;
 };
 
 #endif
