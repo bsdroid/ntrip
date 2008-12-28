@@ -34,6 +34,8 @@ bncNetQuery::bncNetQuery() {
   _manager   = new QNetworkAccessManager(this);
   _reply     = 0;
   _eventLoop = new QEventLoop(this);
+
+  _status    = init;
 }
 
 // Destructor
@@ -47,12 +49,16 @@ bncNetQuery::~bncNetQuery() {
 // Error
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQuery::slotError(QNetworkReply::NetworkError) {
+  _status = error;
   cout << "slotError " << endl;
   emit newMessage("slotError " + _reply->errorString().toAscii(), true);
   _eventLoop->quit();
 }
 
 void bncNetQuery::slotFinished() {
+  if (_status != error) {
+    _status = finished;
+  }
   cout << "slotFinished" << endl;
 }
 
@@ -62,13 +68,15 @@ void bncNetQuery::slotReadyRead() {
 
 // Start request, block till the next read (public)
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncNetQuery::startRequest(const QUrl& url) {
-  return startRequest(url, true);
+void bncNetQuery::startRequest(const QUrl& url) {
+  startRequest(url, true);
 }
 
 // Start request
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncNetQuery::startRequest(const QUrl& url, bool full) {
+void bncNetQuery::startRequest(const QUrl& url, bool full) {
+
+  _status = running;
 
   // Default scheme and path
   // -----------------------
@@ -106,19 +114,15 @@ t_irc bncNetQuery::startRequest(const QUrl& url, bool full) {
   }
   connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
           this, SLOT(slotError(QNetworkReply::NetworkError)));
-
-  return success;
 }
 
 // Start Request, wait for its completion
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncNetQuery::waitForRequestResult(const QUrl& url, QByteArray& outData) {
+void bncNetQuery::waitForRequestResult(const QUrl& url, QByteArray& outData) {
 
   // Send Request
   // ------------
-  if (startRequest(url) != success) {
-    return failure;
-  }
+  startRequest(url);
 
   // Wait Loop
   // ---------
@@ -127,18 +131,11 @@ t_irc bncNetQuery::waitForRequestResult(const QUrl& url, QByteArray& outData) {
   // Copy Data and Return
   // --------------------
   outData = _reply->readAll();
-
-  if (_reply->error() == QNetworkReply::NoError) {
-    return success;
-  }
-  else {
-    return failure;
-  }
 }
 
 // Wait for next data
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncNetQuery::waitForReadyRead(QByteArray& outData) {
+void bncNetQuery::waitForReadyRead(QByteArray& outData) {
 
   // Wait Loop
   // ---------
@@ -146,14 +143,7 @@ t_irc bncNetQuery::waitForReadyRead(QByteArray& outData) {
     _eventLoop->exec();
   }
 
-  // Append Data and Return
-  // -----------------------
+  // Append Data
+  // -----------
   outData.append(_reply->readAll());
-
-  if (_reply->error() == QNetworkReply::NoError) {
-    return success;
-  }
-  else {
-    return failure;
-  }
 }

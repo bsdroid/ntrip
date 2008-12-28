@@ -8,11 +8,16 @@ class bncNetQuery : public QObject {
  Q_OBJECT
 
  public:
+  enum queryStatus {init, running, finished, error};
+
   bncNetQuery();
   ~bncNetQuery();
-  t_irc waitForRequestResult(const QUrl& url, QByteArray& outData);
-  t_irc startRequest(const QUrl& url);
-  t_irc waitForReadyRead(QByteArray& outData);
+
+  void waitForRequestResult(const QUrl& url, QByteArray& outData);
+  void startRequest(const QUrl& url);
+  void waitForReadyRead(QByteArray& outData);
+
+  queryStatus status() const {return _status;}
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
@@ -23,11 +28,12 @@ class bncNetQuery : public QObject {
   void slotFinished();
 
  private:
-  t_irc startRequest(const QUrl& url, bool full);
+  void startRequest(const QUrl& url, bool full);
 
   QNetworkAccessManager* _manager;
   QNetworkReply*         _reply;
   QEventLoop*            _eventLoop;
+  queryStatus            _status;
 };
 
 #endif
