@@ -122,7 +122,7 @@ t_irc bncRinex::downloadSkeleton() {
 
   QStringList table;
   bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), 
-                            _ntripVersion, table, _reloadTable);
+                            table, _reloadTable);
   QString net;
   QStringListIterator it(table);
   while (it.hasNext()) {
