@@ -69,7 +69,7 @@ void bncNetQuery::slotReadyRead() {
 // Start request, block till the next read (public)
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQuery::startRequest(const QUrl& url) {
-  startRequest(url, true);
+  startRequest(url, false);
 }
 
 // Start request
@@ -122,7 +122,7 @@ void bncNetQuery::waitForRequestResult(const QUrl& url, QByteArray& outData) {
 
   // Send Request
   // ------------
-  startRequest(url);
+  startRequest(url, true);
 
   // Wait Loop
   // ---------

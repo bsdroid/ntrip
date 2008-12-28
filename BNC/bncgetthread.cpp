@@ -354,7 +354,7 @@ t_irc bncGetThread::initRun() {
         if (line.indexOf("Unauthorized") != -1) {
           QStringList table;
           bncTableDlg::getFullTable(_mountPoint.host(), _mountPoint.port(), 
-                                    _ntripVersion, table);
+                                    table);
           QString net;
           QStringListIterator it(table);
           while (it.hasNext()) {

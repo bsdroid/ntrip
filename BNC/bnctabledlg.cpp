@@ -149,8 +149,8 @@ bncTableDlg::~bncTableDlg() {
 // Read Table the caster (static)
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncTableDlg::getFullTable(const QString& casterHost, 
-                                int casterPort, const QByteArray& ntripVersion,
-                                QStringList& allLines, bool alwaysRead) {
+                                int casterPort, QStringList& allLines, 
+                                bool alwaysRead) {
 
   static QMutex mutex;
   static QMap<QString, QStringList> allTables;
@@ -198,7 +198,6 @@ void bncTableDlg::slotGetTable() {
 
   if ( getFullTable(_casterHostLineEdit->currentText(),
                     _casterPortLineEdit->text().toInt(),
-                    _ntripVersionComboBox->currentText().toAscii(),
                     _allLines) != success ) {
     QMessageBox::warning(0, "BNC", "Cannot retrieve table of data");
     _buttonGet->setEnabled(true);
