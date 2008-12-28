@@ -69,7 +69,7 @@ Unless in offline mode, BNC
 
 <p><a name="options"><h3>3. Options</h3></p>
 <p>
-The usual handling of BNC is that you first select a number of streams from NTRIP broadcasters ('Add Streams'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various tabs to select a combination of processing options before you start the program ('Start'). Records of BNC's activities are shown in the 'Log' canvas on the bottom of the main window.
+The usual handling of BNC is that you first select a number of streams from NTRIP broadcasters ('Add Streams'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various tabs to select a combination of processing options before you start the program ('Start'). Records of BNC's activities are shown in the 'Logs' canvas on the bottom of the main window.
 </p>
 <p>
 All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf, see annexed 'Configuration File' example. On Windows systems options are saved in register BKG_NTRIP_Client. The self-explaining contents of the configuration file or the Windows register can easily be edited. Some options can be changed on-the-fly.
@@ -127,8 +127,8 @@ All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/
 &nbsp; &nbsp; &nbsp; 3.11.3. <a href=#miscscan>Scan RTCM</a><br>
 3.12. <a href=#streams>Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1. <a href=#streamadd>Add Streams</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.2. <a href=#streamhost>Broadcaster Host and Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.3. <a href=#streamuser>Broadcaster User and Password</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.2. <a href=#streamhost>Caster Host and Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.3. <a href=#streamuser>Caster User and Password</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.4. <a href=#streamtable>Get Table</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.5. <a href=#streamdelete>Delete Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.6. <a href=#streamedit>Edit Streams</a><br>
@@ -194,7 +194,7 @@ The following defines general settings for BNC's logfile, file handling and reco
 
 <p><a name="genlog"><h4>3.4.1 Logfile - optional</h4></p>
 <p>
-Records of BNC's activities are shown in the 'Log' canvas on the bottom of the main window. These logs can be saved into a file when a valid path is specified in the 'Log (full path)' field. The message log covers the communication status between BNC and the NTRIP broadcaster as well as problems that may occur in the communication link, stream availability, stream delay, stream conversion etc. All times are given in UTC. The default value for 'Log (full path)' is an empty option field, meaning that BNC logs will not saved into a file.
+Records of BNC's activities are shown in the 'Logs' canvas on the bottom of the main window. These logs can be saved into a file when a valid path is specified in the 'Logfile (full path)' field. The message log covers the communication status between BNC and the NTRIP broadcaster as well as problems that may occur in the communication link, stream availability, stream delay, stream conversion etc. All times are given in UTC. The default value for 'Logfile (full path)' is an empty option field, meaning that BNC logs will not saved into a file.
 </p>
 
 <p><a name="genapp"><h4>3.4.2 Append Files - optional</h4></p>
@@ -504,7 +504,7 @@ class t_obsInternal {
 The source code for BNC comes with an example program called 'test_bnc_qt.cpp' that allows you to read BNC's binary observation output from the IP port and print the observations in a plain ASCII format on standard output.
 </p>
 <p>
-Note that any socket connection of an application to BNC's synchronized observations 'Port' is recorded in the 'Log' canvas on the bottom of the main window together with a connection counter, leading to log records like 'New Connection # 1'.
+Note that any socket connection of an application to BNC's synchronized observations 'Port' is recorded in the 'Logs' canvas on the bottom of the main window together with a connection counter, leading to log records like 'New Connection # 1'.
 </p>
 
 <p><a name="syncwait"><h4>3.8.2 Wait for Full Epoch - mandatory if 'Port (synchronized)' is set</h4></p>
@@ -522,7 +522,7 @@ An application may want to receive unsynchronized observations from reference st
 The example program 'test_bnc_qt.cpp' allows you to read BNC's unsynchronized binary observation output from the IP port and print the observations in a plain ASCII format on standard output.
 </p>
 <p>
-Note that any socket connection of an application to BNC's unsynchronized observations 'Port' is recorded in the 'Log' canvas on the bottom of the main window together with a connection counter, leading to log records like 'New Connection # 1'.
+Note that any socket connection of an application to BNC's unsynchronized observations 'Port' is recorded in the 'Logs' canvas on the bottom of the main window together with a connection counter, leading to log records like 'New Connection # 1'.
 </p>
 
 
@@ -605,7 +605,7 @@ At various times, the incoming stream might become unavailable or corrupted. In 
 <u>Stream corruption:</u> Not all bits chunk transfers to BNC's internal decoders return valid observations. Sometimes several chunks might be needed before the next observation can be properly decoded. BNC buffers all the outputs (both valid and invalid) from the decoder for a short time span (size derived from the expected 'Observation rate') and then determines whether a stream is valid or corrupted.
 </p>
 <p>
-Outage and corruption events are reported in the 'Log' file/canvas. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilise BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
+Outage and corruption events are reported in the 'Logs' canvas. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilise BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
 </p>
 
 <p><a name="obsrate"><h4>3.10.1 Observation Rate - mandatory if 'Failure threshold', 'Recovery threshold', 'Pause' and 'Script' is set</h4></p>
@@ -694,7 +694,7 @@ Specify a mountpoint to apply one or several of the 'Miscellaneous' options to t
 <u>Statistics:</u> BNC counts the number of GPS seconds covered by at least one observation. It also estimates an observation rate (independent from the a priory specified 'Observation rate') from all observations received throughout the first full 'Performance log' interval. Based on this rate, BNC estimates the number of data gaps when appearing in subsequent intervals. 
 </p>
 <p>
-Latencies of observations or corrections to Broadcast Ephemeris and statistical information can be recorded in the 'Log' file/canvas at the end of each 'Performance log' interval. A typical output from a 1 hour 'Performance log' interval would be:
+Latencies of observations or corrections to Broadcast Ephemeris and statistical information can be recorded in the 'Logs' canvas at the end of each 'Performance log' interval. A typical output from a 1 hour 'Performance log' interval would be:
 </p>
 <pre>
 08-03-17 15:59:47 BRUS0: Mean latency 1.47 sec, min 0.66, max 3.02, rms 0.35, 3585 epochs, 15 gaps
@@ -753,12 +753,12 @@ Streams selected for retrieval are listed under the 'Streams' canvas section on 
 Button 'Add Streams' opens a window that allows user to select data streams from an NTRIP broadcaster according to their mountpoints.
 </p> 
 
-<p><a name="streamhost"><h4>3.12.2 Broadcaster Host and Port - mandatory</h4></p>
+<p><a name="streamhost"><h4>3.12.2 Caster Host and Port - mandatory</h4></p>
 <p>
 Enter the NTRIP broadcaster host IP and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.
 </p> 
 
-<p><a name="streamuser"><h4>3.12.3 Broadcaster User and Password - mandatory for protected streams</h4></p>
+<p><a name="streamuser"><h4>3.12.3 Caster User and Password - mandatory for protected streams</h4></p>
 <p>
 Some streams on NTRIP broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.
 </p> 
