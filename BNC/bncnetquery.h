@@ -11,11 +11,11 @@ class bncNetQuery : public QObject {
   enum queryStatus {init, running, finished, error};
 
   bncNetQuery();
-  ~bncNetQuery();
+  virtual ~bncNetQuery();
 
-  void waitForRequestResult(const QUrl& url, QByteArray& outData);
-  void startRequest(const QUrl& url);
-  void waitForReadyRead(QByteArray& outData);
+  virtual void waitForRequestResult(const QUrl& url, QByteArray& outData) = 0;
+  virtual void startRequest(const QUrl& url) = 0;
+  virtual void waitForReadyRead(QByteArray& outData) = 0;
 
   queryStatus status() const {return _status;}
 
@@ -23,16 +23,8 @@ class bncNetQuery : public QObject {
   void newMessage(QByteArray msg, bool showOnScreen);
 
  private slots:
-  void slotError(QNetworkReply::NetworkError);
-  void slotReadyRead();
-  void slotFinished();
 
- private:
-  void startRequest(const QUrl& url, bool full);
-
-  QNetworkAccessManager* _manager;
-  QNetworkReply*         _reply;
-  QEventLoop*            _eventLoop;
+ protected:
   queryStatus            _status;
 };
 
