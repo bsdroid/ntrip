@@ -17,7 +17,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "bncNetQueryV2.h"
+#include "bncnetqueryv2.h"
 #include "bncapp.h"
 
 using namespace std;

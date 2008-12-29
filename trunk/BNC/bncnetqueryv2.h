@@ -7,8 +7,6 @@ class bncNetQueryV2 : public bncNetQuery {
  Q_OBJECT
 
  public:
-  enum queryStatus {init, running, finished, error};
-
   bncNetQueryV2();
   virtual ~bncNetQueryV2();
 
