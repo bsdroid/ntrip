@@ -298,6 +298,17 @@ bncGetThread::~bncGetThread() {
   delete _serialPort;
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncGetThread::terminate() {
+  cout << "terminate a" << endl;
+  if (_query) {
+    _query->stop();
+  }
+  cout << "terminate b" << endl;
+  QThread::terminate();
+}
+
 // Init Run
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncGetThread::initRun() {
