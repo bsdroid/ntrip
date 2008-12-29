@@ -19,7 +19,7 @@ class bncNetQueryV2 : public bncNetQuery {
   void slotFinished();
 
  private:
-  void startRequest(const QUrl& url, const QByteArray& gga, bool full);
+  void startRequestPrivate(const QUrl& url, const QByteArray& gga, bool full);
 
   QNetworkAccessManager* _manager;
   QNetworkReply*         _reply;
