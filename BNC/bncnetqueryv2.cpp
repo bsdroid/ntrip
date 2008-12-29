@@ -40,9 +40,11 @@ bncNetQueryV2::~bncNetQueryV2() {
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::stop() {
   if (_reply) {
+    _reply->disconnect(SIGNAL(error(QNetworkReply::NetworkError)));
     _reply->abort();
   }
   _eventLoop->quit();
+  _status = finished;
 }
 
 // Error
