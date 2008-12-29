@@ -86,6 +86,17 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
     urlLoc.setPath("/");
   }
 
+  // Proxy Settings
+  // --------------
+  QSettings settings;
+  QString proxyHost = settings.value("proxyHost").toString();
+  int     proxyPort = settings.value("proxyPort").toInt();
+
+  if (!proxyHost.isEmpty()) {
+    QNetworkProxy proxy(QNetworkProxy::HttpProxy, proxyHost, proxyPort);
+    _manager->setProxy(proxy);
+  }
+
   // Network Request
   // ---------------
   QNetworkRequest request;
