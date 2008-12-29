@@ -52,6 +52,8 @@ class bncGetThread : public QThread {
 
    ~bncGetThread();
 
+   void terminate();
+
    QByteArray staID() const {return _staID;}
    QUrl       mountPoint() const {return _mountPoint;}
    QByteArray latitude() const {return _latitude;}

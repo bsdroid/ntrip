@@ -8,6 +8,7 @@ class bncNetQueryV1 : public bncNetQuery {
   bncNetQueryV1();
   virtual ~bncNetQueryV1();
 
+  virtual void stop();
   virtual void waitForRequestResult(const QUrl& url, QByteArray& outData);
   virtual void startRequest(const QUrl& url, const QByteArray& gga);
   virtual void waitForReadyRead(QByteArray& outData);
