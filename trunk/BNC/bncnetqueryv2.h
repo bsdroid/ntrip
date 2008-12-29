@@ -11,7 +11,7 @@ class bncNetQueryV2 : public bncNetQuery {
   virtual ~bncNetQueryV2();
 
   virtual void waitForRequestResult(const QUrl& url, QByteArray& outData);
-  virtual void startRequest(const QUrl& url);
+  virtual void startRequest(const QUrl& url, const QByteArray& gga);
   virtual void waitForReadyRead(QByteArray& outData);
 
  signals:
@@ -22,7 +22,7 @@ class bncNetQueryV2 : public bncNetQuery {
   void slotFinished();
 
  private:
-  void startRequest(const QUrl& url, bool full);
+  void startRequest(const QUrl& url, const QByteArray& gga, bool full);
 
   QNetworkAccessManager* _manager;
   QNetworkReply*         _reply;
