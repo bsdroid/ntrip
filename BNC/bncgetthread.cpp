@@ -53,7 +53,8 @@
 #include "bncutils.h"
 #include "bncrinex.h"
 #include "bnczerodecoder.h"
-#include "bncnetquery.h"
+#include "bncnetqueryv1.h"
+#include "bncnetqueryv2.h"
 
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
@@ -187,12 +188,12 @@ void bncGetThread::initialize() {
   }
   else {
     _rnx = new bncRinex(_staID, _mountPoint, _format, _latitude, 
-                        _longitude, _nmea, _ntripVersion);
+                        _longitude, _nmea);
   }
   _rnx_set_position = false;
 
   connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
-	  this, SLOT(slotNewEphGPS(gpsephemeris)));
+          this, SLOT(slotNewEphGPS(gpsephemeris)));
 
   if (settings.value("serialMountPoint").toString() == _staID) {
     _serialPort = new QextSerialPort( 
@@ -303,8 +304,19 @@ t_irc bncGetThread::initRun() {
 
   if (!_rawInpFile) {
     delete _query;
-    _query = new bncNetQuery();
-    _query->startRequest(_mountPoint);
+    if (_ntripVersion == "2") {
+      _query = new bncNetQueryV2();
+    }
+    else {
+      _query = new bncNetQueryV1();
+    }
+    if (_nmea == "yes") {
+      QByteArray gga = ggaString(_latitude, _longitude);
+      _query->startRequest(_mountPoint, gga);
+    }
+    else {
+      _query->startRequest(_mountPoint, "");
+    }
   }
 
   // Instantiate the filter
@@ -553,8 +565,8 @@ void bncGetThread::run() {
           }
         }
 
-	// RTCM scan output
-	// ----------------
+        // RTCM scan output
+        // ----------------
         if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
           QSettings settings;
           if ( Qt::CheckState(settings.value("scanRTCM").toInt()) == Qt::Checked) {
@@ -588,42 +600,42 @@ void bncGetThread::run() {
                 ant2 = QString("%1 ").arg(_decoder->_antList[ii].yy,0,'f',4).toAscii();
                 ant3 = QString("%1 ").arg(_decoder->_antList[ii].zz,0,'f',4).toAscii();
                 switch (_decoder->_antList[ii].type) {
-	        case GPSDecoder::t_antInfo::ARP: antT = "ARP"; break;
-	        case GPSDecoder::t_antInfo::APC: antT = "APC"; break;
-	        }
+                case GPSDecoder::t_antInfo::ARP: antT = "ARP"; break;
+                case GPSDecoder::t_antInfo::APC: antT = "APC"; break;
+                }
                 emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m", true));
                 emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m", true));
                 emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m", true));
-	        if (_decoder->_antList[ii].height_f) {
-		  QByteArray ant4 = QString("%1 ").arg(_decoder->_antList[ii].height,0,'f',4).toAscii();
-		  emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m", true));
-	        }
-	        emit(newAntCrd(_staID, 
-			     _decoder->_antList[ii].xx, _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
-			     antT));
+                if (_decoder->_antList[ii].height_f) {
+                  QByteArray ant4 = QString("%1 ").arg(_decoder->_antList[ii].height,0,'f',4).toAscii();
+                  emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m", true));
+                }
+                emit(newAntCrd(_staID, 
+                             _decoder->_antList[ii].xx, _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
+                             antT));
               }
             }
           }
           if ( _checkMountPoint == "ANTCRD_ONLY" && _decoder->_antList.size() ) {
-	    for (int ii=0;ii<_decoder->_antList.size();++ii) {
-	      QByteArray antT;
-	      switch (_decoder->_antList[ii].type) {
-	      case GPSDecoder::t_antInfo::ARP: antT = "ARP"; break;
-	      case GPSDecoder::t_antInfo::APC: antT = "APC"; break;
-	      }
-	      emit(newAntCrd(_staID, 
-			   _decoder->_antList[ii].xx, _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
-			   antT));
-	    }
+            for (int ii=0;ii<_decoder->_antList.size();++ii) {
+              QByteArray antT;
+              switch (_decoder->_antList[ii].type) {
+              case GPSDecoder::t_antInfo::ARP: antT = "ARP"; break;
+              case GPSDecoder::t_antInfo::APC: antT = "APC"; break;
+              }
+              emit(newAntCrd(_staID, 
+                           _decoder->_antList[ii].xx, _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
+                           antT));
+            }
           }
         }
-	
+        
         _decoder->_typeList.clear();
         _decoder->_antType.clear();
         _decoder->_antList.clear();
 
-	// Loop over all observations (observations output)
-	// ------------------------------------------------
+        // Loop over all observations (observations output)
+        // ------------------------------------------------
         QListIterator<p_obs> it(_decoder->_obsList);
         while (it.hasNext()) {
           p_obs obs = it.next();
@@ -719,18 +731,18 @@ void bncGetThread::run() {
           // RINEX Output
           // ------------
           if (_rnx) {
-	    bool dump = true;
+            bool dump = true;
 
             //// // RTCMv2 XYZ
             //// // ----------
             //// RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
             //// if ( decoder2 && !_rnx_set_position ) {
-	    ////   double stax, stay, staz;
-	    ////   double dL1[3], dL2[3];
-	    ////   if ( decoder2->getStaCrd(stax, stay, staz,
+            ////   double stax, stay, staz;
+            ////   double dL1[3], dL2[3];
+            ////   if ( decoder2->getStaCrd(stax, stay, staz,
             ////                            dL1[0], dL1[1], dL1[2], 
             ////                            dL2[0], dL2[1], dL2[2]) == success ) {
-	    //// 
+            //// 
             ////     if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
             ////       QString ant1;
             ////       ant1 =  QString("%1 ").arg(stax,0,'f',4);
@@ -752,22 +764,22 @@ void bncGetThread::run() {
             ////       ant1 =  QString("%1 ").arg(dL2[2],0,'f',4);
             ////       emit(newMessage(_staID + ": L2 APC DZ " + ant1.toAscii() + "m" ));
             ////     }
-	    //// 	_rnx_set_position = true;
+            ////        _rnx_set_position = true;
             ////   }
             //// }  
 
-	    if ( dump ) {
-	      long iSec    = long(floor(obs->_o.GPSWeeks+0.5));
-	      long newTime = obs->_o.GPSWeek * 7*24*3600 + iSec;
-	      if (_samplingRate == 0 || iSec % _samplingRate == 0) {
-		_rnx->deepCopy(obs);
-	      }
-	      _rnx->dumpEpoch(newTime);
+            if ( dump ) {
+              long iSec    = long(floor(obs->_o.GPSWeeks+0.5));
+              long newTime = obs->_o.GPSWeek * 7*24*3600 + iSec;
+              if (_samplingRate == 0 || iSec % _samplingRate == 0) {
+                _rnx->deepCopy(obs);
+              }
+              _rnx->dumpEpoch(newTime);
             }
           }
 
-	  // Emit new observation signal
-	  // ---------------------------
+          // Emit new observation signal
+          // ---------------------------
           bool firstObs = (obs == _decoder->_obsList.first());
           obs->_status = t_obs::posted;
           emit newObs(_staID, firstObs, obs);
@@ -880,4 +892,3 @@ void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
     }
   }
 }
-
