@@ -26,7 +26,7 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryV1::bncNetQueryV1() {
-  _socket    = 0;
+  _socket = 0;
 }
 
 // Destructor
@@ -41,6 +41,7 @@ void bncNetQueryV1::stop() {
   if (_socket) {
     _socket->abort();
   }
+  _status = finished;
 }
 
 // 
