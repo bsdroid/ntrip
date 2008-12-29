@@ -40,6 +40,7 @@ bncNetQueryV2::~bncNetQueryV2() {
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::stop() {
   _eventLoop->quit();
+  this->deleteLater();
 }
 
 // Error
