@@ -14,8 +14,6 @@ class bncNetQueryV2 : public bncNetQuery {
   virtual void startRequest(const QUrl& url, const QByteArray& gga);
   virtual void waitForReadyRead(QByteArray& outData);
 
- signals:
-
  private slots:
   void slotError(QNetworkReply::NetworkError);
   void slotReadyRead();
