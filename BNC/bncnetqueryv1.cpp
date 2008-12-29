@@ -39,70 +39,18 @@ bncNetQueryV1::~bncNetQueryV1() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV1::close() {
-  if (_socket) {
-    _socket->close();
-  }
+void bncNetQueryV1::waitForRequestResult(const QUrl& url, QByteArray& outData) {
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-qint64 bncNetQueryV1::bytesAvailable() const {
-  if (_socket) {
-    return _socket->bytesAvailable();
-  }
-  else {
-    return 0;
-  }
-}
+void bncNetQueryV1::waitForReadyRead(QByteArray& outData) {
 
-// 
-////////////////////////////////////////////////////////////////////////////
-bool bncNetQueryV1::canReadLine() const {
-  if (_socket) {
-    return _socket->canReadLine();
-  }
-  else {
-    return false;
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-QByteArray bncNetQueryV1::readLine() {
-  if (_socket) {
-    return _socket->readLine();
-  }
-  else {
-    return "";
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV1::waitForReadyRead(int msecs) {
-  if (_socket) {
-    _socket->waitForReadyRead(msecs);
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-QByteArray bncNetQueryV1::read(qint64 maxSize) {
-  if (_socket) {
-    return _socket->read(maxSize);
-  }
-  else {
-    return "";
-  }
 }
 
 // Connect to Caster, send the Request
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncNetQueryV1::request(const QUrl& mountPoint, const QByteArray& latitude, 
-                         const QByteArray& longitude, const QByteArray& nmea,
-                         const QByteArray& ntripVersion, 
-                         int timeOut, QString& msg) {
+void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
 
   delete _socket;
   _socket = new QTcpSocket();
@@ -160,7 +108,7 @@ t_irc bncNetQueryV1::request(const QUrl& mountPoint, const QByteArray& latitude,
   // NMEA string to handle VRS stream
   // --------------------------------
   if ((nmea == "yes") && (hlp.path().length() > 2) && (hlp.path().indexOf(".skl") < 0)) {
-    reqStr += "$" + ggaString(latitude, longitude) + "\r\n";
+    reqStr += ggaString(latitude, longitude) + "\r\n";
   }
 
   msg += reqStr;

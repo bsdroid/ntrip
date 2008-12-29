@@ -4,30 +4,16 @@
 #include "bncnetquery.h"
 
 class bncNetQueryV1 : public bncNetQuery {
- Q_OBJECT
-
  public:
   bncNetQueryV1();
-  ~bncNetQueryV1();
+  virtual ~bncNetQueryV1();
 
-  void       close();
-  qint64     bytesAvailable() const;
-  bool       canReadLine() const;
-  QByteArray readLine();
-  void       waitForReadyRead(int msecs = 30000);
-  QByteArray read(qint64 maxSize);
-
-  t_irc request(const QUrl& mountPoint, const QByteArray& latitude, 
-                const QByteArray& longitude, const QByteArray& nmea, 
-                const QByteArray& ntripVersion, int timeOut, QString& msg);
-
- signals:
-  void newMessage(QByteArray msg, bool showOnScreen);
-
- private slots:
+  virtual void waitForRequestResult(const QUrl& url, QByteArray& outData);
+  virtual void startRequest(const QUrl& url, const QByteArray& gga);
+  virtual void waitForReadyRead(QByteArray& outData);
 
  private:
-  QTcpSocket*            _socket;
+  QTcpSocket* _socket;
 };
 
 #endif
