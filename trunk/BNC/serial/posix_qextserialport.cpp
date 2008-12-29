@@ -11,6 +11,10 @@ defining _TTY_NOWARN_ (to turn off all warnings) or _TTY_NOWARN_PORT_ (to turn o
 warnings) in the project.  Note that _TTY_NOWARN_ will also turn off portability warnings.
 */
 
+#ifdef sparc
+#include <sys/filio.h>
+#endif
+
 #include <stdio.h>
 #include "posix_qextserialport.h"
 
