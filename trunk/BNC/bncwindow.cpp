@@ -617,6 +617,7 @@ void bncWindow::slotAddMountPoints() {
     if      (iRet == QMessageBox::Yes) {
       settings.setValue("proxyHost",   _proxyHostLineEdit->text());
       settings.setValue("proxyPort",   _proxyPortLineEdit->text());
+      settings.sync();
     }
   }
 
@@ -782,6 +783,7 @@ void bncWindow::slotSaveOptions() {
   if (_caster) {
     _caster->slotReadMountPoints();
   }
+  settings.sync();
 }
 
 // All get slots terminated

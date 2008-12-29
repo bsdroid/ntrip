@@ -18,6 +18,7 @@ class bncNetQueryV2 : public bncNetQuery {
  private slots:
   void slotError(QNetworkReply::NetworkError);
   void slotFinished();
+  void slotProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
 
  private:
   void startRequestPrivate(const QUrl& url, const QByteArray& gga, bool full);
