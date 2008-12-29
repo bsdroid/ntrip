@@ -14,13 +14,7 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
-#include <iomanip>
-
 #include "bncnetqueryv2.h"
-#include "bncapp.h"
-
-using namespace std;
 
 #define BNCVERSION "1.7"
 
@@ -50,22 +44,24 @@ void bncNetQueryV2::slotError(QNetworkReply::NetworkError) {
   _eventLoop->quit();
 }
 
+// End of Request
+////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::slotFinished() {
   if (_status != error) {
     _status = finished;
   }
 }
 
-// Start request, block till the next read (public)
+// Start request, block till the next read
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::startRequest(const QUrl& url, const QByteArray& gga) {
-  startRequest(url, gga, false);
+  startRequestPrivate(url, gga, false);
 }
 
-// Start request
+// Start Request (Private Method)
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV2::startRequest(const QUrl& url, const QByteArray& gga,
-                                 bool full) {
+void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
+                                        bool full) {
 
   _status = running;
 
@@ -90,6 +86,9 @@ void bncNetQueryV2::startRequest(const QUrl& url, const QByteArray& gga,
     request.setRawHeader("Authorization", "Basic " + 
            (urlLoc.userName() + ":" + urlLoc.password()).toAscii().toBase64());
   } 
+  if (!gga.isEmpty()) {
+    request.setRawHeader("Ntrip-GGA", gga);
+  }
   request.setRawHeader("Connection"   , "close");
 
   _reply = _manager->get(request);
@@ -111,7 +110,7 @@ void bncNetQueryV2::waitForRequestResult(const QUrl& url, QByteArray& outData) {
 
   // Send Request
   // ------------
-  startRequest(url, "", true);
+  startRequestPrivate(url, "", true);
 
   // Wait Loop
   // ---------
