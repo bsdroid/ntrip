@@ -38,9 +38,9 @@ bncNetQueryV1::~bncNetQueryV1() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV1::stop() {
-  if (_socket) {
-    _socket->abort();
-  }
+//  if (_socket) {
+//    _socket->abort();
+//  }
   _status = finished;
 }
 
