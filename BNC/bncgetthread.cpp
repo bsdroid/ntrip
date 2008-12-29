@@ -305,7 +305,7 @@ void bncGetThread::terminate() {
     _query->stop();
   }
   QThread::terminate();
-  wait(1000);
+  wait(2000);
 }
 
 // Init Run
