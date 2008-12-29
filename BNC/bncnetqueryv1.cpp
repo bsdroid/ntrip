@@ -38,9 +38,11 @@ bncNetQueryV1::~bncNetQueryV1() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV1::stop() {
-//  if (_socket) {
-//    _socket->abort();
-//  }
+#ifndef sparc
+  if (_socket) {
+    _socket->abort();
+  }
+#endif
   _status = finished;
 }
 
