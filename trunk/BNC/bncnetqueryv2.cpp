@@ -2,9 +2,9 @@
  * BKG NTRIP Client
  * -------------------------------------------------------------------------
  *
- * Class:      bncNetQuery
+ * Class:      bncNetQueryV2
  *
- * Purpose:    Blocking Network Requests
+ * Purpose:    Blocking Network Requests (NTRIP Version 2)
  *
  * Author:     L. Mervart
  *
@@ -17,7 +17,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "bncnetquery.h"
+#include "bncNetQueryV2.h"
 #include "bncapp.h"
 
 using namespace std;
@@ -26,7 +26,7 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncNetQuery::bncNetQuery() {
+bncNetQueryV2::bncNetQueryV2() {
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           (bncApp*) qApp, SLOT(slotMessage(const QByteArray,bool)));
@@ -40,7 +40,7 @@ bncNetQuery::bncNetQuery() {
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-bncNetQuery::~bncNetQuery() {
+bncNetQueryV2::~bncNetQueryV2() {
   delete _eventLoop;
   delete _reply;
   delete _manager;
@@ -48,33 +48,33 @@ bncNetQuery::~bncNetQuery() {
 
 // Error
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQuery::slotError(QNetworkReply::NetworkError) {
+void bncNetQueryV2::slotError(QNetworkReply::NetworkError) {
   _status = error;
   cout << "slotError " << endl;
   emit newMessage("slotError " + _reply->errorString().toAscii(), true);
   _eventLoop->quit();
 }
 
-void bncNetQuery::slotFinished() {
+void bncNetQueryV2::slotFinished() {
   if (_status != error) {
     _status = finished;
   }
   cout << "slotFinished" << endl;
 }
 
-void bncNetQuery::slotReadyRead() {
+void bncNetQueryV2::slotReadyRead() {
   cout << "slotReadyRead" << endl;
 }
 
 // Start request, block till the next read (public)
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQuery::startRequest(const QUrl& url) {
+void bncNetQueryV2::startRequest(const QUrl& url) {
   startRequest(url, false);
 }
 
 // Start request
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQuery::startRequest(const QUrl& url, bool full) {
+void bncNetQueryV2::startRequest(const QUrl& url, bool full) {
 
   _status = running;
 
@@ -118,7 +118,7 @@ void bncNetQuery::startRequest(const QUrl& url, bool full) {
 
 // Start Request, wait for its completion
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQuery::waitForRequestResult(const QUrl& url, QByteArray& outData) {
+void bncNetQueryV2::waitForRequestResult(const QUrl& url, QByteArray& outData) {
 
   // Send Request
   // ------------
@@ -135,7 +135,7 @@ void bncNetQuery::waitForRequestResult(const QUrl& url, QByteArray& outData) {
 
 // Wait for next data
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQuery::waitForReadyRead(QByteArray& outData) {
+void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
 
   // Wait Loop
   // ---------

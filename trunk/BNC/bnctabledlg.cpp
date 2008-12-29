@@ -78,7 +78,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _casterPasswordLineEdit->setEchoMode(QLineEdit::Password);
 
   _ntripVersionComboBox = new QComboBox();
-  _ntripVersionComboBox->addItems(QString("1,2,AUTO").split(","));
+  _ntripVersionComboBox->addItems(QString("1,2").split(","));
   int kk = _ntripVersionComboBox->findText(settings.value("ntripVersion").toString());
   if (kk != -1) {
     _ntripVersionComboBox->setCurrentIndex(kk);
