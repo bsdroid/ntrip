@@ -117,7 +117,6 @@ bncCaster::~bncCaster() {
   while(it.hasNext()){
     bncGetThread* thread = it.next();
     thread->terminate();
-    thread->wait(3000);
     delete thread;
   }
   delete _out;
@@ -435,7 +434,6 @@ void bncCaster::slotReadMountPoints() {
       _staIDs.removeAll(thread->staID());
       _threads.removeAll(thread);
       thread->terminate();
-      thread->wait(3000);
       delete thread;
     }
   }
