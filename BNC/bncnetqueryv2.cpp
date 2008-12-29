@@ -22,6 +22,10 @@
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryV2::bncNetQueryV2() {
   _manager   = new QNetworkAccessManager(this);
+  connect(_manager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, 
+                                                       QAuthenticator*)),
+          this, SLOT(slotProxyAuthenticationRequired(const QNetworkProxy&, 
+                                                     QAuthenticator*)));
   _reply     = 0;
   _eventLoop = new QEventLoop(this);
 
@@ -61,6 +65,13 @@ void bncNetQueryV2::slotFinished() {
   if (_status != error) {
     _status = finished;
   }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncNetQueryV2::slotProxyAuthenticationRequired(const QNetworkProxy&, 
+                                                    QAuthenticator*) {
+  emit newMessage("slotProxyAuthenticationRequired", true);
 }
 
 // Start request, block till the next read
