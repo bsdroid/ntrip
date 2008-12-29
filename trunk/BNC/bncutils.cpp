@@ -51,6 +51,8 @@
 
 using namespace std;
 
+// 
+////////////////////////////////////////////////////////////////////////////
 void expandEnvVar(QString& str) {
 
   QRegExp rx("(\\$\\{.+\\})");
@@ -66,6 +68,8 @@ void expandEnvVar(QString& str) {
 
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
 QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks) {
 
   static const QDate zeroEpoch(1980, 1, 6);
@@ -80,6 +84,8 @@ QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks) {
   return QDateTime(date,time);
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
 void currentGPSWeeks(int& week, double& sec) {
 
   QDateTime currDateTime;
@@ -111,6 +117,8 @@ void currentGPSWeeks(int& week, double& sec) {
         leapsecond;
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
 QDateTime currentDateAndTimeGPS() {
   int    GPSWeek;
   double GPSWeeks;
@@ -118,3 +126,44 @@ QDateTime currentDateAndTimeGPS() {
   return dateAndTimeFromGPSweek(GPSWeek, GPSWeeks);
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+QString ggaString(const QByteArray& latitude, const QByteArray& longitude) {
+
+  double lat = strtod(latitude,NULL);
+  double lon = strtod(longitude,NULL);
+
+  const char* flagN="N";
+  const char* flagE="E";
+  if (lon >180.) {lon=(lon-360.)*(-1.); flagE="W";}
+  if ((lon < 0.) && (lon >= -180.))  {lon=lon*(-1.); flagE="W";}
+  if (lon < -180.)  {lon=(lon+360.); flagE="E";}
+  if (lat < 0.)  {lat=lat*(-1.); flagN="S";}
+  QTime ttime(QDateTime::currentDateTime().toUTC().time());
+  int lat_deg = (int)lat;  
+  double lat_min=(lat-lat_deg)*60.;
+  int lon_deg = (int)lon;  
+  double lon_min=(lon-lon_deg)*60.;
+  int hh = 0 , mm = 0;
+  double ss = 0.0;
+  hh=ttime.hour();
+  mm=ttime.minute();
+  ss=(double)ttime.second()+0.001*ttime.msec();
+  QString gga;
+  gga += "GPGGA,";
+  gga += QString("%1%2%3,").arg((int)hh, 2, 10, QLatin1Char('0')).arg((int)mm, 2, 10, QLatin1Char('0')).arg((int)ss, 2, 10, QLatin1Char('0'));
+  gga += QString("%1%2,").arg((int)lat_deg,2, 10, QLatin1Char('0')).arg(lat_min, 7, 'f', 4, QLatin1Char('0'));
+  gga += flagN;
+  gga += QString(",%1%2,").arg((int)lon_deg,3, 10, QLatin1Char('0')).arg(lon_min, 7, 'f', 4, QLatin1Char('0'));
+  gga += flagE + QString(",1,05,1.00,+00100,M,10.000,M,,");
+  int xori;
+  char XOR = 0;
+  char *Buff =gga.toAscii().data();
+  int iLen = strlen(Buff);
+  for (xori = 0; xori < iLen; xori++) {
+    XOR ^= (char)Buff[xori];
+  }
+  gga += QString("*%1").arg(XOR, 2, 16, QLatin1Char('0'));
+
+  return gga;
+}
