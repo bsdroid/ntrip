@@ -814,11 +814,13 @@ void bncGetThread::run() {
 // Exit
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::exit(int exitCode) {
+  terminate();
   if (exitCode!= 0) {
     emit error(_staID);
   }
   QThread::exit(exitCode);
   terminate();
+  wait(1000);
 }
 
 // Try Re-Connect 
