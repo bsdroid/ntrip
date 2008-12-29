@@ -38,8 +38,6 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
-
 #include <math.h>
 #include <unistd.h>
 
@@ -48,8 +46,6 @@
 #include "bncgetthread.h"
 #include "bncutils.h"
 #include "RTCM/GPSDecoder.h"
-
-using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -120,13 +116,9 @@ bncCaster::~bncCaster() {
   QListIterator<bncGetThread*> it(_threads);
   while(it.hasNext()){
     bncGetThread* thread = it.next();
-    cout << "~bncCaster A" << endl;
     thread->terminate();
-    cout << "~bncCaster B" << endl;
     thread->wait();
-    cout << "~bncCaster C" << endl;
     delete thread;
-    cout << "~bncCaster D" << endl;
   }
   delete _out;
   delete _outFile;

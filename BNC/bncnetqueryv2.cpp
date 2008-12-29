@@ -36,10 +36,9 @@ bncNetQueryV2::~bncNetQueryV2() {
   delete _manager;
 }
 
-// 
+// Stop (quit even loop)
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::stop() {
-  _reply->abort();
   _eventLoop->quit();
 }
 
