@@ -1,15 +1,14 @@
-#ifndef BNCSOCKET_H
-#define BNCSOCKET_H
+#ifndef BNCNETQUERYV1_H
+#define BNCNETQUERYV1_H
 
-#include <QtNetwork>
-#include "bncconst.h"
+#include "bncnetquery.h"
 
-class bncSocket : public QObject {
+class bncNetQueryV1 : public bncNetQuery {
  Q_OBJECT
 
  public:
-  bncSocket();
-  ~bncSocket();
+  bncNetQueryV1();
+  ~bncNetQueryV1();
 
   void       close();
   qint64     bytesAvailable() const;

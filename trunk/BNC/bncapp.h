@@ -44,7 +44,7 @@ class bncApp : public QApplication {
     QDateTime* _currentDateAndTimeGPS;
     void setWaitCoTime(int waitCoTime) {_waitCoTime = waitCoTime;}
   public slots:
-    void slotMessage(const QByteArray msg, bool showOnScreen);
+    void slotMessage(QByteArray msg, bool showOnScreen);
     void slotNewGPSEph(gpsephemeris* gpseph);
     void slotNewGlonassEph(glonassephemeris* glonasseph);
     void slotNewCorrLine(QString line, QString staID, long coTime);

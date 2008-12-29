@@ -146,7 +146,7 @@ bncApp::~bncApp() {
 
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::slotMessage(const QByteArray msg, bool showOnScreen) {
+void bncApp::slotMessage(QByteArray msg, bool showOnScreen) {
 
   QMutexLocker locker(&_mutexMessage);
 
