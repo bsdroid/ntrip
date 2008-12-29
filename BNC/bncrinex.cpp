@@ -53,7 +53,7 @@
 #include "bncconst.h"
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
-#include "bncsocket.h"
+#include "bncnetqueryv2.h"
 #include "RTCM3/rtcm3torinex.h"
 
 using namespace std;
@@ -153,24 +153,15 @@ t_irc bncRinex::downloadSkeleton() {
       url.setPort(80);
     }
 
-    const int timeOut = 10*1000;
-    QString msg;
-    QByteArray _latitude;
-    QByteArray _longitude;
-    QByteArray _nmea;
-    bncSocket* socket = new bncSocket();
-    if (socket->request(url, _latitude, _longitude, 
-                        _nmea, _ntripVersion, timeOut, msg) != success) {
-      delete socket;
-      return failure;
-    }
-
-    _headerLines.clear();
-    bool firstLineRead = false;
-    while (true) {
-      if (socket->canReadLine()) {
-        QString line = socket->readLine();
-        line.chop(1);
+    bncNetQueryV2 query;
+    QByteArray outData;
+    query.waitForRequestResult(url, outData);
+    if (query.status() == bncNetQuery::finished) {
+      _headerLines.clear();
+      bool firstLineRead = false;
+      QTextStream in(outData);
+      QString line = in.readLine();
+      while ( !line.isNull() ) {
         if (line.indexOf("MARKER NAME") != -1) {
           irc = success;
         }
@@ -204,17 +195,13 @@ t_irc bncRinex::downloadSkeleton() {
             _headerLines.append( line );
           }
         }
+        line = in.readLine();
       }
-      else {
-        socket->waitForReadyRead(timeOut);
-        if (socket->bytesAvailable() > 0) {
-          continue;
-        }
-        else {
-          break;
-        }
-      }
+    } 
+    else {
+      return failure;
     }
+
   }
   return irc;
 }
