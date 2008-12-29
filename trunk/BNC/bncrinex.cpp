@@ -62,15 +62,14 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint, 
                    const QByteArray& format, const QByteArray& latitude,
-                   const QByteArray& longitude, const QByteArray& nmea,
-                   const QByteArray& ntripVersion) {
+                   const QByteArray& longitude, const QByteArray& nmea) {
+
   _statID        = statID;
   _mountPoint    = mountPoint;
   _format        = format.left(6);
   _latitude      = latitude;
   _longitude     = longitude;
   _nmea          = nmea;
-  _ntripVersion  = ntripVersion;
   _headerWritten = false;
   _reconnectFlag = false;
   _reloadTable   = false;

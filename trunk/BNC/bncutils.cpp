@@ -128,7 +128,7 @@ QDateTime currentDateAndTimeGPS() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-QString ggaString(const QByteArray& latitude, const QByteArray& longitude) {
+QByteArray ggaString(const QByteArray& latitude, const QByteArray& longitude) {
 
   double lat = strtod(latitude,NULL);
   double lon = strtod(longitude,NULL);
@@ -165,5 +165,5 @@ QString ggaString(const QByteArray& latitude, const QByteArray& longitude) {
   }
   gga += QString("*%1").arg(XOR, 2, 16, QLatin1Char('0'));
 
-  return gga;
+  return gga.toAscii();
 }

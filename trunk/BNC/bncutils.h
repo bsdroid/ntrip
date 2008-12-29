@@ -36,6 +36,6 @@ void currentGPSWeeks(int& week, double& sec);
 
 QDateTime currentDateAndTimeGPS();
 
-QString ggaString(const QByteArray& latitude, const QByteArray& longitude);
+QByteArray ggaString(const QByteArray& latitude, const QByteArray& longitude);
 
 #endif

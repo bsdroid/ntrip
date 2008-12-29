@@ -15,7 +15,7 @@ class bncNetQuery : public QObject {
     connect(this,           SIGNAL(newMessage(QByteArray,bool)), 
             (bncApp*) qApp, SLOT(slotMessage(const QByteArray,bool)));
   }
-  virtual ~bncNetQuery();
+  virtual ~bncNetQuery() {};
 
   virtual void waitForRequestResult(const QUrl& url, QByteArray& outData) = 0;
   virtual void startRequest(const QUrl& url, const QByteArray& gga) = 0;
