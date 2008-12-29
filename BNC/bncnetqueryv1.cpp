@@ -2,7 +2,7 @@
  * BKG NTRIP Client
  * -------------------------------------------------------------------------
  *
- * Class:      bncSocket
+ * Class:      bncNetQueryV1
  *
  * Purpose:    Blocking Network Requests (NTRIP Version 1)
  *
@@ -27,22 +27,19 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncSocket::bncSocket() {
-  bncApp* app = (bncApp*) qApp;
-  app->connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-               app, SLOT(slotMessage(const QByteArray,bool)));
+bncNetQueryV1::bncNetQueryV1() {
   _socket    = 0;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-bncSocket::~bncSocket() {
+bncNetQueryV1::~bncNetQueryV1() {
   delete _socket;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncSocket::close() {
+void bncNetQueryV1::close() {
   if (_socket) {
     _socket->close();
   }
@@ -50,7 +47,7 @@ void bncSocket::close() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-qint64 bncSocket::bytesAvailable() const {
+qint64 bncNetQueryV1::bytesAvailable() const {
   if (_socket) {
     return _socket->bytesAvailable();
   }
@@ -61,7 +58,7 @@ qint64 bncSocket::bytesAvailable() const {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-bool bncSocket::canReadLine() const {
+bool bncNetQueryV1::canReadLine() const {
   if (_socket) {
     return _socket->canReadLine();
   }
@@ -72,7 +69,7 @@ bool bncSocket::canReadLine() const {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-QByteArray bncSocket::readLine() {
+QByteArray bncNetQueryV1::readLine() {
   if (_socket) {
     return _socket->readLine();
   }
@@ -83,7 +80,7 @@ QByteArray bncSocket::readLine() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncSocket::waitForReadyRead(int msecs) {
+void bncNetQueryV1::waitForReadyRead(int msecs) {
   if (_socket) {
     _socket->waitForReadyRead(msecs);
   }
@@ -91,7 +88,7 @@ void bncSocket::waitForReadyRead(int msecs) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-QByteArray bncSocket::read(qint64 maxSize) {
+QByteArray bncNetQueryV1::read(qint64 maxSize) {
   if (_socket) {
     return _socket->read(maxSize);
   }
@@ -102,7 +99,7 @@ QByteArray bncSocket::read(qint64 maxSize) {
 
 // Connect to Caster, send the Request
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncSocket::request(const QUrl& mountPoint, const QByteArray& latitude, 
+t_irc bncNetQueryV1::request(const QUrl& mountPoint, const QByteArray& latitude, 
                          const QByteArray& longitude, const QByteArray& nmea,
                          const QByteArray& ntripVersion, 
                          int timeOut, QString& msg) {

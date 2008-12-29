@@ -3,6 +3,7 @@
 
 #include <QtNetwork>
 #include "bncconst.h"
+#include "bncapp.h"
 
 class bncNetQuery : public QObject {
  Q_OBJECT
@@ -10,7 +11,10 @@ class bncNetQuery : public QObject {
  public:
   enum queryStatus {init, running, finished, error};
 
-  bncNetQuery();
+  bncNetQuery() {
+    connect(this,           SIGNAL(newMessage(QByteArray,bool)), 
+            (bncApp*) qApp, SLOT(slotMessage(const QByteArray,bool)));
+  }
   virtual ~bncNetQuery();
 
   virtual void waitForRequestResult(const QUrl& url, QByteArray& outData) = 0;
