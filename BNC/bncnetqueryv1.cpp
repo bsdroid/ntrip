@@ -38,18 +38,24 @@ bncNetQueryV1::~bncNetQueryV1() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV1::stop() {
-
+  if (_socket) {
+    _socket->abort();
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV1::waitForRequestResult(const QUrl& url, QByteArray& outData) {
+void bncNetQueryV1::waitForRequestResult(const QUrl&, QByteArray&) {
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV1::waitForReadyRead(QByteArray& outData) {
-
+  if (_socket) {
+    if (_socket->waitForReadyRead()) {
+      outData = _socket->readAll();
+    }
+  }
 }
 
 // Connect to Caster, send the Request
