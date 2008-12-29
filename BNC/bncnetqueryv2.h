@@ -16,7 +16,6 @@ class bncNetQueryV2 : public bncNetQuery {
 
  private slots:
   void slotError(QNetworkReply::NetworkError);
-  void slotReadyRead();
   void slotFinished();
 
  private:

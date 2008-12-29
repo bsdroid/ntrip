@@ -27,10 +27,6 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryV2::bncNetQueryV2() {
-
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          (bncApp*) qApp, SLOT(slotMessage(const QByteArray,bool)));
-
   _manager   = new QNetworkAccessManager(this);
   _reply     = 0;
   _eventLoop = new QEventLoop(this);
@@ -50,8 +46,7 @@ bncNetQueryV2::~bncNetQueryV2() {
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::slotError(QNetworkReply::NetworkError) {
   _status = error;
-  cout << "slotError " << endl;
-  emit newMessage("slotError " + _reply->errorString().toAscii(), true);
+  emit newMessage(_reply->errorString().toAscii(), true);
   _eventLoop->quit();
 }
 
@@ -59,11 +54,6 @@ void bncNetQueryV2::slotFinished() {
   if (_status != error) {
     _status = finished;
   }
-  cout << "slotFinished" << endl;
-}
-
-void bncNetQueryV2::slotReadyRead() {
-  cout << "slotReadyRead" << endl;
 }
 
 // Start request, block till the next read (public)
@@ -107,8 +97,6 @@ void bncNetQueryV2::startRequest(const QUrl& url, const QByteArray& gga,
   // Connect Signals
   // ---------------
   connect(_reply, SIGNAL(finished()), this, SLOT(slotFinished()));
-  connect(_reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
-
   connect(_reply, SIGNAL(finished()), _eventLoop, SLOT(quit()));
   if (!full) {
     connect(_reply, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
