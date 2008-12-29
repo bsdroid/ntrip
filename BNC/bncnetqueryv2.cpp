@@ -39,8 +39,15 @@ bncNetQueryV2::~bncNetQueryV2() {
 // Stop (quit even loop)
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::stop() {
-  _eventLoop->quit();
-  this->deleteLater();
+  if (_reply) {
+    _reply->disconnect();
+    _reply->abort();
+  }
+  if (_eventLoop) {
+    _eventLoop->quit();
+    delete _eventLoop;
+    _eventLoop = 0;
+  }
 }
 
 // Error
@@ -48,7 +55,9 @@ void bncNetQueryV2::stop() {
 void bncNetQueryV2::slotError(QNetworkReply::NetworkError) {
   _status = error;
   emit newMessage(_reply->errorString().toAscii(), true);
-  _eventLoop->quit();
+  if (_eventLoop) {
+    _eventLoop->quit();
+  }
 }
 
 // End of Request
@@ -121,7 +130,9 @@ void bncNetQueryV2::waitForRequestResult(const QUrl& url, QByteArray& outData) {
 
   // Wait Loop
   // ---------
-  _eventLoop->exec();
+  if (_eventLoop) {
+    _eventLoop->exec();
+  }
 
   // Copy Data and Return
   // --------------------
@@ -135,7 +146,9 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
   // Wait Loop
   // ---------
   if (!_reply->bytesAvailable()) {
-    _eventLoop->exec();
+    if (_eventLoop) {
+      _eventLoop->exec();
+    }
   }
 
   // Append Data
