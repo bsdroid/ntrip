@@ -129,10 +129,11 @@ All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/
 &nbsp; &nbsp; &nbsp; 3.12.1. <a href=#streamadd>Add Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.2. <a href=#streamhost>Caster Host and Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.3. <a href=#streamuser>Caster User and Password</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.4. <a href=#streamtable>Get Table</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.5. <a href=#streamdelete>Delete Streams</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.6. <a href=#streamedit>Edit Streams</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.7. <a href=#streamconf>Reconfigure Streams On-the-fly</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.4. <a href=#streamntrip>NTRIP Version</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.5. <a href=#streamtable>Get Table</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.6. <a href=#streamdelete>Delete Streams</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.7. <a href=#streamedit>Edit Streams</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.8. <a href=#streamconf>Reconfigure Streams On-the-fly</a><br>
 3.13. <a href=#start>Start</a><br>
 3.14. <a href=#stop>Stop</a><br>
 3.15. <a href=#cmd>Command Line Options</a><br>
@@ -735,16 +736,18 @@ Note that in RTCM Version 2.x the message types 18 and 19 carry only the observa
 Each stream on an NTRIP broadcaster is defined using a unique source ID called mountpoint. An NTRIP client like BNC access the desired data stream by referring to its mountpoint. Information about streams and their mountpoints is available through the source-table maintained by the NTRIP broadcaster. Note that mountpoints could show up in BNC more than once when retrieving streams from several NTRIP broadcasters.
 </p>
 
+<p>
 Streams selected for retrieval are listed under the 'Streams' canvas section on BNC's main window. The list provides the following information extracted from source-table(s) produced by the NTRIP broadcasters:
+</p>
  
 <table>
-<tr></tr>
-<tr><td>'broadcaster:port' &nbsp;</td><td>NTRIP broadcaster URL and port.</td></tr>
+<tr><td>'broadcaster:port'&nbsp; </td><td>NTRIP broadcaster URL and port.</td></tr>
 <tr><td>'mountpoint' &nbsp;</td><td>Mountpoint on NTRIP broadcaster.</td></tr>
 <tr><td>'decoder' &nbsp;</td><td>Type of decoder used to handle the incoming stream content according to its format; editable.</td></tr>
 <tr><td>'lat' &nbsp;</td><td>Approximate latitude of reference station, in degrees, north; editable if 'nmea' = 'yes'.</td></tr>
 <tr><td>'long' &nbsp;</td><td>Approximate longitude of reference station, in degrees, east; editable if 'nmea' = 'yes'.</td></tr>
 <tr><td>'nmea' &nbsp;</td><td>Indicates whether or not streaming needs to be initiated by BNC through sending NMEA-GGA message carrying position coordinates in 'lat' and 'long'.</td></tr>
+<tr><td>'ntrip' &nbsp;</td><td>Selected NTRIP transport protocol version.</td></tr>
 <tr><td>'bytes' &nbsp;</td><td>Number of bytes retrieved.
 </table>
 
@@ -763,7 +766,23 @@ Enter the NTRIP broadcaster host IP and port number. <u>http://www.rtcm-ntrip.or
 Some streams on NTRIP broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.
 </p> 
 
-<p><a name="streamtable"><h4>3.12.4 Get Table</h4></p>
+<p><a name="streamntrip"><h4>3.12.4 NTRIP Version - mandatory</h4></p>
+<p>
+Some limitations and deficiencies of the NTRIP version 1 stream transport protocol are solved in NTRIP version 2. Improvements mainly concern a full HTTP compatibility in view of requirements coming from proxy servers. Options implemented in BNC are:
+</p>
+<p>
+&nbsp; 1:&nbsp; NTRIP version 1 in TCP/IP mode,<br>
+&nbsp; 2:&nbsp; NTRIP version 2 in TCP/IP mode.
+</p>
+<p>
+Try using option '2' if your streams are blocked by a proxy and protocol version 2 is supported by the broadcaster. Select option '1' if you not sure whether the broadcaster supports NTRIP version 2.
+</p>
+
+
+
+</p>
+
+<p><a name="streamtable"><h4>3.12.5 Get Table</h4></p>
 <p>
 Use the 'Get Table' button to download the source-table from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. RTCM Version 2.x streams must contain message types 18 and 19 or 20 and 21 while RTCM Version 3.x streams must contain GPS or SBAS message types 1002 or 1004 and may contain GLONASS message types 1010 or 1012, see data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3.x streams containing message types 1019 (GPS) and 1020 (GLONASS) are required. Select your streams line by line, use +Shift and +Ctrl when necessary.
 </p> 
@@ -774,11 +793,11 @@ The contents of data field 'nmea' tells you whether a stream retrieval needs to 
 Hit 'OK' to return to the main window. If you wish you can click on 'Add Streams' and repeat the process again to retrieve streams from different casters.
 </p> 
 
-<p><a name="streamdelete"><h4>3.12.5 Delete Streams</h4></p>
+<p><a name="streamdelete"><h4>3.12.6 Delete Streams</h4></p>
 <p>
 To remove a stream from the 'Streams' canvas in the main window, highlight it by clicking on it and hit the 'Delete Streams' button. You can also remove multiple streams simultaneously by highlighting them using +Shift and +Ctrl.</p>
 
-<p><a name="streamedit"><h4>3.12.6 Edit Streams</h4></p>
+<p><a name="streamedit"><h4>3.12.7 Edit Streams</h4></p>
 <ul>
 <li>
 BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.
@@ -788,12 +807,12 @@ In case you need to log the raw data as is, BNC allows users to by-pass its deco
 </li>
 <li>
 BNC can also retrieve streams from virtual reference stations (VRS). To initiate these streams, an approximate rover position needs to be sent in NMEA format to the NTRIP broadcaster. In return, a user-specific data stream is generated, typically by a Network-RTK software. VRS streams are indicated by a 'yes' in the source-table as well as in the 'nmea' column on the 'Streams' canvas in BNC's main window. They are customized exactly to the latitude and longitude transmitted to the NTRIP broadcaster via NMEA-GGA messages.
-<br>If NMEA-GGA messages are not coming from a serial connected GNSS rover, BNC simulates them from the default latitude and longitude of the source-table as shown in the 'lat' and 'lon' columns on the 'Streams' canvas. However, in most cases you would probably want to change these defaults according to your requirement. Double-click on 'lat' and 'lon' fields, enter the values you wish to send and then hit Enter. The format is in positive north latitude degrees (e.g. for northern hemisphere: 52.436, for southern hemisphere: -24.567) and eastern longitude degrees (example: 358.872 or -1.128). Only streams with a 'yes' in their 'nmea' column can be edited. The position must preferably be a point within the VRS service area of the network. RINEX files generated from these streams will contain an additional COMMENT line in the header beginning with 'NMEA' showing the 'lat' and 'lon' used.
+<br>If NMEA-GGA messages are not coming from a serial connected GNSS rover, BNC simulates them from the default latitude and longitude of the source-table as shown in the 'lat' and 'long' columns on the 'Streams' canvas. However, in most cases you would probably want to change these defaults according to your requirement. Double-click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter. The format is in positive north latitude degrees (e.g. for northern hemisphere: 52.436, for southern hemisphere: -24.567) and eastern longitude degrees (example: 358.872 or -1.128). Only streams with a 'yes' in their 'nmea' column can be edited. The position must preferably be a point within the VRS service area of the network. RINEX files generated from these streams will contain an additional COMMENT line in the header beginning with 'NMEA' showing the 'lat' and 'long' used.
 <br>Note that when running BNC in a Local Area Network (LAN), NMEA strings may be blocked by a proxy server, firewall or virus scanner.
 </li>
 </ul> 
 
-<p><a name="streamconf"><h4>3.12.7 Reconfigure Streams On-the-fly</h4></p>
+<p><a name="streamconf"><h4>3.12.8 Reconfigure Streams On-the-fly</h4></p>
 <p>
 The streams selection can be changed on-the-fly without interrupting uninvolved threads in the running BNC process.
 </p>
@@ -915,9 +934,10 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 <p>
 8.1. <a href=#history>History</a><br>
 8.2. <a href=#rtcm>RTCM</a><br>
-&nbsp; &nbsp; &nbsp; 8.2.1 <a href=#ntrip>NTRIP</a><br>
-&nbsp; &nbsp; &nbsp; 8.2.2 RTCM <a href=#rtcm2>Version 2.x</a><br>
-&nbsp; &nbsp; &nbsp; 8.2.3 RTCM <a href=#rtcm3>Version 3.x</a><br>
+&nbsp; &nbsp; &nbsp; 8.2.1 NTRIP <a href=#ntrip1>Version 1</a><br>
+&nbsp; &nbsp; &nbsp; 8.2.2 NTRIP <a href=#ntrip2>Version 2</a><br>
+&nbsp; &nbsp; &nbsp; 8.2.3 RTCM <a href=#rtcm2>Version 2.x</a><br>
+&nbsp; &nbsp; &nbsp; 8.2.4 RTCM <a href=#rtcm3>Version 3.x</a><br>
 8.3. <a href=#rtigs>RTIGS</a><br>
 &nbsp; &nbsp; &nbsp; 8.3.1 <a href=#soc>SOC</a><br>
 8.4. <a href=#config>Configuration File</a><br>
@@ -934,8 +954,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 <tr><td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td><td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td></tr>
 <tr><td>Apr 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Handle ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Monitor stream failure/recovery and latency<br> [Mod] Redesign of main window<br> [Bug] Freezing of About window on Mac systems<br> [Bug] Fixed problem with PRN 32 in RTCMv2 decoder<br> [Bug] Fix for Trimble 4000SSI receivers in RTCMv2 decoder<br> [Mod] Major revision of input buffer in RTCMv2 decoder</td></tr>
 <tr><td>Dec 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td><td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCMv3 decoder for clock and orbit corrections<br>[Add] Check RTCMv3 streams for incoming message types<br> [Add] Decode RTCMv2 message types 3, 20, 21, and 22<br> [Add] Loss of lock and lock time indicator<br> [Bug] Rounding error in RTCMv3 decoder concerning GLONASS height<br> [Mod] Accept GLONASS in RTCMv3 when transmitted first<br> [Add] Leap second 1 January 2009<br> [Add] Offline mode, read data from file<br> [Add] Output antenna descriptor, coordinates and excentricities from RTCMv3<br> [Add] Reconfiguration on-the-fly<br> [Mod] Binary ouput of synchronized observations<br> [Add] Binary output of unsynchronized observations<br> [Bug] Fixed problem with joined RTCMv3 blocks</td></tr>
-<tr><td>Jan 2009 &nbsp;</td><td>Version 1.7 &nbsp;</td><td>
-[Add] Full proxy support<br> [Mod] Ntrip source-table request<br> [Bug] RINEX navigation file format<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port</td></tr>
+<tr><td>Jan 2009 &nbsp;</td><td>Version 1.7 &nbsp;</td><td>[Mod] NTRIP v1 source-table request<br> [Bug] RINEX navigation file format<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port</td></tr>
 </table>
 </p>
 
@@ -947,7 +966,7 @@ The Radio Technical Commission for Maritime Services (RTCM) is an international 
 Personal copies of RTCM Recommended Standards can be ordered through <u>http://www.rtcm.org/orderinfo.php</u>.
 </p>
 
-<p><a name="ntrip"><h4>8.2.1 NTRIP</h4></p>
+<p><a name="ntrip1"><h4>8.2.1 NTRIP Version 1</h4></p>
 
 <p>
 'Networked Transport of RTCM via Internet Protocol' Version 1.0 (NTRIP) stands for an application-level protocol streaming Global Navigation Satellite System (GNSS) data over the Internet. NTRIP is a generic, stateless protocol based on the Hypertext Transfer Protocol HTTP/1.1. The HTTP objects are enhanced to GNSS data streams.
@@ -986,8 +1005,25 @@ Source-table records of type NET contain the following data fields: 'identifiey'
 Source-table records of type CAS contain the following data fields: 'host', 'port', 'identifier', 'operator', 'nmea', 'country', 'latitude', 'longitude', 'misc'.
 </p>
 
+<p><a name="ntrip2"><h4>8.2.1 NTRIP Version 2</h4></p>
 
-<p><a name="rtcm2"><h4>8.2.2 RTCM Version 2.x</h4></p>
+<p>
+The major changes of NTRIP version 2.0 compared to Version 1.0 are:
+</p>
+
+<ul>
+<li>cleared and fixed design problems and HTTP protocol violations;</li>
+<li>replaced non standard directives;</li>
+<li>chunked transfer encoding;</li>
+<li>improvements in header records;</li>
+<li>sourcetable filtering; and</li>
+<li>RTSP communication.</li>
+</ul>
+
+<p>NTRIP version 2 allows to either communicate in TCP/IP mode or in RTSP/RTP mode. Note that RTSP/RTP support is not yet implemented in BNC.
+</p>
+
+<p><a name="rtcm2"><h4>8.2.3 RTCM Version 2.x</h4></p>
 <p>
 Transmitting GNSS carrier phase data can be done through RTCM Version 2.x messages. Please note that only RTCM Version 2.2 and 2.3 streams may include GLONASS data. Messages that may be of some interest here are:
 </p>
@@ -1025,7 +1061,7 @@ Type 24 message carries the coordinates of the installed antenna's ARP in the GN
 </li>
 </ul>
 
-<p><a name="rtcm3"><h4>8.2.3 RTCM Version 3.x</h4></p>
+<p><a name="rtcm3"><h4>8.2.4 RTCM Version 3.x</h4></p>
 <p>
 RTCM Version 3.x has been developed as a more efficient alternative to RTCM Version 2.x. Service providers and vendors have asked for a standard that would be more efficient, easy to use, and more easily adaptable to new situations. The main complaint was that the Version 2 parity scheme was wasteful of bandwidth. Another complaint was that the parity is not independent from word to word. Still another was that even with so many bits devoted to parity, the actual integrity of the message was not as high as it should be. Plus, 30-bit words are awkward to handle. The Version 3.x standard is intended to correct these weaknesses.
 </p>
