@@ -51,7 +51,7 @@ using namespace std;
 bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   setMinimumSize(600,400);
-  setWindowTitle(tr("Add Mountpoints"));
+  setWindowTitle(tr("Add Streams"));
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
@@ -105,8 +105,10 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   mainLayout->addLayout(editLayout);
 
+  _ntripVersionComboBox->setWhatsThis(tr("<p>Select the NTRIP transport protocol version you want to use. Implemented options are:<br>&nbsp; 1:&nbsp; NTRIP version 1, TCP/IP<br>&nbsp; 2:&nbsp; NTRIP version 2, TCP/IP<br>Select option '1' if you not sure whether the NTRIP broadcaster supports NTRIP version 2.</p>"));
+
   _table = new QTableWidget(this);
-  _table->setWhatsThis(tr("<p>Use the 'Get Table' button to download the sourcetable from the NTRIP broadcaster. Select the desired streams line by line, using +Shift and +Ctrl when necessary. Hit 'OK' to return to the main window.</p><p>Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. RTCM Version 2.x streams must contain message Type 18 and 19 or 20 and 21 while RTCM Version 3.x streams must contain GPS or SBAS message Type 1002 or 1004 and may contain GLONASS message types 1010 or 1012. See data field 'format-details' for available message types and their repetition rates in brackets.</p><p>Note that in order to produce RINEX Navigation files, RTCM Version 3.x streams containing message Type 1019 (GPS) and 1020 (GLONASS) or RTIGS streams are required.</p><p>Search for RTCM Version 3.x streams containing (premature) message Types 4056 and 4057 if you need corrections to Broadcast Ephemeris.</p><p>The content of data field 'nmea' tells you whether a stream retrieval needs to be initiated by BNC by sending an NMEA-GGA message containing the user (or virtual reference station)'s coordinate.</p>"));
+  _table->setWhatsThis(tr("<p>Use the 'Get Table' button to download the sourcetable from the NTRIP broadcaster. Select the desired streams line by line, using +Shift and +Ctrl when necessary. Hit 'OK' to return to the main window.</p><p>Pay attention to data field 'format'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. See data field 'format-details' for available message types and their repetition rates in brackets.</p><p>The content of data field 'nmea' tells you whether a stream comes from a virtual reference station (VRS).</p>"));
   connect(_table, SIGNAL(itemSelectionChanged()),
           this, SLOT(slotSelectionChanged()));
   mainLayout->addWidget(_table);
