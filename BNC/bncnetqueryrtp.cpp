@@ -26,13 +26,15 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryRtp::bncNetQueryRtp() {
-  _socket = 0;
+  _socket    = 0;
+  _udpSocket = 0;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryRtp::~bncNetQueryRtp() {
   delete _socket;
+  delete _udpSocket;
 }
 
 // 
@@ -98,6 +100,9 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
     }
     
     QByteArray clientPort = "7777"; // TODO: make it an option
+    delete _udpSocket;
+    _udpSocket = new QUdpSocket();
+    _udpSocket->bind(clientPort.toInt());
     
     QByteArray reqStr;
     reqStr = "SETUP " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
@@ -133,8 +138,6 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
                  + "Session: " + session + "\r\n"
                  + "\r\n";
           _socket->write(reqStr, reqStr.length());
-
-          cout << reqStr.data();
 
           // Read Server Answer 2
           // --------------------
