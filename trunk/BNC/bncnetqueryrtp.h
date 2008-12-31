@@ -16,6 +16,7 @@ class bncNetQueryRtp : public bncNetQuery {
  private:
   QTcpSocket* _socket;
   QUdpSocket* _udpSocket;
+  QEventLoop* _eventLoop;
 };
 
 #endif
