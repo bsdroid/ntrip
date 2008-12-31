@@ -4,7 +4,7 @@
  *
  * Class:      bncNetQueryRtp
  *
- * Purpose:    Blocking Network Requests (NTRIP Version 1)
+ * Purpose:    Blocking Network Requests (NTRIP Version 2 with RTSP)
  *
  * Author:     L. Mervart
  *
@@ -67,15 +67,10 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
   delete _socket;
   _socket = new QTcpSocket();
 
-  // Default scheme and path
-  // -----------------------
+  // Default scheme
+  // --------------
   QUrl urlLoc(url);
-  if (urlLoc.scheme().isEmpty()) {
-    urlLoc.setScheme("http");
-  }
-  if (urlLoc.path().isEmpty()) {
-    urlLoc.setPath("/");
-  }
+  urlLoc.setScheme("rtsp");
 
   // Connect the Socket
   // ------------------
@@ -89,49 +84,81 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
   else {
     _socket->connectToHost(proxyHost, proxyPort);
   }
-  if (!_socket->waitForConnected(timeOut)) {
-    delete _socket; 
-    _socket = 0;
-    _status = error;
-    return;
+
+  // Send Request 1
+  // --------------
+  if (_socket->waitForConnected(timeOut)) {
+    QString uName = QUrl::fromPercentEncoding(urlLoc.userName().toAscii());
+    QString passW = QUrl::fromPercentEncoding(urlLoc.password().toAscii());
+    QByteArray userAndPwd;
+    
+    if(!uName.isEmpty() || !passW.isEmpty()) {
+      userAndPwd = "Authorization: Basic " + (uName.toAscii() + ":" +
+      passW.toAscii()).toBase64() + "\r\n";
+    }
+    
+    QByteArray clientPort = "7777"; // TODO: make it an option
+    
+    QByteArray reqStr;
+    reqStr = "SETUP " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
+           + "Cseq: 1\r\n"
+           + "Ntrip-Version: Ntrip/2.0\r\n"
+           + "Ntrip-Component: Ntripclient\r\n"
+           + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
+           + "Transport: RTP/GNSS;unicast;client_port=" + clientPort + "\r\n"
+           + userAndPwd 
+           + "\r\n";
+    _socket->write(reqStr, reqStr.length());
+    
+    // Read Server Answer 1
+    // --------------------
+    if (_socket->waitForBytesWritten(timeOut)) {
+      if (_socket->waitForReadyRead(timeOut)) {
+        QTextStream in(_socket);
+        QByteArray session;
+        QString line = in.readLine();
+        while (!line.isEmpty()) {
+          cout << line.toAscii().data() << endl;;
+          if (line.indexOf("Session:") == 0) {
+            session = line.mid(9).toAscii();
+          }
+          line = in.readLine();
+        }
+
+        // Send Request 2
+        // --------------
+        if (!session.isEmpty()) { 
+          reqStr = "PLAY " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
+                 + "Cseq: 2\r\n"
+                 + "Session: " + session + "\r\n"
+                 + "\r\n";
+          _socket->write(reqStr, reqStr.length());
+
+          cout << reqStr.data();
+
+          // Read Server Answer 2
+          // --------------------
+          if (_socket->waitForBytesWritten(timeOut)) {
+            if (_socket->waitForReadyRead(timeOut)) {
+              QTextStream in(_socket);
+              line = in.readLine();
+              while (!line.isEmpty()) {
+                cout << line.toAscii().data() << endl;
+                if (line.indexOf("200 OK") != -1) {
+                  cout << "Connection Established" << endl;
+                  return;
+                }
+                line = in.readLine();
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
-  // Send Request
-  // ------------
-  QString uName = QUrl::fromPercentEncoding(urlLoc.userName().toAscii());
-  QString passW = QUrl::fromPercentEncoding(urlLoc.password().toAscii());
-  QByteArray userAndPwd;
-
-  if(!uName.isEmpty() || !passW.isEmpty()) {
-    userAndPwd = "Authorization: Basic " + (uName.toAscii() + ":" +
-    passW.toAscii()).toBase64() + "\r\n";
-  }
-
-  QByteArray reqStr;
-  if ( proxyHost.isEmpty() ) {
-    if (urlLoc.path().indexOf("/") != 0) urlLoc.setPath("/");
-    reqStr = "GET " + urlLoc.path().toAscii() + " HTTP/1.0\r\n"
-             + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
-             + userAndPwd + "\r\n";
-  } else {
-    reqStr = "GET " + urlLoc.toEncoded() + " HTTP/1.0\r\n"
-             + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
-             + "Host: " + urlLoc.host().toAscii() + "\r\n"
-             + userAndPwd + "\r\n";
-  }
-
-  // NMEA string to handle VRS stream
-  // --------------------------------
-  if (!gga.isEmpty()) {
-    reqStr += gga + "\r\n";
-  }
-
-  _socket->write(reqStr, reqStr.length());
-
-  if (!_socket->waitForBytesWritten(timeOut)) {
-    delete _socket;
-    _socket = 0;
-    _status = error;
-  }
+  delete _socket;
+  _socket = 0;
+  _status = error;
 }
 
