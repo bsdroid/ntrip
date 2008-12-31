@@ -29,6 +29,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bnccaster.h bncrinex.h bncapp.h bncutils.h   bnchlpdlg.h    \
           bncconst.h bnchtml.h bnctableitem.h bnczerodecoder.h        \
           bncnetquery.h bncnetqueryv1.h bncnetqueryv2.h               \
+          bncnetqueryrtp.h                                            \
           RTCM/GPSDecoder.h RTCM/RTCM2.h RTCM/RTCM2Decoder.h          \
           RTCM/RTCM2_2021.h RTCM/rtcm_utils.h                         \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex.h                   \
@@ -47,6 +48,7 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bnccaster.cpp bncrinex.cpp bncapp.cpp bncutils.cpp          \
           bncconst.cpp bnchtml.cpp bnchlpdlg.cpp bnctableitem.cpp     \
           bnczerodecoder.cpp bncnetqueryv1.cpp bncnetqueryv2.cpp      \
+          bncnetqueryrtp.cpp                                          \
           RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp                        \
           RTCM/RTCM2_2021.cpp RTCM/rtcm_utils.cpp                     \
           RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex.c                 \
