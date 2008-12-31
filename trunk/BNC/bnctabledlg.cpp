@@ -105,7 +105,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   mainLayout->addLayout(editLayout);
 
-  _ntripVersionComboBox->setWhatsThis(tr("<p>Select the NTRIP transport protocol version you want to use. Implemented options are:<br>&nbsp; 1:&nbsp; NTRIP version 1, TCP/IP<br>&nbsp; 2:&nbsp; NTRIP version 2, TCP/IP<br>Select option '1' if you not sure whether the NTRIP broadcaster supports NTRIP version 2.</p>"));
+  _ntripVersionComboBox->setWhatsThis(tr("<p>Select the NTRIP transport protocol version you want to use. Implemented options are:<br>&nbsp; 1:&nbsp; NTRIP version 1, TCP/IP<br>&nbsp; 2:&nbsp; NTRIP version 2, TCP/IP<br>&nbsp; R:&nbsp; NTRIP Version 2, RTSP/RTP<br>Select option '1' if you are not sure whether the NTRIP broadcaster supports NTRIP version 2.</p>"));
 
   _table = new QTableWidget(this);
   _table->setWhatsThis(tr("<p>Use the 'Get Table' button to download the sourcetable from the NTRIP broadcaster. Select the desired streams line by line, using +Shift and +Ctrl when necessary. Hit 'OK' to return to the main window.</p><p>Pay attention to data field 'format'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. See data field 'format-details' for available message types and their repetition rates in brackets.</p><p>The content of data field 'nmea' tells you whether a stream comes from a virtual reference station (VRS).</p>"));
