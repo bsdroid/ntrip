@@ -67,8 +67,6 @@ void bncNetQueryRtp::waitForReadyRead(QByteArray& outData) {
   datagram.resize(_udpSocket->pendingDatagramSize());
   _udpSocket->readDatagram(datagram.data(), datagram.size());
 
-  cout << "Read Datagram: size = " << datagram.size() << endl;
-
   if (datagram.size() > 12) {
     outData.append(datagram.mid(12));
   }
@@ -164,7 +162,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
               line = in.readLine();
               while (!line.isEmpty()) {
                 if (line.indexOf("200 OK") != -1) {
-                  cout << "Connection Established" << endl;
+                  emit newMessage("UDP connection established", true);
                   return;
                 }
                 line = in.readLine();
