@@ -69,7 +69,9 @@ void bncNetQueryRtp::waitForReadyRead(QByteArray& outData) {
 
   cout << "Read Datagram: size = " << datagram.size() << endl;
 
-  outData.append(datagram);
+  if (datagram.size() > 12) {
+    outData.append(datagram.mid(12));
+  }
 }
 
 // Connect to Caster, send the Request
