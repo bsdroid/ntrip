@@ -28,11 +28,13 @@ using namespace std;
 bncNetQueryRtp::bncNetQueryRtp() {
   _socket    = 0;
   _udpSocket = 0;
+  _eventLoop = new QEventLoop(this);
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryRtp::~bncNetQueryRtp() {
+  delete _eventLoop;
   delete _socket;
   delete _udpSocket;
 }
@@ -40,11 +42,7 @@ bncNetQueryRtp::~bncNetQueryRtp() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryRtp::stop() {
-#ifndef sparc
-  if (_socket) {
-    _socket->abort();
-  }
-#endif
+  _eventLoop->quit();
   _status = finished;
 }
 
@@ -56,6 +54,19 @@ void bncNetQueryRtp::waitForRequestResult(const QUrl&, QByteArray&) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryRtp::waitForReadyRead(QByteArray& outData) {
+
+  // Wait Loop
+  // ---------
+  if (!_udpSocket->hasPendingDatagrams()) {
+    _eventLoop->exec();
+  }
+
+  // Append Data
+  // -----------
+  QByteArray datagram;
+  datagram.resize(_udpSocket->pendingDatagramSize());
+  _udpSocket->readDatagram(datagram.data(), datagram.size());
+  outData.append(datagram);
 }
 
 // Connect to Caster, send the Request
@@ -103,6 +114,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
     delete _udpSocket;
     _udpSocket = new QUdpSocket();
     _udpSocket->bind(clientPort.toInt());
+    connect(_udpSocket, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
     
     QByteArray reqStr;
     reqStr = "SETUP " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
