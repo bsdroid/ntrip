@@ -9,7 +9,7 @@ BNC has been developed for the Federal Agency for Cartography and Geodesy (BKG) 
 </p>
 
 <p>
-BNC has been written under GNU General Public License (GPL). Binaries for BNC are available for Windows, 32-bit Linux, 64-bit Linux (compiled using option -m32), Solaris, and Mac systems. We used the MinGW Version 5.3.1 compiler to create the Windows binary. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.3.2 are installed.
+BNC has been written under GNU General Public License (GPL). Binaries for BNC are available for Windows, 32-bit Linux, 64-bit Linux (compiled using option -m32), Solaris, and Mac systems. We used the MinGW Version 5.3.1 compiler to create the Windows binary. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.4.3 are installed.
 </p>
 
 <p>
@@ -128,7 +128,7 @@ All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/
 3.12. <a href=#streams>Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1. <a href=#streamadd>Add Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.2. <a href=#streamhost>Caster Host and Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.3. <a href=#streamuser>Caster User and Password</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.3. <a href=#streamuser>User and Password</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.4. <a href=#streamntrip>NTRIP Version</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.5. <a href=#streamtable>Get Table</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.6. <a href=#streamdelete>Delete Streams</a><br>
@@ -761,7 +761,7 @@ Button 'Add Streams' opens a window that allows user to select data streams from
 Enter the NTRIP broadcaster host IP and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.
 </p> 
 
-<p><a name="streamuser"><h4>3.12.3 Caster User and Password - mandatory for protected streams</h4></p>
+<p><a name="streamuser"><h4>3.12.3 User and Password - mandatory for protected streams</h4></p>
 <p>
 Some streams on NTRIP broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.
 </p> 
@@ -772,14 +772,18 @@ Some limitations and deficiencies of the NTRIP version 1 stream transport protoc
 </p>
 <p>
 &nbsp; 1:&nbsp; NTRIP version 1 in TCP/IP mode,<br>
-&nbsp; 2:&nbsp; NTRIP version 2 in TCP/IP mode.
+&nbsp; 2:&nbsp; NTRIP version 2 in TCP/IP mode.<br>
+&nbsp; R:&nbsp; NTRIP version 2 in RTSP/RTP mode.
 </p>
 <p>
-Try using option '2' if your streams are blocked by a proxy and protocol version 2 is supported by the broadcaster. Select option '1' if you not sure whether the broadcaster supports NTRIP version 2.
+If protocol version 2 is supported by the broadcaster:
 </p>
-
-
-
+<ul>
+<li>Try using option '2' if your streams are blocked by a proxy server operated in front of BNC.</li>
+<li>Option 'R' may be selected if latency is more important than completeness for your application. Note that the latency reduction is likely to be in the order of 0.5 sec. Note further that option 'R' is not accepted by proxy servers.</li>
+</ul>
+<p>
+Select option '1' if you are not sure whether the broadcaster supports NTRIP version 2.</li>
 </p>
 
 <p><a name="streamtable"><h4>3.12.5 Get Table</h4></p>
@@ -954,7 +958,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 <tr><td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td><td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td></tr>
 <tr><td>Apr 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Handle ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Monitor stream failure/recovery and latency<br> [Mod] Redesign of main window<br> [Bug] Freezing of About window on Mac systems<br> [Bug] Fixed problem with PRN 32 in RTCMv2 decoder<br> [Bug] Fix for Trimble 4000SSI receivers in RTCMv2 decoder<br> [Mod] Major revision of input buffer in RTCMv2 decoder</td></tr>
 <tr><td>Dec 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td><td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCMv3 decoder for clock and orbit corrections<br>[Add] Check RTCMv3 streams for incoming message types<br> [Add] Decode RTCMv2 message types 3, 20, 21, and 22<br> [Add] Loss of lock and lock time indicator<br> [Bug] Rounding error in RTCMv3 decoder concerning GLONASS height<br> [Mod] Accept GLONASS in RTCMv3 when transmitted first<br> [Add] Leap second 1 January 2009<br> [Add] Offline mode, read data from file<br> [Add] Output antenna descriptor, coordinates and excentricities from RTCMv3<br> [Add] Reconfiguration on-the-fly<br> [Mod] Binary ouput of synchronized observations<br> [Add] Binary output of unsynchronized observations<br> [Bug] Fixed problem with joined RTCMv3 blocks</td></tr>
-<tr><td>Jan 2009 &nbsp;</td><td>Version 1.7 &nbsp;</td><td>[Mod] NTRIP v1 source-table request<br> [Bug] RINEX navigation file format<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port</td></tr>
+<tr><td>Jan 2009 &nbsp;</td><td>Version 1.7 &nbsp;</td><td>[Mod] NTRIP v1 source-table request<br> [Bug] RINEX navigation file format <br> [Add] Upgrade to Qt Version 4.4.3<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port</td></tr>
 </table>
 </p>
 
@@ -1008,7 +1012,7 @@ Source-table records of type CAS contain the following data fields: 'host', 'por
 <p><a name="ntrip2"><h4>8.2.1 NTRIP Version 2</h4></p>
 
 <p>
-The major changes of NTRIP version 2.0 compared to Version 1.0 are:
+The major changes of NTRIP version 2.0 compared to version 1.0 are:
 </p>
 
 <ul>
@@ -1020,7 +1024,7 @@ The major changes of NTRIP version 2.0 compared to Version 1.0 are:
 <li>RTSP communication.</li>
 </ul>
 
-<p>NTRIP version 2 allows to either communicate in TCP/IP mode or in RTSP/RTP mode. Note that RTSP/RTP support is not yet implemented in BNC.
+<p>NTRIP version 2 allows to either communicate in TCP/IP mode or in RTSP/RTP mode whereas version 1 is limited to TCP/IP only.
 </p>
 
 <p><a name="rtcm2"><h4>8.2.3 RTCM Version 2.x</h4></p>
