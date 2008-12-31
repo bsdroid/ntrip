@@ -66,6 +66,9 @@ void bncNetQueryRtp::waitForReadyRead(QByteArray& outData) {
   QByteArray datagram;
   datagram.resize(_udpSocket->pendingDatagramSize());
   _udpSocket->readDatagram(datagram.data(), datagram.size());
+
+  cout << "Read Datagram: size = " << datagram.size() << endl;
+
   outData.append(datagram);
 }
 
