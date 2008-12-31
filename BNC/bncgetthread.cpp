@@ -55,6 +55,7 @@
 #include "bnczerodecoder.h"
 #include "bncnetqueryv1.h"
 #include "bncnetqueryv2.h"
+#include "bncnetqueryrtp.h"
 
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
@@ -314,7 +315,10 @@ t_irc bncGetThread::initRun() {
 
   if (!_rawInpFile) {
     delete _query;
-    if (_ntripVersion == "2") {
+    if      (_ntripVersion == "R") {
+      _query = new bncNetQueryRtp();
+    }
+    else if (_ntripVersion == "2") {
       _query = new bncNetQueryV2();
     }
     else {
