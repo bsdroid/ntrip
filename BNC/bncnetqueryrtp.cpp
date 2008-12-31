@@ -112,11 +112,26 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
       userAndPwd = "Authorization: Basic " + (uName.toAscii() + ":" +
       passW.toAscii()).toBase64() + "\r\n";
     }
+
+    // Find a free port number
+    // -----------------------
+    int clientPortInt = 0;
+    QTcpSocket* hlpSocket = new QTcpSocket();
+    if ( proxyHost.isEmpty() ) {
+      hlpSocket->connectToHost(urlLoc.host(), urlLoc.port());
+    }
+    else {
+      hlpSocket->connectToHost(proxyHost, proxyPort);
+    }
+    if (hlpSocket->waitForConnected(timeOut)) {
+      clientPortInt = hlpSocket->localPort();
+    }
+    delete hlpSocket;
     
-    QByteArray clientPort = "7777"; // TODO: make it an option
+    QByteArray clientPort = QString("%1").arg(clientPortInt).toAscii();
     delete _udpSocket;
     _udpSocket = new QUdpSocket();
-    _udpSocket->bind(clientPort.toInt());
+    _udpSocket->bind(clientPortInt);
     connect(_udpSocket, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
     
     QByteArray reqStr;
