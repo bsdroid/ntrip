@@ -123,9 +123,9 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
         QByteArray session;
         QString line = in.readLine();
         while (!line.isEmpty()) {
-          cout << line.toAscii().data() << endl;;
           if (line.indexOf("Session:") == 0) {
             session = line.mid(9).toAscii();
+            break;
           }
           line = in.readLine();
         }
@@ -146,7 +146,6 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
               QTextStream in(_socket);
               line = in.readLine();
               while (!line.isEmpty()) {
-                cout << line.toAscii().data() << endl;
                 if (line.indexOf("200 OK") != -1) {
                   cout << "Connection Established" << endl;
                   return;
