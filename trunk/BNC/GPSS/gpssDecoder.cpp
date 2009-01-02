@@ -40,7 +40,6 @@ typedef struct epochHeader {
 ////////////////////////////////////////////////////////////////////////////
 gpssDecoder::gpssDecoder() : GPSDecoder() {
   _mode       = MODE_SEARCH;
-  _recordSize = 0;
 
   connect(this, SIGNAL(newGPSEph(gpsephemeris*)), 
           (bncApp*) qApp, SLOT(slotNewGPSEph(gpsephemeris*)));
@@ -57,105 +56,74 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
   errmsg.clear();
 
-  if (_mode == MODE_SEARCH) {
-    _buffer.clear();
-    _recordSize = 0;
-  }
   _buffer.append(data, dataLen);
 
-  unsigned offset     = 0;
-  for (offset = 0; offset < _buffer.size(); offset++) { 
+  for (;;) { 
 
-    switch(_mode) {
+    if      (_mode == MODE_SEARCH) {
+      if (_buffer.size() < 1) return success;
+      if (_buffer[0] == 0x02) {
+        _mode = MODE_TYPE;
+      }
+      _buffer.erase(0,1);
+    }
 
-      case MODE_SEARCH:
-        if (_buffer[offset] == 0x02) {
-          _mode = MODE_TYPE;
-        }
-        continue;
-
-      case MODE_TYPE:
-        if        (_buffer[offset] == 0x00) {
-          _mode = MODE_EPOCH;
-        } else if (_buffer[offset] == 0x01) {
-          _mode = MODE_EPH;
-        } else {
-          errmsg.push_back("Unknown record type");
-          _mode = MODE_SEARCH;
-        }
-        continue;
-
-      case MODE_EPOCH:
-      case MODE_EPH:
-        if (offset+sizeof(_recordSize) > _buffer.size()) {
-          errmsg.push_back("Record size too large (A)");
-          _mode = MODE_SEARCH;
-        } else {
-          memcpy(&_recordSize, &_buffer[offset], sizeof(_recordSize)); 
-          if (_mode == MODE_EPOCH) {
-            _mode = MODE_EPOCH_BODY;
-          }
-          if (_mode == MODE_EPH) {
-            _mode = MODE_EPH_BODY;
-          }
-          offset += sizeof(_recordSize) - 1;
-        }
-        continue;
-
-      case MODE_EPOCH_BODY:
-        if (offset + _recordSize > _buffer.size()) {
-          errmsg.push_back("Record size too large (B)");
-          _mode = MODE_SEARCH;
-        } else {
-          EPOCHHEADER epochHdr;
-          memcpy(&epochHdr, &_buffer[offset], sizeof(epochHdr));
-          offset += sizeof(epochHdr);
-          for (int is = 1; is <= epochHdr.n_svs; is++) {
-            t_obs* obs = new t_obs();
-            memcpy(&(obs->_o), &_buffer[offset], sizeof(obs->_o));
-            _obsList.push_back(obs);
-            offset += sizeof(obs->_o);
-          }
-          _mode = MODE_EPOCH_CRC;
-          --offset;
-        }
-        continue;
-
-      case MODE_EPH_BODY:
-        if (offset + _recordSize > _buffer.size()) {
-          errmsg.push_back("Record size too large (C)");
-          _mode = MODE_SEARCH;
-        } else {
-          gpsephemeris* gpsEph = new gpsephemeris;
-          memcpy(gpsEph, &_buffer[offset], sizeof(gpsephemeris));
-          emit newGPSEph(gpsEph);
-          offset += sizeof(gpsephemeris) - 1;
-          _mode = MODE_EPH_CRC;
-        }
-        continue;
-
-      case MODE_EPOCH_CRC:
-        _mode = MODE_EPOCH_ETX; // TODO: CRC check
-        continue;
-
-      case MODE_EPH_CRC:
-        _mode = MODE_EPH_ETX;   // TODO: CRC check
-        continue;
-
-      case MODE_EPOCH_ETX:
+    else if (_mode == MODE_TYPE) {
+      if (_buffer.size() < 1) return success;
+      if        (_buffer[0] == 0x00) {
+        _mode = MODE_EPOCH;
+      } else if (_buffer[0] == 0x01) {
+        _mode = MODE_EPH;
+      } else {
+        errmsg.push_back("Unknown record type");
         _mode = MODE_SEARCH;
-        continue;
+      }
+      _buffer.erase(0,1);
+    }
 
-      case MODE_EPH_ETX:
-        _mode = MODE_SEARCH;
-        continue;
+    else if (_mode == MODE_EPOCH || _mode == MODE_EPH) {
+      int recordSize;
+      if (_buffer.size() < sizeof(recordSize)) return success;
+      memcpy(&recordSize, _buffer.data(), sizeof(recordSize)); 
+      if (_mode == MODE_EPOCH) {
+        _mode = MODE_EPOCH_BODY;
+      }
+      if (_mode == MODE_EPH) {
+        _mode = MODE_EPH_BODY;
+      }
+      _buffer.erase(0,sizeof(recordSize));
+    }
+
+    else if (_mode == MODE_EPOCH_BODY) {
+      EPOCHHEADER epochHdr;
+      if (_buffer.size() < sizeof(epochHdr)) return success;    
+      memcpy(&epochHdr, _buffer.data(), sizeof(epochHdr));
+      _buffer.erase(0,sizeof(epochHdr));
+      for (int is = 1; is <= epochHdr.n_svs; is++) {
+        if (_buffer.size() < sizeof(t_obsInternal)) return success;
+        t_obs* obs = new t_obs();
+        memcpy(&(obs->_o), _buffer.data(), sizeof(t_obsInternal));
+        _obsList.push_back(obs);
+        _buffer.erase(0, sizeof(t_obsInternal));
+      }
+      _mode = MODE_EPOCH_CRC;
+    }
+
+    else if (_mode == MODE_EPH_BODY) {
+      if (_buffer.size() < sizeof(gpsephemeris)) return success;
+      gpsephemeris* gpsEph = new gpsephemeris;
+      memcpy(gpsEph, _buffer.data(), sizeof(gpsephemeris));
+      emit newGPSEph(gpsEph);
+      _buffer.erase(0, sizeof(gpsephemeris));
+      _mode = MODE_EPH_CRC;
+    }
+
+    else {
+      if (_buffer.size() < 1) return success;
+      _buffer.erase(0,1);
+      _mode = MODE_SEARCH;
     }
   }
 
-  if (errmsg.size() == 0) {
-    return success;
-  }
-  else {
-    return failure;
-  }
+  return success;
 }
