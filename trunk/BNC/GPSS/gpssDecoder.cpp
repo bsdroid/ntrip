@@ -56,32 +56,34 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
   errmsg.clear();
 
+  if (_mode == MODE_SEARCH) {
+    _buffer.clear();
+  }
   _buffer.append(data, dataLen);
 
   for (;;) { 
 
+    if (_buffer.size() < 1) {
+      _mode = MODE_SEARCH;
+      return success;
+    }
+
     if      (_mode == MODE_SEARCH) {
-      if (_buffer.size() < 1) {
-        _mode = MODE_SEARCH;
-        return success;
-      }
       if (_buffer[0] == 0x02) {
         _mode = MODE_TYPE;
+      }
+      else {
+        _mode = MODE_SEARCH;
       }
       _buffer.erase(0,1);
     }
 
     else if (_mode == MODE_TYPE) {
-      if (_buffer.size() < 1) {
-        _mode = MODE_SEARCH;
-        return success;
-      }
       if        (_buffer[0] == 0x00) {
         _mode = MODE_EPOCH;
       } else if (_buffer[0] == 0x01) {
         _mode = MODE_EPH;
       } else {
-        errmsg.push_back("Unknown record type");
         _mode = MODE_SEARCH;
       }
       _buffer.erase(0,1);
@@ -111,11 +113,11 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
       }
       memcpy(&epochHdr, _buffer.data(), sizeof(epochHdr));
       _buffer.erase(0,sizeof(epochHdr));
+      if (_buffer.size() < epochHdr.n_svs * sizeof(t_obsInternal)) {
+        _mode = MODE_SEARCH;
+        return success;
+      }
       for (int is = 1; is <= epochHdr.n_svs; is++) {
-        if (_buffer.size() < sizeof(t_obsInternal)) {
-          _mode = MODE_SEARCH;
-          return success;
-	}
         t_obs* obs = new t_obs();
         memcpy(&(obs->_o), _buffer.data(), sizeof(t_obsInternal));
         _obsList.push_back(obs);
@@ -137,10 +139,6 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
     }
 
     else {
-      if (_buffer.size() < 1) {
-        _mode = MODE_SEARCH;
-        return success;
-      }
       _buffer.erase(0,1);
       _mode = MODE_SEARCH;
     }
