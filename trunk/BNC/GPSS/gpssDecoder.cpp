@@ -61,7 +61,10 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
   for (;;) { 
 
     if      (_mode == MODE_SEARCH) {
-      if (_buffer.size() < 1) return success;
+      if (_buffer.size() < 1) {
+        _mode = MODE_SEARCH;
+        return success;
+      }
       if (_buffer[0] == 0x02) {
         _mode = MODE_TYPE;
       }
@@ -69,7 +72,10 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
     }
 
     else if (_mode == MODE_TYPE) {
-      if (_buffer.size() < 1) return success;
+      if (_buffer.size() < 1) {
+        _mode = MODE_SEARCH;
+        return success;
+      }
       if        (_buffer[0] == 0x00) {
         _mode = MODE_EPOCH;
       } else if (_buffer[0] == 0x01) {
@@ -83,7 +89,10 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
     else if (_mode == MODE_EPOCH || _mode == MODE_EPH) {
       int recordSize;
-      if (_buffer.size() < sizeof(recordSize)) return success;
+      if (_buffer.size() < sizeof(recordSize)) {
+        _mode = MODE_SEARCH;
+        return success;
+      }
       memcpy(&recordSize, _buffer.data(), sizeof(recordSize)); 
       if (_mode == MODE_EPOCH) {
         _mode = MODE_EPOCH_BODY;
@@ -96,11 +105,17 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
     else if (_mode == MODE_EPOCH_BODY) {
       EPOCHHEADER epochHdr;
-      if (_buffer.size() < sizeof(epochHdr)) return success;    
+      if (_buffer.size() < sizeof(epochHdr)) {
+        _mode = MODE_SEARCH;
+        return success;    
+      }
       memcpy(&epochHdr, _buffer.data(), sizeof(epochHdr));
       _buffer.erase(0,sizeof(epochHdr));
       for (int is = 1; is <= epochHdr.n_svs; is++) {
-        if (_buffer.size() < sizeof(t_obsInternal)) return success;
+        if (_buffer.size() < sizeof(t_obsInternal)) {
+          _mode = MODE_SEARCH;
+          return success;
+	}
         t_obs* obs = new t_obs();
         memcpy(&(obs->_o), _buffer.data(), sizeof(t_obsInternal));
         _obsList.push_back(obs);
@@ -110,7 +125,10 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
     }
 
     else if (_mode == MODE_EPH_BODY) {
-      if (_buffer.size() < sizeof(gpsephemeris)) return success;
+      if (_buffer.size() < sizeof(gpsephemeris)) {
+        _mode = MODE_SEARCH;
+        return success;
+      }
       gpsephemeris* gpsEph = new gpsephemeris;
       memcpy(gpsEph, _buffer.data(), sizeof(gpsephemeris));
       emit newGPSEph(gpsEph);
@@ -119,7 +137,10 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
     }
 
     else {
-      if (_buffer.size() < 1) return success;
+      if (_buffer.size() < 1) {
+        _mode = MODE_SEARCH;
+        return success;
+      }
       _buffer.erase(0,1);
       _mode = MODE_SEARCH;
     }
