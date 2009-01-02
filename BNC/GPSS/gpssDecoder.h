@@ -21,7 +21,6 @@ Q_OBJECT
 
  private:
   int         _mode;
-  int         _recordSize;
   std::string _buffer;
 } ;
 
