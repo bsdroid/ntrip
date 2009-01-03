@@ -62,16 +62,8 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
   while ( (iBeg = _buffer.indexOf(0x02)) != -1) {
     _buffer = _buffer.mid(iBeg);
 
-    // Record Size
-    // -----------
     int recordSize;
-    if (_buffer.length() >= int(2 + sizeof(recordSize)) &&
-        ( char(_buffer[1]) == 0x00 || char(_buffer[1]) == 0x01) ) {
-      memcpy(&recordSize, _buffer.data()+2, sizeof(recordSize)); 
-    }
-    else {
-      break;
-    }
+    int crc;
    
     // Observations
     // ------------
@@ -81,11 +73,15 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
         memcpy(&epochHdr, _buffer.data() + 2 + sizeof(recordSize), 
                sizeof(epochHdr));
 
-        if (_buffer.length() >= int(2 + sizeof(recordSize) + sizeof(epochHdr) +
-                                epochHdr.n_svs * sizeof(t_obsInternal))) {
-          for (int is = 1; is <= epochHdr.n_svs; is++) {
+        int reqLength = 2 + sizeof(recordSize) + sizeof(epochHdr) +
+          epochHdr.n_svs * sizeof(t_obsInternal) + sizeof(crc) + 1;
+
+        if (_buffer.length() >= reqLength) {
+          for (int is = 0; is < epochHdr.n_svs; is++) {
             t_obs* obs = new t_obs();
-            memcpy(&(obs->_o), _buffer.data(), sizeof(t_obsInternal));
+            memcpy(&(obs->_o), _buffer.data() + 2 + sizeof(recordSize) + 
+                               sizeof(epochHdr) + is * sizeof(t_obsInternal), 
+                   sizeof(t_obsInternal));
             _obsList.push_back(obs);
           }
         }
@@ -95,9 +91,12 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
     // Ephemeris
     // ---------
     else if (char(_buffer[1]) == 0x01) {
-      if (_buffer.length() >= int(2+sizeof(recordSize)+ sizeof(gpsephemeris))){
+      int reqLength = 2 + sizeof(recordSize) + sizeof(gpsephemeris) +
+        sizeof(crc) + 1;
+      if (_buffer.length() >= reqLength) {
         gpsephemeris* gpsEph = new gpsephemeris;
-        memcpy(gpsEph, _buffer.data(), sizeof(gpsephemeris));
+        memcpy(gpsEph, _buffer.data() + 2 + sizeof(recordSize) + 
+                       sizeof(gpsephemeris), sizeof(gpsephemeris));
         emit newGPSEph(gpsEph);
       }
     }
