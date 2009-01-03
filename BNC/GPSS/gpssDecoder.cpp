@@ -40,7 +40,7 @@ typedef struct epochHeader {
 
 // Cyclic Redundancy Check
 ////////////////////////////////////////////////////////////////////////////
-unsigned short cal_crc(char *buf, int num) {
+unsigned short cal_crc(unsigned char *buf, int num) {
   unsigned short polynomial = 0x8408;
   unsigned short crc = 0;
   int i;
@@ -108,7 +108,7 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
           int checkLen = 2 + sizeof(recordSize) + sizeof(EPOCHHEADER) + 
                          epochHdr.n_svs * sizeof(t_obsInternal);
           memcpy(&crc, _buffer.data() + checkLen, sizeof(crc));
-          int crdCal = cal_crc(_buffer.data(), checkLen);
+          int crdCal = cal_crc((unsigned char*) _buffer.data(), checkLen);
 
           cout << "Obs: " << crc << " " << crdCal << endl;
 
@@ -134,9 +134,9 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
         int checkLen = 2 + sizeof(recordSize) + sizeof(gpsephemeris);
         memcpy(&crc, _buffer.data() + checkLen, sizeof(crc));
-        int crdCal = cal_crc(_buffer.data(), checkLen);
+        int crdCal = cal_crc((unsigned char*) _buffer.data(), checkLen);
 
-        cout << "Obs: " << crc << " " << crdCal << endl;
+        cout << "Eph: " << crc << " " << crdCal << endl;
 
         gpsephemeris* gpsEph = new gpsephemeris;
         memcpy(gpsEph, _buffer.data() + 2 + sizeof(recordSize), 
