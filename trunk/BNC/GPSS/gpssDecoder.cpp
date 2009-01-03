@@ -92,7 +92,7 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
           }
         }
       }
-      _buffer.mid(reqLength);
+      _buffer = _buffer.mid(reqLength);
     }
 
     // Ephemeris
@@ -109,7 +109,7 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
                sizeof(gpsephemeris));
         emit newGPSEph(gpsEph);
       }
-      _buffer.mid(reqLength);
+      _buffer = _buffer.mid(reqLength);
     }
 
     else {
