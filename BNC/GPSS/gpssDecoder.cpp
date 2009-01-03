@@ -15,6 +15,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
+
 #include "gpssDecoder.h"
 #include "bncapp.h"
 
@@ -68,13 +70,17 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
     // Observations
     // ------------
     if      (char(_buffer[1]) == 0x00) {
-      EPOCHHEADER epochHdr;
-      if (_buffer.length() >= int(2 + sizeof(recordSize) + sizeof(epochHdr))) {
+
+      int reqLength = 2 + sizeof(recordSize) + sizeof(EPOCHHEADER);
+
+      cout << "Obs: " << _buffer.length() << " " << reqLength << endl;
+
+      if (_buffer.length() >= reqLength) {
+        EPOCHHEADER epochHdr;
         memcpy(&epochHdr, _buffer.data() + 2 + sizeof(recordSize), 
                sizeof(epochHdr));
-
-        int reqLength = 2 + sizeof(recordSize) + sizeof(epochHdr) +
-          epochHdr.n_svs * sizeof(t_obsInternal) + sizeof(crc) + 1;
+        
+        reqLength += epochHdr.n_svs * sizeof(t_obsInternal) + sizeof(crc) + 1;
 
         if (_buffer.length() >= reqLength) {
           for (int is = 0; is < epochHdr.n_svs; is++) {
@@ -86,6 +92,7 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
           }
         }
       }
+      _buffer.mid(reqLength);
     }
 
     // Ephemeris
@@ -93,12 +100,16 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
     else if (char(_buffer[1]) == 0x01) {
       int reqLength = 2 + sizeof(recordSize) + sizeof(gpsephemeris) +
         sizeof(crc) + 1;
+
+      cout << "Eph: " << _buffer.length() << " " << reqLength << endl;
+
       if (_buffer.length() >= reqLength) {
         gpsephemeris* gpsEph = new gpsephemeris;
         memcpy(gpsEph, _buffer.data() + 2 + sizeof(recordSize) + 
                        sizeof(gpsephemeris), sizeof(gpsephemeris));
         emit newGPSEph(gpsEph);
       }
+      _buffer.mid(reqLength);
     }
 
     else {
