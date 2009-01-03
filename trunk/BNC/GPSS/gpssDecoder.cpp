@@ -79,6 +79,8 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
   _buffer += QByteArray(data, dataLen);
 
+  bool obsFound = false;
+  bool ephFound = false;
   int iBeg;
   while ( (iBeg = _buffer.indexOf(0x02)) != -1) {
     _buffer = _buffer.mid(iBeg);
@@ -88,7 +90,7 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
    
     // Observations
     // ------------
-    if      (char(_buffer[1]) == 0x00) {
+    if      (_buffer.length() > 0 && char(_buffer[1]) == 0x00) {
 
       int reqLength = 2 + sizeof(recordSize) + sizeof(EPOCHHEADER);
 
@@ -108,6 +110,7 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
           if (crc == crcCal) {
             for (int is = 0; is < epochHdr.n_svs; is++) {
+              obsFound = true;
               t_obs* obs = new t_obs();
               memcpy(&(obs->_o), _buffer.data() + 2 + sizeof(recordSize) + 
                                  sizeof(epochHdr) + is * sizeof(t_obsInternal), 
@@ -122,9 +125,9 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
     // Ephemeris
     // ---------
-    else if (char(_buffer[1]) == 0x01) {
+    else if (_buffer.length() > 0 && char(_buffer[1]) == 0x01) {
       int reqLength = 2 + sizeof(recordSize) + sizeof(gpsephemeris) +
-        sizeof(crc) + 1;
+                      sizeof(crc) + 1;
 
       if (_buffer.length() >= reqLength) {
 
@@ -133,6 +136,7 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
         int crcCal = cal_crc((unsigned char*) _buffer.data(), checkLen);
 
         if (crc == crcCal) {
+          ephFound = true;
           gpsephemeris* gpsEph = new gpsephemeris;
           memcpy(gpsEph, _buffer.data() + 2 + sizeof(recordSize), 
                  sizeof(gpsephemeris));
@@ -147,5 +151,10 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
     }
   }
 
-  return success;
+  if (obsFound || ephFound) {
+    return success;
+  }
+  else {
+    return failure;
+  }
 }
