@@ -15,8 +15,6 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
-
 #include "gpssDecoder.h"
 #include "bncapp.h"
 
@@ -80,8 +78,6 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
   errmsg.clear();
 
   _buffer += QByteArray(data, dataLen);
-
-  cout << "Decode: buffer length = " << _buffer.length() << endl;
 
   int iBeg;
   while ( (iBeg = _buffer.indexOf(0x02)) != -1) {
