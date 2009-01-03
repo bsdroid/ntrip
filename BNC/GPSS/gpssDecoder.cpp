@@ -105,8 +105,8 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
       if (_buffer.length() >= reqLength) {
         gpsephemeris* gpsEph = new gpsephemeris;
-        memcpy(gpsEph, _buffer.data() + 2 + sizeof(recordSize) + 
-                       sizeof(gpsephemeris), sizeof(gpsephemeris));
+        memcpy(gpsEph, _buffer.data() + 2 + sizeof(recordSize), 
+               sizeof(gpsephemeris));
         emit newGPSEph(gpsEph);
       }
       _buffer.mid(reqLength);
