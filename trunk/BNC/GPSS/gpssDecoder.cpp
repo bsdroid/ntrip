@@ -108,16 +108,16 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
           int checkLen = 2 + sizeof(recordSize) + sizeof(EPOCHHEADER) + 
                          epochHdr.n_svs * sizeof(t_obsInternal);
           memcpy(&crc, _buffer.data() + checkLen, sizeof(crc));
-          int crdCal = cal_crc((unsigned char*) _buffer.data(), checkLen);
+          int crcCal = cal_crc((unsigned char*) _buffer.data(), checkLen);
 
-          cout << "Obs: " << crc << " " << crdCal << endl;
-
-          for (int is = 0; is < epochHdr.n_svs; is++) {
-            t_obs* obs = new t_obs();
-            memcpy(&(obs->_o), _buffer.data() + 2 + sizeof(recordSize) + 
-                               sizeof(epochHdr) + is * sizeof(t_obsInternal), 
-                   sizeof(t_obsInternal));
-            _obsList.push_back(obs);
+          if (crc == crcCal) {
+            for (int is = 0; is < epochHdr.n_svs; is++) {
+              t_obs* obs = new t_obs();
+              memcpy(&(obs->_o), _buffer.data() + 2 + sizeof(recordSize) + 
+                                 sizeof(epochHdr) + is * sizeof(t_obsInternal), 
+                     sizeof(t_obsInternal));
+              _obsList.push_back(obs);
+            }
           }
         }
       }
@@ -134,14 +134,14 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
         int checkLen = 2 + sizeof(recordSize) + sizeof(gpsephemeris);
         memcpy(&crc, _buffer.data() + checkLen, sizeof(crc));
-        int crdCal = cal_crc((unsigned char*) _buffer.data(), checkLen);
+        int crcCal = cal_crc((unsigned char*) _buffer.data(), checkLen);
 
-        cout << "Eph: " << crc << " " << crdCal << endl;
-
-        gpsephemeris* gpsEph = new gpsephemeris;
-        memcpy(gpsEph, _buffer.data() + 2 + sizeof(recordSize), 
-               sizeof(gpsephemeris));
-        emit newGPSEph(gpsEph);
+        if (crc == crcCal) {
+          gpsephemeris* gpsEph = new gpsephemeris;
+          memcpy(gpsEph, _buffer.data() + 2 + sizeof(recordSize), 
+                 sizeof(gpsephemeris));
+          emit newGPSEph(gpsEph);
+        }
       }
       _buffer = _buffer.mid(reqLength);
     }
