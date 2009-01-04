@@ -58,6 +58,7 @@
   
   public slots:  
     void slotMountPointsRead(QList<bncGetThread*>);
+    void bncText(const QString &text);
 
   private slots:
     void slotWindowMessage(const QByteArray msg, bool showOnScreen);

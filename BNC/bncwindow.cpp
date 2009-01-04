@@ -68,6 +68,8 @@ bncWindow::bncWindow() {
   connect((bncApp*)qApp, SIGNAL(newMessage(QByteArray,bool)), 
            this, SLOT(slotWindowMessage(QByteArray,bool)));
 
+  QPalette palette;
+
   // Create Actions
   // --------------
   _actHelp = new QAction(tr("&Help Contents"),this);
@@ -235,6 +237,7 @@ bncWindow::bncWindow() {
   _serialPortNameLineEdit = new QLineEdit(settings.value("serialPortName").toString());
   _serialMountPointLineEdit = new QLineEdit(settings.value("serialMountPoint").toString());
 
+
   _serialBaudRateComboBox = new QComboBox();
   _serialBaudRateComboBox->setMaximumWidth(9*ww);
   _serialBaudRateComboBox->addItems(QString("110,300,600,"
@@ -371,6 +374,8 @@ bncWindow::bncWindow() {
   aogroup->addTab(agroup,tr("Outages"));
   aogroup->addTab(rgroup,tr("Miscellaneous"));
 
+  // Proxy
+  // ----
   QGridLayout* pLayout = new QGridLayout;
   pLayout->setColumnMinimumWidth(0,13*ww);
   pLayout->addWidget(new QLabel("Proxy host"),                   0, 0);
@@ -382,7 +387,18 @@ bncWindow::bncWindow() {
   pLayout->addWidget(new QLabel("    "),4,0);
   pLayout->addWidget(new QLabel("    "),5,0);
   pgroup->setLayout(pLayout);
+
+
+  connect(_proxyHostLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+  if (_proxyHostLineEdit->text().isEmpty()) { 
+    palette.setColor(_proxyPortLineEdit->backgroundRole(), Qt::lightGray);
+    _proxyPortLineEdit->setPalette(palette);
+    _proxyPortLineEdit->setEnabled(false);
+  }
  
+  // General
+  // -------
   QGridLayout* gLayout = new QGridLayout;
   gLayout->setColumnMinimumWidth(0,14*ww);
   gLayout->addWidget(new QLabel("Logfile (full path)"),          0, 0);
@@ -397,6 +413,8 @@ bncWindow::bncWindow() {
   gLayout->addWidget(new QLabel("    "),5,0);
   ggroup->setLayout(gLayout);
 
+  // Feed Engine
+  // -----------
   QGridLayout* sLayout = new QGridLayout;
   sLayout->setColumnMinimumWidth(0,14*ww);
   sLayout->addWidget(new QLabel("Port (synchronized)"),           0, 0);
@@ -413,6 +431,25 @@ bncWindow::bncWindow() {
   sLayout->addWidget(new QLabel("    "),5,0);
   sgroup->setLayout(sLayout);
 
+  connect(_outPortLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+  if (_outPortLineEdit->text().isEmpty()) { 
+    palette.setColor(_waitTimeSpinBox->backgroundRole(), Qt::lightGray);
+    _waitTimeSpinBox->setPalette(palette);
+    palette.setColor(_outUPortLineEdit->backgroundRole(), Qt::lightGray);
+    _outUPortLineEdit->setPalette(palette);
+    palette.setColor(_outFileLineEdit->backgroundRole(), Qt::lightGray);
+    _outFileLineEdit->setPalette(palette);
+    palette.setColor(_binSamplSpinBox->backgroundRole(), Qt::lightGray);
+    _binSamplSpinBox->setPalette(palette);
+    _waitTimeSpinBox->setEnabled(false);
+    _outUPortLineEdit->setEnabled(false);
+    _outFileLineEdit->setEnabled(false);
+    _binSamplSpinBox->setEnabled(false);
+  }
+
+  // RINEX Ephemeris
+  // ---------------
   QGridLayout* eLayout = new QGridLayout;
   eLayout->setColumnMinimumWidth(0,14*ww);
   eLayout->addWidget(new QLabel("Directory"),                     0, 0);
@@ -427,6 +464,22 @@ bncWindow::bncWindow() {
   eLayout->addWidget(new QLabel("    "),5,0);
   egroup->setLayout(eLayout);
 
+  connect(_ephPathLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+  if (_ephPathLineEdit->text().isEmpty()) { 
+    palette.setColor(_ephIntrComboBox->backgroundRole(), Qt::lightGray);
+    _ephIntrComboBox->setPalette(palette);
+    palette.setColor(_outEphPortLineEdit->backgroundRole(), Qt::lightGray);
+    _outEphPortLineEdit->setPalette(palette);
+    palette.setColor(_ephV3CheckBox->backgroundRole(), Qt::lightGray);
+    _ephV3CheckBox->setPalette(palette);
+    _ephIntrComboBox->setEnabled(false);
+    _outEphPortLineEdit->setEnabled(false);
+    _ephV3CheckBox->setEnabled(false);
+  }
+
+  // Outages
+  // -------
   QGridLayout* aLayout = new QGridLayout;
   aLayout->setColumnMinimumWidth(0,14*ww);
   aLayout->addWidget(new QLabel("Observation rate"),              0, 0);
@@ -442,6 +495,25 @@ bncWindow::bncWindow() {
   aLayout->addWidget(new QLabel("Outage report, handling of corrupted streams."),5,0,1,10,Qt::AlignLeft);
   agroup->setLayout(aLayout);
 
+  connect(_obsRateComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(bncText(const QString)));
+  if (_obsRateComboBox->currentText().isEmpty()) { 
+    palette.setColor(_adviseFailSpinBox->backgroundRole(), Qt::lightGray);
+    _adviseFailSpinBox->setPalette(palette);
+    palette.setColor(_adviseRecoSpinBox->backgroundRole(), Qt::lightGray);
+    _adviseRecoSpinBox->setPalette(palette);
+    palette.setColor(_makePauseCheckBox->backgroundRole(), Qt::lightGray);
+    _makePauseCheckBox->setPalette(palette);
+    palette.setColor(_adviseScriptLineEdit->backgroundRole(), Qt::lightGray);
+    _adviseScriptLineEdit->setPalette(palette);
+    _adviseFailSpinBox->setEnabled(false);
+    _adviseRecoSpinBox->setEnabled(false);
+    _makePauseCheckBox->setEnabled(false);
+    _adviseScriptLineEdit->setEnabled(false);
+  }
+
+  // Miscellaneous
+  // -------------
   QGridLayout* rLayout = new QGridLayout;
   rLayout->setColumnMinimumWidth(0,14*ww);
   rLayout->addWidget(new QLabel("Mountpoint"),                    0, 0);
@@ -455,6 +527,19 @@ bncWindow::bncWindow() {
   rLayout->addWidget(new QLabel("    "),                          5, 0);
   rgroup->setLayout(rLayout);
 
+  connect(_miscMountLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+  if (_miscMountLineEdit->text().isEmpty()) { 
+    palette.setColor(_perfIntrComboBox->backgroundRole(), Qt::lightGray);
+    _perfIntrComboBox->setPalette(palette);
+    palette.setColor(_scanRTCMCheckBox->backgroundRole(), Qt::lightGray);
+    _scanRTCMCheckBox->setPalette(palette);
+    _perfIntrComboBox->setEnabled(false);
+    _scanRTCMCheckBox->setEnabled(false);
+  }
+
+  // RINEX Observations
+  // ------------------
   QGridLayout* oLayout = new QGridLayout;
   oLayout->setColumnMinimumWidth(0,14*ww);
   oLayout->addWidget(new QLabel("Directory"),                     0, 0);
@@ -471,7 +556,29 @@ bncWindow::bncWindow() {
   oLayout->addWidget(_rnxV3CheckBox,                              4, 1);
   oLayout->addWidget(new QLabel("Saving RINEX observation files."),5,0,1,12, Qt::AlignLeft);
   ogroup->setLayout(oLayout);
- 
+
+  connect(_rnxPathLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+  if (_rnxPathLineEdit->text().isEmpty()) { 
+    palette.setColor(_rnxIntrComboBox->backgroundRole(), Qt::lightGray);
+    _rnxIntrComboBox->setPalette(palette);
+    palette.setColor(_rnxSamplSpinBox->backgroundRole(), Qt::lightGray);
+    _rnxSamplSpinBox->setPalette(palette);
+    palette.setColor(_rnxSkelLineEdit->backgroundRole(), Qt::lightGray);
+    _rnxSkelLineEdit->setPalette(palette);
+    palette.setColor(_rnxScrpLineEdit->backgroundRole(), Qt::lightGray);
+    _rnxScrpLineEdit->setPalette(palette);
+    palette.setColor(_rnxV3CheckBox->backgroundRole(), Qt::lightGray);
+    _rnxV3CheckBox->setPalette(palette);
+    _rnxIntrComboBox->setEnabled(false);
+    _rnxSamplSpinBox->setEnabled(false);
+    _rnxSkelLineEdit->setEnabled(false);
+    _rnxScrpLineEdit->setEnabled(false);
+    _rnxV3CheckBox->setEnabled(false);
+  }
+
+  // Ephemeris Corrections
+  // ---------------------
   QGridLayout* cLayout = new QGridLayout;
   cLayout->setColumnMinimumWidth(0,14*ww);
   cLayout->addWidget(new QLabel("Directory"),                     0, 0);
@@ -487,6 +594,22 @@ bncWindow::bncWindow() {
   cLayout->addWidget(new QLabel("    "),5,0);
   cgroup->setLayout(cLayout);
 
+  connect(_corrPathLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+  if (_corrPathLineEdit->text().isEmpty()) { 
+    palette.setColor(_corrIntrComboBox->backgroundRole(), Qt::lightGray);
+    _corrIntrComboBox->setPalette(palette);
+    palette.setColor(_corrPortLineEdit->backgroundRole(), Qt::lightGray);
+    _corrPortLineEdit->setPalette(palette);
+    palette.setColor(_corrTimeSpinBox->backgroundRole(), Qt::lightGray);
+    _corrTimeSpinBox->setPalette(palette);
+    _corrIntrComboBox->setEnabled(false);
+    _corrPortLineEdit->setEnabled(false);
+    _corrTimeSpinBox->setEnabled(false);
+  }
+
+  // Serial Link
+  // -----------
   QGridLayout* serLayout = new QGridLayout;
   serLayout->setColumnMinimumWidth(0,14*ww);
   serLayout->addWidget(new QLabel("Mountpoint"),                  0,0, Qt::AlignLeft);
@@ -505,12 +628,31 @@ bncWindow::bncWindow() {
   serLayout->addWidget(_serialAutoNMEACheckBox,                   4, 1);
   serLayout->addWidget(new QLabel("Serial port settings to feed a serial connected device."),5,0,1,30);
 
+  connect(_serialMountPointLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+  if (_serialMountPointLineEdit->text().isEmpty()) { 
+    palette.setColor(_serialPortNameLineEdit->backgroundRole(), Qt::lightGray);
+    _serialPortNameLineEdit->setPalette(palette);
+    palette.setColor(_serialBaudRateComboBox->backgroundRole(), Qt::lightGray);
+    _serialBaudRateComboBox->setPalette(palette);
+    palette.setColor(_serialParityComboBox->backgroundRole(), Qt::lightGray);
+    _serialParityComboBox->setPalette(palette);
+    palette.setColor(_serialDataBitsComboBox->backgroundRole(), Qt::lightGray);
+    _serialDataBitsComboBox->setPalette(palette);
+    palette.setColor(_serialStopBitsComboBox->backgroundRole(), Qt::lightGray);
+    _serialStopBitsComboBox->setPalette(palette);
+    palette.setColor(_serialAutoNMEACheckBox->backgroundRole(), Qt::lightGray);
+    _serialAutoNMEACheckBox->setPalette(palette);
+    _serialPortNameLineEdit->setEnabled(false);
+    _serialBaudRateComboBox->setEnabled(false);
+    _serialParityComboBox->setEnabled(false);
+    _serialDataBitsComboBox->setEnabled(false);
+    _serialStopBitsComboBox->setEnabled(false);
+    _serialAutoNMEACheckBox->setEnabled(false);
+  }
+
   sergroup->setLayout(serLayout);
 
-//QVBoxLayout* mLayout = new QVBoxLayout;
-//mLayout->addWidget(aogroup);
-//mLayout->addWidget(_mountPointsTable);
-//mLayout->addWidget(_log);
   QGridLayout* mLayout = new QGridLayout;
   aogroup->setCurrentIndex(settings.value("startTab").toInt());
   mLayout->addWidget(aogroup,             0,0);
@@ -972,7 +1114,7 @@ void bncWindow::CreateMenu() {
   _menuHlp->addAction(_actAbout);
 }
 
-// 
+// Toolbar
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::AddToolbar() {
   // Tool (Command) Bar
@@ -986,9 +1128,9 @@ void bncWindow::AddToolbar() {
   toolBar->addAction(_actStop);
   toolBar->addWidget(new QLabel("                                   "));
   toolBar->addAction(_actwhatsthis);
-}
+} 
 
-// 
+// About
 ////////////////////////////////////////////////////////////////////////////
 bncAboutDlg::bncAboutDlg(QWidget* parent) : 
    QDialog(parent) {
@@ -1021,7 +1163,7 @@ bncAboutDlg::bncAboutDlg(QWidget* parent) :
 bncAboutDlg::~bncAboutDlg() {
 }; 
 
-// 
+// Flowchart 
 ////////////////////////////////////////////////////////////////////////////
 bncFlowchartDlg::bncFlowchartDlg(QWidget* parent) :
    QDialog(parent) {
@@ -1045,4 +1187,245 @@ bncFlowchartDlg::bncFlowchartDlg(QWidget* parent) :
 ////////////////////////////////////////////////////////////////////////////
 bncFlowchartDlg::~bncFlowchartDlg() {
 };
+
+//  Bnc Text
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::bncText(const QString &text){
+
+  bool isEmpty = text.isEmpty();
+
+  QPalette palette;
+
+  // Proxy
+  //------
+  if (aogroup->currentIndex() == 0) {
+    if (!isEmpty) {
+      palette.setColor(_proxyPortLineEdit->backgroundRole(), Qt::white);
+      _proxyPortLineEdit->setPalette(palette);
+      _proxyPortLineEdit->setEnabled(true);
+    } else {
+      palette.setColor(_proxyPortLineEdit->backgroundRole(), Qt::lightGray);
+      _proxyPortLineEdit->setPalette(palette);
+      _proxyPortLineEdit->setEnabled(false);
+    }
+  }
+
+  // RINEX Observations
+  // ------------------
+  if (aogroup->currentIndex() == 2) {
+    if (!isEmpty) {
+      palette.setColor(_rnxIntrComboBox->backgroundRole(), Qt::white);
+      _rnxIntrComboBox->setPalette(palette);
+      palette.setColor(_rnxSamplSpinBox->backgroundRole(), Qt::white);
+      _rnxSamplSpinBox->setPalette(palette);
+      palette.setColor(_rnxSkelLineEdit->backgroundRole(), Qt::white);
+      _rnxSkelLineEdit->setPalette(palette);
+      palette.setColor(_rnxScrpLineEdit->backgroundRole(), Qt::white);
+      _rnxScrpLineEdit->setPalette(palette);
+      palette.setColor(_rnxV3CheckBox->backgroundRole(), Qt::white);
+      _rnxV3CheckBox->setPalette(palette);
+      _rnxIntrComboBox->setEnabled(true);
+      _rnxSamplSpinBox->setEnabled(true);
+      _rnxSkelLineEdit->setEnabled(true);
+      _rnxScrpLineEdit->setEnabled(true);
+      _rnxV3CheckBox->setEnabled(true);
+    } else {
+      palette.setColor(_rnxIntrComboBox->backgroundRole(), Qt::lightGray);
+      _rnxIntrComboBox->setPalette(palette);
+      palette.setColor(_rnxSkelLineEdit->backgroundRole(), Qt::lightGray);
+      _rnxSkelLineEdit->setPalette(palette);
+      palette.setColor(_rnxScrpLineEdit->backgroundRole(), Qt::lightGray);
+      _rnxScrpLineEdit->setPalette(palette);
+      palette.setColor(_rnxV3CheckBox->backgroundRole(), Qt::lightGray);
+      _rnxV3CheckBox->setPalette(palette);
+      palette.setColor(_rnxSamplSpinBox->backgroundRole(), Qt::lightGray);
+      _rnxSamplSpinBox->setPalette(palette);
+      _rnxIntrComboBox->setEnabled(false);
+      _rnxSamplSpinBox->setEnabled(false);
+      _rnxSkelLineEdit->setEnabled(false);
+      _rnxScrpLineEdit->setEnabled(false);
+      _rnxV3CheckBox->setEnabled(false);
+    }
+  }
+
+  // RINEX Ephemeris
+  // ---------------
+  if (aogroup->currentIndex() == 3) {
+    if (!isEmpty) {
+      _ephIntrComboBox->setPalette(palette);
+      palette.setColor(_outEphPortLineEdit->backgroundRole(), Qt::white);
+      _outEphPortLineEdit->setPalette(palette);
+      palette.setColor(_ephV3CheckBox->backgroundRole(), Qt::white);
+      _ephV3CheckBox->setPalette(palette);
+      _ephIntrComboBox->setEnabled(false);
+      _ephIntrComboBox->setEnabled(true);
+      _outEphPortLineEdit->setEnabled(true);
+      _ephV3CheckBox->setEnabled(true);
+    } else {
+      _ephIntrComboBox->setPalette(palette);
+      palette.setColor(_outEphPortLineEdit->backgroundRole(), Qt::lightGray);
+      _outEphPortLineEdit->setPalette(palette);
+      palette.setColor(_ephV3CheckBox->backgroundRole(), Qt::lightGray);
+      _ephV3CheckBox->setPalette(palette);
+      _ephIntrComboBox->setEnabled(false);
+      _ephIntrComboBox->setEnabled(false);
+      _outEphPortLineEdit->setEnabled(false);
+      _ephV3CheckBox->setEnabled(false);
+    }
+  }
+
+  // Ephemeris Corrections
+  // ---------------------
+  if (aogroup->currentIndex() == 4) {
+    if (!isEmpty) {
+      palette.setColor(_corrIntrComboBox->backgroundRole(), Qt::white);
+      _corrIntrComboBox->setPalette(palette);
+      palette.setColor(_corrPortLineEdit->backgroundRole(), Qt::white);
+      _corrPortLineEdit->setPalette(palette);
+      palette.setColor(_corrTimeSpinBox->backgroundRole(), Qt::white);
+      _corrTimeSpinBox->setPalette(palette);
+      _corrIntrComboBox->setEnabled(true);
+      _corrPortLineEdit->setEnabled(true);
+      _corrTimeSpinBox->setEnabled(true);
+    } else {
+      palette.setColor(_corrIntrComboBox->backgroundRole(), Qt::lightGray);
+      _corrIntrComboBox->setPalette(palette);
+      palette.setColor(_corrPortLineEdit->backgroundRole(), Qt::lightGray);
+      _corrPortLineEdit->setPalette(palette);
+      palette.setColor(_corrTimeSpinBox->backgroundRole(), Qt::lightGray);
+      _corrTimeSpinBox->setPalette(palette);
+      _corrIntrComboBox->setEnabled(false);
+      _corrPortLineEdit->setEnabled(false);
+      _corrTimeSpinBox->setEnabled(false);
+    }
+  }
+
+  // Feed Engine
+  // -----------
+  if (aogroup->currentIndex() == 5) {
+    if (!isEmpty) {
+      palette.setColor(_outUPortLineEdit->backgroundRole(), Qt::white);
+      _outUPortLineEdit->setPalette(palette);
+      palette.setColor(_outFileLineEdit->backgroundRole(), Qt::white);
+      _outFileLineEdit->setPalette(palette);
+      palette.setColor(_waitTimeSpinBox->backgroundRole(), Qt::white);
+      _waitTimeSpinBox->setPalette(palette);
+      palette.setColor(_binSamplSpinBox->backgroundRole(), Qt::white);
+      _binSamplSpinBox->setPalette(palette);
+      _waitTimeSpinBox->setEnabled(true);
+      _outUPortLineEdit->setEnabled(true);
+      _outFileLineEdit->setEnabled(true);
+      _binSamplSpinBox->setEnabled(true);
+    } else {
+      palette.setColor(_outUPortLineEdit->backgroundRole(), Qt::lightGray);
+      _outUPortLineEdit->setPalette(palette);
+      palette.setColor(_outFileLineEdit->backgroundRole(), Qt::lightGray);
+      _outFileLineEdit->setPalette(palette);
+      palette.setColor(_waitTimeSpinBox->backgroundRole(), Qt::lightGray);
+      _waitTimeSpinBox->setPalette(palette);
+      palette.setColor(_binSamplSpinBox->backgroundRole(), Qt::lightGray);
+      _binSamplSpinBox->setPalette(palette);
+      _waitTimeSpinBox->setEnabled(false);
+      _outUPortLineEdit->setEnabled(false);
+      _outFileLineEdit->setEnabled(false);
+      _binSamplSpinBox->setEnabled(false);
+    }
+  }
+
+  // Serial Link
+  // -----------
+  if (aogroup->currentIndex() == 6) {
+    if (!isEmpty) {
+      palette.setColor(_serialPortNameLineEdit->backgroundRole(), Qt::white);
+      _serialPortNameLineEdit->setPalette(palette);
+      palette.setColor(_serialBaudRateComboBox->backgroundRole(), Qt::white);
+      _serialBaudRateComboBox->setPalette(palette);
+      palette.setColor(_serialParityComboBox->backgroundRole(), Qt::white);
+      _serialParityComboBox->setPalette(palette);
+      palette.setColor(_serialDataBitsComboBox->backgroundRole(), Qt::white);
+      _serialDataBitsComboBox->setPalette(palette);
+      palette.setColor(_serialStopBitsComboBox->backgroundRole(), Qt::white);
+      _serialStopBitsComboBox->setPalette(palette);
+      palette.setColor(_serialAutoNMEACheckBox->backgroundRole(), Qt::white);
+      _serialAutoNMEACheckBox->setPalette(palette);
+      _serialPortNameLineEdit->setEnabled(true);
+      _serialBaudRateComboBox->setEnabled(true);
+      _serialParityComboBox->setEnabled(true);
+      _serialDataBitsComboBox->setEnabled(true);
+      _serialStopBitsComboBox->setEnabled(true);
+      _serialAutoNMEACheckBox->setEnabled(true);
+    } else {
+      palette.setColor(_serialPortNameLineEdit->backgroundRole(), Qt::lightGray);
+      _serialPortNameLineEdit->setPalette(palette);
+      palette.setColor(_serialBaudRateComboBox->backgroundRole(), Qt::lightGray);
+      _serialBaudRateComboBox->setPalette(palette);
+      palette.setColor(_serialParityComboBox->backgroundRole(), Qt::lightGray);
+      _serialParityComboBox->setPalette(palette);
+      palette.setColor(_serialDataBitsComboBox->backgroundRole(), Qt::lightGray);
+      _serialDataBitsComboBox->setPalette(palette);
+      palette.setColor(_serialStopBitsComboBox->backgroundRole(), Qt::lightGray);
+      _serialStopBitsComboBox->setPalette(palette);
+      palette.setColor(_serialAutoNMEACheckBox->backgroundRole(), Qt::lightGray);
+      _serialAutoNMEACheckBox->setPalette(palette);
+      _serialPortNameLineEdit->setEnabled(false);
+      _serialBaudRateComboBox->setEnabled(false);
+      _serialParityComboBox->setEnabled(false);
+      _serialDataBitsComboBox->setEnabled(false);
+      _serialStopBitsComboBox->setEnabled(false);
+      _serialAutoNMEACheckBox->setEnabled(false);
+    }
+  }
+
+  // Outages
+  // -------
+  if (aogroup->currentIndex() == 7) {
+    if (!isEmpty) {
+      palette.setColor(_adviseScriptLineEdit->backgroundRole(), Qt::white);
+      _adviseScriptLineEdit->setPalette(palette);
+      palette.setColor(_adviseFailSpinBox->backgroundRole(), Qt::white);
+      _adviseFailSpinBox->setPalette(palette);
+      palette.setColor(_adviseRecoSpinBox->backgroundRole(), Qt::white);
+      _adviseRecoSpinBox->setPalette(palette);
+      palette.setColor(_makePauseCheckBox->backgroundRole(), Qt::white);
+      _makePauseCheckBox->setPalette(palette);
+      _adviseFailSpinBox->setEnabled(true);
+      _adviseRecoSpinBox->setEnabled(true);
+      _makePauseCheckBox->setEnabled(true);
+      _adviseScriptLineEdit->setEnabled(true);
+    } else {
+      palette.setColor(_adviseScriptLineEdit->backgroundRole(), Qt::lightGray);
+      _adviseScriptLineEdit->setPalette(palette);
+      palette.setColor(_adviseFailSpinBox->backgroundRole(), Qt::lightGray);
+      _adviseFailSpinBox->setPalette(palette);
+      palette.setColor(_adviseRecoSpinBox->backgroundRole(), Qt::lightGray);
+      _adviseRecoSpinBox->setPalette(palette);
+      palette.setColor(_makePauseCheckBox->backgroundRole(), Qt::lightGray);
+      _makePauseCheckBox->setPalette(palette);
+      _adviseFailSpinBox->setEnabled(false);
+      _adviseRecoSpinBox->setEnabled(false);
+      _makePauseCheckBox->setEnabled(false);
+      _adviseScriptLineEdit->setEnabled(false);
+    }
+  }
+
+  // Miscellaneous
+  // -------------
+  if (aogroup->currentIndex() == 8) {
+    if (!isEmpty) {
+      palette.setColor(_perfIntrComboBox->backgroundRole(), Qt::white);
+      _perfIntrComboBox->setPalette(palette);
+      palette.setColor(_scanRTCMCheckBox->backgroundRole(), Qt::white);
+      _scanRTCMCheckBox->setPalette(palette);
+      _perfIntrComboBox->setEnabled(true);
+      _scanRTCMCheckBox->setEnabled(true);
+    } else {
+      palette.setColor(_perfIntrComboBox->backgroundRole(), Qt::lightGray);
+      _perfIntrComboBox->setPalette(palette);
+      palette.setColor(_scanRTCMCheckBox->backgroundRole(), Qt::lightGray);
+      _scanRTCMCheckBox->setPalette(palette);
+      _perfIntrComboBox->setEnabled(false);
+      _scanRTCMCheckBox->setEnabled(false);
+    }
+  }
+}
 
