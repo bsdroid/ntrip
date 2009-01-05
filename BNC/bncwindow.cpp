@@ -393,8 +393,7 @@ bncWindow::bncWindow() {
   connect(_proxyHostLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
   if (_proxyHostLineEdit->text().isEmpty()) { 
-    palette.setColor(_proxyPortLineEdit->backgroundRole(), lightGray);
-    _proxyPortLineEdit->setPalette(palette);
+    _proxyPortLineEdit->setStyleSheet("background-color: lightGray");
     _proxyPortLineEdit->setEnabled(false);
   }
  
@@ -437,10 +436,8 @@ bncWindow::bncWindow() {
   connect(_outFileLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
   if (_outPortLineEdit->text().isEmpty() && _outFileLineEdit->text().isEmpty()) { 
-    palette.setColor(_waitTimeSpinBox->backgroundRole(), lightGray);
-    _waitTimeSpinBox->setPalette(palette);
-    palette.setColor(_binSamplSpinBox->backgroundRole(), lightGray);
-    _binSamplSpinBox->setPalette(palette);
+    _waitTimeSpinBox->setStyleSheet("background-color: lightGray");
+    _binSamplSpinBox->setStyleSheet("background-color: lightGray");
     _waitTimeSpinBox->setEnabled(false);
     _binSamplSpinBox->setEnabled(false);
   }
@@ -464,10 +461,8 @@ bncWindow::bncWindow() {
   connect(_ephPathLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
   if (_ephPathLineEdit->text().isEmpty()) { 
-    palette.setColor(_ephIntrComboBox->backgroundRole(), lightGray);
-    _ephIntrComboBox->setPalette(palette);
-    palette.setColor(_outEphPortLineEdit->backgroundRole(), lightGray);
-    _outEphPortLineEdit->setPalette(palette);
+    _ephIntrComboBox->setStyleSheet("background-color: lightGray");
+    _outEphPortLineEdit->setStyleSheet("background-color: lightGray");
     palette.setColor(_ephV3CheckBox->backgroundRole(), lightGray);
     _ephV3CheckBox->setPalette(palette);
     _ephIntrComboBox->setEnabled(false);
@@ -495,14 +490,11 @@ bncWindow::bncWindow() {
   connect(_obsRateComboBox, SIGNAL(currentIndexChanged(const QString &)),
           this, SLOT(bncText(const QString)));
   if (_obsRateComboBox->currentText().isEmpty()) { 
-    palette.setColor(_adviseFailSpinBox->backgroundRole(), lightGray);
-    _adviseFailSpinBox->setPalette(palette);
-    palette.setColor(_adviseRecoSpinBox->backgroundRole(), lightGray);
-    _adviseRecoSpinBox->setPalette(palette);
+    _adviseFailSpinBox->setStyleSheet("background-color: lightGray");
+    _adviseRecoSpinBox->setStyleSheet("background-color: lightGray");
     palette.setColor(_makePauseCheckBox->backgroundRole(), lightGray);
     _makePauseCheckBox->setPalette(palette);
-    palette.setColor(_adviseScriptLineEdit->backgroundRole(), lightGray);
-    _adviseScriptLineEdit->setPalette(palette);
+    _adviseScriptLineEdit->setStyleSheet("background-color: lightGray");
     _adviseFailSpinBox->setEnabled(false);
     _adviseRecoSpinBox->setEnabled(false);
     _makePauseCheckBox->setEnabled(false);
@@ -527,8 +519,7 @@ bncWindow::bncWindow() {
   connect(_miscMountLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
   if (_miscMountLineEdit->text().isEmpty()) { 
-    palette.setColor(_perfIntrComboBox->backgroundRole(), lightGray);
-    _perfIntrComboBox->setPalette(palette);
+    _perfIntrComboBox->setStyleSheet("background-color: lightGray");
     palette.setColor(_scanRTCMCheckBox->backgroundRole(), lightGray);
     _scanRTCMCheckBox->setPalette(palette);
     _perfIntrComboBox->setEnabled(false);
@@ -557,14 +548,10 @@ bncWindow::bncWindow() {
   connect(_rnxPathLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
   if (_rnxPathLineEdit->text().isEmpty()) { 
-    palette.setColor(_rnxIntrComboBox->backgroundRole(), lightGray);
-    _rnxIntrComboBox->setPalette(palette);
-    palette.setColor(_rnxSamplSpinBox->backgroundRole(), lightGray);
-    _rnxSamplSpinBox->setPalette(palette);
-    palette.setColor(_rnxSkelLineEdit->backgroundRole(), lightGray);
-    _rnxSkelLineEdit->setPalette(palette);
-    palette.setColor(_rnxScrpLineEdit->backgroundRole(), lightGray);
-    _rnxScrpLineEdit->setPalette(palette);
+    _rnxIntrComboBox->setStyleSheet("background-color: lightGray");
+    _rnxSamplSpinBox->setStyleSheet("background-color: lightGray");
+    _rnxSkelLineEdit->setStyleSheet("background-color: lightGray");
+    _rnxScrpLineEdit->setStyleSheet("background-color: lightGray");
     palette.setColor(_rnxV3CheckBox->backgroundRole(), lightGray);
     _rnxV3CheckBox->setPalette(palette);
     _rnxIntrComboBox->setEnabled(false);
@@ -594,12 +581,9 @@ bncWindow::bncWindow() {
   connect(_corrPathLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
   if (_corrPathLineEdit->text().isEmpty()) { 
-    palette.setColor(_corrIntrComboBox->backgroundRole(), lightGray);
-    _corrIntrComboBox->setPalette(palette);
-    palette.setColor(_corrPortLineEdit->backgroundRole(), lightGray);
-    _corrPortLineEdit->setPalette(palette);
-    palette.setColor(_corrTimeSpinBox->backgroundRole(), lightGray);
-    _corrTimeSpinBox->setPalette(palette);
+    _corrIntrComboBox->setStyleSheet("background-color: lightGray");
+    _corrPortLineEdit->setStyleSheet("background-color: lightGray");
+    _corrTimeSpinBox->setStyleSheet("background-color: lightGray");
     _corrIntrComboBox->setEnabled(false);
     _corrPortLineEdit->setEnabled(false);
     _corrTimeSpinBox->setEnabled(false);
@@ -628,16 +612,11 @@ bncWindow::bncWindow() {
   connect(_serialMountPointLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
   if (_serialMountPointLineEdit->text().isEmpty()) { 
-    palette.setColor(_serialPortNameLineEdit->backgroundRole(), lightGray);
-    _serialPortNameLineEdit->setPalette(palette);
-    palette.setColor(_serialBaudRateComboBox->backgroundRole(), lightGray);
-    _serialBaudRateComboBox->setPalette(palette);
-    palette.setColor(_serialParityComboBox->backgroundRole(), lightGray);
-    _serialParityComboBox->setPalette(palette);
-    palette.setColor(_serialDataBitsComboBox->backgroundRole(), lightGray);
-    _serialDataBitsComboBox->setPalette(palette);
-    palette.setColor(_serialStopBitsComboBox->backgroundRole(), lightGray);
-    _serialStopBitsComboBox->setPalette(palette);
+    _serialPortNameLineEdit->setStyleSheet("background-color: lightGray");
+    _serialBaudRateComboBox->setStyleSheet("background-color: lightGray");
+    _serialParityComboBox->setStyleSheet("background-color: lightGray");
+    _serialDataBitsComboBox->setStyleSheet("background-color: lightGray");
+    _serialStopBitsComboBox->setStyleSheet("background-color: lightGray");
     palette.setColor(_serialAutoNMEACheckBox->backgroundRole(), lightGray);
     _serialAutoNMEACheckBox->setPalette(palette);
     _serialPortNameLineEdit->setEnabled(false);
@@ -1193,17 +1172,16 @@ void bncWindow::bncText(const QString &text){
 
   QPalette palette;
   QColor lightGray(230, 230, 230);
+  QColor white(255, 255, 255);
 
   // Proxy
   //------
   if (aogroup->currentIndex() == 0) {
     if (!isEmpty) {
-      palette.setColor(_proxyPortLineEdit->backgroundRole(), Qt::white);
-      _proxyPortLineEdit->setPalette(palette);
+      _proxyPortLineEdit->setStyleSheet("background-color: white");
       _proxyPortLineEdit->setEnabled(true);
     } else {
-      palette.setColor(_proxyPortLineEdit->backgroundRole(), lightGray);
-      _proxyPortLineEdit->setPalette(palette);
+      _proxyPortLineEdit->setStyleSheet("background-color: lightGray");
       _proxyPortLineEdit->setEnabled(false);
     }
   }
@@ -1212,32 +1190,24 @@ void bncWindow::bncText(const QString &text){
   // ------------------
   if (aogroup->currentIndex() == 2) {
     if (!isEmpty) {
-      palette.setColor(_rnxSamplSpinBox->backgroundRole(), Qt::white);
-      _rnxSamplSpinBox->setPalette(palette);
-      palette.setColor(_rnxSkelLineEdit->backgroundRole(), Qt::white);
-      _rnxSkelLineEdit->setPalette(palette);
-      palette.setColor(_rnxScrpLineEdit->backgroundRole(), Qt::white);
-      _rnxScrpLineEdit->setPalette(palette);
-      palette.setColor(_rnxV3CheckBox->backgroundRole(), Qt::white);
+      _rnxSamplSpinBox->setStyleSheet("background-color: white");
+      _rnxSkelLineEdit->setStyleSheet("background-color: white");
+      _rnxScrpLineEdit->setStyleSheet("background-color: white");
+      palette.setColor(_rnxV3CheckBox->backgroundRole(), white);
       _rnxV3CheckBox->setPalette(palette);
-      palette.setColor(_rnxIntrComboBox->backgroundRole(), Qt::white);
-      _rnxIntrComboBox->setPalette(palette);
+      _rnxIntrComboBox->setStyleSheet("background-color: white");
       _rnxSamplSpinBox->setEnabled(true);
       _rnxSkelLineEdit->setEnabled(true);
       _rnxScrpLineEdit->setEnabled(true);
       _rnxV3CheckBox->setEnabled(true);
       _rnxIntrComboBox->setEnabled(true);
     } else {
-      palette.setColor(_rnxSkelLineEdit->backgroundRole(), lightGray);
-      _rnxSkelLineEdit->setPalette(palette);
-      palette.setColor(_rnxScrpLineEdit->backgroundRole(), lightGray);
-      _rnxScrpLineEdit->setPalette(palette);
+      _rnxSamplSpinBox->setStyleSheet("background-color: lightGray");
+      _rnxSkelLineEdit->setStyleSheet("background-color: lightGray");
+      _rnxScrpLineEdit->setStyleSheet("background-color: lightGray");
       palette.setColor(_rnxV3CheckBox->backgroundRole(), lightGray);
       _rnxV3CheckBox->setPalette(palette);
-      palette.setColor(_rnxSamplSpinBox->backgroundRole(), lightGray);
-      _rnxSamplSpinBox->setPalette(palette);
-      palette.setColor(_rnxIntrComboBox->backgroundRole(), lightGray);
-      _rnxIntrComboBox->setPalette(palette);
+      _rnxIntrComboBox->setStyleSheet("background-color: lightGray");
       _rnxSamplSpinBox->setEnabled(false);
       _rnxSkelLineEdit->setEnabled(false);
       _rnxScrpLineEdit->setEnabled(false);
@@ -1250,22 +1220,18 @@ void bncWindow::bncText(const QString &text){
   // ---------------
   if (aogroup->currentIndex() == 3) {
     if (!isEmpty) {
-      palette.setColor(_outEphPortLineEdit->backgroundRole(), Qt::white);
-      _outEphPortLineEdit->setPalette(palette);
-      palette.setColor(_ephV3CheckBox->backgroundRole(), Qt::white);
+      _outEphPortLineEdit->setStyleSheet("background-color: white");
+      palette.setColor(_ephV3CheckBox->backgroundRole(), white);
       _ephV3CheckBox->setPalette(palette);
-      palette.setColor(_ephIntrComboBox->backgroundRole(), Qt::white);
-      _ephIntrComboBox->setPalette(palette);
+      _ephIntrComboBox->setStyleSheet("background-color: white");
       _outEphPortLineEdit->setEnabled(true);
       _ephV3CheckBox->setEnabled(true);
       _ephIntrComboBox->setEnabled(true);
     } else {
-      palette.setColor(_outEphPortLineEdit->backgroundRole(), lightGray);
-      _outEphPortLineEdit->setPalette(palette);
+      _outEphPortLineEdit->setStyleSheet("background-color: lightGray");
       palette.setColor(_ephV3CheckBox->backgroundRole(), lightGray);
       _ephV3CheckBox->setPalette(palette);
-      palette.setColor(_ephIntrComboBox->backgroundRole(), lightGray);
-      _ephIntrComboBox->setPalette(palette);
+      _ephIntrComboBox->setStyleSheet("background-color: lightGray");
       _outEphPortLineEdit->setEnabled(false);
       _ephV3CheckBox->setEnabled(false);
       _ephIntrComboBox->setEnabled(false);
@@ -1276,22 +1242,16 @@ void bncWindow::bncText(const QString &text){
   // ---------------------
   if (aogroup->currentIndex() == 4) {
     if (!isEmpty) {
-      palette.setColor(_corrPortLineEdit->backgroundRole(), Qt::white);
-      _corrPortLineEdit->setPalette(palette);
-      palette.setColor(_corrTimeSpinBox->backgroundRole(), Qt::white);
-      _corrTimeSpinBox->setPalette(palette);
-      palette.setColor(_corrIntrComboBox->backgroundRole(), Qt::white);
-      _corrIntrComboBox->setPalette(palette);
+      _corrPortLineEdit->setStyleSheet("background-color: white");
+      _corrTimeSpinBox->setStyleSheet("background-color: white");
+      _corrIntrComboBox->setStyleSheet("background-color: white");
       _corrPortLineEdit->setEnabled(true);
       _corrTimeSpinBox->setEnabled(true);
       _corrIntrComboBox->setEnabled(true);
     } else {
-      palette.setColor(_corrPortLineEdit->backgroundRole(), lightGray);
-      _corrPortLineEdit->setPalette(palette);
-      palette.setColor(_corrTimeSpinBox->backgroundRole(), lightGray);
-      _corrTimeSpinBox->setPalette(palette);
-      palette.setColor(_corrIntrComboBox->backgroundRole(), lightGray);
-      _corrIntrComboBox->setPalette(palette);
+      _corrPortLineEdit->setStyleSheet("background-color: lightGray");
+      _corrTimeSpinBox->setStyleSheet("background-color: lightGray");
+      _corrIntrComboBox->setStyleSheet("background-color: lightGray");
       _corrPortLineEdit->setEnabled(false);
       _corrTimeSpinBox->setEnabled(false);
       _corrIntrComboBox->setEnabled(false);
@@ -1302,19 +1262,15 @@ void bncWindow::bncText(const QString &text){
   // -----------
   if (aogroup->currentIndex() == 5) {
     if ( !_outPortLineEdit->text().isEmpty() || !_outFileLineEdit->text().isEmpty()) {
+      _waitTimeSpinBox->setStyleSheet("background-color: white");
+      _binSamplSpinBox->setStyleSheet("background-color: white");
       _waitTimeSpinBox->setEnabled(true);
       _binSamplSpinBox->setEnabled(true);
-      palette.setColor(_binSamplSpinBox->backgroundRole(), Qt::white);
-      _binSamplSpinBox->setPalette(palette);
-      palette.setColor(_waitTimeSpinBox->backgroundRole(), Qt::white);
-      _waitTimeSpinBox->setPalette(palette);
     } else {
+      _waitTimeSpinBox->setStyleSheet("background-color: lightGray");
+      _binSamplSpinBox->setStyleSheet("background-color: lightGray");
       _waitTimeSpinBox->setEnabled(false);
-      _binSamplSpinBox->setEnabled(false);
-      palette.setColor(_binSamplSpinBox->backgroundRole(), lightGray);
-      _binSamplSpinBox->setPalette(palette);
-      palette.setColor(_waitTimeSpinBox->backgroundRole(), lightGray);
-      _waitTimeSpinBox->setPalette(palette);
+      _binSamplSpinBox->setEnabled(false); 
     }
   }
 
@@ -1322,17 +1278,12 @@ void bncWindow::bncText(const QString &text){
   // -----------
   if (aogroup->currentIndex() == 6) {
     if (!isEmpty) {
-      palette.setColor(_serialPortNameLineEdit->backgroundRole(), Qt::white);
-      _serialPortNameLineEdit->setPalette(palette);
-      palette.setColor(_serialBaudRateComboBox->backgroundRole(), Qt::white);
-      _serialBaudRateComboBox->setPalette(palette);
-      palette.setColor(_serialParityComboBox->backgroundRole(), Qt::white);
-      _serialParityComboBox->setPalette(palette);
-      palette.setColor(_serialDataBitsComboBox->backgroundRole(), Qt::white);
-      _serialDataBitsComboBox->setPalette(palette);
-      palette.setColor(_serialStopBitsComboBox->backgroundRole(), Qt::white);
-      _serialStopBitsComboBox->setPalette(palette);
-      palette.setColor(_serialAutoNMEACheckBox->backgroundRole(), Qt::white);
+      _serialPortNameLineEdit->setStyleSheet("background-color: white");
+      _serialBaudRateComboBox->setStyleSheet("background-color: white");
+      _serialParityComboBox->setStyleSheet("background-color: white");
+      _serialDataBitsComboBox->setStyleSheet("background-color: white");
+      _serialStopBitsComboBox->setStyleSheet("background-color: white");
+      palette.setColor(_serialAutoNMEACheckBox->backgroundRole(), white);
       _serialAutoNMEACheckBox->setPalette(palette);
       _serialPortNameLineEdit->setEnabled(true);
       _serialBaudRateComboBox->setEnabled(true);
@@ -1341,16 +1292,11 @@ void bncWindow::bncText(const QString &text){
       _serialStopBitsComboBox->setEnabled(true);
       _serialAutoNMEACheckBox->setEnabled(true);
     } else {
-      palette.setColor(_serialPortNameLineEdit->backgroundRole(), lightGray);
-      _serialPortNameLineEdit->setPalette(palette);
-      palette.setColor(_serialBaudRateComboBox->backgroundRole(), lightGray);
-      _serialBaudRateComboBox->setPalette(palette);
-      palette.setColor(_serialParityComboBox->backgroundRole(), lightGray);
-      _serialParityComboBox->setPalette(palette);
-      palette.setColor(_serialDataBitsComboBox->backgroundRole(), lightGray);
-      _serialDataBitsComboBox->setPalette(palette);
-      palette.setColor(_serialStopBitsComboBox->backgroundRole(), lightGray);
-      _serialStopBitsComboBox->setPalette(palette);
+      _serialPortNameLineEdit->setStyleSheet("background-color: lightGray");
+      _serialBaudRateComboBox->setStyleSheet("background-color: lightGray");
+      _serialParityComboBox->setStyleSheet("background-color: lightGray");
+      _serialDataBitsComboBox->setStyleSheet("background-color: lightGray");
+      _serialStopBitsComboBox->setStyleSheet("background-color: lightGray");
       palette.setColor(_serialAutoNMEACheckBox->backgroundRole(), lightGray);
       _serialAutoNMEACheckBox->setPalette(palette);
       _serialPortNameLineEdit->setEnabled(false);
@@ -1366,25 +1312,19 @@ void bncWindow::bncText(const QString &text){
   // -------
   if (aogroup->currentIndex() == 7) {
     if (!isEmpty) {
-      palette.setColor(_adviseScriptLineEdit->backgroundRole(), Qt::white);
-      _adviseScriptLineEdit->setPalette(palette);
-      palette.setColor(_adviseFailSpinBox->backgroundRole(), Qt::white);
-      _adviseFailSpinBox->setPalette(palette);
-      palette.setColor(_adviseRecoSpinBox->backgroundRole(), Qt::white);
-      _adviseRecoSpinBox->setPalette(palette);
-      palette.setColor(_makePauseCheckBox->backgroundRole(), Qt::white);
+      _adviseScriptLineEdit->setStyleSheet("background-color: white");
+      _adviseFailSpinBox->setStyleSheet("background-color: white");
+      _adviseRecoSpinBox->setStyleSheet("background-color: white");
+      palette.setColor(_makePauseCheckBox->backgroundRole(), white);
       _makePauseCheckBox->setPalette(palette);
       _adviseFailSpinBox->setEnabled(true);
       _adviseRecoSpinBox->setEnabled(true);
       _makePauseCheckBox->setEnabled(true);
       _adviseScriptLineEdit->setEnabled(true);
     } else {
-      palette.setColor(_adviseScriptLineEdit->backgroundRole(), lightGray);
-      _adviseScriptLineEdit->setPalette(palette);
-      palette.setColor(_adviseFailSpinBox->backgroundRole(), lightGray);
-      _adviseFailSpinBox->setPalette(palette);
-      palette.setColor(_adviseRecoSpinBox->backgroundRole(), lightGray);
-      _adviseRecoSpinBox->setPalette(palette);
+      _adviseScriptLineEdit->setStyleSheet("background-color: lightGray");
+      _adviseFailSpinBox->setStyleSheet("background-color: lightGray");
+      _adviseRecoSpinBox->setStyleSheet("background-color: lightGray");
       palette.setColor(_makePauseCheckBox->backgroundRole(), lightGray);
       _makePauseCheckBox->setPalette(palette);
       _adviseFailSpinBox->setEnabled(false);
@@ -1398,20 +1338,17 @@ void bncWindow::bncText(const QString &text){
   // -------------
   if (aogroup->currentIndex() == 8) {
     if (!isEmpty) {
-      palette.setColor(_perfIntrComboBox->backgroundRole(), Qt::white);
-      _perfIntrComboBox->setPalette(palette);
-      _perfIntrComboBox->setEnabled(true);
-      palette.setColor(_scanRTCMCheckBox->backgroundRole(), Qt::white);
+      _perfIntrComboBox->setStyleSheet("background-color: white");
+      palette.setColor(_scanRTCMCheckBox->backgroundRole(), white);
       _scanRTCMCheckBox->setPalette(palette);
+      _perfIntrComboBox->setEnabled(true);
       _scanRTCMCheckBox->setEnabled(true);
     } else {
+      _perfIntrComboBox->setStyleSheet("background-color: lightGray");
       palette.setColor(_scanRTCMCheckBox->backgroundRole(), lightGray);
       _scanRTCMCheckBox->setPalette(palette);
-      _scanRTCMCheckBox->setEnabled(false);
-      palette.setColor(_perfIntrComboBox->backgroundRole(), lightGray);
-      _perfIntrComboBox->setPalette(palette);
       _perfIntrComboBox->setEnabled(false);
+      _scanRTCMCheckBox->setEnabled(false);
     }
   }
 }
-
