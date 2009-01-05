@@ -307,7 +307,7 @@ bncWindow::bncWindow() {
   // WhatsThis
   // ---------
   _proxyHostLineEdit->setWhatsThis(tr("<p>If you are running BNC within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you do not know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is sometimes not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNC outside your LAN on a network that has unobstructed connection to the Internet.</p>"));
-  _proxyPortLineEdit->setWhatsThis(tr("<p>Enter your proxy server port number in case one is operated in front of BNC.</p>"));
+  _proxyPortLineEdit->setWhatsThis(tr("<p>Enter your proxy server port number in case a proxy is operated in front of BNC.</p>"));
   _waitTimeSpinBox->setWhatsThis(tr("<p>When feeding a real-time GNSS engine waiting for synchronized input epoch by epoch, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds is recommended, depending on the latency of the incoming streams and the delay acceptable to your real-time GNSS engine or products.</p><p>Note that 'Wait for full epoch' does not effect the RINEX Observation file content. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX Observation files.</p>"));
   _outFileLineEdit->setWhatsThis(tr("Specify the full path to a file where synchronized observations are saved in plain ASCII format. Beware that the size of this file can rapidly increase depending on the number of incoming streams."));
   _outPortLineEdit->setWhatsThis(tr("BNC can produce synchronized observations in binary format on your local host through an IP port. Specify a port number here to activate this function."));
@@ -1213,8 +1213,6 @@ void bncWindow::bncText(const QString &text){
   // ------------------
   if (aogroup->currentIndex() == 2) {
     if (!isEmpty) {
-      palette.setColor(_rnxIntrComboBox->backgroundRole(), Qt::white);
-      _rnxIntrComboBox->setPalette(palette);
       palette.setColor(_rnxSamplSpinBox->backgroundRole(), Qt::white);
       _rnxSamplSpinBox->setPalette(palette);
       palette.setColor(_rnxSkelLineEdit->backgroundRole(), Qt::white);
@@ -1223,14 +1221,14 @@ void bncWindow::bncText(const QString &text){
       _rnxScrpLineEdit->setPalette(palette);
       palette.setColor(_rnxV3CheckBox->backgroundRole(), Qt::white);
       _rnxV3CheckBox->setPalette(palette);
-      _rnxIntrComboBox->setEnabled(true);
+      palette.setColor(_rnxIntrComboBox->backgroundRole(), Qt::white);
+      _rnxIntrComboBox->setPalette(palette);
       _rnxSamplSpinBox->setEnabled(true);
       _rnxSkelLineEdit->setEnabled(true);
       _rnxScrpLineEdit->setEnabled(true);
       _rnxV3CheckBox->setEnabled(true);
+      _rnxIntrComboBox->setEnabled(true);
     } else {
-      palette.setColor(_rnxIntrComboBox->backgroundRole(), lightGray);
-      _rnxIntrComboBox->setPalette(palette);
       palette.setColor(_rnxSkelLineEdit->backgroundRole(), lightGray);
       _rnxSkelLineEdit->setPalette(palette);
       palette.setColor(_rnxScrpLineEdit->backgroundRole(), lightGray);
@@ -1239,11 +1237,13 @@ void bncWindow::bncText(const QString &text){
       _rnxV3CheckBox->setPalette(palette);
       palette.setColor(_rnxSamplSpinBox->backgroundRole(), lightGray);
       _rnxSamplSpinBox->setPalette(palette);
-      _rnxIntrComboBox->setEnabled(false);
+      palette.setColor(_rnxIntrComboBox->backgroundRole(), lightGray);
+      _rnxIntrComboBox->setPalette(palette);
       _rnxSamplSpinBox->setEnabled(false);
       _rnxSkelLineEdit->setEnabled(false);
       _rnxScrpLineEdit->setEnabled(false);
       _rnxV3CheckBox->setEnabled(false);
+      _rnxIntrComboBox->setEnabled(false);
     }
   }
 
@@ -1251,25 +1251,25 @@ void bncWindow::bncText(const QString &text){
   // ---------------
   if (aogroup->currentIndex() == 3) {
     if (!isEmpty) {
-      _ephIntrComboBox->setPalette(palette);
       palette.setColor(_outEphPortLineEdit->backgroundRole(), Qt::white);
       _outEphPortLineEdit->setPalette(palette);
       palette.setColor(_ephV3CheckBox->backgroundRole(), Qt::white);
       _ephV3CheckBox->setPalette(palette);
-      _ephIntrComboBox->setEnabled(false);
-      _ephIntrComboBox->setEnabled(true);
+      palette.setColor(_ephIntrComboBox->backgroundRole(), Qt::white);
+      _ephIntrComboBox->setPalette(palette);
       _outEphPortLineEdit->setEnabled(true);
       _ephV3CheckBox->setEnabled(true);
+      _ephIntrComboBox->setEnabled(true);
     } else {
-      _ephIntrComboBox->setPalette(palette);
       palette.setColor(_outEphPortLineEdit->backgroundRole(), lightGray);
       _outEphPortLineEdit->setPalette(palette);
       palette.setColor(_ephV3CheckBox->backgroundRole(), lightGray);
       _ephV3CheckBox->setPalette(palette);
-      _ephIntrComboBox->setEnabled(false);
-      _ephIntrComboBox->setEnabled(false);
+      palette.setColor(_ephIntrComboBox->backgroundRole(), lightGray);
+      _ephIntrComboBox->setPalette(palette);
       _outEphPortLineEdit->setEnabled(false);
       _ephV3CheckBox->setEnabled(false);
+      _ephIntrComboBox->setEnabled(false);
     }
   }
 
@@ -1277,25 +1277,25 @@ void bncWindow::bncText(const QString &text){
   // ---------------------
   if (aogroup->currentIndex() == 4) {
     if (!isEmpty) {
-      palette.setColor(_corrIntrComboBox->backgroundRole(), Qt::white);
-      _corrIntrComboBox->setPalette(palette);
       palette.setColor(_corrPortLineEdit->backgroundRole(), Qt::white);
       _corrPortLineEdit->setPalette(palette);
       palette.setColor(_corrTimeSpinBox->backgroundRole(), Qt::white);
       _corrTimeSpinBox->setPalette(palette);
-      _corrIntrComboBox->setEnabled(true);
+      palette.setColor(_corrIntrComboBox->backgroundRole(), Qt::white);
+      _corrIntrComboBox->setPalette(palette);
       _corrPortLineEdit->setEnabled(true);
       _corrTimeSpinBox->setEnabled(true);
+      _corrIntrComboBox->setEnabled(true);
     } else {
-      palette.setColor(_corrIntrComboBox->backgroundRole(), lightGray);
-      _corrIntrComboBox->setPalette(palette);
       palette.setColor(_corrPortLineEdit->backgroundRole(), lightGray);
       _corrPortLineEdit->setPalette(palette);
       palette.setColor(_corrTimeSpinBox->backgroundRole(), lightGray);
       _corrTimeSpinBox->setPalette(palette);
-      _corrIntrComboBox->setEnabled(false);
+      palette.setColor(_corrIntrComboBox->backgroundRole(), lightGray);
+      _corrIntrComboBox->setPalette(palette);
       _corrPortLineEdit->setEnabled(false);
       _corrTimeSpinBox->setEnabled(false);
+      _corrIntrComboBox->setEnabled(false);
     }
   }
 
@@ -1407,17 +1407,17 @@ void bncWindow::bncText(const QString &text){
     if (!isEmpty) {
       palette.setColor(_perfIntrComboBox->backgroundRole(), Qt::white);
       _perfIntrComboBox->setPalette(palette);
+      _perfIntrComboBox->setEnabled(true);
       palette.setColor(_scanRTCMCheckBox->backgroundRole(), Qt::white);
       _scanRTCMCheckBox->setPalette(palette);
-      _perfIntrComboBox->setEnabled(true);
       _scanRTCMCheckBox->setEnabled(true);
     } else {
-      palette.setColor(_perfIntrComboBox->backgroundRole(), lightGray);
-      _perfIntrComboBox->setPalette(palette);
       palette.setColor(_scanRTCMCheckBox->backgroundRole(), lightGray);
       _scanRTCMCheckBox->setPalette(palette);
-      _perfIntrComboBox->setEnabled(false);
       _scanRTCMCheckBox->setEnabled(false);
+      palette.setColor(_perfIntrComboBox->backgroundRole(), lightGray);
+      _perfIntrComboBox->setPalette(palette);
+      _perfIntrComboBox->setEnabled(false);
     }
   }
 }
