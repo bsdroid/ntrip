@@ -69,7 +69,7 @@ bncWindow::bncWindow() {
            this, SLOT(slotWindowMessage(QByteArray,bool)));
 
   QPalette palette;
-  QColor lightGray(225, 225, 225);
+  QColor lightGray(230, 230, 230);
 
   // Create Actions
   // --------------
@@ -418,12 +418,12 @@ bncWindow::bncWindow() {
   // -----------
   QGridLayout* sLayout = new QGridLayout;
   sLayout->setColumnMinimumWidth(0,14*ww);
-  sLayout->addWidget(new QLabel("Port (synchronized)"),           0, 0);
-  sLayout->addWidget(_outPortLineEdit,                            0, 1);
-  sLayout->addWidget(new QLabel("Wait for full epoch"),           0, 2, Qt::AlignRight);
-  sLayout->addWidget(_waitTimeSpinBox,                            0, 3, Qt::AlignLeft);
-  sLayout->addWidget(new QLabel("Port (unsynchronized)"),         1, 0);
-  sLayout->addWidget(_outUPortLineEdit,                           1, 1);
+  sLayout->addWidget(new QLabel("Port (unsynchronized)"),         0, 0);
+  sLayout->addWidget(_outUPortLineEdit,                           0, 1);
+  sLayout->addWidget(new QLabel("Port (synchronized)"),           1, 0);
+  sLayout->addWidget(_outPortLineEdit,                            1, 1);
+  sLayout->addWidget(new QLabel("Wait for full epoch"),           1, 2, Qt::AlignRight);
+  sLayout->addWidget(_waitTimeSpinBox,                            1, 3, Qt::AlignLeft);
   sLayout->addWidget(new QLabel("File (full path)"),              2, 0);
   sLayout->addWidget(_outFileLineEdit,                            2, 1, 1, 30);
   sLayout->addWidget(new QLabel("Sampling"),                      3, 0);
@@ -1193,7 +1193,7 @@ void bncWindow::bncText(const QString &text){
   bool isEmpty = text.isEmpty();
 
   QPalette palette;
-  QColor lightGray(225, 225, 225);
+  QColor lightGray(230, 230, 230);
 
   // Proxy
   //------
