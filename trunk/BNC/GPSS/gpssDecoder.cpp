@@ -18,17 +18,6 @@
 #include "gpssDecoder.h"
 #include "bncapp.h"
 
-#define MODE_SEARCH     0
-#define MODE_TYPE       1
-#define MODE_EPOCH      2
-#define MODE_EPOCH_BODY 3
-#define MODE_EPOCH_CRC  4
-#define MODE_EPOCH_ETX  5
-#define MODE_EPH        6
-#define MODE_EPH_BODY   7
-#define MODE_EPH_CRC    8
-#define MODE_EPH_ETX    9
-
 using namespace std;
 
 typedef struct epochHeader {
@@ -60,8 +49,6 @@ unsigned short cal_crc(unsigned char *buf, int num) {
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 gpssDecoder::gpssDecoder() : GPSDecoder() {
-  _mode       = MODE_SEARCH;
-
   connect(this, SIGNAL(newGPSEph(gpsephemeris*)), 
           (bncApp*) qApp, SLOT(slotNewGPSEph(gpsephemeris*)));
 }
