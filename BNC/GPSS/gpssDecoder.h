@@ -20,7 +20,6 @@ Q_OBJECT
   void newGPSEph(gpsephemeris* gpseph);
 
  private:
-  int        _mode;
   QByteArray _buffer;
 } ;
 
