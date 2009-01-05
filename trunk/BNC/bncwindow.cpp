@@ -434,15 +434,14 @@ bncWindow::bncWindow() {
 
   connect(_outPortLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
-  if (_outPortLineEdit->text().isEmpty()) { 
+  connect(_outFileLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+  if (_outPortLineEdit->text().isEmpty() && _outFileLineEdit->text().isEmpty()) { 
     palette.setColor(_waitTimeSpinBox->backgroundRole(), lightGray);
     _waitTimeSpinBox->setPalette(palette);
-    palette.setColor(_outFileLineEdit->backgroundRole(), lightGray);
-    _outFileLineEdit->setPalette(palette);
     palette.setColor(_binSamplSpinBox->backgroundRole(), lightGray);
     _binSamplSpinBox->setPalette(palette);
     _waitTimeSpinBox->setEnabled(false);
-    _outFileLineEdit->setEnabled(false);
     _binSamplSpinBox->setEnabled(false);
   }
 
@@ -1302,26 +1301,20 @@ void bncWindow::bncText(const QString &text){
   // Feed Engine
   // -----------
   if (aogroup->currentIndex() == 5) {
-    if (!isEmpty) {
-      palette.setColor(_outFileLineEdit->backgroundRole(), Qt::white);
-      _outFileLineEdit->setPalette(palette);
-      palette.setColor(_waitTimeSpinBox->backgroundRole(), Qt::white);
-      _waitTimeSpinBox->setPalette(palette);
+    if ( !_outPortLineEdit->text().isEmpty() || !_outFileLineEdit->text().isEmpty()) {
+      _waitTimeSpinBox->setEnabled(true);
+      _binSamplSpinBox->setEnabled(true);
       palette.setColor(_binSamplSpinBox->backgroundRole(), Qt::white);
       _binSamplSpinBox->setPalette(palette);
-      _waitTimeSpinBox->setEnabled(true);
-      _outFileLineEdit->setEnabled(true);
-      _binSamplSpinBox->setEnabled(true);
-    } else {
-      palette.setColor(_outFileLineEdit->backgroundRole(), lightGray);
-      _outFileLineEdit->setPalette(palette);
-      palette.setColor(_waitTimeSpinBox->backgroundRole(), lightGray);
+      palette.setColor(_waitTimeSpinBox->backgroundRole(), Qt::white);
       _waitTimeSpinBox->setPalette(palette);
+    } else {
+      _waitTimeSpinBox->setEnabled(false);
+      _binSamplSpinBox->setEnabled(false);
       palette.setColor(_binSamplSpinBox->backgroundRole(), lightGray);
       _binSamplSpinBox->setPalette(palette);
-      _waitTimeSpinBox->setEnabled(false);
-      _outFileLineEdit->setEnabled(false);
-      _binSamplSpinBox->setEnabled(false);
+      palette.setColor(_waitTimeSpinBox->backgroundRole(), lightGray);
+      _waitTimeSpinBox->setPalette(palette);
     }
   }
 
