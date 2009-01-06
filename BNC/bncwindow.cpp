@@ -580,12 +580,16 @@ bncWindow::bncWindow() {
 
   connect(_corrPathLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
+  connect(_corrPortLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
   if (_corrPathLineEdit->text().isEmpty()) { 
     _corrIntrComboBox->setStyleSheet("background-color: lightGray");
     _corrPortLineEdit->setStyleSheet("background-color: lightGray");
-    _corrTimeSpinBox->setStyleSheet("background-color: lightGray");
     _corrIntrComboBox->setEnabled(false);
     _corrPortLineEdit->setEnabled(false);
+  }
+  if (_corrPortLineEdit->text().isEmpty()) { 
+    _corrTimeSpinBox->setStyleSheet("background-color: lightGray");
     _corrTimeSpinBox->setEnabled(false);
   }
 
@@ -1242,19 +1246,29 @@ void bncWindow::bncText(const QString &text){
   // ---------------------
   if (aogroup->currentIndex() == 4) {
     if (!isEmpty) {
-      _corrPortLineEdit->setStyleSheet("background-color: white");
-      _corrTimeSpinBox->setStyleSheet("background-color: white");
+      if (!_corrPathLineEdit->text().isEmpty()) {
       _corrIntrComboBox->setStyleSheet("background-color: white");
-      _corrPortLineEdit->setEnabled(true);
-      _corrTimeSpinBox->setEnabled(true);
+      _corrPortLineEdit->setStyleSheet("background-color: white");
       _corrIntrComboBox->setEnabled(true);
+      _corrPortLineEdit->setEnabled(true);
+      }
+      if (!_corrPortLineEdit->text().isEmpty()) {
+      _corrTimeSpinBox->setStyleSheet("background-color: white");
+      _corrTimeSpinBox->setEnabled(true);
+      }
     } else {
+      if (_corrPathLineEdit->text().isEmpty()) {
+      _corrIntrComboBox->setStyleSheet("background-color: lightGray");
       _corrPortLineEdit->setStyleSheet("background-color: lightGray");
       _corrTimeSpinBox->setStyleSheet("background-color: lightGray");
-      _corrIntrComboBox->setStyleSheet("background-color: lightGray");
+      _corrIntrComboBox->setEnabled(false);
       _corrPortLineEdit->setEnabled(false);
       _corrTimeSpinBox->setEnabled(false);
-      _corrIntrComboBox->setEnabled(false);
+      }
+      if (_corrPortLineEdit->text().isEmpty()) {
+      _corrTimeSpinBox->setStyleSheet("background-color: lightGray");
+      _corrTimeSpinBox->setEnabled(false);
+      }
     }
   }
 
