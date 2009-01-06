@@ -103,9 +103,9 @@ All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/
 &nbsp; &nbsp; &nbsp; 3.7.3. <a href=#corrport>Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.4. <a href=#corrwait>Wait for Full Epoch</a><br>
 3.8. <a href=#syncout>Feed Engine</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.1. <a href=#syncport>Port (synchronized)</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.2. <a href=#syncwait>Wait for Full Epoch</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.3. <a href=#syncuport>Port (unsynchronized)</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.1. <a href=#syncuport>Port (unsynchronized)</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.2. <a href=#syncport>Port (synchronized)</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.3. <a href=#syncwait>Wait for Full Epoch</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.4. <a href=#syncfile>File</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.5. <a href=#syncsample>Sampling</a><br>
 3.9. <a href=#serial>Serial Link</a><br>
@@ -454,9 +454,6 @@ StatID, SVPRN, GPSWeek, GPSWeeks, C1, C2, P1, P2, L1, L2, slip_cnt_L1, slip_cnt_
 Note that slip_cnt stands for the cumulative loss of continuity indicator, lock_timei for the lock time indicator, and SNR for the signal-to-noise ratio 'S' mapped to integer numbers 1 to 9. In case an observation is not available, its value is set to zero '0.000'. Loss of continuity indicator and lock time indicator are set to nedative values if undefined.
 </p>
 
-<p><a name="syncport"><h4>3.8.1 Port (synchronized) - optional</h4></p>
-<p>
-BNC can produce synchronized observations in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary output is generated.</p>
 <p>The binary output is a continuous stream in the following order:</p>
 <pre>
 begEpoch
@@ -506,27 +503,25 @@ class t_obsInternal {
 The source code for BNC comes with an example program called 'test_bnc_qt.cpp' that allows you to read BNC's binary observation output from the IP port and print the observations in a plain ASCII format on standard output.
 </p>
 <p>
-Note that any socket connection of an application to BNC's synchronized observations 'Port' is recorded in the 'Logs' canvas on the bottom of the main window together with a connection counter, leading to log records like 'New Connection # 1'.
+Note that any socket connection of an application to BNC's synchronized or unsynchronized observations ports is recorded in the 'Logs' canvas on the bottom of the main window together with a connection counter, leading to log records like 'New Connection # 1'.
 </p>
 
-<p><a name="syncwait"><h4>3.8.2 Wait for Full Epoch - mandatory if 'Port (synchronized)' is set</h4></p>
+<p><a name="syncuport"><h4>3.8.1 Port (unsynchronized) - optional</h4></p>
+BNC can produce unsynchronized observations from all configured streams in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary unsynchronized output is generated.</p>
+
+<p><a name="syncport"><h4>3.8.2 Port (synchronized) - optional</h4></p>
+<p>
+BNC can produce synchronized observations in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Scynchronized means that BNC collects all data for any specific epoch which become available within a certain number of latency seconds (see 'Wait for Full Epoch' option). It then - epoch by epoch - outputs whatever has been received. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary synchronized output is generated.</p>
+<p>
+</p>
+
+<p><a name="syncwait"><h4>3.8.3 Wait for Full Epoch - mandatory if 'Port (synchronized)' is set</h4></p>
 <p>
 When feeding a real-time GNSS engine waiting for synchronized input epoch by epoch, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming streams and the delay acceptable for your real-time GNSS product. Default value for 'Wait for full epoch' is 5 seconds.
 </p>
 <p>
 Note that 'Wait for full epoch' does not effect the RINEX Observation file content. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX Observation files.
 </p> 
-
-<p><a name="syncuport"><h4>3.8.3 Port (unsynchronized) - optional</h4></p>
-An application may want to receive unsynchronized observations from reference stations. If so, BNC can produce such unsynchronized observations in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary unsynchronized output is generated.</p>
-
-<p>
-The example program 'test_bnc_qt.cpp' allows you to read BNC's unsynchronized binary observation output from the IP port and print the observations in a plain ASCII format on standard output.
-</p>
-<p>
-Note that any socket connection of an application to BNC's unsynchronized observations 'Port' is recorded in the 'Logs' canvas on the bottom of the main window together with a connection counter, leading to log records like 'New Connection # 1'.
-</p>
-
 
 <p><a name="syncfile"><h4>3.8.4 File - optional</h4></p>
 <p>
