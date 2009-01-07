@@ -337,25 +337,25 @@ t_irc bncGetThread::initRun() {
   // ----------------------
   if (!_decoder) { 
     if      (_format.indexOf("RTCM_2") != -1) {
-      emit(newMessage("Get Data: " + _staID + " in RTCM 2.x format", true));
+      emit(newMessage(_staID + ": Get data in RTCM 2.x format", true));
       _decoder = new RTCM2Decoder(_staID.data());
     }
     else if (_format.indexOf("RTCM_3") != -1) {
-      emit(newMessage("Get Data: " + _staID + " in RTCM 3.x format", true));
+      emit(newMessage(_staID + ": Get data in RTCM 3.x format", true));
       _decoder = new RTCM3Decoder(_staID);
       connect((RTCM3Decoder*) _decoder, SIGNAL(newMessage(QByteArray,bool)), 
               this, SIGNAL(newMessage(QByteArray,bool)));
     }
     else if (_format.indexOf("RTIGS") != -1) {
-      emit(newMessage("Get Data: " + _staID + " in RTIGS format", true));
+      emit(newMessage(_staID + ": Get data in RTIGS format", true));
       _decoder = new RTIGSDecoder();
     }
     else if (_format.indexOf("GPSS") != -1 || _format.indexOf("BNC") != -1) {
-      emit(newMessage("Get Data: " + _staID + " in GPSS format", true));
+      emit(newMessage(_staID + ": Get Data in GPSS format", true));
       _decoder = new gpssDecoder();
     }
     else if (_format.indexOf("ZERO") != -1) {
-      emit(newMessage("Get Data: " + _staID + " in original format", true));
+      emit(newMessage(_staID + ": Get data in original format", true));
       _decoder = new bncZeroDecoder(_staID);
     }
     else {
@@ -873,7 +873,7 @@ void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
     
     if ( decoder->storeEph(gpseph, storedPRN, IODs) ) {
 #ifdef DEBUG_RTCM2_2021
-      QString msg = _staID + QString(": stored eph %1 IODs").arg(storedPRN.c_str());
+      QString msg = _staID + QString(": Stored eph %1 IODs").arg(storedPRN.c_str());
       
       for (unsigned ii = 0; ii < IODs.size(); ii++) {
         msg += QString(" %1").arg(IODs[ii],4);
