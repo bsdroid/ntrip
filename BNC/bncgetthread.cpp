@@ -270,7 +270,7 @@ void bncGetThread::initialize() {
     if (!_serialPort->isOpen()) {
       delete _serialPort;
       _serialPort = 0;
-      emit(newMessage((_staID + ": Cannot Open Serial Port\n"), true));
+      emit(newMessage((_staID + ": Cannot open serial port\n"), true));
     }
   }
   else {
