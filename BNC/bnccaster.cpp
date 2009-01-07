@@ -79,7 +79,7 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
   if (_port != 0) {
     _server = new QTcpServer;
     if ( !_server->listen(QHostAddress::Any, _port) ) {
-      emit newMessage("bncCaster: cannot listen on sync port", true);
+      emit newMessage("bncCaster: Cannot listen on sync port", true);
     }
     connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
     _sockets = new QList<QTcpSocket*>;
@@ -93,7 +93,7 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
   if (uPort != 0) {
     _uServer = new QTcpServer;
     if ( !_uServer->listen(QHostAddress::Any, uPort) ) {
-      emit newMessage("bncCaster: cannot listen on usync port", true);
+      emit newMessage("bncCaster: Cannot listen on usync port", true);
     }
     connect(_uServer, SIGNAL(newConnection()), this, SLOT(slotNewUConnection()));
     _uSockets = new QList<QTcpSocket*>;
@@ -217,13 +217,13 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::slotNewConnection() {
   _sockets->push_back( _server->nextPendingConnection() );
-  emit( newMessage(QString("New Connection # %1")
+  emit( newMessage(QString("New client connection on sync port: # %1")
                    .arg(_sockets->size()).toAscii(), true) );
 }
 
 void bncCaster::slotNewUConnection() {
   _uSockets->push_back( _uServer->nextPendingConnection() );
-  emit( newMessage(QString("New Connection (usync) # %1")
+  emit( newMessage(QString("New client connection on usync port: # %1")
                    .arg(_uSockets->size()).toAscii(), true) );
 }
 
@@ -253,7 +253,7 @@ void bncCaster::slotGetThreadError(QByteArray staID) {
   emit( newMessage(
            QString("Mountpoint size %1").arg(_staIDs.size()).toAscii(), true) );
   if (_staIDs.size() == 0) {
-    emit(newMessage("bncCaster:: last get thread terminated", true));
+    emit(newMessage("bncCaster: Last get thread terminated", true));
     emit getThreadErrors();
   }
 }
