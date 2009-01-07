@@ -585,7 +585,7 @@ void bncApp::setPort(int port) {
     delete _server;
     _server = new QTcpServer;
     if ( !_server->listen(QHostAddress::Any, _port) ) {
-      slotMessage("bncApp: cannot listen on ephemeris port", true);
+      slotMessage("bncApp: Cannot listen on ephemeris port", true);
     }
     connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
     delete _sockets;
@@ -601,7 +601,7 @@ void bncApp::setPortCorr(int port) {
     delete _serverCorr;
     _serverCorr = new QTcpServer;
     if ( !_serverCorr->listen(QHostAddress::Any, _portCorr) ) {
-      slotMessage("bncApp: cannot listen on correction port", true);
+      slotMessage("bncApp: Cannot listen on correction port", true);
     }
     connect(_serverCorr, SIGNAL(newConnection()), this, SLOT(slotNewConnectionCorr()));
     delete _socketsCorr;
