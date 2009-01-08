@@ -337,7 +337,7 @@ bncWindow::bncWindow() {
   _perfIntrComboBox->setWhatsThis(tr("<p>BNC can average latencies per stream over a certain period of GPS time. The resulting mean latencies are recorded in the 'Logs' section at the end of each 'Log latency' interval together with results of a statistical evaluation (approximate number of covered epochs, data gaps).</p><p>Select a 'Log latency' interval or select the empty option field if you do not want BNC to log latencies and statistical information.</p>"));
   _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Streams' section. Clicking on 'Add Streams' button will open a window that allows the user to select data streams from an NTRIP broadcaster according to their mountpoints. To remove a stream from the 'Streams' list, highlight it by clicking on it and hit the 'Delete Streams' button. You can also remove multiple streams by highlighting them using +Shift and +Ctrl.</p><p>BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' as given in the sourcetable. BNC allows users to change this selection by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.</p><p>In case you need to log the raw data as is, BNC allows users to by-pass its decoders and and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'.</p><p>BNC can also retrieve streams from virtual reference stations (VRS). VRS streams are indicated by a 'yes' in the 'nmea' column. To initiate these streams, the approximate latitude/longitude rover position is sent to the NTRIP broadcaster. The default values can be change according to your requirement. Double click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter.</p>"));
   _log->setWhatsThis(tr("Records of BNC's activities are shown in the 'Logs' section. The message log covers the communication status between BNC and the NTRIP broadcaster as well as any problems that occur in the communication link, stream availability, stream delay, stream conversion etc."));
-  _ephV3CheckBox->setWhatsThis(tr("The default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format."));
+  _ephV3CheckBox->setWhatsThis(tr("The default format for output of RINEX Navigation data containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to output the ephemeris in RINEX Version 3 format."));
   _rnxV3CheckBox->setWhatsThis(tr("The default format for RINEX Observation files is RINEX Version 2.11. Select 'Version 3' if you want to save the observations in RINEX Version 3 format."));
   _miscMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint to apply any of the options shown below. Enter 'ALL' if you want to apply these options to all configured streams.</p><p>An empty option field (default) means that you don't want BNC to apply any of these options.</p>"));
   _scanRTCMCheckBox->setWhatsThis(tr("<p>Tick 'Scan RTCM' to log the numbers of incomming message types as well as contained antenna coordinates, antenna heigt, and antenna descriptor.</p>"));
@@ -460,15 +460,20 @@ bncWindow::bncWindow() {
 
   connect(_ephPathLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
-  if (_ephPathLineEdit->text().isEmpty()) { 
+  connect(_outEphPortLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+
+  if (_ephPathLineEdit->text().isEmpty() && _outEphPortLineEdit->text().isEmpty()) { 
     _ephIntrComboBox->setStyleSheet("background-color: lightGray");
-    _outEphPortLineEdit->setStyleSheet("background-color: lightGray");
     palette.setColor(_ephV3CheckBox->backgroundRole(), lightGray);
     _ephV3CheckBox->setPalette(palette);
     _ephIntrComboBox->setEnabled(false);
-    _outEphPortLineEdit->setEnabled(false);
     _ephV3CheckBox->setEnabled(false);
   }
+  if (_ephPathLineEdit->text().isEmpty() && !_outEphPortLineEdit->text().isEmpty()) { 
+    _ephIntrComboBox->setStyleSheet("background-color: lightGray");
+    _ephIntrComboBox->setEnabled(false);
+  }   
 
   // Outages
   // -------
@@ -584,9 +589,7 @@ bncWindow::bncWindow() {
           this, SLOT(bncText(const QString &)));
   if (_corrPathLineEdit->text().isEmpty()) { 
     _corrIntrComboBox->setStyleSheet("background-color: lightGray");
-    _corrPortLineEdit->setStyleSheet("background-color: lightGray");
     _corrIntrComboBox->setEnabled(false);
-    _corrPortLineEdit->setEnabled(false);
   }
   if (_corrPortLineEdit->text().isEmpty()) { 
     _corrTimeSpinBox->setStyleSheet("background-color: lightGray");
@@ -1223,22 +1226,33 @@ void bncWindow::bncText(const QString &text){
   // RINEX Ephemeris
   // ---------------
   if (aogroup->currentIndex() == 3) {
-    if (!isEmpty) {
-      _outEphPortLineEdit->setStyleSheet("background-color: white");
+    if (!_ephPathLineEdit->text().isEmpty() && !_outEphPortLineEdit->text().isEmpty()) { 
+      _ephIntrComboBox->setStyleSheet("background-color: white");
       palette.setColor(_ephV3CheckBox->backgroundRole(), white);
       _ephV3CheckBox->setPalette(palette);
-      _ephIntrComboBox->setStyleSheet("background-color: white");
-      _outEphPortLineEdit->setEnabled(true);
-      _ephV3CheckBox->setEnabled(true);
       _ephIntrComboBox->setEnabled(true);
-    } else {
-      _outEphPortLineEdit->setStyleSheet("background-color: lightGray");
+      _ephV3CheckBox->setEnabled(true);
+    }
+    if (_ephPathLineEdit->text().isEmpty() && !_outEphPortLineEdit->text().isEmpty()) { 
+      _ephIntrComboBox->setStyleSheet("background-color: lightGray");
+      palette.setColor(_ephV3CheckBox->backgroundRole(), white);
+      _ephV3CheckBox->setPalette(palette);
+      _ephIntrComboBox->setEnabled(false);
+      _ephV3CheckBox->setEnabled(true);
+    }
+    if (!_ephPathLineEdit->text().isEmpty() && _outEphPortLineEdit->text().isEmpty()) { 
+      _ephIntrComboBox->setStyleSheet("background-color: white");
+      palette.setColor(_ephV3CheckBox->backgroundRole(), white);
+      _ephV3CheckBox->setPalette(palette);
+      _ephIntrComboBox->setEnabled(true);
+      _ephV3CheckBox->setEnabled(true);
+    }
+    if (_ephPathLineEdit->text().isEmpty() && _outEphPortLineEdit->text().isEmpty()) { 
+      _ephIntrComboBox->setStyleSheet("background-color: lightGray");
       palette.setColor(_ephV3CheckBox->backgroundRole(), lightGray);
       _ephV3CheckBox->setPalette(palette);
-      _ephIntrComboBox->setStyleSheet("background-color: lightGray");
-      _outEphPortLineEdit->setEnabled(false);
-      _ephV3CheckBox->setEnabled(false);
       _ephIntrComboBox->setEnabled(false);
+      _ephV3CheckBox->setEnabled(false);
     }
   }
 
@@ -1259,11 +1273,7 @@ void bncWindow::bncText(const QString &text){
     } else {
       if (_corrPathLineEdit->text().isEmpty()) {
       _corrIntrComboBox->setStyleSheet("background-color: lightGray");
-      _corrPortLineEdit->setStyleSheet("background-color: lightGray");
-      _corrTimeSpinBox->setStyleSheet("background-color: lightGray");
-      _corrIntrComboBox->setEnabled(false);
-      _corrPortLineEdit->setEnabled(false);
-      _corrTimeSpinBox->setEnabled(false);
+      _corrIntrComboBox->setEnabled(false); 
       }
       if (_corrPortLineEdit->text().isEmpty()) {
       _corrTimeSpinBox->setStyleSheet("background-color: lightGray");
