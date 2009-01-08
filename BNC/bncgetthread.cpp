@@ -783,7 +783,7 @@ void bncGetThread::run() {
       // Timeout, reconnect
       // ------------------
       else {
-        emit(newMessage(_staID + ": Data Timeout, reconnecting", true));
+        emit(newMessage(_staID + ": Data timeout, reconnecting", true));
         tryReconnect();
       }
     }
