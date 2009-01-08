@@ -417,16 +417,16 @@ bncWindow::bncWindow() {
   // -----------
   QGridLayout* sLayout = new QGridLayout;
   sLayout->setColumnMinimumWidth(0,14*ww);
-  sLayout->addWidget(new QLabel("Port (unsynchronized)"),         0, 0);
-  sLayout->addWidget(_outUPortLineEdit,                           0, 1);
-  sLayout->addWidget(new QLabel("Port (synchronized)"),           1, 0);
-  sLayout->addWidget(_outPortLineEdit,                            1, 1);
-  sLayout->addWidget(new QLabel("Wait for full epoch"),           1, 2, Qt::AlignRight);
-  sLayout->addWidget(_waitTimeSpinBox,                            1, 3, Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("Port"),                          0, 0);
+  sLayout->addWidget(_outPortLineEdit,                            0, 1);
+  sLayout->addWidget(new QLabel("Wait for full epoch"),           0, 2, Qt::AlignRight);
+  sLayout->addWidget(_waitTimeSpinBox,                            0, 3, Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("Sampling"),                      1, 0);
+  sLayout->addWidget(_binSamplSpinBox,                            1, 1, Qt::AlignLeft);
   sLayout->addWidget(new QLabel("File (full path)"),              2, 0);
   sLayout->addWidget(_outFileLineEdit,                            2, 1, 1, 30);
-  sLayout->addWidget(new QLabel("Sampling"),                      3, 0);
-  sLayout->addWidget(_binSamplSpinBox,                            3, 1, Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("Port (unsynchronized)"),         3, 0);
+  sLayout->addWidget(_outUPortLineEdit,                           3, 1);
   sLayout->addWidget(new QLabel("Output decoded observations in a binary format to feed a real-time GNSS engine."),4,0,1,30);
   sLayout->addWidget(new QLabel("    "),5,0);
   sgroup->setLayout(sLayout);
