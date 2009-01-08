@@ -103,11 +103,11 @@ All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/
 &nbsp; &nbsp; &nbsp; 3.7.3. <a href=#corrport>Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.4. <a href=#corrwait>Wait for Full Epoch</a><br>
 3.8. <a href=#syncout>Feed Engine</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.1. <a href=#syncuport>Port (unsynchronized)</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.2. <a href=#syncport>Port (synchronized)</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.3. <a href=#syncwait>Wait for Full Epoch</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.1. <a href=#syncport>Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.2. <a href=#syncwait>Wait for Full Epoch</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.3. <a href=#syncsample>Sampling</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.4. <a href=#syncfile>File</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.5. <a href=#syncsample>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.5. <a href=#syncuport>Port (unsynchronized)</a><br>
 3.9. <a href=#serial>Serial Link</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.1. <a href=#sermount>Mountpoint</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.2. <a href=#serport>Port Name</a><br>
@@ -503,19 +503,16 @@ class t_obsInternal {
 The source code for BNC comes with an example program called 'test_bnc_qt.cpp' that allows you to read BNC's binary observation output from the IP port and print the observations in a plain ASCII format on standard output.
 </p>
 <p>
-Note that any socket connection of an application to BNC's synchronized or unsynchronized observations ports is recorded in the 'Logs' canvas on the bottom of the main window together with a connection counter, leading to log records like 'New client connection on sync/usync port: # 1'.
+Note that any socket connection of an application to BNC's synchronized or unsynchronized observations ports is recorded in the 'Logs' canvas on the bottom of the main window together with a connection counter, resulting in log records like 'New client connection on sync/usync port: # 1'.
 </p>
 
-<p><a name="syncuport"><h4>3.8.1 Port (unsynchronized) - optional</h4></p>
-BNC can produce unsynchronized observations from all configured streams in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary unsynchronized output is generated.</p>
-
-<p><a name="syncport"><h4>3.8.2 Port (synchronized) - optional</h4></p>
+<p><a name="syncport"><h4>3.8.1 Port - optional</h4></p>
 <p>
 BNC can produce synchronized observations in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Scynchronized means that BNC collects all data for any specific epoch which become available within a certain number of latency seconds (see 'Wait for Full Epoch' option). It then - epoch by epoch - outputs whatever has been received. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary synchronized output is generated.</p>
 <p>
 </p>
 
-<p><a name="syncwait"><h4>3.8.3 Wait for Full Epoch - mandatory if 'Port (synchronized)' is set</h4></p>
+<p><a name="syncwait"><h4>3.8.2 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
 <p>
 When feeding a real-time GNSS engine waiting for synchronized input epoch by epoch, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming streams and the delay acceptable for your real-time GNSS product. Default value for 'Wait for full epoch' is 5 seconds.
 </p>
@@ -523,18 +520,24 @@ When feeding a real-time GNSS engine waiting for synchronized input epoch by epo
 Note that 'Wait for full epoch' does not effect the RINEX Observation file content. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX Observation files.
 </p> 
 
+<p><a name="syncsample"><h4>3.8.3 Sampling - mandatory if 'File' or 'Port' is set</h4></p>
+<p>
+Select the synchronized observation output sampling interval in seconds. A value of zero '0' tells BNC to send/store all received epochs. This is the default value.
+</p>
+
 <p><a name="syncfile"><h4>3.8.4 File - optional</h4></p>
 <p>
-Specifies the full path to a 'File' where synchronized or unsynchronized observations are saved in plain ASCII format. The default value is an empty option field, meaning that no ASCII output file is created.
+Specifies the full path to a 'File' where synchronized observations are saved in plain ASCII format. The default value is an empty option field, meaning that no ASCII output file is created.
 </p>
 <p>
 Beware that the size of this file can rapidly increase depending on the number of incoming streams. This option is primarily meant for testing and evaluation.
 </p>
 
-<p><a name="syncsample"><h4>3.8.5 Sampling - mandatory if 'File' or 'Port' is set</h4></p>
+<p><a name="syncuport"><h4>3.8.5 Port (unsynchronized) - optional</h4></p>
 <p>
-Select the observation output sampling interval in seconds. A value of zero '0' tells BNC to send/store all received epochs. This is the default value.
-</p>
+BNC can produce unsynchronized observations from all configured streams in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary unsynchronized output is generated.</p>
+<p>
+
 
 <p><a name="serial"><h4>3.9. Serial Link</h4></p>
 <p>
