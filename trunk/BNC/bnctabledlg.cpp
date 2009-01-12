@@ -83,32 +83,40 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   if (kk != -1) {
     _ntripVersionComboBox->setCurrentIndex(kk);
   }
+  _ntripVersionComboBox->setMaximumWidth(5*ww);
+
+  _buttonCasterTable = new QPushButton(tr("Show"), this);
+  connect(_buttonCasterTable, SIGNAL(clicked()), this, SLOT(slotCasterTable()));
+  _buttonCasterTable->setMaximumWidth(5*ww);
 
   // WhatsThis
   // ---------
-  _casterUserLineEdit->setWhatsThis(tr("Access to some streams on NTRIP broadcasters may be restricted. You'll need to enter a valid 'User ID' and 'Password' for access to these protected streams. Accounts are usually provided per NTRIP broadcaster through a registration process. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>."));
-  _casterPortLineEdit->setWhatsThis(tr("Enter the NTRIP broadcaster hostname or IP number and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>."));
-  _casterHostLineEdit->setWhatsThis(tr("Enter the NTRIP broadcaster hostname or IP number and port number. <u>http://www.rtcm-ntrip.org/home</u> provides information about known NTRIP broadcaster installations. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>."));
-  _casterPasswordLineEdit->setWhatsThis(tr("Access to some streams on NTRIP broadcasters may be restricted. You'll need to enter a valid 'User ID' and 'Password' for access to these protected streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>."));
+  _casterUserLineEdit->setWhatsThis(tr("<p>Access to some streams on NTRIP broadcasters may be restricted. You'll need to enter a valid 'User ID' and 'Password' for access to these protected streams.</p><p>Accounts are usually provided per NTRIP broadcaster through a registration process. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.</p>"));
+  _casterHostLineEdit->setWhatsThis(tr("<p>Enter the NTRIP broadcaster hostname or IP number.</p><p>Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.</p>"));
+  _casterPortLineEdit->setWhatsThis(tr("Enter the NTRIP broadcaster port number."));
+  _casterPasswordLineEdit->setWhatsThis(tr("Access to some streams on NTRIP broadcasters may be restricted. You'll need to enter a valid 'Password' for access to these protected streams."));
 
   QGridLayout* editLayout = new QGridLayout;
-  editLayout->addWidget(new QLabel(tr("Caster host")), 0, 0);
-  editLayout->addWidget(_casterHostLineEdit,           0, 1);
-  editLayout->addWidget(new QLabel(tr("Caster port")), 0, 2);
-  editLayout->addWidget(_casterPortLineEdit,           0, 3);
-  editLayout->addWidget(new QLabel(tr("NTRIP Version")), 0, 4);
-  editLayout->addWidget(_ntripVersionComboBox,           0, 5);
-  editLayout->addWidget(new QLabel(tr("User")),        1, 0);
-  editLayout->addWidget(_casterUserLineEdit,           1, 1);
-  editLayout->addWidget(new QLabel(tr("Password")),    1, 2);
-  editLayout->addWidget(_casterPasswordLineEdit,       1, 3);
+  editLayout->addWidget(new QLabel(tr("Caster host")),    0, 0);
+  editLayout->addWidget(_casterHostLineEdit,              0, 1);
+  editLayout->addWidget(new QLabel(tr("  Caster port")),  0, 2, Qt::AlignRight);
+  editLayout->addWidget(_casterPortLineEdit,              0, 3);
+  editLayout->addWidget(new QLabel(tr("Caster table")),   0, 4, Qt::AlignRight);
+  editLayout->addWidget(_buttonCasterTable,               0, 5);
+  editLayout->addWidget(new QLabel(tr("User")),           1, 0, Qt::AlignRight);
+  editLayout->addWidget(_casterUserLineEdit,              1, 1);
+  editLayout->addWidget(new QLabel(tr("Password")),       1, 2, Qt::AlignRight);
+  editLayout->addWidget(_casterPasswordLineEdit,          1, 3);
+  editLayout->addWidget(new QLabel(tr("  NTRIP Version")),1, 4, Qt::AlignRight);
+  editLayout->addWidget(_ntripVersionComboBox,            1, 5);
 
   mainLayout->addLayout(editLayout);
 
+  _buttonCasterTable->setWhatsThis(tr("<p>Hit 'Show' for a table of known NTRIP broadcaster installations as maintained at www.rtcm-ntrip.org/home.</p><p>A window opens which allows to select a broadcaster for stream retrieval.</p>"));
   _ntripVersionComboBox->setWhatsThis(tr("<p>Select the NTRIP transport protocol version you want to use. Implemented options are:<br>&nbsp; 1:&nbsp; NTRIP version 1, TCP/IP<br>&nbsp; 2:&nbsp; NTRIP version 2, TCP/IP<br>&nbsp; R:&nbsp; NTRIP Version 2, RTSP/RTP<br>Select option '1' if you are not sure whether the NTRIP broadcaster supports NTRIP version 2.</p>"));
 
   _table = new QTableWidget(this);
-  _table->setWhatsThis(tr("<p>Use the 'Get Table' button to download the sourcetable from the NTRIP broadcaster. Select the desired streams line by line, using +Shift and +Ctrl when necessary. Hit 'OK' to return to the main window.</p><p>Pay attention to data field 'format'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. See data field 'format-details' for available message types and their repetition rates in brackets.</p><p>The content of data field 'nmea' tells you whether a stream comes from a virtual reference station (VRS).</p>"));
+  _table->setWhatsThis(tr("<p>Use the 'Get Table' button to download the sourcetable from the selected NTRIP broadcaster. Select the desired streams line by line, using +Shift and +Ctrl when necessary. Hit 'OK' to return to the main window.</p><p>Pay attention to data field 'format'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. See data field 'format-details' for available message types and their repetition rates in brackets.</p><p>The content of data field 'nmea' tells you whether a stream comes from a virtual reference station (VRS).</p>"));
   connect(_table, SIGNAL(itemSelectionChanged()),
           this, SLOT(slotSelectionChanged()));
   mainLayout->addWidget(_table);
@@ -195,6 +203,7 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
 void bncTableDlg::slotGetTable() {
 
   _buttonGet->setEnabled(false);
+  _buttonCasterTable->setEnabled(false); 
 
   _allLines.clear();
 
@@ -356,4 +365,174 @@ void bncTableDlg::slotWhatsThis() {
 QWhatsThis::enterWhatsThisMode();
 }
 
+// Slot caster table
+////////////////////////////////////////////////////////////////////////////
+void bncTableDlg::slotCasterTable() {
+        
+  _buttonCasterTable->setEnabled(false);
+  bncCasterTableDlg* dlg = new bncCasterTableDlg(this);
+  dlg->move(this->pos().x()+50, this->pos().y()+50);
+  connect(dlg, SIGNAL(newCaster(QString*, QString*)),
+          this, SLOT(slotNewCaster(QString*, QString*)));
+  dlg->exec();
+  delete dlg;
+  _buttonCasterTable->setEnabled(true);
+
+}
+
+// Caster table
+////////////////////////////////////////////////////////////////////////////
+bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) : 
+   QDialog(parent) {
+
+  static const QStringList labels = QString("url,port,caster,operator,nmea,country,lat,long,link").split(",");
+
+  QStringList lines;
+  lines.clear();
+  _casterTable = new QTableWidget(this);
+
+  QUrl url;
+  url.setHost("www.rtcm-ntrip.org");
+  url.setPort(2101);
+  url.setScheme("http");
+  url.setPath("/");
+
+  bncNetQueryV2 query;
+  QByteArray outData;
+  query.waitForRequestResult(url, outData);
+  if (query.status() == bncNetQuery::finished) {
+    QTextStream in(outData);
+    QString line = in.readLine();
+    while ( !line.isNull() ) {
+      line = in.readLine();
+      if (line.indexOf("CAS") == 0) {
+        lines.append(line);
+      }
+    }
+  }
+  if (lines.size() > 0) {
+    _casterTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    _casterTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    QStringList hlp = lines[0].split(";");
+    _casterTable->setColumnCount(hlp.size()-1);
+    _casterTable->setRowCount(lines.size());
+
+    QListIterator<QString> it(lines);
+    int nRow = -1;
+    while (it.hasNext()) {
+      QStringList columns = it.next().split(";");
+      ++nRow;
+      for (int ic = 0; ic < columns.size()-1; ic++) {
+         if (ic+1 == 5) { if (columns[ic+1] == "0") { columns[ic+1] = "no"; } else { columns[ic+1] = "yes"; }}
+         QTableWidgetItem* it = new QTableWidgetItem(columns[ic+1]);
+        it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+        _casterTable->setItem(nRow, ic, it);
+      }
+    }
+  } 
+  _casterTable->sortItems(0);
+  _casterTable->setHorizontalHeaderLabels(labels);
+  _casterTable->setSortingEnabled(true);
+
+   int ww = QFontMetrics(this->font()).width('w');
+  _casterTable->horizontalHeader()->resizeSection(0,15*ww);
+  _casterTable->horizontalHeader()->resizeSection(1,5*ww);
+  _casterTable->horizontalHeader()->resizeSection(2,15*ww);
+  _casterTable->horizontalHeader()->resizeSection(3,15*ww);
+  _casterTable->horizontalHeader()->resizeSection(4,5*ww);
+  _casterTable->horizontalHeader()->resizeSection(5,7*ww);
+  _casterTable->horizontalHeader()->resizeSection(6,7*ww);
+  _casterTable->horizontalHeader()->resizeSection(7,7*ww);
+  _casterTable->horizontalHeader()->resizeSection(8,15*ww);
+
+  ww = QFontMetrics(font()).width('w');
+
+  QPushButton* _closeButton = new QPushButton("Cancel");
+  connect(_closeButton, SIGNAL(clicked()), this, SLOT(close()));
+  _closeButton->setMinimumWidth(8*ww);
+  _closeButton->setMaximumWidth(8*ww);
+
+  QPushButton* _okButton = new QPushButton(tr("OK"), this);
+  connect(_okButton, SIGNAL(clicked()), this, SLOT(slotAcceptCasterTable()));
+  _okButton->setMinimumWidth(8*ww);
+  _okButton->setMaximumWidth(8*ww);
+
+  QPushButton* _whatsThisCasterTableButton = new QPushButton(tr("Help=Shift+F1"), this);
+  connect(_whatsThisCasterTableButton, SIGNAL(clicked()), this, SLOT(slotWhatsThisCasterTable()));
+  _whatsThisCasterTableButton->setMinimumWidth(12*ww);
+  _whatsThisCasterTableButton->setMaximumWidth(12*ww);
+
+  _casterTable->setWhatsThis(tr("<p>Select an NTRIP broadcaster and hit 'OK'.</p><p>See http://www.rtcm-ntrip.org/home for further details on known NTRIP broadcaster installations.</u>."));
+
+  QGridLayout* dlgLayout = new QGridLayout();
+  dlgLayout->addWidget(new QLabel("  List of NTRIP Broadcasters from www.rtcm-ntrip.org"), 0,0,1,3,Qt::AlignLeft);
+  dlgLayout->addWidget(_casterTable,                1, 0, 1, 3);
+  dlgLayout->addWidget(_whatsThisCasterTableButton, 2, 0);
+  dlgLayout->addWidget(_closeButton,                2, 1, Qt::AlignRight);  
+  dlgLayout->addWidget(_okButton,                   2, 2);
+
+  setMinimumSize(600,400);
+  setWindowTitle(tr("Select Broadcaster"));
+  setLayout(dlgLayout);
+  resize(68*ww, 60*ww);
+  show();
+}
+
+// Caster table what's this
+////////////////////////////////////////////////////////////////////////////
+void bncCasterTableDlg:: slotWhatsThisCasterTable() {
+QWhatsThis::enterWhatsThisMode();
+}
+
+// Caster table destructor
+////////////////////////////////////////////////////////////////////////////
+bncCasterTableDlg::~bncCasterTableDlg() {
+  if (_casterTable) {
+    for (int ir = 0; ir < _casterTable->rowCount(); ir++) {
+      for (int ic = 0; ic < _casterTable->columnCount(); ic++) {
+        delete _casterTable->item(ir,ic);
+      }
+    }
+  }
+}
+
+// Accept caster table
+////////////////////////////////////////////////////////////////////////////
+void bncCasterTableDlg::slotAcceptCasterTable() {
+
+  QSettings settings;
+  QString* newCasterHost = new QString;
+  QString* newCasterPort = new QString;
+
+  if (_casterTable) {
+    for (int ir = 0; ir < _casterTable->rowCount(); ir++) {
+      QTableWidgetItem* item   = _casterTable->item(ir,0);
+      for (int ic = 0; ic < _casterTable->columnCount(); ic++) {
+        if (_casterTable->isItemSelected(item)) {
+          if (ic == 0) {
+            newCasterHost->push_back(_casterTable->item(ir,0)->text());
+          }
+          if (ic == 1) {
+            newCasterPort->push_back(_casterTable->item(ir,1)->text());
+          }
+        }
+      }
+    }
+  }
+  emit newCaster(newCasterHost, newCasterPort);
+QDialog::accept();
+}
+
+// New caster selected
+////////////////////////////////////////////////////////////////////////////
+void bncTableDlg::slotNewCaster(QString* newCasterHost, QString* newCasterPort) {
+
+  const QString* newHost = new QString(*newCasterHost);
+  const QString* newPort = new QString(*newCasterPort);
+
+  _casterHostLineEdit->setItemText(0,newHost->toAscii().data());
+  _casterPortLineEdit->clear();
+  _casterPortLineEdit->insert(newPort->toAscii().data());
+}
 

@@ -31,6 +31,24 @@
 
 #include "bncconst.h"
 
+  class bncCasterTableDlg : public QDialog {
+  Q_OBJECT
+
+  public:
+    bncCasterTableDlg(QWidget* parent);
+    ~bncCasterTableDlg();
+
+  signals:
+    void newCaster(QString* newCasterHost, QString* newCasterPort);
+
+  private slots:
+    virtual void slotAcceptCasterTable();
+    virtual void slotWhatsThisCasterTable();
+
+  private:
+    QTableWidget* _casterTable;
+};
+
 class bncTableDlg : public QDialog {
   Q_OBJECT
 
@@ -49,6 +67,8 @@ class bncTableDlg : public QDialog {
     void slotSkl();
     void slotSelectionChanged();
     void slotWhatsThis();
+    void slotCasterTable();
+    void slotNewCaster(QString* newCasterHost, QString* newCasterPort);
 
   private:
     QComboBox*   _casterHostLineEdit;
@@ -62,6 +82,7 @@ class bncTableDlg : public QDialog {
     QPushButton* _buttonCancel;
     QPushButton* _buttonOK;
     QPushButton* _buttonWhatsThis;
+    QPushButton* _buttonCasterTable;
 
     QTableWidget* _table;
     QStringList   _allLines;
