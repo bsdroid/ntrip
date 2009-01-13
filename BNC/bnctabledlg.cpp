@@ -385,7 +385,7 @@ void bncTableDlg::slotCasterTable() {
 bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) : 
    QDialog(parent) {
 
-  static const QStringList labels = QString("url,port,caster,operator,nmea,country,lat,long,link").split(",");
+  static const QStringList labels = QString("host,port,caster,operator,nmea,country,lat,long,link").split(",");
 
   QStringList lines;
   lines.clear();
