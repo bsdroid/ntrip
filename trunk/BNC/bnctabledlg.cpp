@@ -225,8 +225,8 @@ void bncTableDlg::slotGetTable() {
   }
 
   static const QStringList labels = QString("mountpoint,identifier,format,"
-    "format-details,carrier,system,network,country,latitude,longitude,"
-    "nmea,solution,generator,compress.,authentic.,fee,bitrate,"
+    "format-details,carrier,system,network,country,lat,long,"
+    "nmea,solution,generator,compress.,auth.,fee,bitrate,"
     "misc").split(",");
 
   if (lines.size() > 0) {
@@ -257,21 +257,22 @@ void bncTableDlg::slotGetTable() {
 
     int ww = QFontMetrics(this->font()).width('w');
     _table->horizontalHeader()->resizeSection(0,10*ww);
+    _table->horizontalHeader()->resizeSection(1,10*ww);
     _table->horizontalHeader()->resizeSection(2,8*ww);
-    _table->horizontalHeader()->resizeSection(3,15*ww);
-    _table->horizontalHeader()->resizeSection(4,8*ww);
+    _table->horizontalHeader()->resizeSection(3,22*ww);
+    _table->horizontalHeader()->resizeSection(4,5*ww);
     _table->horizontalHeader()->resizeSection(5,8*ww);
     _table->horizontalHeader()->resizeSection(6,8*ww);
-    _table->horizontalHeader()->resizeSection(7,8*ww);
-    _table->horizontalHeader()->resizeSection(8,8*ww);
-    _table->horizontalHeader()->resizeSection(9,8*ww);
-    _table->horizontalHeader()->resizeSection(10,8*ww);
-    _table->horizontalHeader()->resizeSection(11,8*ww);
+    _table->horizontalHeader()->resizeSection(7,7*ww);
+    _table->horizontalHeader()->resizeSection(8,6*ww);
+    _table->horizontalHeader()->resizeSection(9,6*ww);
+    _table->horizontalHeader()->resizeSection(10,6*ww);
+    _table->horizontalHeader()->resizeSection(11,6*ww);
     _table->horizontalHeader()->resizeSection(12,15*ww);
     _table->horizontalHeader()->resizeSection(13,8*ww);
-    _table->horizontalHeader()->resizeSection(14,8*ww);
-    _table->horizontalHeader()->resizeSection(15,8*ww);
-    _table->horizontalHeader()->resizeSection(16,8*ww);
+    _table->horizontalHeader()->resizeSection(14,5*ww);
+    _table->horizontalHeader()->resizeSection(15,5*ww);
+    _table->horizontalHeader()->resizeSection(16,7*ww);
     _table->horizontalHeader()->resizeSection(17,15*ww);
   }
 }
