@@ -139,7 +139,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
       
       QByteArray reqStr;
       reqStr = "SETUP " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
-             + "Cseq: 1\r\n"
+             + "CSeq: 1\r\n"
              + "Ntrip-Version: Ntrip/2.0\r\n"
              + "Ntrip-Component: Ntripclient\r\n"
              + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
@@ -167,7 +167,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
           // --------------
           if (!session.isEmpty()) { 
             reqStr = "PLAY " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
-                   + "Cseq: 2\r\n"
+                   + "CSeq: 2\r\n"
                    + "Session: " + session + "\r\n"
                    + "\r\n";
             _socket->write(reqStr, reqStr.length());
