@@ -55,7 +55,7 @@ void bncNetQueryV2::stop() {
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::slotError(QNetworkReply::NetworkError) {
   _status = error;
-  emit newMessage(_reply->errorString().toAscii(), true);
+  emit newMessage("NetQuery: " + _reply->errorString().toAscii(), true);
   _eventLoop->quit();
 }
 
