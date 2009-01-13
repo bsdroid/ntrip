@@ -370,13 +370,33 @@ QWhatsThis::enterWhatsThisMode();
 void bncTableDlg::slotCasterTable() {
         
   _buttonCasterTable->setEnabled(false);
+  _casterHostLineEdit->setEnabled(false);
+  _casterPortLineEdit->setEnabled(false);
+  _casterUserLineEdit->setEnabled(false);
+  _casterPasswordLineEdit->setEnabled(false);
+  _ntripVersionComboBox->setEnabled(false);
+  _buttonWhatsThis->setEnabled(false);
+  _buttonGet->setEnabled(false);
+  _buttonCancel->setEnabled(false);
+  _buttonOK->setEnabled(false);
+
   bncCasterTableDlg* dlg = new bncCasterTableDlg(this);
   dlg->move(this->pos().x()+50, this->pos().y()+50);
   connect(dlg, SIGNAL(newCaster(QString*, QString*)),
           this, SLOT(slotNewCaster(QString*, QString*)));
   dlg->exec();
   delete dlg;
+
   _buttonCasterTable->setEnabled(true);
+  _casterHostLineEdit->setEnabled(true);
+  _casterPortLineEdit->setEnabled(true);
+  _casterUserLineEdit->setEnabled(true);
+  _casterPasswordLineEdit->setEnabled(true);
+  _ntripVersionComboBox->setEnabled(true);
+  _buttonWhatsThis->setEnabled(true);
+  _buttonGet->setEnabled(true);
+  _buttonCancel->setEnabled(true);
+  _buttonOK->setEnabled(true);
 
 }
 
@@ -385,7 +405,7 @@ void bncTableDlg::slotCasterTable() {
 bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) : 
    QDialog(parent) {
 
-  static const QStringList labels = QString("host,port,caster,operator,nmea,country,lat,long,link").split(",");
+  static const QStringList labels = QString("host,port,identifier,operator,nmea,country,lat,long,link").split(",");
 
   QStringList lines;
   lines.clear();
