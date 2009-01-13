@@ -113,7 +113,7 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
   QNetworkRequest request;
   request.setUrl(urlLoc);
   request.setRawHeader("Host"         , urlLoc.host().toAscii());
-  request.setRawHeader("Ntrip-Version", "NTRIP/2.0");
+  request.setRawHeader("Ntrip-Version", "Ntrip/2.0");
   request.setRawHeader("User-Agent"   , "NTRIP BNC/1.7");
   if (!urlLoc.userName().isEmpty()) {
     request.setRawHeader("Authorization", "Basic " + 
