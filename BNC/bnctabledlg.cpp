@@ -112,7 +112,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   mainLayout->addLayout(editLayout);
 
-  _buttonCasterTable->setWhatsThis(tr("<p>Hit 'Show' for a table of known NTRIP broadcaster installations as maintained at www.rtcm-ntrip.org/home.</p><p>A window opens which allows to select a broadcaster for stream retrieval.</p>"));
+  _buttonCasterTable->setWhatsThis(tr("<p>Hit 'Show' for a table of known NTRIP broadcaster installations as maintained at <u>www.rtcm-ntrip.org/home.</u></p><p>A window opens which allows to select a broadcaster for stream retrieval.</p>"));
   _ntripVersionComboBox->setWhatsThis(tr("<p>Select the NTRIP transport protocol version you want to use. Implemented options are:<br>&nbsp; 1:&nbsp; NTRIP version 1, TCP/IP<br>&nbsp; 2:&nbsp; NTRIP version 2, TCP/IP mode<br>&nbsp; R:&nbsp; NTRIP Version 2, RTSP/RTP mode<br>Select option '1' if you are not sure whether the NTRIP broadcaster supports NTRIP version 2.</p><p>Note that RTSP/RTP (option 'R') is sometimes not supported by mobile Internet Service Providers.</p>"));
 
   _table = new QTableWidget(this);
@@ -494,7 +494,7 @@ bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) :
   _whatsThisCasterTableButton->setMinimumWidth(12*ww);
   _whatsThisCasterTableButton->setMaximumWidth(12*ww);
 
-  _casterTable->setWhatsThis(tr("<p>Select an NTRIP broadcaster and hit 'OK'.</p><p>See http://www.rtcm-ntrip.org/home for further details on known NTRIP broadcaster installations.</u>."));
+  _casterTable->setWhatsThis(tr("<p>Select an NTRIP broadcaster and hit 'OK'.</p><p>See <u>http://www.rtcm-ntrip.org/home</u> for further details on known NTRIP broadcaster installations.</u>."));
 
   QGridLayout* dlgLayout = new QGridLayout();
   dlgLayout->addWidget(new QLabel("  List of NTRIP Broadcasters from www.rtcm-ntrip.org"), 0,0,1,3,Qt::AlignLeft);

@@ -170,6 +170,7 @@ void bncGetThread::initialize() {
   // ------------------------
   _perfIntr = 86400;
   if ( settings.value("perfIntr").toString().isEmpty() ) { _perfIntr = 0; }
+  if ( settings.value("perfIntr").toString().indexOf("10 sec") != -1 ) { _perfIntr = 10; }
   if ( settings.value("perfIntr").toString().indexOf("1 min") != -1 ) { _perfIntr = 60; }
   if ( settings.value("perfIntr").toString().indexOf("5 min") != -1 ) { _perfIntr = 300; }
   if ( settings.value("perfIntr").toString().indexOf("15 min") != -1 ) { _perfIntr = 900; }

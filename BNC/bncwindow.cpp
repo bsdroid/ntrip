@@ -275,7 +275,7 @@ bncWindow::bncWindow() {
   _perfIntrComboBox    = new QComboBox();
   _perfIntrComboBox->setMaximumWidth(9*ww);
   _perfIntrComboBox->setEditable(false);
-  _perfIntrComboBox->addItems(QString(",1 min,5 min,15 min,1 hour,6 hours,1 day").split(","));
+  _perfIntrComboBox->addItems(QString(",10 sec,1 min,5 min,15 min,1 hour,6 hours,1 day").split(","));
   int ll = _perfIntrComboBox->findText(settings.value("perfIntr").toString());
   if (ll != -1) {
     _perfIntrComboBox->setCurrentIndex(ll);
