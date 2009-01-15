@@ -217,12 +217,17 @@ void bncTableDlg::slotGetTable() {
 
   QStringList lines;
   QStringListIterator it(_allLines);
+  int endSourceTable = 1;
   while (it.hasNext()) {
     QString line = it.next();
+    if ((endSourceTable == 1 ) && line.indexOf("ENDSOURCETABLE") == 0) { 
+      endSourceTable = 0;
+    }
     if (line.indexOf("STR") == 0) {
       lines.push_back(line);
     }
   }
+  if (endSourceTable == 1) { printf("ENDSOURCETABLE missing\n");}
 
   static const QStringList labels = QString("mountpoint,identifier,format,"
     "format-details,carrier,system,network,country,lat,long,"
@@ -235,7 +240,7 @@ void bncTableDlg::slotGetTable() {
 
     QStringList hlp = lines[0].split(";");
     _table->setColumnCount(hlp.size()-1);
-    _table->setRowCount(lines.size());
+    _table->setRowCount(lines.size() - endSourceTable);
 
     QListIterator<QString> it(lines);
     int nRow = -1;
@@ -421,23 +426,28 @@ bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) :
   bncNetQueryV2 query;
   QByteArray outData;
   query.waitForRequestResult(url, outData);
+  int endSourceTable = 1;
   if (query.status() == bncNetQuery::finished) {
     QTextStream in(outData);
     QString line = in.readLine();
     while ( !line.isNull() ) {
       line = in.readLine();
+      if ((endSourceTable == 1 ) && line.indexOf("ENDSOURCETABLE") == 0) { 
+        endSourceTable = 0;
+      }
       if (line.indexOf("CAS") == 0) {
         lines.append(line);
       }
     }
   }
+  if (endSourceTable == 1) { printf("ENDSOURCETABLE missing\n");}
   if (lines.size() > 0) {
     _casterTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
     _casterTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     QStringList hlp = lines[0].split(";");
     _casterTable->setColumnCount(hlp.size()-1);
-    _casterTable->setRowCount(lines.size());
+    _casterTable->setRowCount(lines.size() - endSourceTable);
 
     QListIterator<QString> it(lines);
     int nRow = -1;
