@@ -55,7 +55,6 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
-  QSettings settings;
   int ww = QFontMetrics(font()).width('w');
 
   _casterPortLineEdit = new QLineEdit();
@@ -74,13 +73,10 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _casterHostComboBox->setMaximumWidth(20*ww);
   connect(_casterHostComboBox, SIGNAL(currentIndexChanged(const QString&)),
           this, SLOT(slotCasterHostChanged(const QString&)));
-  QStringList casterHostList = settings.value("casterHostList").toStringList();
-  for (int ii = 0; ii < casterHostList.count(); ii++) {
-    QString item = casterHostList[ii];
-    if (item.indexOf("http://") != 0) {
-      item = "http://" + item;
-    }
-    QUrl url(item);
+  QSettings settings;
+  QStringList casterUrlList = settings.value("casterUrlList").toStringList();
+  for (int ii = 0; ii < casterUrlList.count(); ii++) {
+    QUrl url(casterUrlList[ii]);
     _casterHostComboBox->addItem(url.host());
   }
 
@@ -293,9 +289,19 @@ void bncTableDlg::slotGetTable() {
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::accept() {
 
+  QUrl url;
+  url.setHost(_casterHostComboBox->currentText());
+  url.setPort(_casterPortLineEdit->text().toInt());
+  url.setUserName(_casterUserLineEdit->text());
+  url.setPassword(_casterPasswordLineEdit->text());
+
   QSettings settings;
   settings.setValue("casterHost", _casterHostComboBox->currentText());
   settings.setValue("ntripVersion", _ntripVersionComboBox->currentText());
+  QStringList casterUrlList = settings.value("casterUrlList").toStringList();
+  casterUrlList << url.toString();
+  settings.setValue("casterUrlList", casterUrlList);
+  settings.sync();
 
   QStringList* mountPoints = new QStringList;
 
@@ -309,13 +315,7 @@ void bncTableDlg::accept() {
       QString     ntripVersion = _ntripVersionComboBox->currentText();
       format.replace(" ", "_");
       if (_table->isItemSelected(item)) {
-        QUrl url;
-        url.setUserName(QUrl::toPercentEncoding(_casterUserLineEdit->text()));
-        url.setPassword(QUrl::toPercentEncoding(_casterPasswordLineEdit->text()));
-        url.setHost(_casterHostComboBox->currentText());
-        url.setPort(_casterPortLineEdit->text().toInt());
         url.setPath(item->text());
-
         mountPoints->push_back(url.toString() + " " + format + " " + latitude 
                         + " " + longitude + " " + nmea + " " + ntripVersion);
       }
@@ -512,7 +512,7 @@ bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) :
 // Caster table what's this
 ////////////////////////////////////////////////////////////////////////////
 void bncCasterTableDlg:: slotWhatsThisCasterTable() {
-QWhatsThis::enterWhatsThisMode();
+  QWhatsThis::enterWhatsThisMode();
 }
 
 // Caster table destructor
@@ -549,10 +549,15 @@ void bncTableDlg::slotNewCaster(QString newCasterHost, QString newCasterPort) {
   _casterUserLineEdit->setText("");
   _casterPortLineEdit->setText(newCasterPort);
 
+  QUrl url;
+  url.setScheme("http");
+  url.setHost(newCasterHost);
+  url.setPort(newCasterPort.toInt());
+
   QSettings settings;
-  QStringList casterHostList = settings.value("casterHostList").toStringList();
-  casterHostList << QString("http://" + newCasterHost + ":" + newCasterPort);
-  settings.setValue("casterHostList", casterHostList);
+  QStringList casterUrlList = settings.value("casterUrlList").toStringList();
+  casterUrlList << url.toString();
+  settings.setValue("casterUrlList", casterUrlList);
   settings.sync();
 }
 
@@ -560,13 +565,9 @@ void bncTableDlg::slotNewCaster(QString newCasterHost, QString newCasterPort) {
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
   QSettings settings;
-  QStringList casterHostList = settings.value("casterHostList").toStringList();
-  for (int ii = 0; ii < casterHostList.count(); ii++) {
-    QString item = casterHostList[ii];
-    if (item.indexOf("http://") != 0) {
-      item = "http://" + item;
-    }
-    QUrl url(item);
+  QStringList casterUrlList = settings.value("casterUrlList").toStringList();
+  for (int ii = 0; ii < casterUrlList.count(); ii++) {
+    QUrl url(casterUrlList[ii]);
     if (url.host() == newHost) {
       _casterUserLineEdit->setText(url.userName());
       if (url.port() > 0) {
