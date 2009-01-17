@@ -68,6 +68,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _casterPasswordLineEdit->setEchoMode(QLineEdit::Password);
 
   _casterHostComboBox = new QComboBox();
+  _casterHostComboBox->setMaxCount(10);
   _casterHostComboBox->setDuplicatesEnabled(false);
   _casterHostComboBox->setEditable(true);
   _casterHostComboBox->setMinimumWidth(20*ww);
@@ -557,6 +558,8 @@ void bncTableDlg::slotNewCaster(QString newCasterHost, QString newCasterPort) {
   url.setHost(newCasterHost);
   url.setPort(newCasterPort.toInt());
   addUrl(url);
+  
+  _casterHostComboBox->setCurrentIndex(0);
 }
 
 // New caster selected
@@ -586,6 +589,9 @@ void bncTableDlg::addUrl(const QUrl& url) {
 // New caster selected in combobox
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
+
+  cout << "current index: " << _casterHostComboBox->currentIndex() << endl;
+
   QSettings settings;
   QStringList casterUrlList = settings.value("casterUrlList").toStringList();
   for (int ii = 0; ii < casterUrlList.count(); ii++) {
