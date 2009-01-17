@@ -546,6 +546,7 @@ void bncCasterTableDlg::slotAcceptCasterTable() {
 void bncTableDlg::slotNewCaster(QString newCasterHost, QString newCasterPort) {
 
   _casterHostComboBox->insertItem(0, newCasterHost);
+  _casterHostComboBox->setCurrentIndex(0);
   _casterUserLineEdit->setText("");
   _casterPortLineEdit->setText(newCasterPort);
 
@@ -589,6 +590,7 @@ void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
     QUrl url(casterUrlList[ii]);
     if (url.host() == newHost) {
       _casterUserLineEdit->setText(url.userName());
+      _casterUserLineEdit->setText(url.password());
       if (url.port() > 0) {
         _casterPortLineEdit->setText(QString("%1").arg(url.port()));
       }
