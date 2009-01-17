@@ -75,6 +75,11 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   connect(_casterHostComboBox, SIGNAL(currentIndexChanged(const QString&)),
           this, SLOT(slotCasterHostChanged(const QString&)));
   QSettings settings;
+  settings.remove("casterHostList");
+  settings.remove("casterHost");
+  settings.remove("casterPort");
+  settings.remove("casterUser");
+  settings.remove("casterPassword");
   QStringList casterUrlList = settings.value("casterUrlList").toStringList();
   for (int ii = 0; ii < casterUrlList.count(); ii++) {
     QUrl url(casterUrlList[ii]);
@@ -291,10 +296,7 @@ void bncTableDlg::slotGetTable() {
 void bncTableDlg::accept() {
 
   QSettings settings;
-  settings.setValue("casterHost", _casterHostComboBox->currentText());
   settings.setValue("ntripVersion", _ntripVersionComboBox->currentText());
-  settings.sync();
-
   QUrl url;
   url.setScheme("http");
   url.setHost(_casterHostComboBox->currentText());
