@@ -575,8 +575,6 @@ void bncTableDlg::addUrl(const QUrl& url) {
       newUrlList << oldUrl.toString();
     }
   }
-  if (! replaced) {
-  }
   settings.setValue("casterUrlList", newUrlList);
   settings.sync();
 }
