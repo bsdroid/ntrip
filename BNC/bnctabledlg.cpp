@@ -70,6 +70,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _casterHostComboBox = new QComboBox();
   _casterHostComboBox->setDuplicatesEnabled(false);
   _casterHostComboBox->setEditable(true);
+  _casterHostComboBox->setMinimumWidth(20*ww);
   _casterHostComboBox->setMaximumWidth(20*ww);
   connect(_casterHostComboBox, SIGNAL(currentIndexChanged(const QString&)),
           this, SLOT(slotCasterHostChanged(const QString&)));
@@ -289,19 +290,17 @@ void bncTableDlg::slotGetTable() {
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::accept() {
 
+  QSettings settings;
+  settings.setValue("casterHost", _casterHostComboBox->currentText());
+  settings.setValue("ntripVersion", _ntripVersionComboBox->currentText());
+  settings.sync();
+
   QUrl url;
   url.setHost(_casterHostComboBox->currentText());
   url.setPort(_casterPortLineEdit->text().toInt());
   url.setUserName(_casterUserLineEdit->text());
   url.setPassword(_casterPasswordLineEdit->text());
-
-  QSettings settings;
-  settings.setValue("casterHost", _casterHostComboBox->currentText());
-  settings.setValue("ntripVersion", _ntripVersionComboBox->currentText());
-  QStringList casterUrlList = settings.value("casterUrlList").toStringList();
-  casterUrlList << url.toString();
-  settings.setValue("casterUrlList", casterUrlList);
-  settings.sync();
+  addUrl(url);
 
   QStringList* mountPoints = new QStringList;
 
@@ -553,11 +552,25 @@ void bncTableDlg::slotNewCaster(QString newCasterHost, QString newCasterPort) {
   url.setScheme("http");
   url.setHost(newCasterHost);
   url.setPort(newCasterPort.toInt());
+  addUrl(url);
+}
 
+// New caster selected
+////////////////////////////////////////////////////////////////////////////
+void bncTableDlg::addUrl(const QUrl& url) {
   QSettings settings;
-  QStringList casterUrlList = settings.value("casterUrlList").toStringList();
-  casterUrlList << url.toString();
-  settings.setValue("casterUrlList", casterUrlList);
+  QStringList oldUrlList = settings.value("casterUrlList").toStringList();
+  QStringList newUrlList;
+  for (int ii = 0; ii < oldUrlList.count(); ii++) {
+    QUrl oldUrl(oldUrlList[ii]);
+    if (url.host() == oldUrl.host()) {
+      newUrlList << url.toString();
+    }
+    else {
+      newUrlList << oldUrl.toString();
+    }
+  }
+  settings.setValue("casterUrlList", newUrlList);
   settings.sync();
 }
 
