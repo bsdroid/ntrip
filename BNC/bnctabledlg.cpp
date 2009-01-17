@@ -235,7 +235,6 @@ void bncTableDlg::slotGetTable() {
       lines.push_back(line);
     }
   }
-  if (endSourceTable == 1) { printf("ENDSOURCETABLE missing\n");}
 
   static const QStringList labels = QString("mountpoint,identifier,format,"
     "format-details,carrier,system,network,country,lat,long,"
@@ -440,7 +439,6 @@ bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) :
       }
     }
   }
-  if (endSourceTable == 1) { printf("ENDSOURCETABLE missing\n");}
   if (lines.size() > 0) {
     _casterTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
     _casterTable->setSelectionBehavior(QAbstractItemView::SelectRows);
