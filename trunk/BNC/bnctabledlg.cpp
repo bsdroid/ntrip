@@ -38,8 +38,6 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
-
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
 #include "bncnetqueryv2.h"
@@ -582,9 +580,6 @@ void bncTableDlg::addUrl(const QUrl& url) {
 // New caster selected in combobox
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
-
-  cout << "current index: " << _casterHostComboBox->currentIndex() << endl;
-
   QSettings settings;
   QStringList casterUrlList = settings.value("casterUrlList").toStringList();
   for (int ii = 0; ii < casterUrlList.count(); ii++) {
