@@ -39,7 +39,7 @@
     ~bncCasterTableDlg();
 
   signals:
-    void newCaster(QString* newCasterHost, QString* newCasterPort);
+    void newCaster(QString newCasterHost, QString newCasterPort);
 
   private slots:
     virtual void slotAcceptCasterTable();
@@ -68,10 +68,11 @@ class bncTableDlg : public QDialog {
     void slotSelectionChanged();
     void slotWhatsThis();
     void slotCasterTable();
-    void slotNewCaster(QString* newCasterHost, QString* newCasterPort);
+    void slotNewCaster(QString newCasterHost, QString newCasterPort);
+    void slotCasterHostChanged(const QString&);
 
   private:
-    QComboBox*   _casterHostLineEdit;
+    QComboBox*   _casterHostComboBox;
     QLineEdit*   _casterPortLineEdit;
     QLineEdit*   _casterUserLineEdit;
     QLineEdit*   _casterPasswordLineEdit;

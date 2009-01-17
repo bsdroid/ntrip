@@ -56,26 +56,33 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
   QSettings settings;
-  _casterHostLineEdit     = new QComboBox();
-  _casterHostLineEdit->setDuplicatesEnabled(false);
-  _casterHostLineEdit->setEditable(true);
-  int ww = QFontMetrics(_casterHostLineEdit->font()).width('w');
-  _casterHostLineEdit->setMaximumWidth(20*ww);
-  QStringList casterHostList = settings.value("casterHostList").toStringList();
-  _casterHostLineEdit->addItem(settings.value("casterHost").toString());
-  for (int ii = 0; ii < casterHostList.count(); ii++) {
-    QString item = casterHostList[ii];
-    if (_casterHostLineEdit->findText(item, Qt::MatchFixedString) < 0) {
-      _casterHostLineEdit->addItem(item);
-    }
-  }
-  _casterPortLineEdit     = new QLineEdit(settings.value("casterPort").toString());
+  int ww = QFontMetrics(font()).width('w');
+
+  _casterPortLineEdit = new QLineEdit();
   _casterPortLineEdit->setMaximumWidth(9*ww);
-  _casterUserLineEdit     = new QLineEdit(settings.value("casterUser").toString());
+
+  _casterUserLineEdit = new QLineEdit();
   _casterUserLineEdit->setMaximumWidth(9*ww);
-  _casterPasswordLineEdit = new QLineEdit(settings.value("casterPassword").toString());
+
+  _casterPasswordLineEdit = new QLineEdit();
   _casterPasswordLineEdit->setMaximumWidth(9*ww);
   _casterPasswordLineEdit->setEchoMode(QLineEdit::Password);
+
+  _casterHostComboBox = new QComboBox();
+  _casterHostComboBox->setDuplicatesEnabled(false);
+  _casterHostComboBox->setEditable(true);
+  _casterHostComboBox->setMaximumWidth(20*ww);
+  connect(_casterHostComboBox, SIGNAL(currentIndexChanged(const QString&)),
+          this, SLOT(slotCasterHostChanged(const QString&)));
+  QStringList casterHostList = settings.value("casterHostList").toStringList();
+  for (int ii = 0; ii < casterHostList.count(); ii++) {
+    QString item = casterHostList[ii];
+    if (item.indexOf("http://") != 0) {
+      item = "http://" + item;
+    }
+    QUrl url(item);
+    _casterHostComboBox->addItem(url.host());
+  }
 
   _ntripVersionComboBox = new QComboBox();
   _ntripVersionComboBox->addItems(QString("1,2,R").split(","));
@@ -92,13 +99,13 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   // WhatsThis
   // ---------
   _casterUserLineEdit->setWhatsThis(tr("<p>Access to some streams on NTRIP broadcasters may be restricted. You'll need to enter a valid 'User ID' and 'Password' for access to these protected streams.</p><p>Accounts are usually provided per NTRIP broadcaster through a registration process. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.</p>"));
-  _casterHostLineEdit->setWhatsThis(tr("<p>Enter the NTRIP broadcaster hostname or IP number.</p><p>Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.</p>"));
+  _casterHostComboBox->setWhatsThis(tr("<p>Enter the NTRIP broadcaster hostname or IP number.</p><p>Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.</p>"));
   _casterPortLineEdit->setWhatsThis(tr("Enter the NTRIP broadcaster port number."));
   _casterPasswordLineEdit->setWhatsThis(tr("Access to some streams on NTRIP broadcasters may be restricted. You'll need to enter a valid 'Password' for access to these protected streams."));
 
   QGridLayout* editLayout = new QGridLayout;
   editLayout->addWidget(new QLabel(tr("Caster host")),    0, 0);
-  editLayout->addWidget(_casterHostLineEdit,              0, 1);
+  editLayout->addWidget(_casterHostComboBox,              0, 1);
   editLayout->addWidget(new QLabel(tr("  Caster port")),  0, 2, Qt::AlignRight);
   editLayout->addWidget(_casterPortLineEdit,              0, 3);
   editLayout->addWidget(new QLabel(tr("Caster table")),   0, 4, Qt::AlignRight);
@@ -207,7 +214,7 @@ void bncTableDlg::slotGetTable() {
 
   _allLines.clear();
 
-  if ( getFullTable(_casterHostLineEdit->currentText(),
+  if ( getFullTable(_casterHostComboBox->currentText(),
                     _casterPortLineEdit->text().toInt(),
                     _allLines) != success ) {
     QMessageBox::warning(0, "BNC", "Cannot retrieve table of data");
@@ -287,10 +294,10 @@ void bncTableDlg::slotGetTable() {
 void bncTableDlg::accept() {
 
   QSettings settings;
-  settings.setValue("casterHost", _casterHostLineEdit->currentText());
+  settings.setValue("casterHost", _casterHostComboBox->currentText());
   QStringList casterHostList;
-  for (int ii = 0; ii < _casterHostLineEdit->count(); ii++) {
-    casterHostList.push_back(_casterHostLineEdit->itemText(ii));
+  for (int ii = 0; ii < _casterHostComboBox->count(); ii++) {
+    casterHostList.push_back(_casterHostComboBox->itemText(ii));
   } 
   settings.setValue("casterHostList", casterHostList);
   settings.setValue("casterPort", _casterPortLineEdit->text());
@@ -313,7 +320,7 @@ void bncTableDlg::accept() {
         QUrl url;
         url.setUserName(QUrl::toPercentEncoding(_casterUserLineEdit->text()));
         url.setPassword(QUrl::toPercentEncoding(_casterPasswordLineEdit->text()));
-        url.setHost(_casterHostLineEdit->currentText());
+        url.setHost(_casterHostComboBox->currentText());
         url.setPort(_casterPortLineEdit->text().toInt());
         url.setPath(item->text());
 
@@ -376,7 +383,7 @@ QWhatsThis::enterWhatsThisMode();
 void bncTableDlg::slotCasterTable() {
         
   _buttonCasterTable->setEnabled(false);
-  _casterHostLineEdit->setEnabled(false);
+  _casterHostComboBox->setEnabled(false);
   _casterPortLineEdit->setEnabled(false);
   _casterUserLineEdit->setEnabled(false);
   _casterPasswordLineEdit->setEnabled(false);
@@ -388,13 +395,13 @@ void bncTableDlg::slotCasterTable() {
 
   bncCasterTableDlg* dlg = new bncCasterTableDlg(this);
   dlg->move(this->pos().x()+50, this->pos().y()+50);
-  connect(dlg, SIGNAL(newCaster(QString*, QString*)),
-          this, SLOT(slotNewCaster(QString*, QString*)));
+  connect(dlg, SIGNAL(newCaster(QString, QString)),
+          this, SLOT(slotNewCaster(QString, QString)));
   dlg->exec();
   delete dlg;
 
   _buttonCasterTable->setEnabled(true);
-  _casterHostLineEdit->setEnabled(true);
+  _casterHostComboBox->setEnabled(true);
   _casterPortLineEdit->setEnabled(true);
   _casterUserLineEdit->setEnabled(true);
   _casterPasswordLineEdit->setEnabled(true);
@@ -531,39 +538,47 @@ bncCasterTableDlg::~bncCasterTableDlg() {
 // Accept caster table
 ////////////////////////////////////////////////////////////////////////////
 void bncCasterTableDlg::slotAcceptCasterTable() {
-
-  QSettings settings;
-  QString* newCasterHost = new QString;
-  QString* newCasterPort = new QString;
-
   if (_casterTable) {
     for (int ir = 0; ir < _casterTable->rowCount(); ir++) {
-      QTableWidgetItem* item   = _casterTable->item(ir,0);
-      for (int ic = 0; ic < _casterTable->columnCount(); ic++) {
-        if (_casterTable->isItemSelected(item)) {
-          if (ic == 0) {
-            newCasterHost->push_back(_casterTable->item(ir,0)->text());
-          }
-          if (ic == 1) {
-            newCasterPort->push_back(_casterTable->item(ir,1)->text());
-          }
-        }
+      if (_casterTable->isItemSelected(_casterTable->item(ir,0))) {
+        emit newCaster(_casterTable->item(ir,0)->text(), 
+                       _casterTable->item(ir,1)->text());
       }
     }
   }
-  emit newCaster(newCasterHost, newCasterPort);
-QDialog::accept();
+  QDialog::accept();
 }
 
 // New caster selected
 ////////////////////////////////////////////////////////////////////////////
-void bncTableDlg::slotNewCaster(QString* newCasterHost, QString* newCasterPort) {
+void bncTableDlg::slotNewCaster(QString newCasterHost, QString newCasterPort) {
 
-  const QString* newHost = new QString(*newCasterHost);
-  const QString* newPort = new QString(*newCasterPort);
-
-  _casterHostLineEdit->setItemText(0,newHost->toAscii().data());
-  _casterPortLineEdit->clear();
-  _casterPortLineEdit->insert(newPort->toAscii().data());
+  _casterHostComboBox->insertItem(0, newCasterHost);
+  _casterUserLineEdit->setText("");
+  _casterPortLineEdit->setText(newCasterPort);
 }
 
+// New caster selected in combobox
+////////////////////////////////////////////////////////////////////////////
+void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
+  QSettings settings;
+  QStringList casterHostList = settings.value("casterHostList").toStringList();
+  for (int ii = 0; ii < casterHostList.count(); ii++) {
+    QString item = casterHostList[ii];
+    if (item.indexOf("http://") != 0) {
+      item = "http://" + item;
+    }
+    QUrl url(item);
+    if (url.host() == newHost) {
+    cout << "slot: " << url.toString().toAscii().data() << " " 
+         << newHost.toAscii().data() << endl;
+      _casterUserLineEdit->setText(url.userName());
+      if (url.port() > 0) {
+        _casterPortLineEdit->setText(QString("%1").arg(url.port()));
+      }
+      else {
+        _casterPortLineEdit->setText("");
+      }
+    }
+  }
+}
