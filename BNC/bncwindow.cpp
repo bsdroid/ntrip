@@ -88,6 +88,9 @@ bncWindow::bncWindow() {
   _actSaveOpt = new QAction(tr("&Save && Activate Options"),this);
   connect(_actSaveOpt, SIGNAL(triggered()), SLOT(slotSaveOptions()));
 
+  _actResetOpt = new QAction(tr("&Reset Options"),this);
+  connect(_actResetOpt, SIGNAL(triggered()), SLOT(slotResetOptions()));
+
   _actQuit  = new QAction(tr("&Quit"),this);
   connect(_actQuit, SIGNAL(triggered()), SLOT(close()));
 
@@ -852,6 +855,18 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
   delete mountPoints;
 }
 
+// Reset Options
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotResetOptions() {
+  int iRet = QMessageBox::question(this, "Reset", "Delete saved options?",
+                                   QMessageBox::Yes, QMessageBox::No,
+                                   QMessageBox::NoButton);
+  if (iRet == QMessageBox::Yes) {
+  QSettings settings;
+  settings.remove("");
+  }
+}
+
 // Save Options
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotSaveOptions() {
@@ -1088,6 +1103,8 @@ void bncWindow::CreateMenu() {
   _menuFile->addAction(_actFontSel);
   _menuFile->addSeparator();
   _menuFile->addAction(_actSaveOpt);
+  _menuFile->addSeparator();
+  _menuFile->addAction(_actResetOpt);
   _menuFile->addSeparator();
   _menuFile->addAction(_actQuit);
 
