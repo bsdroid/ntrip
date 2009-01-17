@@ -590,7 +590,7 @@ void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
     QUrl url(casterUrlList[ii]);
     if (url.host() == newHost) {
       _casterUserLineEdit->setText(url.userName());
-      _casterUserLineEdit->setText(url.password());
+      _casterPasswordLineEdit->setText(url.password());
       if (url.port() > 0) {
         _casterPortLineEdit->setText(QString("%1").arg(url.port()));
       }
