@@ -72,6 +72,7 @@ class bncTableDlg : public QDialog {
     void slotCasterHostChanged(const QString&);
 
   private:
+    void addUrl(const QUrl& url);
     QComboBox*   _casterHostComboBox;
     QLineEdit*   _casterPortLineEdit;
     QLineEdit*   _casterUserLineEdit;
