@@ -295,15 +295,7 @@ void bncTableDlg::accept() {
 
   QSettings settings;
   settings.setValue("casterHost", _casterHostComboBox->currentText());
-  QStringList casterHostList;
-  for (int ii = 0; ii < _casterHostComboBox->count(); ii++) {
-    casterHostList.push_back(_casterHostComboBox->itemText(ii));
-  } 
-  settings.setValue("casterHostList", casterHostList);
-  settings.setValue("casterPort", _casterPortLineEdit->text());
   settings.setValue("ntripVersion", _ntripVersionComboBox->currentText());
-  settings.setValue("casterUser", _casterUserLineEdit->text());
-  settings.setValue("casterPassword", _casterPasswordLineEdit->text());
 
   QStringList* mountPoints = new QStringList;
 
@@ -556,6 +548,12 @@ void bncTableDlg::slotNewCaster(QString newCasterHost, QString newCasterPort) {
   _casterHostComboBox->insertItem(0, newCasterHost);
   _casterUserLineEdit->setText("");
   _casterPortLineEdit->setText(newCasterPort);
+
+  QSettings settings;
+  QStringList casterHostList = settings.value("casterHostList").toStringList();
+  casterHostList << QString("http://" + newCasterHost + ":" + newCasterPort);
+  settings.setValue("casterHostList", casterHostList);
+  settings.sync();
 }
 
 // New caster selected in combobox
@@ -570,8 +568,6 @@ void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
     }
     QUrl url(item);
     if (url.host() == newHost) {
-    cout << "slot: " << url.toString().toAscii().data() << " " 
-         << newHost.toAscii().data() << endl;
       _casterUserLineEdit->setText(url.userName());
       if (url.port() > 0) {
         _casterPortLineEdit->setText(QString("%1").arg(url.port()));
