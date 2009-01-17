@@ -296,6 +296,7 @@ void bncTableDlg::accept() {
   settings.sync();
 
   QUrl url;
+  url.setScheme("http");
   url.setHost(_casterHostComboBox->currentText());
   url.setPort(_casterPortLineEdit->text().toInt());
   url.setUserName(_casterUserLineEdit->text());
@@ -561,14 +562,19 @@ void bncTableDlg::addUrl(const QUrl& url) {
   QSettings settings;
   QStringList oldUrlList = settings.value("casterUrlList").toStringList();
   QStringList newUrlList;
+  bool replaced = false;
   for (int ii = 0; ii < oldUrlList.count(); ii++) {
     QUrl oldUrl(oldUrlList[ii]);
     if (url.host() == oldUrl.host()) {
       newUrlList << url.toString();
+      replaced = true;
     }
     else {
       newUrlList << oldUrl.toString();
     }
+  }
+  if (! replaced) {
+    newUrlList << url.toString();
   }
   settings.setValue("casterUrlList", newUrlList);
   settings.sync();
