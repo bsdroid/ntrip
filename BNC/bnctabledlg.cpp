@@ -568,19 +568,14 @@ void bncTableDlg::addUrl(const QUrl& url) {
   QSettings settings;
   QStringList oldUrlList = settings.value("casterUrlList").toStringList();
   QStringList newUrlList;
-  bool replaced = false;
+  newUrlList << url.toString();
   for (int ii = 0; ii < oldUrlList.count(); ii++) {
     QUrl oldUrl(oldUrlList[ii]);
-    if (url.host() == oldUrl.host()) {
-      newUrlList << url.toString();
-      replaced = true;
-    }
-    else {
+    if (url.host() != oldUrl.host()) {
       newUrlList << oldUrl.toString();
     }
   }
   if (! replaced) {
-    newUrlList << url.toString();
   }
   settings.setValue("casterUrlList", newUrlList);
   settings.sync();
