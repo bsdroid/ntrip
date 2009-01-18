@@ -377,6 +377,61 @@ void bncTableDlg::slotCasterTable() {
 
 }
 
+// New caster selected
+////////////////////////////////////////////////////////////////////////////
+void bncTableDlg::slotNewCaster(QString newCasterHost, QString newCasterPort) {
+
+  _casterHostComboBox->insertItem(0, newCasterHost);
+  _casterHostComboBox->setCurrentIndex(0);
+  _casterUserLineEdit->setText("");
+  _casterPortLineEdit->setText(newCasterPort);
+
+  QUrl url;
+  url.setScheme("http");
+  url.setHost(newCasterHost);
+  url.setPort(newCasterPort.toInt());
+  addUrl(url);
+  
+  _casterHostComboBox->setCurrentIndex(0);
+}
+
+// New caster selected
+////////////////////////////////////////////////////////////////////////////
+void bncTableDlg::addUrl(const QUrl& url) {
+  QSettings settings;
+  QStringList oldUrlList = settings.value("casterUrlList").toStringList();
+  QStringList newUrlList;
+  newUrlList << url.toString();
+  for (int ii = 0; ii < oldUrlList.count(); ii++) {
+    QUrl oldUrl(oldUrlList[ii]);
+    if (url.host() != oldUrl.host()) {
+      newUrlList << oldUrl.toString();
+    }
+  }
+  settings.setValue("casterUrlList", newUrlList);
+  settings.sync();
+}
+
+// New caster selected in combobox
+////////////////////////////////////////////////////////////////////////////
+void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
+  QSettings settings;
+  QStringList casterUrlList = settings.value("casterUrlList").toStringList();
+  for (int ii = 0; ii < casterUrlList.count(); ii++) {
+    QUrl url(casterUrlList[ii]);
+    if (url.host() == newHost) {
+      _casterUserLineEdit->setText(url.userName());
+      _casterPasswordLineEdit->setText(url.password());
+      if (url.port() > 0) {
+        _casterPortLineEdit->setText(QString("%1").arg(url.port()));
+      }
+      else {
+        _casterPortLineEdit->setText("");
+      }
+    }
+  }
+}
+
 // Caster table
 ////////////////////////////////////////////////////////////////////////////
 bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) : 
@@ -509,57 +564,3 @@ void bncCasterTableDlg::slotAcceptCasterTable() {
   QDialog::accept();
 }
 
-// New caster selected
-////////////////////////////////////////////////////////////////////////////
-void bncTableDlg::slotNewCaster(QString newCasterHost, QString newCasterPort) {
-
-  _casterHostComboBox->insertItem(0, newCasterHost);
-  _casterHostComboBox->setCurrentIndex(0);
-  _casterUserLineEdit->setText("");
-  _casterPortLineEdit->setText(newCasterPort);
-
-  QUrl url;
-  url.setScheme("http");
-  url.setHost(newCasterHost);
-  url.setPort(newCasterPort.toInt());
-  addUrl(url);
-  
-  _casterHostComboBox->setCurrentIndex(0);
-}
-
-// New caster selected
-////////////////////////////////////////////////////////////////////////////
-void bncTableDlg::addUrl(const QUrl& url) {
-  QSettings settings;
-  QStringList oldUrlList = settings.value("casterUrlList").toStringList();
-  QStringList newUrlList;
-  newUrlList << url.toString();
-  for (int ii = 0; ii < oldUrlList.count(); ii++) {
-    QUrl oldUrl(oldUrlList[ii]);
-    if (url.host() != oldUrl.host()) {
-      newUrlList << oldUrl.toString();
-    }
-  }
-  settings.setValue("casterUrlList", newUrlList);
-  settings.sync();
-}
-
-// New caster selected in combobox
-////////////////////////////////////////////////////////////////////////////
-void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
-  QSettings settings;
-  QStringList casterUrlList = settings.value("casterUrlList").toStringList();
-  for (int ii = 0; ii < casterUrlList.count(); ii++) {
-    QUrl url(casterUrlList[ii]);
-    if (url.host() == newHost) {
-      _casterUserLineEdit->setText(url.userName());
-      _casterPasswordLineEdit->setText(url.password());
-      if (url.port() > 0) {
-        _casterPortLineEdit->setText(QString("%1").arg(url.port()));
-      }
-      else {
-        _casterPortLineEdit->setText("");
-      }
-    }
-  }
-}

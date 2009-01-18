@@ -67,7 +67,6 @@ class bncTableDlg : public QDialog {
   private slots:
     virtual void accept();
     void slotGetTable();
-    void slotSkl();
     void slotSelectionChanged();
     void slotWhatsThis();
     void slotCasterTable();
