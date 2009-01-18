@@ -65,7 +65,7 @@ void bncNetQueryV1::waitForReadyRead(QByteArray& outData) {
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
 
-  const int timeOut = 5000;
+  const int timeOut = 20000;
 
   _status = running;
 
@@ -137,6 +137,27 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
     delete _socket;
     _socket = 0;
     _status = error;
+    emit newMessage("bncnetqueryv1: write timeout", true);
+    return;
+  }
+
+  // Read Caster Response
+  // --------------------
+  while (true) {
+    if (!_socket->waitForReadyRead(timeOut)) {
+      delete _socket;
+      _socket = 0;
+      _status = error;
+      emit newMessage("bncnetqueryv1: read timeout", true);
+      return;
+    }
+    if (_socket->canReadLine()) {
+      QString line = _socket->readLine();
+      cout << ">" << line.toAscii().data() << "<" << endl;
+      if (line.indexOf("ICY 200 OK") != -1) {
+        break;
+      }
+    }
   }
 }
 
