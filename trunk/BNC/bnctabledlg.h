@@ -82,7 +82,6 @@ class bncTableDlg : public QDialog {
     QLineEdit*   _casterPasswordLineEdit;
     QComboBox*   _ntripVersionComboBox;
 
-    QPushButton* _buttonSkl;
     QPushButton* _buttonGet;
     QPushButton* _buttonCancel;
     QPushButton* _buttonOK;
