@@ -65,7 +65,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   _casterPasswordLineEdit = new QLineEdit();
   _casterPasswordLineEdit->setMaximumWidth(9*ww);
-  _casterPasswordLineEdit->setEchoMode(QLineEdit::Password);
+  ////  _casterPasswordLineEdit->setEchoMode(QLineEdit::Password);
 
   _casterHostComboBox = new QComboBox();
   _casterHostComboBox->setMaxCount(10);
@@ -380,6 +380,7 @@ void bncTableDlg::slotNewCaster(QString newCasterHost, QString newCasterPort) {
   _casterHostComboBox->insertItem(0, newCasterHost);
   _casterHostComboBox->setCurrentIndex(0);
   _casterUserLineEdit->setText("");
+  _casterPasswordLineEdit->setText("");
   _casterPortLineEdit->setText(newCasterPort);
 
   QUrl url;
