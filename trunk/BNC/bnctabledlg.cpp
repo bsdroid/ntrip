@@ -527,7 +527,7 @@ void bncCasterTableDlg:: slotWhatsThis() {
 ////////////////////////////////////////////////////////////////////////////
 void bncCasterTableDlg::slotAcceptCasterTable() {
   if (_casterTable) {
-    for (int ir = 0; ir < _casterTable->rowCount(); ir++) {
+    for (int ir = _casterTable->rowCount() - 1; ir >= 0 ; ir--) {
       if (_casterTable->isItemSelected(_casterTable->item(ir,0))) {
         emit newCaster(_casterTable->item(ir,0)->text(), 
                        _casterTable->item(ir,1)->text());
