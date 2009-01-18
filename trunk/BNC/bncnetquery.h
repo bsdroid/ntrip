@@ -30,7 +30,8 @@ class bncNetQuery : public QObject {
  private slots:
 
  protected:
-  queryStatus            _status;
+  queryStatus _status;
+  int         _timeOut;
 };
 
 #endif
