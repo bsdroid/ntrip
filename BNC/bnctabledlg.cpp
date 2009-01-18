@@ -337,38 +337,6 @@ void bncTableDlg::slotSelectionChanged() {
   }
 }
 
-// Create RINEX skeleton header
-////////////////////////////////////////////////////////////////////////////
-void bncTableDlg::slotSkl() {
-
-  int nRows = _table->rowCount();
-  for (int iRow = 0; iRow < nRows; iRow++) {
-    if (_table->isItemSelected(_table->item(iRow,1))) {
-      QString staID = _table->item(iRow,0)->text();
-      QString net   = _table->item(iRow,6)->text();
-
-      QString ftpDir;
-      QStringListIterator it(_allLines);
-      while (it.hasNext()) {
-        QString line = it.next();
-        if (line.indexOf("NET") == 0) {
-          QStringList tags = line.split(';');
-          if (tags.at(1) == net) {
-            ftpDir = tags.at(6);
-            break;
-          }
-        }
-      }
-
-      if (!ftpDir.isEmpty()) {
-        QUrl url(ftpDir);
-        QMessageBox::warning(0, "Warning", url.host() + "\n" + url.path() + 
-                             "\nnot yet implemented");
-      }
-    }
-  }
-}
-
 // Whats This Help
 void bncTableDlg::slotWhatsThis() {
 QWhatsThis::enterWhatsThisMode();
