@@ -435,8 +435,6 @@ bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) :
 
   static const QStringList labels = QString("host,port,identifier,operator,nmea,country,lat,long,link").split(",");
 
-  QStringList lines;
-  lines.clear();
   _casterTable = new QTableWidget(this);
 
   QUrl url;
@@ -448,57 +446,59 @@ bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) :
   bncNetQueryV2 query;
   QByteArray outData;
   query.waitForRequestResult(url, outData);
-  int endSourceTable = 1;
+
+  QStringList lines;
   if (query.status() == bncNetQuery::finished) {
     QTextStream in(outData);
     QString line = in.readLine();
     while ( !line.isNull() ) {
       line = in.readLine();
-      if ((endSourceTable == 1 ) && line.indexOf("ENDSOURCETABLE") == 0) { 
-        endSourceTable = 0;
-      }
       if (line.indexOf("CAS") == 0) {
-        lines.append(line);
+        QStringList hlp = line.split(";");
+        if (hlp.size() > labels.size()) {
+          lines.push_back(line);
+        }
       }
     }
   }
+
   if (lines.size() > 0) {
     _casterTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
     _casterTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     QStringList hlp = lines[0].split(";");
-    _casterTable->setColumnCount(hlp.size()-1);
-    _casterTable->setRowCount(lines.size() - endSourceTable);
+    _casterTable->setColumnCount(labels.size());
+    _casterTable->setRowCount(lines.size());
 
-    QListIterator<QString> it(lines);
-    int nRow = -1;
-    while (it.hasNext()) {
-      QStringList columns = it.next().split(";");
-      ++nRow;
-      for (int ic = 0; ic < columns.size()-1; ic++) {
-         if (ic+1 == 5) { if (columns[ic+1] == "0") { columns[ic+1] = "no"; } else { columns[ic+1] = "yes"; }}
-         QTableWidgetItem* it = new QTableWidgetItem(columns[ic+1]);
-        it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-        _casterTable->setItem(nRow, ic, it);
+    for (int nRow = 0; nRow < lines.size(); nRow++) {
+      QStringList columns = lines[nRow].split(";");
+      for (int ic = 1; ic < columns.size(); ic++) {
+         if (ic == 5) { 
+           if (columns[ic] == "0") { 
+             columns[ic] = "no"; 
+           } else { 
+             columns[ic] = "yes"; 
+           }
+         }
+         QTableWidgetItem* item = new QTableWidgetItem(columns[ic]);
+        item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+        _casterTable->setItem(nRow, ic-1, item);
       }
     }
   } 
-  _casterTable->sortItems(0);
   _casterTable->setHorizontalHeaderLabels(labels);
   _casterTable->setSortingEnabled(true);
-
+  _casterTable->sortItems(0);
    int ww = QFontMetrics(this->font()).width('w');
   _casterTable->horizontalHeader()->resizeSection(0,15*ww);
-  _casterTable->horizontalHeader()->resizeSection(1,5*ww);
+  _casterTable->horizontalHeader()->resizeSection(1, 5*ww);
   _casterTable->horizontalHeader()->resizeSection(2,15*ww);
   _casterTable->horizontalHeader()->resizeSection(3,15*ww);
-  _casterTable->horizontalHeader()->resizeSection(4,5*ww);
-  _casterTable->horizontalHeader()->resizeSection(5,7*ww);
-  _casterTable->horizontalHeader()->resizeSection(6,7*ww);
-  _casterTable->horizontalHeader()->resizeSection(7,7*ww);
+  _casterTable->horizontalHeader()->resizeSection(4, 5*ww);
+  _casterTable->horizontalHeader()->resizeSection(5, 7*ww);
+  _casterTable->horizontalHeader()->resizeSection(6, 7*ww);
+  _casterTable->horizontalHeader()->resizeSection(7, 7*ww);
   _casterTable->horizontalHeader()->resizeSection(8,15*ww);
-
-  ww = QFontMetrics(font()).width('w');
 
   _closeButton = new QPushButton("Cancel");
   connect(_closeButton, SIGNAL(clicked()), this, SLOT(close()));
