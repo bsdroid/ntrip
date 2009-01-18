@@ -38,6 +38,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
+
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
 #include "bncnetqueryv2.h"
@@ -168,7 +170,7 @@ bncTableDlg::~bncTableDlg() {
   delete _table;
 }
 
-// Read Table the caster (static)
+// Read full caster table (static)
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncTableDlg::getFullTable(const QString& casterHost, 
                                 int casterPort, QStringList& allLines, 
@@ -217,27 +219,12 @@ void bncTableDlg::slotGetTable() {
   _buttonGet->setEnabled(false);
   _buttonCasterTable->setEnabled(false); 
 
-  _allLines.clear();
-
   if ( getFullTable(_casterHostComboBox->currentText(),
                     _casterPortLineEdit->text().toInt(),
-                    _allLines) != success ) {
+                    _allLines, true) != success ) {
     QMessageBox::warning(0, "BNC", "Cannot retrieve table of data");
     _buttonGet->setEnabled(true);
     return;
-  }
-
-  QStringList lines;
-  QStringListIterator it(_allLines);
-  int endSourceTable = 1;
-  while (it.hasNext()) {
-    QString line = it.next();
-    if ((endSourceTable == 1 ) && line.indexOf("ENDSOURCETABLE") == 0) { 
-      endSourceTable = 0;
-    }
-    if (line.indexOf("STR") == 0) {
-      lines.push_back(line);
-    }
   }
 
   static const QStringList labels = QString("mountpoint,identifier,format,"
@@ -245,51 +232,60 @@ void bncTableDlg::slotGetTable() {
     "nmea,solution,generator,compress.,auth.,fee,bitrate,"
     "misc").split(",");
 
+  QStringList lines;
+  QStringListIterator it(_allLines);
+  while (it.hasNext()) {
+    QString line = it.next();
+    if (line.indexOf("STR") == 0) {
+      QStringList hlp = line.split(";");
+      if (hlp.size() > labels.size()) {
+        lines.push_back(line);
+      }
+    }
+  }
+
   if (lines.size() > 0) {
     _table->setSelectionMode(QAbstractItemView::ExtendedSelection);
     _table->setSelectionBehavior(QAbstractItemView::SelectRows);
-
-    QStringList hlp = lines[0].split(";");
-    _table->setColumnCount(hlp.size()-1);
-    _table->setRowCount(lines.size() - endSourceTable);
-
-    QListIterator<QString> it(lines);
-    int nRow = -1;
-    while (it.hasNext()) {
-      QStringList columns = it.next().split(";");
-      ++nRow;
-      for (int ic = 0; ic < columns.size()-1; ic++) {
-
-        if (ic+1 == 11) { if (columns[ic+1] == "0") { columns[ic+1] = "no"; } else { columns[ic+1] = "yes"; }}
-
-        QTableWidgetItem* it = new QTableWidgetItem(columns[ic+1]);
-        it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-        _table->setItem(nRow, ic, it);
+    _table->setColumnCount(labels.size());
+    _table->setRowCount(lines.size());
+    for (int nRow = 0; nRow < lines.size(); nRow++) {
+      QStringList columns = lines[nRow].split(";");
+      for (int ic = 1; ic < columns.size(); ic++) {
+        if (ic == 11) { 
+          if (columns[ic] == "0") { 
+            columns[ic] = "no"; 
+          } else { 
+            columns[ic] = "yes"; 
+          }
+        }
+        QTableWidgetItem* item = new QTableWidgetItem(columns[ic]);
+        item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+        _table->setItem(nRow, ic-1, item);
       }
     }
-    _table->sortItems(0);
     _table->setHorizontalHeaderLabels(labels);
     _table->setSortingEnabled(true);
-
     int ww = QFontMetrics(this->font()).width('w');
-    _table->horizontalHeader()->resizeSection(0,10*ww);
-    _table->horizontalHeader()->resizeSection(1,10*ww);
-    _table->horizontalHeader()->resizeSection(2,8*ww);
-    _table->horizontalHeader()->resizeSection(3,22*ww);
-    _table->horizontalHeader()->resizeSection(4,5*ww);
-    _table->horizontalHeader()->resizeSection(5,8*ww);
-    _table->horizontalHeader()->resizeSection(6,8*ww);
-    _table->horizontalHeader()->resizeSection(7,7*ww);
-    _table->horizontalHeader()->resizeSection(8,6*ww);
-    _table->horizontalHeader()->resizeSection(9,6*ww);
-    _table->horizontalHeader()->resizeSection(10,6*ww);
-    _table->horizontalHeader()->resizeSection(11,6*ww);
+    _table->horizontalHeader()->resizeSection( 0,10*ww);
+    _table->horizontalHeader()->resizeSection( 1,10*ww);
+    _table->horizontalHeader()->resizeSection( 2, 8*ww);
+    _table->horizontalHeader()->resizeSection( 3,22*ww);
+    _table->horizontalHeader()->resizeSection( 4, 5*ww);
+    _table->horizontalHeader()->resizeSection( 5, 8*ww);
+    _table->horizontalHeader()->resizeSection( 6, 8*ww);
+    _table->horizontalHeader()->resizeSection( 7, 7*ww);
+    _table->horizontalHeader()->resizeSection( 8, 6*ww);
+    _table->horizontalHeader()->resizeSection( 9, 6*ww);
+    _table->horizontalHeader()->resizeSection(10, 6*ww);
+    _table->horizontalHeader()->resizeSection(11, 6*ww);
     _table->horizontalHeader()->resizeSection(12,15*ww);
-    _table->horizontalHeader()->resizeSection(13,8*ww);
-    _table->horizontalHeader()->resizeSection(14,5*ww);
-    _table->horizontalHeader()->resizeSection(15,5*ww);
-    _table->horizontalHeader()->resizeSection(16,7*ww);
+    _table->horizontalHeader()->resizeSection(13, 8*ww);
+    _table->horizontalHeader()->resizeSection(14, 5*ww);
+    _table->horizontalHeader()->resizeSection(15, 5*ww);
+    _table->horizontalHeader()->resizeSection(16, 7*ww);
     _table->horizontalHeader()->resizeSection(17,15*ww);
+    _table->sortItems(0);
   }
 }
 
