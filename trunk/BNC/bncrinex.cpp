@@ -128,22 +128,28 @@ t_irc bncRinex::downloadSkeleton() {
     QString line = it.next();
     if (line.indexOf("STR") == 0) {
       QStringList tags = line.split(";");
-      if (tags.at(1) == _mountPoint.path().mid(1).toAscii()) {
-        net = tags.at(7);
-        break;
+      if (tags.size() > 7) {
+        if (tags.at(1) == _mountPoint.path().mid(1).toAscii()) {
+          net = tags.at(7);
+          break;
+        }
       }
     }
   }
   QString sklDir;
-  it.toFront();
-  while (it.hasNext()) {
-    QString line = it.next();
-    if (line.indexOf("NET") == 0) {
-      QStringList tags = line.split(";");
-      if (tags.at(1) == net) {
-        sklDir = tags.at(6).trimmed();
-        break;
-      }          
+  if (!net.isEmpty()) {
+    it.toFront();
+    while (it.hasNext()) {
+      QString line = it.next();
+      if (line.indexOf("NET") == 0) {
+        QStringList tags = line.split(";");
+        if (tags.size() > 6) {
+          if (tags.at(1) == net) {
+            sklDir = tags.at(6).trimmed();
+            break;
+          }
+        }          
+      }
     }
   }
   if (!sklDir.isEmpty() && sklDir != "none") {
