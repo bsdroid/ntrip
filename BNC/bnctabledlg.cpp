@@ -155,13 +155,17 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncTableDlg::~bncTableDlg() {
-  if (_table) {
-    for (int ir = 0; ir < _table->rowCount(); ir++) {
-      for (int ic = 0; ic < _table->columnCount(); ic++) {
-        delete _table->item(ir,ic);
-      }
-    }
-  }
+  delete _casterHostComboBox;
+  delete _casterPortLineEdit;
+  delete _casterUserLineEdit;
+  delete _casterPasswordLineEdit;
+  delete _ntripVersionComboBox;
+  delete _buttonGet;
+  delete _buttonCancel;
+  delete _buttonOK;
+  delete _buttonWhatsThis;
+  delete _buttonCasterTable;
+  delete _table;
 }
 
 // Read Table the caster (static)
