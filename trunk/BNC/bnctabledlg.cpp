@@ -477,29 +477,29 @@ bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) :
 
   ww = QFontMetrics(font()).width('w');
 
-  QPushButton* _closeButton = new QPushButton("Cancel");
+  _closeButton = new QPushButton("Cancel");
   connect(_closeButton, SIGNAL(clicked()), this, SLOT(close()));
   _closeButton->setMinimumWidth(8*ww);
   _closeButton->setMaximumWidth(8*ww);
 
-  QPushButton* _okButton = new QPushButton(tr("OK"), this);
+  _okButton = new QPushButton(tr("OK"), this);
   connect(_okButton, SIGNAL(clicked()), this, SLOT(slotAcceptCasterTable()));
   _okButton->setMinimumWidth(8*ww);
   _okButton->setMaximumWidth(8*ww);
 
-  QPushButton* _whatsThisCasterTableButton = new QPushButton(tr("Help=Shift+F1"), this);
-  connect(_whatsThisCasterTableButton, SIGNAL(clicked()), this, SLOT(slotWhatsThisCasterTable()));
-  _whatsThisCasterTableButton->setMinimumWidth(12*ww);
-  _whatsThisCasterTableButton->setMaximumWidth(12*ww);
+  _whatsThisButton = new QPushButton(tr("Help=Shift+F1"), this);
+  connect(_whatsThisButton, SIGNAL(clicked()), this, SLOT(slotWhatsThis()));
+  _whatsThisButton->setMinimumWidth(12*ww);
+  _whatsThisButton->setMaximumWidth(12*ww);
 
   _casterTable->setWhatsThis(tr("<p>Select an NTRIP broadcaster and hit 'OK'.</p><p>See <u>http://www.rtcm-ntrip.org/home</u> for further details on known NTRIP broadcaster installations.</u>."));
 
   QGridLayout* dlgLayout = new QGridLayout();
   dlgLayout->addWidget(new QLabel("  List of NTRIP Broadcasters from www.rtcm-ntrip.org"), 0,0,1,3,Qt::AlignLeft);
-  dlgLayout->addWidget(_casterTable,                1, 0, 1, 3);
-  dlgLayout->addWidget(_whatsThisCasterTableButton, 2, 0);
-  dlgLayout->addWidget(_closeButton,                2, 1, Qt::AlignRight);  
-  dlgLayout->addWidget(_okButton,                   2, 2);
+  dlgLayout->addWidget(_casterTable,     1, 0, 1, 3);
+  dlgLayout->addWidget(_whatsThisButton, 2, 0);
+  dlgLayout->addWidget(_closeButton,     2, 1, Qt::AlignRight);  
+  dlgLayout->addWidget(_okButton,        2, 2);
 
   setMinimumSize(600,400);
   setWindowTitle(tr("Select Broadcaster"));
@@ -508,22 +508,19 @@ bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) :
   show();
 }
 
-// Caster table what's this
-////////////////////////////////////////////////////////////////////////////
-void bncCasterTableDlg:: slotWhatsThisCasterTable() {
-  QWhatsThis::enterWhatsThisMode();
-}
-
 // Caster table destructor
 ////////////////////////////////////////////////////////////////////////////
 bncCasterTableDlg::~bncCasterTableDlg() {
-  if (_casterTable) {
-    for (int ir = 0; ir < _casterTable->rowCount(); ir++) {
-      for (int ic = 0; ic < _casterTable->columnCount(); ic++) {
-        delete _casterTable->item(ir,ic);
-      }
-    }
-  }
+  delete _casterTable;
+  delete _okButton;
+  delete _closeButton;
+  delete _whatsThisButton;
+}
+
+// Caster table what's this
+////////////////////////////////////////////////////////////////////////////
+void bncCasterTableDlg:: slotWhatsThis() {
+  QWhatsThis::enterWhatsThisMode();
 }
 
 // Accept caster table
