@@ -26,7 +26,8 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryV1::bncNetQueryV1() {
-  _socket = 0;
+  _socket  = 0;
+  _timeOut = 20000;
 }
 
 // Destructor
@@ -54,9 +55,20 @@ void bncNetQueryV1::waitForRequestResult(const QUrl&, QByteArray&) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV1::waitForReadyRead(QByteArray& outData) {
-  if (_socket) {
-    if (_socket->waitForReadyRead()) {
-      outData = _socket->readAll();
+  if (_socket && _socket->state() == QAbstractSocket::ConnectedState) {
+    while (true) {
+      int nBytes = _socket->bytesAvailable();
+      if (nBytes > 0) {
+        outData = _socket->readAll();
+        return;
+      }
+      else if (!_socket->waitForReadyRead(_timeOut)) {
+        delete _socket;
+        _socket = 0;
+        _status = error;
+        emit newMessage(_url.path().toAscii() + " read timeout", true);
+        return;
+      }
     }
   }
 }
@@ -65,8 +77,6 @@ void bncNetQueryV1::waitForReadyRead(QByteArray& outData) {
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
 
-  const int timeOut = 20000;
-
   _status = running;
 
   delete _socket;
@@ -74,12 +84,12 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
 
   // Default scheme and path
   // -----------------------
-  QUrl urlLoc(url);
-  if (urlLoc.scheme().isEmpty()) {
-    urlLoc.setScheme("http");
+  _url = url;
+  if (_url.scheme().isEmpty()) {
+    _url.setScheme("http");
   }
-  if (urlLoc.path().isEmpty()) {
-    urlLoc.setPath("/");
+  if (_url.path().isEmpty()) {
+    _url.setPath("/");
   }
 
   // Connect the Socket
@@ -89,12 +99,12 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
   int     proxyPort = settings.value("proxyPort").toInt();
  
   if ( proxyHost.isEmpty() ) {
-    _socket->connectToHost(urlLoc.host(), urlLoc.port());
+    _socket->connectToHost(_url.host(), _url.port());
   }
   else {
     _socket->connectToHost(proxyHost, proxyPort);
   }
-  if (!_socket->waitForConnected(timeOut)) {
+  if (!_socket->waitForConnected(_timeOut)) {
     delete _socket; 
     _socket = 0;
     _status = error;
@@ -103,8 +113,8 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
 
   // Send Request
   // ------------
-  QString uName = QUrl::fromPercentEncoding(urlLoc.userName().toAscii());
-  QString passW = QUrl::fromPercentEncoding(urlLoc.password().toAscii());
+  QString uName = QUrl::fromPercentEncoding(_url.userName().toAscii());
+  QString passW = QUrl::fromPercentEncoding(_url.password().toAscii());
   QByteArray userAndPwd;
 
   if(!uName.isEmpty() || !passW.isEmpty()) {
@@ -114,14 +124,14 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
 
   QByteArray reqStr;
   if ( proxyHost.isEmpty() ) {
-    if (urlLoc.path().indexOf("/") != 0) urlLoc.setPath("/");
-    reqStr = "GET " + urlLoc.path().toAscii() + " HTTP/1.0\r\n"
+    if (_url.path().indexOf("/") != 0) _url.setPath("/");
+    reqStr = "GET " + _url.path().toAscii() + " HTTP/1.0\r\n"
              + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
              + userAndPwd + "\r\n";
   } else {
-    reqStr = "GET " + urlLoc.toEncoded() + " HTTP/1.0\r\n"
+    reqStr = "GET " + _url.toEncoded() + " HTTP/1.0\r\n"
              + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
-             + "Host: " + urlLoc.host().toAscii() + "\r\n"
+             + "Host: " + _url.host().toAscii() + "\r\n"
              + userAndPwd + "\r\n";
   }
 
@@ -133,27 +143,26 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
 
   _socket->write(reqStr, reqStr.length());
 
-  if (!_socket->waitForBytesWritten(timeOut)) {
+  if (!_socket->waitForBytesWritten(_timeOut)) {
     delete _socket;
     _socket = 0;
     _status = error;
-    emit newMessage("bncnetqueryv1: write timeout", true);
+    emit newMessage(_url.path().toAscii() + " write timeout", true);
     return;
   }
 
   // Read Caster Response
   // --------------------
   while (true) {
-    if (!_socket->waitForReadyRead(timeOut)) {
+    if (!_socket->waitForReadyRead(_timeOut)) {
       delete _socket;
       _socket = 0;
       _status = error;
-      emit newMessage("bncnetqueryv1: read timeout", true);
+      emit newMessage(_url.path().toAscii() + " read timeout", true);
       return;
     }
     if (_socket->canReadLine()) {
       QString line = _socket->readLine();
-      cout << ">" << line.toAscii().data() << "<" << endl;
       if (line.indexOf("ICY 200 OK") != -1) {
         break;
       }

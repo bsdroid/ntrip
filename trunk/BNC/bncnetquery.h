@@ -32,6 +32,7 @@ class bncNetQuery : public QObject {
  protected:
   queryStatus _status;
   int         _timeOut;
+  QUrl        _url;
 };
 
 #endif
