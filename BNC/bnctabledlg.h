@@ -31,7 +31,7 @@
 
 #include "bncconst.h"
 
-  class bncCasterTableDlg : public QDialog {
+class bncCasterTableDlg : public QDialog {
   Q_OBJECT
 
   public:
@@ -43,10 +43,13 @@
 
   private slots:
     virtual void slotAcceptCasterTable();
-    virtual void slotWhatsThisCasterTable();
+    virtual void slotWhatsThis();
 
   private:
     QTableWidget* _casterTable;
+    QPushButton*  _okButton;
+    QPushButton*  _closeButton;
+    QPushButton*  _whatsThisButton;
 };
 
 class bncTableDlg : public QDialog {
