@@ -858,7 +858,9 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
 // Reset Options
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotResetOptions() {
-  int iRet = QMessageBox::question(this, "Reset", "Delete saved options?",
+  int iRet = QMessageBox::question(this, "Reset", "Remove all configuration"
+                                   " options from configuration"
+                                   " file/register on disk?",
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {

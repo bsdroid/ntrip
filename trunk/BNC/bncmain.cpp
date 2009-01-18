@@ -60,10 +60,13 @@ int main(int argc, char *argv[]) {
 
   bool       GUIenabled  = true;
   bool       fileInput   = false;
+  bool       confFile  = false;
   QByteArray fileName;
   QByteArray format; 
   QString    dateString;
   QString    timeString;
+  QString    confFileName;
+  QString    confFileIs;
 
   for (int ii = 1; ii < argc; ii++) {
     if (QByteArray(argv[ii]) == "-nw") {
@@ -97,11 +100,30 @@ int main(int argc, char *argv[]) {
         timeString = QString(argv[ii+1]);
       }
     }
+    if (QByteArray(argv[ii]) == "-conf" || QByteArray(argv[ii]) == "--conf") {
+      confFile  = true;
+      if (ii+1 < argc) {
+        confFileName = QString(argv[ii+1]);
+      }
+    }
+  }
+
+  if (confFile && confFileName.isEmpty() ) {
+      cout << "Usage: bnc --conf <confFileName>\n"
+              "           --file <inputFileName>\n"
+              "           --format <RTIGS | RTCM_2 | RTCM_3>\n" 
+              "           --date YYYY-MM-DD  --time HH:MM:SS" << endl;
+      exit(0);
   }
 
   QCoreApplication::setOrganizationName("BKG");
   QCoreApplication::setOrganizationDomain("www.bkg.bund.de");
-  QCoreApplication::setApplicationName("BKG_NTRIP_Client");
+  if (!confFileName.isEmpty()) {
+    confFileIs = confFileName;
+  } else {
+    confFileIs = "BKG_NTRIP_Client";
+  }
+  QCoreApplication::setApplicationName(confFileIs);
 
   // Default Settings
   // ----------------
@@ -135,7 +157,6 @@ int main(int argc, char *argv[]) {
     }
     settings.setValue("casterHostList", listCopy);
   }
-
 
 
   bncApp app(argc, argv, GUIenabled);
@@ -186,7 +207,7 @@ int main(int argc, char *argv[]) {
     if (!fileInput) {
       caster->slotReadMountPoints();
       if (caster->numStations() == 0) {
-        return 0;
+      return 0;
       }
     }
 
@@ -195,7 +216,8 @@ int main(int argc, char *argv[]) {
     else {
       if ( fileName.isEmpty() || format.isEmpty() || 
            dateString.isEmpty() || timeString.isEmpty() ) {
-        cout << "Usage: bnc --file <fileName>\n"
+        cout << "Usage: bnc --conf <confFileName>\n"
+                "           --file <inputFileName>\n"
                 "           --format <RTIGS | RTCM_2 | RTCM_3>\n" 
                 "           --date YYYY-MM-DD  --time HH:MM:SS" << endl;
         exit(0);
