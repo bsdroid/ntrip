@@ -89,12 +89,12 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
 
   // Default scheme and path
   // -----------------------
-  QUrl urlLoc(url);
-  if (urlLoc.scheme().isEmpty()) {
-    urlLoc.setScheme("http");
+  _url = url;
+  if (_url.scheme().isEmpty()) {
+    _url.setScheme("http");
   }
-  if (urlLoc.path().isEmpty()) {
-    urlLoc.setPath("/");
+  if (_url.path().isEmpty()) {
+    _url.setPath("/");
   }
 
   // Proxy Settings
@@ -111,13 +111,15 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
   // Network Request
   // ---------------
   QNetworkRequest request;
-  request.setUrl(urlLoc);
-  request.setRawHeader("Host"         , urlLoc.host().toAscii());
+  request.setUrl(_url);
+  request.setRawHeader("Host"         , _url.host().toAscii());
   request.setRawHeader("Ntrip-Version", "Ntrip/2.0");
   request.setRawHeader("User-Agent"   , "NTRIP BNC/1.7");
-  if (!urlLoc.userName().isEmpty()) {
+  if (!_url.userName().isEmpty()) {
+    QString uName = QUrl::fromPercentEncoding(_url.userName().toAscii());
+    QString passW = QUrl::fromPercentEncoding(_url.password().toAscii());
     request.setRawHeader("Authorization", "Basic " + 
-           (urlLoc.userName() + ":" + urlLoc.password()).toAscii().toBase64());
+                         (uName + ":" + passW).toAscii().toBase64());
   } 
   if (!gga.isEmpty()) {
     request.setRawHeader("Ntrip-GGA", gga);
