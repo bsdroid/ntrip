@@ -528,7 +528,7 @@ bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) :
   setMinimumSize(600,400);
   setWindowTitle(tr("Select Broadcaster"));
   setLayout(dlgLayout);
-  resize(68*ww, 60*ww);
+  resize(68*ww, 50*ww);
   show();
 }
 

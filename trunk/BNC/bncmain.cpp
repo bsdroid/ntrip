@@ -139,6 +139,7 @@ int main(int argc, char *argv[]) {
   settings.setValue("binSampl",         "0");
   settings.setValue("casterHost",       "www.euref-ip.net");
   settings.setValue("casterPort",       "2101");
+  settings.setValue("casterUrlList",    "");
   settings.setValue("corrIntr",         "1 day");
   settings.setValue("corrPath",         "");
   settings.setValue("corrPort",         "");
@@ -149,6 +150,7 @@ int main(int argc, char *argv[]) {
   settings.setValue("logFile",          "");
   settings.setValue("makePause",        "0");
   settings.setValue("miscMount",        "");  
+  settings.setValue("mountPoints",      "");
   settings.setValue("obsRate",          "");
   settings.setValue("onTheFlyInterval", "1 day");
   settings.setValue("outEphPort",       "");
