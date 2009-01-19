@@ -73,7 +73,7 @@ Unless in offline mode, BNC
 The usual handling of BNC is that you first select a number of streams from NTRIP broadcasters ('Add Streams'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various tabs to select a combination of processing options before you start the program ('Start'). Records of BNC's activities are shown in the 'Logs' canvas on the bottom of the main window.
 </p>
 <p>
-All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf, see annexed 'Configuration File' example. On Windows systems options are saved in register BKG_NTRIP_Client. The self-explaining contents of the configuration file or the Windows register can easily be edited. Some options can be changed on-the-fly.
+All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf, see annexed 'Configuration File Example'. On Windows systems options are saved in register BKG_NTRIP_Client. The self-explaining contents of the configuration file or the Windows register can easily be edited. Some options can be changed on-the-fly.
 </p>
 <p>
 3.1. <a href=#file>File</a><br>
@@ -141,6 +141,7 @@ All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/
 3.15. <a href=#cmd>Command Line Options</a><br>
 &nbsp; &nbsp; &nbsp; 3.15.1. <a href=#nw>No Window Mode</a><br>
 &nbsp; &nbsp; &nbsp; 3.15.2. <a href=#post>Offline Mode</a><br>
+&nbsp; &nbsp; &nbsp; 3.15.3. <a href=#conffile>Configuration File</a><br>
 </p>
 
 <p><a name="file"><h4>3.1. File</h4></p>
@@ -148,15 +149,15 @@ All options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/
 <p>
 The 'File' button lets you
 <ul>
-<li>
-select an appropriate font.<br>
+<li> select an appropriate font.<br>
 Use smaller font size if the BNC main window exceeds the size of your screen.
 </li> 
 <li> save selected options in configuration file resp. Windows register.<br>
-When using 'Save & Activate Options' while BNC is already processing data, some configuration options become immediately effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration File' for a list of on-the-fly changeable configuration options.
+When using 'Save & Activate Options' while BNC is already processing data, some configuration options become immediately effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration File Example' for a list of on-the-fly changeable configuration options.
 </li>
-<li>
-quit the BNC program.
+<li> remove all options from configuration file/register on disk.
+</li>
+<li> quit the BNC program.
 </li> 
 </ul>
 </p>
@@ -207,7 +208,7 @@ When BNC is started, new files are created by default and any existing files wit
 
 <p><a name="genconf"><h4>3.4.3 Reread Configuration - optional</h4></p>
 <p>
-When operating BNC online in 'no window' mode (command line option -nw), some configuration options can nevertheless be changed on-the-fly without interrupting the running process. For that you force the program to reread parts of its configuration in pre-defined intervals. Select '1 min', '1 hour', or '1 day' to let BNC reread on-the-fly changeable configuration options every full minute, hour, or day. This lets in between edited options become effective without interrupting uninvolved threads. See annexed section 'Configuration File' for a Unix/Linux/Mac configuration file example and a list of on-the-fly changeable options.
+When operating BNC online in 'no window' mode (command line option -nw), some configuration options can nevertheless be changed on-the-fly without interrupting the running process. For that you force the program to reread parts of its configuration in pre-defined intervals. Select '1 min', '1 hour', or '1 day' to let BNC reread on-the-fly changeable configuration options every full minute, hour, or day. This lets in between edited options become effective without interrupting uninvolved threads. See annexed section 'Configuration File Example' for a Unix/Linux/Mac configuration file example and a list of on-the-fly changeable options.
 </p> 
 
 <p><a name="genstart"><h4>3.4.4 Auto Start - optional</h4></p>
@@ -830,7 +831,7 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 <p>
 <u>Window mode:</u> Hit 'Save & Activate Options' while BNC is in window mode and already processing data to let changes of your streams selection immediately become effective.
 <p>
-<u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option in pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file or Windows register become effective without terminating uninvolved threads. See annexed section 'Configuration File' for a Unix/Linux/Mac configuration file example and a list of other on-the-fly changeable options.
+<u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option in pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file or Windows register become effective without terminating uninvolved threads. See annexed section 'Configuration File Example' for a Unix/Linux/Mac configuration file example and a list of other on-the-fly changeable options.
 </p>
 
 <p><a name="start"><h4>3.13. Start</h4></p>
@@ -863,8 +864,8 @@ Although BNC is primarily a real-time online tool, it can be run in offline mode
 </p>
 <p>
 <ul>
-<li>'--file &#060;<u>file</u>&#062;' to enter the full path to an input <u>file</u> containing data in RTCM Version 2.x, or Version 3.x, or RTIGS/SOC format.</li>
-<li>'--format &#060;<u>format</u>&#062;' to enter one of the file <u>format</u> describing strings 'RTCM_2', 'RTCM_3' or 'RTIGS'.</li>
+<li>'--file &#060;<u>inputFile</u>&#062;' to enter the full path to an input file containing data in RTCM Version 2.x, or Version 3.x, or RTIGS/SOC format.</li>
+<li>'--format &#060;<u>format</u>&#062;' to enter one of the file format describing strings 'RTCM_2', 'RTCM_3' or 'RTIGS'.</li>
 <li>'--date YYYY-MM-DD' to enter a date for the first epoch.</li>
 <li>'--time HH:MM:SS' to enter a time for the first epoch.</li>
 </ul>
@@ -874,6 +875,17 @@ Example:<br><br>
 </p>
 <p>
 Note that it is necessary to define a date and time for the first epoch because RTCM streams do not contain complete time stamps as needed for RINEX. Note further that when running BNC in offline mode, it will use options for file saving, interval, sampling etc. from its configuration file.
+</p> 
+
+<p><a name="conffile"><h4>3.15.3 Configuration File - optional</h4></p>
+The default configuration file name on  Unix/Linux/Mac systems is 'BKG_NTRIP_Client' with suffix '.conf'. On Windows systems the configuration is saved in register 'BKG_NTRIP_Client'. You may change the configuration file/register string at startup time using the command line option '--conf &#060;<u>confFile</u>&#062;'.
+</p>
+<p>
+Example:<br><br>
+./bnc --conf myConf
+</p> 
+<p> 
+This leads to a configuration file 'myConf.conf' and a Windows register 'myConf'.
 </p> 
 
 <p><a name="limits"><h3>4. Limitations</h3></p>
@@ -953,7 +965,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 &nbsp; &nbsp; &nbsp; 8.2.4 RTCM <a href=#rtcm3>Version 3.x</a><br>
 8.3. <a href=#rtigs>RTIGS</a><br>
 &nbsp; &nbsp; &nbsp; 8.3.1 <a href=#soc>SOC</a><br>
-8.4. <a href=#config>Configuration File</a><br>
+8.4. <a href=#config>Configuration File Example</a><br>
 8.5. <a href=#links>Links</a><br>
 </p>
 
@@ -1164,7 +1176,7 @@ Visit <u>http://gipsy.jpl.nasa.gov/igdg/papers/SOC_FORMAT.ppt</u> for further de
 </p>
 <p>
 </p>
-<p><a name="config"><h4>8.4. Configuration File</h4></p>
+<p><a name="config"><h4>8.4. Configuration File Example</h4></p>
 <p>
 The following is an example for the contents of a Unix/Linux/Mac configuration file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf. It enables the retrieval of stream ACOR0 form www.euref-ip.net and FFMJ3 from www.igs-ip.net for the generation of 15 min RINEX files. RINEX files are uploaded to an archive using script 'up2archive' :
 <pre>
