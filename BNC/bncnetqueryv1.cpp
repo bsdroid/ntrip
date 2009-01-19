@@ -153,6 +153,7 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
 
   // Read Caster Response
   // --------------------
+  QStringList response;
   while (true) {
     if (!_socket->waitForReadyRead(_timeOut)) {
       delete _socket;
@@ -163,10 +164,22 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
     }
     if (_socket->canReadLine()) {
       QString line = _socket->readLine();
+      response.push_back(line);
+      if (line.trimmed().isEmpty()) {
+        break;
+      }
       if (line.indexOf("ICY 200 OK") != -1) {
+        response.clear();
         break;
       }
     }
+  }
+  if (response.size() > 0) {
+    delete _socket;
+    _socket = 0;
+    _status = error;
+    emit newMessage(_url.path().toAscii() + " wrong caster response\n" +
+                    response.join("\n").toAscii(), true);
   }
 }
 
