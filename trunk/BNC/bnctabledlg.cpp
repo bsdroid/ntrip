@@ -299,8 +299,8 @@ void bncTableDlg::accept() {
   url.setScheme("http");
   url.setHost(_casterHostComboBox->currentText());
   url.setPort(_casterPortLineEdit->text().toInt());
-  url.setUserName(_casterUserLineEdit->text());
-  url.setPassword(_casterPasswordLineEdit->text());
+  url.setUserName(QUrl::toPercentEncoding(_casterUserLineEdit->text()));
+  url.setPassword(QUrl::toPercentEncoding(_casterPasswordLineEdit->text()));
   addUrl(url);
 
   QStringList* mountPoints = new QStringList;
@@ -417,8 +417,10 @@ void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
   for (int ii = 0; ii < casterUrlList.count(); ii++) {
     QUrl url(casterUrlList[ii]);
     if (url.host() == newHost) {
-      _casterUserLineEdit->setText(url.userName());
-      _casterPasswordLineEdit->setText(url.password());
+      _casterUserLineEdit->setText(
+                QUrl::fromPercentEncoding(url.userName().toAscii()));
+      _casterPasswordLineEdit->setText(
+                QUrl::fromPercentEncoding(url.password().toAscii()));
       if (url.port() > 0) {
         _casterPortLineEdit->setText(QString("%1").arg(url.port()));
       }
