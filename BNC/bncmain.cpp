@@ -151,6 +151,7 @@ int main(int argc, char *argv[]) {
   settings.setValue("makePause",        "0");
   settings.setValue("miscMount",        "");  
   settings.setValue("mountPoints",      "");
+  settings.setValue("ntripVersion",     "1");
   settings.setValue("obsRate",          "");
   settings.setValue("onTheFlyInterval", "1 day");
   settings.setValue("outEphPort",       "");
