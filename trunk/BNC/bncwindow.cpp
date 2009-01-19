@@ -858,9 +858,9 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
 // Reset Options
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotResetOptions() {
-  int iRet = QMessageBox::question(this, "Reset", "Remove all configuration"
-                                   " options from configuration"
-                                   " file/register on disk?",
+  int iRet = QMessageBox::question(this, "Reset", "Remove all options from"
+                                   " configuration file/register"
+                                   " saved on disk?",
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
@@ -873,48 +873,47 @@ void bncWindow::slotResetOptions() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotSaveOptions() {
   QSettings settings;
-  settings.setValue("proxyHost",   _proxyHostLineEdit->text());
-  settings.setValue("proxyPort",   _proxyPortLineEdit->text());
-  settings.setValue("waitTime",    _waitTimeSpinBox->value());
-  settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("adviseFail",  _adviseFailSpinBox->value());
   settings.setValue("adviseReco",  _adviseRecoSpinBox->value());
-  settings.setValue("makePause",   _makePauseCheckBox->checkState());
-  settings.setValue("outFile",     _outFileLineEdit->text());
-  settings.setValue("perfIntr",    _perfIntrComboBox->currentText());
-  settings.setValue("outPort",     _outPortLineEdit->text());
-  settings.setValue("outUPort",    _outUPortLineEdit->text());
-  settings.setValue("outEphPort",  _outEphPortLineEdit->text());
+  settings.setValue("adviseScript",_adviseScriptLineEdit->text());
+  settings.setValue("autoStart",   _autoStartCheckBox->checkState());
+  settings.setValue("binSampl",    _binSamplSpinBox->value());
+  settings.setValue("corrIntr",    _corrIntrComboBox->currentText());
+  settings.setValue("corrPath",    _corrPathLineEdit->text());
   settings.setValue("corrPort",    _corrPortLineEdit->text());
   settings.setValue("corrTime",    _corrTimeSpinBox->value());
-  settings.setValue("rnxPath",     _rnxPathLineEdit->text());
-  settings.setValue("ephPath",     _ephPathLineEdit->text());
-  settings.setValue("corrPath",    _corrPathLineEdit->text());
-  settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
-  settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
-  settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
   settings.setValue("ephIntr",     _ephIntrComboBox->currentText());
-  settings.setValue("corrIntr",    _corrIntrComboBox->currentText());
-  settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
-  settings.setValue("binSampl",    _binSamplSpinBox->value());
-  settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
-  settings.setValue("rnxAppend",   _rnxAppendCheckBox->checkState());
-  settings.setValue("autoStart",   _autoStartCheckBox->checkState());
-  settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
+  settings.setValue("ephPath",     _ephPathLineEdit->text());
   settings.setValue("ephV3",       _ephV3CheckBox->checkState());
   settings.setValue("logFile",     _logFileLineEdit->text());
-  settings.setValue("adviseScript",_adviseScriptLineEdit->text());
+  settings.setValue("makePause",   _makePauseCheckBox->checkState());
   settings.setValue("miscMount",   _miscMountLineEdit->text());
+  settings.setValue("obsRate",     _obsRateComboBox->currentText());
+  settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
+  settings.setValue("outEphPort",  _outEphPortLineEdit->text());
+  settings.setValue("outFile",     _outFileLineEdit->text());
+  settings.setValue("outPort",     _outPortLineEdit->text());
+  settings.setValue("outUPort",    _outUPortLineEdit->text());
+  settings.setValue("perfIntr",    _perfIntrComboBox->currentText());
+  settings.setValue("proxyHost",   _proxyHostLineEdit->text());
+  settings.setValue("proxyPort",   _proxyPortLineEdit->text());
+  settings.setValue("rnxAppend",   _rnxAppendCheckBox->checkState());
+  settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
+  settings.setValue("rnxPath",     _rnxPathLineEdit->text());
+  settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
+  settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
+  settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
+  settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
   settings.setValue("scanRTCM",    _scanRTCMCheckBox->checkState());
-  settings.setValue("serialPortName",  _serialPortNameLineEdit->text());
-  settings.setValue("serialMountPoint",_serialMountPointLineEdit->text());
-  settings.setValue("serialBaudRate",  _serialBaudRateComboBox->currentText());
-  settings.setValue("serialParity",    _serialParityComboBox->currentText());
-  settings.setValue("serialDataBits",  _serialDataBitsComboBox->currentText());
-  settings.setValue("serialStopBits",  _serialStopBitsComboBox->currentText());
   settings.setValue("serialAutoNMEA",  _serialAutoNMEACheckBox->checkState());
+  settings.setValue("serialBaudRate",  _serialBaudRateComboBox->currentText());
+  settings.setValue("serialDataBits",  _serialDataBitsComboBox->currentText());
+  settings.setValue("serialMountPoint",_serialMountPointLineEdit->text());
+  settings.setValue("serialParity",    _serialParityComboBox->currentText());
+  settings.setValue("serialPortName",  _serialPortNameLineEdit->text());
+  settings.setValue("serialStopBits",  _serialStopBitsComboBox->currentText());
   settings.setValue("startTab",    aogroup->currentIndex());
-  
+  settings.setValue("waitTime",    _waitTimeSpinBox->value());
   QStringList mountPoints;
 
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {

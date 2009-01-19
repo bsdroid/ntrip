@@ -108,11 +108,14 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  if (confFile && confFileName.isEmpty() ) {
-      cout << "Usage: bnc --conf <confFileName>\n"
+  QString printHelp;
+  printHelp = "Usage: bnc --conf <confFileName>\n" 
               "           --file <inputFileName>\n"
-              "           --format <RTIGS | RTCM_2 | RTCM_3>\n" 
-              "           --date YYYY-MM-DD  --time HH:MM:SS" << endl;
+              "           --format <RTIGS | RTCM_2 | RTCM_3>\n"
+              "           --date YYYY-MM-DD  --time HH:MM:SS";
+
+  if (confFile && confFileName.isEmpty() ) {
+      cout << printHelp.toAscii().data() << endl;
       exit(0);
   }
 
@@ -129,21 +132,50 @@ int main(int argc, char *argv[]) {
   // ----------------
   QSettings settings;
   if (settings.allKeys().size() == 0) {
-    settings.setValue("casterHost", "www.euref-ip.net");
-    settings.setValue("casterHostList", QStringList());
-    settings.setValue("casterPort", 2101);
-    settings.setValue("rnxIntr",    "15 min");
-    settings.setValue("ephIntr",    "1 day");
-    settings.setValue("corrIntr",   "1 day");
-    settings.setValue("rnxSkel",    "SKL");
-    settings.setValue("waitTime",   "5");
-    settings.setValue("makePause",  0);
-    settings.setValue("obsRate",    "");
-    settings.setValue("adviseFail", "15");
-    settings.setValue("adviseReco", "5");
-    settings.setValue("perfIntr",   "");
-    settings.setValue("corrTime",   "5");
-    settings.setValue("miscMount",  "");
+  settings.setValue("adviseFail",       "15");
+  settings.setValue("adviseReco",       "5");
+  settings.setValue("adviseScript",     "");
+  settings.setValue("autoStart",        "0");
+  settings.setValue("binSampl",         "0");
+  settings.setValue("casterHost",       "www.euref-ip.net");
+  settings.setValue("casterPort",       "2101");
+  settings.setValue("corrIntr",         "1 day");
+  settings.setValue("corrPath",         "");
+  settings.setValue("corrPort",         "");
+  settings.setValue("corrTime",         "5");
+  settings.setValue("ephIntr",          "1 day");
+  settings.setValue("ephPath",          "");
+  settings.setValue("ephV3",            "0");
+  settings.setValue("logFile",          "");
+  settings.setValue("makePause",        "0");
+  settings.setValue("miscMount",        "");  
+  settings.setValue("obsRate",          "");
+  settings.setValue("onTheFlyInterval", "1 day");
+  settings.setValue("outEphPort",       "");
+  settings.setValue("outFile",          "");
+  settings.setValue("outPort",          "");
+  settings.setValue("outUPort",         "");
+  settings.setValue("perfIntr",         "");
+  settings.setValue("proxyHost",        "");
+  settings.setValue("proxyPort",        "");
+  settings.setValue("rnxAppend",        "0");
+  settings.setValue("rnxIntr",          "15 min");
+  settings.setValue("rnxPath",          "");
+  settings.setValue("rnxSampl",         "0");
+  settings.setValue("rnxScript",        "");
+  settings.setValue("rnxSkel",          "SKL");
+  settings.setValue("rnxV3",            "0");
+  settings.setValue("scanRTCM",         "0");
+  settings.setValue("serialAutoNMEA",   "0");
+  settings.setValue("serialBaudRate",   "9600");
+  settings.setValue("serialDataBits",   "8");
+  settings.setValue("serialMountPoint", "");
+  settings.setValue("serialParity",     "NONE");
+  settings.setValue("serialPortName",   "");
+  settings.setValue("serialStopBits",   "1");
+  settings.setValue("startTab",         "0");
+  settings.setValue("waitTime",         "5");
+
   }
 
   // Truncate list of casters
@@ -216,10 +248,7 @@ int main(int argc, char *argv[]) {
     else {
       if ( fileName.isEmpty() || format.isEmpty() || 
            dateString.isEmpty() || timeString.isEmpty() ) {
-        cout << "Usage: bnc --conf <confFileName>\n"
-                "           --file <inputFileName>\n"
-                "           --format <RTIGS | RTCM_2 | RTCM_3>\n" 
-                "           --date YYYY-MM-DD  --time HH:MM:SS" << endl;
+      cout << printHelp.toAscii().data() << endl;
         exit(0);
       }
 
