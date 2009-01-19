@@ -872,7 +872,22 @@ void bncWindow::slotResetOptions() {
 // Save Options
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotSaveOptions() {
+
+  QStringList mountPoints;
+  for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
+    QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
+              "@"  + _mountPointsTable->item(iRow, 1)->text() );
+
+    mountPoints.append(url.toString() + " " + 
+                       _mountPointsTable->item(iRow, 2)->text()
+               + " " + _mountPointsTable->item(iRow, 3)->text()
+               + " " + _mountPointsTable->item(iRow, 4)->text()
+               + " " + _mountPointsTable->item(iRow, 5)->text()
+               + " " + _mountPointsTable->item(iRow, 6)->text());
+  }
+
   QSettings settings;
+
   settings.setValue("adviseFail",  _adviseFailSpinBox->value());
   settings.setValue("adviseReco",  _adviseRecoSpinBox->value());
   settings.setValue("adviseScript",_adviseScriptLineEdit->text());
@@ -888,6 +903,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("logFile",     _logFileLineEdit->text());
   settings.setValue("makePause",   _makePauseCheckBox->checkState());
   settings.setValue("miscMount",   _miscMountLineEdit->text());
+  settings.setValue("mountPoints", mountPoints);
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
   settings.setValue("outEphPort",  _outEphPortLineEdit->text());
@@ -914,20 +930,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("serialStopBits",  _serialStopBitsComboBox->currentText());
   settings.setValue("startTab",    aogroup->currentIndex());
   settings.setValue("waitTime",    _waitTimeSpinBox->value());
-  QStringList mountPoints;
 
-  for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
-    QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
-              "@"  + _mountPointsTable->item(iRow, 1)->text() );
-
-    mountPoints.append(url.toString() + " " + 
-                       _mountPointsTable->item(iRow, 2)->text()
-               + " " + _mountPointsTable->item(iRow, 3)->text()
-               + " " + _mountPointsTable->item(iRow, 4)->text()
-               + " " + _mountPointsTable->item(iRow, 5)->text()
-               + " " + _mountPointsTable->item(iRow, 6)->text());
-  }
-  settings.setValue("mountPoints", mountPoints);
   if (_caster) {
     _caster->slotReadMountPoints();
   }
