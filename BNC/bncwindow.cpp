@@ -88,8 +88,8 @@ bncWindow::bncWindow() {
   _actSaveOpt = new QAction(tr("&Save && Activate Options"),this);
   connect(_actSaveOpt, SIGNAL(triggered()), SLOT(slotSaveOptions()));
 
-  _actResetOpt = new QAction(tr("&Reset Options"),this);
-  connect(_actResetOpt, SIGNAL(triggered()), SLOT(slotResetOptions()));
+  _actRemoveOpt = new QAction(tr("&Remove Options"),this);
+  connect(_actRemoveOpt, SIGNAL(triggered()), SLOT(slotRemoveOptions()));
 
   _actQuit  = new QAction(tr("&Quit"),this);
   connect(_actQuit, SIGNAL(triggered()), SLOT(close()));
@@ -855,12 +855,11 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
   delete mountPoints;
 }
 
-// Reset Options
+// Remove Options
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotResetOptions() {
-  int iRet = QMessageBox::question(this, "Reset", "Remove all options from"
-                                   " configuration file/register"
-                                   " saved on disk?",
+void bncWindow::slotRemoveOptions() {
+  int iRet = QMessageBox::question(this, "Remove", "Remove all options from"
+                                   " configuration file/register on disk?",
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
@@ -1108,7 +1107,7 @@ void bncWindow::CreateMenu() {
   _menuFile->addSeparator();
   _menuFile->addAction(_actSaveOpt);
   _menuFile->addSeparator();
-  _menuFile->addAction(_actResetOpt);
+  _menuFile->addAction(_actRemoveOpt);
   _menuFile->addSeparator();
   _menuFile->addAction(_actQuit);
 

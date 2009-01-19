@@ -67,7 +67,7 @@
     void slotFlowchart();
     void slotFontSel();
     void slotSaveOptions();
-    void slotResetOptions();
+    void slotRemoveOptions();
     void slotAddMountPoints();
     void slotGetData();
     void slotStop();
@@ -91,7 +91,7 @@
     QAction*   _actFlowchart;
     QAction*   _actFontSel;
     QAction*   _actSaveOpt;
-    QAction*   _actResetOpt;
+    QAction*   _actRemoveOpt;
     QAction*   _actQuit; 
     QAction*   _actGetData;
     QAction*   _actStop;
