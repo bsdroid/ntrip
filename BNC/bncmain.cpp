@@ -66,7 +66,6 @@ int main(int argc, char *argv[]) {
   QString    dateString;
   QString    timeString;
   QString    confFileName;
-  QString    confFileIs;
 
   for (int ii = 1; ii < argc; ii++) {
     if (QByteArray(argv[ii]) == "-nw") {
@@ -122,11 +121,10 @@ int main(int argc, char *argv[]) {
   QCoreApplication::setOrganizationName("BKG");
   QCoreApplication::setOrganizationDomain("www.bkg.bund.de");
   if (!confFileName.isEmpty()) {
-    confFileIs = confFileName;
+    QCoreApplication::setApplicationName(confFileName);
   } else {
-    confFileIs = "BKG_NTRIP_Client";
+    QCoreApplication::setApplicationName("BKG_NTRIP_Client");
   }
-  QCoreApplication::setApplicationName(confFileIs);
 
   // Default Settings
   // ----------------
@@ -137,9 +135,7 @@ int main(int argc, char *argv[]) {
   settings.setValue("adviseScript",     "");
   settings.setValue("autoStart",        "0");
   settings.setValue("binSampl",         "0");
-  settings.setValue("casterHost",       "www.euref-ip.net");
-  settings.setValue("casterPort",       "2101");
-  settings.setValue("casterUrlList",    "");
+  settings.setValue("casterUrlList",    "http://user:pass@www.euref-ip.net:2101");
   settings.setValue("corrIntr",         "1 day");
   settings.setValue("corrPath",         "");
   settings.setValue("corrPort",         "");
