@@ -858,8 +858,10 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
 // Remove Options
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotRemoveOptions() {
-  int iRet = QMessageBox::question(this, "Remove", "Remove all options from"
-                                   " configuration file/register on disk?",
+
+  int iRet = QMessageBox::question(this, "Remove", "Remove all '" 
+                                   + QCoreApplication::applicationName() 
+                                   + "' configuration options from disk?",
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
