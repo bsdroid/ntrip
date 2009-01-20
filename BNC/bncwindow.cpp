@@ -722,7 +722,7 @@ void bncWindow::populateMountPointsTable() {
     _mountPointsTable->setItem(iRow, 5, it);
 
     it = new QTableWidgetItem(ntripVersion);
-    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    ////    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
     _mountPointsTable->setItem(iRow, 6, it);
 
     bncTableItem* bncIt = new bncTableItem();
