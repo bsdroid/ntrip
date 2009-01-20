@@ -73,7 +73,7 @@ Unless in offline mode, BNC
 The usual handling of BNC is that you first select a number of streams from NTRIP broadcasters ('Add Streams'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various tabs to select a combination of processing options before you start the program ('Start'). Records of BNC's activities are shown in the 'Logs' canvas on the bottom of the main window.
 </p>
 <p>
-As default, all options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf, see annexed 'Configuration File Example'. On Windows systems options are saved in register BKG_NTRIP_Client (default). The self-explaining contents of the configuration file or the Windows register can easily be edited. Some options can be changed on-the-fly.
+All configuration options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf, see annexed 'Configuration Example'. On Windows systems, configuration options are saved in register HKEY_CURRENT_USER/Software/BKG/BKG_NTRIP_Client. The default configuration file/register name 'BKG_NTRIP_Client' can be changed. The file/register contents can easily be edited. Some options can be changed on-the-fly.
 </p>
 <p>
 3.1. <a href=#file>File</a><br>
@@ -153,7 +153,7 @@ The 'File' button lets you
 Use smaller font size if the BNC main window exceeds the size of your screen.
 </li> 
 <li> save selected options in configuration file resp. Windows register.<br>
-When using 'Save & Activate Options' while BNC is already processing data, some configuration options become immediately effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration File Example' for a list of on-the-fly changeable configuration options.
+When using 'Save & Activate Options' while BNC is already processing data, some configuration options become immediately effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration Example' for a list of on-the-fly changeable configuration options.
 </li>
 <li> remove all options from configuration file/register on disk.
 </li>
@@ -208,7 +208,7 @@ When BNC is started, new files are created by default and any existing files wit
 
 <p><a name="genconf"><h4>3.4.3 Reread Configuration - optional</h4></p>
 <p>
-When operating BNC online in 'no window' mode (command line option -nw), some configuration options can nevertheless be changed on-the-fly without interrupting the running process. For that you force the program to reread parts of its configuration in pre-defined intervals from the disk. Select '1 min', '1 hour', or '1 day' to let BNC reread on-the-fly changeable configuration options every full minute, hour, or day. This lets in between edited options become effective without interrupting uninvolved threads. See annexed section 'Configuration File Example' for a Unix/Linux/Mac configuration file example and a list of on-the-fly changeable options.
+When operating BNC online in 'no window' mode (command line option -nw), some configuration options can nevertheless be changed on-the-fly without interrupting the running process. For that you force the program to reread parts of its configuration in pre-defined intervals from the disk. Select '1 min', '1 hour', or '1 day' to let BNC reread on-the-fly changeable configuration options every full minute, hour, or day. This lets in between edited options become effective without interrupting uninvolved threads. See annexed section 'Configuration Example' for a Unix/Linux/Mac configuration file example and a list of on-the-fly changeable options.
 </p> 
 
 <p><a name="genstart"><h4>3.4.4 Auto Start - optional</h4></p>
@@ -831,7 +831,7 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 <p>
 <u>Window mode:</u> Hit 'Save & Activate Options' while BNC is in window mode and already processing data to let changes of your streams selection immediately become effective.
 <p>
-<u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option from disk at pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file or Windows register become effective without terminating uninvolved threads. See annexed section 'Configuration File Example' for a Unix/Linux/Mac configuration file example and a list of other on-the-fly changeable options.
+<u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option from disk at pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file or Windows register become effective without terminating uninvolved threads. See annexed section 'Configuration Example' for a Unix/Linux/Mac configuration file example and a list of other on-the-fly changeable options.
 </p>
 
 <p><a name="start"><h4>3.13. Start</h4></p>
@@ -846,7 +846,7 @@ Hit the 'Stop' button in order to stop BNC.
 
 <p><a name="cmd"><h4>3.15. Command Line Options</h4></p>
 <p> 
-Command line options are available to run BNC in 'no window' mode or let it read data from a file in offline mode. BNC will then use processing options from the configuration file (Unix/Linux/Mac) or from the Windows register. Note that the self-explaining contents of the configuration file or the Windows register can easily be edited and it is possible to introduce specific configuration file/register names instead of the default name 'BKG_NTRIP_Client'.
+Command line options are available to run BNC in 'no window' mode or let it read data from a file in offline mode. BNC will then use processing options from the configuration file (Unix/Linux/Mac) or from the Windows register. Note that the self-explaining contents of the configuration file or the Windows register can easily be edited. It is possible to introduce your own configuration file/register names instead of the default name 'BKG_NTRIP_Client'.
 </p> 
 
 <p><a name="nw"><h4>3.15.1 No Window Mode - optional</h4></p>
@@ -960,7 +960,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 &nbsp; &nbsp; &nbsp; 8.2.4 RTCM <a href=#rtcm3>Version 3.x</a><br>
 8.3. <a href=#rtigs>RTIGS</a><br>
 &nbsp; &nbsp; &nbsp; 8.3.1 <a href=#soc>SOC</a><br>
-8.4. <a href=#config>Configuration File Example</a><br>
+8.4. <a href=#config>Configuration Example</a><br>
 8.5. <a href=#links>Links</a><br>
 </p>
 
@@ -1171,9 +1171,9 @@ Visit <u>http://gipsy.jpl.nasa.gov/igdg/papers/SOC_FORMAT.ppt</u> for further de
 </p>
 <p>
 </p>
-<p><a name="config"><h4>8.4. Configuration File Example</h4></p>
+<p><a name="config"><h4>8.4. Configuration Example</h4></p>
 <p>
-The following is an example for the contents of a Unix/Linux/Mac (default) configuration file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf. It enables the retrieval of stream ACOR0 form www.euref-ip.net and FFMJ3 from www.igs-ip.net for the generation of 15 min RINEX files. RINEX files are uploaded to an archive using script 'up2archive' :
+The following is an example for the contents of a Unix/Linux/Mac configuration file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf. It enables the retrieval of stream ACOR0 form www.euref-ip.net and FFMJ3 from www.igs-ip.net for the generation of 15 min RINEX files. RINEX files are uploaded to an archive using script 'up2archive' :
 <pre>
 [General]
 adviseFail=15
@@ -1181,39 +1181,35 @@ adviseReco=5
 adviseScript=
 autoStart=0
 binSampl=0
-casterHost=www.euref-ip.net
-casterHostList=
-casterPassword=pass
-casterPort=80
-casterUser=user
+casterUrlList=http://user:pass@euref-ip:2101
 corrIntr=1 day
 corrPath=
 corrPort=
 corrTime=5
-ephIntr=1 day
-ephPath=/home/user/rinex
+ephIntr=15 min
+ephPath=/home/usr/rinex
 ephV3=2
-font="Helvetica [Adobe],9,-1,5,50,0,0,0,0,0"
-logFile=/home/user/log.txt
+logFile=/home/weber/bnc.log
 makePause=0
 miscMount=
-mountPoints=//user:pass@www.euref-ip.net:2101/ACOR0 RTCM_2.3 43.36 351.60 no, //user:pass@www.igs-ip.net:2101/FFMJ3 RTCM_3.0 41.58 1.40 no
+mountPoints=//user:pass@www.euref-ip.net:2101/ACOR0 RTCM_2.3 43.36 351.60 no 1, //user:pass@www.igs-ip.net:2101/FFMJ3 RTCM_3.0 41.58 1.40 no 1
+ntripVersion=1
 obsRate=
 onTheFlyInterval=1 day
-outEphPort=2102
-outFile=/home/user/ascii
-outPort=2101
+outEphPort=
+outFile=
+outPort=
 outUPort=
 perfIntr=
-proxyHost=proxyhost
-proxyPort=8001
+proxyHost=
+proxyPort=
 rnxAppend=2
 rnxIntr=15 min
 rnxPath=/home/user/rinex
 rnxSampl=0
-rnxScript=/home/user/up2archive
-rnxSkel=SKL
-rnxV3=2
+rnxScript=/home/user/rinex/up2archive
+rnxSkel=
+rnxV3=0
 scanRTCM=0
 serialAutoNMEA=0
 serialBaudRate=9600
@@ -1222,11 +1218,12 @@ serialMountPoint=
 serialParity=NONE
 serialPortName=
 serialStopBits=1
+startTab=8
 waitTime=5
 </pre>
 </p>
 <p>
-Note that on Windows systems configuration options are saved in (default) register BKG_NTRIP_Client.
+Note that on Windows systems configuration options are saved in register BKG_NTRIP_Client.
 </p>
 <p>
 Note further that configuration options saved on disk can be changed/edited on-the-fly while BNC is already processing data.
