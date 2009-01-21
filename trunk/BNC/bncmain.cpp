@@ -128,6 +128,9 @@ int main(int argc, char *argv[]) {
 
   // Default Settings
   // ----------------
+  QStringList casterUrlList;
+  casterUrlList << "http://user:pass@www.euref-ip.net:2101" << "http://user:pass@www.igs-ip.net:2101";
+
   QSettings settings;
   if (settings.allKeys().size() == 0) {
   settings.setValue("adviseFail",       "15");
@@ -135,7 +138,7 @@ int main(int argc, char *argv[]) {
   settings.setValue("adviseScript",     "");
   settings.setValue("autoStart",        "0");
   settings.setValue("binSampl",         "0");
-  settings.setValue("casterUrlList",    "http://user:pass@www.euref-ip.net:2101");
+  settings.setValue("casterUrlList",    casterUrlList);
   settings.setValue("corrIntr",         "1 day");
   settings.setValue("corrPath",         "");
   settings.setValue("corrPort",         "");
