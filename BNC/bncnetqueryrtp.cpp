@@ -149,8 +149,12 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
            + "Ntrip-Component: Ntripclient\r\n"
            + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
            + "Transport: RTP/GNSS;unicast;client_port=" + clientPort + "\r\n"
-           + userAndPwd 
-           + "\r\n";
+           + userAndPwd;
+    if (!gga.isEmpty()) {
+      reqStr += "Ntrip-GGA: " + gga + "\r\n";
+    }
+    reqStr += "\r\n";
+
     _socket->write(reqStr, reqStr.length());
     
     // Read Server Answer 1
