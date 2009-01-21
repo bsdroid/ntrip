@@ -4,6 +4,7 @@
 #include "bncnetquery.h"
 
 class bncNetQueryRtp : public bncNetQuery {
+ Q_OBJECT
  public:
   bncNetQueryRtp();
   virtual ~bncNetQueryRtp();
@@ -12,6 +13,9 @@ class bncNetQueryRtp : public bncNetQuery {
   virtual void waitForRequestResult(const QUrl& url, QByteArray& outData);
   virtual void startRequest(const QUrl& url, const QByteArray& gga);
   virtual void waitForReadyRead(QByteArray& outData);
+
+ private slots:
+  void slotKeepAlive();
 
  private:
   QTcpSocket* _socket;
