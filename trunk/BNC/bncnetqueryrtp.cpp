@@ -85,8 +85,8 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
 
   // Default scheme
   // --------------
-  QUrl urlLoc(url);
-  urlLoc.setScheme("rtsp");
+  _url = url;
+  _url.setScheme("rtsp");
 
   // Connect the Socket
   // ------------------
@@ -95,7 +95,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
   int     proxyPort = settings.value("proxyPort").toInt();
  
   if ( proxyHost.isEmpty() ) {
-    _socket->connectToHost(urlLoc.host(), urlLoc.port());
+    _socket->connectToHost(_url.host(), _url.port());
   }
   else {
     _socket->connectToHost(proxyHost, proxyPort);
@@ -104,8 +104,8 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
   // Send Request 1
   // --------------
   if (_socket->waitForConnected(timeOut)) {
-    QString uName = QUrl::fromPercentEncoding(urlLoc.userName().toAscii());
-    QString passW = QUrl::fromPercentEncoding(urlLoc.password().toAscii());
+    QString uName = QUrl::fromPercentEncoding(_url.userName().toAscii());
+    QString passW = QUrl::fromPercentEncoding(_url.password().toAscii());
     QByteArray userAndPwd;
     
     if(!uName.isEmpty() || !passW.isEmpty()) {
@@ -122,7 +122,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
     QByteArray clientPort = QString("%1").arg(_udpSocket->localPort()).toAscii();
 
     QByteArray reqStr;
-    reqStr = "SETUP " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
+    reqStr = "SETUP " + _url.toEncoded() + " RTSP/1.0\r\n"
            + "CSeq: 1\r\n"
            + "Ntrip-Version: Ntrip/2.0\r\n"
            + "Ntrip-Component: Ntripclient\r\n"
@@ -177,7 +177,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
                               _socket->peerAddress(), serverPort.toInt());
           }
 
-          reqStr = "PLAY " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
+          reqStr = "PLAY " + _url.toEncoded() + " RTSP/1.0\r\n"
                  + "CSeq: 2\r\n"
                  + "Session: " + session + "\r\n"
                  + "\r\n";
@@ -191,8 +191,8 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
               line = in.readLine();
               while (!line.isEmpty()) {
                 if (line.indexOf("200 OK") != -1) {
-                  emit newMessage(urlLoc.host().toAscii() + 
-                                  urlLoc.path().toAscii() + 
+                  emit newMessage(_url.host().toAscii() + 
+                                  _url.path().toAscii() + 
                                   ": UDP connection established", true);
                   return;
                 }
