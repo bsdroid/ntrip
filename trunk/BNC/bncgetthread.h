@@ -50,8 +50,10 @@ class bncGetThread : public QThread {
                 const QByteArray& nmea, 
                 const QByteArray& ntripVersion, int iMount);
 
+ protected:
    ~bncGetThread();
 
+ public:
    void terminate();
 
    QByteArray staID() const {return _staID;}
@@ -77,7 +79,6 @@ class bncGetThread : public QThread {
    void  initialize();
    t_irc initRun();
    void  message(const QString&);
-   void  exit(int exitCode = 0);
    void  tryReconnect();
    void  callScript(const char* _comment);
    GPSDecoder* _decoder;
@@ -122,6 +123,7 @@ class bncGetThread : public QThread {
    QFile*      _rawOutFile;
    QFile*      _rawInpFile;
    QextSerialPort* _serialPort;
+   bool        _isToBeDeleted;
 };
 
 #endif
