@@ -45,6 +45,11 @@ bncNetQueryRtp::~bncNetQueryRtp() {
 void bncNetQueryRtp::stop() {
   _eventLoop->quit();
   _status = finished;
+  QByteArray reqStr = "TEARDOWN " + _url.toEncoded() + " RTSP/1.0\r\n"
+                    + "CSeq: " + QString("%1").arg(++_CSeq).toAscii() + "\r\n"
+                    + "Session: " + _session + "\r\n"
+                    + "\r\n";
+  _socket->write(reqStr, reqStr.length());
 }
 
 // 
