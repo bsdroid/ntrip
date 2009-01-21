@@ -174,7 +174,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
             rtpbuffer[11] = (sessInt)&0xFF;
 
             int irc = _udpSocket->writeDatagram(rtpbuffer, 12, 
-                          QHostAddress("141.74.33.12"), serverPort.toInt());
+                      _socket->peerAddress(), serverPort.toInt());
             cout << "irc = " << irc << endl;
           }
 
