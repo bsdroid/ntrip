@@ -437,7 +437,9 @@ void bncCaster::slotReadMountPoints() {
   }
 
   emit mountPointsRead(_threads);
-  emit( newMessage(QString("Configuration read: %1 stream(s)")
+  emit( newMessage(QString("Configuration read: "
+                           + QCoreApplication::applicationName()
+                           + ", %1 stream(s)")
                             .arg(_threads.count()).toAscii(), true) );
 
   // (Re-) Start the configuration timer
