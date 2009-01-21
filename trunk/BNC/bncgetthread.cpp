@@ -292,7 +292,10 @@ void bncGetThread::initialize() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncGetThread::~bncGetThread() {
-  delete _query;
+  if (_query) {
+    _query->stop();
+    delete _query;
+  }
   delete _decoder;
   delete _rnx;
   delete _rawInpFile;
