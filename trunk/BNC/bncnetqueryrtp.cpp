@@ -45,11 +45,26 @@ bncNetQueryRtp::~bncNetQueryRtp() {
 void bncNetQueryRtp::stop() {
   _eventLoop->quit();
   _status = finished;
-  QByteArray reqStr = "TEARDOWN " + _url.toEncoded() + " RTSP/1.0\r\n"
-                    + "CSeq: " + QString("%1").arg(++_CSeq).toAscii() + "\r\n"
-                    + "Session: " + _session + "\r\n"
-                    + "\r\n";
-  _socket->write(reqStr, reqStr.length());
+  if (_socket) {
+    QByteArray reqStr = "TEARDOWN " + _url.toEncoded() + " RTSP/1.0\r\n"
+                      + "CSeq: " + QString("%1").arg(++_CSeq).toAscii() + "\r\n"
+                      + "Session: " + _session + "\r\n"
+                      + "\r\n";
+    _socket->write(reqStr, reqStr.length());
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncNetQueryRtp::slotKeepAlive() {
+  if (_socket) {
+    QByteArray reqStr = "GET_PARAMETER " + _url.toEncoded() + " RTSP/1.0\r\n"
+                      + "CSeq: " + QString("%1").arg(++_CSeq).toAscii() + "\r\n"
+                      + "Session: " + _session + "\r\n"
+                      + "\r\n";
+    _socket->write(reqStr, reqStr.length());
+  }
+  QTimer::singleShot(30000, this, SLOT(slotKeepAlive()));
 }
 
 // 
@@ -199,6 +214,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
                   emit newMessage(_url.host().toAscii() + 
                                   _url.path().toAscii() + 
                                   ": UDP connection established", true);
+                  slotKeepAlive();
                   return;
                 }
                 line = in.readLine();
