@@ -35,7 +35,7 @@
 #include "bncconst.h"
 #include "RTCM/GPSDecoder.h"
 
-class bncRinex : public QThread {
+class bncRinex {
  public:
    bncRinex(const QByteArray& statID, const QUrl& mountPoint, 
             const QByteArray& format, const QByteArray& latitude,
@@ -53,9 +53,6 @@ class bncRinex : public QThread {
      _approxPos[1] = stay;
      _approxPos[2] = staz;
    }
-
- protected:
-   virtual void run() {};
 
  private:
    void resolveFileName(const QDateTime& datTim);
