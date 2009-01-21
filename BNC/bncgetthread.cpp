@@ -84,7 +84,7 @@ bncGetThread::bncGetThread(const QByteArray& rawInpFileName,
 
   if (!_rnx) {
     cerr << "no RINEX path specified" << endl;
-    ::exit(0);
+    delete this;
   }
 }
 
@@ -120,6 +120,7 @@ void bncGetThread::initialize() {
   app->connect(this, SIGNAL(newMessage(QByteArray,bool)), 
                app, SLOT(slotMessage(const QByteArray,bool)));
 
+  _isToBeDeleted = false;
   _decoder    = 0;
   _query      = 0;
   _timeOut    = 20*1000; // 20 seconds
@@ -291,9 +292,7 @@ void bncGetThread::initialize() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncGetThread::~bncGetThread() {
-  if (_query) {
-    _query->deleteLater();
-  }
+  delete _query;
   delete _decoder;
   delete _rnx;
   delete _rawInpFile;
@@ -304,11 +303,7 @@ bncGetThread::~bncGetThread() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::terminate() {
-  if (_query) {
-    _query->stop();
-  }
-  QThread::terminate();
-  wait(2000);
+  _isToBeDeleted = true;
 }
 
 // Init Run
@@ -364,7 +359,7 @@ t_irc bncGetThread::initRun() {
       emit(newMessage(_staID + ": Unknown data format " + _format, true));
       if (_rawInpFile) {
         cerr << "Uknown data format" << endl;
-        ::exit(0);
+        delete this;
       }
       else {
         return fatal;
@@ -406,7 +401,7 @@ void bncGetThread::run() {
   t_irc irc = initRun();
 
   if      (irc == fatal) {
-    QThread::exit(1);
+    this->deleteLater();
     return;
   }
   else if (irc != success) {
@@ -794,16 +789,6 @@ void bncGetThread::run() {
       tryReconnect();
     }
   }
-}
-
-// Exit
-////////////////////////////////////////////////////////////////////////////
-void bncGetThread::exit(int exitCode) {
-  if (exitCode!= 0) {
-    emit error(_staID);
-  }
-  QThread::exit(exitCode);
-  terminate();
 }
 
 // Try Re-Connect 

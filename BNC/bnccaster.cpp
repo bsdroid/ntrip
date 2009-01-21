@@ -116,8 +116,7 @@ bncCaster::~bncCaster() {
   QListIterator<bncGetThread*> it(_threads);
   while(it.hasNext()){
     bncGetThread* thread = it.next();
-    ////    thread->quit();
-    thread->deleteLater();
+    thread->terminate();
   }
   delete _out;
   delete _outFile;
@@ -434,7 +433,6 @@ void bncCaster::slotReadMountPoints() {
       _staIDs.removeAll(thread->staID());
       _threads.removeAll(thread);
       thread->terminate();
-      delete thread;
     }
   }
 
