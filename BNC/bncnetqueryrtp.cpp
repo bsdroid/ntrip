@@ -28,6 +28,7 @@ using namespace std;
 bncNetQueryRtp::bncNetQueryRtp() {
   _socket    = 0;
   _udpSocket = 0;
+  _CSeq      = 0;
   _eventLoop = new QEventLoop(this);
 }
 
@@ -123,7 +124,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
 
     QByteArray reqStr;
     reqStr = "SETUP " + _url.toEncoded() + " RTSP/1.0\r\n"
-           + "CSeq: 1\r\n"
+           + "CSeq: " + QString("%1").arg(++_CSeq).toAscii() + "\r\n"
            + "Ntrip-Version: Ntrip/2.0\r\n"
            + "Ntrip-Component: Ntripclient\r\n"
            + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
@@ -137,12 +138,11 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
     if (_socket->waitForBytesWritten(timeOut)) {
       if (_socket->waitForReadyRead(timeOut)) {
         QTextStream in(_socket);
-        QByteArray session;
         QByteArray serverPort;
         QString line = in.readLine();
         while (!line.isEmpty()) {
           if (line.indexOf("Session:") == 0) {
-            session = line.mid(9).toAscii();
+            _session = line.mid(9).toAscii();
           }
           int iSrv = line.indexOf("server_port=");
           if (iSrv != -1) {
@@ -153,12 +153,12 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
     
         // Send Request 2
         // --------------
-        if (!session.isEmpty()) { 
+        if (!_session.isEmpty()) { 
 
           // Send initial RTP packet for firewall handling
           // ---------------------------------------------
           if (!serverPort.isEmpty()) {
-            int sessInt = session.toInt();
+            int sessInt = _session.toInt();
             char rtpbuffer[12];
             rtpbuffer[0]  = (2<<6);
             rtpbuffer[1]  = 96;
@@ -178,8 +178,8 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
           }
 
           reqStr = "PLAY " + _url.toEncoded() + " RTSP/1.0\r\n"
-                 + "CSeq: 2\r\n"
-                 + "Session: " + session + "\r\n"
+                 + "CSeq: " + QString("%1").arg(++_CSeq).toAscii() + "\r\n"
+                 + "Session: " + _session + "\r\n"
                  + "\r\n";
           _socket->write(reqStr, reqStr.length());
     
