@@ -173,9 +173,8 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
             rtpbuffer[10] = (sessInt>>8)&0xFF;
             rtpbuffer[11] = (sessInt)&0xFF;
 
-            int irc = _udpSocket->writeDatagram(rtpbuffer, 12, 
-                      _socket->peerAddress(), serverPort.toInt());
-            cout << "irc = " << irc << endl;
+            _udpSocket->writeDatagram(rtpbuffer, 12, 
+                              _socket->peerAddress(), serverPort.toInt());
           }
 
           reqStr = "PLAY " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
