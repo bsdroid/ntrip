@@ -138,11 +138,15 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
       if (_socket->waitForReadyRead(timeOut)) {
         QTextStream in(_socket);
         QByteArray session;
+        QByteArray serverPort;
         QString line = in.readLine();
         while (!line.isEmpty()) {
           if (line.indexOf("Session:") == 0) {
             session = line.mid(9).toAscii();
-            break;
+          }
+          int iSrv = line.indexOf("server_port=");
+          if (iSrv != -1) {
+            serverPort = line.mid(iSrv+12).toAscii();
           }
           line = in.readLine();
         }
@@ -150,6 +154,30 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
         // Send Request 2
         // --------------
         if (!session.isEmpty()) { 
+
+          // Send initial RTP packet for firewall handling
+          // ---------------------------------------------
+          if (!serverPort.isEmpty()) {
+            int sessInt = session.toInt();
+            char rtpbuffer[12];
+            rtpbuffer[0]  = (2<<6);
+            rtpbuffer[1]  = 96;
+            rtpbuffer[2]  = 0;
+            rtpbuffer[3]  = 0;
+            rtpbuffer[4]  = 0;
+            rtpbuffer[5]  = 0;
+            rtpbuffer[6]  = 0;
+            rtpbuffer[7]  = 0;
+            rtpbuffer[8]  = (sessInt>>24)&0xFF;
+            rtpbuffer[9]  = (sessInt>>16)&0xFF;
+            rtpbuffer[10] = (sessInt>>8)&0xFF;
+            rtpbuffer[11] = (sessInt)&0xFF;
+
+            int irc = _udpSocket->writeDatagram(rtpbuffer, 12, 
+                          QHostAddress("141.74.33.12"), serverPort.toInt());
+            cout << "irc = " << irc << endl;
+          }
+
           reqStr = "PLAY " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
                  + "CSeq: 2\r\n"
                  + "Session: " + session + "\r\n"
