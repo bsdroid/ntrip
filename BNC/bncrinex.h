@@ -25,7 +25,6 @@
 #ifndef BNCRINEX_H
 #define BNCRINEX_H
 
-#include <QThread>
 #include <QByteArray>
 #include <QDateTime>
 #include <QList>
