@@ -84,7 +84,7 @@ bncGetThread::bncGetThread(const QByteArray& rawInpFileName,
 
   if (!_rnx) {
     cerr << "no RINEX path specified" << endl;
-    delete this;
+    ::exit(1);
   }
 }
 
@@ -401,6 +401,7 @@ void bncGetThread::run() {
   t_irc irc = initRun();
 
   if      (irc == fatal) {
+    QThread::exit(1);
     this->deleteLater();
     return;
   }
@@ -418,6 +419,11 @@ void bncGetThread::run() {
   // Read Incoming Data
   // ------------------
   while (true) {
+    if (_isToBeDeleted) {
+      QThread::exit(0);
+      this->deleteLater();
+      return;
+    }
     try {
       if (_query && _query->status() != bncNetQuery::running) {
         emit(newMessage(_staID + ": Internet query not running, reconnecting", true));
