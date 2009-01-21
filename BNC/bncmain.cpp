@@ -161,7 +161,7 @@ int main(int argc, char *argv[]) {
   settings.setValue("proxyHost",        "");
   settings.setValue("proxyPort",        "");
   settings.setValue("rnxAppend",        "0");
-  settings.setValue("rnxIntr",          "15 min");
+  settings.setValue("rnxIntr",          "1 day");
   settings.setValue("rnxPath",          "");
   settings.setValue("rnxSampl",         "0");
   settings.setValue("rnxScript",        "");
