@@ -113,80 +113,63 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
       passW.toAscii()).toBase64() + "\r\n";
     }
 
-    // Find a free port number
-    // -----------------------
-    int clientPortInt = 0;
-    QTcpSocket* hlpSocket = new QTcpSocket();
-    if ( proxyHost.isEmpty() ) {
-      hlpSocket->connectToHost(urlLoc.host(), urlLoc.port());
-    }
-    else {
-      hlpSocket->connectToHost(proxyHost, proxyPort);
-    }
-    if (hlpSocket->waitForConnected(timeOut)) {
-      clientPortInt = hlpSocket->localPort();
-    }
-    delete hlpSocket;
-
     // Setup the RTSP Connection
     // -------------------------
-    if (clientPortInt) {    
-      QByteArray clientPort = QString("%1").arg(clientPortInt).toAscii();
-      delete _udpSocket;
-      _udpSocket = new QUdpSocket();
-      _udpSocket->bind(clientPortInt);
-      connect(_udpSocket, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
-      
-      QByteArray reqStr;
-      reqStr = "SETUP " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
-             + "CSeq: 1\r\n"
-             + "Ntrip-Version: Ntrip/2.0\r\n"
-             + "Ntrip-Component: Ntripclient\r\n"
-             + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
-             + "Transport: RTP/GNSS;unicast;client_port=" + clientPort + "\r\n"
-             + userAndPwd 
-             + "\r\n";
-      _socket->write(reqStr, reqStr.length());
-      
-      // Read Server Answer 1
-      // --------------------
-      if (_socket->waitForBytesWritten(timeOut)) {
-        if (_socket->waitForReadyRead(timeOut)) {
-          QTextStream in(_socket);
-          QByteArray session;
-          QString line = in.readLine();
-          while (!line.isEmpty()) {
-            if (line.indexOf("Session:") == 0) {
-              session = line.mid(9).toAscii();
-              break;
-            }
-            line = in.readLine();
+    delete _udpSocket;
+    _udpSocket = new QUdpSocket();
+    _udpSocket->bind(0);
+    connect(_udpSocket, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
+    QByteArray clientPort = QString("%1").arg(_udpSocket->localPort()).toAscii();
+
+    QByteArray reqStr;
+    reqStr = "SETUP " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
+           + "CSeq: 1\r\n"
+           + "Ntrip-Version: Ntrip/2.0\r\n"
+           + "Ntrip-Component: Ntripclient\r\n"
+           + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
+           + "Transport: RTP/GNSS;unicast;client_port=" + clientPort + "\r\n"
+           + userAndPwd 
+           + "\r\n";
+    _socket->write(reqStr, reqStr.length());
+    
+    // Read Server Answer 1
+    // --------------------
+    if (_socket->waitForBytesWritten(timeOut)) {
+      if (_socket->waitForReadyRead(timeOut)) {
+        QTextStream in(_socket);
+        QByteArray session;
+        QString line = in.readLine();
+        while (!line.isEmpty()) {
+          if (line.indexOf("Session:") == 0) {
+            session = line.mid(9).toAscii();
+            break;
           }
-      
-          // Send Request 2
-          // --------------
-          if (!session.isEmpty()) { 
-            reqStr = "PLAY " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
-                   + "CSeq: 2\r\n"
-                   + "Session: " + session + "\r\n"
-                   + "\r\n";
-            _socket->write(reqStr, reqStr.length());
-      
-            // Read Server Answer 2
-            // --------------------
-            if (_socket->waitForBytesWritten(timeOut)) {
-              if (_socket->waitForReadyRead(timeOut)) {
-                QTextStream in(_socket);
-                line = in.readLine();
-                while (!line.isEmpty()) {
-                  if (line.indexOf("200 OK") != -1) {
-                    emit newMessage(urlLoc.host().toAscii() + 
-                                    urlLoc.path().toAscii() + 
-                                    ": UDP connection established", true);
-                    return;
-                  }
-                  line = in.readLine();
+          line = in.readLine();
+        }
+    
+        // Send Request 2
+        // --------------
+        if (!session.isEmpty()) { 
+          reqStr = "PLAY " + urlLoc.toEncoded() + " RTSP/1.0\r\n"
+                 + "CSeq: 2\r\n"
+                 + "Session: " + session + "\r\n"
+                 + "\r\n";
+          _socket->write(reqStr, reqStr.length());
+    
+          // Read Server Answer 2
+          // --------------------
+          if (_socket->waitForBytesWritten(timeOut)) {
+            if (_socket->waitForReadyRead(timeOut)) {
+              QTextStream in(_socket);
+              line = in.readLine();
+              while (!line.isEmpty()) {
+                if (line.indexOf("200 OK") != -1) {
+                  emit newMessage(urlLoc.host().toAscii() + 
+                                  urlLoc.path().toAscii() + 
+                                  ": UDP connection established", true);
+                  return;
                 }
+                line = in.readLine();
               }
             }
           }
