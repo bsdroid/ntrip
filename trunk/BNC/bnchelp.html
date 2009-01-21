@@ -73,7 +73,13 @@ Unless in offline mode, BNC
 The usual handling of BNC is that you first select a number of streams from NTRIP broadcasters ('Add Streams'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various tabs to select a combination of processing options before you start the program ('Start'). Records of BNC's activities are shown in the 'Logs' canvas on the bottom of the main window.
 </p>
 <p>
-All configuration options for running BNC on Unix/Linux/Mac systems are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Client.conf, see annexed 'Configuration Example'. On Windows systems, configuration options are saved in register HKEY_CURRENT_USER/Software/BKG/BKG_NTRIP_Client. The default configuration file/register name 'BKG_NTRIP_Client' can be changed. The file/register contents can easily be edited. Some options can be changed on-the-fly.
+All configuration files for running BNC on Unix/Linux/Mac systems are saved in directory ${HOME}/.config/BKG. The default configuration file name there is 'BKG_NTRIP_Client' with suffix '.conf'.
+</p>
+<p>
+On Windows systems all configurations for running BNC are saved in register HKEY_CURRENT_USER/Software/BKG. The default configuration register name there is 'BKG_NTRIP_Client.
+</p>
+<p>
+The default 'BKG_NTRIP_Client' can be changed. The contents of configuration files/registers can easily be edited. Some options can be changed on-the-fly. See annexed 'Configuration Example' for a complete set of saved configuration options.
 </p>
 <p>
 3.1. <a href=#file>File</a><br>
@@ -846,12 +852,12 @@ Hit the 'Stop' button in order to stop BNC.
 
 <p><a name="cmd"><h4>3.15. Command Line Options</h4></p>
 <p> 
-Command line options are available to run BNC in 'no window' mode or let it read data from a file in offline mode. BNC will then use processing options from the configuration file (Unix/Linux/Mac) or from the Windows register. Note that the self-explaining contents of the configuration file or the Windows register can easily be edited. It is possible to introduce your own configuration file/register names instead of the default name 'BKG_NTRIP_Client'.
+Command line options are available to run BNC in 'no window' mode or let it read data from a file in offline mode. BNC will then use processing options from the configuration file (Unix/Linux/Mac) or from the Windows register. Note that the self-explaining contents of the configuration file or the Windows register can easily be edited. It is possible to introduce a specific configuration file/register name instead of using the default name 'BKG_NTRIP_Client'.
 </p> 
 
 <p><a name="nw"><h4>3.15.1 No Window Mode - optional</h4></p>
 <p>
-Apart from its regular windows mode, BNC can be started on all systems as a background/batch job with command line option '-nw'. BNC will then run in 'no window' mode, using processing options from its configuration file on disk. Terminate BNC using Windows Task Manager when running it in 'no window' mode on Windows systems.
+Apart from its regular windows mode, BNC can be started on all systems as a background/batch job with command line option '-nw'. BNC will then run in 'no window' mode, using processing options from its configuration file/register on disk. Terminate BNC using Windows Task Manager when running it in 'no window' mode on Windows systems.
 </p> 
 <p> 
 Example:<br><br>
@@ -874,18 +880,18 @@ Example:<br><br>
 ./bnc --file FFMJ.dat --format RTCM_3 --date 2008-10-27 --time 23:12:56
 </p>
 <p>
-Note that it is necessary to define a date and time for the first epoch because RTCM streams do not contain complete time stamps as needed for RINEX. Note further that when running BNC in offline mode, it will use options for file saving, interval, sampling etc. from its configuration file.
+Note that it is necessary to define a date and time for the first epoch because RTCM streams do not contain complete time stamps as needed for RINEX. Note further that when running BNC in offline mode, it will use options for file saving, interval, sampling etc. from its configuration file/register.
 </p> 
 
 <p><a name="conffile"><h4>3.15.3 Configuration File - optional</h4></p>
-The default configuration file name on  Unix/Linux/Mac systems is 'BKG_NTRIP_Client' with suffix '.conf'. On Windows systems the configuration is saved in register 'BKG_NTRIP_Client'. You may change the configuration file/register name at startup time using the command line option '--conf &#060;<u>confFile</u>&#062;'.
+The default configuration file name on  Unix/Linux/Mac systems is 'BKG_NTRIP_Client' with suffix '.conf'. On Windows systems the configuration is saved in register 'BKG_NTRIP_Client'. You may change the configuration file/register name at startup time using the command line option '--conf &#060;<u>confFile</u>&#062;'. This allows to run several BNC jobs in parallel on the same host using differen sets of configuration options.
 </p>
 <p>
 Example:<br><br>
 ./bnc --conf MyConfig
 </p> 
 <p> 
-This leads to a configuration file 'MyConfig.conf' and a Windows register 'MyConfig'.
+This leads to a BNC job using configuration file 'MyConfig.conf' or the Windows configuration register 'MyConfig'.
 </p> 
 
 <p><a name="limits"><h3>4. Limitations</h3></p>
@@ -1226,7 +1232,7 @@ waitTime=5
 Note that on Windows systems configuration options are saved in register BKG_NTRIP_Client.
 </p>
 <p>
-Note further that configuration options saved on disk can be changed/edited on-the-fly while BNC is already processing data.
+Note further that the following configuration options saved on disk can be changed/edited on-the-fly while BNC is already processing data:
 </p>
 <p>
 <ul>
