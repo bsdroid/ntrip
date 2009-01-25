@@ -705,7 +705,10 @@ void bncApp::dumpCorrs(long minTime, long maxTime) {
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::setConfFileName(const QString& confFileName) {
   if (confFileName.isEmpty()) {
-    _confFileName = "/home/mervart/bla.ini";
+    _confFileName = QDir::homePath() + QDir::separator() 
+                  + ".config" + QDir::separator()
+                  + organizationName() + QDir::separator()
+                  + applicationName() + ".ini";
   }
   else {
     _confFileName = confFileName;
