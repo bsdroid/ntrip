@@ -127,80 +127,9 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationName("BKG_NTRIP_Client");
   }
 
-  // Default Settings
-  // ----------------
-  QStringList casterUrlList;
-  casterUrlList << "http://user:pass@www.euref-ip.net:2101" << "http://user:pass@www.igs-ip.net:2101";
-
-  bncSettings settings;
-  if (settings.allKeys().size() == 0) {
-  settings.setValue("adviseFail",       "15");
-  settings.setValue("adviseReco",       "5");
-  settings.setValue("adviseScript",     "");
-  settings.setValue("autoStart",        "0");
-  settings.setValue("binSampl",         "0");
-  settings.setValue("casterUrlList",    casterUrlList);
-  settings.setValue("corrIntr",         "1 day");
-  settings.setValue("corrPath",         "");
-  settings.setValue("corrPort",         "");
-  settings.setValue("corrTime",         "5");
-  settings.setValue("ephIntr",          "1 day");
-  settings.setValue("ephPath",          "");
-  settings.setValue("ephV3",            "0");
-  settings.setValue("logFile",          "");
-  settings.setValue("makePause",        "0");
-  settings.setValue("miscMount",        "");  
-  settings.setValue("mountPoints",      "");
-  settings.setValue("ntripVersion",     "1");
-  settings.setValue("obsRate",          "");
-  settings.setValue("onTheFlyInterval", "1 day");
-  settings.setValue("outEphPort",       "");
-  settings.setValue("outFile",          "");
-  settings.setValue("outPort",          "");
-  settings.setValue("outUPort",         "");
-  settings.setValue("perfIntr",         "");
-  settings.setValue("proxyHost",        "");
-  settings.setValue("proxyPort",        "");
-  settings.setValue("rnxAppend",        "0");
-  settings.setValue("rnxIntr",          "1 day");
-  settings.setValue("rnxPath",          "");
-  settings.setValue("rnxSampl",         "0");
-  settings.setValue("rnxScript",        "");
-  settings.setValue("rnxSkel",          "SKL");
-  settings.setValue("rnxV3",            "0");
-  settings.setValue("scanRTCM",         "0");
-  settings.setValue("serialAutoNMEA",   "0");
-  settings.setValue("serialBaudRate",   "9600");
-  settings.setValue("serialDataBits",   "8");
-  settings.setValue("serialMountPoint", "");
-  settings.setValue("serialParity",     "NONE");
-  settings.setValue("serialPortName",   "");
-  settings.setValue("serialStopBits",   "1");
-  settings.setValue("startTab",         "0");
-  settings.setValue("waitTime",         "5");
-
-  }
-
-  // Truncate list of casters
-  // ------------------------
-  int maxListSize = 5;
-  QStringList casterHostList = settings.value("casterHostList").toStringList();
-  if ( casterHostList.count() > maxListSize ) {
-    QStringList listCopy;
-    for (int ii = 0; ii < maxListSize; ii++) {
-      listCopy.push_back(casterHostList[ii]);
-    }
-    settings.setValue("casterHostList", listCopy);
-  }
-
-
   bncApp app(argc, argv, GUIenabled);
 
-  int waitCoTime    = settings.value("corrTime").toInt();
-  if (waitCoTime < 1) {
-    waitCoTime = 1;
-  }
-  app.setWaitCoTime(waitCoTime);
+  bncSettings settings;
 
   // Interactive Mode - open the main window
   // ---------------------------------------
