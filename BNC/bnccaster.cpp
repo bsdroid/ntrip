@@ -45,13 +45,14 @@
 #include "bncapp.h"
 #include "bncgetthread.h"
 #include "bncutils.h"
+#include "bncsettings.h"
 #include "RTCM/GPSDecoder.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncCaster::bncCaster(const QString& outFileName, int port) {
 
-  QSettings settings;
+  bncSettings settings;
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           (bncApp*) qApp, SLOT(slotMessage(const QByteArray,bool)));
@@ -189,7 +190,7 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
   // ----------------------------------
   if (newTime <= _lastDumpSec) {
     if (firstObs) {
-      QSettings settings;
+      bncSettings settings;
       if ( !settings.value("outFile").toString().isEmpty() || 
            !settings.value("outPort").toString().isEmpty() ) { 
         emit( newMessage(QString("%1: Old epoch %2 thrown away")
@@ -362,7 +363,7 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::slotReadMountPoints() {
 
-  QSettings settings;
+  bncSettings settings;
 
   // Reread several options
   // ----------------------

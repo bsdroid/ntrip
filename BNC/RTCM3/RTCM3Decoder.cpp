@@ -46,7 +46,8 @@
 #include "RTCM3coDecoder.h"
 #include "bncconst.h"
 #include "bncapp.h"
-#include "bncutils.h" /* Weber, for latencies */
+#include "bncutils.h"
+#include "bncsettings.h" 
 
 using namespace std;
 
@@ -63,7 +64,7 @@ void RTCM3Error(const char*, ...) {
 ////////////////////////////////////////////////////////////////////////////
 RTCM3Decoder::RTCM3Decoder(const QString& staID) : GPSDecoder() {
 
-  QSettings settings;
+  bncSettings settings;
   _checkMountPoint = settings.value("messTypes").toString();
   _staID = staID;
 

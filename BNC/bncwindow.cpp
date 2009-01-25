@@ -48,6 +48,7 @@
 #include "bnchlpdlg.h" 
 #include "bnchtml.h" 
 #include "bnctableitem.h"
+#include "bncsettings.h"
 
 using namespace std;
 
@@ -114,7 +115,7 @@ bncWindow::bncWindow() {
   CreateMenu();
   AddToolbar();
 
-  QSettings settings;
+  bncSettings settings;
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
   _proxyPortLineEdit->setMaximumWidth(9*ww);
@@ -669,7 +670,7 @@ void bncWindow::populateMountPointsTable() {
     _mountPointsTable->removeRow(iRow);
   }
 
-  QSettings settings;
+  bncSettings settings;
 
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
   if (!it.hasNext()) {
@@ -739,7 +740,7 @@ void bncWindow::populateMountPointsTable() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotAddMountPoints() {
 
-  QSettings settings;
+  bncSettings settings;
   QString proxyHost = settings.value("proxyHost").toString();
   int     proxyPort = settings.value("proxyPort").toInt();
   if (proxyHost != _proxyHostLineEdit->text()         ||
@@ -864,7 +865,7 @@ void bncWindow::slotRemoveOptions() {
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
-  QSettings settings;
+  bncSettings settings;
   settings.remove("");
   }
 }
@@ -886,7 +887,7 @@ void bncWindow::slotSaveOptions() {
                + " " + _mountPointsTable->item(iRow, 6)->text());
   }
 
-  QSettings settings;
+  bncSettings settings;
 
   settings.setValue("adviseFail",  _adviseFailSpinBox->value());
   settings.setValue("adviseReco",  _adviseRecoSpinBox->value());
@@ -1061,7 +1062,7 @@ void bncWindow::slotFontSel() {
   bool ok;
   QFont newFont = QFontDialog::getFont(&ok, this->font(), this); 
   if (ok) {
-    QSettings settings;
+    bncSettings settings;
     settings.setValue("font", newFont.toString());
     QApplication::setFont(newFont);
     int ww = QFontMetrics(newFont).width('w');
@@ -1079,7 +1080,7 @@ void bncWindow::slotWhatsThis() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
   populateMountPointsTable();
-  QSettings settings;
+  bncSettings settings;
   _binSamplSpinBox->setValue(settings.value("binSampl").toInt());
   _waitTimeSpinBox->setValue(settings.value("waitTime").toInt());
   QListIterator<bncGetThread*> iTh(threads);

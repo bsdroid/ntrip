@@ -41,6 +41,7 @@
 #include <iostream>
 #include "bnczerodecoder.h"
 #include "bncutils.h"
+#include "bncsettings.h"
 
 using namespace std;
 
@@ -48,7 +49,7 @@ using namespace std;
 //////////////////////////////////////////////////////////////////////// 
 bncZeroDecoder::bncZeroDecoder(const QString& fileName) {
 
-  QSettings settings;
+  bncSettings settings;
   QString path = settings.value("rnxPath").toString();
   expandEnvVar(path);
 

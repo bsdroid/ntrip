@@ -56,6 +56,7 @@
 #include "bncnetqueryv1.h"
 #include "bncnetqueryv2.h"
 #include "bncnetqueryrtp.h"
+#include "bncsettings.h"
 
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
@@ -131,7 +132,7 @@ void bncGetThread::initialize() {
 
   // Check name conflict
   // -------------------
-  QSettings settings;
+  bncSettings settings;
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
   int num = 0;
   int ind = -1;
@@ -588,7 +589,7 @@ void bncGetThread::run() {
         // RTCM scan output
         // ----------------
         if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
-          QSettings settings;
+          bncSettings settings;
           if ( Qt::CheckState(settings.value("scanRTCM").toInt()) == Qt::Checked) {
 
             // RTCMv3 message types

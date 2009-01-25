@@ -18,6 +18,7 @@
 #include <iomanip>
 
 #include "bncnetqueryrtp.h"
+#include "bncsettings.h"
 
 using namespace std;
 
@@ -111,7 +112,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
 
   // Connect the Socket
   // ------------------
-  QSettings settings;
+  bncSettings settings;
   QString proxyHost = settings.value("proxyHost").toString();
   int     proxyPort = settings.value("proxyPort").toInt();
  

@@ -15,6 +15,7 @@
  * -----------------------------------------------------------------------*/
 
 #include "bncnetqueryv2.h"
+#include "bncsettings.h"
 
 #define BNCVERSION "1.7"
 
@@ -99,7 +100,7 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
 
   // Proxy Settings
   // --------------
-  QSettings settings;
+  bncSettings settings;
   QString proxyHost = settings.value("proxyHost").toString();
   int     proxyPort = settings.value("proxyPort").toInt();
 

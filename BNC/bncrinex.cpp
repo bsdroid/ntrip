@@ -54,6 +54,7 @@
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
 #include "bncnetqueryv2.h"
+#include "bncsettings.h"
 #include "RTCM3/rtcm3torinex.h"
 
 using namespace std;
@@ -75,7 +76,7 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
   _reloadTable   = false;
   _reloadDone    = false;
 
-  QSettings settings;
+  bncSettings settings;
   _rnxScriptName = settings.value("rnxScript").toString();
   expandEnvVar(_rnxScriptName);
 
@@ -105,7 +106,7 @@ bncRinex::~bncRinex() {
   while (it.hasNext()) {
     delete it.next();
   }
-  QSettings settings;
+  bncSettings settings;
   if ((_rinexVers == 3) && ( Qt::CheckState(settings.value("rnxAppend").toInt()) != Qt::Checked) ) {
     _out << ">                              4  1" << endl;
     _out << "END OF FILE" << endl;
@@ -319,7 +320,7 @@ QString bncRinex::nextEpochStr(const QDateTime& datTim,
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::resolveFileName(const QDateTime& datTim) {
 
-  QSettings settings;
+  bncSettings settings;
   QString path = settings.value("rnxPath").toString();
   expandEnvVar(path);
 
@@ -364,7 +365,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
 void bncRinex::writeHeader(const QDateTime& datTim, 
                            const QDateTime& datTimNom) {
 
-  QSettings settings;
+  bncSettings settings;
 
   // Open the Output File
   // --------------------
