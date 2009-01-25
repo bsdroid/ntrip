@@ -14,13 +14,16 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <QCoreApplication>
 #include <QStringList>
 
 #include "bncsettings.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncSettings::bncSettings() : QSettings() {
+bncSettings::bncSettings() : 
+  QSettings(QCoreApplication::applicationName().append(".ini"),
+            QSettings::IniFormat) {
 
   if (allKeys().size() == 0) {
     setValue("adviseFail",       "15");

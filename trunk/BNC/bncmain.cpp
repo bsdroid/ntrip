@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
   if (!confFileName.isEmpty()) {
     QCoreApplication::setApplicationName(confFileName);
   } else {
-    QCoreApplication::setApplicationName("BKG_NTRIP_Client");
+    QCoreApplication::setApplicationName("BNC");
   }
 
   bncApp app(argc, argv, GUIenabled);
