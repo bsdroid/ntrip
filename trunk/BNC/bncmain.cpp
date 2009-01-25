@@ -46,6 +46,7 @@
 
 #include "bncapp.h"
 #include "bncwindow.h"
+#include "bncsettings.h"
 
 using namespace std;
 
@@ -131,7 +132,7 @@ int main(int argc, char *argv[]) {
   QStringList casterUrlList;
   casterUrlList << "http://user:pass@www.euref-ip.net:2101" << "http://user:pass@www.igs-ip.net:2101";
 
-  QSettings settings;
+  bncSettings settings;
   if (settings.allKeys().size() == 0) {
   settings.setValue("adviseFail",       "15");
   settings.setValue("adviseReco",       "5");

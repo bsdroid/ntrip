@@ -45,6 +45,7 @@
 #include "bncutils.h"
 #include "bncrinex.h"
 #include "bncapp.h"
+#include "bncsettings.h"
 
 using namespace std;
 
@@ -56,7 +57,7 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
 
   // File Output
   // -----------
-  QSettings settings;
+  bncSettings settings;
   QString path = settings.value("corrPath").toString();
   if (!path.isEmpty()) {
     expandEnvVar(path);
@@ -83,7 +84,7 @@ void RTCM3coDecoder::reopen() {
 
   if (!_fileNameSkl.isEmpty()) {
 
-    QSettings settings;
+    bncSettings settings;
 
     QDateTime datTim = currentDateAndTimeGPS();
 

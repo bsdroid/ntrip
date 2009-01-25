@@ -43,6 +43,7 @@
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
 #include "bncnetqueryv2.h"
+#include "bncsettings.h"
 
 using namespace std;
 
@@ -75,7 +76,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _casterHostComboBox->setMaximumWidth(20*ww);
   connect(_casterHostComboBox, SIGNAL(currentIndexChanged(const QString&)),
           this, SLOT(slotCasterHostChanged(const QString&)));
-  QSettings settings;
+  bncSettings settings;
   settings.remove("casterHostList");
   settings.remove("casterHost");
   settings.remove("casterPort");
@@ -293,7 +294,7 @@ void bncTableDlg::slotGetTable() {
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::accept() {
 
-  QSettings settings;
+  bncSettings settings;
   settings.setValue("ntripVersion", _ntripVersionComboBox->currentText());
   QUrl url;
   url.setScheme("http");
@@ -395,7 +396,7 @@ void bncTableDlg::slotNewCaster(QString newCasterHost, QString newCasterPort) {
 // New caster selected
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::addUrl(const QUrl& url) {
-  QSettings settings;
+  bncSettings settings;
   QStringList oldUrlList = settings.value("casterUrlList").toStringList();
   QStringList newUrlList;
   newUrlList << url.toString();
@@ -412,7 +413,7 @@ void bncTableDlg::addUrl(const QUrl& url) {
 // New caster selected in combobox
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
-  QSettings settings;
+  bncSettings settings;
   QStringList casterUrlList = settings.value("casterUrlList").toStringList();
   for (int ii = 0; ii < casterUrlList.count(); ii++) {
     QUrl url(casterUrlList[ii]);

@@ -39,7 +39,6 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
-#include <QSettings>
 #include <QMessageBox>
 #include <cmath>
 #include <unistd.h>
@@ -47,6 +46,7 @@
 #include "bncapp.h" 
 #include "bncutils.h" 
 #include "bncrinex.h" 
+#include "bncsettings.h" 
 
 using namespace std;
 
@@ -162,7 +162,7 @@ void bncApp::messagePrivate(const QByteArray& msg) {
   // ------------------------------------
   if (_logFileFlag == 0) {
     _logFileFlag = 1;
-    QSettings settings;
+    bncSettings settings;
     QString logFileName = settings.value("logFile").toString();
     if ( !logFileName.isEmpty() ) {
       expandEnvVar(logFileName);
@@ -252,7 +252,7 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printEphHeader() {
 
-  QSettings settings;
+  bncSettings settings;
 
   // Initialization
   // --------------
@@ -639,7 +639,7 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
     return;
   }
 
-  QSettings settings;
+  bncSettings settings;
   _waitCoTime    = settings.value("corrTime").toInt();
   if (_waitCoTime < 1) {
     _waitCoTime = 1;

@@ -18,6 +18,7 @@
 #include <iomanip>
 
 #include "bncnetqueryv1.h"
+#include "bncsettings.h"
 
 using namespace std;
 
@@ -94,7 +95,7 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
 
   // Connect the Socket
   // ------------------
-  QSettings settings;
+  bncSettings settings;
   QString proxyHost = settings.value("proxyHost").toString();
   int     proxyPort = settings.value("proxyPort").toInt();
  
