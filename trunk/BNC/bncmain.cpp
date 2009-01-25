@@ -119,15 +119,12 @@ int main(int argc, char *argv[]) {
       exit(0);
   }
 
-  QCoreApplication::setOrganizationName("BKG");
-  QCoreApplication::setOrganizationDomain("www.bkg.bund.de");
-  if (!confFileName.isEmpty()) {
-    QCoreApplication::setApplicationName(confFileName);
-  } else {
-    QCoreApplication::setApplicationName("BNC");
-  }
-
   bncApp app(argc, argv, GUIenabled);
+
+  app.setApplicationName("BNC");
+  app.setOrganizationName("BKG");
+  app.setOrganizationDomain("www.bkg.bund.de");
+  app.setConfFileName( confFileName );
 
   bncSettings settings;
 

@@ -18,12 +18,12 @@
 #include <QStringList>
 
 #include "bncsettings.h"
+#include "bncapp.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncSettings::bncSettings() : 
-  QSettings(QCoreApplication::applicationName().append(".ini"),
-            QSettings::IniFormat) {
+  QSettings(((bncApp*) qApp)->confFileName(), QSettings::IniFormat) {
 
   if (allKeys().size() == 0) {
     setValue("adviseFail",       "15");
@@ -72,6 +72,8 @@ bncSettings::bncSettings() :
     setValue("serialStopBits",   "1");
     setValue("startTab",         "0");
     setValue("waitTime",         "5");
+
+    sync();
   }
 }
 

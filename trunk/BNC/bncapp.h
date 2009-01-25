@@ -42,6 +42,9 @@ class bncApp : public QApplication {
     void setPortCorr(int port);
     void setCaster(bncCaster* caster) {_caster = caster;}
     QDateTime* _currentDateAndTimeGPS;
+    void setConfFileName(const QString& confFileName);
+    QString confFileName() const {return _confFileName;}
+
   public slots:
     void slotMessage(QByteArray msg, bool showOnScreen);
     void slotNewGPSEph(gpsephemeris* gpseph);
@@ -95,5 +98,6 @@ class bncApp : public QApplication {
     long                _lastDumpCoSec;
     long                _waitCoTime;
     QMultiMap<long, QString>* _corrs;
+    QString             _confFileName;
 };
 #endif
