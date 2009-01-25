@@ -700,3 +700,14 @@ void bncApp::dumpCorrs(long minTime, long maxTime) {
     _corrs->remove(sec);
   }
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncApp::setConfFileName(const QString& confFileName) {
+  if (confFileName.isEmpty()) {
+    _confFileName = "/home/mervart/bla.ini";
+  }
+  else {
+    _confFileName = confFileName;
+  }
+}
