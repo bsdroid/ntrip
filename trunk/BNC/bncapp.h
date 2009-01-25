@@ -42,7 +42,6 @@ class bncApp : public QApplication {
     void setPortCorr(int port);
     void setCaster(bncCaster* caster) {_caster = caster;}
     QDateTime* _currentDateAndTimeGPS;
-    void setWaitCoTime(int waitCoTime) {_waitCoTime = waitCoTime;}
   public slots:
     void slotMessage(QByteArray msg, bool showOnScreen);
     void slotNewGPSEph(gpsephemeris* gpseph);
