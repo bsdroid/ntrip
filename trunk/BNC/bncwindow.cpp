@@ -89,9 +89,6 @@ bncWindow::bncWindow() {
   _actSaveOpt = new QAction(tr("&Save && Activate Options"),this);
   connect(_actSaveOpt, SIGNAL(triggered()), SLOT(slotSaveOptions()));
 
-  _actRemoveOpt = new QAction(tr("&Remove Options"),this);
-  connect(_actRemoveOpt, SIGNAL(triggered()), SLOT(slotRemoveOptions()));
-
   _actQuit  = new QAction(tr("&Quit"),this);
   connect(_actQuit, SIGNAL(triggered()), SLOT(close()));
 
@@ -856,20 +853,6 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
   delete mountPoints;
 }
 
-// Remove Options
-////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotRemoveOptions() {
-
-  int iRet = QMessageBox::question(this, "Remove", "Remove" 
-                                   " options from disk?",
-                                   QMessageBox::Yes, QMessageBox::No,
-                                   QMessageBox::NoButton);
-  if (iRet == QMessageBox::Yes) {
-  bncSettings settings;
-  settings.remove("");
-  }
-}
-
 // Save Options
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotSaveOptions() {
@@ -1108,8 +1091,6 @@ void bncWindow::CreateMenu() {
   _menuFile->addAction(_actFontSel);
   _menuFile->addSeparator();
   _menuFile->addAction(_actSaveOpt);
-  _menuFile->addSeparator();
-  _menuFile->addAction(_actRemoveOpt);
   _menuFile->addSeparator();
   _menuFile->addAction(_actQuit);
 
