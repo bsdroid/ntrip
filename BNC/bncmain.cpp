@@ -62,6 +62,7 @@ int main(int argc, char *argv[]) {
   bool       GUIenabled  = true;
   bool       fileInput   = false;
   bool       confFile  = false;
+  bool       dragAndDrop = true;
   QByteArray fileName;
   QByteArray format; 
   QString    dateString;
@@ -86,24 +87,34 @@ int main(int argc, char *argv[]) {
     if (QByteArray(argv[ii]) == "-format" || QByteArray(argv[ii]) == "--format") {
       GUIenabled = false;
       fileInput  = true;
+      dragAndDrop = false;
       if (ii+1 < argc) {
         format = QByteArray(argv[ii+1]);
       }
     }
     if (QByteArray(argv[ii]) == "-date" || QByteArray(argv[ii]) == "--date") {
+      dragAndDrop = false;
       if (ii+1 < argc) {
         dateString = QString(argv[ii+1]);
       }
     }
     if (QByteArray(argv[ii]) == "-time" || QByteArray(argv[ii]) == "--time") {
+      dragAndDrop = false;
       if (ii+1 < argc) {
         timeString = QString(argv[ii+1]);
       }
     }
     if (QByteArray(argv[ii]) == "-conf" || QByteArray(argv[ii]) == "--conf") {
       confFile  = true;
+      dragAndDrop = false;
       if (ii+1 < argc) {
         confFileName = QString(argv[ii+1]);
+      }
+    }
+    if (dragAndDrop && ii == 1) {
+      confFile  = true;
+      if (ii < argc) {
+        confFileName = QString(argv[ii]);
       }
     }
   }
