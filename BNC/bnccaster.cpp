@@ -439,7 +439,7 @@ void bncCaster::slotReadMountPoints() {
 
   emit mountPointsRead(_threads);
   emit( newMessage(QString("Configuration read: "
-                           + QCoreApplication::applicationName()
+                           + ((bncApp*) qApp)->confFileName()
                            + ", %1 stream(s)")
                             .arg(_threads.count()).toAscii(), true) );
 
