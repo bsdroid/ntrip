@@ -72,6 +72,7 @@ int main(int argc, char *argv[]) {
   for (int ii = 1; ii < argc; ii++) {
     if (QByteArray(argv[ii]) == "-nw") {
       GUIenabled = false;
+      dragAndDrop = false;
       break;
     }
   }
@@ -80,6 +81,7 @@ int main(int argc, char *argv[]) {
     if (QByteArray(argv[ii]) == "-file" || QByteArray(argv[ii]) == "--file") {
       GUIenabled = false;
       fileInput  = true;
+      dragAndDrop = false;
       if (ii+1 < argc) {
         fileName = QByteArray(argv[ii+1]);
       }
