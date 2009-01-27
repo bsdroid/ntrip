@@ -122,7 +122,8 @@ int main(int argc, char *argv[]) {
   }
 
   QString printHelp;
-  printHelp = "Usage: bnc --conf <confFileName>\n" 
+  printHelp = "Usage: bnc -nw\n" 
+              "           --conf <confFileName>\n" 
               "           --file <inputFileName>\n"
               "           --format <RTIGS | RTCM_2 | RTCM_3>\n"
               "           --date YYYY-MM-DD  --time HH:MM:SS";
