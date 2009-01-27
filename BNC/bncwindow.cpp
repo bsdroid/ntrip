@@ -1141,6 +1141,7 @@ bncAboutDlg::bncAboutDlg(QWidget* parent) :
 
   setLayout(dlgLayout);
   resize(60*ww, 60*ww);
+  setWindowTitle("About BNC");
   show();
 }
 
@@ -1166,6 +1167,7 @@ bncFlowchartDlg::bncFlowchartDlg(QWidget* parent) :
   dlgLayout->addWidget(_closeButton,1,0,Qt::AlignLeft);
 
   setLayout(dlgLayout);
+  setWindowTitle("Flow Chart");
   show();
 }
 
