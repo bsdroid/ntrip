@@ -160,13 +160,17 @@ void bncApp::messagePrivate(const QByteArray& msg) {
 
   // First time resolve the log file name
   // ------------------------------------
-  if (_logFileFlag == 0) {
+  QDate currDate = currentDateAndTimeGPS().date();
+  if (_logFileFlag == 0 || _fileDate != currDate) {
+    delete _logFile;
     _logFileFlag = 1;
     bncSettings settings;
     QString logFileName = settings.value("logFile").toString();
     if ( !logFileName.isEmpty() ) {
       expandEnvVar(logFileName);
-      _logFile = new QFile(logFileName);
+      _logFile = new QFile(logFileName + "_" + 
+                          currDate.toString("yyMMdd").toAscii().data());
+      _fileDate = currDate;
       if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
         _logFile->open(QIODevice::WriteOnly | QIODevice::Append);
       }
