@@ -99,5 +99,6 @@ class bncApp : public QApplication {
     long                _waitCoTime;
     QMultiMap<long, QString>* _corrs;
     QString             _confFileName;
+    QDate          _fileDate;
 };
 #endif
