@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
       }
       if (QByteArray(argv[ii]).indexOf("-file")   != -1) {
         GUIenabled = false;
-        rawFileName   = QByteArray(argv[ii+1]);
+        rawFileName = QByteArray(argv[ii+1]);
       }
       if (QByteArray(argv[ii]).indexOf("-format") != -1) {
         format = QByteArray(argv[ii+1]);
