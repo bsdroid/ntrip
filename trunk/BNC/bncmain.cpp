@@ -60,10 +60,7 @@ void catch_signal(int) {
 int main(int argc, char *argv[]) {
 
   bool       GUIenabled  = true;
-  bool       fileInput   = false;
-  bool       confFile  = false;
-  bool       dragAndDrop = true;
-  QByteArray fileName;
+  QByteArray rawFileName;
   QByteArray format; 
   QString    dateString;
   QString    timeString;
@@ -72,66 +69,32 @@ int main(int argc, char *argv[]) {
   for (int ii = 1; ii < argc; ii++) {
     if (QByteArray(argv[ii]) == "-nw") {
       GUIenabled = false;
-      dragAndDrop = false;
-      break;
     }
-  }
-
-  for (int ii = 1; ii < argc; ii++) {
-    if (QByteArray(argv[ii]) == "-file" || QByteArray(argv[ii]) == "--file") {
-      GUIenabled = false;
-      fileInput  = true;
-      dragAndDrop = false;
-      if (ii+1 < argc) {
-        fileName = QByteArray(argv[ii+1]);
+    if (ii + 1 < argc) {
+      if (QByteArray(argv[ii]).indexOf("-conf")   != -1) {
+        confFileName = QString(argv[ii+1]);
       }
-    }
-    if (QByteArray(argv[ii]) == "-format" || QByteArray(argv[ii]) == "--format") {
-      GUIenabled = false;
-      fileInput  = true;
-      dragAndDrop = false;
-      if (ii+1 < argc) {
+      if (QByteArray(argv[ii]).indexOf("-file")   != -1) {
+        GUIenabled = false;
+        rawFileName   = QByteArray(argv[ii+1]);
+      }
+      if (QByteArray(argv[ii]).indexOf("-format") != -1) {
         format = QByteArray(argv[ii+1]);
       }
-    }
-    if (QByteArray(argv[ii]) == "-date" || QByteArray(argv[ii]) == "--date") {
-      dragAndDrop = false;
-      if (ii+1 < argc) {
+      if (QByteArray(argv[ii]).indexOf("-date")   != -1) {
         dateString = QString(argv[ii+1]);
       }
-    }
-    if (QByteArray(argv[ii]) == "-time" || QByteArray(argv[ii]) == "--time") {
-      dragAndDrop = false;
-      if (ii+1 < argc) {
+      if (QByteArray(argv[ii]).indexOf("-time")   != -1) {
         timeString = QString(argv[ii+1]);
       }
     }
-    if (QByteArray(argv[ii]) == "-conf" || QByteArray(argv[ii]) == "--conf") {
-      confFile  = true;
-      dragAndDrop = false;
-      if (ii+1 < argc) {
-        confFileName = QString(argv[ii+1]);
-      }
-    }
-    if (dragAndDrop && ii == 1) {
-      confFile  = true;
-      if (ii < argc) {
-        confFileName = QString(argv[ii]);
-      }
-    }
   }
 
-  QString printHelp;
-  printHelp = "Usage: bnc -nw\n" 
-              "           --conf <confFileName>\n" 
-              "           --file <inputFileName>\n"
-              "           --format <RTIGS | RTCM_2 | RTCM_3>\n"
-              "           --date YYYY-MM-DD  --time HH:MM:SS";
-
-  if (confFile && confFileName.isEmpty() ) {
-      cout << printHelp.toAscii().data() << endl;
-      exit(0);
-  }
+  QString printHelp = "Usage: bnc -nw\n" 
+                      "           --conf <confFileName>\n" 
+                      "           --file <rawFileName>\n"
+                      "           --format <RTIGS | RTCM_2 | RTCM_3>\n"
+                      "           --date YYYY-MM-DD  --time HH:MM:SS";
 
   bncApp app(argc, argv, GUIenabled);
 
@@ -179,19 +142,18 @@ int main(int argc, char *argv[]) {
 
     // Normal case - data from Internet
     // --------------------------------
-    if (!fileInput) {
+    if ( rawFileName.isEmpty() ) {
       caster->slotReadMountPoints();
       if (caster->numStations() == 0) {
-      return 0;
+        exit(0);
       }
     }
 
     // Special case - data from file
     // -----------------------------
     else {
-      if ( fileName.isEmpty() || format.isEmpty() || 
-           dateString.isEmpty() || timeString.isEmpty() ) {
-      cout << printHelp.toAscii().data() << endl;
+      if ( format.isEmpty() || dateString.isEmpty() || timeString.isEmpty() ) {
+        cout << printHelp.toAscii().data() << endl;
         exit(0);
       }
 
@@ -199,7 +161,7 @@ int main(int argc, char *argv[]) {
         new QDateTime(QDate::fromString(dateString, Qt::ISODate), 
                       QTime::fromString(timeString, Qt::ISODate), Qt::UTC);
 
-      bncGetThread* getThread = new bncGetThread(fileName, format);
+      bncGetThread* getThread = new bncGetThread(rawFileName, format);
       caster->addGetThread(getThread);
     }
   }
