@@ -332,6 +332,9 @@ t_irc bncGetThread::initRun() {
     else {
       _query->startRequest(_mountPoint, "");
     }
+    if (_query->status() != bncNetQuery::running) {
+      return failure;
+    }
   }
 
   // Instantiate the filter
