@@ -73,9 +73,65 @@ class bncGetThread : public QThread {
    virtual void run();
 
  private:
+
+   class latencyChecker : public QObject {
+   Q_OBJECT
+   public:
+     latencyChecker(QByteArray staID);
+     ~latencyChecker();
+     void check(GPSDecoder* decoder);
+   signals:
+     void newMessage(QByteArray msg, bool showOnScreen);
+   private:
+     void callScript(const char* comment);
+     int        _inspSegm;
+     int        _adviseFail;
+     int        _adviseReco;
+     int        _perfIntr;
+     int        _numSucc;
+     int        _secSucc;
+     int        _secFail;
+     int        _initPause;
+     int        _currPause;
+     int        _oldSecGPS;
+     int        _newSecGPS;
+     int        _numGaps;
+     int        _diffSecGPS;
+     int        _numLat;
+     bool       _makePause;
+     bool       _wrongEpoch;
+     bool       _decode;
+     bool       _begCorrupt;
+     bool       _endCorrupt;
+     bool       _followSec;
+     double     _maxDt;
+     double     _sumLat;
+     double     _sumLatQ;
+     double     _meanDiff;
+     double     _minLat;
+     double     _maxLat;
+     double     _curLat;
+     QByteArray _staID;
+     QString    _adviseScript;
+     QString    _checkMountPoint;
+     QString    _begDateCor;
+     QString    _begTimeCor;
+     QString    _begDateOut;
+     QString    _begTimeOut;
+     QString    _endDateCor;
+     QString    _endTimeCor;
+     QString    _endDateOut;
+     QString    _endTimeOut;
+     QDateTime  _decodeTime;
+     QDateTime  _decodeSucc;
+     QDateTime  _decodeFailure;
+     QDateTime  _decodeStart;
+     QDateTime  _decodeStop;
+     QDateTime  _decodePause;
+   };
+
    void  initialize();
    t_irc tryReconnect();
-   void  checkLatency();
    void  scanRTCM();
 
    GPSDecoder*     _decoder;
@@ -96,6 +152,7 @@ class bncGetThread : public QThread {
    QFile*          _rawInpFile;
    QextSerialPort* _serialPort;
    bool            _isToBeDeleted;
+   latencyChecker* _latencyChecker;
 };
 
 #endif
