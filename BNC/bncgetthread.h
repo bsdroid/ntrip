@@ -66,64 +66,35 @@ class bncGetThread : public QThread {
    void newBytes(QByteArray staID, double nbyte);
    void newObs(QByteArray staID, bool firstObs, p_obs obs);
    void newAntCrd(QByteArray staID, double xx, double yy, double zz, QByteArray antType);
-   void error(QByteArray staID);
    void newMessage(QByteArray msg, bool showOnScreen);
-
- public slots:
-   void slotNewEphGPS(gpsephemeris gpseph);
 
  protected:
    virtual void run();
 
  private:
    void  initialize();
-   t_irc initRun();
-   void  message(const QString&);
-   void  tryReconnect();
-   void  callScript(const char* _comment);
-   GPSDecoder* _decoder;
-   bncNetQuery* _query;
-   QUrl        _mountPoint;
-   QByteArray  _staID;
-   QByteArray  _staID_orig;
-   QByteArray  _format;
-   QByteArray  _latitude;
-   QByteArray  _longitude;
-   QByteArray  _nmea;
-   QByteArray  _ntripVersion;
-   QString     _adviseScript;
-   QString     _begDateCor;
-   QString     _begTimeCor;
-   QString     _begDateOut;
-   QString     _begTimeOut;
-   QString     _endDateCor;
-   QString     _endTimeCor;
-   QString     _endDateOut;
-   QString     _endTimeOut;
-   QString     _checkMountPoint;
-   bool        _makePause;
-   int         _obsRate;
-   int         _inspSegm;
-   int         _adviseFail;
-   int         _adviseReco;
-   int         _perfIntr;
-   int         _timeOut;
-   int         _nextSleep;
-   int         _iMount;
-   int         _samplingRate;
-   bncRinex*   _rnx;
-   bool        _rnx_set_position;
-   QDateTime   _decodeFailure;
-   QDateTime   _decodeStart;
-   QDateTime   _decodeStop;
-   QDateTime   _decodePause;
-   QDateTime   _decodeTime;
-   QDateTime   _decodeSucc;
-   QMutex      _mutex;
-   QFile*      _rawOutFile;
-   QFile*      _rawInpFile;
+   t_irc tryReconnect();
+   void  checkLatency();
+   void  scanRTCM();
+
+   GPSDecoder*     _decoder;
+   bncNetQuery*    _query;
+   QUrl            _mountPoint;
+   QByteArray      _staID;
+   QByteArray      _staID_orig;
+   QByteArray      _format;
+   QByteArray      _latitude;
+   QByteArray      _longitude;
+   QByteArray      _nmea;
+   QByteArray      _ntripVersion;
+   int             _nextSleep;
+   int             _iMount;
+   int             _samplingRate;
+   bncRinex*       _rnx;
+   QFile*          _rawOutFile;
+   QFile*          _rawInpFile;
    QextSerialPort* _serialPort;
-   bool        _isToBeDeleted;
+   bool            _isToBeDeleted;
 };
 
 #endif
