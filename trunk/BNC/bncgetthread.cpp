@@ -370,12 +370,14 @@ void bncGetThread::run() {
       // Decode Data
       // -----------
       vector<string> errmsg;
-      _decoder->Decode(data.data(), data.size(), errmsg);
+      t_irc irc = _decoder->Decode(data.data(), data.size(), errmsg);
 
       // Perform various scans and checks
       // --------------------------------
+      _latencyChecker->checkOutage(irc == success);
+      _latencyChecker->checkObsLatency(_decoder->_obsList);
+      _latencyChecker->checkCorrLatency(_decoder->epochList());
       scanRTCM();            
-      _latencyChecker->check(_decoder->_obsList);
 
       // Loop over all observations (observations output)
       // ------------------------------------------------

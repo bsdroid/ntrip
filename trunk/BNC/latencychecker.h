@@ -35,7 +35,9 @@ Q_OBJECT
  public:
   latencyChecker(QByteArray staID);
   ~latencyChecker();
-  void check(const QList<p_obs>& obsList);
+  void checkOutage(bool decoded);
+  void checkObsLatency(const QList<p_obs>& obsList);
+  void checkCorrLatency(QList<int>* epochList);
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
