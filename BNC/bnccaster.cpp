@@ -236,8 +236,8 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
   connect(getThread, SIGNAL(newObs(QByteArray, bool, p_obs)),
           this,      SLOT(newObs(QByteArray, bool, p_obs)));
 
-  connect(getThread, SIGNAL(error(QByteArray)), 
-          this, SLOT(slotGetThreadError(QByteArray)));
+  connect(getThread, SIGNAL(getThreadFinished(QByteArray)), 
+          this, SLOT(slotGetThreadFinished(QByteArray)));
 
   _staIDs.push_back(getThread->staID());
   _threads.push_back(getThread);
@@ -245,16 +245,16 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
   getThread->start();
 }
 
-// Error in get thread
+// Get Thread destroyed
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::slotGetThreadError(QByteArray staID) {
+void bncCaster::slotGetThreadFinished(QByteArray staID) {
   QMutexLocker locker(&_mutex);
   _staIDs.removeAll(staID);
   emit( newMessage(
            QString("Mountpoint size %1").arg(_staIDs.size()).toAscii(), true) );
   if (_staIDs.size() == 0) {
     emit(newMessage("bncCaster: Last get thread terminated", true));
-    emit getThreadErrors();
+    emit getThreadsFinished();
   }
 }
 

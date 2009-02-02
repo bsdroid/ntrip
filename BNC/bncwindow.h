@@ -72,7 +72,7 @@
     void slotStop();
     void slotNewMountPoints(QStringList* mountPoints);
     void slotDeleteMountPoints();
-    void slotGetThreadErrors();
+    void slotGetThreadsFinished();
     void slotSelectionChanged();
     void slotWhatsThis();
 
