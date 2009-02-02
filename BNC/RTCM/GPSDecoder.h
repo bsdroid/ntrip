@@ -135,6 +135,8 @@ class GPSDecoder {
     }
   }
 
+  virtual QList<int>* epochList() {return 0;}
+
   struct t_antInfo {
     enum t_type { ARP, APC };
 
@@ -156,7 +158,6 @@ class GPSDecoder {
 
   QList<p_obs>     _obsList;
   QList<int>       _typeList;  // RTCM   message types
-  QList<int>       _epochList; // Broadcast corrections
   QStringList      _antType;   // RTCM   antenna descriptor
   QList<t_antInfo> _antList;   // RTCM   antenna XYZ
 };

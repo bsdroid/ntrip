@@ -27,12 +27,12 @@
 
 #include <QtCore>
 #include "../RTCM/GPSDecoder.h"
+#include "../RTCM/GPSDecoder.h"
+#include "RTCM3coDecoder.h"
 
 extern "C" {
 #include "rtcm3torinex.h"
 }
-
-class RTCM3coDecoder;
 
 class RTCM3Decoder : public QObject, public GPSDecoder {
 Q_OBJECT
@@ -40,6 +40,9 @@ Q_OBJECT
   RTCM3Decoder(const QString& fileName);
   virtual ~RTCM3Decoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
+  virtual QList<int>* epochList() {
+    return (_coDecoder ? &(_coDecoder->_epochList) : 0);
+  }
  signals:
   void newMessage(QByteArray msg,bool showOnScreen);
   void newGPSEph(gpsephemeris* gpseph);
@@ -52,20 +55,7 @@ Q_OBJECT
   struct RTCM3ParserData _Parser;
   RTCM3coDecoder*        _coDecoder; 
   t_mode                 _mode;
-  int _perfIntr;
-  int _numLat;
-  int _numGaps;
-  bool _followSec;
-  double _curLat;
-  double _sumLat;
-  double _sumLatQ;
-  double _minLat;
-  double _maxLat;
-  double _newSecGPS;
-  double _oldSecGPS;
-  double _diffSecGPS;
-  double _meanDiff;
-} ;
+};
 
 #endif
 

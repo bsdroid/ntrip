@@ -42,6 +42,8 @@ Q_OBJECT
   RTCM3coDecoder(const QString& staID);
   virtual ~RTCM3coDecoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
+  virtual QList<int>* epochList() {return &_epochList;}
+  QList<int>     _epochList;
 
  signals:
   void newCorrLine(QString line, QString staID, long coTime);
@@ -50,14 +52,14 @@ Q_OBJECT
   void reopen();
   void printLine(const QString& line, long coTime);
 
-  int                 _port;
-  std::ofstream*      _out;
-  QString             _staID;
-  QString             _fileNameSkl;
-  QString             _fileName;
-  QByteArray          _buffer;
-  ClockOrbit          _co;
-  Bias                _bias;
+  int            _port;
+  std::ofstream* _out;
+  QString        _staID;
+  QString        _fileNameSkl;
+  QString        _fileName;
+  QByteArray     _buffer;
+  ClockOrbit     _co;
+  Bias           _bias;
 };
 
 #endif
