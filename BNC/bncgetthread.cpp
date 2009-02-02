@@ -375,7 +375,7 @@ void bncGetThread::run() {
       // Perform various scans and checks
       // --------------------------------
       scanRTCM();            
-      _latencyChecker->check(_decoder);
+      _latencyChecker->check(_decoder->_obsList);
 
       // Loop over all observations (observations output)
       // ------------------------------------------------

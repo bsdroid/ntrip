@@ -161,11 +161,11 @@ latencyChecker::~latencyChecker() {
 
 // Perform latency checks
 //////////////////////////////////////////////////////////////////////////////
-void latencyChecker::check(GPSDecoder* decoder) {
+void latencyChecker::check(const QList<p_obs>& obsList) {
 
   // Check - once per inspect segment
   // --------------------------------
-  if (decoder->_obsList.size() > 0) {
+  if (obsList.size() > 0) {
 
     _decodeTime = QDateTime::currentDateTime();
 
@@ -249,7 +249,7 @@ void latencyChecker::check(GPSDecoder* decoder) {
   if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
     if (_perfIntr > 0 ) {
 
-      QListIterator<p_obs> it(decoder->_obsList);
+      QListIterator<p_obs> it(obsList);
       while (it.hasNext()) {
         p_obs obs = it.next();
       
