@@ -48,13 +48,13 @@ class bncCaster : public QObject {
 
  signals:
    void mountPointsRead(QList<bncGetThread*>);
-   void getThreadErrors();   
+   void getThreadsFinished();   
    void newMessage(QByteArray msg, bool showOnScreen);
 
  private slots:
    void slotNewConnection();
    void slotNewUConnection();
-   void slotGetThreadError(QByteArray staID);
+   void slotGetThreadFinished(QByteArray staID);
 
  private:
    void dumpEpochs(long minTime, long maxTime);

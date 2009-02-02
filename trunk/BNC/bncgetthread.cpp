@@ -291,6 +291,7 @@ bncGetThread::~bncGetThread() {
   delete _rawInpFile;
   delete _rawOutFile;
   delete _serialPort;
+  emit getThreadFinished(_staID);
 }
 
 // 

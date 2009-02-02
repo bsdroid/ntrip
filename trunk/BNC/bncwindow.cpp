@@ -923,7 +923,7 @@ void bncWindow::slotSaveOptions() {
 
 // All get slots terminated
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotGetThreadErrors() {
+void bncWindow::slotGetThreadsFinished() {
   ((bncApp*)qApp)->slotMessage("All Get Threads Terminated", true);
   if (!_actStop->isEnabled()) {
     _actGetData->setEnabled(true);
@@ -945,8 +945,8 @@ void bncWindow::slotGetData() {
   ((bncApp*)qApp)->setPort(_outEphPortLineEdit->text().toInt());
   ((bncApp*)qApp)->setPortCorr(_corrPortLineEdit->text().toInt());
 
-  connect(_caster, SIGNAL(getThreadErrors()), 
-          this, SLOT(slotGetThreadErrors()));
+  connect(_caster, SIGNAL(getThreadsFinished()), 
+          this, SLOT(slotGetThreadsFinished()));
 
   connect (_caster, SIGNAL(mountPointsRead(QList<bncGetThread*>)), 
            this, SLOT(slotMountPointsRead(QList<bncGetThread*>)));
