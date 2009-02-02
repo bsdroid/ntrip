@@ -249,6 +249,15 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::slotGetThreadFinished(QByteArray staID) {
   QMutexLocker locker(&_mutex);
+
+  QListIterator<bncGetThread*> it(_threads);
+  while (it.hasNext()) {
+    bncGetThread* thread = it.next();
+    if (thread->staID() == staID) {
+      _threads.removeOne(thread);
+    }
+  }
+
   _staIDs.removeAll(staID);
   emit( newMessage(
            QString("Mountpoint size %1").arg(_staIDs.size()).toAscii(), true) );
