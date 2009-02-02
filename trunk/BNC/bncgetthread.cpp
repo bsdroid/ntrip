@@ -302,6 +302,9 @@ bncGetThread::~bncGetThread() {
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::terminate() {
   _isToBeDeleted = true;
+  if (!isRunning()) {
+    delete this;
+  }
 }
 
 // Run
@@ -424,13 +427,9 @@ void bncGetThread::run() {
       }
       _decoder->_obsList.clear();
     }
-    catch (const char* msg) {
-      emit(newMessage(_staID + msg, true));
-      tryReconnect();
-    }
     catch (...) {
-      emit(newMessage(_staID + "unknown exception", true));
-      tryReconnect();
+      emit(newMessage(_staID + "bncGetThread exception", true));
+      _isToBeDeleted = true;
     }
   }
 }
