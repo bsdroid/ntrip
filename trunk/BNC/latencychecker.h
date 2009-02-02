@@ -35,7 +35,7 @@ Q_OBJECT
  public:
   latencyChecker(QByteArray staID);
   ~latencyChecker();
-  void check(GPSDecoder* decoder);
+  void check(const QList<p_obs>& obsList);
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
