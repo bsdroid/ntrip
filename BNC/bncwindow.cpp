@@ -925,9 +925,9 @@ void bncWindow::slotSaveOptions() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotGetThreadsFinished() {
   ((bncApp*)qApp)->slotMessage("All Get Threads Terminated", true);
-  if (!_actStop->isEnabled()) {
-    _actGetData->setEnabled(true);
-  }
+  delete _caster; _caster = 0;
+  _actGetData->setEnabled(true);
+  _actStop->setEnabled(false);
 }
 
 // Retrieve Data
