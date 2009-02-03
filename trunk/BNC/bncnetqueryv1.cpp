@@ -160,7 +160,7 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
       delete _socket;
       _socket = 0;
       _status = error;
-      emit newMessage(_url.path().toAscii() + " read timeout", true);
+      emit newMessage(_url.path().toAscii() + " response timeout", true);
       return;
     }
     if (_socket->canReadLine()) {
