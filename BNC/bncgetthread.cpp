@@ -376,10 +376,8 @@ void bncGetThread::run() {
       // --------------------------------
       _latencyChecker->checkOutage(irc == success);
       _latencyChecker->checkObsLatency(_decoder->_obsList);
-      RTCM3Decoder* rtcm3decoder =  dynamic_cast<RTCM3Decoder*>(_decoder);
-      if (rtcm3decoder) {
-        _latencyChecker->checkCorrLatency(rtcm3decoder->corrGPSEpochTime());
-      }
+      _latencyChecker->checkCorrLatency(_decoder->corrGPSEpochTime());
+
       scanRTCM();            
 
       // Loop over all observations (observations output)

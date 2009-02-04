@@ -135,6 +135,8 @@ class GPSDecoder {
     }
   }
 
+  virtual int corrGPSEpochTime() const {return -1;}
+
   struct t_antInfo {
     enum t_type { ARP, APC };
 

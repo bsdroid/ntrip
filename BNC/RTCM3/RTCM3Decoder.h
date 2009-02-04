@@ -40,13 +40,15 @@ Q_OBJECT
   RTCM3Decoder(const QString& fileName);
   virtual ~RTCM3Decoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
-  int corrGPSEpochTime() const {
-    return (_coDecoder ? _coDecoder->GPSEpochTime() : -1);
+  virtual int corrGPSEpochTime() const {
+    return (_mode == corrections ? _coDecoder->corrGPSEpochTime() : -1);
   }
+
  signals:
   void newMessage(QByteArray msg,bool showOnScreen);
   void newGPSEph(gpsephemeris* gpseph);
   void newGlonassEph(glonassephemeris* glonasseph);
+
  private:
   enum t_mode{unknown = 0, observations, corrections};
 
