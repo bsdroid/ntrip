@@ -42,8 +42,7 @@ Q_OBJECT
   RTCM3coDecoder(const QString& staID);
   virtual ~RTCM3coDecoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
-  virtual QList<int>* epochList() {return &_epochList;}
-  QList<int>     _epochList;
+  int GPSEpochTime() const {return _co.GPSEpochTime;}
 
  signals:
   void newCorrLine(QString line, QString staID, long coTime);

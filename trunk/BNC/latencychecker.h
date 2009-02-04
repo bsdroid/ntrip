@@ -37,7 +37,7 @@ Q_OBJECT
   ~latencyChecker();
   void checkOutage(bool decoded);
   void checkObsLatency(const QList<p_obs>& obsList);
-  void checkCorrLatency(QList<int>* epochList);
+  void checkCorrLatency(int corrGPSEpochTime);
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
