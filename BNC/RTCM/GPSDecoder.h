@@ -135,8 +135,6 @@ class GPSDecoder {
     }
   }
 
-  virtual QList<int>* epochList() {return 0;}
-
   struct t_antInfo {
     enum t_type { ARP, APC };
 

@@ -40,8 +40,8 @@ Q_OBJECT
   RTCM3Decoder(const QString& fileName);
   virtual ~RTCM3Decoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
-  virtual QList<int>* epochList() {
-    return (_coDecoder ? &(_coDecoder->_epochList) : 0);
+  int corrGPSEpochTime() const {
+    return (_coDecoder ? _coDecoder->GPSEpochTime() : -1);
   }
  signals:
   void newMessage(QByteArray msg,bool showOnScreen);
