@@ -350,7 +350,9 @@ void bncGetThread::run() {
       // Timeout, reconnect
       // ------------------
       if (nBytes == 0) {
+        _latencyChecker->checkReconnect();
         emit(newMessage(_staID + ": Data timeout, reconnecting", true));
+        msleep (5000); // sleep 5 sec
         continue;
       }
       else {

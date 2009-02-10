@@ -35,6 +35,7 @@ Q_OBJECT
  public:
   latencyChecker(QByteArray staID);
   ~latencyChecker();
+  void checkReconnect();
   void checkOutage(bool decoded);
   void checkObsLatency(const QList<p_obs>& obsList);
   void checkCorrLatency(int corrGPSEpochTime);
@@ -58,12 +59,12 @@ Q_OBJECT
   int        _numGaps;
   int        _diffSecGPS;
   int        _numLat;
-  bool       _makePause;
   bool       _wrongEpoch;
-  bool       _decode;
+  bool       _checkSeg;
   bool       _begCorrupt;
   bool       _endCorrupt;
   bool       _followSec;
+  bool       _reConnect;
   double     _maxDt;
   double     _sumLat;
   double     _sumLatQ;
@@ -82,12 +83,12 @@ Q_OBJECT
   QString    _endTimeCor;
   QString    _endDateOut;
   QString    _endTimeOut;
-  QDateTime  _decodeTime;
+  QDateTime  _checkTime;
   QDateTime  _decodeSucc;
   QDateTime  _decodeFailure;
   QDateTime  _decodeStart;
   QDateTime  _decodeStop;
-  QDateTime  _decodePause;
+  QDateTime  _checkPause;
 };
 
 #endif
