@@ -169,7 +169,8 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
       if (line.trimmed().isEmpty()) {
         break;
       }
-      if (line.indexOf("200 OK") != -1) {
+      if (line.indexOf("200 OK") != -1 &&
+          line.indexOf("SOURCETABLE") == -1) {
         response.clear();
         break;
       }
