@@ -64,7 +64,6 @@ Q_OBJECT
   bool       _begCorrupt;
   bool       _endCorrupt;
   bool       _followSec;
-  bool       _reConnect;
   double     _maxDt;
   double     _sumLat;
   double     _sumLatQ;

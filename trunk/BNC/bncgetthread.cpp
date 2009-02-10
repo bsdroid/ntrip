@@ -320,6 +320,7 @@ void bncGetThread::run() {
       }
 
       if (tryReconnect() != success) {
+        _latencyChecker->checkReconnect();
         continue;
       }
 
@@ -350,7 +351,6 @@ void bncGetThread::run() {
       // Timeout, reconnect
       // ------------------
       if (nBytes == 0) {
-        _latencyChecker->checkReconnect();
         emit(newMessage(_staID + ": Data timeout, reconnecting", true));
         continue;
       }

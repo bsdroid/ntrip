@@ -150,6 +150,8 @@ latencyChecker::latencyChecker(QByteArray staID) {
   _checkTime = QDateTime::currentDateTime();
   _decodeSucc = QDateTime::currentDateTime();
 
+  _decodeStop = QDateTime::currentDateTime();
+
 }
 
 // Destructor
@@ -160,7 +162,24 @@ latencyChecker::~latencyChecker() {
 // Perform 'Begin outage' check
 //////////////////////////////////////////////////////////////////////////////
 void latencyChecker::checkReconnect() {
-  _reConnect = true;
+
+  // Begin outage threshold
+  // ----------------------
+  if ( _decodeStop.isValid() ) {
+    if ( _decodeStop.secsTo(QDateTime::currentDateTime()) >  _adviseFail * 60 ) {
+      _decodeStop.setDate(QDate());
+      _decodeStop.setTime(QTime());
+      _begDateOut = _checkTime.toUTC().date().toString("yy-MM-dd");
+      _begTimeOut = _checkTime.toUTC().time().toString("hh:mm:ss");
+      emit(newMessage((_staID
+                    + ": Failure threshold exceeded, outage since "
+                    + _begDateOut + " " + _begTimeOut).toAscii(), true));
+      callScript(("Begin_Outage "
+                    + _begDateOut + " " + _begTimeOut).toAscii());
+    }
+    _decodeStart = QDateTime::currentDateTime();
+  }
+
 }
 
 // Perform Corrupt and 'End outage' check
@@ -256,23 +275,6 @@ void latencyChecker::checkOutage(bool decoded) {
     }
   }
 
-  // Begin outage threshold
-  // ----------------------
-  if ( _decodeStop.isValid() ) {
-    if ( _decodeStop.secsTo(QDateTime::currentDateTime()) >  _adviseFail * 60 ) {
-      _decodeStop.setDate(QDate());
-      _decodeStop.setTime(QTime());
-      _begDateOut = _checkTime.toUTC().date().toString("yy-MM-dd");
-      _begTimeOut = _checkTime.toUTC().time().toString("hh:mm:ss");
-      emit(newMessage((_staID
-                    + ": Failure threshold exceeded, outage since "
-                    + _begDateOut + " " + _begTimeOut).toAscii(), true));
-      callScript(("Begin_Outage "
-                    + _begDateOut + " " + _begTimeOut).toAscii());
-      _decodeStart = QDateTime::currentDateTime();
-    }
-  }
-
   // End outage threshold
   // --------------------
   if ( _decodeStart.isValid() ) {
@@ -291,11 +293,9 @@ void latencyChecker::checkOutage(bool decoded) {
       callScript(("End_Outage "
                     + _endDateOut + " " + _endTimeOut + " Begin was "
                     + _begDateOut + " " + _begTimeOut).toAscii());
-      _decodeStop = QDateTime::currentDateTime();
+    _decodeStop = QDateTime::currentDateTime();
     }
   }
-  _reConnect = false;
-
 }
 
 // Perform latency checks (observations)
