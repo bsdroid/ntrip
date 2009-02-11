@@ -97,6 +97,7 @@ class bncGetThread : public QThread {
    QextSerialPort* _serialPort;
    bool            _isToBeDeleted;
    latencyChecker* _latencyChecker;
+   QString         _miscMount;
 };
 
 #endif
