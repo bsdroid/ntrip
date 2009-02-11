@@ -120,9 +120,11 @@ void bncGetThread::initialize() {
   _rawOutFile    = 0;
   _staID_orig    = _staID;
 
+  bncSettings settings;
+  _miscMount = settings.value("miscMount").toString();
+
   // Check name conflict
   // -------------------
-  bncSettings settings;
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
   int num = 0;
   int ind = -1;
@@ -498,35 +500,38 @@ t_irc bncGetThread::tryReconnect() {
 void bncGetThread::scanRTCM() {
 
   bncSettings settings;
-  if ( Qt::CheckState(settings.value("scanRTCM").toInt()) == Qt::Checked) {
-  
-    // RTCMv3 message types
-    // --------------------
-    for (int ii = 0; ii <_decoder->_typeList.size(); ii++) {
-      QString type =  QString("%1 ").arg(_decoder->_typeList[ii]);
-      emit(newMessage(_staID + ": Received message type " + type.toAscii(), true));
-    }
-  
-    // RTCMv3 antenna descriptor
-    // -------------------------
-    for (int ii=0;ii<_decoder->_antType.size();ii++) {
-      QString ant1 =  QString("%1 ").arg(_decoder->_antType[ii]);
-      emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii(), true));
-    }
+  if ( Qt::CheckState(settings.value("scanRTCM").toInt()) == Qt::Checked ) {
 
-    // Antenna Coordinates
-    // -------------------
-    for (int ii=0; ii <_decoder->_antList.size(); ii++) {
-      QByteArray antT;
-      if      (_decoder->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
-        antT = "ARP";
+    if ( _miscMount == _staID || _miscMount == "ALL" ) {
+
+      // RTCMv3 message types
+      // --------------------
+      for (int ii = 0; ii <_decoder->_typeList.size(); ii++) {
+        QString type =  QString("%1 ").arg(_decoder->_typeList[ii]);
+        emit(newMessage(_staID + ": Received message type " + type.toAscii(), true));
       }
-      else if (_decoder->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
-        antT = "APC";
+  
+      // RTCMv3 antenna descriptor
+      // -------------------------
+      for (int ii=0;ii<_decoder->_antType.size();ii++) {
+        QString ant1 =  QString("%1 ").arg(_decoder->_antType[ii]);
+        emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii(), true));
       }
-      emit(newAntCrd(_staID, _decoder->_antList[ii].xx, 
-                     _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
-                     antT));
+
+      // Antenna Coordinates
+      // -------------------
+      for (int ii=0; ii <_decoder->_antList.size(); ii++) {
+        QByteArray antT;
+        if      (_decoder->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
+          antT = "ARP";
+        }
+        else if (_decoder->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
+          antT = "APC";
+        }
+        emit(newAntCrd(_staID, _decoder->_antList[ii].xx, 
+                       _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
+                       antT));
+      }
     }
   }
       
