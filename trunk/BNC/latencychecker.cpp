@@ -39,10 +39,12 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+
 #ifdef WIN32
 #include <windows.h>
+#else
+#include <unistd.h>
 #endif
-
 
 #include "latencychecker.h"
 #include "bncapp.h"
