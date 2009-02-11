@@ -39,6 +39,10 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 
 #include "latencychecker.h"
 #include "bncapp.h"
@@ -472,10 +476,11 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime) {
 ////////////////////////////////////////////////////////////////////////////
 void latencyChecker::callScript(const char* comment) {
   if (!_adviseScript.isEmpty()) {
-    sleep(1);
 #ifdef WIN32
+    Sleep(1);
     QProcess::startDetached(_adviseScript, QStringList() << _staID << comment) ;
 #else
+    sleep(1);
     QProcess::startDetached("nohup", QStringList() << _adviseScript << _staID << comment) ;
 #endif
   }
