@@ -67,7 +67,7 @@ void bncNetQueryV1::waitForReadyRead(QByteArray& outData) {
         delete _socket;
         _socket = 0;
         _status = error;
-        emit newMessage(_url.path().toAscii() + " read timeout", true);
+        emit newMessage(_url.path().toAscii() + ": Read timeout", true);
         return;
       }
     }
@@ -148,7 +148,7 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
     delete _socket;
     _socket = 0;
     _status = error;
-    emit newMessage(_url.path().toAscii() + " write timeout", true);
+    emit newMessage(_url.path().toAscii() + ": Write timeout", true);
     return;
   }
 
@@ -160,7 +160,7 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
       delete _socket;
       _socket = 0;
       _status = error;
-      emit newMessage(_url.path().toAscii() + " response timeout", true);
+      emit newMessage(_url.path().toAscii() + ": Response timeout", true);
       return;
     }
     if (_socket->canReadLine()) {
@@ -180,8 +180,8 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
     delete _socket;
     _socket = 0;
     _status = error;
-    emit newMessage(_url.path().toAscii() + " wrong caster response\n" +
-                    response.join("\n").toAscii(), true);
+    emit newMessage(_url.path().toAscii() + ": Wrong caster response\n" +
+                    response.join("").toAscii(), true);
   }
 }
 

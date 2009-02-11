@@ -504,8 +504,8 @@ void bncGetThread::scanRTCM() {
 
     if ( _miscMount == _staID || _miscMount == "ALL" ) {
 
-      // RTCMv3 message types
-      // --------------------
+      // RTCM message types
+      // ------------------
       for (int ii = 0; ii <_decoder->_typeList.size(); ii++) {
         QString type =  QString("%1 ").arg(_decoder->_typeList[ii]);
         emit(newMessage(_staID + ": Received message type " + type.toAscii(), true));
@@ -518,8 +518,8 @@ void bncGetThread::scanRTCM() {
         emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii(), true));
       }
 
-      // Antenna Coordinates
-      // -------------------
+      // RTCM Antenna Coordinates
+      // ------------------------
       for (int ii=0; ii <_decoder->_antList.size(); ii++) {
         QByteArray antT;
         if      (_decoder->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
@@ -528,13 +528,24 @@ void bncGetThread::scanRTCM() {
         else if (_decoder->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
           antT = "APC";
         }
+        QByteArray ant1, ant2, ant3;
+        ant1 = QString("%1 ").arg(_decoder->_antList[ii].xx,0,'f',4).toAscii();
+        ant2 = QString("%1 ").arg(_decoder->_antList[ii].yy,0,'f',4).toAscii();
+        ant3 = QString("%1 ").arg(_decoder->_antList[ii].zz,0,'f',4).toAscii();
+        emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m", true));
+        emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m", true));
+        emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m", true));
+        if (_decoder->_antList[ii].height_f) {
+          QByteArray ant4 = QString("%1 ").arg(_decoder->_antList[ii].height,0,'f',4).toAscii();
+          emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m", true));
+        }
         emit(newAntCrd(_staID, _decoder->_antList[ii].xx, 
                        _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
                        antT));
       }
     }
   }
-      
+
   _decoder->_typeList.clear();
   _decoder->_antType.clear();
   _decoder->_antList.clear();
