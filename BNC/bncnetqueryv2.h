@@ -26,6 +26,7 @@ class bncNetQueryV2 : public bncNetQuery {
   QNetworkAccessManager* _manager;
   QNetworkReply*         _reply;
   QEventLoop*            _eventLoop;
+  bool                   _firstData;
 };
 
 #endif
