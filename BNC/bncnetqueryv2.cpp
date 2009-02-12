@@ -180,7 +180,7 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
       _reply->abort();
       _eventLoop->quit();
       _status = error;
-      emit newMessage("NetQuery: wrong Mountpoint and/or Authorization", true);
+      emit newMessage("NetQuery: wrong Mountpoint", true);
     }
   }
 }
