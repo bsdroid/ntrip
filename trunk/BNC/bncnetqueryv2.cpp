@@ -14,6 +14,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
+
 #include "bncnetqueryv2.h"
 #include "bncsettings.h"
 
@@ -29,7 +31,7 @@ bncNetQueryV2::bncNetQueryV2() {
                                                      QAuthenticator*)));
   _reply     = 0;
   _eventLoop = new QEventLoop(this);
-
+  _firstData = true;
   _status    = init;
 }
 
@@ -170,4 +172,15 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
   // Append Data
   // -----------
   outData.append(_reply->readAll());
+
+  if (_firstData) {
+    _firstData = false;
+    if (outData.indexOf("SOURCETABLE") != -1) {
+      _reply->disconnect(SIGNAL(error(QNetworkReply::NetworkError)));
+      _reply->abort();
+      _eventLoop->quit();
+      _status = error;
+      emit newMessage("NetQuery: wrong Mountpoint and/or Authorization", true);
+    }
+  }
 }
