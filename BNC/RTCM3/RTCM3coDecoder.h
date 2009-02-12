@@ -42,7 +42,7 @@ Q_OBJECT
   RTCM3coDecoder(const QString& staID);
   virtual ~RTCM3coDecoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
-  virtual int corrGPSEpochTime() const {return _co.GPSEpochTime;}
+  virtual int corrGPSEpochTime() const {return (int) _GPSweeks;}
 
  signals:
   void newCorrLine(QString line, QString staID, long coTime);
@@ -59,6 +59,7 @@ Q_OBJECT
   QByteArray     _buffer;
   ClockOrbit     _co;
   Bias           _bias;
+  double         _GPSweeks;
 };
 
 #endif

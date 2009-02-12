@@ -66,7 +66,8 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
     }
     _fileNameSkl = path + staID;
   }
-  _out = 0;
+  _out      = 0;
+  _GPSweeks = -1.0;
 
   connect(this, SIGNAL(newCorrLine(QString, QString, long)), 
           (bncApp*) qApp, SLOT(slotNewCorrLine(QString, QString, long)));
@@ -129,6 +130,9 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     // ---------------
     if      (irc == GCOBR_SHORTBUFFER ||
              irc == GCOBR_MESSAGEEXCEEDSBUFFER) {
+      if (retCode != success) {
+        _GPSweeks = -1.0;
+      }
       return retCode;
     }
     
@@ -139,20 +143,19 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
       reopen();
 
       int    GPSweek;
-      double GPSweeks;
-      currentGPSWeeks(GPSweek, GPSweeks);
+      currentGPSWeeks(GPSweek, _GPSweeks);
       if (_co.NumberOfGPSSat > 0) {
-        if      (GPSweeks > _co.GPSEpochTime + 86400.0) {
+        if      (_GPSweeks > _co.GPSEpochTime + 86400.0) {
           GPSweek += 1;
         }
-        else if (GPSweeks < _co.GPSEpochTime - 86400.0) {
+        else if (_GPSweeks < _co.GPSEpochTime - 86400.0) {
           GPSweek -= 1;
         }
-        GPSweeks = _co.GPSEpochTime;
+        _GPSweeks = _co.GPSEpochTime;
       }
       else {
-        double GPSdaysec = fmod(GPSweeks, 86400.0);
-        int    weekDay   = int((GPSweeks - GPSdaysec) / 86400.0);
+        double GPSdaysec = fmod(_GPSweeks, 86400.0);
+        int    weekDay   = int((_GPSweeks - GPSdaysec) / 86400.0);
         if      (GPSdaysec > _co.GLONASSEpochTime + 3600.0) {
           weekDay += 1;
           if (weekDay > 6) {
@@ -167,30 +170,30 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
             GPSweek -= 1;
           }
         }
-        GPSweeks = weekDay * 86400.0 + _co.GLONASSEpochTime;
+        _GPSweeks = weekDay * 86400.0 + _co.GLONASSEpochTime;
       }
 
       for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
         QString line;
         line.sprintf("%d %.1f G%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f", 
-               GPSweek, GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
+               GPSweek, _GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
                _co.Sat[ii].Clock.DeltaA0,
                _co.Sat[ii].Orbit.DeltaRadial, 
                _co.Sat[ii].Orbit.DeltaAlongTrack,
                _co.Sat[ii].Orbit.DeltaCrossTrack);
-        long coTime = GPSweek * 7*24*3600 + long(floor(GPSweeks+0.5));
+        long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
         printLine(line, coTime);
       }
       for(int ii = CLOCKORBIT_NUMGPS; 
           ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
         QString line;
         line.sprintf("%d %.1f R%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f", 
-               GPSweek, GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
+               GPSweek, _GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
                _co.Sat[ii].Clock.DeltaA0, 
                _co.Sat[ii].Orbit.DeltaRadial, 
                _co.Sat[ii].Orbit.DeltaAlongTrack,
                _co.Sat[ii].Orbit.DeltaCrossTrack);
-        long coTime = GPSweek * 7*24*3600 + long(floor(GPSweeks+0.5));
+        long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
         printLine(line, coTime);
       }
       _buffer = _buffer.mid(bytesused);
