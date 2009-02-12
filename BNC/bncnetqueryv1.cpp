@@ -154,6 +154,7 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
 
   // Read Caster Response
   // --------------------
+  bool proxyResponse = false;
   QStringList response;
   while (true) {
     if (!_socket->waitForReadyRead(_timeOut)) {
@@ -165,14 +166,31 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
     }
     if (_socket->canReadLine()) {
       QString line = _socket->readLine();
-      response.push_back(line);
-      if (line.trimmed().isEmpty()) {
-        break;
+
+      if (line.indexOf("ICY 200 OK") == -1 && 
+          line.indexOf("HTTP")       != -1 && 
+          line.indexOf("200 OK")     != -1 ) {
+        proxyResponse = true;
       }
-      if (line.indexOf("200 OK") != -1 &&
+
+      if (!proxyResponse) {
+        response.push_back(line);
+      }
+
+      if (line.trimmed().isEmpty()) {
+        if (proxyResponse) {
+          proxyResponse = false;
+	}
+	else {
+          break;
+	}
+      }
+
+      if (!proxyResponse                    &&
+          line.indexOf("200 OK")      != -1 &&
           line.indexOf("SOURCETABLE") == -1) {
         response.clear();
-        break;
+	break;
       }
     }
   }
