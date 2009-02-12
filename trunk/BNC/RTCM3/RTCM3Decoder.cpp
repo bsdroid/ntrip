@@ -64,7 +64,7 @@ void RTCM3Error(const char*, ...) {
 RTCM3Decoder::RTCM3Decoder(const QString& staID) : GPSDecoder() {
 
   bncSettings settings;
-  _checkMountPoint = settings.value("messTypes").toString();
+  _checkMountPoint = settings.value("miscMount").toString();
   _staID = staID;
 
   // Ensure, that the Decoder uses the "old" convention for the data structure for Rinex2. Perlt
