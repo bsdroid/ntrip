@@ -157,45 +157,41 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
   bool proxyResponse = false;
   QStringList response;
   while (true) {
-    if (!_socket->waitForReadyRead(_timeOut)) {
-      delete _socket;
-      _socket = 0;
-      _status = error;
-      emit newMessage(_url.path().toAscii() + ": Response timeout", true);
-      return;
+    QByteArray line = this->readNextLine();
+    if (_status == error) {
+      break;
     }
-    if (_socket->canReadLine()) {
-      QString line = _socket->readLine();
 
-      if (line.indexOf("ICY 200 OK") == -1 && 
-          line.indexOf("HTTP")       != -1 && 
-          line.indexOf("200 OK")     != -1 ) {
-        proxyResponse = true;
-      }
+    cout << ">" << line.data() << "<"; cout.flush();
 
-      if (!proxyResponse) {
-        response.push_back(line);
-      }
+    if (line.indexOf("ICY 200 OK") == -1 && 
+        line.indexOf("HTTP")       != -1 && 
+        line.indexOf("200 OK")     != -1 ) {
+      proxyResponse = true;
+    }
 
-      if (line.indexOf("Unauthorized") != -1) {
+    if (!proxyResponse && !line.trimmed().isEmpty()) {
+      response.push_back(line);
+    }
+
+    if (line.indexOf("Unauthorized") != -1) {
+      break;
+    }
+
+    if (line.trimmed().isEmpty()) {
+      if (proxyResponse) {
+        proxyResponse = false;
+    	}
+    	else {
         break;
-      }
+    	}
+    }
 
-      if (line.trimmed().isEmpty()) {
-        if (proxyResponse) {
-          proxyResponse = false;
-	}
-	else {
-          break;
-	}
-      }
-
-      if (!proxyResponse                    &&
-          line.indexOf("200 OK")      != -1 &&
-          line.indexOf("SOURCETABLE") == -1) {
-        response.clear();
-	break;
-      }
+    if (!proxyResponse                    &&
+        line.indexOf("200 OK")      != -1 &&
+        line.indexOf("SOURCETABLE") == -1) {
+      response.clear();
+      break;
     }
   }
   if (response.size() > 0) {
@@ -204,6 +200,34 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
     _status = error;
     emit newMessage(_url.path().toAscii() + ": Wrong caster response\n" +
                     response.join("").toAscii(), true);
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+QByteArray bncNetQueryV1::readNextLine() {
+  QByteArray buffer;
+  char ch1 = ' ';
+  while (true) {
+    if (_socket->bytesAvailable()) {
+      char ch2;
+      _socket->read(&ch2, 1);
+      if (ch2 != '\r') {
+        buffer += ch2;
+      }
+      if ( (ch2 == '\n' && ch1 == '\r') ||
+           (ch2 == '\r' && ch1 == '\n') ) {
+        return buffer;
+      }
+      ch1 = ch2;
+    }
+    else if (!_socket->waitForReadyRead(_timeOut)) {
+      delete _socket;
+      _socket = 0;
+      _status = error;
+      emit newMessage(_url.path().toAscii() + ": Response timeout", true);
+      return "";
+    }
   }
 }
 
