@@ -66,6 +66,7 @@ int main(int argc, char *argv[]) {
   QString    timeString;
   QString    confFileName;
 
+  printf("hier %d\n",argc);
   for (int ii = 1; ii < argc; ii++) {
     if (QByteArray(argv[ii]) == "-nw") {
       GUIenabled = false;
@@ -88,6 +89,10 @@ int main(int argc, char *argv[]) {
         timeString = QString(argv[ii+1]);
       }
     }
+  }
+
+  if (argc == 2 && GUIenabled) {
+    confFileName = QString(argv[1]);
   }
 
   QString printHelp = "Usage: bnc -nw\n" 
