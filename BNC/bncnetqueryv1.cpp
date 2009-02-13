@@ -177,6 +177,10 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
         response.push_back(line);
       }
 
+      if (line.indexOf("Unauthorized") != -1) {
+        break;
+      }
+
       if (line.trimmed().isEmpty()) {
         if (proxyResponse) {
           proxyResponse = false;
