@@ -66,7 +66,6 @@ int main(int argc, char *argv[]) {
   QString    timeString;
   QString    confFileName;
 
-  printf("hier %d\n",argc);
   for (int ii = 1; ii < argc; ii++) {
     if (QByteArray(argv[ii]) == "-nw") {
       GUIenabled = false;
