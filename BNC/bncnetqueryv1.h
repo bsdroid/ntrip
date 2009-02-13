@@ -14,7 +14,6 @@ class bncNetQueryV1 : public bncNetQuery {
   virtual void waitForReadyRead(QByteArray& outData);
 
  private:
-  QByteArray readNextLine();
   QTcpSocket* _socket;
 };
 
