@@ -162,13 +162,13 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
       break;
     }
 
-    cout << ">" << line.data() << "<"; cout.flush();
-
     if (line.indexOf("ICY 200 OK") == -1 && 
         line.indexOf("HTTP")       != -1 && 
         line.indexOf("200 OK")     != -1 ) {
       proxyResponse = true;
     }
+
+    cout << proxyResponse << ": " << line.data(); cout.flush();
 
     if (!proxyResponse && !line.trimmed().isEmpty()) {
       response.push_back(line);
