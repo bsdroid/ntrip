@@ -121,7 +121,15 @@ void bncGetThread::initialize() {
   _staID_orig    = _staID;
 
   bncSettings settings;
+
   _miscMount = settings.value("miscMount").toString();
+
+  if ( settings.value("serialMountPoint").toString() == _staID &&
+       settings.value("serialAutoNMEA").toString() != "Auto" ) {
+    _height = settings.value("serialHeightNMEA").toString().toAscii();
+  } else {
+    _height = "100";
+  }
 
   // Check name conflict
   // -------------------
@@ -478,7 +486,7 @@ t_irc bncGetThread::tryReconnect() {
       _query = new bncNetQueryV1();
     }
     if (_nmea == "yes") {
-      QByteArray gga = ggaString(_latitude, _longitude);
+      QByteArray gga = ggaString(_latitude, _longitude, _height);
       _query->startRequest(_mountPoint, gga);
     }
     else {

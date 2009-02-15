@@ -128,10 +128,13 @@ QDateTime currentDateAndTimeGPS() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-QByteArray ggaString(const QByteArray& latitude, const QByteArray& longitude) {
+QByteArray ggaString(const QByteArray& latitude,
+                     const QByteArray& longitude,
+                     const QByteArray& height) {
 
   double lat = strtod(latitude,NULL);
   double lon = strtod(longitude,NULL);
+  double hei = strtod(height,NULL);
 
   const char* flagN="N";
   const char* flagE="E";
@@ -155,7 +158,9 @@ QByteArray ggaString(const QByteArray& latitude, const QByteArray& longitude) {
   gga += QString("%1%2,").arg((int)lat_deg,2, 10, QLatin1Char('0')).arg(lat_min, 7, 'f', 4, QLatin1Char('0'));
   gga += flagN;
   gga += QString(",%1%2,").arg((int)lon_deg,3, 10, QLatin1Char('0')).arg(lon_min, 7, 'f', 4, QLatin1Char('0'));
-  gga += flagE + QString(",1,05,1.00,+00100,M,10.000,M,,");
+  gga += flagE + QString(",1,05,1.00");
+  gga += QString(",%1,").arg(hei, 7, 'f', 1, QLatin1Char('0'));
+  gga += QString("M,10.000,M,,");
   int xori;
   char XOR = 0;
   char *Buff =gga.toAscii().data();

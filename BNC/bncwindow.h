@@ -122,7 +122,6 @@
     QCheckBox* _rnxAppendCheckBox;
     QCheckBox* _autoStartCheckBox;
     QCheckBox* _scanRTCMCheckBox;
-    QCheckBox* _makePauseCheckBox;
     QSpinBox*  _waitTimeSpinBox;
     QSpinBox*  _corrTimeSpinBox;
     QComboBox* _obsRateComboBox;
@@ -138,7 +137,8 @@
     QComboBox* _serialParityComboBox;
     QComboBox* _serialDataBitsComboBox;
     QComboBox* _serialStopBitsComboBox;
-    QCheckBox* _serialAutoNMEACheckBox;
+    QLineEdit* _serialHeightNMEALineEdit;
+    QComboBox* _serialAutoNMEAComboBox;
 
     QLineEdit*   _LatLineEdit;
     QLineEdit*   _LonLineEdit;
