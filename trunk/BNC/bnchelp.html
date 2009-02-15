@@ -117,13 +117,13 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.9.4. <a href=#serparity>Parity</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.5. <a href=#serdata>Data Bits</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.6. <a href=#serstop>Stop Bits</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.7. <a href=#serauto>Auto NMEA</a><br>
+&nbsp; &nbsp; &nbsp; 3.9.7. <a href=#serauto>NMEA</a><br>
+&nbsp; &nbsp; &nbsp; 3.9.8. <a href=#serheight>Height</a><br>
 3.10. <a href=#advnote>Outages</a><br>
 &nbsp; &nbsp; &nbsp; 3.10.1. <a href=#obsrate>Observation Rate</a><br>
 &nbsp; &nbsp; &nbsp; 3.10.2. <a href=#advfail>Failure Threshold</a><br>
 &nbsp; &nbsp; &nbsp; 3.10.3. <a href=#advreco>Recovery Threshold</a><br>
-&nbsp; &nbsp; &nbsp; 3.10.4. <a href=#pause>Pause</a><br>
-&nbsp; &nbsp; &nbsp; 3.10.5. <a href=#advscript>Script</a><br>
+&nbsp; &nbsp; &nbsp; 3.10.4. <a href=#advscript>Script</a><br>
 3.11. <a href=#misc>Miscellaneous</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.1. <a href=#miscmount>Mountpoint</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2. <a href=#miscperf>Log Latency</a><br>
@@ -590,11 +590,22 @@ Select the number of 'Data bits' for the serial link. Note that often '8' data b
 Select the number of 'Stop bits' for the serial link. Note that often '1' stop bit is used.
 </p>
 
-<p><a name="serauto"><h4>3.9.7 Auto NMEA - optional</h4></p>
+<p><a name="serauto"><h4>3.9.7 NMEA - optional</h4></p>
 <p>
-Tick 'Auto NMEA' to forward NMEA-GGA messages (or any other message) coming from your serial connected device to the NTRIP brodacaster.</p>
+Select 'Auto' to automatically forward all NMEA-GGA messages (or any other message) coming from your serial connected device to the NTRIP brodacaster.</p>
 <p>
-This option replaces BNC's simulation of an initial NMEA-GGA message based on approximate latitude/longitude from the broadcaster's source-table. Note that sending valid NMEA-GGA strings (simulated or coming from your serial connected device) to the NTRIP broadcaster is required for receiving virtual reference station (VRS) streams.
+This option replaces BNC's 'Manual' simulation of an initial NMEA-GGA message based on the approximate (editable) latitude/longitude from the broadcaster's source-table and a default height of 100 meters. Note that sending valid NMEA-GGA strings (simulated or coming from your serial connected device) to the NTRIP broadcaster is required for receiving virtual reference station (VRS) streams.
+</p>
+<p>
+The setting of this option is ignored in case of streams coming from physical reference stations.
+</p>
+
+<p><a name="serheight"><h4>3.9.8 Height - mandatory if 'Manual' NMEA is set</h4></p>
+<p>
+Concerning 'Virtual Reference Stations' (VRS):<p></p>Specify an approximate 'Height' in meter for your VRS to simulate an inital NMEA GGA message.
+</p>
+<p>
+The setting of this option is ignored in case of streams coming from physical reference stations.
 </p>
 
 <p><a name="advnote"><h4>3.10. Outages</h4></p>
@@ -612,7 +623,7 @@ At various times, the incoming stream might become unavailable or corrupted. In 
 Outage and corruption events are reported in the 'Logs' canvas. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilise BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
 </p>
 
-<p><a name="obsrate"><h4>3.10.1 Observation Rate - mandatory if 'Failure threshold', 'Recovery threshold', 'Pause' and 'Script' is set</h4></p>
+<p><a name="obsrate"><h4>3.10.1 Observation Rate - mandatory if 'Failure threshold', 'Recovery threshold', and 'Script' is set</h4></p>
 <p>
 BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough a priory estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded and that the special procedure for handling of corrupted streams is by-passed (decoding attempt will never get paused).
 </p> 
@@ -633,15 +644,7 @@ Once a 'Begin_Failure' or 'Begin_Corrupted' event has been reported, BNC will ch
 Note that specifying a value of zero '0' for the 'Recovery threshold' will force BNC to report any stream recovery immediately. Note also that for using this function you need to specify the 'Observation rate'.
 </p>
 
-<p><a name="pause"><h4>3.10.4 Pause - optional</h4></p>
-<p>
-In case of a corrupted stream, the decoding process can be paused and decodings are then attempted again at decreasing rate. BNC will first attempt to decode again after a 30 second lag and if unsuccessful, make another attempt within 60 seconds after the previous attempt. If it is still unsuccessful, it will make another attempt to decode within 120 seconds after the previous attempt and so on. Each decoding attempt doubles the wait time since the previous attempt. The maximum wait time between attempts is limited to 960 seconds. Tick 'Pause' to activate this function. Note that it is only effective if an 'Observation rate' is specified.
-</p>
-<p>
-Do not tick 'Pause' if you want to prevent BNC from making any decoding pause. Be aware that this may incur an unnecessary workload.
-</p>
-
-<p><a name="advscript"><h4>3.10.5 Script - optional </h4></p>
+<p><a name="advscript"><h4>3.10.4 Script - optional </h4></p>
 <p>
 As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected stream's mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (%1 and %2 on Windows systems or $1 and $2 on Unix/Linux/Mac systems) together with date and time information.
 </p>
@@ -1194,7 +1197,6 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>ephV3=0</td><td>RINEX Ephemeris: Version 3</td></tr>
 <tr><td>font=</td><td>Internal memory: Used font</td></tr>
 <tr><td>logFile=/home/weber/bnc.log</td><td>General: Logfile (full path)</td></tr>
-<tr><td>makePause=0</td><td>Outages: Pause</td></tr>
 <tr><td>miscMount=</td><td>Miscellaneous: Mountpoint</td></tr>
 <tr><td>mountPoints=//user:pass@www.euref-ip.net:2101<br>/ACOR0 RTCM_2.3 43.36 351.60 no 1</td><td>Streams: broadcaster:port/mountpoint</td></tr>
 <tr><td>ntripVersion=1</td><td>Add Streams: NTRIP Version</td></tr>
@@ -1215,9 +1217,10 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>rnxSkel=</td><td>RINEX Observations: Skeleton extension</td></tr>
 <tr><td>rnxV3=0</td><td>RINEX Observation: Version 3</td></tr>
 <tr><td>scanRTCM=0</td><td>Miscellaneous: Scan RTCM</td></tr>
-<tr><td>serialAutoNMEA=0</td><td>Serial Link: Auto NMEA</td></tr>
+<tr><td>serialAutoNMEA=Auto</td><td>Serial Link: NMEA</td></tr>
 <tr><td>serialBaudRate=9600</td><td>Serial Link: Baud rate</td></tr>
 <tr><td>serialDataBits=8</td><td>Serial Link: Data bits</td></tr>
+<tr><td>serialHeightNMEA=</td><td>Serial Link: Height</td></tr>
 <tr><td>serialMountPoint=</td><td>Serial Link: Mountpoint</td></tr>
 <tr><td>serialParity=NONE</td><td>Serial Link: Parity</td></tr>
 <tr><td>serialPortName=</td><td>Serial Link: Port name</td></tr>
