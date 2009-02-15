@@ -86,6 +86,7 @@ class bncGetThread : public QThread {
    QByteArray      _format;
    QByteArray      _latitude;
    QByteArray      _longitude;
+   QByteArray      _height;
    QByteArray      _nmea;
    QByteArray      _ntripVersion;
    int             _nextSleep;

@@ -42,7 +42,6 @@ bncSettings::bncSettings() :
     setValue("ephPath",          "");
     setValue("ephV3",            "0");
     setValue("logFile",          "");
-    setValue("makePause",        "0");
     setValue("miscMount",        "");  
     setValue("mountPoints",      "");
     setValue("ntripVersion",     "1");
@@ -63,9 +62,10 @@ bncSettings::bncSettings() :
     setValue("rnxSkel",          "SKL");
     setValue("rnxV3",            "0");
     setValue("scanRTCM",         "0");
-    setValue("serialAutoNMEA",   "0");
+    setValue("serialAutoNMEA",   "Auto");
     setValue("serialBaudRate",   "9600");
     setValue("serialDataBits",   "8");
+    setValue("serialHeightNMEA", "");
     setValue("serialMountPoint", "");
     setValue("serialParity",     "NONE");
     setValue("serialPortName",   "");

@@ -216,9 +216,6 @@ bncWindow::bncWindow() {
   if (kk != -1) {
     _obsRateComboBox->setCurrentIndex(kk);
   }
-  _makePauseCheckBox  = new QCheckBox();
-  _makePauseCheckBox->setCheckState(Qt::CheckState(
-                                    settings.value("makePause").toInt()));
   _adviseRecoSpinBox = new QSpinBox();
   _adviseRecoSpinBox->setMinimum(0);
   _adviseRecoSpinBox->setMaximum(60);
@@ -269,10 +266,14 @@ bncWindow::bncWindow() {
   if (kk != -1) {
     _serialStopBitsComboBox->setCurrentIndex(kk);
   }
-  _serialAutoNMEACheckBox  = new QCheckBox();
-  _serialAutoNMEACheckBox->setCheckState(Qt::CheckState(
-                                    settings.value("serialAutoNMEA").toInt()));
-
+  _serialAutoNMEAComboBox  = new QComboBox();
+  _serialAutoNMEAComboBox->setMaximumWidth(9*ww);
+  _serialAutoNMEAComboBox->addItems(QString("Auto,Manual").split(","));
+  kk = _serialAutoNMEAComboBox->findText(settings.value("serialAutoNMEA").toString());
+  if (kk != -1) {
+    _serialAutoNMEAComboBox->setCurrentIndex(kk);
+  }
+  _serialHeightNMEALineEdit  = new QLineEdit(settings.value("serialHeightNMEA").toString());
   _perfIntrComboBox    = new QComboBox();
   _perfIntrComboBox->setMaximumWidth(9*ww);
   _perfIntrComboBox->setEditable(false);
@@ -332,7 +333,6 @@ bncWindow::bncWindow() {
   _obsRateComboBox->setWhatsThis(tr("<p>BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. The procedure needs a rough estimate of the expected 'Observation rate' of the incoming streams. When a continuous problem is detected, BNC can inform its operator about this event through an advisory note.</p>"));
   _adviseRecoSpinBox->setWhatsThis(tr("<p>Following a stream outage or a longer series of bad observations, an advisory note is generated when valid observations are received again throughout the 'Recovery threshold' time span. A value of about 5min (default) is recommended.</p><p>A value of zero '0' means that for any stream recovery, however short, BNC immediately generates an advisory note.</p>"));
   _adviseFailSpinBox->setWhatsThis(tr("<p>An advisory note is generated when no (or only corrupted) observations are seen throughout the 'Failure threshold' time span. A value of 15 min (default) is recommended.</p><p>A value of zero '0' means that for any stream failure, however short, BNC immediately generates an advisory note.</p>"));
-  _makePauseCheckBox->setWhatsThis(tr("<p>In case of a continuously corrupted stream, the decoding process can be paused and decodings are then attempted again at decreasing rate till the stream hopefully recovers. Tick 'Pause' to activate this function.</p><p>Do not tick 'Pause' (default) in order to prevent BNC from making any decoding pause. Be aware that this may incur an unnecessary workload.</p>"));
   _logFileLineEdit->setWhatsThis(tr("<p>Records of BNC's activities are shown in the 'Logs' section on the bottom of this window. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field.</p><p>The logfile name will automatically be extended by a string '_YYMMDD' carrying the current date."));
   _adviseScriptLineEdit->setWhatsThis(tr("<p>Specify the full path to a script or batch file to handle advisory notes generated in the event of corrupted streams or stream outages. The affected mountpoint and one of the comments 'Begin_Outage', 'End_Outage', 'Begin_Corrupted', or 'End_Corrupted' are passed on to the script as command line parameters.</p><p>The script can be configured to send an email to BNC's operator and/or to the affected stream provider. An empty option field (default) or invalid path means that you don't want to use this option.</p>"));
   _perfIntrComboBox->setWhatsThis(tr("<p>BNC can average latencies per stream over a certain period of GPS time. The resulting mean latencies are recorded in the 'Logs' section at the end of each 'Log latency' interval together with results of a statistical evaluation (approximate number of covered epochs, data gaps).</p><p>Select a 'Log latency' interval or select the empty option field if you do not want BNC to log latencies and statistical information.</p>"));
@@ -348,7 +348,8 @@ bncWindow::bncWindow() {
   _serialParityComboBox->setWhatsThis(tr("<p>Select the 'Parity' for the serial link.</p><p>Note that your selection must equal the parity selection configured to the serial connected device. Note further that parity is often set to 'NONE'.</p>"));
   _serialDataBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Data bits' for the serial link.</p><p>Note that your selection must equal the number of data bits configured to the serial connected device. Note further that often 8 data bits are used.</p>"));
   _serialStopBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Stop bits' for the serial link.</p><p>Note that your selection must equal the number of stop bits configured to the serial connected device. Note further that often 1 stop bit is used.</p>"));
-  _serialAutoNMEACheckBox->setWhatsThis(tr("<p>Tick 'Auto NMEA' to forward NMEA GGA messages coming from your serial connected device to the NTRIP brodacaster.</p><p>Note that this replaces the simulation of an initial NMEA GGA message based on latitude/longitude from the broadcaster's sourcetable.</p>"));
+  _serialAutoNMEAComboBox->setWhatsThis(tr("<p>Concerning virtual reference stations (VRS):<p></p>Select 'Auto' to automatically forward NMEA GGA messages coming from your serial connected device to the NTRIP brodacaster.</p><p>Note that this replaces the 'Manual' simulation of an initial NMEA GGA message based on the approximate (editable) VRS latitude/longitude from the broadcaster's sourcetable and an approximate VRS height to be specified.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
+  _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Concerning virtual reference stations (VRS):<p></p>Specify an approximate 'Height' in meter for your VRS to simulate an inital NMEA GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -486,8 +487,6 @@ bncWindow::bncWindow() {
   aLayout->addWidget(_adviseFailSpinBox,                          1, 1);
   aLayout->addWidget(new QLabel("Recovery threshold"),            2, 0);
   aLayout->addWidget(_adviseRecoSpinBox,                          2, 1);
-  aLayout->addWidget(new QLabel("Pause"),                         2, 2, Qt::AlignRight);
-  aLayout->addWidget(_makePauseCheckBox,                          2, 3, Qt::AlignLeft);
   aLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
   aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,10);
   aLayout->addWidget(new QLabel("Outage report, handling of corrupted streams."),5,0,1,10,Qt::AlignLeft);
@@ -498,12 +497,9 @@ bncWindow::bncWindow() {
   if (_obsRateComboBox->currentText().isEmpty()) { 
     _adviseFailSpinBox->setStyleSheet("background-color: lightGray");
     _adviseRecoSpinBox->setStyleSheet("background-color: lightGray");
-    palette.setColor(_makePauseCheckBox->backgroundRole(), lightGray);
-    _makePauseCheckBox->setPalette(palette);
     _adviseScriptLineEdit->setStyleSheet("background-color: lightGray");
     _adviseFailSpinBox->setEnabled(false);
     _adviseRecoSpinBox->setEnabled(false);
-    _makePauseCheckBox->setEnabled(false);
     _adviseScriptLineEdit->setEnabled(false);
   }
 
@@ -601,6 +597,7 @@ bncWindow::bncWindow() {
   // -----------
   QGridLayout* serLayout = new QGridLayout;
   serLayout->setColumnMinimumWidth(0,14*ww);
+  _serialHeightNMEALineEdit->setMaximumWidth(8*ww);
   serLayout->addWidget(new QLabel("Mountpoint"),                  0,0, Qt::AlignLeft);
   serLayout->addWidget(_serialMountPointLineEdit,                 0,1,1,2);
   serLayout->addWidget(new QLabel("Port name"),                   1,0, Qt::AlignLeft);
@@ -613,26 +610,36 @@ bncWindow::bncWindow() {
   serLayout->addWidget(_serialDataBitsComboBox,                   3,1);
   serLayout->addWidget(new QLabel("               Stop bits  "),  3,2, Qt::AlignRight);
   serLayout->addWidget(_serialStopBitsComboBox,                   3,3);
-  serLayout->addWidget(new QLabel("Auto NMEA"),                   4, 0);
-  serLayout->addWidget(_serialAutoNMEACheckBox,                   4, 1);
+  serLayout->addWidget(new QLabel("NMEA"),                        4,0);
+  serLayout->addWidget(_serialAutoNMEAComboBox,                   4,1);
+  serLayout->addWidget(new QLabel("Height"),                      4,2, Qt::AlignRight);
+  serLayout->addWidget(_serialHeightNMEALineEdit,                 4,3);
   serLayout->addWidget(new QLabel("Serial port settings to feed a serial connected device."),5,0,1,30);
 
   connect(_serialMountPointLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
+  connect(_serialAutoNMEAComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(bncText(const QString)));
   if (_serialMountPointLineEdit->text().isEmpty()) { 
     _serialPortNameLineEdit->setStyleSheet("background-color: lightGray");
     _serialBaudRateComboBox->setStyleSheet("background-color: lightGray");
     _serialParityComboBox->setStyleSheet("background-color: lightGray");
     _serialDataBitsComboBox->setStyleSheet("background-color: lightGray");
     _serialStopBitsComboBox->setStyleSheet("background-color: lightGray");
-    palette.setColor(_serialAutoNMEACheckBox->backgroundRole(), lightGray);
-    _serialAutoNMEACheckBox->setPalette(palette);
+    _serialAutoNMEAComboBox->setStyleSheet("background-color: lightGray");
+    _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
     _serialPortNameLineEdit->setEnabled(false);
     _serialBaudRateComboBox->setEnabled(false);
     _serialParityComboBox->setEnabled(false);
     _serialDataBitsComboBox->setEnabled(false);
     _serialStopBitsComboBox->setEnabled(false);
-    _serialAutoNMEACheckBox->setEnabled(false);
+    _serialAutoNMEAComboBox->setEnabled(false);
+    _serialHeightNMEALineEdit->setEnabled(false);
+  } else {
+    if (_serialAutoNMEAComboBox->currentText() == "Auto" ) {
+      _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
+      _serialHeightNMEALineEdit->setEnabled(false);
+    } 
   }
 
   sergroup->setLayout(serLayout);
@@ -885,7 +892,6 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("ephPath",     _ephPathLineEdit->text());
   settings.setValue("ephV3",       _ephV3CheckBox->checkState());
   settings.setValue("logFile",     _logFileLineEdit->text());
-  settings.setValue("makePause",   _makePauseCheckBox->checkState());
   settings.setValue("miscMount",   _miscMountLineEdit->text());
   settings.setValue("mountPoints", mountPoints);
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
@@ -905,7 +911,8 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
   settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
   settings.setValue("scanRTCM",    _scanRTCMCheckBox->checkState());
-  settings.setValue("serialAutoNMEA",  _serialAutoNMEACheckBox->checkState());
+  settings.setValue("serialHeightNMEA",_serialHeightNMEALineEdit->text());
+  settings.setValue("serialAutoNMEA",  _serialAutoNMEAComboBox->currentText());
   settings.setValue("serialBaudRate",  _serialBaudRateComboBox->currentText());
   settings.setValue("serialDataBits",  _serialDataBitsComboBox->currentText());
   settings.setValue("serialMountPoint",_serialMountPointLineEdit->text());
@@ -1312,28 +1319,35 @@ void bncWindow::bncText(const QString &text){
       _serialParityComboBox->setStyleSheet("background-color: white");
       _serialDataBitsComboBox->setStyleSheet("background-color: white");
       _serialStopBitsComboBox->setStyleSheet("background-color: white");
-      palette.setColor(_serialAutoNMEACheckBox->backgroundRole(), white);
-      _serialAutoNMEACheckBox->setPalette(palette);
+      _serialAutoNMEAComboBox->setStyleSheet("background-color: white");
       _serialPortNameLineEdit->setEnabled(true);
       _serialBaudRateComboBox->setEnabled(true);
       _serialParityComboBox->setEnabled(true);
       _serialDataBitsComboBox->setEnabled(true);
       _serialStopBitsComboBox->setEnabled(true);
-      _serialAutoNMEACheckBox->setEnabled(true);
+      _serialAutoNMEAComboBox->setEnabled(true);
+      if (_serialAutoNMEAComboBox->currentText() != "Auto" ) {
+        _serialHeightNMEALineEdit->setStyleSheet("background-color: white");
+        _serialHeightNMEALineEdit->setEnabled(true);
+      } else {
+        _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
+        _serialHeightNMEALineEdit->setEnabled(false);
+      }
     } else {
       _serialPortNameLineEdit->setStyleSheet("background-color: lightGray");
       _serialBaudRateComboBox->setStyleSheet("background-color: lightGray");
       _serialParityComboBox->setStyleSheet("background-color: lightGray");
       _serialDataBitsComboBox->setStyleSheet("background-color: lightGray");
       _serialStopBitsComboBox->setStyleSheet("background-color: lightGray");
-      palette.setColor(_serialAutoNMEACheckBox->backgroundRole(), lightGray);
-      _serialAutoNMEACheckBox->setPalette(palette);
+      _serialAutoNMEAComboBox->setStyleSheet("background-color: lightGray");
+      _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
       _serialPortNameLineEdit->setEnabled(false);
       _serialBaudRateComboBox->setEnabled(false);
       _serialParityComboBox->setEnabled(false);
       _serialDataBitsComboBox->setEnabled(false);
       _serialStopBitsComboBox->setEnabled(false);
-      _serialAutoNMEACheckBox->setEnabled(false);
+      _serialAutoNMEAComboBox->setEnabled(false);
+      _serialHeightNMEALineEdit->setEnabled(false);
     }
   }
 
@@ -1344,21 +1358,15 @@ void bncWindow::bncText(const QString &text){
       _adviseScriptLineEdit->setStyleSheet("background-color: white");
       _adviseFailSpinBox->setStyleSheet("background-color: white");
       _adviseRecoSpinBox->setStyleSheet("background-color: white");
-      palette.setColor(_makePauseCheckBox->backgroundRole(), white);
-      _makePauseCheckBox->setPalette(palette);
       _adviseFailSpinBox->setEnabled(true);
       _adviseRecoSpinBox->setEnabled(true);
-      _makePauseCheckBox->setEnabled(true);
       _adviseScriptLineEdit->setEnabled(true);
     } else {
       _adviseScriptLineEdit->setStyleSheet("background-color: lightGray");
       _adviseFailSpinBox->setStyleSheet("background-color: lightGray");
       _adviseRecoSpinBox->setStyleSheet("background-color: lightGray");
-      palette.setColor(_makePauseCheckBox->backgroundRole(), lightGray);
-      _makePauseCheckBox->setPalette(palette);
       _adviseFailSpinBox->setEnabled(false);
       _adviseRecoSpinBox->setEnabled(false);
-      _makePauseCheckBox->setEnabled(false);
       _adviseScriptLineEdit->setEnabled(false);
     }
   }
