@@ -191,6 +191,10 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
           line.indexOf("200 OK")      != -1 &&
           line.indexOf("SOURCETABLE") == -1) {
         response.clear();
+        if (_socket->canReadLine()) {
+          _socket->readLine();
+	}
+	break;
       }
     }
     else if (!_socket->waitForReadyRead(_timeOut)) {
