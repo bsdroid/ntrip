@@ -159,7 +159,7 @@ QByteArray ggaString(const QByteArray& latitude,
   gga += flagN;
   gga += QString(",%1%2,").arg((int)lon_deg,3, 10, QLatin1Char('0')).arg(lon_min, 7, 'f', 4, QLatin1Char('0'));
   gga += flagE + QString(",1,05,1.00");
-  gga += QString(",%1,").arg(hei, 7, 'f', 1, QLatin1Char('0'));
+  gga += QString(",%1,").arg(hei, 2, 'f', 1);
   gga += QString("M,10.000,M,,");
   int xori;
   char XOR = 0;
@@ -169,6 +169,7 @@ QByteArray ggaString(const QByteArray& latitude,
     XOR ^= (char)Buff[xori];
   }
   gga = "$" + gga + QString("*%1").arg(XOR, 2, 16, QLatin1Char('0'));
+  printf("%s\n",gga.toAscii().data());
 
   return gga.toAscii();
 }
