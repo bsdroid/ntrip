@@ -273,6 +273,7 @@ bncWindow::bncWindow() {
   if (kk != -1) {
     _serialAutoNMEAComboBox->setCurrentIndex(kk);
   }
+  _serialFileNMEALineEdit    = new QLineEdit(settings.value("serialFileNMEA").toString());
   _serialHeightNMEALineEdit  = new QLineEdit(settings.value("serialHeightNMEA").toString());
   _perfIntrComboBox    = new QComboBox();
   _perfIntrComboBox->setMaximumWidth(9*ww);
@@ -349,7 +350,8 @@ bncWindow::bncWindow() {
   _serialDataBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Data bits' for the serial link.</p><p>Note that your selection must equal the number of data bits configured to the serial connected device. Note further that often 8 data bits are used.</p>"));
   _serialStopBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Stop bits' for the serial link.</p><p>Note that your selection must equal the number of stop bits configured to the serial connected device. Note further that often 1 stop bit is used.</p>"));
   _serialAutoNMEAComboBox->setWhatsThis(tr("<p>Concerning virtual reference stations (VRS):<p></p>Select 'Auto' to automatically forward NMEA GGA messages coming from your serial connected device to the NTRIP broadcaster.</p><p>Note that this replaces the 'Manual' simulation of an initial NMEA GGA message based on the approximate (editable) VRS latitude/longitude from the broadcaster's sourcetable and an approximate VRS height to be specified.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
-  _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Concerning virtual reference stations (VRS):<p></p>Specify an approximate 'Height' in meter for your VRS to simulate an inital NMEA GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
+  _serialFileNMEALineEdit->setWhatsThis(tr("<p>Save NMEA.</p>"));
+  _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Concerning virtual reference stations (VRS):<p></p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -612,8 +614,10 @@ bncWindow::bncWindow() {
   serLayout->addWidget(_serialStopBitsComboBox,                   3,3);
   serLayout->addWidget(new QLabel("NMEA"),                        4,0);
   serLayout->addWidget(_serialAutoNMEAComboBox,                   4,1);
-  serLayout->addWidget(new QLabel("Height"),                      4,2, Qt::AlignRight);
-  serLayout->addWidget(_serialHeightNMEALineEdit,                 4,3);
+  serLayout->addWidget(new QLabel("File (full path)"),            4,2, Qt::AlignRight);
+  serLayout->addWidget(_serialFileNMEALineEdit,                   4,3,1,25);
+  serLayout->addWidget(new QLabel("Height"),                      4,29, Qt::AlignRight);
+  serLayout->addWidget(_serialHeightNMEALineEdit,                 4,30);
   serLayout->addWidget(new QLabel("Serial port settings to feed a serial connected device."),5,0,1,30);
 
   connect(_serialMountPointLineEdit, SIGNAL(textChanged(const QString &)),
@@ -627,6 +631,7 @@ bncWindow::bncWindow() {
     _serialDataBitsComboBox->setStyleSheet("background-color: lightGray");
     _serialStopBitsComboBox->setStyleSheet("background-color: lightGray");
     _serialAutoNMEAComboBox->setStyleSheet("background-color: lightGray");
+    _serialFileNMEALineEdit->setStyleSheet("background-color: lightGray");
     _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
     _serialPortNameLineEdit->setEnabled(false);
     _serialBaudRateComboBox->setEnabled(false);
@@ -634,11 +639,16 @@ bncWindow::bncWindow() {
     _serialDataBitsComboBox->setEnabled(false);
     _serialStopBitsComboBox->setEnabled(false);
     _serialAutoNMEAComboBox->setEnabled(false);
+    _serialFileNMEALineEdit->setEnabled(false);
     _serialHeightNMEALineEdit->setEnabled(false);
   } else {
     if (_serialAutoNMEAComboBox->currentText() == "Auto" ) {
       _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
       _serialHeightNMEALineEdit->setEnabled(false);
+    } 
+    if (_serialAutoNMEAComboBox->currentText() != "Auto" ) {
+      _serialFileNMEALineEdit->setStyleSheet("background-color: lightGray");
+      _serialFileNMEALineEdit->setEnabled(false);
     } 
   }
 
@@ -911,6 +921,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
   settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
   settings.setValue("scanRTCM",    _scanRTCMCheckBox->checkState());
+  settings.setValue("serialFileNMEA",_serialFileNMEALineEdit->text());
   settings.setValue("serialHeightNMEA",_serialHeightNMEALineEdit->text());
   settings.setValue("serialAutoNMEA",  _serialAutoNMEAComboBox->currentText());
   settings.setValue("serialBaudRate",  _serialBaudRateComboBox->currentText());
@@ -1329,9 +1340,13 @@ void bncWindow::bncText(const QString &text){
       if (_serialAutoNMEAComboBox->currentText() != "Auto" ) {
         _serialHeightNMEALineEdit->setStyleSheet("background-color: white");
         _serialHeightNMEALineEdit->setEnabled(true);
+        _serialFileNMEALineEdit->setStyleSheet("background-color: lightGray");
+        _serialFileNMEALineEdit->setEnabled(false);
       } else {
         _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
         _serialHeightNMEALineEdit->setEnabled(false);
+        _serialFileNMEALineEdit->setStyleSheet("background-color: white");
+        _serialFileNMEALineEdit->setEnabled(true);
       }
     } else {
       _serialPortNameLineEdit->setStyleSheet("background-color: lightGray");
@@ -1340,6 +1355,7 @@ void bncWindow::bncText(const QString &text){
       _serialDataBitsComboBox->setStyleSheet("background-color: lightGray");
       _serialStopBitsComboBox->setStyleSheet("background-color: lightGray");
       _serialAutoNMEAComboBox->setStyleSheet("background-color: lightGray");
+      _serialFileNMEALineEdit->setStyleSheet("background-color: lightGray");
       _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
       _serialPortNameLineEdit->setEnabled(false);
       _serialBaudRateComboBox->setEnabled(false);
@@ -1348,6 +1364,7 @@ void bncWindow::bncText(const QString &text){
       _serialStopBitsComboBox->setEnabled(false);
       _serialAutoNMEAComboBox->setEnabled(false);
       _serialHeightNMEALineEdit->setEnabled(false);
+      _serialFileNMEALineEdit->setEnabled(false);
     }
   }
 

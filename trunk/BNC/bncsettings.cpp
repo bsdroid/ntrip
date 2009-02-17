@@ -65,6 +65,7 @@ bncSettings::bncSettings() :
     setValue("serialAutoNMEA",   "Auto");
     setValue("serialBaudRate",   "9600");
     setValue("serialDataBits",   "8");
+    setValue("serialFileNMEA",   "");
     setValue("serialHeightNMEA", "");
     setValue("serialMountPoint", "");
     setValue("serialParity",     "NONE");
