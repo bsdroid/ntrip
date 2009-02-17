@@ -169,7 +169,6 @@ QByteArray ggaString(const QByteArray& latitude,
     XOR ^= (char)Buff[xori];
   }
   gga = "$" + gga + QString("*%1").arg(XOR, 2, 16, QLatin1Char('0'));
-  printf("%s\n",gga.toAscii().data());
 
   return gga.toAscii();
 }
