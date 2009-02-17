@@ -112,7 +112,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   editLayout->addWidget(_casterHostComboBox,              0, 1);
   editLayout->addWidget(new QLabel(tr("  Caster port")),  0, 2, Qt::AlignRight);
   editLayout->addWidget(_casterPortLineEdit,              0, 3);
-  editLayout->addWidget(new QLabel(tr("Caster table")),   0, 4, Qt::AlignRight);
+  editLayout->addWidget(new QLabel(tr("Casters table")),  0, 4, Qt::AlignRight);
   editLayout->addWidget(_buttonCasterTable,               0, 5);
   editLayout->addWidget(new QLabel(tr("User")),           1, 0, Qt::AlignRight);
   editLayout->addWidget(_casterUserLineEdit,              1, 1);
