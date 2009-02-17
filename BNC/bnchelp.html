@@ -117,8 +117,9 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.9.4. <a href=#serparity>Parity</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.5. <a href=#serdata>Data Bits</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.6. <a href=#serstop>Stop Bits</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.7. <a href=#serauto>NMEA</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.8. <a href=#serheight>Height</a><br>
+&nbsp; &nbsp; &nbsp; 3.9.7. <a href=#serauto>VRS/NMEA</a><br>
+&nbsp; &nbsp; &nbsp; 3.9.8. <a href=#serfile>File</a><br>
+&nbsp; &nbsp; &nbsp; 3.9.9. <a href=#serheight>Height</a><br>
 3.10. <a href=#advnote>Outages</a><br>
 &nbsp; &nbsp; &nbsp; 3.10.1. <a href=#obsrate>Observation Rate</a><br>
 &nbsp; &nbsp; &nbsp; 3.10.2. <a href=#advfail>Failure Threshold</a><br>
@@ -590,7 +591,9 @@ Select the number of 'Data bits' for the serial link. Note that often '8' data b
 Select the number of 'Stop bits' for the serial link. Note that often '1' stop bit is used.
 </p>
 
-<p><a name="serauto"><h4>3.9.7 NMEA - optional</h4></p>
+<p><a name="serauto"><h4>3.9.7 VRS/NMEA - optional</h4></p>
+<p>Concerning 'Virtual Reference Stations' (VRS) only:
+</p>
 <p>
 Select 'Auto' to automatically forward all NMEA-GGA messages (or any other message) coming from your serial connected device to the NTRIP brodacaster.</p>
 <p>
@@ -600,9 +603,14 @@ This option replaces BNC's 'Manual' simulation of an initial NMEA-GGA message ba
 The setting of this option is ignored in case of streams coming from physical reference stations.
 </p>
 
-<p><a name="serheight"><h4>3.9.8 Height - mandatory if 'Manual' NMEA is set</h4></p>
+<p><a name="serfile"><h4>3.9.8 File - optional if 'Auto' NMEA is set</h4></p>
+<p>Specify the full path to a file where NMEA messages coming from your serial connected device are saved.
+</p>
+<p>The setting of this option is ignored in case of streams coming from physical reference stations.
+</p>
+<p><a name="serheight"><h4>3.9.9 Height - mandatory if 'Manual' NMEA is set</h4></p>
 <p>
-Concerning 'Virtual Reference Stations' (VRS):<p></p>Specify an approximate 'Height' in meter for your VRS to simulate an inital NMEA GGA message.
+Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA GGA message.
 </p>
 <p>
 The setting of this option is ignored in case of streams coming from physical reference stations.
