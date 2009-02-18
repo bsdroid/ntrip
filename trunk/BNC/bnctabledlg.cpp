@@ -52,7 +52,7 @@ using namespace std;
 bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   setMinimumSize(600,400);
-  setWindowTitle(tr("Add Streams"));
+  setWindowTitle(tr("Add Streams from Caster"));
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
