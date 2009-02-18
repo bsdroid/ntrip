@@ -134,13 +134,13 @@ void bncIpPort::accept() {
        !_ipLatLineEdit->text().isEmpty()    &&
        !_ipLonLineEdit->text().isEmpty() ) {
 
-    mountPoints->push_back("//"+ _ipHostLineEdit->text() + ":" 
-                               + _ipPortLineEdit->text() + "/" 
-                               + _ipMountLineEdit->text() + " "
-                               + _ipFormatLineEdit->text() + " "
-                               + _ipLatLineEdit->text() + " "
-                               + _ipLonLineEdit->text() + " "
-                               + "no N");
+    mountPoints->push_back("//" + _ipHostLineEdit->text() + ":" 
+                                + _ipPortLineEdit->text() + "/" 
+                                + _ipMountLineEdit->text() + " "
+                                + _ipFormatLineEdit->text() + " "
+                                + _ipLatLineEdit->text() + " "
+                                + _ipLonLineEdit->text() + " "
+                                + "no N");
   } else {
    QMessageBox::warning(this, tr("Warning"),
                                tr("Incomplete settings!"),
