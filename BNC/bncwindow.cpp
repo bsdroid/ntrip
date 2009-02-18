@@ -45,6 +45,7 @@
 #include "bncapp.h" 
 #include "bncgetthread.h" 
 #include "bnctabledlg.h" 
+#include "bncipport.h" 
 #include "bnchlpdlg.h" 
 #include "bnchtml.h" 
 #include "bnctableitem.h"
