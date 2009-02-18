@@ -770,13 +770,34 @@ void bncWindow::slotAddMountPoints() {
     }
   }
 
-  bncTableDlg* dlg = new bncTableDlg(this); 
-  dlg->move(this->pos().x()+50, this->pos().y()+50);
-  connect(dlg, SIGNAL(newMountPoints(QStringList*)), 
-          this, SLOT(slotNewMountPoints(QStringList*)));
-  dlg->exec();
-  delete dlg;
+  QMessageBox msgBox;
+  msgBox.setIcon(QMessageBox::Question);
+  msgBox.setWindowTitle("Add Streams");
+  msgBox.setText("Add stream(s) coming from:");
 
+  QPushButton *buttonNtrip = msgBox.addButton(tr("Caster"), QMessageBox::ActionRole);
+  QPushButton *buttonIP = msgBox.addButton(tr("IP port"), QMessageBox::ActionRole);
+  QPushButton *buttonCancel = msgBox.addButton(tr("Cancel"), QMessageBox::ActionRole);
+
+  msgBox.exec();
+
+  if (msgBox.clickedButton() == buttonNtrip) {
+    bncTableDlg* dlg = new bncTableDlg(this); 
+    dlg->move(this->pos().x()+50, this->pos().y()+50);
+    connect(dlg, SIGNAL(newMountPoints(QStringList*)), 
+          this, SLOT(slotNewMountPoints(QStringList*)));
+    dlg->exec();
+    delete dlg;
+  } else if (msgBox.clickedButton() == buttonIP) {
+    bncIpPort* ipp = new bncIpPort(this); 
+    ipp->move(this->pos().x()+50, this->pos().y()+50);
+    connect(ipp, SIGNAL(newMountPoints(QStringList*)), 
+          this, SLOT(slotNewMountPoints(QStringList*)));
+    ipp->exec();
+    delete ipp;
+  } else if (msgBox.clickedButton() == buttonCancel) {
+    // Cancel
+  }
 }
 
 // Delete Selected Mount Points
