@@ -245,6 +245,20 @@ void bncGetThread::initialize() {
       _serialPort = 0;
       emit(newMessage((_staID + ": Cannot open serial port\n"), true));
     }
+
+    connect(_serialPort, SIGNAL(readyRead()), 
+            this, SLOT(slotSerialReadyRead()));
+
+    // Serial File Output
+    // ------------------
+    QString serialFileNMEA = settings.value("serialFileNMEA").toString();
+    if (!serialFileNMEA.isEmpty()) {
+      _serialOutFile = new QFile(serialFileNMEA);
+      _serialOutFile->open(QIODevice::WriteOnly);
+    }
+    else {
+      _serialOutFile = 0;
+    }
   }
   else {
     _serialPort = 0;
@@ -560,3 +574,8 @@ void bncGetThread::scanRTCM() {
   _decoder->_antList.clear();
 }
 
+// Handle Data from Serial Port
+////////////////////////////////////////////////////////////////////////////
+void bncGetThread::slotSerialReadyRead() {
+
+}
