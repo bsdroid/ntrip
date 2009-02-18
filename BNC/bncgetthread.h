@@ -73,6 +73,9 @@ class bncGetThread : public QThread {
  protected:
    virtual void run();
 
+ private slots:
+   void slotSerialReadyRead();
+
  private:
    void  initialize();
    t_irc tryReconnect();
@@ -99,6 +102,7 @@ class bncGetThread : public QThread {
    bool            _isToBeDeleted;
    latencyChecker* _latencyChecker;
    QString         _miscMount;
+   QFile*          _serialOutFile;
 };
 
 #endif

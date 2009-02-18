@@ -118,6 +118,7 @@ void bncGetThread::initialize() {
   _query         = 0;
   _nextSleep     = 0;
   _rawOutFile    = 0;
+  _serialOutFile = 0;
   _staID_orig    = _staID;
 
   bncSettings settings;
@@ -256,9 +257,6 @@ void bncGetThread::initialize() {
       _serialOutFile = new QFile(serialFileNMEA);
       _serialOutFile->open(QIODevice::WriteOnly);
     }
-    else {
-      _serialOutFile = 0;
-    }
   }
   else {
     _serialPort = 0;
@@ -317,6 +315,7 @@ bncGetThread::~bncGetThread() {
   delete _rnx;
   delete _rawInpFile;
   delete _rawOutFile;
+  delete _serialOutFile;
   delete _serialPort;
   delete _latencyChecker;
   emit getThreadFinished(_staID);
@@ -577,5 +576,11 @@ void bncGetThread::scanRTCM() {
 // Handle Data from Serial Port
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::slotSerialReadyRead() {
-
+  if (_serialPort) {
+    QByteArray data = _serialPort->readAll();
+    if (_serialOutFile) {
+      _serialOutFile->write(data);
+      _serialOutFile->flush();
+    }
+  }
 }
