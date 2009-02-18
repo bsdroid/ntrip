@@ -591,29 +591,24 @@ Select the number of 'Data bits' for the serial link. Note that often '8' data b
 Select the number of 'Stop bits' for the serial link. Note that often '1' stop bit is used.
 </p>
 
-<p><a name="serauto"><h4>3.9.7 VRS/NMEA - optional</h4></p>
-<p>Concerning 'Virtual Reference Stations' (VRS) only:
+<p><a name="serauto"><h4>3.9.7 VRS/NMEA - mandatory for VRS streams</h4></p>
+<p>This option concerns only 'Virtual Reference Stations' (VRS). Its setting is ignored in case of streams coming from physical reference stations.
 </p>
 <p>
-Select 'Auto' to automatically forward all NMEA-GGA messages (or any other message) coming from your serial connected device to the NTRIP brodacaster.</p>
+Select 'Auto' to automatically forward all NMEA-GGA messages (or any other message) coming from your serial connected device to the NTRIP broadcaster.</p>
 <p>
-This option replaces BNC's 'Manual' simulation of an initial NMEA-GGA message based on the approximate (editable) latitude/longitude from the broadcaster's source-table and a default height of 100 meters. Note that sending valid NMEA-GGA strings (simulated or coming from your serial connected device) to the NTRIP broadcaster is required for receiving virtual reference station (VRS) streams.
+The alternative is a 'Manual' simulation of an initial NMEA-GGA message based on the approximate (editable) latitude/longitude from the broadcaster's source-table and a default height of 100 meters.
 </p>
 <p>
-The setting of this option is ignored in case of streams coming from physical reference stations.
+Note that sending valid NMEA-GGA strings (simulated or coming from your serial connected device) to the NTRIP broadcaster is required for receiving VRS streams.
 </p>
 
-<p><a name="serfile"><h4>3.9.8 File - optional if 'Auto' NMEA is set</h4></p>
+<p><a name="serfile"><h4>3.9.8 File - optional if 'Auto' VRS/NMEA is set</h4></p>
 <p>Specify the full path to a file where NMEA messages coming from your serial connected device are saved.
 </p>
-<p>The setting of this option is ignored in case of streams coming from physical reference stations.
-</p>
-<p><a name="serheight"><h4>3.9.9 Height - mandatory if 'Manual' NMEA is set</h4></p>
+<p><a name="serheight"><h4>3.9.9 Height - mandatory if 'Manual' VRS/NMEA is set</h4></p>
 <p>
-Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA GGA message.
-</p>
-<p>
-The setting of this option is ignored in case of streams coming from physical reference stations.
+Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message. Latitude and longitude for that (editable) are taken from the broadcaster's source-table.
 </p>
 
 <p><a name="advnote"><h4>3.10. Outages</h4></p>
@@ -1047,7 +1042,7 @@ The major changes of NTRIP version 2.0 compared to version 1.0 are:
 <li>replaced non standard directives;</li>
 <li>chunked transfer encoding;</li>
 <li>improvements in header records;</li>
-<li>sourcetable filtering; and</li>
+<li>source-table filtering; and</li>
 <li>RTSP communication.</li>
 </ul>
 
