@@ -48,11 +48,11 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncIpPort::bncIpPort(QWidget* parent) : QDialog(parent) {
 
+  setMinimumSize(400,150);
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
-
   QGridLayout* editLayout = new QGridLayout;
 
-  setWindowTitle(tr("Add Stream from IP Port"));
+  setWindowTitle(tr("Add Stream from TCP/IP Port"));
 
   _ipHostLineEdit = new QLineEdit();
   _ipPortLineEdit = new QLineEdit();
@@ -70,7 +70,7 @@ bncIpPort::bncIpPort(QWidget* parent) : QDialog(parent) {
 
   // WhatsThis
   // ---------
-  _ipHostLineEdit->setWhatsThis(tr("<p>BNC allows to retrieve streams directly from an IP address without using the NTRIP transport protocol.</p><p>Enter the IP address of the stream providing host.</p>"));
+  _ipHostLineEdit->setWhatsThis(tr("<p>BNC allows to retrieve streams directly via TCP from an IP address without using the NTRIP transport protocol.</p><p>Enter the IP address of the stream providing host.</p>"));
   _ipPortLineEdit->setWhatsThis(tr("<p>Enter the port number of the stream providing host.</p>"));
   _ipMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint.</p><p>Recommended is a 4-character reference station ID. Example: FFMJ</p>"));
   _ipFormatLineEdit->setWhatsThis(tr("<p>Specify the stream format.</p><p>Available options are 'RTCM_2', 'RTCM_3', 'RTIGS', and 'ZERO'.</p>"));

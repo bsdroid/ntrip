@@ -777,7 +777,7 @@ void bncWindow::slotAddMountPoints() {
   msgBox.setText("Add stream(s) coming from:");
 
   QPushButton *buttonNtrip = msgBox.addButton(tr("Caster"), QMessageBox::ActionRole);
-  QPushButton *buttonIP = msgBox.addButton(tr("IP port"), QMessageBox::ActionRole);
+  QPushButton *buttonIP = msgBox.addButton(tr("TCP/IP port"), QMessageBox::ActionRole);
   QPushButton *buttonCancel = msgBox.addButton(tr("Cancel"), QMessageBox::ActionRole);
 
   msgBox.exec();
