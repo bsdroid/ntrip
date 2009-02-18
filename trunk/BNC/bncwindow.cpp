@@ -350,9 +350,9 @@ bncWindow::bncWindow() {
   _serialParityComboBox->setWhatsThis(tr("<p>Select the 'Parity' for the serial link.</p><p>Note that your selection must equal the parity selection configured to the serial connected device. Note further that parity is often set to 'NONE'.</p>"));
   _serialDataBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Data bits' for the serial link.</p><p>Note that your selection must equal the number of data bits configured to the serial connected device. Note further that often 8 data bits are used.</p>"));
   _serialStopBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Stop bits' for the serial link.</p><p>Note that your selection must equal the number of stop bits configured to the serial connected device. Note further that often 1 stop bit is used.</p>"));
-  _serialAutoNMEAComboBox->setWhatsThis(tr("<p>Concerning virtual reference stations (VRS):<p></p>Select 'Auto' to automatically forward NMEA GGA messages coming from your serial connected device to the NTRIP broadcaster.</p><p>The alternative is a 'Manual' simulation of an initial NMEA GGA message based on the approximate (editable) VRS latitude/longitude from the broadcaster's sourcetable and an approximate VRS height to be specified.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
-  _serialFileNMEALineEdit->setWhatsThis(tr("<p>Concerning virtual reference stations (VRS):</p><p>Specify the full path to a file where NMEA messages coming from your serial connected device are saved.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
-  _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Concerning virtual reference stations (VRS):<p></p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
+  _serialAutoNMEAComboBox->setWhatsThis(tr("<p>Select 'Auto' to automatically forward NMEA-GGA messages coming from your serial connected device to the NTRIP broadcaster and/or save them in a file.</p><p>The alternative is a 'Manual' simulation of an initial NMEA-GGA message based on the approximate (editable) VRS latitude/longitude from the broadcaster's sourcetable and an approximate VRS height to be specified.</p>"));
+  _serialFileNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where NMEA messages coming from your serial connected device are saved.</p>"));
+  _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -613,7 +613,7 @@ bncWindow::bncWindow() {
   serLayout->addWidget(_serialDataBitsComboBox,                   3,1);
   serLayout->addWidget(new QLabel("               Stop bits  "),  3,2, Qt::AlignRight);
   serLayout->addWidget(_serialStopBitsComboBox,                   3,3);
-  serLayout->addWidget(new QLabel("VRS/NMEA"),                    4,0);
+  serLayout->addWidget(new QLabel("NMEA"),                        4,0);
   serLayout->addWidget(_serialAutoNMEAComboBox,                   4,1);
   serLayout->addWidget(new QLabel("File (full path)"),            4,2, Qt::AlignRight);
   serLayout->addWidget(_serialFileNMEALineEdit,                   4,3,1,25);
