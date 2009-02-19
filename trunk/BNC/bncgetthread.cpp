@@ -254,7 +254,8 @@ void bncGetThread::initialize() {
     // Serial File Output
     // ------------------
     QString serialFileNMEA = settings.value("serialFileNMEA").toString();
-    if (!serialFileNMEA.isEmpty()) {
+    QString serialAutoNMEA = settings.value("serialAutoNMEA").toString();
+    if (!serialFileNMEA.isEmpty() && serialAutoNMEA == "Auto" ) {
       _serialOutFile = new QFile(serialFileNMEA);
       _serialOutFile->open(QIODevice::WriteOnly);
     }
