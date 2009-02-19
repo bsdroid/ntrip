@@ -4,11 +4,11 @@
  *
  * Class:      bncNetQueryV0
  *
- * Purpose:    Direct TCP/IP Network Requests no NTRIP
+ * Purpose:    TCP/IP Network Requests, no NTRIP
  *
- * Author:     L. Mervart
+ * Author:     G. Weber
  *
- * Created:    27-Dec-2008
+ * Created:    19-Feb-2009
  *
  * Changes:    
  *
