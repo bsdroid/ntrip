@@ -53,6 +53,7 @@
 #include "bncutils.h"
 #include "bncrinex.h"
 #include "bnczerodecoder.h"
+#include "bncnetqueryv0.h"
 #include "bncnetqueryv1.h"
 #include "bncnetqueryv2.h"
 #include "bncnetqueryrtp.h"
@@ -491,6 +492,9 @@ t_irc bncGetThread::tryReconnect() {
     delete _query;
     if      (_ntripVersion == "R") {
       _query = new bncNetQueryRtp();
+    }
+    else if (_ntripVersion == "N") {
+      _query = new bncNetQueryV0();
     }
     else if (_ntripVersion == "2") {
       _query = new bncNetQueryV2();
