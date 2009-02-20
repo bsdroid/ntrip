@@ -5,19 +5,18 @@
 
 int main(int argc, char* argv[]) {
 
-  FILE* fp = fopen("/dev/ttyS0", "w");
+  FILE* fp = fopen("/dev/ttyS0", "r");
 
   if (!fp) {
     printf("Cannot open file.\n");
     exit(1);
   }
 
-  const char* msg = "message\n";
+  char msg[100];
 
   while (true) {
-    int nb = fprintf(fp, msg, sizeof(msg));
-    fflush(fp);
-    printf("written %d\n", nb);
+    int nb = fread(msg, sizeof(msg), 1, fp);
+    printf("read %d\n", nb);
     sleep(1);
   }
 

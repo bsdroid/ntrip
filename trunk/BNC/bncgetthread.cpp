@@ -260,7 +260,7 @@ void bncGetThread::initialize() {
       _serialOutFile->open(QIODevice::WriteOnly);
     }
 
-    _serialPort->setTimeout(3600,0);
+    _serialPort->setTimeout(0,100);
     _serialPort->setFlowControl(FLOW_OFF);
   }
   else {
@@ -394,6 +394,7 @@ void bncGetThread::run() {
         _rawOutFile->flush();
       }
       if (_serialPort) {
+        slotSerialReadyRead();
         _serialPort->write(data);
       }
       
@@ -592,10 +593,13 @@ void bncGetThread::scanRTCM() {
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::slotSerialReadyRead() {
   if (_serialPort) {
-    QByteArray data = _serialPort->readAll();
-    if (_serialOutFile) {
-      _serialOutFile->write(data);
-      _serialOutFile->flush();
+    int nb = _serialPort->bytesAvailable();
+    if (nb > 0) {
+      QByteArray data = _serialPort->read(nb);
+      if (_serialOutFile) {
+        _serialOutFile->write(data);
+        _serialOutFile->flush();
+      }
     }
   }
 }
