@@ -259,6 +259,9 @@ void bncGetThread::initialize() {
       _serialOutFile = new QFile(serialFileNMEA);
       _serialOutFile->open(QIODevice::WriteOnly);
     }
+
+    _serialPort->setTimeout(3600,0);
+    _serialPort->setFlowControl(FLOW_HARDWARE);
   }
   else {
     _serialPort = 0;
