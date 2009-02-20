@@ -505,7 +505,7 @@ t_irc bncGetThread::tryReconnect() {
     else {
       _query = new bncNetQueryV1();
     }
-    if (_nmea == "yes" && settings.value("serialAutoNMEA").toString() != "Auto" ) {
+    if (_nmea == "yes") {
       QByteArray gga = ggaString(_latitude, _longitude, _height);
       _query->startRequest(_mountPoint, gga);
     }
