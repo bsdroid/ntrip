@@ -261,7 +261,7 @@ void bncGetThread::initialize() {
     }
 
     _serialPort->setTimeout(3600,0);
-    _serialPort->setFlowControl(FLOW_HARDWARE);
+    _serialPort->setFlowControl(FLOW_OFF);
   }
   else {
     _serialPort = 0;
