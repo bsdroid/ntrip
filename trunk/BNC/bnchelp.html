@@ -597,7 +597,10 @@ Select the number of 'Stop bits' for the serial link. Note that often '1' stop b
 Select 'Auto' to automatically forward all NMEA-GGA messages (or any other message) coming from your serial connected device to the NTRIP broadcaster and/or save them in a file.
 </p>
 <p>
-Forwarding valid NMEA-GGA messages to the NTRIP broadcaster is required for receiving VRS streams. Thus, in case your serial connected device is not capable to provide them, the alternative for VRS streams is a 'Manual' simulation of an initial NMEA-GGA message. Its contents is based on the approximate (editable) latitude/longitude from the broadcaster's source-table and an approximate VRS height to be specified.
+Forwarding valid NMEA-GGA messages to the NTRIP broadcaster is required for receiving 'Virtual Reference Station' (VRS) streams. Thus, in case your serial connected device is not capable to provide them, the alternative for VRS streams is a 'Manual' simulation of an initial NMEA-GGA message. Its contents is based on the approximate (editable) latitude/longitude from the broadcaster's source-table and an approximate VRS height to be specified.
+</p>
+<p>
+In summary: select 'Manual' only when handling a VRS streams and your serial connected device doesn't generate NMEA-GGA messages. Otherwise select 'Auto'.
 </p>
 
 <p><a name="serfile"><h4>3.9.8 File - optional if 'Auto' NMEA is set</h4></p>
