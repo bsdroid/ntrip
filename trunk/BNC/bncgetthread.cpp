@@ -265,7 +265,16 @@ void bncGetThread::initialize() {
       }
     }
     _serialPort->setTimeout(0,100);
-    _serialPort->setFlowControl(FLOW_OFF);
+    hlp = settings.value("serialFlowControl").toString();
+    if      (hlp == "OFF") {
+      _serialPort->setFlowControl(FLOW_OFF);    
+    }
+    else if (hlp == "XONXOFF") {
+      _serialPort->setFlowControl(FLOW_XONXOFF);    
+    }
+else if (hlp == "HARDWARE") {
+      _serialPort->setFlowControl(FLOW_HARDWARE);    
+    }
   }
   else {
     _serialPort = 0;

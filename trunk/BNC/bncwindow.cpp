@@ -267,6 +267,13 @@ bncWindow::bncWindow() {
   if (kk != -1) {
     _serialStopBitsComboBox->setCurrentIndex(kk);
   }
+  _serialFlowControlComboBox = new QComboBox();
+  _serialFlowControlComboBox->setMaximumWidth(11*ww);
+  _serialFlowControlComboBox->addItems(QString("OFF,XONXOFF,HARDWARE").split(","));
+  kk = _serialFlowControlComboBox->findText(settings.value("serialFlowControl").toString());
+  if (kk != -1) {
+    _serialFlowControlComboBox->setCurrentIndex(kk);
+  }
   _serialAutoNMEAComboBox  = new QComboBox();
   _serialAutoNMEAComboBox->setMaximumWidth(9*ww);
   _serialAutoNMEAComboBox->addItems(QString("Auto,Manual").split(","));
@@ -350,6 +357,7 @@ bncWindow::bncWindow() {
   _serialParityComboBox->setWhatsThis(tr("<p>Select the 'Parity' for the serial link.</p><p>Note that your selection must equal the parity selection configured to the serial connected device. Note further that parity is often set to 'NONE'.</p>"));
   _serialDataBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Data bits' for the serial link.</p><p>Note that your selection must equal the number of data bits configured to the serial connected device. Note further that often 8 data bits are used.</p>"));
   _serialStopBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Stop bits' for the serial link.</p><p>Note that your selection must equal the number of stop bits configured to the serial connected device. Note further that often 1 stop bit is used.</p>"));
+  _serialFlowControlComboBox->setWhatsThis(tr("<p>Select a 'Flow control' for the serial link.</p><p>Note that your selection must equal the flow control configured to the serial connected device. Select 'OFF' if you don't know better.</p>"));
   _serialAutoNMEAComboBox->setWhatsThis(tr("<p>Select 'Auto' to automatically forward NMEA-GGA messages coming from your serial connected device to the NTRIP broadcaster and/or save them in a file.</p><p>Forwarding NMEA-GGA messages is a must for VRS streams. Thus, in case your serial device is no capable to provide them, the alternative for VRS streams is a 'Manual' simulation of an initial NMEA-GGA message. Its contents is based on the approximate (editable) VRS latitude/longitude from the broadcaster's sourcetable and an approximate VRS height to be specified.</p>"));
   _serialFileNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where NMEA messages coming from your serial connected device are saved.</p>"));
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
@@ -607,12 +615,14 @@ bncWindow::bncWindow() {
   serLayout->addWidget(_serialPortNameLineEdit,                   1,1,1,2);
   serLayout->addWidget(new QLabel("Baud rate"),                   2,0, Qt::AlignLeft);
   serLayout->addWidget(_serialBaudRateComboBox,                   2,1);
-  serLayout->addWidget(new QLabel("               Parity  "),     2,2, Qt::AlignRight);
-  serLayout->addWidget(_serialParityComboBox,                     2,3);
+  serLayout->addWidget(new QLabel("               Flow control"), 2,2, Qt::AlignRight);
+  serLayout->addWidget(_serialFlowControlComboBox,                2,3);
   serLayout->addWidget(new QLabel("Data bits"),                   3,0, Qt::AlignLeft);
   serLayout->addWidget(_serialDataBitsComboBox,                   3,1);
-  serLayout->addWidget(new QLabel("               Stop bits  "),  3,2, Qt::AlignRight);
-  serLayout->addWidget(_serialStopBitsComboBox,                   3,3);
+  serLayout->addWidget(new QLabel("               Parity  "),     3,2, Qt::AlignRight);
+  serLayout->addWidget(_serialParityComboBox,                     3,3);
+  serLayout->addWidget(new QLabel("               Stop bits  "),  3,4, Qt::AlignRight);
+  serLayout->addWidget(_serialStopBitsComboBox,                   3,5);
   serLayout->addWidget(new QLabel("NMEA"),                        4,0);
   serLayout->addWidget(_serialAutoNMEAComboBox,                   4,1);
   serLayout->addWidget(new QLabel("File (full path)"),            4,2, Qt::AlignRight);
@@ -631,6 +641,7 @@ bncWindow::bncWindow() {
     _serialParityComboBox->setStyleSheet("background-color: lightGray");
     _serialDataBitsComboBox->setStyleSheet("background-color: lightGray");
     _serialStopBitsComboBox->setStyleSheet("background-color: lightGray");
+    _serialFlowControlComboBox->setStyleSheet("background-color: lightGray");
     _serialAutoNMEAComboBox->setStyleSheet("background-color: lightGray");
     _serialFileNMEALineEdit->setStyleSheet("background-color: lightGray");
     _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
@@ -639,6 +650,7 @@ bncWindow::bncWindow() {
     _serialParityComboBox->setEnabled(false);
     _serialDataBitsComboBox->setEnabled(false);
     _serialStopBitsComboBox->setEnabled(false);
+    _serialFlowControlComboBox->setEnabled(false);
     _serialAutoNMEAComboBox->setEnabled(false);
     _serialFileNMEALineEdit->setEnabled(false);
     _serialHeightNMEALineEdit->setEnabled(false);
@@ -952,6 +964,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("serialParity",    _serialParityComboBox->currentText());
   settings.setValue("serialPortName",  _serialPortNameLineEdit->text());
   settings.setValue("serialStopBits",  _serialStopBitsComboBox->currentText());
+  settings.setValue("serialFlowControl",_serialFlowControlComboBox->currentText());
   settings.setValue("startTab",    aogroup->currentIndex());
   settings.setValue("waitTime",    _waitTimeSpinBox->value());
 
@@ -1352,12 +1365,14 @@ void bncWindow::bncText(const QString &text){
       _serialParityComboBox->setStyleSheet("background-color: white");
       _serialDataBitsComboBox->setStyleSheet("background-color: white");
       _serialStopBitsComboBox->setStyleSheet("background-color: white");
+      _serialFlowControlComboBox->setStyleSheet("background-color: white");
       _serialAutoNMEAComboBox->setStyleSheet("background-color: white");
       _serialPortNameLineEdit->setEnabled(true);
       _serialBaudRateComboBox->setEnabled(true);
       _serialParityComboBox->setEnabled(true);
       _serialDataBitsComboBox->setEnabled(true);
       _serialStopBitsComboBox->setEnabled(true);
+      _serialFlowControlComboBox->setEnabled(true);
       _serialAutoNMEAComboBox->setEnabled(true);
       if (_serialAutoNMEAComboBox->currentText() != "Auto" ) {
         _serialHeightNMEALineEdit->setStyleSheet("background-color: white");
@@ -1376,6 +1391,7 @@ void bncWindow::bncText(const QString &text){
       _serialParityComboBox->setStyleSheet("background-color: lightGray");
       _serialDataBitsComboBox->setStyleSheet("background-color: lightGray");
       _serialStopBitsComboBox->setStyleSheet("background-color: lightGray");
+      _serialFlowControlComboBox->setStyleSheet("background-color: lightGray");
       _serialAutoNMEAComboBox->setStyleSheet("background-color: lightGray");
       _serialFileNMEALineEdit->setStyleSheet("background-color: lightGray");
       _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
@@ -1384,6 +1400,7 @@ void bncWindow::bncText(const QString &text){
       _serialParityComboBox->setEnabled(false);
       _serialDataBitsComboBox->setEnabled(false);
       _serialStopBitsComboBox->setEnabled(false);
+      _serialFlowControlComboBox->setEnabled(false);
       _serialAutoNMEAComboBox->setEnabled(false);
       _serialHeightNMEALineEdit->setEnabled(false);
       _serialFileNMEALineEdit->setEnabled(false);
