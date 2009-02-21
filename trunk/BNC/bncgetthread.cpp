@@ -257,9 +257,13 @@ void bncGetThread::initialize() {
     QString serialAutoNMEA = settings.value("serialAutoNMEA").toString();
     if (!serialFileNMEA.isEmpty() && serialAutoNMEA == "Auto" ) {
       _serialOutFile = new QFile(serialFileNMEA);
-      _serialOutFile->open(QIODevice::WriteOnly);
+      if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
+        _serialOutFile->open(QIODevice::WriteOnly | QIODevice::Append);
+      }
+      else {
+        _serialOutFile->open(QIODevice::WriteOnly);
+      }
     }
-
     _serialPort->setTimeout(0,100);
     _serialPort->setFlowControl(FLOW_OFF);
   }
