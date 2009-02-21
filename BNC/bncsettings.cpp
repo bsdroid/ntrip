@@ -71,6 +71,7 @@ bncSettings::bncSettings() :
     setValue("serialParity",     "NONE");
     setValue("serialPortName",   "");
     setValue("serialStopBits",   "1");
+    setValue("serialFlowControl","OFF");
     setValue("startTab",         "0");
     setValue("waitTime",         "5");
 

@@ -137,6 +137,7 @@
     QComboBox* _serialParityComboBox;
     QComboBox* _serialDataBitsComboBox;
     QComboBox* _serialStopBitsComboBox;
+    QComboBox* _serialFlowControlComboBox;
     QLineEdit* _serialHeightNMEALineEdit;
     QLineEdit* _serialFileNMEALineEdit;
     QComboBox* _serialAutoNMEAComboBox;
