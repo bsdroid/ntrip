@@ -63,7 +63,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint, 
                    const QByteArray& format, const QByteArray& latitude,
-                   const QByteArray& longitude, const QByteArray& nmea) {
+                   const QByteArray& longitude, const QByteArray& nmea,
+                   const QByteArray& ntripVersion) {
 
   _statID        = statID;
   _mountPoint    = mountPoint;
@@ -71,6 +72,7 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
   _latitude      = latitude;
   _longitude     = longitude;
   _nmea          = nmea;
+  _ntripVersion  = ntripVersion;
   _headerWritten = false;
   _reconnectFlag = false;
   _reloadTable   = false;
@@ -232,7 +234,7 @@ void bncRinex::readSkeleton() {
 
   // Read downloaded file
   // --------------------
-  else {
+  else if ( _ntripVersion != "N" ) {
     QDate currDate = currentDateAndTimeGPS().date();
     if ( !_skeletonDate.isValid() || _skeletonDate != currDate ) {
       if ( downloadSkeleton() == success) {
