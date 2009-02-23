@@ -615,20 +615,20 @@ bncWindow::bncWindow() {
   serLayout->addWidget(_serialPortNameLineEdit,                   1,1,1,2);
   serLayout->addWidget(new QLabel("Baud rate"),                   2,0, Qt::AlignLeft);
   serLayout->addWidget(_serialBaudRateComboBox,                   2,1);
-  serLayout->addWidget(new QLabel("               Flow control"), 2,2, Qt::AlignRight);
+  serLayout->addWidget(new QLabel("Flow control"),                2,2, Qt::AlignRight);
   serLayout->addWidget(_serialFlowControlComboBox,                2,3);
   serLayout->addWidget(new QLabel("Data bits"),                   3,0, Qt::AlignLeft);
   serLayout->addWidget(_serialDataBitsComboBox,                   3,1);
-  serLayout->addWidget(new QLabel("               Parity  "),     3,2, Qt::AlignRight);
+  serLayout->addWidget(new QLabel("Parity"),                      3,2, Qt::AlignRight);
   serLayout->addWidget(_serialParityComboBox,                     3,3);
-  serLayout->addWidget(new QLabel("               Stop bits  "),  3,4, Qt::AlignRight);
+  serLayout->addWidget(new QLabel("   Stop bits"),                3,4, Qt::AlignRight);
   serLayout->addWidget(_serialStopBitsComboBox,                   3,5);
   serLayout->addWidget(new QLabel("NMEA"),                        4,0);
   serLayout->addWidget(_serialAutoNMEAComboBox,                   4,1);
-  serLayout->addWidget(new QLabel("File (full path)"),            4,2, Qt::AlignRight);
-  serLayout->addWidget(_serialFileNMEALineEdit,                   4,3,1,25);
-  serLayout->addWidget(new QLabel("Height"),                      4,29, Qt::AlignRight);
-  serLayout->addWidget(_serialHeightNMEALineEdit,                 4,30);
+  serLayout->addWidget(new QLabel("   File (full path)"),         4,2, Qt::AlignRight);
+  serLayout->addWidget(_serialFileNMEALineEdit,                   4,3,1,16);
+  serLayout->addWidget(new QLabel("Height"),                      4,21, Qt::AlignRight);
+  serLayout->addWidget(_serialHeightNMEALineEdit,                 4,22,1,8);
   serLayout->addWidget(new QLabel("Serial port settings to feed a serial connected device."),5,0,1,30);
 
   connect(_serialMountPointLineEdit, SIGNAL(textChanged(const QString &)),
