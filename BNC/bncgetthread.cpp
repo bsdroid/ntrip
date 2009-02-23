@@ -166,7 +166,7 @@ void bncGetThread::initialize() {
   }
   else {
     _rnx = new bncRinex(_staID, _mountPoint, _format, _latitude, 
-                        _longitude, _nmea);
+                        _longitude, _nmea, _ntripVersion);
   }
 
   // Serial Port
