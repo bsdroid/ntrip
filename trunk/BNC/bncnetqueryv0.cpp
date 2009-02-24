@@ -102,6 +102,8 @@ void bncNetQueryV0::startRequest(const QUrl& url, const QByteArray& gga) {
     delete _socket; 
     _socket = 0;
     _status = error;
+      emit(newMessage(_url.path().toAscii().replace(0,1,"")
+                      + ": Connect timeout, reconnecting", true));
     return;
   }
 
@@ -113,7 +115,8 @@ void bncNetQueryV0::startRequest(const QUrl& url, const QByteArray& gga) {
       delete _socket;
       _socket = 0;
       _status = error;
-      emit newMessage(_url.path().toAscii() + " read timeout", true);
+      emit newMessage(_url.path().toAscii().replace(0,1,"")
+                      + ": Read timeout", true);
       return;
     }
     if (_socket->canReadLine()) {
