@@ -175,7 +175,8 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
 
   if (_firstData) {
     _firstData = false;
-    if (outData.indexOf("SOURCETABLE") != -1) {
+    if (outData.indexOf("SOURCETABLE") != -1 ||
+        outData.indexOf("not found") != -1) {
       _reply->disconnect(SIGNAL(error(QNetworkReply::NetworkError)));
       _reply->abort();
       _eventLoop->quit();
