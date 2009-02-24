@@ -143,7 +143,7 @@ void bncIpPort::accept() {
                                 + "no N");
   } else {
    QMessageBox::warning(this, tr("Warning"),
-                               tr("Incomplete settings!"),
+                               tr("Incomplete settings"),
                                QMessageBox::Ok);
   }
 
