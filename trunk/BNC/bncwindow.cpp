@@ -626,9 +626,9 @@ bncWindow::bncWindow() {
   serLayout->addWidget(new QLabel("NMEA"),                        4,0);
   serLayout->addWidget(_serialAutoNMEAComboBox,                   4,1);
   serLayout->addWidget(new QLabel("   File (full path)"),         4,2, Qt::AlignRight);
-  serLayout->addWidget(_serialFileNMEALineEdit,                   4,3,1,16);
-  serLayout->addWidget(new QLabel("Height"),                      4,21, Qt::AlignRight);
-  serLayout->addWidget(_serialHeightNMEALineEdit,                 4,22,1,8);
+  serLayout->addWidget(_serialFileNMEALineEdit,                   4,3,1,14);
+  serLayout->addWidget(new QLabel("Height"),                      4,20, Qt::AlignRight);
+  serLayout->addWidget(_serialHeightNMEALineEdit,                 4,22,1,11);
   serLayout->addWidget(new QLabel("Serial port settings to feed a serial connected device."),5,0,1,30);
 
   connect(_serialMountPointLineEdit, SIGNAL(textChanged(const QString &)),
