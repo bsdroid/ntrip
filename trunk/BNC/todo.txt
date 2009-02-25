@@ -1,23 +1,26 @@
 Todo's sorted by priority:
 
+BNS
+=========================
+(1) Update to new version of clock_orbit_rtcm.c
+See mail from Fr 13.02.2009 16:18
+Concerns also RTNet and BNC
+
+
 BNC
 =========================
 (1) If "<HTML><BODY>Requested data not found.</BODY></HTML>"
 is received in addition to "HTTP/1.1 404 Not Found"
-in case of unavailable mountpoints, this is not understood
+when mounpoint is unavailable, this is not understood
 as a NetworkError in bncnetqueryv2.
 
 (2) NMEA "Auto" (send NMEA streams from rover to caster) not 
 yet implemented.
 
-(3) Pure UDP protocol not yet implemented.
+(3) "Append files" options allways appends.
 
-(4) GW: Keep an eye on www.igs-ip.net/PENC0.
+(4) Pure UDP protocol not yet implemented.
 
-BNC
-=========================
-(1) Update to new clock_orbit_rtcm.c
-See mail from Fr 13.02.2009 16:18
-Concerns also RTNet and BNC
+(5) GW: Keep an eye on www.igs-ip.net/PENC0.
 
 
