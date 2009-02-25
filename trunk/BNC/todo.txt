@@ -2,21 +2,22 @@ Todo's sorted by priority:
 
 BNC
 =========================
-(1) GW: Keep an eye on www.igs-ip.net/PENC0.
-Reason: Have seen 100% CPU. Dirk Stoecker says he has not seen
-this over a period of several days. He also says the reason
-could actually only be that the decoding function is called
-although no new data available.
-GW 08-09-15: BNC again shows 100% CPU because of PENC0.
-Could it really be that the decoder is called although no new
-data available? Deleted PENC0 from the configuration.
+(1) If "<HTML><BODY>Requested data not found.</BODY></HTML>"
+is received in addition to "HTTP/1.1 404 Not Found"
+in case of unavailable mountpoints, this is not understood
+as a NetworkError in bncnetqueryv2.
 
-(2) ZL: Include GLONASS in RTCMv2 20/21 messages.
+(2) NMEA "Auto" (send NMEA streams from rover to caster) not 
+yet implemented.
 
-(3) LM: NTRIP Version 2.
+(3) Pure UDP protocol not yet implemented.
 
-BNS 
+(4) GW: Keep an eye on www.igs-ip.net/PENC0.
+
+BNC
 =========================
+(1) Update to new clock_orbit_rtcm.c
+See mail from Fr 13.02.2009 16:18
+Concerns also RTNet and BNC
 
-(1) LM: "TODO: handle old ephemeris" in bns.cpp
 
