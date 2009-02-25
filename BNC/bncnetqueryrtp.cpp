@@ -234,6 +234,6 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
   _socket = 0;
   _status = error;
   emit newMessage(_url.encodedPath().replace(0,1,"")
-                  + ": NetQuery, wait for connect", true);
+                  + ": NetQuery, waiting for connect", true);
 }
 
