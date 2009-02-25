@@ -216,9 +216,8 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
               line = in.readLine();
               while (!line.isEmpty()) {
                 if (line.indexOf("200 OK") != -1) {
-                  emit newMessage(_url.host().toAscii() + 
-                                  _url.path().toAscii() + 
-                                  ": UDP connection established", true);
+                  emit newMessage(_url.encodedPath().replace(0,1,"")
+                            + ": UDP connection established", true);
                   slotKeepAlive();
                   return;
                 }
@@ -234,5 +233,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
   delete _socket;
   _socket = 0;
   _status = error;
+  emit newMessage(_url.encodedPath().replace(0,1,"")
+                  + ": NetQuery, wrong mountpont", true);
 }
 
