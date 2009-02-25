@@ -183,7 +183,7 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
       _eventLoop->quit();
       _status = error;
       emit newMessage(_url.path().toAscii().replace(0,1,"") 
-                      + ": NetQuery, wrong mountpont", true);
+                      + ": NetQuery, wrong mountpoint", true);
     }
   }
 }
