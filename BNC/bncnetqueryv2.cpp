@@ -58,7 +58,8 @@ void bncNetQueryV2::stop() {
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::slotError(QNetworkReply::NetworkError) {
   _status = error;
-  emit newMessage("NetQuery: " + _reply->errorString().toAscii(), true);
+  emit newMessage(_url.path().toAscii().replace(0,1,"") 
+                  + ": NetQuery, " + _reply->errorString().toAscii(), true);
   _eventLoop->quit();
 }
 
@@ -181,7 +182,8 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
       _reply->abort();
       _eventLoop->quit();
       _status = error;
-      emit newMessage("NetQuery: wrong Mountpoint", true);
+      emit newMessage(_url.path().toAscii().replace(0,1,"") 
+                      + ": NetQuery, wrong mountpont", true);
     }
   }
 }
