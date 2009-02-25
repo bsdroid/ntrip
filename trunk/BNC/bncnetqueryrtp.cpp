@@ -234,6 +234,6 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
   _socket = 0;
   _status = error;
   emit newMessage(_url.encodedPath().replace(0,1,"")
-                  + ": NetQuery, wrong mountpont", true);
+                  + ": NetQuery, wrong mountpoint", true);
 }
 
