@@ -3,9 +3,11 @@ Todo's sorted by priority:
 BNC & BNS & RTNet
 =========================
 (1) Update to new version of clock_orbit_rtcm.c
-introduced in BNC. However, BNC still running
-with in "OLD" mode concerning clock_orbit_rtcm.c
-See DEFINES += OLD in bnc.pro
+introduced in BNC and BNS. However, BNC and BNS are still
+running in "OLD" mode concerning clock_orbit_rtcm.c
+See DEFINES += OLD in bnc.pro and bns.pro
+Main issue: Introduction of new messages for 
+URA and high-rate clocks.
 
 
 BNC
