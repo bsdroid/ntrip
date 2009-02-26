@@ -3,7 +3,6 @@
 # -----------------------------
 CONFIG += release
 #CONFIG += debug
-CONFIG += OLD
 
 RESOURCES += bns.qrc
 
