@@ -401,18 +401,8 @@ Specify a directory for saving Ephemeris Corrections in files. If the specified 
 <p>
 The file name convention for Ephemeris Correction files follows the convention for RINEX files except for the last character of the file name suffix which is set to "C".
 </p>
-
-<p><a name="corrint"><h4>3.7.2 Interval - mandatory if 'Directory' is set</h4></p>
 <p>
-Select the length of the Ephemeris Correction files. The default value is 1 day.
-</p>
-
-<p><a name="corrport"><h4>3.7.3 Port - optional</h4></p>
-<p>
-BNC can output epoch by epoch synchronized Ephemeris Corrections in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number to activate this function. The default is an empty option field, meaning that no Ephemeris Correction output via IP port is generated.
-</p>
-<p>
-The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that allows you to read BNC's Ephemeris Corrections from the IP port. In case of a stream carrying message types 4056 and 4057, the script produces ASCII records containing the following set of parameters:
+The saved file contains the following information in plain ASCII format:
 </p>
 <p>
 <ul>
@@ -424,8 +414,29 @@ The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that
 <li>Radial Component of Orbit Correction to Broadcast Ephemeris [m]</li>
 <li>Along-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
 <li>Cross-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
-<li>Mountpoint</li>
 </ul>
+</p>
+<p>
+Example file contents:
+</p>
+<pre>
+...
+1490 115710.0 G27    97      5.291      1.201   -1.964    0.821
+1490 115710.0 G26    14    -11.247      1.003   -1.168    0.074
+...
+</pre>
+
+<p><a name="corrint"><h4>3.7.2 Interval - mandatory if 'Directory' is set</h4></p>
+<p>
+Select the length of the Ephemeris Correction files. The default value is 1 day.
+</p>
+
+<p><a name="corrport"><h4>3.7.3 Port - optional</h4></p>
+<p>
+BNC can output epoch by epoch synchronized Ephemeris Corrections in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number to activate this function. The default is an empty option field, meaning that no Ephemeris Correction output via IP port is generated.
+</p>
+<p>
+The output format equals the format used for saving Ephemeris Corrections in a file with the exception that the Mountpoint is added at each line's end.
 </p>
 <p>
 The following is an example output from two RTCM Version 3 streams (CLCK1 and CLCK4) containing message types 4056 and 4057:
@@ -442,6 +453,9 @@ The following is an example output from two RTCM Version 3 streams (CLCK1 and CL
 1490 115711.0 G26    14    -11.246      1.004   -1.168    0.074 CLCK4
 ...
 </pre>
+</p>
+<p>
+The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that allows you to read BNC's Ephemeris Corrections from the IP port.
 </p>
 
 <p><a name="corrwait"><h4>3.7.4 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
