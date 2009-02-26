@@ -5,7 +5,7 @@
 
         Name:           clock_orbit_rtcm.h
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.h,v 1.3 2009/02/12 11:56:16 stoecker Exp $
+        Version:        $Id: clock_orbit_rtcm.h,v 1.4 2009/02/04 08:19:20 mervart Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -14,15 +14,11 @@
 
 enum SatelliteReferenceDatum { DATUM_ITRF=0, DATUM_LOCAL=1 };
 enum SatelliteReferencePoint { POINT_IONOFREE=0, POINT_CENTER=1 };
-enum ClockOrbitType {
-     COTYPE_GPSORBIT=4060, COTYPE_GPSCLOCK=4061,
-     COTYPE_GPSCOMBINED=4063, COTYPE_GPSURA=4064, COTYPE_GPSHR=4065,
-
-     COTYPE_GLONASSORBIT=4066, COTYPE_GLONASSCLOCK=4067,
-     COTYPE_GLONASSCOMBINED=4069, COTYPE_GLONASSURA=4070, COTYPE_GLONASSHR=4071,
-
+enum ClockOrbitType { COTYPE_GPSORBIT=4050, COTYPE_GPSCLOCK=4051,
+     COTYPE_GLONASSORBIT=4053, COTYPE_GLONASSCLOCK=4054,
+     COTYPE_GPSCOMBINED=4056, COTYPE_GLONASSCOMBINED=4057,
      COTYPE_AUTO=0 };
-enum BiasType { BTYPE_GPS=4062, BTYPE_GLONASS=4068, BTYPE_AUTO = 0 };
+enum BiasType { BTYPE_GPS=4052, BTYPE_GLONASS=4055, BTYPE_AUTO = 0 };
 
 enum COR_CONSTANTS {
   CLOCKORBIT_BUFFERSIZE=2048,
@@ -54,19 +50,12 @@ struct ClockOrbit
   int NumberOfGPSSat;               /* 0 .. 32 */
   int NumberOfGLONASSSat;           /* 0 .. 24 */
   int ClockDataSupplied;            /* boolean */
-  int HRDataSupplied;               /* boolean */
   int OrbitDataSupplied;            /* boolean */
-  int URADataSupplied;              /* boolean */
-  int epochGPS[101];                /* Weber, for latency */
-  int epochSize;                    /* Weber, for latency */
-  int UpdateInterval;
   enum SatelliteReferencePoint SatRefPoint;
   enum SatelliteReferenceDatum SatRefDatum;
   struct SatData {
     int ID; /* GPS or GLONASS */
     int IOD; /* GPS or GLONASS */
-    int URA;
-    double hrclock;
     struct OrbitPart
     {
       double DeltaRadial;           /* m */
@@ -94,7 +83,6 @@ struct Bias
   int GLONASSEpochTime;             /* 0 .. 86399 s (86400 for leap second) */
   int NumberOfGPSSat;               /* 0 .. 32 */
   int NumberOfGLONASSSat;           /* 0 .. 24 */
-  int UpdateInterval;
   struct BiasSat
   {
     int ID; /* GPS or GLONASS */
