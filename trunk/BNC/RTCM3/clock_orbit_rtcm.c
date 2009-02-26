@@ -2,19 +2,14 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.5 2008/12/19 10:16:59 mervart Exp $
+        Version:        $Id: clock_orbit_rtcm.c,v 1.3 2009/02/12 11:56:16 stoecker Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
 
 #include <stdio.h>
 #include <string.h>
-
-#ifndef sparc
 #include <stdint.h>
-#endif
-
-#include <sys/types.h>
 #include "clock_orbit_rtcm.h"
 
 static uint32_t CRC24(long size, const unsigned char *buf)
@@ -89,61 +84,57 @@ modified variables are:
 
 #define SCALEADDBITS(a, b, c) ADDBITS(a, (int64_t)(b*c))
 
-#if 0
-#define DEBUGSCALEADDBITS(n, a, b, c) \
-  { \
-    int64_t x = b*c, z; \
-    uint64_t y; \
-    y = (x&((1<<a)-1)); \
-    z = ((int64_t)(y<<(64-a)))>>(64-a); \
-    fprintf(stderr, "Type " # n " val %19.15f*%11.1f %16llX %16llX %16llX %s\n", \
-    c, b, x, y, z, x != z ? "OVERFLOW" : "OK"); \
-  } \
-  SCALEADDBITS(a,b,c)
-#else
-#define DEBUGSCALEADDBITS(n, a, b, c) SCALEADDBITS(a,b,c)
-#endif
-
 /* standard values */
 #define T_MESSAGE_NUMBER(a)              ADDBITS(12, a) /* DF002 */
-#define T_RESERVED6                      ADDBITS(6, 0)  /* DF001 */
+#define T_RESERVED5                      ADDBITS(5, 0)  /* DF001 */
 #define T_GPS_SATELLITE_ID(a)            ADDBITS(6, a)  /* DF068 */
 #define T_GPS_IODE(a)                    ADDBITS(8, a)  /* DF071 */
 #define T_GLONASS_IOD(a)                 ADDBITS(8, a)  /* DF237 */
 
 /* defined values */
-#define T_MULTIPLE_MESSAGE_INDICATOR(a)  ADDBITS(1, a)
+#define T_DELTA_RADIAL(a)                SCALEADDBITS(22, 10000.0, a)
+#define T_DELTA_ALONG_TRACK(a)           SCALEADDBITS(22, 10000.0, a)
+#define T_DELTA_CROSS_TRACK(a)           SCALEADDBITS(22, 10000.0, a)
+#define T_DELTA_DOT_RADIAL(a)            SCALEADDBITS(21, 1000000.0, a)
+#define T_DELTA_DOT_ALONG_TRACK(a)       SCALEADDBITS(21, 1000000.0, a)
+#define T_DELTA_DOT_CROSS_TRACK(a)       SCALEADDBITS(21, 1000000.0, a)
+#define T_DELTA_DOT_DOT_RADIAL(a)        SCALEADDBITS(27, 50000000.0, a)
+#define T_DELTA_DOT_DOT_ALONG_TRACK(a)   SCALEADDBITS(27, 50000000.0, a)
+#define T_DELTA_DOT_DOT_CROSS_TRACK(a)   SCALEADDBITS(27, 50000000.0, a)
+#define T_SATELLITE_REFERENCE_POINT(a)   ADDBITS(1, a)
+
+#define T_SATELLITE_REFERENCE_DATUM(a)   ADDBITS(1, a)
+#define T_DELTA_CLOCK_C0(a)              SCALEADDBITS(22, 10000.0, a)
+#define T_DELTA_CLOCK_C1(a)              SCALEADDBITS(21, 1000000.0, a)
+#define T_DELTA_CLOCK_C2(a)              SCALEADDBITS(27, 50000000.0, a)
+#define T_NO_OF_CODE_BIASES(a)           ADDBITS(5, a)
+#define T_GPS_SIGNAL_IDENTIFIER(a)       ADDBITS(5, a)
+#define T_GLONASS_SIGNAL_IDENTIFIER(a)   ADDBITS(5, a)
+#define T_GALILEO_SIGNAL_IDENTIFIER(a)   ADDBITS(5, a)
+#define T_CODE_BIAS(a)                   SCALEADDBITS(14, 100.0, a)
+#define T_GLONASS_SATELLITE_ID(a)        ADDBITS(5, a)
+
 #define T_GPS_EPOCH_TIME(a)              ADDBITS(20, a)
 #define T_GLONASS_EPOCH_TIME(a)          ADDBITS(17, a)
-#define T_GLONASS_SATELLITE_ID(a)        ADDBITS(6, a)
-#define T_NO_OF_SATELLITES(a)            ADDBITS(5, a)
-#define T_SATELLITE_REFERENCE_POINT(a)   ADDBITS(1, a)
-#define T_SATELLITE_REFERENCE_DATUM(a)   ADDBITS(1, a)
-#define T_NO_OF_CODE_BIASES(a)           ADDBITS(5, a)
-#define T_GPS_CODE_TYPE(a)               ADDBITS(5, a)
-#define T_GLONASS_CODE_TYPE(a)           ADDBITS(5, a)
-
-/* yet undefined values */
-#define T_DELTA_RADIAL(a)                DEBUGSCALEADDBITS(dr, 20, 1000.0, a)
-#define T_DELTA_ALONG_TRACK(a)           DEBUGSCALEADDBITS(da, 20, 1000.0, a)
-#define T_DELTA_CROSS_TRACK(a)           DEBUGSCALEADDBITS(dc, 20, 1000.0, a)
-#define T_DELTA_DOT_RADIAL(a)            DEBUGSCALEADDBITS(Dr, 20, 100000.0, a)
-#define T_DELTA_DOT_ALONG_TRACK(a)       DEBUGSCALEADDBITS(Dr, 20, 100000.0, a)
-#define T_DELTA_DOT_CROSS_TRACK(a)       DEBUGSCALEADDBITS(Dr, 20, 100000.0, a)
-#define T_DELTA_DOT_DOT_RADIAL(a)        DEBUGSCALEADDBITS(DR, 20, 5000000.0, a)
-#define T_DELTA_DOT_DOT_ALONG_TRACK(a)   DEBUGSCALEADDBITS(DA, 20, 5000000.0, a)
-#define T_DELTA_DOT_DOT_CROSS_TRACK(a)   DEBUGSCALEADDBITS(DC, 20, 5000000.0, a)
-#define T_DELTA_A0(a)                    DEBUGSCALEADDBITS(A0, 20, 1000.0, a)
-#define T_DELTA_A1(a)                    DEBUGSCALEADDBITS(A1, 20, 100000.0, a)
-#define T_DELTA_A2(a)                    DEBUGSCALEADDBITS(A2, 20, 5000000.0, a)
-#define T_CODE_BIAS(a)                   DEBUGSCALEADDBITS(CB, 20, 100.0, a)
+#define T_NO_OF_SATELLITES(a)            ADDBITS(6, a)
+#define T_MULTIPLE_MESSAGE_INDICATOR(a)  ADDBITS(1, a)
+#define T_SSR_URA(a)                     ADDBITS(4, a)
+#define T_HR_CLOCK_CORRECTION(a)         SCALEADDBITS(22, 10000.0, a)
+#define T_SSR_UPDATE_INTERVAL(a)         ADDBITS(4, a)
 
 size_t MakeClockOrbit(const struct ClockOrbit *co, enum ClockOrbitType type,
 int moremessagesfollow, char *buffer, size_t size)
 {
-  int gpsor=0, gpscl=0, gpsco=0, gloor=0, glocl=0, gloco=0, mmi, i;
+  int gpshr=0, gpsur=0, gpsor=0, gpscl=0, gpsco=0, glohr=0, glour=0, gloor=0,
+  glocl=0, gloco=0, mmi, i;
   STARTDATA
 
+  if(co->NumberOfGPSSat && co->HRDataSupplied
+  && (type == COTYPE_AUTO || type == COTYPE_GPSHR))
+    gpshr = 1;
+  if(co->NumberOfGPSSat && co->URADataSupplied
+  && (type == COTYPE_AUTO || type == COTYPE_GPSURA))
+    gpsur = 1;
   if(co->NumberOfGPSSat && co->OrbitDataSupplied
   && (type == COTYPE_AUTO || type == COTYPE_GPSORBIT))
     gpsor = 1;
@@ -155,6 +146,12 @@ int moremessagesfollow, char *buffer, size_t size)
   {
     gpsco = 1; gpsor = 0; gpscl = 0;
   }
+  if(co->NumberOfGLONASSSat && co->HRDataSupplied
+  && (type == COTYPE_AUTO || type == COTYPE_GLONASSHR))
+    glohr = 1;
+  if(co->NumberOfGLONASSSat && co->URADataSupplied
+  && (type == COTYPE_AUTO || type == COTYPE_GLONASSURA))
+    glour = 1;
   if(co->NumberOfGLONASSSat && co->OrbitDataSupplied
   && (type == COTYPE_AUTO || type == COTYPE_GLONASSORBIT))
     gloor = 1;
@@ -167,7 +164,7 @@ int moremessagesfollow, char *buffer, size_t size)
     gloco = 1; gloor = 0; glocl = 0;
   }
 
-  mmi = gpsor+gpscl+gpsco+gloor+glocl+gloco; /* required for multimessage */
+  mmi = gpshr+gpsur+gpsor+gpscl+gpsco+glohr+glour+gloor+glocl+gloco; /* required for multimessage */
   if(!moremessagesfollow) --mmi;
 
   if(gpsor)
@@ -175,9 +172,10 @@ int moremessagesfollow, char *buffer, size_t size)
     INITBLOCK
     T_MESSAGE_NUMBER(COTYPE_GPSORBIT)
     T_GPS_EPOCH_TIME(co->GPSEpochTime)
+    T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(mmi ? 1 :0)
     --mmi;
-    T_RESERVED6
+    T_RESERVED5
     T_NO_OF_SATELLITES(co->NumberOfGPSSat)
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
@@ -202,17 +200,17 @@ int moremessagesfollow, char *buffer, size_t size)
     INITBLOCK
     T_MESSAGE_NUMBER(COTYPE_GPSCLOCK)
     T_GPS_EPOCH_TIME(co->GPSEpochTime)
+    T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(mmi ? 1 :0)
     --mmi;
-    T_RESERVED6
+    T_RESERVED5
     T_NO_OF_SATELLITES(co->NumberOfGPSSat)
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
       T_GPS_SATELLITE_ID(co->Sat[i].ID)
-      T_GPS_IODE(co->Sat[i].IOD)
-      T_DELTA_A0(co->Sat[i].Clock.DeltaA0)
-      T_DELTA_A1(co->Sat[i].Clock.DeltaA1)
-      T_DELTA_A2(co->Sat[i].Clock.DeltaA2)
+      T_DELTA_CLOCK_C0(co->Sat[i].Clock.DeltaA0)
+      T_DELTA_CLOCK_C1(co->Sat[i].Clock.DeltaA1)
+      T_DELTA_CLOCK_C2(co->Sat[i].Clock.DeltaA2)
     }
     ENDBLOCK
   }
@@ -221,9 +219,10 @@ int moremessagesfollow, char *buffer, size_t size)
     INITBLOCK
     T_MESSAGE_NUMBER(COTYPE_GPSCOMBINED)
     T_GPS_EPOCH_TIME(co->GPSEpochTime)
+    T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(mmi ? 1 :0)
     --mmi;
-    T_RESERVED6
+    T_RESERVED5
     T_NO_OF_SATELLITES(co->NumberOfGPSSat)
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
@@ -240,9 +239,42 @@ int moremessagesfollow, char *buffer, size_t size)
       T_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDotDeltaCrossTrack)
       T_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
       T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-      T_DELTA_A0(co->Sat[i].Clock.DeltaA0)
-      T_DELTA_A1(co->Sat[i].Clock.DeltaA1)
-      T_DELTA_A2(co->Sat[i].Clock.DeltaA2)
+      T_DELTA_CLOCK_C0(co->Sat[i].Clock.DeltaA0)
+      T_DELTA_CLOCK_C1(co->Sat[i].Clock.DeltaA1)
+      T_DELTA_CLOCK_C2(co->Sat[i].Clock.DeltaA2)
+    }
+    ENDBLOCK
+  }
+  if(gpshr)
+  {
+    INITBLOCK
+    T_MESSAGE_NUMBER(COTYPE_GPSHR)
+    T_GPS_EPOCH_TIME(co->GPSEpochTime)
+    T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
+    T_MULTIPLE_MESSAGE_INDICATOR(mmi ? 1 :0)
+    --mmi;
+    T_RESERVED5
+    T_NO_OF_SATELLITES(co->NumberOfGPSSat)
+    for(i = 0; i < co->NumberOfGPSSat; ++i)
+    {
+      T_GPS_SATELLITE_ID(co->Sat[i].ID)
+      T_HR_CLOCK_CORRECTION(co->Sat[i].hrclock)
+    }
+    ENDBLOCK
+  }
+  if(gpsur)
+  {
+    INITBLOCK
+    T_MESSAGE_NUMBER(COTYPE_GPSURA)
+    T_GPS_EPOCH_TIME(co->GPSEpochTime)
+    T_MULTIPLE_MESSAGE_INDICATOR(mmi ? 1 :0)
+    --mmi;
+    T_RESERVED5
+    T_NO_OF_SATELLITES(co->NumberOfGPSSat)
+    for(i = 0; i < co->NumberOfGPSSat; ++i)
+    {
+      T_GPS_SATELLITE_ID(co->Sat[i].ID)
+      T_SSR_URA(co->Sat[i].URA)
     }
     ENDBLOCK
   }
@@ -251,9 +283,10 @@ int moremessagesfollow, char *buffer, size_t size)
     INITBLOCK
     T_MESSAGE_NUMBER(COTYPE_GLONASSORBIT)
     T_GLONASS_EPOCH_TIME(co->GLONASSEpochTime)
+    T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(mmi ? 1 :0)
     --mmi;
-    T_RESERVED6
+    T_RESERVED5
     T_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
@@ -279,18 +312,19 @@ int moremessagesfollow, char *buffer, size_t size)
     INITBLOCK
     T_MESSAGE_NUMBER(COTYPE_GLONASSCLOCK)
     T_GLONASS_EPOCH_TIME(co->GLONASSEpochTime)
+    T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(mmi ? 1 :0)
     --mmi;
-    T_RESERVED6
+    T_RESERVED5
     T_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
     {
       T_GLONASS_SATELLITE_ID(co->Sat[i].ID)
       T_GLONASS_IOD(co->Sat[i].IOD)
-      T_DELTA_A0(co->Sat[i].Clock.DeltaA0)
-      T_DELTA_A1(co->Sat[i].Clock.DeltaA1)
-      T_DELTA_A2(co->Sat[i].Clock.DeltaA2)
+      T_DELTA_CLOCK_C0(co->Sat[i].Clock.DeltaA0)
+      T_DELTA_CLOCK_C1(co->Sat[i].Clock.DeltaA1)
+      T_DELTA_CLOCK_C2(co->Sat[i].Clock.DeltaA2)
     }
     ENDBLOCK
   }
@@ -299,9 +333,10 @@ int moremessagesfollow, char *buffer, size_t size)
     INITBLOCK
     T_MESSAGE_NUMBER(COTYPE_GLONASSCOMBINED)
     T_GLONASS_EPOCH_TIME(co->GLONASSEpochTime)
+    T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(mmi ? 1 :0)
     --mmi;
-    T_RESERVED6
+    T_RESERVED5
     T_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
@@ -319,9 +354,44 @@ int moremessagesfollow, char *buffer, size_t size)
       T_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDotDeltaCrossTrack)
       T_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
       T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-      T_DELTA_A0(co->Sat[i].Clock.DeltaA0)
-      T_DELTA_A1(co->Sat[i].Clock.DeltaA1)
-      T_DELTA_A2(co->Sat[i].Clock.DeltaA2)
+      T_DELTA_CLOCK_C0(co->Sat[i].Clock.DeltaA0)
+      T_DELTA_CLOCK_C1(co->Sat[i].Clock.DeltaA1)
+      T_DELTA_CLOCK_C2(co->Sat[i].Clock.DeltaA2)
+    }
+    ENDBLOCK
+  }
+  if(glohr)
+  {
+    INITBLOCK
+    T_MESSAGE_NUMBER(COTYPE_GLONASSHR)
+    T_GLONASS_EPOCH_TIME(co->GLONASSEpochTime)
+    T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
+    T_MULTIPLE_MESSAGE_INDICATOR(mmi ? 1 :0)
+    --mmi;
+    T_RESERVED5
+    T_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
+    for(i = CLOCKORBIT_NUMGPS;
+    i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
+    {
+      T_GPS_SATELLITE_ID(co->Sat[i].ID)
+      T_HR_CLOCK_CORRECTION(co->Sat[i].hrclock)
+    }
+    ENDBLOCK
+  }
+  if(glour)
+  {
+    INITBLOCK
+    T_MESSAGE_NUMBER(COTYPE_GLONASSURA)
+    T_GLONASS_EPOCH_TIME(co->GLONASSEpochTime)
+    T_MULTIPLE_MESSAGE_INDICATOR(mmi ? 1 :0)
+    --mmi;
+    T_RESERVED5
+    T_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
+    for(i = CLOCKORBIT_NUMGPS;
+    i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
+    {
+      T_GPS_SATELLITE_ID(co->Sat[i].ID)
+      T_SSR_URA(co->Sat[i].URA)
     }
     ENDBLOCK
   }
@@ -332,9 +402,7 @@ int moremessagesfollow, char *buffer, size_t size)
 size_t MakeBias(const struct Bias *b, enum BiasType type,
 int moremessagesfollow, char *buffer, size_t size)
 {
-  int gps = 0;
-  int glo = 0;
-  int mmi, i, j;
+  int gps, glo, mmi, i, j;
   STARTDATA
 
   if(b->NumberOfGPSSat && (type == BTYPE_AUTO || type == BTYPE_GPS))
@@ -350,9 +418,10 @@ int moremessagesfollow, char *buffer, size_t size)
     INITBLOCK
     T_MESSAGE_NUMBER(BTYPE_GPS)
     T_GPS_EPOCH_TIME(b->GPSEpochTime)
+    T_SSR_UPDATE_INTERVAL(b->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(mmi ? 1 :0)
     --mmi;
-    T_RESERVED6
+    T_RESERVED5
     T_NO_OF_SATELLITES(b->NumberOfGPSSat)
     for(i = 0; i < b->NumberOfGPSSat; ++i)
     {
@@ -360,7 +429,7 @@ int moremessagesfollow, char *buffer, size_t size)
       T_NO_OF_CODE_BIASES(b->Sat[i].NumberOfCodeBiases)
       for(j = 0; j < b->Sat[i].NumberOfCodeBiases; ++j)
       {
-        T_GPS_CODE_TYPE(b->Sat[i].Biases[j].Type)
+        T_GPS_SIGNAL_IDENTIFIER(b->Sat[i].Biases[j].Type)
         T_CODE_BIAS(b->Sat[i].Biases[j].Bias)
       }
     }
@@ -371,9 +440,10 @@ int moremessagesfollow, char *buffer, size_t size)
     INITBLOCK
     T_MESSAGE_NUMBER(BTYPE_GLONASS)
     T_GPS_EPOCH_TIME(b->GLONASSEpochTime)
+    T_SSR_UPDATE_INTERVAL(b->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(mmi ? 1 :0)
     --mmi;
-    T_RESERVED6
+    T_RESERVED5
     T_NO_OF_SATELLITES(b->NumberOfGLONASSSat)
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+b->NumberOfGLONASSSat; ++i)
@@ -382,7 +452,7 @@ int moremessagesfollow, char *buffer, size_t size)
       T_NO_OF_CODE_BIASES(b->Sat[i].NumberOfCodeBiases)
       for(j = 0; j < b->Sat[i].NumberOfCodeBiases; ++j)
       {
-        T_GLONASS_CODE_TYPE(b->Sat[i].Biases[j].Type)
+        T_GLONASS_SIGNAL_IDENTIFIER(b->Sat[i].Biases[j].Type)
         T_CODE_BIAS(b->Sat[i].Biases[j].Bias)
       }
     }
@@ -391,6 +461,7 @@ int moremessagesfollow, char *buffer, size_t size)
 
   return ressize;
 }
+
 #endif /* NOENCODE */
 
 #ifndef NODECODE
@@ -434,42 +505,71 @@ int moremessagesfollow, char *buffer, size_t size)
 #define G_RESERVEDH(a)                   GETBITS(a,6)
 #define G_SIZE(a)                        GETBITS(a, 10)
 #define G_MESSAGE_NUMBER(a)              GETBITS(a, 12) /* DF002 */
-#define G_RESERVED6                      SKIPBITS(6)    /* DF001 */
+#define G_RESERVED5                      SKIPBITS(5)    /* DF001 */
 #define G_GPS_SATELLITE_ID(a)            {int temp; GETBITS(temp, 6) \
  if(a && a != temp) return GCOBR_DATAMISMATCH; a = temp;}  /* DF068 */
 #define G_GPS_IODE(a)                    GETBITS(a, 8)  /* DF071 */
 #define G_GLONASS_IOD(a)                 GETBITS(a, 8)  /* DF237 */
 
 /* defined values */
-#define G_MULTIPLE_MESSAGE_INDICATOR(a)  GETBITS(a, 1)
+#define G_DELTA_RADIAL(a)                GETFLOATSIGN(a, 22, 1/10000.0)
+#define G_DELTA_ALONG_TRACK(a)           GETFLOATSIGN(a, 22, 1/10000.0)
+#define G_DELTA_CROSS_TRACK(a)           GETFLOATSIGN(a, 22, 1/10000.0)
+#define G_DELTA_DOT_RADIAL(a)            GETFLOATSIGN(a, 21, 1/1000000.0)
+#define G_DELTA_DOT_ALONG_TRACK(a)       GETFLOATSIGN(a, 21, 1/1000000.0)
+#define G_DELTA_DOT_CROSS_TRACK(a)       GETFLOATSIGN(a, 21, 1/1000000.0)
+#define G_DELTA_DOT_DOT_RADIAL(a)        GETFLOATSIGN(a, 27, 1/50000000.0)
+#define G_DELTA_DOT_DOT_ALONG_TRACK(a)   GETFLOATSIGN(a, 27, 1/50000000.0)
+#define G_DELTA_DOT_DOT_CROSS_TRACK(a)   GETFLOATSIGN(a, 27, 1/50000000.0)
+#define G_SATELLITE_REFERENCE_POINT(a)   GETBITS(a, 1)
+
+#define G_SATELLITE_REFERENCE_DATUM(a)   GETBITS(a, 1)
+#define G_DELTA_CLOCK_C0(a)              GETFLOATSIGN(a, 22, 1/10000.0)
+#define G_DELTA_CLOCK_C1(a)              GETFLOATSIGN(a, 21, 1/1000000.0)
+#define G_DELTA_CLOCK_C2(a)              GETFLOATSIGN(a, 27, 1/50000000.0)
+#define G_NO_OF_CODE_BIASES(a)           GETBITS(a, 5)
+#define G_GPS_SIGNAL_IDENTIFIER(a)       GETBITS(a, 5)
+#define G_GLONASS_SIGNAL_IDENTIFIER(a)   GETBITS(a, 5)
+#define G_GALILEO_SIGNAL_IDENTIFIER(a)   GETBITS(a, 5)
+#define G_CODE_BIAS(a)                   GETFLOATSIGN(a, 14, 1/100.0)
+#define G_GLONASS_SATELLITE_ID(a)        {int temp; GETBITS(temp, 5) \
+ if(a && a != temp) return GCOBR_DATAMISMATCH; a = temp;}
+
 #define G_GPS_EPOCH_TIME(a, b)           {int temp; GETBITS(temp, 20) \
  if(b && a != temp) return GCOBR_TIMEMISMATCH; a = temp;}
 #define G_GLONASS_EPOCH_TIME(a, b)       {int temp; GETBITS(temp, 17) \
  if(b && a != temp) return GCOBR_TIMEMISMATCH; a = temp;}
-#define G_GLONASS_SATELLITE_ID(a)        {int temp; GETBITS(temp, 6) \
+#define G_NO_OF_SATELLITES(a)            {int temp; GETBITS(temp, 6) \
  if(a && a != temp) return GCOBR_DATAMISMATCH; a = temp;}
-#define G_NO_OF_SATELLITES(a)            {int temp; GETBITS(temp, 5) \
- if(a && a != temp) return GCOBR_DATAMISMATCH; a = temp;}
-#define G_SATELLITE_REFERENCE_POINT(a)   GETBITS(a, 1)
-#define G_SATELLITE_REFERENCE_DATUM(a)   GETBITS(a, 1)
-#define G_NO_OF_CODE_BIASES(a)           GETBITS(a, 5)
-#define G_GPS_CODE_TYPE(a)               GETBITS(a, 5)
-#define G_GLONASS_CODE_TYPE(a)           GETBITS(a, 5)
+#define G_MULTIPLE_MESSAGE_INDICATOR(a)  GETBITS(a, 1)
+#define G_SSR_URA(a)                     GETBITS(a, 4)
+#define G_HR_CLOCK_CORRECTION(a)         GETFLOATSIGN(a, 22, 1/10000.0)
+#define G_SSR_UPDATE_INTERVAL(a)         GETBITS(a, 4)
 
-/* yet undefined values */
-#define G_DELTA_RADIAL(a)                GETFLOATSIGN(a, 20, 1/1000.0)
-#define G_DELTA_ALONG_TRACK(a)           GETFLOATSIGN(a, 20, 1/1000.0)
-#define G_DELTA_CROSS_TRACK(a)           GETFLOATSIGN(a, 20, 1/1000.0)
-#define G_DELTA_DOT_RADIAL(a)            GETFLOATSIGN(a, 20, 1/100000.0)
-#define G_DELTA_DOT_ALONG_TRACK(a)       GETFLOATSIGN(a, 20, 1/100000.0)
-#define G_DELTA_DOT_CROSS_TRACK(a)       GETFLOATSIGN(a, 20, 1/100000.0)
-#define G_DELTA_DOT_DOT_RADIAL(a)        GETFLOATSIGN(a, 20, 1/5000000.0)
-#define G_DELTA_DOT_DOT_ALONG_TRACK(a)   GETFLOATSIGN(a, 20, 1/5000000.0)
-#define G_DELTA_DOT_DOT_CROSS_TRACK(a)   GETFLOATSIGN(a, 20, 1/5000000.0)
-#define G_DELTA_A0(a)                    GETFLOATSIGN(a, 20, 1/1000.0)
-#define G_DELTA_A1(a)                    GETFLOATSIGN(a, 20, 1/100000.0)
-#define G_DELTA_A2(a)                    GETFLOATSIGN(a, 20, 1/5000000.0)
-#define G_CODE_BIAS(a)                   GETFLOATSIGN(a, 20, 1/100.0)
+#ifdef OLD
+enum OldClockOrbitType { OLDCOTYPE_GPSORBIT=4050, OLDCOTYPE_GPSCLOCK=4051,
+     OLDCOTYPE_GLONASSORBIT=4053, OLDCOTYPE_GLONASSCLOCK=4054,
+     OLDCOTYPE_GPSCOMBINED=4056, OLDCOTYPE_GLONASSCOMBINED=4057};
+enum OldBiasType { OLDBTYPE_GPS=4052, OLDBTYPE_GLONASS=4055};
+#define OLD_G_RESERVED6                      SKIPBITS(6)    /* DF001 */
+#define OLD_G_GLONASS_SATELLITE_ID(a)        {int temp; GETBITS(temp, 6) \
+ if(a && a != temp) return GCOBR_DATAMISMATCH; a = temp;}
+#define OLD_G_NO_OF_SATELLITES(a)            {int temp; GETBITS(temp, 5) \
+ if(a && a != temp) return GCOBR_DATAMISMATCH; a = temp;}
+#define OLD_G_DELTA_RADIAL(a)                GETFLOATSIGN(a, 20, 1/1000.0)
+#define OLD_G_DELTA_ALONG_TRACK(a)           GETFLOATSIGN(a, 20, 1/1000.0)
+#define OLD_G_DELTA_CROSS_TRACK(a)           GETFLOATSIGN(a, 20, 1/1000.0)
+#define OLD_G_DELTA_DOT_RADIAL(a)            GETFLOATSIGN(a, 20, 1/100000.0)
+#define OLD_G_DELTA_DOT_ALONG_TRACK(a)       GETFLOATSIGN(a, 20, 1/100000.0)
+#define OLD_G_DELTA_DOT_CROSS_TRACK(a)       GETFLOATSIGN(a, 20, 1/100000.0)
+#define OLD_G_DELTA_DOT_DOT_RADIAL(a)        GETFLOATSIGN(a, 20, 1/5000000.0)
+#define OLD_G_DELTA_DOT_DOT_ALONG_TRACK(a)   GETFLOATSIGN(a, 20, 1/5000000.0)
+#define OLD_G_DELTA_DOT_DOT_CROSS_TRACK(a)   GETFLOATSIGN(a, 20, 1/5000000.0)
+#define OLD_G_DELTA_A0(a)                    GETFLOATSIGN(a, 20, 1/1000.0)
+#define OLD_G_DELTA_A1(a)                    GETFLOATSIGN(a, 20, 1/100000.0)
+#define OLD_G_DELTA_A2(a)                    GETFLOATSIGN(a, 20, 1/5000000.0)
+#define OLD_G_CODE_BIAS(a)                   GETFLOATSIGN(a, 20, 1/100.0)
+#endif
 
 enum GCOB_RETURN GetClockOrbitBias(struct ClockOrbit *co, struct Bias *b,
 const char *buffer, size_t size, int *bytesused)
@@ -501,8 +601,11 @@ const char *buffer, size_t size, int *bytesused)
   case COTYPE_GPSORBIT:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
+    G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED6
+    G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
     if(co->OrbitDataSupplied)
       return GCOBR_DATAMISMATCH;
@@ -527,8 +630,11 @@ const char *buffer, size_t size, int *bytesused)
   case COTYPE_GPSCLOCK:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
+    G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED6
+    G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
     if(co->ClockDataSupplied)
       return GCOBR_DATAMISMATCH;
@@ -536,17 +642,19 @@ const char *buffer, size_t size, int *bytesused)
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
       G_GPS_SATELLITE_ID(co->Sat[i].ID)
-      G_GPS_IODE(co->Sat[i].IOD)
-      G_DELTA_A0(co->Sat[i].Clock.DeltaA0)
-      G_DELTA_A1(co->Sat[i].Clock.DeltaA1)
-      G_DELTA_A2(co->Sat[i].Clock.DeltaA2)
+      G_DELTA_CLOCK_C0(co->Sat[i].Clock.DeltaA0)
+      G_DELTA_CLOCK_C1(co->Sat[i].Clock.DeltaA1)
+      G_DELTA_CLOCK_C2(co->Sat[i].Clock.DeltaA2)
     }
     break;
   case COTYPE_GPSCOMBINED:
     if(!co) return -5;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
+    G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED6
+    G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
     if(co->ClockDataSupplied || co->OrbitDataSupplied)
       return GCOBR_DATAMISMATCH;
@@ -567,16 +675,52 @@ const char *buffer, size_t size, int *bytesused)
       G_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDotDeltaCrossTrack)
       G_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
       G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-      G_DELTA_A0(co->Sat[i].Clock.DeltaA0)
-      G_DELTA_A1(co->Sat[i].Clock.DeltaA1)
-      G_DELTA_A2(co->Sat[i].Clock.DeltaA2)
+      G_DELTA_CLOCK_C0(co->Sat[i].Clock.DeltaA0)
+      G_DELTA_CLOCK_C1(co->Sat[i].Clock.DeltaA1)
+      G_DELTA_CLOCK_C2(co->Sat[i].Clock.DeltaA2)
+    }
+    break;
+  case COTYPE_GPSURA:
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
+    G_MULTIPLE_MESSAGE_INDICATOR(mmi)
+    G_RESERVED5
+    G_NO_OF_SATELLITES(co->NumberOfGPSSat)
+    if(co->URADataSupplied)
+      return GCOBR_DATAMISMATCH;
+    co->URADataSupplied = 1;
+    for(i = 0; i < co->NumberOfGPSSat; ++i)
+    {
+      G_GPS_SATELLITE_ID(co->Sat[i].ID)
+      G_SSR_URA(co->Sat[i].URA)
+    }
+    break;
+  case COTYPE_GPSHR:
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
+    G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
+    G_MULTIPLE_MESSAGE_INDICATOR(mmi)
+    G_RESERVED5
+    G_NO_OF_SATELLITES(co->NumberOfGPSSat)
+    if(co->HRDataSupplied)
+      return GCOBR_DATAMISMATCH;
+    co->HRDataSupplied = 1;
+    for(i = 0; i < co->NumberOfGPSSat; ++i)
+    {
+      G_GPS_SATELLITE_ID(co->Sat[i].ID)
+      G_HR_CLOCK_CORRECTION(co->Sat[i].hrclock)
     }
     break;
   case COTYPE_GLONASSORBIT:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
     G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
+    G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED6
+    G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
     if(co->OrbitDataSupplied)
       return GCOBR_DATAMISMATCH;
@@ -602,8 +746,9 @@ const char *buffer, size_t size, int *bytesused)
   case COTYPE_GLONASSCLOCK:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
     G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
+    G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED6
+    G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
     if(co->ClockDataSupplied)
       return GCOBR_DATAMISMATCH;
@@ -612,17 +757,17 @@ const char *buffer, size_t size, int *bytesused)
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
     {
       G_GLONASS_SATELLITE_ID(co->Sat[i].ID)
-      G_GLONASS_IOD(co->Sat[i].IOD)
-      G_DELTA_A0(co->Sat[i].Clock.DeltaA0)
-      G_DELTA_A1(co->Sat[i].Clock.DeltaA1)
-      G_DELTA_A2(co->Sat[i].Clock.DeltaA2)
+      G_DELTA_CLOCK_C0(co->Sat[i].Clock.DeltaA0)
+      G_DELTA_CLOCK_C1(co->Sat[i].Clock.DeltaA1)
+      G_DELTA_CLOCK_C2(co->Sat[i].Clock.DeltaA2)
     }
     break;
   case COTYPE_GLONASSCOMBINED:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
     G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
+    G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED6
+    G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
     if(co->ClockDataSupplied || co->OrbitDataSupplied)
       return GCOBR_DATAMISMATCH;
@@ -644,16 +789,50 @@ const char *buffer, size_t size, int *bytesused)
       G_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDotDeltaCrossTrack)
       G_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
       G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-      G_DELTA_A0(co->Sat[i].Clock.DeltaA0)
-      G_DELTA_A1(co->Sat[i].Clock.DeltaA1)
-      G_DELTA_A2(co->Sat[i].Clock.DeltaA2)
+      G_DELTA_CLOCK_C0(co->Sat[i].Clock.DeltaA0)
+      G_DELTA_CLOCK_C1(co->Sat[i].Clock.DeltaA1)
+      G_DELTA_CLOCK_C2(co->Sat[i].Clock.DeltaA2)
+    }
+    break;
+  case COTYPE_GLONASSURA:
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
+    G_MULTIPLE_MESSAGE_INDICATOR(mmi)
+    G_RESERVED5
+    G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
+    if(co->URADataSupplied)
+      return GCOBR_DATAMISMATCH;
+    co->URADataSupplied = 1;
+    for(i = CLOCKORBIT_NUMGPS;
+    i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
+    {
+      G_GLONASS_SATELLITE_ID(co->Sat[i].ID)
+      G_SSR_URA(co->Sat[i].URA)
+    }
+    break;
+  case COTYPE_GLONASSHR:
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
+    G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
+    G_MULTIPLE_MESSAGE_INDICATOR(mmi)
+    G_RESERVED5
+    G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
+    if(co->HRDataSupplied)
+      return GCOBR_DATAMISMATCH;
+    co->HRDataSupplied = 1;
+    for(i = CLOCKORBIT_NUMGPS;
+    i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
+    {
+      G_GLONASS_SATELLITE_ID(co->Sat[i].ID)
+      G_HR_CLOCK_CORRECTION(co->Sat[i].hrclock)
     }
     break;
   case BTYPE_GPS:
     if(!b) return GCOBR_NOBIASPARAMETER;
     G_GPS_EPOCH_TIME(b->GPSEpochTime, co->NumberOfGPSSat)
+    G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED6
+    G_RESERVED5
     G_NO_OF_SATELLITES(b->NumberOfGPSSat)
     for(i = 0; i < b->NumberOfGPSSat; ++i)
     {
@@ -661,7 +840,7 @@ const char *buffer, size_t size, int *bytesused)
       G_NO_OF_CODE_BIASES(b->Sat[i].NumberOfCodeBiases)
       for(j = 0; j < b->Sat[i].NumberOfCodeBiases; ++j)
       {
-        G_GPS_CODE_TYPE(b->Sat[i].Biases[j].Type)
+        G_GPS_SIGNAL_IDENTIFIER(b->Sat[i].Biases[j].Type)
         G_CODE_BIAS(b->Sat[i].Biases[j].Bias)
       }
     }
@@ -669,8 +848,9 @@ const char *buffer, size_t size, int *bytesused)
   case BTYPE_GLONASS:
     if(!b) return GCOBR_NOBIASPARAMETER;
     G_GPS_EPOCH_TIME(b->GLONASSEpochTime, co->NumberOfGLONASSSat)
+    G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED6
+    G_RESERVED5
     G_NO_OF_SATELLITES(b->NumberOfGLONASSSat)
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+b->NumberOfGLONASSSat; ++i)
@@ -679,11 +859,205 @@ const char *buffer, size_t size, int *bytesused)
       G_NO_OF_CODE_BIASES(b->Sat[i].NumberOfCodeBiases)
       for(j = 0; j < b->Sat[i].NumberOfCodeBiases; ++j)
       {
-        G_GLONASS_CODE_TYPE(b->Sat[i].Biases[j].Type)
+        G_GLONASS_SIGNAL_IDENTIFIER(b->Sat[i].Biases[j].Type)
         G_CODE_BIAS(b->Sat[i].Biases[j].Bias)
       }
     }
     break;
+#ifdef OLD
+  case OLDCOTYPE_GPSORBIT:
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
+    G_MULTIPLE_MESSAGE_INDICATOR(mmi)
+    OLD_G_RESERVED6
+    OLD_G_NO_OF_SATELLITES(co->NumberOfGPSSat)
+    if(co->OrbitDataSupplied)
+      return GCOBR_DATAMISMATCH;
+    co->OrbitDataSupplied = 1;
+    for(i = 0; i < co->NumberOfGPSSat; ++i)
+    {
+      G_GPS_SATELLITE_ID(co->Sat[i].ID)
+      G_GPS_IODE(co->Sat[i].IOD)
+      OLD_G_DELTA_RADIAL(co->Sat[i].Orbit.DeltaRadial)
+      OLD_G_DELTA_ALONG_TRACK(co->Sat[i].Orbit.DeltaAlongTrack)
+      OLD_G_DELTA_CROSS_TRACK(co->Sat[i].Orbit.DeltaCrossTrack)
+      OLD_G_DELTA_DOT_RADIAL(co->Sat[i].Orbit.DotDeltaRadial)
+      OLD_G_DELTA_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDeltaAlongTrack)
+      OLD_G_DELTA_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDeltaCrossTrack)
+      OLD_G_DELTA_DOT_DOT_RADIAL(co->Sat[i].Orbit.DotDotDeltaRadial)
+      OLD_G_DELTA_DOT_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDotDeltaAlongTrack)
+      OLD_G_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDotDeltaCrossTrack)
+      G_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
+      G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
+    }
+    break;
+  case OLDCOTYPE_GPSCLOCK:
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
+    G_MULTIPLE_MESSAGE_INDICATOR(mmi)
+    OLD_G_RESERVED6
+    OLD_G_NO_OF_SATELLITES(co->NumberOfGPSSat)
+    if(co->ClockDataSupplied)
+      return GCOBR_DATAMISMATCH;
+    co->ClockDataSupplied = 1;
+    for(i = 0; i < co->NumberOfGPSSat; ++i)
+    {
+      G_GPS_SATELLITE_ID(co->Sat[i].ID)
+      G_GPS_IODE(co->Sat[i].IOD)
+      OLD_G_DELTA_A0(co->Sat[i].Clock.DeltaA0)
+      OLD_G_DELTA_A1(co->Sat[i].Clock.DeltaA1)
+      OLD_G_DELTA_A2(co->Sat[i].Clock.DeltaA2)
+    }
+    break;
+  case OLDCOTYPE_GPSCOMBINED:
+    if(!co) return -5;
+    G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
+    co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
+    if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
+    G_MULTIPLE_MESSAGE_INDICATOR(mmi)
+    OLD_G_RESERVED6
+    OLD_G_NO_OF_SATELLITES(co->NumberOfGPSSat)
+    if(co->ClockDataSupplied || co->OrbitDataSupplied)
+      return GCOBR_DATAMISMATCH;
+    co->OrbitDataSupplied = 1;
+    co->ClockDataSupplied = 1;
+    for(i = 0; i < co->NumberOfGPSSat; ++i)
+    {
+      G_GPS_SATELLITE_ID(co->Sat[i].ID)
+      G_GPS_IODE(co->Sat[i].IOD)
+      OLD_G_DELTA_RADIAL(co->Sat[i].Orbit.DeltaRadial)
+      OLD_G_DELTA_ALONG_TRACK(co->Sat[i].Orbit.DeltaAlongTrack)
+      OLD_G_DELTA_CROSS_TRACK(co->Sat[i].Orbit.DeltaCrossTrack)
+      OLD_G_DELTA_DOT_RADIAL(co->Sat[i].Orbit.DotDeltaRadial)
+      OLD_G_DELTA_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDeltaAlongTrack)
+      OLD_G_DELTA_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDeltaCrossTrack)
+      OLD_G_DELTA_DOT_DOT_RADIAL(co->Sat[i].Orbit.DotDotDeltaRadial)
+      OLD_G_DELTA_DOT_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDotDeltaAlongTrack)
+      OLD_G_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDotDeltaCrossTrack)
+      G_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
+      G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
+      OLD_G_DELTA_A0(co->Sat[i].Clock.DeltaA0)
+      OLD_G_DELTA_A1(co->Sat[i].Clock.DeltaA1)
+      OLD_G_DELTA_A2(co->Sat[i].Clock.DeltaA2)
+    }
+    break;
+  case OLDCOTYPE_GLONASSORBIT:
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
+    G_MULTIPLE_MESSAGE_INDICATOR(mmi)
+    OLD_G_RESERVED6
+    OLD_G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
+    if(co->OrbitDataSupplied)
+      return GCOBR_DATAMISMATCH;
+    co->OrbitDataSupplied = 1;
+    for(i = CLOCKORBIT_NUMGPS;
+    i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
+    {
+      OLD_G_GLONASS_SATELLITE_ID(co->Sat[i].ID)
+      G_GLONASS_IOD(co->Sat[i].IOD)
+      OLD_G_DELTA_RADIAL(co->Sat[i].Orbit.DeltaRadial)
+      OLD_G_DELTA_ALONG_TRACK(co->Sat[i].Orbit.DeltaAlongTrack)
+      OLD_G_DELTA_CROSS_TRACK(co->Sat[i].Orbit.DeltaCrossTrack)
+      OLD_G_DELTA_DOT_RADIAL(co->Sat[i].Orbit.DotDeltaRadial)
+      OLD_G_DELTA_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDeltaAlongTrack)
+      OLD_G_DELTA_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDeltaCrossTrack)
+      OLD_G_DELTA_DOT_DOT_RADIAL(co->Sat[i].Orbit.DotDotDeltaRadial)
+      OLD_G_DELTA_DOT_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDotDeltaAlongTrack)
+      OLD_G_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDotDeltaCrossTrack)
+      G_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
+      G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
+    }
+    break;
+  case OLDCOTYPE_GLONASSCLOCK:
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
+    G_MULTIPLE_MESSAGE_INDICATOR(mmi)
+    OLD_G_RESERVED6
+    OLD_G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
+    if(co->ClockDataSupplied)
+      return GCOBR_DATAMISMATCH;
+    co->ClockDataSupplied = 1;
+    for(i = CLOCKORBIT_NUMGPS;
+    i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
+    {
+      OLD_G_GLONASS_SATELLITE_ID(co->Sat[i].ID)
+      G_GLONASS_IOD(co->Sat[i].IOD)
+      OLD_G_DELTA_A0(co->Sat[i].Clock.DeltaA0)
+      OLD_G_DELTA_A1(co->Sat[i].Clock.DeltaA1)
+      OLD_G_DELTA_A2(co->Sat[i].Clock.DeltaA2)
+    }
+    break;
+  case OLDCOTYPE_GLONASSCOMBINED:
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
+    G_MULTIPLE_MESSAGE_INDICATOR(mmi)
+    OLD_G_RESERVED6
+    OLD_G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
+    if(co->ClockDataSupplied || co->OrbitDataSupplied)
+      return GCOBR_DATAMISMATCH;
+    co->OrbitDataSupplied = 1;
+    co->ClockDataSupplied = 1;
+    for(i = CLOCKORBIT_NUMGPS;
+    i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
+    {
+      OLD_G_GLONASS_SATELLITE_ID(co->Sat[i].ID)
+      G_GLONASS_IOD(co->Sat[i].IOD)
+      OLD_G_DELTA_RADIAL(co->Sat[i].Orbit.DeltaRadial)
+      OLD_G_DELTA_ALONG_TRACK(co->Sat[i].Orbit.DeltaAlongTrack)
+      OLD_G_DELTA_CROSS_TRACK(co->Sat[i].Orbit.DeltaCrossTrack)
+      OLD_G_DELTA_DOT_RADIAL(co->Sat[i].Orbit.DotDeltaRadial)
+      OLD_G_DELTA_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDeltaAlongTrack)
+      OLD_G_DELTA_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDeltaCrossTrack)
+      OLD_G_DELTA_DOT_DOT_RADIAL(co->Sat[i].Orbit.DotDotDeltaRadial)
+      OLD_G_DELTA_DOT_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDotDeltaAlongTrack)
+      OLD_G_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDotDeltaCrossTrack)
+      G_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
+      G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
+      OLD_G_DELTA_A0(co->Sat[i].Clock.DeltaA0)
+      OLD_G_DELTA_A1(co->Sat[i].Clock.DeltaA1)
+      OLD_G_DELTA_A2(co->Sat[i].Clock.DeltaA2)
+    }
+    break;
+  case OLDBTYPE_GPS:
+    if(!b) return GCOBR_NOBIASPARAMETER;
+    G_GPS_EPOCH_TIME(b->GPSEpochTime, co->NumberOfGPSSat)
+    G_MULTIPLE_MESSAGE_INDICATOR(mmi)
+    OLD_G_RESERVED6
+    OLD_G_NO_OF_SATELLITES(b->NumberOfGPSSat)
+    for(i = 0; i < b->NumberOfGPSSat; ++i)
+    {
+      G_GPS_SATELLITE_ID(b->Sat[i].ID)
+      G_NO_OF_CODE_BIASES(b->Sat[i].NumberOfCodeBiases)
+      for(j = 0; j < b->Sat[i].NumberOfCodeBiases; ++j)
+      {
+        G_GPS_SIGNAL_IDENTIFIER(b->Sat[i].Biases[j].Type)
+        OLD_G_CODE_BIAS(b->Sat[i].Biases[j].Bias)
+      }
+    }
+    break;
+  case OLDBTYPE_GLONASS:
+    if(!b) return GCOBR_NOBIASPARAMETER;
+    G_GPS_EPOCH_TIME(b->GLONASSEpochTime, co->NumberOfGLONASSSat)
+    G_MULTIPLE_MESSAGE_INDICATOR(mmi)
+    OLD_G_RESERVED6
+    OLD_G_NO_OF_SATELLITES(b->NumberOfGLONASSSat)
+    for(i = CLOCKORBIT_NUMGPS;
+    i < CLOCKORBIT_NUMGPS+b->NumberOfGLONASSSat; ++i)
+    {
+      OLD_G_GLONASS_SATELLITE_ID(b->Sat[i].ID)
+      G_NO_OF_CODE_BIASES(b->Sat[i].NumberOfCodeBiases)
+      for(j = 0; j < b->Sat[i].NumberOfCodeBiases; ++j)
+      {
+        G_GLONASS_SIGNAL_IDENTIFIER(b->Sat[i].Biases[j].Type)
+        OLD_G_CODE_BIAS(b->Sat[i].Biases[j].Bias)
+      }
+    }
+    break;
+#endif
   default:
     return GCOBR_UNKNOWNTYPE;
   }

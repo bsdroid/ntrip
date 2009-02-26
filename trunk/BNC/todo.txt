@@ -1,10 +1,11 @@
 Todo's sorted by priority:
 
-BNS
+BNC & BNS & RTNet
 =========================
 (1) Update to new version of clock_orbit_rtcm.c
-See mail from Fr 13.02.2009 16:18
-Concerns also RTNet and BNC
+introduced in BNC. However, BNC still running
+with in "OLD" mode concerning clock_orbit_rtcm.c
+See DEFINES += OLD in bnc.pro
 
 
 BNC
