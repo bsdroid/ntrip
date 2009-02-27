@@ -949,7 +949,7 @@ BNC currently will only handle C1, C2, P1, P2, L1, L2, S1, and S2 observations a
 <li>
 Using RTCM Version 3.x, BNC will properly handle message types 1002, 1004, 1010, and 1012. Note that when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
 </li>
-Concerning the length of data fields in RTCM Version 3.x premature message types 4063 and 4069 (combined orbit and clock corrections to GPS and GLONASS Broadcast Ephemeris, see RTCM document 012-2009-SC104-528 'Proposed SSR Messages for SV Orbit, Clock, Code Biases, URA prepared by Geo++'). A final decision on his is not yet available. Note the what's implemented in BNC is just a temporary solutions.
+Concerning the RTCM Version 3.x premature message types 4060-4071 (see RTCM document 012-2009-SC104-528 'Proposed SSR Messages for SV Orbit, Clock, Code Biases, URA prepared by Geo++'), a final decision is not yet made. Note the what's implemented in BNC is just a temporary solutions.
 <li>
 Using RTCM Version 2.x, BNC will only handle message types 18 and 19 or 20 and 21 together with position and the antenna offset information carried in types 3 and 22. Note that processing carrier phase corrections and pseudo-range corrections contained in message types 20 and 21 needs access to broadcast ephemeris. Hence, whenever dealing with message types 20 and 21, make sure that broadcast ephemeris become available for BNC through also retrieving at least one RTCM Version 3.x stream carrying message types 1019 (GPS ephemeris) and 1020 (GLONASS ephemeris).
 </li>
