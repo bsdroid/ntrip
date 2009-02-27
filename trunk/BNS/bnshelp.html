@@ -1,4 +1,4 @@
-<h3>BKG Ntrip State Space Server (BNS) Version 1.0</h3>
+<h3>BKG Ntrip State Space Server (BNS) Version 1.1</h3>
 
 <p>
 The BKG Ntrip State Space Server (BNS) is a program for transforming GNSS satellite clocks and orbits into corrections to Broadcast Ephemeris. These corrections are then encode in a (premature) RTCM Version 3.x format and uploaded to NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home.</u> BNS is created as a tool for service providers with real-time access to a network of continentally or globally distributed GNSS reference stations.
@@ -50,7 +50,7 @@ An alternative to the observation space approach is the so called 'sate space' a
 </ul>
 </p>
 <p>
-Note that BNS currently only generates premature RTCM Version 3.x message types 4056 for combined GPS orbit and clock corrections and 4057 for combined GLONASS orbit and clock corrections to Broadcast Ephemeris.
+Note that BNS currently only generates premature RTCM Version 3.x message types 4063 for combined GPS orbit and clock corrections and 4069 for combined GLONASS orbit and clock corrections to Broadcast Ephemeris.
 </p>
 
 <p><a name="function"><h3>2. Functioning</h3></p>
@@ -274,7 +274,7 @@ Specify the full path to a file where received clocks and orbits from a real-tim
 
 <p><a name="ephc"><h4>4.7. Ephemeris Corrections</h4></p>
 <p>
-BNS can upload the resulting stream(s) of clock and orbit corrections to Broadcast Ephemeris to an NTRIP Broadcaster. Both EUREF and IGS operate an NTRIP broadcaster at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which can be used for stream upload. The stream's format is RTCM Version 3.x. Note that it only carries the premature message Types 4056 and 4057 for combined orbit and clock corrections to GPS and GLONASS Broadcast Ephemeris.
+BNS can upload the resulting stream(s) of clock and orbit corrections to Broadcast Ephemeris to an NTRIP Broadcaster. Both EUREF and IGS operate an NTRIP broadcaster at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which can be used for stream upload. The stream's format is RTCM Version 3.x. Note that it only carries the premature message Types 4063 and 4069 for combined orbit and clock corrections to GPS and GLONASS Broadcast Ephemeris.
 </p>
 <p>
 BNS allows to configure two Ephemeris Corrections streams refering do different reference systems for upload to different NTRIP broadcasters. You may use this functionality for parallel support of a backup NTRIP broadcaster or for simultaneous support of two reference systems.
@@ -361,7 +361,7 @@ The file is in plain ASCII format comprising records containing the following se
 </ul>
 </p>
 <p>
-The following is an example file contents based on combined orbit and clock corrections for GPS and GLONASS carried in RTCM Version 3.x message Type 4056 and 4057:
+The following is an example file contents based on combined orbit and clock corrections for GPS and GLONASS carried in RTCM Version 3.x message Type 4063 and 4069:
 </p>
 <p>
 <pre>
@@ -437,7 +437,7 @@ The self-explanatory contents of the configuration file or the Windows registry 
 In Qt-based desktop environments (such as KDE) on Unix/Linux/Mac platforms users may experience a crash at startup even when BNS is run in the background using the '-nw' option. This is a known bug most likely resulting from an incompatibility of Qt libraries in the environment and in BNS. Entering the command 'unset SESSION_MANAGER' before running BNS may help as a work-around.
 </li>
 <li>
-Currently BNS can only generate premature RTCM Version 3.x message Type 4056 and 4057 for combined GPS and GLONASS orbit and clock corrections, see RTCM document 026-2008-SC104-429 'Version 1 Proposed SSR Messages prepared by Geo++'. Note that the length of data fields in these messages is not yet standardized. What's implemented in BNS is just a temporary solution.
+Currently BNS can only generate premature RTCM Version 3.x message Type 4060-4071 (see RTCM document 012-2009-SC104-528 'Proposed SSR Messages for SV Orbit, Clock, Code Biases, URA prepared by Geo++'). Note that what is implemented in BNS is just a temporary solution.
 </li>
 <li>
 We experienced some limitation with the Standard Version of Microsoft Windows related to socket communication where sockets are not always handled properly. Since BNS makes intensive use of communication through sockets, we recommend to use the Server Version of Microsoft Windows when running BNS continuously for extended period on a Windows platform.
@@ -473,6 +473,7 @@ Frankfurt, Germany<br>
 <table>
 <tr></tr>
 <tr><td>Dec 2008 &nbsp;</td><td>Version 1.0 &nbsp;</td><td>[Add] Source code and binaries published.</td></tr>
+<tr><td>Mar 2009 &nbsp;</td><td>Version 1.1 &nbsp;</td><td>[Add] New messages for URA and high-rate clocks.</td></tr>
 </table>
 </p>
 
@@ -517,14 +518,18 @@ RTCM Version 3.x has been developed as a better alternative to RTCM Version 2.x.
 RTCM is in the process of developing new Version 3 message types to carry satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following premature messages currently under discussion of relevance to BNS are listed here:
 <p>
 <ul>
-<li>Message type 4050: GPS orbit corrections to Broadcast Ephemeris</li>
-<li>Message type 4051: GPS clock corrections to Broadcast Ephemeris</li>
-<li>Message type 4052: GPS code biases</li>
-<li>Message type 4053: GLONASS orbit corrections to Broadcast Ephemeris</li>
-<li>Message type 4054: GLONASS clock corrections to Broadcast Ephemeris</li>
-<li>Message type 4055: GLONASS code biases</li>
-<li>Message type 4056: Combined orbit and clock corrections to GPS Broadcast Ephemeris</li>
-<li>Message type 4057: Combined orbit and clock corrections to GLONASS Broadcast Ephemeris</li>
+<li>Message type 4060: GPS orbit corrections to Broadcast Ephemeris</li>
+<li>Message type 4061: GPS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 4062: GPS code biases</li>
+<li>Message type 4063: Combined orbit and clock corrections to GPS Broadcast Ephemeris</li>
+<li>Message type 4064: GPS User Range Accuracy (URA)</li>
+<li>Message type 4065: High-rate GPS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 4066: GLONASS orbit corrections to Broadcast Ephemeris</li>
+<li>Message type 4067: GLONASS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 4068: GLONASS code biases</li>
+<li>Message type 4069: Combined orbit and clock corrections to GLONASS Broadcast Ephemeris</li>
+<li>Message type 4070: GLONASS User Range Accuracy (URA)</li>
+<li>Message type 4071: High-rate GLONASS clock corrections to Broadcast Ephemeris</li>
 </ul>
 </p>
 <p>
