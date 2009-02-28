@@ -181,6 +181,8 @@ bnsWindow::bnsWindow() {
     _refSys_1_ComboBox->setCurrentIndex(ii);
   }
   _outFile_1_LineEdit    = new QLineEdit(settings.value("outFile_1").toString());
+  _beClocks1CheckBox  = new QCheckBox();
+  _beClocks1CheckBox->setCheckState(Qt::CheckState(settings.value("beClocks1").toInt()));
 
   // Ephemeris Corrections II Options
   // --------------------------------
@@ -197,6 +199,8 @@ bnsWindow::bnsWindow() {
     _refSys_2_ComboBox->setCurrentIndex(ii);
   }
   _outFile_2_LineEdit    = new QLineEdit(settings.value("outFile_2").toString());
+  _beClocks2CheckBox  = new QCheckBox();
+  _beClocks2CheckBox->setCheckState(Qt::CheckState(settings.value("beClocks2").toInt()));
 
   // RINEX Clocks Options
   // --------------------
@@ -264,6 +268,8 @@ bnsWindow::bnsWindow() {
   _sp3IntrComboBox->setWhatsThis(tr("Select the length of the SP3 orbit file."));
   _sp3SamplSpinBox->setWhatsThis(tr("Select the SP3 orbit file sampling interval in seconds. A value of zero '0' tells BNS to store all available samples into SP3 orbit files."));
   _autoStartCheckBox->setWhatsThis(tr("<p>Tick 'Auto start' for auto-start of BNS at startup time in window mode with preassigned processing options.</p>"));
+  _beClocks1CheckBox->setWhatsThis(tr("<p>Send broadcast clocks instead of broadcast clock corrections and ignore the incoming clock estimates.</p>"));
+  _beClocks2CheckBox->setWhatsThis(tr("<p>Send broadcast clocks instead of broadcast clock corrections and ignore the incoming clock estimates.</p>"));
 
 
   // TabWidget
@@ -383,7 +389,9 @@ bnsWindow::bnsWindow() {
   layout_cas1->addWidget(_refSys_1_ComboBox,               2, 1);
   layout_cas1->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
   layout_cas1->addWidget(_outFile_1_LineEdit,              2, 3, 1, 30);
-  layout_cas1->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 50);
+  layout_cas1->addWidget(new QLabel("Broadcast clocks"),   3, 0);
+  layout_cas1->addWidget(_beClocks1CheckBox,               3, 1);
+  layout_cas1->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
   tab_cas1->setLayout(layout_cas1);
 
@@ -429,7 +437,9 @@ bnsWindow::bnsWindow() {
   layout_cas2->addWidget(_refSys_2_ComboBox,               2, 1);
   layout_cas2->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
   layout_cas2->addWidget(_outFile_2_LineEdit,              2, 3, 1, 30);
-  layout_cas2->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 50);
+  layout_cas2->addWidget(new QLabel("Broadcast clocks"),   3, 0);
+  layout_cas2->addWidget(_beClocks2CheckBox,               3, 1);
+  layout_cas2->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
   tab_cas2->setLayout(layout_cas2);
 
@@ -691,6 +701,8 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("sp3Intr",     _sp3IntrComboBox->currentText());
   settings.setValue("sp3Sampl",    _sp3SamplSpinBox->value());
   settings.setValue("startTab",    tabs->currentIndex());
+  settings.setValue("beClocks1",   _beClocks1CheckBox->checkState());
+  settings.setValue("beClocks2",   _beClocks2CheckBox->checkState());
 }
 
 // Display Program Messages 

@@ -99,6 +99,8 @@ Q_OBJECT
   QSpinBox*  _sp3SamplSpinBox;
   QCheckBox* _fileAppendCheckBox;
   QCheckBox* _autoStartCheckBox;
+  QCheckBox* _beClocks1CheckBox;
+  QCheckBox* _beClocks2CheckBox;
 
   QTextEdit*  _log;
 
