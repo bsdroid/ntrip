@@ -31,6 +31,7 @@ Q_OBJECT
  public slots:  
   void slotMessage(const QByteArray msg);
   void slotError(const QByteArray msg);
+  void bnsText(const QString &text);
 
  private slots:
   void slotHelp();
@@ -97,9 +98,11 @@ Q_OBJECT
   QSpinBox*  _rnxSamplSpinBox;
   QSpinBox*  _sp3SamplSpinBox;
   QCheckBox* _fileAppendCheckBox;
+  QCheckBox* _autoStartCheckBox;
 
   QTextEdit*  _log;
 
+  QTabWidget* tabs;
 //QWidget*    _status;
   QGroupBox*  _status;
   QLabel*     _statusLbl[8];  
