@@ -372,7 +372,8 @@ void t_bns::readEpoch() {
             in >> prn;
             prns << prn;
             if ( _ephList.contains(prn) ) {
-              in >> xx(1) >> xx(2) >> xx(3) >> xx(4);
+//            in >> xx(1) >> xx(2) >> xx(3) >> xx(4);
+              in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5);
               xx(1) *= 1e3;
               xx(2) *= 1e3;
               xx(3) *= 1e3;
