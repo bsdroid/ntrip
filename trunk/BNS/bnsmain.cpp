@@ -33,13 +33,17 @@ int main(int argc, char *argv[]) {
   // Command-Line Options
   // --------------------
   bool GUIenabled = true;
+
   for (int ii = 1; ii < argc; ii++) {
-    if (QString(argv[ii]) == "-nw") {
+    if (QByteArray(argv[ii]) == "-nw") {
       GUIenabled = false;
-      break;
+    }
+    if (ii + 1 < argc) {
+      if (QByteArray(argv[ii]).indexOf("-conf")   != -1) {
+        confFileName = QString(argv[ii+1]);
+      }
     }
   }
-
   if (argc == 2 && GUIenabled) {
     confFileName = QString(argv[1]);
   }
