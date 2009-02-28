@@ -22,6 +22,7 @@
 #include "bnsutils.h" 
 #include "bnsrinex.h" 
 #include "bnssp3.h" 
+#include "bnssettings.h" 
 
 using namespace std;
 
@@ -34,7 +35,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   connect(this, SIGNAL(moveSocket(QThread*)), 
           this, SLOT(slotMoveSocket(QThread*)));
 
-  QSettings settings;
+  bnsSettings settings;
 
   // Set Proxy (application-wide)
   // ----------------------------

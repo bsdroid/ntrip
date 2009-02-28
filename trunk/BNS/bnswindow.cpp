@@ -19,6 +19,7 @@
 
 #include "bnswindow.h" 
 #include "bnshlpdlg.h" 
+#include "bnssettings.h" 
 
 using namespace std;
 
@@ -86,7 +87,7 @@ bnsWindow::bnsWindow() {
 
   _bns = 0;
 
-  QSettings settings;
+  bnsSettings settings;
 
   QString fontString = settings.value("font").toString();
   if ( !fontString.isEmpty() ) {
@@ -139,93 +140,74 @@ bnsWindow::bnsWindow() {
   _canvas = new QWidget;
   setCentralWidget(_canvas);
 
+  // Proxy Options
+  // -------------
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
-  _proxyHostLineEdit->setWhatsThis(tr("<p>If you are running BNS within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNS. If you do not know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is sometimes not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNS outside your LAN on a network that has unobstructed connection to the Internet.</p>"));
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
-  _proxyPortLineEdit->setWhatsThis(tr("<p>Enter your proxy server port number in case one is operated in front of BNS.</p>"));
-  _proxyPortLineEdit->setMaximumWidth(9*ww);
 
+  // General Options
+  // ---------------
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
-  _logFileLineEdit->setWhatsThis(tr("<p>Records of BNS activities are shown in the Log section on the bottom of this window. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field.</p>"));
   _fileAppendCheckBox  = new QCheckBox();
   _fileAppendCheckBox->setCheckState(Qt::CheckState(settings.value("fileAppend").toInt()));
-  _fileAppendCheckBox->setWhatsThis(tr("<p>When BNS is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append already existing files following a restart of BNS, a system crash or when BNS crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far.</p>"));
+  _autoStartCheckBox  = new QCheckBox();
+  _autoStartCheckBox->setCheckState(Qt::CheckState(
+                                    settings.value("autoStart").toInt()));
 
-  _inpEchoLineEdit  = new QLineEdit(settings.value("inpEcho").toString());
-  _inpEchoLineEdit->setWhatsThis(tr("Specify the full path to a file where incoming clocks and orbits are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that incoming clocks and orbits are not saved."));
-
+  // RINEX Ephemeris Options
+  // -----------------------
   _ephHostLineEdit  = new QLineEdit(settings.value("ephHost").toString());
-  _ephHostLineEdit->setWhatsThis(tr("BNS reads Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address. Specify the host IP e.g. of a BNC installation providing this information."));
   _ephPortLineEdit  = new QLineEdit(settings.value("ephPort").toString());
-  _ephPortLineEdit->setWhatsThis(tr("BNS reads Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address. Specify the IP port e.g. of a BNC installation providing this information."));
-  _ephPortLineEdit->setMaximumWidth(9*ww);
   _ephEchoLineEdit  = new QLineEdit(settings.value("ephEcho").toString());
-  _ephEchoLineEdit->setWhatsThis(tr("Specify the full path to a file where incoming Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that incoming Broadcast Ephemeris are not saved."));
 
+  // Clocks & Orbits Options
+  // -----------------------
   _clkPortLineEdit  = new QLineEdit(settings.value("clkPort").toString());
-  _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in SP3 format from an IP port. Specify a local IP port e.g. for an RTNet installation to provide this information."));
-  _clkPortLineEdit->setMaximumWidth(9*ww);
+  _inpEchoLineEdit  = new QLineEdit(settings.value("inpEcho").toString());
 
+
+  // Ephemeris Corrections I Options
+  // -------------------------------
   _outHost_1_LineEdit    = new QLineEdit(settings.value("outHost1").toString());
-  _outHost_1_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
   _outPort_1_LineEdit    = new QLineEdit(settings.value("outPort1").toString());
-  _outPort_1_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
-  _outPort_1_LineEdit->setMaximumWidth(9*ww);
   _password_1_LineEdit   = new QLineEdit(settings.value("password1").toString());
-  _password_1_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
-  _password_1_LineEdit->setMaximumWidth(9*ww);
   _password_1_LineEdit->setEchoMode(QLineEdit::Password);
-
-  _outHost_2_LineEdit    = new QLineEdit(settings.value("outHost2").toString());
-  _outHost_2_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
-  _outPort_2_LineEdit    = new QLineEdit(settings.value("outPort2").toString());
-  _outPort_2_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
-  _outPort_2_LineEdit->setMaximumWidth(9*ww);
-  _password_2_LineEdit   = new QLineEdit(settings.value("password2").toString());
-  _password_2_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
-  _password_2_LineEdit->setMaximumWidth(9*ww);
-  _password_2_LineEdit->setEchoMode(QLineEdit::Password);
-
   _mountpoint_1_LineEdit = new QLineEdit(settings.value("mountpoint_1").toString());
-  _mountpoint_1_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
-  _mountpoint_1_LineEdit->setMaximumWidth(12*ww);
-  _mountpoint_2_LineEdit = new QLineEdit(settings.value("mountpoint_2").toString());
-  _mountpoint_2_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
-  _mountpoint_2_LineEdit->setMaximumWidth(12*ww);
   _refSys_1_ComboBox = new QComboBox;
-  _refSys_1_ComboBox->setMaximumWidth(12*ww);
   _refSys_1_ComboBox->setEditable(false);
   _refSys_1_ComboBox->addItems(QString("IGS05,ETRF2000").split(","));
   int ii = _refSys_1_ComboBox->findText(settings.value("refSys_1").toString());
   if (ii != -1) {
     _refSys_1_ComboBox->setCurrentIndex(ii);
   }
-  _refSys_1_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
+  _outFile_1_LineEdit    = new QLineEdit(settings.value("outFile_1").toString());
+
+  // Ephemeris Corrections II Options
+  // --------------------------------
+  _outHost_2_LineEdit    = new QLineEdit(settings.value("outHost2").toString());
+  _outPort_2_LineEdit    = new QLineEdit(settings.value("outPort2").toString());
+  _password_2_LineEdit   = new QLineEdit(settings.value("password2").toString());
+  _password_2_LineEdit->setEchoMode(QLineEdit::Password);
+  _mountpoint_2_LineEdit = new QLineEdit(settings.value("mountpoint_2").toString());
   _refSys_2_ComboBox = new QComboBox;
-  _refSys_2_ComboBox->setMaximumWidth(12*ww);
   _refSys_2_ComboBox->setEditable(false);
   _refSys_2_ComboBox->addItems(QString("IGS05,ETRF2000").split(","));
   ii = _refSys_2_ComboBox->findText(settings.value("refSys_2").toString());
   if (ii != -1) {
     _refSys_2_ComboBox->setCurrentIndex(ii);
   }
-  _refSys_2_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
-  _outFile_1_LineEdit    = new QLineEdit(settings.value("outFile_1").toString());
-  _outFile_1_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
   _outFile_2_LineEdit    = new QLineEdit(settings.value("outFile_2").toString());
-  _outFile_2_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
 
+  // RINEX Clocks Options
+  // --------------------
   _rnxPathLineEdit = new QLineEdit(settings.value("rnxPath").toString());
-  _rnxPathLineEdit->setWhatsThis(tr("Specify the path for saving the generated clock corrections as Clock RINEX files. If the specified directory does not exist, BNS will not create Clock RINEX files."));
   _rnxIntrComboBox = new QComboBox;
-  _rnxIntrComboBox->setMaximumWidth(9*ww);
   _rnxIntrComboBox->setEditable(false);
   _rnxIntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
   ii = _rnxIntrComboBox->findText(settings.value("rnxIntr").toString());
   if (ii != -1) {
     _rnxIntrComboBox->setCurrentIndex(ii);
   }
-  _rnxIntrComboBox->setWhatsThis(tr("Select the length of the Clock RINEX file."));
   _rnxSamplSpinBox = new QSpinBox;
   _rnxSamplSpinBox->setMinimum(0);
   _rnxSamplSpinBox->setMaximum(60);
@@ -233,19 +215,17 @@ bnsWindow::bnsWindow() {
   _rnxSamplSpinBox->setMaximumWidth(9*ww);
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
   _rnxSamplSpinBox->setSuffix(" sec");
-  _rnxSamplSpinBox->setWhatsThis(tr("Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNS to store all available samples into Clock RINEX files."));
 
+  // SP3 Orbits Options
+  // ------------------
   _sp3PathLineEdit = new QLineEdit(settings.value("sp3Path").toString());
-  _sp3PathLineEdit->setWhatsThis(tr("Specify the path for saving the generated orbit corrections as SP3 orbit files. If the specified directory does not exist, BNS will not create SP3 orbit files."));
   _sp3IntrComboBox = new QComboBox;
-  _sp3IntrComboBox->setMaximumWidth(9*ww);
   _sp3IntrComboBox->setEditable(false);
   _sp3IntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
   ii = _sp3IntrComboBox->findText(settings.value("sp3Intr").toString());
   if (ii != -1) {
     _sp3IntrComboBox->setCurrentIndex(ii);
   }
-  _sp3IntrComboBox->setWhatsThis(tr("Select the length of the SP3 orbit file."));
   _sp3SamplSpinBox = new QSpinBox;
   _sp3SamplSpinBox->setMinimum(0);
   _sp3SamplSpinBox->setMaximum(900);
@@ -253,11 +233,42 @@ bnsWindow::bnsWindow() {
   _sp3SamplSpinBox->setMaximumWidth(9*ww);
   _sp3SamplSpinBox->setValue(settings.value("sp3Sampl").toInt());
   _sp3SamplSpinBox->setSuffix(" sec");
+
+  // Whats This
+  // ----------
+  _proxyHostLineEdit->setWhatsThis(tr("<p>If you are running BNS within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNS. If you do not know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is sometimes not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNS outside your LAN on a network that has unobstructed connection to the Internet.</p>"));
+  _proxyPortLineEdit->setWhatsThis(tr("<p>Enter your proxy server port number in case one is operated in front of BNS.</p>"));
+  _logFileLineEdit->setWhatsThis(tr("<p>Records of BNS activities are shown in the Log section on the bottom of this window. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field.</p>"));
+  _fileAppendCheckBox->setWhatsThis(tr("<p>When BNS is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append already existing files following a restart of BNS, a system crash or when BNS crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far.</p>"));
+  _inpEchoLineEdit->setWhatsThis(tr("Specify the full path to a file where incoming clocks and orbits are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that incoming clocks and orbits are not saved."));
+  _ephHostLineEdit->setWhatsThis(tr("BNS reads Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address. Specify the host IP e.g. of a BNC installation providing this information."));
+  _ephPortLineEdit->setWhatsThis(tr("BNS reads Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address. Specify the IP port e.g. of a BNC installation providing this information."));
+  _ephEchoLineEdit->setWhatsThis(tr("Specify the full path to a file where incoming Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that incoming Broadcast Ephemeris are not saved."));
+  _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in SP3 format from an IP port. Specify a local IP port e.g. for an RTNet installation to provide this information."));
+  _outHost_1_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outPort_1_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
+  _password_1_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
+  _mountpoint_1_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
+  _refSys_1_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
+  _outHost_2_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outPort_2_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
+  _password_2_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
+  _mountpoint_2_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
+  _refSys_2_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
+  _outFile_1_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
+  _outFile_2_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
+  _rnxPathLineEdit->setWhatsThis(tr("Specify the path for saving the generated clock corrections as Clock RINEX files. If the specified directory does not exist, BNS will not create Clock RINEX files."));
+  _rnxIntrComboBox->setWhatsThis(tr("Select the length of the Clock RINEX file."));
+  _rnxSamplSpinBox->setWhatsThis(tr("Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNS to store all available samples into Clock RINEX files."));
+  _sp3PathLineEdit->setWhatsThis(tr("Specify the path for saving the generated orbit corrections as SP3 orbit files. If the specified directory does not exist, BNS will not create SP3 orbit files."));
+  _sp3IntrComboBox->setWhatsThis(tr("Select the length of the SP3 orbit file."));
   _sp3SamplSpinBox->setWhatsThis(tr("Select the SP3 orbit file sampling interval in seconds. A value of zero '0' tells BNS to store all available samples into SP3 orbit files."));
+  _autoStartCheckBox->setWhatsThis(tr("<p>Tick 'Auto start' for auto-start of BNS at startup time in window mode with preassigned processing options.</p>"));
+
 
   // TabWidget
   // ---------
-  QTabWidget* tabs = new QTabWidget();
+  tabs = new QTabWidget();
 
   // Proxy Tab
   // ---------
@@ -266,16 +277,25 @@ bnsWindow::bnsWindow() {
   tabs->addTab(tab_prx, "Proxy");
 
   QGridLayout* layout_prx = new QGridLayout;
-  layout_prx->setColumnMinimumWidth(0,9*ww);
 
-  layout_prx->addWidget(new QLabel("Host"),       0, 0, Qt::AlignLeft);
-  layout_prx->addWidget(_proxyHostLineEdit,       0, 1);
-  layout_prx->addWidget(new QLabel("Port"),       1, 0, Qt::AlignLeft);
+  layout_prx->setColumnMinimumWidth(0,9*ww);
+  _proxyPortLineEdit->setMaximumWidth(9*ww);
+
+  layout_prx->addWidget(new QLabel("Host"),       0, 0);
+  layout_prx->addWidget(_proxyHostLineEdit,       0, 1, 1, 10);
+  layout_prx->addWidget(new QLabel("Port"),       1, 0);
   layout_prx->addWidget(_proxyPortLineEdit,       1, 1);
-  layout_prx->addWidget(new QLabel("Settings for the proxy in protected networks, leave boxes blank if none."),2, 0, 1, 2, Qt::AlignLeft);
+  layout_prx->addWidget(new QLabel("Settings for the proxy in protected networks, leave boxes blank if none."),2, 0, 1, 50, Qt::AlignLeft);
   layout_prx->addWidget(new QLabel("    "),       3, 0);
 
   tab_prx->setLayout(layout_prx);
+
+  connect(_proxyHostLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bnsText(const QString &)));
+  if (_proxyHostLineEdit->text().isEmpty()) {
+    _proxyPortLineEdit->setStyleSheet("background-color: lightGray");
+    _proxyPortLineEdit->setEnabled(false);
+  }
 
   // General Tab
   // ----------- 
@@ -283,139 +303,212 @@ bnsWindow::bnsWindow() {
   tabs->addTab(tab_gen, "General");
 
   QGridLayout* layout_gen = new QGridLayout;
-  layout_gen->setColumnMinimumWidth(0,9*ww);
 
-  layout_gen->addWidget(new QLabel("Logfile (full path)"), 0, 0);
-  layout_gen->addWidget(_logFileLineEdit,                  0, 1);
-  layout_gen->addWidget(new QLabel("Append files"),        1, 0);
-  layout_gen->addWidget(_fileAppendCheckBox,               1, 1); 
-  layout_gen->addWidget(new QLabel("General settings for logfile and file handling."), 2, 0, 1, 2, Qt::AlignLeft);
-  layout_gen->addWidget(new QLabel("    "),                3, 0);
+  layout_gen->setColumnMinimumWidth(0,9*ww);
+  _logFileLineEdit->setMaximumWidth(40*ww);
+
+  layout_gen->addWidget(new QLabel("Logfile (full path)  "), 0, 0);
+  layout_gen->addWidget(_logFileLineEdit,                    0, 1);
+  layout_gen->addWidget(new QLabel("Append files"),          1, 0);
+  layout_gen->addWidget(_fileAppendCheckBox,                 1, 1); 
+  layout_gen->addWidget(new QLabel("Auto start"),            2, 0);
+  layout_gen->addWidget(_autoStartCheckBox,                  2, 1);
+  layout_gen->addWidget(new QLabel("General settings for logfile and file handling."), 3, 0, 1, 50, Qt::AlignLeft);
 
   tab_gen->setLayout(layout_gen);
 
-  // Ephemeris Tab
-  // -------------
+  // RINEX Ephemeris Tab
+  // -------------------
   QWidget* tab_eph = new QWidget();
   tabs->addTab(tab_eph, "RINEX Ephemeris");
 
   QGridLayout* layout_eph = new QGridLayout;
+
   layout_eph->setColumnMinimumWidth(0, 9*ww);
+  _ephPortLineEdit->setMaximumWidth(9*ww);
 
   layout_eph->addWidget(new QLabel("Host"),                   0, 0);
-  layout_eph->addWidget(_ephHostLineEdit,                     0, 1);
+  layout_eph->addWidget(_ephHostLineEdit,                     0, 1, 1, 10);
   layout_eph->addWidget(new QLabel("Port"),                   1, 0);
   layout_eph->addWidget(_ephPortLineEdit,                     1, 1);
   layout_eph->addWidget(new QLabel("Save (full path)"),       2, 0);
-  layout_eph->addWidget(_ephEchoLineEdit,                     2, 1);
-  layout_eph->addWidget(new QLabel("Read broadcast ephemeris in RINEX Version 3 Navigation format."), 3, 0, 1, 2, Qt::AlignLeft);
-//layout_eph->addWidget(new QLabel(""),                       4, 0);
+  layout_eph->addWidget(_ephEchoLineEdit,                     2, 1, 1, 26);
+  layout_eph->addWidget(new QLabel("Read broadcast ephemeris in RINEX Version 3 Navigation format."), 3, 0, 1, 50, Qt::AlignLeft);
 
   tab_eph->setLayout(layout_eph);
 
-  // Clock & Orbit Tab
-  // -----------------
+  // Clocks & Orbits Tab
+  // -------------------
   QWidget* tab_co = new QWidget();
   tabs->addTab(tab_co,"Clocks && Orbits");
 
-
   QGridLayout* layout_co = new QGridLayout;
+
   layout_co->setColumnMinimumWidth(0, 9*ww);
+  _clkPortLineEdit->setMaximumWidth(9*ww);
 
   layout_co->addWidget(new QLabel("Listening port"),                  0, 0);
   layout_co->addWidget(_clkPortLineEdit,                              0, 1);
-  layout_co->addWidget(new QLabel("Save (full path)"),                1, 0);
+  layout_co->addWidget(new QLabel("Save (full path)  "),              1, 0);
   layout_co->addWidget(_inpEchoLineEdit,                              1, 1);
-  layout_co->addWidget(new QLabel("Read clocks and orbits in SP3 format."),     2, 0, 1, 2, Qt::AlignLeft);
+  layout_co->addWidget(new QLabel("Read clocks and orbits in SP3 format."),     2, 0, 1, 50, Qt::AlignLeft);
   layout_co->addWidget(new QLabel(""),                                3, 0);
 
   tab_co->setLayout(layout_co);
 
-  // Caster Tab I
-  // ------------
+  // Ephemeris Corrections I Tab
+  // ---------------------------
   QWidget* tab_cas1 = new QWidget();
   tabs->addTab(tab_cas1, "Ephemeris Corrections I");
 
   QGridLayout* layout_cas1 = new QGridLayout;
+
   layout_cas1->setColumnMinimumWidth(0, 9*ww);
-  layout_cas1->addWidget(new QLabel("Host"),             0, 0);
-  layout_cas1->addWidget(_outHost_1_LineEdit,            0, 1, 1, 3);
-  layout_cas1->addWidget(new QLabel("Port"),             0, 4, Qt::AlignRight);
-  layout_cas1->addWidget(_outPort_1_LineEdit,            0, 5);
-  layout_cas1->addWidget(new QLabel("Mountpoint"),       1, 0);
-  layout_cas1->addWidget(_mountpoint_1_LineEdit,         1, 1);
-  layout_cas1->addWidget(new QLabel("Password"),         1, 2, Qt::AlignRight);
-  layout_cas1->addWidget(_password_1_LineEdit,           1, 3);
-  layout_cas1->addWidget(new QLabel(" "),                1, 4);
-  layout_cas1->addWidget(new QLabel(" "),                1, 5);
-  layout_cas1->addWidget(new QLabel("System"),           2, 0);
-  layout_cas1->addWidget(_refSys_1_ComboBox,             2, 1);
-  layout_cas1->addWidget(new QLabel("Save (full path)"), 2, 2, Qt::AlignRight);
-  layout_cas1->addWidget(_outFile_1_LineEdit,            2, 3, 1, 10);
-  layout_cas1->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 10);
+  _outPort_1_LineEdit->setMaximumWidth(9*ww);
+  _password_1_LineEdit->setMaximumWidth(9*ww);
+  _mountpoint_1_LineEdit->setMaximumWidth(12*ww);
+  _refSys_1_ComboBox->setMaximumWidth(12*ww);
+
+  layout_cas1->addWidget(new QLabel("Host"),               0, 0);
+  layout_cas1->addWidget(_outHost_1_LineEdit,              0, 1, 1, 3);
+  layout_cas1->addWidget(new QLabel("  Port"),             0, 4, Qt::AlignRight);
+  layout_cas1->addWidget(_outPort_1_LineEdit,              0, 5);
+  layout_cas1->addWidget(new QLabel("Mountpoint"),         1, 0);
+  layout_cas1->addWidget(_mountpoint_1_LineEdit,           1, 1);
+  layout_cas1->addWidget(new QLabel("Password"),           1, 2, Qt::AlignRight);
+  layout_cas1->addWidget(_password_1_LineEdit,             1, 3);
+  layout_cas1->addWidget(new QLabel(" "),                  1, 4);
+  layout_cas1->addWidget(new QLabel(" "),                  1, 5);
+  layout_cas1->addWidget(new QLabel("System"),             2, 0);
+  layout_cas1->addWidget(_refSys_1_ComboBox,               2, 1);
+  layout_cas1->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
+  layout_cas1->addWidget(_outFile_1_LineEdit,              2, 3, 1, 30);
+  layout_cas1->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 50);
 
   tab_cas1->setLayout(layout_cas1);
 
-  // Caster Tab II
-  // -------------
+  connect(_outHost_1_LineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bnsText(const QString &)));
+  if (_outHost_1_LineEdit->text().isEmpty()) {
+    _outPort_1_LineEdit->setStyleSheet("background-color: lightGray");
+    _mountpoint_1_LineEdit->setStyleSheet("background-color: lightGray");
+    _password_1_LineEdit->setStyleSheet("background-color: lightGray");
+    _outFile_1_LineEdit->setStyleSheet("background-color: lightGray");
+    _refSys_1_ComboBox->setStyleSheet("background-color: lightGray");
+    _outPort_1_LineEdit->setEnabled(false);
+    _mountpoint_1_LineEdit->setEnabled(false);
+    _password_1_LineEdit->setEnabled(false);
+    _outFile_1_LineEdit->setEnabled(false);
+    _refSys_1_ComboBox->setEnabled(false);
+  }
+
+  // Ephemeris Corrections II Tab
+  // ----------------------------
   QWidget* tab_cas2 = new QWidget();
   tabs->addTab(tab_cas2, "Ephemeris Corrections II");
 
   QGridLayout* layout_cas2 = new QGridLayout;
+
   layout_cas2->setColumnMinimumWidth(0, 9*ww);
-  layout_cas2->addWidget(new QLabel("Host"),             0, 0);
-  layout_cas2->addWidget(_outHost_2_LineEdit,            0, 1, 1, 3);
-  layout_cas2->addWidget(new QLabel("Port"),             0, 4, Qt::AlignRight);
-  layout_cas2->addWidget(_outPort_2_LineEdit,            0, 5);
-  layout_cas2->addWidget(new QLabel("Mountpoint"),       1, 0);
-  layout_cas2->addWidget(_mountpoint_2_LineEdit,         1, 1);
-  layout_cas2->addWidget(new QLabel("Password"),         1, 2, Qt::AlignRight);
-  layout_cas2->addWidget(_password_2_LineEdit,           1, 3);
-  layout_cas2->addWidget(new QLabel(" "),                1, 4);
-  layout_cas2->addWidget(new QLabel(" "),                1, 5);
-  layout_cas2->addWidget(new QLabel("System"),           2, 0);
-  layout_cas2->addWidget(_refSys_2_ComboBox,             2, 1);
-  layout_cas2->addWidget(new QLabel("Save (full path)"), 2, 2, Qt::AlignRight);
-  layout_cas2->addWidget(_outFile_2_LineEdit,            2, 3, 1, 10);
-  layout_cas2->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 10);
+  _outPort_2_LineEdit->setMaximumWidth(9*ww);
+  _password_2_LineEdit->setMaximumWidth(9*ww);
+  _mountpoint_2_LineEdit->setMaximumWidth(12*ww);
+  _refSys_2_ComboBox->setMaximumWidth(12*ww);
+
+  layout_cas2->addWidget(new QLabel("Host"),               0, 0);
+  layout_cas2->addWidget(_outHost_2_LineEdit,              0, 1, 1, 3);
+  layout_cas2->addWidget(new QLabel("  Port"),             0, 4, Qt::AlignRight);
+  layout_cas2->addWidget(_outPort_2_LineEdit,              0, 5);
+  layout_cas2->addWidget(new QLabel("Mountpoint"),         1, 0);
+  layout_cas2->addWidget(_mountpoint_2_LineEdit,           1, 1);
+  layout_cas2->addWidget(new QLabel("Password"),           1, 2, Qt::AlignRight);
+  layout_cas2->addWidget(_password_2_LineEdit,             1, 3);
+  layout_cas2->addWidget(new QLabel(" "),                  1, 4);
+  layout_cas2->addWidget(new QLabel(" "),                  1, 5);
+  layout_cas2->addWidget(new QLabel("System"),             2, 0);
+  layout_cas2->addWidget(_refSys_2_ComboBox,               2, 1);
+  layout_cas2->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
+  layout_cas2->addWidget(_outFile_2_LineEdit,              2, 3, 1, 30);
+  layout_cas2->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 3, 0, 1, 50);
 
   tab_cas2->setLayout(layout_cas2);
 
-  // RINEX Tab
-  // ---------
+  connect(_outHost_2_LineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bnsText(const QString &)));
+  if (_outHost_2_LineEdit->text().isEmpty()) {
+    _outPort_2_LineEdit->setStyleSheet("background-color: lightGray");
+    _mountpoint_2_LineEdit->setStyleSheet("background-color: lightGray");
+    _password_2_LineEdit->setStyleSheet("background-color: lightGray");
+    _outFile_2_LineEdit->setStyleSheet("background-color: lightGray");
+    _refSys_2_ComboBox->setStyleSheet("background-color: lightGray");
+    _outPort_2_LineEdit->setEnabled(false);
+    _mountpoint_2_LineEdit->setEnabled(false);
+    _password_2_LineEdit->setEnabled(false);
+    _outFile_2_LineEdit->setEnabled(false);
+    _refSys_2_ComboBox->setEnabled(false);
+  }
+
+  // RINEX Clocks Tab
+  // ----------------
   QWidget* tab_rin = new QWidget();
   tabs->addTab(tab_rin, "RINEX Clocks ");
 
   QGridLayout* layout_rin = new QGridLayout;
+
   layout_rin->setColumnMinimumWidth(0, 9*ww);
+  _rnxIntrComboBox->setMaximumWidth(9*ww);
 
   layout_rin->addWidget(new QLabel("Directory"),                    0, 0);
-  layout_rin->addWidget(_rnxPathLineEdit,                           0, 1);
+  layout_rin->addWidget(_rnxPathLineEdit,                           0, 1, 1, 27);
   layout_rin->addWidget(new QLabel("Interval"),                     1, 0);
   layout_rin->addWidget(_rnxIntrComboBox,                           1, 1);
   layout_rin->addWidget(new QLabel("Sampling"),                     2, 0);
   layout_rin->addWidget(_rnxSamplSpinBox,                           2, 1);
-  layout_rin->addWidget(new QLabel("Save clock corrections in Clock RINEX file format."),  3, 0, 1, 2, Qt::AlignLeft);
+  layout_rin->addWidget(new QLabel("Save clock corrections in Clock RINEX file format."),  3, 0, 1, 50, Qt::AlignLeft);
+  layout_rin->addWidget(new QLabel("    "),                         3, 0);
 
   tab_rin->setLayout(layout_rin);
 
-  // SP3 Tab
-  // -------
+  connect(_rnxPathLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bnsText(const QString &)));
+  if (_rnxPathLineEdit->text().isEmpty()) {
+    _rnxIntrComboBox->setStyleSheet("background-color: lightGray");
+    _rnxSamplSpinBox->setStyleSheet("background-color: lightGray");
+    _rnxIntrComboBox->setEnabled(false);
+    _rnxSamplSpinBox->setEnabled(false);
+  }
+
+  // SP3 Orbits Tab
+  // --------------
   QWidget* tab_sp3 = new QWidget();
   tabs->addTab(tab_sp3, "SP3 Orbits");
 
   QGridLayout* layout_sp3 = new QGridLayout;
+
   layout_sp3->setColumnMinimumWidth(0, 9*ww);
+  _sp3IntrComboBox->setMaximumWidth(9*ww);
 
   layout_sp3->addWidget(new QLabel("Directory"),                 0, 0);
-  layout_sp3->addWidget(_sp3PathLineEdit,                        0, 1);
+  layout_sp3->addWidget(_sp3PathLineEdit,                        0, 1, 1, 27);
   layout_sp3->addWidget(new QLabel("Interval"),                  1, 0);
   layout_sp3->addWidget(_sp3IntrComboBox,                        1, 1);
   layout_sp3->addWidget(new QLabel("Sampling"),                  2, 0);
   layout_sp3->addWidget(_sp3SamplSpinBox,                        2, 1);
-  layout_sp3->addWidget(new QLabel("Save orbit corrections in SP3 file format."), 3, 0, 1, 2, Qt::AlignLeft);
+  layout_sp3->addWidget(new QLabel("Save orbit corrections in SP3 file format."), 3, 0, 1, 50, Qt::AlignLeft);
+  layout_sp3->addWidget(new QLabel("    "),                      3, 0);
 
   tab_sp3->setLayout(layout_sp3);
+
+  connect(_sp3PathLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bnsText(const QString &)));
+  if (_sp3PathLineEdit->text().isEmpty()) {
+    _sp3IntrComboBox->setStyleSheet("background-color: lightGray");
+    _sp3SamplSpinBox->setStyleSheet("background-color: lightGray");
+    _sp3IntrComboBox->setEnabled(false);
+    _sp3SamplSpinBox->setEnabled(false);
+  }
+
+  tabs->setCurrentIndex(settings.value("startTab").toInt());
 
   // Log
   // ---
@@ -425,7 +518,6 @@ bnsWindow::bnsWindow() {
 
   // Status
   // ------
-//_status = new QWidget();
   _status = new QGroupBox(tr("Status"));
   QGridLayout* layout_status = new QGridLayout;
 
@@ -465,6 +557,13 @@ bnsWindow::bnsWindow() {
   mainLayout->addWidget(_status);
 
   _canvas->setLayout(mainLayout);
+
+  // Auto start
+  // ----------
+  if ( Qt::CheckState(settings.value("autoStart").toInt()) == Qt::Checked) {
+    slotStart();
+  }
+
 }
 
 // Destructor
@@ -497,7 +596,7 @@ void bnsWindow::slotAbout() {
  new bnsAboutDlg(0);
 }
 
-//Flowchart
+// Flowchart
 ////////////////////////////////////////////////////////////////////////////
 void bnsWindow::slotFlowchart() {
  new bnsFlowchartDlg(0);
@@ -517,7 +616,7 @@ void bnsWindow::slotFontSel() {
   bool ok;
   QFont newFont = QFontDialog::getFont(&ok, this->font(), this); 
   if (ok) {
-    QSettings settings;
+    bnsSettings settings;
     settings.setValue("font", newFont.toString());
     QApplication::setFont(newFont);
     int ww = QFontMetrics(newFont).width('w');
@@ -562,11 +661,12 @@ void bnsWindow::AddToolbar() {
 // Save Options
 ////////////////////////////////////////////////////////////////////////////
 void bnsWindow::slotSaveOptions() {
-  QSettings settings;
+  bnsSettings settings;
   settings.setValue("proxyHost",   _proxyHostLineEdit->text());
   settings.setValue("proxyPort",   _proxyPortLineEdit->text());
   settings.setValue("logFile",     _logFileLineEdit->text());
   settings.setValue("fileAppend",  _fileAppendCheckBox->checkState());
+  settings.setValue("autoStart",   _autoStartCheckBox->checkState());
   settings.setValue("refSys_1",    _refSys_1_ComboBox->currentText());
   settings.setValue("refSys_2",    _refSys_2_ComboBox->currentText());
   settings.setValue("inpEcho",     _inpEchoLineEdit->text());
@@ -590,6 +690,7 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("sp3Path",     _sp3PathLineEdit->text());
   settings.setValue("sp3Intr",     _sp3IntrComboBox->currentText());
   settings.setValue("sp3Sampl",    _sp3SamplSpinBox->value());
+  settings.setValue("startTab",    tabs->currentIndex());
 }
 
 // Display Program Messages 
@@ -686,4 +787,116 @@ void bnsWindow::updateStatus(int ii, int nBytes) {
   else {
     _statusLbl[ii]->setText(QString("%1 Mb").arg(_statusCnt[ii]/1.e6, 5));
   }
+}
+
+//  Bns Text
+////////////////////////////////////////////////////////////////////////////
+void bnsWindow::bnsText(const QString &text){
+
+  bool isEmpty = text.isEmpty();
+
+  QPalette palette;
+  QColor lightGray(230, 230, 230);
+  QColor white(255, 255, 255);
+
+  // Enable/disable Proxy Options
+  // -----
+  if (tabs->currentIndex() == 0) {
+    if (!isEmpty) {
+      _proxyPortLineEdit->setStyleSheet("background-color: white");
+      _proxyPortLineEdit->setEnabled(true);
+    } else {
+      _proxyPortLineEdit->setStyleSheet("background-color: lightGray");
+      _proxyPortLineEdit->setEnabled(false);
+    }
+  }
+
+  // Enable/disable  Ephemeris Corrections I Options
+  // -----------------------------------------------
+  if (tabs->currentIndex() == 4) {
+    if (!isEmpty) {
+      _outPort_1_LineEdit->setStyleSheet("background-color: white");
+      _mountpoint_1_LineEdit->setStyleSheet("background-color: white");
+      _password_1_LineEdit->setStyleSheet("background-color: white");
+      _outFile_1_LineEdit->setStyleSheet("background-color: white");
+      _refSys_1_ComboBox->setStyleSheet("background-color: white");
+      _outPort_1_LineEdit->setEnabled(true);
+      _mountpoint_1_LineEdit->setEnabled(true);
+      _password_1_LineEdit->setEnabled(true);
+      _outFile_1_LineEdit->setEnabled(true);
+      _refSys_1_ComboBox->setEnabled(true);
+    } else {
+      _outPort_1_LineEdit->setStyleSheet("background-color: lightGray");
+      _mountpoint_1_LineEdit->setStyleSheet("background-color: lightGray");
+      _password_1_LineEdit->setStyleSheet("background-color: lightGray");
+      _outFile_1_LineEdit->setStyleSheet("background-color: lightGray");
+      _refSys_1_ComboBox->setStyleSheet("background-color: lightGray");
+      _outPort_1_LineEdit->setEnabled(false);
+      _mountpoint_1_LineEdit->setEnabled(false);
+      _password_1_LineEdit->setEnabled(false);
+      _outFile_1_LineEdit->setEnabled(false);
+      _refSys_1_ComboBox->setEnabled(false);
+    }
+  }
+
+  // Enable/disable Ephemeris Corrections II Options
+  // -----------------------------------------------
+  if (tabs->currentIndex() == 5) {
+    if (!isEmpty) {
+      _outPort_2_LineEdit->setStyleSheet("background-color: white");
+      _mountpoint_2_LineEdit->setStyleSheet("background-color: white");
+      _password_2_LineEdit->setStyleSheet("background-color: white");
+      _outFile_2_LineEdit->setStyleSheet("background-color: white");
+      _refSys_2_ComboBox->setStyleSheet("background-color: white");
+      _outPort_2_LineEdit->setEnabled(true);
+      _mountpoint_2_LineEdit->setEnabled(true);
+      _password_2_LineEdit->setEnabled(true);
+      _outFile_2_LineEdit->setEnabled(true);
+      _refSys_2_ComboBox->setEnabled(true);
+    } else {
+      _outPort_2_LineEdit->setStyleSheet("background-color: lightGray");
+      _mountpoint_2_LineEdit->setStyleSheet("background-color: lightGray");
+      _password_2_LineEdit->setStyleSheet("background-color: lightGray");
+      _outFile_2_LineEdit->setStyleSheet("background-color: lightGray");
+      _refSys_2_ComboBox->setStyleSheet("background-color: lightGray");
+      _outPort_2_LineEdit->setEnabled(false);
+      _mountpoint_2_LineEdit->setEnabled(false);
+      _password_2_LineEdit->setEnabled(false);
+      _outFile_2_LineEdit->setEnabled(false);
+      _refSys_2_ComboBox->setEnabled(false);
+    }
+  }
+
+  // Enable/disable RINEX Clocks Options
+  // -----------------------------------
+  if (tabs->currentIndex() == 6) {
+    if (!isEmpty) {
+      _rnxIntrComboBox->setStyleSheet("background-color: white");
+      _rnxSamplSpinBox->setStyleSheet("background-color: white");
+      _rnxIntrComboBox->setEnabled(true);
+      _rnxSamplSpinBox->setEnabled(true);
+    } else {
+      _rnxIntrComboBox->setStyleSheet("background-color: lightGray");
+      _rnxSamplSpinBox->setStyleSheet("background-color: lightGray");
+      _rnxIntrComboBox->setEnabled(false);
+      _rnxSamplSpinBox->setEnabled(false);
+    }
+  }
+
+  // Enable/disable SP3 Orbits Options
+  // ---------------------------------
+  if (tabs->currentIndex() == 7) {
+    if (!isEmpty) {
+      _sp3IntrComboBox->setStyleSheet("background-color: white");
+      _sp3SamplSpinBox->setStyleSheet("background-color: white");
+      _sp3IntrComboBox->setEnabled(true);
+      _sp3SamplSpinBox->setEnabled(true);
+    } else {
+      _sp3IntrComboBox->setStyleSheet("background-color: lightGray");
+      _sp3SamplSpinBox->setStyleSheet("background-color: lightGray");
+      _sp3IntrComboBox->setEnabled(false);
+      _sp3SamplSpinBox->setEnabled(false);
+    }
+  }
+
 }

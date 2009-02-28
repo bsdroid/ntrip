@@ -19,12 +19,16 @@
 #include "bns.h"
 #include "bnswindow.h"
 #include "bnsutils.h"
+#include "bnsapp.h"
+#include "bnssettings.h"
 
 using namespace std;
 
 // Main Program
 /////////////////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[]) {
+
+  QString confFileName;
 
   // Command-Line Options
   // --------------------
@@ -38,11 +42,13 @@ int main(int argc, char *argv[]) {
 
   // Main Qt Class
   // -------------
-  QApplication app(argc, argv, GUIenabled);
+//QApplication app(argc, argv, GUIenabled);
+  bnsApp app(argc, argv, GUIenabled);
 
+  app.setApplicationName("BNS");
   app.setOrganizationName("BKG");
   app.setOrganizationDomain("www.bkg.bund.de");
-  app.setApplicationName("BKG_NTRIP_Server");
+  app.setConfFileName( confFileName );
 
   // Interactive Mode - open the main window
   // ---------------------------------------

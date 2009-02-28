@@ -18,6 +18,7 @@
 
 #include "bnseph.h" 
 #include "bnsutils.h" 
+#include "bnssettings.h" 
 
 using namespace std;
 
@@ -29,7 +30,7 @@ t_bnseph::t_bnseph(QObject* parent) : QThread(parent) {
 
   _socket = 0;
 
-  QSettings settings;
+  bnsSettings settings;
 
   QIODevice::OpenMode oMode;
   if (Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked) {
@@ -71,7 +72,7 @@ void t_bnseph::reconnect() {
 
   delete _socket;
 
-  QSettings settings;
+  bnsSettings settings;
   QString host = settings.value("ephHost").toString();
   if (host.isEmpty()) {
     host = "localhost";

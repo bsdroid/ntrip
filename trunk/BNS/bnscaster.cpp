@@ -16,6 +16,7 @@
 
 #include <math.h>
 #include "bnscaster.h" 
+#include "bnssettings.h"
 
 using namespace std;
 
@@ -29,7 +30,7 @@ t_bnscaster::t_bnscaster(const QString& mountpoint, const QString& outFileName,
   _outSocketOpenTrial = 0;
   _ic = ic;
 
-  QSettings settings;
+  bnsSettings settings;
 
   QIODevice::OpenMode oMode;
   if (Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked) {
@@ -93,7 +94,7 @@ void t_bnscaster::open() {
     _outSocketOpenTime = QDateTime::currentDateTime();
   }
 
-  QSettings settings;
+  bnsSettings settings;
   _outSocket = new QTcpSocket();
   QString password;
   if (_ic == 1) {
