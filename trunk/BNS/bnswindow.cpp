@@ -88,6 +88,8 @@ bnsWindow::bnsWindow() {
   _bns = 0;
 
   bnsSettings settings;
+  QPalette palette;
+  QColor lightGray(230, 230, 230);
 
   QString fontString = settings.value("font").toString();
   if ( !fontString.isEmpty() ) {
@@ -403,11 +405,14 @@ bnsWindow::bnsWindow() {
     _password_1_LineEdit->setStyleSheet("background-color: lightGray");
     _outFile_1_LineEdit->setStyleSheet("background-color: lightGray");
     _refSys_1_ComboBox->setStyleSheet("background-color: lightGray");
+    palette.setColor(_beClocks1CheckBox->backgroundRole(), lightGray);
+    _beClocks1CheckBox->setPalette(palette);
     _outPort_1_LineEdit->setEnabled(false);
     _mountpoint_1_LineEdit->setEnabled(false);
     _password_1_LineEdit->setEnabled(false);
     _outFile_1_LineEdit->setEnabled(false);
     _refSys_1_ComboBox->setEnabled(false);
+    _beClocks1CheckBox->setEnabled(false);
   }
 
   // Ephemeris Corrections II Tab
@@ -451,11 +456,14 @@ bnsWindow::bnsWindow() {
     _password_2_LineEdit->setStyleSheet("background-color: lightGray");
     _outFile_2_LineEdit->setStyleSheet("background-color: lightGray");
     _refSys_2_ComboBox->setStyleSheet("background-color: lightGray");
+    palette.setColor(_beClocks2CheckBox->backgroundRole(), lightGray);
+    _beClocks2CheckBox->setPalette(palette);
     _outPort_2_LineEdit->setEnabled(false);
     _mountpoint_2_LineEdit->setEnabled(false);
     _password_2_LineEdit->setEnabled(false);
     _outFile_2_LineEdit->setEnabled(false);
     _refSys_2_ComboBox->setEnabled(false);
+    _beClocks2CheckBox->setEnabled(false);
   }
 
   // RINEX Clocks Tab
@@ -832,22 +840,28 @@ void bnsWindow::bnsText(const QString &text){
       _password_1_LineEdit->setStyleSheet("background-color: white");
       _outFile_1_LineEdit->setStyleSheet("background-color: white");
       _refSys_1_ComboBox->setStyleSheet("background-color: white");
+      palette.setColor(_beClocks1CheckBox->backgroundRole(), white);
+      _beClocks1CheckBox->setPalette(palette);
       _outPort_1_LineEdit->setEnabled(true);
       _mountpoint_1_LineEdit->setEnabled(true);
       _password_1_LineEdit->setEnabled(true);
       _outFile_1_LineEdit->setEnabled(true);
       _refSys_1_ComboBox->setEnabled(true);
+      _beClocks1CheckBox->setEnabled(true);
     } else {
       _outPort_1_LineEdit->setStyleSheet("background-color: lightGray");
       _mountpoint_1_LineEdit->setStyleSheet("background-color: lightGray");
       _password_1_LineEdit->setStyleSheet("background-color: lightGray");
       _outFile_1_LineEdit->setStyleSheet("background-color: lightGray");
       _refSys_1_ComboBox->setStyleSheet("background-color: lightGray");
+      palette.setColor(_beClocks1CheckBox->backgroundRole(), lightGray);
+      _beClocks1CheckBox->setPalette(palette);
       _outPort_1_LineEdit->setEnabled(false);
       _mountpoint_1_LineEdit->setEnabled(false);
       _password_1_LineEdit->setEnabled(false);
       _outFile_1_LineEdit->setEnabled(false);
       _refSys_1_ComboBox->setEnabled(false);
+      _beClocks1CheckBox->setEnabled(false);
     }
   }
 
@@ -860,22 +874,28 @@ void bnsWindow::bnsText(const QString &text){
       _password_2_LineEdit->setStyleSheet("background-color: white");
       _outFile_2_LineEdit->setStyleSheet("background-color: white");
       _refSys_2_ComboBox->setStyleSheet("background-color: white");
+      palette.setColor(_beClocks2CheckBox->backgroundRole(), white);
+      _beClocks2CheckBox->setPalette(palette);
       _outPort_2_LineEdit->setEnabled(true);
       _mountpoint_2_LineEdit->setEnabled(true);
       _password_2_LineEdit->setEnabled(true);
       _outFile_2_LineEdit->setEnabled(true);
       _refSys_2_ComboBox->setEnabled(true);
+      _beClocks2CheckBox->setEnabled(true);
     } else {
       _outPort_2_LineEdit->setStyleSheet("background-color: lightGray");
       _mountpoint_2_LineEdit->setStyleSheet("background-color: lightGray");
       _password_2_LineEdit->setStyleSheet("background-color: lightGray");
       _outFile_2_LineEdit->setStyleSheet("background-color: lightGray");
       _refSys_2_ComboBox->setStyleSheet("background-color: lightGray");
+      palette.setColor(_beClocks2CheckBox->backgroundRole(), lightGray);
+      _beClocks2CheckBox->setPalette(palette);
       _outPort_2_LineEdit->setEnabled(false);
       _mountpoint_2_LineEdit->setEnabled(false);
       _password_2_LineEdit->setEnabled(false);
       _outFile_2_LineEdit->setEnabled(false);
       _refSys_2_ComboBox->setEnabled(false);
+      _beClocks2CheckBox->setEnabled(false);
     }
   }
 
