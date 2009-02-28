@@ -52,6 +52,8 @@ bnsSettings::bnsSettings() :
     setValue("sp3Sampl",    "0");
     setValue("startTab",    "0");
     setValue("autoStart",   "0");
+    setValue("beClocks1",   "0");
+    setValue("beClocks2",   "0");
     sync();
   }
 }

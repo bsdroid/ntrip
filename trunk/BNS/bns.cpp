@@ -291,6 +291,8 @@ void t_bns::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::readEpoch() {
 
+  bnsSettings settings;
+
   // Read the first line (if not already read)
   // -----------------------------------------
   if (_clkLine.indexOf('*') == -1) {
@@ -375,6 +377,10 @@ void t_bns::readEpoch() {
               xx(2) *= 1e3;
               xx(3) *= 1e3;
               xx(4) *= 1e-6;
+
+              if ( Qt::CheckState(settings.value("beClocks1").toInt()) == Qt::Checked) {
+                xx(4) -= xx(5) / 299792458.0;
+              }
       
               t_ephPair* pair = _ephList[prn];
               pair->xx = xx;
