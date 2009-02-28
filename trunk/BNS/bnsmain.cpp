@@ -40,6 +40,10 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  if (argc == 2 && GUIenabled) {
+    confFileName = QString(argv[1]);
+  }
+
   // Main Qt Class
   // -------------
 //QApplication app(argc, argv, GUIenabled);
