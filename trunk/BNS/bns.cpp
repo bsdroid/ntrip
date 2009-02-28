@@ -372,16 +372,23 @@ void t_bns::readEpoch() {
             in >> prn;
             prns << prn;
             if ( _ephList.contains(prn) ) {
-//            in >> xx(1) >> xx(2) >> xx(3) >> xx(4);
-              in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5);
+              in >> xx(1) >> xx(2) >> xx(3) >> xx(4);
               xx(1) *= 1e3;
               xx(2) *= 1e3;
               xx(3) *= 1e3;
               xx(4) *= 1e-6;
 
-              if ( Qt::CheckState(settings.value("beClocks1").toInt()) == Qt::Checked) {
-                xx(4) -= xx(5) / 299792458.0;
-              }
+    //// in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5); xx(4) *= 1e-6;
+    ////
+    //// beg test (zero clock correction for Gerhard Wuebbena)
+    ////            xx(4) -= xx(5) / 299792458.0;
+    //// end test
+    ////
+    //// Falls Clocks aus den Broadcast Ephemeris gewuenscht:
+    ////
+    //// if ( Qt::CheckState(settings.value("beClocks1 oder beClocks2").toInt()) == Qt::Checked) {
+    ////  .....
+    //// }
       
               t_ephPair* pair = _ephList[prn];
               pair->xx = xx;
