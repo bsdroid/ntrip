@@ -1,5 +1,17 @@
 Todo's sorted by priority:
 
+BNS
+=========================
+(1) Zero Clock Corrections
+Loukis wishes to have one stream (for combination purposes)
+which provides the original clocks from the BE (no corrections).
+I remember that we once implemented a hard-coded option
+for that in bns.cpp for Gerhard Wuebbena. I have added the solution
+for Gerhard as comment lines to bns.cpp, see lines 385 ff.
+To send zero clock corrections I have added options
+"beClocks1" and "beClocks2" (for Broadcast Clocks) to BNS.
+
+
 BNC & BNS & RTNet
 =========================
 (1) Update to new version of clock_orbit_rtcm.c
@@ -24,5 +36,4 @@ yet implemented.
 (4) Pure UDP protocol not yet implemented.
 
 (5) GW: Keep an eye on www.igs-ip.net/PENC0.
-
 
