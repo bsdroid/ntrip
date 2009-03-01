@@ -114,168 +114,137 @@ bncWindow::bncWindow() {
   AddToolbar();
 
   bncSettings settings;
+
+  // Proxy Options
+  // -------------
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
-  _proxyPortLineEdit->setMaximumWidth(9*ww);
-  _miscMountLineEdit  = new QLineEdit(settings.value("miscMount").toString());
-  _scanRTCMCheckBox  = new QCheckBox();
-  _scanRTCMCheckBox->setCheckState(Qt::CheckState(
-                                    settings.value("scanRTCM").toInt()));
-  _waitTimeSpinBox   = new QSpinBox();
-  _waitTimeSpinBox->setMinimum(1);
-  _waitTimeSpinBox->setMaximum(30);
-  _waitTimeSpinBox->setSingleStep(1);
-  _waitTimeSpinBox->setSuffix(" sec");
-  _waitTimeSpinBox->setMaximumWidth(9*ww);
-  _waitTimeSpinBox->setValue(settings.value("waitTime").toInt());
-  _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
-  _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
-  _outPortLineEdit->setMaximumWidth(9*ww);
-  _outUPortLineEdit   = new QLineEdit(settings.value("outUPort").toString());
-  _outUPortLineEdit->setMaximumWidth(9*ww);
-  _outEphPortLineEdit    = new QLineEdit(settings.value("outEphPort").toString());
-  _outEphPortLineEdit->setMaximumWidth(9*ww);
-  _corrPortLineEdit    = new QLineEdit(settings.value("corrPort").toString());
-  _corrPortLineEdit->setMaximumWidth(9*ww);
-  _rnxPathLineEdit    = new QLineEdit(settings.value("rnxPath").toString());
-  _ephPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
-  _corrPathLineEdit    = new QLineEdit(settings.value("corrPath").toString());
 
-  _rnxV3CheckBox = new QCheckBox();
-  _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
-  _ephV3CheckBox = new QCheckBox();
-  _ephV3CheckBox->setCheckState(Qt::CheckState(settings.value("ephV3").toInt()));
-  _rnxScrpLineEdit    = new QLineEdit(settings.value("rnxScript").toString());
-  _rnxSkelLineEdit    = new QLineEdit(settings.value("rnxSkel").toString());
-  _rnxSkelLineEdit->setMaximumWidth(5*ww);
+  // General Options
+  // ---------------
+  _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
   _rnxAppendCheckBox  = new QCheckBox();
   _rnxAppendCheckBox->setCheckState(Qt::CheckState(
                                     settings.value("rnxAppend").toInt()));
-  _autoStartCheckBox  = new QCheckBox();
-  _autoStartCheckBox->setCheckState(Qt::CheckState(
-                                    settings.value("autoStart").toInt()));
-  _rnxIntrComboBox    = new QComboBox();
-  _rnxIntrComboBox->setMaximumWidth(9*ww);
-  _rnxIntrComboBox->setEditable(false);
-  _rnxIntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
-  int ii = _rnxIntrComboBox->findText(settings.value("rnxIntr").toString());
-  if (ii != -1) {
-    _rnxIntrComboBox->setCurrentIndex(ii);
-  }
   _onTheFlyComboBox = new QComboBox();
-  _onTheFlyComboBox->setMaximumWidth(9*ww);
   _onTheFlyComboBox->setEditable(false);
   _onTheFlyComboBox->addItems(QString("1 day,1 hour,1 min").split(","));
-  ii = _onTheFlyComboBox->findText(settings.value("onTheFlyInterval").toString());
+  int ii = _onTheFlyComboBox->findText(settings.value("onTheFlyInterval").toString());
   if (ii != -1) {
     _onTheFlyComboBox->setCurrentIndex(ii);
   }
+  _autoStartCheckBox  = new QCheckBox();
+  _autoStartCheckBox->setCheckState(Qt::CheckState(
+                                    settings.value("autoStart").toInt()));
+
+  // RINEX Observations Options
+  // --------------------------
+  _rnxPathLineEdit    = new QLineEdit(settings.value("rnxPath").toString());
+  _rnxIntrComboBox    = new QComboBox();
+  _rnxIntrComboBox->setEditable(false);
+  _rnxIntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
+  ii = _rnxIntrComboBox->findText(settings.value("rnxIntr").toString());
+  if (ii != -1) {
+    _rnxIntrComboBox->setCurrentIndex(ii);
+  }
+  _rnxSamplSpinBox    = new QSpinBox();
+  _rnxSamplSpinBox->setMinimum(0);
+  _rnxSamplSpinBox->setMaximum(60);
+  _rnxSamplSpinBox->setSingleStep(5);
+  _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
+  _rnxSamplSpinBox->setSuffix(" sec");
+  _rnxSkelLineEdit    = new QLineEdit(settings.value("rnxSkel").toString());
+  _rnxSkelLineEdit->setMaximumWidth(5*ww);
+  _rnxScrpLineEdit    = new QLineEdit(settings.value("rnxScript").toString());
+  _rnxV3CheckBox = new QCheckBox();
+  _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
+
+  // RINEX Ephemeris Options
+  // -----------------------
+  _ephPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
   _ephIntrComboBox    = new QComboBox();
-  _ephIntrComboBox->setMaximumWidth(9*ww);
   _ephIntrComboBox->setEditable(false);
   _ephIntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
   int jj = _ephIntrComboBox->findText(settings.value("ephIntr").toString());
   if (jj != -1) {
     _ephIntrComboBox->setCurrentIndex(jj);
   }
+  _outEphPortLineEdit    = new QLineEdit(settings.value("outEphPort").toString());
+  _ephV3CheckBox = new QCheckBox();
+  _ephV3CheckBox->setCheckState(Qt::CheckState(settings.value("ephV3").toInt()));
+
+  // Ephemeris Corrections Options
+  // -----------------------------
+  _corrPathLineEdit    = new QLineEdit(settings.value("corrPath").toString());
   _corrIntrComboBox    = new QComboBox();
-  _corrIntrComboBox->setMaximumWidth(9*ww);
   _corrIntrComboBox->setEditable(false);
   _corrIntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
   int mm = _corrIntrComboBox->findText(settings.value("corrIntr").toString());
   if (mm != -1) {
     _corrIntrComboBox->setCurrentIndex(mm);
   }
+  _corrPortLineEdit    = new QLineEdit(settings.value("corrPort").toString());
   _corrTimeSpinBox   = new QSpinBox();
   _corrTimeSpinBox->setMinimum(1);
   _corrTimeSpinBox->setMaximum(30);
   _corrTimeSpinBox->setSingleStep(1);
   _corrTimeSpinBox->setSuffix(" sec");
-  _corrTimeSpinBox->setMaximumWidth(9*ww);
   _corrTimeSpinBox->setValue(settings.value("corrTime").toInt());
-  _rnxSamplSpinBox    = new QSpinBox();
-  _rnxSamplSpinBox->setMinimum(0);
-  _rnxSamplSpinBox->setMaximum(60);
-  _rnxSamplSpinBox->setSingleStep(5);
-  _rnxSamplSpinBox->setMaximumWidth(9*ww);
-  _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
-  _rnxSamplSpinBox->setSuffix(" sec");
 
+  // Feed Engine Options
+  // -------------------
+  _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
+  _waitTimeSpinBox   = new QSpinBox();
+  _waitTimeSpinBox->setMinimum(1);
+  _waitTimeSpinBox->setMaximum(30);
+  _waitTimeSpinBox->setSingleStep(1);
+  _waitTimeSpinBox->setSuffix(" sec");
+  _waitTimeSpinBox->setValue(settings.value("waitTime").toInt());
   _binSamplSpinBox    = new QSpinBox();
   _binSamplSpinBox->setMinimum(0);
   _binSamplSpinBox->setMaximum(60);
   _binSamplSpinBox->setSingleStep(5);
-  _binSamplSpinBox->setMaximumWidth(9*ww);
   _binSamplSpinBox->setValue(settings.value("binSampl").toInt());
   _binSamplSpinBox->setSuffix(" sec");
+  _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
+  _outUPortLineEdit   = new QLineEdit(settings.value("outUPort").toString());
 
-  _obsRateComboBox    = new QComboBox();
-  _obsRateComboBox->setMaximumWidth(9*ww);
-  _obsRateComboBox->setEditable(false);
-  _obsRateComboBox->addItems(QString(",0.1 Hz,0.2 Hz,0.5 Hz,1 Hz,5 Hz").split(","));
-  int kk = _obsRateComboBox->findText(settings.value("obsRate").toString());
-  if (kk != -1) {
-    _obsRateComboBox->setCurrentIndex(kk);
-  }
-  _adviseRecoSpinBox = new QSpinBox();
-  _adviseRecoSpinBox->setMinimum(0);
-  _adviseRecoSpinBox->setMaximum(60);
-  _adviseRecoSpinBox->setSingleStep(1);
-  _adviseRecoSpinBox->setSuffix(" min");
-  _adviseRecoSpinBox->setMaximumWidth(9*ww);
-  _adviseRecoSpinBox->setValue(settings.value("adviseReco").toInt());
-  _adviseFailSpinBox = new QSpinBox();
-  _adviseFailSpinBox->setMinimum(0);
-  _adviseFailSpinBox->setMaximum(60);
-  _adviseFailSpinBox->setSingleStep(1);
-  _adviseFailSpinBox->setSuffix(" min");
-  _adviseFailSpinBox->setMaximumWidth(9*ww);
-  _adviseFailSpinBox->setValue(settings.value("adviseFail").toInt());
-  _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
-  _adviseScriptLineEdit    = new QLineEdit(settings.value("adviseScript").toString());
-
-  _serialPortNameLineEdit = new QLineEdit(settings.value("serialPortName").toString());
+  // Serial Link Options
+  // -------------------
   _serialMountPointLineEdit = new QLineEdit(settings.value("serialMountPoint").toString());
-
-
+  _serialPortNameLineEdit = new QLineEdit(settings.value("serialPortName").toString());
   _serialBaudRateComboBox = new QComboBox();
-  _serialBaudRateComboBox->setMaximumWidth(9*ww);
   _serialBaudRateComboBox->addItems(QString("110,300,600,"
             "1200,2400,4800,9600,19200,38400,57600,115200").split(","));
-  kk = _serialBaudRateComboBox->findText(settings.value("serialBaudRate").toString());
+  int kk = _serialBaudRateComboBox->findText(settings.value("serialBaudRate").toString());
   if (kk != -1) {
     _serialBaudRateComboBox->setCurrentIndex(kk);
   }
-  _serialParityComboBox   = new QComboBox();
-  _serialParityComboBox->setMaximumWidth(9*ww);
-  _serialParityComboBox->addItems(QString("NONE,ODD,EVEN,SPACE").split(","));
-  kk = _serialParityComboBox->findText(settings.value("serialParity").toString());
-  if (kk != -1) {
-    _serialParityComboBox->setCurrentIndex(kk);
-  }
-  _serialDataBitsComboBox = new QComboBox();
-  _serialDataBitsComboBox->setMaximumWidth(5*ww);
-  _serialDataBitsComboBox->addItems(QString("5,6,7,8").split(","));
-  kk = _serialDataBitsComboBox->findText(settings.value("serialDataBits").toString());
-  if (kk != -1) {
-    _serialDataBitsComboBox->setCurrentIndex(kk);
-  }
-  _serialStopBitsComboBox = new QComboBox();
-  _serialStopBitsComboBox->setMaximumWidth(5*ww);
-  _serialStopBitsComboBox->addItems(QString("1,2").split(","));
-  kk = _serialStopBitsComboBox->findText(settings.value("serialStopBits").toString());
-  if (kk != -1) {
-    _serialStopBitsComboBox->setCurrentIndex(kk);
-  }
   _serialFlowControlComboBox = new QComboBox();
-  _serialFlowControlComboBox->setMaximumWidth(11*ww);
   _serialFlowControlComboBox->addItems(QString("OFF,XONXOFF,HARDWARE").split(","));
   kk = _serialFlowControlComboBox->findText(settings.value("serialFlowControl").toString());
   if (kk != -1) {
     _serialFlowControlComboBox->setCurrentIndex(kk);
   }
+  _serialDataBitsComboBox = new QComboBox();
+  _serialDataBitsComboBox->addItems(QString("5,6,7,8").split(","));
+  kk = _serialDataBitsComboBox->findText(settings.value("serialDataBits").toString());
+  if (kk != -1) {
+    _serialDataBitsComboBox->setCurrentIndex(kk);
+  }
+  _serialParityComboBox   = new QComboBox();
+  _serialParityComboBox->addItems(QString("NONE,ODD,EVEN,SPACE").split(","));
+  kk = _serialParityComboBox->findText(settings.value("serialParity").toString());
+  if (kk != -1) {
+    _serialParityComboBox->setCurrentIndex(kk);
+  }
+  _serialStopBitsComboBox = new QComboBox();
+  _serialStopBitsComboBox->addItems(QString("1,2").split(","));
+  kk = _serialStopBitsComboBox->findText(settings.value("serialStopBits").toString());
+  if (kk != -1) {
+    _serialStopBitsComboBox->setCurrentIndex(kk);
+  }
   _serialAutoNMEAComboBox  = new QComboBox();
-  _serialAutoNMEAComboBox->setMaximumWidth(9*ww);
   _serialAutoNMEAComboBox->addItems(QString("Auto,Manual").split(","));
   kk = _serialAutoNMEAComboBox->findText(settings.value("serialAutoNMEA").toString());
   if (kk != -1) {
@@ -283,15 +252,46 @@ bncWindow::bncWindow() {
   }
   _serialFileNMEALineEdit    = new QLineEdit(settings.value("serialFileNMEA").toString());
   _serialHeightNMEALineEdit  = new QLineEdit(settings.value("serialHeightNMEA").toString());
+
+  // Outages Options
+  // ---------------
+  _obsRateComboBox    = new QComboBox();
+  _obsRateComboBox->setEditable(false);
+  _obsRateComboBox->addItems(QString(",0.1 Hz,0.2 Hz,0.5 Hz,1 Hz,5 Hz").split(","));
+  kk = _obsRateComboBox->findText(settings.value("obsRate").toString());
+  if (kk != -1) {
+    _obsRateComboBox->setCurrentIndex(kk);
+  }
+  _adviseFailSpinBox = new QSpinBox();
+  _adviseFailSpinBox->setMinimum(0);
+  _adviseFailSpinBox->setMaximum(60);
+  _adviseFailSpinBox->setSingleStep(1);
+  _adviseFailSpinBox->setSuffix(" min");
+  _adviseFailSpinBox->setValue(settings.value("adviseFail").toInt());
+  _adviseRecoSpinBox = new QSpinBox();
+  _adviseRecoSpinBox->setMinimum(0);
+  _adviseRecoSpinBox->setMaximum(60);
+  _adviseRecoSpinBox->setSingleStep(1);
+  _adviseRecoSpinBox->setSuffix(" min");
+  _adviseRecoSpinBox->setValue(settings.value("adviseReco").toInt());
+  _adviseScriptLineEdit    = new QLineEdit(settings.value("adviseScript").toString());
+
+  // Miscellaneous Options
+  // ---------------------
+  _miscMountLineEdit  = new QLineEdit(settings.value("miscMount").toString());
   _perfIntrComboBox    = new QComboBox();
-  _perfIntrComboBox->setMaximumWidth(9*ww);
   _perfIntrComboBox->setEditable(false);
   _perfIntrComboBox->addItems(QString(",2 sec, 10 sec,1 min,5 min,15 min,1 hour,6 hours,1 day").split(","));
   int ll = _perfIntrComboBox->findText(settings.value("perfIntr").toString());
   if (ll != -1) {
     _perfIntrComboBox->setCurrentIndex(ll);
   }
+  _scanRTCMCheckBox  = new QCheckBox();
+  _scanRTCMCheckBox->setCheckState(Qt::CheckState(
+                                    settings.value("scanRTCM").toInt()));
 
+  // Streams
+  // -------
   _mountPointsTable   = new QTableWidget(0,8);
 
   _mountPointsTable->horizontalHeader()->resizeSection(1,34*ww);
@@ -299,7 +299,7 @@ bncWindow::bncWindow() {
   _mountPointsTable->horizontalHeader()->resizeSection(3,7*ww); 
   _mountPointsTable->horizontalHeader()->resizeSection(4,7*ww); 
   _mountPointsTable->horizontalHeader()->resizeSection(5,5*ww); 
-  _mountPointsTable->horizontalHeader()->resizeSection(6,4*ww); 
+  _mountPointsTable->horizontalHeader()->resizeSection(6,5*ww); 
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
   _mountPointsTable->horizontalHeader()->setStretchLastSection(true);
   _mountPointsTable->setHorizontalHeaderLabels(labels);
@@ -367,7 +367,6 @@ bncWindow::bncWindow() {
   _canvas = new QWidget;
   setCentralWidget(_canvas);
 
-//QTabWidget* aogroup = new QTabWidget();
   aogroup = new QTabWidget();
   QWidget* pgroup = new QWidget();
   QWidget* ggroup = new QWidget();
@@ -388,10 +387,12 @@ bncWindow::bncWindow() {
   aogroup->addTab(agroup,tr("Outages"));
   aogroup->addTab(rgroup,tr("Miscellaneous"));
 
-  // Proxy
-  // ----
+  // Proxy Tab
+  // ---------
   QGridLayout* pLayout = new QGridLayout;
   pLayout->setColumnMinimumWidth(0,13*ww);
+  _proxyPortLineEdit->setMaximumWidth(9*ww);
+
   pLayout->addWidget(new QLabel("Proxy host"),                   0, 0);
   pLayout->addWidget(_proxyHostLineEdit,                         0, 1, 1,10);
   pLayout->addWidget(new QLabel("Proxy port"),                   1, 0);
@@ -410,10 +411,12 @@ bncWindow::bncWindow() {
     _proxyPortLineEdit->setEnabled(false);
   }
  
-  // General
-  // -------
+  // General Tab
+  // -----------
   QGridLayout* gLayout = new QGridLayout;
   gLayout->setColumnMinimumWidth(0,14*ww);
+  _onTheFlyComboBox->setMaximumWidth(9*ww);
+
   gLayout->addWidget(new QLabel("Logfile (full path)"),          0, 0);
   gLayout->addWidget(_logFileLineEdit,                           0, 1);
   gLayout->addWidget(new QLabel("Append files"),                 1, 0);
@@ -426,123 +429,13 @@ bncWindow::bncWindow() {
   gLayout->addWidget(new QLabel("    "),5,0);
   ggroup->setLayout(gLayout);
 
-  // Feed Engine
-  // -----------
-  QGridLayout* sLayout = new QGridLayout;
-  sLayout->setColumnMinimumWidth(0,14*ww);
-  sLayout->addWidget(new QLabel("Port"),                          0, 0);
-  sLayout->addWidget(_outPortLineEdit,                            0, 1);
-  sLayout->addWidget(new QLabel("Wait for full epoch"),           0, 2, Qt::AlignRight);
-  sLayout->addWidget(_waitTimeSpinBox,                            0, 3, Qt::AlignLeft);
-  sLayout->addWidget(new QLabel("Sampling"),                      1, 0);
-  sLayout->addWidget(_binSamplSpinBox,                            1, 1, Qt::AlignLeft);
-  sLayout->addWidget(new QLabel("File (full path)"),              2, 0);
-  sLayout->addWidget(_outFileLineEdit,                            2, 1, 1, 30);
-  sLayout->addWidget(new QLabel("Port (unsynchronized)"),         3, 0);
-  sLayout->addWidget(_outUPortLineEdit,                           3, 1);
-  sLayout->addWidget(new QLabel("Output decoded observations in a binary format to feed a real-time GNSS engine."),4,0,1,30);
-  sLayout->addWidget(new QLabel("    "),5,0);
-  sgroup->setLayout(sLayout);
-
-  connect(_outPortLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
-  connect(_outFileLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
-  if (_outPortLineEdit->text().isEmpty() && _outFileLineEdit->text().isEmpty()) { 
-    _waitTimeSpinBox->setStyleSheet("background-color: lightGray");
-    _binSamplSpinBox->setStyleSheet("background-color: lightGray");
-    _waitTimeSpinBox->setEnabled(false);
-    _binSamplSpinBox->setEnabled(false);
-  }
-
-  // RINEX Ephemeris
-  // ---------------
-  QGridLayout* eLayout = new QGridLayout;
-  eLayout->setColumnMinimumWidth(0,14*ww);
-  eLayout->addWidget(new QLabel("Directory"),                     0, 0);
-  eLayout->addWidget(_ephPathLineEdit,                            0, 1);
-  eLayout->addWidget(new QLabel("Interval"),                      1, 0);
-  eLayout->addWidget(_ephIntrComboBox,                            1, 1);
-  eLayout->addWidget(new QLabel("Port"),                          2, 0);
-  eLayout->addWidget(_outEphPortLineEdit,                         2, 1);
-  eLayout->addWidget(new QLabel("Version 3"),                     3, 0);
-  eLayout->addWidget(_ephV3CheckBox,                              3, 1);
-  eLayout->addWidget(new QLabel("Saving RINEX ephemeris files and ephemeris output through IP port."),4,0,1,2,Qt::AlignLeft);
-  eLayout->addWidget(new QLabel("    "),5,0);
-  egroup->setLayout(eLayout);
-
-  connect(_ephPathLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
-  connect(_outEphPortLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
-
-  if (_ephPathLineEdit->text().isEmpty() && _outEphPortLineEdit->text().isEmpty()) { 
-    _ephIntrComboBox->setStyleSheet("background-color: lightGray");
-    palette.setColor(_ephV3CheckBox->backgroundRole(), lightGray);
-    _ephV3CheckBox->setPalette(palette);
-    _ephIntrComboBox->setEnabled(false);
-    _ephV3CheckBox->setEnabled(false);
-  }
-  if (_ephPathLineEdit->text().isEmpty() && !_outEphPortLineEdit->text().isEmpty()) { 
-    _ephIntrComboBox->setStyleSheet("background-color: lightGray");
-    _ephIntrComboBox->setEnabled(false);
-  }   
-
-  // Outages
-  // -------
-  QGridLayout* aLayout = new QGridLayout;
-  aLayout->setColumnMinimumWidth(0,14*ww);
-  aLayout->addWidget(new QLabel("Observation rate"),              0, 0);
-  aLayout->addWidget(_obsRateComboBox,                            0, 1);
-  aLayout->addWidget(new QLabel("Failure threshold"),             1, 0);
-  aLayout->addWidget(_adviseFailSpinBox,                          1, 1);
-  aLayout->addWidget(new QLabel("Recovery threshold"),            2, 0);
-  aLayout->addWidget(_adviseRecoSpinBox,                          2, 1);
-  aLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
-  aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,10);
-  aLayout->addWidget(new QLabel("Outage report, handling of corrupted streams."),5,0,1,10,Qt::AlignLeft);
-  agroup->setLayout(aLayout);
-
-  connect(_obsRateComboBox, SIGNAL(currentIndexChanged(const QString &)),
-          this, SLOT(bncText(const QString)));
-  if (_obsRateComboBox->currentText().isEmpty()) { 
-    _adviseFailSpinBox->setStyleSheet("background-color: lightGray");
-    _adviseRecoSpinBox->setStyleSheet("background-color: lightGray");
-    _adviseScriptLineEdit->setStyleSheet("background-color: lightGray");
-    _adviseFailSpinBox->setEnabled(false);
-    _adviseRecoSpinBox->setEnabled(false);
-    _adviseScriptLineEdit->setEnabled(false);
-  }
-
-  // Miscellaneous
-  // -------------
-  QGridLayout* rLayout = new QGridLayout;
-  rLayout->setColumnMinimumWidth(0,14*ww);
-  rLayout->addWidget(new QLabel("Mountpoint"),                    0, 0);
-  rLayout->addWidget(_miscMountLineEdit,                          0, 1, 1,7);
-  rLayout->addWidget(new QLabel("Log latency"),                   1, 0);
-  rLayout->addWidget(_perfIntrComboBox,                           1, 1);
-  rLayout->addWidget(new QLabel("Scan RTCM"),                     2, 0);
-  rLayout->addWidget(_scanRTCMCheckBox,                           2, 1);
-  rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for numbers of message types and antenna information."),3, 0,1,30);
-  rLayout->addWidget(new QLabel("    "),                          4, 0);
-  rLayout->addWidget(new QLabel("    "),                          5, 0);
-  rgroup->setLayout(rLayout);
-
-  connect(_miscMountLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
-  if (_miscMountLineEdit->text().isEmpty()) { 
-    _perfIntrComboBox->setStyleSheet("background-color: lightGray");
-    palette.setColor(_scanRTCMCheckBox->backgroundRole(), lightGray);
-    _scanRTCMCheckBox->setPalette(palette);
-    _perfIntrComboBox->setEnabled(false);
-    _scanRTCMCheckBox->setEnabled(false);
-  }
-
   // RINEX Observations
   // ------------------
   QGridLayout* oLayout = new QGridLayout;
   oLayout->setColumnMinimumWidth(0,14*ww);
+  _rnxIntrComboBox->setMaximumWidth(9*ww);
+  _rnxSamplSpinBox->setMaximumWidth(9*ww);
+
   oLayout->addWidget(new QLabel("Directory"),                     0, 0);
   oLayout->addWidget(_rnxPathLineEdit,                            0, 1,1,12);
   oLayout->addWidget(new QLabel("Interval"),                      1, 0);
@@ -574,10 +467,50 @@ bncWindow::bncWindow() {
     _rnxV3CheckBox->setEnabled(false);
   }
 
+  // RINEX Ephemeris
+  // ---------------
+  QGridLayout* eLayout = new QGridLayout;
+  eLayout->setColumnMinimumWidth(0,14*ww);
+  _ephIntrComboBox->setMaximumWidth(9*ww);
+  _outEphPortLineEdit->setMaximumWidth(9*ww);
+
+  eLayout->addWidget(new QLabel("Directory"),                     0, 0);
+  eLayout->addWidget(_ephPathLineEdit,                            0, 1);
+  eLayout->addWidget(new QLabel("Interval"),                      1, 0);
+  eLayout->addWidget(_ephIntrComboBox,                            1, 1);
+  eLayout->addWidget(new QLabel("Port"),                          2, 0);
+  eLayout->addWidget(_outEphPortLineEdit,                         2, 1);
+  eLayout->addWidget(new QLabel("Version 3"),                     3, 0);
+  eLayout->addWidget(_ephV3CheckBox,                              3, 1);
+  eLayout->addWidget(new QLabel("Saving RINEX ephemeris files and ephemeris output through IP port."),4,0,1,2,Qt::AlignLeft);
+  eLayout->addWidget(new QLabel("    "),5,0);
+  egroup->setLayout(eLayout);
+
+  connect(_ephPathLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+  connect(_outEphPortLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+
+  if (_ephPathLineEdit->text().isEmpty() && _outEphPortLineEdit->text().isEmpty()) { 
+    _ephIntrComboBox->setStyleSheet("background-color: lightGray");
+    palette.setColor(_ephV3CheckBox->backgroundRole(), lightGray);
+    _ephV3CheckBox->setPalette(palette);
+    _ephIntrComboBox->setEnabled(false);
+    _ephV3CheckBox->setEnabled(false);
+  }
+  if (_ephPathLineEdit->text().isEmpty() && !_outEphPortLineEdit->text().isEmpty()) { 
+    _ephIntrComboBox->setStyleSheet("background-color: lightGray");
+    _ephIntrComboBox->setEnabled(false);
+  }   
+
   // Ephemeris Corrections
   // ---------------------
   QGridLayout* cLayout = new QGridLayout;
   cLayout->setColumnMinimumWidth(0,14*ww);
+  _corrIntrComboBox->setMaximumWidth(9*ww);
+  _corrPortLineEdit->setMaximumWidth(9*ww);
+  _corrTimeSpinBox->setMaximumWidth(9*ww);
+
   cLayout->addWidget(new QLabel("Directory"),                     0, 0);
   cLayout->addWidget(_corrPathLineEdit,                           0, 1,1,30);
   cLayout->addWidget(new QLabel("Interval"),                      1, 0);
@@ -604,11 +537,52 @@ bncWindow::bncWindow() {
     _corrTimeSpinBox->setEnabled(false);
   }
 
+  // Feed Engine
+  // -----------
+  QGridLayout* sLayout = new QGridLayout;
+  sLayout->setColumnMinimumWidth(0,14*ww);
+  _outPortLineEdit->setMaximumWidth(9*ww);
+  _waitTimeSpinBox->setMaximumWidth(9*ww);
+  _binSamplSpinBox->setMaximumWidth(9*ww);
+  _outUPortLineEdit->setMaximumWidth(9*ww);
+
+  sLayout->addWidget(new QLabel("Port"),                          0, 0);
+  sLayout->addWidget(_outPortLineEdit,                            0, 1);
+  sLayout->addWidget(new QLabel("Wait for full epoch"),           0, 2, Qt::AlignRight);
+  sLayout->addWidget(_waitTimeSpinBox,                            0, 3, Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("Sampling"),                      1, 0);
+  sLayout->addWidget(_binSamplSpinBox,                            1, 1, Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("File (full path)"),              2, 0);
+  sLayout->addWidget(_outFileLineEdit,                            2, 1, 1, 30);
+  sLayout->addWidget(new QLabel("Port (unsynchronized)"),         3, 0);
+  sLayout->addWidget(_outUPortLineEdit,                           3, 1);
+  sLayout->addWidget(new QLabel("Output decoded observations in a binary format to feed a real-time GNSS engine."),4,0,1,30);
+  sLayout->addWidget(new QLabel("    "),5,0);
+  sgroup->setLayout(sLayout);
+
+  connect(_outPortLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+  connect(_outFileLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+  if (_outPortLineEdit->text().isEmpty() && _outFileLineEdit->text().isEmpty()) { 
+    _waitTimeSpinBox->setStyleSheet("background-color: lightGray");
+    _binSamplSpinBox->setStyleSheet("background-color: lightGray");
+    _waitTimeSpinBox->setEnabled(false);
+    _binSamplSpinBox->setEnabled(false);
+  }
+
   // Serial Link
   // -----------
   QGridLayout* serLayout = new QGridLayout;
   serLayout->setColumnMinimumWidth(0,14*ww);
+  _serialBaudRateComboBox->setMaximumWidth(9*ww);
+  _serialFlowControlComboBox->setMaximumWidth(11*ww);
+  _serialDataBitsComboBox->setMaximumWidth(5*ww);
+  _serialParityComboBox->setMaximumWidth(9*ww);
+  _serialStopBitsComboBox->setMaximumWidth(5*ww);
+  _serialAutoNMEAComboBox->setMaximumWidth(9*ww);
   _serialHeightNMEALineEdit->setMaximumWidth(8*ww);
+
   serLayout->addWidget(new QLabel("Mountpoint"),                  0,0, Qt::AlignLeft);
   serLayout->addWidget(_serialMountPointLineEdit,                 0,1,1,2);
   serLayout->addWidget(new QLabel("Port name"),                   1,0, Qt::AlignLeft);
@@ -666,6 +640,66 @@ bncWindow::bncWindow() {
   }
 
   sergroup->setLayout(serLayout);
+
+  // Outages
+  // -------
+  QGridLayout* aLayout = new QGridLayout;
+  aLayout->setColumnMinimumWidth(0,14*ww);
+  _obsRateComboBox->setMaximumWidth(9*ww);
+  _adviseFailSpinBox->setMaximumWidth(9*ww);
+  _adviseRecoSpinBox->setMaximumWidth(9*ww);
+
+  aLayout->addWidget(new QLabel("Observation rate"),              0, 0);
+  aLayout->addWidget(_obsRateComboBox,                            0, 1);
+  aLayout->addWidget(new QLabel("Failure threshold"),             1, 0);
+  aLayout->addWidget(_adviseFailSpinBox,                          1, 1);
+  aLayout->addWidget(new QLabel("Recovery threshold"),            2, 0);
+  aLayout->addWidget(_adviseRecoSpinBox,                          2, 1);
+  aLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
+  aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,10);
+  aLayout->addWidget(new QLabel("Outage report, handling of corrupted streams."),5,0,1,10,Qt::AlignLeft);
+  agroup->setLayout(aLayout);
+
+  connect(_obsRateComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(bncText(const QString)));
+  if (_obsRateComboBox->currentText().isEmpty()) { 
+    _adviseFailSpinBox->setStyleSheet("background-color: lightGray");
+    _adviseRecoSpinBox->setStyleSheet("background-color: lightGray");
+    _adviseScriptLineEdit->setStyleSheet("background-color: lightGray");
+    _adviseFailSpinBox->setEnabled(false);
+    _adviseRecoSpinBox->setEnabled(false);
+    _adviseScriptLineEdit->setEnabled(false);
+  }
+
+  // Miscellaneous
+  // -------------
+  QGridLayout* rLayout = new QGridLayout;
+  rLayout->setColumnMinimumWidth(0,14*ww);
+  _perfIntrComboBox->setMaximumWidth(9*ww);
+
+  rLayout->addWidget(new QLabel("Mountpoint"),                    0, 0);
+  rLayout->addWidget(_miscMountLineEdit,                          0, 1, 1,7);
+  rLayout->addWidget(new QLabel("Log latency"),                   1, 0);
+  rLayout->addWidget(_perfIntrComboBox,                           1, 1);
+  rLayout->addWidget(new QLabel("Scan RTCM"),                     2, 0);
+  rLayout->addWidget(_scanRTCMCheckBox,                           2, 1);
+  rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for numbers of message types and antenna information."),3, 0,1,30);
+  rLayout->addWidget(new QLabel("    "),                          4, 0);
+  rLayout->addWidget(new QLabel("    "),                          5, 0);
+  rgroup->setLayout(rLayout);
+
+  connect(_miscMountLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+  if (_miscMountLineEdit->text().isEmpty()) { 
+    _perfIntrComboBox->setStyleSheet("background-color: lightGray");
+    palette.setColor(_scanRTCMCheckBox->backgroundRole(), lightGray);
+    _scanRTCMCheckBox->setPalette(palette);
+    _perfIntrComboBox->setEnabled(false);
+    _scanRTCMCheckBox->setEnabled(false);
+  }
+
+  // Main Layout
+  // -----------
 
   QGridLayout* mLayout = new QGridLayout;
   aogroup->setCurrentIndex(settings.value("startTab").toInt());
