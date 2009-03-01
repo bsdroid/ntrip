@@ -385,6 +385,8 @@ void t_bns::readEpoch() {
     //// end test
     ////
     //// Falls Clocks aus den Broadcast Ephemeris gewuenscht:
+    //// (2nd order relativistic effect taken out for
+    //// compatibility with IGS products?)
     ////
     //// if ( Qt::CheckState(settings.value("beClocks1 oder beClocks2").toInt()) == Qt::Checked) {
     ////  .....
