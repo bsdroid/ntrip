@@ -5,11 +5,18 @@ BNS
 (1) Zero Clock Corrections
 Loukis wishes to have one stream (for combination purposes)
 which provides the original clocks from the BE (no corrections).
+We also may need such a stream as soon as we start with the
+absolute clocks. Reason: At some point in time we may want
+to compare our clocks with the IGS clocks. If we have
+"BE clocks" (2nd order relativistic effect taken out) we could
+add our absolute clocks and end up with clocks we can compare
+with IGS clocks.
 I remember that we once implemented a hard-coded option
 for that in bns.cpp for Gerhard Wuebbena. I have added the solution
 for Gerhard as comment lines to bns.cpp, see lines 385 ff.
-To send zero clock corrections I have added options
+To send zero clock corrections (BE clocks) I have added options
 "beClocks1" and "beClocks2" (for Broadcast Clocks) to BNS.
+Shall we discuss this on the phone if you are not convinced?
 
 
 BNC & BNS & RTNet
