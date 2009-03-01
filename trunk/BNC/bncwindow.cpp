@@ -173,7 +173,7 @@ bncWindow::bncWindow() {
   _ephV3CheckBox = new QCheckBox();
   _ephV3CheckBox->setCheckState(Qt::CheckState(settings.value("ephV3").toInt()));
 
-  // Ephemeris Corrections Options
+  // Broadcast Corrections Options
   // -----------------------------
   _corrPathLineEdit    = new QLineEdit(settings.value("corrPath").toString());
   _corrIntrComboBox    = new QComboBox();
@@ -381,7 +381,7 @@ bncWindow::bncWindow() {
   aogroup->addTab(ggroup,tr("General"));
   aogroup->addTab(ogroup,tr("RINEX Observations"));
   aogroup->addTab(egroup,tr("RINEX Ephemeris"));
-  aogroup->addTab(cgroup,tr("Ephemeris Corrections"));
+  aogroup->addTab(cgroup,tr("Broadcast Corrections"));
   aogroup->addTab(sgroup,tr("Feed Engine"));
   aogroup->addTab(sergroup,tr("Serial Link"));
   aogroup->addTab(agroup,tr("Outages"));
@@ -503,7 +503,7 @@ bncWindow::bncWindow() {
     _ephIntrComboBox->setEnabled(false);
   }   
 
-  // Ephemeris Corrections
+  // Broadcast Corrections
   // ---------------------
   QGridLayout* cLayout = new QGridLayout;
   cLayout->setColumnMinimumWidth(0,14*ww);
@@ -1348,7 +1348,7 @@ void bncWindow::bncText(const QString &text){
     }
   }
 
-  // Ephemeris Corrections
+  // Broadcast Corrections
   // ---------------------
   if (aogroup->currentIndex() == 4) {
     if (!isEmpty) {

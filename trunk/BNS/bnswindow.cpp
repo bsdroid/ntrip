@@ -168,7 +168,7 @@ bnsWindow::bnsWindow() {
   _inpEchoLineEdit  = new QLineEdit(settings.value("inpEcho").toString());
 
 
-  // Ephemeris Corrections I Options
+  // Broadcast Corrections I Options
   // -------------------------------
   _outHost_1_LineEdit    = new QLineEdit(settings.value("outHost1").toString());
   _outPort_1_LineEdit    = new QLineEdit(settings.value("outPort1").toString());
@@ -186,7 +186,7 @@ bnsWindow::bnsWindow() {
   _beClocks1CheckBox  = new QCheckBox();
   _beClocks1CheckBox->setCheckState(Qt::CheckState(settings.value("beClocks1").toInt()));
 
-  // Ephemeris Corrections II Options
+  // Broadcast Corrections II Options
   // --------------------------------
   _outHost_2_LineEdit    = new QLineEdit(settings.value("outHost2").toString());
   _outPort_2_LineEdit    = new QLineEdit(settings.value("outPort2").toString());
@@ -270,8 +270,8 @@ bnsWindow::bnsWindow() {
   _sp3IntrComboBox->setWhatsThis(tr("Select the length of the SP3 orbit file."));
   _sp3SamplSpinBox->setWhatsThis(tr("Select the SP3 orbit file sampling interval in seconds. A value of zero '0' tells BNS to store all available samples into SP3 orbit files."));
   _autoStartCheckBox->setWhatsThis(tr("<p>Tick 'Auto start' for auto-start of BNS at startup time in window mode with preassigned processing options.</p>"));
-  _beClocks1CheckBox->setWhatsThis(tr("<p>Send broadcast clocks instead of broadcast clock corrections and ignore the incoming clock estimates.</p>"));
-  _beClocks2CheckBox->setWhatsThis(tr("<p>Send broadcast clocks instead of broadcast clock corrections and ignore the incoming clock estimates.</p>"));
+  _beClocks1CheckBox->setWhatsThis(tr("<p>Ignore incoming clock estimates and send broadcast clocks instead of broadcast clock corrections.</p><p>Note that for compatibility with IGS post processing products these clocks are reduced for the 2nd order relativistic effect.</p>"));
+  _beClocks2CheckBox->setWhatsThis(tr("<p>Ignore incoming clock estimates and send broadcast clocks instead of broadcast clock corrections.</p><p>Note that for compatibility with IGS post processing products these clocks are reduced for the 2nd order relativistic effect.</p>"));
 
 
   // TabWidget
@@ -364,10 +364,10 @@ bnsWindow::bnsWindow() {
 
   tab_co->setLayout(layout_co);
 
-  // Ephemeris Corrections I Tab
+  // Broadcast Corrections I Tab
   // ---------------------------
   QWidget* tab_cas1 = new QWidget();
-  tabs->addTab(tab_cas1, "Ephemeris Corrections I");
+  tabs->addTab(tab_cas1, "Broadcast Corrections I");
 
   QGridLayout* layout_cas1 = new QGridLayout;
 
@@ -415,10 +415,10 @@ bnsWindow::bnsWindow() {
     _beClocks1CheckBox->setEnabled(false);
   }
 
-  // Ephemeris Corrections II Tab
+  // Broadcast Corrections II Tab
   // ----------------------------
   QWidget* tab_cas2 = new QWidget();
-  tabs->addTab(tab_cas2, "Ephemeris Corrections II");
+  tabs->addTab(tab_cas2, "Broadcast Corrections II");
 
   QGridLayout* layout_cas2 = new QGridLayout;
 
@@ -544,8 +544,8 @@ bnsWindow::bnsWindow() {
   _statusLbl[2] = new QLabel("0 byte(s)"); _statusCnt[2] = 0;
   _statusLbl[7] = new QLabel("RINEX Ephemeris:");  
   _statusLbl[4] = new QLabel("Clocks & Orbits:");
-  _statusLbl[5] = new QLabel("Ephemeris Corrections I:");  
-  _statusLbl[6] = new QLabel("Ephemeris Corrections II:");  
+  _statusLbl[5] = new QLabel("Broadcast Corrections I:");  
+  _statusLbl[6] = new QLabel("Broadcast Corrections II:");  
   _statusLbl[3] = new QLabel("0 byte(s)"); _statusCnt[3] = 0;
 
   _statusLbl[0]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
@@ -831,7 +831,7 @@ void bnsWindow::bnsText(const QString &text){
     }
   }
 
-  // Enable/disable  Ephemeris Corrections I Options
+  // Enable/disable  Broadcast Corrections I Options
   // -----------------------------------------------
   if (tabs->currentIndex() == 4) {
     if (!isEmpty) {
@@ -865,7 +865,7 @@ void bnsWindow::bnsText(const QString &text){
     }
   }
 
-  // Enable/disable Ephemeris Corrections II Options
+  // Enable/disable Broadcast Corrections II Options
   // -----------------------------------------------
   if (tabs->currentIndex() == 5) {
     if (!isEmpty) {
