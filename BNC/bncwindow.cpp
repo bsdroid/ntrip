@@ -418,14 +418,14 @@ bncWindow::bncWindow() {
   _onTheFlyComboBox->setMaximumWidth(9*ww);
 
   gLayout->addWidget(new QLabel("Logfile (full path)"),          0, 0);
-  gLayout->addWidget(_logFileLineEdit,                           0, 1);
+  gLayout->addWidget(_logFileLineEdit,                           0, 1, 1,30); // 1
   gLayout->addWidget(new QLabel("Append files"),                 1, 0);
   gLayout->addWidget(_rnxAppendCheckBox,                         1, 1);
   gLayout->addWidget(new QLabel("Reread configuration"),         2, 0);
   gLayout->addWidget(_onTheFlyComboBox,                          2, 1);
   gLayout->addWidget(new QLabel("Auto start"),                   3, 0);
   gLayout->addWidget(_autoStartCheckBox,                         3, 1);
-  gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, and auto-start."),4, 0, 1, 2, Qt::AlignLeft);
+  gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, and auto-start."),4, 0, 1, 50, Qt::AlignLeft); // 2
   gLayout->addWidget(new QLabel("    "),5,0);
   ggroup->setLayout(gLayout);
 
@@ -437,18 +437,18 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setMaximumWidth(9*ww);
 
   oLayout->addWidget(new QLabel("Directory"),                     0, 0);
-  oLayout->addWidget(_rnxPathLineEdit,                            0, 1,1,12);
+  oLayout->addWidget(_rnxPathLineEdit,                            0, 1,1,24);
   oLayout->addWidget(new QLabel("Interval"),                      1, 0);
   oLayout->addWidget(_rnxIntrComboBox,                            1, 1);
-  oLayout->addWidget(new QLabel("Sampling"),                      1, 2, Qt::AlignRight);
+  oLayout->addWidget(new QLabel("  Sampling"),                    1, 2, Qt::AlignRight);
   oLayout->addWidget(_rnxSamplSpinBox,                            1, 3, Qt::AlignLeft);
   oLayout->addWidget(new QLabel("Skeleton extension"),            2, 0);
   oLayout->addWidget(_rnxSkelLineEdit,                            2, 1,1,1, Qt::AlignLeft);
   oLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
-  oLayout->addWidget(_rnxScrpLineEdit,                            3, 1,1,12);
+  oLayout->addWidget(_rnxScrpLineEdit,                            3, 1,1,24);
   oLayout->addWidget(new QLabel("Version 3"),                     4, 0);
   oLayout->addWidget(_rnxV3CheckBox,                              4, 1);
-  oLayout->addWidget(new QLabel("Saving RINEX observation files."),5,0,1,12, Qt::AlignLeft);
+  oLayout->addWidget(new QLabel("Saving RINEX observation files."),5,0,1,50, Qt::AlignLeft);
   ogroup->setLayout(oLayout);
 
   connect(_rnxPathLineEdit, SIGNAL(textChanged(const QString &)),
@@ -475,14 +475,14 @@ bncWindow::bncWindow() {
   _outEphPortLineEdit->setMaximumWidth(9*ww);
 
   eLayout->addWidget(new QLabel("Directory"),                     0, 0);
-  eLayout->addWidget(_ephPathLineEdit,                            0, 1);
+  eLayout->addWidget(_ephPathLineEdit,                            0, 1, 1,30);
   eLayout->addWidget(new QLabel("Interval"),                      1, 0);
   eLayout->addWidget(_ephIntrComboBox,                            1, 1);
   eLayout->addWidget(new QLabel("Port"),                          2, 0);
   eLayout->addWidget(_outEphPortLineEdit,                         2, 1);
   eLayout->addWidget(new QLabel("Version 3"),                     3, 0);
   eLayout->addWidget(_ephV3CheckBox,                              3, 1);
-  eLayout->addWidget(new QLabel("Saving RINEX ephemeris files and ephemeris output through IP port."),4,0,1,2,Qt::AlignLeft);
+  eLayout->addWidget(new QLabel("Saving RINEX ephemeris files and ephemeris output through IP port."),4,0,1,50,Qt::AlignLeft);
   eLayout->addWidget(new QLabel("    "),5,0);
   egroup->setLayout(eLayout);
 
@@ -512,14 +512,14 @@ bncWindow::bncWindow() {
   _corrTimeSpinBox->setMaximumWidth(9*ww);
 
   cLayout->addWidget(new QLabel("Directory"),                     0, 0);
-  cLayout->addWidget(_corrPathLineEdit,                           0, 1,1,30);
+  cLayout->addWidget(_corrPathLineEdit,                           0, 1,1,20);
   cLayout->addWidget(new QLabel("Interval"),                      1, 0);
   cLayout->addWidget(_corrIntrComboBox,                           1, 1);
   cLayout->addWidget(new QLabel("Port"),                          2, 0);
   cLayout->addWidget(_corrPortLineEdit,                           2, 1);
-  cLayout->addWidget(new QLabel("Wait for full epoch"),           2, 2, Qt::AlignRight);
+  cLayout->addWidget(new QLabel("  Wait for full epoch"),         2, 2, Qt::AlignRight);
   cLayout->addWidget(_corrTimeSpinBox,                            2, 3, Qt::AlignLeft);
-  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),3,0,1,30);
+  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),3,0,1,50);
   cLayout->addWidget(new QLabel("    "),4,0);
   cLayout->addWidget(new QLabel("    "),5,0);
   cgroup->setLayout(cLayout);
@@ -553,10 +553,10 @@ bncWindow::bncWindow() {
   sLayout->addWidget(new QLabel("Sampling"),                      1, 0);
   sLayout->addWidget(_binSamplSpinBox,                            1, 1, Qt::AlignLeft);
   sLayout->addWidget(new QLabel("File (full path)"),              2, 0);
-  sLayout->addWidget(_outFileLineEdit,                            2, 1, 1, 30);
+  sLayout->addWidget(_outFileLineEdit,                            2, 1, 1, 20);
   sLayout->addWidget(new QLabel("Port (unsynchronized)"),         3, 0);
   sLayout->addWidget(_outUPortLineEdit,                           3, 1);
-  sLayout->addWidget(new QLabel("Output decoded observations in a binary format to feed a real-time GNSS engine."),4,0,1,30);
+  sLayout->addWidget(new QLabel("Output decoded observations in a binary format to feed a real-time GNSS engine."),4,0,1,50);
   sLayout->addWidget(new QLabel("    "),5,0);
   sgroup->setLayout(sLayout);
 
@@ -656,8 +656,8 @@ bncWindow::bncWindow() {
   aLayout->addWidget(new QLabel("Recovery threshold"),            2, 0);
   aLayout->addWidget(_adviseRecoSpinBox,                          2, 1);
   aLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
-  aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,10);
-  aLayout->addWidget(new QLabel("Outage report, handling of corrupted streams."),5,0,1,10,Qt::AlignLeft);
+  aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,30);
+  aLayout->addWidget(new QLabel("Outage report, handling of corrupted streams."),5,0,1,50,Qt::AlignLeft);
   agroup->setLayout(aLayout);
 
   connect(_obsRateComboBox, SIGNAL(currentIndexChanged(const QString &)),
