@@ -2,7 +2,7 @@
  * BKG NTRIP Server
  * -------------------------------------------------------------------------
  *
- * Class:      bnsappw.cpp
+ * Class:      bnsApp
  *
  * Purpose:    This class implements the main application
  *
@@ -14,7 +14,7 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include "bnsappw.h" 
+#include "bnsapp.h" 
 
 using namespace std;
 
