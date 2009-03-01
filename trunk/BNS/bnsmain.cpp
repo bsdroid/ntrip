@@ -19,7 +19,7 @@
 #include "bns.h"
 #include "bnswindow.h"
 #include "bnsutils.h"
-#include "bnsappw.h"
+#include "bnsapp.h"
 #include "bnssettings.h"
 
 using namespace std;
