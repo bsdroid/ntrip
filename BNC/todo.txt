@@ -2,7 +2,11 @@ Todo's sorted by priority:
 
 BNS
 =========================
-(1) Zero Clock Corrections
+(1) Check transformation from earth-centered-earth-fixed to
+radial-tangential-normal frame in bnsutils.cpp. Should follow
+Gerhards paper 012-2009-SC104-528.
+
+(2) Zero Clock Corrections
 Loukis wishes to have one stream (for combination purposes)
 which provides the original clocks from the BE (no corrections).
 We also may need such a stream as soon as we start with the
