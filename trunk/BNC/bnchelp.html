@@ -100,7 +100,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.6.2. <a href=#ephint>Interval</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.3. <a href=#ephport>Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.4. <a href=#ephvers>Version</a><br>
-3.7. <a href=#correct>Ephemeris Corrections</a><br>
+3.7. <a href=#correct>Broadcast Corrections</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.1. <a href=#corrdir>Directory</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.2. <a href=#corrint>Interval</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.3. <a href=#corrport>Port</a><br>
@@ -373,7 +373,7 @@ Default format for RINEX Navigation files containing broadcast ephemeris is RINE
 Note that this does not concern the broadcast ephemeris output throug IP port which is always in RINEX Version 3 format.
 </p> 
 
-<p><a name="correct"><h4>3.7. Ephemeris Corrections</h4></p>
+<p><a name="correct"><h4>3.7. Broadcast Corrections</h4></p>
 <p>
 </p>
 RTCM is in the process of developing new Version 3 messages to transport satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following premature messages currently under discussion have been implemented in BNC:
@@ -400,10 +400,10 @@ When using clocks from Broadcast Ephemeris (with or without corrections) and clo
 
 <p><a name="corrdir"><h4>3.7.1 Directory - optional</h4></p>
 <p>
-Specify a directory for saving Ephemeris Corrections in files. If the specified directory does not exist, BNC will not create Ephemeris Correction files. Default value for Ephemeris Corrections 'Directory' is an empty option field, meaning that no Ephemeris Correction files will be created.
+Specify a directory for saving Broadcast Corrections in files. If the specified directory does not exist, BNC will not create Broadcast Correction files. Default value for Broadcast Corrections 'Directory' is an empty option field, meaning that no Broadcast Correction files will be created.
 </p>
 <p>
-The file name convention for Ephemeris Correction files follows the convention for RINEX files except for the last character of the file name suffix which is set to "C".
+The file name convention for Broadcast Correction files follows the convention for RINEX files except for the last character of the file name suffix which is set to "C".
 </p>
 <p>
 The saved file contains the following information in plain ASCII format:
@@ -432,15 +432,15 @@ Example file contents:
 
 <p><a name="corrint"><h4>3.7.2 Interval - mandatory if 'Directory' is set</h4></p>
 <p>
-Select the length of the Ephemeris Correction files. The default value is 1 day.
+Select the length of the Broadcast Correction files. The default value is 1 day.
 </p>
 
 <p><a name="corrport"><h4>3.7.3 Port - optional</h4></p>
 <p>
-BNC can output epoch by epoch synchronized Ephemeris Corrections in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number to activate this function. The default is an empty option field, meaning that no Ephemeris Correction output via IP port is generated.
+BNC can output epoch by epoch synchronized Broadcast Corrections in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number to activate this function. The default is an empty option field, meaning that no Broadcast Correction output via IP port is generated.
 </p>
 <p>
-The output format equals the format used for saving Ephemeris Corrections in a file with the exception that the Mountpoint is added at each line's end.
+The output format equals the format used for saving Broadcast Corrections in a file with the exception that the Mountpoint is added at each line's end.
 </p>
 <p>
 The following is an example output from two RTCM Version 3 streams (CLCK1 and CLCK4) containing message types 4063 and 4069:
@@ -459,12 +459,12 @@ The following is an example output from two RTCM Version 3 streams (CLCK1 and CL
 </pre>
 </p>
 <p>
-The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that allows you to read BNC's Ephemeris Corrections from the IP port.
+The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that allows you to read BNC's Broadcast Corrections from the IP port.
 </p>
 
 <p><a name="corrwait"><h4>3.7.4 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
 <p>
-When feeding a real-time GNSS network engine waiting epoch by epoch for synchronized Ephemeris Corrections, BNC drops (only concering IP port output) whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Ephemeris Corrections stream and the delay acceptable by your application. A message such as "COCK1: Correction overaged by 5 sec" shows up in BNC's logfile if 'Wait for full epoch' is exceeded.
+When feeding a real-time GNSS network engine waiting epoch by epoch for synchronized Broadcast Corrections, BNC drops (only concering IP port output) whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Broadcast Corrections stream and the delay acceptable by your application. A message such as "COCK1: Correction overaged by 5 sec" shows up in BNC's logfile if 'Wait for full epoch' is exceeded.
 </p>
 
 <p><a name="syncout"><h4>3.8. Feed Engine</h4></p>
@@ -1014,15 +1014,52 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 <p><a name=history><h3>8.1 Revision History</h3></p>
 <table>
 <tr></tr>
-<tr><td>Dec 2006 &nbsp;</td><td>Version 1.0b &nbsp;</td><td>[Add] First Beta Binaries published based on Qt 4.2.3.</td></tr>
-<tr><td>Jan 2007 &nbsp;</td><td>Version 1.1b &nbsp;</td><td>[Add] Observables C2, S1, and S2<br>[Add] Virtual reference station access<br>[Bug] RTCM2 decoder time tag fixed<br>[Mod] Small letters for public RINEX skeleton files<br>[Add] Online help through Shift+F1</td></tr>
-<tr><td>Apr 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td><td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save<br> [Add] ZERO decoder added<br> [Mod] Download public RINEX skeletons once per day<br> [Mod] Upgrade to Qt Version 4.2.3<br> [Mod] Replace 'system' call for RINEX script by 'QProcess'<br> [Add] HTTP Host directive for skeleton file download<br> [Add] Percent encoding for user IDs and passwords<br> [Bug] Exit execution of calling thread for RTCM3 streams<br> [Bug] Signal-slot mechanism for threads</td></tr>
-<tr><td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td><td>[Add] Source code published.
-<tr><td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td><td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td></tr>
-<tr><td>Apr 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td><td>[Add] Handle ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Monitor stream failure/recovery and latency<br> [Mod] Redesign of main window<br> [Bug] Freezing of About window on Mac systems<br> [Bug] Fixed problem with PRN 32 in RTCMv2 decoder<br> [Bug] Fix for Trimble 4000SSI receivers in RTCMv2 decoder<br> [Mod] Major revision of input buffer in RTCMv2 decoder</td></tr>
-<tr><td>Dec 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td><td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCMv3 decoder for clock and orbit corrections<br>[Add] Check RTCMv3 streams for incoming message types<br> [Add] Decode RTCMv2 message types 3, 20, 21, and 22<br> [Add] Loss of lock and lock time indicator<br> [Bug] Rounding error in RTCMv3 decoder concerning GLONASS height<br> [Mod] Accept GLONASS in RTCMv3 when transmitted first<br> [Add] Leap second 1 January 2009<br> [Add] Offline mode, read data from file<br> [Add] Output antenna descriptor, coordinates and excentricities from RTCMv3<br> [Add] Reconfiguration on-the-fly<br> [Mod] Binary ouput of synchronized observations<br> [Add] Binary output of unsynchronized observations<br> [Bug] Fixed problem with joined RTCMv3 blocks</td></tr>
-<tr><td>Dec 2008 &nbsp;</td><td>Version 1.6.1 &nbsp;</td><td>[Mod] HTTP GET when no proxy in front</td></tr>
-<tr><td>Mar 2009 &nbsp;</td><td>Version 1.7 &nbsp;</td><td>[Bug] RINEX navigation file format <br> [Add] Upgrade to Qt Version 4.4.3<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port<br> [Add] Show broadcaster table from www.rtcm-ntrip.org<br> [Add] Enable/disable tab widgets<br> [Add] User defined configuration file name<br> [mod] Switch to configuration files in ini-Format<br> [Add] Daily logfile rotation<br> [Add] Read from TCP/IP port, by-pass NTRIP transport protocol<br> [Add] Save NMEA messages coming from rover<br> [Add] Auto start<br> [Add] Drag and drop ini files</td></tr>
+
+<tr>
+<td>Dec 2006 &nbsp;</td><td>Version 1.0b &nbsp;</td>
+<td>[Add] First Beta Binaries published based on Qt 4.2.3.</td>
+</tr>
+
+<tr>
+<td>Jan 2007 &nbsp;</td><td>Version 1.1b &nbsp;</td>
+<td>[Add] Observables C2, S1, and S2<br>[Add] Virtual reference station access<br>[Bug] RTCM2 decoder time tag fixed<br>[Mod] Small letters for public RINEX skeleton files<br>[Add] Online help through Shift+F1</td>
+</tr>
+
+<tr>
+<td>Apr 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td>
+<td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save<br> [Add] ZERO decoder added<br> [Mod] Download public RINEX skeletons once per day<br> [Mod] Upgrade to Qt Version 4.2.3<br> [Mod] Replace 'system' call for RINEX script by 'QProcess'<br> [Add] HTTP Host directive for skeleton file download<br> [Add] Percent encoding for user IDs and passwords<br> [Bug] Exit execution of calling thread for RTCM3 streams<br> [Bug] Signal-slot mechanism for threads</td>
+</tr>
+
+<tr>
+<td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td>
+<td>[Add] Source code published.</td>
+</tr>
+
+<tr>
+<td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td>
+<td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td>
+</tr>
+
+<tr>
+<td>Apr 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td>
+<td>[Add] Handle ephemeris from RTCM Version 3.x streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Monitor stream failure/recovery and latency<br> [Mod] Redesign of main window<br> [Bug] Freezing of About window on Mac systems<br> [Bug] Fixed problem with PRN 32 in RTCMv2 decoder<br> [Bug] Fix for Trimble 4000SSI receivers in RTCMv2 decoder<br> [Mod] Major revision of input buffer in RTCMv2 decoder</td>
+</tr>
+
+<tr>
+<td>Dec 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td>
+<td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCMv3 decoder for clock and orbit corrections<br>[Add] Check RTCMv3 streams for incoming message types<br> [Add] Decode RTCMv2 message types 3, 20, 21, and 22<br> [Add] Loss of lock and lock time indicator<br> [Bug] Rounding error in RTCMv3 decoder concerning GLONASS height<br> [Mod] Accept GLONASS in RTCMv3 when transmitted first<br> [Add] Leap second 1 January 2009<br> [Add] Offline mode, read data from file<br> [Add] Output antenna descriptor, coordinates and excentricities from RTCMv3<br> [Add] Reconfiguration on-the-fly<br> [Mod] Binary ouput of synchronized observations<br> [Add] Binary output of unsynchronized observations<br> [Bug] Fixed problem with joined RTCMv3 blocks</td>
+</tr>
+
+<tr>
+<td>Dec 2008 &nbsp;</td><td>Version 1.6.1 &nbsp;</td>
+<td>[Mod] HTTP GET when no proxy in front</td>
+</tr>
+
+<tr>
+<td>Mar 2009 &nbsp;</td><td>Version 1.7 &nbsp;</td>
+<td>[Bug] RINEX navigation file format<br> [Add] Upgrade to Qt Version 4.4.3<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port<br> [Add] Show broadcaster table from www.rtcm-ntrip.org<br> [Add] Enable/disable tab widgets<br> [Add] User defined configuration file name<br> [mod] Switch to configuration files in ini-Format<br> [Add] Daily logfile rotation<br> [Add] Read from TCP/IP port, by-pass NTRIP transport protocol<br> [Add] Save NMEA messages coming from rover<br> [Add] Auto start<br> [Add] Drag and drop ini files</td>
+</tr>
+
 </table>
 </p>
 
@@ -1233,10 +1270,10 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>autoStart=0</td><td>General: Auto start</td></tr>
 <tr><td>binSample=0</td><td>Feed Engine: Sampling</td></tr>
 <tr><td>casterUrlList=http://user:pass@euref-ip:2101</td><td>Internal memory: Visited URLs</td></tr>
-<tr><td>corrIntr=1 day</td><td>Ephemeris Corrections: Interval</td></tr>
-<tr><td>corrPath=</td><td>Ephemeris Corrections: Directory </td></tr>
-<tr><td>corrPort=</td><td>Ephemeris Corrections: Port</td></tr>
-<tr><td>corrTime=5</td><td>Ephemeris Corrections: Wait for full epoch</td></tr>
+<tr><td>corrIntr=1 day</td><td>Broadcast Corrections: Interval</td></tr>
+<tr><td>corrPath=</td><td>Broadcast Corrections: Directory </td></tr>
+<tr><td>corrPort=</td><td>Broadcast Corrections: Port</td></tr>
+<tr><td>corrTime=5</td><td>Broadcast Corrections: Wait for full epoch</td></tr>
 <tr><td>ephIntr=15 min</td><td>RINEX Ephemeris: Interval</td></tr>
 <tr><td>ephPath=</td><td>RINEX Ephemeris: Directory</td></tr>
 <tr><td>ephV3=0</td><td>RINEX Ephemeris: Version 3</td></tr>
