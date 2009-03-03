@@ -49,9 +49,6 @@ An alternative to the observation space approach is the so called 'sate space' a
 <li>log the Broadcast Ephemeris orbit corrections as files in SP3 files.</li>
 </ul>
 </p>
-<p>
-Note that BNS currently only generates premature RTCM Version 3.x message types 4063 for combined GPS orbit and clock corrections and 4069 for combined GLONASS orbit and clock corrections to Broadcast Ephemeris.
-</p>
 
 <p><a name="function"><h3>2. Functioning</h3></p>
 <p>
@@ -307,7 +304,7 @@ Specify the full path to a file where received clocks and orbits from a real-tim
 
 <p><a name="ephc"><h4>4.6. Broadcast Corrections</h4></p>
 <p>
-BNS can upload the resulting stream(s) of clock and orbit corrections to Broadcast Ephemeris to an NTRIP Broadcaster. Both EUREF and IGS operate an NTRIP broadcaster at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which can be used for stream upload. The stream's format is RTCM Version 3.x. Note that it only carries the premature message Types 4063 and 4069 for combined orbit and clock corrections to GPS and GLONASS Broadcast Ephemeris.
+BNS can upload the resulting stream(s) of clock and orbit corrections to Broadcast Ephemeris to an NTRIP Broadcaster. Both EUREF and IGS operate an NTRIP broadcaster at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which can be used for stream upload. The stream's format is RTCM Version 3.x. 
 </p>
 <p>
 BNS allows to configure two Broadcast Corrections streams refering do different reference systems for upload to different NTRIP broadcasters. You may use this functionality for parallel support of a backup NTRIP broadcaster or for simultaneous support of two reference systems.

@@ -270,8 +270,8 @@ bnsWindow::bnsWindow() {
   _sp3IntrComboBox->setWhatsThis(tr("Select the length of the SP3 orbit file."));
   _sp3SamplSpinBox->setWhatsThis(tr("Select the SP3 orbit file sampling interval in seconds. A value of zero '0' tells BNS to store all available samples into SP3 orbit files."));
   _autoStartCheckBox->setWhatsThis(tr("<p>Tick 'Auto start' for auto-start of BNS at startup time in window mode with preassigned processing options.</p>"));
-  _beClocks1CheckBox->setWhatsThis(tr("<p>Ignore incoming clock estimates and send broadcast clocks instead of broadcast clock corrections.</p><p>Note that for compatibility with IGS post processing products these clocks are reduced for the 2nd order relativistic effect.</p>"));
-  _beClocks2CheckBox->setWhatsThis(tr("<p>Ignore incoming clock estimates and send broadcast clocks instead of broadcast clock corrections.</p><p>Note that for compatibility with IGS post processing products these clocks are reduced for the 2nd order relativistic effect.</p>"));
+  _beClocks1CheckBox->setWhatsThis(tr("<p>Ignore incoming clock estimates and send broadcast clocks instead of broadcast clock corrections.</p><p>Note that for compatibility with IGS post processing products these clocks will not be corrected for the 2nd order relativistic effect.</p>"));
+  _beClocks2CheckBox->setWhatsThis(tr("<p>Ignore incoming clock estimates and send broadcast clocks instead of broadcast clock corrections.</p><p>Note that for compatibility with IGS post processing products these clocks will not be corrected for the 2nd order relativistic effect.</p>"));
 
 
   // TabWidget
