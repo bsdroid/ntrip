@@ -9,7 +9,7 @@ BNS has been developed for the Federal Agency for Cartography and Geodesy (BKG) 
 </p>
 
 <p>
-BNS is released under the GNU General Public License (GPL). Binaries for BNS are available for Windows, 32-bit and 64-bit Linux (compiled under -m32 32-bit compatibility mode), Solaris, and Mac OS X systems. The MinGW compiler (Version 5.3.1) is used to produce the Windows binary. It is likely that BNS can be compiled on other systems where a GNU compiler and Qt Version 4.3.2 are available.
+BNS is released under the GNU General Public License (GPL). Binaries for BNS are available for Windows, 32-bit and 64-bit Linux (compiled under -m32 32-bit compatibility mode), Solaris, and Mac OS X systems. The MinGW compiler (Version 5.3.1) is used to produce the Windows binary. It is likely that BNS can be compiled on other systems where a GNU compiler and Qt Version 4.4.3 are available.
 </p>
 
 <p>
@@ -21,7 +21,7 @@ Before running, please ensure that you have installed the latest version availab
 <h4>
 <a href=#purpose>1. Purpose</a><br>
 <a href=#function>2. Functioning</a><br>
-<a href=#resources>3. Resources</a><br>
+<a href=#resources>3. Modes & Resources</a><br>
 <a href=#options>4. Options</a><br>
 <a href=#limits>5. Limitations</a><br>
 <a href=#authors>6. Authors</a><br>
@@ -78,50 +78,76 @@ Then, epoch by epoch:
 Although it is not compulsory, because BNS puts a significant load on the communication link, it is recommended that BNS, the Broadcast Ephemeris server (i.e. BNC), and the server providing orbits and clocks (i.e. RTNet) are run on the same host.
 </p>
 
-<p><a name="resources"><h3>3. Resources</h3></p>
+<p><a name="resources"><h3>3. Modes & Resources</h3></p>
 <p>
-The current size of the real-time stream produced by BNS is in the order of 5 kbits/sec depending on the number of visible satellites. When uploading the stream to an NTRIP Broadcaster, user needs to ensure that the connection used can sustain the required bandwidth.
+Apart from its regular window mode, BNS can be run as a background job in a 'no window' mode using processing options from previously saved configuration.
 </p>
 <p>
-Running BNS requires the clock of the host computer to be properly synchronized.
+BNS requires access to the Internet with a minimum of about 1 kbits/sec per stream depending on the stream format and the number of visible satellites. You need to make sure that the connection can sustain the required bandwidth.
+</p>
+<p>
+It requires the clock of the host computer to be properly synchronized.
 </p>
 
 <p><a name="options"><h3>4. Options</h3></p>
 
 <p>
-All options for running BNS on Unix/Linux/Mac systems are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Server.conf, see annexed 'Configuration File' example. On Windows systems options are saved in register BKG_NTRIP_Server. The self-explaining contents of the configuration file or the Windows register can easily be edited.
+This section describes BNS's top menu bar, its processing options and its bottom menu bar.
 </p>
 
 <p>
-4.1. <a href=#file>File</a><br>
-4.2. <a href=#help>Help</a><br>
-4.3. <a href=#proxy>Proxy</a><br>
-4.4. <a href=#general>General</a><br>
-&nbsp; &nbsp; &nbsp; 4.4.1. <a href=#logfile>Logfile</a><br>
-&nbsp; &nbsp; &nbsp; 4.4.2. <a href=#appfile>Append Files</a><br>
-4.5. <a href=#eph>RINEX Ephemeris</a><br>
-&nbsp; &nbsp; &nbsp; 4.5.1. <a href=#ephserver>Host & Port</a><br>
-&nbsp; &nbsp; &nbsp; 4.5.2. <a href=#ephsave>Save</a><br>
-4.6. <a href=#co>Clocks & Orbits</a><br>
-&nbsp; &nbsp; &nbsp; 4.6.1. <a href=#coport>Listening Port</a><br>
-&nbsp; &nbsp; &nbsp; 4.6.2. <a href=#cosave>Save</a><br>
-4.7. <a href=#ephc>Ephemeris Corrections</a><br>
-&nbsp; &nbsp; &nbsp; 4.7.1. <a href=#ephcserver>Host & Port</a><br>
-&nbsp; &nbsp; &nbsp; 4.7.2. <a href=#ephcmount>Mountpoint & Password</a><br>
-&nbsp; &nbsp; &nbsp; 4.7.3. <a href=#ephcsys>System</a><br>
-&nbsp; &nbsp; &nbsp; 4.7.4. <a href=#ephcsave>Save</a><br>
-4.8. <a href=#clkrnx>RINEX Clocks</a><br>
-&nbsp; &nbsp; &nbsp; 4.8.1. <a href=#clkdir>Directory</a><br>
-&nbsp; &nbsp; &nbsp; 4.8.2. <a href=#clkint>Interval & Sampling</a><br>
-4.9. <a href=#orb>SP3 Orbits</a><br>
-&nbsp; &nbsp; &nbsp; 4.9.1. <a href=#orbdir>Directory</a><br>
-&nbsp; &nbsp; &nbsp; 4.9.2. <a href=#orbint>Interval & Sampling</a><br>
-4.10. <a href=#start>Start</a><br>
-4.11. <a href=#stop>Stop</a><br>
-4.12. <a href=#nw>No Window</a>
+The usual handling of BNS is that you first select severs for 'RINEX Ephemeris' and 'Clocks & Orbits'. You then select an NTRIP broadcaster for stream upload ('Broadcast Corrections') before you start the program ('Start'). Records of BNS's activities are shown in the'Logs' canvas in the middle of the main window.
 </p>
 
-<p><a name="file"><h4>4.1. File</h4></p>
+<p>
+As a default, configuration files for running BNS on Unix/Linux/Mac systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration file name is 'BNS.ini'.
+</p>
+
+<p>
+The default file name 'BNS.ini' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag & Drop a configuration file icon to start BNS. See annexed 'Configuration Example' for a complete set of configuration options.
+</p>
+
+<p>
+4.1. <a href=#topmenu>Top Menu Bar</a><br>
+4.1.1 <a href=#file>File</a><br>
+4.1.2 <a href=#help>Help</a><br>
+4.2. <a href=#proxy>Proxy</a><br>
+4.3. <a href=#general>General</a><br>
+&nbsp; &nbsp; &nbsp; 4.3.1. <a href=#logfile>Logfile</a><br>
+&nbsp; &nbsp; &nbsp; 4.3.2. <a href=#appfile>Append Files</a><br>
+&nbsp; &nbsp; &nbsp; 4.3.3. <a href=#genstart>Auto Start</a><br>
+4.4. <a href=#eph>RINEX Ephemeris</a><br>
+&nbsp; &nbsp; &nbsp; 4.4.1. <a href=#ephserver>Host & Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.4.2. <a href=#ephsave>Save</a><br>
+4.5. <a href=#co>Clocks & Orbits</a><br>
+&nbsp; &nbsp; &nbsp; 4.5.1. <a href=#coport>Listening Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.5.2. <a href=#cosave>Save</a><br>
+4.6. <a href=#ephc>Broadcast Corrections</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.1. <a href=#ephcserver>Host & Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.2. <a href=#ephcmount>Mountpoint & Password</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.3. <a href=#ephcsys>System</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.4. <a href=#ephcsave>Save</a><br>
+4.7. <a href=#clkrnx>RINEX Clocks</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.1. <a href=#clkdir>Directory</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.2. <a href=#clkint>Interval & Sampling</a><br>
+4.8. <a href=#orb>SP3 Orbits</a><br>
+&nbsp; &nbsp; &nbsp; 4.8.1. <a href=#orbdir>Directory</a><br>
+&nbsp; &nbsp; &nbsp; 4.8.2. <a href=#orbint>Interval & Sampling</a><br>
+4.9. <a href=#bottom>Bottom Menu Bar</a><br>
+4.9.1 <a href=#start>Start</a><br>
+4.9.2 <a href=#stop>Stop</a><br>
+4.10. <a href=#cmd>Command Line Options</a><br>
+4.10.1 <a href=#nw>No Window</a><br>
+4.10.2 <a href=#conffile>Configuration File</a>
+</p>
+
+<p><a name="topmenu"><h4>4.1. Top Menu Bar</h4></p>
+<p>
+The top menu bar allows to select a font for the BNS windows, save configured options or quit
+ the program execution. It also provides access to a program documentation.
+</p>
+
+<p><a name="file"><h4>4.1.1 File</h4></p>
 
 <p>
 The 'File' button lets you
@@ -130,8 +156,7 @@ The 'File' button lets you
 select an appropriate font.<br>
 Use smaller font size if the BNS main window extends beyond the size of your screen.
 </li> 
-<li> save selected options.<br>
-Note that on Windows systems options are saved in register BKG_NTRIP_Server. On Unix/Linux/Mac systems options are saved in file ${HOME}/.config/BKG/BKG_NTRIP_Server.conf.
+<li> save selected options in configuration file.
 </li>
 <li>
 quit the BNS program.
@@ -139,7 +164,7 @@ quit the BNS program.
 </ul>
 </p>
 
-<p><a name="help"><h4>4.2. Help</h4></p>
+<p><a name="help"><h4>4.1.2 Help</h4></p>
 
 <p>
 The 'Help' button provides access to
@@ -161,27 +186,35 @@ Close the 'About BNS' window to continue working with BNS.
 BNS comes with a help system providing online information about its functionality and usage. Short descriptions are available for any widget. Focus to the relevant widget and press Shift+F1 to request help information. A help text will appear immediately; it disappears as soon as the focus is shifted to something else. The dialogs on some operating systems may provide a "?" button that users can click; they then click the relevant widget to pop up the help text.
 </p>
 
-<p><a name="proxy"><h4>4.3. Proxy - for usage in a protected LAN</h4></p>
+<p><a name="proxy"><h4>4.2. Proxy - for usage in a protected LAN</h4></p>
 
 <p>
-If you are running BNS within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you don't know the address and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.
+If you are running BNS within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNS. If you don't know the address and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.
 </p>
 <p>
 Note that IP streaming is often not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP Casters. If these are not possible, you might need to run BNS outside your LAN on a host that has unobstructed connection to the Internet.
 </p>
-<p><a name="general"><h4>4.4. General Options</h4></p>
-
-<p><a name="logfile"><h4>4.4.1 Logfile - optional</h4></p>
+<p><a name="general"><h4>4.3. General Options</h4></p>
 <p>
-Records of BNC's activities are shown in the Log section on the bottom of the main window. These logs can be saved into a file when a valid path is specified in the 'Log (full path)' field. The message log covers the communication status between BNC and the NTRIP broadcaster as well as problems that may occur in the communication link, stream availability, stream delay, stream conversion etc. All times are given in UTC. The default value for 'Log (full path)' is an empty option field, meaning that BNC logs will not saved into a file.
+The following describes general settings for BNC's logfile, file handling and auto-start.
 </p>
 
-<p><a name="appfile"><h4>4.4.2 Append Files</h4></p>
+<p><a name="logfile"><h4>4.3.1 Logfile - optional</h4></p>
+<p>
+Records of BNS's activities are shown in the Log section on the bottom of the main window. These logs can be saved into a file when a valid path is specified in the 'Log (full path)' field. The message log covers the communication status between BNS and the NTRIP broadcaster as well as problems that may occur in the communication link, stream availability, stream delay, stream conversion etc. All times are given in UTC. The default value for 'Log (full path)' is an empty option field, meaning that BNS logs will not saved into a file.
+</p>
+
+<p><a name="appfile"><h4>4.3.2 Append Files</h4></p>
 <p>
 When BNS is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append existing files following a restart of BNS, a system crash or when BNS had crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far. Note that option 'Append files' affects all types of files created by BNS.
 </p> 
 
-<p><a name="eph"><h4>4.5. RINEX Ephemeris</h4></p>
+<p><a name="genstart"><h4>4.3.3 Auto Start - optional</h4></p>
+<p>
+You may like to auto-start BNS at startup time in window mode with preassigned configuration options. This may be required i.e. immediately after booting your system. Tick 'Autostart' to supersede the usage of the 'Start' button. Make sure that you maintain a link to BNS for that in your Autostart directory (Windows systems) or call BNS in a script below directory /etc/init.d (Unix/Linux/Mac systems).
+</p>
+
+<p><a name="eph"><h4>4.4. RINEX Ephemeris</h4></p>
 <p>
 BNS requires GNSS Broadcast Ephemeris in RINEX Version 3 Navigation file format from an IP address and port. This information can be provided in real-time by the 'BKG Ntrip Client' (BNC) program. Note that whenever a new set of Broadcast Ephemeris becomes available, BNS needs it immediately.
 </p>
@@ -207,17 +240,17 @@ R04 2008 07 22 08 15 14  4.76110726595e-05  0.00000000000e+00  2.88600000000e+04
 </pre>
 </p>
 
-<p><a name="ephserver"><h4>4.5.1 Host & Port - mandatory</h4></p>
+<p><a name="ephserver"><h4>4.4.1 Host & Port - mandatory</h4></p>
 <p>
 Enter the IP address and port number of a Broadcast Ephemeris server like BNC to establish a persistent socket connection, see section 'Flow Chart' under 'Help' for socket communication details. If BNS runs on the same host as BNC, 127.0.0.1 should be used as the server's IP address. Make sure that this server is up and running before you start BNS.
 </p>
 
-<p><a name="ephsave"><h4>4.5.2 Save - optional</h4></p>
+<p><a name="ephsave"><h4>4.4.2 Save - optional</h4></p>
 </p>
 Specify the full path to a file where received Broadcast Ephemeris will be logged. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that logging is disabled.
 </p>
 
-<p><a name="co"><h4>4.6. Clocks & Orbits</h4></p>
+<p><a name="co"><h4>4.5. Clocks & Orbits</h4></p>
 <p>
 BNS requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system in SP3 format. They can be provided by a real-time GNSS engine such as RTNet. The sampling rate should not be much greater than 10 sec. Note that otherwise in IP streaming involved tools on the NTRIP Broadcaster or client side may respond with a timeout.
 </p>
@@ -262,29 +295,29 @@ PR23 -14575.573714   2817.925995  20728.130339   -263.187906
 </pre>
 </p>
 
-<p><a name="coport"><h4>4.6.1 Listening Port - mandatory</h4></p>
+<p><a name="coport"><h4>4.5.1 Listening Port - mandatory</h4></p>
 <p>
 BNS is listening at an IP port for incoming GNSS clocks and orbits in SP3 format. Enter the respective IP port number to setup a server socket for incoming data, see section 'Flow Chart' under 'Help' for socket communication details. Make sure that the software providing clocks and orbits is up and running before you start BNS.
 </p>
 
-<p><a name="cosave"><h4>4.6.2 Save - optional</h4></p>
+<p><a name="cosave"><h4>4.5.2 Save - optional</h4></p>
 <p>
 Specify the full path to a file where received clocks and orbits from a real-time engine will be logged. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that logging is disabled.
 </p>
 
-<p><a name="ephc"><h4>4.7. Ephemeris Corrections</h4></p>
+<p><a name="ephc"><h4>4.6. Broadcast Corrections</h4></p>
 <p>
 BNS can upload the resulting stream(s) of clock and orbit corrections to Broadcast Ephemeris to an NTRIP Broadcaster. Both EUREF and IGS operate an NTRIP broadcaster at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> which can be used for stream upload. The stream's format is RTCM Version 3.x. Note that it only carries the premature message Types 4063 and 4069 for combined orbit and clock corrections to GPS and GLONASS Broadcast Ephemeris.
 </p>
 <p>
-BNS allows to configure two Ephemeris Corrections streams refering do different reference systems for upload to different NTRIP broadcasters. You may use this functionality for parallel support of a backup NTRIP broadcaster or for simultaneous support of two reference systems.
+BNS allows to configure two Broadcast Corrections streams refering do different reference systems for upload to different NTRIP broadcasters. You may use this functionality for parallel support of a backup NTRIP broadcaster or for simultaneous support of two reference systems.
 </p>
 
 <p>
 When using clocks from Broadcast Ephemeris (with or without corrections) and clocks from SP3 files in the same application, it is important to understand that Broadcast Ephemeris clocks - according to the Interface Control Documents (ICD) - are corrected for the 2nd-order relativistic effect whereas clocks from SP3 files are not. The 2nd-order relativistic effect is a priodic time correction defined as -2 (R * V) / c^2 and includes the scalar product of satallite position and velocity divided by the speed of light raised to the second power. 
 </p>
 
-<p><a name="ephcserver"><h4>4.7.1 Host & Port - optional</h4></p>
+<p><a name="ephcserver"><h4>4.6.1 Host & Port - optional</h4></p>
 <p>
 Enter the NTRIP Caster's 'Host' IP name or number for stream upload.
 </p>
@@ -292,7 +325,7 @@ Enter the NTRIP Caster's 'Host' IP name or number for stream upload.
 Enter the NTRIP Caster's IP 'Port' number for stream upload. Note that NTRIP Casters are often configured to provide access on more than one port, usually port 80 and 2101. If you experience communication problems on port 80, you should try to use the alternative port(s).
 </p>
 
-<p><a name="ephcmount"><h4>4.7.2 Mountpoint & Password - mandatory if 'Host' is set</h4></p>
+<p><a name="ephcmount"><h4>4.6.2 Mountpoint & Password - mandatory if 'Host' is set</h4></p>
 <p>
 Each stream on an NTRIP Caster is defined using a unique source ID called mountpoint. An NTRIP Server like BNS upload a stream to the Caster by referring to a dedicated mountpoint that has been set by the Caster operator. Specify here the mountpoint based on the detail you received from the operator for your stream. It is often a four character ID (capital letters) plus an integer number.
 <p>
@@ -300,7 +333,7 @@ Each stream on an NTRIP Caster is defined using a unique source ID called mountp
 In NTRIP Version 1.0 stream upload may be protected through an upload 'Password'. Enter the password you received from the Caster operator along with the mountpoint(s).
 </p>
 
-<p><a name="ephcsys"><h4>4.7.3 System - mandatory if 'Host' is set</h4></p>
+<p><a name="ephcsys"><h4>4.6.3 System - mandatory if 'Host' is set</h4></p>
 <p>
 BNS refers its clock and orbit corrections to a specific reference system. Available options are
 <p>
@@ -340,7 +373,7 @@ Contact [igs-ip@bkg.bund.de] if you would like to see further Helmert transforma
 <p>
 
 
-<p><a name="ephcsave"><h4>4.7.4 Save - optional</h4></p>
+<p><a name="ephcsave"><h4>4.6.4 Save - optional</h4></p>
 <p>
 The clock and orbit corrections streamed by BNS to the NTRIP Caster can be logged locally. Specify a full 'Save stream' path here to save this information to a local file. Default value for 'Save stream' is an empty option field, meaning that logging is disabled.
 </p>
@@ -377,17 +410,21 @@ The following is an example file contents based on combined orbit and clock corr
 </pre>
 </p>
 
-<p><a name="clkrnx"><h4>4.8. RINEX Clocks</h4></p>
+<p><a name="clkrnx"><h4>4.7. RINEX Clocks</h4></p>
 <p>
 The clock corrections generated by BNS can be logged separately in Clock RINEX format. The file naming follows the RINEX convention.
+<p>
+
+</p>
+Note that clocks in the Clock RINEX files are not corrected for the 2nd-order relativistic effect.
 </p>
 
-<p><a name="clkdir"><h4>4.8.1 Directory - optional</h4></p>
+<p><a name="clkdir"><h4>4.7.1 Directory - optional</h4></p>
 <p>
 Here you can specify the path to where the Clock RINEX files will be stored. If the specified directory does not exist, BNS will not create Clock RINEX files. Default value for 'Directory' is an empty option field, meaning that logging of Clock RINEX files is disabled.
 </p>
 
-<p><a name="clkint"><h4>4.8.2 Interval & Sampling - mandatory if 'Directory' is set</h4></p>
+<p><a name="clkint"><h4>4.7.2 Interval & Sampling - mandatory if 'Directory' is set</h4></p>
 <p>
 Select the length of the Clock RINEX file generated. The default value is 1 day.
 </p>
@@ -396,17 +433,20 @@ Select the length of the Clock RINEX file generated. The default value is 1 day.
 Select the Clock RINEX sampling interval in seconds. A value of zero '0' tells BNS to store all received epochs into Clock RINEX. This is the default value.
 </p>
 
-<p><a name="orb"><h4>4.9. SP3 Orbits</h4></p>
+<p><a name="orb"><h4>4.8. SP3 Orbits</h4></p>
 <p>
 The orbit corrections generated by BNS can be logged separately in SP3 Orbit files. The file naming follows the IGS convention.
 </p>
+</p>
+Note that clocks in the SP3 Orbit files are not corrected for the 2nd-order relativistic effect.
+</p>
 
-<p><a name="orbdir"><h4>4.9.1 Directory - optional</h4></p>
+<p><a name="orbdir"><h4>4.8.1 Directory - optional</h4></p>
 <p>
 Here you can specify the path to where the SP3 Orbit files will be stored. If the specified directory does not exist, BNS will not create SP3 Orbit files. Default value for 'Directory' is an empty option field, meaning that logging of SP3 Orbit files is disabled.
 </p>
 
-<p><a name="orbint"><h4>4.9.2 Interval & Sampling - mandatory if 'Directory' is set</h4></p>
+<p><a name="orbint"><h4>4.8.2 Interval & Sampling - mandatory if 'Directory' is set</h4></p>
 <p>
 Select the length of the SP3 Orbit file generated. The default value is 1 day.
 </p>
@@ -414,22 +454,47 @@ Select the length of the SP3 Orbit file generated. The default value is 1 day.
 Select the SP3 Orbit file sampling interval in seconds. A value of zero '0' tells BNS to store all received epochs into SP3 Orbit files. This is the default value.
 </p>
 
-<p><a name="start"><h4>4.10. Start</h4></p>
+<p><a name="bottom"><h4>4.9. Bottom Menu Bar</h4></p>
+<p>
+The bottom menu bar allows to start or stop the execution of BNS and provides access the BNC's online help funtion.
+</p>
+
+<p><a name="start"><h4>4.9.1 Start</h4></p>
 <p>
 Hit 'Start' to start receiving IGS orbits and clocks and convert them into corrections to Broadcast Ephemeris. Note that when started BNS by default will begin with new files which might overwrite existing files when necessary unless the option 'Append files' is ticked.
 </p> 
 
-<p><a name="stop"><h4>4.11. Stop</h4></p>
+<p><a name="stop"><h4>4.9.2 Stop</h4></p>
 <p>
 Hit the 'Stop' button in order to stop BNS. 
 </p> 
 
-<p><a name="nw"><h4>4.12. No Window - optional</h4></p>
+<p><a name="cmd"><h4>4.10. Command Line Options</h4></p>
 <p>
-On all systems BNS can be started in batch mode with the command line option '-nw'. BNS will then run in 'no window' mode, using options from the configuration file ${HOME}/.config/BKG/BNC_NTRIP_Server.conf (Unix/Linux/Mac, see 'Configuration File' example in the Annex) or from the register BKG_NTRIP_Server (Windows).
-</p> 
-<p> 
-The self-explanatory contents of the configuration file or the Windows registry can easily be edited. Before editing, terminate BNS first using Windows Task Manager when running it in 'no window' mode on Windows systems.
+Command line options are available to run BNS in 'no window' mode or let it read a specific configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration file name instead of using the default name 'BNS.ini'.
+</p>
+
+<p><a name="nw"><h4>4.10.1 No Window - optional</h4></p>
+<p>
+Apart from its regular windows mode, BNS can be started on all systems as a background/batch job with command line option '-nw'. BNS will then run in 'no window' mode, using processing options from its configuration file on disk. Terminate BNS using Windows Task Manager when running it in 'no window' mode on Windows systems.
+</p>
+<p>
+Example:<br><br>
+bns.exe -nw
+</p>
+
+<p><a name="conffile"><h4>4.10.2 Configuration File - optional</h4></p>
+The default configuration file name is 'BNS.ini'. You may change this name at startup time using the command line option '--conf &#060;<u>confFileName</u>&#062;'. This allows to run several BNS jobs in parallel on the same host using different sets of configuration options. <u>confFileName</u> stands either for the full path to a configuration file or just for a file name. If you introduce only a filename, the corresponding file will be saved in the current working directory from where BNS is started.
+</p>
+<p>
+Example:<br><br>
+./bns --conf MyConfig.ini
+</p>
+<p>
+This leads to a BNS job using configuration file 'MyConfig.ini'. The configuration file will be saved in the current working directory.
+</p>
+
+
 </p> 
 <p><a name="limits"><h3>5. Limitations</h3></p>
 <ul>
@@ -464,7 +529,7 @@ Frankfurt, Germany<br>
 7.2. <a href=#rtcm>RTCM</a><br>
 &nbsp; &nbsp; &nbsp; 7.2.1 RTCM <a href=#ntrip>NTRIP</a><br>
 &nbsp; &nbsp; &nbsp; 7.2.2 RTCM <a href=#rtcm3>Version 3.x</a><br>
-7.3. <a href=#config>Configuration File</a><br>
+7.3. <a href=#config>Configuration Example</a><br>
 7.4. <a href=#links>Links</a><br>
 </p>
 
@@ -472,8 +537,17 @@ Frankfurt, Germany<br>
 </p>
 <table>
 <tr></tr>
-<tr><td>Dec 2008 &nbsp;</td><td>Version 1.0 &nbsp;</td><td>[Add] Source code and binaries published.</td></tr>
-<tr><td>Mar 2009 &nbsp;</td><td>Version 1.1 &nbsp;</td><td>[Add] New messages for URA and high-rate clocks.</td></tr>
+
+<tr>
+<td>Dec 2008 &nbsp;</td><td>Version 1.0 &nbsp;</td>
+<td>[Add] Source code and binaries published.</td>
+</tr>
+
+<tr>
+<td>Mar 2009 &nbsp;</td><td>Version 1.1 &nbsp;</td>
+<td>[Add] New messages for URA and high-rate clocks.<br> [Add] Upgrade to Qt Version 4.4.3<br> [Add] Enable/disable tab widgets<br> [Add] User defined configuration file name<br> [mod] Switch to configuration files in ini-Format<br> [Add] Auto start<br> [Add] Drag and drop ini files</td>
+</tr>
+
 </table>
 </p>
 
@@ -536,40 +610,46 @@ RTCM is in the process of developing new Version 3 message types to carry satell
 RTCM Version 3.x streams carrying these messages may be used for example to support real-time Precise Point Positioning (PPP) applications using the 'state space' approach.
 </p>
 
-<p><a name="config"><h4>7.3. Configuration File</h4></p>
+<p><a name="config"><h4>7.3. Configuration Example</h4></p>
 <p>
-The following is an example of the contents of a Unix/Linux/Mac configuration file ${HOME}/.config/BKG/BKG_NTRIP_Server.conf. It enables the upload of streams CLCK1 and CLCK2 to www.igs-ip.net. Clock RINEX files and SP3 Orbit files are saved to a directory /home/weber/rinex :
+The following table's left column is an example for the contents of a configuration file 'BNS.ini'. It enables the upload of streams CLCK1 and CLCK2 to www.igs-ip.net. Clock RINEX files and SP3 Orbit files are saved to a directory /home/weber/rinex :
 </p>
-<p>
-<pre>
-[General]
-clkPort=7000
-ephEcho=/home/weber/rinex/eph.rnx
-ephHost=clock-ip.bkg.bund.de
-ephPort=6000
-fileAppend=0
-font="Helvetica [Adobe],8,-1,5,75,0,0,0,0,0"
-inpEcho=/home/weber/rinex/ClocksOrbits.dat
-logFile=/home/weber/rinex/bns.log
-mountpoint_1=CLCK1
-mountpoint_2=CLCK2
-outFile_1=/home/weber/rinex/CLCK1
-outFile_2=/home/weber/rinex/CLCK2
-beClocks1=
-beClocks2=
-outHost=www.igs-ip.net
-outPort=2101
-password=serverPass
-proxyHost=
-proxyPort=
-refSys_1=IGS05
-refSys_2=ETRS89
-rnxIntr=1 day
-rnxPath=/home/weber/rinex
-rnxSampl=30
-sp3Intr=1 day
-sp3Path=/home/weber/rinex
-sp3Sampl=300
+<table>
+<tr></tr>
+<tr><td><b>Option</b></td><td><b>Affiliation</b></td></tr>
+<tr><td>[General]</td><td>Settings: Group</td></tr>
+<tr><td>proxyHost=</td><td>Proxy: Host</td></tr>
+<tr><td>proxyPort=</td><td>Proxy: Port</td></tr>
+<tr><td>logFile=/home/weber/rinex/bns.log</td><td>General: Logfile (full path)</td></tr>
+<tr><td>fileAppend=0</td><td>General: Append files</td></tr>
+<tr><td>font="Helvetica [Adobe],8,-1,5,75,0,0,0,0,0"</td><td>Internal memory: Used font</td></tr>
+<tr><td>refSys_1=IGS05</td><td>Broadcast Corrections I: System</td></tr>
+<tr><td>refSys_2=ETRF2000</td><td>Broadcast Corrections II: System</td></tr>
+<tr><td>inpEcho=/home/weber/rinex/ClocksOrbits.dat</td><td>Clocks & Orbits: Save (full path)</td></tr>
+<tr><td>ephHost=clock-ip.bkg.bund.de</td><td>RINEX Ephemeris: Host</td></tr>
+<tr><td>ephPort=6000</td><td>RINEX Ephemeris: Port</td></tr>
+<tr><td>ephEcho=/home/weber/rinex/eph.rnx</td><td>RINEX Ephemeris: Save (full path)</td></tr>
+<tr><td>clkPort=7000</td><td>Clocks & Orbits: Listening port</td></tr>
+<tr><td>outHost1=www.igs-ip.net</td><td>Broadcast Corrections I: Host</td></tr>
+<tr><td>outPort1=2101</td><td>Broadcast Corrections I: Port</td></tr>
+<tr><td>outHost2=www.euref-ip.net</td><td>Broadcast Corrections II: Host</td></tr>
+<tr><td>outPort2=2101</td><td>Broadcast Corrections II: Port</td></tr>
+<tr><td>mountpoint_1=CLCK1</td><td>Broadcast Corrections I: Mountpoint</td></tr>
+<tr><td>mountpoint_2=CLCK2</td><td>Broadcast Corrections II: Mountpoint</td></tr>
+<tr><td>outFile_1=/home/weber/rinex/CLCK1</td><td>Broadcast Corrections I: Save (full path)</td></tr>
+<tr><td>outFile_2=/home/weber/rinex/CLCK2</td><td>Broadcast Corrections II: Save (full path)</td></tr>
+<tr><td>password1=pw1</td><td>Broadcast Corrections I: Password</td></tr>
+<tr><td>password2=pw2</td><td>Broadcast Corrections I: Password</td></tr>
+<tr><td>rnxPath=/home/weber/rinex</td><td>RINEX Clocks: Directory</td></tr>
+<tr><td>rnxIntr=1 day</td><td>RINEX Clocks: Interval</td></tr>
+<tr><td>rnxSampl=30</td><td>RINEX Clocks: Sampling</td></tr>
+<tr><td>sp3Path=/home/weber/rinex</td><td>SP3 Orbits: Directory</td></tr>
+<tr><td>sp3Intr=1 day</td><td>SP3 Orbits: Interval</td></tr>
+<tr><td>sp3Sampl=300</td><td>SP3 Orbits: Sampling</td></tr>
+<tr><td>startTab=0</td><td>Internal memory: Top tab</td></tr>
+<tr><td>autoStart=0</td><td>General: Auto start</td></tr>
+<tr><td>beClocks1=0</td><td>Broadcast Corrections I: Broadcast clocks</td></tr>
+<tr><td>beClocks2=0</td><td>Broadcast Corrections I: Broadcast clocks</td></tr>
 </pre>
 </p>
 
