@@ -111,12 +111,14 @@ void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac) {
 void XYZ_to_RSW(const ColumnVector& rr, const ColumnVector& vv,
                 const ColumnVector& xyz, ColumnVector& rsw) {
 
-  ColumnVector cross = crossproduct(rr, vv);
+  ColumnVector along  = vv / vv.norm_Frobenius();
+  ColumnVector cross  = crossproduct(rr, vv); cross /= cross.norm_Frobenius();
+  ColumnVector radial = crossproduct(along, cross);
 
   rsw.ReSize(3);
-  rsw(1) = DotProduct(xyz, rr)    / rr.norm_Frobenius();
-  rsw(2) = DotProduct(xyz, vv)    / vv.norm_Frobenius();
-  rsw(3) = DotProduct(xyz, cross) / cross.norm_Frobenius();
+  rsw(1) = DotProduct(xyz, radial);
+  rsw(2) = DotProduct(xyz, along);
+  rsw(3) = DotProduct(xyz, cross);
 }
 
 // Fourth order Runge-Kutta numerical integrator for ODEs
