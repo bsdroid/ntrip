@@ -74,6 +74,7 @@ void bncNetQueryUdp::waitForReadyRead(QByteArray& outData) {
 
   if (datagram.size() > 12) {
     outData.append(datagram.mid(12));
+    cout << outData.data() << endl;
   }
 }
 
@@ -135,15 +136,21 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
       passW.toAscii()).toBase64() + "\r\n";
     }
     
-    QByteArray reqStr = "GET " + _url.path().toAscii() + " HTTP/1.0\r\n"
+    QByteArray reqStr = "GET " + _url.path().toAscii() + " HTTP/1.1\r\n"
+                      + "Host: " + _url.host().toAscii() + "\r\n"
+                      + "Ntrip-Version: Ntrip/2.0\r\n"
                       + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
-                      + userAndPwd + "\r\n";
+                      + "Connection: close\r\n"
+                      + userAndPwd
+                      + "\r\n";
     
-    // NMEA string to handle VRS stream
-    // --------------------------------
-    if (!gga.isEmpty()) {
-      reqStr += gga + "\r\n";
-    }
+////    // NMEA string to handle VRS stream
+////    // --------------------------------
+////    if (!gga.isEmpty()) {
+////      reqStr += gga + "\r\n";
+////    }
+
+    cout << "reqStr > " << reqStr.data() << "<" << endl;
 
     rtpbuffer[1] = 97;
     QByteArray buffer = QByteArray(rtpbuffer) + reqStr;
