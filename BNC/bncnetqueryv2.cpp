@@ -170,20 +170,22 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
     _eventLoop->exec();
   }
 
+  // Check NTRIPv2 error code
+  // ------------------------
+  if (_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() != 200) {
+    _reply->disconnect(SIGNAL(error(QNetworkReply::NetworkError)));
+    _reply->abort();
+    _eventLoop->quit();
+    _status = error;
+    emit newMessage(_url.path().toAscii().replace(0,1,"") +
+                    ": NetQuery, Error - server replied: " + 
+                    _reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray(),
+                    true);
+  }
+
   // Append Data
   // -----------
-  outData.append(_reply->readAll());
-
-  if (_firstData) {
-    _firstData = false;
-    if (outData.indexOf("SOURCETABLE") != -1 ||
-        outData.indexOf("not found") != -1) {
-      _reply->disconnect(SIGNAL(error(QNetworkReply::NetworkError)));
-      _reply->abort();
-      _eventLoop->quit();
-      _status = error;
-      emit newMessage(_url.path().toAscii().replace(0,1,"") 
-                      + ": NetQuery, wrong mountpoint", true);
-    }
+  else {
+    outData.append(_reply->readAll());
   }
 }
