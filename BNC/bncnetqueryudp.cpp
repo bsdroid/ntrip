@@ -108,18 +108,18 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
     // Send initial RTP packet for firewall handling
     // ---------------------------------------------
     char rtpbuffer[12];
-    rtpbuffer[0]  = (2<<6);
-    rtpbuffer[1]  = 96;
-    rtpbuffer[2]  = 0;
-    rtpbuffer[3]  = 0;
-    rtpbuffer[4]  = 0;
-    rtpbuffer[5]  = 0;
-    rtpbuffer[6]  = 0;
-    rtpbuffer[7]  = 0;
-    rtpbuffer[8]  = 0;
-    rtpbuffer[9]  = 0; 
-    rtpbuffer[10] = 0;
-    rtpbuffer[11] = 0;
+    rtpbuffer[0]  = 128;
+    rtpbuffer[1]  =  96;
+    rtpbuffer[2]  =   0;
+    rtpbuffer[3]  =   0;
+    rtpbuffer[4]  =   0;
+    rtpbuffer[5]  =   0;
+    rtpbuffer[6]  =   0;
+    rtpbuffer[7]  =   0;
+    rtpbuffer[8]  =   0;
+    rtpbuffer[9]  =   0; 
+    rtpbuffer[10] =   0;
+    rtpbuffer[11] =   0;
 
     _udpSocket->writeDatagram(rtpbuffer, 12, _address, _port);
 

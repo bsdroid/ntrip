@@ -185,18 +185,18 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
           if (!serverPort.isEmpty()) {
             int sessInt = _session.toInt();
             char rtpbuffer[12];
-            rtpbuffer[0]  = (2<<6);
-            rtpbuffer[1]  = 96;
-            rtpbuffer[2]  = 0;
-            rtpbuffer[3]  = 0;
-            rtpbuffer[4]  = 0;
-            rtpbuffer[5]  = 0;
-            rtpbuffer[6]  = 0;
-            rtpbuffer[7]  = 0;
-            rtpbuffer[8]  = (sessInt>>24)&0xFF;
-            rtpbuffer[9]  = (sessInt>>16)&0xFF;
-            rtpbuffer[10] = (sessInt>>8)&0xFF;
-            rtpbuffer[11] = (sessInt)&0xFF;
+            rtpbuffer[0]  = 128;
+            rtpbuffer[1]  =  96;
+            rtpbuffer[2]  =   0;
+            rtpbuffer[3]  =   0;
+            rtpbuffer[4]  =   0;
+            rtpbuffer[5]  =   0;
+            rtpbuffer[6]  =   0;
+            rtpbuffer[7]  =   0;
+            rtpbuffer[8]  = (sessInt >> 24) & 0xFF;
+            rtpbuffer[9]  = (sessInt >> 16) & 0xFF;
+            rtpbuffer[10] = (sessInt >>  8) & 0xFF;
+            rtpbuffer[11] = (sessInt      ) & 0xFF;
 
             _udpSocket->writeDatagram(rtpbuffer, 12, 
                               _socket->peerAddress(), serverPort.toInt());

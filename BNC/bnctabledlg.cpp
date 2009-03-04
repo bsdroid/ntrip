@@ -89,7 +89,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   }
 
   _ntripVersionComboBox = new QComboBox();
-  _ntripVersionComboBox->addItems(QString("1,2,R").split(","));
+  _ntripVersionComboBox->addItems(QString("1,2,R,U").split(","));
   int kk = _ntripVersionComboBox->findText(settings.value("ntripVersion").toString());
   if (kk != -1) {
     _ntripVersionComboBox->setCurrentIndex(kk);
