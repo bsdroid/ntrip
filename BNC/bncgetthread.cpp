@@ -327,7 +327,7 @@ else if (hlp == "HARDWARE") {
 bncGetThread::~bncGetThread() {
   if (_query) {
     _query->stop();
-    delete _query;
+    _query->deleteLater();
   }
   delete _decoder;
   delete _rnx;
