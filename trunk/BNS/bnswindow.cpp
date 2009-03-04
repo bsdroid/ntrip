@@ -396,7 +396,7 @@ bnsWindow::bnsWindow() {
   layout_cas1->addWidget(new QLabel("Host"),               0, 0);
   layout_cas1->addWidget(_outHost_1_LineEdit,              0, 1, 1, 3);
   layout_cas1->addWidget(new QLabel("  Port"),             0, 4, Qt::AlignRight);
-  layout_cas1->addWidget(_outPort_1_LineEdit,              0, 5);
+  layout_cas1->addWidget(_outPort_1_LineEdit,              0, 5, 1, 10);
   layout_cas1->addWidget(new QLabel("Mountpoint"),         1, 0);
   layout_cas1->addWidget(_mountpoint_1_LineEdit,           1, 1);
   layout_cas1->addWidget(new QLabel("Password"),           1, 2, Qt::AlignRight);
@@ -447,7 +447,7 @@ bnsWindow::bnsWindow() {
   layout_cas2->addWidget(new QLabel("Host"),               0, 0);
   layout_cas2->addWidget(_outHost_2_LineEdit,              0, 1, 1, 3);
   layout_cas2->addWidget(new QLabel("  Port"),             0, 4, Qt::AlignRight);
-  layout_cas2->addWidget(_outPort_2_LineEdit,              0, 5);
+  layout_cas2->addWidget(_outPort_2_LineEdit,              0, 5, 1, 10);
   layout_cas2->addWidget(new QLabel("Mountpoint"),         1, 0);
   layout_cas2->addWidget(_mountpoint_2_LineEdit,           1, 1);
   layout_cas2->addWidget(new QLabel("Password"),           1, 2, Qt::AlignRight);
