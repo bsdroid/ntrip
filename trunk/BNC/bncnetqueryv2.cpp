@@ -47,7 +47,6 @@ bncNetQueryV2::~bncNetQueryV2() {
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::stop() {
   if (_reply) {
-    _reply->disconnect(SIGNAL(error(QNetworkReply::NetworkError)));
     _reply->abort();
   }
   _eventLoop->quit();
@@ -57,10 +56,13 @@ void bncNetQueryV2::stop() {
 // Error
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::slotError(QNetworkReply::NetworkError) {
-  _status = error;
-  emit newMessage(_url.path().toAscii().replace(0,1,"") 
-                  + ": NetQuery, " + _reply->errorString().toAscii(), true);
   _eventLoop->quit();
+  _status = error;
+
+  emit newMessage(_url.path().toAscii().replace(0,1,"")  +
+                  ": NetQuery, Error - server replied: " + 
+                  _reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray(),
+                  true);
 }
 
 // End of Request
@@ -173,14 +175,8 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
   // Check NTRIPv2 error code
   // ------------------------
   if (_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() != 200) {
-    _reply->disconnect(SIGNAL(error(QNetworkReply::NetworkError)));
     _reply->abort();
-    _eventLoop->quit();
-    _status = error;
-    emit newMessage(_url.path().toAscii().replace(0,1,"") +
-                    ": NetQuery, Error - server replied: " + 
-                    _reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray(),
-                    true);
+    slotError(QNetworkReply::UnknownNetworkError);
   }
 
   // Append Data
