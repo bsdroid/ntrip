@@ -21,7 +21,7 @@ class bncNetQuery : public QObject {
   virtual void waitForRequestResult(const QUrl& url, QByteArray& outData) = 0;
   virtual void startRequest(const QUrl& url, const QByteArray& gga) = 0;
   virtual void waitForReadyRead(QByteArray& outData) = 0;
-  virtual void sendNMEA(const QByteArray& /* ggaString */) {}
+  virtual void sendNMEA(const QByteArray& gga) = 0;
 
   queryStatus status() const {return _status;}
 

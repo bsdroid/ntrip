@@ -178,3 +178,9 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
     outData.append(_reply->readAll());
   }
 }
+
+// Send NMEA String
+////////////////////////////////////////////////////////////////////////////
+void bncNetQueryV2::sendNMEA(const QByteArray& gga) {
+
+}

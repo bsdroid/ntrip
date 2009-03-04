@@ -237,3 +237,8 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
                   + ": NetQuery, waiting for connect", true);
 }
 
+// Send NMEA String
+////////////////////////////////////////////////////////////////////////////
+void bncNetQueryRtp::sendNMEA(const QByteArray& gga) {
+
+}
