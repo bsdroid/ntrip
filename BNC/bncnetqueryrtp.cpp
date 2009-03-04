@@ -239,7 +239,6 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
 
 // Send NMEA String
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQueryRtp::sendNMEA(const QByteArray& /* gga */) {
-  emit newMessage(_url.path().toAscii().replace(0,1,"") 
-                  + ": sending NMEA not impelmented for NTRIP RTP", true);
+void bncNetQueryRtp::sendNMEA(const QByteArray& gga) {
+  startRequest(_url, gga);
 }
