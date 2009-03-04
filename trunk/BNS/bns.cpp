@@ -74,13 +74,10 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   // Socket and file for outputting the results
   // -------------------------------------------
   for (int ic = 1; ic <= 2; ic++) {
-
     QString mountpoint  = settings.value(QString("mountpoint_%1").arg(ic)).toString();
     QString outFileName = settings.value(QString("outFile_%1").arg(ic)).toString();
     if (!mountpoint.isEmpty() || !outFileName.isEmpty()) {
-      QString refSys      = settings.value(QString("refSys_%1").arg(ic)).toString();
-
-      _caster.push_back(new t_bnscaster(mountpoint, outFileName, refSys, ic));
+      _caster.push_back(new t_bnscaster(mountpoint, outFileName, ic));
       connect(_caster.back(), SIGNAL(error(const QByteArray)),
               this, SLOT(slotError(const QByteArray)));
       connect(_caster.back(), SIGNAL(newMessage(const QByteArray)),
@@ -372,25 +369,17 @@ void t_bns::readEpoch() {
             in >> prn;
             prns << prn;
             if ( _ephList.contains(prn) ) {
-              in >> xx(1) >> xx(2) >> xx(3) >> xx(4);
+              in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5);
               xx(1) *= 1e3;
               xx(2) *= 1e3;
               xx(3) *= 1e3;
               xx(4) *= 1e-6;
 
-    //// in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5); xx(4) *= 1e-6;
-    ////
-    //// beg test (zero clock correction for Gerhard Wuebbena)
-    ////            xx(4) -= xx(5) / 299792458.0;
-    //// end test
-    ////
-    //// Falls Clocks aus den Broadcast Ephemeris gewuenscht:
-    //// (2nd order relativistic effect taken out for
-    //// compatibility with IGS products?)
-    ////
-    //// if ( Qt::CheckState(settings.value("beClocks1 oder beClocks2").toInt()) == Qt::Checked) {
-    ////  .....
-    //// }
+              // Clocks without corrections 
+              // --------------------------
+              if ( _caster.at(ic)->beClocks() ) {
+                xx(4) -= xx(5) / 299792458.0;
+              } 
       
               t_ephPair* pair = _ephList[prn];
               pair->xx = xx;
