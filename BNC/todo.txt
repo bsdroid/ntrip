@@ -5,10 +5,7 @@ BNS
 
 BNC
 =========================
-(1) NMEA "Auto" (send NMEA streams from rover to caster) not 
-yet implemented.
+(1) Pure UDP protocol not yet implemented.
 
-(2) Pure UDP protocol not yet implemented.
-
-(3) GW: Keep an eye on www.igs-ip.net/PENC0.
+(2) GW: Keep an eye on www.igs-ip.net/PENC0.
 
