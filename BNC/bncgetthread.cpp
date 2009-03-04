@@ -119,19 +119,11 @@ void bncGetThread::initialize() {
   _query         = 0;
   _nextSleep     = 0;
   _rawOutFile    = 0;
-  _serialOutFile = 0;
   _staID_orig    = _staID;
 
   bncSettings settings;
 
   _miscMount = settings.value("miscMount").toString();
-
-  if ( settings.value("serialMountPoint").toString() == _staID &&
-       settings.value("serialAutoNMEA").toString() != "Auto" ) {
-    _height = settings.value("serialHeightNMEA").toString().toAscii();
-  } else {
-    _height = "100";
-  }
 
   // Check name conflict
   // -------------------
@@ -171,9 +163,16 @@ void bncGetThread::initialize() {
 
   // Serial Port
   // -----------
+  _serialNMEA    = NO_NMEA;
+  _serialOutFile = 0;
+  _serialPort    = 0;
+
   if (settings.value("serialMountPoint").toString() == _staID) {
-    _serialPort = new QextSerialPort( 
-                               settings.value("serialPortName").toString() );
+    _serialPort = new QextSerialPort(settings.value("serialPortName").toString() );
+    _serialPort->setTimeout(0,100);
+
+    // Baud Rate
+    // ---------
     QString hlp = settings.value("serialBaudRate").toString();
     if      (hlp == "110") {
       _serialPort->setBaudRate(BAUD110);   
@@ -208,6 +207,9 @@ void bncGetThread::initialize() {
     else if (hlp == "115200") {
       _serialPort->setBaudRate(BAUD115200);   
     }
+
+    // Parity
+    // ------
     hlp = settings.value("serialParity").toString();
     if      (hlp == "NONE") {
       _serialPort->setParity(PAR_NONE);    
@@ -221,6 +223,9 @@ void bncGetThread::initialize() {
     else if (hlp == "SPACE") {
       _serialPort->setParity(PAR_SPACE);    
     }
+
+    // Data Bits
+    // ---------
     hlp = settings.value("serialDataBits").toString();
     if      (hlp == "5") {
       _serialPort->setDataBits(DATA_5);   
@@ -241,30 +246,9 @@ void bncGetThread::initialize() {
     else if (hlp == "2") {
       _serialPort->setStopBits(STOP_2);    
     }
-    _serialPort->open(QIODevice::ReadWrite|QIODevice::Unbuffered);
-    if (!_serialPort->isOpen()) {
-      delete _serialPort;
-      _serialPort = 0;
-      emit(newMessage((_staID + ": Cannot open serial port\n"), true));
-    }
 
-    connect(_serialPort, SIGNAL(readyRead()), 
-            this, SLOT(slotSerialReadyRead()));
-
-    // Serial File Output
-    // ------------------
-    QString serialFileNMEA = settings.value("serialFileNMEA").toString();
-    QString serialAutoNMEA = settings.value("serialAutoNMEA").toString();
-    if (!serialFileNMEA.isEmpty() && serialAutoNMEA == "Auto" ) {
-      _serialOutFile = new QFile(serialFileNMEA);
-      if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
-        _serialOutFile->open(QIODevice::WriteOnly | QIODevice::Append);
-      }
-      else {
-        _serialOutFile->open(QIODevice::WriteOnly);
-      }
-    }
-    _serialPort->setTimeout(0,100);
+    // Flow Control
+    // ------------
     hlp = settings.value("serialFlowControl").toString();
     if      (hlp == "OFF") {
       _serialPort->setFlowControl(FLOW_OFF);    
@@ -272,12 +256,43 @@ void bncGetThread::initialize() {
     else if (hlp == "XONXOFF") {
       _serialPort->setFlowControl(FLOW_XONXOFF);    
     }
-else if (hlp == "HARDWARE") {
+    else if (hlp == "HARDWARE") {
       _serialPort->setFlowControl(FLOW_HARDWARE);    
     }
-  }
-  else {
-    _serialPort = 0;
+
+    // Open Serial Port
+    // ----------------
+    _serialPort->open(QIODevice::ReadWrite|QIODevice::Unbuffered);
+    if (!_serialPort->isOpen()) {
+      delete _serialPort;
+      _serialPort = 0;
+      emit(newMessage((_staID + ": Cannot open serial port\n"), true));
+    }
+    connect(_serialPort, SIGNAL(readyRead()), 
+            this, SLOT(slotSerialReadyRead()));
+
+    // Automatic NMEA
+    // --------------
+    if (settings.value("serialAutoNMEA").toString() == "Auto") {
+      _serialNMEA = AUTO_NMEA;
+
+      QString fName = settings.value("serialFileNMEA").toString();
+      if (!fName.isEmpty()) {
+        _serialOutFile = new QFile(fName);
+        if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
+          _serialOutFile->open(QIODevice::WriteOnly | QIODevice::Append);
+        }
+        else {
+          _serialOutFile->open(QIODevice::WriteOnly);
+        }
+      }
+    }
+
+    // Manual NMEA
+    // -----------
+    else {
+      _serialNMEA = MANUAL_NMEA;
+    }
   }
 
   // Raw Output
@@ -485,13 +500,6 @@ void bncGetThread::run() {
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncGetThread::tryReconnect() {
 
-  bncSettings settings;
-  bool manual = true;
-  if ( _staID == settings.value("serialMountPoint").toString() &&
-       settings.value("serialAutoNMEA").toString() == "Auto" ) {
-    manual = false;
-  }
-
   // Easy Return
   // -----------
   if (_query && _query->status() == bncNetQuery::running) {
@@ -530,8 +538,8 @@ t_irc bncGetThread::tryReconnect() {
     else {
       _query = new bncNetQueryV1();
     }
-    if (_nmea == "yes" && manual ) {
-      QByteArray gga = ggaString(_latitude, _longitude, _height);
+    if (_nmea == "yes" && _serialNMEA != AUTO_NMEA) {
+      QByteArray gga = ggaString(_latitude, _longitude, "100.0");
       _query->startRequest(_mountPoint, gga);
     }
     else {
