@@ -18,8 +18,10 @@ class bncNetQueryUdp : public bncNetQuery {
   void slotKeepAlive();
 
  private:
-  QUdpSocket* _udpSocket;
-  QEventLoop* _eventLoop;
+  QUdpSocket*  _udpSocket;
+  QEventLoop*  _eventLoop;
+  QHostAddress _address;
+  int          _port;
 };
 
 #endif
