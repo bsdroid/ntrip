@@ -15,12 +15,13 @@ class bncNetQuery : public QObject {
     connect(this,           SIGNAL(newMessage(QByteArray,bool)), 
             (bncApp*) qApp, SLOT(slotMessage(const QByteArray,bool)));
   }
-  virtual ~bncNetQuery() {};
+  virtual ~bncNetQuery() {}
   
   virtual void stop() = 0;
   virtual void waitForRequestResult(const QUrl& url, QByteArray& outData) = 0;
   virtual void startRequest(const QUrl& url, const QByteArray& gga) = 0;
   virtual void waitForReadyRead(QByteArray& outData) = 0;
+  virtual void sendNMEA(const QByteArray& /* ggaString */) {}
 
   queryStatus status() const {return _status;}
 

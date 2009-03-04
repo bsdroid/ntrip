@@ -250,14 +250,14 @@ void bncGetThread::initialize() {
     // Flow Control
     // ------------
     hlp = settings.value("serialFlowControl").toString();
-    if      (hlp == "OFF") {
-      _serialPort->setFlowControl(FLOW_OFF);    
-    }
-    else if (hlp == "XONXOFF") {
+    if (hlp == "XONXOFF") {
       _serialPort->setFlowControl(FLOW_XONXOFF);    
     }
     else if (hlp == "HARDWARE") {
       _serialPort->setFlowControl(FLOW_HARDWARE);    
+    }
+    else {
+      _serialPort->setFlowControl(FLOW_OFF);    
     }
 
     // Open Serial Port
@@ -620,6 +620,11 @@ void bncGetThread::slotSerialReadyRead() {
     int nb = _serialPort->bytesAvailable();
     if (nb > 0) {
       QByteArray data = _serialPort->read(nb);
+
+      if (_serialNMEA == AUTO_NMEA) {
+        _query->sendNMEA(data);
+      }
+
       if (_serialOutFile) {
         _serialOutFile->write(data);
         _serialOutFile->flush();
