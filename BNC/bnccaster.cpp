@@ -108,7 +108,7 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
 
   _lastDumpSec   = 0; 
 
-  _confTimer = 0;
+  _confInterval = -1;
 }
 
 // Destructor
@@ -456,13 +456,10 @@ void bncCaster::slotReadMountPoints() {
   // -----------------------------------
   int ms = 0;
 
-  if (_confTimer) {
+  if (_confInterval != -1) {
     ms = 1000 * _confInterval;
   }
   else {
-    _confTimer = new QTimer();
-    connect(_confTimer, SIGNAL(timeout()), this, SLOT(slotReadMountPoints()));
-
     QTime currTime = currentDateAndTimeGPS().time();
     QTime nextShotTime;
 
@@ -485,7 +482,7 @@ void bncCaster::slotReadMountPoints() {
     }
   }
 
-  _confTimer->start(ms);
+  QTimer::singleShot(ms, this, SLOT(slotReadMountPoints()));
 }
 
 // 

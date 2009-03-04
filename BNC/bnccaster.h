@@ -74,7 +74,6 @@ class bncCaster : public QObject {
    int                     _samplingRate;
    long                    _waitTime;
    QMutex                  _mutex;
-   QTimer*                 _confTimer;
    int                     _confInterval;
 };
 
