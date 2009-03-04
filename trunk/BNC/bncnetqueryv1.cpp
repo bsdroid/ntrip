@@ -218,3 +218,8 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
   }
 }
 
+// Send NMEA String
+////////////////////////////////////////////////////////////////////////////
+void bncNetQueryV1::sendNMEA(const QByteArray& gga) {
+
+}
