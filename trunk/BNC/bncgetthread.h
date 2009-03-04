@@ -77,6 +77,8 @@ class bncGetThread : public QThread {
    void slotSerialReadyRead();
 
  private:
+   enum t_serialNMEA {NO_NMEA, MANUAL_NMEA, AUTO_NMEA};
+
    void  initialize();
    t_irc tryReconnect();
    void  scanRTCM();
@@ -103,6 +105,7 @@ class bncGetThread : public QThread {
    latencyChecker* _latencyChecker;
    QString         _miscMount;
    QFile*          _serialOutFile;
+   t_serialNMEA    _serialNMEA;
 };
 
 #endif
