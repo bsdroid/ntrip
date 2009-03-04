@@ -527,10 +527,10 @@ t_irc bncGetThread::tryReconnect() {
     }
 
     delete _query;
-    if      (_ntripVersion == "R") {
+    if      (_ntripVersion == "U") {
       _query = new bncNetQueryUdp();
     }
-    if      (_ntripVersion == "R") {
+    else if (_ntripVersion == "R") {
       _query = new bncNetQueryRtp();
     }
     else if (_ntripVersion == "N") {
