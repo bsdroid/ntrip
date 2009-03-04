@@ -112,34 +112,24 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
 
   // Network Request
   // ---------------
-  _request.setUrl(_url);
-  _request.setRawHeader("Host"         , _url.host().toAscii());
-  _request.setRawHeader("Ntrip-Version", "Ntrip/2.0");
-  _request.setRawHeader("User-Agent"   , "NTRIP BNC/1.7");
+  QNetworkRequest request;
+  request.setUrl(_url);
+  request.setRawHeader("Host"         , _url.host().toAscii());
+  request.setRawHeader("Ntrip-Version", "Ntrip/2.0");
+  request.setRawHeader("User-Agent"   , "NTRIP BNC/1.7");
   if (!_url.userName().isEmpty()) {
     QString uName = QUrl::fromPercentEncoding(_url.userName().toAscii());
     QString passW = QUrl::fromPercentEncoding(_url.password().toAscii());
-    _request.setRawHeader("Authorization", "Basic " + 
+    request.setRawHeader("Authorization", "Basic " + 
                          (uName + ":" + passW).toAscii().toBase64());
   } 
   if (!gga.isEmpty()) {
-    _request.setRawHeader("Ntrip-GGA", gga);
+    request.setRawHeader("Ntrip-GGA", gga);
   }
-  _request.setRawHeader("Connection"   , "close");
+  request.setRawHeader("Connection"   , "close");
 
-  this->startGet(full);
-}
-
-// Start Get HTTP Method
-////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV2::startGet(bool full) {
-
-  if (_reply) {
-    _reply->abort();
-    delete _reply;
-  }
-
-  _reply = _manager->get(_request);
+  delete _reply;
+  _reply = _manager->get(request);
 
   // Connect Signals
   // ---------------
@@ -190,11 +180,3 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
   }
 }
 
-// Send NMEA String
-////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV2::sendNMEA(const QByteArray& gga) {
-  if (!gga.isEmpty()) {
-    _request.setRawHeader("Ntrip-GGA", gga);
-  }
-  this->startGet(false);
-}
