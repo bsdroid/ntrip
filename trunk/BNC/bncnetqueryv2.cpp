@@ -55,10 +55,9 @@ void bncNetQueryV2::stop() {
 
 // Error
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV2::slotError(QNetworkReply::NetworkError) {
+void bncNetQueryV2::slotError() {
   _eventLoop->quit();
   _status = error;
-
   emit newMessage(_url.path().toAscii().replace(0,1,"")  +
                   ": NetQuery, Error - server replied: " + 
                   _reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray(),
@@ -142,7 +141,7 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
     connect(_reply, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
   }
   connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
-          this, SLOT(slotError(QNetworkReply::NetworkError)));
+          this, SLOT(slotError()));
 }
 
 // Start Request, wait for its completion
@@ -176,7 +175,6 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
   // ------------------------
   if (_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() != 200) {
     _reply->abort();
-    slotError(QNetworkReply::UnknownNetworkError);
   }
 
   // Append Data
