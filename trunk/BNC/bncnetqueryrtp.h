@@ -13,7 +13,6 @@ class bncNetQueryRtp : public bncNetQuery {
   virtual void waitForRequestResult(const QUrl& url, QByteArray& outData);
   virtual void startRequest(const QUrl& url, const QByteArray& gga);
   virtual void waitForReadyRead(QByteArray& outData);
-  virtual void sendNMEA(const QByteArray& gga);
 
  private slots:
   void slotKeepAlive();
