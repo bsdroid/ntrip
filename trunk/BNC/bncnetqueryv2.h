@@ -22,9 +22,11 @@ class bncNetQueryV2 : public bncNetQuery {
 
  private:
   void startRequestPrivate(const QUrl& url, const QByteArray& gga, bool full);
+  void startGet(bool full);
 
   QNetworkAccessManager* _manager;
   QNetworkReply*         _reply;
+  QNetworkRequest        _request;
   QEventLoop*            _eventLoop;
   bool                   _firstData;
 };
