@@ -53,21 +53,18 @@ void bncNetQueryV2::stop() {
   _status = finished;
 }
 
-// Error
-////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV2::slotError() {
-  _eventLoop->quit();
-  _status = error;
-  emit newMessage(_url.path().toAscii().replace(0,1,"")  +
-                  ": NetQuery, Error - server replied: " + 
-                  _reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray(),
-                  true);
-}
-
 // End of Request
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::slotFinished() {
-  if (_status != error) {
+  _eventLoop->quit();
+  if (_reply && _reply->error() != QNetworkReply::NoError) {
+    _status = error;
+    emit newMessage(_url.path().toAscii().replace(0,1,"")  +
+                    ": NetQuery, Error - server replied: " + 
+                    _reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray(),
+                    true);
+  }
+  else {
     _status = finished;
   }
 }
@@ -140,8 +137,6 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
   if (!full) {
     connect(_reply, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
   }
-  connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
-          this, SLOT(slotError()));
 }
 
 // Start Request, wait for its completion

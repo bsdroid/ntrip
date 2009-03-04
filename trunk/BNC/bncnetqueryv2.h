@@ -16,7 +16,6 @@ class bncNetQueryV2 : public bncNetQuery {
   virtual void waitForReadyRead(QByteArray& outData);
 
  private slots:
-  void slotError();
   void slotFinished();
   void slotProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
 
