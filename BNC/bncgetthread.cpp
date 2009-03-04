@@ -496,6 +496,9 @@ t_irc bncGetThread::tryReconnect() {
   // -----------
   if (_query && _query->status() == bncNetQuery::running) {
     _nextSleep = 0;
+    if (_rnx) {
+      _rnx->setReconnectFlag(false);
+    }
     return success;
   }
 

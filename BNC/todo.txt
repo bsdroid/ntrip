@@ -5,17 +5,10 @@ BNS
 
 BNC
 =========================
-(1) If "<HTML><BODY>Requested data not found.</BODY></HTML>"
-is received in addition to "HTTP/1.1 404 Not Found"
-when mounpoint is unavailable, this is not understood
-as a NetworkError in bncnetqueryv2.
-
-(2) NMEA "Auto" (send NMEA streams from rover to caster) not 
+(1) NMEA "Auto" (send NMEA streams from rover to caster) not 
 yet implemented.
 
-(3) "Append files" options allways appends.
+(2) Pure UDP protocol not yet implemented.
 
-(4) Pure UDP protocol not yet implemented.
-
-(5) GW: Keep an eye on www.igs-ip.net/PENC0.
+(3) GW: Keep an eye on www.igs-ip.net/PENC0.
 
