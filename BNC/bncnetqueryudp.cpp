@@ -144,6 +144,10 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
       reqStr += gga + "\r\n";
     }
 
+    rtpbuffer[1] = 97;
+    QByteArray buffer = QByteArray(rtpbuffer) + reqStr;
+
+    _udpSocket->writeDatagram(buffer, _address, _port);
   }
 }
 
