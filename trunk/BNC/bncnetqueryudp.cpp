@@ -97,6 +97,7 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
 
   delete _udpSocket;
   _udpSocket = new QUdpSocket();
+  _udpSocket->bind(0);
   connect(_udpSocket, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
 
   QHostInfo hInfo = QHostInfo::fromName(url.host());
