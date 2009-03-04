@@ -345,6 +345,15 @@ bnsWindow::bnsWindow() {
 
   tab_eph->setLayout(layout_eph);
 
+  connect(_ephHostLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bnsText(const QString &)));
+  if (_ephHostLineEdit->text().isEmpty()) {
+    _ephPortLineEdit->setStyleSheet("background-color: lightGray");
+    _ephEchoLineEdit->setStyleSheet("background-color: lightGray");
+    _ephPortLineEdit->setEnabled(false);
+    _ephEchoLineEdit->setEnabled(false);
+  }
+
   // Clocks & Orbits Tab
   // -------------------
   QWidget* tab_co = new QWidget();
@@ -363,6 +372,13 @@ bnsWindow::bnsWindow() {
   layout_co->addWidget(new QLabel(""),                                3, 0);
 
   tab_co->setLayout(layout_co);
+
+  connect(_clkPortLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bnsText(const QString &)));
+  if (_clkPortLineEdit->text().isEmpty()) {
+    _inpEchoLineEdit->setStyleSheet("background-color: lightGray");
+    _inpEchoLineEdit->setEnabled(false);
+  }
 
   // Broadcast Corrections I Tab
   // ---------------------------
@@ -820,7 +836,7 @@ void bnsWindow::bnsText(const QString &text){
   QColor white(255, 255, 255);
 
   // Enable/disable Proxy Options
-  // -----
+  // ----------------------------
   if (tabs->currentIndex() == 0) {
     if (!isEmpty) {
       _proxyPortLineEdit->setStyleSheet("background-color: white");
@@ -828,6 +844,32 @@ void bnsWindow::bnsText(const QString &text){
     } else {
       _proxyPortLineEdit->setStyleSheet("background-color: lightGray");
       _proxyPortLineEdit->setEnabled(false);
+    }
+  }
+
+  // Enable/disable RINEX Ephemeris Options
+  // --------------------------------------
+  if (tabs->currentIndex() == 2) {
+    if (!isEmpty) {
+    _ephPortLineEdit->setStyleSheet("background-color: white");
+    _ephEchoLineEdit->setStyleSheet("background-color: white");
+    _ephEchoLineEdit->setEnabled(true);
+    } else {
+    _ephPortLineEdit->setStyleSheet("background-color: lightGray");
+    _ephEchoLineEdit->setStyleSheet("background-color: lightGray");
+    _ephEchoLineEdit->setEnabled(false);
+    }
+  }
+
+  // Enable/disable Clocks & Orbits Options
+  // --------------------------------------
+  if (tabs->currentIndex() == 3) {
+    if (!isEmpty) {
+    _inpEchoLineEdit->setStyleSheet("background-color: white");
+    _inpEchoLineEdit->setEnabled(true);
+    } else {
+    _inpEchoLineEdit->setStyleSheet("background-color: lightGray");
+    _inpEchoLineEdit->setEnabled(false);
     }
   }
 
