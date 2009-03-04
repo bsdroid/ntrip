@@ -6,14 +6,14 @@
 class t_bnscaster : public QObject {
  Q_OBJECT
  public:
-  t_bnscaster(const QString& mountpoint, const QString& outFileName, 
-              const QString& refSys, int ic);
+  t_bnscaster(const QString& mountpoint, const QString& outFileName, int ic);
   virtual ~t_bnscaster();
   void open();
   void write(char* buffer, unsigned len);
   void printAscii(const QString& line);
   bool usedSocket() const {return _outSocket;}
   bool crdTrafo() const {return _crdTrafo;}
+  bool beClocks() const {return _beClocks;}
   int  ic() const {return _ic;}
 
  signals:
@@ -23,11 +23,12 @@ class t_bnscaster : public QObject {
  private:
   QString      _mountpoint;
   QTcpSocket*  _outSocket;
-  int          _outSocketOpenTrial;
+  int          _sOpenTrial;
   QDateTime    _outSocketOpenTime;
   QFile*       _outFile;
   QTextStream* _outStream;
   bool         _crdTrafo;
+  bool         _beClocks;
   int          _ic;
 };
 

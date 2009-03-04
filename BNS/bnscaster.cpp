@@ -23,22 +23,14 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_bnscaster::t_bnscaster(const QString& mountpoint, const QString& outFileName,
-                         const QString& refSys, const int ic) {
-
-  _mountpoint         = mountpoint;
-  _outSocket          = 0;
-  _outSocketOpenTrial = 0;
-  _ic = ic;
+                         int ic) {
 
   bnsSettings settings;
 
-  QIODevice::OpenMode oMode;
-  if (Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked) {
-    oMode = QIODevice::WriteOnly | QIODevice::Unbuffered | QIODevice::Append;
-  }
-  else {
-    oMode = QIODevice::WriteOnly | QIODevice::Unbuffered;
-  }
+  _mountpoint = mountpoint;
+  _ic         = ic;
+  _outSocket  = 0;
+  _sOpenTrial = 0;
 
   if (outFileName.isEmpty()) {
     _outFile   = 0;
@@ -46,6 +38,15 @@ t_bnscaster::t_bnscaster(const QString& mountpoint, const QString& outFileName,
   }
   else {
     _outFile = new QFile(outFileName);
+
+    QIODevice::OpenMode oMode;
+    if (Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked) {
+      oMode = QIODevice::WriteOnly | QIODevice::Unbuffered | QIODevice::Append;
+    }
+    else {
+      oMode = QIODevice::WriteOnly | QIODevice::Unbuffered;
+    }
+
     if (_outFile->open(oMode)) {
       _outStream = new QTextStream(_outFile);
     }
@@ -53,9 +54,19 @@ t_bnscaster::t_bnscaster(const QString& mountpoint, const QString& outFileName,
 
   // Reference frame
   // ---------------
-  _crdTrafo = false;
-  if (refSys == "ETRF2000") {
+  if (settings.value(QString("refSys_%1").arg(_ic)).toString() == "ETRF2000") {
     _crdTrafo = true;
+  }
+  else {
+    _crdTrafo = false;
+  }
+
+  if ( Qt::CheckState(settings.value(QString("beClocks%1").arg(_ic)).toInt()) 
+       == Qt::Checked ) {
+    _beClocks = true;
+  }
+  else {
+    _beClocks = false;
   }
 }
 
@@ -82,9 +93,9 @@ void t_bnscaster::open() {
 
   delete _outSocket; _outSocket = 0;
 
-  double minDt = pow(2.0,_outSocketOpenTrial);
-  if (++_outSocketOpenTrial > 8) {
-    _outSocketOpenTrial = 8;
+  double minDt = pow(2.0,_sOpenTrial);
+  if (++_sOpenTrial > 8) {
+    _sOpenTrial = 8;
   }
   if (_outSocketOpenTime.isValid() &&
       _outSocketOpenTime.secsTo(QDateTime::currentDateTime()) < minDt) {
@@ -129,13 +140,11 @@ void t_bnscaster::open() {
   if (ans.indexOf("OK") == -1) {
     delete _outSocket;
     _outSocket = 0;
-//  emit(newMessage("t_bnscaster::open  socket deleted"));
-    emit(newMessage("Broadcaster: Connection broken")); // weber
+    emit(newMessage("Broadcaster: Connection broken"));
   }
   else {
-//  emit(newMessage("t_bnscaster::open  socket OK"));
-    emit(newMessage("Broadcaster: Connection opened")); // weber
-    _outSocketOpenTrial = 0;
+    emit(newMessage("Broadcaster: Connection opened"));
+    _sOpenTrial = 0;
   }
 }
 
