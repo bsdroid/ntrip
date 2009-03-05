@@ -375,12 +375,6 @@ void t_bns::readEpoch() {
               xx(3) *= 1e3;
               xx(4) *= 1e-6;
 
-              // Clocks without corrections 
-              // --------------------------
-              if ( _caster.at(ic)->beClocks() ) {
-                xx(4) -= xx(5) / 299792458.0;
-              } 
-      
               t_ephPair* pair = _ephList[prn];
               pair->xx = xx;
               ep = pair->eph;
@@ -401,6 +395,13 @@ void t_bns::readEpoch() {
             }
           }
       
+          // Clocks without corrections 
+          // --------------------------
+          if ( _caster.at(ic)->beClocks() ) {
+            xx(4) -= xx(5) / 299792458.0;
+            xx(5) = 0.0;
+          } 
+
           if (ep != 0) {
             struct ClockOrbit::SatData* sd = 0;
             if      (prn[0] == 'G') {
