@@ -74,7 +74,6 @@ void bncNetQueryUdp::waitForReadyRead(QByteArray& outData) {
 
   if (datagram.size() > 12) {
     outData.append(datagram.mid(12));
-    cout << outData.data() << endl;
   }
 }
 
@@ -132,27 +131,17 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
 ////      reqStr += gga + "\r\n";
 ////    }
 
-    cout << "reqStr > " << reqStr.data() << "<" << endl;
-
     char rtpbuffer[12 + reqStr.size()];
     rtpbuffer[0]  = 128;
     rtpbuffer[1]  =  97;
-    rtpbuffer[2]  =   0;
-    rtpbuffer[3]  =   0;
-    rtpbuffer[4]  =   0;
-    rtpbuffer[5]  =   0;
-    rtpbuffer[6]  =   0;
-    rtpbuffer[7]  =   0;
-    rtpbuffer[8]  =   0;
-    rtpbuffer[9]  =   0; 
-    rtpbuffer[10] =   0;
-    rtpbuffer[11] =   0;
-
+    for (int jj = 2; jj <= 11; jj++) {
+      rtpbuffer[jj] = 0;
+    }
     for (int ii = 0; ii < reqStr.size(); ii++) {
       rtpbuffer[12+ii] = reqStr[ii]; 
     }
 
-    _udpSocket->writeDatagram(rtpbuffer, 12+reqStr.size(), _address, _port);
+    _udpSocket->writeDatagram(rtpbuffer, 12 + reqStr.size(), _address, _port);
   }
 }
 
