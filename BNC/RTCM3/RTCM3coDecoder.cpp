@@ -104,7 +104,13 @@ void RTCM3coDecoder::reopen() {
     }
 
     delete _out;
-    _out = new ofstream( _fileName.toAscii().data() );
+    if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
+      _out = new ofstream( _fileName.toAscii().data(),
+                           ios_base::out | ios_base::app );
+    }
+    else {
+      _out = new ofstream( _fileName.toAscii().data() );
+    }
   }
 }
 
