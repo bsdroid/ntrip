@@ -107,24 +107,6 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
 
     _address = hInfo.addresses().first();
 
-    // Send initial RTP packet for firewall handling
-    // ---------------------------------------------
-    char rtpbuffer[12];
-    rtpbuffer[0]  = 128;
-    rtpbuffer[1]  =  96;
-    rtpbuffer[2]  =   0;
-    rtpbuffer[3]  =   0;
-    rtpbuffer[4]  =   0;
-    rtpbuffer[5]  =   0;
-    rtpbuffer[6]  =   0;
-    rtpbuffer[7]  =   0;
-    rtpbuffer[8]  =   0;
-    rtpbuffer[9]  =   0; 
-    rtpbuffer[10] =   0;
-    rtpbuffer[11] =   0;
-
-    _udpSocket->writeDatagram(rtpbuffer, 12, _address, _port);
-
     // Send Request
     // ------------
     QString uName = QUrl::fromPercentEncoding(_url.userName().toAscii());
@@ -152,10 +134,25 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
 
     cout << "reqStr > " << reqStr.data() << "<" << endl;
 
-    rtpbuffer[1] = 97;
-    QByteArray buffer = QByteArray(rtpbuffer) + reqStr;
+    char rtpbuffer[12 + reqStr.size()];
+    rtpbuffer[0]  = 128;
+    rtpbuffer[1]  =  97;
+    rtpbuffer[2]  =   0;
+    rtpbuffer[3]  =   0;
+    rtpbuffer[4]  =   0;
+    rtpbuffer[5]  =   0;
+    rtpbuffer[6]  =   0;
+    rtpbuffer[7]  =   0;
+    rtpbuffer[8]  =   0;
+    rtpbuffer[9]  =   0; 
+    rtpbuffer[10] =   0;
+    rtpbuffer[11] =   0;
 
-    _udpSocket->writeDatagram(buffer, _address, _port);
+    for (int ii = 0; ii < reqStr.size(); ii++) {
+      rtpbuffer[12+ii] = reqStr[ii]; 
+    }
+
+    _udpSocket->writeDatagram(rtpbuffer, 12+reqStr.size(), _address, _port);
   }
 }
 
