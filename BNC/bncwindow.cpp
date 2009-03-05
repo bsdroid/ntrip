@@ -837,7 +837,6 @@ void bncWindow::slotAddMountPoints() {
     delete dlg;
   } else if (msgBox.clickedButton() == buttonIP) {
     bncIpPort* ipp = new bncIpPort(this); 
-    ipp->move(this->pos().x()+50, this->pos().y()+50);
     connect(ipp, SIGNAL(newMountPoints(QStringList*)), 
           this, SLOT(slotNewMountPoints(QStringList*)));
     ipp->exec();
