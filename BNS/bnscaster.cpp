@@ -118,6 +118,11 @@ void t_bnscaster::open() {
                               settings.value("outPort2").toInt());
     password = settings.value("password2").toString();
   }
+  if (_ic == 3) {
+    _outSocket->connectToHost(settings.value("outHost3").toString(),
+                              settings.value("outPort3").toInt());
+    password = settings.value("password3").toString();
+  }
 
   const int timeOut = 5000;  // 5 seconds
   if (!_outSocket->waitForConnected(timeOut)) {

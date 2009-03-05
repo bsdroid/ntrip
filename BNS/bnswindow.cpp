@@ -204,6 +204,24 @@ bnsWindow::bnsWindow() {
   _beClocks2CheckBox  = new QCheckBox();
   _beClocks2CheckBox->setCheckState(Qt::CheckState(settings.value("beClocks2").toInt()));
 
+  // Broadcast Corrections III Options
+  // ---------------------------------
+  _outHost_3_LineEdit    = new QLineEdit(settings.value("outHost3").toString());
+  _outPort_3_LineEdit    = new QLineEdit(settings.value("outPort3").toString());
+  _password_3_LineEdit   = new QLineEdit(settings.value("password3").toString());
+  _password_3_LineEdit->setEchoMode(QLineEdit::Password);
+  _mountpoint_3_LineEdit = new QLineEdit(settings.value("mountpoint_3").toString());
+  _refSys_3_ComboBox = new QComboBox;
+  _refSys_3_ComboBox->setEditable(false);
+  _refSys_3_ComboBox->addItems(QString("IGS05,ETRF2000").split(","));
+  ii = _refSys_3_ComboBox->findText(settings.value("refSys_3").toString());
+  if (ii != -1) {
+    _refSys_3_ComboBox->setCurrentIndex(ii);
+  }
+  _outFile_3_LineEdit    = new QLineEdit(settings.value("outFile_3").toString());
+  _beClocks3CheckBox  = new QCheckBox();
+  _beClocks3CheckBox->setCheckState(Qt::CheckState(settings.value("beClocks3").toInt()));
+
   // RINEX Clocks Options
   // --------------------
   _rnxPathLineEdit = new QLineEdit(settings.value("rnxPath").toString());
@@ -253,16 +271,22 @@ bnsWindow::bnsWindow() {
   _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in SP3 format from an IP port. Specify a local IP port e.g. for an RTNet installation to provide this information."));
   _outHost_1_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
   _outPort_1_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
-  _password_1_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _mountpoint_1_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
+  _password_1_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _refSys_1_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
+  _outFile_1_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
   _outHost_2_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
   _outPort_2_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
-  _password_2_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _mountpoint_2_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
+  _password_2_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _refSys_2_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
-  _outFile_1_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
   _outFile_2_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
+  _outHost_3_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outPort_3_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
+  _mountpoint_3_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
+  _password_3_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
+  _refSys_3_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
+  _outFile_3_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
   _rnxPathLineEdit->setWhatsThis(tr("Specify the path for saving the generated clock corrections as Clock RINEX files. If the specified directory does not exist, BNS will not create Clock RINEX files."));
   _rnxIntrComboBox->setWhatsThis(tr("Select the length of the Clock RINEX file."));
   _rnxSamplSpinBox->setWhatsThis(tr("Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNS to store all available samples into Clock RINEX files."));
@@ -482,6 +506,57 @@ bnsWindow::bnsWindow() {
     _beClocks2CheckBox->setEnabled(false);
   }
 
+  // Broadcast Corrections III Tab
+  // -----------------------------
+  QWidget* tab_cas3 = new QWidget();
+  tabs->addTab(tab_cas3, "Broadcast Corrections III");
+
+  QGridLayout* layout_cas3 = new QGridLayout;
+
+  layout_cas3->setColumnMinimumWidth(0, 9*ww);
+  _outPort_3_LineEdit->setMaximumWidth(9*ww);
+  _password_3_LineEdit->setMaximumWidth(9*ww);
+  _mountpoint_3_LineEdit->setMaximumWidth(12*ww);
+  _refSys_3_ComboBox->setMaximumWidth(12*ww);
+
+  layout_cas3->addWidget(new QLabel("Host"),               0, 0);
+  layout_cas3->addWidget(_outHost_3_LineEdit,              0, 1, 1, 3);
+  layout_cas3->addWidget(new QLabel("  Port"),             0, 4, Qt::AlignRight);
+  layout_cas3->addWidget(_outPort_3_LineEdit,              0, 5, 1, 10);
+  layout_cas3->addWidget(new QLabel("Mountpoint"),         1, 0);
+  layout_cas3->addWidget(_mountpoint_3_LineEdit,           1, 1);
+  layout_cas3->addWidget(new QLabel("Password"),           1, 2, Qt::AlignRight);
+  layout_cas3->addWidget(_password_3_LineEdit,             1, 3);
+  layout_cas3->addWidget(new QLabel(" "),                  1, 4);
+  layout_cas3->addWidget(new QLabel(" "),                  1, 5);
+  layout_cas3->addWidget(new QLabel("System"),             2, 0);
+  layout_cas3->addWidget(_refSys_3_ComboBox,               2, 1);
+  layout_cas3->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
+  layout_cas3->addWidget(_outFile_3_LineEdit,              2, 3, 1, 30);
+  layout_cas3->addWidget(new QLabel("Broadcast clocks"),   3, 0);
+  layout_cas3->addWidget(_beClocks3CheckBox,               3, 1);
+  layout_cas3->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
+
+  tab_cas3->setLayout(layout_cas3);
+
+  connect(_outHost_3_LineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bnsText(const QString &)));
+  if (_outHost_3_LineEdit->text().isEmpty()) {
+    _outPort_3_LineEdit->setStyleSheet("background-color: lightGray");
+    _mountpoint_3_LineEdit->setStyleSheet("background-color: lightGray");
+    _password_3_LineEdit->setStyleSheet("background-color: lightGray");
+    _outFile_3_LineEdit->setStyleSheet("background-color: lightGray");
+    _refSys_3_ComboBox->setStyleSheet("background-color: lightGray");
+    palette.setColor(_beClocks3CheckBox->backgroundRole(), lightGray);
+    _beClocks3CheckBox->setPalette(palette);
+    _outPort_3_LineEdit->setEnabled(false);
+    _mountpoint_3_LineEdit->setEnabled(false);
+    _password_3_LineEdit->setEnabled(false);
+    _outFile_3_LineEdit->setEnabled(false);
+    _refSys_3_ComboBox->setEnabled(false);
+    _beClocks3CheckBox->setEnabled(false);
+  }
+
   // RINEX Clocks Tab
   // ----------------
   QWidget* tab_rin = new QWidget();
@@ -558,11 +633,13 @@ bnsWindow::bnsWindow() {
   _statusLbl[0] = new QLabel("0 byte(s)"); _statusCnt[0] = 0;
   _statusLbl[1] = new QLabel("0 byte(s)"); _statusCnt[1] = 0;
   _statusLbl[2] = new QLabel("0 byte(s)"); _statusCnt[2] = 0;
+  _statusLbl[3] = new QLabel("0 byte(s)"); _statusCnt[3] = 0;
+  _statusLbl[9] = new QLabel("0 byte(s)"); _statusCnt[4] = 0;
   _statusLbl[7] = new QLabel("RINEX Ephemeris:");  
   _statusLbl[4] = new QLabel("Clocks & Orbits:");
   _statusLbl[5] = new QLabel("Broadcast Corrections I:");  
   _statusLbl[6] = new QLabel("Broadcast Corrections II:");  
-  _statusLbl[3] = new QLabel("0 byte(s)"); _statusCnt[3] = 0;
+  _statusLbl[8] = new QLabel("Broadcast Corrections III:");  
 
   _statusLbl[0]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
   _statusLbl[1]->setWhatsThis(tr("Status of incoming stream of clocks and orbits."));
@@ -572,15 +649,18 @@ bnsWindow::bnsWindow() {
   _statusLbl[5]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster I."));
   _statusLbl[6]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster II."));
   _statusLbl[3]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster II."));
+  _statusLbl[8]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster III."));
 
   layout_status->addWidget(_statusLbl[7], 0, 0);
   layout_status->addWidget(_statusLbl[0], 0, 1);
-  layout_status->addWidget(_statusLbl[4], 1, 0);
-  layout_status->addWidget(_statusLbl[1], 1, 1);
   layout_status->addWidget(_statusLbl[5], 0, 2);
   layout_status->addWidget(_statusLbl[2], 0, 3);
+  layout_status->addWidget(_statusLbl[4], 1, 0);
+  layout_status->addWidget(_statusLbl[1], 1, 1);
   layout_status->addWidget(_statusLbl[6], 1, 2);
   layout_status->addWidget(_statusLbl[3], 1, 3);
+  layout_status->addWidget(_statusLbl[8], 2, 2);
+  layout_status->addWidget(_statusLbl[9], 2, 3);
   _status->setLayout(layout_status);
 
   // Main Layout
@@ -698,35 +778,51 @@ void bnsWindow::slotSaveOptions() {
   bnsSettings settings;
   settings.setValue("proxyHost",   _proxyHostLineEdit->text());
   settings.setValue("proxyPort",   _proxyPortLineEdit->text());
+
   settings.setValue("logFile",     _logFileLineEdit->text());
   settings.setValue("fileAppend",  _fileAppendCheckBox->checkState());
   settings.setValue("autoStart",   _autoStartCheckBox->checkState());
-  settings.setValue("refSys_1",    _refSys_1_ComboBox->currentText());
-  settings.setValue("refSys_2",    _refSys_2_ComboBox->currentText());
-  settings.setValue("inpEcho",     _inpEchoLineEdit->text());
+
   settings.setValue("ephHost",     _ephHostLineEdit->text());
   settings.setValue("ephPort",     _ephPortLineEdit->text());
   settings.setValue("ephEcho",     _ephEchoLineEdit->text());
+
   settings.setValue("clkPort",     _clkPortLineEdit->text());
+  settings.setValue("inpEcho",     _inpEchoLineEdit->text());
+
   settings.setValue("outHost1",    _outHost_1_LineEdit->text());
   settings.setValue("outPort1",    _outPort_1_LineEdit->text());
+  settings.setValue("mountpoint_1",_mountpoint_1_LineEdit->text());
+  settings.setValue("password1",   _password_1_LineEdit->text());
+  settings.setValue("refSys_1",    _refSys_1_ComboBox->currentText());
+  settings.setValue("outFile_1",   _outFile_1_LineEdit->text());
+  settings.setValue("beClocks1",   _beClocks1CheckBox->checkState());
+
   settings.setValue("outHost2",    _outHost_2_LineEdit->text());
   settings.setValue("outPort2",    _outPort_2_LineEdit->text());
-  settings.setValue("mountpoint_1",_mountpoint_1_LineEdit->text());
   settings.setValue("mountpoint_2",_mountpoint_2_LineEdit->text());
-  settings.setValue("outFile_1",   _outFile_1_LineEdit->text());
-  settings.setValue("outFile_2",   _outFile_2_LineEdit->text());
-  settings.setValue("password1",   _password_1_LineEdit->text());
   settings.setValue("password2",   _password_2_LineEdit->text());
+  settings.setValue("refSys_2",    _refSys_2_ComboBox->currentText());
+  settings.setValue("outFile_2",   _outFile_2_LineEdit->text());
+  settings.setValue("beClocks2",   _beClocks2CheckBox->checkState());
+
+  settings.setValue("outHost3",    _outHost_3_LineEdit->text());
+  settings.setValue("outPort3",    _outPort_3_LineEdit->text());
+  settings.setValue("mountpoint_3",_mountpoint_3_LineEdit->text());
+  settings.setValue("password3",   _password_3_LineEdit->text());
+  settings.setValue("refSys_3",    _refSys_3_ComboBox->currentText());
+  settings.setValue("outFile_3",   _outFile_3_LineEdit->text());
+  settings.setValue("beClocks3",   _beClocks2CheckBox->checkState());
+
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
+
   settings.setValue("sp3Path",     _sp3PathLineEdit->text());
   settings.setValue("sp3Intr",     _sp3IntrComboBox->currentText());
   settings.setValue("sp3Sampl",    _sp3SamplSpinBox->value());
+
   settings.setValue("startTab",    tabs->currentIndex());
-  settings.setValue("beClocks1",   _beClocks1CheckBox->checkState());
-  settings.setValue("beClocks2",   _beClocks2CheckBox->checkState());
 }
 
 // Display Program Messages 
@@ -790,6 +886,7 @@ void bnsWindow::slotStart() {
   connect(_bns, SIGNAL(newClkBytes(int)), this, SLOT(slotClkBytes(int)));
   connect(_bns, SIGNAL(newOutBytes1(int)), this, SLOT(slotOutBytes1(int)));
   connect(_bns, SIGNAL(newOutBytes2(int)), this, SLOT(slotOutBytes2(int)));
+  connect(_bns, SIGNAL(newOutBytes3(int)), this, SLOT(slotOutBytes3(int)));
 
   _bns->start();
 }
@@ -807,6 +904,9 @@ void bnsWindow::slotOutBytes1(int nBytes) {
 }
 void bnsWindow::slotOutBytes2(int nBytes) {
   updateStatus(3, nBytes);
+}
+void bnsWindow::slotOutBytes3(int nBytes) {
+  updateStatus(4, nBytes);
 }
 
 void bnsWindow::updateStatus(int ii, int nBytes) {
@@ -941,9 +1041,43 @@ void bnsWindow::bnsText(const QString &text){
     }
   }
 
+  // Enable/disable Broadcast Corrections III Options
+  // -----------------------------------------------
+  if (tabs->currentIndex() == 6) {
+    if (!isEmpty) {
+      _outPort_3_LineEdit->setStyleSheet("background-color: white");
+      _mountpoint_3_LineEdit->setStyleSheet("background-color: white");
+      _password_3_LineEdit->setStyleSheet("background-color: white");
+      _outFile_3_LineEdit->setStyleSheet("background-color: white");
+      _refSys_3_ComboBox->setStyleSheet("background-color: white");
+      palette.setColor(_beClocks3CheckBox->backgroundRole(), white);
+      _beClocks3CheckBox->setPalette(palette);
+      _outPort_3_LineEdit->setEnabled(true);
+      _mountpoint_3_LineEdit->setEnabled(true);
+      _password_3_LineEdit->setEnabled(true);
+      _outFile_3_LineEdit->setEnabled(true);
+      _refSys_3_ComboBox->setEnabled(true);
+      _beClocks3CheckBox->setEnabled(true);
+    } else {
+      _outPort_3_LineEdit->setStyleSheet("background-color: lightGray");
+      _mountpoint_3_LineEdit->setStyleSheet("background-color: lightGray");
+      _password_3_LineEdit->setStyleSheet("background-color: lightGray");
+      _outFile_3_LineEdit->setStyleSheet("background-color: lightGray");
+      _refSys_3_ComboBox->setStyleSheet("background-color: lightGray");
+      palette.setColor(_beClocks3CheckBox->backgroundRole(), lightGray);
+      _beClocks3CheckBox->setPalette(palette);
+      _outPort_3_LineEdit->setEnabled(false);
+      _mountpoint_3_LineEdit->setEnabled(false);
+      _password_3_LineEdit->setEnabled(false);
+      _outFile_3_LineEdit->setEnabled(false);
+      _refSys_3_ComboBox->setEnabled(false);
+      _beClocks3CheckBox->setEnabled(false);
+    }
+  }
+
   // Enable/disable RINEX Clocks Options
   // -----------------------------------
-  if (tabs->currentIndex() == 6) {
+  if (tabs->currentIndex() == 7) {
     if (!isEmpty) {
       _rnxIntrComboBox->setStyleSheet("background-color: white");
       _rnxSamplSpinBox->setStyleSheet("background-color: white");
@@ -959,7 +1093,7 @@ void bnsWindow::bnsText(const QString &text){
 
   // Enable/disable SP3 Orbits Options
   // ---------------------------------
-  if (tabs->currentIndex() == 7) {
+  if (tabs->currentIndex() == 8) {
     if (!isEmpty) {
       _sp3IntrComboBox->setStyleSheet("background-color: white");
       _sp3SamplSpinBox->setStyleSheet("background-color: white");
