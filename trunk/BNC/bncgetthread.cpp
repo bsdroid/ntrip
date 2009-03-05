@@ -626,7 +626,14 @@ void bncGetThread::slotSerialReadyRead() {
       QByteArray data = _serialPort->read(nb);
 
       if (_serialNMEA == AUTO_NMEA) {
-        _query->sendNMEA(data);
+        int i1 = data.indexOf("$GPGGA");
+        if (i1 != -1) {
+	  int i2 = data.indexOf("*", i1);
+          if (i2 != -1 && data.size() > i2 + 1) {
+            QByteArray gga = data.mid(i1,i2-i1+3);
+            _query->sendNMEA(gga);
+	  }
+	}
       }
 
       if (_serialOutFile) {
