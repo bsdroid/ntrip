@@ -46,6 +46,7 @@ Q_OBJECT
   void slotClkBytes(int nBytes);
   void slotOutBytes1(int nBytes);
   void slotOutBytes2(int nBytes);
+  void slotOutBytes3(int nBytes);
 
  protected:
   virtual void closeEvent(QCloseEvent *);
@@ -73,42 +74,57 @@ Q_OBJECT
 
   QLineEdit* _proxyHostLineEdit;
   QLineEdit* _proxyPortLineEdit;
-  QLineEdit* _inpEchoLineEdit;
+
+  QLineEdit* _logFileLineEdit;
+  QCheckBox* _fileAppendCheckBox;
+  QCheckBox* _autoStartCheckBox;
+
   QLineEdit* _ephHostLineEdit;
   QLineEdit* _ephPortLineEdit;
   QLineEdit* _ephEchoLineEdit;
+
   QLineEdit* _clkPortLineEdit;
-  QLineEdit* _logFileLineEdit;
+  QLineEdit* _inpEchoLineEdit;
+
   QLineEdit* _outHost_1_LineEdit;
   QLineEdit* _outPort_1_LineEdit;
+  QLineEdit* _mountpoint_1_LineEdit;
   QLineEdit* _password_1_LineEdit;
+  QComboBox* _refSys_1_ComboBox;
+  QLineEdit* _outFile_1_LineEdit;
+  QCheckBox* _beClocks1CheckBox;
+
   QLineEdit* _outHost_2_LineEdit;
   QLineEdit* _outPort_2_LineEdit;
-  QLineEdit* _password_2_LineEdit;
-  QLineEdit* _mountpoint_1_LineEdit;
   QLineEdit* _mountpoint_2_LineEdit;
-  QLineEdit* _outFile_1_LineEdit;
-  QLineEdit* _outFile_2_LineEdit;
-  QComboBox* _refSys_1_ComboBox;
+  QLineEdit* _password_2_LineEdit;
   QComboBox* _refSys_2_ComboBox;
-  QLineEdit* _rnxPathLineEdit;
-  QLineEdit* _sp3PathLineEdit;
-  QComboBox* _rnxIntrComboBox;
-  QComboBox* _sp3IntrComboBox;
-  QSpinBox*  _rnxSamplSpinBox;
-  QSpinBox*  _sp3SamplSpinBox;
-  QCheckBox* _fileAppendCheckBox;
-  QCheckBox* _autoStartCheckBox;
-  QCheckBox* _beClocks1CheckBox;
+  QLineEdit* _outFile_2_LineEdit;
   QCheckBox* _beClocks2CheckBox;
+
+  QLineEdit* _outHost_3_LineEdit;
+  QLineEdit* _outPort_3_LineEdit;
+  QLineEdit* _mountpoint_3_LineEdit;
+  QLineEdit* _password_3_LineEdit;
+  QComboBox* _refSys_3_ComboBox;
+  QLineEdit* _outFile_3_LineEdit;
+  QCheckBox* _beClocks3CheckBox;
+
+  QLineEdit* _rnxPathLineEdit;
+  QComboBox* _rnxIntrComboBox;
+  QSpinBox*  _rnxSamplSpinBox;
+
+  QLineEdit* _sp3PathLineEdit;
+  QComboBox* _sp3IntrComboBox;
+  QSpinBox*  _sp3SamplSpinBox;
 
   QTextEdit*  _log;
 
   QTabWidget* tabs;
 //QWidget*    _status;
   QGroupBox*  _status;
-  QLabel*     _statusLbl[8];  
-  double      _statusCnt[4];
+  QLabel*     _statusLbl[10];  
+  double      _statusCnt[5];
   QMutex      _mutex;
 
   t_bns*      _bns;
