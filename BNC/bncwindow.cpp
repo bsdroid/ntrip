@@ -957,15 +957,26 @@ void bncWindow::slotSaveOptions() {
 
   QStringList mountPoints;
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
-    QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
-              "@"  + _mountPointsTable->item(iRow, 1)->text() );
 
-    mountPoints.append(url.toString() + " " + 
-                       _mountPointsTable->item(iRow, 2)->text()
-               + " " + _mountPointsTable->item(iRow, 3)->text()
-               + " " + _mountPointsTable->item(iRow, 4)->text()
-               + " " + _mountPointsTable->item(iRow, 5)->text()
-               + " " + _mountPointsTable->item(iRow, 6)->text());
+    if (_mountPointsTable->item(iRow, 6)->text() != "S") {
+      QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
+                "@"  + _mountPointsTable->item(iRow, 1)->text() );
+
+      mountPoints.append(url.toString() + " " + 
+                         _mountPointsTable->item(iRow, 2)->text()
+                 + " " + _mountPointsTable->item(iRow, 3)->text()
+                 + " " + _mountPointsTable->item(iRow, 4)->text()
+                 + " " + _mountPointsTable->item(iRow, 5)->text()
+                 + " " + _mountPointsTable->item(iRow, 6)->text());
+    } else {
+      mountPoints.append( 
+                  "//" + _mountPointsTable->item(iRow, 1)->text()
+                 + " " + _mountPointsTable->item(iRow, 2)->text()
+                 + " " + _mountPointsTable->item(iRow, 3)->text()
+                 + " " + _mountPointsTable->item(iRow, 4)->text()
+                 + " " + _mountPointsTable->item(iRow, 5)->text()
+                 + " " + _mountPointsTable->item(iRow, 6)->text());
+    }
   }
 
   bncSettings settings;
