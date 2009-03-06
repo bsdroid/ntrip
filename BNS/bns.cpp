@@ -73,7 +73,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   // Socket and file for outputting the results
   // -------------------------------------------
-  for (int ic = 1; ic <= 2; ic++) {
+  for (int ic = 1; ic <= 3; ic++) {
     QString mountpoint  = settings.value(QString("mountpoint_%1").arg(ic)).toString();
     QString outFileName = settings.value(QString("outFile_%1").arg(ic)).toString();
     if (!mountpoint.isEmpty() || !outFileName.isEmpty()) {
@@ -422,6 +422,7 @@ void t_bns::readEpoch() {
           if (len > 0) {
             if (_caster.at(ic)->ic() == 1) { emit(newOutBytes1(len));}
             if (_caster.at(ic)->ic() == 2) { emit(newOutBytes2(len));}
+            if (_caster.at(ic)->ic() == 3) { emit(newOutBytes3(len));}
             _caster.at(ic)->write(obuffer, len);
           }
         }
