@@ -749,6 +749,9 @@ void bncWindow::populateMountPointsTable() {
     QString fullPath = url.host() + QString(":%1").arg(url.port()) + url.path();
     QString format(hlp[1]); QString latitude(hlp[2]); QString longitude(hlp[3]);
     QString nmea(hlp[4]);
+    if (hlp[5] == "S") {
+      fullPath = hlp[0].replace(0,2,"");
+    }
     QString ntripVersion = "1";
     if (hlp.size() >= 6) {
       ntripVersion = (hlp[5]);
@@ -891,6 +894,9 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
     QString fullPath = url.host() + QString(":%1").arg(url.port()) + url.path();
     QString format(hlp[1]); QString latitude(hlp[2]); QString longitude(hlp[3]);
     QString nmea(hlp[4]);
+    if (hlp[5] == "S") {
+      fullPath = hlp[0].replace(0,2,"");
+    }
     QString ntripVersion = "1";
     if (hlp.size() >= 6) {
       ntripVersion = (hlp[5]);
