@@ -120,17 +120,12 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
     QByteArray reqStr = "GET " + _url.path().toAscii() + " HTTP/1.1\r\n"
                       + "Host: " + _url.host().toAscii() + "\r\n"
                       + "Ntrip-Version: Ntrip/2.0\r\n"
-                      + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
-                      + "Connection: close\r\n"
-                      + userAndPwd
-                      + "\r\n";
+                      + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n";
+    if (!gga.isEmpty()) {
+      reqStr += "Ntrip-GGA: " + gga + "\r\n";
+    }
+    reqStr += userAndPwd + "Connection: close\r\n\r\n";
     
-////    // NMEA string to handle VRS stream
-////    // --------------------------------
-////    if (!gga.isEmpty()) {
-////      reqStr += gga + "\r\n";
-////    }
-
     char rtpbuffer[12 + reqStr.size()];
     rtpbuffer[0]  = 128;
     rtpbuffer[1]  =  97;
