@@ -46,6 +46,7 @@
 #include "bncgetthread.h" 
 #include "bnctabledlg.h" 
 #include "bncipport.h" 
+#include "bncserialport.h" 
 #include "bnchlpdlg.h" 
 #include "bnchtml.h" 
 #include "bnctableitem.h"
@@ -61,7 +62,7 @@ bncWindow::bncWindow() {
 
   int ww = QFontMetrics(this->font()).width('w');
   
-  static const QStringList labels = QString("account, Streams:     broadcaster:port/mountpoint,decoder,lat,long,nmea,ntrip,bytes").split(",");
+  static const QStringList labels = QString("account, Streams:     resource loader / mountpoint,decoder,lat,long,nmea,ntrip,bytes").split(",");
 
   setMinimumSize(85*ww, 65*ww);
 
@@ -824,23 +825,30 @@ void bncWindow::slotAddMountPoints() {
 
   QPushButton *buttonNtrip = msgBox.addButton(tr("Caster"), QMessageBox::ActionRole);
   QPushButton *buttonIP = msgBox.addButton(tr("TCP/IP port"), QMessageBox::ActionRole);
+  QPushButton *buttonSerial = msgBox.addButton(tr("Serial port"), QMessageBox::ActionRole);
   QPushButton *buttonCancel = msgBox.addButton(tr("Cancel"), QMessageBox::ActionRole);
 
   msgBox.exec();
 
   if (msgBox.clickedButton() == buttonNtrip) {
-    bncTableDlg* dlg = new bncTableDlg(this); 
+    bncTableDlg* dlg = new bncTableDlg(this);
     dlg->move(this->pos().x()+50, this->pos().y()+50);
-    connect(dlg, SIGNAL(newMountPoints(QStringList*)), 
+    connect(dlg, SIGNAL(newMountPoints(QStringList*)),
           this, SLOT(slotNewMountPoints(QStringList*)));
     dlg->exec();
     delete dlg;
   } else if (msgBox.clickedButton() == buttonIP) {
-    bncIpPort* ipp = new bncIpPort(this); 
-    connect(ipp, SIGNAL(newMountPoints(QStringList*)), 
+    bncIpPort* ipp = new bncIpPort(this);
+    connect(ipp, SIGNAL(newMountPoints(QStringList*)),
           this, SLOT(slotNewMountPoints(QStringList*)));
     ipp->exec();
     delete ipp;
+  } else if (msgBox.clickedButton() == buttonSerial) {
+    bncSerialPort* sep = new bncSerialPort(this);
+    connect(sep, SIGNAL(newMountPoints(QStringList*)),
+          this, SLOT(slotNewMountPoints(QStringList*)));
+    sep->exec();
+    delete sep;
   } else if (msgBox.clickedButton() == buttonCancel) {
     // Cancel
   }
