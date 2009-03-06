@@ -5,7 +5,5 @@ BNS
 
 BNC
 =========================
-(1) Pure UDP protocol not yet implemented.
-
-(2) GW: Keep an eye on www.igs-ip.net/PENC0.
+(1) GW: Keep an eye on www.igs-ip.net/PENC0.
 
