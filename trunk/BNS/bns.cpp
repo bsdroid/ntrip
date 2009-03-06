@@ -361,7 +361,7 @@ void t_bns::readEpoch() {
         for (int ii = 0; ii < lines.size(); ii++) {
 
           QString      prn;
-          ColumnVector xx(5);
+          ColumnVector xx(5); xx = 0.0;
           t_eph*       ep = 0;
       
           if (oldEph == 0 && ic == 0) {
