@@ -395,13 +395,6 @@ void t_bns::readEpoch() {
             }
           }
       
-          // Clocks without corrections 
-          // --------------------------
-          if ( _caster.at(ic)->beClocks() ) {
-            xx(4) -= xx(5) / 299792458.0;
-            xx(5) = 0.0;
-          } 
-
           if (ep != 0) {
             struct ClockOrbit::SatData* sd = 0;
             if      (prn[0] == 'G') {
@@ -414,7 +407,8 @@ void t_bns::readEpoch() {
             }
             if (sd) {
               QString outLine;
-              processSatellite(oldEph, ic, _caster.at(ic)->crdTrafo(), ep, 
+              processSatellite(oldEph, ic, _caster.at(ic)->crdTrafo(), 
+                               _caster.at(ic)->beClocks(), ep, 
                                GPSweek, GPSweeks, prn, xx, sd, outLine);
               _caster.at(ic)->printAscii(outLine);
             }
@@ -438,8 +432,9 @@ void t_bns::readEpoch() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_bns::processSatellite(int oldEph, int iCaster, bool trafo, t_eph* ep, 
-                             int GPSweek, double GPSweeks, const QString& prn, 
+void t_bns::processSatellite(int oldEph, int iCaster, bool trafo, 
+                             bool beClocks, t_eph* ep, int GPSweek, 
+                             double GPSweeks, const QString& prn, 
                              const ColumnVector& xx, 
                              struct ClockOrbit::SatData* sd,
                              QString& outLine) {
@@ -454,12 +449,18 @@ void t_bns::processSatellite(int oldEph, int iCaster, bool trafo, t_eph* ep,
     crdTrafo(GPSweek, xyz);
   }
 
-  ColumnVector dx   = xyz - xB.Rows(1,3);
+  ColumnVector dx = xyz - xB.Rows(1,3);
 
-  double       dClk = (xx(4) - xB(4)) * 299792458.0; 
   ColumnVector rsw(3);
-
   XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw);
+
+  double dClk;
+  if (beClocks) {
+    dClk = (xx(4) - xB(4)) * 299792458.0 - xx(5);
+  }
+  else {
+    dClk = (xx(4) - xB(4)) * 299792458.0;
+  }
 
   if (sd) {
     sd->ID                    = prn.mid(1).toInt();
@@ -524,7 +525,6 @@ void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz) {
   rMat(3,1) = -oy;
   rMat(3,2) =  ox;
   rMat(3,3) = 1.0;
-
 
   xyz = sc * rMat * xyz + dx;
 }
