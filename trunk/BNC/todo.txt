@@ -5,5 +5,9 @@ BNS
 
 BNC
 =========================
+(1) NTRIP "U": 
+Stopps after ~60sec with message "Data timeout, reconnecting"
+Could it be that a kind of keep-alife packet is necessary?
+
 (1) GW: Keep an eye on www.igs-ip.net/PENC0.
 
