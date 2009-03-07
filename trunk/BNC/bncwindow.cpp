@@ -658,7 +658,7 @@ bncWindow::bncWindow() {
   aLayout->addWidget(_adviseRecoSpinBox,                          2, 1);
   aLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
   aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,30);
-  aLayout->addWidget(new QLabel("Outage report, handling of corrupted streams."),5,0,1,50,Qt::AlignLeft);
+  aLayout->addWidget(new QLabel("Failure and recovery reports, advisory notes."),5,0,1,50,Qt::AlignLeft);
   agroup->setLayout(aLayout);
 
   connect(_obsRateComboBox, SIGNAL(currentIndexChanged(const QString &)),
