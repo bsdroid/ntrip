@@ -557,7 +557,7 @@ bncWindow::bncWindow() {
   sLayout->addWidget(_outFileLineEdit,                            2, 1, 1, 20);
   sLayout->addWidget(new QLabel("Port (unsynchronized)"),         3, 0);
   sLayout->addWidget(_outUPortLineEdit,                           3, 1);
-  sLayout->addWidget(new QLabel("Output decoded observations in a binary format to feed a real-time GNSS engine."),4,0,1,50);
+  sLayout->addWidget(new QLabel("Output decoded observations in a binary format to feed a real-time GNSS network engine."),4,0,1,50);
   sLayout->addWidget(new QLabel("    "),5,0);
   sgroup->setLayout(sLayout);
 
