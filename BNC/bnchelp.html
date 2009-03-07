@@ -35,13 +35,14 @@ Please ensure that you have installed the latest version of BNC available from <
 <ul>
 <li>retrieve real-time GNSS data streams available through NTRIP transport protocol,</li>
 <li>retrieve real-time GNSS data streams via TCP directly from an IP address without using the NTRIP transport protocol, and/or</li>
+<li>retrieve real-time GNSS data streams from a serial port without using the NTRIP transport protocol, and/or</li>
 <li>generate high-rate RINEX Observation and Navigation files to support near real-time GNSS post-processing applications, and/or</li> 
 <li>generate ephemeris and synchronized or unsynchronized observations epoch by epoch through an IP port to support real-time GNSS network engines, and/or</li> 
 <li>generate clock and orbit corrections to broadcast ephemeris through an IP port to support real-time Precise Point Positioning on GNSS rovers, and/or</li> 
 <li>generate synchronized clock and orbit corrections to broadcast ephemeris epoch by epoch through an IP port to support the combination of such streams as coming simultaneously from various correction providers, and/or</li> 
 <li>monitor the performance of a network of real-time GNSS data streams to generate advisory notes, and/or</li>
 <li>scan RTCM streams for incoming antenna information as well as message types and their repetition rates, and/or</li>
-<li>feed a stream into a GNSS rover via serial communication link.</li>
+<li>feed a stream into a GNSS receiver via serial communication link.</li>
 </ul>
 </p>
 <p>
@@ -115,16 +116,17 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.7.3. <a href=#syncsample>Sampling</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.4. <a href=#syncfile>File</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.5. <a href=#syncuport>Port (unsynchronized)</a><br>
-3.8. <a href=#serial>Serial Link</a><br>
+3.8. <a href=#serial>Serial Output</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.1. <a href=#sermount>Mountpoint</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.2. <a href=#serport>Port Name</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.3. <a href=#serbaud>Baud Rate</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.4. <a href=#serparity>Parity</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.5. <a href=#serdata>Data Bits</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.6. <a href=#serstop>Stop Bits</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.7. <a href=#serauto>NMEA</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.8. <a href=#serfile>File</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.9. <a href=#serheight>Height</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.4. <a href=#serflow>Flow Control</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.5. <a href=#serparity>Parity</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.6. <a href=#serdata>Data Bits</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.7. <a href=#serstop>Stop Bits</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.8. <a href=#serauto>NMEA</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.9. <a href=#serfile>File</a><br>
+&nbsp; &nbsp; &nbsp; 3.8.10. <a href=#serheight>Height</a><br>
 3.9. <a href=#advnote>Outages</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.1. <a href=#obsrate>Observation Rate</a><br>
 &nbsp; &nbsp; &nbsp; 3.9.2. <a href=#advfail>Failure Threshold</a><br>
@@ -146,8 +148,9 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.12.1.4 <a href=#gettable>Get Table</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.12.1.5 <a href=#ntripv>NTRIP Version</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.2 <a href=#streamip>Add Streams - Coming from TCP/IP Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.3 <a href=#start>Start</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.4 <a href=#stop>Stop</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.3 <a href=#streamser>Add Streams - Coming from Serial Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.4 <a href=#start>Start</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.5 <a href=#stop>Stop</a><br>
 3.13. <a href=#cmd>Command Line Options</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.1. <a href=#nw>No Window Mode</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.2. <a href=#post>Offline Mode</a><br>
@@ -571,22 +574,22 @@ Beware that the size of this file can rapidly increase depending on the number o
 BNC can produce unsynchronized observations from all configured streams in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Unscynchronized means that BNC immediately forwards any received observation to the port. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary unsynchronized output is generated.</p>
 <p>
 
-<p><a name="serial"><h4>3.8. Serial Link</h4></p>
+<p><a name="serial"><h4>3.8. Serial Output</h4></p>
 <p>
-You may use BNC to feed a serial connected device like an GNSS rover. For that one of the incoming streams can be forwarded to a serial port.
+You may use BNC to feed a serial connected device like an GNSS receiver. For that one of the incoming streams can be forwarded to a serial port.
 </p>
 
 <p><a name="sermount"><h4>3.8.1 Mountpoint - optional</h4></p>
 <p>
-Enter a 'Mountpoint' to forward its corresponding stream to a serial connected device.
+Enter a 'Mountpoint' to forward its corresponding stream to a serial connected GNSS receiver.
 </p>
 <p>
-When selecting the serial communication options listed below, make sure that you pick those configured to the serial connected device.
+When selecting the serial communication options listed below, make sure that you pick those configured to the serial connected receiver.
 </p>
 
 <p><a name="serport"><h4>3.8.2 Port Name - mandatory if 'Mountpoint' is set</h4></p>
 <p>
-Enter the serial 'Port name' selected on your host for communication with the serial connected device. Valid port names are
+Enter the serial 'Port name' selected on your host for communication with the serial connected receiver. Valid port names are
 </p>
 <pre>
 Windows:       COM1, COM2
@@ -603,39 +606,44 @@ Note that you must plug a serial cable in the port defined here before you start
 
 <p><a name="serbaud"><h4>3.8.3 Baud Rate - mandatory if 'Mountpoint' is set</h4></p>
 <p>
-Select a 'Baud rate' for the serial link. Note that using a high baud rate is recommended.
+Select a 'Baud rate' for the serial output link. Note that using a high baud rate is recommended.
 </p>
 
-<p><a name="serparity"><h4>3.8.4 Parity - mandatory if 'Mountpoint' is set</h4></p>
+<p><a name="serflow"><h4>3.8.4 Flow Control - mandatory if 'Mountpoint' is set</h4></p>
 <p>
-Select the 'Parity' for the serial link. Note that parity is often set to 'NONE'.
+Select a 'Flow control' for the serial output link. Note that your selection must equal the flow control configured to the serial connected device. Select 'OFF' if you don't know better.
 </p>
 
-<p><a name="serdata"><h4>3.8.5 Data Bits - mandatory if 'Mountpoint' is set</h4></p>
+<p><a name="serparity"><h4>3.8.5 Parity - mandatory if 'Mountpoint' is set</h4></p>
 <p>
-Select the number of 'Data bits' for the serial link. Note that often '8' data bits are used.
+Select the 'Parity' for the serial output link. Note that parity is often set to 'NONE'.
 </p>
 
-<p><a name="serstop"><h4>3.8.6 Stop Bits - mandatory if 'Mountpoint' is set</h4></p>
+<p><a name="serdata"><h4>3.8.6 Data Bits - mandatory if 'Mountpoint' is set</h4></p>
 <p>
-Select the number of 'Stop bits' for the serial link. Note that often '1' stop bit is used.
+Select the number of 'Data bits' for the serial output link. Note that often '8' data bits are used.
 </p>
 
-<p><a name="serauto"><h4>3.8.7 NMEA - mandatory for VRS streams</h4></p>
+<p><a name="serstop"><h4>3.8.7 Stop Bits - mandatory if 'Mountpoint' is set</h4></p>
 <p>
-Select 'Auto' to automatically forward all NMEA-GGA messages coming from your serial connected device to the NTRIP broadcaster and/or save them in a file.
-</p>
-<p>
-Forwarding valid NMEA-GGA messages to the NTRIP broadcaster is required for receiving 'Virtual Reference Station' (VRS) streams. Thus, in case your serial connected device is not capable to provide them, the alternative for VRS streams is a 'Manual' simulation of an initial NMEA-GGA message. Its contents is based on the approximate (editable) latitude/longitude from the broadcaster's source-table and an approximate VRS height to be specified.
-</p>
-<p>
-In summary: select 'Manual' only when handling a VRS stream and your serial connected device doesn't generate NMEA-GGA messages. Otherwise select 'Auto'.
+Select the number of 'Stop bits' for the serial output link. Note that often '1' stop bit is used.
 </p>
 
-<p><a name="serfile"><h4>3.8.8 File - optional if 'Auto' NMEA is set</h4></p>
-<p>Specify the full path to a file where NMEA messages coming from your serial connected device are saved.
+<p><a name="serauto"><h4>3.8.8 NMEA - mandatory for VRS streams</h4></p>
+<p>
+Select 'Auto' to automatically forward all NMEA-GGA messages coming from your serial connected GNSS receiver to the NTRIP broadcaster and/or save them in a file.
 </p>
-<p><a name="serheight"><h4>3.8.9 Height - mandatory if 'Manual' NMEA is set</h4></p>
+<p>
+Forwarding valid NMEA-GGA messages to the NTRIP broadcaster is required for receiving 'Virtual Reference Station' (VRS) streams. Thus, in case your serial connected receiver is not capable to provide them, the alternative for VRS streams is a 'Manual' simulation of an initial NMEA-GGA message. Its contents is based on the approximate (editable) latitude/longitude from the broadcaster's source-table and an approximate VRS height to be specified.
+</p>
+<p>
+In summary: select 'Manual' only when handling a VRS stream and your serial connected GNSS receiver doesn't generate NMEA-GGA messages. Select 'Auto' otherweise.
+</p>
+
+<p><a name="serfile"><h4>3.8.9 File - optional if 'Auto' NMEA is set</h4></p>
+<p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved.
+</p>
+<p><a name="serheight"><h4>3.8.10 Height - mandatory if 'Manual' NMEA is set</h4></p>
 <p>
 Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message. Latitude and longitude for that (editable) are taken from the broadcaster's source-table.
 </p>
@@ -884,7 +892,7 @@ Button 'Add Streams' > 'Coming from TCP/IP Port' allows to retrieve streams via 
 <ul>
 <li>Enter the IP address of the stream providing host.</li>
 <li>Enter the IP port number of the stream providing host.</li>
-<li>Specify a mountpoint. Recommended is a 4-character reference station ID. Example: FFMJ</li>
+<li>Specify a mountpoint. Recommended is a 4-character station ID. Example: FFMJ</li>
 <li>Specify the stream format. Available options are 'RTCM_2', 'RTCM_3', 'RTIGS', and 'ZERO'.</li>
 <li>Enter the approximate latitude of the stream providing rover in degrees. Example: 45.32.</li>
 <li>Enter the approximate longitude of the stream providing rover in degrees. Example: -15.20.</li>
@@ -896,6 +904,40 @@ Streams directly received from a TCP/IP port show up with an 'N' for 'No NTRIP' 
 </p>
 Note that this option works only if no proxy server is involved in the communication link.
 </p>
+
+<p><a name="streamser"><h4>3.12.3 Add Streams - Coming from Serial Port</h4></p>
+<p>
+Button 'Add Streams' > 'Coming from Serial Port' allows to retrieve streams from a GNSS receiver via serial port without using the NTRIP transport protocol. For that you:
+<ul>
+<li>Specify a mountpoint. Recommended is a 4-character station ID. Example: FFMJ</li>
+<li>Specify the stream format. Available options are 'RTCM_2', 'RTCM_3', 'RTIGS', and 'ZERO'.</li>
+<li>Enter the approximate latitude of the stream providing receiver in degrees. Example: 45.32.</li>
+<li>Enter the approximate longitude of the stream providing receiver in degrees. Example: -15.20.</li>
+<li>Enter the serial 'Port name' selected on your host for communication with the receiver. Valid port names are
+<pre>
+Windows:       COM1, COM2
+Linux:         /dev/ttyS0, /dev/ttyS1
+FreeBSD:       /dev/ttyd0, /dev/ttyd1
+Digital Unix:  /dev/tty01, /dev/tty02
+HP-UX:         /dev/tty1p0, /dev/tty2p0
+SGI/IRIX:      /dev/ttyf1, /dev/ttyf2
+SunOS/Solaris: /dev/ttya, /dev/ttyb
+</pre>
+</li>
+<li>Select a 'Baud rate' for the serial input. Note that using a high baud rate is recommended.</li>
+<li>Select the number of 'Data bits' for the serial input. Note that often '8' data bits are used.</li>
+<li>Select the 'Parity' for the serial input. Note that parity is often set to 'NONE'.</li>
+<li>Select the number of 'Stop bits' for the serial input. Note that often '1' stop bit is used.</li>
+<li>Select a 'Flow control' for the serial link. Select 'OFF' if you don't know better.</li>
+</ul>
+</p>
+<p>
+When selecting the serial communication options listed above, make sure that you pick those configured to the serial connected GNSS receiver. 
+</p>
+
+<p>
+Streams received from a serial connected GNSS receiver show up with an 'S' (for <u>S</u>erial Port, no NTRIP) in the 'Streams' canvas section on BNC's main window . Latitude and longitude are to be entered just for informal reasons.
+<p>
 
 <p><a name="start"><h4>3.12.3 Start</h4></p>
 <p>
@@ -1315,14 +1357,14 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>rnxSkel=</td><td>RINEX Observations: Skeleton extension</td></tr>
 <tr><td>rnxV3=0</td><td>RINEX Observation: Version 3</td></tr>
 <tr><td>scanRTCM=0</td><td>Miscellaneous: Scan RTCM</td></tr>
-<tr><td>serialAutoNMEA=Auto</td><td>Serial Link: NMEA</td></tr>
-<tr><td>serialBaudRate=9600</td><td>Serial Link: Baud rate</td></tr>
-<tr><td>serialDataBits=8</td><td>Serial Link: Data bits</td></tr>
-<tr><td>serialHeightNMEA=</td><td>Serial Link: Height</td></tr>
-<tr><td>serialMountPoint=</td><td>Serial Link: Mountpoint</td></tr>
-<tr><td>serialParity=NONE</td><td>Serial Link: Parity</td></tr>
-<tr><td>serialPortName=</td><td>Serial Link: Port name</td></tr>
-<tr><td>serialStopBits=1</td><td>Serial Link: Stop bits</td></tr>
+<tr><td>serialAutoNMEA=Auto</td><td>Serial Output: NMEA</td></tr>
+<tr><td>serialBaudRate=9600</td><td>Serial Output: Baud rate</td></tr>
+<tr><td>serialDataBits=8</td><td>Serial Output: Data bits</td></tr>
+<tr><td>serialHeightNMEA=</td><td>Serial Output: Height</td></tr>
+<tr><td>serialMountPoint=</td><td>Serial Output: Mountpoint</td></tr>
+<tr><td>serialParity=NONE</td><td>Serial Output: Parity</td></tr>
+<tr><td>serialPortName=</td><td>Serial Output: Port name</td></tr>
+<tr><td>serialStopBits=1</td><td>Serial Output: Stop bits</td></tr>
 <tr><td>startTab=0</td><td>Internal memory: Top tab</td></tr>
 <tr><td>waitTime=5</td><td>Feed Engine: Wait for full epoch</td></tr>
 </table>
