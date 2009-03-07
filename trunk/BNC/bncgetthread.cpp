@@ -305,11 +305,13 @@ void bncGetThread::initialize() {
 
   // Instantiate the decoder
   // -----------------------
-  if      (_format.indexOf("RTCM_2") != -1) {
+  if      (_format.indexOf("RTCM_2") != -1 || _format.indexOf("RTCM2") != -1 ||
+           _format.indexOf("RTCM 2") != -1 ) {
     emit(newMessage(_staID + ": Get data in RTCM 2.x format", true));
     _decoder = new RTCM2Decoder(_staID.data());
   }
-  else if (_format.indexOf("RTCM_3") != -1) {
+  else if (_format.indexOf("RTCM_3") != -1 || _format.indexOf("RTCM3") != -1 ||
+           _format.indexOf("RTCM 3") != -1 ) {
     emit(newMessage(_staID + ": Get data in RTCM 3.x format", true));
     _decoder = new RTCM3Decoder(_staID);
     connect((RTCM3Decoder*) _decoder, SIGNAL(newMessage(QByteArray,bool)), 
@@ -532,6 +534,9 @@ t_irc bncGetThread::tryReconnect() {
     }
     else if (_ntripVersion == "R") {
       _query = new bncNetQueryRtp();
+    }
+    else if (_ntripVersion == "S") {
+      _query = new bncNetQueryV0();
     }
     else if (_ntripVersion == "N") {
       _query = new bncNetQueryV0();
