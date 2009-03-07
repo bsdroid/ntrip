@@ -782,22 +782,22 @@ Note that in RTCM Version 2.x the message types 18 and 19 carry only the observa
 
 <p><a name="streams"><h4>3.11. Streams</h4></p>
 <p>
-Each stream on an NTRIP broadcaster is defined using a unique source ID called mountpoint. An NTRIP client like BNC access the desired data stream by referring to its mountpoint. Information about streams and their mountpoints is available through the source-table maintained by the NTRIP broadcaster. Note that mountpoints could show up in BNC more than once when retrieving streams from several NTRIP broadcasters.
+Each stream on an NTRIP broadcaster (and consequently on BNC) is defined using a unique source ID called mountpoint. An NTRIP client like BNC access the desired data stream by referring to its mountpoint. Information about streams and their mountpoints is available through the source-table maintained by the NTRIP broadcaster. Note that mountpoints could show up in BNC more than once when retrieving streams from several NTRIP broadcasters.
 </p>
 
 <p>
-Streams selected for retrieval are listed under the 'Streams' canvas section on BNC's main window. The list provides the following information extracted from source-table(s) produced by the NTRIP broadcasters:
+Streams selected for retrieval are listed under the 'Streams' canvas section on BNC's main window. The list provides the following information either extracted from source-table(s) produced by the NTRIP broadcasters or introduced by BNC's user:
 </p>
  
 <table>
-<tr><td>'broadcaster:port'&nbsp; </td><td>NTRIP broadcaster URL and port.</td></tr>
-<tr><td>'mountpoint' &nbsp;</td><td>Mountpoint on NTRIP broadcaster.</td></tr>
+<tr><td>'resource loader'&nbsp; </td><td>NTRIP broadcaster URL and port, or<br>TCP/IP host and port, or<br>COM port specification.</td></tr>
+<tr><td>'mountpoint' &nbsp;</td><td>Mountpoint introduced by NTRIP broadcaster, or<br>Mountpoint introduced by BNC's user.</td></tr>
 <tr><td>'decoder' &nbsp;</td><td>Type of decoder used to handle the incoming stream content according to its format; editable.</td></tr>
 <tr><td>'lat' &nbsp;</td><td>Approximate latitude of reference station, in degrees, north; editable if 'nmea' = 'yes'.</td></tr>
 <tr><td>'long' &nbsp;</td><td>Approximate longitude of reference station, in degrees, east; editable if 'nmea' = 'yes'.</td></tr>
 <tr><td>'nmea' &nbsp;</td><td>Indicates whether or not streaming needs to be initiated by BNC through sending NMEA-GGA message carrying position coordinates in 'lat' and 'long'.</td></tr>
-<tr><td>'ntrip' &nbsp;</td><td>Selected NTRIP transport protocol version.</td></tr>
-<tr><td>'bytes' &nbsp;</td><td>Number of bytes retrieved.
+<tr><td>'ntrip' &nbsp;</td><td>Selected NTRIP transport protocol version (1,2,R,U), or<br>'N' for TCP/IP streams without NTRIP, or<br>'S' for serial streams without NTRIP.</td></tr>
+<tr><td>'bytes' &nbsp;</td><td>Number of bytes received.
 </table>
 
 <p><a name="streamedit"><h4>3.11.1 Edit Streams</h4></p>
@@ -1115,7 +1115,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 
 <tr>
 <td>Mar 2009 &nbsp;</td><td>Version 1.7 &nbsp;</td>
-<td>[Bug] RINEX navigation file format<br> [Add] Upgrade to Qt Version 4.4.3<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port<br> [Add] Show broadcaster table from www.rtcm-ntrip.org<br> [Add] Enable/disable tab widgets<br> [Add] User defined configuration file name<br> [mod] Switch to configuration files in ini-Format<br> [Add] Daily logfile rotation<br> [Add] Read from TCP/IP port, by-pass NTRIP transport protocol<br> [Add] Save NMEA messages coming from rover<br> [Add] Auto start<br> [Add] Drag and drop ini files</td>
+<td>[Bug] RINEX navigation file format<br> [Add] Upgrade to Qt Version 4.4.3<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port<br> [Add] Show broadcaster table from www.rtcm-ntrip.org<br> [Add] Enable/disable tab widgets<br> [Add] User defined configuration file name<br> [mod] Switch to configuration files in ini-Format<br> [Add] Daily logfile rotation<br> [Add] Read from TCP/IP port, by-pass NTRIP transport protocol<br> [Add] Save NMEA messages coming from rover<br> [Add] Auto start<br> [Add] Drag and drop ini files<br> [Add] Read from serial port, by-pass NTRIP transport protocol</td>
 </tr>
 
 </table>
