@@ -102,24 +102,24 @@ bncSerialPort::bncSerialPort(QWidget* parent) : QDialog(parent) {
 
   editLayout->addWidget(new QLabel(tr("Mountpoint")),  0, 0, Qt::AlignRight);
   editLayout->addWidget(_serialMountpointLineEdit,     0, 1);
-  editLayout->addWidget(new QLabel(tr("Port")),        0, 2, Qt::AlignRight);
-  editLayout->addWidget(_serialPortLineEdit,           0, 3);
-  editLayout->addWidget(new QLabel(tr("Format")),      1, 0, Qt::AlignRight);
-  editLayout->addWidget(_serialFormatLineEdit,         1, 1);
-  editLayout->addWidget(new QLabel(tr("Baud rate")),   1, 2, Qt::AlignRight);
-  editLayout->addWidget(_serialBaudRateComboBox,       1, 3);
-  editLayout->addWidget(new QLabel(tr("Flow control")),2, 0, Qt::AlignRight);
-  editLayout->addWidget(_serialFlowControlComboBox,    2, 1);
-  editLayout->addWidget(new QLabel(tr("Data bits")),   2, 2, Qt::AlignRight);
-  editLayout->addWidget(_serialDataBitsComboBox,       2, 3);
-  editLayout->addWidget(new QLabel(tr("Parity")),      3, 0, Qt::AlignRight);
-  editLayout->addWidget(_serialParityComboBox,         3, 1);
-  editLayout->addWidget(new QLabel(tr("Stop bits")),   3, 2, Qt::AlignRight);
-  editLayout->addWidget(_serialStopBitsComboBox,       3, 3);
-  editLayout->addWidget(new QLabel(tr("Latitude")),    4, 0, Qt::AlignRight);
-  editLayout->addWidget(_serialLatLineEdit,            4, 1);
-  editLayout->addWidget(new QLabel(tr("Longitude")),   4, 2, Qt::AlignRight);
-  editLayout->addWidget(_serialLonLineEdit,            4, 3);
+  editLayout->addWidget(new QLabel(tr("Format")),      0, 2, Qt::AlignRight);
+  editLayout->addWidget(_serialFormatLineEdit,         0, 3);
+  editLayout->addWidget(new QLabel(tr("Latitude")),    1, 0, Qt::AlignRight);
+  editLayout->addWidget(_serialLatLineEdit,            1, 1);
+  editLayout->addWidget(new QLabel(tr("Longitude")),   1, 2, Qt::AlignRight);
+  editLayout->addWidget(_serialLonLineEdit,            1, 3);
+  editLayout->addWidget(new QLabel(tr("Port")),        2, 0, Qt::AlignRight);
+  editLayout->addWidget(_serialPortLineEdit,           2, 1);
+  editLayout->addWidget(new QLabel(tr("Baud rate")),   2, 2, Qt::AlignRight);
+  editLayout->addWidget(_serialBaudRateComboBox,       2, 3);
+  editLayout->addWidget(new QLabel(tr("Data bits")),   3, 0, Qt::AlignRight);
+  editLayout->addWidget(_serialDataBitsComboBox,       3, 1);
+  editLayout->addWidget(new QLabel(tr("Parity")),      3, 2, Qt::AlignRight);
+  editLayout->addWidget(_serialParityComboBox,         3, 3);
+  editLayout->addWidget(new QLabel(tr("Stop bits")),   4, 0, Qt::AlignRight);
+  editLayout->addWidget(_serialStopBitsComboBox,       4, 1);
+  editLayout->addWidget(new QLabel(tr("Flow control")),4, 2, Qt::AlignRight);
+  editLayout->addWidget(_serialFlowControlComboBox,    4, 3);
 
   mainLayout->addLayout(editLayout);
 
