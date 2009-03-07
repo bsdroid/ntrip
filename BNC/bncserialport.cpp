@@ -169,17 +169,18 @@ void bncSerialPort::accept() {
        !_serialFormatLineEdit->text().isEmpty() &&
        !_serialLatLineEdit->text().isEmpty() &&
        !_serialLonLineEdit->text().isEmpty() ) {
-    mountPoints->push_back("//" + _serialDataBits + "-"
-                                + _serialParity + "-"
-                                + _serialStopBits + "-"
-                                + _serialFlowControl + "-"
-                                + _serialPortLineEdit->text().replace("/","-").replace(QRegExp("^[-]"), "") + ":"
-                                + _serialBaudRate + "/"
-                                + _serialMountpointLineEdit->text() + " "
-                                + _serialFormatLineEdit->text() + " "
-                                + _serialLatLineEdit->text() + " "
-                                + _serialLonLineEdit->text() + " "
-                                + "no S");
+    mountPoints->push_back("//" 
+      + _serialPortLineEdit->text().replace("/","-").replace(QRegExp("^[-]"), "") + "-"
+      + _serialDataBits + "-"
+      + _serialParity + "-"
+      + _serialStopBits + "-"
+      + _serialFlowControl + "-"
+      + _serialBaudRate + "/"
+      + _serialMountpointLineEdit->text() + " "
+      + _serialFormatLineEdit->text() + " "
+      + _serialLatLineEdit->text() + " "
+      + _serialLonLineEdit->text() + " "
+      + "no S");
   } else {
    QMessageBox::warning(this, tr("Warning"),
                                tr("Incomplete settings"),
