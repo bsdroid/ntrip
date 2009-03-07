@@ -210,8 +210,8 @@ bncWindow::bncWindow() {
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
   _outUPortLineEdit   = new QLineEdit(settings.value("outUPort").toString());
 
-  // Serial Link Options
-  // -------------------
+  // Serial Output Options
+  // ---------------------
   _serialMountPointLineEdit = new QLineEdit(settings.value("serialMountPoint").toString());
   _serialPortNameLineEdit = new QLineEdit(settings.value("serialPortName").toString());
   _serialBaudRateComboBox = new QComboBox();
@@ -352,15 +352,15 @@ bncWindow::bncWindow() {
   _rnxV3CheckBox->setWhatsThis(tr("The default format for RINEX Observation files is RINEX Version 2.11. Select 'Version 3' if you want to save the observations in RINEX Version 3 format."));
   _miscMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint to apply any of the options shown below. Enter 'ALL' if you want to apply these options to all configured streams.</p><p>An empty option field (default) means that you don't want BNC to apply any of these options.</p>"));
   _scanRTCMCheckBox->setWhatsThis(tr("<p>Tick 'Scan RTCM' to log the numbers of incomming message types as well as contained antenna coordinates, antenna heigt, and antenna descriptor.</p>"));
-  _serialMountPointLineEdit->setWhatsThis(tr("<p>Enter a 'Mountpoint' to forward the corresponding stream to a serial connected device.</p>"));
-  _serialPortNameLineEdit->setWhatsThis(tr("<p>Enter the serial 'Port name' selected for communication with your serial connected device. Valid port names are</p><pre>Windows:       COM1, COM2<br>Linux:         /dev/ttyS0, /dev/ttyS1<br>FreeBSD:       /dev/ttyd0, /dev/ttyd1<br>Digital Unix:  /dev/tty01, /dev/tty02<br>HP-UX:         /dev/tty1p0, /dev/tty2p0<br>SGI/IRIX:      /dev/ttyf1, /dev/ttyf2<br>SunOS/Solaris: /dev/ttya, /dev/ttyb</pre><p>Note that you must plug a serial cable in the port defined here before you start BNC.</p>"));
-  _serialBaudRateComboBox->setWhatsThis(tr("<p>Select a 'Baud rate' for the serial link.</p><p>Note that your selection must equal the baud rate configured to the serial connected device. Note further that using a high baud rate is recommended.</p>"));
-  _serialParityComboBox->setWhatsThis(tr("<p>Select the 'Parity' for the serial link.</p><p>Note that your selection must equal the parity selection configured to the serial connected device. Note further that parity is often set to 'NONE'.</p>"));
-  _serialDataBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Data bits' for the serial link.</p><p>Note that your selection must equal the number of data bits configured to the serial connected device. Note further that often 8 data bits are used.</p>"));
-  _serialStopBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Stop bits' for the serial link.</p><p>Note that your selection must equal the number of stop bits configured to the serial connected device. Note further that often 1 stop bit is used.</p>"));
-  _serialFlowControlComboBox->setWhatsThis(tr("<p>Select a 'Flow control' for the serial link.</p><p>Note that your selection must equal the flow control configured to the serial connected device. Select 'OFF' if you don't know better.</p>"));
-  _serialAutoNMEAComboBox->setWhatsThis(tr("<p>Select 'Auto' to automatically forward NMEA-GGA messages coming from your serial connected device to the NTRIP broadcaster and/or save them in a file.</p><p>Select 'Manual' only when handling a VRS stream and your serial connected device doesn't generate NMEA-GGA messages.</p>"));
-  _serialFileNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where NMEA messages coming from your serial connected device are saved.</p>"));
+  _serialMountPointLineEdit->setWhatsThis(tr("<p>Enter a 'Mountpoint' to forward the corresponding stream to a serial connected receiver.</p>"));
+  _serialPortNameLineEdit->setWhatsThis(tr("<p>Enter the serial 'Port name' selected for communication with your serial connected receiver. Valid port names are</p><pre>Windows:       COM1, COM2<br>Linux:         /dev/ttyS0, /dev/ttyS1<br>FreeBSD:       /dev/ttyd0, /dev/ttyd1<br>Digital Unix:  /dev/tty01, /dev/tty02<br>HP-UX:         /dev/tty1p0, /dev/tty2p0<br>SGI/IRIX:      /dev/ttyf1, /dev/ttyf2<br>SunOS/Solaris: /dev/ttya, /dev/ttyb</pre><p>Note that you must plug a serial cable in the port defined here before you start BNC.</p>"));
+  _serialBaudRateComboBox->setWhatsThis(tr("<p>Select a 'Baud rate' for the serial output link.</p><p>Note that your selection must equal the baud rate configured to the serial connected receiver. Note further that using a high baud rate is recommended.</p>"));
+  _serialParityComboBox->setWhatsThis(tr("<p>Select the 'Parity' for the serial output link.</p><p>Note that your selection must equal the parity selection configured to the serial connected receiver. Note further that parity is often set to 'NONE'.</p>"));
+  _serialDataBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Data bits' for the serial output link.</p><p>Note that your selection must equal the number of data bits configured to the serial connected receiver. Note further that often 8 data bits are used.</p>"));
+  _serialStopBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Stop bits' for the serial output link.</p><p>Note that your selection must equal the number of stop bits configured to the serial connected receiver. Note further that often 1 stop bit is used.</p>"));
+  _serialFlowControlComboBox->setWhatsThis(tr("<p>Select a 'Flow control' for the serial output link.</p><p>Note that your selection must equal the flow control configured to the serial connected receiver. Select 'OFF' if you don't know better.</p>"));
+  _serialAutoNMEAComboBox->setWhatsThis(tr("<p>Select 'Auto' to automatically forward NMEA-GGA messages coming from your serial connected receiver to the NTRIP broadcaster and/or save them in a file.</p><p>Select 'Manual' only when handling a VRS stream and your serial connected receiver doesn't generate NMEA-GGA messages.</p>"));
+  _serialFileNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved.</p>"));
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
 
   // Canvas with Editable Fields
@@ -384,7 +384,7 @@ bncWindow::bncWindow() {
   aogroup->addTab(egroup,tr("RINEX Ephemeris"));
   aogroup->addTab(cgroup,tr("Broadcast Corrections"));
   aogroup->addTab(sgroup,tr("Feed Engine"));
-  aogroup->addTab(sergroup,tr("Serial Link"));
+  aogroup->addTab(sergroup,tr("Serial Output"));
   aogroup->addTab(agroup,tr("Outages"));
   aogroup->addTab(rgroup,tr("Miscellaneous"));
 
@@ -572,8 +572,8 @@ bncWindow::bncWindow() {
     _binSamplSpinBox->setEnabled(false);
   }
 
-  // Serial Link
-  // -----------
+  // Serial Output
+  // -------------
   QGridLayout* serLayout = new QGridLayout;
   serLayout->setColumnMinimumWidth(0,14*ww);
   _serialBaudRateComboBox->setMaximumWidth(9*ww);
@@ -604,7 +604,7 @@ bncWindow::bncWindow() {
   serLayout->addWidget(_serialFileNMEALineEdit,                   4,3,1,15);
   serLayout->addWidget(new QLabel("Height"),                      4,20, Qt::AlignRight);
   serLayout->addWidget(_serialHeightNMEALineEdit,                 4,21,1,11);
-  serLayout->addWidget(new QLabel("Serial port settings to feed a serial connected device."),5,0,1,30);
+  serLayout->addWidget(new QLabel("Serial port settings to feed a serial connected receiver."),5,0,1,30);
 
   connect(_serialMountPointLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
@@ -1414,8 +1414,8 @@ void bncWindow::bncText(const QString &text){
     }
   }
 
-  // Serial Link
-  // -----------
+  // Serial Output
+  // -------------
   if (aogroup->currentIndex() == 6) {
     if (!isEmpty) {
       _serialPortNameLineEdit->setStyleSheet("background-color: white");

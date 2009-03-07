@@ -108,7 +108,7 @@ bncSerialPort::bncSerialPort(QWidget* parent) : QDialog(parent) {
   editLayout->addWidget(_serialLatLineEdit,            1, 1);
   editLayout->addWidget(new QLabel(tr("Longitude")),   1, 2, Qt::AlignRight);
   editLayout->addWidget(_serialLonLineEdit,            1, 3);
-  editLayout->addWidget(new QLabel(tr("Port")),        2, 0, Qt::AlignRight);
+  editLayout->addWidget(new QLabel(tr("Port name")),   2, 0, Qt::AlignRight);
   editLayout->addWidget(_serialPortLineEdit,           2, 1);
   editLayout->addWidget(new QLabel(tr("Baud rate")),   2, 2, Qt::AlignRight);
   editLayout->addWidget(_serialBaudRateComboBox,       2, 3);
