@@ -111,7 +111,6 @@ void bncNetQueryS::startRequest(const QUrl& url, const QByteArray& gga) {
     _serialPort->setBaudRate(BAUD2400);
   }
   else if (hlp == "4800") {
-  printf("4800\n");
     _serialPort->setBaudRate(BAUD4800);
   }
   else if (hlp == "9600") {
@@ -134,7 +133,6 @@ void bncNetQueryS::startRequest(const QUrl& url, const QByteArray& gga) {
   // ------
   hlp = hlpL[hlpL.size()-4].toUpper();
   if      (hlp == "NONE") {
-  printf("NONE\n");
     _serialPort->setParity(PAR_NONE);
   }
   else if (hlp == "ODD") {
@@ -160,7 +158,6 @@ void bncNetQueryS::startRequest(const QUrl& url, const QByteArray& gga) {
     _serialPort->setDataBits(DATA_7);
   }
   else if (hlp == "8") {
-  printf("8\n");
     _serialPort->setDataBits(DATA_8);
   }
 
@@ -168,7 +165,6 @@ void bncNetQueryS::startRequest(const QUrl& url, const QByteArray& gga) {
   // ---------
   hlp = hlpL[hlpL.size()-3];
   if      (hlp == "1") {
-  printf("1\n");
     _serialPort->setStopBits(STOP_1);
   }
   else if (hlp == "2") {
@@ -179,7 +175,6 @@ void bncNetQueryS::startRequest(const QUrl& url, const QByteArray& gga) {
   // ------------
   hlp = hlpL[hlpL.size()-2].toUpper();
   if (hlp == "XONXOFF") {
-  printf("XONXOFF\n");
     _serialPort->setFlowControl(FLOW_XONXOFF);
   }
   else if (hlp == "HARDWARE") {
