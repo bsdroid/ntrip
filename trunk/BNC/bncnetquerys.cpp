@@ -185,12 +185,13 @@ void bncNetQueryS::startRequest(const QUrl& url, const QByteArray& gga) {
   }
 
   _status = running;
+
   _serialPort->open(QIODevice::ReadWrite|QIODevice::Unbuffered);
   if (!_serialPort->isOpen()) {
     delete _serialPort;
     _serialPort = 0;
     _status = error;
-    emit(newMessage(("Cannot open serial port\n"), true));
+    emit newMessage(_url.path().toAscii() + " Cannot open serial port", true);
     return;
   }
 }
