@@ -9,5 +9,10 @@ BNC
 Stopps after ~60sec with message "Data timeout, reconnecting"
 Could it be that a kind of keep-alife packet is necessary?
 
-(1) GW: Keep an eye on www.igs-ip.net/PENC0.
+(2) Added "bncnetquerys" for stream input from serial port
+Please have a look.
+
+(3) "Append" files doesn't work with "ZERO" decoder.
+
+(3) GW: Keep an eye on www.igs-ip.net/PENC0.
 
