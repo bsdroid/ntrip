@@ -30,6 +30,13 @@ bncNetQueryUdp::bncNetQueryUdp() {
   _port      = 0;
   _udpSocket = 0;
   _eventLoop = new QEventLoop(this);
+
+  _keepAlive = new char[12];
+  _keepAlive[0]  = 128;
+  _keepAlive[1]  =  97;
+  for (int jj = 2; jj <= 11; jj++) {
+    _keepAlive[jj] = 0;
+  }
 }
 
 // Destructor
@@ -37,6 +44,7 @@ bncNetQueryUdp::bncNetQueryUdp() {
 bncNetQueryUdp::~bncNetQueryUdp() {
   delete _eventLoop;
   delete _udpSocket;
+  delete _keepAlive;
 }
 
 // 
@@ -49,6 +57,10 @@ void bncNetQueryUdp::stop() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryUdp::slotKeepAlive() {
+  if (_udpSocket) {
+    _udpSocket->writeDatagram(_keepAlive, 12, _address, _port);
+  }
+  QTimer::singleShot(30000, this, SLOT(slotKeepAlive()));
 }
 
 // 
@@ -137,6 +149,7 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
     }
 
     _udpSocket->writeDatagram(rtpbuffer, 12 + reqStr.size(), _address, _port);
+    QTimer::singleShot(30000, this, SLOT(slotKeepAlive()));
   }
 }
 
