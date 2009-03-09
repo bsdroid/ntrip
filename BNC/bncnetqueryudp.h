@@ -22,7 +22,8 @@ class bncNetQueryUdp : public bncNetQuery {
   QEventLoop*  _eventLoop;
   QHostAddress _address;
   int          _port;
-  char*        _keepAlive;
+  char         _keepAlive[12];
+  int          _session;
 };
 
 #endif

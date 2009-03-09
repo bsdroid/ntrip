@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <time.h>
 
 #include "bncnetqueryudp.h"
 #include "bncsettings.h"
@@ -23,6 +24,7 @@
 using namespace std;
 
 #define BNCVERSION "1.7"
+#define TIME_RESOLUTION 125
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -31,17 +33,11 @@ bncNetQueryUdp::bncNetQueryUdp() {
   _udpSocket = 0;
   _eventLoop = new QEventLoop(this);
 
-  _keepAlive = new char[12];
-  _keepAlive[0]  = 128;
-  _keepAlive[1]  =  96;
-  for (int jj = 2; jj <= 7; jj++) {
-    _keepAlive[jj] = 0;
+  _keepAlive[ 0] = 128;
+  _keepAlive[ 1] =  96;
+  for (int ii = 2; ii <=11; ii++) {
+    _keepAlive[ii] = 0;
   }
-  int session = rand();
-  _keepAlive[8]  = (session >> 24) & 0xFF;
-  _keepAlive[9]  = (session >> 16) & 0xFF;
-  _keepAlive[10] = (session >>  8) & 0xFF;
-  _keepAlive[11] = (session)       & 0xFF;
 }
 
 // Destructor
@@ -49,7 +45,6 @@ bncNetQueryUdp::bncNetQueryUdp() {
 bncNetQueryUdp::~bncNetQueryUdp() {
   delete _eventLoop;
   delete _udpSocket;
-  delete _keepAlive;
 }
 
 // 
@@ -63,10 +58,9 @@ void bncNetQueryUdp::stop() {
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryUdp::slotKeepAlive() {
   if (_udpSocket) {
-    cout << "slotKeepAlive" << endl;
     _udpSocket->writeDatagram(_keepAlive, 12, _address, _port);
   }
-  QTimer::singleShot(30000, this, SLOT(slotKeepAlive()));
+  QTimer::singleShot(15000, this, SLOT(slotKeepAlive()));
 }
 
 // 
@@ -155,7 +149,27 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
     }
 
     _udpSocket->writeDatagram(rtpbuffer, 12 + reqStr.size(), _address, _port);
-    QTimer::singleShot(30000, this, SLOT(slotKeepAlive()));
+
+    // Wait for Reply, read Session Number
+    // -----------------------------------
+    QByteArray repl;
+    waitForReadyRead(repl);
+
+    QTextStream in(repl);
+    QString line = in.readLine();
+    while (!line.isEmpty()) {
+      if (line.indexOf("Session:") == 0) {
+        _session = line.mid(9).toInt();
+        _keepAlive[ 8] = (_session >> 24) & 0xFF;
+        _keepAlive[ 9] = (_session >> 16) & 0xFF;
+        _keepAlive[10] = (_session >>  8) & 0xFF;
+        _keepAlive[11] = (_session)       & 0xFF;
+        break;
+      }
+      line = in.readLine();
+    }
+
+    QTimer::singleShot(15000, this, SLOT(slotKeepAlive()));
   }
 }
 
