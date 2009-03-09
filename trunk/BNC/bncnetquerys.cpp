@@ -191,7 +191,7 @@ void bncNetQueryS::startRequest(const QUrl& url, const QByteArray& gga) {
     delete _serialPort;
     _serialPort = 0;
     _status = error;
-    emit newMessage(_url.path().toAscii() + " Cannot open serial port", true);
+    emit newMessage(_url.path().toAscii().replace(0,1,"") + ": Cannot open serial port", true);
     return;
   }
 }
