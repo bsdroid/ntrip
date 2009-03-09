@@ -33,10 +33,15 @@ bncNetQueryUdp::bncNetQueryUdp() {
 
   _keepAlive = new char[12];
   _keepAlive[0]  = 128;
-  _keepAlive[1]  =  97;
-  for (int jj = 2; jj <= 11; jj++) {
+  _keepAlive[1]  =  96;
+  for (int jj = 2; jj <= 7; jj++) {
     _keepAlive[jj] = 0;
   }
+  int session = rand();
+  _keepAlive[8]  = (session >> 24) & 0xFF;
+  _keepAlive[9]  = (session >> 16) & 0xFF;
+  _keepAlive[10] = (session >>  8) & 0xFF;
+  _keepAlive[11] = (session)       & 0xFF;
 }
 
 // Destructor
@@ -58,6 +63,7 @@ void bncNetQueryUdp::stop() {
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryUdp::slotKeepAlive() {
   if (_udpSocket) {
+    cout << "slotKeepAlive" << endl;
     _udpSocket->writeDatagram(_keepAlive, 12, _address, _port);
   }
   QTimer::singleShot(30000, this, SLOT(slotKeepAlive()));
@@ -142,7 +148,7 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
     rtpbuffer[0]  = 128;
     rtpbuffer[1]  =  97;
     for (int jj = 2; jj <= 11; jj++) {
-      rtpbuffer[jj] = 0;
+      rtpbuffer[jj] = _keepAlive[jj];
     }
     for (int ii = 0; ii < reqStr.size(); ii++) {
       rtpbuffer[12+ii] = reqStr[ii]; 
