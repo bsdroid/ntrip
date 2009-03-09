@@ -8,7 +8,5 @@ BNC
 (1) Added "bncnetquerys" for stream input from serial port
 Please have a look.
 
-(2) "Append" files doesn't work with "ZERO" decoder.
-
-(3) GW: Keep an eye on www.igs-ip.net/PENC0.
+(2) GW: Keep an eye on www.igs-ip.net/PENC0.
 
