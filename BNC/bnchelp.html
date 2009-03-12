@@ -874,14 +874,15 @@ Some limitations and deficiencies of the NTRIP version 1 stream transport protoc
 <p>
 &nbsp; 1:&nbsp; NTRIP version 1, TCP/IP.<br>
 &nbsp; 2:&nbsp; NTRIP version 2 in TCP/IP mode.<br>
-&nbsp; R:&nbsp; NTRIP version 2 in RTSP/RTP mode.
+&nbsp; R:&nbsp; NTRIP version 2 in RTSP/RTP mode.<br>
+&nbsp; U:&nbsp; NTRIP version 2 in UDP mode.
 </p>
 <p>
 If NTRIP version 2 is supported by the broadcaster:
 </p>
 <ul>
 <li>Try using option '2' if your streams are otherwise blocked by a proxy server operated in front of BNC.</li>
-<li>Option 'R' may be selected if latency is more important than completeness for your application. Note that the latency reduction is likely to be in the order of 0.5 sec or less. Note further that option 'R' (RTSP/RTP mode) is not accepted by proxy servers and a mobile Internet Service Provider may not support it.</li>
+<li>Option 'R' or 'U' may be selected if latency is more important than completeness for your application. Note that the latency reduction is likely to be in the order of 0.5 sec or less. Note further that options 'R' (RTSP/RTP mode) and 'U' (UDP mode) are not accepted by proxy servers and a mobile Internet Service Provider may not support it.</li>
 </ul>
 <p>
 Select option '1' if you are not sure whether the broadcaster supports NTRIP version 2.</li>
