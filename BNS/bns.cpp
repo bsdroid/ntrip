@@ -374,6 +374,7 @@ void t_bns::readEpoch() {
               xx(2) *= 1e3;
               xx(3) *= 1e3;
               xx(4) *= 1e-6;
+              xx(5) *= 1e-6;
 
               t_ephPair* pair = _ephList[prn];
               pair->xx = xx;
@@ -457,7 +458,7 @@ void t_bns::processSatellite(int oldEph, int iCaster, bool trafo,
 
   double dClk;
   if (beClocks) {
-    dClk = (xx(4) - xB(4)) * 299792458.0 - xx(5);
+    dClk = (xx(4) - xB(4) - xx(5)) * 299792458.0;
   }
   else {
     dClk = (xx(4) - xB(4)) * 299792458.0;
