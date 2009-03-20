@@ -649,3 +649,29 @@ void bncGetThread::slotSerialReadyRead() {
     }
   }
 }
+
+//
+//////////////////////////////////////////////////////////////////////////////
+void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
+  RTCM2Decoder* decoder = dynamic_cast<RTCM2Decoder*>(_decoder);
+
+  if ( decoder ) {
+    QMutexLocker locker(&_mutex);
+  
+    string storedPRN;
+    vector<int> IODs;
+    
+    if ( decoder->storeEph(gpseph, storedPRN, IODs) ) {
+#ifdef DEBUG_RTCM2_2021
+      QString msg = _staID + QString(": stored eph %1 IODs").arg(storedPRN.c_str());
+      
+      for (unsigned ii = 0; ii < IODs.size(); ii++) {
+        msg += QString(" %1").arg(IODs[ii],4);
+      }
+      
+      emit(newMessage(msg.toAscii()));
+#endif
+    }
+  }
+}
+
