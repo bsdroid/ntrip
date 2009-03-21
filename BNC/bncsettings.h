@@ -5,7 +5,7 @@
 
 class bncSettings : public QSettings {
  public:
-  bncSettings();
+  bncSettings(bool noInit = false);
   virtual ~bncSettings() {};
  private:
 };

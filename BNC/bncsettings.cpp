@@ -22,10 +22,10 @@
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncSettings::bncSettings() : 
+bncSettings::bncSettings(bool noInit) : 
   QSettings(((bncApp*) qApp)->confFileName(), QSettings::IniFormat) {
 
-  if (allKeys().size() == 0) {
+  if (! noInit && allKeys().size() == 0) {
     setValue("adviseFail",       "15");
     setValue("adviseReco",       "5");
     setValue("adviseScript",     "");
