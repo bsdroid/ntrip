@@ -91,16 +91,15 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
                            const QByteArray& latitude,
                            const QByteArray& longitude,
                            const QByteArray& nmea, 
-                           const QByteArray& ntripVersion, int iMount) {
+                           const QByteArray& ntripVersion, const QByteArray& extraStaID) {
   _rawInpFile   = 0;
   _mountPoint   = mountPoint;
-  _staID        = mountPoint.path().mid(1).toAscii();
+  _staID        = (extraStaID.size() == 0 ? mountPoint.path().mid(1).toAscii() : extraStaID);
   _format       = format;
   _latitude     = latitude;
   _longitude    = longitude;
   _nmea         = nmea;
   _ntripVersion = ntripVersion;
-  _iMount       = iMount;   // index in mountpoints array
 
   initialize();
 }
@@ -121,32 +120,10 @@ void bncGetThread::initialize() {
   _query         = 0;
   _nextSleep     = 0;
   _rawOutFile    = 0;
-  _staID_orig    = _staID;
 
   bncSettings settings;
 
   _miscMount = settings.value("miscMount").toString();
-
-  // Check name conflict
-  // -------------------
-  QListIterator<QString> it(settings.value("mountPoints").toStringList());
-  int num = 0;
-  int ind = -1;
-  while (it.hasNext()) {
-    ++ind;
-    QStringList hlp = it.next().split(" ");
-    if (hlp.size() <= 1) continue;
-    QUrl url(hlp[0]);
-    if (_mountPoint.path() == url.path()) {
-      if (_iMount > ind || _iMount < 0) {
-        ++num;
-      }
-    }
-  }
-
-  if (num > 0) {
-    _staID = _staID.left(_staID.length()-1) + QString("%1").arg(num).toAscii();
-  }    
 
   // RINEX writer
   // ------------
@@ -617,6 +594,24 @@ void bncGetThread::scanRTCM() {
       }
     }
   }
+
+#ifdef MLS_SOFTWARE
+  for (int ii=0; ii <_decoder->_antList.size(); ii++) {
+        QByteArray antT;
+        if      (_decoder->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
+          antT = "ARP";
+        }
+        else if (_decoder->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
+          antT = "APC";
+        }
+        emit(newAntCrd(_staID, _decoder->_antList[ii].xx, 
+                       _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
+                       antT));
+  }
+#endif
+
+
+
 
   _decoder->_typeList.clear();
   _decoder->_antType.clear();

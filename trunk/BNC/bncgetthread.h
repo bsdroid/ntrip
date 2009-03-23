@@ -49,7 +49,7 @@ class bncGetThread : public QThread {
                 const QByteArray& latitude,
                 const QByteArray& longitude,
                 const QByteArray& nmea, 
-                const QByteArray& ntripVersion, int iMount);
+                const QByteArray& ntripVersion, const QByteArray& extraStaID);
 
  protected:
    ~bncGetThread();
