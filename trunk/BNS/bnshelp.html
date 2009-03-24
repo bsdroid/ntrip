@@ -337,7 +337,8 @@ BNS refers its clock and orbit corrections to a specific reference system. Avail
 <p>
 <ul>
 <li>IGS05 which stands for the GNSS-based IGS realization of the International Terrestrial Reference Frame 2005 (ITRF2005), and</li>
-<li>ETRF2000 which stands for the European Terestrial Reference Frame 2000 adopted by EUREF.</li>
+<li>ETRF2000 which stands for the European Terestrial Reference Frame 2000 adopted by EUREF, and</li>
+<li>'Custom' which allows a transformation of Broadcast Corrections from the IGS05 system to any other system through specifying up to 14 Helmert Transformation Parameters.</li>
 </ul>
 </p>
 
@@ -367,8 +368,8 @@ To: 2000.0
 </pre>
 </p>
 <p>
-Contact [igs-ip@bkg.bund.de] if you would like to see further Helmert transformation parameters implemented in BNS to support other national or regional reference system.
-<p>
+<u>Custom:</u> The default numbers shown as an example are those for a transformation from ITRF2005 to ETRF2000'.
+</p>
 
 
 <p><a name="ephcsave"><h4>4.6.4 Save - optional</h4></p>

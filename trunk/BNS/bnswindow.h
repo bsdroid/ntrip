@@ -3,6 +3,7 @@
 
 #include <QtGui>
 #include <QWhatsThis>
+#include <QMessageBox>
 
 #include "bns.h"
 
@@ -32,6 +33,7 @@ Q_OBJECT
   void slotMessage(const QByteArray msg);
   void slotError(const QByteArray msg);
   void bnsText(const QString &text);
+  void customTrafo(const QString &text);
 
  private slots:
   void slotHelp();
