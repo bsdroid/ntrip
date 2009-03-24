@@ -20,6 +20,7 @@
 #include "bnswindow.h" 
 #include "bnshlpdlg.h" 
 #include "bnssettings.h" 
+#include "bnscustomtrafo.h" 
 
 using namespace std;
 
@@ -177,7 +178,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_1_LineEdit = new QLineEdit(settings.value("mountpoint_1").toString());
   _refSys_1_ComboBox = new QComboBox;
   _refSys_1_ComboBox->setEditable(false);
-  _refSys_1_ComboBox->addItems(QString("IGS05,ETRF2000").split(","));
+  _refSys_1_ComboBox->addItems(QString("IGS05,ETRF2000,Custom").split(","));
   int ii = _refSys_1_ComboBox->findText(settings.value("refSys_1").toString());
   if (ii != -1) {
     _refSys_1_ComboBox->setCurrentIndex(ii);
@@ -195,7 +196,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_2_LineEdit = new QLineEdit(settings.value("mountpoint_2").toString());
   _refSys_2_ComboBox = new QComboBox;
   _refSys_2_ComboBox->setEditable(false);
-  _refSys_2_ComboBox->addItems(QString("IGS05,ETRF2000").split(","));
+  _refSys_2_ComboBox->addItems(QString("IGS05,ETRF2000,Custom").split(","));
   ii = _refSys_2_ComboBox->findText(settings.value("refSys_2").toString());
   if (ii != -1) {
     _refSys_2_ComboBox->setCurrentIndex(ii);
@@ -213,7 +214,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_3_LineEdit = new QLineEdit(settings.value("mountpoint_3").toString());
   _refSys_3_ComboBox = new QComboBox;
   _refSys_3_ComboBox->setEditable(false);
-  _refSys_3_ComboBox->addItems(QString("IGS05,ETRF2000").split(","));
+  _refSys_3_ComboBox->addItems(QString("IGS05,ETRF2000,Custom").split(","));
   ii = _refSys_3_ComboBox->findText(settings.value("refSys_3").toString());
   if (ii != -1) {
     _refSys_3_ComboBox->setCurrentIndex(ii);
@@ -436,7 +437,8 @@ bnsWindow::bnsWindow() {
   layout_cas1->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
   tab_cas1->setLayout(layout_cas1);
-
+  connect(_refSys_1_ComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(customTrafo(const QString)));
   connect(_outHost_1_LineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bnsText(const QString &)));
   if (_outHost_1_LineEdit->text().isEmpty()) {
@@ -487,7 +489,8 @@ bnsWindow::bnsWindow() {
   layout_cas2->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
   tab_cas2->setLayout(layout_cas2);
-
+  connect(_refSys_2_ComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(customTrafo(const QString)));
   connect(_outHost_2_LineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bnsText(const QString &)));
   if (_outHost_2_LineEdit->text().isEmpty()) {
@@ -538,7 +541,8 @@ bnsWindow::bnsWindow() {
   layout_cas3->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
   tab_cas3->setLayout(layout_cas3);
-
+  connect(_refSys_3_ComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(customTrafo(const QString)));
   connect(_outHost_3_LineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bnsText(const QString &)));
   if (_outHost_3_LineEdit->text().isEmpty()) {
@@ -813,7 +817,6 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("refSys_3",    _refSys_3_ComboBox->currentText());
   settings.setValue("outFile_3",   _outFile_3_LineEdit->text());
   settings.setValue("beClocks3",   _beClocks2CheckBox->checkState());
-
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
@@ -953,10 +956,12 @@ void bnsWindow::bnsText(const QString &text){
     if (!isEmpty) {
     _ephPortLineEdit->setStyleSheet("background-color: white");
     _ephEchoLineEdit->setStyleSheet("background-color: white");
+    _ephPortLineEdit->setEnabled(true);
     _ephEchoLineEdit->setEnabled(true);
     } else {
     _ephPortLineEdit->setStyleSheet("background-color: lightGray");
     _ephEchoLineEdit->setStyleSheet("background-color: lightGray");
+    _ephPortLineEdit->setEnabled(false);
     _ephEchoLineEdit->setEnabled(false);
     }
   }
@@ -1108,3 +1113,14 @@ void bnsWindow::bnsText(const QString &text){
   }
 
 }
+
+//  Custom transformation parameters
+////////////////////////////////////////////////////////////////////////////
+void bnsWindow::customTrafo(const QString &text){
+  if (text == "Custom" ) {
+    bnsCustomTrafo* dlg = new bnsCustomTrafo(this);
+    dlg->exec();
+    delete dlg;
+  }
+}
+  

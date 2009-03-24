@@ -61,6 +61,22 @@ bnsSettings::bnsSettings() :
     setValue("beClocks3",   "0");
     setValue("outFile_3",   "");
 
+    setValue("dx",    "0.0541");
+    setValue("dy",    "0.0502");
+    setValue("dz",   "-0.0538");
+    setValue("dxr",  "-0.0002");
+    setValue("dyr",   "0.0001");
+    setValue("dzr",  "-0.0018");
+    setValue("ox",     "0.891");
+    setValue("oy",     "5.390");
+    setValue("oz",    "-8.712");
+    setValue("oxr",    "0.081");
+    setValue("oyr",    "0.490");
+    setValue("ozr",   "-0.792");
+    setValue("sc",      "0.40");
+    setValue("scr",     "0.08");
+    setValue("t0",    "2000.0");
+
     setValue("rnxPath",     "");
     setValue("rnxIntr",     "1 min");
     setValue("rnxSampl",    "0");
