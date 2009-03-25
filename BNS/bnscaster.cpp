@@ -54,12 +54,7 @@ t_bnscaster::t_bnscaster(const QString& mountpoint, const QString& outFileName,
 
   // Reference frame
   // ---------------
-  if (settings.value(QString("refSys_%1").arg(_ic)).toString() == "ETRF2000") {
-    _crdTrafo = true;
-  }
-  else {
-    _crdTrafo = false;
-  }
+  _crdTrafo = settings.value(QString("refSys_%1").arg(_ic)).toString();
 
   if ( Qt::CheckState(settings.value(QString("beClocks%1").arg(_ic)).toInt()) 
        == Qt::Checked ) {

@@ -60,11 +60,11 @@ class t_bns : public QThread {
   void deleteBnsEph();
   void openCaster();
   void readEpoch();
-  void processSatellite(int oldEph, int iCaster, bool trafo, bool beClocks,
+  void processSatellite(int oldEph, int iCaster, const QString trafo, bool beClocks,
                         t_eph* ep, int GPSweek, double GPSweeks, 
                         const QString& prn, const ColumnVector& xx, 
                         struct ClockOrbit::SatData* sd, QString& outLine);
-  void crdTrafo(int GPSWeek, ColumnVector& xyz);
+  void crdTrafo(int GPSWeek, ColumnVector& xyz, const QString trafo);
 
   QTcpServer*               _clkServer;
   QTcpSocket*               _clkSocket;
@@ -79,5 +79,20 @@ class t_bns : public QThread {
   bnsRinex*                 _rnx;
   bnsSP3*                   _sp3;
   QByteArray                _clkLine;
+  double _dx;
+  double _dy;
+  double _dz;
+  double _dxr;
+  double _dyr;
+  double _dzr;
+  double _ox;
+  double _oy;
+  double _oz;
+  double _oxr;
+  double _oyr;
+  double _ozr;
+  double _sc;
+  double _scr;
+  double _t0;
 };
 #endif

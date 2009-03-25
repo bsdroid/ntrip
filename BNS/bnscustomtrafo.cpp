@@ -31,21 +31,21 @@ bnsCustomTrafo::bnsCustomTrafo(QWidget* parent) : QDialog(parent) {
 
  bnsSettings settings;
 
- _dxLineEdit = new QLineEdit(settings.value("dx").toString());
- _dyLineEdit = new QLineEdit(settings.value("dy").toString());
- _dzLineEdit = new QLineEdit(settings.value("dz").toString());
- _dxrLineEdit = new QLineEdit(settings.value("dxr").toString());
- _dyrLineEdit = new QLineEdit(settings.value("dyr").toString());
- _dzrLineEdit = new QLineEdit(settings.value("dzr").toString());
- _oxLineEdit = new QLineEdit(settings.value("ox").toString());
- _oyLineEdit = new QLineEdit(settings.value("oy").toString());
- _ozLineEdit = new QLineEdit(settings.value("oz").toString());
- _oxrLineEdit = new QLineEdit(settings.value("oxr").toString());
- _oyrLineEdit = new QLineEdit(settings.value("oyr").toString());
- _ozrLineEdit = new QLineEdit(settings.value("ozr").toString());
- _scLineEdit = new QLineEdit(settings.value("sc").toString());
- _scrLineEdit = new QLineEdit(settings.value("scr").toString());
- _t0LineEdit = new QLineEdit(settings.value("t0").toString());
+ _dxLineEdit = new QLineEdit(settings.value("trafo_dx").toString());
+ _dyLineEdit = new QLineEdit(settings.value("trafo_dy").toString());
+ _dzLineEdit = new QLineEdit(settings.value("trafo_dz").toString());
+ _dxrLineEdit = new QLineEdit(settings.value("trafo_dxr").toString());
+ _dyrLineEdit = new QLineEdit(settings.value("trafo_dyr").toString());
+ _dzrLineEdit = new QLineEdit(settings.value("trafo_dzr").toString());
+ _oxLineEdit = new QLineEdit(settings.value("trafo_ox").toString());
+ _oyLineEdit = new QLineEdit(settings.value("trafo_oy").toString());
+ _ozLineEdit = new QLineEdit(settings.value("trafo_oz").toString());
+ _oxrLineEdit = new QLineEdit(settings.value("trafo_oxr").toString());
+ _oyrLineEdit = new QLineEdit(settings.value("trafo_oyr").toString());
+ _ozrLineEdit = new QLineEdit(settings.value("trafo_ozr").toString());
+ _scLineEdit = new QLineEdit(settings.value("trafo_sc").toString());
+ _scrLineEdit = new QLineEdit(settings.value("trafo_scr").toString());
+ _t0LineEdit = new QLineEdit(settings.value("trafo_t0").toString());
 
   // WhatsThis
   // ---------
@@ -94,21 +94,21 @@ bnsCustomTrafo::bnsCustomTrafo(QWidget* parent) : QDialog(parent) {
   editLayout->addWidget(_dyrLineEdit,                     1, 3);
   editLayout->addWidget(new QLabel(tr("dZr [m/y]")),      1, 4, Qt::AlignRight);
   editLayout->addWidget(_dzrLineEdit,                     1, 5);
-  editLayout->addWidget(new QLabel(tr("   oX(t0) [mas]")),2, 0, Qt::AlignRight);
+  editLayout->addWidget(new QLabel(tr("   oX(t0) [as]")), 2, 0, Qt::AlignRight);
   editLayout->addWidget(_oxLineEdit,                      2, 1);
-  editLayout->addWidget(new QLabel(tr("   oY(t0) [mas]")),2, 2, Qt::AlignRight);
+  editLayout->addWidget(new QLabel(tr("   oY(t0) [as]")), 2, 2, Qt::AlignRight);
   editLayout->addWidget(_oyLineEdit,                      2, 3);
-  editLayout->addWidget(new QLabel(tr("   oZ(t0) [mas]")),2, 4, Qt::AlignRight);
+  editLayout->addWidget(new QLabel(tr("   oZ(t0) [as]")), 2, 4, Qt::AlignRight);
   editLayout->addWidget(_ozLineEdit,                      2, 5);
-  editLayout->addWidget(new QLabel(tr("oXr [mas/y]")),    3, 0, Qt::AlignRight);
+  editLayout->addWidget(new QLabel(tr("oXr [as/y]")),     3, 0, Qt::AlignRight);
   editLayout->addWidget(_oxrLineEdit,                     3, 1);
-  editLayout->addWidget(new QLabel(tr("oYr [mas/y]")),    3, 2, Qt::AlignRight);
+  editLayout->addWidget(new QLabel(tr("oYr [as/y]")),     3, 2, Qt::AlignRight);
   editLayout->addWidget(_oyrLineEdit,                     3, 3);
-  editLayout->addWidget(new QLabel(tr("oZr [mas/y]")),    3, 4, Qt::AlignRight);
+  editLayout->addWidget(new QLabel(tr("oZr [as/y]")),     3, 4, Qt::AlignRight);
   editLayout->addWidget(_ozrLineEdit,                     3, 5);
-  editLayout->addWidget(new QLabel(tr("S(t0) [10^-9]")),    4, 0, Qt::AlignRight);
+  editLayout->addWidget(new QLabel(tr("S(t0) [10^-9]")),  4, 0, Qt::AlignRight);
   editLayout->addWidget(_scLineEdit,                      4, 1);
-  editLayout->addWidget(new QLabel(tr("Sr [10^-9/y]")),     4, 2, Qt::AlignRight);
+  editLayout->addWidget(new QLabel(tr("Sr [10^-9/y]")),   4, 2, Qt::AlignRight);
   editLayout->addWidget(_scrLineEdit,                     4, 3);
   editLayout->addWidget(new QLabel(tr("t0 [y]")),         4, 4, Qt::AlignRight);
   editLayout->addWidget(_t0LineEdit,                      4, 5);
@@ -169,21 +169,21 @@ void bnsCustomTrafo::accept() {
        !_t0LineEdit->text().isEmpty() ) {
 
     bnsSettings settings;
-    settings.setValue("dx",   _dxLineEdit->text());
-    settings.setValue("dy",   _dyLineEdit->text());
-    settings.setValue("dz",   _dzLineEdit->text());
-    settings.setValue("dxr",  _dxrLineEdit->text());
-    settings.setValue("dyr",  _dyrLineEdit->text());
-    settings.setValue("dzr",  _dzrLineEdit->text());
-    settings.setValue("ox",   _oxLineEdit->text());
-    settings.setValue("oy",   _oyLineEdit->text());
-    settings.setValue("oz",   _ozLineEdit->text());
-    settings.setValue("oxr",  _oxrLineEdit->text());
-    settings.setValue("oyr",  _oyrLineEdit->text());
-    settings.setValue("ozr",  _ozrLineEdit->text());
-    settings.setValue("sc",   _scLineEdit->text());
-    settings.setValue("scr",  _scrLineEdit->text());
-    settings.setValue("t0",   _t0LineEdit->text());
+    settings.setValue("trafo_dx",   _dxLineEdit->text());
+    settings.setValue("trafo_dy",   _dyLineEdit->text());
+    settings.setValue("trafo_dz",   _dzLineEdit->text());
+    settings.setValue("trafo_dxr",  _dxrLineEdit->text());
+    settings.setValue("trafo_dyr",  _dyrLineEdit->text());
+    settings.setValue("trafo_dzr",  _dzrLineEdit->text());
+    settings.setValue("trafo_ox",   _oxLineEdit->text());
+    settings.setValue("trafo_oy",   _oyLineEdit->text());
+    settings.setValue("trafo_oz",   _ozLineEdit->text());
+    settings.setValue("trafo_oxr",  _oxrLineEdit->text());
+    settings.setValue("trafo_oyr",  _oyrLineEdit->text());
+    settings.setValue("trafo_ozr",  _ozrLineEdit->text());
+    settings.setValue("trafo_sc",   _scLineEdit->text());
+    settings.setValue("trafo_scr",  _scrLineEdit->text());
+    settings.setValue("trafo_t0",   _t0LineEdit->text());
 
   } else {
    QMessageBox::warning(this, tr("Warning"),

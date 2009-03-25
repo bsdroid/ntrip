@@ -434,7 +434,7 @@ void t_bns::readEpoch() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_bns::processSatellite(int oldEph, int iCaster, bool trafo, 
+void t_bns::processSatellite(int oldEph, int iCaster, const QString trafo, 
                              bool beClocks, t_eph* ep, int GPSweek, 
                              double GPSweeks, const QString& prn, 
                              const ColumnVector& xx, 
@@ -447,8 +447,8 @@ void t_bns::processSatellite(int oldEph, int iCaster, bool trafo,
   ep->position(GPSweek, GPSweeks, xB, vv);
 
   ColumnVector xyz = xx.Rows(1,3);
-  if (trafo) {
-    crdTrafo(GPSweek, xyz);
+  if (trafo != "IGS05") {
+    crdTrafo(GPSweek, xyz, trafo);
   }
 
   ColumnVector dx = xyz - xB.Rows(1,3);
@@ -497,25 +497,72 @@ void t_bns::slotMoveSocket(QThread* tt) {
   slotMessage("Clocks & orbits port: Socket moved to thread"); // weber
 }
 
-// Transform Coordinates IGS -> ETRF
+// Transform Coordinates
 ////////////////////////////////////////////////////////////////////////////
-void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz) {
+void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz, const QString trafo) {
+
+  bnsSettings settings;
+
+  if (trafo == "ETRF2000") {
+  _dx  =  0.0541;
+  _dy  =  0.0502;
+  _dz  = -0.0538;
+  _dxr = -0.0002;
+  _dyr =  0.0001;
+  _dzr = -0.0018;
+  _ox  =  0.000891;
+  _oy  =  0.005390;
+  _oz  = -0.008712;
+  _oxr =  0.000081;
+  _oyr =  0.000490;
+  _ozr = -0.000792;
+  _sc  =  0.40;
+  _scr =  0.08;
+  _t0  =  2000.0;
+  }
+  else if (trafo == "Custom") {
+  _dx  = settings.value("trafo_dx").toInt();
+  _dy  = settings.value("trafo_dy").toInt();
+  _dz  = settings.value("trafo_dz").toInt();
+  _dxr = settings.value("trafo_dxr").toInt();
+  _dyr = settings.value("trafo_dyr").toInt();
+  _dzr = settings.value("trafo_dzr").toInt();
+  _ox  = settings.value("trafo_ox").toInt();
+  _oy  = settings.value("trafo_oy").toInt();
+  _oz  = settings.value("trafo_oz").toInt();
+  _oxr = settings.value("trafo_oxr").toInt();
+  _oyr = settings.value("trafo_oyr").toInt();
+  _ozr = settings.value("trafo_ozr").toInt();
+  _sc  = settings.value("trafo_sc").toInt();
+  _scr = settings.value("trafo_scr").toInt();
+  _t0  = settings.value("trafo_t0").toInt();
+  }
 
   // Current epoch minus 2000.0 in years
   // ------------------------------------
-  double dt = (GPSWeek - (1042.0+6.0/7.0)) / 365.2422 * 7.0;
+//double dt = (GPSWeek - (1042.0+6.0/7.0)) / 365.2422 * 7.0;
+  double dt = (GPSWeek - (1042.0+6.0/7.0)) / 365.2422 * 7.0 + 2000.0 - _t0;
 
   ColumnVector dx(3);
-  dx(1) =  0.0541 - dt * 0.0002;
-  dx(2) =  0.0502 + dt * 0.0001;
-  dx(3) = -0.0538 - dt * 0.0018;
+
+//dx(1) =  0.0541 - dt * 0.0002;
+//dx(2) =  0.0502 + dt * 0.0001;
+//dx(3) = -0.0538 - dt * 0.0018;
+  dx(1) = _dx + dt * _dxr;
+  dx(2) = _dy + dt * _dyr;
+  dx(3) = _dz + dt * _dzr;
 
   static const double arcSec = 180.0 * 3600.0 / M_PI;
-  double ox = ( 0.000891 + dt * 0.000081) / arcSec;
-  double oy = ( 0.005390 + dt * 0.000490) / arcSec;
-  double oz = (-0.008712 - dt * 0.000792) / arcSec;
 
-  double sc = 1.0 + 0.4e-9 + dt * 0.08e-9;
+//double ox = ( 0.000891 + dt * 0.000081) / arcSec;
+//double oy = ( 0.005390 + dt * 0.000490) / arcSec;
+//double oz = (-0.008712 - dt * 0.000792) / arcSec;
+  double ox = (_ox + dt * _oxr) / arcSec;
+  double oy = (_oy + dt * _oyr) / arcSec;
+  double oz = (_oz + dt * _ozr) / arcSec;
+
+//double sc = 1.0 + 0.4e-9 + dt * 0.08e-9;
+  double sc = 1.0 + _sc * 1e-9 + dt * _scr * 1e-9;
 
   Matrix rMat(3,3);
   rMat(1,1) = 1.0;
