@@ -14,17 +14,9 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
-#include <iomanip>
-#include <time.h>
-
 #include "bncnetqueryudp0.h"
-#include "bncsettings.h"
 
 using namespace std;
-
-#define BNCVERSION "1.7"
-#define TIME_RESOLUTION 125
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
