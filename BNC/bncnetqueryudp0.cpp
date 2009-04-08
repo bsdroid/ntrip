@@ -68,9 +68,10 @@ void bncNetQueryUdp0::waitForReadyRead(QByteArray& outData) {
   datagram.resize(_udpSocket->pendingDatagramSize());
   _udpSocket->readDatagram(datagram.data(), datagram.size());
 
-  if (datagram.size() > 0) {
-    outData.append(datagram);
-  }
+  outData.append(datagram);
+
+  cout << datagram.data() << endl;
+  cout.flush();
 }
 
 // Connect to Caster, send the Request
