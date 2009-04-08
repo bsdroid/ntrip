@@ -15,6 +15,9 @@ class bncNetQueryUdp0 : public bncNetQuery {
   virtual void waitForReadyRead(QByteArray& outData);
  private:
   QUdpSocket*  _udpSocket;
+  QEventLoop*  _eventLoop;
+  QHostAddress _address;
+  char         _keepAlive[12];
 };
 
 #endif
