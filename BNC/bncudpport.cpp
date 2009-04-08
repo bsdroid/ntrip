@@ -26,7 +26,7 @@
  * BKG NTRIP Client
  * -------------------------------------------------------------------------
  *
- * Class:      bncIpPort
+ * Class:      bncUdpPort
  *
  * Purpose:    Select host for stream retrieval without NTRIP
  *
@@ -40,13 +40,13 @@
 
 #include <iostream>
 
-#include "bncipport.h"
+#include "bncudpport.h"
 
 using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncIpPort::bncIpPort(QWidget* parent) : QDialog(parent) {
+bncUdpPort::bncUdpPort(QWidget* parent) : QDialog(parent) {
 
   setMinimumSize(400,150);
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -115,7 +115,7 @@ bncIpPort::bncIpPort(QWidget* parent) : QDialog(parent) {
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-bncIpPort::~bncIpPort() {
+bncUdpPort::~bncUdpPort() {
   delete _buttonCancel;
   delete _buttonOK;
   delete _buttonWhatsThis;
@@ -123,7 +123,7 @@ bncIpPort::~bncIpPort() {
 
 // Accept slot
 ////////////////////////////////////////////////////////////////////////////
-void bncIpPort::accept() {
+void bncUdpPort::accept() {
 
   QStringList* mountPoints = new QStringList;
 
@@ -140,7 +140,7 @@ void bncIpPort::accept() {
                                 + _ipFormatLineEdit->text() + " "
                                 + _ipLatLineEdit->text() + " "
                                 + _ipLonLineEdit->text() + " "
-                                + "N");
+                                + "UN");
   } else {
    QMessageBox::warning(this, tr("Warning"),
                                tr("Incomplete settings"),
@@ -153,7 +153,7 @@ void bncIpPort::accept() {
 }
 
 // Whats This Help
-void bncIpPort::slotWhatsThis() {
+void bncUdpPort::slotWhatsThis() {
 QWhatsThis::enterWhatsThisMode();
 }
 

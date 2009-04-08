@@ -46,6 +46,7 @@
 #include "bncgetthread.h" 
 #include "bnctabledlg.h" 
 #include "bncipport.h" 
+#include "bncudpport.h" 
 #include "bncserialport.h" 
 #include "bnchlpdlg.h" 
 #include "bnchtml.h" 
@@ -826,10 +827,11 @@ void bncWindow::slotAddMountPoints() {
   msgBox.setWindowTitle("Add Streams");
   msgBox.setText("Add stream(s) coming from:");
 
-  QPushButton *buttonNtrip = msgBox.addButton(tr("Caster"), QMessageBox::ActionRole);
-  QPushButton *buttonIP = msgBox.addButton(tr("TCP/IP port"), QMessageBox::ActionRole);
-  QPushButton *buttonSerial = msgBox.addButton(tr("Serial port"), QMessageBox::ActionRole);
-  QPushButton *buttonCancel = msgBox.addButton(tr("Cancel"), QMessageBox::ActionRole);
+  QPushButton* buttonNtrip  = msgBox.addButton(tr("Caster"), QMessageBox::ActionRole);
+  QPushButton* buttonIP     = msgBox.addButton(tr("TCP/IP port"), QMessageBox::ActionRole);
+  QPushButton* buttonUDP    = msgBox.addButton(tr("UDP port"), QMessageBox::ActionRole);
+  QPushButton* buttonSerial = msgBox.addButton(tr("Serial port"), QMessageBox::ActionRole);
+  QPushButton* buttonCancel = msgBox.addButton(tr("Cancel"), QMessageBox::ActionRole);
 
   msgBox.exec();
 
@@ -846,6 +848,12 @@ void bncWindow::slotAddMountPoints() {
           this, SLOT(slotNewMountPoints(QStringList*)));
     ipp->exec();
     delete ipp;
+  } else if (msgBox.clickedButton() == buttonUDP) {
+    bncUdpPort* udp = new bncUdpPort(this);
+    connect(udp, SIGNAL(newMountPoints(QStringList*)),
+          this, SLOT(slotNewMountPoints(QStringList*)));
+    udp->exec();
+    delete udp;
   } else if (msgBox.clickedButton() == buttonSerial) {
     bncSerialPort* sep = new bncSerialPort(this);
     connect(sep, SIGNAL(newMountPoints(QStringList*)),
