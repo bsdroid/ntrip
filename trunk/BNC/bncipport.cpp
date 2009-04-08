@@ -140,7 +140,7 @@ void bncIpPort::accept() {
                                 + _ipFormatLineEdit->text() + " "
                                 + _ipLatLineEdit->text() + " "
                                 + _ipLonLineEdit->text() + " "
-                                + "N");
+                                + "no N");
   } else {
    QMessageBox::warning(this, tr("Warning"),
                                tr("Incomplete settings"),
