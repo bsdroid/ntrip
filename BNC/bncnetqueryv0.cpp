@@ -76,10 +76,9 @@ void bncNetQueryV0::waitForReadyRead(QByteArray& outData) {
 
 // Connect to Caster, send the Request
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV0::startRequest(const QUrl& url, const QByteArray& gga) {
+void bncNetQueryV0::startRequest(const QUrl& url, const QByteArray& /* gga */) {
 
   _status = running;
-  QByteArray dummy = gga;
 
   delete _socket;
   _socket = new QTcpSocket();
