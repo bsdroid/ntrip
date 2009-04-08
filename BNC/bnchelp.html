@@ -148,9 +148,10 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.12.1.4 <a href=#gettable>Get Table</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.12.1.5 <a href=#ntripv>NTRIP Version</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.2 <a href=#streamip>Add Streams - Coming from TCP/IP Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.3 <a href=#streamser>Add Streams - Coming from Serial Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.4 <a href=#start>Start</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.5 <a href=#stop>Stop</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.3 <a href=#streamudp>Add Streams - Coming from UDP Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.4 <a href=#streamser>Add Streams - Coming from Serial Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.5 <a href=#start>Start</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.6 <a href=#stop>Stop</a><br>
 3.13. <a href=#cmd>Command Line Options</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.1. <a href=#nw>No Window Mode</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.2. <a href=#post>Offline Mode</a><br>
@@ -796,7 +797,7 @@ Streams selected for retrieval are listed under the 'Streams' canvas section on 
 <tr><td>'lat' &nbsp;</td><td>Approximate latitude of reference station, in degrees, north; editable if 'nmea' = 'yes'.</td></tr>
 <tr><td>'long' &nbsp;</td><td>Approximate longitude of reference station, in degrees, east; editable if 'nmea' = 'yes'.</td></tr>
 <tr><td>'nmea' &nbsp;</td><td>Indicates whether or not streaming needs to be initiated by BNC through sending NMEA-GGA message carrying position coordinates in 'lat' and 'long'.</td></tr>
-<tr><td>'ntrip' &nbsp;</td><td>Selected NTRIP transport protocol version (1, 2, R, or U), or<br>'N' for TCP/IP streams without NTRIP, or<br>'S' for serial input streams without NTRIP.</td></tr>
+<tr><td>'ntrip' &nbsp;</td><td>Selected NTRIP transport protocol version (1, 2, R, or U), or<br>'N' for TCP/IP streams without NTRIP, or<br>'UN' for UDP streams without NTRIP, or<br>'S' for serial input streams without NTRIP.</td></tr>
 <tr><td>'bytes' &nbsp;</td><td>Number of bytes received.
 </table>
 </p>
@@ -907,7 +908,22 @@ Streams directly received from a TCP/IP port show up with an 'N' for 'No NTRIP' 
 Note that this option works only if no proxy server is involved in the communication link.
 </p>
 
-<p><a name="streamser"><h4>3.12.3 Add Streams - Coming from Serial Port</h4></p>
+<p><a name="streamudp"><h4>3.12.3 Add Streams - Coming from UDP Port</h4></p>
+<p>
+Button 'Add Streams' > 'Coming from UDP Port' allows to pick up streams arriving directly at one of the local host's UDP ports without using the NTRIP transport protocol. For that you:
+<ul>
+<li>Enter the local port number where the UDP stream arrives.</li>
+<li>Specify a mountpoint. Recommended is a 4-character station ID. Example: FFMJ</li>
+<li>Specify the stream format. Available options are 'RTCM_2', 'RTCM_3', 'RTIGS', and 'ZERO'.</li>
+<li>Enter the approximate latitude of the stream providing rover in degrees. Example: 45.32.</li>
+<li>Enter the approximate longitude of the stream providing rover in degrees. Example: -15.20.</li>
+</ul>
+</p>
+<p>
+Streams directly received at a UDP port show up with a 'UN' for 'UDP, No NTRIP' in the 'Streams' canvas section on BNC's main window . Latitude and longitude are to be entered just for informal reasons.
+<p>
+
+<p><a name="streamser"><h4>3.12.4 Add Streams - Coming from Serial Port</h4></p>
 <p>
 Button 'Add Streams' > 'Coming from Serial Port' allows to retrieve streams from a GNSS receiver via serial port without using the NTRIP transport protocol. For that you:
 <ul>
@@ -941,12 +957,12 @@ When selecting the serial communication options listed above, make sure that you
 Streams received from a serial connected GNSS receiver show up with an 'S' (for <u>S</u>erial Port, no NTRIP) in the 'Streams' canvas section on BNC's main window . Latitude and longitude are to be entered just for informal reasons.
 <p>
 
-<p><a name="start"><h4>3.12.3 Start</h4></p>
+<p><a name="start"><h4>3.12.5 Start</h4></p>
 <p>
 Hit 'Start' to start retrieving, decoding, and converting GNSS data streams in real-time. Note that 'Start' generally forces BNC to begin with fresh RINEX which might overwrite existing files when necessary unless the option 'Append files' is ticked.
 </p> 
 
-<p><a name="stop"><h4>3.12.4 Stop</h4></p>
+<p><a name="stop"><h4>3.12.6 Stop</h4></p>
 <p>
 Hit the 'Stop' button in order to stop BNC. 
 </p> 
