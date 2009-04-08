@@ -95,7 +95,7 @@ void bncNetQueryUdp0::startRequest(const QUrl& url, const QByteArray& /* gga */)
   if (!hInfo.addresses().isEmpty()) {
     _address = hInfo.addresses().first();
     _udpSocket = new QUdpSocket();
-    _udpSocket->bind(0);
+    _udpSocket->bind(_url.port());
     connect(_udpSocket, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
 
     _udpSocket->writeDatagram(_keepAlive, 12, _address, _url.port());
