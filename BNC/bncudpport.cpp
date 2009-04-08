@@ -140,7 +140,7 @@ void bncUdpPort::accept() {
                                 + _ipFormatLineEdit->text() + " "
                                 + _ipLatLineEdit->text() + " "
                                 + _ipLonLineEdit->text() + " "
-                                + "UN");
+                                + "no UN");
   } else {
    QMessageBox::warning(this, tr("Warning"),
                                tr("Incomplete settings"),
