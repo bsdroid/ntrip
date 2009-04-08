@@ -14,6 +14,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
+
 #include "bncnetqueryudp0.h"
 
 using namespace std;
@@ -22,22 +24,26 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryUdp0::bncNetQueryUdp0() {
   _udpSocket = 0;
+  _eventLoop = new QEventLoop(this);
+
+  _keepAlive[ 0] = 128;
+  _keepAlive[ 1] =  96;
+  for (int ii = 2; ii <=11; ii++) {
+    _keepAlive[ii] = 0;
+  }
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryUdp0::~bncNetQueryUdp0() {
+  delete _eventLoop;
   delete _udpSocket;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryUdp0::stop() {
-#ifndef sparc
-  if (_udpSocket) {
-    _udpSocket->abort();
-  }
-#endif
+  _eventLoop->quit();
   _status = finished;
 }
 
@@ -49,21 +55,21 @@ void bncNetQueryUdp0::waitForRequestResult(const QUrl&, QByteArray&) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryUdp0::waitForReadyRead(QByteArray& outData) {
-  if (_udpSocket) {
-    while (true) {
-      int nBytes = _udpSocket->bytesAvailable();
-      if (nBytes > 0) {
-        outData = _udpSocket->readAll();
-        return;
-      }
-      else if (!_udpSocket->waitForReadyRead(_timeOut)) {
-        delete _udpSocket;
-        _udpSocket = 0;
-        _status = error;
-        emit newMessage(_url.path().toAscii() + " read timeout", true);
-        return;
-      }
-    }
+
+  // Wait Loop
+  // ---------
+  if (!_udpSocket->hasPendingDatagrams()) {
+    _eventLoop->exec();
+  }
+
+  // Append Data
+  // -----------
+  QByteArray datagram;
+  datagram.resize(_udpSocket->pendingDatagramSize());
+  _udpSocket->readDatagram(datagram.data(), datagram.size());
+
+  if (datagram.size() > 0) {
+    outData.append(datagram);
   }
 }
 
@@ -83,8 +89,16 @@ void bncNetQueryUdp0::startRequest(const QUrl& url, const QByteArray& /* gga */)
     _url.setPath("/");
   }
 
-  delete _udpSocket;
-  _udpSocket = new QUdpSocket();
-  _udpSocket->connectToHost(_url.host(), _url.port());
+  delete _udpSocket; _udpSocket = 0;
+
+  QHostInfo hInfo = QHostInfo::fromName(_url.host());
+  if (!hInfo.addresses().isEmpty()) {
+    _address = hInfo.addresses().first();
+    _udpSocket = new QUdpSocket();
+    _udpSocket->bind(0);
+    connect(_udpSocket, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
+
+    _udpSocket->writeDatagram(_keepAlive, 12, _address, _url.port());
+  }
 }
 
