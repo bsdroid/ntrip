@@ -58,6 +58,7 @@
 #include "bncnetqueryv2.h"
 #include "bncnetqueryrtp.h"
 #include "bncnetqueryudp.h"
+#include "bncnetqueryudp0.h"
 #include "bncnetquerys.h"
 #include "bncsettings.h"
 #include "latencychecker.h"
@@ -518,6 +519,9 @@ t_irc bncGetThread::tryReconnect() {
     }
     else if (_ntripVersion == "N") {
       _query = new bncNetQueryV0();
+    }
+    else if (_ntripVersion == "UN") {
+      _query = new bncNetQueryUdp0();
     }
     else if (_ntripVersion == "2") {
       _query = new bncNetQueryV2();
