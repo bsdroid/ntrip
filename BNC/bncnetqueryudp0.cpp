@@ -69,7 +69,7 @@ void bncNetQueryUdp0::startRequest(const QUrl& url, const QByteArray& /* gga */)
 
   delete _udpSocket;
   _udpSocket = new QUdpSocket();
-  _udpSocket->bind(_url.port());
+  _udpSocket->bind(url.port());
 
   connect(_udpSocket, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
 }

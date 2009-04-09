@@ -16,8 +16,6 @@ class bncNetQueryUdp0 : public bncNetQuery {
  private:
   QUdpSocket*  _udpSocket;
   QEventLoop*  _eventLoop;
-  QHostAddress _address;
-  char         _keepAlive[12];
 };
 
 #endif
