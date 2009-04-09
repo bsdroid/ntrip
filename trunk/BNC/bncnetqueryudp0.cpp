@@ -14,23 +14,13 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
-
 #include "bncnetqueryudp0.h"
-
-using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryUdp0::bncNetQueryUdp0() {
   _udpSocket = 0;
   _eventLoop = new QEventLoop(this);
-
-  _keepAlive[ 0] = 128;
-  _keepAlive[ 1] =  96;
-  for (int ii = 2; ii <=11; ii++) {
-    _keepAlive[ii] = 0;
-  }
 }
 
 // Destructor
@@ -77,26 +67,10 @@ void bncNetQueryUdp0::startRequest(const QUrl& url, const QByteArray& /* gga */)
 
   _status = running;
 
-  // Default scheme and path
-  // -----------------------
-  _url = url;
-  if (_url.scheme().isEmpty()) {
-    _url.setScheme("http");
-  }
-  if (_url.path().isEmpty()) {
-    _url.setPath("/");
-  }
+  delete _udpSocket;
+  _udpSocket = new QUdpSocket();
+  _udpSocket->bind(_url.port());
 
-  delete _udpSocket; _udpSocket = 0;
-
-  QHostInfo hInfo = QHostInfo::fromName(_url.host());
-  if (!hInfo.addresses().isEmpty()) {
-    _address = hInfo.addresses().first();
-    _udpSocket = new QUdpSocket();
-    _udpSocket->bind(_url.port());
-    connect(_udpSocket, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
-
-    _udpSocket->writeDatagram(_keepAlive, 12, _address, _url.port());
-  }
+  connect(_udpSocket, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
 }
 
