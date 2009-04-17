@@ -223,6 +223,14 @@ bnsWindow::bnsWindow() {
   _beClocks3CheckBox  = new QCheckBox();
   _beClocks3CheckBox->setCheckState(Qt::CheckState(settings.value("beClocks3").toInt()));
 
+  // Broadcast Ephemerides
+  // ---------------------
+  _outHost_Eph_LineEdit    = new QLineEdit(settings.value("outHostEph").toString());
+  _outPort_Eph_LineEdit    = new QLineEdit(settings.value("outPortEph").toString());
+  _password_Eph_LineEdit   = new QLineEdit(settings.value("passwordEph").toString());
+  _password_Eph_LineEdit->setEchoMode(QLineEdit::Password);
+  _mountpoint_Eph_LineEdit = new QLineEdit(settings.value("mountpoint_Eph").toString());
+
   // RINEX Clocks Options
   // --------------------
   _rnxPathLineEdit = new QLineEdit(settings.value("rnxPath").toString());
@@ -561,6 +569,40 @@ bnsWindow::bnsWindow() {
     _beClocks3CheckBox->setEnabled(false);
   }
 
+  // Broadcast Ephemerides
+  // ---------------------
+  QWidget* tab_casEph = new QWidget();
+  tabs->addTab(tab_casEph, "Broadcast Ephemerides");
+
+  QGridLayout* layout_casEph = new QGridLayout;
+
+  layout_casEph->setColumnMinimumWidth(0, 9*ww);
+  _outPort_Eph_LineEdit->setMaximumWidth(9*ww);
+  _password_Eph_LineEdit->setMaximumWidth(9*ww);
+  _mountpoint_Eph_LineEdit->setMaximumWidth(12*ww);
+
+  layout_casEph->addWidget(new QLabel("Host"),               0, 0);
+  layout_casEph->addWidget(_outHost_Eph_LineEdit,              0, 1, 1, 3);
+  layout_casEph->addWidget(new QLabel("  Port"),             0, 4, Qt::AlignRight);
+  layout_casEph->addWidget(_outPort_Eph_LineEdit,              0, 5, 1, 10);
+  layout_casEph->addWidget(new QLabel("Mountpoint"),         1, 0);
+  layout_casEph->addWidget(_mountpoint_Eph_LineEdit,           1, 1);
+  layout_casEph->addWidget(new QLabel("Password"),           1, 2, Qt::AlignRight);
+  layout_casEph->addWidget(_password_Eph_LineEdit,             1, 3);
+  layout_casEph->addWidget(new QLabel("Concatenated Broadcast Ephemerides"), 2, 0, 1, 50);
+
+  tab_casEph->setLayout(layout_casEph);
+  connect(_outHost_Eph_LineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bnsText(const QString &)));
+  if (_outHost_Eph_LineEdit->text().isEmpty()) {
+    _outPort_Eph_LineEdit->setStyleSheet("background-color: lightGray");
+    _mountpoint_Eph_LineEdit->setStyleSheet("background-color: lightGray");
+    _password_Eph_LineEdit->setStyleSheet("background-color: lightGray");
+    _outPort_Eph_LineEdit->setEnabled(false);
+    _mountpoint_Eph_LineEdit->setEnabled(false);
+    _password_Eph_LineEdit->setEnabled(false);
+  }
+
   // RINEX Clocks Tab
   // ----------------
   QWidget* tab_rin = new QWidget();
@@ -817,6 +859,12 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("refSys_3",    _refSys_3_ComboBox->currentText());
   settings.setValue("outFile_3",   _outFile_3_LineEdit->text());
   settings.setValue("beClocks3",   _beClocks2CheckBox->checkState());
+
+  settings.setValue("outHostEph",    _outHost_Eph_LineEdit->text());
+  settings.setValue("outPortEph",    _outPort_Eph_LineEdit->text());
+  settings.setValue("mountpoint_Eph",_mountpoint_Eph_LineEdit->text());
+  settings.setValue("passwordEph",   _password_Eph_LineEdit->text());
+
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
@@ -1080,9 +1128,29 @@ void bnsWindow::bnsText(const QString &text){
     }
   }
 
+  // Enable/disable Broadcast Ephemerides
+  // ------------------------------------k-----------
+  if (tabs->currentIndex() == 7) {
+    if (!isEmpty) {
+      _outPort_Eph_LineEdit->setStyleSheet("background-color: white");
+      _mountpoint_Eph_LineEdit->setStyleSheet("background-color: white");
+      _password_Eph_LineEdit->setStyleSheet("background-color: white");
+      _outPort_Eph_LineEdit->setEnabled(true);
+      _mountpoint_Eph_LineEdit->setEnabled(true);
+      _password_Eph_LineEdit->setEnabled(true);
+    } else {
+      _outPort_Eph_LineEdit->setStyleSheet("background-color: lightGray");
+      _mountpoint_Eph_LineEdit->setStyleSheet("background-color: lightGray");
+      _password_Eph_LineEdit->setStyleSheet("background-color: lightGray");
+      _outPort_Eph_LineEdit->setEnabled(false);
+      _mountpoint_Eph_LineEdit->setEnabled(false);
+      _password_Eph_LineEdit->setEnabled(false);
+    }
+  }
+
   // Enable/disable RINEX Clocks Options
   // -----------------------------------
-  if (tabs->currentIndex() == 7) {
+  if (tabs->currentIndex() == 8) {
     if (!isEmpty) {
       _rnxIntrComboBox->setStyleSheet("background-color: white");
       _rnxSamplSpinBox->setStyleSheet("background-color: white");
@@ -1098,7 +1166,7 @@ void bnsWindow::bnsText(const QString &text){
 
   // Enable/disable SP3 Orbits Options
   // ---------------------------------
-  if (tabs->currentIndex() == 8) {
+  if (tabs->currentIndex() == 9) {
     if (!isEmpty) {
       _sp3IntrComboBox->setStyleSheet("background-color: white");
       _sp3SamplSpinBox->setStyleSheet("background-color: white");

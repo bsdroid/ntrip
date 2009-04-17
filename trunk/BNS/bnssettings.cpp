@@ -61,6 +61,11 @@ bnsSettings::bnsSettings() :
     setValue("beClocks3",   "0");
     setValue("outFile_3",   "");
 
+    setValue("outHostEph",    "");
+    setValue("outPortEph",    "");
+    setValue("mountpoint_Eph","");
+    setValue("passwordEph",   "");
+
     setValue("trafo_dx",    "0.0541");
     setValue("trafo_dy",    "0.0502");
     setValue("trafo_dz",   "-0.0538");

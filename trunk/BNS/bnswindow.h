@@ -112,6 +112,11 @@ Q_OBJECT
   QLineEdit* _outFile_3_LineEdit;
   QCheckBox* _beClocks3CheckBox;
 
+  QLineEdit* _outHost_Eph_LineEdit;
+  QLineEdit* _outPort_Eph_LineEdit;
+  QLineEdit* _mountpoint_Eph_LineEdit;
+  QLineEdit* _password_Eph_LineEdit;
+
   QLineEdit* _rnxPathLineEdit;
   QComboBox* _rnxIntrComboBox;
   QSpinBox*  _rnxSamplSpinBox;
