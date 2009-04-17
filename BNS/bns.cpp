@@ -85,6 +85,20 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
     }
   }
 
+  // Socket for outputting the Ephemerides
+  // -------------------------------------
+  QString mountpoint  = settings.value("mountpoint_Eph").toString();
+  if (mountpoint.isEmpty()) {
+    _casterEph = 0;
+  }
+  else {
+    _casterEph = new t_bnscaster(mountpoint);
+    connect(_caster.back(), SIGNAL(error(const QByteArray)),
+            this, SLOT(slotError(const QByteArray)));
+    connect(_caster.back(), SIGNAL(newMessage(const QByteArray)),
+            this, SLOT(slotMessage(const QByteArray)));
+  }
+
   // Log File
   // --------
   QIODevice::OpenMode oMode;
@@ -165,6 +179,7 @@ t_bns::~t_bns() {
   for (int ic = 0; ic < _caster.size(); ic++) {
     delete _caster.at(ic);
   }
+  delete _casterEph;
   delete _logStream;
   delete _logFile;
   delete _echoStream;

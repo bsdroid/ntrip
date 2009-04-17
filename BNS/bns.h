@@ -69,6 +69,7 @@ class t_bns : public QThread {
   QTcpServer*               _clkServer;
   QTcpSocket*               _clkSocket;
   QList<t_bnscaster*>       _caster;
+  t_bnscaster*              _casterEph;
   QFile*                    _logFile;
   QTextStream*              _logStream;
   QFile*                    _echoFile;

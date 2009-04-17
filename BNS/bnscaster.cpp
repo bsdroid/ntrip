@@ -65,6 +65,22 @@ t_bnscaster::t_bnscaster(const QString& mountpoint, const QString& outFileName,
   }
 }
 
+// Constructor
+////////////////////////////////////////////////////////////////////////////
+t_bnscaster::t_bnscaster(const QString& mountpoint) {
+
+  bnsSettings settings;
+
+  _mountpoint = mountpoint;
+  _ic         = 0;
+  _outSocket  = 0;
+  _sOpenTrial = 0;
+  _outFile    = 0;
+  _outStream  = 0;
+  _crdTrafo   = "";
+  _beClocks   = false;
+}
+
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_bnscaster::~t_bnscaster() {
