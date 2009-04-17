@@ -265,6 +265,14 @@ void t_bns::slotNewEph(t_eph* ep, int nBytes) {
       delete ep;
     }
   }
+
+  // Output Ephemerides as they are
+  // ------------------------------
+  if (_casterEph) {
+    // TODO encoder ephemerides into RTCM v3 format
+    QByteArray buffer = "New Ephemeris " + ep->prn().toAscii() + "\n";
+    _casterEph->write(buffer.data(), buffer.length());
+  }
 }
 
 // Start 
