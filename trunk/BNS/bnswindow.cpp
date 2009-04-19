@@ -296,6 +296,10 @@ bnsWindow::bnsWindow() {
   _password_3_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _refSys_3_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
   _outFile_3_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
+  _outHost_Eph_LineEdit->setWhatsThis(tr("BNS can upload a Broadcast Ephemeris stream in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload Broadcast Ephemeris."));
+  _outPort_Eph_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
+  _mountpoint_Eph_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
+  _password_Eph_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _rnxPathLineEdit->setWhatsThis(tr("Specify the path for saving the generated clock corrections as Clock RINEX files. If the specified directory does not exist, BNS will not create Clock RINEX files."));
   _rnxIntrComboBox->setWhatsThis(tr("Select the length of the Clock RINEX file."));
   _rnxSamplSpinBox->setWhatsThis(tr("Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNS to store all available samples into Clock RINEX files."));
@@ -572,7 +576,7 @@ bnsWindow::bnsWindow() {
   // Broadcast Ephemerides
   // ---------------------
   QWidget* tab_casEph = new QWidget();
-  tabs->addTab(tab_casEph, "Broadcast Ephemerides");
+  tabs->addTab(tab_casEph, "Broadcast Ephemeris");
 
   QGridLayout* layout_casEph = new QGridLayout;
 
@@ -581,15 +585,16 @@ bnsWindow::bnsWindow() {
   _password_Eph_LineEdit->setMaximumWidth(9*ww);
   _mountpoint_Eph_LineEdit->setMaximumWidth(12*ww);
 
-  layout_casEph->addWidget(new QLabel("Host"),               0, 0);
-  layout_casEph->addWidget(_outHost_Eph_LineEdit,              0, 1, 1, 3);
-  layout_casEph->addWidget(new QLabel("  Port"),             0, 4, Qt::AlignRight);
-  layout_casEph->addWidget(_outPort_Eph_LineEdit,              0, 5, 1, 10);
-  layout_casEph->addWidget(new QLabel("Mountpoint"),         1, 0);
-  layout_casEph->addWidget(_mountpoint_Eph_LineEdit,           1, 1);
-  layout_casEph->addWidget(new QLabel("Password"),           1, 2, Qt::AlignRight);
-  layout_casEph->addWidget(_password_Eph_LineEdit,             1, 3);
-  layout_casEph->addWidget(new QLabel("Concatenated Broadcast Ephemerides"), 2, 0, 1, 50);
+  layout_casEph->addWidget(new QLabel("Host"),                  0, 0);
+  layout_casEph->addWidget(_outHost_Eph_LineEdit,               0, 1, 1, 3);
+  layout_casEph->addWidget(new QLabel("  Port"),                0, 4, Qt::AlignRight);
+  layout_casEph->addWidget(_outPort_Eph_LineEdit,               0, 5, 1, 10);
+  layout_casEph->addWidget(new QLabel("Mountpoint           "), 1, 0);
+  layout_casEph->addWidget(_mountpoint_Eph_LineEdit,            1, 1);
+  layout_casEph->addWidget(new QLabel("          Password"),    1, 2, Qt::AlignRight);
+  layout_casEph->addWidget(_password_Eph_LineEdit,              1, 3);
+  layout_casEph->addWidget(new QLabel("Upload concatenated Broadcast Ephemeris in RTCMv3 format to caster."), 2, 0, 1, 50);
+  layout_casEph->addWidget(new QLabel(""),                      3, 0);
 
   tab_casEph->setLayout(layout_casEph);
   connect(_outHost_Eph_LineEdit, SIGNAL(textChanged(const QString &)),
@@ -680,33 +685,40 @@ bnsWindow::bnsWindow() {
   _statusLbl[1] = new QLabel("0 byte(s)"); _statusCnt[1] = 0;
   _statusLbl[2] = new QLabel("0 byte(s)"); _statusCnt[2] = 0;
   _statusLbl[3] = new QLabel("0 byte(s)"); _statusCnt[3] = 0;
-  _statusLbl[9] = new QLabel("0 byte(s)"); _statusCnt[4] = 0;
-  _statusLbl[7] = new QLabel("RINEX Ephemeris:");  
-  _statusLbl[4] = new QLabel("Clocks & Orbits:");
-  _statusLbl[5] = new QLabel("Broadcast Corrections I:");  
-  _statusLbl[6] = new QLabel("Broadcast Corrections II:");  
-  _statusLbl[8] = new QLabel("Broadcast Corrections III:");  
+  _statusLbl[4] = new QLabel("0 byte(s)"); _statusCnt[4] = 0;
+  _statusLbl[5] = new QLabel("0 byte(s)"); _statusCnt[5] = 0;
+  _statusLbl[6] = new QLabel("RINEX Ephemeris:");  
+  _statusLbl[7] = new QLabel("Clocks & Orbits:");
+  _statusLbl[8] = new QLabel("Broadcast Corrections I:");  
+  _statusLbl[9] = new QLabel("Broadcast Corrections II:");  
+  _statusLbl[10] = new QLabel("Broadcast Corrections III:");  
+  _statusLbl[11] = new QLabel("Broadcast Ephemeris:");  
 
   _statusLbl[0]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
   _statusLbl[1]->setWhatsThis(tr("Status of incoming stream of clocks and orbits."));
-  _statusLbl[2]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster."));
-  _statusLbl[7]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
-  _statusLbl[4]->setWhatsThis(tr("Status of incoming stream of clocks and orbits I."));
-  _statusLbl[5]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster I."));
-  _statusLbl[6]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster II."));
-  _statusLbl[3]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster II."));
-  _statusLbl[8]->setWhatsThis(tr("Status of outgoing stream to NTRIP broadcaster III."));
+  _statusLbl[2]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster I."));
+  _statusLbl[3]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster II."));
+  _statusLbl[4]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster III."));
+  _statusLbl[5]->setWhatsThis(tr("Status of outgoing Broadcast Ephemeris to NTRIP broadcaster"));
+  _statusLbl[6]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
+  _statusLbl[7]->setWhatsThis(tr("Status of incoming stream of clocks and orbits I."));
+  _statusLbl[8]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster I."));
+  _statusLbl[9]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster II."));
+  _statusLbl[10]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster III."));
+  _statusLbl[11]->setWhatsThis(tr("Status of outgoing Broadcast Ephemeris to NTRIP broadcaster"));
 
-  layout_status->addWidget(_statusLbl[7], 0, 0);
-  layout_status->addWidget(_statusLbl[0], 0, 1);
-  layout_status->addWidget(_statusLbl[5], 0, 2);
-  layout_status->addWidget(_statusLbl[2], 0, 3);
-  layout_status->addWidget(_statusLbl[4], 1, 0);
-  layout_status->addWidget(_statusLbl[1], 1, 1);
-  layout_status->addWidget(_statusLbl[6], 1, 2);
-  layout_status->addWidget(_statusLbl[3], 1, 3);
-  layout_status->addWidget(_statusLbl[8], 2, 2);
-  layout_status->addWidget(_statusLbl[9], 2, 3);
+  layout_status->addWidget(_statusLbl[6],  0, 0);
+  layout_status->addWidget(_statusLbl[0],  0, 1);
+  layout_status->addWidget(_statusLbl[11], 0, 2); 
+  layout_status->addWidget(_statusLbl[5],  0, 3); 
+  layout_status->addWidget(_statusLbl[7],  1, 0);
+  layout_status->addWidget(_statusLbl[1],  1, 1);
+  layout_status->addWidget(_statusLbl[8],  1, 2); 
+  layout_status->addWidget(_statusLbl[2],  1, 3); 
+  layout_status->addWidget(_statusLbl[9],  2, 2); 
+  layout_status->addWidget(_statusLbl[3],  2, 3); 
+  layout_status->addWidget(_statusLbl[10], 3, 2); 
+  layout_status->addWidget(_statusLbl[4],  3, 3); 
   _status->setLayout(layout_status);
 
   // Main Layout
@@ -938,6 +950,7 @@ void bnsWindow::slotStart() {
   connect(_bns, SIGNAL(newOutBytes1(int)), this, SLOT(slotOutBytes1(int)));
   connect(_bns, SIGNAL(newOutBytes2(int)), this, SLOT(slotOutBytes2(int)));
   connect(_bns, SIGNAL(newOutBytes3(int)), this, SLOT(slotOutBytes3(int)));
+  connect(_bns, SIGNAL(newOutEphBytes(int)), this, SLOT(slotOutEphBytes(int)));
 
   _bns->start();
 }
@@ -958,6 +971,9 @@ void bnsWindow::slotOutBytes2(int nBytes) {
 }
 void bnsWindow::slotOutBytes3(int nBytes) {
   updateStatus(4, nBytes);
+}
+void bnsWindow::slotOutEphBytes(int nBytes) {
+  updateStatus(5, nBytes);
 }
 
 void bnsWindow::updateStatus(int ii, int nBytes) {
@@ -1129,7 +1145,7 @@ void bnsWindow::bnsText(const QString &text){
   }
 
   // Enable/disable Broadcast Ephemerides
-  // ------------------------------------k-----------
+  // ------------------------------------
   if (tabs->currentIndex() == 7) {
     if (!isEmpty) {
       _outPort_Eph_LineEdit->setStyleSheet("background-color: white");

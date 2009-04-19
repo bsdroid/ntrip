@@ -250,6 +250,10 @@ void t_bns::slotNewEph(t_eph* ep, int nBytes) {
     // TODO encode ephemerides into RTCM v3 format
     QByteArray buffer = "New Ephemeris " + ep->prn().toAscii() + "\n";
     _casterEph->write(buffer.data(), buffer.length());
+    int len = buffer.length();
+    if (len > 0) {
+      emit(newOutEphBytes(len));
+    }
   }
 
   t_ephPair* pair;

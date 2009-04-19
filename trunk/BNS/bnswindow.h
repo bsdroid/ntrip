@@ -49,6 +49,7 @@ Q_OBJECT
   void slotOutBytes1(int nBytes);
   void slotOutBytes2(int nBytes);
   void slotOutBytes3(int nBytes);
+  void slotOutEphBytes(int nBytes);
 
  protected:
   virtual void closeEvent(QCloseEvent *);
@@ -130,8 +131,8 @@ Q_OBJECT
   QTabWidget* tabs;
 //QWidget*    _status;
   QGroupBox*  _status;
-  QLabel*     _statusLbl[10];  
-  double      _statusCnt[5];
+  QLabel*     _statusLbl[12];  
+  double      _statusCnt[6];
   QMutex      _mutex;
 
   t_bns*      _bns;
