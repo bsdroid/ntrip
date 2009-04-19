@@ -93,9 +93,9 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
   }
   else {
     _casterEph = new t_bnscaster(mountpoint);
-    connect(_caster.back(), SIGNAL(error(const QByteArray)),
+    connect(_casterEph, SIGNAL(error(const QByteArray)),
             this, SLOT(slotError(const QByteArray)));
-    connect(_caster.back(), SIGNAL(newMessage(const QByteArray)),
+    connect(_casterEph, SIGNAL(newMessage(const QByteArray)),
             this, SLOT(slotMessage(const QByteArray)));
   }
 
