@@ -125,18 +125,21 @@ The default file name 'BNS.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 4.6.3. <a href=#ephcsys>System</a><br>
 &nbsp; &nbsp; &nbsp; 4.6.4. <a href=#ephcsave>Save</a><br>
 &nbsp; &nbsp; &nbsp; 4.6.5. <a href=#ephbec>Broadcast Clocks</a><br>
-4.7. <a href=#clkrnx>RINEX Clocks</a><br>
-&nbsp; &nbsp; &nbsp; 4.7.1. <a href=#clkdir>Directory</a><br>
-&nbsp; &nbsp; &nbsp; 4.7.2. <a href=#clkint>Interval & Sampling</a><br>
-4.8. <a href=#orb>SP3 Orbits</a><br>
-&nbsp; &nbsp; &nbsp; 4.8.1. <a href=#orbdir>Directory</a><br>
-&nbsp; &nbsp; &nbsp; 4.8.2. <a href=#orbint>Interval & Sampling</a><br>
-4.9. <a href=#bottom>Bottom Menu Bar</a><br>
-4.9.1 <a href=#start>Start</a><br>
-4.9.2 <a href=#stop>Stop</a><br>
-4.10. <a href=#cmd>Command Line Options</a><br>
-4.10.1 <a href=#nw>No Window</a><br>
-4.10.2 <a href=#conffile>Configuration File</a>
+4.7. <a href=#brdc>Broadcast Ephemeris</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.1. <a href=#brdcserver>Host & Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.2. <a href=#brdcmount>Mountpoint & Password</a><br>
+4.8. <a href=#clkrnx>RINEX Clocks</a><br>
+&nbsp; &nbsp; &nbsp; 4.8.1. <a href=#clkdir>Directory</a><br>
+&nbsp; &nbsp; &nbsp; 4.8.2. <a href=#clkint>Interval & Sampling</a><br>
+4.9. <a href=#orb>SP3 Orbits</a><br>
+&nbsp; &nbsp; &nbsp; 4.9.1. <a href=#orbdir>Directory</a><br>
+&nbsp; &nbsp; &nbsp; 4.9.2. <a href=#orbint>Interval & Sampling</a><br>
+4.10. <a href=#bottom>Bottom Menu Bar</a><br>
+4.10.1 <a href=#start>Start</a><br>
+4.10.2 <a href=#stop>Stop</a><br>
+4.11. <a href=#cmd>Command Line Options</a><br>
+4.11.1 <a href=#nw>No Window</a><br>
+4.11.2 <a href=#conffile>Configuration File</a>
 </p>
 
 <p><a name="topmenu"><h4>4.1. Top Menu Bar</h4></p>
@@ -317,7 +320,7 @@ When using clocks from Broadcast Ephemeris (with or without corrections) and clo
 
 <p><a name="ephcserver"><h4>4.6.1 Host & Port - optional</h4></p>
 <p>
-Enter the NTRIP Caster's 'Host' IP name or number for stream upload.
+Specify the 'Host' IP name or number of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections to Broadcast Ephemeris.
 </p>
 <p>
 Enter the NTRIP Caster's IP 'Port' number for stream upload. Note that NTRIP Casters are often configured to provide access on more than one port, usually port 80 and 2101. If you experience communication problems on port 80, you should try to use the alternative port(s).
@@ -325,7 +328,7 @@ Enter the NTRIP Caster's IP 'Port' number for stream upload. Note that NTRIP Cas
 
 <p><a name="ephcmount"><h4>4.6.2 Mountpoint & Password - mandatory if 'Host' is set</h4></p>
 <p>
-Each stream on an NTRIP Caster is defined using a unique source ID called mountpoint. An NTRIP Server like BNS upload a stream to the Caster by referring to a dedicated mountpoint that has been set by the Caster operator. Specify here the mountpoint based on the detail you received from the operator for your stream. It is often a four character ID (capital letters) plus an integer number.
+Each stream on an NTRIP Caster is defined using a unique source ID called mountpoint. An NTRIP Server like BNS uploads a stream to the Caster by referring to a dedicated mountpoint that has been set by the Caster operator. Specify here the mountpoint based on the details you received for your stream from the operator. It is often a four character ID (capital letters) plus an integer number.
 <p>
 </p>
 In NTRIP Version 1.0 stream upload may be protected through an upload 'Password'. Enter the password you received from the Caster operator along with the mountpoint(s).
@@ -414,7 +417,25 @@ The following is an example file contents based on combined orbit and clock corr
 Tick 'Broadcast clocks" to ignore incoming clock estimates and send broadcast clocks instead of broadcast clock corrections.</p><p>This option is implemented to enable comparison with IGS post processing products. For that these clocks will not be corrected for the 2nd order relativistic effect.
 </p>
 
-<p><a name="clkrnx"><h4>4.7. RINEX Clocks</h4></p>
+<p><a name="brdc"><h4>4.7. Broadcast Ephemeris</h4></p>
+<p>
+BNS can upload a stream carrying Broadcast Ephemeris in RTCM Version 3 format to an NTRIP Caster.
+</p>
+
+<p><a name="brdcserver"><h4>4.7.1 Host & Port - optional</h4></p>
+<p>
+Specify the 'Host' IP name or number of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload Broadcast Ephemeris.
+</p>
+<p>
+Enter the NTRIP Caster's IP 'Port' number for stream upload. Note that NTRIP Casters are often configured to provide access on more than one port, usually port 80 and 2101. If you experience communication problems on port 80, you should try to use the alternative port(s).
+</p>
+
+<p><a name="brdcmount"><h4>4.7.1 Mountpoint & Password - mandatory if 'Host' is set</h4></p>
+<p>
+Each stream on an NTRIP Caster is defined using a unique source ID called mountpoint. An NTRIP Server like BNS uploads a stream to the Caster by referring to a dedicated mountpoint that has been set by the Caster operator. Specify here the mountpoint based on the details you received for your stream from the operator. It is often a four character ID (capital letters) plus an integer number.
+</p>
+
+<p><a name="clkrnx"><h4>4.8. RINEX Clocks</h4></p>
 <p>
 The clock corrections generated by BNS can be logged separately in Clock RINEX format. The file naming follows the RINEX convention.
 <p>
@@ -423,12 +444,12 @@ The clock corrections generated by BNS can be logged separately in Clock RINEX f
 Note that clocks in the Clock RINEX files are not corrected for the 2nd-order relativistic effect.
 </p>
 
-<p><a name="clkdir"><h4>4.7.1 Directory - optional</h4></p>
+<p><a name="clkdir"><h4>4.8.1 Directory - optional</h4></p>
 <p>
 Here you can specify the path to where the Clock RINEX files will be stored. If the specified directory does not exist, BNS will not create Clock RINEX files. Default value for 'Directory' is an empty option field, meaning that logging of Clock RINEX files is disabled.
 </p>
 
-<p><a name="clkint"><h4>4.7.2 Interval & Sampling - mandatory if 'Directory' is set</h4></p>
+<p><a name="clkint"><h4>4.8.2 Interval & Sampling - mandatory if 'Directory' is set</h4></p>
 <p>
 Select the length of the Clock RINEX file generated. The default value is 1 day.
 </p>
@@ -437,7 +458,7 @@ Select the length of the Clock RINEX file generated. The default value is 1 day.
 Select the Clock RINEX sampling interval in seconds. A value of zero '0' tells BNS to store all received epochs into Clock RINEX. This is the default value.
 </p>
 
-<p><a name="orb"><h4>4.8. SP3 Orbits</h4></p>
+<p><a name="orb"><h4>4.9. SP3 Orbits</h4></p>
 <p>
 The orbit corrections generated by BNS can be logged separately in SP3 Orbit files. The file naming follows the IGS convention.
 </p>
@@ -445,12 +466,12 @@ The orbit corrections generated by BNS can be logged separately in SP3 Orbit fil
 Note that clocks in the SP3 Orbit files are not corrected for the 2nd-order relativistic effect.
 </p>
 
-<p><a name="orbdir"><h4>4.8.1 Directory - optional</h4></p>
+<p><a name="orbdir"><h4>4.9.1 Directory - optional</h4></p>
 <p>
 Here you can specify the path to where the SP3 Orbit files will be stored. If the specified directory does not exist, BNS will not create SP3 Orbit files. Default value for 'Directory' is an empty option field, meaning that logging of SP3 Orbit files is disabled.
 </p>
 
-<p><a name="orbint"><h4>4.8.2 Interval & Sampling - mandatory if 'Directory' is set</h4></p>
+<p><a name="orbint"><h4>4.9.2 Interval & Sampling - mandatory if 'Directory' is set</h4></p>
 <p>
 Select the length of the SP3 Orbit file generated. The default value is 1 day.
 </p>
@@ -458,27 +479,27 @@ Select the length of the SP3 Orbit file generated. The default value is 1 day.
 Select the SP3 Orbit file sampling interval in seconds. A value of zero '0' tells BNS to store all received epochs into SP3 Orbit files. This is the default value.
 </p>
 
-<p><a name="bottom"><h4>4.9. Bottom Menu Bar</h4></p>
+<p><a name="bottom"><h4>4.10. Bottom Menu Bar</h4></p>
 <p>
 The bottom menu bar allows to start or stop the execution of BNS and provides access to BNC's online help funtion.
 </p>
 
-<p><a name="start"><h4>4.9.1 Start</h4></p>
+<p><a name="start"><h4>4.10.1 Start</h4></p>
 <p>
 Hit 'Start' to start receiving IGS orbits and clocks and convert them into corrections to Broadcast Ephemeris. Note that when started, BNS by default will begin with new files which might overwrite existing files when necessary unless the option 'Append files' is ticked.
 </p> 
 
-<p><a name="stop"><h4>4.9.2 Stop</h4></p>
+<p><a name="stop"><h4>4.10.2 Stop</h4></p>
 <p>
 Hit the 'Stop' button in order to stop BNS. 
 </p> 
 
-<p><a name="cmd"><h4>4.10. Command Line Options</h4></p>
+<p><a name="cmd"><h4>4.11. Command Line Options</h4></p>
 <p>
 Command line options are available to run BNS in 'no window' mode or let it read a specific configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration file name instead of using the default name 'BNS.ini'.
 </p>
 
-<p><a name="nw"><h4>4.10.1 No Window - optional</h4></p>
+<p><a name="nw"><h4>4.11.1 No Window - optional</h4></p>
 <p>
 Apart from its regular windows mode, BNS can be started on all systems as a background job with command line option '-nw'. BNS will then run in 'no window' mode, using processing options from its configuration file on disk. Terminate BNS using Windows Task Manager when running it in 'no window' mode on Windows systems.
 </p>
@@ -487,7 +508,7 @@ Example:<br><br>
 bns.exe -nw
 </p>
 
-<p><a name="conffile"><h4>4.10.2 Configuration File - optional</h4></p>
+<p><a name="conffile"><h4>4.11.2 Configuration File - optional</h4></p>
 The default configuration file name is 'BNS.ini'. You may change this name at startup time using the command line option '--conf &#060;<u>confFileName</u>&#062;'. This allows to run several BNS jobs in parallel on the same host using different sets of configuration options. <u>confFileName</u> stands either for the full path to a configuration file or just for a file name. If you introduce only a filename, the corresponding file will be saved in the current working directory from where BNS is started.
 </p>
 <p>
