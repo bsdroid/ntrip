@@ -65,6 +65,7 @@ bnsSettings::bnsSettings() :
     setValue("outPortEph",    "");
     setValue("mountpoint_Eph","");
     setValue("passwordEph",   "");
+    setValue("samplEph",      "5");
 
     setValue("trafo_dx",    "0.0541");
     setValue("trafo_dy",    "0.0502");

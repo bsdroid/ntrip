@@ -117,6 +117,7 @@ Q_OBJECT
   QLineEdit* _outPort_Eph_LineEdit;
   QLineEdit* _mountpoint_Eph_LineEdit;
   QLineEdit* _password_Eph_LineEdit;
+  QSpinBox*  _samplEphSpinBox;
 
   QLineEdit* _rnxPathLineEdit;
   QComboBox* _rnxIntrComboBox;
