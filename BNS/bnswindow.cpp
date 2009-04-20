@@ -603,7 +603,7 @@ bnsWindow::bnsWindow() {
   layout_casEph->addWidget(_password_Eph_LineEdit,              1, 3);
   layout_casEph->addWidget(new QLabel("Sampling"),              2, 0);
   layout_casEph->addWidget(_samplEphSpinBox,                    2, 1);
-  layout_casEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris caster."), 3, 0, 1, 50);
+  layout_casEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster."), 3, 0, 1, 50);
 
   tab_casEph->setLayout(layout_casEph);
   connect(_outHost_Eph_LineEdit, SIGNAL(textChanged(const QString &)),
