@@ -230,6 +230,13 @@ bnsWindow::bnsWindow() {
   _password_Eph_LineEdit   = new QLineEdit(settings.value("passwordEph").toString());
   _password_Eph_LineEdit->setEchoMode(QLineEdit::Password);
   _mountpoint_Eph_LineEdit = new QLineEdit(settings.value("mountpoint_Eph").toString());
+  _samplEphSpinBox = new QSpinBox;
+  _samplEphSpinBox->setMinimum(0);
+  _samplEphSpinBox->setMaximum(60);
+  _samplEphSpinBox->setSingleStep(5);
+  _samplEphSpinBox->setMaximumWidth(9*ww);
+  _samplEphSpinBox->setValue(settings.value("samplEph").toInt());
+  _samplEphSpinBox->setSuffix(" sec");
 
   // RINEX Clocks Options
   // --------------------
@@ -300,6 +307,7 @@ bnsWindow::bnsWindow() {
   _outPort_Eph_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
   _mountpoint_Eph_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
   _password_Eph_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
+  _samplEphSpinBox->setWhatsThis(tr("Select the Broadcast Ephemeris sampling interval in seconds. Defaut is '5' meaning that a complete set of Broadcast Ephemeris is uploaded every 5 seconds."));
   _rnxPathLineEdit->setWhatsThis(tr("Specify the path for saving the generated clock corrections as Clock RINEX files. If the specified directory does not exist, BNS will not create Clock RINEX files."));
   _rnxIntrComboBox->setWhatsThis(tr("Select the length of the Clock RINEX file."));
   _rnxSamplSpinBox->setWhatsThis(tr("Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNS to store all available samples into Clock RINEX files."));
@@ -593,8 +601,9 @@ bnsWindow::bnsWindow() {
   layout_casEph->addWidget(_mountpoint_Eph_LineEdit,            1, 1);
   layout_casEph->addWidget(new QLabel("          Password"),    1, 2, Qt::AlignRight);
   layout_casEph->addWidget(_password_Eph_LineEdit,              1, 3);
-  layout_casEph->addWidget(new QLabel("Upload concatenated Broadcast Ephemeris in RTCMv3 format to caster."), 2, 0, 1, 50);
-  layout_casEph->addWidget(new QLabel(""),                      3, 0);
+  layout_casEph->addWidget(new QLabel("Sampling"),              2, 0);
+  layout_casEph->addWidget(_samplEphSpinBox,                    2, 1);
+  layout_casEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris caster."), 3, 0, 1, 50);
 
   tab_casEph->setLayout(layout_casEph);
   connect(_outHost_Eph_LineEdit, SIGNAL(textChanged(const QString &)),
@@ -603,9 +612,11 @@ bnsWindow::bnsWindow() {
     _outPort_Eph_LineEdit->setStyleSheet("background-color: lightGray");
     _mountpoint_Eph_LineEdit->setStyleSheet("background-color: lightGray");
     _password_Eph_LineEdit->setStyleSheet("background-color: lightGray");
+    _samplEphSpinBox->setStyleSheet("background-color: lightGray");
     _outPort_Eph_LineEdit->setEnabled(false);
     _mountpoint_Eph_LineEdit->setEnabled(false);
     _password_Eph_LineEdit->setEnabled(false);
+    _samplEphSpinBox->setEnabled(false);
   }
 
   // RINEX Clocks Tab
@@ -876,6 +887,7 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("outPortEph",    _outPort_Eph_LineEdit->text());
   settings.setValue("mountpoint_Eph",_mountpoint_Eph_LineEdit->text());
   settings.setValue("passwordEph",   _password_Eph_LineEdit->text());
+  settings.setValue("samplEph",      _samplEphSpinBox->value());
 
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
@@ -1151,16 +1163,20 @@ void bnsWindow::bnsText(const QString &text){
       _outPort_Eph_LineEdit->setStyleSheet("background-color: white");
       _mountpoint_Eph_LineEdit->setStyleSheet("background-color: white");
       _password_Eph_LineEdit->setStyleSheet("background-color: white");
+      _samplEphSpinBox->setStyleSheet("background-color: white");
       _outPort_Eph_LineEdit->setEnabled(true);
       _mountpoint_Eph_LineEdit->setEnabled(true);
       _password_Eph_LineEdit->setEnabled(true);
+      _samplEphSpinBox->setEnabled(true);
     } else {
       _outPort_Eph_LineEdit->setStyleSheet("background-color: lightGray");
       _mountpoint_Eph_LineEdit->setStyleSheet("background-color: lightGray");
       _password_Eph_LineEdit->setStyleSheet("background-color: lightGray");
+      _samplEphSpinBox->setStyleSheet("background-color: lightGray");
       _outPort_Eph_LineEdit->setEnabled(false);
       _mountpoint_Eph_LineEdit->setEnabled(false);
       _password_Eph_LineEdit->setEnabled(false);
+      _samplEphSpinBox->setEnabled(false);
     }
   }
 
