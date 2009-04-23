@@ -652,15 +652,16 @@ void bncGetThread::slotSerialReadyRead() {
 //
 //////////////////////////////////////////////////////////////////////////////
 void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
-  RTCM2Decoder* decoder = dynamic_cast<RTCM2Decoder*>(_decoder);
+  RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
+  RTCM3Decoder* decoder3 = dynamic_cast<RTCM3Decoder*>(_decoder);
 
-  if ( decoder ) {
+  if ( decoder2 ) {
     QMutexLocker locker(&_mutex);
   
     string storedPRN;
     vector<int> IODs;
     
-    if ( decoder->storeEph(gpseph, storedPRN, IODs) ) {
+    if ( decoder2->storeEph(gpseph, storedPRN, IODs) ) {
 #ifdef DEBUG_RTCM2_2021
       QString msg = _staID + QString(": stored eph %1 IODs").arg(storedPRN.c_str());
       
@@ -670,6 +671,15 @@ void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
       
       emit(newMessage(msg.toAscii()));
 #endif
+    }
+  }
+
+  if ( decoder3 ) {
+    QMutexLocker locker(&_mutex);
+  
+    if ( decoder3->storeEph(gpseph) ) {
+      QString msg = _staID + QString(": RTCM3Decoder, stored eph for satellite %1").arg(gpseph.satellite);
+      emit(newMessage(msg.toAscii(),true));
     }
   }
 }

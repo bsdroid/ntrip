@@ -26,9 +26,12 @@
 #define RTCM3DECODER_H
 
 #include <QtCore>
+#include <map>
+
 #include "../RTCM/GPSDecoder.h"
 #include "../RTCM/GPSDecoder.h"
 #include "RTCM3coDecoder.h"
+#include "ephemeris.h"
 
 extern "C" {
 #include "rtcm3torinex.h"
@@ -44,6 +47,9 @@ Q_OBJECT
     return (_mode == corrections ? _coDecoder->corrGPSEpochTime() : -1);
   }
 
+  bool  storeEph(const gpsephemeris& gpseph);
+  bool  storeEph(const t_ephGPS&     gpseph);
+
  signals:
   void newMessage(QByteArray msg,bool showOnScreen);
   void newGPSEph(gpsephemeris* gpseph);
@@ -57,6 +63,10 @@ Q_OBJECT
   struct RTCM3ParserData _Parser;
   RTCM3coDecoder*        _coDecoder; 
   t_mode                 _mode;
+
+  std::map<std::string, t_ephGPS> _ephList;
+  double                 _antXYZ[3];
+
 };
 
 #endif

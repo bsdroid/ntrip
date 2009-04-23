@@ -3,7 +3,9 @@
 
 #include <stdio.h>
 #include <string>
+extern "C" {
 #include "RTCM3/rtcm3torinex.h"
+}
 
 class t_eph {
  public:

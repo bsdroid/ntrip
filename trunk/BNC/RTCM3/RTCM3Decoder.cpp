@@ -39,10 +39,13 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <math.h>
 #include <string.h>
 
 #include "RTCM3Decoder.h"
+#include "../RTCM/rtcm_utils.h"
 #include "bncconst.h"
 #include "bncapp.h"
 #include "bncutils.h"
@@ -88,6 +91,11 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID) : GPSDecoder() {
   // Mode can be either observations or corrections
   // ----------------------------------------------
   _mode = unknown;
+
+  // Antenna position (used for decoding of message 1003)
+  // ----------------------------------------------------
+  _antXYZ[0] = _antXYZ[1] = _antXYZ[2] = 0;
+
 }
 
 // Destructor
@@ -147,6 +155,11 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 	    _antList.back().yy       = _Parser.antY * 1e-4;
 	    _antList.back().zz       = _Parser.antZ * 1e-4;
 	    _antList.back().message  = rr;
+
+	    // Remember station position for 1003 message decoding
+	    _antXYZ[0] = _Parser.antX * 1e-4;
+	    _antXYZ[1] = _Parser.antY * 1e-4;
+	    _antXYZ[2] = _Parser.antZ * 1e-4;
           }
 
           // RTCMv3 antenna XYZ-H
@@ -161,6 +174,11 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 	    _antList.back().height   = _Parser.antH * 1e-4;
 	    _antList.back().height_f = true;
 	    _antList.back().message  = rr;
+
+	    // Remember station position for 1003 message decoding
+	    _antXYZ[0] = _Parser.antX * 1e-4;
+	    _antXYZ[1] = _Parser.antY * 1e-4;
+	    _antXYZ[2] = _Parser.antZ * 1e-4;
           }
 
           // GNSS Observations
@@ -173,6 +191,12 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               _Parser.init = 1;
             }
             
+	    // apply "GPS Integer L1 Pseudorange Modulus Ambiguity"
+	    bool applyModulusAmb = false;
+            ///if (rr == 2) {
+	    ///  applyModulusAmb = true;
+            ///}
+
             if (rr == 2) {
               emit(newMessage( (_staID + ": No valid RINEX! All values are modulo 299792.458!").toAscii(), true));
             }
@@ -194,7 +218,44 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               }
               obs->_o.GPSWeek  = _Parser.Data.week;
               obs->_o.GPSWeeks = _Parser.Data.timeofweek / 1000.0;
+
+	      // Estimate "GPS Integer L1 Pseudorange Modulus Ambiguity"
+	      // -------------------------------------------------------
+	      double modulusAmb = 0;
+	      if (applyModulusAmb) {
+		// Missing antenna coordinates: skip all data
+		if ( !_antXYZ[0] && !_antXYZ[1] && !_antXYZ[2] ) {
+		  continue;
+		}
+		
+		ostringstream prns;
+		prns << obs->_o.satSys << setfill('0') << setw(2) << obs->_o.satNum;
+
+		string prn = prns.str();
+
+		// Missing ephemerides, skip satellite
+		if (_ephList.find(prn) == _ephList.end()) {
+		  continue;
+		}
+		
+		const t_eph* eph = &(_ephList.find(prn)->second);
+		  
+		double rho, xSat, ySat, zSat, clkSat, GPSWeeks_tot;
+		int    GPSWeek_tot;
+		cmpRho(eph, _antXYZ[0], _antXYZ[1], _antXYZ[2], 
+		       obs->_o.GPSWeek, obs->_o.GPSWeeks,
+		       rho, GPSWeek_tot, GPSWeeks_tot,
+		       xSat, ySat, zSat, clkSat);
+
+		const double CC = 299792458.0;
+
+		int nn = static_cast<int>(rho / (CC * 0.001));
+
+		modulusAmb = nn * CC * 0.001;
+	      }
             
+	      // Loop over all data types
+	      // ------------------------
               for (int jj = 0; jj < _Parser.numdatatypesGPS; jj++) {
                 int v = 0;
                 // sepearated declaration and initalization of df and pos. Perlt
@@ -227,24 +288,24 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                   
                   // variables df and pos are used consequently. Perlt
                   if      (df & GNSSDF_C1DATA) {
-                    obs->_o.C1 = _Parser.Data.measdata[ii][pos];
+                    obs->_o.C1 = _Parser.Data.measdata[ii][pos] + modulusAmb;
                   }
                   else if (df & GNSSDF_C2DATA) {
-                    obs->_o.C2 = _Parser.Data.measdata[ii][pos];
+                    obs->_o.C2 = _Parser.Data.measdata[ii][pos] + modulusAmb;
                   }
                   else if (df & GNSSDF_P1DATA) {
-                    obs->_o.P1 = _Parser.Data.measdata[ii][pos];
+                    obs->_o.P1 = _Parser.Data.measdata[ii][pos] + modulusAmb;
                   }
                   else if (df & GNSSDF_P2DATA) {
-                    obs->_o.P2 = _Parser.Data.measdata[ii][pos];
+                    obs->_o.P2 = _Parser.Data.measdata[ii][pos] + modulusAmb;
                   }
                   else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
-                    obs->_o.L1            = _Parser.Data.measdata[ii][pos];
+                    obs->_o.L1            = _Parser.Data.measdata[ii][pos] + modulusAmb;
                     obs->_o.SNR1          = _Parser.Data.snrL1[ii];
                     obs->_o.lock_timei_L1 = _Parser.lastlockl1[isat];
                   }
                   else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
-                    obs->_o.L2            = _Parser.Data.measdata[ii][pos];
+                    obs->_o.L2            = _Parser.Data.measdata[ii][pos] + modulusAmb;
                     obs->_o.SNR2          = _Parser.Data.snrL2[ii];
                     obs->_o.lock_timei_L2 = _Parser.lastlockl2[isat];
                   }
@@ -288,4 +349,30 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
   else {
     return failure;
   }
+}
+
+// Store ephemerides
+////////////////////////////////////////////////////////////////////////////////////////
+bool RTCM3Decoder::storeEph(const gpsephemeris& gpseph) {
+  t_ephGPS eph; eph.set(&gpseph);
+
+  return storeEph(eph);
+}
+
+
+bool RTCM3Decoder::storeEph(const t_ephGPS& gpseph) {
+  double weekold = 0.0;
+  double weeknew = gpseph.GPSweek() + gpseph.GPSweeks() / 86400.0;
+  if ( _ephList.find(gpseph.prn()) != _ephList.end() ) {
+    weekold = _ephList.find(gpseph.prn())->second.GPSweek() 
+            + _ephList.find(gpseph.prn())->second.GPSweeks() / 86400.0; 
+  }
+
+  if ( weeknew - weekold > 1/86400.0 ) {
+    _ephList[gpseph.prn()] = gpseph;
+
+    return true;
+  }
+
+  return false;
 }
