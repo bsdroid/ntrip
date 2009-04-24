@@ -2,7 +2,7 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.2 2008/11/26 12:05:37 stoecker Exp $
+        Version:        $Id: clock_orbit_rtcm.c,v 1.9 2009/02/27 08:59:49 weber Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -92,26 +92,26 @@ modified variables are:
 #define T_GLONASS_IOD(a)                 ADDBITS(8, a)  /* DF237 */
 
 /* defined values */
-#define T_DELTA_RADIAL(a)                SCALEADDBITS(22, 10000.0, a)
-#define T_DELTA_ALONG_TRACK(a)           SCALEADDBITS(22, 10000.0, a)
-#define T_DELTA_CROSS_TRACK(a)           SCALEADDBITS(22, 10000.0, a)
-#define T_DELTA_DOT_RADIAL(a)            SCALEADDBITS(21, 1000000.0, a)
-#define T_DELTA_DOT_ALONG_TRACK(a)       SCALEADDBITS(21, 1000000.0, a)
-#define T_DELTA_DOT_CROSS_TRACK(a)       SCALEADDBITS(21, 1000000.0, a)
+#define T_DELTA_RADIAL(a)                SCALEADDBITS(22,    10000.0, a)
+#define T_DELTA_ALONG_TRACK(a)           SCALEADDBITS(20,     2500.0, a)
+#define T_DELTA_CROSS_TRACK(a)           SCALEADDBITS(20,     2500.0, a)
+#define T_DELTA_DOT_RADIAL(a)            SCALEADDBITS(21,  1000000.0, a)
+#define T_DELTA_DOT_ALONG_TRACK(a)       SCALEADDBITS(19,   250000.0, a)
+#define T_DELTA_DOT_CROSS_TRACK(a)       SCALEADDBITS(19,   250000.0, a)
 #define T_DELTA_DOT_DOT_RADIAL(a)        SCALEADDBITS(27, 50000000.0, a)
-#define T_DELTA_DOT_DOT_ALONG_TRACK(a)   SCALEADDBITS(27, 50000000.0, a)
-#define T_DELTA_DOT_DOT_CROSS_TRACK(a)   SCALEADDBITS(27, 50000000.0, a)
+#define T_DELTA_DOT_DOT_ALONG_TRACK(a)   SCALEADDBITS(25, 12500000.0, a)
+#define T_DELTA_DOT_DOT_CROSS_TRACK(a)   SCALEADDBITS(25, 12500000.0, a)
 #define T_SATELLITE_REFERENCE_POINT(a)   ADDBITS(1, a)
 
 #define T_SATELLITE_REFERENCE_DATUM(a)   ADDBITS(1, a)
-#define T_DELTA_CLOCK_C0(a)              SCALEADDBITS(22, 10000.0, a)
-#define T_DELTA_CLOCK_C1(a)              SCALEADDBITS(21, 1000000.0, a)
+#define T_DELTA_CLOCK_C0(a)              SCALEADDBITS(22,    10000.0, a)
+#define T_DELTA_CLOCK_C1(a)              SCALEADDBITS(21,  1000000.0, a)
 #define T_DELTA_CLOCK_C2(a)              SCALEADDBITS(27, 50000000.0, a)
 #define T_NO_OF_CODE_BIASES(a)           ADDBITS(5, a)
 #define T_GPS_SIGNAL_IDENTIFIER(a)       ADDBITS(5, a)
 #define T_GLONASS_SIGNAL_IDENTIFIER(a)   ADDBITS(5, a)
 #define T_GALILEO_SIGNAL_IDENTIFIER(a)   ADDBITS(5, a)
-#define T_CODE_BIAS(a)                   SCALEADDBITS(14, 100.0, a)
+#define T_CODE_BIAS(a)                   SCALEADDBITS(14,      100.0, a)
 #define T_GLONASS_SATELLITE_ID(a)        ADDBITS(5, a)
 
 #define T_GPS_EPOCH_TIME(a)              ADDBITS(20, a)
@@ -119,7 +119,7 @@ modified variables are:
 #define T_NO_OF_SATELLITES(a)            ADDBITS(6, a)
 #define T_MULTIPLE_MESSAGE_INDICATOR(a)  ADDBITS(1, a)
 #define T_SSR_URA(a)                     ADDBITS(4, a)
-#define T_HR_CLOCK_CORRECTION(a)         SCALEADDBITS(22, 10000.0, a)
+#define T_HR_CLOCK_CORRECTION(a)         SCALEADDBITS(22,    10000.0, a)
 #define T_SSR_UPDATE_INTERVAL(a)         ADDBITS(4, a)
 
 size_t MakeClockOrbit(const struct ClockOrbit *co, enum ClockOrbitType type,
@@ -474,7 +474,7 @@ int moremessagesfollow, char *buffer, size_t size)
 { \
   while((a) > numbits) \
   { \
-    if(!size--) return GCOBR_SHORTBUFFER; \
+    if(!size--) return GCOBR_SHORTMESSAGE; \
     bitbuffer = (bitbuffer<<8)|((unsigned char)*(buffer++)); \
     numbits += 8; \
   } \
@@ -513,14 +513,14 @@ int moremessagesfollow, char *buffer, size_t size)
 
 /* defined values */
 #define G_DELTA_RADIAL(a)                GETFLOATSIGN(a, 22, 1/10000.0)
-#define G_DELTA_ALONG_TRACK(a)           GETFLOATSIGN(a, 22, 1/10000.0)
-#define G_DELTA_CROSS_TRACK(a)           GETFLOATSIGN(a, 22, 1/10000.0)
+#define G_DELTA_ALONG_TRACK(a)           GETFLOATSIGN(a, 20, 1/2500.0)
+#define G_DELTA_CROSS_TRACK(a)           GETFLOATSIGN(a, 20, 1/2500.0)
 #define G_DELTA_DOT_RADIAL(a)            GETFLOATSIGN(a, 21, 1/1000000.0)
-#define G_DELTA_DOT_ALONG_TRACK(a)       GETFLOATSIGN(a, 21, 1/1000000.0)
-#define G_DELTA_DOT_CROSS_TRACK(a)       GETFLOATSIGN(a, 21, 1/1000000.0)
+#define G_DELTA_DOT_ALONG_TRACK(a)       GETFLOATSIGN(a, 19, 1/250000.0)
+#define G_DELTA_DOT_CROSS_TRACK(a)       GETFLOATSIGN(a, 19, 1/250000.0)
 #define G_DELTA_DOT_DOT_RADIAL(a)        GETFLOATSIGN(a, 27, 1/50000000.0)
-#define G_DELTA_DOT_DOT_ALONG_TRACK(a)   GETFLOATSIGN(a, 27, 1/50000000.0)
-#define G_DELTA_DOT_DOT_CROSS_TRACK(a)   GETFLOATSIGN(a, 27, 1/50000000.0)
+#define G_DELTA_DOT_DOT_ALONG_TRACK(a)   GETFLOATSIGN(a, 25, 1/12500000.0)
+#define G_DELTA_DOT_DOT_CROSS_TRACK(a)   GETFLOATSIGN(a, 25, 1/12500000.0)
 #define G_SATELLITE_REFERENCE_POINT(a)   GETBITS(a, 1)
 
 #define G_SATELLITE_REFERENCE_DATUM(a)   GETBITS(a, 1)
@@ -594,8 +594,12 @@ const char *buffer, size_t size, int *bytesused)
    (((unsigned char)buffer[sizeofrtcmblock+1])<<8)|
    (((unsigned char)buffer[sizeofrtcmblock+2]))))
     return GCOBR_CRCMISMATCH;
+  size = sizeofrtcmblock; /* reduce size, so overflows are detected */
 
   G_MESSAGE_NUMBER(type)
+#ifdef DEBUG
+fprintf(stderr, "type %d size %d\n",type,sizeofrtcmblock);
+#endif
   switch(type)
   {
   case COTYPE_GPSORBIT:
@@ -610,6 +614,9 @@ const char *buffer, size_t size, int *bytesused)
     if(co->OrbitDataSupplied)
       return GCOBR_DATAMISMATCH;
     co->OrbitDataSupplied = 1;
+#ifdef DEBUG
+fprintf(stderr, "epochtime %d ui %d mmi %d sats %d\n",co->GPSEpochTime,co->UpdateInterval,mmi,co->NumberOfGPSSat);
+#endif
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
       G_GPS_SATELLITE_ID(co->Sat[i].ID)
@@ -625,6 +632,19 @@ const char *buffer, size_t size, int *bytesused)
       G_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDotDeltaCrossTrack)
       G_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
       G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
+#ifdef DEBUG
+fprintf(stderr, "id %2d iod %3d dr %8.3f da %8.3f dc %8.3f dr %8.3f da %8.3f dc %8.3f dr %8.3f da %8.3f dc %8.3f rp %d rd %d\n",
+co->Sat[i].ID,co->Sat[i].IOD,co->Sat[i].Orbit.DeltaRadial,
+co->Sat[i].Orbit.DeltaAlongTrack,co->Sat[i].Orbit.DeltaCrossTrack,
+co->Sat[i].Orbit.DotDeltaRadial,
+co->Sat[i].Orbit.DotDeltaAlongTrack,
+co->Sat[i].Orbit.DotDeltaCrossTrack,
+co->Sat[i].Orbit.DotDotDeltaRadial,
+co->Sat[i].Orbit.DotDotDeltaAlongTrack,
+co->Sat[i].Orbit.DotDotDeltaCrossTrack,
+co->SatRefPoint,
+co->SatRefDatum);
+#endif
     }
     break;
   case COTYPE_GPSCLOCK:
@@ -1061,6 +1081,11 @@ const char *buffer, size_t size, int *bytesused)
   default:
     return GCOBR_UNKNOWNTYPE;
   }
+#ifdef DEBUG
+for(type = 0; type < size && (unsigned char)buffer[type] != 0xD3; ++type)
+  numbits += 8;
+fprintf(stderr, "numbits left %d\n",numbits);
+#endif
   if(bytesused)
     *bytesused = sizeofrtcmblock+6;
   return mmi ? GCOBR_MESSAGEFOLLOWS : GCOBR_OK;

@@ -5,7 +5,7 @@
 
         Name:           clock_orbit_rtcm.h
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.h,v 1.2 2008/11/26 12:05:37 stoecker Exp $
+        Version:        $Id: clock_orbit_rtcm.h,v 1.8 2009/03/06 15:59:53 weber Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -15,14 +15,14 @@
 enum SatelliteReferenceDatum { DATUM_ITRF=0, DATUM_LOCAL=1 };
 enum SatelliteReferencePoint { POINT_IONOFREE=0, POINT_CENTER=1 };
 enum ClockOrbitType {
-     COTYPE_GPSORBIT=4060, COTYPE_GPSCLOCK=4061,
-     COTYPE_GPSCOMBINED=4063, COTYPE_GPSURA=4064, COTYPE_GPSHR=4065,
+     COTYPE_GPSORBIT=3001, COTYPE_GPSCLOCK=3002,
+     COTYPE_GPSCOMBINED=3004, COTYPE_GPSURA=3005, COTYPE_GPSHR=3006,
 
-     COTYPE_GLONASSORBIT=4066, COTYPE_GLONASSCLOCK=4067,
-     COTYPE_GLONASSCOMBINED=4069, COTYPE_GLONASSURA=4070, COTYPE_GLONASSHR=4071,
+     COTYPE_GLONASSORBIT=3007, COTYPE_GLONASSCLOCK=3008,
+     COTYPE_GLONASSCOMBINED=3010, COTYPE_GLONASSURA=3011, COTYPE_GLONASSHR=3012,
 
      COTYPE_AUTO=0 };
-enum BiasType { BTYPE_GPS=4062, BTYPE_GLONASS=4068, BTYPE_AUTO = 0 };
+enum BiasType { BTYPE_GPS=3003, BTYPE_GLONASS=3009, BTYPE_AUTO = 0 };
 
 enum COR_CONSTANTS {
   CLOCKORBIT_BUFFERSIZE=2048,
@@ -130,7 +130,8 @@ enum GCOB_RETURN {
   /* not enough data - can decode the block completely */
   GCOBR_SHORTBUFFER = -30,
   GCOBR_MISSINGBITS = -31,
-  GCOBR_MESSAGEEXCEEDSBUFFER = -32
+  GCOBR_MESSAGEEXCEEDSBUFFER = -32,
+  GCOBR_SHORTMESSAGE = -33
 };
 
 /* NOTE: When an error message has been emitted, the output structures may have been modified. Make a copy of the previous variant before calling the
