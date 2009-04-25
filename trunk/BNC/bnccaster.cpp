@@ -193,8 +193,13 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
       bncSettings settings;
       if ( !settings.value("outFile").toString().isEmpty() || 
            !settings.value("outPort").toString().isEmpty() ) { 
-        emit( newMessage(QString("%1: Old epoch %2 thrown away")
-                                   .arg(staID.data()).arg(iSec).toAscii(), true) );
+
+	QTime enomtime = QTime(0,0,0).addSecs(iSec);
+
+        emit( newMessage(QString("%1: Old epoch %2 (%3) thrown away")
+			 .arg(staID.data()).arg(iSec)
+			 .arg(enomtime.toString("HH:mm:ss"))
+			 .toAscii(), true) );
       }
     }
     delete obs;
@@ -289,12 +294,16 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
       p_obs obs = it.next();
 
       if (_samplingRate == 0 || sec % _samplingRate == 0) {
-   
+
+	if (first) {
+	  QTime enomtime = QTime(0,0,0).addSecs(static_cast<int>(floor(obs->_o.GPSWeeks+0.5)));
+	  emit( newMessage( QString("Epoch %1 dumped").arg(enomtime.toString("HH:mm:ss")).toAscii(), true) );
+	}
         // Output into the file
         // --------------------
         if (_out) {
           if (first) {
-            _out->setFieldWidth(1); *_out << begEpoch << endl;;
+            _out->setFieldWidth(1); *_out << begEpoch << endl;
           }
           _out->setFieldWidth(0); *_out << obs->_o.StatID; 
           _out->setFieldWidth(1); *_out << " " << obs->_o.satSys;
