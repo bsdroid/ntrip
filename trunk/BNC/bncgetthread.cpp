@@ -506,8 +506,8 @@ t_irc bncGetThread::tryReconnect() {
         _nextSleep = 256;
       }
 #ifdef MLS_SOFTWARE
-      if (_nextSleep > 10) {
-        _nextSleep = 10;
+      if (_nextSleep > 4) {
+        _nextSleep = 4;
       }
 #endif
     }
