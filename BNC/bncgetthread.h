@@ -33,10 +33,10 @@
 #include "RTCM/GPSDecoder.h"
 #include "RTCM3/rtcm3torinex.h"
 #include "bncconst.h"
+#include "bncnetquery.h"
 
 class bncRinex;
 class QextSerialPort;
-class bncNetQuery;
 class latencyChecker;
 
 class bncGetThread : public QThread {
@@ -50,6 +50,15 @@ class bncGetThread : public QThread {
                 const QByteArray& longitude,
                 const QByteArray& nmea, 
                 const QByteArray& ntripVersion, const QByteArray& extraStaID);
+
+   bncNetQuery::queryStatus queryStatus() {
+     if (_query) {
+       return _query->status();
+     }
+     else {
+       return bncNetQuery::init;
+     }
+   }
 
  protected:
    ~bncGetThread();
