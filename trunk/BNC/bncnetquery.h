@@ -9,7 +9,7 @@ class bncNetQuery : public QObject {
  Q_OBJECT
 
  public:
-  enum queryStatus {init, running, finished, error, fatal};
+  enum queryStatus {init, running, finished, error};
 
   bncNetQuery() {
     connect(this,           SIGNAL(newMessage(QByteArray,bool)), 
