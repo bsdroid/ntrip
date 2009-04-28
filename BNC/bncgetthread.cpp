@@ -351,11 +351,6 @@ void bncGetThread::run() {
 
   while (true) {
     try {
-
-      if (_query && _query->status() == bncNetQuery::fatal) {
-        _isToBeDeleted = true;
-      }
-
       if (_isToBeDeleted) {
         QThread::exit(0);
         this->deleteLater();
