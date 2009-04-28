@@ -505,6 +505,11 @@ t_irc bncGetThread::tryReconnect() {
       if (_nextSleep > 256) {
         _nextSleep = 256;
       }
+#ifdef MLS_SOFTWARE
+      if (_nextSleep > 10) {
+        _nextSleep = 10;
+      }
+#endif
     }
 
     delete _query;
