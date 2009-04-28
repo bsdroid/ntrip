@@ -678,8 +678,10 @@ void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
     QMutexLocker locker(&_mutex);
   
     if ( decoder3->storeEph(gpseph) ) {
+#ifdef DEBUG_RTCM3
       QString msg = _staID + QString(": RTCM3Decoder, stored eph for satellite %1").arg(gpseph.satellite);
       emit(newMessage(msg.toAscii(),true));
+#endif
     }
   }
 }

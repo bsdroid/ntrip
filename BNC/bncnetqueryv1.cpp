@@ -56,6 +56,11 @@ void bncNetQueryV1::waitForRequestResult(const QUrl&, QByteArray&) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV1::waitForReadyRead(QByteArray& outData) {
+
+  if (_status == bncNetQuery::fatal) {
+    return;
+  }
+
   if (_socket && _socket->state() == QAbstractSocket::ConnectedState) {
     while (true) {
       int nBytes = _socket->bytesAvailable();
@@ -82,6 +87,10 @@ void bncNetQueryV1::waitForReadyRead(QByteArray& outData) {
 // Connect to Caster, send the Request
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
+
+  if (_status == bncNetQuery::fatal) {
+    return;
+  }
 
   _status = running;
 
@@ -211,7 +220,7 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
   if (response.size() > 0) {
     delete _socket;
     _socket = 0;
-    _status = error;
+    _status = fatal;
     emit newMessage(_url.path().toAscii().replace(0,1,"") 
                     + ": Wrong caster response\n" 
                     + response.join("").toAscii(), true);
