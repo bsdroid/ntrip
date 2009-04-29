@@ -23,7 +23,7 @@ class bncNetQueryUdp : public bncNetQuery {
   QHostAddress _address;
   int          _port;
   char         _keepAlive[12];
-  int          _session;
+  unsigned     _session;
 };
 
 #endif

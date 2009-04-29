@@ -159,7 +159,7 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
     QString line = in.readLine();
     while (!line.isEmpty()) {
       if (line.indexOf("Session:") == 0) {
-        _session = line.mid(9).toInt();
+        _session = line.mid(9).toUInt();
         _keepAlive[ 8] = (_session >> 24) & 0xFF;
         _keepAlive[ 9] = (_session >> 16) & 0xFF;
         _keepAlive[10] = (_session >>  8) & 0xFF;

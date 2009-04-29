@@ -183,7 +183,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
           // Send initial RTP packet for firewall handling
           // ---------------------------------------------
           if (!serverPort.isEmpty()) {
-            int sessInt = _session.toInt();
+            unsigned sessInt = _session.toInt();
             char rtpbuffer[12];
             rtpbuffer[0]  = 128;
             rtpbuffer[1]  =  96;
