@@ -6,6 +6,9 @@ CONFIG += release
 
 RESOURCES += bns.qrc
 
+unix:QMAKE_CFLAGS_RELEASE   -= -O2
+unix:QMAKE_CXXFLAGS_RELEASE -= -O2
+
 # Get rid of wrong warnings with MinGW g++ Version 3.4.5
 # ------------------------------------------------------
 win32:CONFIG += warn_off
