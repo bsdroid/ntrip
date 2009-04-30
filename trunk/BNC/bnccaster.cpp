@@ -297,7 +297,7 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
 
 	if (first) {
 	  QTime enomtime = QTime(0,0,0).addSecs(static_cast<int>(floor(obs->_o.GPSWeeks+0.5)));
-	  emit( newMessage( QString("Epoch %1 dumped").arg(enomtime.toString("HH:mm:ss")).toAscii(), true) );
+//        emit( newMessage( QString("Epoch %1 dumped").arg(enomtime.toString("HH:mm:ss")).toAscii(), true) ); // weber
 	}
         // Output into the file
         // --------------------
