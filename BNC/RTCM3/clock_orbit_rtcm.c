@@ -2,7 +2,7 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.4 2009/04/24 08:36:34 stoecker Exp $
+        Version:        $Id: clock_orbit_rtcm.c,v 1.5 2009/04/30 08:41:49 stoecker Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -127,6 +127,7 @@ int moremessagesfollow, char *buffer, size_t size)
 {
   int gpshr=0, gpsur=0, gpsor=0, gpscl=0, gpsco=0, glohr=0, glour=0, gloor=0,
   glocl=0, gloco=0, mmi, i;
+
   STARTDATA
 
   if(co->NumberOfGPSSat && co->HRDataSupplied
@@ -396,6 +397,7 @@ int moremessagesfollow, char *buffer, size_t size)
     ENDBLOCK
   }
 
+
   return ressize;
 }
 
@@ -403,6 +405,7 @@ size_t MakeBias(const struct Bias *b, enum BiasType type,
 int moremessagesfollow, char *buffer, size_t size)
 {
   int gps, glo, mmi, i, j;
+
   STARTDATA
 
   if(b->NumberOfGPSSat && (type == BTYPE_AUTO || type == BTYPE_GPS))
@@ -574,7 +577,8 @@ enum OldBiasType { OLDBTYPE_GPS=4052, OLDBTYPE_GLONASS=4055};
 enum GCOB_RETURN GetClockOrbitBias(struct ClockOrbit *co, struct Bias *b,
 const char *buffer, size_t size, int *bytesused)
 {
-  int type, mmi=0, i, j, h, rs, sizeofrtcmblock;
+  int type, mmi=0, i, j, h, rs;
+  size_t sizeofrtcmblock;
   const char *blockstart = buffer;
   DECODESTART
 
@@ -590,7 +594,7 @@ const char *buffer, size_t size, int *bytesused)
   if(size < sizeofrtcmblock + 3) /* 3 header bytes already removed */
     return GCOBR_MESSAGEEXCEEDSBUFFER;
   if(CRC24(sizeofrtcmblock+3, (const unsigned char *) blockstart) !=
-  ((((unsigned char)buffer[sizeofrtcmblock])<<16)|
+  (uint32_t)((((unsigned char)buffer[sizeofrtcmblock])<<16)|
    (((unsigned char)buffer[sizeofrtcmblock+1])<<8)|
    (((unsigned char)buffer[sizeofrtcmblock+2]))))
     return GCOBR_CRCMISMATCH;
