@@ -2,7 +2,7 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.5 2009/04/30 08:41:49 stoecker Exp $
+        Version:        $Id: clock_orbit_rtcm.c,v 1.6 2009/05/04 12:53:42 stoecker Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -78,6 +78,8 @@ modified variables are:
     int len = buffer-blockstart-3; \
     blockstart[1] |= len>>8; \
     blockstart[2] = len; \
+    if(len > 1023) \
+      return 0; \
     len = CRC24(len+3, (const unsigned char *) blockstart); \
     ADDBITS(24, len) \
   }
@@ -143,7 +145,8 @@ int moremessagesfollow, char *buffer, size_t size)
   && (type == COTYPE_AUTO || type == COTYPE_GPSCLOCK))
     gpscl = 1;
   if(co->NumberOfGPSSat && co->ClockDataSupplied && co->OrbitDataSupplied
-  && (type == COTYPE_AUTO || type == COTYPE_GPSCOMBINED))
+  && (type == COTYPE_AUTO || type == COTYPE_GPSCOMBINED)
+  && co->NumberOfGPSSat < 28)
   {
     gpsco = 1; gpsor = 0; gpscl = 0;
   }
@@ -396,7 +399,6 @@ int moremessagesfollow, char *buffer, size_t size)
     }
     ENDBLOCK
   }
-
 
   return ressize;
 }
