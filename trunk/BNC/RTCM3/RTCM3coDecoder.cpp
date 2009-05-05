@@ -71,6 +71,8 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
 
   connect(this, SIGNAL(newCorrLine(QString, QString, long)), 
           (bncApp*) qApp, SLOT(slotNewCorrLine(QString, QString, long)));
+
+  memset(&_co, 0, sizeof(_co));
 }
 
 // Destructor
@@ -126,26 +128,30 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
   while (true) {
    
-    memset(&_co, 0, sizeof(_co));
-
     int bytesused = 0;
     GCOB_RETURN irc = GetClockOrbitBias(&_co, &_bias, _buffer.data(), 
                                         _buffer.size(), &bytesused);
 
     // Not enough Data
     // ---------------
-    if      (irc == GCOBR_SHORTBUFFER ||
+    if      (irc == GCOBR_SHORTBUFFER         ||
              irc == GCOBR_MESSAGEEXCEEDSBUFFER) {
       if (retCode != success) {
         _GPSweeks = -1.0;
       }
       return retCode;
     }
+
+    // Second part of the message follows
+    // ----------------------------------
+    else if (irc == GCOBR_MESSAGEFOLLOWS) {
+      _buffer = _buffer.mid(bytesused);
+    }
     
     // Message correctly decoded
     // -------------------------
-    else if ( (irc == GCOBR_OK || irc == GCOBR_MESSAGEFOLLOWS) && 
-              bytesused > 0) {
+    else if (bytesused > 0 && irc == GCOBR_OK) {
+
       reopen();
 
       int    GPSweek;
@@ -204,6 +210,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
       }
       _buffer = _buffer.mid(bytesused);
       retCode = success;
+      memset(&_co, 0, sizeof(_co));
     }
 
     // All other Cases
