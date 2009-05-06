@@ -122,103 +122,108 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
   errmsg.clear();
 
+//printf("Start with %d new bytes and %d old bytes\n", bufLen, _buffer.size());
+
   _buffer.append(QByteArray(buffer,bufLen));
 
   t_irc retCode = failure;
 
-  while (true) {
-   
+  while(_buffer.size())
+  {
     int bytesused = 0;
-    GCOB_RETURN irc = GetClockOrbitBias(&_co, &_bias, _buffer.data(), 
+    struct ClockOrbit cox;
+    memcpy(&cox, &_co, sizeof(cox)); /* save state */
+
+    GCOB_RETURN irc = GetClockOrbitBias(&_co, &_bias, _buffer.data(),
                                         _buffer.size(), &bytesused);
 
-    // Not enough Data
-    // ---------------
-    if      (irc == GCOBR_SHORTBUFFER         ||
-             irc == GCOBR_MESSAGEEXCEEDSBUFFER) {
+//printf("used %4d buffer %4d return %4d first byte %2x\n", bytesused, _buffer.size(), irc, (unsigned char)_buffer.data()[0]);
+    if(irc <= -30) /* not enough data found */
+    {
+      /* copy previous state back - necessary in case of MESSAGEFOLLOWS with
+         incomplete second block */
+      memcpy(&_co, &cox, sizeof(cox));
       if (retCode != success) {
         _GPSweeks = -1.0;
       }
       return retCode;
     }
-
-    // Second part of the message follows
-    // ----------------------------------
-    else if (irc == GCOBR_MESSAGEFOLLOWS) {
+    else if(irc >= 0)
+    {
       _buffer = _buffer.mid(bytesused);
-    }
-    
-    // Message correctly decoded
-    // -------------------------
-    else if (bytesused > 0 && irc == GCOBR_OK) {
 
-      reopen();
+      if(irc == GCOBR_OK) /* correctly and complete decoded */
+      {
+        reopen();
 
-      int    GPSweek;
-      currentGPSWeeks(GPSweek, _GPSweeks);
-      if (_co.NumberOfGPSSat > 0) {
-        if      (_GPSweeks > _co.GPSEpochTime + 86400.0) {
-          GPSweek += 1;
-        }
-        else if (_GPSweeks < _co.GPSEpochTime - 86400.0) {
-          GPSweek -= 1;
-        }
-        _GPSweeks = _co.GPSEpochTime;
-      }
-      else {
-        double GPSdaysec = fmod(_GPSweeks, 86400.0);
-        int    weekDay   = int((_GPSweeks - GPSdaysec) / 86400.0);
-        if      (GPSdaysec > _co.GLONASSEpochTime + 3600.0) {
-          weekDay += 1;
-          if (weekDay > 6) {
-            weekDay = 0;
+//printf("TIME: gps %d glonass %d gps_tod %d\n", _co.GPSEpochTime, _co.GLONASSEpochTime, _co.GPSEpochTime%86400);
+
+        int    GPSweek;
+        currentGPSWeeks(GPSweek, _GPSweeks);
+        if (_co.NumberOfGPSSat > 0) {
+          if      (_GPSweeks > _co.GPSEpochTime + 86400.0) {
             GPSweek += 1;
           }
-        }
-        else if (GPSdaysec < _co.GLONASSEpochTime - 3600.0) {
-          weekDay -= 1;
-          if (weekDay < 0) {
-            weekDay = 6;
+          else if (_GPSweeks < _co.GPSEpochTime - 86400.0) {
             GPSweek -= 1;
           }
+          _GPSweeks = _co.GPSEpochTime;
         }
-        _GPSweeks = weekDay * 86400.0 + _co.GLONASSEpochTime;
-      }
+        else {
+          double GPSdaysec = fmod(_GPSweeks, 86400.0);
+          int    weekDay   = int((_GPSweeks - GPSdaysec) / 86400.0);
+          if      (GPSdaysec > _co.GLONASSEpochTime + 3600.0) {
+            weekDay += 1;
+            if (weekDay > 6) {
+              weekDay = 0;
+              GPSweek += 1;
+            }
+          }
+          else if (GPSdaysec < _co.GLONASSEpochTime - 3600.0) {
+            weekDay -= 1;
+            if (weekDay < 0) {
+              weekDay = 6;
+              GPSweek -= 1;
+            }
+          }
+          _GPSweeks = weekDay * 86400.0 + _co.GLONASSEpochTime;
+        }
 
-      for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
-        QString line;
-        line.sprintf("%d %.1f G%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f", 
-               GPSweek, _GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
-               _co.Sat[ii].Clock.DeltaA0,
-               _co.Sat[ii].Orbit.DeltaRadial, 
-               _co.Sat[ii].Orbit.DeltaAlongTrack,
-               _co.Sat[ii].Orbit.DeltaCrossTrack);
-        long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
-        printLine(line, coTime);
+        for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
+          QString line;
+          line.sprintf("%d %.1f G%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f", 
+                  GPSweek, _GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
+                  _co.Sat[ii].Clock.DeltaA0,
+                  _co.Sat[ii].Orbit.DeltaRadial, 
+                  _co.Sat[ii].Orbit.DeltaAlongTrack,
+                  _co.Sat[ii].Orbit.DeltaCrossTrack);
+          long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
+          printLine(line, coTime);
+        }
+        for(int ii = CLOCKORBIT_NUMGPS; 
+            ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
+          QString line;
+          line.sprintf("%d %.1f R%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f", 
+                  GPSweek, _GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
+                  _co.Sat[ii].Clock.DeltaA0, 
+                  _co.Sat[ii].Orbit.DeltaRadial, 
+                  _co.Sat[ii].Orbit.DeltaAlongTrack,
+                  _co.Sat[ii].Orbit.DeltaCrossTrack);
+          long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
+          printLine(line, coTime);
+        }
+        retCode = success;
+        memset(&_co, 0, sizeof(_co));
       }
-      for(int ii = CLOCKORBIT_NUMGPS; 
-          ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
-        QString line;
-        line.sprintf("%d %.1f R%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f", 
-               GPSweek, _GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
-               _co.Sat[ii].Clock.DeltaA0, 
-               _co.Sat[ii].Orbit.DeltaRadial, 
-               _co.Sat[ii].Orbit.DeltaAlongTrack,
-               _co.Sat[ii].Orbit.DeltaCrossTrack);
-        long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
-        printLine(line, coTime);
-      }
-      _buffer = _buffer.mid(bytesused);
-      retCode = success;
-      memset(&_co, 0, sizeof(_co));
     }
-
-    // All other Cases
-    // ---------------
-    else {
+    else /* error  - skip 1 byte and retry */
+    {
+      memset(&_co, 0, sizeof(_co));
       _buffer = _buffer.mid(1);
     }
   }
+//printf("Return with %d (success = %d) bytes %d\n", retCode, success, _buffer.size());
+  return retCode;
 }
 
 // 

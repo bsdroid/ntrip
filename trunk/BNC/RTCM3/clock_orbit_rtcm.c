@@ -2,7 +2,7 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.6 2009/05/04 12:53:42 stoecker Exp $
+        Version:        $Id: clock_orbit_rtcm.c,v 1.12 2009/05/05 07:00:40 mervart Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -617,9 +617,9 @@ fprintf(stderr, "type %d size %d\n",type,sizeofrtcmblock);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
-    if(co->OrbitDataSupplied)
+    if(co->OrbitDataSupplied&1)
       return GCOBR_DATAMISMATCH;
-    co->OrbitDataSupplied = 1;
+    co->OrbitDataSupplied |= 1;
 #ifdef DEBUG
 fprintf(stderr, "epochtime %d ui %d mmi %d sats %d\n",co->GPSEpochTime,co->UpdateInterval,mmi,co->NumberOfGPSSat);
 #endif
@@ -662,9 +662,9 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
-    if(co->ClockDataSupplied)
+    if(co->ClockDataSupplied & 1)
       return GCOBR_DATAMISMATCH;
-    co->ClockDataSupplied = 1;
+    co->ClockDataSupplied |= 1;
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
       G_GPS_SATELLITE_ID(co->Sat[i].ID)
@@ -682,10 +682,10 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
-    if(co->ClockDataSupplied || co->OrbitDataSupplied)
+    if((co->ClockDataSupplied&1) || (co->OrbitDataSupplied&1))
       return GCOBR_DATAMISMATCH;
-    co->OrbitDataSupplied = 1;
-    co->ClockDataSupplied = 1;
+    co->OrbitDataSupplied |= 1;
+    co->ClockDataSupplied |= 1;
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
       G_GPS_SATELLITE_ID(co->Sat[i].ID)
@@ -714,9 +714,9 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
-    if(co->URADataSupplied)
+    if(co->URADataSupplied&1)
       return GCOBR_DATAMISMATCH;
-    co->URADataSupplied = 1;
+    co->URADataSupplied |= 1;
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
       G_GPS_SATELLITE_ID(co->Sat[i].ID)
@@ -732,9 +732,9 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGPSSat)
-    if(co->HRDataSupplied)
+    if(co->HRDataSupplied&1)
       return GCOBR_DATAMISMATCH;
-    co->HRDataSupplied = 1;
+    co->HRDataSupplied |= 1;
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
       G_GPS_SATELLITE_ID(co->Sat[i].ID)
@@ -748,9 +748,9 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
-    if(co->OrbitDataSupplied)
+    if(co->OrbitDataSupplied&2)
       return GCOBR_DATAMISMATCH;
-    co->OrbitDataSupplied = 1;
+    co->OrbitDataSupplied |= 2;
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
     {
@@ -776,9 +776,9 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
-    if(co->ClockDataSupplied)
+    if(co->ClockDataSupplied&2)
       return GCOBR_DATAMISMATCH;
-    co->ClockDataSupplied = 1;
+    co->ClockDataSupplied |= 2;
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
     {
@@ -795,10 +795,10 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
-    if(co->ClockDataSupplied || co->OrbitDataSupplied)
+    if((co->ClockDataSupplied&2) || (co->OrbitDataSupplied&2))
       return GCOBR_DATAMISMATCH;
-    co->OrbitDataSupplied = 1;
-    co->ClockDataSupplied = 1;
+    co->OrbitDataSupplied |= 2;
+    co->ClockDataSupplied |= 2;
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
     {
@@ -826,9 +826,9 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
-    if(co->URADataSupplied)
+    if(co->URADataSupplied&2)
       return GCOBR_DATAMISMATCH;
-    co->URADataSupplied = 1;
+    co->URADataSupplied |= 2;
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
     {
@@ -843,9 +843,9 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED5
     G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
-    if(co->HRDataSupplied)
+    if(co->HRDataSupplied&2)
       return GCOBR_DATAMISMATCH;
-    co->HRDataSupplied = 1;
+    co->HRDataSupplied |= 2;
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
     {
@@ -899,9 +899,9 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     OLD_G_RESERVED6
     OLD_G_NO_OF_SATELLITES(co->NumberOfGPSSat)
-    if(co->OrbitDataSupplied)
+    if(co->OrbitDataSupplied&1)
       return GCOBR_DATAMISMATCH;
-    co->OrbitDataSupplied = 1;
+    co->OrbitDataSupplied |= 1;
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
       G_GPS_SATELLITE_ID(co->Sat[i].ID)
@@ -927,9 +927,9 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     OLD_G_RESERVED6
     OLD_G_NO_OF_SATELLITES(co->NumberOfGPSSat)
-    if(co->ClockDataSupplied)
+    if(co->ClockDataSupplied&1)
       return GCOBR_DATAMISMATCH;
-    co->ClockDataSupplied = 1;
+    co->ClockDataSupplied |= 1;
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
       G_GPS_SATELLITE_ID(co->Sat[i].ID)
@@ -947,10 +947,10 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     OLD_G_RESERVED6
     OLD_G_NO_OF_SATELLITES(co->NumberOfGPSSat)
-    if(co->ClockDataSupplied || co->OrbitDataSupplied)
+    if((co->ClockDataSupplied&1) || (co->OrbitDataSupplied&1))
       return GCOBR_DATAMISMATCH;
-    co->OrbitDataSupplied = 1;
-    co->ClockDataSupplied = 1;
+    co->OrbitDataSupplied |= 1;
+    co->ClockDataSupplied |= 1;
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
       G_GPS_SATELLITE_ID(co->Sat[i].ID)
@@ -977,9 +977,9 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     OLD_G_RESERVED6
     OLD_G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
-    if(co->OrbitDataSupplied)
+    if(co->OrbitDataSupplied&2)
       return GCOBR_DATAMISMATCH;
-    co->OrbitDataSupplied = 1;
+    co->OrbitDataSupplied |= 2;
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
     {
@@ -1004,9 +1004,9 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     OLD_G_RESERVED6
     OLD_G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
-    if(co->ClockDataSupplied)
+    if(co->ClockDataSupplied&2)
       return GCOBR_DATAMISMATCH;
-    co->ClockDataSupplied = 1;
+    co->ClockDataSupplied |= 2;
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
     {
@@ -1023,10 +1023,10 @@ co->SatRefDatum);
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     OLD_G_RESERVED6
     OLD_G_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
-    if(co->ClockDataSupplied || co->OrbitDataSupplied)
+    if((co->ClockDataSupplied&2) || (co->OrbitDataSupplied&2))
       return GCOBR_DATAMISMATCH;
-    co->OrbitDataSupplied = 1;
-    co->ClockDataSupplied = 1;
+    co->OrbitDataSupplied |= 2;
+    co->ClockDataSupplied |= 2;
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
     {
