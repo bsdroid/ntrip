@@ -151,52 +151,56 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
       if (irc == GCOBR_OK) { 
         reopen();
+
+        // Guess GPS week and sec using system time
+        // ----------------------------------------
         int    GPSweek;
-        currentGPSWeeks(GPSweek, _GPSweeks);
+        double GPSweeksHlp;
+        currentGPSWeeks(GPSweek, GPSweeksHlp);
+
+        // Correction Epoch from GPSEpochTime
+        // ----------------------------------
         if (_co.NumberOfGPSSat > 0) {
-          if      (_GPSweeks > _co.GPSEpochTime + 86400.0) {
+          if      (GPSweeksHlp > _co.GPSEpochTime + 86400.0) {
             GPSweek += 1;
           }
-          else if (_GPSweeks < _co.GPSEpochTime - 86400.0) {
+          else if (GPSweeksHlp < _co.GPSEpochTime - 86400.0) {
             GPSweek -= 1;
           }
           _GPSweeks = _co.GPSEpochTime;
         }
+
+        // Correction Epoch from Glonass Epoch
+        // -----------------------------------
         else {
-
-          // Guess GPS week and sec using system time
-          // ----------------------------------------
-          int week;
-          double sec;
-          currentGPSWeeks(week, sec); 
-          int weekDay      = int(sec/86400.0); 
-          int GPSDaySecHlp = int(sec) - weekDay * 86400;
-
-          // cout << "week, sec " << week << " " << sec << endl;
 
           // Second of day (GPS time) from Glonass Epoch
           // -------------------------------------------
-          QDate date = dateAndTimeFromGPSweek(week, sec).date();
+          QDate date = dateAndTimeFromGPSweek(GPSweek, GPSweeksHlp).date();
           int leapSecond = gnumleap(date.year(), date.month(), date.day());
           int GPSDaySec  = _co.GLONASSEpochTime + 3 * 3600 + leapSecond;
 
-          // cout << "GlonassEpoch, leapSecond, GPSDaySec "
-          //      << _co.GLONASSEpochTime << " " << leapSecond << " "
-          //      << GPSDaySec << endl;
+          int weekDay      = int(GPSweeksHlp/86400.0); 
+          int GPSDaySecHlp = int(GPSweeksHlp) - weekDay * 86400;
 
           // Handle the difference between system clock and correction epoch
           // ---------------------------------------------------------------
           if      (GPSDaySec < GPSDaySecHlp - 3600) {
             weekDay += 1;
+            if (weekDay > 6) {
+              weekDay = 0;
+              GPSweek += 1;
+            }
           }
           else if (GPSDaySec > GPSDaySecHlp + 3600) {
             weekDay -= 1;
+            if (weekDay < 0) {
+              weekDay = 6;
+              GPSweek -= 1;
+            }
           } 
 
           _GPSweeks = weekDay * 86400.0 + GPSDaySec;
-                      
-          // cout << "weekDay, _GPSweeks " << weekDay << " " 
-          //      << _GPSweeks << endl;
         }
 
         for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
