@@ -3,7 +3,7 @@
 
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.h,v 1.15 2008/11/26 12:17:13 weber Exp $
+  $Id: rtcm3torinex.h,v 1.16 2008/12/08 10:50:42 mervart Exp $
   Copyright (C) 2005-2006 by Dirk Stöcker <stoecker@alberding.eu>
 
   This program is free software; you can redistribute it and/or modify
@@ -231,6 +231,7 @@ struct RTCM3ParserData {
 #endif /* __GNUC__ */
 #endif /* PRINTFARG */
 
+int gnumleap(int year, int month, int day);
 void HandleHeader(struct RTCM3ParserData *Parser);
 int RTCM3Parser(struct RTCM3ParserData *handle);
 void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte);
