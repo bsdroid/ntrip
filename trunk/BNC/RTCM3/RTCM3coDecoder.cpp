@@ -135,15 +135,17 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     GCOB_RETURN irc = GetClockOrbitBias(&_co, &_bias, _buffer.data(),
                                         _buffer.size(), &bytesused);
 
-    if      (irc <= -30) { // not enough data
+    if      (irc <= -30) { // not enough data - restore state and exit loop
       memcpy(&_co, &co_sav, sizeof(co_sav));
-      if (retCode != success) {
-        _GPSweeks = -1.0;
-      }
-      return retCode;
+      break;
     }
 
-    else if (irc >= 0) {  // OK or MESSAGEFOLLOWS
+    else if (irc < 0) {    // error  - skip 1 byte and retry
+      memset(&_co, 0, sizeof(_co));
+      _buffer = _buffer.mid(1);
+    }
+
+    else {                 // OK or MESSAGEFOLLOWS
       _buffer = _buffer.mid(bytesused);
 
       if (irc == GCOBR_OK) { 
@@ -206,13 +208,11 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         memset(&_co, 0, sizeof(_co));
       }
     }
-
-    else { // error  - skip 1 byte and retry
-      memset(&_co, 0, sizeof(_co));
-      _buffer = _buffer.mid(1);
-    }
   }
 
+  if (retCode != success) {
+    _GPSweeks = -1.0;
+  }
   return retCode;
 }
 
