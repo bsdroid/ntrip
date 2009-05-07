@@ -122,42 +122,32 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
   errmsg.clear();
 
-//printf("Start with %d new bytes and %d old bytes\n", bufLen, _buffer.size());
-
   _buffer.append(QByteArray(buffer,bufLen));
 
   t_irc retCode = failure;
 
-  while(_buffer.size())
-  {
+  while(_buffer.size()) {
+
     int bytesused = 0;
-    struct ClockOrbit cox;
-    memcpy(&cox, &_co, sizeof(cox)); /* save state */
+    struct ClockOrbit co_sav;
+    memcpy(&co_sav, &_co, sizeof(co_sav)); // save state
 
     GCOB_RETURN irc = GetClockOrbitBias(&_co, &_bias, _buffer.data(),
                                         _buffer.size(), &bytesused);
 
-//printf("used %4d buffer %4d return %4d first byte %2x\n", bytesused, _buffer.size(), irc, (unsigned char)_buffer.data()[0]);
-    if(irc <= -30) /* not enough data found */
-    {
-      /* copy previous state back - necessary in case of MESSAGEFOLLOWS with
-         incomplete second block */
-      memcpy(&_co, &cox, sizeof(cox));
+    if      (irc <= -30) { // not enough data
+      memcpy(&_co, &co_sav, sizeof(co_sav));
       if (retCode != success) {
         _GPSweeks = -1.0;
       }
       return retCode;
     }
-    else if(irc >= 0)
-    {
+
+    else if (irc >= 0) {  // OK or MESSAGEFOLLOWS
       _buffer = _buffer.mid(bytesused);
 
-      if(irc == GCOBR_OK) /* correctly and complete decoded */
-      {
+      if (irc == GCOBR_OK) { 
         reopen();
-
-//printf("TIME: gps %d glonass %d gps_tod %d\n", _co.GPSEpochTime, _co.GLONASSEpochTime, _co.GPSEpochTime%86400);
-
         int    GPSweek;
         currentGPSWeeks(GPSweek, _GPSweeks);
         if (_co.NumberOfGPSSat > 0) {
@@ -216,13 +206,13 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         memset(&_co, 0, sizeof(_co));
       }
     }
-    else /* error  - skip 1 byte and retry */
-    {
+
+    else { // error  - skip 1 byte and retry
       memset(&_co, 0, sizeof(_co));
       _buffer = _buffer.mid(1);
     }
   }
-//printf("Return with %d (success = %d) bytes %d\n", retCode, success, _buffer.size());
+
   return retCode;
 }
 
