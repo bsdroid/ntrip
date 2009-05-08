@@ -51,7 +51,7 @@ BNC supports the following GNSS data formats:
 <p>
 <ul>
 <li>RTCM Version 2.x containing message types 18 and 19 or 20 and 21 together with 3 and 22 (GPS and GLONASS), </li> 
-<li>RTCM Version 3.x containing message types 1002 (GPS, SBAS) or 1004 (GPS), 1010 or 1012 (GLONASS), 1019 or 1020 (broadcast ephemeris), 3001-3012 (premature messages for combined orbit and clock corrections to GPS and GLONASS broadcast ephemeris)</li>
+<li>RTCM Version 3.x containing message types 1002 (GPS, SBAS) or 1004 (GPS), 1010 or 1012 (GLONASS), 1019 or 1020 (broadcast ephemeris), 1057-1068 (premature State Space Representation messages for GPS and GLONASS)</li>
 <li>RTIGS containing GPS record types 200 (observations) and 300 (ephemeris).</li>
 </ul>
 BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
@@ -392,18 +392,18 @@ Note that this does not concern the broadcast ephemeris output throug IP port wh
 </p>
 RTCM is in the process of developing new Version 3 messages to transport satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following premature messages currently under discussion have been implemented in BNC:
 <ul>
-<li>Message type 3001: GPS orbit corrections to Broadcast Ephemeris</li>
-<li>Message type 3002: GPS clock corrections to Broadcast Ephemeris</li>
-<li>Message type 3003: GPS code biases</li>
-<li>Message type 3004: Combined orbit and clock corrections to GPS Broadcast Ephemeris</li>
-<li>Message type 3005: GPS User Range Accuracy (URA)</li>
-<li>Message type 3006: High-rate GPS clock corrections to Broadcast Ephemeris</li>
-<li>Message type 3007: GLONASS orbit corrections to Broadcast Ephemeris</li>
-<li>Message type 3008: GLONASS clock corrections to Broadcast Ephemeris</li>
-<li>Message type 3009: GLONASS code biases</li>
-<li>Message type 3010: Combined orbit and clock corrections to GLONASS Broadcast Ephemeris</li>
-<li>Message type 3011: GLONASS User Range Accuracy (URA)</li>
-<li>Message type 3012: High-rate GLONASS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 1057: GPS orbit corrections to Broadcast Ephemeris</li>
+<li>Message type 1058: GPS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 1059: GPS code biases</li>
+<li>Message type 1060: Combined orbit and clock corrections to GPS Broadcast Ephemeris</li>
+<li>Message type 1061: GPS User Range Accuracy (URA)</li>
+<li>Message type 1062: High-rate GPS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 1063: GLONASS orbit corrections to Broadcast Ephemeris</li>
+<li>Message type 1064: GLONASS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 1065: GLONASS code biases</li>
+<li>Message type 1066: Combined orbit and clock corrections to GLONASS Broadcast Ephemeris</li>
+<li>Message type 1067: GLONASS User Range Accuracy (URA)</li>
+<li>Message type 1068: High-rate GLONASS clock corrections to Broadcast Ephemeris</li>
 </ul>
 <p>
 RTCM Version 3 streams carrying these messages may be used i.e. to support real-time Precise Point Positioning (PPP) applications. 
@@ -457,7 +457,7 @@ BNC can output epoch by epoch synchronized Broadcast Corrections in ASCII format
 The output format equals the format used for saving Broadcast Corrections in a file with the exception that the Mountpoint is added at each line's end.
 </p>
 <p>
-The following is an example output from two RTCM Version 3 streams (CLCK1 and CLCK4) containing message types 3004 and 3010:
+The following is an example output from two RTCM Version 3 streams (CLCK1 and CLCK4) containing message types 1060 and 1066:
 <pre>
 ...
 1490 115710.0 R17    18     -1.903      2.348   -1.343   -1.403 CLCK1
@@ -1025,7 +1025,7 @@ BNC currently will only handle C1, C2, P1, P2, L1, L2, S1, and S2 observations a
 <li>
 Using RTCM Version 3.x, BNC will properly handle message types 1002, 1004, 1010, and 1012. Note that when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
 </li>
-Concerning the RTCM Version 3.x premature message types 3001-3012 (see RTCM document 012-2009-SC104-528 'Proposed SSR Messages for SV Orbit, Clock, Code Biases, URA prepared by Geo++'), a final decision is not yet made. Note the what's implemented in BNC is just a temporary solutions.
+Concerning the RTCM Version 3.x premature message types 1057-1068 (see RTCM document 091-2009-SC104-542 'Version 3 Proposed Messages – Set 10'), a final decision is not yet made. Note the what's implemented in BNC is just a temporary solutions.
 <li>
 Using RTCM Version 2.x, BNC will only handle message types 18 and 19 or 20 and 21 together with position and the antenna offset information carried in types 3 and 22. Note that processing carrier phase corrections and pseudo-range corrections contained in message types 20 and 21 needs access to broadcast ephemeris. Hence, whenever dealing with message types 20 and 21, make sure that broadcast ephemeris become available for BNC through also retrieving at least one RTCM Version 3.x stream carrying message types 1019 (GPS ephemeris) and 1020 (GLONASS ephemeris).
 </li>
@@ -1133,7 +1133,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 
 <tr>
 <td>May 2009 &nbsp;</td><td>Version 1.7 &nbsp;</td>
-<td>[Bug] RINEX navigation file format<br> [Add] Upgrade to Qt Version 4.4.3<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port<br> [Add] Show broadcaster table from www.rtcm-ntrip.org<br> [Add] Enable/disable tab widgets<br> [Add] User defined configuration file name<br> [mod] Switch to configuration files in ini-Format<br> [Add] Daily logfile rotation<br> [Add] Read from TCP/IP port, by-pass NTRIP transport protocol<br> [Add] Save NMEA messages coming from rover<br> [Add] Auto start<br> [Add] Drag and drop ini files<br> [Add] Read from serial port, by-pass NTRIP transport protocol<br> [Mod] Update following RTCM 012-2009-SC104-528 document</td>
+<td>[Bug] RINEX navigation file format<br> [Add] Upgrade to Qt Version 4.4.3<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port<br> [Add] Show broadcaster table from www.rtcm-ntrip.org<br> [Add] Enable/disable tab widgets<br> [Add] User defined configuration file name<br> [mod] Switch to configuration files in ini-Format<br> [Add] Daily logfile rotation<br> [Add] Read from TCP/IP port, by-pass NTRIP transport protocol<br> [Add] Save NMEA messages coming from rover<br> [Add] Auto start<br> [Add] Drag and drop ini files<br> [Add] Read from serial port, by-pass NTRIP transport protocol<br> [Mod] Update following RTCM 091-2009-SC104-542 document</td>
 </tr>
 
 </table>
