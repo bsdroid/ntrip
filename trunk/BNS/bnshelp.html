@@ -396,7 +396,7 @@ The file is in plain ASCII format comprising records containing the following se
 </ul>
 </p>
 <p>
-The following is an example file contents based on combined orbit and clock corrections for GPS and GLONASS carried in RTCM Version 3.x message Type 3004 and 3010:
+The following is an example file contents based on combined orbit and clock corrections for GPS and GLONASS carried in RTCM Version 3.x message Type 1060 and 1066:
 </p>
 <p>
 <pre>
@@ -527,7 +527,7 @@ This leads to a BNS job using configuration file 'MyConfig.ini'. The configurati
 In Qt-based desktop environments (such as KDE) on Unix/Linux/Mac platforms users may experience a crash at startup even when BNS is run in the background using the '-nw' option. This is a known bug most likely resulting from an incompatibility of Qt libraries in the environment and in BNS. Entering the command 'unset SESSION_MANAGER' before running BNS may help as a work-around.
 </li>
 <li>
-Currently BNS can only generate premature RTCM Version 3.x message Type 3001-3012 (see RTCM document 012-2009-SC104-528 'Proposed SSR Messages for SV Orbit, Clock, Code Biases, URA prepared by Geo++'). Note that what is implemented in BNS is just a temporary solution.
+Currently BNS can only generate premature RTCM Version 3.x message Type 1057-1068 (see RTCM document 091-2009-SC104-542 'Version 3 Proposed Messages – Set 10') . Note that what is implemented in BNS is just a temporary solution.
 </li>
 <li>
 We experienced some limitation with the Standard Version of Microsoft Windows related to socket communication where sockets are not always handled properly. Since BNS makes intensive use of communication through sockets, we recommend to use the Server Version of Microsoft Windows when running BNS continuously for extended period on a Windows platform.
@@ -570,7 +570,7 @@ Frankfurt, Germany<br>
 
 <tr>
 <td>May 2009 &nbsp;</td><td>Version 1.1 &nbsp;</td>
-<td>[Add] Upgrade to Qt Version 4.4.3<br> [Add] Enable/disable tab widgets<br> [Add] User defined configuration file name<br> [mod] Switch to configuration files in ini-Format<br> [Add] Auto start<br> [Add] Drag and drop ini files<br> [Add] Send broadcast clocks<br> [Mod] Update following RTCM 012-2009-SC104-528 document</td>
+<td>[Add] Upgrade to Qt Version 4.4.3<br> [Add] Enable/disable tab widgets<br> [Add] User defined configuration file name<br> [mod] Switch to configuration files in ini-Format<br> [Add] Auto start<br> [Add] Drag and drop ini files<br> [Add] Send broadcast clocks<br> [Mod] Update following RTCM 091-2009-SC104-542 document</td>
 </tr>
 
 </table>
@@ -621,18 +621,18 @@ RTCM Version 3.x has been developed as a better alternative to RTCM Version 2.x.
 RTCM is in the process of developing new Version 3 message types to carry satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following premature messages currently under discussion of relevance to BNS are listed here:
 <p>
 <ul>
-<li>Message type 3001: GPS orbit corrections to Broadcast Ephemeris</li>
-<li>Message type 3002: GPS clock corrections to Broadcast Ephemeris</li>
-<li>Message type 3003: GPS code biases</li>
-<li>Message type 3004: Combined orbit and clock corrections to GPS Broadcast Ephemeris</li>
-<li>Message type 3005: GPS User Range Accuracy (URA)</li>
-<li>Message type 3006: High-rate GPS clock corrections to Broadcast Ephemeris</li>
-<li>Message type 3007: GLONASS orbit corrections to Broadcast Ephemeris</li>
-<li>Message type 3008: GLONASS clock corrections to Broadcast Ephemeris</li>
-<li>Message type 3009: GLONASS code biases</li>
-<li>Message type 3010: Combined orbit and clock corrections to GLONASS Broadcast Ephemeris</li>
-<li>Message type 3011: GLONASS User Range Accuracy (URA)</li>
-<li>Message type 3012: High-rate GLONASS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 1057: GPS orbit corrections to Broadcast Ephemeris</li>
+<li>Message type 1058: GPS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 1059: GPS code biases</li>
+<li>Message type 1060: Combined orbit and clock corrections to GPS Broadcast Ephemeris</li>
+<li>Message type 1061: GPS User Range Accuracy (URA)</li>
+<li>Message type 1062: High-rate GPS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 1063: GLONASS orbit corrections to Broadcast Ephemeris</li>
+<li>Message type 1064: GLONASS clock corrections to Broadcast Ephemeris</li>
+<li>Message type 1065: GLONASS code biases</li>
+<li>Message type 1066: Combined orbit and clock corrections to GLONASS Broadcast Ephemeris</li>
+<li>Message type 1067: GLONASS User Range Accuracy (URA)</li>
+<li>Message type 1068: High-rate GLONASS clock corrections to Broadcast Ephemeris</li>
 </ul>
 </p>
 <p>
