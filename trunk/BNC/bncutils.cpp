@@ -96,12 +96,8 @@ void currentGPSWeeks(int& week, double& sec) {
   }
   else {
     currDateTime = QDateTime::currentDateTime().toUTC();
-    if (currDateTime.date().year() >= 2009) {
-      leapsecond = 15;
-    }
-    else {
-      leapsecond = 14;
-    }
+    QDate date = currDateTime.date();
+    leapsecond = gnumleap(date.year(), date.month(), date.day());
   }
 
   QDate     currDate = currDateTime.date();
