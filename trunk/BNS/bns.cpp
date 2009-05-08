@@ -23,8 +23,16 @@
 #include "bnsrinex.h" 
 #include "bnssp3.h" 
 #include "bnssettings.h" 
+extern "C" {
+#include "RTCM/rtcm3torinex.h" 
+}
 
 using namespace std;
+
+// Error Handling
+////////////////////////////////////////////////////////////////////////////
+void RTCM3Error(const char*, ...) {
+}
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -380,7 +388,8 @@ void t_bns::readEpoch() {
         struct ClockOrbit co;
         memset(&co, 0, sizeof(co));
         co.GPSEpochTime      = (int)GPSweeks;
-        co.GLONASSEpochTime  = (int)fmod(GPSweeks, 86400.0);
+        co.GLONASSEpochTime  = (int)fmod(GPSweeks, 86400.0) 
+                             + 3 * 3600 - gnumleap(year, month, day);
         co.ClockDataSupplied = 1;
         co.OrbitDataSupplied = 1;
         co.SatRefPoint       = POINT_CENTER;
