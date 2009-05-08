@@ -178,7 +178,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           // -------------------------------------------
           QDate date = dateAndTimeFromGPSweek(GPSweek, GPSweeksHlp).date();
           int leapSecond = gnumleap(date.year(), date.month(), date.day());
-          int GPSDaySec  = _co.GLONASSEpochTime + 3 * 3600 + leapSecond;
+          int GPSDaySec  = _co.GLONASSEpochTime - 3 * 3600 + leapSecond;
 
           int weekDay      = int(GPSweeksHlp/86400.0); 
           int GPSDaySecHlp = int(GPSweeksHlp) - weekDay * 86400;
