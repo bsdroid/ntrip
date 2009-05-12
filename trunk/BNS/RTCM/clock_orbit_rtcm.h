@@ -5,7 +5,7 @@
 
         Name:           clock_orbit_rtcm.h
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.h,v 1.4 2009/04/24 08:36:34 stoecker Exp $
+        Version:        $Id: clock_orbit_rtcm.h,v 1.5 2009/05/12 13:19:03 stoecker Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -15,14 +15,14 @@
 enum SatelliteReferenceDatum { DATUM_ITRF=0, DATUM_LOCAL=1 };
 enum SatelliteReferencePoint { POINT_IONOFREE=0, POINT_CENTER=1 };
 enum ClockOrbitType {
-     COTYPE_GPSORBIT=3001, COTYPE_GPSCLOCK=3002,
-     COTYPE_GPSCOMBINED=3004, COTYPE_GPSURA=3005, COTYPE_GPSHR=3006,
+     COTYPE_GPSORBIT=1057, COTYPE_GPSCLOCK=1058,
+     COTYPE_GPSCOMBINED=1060, COTYPE_GPSURA=1061, COTYPE_GPSHR=1062,
 
-     COTYPE_GLONASSORBIT=3007, COTYPE_GLONASSCLOCK=3008,
-     COTYPE_GLONASSCOMBINED=3010, COTYPE_GLONASSURA=3011, COTYPE_GLONASSHR=3012,
+     COTYPE_GLONASSORBIT=1063, COTYPE_GLONASSCLOCK=1064,
+     COTYPE_GLONASSCOMBINED=1066, COTYPE_GLONASSURA=1067, COTYPE_GLONASSHR=1068,
 
      COTYPE_AUTO=0 };
-enum BiasType { BTYPE_GPS=3003, BTYPE_GLONASS=3009, BTYPE_AUTO = 0 };
+enum BiasType { BTYPE_GPS=1059, BTYPE_GLONASS=1065, BTYPE_AUTO = 0 };
 
 enum COR_CONSTANTS {
   CLOCKORBIT_BUFFERSIZE=2048,
