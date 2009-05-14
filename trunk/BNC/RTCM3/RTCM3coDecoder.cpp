@@ -143,13 +143,14 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
     else if (irc < 0) {    // error  - skip 1 byte and retry
       memset(&_co, 0, sizeof(_co));
-      _buffer = _buffer.mid(1);
+      memset(&_bias, 0, sizeof(_bias));
+      _buffer = _buffer.mid(bytesused ? bytesused : 1);
     }
 
     else {                 // OK or MESSAGEFOLLOWS
       _buffer = _buffer.mid(bytesused);
 
-      if (irc == GCOBR_OK) { 
+      if (irc == GCOBR_OK) {
         reopen();
 
         // Guess GPS week and sec using system time
@@ -172,7 +173,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
         // Correction Epoch from Glonass Epoch
         // -----------------------------------
-        else {
+        else if (_co.NumberOfGLONASSSat > 0){
 
           // Second of day (GPS time) from Glonass Epoch
           // -------------------------------------------
@@ -228,6 +229,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         }
         retCode = success;
         memset(&_co, 0, sizeof(_co));
+        memset(&_bias, 0, sizeof(_bias));
       }
     }
   }
