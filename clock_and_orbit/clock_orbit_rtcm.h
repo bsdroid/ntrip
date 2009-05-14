@@ -5,7 +5,7 @@
 
         Name:           clock_orbit_rtcm.h
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.h,v 1.9 2009/04/24 09:19:10 weber Exp $
+        Version:        $Id: clock_orbit_rtcm.h,v 1.11 2009/05/14 13:24:13 stoecker Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -121,6 +121,7 @@ enum GCOB_RETURN {
   GCOBR_UNKNOWNTYPE = -1,
   GCOBR_UNKNOWNDATA = -2,
   GCOBR_CRCMISMATCH = -3,
+  GCOBR_SHORTMESSAGE = -4,
   /* failed to do the work */
   GCOBR_NOCLOCKORBITPARAMETER = -10,
   GCOBR_NOBIASPARAMETER = -11,
@@ -129,10 +130,7 @@ enum GCOB_RETURN {
   GCOBR_DATAMISMATCH = -21,
   /* not enough data - can decode the block completely */
   GCOBR_SHORTBUFFER = -30,
-  GCOBR_MISSINGBITS = -31,
-  GCOBR_MESSAGEEXCEEDSBUFFER = -32,
-  GCOBR_SHORTMESSAGE = -33
-};
+  GCOBR_MESSAGEEXCEEDSBUFFER = -31};
 
 /* NOTE: When an error message has been emitted, the output structures may have been modified. Make a copy of the previous variant before calling the
 function to have a clean state. */
