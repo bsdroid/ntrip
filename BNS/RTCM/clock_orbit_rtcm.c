@@ -2,7 +2,7 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.7 2009/05/12 13:19:03 stoecker Exp $
+        Version:        $Id: clock_orbit_rtcm.c,v 1.15 2009/05/14 13:24:13 stoecker Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -572,6 +572,10 @@ const char *buffer, size_t size, int *bytesused)
   if(size < 7)
     return GCOBR_SHORTBUFFER;
 
+#ifdef DEBUG
+fprintf(stderr, "GetClockOrbitBias START: size %d, numbits %d\n",size, numbits);
+#endif
+
   G_HEADER(h)
   G_RESERVEDH(rs)
   G_SIZE(sizeofrtcmblock);
@@ -604,7 +608,8 @@ fprintf(stderr, "type %d size %d\n",type,sizeofrtcmblock);
     G_NO_OF_SATELLITES(nums)
     co->OrbitDataSupplied |= 1;
 #ifdef DEBUG
-fprintf(stderr, "epochtime %d ui %d mmi %d sats %d\n",co->GPSEpochTime,co->UpdateInterval,mmi,co->NumberOfGPSSat);
+fprintf(stderr, "epochtime %d ui %d mmi %d sats %d/%d\n",co->GPSEpochTime,
+co->UpdateInterval,mmi,co->NumberOfGPSSat,nums);
 #endif
     for(i = 0; i < nums; ++i)
     {
@@ -652,6 +657,10 @@ co->SatRefDatum);
     G_RESERVED5
     G_NO_OF_SATELLITES(nums)
     co->ClockDataSupplied |= 1;
+#ifdef DEBUG
+fprintf(stderr, "epochtime %d ui %d mmi %d sats %d/%d\n",co->GPSEpochTime,
+co->UpdateInterval,mmi,co->NumberOfGPSSat,nums);
+#endif
     for(i = 0; i < nums; ++i)
     {
       G_GPS_SATELLITE_ID(id)
@@ -664,6 +673,11 @@ co->SatRefDatum);
       G_DELTA_CLOCK_C0(co->Sat[pos].Clock.DeltaA0)
       G_DELTA_CLOCK_C1(co->Sat[pos].Clock.DeltaA1)
       G_DELTA_CLOCK_C2(co->Sat[pos].Clock.DeltaA2)
+#ifdef DEBUG
+fprintf(stderr, "id %2d c0 %8.3f c1 %8.3f c2 %8.3f\n",
+co->Sat[pos].ID, co->Sat[pos].Clock.DeltaA0, co->Sat[pos].Clock.DeltaA1,
+co->Sat[pos].Clock.DeltaA2);
+#endif
     }
     break;
   case COTYPE_GPSCOMBINED:
@@ -754,16 +768,19 @@ co->SatRefDatum);
     G_RESERVED5
     G_NO_OF_SATELLITES(nums)
     co->OrbitDataSupplied |= 2;
+#ifdef DEBUG
+fprintf(stderr, "epochtime %d ui %d mmi %d sats %d/%d\n",co->GLONASSEpochTime,
+co->UpdateInterval,mmi,co->NumberOfGLONASSSat,nums);
+#endif
     for(i = 0; i < nums; ++i)
     {
       G_GLONASS_SATELLITE_ID(id)
-      for(pos = CLOCKORBIT_NUMGPS; pos < co->NumberOfGLONASSSat && co->Sat[pos].ID != id; ++pos)
+      for(pos = CLOCKORBIT_NUMGPS; pos < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat && co->Sat[pos].ID != id; ++pos)
         ;
       if(pos >= CLOCKORBIT_NUMGPS+CLOCKORBIT_NUMGLONASS) return GCOBR_DATAMISMATCH;
-      else if(pos == co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
+      else if(pos == CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
       co->Sat[pos].ID = id;
 
-      G_GLONASS_SATELLITE_ID(co->Sat[pos].ID)
       G_GLONASS_IOD(co->Sat[pos].IOD)
       G_DELTA_RADIAL(co->Sat[pos].Orbit.DeltaRadial)
       G_DELTA_ALONG_TRACK(co->Sat[pos].Orbit.DeltaAlongTrack)
@@ -776,6 +793,19 @@ co->SatRefDatum);
       G_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[pos].Orbit.DotDotDeltaCrossTrack)
       G_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
       G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
+#ifdef DEBUG
+fprintf(stderr, "id %2d iod %3d dr %8.3f da %8.3f dc %8.3f dr %8.3f da %8.3f dc %8.3f dr %8.3f da %8.3f dc %8.3f rp %d rd %d\n",
+co->Sat[pos].ID,co->Sat[pos].IOD,co->Sat[pos].Orbit.DeltaRadial,
+co->Sat[pos].Orbit.DeltaAlongTrack,co->Sat[pos].Orbit.DeltaCrossTrack,
+co->Sat[pos].Orbit.DotDeltaRadial,
+co->Sat[pos].Orbit.DotDeltaAlongTrack,
+co->Sat[pos].Orbit.DotDeltaCrossTrack,
+co->Sat[pos].Orbit.DotDotDeltaRadial,
+co->Sat[pos].Orbit.DotDotDeltaAlongTrack,
+co->Sat[pos].Orbit.DotDotDeltaCrossTrack,
+co->SatRefPoint,
+co->SatRefDatum);
+#endif
     }
     break;
   case COTYPE_GLONASSCLOCK:
@@ -786,18 +816,27 @@ co->SatRefDatum);
     G_RESERVED5
     G_NO_OF_SATELLITES(nums)
     co->ClockDataSupplied |= 2;
+#ifdef DEBUG
+fprintf(stderr, "epochtime %d ui %d mmi %d sats %d/%d\n",co->GLONASSEpochTime,
+co->UpdateInterval,mmi,co->NumberOfGLONASSSat,nums);
+#endif
     for(i = 0; i < nums; ++i)
     {
       G_GLONASS_SATELLITE_ID(id)
-      for(pos = CLOCKORBIT_NUMGPS; pos < co->NumberOfGLONASSSat && co->Sat[pos].ID != id; ++pos)
+      for(pos = CLOCKORBIT_NUMGPS; pos < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat && co->Sat[pos].ID != id; ++pos)
         ;
       if(pos >= CLOCKORBIT_NUMGPS+CLOCKORBIT_NUMGLONASS) return GCOBR_DATAMISMATCH;
-      else if(pos == co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
+      else if(pos == CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
       co->Sat[pos].ID = id;
 
       G_DELTA_CLOCK_C0(co->Sat[pos].Clock.DeltaA0)
       G_DELTA_CLOCK_C1(co->Sat[pos].Clock.DeltaA1)
       G_DELTA_CLOCK_C2(co->Sat[pos].Clock.DeltaA2)
+#ifdef DEBUG
+fprintf(stderr, "id %2d c0 %8.3f c1 %8.3f c2 %8.3f\n",
+co->Sat[pos].ID, co->Sat[pos].Clock.DeltaA0, co->Sat[pos].Clock.DeltaA1,
+co->Sat[pos].Clock.DeltaA2);
+#endif
     }
     break;
   case COTYPE_GLONASSCOMBINED:
@@ -812,10 +851,10 @@ co->SatRefDatum);
     for(i = 0; i < nums; ++i)
     {
       G_GLONASS_SATELLITE_ID(id)
-      for(pos = CLOCKORBIT_NUMGPS; pos < co->NumberOfGLONASSSat && co->Sat[pos].ID != id; ++pos)
+      for(pos = CLOCKORBIT_NUMGPS; pos < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat && co->Sat[pos].ID != id; ++pos)
         ;
       if(pos >= CLOCKORBIT_NUMGPS+CLOCKORBIT_NUMGLONASS) return GCOBR_DATAMISMATCH;
-      else if(pos == co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
+      else if(pos == CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
       co->Sat[pos].ID = id;
 
       G_GLONASS_IOD(co->Sat[pos].IOD)
@@ -845,10 +884,10 @@ co->SatRefDatum);
     for(i = 0; i < nums; ++i)
     {
       G_GLONASS_SATELLITE_ID(id)
-      for(pos = CLOCKORBIT_NUMGPS; pos < co->NumberOfGLONASSSat && co->Sat[pos].ID != id; ++pos)
+      for(pos = CLOCKORBIT_NUMGPS; pos < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat && co->Sat[pos].ID != id; ++pos)
         ;
       if(pos >= CLOCKORBIT_NUMGPS+CLOCKORBIT_NUMGLONASS) return GCOBR_DATAMISMATCH;
-      else if(pos == co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
+      else if(pos == CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
       co->Sat[pos].ID = id;
 
       G_SSR_URA(co->Sat[pos].URA)
@@ -865,10 +904,10 @@ co->SatRefDatum);
     for(i = 0; i < nums; ++i)
     {
       G_GLONASS_SATELLITE_ID(id)
-      for(pos = CLOCKORBIT_NUMGPS; pos < co->NumberOfGLONASSSat && co->Sat[pos].ID != id; ++pos)
+      for(pos = CLOCKORBIT_NUMGPS; pos < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat && co->Sat[pos].ID != id; ++pos)
         ;
       if(pos >= CLOCKORBIT_NUMGPS+CLOCKORBIT_NUMGLONASS) return GCOBR_DATAMISMATCH;
-      else if(pos == co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
+      else if(pos == CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
       co->Sat[pos].ID = id;
 
       G_HR_CLOCK_CORRECTION(co->Sat[pos].hrclock)
@@ -876,19 +915,19 @@ co->SatRefDatum);
     break;
   case BTYPE_GPS:
     if(!b) return GCOBR_NOBIASPARAMETER;
-    G_GPS_EPOCH_TIME(b->GPSEpochTime, co->NumberOfGPSSat)
-    G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
+    G_GPS_EPOCH_TIME(b->GPSEpochTime, b->NumberOfGPSSat)
+    G_SSR_UPDATE_INTERVAL(b->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED5
     G_NO_OF_SATELLITES(nums)
     for(i = 0; i < nums; ++i)
     {
       G_GPS_SATELLITE_ID(id)
-      for(pos = 0; pos < co->NumberOfGPSSat && co->Sat[pos].ID != id; ++pos)
+      for(pos = 0; pos < b->NumberOfGPSSat && b->Sat[pos].ID != id; ++pos)
         ;
       if(pos >= CLOCKORBIT_NUMGPS) return GCOBR_DATAMISMATCH;
-      else if(pos == co->NumberOfGPSSat) ++co->NumberOfGPSSat;
-      co->Sat[pos].ID = id;
+      else if(pos == b->NumberOfGPSSat) ++b->NumberOfGPSSat;
+      b->Sat[pos].ID = id;
 
       G_NO_OF_CODE_BIASES(b->Sat[pos].NumberOfCodeBiases)
       for(j = 0; j < b->Sat[pos].NumberOfCodeBiases; ++j)
@@ -900,19 +939,19 @@ co->SatRefDatum);
     break;
   case BTYPE_GLONASS:
     if(!b) return GCOBR_NOBIASPARAMETER;
-    G_GPS_EPOCH_TIME(b->GLONASSEpochTime, co->NumberOfGLONASSSat)
-    G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
+    G_GLONASS_EPOCH_TIME(b->GLONASSEpochTime, b->NumberOfGLONASSSat)
+    G_SSR_UPDATE_INTERVAL(b->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED5
     G_NO_OF_SATELLITES(nums)
     for(i = 0; i < nums; ++i)
     {
       G_GLONASS_SATELLITE_ID(id)
-      for(pos = CLOCKORBIT_NUMGPS; pos < co->NumberOfGLONASSSat && co->Sat[pos].ID != id; ++pos)
+      for(pos = CLOCKORBIT_NUMGPS; pos < b->NumberOfGLONASSSat && b->Sat[pos].ID != id; ++pos)
         ;
       if(pos >= CLOCKORBIT_NUMGPS+CLOCKORBIT_NUMGLONASS) return GCOBR_DATAMISMATCH;
-      else if(pos == co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
-      co->Sat[pos].ID = id;
+      else if(pos == b->NumberOfGLONASSSat) ++b->NumberOfGLONASSSat;
+      b->Sat[pos].ID = id;
 
       G_NO_OF_CODE_BIASES(b->Sat[pos].NumberOfCodeBiases)
       for(j = 0; j < b->Sat[pos].NumberOfCodeBiases; ++j)
@@ -923,10 +962,12 @@ co->SatRefDatum);
     }
     break;
   default:
+    if(bytesused)
+      *bytesused = sizeofrtcmblock+6;
     return GCOBR_UNKNOWNTYPE;
   }
 #ifdef DEBUG
-for(type = 0; type < size && (unsigned char)buffer[type] != 0xD3; ++type)
+for(type = 0; type < (int)size && (unsigned char)buffer[type] != 0xD3; ++type)
   numbits += 8;
 fprintf(stderr, "numbits left %d\n",numbits);
 #endif
