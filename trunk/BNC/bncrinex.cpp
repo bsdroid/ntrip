@@ -53,7 +53,7 @@
 #include "bncconst.h"
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
-#include "bncnetqueryv2.h"
+#include "bncnetqueryv1.h"
 #include "bncsettings.h"
 #include "RTCM3/rtcm3torinex.h"
 
@@ -161,7 +161,7 @@ t_irc bncRinex::downloadSkeleton() {
       url.setPort(80);
     }
 
-    bncNetQueryV2 query;
+    bncNetQueryV1 query;
     QByteArray outData;
     query.waitForRequestResult(url, outData);
     if (query.status() == bncNetQuery::finished) {

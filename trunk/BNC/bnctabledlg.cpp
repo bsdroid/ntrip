@@ -42,7 +42,7 @@
 
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
-#include "bncnetqueryv2.h"
+#include "bncnetqueryv1.h"
 #include "bncsettings.h"
 
 using namespace std;
@@ -195,7 +195,7 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
   url.setScheme("http");
   url.setPath("/");
 
-  bncNetQueryV2 query;
+  bncNetQueryV1 query;
   QByteArray outData;
   query.waitForRequestResult(url, outData);
   if (query.status() == bncNetQuery::finished) {
@@ -447,7 +447,7 @@ bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) :
   url.setScheme("http");
   url.setPath("/");
 
-  bncNetQueryV2 query;
+  bncNetQueryV1 query;
   QByteArray outData;
   query.waitForRequestResult(url, outData);
 

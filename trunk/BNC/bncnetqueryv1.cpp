@@ -27,19 +27,22 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryV1::bncNetQueryV1() {
-  _socket  = 0;
-  _timeOut = 20000;
+  _socket    = 0;
+  _eventLoop = new QEventLoop(this);
+  _timeOut   = 20000;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryV1::~bncNetQueryV1() {
   delete _socket;
+  delete _eventLoop;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV1::stop() {
+  _eventLoop->quit();
 #ifndef sparc
   if (_socket) {
     _socket->abort();
@@ -48,9 +51,33 @@ void bncNetQueryV1::stop() {
   _status = finished;
 }
 
+// End of Request
+////////////////////////////////////////////////////////////////////////////
+void bncNetQueryV1::slotFinished() {
+  _eventLoop->quit();
+  if (_socket) { 
+    _outData = _socket->readAll();
+    _status = finished;
+  }
+}
+
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV1::waitForRequestResult(const QUrl&, QByteArray&) {
+void bncNetQueryV1::waitForRequestResult(const QUrl& url, QByteArray& outData){
+
+  delete _socket;
+  _socket = new QTcpSocket();
+
+  connect(_socket, SIGNAL(disconnected()), this, SLOT(slotFinished()));
+
+  startRequestPrivate(url, "", true);
+
+  _eventLoop->exec();
+
+  delete _socket; _socket = 0;
+
+  outData = _outData;
+  _outData.clear();
 }
 
 // 
@@ -82,11 +109,21 @@ void bncNetQueryV1::waitForReadyRead(QByteArray& outData) {
 // Connect to Caster, send the Request
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
+  startRequestPrivate(url, gga, false);
+}
+
+// Connect to Caster, send the Request
+////////////////////////////////////////////////////////////////////////////
+void bncNetQueryV1::startRequestPrivate(const QUrl& url, 
+                                        const QByteArray& gga, 
+                                        bool sendRequestOnly) {
 
   _status = running;
 
-  delete _socket;
-  _socket = new QTcpSocket();
+  if (!sendRequestOnly) {
+    delete _socket;
+    _socket = new QTcpSocket();
+  }
 
   // Default scheme and path
   // -----------------------
@@ -160,61 +197,63 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
 
   // Read Caster Response
   // --------------------
-  bool proxyResponse = false;
-  QStringList response;
-  while (true) {
-    if (_socket->canReadLine()) {
-      QString line = _socket->readLine();
-
-      if (line.indexOf("ICY 200 OK") == -1 && 
-          line.indexOf("HTTP")       != -1 && 
-          line.indexOf("200 OK")     != -1 ) {
-        proxyResponse = true;
-      }
-
-      if (!proxyResponse && !line.trimmed().isEmpty()) {
-        response.push_back(line);
-      }
-
-      if (line.trimmed().isEmpty()) {
-        if (proxyResponse) {
-          proxyResponse = false;
-	}
-	else {
+  if (!sendRequestOnly) {
+    bool proxyResponse = false;
+    QStringList response;
+    while (true) {
+      if (_socket->canReadLine()) {
+        QString line = _socket->readLine();
+    
+        if (line.indexOf("ICY 200 OK") == -1 && 
+            line.indexOf("HTTP")       != -1 && 
+            line.indexOf("200 OK")     != -1 ) {
+          proxyResponse = true;
+        }
+    
+        if (!proxyResponse && !line.trimmed().isEmpty()) {
+          response.push_back(line);
+        }
+    
+        if (line.trimmed().isEmpty()) {
+          if (proxyResponse) {
+            proxyResponse = false;
+    	}
+    	else {
+            break;
+    	}
+        }
+    
+        if (line.indexOf("Unauthorized") != -1) {
           break;
-	}
+        }
+    
+        if (!proxyResponse                    &&
+            line.indexOf("200 OK")      != -1 &&
+            line.indexOf("SOURCETABLE") == -1) {
+          response.clear();
+          if (_socket->canReadLine()) {
+            _socket->readLine();
+    	}
+    	break;
+        }
       }
-
-      if (line.indexOf("Unauthorized") != -1) {
-        break;
-      }
-
-      if (!proxyResponse                    &&
-          line.indexOf("200 OK")      != -1 &&
-          line.indexOf("SOURCETABLE") == -1) {
-        response.clear();
-        if (_socket->canReadLine()) {
-          _socket->readLine();
-	}
-	break;
+      else if (!_socket->waitForReadyRead(_timeOut)) {
+        delete _socket;
+        _socket = 0;
+        _status = error;
+        emit newMessage(_url.path().toAscii().replace(0,1,"") 
+                        + ": Response timeout", true);
+        return;
       }
     }
-    else if (!_socket->waitForReadyRead(_timeOut)) {
+    if (response.size() > 0) {
       delete _socket;
       _socket = 0;
       _status = error;
       emit newMessage(_url.path().toAscii().replace(0,1,"") 
-                      + ": Response timeout", true);
-      return;
+                      + ": Wrong caster response\n" 
+                      + response.join("").toAscii(), true);
     }
-  }
-  if (response.size() > 0) {
-    delete _socket;
-    _socket = 0;
-    _status = error;
-    emit newMessage(_url.path().toAscii().replace(0,1,"") 
-                    + ": Wrong caster response\n" 
-                    + response.join("").toAscii(), true);
   }
 }
 
