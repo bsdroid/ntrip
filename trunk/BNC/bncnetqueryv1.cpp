@@ -72,6 +72,8 @@ void bncNetQueryV1::waitForRequestResult(const QUrl& url, QByteArray& outData){
 
   startRequestPrivate(url, "", true);
 
+  QTimer::singleShot(10000, this, SLOT(slotFinished()));
+
   _eventLoop->exec();
 
   delete _socket; _socket = 0;
