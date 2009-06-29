@@ -51,16 +51,6 @@ void bncNetQueryV1::stop() {
   _status = finished;
 }
 
-// End of Request
-////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV1::slotFinished() {
-  _eventLoop->quit();
-  if (_socket) { 
-    _outData = _socket->readAll();
-    _status = finished;
-  }
-}
-
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV1::waitForRequestResult(const QUrl& url, QByteArray& outData){
@@ -68,18 +58,19 @@ void bncNetQueryV1::waitForRequestResult(const QUrl& url, QByteArray& outData){
   delete _socket;
   _socket = new QTcpSocket();
 
-  connect(_socket, SIGNAL(disconnected()), this, SLOT(slotFinished()));
+  connect(_socket, SIGNAL(disconnected()), _eventLoop, SLOT(quit()));
 
   startRequestPrivate(url, "", true);
 
-  QTimer::singleShot(10000, this, SLOT(slotFinished()));
+  QTimer::singleShot(10000, _eventLoop, SLOT(quit()));
 
   _eventLoop->exec();
 
+  outData = _socket->readAll();
+
   delete _socket; _socket = 0;
 
-  outData = _outData;
-  _outData.clear();
+  _status = finished;
 }
 
 // 
