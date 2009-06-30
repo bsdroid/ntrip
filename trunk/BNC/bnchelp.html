@@ -420,27 +420,103 @@ Specify a directory for saving Broadcast Corrections in files. If the specified 
 The file name convention for Broadcast Correction files follows the convention for RINEX files except for the last character of the file name suffix which is set to "C".
 </p>
 <p>
-The saved file contains the following information in plain ASCII format:
+The saved files contains parameters in plain ASCII format. The first four parameters in each record are:
 </p>
 <p>
 <ul>
+<li>RTCMv3 message type number</li>
 <li>GPS Week</li>
 <li>Second in GPS Week</li>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
+</ul>
+</p>
+<p>
+In case of RTCM message types 1057 or 1063 these parameters are followed by
+</p>
+<p>
+<ul>
+<li>IOD refering to Broadcast Ephemeris set</li>
+<li>Radial Component of Orbit Correction to Broadcast Ephemeris [m]</li>
+<li>Along-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
+<li>Cross-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
+<p>
+</ul>
+</p>
+<p>
+Example:
+<pre>
+...
+1057 1538 211151.0 G18     1      0.034    0.011   -0.064
+1057 1538 211151.0 G16    33     -0.005    0.194   -0.091
+1057 1538 211151.0 G22    50      0.008   -0.082   -0.001
+...
+1063 1538 211151.0 R09   111     -0.011   -0.014    0.005
+1063 1538 211151.0 R10    43      0.000   -0.009   -0.002
+1063 1538 211151.0 R21    75     -0.029    0.108    0.107
+...
+</pre>
+<p>
+In case of RTCM message types 1058 or 1064 the first four parameters are followed by
+</p>
+<ul>
+<li>IOD set to zero "0"</li>
+<li>Clock Correction to Broadcast Ephemeris [m]</li>
+</ul>
+Example:
+</p>
+<pre>
+...
+1058 1538 211151.0 G18     0      1.846
+1058 1538 211151.0 G16     0      0.376
+1058 1538 211151.0 G22     0      2.727
+...
+1064 1538 211151.0 R08     0      8.956
+1064 1538 211151.0 R07     0     14.457
+1064 1538 211151.0 R23     0      6.436
+...
+</pre>
+</p>
+<p>
+In case of RTCM message types 1060 or 1066 the first four parameters are followed by
+<p>
+<ul>
 <li>IOD refering to Broadcast Ephemeris set</li>
 <li>Clock Correction to Broadcast Ephemeris [m]</li>
 <li>Radial Component of Orbit Correction to Broadcast Ephemeris [m]</li>
 <li>Along-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
 <li>Cross-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
 </ul>
-</p>
-<p>
-Example file contents:
+Example:
 </p>
 <pre>
 ...
-1490 115710.0 G27    97      5.291      1.201   -1.964    0.821
-1490 115710.0 G26    14    -11.247      1.003   -1.168    0.074
+1060 1538 211610.0 G30    82      2.533      0.635   -0.359   -0.598
+1060 1538 211610.0 G31     5     -4.218     -0.208    0.022    0.002
+1060 1538 211610.0 G32    28     -2.326      0.977   -0.576    0.142
+...
+1066 1538 211610.0 R22    27      1.585      2.024    2.615   -2.080
+1066 1538 211610.0 R23    27      6.277      2.853    4.181    1.304
+1066 1538 211610.0 R24    27      0.846      1.805   13.095    6.102
+...
+</pre>
+</p>
+<p>
+In case of RTCM message types 1059 or 1065 the first four parameters are followed by
+<ul>
+<li>Number of Code Biases</li>
+<li>Type of Code Bias</li>
+<li>Code Bias</li>
+<li>Type of Code Bias</li>
+<li>Code Bias</li>
+<li>etc.</li>
+</ul>
+Example:
+</p>
+<pre>
+...
+1059 1538 211151.0 G18 2 0   -0.010 11   -0.750 
+1059 1538 211151.0 G16 2 0   -0.040 11   -0.430
+1059 1538 211151.0 G22 2 0   -0.630 11   -2.400
 ...
 </pre>
 
@@ -457,18 +533,30 @@ BNC can output epoch by epoch synchronized Broadcast Corrections in ASCII format
 The output format equals the format used for saving Broadcast Corrections in a file with the exception that the Mountpoint is added at each line's end.
 </p>
 <p>
-The following is an example output from two RTCM Version 3 streams (CLCK1 and CLCK4) containing message types 1060 and 1066:
+The following is an example output for streams from Mountpoints RTCMSSR, CLK10 and CLK11:
 <pre>
 ...
-1490 115710.0 R17    18     -1.903      2.348   -1.343   -1.403 CLCK1
-1490 115710.0 R10    18     -4.131      2.416   -0.646   -1.054 CLCK1
-1490 115710.0 G27    97      5.291      1.201   -1.964    0.821 CLCK4
-1490 115710.0 G26    14    -11.247      1.003   -1.168    0.074 CLCK4
-...
-1490 115711.0 R17    18     -1.902      2.349   -1.342   -1.403 CLCK1
-1490 115711.0 R10    18     -4.131      2.415   -0.647   -1.052 CLCK1
-1490 115711.0 G27    97      5.288      1.200   -1.964    0.820 CLCK4
-1490 115711.0 G26    14    -11.246      1.004   -1.168    0.074 CLCK4
+1057 1538 211151.0 G18     1      0.034    0.011   -0.064 RTCMSSR
+1057 1538 211151.0 G16    33     -0.005    0.194   -0.091 RTCMSSR
+1057 1538 211151.0 G22    50      0.008   -0.082   -0.001 RTCMSSR
+1058 1538 211151.0 G18     0      1.846 RTCMSSR
+1058 1538 211151.0 G16     0      0.376 RTCMSSR
+1058 1538 211151.0 G22     0      2.727 RTCMSSR
+1059 1538 211151.0 G18 2 0   -0.010 11   -0.750  RTCMSSR
+1059 1538 211151.0 G16 2 0   -0.040 11   -0.430  RTCMSSR
+1059 1538 211151.0 G22 2 0   -0.630 11   -2.400  RTCMSSR
+1060 1538 211610.0 G32    28     -2.326      0.977   -0.576    0.142 CLK10
+1060 1538 211610.0 G31     5     -4.218     -0.208    0.022    0.002 CLK10
+1060 1538 211610.0 G30    82      2.533      0.635   -0.359   -0.598 CLK10
+1063 1538 211151.0 R09   111     -0.011   -0.014    0.005 RTCMSSR
+1063 1538 211151.0 R10    43      0.000   -0.009   -0.002 RTCMSSR
+1063 1538 211151.0 R21    75     -0.029    0.108    0.107 RTCMSSR
+1064 1538 211151.0 R08     0      8.956 RTCMSSR
+1064 1538 211151.0 R07     0     14.457 RTCMSSR
+1064 1538 211151.0 R23     0      6.436 RTCMSSR
+1066 1538 211610.0 R24    27      0.846      1.805   13.095    6.102 CLK11
+1066 1538 211610.0 R23    27      6.277      2.853    4.181    1.304 CLK11
+1066 1538 211610.0 R22    27      1.585      2.024    2.615   -2.080 CLK11
 ...
 </pre>
 </p>
@@ -1132,7 +1220,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 </tr>
 
 <tr>
-<td>May 2009 &nbsp;</td><td>Version 1.7 &nbsp;</td>
+<td>July 2009 &nbsp;</td><td>Version 1.7 &nbsp;</td>
 <td>[Bug] RINEX navigation file format<br> [Add] Upgrade to Qt Version 4.4.3<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port<br> [Add] Show broadcaster table from www.rtcm-ntrip.org<br> [Add] Enable/disable tab widgets<br> [Add] User defined configuration file name<br> [mod] Switch to configuration files in ini-Format<br> [Add] Daily logfile rotation<br> [Add] Read from TCP/IP port, by-pass NTRIP transport protocol<br> [Add] Save NMEA messages coming from rover<br> [Add] Auto start<br> [Add] Drag and drop ini files<br> [Add] Read from serial port, by-pass NTRIP transport protocol<br> [Mod] Update following RTCM 091-2009-SC104-542 document</td>
 </tr>
 
