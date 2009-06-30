@@ -204,29 +204,160 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           _GPSweeks = weekDay * 86400.0 + GPSDaySec;
         }
 
-        for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
-          QString line;
-          line.sprintf("%d %.1f G%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f", 
-                  GPSweek, _GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
-                  _co.Sat[ii].Clock.DeltaA0,
-                  _co.Sat[ii].Orbit.DeltaRadial, 
-                  _co.Sat[ii].Orbit.DeltaAlongTrack,
-                  _co.Sat[ii].Orbit.DeltaCrossTrack);
-          long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
-          printLine(line, coTime);
+        long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
+
+        // Combined message (orbit and clock)
+        // ----------------------------------
+        if ( _co.messageType == COTYPE_GPSCOMBINED     || 
+             _co.messageType == COTYPE_GLONASSCOMBINED ) {
+          for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
+            QString line;
+            line.sprintf("%d %d %.1f G%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f",
+                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
+                    _co.Sat[ii].IOD, 
+                    _co.Sat[ii].Clock.DeltaA0,
+                    _co.Sat[ii].Orbit.DeltaRadial, 
+                    _co.Sat[ii].Orbit.DeltaAlongTrack,
+                    _co.Sat[ii].Orbit.DeltaCrossTrack);
+            printLine(line, coTime);
+          }
+          for(int ii = CLOCKORBIT_NUMGPS; 
+              ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
+            QString line;
+            line.sprintf("%d %d %.1f R%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f",
+                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
+                    _co.Sat[ii].IOD, 
+                    _co.Sat[ii].Clock.DeltaA0, 
+                    _co.Sat[ii].Orbit.DeltaRadial, 
+                    _co.Sat[ii].Orbit.DeltaAlongTrack,
+                    _co.Sat[ii].Orbit.DeltaCrossTrack);
+            printLine(line, coTime);
+          }
         }
-        for(int ii = CLOCKORBIT_NUMGPS; 
-            ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
-          QString line;
-          line.sprintf("%d %.1f R%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f", 
-                  GPSweek, _GPSweeks, _co.Sat[ii].ID, _co.Sat[ii].IOD, 
-                  _co.Sat[ii].Clock.DeltaA0, 
-                  _co.Sat[ii].Orbit.DeltaRadial, 
-                  _co.Sat[ii].Orbit.DeltaAlongTrack,
-                  _co.Sat[ii].Orbit.DeltaCrossTrack);
-          long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
-          printLine(line, coTime);
+
+        // Orbits only
+        // -----------
+        else if ( _co.messageType == COTYPE_GPSORBIT     || 
+                  _co.messageType == COTYPE_GLONASSORBIT ) {
+          for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
+            QString line;
+            line.sprintf("%d %d %.1f G%2.2d   %3d   %8.3f %8.3f %8.3f",
+                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
+                    _co.Sat[ii].IOD, 
+                    _co.Sat[ii].Orbit.DeltaRadial, 
+                    _co.Sat[ii].Orbit.DeltaAlongTrack,
+                    _co.Sat[ii].Orbit.DeltaCrossTrack);
+            printLine(line, coTime);
+          }
+          for(int ii = CLOCKORBIT_NUMGPS; 
+              ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
+            QString line;
+            line.sprintf("%d %d %.1f R%2.2d   %3d   %8.3f %8.3f %8.3f",
+                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
+                    _co.Sat[ii].IOD, 
+                    _co.Sat[ii].Orbit.DeltaRadial, 
+                    _co.Sat[ii].Orbit.DeltaAlongTrack,
+                    _co.Sat[ii].Orbit.DeltaCrossTrack);
+            printLine(line, coTime);
+          }
         }
+
+        // Clocks only
+        // -----------
+        else if ( _co.messageType == COTYPE_GPSCLOCK     || 
+                  _co.messageType == COTYPE_GLONASSCLOCK ) {
+          for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
+            QString line;
+            line.sprintf("%d %d %.1f G%2.2d   %3d   %8.3f",
+                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
+                    _co.Sat[ii].IOD, _co.Sat[ii].Clock.DeltaA0);
+            printLine(line, coTime);
+          }
+          for(int ii = CLOCKORBIT_NUMGPS; 
+              ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
+            QString line;
+            line.sprintf("%d %d %.1f R%2.2d   %3d   %8.3f",
+                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
+                    _co.Sat[ii].IOD, _co.Sat[ii].Clock.DeltaA0);
+            printLine(line, coTime);
+          }
+        }
+
+        // URA
+        // ---
+        else if ( _co.messageType == COTYPE_GPSURA     || 
+                  _co.messageType == COTYPE_GLONASSURA ) {
+          for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
+            QString line;
+            line.sprintf("%d %d %.1f G%2.2d   %3d   %d",
+                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
+                    _co.Sat[ii].IOD, _co.Sat[ii].URA);
+            printLine(line, coTime);
+          }
+          for(int ii = CLOCKORBIT_NUMGPS; 
+              ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
+            QString line;
+            line.sprintf("%d %d %.1f R%2.2d   %3d   %d",
+                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
+                    _co.Sat[ii].IOD, _co.Sat[ii].URA);
+            printLine(line, coTime);
+          }
+        }
+
+        // HR
+        // --
+        else if ( _co.messageType == COTYPE_GPSHR     || 
+                  _co.messageType == COTYPE_GLONASSHR ) {
+          for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
+            QString line;
+            line.sprintf("%d %d %.1f G%2.2d   %3d   %8.3f",
+                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
+                    _co.Sat[ii].IOD, _co.Sat[ii].hrclock);
+            printLine(line, coTime);
+          }
+          for(int ii = CLOCKORBIT_NUMGPS; 
+              ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
+            QString line;
+            line.sprintf("%d %d %.1f R%2.2d   %3d   %8.3f",
+                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
+                    _co.Sat[ii].IOD, _co.Sat[ii].hrclock);
+            printLine(line, coTime);
+          }
+        }
+
+        // Biases
+        // ------
+        else if ( _bias.messageType == BTYPE_GPS     || 
+                  _bias.messageType == BTYPE_GLONASS ) {
+          for(int ii = 0; ii < _bias.NumberOfGPSSat; ++ii) {
+            QString line;
+            line.sprintf("%d %d %.1f G%2.2d %d ", _bias.messageType, 
+                         GPSweek, _GPSweeks, _bias.Sat[ii].ID,
+                         _bias.Sat[ii].NumberOfCodeBiases);
+            for (int jj = 0; jj < _bias.Sat[ii].NumberOfCodeBiases; jj++) {
+              QString hlp;
+              hlp.sprintf("%d %8.3f ",  _bias.Sat[ii].Biases[jj].Type,
+                          _bias.Sat[ii].Biases[jj].Bias);
+              line += hlp;
+            }
+            printLine(line, coTime);
+          }
+          for(int ii = CLOCKORBIT_NUMGPS; 
+              ii < CLOCKORBIT_NUMGPS + _bias.NumberOfGLONASSSat; ++ii) {
+            QString line;
+            line.sprintf("%d %d %.1f R%2.2d %d ", _bias.messageType, 
+                         GPSweek, _GPSweeks, _bias.Sat[ii].ID,
+                         _bias.Sat[ii].NumberOfCodeBiases);
+            for (int jj = 0; jj < _bias.Sat[ii].NumberOfCodeBiases; jj++) {
+              QString hlp;
+              hlp.sprintf("%d %8.3f ",  _bias.Sat[ii].Biases[jj].Type,
+                          _bias.Sat[ii].Biases[jj].Bias);
+              line += hlp;
+            }
+            printLine(line, coTime);
+          }
+        }
+
         retCode = success;
         memset(&_co, 0, sizeof(_co));
         memset(&_bias, 0, sizeof(_bias));
