@@ -206,151 +206,124 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
         long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
 
-        // Combined message (orbit and clock)
-        // ----------------------------------
-        if ( _co.messageType == COTYPE_GPSCOMBINED     || 
-             _co.messageType == COTYPE_GLONASSCOMBINED ) {
-          for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
-            QString line;
-            line.sprintf("%d %d %.1f G%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f",
-                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
-                    _co.Sat[ii].IOD, 
-                    _co.Sat[ii].Clock.DeltaA0,
-                    _co.Sat[ii].Orbit.DeltaRadial, 
-                    _co.Sat[ii].Orbit.DeltaAlongTrack,
-                    _co.Sat[ii].Orbit.DeltaCrossTrack);
-            printLine(line, coTime);
+        // Loop over all satellites (GPS and Glonass)
+        // ------------------------------------------
+        for (int ii = 0; ii < CLOCKORBIT_NUMGPS+_co.NumberOfGLONASSSat; ii++) {
+          char sysCh = ' ';
+          if      (ii < _co.NumberOfGPSSat) {
+            sysCh = 'G';
           }
-          for(int ii = CLOCKORBIT_NUMGPS; 
-              ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
-            QString line;
-            line.sprintf("%d %d %.1f R%2.2d   %3d   %8.3f   %8.3f %8.3f %8.3f",
-                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
-                    _co.Sat[ii].IOD, 
-                    _co.Sat[ii].Clock.DeltaA0, 
-                    _co.Sat[ii].Orbit.DeltaRadial, 
-                    _co.Sat[ii].Orbit.DeltaAlongTrack,
-                    _co.Sat[ii].Orbit.DeltaCrossTrack);
-            printLine(line, coTime);
+          else if (ii >= CLOCKORBIT_NUMGPS) {
+            sysCh = 'R';
           }
-        }
+          if (sysCh != ' ') {
 
-        // Orbits only
-        // -----------
-        else if ( _co.messageType == COTYPE_GPSORBIT     || 
-                  _co.messageType == COTYPE_GLONASSORBIT ) {
-          for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
-            QString line;
-            line.sprintf("%d %d %.1f G%2.2d   %3d   %8.3f %8.3f %8.3f",
-                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
-                    _co.Sat[ii].IOD, 
-                    _co.Sat[ii].Orbit.DeltaRadial, 
-                    _co.Sat[ii].Orbit.DeltaAlongTrack,
-                    _co.Sat[ii].Orbit.DeltaCrossTrack);
-            printLine(line, coTime);
-          }
-          for(int ii = CLOCKORBIT_NUMGPS; 
-              ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
-            QString line;
-            line.sprintf("%d %d %.1f R%2.2d   %3d   %8.3f %8.3f %8.3f",
-                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
-                    _co.Sat[ii].IOD, 
-                    _co.Sat[ii].Orbit.DeltaRadial, 
-                    _co.Sat[ii].Orbit.DeltaAlongTrack,
-                    _co.Sat[ii].Orbit.DeltaCrossTrack);
-            printLine(line, coTime);
-          }
-        }
+            QString linePart;
+            linePart.sprintf("%d %d %.1f %c%2.2d",
+                             _co.messageType, GPSweek, _GPSweeks,
+                             sysCh, _co.Sat[ii].ID);
 
-        // Clocks only
-        // -----------
-        else if ( _co.messageType == COTYPE_GPSCLOCK     || 
-                  _co.messageType == COTYPE_GLONASSCLOCK ) {
-          for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
-            QString line;
-            line.sprintf("%d %d %.1f G%2.2d   %3d   %8.3f",
-                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
-                    _co.Sat[ii].IOD, _co.Sat[ii].Clock.DeltaA0);
-            printLine(line, coTime);
-          }
-          for(int ii = CLOCKORBIT_NUMGPS; 
-              ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
-            QString line;
-            line.sprintf("%d %d %.1f R%2.2d   %3d   %8.3f",
-                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
-                    _co.Sat[ii].IOD, _co.Sat[ii].Clock.DeltaA0);
-            printLine(line, coTime);
-          }
-        }
-
-        // URA
-        // ---
-        else if ( _co.messageType == COTYPE_GPSURA     || 
-                  _co.messageType == COTYPE_GLONASSURA ) {
-          for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
-            QString line;
-            line.sprintf("%d %d %.1f G%2.2d   %3d   %d",
-                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
-                    _co.Sat[ii].IOD, _co.Sat[ii].URA);
-            printLine(line, coTime);
-          }
-          for(int ii = CLOCKORBIT_NUMGPS; 
-              ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
-            QString line;
-            line.sprintf("%d %d %.1f R%2.2d   %3d   %d",
-                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
-                    _co.Sat[ii].IOD, _co.Sat[ii].URA);
-            printLine(line, coTime);
-          }
-        }
-
-        // HR
-        // --
-        else if ( _co.messageType == COTYPE_GPSHR     || 
-                  _co.messageType == COTYPE_GLONASSHR ) {
-          for(int ii = 0; ii < _co.NumberOfGPSSat; ++ii) {
-            QString line;
-            line.sprintf("%d %d %.1f G%2.2d   %3d   %8.3f",
-                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
-                    _co.Sat[ii].IOD, _co.Sat[ii].hrclock);
-            printLine(line, coTime);
-          }
-          for(int ii = CLOCKORBIT_NUMGPS; 
-              ii < CLOCKORBIT_NUMGPS + _co.NumberOfGLONASSSat; ++ii) {
-            QString line;
-            line.sprintf("%d %d %.1f R%2.2d   %3d   %8.3f",
-                    _co.messageType, GPSweek, _GPSweeks, _co.Sat[ii].ID, 
-                    _co.Sat[ii].IOD, _co.Sat[ii].hrclock);
-            printLine(line, coTime);
-          }
-        }
-
-        // Biases
-        // ------
-        else if ( _bias.messageType == BTYPE_GPS     || 
-                  _bias.messageType == BTYPE_GLONASS ) {
-          for(int ii = 0; ii < _bias.NumberOfGPSSat; ++ii) {
-            QString line;
-            line.sprintf("%d %d %.1f G%2.2d %d ", _bias.messageType, 
-                         GPSweek, _GPSweeks, _bias.Sat[ii].ID,
-                         _bias.Sat[ii].NumberOfCodeBiases);
-            for (int jj = 0; jj < _bias.Sat[ii].NumberOfCodeBiases; jj++) {
-              QString hlp;
-              hlp.sprintf("%d %8.3f ",  _bias.Sat[ii].Biases[jj].Type,
-                          _bias.Sat[ii].Biases[jj].Bias);
-              line += hlp;
+            // Combined message (orbit and clock)
+            // ----------------------------------
+            if ( _co.messageType == COTYPE_GPSCOMBINED     || 
+                 _co.messageType == COTYPE_GLONASSCOMBINED ) {
+              QString line;
+              line.sprintf("   %3d"
+                           "   %8.3f %8.3f %8.3f %8.3f"
+                           "   %8.3f %8.3f %8.3f %8.3f"
+                           "   %8.3f %8.3f %8.3f %8.3f",
+                           _co.Sat[ii].IOD, 
+                           _co.Sat[ii].Clock.DeltaA0,
+                           _co.Sat[ii].Orbit.DeltaRadial, 
+                           _co.Sat[ii].Orbit.DeltaAlongTrack,
+                           _co.Sat[ii].Orbit.DeltaCrossTrack,
+                           _co.Sat[ii].Clock.DeltaA1,
+                           _co.Sat[ii].Orbit.DotDeltaRadial, 
+                           _co.Sat[ii].Orbit.DotDeltaAlongTrack,
+                           _co.Sat[ii].Orbit.DotDeltaCrossTrack,
+                           _co.Sat[ii].Clock.DeltaA2,
+                           _co.Sat[ii].Orbit.DotDotDeltaRadial, 
+                           _co.Sat[ii].Orbit.DotDotDeltaAlongTrack,
+                           _co.Sat[ii].Orbit.DotDotDeltaCrossTrack);
+              printLine(linePart+line, coTime);
             }
-            printLine(line, coTime);
+
+            // Orbits only
+            // -----------
+            else if ( _co.messageType == COTYPE_GPSORBIT     || 
+                      _co.messageType == COTYPE_GLONASSORBIT ) {
+              QString line;
+              line.sprintf("   %3d"
+                           "   %8.3f %8.3f %8.3f"
+                           "   %8.3f %8.3f %8.3f"
+                           "   %8.3f %8.3f %8.3f",
+                           _co.Sat[ii].IOD, 
+                           _co.Sat[ii].Orbit.DeltaRadial, 
+                           _co.Sat[ii].Orbit.DeltaAlongTrack,
+                           _co.Sat[ii].Orbit.DeltaCrossTrack,
+                           _co.Sat[ii].Orbit.DotDeltaRadial, 
+                           _co.Sat[ii].Orbit.DotDeltaAlongTrack,
+                           _co.Sat[ii].Orbit.DotDeltaCrossTrack,
+                           _co.Sat[ii].Orbit.DotDotDeltaRadial, 
+                           _co.Sat[ii].Orbit.DotDotDeltaAlongTrack,
+                           _co.Sat[ii].Orbit.DotDotDeltaCrossTrack);
+              printLine(linePart+line, coTime);
+            }
+
+            // Clocks only
+            // -----------
+            else if ( _co.messageType == COTYPE_GPSCLOCK     || 
+                      _co.messageType == COTYPE_GLONASSCLOCK ) {
+              QString line;
+              line.sprintf("   %3d   %8.3f   %8.3f   %8.3f",
+                           _co.Sat[ii].IOD, 
+                           _co.Sat[ii].Clock.DeltaA0,
+                           _co.Sat[ii].Clock.DeltaA1,
+                           _co.Sat[ii].Clock.DeltaA2);
+              printLine(linePart+line, coTime);
+            }
+
+            // User Range Accuracy
+            // -------------------
+            else if ( _co.messageType == COTYPE_GPSURA     || 
+                      _co.messageType == COTYPE_GLONASSURA ) {
+              QString line;
+              line.sprintf("   %3d   %d",
+                           _co.Sat[ii].IOD, _co.Sat[ii].URA);
+              printLine(linePart+line, coTime);
+            }
+
+            // High-Resolution Clocks
+            // ----------------------
+            else if ( _co.messageType == COTYPE_GPSHR     || 
+                      _co.messageType == COTYPE_GLONASSHR ) {
+              QString line;
+              line.sprintf("   %3d   %8.3f",
+                           _co.Sat[ii].IOD, _co.Sat[ii].hrclock);
+              printLine(linePart+line, coTime);
+            }
           }
-          for(int ii = CLOCKORBIT_NUMGPS; 
-              ii < CLOCKORBIT_NUMGPS + _bias.NumberOfGLONASSSat; ++ii) {
+        }
+
+        // Loop over all satellites (GPS and Glonass)
+        // ------------------------------------------
+        for (int ii = 0; ii < CLOCKORBIT_NUMGPS + _bias.NumberOfGLONASSSat; ii++) {
+          char sysCh = ' ';
+          if      (ii < _bias.NumberOfGPSSat) {
+            sysCh = 'G';
+          }
+          else if (ii >= CLOCKORBIT_NUMGPS) {
+            sysCh = 'R';
+          }
+          if (sysCh != ' ') {
             QString line;
-            line.sprintf("%d %d %.1f R%2.2d %d ", _bias.messageType, 
-                         GPSweek, _GPSweeks, _bias.Sat[ii].ID,
+            line.sprintf("%d %d %.1f %c%2.2d %d", 
+                         _bias.messageType, GPSweek, _GPSweeks, 
+                         sysCh, _bias.Sat[ii].ID,
                          _bias.Sat[ii].NumberOfCodeBiases);
             for (int jj = 0; jj < _bias.Sat[ii].NumberOfCodeBiases; jj++) {
               QString hlp;
-              hlp.sprintf("%d %8.3f ",  _bias.Sat[ii].Biases[jj].Type,
+              hlp.sprintf(" %d %8.3f",  _bias.Sat[ii].Biases[jj].Type,
                           _bias.Sat[ii].Biases[jj].Bias);
               line += hlp;
             }
