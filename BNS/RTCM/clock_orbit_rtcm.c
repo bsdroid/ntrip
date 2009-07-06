@@ -2,7 +2,7 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.15 2009/05/14 13:24:13 stoecker Exp $
+        Version:        $Id: clock_orbit_rtcm.c,v 1.16 2009/06/29 15:58:56 mervart Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -599,6 +599,7 @@ fprintf(stderr, "type %d size %d\n",type,sizeofrtcmblock);
   {
   case COTYPE_GPSORBIT:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    co->messageType = COTYPE_GPSORBIT;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
     co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
     if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
@@ -649,6 +650,7 @@ co->SatRefDatum);
     break;
   case COTYPE_GPSCLOCK:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    co->messageType = COTYPE_GPSCLOCK;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
     co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
     if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
@@ -682,6 +684,7 @@ co->Sat[pos].Clock.DeltaA2);
     break;
   case COTYPE_GPSCOMBINED:
     if(!co) return -5;
+    co->messageType = COTYPE_GPSCOMBINED;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
     co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
     if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
@@ -719,6 +722,7 @@ co->Sat[pos].Clock.DeltaA2);
     break;
   case COTYPE_GPSURA:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    co->messageType = COTYPE_GPSURA;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
     co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
     if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
@@ -740,6 +744,7 @@ co->Sat[pos].Clock.DeltaA2);
     break;
   case COTYPE_GPSHR:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    co->messageType = COTYPE_GPSHR;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
     co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
     if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
@@ -762,6 +767,7 @@ co->Sat[pos].Clock.DeltaA2);
     break;
   case COTYPE_GLONASSORBIT:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    co->messageType = COTYPE_GLONASSORBIT;
     G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
@@ -810,6 +816,7 @@ co->SatRefDatum);
     break;
   case COTYPE_GLONASSCLOCK:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    co->messageType = COTYPE_GLONASSCLOCK;
     G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
@@ -841,6 +848,7 @@ co->Sat[pos].Clock.DeltaA2);
     break;
   case COTYPE_GLONASSCOMBINED:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    co->messageType = COTYPE_GLONASSCOMBINED;
     G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
@@ -876,6 +884,7 @@ co->Sat[pos].Clock.DeltaA2);
     break;
   case COTYPE_GLONASSURA:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    co->messageType = COTYPE_GLONASSURA;
     G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_RESERVED5
@@ -895,6 +904,7 @@ co->Sat[pos].Clock.DeltaA2);
     break;
   case COTYPE_GLONASSHR:
     if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
+    co->messageType = COTYPE_GLONASSHR;
     G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
@@ -915,6 +925,7 @@ co->Sat[pos].Clock.DeltaA2);
     break;
   case BTYPE_GPS:
     if(!b) return GCOBR_NOBIASPARAMETER;
+    b->messageType = BTYPE_GPS;
     G_GPS_EPOCH_TIME(b->GPSEpochTime, b->NumberOfGPSSat)
     G_SSR_UPDATE_INTERVAL(b->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
@@ -939,6 +950,7 @@ co->Sat[pos].Clock.DeltaA2);
     break;
   case BTYPE_GLONASS:
     if(!b) return GCOBR_NOBIASPARAMETER;
+    b->messageType = BTYPE_GLONASS;
     G_GLONASS_EPOCH_TIME(b->GLONASSEpochTime, b->NumberOfGLONASSSat)
     G_SSR_UPDATE_INTERVAL(b->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
