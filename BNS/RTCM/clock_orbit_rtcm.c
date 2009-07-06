@@ -2,7 +2,7 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.16 2009/06/29 15:58:56 mervart Exp $
+        Version:        $Id: clock_orbit_rtcm.c,v 1.15 2009/07/06 05:42:44 mervart Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -226,6 +226,9 @@ int moremessagesfollow, char *buffer, size_t size)
     {
       left = nums - 28;
       nums = 28;
+    }
+    else {
+      left = 0;
     }
     while(nums)
     {
