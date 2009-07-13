@@ -229,9 +229,6 @@ void t_ephGPS::read(const QStringList& lines) {
       in >> _TOW;
     }
   }
-  unsigned char Array[67];
-  int size = RTCM3GPS(Array);
-  fwrite(Array,size, 1, stdout);
 }
 
 // Returns nearest integer value
@@ -281,7 +278,7 @@ static unsigned long CRC24(long size, const unsigned char *buf)
 #define GPSADDBITSFLOAT(a,b,c) {long long i = GPSTOINT(long long,(b)/(c)); \
                              GPSADDBITS(a,i)};
 
-int t_ephGPS::RTCM3GPS(unsigned char *buffer)
+int t_ephGPS::RTCM3(unsigned char *buffer)
 {
 
   unsigned char *startbuffer = buffer;
@@ -339,7 +336,7 @@ int t_ephGPS::RTCM3GPS(unsigned char *buffer)
   buffer[size++] = i;
   size += 3;
   return size;
-} /* RTCM3GPS */
+}
 
 // Compute GPS Satellite Position
 ////////////////////////////////////////////////////////////////////////////
@@ -480,9 +477,6 @@ void t_ephGlo::read(const QStringList& lines) {
   _xv(4) = _x_velocity * 1.e3; 
   _xv(5) = _y_velocity * 1.e3; 
   _xv(6) = _z_velocity * 1.e3; 
-  unsigned char Array[51];
-  int size = RTCM3GLO(Array);
-  fwrite(Array,size, 1, stdout);
 }
 
 
@@ -510,7 +504,7 @@ void t_ephGlo::read(const QStringList& lines) {
                        GLONASSADDBITS(1,s) \
                        GLONASSADDBITS(a-1,i)}
 
-int t_ephGlo::RTCM3GLO(unsigned char *buffer)
+int t_ephGlo::RTCM3(unsigned char *buffer)
 {
 
   int size = 0;
@@ -571,7 +565,7 @@ int t_ephGlo::RTCM3GLO(unsigned char *buffer)
   buffer[size++] = i;
   size += 3;
   return size;
-} /* RTCM3GLO */
+}
 
 // Derivative of the state vector using a simple force model (static)
 ////////////////////////////////////////////////////////////////////////////

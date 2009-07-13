@@ -20,6 +20,7 @@ class t_eph {
                         ColumnVector& vv) const = 0;
   virtual void read(const QStringList& lines) = 0;
   virtual int  IOD() const = 0;
+  virtual int  RTCM3(unsigned char *) = 0;
  protected:  
   QString _prn;
   int     _GPSweek;
@@ -37,7 +38,7 @@ class t_ephGlo : public t_eph {
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const;
   virtual int  IOD() const;
-  virtual int  RTCM3GLO(unsigned char *);
+  virtual int  RTCM3(unsigned char *);
  private:
   static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv);
   mutable double       _tt;  // time in seconds of GPSweek
@@ -70,7 +71,7 @@ class t_ephGPS : public t_eph {
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const;
   virtual int  IOD() const {return int(_IODE);}
-  virtual int  RTCM3GPS(unsigned char *);
+  virtual int  RTCM3(unsigned char *);
  private:
   double  _TOW;              //  [s]    
   double  _TOC;              //  [s]    
