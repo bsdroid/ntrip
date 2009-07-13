@@ -255,13 +255,18 @@ void t_bns::slotNewEph(t_eph* ep, int nBytes) {
   // ------------------------------
   if (_casterEph) {
     _casterEph->open();
-    // TODO encode ephemerides into RTCM v3 format
-    QByteArray buffer = "New Ephemeris " + ep->prn().toAscii() + "\n";
-    _casterEph->write(buffer.data(), buffer.length());
-    int len = buffer.length();
-    if (len > 0) {
-      emit(newOutEphBytes(len));
+    unsigned char Array[67];
+    int size = ep->RTCM3(Array);
+    if (size > 0) {
+      _casterEph->write((char*) Array, size);
+      emit(newOutEphBytes(size));
     }
+    ////    QByteArray buffer = "New Ephemeris " + ep->prn().toAscii() + "\n";
+    ////    _casterEph->write(buffer.data(), buffer.length());
+    ////    int len = buffer.length();
+    ////    if (len > 0) {
+    ////      emit(newOutEphBytes(len));
+    ////    }
   }
 
   t_ephPair* pair;
