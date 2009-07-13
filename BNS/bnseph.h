@@ -37,6 +37,7 @@ class t_ephGlo : public t_eph {
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const;
   virtual int  IOD() const;
+  virtual int  RTCM3GLO(unsigned char *);
  private:
   static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv);
   mutable double       _tt;  // time in seconds of GPSweek
@@ -57,6 +58,7 @@ class t_ephGlo : public t_eph {
   double _z_acceleration;     // [km/s^2] 
   double _health;             // 0 = O.K. 
   double _frequency_number;   // ICD-GLONASS data position 
+  double _tki;                // message frame time
 };
 
 
@@ -68,7 +70,7 @@ class t_ephGPS : public t_eph {
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const;
   virtual int  IOD() const {return int(_IODE);}
-
+  virtual int  RTCM3GPS(unsigned char *);
  private:
   double  _TOW;              //  [s]    
   double  _TOC;              //  [s]    
@@ -97,6 +99,10 @@ class t_ephGPS : public t_eph {
   double  _IDOT;             //  [rad/s]
 
   double  _TGD;              //  [s]    
+  double _health;            //  SV health
+  double _ura;               //  SV accuracy
+  double _L2PFlag;           //  L2 P data flag
+  double _L2Codes;           //  Codes on L2 channel 
 };
 
 class t_bnseph : public QThread {
