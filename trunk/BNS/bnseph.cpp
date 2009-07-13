@@ -20,6 +20,8 @@
 #include "bnsutils.h" 
 #include "bnssettings.h" 
 
+#define PI          3.1415926535898
+
 using namespace std;
 
 // Constructor
@@ -217,17 +219,127 @@ void t_ephGPS::read(const QStringList& lines) {
       in >> _i0 >> _Crc >> _omega >> _OMEGADOT;
     }
     else if (ii == 6) {
-      in >>  _IDOT;
+      double GPSweek;
+      in >>  _IDOT >> _L2Codes >> GPSweek >> _L2PFlag;
     }
     else if (ii == 7) {
-      double hlp, health;
-      in >> hlp >> health >> _TGD >> _IODC;
+      in >> _ura >> _health >> _TGD >> _IODC;
     }
     else if (ii == 8) {
       in >> _TOW;
     }
   }
+  unsigned char Array[67];
+  int size = RTCM3GPS(Array);
+  fwrite(Array,size, 1, stdout);
 }
+
+// Returns nearest integer value
+////////////////////////////////////////////////////////////////////////////
+static double NearestInt(double fl, double * remain)
+{
+  bool isneg = fl < 0.0;
+  double intval;
+  if(isneg) fl *= -1.0;
+  intval = (double)((unsigned long)(fl+0.5));
+  if(isneg) {fl *= -1.0; intval *= -1.0;}
+  if(remain)
+    *remain = fl-intval;
+  return intval;
+} /* NearestInt() */
+
+// Returns CRC24
+////////////////////////////////////////////////////////////////////////////
+static unsigned long CRC24(long size, const unsigned char *buf)
+{
+  unsigned long crc = 0;
+  int i;
+
+  while(size--)
+  {
+    crc ^= (*buf++) << (16);
+    for(i = 0; i < 8; i++)
+    {
+      crc <<= 1;
+      if(crc & 0x1000000)
+        crc ^= 0x01864cfb;
+    }
+  }
+  return crc;
+} /* CRC24 */
+
+// build up RTCM3 for GPS
+////////////////////////////////////////////////////////////////////////////
+
+#define GPSTOINT(type, value) static_cast<type>(NearestInt(value,0))
+
+#define GPSADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
+                       |(GPSTOINT(long long,b)&((1ULL<<a)-1)); \
+                       numbits += (a); \
+                       while(numbits >= 8) { \
+                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
+#define GPSADDBITSFLOAT(a,b,c) {long long i = GPSTOINT(long long,(b)/(c)); \
+                             GPSADDBITS(a,i)};
+
+int t_ephGPS::RTCM3GPS(unsigned char *buffer)
+{
+
+  unsigned char *startbuffer = buffer;
+  buffer= buffer+3;
+  int size = 0;
+  int numbits = 0;
+  unsigned long long bitbuffer = 0;
+
+  GPSADDBITS(12, 1019)
+  GPSADDBITS(6,_prn.right((_prn.length()-1)).toInt())
+  GPSADDBITS(10, _GPSweek)
+  GPSADDBITS(4, _ura)
+  GPSADDBITS(2,_L2Codes)
+  GPSADDBITSFLOAT(14, _IDOT, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<13))
+  GPSADDBITS(8, _IODE)
+  GPSADDBITS(16, static_cast<int>(_TOC)>>4)
+  GPSADDBITSFLOAT(8, _clock_driftrate, 1.0/static_cast<double>(1<<30)
+  /static_cast<double>(1<<25))
+  GPSADDBITSFLOAT(16, _clock_drift, 1.0/static_cast<double>(1<<30)
+  /static_cast<double>(1<<13))
+  GPSADDBITSFLOAT(22, _clock_bias, 1.0/static_cast<double>(1<<30)
+  /static_cast<double>(1<<1))
+  GPSADDBITS(10, _IODC)
+  GPSADDBITSFLOAT(16, _Crs, 1.0/static_cast<double>(1<<5))
+  GPSADDBITSFLOAT(16, _Delta_n, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<13))
+  GPSADDBITSFLOAT(32, _M0, PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  GPSADDBITSFLOAT(16, _Cuc, 1.0/static_cast<double>(1<<29))
+  GPSADDBITSFLOAT(32, _e, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
+  GPSADDBITSFLOAT(16, _Cus, 1.0/static_cast<double>(1<<29))
+  GPSADDBITSFLOAT(32, _sqrt_A, 1.0/static_cast<double>(1<<19))
+  GPSADDBITS(16, static_cast<int>(_TOE)>>4)
+  GPSADDBITSFLOAT(16, _Cic, 1.0/static_cast<double>(1<<29))
+  GPSADDBITSFLOAT(32, _OMEGA0, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<1))
+  GPSADDBITSFLOAT(16, _Cis, 1.0/static_cast<double>(1<<29))
+  GPSADDBITSFLOAT(32, _i0, PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  GPSADDBITSFLOAT(16, _Crc, 1.0/static_cast<double>(1<<5))
+  GPSADDBITSFLOAT(32, _omega, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<1))
+  GPSADDBITSFLOAT(24, _OMEGADOT, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<13))
+  GPSADDBITSFLOAT(8, _TGD, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  GPSADDBITS(6, _health) 
+  GPSADDBITS(1, _L2PFlag)
+  GPSADDBITS(1, 0) /* GPS fit interval */
+
+  startbuffer[0]=0xD3;
+  startbuffer[1]=(size >> 8);
+  startbuffer[2]=size;
+  unsigned long  i = CRC24(size+3, startbuffer);
+  buffer[size++] = i >> 16;
+  buffer[size++] = i >> 8;
+  buffer[size++] = i;
+  size += 3;
+  return size;
+} /* RTCM3GPS */
 
 // Compute GPS Satellite Position
 ////////////////////////////////////////////////////////////////////////////
@@ -328,7 +440,7 @@ void t_ephGlo::read(const QStringList& lines) {
     if (ii == 1) {
       double  year, month, day, hour, minute, second;
       in >> _prn >> year >> month >> day >> hour >> minute >> second
-         >> _tau >> _gamma;
+         >> _tau >> _gamma >> _tki;
 
       _tau = -_tau;
       
@@ -368,7 +480,98 @@ void t_ephGlo::read(const QStringList& lines) {
   _xv(4) = _x_velocity * 1.e3; 
   _xv(5) = _y_velocity * 1.e3; 
   _xv(6) = _z_velocity * 1.e3; 
+  unsigned char Array[51];
+  int size = RTCM3GLO(Array);
+  fwrite(Array,size, 1, stdout);
 }
+
+
+// build up RTCM3 for GLONASS
+////////////////////////////////////////////////////////////////////////////
+#define GLONASSTOINT(type, value) static_cast<type>(NearestInt(value,0))
+
+#define GLONASSADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
+                       |(GLONASSTOINT(long long,b)&((1ULL<<(a))-1)); \
+                       numbits += (a); \
+                       while(numbits >= 8) { \
+                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
+#define GLONASSADDBITSFLOATM(a,b,c) {int s; long long i; \
+                       if(b < 0.0) \
+                       { \
+                         s = 1; \
+                         i = GLONASSTOINT(long long,(-b)/(c)); \
+                         if(!i) s = 0; \
+                       } \
+                       else \
+                       { \
+                         s = 0; \
+                         i = GLONASSTOINT(long long,(b)/(c)); \
+                       } \
+                       GLONASSADDBITS(1,s) \
+                       GLONASSADDBITS(a-1,i)}
+
+int t_ephGlo::RTCM3GLO(unsigned char *buffer)
+{
+
+  int size = 0;
+  int numbits = 0;
+  long long bitbuffer = 0;
+  unsigned char *startbuffer = buffer;
+  buffer= buffer+3;
+
+  GLONASSADDBITS(12, 1020)
+  GLONASSADDBITS(6, _prn.right((_prn.length()-1)).toInt())
+  GLONASSADDBITS(5, 7+_frequency_number)
+  GLONASSADDBITS(1, 0)
+  GLONASSADDBITS(1, 0)
+  GLONASSADDBITS(2, 0)
+  _tki=_tki+3*60*60;
+  GLONASSADDBITS(5, static_cast<int>(_tki)/(60*60))
+  GLONASSADDBITS(6, (static_cast<int>(_tki)/60)%60)
+  GLONASSADDBITS(1, (static_cast<int>(_tki)/30)%30)
+  GLONASSADDBITS(1, _health) 
+  GLONASSADDBITS(1, 0)
+  unsigned long long timeofday = (static_cast<int>(_tt+3*60*60-_gps_utc)%86400);
+  GLONASSADDBITS(7, timeofday/60/15)
+  GLONASSADDBITSFLOATM(24, _x_velocity*1000, 1000.0/static_cast<double>(1<<20))
+  GLONASSADDBITSFLOATM(27, _x_pos*1000, 1000.0/static_cast<double>(1<<11))
+  GLONASSADDBITSFLOATM(5, _x_acceleration*1000, 1000.0/static_cast<double>(1<<30))
+  GLONASSADDBITSFLOATM(24, _y_velocity*1000, 1000.0/static_cast<double>(1<<20))
+  GLONASSADDBITSFLOATM(27, _y_pos*1000, 1000.0/static_cast<double>(1<<11))
+  GLONASSADDBITSFLOATM(5, _y_acceleration*1000, 1000.0/static_cast<double>(1<<30))
+  GLONASSADDBITSFLOATM(24, _z_velocity*1000, 1000.0/static_cast<double>(1<<20))
+  GLONASSADDBITSFLOATM(27,_z_pos*1000, 1000.0/static_cast<double>(1<<11))
+  GLONASSADDBITSFLOATM(5, _z_acceleration*1000, 1000.0/static_cast<double>(1<<30))
+  GLONASSADDBITS(1, 0)
+  GLONASSADDBITSFLOATM(11, _gamma, 1.0/static_cast<double>(1<<30)
+  /static_cast<double>(1<<10))
+  GLONASSADDBITS(2, 0) /* GLONASS-M P */
+  GLONASSADDBITS(1, 0) /* GLONASS-M ln(3) */
+  GLONASSADDBITSFLOATM(22, _tau, 1.0/static_cast<double>(1<<30))
+  GLONASSADDBITS(5, 0) /* GLONASS-M delta tau */
+  GLONASSADDBITS(5, _E)
+  GLONASSADDBITS(1, 0) /* GLONASS-M P4 */
+  GLONASSADDBITS(4, 0) /* GLONASS-M FT */
+  GLONASSADDBITS(11, 0) /* GLONASS-M NT */
+  GLONASSADDBITS(2, 0) /* GLONASS-M active? */
+  GLONASSADDBITS(1, 0) /* GLONASS additional data */
+  GLONASSADDBITS(11, 0) /* GLONASS NA */
+  GLONASSADDBITS(32, 0) /* GLONASS tau C */
+  GLONASSADDBITS(5, 0) /* GLONASS-M N4 */
+  GLONASSADDBITS(22, 0) /* GLONASS-M tau GPS */
+  GLONASSADDBITS(1, 0) /* GLONASS-M ln(5) */
+  GLONASSADDBITS(7, 0) /* Reserved */
+
+  startbuffer[0]=0xD3;
+  startbuffer[1]=(size >> 8);
+  startbuffer[2]=size;
+  unsigned long i = CRC24(size+3, startbuffer);
+  buffer[size++] = i >> 16;
+  buffer[size++] = i >> 8;
+  buffer[size++] = i;
+  size += 3;
+  return size;
+} /* RTCM3GLO */
 
 // Derivative of the state vector using a simple force model (static)
 ////////////////////////////////////////////////////////////////////////////
