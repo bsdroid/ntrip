@@ -128,6 +128,7 @@ The default file name 'BNS.ini' can be changed and the file contents can easily 
 4.7. <a href=#brdc>Broadcast Ephemeris</a><br>
 &nbsp; &nbsp; &nbsp; 4.7.1. <a href=#brdcserver>Host & Port</a><br>
 &nbsp; &nbsp; &nbsp; 4.7.2. <a href=#brdcmount>Mountpoint & Password</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.3. <a href=#brdcsmpl>Sampling</a><br>
 4.8. <a href=#clkrnx>RINEX Clocks</a><br>
 &nbsp; &nbsp; &nbsp; 4.8.1. <a href=#clkdir>Directory</a><br>
 &nbsp; &nbsp; &nbsp; 4.8.2. <a href=#clkint>Interval & Sampling</a><br>
@@ -430,9 +431,13 @@ Specify the 'Host' IP name or number of an NTRIP Broadcaster to upload the strea
 Enter the NTRIP Caster's IP 'Port' number for stream upload. Note that NTRIP Casters are often configured to provide access on more than one port, usually port 80 and 2101. If you experience communication problems on port 80, you should try to use the alternative port(s).
 </p>
 
-<p><a name="brdcmount"><h4>4.7.1 Mountpoint & Password - mandatory if 'Host' is set</h4></p>
+<p><a name="brdcmount"><h4>4.7.2 Mountpoint & Password - mandatory if 'Host' is set</h4></p>
 <p>
 Each stream on an NTRIP Caster is defined using a unique source ID called mountpoint. An NTRIP Server like BNS uploads a stream to the Caster by referring to a dedicated mountpoint that has been set by the Caster operator. Specify here the mountpoint based on the details you received for your stream from the operator. It is often a four character ID (capital letters) plus an integer number.
+</p>
+
+<p><a name="brdcsmpl"><h4>4.7.3 Sampling - mandatory if 'Host' is set</h4></p>
+Select the Broadcast Ephemeris sampling interval in seconds. Defaut is '5' meaning that a complete set of Broadcast Ephemeris is uploaded every 5 seconds.
 </p>
 
 <p><a name="clkrnx"><h4>4.8. RINEX Clocks</h4></p>
