@@ -317,8 +317,6 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           }
           if (sysCh != ' ') {
             QString line;
-         // line.sprintf("%d %d %.1f %c%2.2d %d", 
-         //              _bias.messageType, GPSweek, _GPSweeks, 
             line.sprintf("%d %d %d %.1f %c%2.2d %d", 
                          _bias.messageType, _bias.UpdateInterval, GPSweek, _GPSweeks, 
                          sysCh, _bias.Sat[ii].ID,
