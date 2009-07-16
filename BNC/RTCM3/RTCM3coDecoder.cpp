@@ -219,8 +219,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           if (sysCh != ' ') {
 
             QString linePart;
-            linePart.sprintf("%d %d %.1f %c%2.2d",
-                             _co.messageType, GPSweek, _GPSweeks,
+            linePart.sprintf("%d %d %d %.1f %c%2.2d",
+                             _co.messageType, _co.UpdateInterval, GPSweek, _GPSweeks,
                              sysCh, _co.Sat[ii].ID);
 
             // Combined message (orbit and clock)
@@ -317,8 +317,10 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           }
           if (sysCh != ' ') {
             QString line;
-            line.sprintf("%d %d %.1f %c%2.2d %d", 
-                         _bias.messageType, GPSweek, _GPSweeks, 
+         // line.sprintf("%d %d %.1f %c%2.2d %d", 
+         //              _bias.messageType, GPSweek, _GPSweeks, 
+            line.sprintf("%d %d %d %.1f %c%2.2d %d", 
+                         _bias.messageType, _bias.UpdateInterval, GPSweek, _GPSweeks, 
                          sysCh, _bias.Sat[ii].ID,
                          _bias.Sat[ii].NumberOfCodeBiases);
             for (int jj = 0; jj < _bias.Sat[ii].NumberOfCodeBiases; jj++) {
