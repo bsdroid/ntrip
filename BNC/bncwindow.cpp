@@ -1072,6 +1072,21 @@ void bncWindow::slotGetData() {
 
   ((bncApp*)qApp)->slotMessage("============ Start BNC ============", true);
 
+  bncSettings settings;
+  QDir rnxdir(settings.value("rnxPath").toString());
+  if (!rnxdir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find RINEX Observations directory", true);
+  QFile rnxfile(settings.value("rnxScript").toString());
+  if (!rnxfile.exists()) ((bncApp*)qApp)->slotMessage("Cannot find RINEX Observations script", true);
+  QDir ephdir(settings.value("ephPath").toString());
+  if (!ephdir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find RINEX Ephemeris directory", true);
+  QDir corrdir(settings.value("corrPath").toString());
+  if (!corrdir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find Broadcast Corrections directory", true);
+  QString obsRate = settings.value("obsRate").toString();
+  if ( !obsRate.isEmpty() ) {
+    QFile advisefile(settings.value("adviseScript").toString());
+    if (!advisefile.exists()) ((bncApp*)qApp)->slotMessage("Cannot find Outages script", true);
+  }
+
   _caster->slotReadMountPoints();
 }
 
