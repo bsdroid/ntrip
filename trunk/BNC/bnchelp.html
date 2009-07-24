@@ -75,7 +75,7 @@ Unless in offline mode, BNC
 This section describes BNC's top menu bar, its processing options and bottom menu bar.
 </p>
 <p>
-The usual handling of BNC is that you first select a number of streams ('Add Streams'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various tabs to select a combination of processing options before you start the program ('Start'). Records of BNC's activities are shown in the 'Logs' canvas on the bottom of the main window.
+The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various tabs to select a combination of processing options before you start the program ('Start'). Records of BNC's activities are shown in the 'Logs' canvas on the bottom of the main window.
 </p>
 <p>
 As a default, configuration files for running BNC on Unix/Linux/Mac systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration file name is 'BNC.ini'.</p>
@@ -138,18 +138,18 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.10.3. <a href=#miscscan>Scan RTCM</a><br>
 3.11. <a href=#streams>Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.1 <a href=#streamedit>Edit Streams</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.2 <a href=#streamdelete>Delete Streams</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.2 <a href=#streamdelete>Delete Stream</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.3 <a href=#streamconf>Reconfigure Streams On-the-fly</a><br>
 3.12. <a href=#bottom>Bottom Menu Bar</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.1. <a href=#streamadd>Add Streams - Coming from Caster</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.1. <a href=#streamadd>Add Stream - Coming from Caster</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.12.1.1 <a href=#streamhost>Caster Host and Port</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.12.1.2 <a href=#streamtable>Casters Table</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.12.1.3 <a href=#streamuser>User and Password</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.12.1.4 <a href=#gettable>Get Table</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.12.1.5 <a href=#ntripv>NTRIP Version</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.2 <a href=#streamip>Add Streams - Coming from TCP/IP Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.3 <a href=#streamudp>Add Streams - Coming from UDP Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.4 <a href=#streamser>Add Streams - Coming from Serial Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.2 <a href=#streamip>Add Stream - Coming from TCP/IP Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.3 <a href=#streamudp>Add Stream - Coming from UDP Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.4 <a href=#streamser>Add Stream - Coming from Serial Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.5 <a href=#start>Start</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.6 <a href=#stop>Stop</a><br>
 3.13. <a href=#cmd>Command Line Options</a><br>
@@ -940,9 +940,9 @@ BNC can also retrieve streams from virtual reference stations (VRS). To initiate
 </li>
 </ul> 
 
-<p><a name="streamdelete"><h4>3.11.2 Delete Streams</h4></p>
+<p><a name="streamdelete"><h4>3.11.2 Delete Stream</h4></p>
 <p>
-To remove a stream from the 'Streams' canvas in the main window, highlight it by clicking on it and hit the 'Delete Streams' button. You can also remove multiple streams simultaneously by highlighting them using +Shift and +Ctrl.</p>
+To remove a stream from the 'Streams' canvas in the main window, highlight it by clicking on it and hit the 'Delete Stream' button. You can also remove multiple streams simultaneously by highlighting them using +Shift and +Ctrl.</p>
 
 <p><a name="streamconf"><h4>3.11.3 Reconfigure Streams On-the-fly</h4></p>
 <p>
@@ -960,9 +960,9 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 The bottom menu bar allows to add or delete streams to BNC's configuration and to start or stop it. It also provides access to BNC's online help function.
 </p>
 
-<p><a name="streamadd"><h4>3.12.1 Add Streams - Coming from Caster</h4></p>
+<p><a name="streamadd"><h4>3.12.1 Add Stream - Coming from Caster</h4></p>
 <p>
-Button 'Add Streams' > 'Coming from Caster' opens a window that allows user to select data streams from an NTRIP broadcaster according to their mountpoints.
+Button 'Add Stream' > 'Coming from Caster' opens a window that allows user to select data streams from an NTRIP broadcaster according to their mountpoints.
 </p> 
 
 <p><a name="streamhost"><h4>3.12.1.1 Caster Host and Port - mandatory</h4></p>
@@ -988,7 +988,7 @@ Use the 'Get Table' button to download the source-table from the NTRIP broadcast
 The contents of data field 'nmea' tells you whether a stream retrieval needs to be initiated by BNC through sending an NMEA-GGA message carrying approximate position coordinates (virtual reference station).
 </p>
 <p>
-Hit 'OK' to return to the main window. If you wish you can click on 'Add Streams' and repeat the process again to retrieve streams from different casters.
+Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream' and repeat the process again to retrieve streams from different casters.
 </p> 
 
 <p><a name="ntripv"><h4>3.12.1.5 NTRIP Version - mandatory</h4></p>
@@ -1012,9 +1012,9 @@ If NTRIP version 2 is supported by the broadcaster:
 Select option '1' if you are not sure whether the broadcaster supports NTRIP version 2.</li>
 </p>
 
-<p><a name="streamip"><h4>3.12.2 Add Streams - Coming from TCP/IP Port</h4></p>
+<p><a name="streamip"><h4>3.12.2 Add Stream - Coming from TCP/IP Port</h4></p>
 <p>
-Button 'Add Streams' > 'Coming from TCP/IP Port' allows to retrieve streams via TCP directly from an IP address without using the NTRIP transport protocol. For that you:
+Button 'Add Stream' > 'Coming from TCP/IP Port' allows to retrieve streams via TCP directly from an IP address without using the NTRIP transport protocol. For that you:
 <ul>
 <li>Enter the IP address of the stream providing host.</li>
 <li>Enter the IP port number of the stream providing host.</li>
@@ -1031,9 +1031,9 @@ Streams directly received from a TCP/IP port show up with an 'N' for 'No NTRIP' 
 Note that this option works only if no proxy server is involved in the communication link.
 </p>
 
-<p><a name="streamudp"><h4>3.12.3 Add Streams - Coming from UDP Port</h4></p>
+<p><a name="streamudp"><h4>3.12.3 Add Stream - Coming from UDP Port</h4></p>
 <p>
-Button 'Add Streams' > 'Coming from UDP Port' allows to pick up streams arriving directly at one of the local host's UDP ports without using the NTRIP transport protocol. For that you:
+Button 'Add Stream' > 'Coming from UDP Port' allows to pick up streams arriving directly at one of the local host's UDP ports without using the NTRIP transport protocol. For that you:
 <ul>
 <li>Enter the local port number where the UDP stream arrives.</li>
 <li>Specify a mountpoint. Recommended is a 4-character station ID. Example: FFMJ</li>
@@ -1046,9 +1046,9 @@ Button 'Add Streams' > 'Coming from UDP Port' allows to pick up streams arriving
 Streams directly received at a UDP port show up with a 'UN' for 'UDP, No NTRIP' in the 'Streams' canvas section on BNC's main window . Latitude and longitude are to be entered just for informal reasons.
 <p>
 
-<p><a name="streamser"><h4>3.12.4 Add Streams - Coming from Serial Port</h4></p>
+<p><a name="streamser"><h4>3.12.4 Add Stream - Coming from Serial Port</h4></p>
 <p>
-Button 'Add Streams' > 'Coming from Serial Port' allows to retrieve streams from a GNSS receiver via serial port without using the NTRIP transport protocol. For that you:
+Button 'Add Stream' > 'Coming from Serial Port' allows to retrieve streams from a GNSS receiver via serial port without using the NTRIP transport protocol. For that you:
 <ul>
 <li>Specify a mountpoint. Recommended is a 4-character station ID. Example: FFMJ</li>
 <li>Specify the stream format. Available options are 'RTCM_2', 'RTCM_3', 'RTIGS', and 'ZERO'.</li>
@@ -1480,7 +1480,7 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>logFile=/home/weber/bnc.log</td><td>General: Logfile (full path)</td></tr>
 <tr><td>miscMount=</td><td>Miscellaneous: Mountpoint</td></tr>
 <tr><td>mountPoints=//user:pass@www.euref-ip.net:2101<br>/ACOR0 RTCM_2.3 43.36 351.60 no 1</td><td>Streams: broadcaster:port/mountpoint</td></tr>
-<tr><td>ntripVersion=1</td><td>Add Streams: NTRIP Version</td></tr>
+<tr><td>ntripVersion=1</td><td>Add Stream: NTRIP Version</td></tr>
 <tr><td>obsRate=</td><td>Outages: Observation rate</td></tr>
 <tr><td>onTheFlyInterval=1 day</td><td>General: Reread configuration</td></tr>
 <tr><td>outEphPort=</td><td>RINEX Ephemeris: Port</td></tr>
