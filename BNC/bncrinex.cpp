@@ -706,7 +706,6 @@ void bncRinex::dumpEpoch(long maxTime) {
 // Close the Old RINEX File
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::closeFile() {
-  QMutexLocker locker(&_mutex);
   if (_rinexVers == 3) {
     _out << ">                              4  1" << endl;
     _out << "END OF FILE" << endl;
