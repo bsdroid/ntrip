@@ -80,7 +80,6 @@ class bncRinex {
    QByteArray      _ntripVersion;
    bool          _reconnectFlag;
    QDate         _skeletonDate;
-   QMutex        _mutex;
    int           _rinexVers;
    bool          _reloadTable;
    bool          _reloadDone;
