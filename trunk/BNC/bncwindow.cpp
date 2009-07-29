@@ -1073,16 +1073,24 @@ void bncWindow::slotGetData() {
   ((bncApp*)qApp)->slotMessage("============ Start BNC ============", true);
 
   bncSettings settings;
+
   QDir rnxdir(settings.value("rnxPath").toString());
   if (!rnxdir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find RINEX Observations directory", true);
-  QFile rnxfile(settings.value("rnxScript").toString());
-  if (!rnxfile.exists()) ((bncApp*)qApp)->slotMessage("Cannot find RINEX Observations script", true);
+
+  QString rnx_file = settings.value("rnxScript").toString();
+  if ( !rnx_file.isEmpty() ) {
+    QFile rnxfile(settings.value("rnxScript").toString());
+    if (!rnxfile.exists()) ((bncApp*)qApp)->slotMessage("Cannot find RINEX Observations script", true);
+  }
+
   QDir ephdir(settings.value("ephPath").toString());
   if (!ephdir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find RINEX Ephemeris directory", true);
+
   QDir corrdir(settings.value("corrPath").toString());
   if (!corrdir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find Broadcast Corrections directory", true);
-  QString obsRate = settings.value("obsRate").toString();
-  if ( !obsRate.isEmpty() ) {
+
+  QString advise_file = settings.value("adviseScript").toString();
+  if ( !advise_file.isEmpty() ) {
     QFile advisefile(settings.value("adviseScript").toString());
     if (!advisefile.exists()) ((bncApp*)qApp)->slotMessage("Cannot find Outages script", true);
   }
