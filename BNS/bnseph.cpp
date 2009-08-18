@@ -286,6 +286,54 @@ int t_ephGPS::RTCM3(unsigned char *buffer)
   int size = 0;
   int numbits = 0;
   unsigned long long bitbuffer = 0;
+  if (_ura <= 2.40){
+    _ura = 0;
+  }
+  else if (_ura <= 3.40){
+    _ura = 1;
+  }
+  else if (_ura <= 6.85){
+    _ura = 2;
+  }
+  else if (_ura <= 9.65){
+    _ura = 3;
+  }
+  else if (_ura <= 13.65){
+    _ura = 4;
+  }
+  else if (_ura <= 24.00){
+    _ura = 5;
+  }
+  else if (_ura <= 48.00){
+    _ura = 6;
+  }
+  else if (_ura <= 96.00){
+    _ura = 7;
+  }
+  else if (_ura <= 192.00){
+    _ura = 8;
+  }
+  else if (_ura <= 384.00){
+    _ura = 9;
+  }
+  else if (_ura <= 768.00){
+    _ura = 10;
+  }
+  else if (_ura <= 1536.00){
+    _ura = 11;
+  }
+  else if (_ura <= 1536.00){
+    _ura = 12;
+  }
+  else if (_ura <= 2072.00){
+    _ura = 13;
+  }
+  else if (_ura <= 6144.00){
+    _ura = 14;
+  }
+  else{
+    _ura = 15;
+  }
 
   GPSADDBITS(12, 1019)
   GPSADDBITS(6,_prn.right((_prn.length()-1)).toInt())
