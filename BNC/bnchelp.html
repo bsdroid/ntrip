@@ -412,13 +412,14 @@ RTCM Version 3 streams carrying these messages may be used i.e. to support real-
 When using clocks from Broadcast Ephemeris (with or without applied corrections) or clocks from SP3 files, it may beimportant to understand that they are not corrected for the 2nd-order relativistic effect. The 2nd-order relativistic effect is a priodic time correction defined as -2 (R * V) / c^2 and includes the scalar product of satallite position and velocity divided by the speed of light raised to the second power.
 </p>
 
-<p><a name="corrdir"><h4>3.6.1 Directory - optional</h4></p>
 <p>
-Specify a directory for saving Broadcast Corrections in files. If the specified directory does not exist, BNC will not create Broadcast Correction files. Default value for Broadcast Corrections 'Directory' is an empty option field, meaning that no Broadcast Correction files will be created.
+Orbit corrections are provided in along-track, cross-track and radial components. The along-track component is parallel to the velocity vector, the cross-track component is perpendicular to the plane of motion and the radial component is perpendicular to both along-track and cross-track components. The three components form an orthogonal system in WGS-84.
 </p>
+
 <p>
-The file name convention for Broadcast Correction files follows the convention for RINEX files except for the last character of the file name suffix which is set to "C".
+Broadcast Corrrections can be saved by BNC in files. The file name convention for Broadcast Correction files follows the convention for RINEX files except for the last character of the file name suffix which is set to "C".
 </p>
+
 <p>
 The saved files contain parameters in plain ASCII format. The first five parameters in each record are:
 </p>
@@ -554,6 +555,11 @@ Example:
 1059 0 1538 211151.0 G22 2 0   -0.630 11   -2.400
 ...
 </pre>
+
+<p><a name="corrdir"><h4>3.6.1 Directory - optional</h4></p>
+<p>
+Specify a directory for saving Broadcast Corrections in files. If the specified directory does not exist, BNC will not create Broadcast Correction files. Default value for Broadcast Corrections 'Directory' is an empty option field, meaning that no Broadcast Correction files will be created.
+</p>
 
 <p><a name="corrint"><h4>3.6.2 Interval - mandatory if 'Directory' is set</h4></p>
 <p>
