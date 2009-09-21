@@ -24,7 +24,7 @@ Please ensure that you have installed the latest version of BNC available from <
 <a href=#options>3. Options</a><br>
 <a href=#limits>4. Limitations</a><br>
 <a href=#authors>5. Authors</a><br>
-<a href=#annex>8. Annex</a><br>
+<a href=#annex>6. Annex</a><br>
 </h4>
 </p>
 
@@ -1202,21 +1202,21 @@ Andre Hauschild, German Space Operations Center, DLR, revised the RTCMv2 decoder
 Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended the RTCMv2 decoder to handle message types 3, 20, 21, and 22 and added loss of lock indicator.<br>
 </p>
 
-<p><a name="annex"><h3>8. Annex</h3></p>
+<p><a name="annex"><h3>6. Annex</h3></p>
 <p>
-8.1. <a href=#history>Revision History</a><br>
-8.2. <a href=#rtcm>RTCM</a><br>
-&nbsp; &nbsp; &nbsp; 8.2.1 NTRIP <a href=#ntrip1>Version 1</a><br>
-&nbsp; &nbsp; &nbsp; 8.2.2 NTRIP <a href=#ntrip2>Version 2</a><br>
-&nbsp; &nbsp; &nbsp; 8.2.3 RTCM <a href=#rtcm2>Version 2.x</a><br>
-&nbsp; &nbsp; &nbsp; 8.2.4 RTCM <a href=#rtcm3>Version 3.x</a><br>
-8.3. <a href=#rtigs>RTIGS</a><br>
-&nbsp; &nbsp; &nbsp; 8.3.1 <a href=#soc>SOC</a><br>
-8.4. <a href=#config>Configuration Example</a><br>
-8.5. <a href=#links>Links</a><br>
+6.1. <a href=#history>Revision History</a><br>
+6.2. <a href=#rtcm>RTCM</a><br>
+&nbsp; &nbsp; &nbsp; 6.2.1 NTRIP <a href=#ntrip1>Version 1</a><br>
+&nbsp; &nbsp; &nbsp; 6.2.2 NTRIP <a href=#ntrip2>Version 2</a><br>
+&nbsp; &nbsp; &nbsp; 6.2.3 RTCM <a href=#rtcm2>Version 2.x</a><br>
+&nbsp; &nbsp; &nbsp; 6.2.4 RTCM <a href=#rtcm3>Version 3.x</a><br>
+6.3. <a href=#rtigs>RTIGS</a><br>
+&nbsp; &nbsp; &nbsp; 6.3.1 <a href=#soc>SOC</a><br>
+6.4. <a href=#config>Configuration Example</a><br>
+6.5. <a href=#links>Links</a><br>
 </p>
 
-<p><a name=history><h3>8.1 Revision History</h3></p>
+<p><a name=history><h3>6.1 Revision History</h3></p>
 <table>
 <tr></tr>
 
@@ -1268,7 +1268,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 </table>
 </p>
 
-<p><a name="rtcm"><h4>8.2. RTCM</h4></p>
+<p><a name="rtcm"><h4>6.2. RTCM</h4></p>
 
 <p>
 The Radio Technical Commission for Maritime Services (RTCM) is an international non-profit scientific, professional and educational organization. Special Committees provide a forum in which governmental and non-governmental members work together to develop technical standards and consensus recommendations in regard to issues of particular concern. RTCM is engaged in the development of international standards for maritime radionavigation and radiocommunication systems. The output documents and reports prepared by RTCM Committees are published as RTCM Recommended Standards. Topics concerning Differential Global Navigation Satellite Systems (DGNSS) are handled by the Special Committee SC 104.
@@ -1276,7 +1276,7 @@ The Radio Technical Commission for Maritime Services (RTCM) is an international 
 Personal copies of RTCM Recommended Standards can be ordered through <u>http://www.rtcm.org/orderinfo.php</u>.
 </p>
 
-<p><a name="ntrip1"><h4>8.2.1 NTRIP Version 1</h4></p>
+<p><a name="ntrip1"><h4>6.2.1 NTRIP Version 1</h4></p>
 
 <p>
 'Networked Transport of RTCM via Internet Protocol' Version 1.0 (NTRIP) stands for an application-level protocol streaming Global Navigation Satellite System (GNSS) data over the Internet. NTRIP is a generic, stateless protocol based on the Hypertext Transfer Protocol HTTP/1.1. The HTTP objects are enhanced to GNSS data streams.
@@ -1315,7 +1315,7 @@ Source-table records of type NET contain the following data fields: 'identifiey'
 Source-table records of type CAS contain the following data fields: 'host', 'port', 'identifier', 'operator', 'nmea', 'country', 'latitude', 'longitude', 'misc'.
 </p>
 
-<p><a name="ntrip2"><h4>8.2.1 NTRIP Version 2</h4></p>
+<p><a name="ntrip2"><h4>6.2.1 NTRIP Version 2</h4></p>
 
 <p>
 The major changes of NTRIP version 2.0 compared to version 1.0 are:
@@ -1333,7 +1333,7 @@ The major changes of NTRIP version 2.0 compared to version 1.0 are:
 <p>NTRIP version 2 allows to either communicate in TCP/IP mode or in RTSP/RTP mode whereas version 1 is limited to TCP/IP only.
 </p>
 
-<p><a name="rtcm2"><h4>8.2.3 RTCM Version 2.x</h4></p>
+<p><a name="rtcm2"><h4>6.2.3 RTCM Version 2.x</h4></p>
 <p>
 Transmitting GNSS carrier phase data can be done through RTCM Version 2.x messages. Please note that only RTCM Version 2.2 and 2.3 streams may include GLONASS data. Messages that may be of some interest here are:
 </p>
@@ -1371,7 +1371,7 @@ Type 24 message carries the coordinates of the installed antenna's ARP in the GN
 </li>
 </ul>
 
-<p><a name="rtcm3"><h4>8.2.4 RTCM Version 3.x</h4></p>
+<p><a name="rtcm3"><h4>6.2.4 RTCM Version 3.x</h4></p>
 <p>
 RTCM Version 3.x has been developed as a more efficient alternative to RTCM Version 2.x. Service providers and vendors have asked for a standard that would be more efficient, easy to use, and more easily adaptable to new situations. The main complaint was that the Version 2 parity scheme was wasteful of bandwidth. Another complaint was that the parity is not independent from word to word. Still another was that even with so many bits devoted to parity, the actual integrity of the message was not as high as it should be. Plus, 30-bit words are awkward to handle. The Version 3.x standard is intended to correct these weaknesses.
 </p>
@@ -1399,7 +1399,7 @@ RTCM Version 3.x defines a number of message types. Messages that may be of inte
 </li>
 </ul>
 
-<p><a name="rtigs"><h4>8.3. RTIGS</h4></p>
+<p><a name="rtigs"><h4>6.3. RTIGS</h4></p>
 <p>
 RTIGS stands for a data format and transport protocol for GPS observations. It was defined by the Real-Time IGS Working Group (RTIGS WG). Its definition is based on the SOC format. Every RTIGS record has one of the following numbers:
 </p>
@@ -1452,7 +1452,7 @@ All record data are in network byte order (Big Endian), i.e. IA32 users have to 
 Visit <u>http://igscb.jpl.nasa.gov/mail/igs-rtwg/2004/msg00001.html</u> for further details.
 </p>
 
-<p><a name="soc"><h4>8.3.1 SOC</h4></p>
+<p><a name="soc"><h4>6.3.1 SOC</h4></p>
 <p>
 The SOC format has been designed in July 1999 by the Jet Propulsion Laboratory (JPL) and the California Institute of Technology (CalTech) to transport 1Hz GPS data with minimal bandwidth over the open Internet. SOC follows the 'little-endian' byte order meaning that the low-order byte of a number is stored in memory at the lowest address, and the high-order byte at the highest address. Because the transport layer is UDP, the format does not include sync bits, a checksum, or cyclic redundancy checksum (CRC). SOC allows to transport the GPS observable CA, P1, P2, L1, and L2, efficiently compressed down to 14 bytes with 1 mm range resolution and 0.02 mm phase resolution. SOC contains epochs for cycle slips, a stand-alone time-tag per epoch, a minimum representation of the receiver's clock solution, 3 SNR numbers, a unique site id, a modulo 12 hour sequence number and flags for receiver type and GPS health. SOC's simple structure comprises an 8 byte header, a 9 byte overhead for timetag, number of gps, etc., plus 21 data bytes per gps.
 </p>
@@ -1461,7 +1461,7 @@ Visit <u>http://gipsy.jpl.nasa.gov/igdg/papers/SOC_FORMAT.ppt</u> for further de
 </p>
 <p>
 </p>
-<p><a name="config"><h4>8.4. Configuration Example</h4></p>
+<p><a name="config"><h4>6.4. Configuration Example</h4></p>
 <p>
 The following table's left column is an example for the contents of a configuration file 'BNC.ini'. It enables the retrieval of stream ACOR0 form www.euref-ip.net for the generation of 15 min RINEX files. RINEX files are uploaded to an archive using script 'up2archive' :
 </p>
@@ -1527,7 +1527,7 @@ Note that the following configuration options saved on disk can be changed/edite
 </ul>
 </p>
 
-<p><a name="links"><h3>8.5 Links</h3></p>
+<p><a name="links"><h3>6.5 Links</h3></p>
 <table>
 <tr></tr>
 <tr><td>NTRIP &nbsp;</td><td><u>http://igs.bkg.bund.de/index_ntrip.htm</u></td></tr>
