@@ -25,6 +25,10 @@ debug:MOC_DIR=.moc/debug
 release:OBJECTS_DIR=.obj/release
 release:MOC_DIR=.moc/release
 
+# Include Path
+# ------------
+INCLUDEPATH = .
+
 HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bnccaster.h bncrinex.h bncapp.h bncutils.h   bnchlpdlg.h    \
           bncconst.h bnchtml.h bnctableitem.h bnczerodecoder.h        \
