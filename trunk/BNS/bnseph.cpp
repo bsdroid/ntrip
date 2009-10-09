@@ -84,7 +84,7 @@ void t_bnseph::reconnect() {
   _socket = new QTcpSocket();
   _socket->connectToHost(host, port);
 
-  const int timeOut = 10*1000;  // 10 seconds
+  const int timeOut = 30*1000;  // 30 seconds
   if (!_socket->waitForConnected(timeOut)) {
 //  emit(newMessage("bnseph::run Connect Timeout"));
     emit(newMessage("Ephemeris server: Connection timeout")); // weber
@@ -100,7 +100,9 @@ void t_bnseph::run() {
   emit(newMessage("Ephemeris server: Connection opened")); // weber
 
   while (true) {
-    if (_socket == 0 || _socket->state() != QAbstractSocket::ConnectedState) {
+    if ( _socket == 0 ||
+         (_socket->state() != QAbstractSocket::ConnectingState &&
+          _socket->state() != QAbstractSocket::ConnectedState) ) {
       reconnect();
     }
     if (_socket && _socket->state() == QAbstractSocket::ConnectedState) {
