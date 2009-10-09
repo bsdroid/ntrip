@@ -87,6 +87,9 @@ void bncNetQueryUdp::waitForReadyRead(QByteArray& outData) {
   if (datagram.size() > 12) {
     outData.append(datagram.mid(12));
   }
+  else {
+    _status = error;
+  }
 }
 
 // Connect to Caster, send the Request
