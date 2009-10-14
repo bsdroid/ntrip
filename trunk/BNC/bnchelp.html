@@ -390,7 +390,7 @@ Note that this does not concern the broadcast ephemeris output throug IP port wh
 <p><a name="correct"><h4>3.6. Broadcast Corrections</h4></p>
 <p>
 </p>
-RTCM is in the process of developing new Version 3 messages to transport satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following premature messages currently under discussion have been implemented in BNC:
+RTCM is in the process of developing new Version 3 messages to transport satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following premature so-called 'State Space Representation' (SSR) messages currently under discussion have been implemented in BNC:
 <ul>
 <li>Message type 1057: GPS orbit corrections to Broadcast Ephemeris</li>
 <li>Message type 1058: GPS clock corrections to Broadcast Ephemeris</li>
@@ -414,6 +414,14 @@ When using clocks from Broadcast Ephemeris (with or without applied corrections)
 
 <p>
 Orbit corrections are provided in along-track, cross-track and radial components. These components are defined in the Earth-centered, Earth-fixed reference frame of the broadcast ephemerides. For an observer in this frame, the along-track component is aligned in both direction and sign with the velocity vector, the cross-track component is perpendicular to the plane defined by the satellite position and velocity vectors, and the radial direction is perpendicular to the along track and cross-track ones. The three components form a right-handed orthogonal system.
+</p>
+
+<p>
+After applying corrections, the satellite position and clock is referred to the 'ionospheric free' phase center of the antenna which is compatible with the broadcast orbit reference.
+</p>
+
+<p>
+The orbit and clock corrections do not include local effects (like Ocean Loading or Solid Earth Tides) or atmospheric effects (Ionosphere and/or troposphere). Depending on the accuracy of your application you should correct for such effects by other means. There is currently no RTCM SSR message for ionospheric state parameters. Such messages are needed for accurate single frequency applications. The development of Iono messages will be the next step in the schedule of the RTCM State Space Representation Working Group.
 </p>
 
 <p>
