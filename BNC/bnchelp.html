@@ -172,7 +172,7 @@ The 'File' button lets you
 Use smaller font size if the BNC main window exceeds the size of your screen.
 </li> 
 <li> save selected options in configuration file.<br>
-When using 'Save & Activate Options' while BNC is already processing data, some configuration options become immediately effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration Example' for a list of on-the-fly changeable configuration options.
+When using 'Save & Reread Configuration' while BNC is already processing data, some configuration options become immediately effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration Example' for a list of on-the-fly changeable configuration options.
 </li>
 <li> quit the BNC program.
 </li> 
@@ -963,7 +963,7 @@ To remove a stream from the 'Streams' canvas in the main window, highlight it by
 The streams selection can be changed on-the-fly without interrupting uninvolved threads in the running BNC process.
 </p>
 <p>
-<u>Window mode:</u> Hit 'Save & Activate Options' while BNC is in window mode and already processing data to let changes of your streams selection immediately become effective.
+<u>Window mode:</u> Hit 'Save & Reread Configuration' while BNC is in window mode and already processing data to let changes of your streams selection immediately become effective.
 <p>
 <u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option from disk at pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file become effective without terminating uninvolved threads. See annexed section 'Configuration Example' for a configuration file example and a list of other on-the-fly changeable options.
 </p>
