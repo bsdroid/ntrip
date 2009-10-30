@@ -2,11 +2,15 @@ Todo's sorted by priority:
 
 BNS
 =========================
+(1) GLONASS-IOD 7-bit-Problem, explained by email from Andrea Stuerze.
 
 BNC
 =========================
-(1) Added "bncnetquerys" for stream input from serial port
-Please have a look.
-
-(2) GW: Keep an eye on www.igs-ip.net/PENC0.
+(1) LM: Program crashes on Windows XP systems when saving stream contents in RINEX files.
+(2) LM: Change time tag for GLONASS ephemeris from GPS time to GLONASS time (UTC).
+(3) LM: We may also have a date problem in the GLONASS Ephemeris time tag.
+    We once saw a wrong date.
+(4) LM&JP: Bandwidth graphics: one column per stream showing the current bandwidth needed.
+    Please consider this as "nice to have". It's of course not a must.
+(5) GW: Keep an eye on www.igs-ip.net/PENC0.
 
