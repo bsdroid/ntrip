@@ -16,4 +16,5 @@ BNC
 
 RTNET
 =========================
-(1) SVs missing after temporary exclusion on clock-ip
+(1) SV missing in solution after temporary exclusion (e.g. SV not in IGU orbits or in SAT_2009.CRX), only on clock-ip
+
