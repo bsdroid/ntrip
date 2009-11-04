@@ -14,3 +14,6 @@ BNC
     Please consider this as "nice to have". It's of course not a must.
 (5) GW: Keep an eye on www.igs-ip.net/PENC0.
 
+RTNET
+=========================
+(1) SVs missing after temporary exclusion on clock-ip
