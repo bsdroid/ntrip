@@ -11,8 +11,8 @@ BNC
 (2) LM: Change time tag for GLONASS ephemeris from GPS time to GLONASS time (UTC).
 (3) LM: We may also have a date problem in the GLONASS Ephemeris time tag.
     We once saw a wrong date.
-(4) LM&JP: Bandwidth graphics: one column per stream showing the current bandwidth needed.
-    Please consider this as "nice to have" - it's not a must.
+(4) LM&JamesPerlt: Bandwidth graphics: one column per stream showing the current 
+    bandwidth needed. Please consider this as "nice to have" - it's not a must.
     What we have is marked with "Begin new Perlt" and "End new Perlt" in bncwindow.cpp 
     and bncwindow.h. If you don't like it or if its to difficult to implement
     it then: please delete it form the source code.
