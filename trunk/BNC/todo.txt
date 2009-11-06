@@ -2,7 +2,8 @@ Todo's sorted by priority:
 
 BNS
 =========================
-(1) GLONASS-IOD 7-bit-Problem, explained by email from Andrea Stuerze.
+(1) Reconnect of "Broadcast Ephemeris" stream upload to caster does not work.
+(2) GLONASS-IOD 7-bit-Problem, explained by email from Andrea Stuerze.
 
 BNC
 =========================
