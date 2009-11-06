@@ -81,25 +81,13 @@ void FWidget::paintEvent(QPaintEvent *)
     painter.drawRect(rectangle);
     QLine line(50, 140, 630, 140);
     painter.drawLine(line);
-
-    line.setLine(50, 105, 50, 10);
+    line.setLine(50, 140, 50, 10);
     painter.drawLine(line);
-    line.setLine(50, 105, 400, 105);
-    painter.drawLine(line);
-
     QPoint textP(40, 140);
     painter.drawText(textP, tr("0"));
     textP.setX(20);
     textP.setY(25);
     painter.drawText(textP, tr("3000"));
-    textP.setX(20);
-    textP.setY(40);
-    painter.drawText(textP, tr("bps"));
-
-    textP.setX(410);
-    textP.setY(105);
-    painter.drawText(textP, tr("Mountpoints"));
-
     int anker=0;
     textP.setY(160);
     painter.drawText(textP, tr(QTime::currentTime().toString().toAscii()));
