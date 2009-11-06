@@ -55,11 +55,85 @@
 
 using namespace std;
 
+// Begin new Perlt
+FWidget::FWidget(QWidget *parent)
+    : QWidget(parent)
+{
+  bncSettings settings;
+  QListIterator<QString> it(settings.value("mountPoints").toStringList());
+  while (it.hasNext()) {
+    QStringList hlp = it.next().split(" ");
+    QUrl    url(hlp[0]);
+    MPName.append(url.path().toAscii()); bytesMP.append(0);
+    }
+}
+
+FWidget::~FWidget() { };
+
+void FWidget::nextAnimationFrame(){update();}
+
+void FWidget::paintEvent(QPaintEvent *)
+{
+    QRectF rectangle(0, 0, 640, 180);
+    QBrush rBrush(Qt::white,Qt::SolidPattern);
+    QPainter painter(this);
+    painter.fillRect(rectangle,rBrush);
+    painter.drawRect(rectangle);
+    QLine line(50, 140, 630, 140);
+    painter.drawLine(line);
+
+    line.setLine(50, 105, 50, 10);
+    painter.drawLine(line);
+    line.setLine(50, 105, 400, 105);
+    painter.drawLine(line);
+
+    QPoint textP(40, 140);
+    painter.drawText(textP, tr("0"));
+    textP.setX(20);
+    textP.setY(25);
+    painter.drawText(textP, tr("3000"));
+    textP.setX(20);
+    textP.setY(40);
+    painter.drawText(textP, tr("bps"));
+
+    textP.setX(410);
+    textP.setY(105);
+    painter.drawText(textP, tr("Mountpoints"));
+
+    int anker=0;
+    textP.setY(160);
+    painter.drawText(textP, tr(QTime::currentTime().toString().toAscii()));
+    textP.setX(300);
+
+//  QString hlp = (QString("%1").arg(MPName.size()));
+//  if (MPName.isEmpty()) {painter.drawText(textP, tr("Empty"));} else {painter.drawText(textP, tr(hlp.toAscii()));}
+
+    QListIterator<QByteArray> it(MPName);
+    while (it.hasNext()) {
+    QByteArray hlp=it.next();
+    double bytesnew=bytesMP[MPName.lastIndexOf(hlp)];
+    double vv = bytesnew/30;
+      QRectF vrect((100+anker*40), (140-vv), (30), (vv));
+      QBrush xBrush(Qt::green,Qt::SolidPattern);
+      textP.setX(100+anker*40);
+      painter.fillRect(vrect,xBrush);
+      painter.drawRect(vrect);
+      painter.drawText(textP, hlp);
+      anker++;
+    }
+}
+// End new Perlt
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::bncWindow() {
 
   _caster = 0;
+
+// Begin new Perlt
+  // Figure
+  _Figure1 = new FWidget(this);
+// End new Perlt
 
   int ww = QFontMetrics(this->font()).width('w');
   
@@ -389,6 +463,28 @@ bncWindow::bncWindow() {
   aogroup->addTab(agroup,tr("Outages"));
   aogroup->addTab(rgroup,tr("Miscellaneous"));
 
+// Begin new Perlt
+
+  loggroup = new QTabWidget();
+  QWidget* log1group = new QWidget();
+  QWidget* log2group = new QWidget();
+  loggroup->addTab(log1group,tr("Log"));
+  loggroup->addTab(log2group,tr("Status"));
+
+  // log Tab
+  // -------
+  QGridLayout* log1Layout = new QGridLayout;
+  log1Layout->addWidget(_log,                0,0);
+  log1group->setLayout(log1Layout);
+
+  // Status Tab
+  // ----------
+  QGridLayout* log2Layout = new QGridLayout;
+  log2Layout->addWidget(_Figure1,            0,0);
+  log2group->setLayout(log2Layout);
+
+// End new Perlt
+
   // Proxy Tab
   // ---------
   QGridLayout* pLayout = new QGridLayout;
@@ -707,8 +803,16 @@ bncWindow::bncWindow() {
   aogroup->setCurrentIndex(settings.value("startTab").toInt());
   mLayout->addWidget(aogroup,             0,0);
   mLayout->addWidget(_mountPointsTable,   1,0);
-  mLayout->addWidget(new QLabel(" Logs:"),2,0);
-  mLayout->addWidget(_log,                3,0);
+
+// Begin new Perlt
+//  mLayout->addWidget(new QLabel(" Logs:"),2,0);
+//  mLayout->addWidget(_log,                3,0);
+  QTimer *timer = new QTimer(this);
+  connect(timer, SIGNAL(timeout()), _Figure1, SLOT(nextAnimationFrame()));
+  mLayout->addWidget(loggroup,            2,0);
+  timer->start(100);
+
+// End new Perlt
 
   _canvas->setLayout(mLayout);
 
@@ -1328,6 +1432,7 @@ void bncWindow::bncText(const QString &text){
   QColor lightGray(230, 230, 230);
   QColor white(255, 255, 255);
 
+
   // Proxy
   //------
   if (aogroup->currentIndex() == 0) {
@@ -1534,3 +1639,4 @@ void bncWindow::bncText(const QString &text){
     }
   }
 }
+
