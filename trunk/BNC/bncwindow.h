@@ -31,6 +31,27 @@
 #include "bncgetthread.h"
 #include "bnccaster.h"
 
+// Begin new Perlt
+class FWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    FWidget(QWidget *parent);
+    ~FWidget();
+
+public slots:
+    void nextAnimationFrame();
+
+protected:
+    void paintEvent(QPaintEvent *event);
+
+private:
+    QList<QByteArray> MPName;
+    QList<double> bytesMP;
+};
+// End new Perlt
+
   class bncAboutDlg : public QDialog {
   Q_OBJECT
 
@@ -55,7 +76,7 @@
     ~bncWindow();
     void CreateMenu();
     void AddToolbar();
-  
+
   public slots:  
     void slotMountPointsRead(QList<bncGetThread*>);
     void bncText(const QString &text);
@@ -149,8 +170,13 @@
 
     QTextEdit*  _log;
 
-    QWidget*   _canvas;
+    QWidget*    _canvas;
     QTabWidget* aogroup;
+
+// neu Perlt
+    QTabWidget* loggroup;
+    FWidget*    _Figure1;
+// Ende neu Perlt
 
     bncCaster* _caster;
 };
