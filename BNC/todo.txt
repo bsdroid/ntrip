@@ -12,7 +12,7 @@ BNC
 (1) LM: Change time tag for GLONASS ephemeris from GPS time to GLONASS time (UTC).
 (2) LM: We may also have a date problem in the GLONASS Ephemeris time tag.
     We once saw a wrong date.
-(3) Ntrip version "U" (for UDP) works with Dirk Stoecker's casster at
+(3) Ntrip version "U" (for UDP) works with Dirk Stoecker's caster at
     www.dgpsonline.eu:2101 but not with our own Caster at
     euref-ip.bkg.bund.de:2101. Check situation with mountPoints string:
     mountPoints=//bkg:realtime06@141.74.33.12:2101/ZOUF0 RTCM_2.3 46.56 12.97 no U,
