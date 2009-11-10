@@ -9,20 +9,50 @@ BNS
 
 BNC
 =========================
-(1) LM: Change time tag for GLONASS ephemeris from GPS time to GLONASS time (UTC).
-(2) LM: We may also have a date problem in the GLONASS Ephemeris time tag.
+(1) Change time tag for GLONASS ephemeris from GPS time to GLONASS time (UTC).
+
+(2) We may also have a date problem in the GLONASS Ephemeris time tag.
     We once saw a wrong date.
-(3) Ntrip version "U" (for UDP) works with Dirk Stoecker's caster at
+
+(3) Oscar Colombo describes the following bug in the BRDC and CLK* time tags:
+    "I have found an odd situation concerning the correspondence between the epochs
+    of data in "RTCM3EPH" and of those of the data in "CLK10". 
+    In the file extract below you can see that the "CLK10" corrections to the orbits
+    and clocks are for an epoch close to Greenwich midnight of November 5, 2009
+    (when I was collecting it with BNC 1.7), but the orbits and clocks with the
+    same IODE are the broadcast values for 15:59 hs and 16:00 hs: some 8 hours
+    earlier. So those are midnight corrections to the broadcast orbits and clocks
+    from 8 hours earlier."
+    File extract:
+    ....
+    BRDCRR  1060 0 1556 430940.0 G28    44      9.498  -46.343 -155.593  147.576
+    BRDCRR  1060 0 1556 430940.0 G29    22     -3.045  -58.524  133.230  116.716
+    BRDCRR  1060 0 1556 430940.0 G30    51      3.554  -18.734   22.571 -174.303
+    BRDCRR  1060 0 1556 430940.0 G31    29     -5.229  116.870   77.207 -113.687
+    BRDCRR  1060 0 1556 430940.0 G32    79    -12.534  179.447  -90.711  144.278
+    RINAVH 027 09 11  5 15 59 44.0 0.973059795797E-04 0.318323145621E-11 0.000000000000E+00            
+    RINAVR 0    0.190000000000E+02-0.167312500000E+03 0.398159460957E-08 0.242476843284E+01            
+    RINAVR 0   -0.858306884766E-05 0.215127451811E-01 0.515021383762E-05 0.515372610092E+04            
+    RINAVR 0    0.403184000000E+06 0.279396772385E-06-0.194402304722E+00-0.670552253723E-07            
+    RINAVR 0    0.976590072451E+00 0.287843750000E+03-0.152511337870E+01-0.761210294797E-08            
+    RINAVR 0   -0.272154188075E-09 0.100000000000E+01 0.155600000000E+04 0.000000000000E+00            
+    RINAVR 0    0.200000000000E+01 0.000000000000E+00-0.419095158577E-08 0.190000000000E+02            
+    RINAVR 0    0.396018000000E+06 0.400000000000E+01 0.000000000000E+00 0.000000000000E+00 
+    ....
+
+(4) Ntrip version "U" (for UDP) works with Dirk Stoecker's caster at
     www.dgpsonline.eu:2101 but not with our own Caster at
     euref-ip.bkg.bund.de:2101. Check situation with mountPoints string:
     mountPoints=//bkg:realtime06@141.74.33.12:2101/ZOUF0 RTCM_2.3 46.56 12.97 no U,
                //weber:bkg@www.dgpsonline.eu:2101/WILD_RTK3 RTCM_3 52.36 13.56 no U
-(4) LM&JamesPerlt: Bandwidth graphics: one column per stream showing the current 
+
+(5) Bandwidth graphics: one column per stream showing the current 
     bandwidth needed. Please consider this as "nice to have" - it's not a must.
     What we have is marked with "Begin new Perlt" and "End new Perlt" in bncwindow.cpp 
     and bncwindow.h. If you don't like it or if its to difficult to implement
     it then: please delete it form the source code.
-(5) GW: Keep an eye on www.igs-ip.net/PENC0.
+
+(6) GW: Keep an eye on www.igs-ip.net/PENC0.
 
 RTNET
 =========================
