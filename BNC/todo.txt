@@ -4,15 +4,19 @@ BNS
 =========================
 (1) Reconnect of "Broadcast Ephemeris" stream upload to caster does not work.
     If we shut down the caster, wait a minute and then restart it, stream
-    RTCM3EPH does not connect again.
+    RTCM3EPH does not reconnect.
 (2) GLONASS-IOD 7-bit-Problem, explained by email from Andrea Stuerze.
 
 BNC
 =========================
-(1) LM: Program crashes on Windows XP systems when saving stream contents in RINEX files.
-(2) LM: Change time tag for GLONASS ephemeris from GPS time to GLONASS time (UTC).
-(3) LM: We may also have a date problem in the GLONASS Ephemeris time tag.
+(1) LM: Change time tag for GLONASS ephemeris from GPS time to GLONASS time (UTC).
+(2) LM: We may also have a date problem in the GLONASS Ephemeris time tag.
     We once saw a wrong date.
+(3) Ntrip version "U" (for UDP) works with Dirk Stoecker's casster at
+    www.dgpsonline.eu:2101 but not with our own Caster at
+    euref-ip.bkg.bund.de:2101. Check situation with mountPoints string:
+    mountPoints=//bkg:realtime06@141.74.33.12:2101/ZOUF0 RTCM_2.3 46.56 12.97 no U,
+               //weber:bkg@www.dgpsonline.eu:2101/WILD_RTK3 RTCM_3 52.36 13.56 no U
 (4) LM&JamesPerlt: Bandwidth graphics: one column per stream showing the current 
     bandwidth needed. Please consider this as "nice to have" - it's not a must.
     What we have is marked with "Begin new Perlt" and "End new Perlt" in bncwindow.cpp 
