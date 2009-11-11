@@ -697,7 +697,7 @@ void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
 ////////////////////////////////////////////////////////////////////////////
 int t_ephGlo::IOD() const {
 
-  bool old = true;
+  bool old = false;
 
   if (old) { // 5 LSBs of iod are equal to 5 LSBs of tb
     unsigned int tb  = int(fmod(_GPSweeks,86400.0)); //sec of day
@@ -705,10 +705,7 @@ int t_ephGlo::IOD() const {
     unsigned int iod = tb << shift;
     return (iod >> shift);
   }
-  else     {  // 7 LSBs of iod are equal to 7 LSBs of tk
-    unsigned tk = int(_tki);
-    const int shift = sizeof(tk) * 8 - 7;
-    unsigned int iod = tk << shift;
-    return (iod >> shift);
+  else     {  
+    return int(fmod(_tki, 3600)) / 30;
   }
 }
