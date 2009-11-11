@@ -31,30 +31,22 @@
 #include "bncgetthread.h"
 #include "bnccaster.h"
 
-// Begin new Perlt
-class FWidget : public QWidget
-{
-    Q_OBJECT
-
-public:
-    FWidget(QWidget *parent);
-    ~FWidget();
-
-public slots:
-    void nextAnimationFrame();
-
-protected:
-    void paintEvent(QPaintEvent *event);
-
-private:
-    QList<QByteArray> MPName;
-    QList<double> bytesMP;
-};
-// End new Perlt
-
-  class bncAboutDlg : public QDialog {
+class FWidget : public QWidget {
   Q_OBJECT
+ public:
+  FWidget(QWidget *parent);
+  ~FWidget();
+ public slots:
+  void nextAnimationFrame();
+ protected:
+  void paintEvent(QPaintEvent *event);
+ private:
+  QList<QByteArray> _MPName;
+  QList<double>     _bytesMP;
+};
 
+class bncAboutDlg : public QDialog {
+  Q_OBJECT
   public:
     bncAboutDlg(QWidget* parent);
     ~bncAboutDlg();
@@ -171,12 +163,10 @@ private:
     QTextEdit*  _log;
 
     QWidget*    _canvas;
-    QTabWidget* aogroup;
+    QTabWidget* _aogroup;
 
-// neu Perlt
-    QTabWidget* loggroup;
+    QTabWidget* _loggroup;
     FWidget*    _Figure1;
-// Ende neu Perlt
 
     bncCaster* _caster;
 };

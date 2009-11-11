@@ -55,62 +55,65 @@
 
 using namespace std;
 
-// Begin new Perlt
-FWidget::FWidget(QWidget *parent)
-    : QWidget(parent)
-{
+// Constructor
+////////////////////////////////////////////////////////////////////////////
+FWidget::FWidget(QWidget *parent) : QWidget(parent) {
   bncSettings settings;
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
   while (it.hasNext()) {
     QStringList hlp = it.next().split(" ");
     QUrl    url(hlp[0]);
-    MPName.append(url.path().toAscii()); bytesMP.append(0);
-    }
+    _MPName.append(url.path().toAscii()); _bytesMP.append(0);
+  }
 }
 
-FWidget::~FWidget() { };
+// Destructor
+////////////////////////////////////////////////////////////////////////////
+FWidget::~FWidget() { 
+}
 
-void FWidget::nextAnimationFrame(){update();}
+// 
+////////////////////////////////////////////////////////////////////////////
+void FWidget::nextAnimationFrame() {
+  update();
+}
 
-void FWidget::paintEvent(QPaintEvent *)
-{
-    QRectF rectangle(0, 0, 640, 180);
-    QBrush rBrush(Qt::white,Qt::SolidPattern);
-    QPainter painter(this);
-    painter.fillRect(rectangle,rBrush);
-    painter.drawRect(rectangle);
-    QLine line(50, 140, 630, 140);
-    painter.drawLine(line);
-    line.setLine(50, 140, 50, 10);
-    painter.drawLine(line);
-    QPoint textP(40, 140);
-    painter.drawText(textP, tr("0"));
-    textP.setX(20);
-    textP.setY(25);
-    painter.drawText(textP, tr("3000"));
-    int anker=0;
-    textP.setY(160);
-    painter.drawText(textP, tr(QTime::currentTime().toString().toAscii()));
-    textP.setX(300);
+// 
+////////////////////////////////////////////////////////////////////////////
+void FWidget::paintEvent(QPaintEvent *) {
+  QRectF rectangle(0, 0, 640, 180);
+  QBrush rBrush(Qt::white,Qt::SolidPattern);
+  QPainter painter(this);
+  painter.fillRect(rectangle,rBrush);
+  painter.drawRect(rectangle);
+  QLine line(50, 140, 630, 140);
+  painter.drawLine(line);
+  line.setLine(50, 140, 50, 10);
+  painter.drawLine(line);
+  QPoint textP(40, 140);
+  painter.drawText(textP, tr("0"));
+  textP.setX(20);
+  textP.setY(25);
+  painter.drawText(textP, tr("3000"));
+  int anker=0;
+  textP.setY(160);
+  painter.drawText(textP, tr(QTime::currentTime().toString().toAscii()));
+  textP.setX(300);
 
-//  QString hlp = (QString("%1").arg(MPName.size()));
-//  if (MPName.isEmpty()) {painter.drawText(textP, tr("Empty"));} else {painter.drawText(textP, tr(hlp.toAscii()));}
-
-    QListIterator<QByteArray> it(MPName);
-    while (it.hasNext()) {
+  QListIterator<QByteArray> it(_MPName);
+  while (it.hasNext()) {
     QByteArray hlp=it.next();
-    double bytesnew=bytesMP[MPName.lastIndexOf(hlp)];
+    double bytesnew=_bytesMP[_MPName.lastIndexOf(hlp)];
     double vv = bytesnew/30;
-      QRectF vrect((100+anker*40), (140-vv), (30), (vv));
-      QBrush xBrush(Qt::green,Qt::SolidPattern);
-      textP.setX(100+anker*40);
-      painter.fillRect(vrect,xBrush);
-      painter.drawRect(vrect);
-      painter.drawText(textP, hlp);
-      anker++;
-    }
+    QRectF vrect((100+anker*40), (140-vv), (30), (vv));
+    QBrush xBrush(Qt::green,Qt::SolidPattern);
+    textP.setX(100+anker*40);
+    painter.fillRect(vrect,xBrush);
+    painter.drawRect(vrect);
+    painter.drawText(textP, hlp);
+    anker++;
+  }
 }
-// End new Perlt
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -118,10 +121,7 @@ bncWindow::bncWindow() {
 
   _caster = 0;
 
-// Begin new Perlt
-  // Figure
   _Figure1 = new FWidget(this);
-// End new Perlt
 
   int ww = QFontMetrics(this->font()).width('w');
   
@@ -431,7 +431,7 @@ bncWindow::bncWindow() {
   _canvas = new QWidget;
   setCentralWidget(_canvas);
 
-  aogroup = new QTabWidget();
+  _aogroup = new QTabWidget();
   QWidget* pgroup = new QWidget();
   QWidget* ggroup = new QWidget();
   QWidget* sgroup = new QWidget();
@@ -441,23 +441,21 @@ bncWindow::bncWindow() {
   QWidget* ogroup = new QWidget();
   QWidget* rgroup = new QWidget();
   QWidget* sergroup = new QWidget();
-  aogroup->addTab(pgroup,tr("Proxy"));
-  aogroup->addTab(ggroup,tr("General"));
-  aogroup->addTab(ogroup,tr("RINEX Observations"));
-  aogroup->addTab(egroup,tr("RINEX Ephemeris"));
-  aogroup->addTab(cgroup,tr("Broadcast Corrections"));
-  aogroup->addTab(sgroup,tr("Feed Engine"));
-  aogroup->addTab(sergroup,tr("Serial Output"));
-  aogroup->addTab(agroup,tr("Outages"));
-  aogroup->addTab(rgroup,tr("Miscellaneous"));
+  _aogroup->addTab(pgroup,tr("Proxy"));
+  _aogroup->addTab(ggroup,tr("General"));
+  _aogroup->addTab(ogroup,tr("RINEX Observations"));
+  _aogroup->addTab(egroup,tr("RINEX Ephemeris"));
+  _aogroup->addTab(cgroup,tr("Broadcast Corrections"));
+  _aogroup->addTab(sgroup,tr("Feed Engine"));
+  _aogroup->addTab(sergroup,tr("Serial Output"));
+  _aogroup->addTab(agroup,tr("Outages"));
+  _aogroup->addTab(rgroup,tr("Miscellaneous"));
 
-// Begin new Perlt
-
-  loggroup = new QTabWidget();
+  _loggroup = new QTabWidget();
   QWidget* log1group = new QWidget();
   QWidget* log2group = new QWidget();
-  loggroup->addTab(log1group,tr("Log"));
-  loggroup->addTab(log2group,tr("Status"));
+  _loggroup->addTab(log1group,tr("Log"));
+  _loggroup->addTab(log2group,tr("Status"));
 
   // log Tab
   // -------
@@ -470,8 +468,6 @@ bncWindow::bncWindow() {
   QGridLayout* log2Layout = new QGridLayout;
   log2Layout->addWidget(_Figure1,            0,0);
   log2group->setLayout(log2Layout);
-
-// End new Perlt
 
   // Proxy Tab
   // ---------
@@ -788,19 +784,14 @@ bncWindow::bncWindow() {
   // -----------
 
   QGridLayout* mLayout = new QGridLayout;
-  aogroup->setCurrentIndex(settings.value("startTab").toInt());
-  mLayout->addWidget(aogroup,             0,0);
+  _aogroup->setCurrentIndex(settings.value("startTab").toInt());
+  mLayout->addWidget(_aogroup,             0,0);
   mLayout->addWidget(_mountPointsTable,   1,0);
 
-// Begin new Perlt
-//  mLayout->addWidget(new QLabel(" Logs:"),2,0);
-//  mLayout->addWidget(_log,                3,0);
   QTimer *timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), _Figure1, SLOT(nextAnimationFrame()));
-  mLayout->addWidget(loggroup,            2,0);
+  mLayout->addWidget(_loggroup,            2,0);
   timer->start(100);
-
-// End new Perlt
 
   _canvas->setLayout(mLayout);
 
@@ -1123,7 +1114,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("serialPortName",  _serialPortNameLineEdit->text());
   settings.setValue("serialStopBits",  _serialStopBitsComboBox->currentText());
   settings.setValue("serialFlowControl",_serialFlowControlComboBox->currentText());
-  settings.setValue("startTab",    aogroup->currentIndex());
+  settings.setValue("startTab",    _aogroup->currentIndex());
   settings.setValue("waitTime",    _waitTimeSpinBox->value());
 
   if (_caster) {
@@ -1423,7 +1414,7 @@ void bncWindow::bncText(const QString &text){
 
   // Proxy
   //------
-  if (aogroup->currentIndex() == 0) {
+  if (_aogroup->currentIndex() == 0) {
     if (!isEmpty) {
       _proxyPortLineEdit->setStyleSheet("background-color: white");
       _proxyPortLineEdit->setEnabled(true);
@@ -1435,7 +1426,7 @@ void bncWindow::bncText(const QString &text){
 
   // RINEX Observations
   // ------------------
-  if (aogroup->currentIndex() == 2) {
+  if (_aogroup->currentIndex() == 2) {
     if (!isEmpty) {
       _rnxSamplSpinBox->setStyleSheet("background-color: white");
       _rnxSkelLineEdit->setStyleSheet("background-color: white");
@@ -1465,7 +1456,7 @@ void bncWindow::bncText(const QString &text){
 
   // RINEX Ephemeris
   // ---------------
-  if (aogroup->currentIndex() == 3) {
+  if (_aogroup->currentIndex() == 3) {
     if (!_ephPathLineEdit->text().isEmpty() && !_outEphPortLineEdit->text().isEmpty()) { 
       _ephIntrComboBox->setStyleSheet("background-color: white");
       palette.setColor(_ephV3CheckBox->backgroundRole(), white);
@@ -1498,7 +1489,7 @@ void bncWindow::bncText(const QString &text){
 
   // Broadcast Corrections
   // ---------------------
-  if (aogroup->currentIndex() == 4) {
+  if (_aogroup->currentIndex() == 4) {
     if (!isEmpty) {
       if (!_corrPathLineEdit->text().isEmpty()) {
       _corrIntrComboBox->setStyleSheet("background-color: white");
@@ -1524,7 +1515,7 @@ void bncWindow::bncText(const QString &text){
 
   // Feed Engine
   // -----------
-  if (aogroup->currentIndex() == 5) {
+  if (_aogroup->currentIndex() == 5) {
     if ( !_outPortLineEdit->text().isEmpty() || !_outFileLineEdit->text().isEmpty()) {
       _waitTimeSpinBox->setStyleSheet("background-color: white");
       _binSamplSpinBox->setStyleSheet("background-color: white");
@@ -1540,7 +1531,7 @@ void bncWindow::bncText(const QString &text){
 
   // Serial Output
   // -------------
-  if (aogroup->currentIndex() == 6) {
+  if (_aogroup->currentIndex() == 6) {
     if (!isEmpty) {
       _serialPortNameLineEdit->setStyleSheet("background-color: white");
       _serialBaudRateComboBox->setStyleSheet("background-color: white");
@@ -1591,7 +1582,7 @@ void bncWindow::bncText(const QString &text){
 
   // Outages
   // -------
-  if (aogroup->currentIndex() == 7) {
+  if (_aogroup->currentIndex() == 7) {
     if (!isEmpty) {
       _adviseScriptLineEdit->setStyleSheet("background-color: white");
       _adviseFailSpinBox->setStyleSheet("background-color: white");
@@ -1611,7 +1602,7 @@ void bncWindow::bncText(const QString &text){
 
   // Miscellaneous
   // -------------
-  if (aogroup->currentIndex() == 8) {
+  if (_aogroup->currentIndex() == 8) {
     if (!isEmpty) {
       _perfIntrComboBox->setStyleSheet("background-color: white");
       palette.setColor(_scanRTCMCheckBox->backgroundRole(), white);
