@@ -322,6 +322,11 @@ void bncGetThread::initialize() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncGetThread::~bncGetThread() {
+
+  if (isRunning()) {
+    wait();
+  }
+
   if (_query) {
     _query->stop();
     _query->deleteLater();
