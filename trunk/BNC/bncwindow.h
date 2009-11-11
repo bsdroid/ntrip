@@ -43,7 +43,7 @@ class FWidget : public QWidget {
  private slots:
   void slotNextAnimationFrame();
  private:
-  QMap<QByteArray, double> _bytes;
+  QMap<QByteArray, double*> _bytes;
 };
 
 class bncAboutDlg : public QDialog {
