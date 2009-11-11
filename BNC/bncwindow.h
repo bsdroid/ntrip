@@ -51,6 +51,8 @@ class FWidget : public QWidget {
     double _sum;
   };
   QMap<QByteArray, sumAndMean*> _bytes;
+  QMutex                        _mutex;
+  int                           _counter;
 };
 
 class bncAboutDlg : public QDialog {

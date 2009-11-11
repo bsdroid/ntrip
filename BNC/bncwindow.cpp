@@ -66,6 +66,7 @@ FWidget::FWidget(QWidget *parent) : QWidget(parent) {
     QByteArray  staID = url.path().mid(1).toAscii();
     _bytes[staID] = new sumAndMean();
   }
+  _counter = 0;
   slotNextAnimationFrame();
 }
 
@@ -77,6 +78,7 @@ FWidget::~FWidget() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void FWidget::slotNewData(const QByteArray staID, double nbyte) {
+  QMutexLocker locker(&_mutex);
   QMap<QByteArray, sumAndMean*>::const_iterator it = _bytes.find(staID);
   if (it != _bytes.end()) {
     it.value()->_sum += nbyte;
@@ -86,6 +88,16 @@ void FWidget::slotNewData(const QByteArray staID, double nbyte) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void FWidget::slotNextAnimationFrame() {
+  QMutexLocker locker(&_mutex);
+  if (++_counter == 10) {
+    QMapIterator<QByteArray, sumAndMean*> it(_bytes);
+    while (it.hasNext()) {
+      it.next();
+      it.value()->_mean = it.value()->_sum / _counter;
+      it.value()->_sum  = 0.0;
+    }
+    _counter = 0;
+  }
   update();
   QTimer::singleShot(1000, this, SLOT(slotNextAnimationFrame()));
 }
@@ -115,9 +127,8 @@ void FWidget::paintEvent(QPaintEvent *) {
   QMapIterator<QByteArray, sumAndMean*> it(_bytes);
   while (it.hasNext()) {
     it.next();
-    QByteArray staID    = it.key();
-    double     bytesnew = it.value()->_sum;
-    double     vv       = bytesnew/30;
+    QByteArray staID = it.key();
+    double     vv    = it.value()->_mean;
     QRectF vrect((100+anker*40), (140-vv), (30), (vv));
     QBrush xBrush(Qt::green,Qt::SolidPattern);
     textP.setX(100+anker*40);
