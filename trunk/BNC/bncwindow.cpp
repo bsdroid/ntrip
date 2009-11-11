@@ -64,8 +64,7 @@ FWidget::FWidget(QWidget *parent) : QWidget(parent) {
     QStringList hlp   = it.next().split(" ");
     QUrl        url(hlp[0]);
     QByteArray  staID = url.path().mid(1).toAscii();
-    double* bb = new double[2]; bb[0] = 0.0; bb[1] = 0.0;
-    _bytes[staID] = bb;
+    _bytes[staID] = new sumAndMean();
   }
   slotNextAnimationFrame();
 }
@@ -78,10 +77,9 @@ FWidget::~FWidget() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void FWidget::slotNewData(const QByteArray staID, double nbyte) {
-  cout << staID.data() << " " << nbyte << endl;
-  QMap<QByteArray, double*>::const_iterator it = _bytes.find(staID);
+  QMap<QByteArray, sumAndMean*>::const_iterator it = _bytes.find(staID);
   if (it != _bytes.end()) {
-    it.value()[0] += nbyte;
+    it.value()->_sum += nbyte;
   }
 }
 
@@ -114,11 +112,11 @@ void FWidget::paintEvent(QPaintEvent *) {
   painter.drawText(textP, tr(QTime::currentTime().toString().toAscii()));
   textP.setX(300);
 
-  QMapIterator<QByteArray, double*> it(_bytes);
+  QMapIterator<QByteArray, sumAndMean*> it(_bytes);
   while (it.hasNext()) {
     it.next();
     QByteArray staID    = it.key();
-    double     bytesnew = it.value()[0];
+    double     bytesnew = it.value()->_sum;
     double     vv       = bytesnew/30;
     QRectF vrect((100+anker*40), (140-vv), (30), (vv));
     QBrush xBrush(Qt::green,Qt::SolidPattern);

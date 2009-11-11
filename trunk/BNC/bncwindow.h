@@ -43,7 +43,14 @@ class FWidget : public QWidget {
  private slots:
   void slotNextAnimationFrame();
  private:
-  QMap<QByteArray, double*> _bytes;
+  class sumAndMean {
+   public:
+    sumAndMean() {_mean = 0.0; _sum = 0.0;}
+    ~sumAndMean() {}
+    double _mean;
+    double _sum;
+  };
+  QMap<QByteArray, sumAndMean*> _bytes;
 };
 
 class bncAboutDlg : public QDialog {
