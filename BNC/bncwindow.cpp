@@ -65,17 +65,23 @@ FWidget::FWidget(QWidget *parent) : QWidget(parent) {
     QUrl    url(hlp[0]);
     _MPName.append(url.path().toAscii()); _bytesMP.append(0);
   }
+  connect(&_timer, SIGNAL(timeout()), this, SLOT(update()));
+  _timer.start(1000);
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 FWidget::~FWidget() { 
+  _timer.stop();
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void FWidget::nextAnimationFrame() {
+void FWidget::slotNextAnimationFrame(const QByteArray staID, double nbyte) {
+  _timer.stop();
+  cout << staID.data() << " " << nbyte << endl;
   update();
+  _timer.start(1000);
 }
 
 // 
@@ -785,13 +791,9 @@ bncWindow::bncWindow() {
 
   QGridLayout* mLayout = new QGridLayout;
   _aogroup->setCurrentIndex(settings.value("startTab").toInt());
-  mLayout->addWidget(_aogroup,             0,0);
+  mLayout->addWidget(_aogroup,            0,0);
   mLayout->addWidget(_mountPointsTable,   1,0);
-
-  QTimer *timer = new QTimer(this);
-  connect(timer, SIGNAL(timeout()), _Figure1, SLOT(nextAnimationFrame()));
-  mLayout->addWidget(_loggroup,            2,0);
-  timer->start(100);
+  mLayout->addWidget(_loggroup,           2,0);
 
   _canvas->setLayout(mLayout);
 
@@ -1301,6 +1303,9 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
           _mountPointsTable->item(iRow, 3)->text() == thread->latitude()   &&
           _mountPointsTable->item(iRow, 4)->text() == thread->longitude() ) {
         ((bncTableItem*) _mountPointsTable->item(iRow, 7))->setGetThread(thread);
+        connect(thread, SIGNAL(newBytes(QByteArray, double)),
+                _Figure1, SLOT(slotNextAnimationFrame(QByteArray, double)));
+
         break;
       }
     }
