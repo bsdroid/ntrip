@@ -61,27 +61,30 @@ FWidget::FWidget(QWidget *parent) : QWidget(parent) {
   bncSettings settings;
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
   while (it.hasNext()) {
-    QStringList hlp = it.next().split(" ");
-    QUrl    url(hlp[0]);
-    _MPName.append(url.path().toAscii()); _bytesMP.append(0);
+    QStringList hlp   = it.next().split(" ");
+    QUrl        url(hlp[0]);
+    QByteArray  staID = url.path().mid(1).toAscii();
+    _bytes[staID] = 0.0;
   }
-  connect(&_timer, SIGNAL(timeout()), this, SLOT(update()));
-  _timer.start(1000);
+  slotNextAnimationFrame();
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 FWidget::~FWidget() { 
-  _timer.stop();
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void FWidget::slotNextAnimationFrame(const QByteArray staID, double nbyte) {
-  _timer.stop();
+void FWidget::slotNewData(const QByteArray staID, double nbyte) {
   cout << staID.data() << " " << nbyte << endl;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void FWidget::slotNextAnimationFrame() {
   update();
-  _timer.start(1000);
+  QTimer::singleShot(1000, this, SLOT(slotNextAnimationFrame()));
 }
 
 // 
@@ -106,17 +109,18 @@ void FWidget::paintEvent(QPaintEvent *) {
   painter.drawText(textP, tr(QTime::currentTime().toString().toAscii()));
   textP.setX(300);
 
-  QListIterator<QByteArray> it(_MPName);
+  QMapIterator<QByteArray, double> it(_bytes);
   while (it.hasNext()) {
-    QByteArray hlp=it.next();
-    double bytesnew=_bytesMP[_MPName.lastIndexOf(hlp)];
-    double vv = bytesnew/30;
+    it.next();
+    QByteArray staID    = it.key();
+    double     bytesnew = it.value();
+    double     vv       = bytesnew/30;
     QRectF vrect((100+anker*40), (140-vv), (30), (vv));
     QBrush xBrush(Qt::green,Qt::SolidPattern);
     textP.setX(100+anker*40);
     painter.fillRect(vrect,xBrush);
     painter.drawRect(vrect);
-    painter.drawText(textP, hlp);
+    painter.drawText(textP, staID);
     anker++;
   }
 }
@@ -1304,7 +1308,7 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
           _mountPointsTable->item(iRow, 4)->text() == thread->longitude() ) {
         ((bncTableItem*) _mountPointsTable->item(iRow, 7))->setGetThread(thread);
         connect(thread, SIGNAL(newBytes(QByteArray, double)),
-                _Figure1, SLOT(slotNextAnimationFrame(QByteArray, double)));
+                _Figure1, SLOT(slotNewData(QByteArray, double)));
 
         break;
       }
