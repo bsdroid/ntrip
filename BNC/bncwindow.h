@@ -37,13 +37,13 @@ class FWidget : public QWidget {
   FWidget(QWidget *parent);
   ~FWidget();
  public slots:
-  void slotNextAnimationFrame(const QByteArray staID, double nbyte);
+  void slotNewData(const QByteArray staID, double nbyte);
  protected:
   void paintEvent(QPaintEvent *event);
+ private slots:
+  void slotNextAnimationFrame();
  private:
-  QList<QByteArray> _MPName;
-  QList<double>     _bytesMP;
-  QTimer            _timer;
+  QMap<QByteArray, double> _bytes;
 };
 
 class bncAboutDlg : public QDialog {
