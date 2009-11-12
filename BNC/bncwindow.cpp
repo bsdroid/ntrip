@@ -1115,6 +1115,7 @@ void bncWindow::slotGetData() {
     if (!advisefile.exists()) ((bncApp*)qApp)->slotMessage("Cannot find Outages script", true);
   }
 
+  _bncFigure->updateMountPoints();
   _caster->slotReadMountPoints();
 }
 

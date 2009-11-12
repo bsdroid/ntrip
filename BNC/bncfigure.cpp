@@ -48,6 +48,29 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncFigure::bncFigure(QWidget *parent) : QWidget(parent) {
+  updateMountPoints();
+  slotNextAnimationFrame();
+}
+
+// Destructor
+////////////////////////////////////////////////////////////////////////////
+bncFigure::~bncFigure() { 
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncFigure::updateMountPoints() {
+  QMutexLocker locker(&_mutex);
+
+  _counter = 0;
+
+  QMapIterator<QByteArray, sumAndMean*> it1(_bytes);
+  while (it1.hasNext()) {
+    it1.next();
+    delete it1.value();
+  }
+  _bytes.clear();
+
   bncSettings settings;
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
   while (it.hasNext()) {
@@ -56,13 +79,6 @@ bncFigure::bncFigure(QWidget *parent) : QWidget(parent) {
     QByteArray  staID = url.path().mid(1).toAscii();
     _bytes[staID] = new sumAndMean();
   }
-  _counter = 0;
-  slotNextAnimationFrame();
-}
-
-// Destructor
-////////////////////////////////////////////////////////////////////////////
-bncFigure::~bncFigure() { 
 }
 
 // 

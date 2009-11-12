@@ -32,6 +32,7 @@ class bncFigure : public QWidget {
  public:
   bncFigure(QWidget *parent);
   ~bncFigure();
+  void updateMountPoints();
  public slots:
   void slotNewData(const QByteArray staID, double nbyte);
  protected:
