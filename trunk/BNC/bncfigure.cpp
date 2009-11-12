@@ -138,7 +138,19 @@ void bncFigure::paintEvent(QPaintEvent *) {
   int yLength = (yMax-40) - (yMin+10);
   painter.drawLine(xMin+50, yMax-40, xMin+50, yMin+10);
   painter.drawText(xMin+40, yMax-40, tr("0"));
-  painter.drawText(xMin+20, yMin+25, tr("100 %"));
+
+  QString maxRateStr;
+  if      (8.0 * _maxRate < 1e3) {
+    maxRateStr = QString("%1  bps").arg(int(8.0 * _maxRate));
+  }
+  else if (8.0 * _maxRate < 1e6) {
+    maxRateStr = QString("%1 kbps").arg(int(8.0 * _maxRate / 1.e3));
+  }
+  else {
+    maxRateStr = QString("%1 Mbps").arg(int(8.0 * _maxRate / 1.e6));
+  }
+
+  painter.drawText(xMin+20, yMin+25, maxRateStr);
 
   // x-axis
   // ------
@@ -154,10 +166,10 @@ void bncFigure::paintEvent(QPaintEvent *) {
     it.next();
     QByteArray staID = it.key();
 
-    int yy = yLength * (it.value()->_mean / _maxRate);
     int xx = xMin+100+anchor*40;
+    int yy = int(yLength * (it.value()->_mean / _maxRate));
 
-    painter.drawText(xx, yMax-10, staID);
+    painter.drawText(xx, yMax-10, staID.left(4));
 
     painter.fillRect(xx, yMax-40-yy, 30, yy, 
                      QBrush(Qt::blue,Qt::SolidPattern));
