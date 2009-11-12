@@ -50,6 +50,7 @@ class bncFigure : public QWidget {
   QMap<QByteArray, sumAndMean*> _bytes;
   QMutex                        _mutex;
   int                           _counter;
+  double                        _maxRate;
 };
 
 #endif

@@ -63,6 +63,7 @@ void bncFigure::updateMountPoints() {
   QMutexLocker locker(&_mutex);
 
   _counter = 0;
+  _maxRate = 0;
 
   QMapIterator<QByteArray, sumAndMean*> it1(_bytes);
   while (it1.hasNext()) {
@@ -103,12 +104,16 @@ void bncFigure::slotNextAnimationFrame() {
   // If counter reaches its maximal value, compute the mean rate
   // -----------------------------------------------------------
   if (_counter == MAXCOUNTER) {
+    _maxRate = 0.0;
     QMapIterator<QByteArray, sumAndMean*> it(_bytes);
     while (it.hasNext()) {
       it.next();
       it.value()->_mean = it.value()->_sum / _counter;
-        it.value()->_sum  = 0.0;
-     }
+      it.value()->_sum  = 0.0;
+      if (it.value()->_mean > _maxRate) {
+        _maxRate = it.value()->_mean;
+      }
+    }
     _counter = 0;
   }
 
@@ -120,37 +125,44 @@ void bncFigure::slotNextAnimationFrame() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncFigure::paintEvent(QPaintEvent *) {
-  QRectF rectangle(0, 0, 640, 180);
-  QBrush rBrush(Qt::white,Qt::SolidPattern);
+
+  int xMin =   0;
+  int xMax = 640;
+  int yMin =   0;
+  int yMax = 180;
+
   QPainter painter(this);
-  painter.fillRect(rectangle,rBrush);
-  painter.drawRect(rectangle);
-  QLine line(50, 140, 630, 140);
-  painter.drawLine(line);
-  line.setLine(50, 140, 50, 10);
-  painter.drawLine(line);
-  QPoint textP(40, 140);
-  painter.drawText(textP, tr("0"));
-  textP.setX(20);
-  textP.setY(25);
-  painter.drawText(textP, tr("3000"));
-  int anker=0;
-  textP.setY(160);
-  painter.drawText(textP, tr(QTime::currentTime().toString().toAscii()));
-  textP.setX(300);
+
+  // y-axis
+  // ------
+  painter.drawLine(xMin+50, yMax-40, xMin+50, yMin+10);
+  painter.drawText(xMin+40, yMax-40, tr("0"));
+  painter.drawText(xMin+20, yMin+25, tr("100 %"));
+
+  // x-axis
+  // ------
+  painter.drawLine(xMin+50, yMax-40, xMax-10, yMax-40);
+
+  painter.drawText(xMin+10,yMax-10, 
+                   tr(QTime::currentTime().toString().toAscii()));
+
+  int anchor = 0;
 
   QMapIterator<QByteArray, sumAndMean*> it(_bytes);
   while (it.hasNext()) {
     it.next();
     QByteArray staID = it.key();
     double     vv    = it.value()->_mean;
-    QRectF vrect((100+anker*40), (140-vv), (30), (vv));
-    QBrush xBrush(Qt::green,Qt::SolidPattern);
-    textP.setX(100+anker*40);
+
+    int xx = xMin+100+anchor*40;
+
+    painter.drawText(xx, yMax-10, staID);
+
+    QRectF vrect(xx, yMax-40-vv, 30, vv);
+    QBrush xBrush(Qt::blue,Qt::SolidPattern);
     painter.fillRect(vrect,xBrush);
     painter.drawRect(vrect);
-    painter.drawText(textP, staID);
-    anker++;
+    anchor++;
   }
 }
 
