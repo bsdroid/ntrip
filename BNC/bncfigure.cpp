@@ -169,7 +169,7 @@ void bncFigure::paintEvent(QPaintEvent *) {
     int xx = xMin+100+anchor*40;
     int yy = int(yLength * (it.value()->_mean / _maxRate));
 
-    painter.drawText(xx, yMax-10, staID.left(4));
+    painter.drawText(xx, yMax-10, staID.left(5));
 
     painter.fillRect(xx, yMax-40-yy, 30, yy, 
                      QBrush(Qt::blue,Qt::SolidPattern));

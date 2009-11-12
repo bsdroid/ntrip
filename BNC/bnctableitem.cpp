@@ -67,10 +67,10 @@ void bncTableItem::slotNewBytes(const QByteArray, double nbyte) {
     setText(QString("%1 byte(s)").arg((int)_bytesRead));
   }
   else if (_bytesRead < 1e6) {
-    setText(QString("%1 kb").arg(_bytesRead/1.e3, 5));
+    setText(QString("%1 kB").arg(_bytesRead/1.e3, 5));
   }
   else {
-    setText(QString("%1 Mb").arg(_bytesRead/1.e6, 5));
+    setText(QString("%1 MB").arg(_bytesRead/1.e6, 5));
   }
 }
 
