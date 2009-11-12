@@ -31,30 +31,6 @@
 #include "bncgetthread.h"
 #include "bnccaster.h"
 
-class FWidget : public QWidget {
-  Q_OBJECT
- public:
-  FWidget(QWidget *parent);
-  ~FWidget();
- public slots:
-  void slotNewData(const QByteArray staID, double nbyte);
- protected:
-  void paintEvent(QPaintEvent *event);
- private slots:
-  void slotNextAnimationFrame();
- private:
-  class sumAndMean {
-   public:
-    sumAndMean() {_mean = 0.0; _sum = 0.0;}
-    ~sumAndMean() {}
-    double _mean;
-    double _sum;
-  };
-  QMap<QByteArray, sumAndMean*> _bytes;
-  QMutex                        _mutex;
-  int                           _counter;
-};
-
 class bncAboutDlg : public QDialog {
   Q_OBJECT
   public:
@@ -62,7 +38,7 @@ class bncAboutDlg : public QDialog {
     ~bncAboutDlg();
 };
 
-  class bncFlowchartDlg : public QDialog {
+class bncFlowchartDlg : public QDialog {
   Q_OBJECT
 
   public:
@@ -70,7 +46,9 @@ class bncAboutDlg : public QDialog {
     ~bncFlowchartDlg();
 };
 
-  class bncWindow : public QMainWindow {
+class bncFigure;
+
+class bncWindow : public QMainWindow {
   Q_OBJECT
 
   public:
@@ -176,7 +154,7 @@ class bncAboutDlg : public QDialog {
     QTabWidget* _aogroup;
 
     QTabWidget* _loggroup;
-    FWidget*    _Figure1;
+    bncFigure*  _bncFigure;
 
     bncCaster* _caster;
 };
