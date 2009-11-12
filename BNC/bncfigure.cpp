@@ -95,15 +95,24 @@ void bncFigure::slotNewData(const QByteArray staID, double nbyte) {
 ////////////////////////////////////////////////////////////////////////////
 void bncFigure::slotNextAnimationFrame() {
   QMutexLocker locker(&_mutex);
-  if (++_counter == 10) {
-    QMapIterator<QByteArray, sumAndMean*> it(_bytes);
-    while (it.hasNext()) {
-      it.next();
-      it.value()->_mean = it.value()->_sum / _counter;
+
+  const static int MAXCOUNTER = 10;
+
+  ++_counter;
+
+  QMapIterator<QByteArray, sumAndMean*> it(_bytes);
+  while (it.hasNext()) {
+    it.next();
+    it.value()->_mean = it.value()->_sum / _counter;
+    if (_counter == MAXCOUNTER) {
       it.value()->_sum  = 0.0;
     }
+  }
+
+  if (_counter == MAXCOUNTER) {
     _counter = 0;
   }
+
   update();
   QTimer::singleShot(1000, this, SLOT(slotNextAnimationFrame()));
 }
