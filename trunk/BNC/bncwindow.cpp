@@ -728,6 +728,7 @@ bncWindow::bncWindow() {
   _aogroup->setCurrentIndex(settings.value("startTab").toInt());
   mLayout->addWidget(_aogroup,            0,0);
   mLayout->addWidget(_mountPointsTable,   1,0);
+  _loggroup->setCurrentIndex(settings.value("statusTab").toInt());
   mLayout->addWidget(_loggroup,           2,0);
 
   _canvas->setLayout(mLayout);
@@ -1052,6 +1053,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("serialStopBits",  _serialStopBitsComboBox->currentText());
   settings.setValue("serialFlowControl",_serialFlowControlComboBox->currentText());
   settings.setValue("startTab",    _aogroup->currentIndex());
+  settings.setValue("statusTab",   _loggroup->currentIndex());
   settings.setValue("waitTime",    _waitTimeSpinBox->value());
 
   if (_caster) {
