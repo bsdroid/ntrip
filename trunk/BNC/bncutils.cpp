@@ -88,29 +88,28 @@ QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks) {
 ////////////////////////////////////////////////////////////////////////////
 void currentGPSWeeks(int& week, double& sec) {
 
-  QDateTime currDateTime;
-  int leapsecond = 0;
+  QDateTime currDateTimeGPS;
 
   if ( ((bncApp*) qApp)->_currentDateAndTimeGPS ) {
-    currDateTime = *(((bncApp*) qApp)->_currentDateAndTimeGPS);
+    currDateTimeGPS = *(((bncApp*) qApp)->_currentDateAndTimeGPS);
   }
   else {
-    currDateTime = QDateTime::currentDateTime().toUTC();
-    QDate date = currDateTime.date();
-    leapsecond = gnumleap(date.year(), date.month(), date.day());
+    currDateTimeGPS = QDateTime::currentDateTime().toUTC();
+    QDate hlp       = currDateTimeGPS.date();
+    currDateTimeGPS = currDateTimeGPS.addSecs(gnumleap(hlp.year(), 
+                                                     hlp.month(), hlp.day()));
   }
 
-  QDate     currDate = currDateTime.date();
-  QTime     currTime = currDateTime.time();
+  QDate currDateGPS = currDateTimeGPS.date();
+  QTime currTimeGPS = currDateTimeGPS.time();
 
-  week = int( (double(currDate.toJulianDay()) - 2444244.5) / 7 );
+  week = int( (double(currDateGPS.toJulianDay()) - 2444244.5) / 7 );
 
-  sec = (currDate.dayOfWeek() % 7) * 24.0 * 3600.0 + 
-        currTime.hour()                   * 3600.0 + 
-        currTime.minute()                 *   60.0 + 
-        currTime.second()                          +
-        currTime.msec()                   / 1000.0 +
-        leapsecond;
+  sec = (currDateGPS.dayOfWeek() % 7) * 24.0 * 3600.0 + 
+        currTimeGPS.hour()                   * 3600.0 + 
+        currTimeGPS.minute()                 *   60.0 + 
+        currTimeGPS.second()                          +
+        currTimeGPS.msec()                   / 1000.0;
 }
 
 // 
