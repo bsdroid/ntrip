@@ -171,8 +171,10 @@ void bncFigure::paintEvent(QPaintEvent *) {
 
     painter.drawText(xx, yMax-10, staID.left(5));
 
-    painter.fillRect(xx, yMax-40-yy, 30, yy, 
-                     QBrush(Qt::blue,Qt::SolidPattern));
+    if(_maxRate > 0.0) {
+      painter.fillRect(xx, yMax-40-yy, 30, yy, 
+                       QBrush(Qt::blue,Qt::SolidPattern));
+    }
 
     anchor++;
   }
