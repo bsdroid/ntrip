@@ -100,20 +100,20 @@ void bncFigure::slotNextAnimationFrame() {
 
   ++_counter;
 
-  QMapIterator<QByteArray, sumAndMean*> it(_bytes);
-  while (it.hasNext()) {
-    it.next();
-    it.value()->_mean = it.value()->_sum / _counter;
-    if (_counter == MAXCOUNTER) {
-      it.value()->_sum  = 0.0;
-    }
-  }
-
+  // If counter reaches its maximal value, compute the mean rate
+  // -----------------------------------------------------------
   if (_counter == MAXCOUNTER) {
+    QMapIterator<QByteArray, sumAndMean*> it(_bytes);
+    while (it.hasNext()) {
+      it.next();
+      it.value()->_mean = it.value()->_sum / _counter;
+        it.value()->_sum  = 0.0;
+     }
     _counter = 0;
   }
 
   update();
+
   QTimer::singleShot(1000, this, SLOT(slotNextAnimationFrame()));
 }
 
