@@ -15,18 +15,6 @@ BNC
 
 (3) See bug report from Oscar Colombo below.
 
-(4) Ntrip version "U" (for UDP) works with Dirk Stoecker's caster at
-    www.dgpsonline.eu:2101 but not with our own Caster at
-    euref-ip.bkg.bund.de:2101. Check situation with mountPoints string:
-    mountPoints=//bkg:realtime06@141.74.33.12:2101/ZOUF0 RTCM_2.3 46.56 12.97 no U,
-               //weber:bkg@www.dgpsonline.eu:2101/WILD_RTK3 RTCM_3 52.36 13.56 no U
-
-(5) Bandwidth graphics: one column per stream showing the current 
-    bandwidth needed. Please consider this as "nice to have" - it's not a must.
-    What we have is marked with "Begin new Perlt" and "End new Perlt" in bncwindow.cpp 
-    and bncwindow.h. If you don't like it or if its to difficult to implement
-    it then: please delete it form the source code.
-
 (6) GW: Keep an eye on www.igs-ip.net/PENC0.
 
 RTNET
