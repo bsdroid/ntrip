@@ -137,7 +137,7 @@ void bncFigure::paintEvent(QPaintEvent *) {
   // ------
   int yLength = (yMax-40) - (yMin+10);
   painter.drawLine(xMin+50, yMax-40, xMin+50, yMin+10);
-  painter.drawText(xMin+40, yMax-40, tr("0"));
+  painter.drawText(xMin+30, yMax-40, tr("0"));
 
   QString maxRateStr;
   if      (8.0 * _maxRate < 1e3) {
@@ -150,7 +150,7 @@ void bncFigure::paintEvent(QPaintEvent *) {
     maxRateStr = QString("%1 Mbps").arg(int(8.0 * _maxRate / 1.e6));
   }
 
-  painter.drawText(xMin+20, yMin+25, maxRateStr);
+  painter.drawText(xMin+0, yMin+25, maxRateStr);
 
   // x-axis
   // ------
