@@ -135,6 +135,7 @@ void bncFigure::paintEvent(QPaintEvent *) {
 
   // y-axis
   // ------
+  int yLength = (yMax-40) - (yMin+10);
   painter.drawLine(xMin+50, yMax-40, xMin+50, yMin+10);
   painter.drawText(xMin+40, yMax-40, tr("0"));
   painter.drawText(xMin+20, yMin+25, tr("100 %"));
@@ -152,16 +153,15 @@ void bncFigure::paintEvent(QPaintEvent *) {
   while (it.hasNext()) {
     it.next();
     QByteArray staID = it.key();
-    double     vv    = it.value()->_mean;
 
+    int yy = yLength * (it.value()->_mean / _maxRate);
     int xx = xMin+100+anchor*40;
 
     painter.drawText(xx, yMax-10, staID);
 
-    QRectF vrect(xx, yMax-40-vv, 30, vv);
-    QBrush xBrush(Qt::blue,Qt::SolidPattern);
-    painter.fillRect(vrect,xBrush);
-    painter.drawRect(vrect);
+    painter.fillRect(xx, yMax-40-yy, 30, yy, 
+                     QBrush(Qt::blue,Qt::SolidPattern));
+
     anchor++;
   }
 }
