@@ -232,7 +232,7 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
   if (*ee != 0) {
     wwOld  = (*ee)->GPSWeek;
     towOld = (*ee)->GPSTOW; 
-    updatetime(&wwOld, &towOld, (*ee)->tb*1000, 0);
+    updatetime(&wwOld, &towOld, (*ee)->tb*1000, 1);
 
     wwNew  = glonasseph->GPSWeek;
     towNew = glonasseph->GPSTOW; 
