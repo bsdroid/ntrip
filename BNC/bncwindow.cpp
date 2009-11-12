@@ -396,7 +396,7 @@ bncWindow::bncWindow() {
   QWidget* log1group = new QWidget();
   QWidget* log2group = new QWidget();
   _loggroup->addTab(log1group,tr("Log"));
-  _loggroup->addTab(log2group,tr("Status"));
+  _loggroup->addTab(log2group,tr("Throughput"));
 
   // log Tab
   // -------
@@ -404,8 +404,8 @@ bncWindow::bncWindow() {
   log1Layout->addWidget(_log,                0,0);
   log1group->setLayout(log1Layout);
 
-  // Status Tab
-  // ----------
+  // Throughput Tab
+  // --------------
   QGridLayout* log2Layout = new QGridLayout;
   log2Layout->addWidget(_bncFigure,            0,0);
   log2group->setLayout(log2Layout);
