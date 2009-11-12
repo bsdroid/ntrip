@@ -105,8 +105,8 @@ void t_bnscaster::open() {
   delete _outSocket; _outSocket = 0;
 
   double minDt = pow(2.0,_sOpenTrial);
-  if (++_sOpenTrial > 8) {
-    _sOpenTrial = 8;
+  if (++_sOpenTrial > 4) {
+    _sOpenTrial = 4;
   }
   if (_outSocketOpenTime.isValid() &&
       _outSocketOpenTime.secsTo(QDateTime::currentDateTime()) < minDt) {
@@ -144,7 +144,7 @@ void t_bnscaster::open() {
   if (!_outSocket->waitForConnected(timeOut)) {
     delete _outSocket;
     _outSocket = 0;
-    emit(error("Broadcaster: Connect timeout"));
+    emit(newMessage("Broadcaster: Connect timeout"));
     return;
   }
 
