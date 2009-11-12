@@ -232,7 +232,7 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
   if (*ee != 0) {
     wwOld  = (*ee)->GPSWeek;
     towOld = (*ee)->GPSTOW; 
-    updatetime(&wwOld, &towOld, (*ee)->tb*1000, 1);
+    updatetime(&wwOld, &towOld, (*ee)->tb*1000, 0);
 
     wwNew  = glonasseph->GPSWeek;
     towNew = glonasseph->GPSTOW; 
@@ -495,7 +495,7 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
   int tow = ep->GPSTOW; 
   struct converttimeinfo cti;
 
-  updatetime(&ww, &tow, ep->tb*1000, 0);
+  updatetime(&ww, &tow, ep->tb*1000, 1);
   converttime(&cti, ww, tow);
 
   int tk = ep->tk-3*60*60; 
