@@ -420,7 +420,7 @@ bncWindow::bncWindow() {
   pLayout->addWidget(_proxyHostLineEdit,                         0, 1, 1,10);
   pLayout->addWidget(new QLabel("Proxy port"),                   1, 0);
   pLayout->addWidget(_proxyPortLineEdit,                         1, 1);
-  pLayout->addWidget(new QLabel("Settings for the proxy in protected networks, leave boxes blank if none."),2, 0, 1, 50, Qt::AlignLeft);
+  pLayout->addWidget(new QLabel("Settings for proxy in protected networks, leave boxes blank if none."),2, 0, 1, 50, Qt::AlignLeft);
   pLayout->addWidget(new QLabel("    "),3,0);
   pLayout->addWidget(new QLabel("    "),4,0);
   pLayout->addWidget(new QLabel("    "),5,0);
