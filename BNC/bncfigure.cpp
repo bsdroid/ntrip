@@ -167,11 +167,11 @@ void bncFigure::paintEvent(QPaintEvent *) {
     QByteArray staID = it.key();
 
     int xx = xMin+100+anchor*40;
-    int yy = int(yLength * (it.value()->_mean / _maxRate));
 
     painter.drawText(xx, yMax-10, staID.left(5));
 
     if(_maxRate > 0.0) {
+      int yy = int(yLength * (it.value()->_mean / _maxRate));
       painter.fillRect(xx, yMax-40-yy, 30, yy, 
                        QBrush(Qt::blue,Qt::SolidPattern));
     }
