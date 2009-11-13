@@ -129,7 +129,7 @@ void bncFigure::paintEvent(QPaintEvent *) {
   int xMin =   0;
   int xMax = 640;
   int yMin =   0;
-  int yMax = 120;
+  int yMax = 140;
   float xLine = .60;
 
 
