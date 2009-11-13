@@ -129,51 +129,57 @@ void bncFigure::paintEvent(QPaintEvent *) {
   int xMin =   0;
   int xMax = 640;
   int yMin =   0;
-  int yMax = 180;
+  int yMax = 120;
+  float xLine = .60;
+
 
   QPainter painter(this);
 
   // y-axis
   // ------
-  int yLength = (yMax-40) - (yMin+10);
-  painter.drawLine(xMin+50, yMax-40, xMin+50, yMin+10);
-  painter.drawText(xMin+30, yMax-40, tr("0"));
+  int yLength = int((yMax-yMin)*xLine) - (yMin+10);
+  painter.drawLine(xMin+50, int((yMax-yMin)*xLine), xMin+50, yMin+10);
 
   QString maxRateStr;
   if      (8.0 * _maxRate < 1e3) {
-    maxRateStr = QString("%1  bps").arg(int(8.0 * _maxRate));
+    maxRateStr = QString("%1 bps").arg(int(8.0 * _maxRate));
+    painter.drawText(xMin+0, int((yMax-yMin)*xLine), tr("0 bps"));
   }
   else if (8.0 * _maxRate < 1e6) {
     maxRateStr = QString("%1 kbps").arg(int(8.0 * _maxRate / 1.e3));
+    painter.drawText(xMin+0, int((yMax-yMin)*xLine), tr("0 kbps"));
   }
   else {
     maxRateStr = QString("%1 Mbps").arg(int(8.0 * _maxRate / 1.e6));
+    painter.drawText(xMin+0, int((yMax-yMin)*xLine), tr("0 Mbps"));
   }
 
-  painter.drawText(xMin+0, yMin+25, maxRateStr);
+  if(_maxRate > 0.0) {
+    painter.drawText(xMin+0, yMin+25, maxRateStr);
+  }
 
   // x-axis
   // ------
-  painter.drawLine(xMin+50, yMax-40, xMax-10, yMax-40);
-
-  painter.drawText(xMin+10,yMax-10, 
-                   tr(QTime::currentTime().toString().toAscii()));
+  painter.drawLine(xMin+50, int((yMax-yMin)*xLine), xMax*3, int((yMax-yMin)*xLine));
 
   int anchor = 0;
-
   QMapIterator<QByteArray, sumAndMean*> it(_bytes);
   while (it.hasNext()) {
     it.next();
     QByteArray staID = it.key();
 
-    int xx = xMin+100+anchor*40;
+    int xx = xMin+70+anchor*15;
+    int yy = int(yLength * (it.value()->_mean / _maxRate));
 
-    painter.drawText(xx, yMax-10, staID.left(5));
+    painter.save();
+    painter.translate(xx, yMax);
+    painter.rotate(-90);
+    painter.drawText(0, 0, staID.left(5));
+    painter.restore();
 
     if(_maxRate > 0.0) {
-      int yy = int(yLength * (it.value()->_mean / _maxRate));
-      painter.fillRect(xx, yMax-40-yy, 30, yy, 
-                       QBrush(Qt::blue,Qt::SolidPattern));
+      painter.fillRect(xx-10, int((yMax-yMin)*xLine)-yy, 10, yy, 
+                       QBrush(Qt::gray,Qt::SolidPattern));
     }
 
     anchor++;
