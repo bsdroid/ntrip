@@ -51,6 +51,9 @@ class bncFigure : public QWidget {
   QMutex                        _mutex;
   int                           _counter;
   double                        _maxRate;
+  int _r[1001];
+  int _g[1001];
+  int _b[1001];
 };
 
 #endif
