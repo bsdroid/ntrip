@@ -50,6 +50,11 @@ using namespace std;
 bncFigure::bncFigure(QWidget *parent) : QWidget(parent) {
   updateMountPoints();
   slotNextAnimationFrame();
+  for (int ii = 0; ii <= 1000; ii++) {
+    _r[ii] = qrand() % 255;
+    _g[ii] = qrand() % 255;
+    _b[ii] = qrand() % 255;
+  }
 }
 
 // Destructor
@@ -178,8 +183,9 @@ void bncFigure::paintEvent(QPaintEvent *) {
     painter.restore();
 
     if(_maxRate > 0.0) {
+      QColor color = QColor::fromRgb(_r[anchor],_g[anchor],_b[anchor]);
       painter.fillRect(xx-10, int((yMax-yMin)*xLine)-yy, 10, yy, 
-                       QBrush(Qt::gray,Qt::SolidPattern));
+                       QBrush(color,Qt::SolidPattern));
     }
 
     anchor++;
