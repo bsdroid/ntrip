@@ -159,7 +159,7 @@ void bncFigure::paintEvent(QPaintEvent *) {
     painter.drawText(xMin+0, int((yMax-yMin)*xLine), tr("  0 kbps"));
   }
   else {
-    maxRateStr = QString(  "%1 Mbps").arg(int(8.0 * _maxRate / 1.e6));
+    maxRateStr = QString("  %1 Mbps").arg(int(8.0 * _maxRate / 1.e6));
     painter.drawText(xMin+0, int((yMax-yMin)*xLine), tr("  0 Mbps"));
   }
 
