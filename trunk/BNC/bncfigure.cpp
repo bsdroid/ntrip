@@ -137,7 +137,6 @@ void bncFigure::paintEvent(QPaintEvent *) {
   int yMax = 140;
   float xLine = .60;
 
-
   QPainter painter(this);
 
   QFont font;
@@ -177,18 +176,18 @@ void bncFigure::paintEvent(QPaintEvent *) {
     it.next();
     QByteArray staID = it.key();
 
-    int xx = xMin+70+anchor*15;
+    int xx = xMin+70+anchor*12;
     int yy = int(yLength * (it.value()->_mean / _maxRate));
 
     painter.save();
-    painter.translate(xx, yMax);
+    painter.translate(xx-5, yMax);
     painter.rotate(-90);
     painter.drawText(0, 0, staID.left(5));
     painter.restore();
 
     if(_maxRate > 0.0) {
       QColor color = QColor::fromRgb(_rgb[0][anchor],_rgb[1][anchor],_rgb[2][anchor]);
-      painter.fillRect(xx-10, int((yMax-yMin)*xLine)-yy, 10, yy, 
+      painter.fillRect(xx-13, int((yMax-yMin)*xLine)-yy, 9, yy, 
                        QBrush(color,Qt::SolidPattern));
     }
 
