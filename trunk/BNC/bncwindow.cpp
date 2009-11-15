@@ -393,23 +393,11 @@ bncWindow::bncWindow() {
   _aogroup->addTab(agroup,tr("Outages"));
   _aogroup->addTab(rgroup,tr("Miscellaneous"));
 
-  _loggroup = new QTabWidget();
-  QWidget* log1group = new QWidget();
-  QWidget* log2group = new QWidget();
-  _loggroup->addTab(log1group,tr("Log"));
-  _loggroup->addTab(log2group,tr("Throughput"));
-
-  // log Tab
+  // Log Tab
   // -------
-  QGridLayout* log1Layout = new QGridLayout;
-  log1Layout->addWidget(_log,                0,0);
-  log1group->setLayout(log1Layout);
-
-  // Throughput Tab
-  // --------------
-  QGridLayout* log2Layout = new QGridLayout;
-  log2Layout->addWidget(_bncFigure,            0,0);
-  log2group->setLayout(log2Layout);
+  _loggroup = new QTabWidget();
+  _loggroup->addTab(_log,tr("Log"));
+  _loggroup->addTab(_bncFigure,tr("Throughput"));
 
   // Proxy Tab
   // ---------
