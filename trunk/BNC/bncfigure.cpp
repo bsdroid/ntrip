@@ -51,9 +51,9 @@ bncFigure::bncFigure(QWidget *parent) : QWidget(parent) {
   updateMountPoints();
   slotNextAnimationFrame();
   for (int ii = 0; ii <= 1000; ii++) {
-    _r[ii] = qrand() % 255;
-    _g[ii] = qrand() % 255;
-    _b[ii] = qrand() % 255;
+    _rgb[0][ii] = qrand() % 255;
+    _rgb[1][ii] = qrand() % 255;
+    _rgb[2][ii] = qrand() % 255;
   }
 }
 
@@ -183,7 +183,7 @@ void bncFigure::paintEvent(QPaintEvent *) {
     painter.restore();
 
     if(_maxRate > 0.0) {
-      QColor color = QColor::fromRgb(_r[anchor],_g[anchor],_b[anchor]);
+      QColor color = QColor::fromRgb(_rgb[0][anchor],_rgb[1][anchor],_rgb[2][anchor]);
       painter.fillRect(xx-10, int((yMax-yMin)*xLine)-yy, 10, yy, 
                        QBrush(color,Qt::SolidPattern));
     }
