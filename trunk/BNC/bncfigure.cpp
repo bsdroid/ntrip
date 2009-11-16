@@ -151,19 +151,19 @@ void bncFigure::paintEvent(QPaintEvent *) {
   QString maxRateStr;
   if      (8.0 * _maxRate < 1e3) {
     maxRateStr = QString("%1 bps  ").arg(int(8.0 * _maxRate));
-    painter.drawText(0, int((yMax-yMin)*xLine)-10, xMin+50,15,Qt::AlignRight,tr("0 bps  "));
+    painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+50,15,Qt::AlignRight,tr("0 bps  "));
   }
   else if (8.0 * _maxRate < 1e6) {
     maxRateStr = QString("%1 kbps  ").arg(int(8.0 * _maxRate / 1.e3));
-    painter.drawText(0, int((yMax-yMin)*xLine)-10, xMin+50,15,Qt::AlignRight,tr("0 kbps  "));
+    painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+50,15,Qt::AlignRight,tr("0 kbps  "));
   }
   else {
     maxRateStr = QString("%1 Mbps  ").arg(int(8.0 * _maxRate / 1.e6));
-    painter.drawText(0, int((yMax-yMin)*xLine)-10, xMin+50,15,Qt::AlignRight,tr("0 Mbps  "));
+    painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+50,15,Qt::AlignRight,tr("0 Mbps  "));
   }
 
   if(_maxRate > 0.0) {
-    painter.drawText(0, yMin+25-10, xMin+50,15,Qt::AlignRight,maxRateStr);
+    painter.drawText(0, yMin+25-5, xMin+50,15,Qt::AlignRight,maxRateStr);
   }
 
   // x-axis
