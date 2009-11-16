@@ -180,9 +180,9 @@ void bncFigure::paintEvent(QPaintEvent *) {
     int yy = int(yLength * (it.value()->_mean / _maxRate));
 
     painter.save();
-    painter.translate(xx-13, int(yMax-yMin)*xLine+55);
+    painter.translate(xx-13, int(yMax-yMin)*xLine+65);
     painter.rotate(-90);
-    painter.drawText(0,0,55,50,Qt::AlignRight,staID.left(5) + "   ");
+    painter.drawText(0,0,65,50,Qt::AlignRight,staID.left(5) + "   ");
     painter.restore();
 
     if(_maxRate > 0.0) {
