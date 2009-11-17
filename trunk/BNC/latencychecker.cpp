@@ -308,6 +308,8 @@ void latencyChecker::checkOutage(bool decoded) {
 //////////////////////////////////////////////////////////////////////////////
 void latencyChecker::checkObsLatency(const QList<p_obs>& obsList) {
 
+  _meanLatency = 0.0;
+
   if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
     if (_perfIntr > 0 ) {
 
@@ -339,6 +341,7 @@ void latencyChecker::checkObsLatency(const QList<p_obs>& obsList) {
                   .arg(_numLat)
                   .toAscii(), true) );
               }
+              _meanLatency = _sumLat/_numLat;
             }
             _meanDiff  = _diffSecGPS / _numLat;
             _diffSecGPS = 0;
@@ -439,6 +442,7 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime) {
               .arg(_numLat);
               emit(newMessage(QString(_staID + late ).toAscii(), true) );
             }
+            _meanLatency = _sumLat/_numLat;
           }
           _meanDiff = int(_diffSecGPS)/_numLat;
           _diffSecGPS = 0;
