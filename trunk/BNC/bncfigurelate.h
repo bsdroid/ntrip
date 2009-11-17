@@ -34,7 +34,7 @@ class bncFigureLate : public QWidget {
   ~bncFigureLate();
   void updateMountPoints();
  public slots:
-  void slotNewData(const QByteArray staID, double mlate);
+  void slotNewData(const QByteArray staID, double clate);
  protected:
   void paintEvent(QPaintEvent *event);
  private slots:
