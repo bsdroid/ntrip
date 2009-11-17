@@ -89,7 +89,7 @@ void bncFigureLate::updateMountPoints() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncFigureLate::slotNewData(const QByteArray staID, double clate) {
+void bncFigureLate::slotNewLatency(const QByteArray staID, double clate) {
   QMutexLocker locker(&_mutex);
   QMap<QByteArray, sumAndMean*>::const_iterator it = _bytes.find(staID);
   if (it != _bytes.end()) {
@@ -149,14 +149,8 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
   painter.drawLine(xMin+50, int((yMax-yMin)*xLine), xMin+50, yMin+10);
 
   QString maxLateStr;
-  if      (8.0 * _maxLate < 1e3) {
-    maxLateStr = QString("%1 ms  ").arg(int(8.0 * _maxLate));
-    painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+50,15,Qt::AlignRight,tr("0 ms  "));
-  }
-  else {
-    maxLateStr = QString("%1 sec  ").arg(int(8.0 * _maxLate / 1.e3));
-    painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+50,15,Qt::AlignRight,tr("0 sec  "));
-  }
+  maxLateStr = QString("%1 sec  ").arg(int(8.0 * _maxLate));
+  painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+50,15,Qt::AlignRight,tr("0 sec  "));
 
   if(_maxLate > 0.0) {
     painter.drawText(0, yMin+25-5, xMin+50,15,Qt::AlignRight,maxLateStr);
