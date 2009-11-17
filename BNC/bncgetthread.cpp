@@ -311,7 +311,6 @@ void bncGetThread::initialize() {
   else {
     emit(newMessage(_staID + ": Unknown data format " + _format, true));
     _isToBeDeleted = true;
-    delete this;
   }
 
   _latencyChecker = new latencyChecker(_staID);
