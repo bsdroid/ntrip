@@ -331,6 +331,7 @@ void latencyChecker::checkObsLatency(const QList<p_obs>& obsList) {
                   .arg(_numLat)
                   .arg(_numGaps)
                   .toAscii(), true) );
+                _meanLatency = _sumLat/_numLat*1000.;
               } else {
                 emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs")
                   .arg(_staID.data())
@@ -340,8 +341,8 @@ void latencyChecker::checkObsLatency(const QList<p_obs>& obsList) {
                   .arg(int((sqrt((_sumLatQ - _sumLat * _sumLat / _numLat)/_numLat))*100)/100.)
                   .arg(_numLat)
                   .toAscii(), true) );
+                _meanLatency = _sumLat/_numLat*1000.;
               }
-              _meanLatency = _sumLat/_numLat;
             }
             _meanDiff  = _diffSecGPS / _numLat;
             _diffSecGPS = 0;
@@ -434,6 +435,7 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime) {
               .arg(_numLat)
               .arg(_numGaps);
               emit(newMessage(QString(_staID + late ).toAscii(), true) );
+              _meanLatency = _sumLat/_numLat*1000.;
             } 
             else {
               late = QString(": Mean latency %1 sec, min %2, max %3, rms %4, %5 epochs")
@@ -443,8 +445,8 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime) {
               .arg(int((sqrt((_sumLatQ - _sumLat * _sumLat / _numLat)/_numLat))*100)/100.)
               .arg(_numLat);
               emit(newMessage(QString(_staID + late ).toAscii(), true) );
+              _meanLatency = _sumLat/_numLat*1000.;
             }
-            _meanLatency = _sumLat/_numLat;
           }
           _meanDiff = int(_diffSecGPS)/_numLat;
           _diffSecGPS = 0;
