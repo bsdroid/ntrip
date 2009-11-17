@@ -89,11 +89,11 @@ void bncFigureLate::updateMountPoints() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncFigureLate::slotNewData(const QByteArray staID, double mlate) {
+void bncFigureLate::slotNewData(const QByteArray staID, double clate) {
   QMutexLocker locker(&_mutex);
   QMap<QByteArray, sumAndMean*>::const_iterator it = _bytes.find(staID);
   if (it != _bytes.end()) {
-    it.value()->_sum += mlate;
+    it.value()->_sum += clate;
   }
 }
 
