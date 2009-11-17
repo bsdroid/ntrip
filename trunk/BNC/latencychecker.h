@@ -39,7 +39,7 @@ Q_OBJECT
   void checkOutage(bool decoded);
   void checkObsLatency(const QList<p_obs>& obsList);
   void checkCorrLatency(int corrGPSEpochTime);
-  double meanLatency() const {return _meanLatency}
+  double meanLatency() const {return _meanLatency;}
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);

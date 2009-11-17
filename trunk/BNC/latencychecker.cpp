@@ -398,6 +398,8 @@ void latencyChecker::checkObsLatency(const QList<p_obs>& obsList) {
 //////////////////////////////////////////////////////////////////////////////
 void latencyChecker::checkCorrLatency(int corrGPSEpochTime) {
 
+  _meanLatency = 0.0;
+
   if (corrGPSEpochTime < 0) {
     return;
   }
