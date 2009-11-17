@@ -93,7 +93,8 @@ void bncFigureLate::slotNewLatency(const QByteArray staID, double clate) {
   QMutexLocker locker(&_mutex);
   QMap<QByteArray, sumAndMean*>::const_iterator it = _bytes.find(staID);
   if (it != _bytes.end()) {
-    it.value()->_sum += clate;
+    it.value()->_sum += clate*1000.;
+    ++_counter;
   }
 }
 
@@ -104,11 +105,12 @@ void bncFigureLate::slotNextAnimationFrame() {
 
   const static int MAXCOUNTER = 10;
 
-  ++_counter;
+//++_counter;
 
   // If counter reaches its maximal value, compute the mean value
   // ------------------------------------------------------------
-  if (_counter == MAXCOUNTER) {
+//if (_counter == MAXCOUNTER) {
+  if (_counter > MAXCOUNTER) {
     _maxLate = 0.0;
     QMapIterator<QByteArray, sumAndMean*> it(_bytes);
     while (it.hasNext()) {
@@ -149,8 +151,8 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
   painter.drawLine(xMin+50, int((yMax-yMin)*xLine), xMin+50, yMin+10);
 
   QString maxLateStr;
-  maxLateStr = QString("%1 sec  ").arg(int(8.0 * _maxLate));
-  painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+50,15,Qt::AlignRight,tr("0 sec  "));
+  maxLateStr = QString("%1 ms  ").arg(int(_maxLate/200)*200);
+  painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+50,15,Qt::AlignRight,tr("0 ms  "));
 
   if(_maxLate > 0.0) {
     painter.drawText(0, yMin+25-5, xMin+50,15,Qt::AlignRight,maxLateStr);
