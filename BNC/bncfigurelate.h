@@ -50,6 +50,7 @@ class bncFigureLate : public QWidget {
   QMap<QByteArray, sumAndMean*> _bytes;
   QMutex                        _mutex;
   int                           _counter;
+  int                           _counter1;
   double                        _maxLate;
   int                           _rgb[3][1001];
 };
