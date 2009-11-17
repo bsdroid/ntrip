@@ -424,6 +424,7 @@ void bncGetThread::run() {
       _latencyChecker->checkCorrLatency(_decoder->corrGPSEpochTime());
 
       emit newLatency(_staID, _latencyChecker->meanLatency());
+      printf("%s: Mean latency in bncgetthread: %f ms\n", _staID.data(), _latencyChecker->meanLatency());
 
       scanRTCM();            
 

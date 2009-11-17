@@ -53,6 +53,7 @@
 #include "bnctableitem.h"
 #include "bncsettings.h"
 #include "bncfigure.h"
+#include "bncfigurelate.h"
 
 using namespace std;
 
@@ -63,6 +64,7 @@ bncWindow::bncWindow() {
   _caster = 0;
 
   _bncFigure = new bncFigure(this);
+  _bncFigureLate = new bncFigureLate(this);
 
   int ww = QFontMetrics(this->font()).width('w');
   
@@ -353,6 +355,7 @@ bncWindow::bncWindow() {
   _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Streams' section. Clicking on 'Add Stream' button will open a window that allows the user to select data streams from an NTRIP broadcaster according to their mountpoints. To remove a stream from the 'Streams' list, highlight it by clicking on it and hit the 'Delete Stream' button. You can also remove multiple streams by highlighting them using +Shift and +Ctrl.</p><p>BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' as given in the sourcetable. BNC allows users to change this selection by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.</p><p>In case you need to log the raw data as is, BNC allows users to by-pass its decoders and and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'.</p><p>BNC can also retrieve streams from virtual reference stations (VRS). VRS streams are indicated by a 'yes' in the 'nmea' column. To initiate these streams, the approximate latitude/longitude rover position is sent to the NTRIP broadcaster. The default values can be change according to your requirement. Double click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter.</p>"));
   _log->setWhatsThis(tr("Records of BNC's activities are shown in the 'Log' tab. The message log covers the communication status between BNC and the NTRIP broadcaster as well as any problems that occur in the communication link, stream availability, stream delay, stream conversion etc."));
   _bncFigure->setWhatsThis(tr("The bandwidth consumtion per stream is shown in the 'Throughput' tab in bits per second (bps) or kilo bits per second (kbps)."));
+  _bncFigureLate->setWhatsThis(tr("Latency"));
   _ephV3CheckBox->setWhatsThis(tr("The default format for output of RINEX Navigation data containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to output the ephemeris in RINEX Version 3 format."));
   _rnxV3CheckBox->setWhatsThis(tr("The default format for RINEX Observation files is RINEX Version 2.11. Select 'Version 3' if you want to save the observations in RINEX Version 3 format."));
   _miscMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint to apply any of the options shown below. Enter 'ALL' if you want to apply these options to all configured streams.</p><p>An empty option field (default) means that you don't want BNC to apply any of these options.</p>"));
@@ -398,6 +401,7 @@ bncWindow::bncWindow() {
   _loggroup = new QTabWidget();
   _loggroup->addTab(_log,tr("Log"));
   _loggroup->addTab(_bncFigure,tr("Throughput"));
+  _loggroup->addTab(_bncFigureLate,tr("Latency"));
 
   // Proxy Tab
   // ---------
@@ -1107,6 +1111,7 @@ void bncWindow::slotGetData() {
   }
 
   _bncFigure->updateMountPoints();
+  _bncFigureLate->updateMountPoints();
   _caster->slotReadMountPoints();
 }
 
@@ -1232,7 +1237,8 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
         ((bncTableItem*) _mountPointsTable->item(iRow, 7))->setGetThread(thread);
         connect(thread, SIGNAL(newBytes(QByteArray, double)),
                 _bncFigure, SLOT(slotNewData(QByteArray, double)));
-
+        connect(thread, SIGNAL(newLatency(QByteArray, double)),
+                _bncFigureLate, SLOT(slotNewData(QByteArray, double)));
         break;
       }
     }
