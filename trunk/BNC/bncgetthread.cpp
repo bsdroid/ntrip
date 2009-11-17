@@ -423,6 +423,8 @@ void bncGetThread::run() {
       _latencyChecker->checkObsLatency(_decoder->_obsList);
       _latencyChecker->checkCorrLatency(_decoder->corrGPSEpochTime());
 
+      emit newLatency(_staID, _latencyChecker->meanLatency());
+
       scanRTCM();            
 
       // Loop over all observations (observations output)
