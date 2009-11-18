@@ -42,7 +42,6 @@ class bncFigureLate : public QWidget {
  private:
   QMap<QByteArray, double> _latency;
   QMutex                   _mutex;
-  double                   _maxLate;
   int                      _rgb[3][1001];
 };
 
