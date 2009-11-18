@@ -143,6 +143,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 3.12. <a href=#logs>Logging</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1 <a href=#logfile>Log</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.2 <a href=#throughput>Throughput</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.3 <a href=#latency>Latency</a><br>
 3.13. <a href=#bottom>Bottom Menu Bar</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.1. <a href=#streamadd>Add Stream - Coming from Caster</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.1 <a href=#streamhost>Caster Host and Port</a><br>
@@ -973,7 +974,7 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 
 <p><a name="logs"><h4>3.12. Logging</h4></p>
 <p>
-A tabs section on the bottom of the main window provides online controle of BNC's activities. Tabs are available to show the records saved in a logfile and for a plot to controle the bandwidth consumtion.
+A tabs section on the bottom of the main window provides online controle of BNC's activities. Tabs are available to show the records saved in a logfile, for a plot to controle the bandwidth consumtion and for a plot showing stream latencies.
 </p>
 <p><a name="logfile"><h4>3.12.1 Log</h4></p>
 <p>
@@ -983,6 +984,11 @@ Records of BNC's activities are shown in the 'Log' tab. They can be saved into a
 <p><a name="throughput"><h4>3.12.2 Throughput</h4></p>
 <p>
 The bandwidth consumtion per stream is shown in the 'Throughput' tab in bits per second (bps) or kilo bits per second (kbps).
+</p>
+
+<p><a name="latency"><h4>3.12.3 Latency</h4></p>
+<p>
+The latency of observations in each incoming stream is shown in the 'Latency' tab in milliseconds. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) are not considered here.
 </p>
 
 <p><a name="bottom"><h4>3.13. Bottom Menu Bar</h4></p>
