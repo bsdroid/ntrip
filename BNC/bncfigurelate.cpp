@@ -94,7 +94,6 @@ void bncFigureLate::slotNewLatency(const QByteArray staID, double clate) {
   QMap<QByteArray, sumAndMean*>::const_iterator it = _bytes.find(staID);
   if (it != _bytes.end()) {
     it.value()->_sum += fabs(clate)*1000.;
-    ++_counter;
   }
 }
 
@@ -105,12 +104,11 @@ void bncFigureLate::slotNextAnimationFrame() {
 
   const static int MAXCOUNTER = 10;
 
-//++_counter;
+  ++_counter;
 
   // If counter reaches its maximal value, compute the mean value
   // ------------------------------------------------------------
-//if (_counter == MAXCOUNTER) {
-  if (_counter > MAXCOUNTER) {
+  if (_counter == MAXCOUNTER) {
     _maxLate = 0.0;
     QMapIterator<QByteArray, sumAndMean*> it(_bytes);
     while (it.hasNext()) {
