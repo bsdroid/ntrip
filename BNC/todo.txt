@@ -2,16 +2,8 @@ Todo's sorted by priority:
 
 BNS
 =========================
-(1) Reconnect of "Broadcast Ephemeris" stream upload to caster does not work.
-    If we shut down the caster, wait a minute and then restart it, stream
-    RTCM3EPH does not reconnect.
 
 BNC
 =========================
-(1) Change time tag for GLONASS ephemeris from GPS time to GLONASS time (UTC).
-
-(2) We may also have a date problem in the GLONASS Ephemeris time tag.
-    We once saw a wrong date.
-
-(3) GW: Keep an eye on www.igs-ip.net/PENC0.
+(1) GW: Keep an eye on www.igs-ip.net/PENC0.
 
