@@ -93,7 +93,7 @@ void bncFigureLate::slotNewLatency(const QByteArray staID, double clate) {
   QMutexLocker locker(&_mutex);
   QMap<QByteArray, sumAndMean*>::const_iterator it = _bytes.find(staID);
   if (it != _bytes.end()) {
-    it.value()->_sum += clate*1000.;
+    it.value()->_sum += fabs(clate)*1000.;
     ++_counter;
   }
 }
