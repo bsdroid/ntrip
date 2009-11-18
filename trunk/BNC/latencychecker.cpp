@@ -94,10 +94,10 @@ latencyChecker::latencyChecker(QByteArray staID) {
 
   // Latency interval/average
   // ------------------------
-  _perfIntr = 0;
+  _perfIntr = 1;
   QString perfIntr = settings.value("perfIntr").toString();
   if      ( perfIntr.isEmpty() ) { 
-    _perfIntr = 0; 
+    _perfIntr = 1; 
   }
   else if ( perfIntr.indexOf("2 sec")   != -1 ) { 
     _perfIntr = 2; 
