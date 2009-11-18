@@ -268,7 +268,7 @@ void bncCaster::slotGetThreadFinished(QByteArray staID) {
 
   _staIDs.removeAll(staID);
   emit( newMessage(
-           QString("Mountpoint size %1").arg(_staIDs.size()).toAscii(), true) );
+           QString("Decoding %1 stream(s)").arg(_staIDs.size()).toAscii(), true) );
   if (_staIDs.size() == 0) {
     emit(newMessage("bncCaster: Last get thread terminated", true));
     emit getThreadsFinished();
