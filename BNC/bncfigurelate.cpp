@@ -67,15 +67,8 @@ bncFigureLate::~bncFigureLate() {
 void bncFigureLate::updateMountPoints() {
   QMutexLocker locker(&_mutex);
 
-  _counter = 0;
   _maxLate = 0;
-
-  QMapIterator<QByteArray, sumAndMean*> it1(_bytes);
-  while (it1.hasNext()) {
-    it1.next();
-    delete it1.value();
-  }
-  _bytes.clear();
+  _latency.clear();
 
   bncSettings settings;
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
@@ -83,7 +76,7 @@ void bncFigureLate::updateMountPoints() {
     QStringList hlp   = it.next().split(" ");
     QUrl        url(hlp[0]);
     QByteArray  staID = url.path().mid(1).toAscii();
-    _bytes[staID] = new sumAndMean();
+    _latency[staID] = 0.0;
   }
 }
 
@@ -91,9 +84,12 @@ void bncFigureLate::updateMountPoints() {
 ////////////////////////////////////////////////////////////////////////////
 void bncFigureLate::slotNewLatency(const QByteArray staID, double clate) {
   QMutexLocker locker(&_mutex);
-  QMap<QByteArray, sumAndMean*>::const_iterator it = _bytes.find(staID);
-  if (it != _bytes.end()) {
-    it.value()->_sum += fabs(clate)*1000.;
+  if (_latency.find(staID) != _latency.end()) {
+    double ms = fabs(clate)*1000.0;
+    _latency[staID] = ms;
+    if (ms > _maxLate) {
+      _maxLate = ms;
+    }
   }
 }
 
@@ -101,29 +97,7 @@ void bncFigureLate::slotNewLatency(const QByteArray staID, double clate) {
 ////////////////////////////////////////////////////////////////////////////
 void bncFigureLate::slotNextAnimationFrame() {
   QMutexLocker locker(&_mutex);
-
-  const static int MAXCOUNTER = 10;
-
-  ++_counter;
-
-  // If counter reaches its maximal value, compute the mean value
-  // ------------------------------------------------------------
-  if (_counter == MAXCOUNTER) {
-    _maxLate = 0.0;
-    QMapIterator<QByteArray, sumAndMean*> it(_bytes);
-    while (it.hasNext()) {
-      it.next();
-      it.value()->_mean = it.value()->_sum / _counter;
-      it.value()->_sum  = 0.0;
-      if (it.value()->_mean > _maxLate) {
-        _maxLate = it.value()->_mean;
-      }
-    }
-    _counter = 0;
-  }
-
   update();
-
   QTimer::singleShot(1000, this, SLOT(slotNextAnimationFrame()));
 }
 
@@ -161,13 +135,12 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
   painter.drawLine(xMin+50, int((yMax-yMin)*xLine), xMax*3, int((yMax-yMin)*xLine));
 
   int anchor = 0;
-  QMapIterator<QByteArray, sumAndMean*> it(_bytes);
+  QMapIterator<QByteArray, double> it(_latency);
   while (it.hasNext()) {
     it.next();
     QByteArray staID = it.key();
 
     int xx = xMin+70+anchor*12;
-    int yy = int(yLength * (it.value()->_mean / _maxLate));
 
     painter.save();
     painter.translate(xx-13, int(yMax-yMin)*xLine+65);
@@ -176,6 +149,7 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
     painter.restore();
 
     if(_maxLate > 0.0) {
+      int yy = int(yLength * (it.value() / _maxLate));
       QColor color = QColor::fromRgb(_rgb[0][anchor],_rgb[1][anchor],_rgb[2][anchor]);
       painter.fillRect(xx-13, int((yMax-yMin)*xLine)-yy, 9, yy, 
                        QBrush(color,Qt::SolidPattern));

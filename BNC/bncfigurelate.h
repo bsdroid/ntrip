@@ -40,19 +40,10 @@ class bncFigureLate : public QWidget {
  private slots:
   void slotNextAnimationFrame();
  private:
-  class sumAndMean {
-   public:
-    sumAndMean() {_mean = 0.0; _sum = 0.0;}
-    ~sumAndMean() {}
-    double _mean;
-    double _sum;
-  };
-  QMap<QByteArray, sumAndMean*> _bytes;
-  QMutex                        _mutex;
-  int                           _counter;
-  int                           _counter1;
-  double                        _maxLate;
-  int                           _rgb[3][1001];
+  QMap<QByteArray, double> _latency;
+  QMutex                   _mutex;
+  double                   _maxLate;
+  int                      _rgb[3][1001];
 };
 
 #endif
