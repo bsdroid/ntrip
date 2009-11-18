@@ -67,7 +67,6 @@ bncFigureLate::~bncFigureLate() {
 void bncFigureLate::updateMountPoints() {
   QMutexLocker locker(&_mutex);
 
-  _maxLate = 0;
   _latency.clear();
 
   bncSettings settings;
@@ -85,11 +84,7 @@ void bncFigureLate::updateMountPoints() {
 void bncFigureLate::slotNewLatency(const QByteArray staID, double clate) {
   QMutexLocker locker(&_mutex);
   if (_latency.find(staID) != _latency.end()) {
-    double ms = fabs(clate)*1000.0;
-    _latency[staID] = ms;
-    if (ms > _maxLate) {
-      _maxLate = ms;
-    }
+    _latency[staID] = fabs(clate)*1000.0;
   }
 }
 
@@ -121,12 +116,20 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
   // ------
   int yLength = int((yMax-yMin)*xLine) - (yMin+10);
   painter.drawLine(xMin+50, int((yMax-yMin)*xLine), xMin+50, yMin+10);
-
-  QString maxLateStr;
-  maxLateStr = QString("%1 ms  ").arg(int(_maxLate/200)*200);
   painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+50,15,Qt::AlignRight,tr("0 ms  "));
 
-  if(_maxLate > 0.0) {
+  double maxLate = 0.0;
+  QMapIterator<QByteArray, double> it1(_latency);
+  while (it1.hasNext()) {
+    it1.next();
+    if (it1.value() > maxLate) {
+      maxLate = it1.value();
+    }
+  }
+
+  if(maxLate > 0.0) {
+    QString maxLateStr;
+    maxLateStr = QString("%1 ms  ").arg(int(maxLate));
     painter.drawText(0, yMin+25-5, xMin+50,15,Qt::AlignRight,maxLateStr);
   }
 
@@ -148,8 +151,8 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
     painter.drawText(0,0,65,50,Qt::AlignRight,staID.left(5) + "   ");
     painter.restore();
 
-    if(_maxLate > 0.0) {
-      int yy = int(yLength * (it.value() / _maxLate));
+    if(maxLate > 0.0) {
+      int yy = int(yLength * (it.value() / maxLate));
       QColor color = QColor::fromRgb(_rgb[0][anchor],_rgb[1][anchor],_rgb[2][anchor]);
       painter.fillRect(xx-13, int((yMax-yMin)*xLine)-yy, 9, yy, 
                        QBrush(color,Qt::SolidPattern));
