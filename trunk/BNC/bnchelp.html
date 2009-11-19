@@ -870,7 +870,7 @@ Specify a mountpoint to apply one or several of the 'Miscellaneous' options to t
 
 <p><a name="miscperf"><h4>3.10.2 Log Latency - optional </h4></p>
 <p>
- BNC can average latencies per stream over a certain period of GPS time, the 'Performance log' interval. Mean latencies are calculated from the individual latencies of at most one (first incoming) observation or correction to Broadcast Ephemeris per second. Note that computing correct latencies requires the clock of the host computer to be properly synchronized.
+ BNC can average latencies per stream over a certain period of GPS time, the 'Log latency' interval. Mean latencies are calculated from the individual latencies of at most one (first incoming) observation or correction to Broadcast Ephemeris per second. The mean latencies are then saved in BNC's logfile. Note that computing correct latencies requires the clock of the host computer to be properly synchronized. Note further that the latencies available from the 'Latency' tab on the bottom of the main window represent individual latencies and not the mean latencies for the logfile.
 </p>
 <p>
 <u>Latency:</u> Latency is defined in BNC by the following equation:
@@ -883,16 +883,16 @@ Specify a mountpoint to apply one or several of the 'Miscellaneous' options to t
   = Latency
 </pre>
 <p>
-<u>Statistics:</u> BNC counts the number of GPS seconds covered by at least one observation. It also estimates an observation rate (independent from the a priory specified 'Observation rate') from all observations received throughout the first full 'Performance log' interval. Based on this rate, BNC estimates the number of data gaps when appearing in subsequent intervals. 
+<u>Statistics:</u> BNC counts the number of GPS seconds covered by at least one observation. It also estimates an observation rate (independent from the a priory specified 'Observation rate') from all observations received throughout the first full 'Log latency' interval. Based on this rate, BNC estimates the number of data gaps when appearing in subsequent intervals. 
 </p>
 <p>
-Latencies of observations or corrections to Broadcast Ephemeris and statistical information can be recorded in the 'Log' tab at the end of each 'Performance log' interval. A typical output from a 1 hour 'Performance log' interval would be:
+Latencies of observations or corrections to Broadcast Ephemeris and statistical information can be recorded in the 'Log' tab at the end of each 'Log latency' interval. A typical output from a 1 hour 'Log latency' interval would be:
 </p>
 <pre>
 08-03-17 15:59:47 BRUS0: Mean latency 1.47 sec, min 0.66, max 3.02, rms 0.35, 3585 epochs, 15 gaps
 </pre>
 <p>
-Select a 'Performance log' interval to activate this function or select the empty option field if you do not want BNC to log latencies and statistical information.
+Select a 'Log latency' interval to activate this function or select the empty option field if you do not want BNC to log latencies and statistical information.
 </p>
 
 
@@ -988,7 +988,7 @@ The bandwidth consumtion per stream is shown in the 'Throughput' tab in bits per
 
 <p><a name="latency"><h4>3.12.3 Latency</h4></p>
 <p>
-The latency of observations in each incoming stream is shown in the 'Latency' tab in milliseconds. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) are not considered here. Note that latency calculations require the clock of the host computer to be properly synchronized.
+The latency of observations in each incoming stream is shown in the 'Latency' tab in milliseconds. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) are not considered here. Note that the calculation of correct latencies requires the clock of the host computer to be properly synchronized.
 </p>
 
 <p><a name="bottom"><h4>3.13. Bottom Menu Bar</h4></p>
