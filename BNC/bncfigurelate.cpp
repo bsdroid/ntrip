@@ -145,18 +145,22 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
 
     int xx = xMin+80+anchor*12;
 
-    painter.save();
-    painter.translate(xx-13, int(yMax-yMin)*xLine+65);
-    painter.rotate(-90);
-    painter.drawText(0,0,65,50,Qt::AlignRight,staID.left(5) + "   ");
-    painter.restore();
-
     if(maxLate > 0.0) {
       int yy = int(yLength * (it.value() / maxLate));
       QColor color = QColor::fromRgb(_rgb[0][anchor],_rgb[1][anchor],_rgb[2][anchor]);
       painter.fillRect(xx-13, int((yMax-yMin)*xLine)-yy, 9, yy, 
                        QBrush(color,Qt::SolidPattern));
+      painter.setPen(Qt::black);
+      if(it.value()<=0) {
+        painter.setPen(Qt::red);
+      }
     }
+
+    painter.save();
+    painter.translate(xx-13, int(yMax-yMin)*xLine+65);
+    painter.rotate(-90);
+    painter.drawText(0,0,65,50,Qt::AlignRight,staID.left(5) + "   ");
+    painter.restore();
 
     anchor++;
   }
