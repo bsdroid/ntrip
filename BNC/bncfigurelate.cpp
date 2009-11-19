@@ -116,7 +116,6 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
   // ------
   int yLength = int((yMax-yMin)*xLine) - (yMin+10);
   painter.drawLine(xMin+60, int((yMax-yMin)*xLine), xMin+60, yMin+10);
-  painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+60,15,Qt::AlignRight,tr("0 ms  "));
 
   double maxLate = 0.0;
   QMapIterator<QByteArray, double> it1(_latency);
@@ -127,11 +126,20 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
     }
   }
 
-  if(maxLate > 0.0) {
-    QString maxLateStr;
+  QString maxLateStr;
+  if(maxLate < 1e3) {
     maxLateStr = QString("%1 ms  ").arg(int(maxLate));
+    painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+60,15,Qt::AlignRight,tr("0 ms  "));
+  }
+  else {
+    maxLateStr = QString("%1 sec  ").arg(int(maxLate / 1.e3));
+    painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+60,15,Qt::AlignRight,tr("0 sec  "));
+  }
+
+  if(maxLate > 0.0) {
     painter.drawText(0, yMin+25-5, xMin+60,15,Qt::AlignRight,maxLateStr);
   }
+
 
   // x-axis
   // ------
