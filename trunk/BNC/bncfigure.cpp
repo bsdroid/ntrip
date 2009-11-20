@@ -52,8 +52,8 @@ bncFigure::bncFigure(QWidget *parent) : QWidget(parent) {
   slotNextAnimationFrame();
   for (int ii = 0; ii <= 1000; ii++) {
     _ran[0][ii] = qrand() % 255;
-    _ran[1][ii] = qrand() % 40;
-    _ran[2][ii] = qrand() % 100;
+    _ran[2][ii] = qrand() % 255;
+    _ran[1][ii] = qrand() % 255;
   }
 }
 
@@ -180,7 +180,7 @@ void bncFigure::paintEvent(QPaintEvent *) {
 
     if(_maxRate > 0.0) {
       int yy = int(yLength * (it.value()->_mean / _maxRate));
-      QColor color = QColor::fromHsv(0,100+_ran[1][anchor],155+_ran[2][anchor]);
+      QColor color = QColor::fromRgb(_ran[0][anchor],_ran[1][anchor],_ran[2][anchor],150);
       painter.fillRect(xx-13, int((yMax-yMin)*xLine)-yy, 9, yy, 
                        QBrush(color,Qt::SolidPattern));
       painter.setPen(Qt::black);
