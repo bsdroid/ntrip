@@ -131,9 +131,13 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
     maxLateStr = QString("%1 ms  ").arg(int(maxLate/100)*100);
     painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+60,15,Qt::AlignRight,tr("0 ms  "));
   }
-  else {
+  else if (maxLate < 6e4) {
     maxLateStr = QString("%1 sec  ").arg(int(maxLate / 1.e3));
     painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+60,15,Qt::AlignRight,tr("0 sec  "));
+  }
+  else {
+    maxLateStr = QString("%1 min  ").arg(int(maxLate / 6.e4));
+    painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+60,15,Qt::AlignRight,tr("0 min  "));
   }
 
   if(maxLate > 0.0) {
