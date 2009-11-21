@@ -90,17 +90,17 @@ void bncPPPthread::run() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPthread::slotNewEpochData(QList<p_obs> obsList) {
-
+  QMutexLocker locker(&_mutex);
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPthread::slotNewEphGPS(gpsephemeris gpseph) {
-
+  QMutexLocker locker(&_mutex);
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPthread::slotNewCorrections(QList<QString> corrList) {
-
+  QMutexLocker locker(&_mutex);
 }
