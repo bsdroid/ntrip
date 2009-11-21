@@ -51,8 +51,9 @@ class bncPPPthread : public QThread {
   virtual void run();
 
  public slots:
-  void slotNewEpochData(QList<p_obs>);
+  void slotNewEpochData(QList<p_obs> obsList);
   void slotNewEphGPS(gpsephemeris gpseph);
+  void slotNewCorrections(QList<QString> corrList);
 
  private:
   QByteArray      _staID;

@@ -257,6 +257,8 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
 	    PPPthread, SLOT(slotNewEpochData(QList<p_obs>)));
     connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
 	    PPPthread, SLOT(slotNewEphGPS(gpsephemeris)));
+    connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
+	    PPPthread, SLOT(slotNewCorrections(QList<QString>)));
     PPPthread->start();
   }
 
