@@ -146,7 +146,7 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
 
   maxLate = maxLateRound;
   if(maxLate > 0.0) {
-    painter.drawText(0,int((yMax-yMin)*xLine)- int(yLength*(maxLateRound/maxLate)), xMin+60, 15, Qt::AlignRight,maxLateStr);
+    painter.drawText(0,int((yMax-yMin)*xLine) - yLength, xMin+60, 15, Qt::AlignRight,maxLateStr);
   }
 
   // x-axis
