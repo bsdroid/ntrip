@@ -286,7 +286,7 @@ bncWindow::bncWindow() {
   // Miscellaneous Options
   // ---------------------
   _miscMountLineEdit  = new QLineEdit(settings.value("miscMount").toString());
-  _perfIntrComboBox    = new QComboBox();
+  _perfIntrComboBox   = new QComboBox();
   _perfIntrComboBox->setEditable(false);
   _perfIntrComboBox->addItems(QString(",2 sec, 10 sec,1 min,5 min,15 min,1 hour,6 hours,1 day").split(","));
   int ll = _perfIntrComboBox->findText(settings.value("perfIntr").toString());
@@ -296,6 +296,10 @@ bncWindow::bncWindow() {
   _scanRTCMCheckBox  = new QCheckBox();
   _scanRTCMCheckBox->setCheckState(Qt::CheckState(
                                     settings.value("scanRTCM").toInt()));
+
+  // PPP Options
+  // -----------
+  _pppMountLineEdit  = new QLineEdit(settings.value("pppMount").toString());
 
   // Streams
   // -------
@@ -386,6 +390,7 @@ bncWindow::bncWindow() {
   QWidget* ogroup = new QWidget();
   QWidget* rgroup = new QWidget();
   QWidget* sergroup = new QWidget();
+  QWidget* pppgroup = new QWidget();
   _aogroup->addTab(pgroup,tr("Proxy"));
   _aogroup->addTab(ggroup,tr("General"));
   _aogroup->addTab(ogroup,tr("RINEX Observations"));
@@ -395,6 +400,7 @@ bncWindow::bncWindow() {
   _aogroup->addTab(sergroup,tr("Serial Output"));
   _aogroup->addTab(agroup,tr("Outages"));
   _aogroup->addTab(rgroup,tr("Miscellaneous"));
+  _aogroup->addTab(pppgroup,tr("PPP Client"));
 
   // Log Tab
   // -------
@@ -714,9 +720,16 @@ bncWindow::bncWindow() {
     _scanRTCMCheckBox->setEnabled(false);
   }
 
+  // PPP Client
+  // ----------
+  QGridLayout* pppLayout = new QGridLayout;
+  pppLayout->setColumnMinimumWidth(0,14*ww);
+  pppLayout->addWidget(new QLabel("Mountpoint"), 0, 0);
+  pppLayout->addWidget(_pppMountLineEdit,        0, 1, 1,7);
+  pppgroup->setLayout(pppLayout);
+
   // Main Layout
   // -----------
-
   QGridLayout* mLayout = new QGridLayout;
   _aogroup->setCurrentIndex(settings.value("startTab").toInt());
   mLayout->addWidget(_aogroup,            0,0);
@@ -1017,6 +1030,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("ephV3",       _ephV3CheckBox->checkState());
   settings.setValue("logFile",     _logFileLineEdit->text());
   settings.setValue("miscMount",   _miscMountLineEdit->text());
+  settings.setValue("pppMount",    _pppMountLineEdit->text());
   settings.setValue("mountPoints", mountPoints);
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
