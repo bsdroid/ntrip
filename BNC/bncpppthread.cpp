@@ -49,6 +49,7 @@ using namespace std;
 bncPPPthread::bncPPPthread(QByteArray staID) {
   _staID         = staID;
   _isToBeDeleted = false;
+  cout << "PPP Client " << _staID.data() << " constructor\n";
 }
 
 // Destructor
@@ -57,6 +58,7 @@ bncPPPthread::~bncPPPthread() {
   if (isRunning()) {
     wait();
   }
+  cout << "PPP Client " << _staID.data() << " destructor\n";
 }
 
 // 
@@ -91,16 +93,19 @@ void bncPPPthread::run() {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPthread::slotNewEpochData(QList<p_obs> obsList) {
   QMutexLocker locker(&_mutex);
+  cout << "PPP Client: new observations " << obsList.size() << endl;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPthread::slotNewEphGPS(gpsephemeris gpseph) {
   QMutexLocker locker(&_mutex);
+  cout << "PPP Client: new ephemeris " << gpseph.satellite << endl;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPthread::slotNewCorrections(QList<QString> corrList) {
   QMutexLocker locker(&_mutex);
+  cout << "PPP Client: new corrections " << corrList.size() << endl;
 }
