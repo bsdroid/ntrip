@@ -283,6 +283,12 @@ void bncGetThread::initialize() {
   // _rawOutFile = new QFile(rawOutFileName);
   // _rawOutFile->open(QIODevice::WriteOnly);
 
+  // Initialize PPP Clinet?
+  // ----------------------
+  bool pppClient = false;
+  if (settings.value("pppMount").toString() == _staID) {
+    pppClient = true;
+  }
 
   // Instantiate the decoder
   // -----------------------
@@ -290,7 +296,9 @@ void bncGetThread::initialize() {
            _format.indexOf("RTCM 2") != -1 ) {
     emit(newMessage(_staID + ": Get data in RTCM 2.x format", true));
     _decoder = new RTCM2Decoder(_staID.data());
-    _PPPthread = new bncPPPthread(_staID);
+    if (pppClient) {
+      _PPPthread = new bncPPPthread(_staID);
+    }
   }
   else if (_format.indexOf("RTCM_3") != -1 || _format.indexOf("RTCM3") != -1 ||
            _format.indexOf("RTCM 3") != -1 ) {
@@ -298,12 +306,16 @@ void bncGetThread::initialize() {
     _decoder = new RTCM3Decoder(_staID);
     connect((RTCM3Decoder*) _decoder, SIGNAL(newMessage(QByteArray,bool)), 
             this, SIGNAL(newMessage(QByteArray,bool)));
-    _PPPthread = new bncPPPthread(_staID);
+    if (pppClient) {
+      _PPPthread = new bncPPPthread(_staID);
+    }
   }
   else if (_format.indexOf("RTIGS") != -1) {
     emit(newMessage(_staID + ": Get data in RTIGS format", true));
     _decoder = new RTIGSDecoder();
-    _PPPthread = new bncPPPthread(_staID);
+    if (pppClient) {
+      _PPPthread = new bncPPPthread(_staID);
+    }
   }
   else if (_format.indexOf("GPSS") != -1 || _format.indexOf("BNC") != -1) {
     emit(newMessage(_staID + ": Get Data in GPSS format", true));
