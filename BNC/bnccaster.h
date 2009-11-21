@@ -50,6 +50,7 @@ class bncCaster : public QObject {
    void mountPointsRead(QList<bncGetThread*>);
    void getThreadsFinished();   
    void newMessage(QByteArray msg, bool showOnScreen);
+   void newEpochData(QList<p_obs>);
 
  private slots:
    void slotNewConnection();
