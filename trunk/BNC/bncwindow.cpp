@@ -1110,8 +1110,6 @@ void bncWindow::slotGetData() {
     if (!advisefile.exists()) ((bncApp*)qApp)->slotMessage("Cannot find Outages script", true);
   }
 
-  _bncFigure->updateMountPoints();
-  _bncFigureLate->updateMountPoints();
   _caster->slotReadMountPoints();
 }
 
@@ -1221,6 +1219,9 @@ void bncWindow::slotWhatsThis() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
+  _bncFigure->updateMountPoints();
+  _bncFigureLate->updateMountPoints();
+
   populateMountPointsTable();
   bncSettings settings;
   _binSamplSpinBox->setValue(settings.value("binSampl").toInt());
