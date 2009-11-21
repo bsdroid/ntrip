@@ -46,6 +46,7 @@
 #include "bncgetthread.h"
 #include "bncutils.h"
 #include "bncsettings.h"
+#include "bncpppthread.h"
 #include "RTCM/GPSDecoder.h"
 
 // Constructor
@@ -249,6 +250,15 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
 
   _staIDs.push_back(getThread->staID());
   _threads.push_back(getThread);
+
+  bncPPPthread* PPPthread = getThread->PPPthread();
+  if (PPPthread) {
+    connect(this, SIGNAL(newEpochData(QList<p_obs>)),
+	    PPPthread, SLOT(slotNewEpochData(QList<p_obs>)));
+    connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
+	    PPPthread, SLOT(slotNewEphGPS(gpsephemeris)));
+    PPPthread->start();
+  }
 
   getThread->start();
 }
