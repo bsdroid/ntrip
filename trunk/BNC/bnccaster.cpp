@@ -289,6 +289,9 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
 
     bool first = true;
     QList<p_obs> allObs = _epochs->values(sec);
+
+    emit newEpochData(allObs);
+
     QListIterator<p_obs> it(allObs);
     while (it.hasNext()) {
       p_obs obs = it.next();
