@@ -126,27 +126,22 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
     }
   }
 
-  double maxLateRound = 0.0;
   QString maxLateStr;
   if(maxLate < 1e3) {
-    maxLateRound = int(maxLate/100)*100 + 300;
     maxLateStr = QString("%1 ms  ").arg(int(maxLate/200)*200);
     painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+60,15,Qt::AlignRight,tr("0 ms  "));
   }
   else if (maxLate < 6e4) {
-    maxLateRound = int(maxLate / 1.e3) + 1500;
     maxLateStr = QString("%1 sec  ").arg(int(maxLate / 1.e3));
     painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+60,15,Qt::AlignRight,tr("0 sec  "));
   }
   else {
-    maxLateRound = int(maxLate / 6.e3) + 90000;
     maxLateStr = QString("%1 min  ").arg(int(maxLate / 6.e4));
     painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+60,15,Qt::AlignRight,tr("0 min  "));
   }
 
-  maxLate = maxLateRound;
   if(maxLate > 0.0) {
-    painter.drawText(0,int((yMax-yMin)*xLine) - yLength, xMin+60, 15, Qt::AlignRight,maxLateStr);
+    painter.drawText(0, yMin+25-5, xMin+60,15,Qt::AlignRight,maxLateStr);
   }
 
   // x-axis
