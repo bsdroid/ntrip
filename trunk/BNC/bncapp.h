@@ -56,6 +56,7 @@ class bncApp : public QApplication {
     void newMessage(QByteArray msg, bool showOnScreen);
     void newEphGPS(gpsephemeris gpseph);
     void newEphGlonass(glonassephemeris glonasseph);
+    void newCorrections(QList<QString>);
     
  private slots:
    void slotNewConnection();

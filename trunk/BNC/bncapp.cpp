@@ -682,6 +682,7 @@ void bncApp::dumpCorrs(long minTime, long maxTime) {
 
   for (long sec = minTime; sec <= maxTime; sec++) {
     QList<QString> allCorrs = _corrs->values(sec);
+    emit newCorrections(allCorrs);
     QListIterator<QString> it(allCorrs);
     while (it.hasNext()) {
       QString corrLine = it.next() + "\n";
