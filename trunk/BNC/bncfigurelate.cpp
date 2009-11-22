@@ -126,22 +126,26 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
     }
   }
 
+  double maxLateRounded;
   QString maxLateStr;
   if(maxLate < 1e3) {
-    maxLateStr = QString("%1 ms  ").arg(int(maxLate/200)*200);
+    maxLateRounded = int(maxLate/200)*200 + 300;
+    maxLateStr = QString("%1 ms  ").arg(int(maxLateRounded/200)*200);
     painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+60,15,Qt::AlignRight,tr("0 ms  "));
   }
   else if (maxLate < 6e4) {
-    maxLateStr = QString("%1 sec  ").arg(int(maxLate / 1.e3));
+    maxLateRounded = int(maxLate/1.e3)*1.e3 + 1500;
+    maxLateStr = QString("%1 sec  ").arg(int(maxLateRounded/1.e3));
     painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+60,15,Qt::AlignRight,tr("0 sec  "));
   }
   else {
-    maxLateStr = QString("%1 min  ").arg(int(maxLate / 6.e4));
+    maxLateRounded = int(maxLate / 6.e4)*6.e4 + 90000;
+    maxLateStr = QString("%1 min  ").arg(int(maxLateRounded/6.e4));
     painter.drawText(0, int((yMax-yMin)*xLine)-5, xMin+60,15,Qt::AlignRight,tr("0 min  "));
   }
 
   if(maxLate > 0.0) {
-    painter.drawText(0, yMin+25-5, xMin+60,15,Qt::AlignRight,maxLateStr);
+    painter.drawText(0, yMin+20-5, xMin+60,15,Qt::AlignRight,maxLateStr);
   }
 
   // x-axis
@@ -157,7 +161,7 @@ void bncFigureLate::paintEvent(QPaintEvent *) {
     int xx = xMin+80+anchor*12;
 
     if(maxLate > 0.0) {
-      int yy = int(yLength * (it.value() / maxLate));
+      int yy = int(yLength * (it.value() / maxLateRounded));
       QColor color = QColor::fromHsv(180,200,120+_ran[2][anchor]);
       painter.fillRect(xx-13, int((yMax-yMin)*xLine)-yy, 9, yy, 
                        QBrush(color,Qt::SolidPattern));
