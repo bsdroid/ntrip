@@ -1099,7 +1099,7 @@ void bncWindow::slotGetData() {
   connect (_caster, SIGNAL(mountPointsRead(QList<bncGetThread*>)), 
            this, SLOT(slotMountPointsRead(QList<bncGetThread*>)));
 
-  ((bncApp*)qApp)->slotMessage("============ Start BNC ============", true);
+  ((bncApp*)qApp)->slotMessage("========== Start BNC v1.7 =========", true);
 
   bncSettings settings;
 
