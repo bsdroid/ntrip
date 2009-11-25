@@ -191,7 +191,37 @@ bool t_eph::isNewerThan(const t_eph* eph) const {
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_ephGPS::t_ephGPS(const gpsephemeris& eph) {
-
+  _prn             = QString("G%1").arg(eph.satellite, 2, 10, QChar('0'));
+  _GPSweek         = eph.GPSweek;
+  _GPSweeks        = eph.TOC;
+  _TOW             = eph.TOW;
+  _TOC             = eph.TOC;
+  _TOE             = eph.TOE;
+  _IODE            = eph.IODE;             
+  _IODC            = eph.IODC;             
+  _clock_bias      = eph.clock_bias;
+  _clock_drift     = eph.clock_drift;
+  _clock_driftrate = eph.clock_driftrate;
+  _Crs             = eph.Crs;     
+  _Delta_n         = eph.Delta_n; 
+  _M0              = eph.M0;      
+  _Cuc             = eph.Cuc;     
+  _e               = eph.e;       
+  _Cus             = eph.Cus;     
+  _sqrt_A          = eph.sqrt_A;  
+  _Cic             = eph.Cic;     
+  _OMEGA0          = eph.OMEGA0;  
+  _Cis             = eph.Cis;     
+  _i0              = eph.i0;      
+  _Crc             = eph.Crc;     
+  _omega           = eph.omega;   
+  _OMEGADOT        = eph.OMEGADOT;
+  _IDOT            = eph.IDOT;    
+  _TGD             = eph.TGD;     
+  _health          = eph.SVhealth;
+  _ura             = 0.0;
+  _L2PFlag         = 0.0;
+  _L2Codes         = 0.0;
 }
 
 // Read GPS Ephemeris
@@ -489,7 +519,35 @@ void t_ephGPS::position(int GPSweek, double GPSweeks, ColumnVector& xc,
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_ephGlo::t_ephGlo(const glonassephemeris& eph) {
+  _prn              = QString("R%1").arg(eph.almanac_number, 2, 10, QChar('0'));
+  _GPSweek          = eph.GPSWeek;
+  _GPSweeks         = eph.GPSTOW;
+  _gps_utc          = 0;
+  _E                = eph.E;               
+  _tau              = eph.tau;             
+  _gamma            = eph.gamma;           
+  _x_pos            = eph.x_pos;           
+  _x_velocity       = eph.x_velocity;      
+  _x_acceleration   = eph.x_acceleration;  
+  _y_pos            = eph.y_pos;           
+  _y_velocity       = eph.y_velocity;      
+  _y_acceleration   = eph.y_acceleration;  
+  _z_pos            = eph.z_pos;           
+  _z_velocity       = eph.z_velocity;      
+  _z_acceleration   = eph.z_acceleration;  
+  _health           = 0;
+  _frequency_number = eph.frequency_number;
+  _tki              = eph.tk;             
 
+  // Initialize status vector
+  // ------------------------
+  _tt    = _GPSweeks;
+  _xv(1) = _x_pos * 1.e3; 
+  _xv(2) = _y_pos * 1.e3; 
+  _xv(3) = _z_pos * 1.e3; 
+  _xv(4) = _x_velocity * 1.e3; 
+  _xv(5) = _y_velocity * 1.e3; 
+  _xv(6) = _z_velocity * 1.e3; 
 }
 
 // Read Glonass Ephemeris
