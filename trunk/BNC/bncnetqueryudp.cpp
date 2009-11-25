@@ -20,10 +20,10 @@
 
 #include "bncnetqueryudp.h"
 #include "bncsettings.h"
+#include "bncversion.h"
 
 using namespace std;
 
-#define BNCVERSION "1.7"
 #define TIME_RESOLUTION 125
 
 // Constructor

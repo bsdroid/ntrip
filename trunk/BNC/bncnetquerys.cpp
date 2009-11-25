@@ -15,10 +15,9 @@
  * -----------------------------------------------------------------------*/
 
 #include "bncnetquerys.h"
+#include "bncversion.h"
 
 using namespace std;
-
-#define BNCVERSION "1.7"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////

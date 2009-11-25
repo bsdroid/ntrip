@@ -47,6 +47,7 @@
 #include "bncutils.h" 
 #include "bncrinex.h" 
 #include "bncsettings.h" 
+#include "bncversion.h" 
 
 using namespace std;
 
@@ -68,8 +69,6 @@ extern "C" {
 ////////////////////////////////////////////////////////////////////////////
 bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) : 
   QApplication(argc, argv, GUIenabled) {
-
-  _bncVersion  = "BNC 1.7";
 
   _logFileFlag = 0;
   _logFile     = 0;
@@ -101,7 +100,7 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
   _serverCorr  = 0;
   _socketsCorr = 0;
 
-  _pgmName  = _bncVersion.leftJustified(20, ' ', true);
+  _pgmName  = QString(BNCPGMNAME).leftJustified(20, ' ', true);
 #ifdef WIN32
   _userName = QString("${USERNAME}");
 #else
