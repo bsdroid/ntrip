@@ -29,7 +29,7 @@
 #include <QtNetwork>
 
 #include "RTCM/GPSDecoder.h"
-#include "RTCM3/rtcm3torinex.h"
+#include "RTCM3/ephemeris.h"
 
 class bncPPPthread : public QThread {
  Q_OBJECT
@@ -56,9 +56,10 @@ class bncPPPthread : public QThread {
   void slotNewCorrections(QList<QString> corrList);
 
  private:
-  QByteArray      _staID;
-  bool            _isToBeDeleted;
-  QMutex          _mutex;
+  QByteArray            _staID;
+  bool                  _isToBeDeleted;
+  QMutex                _mutex;
+  QMap<QString, t_eph*> _eph;
 };
 
 #endif
