@@ -18,8 +18,7 @@
 
 #include "bncnetqueryv2.h"
 #include "bncsettings.h"
-
-#define BNCVERSION "1.7"
+#include "bncversion.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////

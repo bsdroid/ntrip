@@ -37,7 +37,6 @@ class bncApp : public QApplication {
   public:
     bncApp(int& argc, char* argv[], bool GUIenabled);
     virtual ~bncApp();  
-    QString bncVersion() const {return _bncVersion;}
     void setPort(int port);
     void setPortCorr(int port);
     void setCaster(bncCaster* caster) {_caster = caster;}
@@ -75,7 +74,6 @@ class bncApp : public QApplication {
     QFile*            _logFile;
     QTextStream*      _logStream;
     int               _logFileFlag;
-    QString           _bncVersion;
     QMutex            _mutex;
     QMutex            _mutexMessage;
     QString           _ephPath;
