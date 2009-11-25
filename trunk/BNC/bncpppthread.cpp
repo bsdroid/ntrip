@@ -66,6 +66,11 @@ bncPPPthread::~bncPPPthread() {
     it.next();
     delete it.value();
   }
+  QMapIterator<QString, t_corr*> ic(_corr);
+  while (ic.hasNext()) {
+    ic.next();
+    delete ic.value();
+  }
 }
 
 // 
@@ -104,9 +109,9 @@ void bncPPPthread::slotNewEpochData(QList<p_obs> obsList) {
   while (it.hasNext()) {
     p_obs          pp  = it.next();
     t_obsInternal* obs = &(pp->_o);
-    QString staID = QString(obs->StatID); 
+    QByteArray staID = QByteArray(obs->StatID); 
     cout << "DATA " << obs->GPSWeek << " " << obs->GPSWeeks << " " 
-         << staID.toAscii().data() << " " 
+         << staID.data() << " " 
          << obs->satSys << obs->satNum << endl;
   }
 }
