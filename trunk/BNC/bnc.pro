@@ -27,7 +27,7 @@ release:MOC_DIR=.moc/release
 
 # Include Path
 # ------------
-INCLUDEPATH = .
+INCLUDEPATH = . ./newmat ./RTCM3
 
 HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bnccaster.h bncrinex.h bncapp.h bncutils.h   bnchlpdlg.h    \
@@ -37,7 +37,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bncipport.h bncnetqueryv0.h bncnetqueryudp.h                \ 
           bncnetqueryudp0.h bncudpport.h                              \ 
           bncserialport.h bncnetquerys.h bncfigure.h                  \ 
-          bncfigurelate.h bncpppthread.h bncversion.h                 \ 
+          bncfigurelate.h bncpppthread.h bncversion.h bnseph.h        \ 
           RTCM/GPSDecoder.h RTCM/RTCM2.h RTCM/RTCM2Decoder.h          \
           RTCM/RTCM2_2021.h RTCM/rtcm_utils.h                         \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex.h                   \
@@ -52,6 +52,10 @@ HEADERS       += serial/qextserialbase.h serial/qextserialport.h
 unix:HEADERS  += serial/posix_qextserialport.h
 win32:HEADERS += serial/win_qextserialport.h
 
+HEADERS += newmat/controlw.h newmat/include.h newmat/myexcept.h  \
+           newmat/newmatap.h newmat/newmat.h newmat/newmatio.h   \
+           newmat/newmatrc.h newmat/newmatrm.h newmat/precisio.h
+
 SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bnccaster.cpp bncrinex.cpp bncapp.cpp bncutils.cpp          \
           bncconst.cpp bnchtml.cpp bnchlpdlg.cpp bnctableitem.cpp     \
@@ -60,7 +64,7 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bncipport.cpp bncnetqueryv0.cpp bncnetqueryudp.cpp          \
           bncnetqueryudp0.cpp bncudpport.cpp                          \
           bncserialport.cpp bncnetquerys.cpp bncfigure.cpp            \
-          bncfigurelate.cpp bncpppthread.cpp                          \
+          bncfigurelate.cpp bncpppthread.cpp bnseph.cpp               \
           RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp                        \
           RTCM/RTCM2_2021.cpp RTCM/rtcm_utils.cpp                     \
           RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex.c                 \
@@ -72,6 +76,15 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
 SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp
 unix:SOURCES  += serial/posix_qextserialport.cpp
 win32:SOURCES += serial/win_qextserialport.cpp
+
+SOURCES += newmat/bandmat.cpp newmat/cholesky.cpp newmat/evalue.cpp  \
+           newmat/fft.cpp newmat/hholder.cpp newmat/jacobi.cpp       \
+           newmat/myexcept.cpp newmat/newfft.cpp newmat/newmat1.cpp  \
+           newmat/newmat2.cpp newmat/newmat3.cpp newmat/newmat4.cpp  \
+           newmat/newmat5.cpp newmat/newmat6.cpp newmat/newmat7.cpp  \
+           newmat/newmat8.cpp newmat/newmat9.cpp newmat/newmatex.cpp \
+           newmat/newmatrm.cpp newmat/nm_misc.cpp newmat/sort.cpp    \
+           newmat/submat.cpp newmat/svd.cpp
 
 RC_FILE = bnc.rc
 
