@@ -55,6 +55,7 @@
 #include "bncgetthread.h"
 #include "bncnetqueryv2.h"
 #include "bncsettings.h"
+#include "bncversion.h"
 #include "RTCM3/rtcm3torinex.h"
 
 using namespace std;
@@ -82,7 +83,7 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
   _rnxScriptName = settings.value("rnxScript").toString();
   expandEnvVar(_rnxScriptName);
 
-  _pgmName  = ((bncApp*)qApp)->bncVersion().leftJustified(20, ' ', true);
+  _pgmName  = QString(BNCPGMNAME).leftJustified(20, ' ', true);
 #ifdef WIN32
   _userName = QString("${USERNAME}");
 #else
