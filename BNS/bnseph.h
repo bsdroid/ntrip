@@ -8,8 +8,6 @@
 #include <QThread>
 #include <QtNetwork>
 
-struct glonassephemeris;
-struct gpsephemeris;
 
 class t_eph {
  public:
@@ -35,8 +33,6 @@ class t_ephGlo : public t_eph {
     _gps_utc = 0.0;
     _xv.ReSize(6); 
   };
-  t_ephGlo(const glonassephemeris& eph);
-
   virtual ~t_ephGlo() {};
   virtual void read(const QStringList& lines);
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
@@ -70,7 +66,6 @@ class t_ephGlo : public t_eph {
 class t_ephGPS : public t_eph {
  public:
   t_ephGPS() {};
-  t_ephGPS(const gpsephemeris& eph);
   virtual ~t_ephGPS() {};
   virtual void read(const QStringList& lines);
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,

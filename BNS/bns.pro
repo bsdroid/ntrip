@@ -27,7 +27,7 @@ release:MOC_DIR=.moc/release
 
 # Include Path
 # ------------
-INCLUDEPATH = . ./newmat ./RTCM
+INCLUDEPATH = . ./newmat
 
 HEADERS =             bns.h   bnswindow.h   bnshlpdlg.h   bnshtml.h   \
           bnseph.h    bnsutils.h bnsrinex.h bnssp3.h bnsoutf.h        \
