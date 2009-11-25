@@ -3,7 +3,7 @@
 
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.h,v 1.17 2009/05/07 09:27:19 mervart Exp $
+  $Id: rtcm3torinex.h,v 1.18 2009/11/04 16:19:40 zdenek Exp $
   Copyright (C) 2005-2006 by Dirk Stöcker <stoecker@alberding.eu>
 
   This program is free software; you can redistribute it and/or modify
@@ -107,6 +107,7 @@ struct gnssdata {
   double measdata[24][GNSSENTRY_NUMBER];  /* data fields */ 
   int    dataflags[24];      /* GPSDF_xxx */
   int    satellites[24];     /* SV - IDs */
+  int    channels[24];       /* Glonass channels - valid of Glonass SV only */
   int    snrL1[24];          /* Important: all the 5 SV-specific fields must */
   int    snrL2[24];          /* have the same SV-order */
 };
