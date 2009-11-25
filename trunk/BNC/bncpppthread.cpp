@@ -42,6 +42,10 @@
 
 #include "bncpppthread.h"
 
+extern "C" {
+#include "clock_orbit_rtcm.h"
+}
+
 using namespace std;
 
 // Constructor
@@ -49,7 +53,6 @@ using namespace std;
 bncPPPthread::bncPPPthread(QByteArray staID) {
   _staID         = staID;
   _isToBeDeleted = false;
-  cout << "PPP Client " << _staID.data() << " constructor\n";
 }
 
 // Destructor
@@ -102,8 +105,9 @@ void bncPPPthread::slotNewEpochData(QList<p_obs> obsList) {
     p_obs          pp  = it.next();
     t_obsInternal* obs = &(pp->_o);
     QString staID = QString(obs->StatID); 
-    cout << obs->GPSWeek << " " << obs->GPSWeeks << " " 
-         << staID.toAscii().data() << " " << obs->satSys << obs->satNum << endl;
+    cout << "DATA " << obs->GPSWeek << " " << obs->GPSWeeks << " " 
+         << staID.toAscii().data() << " " 
+         << obs->satSys << obs->satNum << endl;
   }
 }
 
@@ -128,5 +132,26 @@ void bncPPPthread::slotNewEphGPS(gpsephemeris gpseph) {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPthread::slotNewCorrections(QList<QString> corrList) {
   QMutexLocker locker(&_mutex);
-  cout << "PPP Client: new corrections " << corrList.size() << endl;
+  QListIterator<QString> it(corrList);
+  while (it.hasNext()) {
+    QTextStream in(it.next().toAscii());
+    int     messageType;
+    int     updateInterval;
+    int     GPSweek;
+    double  GPSweeks;
+    QString prn;
+    in >> messageType >> updateInterval >> GPSweek >> GPSweeks >> prn;
+    if ( messageType == COTYPE_GPSCOMBINED     || 
+         messageType == COTYPE_GLONASSCOMBINED ) {
+      t_corr* cc = 0;
+      if (_corr.contains(prn)) {
+        cc = _corr.value(prn); 
+      }
+      else {
+        cc = new t_corr();
+        _corr[prn] = cc;
+      }
+      in >> cc->iod >> cc->dClk >> cc->rao[0] >> cc->rao[1] >> cc->rao[2];
+    }
+  }
 }

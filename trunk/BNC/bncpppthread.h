@@ -31,6 +31,12 @@
 #include "RTCM/GPSDecoder.h"
 #include "RTCM3/ephemeris.h"
 
+struct t_corr {
+  int    iod;
+  double dClk;
+  double rao[3];
+};
+
 class bncPPPthread : public QThread {
  Q_OBJECT
 
@@ -56,10 +62,11 @@ class bncPPPthread : public QThread {
   void slotNewCorrections(QList<QString> corrList);
 
  private:
-  QByteArray            _staID;
-  bool                  _isToBeDeleted;
-  QMutex                _mutex;
-  QMap<QString, t_eph*> _eph;
+  QByteArray             _staID;
+  bool                   _isToBeDeleted;
+  QMutex                 _mutex;
+  QMap<QString, t_eph*>  _eph;
+  QMap<QString, t_corr*> _corr;
 };
 
 #endif
