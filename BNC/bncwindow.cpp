@@ -1250,8 +1250,12 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
           _mountPointsTable->item(iRow, 3)->text() == thread->latitude()   &&
           _mountPointsTable->item(iRow, 4)->text() == thread->longitude() ) {
         ((bncTableItem*) _mountPointsTable->item(iRow, 7))->setGetThread(thread);
+        disconnect(thread, SIGNAL(newBytes(QByteArray, double)),
+                  _bncFigure, SLOT(slotNewData(QByteArray, double)));
         connect(thread, SIGNAL(newBytes(QByteArray, double)),
                 _bncFigure, SLOT(slotNewData(QByteArray, double)));
+        disconnect(thread, SIGNAL(newLatency(QByteArray, double)),
+                   _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
         connect(thread, SIGNAL(newLatency(QByteArray, double)),
                 _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
         break;
