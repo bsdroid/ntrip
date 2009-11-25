@@ -35,7 +35,7 @@
 
 class t_data {
  public:
-  static const unsigned MAXOBS = 16;
+  static const unsigned MAXOBS = 56;
   t_data() {numSat = 0;}
   ~t_data() {}
   int     GPSWeek;
