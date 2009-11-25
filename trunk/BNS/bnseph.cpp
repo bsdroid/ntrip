@@ -19,6 +19,9 @@
 #include "bnseph.h" 
 #include "bnsutils.h" 
 #include "bnssettings.h" 
+extern "C" {
+#include "rtcm3torinex.h" 
+}
 
 #define PI          3.1415926535898
 
@@ -183,6 +186,12 @@ bool t_eph::isNewerThan(const t_eph* eph) const {
   else {
     return false;
   }
+}
+
+// Constructor
+////////////////////////////////////////////////////////////////////////////
+t_ephGPS::t_ephGPS(const gpsephemeris& eph) {
+
 }
 
 // Read GPS Ephemeris
@@ -475,6 +484,12 @@ void t_ephGPS::position(int GPSweek, double GPSweeks, ColumnVector& xc,
                           - yp*sini*cosom*doti;
 
   vv(3)  = sini    *doty  + yp*cosi      *doti;
+}
+
+// Constructor
+////////////////////////////////////////////////////////////////////////////
+t_ephGlo::t_ephGlo(const glonassephemeris& eph) {
+
 }
 
 // Read Glonass Ephemeris
