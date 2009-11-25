@@ -31,7 +31,27 @@
 #include "RTCM/GPSDecoder.h"
 #include "RTCM3/ephemeris.h"
 
-struct t_corr {
+#define MAXPRN = 
+
+class t_data {
+ public:
+  static const unsigned MAXOBS = 16;
+  t_data() {numSat = 0;}
+  ~t_data() {}
+  int     GPSWeek;
+  double  GPSWeeks;
+  int     numSat;  
+  QString prn[MAXOBS+1];
+  double  C1[MAXOBS+1];
+  double  C2[MAXOBS+1];
+  double  P1[MAXOBS+1];
+  double  P2[MAXOBS+1];
+  double  L1[MAXOBS+1];
+  double  L2[MAXOBS+1];
+};
+
+class t_corr {
+ public:
   int    iod;
   double dClk;
   double rao[3];
@@ -62,11 +82,13 @@ class bncPPPthread : public QThread {
   void slotNewCorrections(QList<QString> corrList);
 
  private:
+  void processEpoch();
   QByteArray             _staID;
   bool                   _isToBeDeleted;
   QMutex                 _mutex;
   QMap<QString, t_eph*>  _eph;
   QMap<QString, t_corr*> _corr;
+  t_data*                _data;
 };
 
 #endif

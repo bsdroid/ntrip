@@ -53,6 +53,7 @@ using namespace std;
 bncPPPthread::bncPPPthread(QByteArray staID) {
   _staID         = staID;
   _isToBeDeleted = false;
+  _data          = 0;
 }
 
 // Destructor
@@ -61,6 +62,7 @@ bncPPPthread::~bncPPPthread() {
   if (isRunning()) {
     wait();
   }
+  delete _data;
   QMapIterator<QString, t_eph*> it(_eph);
   while (it.hasNext()) {
     it.next();
@@ -92,7 +94,7 @@ void bncPPPthread::run() {
         this->deleteLater();
         return;
       }
-
+      processEpoch();
     }
     catch (...) {
       emit(newMessage(_staID + "bncPPPthread exception", true));
@@ -110,9 +112,22 @@ void bncPPPthread::slotNewEpochData(QList<p_obs> obsList) {
     p_obs          pp  = it.next();
     t_obsInternal* obs = &(pp->_o);
     QByteArray staID = QByteArray(obs->StatID); 
-    cout << "DATA " << obs->GPSWeek << " " << obs->GPSWeeks << " " 
-         << staID.data() << " " 
-         << obs->satSys << obs->satNum << endl;
+    if (staID == _staID) {
+      if (!_data) {
+        _data = new t_data();
+        _data->GPSWeek  = obs->GPSWeek;
+        _data->GPSWeeks = obs->GPSWeeks;
+      }
+      ++_data->numSat;
+      _data->prn[_data->numSat] = 
+          QString("%1%2").arg(obs->satSys).arg(obs->satNum, 2, 10, QChar('0'));
+      _data->C1[_data->numSat] = obs->C1;
+      _data->C2[_data->numSat] = obs->C2;
+      _data->P1[_data->numSat] = obs->P1;
+      _data->P2[_data->numSat] = obs->P2;
+      _data->L1[_data->numSat] = obs->L1;
+      _data->L2[_data->numSat] = obs->L2;
+    }
   }
 }
 
@@ -159,4 +174,25 @@ void bncPPPthread::slotNewCorrections(QList<QString> corrList) {
       in >> cc->iod >> cc->dClk >> cc->rao[0] >> cc->rao[1] >> cc->rao[2];
     }
   }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncPPPthread::processEpoch() {
+  QMutexLocker locker(&_mutex);
+
+  if (!_data) {
+    return;
+  }
+
+  for (int is = 1; is <= _data->numSat; is++) {
+    cout << is << " " << _data->prn[is].toAscii().data() << " " 
+         << _data->C1[is] << " " << _data->P1[is] << endl;
+  }
+
+  cout << endl;
+  cout.flush();
+
+  delete _data;
+  _data = 0;
 }
