@@ -108,16 +108,18 @@ void bncPPPthread::run() {
 void bncPPPthread::slotNewEpochData(QList<p_obs> obsList) {
   QMutexLocker locker(&_mutex);
   QListIterator<p_obs> it(obsList);
+
+  delete _data;
+  _data = new t_data();
+
   while (it.hasNext()) {
     p_obs          pp  = it.next();
     t_obsInternal* obs = &(pp->_o);
     QByteArray staID = QByteArray(obs->StatID); 
     if (staID == _staID) {
-      if (!_data) {
-        _data = new t_data();
-        _data->GPSWeek  = obs->GPSWeek;
-        _data->GPSWeeks = obs->GPSWeeks;
-      }
+      _data->GPSWeek  = obs->GPSWeek;
+      _data->GPSWeeks = obs->GPSWeeks;
+
       ++_data->numSat;
       _data->prn[_data->numSat] = 
           QString("%1%2").arg(obs->satSys).arg(obs->satNum, 2, 10, QChar('0'));
