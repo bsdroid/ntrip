@@ -58,7 +58,11 @@ bncPPPthread::~bncPPPthread() {
   if (isRunning()) {
     wait();
   }
-  cout << "PPP Client " << _staID.data() << " destructor\n";
+  QMapIterator<QString, t_eph*> it(_eph);
+  while (it.hasNext()) {
+    it.next();
+    delete it.value();
+  }
 }
 
 // 
@@ -93,7 +97,14 @@ void bncPPPthread::run() {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPthread::slotNewEpochData(QList<p_obs> obsList) {
   QMutexLocker locker(&_mutex);
-  cout << "PPP Client: new observations " << obsList.size() << endl;
+  QListIterator<p_obs> it(obsList);
+  while (it.hasNext()) {
+    p_obs          pp  = it.next();
+    t_obsInternal* obs = &(pp->_o);
+    QString staID = QString(obs->StatID); 
+    cout << obs->GPSWeek << " " << obs->GPSWeeks << " " 
+         << staID.toAscii().data() << " " << obs->satSys << obs->satNum << endl;
+  }
 }
 
 // 
@@ -103,8 +114,14 @@ void bncPPPthread::slotNewEphGPS(gpsephemeris gpseph) {
 
   QString prn = QString("G%1").arg(gpseph.satellite, 2, 10, QChar('0'));
 
-
-  cout << "PPP Client: new ephemeris " << prn.toAscii().data() << endl;
+  if (_eph.contains(prn)) {
+    (static_cast<t_ephGPS*>(_eph.value(prn)))->set(&gpseph);
+  }
+  else {
+    t_ephGPS* ee = new t_ephGPS();
+    ee->set(&gpseph);
+    _eph[prn] = ee;
+  }
 }
 
 // 
