@@ -115,7 +115,7 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
   request.setUrl(_url);
   request.setRawHeader("Host"         , _url.host().toAscii());
   request.setRawHeader("Ntrip-Version", "Ntrip/2.0");
-  request.setRawHeader("User-Agent"   , "NTRIP BNC/1.7");
+  request.setRawHeader("User-Agent"   , "NTRIP BNC/"BNCVERSION);
   if (!_url.userName().isEmpty()) {
     QString uName = QUrl::fromPercentEncoding(_url.userName().toAscii());
     QString passW = QUrl::fromPercentEncoding(_url.password().toAscii());

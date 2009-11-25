@@ -54,6 +54,7 @@
 #include "bncsettings.h"
 #include "bncfigure.h"
 #include "bncfigurelate.h"
+#include "bncversion.h"
 
 using namespace std;
 
@@ -72,7 +73,7 @@ bncWindow::bncWindow() {
 
   setMinimumSize(85*ww, 65*ww);
 
-  setWindowTitle(tr("BKG Ntrip Client (BNC) Version 1.7"));
+  setWindowTitle(tr("BKG Ntrip Client (BNC) Version " BNCVERSION));
 
   connect((bncApp*)qApp, SIGNAL(newMessage(QByteArray,bool)), 
            this, SLOT(slotWindowMessage(QByteArray,bool)));
@@ -1099,7 +1100,7 @@ void bncWindow::slotGetData() {
   connect (_caster, SIGNAL(mountPointsRead(QList<bncGetThread*>)), 
            this, SLOT(slotMountPointsRead(QList<bncGetThread*>)));
 
-  ((bncApp*)qApp)->slotMessage("========== Start BNC v1.7 =========", true);
+  ((bncApp*)qApp)->slotMessage("========== Start BNC v" BNCVERSION " =========", true);
 
   bncSettings settings;
 
@@ -1317,7 +1318,7 @@ bncAboutDlg::bncAboutDlg(QWidget* parent) :
   QLabel* img = new QLabel();
   img->setPixmap(QPixmap(":ntrip-logo.png"));
   dlgLayout->addWidget(img, 0,0);
-  dlgLayout->addWidget(new QLabel("BKG Ntrip Client (BNC) Version 1.7"), 0,1);
+  dlgLayout->addWidget(new QLabel("BKG Ntrip Client (BNC) Version "BNCVERSION), 0,1);
   dlgLayout->addWidget(tb,1,0,1,2);
   dlgLayout->addWidget(_closeButton,2,1,Qt::AlignRight);  
 

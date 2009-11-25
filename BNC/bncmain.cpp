@@ -47,6 +47,7 @@
 #include "bncapp.h"
 #include "bncwindow.h"
 #include "bncsettings.h"
+#include "bncversion.h"
 
 using namespace std;
 
@@ -142,7 +143,7 @@ int main(int argc, char *argv[]) {
 
     app.connect(caster, SIGNAL(getThreadsFinished()), &app, SLOT(quit()));
   
-    ((bncApp*)qApp)->slotMessage("========== Start BNC v1.7 =========", true);
+    ((bncApp*)qApp)->slotMessage("========== Start BNC v" BNCVERSION " =========", true);
 
     // Normal case - data from Internet
     // --------------------------------
