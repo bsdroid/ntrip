@@ -100,7 +100,11 @@ void bncPPPthread::slotNewEpochData(QList<p_obs> obsList) {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPthread::slotNewEphGPS(gpsephemeris gpseph) {
   QMutexLocker locker(&_mutex);
-  cout << "PPP Client: new ephemeris " << gpseph.satellite << endl;
+
+  QString prn = QString("G%1").arg(gpseph.satellite, 2, 10, QChar('0'));
+
+
+  cout << "PPP Client: new ephemeris " << prn.toAscii().data() << endl;
 }
 
 // 
