@@ -117,9 +117,9 @@ void bncPPPthread::slotNewEpochData(QList<p_obs> obsList) {
     t_obsInternal* obs = &(pp->_o);
     QByteArray staID = QByteArray(obs->StatID); 
     if (staID == _staID) {
-      _data->GPSWeek  = obs->GPSWeek;
-      _data->GPSWeeks = obs->GPSWeeks;
-
+      if (_data->tt.undef()) {
+        _data->tt.set(obs->GPSWeek, obs->GPSWeeks);
+      }
       ++_data->numSat;
       _data->prn[_data->numSat] = 
           QString("%1%2").arg(obs->satSys).arg(obs->satNum, 2, 10, QChar('0'));
@@ -173,6 +173,7 @@ void bncPPPthread::slotNewCorrections(QList<QString> corrList) {
         cc = new t_corr();
         _corr[prn] = cc;
       }
+      cc->tt.set(GPSweek, GPSweeks);
       in >> cc->iod >> cc->dClk >> cc->rao[0] >> cc->rao[1] >> cc->rao[2];
     }
   }
@@ -180,10 +181,10 @@ void bncPPPthread::slotNewCorrections(QList<QString> corrList) {
 
 // Satellite Position
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncPPPthread::getSatPos(const QString& prn, 
+t_irc bncPPPthread::getSatPos(const t_time& tt, const QString& prn, 
                               ColumnVector& xc, ColumnVector& vv) {
 
-
+  return success;
 }
 
 // 
@@ -201,7 +202,7 @@ void bncPPPthread::processEpoch() {
     ColumnVector xc(4);
     ColumnVector vv(3);
 
-    if (getSatPos(prn, xc, vv) == success) {
+    if (getSatPos(_data->tt, prn, xc, vv) == success) {
 
     }
   }
