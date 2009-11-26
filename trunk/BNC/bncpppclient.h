@@ -85,8 +85,10 @@ class bncPPPclient : public QObject {
 
  private:
   t_irc getSatPos(const t_time& tt, const QString& prn, 
-                  ColumnVector& xc, ColumnVector& vv);
+                  ColumnVector& xc, ColumnVector& vv, bool& corr);
   void processEpoch();
+  void applyCorr(const t_corr* cc, ColumnVector& xc, ColumnVector& vv);
+
   QByteArray             _staID;
   QMutex                 _mutex;
   QMap<QString, t_eph*>  _eph;

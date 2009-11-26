@@ -114,9 +114,6 @@ void bncPPPclient::slotNewEphGPS(gpsephemeris gpseph) {
 
   QString prn = QString("G%1").arg(gpseph.satellite, 2, 10, QChar('0'));
 
-  cout << "EPH " << prn.toAscii().data() << " " << gpseph.IODE << " " 
-       << gpseph.IODC << endl;
-
   if (_eph.contains(prn)) {
     t_ephGPS* ee = static_cast<t_ephGPS*>(_eph.value(prn));
     if ( (ee->GPSweek() <  gpseph.GPSweek) || 
@@ -199,6 +196,8 @@ void bncPPPclient::applyCorr(const t_corr* cc, ColumnVector& xc,
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::processEpoch() {
 
+  cout.setf(ios::fixed);
+
   QMapIterator<QString, t_satData*> it(_epoData->satData);
   while (it.hasNext()) {
     it.next();
@@ -208,15 +207,13 @@ void bncPPPclient::processEpoch() {
     ColumnVector xc(4);
     ColumnVector vv(3);
 
-    cout.setf(ios::fixed);
-
     bool corr = false;
     if (getSatPos(_epoData->tt, prn, xc, vv, corr) == success) {
       cout << _epoData->tt.timestr(1) << " " << prn.toAscii().data() << "   "
            << setw(14) << setprecision(3) << xc(1)                << "  "
            << setw(14) << setprecision(3) << xc(2)                << "  "
            << setw(14) << setprecision(3) << xc(3)                << "  "
-           << setw(14) << setprecision(6) << xc(4)*1.e6;
+           << setw(12) << setprecision(6) << xc(4)*1.e6;
       if (corr) {
         cout << endl;
       }
