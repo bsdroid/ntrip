@@ -178,6 +178,14 @@ void bncPPPthread::slotNewCorrections(QList<QString> corrList) {
   }
 }
 
+// Satellite Position
+////////////////////////////////////////////////////////////////////////////
+t_irc bncPPPthread::getSatPos(const QString& prn, 
+                              ColumnVector& xc, ColumnVector& vv) {
+
+
+}
+
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPthread::processEpoch() {
@@ -188,8 +196,14 @@ void bncPPPthread::processEpoch() {
   }
 
   for (int is = 1; is <= _data->numSat; is++) {
-    cout << is << " " << _data->prn[is].toAscii().data() << " " 
-         << _data->C1[is] << " " << _data->P1[is] << endl;
+    QString prn = _data->prn[is];
+
+    ColumnVector xc(4);
+    ColumnVector vv(3);
+
+    if (getSatPos(prn, xc, vv) == success) {
+
+    }
   }
 
   cout << endl;
@@ -198,3 +212,4 @@ void bncPPPthread::processEpoch() {
   delete _data;
   _data = 0;
 }
+

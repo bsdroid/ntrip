@@ -28,6 +28,9 @@
 #include <QThread>
 #include <QtNetwork>
 
+#include <newmat.h>
+
+#include "bncconst.h"
 #include "RTCM/GPSDecoder.h"
 #include "RTCM3/ephemeris.h"
 
@@ -82,6 +85,7 @@ class bncPPPthread : public QThread {
   void slotNewCorrections(QList<QString> corrList);
 
  private:
+  t_irc getSatPos(const QString& prn, ColumnVector& xc, ColumnVector& vv);
   void processEpoch();
   QByteArray             _staID;
   bool                   _isToBeDeleted;
