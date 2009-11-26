@@ -52,16 +52,14 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncPPPclient::bncPPPclient(QByteArray staID) {
-  _staID         = staID;
-  _data          = 0;
-  _dataHlp       = 0;
+  _staID = staID;
+  _data  = 0;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncPPPclient::~bncPPPclient() {
   delete _data;
-  delete _dataHlp;
   QMapIterator<QString, t_eph*> it(_eph);
   while (it.hasNext()) {
     it.next();
@@ -83,33 +81,32 @@ void bncPPPclient::putNewObs(p_obs pp) {
   
   t_time tt(obs->GPSWeek, obs->GPSWeeks);
   
-  if      (!_dataHlp) {
-    _dataHlp = new t_data();
-    _dataHlp->tt = tt;
+  if      (!_data) {
+    _data = new t_data();
+    _data->tt = tt;
   }
-  else if (tt != _dataHlp->tt) {
-    _data = _dataHlp;
-    _dataHlp = new t_data();
-    _dataHlp->tt = tt;
+  else if (tt != _data->tt) {
     processEpoch();
+    _data = new t_data();
+    _data->tt = tt;
   }
   
-  ++_dataHlp->numSat;
+  ++_data->numSat;
   
-  if (_dataHlp->numSat > t_data::MAXOBS) {
+  if (_data->numSat > t_data::MAXOBS) {
     cerr << "putNewObs: numSat > MAXOBS\n";
     exit(1);
   }
   
-  _dataHlp->prn[_dataHlp->numSat] = 
+  _data->prn[_data->numSat] = 
         QString("%1%2").arg(obs->satSys).arg(obs->satNum, 2, 10, QChar('0'));
       
-  _dataHlp->C1[_dataHlp->numSat] = obs->C1;
-  _dataHlp->C2[_dataHlp->numSat] = obs->C2;
-  _dataHlp->P1[_dataHlp->numSat] = obs->P1;
-  _dataHlp->P2[_dataHlp->numSat] = obs->P2;
-  _dataHlp->L1[_dataHlp->numSat] = obs->L1;
-  _dataHlp->L2[_dataHlp->numSat] = obs->L2;
+  _data->C1[_data->numSat] = obs->C1;
+  _data->C2[_data->numSat] = obs->C2;
+  _data->P1[_data->numSat] = obs->P1;
+  _data->P2[_data->numSat] = obs->P2;
+  _data->L1[_data->numSat] = obs->L1;
+  _data->L2[_data->numSat] = obs->L2;
 }
 
 // 

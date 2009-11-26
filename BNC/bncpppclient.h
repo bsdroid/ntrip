@@ -84,7 +84,6 @@ class bncPPPclient : public QObject {
   QMap<QString, t_eph*>  _eph;
   QMap<QString, t_corr*> _corr;
   t_data*                _data;
-  t_data*                _dataHlp;
 };
 
 #endif
