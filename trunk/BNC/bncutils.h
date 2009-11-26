@@ -28,6 +28,8 @@
 #include <QString>
 #include <QDateTime>
 
+#include <newmat.h>
+
 void expandEnvVar(QString& str);
 
 QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks);
@@ -39,5 +41,8 @@ QDateTime currentDateAndTimeGPS();
 QByteArray ggaString(const QByteArray& latitude, 
                      const QByteArray& longitude,
                      const QByteArray& height);
+
+void RSW_to_XYZ(const ColumnVector& rr, const ColumnVector& vv,
+                const ColumnVector& rsw, ColumnVector& xyz);
 
 #endif

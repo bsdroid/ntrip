@@ -167,3 +167,20 @@ QByteArray ggaString(const QByteArray& latitude,
 
   return gga.toAscii();
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void RSW_to_XYZ(const ColumnVector& rr, const ColumnVector& vv,
+                const ColumnVector& rsw, ColumnVector& xyz) {
+
+  ColumnVector along  = vv / vv.norm_Frobenius();
+  ColumnVector cross  = crossproduct(rr, vv); cross /= cross.norm_Frobenius();
+  ColumnVector radial = crossproduct(along, cross);
+
+  Matrix RR(3,3);
+  RR.Column(1) = radial;
+  RR.Column(2) = along;
+  RR.Column(3) = cross;
+
+  xyz = RR * rsw;
+}
