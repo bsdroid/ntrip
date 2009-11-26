@@ -77,42 +77,39 @@ bncPPPclient::~bncPPPclient() {
 //
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::putNewObs(p_obs pp) {
-  {
-    QMutexLocker locker(&_mutex);
-    
-    t_obsInternal* obs = &(pp->_o);
-    
-    t_time tt(obs->GPSWeek, obs->GPSWeeks);
-    
-    if      (!_dataHlp) {
-      _dataHlp = new t_data();
-      _dataHlp->tt = tt;
-    }
-    else if (tt != _dataHlp->tt) {
-      _data = _dataHlp;
-      _dataHlp = new t_data();
-      _dataHlp->tt = tt;
-    }
-    
-    ++_dataHlp->numSat;
-    
-    if (_dataHlp->numSat > t_data::MAXOBS) {
-      cerr << "putNewObs: numSat > MAXOBS\n";
-      exit(1);
-    }
-    
-    _dataHlp->prn[_dataHlp->numSat] = 
-          QString("%1%2").arg(obs->satSys).arg(obs->satNum, 2, 10, QChar('0'));
-        
-    _dataHlp->C1[_dataHlp->numSat] = obs->C1;
-    _dataHlp->C2[_dataHlp->numSat] = obs->C2;
-    _dataHlp->P1[_dataHlp->numSat] = obs->P1;
-    _dataHlp->P2[_dataHlp->numSat] = obs->P2;
-    _dataHlp->L1[_dataHlp->numSat] = obs->L1;
-    _dataHlp->L2[_dataHlp->numSat] = obs->L2;
-  } // end of mutex
-
-  processEpoch(); // currently in the same thread as bncgetthread
+  QMutexLocker locker(&_mutex);
+  
+  t_obsInternal* obs = &(pp->_o);
+  
+  t_time tt(obs->GPSWeek, obs->GPSWeeks);
+  
+  if      (!_dataHlp) {
+    _dataHlp = new t_data();
+    _dataHlp->tt = tt;
+  }
+  else if (tt != _dataHlp->tt) {
+    _data = _dataHlp;
+    _dataHlp = new t_data();
+    _dataHlp->tt = tt;
+    processEpoch();
+  }
+  
+  ++_dataHlp->numSat;
+  
+  if (_dataHlp->numSat > t_data::MAXOBS) {
+    cerr << "putNewObs: numSat > MAXOBS\n";
+    exit(1);
+  }
+  
+  _dataHlp->prn[_dataHlp->numSat] = 
+        QString("%1%2").arg(obs->satSys).arg(obs->satNum, 2, 10, QChar('0'));
+      
+  _dataHlp->C1[_dataHlp->numSat] = obs->C1;
+  _dataHlp->C2[_dataHlp->numSat] = obs->C2;
+  _dataHlp->P1[_dataHlp->numSat] = obs->P1;
+  _dataHlp->P2[_dataHlp->numSat] = obs->P2;
+  _dataHlp->L1[_dataHlp->numSat] = obs->L1;
+  _dataHlp->L2[_dataHlp->numSat] = obs->L2;
 }
 
 // 
@@ -177,8 +174,6 @@ t_irc bncPPPclient::getSatPos(const t_time& tt, const QString& prn,
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::processEpoch() {
-  QMutexLocker locker(&_mutex);
-
   if (!_data) {
     return;
   }
