@@ -38,7 +38,7 @@
 class bncRinex;
 class QextSerialPort;
 class latencyChecker;
-class bncPPPthread;
+class bncPPPclient;
 
 class bncGetThread : public QThread {
  Q_OBJECT
@@ -121,7 +121,7 @@ class bncGetThread : public QThread {
    QFile*          _serialOutFile;
    t_serialNMEA    _serialNMEA;
    QMutex          _mutex;
-   bncPPPthread*   _PPPthread;
+   bncPPPclient*   _PPPclient;
 };
 
 #endif

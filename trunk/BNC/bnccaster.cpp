@@ -46,7 +46,6 @@
 #include "bncgetthread.h"
 #include "bncutils.h"
 #include "bncsettings.h"
-#include "bncpppthread.h"
 #include "RTCM/GPSDecoder.h"
 
 // Constructor

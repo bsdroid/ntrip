@@ -22,10 +22,9 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-#ifndef BNCPPPTHREAD_H
-#define BNCPPPTHREAD_H
+#ifndef BNCPPPCLIENT_H
+#define BNCPPPCLIENT_H
 
-#include <QThread>
 #include <QtNetwork>
 
 #include <newmat.h>
@@ -61,25 +60,16 @@ class t_corr {
   double rao[3];
 };
 
-class bncPPPthread : public QThread {
+class bncPPPclient {
  Q_OBJECT
 
  public:
-  bncPPPthread(QByteArray staID);
-
- protected:
-  ~bncPPPthread();
-
- public:
-  void terminate();
+  bncPPPclient(QByteArray staID);
+  ~bncPPPclient();
   void putNewObs(p_obs pp);
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
-
-
- protected:
-  virtual void run();
 
  public slots:
   void slotNewEphGPS(gpsephemeris gpseph);
@@ -90,7 +80,6 @@ class bncPPPthread : public QThread {
                   ColumnVector& xc, ColumnVector& vv);
   void processEpoch();
   QByteArray             _staID;
-  bool                   _isToBeDeleted;
   QMutex                 _mutex;
   QMap<QString, t_eph*>  _eph;
   QMap<QString, t_corr*> _corr;

@@ -26,7 +26,7 @@
  * BKG NTRIP Client
  * -------------------------------------------------------------------------
  *
- * Class:      bncPPPthread
+ * Class:      bncPPPclient
  *
  * Purpose:    Precise Point Positioning
  *
@@ -41,7 +41,7 @@
 #include <iomanip>
 #include <newmatio.h>
 
-#include "bncpppthread.h"
+#include "bncpppclient.h"
 
 extern "C" {
 #include "clock_orbit_rtcm.h"
@@ -51,19 +51,15 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncPPPthread::bncPPPthread(QByteArray staID) {
+bncPPPclient::bncPPPclient(QByteArray staID) {
   _staID         = staID;
-  _isToBeDeleted = false;
   _data          = 0;
   _dataHlp       = 0;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-bncPPPthread::~bncPPPthread() {
-  if (isRunning()) {
-    wait();
-  }
+bncPPPclient::~bncPPPclient() {
   delete _data;
   delete _dataHlp;
   QMapIterator<QString, t_eph*> it(_eph);
@@ -78,37 +74,9 @@ bncPPPthread::~bncPPPthread() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPthread::terminate() {
-  _isToBeDeleted = true;
-  if (!isRunning()) {
-    delete this;
-  }
-}
-
-// Run
-////////////////////////////////////////////////////////////////////////////
-void bncPPPthread::run() {
-  while (true) {
-    try {
-      if (_isToBeDeleted) {
-        QThread::exit(0);
-        this->deleteLater();
-        return;
-      }
-      processEpoch();
-    }
-    catch (...) {
-      emit(newMessage(_staID + "bncPPPthread exception", true));
-      _isToBeDeleted = true;
-    }
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncPPPthread::putNewObs(p_obs pp) {
+void bncPPPclient::putNewObs(p_obs pp) {
   {
     QMutexLocker locker(&_mutex);
     
@@ -149,7 +117,7 @@ void bncPPPthread::putNewObs(p_obs pp) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPthread::slotNewEphGPS(gpsephemeris gpseph) {
+void bncPPPclient::slotNewEphGPS(gpsephemeris gpseph) {
   QMutexLocker locker(&_mutex);
 
   QString prn = QString("G%1").arg(gpseph.satellite, 2, 10, QChar('0'));
@@ -166,7 +134,7 @@ void bncPPPthread::slotNewEphGPS(gpsephemeris gpseph) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPthread::slotNewCorrections(QList<QString> corrList) {
+void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
   QMutexLocker locker(&_mutex);
   QListIterator<QString> it(corrList);
   while (it.hasNext()) {
@@ -195,7 +163,7 @@ void bncPPPthread::slotNewCorrections(QList<QString> corrList) {
 
 // Satellite Position
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncPPPthread::getSatPos(const t_time& tt, const QString& prn, 
+t_irc bncPPPclient::getSatPos(const t_time& tt, const QString& prn, 
                               ColumnVector& xc, ColumnVector& vv) {
 
   if (_eph.contains(prn)) {
@@ -208,7 +176,7 @@ t_irc bncPPPthread::getSatPos(const t_time& tt, const QString& prn,
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPthread::processEpoch() {
+void bncPPPclient::processEpoch() {
   QMutexLocker locker(&_mutex);
 
   if (!_data) {
