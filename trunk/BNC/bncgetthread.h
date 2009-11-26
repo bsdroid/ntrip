@@ -72,7 +72,6 @@ class bncGetThread : public QThread {
    QByteArray latitude() const {return _latitude;}
    QByteArray longitude() const {return _longitude;}
    QByteArray ntripVersion() const {return _ntripVersion;}
-   bncPPPthread* PPPthread() {return _PPPthread;}
 
  signals:
    void newBytes(QByteArray staID, double nbyte);

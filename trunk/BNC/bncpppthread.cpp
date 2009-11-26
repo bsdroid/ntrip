@@ -106,32 +106,38 @@ void bncPPPthread::run() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPthread::slotNewEpochData(QList<p_obs> obsList) {
+void bncPPPthread::putNewObs(p_obs pp) {
+
   QMutexLocker locker(&_mutex);
-  QListIterator<p_obs> it(obsList);
 
-  delete _data;
-  _data = new t_data();
+  t_obsInternal* obs = &(pp->_o);
 
-  while (it.hasNext()) {
-    p_obs          pp  = it.next();
-    t_obsInternal* obs = &(pp->_o);
-    QByteArray staID = QByteArray(obs->StatID); 
-    if (staID == _staID) {
-      if (_data->tt.undef()) {
-        _data->tt.set(obs->GPSWeek, obs->GPSWeeks);
-      }
-      ++_data->numSat;
-      _data->prn[_data->numSat] = 
-          QString("%1%2").arg(obs->satSys).arg(obs->satNum, 2, 10, QChar('0'));
-      _data->C1[_data->numSat] = obs->C1;
-      _data->C2[_data->numSat] = obs->C2;
-      _data->P1[_data->numSat] = obs->P1;
-      _data->P2[_data->numSat] = obs->P2;
-      _data->L1[_data->numSat] = obs->L1;
-      _data->L2[_data->numSat] = obs->L2;
-    }
-  }
+  t_time tt(obs->GPSWeek, obs->GPSWeeks);
+
+  QString prn = 
+        QString("%1%2").arg(obs->satSys).arg(obs->satNum, 2, 10, QChar('0'));
+
+  cout << tt.timestr(1) << " " << prn.toAscii().data() << endl;
+  cout.flush();
+
+///  delete _data;
+///  _data = new t_data();
+///
+///    QByteArray staID = QByteArray(obs->StatID); 
+///    if (staID == _staID) {
+///      if (_data->tt.undef()) {
+///      }
+///      ++_data->numSat;
+///      _data->prn[_data->numSat] = 
+///          
+///      _data->C1[_data->numSat] = obs->C1;
+///      _data->C2[_data->numSat] = obs->C2;
+///      _data->P1[_data->numSat] = obs->P1;
+///      _data->P2[_data->numSat] = obs->P2;
+///      _data->L1[_data->numSat] = obs->L1;
+///      _data->L2[_data->numSat] = obs->L2;
+///    }
+///  }
 }
 
 // 

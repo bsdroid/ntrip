@@ -251,17 +251,6 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
   _staIDs.push_back(getThread->staID());
   _threads.push_back(getThread);
 
-  bncPPPthread* PPPthread = getThread->PPPthread();
-  if (PPPthread) {
-    connect(this, SIGNAL(newEpochData(QList<p_obs>)),
-	    PPPthread, SLOT(slotNewEpochData(QList<p_obs>)));
-    connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
-	    PPPthread, SLOT(slotNewEphGPS(gpsephemeris)));
-    connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
-	    PPPthread, SLOT(slotNewCorrections(QList<QString>)));
-    PPPthread->start();
-  }
-
   getThread->start();
 }
 
@@ -301,8 +290,6 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
 
     bool first = true;
     QList<p_obs> allObs = _epochs->values(sec);
-
-    emit newEpochData(allObs);
 
     QListIterator<p_obs> it(allObs);
     while (it.hasNext()) {

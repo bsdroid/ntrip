@@ -72,6 +72,7 @@ class bncPPPthread : public QThread {
 
  public:
   void terminate();
+  void putNewObs(p_obs pp);
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
@@ -81,7 +82,6 @@ class bncPPPthread : public QThread {
   virtual void run();
 
  public slots:
-  void slotNewEpochData(QList<p_obs> obsList);
   void slotNewEphGPS(gpsephemeris gpseph);
   void slotNewCorrections(QList<QString> corrList);
 
