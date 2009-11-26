@@ -114,8 +114,16 @@ void bncPPPclient::slotNewEphGPS(gpsephemeris gpseph) {
 
   QString prn = QString("G%1").arg(gpseph.satellite, 2, 10, QChar('0'));
 
+  cout << "EPH " << prn.toAscii().data() << " " << gpseph.IODE << " " 
+       << gpseph.IODC << endl;
+
   if (_eph.contains(prn)) {
-    (static_cast<t_ephGPS*>(_eph.value(prn)))->set(&gpseph);
+    t_ephGPS* ee = static_cast<t_ephGPS*>(_eph.value(prn));
+    if ( (ee->GPSweek() <  gpseph.GPSweek) || 
+         (ee->GPSweek() == gpseph.GPSweek &&  
+          ee->TOC()     <  gpseph.TOC) ) {  
+      ee->set(&gpseph);
+    }
   }
   else {
     t_ephGPS* ee = new t_ephGPS();
@@ -159,7 +167,19 @@ t_irc bncPPPclient::getSatPos(const t_time& tt, const QString& prn,
                               ColumnVector& xc, ColumnVector& vv) {
 
   if (_eph.contains(prn)) {
-    _eph.value(prn)->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
+    t_eph* ee = _eph.value(prn);
+    ee->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
+
+    if (_corr.contains(prn)) {
+      t_corr* cc = _corr.value(prn);
+      cout << "found: " << prn.toAscii().data() 
+           << " age: "  << (tt - cc->tt) << " "
+           << ee->IOD() << " " << cc->iod << endl;
+    }
+    else {
+      cout << "not found: " << prn.toAscii().data() << endl;
+    }
+
     return success;
   }
 
