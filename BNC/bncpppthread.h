@@ -39,7 +39,7 @@
 
 class t_data {
  public:
-  static const unsigned MAXOBS = 56;
+  static const int MAXOBS = 56;
   t_data() {numSat = 0;}
   ~t_data() {}
   t_time  tt;
@@ -95,6 +95,7 @@ class bncPPPthread : public QThread {
   QMap<QString, t_eph*>  _eph;
   QMap<QString, t_corr*> _corr;
   t_data*                _data;
+  t_data*                _dataHlp;
 };
 
 #endif
