@@ -142,13 +142,9 @@ void bncPPPthread::putNewObs(p_obs pp) {
     _dataHlp->P2[_dataHlp->numSat] = obs->P2;
     _dataHlp->L1[_dataHlp->numSat] = obs->L1;
     _dataHlp->L2[_dataHlp->numSat] = obs->L2;
-    
-    cout << tt.timestr(1) << " " << obs->satNum << endl;
-    cout.flush();
-
   } // end of mutex
 
-  processEpoch(); // currently in the same thread of bncgetthread;
+  processEpoch(); // currently in the same thread as bncgetthread
 }
 
 // 
@@ -227,7 +223,8 @@ void bncPPPthread::processEpoch() {
 
     if (getSatPos(_data->tt, prn, xc, vv) == success) {
       cout << _data->tt.timestr(1) << " " << prn.toAscii().data() << " "
-           << setprecision(3) << xc.t();
+           << setprecision(6) << xc(4)*1.e6 << "    " 
+           << setw(14) << setprecision(3) << xc.Columns(1,3).t();
     }
   }
 
