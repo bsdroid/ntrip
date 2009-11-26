@@ -42,6 +42,7 @@
 #include <newmatio.h>
 
 #include "bncpppclient.h"
+#include "bncutils.h"
 
 extern "C" {
 #include "clock_orbit_rtcm.h"
@@ -153,6 +154,7 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
         _corr[prn] = cc;
       }
       cc->tt.set(GPSweek, GPSweeks);
+      cc->rao.ReSize(3);
       in >> cc->iod >> cc->dClk >> cc->rao[0] >> cc->rao[1] >> cc->rao[2];
     }
   }
@@ -189,6 +191,9 @@ t_irc bncPPPclient::getSatPos(const t_time& tt, const QString& prn,
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::applyCorr(const t_corr* cc, ColumnVector& xc, 
                              ColumnVector& vv) {
+  ColumnVector dx(3);
+  RSW_to_XYZ(xc.Rows(1,3), vv, cc->rao, dx);
+
 
 }
 
