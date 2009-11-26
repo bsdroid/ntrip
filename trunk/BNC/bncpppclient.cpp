@@ -164,7 +164,11 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 // Satellite Position
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncPPPclient::getSatPos(const t_time& tt, const QString& prn, 
-                              ColumnVector& xc, ColumnVector& vv) {
+                              ColumnVector& xc, ColumnVector& vv, bool& corr) {
+
+  const double MAXAGE = 120.0;
+
+  corr = false;
 
   if (_eph.contains(prn)) {
     t_eph* ee = _eph.value(prn);
@@ -172,18 +176,23 @@ t_irc bncPPPclient::getSatPos(const t_time& tt, const QString& prn,
 
     if (_corr.contains(prn)) {
       t_corr* cc = _corr.value(prn);
-      cout << "found: " << prn.toAscii().data() 
-           << " age: "  << (tt - cc->tt) << " "
-           << ee->IOD() << " " << cc->iod << endl;
-    }
-    else {
-      cout << "not found: " << prn.toAscii().data() << endl;
+      if (ee->IOD() == cc->iod && (tt - cc->tt) < MAXAGE) {
+        corr = true;
+        applyCorr(cc, xc, vv);
+      }
     }
 
     return success;
   }
 
   return failure;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncPPPclient::applyCorr(const t_corr* cc, ColumnVector& xc, 
+                             ColumnVector& vv) {
+
 }
 
 // 
@@ -201,12 +210,19 @@ void bncPPPclient::processEpoch() {
 
     cout.setf(ios::fixed);
 
-    if (getSatPos(_epoData->tt, prn, xc, vv) == success) {
+    bool corr = false;
+    if (getSatPos(_epoData->tt, prn, xc, vv, corr) == success) {
       cout << _epoData->tt.timestr(1) << " " << prn.toAscii().data() << "   "
            << setw(14) << setprecision(3) << xc(1)                << "  "
            << setw(14) << setprecision(3) << xc(2)                << "  "
            << setw(14) << setprecision(3) << xc(3)                << "  "
-           << setw(14) << setprecision(6) << xc(4)*1.e6           << endl;
+           << setw(14) << setprecision(6) << xc(4)*1.e6;
+      if (corr) {
+        cout << endl;
+      }
+      else {
+        cout << " !\n";
+      }
     }
   }
 
