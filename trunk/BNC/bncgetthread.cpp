@@ -337,7 +337,7 @@ void bncGetThread::initialize() {
 	    _PPPthread, SLOT(slotNewEphGPS(gpsephemeris)));
     connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
 	    _PPPthread, SLOT(slotNewCorrections(QList<QString>)));
-    _PPPthread->start();
+    ////    _PPPthread->start();  // currently processing in the same thread
   }
 
   msleep(100); //sleep 0.1 sec
