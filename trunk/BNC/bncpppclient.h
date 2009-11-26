@@ -36,20 +36,28 @@
 
 #define MAXPRN = 
 
-class t_data {
+class t_satData {
  public:
-  static const int MAXOBS = 56;
-  t_data() {numSat = 0;}
-  ~t_data() {}
-  t_time  tt;
-  int     numSat;  
-  QString prn[MAXOBS+1];
-  double  C1[MAXOBS+1];
-  double  C2[MAXOBS+1];
-  double  P1[MAXOBS+1];
-  double  P2[MAXOBS+1];
-  double  L1[MAXOBS+1];
-  double  L2[MAXOBS+1];
+  double C1;
+  double C2;
+  double P1;
+  double P2;
+  double L1;
+  double L2;
+};
+
+class t_epoData {
+ public:
+  t_epoData() {}
+  ~t_epoData() {
+    QMapIterator<QString, t_satData*> it(satData);
+    while (it.hasNext()) {
+      it.next();
+      delete it.value();
+    }
+  }
+  t_time                    tt;
+  QMap<QString, t_satData*> satData;
 };
 
 class t_corr {
@@ -83,7 +91,7 @@ class bncPPPclient : public QObject {
   QMutex                 _mutex;
   QMap<QString, t_eph*>  _eph;
   QMap<QString, t_corr*> _corr;
-  t_data*                _data;
+  t_epoData*             _epoData;
 };
 
 #endif

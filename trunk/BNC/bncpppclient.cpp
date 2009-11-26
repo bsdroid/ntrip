@@ -52,14 +52,14 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncPPPclient::bncPPPclient(QByteArray staID) {
-  _staID = staID;
-  _data  = 0;
+  _staID   = staID;
+  _epoData = 0;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncPPPclient::~bncPPPclient() {
-  delete _data;
+  delete _epoData;
   QMapIterator<QString, t_eph*> it(_eph);
   while (it.hasNext()) {
     it.next();
@@ -81,32 +81,30 @@ void bncPPPclient::putNewObs(p_obs pp) {
   
   t_time tt(obs->GPSWeek, obs->GPSWeeks);
   
-  if      (!_data) {
-    _data = new t_data();
-    _data->tt = tt;
+  if      (!_epoData) {
+    _epoData = new t_epoData();
+    _epoData->tt = tt;
   }
-  else if (tt != _data->tt) {
+  else if (tt != _epoData->tt) {
     processEpoch();
-    _data = new t_data();
-    _data->tt = tt;
+    delete _epoData;
+    _epoData = new t_epoData();
+    _epoData->tt = tt;
   }
   
-  ++_data->numSat;
-  
-  if (_data->numSat > t_data::MAXOBS) {
-    cerr << "putNewObs: numSat > MAXOBS\n";
-    exit(1);
-  }
-  
-  _data->prn[_data->numSat] = 
-        QString("%1%2").arg(obs->satSys).arg(obs->satNum, 2, 10, QChar('0'));
+  t_satData* satData = new t_satData();
       
-  _data->C1[_data->numSat] = obs->C1;
-  _data->C2[_data->numSat] = obs->C2;
-  _data->P1[_data->numSat] = obs->P1;
-  _data->P2[_data->numSat] = obs->P2;
-  _data->L1[_data->numSat] = obs->L1;
-  _data->L2[_data->numSat] = obs->L2;
+  satData->C1 = obs->C1;
+  satData->C2 = obs->C2;
+  satData->P1 = obs->P1;
+  satData->P2 = obs->P2;
+  satData->L1 = obs->L1;
+  satData->L2 = obs->L2;
+
+  QString prn = 
+        QString("%1%2").arg(obs->satSys).arg(obs->satNum, 2, 10, QChar('0'));
+
+  _epoData->satData[prn] = satData;
 }
 
 // 
@@ -171,20 +169,20 @@ t_irc bncPPPclient::getSatPos(const t_time& tt, const QString& prn,
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::processEpoch() {
-  if (!_data) {
-    return;
-  }
 
-  for (int is = 1; is <= _data->numSat; is++) {
-    QString prn = _data->prn[is];
+  QMapIterator<QString, t_satData*> it(_epoData->satData);
+  while (it.hasNext()) {
+    it.next();
+    QString    prn     = it.key();
+    t_satData* satData = it.value();
 
     ColumnVector xc(4);
     ColumnVector vv(3);
 
     cout.setf(ios::fixed);
 
-    if (getSatPos(_data->tt, prn, xc, vv) == success) {
-      cout << _data->tt.timestr(1) << " " << prn.toAscii().data() << "   "
+    if (getSatPos(_epoData->tt, prn, xc, vv) == success) {
+      cout << _epoData->tt.timestr(1) << " " << prn.toAscii().data() << "   "
            << setw(14) << setprecision(3) << xc(1)                << "  "
            << setw(14) << setprecision(3) << xc(2)                << "  "
            << setw(14) << setprecision(3) << xc(3)                << "  "
@@ -194,8 +192,4 @@ void bncPPPclient::processEpoch() {
 
   cout << endl;
   cout.flush();
-
-  delete _data;
-  _data = 0;
 }
-
