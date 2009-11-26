@@ -332,6 +332,14 @@ void bncGetThread::initialize() {
 
   _latencyChecker = new latencyChecker(_staID);
 
+  if (_PPPthread) {
+    connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
+	    _PPPthread, SLOT(slotNewEphGPS(gpsephemeris)));
+    connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
+	    _PPPthread, SLOT(slotNewCorrections(QList<QString>)));
+    _PPPthread->start();
+  }
+
   msleep(100); //sleep 0.1 sec
 }
 
@@ -490,6 +498,12 @@ void bncGetThread::run() {
           _rnx->dumpEpoch(newTime);
         }
       
+        // PPP Client
+        // ----------
+        if (_PPPthread) {
+          _PPPthread->putNewObs(obs);
+        }
+
         // Emit new observation signal
         // ---------------------------
         bool firstObs = (obs == _decoder->_obsList.first());
