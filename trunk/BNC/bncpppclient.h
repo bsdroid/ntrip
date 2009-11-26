@@ -62,10 +62,10 @@ class t_epoData {
 
 class t_corr {
  public:
-  t_time tt;
-  int    iod;
-  double dClk;
-  double rao[3];
+  t_time       tt;
+  int          iod;
+  double       dClk;
+  ColumnVector rao;
 };
 
 class bncPPPclient : public QObject {
