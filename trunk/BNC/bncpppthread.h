@@ -31,6 +31,7 @@
 #include <newmat.h>
 
 #include "bncconst.h"
+#include "t_time.h"
 #include "RTCM/GPSDecoder.h"
 #include "RTCM3/ephemeris.h"
 
@@ -41,8 +42,7 @@ class t_data {
   static const unsigned MAXOBS = 56;
   t_data() {numSat = 0;}
   ~t_data() {}
-  int     GPSWeek;
-  double  GPSWeeks;
+  t_time  tt;
   int     numSat;  
   QString prn[MAXOBS+1];
   double  C1[MAXOBS+1];
@@ -55,6 +55,7 @@ class t_data {
 
 class t_corr {
  public:
+  t_time tt;
   int    iod;
   double dClk;
   double rao[3];
@@ -85,7 +86,8 @@ class bncPPPthread : public QThread {
   void slotNewCorrections(QList<QString> corrList);
 
  private:
-  t_irc getSatPos(const QString& prn, ColumnVector& xc, ColumnVector& vv);
+  t_irc getSatPos(const t_time& tt, const QString& prn, 
+                  ColumnVector& xc, ColumnVector& vv);
   void processEpoch();
   QByteArray             _staID;
   bool                   _isToBeDeleted;
