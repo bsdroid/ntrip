@@ -60,7 +60,7 @@ class t_corr {
   double rao[3];
 };
 
-class bncPPPclient {
+class bncPPPclient : public QObject {
  Q_OBJECT
 
  public:
