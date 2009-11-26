@@ -43,6 +43,7 @@
 
 #include "bncpppclient.h"
 #include "bncutils.h"
+#include "bncconst.h"
 
 extern "C" {
 #include "clock_orbit_rtcm.h"
@@ -156,6 +157,7 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
       cc->tt.set(GPSweek, GPSweeks);
       cc->rao.ReSize(3);
       in >> cc->iod >> cc->dClk >> cc->rao[0] >> cc->rao[1] >> cc->rao[2];
+      cc->dClk /= t_CST::c;
     }
   }
 }
@@ -194,7 +196,10 @@ void bncPPPclient::applyCorr(const t_corr* cc, ColumnVector& xc,
   ColumnVector dx(3);
   RSW_to_XYZ(xc.Rows(1,3), vv, cc->rao, dx);
 
-
+  xc[0] += dx[0];
+  xc[1] += dx[1];
+  xc[2] += dx[2];
+  xc[3] += cc->dClk;
 }
 
 // 
