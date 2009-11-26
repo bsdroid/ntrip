@@ -221,10 +221,14 @@ void bncPPPthread::processEpoch() {
     ColumnVector xc(4);
     ColumnVector vv(3);
 
+    cout.setf(ios::fixed);
+
     if (getSatPos(_data->tt, prn, xc, vv) == success) {
-      cout << _data->tt.timestr(1) << " " << prn.toAscii().data() << " "
-           << setprecision(6) << xc(4)*1.e6 << "    " 
-           << setw(14) << setprecision(3) << xc.Columns(1,3).t();
+      cout << _data->tt.timestr(1) << " " << prn.toAscii().data() << "   "
+           << setw(14) << setprecision(3) << xc(1)                << "  "
+           << setw(14) << setprecision(3) << xc(2)                << "  "
+           << setw(14) << setprecision(3) << xc(3)                << "  "
+           << setw(14) << setprecision(6) << xc(4)*1.e6           << endl;
     }
   }
 
