@@ -49,6 +49,7 @@ class t_ephGPS : public t_eph {
  public:
   t_ephGPS() { }
   ~t_ephGPS() {}
+  double TOC() const {return _TOC;}
 
   void set(const gpsephemeris* ee);
 
