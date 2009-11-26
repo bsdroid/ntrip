@@ -39,6 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <iomanip>
+#include <newmatio.h>
 
 #include "bncpppthread.h"
 
@@ -184,7 +185,12 @@ void bncPPPthread::slotNewCorrections(QList<QString> corrList) {
 t_irc bncPPPthread::getSatPos(const t_time& tt, const QString& prn, 
                               ColumnVector& xc, ColumnVector& vv) {
 
-  return success;
+  if (_eph.contains(prn)) {
+    _eph.value(prn)->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
+    return success;
+  }
+
+  return failure;
 }
 
 // 
@@ -203,7 +209,8 @@ void bncPPPthread::processEpoch() {
     ColumnVector vv(3);
 
     if (getSatPos(_data->tt, prn, xc, vv) == success) {
-
+      cout << _data->tt.timestr(1) << " " << prn.toAscii().data() << " "
+           << setprecision(3) << xc.t();
     }
   }
 
