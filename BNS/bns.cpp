@@ -397,7 +397,6 @@ void t_bns::readEpoch() {
                              + 3 * 3600 - gnumleap(year, month, day);
         co.ClockDataSupplied = 1;
         co.OrbitDataSupplied = 1;
-        co.SatRefPoint       = POINT_CENTER;
         co.SatRefDatum       = DATUM_ITRF;
       
         for (int ii = 0; ii < lines.size(); ii++) {
@@ -463,6 +462,14 @@ void t_bns::readEpoch() {
         if ( _caster.at(ic)->usedSocket() && 
              (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
           char obuffer[CLOCKORBIT_BUFFERSIZE];
+
+          if (_caster.at(ic)->CoM()) {
+            co.SatRefPoint = POINT_CENTER;
+          }
+          else {
+            co.SatRefPoint = POINT_IONOFREE;
+          }
+
           int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
           if (len > 0) {
             if (_caster.at(ic)->ic() == 1) { emit(newOutBytes1(len));}
