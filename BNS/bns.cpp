@@ -403,7 +403,7 @@ void t_bns::readEpoch() {
         for (int ii = 0; ii < lines.size(); ii++) {
 
           QString      prn;
-          ColumnVector xx(5); xx = 0.0;
+          ColumnVector xx(6); xx = 0.0;
           t_eph*       ep = 0;
       
           if (oldEph == 0 && ic == 0) {
@@ -411,7 +411,7 @@ void t_bns::readEpoch() {
             in >> prn;
             prns << prn;
             if ( _ephList.contains(prn) ) {
-              in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5);
+              in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) >> xx(6);
               xx(1) *= 1e3;
               xx(2) *= 1e3;
               xx(3) *= 1e3;
@@ -506,6 +506,8 @@ void t_bns::processSatellite(int oldEph, int iCaster, const QString trafo,
     dClk = (xx(4) - xB(4)) * 299792458.0;
   }
 
+  double antCorr = xx(6);
+
   if (sd) {
     sd->ID                    = prn.mid(1).toInt();
     sd->IOD                   = ep->IOD();
@@ -516,9 +518,9 @@ void t_bns::processSatellite(int oldEph, int iCaster, const QString trafo,
   }
 
   char oldCh = (oldEph ? '!' : ' ');
-  outLine.sprintf("%c %d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n", 
+  outLine.sprintf("%c %d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f %8.3f\n", 
                   oldCh, GPSweek, GPSweeks, ep->prn().toAscii().data(),
-                  ep->IOD(), dClk, rsw(1), rsw(2), rsw(3));
+                  ep->IOD(), dClk, rsw(1), rsw(2), rsw(3), antCorr);
 
   if (!oldEph && iCaster == 0) {
     if (_rnx) {
