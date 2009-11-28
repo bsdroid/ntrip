@@ -449,7 +449,7 @@ bnsWindow::bnsWindow() {
   layout_cas1->addWidget(_refSys_1_ComboBox,               2, 1);
   layout_cas1->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
   layout_cas1->addWidget(_outFile_1_LineEdit,              2, 3, 1, 30);
-  layout_cas1->addWidget(new QLabel("Broadcast clocks"),   3, 0);
+  layout_cas1->addWidget(new QLabel("Center of Mass"),     3, 0);
   layout_cas1->addWidget(_CoM_1_CheckBox,                  3, 1);
   layout_cas1->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
@@ -501,7 +501,7 @@ bnsWindow::bnsWindow() {
   layout_cas2->addWidget(_refSys_2_ComboBox,               2, 1);
   layout_cas2->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
   layout_cas2->addWidget(_outFile_2_LineEdit,              2, 3, 1, 30);
-  layout_cas2->addWidget(new QLabel("Broadcast clocks"),   3, 0);
+  layout_cas2->addWidget(new QLabel("Center of Mass"),     3, 0);
   layout_cas2->addWidget(_CoM_2_CheckBox,                  3, 1);
   layout_cas2->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
@@ -553,7 +553,7 @@ bnsWindow::bnsWindow() {
   layout_cas3->addWidget(_refSys_3_ComboBox,               2, 1);
   layout_cas3->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
   layout_cas3->addWidget(_outFile_3_LineEdit,              2, 3, 1, 30);
-  layout_cas3->addWidget(new QLabel("Broadcast clocks"),   3, 0);
+  layout_cas3->addWidget(new QLabel("Center of Mass"),     3, 0);
   layout_cas3->addWidget(_CoM_3_CheckBox,                  3, 1);
   layout_cas3->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
