@@ -184,8 +184,8 @@ bnsWindow::bnsWindow() {
     _refSys_1_ComboBox->setCurrentIndex(ii);
   }
   _outFile_1_LineEdit    = new QLineEdit(settings.value("outFile_1").toString());
-  _beClocks1CheckBox  = new QCheckBox();
-  _beClocks1CheckBox->setCheckState(Qt::CheckState(settings.value("beClocks1").toInt()));
+  _CoM_1_CheckBox  = new QCheckBox();
+  _CoM_1_CheckBox->setCheckState(Qt::CheckState(settings.value("CoM_1").toInt()));
 
   // Broadcast Corrections II Options
   // --------------------------------
@@ -202,8 +202,8 @@ bnsWindow::bnsWindow() {
     _refSys_2_ComboBox->setCurrentIndex(ii);
   }
   _outFile_2_LineEdit    = new QLineEdit(settings.value("outFile_2").toString());
-  _beClocks2CheckBox  = new QCheckBox();
-  _beClocks2CheckBox->setCheckState(Qt::CheckState(settings.value("beClocks2").toInt()));
+  _CoM_2_CheckBox  = new QCheckBox();
+  _CoM_2_CheckBox->setCheckState(Qt::CheckState(settings.value("CoM_2").toInt()));
 
   // Broadcast Corrections III Options
   // ---------------------------------
@@ -220,8 +220,8 @@ bnsWindow::bnsWindow() {
     _refSys_3_ComboBox->setCurrentIndex(ii);
   }
   _outFile_3_LineEdit    = new QLineEdit(settings.value("outFile_3").toString());
-  _beClocks3CheckBox  = new QCheckBox();
-  _beClocks3CheckBox->setCheckState(Qt::CheckState(settings.value("beClocks3").toInt()));
+  _CoM_3_CheckBox  = new QCheckBox();
+  _CoM_3_CheckBox->setCheckState(Qt::CheckState(settings.value("CoM_3").toInt()));
 
   // Broadcast Ephemerides
   // ---------------------
@@ -315,9 +315,6 @@ bnsWindow::bnsWindow() {
   _sp3IntrComboBox->setWhatsThis(tr("Select the length of the SP3 orbit file."));
   _sp3SamplSpinBox->setWhatsThis(tr("Select the SP3 orbit file sampling interval in seconds. A value of zero '0' tells BNS to store all available samples into SP3 orbit files."));
   _autoStartCheckBox->setWhatsThis(tr("<p>Tick 'Auto start' for auto-start of BNS at startup time in window mode with preassigned processing options.</p>"));
-  _beClocks1CheckBox->setWhatsThis(tr("<p>Ignore incoming clock estimates and send broadcast clocks instead of broadcast clock corrections.</p><p>Note that for compatibility with IGS post processing products these clocks will not be corrected for the 2nd order relativistic effect.</p>"));
-  _beClocks2CheckBox->setWhatsThis(tr("<p>Ignore incoming clock estimates and send broadcast clocks instead of broadcast clock corrections.</p><p>Note that for compatibility with IGS post processing products these clocks will not be corrected for the 2nd order relativistic effect.</p>"));
-
 
   // TabWidget
   // ---------
@@ -453,7 +450,7 @@ bnsWindow::bnsWindow() {
   layout_cas1->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
   layout_cas1->addWidget(_outFile_1_LineEdit,              2, 3, 1, 30);
   layout_cas1->addWidget(new QLabel("Broadcast clocks"),   3, 0);
-  layout_cas1->addWidget(_beClocks1CheckBox,               3, 1);
+  layout_cas1->addWidget(_CoM_1_CheckBox,                  3, 1);
   layout_cas1->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
   tab_cas1->setLayout(layout_cas1);
@@ -467,14 +464,14 @@ bnsWindow::bnsWindow() {
     _password_1_LineEdit->setStyleSheet("background-color: lightGray");
     _outFile_1_LineEdit->setStyleSheet("background-color: lightGray");
     _refSys_1_ComboBox->setStyleSheet("background-color: lightGray");
-    palette.setColor(_beClocks1CheckBox->backgroundRole(), lightGray);
-    _beClocks1CheckBox->setPalette(palette);
+    palette.setColor(_CoM_1_CheckBox->backgroundRole(), lightGray);
+    _CoM_1_CheckBox->setPalette(palette);
     _outPort_1_LineEdit->setEnabled(false);
     _mountpoint_1_LineEdit->setEnabled(false);
     _password_1_LineEdit->setEnabled(false);
     _outFile_1_LineEdit->setEnabled(false);
     _refSys_1_ComboBox->setEnabled(false);
-    _beClocks1CheckBox->setEnabled(false);
+    _CoM_1_CheckBox->setEnabled(false);
   }
 
   // Broadcast Corrections II Tab
@@ -505,7 +502,7 @@ bnsWindow::bnsWindow() {
   layout_cas2->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
   layout_cas2->addWidget(_outFile_2_LineEdit,              2, 3, 1, 30);
   layout_cas2->addWidget(new QLabel("Broadcast clocks"),   3, 0);
-  layout_cas2->addWidget(_beClocks2CheckBox,               3, 1);
+  layout_cas2->addWidget(_CoM_2_CheckBox,                  3, 1);
   layout_cas2->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
   tab_cas2->setLayout(layout_cas2);
@@ -519,14 +516,14 @@ bnsWindow::bnsWindow() {
     _password_2_LineEdit->setStyleSheet("background-color: lightGray");
     _outFile_2_LineEdit->setStyleSheet("background-color: lightGray");
     _refSys_2_ComboBox->setStyleSheet("background-color: lightGray");
-    palette.setColor(_beClocks2CheckBox->backgroundRole(), lightGray);
-    _beClocks2CheckBox->setPalette(palette);
+    palette.setColor(_CoM_2_CheckBox->backgroundRole(), lightGray);
+    _CoM_2_CheckBox->setPalette(palette);
     _outPort_2_LineEdit->setEnabled(false);
     _mountpoint_2_LineEdit->setEnabled(false);
     _password_2_LineEdit->setEnabled(false);
     _outFile_2_LineEdit->setEnabled(false);
     _refSys_2_ComboBox->setEnabled(false);
-    _beClocks2CheckBox->setEnabled(false);
+    _CoM_2_CheckBox->setEnabled(false);
   }
 
   // Broadcast Corrections III Tab
@@ -557,7 +554,7 @@ bnsWindow::bnsWindow() {
   layout_cas3->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
   layout_cas3->addWidget(_outFile_3_LineEdit,              2, 3, 1, 30);
   layout_cas3->addWidget(new QLabel("Broadcast clocks"),   3, 0);
-  layout_cas3->addWidget(_beClocks3CheckBox,               3, 1);
+  layout_cas3->addWidget(_CoM_3_CheckBox,                  3, 1);
   layout_cas3->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
   tab_cas3->setLayout(layout_cas3);
@@ -571,14 +568,14 @@ bnsWindow::bnsWindow() {
     _password_3_LineEdit->setStyleSheet("background-color: lightGray");
     _outFile_3_LineEdit->setStyleSheet("background-color: lightGray");
     _refSys_3_ComboBox->setStyleSheet("background-color: lightGray");
-    palette.setColor(_beClocks3CheckBox->backgroundRole(), lightGray);
-    _beClocks3CheckBox->setPalette(palette);
+    palette.setColor(_CoM_3_CheckBox->backgroundRole(), lightGray);
+    _CoM_3_CheckBox->setPalette(palette);
     _outPort_3_LineEdit->setEnabled(false);
     _mountpoint_3_LineEdit->setEnabled(false);
     _password_3_LineEdit->setEnabled(false);
     _outFile_3_LineEdit->setEnabled(false);
     _refSys_3_ComboBox->setEnabled(false);
-    _beClocks3CheckBox->setEnabled(false);
+    _CoM_3_CheckBox->setEnabled(false);
   }
 
   // Broadcast Ephemerides
@@ -865,7 +862,7 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("password1",   _password_1_LineEdit->text());
   settings.setValue("refSys_1",    _refSys_1_ComboBox->currentText());
   settings.setValue("outFile_1",   _outFile_1_LineEdit->text());
-  settings.setValue("beClocks1",   _beClocks1CheckBox->checkState());
+  settings.setValue("CoM_1",       _CoM_1_CheckBox->checkState());
 
   settings.setValue("outHost2",    _outHost_2_LineEdit->text());
   settings.setValue("outPort2",    _outPort_2_LineEdit->text());
@@ -873,7 +870,7 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("password2",   _password_2_LineEdit->text());
   settings.setValue("refSys_2",    _refSys_2_ComboBox->currentText());
   settings.setValue("outFile_2",   _outFile_2_LineEdit->text());
-  settings.setValue("beClocks2",   _beClocks2CheckBox->checkState());
+  settings.setValue("CoM_2",       _CoM_2_CheckBox->checkState());
 
   settings.setValue("outHost3",    _outHost_3_LineEdit->text());
   settings.setValue("outPort3",    _outPort_3_LineEdit->text());
@@ -881,7 +878,7 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("password3",   _password_3_LineEdit->text());
   settings.setValue("refSys_3",    _refSys_3_ComboBox->currentText());
   settings.setValue("outFile_3",   _outFile_3_LineEdit->text());
-  settings.setValue("beClocks3",   _beClocks2CheckBox->checkState());
+  settings.setValue("CoM_3",       _CoM_3_CheckBox->checkState());
 
   settings.setValue("outHostEph",    _outHost_Eph_LineEdit->text());
   settings.setValue("outPortEph",    _outPort_Eph_LineEdit->text());
@@ -1063,28 +1060,28 @@ void bnsWindow::bnsText(const QString &text){
       _password_1_LineEdit->setStyleSheet("background-color: white");
       _outFile_1_LineEdit->setStyleSheet("background-color: white");
       _refSys_1_ComboBox->setStyleSheet("background-color: white");
-      palette.setColor(_beClocks1CheckBox->backgroundRole(), white);
-      _beClocks1CheckBox->setPalette(palette);
+      palette.setColor(_CoM_1_CheckBox->backgroundRole(), white);
+      _CoM_1_CheckBox->setPalette(palette);
       _outPort_1_LineEdit->setEnabled(true);
       _mountpoint_1_LineEdit->setEnabled(true);
       _password_1_LineEdit->setEnabled(true);
       _outFile_1_LineEdit->setEnabled(true);
       _refSys_1_ComboBox->setEnabled(true);
-      _beClocks1CheckBox->setEnabled(true);
+      _CoM_1_CheckBox->setEnabled(true);
     } else {
       _outPort_1_LineEdit->setStyleSheet("background-color: lightGray");
       _mountpoint_1_LineEdit->setStyleSheet("background-color: lightGray");
       _password_1_LineEdit->setStyleSheet("background-color: lightGray");
       _outFile_1_LineEdit->setStyleSheet("background-color: lightGray");
       _refSys_1_ComboBox->setStyleSheet("background-color: lightGray");
-      palette.setColor(_beClocks1CheckBox->backgroundRole(), lightGray);
-      _beClocks1CheckBox->setPalette(palette);
+      palette.setColor(_CoM_1_CheckBox->backgroundRole(), lightGray);
+      _CoM_1_CheckBox->setPalette(palette);
       _outPort_1_LineEdit->setEnabled(false);
       _mountpoint_1_LineEdit->setEnabled(false);
       _password_1_LineEdit->setEnabled(false);
       _outFile_1_LineEdit->setEnabled(false);
       _refSys_1_ComboBox->setEnabled(false);
-      _beClocks1CheckBox->setEnabled(false);
+      _CoM_1_CheckBox->setEnabled(false);
     }
   }
 
@@ -1097,28 +1094,28 @@ void bnsWindow::bnsText(const QString &text){
       _password_2_LineEdit->setStyleSheet("background-color: white");
       _outFile_2_LineEdit->setStyleSheet("background-color: white");
       _refSys_2_ComboBox->setStyleSheet("background-color: white");
-      palette.setColor(_beClocks2CheckBox->backgroundRole(), white);
-      _beClocks2CheckBox->setPalette(palette);
+      palette.setColor(_CoM_2_CheckBox->backgroundRole(), white);
+      _CoM_2_CheckBox->setPalette(palette);
       _outPort_2_LineEdit->setEnabled(true);
       _mountpoint_2_LineEdit->setEnabled(true);
       _password_2_LineEdit->setEnabled(true);
       _outFile_2_LineEdit->setEnabled(true);
       _refSys_2_ComboBox->setEnabled(true);
-      _beClocks2CheckBox->setEnabled(true);
+      _CoM_2_CheckBox->setEnabled(true);
     } else {
       _outPort_2_LineEdit->setStyleSheet("background-color: lightGray");
       _mountpoint_2_LineEdit->setStyleSheet("background-color: lightGray");
       _password_2_LineEdit->setStyleSheet("background-color: lightGray");
       _outFile_2_LineEdit->setStyleSheet("background-color: lightGray");
       _refSys_2_ComboBox->setStyleSheet("background-color: lightGray");
-      palette.setColor(_beClocks2CheckBox->backgroundRole(), lightGray);
-      _beClocks2CheckBox->setPalette(palette);
+      palette.setColor(_CoM_2_CheckBox->backgroundRole(), lightGray);
+      _CoM_2_CheckBox->setPalette(palette);
       _outPort_2_LineEdit->setEnabled(false);
       _mountpoint_2_LineEdit->setEnabled(false);
       _password_2_LineEdit->setEnabled(false);
       _outFile_2_LineEdit->setEnabled(false);
       _refSys_2_ComboBox->setEnabled(false);
-      _beClocks2CheckBox->setEnabled(false);
+      _CoM_2_CheckBox->setEnabled(false);
     }
   }
 
@@ -1131,28 +1128,28 @@ void bnsWindow::bnsText(const QString &text){
       _password_3_LineEdit->setStyleSheet("background-color: white");
       _outFile_3_LineEdit->setStyleSheet("background-color: white");
       _refSys_3_ComboBox->setStyleSheet("background-color: white");
-      palette.setColor(_beClocks3CheckBox->backgroundRole(), white);
-      _beClocks3CheckBox->setPalette(palette);
+      palette.setColor(_CoM_3_CheckBox->backgroundRole(), white);
+      _CoM_3_CheckBox->setPalette(palette);
       _outPort_3_LineEdit->setEnabled(true);
       _mountpoint_3_LineEdit->setEnabled(true);
       _password_3_LineEdit->setEnabled(true);
       _outFile_3_LineEdit->setEnabled(true);
       _refSys_3_ComboBox->setEnabled(true);
-      _beClocks3CheckBox->setEnabled(true);
+      _CoM_3_CheckBox->setEnabled(true);
     } else {
       _outPort_3_LineEdit->setStyleSheet("background-color: lightGray");
       _mountpoint_3_LineEdit->setStyleSheet("background-color: lightGray");
       _password_3_LineEdit->setStyleSheet("background-color: lightGray");
       _outFile_3_LineEdit->setStyleSheet("background-color: lightGray");
       _refSys_3_ComboBox->setStyleSheet("background-color: lightGray");
-      palette.setColor(_beClocks3CheckBox->backgroundRole(), lightGray);
-      _beClocks3CheckBox->setPalette(palette);
+      palette.setColor(_CoM_3_CheckBox->backgroundRole(), lightGray);
+      _CoM_3_CheckBox->setPalette(palette);
       _outPort_3_LineEdit->setEnabled(false);
       _mountpoint_3_LineEdit->setEnabled(false);
       _password_3_LineEdit->setEnabled(false);
       _outFile_3_LineEdit->setEnabled(false);
       _refSys_3_ComboBox->setEnabled(false);
-      _beClocks3CheckBox->setEnabled(false);
+      _CoM_3_CheckBox->setEnabled(false);
     }
   }
 

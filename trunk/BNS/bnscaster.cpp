@@ -56,12 +56,12 @@ t_bnscaster::t_bnscaster(const QString& mountpoint, const QString& outFileName,
   // ---------------
   _crdTrafo = settings.value(QString("refSys_%1").arg(_ic)).toString();
 
-  if ( Qt::CheckState(settings.value(QString("beClocks%1").arg(_ic)).toInt()) 
+  if ( Qt::CheckState(settings.value(QString("CoM_%1").arg(_ic)).toInt()) 
        == Qt::Checked ) {
-    _beClocks = true;
+    _CoM = true;
   }
   else {
-    _beClocks = false;
+    _CoM = false;
   }
 }
 
@@ -78,7 +78,7 @@ t_bnscaster::t_bnscaster(const QString& mountpoint) {
   _outFile    = 0;
   _outStream  = 0;
   _crdTrafo   = "";
-  _beClocks   = false;
+  _CoM        = false;
 }
 
 // Destructor

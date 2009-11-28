@@ -14,7 +14,7 @@ class t_bnscaster : public QObject {
   void printAscii(const QString& line);
   bool usedSocket() const {return _outSocket;}
   QString crdTrafo() const {return _crdTrafo;}
-  bool beClocks() const {return _beClocks;}
+  bool CoM() const {return _CoM;}
   int  ic() const {return _ic;}
 
  signals:
@@ -29,7 +29,7 @@ class t_bnscaster : public QObject {
   QFile*       _outFile;
   QTextStream* _outStream;
   QString      _crdTrafo;
-  bool         _beClocks;
+  bool         _CoM;
   int          _ic;
 };
 
