@@ -61,7 +61,7 @@ class t_bns : public QThread {
   void deleteBnsEph();
   void openCaster();
   void readEpoch();
-  void processSatellite(int oldEph, int iCaster, const QString trafo, bool beClocks,
+  void processSatellite(int oldEph, int iCaster, const QString trafo, bool CoM,
                         t_eph* ep, int GPSweek, double GPSweeks, 
                         const QString& prn, const ColumnVector& xx, 
                         struct ClockOrbit::SatData* sd, QString& outLine);

@@ -95,7 +95,7 @@ Q_OBJECT
   QLineEdit* _password_1_LineEdit;
   QComboBox* _refSys_1_ComboBox;
   QLineEdit* _outFile_1_LineEdit;
-  QCheckBox* _beClocks1CheckBox;
+  QCheckBox* _CoM_1_CheckBox;
 
   QLineEdit* _outHost_2_LineEdit;
   QLineEdit* _outPort_2_LineEdit;
@@ -103,7 +103,7 @@ Q_OBJECT
   QLineEdit* _password_2_LineEdit;
   QComboBox* _refSys_2_ComboBox;
   QLineEdit* _outFile_2_LineEdit;
-  QCheckBox* _beClocks2CheckBox;
+  QCheckBox* _CoM_2_CheckBox;
 
   QLineEdit* _outHost_3_LineEdit;
   QLineEdit* _outPort_3_LineEdit;
@@ -111,7 +111,7 @@ Q_OBJECT
   QLineEdit* _password_3_LineEdit;
   QComboBox* _refSys_3_ComboBox;
   QLineEdit* _outFile_3_LineEdit;
-  QCheckBox* _beClocks3CheckBox;
+  QCheckBox* _CoM_3_CheckBox;
 
   QLineEdit* _outHost_Eph_LineEdit;
   QLineEdit* _outPort_Eph_LineEdit;

@@ -403,7 +403,7 @@ void t_bns::readEpoch() {
         for (int ii = 0; ii < lines.size(); ii++) {
 
           QString      prn;
-          ColumnVector xx(6); xx = 0.0;
+          ColumnVector xx(8); xx = 0.0;
           t_eph*       ep = 0;
       
           if (oldEph == 0 && ic == 0) {
@@ -411,12 +411,14 @@ void t_bns::readEpoch() {
             in >> prn;
             prns << prn;
             if ( _ephList.contains(prn) ) {
-              in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) >> xx(6);
-              xx(1) *= 1e3;
-              xx(2) *= 1e3;
-              xx(3) *= 1e3;
-              xx(4) *= 1e-6;
-              xx(5) *= 1e-6;
+              in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) 
+                 >> xx(6) >> xx(7) >> xx(8);
+              xx(1) *= 1e3;     // x-crd
+              xx(2) *= 1e3;     // y-crd
+              xx(3) *= 1e3;     // z-crd
+              xx(4) *= 1e-6;    // clk
+              xx(5) *= 1e-6;    // rel. corr.
+                                // xx(6), xx(7), xx(8) ... PhaseCent - CoM
 
               t_ephPair* pair = _ephList[prn];
               pair->xx = xx;
@@ -451,7 +453,7 @@ void t_bns::readEpoch() {
             if (sd) {
               QString outLine;
               processSatellite(oldEph, ic, _caster.at(ic)->crdTrafo(), 
-                               _caster.at(ic)->beClocks(), ep, 
+                               _caster.at(ic)->CoM(), ep, 
                                GPSweek, GPSweeks, prn, xx, sd, outLine);
               _caster.at(ic)->printAscii(outLine);
             }
@@ -477,7 +479,7 @@ void t_bns::readEpoch() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::processSatellite(int oldEph, int iCaster, const QString trafo, 
-                             bool beClocks, t_eph* ep, int GPSweek, 
+                             bool CoM, t_eph* ep, int GPSweek, 
                              double GPSweeks, const QString& prn, 
                              const ColumnVector& xx, 
                              struct ClockOrbit::SatData* sd,
@@ -489,6 +491,15 @@ void t_bns::processSatellite(int oldEph, int iCaster, const QString trafo,
   ep->position(GPSweek, GPSweeks, xB, vv);
 
   ColumnVector xyz = xx.Rows(1,3);
+
+  // Correction Center of Mass -> Antenna Phase Center
+  // -------------------------------------------------
+  if (! CoM) {
+    xyz(1) += xx(6);
+    xyz(2) += xx(7);
+    xyz(3) += xx(8);
+  }
+
   if (trafo != "IGS05") {
     crdTrafo(GPSweek, xyz, trafo);
   }
@@ -498,15 +509,8 @@ void t_bns::processSatellite(int oldEph, int iCaster, const QString trafo,
   ColumnVector rsw(3);
   XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw);
 
-  double dClk;
-  if (beClocks) {
-    dClk = (xx(4) - xB(4) - xx(5)) * 299792458.0;
-  }
-  else {
-    dClk = (xx(4) - xB(4)) * 299792458.0;
-  }
+  double dClk = (xx(4) - xB(4)) * 299792458.0;
 
-  double antCorr = xx(6);
 
   if (sd) {
     sd->ID                    = prn.mid(1).toInt();
@@ -518,9 +522,9 @@ void t_bns::processSatellite(int oldEph, int iCaster, const QString trafo,
   }
 
   char oldCh = (oldEph ? '!' : ' ');
-  outLine.sprintf("%c %d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f %8.3f\n", 
+  outLine.sprintf("%c %d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n", 
                   oldCh, GPSweek, GPSweeks, ep->prn().toAscii().data(),
-                  ep->IOD(), dClk, rsw(1), rsw(2), rsw(3), antCorr);
+                  ep->IOD(), dClk, rsw(1), rsw(2), rsw(3));
 
   if (!oldEph && iCaster == 0) {
     if (_rnx) {
