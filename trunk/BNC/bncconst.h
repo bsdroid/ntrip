@@ -34,6 +34,7 @@ class t_CST {
     static const double freq2  ;
     static const double lambda1;
     static const double lambda2;
+    static const double omega;
 };
 
 
