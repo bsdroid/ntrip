@@ -202,37 +202,79 @@ void bncPPPclient::applyCorr(const t_corr* cc, ColumnVector& xc,
   xc[3] += cc->dClk;
 }
 
+// Correct Time of Transmission
+////////////////////////////////////////////////////////////////////////////
+t_irc bncPPPclient::cmpToT(const QString& prn, t_satData* satData) {
+
+  double prange = satData->C1;
+  if (prange == 0.0) {
+    prange = satData->P1;
+  }
+  if (prange == 0.0) {
+    return failure;
+  }
+
+  double clkSat = 0.0;
+  for (int ii = 1; ii <= 10; ii++) {
+
+    t_time ToT = _epoData->tt - prange / t_CST::c - clkSat;
+
+    ColumnVector xc(4);
+    ColumnVector vv(3);
+    bool corr = false;
+    if (getSatPos(ToT, prn, xc, vv, corr) != success) {
+      return failure;
+    }
+
+    double clkSatOld = clkSat;
+    clkSat = xc(4) * t_CST::c;
+
+    if ( fabs(clkSat-clkSatOld) * t_CST::c < 1.e-4 ) {
+      satData->xx      = xc.Rows(1,3);
+      satData->vv      = vv;
+      satData->clk     = clkSat;
+      satData->clkCorr = corr;
+      return success;
+    } 
+  }
+
+  return failure;
+}
+
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::processEpoch() {
 
   cout.setf(ios::fixed);
 
-  QMapIterator<QString, t_satData*> it(_epoData->satData);
+  QMutableMapIterator<QString, t_satData*> it(_epoData->satData);
+
   while (it.hasNext()) {
     it.next();
     QString    prn     = it.key();
     t_satData* satData = it.value();
 
-    ColumnVector xc(4);
-    ColumnVector vv(3);
+    if (cmpToT(prn, satData) != success) {
+      delete satData;
+      it.remove();
+      continue;
+    }
 
-    bool corr = false;
-    if (getSatPos(_epoData->tt, prn, xc, vv, corr) == success) {
-      cout << _epoData->tt.timestr(1) << " " << prn.toAscii().data() << "   "
-           << setw(14) << setprecision(3) << xc(1)                << "  "
-           << setw(14) << setprecision(3) << xc(2)                << "  "
-           << setw(14) << setprecision(3) << xc(3)                << "  "
-           << setw(12) << setprecision(6) << xc(4)*1.e6;
-      if (corr) {
-        cout << endl;
-      }
-      else {
-        cout << " !\n";
-      }
+    cout << _epoData->tt.timestr(1) << " " << prn.toAscii().data() << "   "
+         << setw(14) << setprecision(3) << satData->xx(1)          << "  "
+         << setw(14) << setprecision(3) << satData->xx(2)          << "  "
+         << setw(14) << setprecision(3) << satData->xx(3)          << "  "
+         << setw(12) << setprecision(3) << satData->clk;
+
+    if (satData->clkCorr) {
+      cout << endl;
+    }
+    else {
+      cout << " !\n";
     }
   }
 
   cout << endl;
   cout.flush();
 }
+

@@ -44,6 +44,10 @@ class t_satData {
   double P2;
   double L1;
   double L2;
+  ColumnVector xx;
+  ColumnVector vv;
+  double       clk;
+  bool         clkCorr;
 };
 
 class t_epoData {
@@ -88,6 +92,7 @@ class bncPPPclient : public QObject {
                   ColumnVector& xc, ColumnVector& vv, bool& corr);
   void processEpoch();
   void applyCorr(const t_corr* cc, ColumnVector& xc, ColumnVector& vv);
+  t_irc cmpToT(const QString& prn, t_satData* satData);
 
   QByteArray             _staID;
   QMutex                 _mutex;
