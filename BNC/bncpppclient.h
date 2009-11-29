@@ -38,12 +38,15 @@
 
 class t_satData {
  public:
-  double C1;
-  double C2;
-  double P1;
-  double P2;
-  double L1;
-  double L2;
+  enum codeType {P_CODE, C_CODE};
+  double       P1;
+  double       P2;
+  double       P3;
+  double       L1;
+  double       L2;
+  double       L3;
+  codeType     codeTypeF1;
+  codeType     codeTypeF2;
   ColumnVector xx;
   ColumnVector vv;
   double       clk;
