@@ -291,6 +291,8 @@ void bncGetThread::initialize() {
 	    _PPPclient, SLOT(slotNewEphGPS(gpsephemeris)));
     connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
 	    _PPPclient, SLOT(slotNewCorrections(QList<QString>)));
+    connect(_PPPclient, SIGNAL(newMessage(QByteArray,bool)), 
+            ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
   }
 
   // Instantiate the decoder

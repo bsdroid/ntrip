@@ -40,6 +40,7 @@
 
 #include <iomanip>
 #include <newmatio.h>
+#include <sstream>
 
 #include "bncpppclient.h"
 #include "bncutils.h"
@@ -327,13 +328,14 @@ void bncPPPclient::processEpoch() {
   ColumnVector pos(4);
   bancroft(BB, pos);
 
-  cout.setf(ios::fixed);
+  ostringstream str;
+  str.setf(ios::fixed);
+  str << "PPP "
+      << _epoData->tt.timestr(1) << " " << _epoData->size() << " " 
+      << setw(14) << setprecision(3) << pos(1)              << "  "
+      << setw(14) << setprecision(3) << pos(2)              << "  "
+      << setw(14) << setprecision(3) << pos(3)              << endl;
 
-  cout << _epoData->tt.timestr(1) << " " << _epoData->size() << " " 
-       << setw(14) << setprecision(3) << pos(1)              << "  "
-       << setw(14) << setprecision(3) << pos(2)              << "  "
-       << setw(14) << setprecision(3) << pos(3)              << endl;
-
-  cout.flush();
+  emit newMessage(QString(str.str().c_str()).toAscii(), true);
 }
 
