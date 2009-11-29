@@ -227,12 +227,12 @@ t_irc bncPPPclient::cmpToT(const QString& prn, t_satData* satData) {
     }
 
     double clkSatOld = clkSat;
-    clkSat = xc(4) * t_CST::c;
+    clkSat = xc(4);
 
     if ( fabs(clkSat-clkSatOld) * t_CST::c < 1.e-4 ) {
       satData->xx      = xc.Rows(1,3);
       satData->vv      = vv;
-      satData->clk     = clkSat;
+      satData->clk     = clkSat * t_CST::c;
       satData->clkCorr = corr;
       return success;
     } 
