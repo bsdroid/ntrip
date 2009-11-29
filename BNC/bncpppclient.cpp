@@ -44,6 +44,7 @@
 #include "bncpppclient.h"
 #include "bncutils.h"
 #include "bncconst.h"
+#include "bancroft.h"
 
 extern "C" {
 #include "clock_orbit_rtcm.h"
@@ -285,38 +286,54 @@ t_irc bncPPPclient::cmpToT(const QString& prn, t_satData* satData) {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::processEpoch() {
 
-  cout.setf(ios::fixed);
+  const unsigned MINOBS = 4;
 
-  QMutableMapIterator<QString, t_satData*> it(_epoData->satData);
+  // Data Pre-Processing
+  // -------------------
+  QMutableMapIterator<QString, t_satData*> im(_epoData->satData);
+  while (im.hasNext()) {
+    im.next();
+    QString    prn     = im.key();
+    t_satData* satData = im.value();
 
+    if (cmpToT(prn, satData) != success) {
+      delete satData;
+      im.remove();
+      continue;
+    }
+  }
+
+  if (_epoData->size() < MINOBS) {
+    return;
+  }
+
+  // Bancroft Solution
+  // -----------------
+  Matrix BB(_epoData->size(), 4);
+
+  QMapIterator<QString, t_satData*> it(_epoData->satData);
+  int iObs = 0;
   while (it.hasNext()) {
     it.next();
     QString    prn     = it.key();
     t_satData* satData = it.value();
-
-    if (cmpToT(prn, satData) != success) {
-      delete satData;
-      it.remove();
-      continue;
-    }
-
-    cout << _epoData->tt.timestr(1) << " " << prn.toAscii().data() << "   "
-         << setw(14) << setprecision(3) << satData->P3             << "  "
-         << setw(14) << setprecision(3) << satData->L3             << "  "
-         << setw(14) << setprecision(3) << satData->xx(1)          << "  "
-         << setw(14) << setprecision(3) << satData->xx(2)          << "  "
-         << setw(14) << setprecision(3) << satData->xx(3)          << "  "
-         << setw(12) << setprecision(6) << satData->clk / t_CST::c * 1.e6;
-
-    if (satData->clkCorr) {
-      cout << endl;
-    }
-    else {
-      cout << " !\n";
-    }
+    ++iObs;
+    BB(iObs, 1) = satData->xx(1);
+    BB(iObs, 2) = satData->xx(2);
+    BB(iObs, 3) = satData->xx(3);
+    BB(iObs, 4) = satData->P3 + satData->clk;
   }
 
-  cout << endl;
+  ColumnVector pos(4);
+  bancroft(BB, pos);
+
+  cout.setf(ios::fixed);
+
+  cout << _epoData->tt.timestr(1) << " " << _epoData->size() << " " 
+       << setw(14) << setprecision(3) << pos(1)              << "  "
+       << setw(14) << setprecision(3) << pos(2)              << "  "
+       << setw(14) << setprecision(3) << pos(3)              << endl;
+
   cout.flush();
 }
 

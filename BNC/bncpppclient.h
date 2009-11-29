@@ -63,6 +63,7 @@ class t_epoData {
       delete it.value();
     }
   }
+  unsigned size() const {return satData.size();}
   t_time                    tt;
   QMap<QString, t_satData*> satData;
 };
