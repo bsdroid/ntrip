@@ -78,9 +78,61 @@ bncPPPclient::~bncPPPclient() {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::putNewObs(p_obs pp) {
   QMutexLocker locker(&_mutex);
+
+  static const double c1 =   t_CST::freq1 * t_CST::freq1 / 
+                 (t_CST::freq1 * t_CST::freq1 - t_CST::freq2 * t_CST::freq2);
   
+  static const double c2 = - t_CST::freq2 * t_CST::freq2 / 
+                 (t_CST::freq1 * t_CST::freq1 - t_CST::freq2 * t_CST::freq2);
+
   t_obsInternal* obs = &(pp->_o);
-  
+
+  t_satData* satData = new t_satData();
+
+  // Set Code Observations
+  // ---------------------  
+  if      (obs->P1) {
+    satData->P1         = obs->P1;
+    satData->codeTypeF1 = t_satData::P_CODE;
+  }
+  else if (obs->C1) {
+    satData->P1         = obs->C1;
+    satData->codeTypeF1 = t_satData::C_CODE;
+  }
+  else {
+    delete satData;
+    return;
+  }
+    
+  if      (obs->P2) {
+    satData->P2         = obs->P2;
+    satData->codeTypeF2 = t_satData::P_CODE;
+  }
+  else if (obs->C2) {
+    satData->P2         = obs->C2;
+    satData->codeTypeF2 = t_satData::C_CODE;
+  }
+  else {
+    delete satData;
+    return;
+  }
+
+  satData->P3 =  c1 * satData->P1 + c2 * satData->P2;
+
+  // Set Phase Observations
+  // ----------------------  
+  if (obs->L1 && obs->L2) {
+    satData->L1 = obs->L1 * t_CST::lambda1;
+    satData->L2 = obs->L2 * t_CST::lambda2;
+  }
+  else {
+    delete satData;
+    return;
+  }
+  satData->L3 =  c1 * satData->L1 + c2 * satData->L2;
+
+  // Add new Satellite to the epoch
+  // ------------------------------
   t_time tt(obs->GPSWeek, obs->GPSWeeks);
   
   if      (!_epoData) {
@@ -93,15 +145,6 @@ void bncPPPclient::putNewObs(p_obs pp) {
     _epoData = new t_epoData();
     _epoData->tt = tt;
   }
-  
-  t_satData* satData = new t_satData();
-      
-  satData->C1 = obs->C1;
-  satData->C2 = obs->C2;
-  satData->P1 = obs->P1;
-  satData->P2 = obs->P2;
-  satData->L1 = obs->L1;
-  satData->L2 = obs->L2;
 
   QString prn = 
         QString("%1%2").arg(obs->satSys).arg(obs->satNum, 2, 10, QChar('0'));
@@ -206,10 +249,7 @@ void bncPPPclient::applyCorr(const t_corr* cc, ColumnVector& xc,
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncPPPclient::cmpToT(const QString& prn, t_satData* satData) {
 
-  double prange = satData->C1;
-  if (prange == 0.0) {
-    prange = satData->P1;
-  }
+  double prange = satData->P3;
   if (prange == 0.0) {
     return failure;
   }
@@ -261,10 +301,12 @@ void bncPPPclient::processEpoch() {
     }
 
     cout << _epoData->tt.timestr(1) << " " << prn.toAscii().data() << "   "
+         << setw(14) << setprecision(3) << satData->P3             << "  "
+         << setw(14) << setprecision(3) << satData->L3             << "  "
          << setw(14) << setprecision(3) << satData->xx(1)          << "  "
          << setw(14) << setprecision(3) << satData->xx(2)          << "  "
          << setw(14) << setprecision(3) << satData->xx(3)          << "  "
-         << setw(12) << setprecision(3) << satData->clk;
+         << setw(12) << setprecision(6) << satData->clk / t_CST::c * 1.e6;
 
     if (satData->clkCorr) {
       cout << endl;
