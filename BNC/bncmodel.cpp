@@ -198,9 +198,6 @@ double bncModel::delay_saast(double Ele) {
   double hh =  50.0 * exp(-6.396e-4 * height);
   double ee =  hh / 100.0 * exp(-37.2465 + 0.213166*TT - 0.000256908*TT*TT);
 
-  cout << "Ele: " << 180.0 * Ele / M_PI << " " << height << " " 
-       << pp << " " << TT << " " << hh << " " << ee << endl;
-
   double h_km = height / 1000.0;
   
   if (h_km < 0.0) h_km = 0.0;
@@ -263,9 +260,6 @@ t_irc bncModel::update(t_epoData* epoData) {
   // Compute Residuals
   // -----------------
   ColumnVector vv = _AA * _dx - _ll;
-
-  cout << setprecision(3) << vv.t(); 
-  cout.flush();
 
   // Set Solution Vector
   // -------------------

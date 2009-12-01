@@ -214,7 +214,8 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 t_irc bncPPPclient::getSatPos(const t_time& tt, const QString& prn, 
                               ColumnVector& xc, ColumnVector& vv, bool& corr) {
 
-  const double MAXAGE = 120.0;
+  const bool   CORR_REQUIRED = true;
+  const double MAXAGE        = 120.0;
 
   corr = false;
 
@@ -227,6 +228,11 @@ t_irc bncPPPclient::getSatPos(const t_time& tt, const QString& prn,
       if (ee->IOD() == cc->iod && (tt - cc->tt) < MAXAGE) {
         corr = true;
         applyCorr(cc, xc, vv);
+      }
+    }
+    else {
+      if (CORR_REQUIRED) {
+        return failure;
       }
     }
 
