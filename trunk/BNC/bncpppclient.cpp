@@ -182,6 +182,20 @@ void bncPPPclient::slotNewEphGPS(gpsephemeris gpseph) {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
   QMutexLocker locker(&_mutex);
+
+  if (corrList.size() == 0) {
+    return;
+  }
+
+  // Remove All Corrections
+  // ----------------------
+  QMapIterator<QString, t_corr*> ic(_corr);
+  while (ic.hasNext()) {
+    ic.next();
+    delete ic.value();
+  }
+  _corr.clear();
+
   QListIterator<QString> it(corrList);
   while (it.hasNext()) {
     QTextStream in(it.next().toAscii());
