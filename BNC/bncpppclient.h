@@ -34,8 +34,6 @@
 #include "RTCM/GPSDecoder.h"
 #include "RTCM3/ephemeris.h"
 
-#define MAXPRN = 
-
 class t_satData {
  public:
   enum codeType {P_CODE, C_CODE};
