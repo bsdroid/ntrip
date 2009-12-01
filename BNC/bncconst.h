@@ -35,6 +35,8 @@ class t_CST {
     static const double lambda1;
     static const double lambda2;
     static const double omega;
+    static const double aell;
+    static const double fInv;
 };
 
 
