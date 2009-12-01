@@ -41,6 +41,8 @@
 #include <iomanip>
 
 #include "bncmodel.h"
+#include "bncpppclient.h"
+#include "bancroft.h"
 
 using namespace std;
 
@@ -54,3 +56,43 @@ bncParam::bncParam() {
 bncParam::~bncParam() {
 }
 
+// Constructor
+////////////////////////////////////////////////////////////////////////////
+bncModel::bncModel() {
+  _xcBanc.ReSize(4);
+}
+
+// Destructor
+////////////////////////////////////////////////////////////////////////////
+bncModel::~bncModel() {
+}
+
+// Bancroft Solution
+////////////////////////////////////////////////////////////////////////////
+t_irc bncModel::cmpBancroft(t_epoData* epoData) {
+
+  const unsigned MINOBS = 4;
+
+  if (epoData->size() < MINOBS) {
+    return failure;
+  }
+
+  Matrix BB(epoData->size(), 4);
+
+  QMapIterator<QString, t_satData*> it(epoData->satData);
+  int iObs = 0;
+  while (it.hasNext()) {
+    it.next();
+    QString    prn     = it.key();
+    t_satData* satData = it.value();
+    ++iObs;
+    BB(iObs, 1) = satData->xx(1);
+    BB(iObs, 2) = satData->xx(2);
+    BB(iObs, 3) = satData->xx(3);
+    BB(iObs, 4) = satData->P3 + satData->clk;
+  }
+
+  bancroft(BB, _xcBanc);
+
+  return success;
+}

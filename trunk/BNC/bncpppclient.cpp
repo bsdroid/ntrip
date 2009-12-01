@@ -45,7 +45,7 @@
 #include "bncpppclient.h"
 #include "bncutils.h"
 #include "bncconst.h"
-#include "bancroft.h"
+#include "bncmodel.h"
 
 extern "C" {
 #include "clock_orbit_rtcm.h"
@@ -58,11 +58,13 @@ using namespace std;
 bncPPPclient::bncPPPclient(QByteArray staID) {
   _staID   = staID;
   _epoData = 0;
+  _model   = new bncModel();
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncPPPclient::~bncPPPclient() {
+  delete _model;
   delete _epoData;
   QMapIterator<QString, t_eph*> it(_eph);
   while (it.hasNext()) {
@@ -287,8 +289,6 @@ t_irc bncPPPclient::cmpToT(const QString& prn, t_satData* satData) {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::processEpoch() {
 
-  const unsigned MINOBS = 4;
-
   // Data Pre-Processing
   // -------------------
   QMutableMapIterator<QString, t_satData*> im(_epoData->satData);
@@ -304,37 +304,19 @@ void bncPPPclient::processEpoch() {
     }
   }
 
-  if (_epoData->size() < MINOBS) {
+  // Bancroft Solution
+  // -----------------
+  if (_model->cmpBancroft(_epoData) != success) {
     return;
   }
 
-  // Bancroft Solution
-  // -----------------
-  Matrix BB(_epoData->size(), 4);
-
-  QMapIterator<QString, t_satData*> it(_epoData->satData);
-  int iObs = 0;
-  while (it.hasNext()) {
-    it.next();
-    QString    prn     = it.key();
-    t_satData* satData = it.value();
-    ++iObs;
-    BB(iObs, 1) = satData->xx(1);
-    BB(iObs, 2) = satData->xx(2);
-    BB(iObs, 3) = satData->xx(3);
-    BB(iObs, 4) = satData->P3 + satData->clk;
-  }
-
-  ColumnVector pos(4);
-  bancroft(BB, pos);
-
   ostringstream str;
   str.setf(ios::fixed);
-  str << "    PPP "
+  str << "    PPP " << _staID.data() << " " 
       << _epoData->tt.timestr(1) << " " << _epoData->size() << " " 
-      << setw(14) << setprecision(3) << pos(1)              << "  "
-      << setw(14) << setprecision(3) << pos(2)              << "  "
-      << setw(14) << setprecision(3) << pos(3);
+      << setw(14) << setprecision(3) << _model->xcBanc()(1) << "  "
+      << setw(14) << setprecision(3) << _model->xcBanc()(2) << "  "
+      << setw(14) << setprecision(3) << _model->xcBanc()(3);
 
   emit newMessage(QString(str.str().c_str()).toAscii(), true);
 }

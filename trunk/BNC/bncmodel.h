@@ -26,15 +26,31 @@
 #define BNCMODEL_H
 
 #include <QtCore>
-
 #include <newmat.h>
+
+#include "bncconst.h"
+
+class t_epoData;
 
 class bncParam {
  public:
+  enum type {CRD_X, CRD_Y, CRD_Z, TROPO, AMB_L3};
   bncParam();
   ~bncParam();
+  double x0;
+};
 
+class bncModel {
+ public:
+  bncModel();
+  ~bncModel();
+  t_irc cmpBancroft(t_epoData* epoData);
+  const ColumnVector& xcBanc() const {return _xcBanc;}
+  
  private:
+  Matrix       _QQ;
+  ColumnVector _xx;
+  ColumnVector _xcBanc;
 };
 
 #endif
