@@ -86,6 +86,7 @@ bncModel::bncModel() {
   _params.push_back(new bncParam(bncParam::CRD_Y));
   _params.push_back(new bncParam(bncParam::CRD_Z));
   _params.push_back(new bncParam(bncParam::RECCLK));
+  _ellBanc.ReSize(3);
 }
 
 // Destructor
@@ -139,13 +140,30 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
     }
   }
 
-  // Set Station Height
-  // ------------------
-  ColumnVector ell(3);
-  xyz2ell(_xcBanc.data(), ell.data());
-  _height = ell(3);
+  // Ellipsoidal Coordinates
+  // ------------------------
+  xyz2ell(_xcBanc.data(), _ellBanc.data());
 
-  cout << "height = " << _height << endl;
+  // Compute Satellite Elevations
+  // ----------------------------
+  QMutableMapIterator<QString, t_satData*> it2(epoData->satData);
+  while (it2.hasNext()) {
+    it2.next();
+    QString    prn     = it2.key();
+    t_satData* satData = it2.value();
+
+    ColumnVector dx = satData->xx - _xcBanc.Rows(1,3);
+    double       rho = dx.norm_Frobenius();
+
+    double neu[3];
+    xyz2neu(_ellBanc.data(), dx.data(), neu);
+
+    satData->eleSat = acos( sqrt(neu[0]*neu[0] + neu[1]*neu[1]) / rho );
+    if (neu[2] < 0) {
+      satData->eleSat *= -1.0;
+    }
+    satData->azSat  = atan2(neu[1], neu[0]);
+  }
 
   return success;
 }
@@ -175,14 +193,15 @@ double bncModel::cmpValueP3(t_satData* satData) {
 ////////////////////////////////////////////////////////////////////////////
 double bncModel::delay_saast() {
 
+  double height = _ellBanc(3);
   double Ele = M_PI/2.0;
 
-  double pp =  1013.25 * pow(1.0 - 2.26e-5 * _height, 5.225);
-  double TT =  18.0 - _height * 0.0065 + 273.15;
-  double hh =  50.0 * exp(-6.396e-4 * _height);
+  double pp =  1013.25 * pow(1.0 - 2.26e-5 * height, 5.225);
+  double TT =  18.0 - height * 0.0065 + 273.15;
+  double hh =  50.0 * exp(-6.396e-4 * height);
   double ee =  hh / 100.0 * exp(-37.2465 + 0.213166*TT - 0.000256908*TT*TT);
 
-  double h_km = _height / 1000.0;
+  double h_km = height / 1000.0;
   
   if (h_km < 0.0) h_km = 0.0;
   if (h_km > 5.0) h_km = 5.0;

@@ -63,7 +63,7 @@ class bncModel {
   ColumnVector     _dx;
   ColumnVector     _xx;
   ColumnVector     _xcBanc;
-  double           _height;
+  ColumnVector     _ellBanc;
 };
 
 #endif
