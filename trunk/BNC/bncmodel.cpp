@@ -48,7 +48,8 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncParam::bncParam() {
+bncParam::bncParam(bncParam::parType typeIn) {
+  type = typeIn;
 }
 
 // Destructor
@@ -59,7 +60,10 @@ bncParam::~bncParam() {
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncModel::bncModel() {
-  _xcBanc.ReSize(4);
+  _xcBanc.ReSize(4); _xcBanc = 0.0;
+  _params.push_back(new bncParam(bncParam::CRD_X));
+  _params.push_back(new bncParam(bncParam::CRD_Y));
+  _params.push_back(new bncParam(bncParam::CRD_Z));
 }
 
 // Destructor

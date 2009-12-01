@@ -34,10 +34,11 @@ class t_epoData;
 
 class bncParam {
  public:
-  enum type {CRD_X, CRD_Y, CRD_Z, TROPO, AMB_L3};
-  bncParam();
+  enum parType {CRD_X, CRD_Y, CRD_Z, TROPO, AMB_L3};
+  bncParam(parType typeIn);
   ~bncParam();
-  double x0;
+  parType  type;
+  double   x0;
 };
 
 class bncModel {
@@ -48,9 +49,10 @@ class bncModel {
   const ColumnVector& xcBanc() const {return _xcBanc;}
   
  private:
-  Matrix       _QQ;
-  ColumnVector _xx;
-  ColumnVector _xcBanc;
+  QList<bncParam*> _params;
+  Matrix           _QQ;
+  ColumnVector     _xx;
+  ColumnVector     _xcBanc;
 };
 
 #endif
