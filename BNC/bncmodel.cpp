@@ -156,7 +156,7 @@ double bncModel::cmpValueP3(t_satData* satData) {
 
   double tropDelay = 0.0;
 
-  return satData->rho + _xcBanc(4) + tropDelay;
+  return satData->rho + _xcBanc(4) - satData->clk + tropDelay;
 }
 
 // Update Step of the Filter (currently just a single-epoch solution)
@@ -165,8 +165,6 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   unsigned nPar = _params.size();
   unsigned nObs = epoData->size();
-
-  cout << "update " << nPar << " " << nObs << endl;
 
   _AA.ReSize(nObs, nPar);  // variance-covariance matrix
   _ll.ReSize(nObs);        // tems observed-computed
@@ -178,7 +176,7 @@ t_irc bncModel::update(t_epoData* epoData) {
     itObs.next();
     QString    prn     = itObs.key();
     t_satData* satData = itObs.value();
-    _ll(iObs) = cmpValueP3(satData);
+    _ll(iObs) = satData->P3 - cmpValueP3(satData);
 
     unsigned iPar = 0;
     QListIterator<bncParam*> itPar(_params);
@@ -188,9 +186,6 @@ t_irc bncModel::update(t_epoData* epoData) {
       _AA(iObs, iPar) = par->partialP3(satData);
     }
   }
-
-  cout << _AA << endl;
-  cout.flush();
 
   _QQ.ReSize(nPar);
   _QQ << _AA.t() * _AA;
