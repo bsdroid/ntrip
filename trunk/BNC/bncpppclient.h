@@ -51,6 +51,8 @@ class t_satData {
   ColumnVector vv;
   double       clk;
   bool         clkCorr;
+  double       eleSat;
+  double       azSat;
   double       rho;
 };
 

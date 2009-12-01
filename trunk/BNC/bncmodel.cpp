@@ -182,7 +182,7 @@ double bncModel::cmpValueP3(t_satData* satData) {
 
   satData->rho = (satData->xx - xRec).norm_Frobenius();
 
-  double tropDelay = delay_saast();
+  double tropDelay = delay_saast(satData->eleSat);
 
   cout << "tropDelay " << tropDelay << endl;
 
@@ -191,10 +191,9 @@ double bncModel::cmpValueP3(t_satData* satData) {
 
 // Tropospheric Model (Saastamoinen)
 ////////////////////////////////////////////////////////////////////////////
-double bncModel::delay_saast() {
+double bncModel::delay_saast(double Ele) {
 
   double height = _ellBanc(3);
-  double Ele = M_PI/2.0;
 
   double pp =  1013.25 * pow(1.0 - 2.26e-5 * height, 5.225);
   double TT =  18.0 - height * 0.0065 + 273.15;

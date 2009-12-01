@@ -54,7 +54,7 @@ class bncModel {
   
  private:
   double cmpValueP3(t_satData* satData);
-  double delay_saast();
+  double delay_saast(double Ele);
 
   QList<bncParam*> _params;
   SymmetricMatrix  _QQ;
