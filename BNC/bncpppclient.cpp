@@ -223,19 +223,18 @@ t_irc bncPPPclient::getSatPos(const t_time& tt, const QString& prn,
     t_eph* ee = _eph.value(prn);
     ee->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
 
-    if (_corr.contains(prn)) {
-      t_corr* cc = _corr.value(prn);
-      if (ee->IOD() == cc->iod && (tt - cc->tt) < MAXAGE) {
-        corr = true;
-        applyCorr(cc, xc, vv);
+    if (CORR_REQUIRED) {
+      if (_corr.contains(prn)) {
+        t_corr* cc = _corr.value(prn);
+        if (ee->IOD() == cc->iod && (tt - cc->tt) < MAXAGE) {
+          corr = true;
+          applyCorr(cc, xc, vv);
+          return success;
+        }
       }
+      return failure;
     }
-    else {
-      if (CORR_REQUIRED) {
-        return failure;
-      }
-    }
-
+    
     return success;
   }
 
@@ -253,6 +252,10 @@ void bncPPPclient::applyCorr(const t_corr* cc, ColumnVector& xc,
   xc[1] += dx[1];
   xc[2] += dx[2];
   xc[3] += cc->dClk;
+
+  // Relativistic Correction
+  // -----------------------
+  xc[3] -= 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c ;
 }
 
 // Correct Time of Transmission
