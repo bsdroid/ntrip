@@ -310,6 +310,12 @@ void bncPPPclient::processEpoch() {
     return;
   }
 
+  // Filter Solution
+  // ---------------
+  if (_model->update(_epoData) != success) {
+    return;
+  }
+
   ostringstream str;
   str.setf(ios::fixed);
   str << "    PPP " << _staID.data() << " " 

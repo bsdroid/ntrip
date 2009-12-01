@@ -39,6 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <iomanip>
+#include <newmatio.h>
 
 #include "bncmodel.h"
 #include "bncpppclient.h"
@@ -57,6 +58,24 @@ bncParam::bncParam(bncParam::parType typeIn) {
 bncParam::~bncParam() {
 }
 
+// Partial
+////////////////////////////////////////////////////////////////////////////
+double bncParam::partialP3(t_satData* satData) {
+  if      (type == CRD_X) {
+    return (x0 - satData->xx(1)) / satData->rho; 
+  }
+  else if (type == CRD_Y) {
+    return (x0 - satData->xx(2)) / satData->rho; 
+  }
+  else if (type == CRD_Z) {
+    return (x0 - satData->xx(3)) / satData->rho; 
+  }
+  else if (type == RECCLK) {
+    return 1.0;
+  }
+  return 0.0;
+}
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncModel::bncModel() {
@@ -64,6 +83,7 @@ bncModel::bncModel() {
   _params.push_back(new bncParam(bncParam::CRD_X));
   _params.push_back(new bncParam(bncParam::CRD_Y));
   _params.push_back(new bncParam(bncParam::CRD_Z));
+  _params.push_back(new bncParam(bncParam::RECCLK));
 }
 
 // Destructor
@@ -86,10 +106,10 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
   QMapIterator<QString, t_satData*> it(epoData->satData);
   int iObs = 0;
   while (it.hasNext()) {
+    ++iObs;
     it.next();
     QString    prn     = it.key();
     t_satData* satData = it.value();
-    ++iObs;
     BB(iObs, 1) = satData->xx(1);
     BB(iObs, 2) = satData->xx(2);
     BB(iObs, 3) = satData->xx(3);
@@ -97,6 +117,95 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
   }
 
   bancroft(BB, _xcBanc);
+
+  // Set Parameter A Priori Values
+  // -----------------------------
+  QListIterator<bncParam*> itPar(_params);
+  while (itPar.hasNext()) {
+    bncParam* par = itPar.next();
+    if      (par->type == bncParam::CRD_X) {
+      par->x0 = _xcBanc(1);
+    }
+    else if (par->type == bncParam::CRD_Y) {
+      par->x0 = _xcBanc(2);
+    }
+    else if (par->type == bncParam::CRD_Z) {
+      par->x0 = _xcBanc(3);
+    }
+    else if (par->type == bncParam::RECCLK) {
+      par->x0 = _xcBanc(4);
+    }
+  }
+
+  return success;
+}
+
+// Computed Value
+////////////////////////////////////////////////////////////////////////////
+double bncModel::cmpValueP3(t_satData* satData) {
+
+  double rho0 = (satData->xx - _xcBanc.Rows(1,3)).norm_Frobenius();
+
+  ColumnVector xRec(3);
+  double dPhi = t_CST::omega * rho0 / t_CST::c; 
+  xRec(1) = _xcBanc(1) * cos(dPhi) - _xcBanc(2) * sin(dPhi); 
+  xRec(2) = _xcBanc(2) * cos(dPhi) + _xcBanc(1) * sin(dPhi); 
+  xRec(3) = _xcBanc(3);
+
+  satData->rho = (satData->xx - xRec).norm_Frobenius();
+
+  double tropDelay = 0.0;
+
+  return satData->rho + _xcBanc(4) + tropDelay;
+}
+
+// Update Step of the Filter (currently just a single-epoch solution)
+////////////////////////////////////////////////////////////////////////////
+t_irc bncModel::update(t_epoData* epoData) {
+
+  unsigned nPar = _params.size();
+  unsigned nObs = epoData->size();
+
+  cout << "update " << nPar << " " << nObs << endl;
+
+  _AA.ReSize(nObs, nPar);  // variance-covariance matrix
+  _ll.ReSize(nObs);        // tems observed-computed
+
+  unsigned iObs = 0;
+  QMapIterator<QString, t_satData*> itObs(epoData->satData);
+  while (itObs.hasNext()) {
+    ++iObs;
+    itObs.next();
+    QString    prn     = itObs.key();
+    t_satData* satData = itObs.value();
+    _ll(iObs) = cmpValueP3(satData);
+
+    unsigned iPar = 0;
+    QListIterator<bncParam*> itPar(_params);
+    while (itPar.hasNext()) {
+      ++iPar;
+      bncParam* par = itPar.next();
+      _AA(iObs, iPar) = par->partialP3(satData);
+    }
+  }
+
+  cout << _AA << endl;
+  cout.flush();
+
+  _QQ.ReSize(nPar);
+  _QQ << _AA.t() * _AA;
+  _QQ = _QQ.i();
+  _dx = _QQ * _AA.t() * _ll;
+
+  _xx.ReSize(nPar);
+
+  unsigned iPar = 0;
+  QListIterator<bncParam*> itPar(_params);
+  while (itPar.hasNext()) {
+    ++iPar;
+    bncParam* par = itPar.next();
+    _xx(iPar) = par->x0 + _dx(iPar);
+  }
 
   return success;
 }

@@ -31,12 +31,14 @@
 #include "bncconst.h"
 
 class t_epoData;
+class t_satData;
 
 class bncParam {
  public:
-  enum parType {CRD_X, CRD_Y, CRD_Z, TROPO, AMB_L3};
+  enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK, TROPO, AMB_L3};
   bncParam(parType typeIn);
   ~bncParam();
+  double partialP3(t_satData* satData);
   parType  type;
   double   x0;
 };
@@ -46,11 +48,17 @@ class bncModel {
   bncModel();
   ~bncModel();
   t_irc cmpBancroft(t_epoData* epoData);
+  t_irc update(t_epoData* epoData);
   const ColumnVector& xcBanc() const {return _xcBanc;}
+  const ColumnVector& xx()     const {return _xx;}
   
  private:
+  double cmpValueP3(t_satData* satData);
   QList<bncParam*> _params;
-  Matrix           _QQ;
+  SymmetricMatrix  _QQ;
+  Matrix           _AA;
+  ColumnVector     _ll;
+  ColumnVector     _dx;
   ColumnVector     _xx;
   ColumnVector     _xcBanc;
 };
