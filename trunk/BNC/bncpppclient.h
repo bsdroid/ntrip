@@ -51,6 +51,7 @@ class t_satData {
   ColumnVector vv;
   double       clk;
   bool         clkCorr;
+  double       rho;
 };
 
 class t_epoData {
