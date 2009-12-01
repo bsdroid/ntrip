@@ -184,8 +184,6 @@ double bncModel::cmpValueP3(t_satData* satData) {
 
   double tropDelay = delay_saast(satData->eleSat);
 
-  cout << "tropDelay " << tropDelay << endl;
-
   return satData->rho + _xcBanc(4) - satData->clk + tropDelay;
 }
 
@@ -199,6 +197,9 @@ double bncModel::delay_saast(double Ele) {
   double TT =  18.0 - height * 0.0065 + 273.15;
   double hh =  50.0 * exp(-6.396e-4 * height);
   double ee =  hh / 100.0 * exp(-37.2465 + 0.213166*TT - 0.000256908*TT*TT);
+
+  cout << "Ele: " << 180.0 * Ele / M_PI << " " << height << " " 
+       << pp << " " << TT << " " << hh << " " << ee << endl;
 
   double h_km = height / 1000.0;
   
@@ -229,6 +230,8 @@ t_irc bncModel::update(t_epoData* epoData) {
   unsigned nPar = _params.size();
   unsigned nObs = epoData->size();
 
+  // Create First-Design Matrix
+  // --------------------------
   _AA.ReSize(nObs, nPar);  // variance-covariance matrix
   _ll.ReSize(nObs);        // tems observed-computed
 
@@ -250,13 +253,23 @@ t_irc bncModel::update(t_epoData* epoData) {
     }
   }
 
+  // Compute Least-Squares Solution
+  // ------------------------------
   _QQ.ReSize(nPar);
   _QQ << _AA.t() * _AA;
   _QQ = _QQ.i();
   _dx = _QQ * _AA.t() * _ll;
 
-  _xx.ReSize(nPar);
+  // Compute Residuals
+  // -----------------
+  ColumnVector vv = _AA * _dx - _ll;
 
+  cout << setprecision(3) << vv.t(); 
+  cout.flush();
+
+  // Set Solution Vector
+  // -------------------
+  _xx.ReSize(nPar);
   unsigned iPar = 0;
   QListIterator<bncParam*> itPar(_params);
   while (itPar.hasNext()) {
