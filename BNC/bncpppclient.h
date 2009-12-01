@@ -34,6 +34,8 @@
 #include "RTCM/GPSDecoder.h"
 #include "RTCM3/ephemeris.h"
 
+class bncModel;
+
 class t_satData {
  public:
   enum codeType {P_CODE, C_CODE};
@@ -101,6 +103,7 @@ class bncPPPclient : public QObject {
   QMap<QString, t_eph*>  _eph;
   QMap<QString, t_corr*> _corr;
   t_epoData*             _epoData;
+  bncModel*              _model;
 };
 
 #endif
