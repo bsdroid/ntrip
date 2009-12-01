@@ -54,6 +54,8 @@ class bncModel {
   
  private:
   double cmpValueP3(t_satData* satData);
+  double delay_saast();
+
   QList<bncParam*> _params;
   SymmetricMatrix  _QQ;
   Matrix           _AA;
@@ -61,6 +63,7 @@ class bncModel {
   ColumnVector     _dx;
   ColumnVector     _xx;
   ColumnVector     _xcBanc;
+  double           _height;
 };
 
 #endif

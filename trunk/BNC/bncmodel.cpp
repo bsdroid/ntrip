@@ -39,11 +39,13 @@
  * -----------------------------------------------------------------------*/
 
 #include <iomanip>
+#include <cmath>
 #include <newmatio.h>
 
 #include "bncmodel.h"
 #include "bncpppclient.h"
 #include "bancroft.h"
+#include "bncutils.h"
 
 using namespace std;
 
@@ -137,6 +139,14 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
     }
   }
 
+  // Set Station Height
+  // ------------------
+  ColumnVector ell(3);
+  xyz2ell(_xcBanc.data(), ell.data());
+  _height = ell(3);
+
+  cout << "height = " << _height << endl;
+
   return success;
 }
 
@@ -154,9 +164,44 @@ double bncModel::cmpValueP3(t_satData* satData) {
 
   satData->rho = (satData->xx - xRec).norm_Frobenius();
 
-  double tropDelay = 0.0;
+  double tropDelay = delay_saast();
+
+  cout << "tropDelay " << tropDelay << endl;
 
   return satData->rho + _xcBanc(4) - satData->clk + tropDelay;
+}
+
+// Tropospheric Model (Saastamoinen)
+////////////////////////////////////////////////////////////////////////////
+double bncModel::delay_saast() {
+
+  double Ele = M_PI/2.0;
+
+  double pp =  1013.25 * pow(1.0 - 2.26e-5 * _height, 5.225);
+  double TT =  18.0 - _height * 0.0065 + 273.15;
+  double hh =  50.0 * exp(-6.396e-4 * _height);
+  double ee =  hh / 100.0 * exp(-37.2465 + 0.213166*TT - 0.000256908*TT*TT);
+
+  double h_km = _height / 1000.0;
+  
+  if (h_km < 0.0) h_km = 0.0;
+  if (h_km > 5.0) h_km = 5.0;
+  int    ii   = int(h_km + 1);
+  double href = ii - 1;
+  
+  double bCor[6]; 
+  bCor[0] = 1.156;
+  bCor[1] = 1.006;
+  bCor[2] = 0.874;
+  bCor[3] = 0.757;
+  bCor[4] = 0.654;
+  bCor[5] = 0.563;
+  
+  double BB = bCor[ii-1] + (bCor[ii]-bCor[ii-1]) * (h_km - href);
+  
+  double zen  = M_PI/2.0 - Ele;
+
+  return (0.002277/cos(zen)) * (pp + ((1255.0/TT)+0.05)*ee - BB*(tan(zen)*tan(zen)));
 }
 
 // Update Step of the Filter (currently just a single-epoch solution)

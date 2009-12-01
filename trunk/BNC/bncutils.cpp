@@ -184,3 +184,40 @@ void RSW_to_XYZ(const ColumnVector& rr, const ColumnVector& vv,
 
   xyz = RR * rsw;
 }
+
+// Rectangular Coordinates -> Ellipsoidal Coordinates
+////////////////////////////////////////////////////////////////////////////
+t_irc xyz2ell(const double* XYZ, double* Ell) {
+
+  const double bell = t_CST::aell*(1.0-1.0/t_CST::fInv) ;
+  const double e2   = (t_CST::aell*t_CST::aell-bell*bell)/(t_CST::aell*t_CST::aell) ;
+  const double e2c  = (t_CST::aell*t_CST::aell-bell*bell)/(bell*bell) ;
+  
+  double nn, ss, zps, hOld, phiOld, theta, sin3, cos3;
+
+  ss    = sqrt(XYZ[0]*XYZ[0]+XYZ[1]*XYZ[1]) ;
+  zps   = XYZ[2]/ss ;
+  theta = atan( (XYZ[2]*t_CST::aell) / (ss*bell) );
+  sin3  = sin(theta) * sin(theta) * sin(theta);
+  cos3  = cos(theta) * cos(theta) * cos(theta);
+
+  // Closed formula
+  Ell[0] = atan( (XYZ[2] + e2c * bell * sin3) / (ss - e2 * t_CST::aell * cos3) );  
+  Ell[1] = atan2(XYZ[1],XYZ[0]) ;
+  nn = t_CST::aell/sqrt(1.0-e2*sin(Ell[0])*sin(Ell[0])) ;
+  Ell[2] = ss / cos(Ell[0]) - nn;
+
+  const int MAXITER = 100;
+  for (int ii = 1; ii <= MAXITER; ii++) {
+    nn     = t_CST::aell/sqrt(1.0-e2*sin(Ell[0])*sin(Ell[0])) ;
+    hOld   = Ell[2] ;
+    phiOld = Ell[0] ;
+    Ell[2] = ss/cos(Ell[0])-nn ;
+    Ell[0] = atan(zps/(1.0-e2*nn/(nn+Ell[2]))) ;
+    if ( fabs(phiOld-Ell[0]) <= 1.0e-11 && fabs(hOld-Ell[2]) <= 1.0e-5 ) {
+      return success;
+    }
+  }
+
+  return failure;
+}

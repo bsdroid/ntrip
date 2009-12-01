@@ -29,6 +29,7 @@
 #include <QDateTime>
 
 #include <newmat.h>
+#include <bncconst.h>
 
 void expandEnvVar(QString& str);
 
@@ -44,5 +45,7 @@ QByteArray ggaString(const QByteArray& latitude,
 
 void RSW_to_XYZ(const ColumnVector& rr, const ColumnVector& vv,
                 const ColumnVector& rsw, ColumnVector& xyz);
+
+t_irc xyz2ell(const double* XYZ, double* Ell);
 
 #endif
