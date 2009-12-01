@@ -48,4 +48,6 @@ void RSW_to_XYZ(const ColumnVector& rr, const ColumnVector& vv,
 
 t_irc xyz2ell(const double* XYZ, double* Ell);
 
+void xyz2neu(const double* Ell, const double* xyz, double* neu);
+
 #endif

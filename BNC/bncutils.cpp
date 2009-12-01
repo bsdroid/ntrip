@@ -221,3 +221,24 @@ t_irc xyz2ell(const double* XYZ, double* Ell) {
 
   return failure;
 }
+
+// Rectangular Coordinates -> North, East, Up Components
+////////////////////////////////////////////////////////////////////////////
+void xyz2neu(const double* Ell, const double* xyz, double* neu) {
+
+  double sinPhi = sin(Ell[0]);
+  double cosPhi = cos(Ell[0]);
+  double sinLam = sin(Ell[1]);
+  double cosLam = cos(Ell[1]);
+
+  neu[0] = - sinPhi*cosLam * xyz[0]
+           - sinPhi*sinLam * xyz[1]
+           + cosPhi        * xyz[2];
+
+  neu[1] = - sinLam * xyz[0]
+           + cosLam * xyz[1];
+
+  neu[2] = + cosPhi*cosLam * xyz[0]
+           + cosPhi*sinLam * xyz[1]
+           + sinPhi        * xyz[2];
+}
