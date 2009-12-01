@@ -49,6 +49,9 @@
 
 using namespace std;
 
+const unsigned MINOBS =    4;
+const double   MINELE = 10.0 * M_PI / 180.0;
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncParam::bncParam(bncParam::parType typeIn) {
@@ -97,8 +100,6 @@ bncModel::~bncModel() {
 // Bancroft Solution
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncModel::cmpBancroft(t_epoData* epoData) {
-
-  const unsigned MINOBS = 4;
 
   if (epoData->size() < MINOBS) {
     return failure;
@@ -163,6 +164,11 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
       satData->eleSat *= -1.0;
     }
     satData->azSat  = atan2(neu[1], neu[0]);
+
+    if (satData->eleSat < MINELE) {
+      delete satData;
+      it2.remove();
+    }
   }
 
   return success;
@@ -224,6 +230,10 @@ double bncModel::delay_saast(double Ele) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncModel::update(t_epoData* epoData) {
 
+  if (epoData->size() < MINOBS) {
+    return failure;
+  }
+
   unsigned nPar = _params.size();
   unsigned nObs = epoData->size();
 
@@ -260,6 +270,10 @@ t_irc bncModel::update(t_epoData* epoData) {
   // Compute Residuals
   // -----------------
   ColumnVector vv = _AA * _dx - _ll;
+
+  cout << setprecision(3) << _dx.t() 
+       << setprecision(3) << vv.t() << endl;
+  cout.flush();
 
   // Set Solution Vector
   // -------------------
