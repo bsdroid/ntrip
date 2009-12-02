@@ -271,10 +271,6 @@ t_irc bncModel::update(t_epoData* epoData) {
   // -----------------
   ColumnVector vv = _AA * _dx - _ll;
 
-  cout << setprecision(3) << _dx.t() 
-       << setprecision(3) << vv.t() << endl;
-  cout.flush();
-
   // Set Solution Vector
   // -------------------
   _xx.ReSize(nPar);
