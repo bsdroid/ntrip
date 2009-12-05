@@ -36,11 +36,18 @@ class t_satData;
 class bncParam {
  public:
   enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK, TROPO, AMB_L3};
-  bncParam(parType typeIn);
+  bncParam(parType typeIn, int indexIn);
   ~bncParam();
   double partialP3(t_satData* satData);
+  bool isCrd() const {
+    return (type == CRD_X || type == CRD_Y || type == CRD_Z);
+  }
+  double solVal() const {return x0 + xx;}
+  double aprVal() const {return x0;}
   parType  type;
+  double   xx;
   double   x0;
+  int      index;
 };
 
 class bncModel {
@@ -49,21 +56,21 @@ class bncModel {
   ~bncModel();
   t_irc cmpBancroft(t_epoData* epoData);
   t_irc update(t_epoData* epoData);
-  const ColumnVector& xcBanc() const {return _xcBanc;}
-  const ColumnVector& xx()     const {return _xx;}
+  double x()   const {return _params[0]->solVal();}
+  double y()   const {return _params[1]->solVal();}
+  double z()   const {return _params[2]->solVal();}
+  double clk() const {return _params[3]->solVal();}
   
  private:
   double cmpValueP3(t_satData* satData);
   double delay_saast(double Ele);
+  void   predict();
 
-  QList<bncParam*> _params;
-  SymmetricMatrix  _QQ;
-  Matrix           _AA;
-  ColumnVector     _ll;
-  ColumnVector     _dx;
-  ColumnVector     _xx;
-  ColumnVector     _xcBanc;
-  ColumnVector     _ellBanc;
+  QVector<bncParam*> _params;
+  SymmetricMatrix    _QQ;
+  ColumnVector       _xx;
+  ColumnVector       _xcBanc;
+  ColumnVector       _ellBanc;
 };
 
 #endif

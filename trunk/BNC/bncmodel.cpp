@@ -51,11 +51,17 @@ using namespace std;
 
 const unsigned MINOBS =    4;
 const double   MINELE = 10.0 * M_PI / 180.0;
+const double   sig_crd_0 =  100.0;
+const double   sig_crd_p =  100.0;
+const double   sig_clk_0 = 1000.0;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncParam::bncParam(bncParam::parType typeIn) {
-  type = typeIn;
+bncParam::bncParam(bncParam::parType typeIn, int indexIn) {
+  type  = typeIn;
+  index = indexIn;
+  x0    = 0.0;
+  xx    = 0.0;
 }
 
 // Destructor
@@ -85,11 +91,23 @@ double bncParam::partialP3(t_satData* satData) {
 ////////////////////////////////////////////////////////////////////////////
 bncModel::bncModel() {
   _xcBanc.ReSize(4); _xcBanc = 0.0;
-  _params.push_back(new bncParam(bncParam::CRD_X));
-  _params.push_back(new bncParam(bncParam::CRD_Y));
-  _params.push_back(new bncParam(bncParam::CRD_Z));
-  _params.push_back(new bncParam(bncParam::RECCLK));
+  _params.push_back(new bncParam(bncParam::CRD_X,  1));
+  _params.push_back(new bncParam(bncParam::CRD_Y,  2));
+  _params.push_back(new bncParam(bncParam::CRD_Z,  3));
+  _params.push_back(new bncParam(bncParam::RECCLK, 4));
   _ellBanc.ReSize(3);
+
+  unsigned nPar = _params.size();
+  _QQ.ReSize(nPar); 
+  _QQ = 0.0;
+
+  _QQ(1,1) = sig_crd_0 * sig_crd_0; 
+  _QQ(2,2) = sig_crd_0 * sig_crd_0; 
+  _QQ(3,3) = sig_crd_0 * sig_crd_0; 
+  _QQ(4,4) = sig_clk_0 * sig_clk_0; 
+
+  _xx.ReSize(nPar);
+  _xx = 0.0;
 }
 
 // Destructor
@@ -121,25 +139,6 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
   }
 
   bancroft(BB, _xcBanc);
-
-  // Set Parameter A Priori Values
-  // -----------------------------
-  QListIterator<bncParam*> itPar(_params);
-  while (itPar.hasNext()) {
-    bncParam* par = itPar.next();
-    if      (par->type == bncParam::CRD_X) {
-      par->x0 = _xcBanc(1);
-    }
-    else if (par->type == bncParam::CRD_Y) {
-      par->x0 = _xcBanc(2);
-    }
-    else if (par->type == bncParam::CRD_Z) {
-      par->x0 = _xcBanc(3);
-    }
-    else if (par->type == bncParam::RECCLK) {
-      par->x0 = _xcBanc(4);
-    }
-  }
 
   // Ellipsoidal Coordinates
   // ------------------------
@@ -178,19 +177,23 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
 ////////////////////////////////////////////////////////////////////////////
 double bncModel::cmpValueP3(t_satData* satData) {
 
-  double rho0 = (satData->xx - _xcBanc.Rows(1,3)).norm_Frobenius();
-
   ColumnVector xRec(3);
+  xRec(1) = x();
+  xRec(2) = y();
+  xRec(3) = z();
+
+  double rho0 = (satData->xx - xRec).norm_Frobenius();
   double dPhi = t_CST::omega * rho0 / t_CST::c; 
-  xRec(1) = _xcBanc(1) * cos(dPhi) - _xcBanc(2) * sin(dPhi); 
-  xRec(2) = _xcBanc(2) * cos(dPhi) + _xcBanc(1) * sin(dPhi); 
-  xRec(3) = _xcBanc(3);
+
+  xRec(1) = x() * cos(dPhi) - y() * sin(dPhi); 
+  xRec(2) = y() * cos(dPhi) + x() * sin(dPhi); 
+  xRec(3) = z();
 
   satData->rho = (satData->xx - xRec).norm_Frobenius();
 
   double tropDelay = delay_saast(satData->eleSat);
 
-  return satData->rho + _xcBanc(4) - satData->clk + tropDelay;
+  return satData->rho + clk() - satData->clk + tropDelay;
 }
 
 // Tropospheric Model (Saastamoinen)
@@ -226,6 +229,32 @@ double bncModel::delay_saast(double Ele) {
   return (0.002277/cos(zen)) * (pp + ((1255.0/TT)+0.05)*ee - BB*(tan(zen)*tan(zen)));
 }
 
+// Prediction Step of the Filter
+////////////////////////////////////////////////////////////////////////////
+void bncModel::predict() {
+
+  _params[0]->x0 = _xcBanc(1);
+  _params[1]->x0 = _xcBanc(2);
+  _params[2]->x0 = _xcBanc(3);
+  _params[3]->x0 = _xcBanc(4);
+
+  _params[0]->xx = 0.0;
+  _params[1]->xx = 0.0;
+  _params[2]->xx = 0.0;
+  _params[3]->xx = 0.0;
+
+  _QQ(1,1) += sig_crd_p * sig_crd_p;
+  _QQ(2,2) += sig_crd_p * sig_crd_p;
+  _QQ(3,3) += sig_crd_p * sig_crd_p;
+
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    _QQ(iPar, 4) = 0.0;
+  }
+  _QQ(4,4) = sig_clk_0 * sig_clk_0;
+
+  _xx = 0.0;
+}
+
 // Update Step of the Filter (currently just a single-epoch solution)
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncModel::update(t_epoData* epoData) {
@@ -234,13 +263,15 @@ t_irc bncModel::update(t_epoData* epoData) {
     return failure;
   }
 
+  predict();
+
   unsigned nPar = _params.size();
   unsigned nObs = epoData->size();
 
   // Create First-Design Matrix
   // --------------------------
-  _AA.ReSize(nObs, nPar);  // variance-covariance matrix
-  _ll.ReSize(nObs);        // tems observed-computed
+  Matrix       AA(nObs, nPar);  // first design matrix
+  ColumnVector ll(nObs);        // tems observed-computed
 
   unsigned iObs = 0;
   QMapIterator<QString, t_satData*> itObs(epoData->satData);
@@ -249,37 +280,30 @@ t_irc bncModel::update(t_epoData* epoData) {
     itObs.next();
     QString    prn     = itObs.key();
     t_satData* satData = itObs.value();
-    _ll(iObs) = satData->P3 - cmpValueP3(satData);
+    ll(iObs) = satData->P3 - cmpValueP3(satData);
 
-    unsigned iPar = 0;
-    QListIterator<bncParam*> itPar(_params);
-    while (itPar.hasNext()) {
-      ++iPar;
-      bncParam* par = itPar.next();
-      _AA(iObs, iPar) = par->partialP3(satData);
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      AA(iObs, iPar) = _params[iPar-1]->partialP3(satData);
     }
   }
 
-  // Compute Least-Squares Solution
-  // ------------------------------
-  _QQ.ReSize(nPar);
-  _QQ << _AA.t() * _AA;
-  _QQ = _QQ.i();
-  _dx = _QQ * _AA.t() * _ll;
-
-  // Compute Residuals
-  // -----------------
-  ColumnVector vv = _AA * _dx - _ll;
+  // Compute Kalman Update
+  // ---------------------
+  IdentityMatrix  PP(nObs);
+  SymmetricMatrix HH; HH << PP + AA * _QQ * AA.t();
+  SymmetricMatrix Hi = HH.i();
+  Matrix          KK  = _QQ * AA.t() * Hi;
+  ColumnVector    v1  = ll - AA * _xx;
+                  _xx = _xx + KK * v1;
+  IdentityMatrix Id(nPar);
+  _QQ << (Id - KK * AA) * _QQ;
 
   // Set Solution Vector
   // -------------------
-  _xx.ReSize(nPar);
-  unsigned iPar = 0;
-  QListIterator<bncParam*> itPar(_params);
+  QVectorIterator<bncParam*> itPar(_params);
   while (itPar.hasNext()) {
-    ++iPar;
     bncParam* par = itPar.next();
-    _xx(iPar) = par->x0 + _dx(iPar);
+    par->xx = _xx(par->index);
   }
 
   return success;
