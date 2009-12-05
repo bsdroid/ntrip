@@ -124,11 +124,16 @@ bncModel::bncModel() {
   _xx.ReSize(nPar);
   _xx = 0.0;
 
-  _static = false;
-
   bncSettings settings;
+
+  _static = false;
   if ( Qt::CheckState(settings.value("pppStatic").toInt()) == Qt::Checked) {
     _static = true;
+  }
+
+  _usePhase = false;
+  if ( Qt::CheckState(settings.value("pppUsePhase").toInt()) == Qt::Checked) {
+    _usePhase = true;
   }
 }
 
@@ -255,79 +260,82 @@ double bncModel::delay_saast(double Ele) {
 ////////////////////////////////////////////////////////////////////////////
 void bncModel::predict(t_epoData* epoData) {
 
-  // Make a copy of QQ and xx, set parameter indices
-  // -----------------------------------------------
-  SymmetricMatrix QQ_old = _QQ;
-  ColumnVector    xx_old = _xx;
+  if (_usePhase) {
 
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    _params[iPar-1]->index_old = _params[iPar-1]->index;
-    _params[iPar-1]->index     = 0;
-  }
-
-  // Remove Ambiguity Parameters without observations
-  // ------------------------------------------------
-  int iPar = 0;
-  QMutableVectorIterator<bncParam*> it(_params);
-  while (it.hasNext()) {
-    bncParam* par = it.next();
-    bool removed = false;
-    if (par->type == bncParam::AMB_L3) {
-      if (epoData->satData.find(par->prn) == epoData->satData.end()) {
-        removed = true;
-        delete par;
-        it.remove();
-      }
-    }
-    if (! removed) {
-      ++iPar;
-      par->index = iPar;
-    }
-  }
-
-  // Add new ambiguity parameters
-  // ----------------------------
-  QMapIterator<QString, t_satData*> itObs(epoData->satData);
-  while (itObs.hasNext()) {
-    itObs.next();
-    QString    prn     = itObs.key();
-    bool found = false;
+    // Make a copy of QQ and xx, set parameter indices
+    // -----------------------------------------------
+    SymmetricMatrix QQ_old = _QQ;
+    ColumnVector    xx_old = _xx;
+    
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
-      if (_params[iPar-1]->type == bncParam::AMB_L3 && 
-          _params[iPar-1]->prn == prn) {
-        found = true;
-        break;
+      _params[iPar-1]->index_old = _params[iPar-1]->index;
+      _params[iPar-1]->index     = 0;
+    }
+    
+    // Remove Ambiguity Parameters without observations
+    // ------------------------------------------------
+    int iPar = 0;
+    QMutableVectorIterator<bncParam*> it(_params);
+    while (it.hasNext()) {
+      bncParam* par = it.next();
+      bool removed = false;
+      if (par->type == bncParam::AMB_L3) {
+        if (epoData->satData.find(par->prn) == epoData->satData.end()) {
+          removed = true;
+          delete par;
+          it.remove();
+        }
+      }
+      if (! removed) {
+        ++iPar;
+        par->index = iPar;
       }
     }
-    if (!found) {
-      bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
-      _params.push_back(par);
+    
+    // Add new ambiguity parameters
+    // ----------------------------
+    QMapIterator<QString, t_satData*> itObs(epoData->satData);
+    while (itObs.hasNext()) {
+      itObs.next();
+      QString    prn     = itObs.key();
+      bool found = false;
+      for (int iPar = 1; iPar <= _params.size(); iPar++) {
+        if (_params[iPar-1]->type == bncParam::AMB_L3 && 
+            _params[iPar-1]->prn == prn) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
+        _params.push_back(par);
+      }
     }
-  }
-
-  int nPar = _params.size();
-  _xx.ReSize(nPar); _xx = 0.0;
-  _QQ.ReSize(nPar); _QQ = 0.0;
-  for (int i1 = 1; i1 <= nPar; i1++) {
-    bncParam* p1 = _params[i1-1];
-    if (p1->index_old != 0) {
-      _xx(p1->index)            = xx_old(p1->index_old);
-      _QQ(p1->index, p1->index) = QQ_old(p1->index_old, p1->index_old);
-      for (int i2 = 1; i2 <= nPar; i2++) {
-        bncParam* p2 = _params[i2-1];
-        if (p2->index_old != 0) {
-          _QQ(p1->index, p2->index) = QQ_old(p1->index_old, p2->index_old);
+    
+    int nPar = _params.size();
+    _xx.ReSize(nPar); _xx = 0.0;
+    _QQ.ReSize(nPar); _QQ = 0.0;
+    for (int i1 = 1; i1 <= nPar; i1++) {
+      bncParam* p1 = _params[i1-1];
+      if (p1->index_old != 0) {
+        _xx(p1->index)            = xx_old(p1->index_old);
+        _QQ(p1->index, p1->index) = QQ_old(p1->index_old, p1->index_old);
+        for (int i2 = 1; i2 <= nPar; i2++) {
+          bncParam* p2 = _params[i2-1];
+          if (p2->index_old != 0) {
+            _QQ(p1->index, p2->index) = QQ_old(p1->index_old, p2->index_old);
+          }
         }
       }
     }
-  }
-
-  for (int ii = 1; ii <= nPar; ii++) {
-    bncParam* par = _params[ii-1];
-    if (par->index_old == 0) {
-      _QQ(par->index, par->index) = sig_amb_0 * sig_amb_0;
+    
+    for (int ii = 1; ii <= nPar; ii++) {
+      bncParam* par = _params[ii-1];
+      if (par->index_old == 0) {
+        _QQ(par->index, par->index) = sig_amb_0 * sig_amb_0;
+      }
+      par->index_old = par->index;
     }
-    par->index_old = par->index;
   }
 
   // Coordinates
@@ -389,7 +397,7 @@ t_irc bncModel::update(t_epoData* epoData) {
   predict(epoData);
 
   unsigned nPar = _params.size();
-  unsigned nObs = 2 * epoData->size();
+  unsigned nObs = _usePhase ? 2 * epoData->size() : epoData->size();
 
   // Create First-Design Matrix
   // --------------------------
@@ -413,15 +421,17 @@ t_irc bncModel::update(t_epoData* epoData) {
       AA(iObs, iPar) = _params[iPar-1]->partial(satData, "");
     }
 
-    ++iObs;
-    ll(iObs)      = satData->L3 - rhoCmp;
-    PP(iObs,iObs) = 1.0 / (sig_L3 * sig_L3);
-    for (int iPar = 1; iPar <= _params.size(); iPar++) {
-      if (_params[iPar-1]->type == bncParam::AMB_L3 &&
-          _params[iPar-1]->prn  == prn) {
-        ll(iObs) -= _params[iPar-1]->x0;
-      } 
-      AA(iObs, iPar) = _params[iPar-1]->partial(satData, prn);
+    if (_usePhase) {
+      ++iObs;
+      ll(iObs)      = satData->L3 - rhoCmp;
+      PP(iObs,iObs) = 1.0 / (sig_L3 * sig_L3);
+      for (int iPar = 1; iPar <= _params.size(); iPar++) {
+        if (_params[iPar-1]->type == bncParam::AMB_L3 &&
+            _params[iPar-1]->prn  == prn) {
+          ll(iObs) -= _params[iPar-1]->x0;
+        } 
+        AA(iObs, iPar) = _params[iPar-1]->partial(satData, prn);
+      }
     }
   }
 
