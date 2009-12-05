@@ -5,8 +5,8 @@ set timefmt "%H:%M:%S"
 set format x "%H:%M"
 
 ### set term png
-### set output "zimm20.png"
-set title "ZIM20"
+### set output "joz20.png"
+set title "JOZ20"
 set ylabel "meters"
 set xlabel "5-Dec-2009"
 
