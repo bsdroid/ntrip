@@ -4,13 +4,14 @@ set timefmt "%H:%M:%S"
 
 set format x "%H:%M"
 
-set term png
-set output "zimm20.png"
+### set term png
+### set output "zimm20.png"
 set title "ZIM20"
 set ylabel "meters"
 set xlabel "1-Dec-2009"
 
-plot "ppp" u 1:4 t "dH" w d 3, \
+plot "ppp" u 1:4 t "dH" w l 3, \
      ""    u 1:2 t "dN" w l 1, \
      ""    u 1:3 t "dE" w l 2
 
+pause -1
