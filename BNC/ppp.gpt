@@ -8,7 +8,7 @@ set format x "%H:%M"
 ### set output "zimm20.png"
 set title "ZIM20"
 set ylabel "meters"
-set xlabel "1-Dec-2009"
+set xlabel "5-Dec-2009"
 
 plot "ppp" u 1:4 t "dH" w p 3, \
      ""    u 1:2 t "dN" w l 1, \
