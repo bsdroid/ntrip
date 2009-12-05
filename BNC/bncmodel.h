@@ -71,6 +71,7 @@ class bncModel {
   ColumnVector       _xx;
   ColumnVector       _xcBanc;
   ColumnVector       _ellBanc;
+  bool               _static;
 };
 
 #endif
