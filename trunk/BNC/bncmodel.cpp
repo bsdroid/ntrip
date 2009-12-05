@@ -108,6 +108,8 @@ bncModel::bncModel() {
 
   _xx.ReSize(nPar);
   _xx = 0.0;
+
+  _static = true;
 }
 
 // Destructor
@@ -233,25 +235,43 @@ double bncModel::delay_saast(double Ele) {
 ////////////////////////////////////////////////////////////////////////////
 void bncModel::predict() {
 
-  _params[0]->x0 = _xcBanc(1);
-  _params[1]->x0 = _xcBanc(2);
-  _params[2]->x0 = _xcBanc(3);
+  // Coordinates
+  // -----------
+  if (_static) {
+    if (x() == 0.0 && y() == 0.0 && z() == 0.0) {
+      _params[0]->x0 = _xcBanc(1);
+      _params[1]->x0 = _xcBanc(2);
+      _params[2]->x0 = _xcBanc(3);
+    }
+    else {
+      _params[0]->x0 += _params[0]->xx;
+      _params[1]->x0 += _params[1]->xx;
+      _params[2]->x0 += _params[2]->xx;
+    }
+  }
+  else {
+    _params[0]->x0 = _xcBanc(1);
+    _params[1]->x0 = _xcBanc(2);
+    _params[2]->x0 = _xcBanc(3);
+
+    _QQ(1,1) += sig_crd_p * sig_crd_p;
+    _QQ(2,2) += sig_crd_p * sig_crd_p;
+    _QQ(3,3) += sig_crd_p * sig_crd_p;
+  }
+
+  // Receiver Clocks
+  // ---------------
   _params[3]->x0 = _xcBanc(4);
-
-  _params[0]->xx = 0.0;
-  _params[1]->xx = 0.0;
-  _params[2]->xx = 0.0;
-  _params[3]->xx = 0.0;
-
-  _QQ(1,1) += sig_crd_p * sig_crd_p;
-  _QQ(2,2) += sig_crd_p * sig_crd_p;
-  _QQ(3,3) += sig_crd_p * sig_crd_p;
-
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     _QQ(iPar, 4) = 0.0;
   }
   _QQ(4,4) = sig_clk_0 * sig_clk_0;
 
+  // Nullify the Solution Vector
+  // ---------------------------
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    _params[iPar-1]->xx = 0.0;
+  }
   _xx = 0.0;
 }
 
