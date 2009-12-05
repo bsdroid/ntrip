@@ -315,14 +315,25 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   // Compute Kalman Update
   // ---------------------
-  IdentityMatrix  PP(nObs);
-  SymmetricMatrix HH; HH << PP + AA * _QQ * AA.t();
-  SymmetricMatrix Hi = HH.i();
-  Matrix          KK  = _QQ * AA.t() * Hi;
-  ColumnVector    v1  = ll - AA * _xx;
-                  _xx = _xx + KK * v1;
-  IdentityMatrix Id(nPar);
-  _QQ << (Id - KK * AA) * _QQ;
+  if (false) {
+    IdentityMatrix  PP(nObs);
+    SymmetricMatrix HH; HH << PP + AA * _QQ * AA.t();
+    SymmetricMatrix Hi = HH.i();
+    Matrix          KK  = _QQ * AA.t() * Hi;
+    ColumnVector    v1  = ll - AA * _xx;
+                    _xx = _xx + KK * v1;
+    IdentityMatrix Id(nPar);
+    _QQ << (Id - KK * AA) * _QQ;
+  }
+  else {
+    IdentityMatrix PP(nObs);
+    Matrix ATP = AA.t() * PP;
+    SymmetricMatrix NN = _QQ.i();
+    ColumnVector    bb = NN * _xx + ATP * ll;
+    NN << NN + ATP * AA;
+    _QQ = NN.i();
+    _xx = _QQ * bb; 
+  }
 
   // Set Solution Vector
   // -------------------
