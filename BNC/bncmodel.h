@@ -36,9 +36,9 @@ class t_satData;
 class bncParam {
  public:
   enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK, TROPO, AMB_L3};
-  bncParam(parType typeIn, int indexIn);
+  bncParam(parType typeIn, int indexIn, const QString& prn);
   ~bncParam();
-  double partialP3(t_satData* satData);
+  double partial(t_satData* satData, const QString& prnIn);
   bool isCrd() const {
     return (type == CRD_X || type == CRD_Y || type == CRD_Z);
   }
@@ -48,6 +48,8 @@ class bncParam {
   double   xx;
   double   x0;
   int      index;
+  int      index_old;
+  QString  prn;
 };
 
 class bncModel {
@@ -62,9 +64,9 @@ class bncModel {
   double clk() const {return _params[3]->solVal();}
   
  private:
-  double cmpValueP3(t_satData* satData);
+  double cmpValue(t_satData* satData);
   double delay_saast(double Ele);
-  void   predict();
+  void   predict(t_epoData* epoData);
 
   QVector<bncParam*> _params;
   SymmetricMatrix    _QQ;
