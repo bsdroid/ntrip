@@ -113,6 +113,7 @@ class bncWindow : public QMainWindow {
     QLineEdit* _miscMountLineEdit;
     QLineEdit* _pppMountLineEdit;
     QCheckBox* _pppStaticCheckBox;
+    QCheckBox* _pppUsePhaseCheckBox;
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;
     QLineEdit* _rnxSkelLineEdit;
