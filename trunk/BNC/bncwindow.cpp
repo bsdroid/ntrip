@@ -301,6 +301,9 @@ bncWindow::bncWindow() {
   // PPP Options
   // -----------
   _pppMountLineEdit  = new QLineEdit(settings.value("pppMount").toString());
+  _pppStaticCheckBox = new QCheckBox();
+  _pppStaticCheckBox->setCheckState(Qt::CheckState(
+                                    settings.value("pppStatic").toInt()));
 
   // Streams
   // -------
@@ -727,6 +730,8 @@ bncWindow::bncWindow() {
   pppLayout->setColumnMinimumWidth(0,14*ww);
   pppLayout->addWidget(new QLabel("Mountpoint"), 0, 0);
   pppLayout->addWidget(_pppMountLineEdit,        0, 1, 1,7);
+  pppLayout->addWidget(new QLabel("Static"),     1, 0);
+  pppLayout->addWidget(_pppStaticCheckBox,       1, 1);
   pppgroup->setLayout(pppLayout);
 
   // Main Layout
@@ -1032,6 +1037,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("logFile",     _logFileLineEdit->text());
   settings.setValue("miscMount",   _miscMountLineEdit->text());
   settings.setValue("pppMount",    _pppMountLineEdit->text());
+  settings.setValue("pppStatic",   _pppStaticCheckBox->checkState());
   settings.setValue("mountPoints", mountPoints);
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
