@@ -56,6 +56,8 @@ const double   sig_crd_0 =  100.0;
 const double   sig_crd_p =  100.0;
 const double   sig_clk_0 = 1000.0;
 const double   sig_amb_0 =  100.0;
+const double   sig_P3    =    1.0;
+const double   sig_L3    =   0.01;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -391,8 +393,9 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   // Create First-Design Matrix
   // --------------------------
-  Matrix       AA(nObs, nPar);  // first design matrix
-  ColumnVector ll(nObs);        // tems observed-computed
+  Matrix          AA(nObs, nPar);  // first design matrix
+  ColumnVector    ll(nObs);        // tems observed-computed
+  SymmetricMatrix PP(nObs); PP = 0.0;
 
   unsigned iObs = 0;
   QMapIterator<QString, t_satData*> itObs(epoData->satData);
@@ -404,13 +407,15 @@ t_irc bncModel::update(t_epoData* epoData) {
 
     double rhoCmp = cmpValue(satData);
 
-    ll(iObs) = satData->P3 - rhoCmp;
+    ll(iObs)      = satData->P3 - rhoCmp;
+    PP(iObs,iObs) = 1.0 / (sig_P3 * sig_P3);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       AA(iObs, iPar) = _params[iPar-1]->partial(satData, "");
     }
 
     ++iObs;
-    ll(iObs) = satData->L3 - rhoCmp;
+    ll(iObs)      = satData->L3 - rhoCmp;
+    PP(iObs,iObs) = 1.0 / (sig_L3 * sig_L3);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       if (_params[iPar-1]->type == bncParam::AMB_L3 &&
           _params[iPar-1]->prn  == prn) {
@@ -423,7 +428,6 @@ t_irc bncModel::update(t_epoData* epoData) {
   // Compute Kalman Update
   // ---------------------
   if (false) {
-    IdentityMatrix  PP(nObs);
     SymmetricMatrix HH; HH << PP + AA * _QQ * AA.t();
     SymmetricMatrix Hi = HH.i();
     Matrix          KK  = _QQ * AA.t() * Hi;
@@ -433,7 +437,6 @@ t_irc bncModel::update(t_epoData* epoData) {
     _QQ << (Id - KK * AA) * _QQ;
   }
   else {
-    IdentityMatrix PP(nObs);
     Matrix ATP = AA.t() * PP;
     SymmetricMatrix NN = _QQ.i();
     ColumnVector    bb = NN * _xx + ATP * ll;
