@@ -46,6 +46,7 @@
 #include "bncpppclient.h"
 #include "bancroft.h"
 #include "bncutils.h"
+#include "bncsettings.h"
 
 using namespace std;
 
@@ -109,7 +110,12 @@ bncModel::bncModel() {
   _xx.ReSize(nPar);
   _xx = 0.0;
 
-  _static = true;
+  _static = false;
+
+  bncSettings settings;
+  if ( Qt::CheckState(settings.value("pppStatic").toInt()) == Qt::Checked) {
+    _static = true;
+  }
 }
 
 // Destructor
