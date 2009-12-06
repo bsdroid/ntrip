@@ -343,9 +343,11 @@ void bncPPPclient::processEpoch() {
   str.setf(ios::fixed);
   str << "    PPP " << _staID.data() << " " 
       << _epoData->tt.timestr(1) << " " << _epoData->size() << " " 
-      << setw(14) << setprecision(3) << _model->x() << "  "
-      << setw(14) << setprecision(3) << _model->y() << "  "
-      << setw(14) << setprecision(3) << _model->z();
+      << setw(14) << setprecision(3) << _model->x()   << "  "
+      << setw(14) << setprecision(3) << _model->y()   << "  "
+      << setw(14) << setprecision(3) << _model->z()   << "  "
+      << setw(8)  << setprecision(3) << _model->clk() << "  "
+      << setw(8)  << setprecision(3) << _model->trp();
 
   emit newMessage(QString(str.str().c_str()).toAscii(), true);
 }

@@ -62,6 +62,7 @@ class bncModel {
   double y()   const {return _params[1]->solVal();}
   double z()   const {return _params[2]->solVal();}
   double clk() const {return _params[3]->solVal();}
+  double trp() const {return _estTropo ? _params[4]->solVal() : 0.0;}
   
  private:
   double cmpValue(t_satData* satData);
@@ -75,6 +76,7 @@ class bncModel {
   ColumnVector       _ellBanc;
   bool               _static;
   bool               _usePhase;
+  bool               _estTropo;
 };
 
 #endif
