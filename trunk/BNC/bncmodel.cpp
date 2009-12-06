@@ -55,9 +55,11 @@ const double   MINELE = 10.0 * M_PI / 180.0;
 const double   sig_crd_0 =  100.0;
 const double   sig_crd_p =  100.0;
 const double   sig_clk_0 = 1000.0;
+const double   sig_trp_0 =    0.01;
+const double   sig_trp_p =    1e-6;
 const double   sig_amb_0 =  100.0;
 const double   sig_P3    =    1.0;
-const double   sig_L3    =   0.01;
+const double   sig_L3    =    0.01;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -91,6 +93,9 @@ double bncParam::partial(t_satData* satData, const QString& prnIn) {
   else if (type == RECCLK) {
     return 1.0;
   }
+  else if (type == TROPO) {
+    return 1.0 / sin(satData->eleSat); 
+  }
   else if (type == AMB_L3) {
     if (prnIn == prn) {
       return 1.0;
@@ -105,24 +110,6 @@ double bncParam::partial(t_satData* satData, const QString& prnIn) {
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncModel::bncModel() {
-  _xcBanc.ReSize(4); _xcBanc = 0.0;
-  _params.push_back(new bncParam(bncParam::CRD_X,  1, ""));
-  _params.push_back(new bncParam(bncParam::CRD_Y,  2, ""));
-  _params.push_back(new bncParam(bncParam::CRD_Z,  3, ""));
-  _params.push_back(new bncParam(bncParam::RECCLK, 4, ""));
-  _ellBanc.ReSize(3);
-
-  unsigned nPar = _params.size();
-  _QQ.ReSize(nPar); 
-  _QQ = 0.0;
-
-  _QQ(1,1) = sig_crd_0 * sig_crd_0; 
-  _QQ(2,2) = sig_crd_0 * sig_crd_0; 
-  _QQ(3,3) = sig_crd_0 * sig_crd_0; 
-  _QQ(4,4) = sig_clk_0 * sig_clk_0; 
-
-  _xx.ReSize(nPar);
-  _xx = 0.0;
 
   bncSettings settings;
 
@@ -134,6 +121,37 @@ bncModel::bncModel() {
   _usePhase = false;
   if ( Qt::CheckState(settings.value("pppUsePhase").toInt()) == Qt::Checked) {
     _usePhase = true;
+  }
+
+  _estTropo = false;
+  if ( Qt::CheckState(settings.value("pppEstTropo").toInt()) == Qt::Checked) {
+    _estTropo = true;
+  }
+
+  _xcBanc.ReSize(4);  _xcBanc  = 0.0;
+  _ellBanc.ReSize(3); _ellBanc = 0.0;
+
+  _params.push_back(new bncParam(bncParam::CRD_X,  1, ""));
+  _params.push_back(new bncParam(bncParam::CRD_Y,  2, ""));
+  _params.push_back(new bncParam(bncParam::CRD_Z,  3, ""));
+  _params.push_back(new bncParam(bncParam::RECCLK, 4, ""));
+  if (_estTropo) {
+    _params.push_back(new bncParam(bncParam::TROPO,  5, ""));
+  }
+
+  unsigned nPar = _params.size();
+
+  _QQ.ReSize(nPar); 
+  _xx.ReSize(nPar);
+  _QQ = 0.0;
+  _xx = 0.0;
+
+  _QQ(1,1) = sig_crd_0 * sig_crd_0; 
+  _QQ(2,2) = sig_crd_0 * sig_crd_0; 
+  _QQ(3,3) = sig_crd_0 * sig_crd_0; 
+  _QQ(4,4) = sig_clk_0 * sig_clk_0; 
+  if (_estTropo) {
+    _QQ(5,5) = sig_trp_0 * sig_trp_0; 
   }
 }
 
@@ -218,7 +236,8 @@ double bncModel::cmpValue(t_satData* satData) {
 
   satData->rho = (satData->xx - xRec).norm_Frobenius();
 
-  double tropDelay = delay_saast(satData->eleSat);
+  double tropDelay = delay_saast(satData->eleSat) + 
+                     trp() / sin(satData->eleSat);
 
   return satData->rho + clk() - satData->clk + tropDelay;
 }
@@ -369,6 +388,13 @@ void bncModel::predict(t_epoData* epoData) {
     _QQ(iPar, 4) = 0.0;
   }
   _QQ(4,4) = sig_clk_0 * sig_clk_0;
+
+  // Tropospheric Delay
+  // ------------------
+  if (_estTropo) {
+    _params[4]->x0 += _params[4]->xx;
+    _QQ(5,5) += sig_trp_p * sig_trp_p;
+  }
 
   // Ambiguities
   // -----------

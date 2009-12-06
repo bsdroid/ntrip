@@ -8,7 +8,7 @@ set format x "%H:%M"
 ### set output "joz20.png"
 set title "JOZ20"
 set ylabel "meters"
-set xlabel "5-Dec-2009"
+set xlabel "6-Dec-2009"
 
 plot "ppp" u 1:4 t "dH" w p 3, \
      ""    u 1:2 t "dN" w l 1, \
