@@ -384,6 +384,10 @@ bncWindow::bncWindow() {
   _serialAutoNMEAComboBox->setWhatsThis(tr("<p>Select 'Auto' to automatically forward NMEA-GGA messages coming from your serial connected receiver to the NTRIP broadcaster and/or save them in a file.</p><p>Select 'Manual' only when handling a VRS stream and your serial connected receiver doesn't generate NMEA-GGA messages.</p>"));
   _serialFileNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved.</p>"));
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
+  _pppMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint if you want BNC to derive coordinates for the affected receiver position through a PPP solution.</p>"));
+  _pppStaticCheckBox->setWhatsThis(tr("<p>By default BNC considers the rover position as mobile.</p><p>Tick 'Static' to consider a static observation sitatuion and adapt appropriate filter characteristics for that.</p>"));
+  _pppUsePhaseCheckBox->setWhatsThis(tr("<p>By default BNC applies a PPP solution using a ionosphere free P3 linear combination of code observations.</p><p>Tick 'Use phase obs' to switch to a ionosphere free L3 linear combination of phase observations.</p>"));
+  _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -735,13 +739,15 @@ bncWindow::bncWindow() {
   QGridLayout* pppLayout = new QGridLayout;
   pppLayout->setColumnMinimumWidth(0,14*ww);
   pppLayout->addWidget(new QLabel("Mountpoint"),     0, 0);
-  pppLayout->addWidget(_pppMountLineEdit,            0, 1, 1, 3);
+  pppLayout->addWidget(_pppMountLineEdit,            0, 1, 1, 7);
   pppLayout->addWidget(new QLabel("Static"),         1, 0);
   pppLayout->addWidget(_pppStaticCheckBox,           1, 1);
-  pppLayout->addWidget(new QLabel("Use Phase Obs"),  2, 0);
+  pppLayout->addWidget(new QLabel("Use phase obs"),  2, 0);
   pppLayout->addWidget(_pppUsePhaseCheckBox,         2, 1);
-  pppLayout->addWidget(new QLabel("Estimate Tropo"), 3, 0);
+  pppLayout->addWidget(new QLabel("Estimate tropo"), 3, 0);
   pppLayout->addWidget(_pppEstTropoCheckBox,         3, 1);
+  pppLayout->addWidget(new QLabel("Derive coordinates through Precise Point Positioning (PPP) solution."),4, 0,1,30);
+  pppLayout->addWidget(new QLabel("    "),           5, 0);
   pppgroup->setLayout(pppLayout);
 
   // Main Layout
