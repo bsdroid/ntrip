@@ -307,6 +307,9 @@ bncWindow::bncWindow() {
   _pppUsePhaseCheckBox = new QCheckBox();
   _pppUsePhaseCheckBox->setCheckState(Qt::CheckState(
                                       settings.value("pppUsePhase").toInt()));
+  _pppEstTropoCheckBox = new QCheckBox();
+  _pppEstTropoCheckBox->setCheckState(Qt::CheckState(
+                                      settings.value("pppEstTropo").toInt()));
 
   // Streams
   // -------
@@ -731,12 +734,14 @@ bncWindow::bncWindow() {
   // ----------
   QGridLayout* pppLayout = new QGridLayout;
   pppLayout->setColumnMinimumWidth(0,14*ww);
-  pppLayout->addWidget(new QLabel("Mountpoint"),    0, 0);
-  pppLayout->addWidget(_pppMountLineEdit,           0, 1, 1, 3);
-  pppLayout->addWidget(new QLabel("Static"),        1, 0);
-  pppLayout->addWidget(_pppStaticCheckBox,          1, 1);
-  pppLayout->addWidget(new QLabel("Use Phase Obs"), 2, 0);
-  pppLayout->addWidget(_pppUsePhaseCheckBox,        2, 1);
+  pppLayout->addWidget(new QLabel("Mountpoint"),     0, 0);
+  pppLayout->addWidget(_pppMountLineEdit,            0, 1, 1, 3);
+  pppLayout->addWidget(new QLabel("Static"),         1, 0);
+  pppLayout->addWidget(_pppStaticCheckBox,           1, 1);
+  pppLayout->addWidget(new QLabel("Use Phase Obs"),  2, 0);
+  pppLayout->addWidget(_pppUsePhaseCheckBox,         2, 1);
+  pppLayout->addWidget(new QLabel("Estimate Tropo"), 3, 0);
+  pppLayout->addWidget(_pppEstTropoCheckBox,         3, 1);
   pppgroup->setLayout(pppLayout);
 
   // Main Layout
@@ -1044,6 +1049,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppMount",    _pppMountLineEdit->text());
   settings.setValue("pppStatic",   _pppStaticCheckBox->checkState());
   settings.setValue("pppUsePhase", _pppUsePhaseCheckBox->checkState());
+  settings.setValue("pppEstTropo", _pppEstTropoCheckBox->checkState());
   settings.setValue("mountPoints", mountPoints);
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
