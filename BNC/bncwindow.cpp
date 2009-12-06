@@ -386,7 +386,7 @@ bncWindow::bncWindow() {
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
   _pppMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint if you want BNC to derive coordinates for the affected receiver position through a PPP solution.</p>"));
   _pppStaticCheckBox->setWhatsThis(tr("<p>By default BNC considers the rover position as mobile.</p><p>Tick 'Static' to consider a static observation sitatuion and adapt appropriate filter characteristics for that.</p>"));
-  _pppUsePhaseCheckBox->setWhatsThis(tr("<p>By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations.</p><p>Tick 'Use phase obs' to switch to an ionosphere free L3 linear combination of phase observations.</p>"));
+  _pppUsePhaseCheckBox->setWhatsThis(tr("<p>By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations.</p><p>Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.</p>"));
   _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
 
   // Canvas with Editable Fields
