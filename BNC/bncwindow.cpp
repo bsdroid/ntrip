@@ -750,6 +750,20 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("    "),           5, 0);
   pppgroup->setLayout(pppLayout);
 
+  connect(_pppMountLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(bncText(const QString &)));
+  if (_pppMountLineEdit->text().isEmpty()) { 
+    palette.setColor(_pppStaticCheckBox->backgroundRole(), lightGray);
+    palette.setColor(_pppUsePhaseCheckBox->backgroundRole(), lightGray);
+    palette.setColor(_pppEstTropoCheckBox->backgroundRole(), lightGray);
+    _pppStaticCheckBox->setPalette(palette);
+    _pppUsePhaseCheckBox->setPalette(palette);
+    _pppEstTropoCheckBox->setPalette(palette);
+    _pppStaticCheckBox->setEnabled(false);
+    _pppUsePhaseCheckBox->setEnabled(false);
+    _pppEstTropoCheckBox->setEnabled(false);
+  }
+
   // Main Layout
   // -----------
   QGridLayout* mLayout = new QGridLayout;
@@ -1599,5 +1613,30 @@ void bncWindow::bncText(const QString &text){
       _scanRTCMCheckBox->setEnabled(false);
     }
   }
-}
 
+  // PPP Client
+  // ----------
+  if (_aogroup->currentIndex() == 9) {
+    if (!isEmpty) {
+      palette.setColor(_pppStaticCheckBox->backgroundRole(), white);
+      palette.setColor(_pppUsePhaseCheckBox->backgroundRole(), white);
+      palette.setColor(_pppEstTropoCheckBox->backgroundRole(), white);
+      _pppStaticCheckBox->setPalette(palette);
+      _pppUsePhaseCheckBox->setPalette(palette);
+      _pppEstTropoCheckBox->setPalette(palette);
+      _pppStaticCheckBox->setEnabled(true);
+      _pppUsePhaseCheckBox->setEnabled(true);
+      _pppEstTropoCheckBox->setEnabled(true);
+    } else {
+      palette.setColor(_pppStaticCheckBox->backgroundRole(), lightGray);
+      palette.setColor(_pppUsePhaseCheckBox->backgroundRole(), lightGray);
+      palette.setColor(_pppEstTropoCheckBox->backgroundRole(), lightGray);
+      _pppStaticCheckBox->setPalette(palette);
+      _pppUsePhaseCheckBox->setPalette(palette);
+      _pppEstTropoCheckBox->setPalette(palette);
+      _pppStaticCheckBox->setEnabled(false);
+      _pppUsePhaseCheckBox->setEnabled(false);
+      _pppEstTropoCheckBox->setEnabled(false);
+    }
+  }
+}
