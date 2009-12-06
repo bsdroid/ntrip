@@ -136,30 +136,35 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.10.1. <a href=#miscmount>Mountpoint</a><br>
 &nbsp; &nbsp; &nbsp; 3.10.2. <a href=#miscperf>Log Latency</a><br>
 &nbsp; &nbsp; &nbsp; 3.10.3. <a href=#miscscan>Scan RTCM</a><br>
-3.11. <a href=#streams>Streams</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.1 <a href=#streamedit>Edit Streams</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.2 <a href=#streamdelete>Delete Stream</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#streamconf>Reconfigure Streams On-the-fly</a><br>
-3.12. <a href=#logs>Logging</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.1 <a href=#logfile>Log</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.2 <a href=#throughput>Throughput</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.3 <a href=#latency>Latency</a><br>
-3.13. <a href=#bottom>Bottom Menu Bar</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.1. <a href=#streamadd>Add Stream - Coming from Caster</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.1 <a href=#streamhost>Caster Host and Port</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.2 <a href=#streamtable>Casters Table</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.3 <a href=#streamuser>User and Password</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.4 <a href=#gettable>Get Table</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.5 <a href=#ntripv>NTRIP Version</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.2 <a href=#streamip>Add Stream - Coming from TCP/IP Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.3 <a href=#streamudp>Add Stream - Coming from UDP Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.4 <a href=#streamser>Add Stream - Coming from Serial Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.5 <a href=#start>Start</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.6 <a href=#stop>Stop</a><br>
-3.14. <a href=#cmd>Command Line Options</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.1. <a href=#nw>No Window Mode</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.2. <a href=#post>Offline Mode</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.3. <a href=#conffile>Configuration File</a><br>
+3.11. <a href=#pppclient>PPP Client</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.1 <a href=#pppmount>Mountpoint</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.2 <a href=#pppstatic>Static</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppphase>Use phase obs</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#ppptropo>Estimate tropo</a><br>
+3.12. <a href=#streams>Streams</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.1 <a href=#streamedit>Edit Streams</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.2 <a href=#streamdelete>Delete Stream</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.3 <a href=#streamconf>Reconfigure Streams On-the-fly</a><br>
+3.13. <a href=#logs>Logging</a><br>
+&nbsp; &nbsp; &nbsp; 3.13.1 <a href=#logfile>Log</a><br>
+&nbsp; &nbsp; &nbsp; 3.13.2 <a href=#throughput>Throughput</a><br>
+&nbsp; &nbsp; &nbsp; 3.13.3 <a href=#latency>Latency</a><br>
+3.14. <a href=#bottom>Bottom Menu Bar</a><br>
+&nbsp; &nbsp; &nbsp; 3.14.1. <a href=#streamadd>Add Stream - Coming from Caster</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.1 <a href=#streamhost>Caster Host and Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.2 <a href=#streamtable>Casters Table</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.3 <a href=#streamuser>User and Password</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.4 <a href=#gettable>Get Table</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.5 <a href=#ntripv>NTRIP Version</a><br>
+&nbsp; &nbsp; &nbsp; 3.14.2 <a href=#streamip>Add Stream - Coming from TCP/IP Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.14.3 <a href=#streamudp>Add Stream - Coming from UDP Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.14.4 <a href=#streamser>Add Stream - Coming from Serial Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.14.5 <a href=#start>Start</a><br>
+&nbsp; &nbsp; &nbsp; 3.14.6 <a href=#stop>Stop</a><br>
+3.15. <a href=#cmd>Command Line Options</a><br>
+&nbsp; &nbsp; &nbsp; 3.15.1. <a href=#nw>No Window Mode</a><br>
+&nbsp; &nbsp; &nbsp; 3.15.2. <a href=#post>Offline Mode</a><br>
+&nbsp; &nbsp; &nbsp; 3.15.3. <a href=#conffile>Configuration File</a><br>
 </p>
 
 <p><a name="topmenu"><h4>3.1. Top Menu Bar</h4></p>
@@ -922,7 +927,32 @@ Note that in RTCM Version 2.x the message types 18 and 19 carry only the observa
 <p>This option is primarily meant for testing and evaluation. Use it to figure out what exactly is produced by a specific GNSS receiver's configuration. An empty option field (default) means that you don't want BNC to print the message type numbers and antenna information carried in RTCM streams.
 </p>
 
-<p><a name="streams"><h4>3.11. Streams</h4></p>
+<p><a name="pppclient"><h4>3.11. PPP Client</h4></p>
+<p>
+BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or phase data in ionosphere free linear combinations P3 or L3.
+</p>
+
+<p><a name="pppmount"><h4>3.11.1 Mountpoint - optional</h4></p>
+<p>
+Specify a mountpoint if you want BNC to derive coordinates for the affected receiver position through a PPP solution.
+</p>
+
+<p><a name="pppstatic"><h4>3.11.2 Static - optional</h4></p>
+<p>
+By default BNC considers the rover position as mobile. Tick 'Static' to consider a static observation sitatuion and adapt appropriate filter characteristics for that.
+</p>
+
+<p><a name="pppphase"><h4>3.11.3 Use phase obs - optional</h4></p>
+<p>
+By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations. Tick 'Use phase obs' to switch to an ionosphere free L3 linear combination of phase observations.
+</p>
+
+<p><a name="ppptropo"><h4>3.11.4 Estimate tropo - optional</h4></p>
+<p>
+By default BNC does not introduce troposphere parameters when estimating coordinates. Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.
+</p>
+
+<p><a name="streams"><h4>3.12. Streams</h4></p>
 <p>
 Each stream on an NTRIP broadcaster (and consequently on BNC) is defined using a unique source ID called mountpoint. An NTRIP client like BNC access the desired data stream by referring to its mountpoint. Information about streams and their mountpoints is available through the source-table maintained by the NTRIP broadcaster. Note that mountpoints could show up in BNC more than once when retrieving streams from several NTRIP broadcasters.
 </p>
@@ -943,7 +973,7 @@ Streams selected for retrieval are listed under the 'Streams' canvas section on 
 </table>
 </p>
 
-<p><a name="streamedit"><h4>3.11.1 Edit Streams</h4></p>
+<p><a name="streamedit"><h4>3.12.1 Edit Streams</h4></p>
 <ul>
 <li>
 BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.
@@ -958,11 +988,11 @@ BNC can also retrieve streams from virtual reference stations (VRS). To initiate
 </li>
 </ul> 
 
-<p><a name="streamdelete"><h4>3.11.2 Delete Stream</h4></p>
+<p><a name="streamdelete"><h4>3.12.2 Delete Stream</h4></p>
 <p>
 To remove a stream from the 'Streams' canvas in the main window, highlight it by clicking on it and hit the 'Delete Stream' button. You can also remove multiple streams simultaneously by highlighting them using +Shift and +Ctrl.</p>
 
-<p><a name="streamconf"><h4>3.11.3 Reconfigure Streams On-the-fly</h4></p>
+<p><a name="streamconf"><h4>3.12.3 Reconfigure Streams On-the-fly</h4></p>
 <p>
 The streams selection can be changed on-the-fly without interrupting uninvolved threads in the running BNC process.
 </p>
@@ -972,51 +1002,51 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 <u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option from disk at pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file become effective without terminating uninvolved threads. See annexed section 'Configuration Example' for a configuration file example and a list of other on-the-fly changeable options.
 </p>
 
-<p><a name="logs"><h4>3.12. Logging</h4></p>
+<p><a name="logs"><h4>3.13. Logging</h4></p>
 <p>
 A tabs section on the bottom of the main window provides online controle of BNC's activities. Tabs are available to show the records saved in a logfile, for a plot to controle the bandwidth consumtion and for a plot showing stream latencies.
 </p>
-<p><a name="logfile"><h4>3.12.1 Log</h4></p>
+<p><a name="logfile"><h4>3.13.1 Log</h4></p>
 <p>
 Records of BNC's activities are shown in the 'Log' tab. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field.
 </p>
 
-<p><a name="throughput"><h4>3.12.2 Throughput</h4></p>
+<p><a name="throughput"><h4>3.13.2 Throughput</h4></p>
 <p>
 The bandwidth consumtion per stream is shown in the 'Throughput' tab in bits per second (bps) or kilo bits per second (kbps).
 </p>
 
-<p><a name="latency"><h4>3.12.3 Latency</h4></p>
+<p><a name="latency"><h4>3.13.3 Latency</h4></p>
 <p>
 The latency of observations in each incoming stream is shown in the 'Latency' tab in milliseconds or seconds. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) are not considered here. Note that the calculation of correct latencies requires the clock of the host computer to be properly synchronized.
 </p>
 
-<p><a name="bottom"><h4>3.13. Bottom Menu Bar</h4></p>
+<p><a name="bottom"><h4>3.14. Bottom Menu Bar</h4></p>
 <p>
 The bottom menu bar allows to add or delete streams to BNC's configuration and to start or stop it. It also provides access to BNC's online help function.
 </p>
 
-<p><a name="streamadd"><h4>3.13.1 Add Stream - Coming from Caster</h4></p>
+<p><a name="streamadd"><h4>3.14.1 Add Stream - Coming from Caster</h4></p>
 <p>
 Button 'Add Stream' > 'Coming from Caster' opens a window that allows user to select data streams from an NTRIP broadcaster according to their mountpoints.
 </p> 
 
-<p><a name="streamhost"><h4>3.13.1.1 Caster Host and Port - mandatory</h4></p>
+<p><a name="streamhost"><h4>3.14.1.1 Caster Host and Port - mandatory</h4></p>
 <p>
 Enter the NTRIP broadcaster host IP and port number. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.
 </p> 
 
-<p><a name="streamtable"><h4>3.13.1.2 Casters Table - optional</h4></p>
+<p><a name="streamtable"><h4>3.14.1.2 Casters Table - optional</h4></p>
 <p>
 It may be that your are not sure about your NTRIP broadcasters host and port number or you are interested in other broadcaster installations operated elsewhere. Hit 'Show' for a table of known broadcasters maintained at <u>www.rtcm-ntrip.org/home</u>. A window opens which allows to select a broadcaster for stream retrieval.
 </p> 
 
-<p><a name="streamuser"><h4>3.13.1.3 User and Password - mandatory for protected streams</h4></p>
+<p><a name="streamuser"><h4>3.14.1.3 User and Password - mandatory for protected streams</h4></p>
 <p>
 Some streams on NTRIP broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.
 </p> 
 
-<p><a name="gettable"><h4>3.13.1.4 Get Table</h4></p>
+<p><a name="gettable"><h4>3.14.1.4 Get Table</h4></p>
 <p>
 Use the 'Get Table' button to download the source-table from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. RTCM Version 2.x streams must contain message types 18 and 19 or 20 and 21 while RTCM Version 3.x streams must contain GPS or SBAS message types 1002 or 1004 and may contain GLONASS message types 1010 or 1012, see data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3.x streams containing message types 1019 (GPS) and 1020 (GLONASS) are required. Select your streams line by line, use +Shift and +Ctrl when necessary.
 </p> 
@@ -1027,7 +1057,7 @@ The contents of data field 'nmea' tells you whether a stream retrieval needs to 
 Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream' and repeat the process again to retrieve streams from different casters.
 </p> 
 
-<p><a name="ntripv"><h4>3.13.1.5 NTRIP Version - mandatory</h4></p>
+<p><a name="ntripv"><h4>3.14.1.5 NTRIP Version - mandatory</h4></p>
 <p>
 Some limitations and deficiencies of the NTRIP version 1 stream transport protocol are solved in NTRIP version 2. Improvements mainly concern a full HTTP compatibility in view of requirements coming from proxy servers. Version 2 is backwards compatible to Version 1. Options implemented in BNC are:
 </p>
@@ -1048,7 +1078,7 @@ If NTRIP version 2 is supported by the broadcaster:
 Select option '1' if you are not sure whether the broadcaster supports NTRIP version 2.</li>
 </p>
 
-<p><a name="streamip"><h4>3.13.2 Add Stream - Coming from TCP/IP Port</h4></p>
+<p><a name="streamip"><h4>3.14.2 Add Stream - Coming from TCP/IP Port</h4></p>
 <p>
 Button 'Add Stream' > 'Coming from TCP/IP Port' allows to retrieve streams via TCP directly from an IP address without using the NTRIP transport protocol. For that you:
 <ul>
@@ -1067,7 +1097,7 @@ Streams directly received from a TCP/IP port show up with an 'N' for 'No NTRIP' 
 Note that this option works only if no proxy server is involved in the communication link.
 </p>
 
-<p><a name="streamudp"><h4>3.13.3 Add Stream - Coming from UDP Port</h4></p>
+<p><a name="streamudp"><h4>3.14.3 Add Stream - Coming from UDP Port</h4></p>
 <p>
 Button 'Add Stream' > 'Coming from UDP Port' allows to pick up streams arriving directly at one of the local host's UDP ports without using the NTRIP transport protocol. For that you:
 <ul>
@@ -1082,7 +1112,7 @@ Button 'Add Stream' > 'Coming from UDP Port' allows to pick up streams arriving 
 Streams directly received at a UDP port show up with a 'UN' for 'UDP, No NTRIP' in the 'Streams' canvas section on BNC's main window . Latitude and longitude are to be entered just for informal reasons.
 <p>
 
-<p><a name="streamser"><h4>3.13.4 Add Stream - Coming from Serial Port</h4></p>
+<p><a name="streamser"><h4>3.14.4 Add Stream - Coming from Serial Port</h4></p>
 <p>
 Button 'Add Stream' > 'Coming from Serial Port' allows to retrieve streams from a GNSS receiver via serial port without using the NTRIP transport protocol. For that you:
 <ul>
@@ -1116,22 +1146,22 @@ When selecting the serial communication options listed above, make sure that you
 Streams received from a serial connected GNSS receiver show up with an 'S' (for <u>S</u>erial Port, no NTRIP) in the 'Streams' canvas section on BNC's main window . Latitude and longitude are to be entered just for informal reasons.
 <p>
 
-<p><a name="start"><h4>3.13.5 Start</h4></p>
+<p><a name="start"><h4>3.14.5 Start</h4></p>
 <p>
 Hit 'Start' to start retrieving, decoding, and converting GNSS data streams in real-time. Note that 'Start' generally forces BNC to begin with fresh RINEX which might overwrite existing files when necessary unless the option 'Append files' is ticked.
 </p> 
 
-<p><a name="stop"><h4>3.13.6 Stop</h4></p>
+<p><a name="stop"><h4>3.14.6 Stop</h4></p>
 <p>
 Hit the 'Stop' button in order to stop BNC. 
 </p> 
 
-<p><a name="cmd"><h4>3.14. Command Line Options</h4></p>
+<p><a name="cmd"><h4>3.15. Command Line Options</h4></p>
 <p> 
 Command line options are available to run BNC in 'no window' mode or let it read data from a file in offline mode. BNC will then use processing options from the configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration file name instead of using the default name 'BNC.ini'.
 </p> 
 
-<p><a name="nw"><h4>3.14.1 No Window Mode - optional</h4></p>
+<p><a name="nw"><h4>3.15.1 No Window Mode - optional</h4></p>
 <p>
 Apart from its regular windows mode, BNC can be started on all systems as a background/batch job with command line option '-nw'. BNC will then run in 'no window' mode, using processing options from its configuration file on disk. Terminate BNC using Windows Task Manager when running it in 'no window' mode on Windows systems.
 </p> 
@@ -1140,7 +1170,7 @@ Example:<br><br>
 bnc.exe -nw
 </p>
 
-<p><a name="post"><h4>3.14.2 Offline Mode - optional</h4></p>
+<p><a name="post"><h4>3.15.2 Offline Mode - optional</h4></p>
 <p>
 Although BNC is primarily a real-time online tool, it can be run in offline mode to read data from a file for post processing purposes. Enter the following four command line options for that:
 </p>
@@ -1159,7 +1189,7 @@ Example:<br><br>
 Note that it is necessary to define a date and time for the first epoch because RTCM streams do not contain complete time stamps as needed for RINEX. Note further that when running BNC in offline mode, it will use options for file saving, interval, sampling etc. from its configuration file.
 </p> 
 
-<p><a name="conffile"><h4>3.14.3 Configuration File - optional</h4></p>
+<p><a name="conffile"><h4>3.15.3 Configuration File - optional</h4></p>
 The default configuration file name is 'BNC.ini'. You may change this name at startup time using the command line option '--conf &#060;<u>confFileName</u>&#062;'. This allows to run several BNC jobs in parallel on the same host using different sets of configuration options. <u>confFileName</u> stands either for the full path to a configuration file or just for a file name. If you introduce only a filename, the corresponding file will be saved in the current working directory from where BNC is started.
 </p>
 <p>
