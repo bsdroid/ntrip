@@ -140,8 +140,8 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 3.11. <a href=#pppclient>PPP Client</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.1 <a href=#pppmount>Mountpoint</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2 <a href=#pppstatic>Static</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppphase>Use phase obs</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#ppptropo>Estimate tropo</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppphase>Use Phase Obs</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#ppptropo>Estimate Tropo</a><br>
 3.12. <a href=#streams>Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1 <a href=#streamedit>Edit Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.2 <a href=#streamdelete>Delete Stream</a><br>
@@ -930,7 +930,11 @@ Note that in RTCM Version 2.x the message types 18 and 19 carry only the observa
 
 <p><a name="pppclient"><h4>3.11. PPP Client</h4></p>
 <p>
-BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or phase data in ionosphere free linear combinations P3 or L3.
+BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or phase data in ionosphere free linear combinations P3 or L3. Besides pulling a stream of observations from a receiver this also requires pulling
+<ul>
+<li>satellite orbit and clock corrections to Broadcast Ephemeris in the form of 'State Space Representation' (SSR) messages as proposed by RTCM (i.e. premature message type 1060).</li>
+<li>Broadcast Ephemeris available as RTCM Version 3 message types 1019 and 1020. Note that a stream dedicated to providing these messages is 'RTCM3EPH" on NTRIP broadcaster www.igs-ip.net.</li>
+</ul>
 </p>
 
 <p><a name="pppmount"><h4>3.11.1 Mountpoint - optional</h4></p>
@@ -943,12 +947,12 @@ Specify a mountpoint if you want BNC to derive coordinates for the affected rece
 By default BNC considers the rover position as mobile. Tick 'Static' to consider a static observation sitatuion and adapt appropriate filter characteristics for that.
 </p>
 
-<p><a name="pppphase"><h4>3.11.3 Use phase obs - optional</h4></p>
+<p><a name="pppphase"><h4>3.11.3 Use Phase Obs - optional</h4></p>
 <p>
 By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations. Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.
 </p>
 
-<p><a name="ppptropo"><h4>3.11.4 Estimate tropo - optional</h4></p>
+<p><a name="ppptropo"><h4>3.11.4 Estimate Tropo - optional</h4></p>
 <p>
 By default BNC does not introduce troposphere parameters when estimating coordinates. Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.
 </p>
