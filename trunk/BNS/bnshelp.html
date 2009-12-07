@@ -1,8 +1,3 @@
-
-*  2009 12  7 13 11   0.00000000
-PG28 -12951.747438 -13222.750536  19615.188932    -24.896066     -0.001994   0.437   0.447  -0.663
-PG29   1040.597872  21860.130922 -14987.804882     80.203472      0.005916  -0.027  -0.577   0.396
-
 <h3>BKG Ntrip State Space Server (BNS) Version 1.1</h3>
 
 <p>
@@ -263,7 +258,7 @@ BNS requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF)
 </p>
 
 <p>
-Below you find an example of precise clocks and orbits coming in SP3 format from a real-time GNSS engine. Each epoch starts with an asterisk character followed by GPS Week, Second in GPS Week and Number of satellites. Subsequent records provide the following set of parameters for each satellite:
+Below you find an example of precise clocks and orbits coming in SP3 format from a real-time GNSS engine. Each epoch starts with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records provide the following set of parameters for each satellite:
 </p>
 
 <p>
@@ -271,8 +266,8 @@ Below you find an example of precise clocks and orbits coming in SP3 format from
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
 <li>X,Y,Z coordinates in Earth-Centered-Earth-Fixed system [km]</li>
 <li>Satellite clock error [microsecond]</li>
-<li>don't know what this is</li>
-<li>DX,DY,DZ [m] in Earth-Centered-Earth-Fixed system for transformation CoM->APC</li>
+<li>2nd order relativistic effect in [microsecond]</li>
+<li>DX,DY,DZ [m] in Earth-Centered-Earth-Fixed system for translation CoM->APC</li>
 </ul>
 </p>
 
@@ -588,8 +583,8 @@ Frankfurt, Germany<br>
 </tr>
 
 <tr>
-<td>October 2009 &nbsp;</td><td>Version 1.1 &nbsp;</td>
-<td>[Add] Upgrade to Qt Version 4.4.3<br> [Add] Enable/disable tab widgets<br> [Add] User defined configuration file name<br> [mod] Switch to configuration files in ini-Format<br> [Add] Auto start<br> [Add] Drag and drop ini files<br> [Add] Send broadcast clocks<br> [Mod] Update following RTCM 091-2009-SC104-542 document</td>
+<td>Dec 2009 &nbsp;</td><td>Version 1.1 &nbsp;</td>
+<td>[Add] Upgrade to Qt Version 4.4.3<br> [Add] Enable/disable tab widgets<br> [Add] User defined configuration file name<br> [mod] Switch to configuration files in ini-Format<br> [Add] Auto start<br> [Add] Drag and drop ini files<br> [Add] Optional reference to Center of Mass< br> [Mod] Update following RTCM 091-2009-SC104-542 document</td>
 </tr>
 
 </table>
@@ -682,18 +677,21 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>password1=pw</td><td>Broadcast Corrections I: Password</td></tr>
 <tr><td>refSys_1=IGS05</td><td>Broadcast Corrections I: System</td></tr>
 <tr><td>outFile_1=/home/weber/rinex/CLCK1</td><td>Broadcast Corrections I: Save (full path)</td></tr>
+<tr><td>CoM_1=2</td><td>Broadcast Corrections I: Center of Mass</td></tr>
 <tr><td>outHost2=www.igs-.net</td><td>Broadcast Corrections II: Host</td></tr>
 <tr><td>outPort2=2101</td><td>Broadcast Corrections II: Port</td></tr>
 <tr><td>mountpoint_2=CLCK2</td><td>Broadcast Corrections II: Mountpoint</td></tr>
 <tr><td>password2=pw</td><td>Broadcast Corrections II: Password</td></tr>
 <tr><td>refSys_2=ETRF2000</td><td>Broadcast Corrections II: System</td></tr>
 <tr><td>outFile_2=/home/weber/rinex/CLCK2</td><td>Broadcast Corrections II: Save (full path)</td></tr>
+<tr><td>CoM_2=0</td><td>Broadcast Corrections II: Center of Mass</td></tr>
 <tr><td>outHost3=www.igs-.net</td><td>Broadcast Corrections III: Host</td></tr>
 <tr><td>outPort3=2101</td><td>Broadcast Corrections III: Port</td></tr>
 <tr><td>mountpoint_3=CLCK3</td><td>Broadcast Corrections III: Mountpoint</td></tr>
 <tr><td>password3=pw</td><td>Broadcast Corrections III: Password</td></tr>
 <tr><td>refSys_3=ETRF2000</td><td>Broadcast Corrections III: System</td></tr>
 <tr><td>outFile_3=/home/weber/rinex/CLCK3</td><td>Broadcast Corrections III: Save (full path)</td></tr>
+<tr><td>CoM_3=0</td><td>Broadcast Corrections III: Center of Mass</td></tr>
 <tr><td>outHostEph=www.igs-ip.net</td><td>Broadcast Ephemeris: Host</td></tr>
 <tr><td>outPortEph=2101</td><td>Broadcast Ephemeris: Port</td></tr>
 <tr><td>mountpoint_Eph=BRDC0</td><td>Broadcast Ephemeris: Mountpoint</td></tr>
