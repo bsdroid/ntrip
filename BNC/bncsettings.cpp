@@ -75,6 +75,10 @@ bncSettings::bncSettings(bool noInit) :
     setValue("startTab",         "0");
     setValue("statusTab",        "0");
     setValue("waitTime",         "5");
+    setValue("pppMount=",         "");
+    setValue("pppStatic=",        "");
+    setValue("pppUsePhase=",      "");
+    setValue("pppEstTropo=",      "");
 
     sync();
   }
