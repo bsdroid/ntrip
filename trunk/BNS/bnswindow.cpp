@@ -315,6 +315,10 @@ bnsWindow::bnsWindow() {
   _sp3IntrComboBox->setWhatsThis(tr("Select the length of the SP3 orbit file."));
   _sp3SamplSpinBox->setWhatsThis(tr("Select the SP3 orbit file sampling interval in seconds. A value of zero '0' tells BNS to store all available samples into SP3 orbit files."));
   _autoStartCheckBox->setWhatsThis(tr("<p>Tick 'Auto start' for auto-start of BNS at startup time in window mode with preassigned processing options.</p>"));
+  _CoM_1_CheckBox->setWhatsThis(tr("<p>By default orbit and clock corrections refer to APC. Tick 'Center of Mass' to refer uploaded corrections to CoM.</p>"));
+  _CoM_2_CheckBox->setWhatsThis(tr("<p>By default orbit and clock corrections refer to APC. Tick 'Center of Mass' to refer uploaded corrections to CoM.</p>"));
+  _CoM_3_CheckBox->setWhatsThis(tr("<p>By default orbit and clock corrections refer to APC. Tick 'Center of Mass' to refer uploaded corrections to CoM.</p>"));
+
 
   // TabWidget
   // ---------
