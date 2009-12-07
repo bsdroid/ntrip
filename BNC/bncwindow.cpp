@@ -738,16 +738,18 @@ bncWindow::bncWindow() {
   // ----------
   QGridLayout* pppLayout = new QGridLayout;
   pppLayout->setColumnMinimumWidth(0,14*ww);
-  pppLayout->addWidget(new QLabel("Mountpoint"),     0, 0);
-  pppLayout->addWidget(_pppMountLineEdit,            0, 1, 1, 7);
-  pppLayout->addWidget(new QLabel("Static"),         1, 0);
-  pppLayout->addWidget(_pppStaticCheckBox,           1, 1);
-  pppLayout->addWidget(new QLabel("Use phase obs"),  2, 0);
-  pppLayout->addWidget(_pppUsePhaseCheckBox,         2, 1);
-  pppLayout->addWidget(new QLabel("Estimate tropo"), 3, 0);
-  pppLayout->addWidget(_pppEstTropoCheckBox,         3, 1);
-  pppLayout->addWidget(new QLabel("Derive coordinates through Precise Point Positioning (PPP) solution."),4, 0,1,30);
-  pppLayout->addWidget(new QLabel("    "),           5, 0);
+  pppLayout->addWidget(new QLabel("Mountpoint"),          0, 0);
+  pppLayout->addWidget(_pppMountLineEdit,                 0, 1, 1, 3);
+  pppLayout->addWidget(new QLabel("Static"),              1, 0);
+  pppLayout->addWidget(_pppStaticCheckBox,                1, 1);
+  pppLayout->addWidget(new QLabel("     Use phase obs"),  1, 2, Qt::AlignRight);
+  pppLayout->addWidget(_pppUsePhaseCheckBox,              1, 3);
+  pppLayout->addWidget(new QLabel("     Estimate tropo"), 1, 4, Qt::AlignRight);
+  pppLayout->addWidget(_pppEstTropoCheckBox,              1, 5);
+  pppLayout->addWidget(new QLabel("Derive coordinates following Precise Point Positioning (PPP) approach."),2, 0,1,30);
+  pppLayout->addWidget(new QLabel("    "),                3, 0);
+  pppLayout->addWidget(new QLabel("    "),                4, 0);
+  pppLayout->addWidget(new QLabel("    "),                5, 0);
   pppgroup->setLayout(pppLayout);
 
   connect(_pppMountLineEdit, SIGNAL(textChanged(const QString &)),
