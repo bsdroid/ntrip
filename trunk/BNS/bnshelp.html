@@ -129,7 +129,7 @@ The default file name 'BNS.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 4.6.2. <a href=#ephcmount>Mountpoint & Password</a><br>
 &nbsp; &nbsp; &nbsp; 4.6.3. <a href=#ephcsys>System</a><br>
 &nbsp; &nbsp; &nbsp; 4.6.4. <a href=#ephcsave>Save</a><br>
-&nbsp; &nbsp; &nbsp; 4.6.5. <a href=#ephbec>Broadcast Clocks</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.5. <a href=#ephcom>Center of Mass</a><br>
 4.7. <a href=#brdc>Broadcast Ephemeris</a><br>
 &nbsp; &nbsp; &nbsp; 4.7.1. <a href=#brdcserver>Host & Port</a><br>
 &nbsp; &nbsp; &nbsp; 4.7.2. <a href=#brdcmount>Mountpoint & Password</a><br>
@@ -427,9 +427,9 @@ The following is an example file contents based on combined orbit and clock corr
 </pre>
 </p>
 
-<p><a name="ephbec"><h4>4.6.5 Broadcast Clocks - optional</h4></p>
+<p><a name="ephcom"><h4>4.6.5 Center of Mass - optional</h4></p>
 <p>
-Tick 'Broadcast clocks" to ignore incoming clock estimates and send broadcast clocks instead of broadcast clock corrections.</p><p>This option is implemented to enable comparison with IGS post processing products. For that these clocks will not be corrected for the 2nd order relativistic effect.
+BNS allows to either refer orbit/clock corrections to the satellite's Center of Mass (CoM) or to the satellite's Antenna Phase Center (APC). By default corrections refer to APC. Tick 'Center of Mass' to refer uploaded corrections to CoM.
 </p>
 
 <p><a name="brdc"><h4>4.7. Broadcast Ephemeris</h4></p>
