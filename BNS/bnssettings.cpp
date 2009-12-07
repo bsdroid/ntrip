@@ -42,7 +42,7 @@ bnsSettings::bnsSettings() :
     setValue("mountpoint_1","");
     setValue("password1",   "");
     setValue("refSys_1",    "IGS05");
-    setValue("beClocks1",   "0");
+    setValue("CoM_1",      "0");
     setValue("outFile_1",   "");
 
     setValue("outHost2",    "");
@@ -50,7 +50,7 @@ bnsSettings::bnsSettings() :
     setValue("mountpoint_2","");
     setValue("password2",   "");
     setValue("refSys_2",    "IGS05");
-    setValue("beClocks2",   "0");
+    setValue("CoM_2",      "0");
     setValue("outFile_2",   "");
 
     setValue("outHost3",    "");
@@ -58,7 +58,7 @@ bnsSettings::bnsSettings() :
     setValue("mountpoint_3","");
     setValue("password3",   "");
     setValue("refSys_3",    "IGS05");
-    setValue("beClocks3",   "0");
+    setValue("CoM_3",       "0");
     setValue("outFile_3",   "");
 
     setValue("outHostEph",    "");
