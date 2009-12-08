@@ -638,10 +638,6 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
 
   QMutexLocker locker(&_mutex);
 
-  if (!_socketsCorr) {
-    return;
-  }
-
   bncSettings settings;
   _waitCoTime    = settings.value("corrTime").toInt();
   if (_waitCoTime < 1) {
@@ -682,22 +678,24 @@ void bncApp::dumpCorrs(long minTime, long maxTime) {
   for (long sec = minTime; sec <= maxTime; sec++) {
     QList<QString> allCorrs = _corrs->values(sec);
     emit newCorrections(allCorrs);
-    QListIterator<QString> it(allCorrs);
-    while (it.hasNext()) {
-      QString corrLine = it.next() + "\n";
-
-      QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
-      while (is.hasNext()) {
-        QTcpSocket* sock = is.next();
-        if (sock->state() == QAbstractSocket::ConnectedState) {
-          if (sock->write(corrLine.toAscii()) == -1) {
+    if (_socketsCorr) {
+      QListIterator<QString> it(allCorrs);
+      while (it.hasNext()) {
+        QString corrLine = it.next() + "\n";
+      
+        QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
+        while (is.hasNext()) {
+          QTcpSocket* sock = is.next();
+          if (sock->state() == QAbstractSocket::ConnectedState) {
+            if (sock->write(corrLine.toAscii()) == -1) {
+              delete sock;
+              is.remove();
+            }
+          }
+          else if (sock->state() != QAbstractSocket::ConnectingState) {
             delete sock;
             is.remove();
           }
-        }
-        else if (sock->state() != QAbstractSocket::ConnectingState) {
-          delete sock;
-          is.remove();
         }
       }
     }
