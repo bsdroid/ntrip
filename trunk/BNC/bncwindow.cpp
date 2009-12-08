@@ -568,10 +568,6 @@ bncWindow::bncWindow() {
     _corrIntrComboBox->setStyleSheet("background-color: lightGray");
     _corrIntrComboBox->setEnabled(false);
   }
-  if (_corrPortLineEdit->text().isEmpty()) { 
-    _corrTimeSpinBox->setStyleSheet("background-color: lightGray");
-    _corrTimeSpinBox->setEnabled(false);
-  }
 
   // Feed Engine
   // -----------
@@ -1495,18 +1491,10 @@ void bncWindow::bncText(const QString &text){
       _corrIntrComboBox->setEnabled(true);
       _corrPortLineEdit->setEnabled(true);
       }
-      if (!_corrPortLineEdit->text().isEmpty()) {
-      _corrTimeSpinBox->setStyleSheet("background-color: white");
-      _corrTimeSpinBox->setEnabled(true);
-      }
     } else {
       if (_corrPathLineEdit->text().isEmpty()) {
       _corrIntrComboBox->setStyleSheet("background-color: lightGray");
       _corrIntrComboBox->setEnabled(false); 
-      }
-      if (_corrPortLineEdit->text().isEmpty()) {
-      _corrTimeSpinBox->setStyleSheet("background-color: lightGray");
-      _corrTimeSpinBox->setEnabled(false);
       }
     }
   }
