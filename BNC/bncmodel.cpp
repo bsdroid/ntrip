@@ -142,9 +142,7 @@ bncModel::bncModel() {
   unsigned nPar = _params.size();
 
   _QQ.ReSize(nPar); 
-  _xx.ReSize(nPar);
   _QQ = 0.0;
-  _xx = 0.0;
 
   _QQ(1,1) = sig_crd_0 * sig_crd_0; 
   _QQ(2,2) = sig_crd_0 * sig_crd_0; 
@@ -284,7 +282,6 @@ void bncModel::predict(t_epoData* epoData) {
     // Make a copy of QQ and xx, set parameter indices
     // -----------------------------------------------
     SymmetricMatrix QQ_old = _QQ;
-    ColumnVector    xx_old = _xx;
     
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       _params[iPar-1]->index_old = _params[iPar-1]->index;
@@ -332,12 +329,10 @@ void bncModel::predict(t_epoData* epoData) {
     }
     
     int nPar = _params.size();
-    _xx.ReSize(nPar); _xx = 0.0;
     _QQ.ReSize(nPar); _QQ = 0.0;
     for (int i1 = 1; i1 <= nPar; i1++) {
       bncParam* p1 = _params[i1-1];
       if (p1->index_old != 0) {
-        _xx(p1->index)            = xx_old(p1->index_old);
         _QQ(p1->index, p1->index) = QQ_old(p1->index_old, p1->index_old);
         for (int i2 = 1; i2 <= nPar; i2++) {
           bncParam* p2 = _params[i2-1];
@@ -409,84 +404,147 @@ void bncModel::predict(t_epoData* epoData) {
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     _params[iPar-1]->xx = 0.0;
   }
-  _xx = 0.0;
 }
 
 // Update Step of the Filter (currently just a single-epoch solution)
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncModel::update(t_epoData* epoData) {
 
-  if (epoData->size() < MINOBS) {
-    return failure;
-  }
+  const static double MAXRES_CODE  = 10.0;
+  const static double MAXRES_PHASE = 0.10;
 
-  predict(epoData);
+  ColumnVector    xx;
 
-  unsigned nPar = _params.size();
-  unsigned nObs = _usePhase ? 2 * epoData->size() : epoData->size();
+  bool outlier = false;
 
-  // Create First-Design Matrix
-  // --------------------------
-  Matrix          AA(nObs, nPar);  // first design matrix
-  ColumnVector    ll(nObs);        // tems observed-computed
-  SymmetricMatrix PP(nObs); PP = 0.0;
+  do {
 
-  unsigned iObs = 0;
-  QMapIterator<QString, t_satData*> itObs(epoData->satData);
-  while (itObs.hasNext()) {
-    ++iObs;
-    itObs.next();
-    QString    prn     = itObs.key();
-    t_satData* satData = itObs.value();
+    outlier = false;
 
-    double rhoCmp = cmpValue(satData);
-
-    ll(iObs)      = satData->P3 - rhoCmp;
-    PP(iObs,iObs) = 1.0 / (sig_P3 * sig_P3);
-    for (int iPar = 1; iPar <= _params.size(); iPar++) {
-      AA(iObs, iPar) = _params[iPar-1]->partial(satData, "");
+    if (epoData->size() < MINOBS) {
+      return failure;
+    }
+    
+    // Bancroft Solution
+    // -----------------
+    if (cmpBancroft(epoData) != success) {
+      return failure;
     }
 
-    if (_usePhase) {
+    // Status Prediction
+    // -----------------
+    predict(epoData);
+    
+    SymmetricMatrix QQsav = _QQ;
+
+    unsigned nPar = _params.size();
+    unsigned nObs = _usePhase ? 2 * epoData->size() : epoData->size();
+    
+    // Set Solution Vector
+    // -------------------
+    xx.ReSize(nPar);
+    QVectorIterator<bncParam*> itPar(_params);
+    while (itPar.hasNext()) {
+      bncParam* par = itPar.next();
+      xx(par->index) = par->xx;
+    }
+    
+    // Create First-Design Matrix
+    // --------------------------
+    Matrix          AA(nObs, nPar);  // first design matrix
+    ColumnVector    ll(nObs);        // tems observed-computed
+    SymmetricMatrix PP(nObs); PP = 0.0;
+    
+    unsigned iObs = 0;
+    QMapIterator<QString, t_satData*> itObs(epoData->satData);
+    while (itObs.hasNext()) {
       ++iObs;
-      ll(iObs)      = satData->L3 - rhoCmp;
-      PP(iObs,iObs) = 1.0 / (sig_L3 * sig_L3);
+      itObs.next();
+      QString    prn     = itObs.key();
+      t_satData* satData = itObs.value();
+    
+      double rhoCmp = cmpValue(satData);
+    
+      ll(iObs)      = satData->P3 - rhoCmp;
+      PP(iObs,iObs) = 1.0 / (sig_P3 * sig_P3);
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        if (_params[iPar-1]->type == bncParam::AMB_L3 &&
-            _params[iPar-1]->prn  == prn) {
-          ll(iObs) -= _params[iPar-1]->x0;
-        } 
-        AA(iObs, iPar) = _params[iPar-1]->partial(satData, prn);
+        AA(iObs, iPar) = _params[iPar-1]->partial(satData, "");
+      }
+    
+      if (_usePhase) {
+        ++iObs;
+        ll(iObs)      = satData->L3 - rhoCmp;
+        PP(iObs,iObs) = 1.0 / (sig_L3 * sig_L3);
+        for (int iPar = 1; iPar <= _params.size(); iPar++) {
+          if (_params[iPar-1]->type == bncParam::AMB_L3 &&
+              _params[iPar-1]->prn  == prn) {
+            ll(iObs) -= _params[iPar-1]->x0;
+          } 
+          AA(iObs, iPar) = _params[iPar-1]->partial(satData, prn);
+        }
       }
     }
-  }
+    
+    // Compute Kalman Update
+    // ---------------------
+    if (false) {
+      SymmetricMatrix HH; HH << PP + AA * _QQ * AA.t();
+      SymmetricMatrix Hi = HH.i();
+      Matrix          KK  = _QQ * AA.t() * Hi;
+      ColumnVector    v1  = ll - AA * xx;
+                      xx = xx + KK * v1;
+      IdentityMatrix Id(nPar);
+      _QQ << (Id - KK * AA) * _QQ;
+    }
+    else {
+      Matrix ATP = AA.t() * PP;
+      SymmetricMatrix NN = _QQ.i();
+      ColumnVector    bb = NN * xx + ATP * ll;
+      NN << NN + ATP * AA;
+      _QQ = NN.i();
+      xx = _QQ * bb; 
+    }
+    
+    // Outlier Detection
+    // -----------------
+    ColumnVector vv = ll - AA * xx;
 
-  // Compute Kalman Update
-  // ---------------------
-  if (false) {
-    SymmetricMatrix HH; HH << PP + AA * _QQ * AA.t();
-    SymmetricMatrix Hi = HH.i();
-    Matrix          KK  = _QQ * AA.t() * Hi;
-    ColumnVector    v1  = ll - AA * _xx;
-                    _xx = _xx + KK * v1;
-    IdentityMatrix Id(nPar);
-    _QQ << (Id - KK * AA) * _QQ;
-  }
-  else {
-    Matrix ATP = AA.t() * PP;
-    SymmetricMatrix NN = _QQ.i();
-    ColumnVector    bb = NN * _xx + ATP * ll;
-    NN << NN + ATP * AA;
-    _QQ = NN.i();
-    _xx = _QQ * bb; 
-  }
+    iObs = 0;
+    QMutableMapIterator<QString, t_satData*> it2Obs(epoData->satData);
+    while (it2Obs.hasNext()) {
+      ++iObs;
+      it2Obs.next();
+      QString    prn     = it2Obs.key();
+      t_satData* satData = it2Obs.value();
+      if (fabs(vv(iObs)) > MAXRES_CODE) {
+        delete satData;
+        it2Obs.remove();
+        _QQ = QQsav;
+        outlier = true;
+        cout << "Code " << prn.toAscii().data() << " " << vv(iObs) << endl;
+        break;
+      }
+      if (_usePhase) {
+        ++iObs;
+        if (fabs(vv(iObs)) > MAXRES_PHASE) {
+          delete satData;
+          it2Obs.remove();
+          _QQ = QQsav;
+          outlier = true;
+          cout << "Phase " << prn.toAscii().data() << " " << vv(iObs) << endl;
+          break;
+        }
+      }
+    }
+  
+  } while (outlier);
 
-  // Set Solution Vector
-  // -------------------
+  // Set Solution Vector back
+  // ------------------------
   QVectorIterator<bncParam*> itPar(_params);
   while (itPar.hasNext()) {
     bncParam* par = itPar.next();
-    par->xx = _xx(par->index);
+    par->xx = xx(par->index);
   }
 
   return success;

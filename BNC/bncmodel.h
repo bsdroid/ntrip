@@ -71,7 +71,6 @@ class bncModel {
 
   QVector<bncParam*> _params;
   SymmetricMatrix    _QQ;
-  ColumnVector       _xx;
   ColumnVector       _xcBanc;
   ColumnVector       _ellBanc;
   bool               _static;
