@@ -327,12 +327,6 @@ void bncPPPclient::processEpoch() {
     }
   }
 
-  // Bancroft Solution
-  // -----------------
-  if (_model->cmpBancroft(_epoData) != success) {
-    return;
-  }
-
   // Filter Solution
   // ---------------
   if (_model->update(_epoData) != success) {
