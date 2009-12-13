@@ -511,12 +511,12 @@ void t_bns::processSatellite(int oldEph, int iCaster, const QString trafo,
     crdTrafo(GPSweek, xyz, trafo);
   }
 
-  ColumnVector dx = xyz - xB.Rows(1,3);
+  ColumnVector dx = xB.Rows(1,3) - xyz;
 
   ColumnVector rsw(3);
   XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw);
 
-  double dClk = (xx(4) - xB(4)) * 299792458.0;
+  double dClk = (xB(4) - xx(4)) * 299792458.0;
 
 
   if (sd) {

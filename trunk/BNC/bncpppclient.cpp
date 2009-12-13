@@ -262,10 +262,10 @@ void bncPPPclient::applyCorr(const t_corr* cc, ColumnVector& xc,
   ColumnVector dx(3);
   RSW_to_XYZ(xc.Rows(1,3), vv, cc->rao, dx);
 
-  xc[0] += dx[0];
-  xc[1] += dx[1];
-  xc[2] += dx[2];
-  xc[3] += cc->dClk;
+  xc[0] -= dx[0];
+  xc[1] -= dx[1];
+  xc[2] -= dx[2];
+  xc[3] -= cc->dClk;
 
   // Relativistic Correction
   // -----------------------
