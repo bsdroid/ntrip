@@ -42,11 +42,9 @@ class bncParam {
   bool isCrd() const {
     return (type == CRD_X || type == CRD_Y || type == CRD_Z);
   }
-  double solVal() const {return x0 + xx;}
-  double aprVal() const {return x0;}
+  double solVal() const {return xx;}
   parType  type;
   double   xx;
-  double   x0;
   int      index;
   int      index_old;
   QString  prn;
