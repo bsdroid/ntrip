@@ -466,34 +466,71 @@ t_irc bncModel::update(t_epoData* epoData) {
     // -----------------
     ColumnVector vv = ll - AA * dx;
 
-    iObs = 0;
-    QMutableMapIterator<QString, t_satData*> it2Obs(epoData->satData);
-    while (it2Obs.hasNext()) {
-      ++iObs;
-      it2Obs.next();
-      QString    prn     = it2Obs.key();
-      t_satData* satData = it2Obs.value();
-      if (fabs(vv(iObs)) > MAXRES_CODE) {
-        delete satData;
-        it2Obs.remove();
-        _QQ = QQsav;
-        outlier = true;
-        cout << "Code " << prn.toAscii().data() << " " << vv(iObs) << endl;
-        break;
+    double vvMaxCode  = 0.0;
+    int    iMaxCode   = 0;
+    double vvMaxPhase = 0.0;
+    int    iMaxPhase  = 0;
+    if (_usePhase) {
+      for (int ii = 1; ii <= vv.Nrows(); ii += 2) {
+        if (vvMaxCode == 0.0 || fabs(vv(ii)) > vvMaxCode) {
+          vvMaxCode = fabs(vv(ii));
+          iMaxCode  = ii;
+	}
+        if (vvMaxPhase == 0.0 || fabs(vv(ii+1)) > vvMaxPhase) {
+          vvMaxPhase = fabs(vv(ii+1));
+          iMaxPhase  = ii;
+	}
       }
-      if (_usePhase) {
-        ++iObs;
-        if (fabs(vv(iObs)) > MAXRES_PHASE) {
+    }
+    else {
+      for (int ii = 1; ii <= vv.Nrows(); ii++) {
+        if (vvMaxCode == 0.0 || fabs(vv(ii)) > vvMaxCode) {
+          vvMaxCode = fabs(vv(ii));
+          iMaxCode  = ii;
+	}
+      }
+    }
+
+    if      (vvMaxCode > MAXRES_CODE) {
+      int iObs = 0;
+      QMutableMapIterator<QString, t_satData*> itObs(epoData->satData);
+      while (itObs.hasNext()) {
+        itObs.next();
+        iObs += 1;
+        if (iObs == iMaxCode) {
+          QString    prn     = itObs.key();
+          t_satData* satData = itObs.value();
           delete satData;
-          it2Obs.remove();
+          itObs.remove();
           _QQ = QQsav;
           outlier = true;
-          cout << "Phase " << prn.toAscii().data() << " " << vv(iObs) << endl;
+          cout << "Code " << prn.toAscii().data() << " " << vv(iObs) << endl;
+          break;
+        }
+        if (_usePhase) {
+          ++iObs;
+        }
+      }
+    }
+    else if (vvMaxPhase > MAXRES_PHASE) {
+      int iObs = 0;
+      QMutableMapIterator<QString, t_satData*> itObs(epoData->satData);
+      while (itObs.hasNext()) {
+        itObs.next();
+        iObs += 2;
+        if (iObs == iMaxPhase) {
+          QString    prn     = itObs.key();
+          t_satData* satData = itObs.value();
+          delete satData;
+          itObs.remove();
+          _QQ = QQsav;
+          outlier = true;
+          cout << "Code " << prn.toAscii().data() << " " << vv(iObs) << endl;
           break;
         }
       }
     }
-  
+
   } while (outlier);
 
   // Set Solution Vector
