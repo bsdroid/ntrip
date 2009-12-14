@@ -42,7 +42,6 @@ class bncParam {
   bool isCrd() const {
     return (type == CRD_X || type == CRD_Y || type == CRD_Z);
   }
-  double solVal() const {return xx;}
   parType  type;
   double   xx;
   int      index;
@@ -56,11 +55,11 @@ class bncModel {
   ~bncModel();
   t_irc cmpBancroft(t_epoData* epoData);
   t_irc update(t_epoData* epoData);
-  double x()   const {return _params[0]->solVal();}
-  double y()   const {return _params[1]->solVal();}
-  double z()   const {return _params[2]->solVal();}
-  double clk() const {return _params[3]->solVal();}
-  double trp() const {return _estTropo ? _params[4]->solVal() : 0.0;}
+  double x()   const {return _params[0]->xx;}
+  double y()   const {return _params[1]->xx;}
+  double z()   const {return _params[2]->xx;}
+  double clk() const {return _params[3]->xx;}
+  double trp() const {return _estTropo ? _params[4]->xx : 0.0;}
   
  private:
   double cmpValue(t_satData* satData);
