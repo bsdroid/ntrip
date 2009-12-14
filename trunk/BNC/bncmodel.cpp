@@ -69,7 +69,6 @@ bncParam::bncParam(bncParam::parType typeIn, int indexIn,
   index     = indexIn;
   prn       = prnIn;
   index_old = 0;
-  x0        = 0.0;
   xx        = 0.0;
 }
 
@@ -82,13 +81,13 @@ bncParam::~bncParam() {
 ////////////////////////////////////////////////////////////////////////////
 double bncParam::partial(t_satData* satData, const QString& prnIn) {
   if      (type == CRD_X) {
-    return (x0 - satData->xx(1)) / satData->rho; 
+    return (xx - satData->xx(1)) / satData->rho; 
   }
   else if (type == CRD_Y) {
-    return (x0 - satData->xx(2)) / satData->rho; 
+    return (xx - satData->xx(2)) / satData->rho; 
   }
   else if (type == CRD_Z) {
-    return (x0 - satData->xx(3)) / satData->rho; 
+    return (xx - satData->xx(3)) / satData->rho; 
   }
   else if (type == RECCLK) {
     return 1.0;
@@ -195,11 +194,11 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
     QString    prn     = it2.key();
     t_satData* satData = it2.value();
 
-    ColumnVector dx = satData->xx - _xcBanc.Rows(1,3);
-    double       rho = dx.norm_Frobenius();
+    ColumnVector rr = satData->xx - _xcBanc.Rows(1,3);
+    double       rho = rr.norm_Frobenius();
 
     double neu[3];
-    xyz2neu(_ellBanc.data(), dx.data(), neu);
+    xyz2neu(_ellBanc.data(), rr.data(), neu);
 
     satData->eleSat = acos( sqrt(neu[0]*neu[0] + neu[1]*neu[1]) / rho );
     if (neu[2] < 0) {
@@ -356,20 +355,15 @@ void bncModel::predict(t_epoData* epoData) {
   // -----------
   if (_static) {
     if (x() == 0.0 && y() == 0.0 && z() == 0.0) {
-      _params[0]->x0 = _xcBanc(1);
-      _params[1]->x0 = _xcBanc(2);
-      _params[2]->x0 = _xcBanc(3);
-    }
-    else {
-      _params[0]->x0 += _params[0]->xx;
-      _params[1]->x0 += _params[1]->xx;
-      _params[2]->x0 += _params[2]->xx;
+      _params[0]->xx = _xcBanc(1);
+      _params[1]->xx = _xcBanc(2);
+      _params[2]->xx = _xcBanc(3);
     }
   }
   else {
-    _params[0]->x0 = _xcBanc(1);
-    _params[1]->x0 = _xcBanc(2);
-    _params[2]->x0 = _xcBanc(3);
+    _params[0]->xx = _xcBanc(1);
+    _params[1]->xx = _xcBanc(2);
+    _params[2]->xx = _xcBanc(3);
 
     _QQ(1,1) += sig_crd_p * sig_crd_p;
     _QQ(2,2) += sig_crd_p * sig_crd_p;
@@ -378,7 +372,7 @@ void bncModel::predict(t_epoData* epoData) {
 
   // Receiver Clocks
   // ---------------
-  _params[3]->x0 = _xcBanc(4);
+  _params[3]->xx = _xcBanc(4);
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     _QQ(iPar, 4) = 0.0;
   }
@@ -387,22 +381,7 @@ void bncModel::predict(t_epoData* epoData) {
   // Tropospheric Delay
   // ------------------
   if (_estTropo) {
-    _params[4]->x0 += _params[4]->xx;
     _QQ(5,5) += sig_trp_p * sig_trp_p;
-  }
-
-  // Ambiguities
-  // -----------
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    if (_params[iPar-1]->type == bncParam::AMB_L3) {
-      _params[iPar-1]->x0 += _params[iPar-1]->xx;
-    }
-  }
-
-  // Nullify the Solution Vector
-  // ---------------------------
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    _params[iPar-1]->xx = 0.0;
   }
 }
 
@@ -413,7 +392,7 @@ t_irc bncModel::update(t_epoData* epoData) {
   const static double MAXRES_CODE  = 10.0;
   const static double MAXRES_PHASE = 0.10;
 
-  ColumnVector    xx;
+  ColumnVector    dx;
 
   bool outlier = false;
 
@@ -435,22 +414,11 @@ t_irc bncModel::update(t_epoData* epoData) {
     // -----------------
     predict(epoData);
     
-    SymmetricMatrix QQsav = _QQ;
-
+    // Create First-Design Matrix
+    // --------------------------
     unsigned nPar = _params.size();
     unsigned nObs = _usePhase ? 2 * epoData->size() : epoData->size();
     
-    // Set Solution Vector
-    // -------------------
-    xx.ReSize(nPar);
-    QVectorIterator<bncParam*> itPar(_params);
-    while (itPar.hasNext()) {
-      bncParam* par = itPar.next();
-      xx(par->index) = par->xx;
-    }
-    
-    // Create First-Design Matrix
-    // --------------------------
     Matrix          AA(nObs, nPar);  // first design matrix
     ColumnVector    ll(nObs);        // tems observed-computed
     SymmetricMatrix PP(nObs); PP = 0.0;
@@ -478,7 +446,7 @@ t_irc bncModel::update(t_epoData* epoData) {
         for (int iPar = 1; iPar <= _params.size(); iPar++) {
           if (_params[iPar-1]->type == bncParam::AMB_L3 &&
               _params[iPar-1]->prn  == prn) {
-            ll(iObs) -= _params[iPar-1]->x0;
+            ll(iObs) -= _params[iPar-1]->xx;
           } 
           AA(iObs, iPar) = _params[iPar-1]->partial(satData, prn);
         }
@@ -487,27 +455,16 @@ t_irc bncModel::update(t_epoData* epoData) {
     
     // Compute Kalman Update
     // ---------------------
-    if (false) {
-      SymmetricMatrix HH; HH << PP + AA * _QQ * AA.t();
-      SymmetricMatrix Hi = HH.i();
-      Matrix          KK  = _QQ * AA.t() * Hi;
-      ColumnVector    v1  = ll - AA * xx;
-                      xx = xx + KK * v1;
-      IdentityMatrix Id(nPar);
-      _QQ << (Id - KK * AA) * _QQ;
-    }
-    else {
-      Matrix ATP = AA.t() * PP;
-      SymmetricMatrix NN = _QQ.i();
-      ColumnVector    bb = NN * xx + ATP * ll;
-      NN << NN + ATP * AA;
-      _QQ = NN.i();
-      xx = _QQ * bb; 
-    }
+    SymmetricMatrix QQsav = _QQ;
+    Matrix ATP = AA.t() * PP;
+    SymmetricMatrix NN = _QQ.i();
+    NN << NN + ATP * AA;
+    _QQ = NN.i();
+    dx = _QQ * ATP * ll; 
     
     // Outlier Detection
     // -----------------
-    ColumnVector vv = ll - AA * xx;
+    ColumnVector vv = ll - AA * dx;
 
     iObs = 0;
     QMutableMapIterator<QString, t_satData*> it2Obs(epoData->satData);
@@ -539,12 +496,12 @@ t_irc bncModel::update(t_epoData* epoData) {
   
   } while (outlier);
 
-  // Set Solution Vector back
-  // ------------------------
+  // Set Solution Vector
+  // -------------------
   QVectorIterator<bncParam*> itPar(_params);
   while (itPar.hasNext()) {
     bncParam* par = itPar.next();
-    par->xx = xx(par->index);
+    par->xx += dx(par->index);
   }
 
   return success;
