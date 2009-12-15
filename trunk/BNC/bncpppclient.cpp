@@ -38,11 +38,8 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iomanip>
-#include <newmatio.h>
-#include <sstream>
-
 #include "bncpppclient.h"
+#include "bncapp.h"
 #include "bncutils.h"
 #include "bncconst.h"
 #include "bncmodel.h"
@@ -56,9 +53,15 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncPPPclient::bncPPPclient(QByteArray staID) {
+
+  connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
+          this, SLOT(slotNewEphGPS(gpsephemeris)));
+  connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
+          this, SLOT(slotNewCorrections(QList<QString>)));
+
   _staID   = staID;
   _epoData = 0;
-  _model   = new bncModel();
+  _model   = new bncModel(staID);
 }
 
 // Destructor
@@ -332,17 +335,5 @@ void bncPPPclient::processEpoch() {
   if (_model->update(_epoData) != success) {
     return;
   }
-
-  ostringstream str;
-  str.setf(ios::fixed);
-  str << "    PPP " << _staID.data() << " " 
-      << _epoData->tt.timestr(1) << " " << _epoData->size() << " " 
-      << setw(14) << setprecision(3) << _model->x()   << "  "
-      << setw(14) << setprecision(3) << _model->y()   << "  "
-      << setw(14) << setprecision(3) << _model->z()   << "  "
-      << setw(8)  << setprecision(3) << _model->clk() << "  "
-      << setw(8)  << setprecision(3) << _model->trp();
-
-  emit newMessage(QString(str.str().c_str()).toAscii(), true);
 }
 
