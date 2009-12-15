@@ -30,8 +30,8 @@ while ( my $line=<inFile> ) {
     
     my $time = $p[4];
     my $x    = $p[6];
-    my $y    = $p[7];
-    my $z    = $p[8];
+    my $y    = $p[9];
+    my $z    = $p[12];
     
     if ($xApr == 0.0 && $yApr == 0.0 && $zApr == 0.0) {
         $xApr = $x;

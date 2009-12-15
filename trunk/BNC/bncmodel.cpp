@@ -489,7 +489,7 @@ t_irc bncModel::update(t_epoData* epoData) {
       << setw(14) << setprecision(3) << z()            << " +- "
       << setw(6)  << setprecision(3) << sqrt(_QQ(3,3));
   if (_estTropo) {
-    str << " " << setw(6) << setprecision(3) << trp() << " +- "
+    str << "    " << setw(6) << setprecision(3) << trp() << " +- "
         << setw(6)  << setprecision(3) << sqrt(_QQ(5,5));
   }
 
