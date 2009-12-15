@@ -87,9 +87,6 @@ class bncPPPclient : public QObject {
   ~bncPPPclient();
   void putNewObs(p_obs pp);
 
- signals:
-  void newMessage(QByteArray msg, bool showOnScreen);
-
  public slots:
   void slotNewEphGPS(gpsephemeris gpseph);
   void slotNewCorrections(QList<QString> corrList);

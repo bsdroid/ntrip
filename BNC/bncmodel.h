@@ -49,9 +49,10 @@ class bncParam {
   QString  prn;
 };
 
-class bncModel {
+class bncModel : public QObject {
+ Q_OBJECT
  public:
-  bncModel();
+  bncModel(QByteArray staID);
   ~bncModel();
   t_irc cmpBancroft(t_epoData* epoData);
   t_irc update(t_epoData* epoData);
@@ -61,6 +62,9 @@ class bncModel {
   double clk() const {return _params[3]->xx;}
   double trp() const {return _estTropo ? _params[4]->xx : 0.0;}
   
+ signals:
+  void newMessage(QByteArray msg, bool showOnScreen);
+
  private:
   double cmpValue(t_satData* satData);
   double delay_saast(double Ele);
@@ -69,6 +73,7 @@ class bncModel {
                           const ColumnVector& vv,
                           QMap<QString, t_satData*>& satData);
 
+  QByteArray         _staID;
   QVector<bncParam*> _params;
   SymmetricMatrix    _QQ;
   ColumnVector       _xcBanc;

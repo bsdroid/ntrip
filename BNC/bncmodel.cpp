@@ -41,8 +41,10 @@
 #include <iomanip>
 #include <cmath>
 #include <newmatio.h>
+#include <sstream>
 
 #include "bncmodel.h"
+#include "bncapp.h"
 #include "bncpppclient.h"
 #include "bancroft.h"
 #include "bncutils.h"
@@ -50,16 +52,18 @@
 
 using namespace std;
 
-const unsigned MINOBS =    4;
-const double   MINELE = 10.0 * M_PI / 180.0;
-const double   sig_crd_0 =  100.0;
-const double   sig_crd_p =  100.0;
-const double   sig_clk_0 = 1000.0;
-const double   sig_trp_0 =    0.01;
-const double   sig_trp_p =    1e-6;
-const double   sig_amb_0 =  100.0;
-const double   sig_P3    =    1.0;
-const double   sig_L3    =    0.01;
+const unsigned MINOBS       =    4;
+const double   MINELE       = 10.0 * M_PI / 180.0;
+const double   MAXRES_CODE  = 10.0;
+const double   MAXRES_PHASE = 0.10;
+const double   sig_crd_0    =  100.0;
+const double   sig_crd_p    =  100.0;
+const double   sig_clk_0    = 1000.0;
+const double   sig_trp_0    =    0.01;
+const double   sig_trp_p    =    1e-6;
+const double   sig_amb_0    =  100.0;
+const double   sig_P3       =    1.0;
+const double   sig_L3       =    0.01;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -108,7 +112,12 @@ double bncParam::partial(t_satData* satData, const QString& prnIn) {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncModel::bncModel() {
+bncModel::bncModel(QByteArray staID) {
+
+  _staID   = staID;
+
+  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
 
   bncSettings settings;
 
@@ -393,11 +402,9 @@ t_irc bncModel::update(t_epoData* epoData) {
   ColumnVector    dx;
   ColumnVector    vv;
 
+  // Loop over all outliers
+  // ----------------------
   do {
-
-    if (epoData->size() < MINOBS) {
-      return failure;
-    }
     
     // Bancroft Solution
     // -----------------
@@ -469,6 +476,18 @@ t_irc bncModel::update(t_epoData* epoData) {
     par->xx += dx(par->index);
   }
 
+  // Message (both log file and screen)
+  // ----------------------------------
+  ostringstream str;
+  str.setf(ios::fixed);
+  str << "    PPP " << _staID.data() << " " 
+      << epoData->tt.timestr(1) << " " << epoData->size() << " " 
+      << setw(14) << setprecision(3) << x()   << "  "
+      << setw(14) << setprecision(3) << y()   << "  "
+      << setw(14) << setprecision(3) << z();
+
+  emit newMessage(QString(str.str().c_str()).toAscii(), true);
+
   return success;
 }
 
@@ -477,9 +496,6 @@ t_irc bncModel::update(t_epoData* epoData) {
 int bncModel::outlierDetection(const SymmetricMatrix& QQsav, 
                                const ColumnVector& vv,
                                QMap<QString, t_satData*>& satData) {
-
-  const static double MAXRES_CODE  = 10.0;
-  const static double MAXRES_PHASE = 0.10;
 
   double vvMaxCode  = 0.0;
   double vvMaxPhase = 0.0;
