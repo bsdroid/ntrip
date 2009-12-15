@@ -1,3 +1,4 @@
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <h3>BKG Ntrip Client (BNC) Version 2.0</h3>
 
 <p>
@@ -20,7 +21,7 @@ Please ensure that you have installed the latest version of BNC available from <
 <p>
 <h4>
 <a href=#purpose>1. Purpose</a><br>
-<a href=#resources>2. Modes & Resources</a><br>
+<a href=#resources>2. Modes &amp; Resources</a><br>
 <a href=#options>3. Options</a><br>
 <a href=#limits>4. Limitations</a><br>
 <a href=#authors>5. Authors</a><br>
@@ -57,7 +58,7 @@ BNC supports decoding the following GNSS data formats:
 </ul>
 BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
 </p>
-<p><a name="resources"><h3>2. Modes & Resources</h3></p>
+<p><a name="resources"><h3>2. Modes &amp; Resources</h3></p>
 <p>
 Although BNC is a real-time tool to be operated in online mode, it can be run offline for post processing of data made availabe from a file. Furthermore, apart from its regular window mode, BNC can be run as a batch/background job in a 'no window' mode using processing options from previously saved configuration.
 </p>
@@ -81,7 +82,7 @@ The usual handling of BNC is that you first select a number of streams ('Add Str
 <p>
 As a default, configuration files for running BNC on Unix/Linux/Mac systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration file name is 'BNC.ini'.</p>
 <p>
-The default file name 'BNC.ini' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag & Drop a configuration file icon to start BNC. Some configuration options can be changed on-the-fly. See annexed 'Configuration Example' for a complete set of configuration options.
+The default file name 'BNC.ini' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC. Some configuration options can be changed on-the-fly. See annexed 'Configuration Example' for a complete set of configuration options.
 </p>
 <p>
 3.1. <a href=#topmenu>Top Menu Bar</a><br>
@@ -182,7 +183,7 @@ The 'File' button lets you
 Use smaller font size if the BNC main window exceeds the size of your screen.
 </li> 
 <li> save selected options in configuration file.<br>
-When using 'Save & Reread Configuration' while BNC is already processing data, some configuration options become immediately effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration Example' for a list of on-the-fly changeable configuration options.
+When using 'Save &amp; Reread Configuration' while BNC is already processing data, some configuration options become immediately effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration Example' for a list of on-the-fly changeable configuration options.
 </li>
 <li> quit the BNC program.
 </li> 
@@ -208,7 +209,7 @@ Close the 'About BNC' window to continue working with BNC.
 </ul>
 </p>
 <p>
-BNC comes with a help system providing online information about its functionality and usage. Short descriptions are available for any widget. Focus to the relevant widget and press Shift+F1 to request help information. A help text appears immediately; it disappears as soon as the user does something else. The dialogs on some operating systems may provide a "?" button that users can click; they then click the relevant widget to pop up the help text.
+BNC comes with a help system providing online information about its functionality and usage. Short descriptions are available for any widget. Focus to the relevant widget and press Shift+F1 to request help information. A help text appears immediately; it disappears as soon as the user does something else. The dialogs on some operating systems may provide a &quot;?&quot; button that users can click; they then click the relevant widget to pop up the help text.
 </p>
 
 <p><a name="proxy"><h4>3.2. Proxy - for usage in a protected LAN</h4></p>
@@ -435,7 +436,7 @@ The orbit and clock corrections do not include local effects (like Ocean Loading
 </p>
 
 <p>
-Broadcast Corrrections can be saved by BNC in files. The file name convention for Broadcast Correction files follows the convention for RINEX files except for the last character of the file name suffix which is set to "C".
+Broadcast Corrrections can be saved by BNC in files. The file name convention for Broadcast Correction files follows the convention for RINEX files except for the last character of the file name suffix which is set to &quot;C&quot;.
 </p>
 
 <p>
@@ -487,7 +488,7 @@ In case of RTCM message types 1057 or 1063 these parameters are followed by
 </ul>
 </p>
 <p>
-Undefined parameters are set to zero "0.000".<br>Example:
+Undefined parameters are set to zero &quot;0.000&quot;.<br>Example:
 <pre>
 ...
 1057 0 1538 211151.0 G18     1      0.034    0.011   -0.064      0.000    0.000    0.000      0.000    0.000    0.000
@@ -503,7 +504,7 @@ Undefined parameters are set to zero "0.000".<br>Example:
 In case of RTCM message types 1058 or 1064 the first five parameters are followed by
 </p>
 <ul>
-<li>IOD set to zero "0"</li>
+<li>IOD set to zero &quot;0&quot;</li>
 <li>C0 polynomial coefficient for Clock Correction to Broadcast Ephemeris [m]</li>
 <li>C1 polynomial coefficient for Clock Correction to Broadcast Ephemeris [m/s]</li>
 <li>C2 polynomial coefficient for Clock Correction to Broadcast Ephemeris [m/s**2]</li>
@@ -625,7 +626,7 @@ The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that
 
 <p><a name="corrwait"><h4>3.6.4 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
 <p>
-When feeding a real-time GNSS network engine waiting epoch by epoch for synchronized Broadcast Corrections, BNC drops (only concering IP port output) whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Broadcast Corrections stream and the delay acceptable by your application. A message such as "COCK1: Correction overaged by 5 sec" shows up in BNC's logfile if 'Wait for full epoch' is exceeded.
+When feeding a real-time GNSS network engine waiting epoch by epoch for synchronized Broadcast Corrections, BNC drops (only concering IP port output) whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Broadcast Corrections stream and the delay acceptable by your application. A message such as &quot;COCK1: Correction overaged by 5 sec&quot; shows up in BNC's logfile if 'Wait for full epoch' is exceeded.
 </p>
 
 <p><a name="syncout"><h4>3.7. Feed Engine</h4></p>
@@ -653,8 +654,8 @@ t_obsInternal
 
 <p>The corresponding structures are defined as follow:</p>
 <pre>
-  const char begEpoch[] = "BEGEPOCH";
-  const char endEpoch[] = "ENDEPOCH";
+  const char begEpoch[] = &quot;BEGEPOCH&quot;;
+  const char endEpoch[] = &quot;ENDEPOCH&quot;;
 ...
 ...
 class t_obsInternal {
@@ -852,7 +853,7 @@ Sample script for Unix/Linux/Mac systems:
 <pre>
 #!/bin/bash
 sleep $((60*RANDOM/32767))
-cat | mail -s "NABU: $1" email@address &lt;&lt;!
+cat | mail -s &quot;NABU: $1&quot; email@address &lt;&lt;!
 Advisory Note to BNC User,
 Please note the following advisory received from BNC.
 Stream: $*
@@ -938,13 +939,13 @@ BNC can derive coordinates for a rover position following the Precise Point Posi
 </p>
 
 <p>
-PPP results are saved in BNC's logfile. Depending on processing options, the following values are recorded every second (example):
+PPP results are saved in BNC's logfile. Depending on the processing options, the following values are recorded every second (example):
 </p>
 <pre>
-09-12-07 11:01:50     PPP ZIM20 11:02:03.0 8    4331302.284      567537.941     4633134.936    -5.669    -0.155
+09-12-15 22:30:39     PPP CAS10 22:30:44.0 9    -901775.887 +-  0.058    2409382.427 +-  0.046   -5816746.721 +-  0.087     0.014 +-  0.005
 </pre>
 <p>
-The 'PPP' string in that is followed by the selected mounpoint, a PPP time stamp, the number of processed satellites, XYZ coordinates in [m], receiver clock correction in [m], and the estimated troposphere correction in [m].
+The 'PPP' string in that is followed by the selected mounpoint, a PPP time stamp, the number of processed satellites, XYZ coordinates and their formal errors as derived from the implemented filter in [m], and the estimated troposphere correction with its formal error in [m]. The implemented algorithm includes an outlier detection to handle clock jumps. The maximum for accepted residuals is hard coded to 10 meters for code observations and 10 centimeters for phase observations. 
 </p>
 
 <p><a name="pppmount"><h4>3.11.1 Mountpoint - optional</h4></p>
@@ -1012,7 +1013,7 @@ To remove a stream from the 'Streams' canvas in the main window, highlight it by
 The streams selection can be changed on-the-fly without interrupting uninvolved threads in the running BNC process.
 </p>
 <p>
-<u>Window mode:</u> Hit 'Save & Reread Configuration' while BNC is in window mode and already processing data to let changes of your streams selection immediately become effective.
+<u>Window mode:</u> Hit 'Save &amp; Reread Configuration' while BNC is in window mode and already processing data to let changes of your streams selection immediately become effective.
 <p>
 <u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option from disk at pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file become effective without terminating uninvolved threads. See annexed section 'Configuration Example' for a configuration file example and a list of other on-the-fly changeable options.
 </p>
@@ -1043,7 +1044,7 @@ The bottom menu bar allows to add or delete streams to BNC's configuration and t
 
 <p><a name="streamadd"><h4>3.14.1 Add Stream - Coming from Caster</h4></p>
 <p>
-Button 'Add Stream' > 'Coming from Caster' opens a window that allows user to select data streams from an NTRIP broadcaster according to their mountpoints.
+Button 'Add Stream' &gt; 'Coming from Caster' opens a window that allows user to select data streams from an NTRIP broadcaster according to their mountpoints.
 </p> 
 
 <p><a name="streamhost"><h4>3.14.1.1 Caster Host and Port - mandatory</h4></p>
@@ -1095,7 +1096,7 @@ Select option '1' if you are not sure whether the broadcaster supports NTRIP ver
 
 <p><a name="streamip"><h4>3.14.2 Add Stream - Coming from TCP/IP Port</h4></p>
 <p>
-Button 'Add Stream' > 'Coming from TCP/IP Port' allows to retrieve streams via TCP directly from an IP address without using the NTRIP transport protocol. For that you:
+Button 'Add Stream' &gt; 'Coming from TCP/IP Port' allows to retrieve streams via TCP directly from an IP address without using the NTRIP transport protocol. For that you:
 <ul>
 <li>Enter the IP address of the stream providing host.</li>
 <li>Enter the IP port number of the stream providing host.</li>
@@ -1114,7 +1115,7 @@ Note that this option works only if no proxy server is involved in the communica
 
 <p><a name="streamudp"><h4>3.14.3 Add Stream - Coming from UDP Port</h4></p>
 <p>
-Button 'Add Stream' > 'Coming from UDP Port' allows to pick up streams arriving directly at one of the local host's UDP ports without using the NTRIP transport protocol. For that you:
+Button 'Add Stream' &gt; 'Coming from UDP Port' allows to pick up streams arriving directly at one of the local host's UDP ports without using the NTRIP transport protocol. For that you:
 <ul>
 <li>Enter the local port number where the UDP stream arrives.</li>
 <li>Specify a mountpoint. Recommended is a 4-character station ID. Example: FFMJ</li>
@@ -1129,7 +1130,7 @@ Streams directly received at a UDP port show up with a 'UN' for 'UDP, No NTRIP' 
 
 <p><a name="streamser"><h4>3.14.4 Add Stream - Coming from Serial Port</h4></p>
 <p>
-Button 'Add Stream' > 'Coming from Serial Port' allows to retrieve streams from a GNSS receiver via serial port without using the NTRIP transport protocol. For that you:
+Button 'Add Stream' &gt; 'Coming from Serial Port' allows to retrieve streams from a GNSS receiver via serial port without using the NTRIP transport protocol. For that you:
 <ul>
 <li>Specify a mountpoint. Recommended is a 4-character station ID. Example: FFMJ</li>
 <li>Specify the stream format. Available options are 'RTCM_2', 'RTCM_3', 'RTIGS', and 'ZERO'.</li>
@@ -1229,7 +1230,7 @@ BNC currently will only handle C1, C2, P1, P2, L1, L2, S1, and S2 observations a
 <li>
 Using RTCM Version 3.x, BNC will properly handle message types 1002, 1004, 1010, and 1012. Note that when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
 </li>
-Concerning the RTCM Version 3.x premature message types 1057-1068 (see RTCM document 091-2009-SC104-542 'Version 3 Proposed Messages â€“ Set 10'), a final decision is not yet made. Note the what's implemented in BNC is just a temporary solutions.
+Concerning the RTCM Version 3.x premature message types 1057-1068 (see RTCM document 091-2009-SC104-542 'Version 3 Proposed Messages â&#8364;&#8220; Set 10'), a final decision is not yet made. Note the what's implemented in BNC is just a temporary solutions.
 <li>
 Using RTCM Version 2.x, BNC will only handle message types 18 and 19 or 20 and 21 together with position and the antenna offset information carried in types 3 and 22. Note that processing carrier phase corrections and pseudo-range corrections contained in message types 20 and 21 needs access to broadcast ephemeris. Hence, whenever dealing with message types 20 and 21, make sure that broadcast ephemeris become available for BNC through also retrieving at least one RTCM Version 3.x stream carrying message types 1019 (GPS ephemeris) and 1020 (GLONASS ephemeris).
 </li>
