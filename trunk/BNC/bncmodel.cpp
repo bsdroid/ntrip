@@ -439,8 +439,15 @@ t_irc bncModel::update(t_epoData* epoData) {
     
       double rhoCmp = cmpValue(satData);
     
+      double ellWgtCoeff = 1.0;
+      double eleD = satData->eleSat * 180.0 / M_PI;
+      if (eleD < 25.0) {
+        ellWgtCoeff = 2.5 - (eleD - 10.0) * 0.1;
+        ellWgtCoeff *= ellWgtCoeff;
+      }
+
       ll(iObs)      = satData->P3 - rhoCmp;
-      PP(iObs,iObs) = 1.0 / (sig_P3 * sig_P3);
+      PP(iObs,iObs) = 1.0 / (sig_P3 * sig_P3) / ellWgtCoeff;
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         AA(iObs, iPar) = _params[iPar-1]->partial(satData, "");
       }
@@ -448,7 +455,7 @@ t_irc bncModel::update(t_epoData* epoData) {
       if (_usePhase) {
         ++iObs;
         ll(iObs)      = satData->L3 - rhoCmp;
-        PP(iObs,iObs) = 1.0 / (sig_L3 * sig_L3);
+        PP(iObs,iObs) = 1.0 / (sig_L3 * sig_L3) / ellWgtCoeff;
         for (int iPar = 1; iPar <= _params.size(); iPar++) {
           if (_params[iPar-1]->type == bncParam::AMB_L3 &&
               _params[iPar-1]->prn  == prn) {
