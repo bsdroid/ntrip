@@ -482,9 +482,16 @@ t_irc bncModel::update(t_epoData* epoData) {
   str.setf(ios::fixed);
   str << "    PPP " << _staID.data() << " " 
       << epoData->tt.timestr(1) << " " << epoData->size() << " " 
-      << setw(14) << setprecision(3) << x()   << "  "
-      << setw(14) << setprecision(3) << y()   << "  "
-      << setw(14) << setprecision(3) << z();
+      << setw(14) << setprecision(3) << x()            << " +- "
+      << setw(6)  << setprecision(3) << sqrt(_QQ(1,1)) << " "
+      << setw(14) << setprecision(3) << y()            << " +- "
+      << setw(6)  << setprecision(3) << sqrt(_QQ(2,2)) << " "
+      << setw(14) << setprecision(3) << z()            << " +- "
+      << setw(6)  << setprecision(3) << sqrt(_QQ(3,3));
+  if (_estTropo) {
+    str << " " << setw(6) << setprecision(3) << trp() << " +- "
+        << setw(6)  << setprecision(3) << sqrt(_QQ(5,5));
+  }
 
   emit newMessage(QString(str.str().c_str()).toAscii(), true);
 
@@ -528,7 +535,11 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
     delete satData;
     itMaxCode.remove();
     _QQ = QQsav;
-    cout << "Code " << prn.toAscii().data() << " " << vvMaxCode << endl;
+
+    QByteArray msg = "Outlier Code " + prn.toAscii() + " " 
+                   + QByteArray::number(vvMaxCode, 'f', 3);
+    emit newMessage(msg, true);
+
     return 1;
   }
   else if (vvMaxPhase > MAXRES_PHASE) {
@@ -537,7 +548,11 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
     delete satData;
     itMaxPhase.remove();
     _QQ = QQsav;
-    cout << "Phase " << prn.toAscii().data() << " " << vvMaxPhase << endl;
+
+    QByteArray msg = "Outlier Phase " + prn.toAscii() + " " 
+                   + QByteArray::number(vvMaxPhase, 'f', 3);
+    emit newMessage(msg, true);
+
     return 1;
   }
   
