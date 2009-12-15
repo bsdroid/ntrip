@@ -65,6 +65,9 @@ class bncModel {
   double cmpValue(t_satData* satData);
   double delay_saast(double Ele);
   void   predict(t_epoData* epoData);
+  int    outlierDetection(const SymmetricMatrix& QQsav, 
+                          const ColumnVector& vv,
+                          QMap<QString, t_satData*>& satData);
 
   QVector<bncParam*> _params;
   SymmetricMatrix    _QQ;
