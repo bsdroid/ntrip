@@ -440,11 +440,11 @@ t_irc bncModel::update(t_epoData* epoData) {
       double rhoCmp = cmpValue(satData);
     
       double ellWgtCoeff = 1.0;
-      double eleD = satData->eleSat * 180.0 / M_PI;
-      if (eleD < 25.0) {
-        ellWgtCoeff = 2.5 - (eleD - 10.0) * 0.1;
-        ellWgtCoeff *= ellWgtCoeff;
-      }
+      ////  double eleD = satData->eleSat * 180.0 / M_PI;
+      ////  if (eleD < 25.0) {
+      ////    ellWgtCoeff = 2.5 - (eleD - 10.0) * 0.1;
+      ////    ellWgtCoeff *= ellWgtCoeff;
+      ////  }
 
       ll(iObs)      = satData->P3 - rhoCmp;
       PP(iObs,iObs) = 1.0 / (sig_P3 * sig_P3) / ellWgtCoeff;
