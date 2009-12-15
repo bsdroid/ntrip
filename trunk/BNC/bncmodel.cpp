@@ -412,6 +412,10 @@ t_irc bncModel::update(t_epoData* epoData) {
       return failure;
     }
 
+    if (epoData->size() < MINOBS) {
+      return failure;
+    }
+
     // Status Prediction
     // -----------------
     predict(epoData);
