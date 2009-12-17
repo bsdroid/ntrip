@@ -945,7 +945,13 @@ PPP results are saved in BNC's logfile. Depending on the processing options, the
 09-12-15 22:30:39     PPP CAS10 22:30:44.0 9    -901775.887 +-  0.058    2409382.427 +-  0.046   -5816746.721 +-  0.087     0.014 +-  0.005
 </pre>
 <p>
-The 'PPP' string in that is followed by the selected mounpoint, a PPP time stamp, the number of processed satellites, XYZ coordinates and their formal errors as derived from the implemented filter in [m], and the estimated troposphere correction with its formal error in [m]. The implemented algorithm includes an outlier detection to handle clock jumps. To detect cycle slips, the maximum for accepted residuals is hard coded to 10 meters for code observations and 10 centimeters for phase observations. 
+The 'PPP' string in that is followed by the selected mounpoint, a PPP time
+stamp, the number of processed satellites, XYZ coordinates and their formal
+errors as derived from the implemented filter in [m], and if the troposphere
+is estimated the estimated troposphere correction with its formal error in
+[m]. The implemented algorithm includes an outlier and cycle slip
+detection. The maximum for accepted residuals is hard coded to 10 meters for
+code observations and 10 centimeters for phase observations.
 </p>
 
 <p><a name="pppmount"><h4>3.11.1 Mountpoint - optional</h4></p>
