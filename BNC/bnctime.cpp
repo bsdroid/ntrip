@@ -4,19 +4,19 @@
 #include <sstream>
 #include <iomanip>
 
-#include "t_time.h"
+#include "bnctime.h"
 
 using namespace std;
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_time::t_time(int gpsw, double gpssec) {
+bncTime::bncTime(int gpsw, double gpssec) {
   this->set(gpsw, gpssec);
 }
   
 // 
 //////////////////////////////////////////////////////////////////////////////
-t_time& t_time::set(int gpsw, double gpssec) {
+bncTime& bncTime::set(int gpsw, double gpssec) {
   int  deltad;
   int  dow = 0;
   while ( gpssec >= 86400 ) {
@@ -35,7 +35,7 @@ t_time& t_time::set(int gpsw, double gpssec) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-t_time& t_time::setmjd(double daysec, int mjd) {
+bncTime& bncTime::setmjd(double daysec, int mjd) {
   _sec = daysec;
   _mjd = mjd;
   while ( _sec >= 86400 ) {
@@ -51,7 +51,7 @@ t_time& t_time::setmjd(double daysec, int mjd) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-void t_time::jdgp(double tjul, double & second, long & nweek) {
+void bncTime::jdgp(double tjul, double & second, long & nweek) {
   double      deltat;
   deltat = tjul - 44244.0 ;
   nweek = (long) floor(deltat/7.0);
@@ -60,19 +60,19 @@ void t_time::jdgp(double tjul, double & second, long & nweek) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-unsigned int t_time::mjd() const {
+unsigned int bncTime::mjd() const {
   return _mjd;
 }
  
 //
 //////////////////////////////////////////////////////////////////////////////
-double t_time::daysec() const {
+double bncTime::daysec() const {
   return _sec;
 }
 
 //
 //////////////////////////////////////////////////////////////////////////////
-unsigned int t_time::gpsw() const {
+unsigned int bncTime::gpsw() const {
   double   gsec;
   long     gpsw;
   jdgp(_mjd, gsec, gpsw);
@@ -81,7 +81,7 @@ unsigned int t_time::gpsw() const {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-double t_time::gpssec() const {
+double bncTime::gpssec() const {
   double   gsec;
   long     gpsw;
   jdgp(_mjd, gsec, gpsw);
@@ -90,29 +90,29 @@ double t_time::gpssec() const {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-bool t_time::operator!=(const t_time &time1) const {
+bool bncTime::operator!=(const bncTime &time1) const {
   if ( ((*this) - time1) != 0 ) return 1;
   return 0;
 }
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-t_time t_time::operator+(double sec) const {
+bncTime bncTime::operator+(double sec) const {
   int     mjd    = this->mjd();
   double  daysec = this->daysec();
   daysec+=sec;
-  return t_time().setmjd(daysec, mjd);
+  return bncTime().setmjd(daysec, mjd);
 }
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-t_time t_time::operator-(double sec) const {
+bncTime bncTime::operator-(double sec) const {
   return (*this) + (-sec);
 }
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-double t_time::operator-(const t_time &time1) const {
+double bncTime::operator-(const bncTime &time1) const {
   int mjdDiff = this->_mjd - time1._mjd;
   if ( mjdDiff != 0 ) {
     return mjdDiff * 86400.0 + this->_sec - time1._sec;
@@ -124,7 +124,7 @@ double t_time::operator-(const t_time &time1) const {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-void t_time::civil_time(unsigned int &hour, unsigned int &min, 
+void bncTime::civil_time(unsigned int &hour, unsigned int &min, 
                           double &sec) const {
   hour = static_cast<unsigned int>(_sec/3600.0);
   min  = static_cast<unsigned int>((_sec - hour*3600)/60.0);
@@ -141,7 +141,7 @@ void t_time::civil_time(unsigned int &hour, unsigned int &min,
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-string t_time::timestr(unsigned numdec, char sep) const {
+string bncTime::timestr(unsigned numdec, char sep) const {
   ostringstream str;
   unsigned int hour, minute;
   double sec;

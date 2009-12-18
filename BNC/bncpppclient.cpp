@@ -140,7 +140,7 @@ void bncPPPclient::putNewObs(p_obs pp) {
 
   // Add new Satellite to the epoch
   // ------------------------------
-  t_time tt(obs->GPSWeek, obs->GPSWeeks);
+  bncTime tt(obs->GPSWeek, obs->GPSWeeks);
   
   if      (!_epoData) {
     _epoData = new t_epoData();
@@ -228,7 +228,7 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 
 // Satellite Position
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncPPPclient::getSatPos(const t_time& tt, const QString& prn, 
+t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn, 
                               ColumnVector& xc, ColumnVector& vv, bool& corr) {
 
   const bool   CORR_REQUIRED = true;
@@ -287,7 +287,7 @@ t_irc bncPPPclient::cmpToT(const QString& prn, t_satData* satData) {
   double clkSat = 0.0;
   for (int ii = 1; ii <= 10; ii++) {
 
-    t_time ToT = _epoData->tt - prange / t_CST::c - clkSat;
+    bncTime ToT = _epoData->tt - prange / t_CST::c - clkSat;
 
     ColumnVector xc(4);
     ColumnVector vv(3);
