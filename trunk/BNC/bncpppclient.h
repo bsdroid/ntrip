@@ -30,7 +30,7 @@
 #include <newmat.h>
 
 #include "bncconst.h"
-#include "t_time.h"
+#include "bnctime.h"
 #include "RTCM/GPSDecoder.h"
 #include "RTCM3/ephemeris.h"
 
@@ -67,13 +67,13 @@ class t_epoData {
     }
   }
   unsigned size() const {return satData.size();}
-  t_time                    tt;
+  bncTime                    tt;
   QMap<QString, t_satData*> satData;
 };
 
 class t_corr {
  public:
-  t_time       tt;
+  bncTime       tt;
   int          iod;
   double       dClk;
   ColumnVector rao;
@@ -92,7 +92,7 @@ class bncPPPclient : public QObject {
   void slotNewCorrections(QList<QString> corrList);
 
  private:
-  t_irc getSatPos(const t_time& tt, const QString& prn, 
+  t_irc getSatPos(const bncTime& tt, const QString& prn, 
                   ColumnVector& xc, ColumnVector& vv, bool& corr);
   void processEpoch();
   void applyCorr(const t_corr* cc, ColumnVector& xc, ColumnVector& vv);
