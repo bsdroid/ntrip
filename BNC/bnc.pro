@@ -35,7 +35,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bncnetquery.h bncnetqueryv1.h bncnetqueryv2.h               \
           bncnetqueryrtp.h bncsettings.h latencychecker.h             \
           bncipport.h bncnetqueryv0.h bncnetqueryudp.h                \ 
-          bncnetqueryudp0.h bncudpport.h t_time.h                     \ 
+          bncnetqueryudp0.h bncudpport.h bnctime.h                    \ 
           bncserialport.h bncnetquerys.h bncfigure.h                  \ 
           bncfigurelate.h bncpppclient.h bncversion.h                 \ 
           bancroft.h bncmodel.h                                       \ 
@@ -65,7 +65,7 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bncipport.cpp bncnetqueryv0.cpp bncnetqueryudp.cpp          \
           bncnetqueryudp0.cpp bncudpport.cpp                          \
           bncserialport.cpp bncnetquerys.cpp bncfigure.cpp            \
-          bncfigurelate.cpp bncpppclient.cpp t_time.cpp               \
+          bncfigurelate.cpp bncpppclient.cpp bnctime.cpp              \
           bancroft.cpp bncmodel.cpp                                   \ 
           RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp                        \
           RTCM/RTCM2_2021.cpp RTCM/rtcm_utils.cpp                     \
