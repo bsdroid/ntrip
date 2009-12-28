@@ -171,6 +171,7 @@ bncModel::~bncModel() {
 t_irc bncModel::cmpBancroft(t_epoData* epoData) {
 
   if (epoData->size() < MINOBS) {
+    _log += "\nNot enough data";
     return failure;
   }
 
@@ -398,6 +399,8 @@ void bncModel::predict(t_epoData* epoData) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncModel::update(t_epoData* epoData) {
 
+  _log = "Precise Point Positioning";
+
   SymmetricMatrix QQsav;
   ColumnVector    dx;
   ColumnVector    vv;
@@ -409,10 +412,14 @@ t_irc bncModel::update(t_epoData* epoData) {
     // Bancroft Solution
     // -----------------
     if (cmpBancroft(epoData) != success) {
+      _log += "\nBancroft failed";
+      emit newMessage(_log, false);
       return failure;
     }
 
     if (epoData->size() < MINOBS) {
+      _log += "\nNot enough data";
+      emit newMessage(_log, false);
       return failure;
     }
 
@@ -481,30 +488,45 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   // Set Solution Vector
   // -------------------
+  ostringstream str1;
+  str1.setf(ios::fixed);
   QVectorIterator<bncParam*> itPar(_params);
   while (itPar.hasNext()) {
     bncParam* par = itPar.next();
     par->xx += dx(par->index);
+    if      (par->type == bncParam::RECCLK) {
+      str1 << "\n    clk = " << setw(6) << setprecision(3) << par->xx 
+           << " +- " << setw(6) << setprecision(3) 
+           << sqrt(_QQ(par->index,par->index));
+    }
+    else if (par->type == bncParam::AMB_L3) {
+      str1 << "\n    amb " << par->prn.toAscii().data() << " = "
+           << setw(6) << setprecision(3) << par->xx 
+           << " +- " << setw(6) << setprecision(3) 
+           << sqrt(_QQ(par->index,par->index));
+    }
   }
+  _log += str1.str().c_str();
 
   // Message (both log file and screen)
   // ----------------------------------
-  ostringstream str;
-  str.setf(ios::fixed);
-  str << "    PPP " << _staID.data() << " " 
-      << epoData->tt.timestr(1) << " " << epoData->size() << " " 
-      << setw(14) << setprecision(3) << x()            << " +- "
-      << setw(6)  << setprecision(3) << sqrt(_QQ(1,1)) << " "
-      << setw(14) << setprecision(3) << y()            << " +- "
-      << setw(6)  << setprecision(3) << sqrt(_QQ(2,2)) << " "
-      << setw(14) << setprecision(3) << z()            << " +- "
-      << setw(6)  << setprecision(3) << sqrt(_QQ(3,3));
+  ostringstream str2;
+  str2.setf(ios::fixed);
+  str2 << "    PPP " << _staID.data() << " " 
+       << epoData->tt.timestr(1) << " " << epoData->size() << " " 
+       << setw(14) << setprecision(3) << x()            << " +- "
+       << setw(6)  << setprecision(3) << sqrt(_QQ(1,1)) << " "
+       << setw(14) << setprecision(3) << y()            << " +- "
+       << setw(6)  << setprecision(3) << sqrt(_QQ(2,2)) << " "
+       << setw(14) << setprecision(3) << z()            << " +- "
+       << setw(6)  << setprecision(3) << sqrt(_QQ(3,3));
   if (_estTropo) {
-    str << "    " << setw(6) << setprecision(3) << trp() << " +- "
-        << setw(6)  << setprecision(3) << sqrt(_QQ(5,5));
+    str2 << "    " << setw(6) << setprecision(3) << trp() << " +- "
+         << setw(6)  << setprecision(3) << sqrt(_QQ(5,5));
   }
 
-  emit newMessage(QString(str.str().c_str()).toAscii(), true);
+  emit newMessage(_log, false);
+  emit newMessage(QByteArray(str2.str().c_str()), true);
 
   return success;
 }
@@ -547,9 +569,8 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
     itMaxCode.remove();
     _QQ = QQsav;
 
-    QByteArray msg = "Outlier Code " + prn.toAscii() + " " 
-                   + QByteArray::number(vvMaxCode, 'f', 3);
-    emit newMessage(msg, true);
+    _log += "\nOutlier Code " + prn.toAscii() + " " 
+            + QByteArray::number(vvMaxCode, 'f', 3);
 
     return 1;
   }
@@ -560,9 +581,8 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
     itMaxPhase.remove();
     _QQ = QQsav;
 
-    QByteArray msg = "Outlier Phase " + prn.toAscii() + " " 
-                   + QByteArray::number(vvMaxPhase, 'f', 3);
-    emit newMessage(msg, true);
+    _log += "\nOutlier Phase " + prn.toAscii() + " " 
+          + QByteArray::number(vvMaxPhase, 'f', 3);
 
     return 1;
   }
