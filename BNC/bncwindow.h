@@ -60,7 +60,7 @@ class bncWindow : public QMainWindow {
 
   public slots:  
     void slotMountPointsRead(QList<bncGetThread*>);
-    void bncText(const QString &text);
+    void slotBncTextChanged();
 
   private slots:
     void slotWindowMessage(const QByteArray msg, bool showOnScreen);

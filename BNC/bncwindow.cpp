@@ -125,6 +125,9 @@ bncWindow::bncWindow() {
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
 
+  connect(_proxyHostLineEdit, SIGNAL(textChanged(const QString &)), 
+          this, SLOT(slotBncTextChanged()));
+
   // General Options
   // ---------------
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
@@ -164,6 +167,9 @@ bncWindow::bncWindow() {
   _rnxV3CheckBox = new QCheckBox();
   _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
 
+  connect(_rnxPathLineEdit, SIGNAL(textChanged(const QString &)), 
+          this, SLOT(slotBncTextChanged()));
+
   // RINEX Ephemeris Options
   // -----------------------
   _ephPathLineEdit    = new QLineEdit(settings.value("ephPath").toString());
@@ -177,6 +183,12 @@ bncWindow::bncWindow() {
   _outEphPortLineEdit    = new QLineEdit(settings.value("outEphPort").toString());
   _ephV3CheckBox = new QCheckBox();
   _ephV3CheckBox->setCheckState(Qt::CheckState(settings.value("ephV3").toInt()));
+
+  connect(_outEphPortLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
+  connect(_ephPathLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
 
   // Broadcast Corrections Options
   // -----------------------------
@@ -196,6 +208,12 @@ bncWindow::bncWindow() {
   _corrTimeSpinBox->setSuffix(" sec");
   _corrTimeSpinBox->setValue(settings.value("corrTime").toInt());
 
+  connect(_corrPathLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
+  connect(_corrPortLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
   // Feed Engine Options
   // -------------------
   _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
@@ -213,6 +231,12 @@ bncWindow::bncWindow() {
   _binSamplSpinBox->setSuffix(" sec");
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
   _outUPortLineEdit   = new QLineEdit(settings.value("outUPort").toString());
+
+  connect(_outPortLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
+  connect(_outFileLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
 
   // Serial Output Options
   // ---------------------
@@ -258,6 +282,12 @@ bncWindow::bncWindow() {
   _serialFileNMEALineEdit    = new QLineEdit(settings.value("serialFileNMEA").toString());
   _serialHeightNMEALineEdit  = new QLineEdit(settings.value("serialHeightNMEA").toString());
 
+  connect(_serialMountPointLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
+  connect(_serialAutoNMEAComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
   // Outages Options
   // ---------------
   _obsRateComboBox    = new QComboBox();
@@ -281,6 +311,9 @@ bncWindow::bncWindow() {
   _adviseRecoSpinBox->setValue(settings.value("adviseReco").toInt());
   _adviseScriptLineEdit    = new QLineEdit(settings.value("adviseScript").toString());
 
+  connect(_obsRateComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
   // Miscellaneous Options
   // ---------------------
   _miscMountLineEdit  = new QLineEdit(settings.value("miscMount").toString());
@@ -295,6 +328,9 @@ bncWindow::bncWindow() {
   _scanRTCMCheckBox->setCheckState(Qt::CheckState(
                                     settings.value("scanRTCM").toInt()));
 
+  connect(_miscMountLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
   // PPP Options
   // -----------
   _pppMountLineEdit  = new QLineEdit(settings.value("pppMount").toString());
@@ -308,6 +344,9 @@ bncWindow::bncWindow() {
   _pppEstTropoCheckBox = new QCheckBox();
   _pppEstTropoCheckBox->setCheckState(Qt::CheckState(
                                       settings.value("pppEstTropo").toInt()));
+
+  connect(_pppMountLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
 
   // Streams
   // -------
@@ -437,14 +476,6 @@ bncWindow::bncWindow() {
   pLayout->addWidget(new QLabel("    "),5,0);
   pgroup->setLayout(pLayout);
 
-
-  connect(_proxyHostLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
-  if (_proxyHostLineEdit->text().isEmpty()) { 
-    _proxyPortLineEdit->setStyleSheet("background-color: lightGray");
-    _proxyPortLineEdit->setEnabled(false);
-  }
- 
   // General Tab
   // -----------
   QGridLayout* gLayout = new QGridLayout;
@@ -485,9 +516,6 @@ bncWindow::bncWindow() {
   oLayout->addWidget(new QLabel("Saving RINEX observation files."),5,0,1,50, Qt::AlignLeft);
   ogroup->setLayout(oLayout);
 
-  connect(_rnxPathLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
-
   // RINEX Ephemeris
   // ---------------
   QGridLayout* eLayout = new QGridLayout;
@@ -507,10 +535,6 @@ bncWindow::bncWindow() {
   eLayout->addWidget(new QLabel("    "),5,0);
   egroup->setLayout(eLayout);
 
-  connect(_ephPathLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
-  connect(_outEphPortLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
 
   // Broadcast Corrections
   // ---------------------
@@ -532,15 +556,6 @@ bncWindow::bncWindow() {
   cLayout->addWidget(new QLabel("    "),4,0);
   cLayout->addWidget(new QLabel("    "),5,0);
   cgroup->setLayout(cLayout);
-
-  connect(_corrPathLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
-  connect(_corrPortLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
-  if (_corrPathLineEdit->text().isEmpty()) { 
-    _corrIntrComboBox->setStyleSheet("background-color: lightGray");
-    _corrIntrComboBox->setEnabled(false);
-  }
 
   // Feed Engine
   // -----------
@@ -564,17 +579,6 @@ bncWindow::bncWindow() {
   sLayout->addWidget(new QLabel("Output decoded observations in a binary format to feed a real-time GNSS network engine."),4,0,1,50);
   sLayout->addWidget(new QLabel("    "),5,0);
   sgroup->setLayout(sLayout);
-
-  connect(_outPortLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
-  connect(_outFileLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
-  if (_outPortLineEdit->text().isEmpty() && _outFileLineEdit->text().isEmpty()) { 
-    _waitTimeSpinBox->setStyleSheet("background-color: lightGray");
-    _binSamplSpinBox->setStyleSheet("background-color: lightGray");
-    _waitTimeSpinBox->setEnabled(false);
-    _binSamplSpinBox->setEnabled(false);
-  }
 
   // Serial Output
   // -------------
@@ -610,40 +614,6 @@ bncWindow::bncWindow() {
   serLayout->addWidget(_serialHeightNMEALineEdit,                 4,21,1,11);
   serLayout->addWidget(new QLabel("Port settings to feed a serial connected receiver."),5,0,1,30);
 
-  connect(_serialMountPointLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
-  connect(_serialAutoNMEAComboBox, SIGNAL(currentIndexChanged(const QString &)),
-          this, SLOT(bncText(const QString)));
-  if (_serialMountPointLineEdit->text().isEmpty()) { 
-    _serialPortNameLineEdit->setStyleSheet("background-color: lightGray");
-    _serialBaudRateComboBox->setStyleSheet("background-color: lightGray");
-    _serialParityComboBox->setStyleSheet("background-color: lightGray");
-    _serialDataBitsComboBox->setStyleSheet("background-color: lightGray");
-    _serialStopBitsComboBox->setStyleSheet("background-color: lightGray");
-    _serialFlowControlComboBox->setStyleSheet("background-color: lightGray");
-    _serialAutoNMEAComboBox->setStyleSheet("background-color: lightGray");
-    _serialFileNMEALineEdit->setStyleSheet("background-color: lightGray");
-    _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
-    _serialPortNameLineEdit->setEnabled(false);
-    _serialBaudRateComboBox->setEnabled(false);
-    _serialParityComboBox->setEnabled(false);
-    _serialDataBitsComboBox->setEnabled(false);
-    _serialStopBitsComboBox->setEnabled(false);
-    _serialFlowControlComboBox->setEnabled(false);
-    _serialAutoNMEAComboBox->setEnabled(false);
-    _serialFileNMEALineEdit->setEnabled(false);
-    _serialHeightNMEALineEdit->setEnabled(false);
-  } else {
-    if (_serialAutoNMEAComboBox->currentText() == "Auto" ) {
-      _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
-      _serialHeightNMEALineEdit->setEnabled(false);
-    } 
-    if (_serialAutoNMEAComboBox->currentText() != "Auto" ) {
-      _serialFileNMEALineEdit->setStyleSheet("background-color: lightGray");
-      _serialFileNMEALineEdit->setEnabled(false);
-    } 
-  }
-
   sergroup->setLayout(serLayout);
 
   // Outages
@@ -665,17 +635,6 @@ bncWindow::bncWindow() {
   aLayout->addWidget(new QLabel("Failure and recovery reports, advisory notes."),5,0,1,50,Qt::AlignLeft);
   agroup->setLayout(aLayout);
 
-  connect(_obsRateComboBox, SIGNAL(currentIndexChanged(const QString &)),
-          this, SLOT(bncText(const QString)));
-  if (_obsRateComboBox->currentText().isEmpty()) { 
-    _adviseFailSpinBox->setStyleSheet("background-color: lightGray");
-    _adviseRecoSpinBox->setStyleSheet("background-color: lightGray");
-    _adviseScriptLineEdit->setStyleSheet("background-color: lightGray");
-    _adviseFailSpinBox->setEnabled(false);
-    _adviseRecoSpinBox->setEnabled(false);
-    _adviseScriptLineEdit->setEnabled(false);
-  }
-
   // Miscellaneous
   // -------------
   QGridLayout* rLayout = new QGridLayout;
@@ -692,9 +651,6 @@ bncWindow::bncWindow() {
   rLayout->addWidget(new QLabel("    "),                          4, 0);
   rLayout->addWidget(new QLabel("    "),                          5, 0);
   rgroup->setLayout(rLayout);
-
-  connect(_miscMountLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
 
   // PPP Client
   // ----------
@@ -715,9 +671,6 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("    "),                4, 0);
   pppLayout->addWidget(new QLabel("    "),                5, 0);
   pppgroup->setLayout(pppLayout);
-
-  connect(_pppMountLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bncText(const QString &)));
 
   // Main Layout
   // -----------
@@ -1355,20 +1308,19 @@ bncFlowchartDlg::~bncFlowchartDlg() {
 
 //  Bnc Text
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::bncText(const QString &text){
-
-  bool isEmpty = text.isEmpty();
+void bncWindow::slotBncTextChanged(){
 
   QPalette palette_white(QColor(255, 255, 255));
   QPalette palette_gray(QColor(230, 230, 230));
 
   // Proxy
   //------
-  if (_aogroup->currentIndex() == 0) {
-    if (!isEmpty) {
+  if (sender() == _proxyHostLineEdit) {
+    if (!_proxyHostLineEdit->text().isEmpty()) {
       _proxyPortLineEdit->setStyleSheet("background-color: white");
       _proxyPortLineEdit->setEnabled(true);
-    } else {
+    } 
+    else {
       _proxyPortLineEdit->setStyleSheet("background-color: lightGray");
       _proxyPortLineEdit->setEnabled(false);
     }
@@ -1376,8 +1328,8 @@ void bncWindow::bncText(const QString &text){
 
   // RINEX Observations
   // ------------------
-  if (_aogroup->currentIndex() == 2) {
-    if (!isEmpty) {
+  if (sender() == _rnxPathLineEdit) {
+    if (!_rnxPathLineEdit->text().isEmpty()) {
       _rnxSamplSpinBox->setStyleSheet("background-color: white");
       _rnxSkelLineEdit->setStyleSheet("background-color: white");
       _rnxScrpLineEdit->setStyleSheet("background-color: white");
@@ -1388,7 +1340,8 @@ void bncWindow::bncText(const QString &text){
       _rnxScrpLineEdit->setEnabled(true);
       _rnxV3CheckBox->setEnabled(true);
       _rnxIntrComboBox->setEnabled(true);
-    } else {
+    } 
+    else {
       _rnxSamplSpinBox->setStyleSheet("background-color: lightGray");
       _rnxSkelLineEdit->setStyleSheet("background-color: lightGray");
       _rnxScrpLineEdit->setStyleSheet("background-color: lightGray");
@@ -1404,26 +1357,15 @@ void bncWindow::bncText(const QString &text){
 
   // RINEX Ephemeris
   // ---------------
-  if (_aogroup->currentIndex() == 3) {
-    if (!_ephPathLineEdit->text().isEmpty() && !_outEphPortLineEdit->text().isEmpty()) { 
+  if (sender() == _ephPathLineEdit || sender() == _outEphPortLineEdit) {
+    if (!_ephPathLineEdit->text().isEmpty() || 
+        !_outEphPortLineEdit->text().isEmpty()) { 
       _ephIntrComboBox->setStyleSheet("background-color: white");
       _ephV3CheckBox->setPalette(palette_white);
       _ephIntrComboBox->setEnabled(true);
       _ephV3CheckBox->setEnabled(true);
     }
-    if (_ephPathLineEdit->text().isEmpty() && !_outEphPortLineEdit->text().isEmpty()) { 
-      _ephIntrComboBox->setStyleSheet("background-color: lightGray");
-      _ephV3CheckBox->setPalette(palette_gray);
-      _ephIntrComboBox->setEnabled(false);
-      _ephV3CheckBox->setEnabled(true);
-    }
-    if (!_ephPathLineEdit->text().isEmpty() && _outEphPortLineEdit->text().isEmpty()) { 
-      _ephIntrComboBox->setStyleSheet("background-color: white");
-      _ephV3CheckBox->setPalette(palette_white);
-      _ephIntrComboBox->setEnabled(true);
-      _ephV3CheckBox->setEnabled(true);
-    }
-    if (_ephPathLineEdit->text().isEmpty() && _outEphPortLineEdit->text().isEmpty()) { 
+    else {
       _ephIntrComboBox->setStyleSheet("background-color: lightGray");
       _ephV3CheckBox->setPalette(palette_gray);
       _ephIntrComboBox->setEnabled(false);
@@ -1433,31 +1375,29 @@ void bncWindow::bncText(const QString &text){
 
   // Broadcast Corrections
   // ---------------------
-  if (_aogroup->currentIndex() == 4) {
-    if (!isEmpty) {
-      if (!_corrPathLineEdit->text().isEmpty()) {
+  if (sender() == _corrPathLineEdit || sender() == _corrPortLineEdit) {
+    if (!_corrPathLineEdit->text().isEmpty() || 
+        !_corrPortLineEdit->text().isEmpty()) { 
       _corrIntrComboBox->setStyleSheet("background-color: white");
-      _corrPortLineEdit->setStyleSheet("background-color: white");
       _corrIntrComboBox->setEnabled(true);
-      _corrPortLineEdit->setEnabled(true);
-      }
-    } else {
-      if (_corrPathLineEdit->text().isEmpty()) {
+    } 
+    else {
       _corrIntrComboBox->setStyleSheet("background-color: lightGray");
       _corrIntrComboBox->setEnabled(false); 
-      }
     }
   }
 
   // Feed Engine
   // -----------
-  if (_aogroup->currentIndex() == 5) {
-    if ( !_outPortLineEdit->text().isEmpty() || !_outFileLineEdit->text().isEmpty()) {
+  if (sender() == _outPortLineEdit || sender() == _outFileLineEdit) {
+    if ( !_outPortLineEdit->text().isEmpty() || 
+         !_outFileLineEdit->text().isEmpty()) {
       _waitTimeSpinBox->setStyleSheet("background-color: white");
       _binSamplSpinBox->setStyleSheet("background-color: white");
       _waitTimeSpinBox->setEnabled(true);
       _binSamplSpinBox->setEnabled(true);
-    } else {
+    } 
+    else {
       _waitTimeSpinBox->setStyleSheet("background-color: lightGray");
       _binSamplSpinBox->setStyleSheet("background-color: lightGray");
       _waitTimeSpinBox->setEnabled(false);
@@ -1467,8 +1407,9 @@ void bncWindow::bncText(const QString &text){
 
   // Serial Output
   // -------------
-  if (_aogroup->currentIndex() == 6) {
-    if (!isEmpty) {
+  if (sender() == _serialMountPointLineEdit || 
+      sender() == _serialAutoNMEAComboBox) {
+    if (!_serialMountPointLineEdit->text().isEmpty()) {
       _serialPortNameLineEdit->setStyleSheet("background-color: white");
       _serialBaudRateComboBox->setStyleSheet("background-color: white");
       _serialParityComboBox->setStyleSheet("background-color: white");
@@ -1488,13 +1429,15 @@ void bncWindow::bncText(const QString &text){
         _serialHeightNMEALineEdit->setEnabled(true);
         _serialFileNMEALineEdit->setStyleSheet("background-color: lightGray");
         _serialFileNMEALineEdit->setEnabled(false);
-      } else {
+      } 
+      else {
         _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
         _serialHeightNMEALineEdit->setEnabled(false);
         _serialFileNMEALineEdit->setStyleSheet("background-color: white");
         _serialFileNMEALineEdit->setEnabled(true);
       }
-    } else {
+    } 
+    else {
       _serialPortNameLineEdit->setStyleSheet("background-color: lightGray");
       _serialBaudRateComboBox->setStyleSheet("background-color: lightGray");
       _serialParityComboBox->setStyleSheet("background-color: lightGray");
@@ -1518,8 +1461,8 @@ void bncWindow::bncText(const QString &text){
 
   // Outages
   // -------
-  if (_aogroup->currentIndex() == 7) {
-    if (!isEmpty) {
+  if (sender() == _obsRateComboBox) {
+    if (!_obsRateComboBox->currentText().isEmpty()) {
       _adviseScriptLineEdit->setStyleSheet("background-color: white");
       _adviseFailSpinBox->setStyleSheet("background-color: white");
       _adviseRecoSpinBox->setStyleSheet("background-color: white");
@@ -1538,8 +1481,8 @@ void bncWindow::bncText(const QString &text){
 
   // Miscellaneous
   // -------------
-  if (_aogroup->currentIndex() == 8) {
-    if (!isEmpty) {
+  if (sender() == _miscMountLineEdit) {
+    if (!_miscMountLineEdit->text().isEmpty()) {
       _perfIntrComboBox->setStyleSheet("background-color: white");
       _scanRTCMCheckBox->setPalette(palette_white);
       _perfIntrComboBox->setEnabled(true);
@@ -1554,8 +1497,8 @@ void bncWindow::bncText(const QString &text){
 
   // PPP Client
   // ----------
-  if (_aogroup->currentIndex() == 9) {
-    if (!isEmpty) {
+  if (sender() == _pppMountLineEdit) {
+    if (!_pppMountLineEdit->text().isEmpty()) {
       _pppNMEALineEdit->setPalette(palette_white);
       _pppStaticCheckBox->setPalette(palette_white);
       _pppUsePhaseCheckBox->setPalette(palette_white);
