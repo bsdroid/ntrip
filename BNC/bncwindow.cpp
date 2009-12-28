@@ -301,6 +301,7 @@ bncWindow::bncWindow() {
   // PPP Options
   // -----------
   _pppMountLineEdit  = new QLineEdit(settings.value("pppMount").toString());
+  _pppNMEALineEdit   = new QLineEdit(settings.value("nmeaFile").toString());
   _pppStaticCheckBox = new QCheckBox();
   _pppStaticCheckBox->setCheckState(Qt::CheckState(
                                     settings.value("pppStatic").toInt()));
@@ -489,19 +490,6 @@ bncWindow::bncWindow() {
 
   connect(_rnxPathLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
-  if (_rnxPathLineEdit->text().isEmpty()) { 
-    _rnxIntrComboBox->setStyleSheet("background-color: lightGray");
-    _rnxSamplSpinBox->setStyleSheet("background-color: lightGray");
-    _rnxSkelLineEdit->setStyleSheet("background-color: lightGray");
-    _rnxScrpLineEdit->setStyleSheet("background-color: lightGray");
-    palette.setColor(_rnxV3CheckBox->backgroundRole(), lightGray);
-    _rnxV3CheckBox->setPalette(palette);
-    _rnxIntrComboBox->setEnabled(false);
-    _rnxSamplSpinBox->setEnabled(false);
-    _rnxSkelLineEdit->setEnabled(false);
-    _rnxScrpLineEdit->setEnabled(false);
-    _rnxV3CheckBox->setEnabled(false);
-  }
 
   // RINEX Ephemeris
   // ---------------
@@ -526,18 +514,6 @@ bncWindow::bncWindow() {
           this, SLOT(bncText(const QString &)));
   connect(_outEphPortLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
-
-  if (_ephPathLineEdit->text().isEmpty() && _outEphPortLineEdit->text().isEmpty()) { 
-    _ephIntrComboBox->setStyleSheet("background-color: lightGray");
-    palette.setColor(_ephV3CheckBox->backgroundRole(), lightGray);
-    _ephV3CheckBox->setPalette(palette);
-    _ephIntrComboBox->setEnabled(false);
-    _ephV3CheckBox->setEnabled(false);
-  }
-  if (_ephPathLineEdit->text().isEmpty() && !_outEphPortLineEdit->text().isEmpty()) { 
-    _ephIntrComboBox->setStyleSheet("background-color: lightGray");
-    _ephIntrComboBox->setEnabled(false);
-  }   
 
   // Broadcast Corrections
   // ---------------------
@@ -722,20 +698,15 @@ bncWindow::bncWindow() {
 
   connect(_miscMountLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
-  if (_miscMountLineEdit->text().isEmpty()) { 
-    _perfIntrComboBox->setStyleSheet("background-color: lightGray");
-    palette.setColor(_scanRTCMCheckBox->backgroundRole(), lightGray);
-    _scanRTCMCheckBox->setPalette(palette);
-    _perfIntrComboBox->setEnabled(false);
-    _scanRTCMCheckBox->setEnabled(false);
-  }
 
   // PPP Client
   // ----------
   QGridLayout* pppLayout = new QGridLayout;
   pppLayout->setColumnMinimumWidth(0,14*ww);
   pppLayout->addWidget(new QLabel("Mountpoint"),          0, 0);
-  pppLayout->addWidget(_pppMountLineEdit,                 0, 1, 1, 3);
+  pppLayout->addWidget(_pppMountLineEdit,                 0, 1, 1, 2);
+  pppLayout->addWidget(new QLabel("      NMEA Output"),   0, 4);
+  pppLayout->addWidget(_pppNMEALineEdit,                  0, 5, 1, 2);
   pppLayout->addWidget(new QLabel("Static"),              1, 0);
   pppLayout->addWidget(_pppStaticCheckBox,                1, 1);
   pppLayout->addWidget(new QLabel("     Use phase obs"),  1, 2, Qt::AlignRight);
@@ -750,17 +721,6 @@ bncWindow::bncWindow() {
 
   connect(_pppMountLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(bncText(const QString &)));
-  if (_pppMountLineEdit->text().isEmpty()) { 
-    palette.setColor(_pppStaticCheckBox->backgroundRole(), lightGray);
-    palette.setColor(_pppUsePhaseCheckBox->backgroundRole(), lightGray);
-    palette.setColor(_pppEstTropoCheckBox->backgroundRole(), lightGray);
-    _pppStaticCheckBox->setPalette(palette);
-    _pppUsePhaseCheckBox->setPalette(palette);
-    _pppEstTropoCheckBox->setPalette(palette);
-    _pppStaticCheckBox->setEnabled(false);
-    _pppUsePhaseCheckBox->setEnabled(false);
-    _pppEstTropoCheckBox->setEnabled(false);
-  }
 
   // Main Layout
   // -----------
@@ -1065,6 +1025,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("logFile",     _logFileLineEdit->text());
   settings.setValue("miscMount",   _miscMountLineEdit->text());
   settings.setValue("pppMount",    _pppMountLineEdit->text());
+  settings.setValue("nmeaFile",    _pppNMEALineEdit->text());
   settings.setValue("pppStatic",   _pppStaticCheckBox->checkState());
   settings.setValue("pppUsePhase", _pppUsePhaseCheckBox->checkState());
   settings.setValue("pppEstTropo", _pppEstTropoCheckBox->checkState());
@@ -1401,10 +1362,8 @@ void bncWindow::bncText(const QString &text){
 
   bool isEmpty = text.isEmpty();
 
-  QPalette palette;
-  QColor lightGray(230, 230, 230);
-  QColor white(255, 255, 255);
-
+  QPalette palette_white(QColor(255, 255, 255));
+  QPalette palette_gray(QColor(230, 230, 230));
 
   // Proxy
   //------
@@ -1425,8 +1384,7 @@ void bncWindow::bncText(const QString &text){
       _rnxSamplSpinBox->setStyleSheet("background-color: white");
       _rnxSkelLineEdit->setStyleSheet("background-color: white");
       _rnxScrpLineEdit->setStyleSheet("background-color: white");
-      palette.setColor(_rnxV3CheckBox->backgroundRole(), white);
-      _rnxV3CheckBox->setPalette(palette);
+      _rnxV3CheckBox->setPalette(palette_white);
       _rnxIntrComboBox->setStyleSheet("background-color: white");
       _rnxSamplSpinBox->setEnabled(true);
       _rnxSkelLineEdit->setEnabled(true);
@@ -1437,8 +1395,7 @@ void bncWindow::bncText(const QString &text){
       _rnxSamplSpinBox->setStyleSheet("background-color: lightGray");
       _rnxSkelLineEdit->setStyleSheet("background-color: lightGray");
       _rnxScrpLineEdit->setStyleSheet("background-color: lightGray");
-      palette.setColor(_rnxV3CheckBox->backgroundRole(), lightGray);
-      _rnxV3CheckBox->setPalette(palette);
+      _rnxV3CheckBox->setPalette(palette_gray);
       _rnxIntrComboBox->setStyleSheet("background-color: lightGray");
       _rnxSamplSpinBox->setEnabled(false);
       _rnxSkelLineEdit->setEnabled(false);
@@ -1453,29 +1410,25 @@ void bncWindow::bncText(const QString &text){
   if (_aogroup->currentIndex() == 3) {
     if (!_ephPathLineEdit->text().isEmpty() && !_outEphPortLineEdit->text().isEmpty()) { 
       _ephIntrComboBox->setStyleSheet("background-color: white");
-      palette.setColor(_ephV3CheckBox->backgroundRole(), white);
-      _ephV3CheckBox->setPalette(palette);
+      _ephV3CheckBox->setPalette(palette_white);
       _ephIntrComboBox->setEnabled(true);
       _ephV3CheckBox->setEnabled(true);
     }
     if (_ephPathLineEdit->text().isEmpty() && !_outEphPortLineEdit->text().isEmpty()) { 
       _ephIntrComboBox->setStyleSheet("background-color: lightGray");
-      palette.setColor(_ephV3CheckBox->backgroundRole(), white);
-      _ephV3CheckBox->setPalette(palette);
+      _ephV3CheckBox->setPalette(palette_gray);
       _ephIntrComboBox->setEnabled(false);
       _ephV3CheckBox->setEnabled(true);
     }
     if (!_ephPathLineEdit->text().isEmpty() && _outEphPortLineEdit->text().isEmpty()) { 
       _ephIntrComboBox->setStyleSheet("background-color: white");
-      palette.setColor(_ephV3CheckBox->backgroundRole(), white);
-      _ephV3CheckBox->setPalette(palette);
+      _ephV3CheckBox->setPalette(palette_white);
       _ephIntrComboBox->setEnabled(true);
       _ephV3CheckBox->setEnabled(true);
     }
     if (_ephPathLineEdit->text().isEmpty() && _outEphPortLineEdit->text().isEmpty()) { 
       _ephIntrComboBox->setStyleSheet("background-color: lightGray");
-      palette.setColor(_ephV3CheckBox->backgroundRole(), lightGray);
-      _ephV3CheckBox->setPalette(palette);
+      _ephV3CheckBox->setPalette(palette_gray);
       _ephIntrComboBox->setEnabled(false);
       _ephV3CheckBox->setEnabled(false);
     }
@@ -1591,14 +1544,12 @@ void bncWindow::bncText(const QString &text){
   if (_aogroup->currentIndex() == 8) {
     if (!isEmpty) {
       _perfIntrComboBox->setStyleSheet("background-color: white");
-      palette.setColor(_scanRTCMCheckBox->backgroundRole(), white);
-      _scanRTCMCheckBox->setPalette(palette);
+      _scanRTCMCheckBox->setPalette(palette_white);
       _perfIntrComboBox->setEnabled(true);
       _scanRTCMCheckBox->setEnabled(true);
     } else {
       _perfIntrComboBox->setStyleSheet("background-color: lightGray");
-      palette.setColor(_scanRTCMCheckBox->backgroundRole(), lightGray);
-      _scanRTCMCheckBox->setPalette(palette);
+      _scanRTCMCheckBox->setPalette(palette_gray);
       _perfIntrComboBox->setEnabled(false);
       _scanRTCMCheckBox->setEnabled(false);
     }
@@ -1608,22 +1559,20 @@ void bncWindow::bncText(const QString &text){
   // ----------
   if (_aogroup->currentIndex() == 9) {
     if (!isEmpty) {
-      palette.setColor(_pppStaticCheckBox->backgroundRole(), white);
-      palette.setColor(_pppUsePhaseCheckBox->backgroundRole(), white);
-      palette.setColor(_pppEstTropoCheckBox->backgroundRole(), white);
-      _pppStaticCheckBox->setPalette(palette);
-      _pppUsePhaseCheckBox->setPalette(palette);
-      _pppEstTropoCheckBox->setPalette(palette);
+      _pppNMEALineEdit->setPalette(palette_white);
+      _pppStaticCheckBox->setPalette(palette_white);
+      _pppUsePhaseCheckBox->setPalette(palette_white);
+      _pppEstTropoCheckBox->setPalette(palette_white);
+      _pppNMEALineEdit->setEnabled(true);
       _pppStaticCheckBox->setEnabled(true);
       _pppUsePhaseCheckBox->setEnabled(true);
       _pppEstTropoCheckBox->setEnabled(true);
     } else {
-      palette.setColor(_pppStaticCheckBox->backgroundRole(), lightGray);
-      palette.setColor(_pppUsePhaseCheckBox->backgroundRole(), lightGray);
-      palette.setColor(_pppEstTropoCheckBox->backgroundRole(), lightGray);
-      _pppStaticCheckBox->setPalette(palette);
-      _pppUsePhaseCheckBox->setPalette(palette);
-      _pppEstTropoCheckBox->setPalette(palette);
+      _pppNMEALineEdit->setPalette(palette_gray);
+      _pppStaticCheckBox->setPalette(palette_gray);
+      _pppUsePhaseCheckBox->setPalette(palette_gray);
+      _pppEstTropoCheckBox->setPalette(palette_gray);
+      _pppNMEALineEdit->setEnabled(false);
       _pppStaticCheckBox->setEnabled(false);
       _pppUsePhaseCheckBox->setEnabled(false);
       _pppEstTropoCheckBox->setEnabled(false);

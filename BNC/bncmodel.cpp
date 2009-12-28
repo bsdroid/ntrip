@@ -184,6 +184,8 @@ bncModel::bncModel(QByteArray staID) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncModel::~bncModel() {
+  delete _nmeaStream;
+  delete _nmeaFile;
 }
 
 // Bancroft Solution
