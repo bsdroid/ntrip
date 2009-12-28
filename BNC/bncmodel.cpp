@@ -580,6 +580,8 @@ t_irc bncModel::update(t_epoData* epoData) {
       lamCh  =  'W';
     }   
 
+    double dop = 2.0; // TODO 
+
     ostringstream str3;
     str3.setf(ios::fixed);
     str3 << "GPGGA," 
@@ -589,7 +591,10 @@ t_irc bncModel::update(t_epoData* epoData) {
          << fmod(60*phiDeg,60) << ',' << phiCh << ','
          << setw(2) << setfill('0') << int(lamDeg) 
          << setw(10) << setprecision(7) << setfill('0') 
-         << fmod(60*lamDeg,60) << ',' << lamCh << ',';
+         << fmod(60*lamDeg,60) << ',' << lamCh 
+         << ",1," << setw(2) << setfill('0') << epoData->size() << ','
+         << setw(3) << setprecision(1) << dop << ','
+         << setprecision(3) << ell[2] << ",M,0.0,M,,,";
                    
     writeNMEAstr(QString(str3.str().c_str()));
   }
