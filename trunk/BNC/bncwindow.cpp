@@ -425,6 +425,7 @@ bncWindow::bncWindow() {
   _pppStaticCheckBox->setWhatsThis(tr("<p>By default BNC considers the rover receiver as mobile.</p><p>Tick 'Static' to consider a static observation sitatuion and adapt appropriate filter characteristics for that.</p>"));
   _pppUsePhaseCheckBox->setWhatsThis(tr("<p>By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations.</p><p>Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.</p>"));
   _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
+  _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -656,18 +657,18 @@ bncWindow::bncWindow() {
   // ----------
   QGridLayout* pppLayout = new QGridLayout;
   pppLayout->setColumnMinimumWidth(0,14*ww);
-  pppLayout->addWidget(new QLabel("Mountpoint"),          0, 0);
-  pppLayout->addWidget(_pppMountLineEdit,                 0, 1, 1, 2);
-  pppLayout->addWidget(new QLabel("      NMEA Output"),   0, 4);
-  pppLayout->addWidget(_pppNMEALineEdit,                  0, 5, 1, 2);
-  pppLayout->addWidget(new QLabel("Static"),              1, 0);
-  pppLayout->addWidget(_pppStaticCheckBox,                1, 1);
-  pppLayout->addWidget(new QLabel("     Use phase obs"),  1, 2, Qt::AlignRight);
-  pppLayout->addWidget(_pppUsePhaseCheckBox,              1, 3);
-  pppLayout->addWidget(new QLabel("     Estimate tropo"), 1, 4, Qt::AlignRight);
-  pppLayout->addWidget(_pppEstTropoCheckBox,              1, 5);
-  pppLayout->addWidget(new QLabel("Derive coordinates following Precise Point Positioning (PPP) approach."),2, 0,1,30);
-  pppLayout->addWidget(new QLabel("    "),                3, 0);
+  pppLayout->addWidget(new QLabel("Mountpoint"),             0, 0);
+  pppLayout->addWidget(_pppMountLineEdit,                    0, 1, 1, 3);
+  pppLayout->addWidget(new QLabel("Options"),                1, 0);
+  pppLayout->addWidget(_pppStaticCheckBox,                   1, 1);
+  pppLayout->addWidget(new QLabel("Static                "), 1, 2, 1, 1, Qt::AlignLeft);
+  pppLayout->addWidget(_pppUsePhaseCheckBox,                 1, 3);
+  pppLayout->addWidget(new QLabel("Use phase obs         "), 1, 4, 1, 1, Qt::AlignLeft);
+  pppLayout->addWidget(_pppEstTropoCheckBox,                 1, 5);
+  pppLayout->addWidget(new QLabel("Estimate tropo        "), 1, 6, 1, 1, Qt::AlignLeft);
+  pppLayout->addWidget(new QLabel("NMEA file (full path)"),  2, 0);
+  pppLayout->addWidget(_pppNMEALineEdit,                     2, 1, 1, 6);
+  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),3, 0,1,30);
   pppLayout->addWidget(new QLabel("    "),                4, 0);
   pppLayout->addWidget(new QLabel("    "),                5, 0);
   pppgroup->setLayout(pppLayout);
