@@ -557,6 +557,16 @@ t_irc bncModel::update(t_epoData* epoData) {
   emit newMessage(_log, false);
   emit newMessage(QByteArray(str2.str().c_str()), true);
 
+  // NMEA Output
+  // -----------
+  if (_nmeaStream) {
+    ostringstream str3;
+    str3.setf(ios::fixed);
+    str3 << "GPGGA," << epoData->tt.timestr(0,0);
+                   
+    writeNMEAstr(QString(str3.str().c_str()));
+  }
+
   return success;
 }
 
