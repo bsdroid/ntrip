@@ -178,6 +178,13 @@ bncModel::bncModel(QByteArray staID) {
     }
     _nmeaStream = new QTextStream();
     _nmeaStream->setDevice(_nmeaFile);
+    QDateTime dateTime = QDateTime::currentDateTime().toUTC();
+    QString nmStr = "GPRMC," + dateTime.time().toString("hhmmss")
+                  + "A,0000.0000000,N,00000.0000000,E,0.00,0.00," 
+                  + dateTime.date().toString("ddMMyy")
+                  + ",0.0,E";
+                   
+    writeNMEAstr(nmStr);
   }
 }
 
@@ -610,4 +617,22 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
   }
   
   return 0;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncModel::writeNMEAstr(const QString& nmStr) {
+
+  if (!_nmeaStream) {
+    return;
+  }
+
+  unsigned char XOR = 0;
+  for (int ii = 0; ii < nmStr.length(); ii++) {
+    XOR ^= (unsigned char) nmStr[ii].toAscii();
+  }
+  
+  *_nmeaStream << '$' << nmStr << '*' << hex << (int) XOR << endl;
+
+  _nmeaStream->flush();
 }

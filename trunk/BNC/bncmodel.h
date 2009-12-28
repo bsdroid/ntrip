@@ -72,6 +72,7 @@ class bncModel : public QObject {
   int    outlierDetection(const SymmetricMatrix& QQsav, 
                           const ColumnVector& vv,
                           QMap<QString, t_satData*>& satData);
+  void writeNMEAstr(const QString& nmStr);
 
   QByteArray         _staID;
   QVector<bncParam*> _params;
