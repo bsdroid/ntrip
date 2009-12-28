@@ -560,9 +560,36 @@ t_irc bncModel::update(t_epoData* epoData) {
   // NMEA Output
   // -----------
   if (_nmeaStream) {
+    double xyz[3]; 
+    xyz[0] = x();
+    xyz[1] = y();
+    xyz[2] = z();
+    double ell[3]; 
+    xyz2ell(xyz, ell);
+    double phiDeg = ell[0] * 180 / M_PI;
+    double lamDeg = ell[1] * 180 / M_PI;
+
+    char phiCh = 'N';
+    if (phiDeg < 0) {
+      phiDeg = -phiDeg;
+      phiCh  =  'S';
+    }   
+    char lamCh = 'E';
+    if (lamDeg < 0) {
+      lamDeg = -lamDeg;
+      lamCh  =  'W';
+    }   
+
     ostringstream str3;
     str3.setf(ios::fixed);
-    str3 << "GPGGA," << epoData->tt.timestr(0,0);
+    str3 << "GPGGA," 
+         << epoData->tt.timestr(0,0) << ','
+         << setw(2) << setfill('0') << int(phiDeg) 
+         << setw(10) << setprecision(7) << setfill('0') 
+         << fmod(60*phiDeg,60) << ',' << phiCh << ','
+         << setw(2) << setfill('0') << int(lamDeg) 
+         << setw(10) << setprecision(7) << setfill('0') 
+         << fmod(60*lamDeg,60) << ',' << lamCh << ',';
                    
     writeNMEAstr(QString(str3.str().c_str()));
   }
