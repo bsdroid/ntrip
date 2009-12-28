@@ -78,9 +78,6 @@ bncWindow::bncWindow() {
   connect((bncApp*)qApp, SIGNAL(newMessage(QByteArray,bool)), 
            this, SLOT(slotWindowMessage(QByteArray,bool)));
 
-  QPalette palette;
-  QColor lightGray(230, 230, 230);
-
   // Create Actions
   // --------------
   _actHelp = new QAction(tr("&Help Contents"),this);
