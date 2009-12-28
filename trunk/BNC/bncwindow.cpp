@@ -683,6 +683,10 @@ bncWindow::bncWindow() {
 
   _canvas->setLayout(mLayout);
 
+  // Enable/Disable all Widgets
+  // --------------------------
+  slotBncTextChanged();
+
   // Auto start
   // ----------
   if ( Qt::CheckState(settings.value("autoStart").toInt()) == Qt::Checked) {
@@ -1315,7 +1319,7 @@ void bncWindow::slotBncTextChanged(){
 
   // Proxy
   //------
-  if (sender() == _proxyHostLineEdit) {
+  if (sender() == 0 || sender() == _proxyHostLineEdit) {
     if (!_proxyHostLineEdit->text().isEmpty()) {
       _proxyPortLineEdit->setStyleSheet("background-color: white");
       _proxyPortLineEdit->setEnabled(true);
@@ -1328,7 +1332,7 @@ void bncWindow::slotBncTextChanged(){
 
   // RINEX Observations
   // ------------------
-  if (sender() == _rnxPathLineEdit) {
+  if (sender() == 0 || sender() == _rnxPathLineEdit) {
     if (!_rnxPathLineEdit->text().isEmpty()) {
       _rnxSamplSpinBox->setStyleSheet("background-color: white");
       _rnxSkelLineEdit->setStyleSheet("background-color: white");
@@ -1357,7 +1361,8 @@ void bncWindow::slotBncTextChanged(){
 
   // RINEX Ephemeris
   // ---------------
-  if (sender() == _ephPathLineEdit || sender() == _outEphPortLineEdit) {
+  if (sender() == 0 || 
+      sender() == _ephPathLineEdit || sender() == _outEphPortLineEdit) {
     if (!_ephPathLineEdit->text().isEmpty() || 
         !_outEphPortLineEdit->text().isEmpty()) { 
       _ephIntrComboBox->setStyleSheet("background-color: white");
@@ -1375,7 +1380,8 @@ void bncWindow::slotBncTextChanged(){
 
   // Broadcast Corrections
   // ---------------------
-  if (sender() == _corrPathLineEdit || sender() == _corrPortLineEdit) {
+  if (sender() == 0 || 
+      sender() == _corrPathLineEdit || sender() == _corrPortLineEdit) {
     if (!_corrPathLineEdit->text().isEmpty() || 
         !_corrPortLineEdit->text().isEmpty()) { 
       _corrIntrComboBox->setStyleSheet("background-color: white");
@@ -1389,7 +1395,8 @@ void bncWindow::slotBncTextChanged(){
 
   // Feed Engine
   // -----------
-  if (sender() == _outPortLineEdit || sender() == _outFileLineEdit) {
+  if (sender() == 0 || 
+      sender() == _outPortLineEdit || sender() == _outFileLineEdit) {
     if ( !_outPortLineEdit->text().isEmpty() || 
          !_outFileLineEdit->text().isEmpty()) {
       _waitTimeSpinBox->setStyleSheet("background-color: white");
@@ -1407,7 +1414,7 @@ void bncWindow::slotBncTextChanged(){
 
   // Serial Output
   // -------------
-  if (sender() == _serialMountPointLineEdit || 
+  if (sender() == 0 || sender() == _serialMountPointLineEdit || 
       sender() == _serialAutoNMEAComboBox) {
     if (!_serialMountPointLineEdit->text().isEmpty()) {
       _serialPortNameLineEdit->setStyleSheet("background-color: white");
@@ -1461,7 +1468,7 @@ void bncWindow::slotBncTextChanged(){
 
   // Outages
   // -------
-  if (sender() == _obsRateComboBox) {
+  if (sender() == 0 || sender() == _obsRateComboBox) {
     if (!_obsRateComboBox->currentText().isEmpty()) {
       _adviseScriptLineEdit->setStyleSheet("background-color: white");
       _adviseFailSpinBox->setStyleSheet("background-color: white");
@@ -1481,7 +1488,7 @@ void bncWindow::slotBncTextChanged(){
 
   // Miscellaneous
   // -------------
-  if (sender() == _miscMountLineEdit) {
+  if (sender() == 0 || sender() == _miscMountLineEdit) {
     if (!_miscMountLineEdit->text().isEmpty()) {
       _perfIntrComboBox->setStyleSheet("background-color: white");
       _scanRTCMCheckBox->setPalette(palette_white);
@@ -1497,7 +1504,7 @@ void bncWindow::slotBncTextChanged(){
 
   // PPP Client
   // ----------
-  if (sender() == _pppMountLineEdit) {
+  if (sender() == 0 || sender() == _pppMountLineEdit) {
     if (!_pppMountLineEdit->text().isEmpty()) {
       _pppNMEALineEdit->setPalette(palette_white);
       _pppStaticCheckBox->setPalette(palette_white);
