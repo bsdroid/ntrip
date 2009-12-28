@@ -82,6 +82,8 @@ class bncModel : public QObject {
   bool               _usePhase;
   bool               _estTropo;
   QByteArray         _log;
+  QFile*             _nmeaFile;
+  QTextStream*       _nmeaStream;
 };
 
 #endif

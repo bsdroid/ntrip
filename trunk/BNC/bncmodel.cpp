@@ -159,6 +159,26 @@ bncModel::bncModel(QByteArray staID) {
   if (_estTropo) {
     _QQ(5,5) = sig_trp_0 * sig_trp_0; 
   }
+
+  // NMEA Output
+  // -----------
+  QString nmeaFileName = settings.value("nmeaFile").toString();
+  if (nmeaFileName.isEmpty()) {
+    _nmeaFile   = 0;
+    _nmeaStream = 0;
+  }
+  else {
+    expandEnvVar(nmeaFileName);
+    _nmeaFile = new QFile(nmeaFileName);
+    if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
+      _nmeaFile->open(QIODevice::WriteOnly | QIODevice::Append);
+    }
+    else {
+      _nmeaFile->open(QIODevice::WriteOnly);
+    }
+    _nmeaStream = new QTextStream();
+    _nmeaStream->setDevice(_nmeaFile);
+  }
 }
 
 // Destructor
