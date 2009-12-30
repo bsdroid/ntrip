@@ -140,9 +140,12 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.10.3. <a href=#miscscan>Scan RTCM</a><br>
 3.11. <a href=#pppclient>PPP Client</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.1 <a href=#pppmount>Mountpoint</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.2 <a href=#pppstatic>Static</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppphase>Use Phase Obs</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#ppptropo>Estimate Tropo</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.2 <a href=#pppopt>Options</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.2.1 <a href=#pppstatic>Static</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.2.2 <a href=#pppphase>Use Phase Obs</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.2.3 <a href=#ppptropo>Estimate Tropo</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.2.4 <a href=#pppglo>Use GLONASS</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppnmea>NMEA file</a><br>
 3.12. <a href=#streams>Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1 <a href=#streamedit>Edit Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.2 <a href=#streamdelete>Delete Stream</a><br>
@@ -959,19 +962,33 @@ code observations and 10 centimeters for phase observations.
 Specify a mountpoint if you want BNC to derive coordinates for the affected rover position through a PPP solution.
 </p>
 
-<p><a name="pppstatic"><h4>3.11.2 Static - optional</h4></p>
-<p>
-By default BNC considers the rover position as mobile. Tick 'Static' to consider a static observation sitatuion and adapt appropriate filter characteristics for that.
+<p><a name="pppopt"><h4>3.11.2 Options - optional</h4></p>
+BNC allows to use different PPP processing options.
 </p>
 
-<p><a name="pppphase"><h4>3.11.3 Use Phase Obs - optional</h4></p>
+<p><a name="pppstatic"><h4>3.11.2.1 Static - optional</h4></p>
+<p>
+By default BNC considers the rover position as mobile. Tick 'Static' in a static observation situation to adapt appropriate filter characteristics for that.
+</p>
+
+<p><a name="pppphase"><h4>3.11.2.2 Use Phase Obs - optional</h4></p>
 <p>
 By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations. Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.
 </p>
 
-<p><a name="ppptropo"><h4>3.11.4 Estimate Tropo - optional</h4></p>
+<p><a name="ppptropo"><h4>3.11.2.3 Estimate Tropo - optional</h4></p>
 <p>
 By default BNC does not introduce troposphere parameters when estimating coordinates. Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.
+</p>
+
+<p><a name="pppglo"><h4>3.11.2.4 Use GLONASS - optional</h4></p>
+<p>
+By default BNC does not process GLONASS observations in PPP mode. Tick 'Use GLONASS' to use GPS and GLONASS observations for estimating coordinates in Precise Point Positioning mode.
+</p>
+
+<p><a name="pppnmea"><h4>3.11.3 NMEA file - optional</h4></p>
+<p>
+Specify the full path to a file where Precise Point Positioning results are saved as NMEA GPGGA messages. The generated NMEA file will begin with a GPRMC message which carries only the date information.
 </p>
 
 <p><a name="streams"><h4>3.12. Streams</h4></p>
@@ -1353,7 +1370,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 </tr>
 
 <tr>
-<td>Dec 2009 &nbsp;</td><td>Version 2.0 &nbsp;</td>
+<td>Jan 2010 &nbsp;</td><td>Version 2.0 &nbsp;</td>
 <td>[Add] Real-time PPP option</td>
 </tr>
 
@@ -1607,6 +1624,12 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>startTab=0</td><td>Internal memory: Top tab index</td></tr>
 <tr><td>statusTab=0</td><td>Internal memory: Bottom tab index</td></tr>
 <tr><td>waitTime=5</td><td>Feed Engine: Wait for full epoch</td></tr>
+<tr><td>pppMount=</td><td>PPP Client: Mountpoint</td></tr>
+<tr><td>pppStatic=0</td><td>PPP Client: Static mode</td></tr>
+<tr><td>pppUsePhase=0</td><td>PPP Client: Use phase data </td></tr>
+<tr><td>pppEstTropo=0</td><td>PPP Client: Estimate troposphere</td></tr>
+<tr><td>pppGLONASS=0</td><td>PPP Client: Use GLONASS</td></tr>
+<tr><td>nmeaFile=</td><td>PPP Client: NMEA file</td></tr>
 </table>
 </p>
 <p>
