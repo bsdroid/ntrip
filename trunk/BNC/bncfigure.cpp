@@ -52,8 +52,8 @@ bncFigure::bncFigure(QWidget *parent) : QWidget(parent) {
   slotNextAnimationFrame();
   for (int ii = 0; ii <= 1000; ii++) {
     _ran[0][ii] = qrand() % 255;
-    _ran[2][ii] = qrand() % 255;
     _ran[1][ii] = qrand() % 255;
+    _ran[2][ii] = qrand() % 255;
   }
 }
 
