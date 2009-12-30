@@ -89,8 +89,6 @@ bnsWindow::bnsWindow() {
   _bns = 0;
 
   bnsSettings settings;
-  QPalette palette;
-  QColor lightGray(230, 230, 230);
 
   QString fontString = settings.value("font").toString();
   if ( !fontString.isEmpty() ) {
@@ -345,11 +343,7 @@ bnsWindow::bnsWindow() {
   tab_prx->setLayout(layout_prx);
 
   connect(_proxyHostLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bnsText(const QString &)));
-  if (_proxyHostLineEdit->text().isEmpty()) {
-    _proxyPortLineEdit->setStyleSheet("background-color: lightGray");
-    _proxyPortLineEdit->setEnabled(false);
-  }
+          this, SLOT(slotBnsTextChanged()));
 
   // General Tab
   // ----------- 
@@ -392,13 +386,7 @@ bnsWindow::bnsWindow() {
   tab_eph->setLayout(layout_eph);
 
   connect(_ephHostLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bnsText(const QString &)));
-  if (_ephHostLineEdit->text().isEmpty()) {
-    _ephPortLineEdit->setStyleSheet("background-color: lightGray");
-    _ephEchoLineEdit->setStyleSheet("background-color: lightGray");
-    _ephPortLineEdit->setEnabled(false);
-    _ephEchoLineEdit->setEnabled(false);
-  }
+          this, SLOT(slotBnsTextChanged()));
 
   // Clocks & Orbits Tab
   // -------------------
@@ -420,11 +408,7 @@ bnsWindow::bnsWindow() {
   tab_co->setLayout(layout_co);
 
   connect(_clkPortLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bnsText(const QString &)));
-  if (_clkPortLineEdit->text().isEmpty()) {
-    _inpEchoLineEdit->setStyleSheet("background-color: lightGray");
-    _inpEchoLineEdit->setEnabled(false);
-  }
+          this, SLOT(slotBnsTextChanged()));
 
   // Broadcast Corrections I Tab
   // ---------------------------
@@ -458,25 +442,12 @@ bnsWindow::bnsWindow() {
   layout_cas1->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
   tab_cas1->setLayout(layout_cas1);
+
   connect(_refSys_1_ComboBox, SIGNAL(currentIndexChanged(const QString &)),
           this, SLOT(customTrafo(const QString)));
+
   connect(_outHost_1_LineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bnsText(const QString &)));
-  if (_outHost_1_LineEdit->text().isEmpty()) {
-    _outPort_1_LineEdit->setStyleSheet("background-color: lightGray");
-    _mountpoint_1_LineEdit->setStyleSheet("background-color: lightGray");
-    _password_1_LineEdit->setStyleSheet("background-color: lightGray");
-    _outFile_1_LineEdit->setStyleSheet("background-color: lightGray");
-    _refSys_1_ComboBox->setStyleSheet("background-color: lightGray");
-    palette.setColor(_CoM_1_CheckBox->backgroundRole(), lightGray);
-    _CoM_1_CheckBox->setPalette(palette);
-    _outPort_1_LineEdit->setEnabled(false);
-    _mountpoint_1_LineEdit->setEnabled(false);
-    _password_1_LineEdit->setEnabled(false);
-    _outFile_1_LineEdit->setEnabled(false);
-    _refSys_1_ComboBox->setEnabled(false);
-    _CoM_1_CheckBox->setEnabled(false);
-  }
+          this, SLOT(slotBnsTextChanged()));
 
   // Broadcast Corrections II Tab
   // ----------------------------
@@ -510,25 +481,12 @@ bnsWindow::bnsWindow() {
   layout_cas2->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
   tab_cas2->setLayout(layout_cas2);
+
   connect(_refSys_2_ComboBox, SIGNAL(currentIndexChanged(const QString &)),
           this, SLOT(customTrafo(const QString)));
+
   connect(_outHost_2_LineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bnsText(const QString &)));
-  if (_outHost_2_LineEdit->text().isEmpty()) {
-    _outPort_2_LineEdit->setStyleSheet("background-color: lightGray");
-    _mountpoint_2_LineEdit->setStyleSheet("background-color: lightGray");
-    _password_2_LineEdit->setStyleSheet("background-color: lightGray");
-    _outFile_2_LineEdit->setStyleSheet("background-color: lightGray");
-    _refSys_2_ComboBox->setStyleSheet("background-color: lightGray");
-    palette.setColor(_CoM_2_CheckBox->backgroundRole(), lightGray);
-    _CoM_2_CheckBox->setPalette(palette);
-    _outPort_2_LineEdit->setEnabled(false);
-    _mountpoint_2_LineEdit->setEnabled(false);
-    _password_2_LineEdit->setEnabled(false);
-    _outFile_2_LineEdit->setEnabled(false);
-    _refSys_2_ComboBox->setEnabled(false);
-    _CoM_2_CheckBox->setEnabled(false);
-  }
+          this, SLOT(slotBnsTextChanged()));
 
   // Broadcast Corrections III Tab
   // -----------------------------
@@ -562,25 +520,12 @@ bnsWindow::bnsWindow() {
   layout_cas3->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
 
   tab_cas3->setLayout(layout_cas3);
+
   connect(_refSys_3_ComboBox, SIGNAL(currentIndexChanged(const QString &)),
           this, SLOT(customTrafo(const QString)));
+
   connect(_outHost_3_LineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bnsText(const QString &)));
-  if (_outHost_3_LineEdit->text().isEmpty()) {
-    _outPort_3_LineEdit->setStyleSheet("background-color: lightGray");
-    _mountpoint_3_LineEdit->setStyleSheet("background-color: lightGray");
-    _password_3_LineEdit->setStyleSheet("background-color: lightGray");
-    _outFile_3_LineEdit->setStyleSheet("background-color: lightGray");
-    _refSys_3_ComboBox->setStyleSheet("background-color: lightGray");
-    palette.setColor(_CoM_3_CheckBox->backgroundRole(), lightGray);
-    _CoM_3_CheckBox->setPalette(palette);
-    _outPort_3_LineEdit->setEnabled(false);
-    _mountpoint_3_LineEdit->setEnabled(false);
-    _password_3_LineEdit->setEnabled(false);
-    _outFile_3_LineEdit->setEnabled(false);
-    _refSys_3_ComboBox->setEnabled(false);
-    _CoM_3_CheckBox->setEnabled(false);
-  }
+          this, SLOT(slotBnsTextChanged()));
 
   // Broadcast Ephemerides
   // ---------------------
@@ -607,18 +552,9 @@ bnsWindow::bnsWindow() {
   layout_casEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster."), 3, 0, 1, 50);
 
   tab_casEph->setLayout(layout_casEph);
+
   connect(_outHost_Eph_LineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bnsText(const QString &)));
-  if (_outHost_Eph_LineEdit->text().isEmpty()) {
-    _outPort_Eph_LineEdit->setStyleSheet("background-color: lightGray");
-    _mountpoint_Eph_LineEdit->setStyleSheet("background-color: lightGray");
-    _password_Eph_LineEdit->setStyleSheet("background-color: lightGray");
-    _samplEphSpinBox->setStyleSheet("background-color: lightGray");
-    _outPort_Eph_LineEdit->setEnabled(false);
-    _mountpoint_Eph_LineEdit->setEnabled(false);
-    _password_Eph_LineEdit->setEnabled(false);
-    _samplEphSpinBox->setEnabled(false);
-  }
+          this, SLOT(slotBnsTextChanged()));
 
   // RINEX Clocks Tab
   // ----------------
@@ -642,13 +578,7 @@ bnsWindow::bnsWindow() {
   tab_rin->setLayout(layout_rin);
 
   connect(_rnxPathLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bnsText(const QString &)));
-  if (_rnxPathLineEdit->text().isEmpty()) {
-    _rnxIntrComboBox->setStyleSheet("background-color: lightGray");
-    _rnxSamplSpinBox->setStyleSheet("background-color: lightGray");
-    _rnxIntrComboBox->setEnabled(false);
-    _rnxSamplSpinBox->setEnabled(false);
-  }
+          this, SLOT(slotBnsTextChanged()));
 
   // SP3 Orbits Tab
   // --------------
@@ -672,13 +602,7 @@ bnsWindow::bnsWindow() {
   tab_sp3->setLayout(layout_sp3);
 
   connect(_sp3PathLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(bnsText(const QString &)));
-  if (_sp3PathLineEdit->text().isEmpty()) {
-    _sp3IntrComboBox->setStyleSheet("background-color: lightGray");
-    _sp3SamplSpinBox->setStyleSheet("background-color: lightGray");
-    _sp3IntrComboBox->setEnabled(false);
-    _sp3SamplSpinBox->setEnabled(false);
-  }
+          this, SLOT(slotBnsTextChanged()));
 
   tabs->setCurrentIndex(settings.value("startTab").toInt());
 
@@ -741,6 +665,10 @@ bnsWindow::bnsWindow() {
   mainLayout->addWidget(_status);
 
   _canvas->setLayout(mainLayout);
+
+  // Enable/Disable all Widgets
+  // --------------------------
+  slotBnsTextChanged();
 
   // Auto start
   // ----------
@@ -1005,23 +933,21 @@ void bnsWindow::updateStatus(int ii, int nBytes) {
   }
 }
 
-//  Bns Text
+// Enable/Disable Widgets according to user input
 ////////////////////////////////////////////////////////////////////////////
-void bnsWindow::bnsText(const QString &text){
+void bnsWindow::slotBnsTextChanged(){
 
-  bool isEmpty = text.isEmpty();
-
-  QPalette palette;
-  QColor lightGray(230, 230, 230);
-  QColor white(255, 255, 255);
+  QPalette palette_white(QColor(255, 255, 255));
+  QPalette palette_gray(QColor(230, 230, 230));
 
   // Enable/disable Proxy Options
   // ----------------------------
-  if (tabs->currentIndex() == 0) {
-    if (!isEmpty) {
+  if (sender() == 0 || sender() == _proxyHostLineEdit) {
+    if (!_proxyHostLineEdit->text().isEmpty()) {
       _proxyPortLineEdit->setStyleSheet("background-color: white");
       _proxyPortLineEdit->setEnabled(true);
-    } else {
+    } 
+    else {
       _proxyPortLineEdit->setStyleSheet("background-color: lightGray");
       _proxyPortLineEdit->setEnabled(false);
     }
@@ -1029,57 +955,58 @@ void bnsWindow::bnsText(const QString &text){
 
   // Enable/disable RINEX Ephemeris Options
   // --------------------------------------
-  if (tabs->currentIndex() == 2) {
-    if (!isEmpty) {
-    _ephPortLineEdit->setStyleSheet("background-color: white");
-    _ephEchoLineEdit->setStyleSheet("background-color: white");
-    _ephPortLineEdit->setEnabled(true);
-    _ephEchoLineEdit->setEnabled(true);
-    } else {
-    _ephPortLineEdit->setStyleSheet("background-color: lightGray");
-    _ephEchoLineEdit->setStyleSheet("background-color: lightGray");
-    _ephPortLineEdit->setEnabled(false);
-    _ephEchoLineEdit->setEnabled(false);
+  if (sender() == 0 || sender() == _ephHostLineEdit) {
+    if (!_ephHostLineEdit->text().isEmpty()) {
+      _ephPortLineEdit->setStyleSheet("background-color: white");
+      _ephEchoLineEdit->setStyleSheet("background-color: white");
+      _ephPortLineEdit->setEnabled(true);
+      _ephEchoLineEdit->setEnabled(true);
+    } 
+    else {
+      _ephPortLineEdit->setStyleSheet("background-color: lightGray");
+      _ephEchoLineEdit->setStyleSheet("background-color: lightGray");
+      _ephPortLineEdit->setEnabled(false);
+      _ephEchoLineEdit->setEnabled(false);
     }
   }
 
   // Enable/disable Clocks & Orbits Options
   // --------------------------------------
-  if (tabs->currentIndex() == 3) {
-    if (!isEmpty) {
-    _inpEchoLineEdit->setStyleSheet("background-color: white");
-    _inpEchoLineEdit->setEnabled(true);
-    } else {
-    _inpEchoLineEdit->setStyleSheet("background-color: lightGray");
-    _inpEchoLineEdit->setEnabled(false);
+  if (sender() == 0 || sender() == _clkPortLineEdit) {
+    if (!_clkPortLineEdit->text().isEmpty()) {
+      _inpEchoLineEdit->setStyleSheet("background-color: white");
+      _inpEchoLineEdit->setEnabled(true);
+    } 
+    else {
+      _inpEchoLineEdit->setStyleSheet("background-color: lightGray");
+      _inpEchoLineEdit->setEnabled(false);
     }
   }
 
   // Enable/disable  Broadcast Corrections I Options
   // -----------------------------------------------
-  if (tabs->currentIndex() == 4) {
-    if (!isEmpty) {
+  if (sender() == 0 || sender() == _outHost_1_LineEdit) {
+    if (!_outHost_1_LineEdit->text().isEmpty()) {
       _outPort_1_LineEdit->setStyleSheet("background-color: white");
       _mountpoint_1_LineEdit->setStyleSheet("background-color: white");
       _password_1_LineEdit->setStyleSheet("background-color: white");
       _outFile_1_LineEdit->setStyleSheet("background-color: white");
       _refSys_1_ComboBox->setStyleSheet("background-color: white");
-      palette.setColor(_CoM_1_CheckBox->backgroundRole(), white);
-      _CoM_1_CheckBox->setPalette(palette);
+      _CoM_1_CheckBox->setPalette(palette_white);
       _outPort_1_LineEdit->setEnabled(true);
       _mountpoint_1_LineEdit->setEnabled(true);
       _password_1_LineEdit->setEnabled(true);
       _outFile_1_LineEdit->setEnabled(true);
       _refSys_1_ComboBox->setEnabled(true);
       _CoM_1_CheckBox->setEnabled(true);
-    } else {
+    } 
+    else {
       _outPort_1_LineEdit->setStyleSheet("background-color: lightGray");
       _mountpoint_1_LineEdit->setStyleSheet("background-color: lightGray");
       _password_1_LineEdit->setStyleSheet("background-color: lightGray");
       _outFile_1_LineEdit->setStyleSheet("background-color: lightGray");
       _refSys_1_ComboBox->setStyleSheet("background-color: lightGray");
-      palette.setColor(_CoM_1_CheckBox->backgroundRole(), lightGray);
-      _CoM_1_CheckBox->setPalette(palette);
+      _CoM_1_CheckBox->setPalette(palette_gray);
       _outPort_1_LineEdit->setEnabled(false);
       _mountpoint_1_LineEdit->setEnabled(false);
       _password_1_LineEdit->setEnabled(false);
@@ -1091,29 +1018,28 @@ void bnsWindow::bnsText(const QString &text){
 
   // Enable/disable Broadcast Corrections II Options
   // -----------------------------------------------
-  if (tabs->currentIndex() == 5) {
-    if (!isEmpty) {
+  if (sender() == 0 || sender() == _outHost_2_LineEdit) {
+    if (!_outHost_2_LineEdit->text().isEmpty()) {
       _outPort_2_LineEdit->setStyleSheet("background-color: white");
       _mountpoint_2_LineEdit->setStyleSheet("background-color: white");
       _password_2_LineEdit->setStyleSheet("background-color: white");
       _outFile_2_LineEdit->setStyleSheet("background-color: white");
       _refSys_2_ComboBox->setStyleSheet("background-color: white");
-      palette.setColor(_CoM_2_CheckBox->backgroundRole(), white);
-      _CoM_2_CheckBox->setPalette(palette);
+      _CoM_2_CheckBox->setPalette(palette_white);
       _outPort_2_LineEdit->setEnabled(true);
       _mountpoint_2_LineEdit->setEnabled(true);
       _password_2_LineEdit->setEnabled(true);
       _outFile_2_LineEdit->setEnabled(true);
       _refSys_2_ComboBox->setEnabled(true);
       _CoM_2_CheckBox->setEnabled(true);
-    } else {
+    } 
+    else {
       _outPort_2_LineEdit->setStyleSheet("background-color: lightGray");
       _mountpoint_2_LineEdit->setStyleSheet("background-color: lightGray");
       _password_2_LineEdit->setStyleSheet("background-color: lightGray");
       _outFile_2_LineEdit->setStyleSheet("background-color: lightGray");
       _refSys_2_ComboBox->setStyleSheet("background-color: lightGray");
-      palette.setColor(_CoM_2_CheckBox->backgroundRole(), lightGray);
-      _CoM_2_CheckBox->setPalette(palette);
+      _CoM_2_CheckBox->setPalette(palette_gray);
       _outPort_2_LineEdit->setEnabled(false);
       _mountpoint_2_LineEdit->setEnabled(false);
       _password_2_LineEdit->setEnabled(false);
@@ -1125,29 +1051,28 @@ void bnsWindow::bnsText(const QString &text){
 
   // Enable/disable Broadcast Corrections III Options
   // -----------------------------------------------
-  if (tabs->currentIndex() == 6) {
-    if (!isEmpty) {
+  if (sender() == 0 || sender() == _outHost_3_LineEdit) {
+    if (!_outHost_3_LineEdit->text().isEmpty()) {
       _outPort_3_LineEdit->setStyleSheet("background-color: white");
       _mountpoint_3_LineEdit->setStyleSheet("background-color: white");
       _password_3_LineEdit->setStyleSheet("background-color: white");
       _outFile_3_LineEdit->setStyleSheet("background-color: white");
       _refSys_3_ComboBox->setStyleSheet("background-color: white");
-      palette.setColor(_CoM_3_CheckBox->backgroundRole(), white);
-      _CoM_3_CheckBox->setPalette(palette);
+      _CoM_3_CheckBox->setPalette(palette_white);
       _outPort_3_LineEdit->setEnabled(true);
       _mountpoint_3_LineEdit->setEnabled(true);
       _password_3_LineEdit->setEnabled(true);
       _outFile_3_LineEdit->setEnabled(true);
       _refSys_3_ComboBox->setEnabled(true);
       _CoM_3_CheckBox->setEnabled(true);
-    } else {
+    } 
+    else {
       _outPort_3_LineEdit->setStyleSheet("background-color: lightGray");
       _mountpoint_3_LineEdit->setStyleSheet("background-color: lightGray");
       _password_3_LineEdit->setStyleSheet("background-color: lightGray");
       _outFile_3_LineEdit->setStyleSheet("background-color: lightGray");
       _refSys_3_ComboBox->setStyleSheet("background-color: lightGray");
-      palette.setColor(_CoM_3_CheckBox->backgroundRole(), lightGray);
-      _CoM_3_CheckBox->setPalette(palette);
+      _CoM_3_CheckBox->setPalette(palette_gray);
       _outPort_3_LineEdit->setEnabled(false);
       _mountpoint_3_LineEdit->setEnabled(false);
       _password_3_LineEdit->setEnabled(false);
@@ -1159,8 +1084,8 @@ void bnsWindow::bnsText(const QString &text){
 
   // Enable/disable Broadcast Ephemerides
   // ------------------------------------
-  if (tabs->currentIndex() == 7) {
-    if (!isEmpty) {
+  if (sender() == 0 || sender() == _outHost_Eph_LineEdit) {
+    if (!_outHost_Eph_LineEdit->text().isEmpty()) {
       _outPort_Eph_LineEdit->setStyleSheet("background-color: white");
       _mountpoint_Eph_LineEdit->setStyleSheet("background-color: white");
       _password_Eph_LineEdit->setStyleSheet("background-color: white");
@@ -1169,7 +1094,8 @@ void bnsWindow::bnsText(const QString &text){
       _mountpoint_Eph_LineEdit->setEnabled(true);
       _password_Eph_LineEdit->setEnabled(true);
       _samplEphSpinBox->setEnabled(true);
-    } else {
+    } 
+    else {
       _outPort_Eph_LineEdit->setStyleSheet("background-color: lightGray");
       _mountpoint_Eph_LineEdit->setStyleSheet("background-color: lightGray");
       _password_Eph_LineEdit->setStyleSheet("background-color: lightGray");
@@ -1183,13 +1109,14 @@ void bnsWindow::bnsText(const QString &text){
 
   // Enable/disable RINEX Clocks Options
   // -----------------------------------
-  if (tabs->currentIndex() == 8) {
-    if (!isEmpty) {
+  if (sender() == 0 || sender() == _rnxPathLineEdit) {
+    if (!_rnxPathLineEdit->text().isEmpty()) {
       _rnxIntrComboBox->setStyleSheet("background-color: white");
       _rnxSamplSpinBox->setStyleSheet("background-color: white");
       _rnxIntrComboBox->setEnabled(true);
       _rnxSamplSpinBox->setEnabled(true);
-    } else {
+    } 
+    else {
       _rnxIntrComboBox->setStyleSheet("background-color: lightGray");
       _rnxSamplSpinBox->setStyleSheet("background-color: lightGray");
       _rnxIntrComboBox->setEnabled(false);
@@ -1199,13 +1126,14 @@ void bnsWindow::bnsText(const QString &text){
 
   // Enable/disable SP3 Orbits Options
   // ---------------------------------
-  if (tabs->currentIndex() == 9) {
-    if (!isEmpty) {
+  if (sender() == 0 || sender() == _sp3PathLineEdit) {
+    if (!_sp3PathLineEdit->text().isEmpty()) {
       _sp3IntrComboBox->setStyleSheet("background-color: white");
       _sp3SamplSpinBox->setStyleSheet("background-color: white");
       _sp3IntrComboBox->setEnabled(true);
       _sp3SamplSpinBox->setEnabled(true);
-    } else {
+    } 
+    else {
       _sp3IntrComboBox->setStyleSheet("background-color: lightGray");
       _sp3SamplSpinBox->setStyleSheet("background-color: lightGray");
       _sp3IntrComboBox->setEnabled(false);

@@ -32,7 +32,7 @@ Q_OBJECT
  public slots:  
   void slotMessage(const QByteArray msg);
   void slotError(const QByteArray msg);
-  void bnsText(const QString &text);
+  void slotBnsTextChanged();
   void customTrafo(const QString &text);
 
  private slots:
