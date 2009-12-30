@@ -344,6 +344,9 @@ bncWindow::bncWindow() {
   _pppEstTropoCheckBox = new QCheckBox();
   _pppEstTropoCheckBox->setCheckState(Qt::CheckState(
                                       settings.value("pppEstTropo").toInt()));
+  _pppGLONASSCheckBox = new QCheckBox();
+  _pppGLONASSCheckBox->setCheckState(Qt::CheckState(
+                                    settings.value("pppGLONASS").toInt()));
 
   connect(_pppMountLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
@@ -425,6 +428,7 @@ bncWindow::bncWindow() {
   _pppStaticCheckBox->setWhatsThis(tr("<p>By default BNC considers the rover receiver as mobile.</p><p>Tick 'Static' to consider a static observation sitatuion and adapt appropriate filter characteristics for that.</p>"));
   _pppUsePhaseCheckBox->setWhatsThis(tr("<p>By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations.</p><p>Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.</p>"));
   _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
+  _pppGLONASSCheckBox->setWhatsThis(tr("<p>By default BNC does not use GLONAS observations in PPP mode.</p><p>Tick 'Use GLONASS' to process GPS and GLONASS observations in PPP mode.</p>"));
   _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
 
   // Canvas with Editable Fields
@@ -666,9 +670,11 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Use phase obs         "), 1, 4, 1, 1, Qt::AlignLeft);
   pppLayout->addWidget(_pppEstTropoCheckBox,                 1, 5);
   pppLayout->addWidget(new QLabel("Estimate tropo        "), 1, 6, 1, 1, Qt::AlignLeft);
+  pppLayout->addWidget(_pppGLONASSCheckBox,                  1, 7);
+  pppLayout->addWidget(new QLabel("Use GLONASS           "), 1, 8, 1, 1, Qt::AlignLeft);
   pppLayout->addWidget(new QLabel("NMEA file (full path)"),  2, 0);
   pppLayout->addWidget(_pppNMEALineEdit,                     2, 1, 1, 6);
-  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),3, 0,1,30);
+  pppLayout->addWidget(new QLabel("Precise Point Positioning (PPP) coordinates."),3, 0,1,30);
   pppLayout->addWidget(new QLabel("    "),                4, 0);
   pppLayout->addWidget(new QLabel("    "),                5, 0);
   pppgroup->setLayout(pppLayout);
@@ -984,6 +990,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppStatic",   _pppStaticCheckBox->checkState());
   settings.setValue("pppUsePhase", _pppUsePhaseCheckBox->checkState());
   settings.setValue("pppEstTropo", _pppEstTropoCheckBox->checkState());
+  settings.setValue("pppGLONASS",  _pppGLONASSCheckBox->checkState());
   settings.setValue("mountPoints", mountPoints);
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
@@ -1511,19 +1518,23 @@ void bncWindow::slotBncTextChanged(){
       _pppStaticCheckBox->setPalette(palette_white);
       _pppUsePhaseCheckBox->setPalette(palette_white);
       _pppEstTropoCheckBox->setPalette(palette_white);
+      _pppGLONASSCheckBox->setPalette(palette_white);
       _pppNMEALineEdit->setEnabled(true);
       _pppStaticCheckBox->setEnabled(true);
       _pppUsePhaseCheckBox->setEnabled(true);
       _pppEstTropoCheckBox->setEnabled(true);
+      _pppGLONASSCheckBox->setEnabled(true);
     } else {
       _pppNMEALineEdit->setPalette(palette_gray);
       _pppStaticCheckBox->setPalette(palette_gray);
       _pppUsePhaseCheckBox->setPalette(palette_gray);
       _pppEstTropoCheckBox->setPalette(palette_gray);
+      _pppGLONASSCheckBox->setPalette(palette_gray);
       _pppNMEALineEdit->setEnabled(false);
       _pppStaticCheckBox->setEnabled(false);
       _pppUsePhaseCheckBox->setEnabled(false);
       _pppEstTropoCheckBox->setEnabled(false);
+      _pppGLONASSCheckBox->setEnabled(false);
     }
   }
 }
