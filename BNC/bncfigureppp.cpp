@@ -96,10 +96,10 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
   cout << "paintEvent" << endl;
 
+  int tMin =   0;
+  int tMax = 640;
   int xMin =   0;
-  int xMax = 640;
-  int yMin =   0;
-  int yMax = 140;
+  int xMax = 140;
   float xLine = .60;
 
   QPainter painter(this);
@@ -110,21 +110,18 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
   // x-axis
   // ------
-  painter.drawLine(xMin+60, int((yMax-yMin)*xLine), xMax*3, 
-                   int((yMax-yMin)*xLine));
+  painter.drawLine(tMin+60, int((xMax-xMin)*xLine), tMax*3, 
+                   int((xMax-xMin)*xLine));
 
   // y-axis
   // ------
-  painter.drawLine(xMin+60, int((yMax-yMin)*xLine), xMin+60, yMin+10);
+  painter.drawLine(tMin+60, int((xMax-xMin)*xLine), tMin+60, xMin+10);
 
-  // Plot XY
-  // -------
+  // Plot X-coordinates
+  // ------------------
   if (_pos.size() > 1) {
-
     double posXmin = _pos[0]->xyz[0];
     double posXmax = _pos[0]->xyz[0];
-    double posYmin = _pos[0]->xyz[1];
-    double posYmax = _pos[0]->xyz[1];
     for (int ii = 1; ii < _pos.size(); ++ii) {
       if (_pos[ii]->xyz[0] < posXmin) {
         posXmin = _pos[ii]->xyz[0];
@@ -132,22 +129,22 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
       if (_pos[ii]->xyz[0] > posXmax) {
         posXmax = _pos[ii]->xyz[0];
       }
-      if (_pos[ii]->xyz[1] < posYmin) {
-        posYmin = _pos[ii]->xyz[1];
-      }
-      if (_pos[ii]->xyz[1] > posYmax) {
-        posYmax = _pos[ii]->xyz[1];
-      }
     }
-    double rangeX = posXmax - posXmin;
-    double rangeY = posYmax - posYmin;
+    double rangeX = posXmax - posXmin; // in meters
+    double rangeT = _pos[_pos.size()-1]->time - _pos[0]->time;  // in seconds
 
-    for (int ii = 0; ii < _pos.size(); ++ii) {
-      const static int width  = 10;
-      const static int height = 10;
-      int xx = int( (_pos[ii]->xyz[0] - posXmin) * (xMax - xMin) / rangeX) ;
-      int yy = int( (_pos[ii]->xyz[1] - posYmin) * (yMax - yMin) / rangeY) ;
-      painter.drawEllipse(xx, yy, width, height);
+    if (rangeX > 0.0 && rangeT > 0.0) {
+      double factorX = (xMax - xMin) / rangeX;
+      double factorT = (tMax - tMin) / rangeT;
+      
+      for (int ii = 1; ii < _pos.size(); ++ii) {
+        int t1 = int( (_pos[ii-1]->time   - _pos[0]->time) * factorT ) ;
+        int t2 = int( (_pos[ii]->time     - _pos[0]->time) * factorT ) ;
+        int x1 = int( (_pos[ii-1]->xyz[0] - posXmin)       * factorX ) ;
+        int x2 = int( (_pos[ii]->xyz[0]   - posXmin)       * factorX ) ;
+      
+        painter.drawLine(t1, x1, t2, x2);
+      }
     }
   }
 }
