@@ -1221,10 +1221,13 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
                    _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
         connect(thread, SIGNAL(newLatency(QByteArray, double)),
                 _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
-        disconnect(thread, SIGNAL(newPosition(const bncTime&, const double*)),
-                   _bncFigurePPP, SLOT(slotNewPosition(const bncTime&, const double*)));
-        connect(thread, SIGNAL(newPosition(const bncTime&, const double*)),
-                _bncFigurePPP, SLOT(slotNewPosition(const bncTime&, const double*)));
+        disconnect(thread, 
+                   SIGNAL(newPosition(bncTime, double, double, double)),
+                   _bncFigurePPP, 
+                   SLOT(slotNewPosition(bncTime, double, double, double)));
+        connect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
+                _bncFigurePPP, 
+                SLOT(slotNewPosition(bncTime, double, double, double)));
         break;
       }
     }

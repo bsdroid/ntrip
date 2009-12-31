@@ -81,7 +81,7 @@ class bncGetThread : public QThread {
    void newAntCrd(QByteArray staID, double xx, double yy, double zz, QByteArray antType);
    void newMessage(QByteArray msg, bool showOnScreen);
    void getThreadFinished(QByteArray staID);
-   void newPosition(const bncTime& time, const double*);
+   void newPosition(bncTime time, double x, double y, double z);
 
  protected:
    virtual void run();
