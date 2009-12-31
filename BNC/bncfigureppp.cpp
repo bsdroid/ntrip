@@ -113,31 +113,17 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
     if (xRange > 0.0 && tRange > 0.0) {
 
-      double tScale = 640 / tRange;
-      double xScale = 140 / xRange;
+      const static double scale0  = 0.8;
+      const static double tOffset = 1.0;
+      const static double xOffset = 0.1;
+
+      double tScale = scale0 * frameSize().width()  / tRange;
+      double xScale = scale0 * frameSize().height() / xRange;
 
       QTransform transform;
       transform.scale(tScale, xScale);
-      transform.translate(-tMin, -xMin);
+      transform.translate(-tMin+tOffset, -xMin+xOffset);
       painter.setTransform(transform);
-
-      //// beg test
-      double aa, bb;
-      transform.map(tMin, xMin, &aa, &bb);
-      cout << tMin << " " << xMin << " " << aa << " " << bb << endl;
-
-      transform.map(tMin, xMax, &aa, &bb);
-      cout << tMin << " " << xMax << " " << aa << " " << bb << endl;
-
-      transform.map(tMax, xMin, &aa, &bb);
-      cout << tMax << " " << xMin << " " << aa << " " << bb << endl;
-
-      transform.map(tMax, xMax, &aa, &bb);
-      cout << tMax << " " << xMax << " " << aa << " " << bb << endl;
-
-      cout << endl;
-
-      //// end test
 
       // x-axis
       // ------
