@@ -287,6 +287,7 @@ void bncGetThread::initialize() {
   // ----------------------
   if (settings.value("pppMount").toString() == _staID) {
     _PPPclient = new bncPPPclient(_staID);
+    qRegisterMetaType<bncTime>("bncTime");
     connect(_PPPclient, SIGNAL(newPosition(const bncTime&, const double*)), 
             this, SIGNAL(newPosition(const bncTime&, const double*)));
   }
