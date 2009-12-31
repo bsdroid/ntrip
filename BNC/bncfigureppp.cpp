@@ -75,75 +75,85 @@ void bncFigurePPP::slotNewPosition(bncTime time, double x, double y, double z){
 
   _pos.push_back(newPos);
 
-  //// beg test
-  cout << newPos->time.timestr(1) << " "
-       << newPos->xyz[0]          << " "
-       << newPos->xyz[1]          << " "
-       << newPos->xyz[2]          << endl;
-  //// end test
-
   if (_pos.size() > MAXNUMPOS) {
     delete _pos[0];
     _pos.pop_front();
   }
 
-  repaint();
+  update();
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncFigurePPP::paintEvent(QPaintEvent *) {
 
-  cout << "paintEvent" << endl;
-
-  int tMin =   0;
-  int tMax = 640;
-  int xMin =   0;
-  int xMax = 140;
-  float xLine = .60;
-
   QPainter painter(this);
 
-  QFont font;
-  font.setPointSize(int(font.QFont::pointSize()*0.8));
-  painter.setFont(font);
-
-  // x-axis
-  // ------
-  painter.drawLine(tMin+60, int((xMax-xMin)*xLine), tMax*3, 
-                   int((xMax-xMin)*xLine));
-
-  // y-axis
-  // ------
-  painter.drawLine(tMin+60, int((xMax-xMin)*xLine), tMin+60, xMin+10);
-
-  // Plot X-coordinates
-  // ------------------
+  // Plot X-coordinates as a function of time (in seconds)
+  // -----------------------------------------------------
   if (_pos.size() > 1) {
-    double posXmin = _pos[0]->xyz[0];
-    double posXmax = _pos[0]->xyz[0];
+
+    // Find the minimum and maximum values
+    // -----------------------------------
+    double tRange = _pos[_pos.size()-1]->time - _pos[0]->time; // in sec
+    double tMin   = _pos[0]->time.gpssec();
+    double tMax   = tMin + tRange;
+
+    double xMin = _pos[0]->xyz[0];
+    double xMax = _pos[0]->xyz[0];
     for (int ii = 1; ii < _pos.size(); ++ii) {
-      if (_pos[ii]->xyz[0] < posXmin) {
-        posXmin = _pos[ii]->xyz[0];
+      if (_pos[ii]->xyz[0] < xMin) {
+        xMin = _pos[ii]->xyz[0];
       }
-      if (_pos[ii]->xyz[0] > posXmax) {
-        posXmax = _pos[ii]->xyz[0];
+      if (_pos[ii]->xyz[0] > xMax) {
+        xMax = _pos[ii]->xyz[0];
       }
     }
-    double rangeX = posXmax - posXmin; // in meters
-    double rangeT = _pos[_pos.size()-1]->time - _pos[0]->time;  // in seconds
+    double xRange = xMax - xMin;
 
-    if (rangeX > 0.0 && rangeT > 0.0) {
-      double factorX = (xMax - xMin) / rangeX;
-      double factorT = (tMax - tMin) / rangeT;
-      
+    if (xRange > 0.0 && tRange > 0.0) {
+
+      double tScale = 640 / tRange;
+      double xScale = 140 / xRange;
+
+      QTransform transform;
+      transform.scale(tScale, xScale);
+      transform.translate(-tMin, -xMin);
+      painter.setTransform(transform);
+
+      //// beg test
+      double aa, bb;
+      transform.map(tMin, xMin, &aa, &bb);
+      cout << tMin << " " << xMin << " " << aa << " " << bb << endl;
+
+      transform.map(tMin, xMax, &aa, &bb);
+      cout << tMin << " " << xMax << " " << aa << " " << bb << endl;
+
+      transform.map(tMax, xMin, &aa, &bb);
+      cout << tMax << " " << xMin << " " << aa << " " << bb << endl;
+
+      transform.map(tMax, xMax, &aa, &bb);
+      cout << tMax << " " << xMax << " " << aa << " " << bb << endl;
+
+      cout << endl;
+
+      //// end test
+
+      // x-axis
+      // ------
+      painter.drawLine(QPointF(tMin, xMax), QPointF(tMax, xMax));
+
+      // y-axis
+      // ------
+      painter.drawLine(QPointF(tMin, xMin), QPointF(tMin, xMax));
+
       for (int ii = 1; ii < _pos.size(); ++ii) {
-        int t1 = int( (_pos[ii-1]->time   - _pos[0]->time) * factorT ) ;
-        int t2 = int( (_pos[ii]->time     - _pos[0]->time) * factorT ) ;
-        int x1 = int( (_pos[ii-1]->xyz[0] - posXmin)       * factorX ) ;
-        int x2 = int( (_pos[ii]->xyz[0]   - posXmin)       * factorX ) ;
+        double t1 = _pos[ii-1]->time.gpssec();
+        double t2 = _pos[ii]->time.gpssec();
+        double x1 = _pos[ii-1]->xyz[0];
+        double x2 = _pos[ii]->xyz[0];
       
-        painter.drawLine(t1, x1, t2, x2);
+        painter.drawLine(QPointF(t1, x1), QPointF(t2, x2));
       }
     }
   }
