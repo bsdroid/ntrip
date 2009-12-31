@@ -99,48 +99,70 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
     double tMin   = _pos[0]->time.gpssec();
     double tMax   = tMin + tRange;
 
-    double xMin = _pos[0]->xyz[0];
-    double xMax = _pos[0]->xyz[0];
-    for (int ii = 1; ii < _pos.size(); ++ii) {
-      if (_pos[ii]->xyz[0] < xMin) {
-        xMin = _pos[ii]->xyz[0];
+    // Reduced Coordinates
+    // -------------------
+    double xx[_pos.size()];
+    double yy[_pos.size()];
+    double zz[_pos.size()];
+
+    double xyzMin = 0.0;
+    double xyzMax = 0.0;
+    for (int ii = 0; ii < _pos.size(); ++ii) {
+      xx[ii] = _pos[ii]->xyz[0] - _pos[0]->xyz[0];
+      yy[ii] = _pos[ii]->xyz[1] - _pos[0]->xyz[1];
+      zz[ii] = _pos[ii]->xyz[2] - _pos[0]->xyz[2];
+      if (xx[ii] < xyzMin) {
+        xyzMin = xx[ii];
       }
-      if (_pos[ii]->xyz[0] > xMax) {
-        xMax = _pos[ii]->xyz[0];
+      if (xx[ii] > xyzMax) {
+        xyzMax = xx[ii];
+      }
+      if (yy[ii] < xyzMin) {
+        xyzMin = yy[ii];
+      }
+      if (yy[ii] > xyzMax) {
+        xyzMax = yy[ii];
+      }
+      if (zz[ii] < xyzMin) {
+        xyzMin = zz[ii];
+      }
+      if (zz[ii] > xyzMax) {
+        xyzMax = zz[ii];
       }
     }
-    double xRange = xMax - xMin;
+    double xyzRange = xyzMax - xyzMin;
 
-    if (xRange > 0.0 && tRange > 0.0) {
+    if (xyzRange > 0.0 && tRange > 0.0) {
 
       const static double scale0  = 0.8;
       double tOffset = tRange / 10.0;
-      double xOffset = xRange / 10.0;
+      double xOffset = xyzRange / 10.0;
 
       double tScale = scale0 * frameSize().width()  / tRange;
-      double xScale = scale0 * frameSize().height() / xRange;
+      double xScale = scale0 * frameSize().height() / xyzRange;
 
       QTransform transform;
       transform.scale(tScale, xScale);
-      transform.translate(-tMin+tOffset, -xMin+xOffset);
+      transform.translate(-tMin+tOffset, -xyzMin+xOffset);
       painter.setTransform(transform);
 
       // x-axis
       // ------
-      painter.drawLine(QPointF(tMin, xMax), QPointF(tMax, xMax));
+      painter.drawLine(QPointF(tMin, xyzMax), QPointF(tMax, xyzMax));
 
       // y-axis
       // ------
-      painter.drawLine(QPointF(tMin, xMin), QPointF(tMin, xMax));
+      painter.drawLine(QPointF(tMin, xyzMin), QPointF(tMin, xyzMax));
 
-      painter.setPen(QColor(Qt::red));
       for (int ii = 1; ii < _pos.size(); ++ii) {
         double t1 = _pos[ii-1]->time.gpssec();
         double t2 = _pos[ii]->time.gpssec();
-        double x1 = _pos[ii-1]->xyz[0];
-        double x2 = _pos[ii]->xyz[0];
-      
-        painter.drawLine(QPointF(t1, x1), QPointF(t2, x2));
+        painter.setPen(QColor(Qt::red));
+        painter.drawLine(QPointF(t1, xx[ii-1]), QPointF(t2, xx[ii]));
+        painter.setPen(QColor(Qt::green));
+        painter.drawLine(QPointF(t1, yy[ii-1]), QPointF(t2, yy[ii]));
+        painter.setPen(QColor(Qt::blue));
+        painter.drawLine(QPointF(t1, zz[ii-1]), QPointF(t2, zz[ii]));
       }
     }
   }
