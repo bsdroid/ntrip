@@ -120,19 +120,16 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
         xyzMax = fabs(zz[ii]);
       }
     }
-    double xyzRange = 2.0 * xyzMax;
-
-    if (xyzRange > 0.0 && tRange > 0.0) {
+    if (xyzMax > 0.0 && tRange > 0.0) {
 
       const static double scale0  = 0.8;
       double tOffset = tRange / 10.0;
-      double xyzOffset = xyzRange / 10.0;
       double tScale = scale0 * frameSize().width()  / tRange;
-      double xScale = scale0 * frameSize().height() / xyzRange;
+      double xScale = scale0 * frameSize().height() / (2.0 * xyzMax);
 
       QTransform transform;
       transform.scale(tScale, xScale);
-      transform.translate(-tMin+tOffset, xyzMax/2.0 + xyzOffset);
+      transform.translate(-tMin+tOffset, xyzMax);
       painter.setTransform(transform);
 
       // x-axis
