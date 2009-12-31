@@ -114,8 +114,8 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
     if (xRange > 0.0 && tRange > 0.0) {
 
       const static double scale0  = 0.8;
-      const static double tOffset = 1.0;
-      const static double xOffset = 0.1;
+      double tOffset = tRange / 10.0;
+      double xOffset = xRange / 10.0;
 
       double tScale = scale0 * frameSize().width()  / tRange;
       double xScale = scale0 * frameSize().height() / xRange;
