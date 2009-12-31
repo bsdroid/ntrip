@@ -87,7 +87,7 @@ void bncFigurePPP::slotNewPosition(bncTime time, double x, double y, double z){
     _pos.pop_front();
   }
 
-  update();
+  repaint();
 }
 
 // 
@@ -117,5 +117,38 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
   // ------
   painter.drawLine(xMin+60, int((yMax-yMin)*xLine), xMin+60, yMin+10);
 
+  // Plot XY
+  // -------
+  if (_pos.size() > 1) {
+
+    double posXmin = _pos[0]->xyz[0];
+    double posXmax = _pos[0]->xyz[0];
+    double posYmin = _pos[0]->xyz[1];
+    double posYmax = _pos[0]->xyz[1];
+    for (int ii = 1; ii < _pos.size(); ++ii) {
+      if (_pos[ii]->xyz[0] < posXmin) {
+        posXmin = _pos[ii]->xyz[0];
+      }
+      if (_pos[ii]->xyz[0] > posXmax) {
+        posXmax = _pos[ii]->xyz[0];
+      }
+      if (_pos[ii]->xyz[1] < posYmin) {
+        posYmin = _pos[ii]->xyz[1];
+      }
+      if (_pos[ii]->xyz[1] > posYmax) {
+        posYmax = _pos[ii]->xyz[1];
+      }
+    }
+    double rangeX = posXmax - posXmin;
+    double rangeY = posYmax - posYmin;
+
+    for (int ii = 0; ii < _pos.size(); ++ii) {
+      const static int width  = 10;
+      const static int height = 10;
+      int xx = int( (_pos[ii]->xyz[0] - posXmin) * (xMax - xMin) / rangeX) ;
+      int yy = int( (_pos[ii]->xyz[1] - posYmin) * (yMax - yMin) / rangeY) ;
+      painter.drawEllipse(xx, yy, width, height);
+    }
+  }
 }
 
