@@ -80,6 +80,7 @@ class bncGetThread : public QThread {
    void newAntCrd(QByteArray staID, double xx, double yy, double zz, QByteArray antType);
    void newMessage(QByteArray msg, bool showOnScreen);
    void getThreadFinished(QByteArray staID);
+   void newPosition(const double*);
 
  protected:
    virtual void run();
