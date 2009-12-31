@@ -133,6 +133,7 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
       // ------
       painter.drawLine(QPointF(tMin, xMin), QPointF(tMin, xMax));
 
+      painter.setPen(QColor(Qt::red));
       for (int ii = 1; ii < _pos.size(); ++ii) {
         double t1 = _pos[ii-1]->time.gpssec();
         double t2 = _pos[ii]->time.gpssec();
