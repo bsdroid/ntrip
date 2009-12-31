@@ -430,6 +430,8 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   _log = "Precise Point Positioning";
 
+  _time = epoData->tt;
+
   SymmetricMatrix QQsav;
   ColumnVector    dx;
   ColumnVector    vv;
