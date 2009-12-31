@@ -35,7 +35,7 @@ class bncFigurePPP : public QWidget {
   ~bncFigurePPP();
 
  public slots:
-  void slotNewPosition(const bncTime& time, const double* xyz);
+  void slotNewPosition(bncTime time, double x, double y, double z);
 
  protected:
   void paintEvent(QPaintEvent *event);

@@ -92,7 +92,7 @@ class bncPPPclient : public QObject {
   void slotNewCorrections(QList<QString> corrList);
 
  signals:
-   void newPosition(const bncTime& time, const double*);
+  void newPosition(bncTime time, double x, double y, double z);
 
  private:
   t_irc getSatPos(const bncTime& tt, const QString& prn, 

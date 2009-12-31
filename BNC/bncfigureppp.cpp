@@ -60,7 +60,7 @@ bncFigurePPP::~bncFigurePPP() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncFigurePPP::slotNewPosition(const bncTime& time, const double* xyz) {
+void bncFigurePPP::slotNewPosition(bncTime time, double x, double y, double z){
 
   const static int MAXNUMPOS = 1000;
 
@@ -69,11 +69,18 @@ void bncFigurePPP::slotNewPosition(const bncTime& time, const double* xyz) {
   pppPos* newPos = new pppPos;
 
   newPos->time   = time;
-  newPos->xyz[0] = xyz[0];
-  newPos->xyz[1] = xyz[1];
-  newPos->xyz[2] = xyz[2];
+  newPos->xyz[0] = x;
+  newPos->xyz[1] = y;
+  newPos->xyz[2] = z;
 
   _pos.push_back(newPos);
+
+  //// beg test
+  cout << newPos->time.timestr(1) << " "
+       << newPos->xyz[0]          << " "
+       << newPos->xyz[1]          << " "
+       << newPos->xyz[2]          << endl;
+  //// end test
 
   if (_pos.size() > MAXNUMPOS) {
     delete _pos[0];
@@ -86,6 +93,8 @@ void bncFigurePPP::slotNewPosition(const bncTime& time, const double* xyz) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncFigurePPP::paintEvent(QPaintEvent *) {
+
+  cout << "paintEvent" << endl;
 
   int xMin =   0;
   int xMax = 640;
