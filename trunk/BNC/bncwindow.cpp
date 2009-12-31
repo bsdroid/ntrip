@@ -54,6 +54,7 @@
 #include "bncsettings.h"
 #include "bncfigure.h"
 #include "bncfigurelate.h"
+#include "bncfigureppp.h"
 #include "bncversion.h"
 
 using namespace std;
@@ -66,6 +67,7 @@ bncWindow::bncWindow() {
 
   _bncFigure = new bncFigure(this);
   _bncFigureLate = new bncFigureLate(this);
+  _bncFigurePPP = new bncFigurePPP(this);
 
   int ww = QFontMetrics(this->font()).width('w');
   
@@ -464,6 +466,7 @@ bncWindow::bncWindow() {
   _loggroup->addTab(_log,tr("Log"));
   _loggroup->addTab(_bncFigure,tr("Throughput"));
   _loggroup->addTab(_bncFigureLate,tr("Latency"));
+  _loggroup->addTab(_bncFigurePPP,tr("PPP"));
 
   // Proxy Tab
   // ---------
@@ -1218,6 +1221,10 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
                    _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
         connect(thread, SIGNAL(newLatency(QByteArray, double)),
                 _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
+        disconnect(thread, SIGNAL(newPosition(const double*)),
+                   _bncFigurePPP, SLOT(slotNewPosition(const double*)));
+        connect(thread, SIGNAL(newPosition(const double*)),
+                _bncFigurePPP, SLOT(slotNewPosition(const double*)));
         break;
       }
     }

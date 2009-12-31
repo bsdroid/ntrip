@@ -48,6 +48,7 @@ class bncFlowchartDlg : public QDialog {
 
 class bncFigure;
 class bncFigureLate;
+class bncFigurePPP;
 
 class bncWindow : public QMainWindow {
   Q_OBJECT
@@ -163,6 +164,7 @@ class bncWindow : public QMainWindow {
     QTabWidget* _loggroup;
     bncFigure*  _bncFigure;
     bncFigureLate*  _bncFigureLate;
+    bncFigurePPP*   _bncFigurePPP;
 
     bncCaster* _caster;
 };
