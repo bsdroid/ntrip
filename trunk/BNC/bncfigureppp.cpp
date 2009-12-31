@@ -62,7 +62,7 @@ bncFigurePPP::~bncFigurePPP() {
 ////////////////////////////////////////////////////////////////////////////
 void bncFigurePPP::slotNewPosition(bncTime time, double x, double y, double z){
 
-  const static int MAXNUMPOS = 1000;
+  const static int MAXNUMPOS = 300;
 
   QMutexLocker locker(&_mutex);
 
@@ -105,54 +105,43 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
     double yy[_pos.size()];
     double zz[_pos.size()];
 
-    double xyzMin = 0.0;
     double xyzMax = 0.0;
     for (int ii = 0; ii < _pos.size(); ++ii) {
       xx[ii] = _pos[ii]->xyz[0] - _pos[0]->xyz[0];
       yy[ii] = _pos[ii]->xyz[1] - _pos[0]->xyz[1];
       zz[ii] = _pos[ii]->xyz[2] - _pos[0]->xyz[2];
-      if (xx[ii] < xyzMin) {
-        xyzMin = xx[ii];
+      if (fabs(xx[ii]) > xyzMax) {
+        xyzMax = fabs(xx[ii]);
       }
-      if (xx[ii] > xyzMax) {
-        xyzMax = xx[ii];
+      if (fabs(yy[ii]) > xyzMax) {
+        xyzMax = fabs(yy[ii]);
       }
-      if (yy[ii] < xyzMin) {
-        xyzMin = yy[ii];
-      }
-      if (yy[ii] > xyzMax) {
-        xyzMax = yy[ii];
-      }
-      if (zz[ii] < xyzMin) {
-        xyzMin = zz[ii];
-      }
-      if (zz[ii] > xyzMax) {
-        xyzMax = zz[ii];
+      if (fabs(zz[ii]) > xyzMax) {
+        xyzMax = fabs(zz[ii]);
       }
     }
-    double xyzRange = xyzMax - xyzMin;
+    double xyzRange = 2.0 * xyzMax;
 
     if (xyzRange > 0.0 && tRange > 0.0) {
 
       const static double scale0  = 0.8;
       double tOffset = tRange / 10.0;
-      double xOffset = xyzRange / 10.0;
-
+      double xyzOffset = tRange / 10.0;
       double tScale = scale0 * frameSize().width()  / tRange;
       double xScale = scale0 * frameSize().height() / xyzRange;
 
       QTransform transform;
       transform.scale(tScale, xScale);
-      transform.translate(-tMin+tOffset, -xyzMin+xOffset);
+      transform.translate(-tMin+tOffset, xyzMax/2.0 + xyzOffset);
       painter.setTransform(transform);
 
       // x-axis
       // ------
-      painter.drawLine(QPointF(tMin, xyzMax), QPointF(tMax, xyzMax));
+      painter.drawLine(QPointF(tMin, 0.0), QPointF(tMax, 0.0));
 
       // y-axis
       // ------
-      painter.drawLine(QPointF(tMin, xyzMin), QPointF(tMin, xyzMax));
+      painter.drawLine(QPointF(tMin, -xyzMax), QPointF(tMin, xyzMax));
 
       for (int ii = 1; ii < _pos.size(); ++ii) {
         double t1 = _pos[ii-1]->time.gpssec();
