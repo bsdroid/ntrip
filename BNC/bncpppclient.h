@@ -91,6 +91,9 @@ class bncPPPclient : public QObject {
   void slotNewEphGPS(gpsephemeris gpseph);
   void slotNewCorrections(QList<QString> corrList);
 
+ signals:
+   void newPosition(const bncTime& time, const double*);
+
  private:
   t_irc getSatPos(const bncTime& tt, const QString& prn, 
                   ColumnVector& xc, ColumnVector& vv, bool& corr);

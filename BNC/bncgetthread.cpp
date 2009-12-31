@@ -287,8 +287,8 @@ void bncGetThread::initialize() {
   // ----------------------
   if (settings.value("pppMount").toString() == _staID) {
     _PPPclient = new bncPPPclient(_staID);
-    connect(_PPPclient, SIGNAL(newPosition(const double*)), 
-            this, SIGNAL(newPosition(const double*)));
+    connect(_PPPclient, SIGNAL(newPosition(const bncTime&, const double*)), 
+            this, SIGNAL(newPosition(const bncTime&, const double*)));
   }
 
   // Instantiate the decoder

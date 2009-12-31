@@ -34,6 +34,7 @@
 #include "RTCM3/rtcm3torinex.h"
 #include "bncconst.h"
 #include "bncnetquery.h"
+#include "bnctime.h"
 
 class bncRinex;
 class QextSerialPort;
@@ -80,7 +81,7 @@ class bncGetThread : public QThread {
    void newAntCrd(QByteArray staID, double xx, double yy, double zz, QByteArray antType);
    void newMessage(QByteArray msg, bool showOnScreen);
    void getThreadFinished(QByteArray staID);
-   void newPosition(const double*);
+   void newPosition(const bncTime& time, const double*);
 
  protected:
    virtual void run();

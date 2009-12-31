@@ -60,17 +60,18 @@ bncFigurePPP::~bncFigurePPP() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncFigurePPP::slotNewPosition(const double* xyz) {
+void bncFigurePPP::slotNewPosition(const bncTime& time, const double* xyz) {
 
   const static int MAXNUMPOS = 1000;
 
   QMutexLocker locker(&_mutex);
 
-  double* newPos = new double [3];
+  pppPos* newPos = new pppPos;
 
-  newPos[0] = xyz[0];
-  newPos[1] = xyz[1];
-  newPos[2] = xyz[2];
+  newPos->time   = time;
+  newPos->xyz[0] = xyz[0];
+  newPos->xyz[1] = xyz[1];
+  newPos->xyz[2] = xyz[2];
 
   _pos.push_back(newPos);
 

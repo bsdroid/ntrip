@@ -26,6 +26,7 @@
 #define BNCFIGUREPPP_H
 
 #include <QtGui>
+#include "bnctime.h"
 
 class bncFigurePPP : public QWidget {
   Q_OBJECT
@@ -34,14 +35,20 @@ class bncFigurePPP : public QWidget {
   ~bncFigurePPP();
 
  public slots:
-  void slotNewPosition(const double* xyz);
+  void slotNewPosition(const bncTime& time, const double* xyz);
 
  protected:
   void paintEvent(QPaintEvent *event);
 
  private:
+  class pppPos {
+   public:
+    bncTime time;
+    double  xyz[3];
+  };
+
   QMutex           _mutex;
-  QVector<double*> _pos;
+  QVector<pppPos*> _pos;
 };
 
 #endif
