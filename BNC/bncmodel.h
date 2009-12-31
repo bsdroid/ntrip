@@ -29,6 +29,7 @@
 #include <newmat.h>
 
 #include "bncconst.h"
+#include "bnctime.h"
 
 class t_epoData;
 class t_satData;
@@ -56,6 +57,7 @@ class bncModel : public QObject {
   ~bncModel();
   t_irc cmpBancroft(t_epoData* epoData);
   t_irc update(t_epoData* epoData);
+  bncTime time() const {return _time;}
   double x()   const {return _params[0]->xx;}
   double y()   const {return _params[1]->xx;}
   double z()   const {return _params[2]->xx;}
@@ -74,6 +76,7 @@ class bncModel : public QObject {
                           QMap<QString, t_satData*>& satData);
   void writeNMEAstr(const QString& nmStr);
 
+  bncTime            _time;
   QByteArray         _staID;
   QVector<bncParam*> _params;
   SymmetricMatrix    _QQ;

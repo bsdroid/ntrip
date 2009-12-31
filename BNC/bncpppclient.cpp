@@ -332,8 +332,12 @@ void bncPPPclient::processEpoch() {
 
   // Filter Solution
   // ---------------
-  if (_model->update(_epoData) != success) {
-    return;
+  if (_model->update(_epoData) == success) {
+    double xyz[3];
+    xyz[0] = _model->x();
+    xyz[1] = _model->y();
+    xyz[2] = _model->z();
+    emit newPosition(_model->time(), xyz);    
   }
 }
 
