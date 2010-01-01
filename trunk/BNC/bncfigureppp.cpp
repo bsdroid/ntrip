@@ -42,6 +42,7 @@
 
 #include "bncfigureppp.h" 
 #include "bncsettings.h"
+#include "bncutils.h"
 
 using namespace std;
 
@@ -89,12 +90,12 @@ QPoint bncFigurePPP::pltPoint(double tt, double yy) {
 
   const static double scale0  = 0.9;
   double tScale  = scale0 * _width  / _tRange;
-  double yScale  = scale0 * _height / (2.0 * _xyzMax);
+  double yScale  = scale0 * _height / (2.0 * _neuMax);
   double tOffset = _tRange / 10.0;
-  double yOffset = _xyzMax / 10.0;
+  double yOffset = _neuMax / 10.0;
 
   int tNew = int( (tt - _tMin   + tOffset) * tScale );
-  int yNew = int( (yy + _xyzMax + yOffset) * yScale );
+  int yNew = int( (yy + _neuMax + yOffset) * yScale );
 
   return QPoint(tNew, yNew);
 }
@@ -116,20 +117,32 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
     _tRange = _pos[_pos.size()-1]->time - _pos[0]->time; // in sec
     _tMin   = _pos[0]->time.gpssec();
 
-    // Reduced Coordinates
-    // -------------------
-    _xyzMax = 0.0;
+    _neuMax = 0.0;
+
+    double xyzRef[3];
+    xyzRef[0] = _pos[0]->xyz[0];
+    xyzRef[1] = _pos[0]->xyz[1];
+    xyzRef[2] = _pos[0]->xyz[2];
+    double ellRef[3];
+    xyz2ell(xyzRef, ellRef);
+
+    // North, East and Up differences wrt Reference Coordinates
+    // --------------------------------------------------------
     double neu[_pos.size()][3];
     for (int ii = 0; ii < _pos.size(); ++ii) {
+      double dXYZ[3];
       for (int ic = 0; ic < 3; ++ic) {
-        neu[ii][ic] = _pos[ii]->xyz[ic] - _pos[0]->xyz[ic];
-        if (fabs(neu[ii][ic]) > _xyzMax) {
-          _xyzMax = fabs(neu[ii][ic]);
+        dXYZ[ic] = _pos[ii]->xyz[ic] - xyzRef[ic];
+      }
+      xyz2neu(ellRef, dXYZ, neu[ii]);
+      for (int ic = 0; ic < 3; ++ic) {
+        if (fabs(neu[ii][ic]) > _neuMax) {
+          _neuMax = fabs(neu[ii][ic]);
         }
       }
     }
 
-    if (_xyzMax > 0.0 && _tRange > 0.0) {
+    if (_neuMax > 0.0 && _tRange > 0.0) {
 
       // x-axis
       // ------
@@ -137,7 +150,7 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
       // y-axis
       // ------
-      painter.drawLine(pltPoint(_tMin, -_xyzMax), pltPoint(_tMin, _xyzMax));
+      painter.drawLine(pltPoint(_tMin, -_neuMax), pltPoint(_tMin, _neuMax));
 
       for (int ii = 1; ii < _pos.size(); ++ii) {
         double t1 = _tMin + (_pos[ii-1]->time - _pos[0]->time);
