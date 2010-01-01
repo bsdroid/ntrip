@@ -112,13 +112,11 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
   // -----------------------------------------------------
   if (_pos.size() > 1) {
 
-    // Find the minimum and maximum values
-    // -----------------------------------
     _tRange = _pos[_pos.size()-1]->time - _pos[0]->time; // in sec
     _tMin   = _pos[0]->time.gpssec();
 
-    _neuMax = 0.0;
-
+    // Reference Coordinates
+    // ---------------------
     double xyzRef[3];
     xyzRef[0] = _pos[0]->xyz[0];
     xyzRef[1] = _pos[0]->xyz[1];
@@ -128,6 +126,7 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
     // North, East and Up differences wrt Reference Coordinates
     // --------------------------------------------------------
+    _neuMax = 0.0;
     double neu[_pos.size()][3];
     for (int ii = 0; ii < _pos.size(); ++ii) {
       double dXYZ[3];
@@ -151,6 +150,23 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
       // y-axis
       // ------
       painter.drawLine(pltPoint(_tMin, -_neuMax), pltPoint(_tMin, _neuMax));
+
+      if      (_neuMax <  1.0) {
+        painter.drawText(pltPoint(0,  0.5), " 0.5 m");
+        painter.drawText(pltPoint(0, -0.5), "-0.5 m");
+      }
+      else if (_neuMax <  2.0) {
+        painter.drawText(pltPoint(0,  1.0), " 1.0 m");
+        painter.drawText(pltPoint(0, -1.0), "-1.0 m");
+      }
+      else if (_neuMax < 10.0) {
+        painter.drawText(pltPoint(0,  5.0), " 5.0 m");
+        painter.drawText(pltPoint(0, -5.0), "-5.0 m");
+      }
+      else {
+        painter.drawText(pltPoint(0, 10.0), " 10.0 m");
+        painter.drawText(pltPoint(0,-10.0), "-10.0 m");
+      }
 
       for (int ii = 1; ii < _pos.size(); ++ii) {
         double t1 = _tMin + (_pos[ii-1]->time - _pos[0]->time);
