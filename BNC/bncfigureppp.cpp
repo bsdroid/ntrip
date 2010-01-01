@@ -83,17 +83,18 @@ void bncFigurePPP::slotNewPosition(bncTime time, double x, double y, double z){
   update();
 }
 
-// 
+// Coordinate Transformation
 ////////////////////////////////////////////////////////////////////////////
 QPoint bncFigurePPP::pltPoint(double tt, double yy) {
 
-  const static double scale0  = 0.8;
+  const static double scale0  = 0.9;
   double tScale  = scale0 * _width  / _tRange;
   double yScale  = scale0 * _height / (2.0 * _xyzMax);
   double tOffset = _tRange / 10.0;
+  double yOffset = _xyzMax / 10.0;
 
-  int tNew = int( (tt-_tMin+tOffset) * tScale);
-  int yNew = int( (yy+_xyzMax) * yScale);
+  int tNew = int( (tt - _tMin   + tOffset) * tScale );
+  int yNew = int( (yy + _xyzMax + yOffset) * yScale );
 
   return QPoint(tNew, yNew);
 }
