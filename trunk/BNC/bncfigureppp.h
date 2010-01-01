@@ -47,8 +47,15 @@ class bncFigurePPP : public QWidget {
     double  xyz[3];
   };
 
+  QPoint pltPoint(double tt, double yy);
+
   QMutex           _mutex;
   QVector<pppPos*> _pos;
+  double           _xyzMax;
+  double           _tRange;
+  double           _tMin;
+  int              _width;
+  int              _height;
 };
 
 #endif
