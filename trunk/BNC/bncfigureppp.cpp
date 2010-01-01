@@ -50,18 +50,20 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncFigurePPP::bncFigurePPP(QWidget *parent) : QWidget(parent) {
 
-  QString refCrdStr = "";
+  bncSettings settings;
 
-  QStringList refCrdStrList = refCrdStr.split(' ', QString::SkipEmptyParts);
-  if (refCrdStrList.size() == 3) {
-    _xyzRef[0] = refCrdStrList[0].toDouble();    
-    _xyzRef[1] = refCrdStrList[1].toDouble();    
-    _xyzRef[2] = refCrdStrList[2].toDouble();    
-  }
-  else {
-    _xyzRef[0] = 0.0;    
-    _xyzRef[1] = 0.0;    
-    _xyzRef[2] = 0.0;    
+  _xyzRef[0] = 0.0;    
+  _xyzRef[1] = 0.0;    
+  _xyzRef[2] = 0.0;    
+
+  QString refCrdStr = settings.value("pppRefCrd").toString();
+  if (!refCrdStr.isEmpty()) {
+    QStringList refCrdStrList = refCrdStr.split(' ', QString::SkipEmptyParts);
+    if (refCrdStrList.size() == 3) {
+      _xyzRef[0] = refCrdStrList[0].toDouble();    
+      _xyzRef[1] = refCrdStrList[1].toDouble();    
+      _xyzRef[2] = refCrdStrList[2].toDouble();    
+    }
   }
 }
 
