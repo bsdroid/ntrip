@@ -30,7 +30,7 @@
  *
  * Purpose:    
  *
- * Author:     Perlt, Mervart
+ * Author:     Mervart
  *
  * Created:    11-Nov-2009
  *
@@ -49,6 +49,20 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncFigurePPP::bncFigurePPP(QWidget *parent) : QWidget(parent) {
+
+  QString refCrdStr = "";
+
+  QStringList refCrdStrList = refCrdStr.split(' ', QString::SkipEmptyParts);
+  if (refCrdStrList.size() == 3) {
+    _xyzRef[0] = refCrdStrList[0].toDouble();    
+    _xyzRef[1] = refCrdStrList[1].toDouble();    
+    _xyzRef[2] = refCrdStrList[2].toDouble();    
+  }
+  else {
+    _xyzRef[0] = 0.0;    
+    _xyzRef[1] = 0.0;    
+    _xyzRef[2] = 0.0;    
+  }
 }
 
 // Destructor
@@ -88,9 +102,8 @@ void bncFigurePPP::slotNewPosition(bncTime time, double x, double y, double z){
 ////////////////////////////////////////////////////////////////////////////
 QPoint bncFigurePPP::pltPoint(double tt, double yy) {
 
-  const static double scale0  = 0.9;
-  double tScale  = scale0 * _width  / _tRange;
-  double yScale  = scale0 * _height / (2.0 * _neuMax);
+  double tScale  = 0.85 * _width  / _tRange;
+  double yScale  = 0.90 * _height / (2.0 * _neuMax);
   double tOffset = _tRange / 10.0;
   double yOffset = _neuMax / 10.0;
 
@@ -117,12 +130,13 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
     // Reference Coordinates
     // ---------------------
-    double xyzRef[3];
-    xyzRef[0] = _pos[0]->xyz[0];
-    xyzRef[1] = _pos[0]->xyz[1];
-    xyzRef[2] = _pos[0]->xyz[2];
+    if (_xyzRef[0] == 0.0 && _xyzRef[1] == 0.0  && _xyzRef[2] == 0.0) {
+      _xyzRef[0] = _pos[0]->xyz[0];
+      _xyzRef[1] = _pos[0]->xyz[1];
+      _xyzRef[2] = _pos[0]->xyz[2];
+    }
     double ellRef[3];
-    xyz2ell(xyzRef, ellRef);
+    xyz2ell(_xyzRef, ellRef);
 
     // North, East and Up differences wrt Reference Coordinates
     // --------------------------------------------------------
@@ -131,7 +145,7 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
     for (int ii = 0; ii < _pos.size(); ++ii) {
       double dXYZ[3];
       for (int ic = 0; ic < 3; ++ic) {
-        dXYZ[ic] = _pos[ii]->xyz[ic] - xyzRef[ic];
+        dXYZ[ic] = _pos[ii]->xyz[ic] - _xyzRef[ic];
       }
       xyz2neu(ellRef, dXYZ, neu[ii]);
       for (int ic = 0; ic < 3; ++ic) {
@@ -146,40 +160,39 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
       if (_neuMax < 0.15) {
         _neuMax = 0.15;
       }
-
-      // x-axis
-      // ------
+      
+      // time-axis
+      // ---------
       painter.drawLine(pltPoint(_tMin, 0.0), pltPoint(_tMin+_tRange, 0.0));
 
-      // y-axis
-      // ------
+      // neu-axis
+      // --------
       painter.drawLine(pltPoint(_tMin, -_neuMax), pltPoint(_tMin, _neuMax));
 
-      if      (_neuMax <  0.2) {
-        painter.drawText(pltPoint(_tMin,  0.1), " 0.1 m");
-        painter.drawText(pltPoint(_tMin, -0.1), "-0.1 m");
-      }
-      else if (_neuMax <  0.5) {
-        painter.drawText(pltPoint(_tMin,  0.2), " 0.2 m");
-        painter.drawText(pltPoint(_tMin, -0.2), "-0.2 m");
-      }
-      else if (_neuMax <  1.0) {
-        painter.drawText(pltPoint(_tMin,  0.5), " 0.5 m");
-        painter.drawText(pltPoint(_tMin, -0.5), "-0.5 m");
-      }
-      else if (_neuMax <  2.0) {
-        painter.drawText(pltPoint(_tMin,  1.0), " 1.0 m");
-        painter.drawText(pltPoint(_tMin, -1.0), "-1.0 m");
-      }
-      else if (_neuMax < 10.0) {
-        painter.drawText(pltPoint(_tMin,  5.0), " 5.0 m");
-        painter.drawText(pltPoint(_tMin, -5.0), "-5.0 m");
-      }
-      else {
-        painter.drawText(pltPoint(_tMin, 10.0), " 10.0 m");
-        painter.drawText(pltPoint(_tMin,-10.0), "-10.0 m");
-      }
+      // neu-tics
+      // --------
+      double tic = floor(20.0 * (_neuMax - 0.05)) / 20.0;
+      QString strP = QString("%1 m").arg( tic,0,'f',2);
+      QString strM = QString("%1 m").arg(-tic,0,'f',2);
 
+      QPoint pntP = pltPoint(_tMin, tic);
+      QPoint pntM = pltPoint(_tMin,-tic);
+
+      int ww = QFontMetrics(this->font()).width('w');
+
+      painter.drawText(pntP.x() - ww * strP.length(), pntP.y()+ww, strP);
+      painter.drawText(pntM.x() - ww * strM.length(), pntM.y(),    strM);
+
+      painter.drawLine(pntP.x(), pntP.y(), pntP.x()+ww, pntP.y());
+      painter.drawLine(pntM.x(), pntM.y(), pntM.x()+ww, pntM.y());
+
+      // time-tic
+      // --------
+      painter.drawText(pltPoint(_tMin+_tRange,0.0), 
+                       QString("  %1 s").arg(_tRange));
+
+      // neu components
+      // --------------
       for (int ii = 1; ii < _pos.size(); ++ii) {
         double t1 = _tMin + (_pos[ii-1]->time - _pos[0]->time);
         double t2 = _tMin + (_pos[ii]->time   - _pos[0]->time);
