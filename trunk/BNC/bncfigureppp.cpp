@@ -152,20 +152,20 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
       painter.drawLine(pltPoint(_tMin, -_neuMax), pltPoint(_tMin, _neuMax));
 
       if      (_neuMax <  1.0) {
-        painter.drawText(pltPoint(0,  0.5), " 0.5 m");
-        painter.drawText(pltPoint(0, -0.5), "-0.5 m");
+        painter.drawText(pltPoint(_tMin,  0.5), " 0.5 m");
+        painter.drawText(pltPoint(_tMin, -0.5), "-0.5 m");
       }
       else if (_neuMax <  2.0) {
-        painter.drawText(pltPoint(0,  1.0), " 1.0 m");
-        painter.drawText(pltPoint(0, -1.0), "-1.0 m");
+        painter.drawText(pltPoint(_tMin,  1.0), " 1.0 m");
+        painter.drawText(pltPoint(_tMin, -1.0), "-1.0 m");
       }
       else if (_neuMax < 10.0) {
-        painter.drawText(pltPoint(0,  5.0), " 5.0 m");
-        painter.drawText(pltPoint(0, -5.0), "-5.0 m");
+        painter.drawText(pltPoint(_tMin,  5.0), " 5.0 m");
+        painter.drawText(pltPoint(_tMin, -5.0), "-5.0 m");
       }
       else {
-        painter.drawText(pltPoint(0, 10.0), " 10.0 m");
-        painter.drawText(pltPoint(0,-10.0), "-10.0 m");
+        painter.drawText(pltPoint(_tMin, 10.0), " 10.0 m");
+        painter.drawText(pltPoint(_tMin,-10.0), "-10.0 m");
       }
 
       for (int ii = 1; ii < _pos.size(); ++ii) {
