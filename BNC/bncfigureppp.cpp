@@ -85,9 +85,26 @@ void bncFigurePPP::slotNewPosition(bncTime time, double x, double y, double z){
 
 // 
 ////////////////////////////////////////////////////////////////////////////
+QPoint bncFigurePPP::pltPoint(double tt, double yy) {
+
+  const static double scale0  = 0.8;
+  double tScale  = scale0 * _width  / _tRange;
+  double yScale  = scale0 * _height / (2.0 * _xyzMax);
+  double tOffset = _tRange / 10.0;
+
+  int tNew = int( (tt-_tMin+tOffset) * tScale);
+  int yNew = int( (yy+_xyzMax) * yScale);
+
+  return QPoint(tNew, yNew);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
 void bncFigurePPP::paintEvent(QPaintEvent *) {
 
   QPainter painter(this);
+  _width  = painter.viewport().width();
+  _height = painter.viewport().height();
 
   // Plot X-coordinates as a function of time (in seconds)
   // -----------------------------------------------------
@@ -95,60 +112,41 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
     // Find the minimum and maximum values
     // -----------------------------------
-    double tRange = _pos[_pos.size()-1]->time - _pos[0]->time; // in sec
-    double tMin   = _pos[0]->time.gpssec();
-    double tMax   = tMin + tRange;
+    _tRange = _pos[_pos.size()-1]->time - _pos[0]->time; // in sec
+    _tMin   = _pos[0]->time.gpssec();
 
     // Reduced Coordinates
     // -------------------
-    double xx[_pos.size()];
-    double yy[_pos.size()];
-    double zz[_pos.size()];
-
-    double xyzMax = 0.0;
+    _xyzMax = 0.0;
+    double neu[_pos.size()][3];
     for (int ii = 0; ii < _pos.size(); ++ii) {
-      xx[ii] = _pos[ii]->xyz[0] - _pos[0]->xyz[0];
-      yy[ii] = _pos[ii]->xyz[1] - _pos[0]->xyz[1];
-      zz[ii] = _pos[ii]->xyz[2] - _pos[0]->xyz[2];
-      if (fabs(xx[ii]) > xyzMax) {
-        xyzMax = fabs(xx[ii]);
-      }
-      if (fabs(yy[ii]) > xyzMax) {
-        xyzMax = fabs(yy[ii]);
-      }
-      if (fabs(zz[ii]) > xyzMax) {
-        xyzMax = fabs(zz[ii]);
+      for (int ic = 0; ic < 3; ++ic) {
+        neu[ii][ic] = _pos[ii]->xyz[ic] - _pos[0]->xyz[ic];
+        if (fabs(neu[ii][ic]) > _xyzMax) {
+          _xyzMax = fabs(neu[ii][ic]);
+        }
       }
     }
-    if (xyzMax > 0.0 && tRange > 0.0) {
 
-      const static double scale0  = 0.8;
-      double tOffset = tRange / 10.0;
-      double tScale = scale0 * frameSize().width()  / tRange;
-      double xScale = scale0 * frameSize().height() / (2.0 * xyzMax);
-
-      QTransform transform;
-      transform.scale(tScale, xScale);
-      transform.translate(-tMin+tOffset, xyzMax);
-      painter.setTransform(transform);
+    if (_xyzMax > 0.0 && _tRange > 0.0) {
 
       // x-axis
       // ------
-      painter.drawLine(QPointF(tMin, 0.0), QPointF(tMax, 0.0));
+      painter.drawLine(pltPoint(_tMin, 0.0), pltPoint(_tMin+_tRange, 0.0));
 
       // y-axis
       // ------
-      painter.drawLine(QPointF(tMin, -xyzMax), QPointF(tMin, xyzMax));
+      painter.drawLine(pltPoint(_tMin, -_xyzMax), pltPoint(_tMin, _xyzMax));
 
       for (int ii = 1; ii < _pos.size(); ++ii) {
-        double t1 = _pos[ii-1]->time.gpssec();
-        double t2 = _pos[ii]->time.gpssec();
+        double t1 = _tMin + (_pos[ii-1]->time - _pos[0]->time);
+        double t2 = _tMin + (_pos[ii]->time   - _pos[0]->time);
         painter.setPen(QColor(Qt::red));
-        painter.drawLine(QPointF(t1, xx[ii-1]), QPointF(t2, xx[ii]));
+        painter.drawLine(pltPoint(t1, neu[ii-1][0]), pltPoint(t2, neu[ii][0]));
         painter.setPen(QColor(Qt::green));
-        painter.drawLine(QPointF(t1, yy[ii-1]), QPointF(t2, yy[ii]));
+        painter.drawLine(pltPoint(t1, neu[ii-1][1]), pltPoint(t2, neu[ii][1]));
         painter.setPen(QColor(Qt::blue));
-        painter.drawLine(QPointF(t1, zz[ii-1]), QPointF(t2, zz[ii]));
+        painter.drawLine(pltPoint(t1, neu[ii-1][2]), pltPoint(t2, neu[ii][2]));
       }
     }
   }
