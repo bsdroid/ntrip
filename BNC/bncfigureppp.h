@@ -51,7 +51,7 @@ class bncFigurePPP : public QWidget {
 
   QMutex           _mutex;
   QVector<pppPos*> _pos;
-  double           _xyzMax;
+  double           _neuMax;
   double           _tRange;
   double           _tMin;
   int              _width;
