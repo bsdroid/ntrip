@@ -143,6 +143,10 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
     if (_neuMax > 0.0 && _tRange > 0.0) {
 
+      if (_neuMax < 0.15) {
+        _neuMax = 0.15;
+      }
+
       // x-axis
       // ------
       painter.drawLine(pltPoint(_tMin, 0.0), pltPoint(_tMin+_tRange, 0.0));
@@ -151,7 +155,15 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
       // ------
       painter.drawLine(pltPoint(_tMin, -_neuMax), pltPoint(_tMin, _neuMax));
 
-      if      (_neuMax <  1.0) {
+      if      (_neuMax <  0.2) {
+        painter.drawText(pltPoint(_tMin,  0.1), " 0.1 m");
+        painter.drawText(pltPoint(_tMin, -0.1), "-0.1 m");
+      }
+      else if (_neuMax <  0.5) {
+        painter.drawText(pltPoint(_tMin,  0.2), " 0.2 m");
+        painter.drawText(pltPoint(_tMin, -0.2), "-0.2 m");
+      }
+      else if (_neuMax <  1.0) {
         painter.drawText(pltPoint(_tMin,  0.5), " 0.5 m");
         painter.drawText(pltPoint(_tMin, -0.5), "-0.5 m");
       }
