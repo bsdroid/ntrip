@@ -56,6 +56,7 @@ class bncFigurePPP : public QWidget {
   double           _tMin;
   int              _width;
   int              _height;
+  double           _xyzRef[3];
 };
 
 #endif
