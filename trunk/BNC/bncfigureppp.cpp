@@ -94,8 +94,8 @@ QPoint bncFigurePPP::pltPoint(double tt, double yy) {
   double tOffset = _tRange / 10.0;
   double yOffset = _neuMax / 10.0;
 
-  int tNew = int( (tt - _tMin   + tOffset) * tScale );
-  int yNew = int( (yy + _neuMax + yOffset) * yScale );
+  int tNew = int( ( tt - _tMin   + tOffset) * tScale );
+  int yNew = int( (-yy + _neuMax + yOffset) * yScale );
 
   return QPoint(tNew, yNew);
 }
