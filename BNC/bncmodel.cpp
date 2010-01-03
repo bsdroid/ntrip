@@ -180,9 +180,9 @@ bncModel::bncModel(QByteArray staID) {
     _nmeaStream->setDevice(_nmeaFile);
     QDateTime dateTime = QDateTime::currentDateTime().toUTC();
     QString nmStr = "GPRMC," + dateTime.time().toString("hhmmss")
-                  + ",A,0000.0000000,N,00000.0000000,E,0.00,0.00," 
+                  + ",A,,,,,,," 
                   + dateTime.date().toString("ddMMyy")
-                  + ",0.0,E";
+                  + ",,";
                    
     writeNMEAstr(nmStr);
   }
