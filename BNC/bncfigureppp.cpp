@@ -179,9 +179,23 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
       int ww = QFontMetrics(this->font()).width('w');
 
-      painter.drawText(0,pntP.y() - ww * 0.5,pntP.x() - ww * 0.25,pntP.x(),Qt::AlignRight,strP);
-      painter.drawText(0,pntM.y() - ww * 0.5,pntM.x() - ww * 0.25,pntM.y(),Qt::AlignRight,strM);
-      painter.drawText(0,pntZ.y() - ww * 0.5,pntZ.x() - ww * 0.25,pntZ.y(),Qt::AlignRight,strZ);
+      painter.setPen(QColor(Qt::red));
+      painter.drawText(0,int( ww * 1.0),int(pntP.x() + ww * 3.00),
+                                                  int(pntP.x()),Qt::AlignRight,"N");
+      painter.setPen(QColor(Qt::green));
+      painter.drawText(0,int( ww * 1.0),int(pntP.x() + ww * 4.00),
+                                                  int(pntP.x()),Qt::AlignRight,"E");
+      painter.setPen(QColor(Qt::blue));
+      painter.drawText(0,int( ww * 1.0),int(pntP.x() + ww * 5.00),
+                                                  int(pntP.x()),Qt::AlignRight,"U");
+      painter.setPen(QColor(Qt::black));
+
+      painter.drawText(0,int(pntP.y() - ww * 0.5),int(pntP.x() - ww * 0.25),
+                                                  int(pntP.x()),Qt::AlignRight,strP);
+      painter.drawText(0,int(pntM.y() - ww * 0.5),int(pntM.x() - ww * 0.25),
+                                                  int(pntM.y()),Qt::AlignRight,strM);
+      painter.drawText(0,int(pntZ.y() - ww * 0.5),int(pntZ.x() - ww * 0.25),
+                                                  int(pntZ.y()),Qt::AlignRight,strZ);
 
       painter.drawLine(pntP.x(), pntP.y(), pntP.x()+ww, pntP.y());
       painter.drawLine(pntM.x(), pntM.y(), pntM.x()+ww, pntM.y());
@@ -204,8 +218,9 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
           painter.setPen(QColor(Qt::black));
           double xFirstCharTic = pntTic.x() - ww * 1.2;
           if ( xFirstCharTic > pntZ.x()) {
-            painter.drawText(xFirstCharTic,pntTic.y() + ww * 1.7,strTic);
-            painter.drawLine(pntTic.x(),pntTic.y(),pntTic.x(),pntTic.y() + ww * 0.5);
+            painter.drawText(int(xFirstCharTic),int(pntTic.y() + ww * 1.7),strTic);
+            painter.drawLine(int(pntTic.x()),int(pntTic.y()),
+                             int(pntTic.x()),int(pntTic.y() + ww * 0.5));
           }
         }
         painter.setPen(QColor(Qt::red));

@@ -429,7 +429,7 @@ bncWindow::bncWindow() {
   _serialAutoNMEAComboBox->setWhatsThis(tr("<p>Select 'Auto' to automatically forward NMEA-GGA messages coming from your serial connected receiver to the NTRIP broadcaster and/or save them in a file.</p><p>Select 'Manual' only when handling a VRS stream and your serial connected receiver doesn't generate NMEA-GGA messages.</p>"));
   _serialFileNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved.</p>"));
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
-  _pppMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint if you want BNC to estimate coordinates for the affected receiver position through a PPP solution.</p><p>Note that PPP in BNC requires to also pull a stream carrying RTCM Version 3 satellite orbit and clock corrections to Broadcast Ephemeris.</p><p>Pulling in addition a third stream carrying Broadcast Ephemeris messages in high repetition rate is suggested if such messages are comeing from the receiver only in low repetition rate or dont come at all from there.</p>"));
+  _pppMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint if you want BNC to estimate coordinates for the affected receiver position through a PPP solution.</p><p>Note that PPP in BNC requires to also pull a stream carrying RTCM Version 3 satellite orbit and clock corrections to Broadcast Ephemeris referring to the satellites' Antenna Phase Centers (APC).</p><p>Pulling in addition a third stream carrying Broadcast Ephemeris messages in high repetition rate is suggested if such messages are comeing from the receiver only in low repetition rate or dont come at all from there.</p>"));
   _pppStaticCheckBox->setWhatsThis(tr("<p>By default BNC considers the rover receiver as mobile.</p><p>Tick 'Static' to consider a static observation sitatuion and adapt appropriate filter characteristics for that.</p>"));
   _pppUsePhaseCheckBox->setWhatsThis(tr("<p>By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations.</p><p>Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.</p>"));
   _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
@@ -438,7 +438,7 @@ bncWindow::bncWindow() {
   _pppRefCrdXLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known.</p>"));
   _pppRefCrdYLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known.</p>"));
   _pppRefCrdZLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known.</p>"));
-  _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab. Values are either referred to reference coordinates (if specified) or referred to mean values calculated from results received over the latest 5 minues."));
+  _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab. Values are either referred to reference coordinates (if specified) or referred to mean values calculated from results received over the past 5 minues."));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -473,7 +473,7 @@ bncWindow::bncWindow() {
   _loggroup->addTab(_log,tr("Log"));
   _loggroup->addTab(_bncFigure,tr("Throughput"));
   _loggroup->addTab(_bncFigureLate,tr("Latency"));
-  _loggroup->addTab(_bncFigurePPP,tr("PPP (NEU)"));
+  _loggroup->addTab(_bncFigurePPP,tr("PPP"));
 
   // Proxy Tab
   // ---------
@@ -1548,7 +1548,8 @@ void bncWindow::slotBncTextChanged(){
       _pppStaticCheckBox->setPalette(palette_white);
       _pppUsePhaseCheckBox->setPalette(palette_white);
       _pppEstTropoCheckBox->setPalette(palette_white);
-      _pppGLONASSCheckBox->setPalette(palette_white);
+//    _pppGLONASSCheckBox->setPalette(palette_white);
+      _pppGLONASSCheckBox->setPalette(palette_gray);
       _pppNMEALineEdit->setEnabled(true);
       _pppRefCrdXLineEdit->setEnabled(true);
       _pppRefCrdYLineEdit->setEnabled(true);
@@ -1556,7 +1557,8 @@ void bncWindow::slotBncTextChanged(){
       _pppStaticCheckBox->setEnabled(true);
       _pppUsePhaseCheckBox->setEnabled(true);
       _pppEstTropoCheckBox->setEnabled(true);
-      _pppGLONASSCheckBox->setEnabled(true);
+//    _pppGLONASSCheckBox->setEnabled(true);
+      _pppGLONASSCheckBox->setEnabled(false);
     } else {
       _pppNMEALineEdit->setPalette(palette_gray);
       _pppRefCrdXLineEdit->setPalette(palette_gray);
