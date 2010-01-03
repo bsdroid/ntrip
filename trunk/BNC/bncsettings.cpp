@@ -80,8 +80,10 @@ bncSettings::bncSettings(bool noInit) :
     setValue("pppUsePhase",      "");
     setValue("pppEstTropo",      "");
     setValue("pppGLONASS",       "");
+    setValue("pppRefCrdX",       "");
+    setValue("pppRefCrdY",       "");
+    setValue("pppRefCrdZ",       "");
     setValue("nmeaFile",         "");
-
     sync();
   }
 }

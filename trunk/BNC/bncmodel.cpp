@@ -543,7 +543,7 @@ t_irc bncModel::update(t_epoData* epoData) {
   // ----------------------------------
   ostringstream str2;
   str2.setf(ios::fixed);
-  str2 << "    PPP " << _staID.data() << " " 
+  str2 << _staID.data() << ": PPP " 
        << epoData->tt.timestr(1) << " " << epoData->size() << " " 
        << setw(14) << setprecision(3) << x()            << " +- "
        << setw(6)  << setprecision(3) << sqrt(_QQ(1,1)) << " "
