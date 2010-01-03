@@ -57,6 +57,7 @@ class bncFigurePPP : public QWidget {
   int              _width;
   int              _height;
   double           _xyzRef[3];
+  const static int MAXNUMPOS = 300;
 };
 
 #endif
