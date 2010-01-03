@@ -57,6 +57,11 @@ class bncFigurePPP : public QWidget {
   int              _width;
   int              _height;
   double           _xyzRef[3];
+  int              _daySec;
+  int              _hours;
+  int              _minutes;
+  int              _seconds;
+  QString          _strTic;
   const static int MAXNUMPOS = 300;
 };
 
