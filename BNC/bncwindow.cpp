@@ -335,10 +335,12 @@ bncWindow::bncWindow() {
 
   // PPP Options
   // -----------
-  _pppMountLineEdit  = new QLineEdit(settings.value("pppMount").toString());
-  _pppNMEALineEdit   = new QLineEdit(settings.value("nmeaFile").toString());
-  _pppRefCrdLineEdit = new QLineEdit(settings.value("pppRefCrd").toString());
-  _pppStaticCheckBox = new QCheckBox();
+  _pppMountLineEdit    = new QLineEdit(settings.value("pppMount").toString());
+  _pppNMEALineEdit     = new QLineEdit(settings.value("nmeaFile").toString());
+  _pppRefCrdXLineEdit  = new QLineEdit(settings.value("pppRefCrdX").toString());
+  _pppRefCrdYLineEdit  = new QLineEdit(settings.value("pppRefCrdY").toString());
+  _pppRefCrdZLineEdit  = new QLineEdit(settings.value("pppRefCrdZ").toString());
+  _pppStaticCheckBox   = new QCheckBox();
   _pppStaticCheckBox->setCheckState(Qt::CheckState(
                                     settings.value("pppStatic").toInt()));
   _pppUsePhaseCheckBox = new QCheckBox();
@@ -433,6 +435,10 @@ bncWindow::bncWindow() {
   _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
   _pppGLONASSCheckBox->setWhatsThis(tr("<p>By default BNC does not use GLONASS observations in PPP mode.</p><p>Tick 'Use GLONASS' for a combined processing of both, GPS and GLONASS observations in PPP mode.</p>"));
   _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
+  _pppRefCrdXLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known.</p>"));
+  _pppRefCrdYLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known.</p>"));
+  _pppRefCrdZLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known.</p>"));
+  _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab. Values are either referred to reference coordinates (if specified) or referred to mean values calculated from results received over the latest 5 minues."));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -467,7 +473,7 @@ bncWindow::bncWindow() {
   _loggroup->addTab(_log,tr("Log"));
   _loggroup->addTab(_bncFigure,tr("Throughput"));
   _loggroup->addTab(_bncFigureLate,tr("Latency"));
-  _loggroup->addTab(_bncFigurePPP,tr("PPP"));
+  _loggroup->addTab(_bncFigurePPP,tr("PPP (NEU)"));
 
   // Proxy Tab
   // ---------
@@ -676,13 +682,18 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Estimate tropo        "), 1, 6, 1, 1, Qt::AlignLeft);
   pppLayout->addWidget(_pppGLONASSCheckBox,                  1, 7);
   pppLayout->addWidget(new QLabel("Use GLONASS           "), 1, 8, 1, 1, Qt::AlignLeft);
-  pppLayout->addWidget(new QLabel("NMEA file (full path)"),  2, 0);
-  pppLayout->addWidget(_pppNMEALineEdit,                     2, 1, 1, 6);
-  pppLayout->addWidget(new QLabel("Reference Coordinates"),  3, 0);
-  pppLayout->addWidget(_pppRefCrdLineEdit,                   3, 1, 1, 6);
+  pppLayout->addWidget(new QLabel("Ref. coordinates"),       2, 0);
+  pppLayout->addWidget(_pppRefCrdXLineEdit,                  2, 1, 1, 2);
+  pppLayout->addWidget(new QLabel("X"),                      2, 3, 1, 1);
+  pppLayout->addWidget(_pppRefCrdYLineEdit,                  2, 4, 1, 1);
+  pppLayout->addWidget(new QLabel("Y"),                      2, 5, 1, 1);
+  pppLayout->addWidget(_pppRefCrdZLineEdit,                  2, 6, 1, 1);
+  pppLayout->addWidget(new QLabel("Z"),                      2, 7, 1, 1);
+  pppLayout->addWidget(new QLabel("NMEA file (full path)"),  3, 0);
+  pppLayout->addWidget(_pppNMEALineEdit,                     3, 1, 1, 6);
   pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),4, 0,1,30);
-  pppLayout->addWidget(new QLabel("    "),                5, 0);
-  pppLayout->addWidget(new QLabel("    "),                6, 0);
+  pppLayout->addWidget(new QLabel("    "),                   5, 0);
+  pppLayout->addWidget(new QLabel("    "),                   6, 0);
   pppgroup->setLayout(pppLayout);
 
   // Main Layout
@@ -993,7 +1004,9 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("miscMount",   _miscMountLineEdit->text());
   settings.setValue("pppMount",    _pppMountLineEdit->text());
   settings.setValue("nmeaFile",    _pppNMEALineEdit->text());
-  settings.setValue("pppRefCrd",   _pppRefCrdLineEdit->text());
+  settings.setValue("pppRefCrdX",  _pppRefCrdXLineEdit->text());
+  settings.setValue("pppRefCrdY",  _pppRefCrdYLineEdit->text());
+  settings.setValue("pppRefCrdZ",  _pppRefCrdZLineEdit->text());
   settings.setValue("pppStatic",   _pppStaticCheckBox->checkState());
   settings.setValue("pppUsePhase", _pppUsePhaseCheckBox->checkState());
   settings.setValue("pppEstTropo", _pppEstTropoCheckBox->checkState());
@@ -1529,26 +1542,34 @@ void bncWindow::slotBncTextChanged(){
   if (sender() == 0 || sender() == _pppMountLineEdit) {
     if (!_pppMountLineEdit->text().isEmpty()) {
       _pppNMEALineEdit->setPalette(palette_white);
-      _pppRefCrdLineEdit->setPalette(palette_white);
+      _pppRefCrdXLineEdit->setPalette(palette_white);
+      _pppRefCrdYLineEdit->setPalette(palette_white);
+      _pppRefCrdZLineEdit->setPalette(palette_white);
       _pppStaticCheckBox->setPalette(palette_white);
       _pppUsePhaseCheckBox->setPalette(palette_white);
       _pppEstTropoCheckBox->setPalette(palette_white);
       _pppGLONASSCheckBox->setPalette(palette_white);
       _pppNMEALineEdit->setEnabled(true);
-      _pppRefCrdLineEdit->setEnabled(true);
+      _pppRefCrdXLineEdit->setEnabled(true);
+      _pppRefCrdYLineEdit->setEnabled(true);
+      _pppRefCrdZLineEdit->setEnabled(true);
       _pppStaticCheckBox->setEnabled(true);
       _pppUsePhaseCheckBox->setEnabled(true);
       _pppEstTropoCheckBox->setEnabled(true);
       _pppGLONASSCheckBox->setEnabled(true);
     } else {
       _pppNMEALineEdit->setPalette(palette_gray);
-      _pppRefCrdLineEdit->setPalette(palette_gray);
+      _pppRefCrdXLineEdit->setPalette(palette_gray);
+      _pppRefCrdYLineEdit->setPalette(palette_gray);
+      _pppRefCrdZLineEdit->setPalette(palette_gray);
       _pppStaticCheckBox->setPalette(palette_gray);
       _pppUsePhaseCheckBox->setPalette(palette_gray);
       _pppEstTropoCheckBox->setPalette(palette_gray);
       _pppGLONASSCheckBox->setPalette(palette_gray);
       _pppNMEALineEdit->setEnabled(false);
-      _pppRefCrdLineEdit->setEnabled(false);
+      _pppRefCrdXLineEdit->setEnabled(false);
+      _pppRefCrdYLineEdit->setEnabled(false);
+      _pppRefCrdZLineEdit->setEnabled(false);
       _pppStaticCheckBox->setEnabled(false);
       _pppUsePhaseCheckBox->setEnabled(false);
       _pppEstTropoCheckBox->setEnabled(false);
