@@ -438,7 +438,7 @@ bncWindow::bncWindow() {
   _pppRefCrdXLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known.</p>"));
   _pppRefCrdYLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known.</p>"));
   _pppRefCrdZLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known.</p>"));
-  _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab. Values are either referred to reference coordinates (if specified) or referred to mean values calculated from results received over the past 5 minues."));
+  _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab. Values are either referred to reference coordinates (if specified) or referred to mean values calculated from results received over the past 5 minutes."));
 
   // Canvas with Editable Fields
   // ---------------------------
