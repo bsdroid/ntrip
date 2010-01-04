@@ -67,9 +67,7 @@ class bncModel : public QObject {
   
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
-
- private slots:
-  void slotNewConnection();
+  void newNMEAstr(QByteArray str);
 
  private:
   double cmpValue(t_satData* satData);
@@ -92,8 +90,6 @@ class bncModel : public QObject {
   QByteArray         _log;
   QFile*             _nmeaFile;
   QTextStream*       _nmeaStream;
-  QTcpServer*         _server;
-  QList<QTcpSocket*>* _sockets;
 };
 
 #endif
