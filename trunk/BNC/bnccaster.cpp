@@ -38,6 +38,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
+
 #include <math.h>
 #include <unistd.h>
 
@@ -243,6 +245,9 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
 
   connect(getThread, SIGNAL(getThreadFinished(QByteArray)), 
           this, SLOT(slotGetThreadFinished(QByteArray)));
+
+  connect(getThread, SIGNAL(newNMEAstr(QByteArray)), 
+          this, SLOT(slotNewNMEAstr(QByteArray)));
 
   connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
 	  getThread, SLOT(slotNewEphGPS(gpsephemeris)));
@@ -508,4 +513,12 @@ int bncCaster::myWrite(QTcpSocket* sock, const char* buf, int bufLen) {
     }
   }
   return -1;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncCaster::slotNewNMEAstr(QByteArray str) {
+
+  std::cout << str.data();
+
 }
