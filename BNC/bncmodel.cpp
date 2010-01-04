@@ -162,6 +162,22 @@ bncModel::bncModel(QByteArray staID) {
 
   // NMEA Output
   // -----------
+  int port = 0; // 7777;
+
+  if (port != 0) {
+    _server = new QTcpServer;
+    if ( !_server->listen(QHostAddress::Any, port) ) {
+      emit newMessage("bncModel: Cannot listen on sync port", true);
+    }
+    connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
+    _sockets = new QList<QTcpSocket*>;
+  }
+  else {
+    _server  = 0;
+    _sockets = 0;
+  }
+
+
   QString nmeaFileName = settings.value("nmeaFile").toString();
   if (nmeaFileName.isEmpty()) {
     _nmeaFile   = 0;
@@ -186,23 +202,6 @@ bncModel::bncModel(QByteArray staID) {
                    
     writeNMEAstr(nmStr);
   }
-
-  int port = 0; // 7777;
-
-  if (port != 0) {
-    _server = new QTcpServer;
-    if ( !_server->listen(QHostAddress::Any, port) ) {
-      emit newMessage("bncModel: Cannot listen on sync port", true);
-    }
-    connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
-    _sockets = new QList<QTcpSocket*>;
-  }
-  else {
-    _server  = 0;
-    _sockets = 0;
-  }
-
-
 }
 
 // Destructor
