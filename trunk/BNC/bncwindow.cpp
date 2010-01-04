@@ -1063,6 +1063,8 @@ void bncWindow::slotGetThreadsFinished() {
 void bncWindow::slotGetData() {
   slotSaveOptions();
 
+  _bncFigurePPP->reset();
+
   _actDeleteMountPoints->setEnabled(false);
   _actGetData->setEnabled(false);
   _actStop->setEnabled(true);
