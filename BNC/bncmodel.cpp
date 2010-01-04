@@ -186,6 +186,23 @@ bncModel::bncModel(QByteArray staID) {
                    
     writeNMEAstr(nmStr);
   }
+
+  int port = 7777;
+
+  if (port != 0) {
+    _server = new QTcpServer;
+    if ( !_server->listen(QHostAddress::Any, port) ) {
+      emit newMessage("bncModel: Cannot listen on sync port", true);
+    }
+    connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
+    _sockets = new QList<QTcpSocket*>;
+  }
+  else {
+    _server  = 0;
+    _sockets = 0;
+  }
+
+
 }
 
 // Destructor
@@ -193,6 +210,16 @@ bncModel::bncModel(QByteArray staID) {
 bncModel::~bncModel() {
   delete _nmeaStream;
   delete _nmeaFile;
+  delete _server;
+  delete _sockets;
+}
+
+// New Connection
+////////////////////////////////////////////////////////////////////////////
+void bncModel::slotNewConnection() {
+  _sockets->push_back( _server->nextPendingConnection() );
+  emit( newMessage(QString("PPP: new connection on port: # %1")
+                   .arg(_sockets->size()).toAscii(), true) );
 }
 
 // Bancroft Solution
@@ -561,7 +588,7 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   // NMEA Output
   // -----------
-  if (_nmeaStream) {
+  if (_nmeaStream || _sockets) {
     double xyz[3]; 
     xyz[0] = x();
     xyz[1] = y();
@@ -667,16 +694,28 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
 ////////////////////////////////////////////////////////////////////////////
 void bncModel::writeNMEAstr(const QString& nmStr) {
 
-  if (!_nmeaStream) {
-    return;
-  }
-
   unsigned char XOR = 0;
   for (int ii = 0; ii < nmStr.length(); ii++) {
     XOR ^= (unsigned char) nmStr[ii].toAscii();
   }
   
-  *_nmeaStream << '$' << nmStr << '*' << hex << (int) XOR << endl;
+  if (_nmeaStream) {
+    *_nmeaStream << '$' << nmStr << '*' << hex << (int) XOR << endl;
+    _nmeaStream->flush();
+  }
 
-  _nmeaStream->flush();
+  if (_sockets) {
+    QMutableListIterator<QTcpSocket*> is(*_sockets);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->state() == QAbstractSocket::ConnectedState) {
+//        *sock << '$' << nmStr << '*' << hex << (int) XOR << endl;
+//        sock->flush();
+      }
+      else if (sock->state() != QAbstractSocket::ConnectingState) {
+        delete sock;
+        is.remove();
+      }
+    }
+  }
 }
