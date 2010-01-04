@@ -290,6 +290,8 @@ void bncGetThread::initialize() {
     qRegisterMetaType<bncTime>("bncTime");
     connect(_PPPclient, SIGNAL(newPosition(bncTime, double, double, double)), 
             this, SIGNAL(newPosition(bncTime, double, double, double)));
+  connect(_PPPclient, SIGNAL(newNMEAstr(QByteArray)), 
+          this,       SIGNAL(newNMEAstr(QByteArray)));
   }
 
   // Instantiate the decoder

@@ -93,6 +93,7 @@ class bncPPPclient : public QObject {
 
  signals:
   void newPosition(bncTime time, double x, double y, double z);
+  void newNMEAstr(QByteArray str);
 
  private:
   t_irc getSatPos(const bncTime& tt, const QString& prn, 

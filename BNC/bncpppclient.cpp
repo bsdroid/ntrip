@@ -62,6 +62,8 @@ bncPPPclient::bncPPPclient(QByteArray staID) {
   _staID   = staID;
   _epoData = 0;
   _model   = new bncModel(staID);
+  connect(_model, SIGNAL(newNMEAstr(QByteArray)), 
+          this,   SIGNAL(newNMEAstr(QByteArray)));
 }
 
 // Destructor
