@@ -55,6 +55,7 @@ class bncCaster : public QObject {
  private slots:
    void slotNewConnection();
    void slotNewUConnection();
+   void slotNewNMEAConnection();
    void slotGetThreadFinished(QByteArray staID);
 
  private:
@@ -68,8 +69,10 @@ class bncCaster : public QObject {
    long                    _lastDumpSec;
    QTcpServer*             _server;
    QTcpServer*             _uServer;
+   QTcpServer*             _nmeaServer;
    QList<QTcpSocket*>*     _sockets;
    QList<QTcpSocket*>*     _uSockets;
+   QList<QTcpSocket*>*     _nmeaSockets;
    QList<QByteArray>       _staIDs;
    QList<bncGetThread*>    _threads;
    int                     _samplingRate;

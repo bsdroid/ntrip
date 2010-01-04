@@ -38,8 +38,6 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
-
 #include <math.h>
 #include <unistd.h>
 
@@ -538,7 +536,17 @@ int bncCaster::myWrite(QTcpSocket* sock, const char* buf, int bufLen) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::slotNewNMEAstr(QByteArray str) {
-
-  std::cout << str.data();
-
+  if (_nmeaSockets) {
+    QMutableListIterator<QTcpSocket*> is(*_nmeaSockets);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->state() == QAbstractSocket::ConnectedState) {
+	sock->write(str);
+      }
+      else if (sock->state() != QAbstractSocket::ConnectingState) {
+        delete sock;
+        is.remove();
+      }
+    }
+  }
 }
