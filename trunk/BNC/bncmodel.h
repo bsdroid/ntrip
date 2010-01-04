@@ -26,6 +26,7 @@
 #define BNCMODEL_H
 
 #include <QtCore>
+#include <QtNetwork>
 #include <newmat.h>
 
 #include "bncconst.h"
@@ -67,6 +68,9 @@ class bncModel : public QObject {
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
 
+ private slots:
+  void slotNewConnection();
+
  private:
   double cmpValue(t_satData* satData);
   double delay_saast(double Ele);
@@ -88,6 +92,8 @@ class bncModel : public QObject {
   QByteArray         _log;
   QFile*             _nmeaFile;
   QTextStream*       _nmeaStream;
+  QTcpServer*         _server;
+  QList<QTcpSocket*>* _sockets;
 };
 
 #endif
