@@ -691,7 +691,7 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Z"),                      2, 7, 1, 1);
   pppLayout->addWidget(new QLabel("NMEA file (full path)"),  3, 0);
   pppLayout->addWidget(_pppNMEALineEdit,                     3, 1, 1, 6);
-  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),4, 0,1,30);
+  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),4, 0,1,15);
   pppLayout->addWidget(new QLabel("    "),                   5, 0);
   pppLayout->addWidget(new QLabel("    "),                   6, 0);
   pppgroup->setLayout(pppLayout);
