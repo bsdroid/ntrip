@@ -33,6 +33,7 @@ class bncFigurePPP : public QWidget {
  public:
   bncFigurePPP(QWidget *parent);
   ~bncFigurePPP();
+  void reset();
 
  public slots:
   void slotNewPosition(bncTime time, double x, double y, double z);
@@ -41,6 +42,8 @@ class bncFigurePPP : public QWidget {
   void paintEvent(QPaintEvent *event);
 
  private:
+  const static int MAXNUMPOS = 300;
+
   class pppPos {
    public:
     bncTime time;
@@ -51,18 +54,13 @@ class bncFigurePPP : public QWidget {
 
   QMutex           _mutex;
   QVector<pppPos*> _pos;
+  bncTime          _startTime;
   double           _neuMax;
   double           _tRange;
   double           _tMin;
   int              _width;
   int              _height;
   double           _xyzRef[3];
-  int              _daySec;
-  int              _hours;
-  int              _minutes;
-  int              _seconds;
-  QString          _strTic;
-  const static int MAXNUMPOS = 300;
 };
 
 #endif

@@ -49,14 +49,9 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncFigurePPP::bncFigurePPP(QWidget *parent) : QWidget(parent) {
-
-  bncSettings settings;
-
-  _xyzRef[0] = settings.value("pppRefCrdX").toDouble();
-  _xyzRef[1] = settings.value("pppRefCrdY").toDouble();
-  _xyzRef[2] = settings.value("pppRefCrdZ").toDouble();
-
+  reset();
 }
+
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
@@ -64,6 +59,25 @@ bncFigurePPP::~bncFigurePPP() {
   for (int ii = 0; ii < _pos.size(); ++ii) {
     delete _pos[ii];
   }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncFigurePPP::reset() {
+  QMutexLocker locker(&_mutex);
+
+  bncSettings settings;
+
+  _xyzRef[0] = settings.value("pppRefCrdX").toDouble();
+  _xyzRef[1] = settings.value("pppRefCrdY").toDouble();
+  _xyzRef[2] = settings.value("pppRefCrdZ").toDouble();
+
+  for (int ii = 0; ii < _pos.size(); ++ii) {
+    delete _pos[ii];
+  }
+  _pos.clear();
+
+  update();
 }
 
 // 
@@ -80,6 +94,10 @@ void bncFigurePPP::slotNewPosition(bncTime time, double x, double y, double z){
   newPos->xyz[2] = z;
 
   _pos.push_back(newPos);
+
+  if (_pos.size() == 1) {
+    _startTime = time;
+  }
 
   if (_pos.size() > MAXNUMPOS) {
     delete _pos[0];
@@ -113,14 +131,13 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
   _width  = painter.viewport().width();
   _height = painter.viewport().height();
 
-  QFont font;
-  font.setPointSize(int(font.QFont::pointSize()*0.8));
+  QFont font = this->font();
+  font.setPointSize(int(this->font().pointSize()*0.9));
   painter.setFont(font);
 
   // Plot X-coordinates as a function of time (in seconds)
   // -----------------------------------------------------
   if (_pos.size() > 1) {
-//  _tRange = _pos[_pos.size()-1]->time - _pos[0]->time;
     _tRange = MAXNUMPOS;
     _tMin   = _pos[0]->time.gpssec();
 
@@ -167,6 +184,7 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
       // neu-tics
       // --------
+
       double tic = floor(20.0 * (_neuMax - 0.05)) / 20.0;
       QString strP = QString("%1 m").arg( tic,0,'f',2);
       QString strM = QString("%1 m").arg(-tic,0,'f',2);
@@ -179,25 +197,35 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
       int ww = QFontMetrics(this->font()).width('w');
 
       painter.setPen(QColor(Qt::red));
-      painter.drawText(0,int( ww * 1.0),int(pntP.x() + ww * 3.00),
-                                        int(pntP.x()),Qt::AlignRight,"N");
-      painter.setPen(QColor(0,210,0,127));
-      painter.drawText(0,int( ww * 1.0),int(pntP.x() + ww * 4.00),
-                                        int(pntP.x()),Qt::AlignRight,"E");
+      painter.drawText(0, ww, pntP.x() + 3*ww, pntP.x(), Qt::AlignRight, "N");
+      painter.setPen(QColor(Qt::green));
+      painter.drawText(0, ww, pntP.x() + 4*ww, pntP.x(), Qt::AlignRight, "E");
       painter.setPen(QColor(Qt::blue));
-      painter.drawText(0,int( ww * 1.0),int(pntP.x() + ww * 5.00),
-                                        int(pntP.x()),Qt::AlignRight,"U");
-      painter.setPen(QColor(Qt::black));
+      painter.drawText(0, ww, pntP.x() + 5*ww, pntP.x(), Qt::AlignRight, "U");
 
-      painter.drawText(0,int(pntP.y() - ww * 0.5),int(pntP.x() - ww * 0.25),
-                                                  int(pntP.x()),Qt::AlignRight,strP);
-      painter.drawText(0,int(pntM.y() - ww * 0.5),int(pntM.x() - ww * 0.25),
-                                                  int(pntM.y()),Qt::AlignRight,strM);
-      painter.drawText(0,int(pntZ.y() - ww * 0.5),int(pntZ.x() - ww * 0.25),
-                                                  int(pntZ.y()),Qt::AlignRight,strZ);
+      painter.setPen(QColor(Qt::black));
+      painter.drawText(0, pntP.y()-ww/2, pntP.x()- ww/4, pntP.x(),
+                       Qt::AlignRight, strP);
+      painter.drawText(0, pntM.y()-ww/2, pntM.x()- ww/4, pntM.x(),
+                       Qt::AlignRight, strM);
+      painter.drawText(0, pntZ.y()-ww/2, pntZ.x()- ww/4, pntZ.x(),
+                       Qt::AlignRight, strZ);
 
       painter.drawLine(pntP.x(), pntP.y(), pntP.x()+ww, pntP.y());
       painter.drawLine(pntM.x(), pntM.y(), pntM.x()+ww, pntM.y());
+
+      // Start Time
+      // ----------
+      unsigned hour, minute;
+      double   second;
+      _startTime.civil_time(hour, minute, second);
+      QString startStr = QString("Start %1:%2:%3")
+                              .arg(hour,   2, 10, QChar('0'))
+                              .arg(minute, 2, 10, QChar('0'))
+                              .arg(int(second), 2, 10, QChar('0'));
+      painter.setPen(QColor(Qt::black));
+      painter.drawText(0, ww, pntP.x() + 14*ww, pntP.x(),
+                       Qt::AlignRight, startStr);
 
       // neu components
       // --------------
@@ -205,36 +233,21 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
         double t1 = _tMin + (_pos[ii-1]->time - _pos[0]->time);
         double t2 = _tMin + (_pos[ii]->time   - _pos[0]->time);
   
-        // start time
-        // ----------
-        if (ii == 1) {
-          _daySec = int(fmod(t1,86400.));
-          _hours = int(_daySec / 3600);
-          _minutes = int((_daySec - _hours * 3600)/ 60.);
-          _seconds = int(fmod(t1,60.));
-          _strTic = QString("Start %1:%2:%3").arg(_hours,   2, 10, QChar('0'))
-                                                     .arg(_minutes, 2, 10, QChar('0'))
-                                                     .arg(_seconds, 2, 10, QChar('0'));
-          painter.setPen(QColor(Qt::black));
-          painter.drawText(0,int( ww * 1.0),int(pntP.x() + ww * 13.50),
-                                            int(pntP.x()),Qt::AlignRight,_strTic);
-        }
 
         // time-tics
         // ---------
-        if (fmod(t1,60.) == 0) {
+        if ( fmod(_pos[ii-1]->time.daysec(), 60.0) == 0 ) {
+          _pos[ii-1]->time.civil_time(hour, minute, second);
           QPoint pntTic = pltPoint(t1, 0.0);
-          _daySec = int(fmod(t1,86400.));
-          _hours = int(_daySec / 3600);
-          _minutes = int((_daySec - _hours * 3600)/ 60.);
-          _strTic = QString("%1:%2").arg(_hours,   2, 10, QChar('0'))
-                                    .arg(_minutes, 2, 10, QChar('0'));
+          QString strTic = QString("%1:%2").arg(hour,   2, 10, QChar('0'))
+                                           .arg(minute, 2, 10, QChar('0'));
           painter.setPen(QColor(Qt::black));
           double xFirstCharTic = pntTic.x() - ww * 1.2;
           if ( xFirstCharTic > pntZ.x()) {
-            painter.drawText(int(xFirstCharTic),int(pntTic.y() + ww * 1.7),_strTic);
-            painter.drawLine(int(pntTic.x()),int(pntTic.y()),
-                             int(pntTic.x()),int(pntTic.y() + ww * 0.5));
+            painter.drawText(int(xFirstCharTic), int(pntTic.y() + ww * 1.7), 
+                             strTic);
+            painter.drawLine(pntTic.x(), pntTic.y(), 
+                             pntTic.x(), pntTic.y()+ww/2);
           }
         }
         painter.setPen(QColor(Qt::red));

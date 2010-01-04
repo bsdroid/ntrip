@@ -15,6 +15,8 @@ class bncTime {
   double       daysec() const;
   unsigned int gpsw()   const;
   double       gpssec() const;
+  void         civil_time (unsigned int& hour, unsigned int& min,
+                           double& sec) const;
 
   bool   operator!=(const bncTime &time1) const;
   double operator-(const bncTime &time1) const;
@@ -26,7 +28,6 @@ class bncTime {
  private:
   bncTime&     setmjd(double daysec, int mjd);
   void        reset() {_mjd = 0; _sec = 0;}
-  void        civil_time (unsigned int& hour, unsigned int& min,   double& sec) const;
   static void jdgp(double tjul, double & second, long & nweek);
 
   unsigned int _mjd;
