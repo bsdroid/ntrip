@@ -139,6 +139,8 @@ bncCaster::~bncCaster() {
   delete _sockets;
   delete _uServer;
   delete _uSockets;
+  delete _nmeaServer;
+  delete _nmeaSockets;
   if (_epochs) {
     QListIterator<p_obs> it(_epochs->values());
     while (it.hasNext()) {
