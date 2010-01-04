@@ -146,6 +146,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.2.3 <a href=#ppptropo>Estimate Tropo</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2.4 <a href=#pppglo>Use GLONASS</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppnmea>NMEA file</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#pppnmeaport>NMEA port</a><br>
 3.12. <a href=#streams>Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1 <a href=#streamedit>Edit Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.2 <a href=#streamdelete>Delete Stream</a><br>
@@ -1002,6 +1003,11 @@ By default BNC does not process GLONASS observations in PPP mode. Tick 'Use GLON
 Specify the full path to a file where Precise Point Positioning results are saved as NMEA GPGGA messages. The generated NMEA file begins with a single GPRMC message which carries only the date information.
 </p>
 
+<p><a name="pppnmeaport"><h4>3.11.3 NMEA port - optional</h4></p>
+<p>
+BNC also outputs all NMEA messages through an IP port. Specify an IP port number to activate this IP server function.
+</p>
+
 <p><a name="streams"><h4>3.12. Streams</h4></p>
 <p>
 Each stream on an NTRIP broadcaster (and consequently on BNC) is defined using a unique source ID called mountpoint. An NTRIP client like BNC access the desired data stream by referring to its mountpoint. Information about streams and their mountpoints is available through the source-table maintained by the NTRIP broadcaster. Note that mountpoints could show up in BNC more than once when retrieving streams from several NTRIP broadcasters.
@@ -1387,7 +1393,8 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 
 <tr>
 <td>Jan 2010 &nbsp;</td><td>Version 2.0 &nbsp;</td>
-<td>[Add] Real-time PPP option</td>
+<td>[Mod] Change sign of Broadcast Ephemeris correctors</td>
+<td>[Add] Real-time PPP options</td>
 </tr>
 
 </table>
@@ -1645,7 +1652,8 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>pppUsePhase=0</td><td>PPP Client: Use phase data </td></tr>
 <tr><td>pppEstTropo=0</td><td>PPP Client: Estimate troposphere</td></tr>
 <tr><td>pppGLONASS=0</td><td>PPP Client: Use GLONASS</td></tr>
-<tr><td>nmeaFile=</td><td>PPP Client: NMEA file</td></tr>
+<tr><td>nmeaFile=</td><td>PPP Client: NMEA outputfile</td></tr>
+<tr><td>nmeaPort=</td><td>PPP Client: NMEA IP output port</td></tr>
 </table>
 </p>
 <p>
