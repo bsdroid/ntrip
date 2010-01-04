@@ -187,7 +187,7 @@ bncModel::bncModel(QByteArray staID) {
     writeNMEAstr(nmStr);
   }
 
-  int port = 7777;
+  int port = 0; // 7777;
 
   if (port != 0) {
     _server = new QTcpServer;
@@ -709,8 +709,9 @@ void bncModel::writeNMEAstr(const QString& nmStr) {
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
       if (sock->state() == QAbstractSocket::ConnectedState) {
-//        *sock << '$' << nmStr << '*' << hex << (int) XOR << endl;
-//        sock->flush();
+        QTextStream ts(sock);
+        ts << '$' << nmStr << '*' << hex << (int) XOR << endl;
+        ts.flush();
       }
       else if (sock->state() != QAbstractSocket::ConnectingState) {
         delete sock;
