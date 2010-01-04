@@ -84,6 +84,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("pppRefCrdY",       "");
     setValue("pppRefCrdZ",       "");
     setValue("nmeaFile",         "");
+    setValue("nmeaPort",         "");
     sync();
   }
 }
