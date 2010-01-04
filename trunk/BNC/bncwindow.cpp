@@ -337,6 +337,7 @@ bncWindow::bncWindow() {
   // -----------
   _pppMountLineEdit    = new QLineEdit(settings.value("pppMount").toString());
   _pppNMEALineEdit     = new QLineEdit(settings.value("nmeaFile").toString());
+  _pppNMEAPortLineEdit = new QLineEdit(settings.value("nmeaPort").toString());
   _pppRefCrdXLineEdit  = new QLineEdit(settings.value("pppRefCrdX").toString());
   _pppRefCrdYLineEdit  = new QLineEdit(settings.value("pppRefCrdY").toString());
   _pppRefCrdZLineEdit  = new QLineEdit(settings.value("pppRefCrdZ").toString());
@@ -691,9 +692,11 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Z"),                      2, 7, 1, 1);
   pppLayout->addWidget(new QLabel("NMEA file (full path)"),  3, 0);
   pppLayout->addWidget(_pppNMEALineEdit,                     3, 1, 1, 6);
-  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),4, 0,1,15);
-  pppLayout->addWidget(new QLabel("    "),                   5, 0);
+  pppLayout->addWidget(new QLabel("NMEA port"),              4, 0);
+  pppLayout->addWidget(_pppNMEAPortLineEdit,                 4, 1, 1, 2);
+  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),5, 0,1,15);
   pppLayout->addWidget(new QLabel("    "),                   6, 0);
+  pppLayout->addWidget(new QLabel("    "),                   7, 0);
   pppgroup->setLayout(pppLayout);
 
   // Main Layout
@@ -1004,6 +1007,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("miscMount",   _miscMountLineEdit->text());
   settings.setValue("pppMount",    _pppMountLineEdit->text());
   settings.setValue("nmeaFile",    _pppNMEALineEdit->text());
+  settings.setValue("nmeaPort",    _pppNMEAPortLineEdit->text());
   settings.setValue("pppRefCrdX",  _pppRefCrdXLineEdit->text());
   settings.setValue("pppRefCrdY",  _pppRefCrdYLineEdit->text());
   settings.setValue("pppRefCrdZ",  _pppRefCrdZLineEdit->text());
@@ -1544,6 +1548,7 @@ void bncWindow::slotBncTextChanged(){
   if (sender() == 0 || sender() == _pppMountLineEdit) {
     if (!_pppMountLineEdit->text().isEmpty()) {
       _pppNMEALineEdit->setPalette(palette_white);
+      _pppNMEAPortLineEdit->setPalette(palette_white);
       _pppRefCrdXLineEdit->setPalette(palette_white);
       _pppRefCrdYLineEdit->setPalette(palette_white);
       _pppRefCrdZLineEdit->setPalette(palette_white);
@@ -1553,6 +1558,7 @@ void bncWindow::slotBncTextChanged(){
 //    _pppGLONASSCheckBox->setPalette(palette_white);
       _pppGLONASSCheckBox->setPalette(palette_gray);
       _pppNMEALineEdit->setEnabled(true);
+      _pppNMEAPortLineEdit->setEnabled(true);
       _pppRefCrdXLineEdit->setEnabled(true);
       _pppRefCrdYLineEdit->setEnabled(true);
       _pppRefCrdZLineEdit->setEnabled(true);
@@ -1563,6 +1569,7 @@ void bncWindow::slotBncTextChanged(){
       _pppGLONASSCheckBox->setEnabled(false);
     } else {
       _pppNMEALineEdit->setPalette(palette_gray);
+      _pppNMEAPortLineEdit->setPalette(palette_gray);
       _pppRefCrdXLineEdit->setPalette(palette_gray);
       _pppRefCrdYLineEdit->setPalette(palette_gray);
       _pppRefCrdZLineEdit->setPalette(palette_gray);
@@ -1571,6 +1578,7 @@ void bncWindow::slotBncTextChanged(){
       _pppEstTropoCheckBox->setPalette(palette_gray);
       _pppGLONASSCheckBox->setPalette(palette_gray);
       _pppNMEALineEdit->setEnabled(false);
+      _pppNMEAPortLineEdit->setEnabled(false);
       _pppRefCrdXLineEdit->setEnabled(false);
       _pppRefCrdYLineEdit->setEnabled(false);
       _pppRefCrdZLineEdit->setEnabled(false);
