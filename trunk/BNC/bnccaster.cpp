@@ -106,6 +106,20 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
     _uSockets = 0;
   }
 
+  int nmeaPort = settings.value("nmeaPort").toInt();
+  if (nmeaPort != 0) {
+    _nmeaServer = new QTcpServer;
+    if ( !_nmeaServer->listen(QHostAddress::Any, nmeaPort) ) {
+      emit newMessage("bncCaster: Cannot listen on port", true);
+    }
+    connect(_nmeaServer, SIGNAL(newConnection()), this, SLOT(slotNewNMEAConnection()));
+    _nmeaSockets = new QList<QTcpSocket*>;
+  }
+  else {
+    _nmeaServer  = 0;
+    _nmeaSockets = 0;
+  }
+
   _epochs = new QMultiMap<long, p_obs>;
 
   _lastDumpSec   = 0; 
@@ -232,6 +246,12 @@ void bncCaster::slotNewUConnection() {
   _uSockets->push_back( _uServer->nextPendingConnection() );
   emit( newMessage(QString("New client connection on usync port: # %1")
                    .arg(_uSockets->size()).toAscii(), true) );
+}
+
+void bncCaster::slotNewNMEAConnection() {
+  _nmeaSockets->push_back( _nmeaServer->nextPendingConnection() );
+  emit( newMessage(QString("New PPP client on port: # %1")
+                   .arg(_nmeaSockets->size()).toAscii(), true) );
 }
 
 // Add New Thread
