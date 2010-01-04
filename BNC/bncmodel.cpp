@@ -162,22 +162,6 @@ bncModel::bncModel(QByteArray staID) {
 
   // NMEA Output
   // -----------
-  int port = 0; // 7777;
-
-  if (port != 0) {
-    _server = new QTcpServer;
-    if ( !_server->listen(QHostAddress::Any, port) ) {
-      emit newMessage("bncModel: Cannot listen on sync port", true);
-    }
-    connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
-    _sockets = new QList<QTcpSocket*>;
-  }
-  else {
-    _server  = 0;
-    _sockets = 0;
-  }
-
-
   QString nmeaFileName = settings.value("nmeaFile").toString();
   if (nmeaFileName.isEmpty()) {
     _nmeaFile   = 0;
@@ -209,16 +193,6 @@ bncModel::bncModel(QByteArray staID) {
 bncModel::~bncModel() {
   delete _nmeaStream;
   delete _nmeaFile;
-  delete _server;
-  delete _sockets;
-}
-
-// New Connection
-////////////////////////////////////////////////////////////////////////////
-void bncModel::slotNewConnection() {
-  _sockets->push_back( _server->nextPendingConnection() );
-  emit( newMessage(QString("PPP: new connection on port: # %1")
-                   .arg(_sockets->size()).toAscii(), true) );
 }
 
 // Bancroft Solution
@@ -587,45 +561,43 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   // NMEA Output
   // -----------
-  if (_nmeaStream || _sockets) {
-    double xyz[3]; 
-    xyz[0] = x();
-    xyz[1] = y();
-    xyz[2] = z();
-    double ell[3]; 
-    xyz2ell(xyz, ell);
-    double phiDeg = ell[0] * 180 / M_PI;
-    double lamDeg = ell[1] * 180 / M_PI;
+  double xyz[3]; 
+  xyz[0] = x();
+  xyz[1] = y();
+  xyz[2] = z();
+  double ell[3]; 
+  xyz2ell(xyz, ell);
+  double phiDeg = ell[0] * 180 / M_PI;
+  double lamDeg = ell[1] * 180 / M_PI;
 
-    char phiCh = 'N';
-    if (phiDeg < 0) {
-      phiDeg = -phiDeg;
-      phiCh  =  'S';
-    }   
-    char lamCh = 'E';
-    if (lamDeg < 0) {
-      lamDeg = -lamDeg;
-      lamCh  =  'W';
-    }   
+  char phiCh = 'N';
+  if (phiDeg < 0) {
+    phiDeg = -phiDeg;
+    phiCh  =  'S';
+  }   
+  char lamCh = 'E';
+  if (lamDeg < 0) {
+    lamDeg = -lamDeg;
+    lamCh  =  'W';
+  }   
 
-    double dop = 2.0; // TODO 
+  double dop = 2.0; // TODO 
 
-    ostringstream str3;
-    str3.setf(ios::fixed);
-    str3 << "GPGGA," 
-         << epoData->tt.timestr(0,0) << ','
-         << setw(2) << setfill('0') << int(phiDeg) 
-         << setw(10) << setprecision(7) << setfill('0') 
-         << fmod(60*phiDeg,60) << ',' << phiCh << ','
-         << setw(2) << setfill('0') << int(lamDeg) 
-         << setw(10) << setprecision(7) << setfill('0') 
-         << fmod(60*lamDeg,60) << ',' << lamCh 
-         << ",1," << setw(2) << setfill('0') << epoData->size() << ','
-         << setw(3) << setprecision(1) << dop << ','
-         << setprecision(3) << ell[2] << ",M,0.0,M,,,";
-                   
-    writeNMEAstr(QString(str3.str().c_str()));
-  }
+  ostringstream str3;
+  str3.setf(ios::fixed);
+  str3 << "GPGGA," 
+       << epoData->tt.timestr(0,0) << ','
+       << setw(2) << setfill('0') << int(phiDeg) 
+       << setw(10) << setprecision(7) << setfill('0') 
+       << fmod(60*phiDeg,60) << ',' << phiCh << ','
+       << setw(2) << setfill('0') << int(lamDeg) 
+       << setw(10) << setprecision(7) << setfill('0') 
+       << fmod(60*lamDeg,60) << ',' << lamCh 
+       << ",1," << setw(2) << setfill('0') << epoData->size() << ','
+       << setw(3) << setprecision(1) << dop << ','
+       << setprecision(3) << ell[2] << ",M,0.0,M,,,";
+                 
+  writeNMEAstr(QString(str3.str().c_str()));
 
   return success;
 }
@@ -697,25 +669,14 @@ void bncModel::writeNMEAstr(const QString& nmStr) {
   for (int ii = 0; ii < nmStr.length(); ii++) {
     XOR ^= (unsigned char) nmStr[ii].toAscii();
   }
+
+  QString outStr = '$' + nmStr 
+                       + QString("*%1\n").arg(int(XOR), 0, 16).toUpper();
   
   if (_nmeaStream) {
-    *_nmeaStream << '$' << nmStr << '*' << hex << (int) XOR << endl;
+    *_nmeaStream << outStr;
     _nmeaStream->flush();
   }
 
-  if (_sockets) {
-    QMutableListIterator<QTcpSocket*> is(*_sockets);
-    while (is.hasNext()) {
-      QTcpSocket* sock = is.next();
-      if (sock->state() == QAbstractSocket::ConnectedState) {
-        QTextStream ts(sock);
-        ts << '$' << nmStr << '*' << hex << (int) XOR << endl;
-        ts.flush();
-      }
-      else if (sock->state() != QAbstractSocket::ConnectingState) {
-        delete sock;
-        is.remove();
-      }
-    }
-  }
+  emit newNMEAstr(outStr.toAscii());
 }

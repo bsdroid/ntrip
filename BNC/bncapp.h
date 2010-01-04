@@ -93,6 +93,9 @@ class bncApp : public QApplication {
     int                 _portCorr;
     QTcpServer*         _serverCorr;
     QList<QTcpSocket*>* _socketsCorr;
+    int                 _portNMEA;
+    QTcpServer*         _serverNMEA;
+    QList<QTcpSocket*>* _socketsNMEA;
     bncCaster*          _caster;
     long                _lastDumpCoSec;
     long                _waitCoTime;
