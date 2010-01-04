@@ -930,7 +930,7 @@ Note that in RTCM Version 2.x the message types 18 and 19 carry only the observa
 
 <p>Logged time stamps refer to message reception time and allow to understand repetition rates. Enter 'ALL' if you want to log this information from all configured streams. Beware that the size of the logfile can rapidly increase depending on the number of incoming RTCM streams. 
 </p>
-<p>This option is primarily meant for testing and evaluation. Use it to figure out what exactly is produced by a specific GNSS receiver's configuration. An empty option field (default) means that you don't want BNC to print the message type numbers and antenna information carried in RTCM streams.
+<p>This option is primarily meant for testing and evaluation. Use it to figure out what exactly is produced by a specific GNSS receiver's configuration. An empty option field (default) means that you don't want BNC to print the message type numbers and antenna information carried in RTCM streams. 
 </p>
 
 <p><a name="pppclient"><h4>3.11. PPP Client</h4></p>
@@ -943,13 +943,29 @@ BNC can derive coordinates for a rover position following the Precise Point Posi
 </p>
 
 <p>
-PPP results are saved in BNC's logfile. Depending on the processing options, the following values are recorded every second (example):
+PPP results are shown in the 'Log' tab on the bottom of BNC's main window. Depending on the processing options, the following values are shown every second (example):
 <pre>
 09-12-15 22:30:39  PPP CAS10 22:30:44.0 9  -901775.887 +- 0.058  2409382.427 +- 0.046  -5816746.721 +- 0.087  0.014 +- 0.005
 </pre>
 </p>
 <p>
-The 'PPP' string in that is followed by the selected mounpoint, a PPP time stamp in GPS Time, the number of processed satellites and XYZ coordinates with their formal errors as derived from the implemented filter in [m]. If the troposphere estimation flag is set then the estimated troposphere correction follows together with its formal error in [m]. The implemented algorithm includes an outlier and cycle slip detection. The maximum for accepted residuals is hard coded to 10 meters for code observations and 10 centimeters for phase observations.
+The 'PPP' string in that is followed by the selected mounpoint, a PPP time stamp in GPS Time, the number of processed satellites, and XYZ coordinates with their formal errors as derived from the implemented filter in [m]. If the troposphere estimation flag is set then the estimated troposphere correction follows together with its formal error in [m]. The implemented algorithm includes an outlier and cycle slip detection. The maximum for accepted residuals is hard coded to 10 meters for code observations and 10 centimeters for phase observations.
+</p>
+<p>
+More detailed PPP results are saved in BNC's logfile. Here you find i.e. the estimated receiver clock errors in [m] and the estimated ambiguities per satellite. Example:
+<pre>
+10-01-04 10:35:36 Precise Point Positioning
+clk = -14.884 +-  0.904
+amb G04 =  0.685 +-  0.691
+amb G11 = -1.639 +-  0.815
+amb G13 = -0.535 +-  0.572
+amb G17 = -0.696 +-  0.608
+amb G20 = -0.942 +-  0.667
+amb G23 = -1.748 +-  0.557
+amb G30 = -2.316 +-  0.823
+amb G31 = -1.123 +-  0.625
+amb G32 =  2.960 +-  0.581
+</pre>
 </p>
 
 <p><a name="pppmount"><h4>3.11.1 Mountpoint - optional</h4></p>
@@ -1057,7 +1073,7 @@ The latency of observations in each incoming stream is shown in the 'Latency' ta
 
 <p><a name="ppptab"><h4>3.13.4 PPP</h4></p>
 <p>
-Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab. Values are either referred to reference coordinates (if specified) or referred to mean values calculated from results received over the latest 5 minues. The time as given in format hh:mm refers to GPS Time.
+Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab. Values are either referred to reference coordinates (if specified) or referred to the first extimated coordinate components. The time as given in format hh:mm refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. 
 </p>
 
 <p><a name="bottom"><h4>3.14. Bottom Menu Bar</h4></p>
