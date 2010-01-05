@@ -683,7 +683,7 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppEstTropoCheckBox,                 1, 5);
   pppLayout->addWidget(new QLabel("Estimate tropo        "), 1, 6, 1, 1, Qt::AlignLeft);
   pppLayout->addWidget(_pppGLONASSCheckBox,                  1, 7);
-  pppLayout->addWidget(new QLabel("Use GLONASS           "), 1, 8, 1, 1, Qt::AlignLeft);
+  pppLayout->addWidget(new QLabel("Use GLONASS           "), 1, 8, 1, 3, Qt::AlignLeft);
   pppLayout->addWidget(new QLabel("Ref. coordinates"),       2, 0);
   pppLayout->addWidget(_pppRefCrdXLineEdit,                  2, 1, 1, 2);
   pppLayout->addWidget(new QLabel("X"),                      2, 3, 1, 1);
@@ -691,10 +691,11 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Y"),                      2, 5, 1, 1);
   pppLayout->addWidget(_pppRefCrdZLineEdit,                  2, 6, 1, 1);
   pppLayout->addWidget(new QLabel("Z"),                      2, 7, 1, 1);
-  pppLayout->addWidget(new QLabel("NMEA file (full path)"),  3, 0);
-  pppLayout->addWidget(_pppNMEALineEdit,                     3, 1, 1, 6);
-  pppLayout->addWidget(new QLabel("  port"),                   3, 7, 1, 1);
-  pppLayout->addWidget(_pppNMEAPortLineEdit,                 3, 8, 1, 2);
+  pppLayout->addWidget(new QLabel("NMEA output"),            3, 0);
+  pppLayout->addWidget(_pppNMEALineEdit,                     3, 1, 1, 5);
+  pppLayout->addWidget(new QLabel("File (full path)"),       3, 6, 1, 1);
+  pppLayout->addWidget(_pppNMEAPortLineEdit,                 3, 7, 1, 2);
+  pppLayout->addWidget(new QLabel("Port"),                   3, 9, 1, 2);
   pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),4, 0,1,15);
   pppLayout->addWidget(new QLabel("    "),                   5, 0);
   pppLayout->addWidget(new QLabel("    "),                   6, 0);
