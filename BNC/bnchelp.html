@@ -145,8 +145,10 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.2.2 <a href=#pppphase>Use Phase Obs</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2.3 <a href=#ppptropo>Estimate Tropo</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2.4 <a href=#pppglo>Use GLONASS</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppnmea>NMEA file</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#pppnmeaport>NMEA port</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppnmearef>Ref. Coordinates</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#pppnmeaout>NMEA Output</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4.1 <a href=#pppnmeafile>NMEA File</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4.2 <a href=#pppnmeaport>NMEA Port</a><br>
 3.12. <a href=#streams>Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1 <a href=#streamedit>Edit Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.2 <a href=#streamdelete>Delete Stream</a><br>
@@ -974,7 +976,7 @@ amb G32 =  2.960 +-  0.581
 Specify a mountpoint if you want BNC to derive coordinates for the affected rover position through a PPP solution.
 </p>
 
-<p><a name="pppopt"><h4>3.11.2 Options - optional</h4></p>
+<p><a name="pppopt"><h4>3.11.2 Options</h4></p>
 BNC allows to use different PPP processing options depending on the capability of the involved receiver and the application in mind.
 </p>
 
@@ -998,14 +1000,28 @@ By default BNC does not introduce troposphere parameters when estimating coordin
 By default BNC does not process GLONASS observations in PPP mode. Tick 'Use GLONASS' to use GPS and GLONASS observations for estimating coordinates in Precise Point Positioning mode.
 </p>
 
-<p><a name="pppnmea"><h4>3.11.3 NMEA file - optional</h4></p>
+<p><a name="pppnmearef"><h4>3.11.3 Ref. Coordinates - optional</h4></p>
 <p>
-Specify the full path to a file where Precise Point Positioning results are saved as NMEA GPGGA messages. The generated NMEA file begins with a single GPRMC message which carries only the date information.
+You may specify X,Y,Z reference coordinate components for the receiver's position if known. The North/East/Up time series plots shown in the 'PPP' tab will then be referred to these values. The default values for the coordinate components are empty option fields, meaning that BNC will refer time series plots to the first estimated position and not to any reference coordinate. 
 </p>
 
-<p><a name="pppnmeaport"><h4>3.11.3 NMEA port - optional</h4></p>
+<p><a name="pppnmeaout"><h4>3.11.4 NMEA Output</h4></p>
 <p>
-Specify an IP port number for a local port where Precise Point Positioning results become available as NMEA messages. The NMEA file output and the NMEA IP port output are the same. 
+BNC allows to output results from Precise Point Positioning in NMEA format. The NMEA messages generated are
+<ul>
+<li> one leading GPRMC message which carries only date and time information, plus</li>
+<li> about once per second a GPGGA message which mainly carries the estimated latitude, longitude, and height values.</li>
+</ul>
+</p>
+
+<p><a name="pppnmeafile"><h4>3.11.4.1 NMEA File - optional</h4></p>
+<p>
+Specify the full path to a file where Precise Point Positioning results are saved as NMEA messages. The generated NMEA file begins with a single GPRMC message which carries only date and time information. The default value for 'File (full path)' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
+</p>
+
+<p><a name="pppnmeaport"><h4>3.11.4.2 NMEA Port - optional</h4></p>
+<p>
+Specify the IP port number of a local port where Precise Point Positioning results become available as NMEA messages. The default value for 'Port' is an empty option field, meaning that BNC does not provide NMEA messsages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same. 
 </p>
 
 <p><a name="streams"><h4>3.12. Streams</h4></p>
@@ -1060,7 +1076,7 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 
 <p><a name="logs"><h4>3.13. Logging</h4></p>
 <p>
-A tabs section on the bottom of the main window provides online controle of BNC's activities. Tabs are available to show the records saved in a logfile, for a plot to controle the bandwidth consumtion and for a plot showing stream latencies.
+A tabs section on the bottom of the main window provides online controle of BNC's activities. Tabs are available to show the records saved in a logfile, for a plot to controle the bandwidth consumtion, for a plot showing stream latencies, and for time series plots of PPP results.
 </p>
 <p><a name="logfile"><h4>3.13.1 Log</h4></p>
 <p>
@@ -1079,7 +1095,7 @@ The latency of observations in each incoming stream is shown in the 'Latency' ta
 
 <p><a name="ppptab"><h4>3.13.4 PPP</h4></p>
 <p>
-Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab. Values are either referred to reference coordinates (if specified) or referred to the first estimated coordinate components. The time as given in format hh:mm refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. 
+Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab. Values are either referred to reference coordinates (if specified) or referred to the first estimated coordinate components. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. 
 </p>
 
 <p><a name="bottom"><h4>3.14. Bottom Menu Bar</h4></p>
