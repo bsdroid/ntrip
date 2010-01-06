@@ -42,7 +42,7 @@ class bncFigurePPP : public QWidget {
   void paintEvent(QPaintEvent *event);
 
  private:
-  const static int MAXNUMPOS = 300;
+  const static double _tRange = 300;
 
   class pppPos {
    public:
@@ -56,7 +56,6 @@ class bncFigurePPP : public QWidget {
   QVector<pppPos*> _pos;
   bncTime          _startTime;
   double           _neuMax;
-  double           _tRange;
   double           _tMin;
   int              _width;
   int              _height;
