@@ -250,12 +250,26 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
                              pntTic.x(), pntTic.y()+ww/2);
           }
         }
-        painter.setPen(QColor(Qt::red));
+
+        // lines
+        // -----
+        painter.setPen(QColor(Qt::gray));
         painter.drawLine(pltPoint(t1, neu[ii-1][0]), pltPoint(t2, neu[ii][0]));
-        painter.setPen(QColor(0,210,0,127));
         painter.drawLine(pltPoint(t1, neu[ii-1][1]), pltPoint(t2, neu[ii][1]));
-        painter.setPen(QColor(Qt::blue));
         painter.drawLine(pltPoint(t1, neu[ii-1][2]), pltPoint(t2, neu[ii][2]));
+
+        // dots
+        // ----
+        QPointF pntDot;
+        pntDot = pltPoint(t1,neu[ii-1][0]);
+        painter.setBrush(QColor(Qt::red));
+        painter.drawEllipse(pntDot,ww*0.2,ww*0.2);
+        pntDot = pltPoint(t1,neu[ii-1][1]);
+        painter.setBrush(QColor(Qt::green));
+        painter.drawEllipse(pntDot,ww*0.2,ww*0.2);
+        pntDot = pltPoint(t1,neu[ii-1][2]);
+        painter.setBrush(QBrush(Qt::blue));
+        painter.drawEllipse(pntDot,ww*0.2,ww*0.2);
       }
     }
   }
