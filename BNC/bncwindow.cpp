@@ -507,7 +507,7 @@ bncWindow::bncWindow() {
   gLayout->addWidget(_onTheFlyComboBox,                          2, 1);
   gLayout->addWidget(new QLabel("Auto start"),                   3, 0);
   gLayout->addWidget(_autoStartCheckBox,                         3, 1);
-  gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, and auto-start."),4, 0, 1, 50, Qt::AlignLeft); // 2
+  gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, and auto-start."),4, 0, 1, 50, Qt::AlignLeft);
   gLayout->addWidget(new QLabel("    "),5,0);
   ggroup->setLayout(gLayout);
 
@@ -649,7 +649,8 @@ bncWindow::bncWindow() {
   aLayout->addWidget(_adviseRecoSpinBox,                          2, 1);
   aLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
   aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,30);
-  aLayout->addWidget(new QLabel("Failure and recovery reports, advisory notes."),5,0,1,50,Qt::AlignLeft);
+  aLayout->addWidget(new QLabel("Failure and recovery reports, advisory notes."),4,0,1,50,Qt::AlignLeft);
+  aLayout->addWidget(new QLabel("    "),                          5, 0);
   agroup->setLayout(aLayout);
 
   // Miscellaneous
@@ -697,8 +698,6 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppNMEAPortLineEdit,                 3, 8, 1, 2);
   pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),4, 0,1,15);
   pppLayout->addWidget(new QLabel("    "),                   5, 0);
-  pppLayout->addWidget(new QLabel("    "),                   6, 0);
-  pppLayout->addWidget(new QLabel("    "),                   7, 0);
   pppgroup->setLayout(pppLayout);
 
   // Main Layout
