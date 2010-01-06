@@ -224,7 +224,7 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
                               .arg(minute, 2, 10, QChar('0'))
                               .arg(int(second), 2, 10, QChar('0'));
       painter.setPen(QColor(Qt::black));
-      painter.drawText(0, ww, pntP.x() + 14*ww, pntP.x(),
+      painter.drawText(0, ww, pntP.x() + 16*ww, pntP.x(),
                        Qt::AlignRight, startStr);
 
       // neu components
