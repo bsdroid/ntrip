@@ -99,9 +99,13 @@ void bncFigurePPP::slotNewPosition(bncTime time, double x, double y, double z){
     _startTime = time;
   }
 
-  if (_pos.size() > MAXNUMPOS) {
-    delete _pos[0];
-    _pos.pop_front();
+  QMutableVectorIterator<pppPos*> it(_pos);
+  while (it.hasNext()) {
+    pppPos* pp = it.next();
+    if ( (time - pp->time) > _tRange ) {
+      delete pp;
+      it.remove();
+    }
   }
 
   update();
@@ -138,7 +142,6 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
   // Plot X-coordinates as a function of time (in seconds)
   // -----------------------------------------------------
   if (_pos.size() > 1) {
-    _tRange = MAXNUMPOS;
     _tMin   = _pos[0]->time.gpssec();
 
     // Reference Coordinates
@@ -168,7 +171,7 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
       }
     }
 
-    if (_neuMax > 0.0 && _tRange > 0.0) {
+    if (_neuMax > 0.0) {
 
       if (_neuMax < 0.15) {
         _neuMax = 0.15;
