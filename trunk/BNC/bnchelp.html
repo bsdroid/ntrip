@@ -955,19 +955,22 @@ PPP results are shown in the 'Log' tab on the bottom of BNC's main window. Depen
 The 'PPP' string in that is followed by the selected mounpoint, a PPP time stamp in GPS Time, the number of processed satellites, and XYZ coordinates with their formal errors as derived from the implemented filter in [m]. If the troposphere estimation flag is set then the estimated troposphere correction follows together with its formal error in [m]. The implemented algorithm includes an outlier and cycle slip detection. The maximum for accepted residuals is hard coded to 10 meters for code observations and 10 centimeters for phase observations.
 </p>
 <p>
-More detailed PPP results are saved in BNC's logfile. Here you find i.e. the estimated receiver clock errors in [m] and the estimated L3 biases per satellite, also known as 'floated ambiguities'. Both are given together with their standard deviations. Example:
+More detailed PPP results are saved in BNC's logfile. There you find the estimated
+<ul>
+<li>receiver clock errors in [m], </li>
+<li>a-priori and estimated tropospheric delay in [m],'
+<li>L3 biases, also known as 'floated ambiguities', given per satellite.
+</ul>
+These parameters are recorded together with their standard deviation. Example extract from a log file:
 <pre>
-10-01-04 10:35:36 Precise Point Positioning
-clk = -14.884 +-  0.904
-amb G04 =  0.685 +-  0.691
-amb G11 = -1.639 +-  0.815
-amb G13 = -0.535 +-  0.572
-amb G17 = -0.696 +-  0.608
-amb G20 = -0.942 +-  0.667
-amb G23 = -1.748 +-  0.557
-amb G30 = -2.316 +-  0.823
-amb G31 = -1.123 +-  0.625
-amb G32 =  2.960 +-  0.581
+10-01-07 15:18:02 Precise Point Positioning
+clk = -1.697 +-  0.801
+trp =   2.176 -0.000 +-  0.010
+amb G11 =  0.637 +-  0.256
+amb G17 =  4.773 +-  0.338
+amb G20 = -0.979 +-  0.312
+amb G23 = -5.682 +-  0.320
+amb G31 =  1.017 +-  0.689
 </pre>
 </p>
 
