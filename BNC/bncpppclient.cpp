@@ -211,7 +211,12 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
     QString prn;
     in >> messageType >> updateInterval >> GPSweek >> GPSweeks >> prn;
     if ( messageType == COTYPE_GPSCOMBINED     || 
-         messageType == COTYPE_GLONASSCOMBINED ) {
+         messageType == COTYPE_GLONASSCOMBINED ||
+         messageType == COTYPE_GPSORBIT        ||
+         messageType == COTYPE_GPSCLOCK        ||
+         messageType == COTYPE_GLONASSORBIT    ||
+         messageType == COTYPE_GLONASSCLOCK ) {
+
       t_corr* cc = 0;
       if (_corr.contains(prn)) {
         cc = _corr.value(prn); 
@@ -220,10 +225,26 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
         cc = new t_corr();
         _corr[prn] = cc;
       }
+
       cc->tt.set(GPSweek, GPSweeks);
-      cc->rao.ReSize(3);
-      in >> cc->iod >> cc->dClk >> cc->rao[0] >> cc->rao[1] >> cc->rao[2];
-      cc->dClk /= t_CST::c;
+
+      if      ( messageType == COTYPE_GPSCOMBINED    || 
+                messageType == COTYPE_GLONASSCOMBINED ) {
+        cc->rao.ReSize(3);
+        in >> cc->iod >> cc->dClk >> cc->rao[0] >> cc->rao[1] >> cc->rao[2];
+        cc->dClk /= t_CST::c;
+      }
+      else if ( messageType == COTYPE_GPSORBIT    || 
+                messageType == COTYPE_GLONASSORBIT ) {
+        cc->rao.ReSize(3);
+        in >> cc->iod >> cc->rao[0] >> cc->rao[1] >> cc->rao[2];
+      }
+      else if ( messageType == COTYPE_GPSCLOCK    || 
+                messageType == COTYPE_GLONASSCLOCK ) {
+        int dummyIOD;
+        in >> dummyIOD >> cc->dClk;
+        cc->dClk /= t_CST::c;
+      }
     }
   }
 }
