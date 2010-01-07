@@ -539,7 +539,7 @@ t_irc bncModel::update(t_epoData* epoData) {
     else if (par->type == bncParam::TROPO) {
       str1 << "\n    trp = " << par->prn.toAscii().data()
            << setw(7) << setprecision(3) << delay_saast(M_PI/2.0) << " "
-           << setw(6) << setprecision(3) << showpos << par->xx 
+           << setw(6) << setprecision(3) << showpos << par->xx << noshowpos
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
     }
