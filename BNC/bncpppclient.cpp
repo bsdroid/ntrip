@@ -233,18 +233,32 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
         cc->rao.ReSize(3);
         in >> cc->iod >> cc->dClk >> cc->rao[0] >> cc->rao[1] >> cc->rao[2];
         cc->dClk /= t_CST::c;
+        cc->raoSet  = true;
+        cc->dClkSet = true;
       }
       else if ( messageType == COTYPE_GPSORBIT    || 
                 messageType == COTYPE_GLONASSORBIT ) {
         cc->rao.ReSize(3);
         in >> cc->iod >> cc->rao[0] >> cc->rao[1] >> cc->rao[2];
+        cc->raoSet  = true;
       }
       else if ( messageType == COTYPE_GPSCLOCK    || 
                 messageType == COTYPE_GLONASSCLOCK ) {
         int dummyIOD;
         in >> dummyIOD >> cc->dClk;
         cc->dClk /= t_CST::c;
+        cc->dClkSet = true;
       }
+    }
+  }
+
+  QMutableMapIterator<QString, t_corr*> im(_corr);
+  while (im.hasNext()) {
+    im.next();
+    t_corr* cc = im.value();
+    if (!cc->ready()) {
+      delete cc;
+      im.remove();
     }
   }
 }

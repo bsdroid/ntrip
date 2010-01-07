@@ -73,10 +73,17 @@ class t_epoData {
 
 class t_corr {
  public:
+  t_corr() {
+    raoSet  = false;
+    dClkSet = false;
+  }
+  bool ready() {return raoSet && dClkSet;}
   bncTime       tt;
   int          iod;
   double       dClk;
   ColumnVector rao;
+  bool         raoSet;
+  bool         dClkSet;
 };
 
 class bncPPPclient : public QObject {
