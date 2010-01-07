@@ -194,19 +194,19 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
         painter.drawLine(pltPoint(t1, neu[ii-1][0]), pltPoint(t2, neu[ii][0]));
         painter.setPen(QColor(Qt::red));
         painter.setBrush(QColor(Qt::red));
-        painter.drawEllipse(pltPoint(t1,neu[ii-1][0]), ww/7, ww/7);
+        painter.drawEllipse(pltPoint(t1,neu[ii-1][0]), ww/5, ww/5);
 
         painter.setPen(QColor(Qt::gray));
         painter.drawLine(pltPoint(t1, neu[ii-1][1]), pltPoint(t2, neu[ii][1]));
         painter.setPen(QColor(Qt::green));
         painter.setBrush(QColor(Qt::green));
-        painter.drawEllipse(pltPoint(t1,neu[ii-1][1]), ww/7, ww/7);
+        painter.drawEllipse(pltPoint(t1,neu[ii-1][1]), ww/5, ww/5);
 
         painter.setPen(QColor(Qt::gray));
         painter.drawLine(pltPoint(t1, neu[ii-1][2]), pltPoint(t2, neu[ii][2]));
         painter.setPen(QColor(Qt::blue));
         painter.setBrush(QColor(Qt::blue));
-        painter.drawEllipse(pltPoint(t1,neu[ii-1][2]), ww/7, ww/7);
+        painter.drawEllipse(pltPoint(t1,neu[ii-1][2]), ww/5, ww/5);
 
         // time-tics
         // ---------
