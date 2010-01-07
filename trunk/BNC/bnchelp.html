@@ -146,7 +146,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.2.3 <a href=#ppptropo>Estimate Tropo</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2.4 <a href=#pppglo>Use GLONASS</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppnmearef>Ref. Coordinates</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#pppnmeaout>NMEA Output</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#pppnmeaout>NMEA</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.4.1 <a href=#pppnmeafile>File</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.4.2 <a href=#pppnmeaport>Port</a><br>
 3.12. <a href=#streams>Streams</a><br>
@@ -955,7 +955,7 @@ PPP results are shown in the 'Log' tab on the bottom of BNC's main window. Depen
 The 'PPP' string in that is followed by the selected mounpoint, a PPP time stamp in GPS Time, the number of processed satellites, and XYZ coordinates with their formal errors as derived from the implemented filter in [m]. If the troposphere estimation flag is set then the estimated troposphere correction follows together with its formal error in [m]. The implemented algorithm includes an outlier and cycle slip detection. The maximum for accepted residuals is hard coded to 10 meters for code observations and 10 centimeters for phase observations.
 </p>
 <p>
-More detailed PPP results are saved in BNC's logfile. Here you find i.e. the estimated receiver clock errors in [m] and the estimated ambiguities per satellite. Example:
+More detailed PPP results are saved in BNC's logfile. Here you find i.e. the estimated receiver clock errors in [m] and the estimated L3 biases per satellite, also known as 'floated ambiguities'. Both are given together with their standard deviations. Example:
 <pre>
 10-01-04 10:35:36 Precise Point Positioning
 clk = -14.884 +-  0.904
@@ -1005,7 +1005,7 @@ By default BNC does not process GLONASS observations in PPP mode. Tick 'Use GLON
 You may specify X,Y,Z reference coordinate components for the receiver's position if known. The North/East/Up time series plots shown in the 'PPP' tab will then be referred to these values. The default values for the coordinate components are empty option fields, meaning that BNC will refer time series plots to the first estimated position and not to any reference coordinate. 
 </p>
 
-<p><a name="pppnmeaout"><h4>3.11.4 NMEA Output</h4></p>
+<p><a name="pppnmeaout"><h4>3.11.4 NMEA</h4></p>
 <p>
 BNC allows to output results from Precise Point Positioning in NMEA format. The NMEA messages generated are
 <ul>
