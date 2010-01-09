@@ -173,8 +173,8 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
     if (_neuMax > 0.0) {
 
-      if (_neuMax < 0.15) {
-        _neuMax = 0.15;
+      if (_neuMax < 0.151) {
+        _neuMax = 0.151;
       }
       
       unsigned hour, minute;
