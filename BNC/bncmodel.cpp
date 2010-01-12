@@ -567,6 +567,11 @@ t_irc bncModel::update(t_epoData* epoData) {
         t_satData* satData = itGlo.value();
       
         double rhoCmp = cmpValue(satData);
+
+        //// beg test
+        cout << prn.toAscii().data() << " "  << rhoCmp << " "
+             << satData->P3 << " " << satData->L3 << endl;
+        //// end test
       
         double ellWgtCoeff = 1.0;
         ////  double eleD = satData->eleSat * 180.0 / M_PI;

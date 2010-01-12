@@ -179,11 +179,11 @@ void bncPPPclient::putNewObs(p_obs pp) {
   }
 
   if      (obs->satSys == 'G') {
-    QString prn = QString("G%2").arg(obs->satNum, 2, 10, QChar('0'));
+    QString prn = QString("G%1").arg(obs->satNum, 2, 10, QChar('0'));
     _epoData->satDataGPS[prn] = satData;
   }
   else if (obs->satSys == 'R') {
-    QString prn = QString("R%2").arg(obs->satNum, 2, 10, QChar('0'));
+    QString prn = QString("R%1").arg(obs->satNum, 2, 10, QChar('0'));
     _epoData->satDataGlo[prn] = satData;
   }
 }
