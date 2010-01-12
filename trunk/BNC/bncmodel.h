@@ -75,7 +75,8 @@ class bncModel : public QObject {
   void   predict(t_epoData* epoData);
   int    outlierDetection(const SymmetricMatrix& QQsav, 
                           const ColumnVector& vv,
-                          QMap<QString, t_satData*>& satData);
+                          QMap<QString, t_satData*>& satDataGPS,
+                          QMap<QString, t_satData*>& satDataGlo);
   void writeNMEAstr(const QString& nmStr);
 
   bncTime            _time;

@@ -60,15 +60,23 @@ class t_epoData {
  public:
   t_epoData() {}
   ~t_epoData() {
-    QMapIterator<QString, t_satData*> it(satData);
-    while (it.hasNext()) {
-      it.next();
-      delete it.value();
+    QMapIterator<QString, t_satData*> itGPS(satDataGPS);
+    while (itGPS.hasNext()) {
+      itGPS.next();
+      delete itGPS.value();
+    }
+    QMapIterator<QString, t_satData*> itGlo(satDataGlo);
+    while (itGlo.hasNext()) {
+      itGlo.next();
+      delete itGlo.value();
     }
   }
-  unsigned size() const {return satData.size();}
+  unsigned sizeGPS() const {return satDataGPS.size();}
+  unsigned sizeGlo() const {return satDataGlo.size();}
+  unsigned sizeAll() const {return satDataGPS.size() + satDataGlo.size();}
   bncTime                    tt;
-  QMap<QString, t_satData*> satData;
+  QMap<QString, t_satData*> satDataGPS;
+  QMap<QString, t_satData*> satDataGlo;
 };
 
 class t_corr {
