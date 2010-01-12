@@ -352,9 +352,6 @@ double bncModel::cmpValue(t_satData* satData) {
     clk = clkGlo();
   }
 
-  cout << satData->prn.toAscii().data() << "  "
-       << clk << " " << satData->rho + clk - satData->clk + tropDelay << endl;
-
   return satData->rho + clk - satData->clk + tropDelay;
 }
 
