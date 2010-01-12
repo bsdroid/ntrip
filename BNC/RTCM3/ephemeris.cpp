@@ -9,6 +9,8 @@
 
 using namespace std;
 
+// 
+////////////////////////////////////////////////////////////////////////////
 bool t_eph::isNewerThan(const t_eph* eph) const {
   if (_GPSweek >  eph->_GPSweek ||
       (_GPSweek == eph->_GPSweek && _GPSweeks > eph->_GPSweeks)) {
@@ -19,6 +21,8 @@ bool t_eph::isNewerThan(const t_eph* eph) const {
   }
 }
 
+// Set GPS Satellite Position
+////////////////////////////////////////////////////////////////////////////
 void t_ephGPS::set(const gpsephemeris* ee) {
   ostringstream prn;
   prn << 'G' << setfill('0') << setw(2) << ee->satellite;
@@ -58,58 +62,7 @@ void t_ephGPS::set(const gpsephemeris* ee) {
   _TGD      = ee->TGD;
 }
 
-void t_ephGPS::set(int    prn,
-		   int    GPSWeek,
-		   double toc, double toe, double tot,
-		   double IODE, double IODC,
-		   double clock_bias, double clock_drift, double clock_driftrate,
-		   double OMEGA0, double OMEGADOT,
-		   double i0,     double IDOT,
-		   double omega,
-		   double M0, double Delta_n, 
-		   double sqrt_A, 
-		   double e,
-		   double Crc, double Crs,
-		   double Cic, double Cis,
-		   double Cuc, double Cus,
-		   double TGD,
-		   int    /*health*/) {
-  ostringstream prnstr;
-  prnstr << 'G' << setfill('0') << setw(2) << prn;
-
-  _prn      = prnstr.str();
-
-  _GPSweek  = GPSWeek;
-  _GPSweeks = toe;
-
-  _TOC              = toc;            
-  _TOE              = toe;            
-  _TOW              = tot;            
-  _IODE             = IODE;           
-  _IODC             = IODC;           
-  _clock_bias       = clock_bias;     
-  _clock_drift      = clock_drift;    
-  _clock_driftrate  = clock_driftrate;
-  _Crs              = Crs;            
-  _Delta_n          = Delta_n;        
-  _M0               = M0;             
-  _Cuc              = Cuc;            
-  _e                = e;              
-  _Cus              = Cus;            
-  _sqrt_A           = sqrt_A;         
-  _Cic              = Cic;            
-  _OMEGA0           = OMEGA0;         
-  _Cis              = Cis;            
-  _i0               = i0;             
-  _Crc              = Crc;            
-  _omega            = omega;          
-  _OMEGADOT         = OMEGADOT;       
-  _IDOT             = IDOT;           
-  _TGD              = TGD;            
-  //_health           = health;         
-}
-
-// Compute GPS Satellite Position
+// Compute GPS Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGPS::position(int GPSweek, double GPSweeks, 
 			double* xc,
@@ -192,84 +145,6 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
   vv[2]  = sini    *doty  + yp*cosi      *doti;
 }
 
-
-void t_ephGPS::print(std::ostream& out) const {
-  double toc_mjd = gpjd(_TOC, _GPSweek);
-  long   toc_y, toc_m;
-  int    toc_d;
-  double toc_dd;
-  jmt(toc_mjd, toc_y, toc_m, toc_dd);
-  toc_d = static_cast<int>(toc_dd);
-
-  int    toc_hour = static_cast<int>(  _TOC/3600 );
-  int    toc_min  = static_cast<int>( (_TOC/3600 - toc_hour)*60 );
-  double toc_sec  = _TOC - toc_hour*3600 - toc_min*60;
-  toc_hour = toc_hour % 24;
-
-  char tmps[20];
-  int  year;
-
-  year = toc_y;
-  if (year>2000) 
-    year-=2000;
-  else
-    year-=1900;
-
-
-  out << _prn.substr(1,2);
-  sprintf(tmps,"%02d", year); out << setw(3)  << tmps;
-  out << setw(3) << toc_m;
-  out << setw(3) << toc_d;
-  out << setw(3) << toc_hour;
-  out << setw(3) << toc_min;
-  sprintf(tmps,"%.1f",  toc_sec);          out << setw(5)  << tmps;
-  sprintf(tmps,"%.12E", _clock_bias);      out << setw(19) << tmps;
-  sprintf(tmps,"%.12E", _clock_drift);     out << setw(19) << tmps;
-  sprintf(tmps,"%.12E", _clock_driftrate); out << setw(19) << tmps;
-  out << endl; 	 
-  out << "   ";
-  sprintf(tmps,"%.12E", (double)_IODE);    out << setw(19) << tmps;
-  sprintf(tmps,"%.12E", _Crs);             out << setw(19) << tmps;
-  sprintf(tmps,"%.12E", _Delta_n);         out << setw(19) << tmps;
-  sprintf(tmps,"%.12E", _M0);              out << setw(19) << tmps;
-  out << endl; 	 
-  out << "   ";
-  sprintf(tmps,"%.12E", _Cuc);             out << setw(19) << tmps;
-  sprintf(tmps,"%.12E", _e);               out << setw(19) << tmps;
-  sprintf(tmps,"%.12E", _Cus);             out << setw(19) << tmps;
-  sprintf(tmps,"%.12E", _sqrt_A);          out << setw(19) << tmps;
-  out << endl; 
-  out << "   ";
-  sprintf(tmps,"%.12E", _TOE);             out << setw(19) << tmps;  
-  sprintf(tmps,"%.12E", _Cic);             out << setw(19) << tmps;  
-  sprintf(tmps,"%.12E", _OMEGA0);          out << setw(19) << tmps;  
-  sprintf(tmps,"%.12E", _Cis);             out << setw(19) << tmps;  
-  out << endl; 	  			   
-  out << "   ";
-  sprintf(tmps,"%.12E", _i0);              out << setw(19) << tmps;  
-  sprintf(tmps,"%.12E", _Crc);             out << setw(19) << tmps;  
-  sprintf(tmps,"%.12E", _omega);           out << setw(19) << tmps;  
-  sprintf(tmps,"%.12E", _OMEGADOT);        out << setw(19) << tmps;  
-  out << endl; 	  			   
-  out << "   ";
-  sprintf(tmps,"%.12E", _IDOT);            out << setw(19) << tmps; 
-  sprintf(tmps,"%.12E", 0.0);              out << setw(19) << tmps; 
-  sprintf(tmps,"%.12E", (double)_GPSweek); out << setw(19) << tmps; 
-  sprintf(tmps,"%.12E", 0.0);              out << setw(19) << tmps; 
-  out << endl;	 			   
-  out << "   ";
-  sprintf(tmps,"%.12E", 0.0);              out << setw(19) << tmps; 
-  sprintf(tmps,"%.12E", 0.0);              out << setw(19) << tmps; 
-  sprintf(tmps,"%.12E", _TGD);             out << setw(19) << tmps;   
-  sprintf(tmps,"%.12E", (double)_IODC);    out << setw(19) << tmps;   
-  out << endl;	 			   
-  out << "   ";
-  sprintf(tmps,"%.12E", _TOE);             out << setw(19) << tmps;   
-  sprintf(tmps,"%.12E", 0.0);              out << setw(19) << tmps; 
-  sprintf(tmps,"%.12E", 0.0);              out << setw(19) << tmps; 
-  sprintf(tmps,"%.12E", 0.0);              out << setw(19) << tmps; 
-  out << endl;
-}
 
 // Derivative of the state vector using a simple force model (static)
 ////////////////////////////////////////////////////////////////////////////
@@ -365,12 +240,6 @@ int t_ephGlo::IOD() const {
   else     {  
     return int(fmod(_tki, 3600)) / 30;
   }
-}
-
-// Print Glonass Ephemeris (virtual)
-////////////////////////////////////////////////////////////////////////////
-void t_ephGlo::print(std::ostream& out) const {
-
 }
 
 // Set Glonass Ephemeris
