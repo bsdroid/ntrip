@@ -51,20 +51,6 @@
 
 using namespace std;
 
-struct converttimeinfo {
-  int second;    /* seconds of GPS time [0..59] */
-  int minute;    /* minutes of GPS time [0..59] */
-  int hour;      /* hour of GPS time [0..24] */
-  int day;       /* day of GPS time [1..28..30(31)*/
-  int month;     /* month of GPS time [1..12]*/
-  int year;      /* year of GPS time [1980..] */
-};
-
-extern "C" {
-  void converttime(struct converttimeinfo *c, int week, int tow);
-  void updatetime(int *week, int *tow, int tk, int fixnumleap);
-}
-
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) : 
