@@ -98,6 +98,10 @@ void bncPPPclient::putNewObs(p_obs pp) {
 
   t_obsInternal* obs = &(pp->_o);
 
+  if (obs->satSys != 'G') {
+    return;
+  }
+
   t_satData* satData = new t_satData();
 
   // Set Code Observations
