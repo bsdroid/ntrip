@@ -38,6 +38,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iomanip>
+
 #include "bncpppclient.h"
 #include "bncapp.h"
 #include "bncutils.h"

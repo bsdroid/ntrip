@@ -61,7 +61,7 @@ const double   sig_crd_p    =  100.0;
 const double   sig_clk_0    = 1000.0;
 const double   sig_trp_0    =    0.01;
 const double   sig_trp_p    =    1e-6;
-const double   sig_amb_0    =  100.0;
+const double   sig_amb_0    = 1000.0;
 const double   sig_P3       =    1.0;
 const double   sig_L3       =    0.01;
 
@@ -509,7 +509,7 @@ t_irc bncModel::update(t_epoData* epoData) {
     unsigned nPar = _params.size();
     unsigned nObs = 0;
     if (_usePhase) {
-      nObs = 2 * epoData->sizeGPS(); // TODO: + epoData->sizeGlo();
+      nObs = 2 * epoData->sizeGPS() + epoData->sizeGlo();
     }
     else {
       nObs = epoData->sizeGPS();  // Glonass pseudoranges are not used
@@ -564,20 +564,39 @@ t_irc bncModel::update(t_epoData* epoData) {
     if (_usePhase) {    
       QMapIterator<QString, t_satData*> itGlo(epoData->satDataGlo);
       while (itGlo.hasNext()) {
-        //// TODO        ++iObs;
+        ++iObs;
         itGlo.next();
         QString    prn     = itGlo.key();
         t_satData* satData = itGlo.value();
+
+        double rhoCmp = cmpValue(satData);
+        
+        double ellWgtCoeff = 1.0;
+        ////  double eleD = satData->eleSat * 180.0 / M_PI;
+        ////  if (eleD < 25.0) {
+        ////    ellWgtCoeff = 2.5 - (eleD - 10.0) * 0.1;
+        ////    ellWgtCoeff *= ellWgtCoeff;
+        ////  }
+
+        ll(iObs)      = satData->L3 - rhoCmp;
+        PP(iObs,iObs) = 1.0 / (sig_L3 * sig_L3) / ellWgtCoeff;
+        for (int iPar = 1; iPar <= _params.size(); iPar++) {
+          if (_params[iPar-1]->type == bncParam::AMB_L3 &&
+              _params[iPar-1]->prn  == prn) {
+            ll(iObs) -= _params[iPar-1]->xx;
+          } 
+          AA(iObs, iPar) = _params[iPar-1]->partial(satData, prn);
+        }
       
         //// beg test
-        double rhoCmp = cmpValue(satData);
-        cout.setf(ios::fixed);
-        cout << prn.toAscii().data() << " "  
-             << setprecision(3) << rhoCmp      << " "
-             << setprecision(3) << satData->P3 << " "
-             << setprecision(3) << satData->L3 << " " << endl;
-
-        //// end test
+        //double rhoCmp = cmpValue(satData);
+        //cout.setf(ios::fixed);
+        //cout << prn.toAscii().data() << " "  
+        //     << setprecision(3) << rhoCmp      << " "
+        //     << setprecision(3) << satData->P3 << " "
+        //     << setprecision(3) << satData->L3 << " " << endl;
+        //
+        ////// end test
       }
     }
 
@@ -724,19 +743,19 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
     }
   }
  
-////  // Glonass phase residuals
-////  // -----------------------
-////  if (_usePhase) {
-////    QMutableMapIterator<QString, t_satData*> itGlo(satDataGlo);
-////    while (itGlo.hasNext()) {
-////      itGlo.next();
-////      ++ii;
-////      if (vvMaxPhaseGlo == 0.0 || fabs(vv(ii)) > vvMaxPhaseGlo) {
-////        vvMaxPhaseGlo = fabs(vv(ii));
-////        itMaxPhaseGlo = itGlo;
-////      }
-////    }
-////  }
+  // Glonass phase residuals
+  // -----------------------
+  if (_usePhase) {
+    QMutableMapIterator<QString, t_satData*> itGlo(satDataGlo);
+    while (itGlo.hasNext()) {
+      itGlo.next();
+      ++ii;
+      if (vvMaxPhaseGlo == 0.0 || fabs(vv(ii)) > vvMaxPhaseGlo) {
+        vvMaxPhaseGlo = fabs(vv(ii));
+        itMaxPhaseGlo = itGlo;
+      }
+    }
+  }
 
   if      (vvMaxCodeGPS > MAXRES_CODE) {
     QString    prn     = itMaxCodeGPS.key();
