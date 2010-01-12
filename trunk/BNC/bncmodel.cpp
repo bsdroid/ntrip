@@ -460,7 +460,7 @@ void bncModel::predict(t_epoData* epoData) {
       if (!found) {
         bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
         _params.push_back(par);
-        par->xx = satData->P3 - cmpValue(satData);
+        ///        par->xx = satData->L3 - cmpValue(satData);
       }
     }
     
@@ -641,6 +641,13 @@ t_irc bncModel::update(t_epoData* epoData) {
         ////  }
 
         ll(iObs)      = satData->L3 - rhoCmp;
+
+        cout.setf(ios::fixed);
+        cout << prn.toAscii().data() << " " 
+             << setprecision(3) << rhoCmp << " "
+             << setprecision(3) << satData->P3 << " "
+             << setprecision(3) << satData->L3 << endl;
+
         PP(iObs,iObs) = 1.0 / (sig_L3 * sig_L3) / ellWgtCoeff;
         for (int iPar = 1; iPar <= _params.size(); iPar++) {
           if (_params[iPar-1]->type == bncParam::AMB_L3 &&
@@ -661,6 +668,8 @@ t_irc bncModel::update(t_epoData* epoData) {
         ////// end test
       }
     }
+
+    cout << endl;
 
     // Compute Filter Update
     // ---------------------
