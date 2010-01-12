@@ -102,7 +102,12 @@ double bncParam::partial(t_satData* satData, bool phase) {
   // Receiver Clocks
   // ---------------
   else if (type == RECCLK_GPS) {
-    return 1.0;
+    if (satData->prn[0] == 'G') {
+      return 1.0;
+    }
+    else {
+      return 0.0;
+    }
   }
   else if (type == RECCLK_GLO) {
     if (satData->prn[0] == 'R') {
@@ -661,26 +666,26 @@ t_irc bncModel::update(t_epoData* epoData) {
     dx    = _QQ * ATP * ll; 
     vv    = ll - AA * dx;
 
-//    //// beg test
-//    {
-//      cout.setf(ios::fixed);
-//      ColumnVector vv_code(epoData->sizeGPS());
-//      ColumnVector vv_phase(epoData->sizeGPS());
-//      ColumnVector vv_glo(epoData->sizeGlo());
-//
-//      for (int iobs = 1; iobs <= epoData->sizeGPS(); ++iobs) {
-//        vv_code(iobs)  = vv(2*iobs-1);
-//        vv_phase(iobs) = vv(2*iobs);
-//      }
-//      for (int iobs = 1; iobs <= epoData->sizeGlo(); ++iobs) {
-//        vv_glo(iobs)  = vv(2*epoData->sizeGPS()+iobs);
-//      }
-//
-//      cout << "residuals code  " << setprecision(3) << vv_code.t(); 
-//      cout << "residuals phase " << setprecision(3) << vv_phase.t();
-//      cout << "residuals glo   " << setprecision(3) << vv_glo.t();
-//    }
-//    //// end test
+    //// beg test
+    {
+      cout.setf(ios::fixed);
+      ColumnVector vv_code(epoData->sizeGPS());
+      ColumnVector vv_phase(epoData->sizeGPS());
+      ColumnVector vv_glo(epoData->sizeGlo());
+
+      for (unsigned iobs = 1; iobs <= epoData->sizeGPS(); ++iobs) {
+        vv_code(iobs)  = vv(2*iobs-1);
+        vv_phase(iobs) = vv(2*iobs);
+      }
+      for (unsigned iobs = 1; iobs <= epoData->sizeGlo(); ++iobs) {
+        vv_glo(iobs)  = vv(2*epoData->sizeGPS()+iobs);
+      }
+
+      cout << "residuals code  " << setprecision(3) << vv_code.t(); 
+      cout << "residuals phase " << setprecision(3) << vv_phase.t();
+      cout << "residuals glo   " << setprecision(3) << vv_glo.t();
+    }
+    //// end test
 
   } while (outlierDetection(QQsav, vv, epoData->satDataGPS, 
                             epoData->satDataGlo) != 0);
