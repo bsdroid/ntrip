@@ -83,7 +83,10 @@ bncParam::~bncParam() {
 
 // Partial
 ////////////////////////////////////////////////////////////////////////////
-double bncParam::partial(t_satData* satData, const QString& prnIn) {
+double bncParam::partial(t_satData* satData, bool phase) {
+
+  // Coordinates
+  // -----------
   if      (type == CRD_X) {
     return (xx - satData->xx(1)) / satData->rho; 
   }
@@ -93,20 +96,45 @@ double bncParam::partial(t_satData* satData, const QString& prnIn) {
   else if (type == CRD_Z) {
     return (xx - satData->xx(3)) / satData->rho; 
   }
-  else if (type == RECCLK) {
-    return 1.0;
-  }
-  else if (type == TROPO) {
-    return 1.0 / sin(satData->eleSat); 
-  }
-  else if (type == AMB_L3) {
-    if (prnIn == prn) {
+
+  // Receiver Clocks
+  // ---------------
+  else if (type == RECCLK_GPS) {
+    if (satData->prn[0] == 'G') {
       return 1.0;
     }
     else {
       return 0.0;
     }
   }
+  else if (type == RECCLK_GLO) {
+    if (satData->prn[0] == 'R') {
+      return 1.0;
+    }
+    else {
+      return 0.0;
+    }
+  }
+
+  // Troposphere
+  // -----------
+  else if (type == TROPO) {
+    return 1.0 / sin(satData->eleSat); 
+  }
+
+  // Ambiguities
+  // -----------
+  else if (type == AMB_L3) {
+    if (phase && satData->prn == prn) {
+      return 1.0;
+    }
+    else {
+      return 0.0;
+    }
+  }
+
+  // Default return
+  // --------------
   return 0.0;
 }
 
@@ -139,25 +167,42 @@ bncModel::bncModel(QByteArray staID) {
   _xcBanc.ReSize(4);  _xcBanc  = 0.0;
   _ellBanc.ReSize(3); _ellBanc = 0.0;
 
-  _params.push_back(new bncParam(bncParam::CRD_X,  1, ""));
-  _params.push_back(new bncParam(bncParam::CRD_Y,  2, ""));
-  _params.push_back(new bncParam(bncParam::CRD_Z,  3, ""));
-  _params.push_back(new bncParam(bncParam::RECCLK, 4, ""));
+  if ( Qt::CheckState(settings.value("pppGLONASS").toInt()) == Qt::Checked) {
+    _useGlonass = true;
+  }
+  else {
+    _useGlonass = false;
+  }
+
+  int nextPar = 0;
+  _params.push_back(new bncParam(bncParam::CRD_X,      ++nextPar, ""));
+  _params.push_back(new bncParam(bncParam::CRD_Y,      ++nextPar, ""));
+  _params.push_back(new bncParam(bncParam::CRD_Z,      ++nextPar, ""));
+  _params.push_back(new bncParam(bncParam::RECCLK_GPS, ++nextPar, ""));
+  if (_useGlonass) {
+    _params.push_back(new bncParam(bncParam::RECCLK_GLO,  ++nextPar, ""));
+  }
   if (_estTropo) {
-    _params.push_back(new bncParam(bncParam::TROPO,  5, ""));
+    _params.push_back(new bncParam(bncParam::TROPO,       ++nextPar, ""));
   }
 
   unsigned nPar = _params.size();
 
   _QQ.ReSize(nPar); 
+
   _QQ = 0.0;
 
-  _QQ(1,1) = sig_crd_0 * sig_crd_0; 
-  _QQ(2,2) = sig_crd_0 * sig_crd_0; 
-  _QQ(3,3) = sig_crd_0 * sig_crd_0; 
-  _QQ(4,4) = sig_clk_0 * sig_clk_0; 
-  if (_estTropo) {
-    _QQ(5,5) = sig_trp_0 * sig_trp_0; 
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    bncParam* pp = _params[iPar-1];
+    if      (pp->isCrd()) {
+      _QQ(iPar,iPar) = sig_crd_0 * sig_crd_0; 
+    }
+    else if (pp->isClk()) {
+      _QQ(iPar,iPar) = sig_clk_0 * sig_clk_0; 
+    }
+    else if (pp->type == bncParam::TROPO) {
+      _QQ(iPar,iPar) = sig_trp_0 * sig_trp_0; 
+    }
   }
 
   // NMEA Output
@@ -299,7 +344,18 @@ double bncModel::cmpValue(t_satData* satData) {
   double tropDelay = delay_saast(satData->eleSat) + 
                      trp() / sin(satData->eleSat);
 
-  return satData->rho + clk() - satData->clk + tropDelay;
+  double clk = 0.0;
+  if      (satData->prn[0] == 'G') {
+    clk = clkGPS();
+  }
+  else if (satData->prn[0] == 'R') {
+    clk = clkGlo();
+  }
+
+  cout << satData->prn.toAscii().data() << "  "
+       << clk << " " << satData->rho + clk - satData->clk + tropDelay << endl;
+
+  return satData->rho + clk - satData->clk + tropDelay;
 }
 
 // Tropospheric Model (Saastamoinen)
@@ -377,7 +433,6 @@ void bncModel::predict(t_epoData* epoData) {
     while (iGPS.hasNext()) {
       iGPS.next();
       QString prn        = iGPS.key();
-      t_satData* satData = iGPS.value();
       bool    found = false;
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         if (_params[iPar-1]->type == bncParam::AMB_L3 && 
@@ -436,37 +491,47 @@ void bncModel::predict(t_epoData* epoData) {
     }
   }
 
-  // Coordinates
-  // -----------
-  if (_static) {
-    if (x() == 0.0 && y() == 0.0 && z() == 0.0) {
-      _params[0]->xx = _xcBanc(1);
-      _params[1]->xx = _xcBanc(2);
-      _params[2]->xx = _xcBanc(3);
-    }
-  }
-  else {
-    _params[0]->xx = _xcBanc(1);
-    _params[1]->xx = _xcBanc(2);
-    _params[2]->xx = _xcBanc(3);
+  bool firstCrd = x() == 0.0 && y() == 0.0 && z() == 0.0;
 
-    _QQ(1,1) += sig_crd_p * sig_crd_p;
-    _QQ(2,2) += sig_crd_p * sig_crd_p;
-    _QQ(3,3) += sig_crd_p * sig_crd_p;
-  }
-
-  // Receiver Clocks
-  // ---------------
-  _params[3]->xx = _xcBanc(4);
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    _QQ(iPar, 4) = 0.0;
-  }
-  _QQ(4,4) = sig_clk_0 * sig_clk_0;
+    bncParam* pp = _params[iPar-1];
+ 
+    // Coordinates
+    // -----------
+    if      (pp->type == bncParam::CRD_X) {
+      if (firstCrd || !_static) {
+        pp->xx = _xcBanc(1);
+      }
+      _QQ(iPar,iPar) += sig_crd_p * sig_crd_p;
+    }
+    else if (pp->type == bncParam::CRD_Y) {
+      if (firstCrd || !_static) {
+        pp->xx = _xcBanc(2);
+      }
+      _QQ(iPar,iPar) += sig_crd_p * sig_crd_p;
+    }
+    else if (pp->type == bncParam::CRD_Z) {
+      if (firstCrd || !_static) {
+        pp->xx = _xcBanc(3);
+      }
+      _QQ(iPar,iPar) += sig_crd_p * sig_crd_p;
+    }   
 
-  // Tropospheric Delay
-  // ------------------
-  if (_estTropo) {
-    _QQ(5,5) += sig_trp_p * sig_trp_p;
+    // Receiver Clocks
+    // ---------------
+    else if (pp->isClk()) {
+      pp->xx = _xcBanc(4);
+      for (int jj = 1; jj <= _params.size(); jj++) {
+        _QQ(iPar, jj) = 0.0;
+      }
+      _QQ(iPar,iPar) = sig_clk_0 * sig_clk_0;
+    }
+
+    // Tropospheric Delay
+    // ------------------
+    else if (pp->type == bncParam::TROPO) {
+      _QQ(iPar,iPar) += sig_trp_p * sig_trp_p;
+    }
   }
 }
 
@@ -542,7 +607,7 @@ t_irc bncModel::update(t_epoData* epoData) {
       ll(iObs)      = satData->P3 - rhoCmp;
       PP(iObs,iObs) = 1.0 / (sig_P3 * sig_P3) / ellWgtCoeff;
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        AA(iObs, iPar) = _params[iPar-1]->partial(satData, "");
+        AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
       }
     
       if (_usePhase) {
@@ -554,7 +619,7 @@ t_irc bncModel::update(t_epoData* epoData) {
               _params[iPar-1]->prn  == prn) {
             ll(iObs) -= _params[iPar-1]->xx;
           } 
-          AA(iObs, iPar) = _params[iPar-1]->partial(satData, prn);
+          AA(iObs, iPar) = _params[iPar-1]->partial(satData, true);
         }
       }
     }
@@ -585,7 +650,7 @@ t_irc bncModel::update(t_epoData* epoData) {
               _params[iPar-1]->prn  == prn) {
             ll(iObs) -= _params[iPar-1]->xx;
           } 
-          AA(iObs, iPar) = _params[iPar-1]->partial(satData, prn);
+          AA(iObs, iPar) = _params[iPar-1]->partial(satData, true);
         }
       
         //// beg test
@@ -622,8 +687,13 @@ t_irc bncModel::update(t_epoData* epoData) {
   while (itPar.hasNext()) {
     bncParam* par = itPar.next();
     par->xx += dx(par->index);
-    if      (par->type == bncParam::RECCLK) {
-      str1 << "\n    clk = " << setw(6) << setprecision(3) << par->xx 
+    if      (par->type == bncParam::RECCLK_GPS) {
+      str1 << "\n    clk GPS = " << setw(6) << setprecision(3) << par->xx 
+           << " +- " << setw(6) << setprecision(3) 
+           << sqrt(_QQ(par->index,par->index));
+    }
+    if      (par->type == bncParam::RECCLK_GLO) {
+      str1 << "\n    clk GLO = " << setw(6) << setprecision(3) << par->xx 
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
     }
@@ -655,10 +725,6 @@ t_irc bncModel::update(t_epoData* epoData) {
        << setw(6)  << setprecision(3) << sqrt(_QQ(2,2))       << " "
        << setw(14) << setprecision(3) << z()                  << " +- "
        << setw(6)  << setprecision(3) << sqrt(_QQ(3,3));
-  if (_estTropo) {
-    str2 << "    " << setw(6) << setprecision(3) << trp()     << " +- "
-         << setw(6)  << setprecision(3) << sqrt(_QQ(5,5));
-  }
 
   emit newMessage(_log, false);
   emit newMessage(QByteArray(str2.str().c_str()), true);
