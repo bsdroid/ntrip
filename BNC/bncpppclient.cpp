@@ -336,10 +336,12 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
     ColumnVector xcTst(4);
     ColumnVector vvTst(3);
     bncTime ttTst(tt.gpsw(), floor(tt.gpssec()+0.5));
-    ee->position(ttTst.gpsw(), ttTst.gpssec(), xcTst.data(), vvTst.data());
-    cout.setf(ios::fixed);
-    cout << "A: " << ttTst.timestr() << " " << prn.toAscii().data() << " "
-         << xcTst.t();
+    if (prn[0] == 'R') {
+      ee->position(ttTst.gpsw(), ttTst.gpssec(), xcTst.data(), vvTst.data());
+      cout.setf(ios::fixed);
+      cout << "A: " << ttTst.timestr() << " " << prn.toAscii().data() << " "
+           << xcTst.t();
+    }
     //// end test
 
     if (CORR_REQUIRED) {
@@ -347,10 +349,12 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
         t_corr* cc = _corr.value(prn);
 
         //// beg test
-        applyCorr(cc, xcTst, vvTst);
-        cout << "B: " << ttTst.timestr() << " " 
-             << ee->IOD() << "  " <<  cc->iod << "  " << (tt - cc->tt) << " "
-             << prn.toAscii().data() << " " << xcTst.t();
+        if (prn[0] == 'R') {
+          applyCorr(cc, xcTst, vvTst);
+          cout << "B: " << ttTst.timestr() << " " 
+               << ee->IOD() << "  " <<  cc->iod << "  " << (tt - cc->tt) << " "
+               << prn.toAscii().data() << " " << xcTst.t();
+        }
         //// beg test
 
         if (ee->IOD() == cc->iod && (tt - cc->tt) < MAXAGE) {
