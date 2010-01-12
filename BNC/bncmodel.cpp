@@ -64,7 +64,8 @@ const double   sig_trp_0        =    0.01;
 const double   sig_trp_p        =    1e-6;
 const double   sig_amb_0        = 1000.0;
 const double   sig_P3           =    1.0;
-const double   sig_L3           =    0.01;
+const double   sig_L3_GPS       =    0.01;
+const double   sig_L3_GLO       =    0.10;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -101,12 +102,7 @@ double bncParam::partial(t_satData* satData, bool phase) {
   // Receiver Clocks
   // ---------------
   else if (type == RECCLK_GPS) {
-    if (satData->prn[0] == 'G') {
-      return 1.0;
-    }
-    else {
-      return 0.0;
-    }
+    return 1.0;
   }
   else if (type == RECCLK_GLO) {
     if (satData->prn[0] == 'R') {
@@ -393,104 +389,10 @@ double bncModel::delay_saast(double Ele) {
 ////////////////////////////////////////////////////////////////////////////
 void bncModel::predict(t_epoData* epoData) {
 
-  if (_usePhase) {
-
-    // Make a copy of QQ and xx, set parameter indices
-    // -----------------------------------------------
-    SymmetricMatrix QQ_old = _QQ;
-    
-    for (int iPar = 1; iPar <= _params.size(); iPar++) {
-      _params[iPar-1]->index_old = _params[iPar-1]->index;
-      _params[iPar-1]->index     = 0;
-    }
-    
-    // Remove Ambiguity Parameters without observations
-    // ------------------------------------------------
-    int iPar = 0;
-    QMutableVectorIterator<bncParam*> it(_params);
-    while (it.hasNext()) {
-      bncParam* par = it.next();
-      bool removed = false;
-      if (par->type == bncParam::AMB_L3) {
-        if (epoData->satDataGPS.find(par->prn) == epoData->satDataGPS.end() &&
-            epoData->satDataGlo.find(par->prn) == epoData->satDataGlo.end() ) {
-          removed = true;
-          delete par;
-          it.remove();
-        }
-      }
-      if (! removed) {
-        ++iPar;
-        par->index = iPar;
-      }
-    }
-    
-    // Add new ambiguity parameters
-    // ----------------------------
-    QMapIterator<QString, t_satData*> iGPS(epoData->satDataGPS);
-    while (iGPS.hasNext()) {
-      iGPS.next();
-      QString prn        = iGPS.key();
-      bool    found = false;
-      for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        if (_params[iPar-1]->type == bncParam::AMB_L3 && 
-            _params[iPar-1]->prn == prn) {
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
-        _params.push_back(par);
-      }
-    }
-
-    QMapIterator<QString, t_satData*> iGlo(epoData->satDataGlo);
-    while (iGlo.hasNext()) {
-      iGlo.next();
-      QString prn        = iGlo.key();
-      t_satData* satData = iGlo.value();
-      bool    found = false;
-      for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        if (_params[iPar-1]->type == bncParam::AMB_L3 && 
-            _params[iPar-1]->prn == prn) {
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
-        _params.push_back(par);
-        ///        par->xx = satData->L3 - cmpValue(satData);
-      }
-    }
-    
-    int nPar = _params.size();
-    _QQ.ReSize(nPar); _QQ = 0.0;
-    for (int i1 = 1; i1 <= nPar; i1++) {
-      bncParam* p1 = _params[i1-1];
-      if (p1->index_old != 0) {
-        _QQ(p1->index, p1->index) = QQ_old(p1->index_old, p1->index_old);
-        for (int i2 = 1; i2 <= nPar; i2++) {
-          bncParam* p2 = _params[i2-1];
-          if (p2->index_old != 0) {
-            _QQ(p1->index, p2->index) = QQ_old(p1->index_old, p2->index_old);
-          }
-        }
-      }
-    }
-    
-    for (int ii = 1; ii <= nPar; ii++) {
-      bncParam* par = _params[ii-1];
-      if (par->index_old == 0) {
-        _QQ(par->index, par->index) = sig_amb_0 * sig_amb_0;
-      }
-      par->index_old = par->index;
-    }
-  }
-
   bool firstCrd = x() == 0.0 && y() == 0.0 && z() == 0.0;
 
+  // Predict Parameter values, add white noise
+  // -----------------------------------------
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     bncParam* pp = _params[iPar-1];
  
@@ -531,6 +433,107 @@ void bncModel::predict(t_epoData* epoData) {
       _QQ(iPar,iPar) += sig_trp_p * sig_trp_p;
     }
   }
+
+  // Add New Ambiguities if necessary
+  // --------------------------------
+  if (_usePhase) {
+
+    // Make a copy of QQ and xx, set parameter indices
+    // -----------------------------------------------
+    SymmetricMatrix QQ_old = _QQ;
+    
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      _params[iPar-1]->index_old = _params[iPar-1]->index;
+      _params[iPar-1]->index     = 0;
+    }
+    
+    // Remove Ambiguity Parameters without observations
+    // ------------------------------------------------
+    int iPar = 0;
+    QMutableVectorIterator<bncParam*> it(_params);
+    while (it.hasNext()) {
+      bncParam* par = it.next();
+      bool removed = false;
+      if (par->type == bncParam::AMB_L3) {
+        if (epoData->satDataGPS.find(par->prn) == epoData->satDataGPS.end() &&
+            epoData->satDataGlo.find(par->prn) == epoData->satDataGlo.end() ) {
+          removed = true;
+          delete par;
+          it.remove();
+        }
+      }
+      if (! removed) {
+        ++iPar;
+        par->index = iPar;
+      }
+    }
+    
+    // Add new ambiguity parameters
+    // ----------------------------
+    QMapIterator<QString, t_satData*> iGPS(epoData->satDataGPS);
+    while (iGPS.hasNext()) {
+      iGPS.next();
+      QString prn        = iGPS.key();
+      t_satData* satData = iGPS.value();
+      bool    found = false;
+      for (int iPar = 1; iPar <= _params.size(); iPar++) {
+        if (_params[iPar-1]->type == bncParam::AMB_L3 && 
+            _params[iPar-1]->prn == prn) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
+        _params.push_back(par);
+        par->xx = satData->L3 - cmpValue(satData);
+      }
+    }
+
+    QMapIterator<QString, t_satData*> iGlo(epoData->satDataGlo);
+    while (iGlo.hasNext()) {
+      iGlo.next();
+      QString prn        = iGlo.key();
+      t_satData* satData = iGlo.value();
+      bool    found = false;
+      for (int iPar = 1; iPar <= _params.size(); iPar++) {
+        if (_params[iPar-1]->type == bncParam::AMB_L3 && 
+            _params[iPar-1]->prn == prn) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
+        _params.push_back(par);
+        par->xx = satData->L3 - cmpValue(satData);
+      }
+    }
+    
+    int nPar = _params.size();
+    _QQ.ReSize(nPar); _QQ = 0.0;
+    for (int i1 = 1; i1 <= nPar; i1++) {
+      bncParam* p1 = _params[i1-1];
+      if (p1->index_old != 0) {
+        _QQ(p1->index, p1->index) = QQ_old(p1->index_old, p1->index_old);
+        for (int i2 = 1; i2 <= nPar; i2++) {
+          bncParam* p2 = _params[i2-1];
+          if (p2->index_old != 0) {
+            _QQ(p1->index, p2->index) = QQ_old(p1->index_old, p2->index_old);
+          }
+        }
+      }
+    }
+    
+    for (int ii = 1; ii <= nPar; ii++) {
+      bncParam* par = _params[ii-1];
+      if (par->index_old == 0) {
+        _QQ(par->index, par->index) = sig_amb_0 * sig_amb_0;
+      }
+      par->index_old = par->index;
+    }
+  }
+
 }
 
 // Update Step of the Filter (currently just a single-epoch solution)
@@ -595,15 +598,8 @@ t_irc bncModel::update(t_epoData* epoData) {
     
       double rhoCmp = cmpValue(satData);
     
-      double ellWgtCoeff = 1.0;
-      ////  double eleD = satData->eleSat * 180.0 / M_PI;
-      ////  if (eleD < 25.0) {
-      ////    ellWgtCoeff = 2.5 - (eleD - 10.0) * 0.1;
-      ////    ellWgtCoeff *= ellWgtCoeff;
-      ////  }
-
       ll(iObs)      = satData->P3 - rhoCmp;
-      PP(iObs,iObs) = 1.0 / (sig_P3 * sig_P3) / ellWgtCoeff;
+      PP(iObs,iObs) = 1.0 / (sig_P3 * sig_P3);
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
       }
@@ -611,7 +607,7 @@ t_irc bncModel::update(t_epoData* epoData) {
       if (_usePhase) {
         ++iObs;
         ll(iObs)      = satData->L3 - rhoCmp;
-        PP(iObs,iObs) = 1.0 / (sig_L3 * sig_L3) / ellWgtCoeff;
+        PP(iObs,iObs) = 1.0 / (sig_L3_GPS * sig_L3_GPS);
         for (int iPar = 1; iPar <= _params.size(); iPar++) {
           if (_params[iPar-1]->type == bncParam::AMB_L3 &&
               _params[iPar-1]->prn  == prn) {
@@ -634,13 +630,6 @@ t_irc bncModel::update(t_epoData* epoData) {
 
         double rhoCmp = cmpValue(satData);
         
-        double ellWgtCoeff = 1.0;
-        ////  double eleD = satData->eleSat * 180.0 / M_PI;
-        ////  if (eleD < 25.0) {
-        ////    ellWgtCoeff = 2.5 - (eleD - 10.0) * 0.1;
-        ////    ellWgtCoeff *= ellWgtCoeff;
-        ////  }
-
         ll(iObs)      = satData->L3 - rhoCmp;
 
         cout.setf(ios::fixed);
@@ -649,7 +638,7 @@ t_irc bncModel::update(t_epoData* epoData) {
              << setprecision(3) << satData->P3 << " "
              << setprecision(3) << satData->L3 << endl;
 
-        PP(iObs,iObs) = 1.0 / (sig_L3 * sig_L3) / ellWgtCoeff;
+        PP(iObs,iObs) = 1.0 / (sig_L3_GLO * sig_L3_GLO);
         for (int iPar = 1; iPar <= _params.size(); iPar++) {
           if (_params[iPar-1]->type == bncParam::AMB_L3 &&
               _params[iPar-1]->prn  == prn) {
@@ -682,6 +671,8 @@ t_irc bncModel::update(t_epoData* epoData) {
     _QQ   = NN.i();
     dx    = _QQ * ATP * ll; 
     vv    = ll - AA * dx;
+    cout << "vv = " << endl;
+    cout << vv.t() << endl;
 
   } while (outlierDetection(QQsav, vv, epoData->satDataGPS, 
                             epoData->satDataGlo) != 0);

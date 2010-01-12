@@ -331,7 +331,7 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
     t_eph* ee = _eph.value(prn);
     ee->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
 
-    if (CORR_REQUIRED) {
+    if (prn[0] == 'G' && CORR_REQUIRED) {
       if (_corr.contains(prn)) {
         t_corr* cc = _corr.value(prn);
         if (ee->IOD() == cc->iod && (tt - cc->tt) < MAXAGE) {
