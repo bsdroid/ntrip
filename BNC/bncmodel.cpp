@@ -646,12 +646,14 @@ t_irc bncModel::update(t_epoData* epoData) {
           AA(iObs, iPar) = _params[iPar-1]->partial(satData, true);
         }
       
-        cout.setf(ios::fixed);
-        cout << "iObs = " << iObs << " " << prn.toAscii().data() << " " 
-             << setprecision(3) << rhoCmp << " "
-             << setprecision(3) << satData->P3 << " "
-             << setprecision(3) << satData->L3 << " "
-             << ll(iObs) << endl;
+        ostringstream str;
+        str.setf(ios::fixed);
+        str << "iObs = " << iObs << " " << prn.toAscii().data() << " " 
+            << setprecision(3) << rhoCmp << " "
+            << setprecision(3) << satData->P3 << " "
+            << setprecision(3) << satData->L3 << " "
+            << ll(iObs) << endl;
+        _log += str.str().c_str();
       }
     }
 
@@ -668,7 +670,8 @@ t_irc bncModel::update(t_epoData* epoData) {
 
     //// beg test
     {
-      cout.setf(ios::fixed);
+      ostringstream str;
+      str.setf(ios::fixed);
       ColumnVector vv_code(epoData->sizeGPS());
       ColumnVector vv_phase(epoData->sizeGPS());
       ColumnVector vv_glo(epoData->sizeGlo());
@@ -681,9 +684,10 @@ t_irc bncModel::update(t_epoData* epoData) {
         vv_glo(iobs)  = vv(2*epoData->sizeGPS()+iobs);
       }
 
-      cout << "residuals code  " << setprecision(3) << vv_code.t(); 
-      cout << "residuals phase " << setprecision(3) << vv_phase.t();
-      cout << "residuals glo   " << setprecision(3) << vv_glo.t();
+      str << "residuals code  " << setprecision(3) << vv_code.t(); 
+      str << "residuals phase " << setprecision(3) << vv_phase.t();
+      str << "residuals glo   " << setprecision(3) << vv_glo.t();
+     _log += str.str().c_str();
     }
     //// end test
 
