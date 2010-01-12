@@ -632,12 +632,6 @@ t_irc bncModel::update(t_epoData* epoData) {
         
         ll(iObs)      = satData->L3 - rhoCmp;
 
-        cout.setf(ios::fixed);
-        cout << prn.toAscii().data() << " " 
-             << setprecision(3) << rhoCmp << " "
-             << setprecision(3) << satData->P3 << " "
-             << setprecision(3) << satData->L3 << endl;
-
         PP(iObs,iObs) = 1.0 / (sig_L3_GLO * sig_L3_GLO);
         for (int iPar = 1; iPar <= _params.size(); iPar++) {
           if (_params[iPar-1]->type == bncParam::AMB_L3 &&
@@ -647,19 +641,14 @@ t_irc bncModel::update(t_epoData* epoData) {
           AA(iObs, iPar) = _params[iPar-1]->partial(satData, true);
         }
       
-        //// beg test
-        //double rhoCmp = cmpValue(satData);
-        //cout.setf(ios::fixed);
-        //cout << prn.toAscii().data() << " "  
-        //     << setprecision(3) << rhoCmp      << " "
-        //     << setprecision(3) << satData->P3 << " "
-        //     << setprecision(3) << satData->L3 << " " << endl;
-        //
-        ////// end test
+        cout.setf(ios::fixed);
+        cout << "iObs = " << iObs << " " << prn.toAscii().data() << " " 
+             << setprecision(3) << rhoCmp << " "
+             << setprecision(3) << satData->P3 << " "
+             << setprecision(3) << satData->L3 << " "
+             << ll(iObs) << endl;
       }
     }
-
-    cout << endl;
 
     // Compute Filter Update
     // ---------------------
@@ -671,8 +660,27 @@ t_irc bncModel::update(t_epoData* epoData) {
     _QQ   = NN.i();
     dx    = _QQ * ATP * ll; 
     vv    = ll - AA * dx;
-    cout << "vv = " << endl;
-    cout << vv.t() << endl;
+
+//    //// beg test
+//    {
+//      cout.setf(ios::fixed);
+//      ColumnVector vv_code(epoData->sizeGPS());
+//      ColumnVector vv_phase(epoData->sizeGPS());
+//      ColumnVector vv_glo(epoData->sizeGlo());
+//
+//      for (int iobs = 1; iobs <= epoData->sizeGPS(); ++iobs) {
+//        vv_code(iobs)  = vv(2*iobs-1);
+//        vv_phase(iobs) = vv(2*iobs);
+//      }
+//      for (int iobs = 1; iobs <= epoData->sizeGlo(); ++iobs) {
+//        vv_glo(iobs)  = vv(2*epoData->sizeGPS()+iobs);
+//      }
+//
+//      cout << "residuals code  " << setprecision(3) << vv_code.t(); 
+//      cout << "residuals phase " << setprecision(3) << vv_phase.t();
+//      cout << "residuals glo   " << setprecision(3) << vv_glo.t();
+//    }
+//    //// end test
 
   } while (outlierDetection(QQsav, vv, epoData->satDataGPS, 
                             epoData->satDataGlo) != 0);
