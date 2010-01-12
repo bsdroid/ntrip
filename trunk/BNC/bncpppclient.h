@@ -96,6 +96,7 @@ class bncPPPclient : public QObject {
 
  public slots:
   void slotNewEphGPS(gpsephemeris gpseph);
+  void slotNewEphGlonass(glonassephemeris gloeph);
   void slotNewCorrections(QList<QString> corrList);
 
  signals:
