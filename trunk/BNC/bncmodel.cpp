@@ -545,7 +545,7 @@ void bncModel::predict(t_epoData* epoData) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncModel::update(t_epoData* epoData) {
 
-  _log = "Precise Point Positioning";
+  _log.clear();  
 
   _time = epoData->tt;
 
@@ -648,7 +648,7 @@ t_irc bncModel::update(t_epoData* epoData) {
       
         ostringstream str;
         str.setf(ios::fixed);
-        str << "iObs = " << iObs << " " << prn.toAscii().data() << " " 
+        str << "\niObs = " << iObs << " " << prn.toAscii().data() << " " 
             << setprecision(3) << rhoCmp << " "
             << setprecision(3) << satData->P3 << " "
             << setprecision(3) << satData->L3 << " "
@@ -684,9 +684,9 @@ t_irc bncModel::update(t_epoData* epoData) {
         vv_glo(iobs)  = vv(2*epoData->sizeGPS()+iobs);
       }
 
-      str << "residuals code  " << setprecision(3) << vv_code.t(); 
-      str << "residuals phase " << setprecision(3) << vv_phase.t();
-      str << "residuals glo   " << setprecision(3) << vv_glo.t();
+      str << "\nresiduals code  " << setprecision(3) << vv_code.t(); 
+      str <<  "residuals phase " << setprecision(3) << vv_phase.t();
+      str <<  "residuals glo   " << setprecision(3) << vv_glo.t();
      _log += str.str().c_str();
     }
     //// end test
@@ -838,7 +838,20 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
     }
   }
 
-  if      (vvMaxCodeGPS > MAXRES_CODE_GPS) {
+  if (vvMaxPhaseGlo > MAXRES_PHASE_GLO) {
+    QString    prn     = itMaxPhaseGlo.key();
+    t_satData* satData = itMaxPhaseGlo.value();
+    delete satData;
+    itMaxPhaseGlo.remove();
+    _QQ = QQsav;
+
+    _log += "\nOutlier Phase " + prn.toAscii() + " " 
+          + QByteArray::number(vvMaxPhaseGlo, 'f', 3);
+
+    return 1;
+  }
+
+  else if (vvMaxCodeGPS > MAXRES_CODE_GPS) {
     QString    prn     = itMaxCodeGPS.key();
     t_satData* satData = itMaxCodeGPS.value();
     delete satData;
@@ -859,18 +872,6 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
 
     _log += "\nOutlier Phase " + prn.toAscii() + " " 
           + QByteArray::number(vvMaxPhaseGPS, 'f', 3);
-
-    return 1;
-  }
-  else if (vvMaxPhaseGlo > MAXRES_PHASE_GLO) {
-    QString    prn     = itMaxPhaseGlo.key();
-    t_satData* satData = itMaxPhaseGlo.value();
-    delete satData;
-    itMaxPhaseGlo.remove();
-    _QQ = QQsav;
-
-    _log += "\nOutlier Phase " + prn.toAscii() + " " 
-          + QByteArray::number(vvMaxPhaseGlo, 'f', 3);
 
     return 1;
   }
