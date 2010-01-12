@@ -100,12 +100,6 @@ bncPPPclient::~bncPPPclient() {
 void bncPPPclient::putNewObs(p_obs pp) {
   QMutexLocker locker(&_mutex);
 
-  static const double c1 =   t_CST::freq1 * t_CST::freq1 / 
-                 (t_CST::freq1 * t_CST::freq1 - t_CST::freq2 * t_CST::freq2);
-  
-  static const double c2 = - t_CST::freq2 * t_CST::freq2 / 
-                 (t_CST::freq1 * t_CST::freq1 - t_CST::freq2 * t_CST::freq2);
-
   t_obsInternal* obs = &(pp->_o);
 
   if (obs->satSys != 'G' && !_useGlonass) {
@@ -142,13 +136,21 @@ void bncPPPclient::putNewObs(p_obs pp) {
     return;
   }
 
+  double f1 = t_CST::freq1;
+  double f2 = t_CST::freq2;
+
+  // Ionosphere-Free Combination
+  // ---------------------------
+  double c1 =   f1 * f1 / (f1 * f1 - f2 * f2);
+  double c2 = - f2 * f2 / (f1 * f1 - f2 * f2);
+  
   satData->P3 =  c1 * satData->P1 + c2 * satData->P2;
 
   // Set Phase Observations
   // ----------------------  
   if (obs->L1 && obs->L2) {
-    satData->L1 = obs->L1 * t_CST::lambda1;
-    satData->L2 = obs->L2 * t_CST::lambda2;
+    satData->L1 = obs->L1 * t_CST::c / f1;
+    satData->L2 = obs->L2 * t_CST::c / f2;
   }
   else {
     delete satData;
