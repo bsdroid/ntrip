@@ -1,6 +1,8 @@
 #ifndef EPHEMERIS_H
 #define EPHEMERIS_H
 
+#include <newmat.h>
+
 #include <stdio.h>
 #include <string>
 extern "C" {
@@ -18,11 +20,11 @@ class t_eph {
   double GPSweeks() const { return _GPSweeks; }
 
   virtual void position(int GPSweek, double GPSweeks, 
-			double* xc,
-			double* vv) const = 0;
+                        double* xc,
+                        double* vv) const = 0;
 
   void position(int GPSweek, double GPSweeks, 
-		double& xx, double& yy, double& zz, double& cc) const {
+                double& xx, double& yy, double& zz, double& cc) const {
     double tmp_xx[4];
     double tmp_vv[4];
 
@@ -48,35 +50,35 @@ class t_eph {
 class t_ephGPS : public t_eph {
  public:
   t_ephGPS() { }
-  ~t_ephGPS() {}
+  virtual ~t_ephGPS() {}
   double TOC() const {return _TOC;}
 
   void set(const gpsephemeris* ee);
 
   void set(int    prn,
-	   int    GPSWeek,
-	   double toc, double toe, double tot,
-	   double IODE, double IODC,
-	   double clock_bias, double clock_drift, double clock_driftrate,
-	   double OMEGA0, double OMEGADOT,
-	   double i0,     double IDOT,
-	   double omega,
-	   double M0, double Delta_n, 
-	   double sqrt_A, 
-	   double e,
-	   double Crc, double Crs,
-	   double Cic, double Cis,
-	   double Cuc, double Cus,
-	   double TGD,
-	   int    health);
+           int    GPSWeek,
+           double toc, double toe, double tot,
+           double IODE, double IODC,
+           double clock_bias, double clock_drift, double clock_driftrate,
+           double OMEGA0, double OMEGADOT,
+           double i0,     double IDOT,
+           double omega,
+           double M0, double Delta_n, 
+           double sqrt_A, 
+           double e,
+           double Crc, double Crs,
+           double Cic, double Cis,
+           double Cuc, double Cus,
+           double TGD,
+           int    health);
 
-  void position(int GPSweek, double GPSweeks, 
-			double* xc,
-			double* vv) const;
+  virtual void position(int GPSweek, double GPSweeks, 
+                        double* xc,
+                        double* vv) const;
 
-  int  IOD() const { return static_cast<int>(_IODC); }
+  virtual int  IOD() const { return static_cast<int>(_IODC); }
 
-  void print(std::ostream& out) const;
+  virtual void print(std::ostream& out) const;
 
  private:
   double  _TOW;              //  [s]    
@@ -106,6 +108,46 @@ class t_ephGPS : public t_eph {
   double  _IDOT;             //  [rad/s]
 
   double  _TGD;              //  [s]    
+};
+
+class t_ephGlo : public t_eph {
+ public:
+  t_ephGlo() { _gps_utc = 0.0; _xv.ReSize(6); }
+
+  virtual ~t_ephGlo() {}
+
+  virtual void position(int GPSweek, double GPSweeks, 
+                        double* xc,
+                        double* vv) const;
+
+  virtual int  IOD() const;
+
+  virtual void print(std::ostream& out) const;
+
+  void set(const glonassephemeris* ee);
+
+ private:
+  static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv);
+
+  mutable double       _tt;  // time in seconds of GPSweek
+  mutable ColumnVector _xv;  // status vector (position, velocity) at time _tt
+
+  double  _gps_utc;          // GPS - UTC in seconds      
+  double  _E;                // [days]   
+  double  _tau;              // [s]      
+  double  _gamma;            //          
+  double  _x_pos;            // [km]     
+  double  _x_velocity;       // [km/s]   
+  double  _x_acceleration;   // [km/s^2] 
+  double  _y_pos;            // [km]     
+  double  _y_velocity;       // [km/s]   
+  double  _y_acceleration;   // [km/s^2] 
+  double  _z_pos;            // [km]     
+  double  _z_velocity;       // [km/s]   
+  double  _z_acceleration;   // [km/s^2] 
+  double  _health;           // 0 = O.K. 
+  double  _frequency_number; // ICD-GLONASS data position 
+  double  _tki;              // message frame time
 };
 
 #endif

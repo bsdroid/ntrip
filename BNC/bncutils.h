@@ -50,4 +50,6 @@ t_irc xyz2ell(const double* XYZ, double* Ell);
 
 void xyz2neu(const double* Ell, const double* xyz, double* neu);
 
+ColumnVector rungeKutta4(double xi, const ColumnVector& yi, double dx,
+                         ColumnVector (*der)(double x, const ColumnVector& y));
 #endif

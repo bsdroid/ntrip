@@ -4,6 +4,7 @@
 #include <cstring>
 
 #include "ephemeris.h"
+#include "bncutils.h"
 #include "timeutils.h"
 
 using namespace std;
@@ -268,4 +269,112 @@ void t_ephGPS::print(std::ostream& out) const {
   sprintf(tmps,"%.12E", 0.0);              out << setw(19) << tmps; 
   sprintf(tmps,"%.12E", 0.0);              out << setw(19) << tmps; 
   out << endl;
+}
+
+// Derivative of the state vector using a simple force model (static)
+////////////////////////////////////////////////////////////////////////////
+ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv) {
+
+  // State vector components
+  // -----------------------
+  ColumnVector rr = xv.rows(1,3);
+  ColumnVector vv = xv.rows(4,6);
+
+  // Acceleration 
+  // ------------
+  static const double GM    = 398.60044e12;
+  static const double AE    = 6378136.0;
+  static const double OMEGA = 7292115.e-11;
+  static const double C20   = -1082.63e-6;
+
+  double rho = rr.norm_Frobenius();
+  double t1  = -GM/(rho*rho*rho);
+  double t2  = 3.0/2.0 * C20 * (GM*AE*AE) / (rho*rho*rho*rho*rho);
+  double t3  = OMEGA * OMEGA;
+  double t4  = 2.0 * OMEGA;
+  double z2  = rr(3) * rr(3);
+
+  // Vector of derivatives
+  // ---------------------
+  ColumnVector va(6);
+  va(1) = vv(1);
+  va(2) = vv(2);
+  va(3) = vv(3);
+  va(4) = (t1 + t2*(1.0-5.0*z2/(rho*rho)) + t3) * rr(1) + t4*vv(2); 
+  va(5) = (t1 + t2*(1.0-5.0*z2/(rho*rho)) + t3) * rr(2) - t4*vv(1); 
+  va(6) = (t1 + t2*(3.0-5.0*z2/(rho*rho))     ) * rr(3);
+
+  return va;
+}
+
+// Compute Glonass Satellite Position (virtual)
+////////////////////////////////////////////////////////////////////////////
+void t_ephGlo::position(int GPSweek, double GPSweeks, 
+                        double* xc, double* vv) const {
+
+  static const double secPerWeek  = 7 * 86400.0;
+  static const double nominalStep = 10.0;
+
+  memset(xc, 0, 4*sizeof(double));
+  memset(vv, 0, 3*sizeof(double));
+
+  double dtPos = GPSweeks - _tt;
+  if (GPSweek != _GPSweek) {  
+    dtPos += (GPSweek - _GPSweek) * secPerWeek;
+  }
+
+  int nSteps  = int(fabs(dtPos) / nominalStep) + 1;
+  double step = dtPos / nSteps;
+
+  for (int ii = 1; ii <= nSteps; ii++) { 
+    _xv = rungeKutta4(_tt, _xv, step, glo_deriv);
+    _tt += step;
+  }
+
+  // Position and Velocity
+  // ---------------------
+  xc[0] = _xv(1);
+  xc[1] = _xv(2);
+  xc[2] = _xv(3);
+
+  vv[0] = _xv(4);
+  vv[1] = _xv(5);
+  vv[2] = _xv(6);
+
+  // Clock Correction
+  // ----------------
+  double dtClk = GPSweeks - _GPSweeks;
+  if (GPSweek != _GPSweek) {  
+    dtClk += (GPSweek - _GPSweek) * secPerWeek;
+  }
+  xc[3] = -_tau + _gamma * dtClk;
+}
+
+// IOD of Glonass Ephemeris (virtual)
+////////////////////////////////////////////////////////////////////////////
+int t_ephGlo::IOD() const {
+
+  bool old = false;
+
+  if (old) { // 5 LSBs of iod are equal to 5 LSBs of tb
+    unsigned int tb  = int(fmod(_GPSweeks,86400.0)); //sec of day
+    const int shift = sizeof(tb) * 8 - 5;
+    unsigned int iod = tb << shift;
+    return (iod >> shift);
+  }
+  else     {  
+    return int(fmod(_tki, 3600)) / 30;
+  }
+}
+
+// Print Glonass Ephemeris (virtual)
+////////////////////////////////////////////////////////////////////////////
+void t_ephGlo::print(std::ostream& out) const {
+
+}
+
+// Set Glonass Ephemeris
+////////////////////////////////////////////////////////////////////////////
+void t_ephGlo::set(const glonassephemeris* ee) {
+
 }
