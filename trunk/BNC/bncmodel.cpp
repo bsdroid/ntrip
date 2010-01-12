@@ -52,18 +52,19 @@
 
 using namespace std;
 
-const unsigned MINOBS       =    4;
-const double   MINELE       = 10.0 * M_PI / 180.0;
-const double   MAXRES_CODE  = 10.0;
-const double   MAXRES_PHASE = 0.10;
-const double   sig_crd_0    =  100.0;
-const double   sig_crd_p    =  100.0;
-const double   sig_clk_0    = 1000.0;
-const double   sig_trp_0    =    0.01;
-const double   sig_trp_p    =    1e-6;
-const double   sig_amb_0    = 1000.0;
-const double   sig_P3       =    1.0;
-const double   sig_L3       =    0.01;
+const unsigned MINOBS           =    4;
+const double   MINELE           = 10.0 * M_PI / 180.0;
+const double   MAXRES_CODE_GPS  = 10.0;
+const double   MAXRES_PHASE_GPS = 0.10;
+const double   MAXRES_PHASE_GLO = 0.50;
+const double   sig_crd_0        =  100.0;
+const double   sig_crd_p        =  100.0;
+const double   sig_clk_0        = 1000.0;
+const double   sig_trp_0        =    0.01;
+const double   sig_trp_p        =    1e-6;
+const double   sig_amb_0        = 1000.0;
+const double   sig_P3           =    1.0;
+const double   sig_L3           =    0.01;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -829,7 +830,7 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
     }
   }
 
-  if      (vvMaxCodeGPS > MAXRES_CODE) {
+  if      (vvMaxCodeGPS > MAXRES_CODE_GPS) {
     QString    prn     = itMaxCodeGPS.key();
     t_satData* satData = itMaxCodeGPS.value();
     delete satData;
@@ -841,7 +842,7 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
 
     return 1;
   }
-  else if (vvMaxPhaseGPS > MAXRES_PHASE) {
+  else if (vvMaxPhaseGPS > MAXRES_PHASE_GPS) {
     QString    prn     = itMaxPhaseGPS.key();
     t_satData* satData = itMaxPhaseGPS.value();
     delete satData;
@@ -853,7 +854,7 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
 
     return 1;
   }
-  else if (vvMaxPhaseGlo > MAXRES_PHASE) {
+  else if (vvMaxPhaseGlo > MAXRES_PHASE_GLO) {
     QString    prn     = itMaxPhaseGlo.key();
     t_satData* satData = itMaxPhaseGlo.value();
     delete satData;
