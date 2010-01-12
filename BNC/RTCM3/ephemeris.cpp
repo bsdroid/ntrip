@@ -1,7 +1,10 @@
 #include <math.h>
 #include <sstream>
+#include <iostream>
 #include <iomanip>
 #include <cstring>
+
+#include <newmatio.h>
 
 #include "ephemeris.h"
 #include "bncutils.h"
@@ -250,9 +253,18 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   prn << 'R' << setfill('0') << setw(2) << ee->almanac_number;
   _prn = prn.str();
 
-  _GPSweek  = ee->GPSWeek;
-  _GPSweeks = ee->GPSTOW;
+  int ww  = ee->GPSWeek;
+  int tow = ee->GPSTOW; 
 
+  updatetime(&ww, &tow, ee->tb*1000, 1);
+
+  int tk = ee->tk-3*60*60; 
+  if (tk < 0) {
+    tk += 86400;
+  }
+
+  _GPSweek           = ww;
+  _GPSweeks          = tow;
   _gps_utc           = 0.0;
   _E                 = ee->E;
   _tau               = ee->tau;
@@ -268,7 +280,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   _z_acceleration    = ee->z_acceleration;
   _health            = 0;
   _frequency_number  = ee->frequency_number;
-  _tki               = ee->tk;
+  _tki               = tk;
 
   // Initialize status vector
   // ------------------------
@@ -280,4 +292,8 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   _xv(4) = _x_velocity * 1.e3; 
   _xv(5) = _y_velocity * 1.e3; 
   _xv(6) = _z_velocity * 1.e3; 
+
+  cout << _prn << " " << _GPSweek << " " << _GPSweeks << " " 
+       << _tki << " "  << _xv << endl;
+
 }
