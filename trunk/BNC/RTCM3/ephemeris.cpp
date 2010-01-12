@@ -292,8 +292,4 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   _xv(4) = _x_velocity * 1.e3; 
   _xv(5) = _y_velocity * 1.e3; 
   _xv(6) = _z_velocity * 1.e3; 
-
-  cout << _prn << " " << _GPSweek << " " << _GPSweeks << " " 
-       << _tki << " "  << _xv << endl;
-
 }

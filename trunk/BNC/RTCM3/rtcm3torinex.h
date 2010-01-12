@@ -3,7 +3,7 @@
 
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.h,v 1.17 2009/05/07 09:27:19 mervart Exp $
+  $Id: rtcm3torinex.h,v 1.18 2009/11/04 16:19:40 zdenek Exp $
   Copyright (C) 2005-2006 by Dirk Stöcker <stoecker@alberding.eu>
 
   This program is free software; you can redistribute it and/or modify
@@ -98,6 +98,15 @@
 /* Additional flags for the data field, which tell us more. */
 #define GNSSDF_LOCKLOSSL1     (1<<29)  /* lost lock on L1 */
 #define GNSSDF_LOCKLOSSL2     (1<<30)  /* lost lock on L2 */
+
+struct converttimeinfo {
+  int second;    /* seconds of GPS time [0..59] */
+  int minute;    /* minutes of GPS time [0..59] */
+  int hour;      /* hour of GPS time [0..24] */
+  int day;       /* day of GPS time [1..28..30(31)*/
+  int month;     /* month of GPS time [1..12]*/
+  int year;      /* year of GPS time [1980..] */
+};
 
 struct gnssdata {
   int    flags;              /* GPSF_xxx */
@@ -233,6 +242,9 @@ struct RTCM3ParserData {
 #endif /* PRINTFARG */
 
 int gnumleap(int year, int month, int day);
+void updatetime(int *week, int *tow, int tk, int fixnumleap);
+void converttime(struct converttimeinfo *c, int week, int tow);
+
 void HandleHeader(struct RTCM3ParserData *Parser);
 int RTCM3Parser(struct RTCM3ParserData *handle);
 void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte);
