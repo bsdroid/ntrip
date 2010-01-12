@@ -1559,7 +1559,7 @@ void bncWindow::slotBncTextChanged(){
       _pppStaticCheckBox->setPalette(palette_white);
       _pppUsePhaseCheckBox->setPalette(palette_white);
       _pppEstTropoCheckBox->setPalette(palette_white);
-//    _pppGLONASSCheckBox->setPalette(palette_white);
+      _pppGLONASSCheckBox->setPalette(palette_white);
       _pppGLONASSCheckBox->setPalette(palette_gray);
       _pppNMEALineEdit->setEnabled(true);
       _pppNMEAPortLineEdit->setEnabled(true);
@@ -1569,7 +1569,7 @@ void bncWindow::slotBncTextChanged(){
       _pppStaticCheckBox->setEnabled(true);
       _pppUsePhaseCheckBox->setEnabled(true);
       _pppEstTropoCheckBox->setEnabled(true);
-//    _pppGLONASSCheckBox->setEnabled(true);
+      _pppGLONASSCheckBox->setEnabled(true);
       _pppGLONASSCheckBox->setEnabled(false);
     } else {
       _pppNMEALineEdit->setPalette(palette_gray);

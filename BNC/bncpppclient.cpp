@@ -43,6 +43,7 @@
 #include "bncutils.h"
 #include "bncconst.h"
 #include "bncmodel.h"
+#include "bncsettings.h"
 
 extern "C" {
 #include "clock_orbit_rtcm.h"
@@ -53,6 +54,15 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncPPPclient::bncPPPclient(QByteArray staID) {
+
+  bncSettings settings;
+
+  if ( Qt::CheckState(settings.value("pppGLONASS").toInt()) == Qt::Checked) {
+    _useGlonass = true;
+  }
+  else {
+    _useGlonass = false;
+  }
 
   connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
           this, SLOT(slotNewEphGPS(gpsephemeris)));
@@ -98,7 +108,7 @@ void bncPPPclient::putNewObs(p_obs pp) {
 
   t_obsInternal* obs = &(pp->_o);
 
-  if (obs->satSys != 'G') {
+  if (obs->satSys != 'G' && !_useGlonass) {
     return;
   }
 

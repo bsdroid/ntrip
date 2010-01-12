@@ -116,6 +116,7 @@ class bncPPPclient : public QObject {
   QMap<QString, t_corr*> _corr;
   t_epoData*             _epoData;
   bncModel*              _model;
+  bool                   _useGlonass;
 };
 
 #endif
