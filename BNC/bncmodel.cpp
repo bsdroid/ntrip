@@ -376,7 +376,8 @@ void bncModel::predict(t_epoData* epoData) {
     QMapIterator<QString, t_satData*> iGPS(epoData->satDataGPS);
     while (iGPS.hasNext()) {
       iGPS.next();
-      QString prn   = iGPS.key();
+      QString prn        = iGPS.key();
+      t_satData* satData = iGPS.value();
       bool    found = false;
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         if (_params[iPar-1]->type == bncParam::AMB_L3 && 
@@ -394,7 +395,8 @@ void bncModel::predict(t_epoData* epoData) {
     QMapIterator<QString, t_satData*> iGlo(epoData->satDataGlo);
     while (iGlo.hasNext()) {
       iGlo.next();
-      QString prn   = iGlo.key();
+      QString prn        = iGlo.key();
+      t_satData* satData = iGlo.value();
       bool    found = false;
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         if (_params[iPar-1]->type == bncParam::AMB_L3 && 
@@ -406,6 +408,7 @@ void bncModel::predict(t_epoData* epoData) {
       if (!found) {
         bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
         _params.push_back(par);
+        par->xx = satData->P3 - cmpValue(satData);
       }
     }
     
@@ -506,7 +509,7 @@ t_irc bncModel::update(t_epoData* epoData) {
     unsigned nPar = _params.size();
     unsigned nObs = 0;
     if (_usePhase) {
-      nObs = 2 * epoData->sizeGPS() + epoData->sizeGlo();
+      nObs = 2 * epoData->sizeGPS(); // TODO: + epoData->sizeGlo();
     }
     else {
       nObs = epoData->sizeGPS();  // Glonass pseudoranges are not used
@@ -561,34 +564,20 @@ t_irc bncModel::update(t_epoData* epoData) {
     if (_usePhase) {    
       QMapIterator<QString, t_satData*> itGlo(epoData->satDataGlo);
       while (itGlo.hasNext()) {
-        ++iObs;
+        //// TODO        ++iObs;
         itGlo.next();
         QString    prn     = itGlo.key();
         t_satData* satData = itGlo.value();
       
-        double rhoCmp = cmpValue(satData);
-
         //// beg test
-        cout << prn.toAscii().data() << " "  << rhoCmp << " "
-             << satData->P3 << " " << satData->L3 << endl;
+        double rhoCmp = cmpValue(satData);
+        cout.setf(ios::fixed);
+        cout << prn.toAscii().data() << " "  
+             << setprecision(3) << rhoCmp      << " "
+             << setprecision(3) << satData->P3 << " "
+             << setprecision(3) << satData->L3 << " " << endl;
+
         //// end test
-      
-        double ellWgtCoeff = 1.0;
-        ////  double eleD = satData->eleSat * 180.0 / M_PI;
-        ////  if (eleD < 25.0) {
-        ////    ellWgtCoeff = 2.5 - (eleD - 10.0) * 0.1;
-        ////    ellWgtCoeff *= ellWgtCoeff;
-        ////  }
-      
-        ll(iObs)      = satData->L3 - rhoCmp;
-        PP(iObs,iObs) = 1.0 / (sig_L3 * sig_L3) / ellWgtCoeff;
-        for (int iPar = 1; iPar <= _params.size(); iPar++) {
-          if (_params[iPar-1]->type == bncParam::AMB_L3 &&
-              _params[iPar-1]->prn  == prn) {
-            ll(iObs) -= _params[iPar-1]->xx;
-          } 
-          AA(iObs, iPar) = _params[iPar-1]->partial(satData, prn);
-        }
       }
     }
 
@@ -604,7 +593,7 @@ t_irc bncModel::update(t_epoData* epoData) {
     vv    = ll - AA * dx;
 
   } while (outlierDetection(QQsav, vv, epoData->satDataGPS, 
-                                       epoData->satDataGlo) != 0);
+                            epoData->satDataGlo) != 0);
 
   // Set Solution Vector
   // -------------------
@@ -735,19 +724,19 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
     }
   }
  
-  // Glonass phase residuals
-  // -----------------------
-  if (_usePhase) {
-    QMutableMapIterator<QString, t_satData*> itGlo(satDataGlo);
-    while (itGlo.hasNext()) {
-      itGlo.next();
-      ++ii;
-      if (vvMaxPhaseGlo == 0.0 || fabs(vv(ii)) > vvMaxPhaseGlo) {
-        vvMaxPhaseGlo = fabs(vv(ii));
-        itMaxPhaseGlo = itGlo;
-      }
-    }
-  }
+////  // Glonass phase residuals
+////  // -----------------------
+////  if (_usePhase) {
+////    QMutableMapIterator<QString, t_satData*> itGlo(satDataGlo);
+////    while (itGlo.hasNext()) {
+////      itGlo.next();
+////      ++ii;
+////      if (vvMaxPhaseGlo == 0.0 || fabs(vv(ii)) > vvMaxPhaseGlo) {
+////        vvMaxPhaseGlo = fabs(vv(ii));
+////        itMaxPhaseGlo = itGlo;
+////      }
+////    }
+////  }
 
   if      (vvMaxCodeGPS > MAXRES_CODE) {
     QString    prn     = itMaxCodeGPS.key();
