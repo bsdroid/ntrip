@@ -178,10 +178,14 @@ void bncPPPclient::putNewObs(p_obs pp) {
     _epoData->tt = tt;
   }
 
-  QString prn = 
-        QString("%1%2").arg(obs->satSys).arg(obs->satNum, 2, 10, QChar('0'));
-
-  _epoData->satData[prn] = satData;
+  if      (obs->satSys == 'G') {
+    QString prn = QString("G%2").arg(obs->satNum, 2, 10, QChar('0'));
+    _epoData->satDataGPS[prn] = satData;
+  }
+  else if (obs->satSys == 'R') {
+    QString prn = QString("R%2").arg(obs->satNum, 2, 10, QChar('0'));
+    _epoData->satDataGlo[prn] = satData;
+  }
 }
 
 // 
@@ -399,15 +403,28 @@ void bncPPPclient::processEpoch() {
 
   // Data Pre-Processing
   // -------------------
-  QMutableMapIterator<QString, t_satData*> im(_epoData->satData);
-  while (im.hasNext()) {
-    im.next();
-    QString    prn     = im.key();
-    t_satData* satData = im.value();
+  QMutableMapIterator<QString, t_satData*> iGPS(_epoData->satDataGPS);
+  while (iGPS.hasNext()) {
+    iGPS.next();
+    QString    prn     = iGPS.key();
+    t_satData* satData = iGPS.value();
 
     if (cmpToT(prn, satData) != success) {
       delete satData;
-      im.remove();
+      iGPS.remove();
+      continue;
+    }
+  }
+
+  QMutableMapIterator<QString, t_satData*> iGlo(_epoData->satDataGlo);
+  while (iGlo.hasNext()) {
+    iGlo.next();
+    QString    prn     = iGlo.key();
+    t_satData* satData = iGlo.value();
+
+    if (cmpToT(prn, satData) != success) {
+      delete satData;
+      iGlo.remove();
       continue;
     }
   }
