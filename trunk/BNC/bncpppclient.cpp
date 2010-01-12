@@ -186,6 +186,7 @@ void bncPPPclient::putNewObs(p_obs pp) {
     QString prn = QString("R%1").arg(obs->satNum, 2, 10, QChar('0'));
     _epoData->satDataGlo[prn] = satData;
   }
+
 }
 
 // 
