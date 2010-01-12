@@ -139,6 +139,11 @@ void bncPPPclient::putNewObs(p_obs pp) {
   double f1 = t_CST::freq1;
   double f2 = t_CST::freq2;
 
+  if (obs->satSys == 'R') {
+    f1 = 1602000000.0 + 562500.0 * obs->slot; 
+    f2 = 1246000000.0 + 437500.0 * obs->slot;
+  }
+
   // Ionosphere-Free Combination
   // ---------------------------
   double c1 =   f1 * f1 / (f1 * f1 - f2 * f2);
