@@ -56,6 +56,8 @@ bncPPPclient::bncPPPclient(QByteArray staID) {
 
   connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
           this, SLOT(slotNewEphGPS(gpsephemeris)));
+  connect(((bncApp*)qApp), SIGNAL(newEphGlonass(glonassephemeris)),
+          this, SLOT(slotNewEphGlonass(glonassephemeris)));
   connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
           this, SLOT(slotNewCorrections(QList<QString>)));
 
@@ -179,6 +181,28 @@ void bncPPPclient::slotNewEphGPS(gpsephemeris gpseph) {
   else {
     t_ephGPS* ee = new t_ephGPS();
     ee->set(&gpseph);
+    _eph[prn] = ee;
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncPPPclient::slotNewEphGlonass(glonassephemeris gloeph) {
+  QMutexLocker locker(&_mutex);
+
+  QString prn = QString("R%1").arg(gloeph.almanac_number, 2, 10, QChar('0'));
+
+  if (_eph.contains(prn)) {
+    t_ephGlo* ee = static_cast<t_ephGlo*>(_eph.value(prn));
+    if ( (ee->GPSweek()  <  gloeph.GPSWeek) || 
+         (ee->GPSweek()  == gloeph.GPSWeek &&  
+          ee->GPSweeks() <  gloeph.GPSTOW) ) {  
+      ee->set(&gloeph);
+    }
+  }
+  else {
+    t_ephGlo* ee = new t_ephGlo();
+    ee->set(&gloeph);
     _eph[prn] = ee;
   }
 }
