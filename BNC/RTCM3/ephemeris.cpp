@@ -256,7 +256,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   int ww  = ee->GPSWeek;
   int tow = ee->GPSTOW; 
 
-  updatetime(&ww, &tow, ee->tb*1000, 1);
+  updatetime(&ww, &tow, ee->tb*1000, 0);
 
   int tk = ee->tk-3*60*60; 
   if (tk < 0) {
