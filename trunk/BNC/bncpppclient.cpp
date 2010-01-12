@@ -182,10 +182,12 @@ void bncPPPclient::putNewObs(p_obs pp) {
 
   if      (obs->satSys == 'G') {
     QString prn = QString("G%1").arg(obs->satNum, 2, 10, QChar('0'));
+    satData->prn = prn;
     _epoData->satDataGPS[prn] = satData;
   }
   else if (obs->satSys == 'R') {
     QString prn = QString("R%1").arg(obs->satNum, 2, 10, QChar('0'));
+    satData->prn = prn;
     _epoData->satDataGlo[prn] = satData;
   }
 
@@ -320,7 +322,7 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn, 
                               ColumnVector& xc, ColumnVector& vv, bool& corr) {
 
-  const bool   CORR_REQUIRED = true;
+  const bool   CORR_REQUIRED = false;
   const double MAXAGE        = 120.0;
 
   corr = false;
@@ -366,7 +368,7 @@ void bncPPPclient::applyCorr(const t_corr* cc, ColumnVector& xc,
 
 // Correct Time of Transmission
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncPPPclient::cmpToT(const QString& prn, t_satData* satData) {
+t_irc bncPPPclient::cmpToT(t_satData* satData) {
 
   double prange = satData->P3;
   if (prange == 0.0) {
@@ -381,7 +383,7 @@ t_irc bncPPPclient::cmpToT(const QString& prn, t_satData* satData) {
     ColumnVector xc(4);
     ColumnVector vv(3);
     bool corr = false;
-    if (getSatPos(ToT, prn, xc, vv, corr) != success) {
+    if (getSatPos(ToT, satData->prn, xc, vv, corr) != success) {
       return failure;
     }
 
@@ -412,7 +414,7 @@ void bncPPPclient::processEpoch() {
     QString    prn     = iGPS.key();
     t_satData* satData = iGPS.value();
 
-    if (cmpToT(prn, satData) != success) {
+    if (cmpToT(satData) != success) {
       delete satData;
       iGPS.remove();
       continue;
@@ -425,7 +427,7 @@ void bncPPPclient::processEpoch() {
     QString    prn     = iGlo.key();
     t_satData* satData = iGlo.value();
 
-    if (cmpToT(prn, satData) != success) {
+    if (cmpToT(satData) != success) {
       delete satData;
       iGlo.remove();
       continue;

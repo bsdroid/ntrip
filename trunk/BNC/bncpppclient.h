@@ -39,6 +39,7 @@ class bncModel;
 class t_satData {
  public:
   enum codeType {P_CODE, C_CODE};
+  QString      prn;
   double       P1;
   double       P2;
   double       P3;
@@ -116,7 +117,7 @@ class bncPPPclient : public QObject {
                   ColumnVector& xc, ColumnVector& vv, bool& corr);
   void processEpoch();
   void applyCorr(const t_corr* cc, ColumnVector& xc, ColumnVector& vv);
-  t_irc cmpToT(const QString& prn, t_satData* satData);
+  t_irc cmpToT(t_satData* satData);
 
   QByteArray             _staID;
   QMutex                 _mutex;
