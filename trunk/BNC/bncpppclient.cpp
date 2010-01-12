@@ -322,7 +322,7 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn, 
                               ColumnVector& xc, ColumnVector& vv, bool& corr) {
 
-  const bool   CORR_REQUIRED = false;
+  const bool   CORR_REQUIRED = true;
   const double MAXAGE        = 120.0;
 
   corr = false;
