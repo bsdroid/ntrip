@@ -158,8 +158,6 @@ void bncPPPclient::putNewObs(p_obs pp) {
   QString prn = 
         QString("%1%2").arg(obs->satSys).arg(obs->satNum, 2, 10, QChar('0'));
 
-  cout << prn.toAscii().data() << "  "  << obs->slot << endl;
-
   _epoData->satData[prn] = satData;
 }
 

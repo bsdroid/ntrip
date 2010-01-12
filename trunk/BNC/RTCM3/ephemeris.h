@@ -20,8 +20,7 @@ class t_eph {
   double GPSweeks() const { return _GPSweeks; }
 
   virtual void position(int GPSweek, double GPSweeks, 
-                        double* xc,
-                        double* vv) const = 0;
+                        double* xc, double* vv) const = 0;
 
   void position(int GPSweek, double GPSweeks, 
                 double& xx, double& yy, double& zz, double& cc) const {
@@ -38,8 +37,6 @@ class t_eph {
 
   virtual int  IOD() const = 0;
 
-  virtual void print(std::ostream& out) const = 0;
-
  protected:  
   std::string _prn;
   int         _GPSweek;
@@ -55,30 +52,11 @@ class t_ephGPS : public t_eph {
 
   void set(const gpsephemeris* ee);
 
-  void set(int    prn,
-           int    GPSWeek,
-           double toc, double toe, double tot,
-           double IODE, double IODC,
-           double clock_bias, double clock_drift, double clock_driftrate,
-           double OMEGA0, double OMEGADOT,
-           double i0,     double IDOT,
-           double omega,
-           double M0, double Delta_n, 
-           double sqrt_A, 
-           double e,
-           double Crc, double Crs,
-           double Cic, double Cis,
-           double Cuc, double Cus,
-           double TGD,
-           int    health);
-
   virtual void position(int GPSweek, double GPSweeks, 
                         double* xc,
                         double* vv) const;
 
   virtual int  IOD() const { return static_cast<int>(_IODC); }
-
-  virtual void print(std::ostream& out) const;
 
  private:
   double  _TOW;              //  [s]    
@@ -121,8 +99,6 @@ class t_ephGlo : public t_eph {
                         double* vv) const;
 
   virtual int  IOD() const;
-
-  virtual void print(std::ostream& out) const;
 
   void set(const glonassephemeris* ee);
 
