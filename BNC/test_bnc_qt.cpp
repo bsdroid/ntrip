@@ -56,9 +56,18 @@ void RTCM3Error(const char*, ...) {}
 
 int main(int /* argc */, char** /* argv */) {
 
+  int    year  = 2010;
+  int    month =    1;
+  int    day   =   10;
+  int    hour  =   12;
+  int    min   =   30;
+  double sec   =  0.0;
+
   bncTime tt;
-  tt.set(2010, 1, 10, 10, 30, 0.0);
+  tt.set(year, month, day, hour, min, sec);
   cout << tt.timestr() << " Moscow time (UTC + 3h)" << endl;
+  cout << "GPS-UTC: " << gnumleap(year, month, day) << endl;
+
 
   int week = tt.gpsw();
   int tow  = int(tt.gpssec());
