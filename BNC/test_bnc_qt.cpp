@@ -57,9 +57,21 @@ void RTCM3Error(const char*, ...) {}
 int main(int /* argc */, char** /* argv */) {
 
   bncTime tt;
-  tt.set(2010, 1, 10, 10, 45, 0.0);
+  tt.set(2010, 1, 10, 10, 30, 0.0);
+  cout << tt.timestr() << " Moscow time (UTC + 3h)" << endl;
 
-  cout << tt.timestr() << endl;
+  int week = tt.gpsw();
+  int tow  = int(tt.gpssec());
+  updatetime(&week, &tow, tow*1000, 1);
+  bncTime t2(week, tow);
+  cout << t2.timestr() << " UTC " << endl;
+
+  week = tt.gpsw();
+  tow  = int(tt.gpssec());
+  updatetime(&week, &tow, tow*1000, 0);
+  bncTime t3(week, tow);
+  cout << t3.timestr() << " GPS " << endl;
+
 
 //  if (argc != 2) {
 //    cerr << "Usage: test_bnc_qt port\n";
