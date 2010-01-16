@@ -255,17 +255,10 @@ void t_ephGlo::set(const glonassephemeris* ee) {
 
   int ww  = ee->GPSWeek;
   int tow = ee->GPSTOW; 
-
-  updatetime(&ww, &tow, ee->tb*1000, 0);
-
-  int tk = ee->tk-3*60*60; 
-  if (tk < 0) {
-    tk += 86400;
-  }
+  updatetime(&ww, &tow, ee->tb*1000, 0);  // Moscow -> GPS
 
   _GPSweek           = ww;
   _GPSweeks          = tow;
-  _gps_utc           = 0.0;
   _E                 = ee->E;
   _tau               = ee->tau;
   _gamma             = ee->gamma;
@@ -280,7 +273,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   _z_acceleration    = ee->z_acceleration;
   _health            = 0;
   _frequency_number  = ee->frequency_number;
-  _tki               = tk;
+  _tki               = ee->tk-3*60*60; if (_tki < 0) _tki += 86400;
 
   // Initialize status vector
   // ------------------------
