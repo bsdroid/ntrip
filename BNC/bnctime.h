@@ -30,7 +30,6 @@ class bncTime {
  private:
   bncTime&     setmjd(double daysec, int mjd);
   void        reset() {_mjd = 0; _sec = 0;}
-  static void jdgp(double tjul, double & second, long & nweek);
 
   unsigned int _mjd;
   double       _sec;
