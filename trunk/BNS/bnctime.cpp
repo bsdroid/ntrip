@@ -5,7 +5,7 @@
 #include <iomanip>
 
 #include "bnctime.h"
-#include "RTCM3/timeutils.h"
+#include "timeutils.h"
 
 using namespace std;
 
