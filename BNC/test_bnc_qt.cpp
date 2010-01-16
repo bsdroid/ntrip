@@ -43,115 +43,126 @@
 #include <iomanip>
 
 #include "RTCM/GPSDecoder.h"
+#include "bnctime.h"
+extern "C" {
+#include "RTCM3/rtcm3torinex.h"
+}
 
 #include <QTcpSocket>
 
 using namespace std;
 
-int main(int argc, char** argv) {
+void RTCM3Error(const char*, ...) {}
 
-  if (argc != 2) {
-    cerr << "Usage: test_bnc_qt port\n";
-    exit(1);
-  }
+int main(int /* argc */, char** /* argv */) {
 
-  int port = atoi(argv[1]);
+  bncTime tt;
+  tt.set(2010, 1, 10, 10, 45, 0.0);
 
-  QTcpSocket socketObs;
+  cout << tt.timestr() << endl;
 
-  socketObs.connectToHost("127.0.0.1", port);
-  if (!socketObs.waitForConnected(10000)) {
-    cerr << "socketObs: not connected on port " << port << endl;
-    exit(1);
-  }
-
-  cout.setf(ios::fixed);
-
-  // Receive Data
-  // ------------
-  const char begObs[] = "BEGOBS";
-  const char begEpoch[] = "BEGEPOCH";
-  const char endEpoch[] = "ENDEPOCH";
-  const unsigned begObsNBytes   = sizeof(begObs) - 1;
-  const unsigned begEpochNBytes = sizeof(begEpoch) - 1;
-  const unsigned endEpochNBytes = sizeof(endEpoch) - 1;
-
-  QByteArray buffer;
-
-  while (true) {
-    if (socketObs.state() != QAbstractSocket::ConnectedState) {
-      cerr << "socketObs: disconnected" << endl;
-      exit(1);
-    }
-
-    if ( socketObs.bytesAvailable() ) {
-      buffer += socketObs.readAll();
-
-      // Skip begEpoch and endEpoch Marks
-      // --------------------------------
-      for (;;) {
-        int i1 = buffer.indexOf(begEpoch);
-        if (i1 == -1) {
-          break;
-        }
-        else {
-          buffer.remove(i1, begEpochNBytes);
-          cout << endl;
-        }
-      }
-      for (;;) {
-        int i2 = buffer.indexOf(endEpoch);
-        if (i2 == -1) {
-          break;
-        }
-        else {
-          buffer.remove(i2, endEpochNBytes);
-        }
-      }
-      for (;;) {
-        int i3 = buffer.indexOf(begObs);
-        if (i3 == -1) {
-          break;
-        }
-        else {
-          buffer.remove(i3, begObsNBytes);
-        }
-      }
-
-      // Interpret a portion of buffer as observation
-      // --------------------------------------------
-      t_obsInternal* obs;
-      const int obsSize = sizeof(t_obsInternal);
-
-
-      while (buffer.size() >= obsSize) {
-
-        obs = (t_obsInternal*) (buffer.left(obsSize).data());
-
-        cout << obs->StatID                      << " "
-             << obs->satSys << obs->satNum       << " "
-             << obs->GPSWeek                     << " "
-             << setprecision(2) << obs->GPSWeeks << " "
-             << setprecision(4) << obs->C1       << " "
-             << setprecision(4) << obs->C2       << " "
-             << setprecision(4) << obs->P1       << " "
-             << setprecision(4) << obs->P2       << " "
-             << setprecision(4) << obs->L1       << " "
-             << setprecision(4) << obs->L2       << " "
-             <<                    obs->slip_cnt_L1 << " "
-             <<                    obs->slip_cnt_L2 << " "
-             << setprecision(4) << obs->S1       << " "
-             << setprecision(4) << obs->S2       << " "
-             <<                    obs->SNR1     << " "
-             <<                    obs->SNR2     << endl;
-
-        buffer.remove(0,obsSize);
-      }
-    }
-    else {
-      socketObs.waitForReadyRead(1);
-    }
-  }
+//  if (argc != 2) {
+//    cerr << "Usage: test_bnc_qt port\n";
+//    exit(1);
+//  }
+//
+//  int port = atoi(argv[1]);
+//
+//  QTcpSocket socketObs;
+//
+//  socketObs.connectToHost("127.0.0.1", port);
+//  if (!socketObs.waitForConnected(10000)) {
+//    cerr << "socketObs: not connected on port " << port << endl;
+//    exit(1);
+//  }
+//
+//  cout.setf(ios::fixed);
+//
+//  // Receive Data
+//  // ------------
+//  const char begObs[] = "BEGOBS";
+//  const char begEpoch[] = "BEGEPOCH";
+//  const char endEpoch[] = "ENDEPOCH";
+//  const unsigned begObsNBytes   = sizeof(begObs) - 1;
+//  const unsigned begEpochNBytes = sizeof(begEpoch) - 1;
+//  const unsigned endEpochNBytes = sizeof(endEpoch) - 1;
+//
+//  QByteArray buffer;
+//
+//  while (true) {
+//    if (socketObs.state() != QAbstractSocket::ConnectedState) {
+//      cerr << "socketObs: disconnected" << endl;
+//      exit(1);
+//    }
+//
+//    if ( socketObs.bytesAvailable() ) {
+//      buffer += socketObs.readAll();
+//
+//      // Skip begEpoch and endEpoch Marks
+//      // --------------------------------
+//      for (;;) {
+//        int i1 = buffer.indexOf(begEpoch);
+//        if (i1 == -1) {
+//          break;
+//        }
+//        else {
+//          buffer.remove(i1, begEpochNBytes);
+//          cout << endl;
+//        }
+//      }
+//      for (;;) {
+//        int i2 = buffer.indexOf(endEpoch);
+//        if (i2 == -1) {
+//          break;
+//        }
+//        else {
+//          buffer.remove(i2, endEpochNBytes);
+//        }
+//      }
+//      for (;;) {
+//        int i3 = buffer.indexOf(begObs);
+//        if (i3 == -1) {
+//          break;
+//        }
+//        else {
+//          buffer.remove(i3, begObsNBytes);
+//        }
+//      }
+//
+//      // Interpret a portion of buffer as observation
+//      // --------------------------------------------
+//      t_obsInternal* obs;
+//      const int obsSize = sizeof(t_obsInternal);
+//
+//
+//      while (buffer.size() >= obsSize) {
+//
+//        obs = (t_obsInternal*) (buffer.left(obsSize).data());
+//
+//        cout << obs->StatID                      << " "
+//             << obs->satSys << obs->satNum       << " "
+//             << obs->GPSWeek                     << " "
+//             << setprecision(2) << obs->GPSWeeks << " "
+//             << setprecision(4) << obs->C1       << " "
+//             << setprecision(4) << obs->C2       << " "
+//             << setprecision(4) << obs->P1       << " "
+//             << setprecision(4) << obs->P2       << " "
+//             << setprecision(4) << obs->L1       << " "
+//             << setprecision(4) << obs->L2       << " "
+//             <<                    obs->slip_cnt_L1 << " "
+//             <<                    obs->slip_cnt_L2 << " "
+//             << setprecision(4) << obs->S1       << " "
+//             << setprecision(4) << obs->S2       << " "
+//             <<                    obs->SNR1     << " "
+//             <<                    obs->SNR2     << endl;
+//
+//        buffer.remove(0,obsSize);
+//      }
+//    }
+//    else {
+//      socketObs.waitForReadyRead(1);
+//    }
+//  }
 
   return 0;
 }
