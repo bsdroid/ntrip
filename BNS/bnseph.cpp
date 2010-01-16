@@ -485,6 +485,8 @@ void t_ephGPS::position(int GPSweek, double GPSweeks, ColumnVector& xc,
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGlo::read(const QStringList& lines) {
 
+  static const double secPerWeek = 7 * 86400.0;
+
   for (int ii = 1; ii <= lines.size(); ii++) {
     QTextStream in(lines.at(ii-1).toAscii());
 
@@ -508,9 +510,9 @@ void t_ephGlo::read(const QStringList& lines) {
       // -------------------
       _gps_utc = gnumleap(int(year), int(month), int(day));
       _GPSweeks += _gps_utc;
-      if (_GPSweeks > 86400.0) {
+      if (_GPSweeks >= secPerWeek) {
         _GPSweek  += 1;
-        _GPSweeks -= 86400.0;
+        _GPSweeks -= secPerWeek;
       }
     }
     else if (ii == 2) {
