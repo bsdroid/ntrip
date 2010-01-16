@@ -19,6 +19,10 @@
 #include "bnseph.h" 
 #include "bnsutils.h" 
 #include "bnssettings.h" 
+#include "bnctime.h" 
+extern "C" {
+#include "RTCM/rtcm3torinex.h"
+}
 
 #define PI          3.1415926535898
 
@@ -492,19 +496,22 @@ void t_ephGlo::read(const QStringList& lines) {
       _tau = -_tau;
       
       if (year < 100) year += 2000;
+
+      bncTime tHlp; 
+      tHlp.set(int(year), int(month), int(day), 
+               int(hour), int(minute), second);
       
-      QDateTime* dateTime = new QDateTime(QDate(int(year), int(month), int(day)), 
-                                          QTime(int(hour), int(minute), int(second)), Qt::UTC);
+      _GPSweek  = tHlp.gpsw();
+      _GPSweeks = tHlp.gpssec();
 
-      GPSweekFromDateAndTime(*dateTime, _GPSweek, _GPSweeks); 
- 
-      delete dateTime;
-
-      //// beg test
-      //// _gps_utc = 14.0;
-      //// end test
-
+      // Correct UTC -> GPS;
+      // -------------------
+      _gps_utc = gnumleap(int(year), int(month), int(day));
       _GPSweeks += _gps_utc;
+      if (_GPSweeks > 86400.0) {
+        _GPSweek  += 1;
+        _GPSweeks -= 86400.0;
+      }
     }
     else if (ii == 2) {
       in >>_x_pos >> _x_velocity >> _x_acceleration >> _health;
