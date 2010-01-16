@@ -224,10 +224,12 @@ void bncPPPclient::slotNewEphGlonass(glonassephemeris gloeph) {
   QString prn = QString("R%1").arg(gloeph.almanac_number, 2, 10, QChar('0'));
 
   if (_eph.contains(prn)) {
+    int ww  = gloeph.GPSWeek;
+    int tow = gloeph.GPSTOW; 
+    updatetime(&ww, &tow, gloeph.tb*1000, 0);  // Moscow -> GPS
     t_ephGlo* ee = static_cast<t_ephGlo*>(_eph.value(prn));
-    if ( (ee->GPSweek()  <  gloeph.GPSWeek) || 
-         (ee->GPSweek()  == gloeph.GPSWeek &&  
-          ee->GPSweeks() <  gloeph.GPSTOW) ) {  
+    if (ee->GPSweek() < ww || 
+        (ee->GPSweek()  == ww &&  ee->GPSweeks() <  tow)) {  
       ee->set(&gloeph);
     }
   }
