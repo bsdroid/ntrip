@@ -10,6 +10,8 @@ class bncTime {
   bncTime(int gpsw, double gpssec);
 
   bncTime& set(int gpsw, double gpssec);
+  bncTime& set(int year, int month, int day, int hour, int min, double sec);
+  bncTime& set(int year, int month, int day, double daysec);
 
   unsigned int mjd()    const;
   double       daysec() const;

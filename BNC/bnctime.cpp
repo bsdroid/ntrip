@@ -8,6 +8,20 @@
 
 using namespace std;
 
+double djul(long jj, long mm, double tt) {
+  long    ii, kk;
+  double  djul ;
+  if( mm <= 2 ) {
+    jj = jj - 1;
+    mm = mm + 12;
+  }  
+  ii   = jj/100;
+  kk   = 2 - ii + ii/4;
+  djul = (365.25*jj - fmod( 365.25*jj, 1.0 )) - 679006.0;
+  djul = djul + floor( 30.6001*(mm + 1) ) + tt + kk;
+  return djul;
+} 
+
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
 bncTime::bncTime(int gpsw, double gpssec) {
@@ -173,3 +187,29 @@ string bncTime::timestr(unsigned numdec, char sep) const {
   return str.str();
 }
 
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+bncTime& bncTime::set(int year, int month, int day, 
+                      int hour, int min, double sec) {
+  return set(year, month, day, hour*3600 + min*60 + sec);
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+bncTime& bncTime::set(int year, int month, int day, double daysec) {
+  _sec = daysec;
+  
+  _mjd = (unsigned int)djul(year, month, day);
+  
+  while ( _sec >= 86400 ) {
+    _sec-=86400;
+    _mjd++;
+  }
+  while ( _sec <  0 ) {
+    _sec+=86400;
+    _mjd--;
+  }
+
+  return *this;
+}
