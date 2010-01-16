@@ -5,22 +5,9 @@
 #include <iomanip>
 
 #include "bnctime.h"
+#include "RTCM3/timeutils.h"
 
 using namespace std;
-
-double djul(long jj, long mm, double tt) {
-  long    ii, kk;
-  double  djul ;
-  if( mm <= 2 ) {
-    jj = jj - 1;
-    mm = mm + 12;
-  }  
-  ii   = jj/100;
-  kk   = 2 - ii + ii/4;
-  djul = (365.25*jj - fmod( 365.25*jj, 1.0 )) - 679006.0;
-  djul = djul + floor( 30.6001*(mm + 1) ) + tt + kk;
-  return djul;
-} 
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
@@ -61,15 +48,6 @@ bncTime& bncTime::setmjd(double daysec, int mjd) {
     _mjd--;
   }
   return *this;
-}
-
-// 
-//////////////////////////////////////////////////////////////////////////////
-void bncTime::jdgp(double tjul, double & second, long & nweek) {
-  double      deltat;
-  deltat = tjul - 44244.0 ;
-  nweek = (long) floor(deltat/7.0);
-  second = (deltat - (nweek)*7.0)*86400.0;
 }
 
 // 
