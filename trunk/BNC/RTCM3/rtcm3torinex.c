@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.28 2010/01/12 12:13:23 mervart Exp $
+  $Id: rtcm3torinex.c,v 1.29 2010/01/16 10:18:44 mervart Exp $
   Copyright (C) 2005-2008 by Dirk Stöcker <stoecker@alberding.eu>
 
   This software is a complete NTRIP-RTCM3 to RINEX converter as well as
@@ -54,7 +54,7 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.28 $";
+static char revisionstr[] = "$Revision: 1.29 $";
 
 #ifndef COMPILEDATE
 #define COMPILEDATE " built " __DATE__
@@ -250,6 +250,7 @@ int gnumleap(int year, int month, int day)
   return ls;
 }
 
+// Convert Moscow time into UTC (fixnumleap == 1) or GPS (fixnumleap == 0)
 void updatetime(int *week, int *secOfWeek, int mSecOfWeek, int fixnumleap)
 {
   int y,m,d,k,l, nul;
@@ -1682,7 +1683,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 }
 
 #ifndef NO_RTCM3_MAIN
-static char datestr[]     = "$Date: 2010/01/12 12:13:23 $";
+static char datestr[]     = "$Date: 2010/01/16 10:18:44 $";
 
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
