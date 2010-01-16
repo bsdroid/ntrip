@@ -1,6 +1,6 @@
 /*
   Converter for RTCM3 data to RINEX.
-  $Id: rtcm3torinex.c,v 1.27 2009/11/04 16:40:16 zdenek Exp $
+  $Id: rtcm3torinex.c,v 1.28 2010/01/12 12:13:23 mervart Exp $
   Copyright (C) 2005-2008 by Dirk Stöcker <stoecker@alberding.eu>
 
   This software is a complete NTRIP-RTCM3 to RINEX converter as well as
@@ -54,7 +54,7 @@
 #include "rtcm3torinex.h"
 
 /* CVS revision and version */
-static char revisionstr[] = "$Revision: 1.27 $";
+static char revisionstr[] = "$Revision: 1.28 $";
 
 #ifndef COMPILEDATE
 #define COMPILEDATE " built " __DATE__
@@ -250,10 +250,10 @@ int gnumleap(int year, int month, int day)
   return ls;
 }
 
-void updatetime(int *week, int *tow, int tk, int fixnumleap)
+void updatetime(int *week, int *secOfWeek, int mSecOfWeek, int fixnumleap)
 {
   int y,m,d,k,l, nul;
-  unsigned int j = *week*(7*24*60*60) + *tow + 5*24*60*60+3*60*60;
+  unsigned int j = *week*(7*24*60*60) + *secOfWeek + 5*24*60*60+3*60*60;
   int glo_daynumber = 0, glo_timeofday;
   for(y = 1980; j >= (unsigned int)(k = (l = (365+longyear(y,0)))*24*60*60)
   + gnumleap(y+1,1,1); ++y)
@@ -271,15 +271,15 @@ void updatetime(int *week, int *tow, int tk, int fixnumleap)
   nul = gnumleap(y, m, d);
   glo_timeofday = j-nul;
 
-  if(tk < 5*60*1000 && glo_timeofday > 23*60*60)
-    *tow += 24*60*60;
-  else if(glo_timeofday < 5*60 && tk > 23*60*60*1000)
-    *tow -= 24*60*60;
-  *tow += tk/1000-glo_timeofday;
+  if(mSecOfWeek < 5*60*1000 && glo_timeofday > 23*60*60)
+    *secOfWeek += 24*60*60;
+  else if(glo_timeofday < 5*60 && mSecOfWeek > 23*60*60*1000)
+    *secOfWeek -= 24*60*60;
+  *secOfWeek += mSecOfWeek/1000-glo_timeofday;
   if(fixnumleap)
-    *tow -= nul;
-  if(*tow < 0) {*tow += 24*60*60*7; --*week; }
-  if(*tow >= 24*60*60*7) {*tow -= 24*60*60*7; ++*week; }
+    *secOfWeek -= nul;
+  if(*secOfWeek < 0) {*secOfWeek += 24*60*60*7; --*week; }
+  if(*secOfWeek >= 24*60*60*7) {*secOfWeek -= 24*60*60*7; ++*week; }
 }
 
 int RTCM3Parser(struct RTCM3ParserData *handle)
@@ -638,8 +638,8 @@ int RTCM3Parser(struct RTCM3ParserData *handle)
         SKIPBITS(12) /* id */;
         GETBITS(i,27) /* tk */
 
-        updatetime(&handle->GPSWeek, &handle->GPSTOW, i, 0);
         i = handle->GPSTOW*1000;
+        updatetime(&handle->GPSWeek, &handle->GPSTOW, i, 0); // Moscow -> GPS
         if(gnss->week && (gnss->timeofweek != i || gnss->week
         != handle->GPSWeek))
         {
@@ -1395,7 +1395,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
             int w = e->GPSWeek, tow = e->GPSTOW, i;
             struct converttimeinfo cti;
 
-            updatetime(&w, &tow, e->tb*1000, 1);
+            updatetime(&w, &tow, e->tb*1000, 1);  // Moscow - > UTC
             converttime(&cti, w, tow);
 
             i = e->tk-3*60*60; if(i < 0) i += 86400;
@@ -1682,7 +1682,7 @@ void HandleByte(struct RTCM3ParserData *Parser, unsigned int byte)
 }
 
 #ifndef NO_RTCM3_MAIN
-static char datestr[]     = "$Date: 2009/11/04 16:40:16 $";
+static char datestr[]     = "$Date: 2010/01/12 12:13:23 $";
 
 /* The string, which is send as agent in HTTP request */
 #define AGENTSTRING "NTRIP NtripRTCM3ToRINEX"
