@@ -59,10 +59,11 @@ const double   MAXRES_PHASE_GPS = 0.10;
 const double   MAXRES_PHASE_GLO = 0.50;
 const double   sig_crd_0        =  100.0;
 const double   sig_crd_p        =  100.0;
-const double   sig_clk_0        = 1000.0;
+const double   sig_clk_0        =  100.0;
 const double   sig_trp_0        =    0.01;
 const double   sig_trp_p        =    1e-6;
-const double   sig_amb_0        = 1000.0;
+const double   sig_amb_0_GPS    =  100.0;
+const double   sig_amb_0_GLO    = 1000.0;
 const double   sig_P3           =    1.0;
 const double   sig_L3_GPS       =    0.01;
 const double   sig_L3_GLO       =    0.10;
@@ -101,21 +102,8 @@ double bncParam::partial(t_satData* satData, bool phase) {
 
   // Receiver Clocks
   // ---------------
-  else if (type == RECCLK_GPS) {
-    if (satData->prn[0] == 'G') {
-      return 1.0;
-    }
-    else {
-      return 0.0;
-    }
-  }
-  else if (type == RECCLK_GLO) {
-    if (satData->prn[0] == 'R') {
-      return 1.0;
-    }
-    else {
-      return 0.0;
-    }
+  else if (type == RECCLK) {
+    return 1.0;
   }
 
   // Troposphere
@@ -169,7 +157,8 @@ bncModel::bncModel(QByteArray staID) {
   _xcBanc.ReSize(4);  _xcBanc  = 0.0;
   _ellBanc.ReSize(3); _ellBanc = 0.0;
 
-  if ( Qt::CheckState(settings.value("pppGLONASS").toInt()) == Qt::Checked) {
+  if (_usePhase && 
+      Qt::CheckState(settings.value("pppGLONASS").toInt()) == Qt::Checked) {
     _useGlonass = true;
   }
   else {
@@ -177,13 +166,10 @@ bncModel::bncModel(QByteArray staID) {
   }
 
   int nextPar = 0;
-  _params.push_back(new bncParam(bncParam::CRD_X,      ++nextPar, ""));
-  _params.push_back(new bncParam(bncParam::CRD_Y,      ++nextPar, ""));
-  _params.push_back(new bncParam(bncParam::CRD_Z,      ++nextPar, ""));
-  _params.push_back(new bncParam(bncParam::RECCLK_GPS, ++nextPar, ""));
-  if (_useGlonass) {
-    _params.push_back(new bncParam(bncParam::RECCLK_GLO,  ++nextPar, ""));
-  }
+  _params.push_back(new bncParam(bncParam::CRD_X,  ++nextPar, ""));
+  _params.push_back(new bncParam(bncParam::CRD_Y,  ++nextPar, ""));
+  _params.push_back(new bncParam(bncParam::CRD_Z,  ++nextPar, ""));
+  _params.push_back(new bncParam(bncParam::RECCLK, ++nextPar, ""));
   if (_estTropo) {
     _params.push_back(new bncParam(bncParam::TROPO,       ++nextPar, ""));
   }
@@ -199,7 +185,7 @@ bncModel::bncModel(QByteArray staID) {
     if      (pp->isCrd()) {
       _QQ(iPar,iPar) = sig_crd_0 * sig_crd_0; 
     }
-    else if (pp->isClk()) {
+    else if (pp->type == bncParam::RECCLK) {
       _QQ(iPar,iPar) = sig_clk_0 * sig_clk_0; 
     }
     else if (pp->type == bncParam::TROPO) {
@@ -346,15 +332,7 @@ double bncModel::cmpValue(t_satData* satData) {
   double tropDelay = delay_saast(satData->eleSat) + 
                      trp() / sin(satData->eleSat);
 
-  double clk = 0.0;
-  if      (satData->prn[0] == 'G') {
-    clk = clkGPS();
-  }
-  else if (satData->prn[0] == 'R') {
-    clk = clkGlo();
-  }
-
-  return satData->rho + clk - satData->clk + tropDelay;
+  return satData->rho + clk() - satData->clk + tropDelay;
 }
 
 // Tropospheric Model (Saastamoinen)
@@ -424,7 +402,7 @@ void bncModel::predict(t_epoData* epoData) {
 
     // Receiver Clocks
     // ---------------
-    else if (pp->isClk()) {
+    else if (pp->type == bncParam::RECCLK) {
       pp->xx = _xcBanc(4);
       for (int jj = 1; jj <= _params.size(); jj++) {
         _QQ(iPar, jj) = 0.0;
@@ -533,7 +511,12 @@ void bncModel::predict(t_epoData* epoData) {
     for (int ii = 1; ii <= nPar; ii++) {
       bncParam* par = _params[ii-1];
       if (par->index_old == 0) {
-        _QQ(par->index, par->index) = sig_amb_0 * sig_amb_0;
+        if (par->prn[0] == 'R') {
+          _QQ(par->index, par->index) = sig_amb_0_GLO * sig_amb_0_GLO;
+        }
+        else {
+          _QQ(par->index, par->index) = sig_amb_0_GPS * sig_amb_0_GPS;
+        }
       }
       par->index_old = par->index;
     }
@@ -645,15 +628,6 @@ t_irc bncModel::update(t_epoData* epoData) {
           } 
           AA(iObs, iPar) = _params[iPar-1]->partial(satData, true);
         }
-      
-        ostringstream str;
-        str.setf(ios::fixed);
-        str << "\niObs = " << iObs << " " << prn.toAscii().data() << " " 
-            << setprecision(3) << rhoCmp << " "
-            << setprecision(3) << satData->P3 << " "
-            << setprecision(3) << satData->L3 << " "
-            << ll(iObs) << endl;
-        _log += str.str().c_str();
       }
     }
 
@@ -668,71 +642,74 @@ t_irc bncModel::update(t_epoData* epoData) {
     dx    = _QQ * ATP * ll; 
     vv    = ll - AA * dx;
 
-    //// beg test
-    {
-      ostringstream str;
-      str.setf(ios::fixed);
-      ColumnVector vv_code(epoData->sizeGPS());
-      ColumnVector vv_phase(epoData->sizeGPS());
-      ColumnVector vv_glo(epoData->sizeGlo());
+    ostringstream str;
+    str.setf(ios::fixed);
+    ColumnVector vv_code(epoData->sizeGPS());
+    ColumnVector vv_phase(epoData->sizeGPS());
+    ColumnVector vv_glo(epoData->sizeGlo());
 
-      for (unsigned iobs = 1; iobs <= epoData->sizeGPS(); ++iobs) {
+    for (unsigned iobs = 1; iobs <= epoData->sizeGPS(); ++iobs) {
+      if (_usePhase) {
         vv_code(iobs)  = vv(2*iobs-1);
         vv_phase(iobs) = vv(2*iobs);
       }
+      else {
+        vv_code(iobs)  = vv(iobs);
+      }
+    }
+    if (_useGlonass) {
       for (unsigned iobs = 1; iobs <= epoData->sizeGlo(); ++iobs) {
         vv_glo(iobs)  = vv(2*epoData->sizeGPS()+iobs);
       }
-
-      str << "\nresiduals code  " << setprecision(3) << vv_code.t(); 
-      str <<  "residuals phase " << setprecision(3) << vv_phase.t();
-      str <<  "residuals glo   " << setprecision(3) << vv_glo.t();
-     _log += str.str().c_str();
     }
-    //// end test
+
+    str << "\nresiduals code  " << setprecision(3) << vv_code.t(); 
+    if (_usePhase) {
+      str <<  "residuals phase " << setprecision(3) << vv_phase.t();
+    }
+    if (_useGlonass) {
+      str <<  "residuals glo   " << setprecision(3) << vv_glo.t();
+    }
+    _log += str.str().c_str();
 
   } while (outlierDetection(QQsav, vv, epoData->satDataGPS, 
                             epoData->satDataGlo) != 0);
 
   // Set Solution Vector
   // -------------------
-  ostringstream str1;
-  str1.setf(ios::fixed);
+  ostringstream strB;
+  strB.setf(ios::fixed);
   QVectorIterator<bncParam*> itPar(_params);
   while (itPar.hasNext()) {
     bncParam* par = itPar.next();
     par->xx += dx(par->index);
-    if      (par->type == bncParam::RECCLK_GPS) {
-      str1 << "\n    clk GPS = " << setw(6) << setprecision(3) << par->xx 
-           << " +- " << setw(6) << setprecision(3) 
-           << sqrt(_QQ(par->index,par->index));
-    }
-    if      (par->type == bncParam::RECCLK_GLO) {
-      str1 << "\n    clk GLO = " << setw(6) << setprecision(3) << par->xx 
+
+    if      (par->type == bncParam::RECCLK) {
+      strB << "\n    clk = " << setw(6) << setprecision(3) << par->xx 
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == bncParam::AMB_L3) {
-      str1 << "\n    amb " << par->prn.toAscii().data() << " = "
+      strB << "\n    amb " << par->prn.toAscii().data() << " = "
            << setw(6) << setprecision(3) << par->xx 
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == bncParam::TROPO) {
-      str1 << "\n    trp = " << par->prn.toAscii().data()
+      strB << "\n    trp = " << par->prn.toAscii().data()
            << setw(7) << setprecision(3) << delay_saast(M_PI/2.0) << " "
            << setw(6) << setprecision(3) << showpos << par->xx << noshowpos
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
     }
   }
-  _log += str1.str().c_str();
+  strB << '\n';
 
   // Message (both log file and screen)
   // ----------------------------------
-  ostringstream str2;
-  str2.setf(ios::fixed);
-  str2 << _staID.data() << ": PPP " 
+  ostringstream strA;
+  strA.setf(ios::fixed);
+  strA << _staID.data() << ": PPP " 
        << epoData->tt.timestr(1) << " " << epoData->sizeAll() << " " 
        << setw(14) << setprecision(3) << x()                  << " +- "
        << setw(6)  << setprecision(3) << sqrt(_QQ(1,1))       << " "
@@ -741,8 +718,10 @@ t_irc bncModel::update(t_epoData* epoData) {
        << setw(14) << setprecision(3) << z()                  << " +- "
        << setw(6)  << setprecision(3) << sqrt(_QQ(3,3));
 
+  emit newMessage(QByteArray(strA.str().c_str()), true);
+
+  _log += strB.str().c_str();
   emit newMessage(_log, false);
-  emit newMessage(QByteArray(str2.str().c_str()), true);
 
   // NMEA Output
   // -----------

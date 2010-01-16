@@ -37,15 +37,12 @@ class t_satData;
 
 class bncParam {
  public:
-  enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK_GPS, RECCLK_GLO, TROPO, AMB_L3};
+  enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK, TROPO, AMB_L3};
   bncParam(parType typeIn, int indexIn, const QString& prn);
   ~bncParam();
   double partial(t_satData* satData, bool phase);
   bool isCrd() const {
     return (type == CRD_X || type == CRD_Y || type == CRD_Z);
-  }
-  bool isClk() const {
-    return (type == RECCLK_GPS|| type == RECCLK_GLO);
   }
   parType  type;
   double   xx;
@@ -65,24 +62,7 @@ class bncModel : public QObject {
   double x()      const {return _params[0]->xx;}
   double y()      const {return _params[1]->xx;}
   double z()      const {return _params[2]->xx;}
-  double clkGPS() const {
-    for (int ii = 0; ii < _params.size(); ++ii) {
-      bncParam* pp = _params[ii];
-      if (pp->type == bncParam::RECCLK_GPS) {
-        return pp->xx;
-      }
-    }
-    return 0.0;
-  }
-  double clkGlo() const {
-    for (int ii = 0; ii < _params.size(); ++ii) {
-      bncParam* pp = _params[ii];
-      if (pp->type == bncParam::RECCLK_GLO) {
-        return pp->xx;
-      }
-    }
-    return 0.0;
-  }
+  double clk()    const {return _params[3]->xx;}
   double trp() const {
     for (int ii = 0; ii < _params.size(); ++ii) {
       bncParam* pp = _params[ii];
