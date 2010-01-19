@@ -71,7 +71,7 @@ bncWindow::bncWindow() {
 
   int ww = QFontMetrics(this->font()).width('w');
   
-  static const QStringList labels = QString("account, Streams:     resource loader / mountpoint,decoder,lat,long,nmea,ntrip,bytes").split(",");
+  static const QStringList labels = QString("account, Streams:   resource loader / mountpoint, decoder, lat, long, nmea, ntrip, bytes").split(",");
 
   setMinimumSize(85*ww, 65*ww);
 
@@ -369,6 +369,7 @@ bncWindow::bncWindow() {
   _mountPointsTable->horizontalHeader()->resizeSection(6,5*ww); 
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
   _mountPointsTable->horizontalHeader()->setStretchLastSection(true);
+  _mountPointsTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
   _mountPointsTable->setHorizontalHeaderLabels(labels);
   _mountPointsTable->setGridStyle(Qt::NoPen);
   _mountPointsTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
