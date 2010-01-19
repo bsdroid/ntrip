@@ -100,6 +100,7 @@ class bncModel : public QObject {
   QFile*             _nmeaFile;
   QTextStream*       _nmeaStream;
   bool               _useGlonass;
+  double             _oldAprTrop;
 };
 
 #endif
