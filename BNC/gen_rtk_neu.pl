@@ -18,9 +18,14 @@ open(outFile, ">$outFile");
 ###my $zApr = 0.0;
 
 # JOS20
-my $xApr = 3664880.4923;
-my $yApr = 1409190.6728;
-my $zApr = 5009618.5192;
+#my $xApr = 3664880.4923;
+#my $yApr = 1409190.6728;
+#my $zApr = 5009618.5192;
+
+# FFMJ1
+my $xApr = 4053455.8174;
+my $yApr =  617729.7434;
+my $zApr = 4869395.7728;
 
 while ( my $line=<inFile> ) {
 
