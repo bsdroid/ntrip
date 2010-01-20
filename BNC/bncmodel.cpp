@@ -153,7 +153,6 @@ bncModel::bncModel(QByteArray staID) {
   if ( Qt::CheckState(settings.value("pppEstTropo").toInt()) == Qt::Checked) {
     _estTropo = true;
   }
-  _oldAprTrop = 0.0;
 
   _xcBanc.ReSize(4);  _xcBanc  = 0.0;
   _ellBanc.ReSize(3); _ellBanc = 0.0;
@@ -307,21 +306,6 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
       delete satData;
       iGlo.remove();
     }
-  }
-
-  // Tropospheric Delay
-  // ------------------
-  if (_estTropo) {
-    double newAprTrop = delay_saast(M_PI/2.0);
-    if (_oldAprTrop != 0.0) {
-      for (int ii = 0; ii < _params.size(); ++ii) {
-        bncParam* pp = _params[ii];
-        if (pp->type == bncParam::TROPO) {
-          pp->xx += _oldAprTrop - newAprTrop;
-        }
-      }
-    }
-    _oldAprTrop = newAprTrop;
   }
 
   return success;
