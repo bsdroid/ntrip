@@ -96,6 +96,11 @@ bncPPPclient::~bncPPPclient() {
     ic.next();
     delete ic.value();
   }
+  QMapIterator<QString, t_bias*> ib(_bias);
+  while (ib.hasNext()) {
+    ib.next();
+    delete ib.value();
+  }
 }
 
 //
@@ -110,6 +115,38 @@ void bncPPPclient::putNewObs(p_obs pp) {
   }
 
   t_satData* satData = new t_satData();
+
+  // Satellite Number
+  // ----------------
+  if      (obs->satSys == 'G') {
+    QString prn = QString("G%1").arg(obs->satNum, 2, 10, QChar('0'));
+    satData->prn = prn;
+  }
+  else if (obs->satSys == 'R') {
+    QString prn = QString("R%1").arg(obs->satNum, 2, 10, QChar('0'));
+    satData->prn = prn;
+  }
+
+  // Handle Code Biases
+  // ------------------
+  t_bias* bb = 0;
+  if (_bias.contains(satData->prn)) {
+    bb = _bias.value(satData->prn); 
+  }
+
+  ////// beg test
+  //cout << satData->prn.toAscii().data();
+  //if (bb) {
+  //  cout.setf(ios::fixed);
+  //  cout << setprecision(3) << bb->c1 << " " 
+  //       << setprecision(3) << bb->p1 << " " 
+  //       << setprecision(3) << bb->c2 << " " 
+  //       << setprecision(3) << bb->p2 << endl;
+  //}
+  //else {
+  //  cout << " no bias\n";
+  //}
+  //// end test
 
   // Set Code Observations
   // ---------------------  
@@ -182,14 +219,10 @@ void bncPPPclient::putNewObs(p_obs pp) {
   }
 
   if      (obs->satSys == 'G') {
-    QString prn = QString("G%1").arg(obs->satNum, 2, 10, QChar('0'));
-    satData->prn = prn;
-    _epoData->satDataGPS[prn] = satData;
+    _epoData->satDataGPS[satData->prn] = satData;
   }
   else if (obs->satSys == 'R') {
-    QString prn = QString("R%1").arg(obs->satNum, 2, 10, QChar('0'));
-    satData->prn = prn;
-    _epoData->satDataGlo[prn] = satData;
+    _epoData->satDataGlo[satData->prn] = satData;
   }
 
 }
@@ -305,6 +338,40 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
         in >> dummyIOD >> cc->dClk;
         cc->dClk /= t_CST::c;
         cc->dClkSet = true;
+      }
+    }
+    else if ( messageType == BTYPE_GPS     || 
+              messageType == BTYPE_GLONASS ) {
+
+      t_bias* bb = 0;
+      if (_bias.contains(prn)) {
+        bb = _bias.value(prn); 
+      }
+      else {
+        bb = new t_bias();
+        _bias[prn] = bb;
+      }
+
+      bb->tt.set(GPSweek, GPSweeks);
+
+      int numBiases;
+      in >> numBiases;
+      for (int ii = 0; ii < numBiases; ++ii) {
+        int    bType;
+        double bValue;
+	in >> bType >> bValue;
+        if      (bType == 0) {
+          bb->c1 = bValue;
+	}
+        else if (bType >= 1 && bType <= 4) {
+          bb->p1 = bValue;
+	}
+        else if (bType == 5) {
+          bb->c2 = bValue;
+	}
+        else if (bType >= 6 && bType <= 13) {
+          bb->p2 = bValue;
+	}
       }
     }
   }

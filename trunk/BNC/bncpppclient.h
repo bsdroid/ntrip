@@ -95,6 +95,21 @@ class t_corr {
   bool         dClkSet;
 };
 
+class t_bias {
+ public:
+  t_bias() {
+    c1 = 0.0;
+    p1 = 0.0;
+    c2 = 0.0;
+    p2 = 0.0;
+  }
+  bncTime tt;
+  double  c1;
+  double  p1;
+  double  c2;
+  double  p2;
+};
+
 class bncPPPclient : public QObject {
  Q_OBJECT
 
@@ -123,6 +138,7 @@ class bncPPPclient : public QObject {
   QMutex                 _mutex;
   QMap<QString, t_eph*>  _eph;
   QMap<QString, t_corr*> _corr;
+  QMap<QString, t_bias*> _bias;
   t_epoData*             _epoData;
   bncModel*              _model;
   bool                   _useGlonass;
