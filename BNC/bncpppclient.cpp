@@ -134,28 +134,14 @@ void bncPPPclient::putNewObs(p_obs pp) {
     bb = _bias.value(satData->prn); 
   }
 
-  ////// beg test
-  //cout << satData->prn.toAscii().data();
-  //if (bb) {
-  //  cout.setf(ios::fixed);
-  //  cout << setprecision(3) << bb->c1 << " " 
-  //       << setprecision(3) << bb->p1 << " " 
-  //       << setprecision(3) << bb->c2 << " " 
-  //       << setprecision(3) << bb->p2 << endl;
-  //}
-  //else {
-  //  cout << " no bias\n";
-  //}
-  //// end test
-
   // Set Code Observations
   // ---------------------  
   if      (obs->P1) {
-    satData->P1         = obs->P1;
+    satData->P1         = obs->P1 + (bb ? bb->p1 : 0.0);
     satData->codeTypeF1 = t_satData::P_CODE;
   }
   else if (obs->C1) {
-    satData->P1         = obs->C1;
+    satData->P1         = obs->C1 + (bb ? bb->c1 : 0.0);
     satData->codeTypeF1 = t_satData::C_CODE;
   }
   else {
@@ -164,11 +150,11 @@ void bncPPPclient::putNewObs(p_obs pp) {
   }
     
   if      (obs->P2) {
-    satData->P2         = obs->P2;
+    satData->P2         = obs->P2 + (bb ? bb->p2 : 0.0);
     satData->codeTypeF2 = t_satData::P_CODE;
   }
   else if (obs->C2) {
-    satData->P2         = obs->C2;
+    satData->P2         = obs->C2 + (bb ? bb->c2 : 0.0);
     satData->codeTypeF2 = t_satData::C_CODE;
   }
   else {
