@@ -4,15 +4,17 @@ set timefmt "%H:%M:%S"
 
 set format x "%H:%M"
 
-set term png
-set output "ffmj1_clk11_glo.png"
-set title "FFMJ1 (CLK11, GPS & Glonass)"
+### set term png
+### set output "ffmj1.png"
+
+set title "FFMJ1"
+
 set ylabel "meters"
 set xlabel "19-Dec-2009"
-set yrange [-1.5:1.5]
+###set yrange [-1.5:1.5]
 
 plot "ppp" u 1:4 t "dH" w lp 3, \
      ""    u 1:2 t "dN" w lp 1, \
      ""    u 1:3 t "dE" w lp 2
 
-###pause -1
+pause -1
