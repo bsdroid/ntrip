@@ -441,7 +441,7 @@ bncWindow::bncWindow() {
   _pppRefCrdXLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown in the 'PPP' tab will then be referred to these values.</p>"));
   _pppRefCrdYLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown inthe 'PPP' tab will then be referred to these values.</p>"));
   _pppRefCrdZLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown inthe 'PPP' tab will then be referred to these values.</p>"));
-  _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab. Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate compoments. The sliding PPP time series window covers the period of the latest 5 minutes."));
+  _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab when the 'Static' PPP option is applied. Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate compoments. The sliding PPP time series window covers the period of the latest 5 minutes."));
 
   // Canvas with Editable Fields
   // ---------------------------
