@@ -476,7 +476,7 @@ bncWindow::bncWindow() {
   _loggroup->addTab(_log,tr("Log"));
   _loggroup->addTab(_bncFigure,tr("Throughput"));
   _loggroup->addTab(_bncFigureLate,tr("Latency"));
-  _loggroup->addTab(_bncFigurePPP,tr("PPP"));
+  _loggroup->addTab(_bncFigurePPP,tr("Static PPP"));
 
   // Proxy Tab
   // ---------

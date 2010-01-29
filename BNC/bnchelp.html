@@ -157,7 +157,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.13.1 <a href=#logfile>Log</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.2 <a href=#throughput>Throughput</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.3 <a href=#latency>Latency</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.4 <a href=#ppptab>PPP</a><br>
+&nbsp; &nbsp; &nbsp; 3.13.4 <a href=#ppptab>Static PPP</a><br>
 3.14. <a href=#bottom>Bottom Menu Bar</a><br>
 &nbsp; &nbsp; &nbsp; 3.14.1. <a href=#streamadd>Add Stream - Coming from Caster</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.1 <a href=#streamhost>Caster Host and Port</a><br>
@@ -1107,9 +1107,9 @@ The bandwidth consumtion per stream is shown in the 'Throughput' tab in bits per
 The latency of observations in each incoming stream is shown in the 'Latency' tab in milliseconds or seconds. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) are not considered here. Note that the calculation of correct latencies requires the clock of the host computer to be properly synchronized.
 </p>
 
-<p><a name="ppptab"><h4>3.13.4 PPP</h4></p>
+<p><a name="ppptab"><h4>3.13.4 Static PPP</h4></p>
 <p>
-Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab. Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate components. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. Note that it may take up to 30 seconds or more till the first PPP solutions becomes available.
+Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab when the 'Static' PPP option is applied. Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate components. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. Note that it may take up to 30 seconds or more till the first PPP solutions becomes available.
 </p>
 
 <p><a name="bottom"><h4>3.14. Bottom Menu Bar</h4></p>
