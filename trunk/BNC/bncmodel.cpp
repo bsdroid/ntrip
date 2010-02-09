@@ -60,13 +60,13 @@ const double   MAXRES_PHASE_GLO = 0.10;
 const double   sig_crd_0        =  100.0;
 const double   sig_crd_p        =  100.0;
 const double   sig_clk_0        = 1000.0;
-const double   sig_trp_0        =    0.01;
-const double   sig_trp_p        =    1e-6;
+const double   sig_trp_0        =    0.05;
+const double   sig_trp_p        =    1e-7;
 const double   sig_amb_0_GPS    =  100.0;
 const double   sig_amb_0_GLO    = 1000.0;
-const double   sig_P3           =    3.0;
-const double   sig_L3_GPS       =    0.01;
-const double   sig_L3_GLO       =    0.01;
+const double   sig_P3           =   20.0;
+const double   sig_L3_GPS       =    0.02;
+const double   sig_L3_GLO       =    0.02;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
