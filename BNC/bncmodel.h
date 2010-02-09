@@ -87,6 +87,10 @@ class bncModel : public QObject {
                           QMap<QString, t_satData*>& satDataGlo);
   void writeNMEAstr(const QString& nmStr);
 
+  static void kalman(const Matrix& AA, const ColumnVector& ll, 
+                     const DiagonalMatrix& PP, 
+                     SymmetricMatrix& QQ, ColumnVector& dx);
+
   bncTime            _time;
   QByteArray         _staID;
   QVector<bncParam*> _params;
