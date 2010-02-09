@@ -9,6 +9,7 @@
 #include "ephemeris.h"
 #include "bncutils.h"
 #include "timeutils.h"
+#include "bnctime.h"
 
 using namespace std;
 
@@ -232,7 +233,7 @@ void t_ephGlo::position(int GPSweek, double GPSweeks,
 ////////////////////////////////////////////////////////////////////////////
 int t_ephGlo::IOD() const {
 
-  bool old = true;
+  bool old = false;
 
   if (old) { // 5 LSBs of iod are equal to 5 LSBs of tb
     unsigned int tb  = int(fmod(_GPSweeks,86400.0)); //sec of day
@@ -241,7 +242,15 @@ int t_ephGlo::IOD() const {
     return (iod >> shift);
   }
   else     {  
-    return int(fmod(_tki, 3600)) / 30;
+    bncTime tGPS(_GPSweek, _GPSweeks);
+    int hlpWeek = _GPSweek;
+    int hlpSec  = int(_GPSweeks);
+    int hlpMsec = int(_GPSweeks * 1000);
+    updatetime(&hlpWeek, &hlpSec, hlpMsec, 0);
+    bncTime tHlp(hlpWeek, hlpSec);
+    double diffSec = tGPS - tHlp;
+    bncTime tMoscow = tGPS + diffSec;
+    return int(tMoscow.daysec() / 900);
   }
 }
 

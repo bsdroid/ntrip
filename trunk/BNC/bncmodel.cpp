@@ -64,7 +64,7 @@ const double   sig_trp_0        =    0.01;
 const double   sig_trp_p        =    1e-6;
 const double   sig_amb_0_GPS    =  100.0;
 const double   sig_amb_0_GLO    = 1000.0;
-const double   sig_P3           =    1.0;
+const double   sig_P3           =    3.0;
 const double   sig_L3_GPS       =    0.01;
 const double   sig_L3_GLO       =    0.01;
 

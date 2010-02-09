@@ -706,7 +706,7 @@ void t_ephGlo::position(int GPSweek, double GPSweeks, ColumnVector& xc,
 ////////////////////////////////////////////////////////////////////////////
 int t_ephGlo::IOD() const {
 
-  bool old = true;
+  bool old = false;
 
   if (old) { // 5 LSBs of iod are equal to 5 LSBs of tb
     unsigned int tb  = int(fmod(_GPSweeks,86400.0)); //sec of day
