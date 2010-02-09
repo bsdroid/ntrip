@@ -53,14 +53,15 @@
 using namespace std;
 
 const unsigned MINOBS           =    4;
-const double   MINELE           = 10.0 * M_PI / 180.0;
+const double   MINELE_GPS       = 10.0 * M_PI / 180.0;
+const double   MINELE_GLO       = 10.0 * M_PI / 180.0;
 const double   MAXRES_CODE_GPS  = 10.0;
 const double   MAXRES_PHASE_GPS = 0.10;
 const double   MAXRES_PHASE_GLO = 0.10;
 const double   sig_crd_0        =  100.0;
 const double   sig_crd_p        =  100.0;
 const double   sig_clk_0        = 1000.0;
-const double   sig_trp_0        =    0.05;
+const double   sig_trp_0        =    0.01;
 const double   sig_trp_p        =    1e-7;
 const double   sig_amb_0_GPS    =  100.0;
 const double   sig_amb_0_GLO    = 1000.0;
@@ -278,7 +279,7 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
     }
     satData->azSat  = atan2(neu[1], neu[0]);
 
-    if (satData->eleSat < MINELE) {
+    if (satData->eleSat < MINELE_GPS) {
       delete satData;
       iGPS.remove();
     }
@@ -302,7 +303,7 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
     }
     satData->azSat  = atan2(neu[1], neu[0]);
 
-    if (satData->eleSat < MINELE) {
+    if (satData->eleSat < MINELE_GLO) {
       delete satData;
       iGlo.remove();
     }
