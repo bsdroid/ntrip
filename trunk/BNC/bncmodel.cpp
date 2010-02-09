@@ -59,14 +59,14 @@ const double   MAXRES_PHASE_GPS = 0.10;
 const double   MAXRES_PHASE_GLO = 0.10;
 const double   sig_crd_0        =  100.0;
 const double   sig_crd_p        =  100.0;
-const double   sig_clk_0        =  100.0;
-const double   sig_trp_0        =    0.05;
-const double   sig_trp_p        =    1e-7;
+const double   sig_clk_0        = 1000.0;
+const double   sig_trp_0        =    0.01;
+const double   sig_trp_p        =    1e-6;
 const double   sig_amb_0_GPS    =  100.0;
 const double   sig_amb_0_GLO    = 1000.0;
-const double   sig_P3           =   10.0;
-const double   sig_L3_GPS       =    0.02;
-const double   sig_L3_GLO       =    0.02;
+const double   sig_P3           =    1.0;
+const double   sig_L3_GPS       =    0.01;
+const double   sig_L3_GLO       =    0.01;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -571,7 +571,7 @@ t_irc bncModel::update(t_epoData* epoData) {
     
     Matrix          AA(nObs, nPar);  // first design matrix
     ColumnVector    ll(nObs);        // tems observed-computed
-    SymmetricMatrix PP(nObs); PP = 0.0;
+    DiagonalMatrix  PP(nObs); PP = 0.0;
     
     unsigned iObs = 0;
 
@@ -635,12 +635,15 @@ t_irc bncModel::update(t_epoData* epoData) {
     // ---------------------
     QQsav = _QQ;
 
-    Matrix          ATP = AA.t() * PP;
-    SymmetricMatrix NN = _QQ.i();
-    NN    << NN + ATP * AA;
-    _QQ   = NN.i();
-    dx    = _QQ * ATP * ll; 
-    vv    = ll - AA * dx;
+//    Matrix          ATP = AA.t() * PP;
+//    SymmetricMatrix NN = _QQ.i();
+//    NN    << NN + ATP * AA;
+//    _QQ   = NN.i();
+//    dx    = _QQ * ATP * ll; 
+
+    kalman(AA, ll, PP, _QQ, dx);
+
+    vv = ll - AA * dx;
 
     ostringstream str;
     str.setf(ios::fixed);
@@ -876,4 +879,41 @@ void bncModel::writeNMEAstr(const QString& nmStr) {
   }
 
   emit newNMEAstr(outStr.toAscii());
+}
+
+
+//// 
+//////////////////////////////////////////////////////////////////////////////
+void bncModel::kalman(const Matrix& AA, const ColumnVector& ll, 
+                      const DiagonalMatrix& PP, 
+                      SymmetricMatrix& QQ, ColumnVector& dx) {
+
+  int nObs = AA.Nrows();
+  int nPar = AA.Ncols();
+
+  UpperTriangularMatrix SS = Cholesky(QQ).t();
+
+  Matrix SA = SS*AA.t();
+  Matrix SRF(nObs+nPar, nObs+nPar); SRF = 0;
+  for (int ii = 1; ii <= nObs; ++ii) {
+    SRF(ii,ii) = 1.0 / sqrt(PP(ii,ii));
+  }
+
+  SRF.SubMatrix   (nObs+1, nObs+nPar, 1, nObs) = SA;
+  SRF.SymSubMatrix(nObs+1, nObs+nPar)          = SS;
+  
+  UpperTriangularMatrix UU;
+  QRZ(SRF, UU);
+  
+  SS = UU.SymSubMatrix(nObs+1, nObs+nPar);
+  UpperTriangularMatrix SH_rt = UU.SymSubMatrix(1, nObs);
+  Matrix YY  = UU.SubMatrix(1, nObs, nObs+1, nObs+nPar);
+  
+  UpperTriangularMatrix SHi = SH_rt.i();
+  
+  Matrix KT  = SHi * YY; 
+  SymmetricMatrix Hi; Hi << SHi * SHi.t();
+
+  dx = KT.t() * ll;
+  QQ << (SS.t() * SS);
 }
