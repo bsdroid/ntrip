@@ -715,6 +715,14 @@ int t_ephGlo::IOD() const {
     return (iod >> shift);
   }
   else     {  
-    return int(fmod(_tki, 3600)) / 30;
+    bncTime tGPS(_GPSweek, _GPSweeks);
+    int hlpWeek = _GPSweek;
+    int hlpSec  = int(_GPSweeks);
+    int hlpMsec = int(_GPSweeks * 1000);
+    updatetime(&hlpWeek, &hlpSec, hlpMsec, 0);
+    bncTime tHlp(hlpWeek, hlpSec);
+    double diffSec = tGPS - tHlp;
+    bncTime tMoscow = tGPS + diffSec;
+    return int(tMoscow.daysec() / 900);
   }
 }
