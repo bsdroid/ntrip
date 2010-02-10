@@ -162,6 +162,7 @@ void bncNetQueryV1::startRequestPrivate(const QUrl& url,
     if (_url.path().indexOf("/") != 0) _url.setPath("/");
     reqStr = "GET " + _url.path().toAscii() + " HTTP/1.0\r\n"
              + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
+             + "Host: " + _url.host().toAscii() + "\r\n"
              + userAndPwd + "\r\n";
   } else {
     reqStr = "GET " + _url.toEncoded() + " HTTP/1.0\r\n"
