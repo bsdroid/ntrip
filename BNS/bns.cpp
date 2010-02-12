@@ -503,12 +503,8 @@ void t_bns::readEpoch() {
         if ( _caster.at(ic)->usedSocket() && 
              (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) ) {
           char obuffer[CLOCKORBIT_BUFFERSIZE];
-
           int len = MakeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
           if (len > 0) {
-            if (_caster.at(ic)->ic() == 1) { emit(newOutBytes1(len));}
-            if (_caster.at(ic)->ic() == 2) { emit(newOutBytes2(len));}
-            if (_caster.at(ic)->ic() == 3) { emit(newOutBytes3(len));}
             _caster.at(ic)->write(obuffer, len);
           }
         }
