@@ -475,7 +475,10 @@ void t_bns::readEpoch() {
             }
 
             if (biasSat) {
-              //// TODO: fill biasSat structure
+              biasSat->ID                 = prn.mid(1).toInt();
+              biasSat->NumberOfCodeBiases = 1;
+              biasSat->Biases[0].Type = CODETYPEGPS_L1_CA;
+              biasSat->Biases[0].Bias = xx(9);
             }
           }
         }
