@@ -399,10 +399,16 @@ void t_bns::readEpoch() {
         co.OrbitDataSupplied = 1;
         co.SatRefDatum       = DATUM_ITRF;
       
+        struct Bias bias;
+        memset(&bias, 0, sizeof(bias));
+        bias.GPSEpochTime      = (int)GPSweeks;
+        bias.GLONASSEpochTime  = (int)fmod(GPSweeks, 86400.0) 
+                               + 3 * 3600 - gnumleap(year, month, day);
+
         for (int ii = 0; ii < lines.size(); ii++) {
 
           QString      prn;
-          ColumnVector xx(8); xx = 0.0;
+          ColumnVector xx(10); xx = 0.0;
           t_eph*       ep = 0;
       
           if (oldEph == 0 && ic == 0) {
@@ -411,13 +417,14 @@ void t_bns::readEpoch() {
             prns << prn;
             if ( _ephList.contains(prn) ) {
               in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) 
-                 >> xx(6) >> xx(7) >> xx(8);
+                 >> xx(6) >> xx(7) >> xx(8) >> xx(9) >> xx(10);
               xx(1) *= 1e3;     // x-crd
               xx(2) *= 1e3;     // y-crd
               xx(3) *= 1e3;     // z-crd
               xx(4) *= 1e-6;    // clk
               xx(5) *= 1e-6;    // rel. corr.
                                 // xx(6), xx(7), xx(8) ... PhaseCent - CoM
+                                // xx(9) P1-C1 DCB, xx(1) P1-P2 DCB
 
               t_ephPair* pair = _ephList[prn];
               pair->xx = xx;
@@ -456,6 +463,20 @@ void t_bns::readEpoch() {
                                GPSweek, GPSweeks, prn, xx, sd, outLine);
               _caster.at(ic)->printAscii(outLine);
             }
+
+            struct Bias::BiasSat* biasSat = 0;
+            if      (prn[0] == 'G') {
+              biasSat = bias.Sat + bias.NumberOfGPSSat;
+              ++bias.NumberOfGPSSat;
+            }
+            else if (prn[0] == 'R') {
+              biasSat = bias.Sat + CLOCKORBIT_NUMGPS + bias.NumberOfGLONASSSat;
+              ++bias.NumberOfGLONASSSat;
+            }
+
+            if (biasSat) {
+              //// TODO: fill biasSat structure
+            }
           }
         }
       
@@ -471,6 +492,19 @@ void t_bns::readEpoch() {
           }
 
           int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+          if (len > 0) {
+            if (_caster.at(ic)->ic() == 1) { emit(newOutBytes1(len));}
+            if (_caster.at(ic)->ic() == 2) { emit(newOutBytes2(len));}
+            if (_caster.at(ic)->ic() == 3) { emit(newOutBytes3(len));}
+            _caster.at(ic)->write(obuffer, len);
+          }
+        }
+
+        if ( _caster.at(ic)->usedSocket() && 
+             (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) ) {
+          char obuffer[CLOCKORBIT_BUFFERSIZE];
+
+          int len = MakeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
           if (len > 0) {
             if (_caster.at(ic)->ic() == 1) { emit(newOutBytes1(len));}
             if (_caster.at(ic)->ic() == 2) { emit(newOutBytes2(len));}
