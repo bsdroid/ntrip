@@ -285,14 +285,16 @@ void bncGetThread::initialize() {
 
   // Initialize PPP Client?
   // ----------------------
+#ifndef MLS_SOFTWARE
   if (settings.value("pppMount").toString() == _staID) {
     _PPPclient = new bncPPPclient(_staID);
     qRegisterMetaType<bncTime>("bncTime");
     connect(_PPPclient, SIGNAL(newPosition(bncTime, double, double, double)), 
             this, SIGNAL(newPosition(bncTime, double, double, double)));
-  connect(_PPPclient, SIGNAL(newNMEAstr(QByteArray)), 
-          this,       SIGNAL(newNMEAstr(QByteArray)));
+    connect(_PPPclient, SIGNAL(newNMEAstr(QByteArray)), 
+            this,       SIGNAL(newNMEAstr(QByteArray)));
   }
+#endif
 
   // Instantiate the decoder
   // -----------------------
@@ -482,9 +484,11 @@ void bncGetThread::run() {
       
         // PPP Client
         // ----------
+#ifndef MLS_SOFTWARE
         if (_PPPclient) {
           _PPPclient->putNewObs(obs);
         }
+#endif
 
         // Emit new observation signal
         // ---------------------------
