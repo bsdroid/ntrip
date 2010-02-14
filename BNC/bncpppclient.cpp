@@ -307,7 +307,11 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
       if      ( messageType == COTYPE_GPSCOMBINED    || 
                 messageType == COTYPE_GLONASSCOMBINED ) {
         cc->rao.ReSize(3);
-        in >> cc->iod >> cc->dClk >> cc->rao[0] >> cc->rao[1] >> cc->rao[2];
+        cc->dotRao.ReSize(3); 
+        cc->dotRao = 0.0;
+        double dummyDotClk;
+        in >> cc->iod >> cc->dClk >> cc->rao[0] >> cc->rao[1] >> cc->rao[2]
+           >> dummyDotClk >> cc->dotRao[0] >> cc->dotRao[1] >> cc->dotRao[2];
         cc->dClk /= t_CST::c;
         cc->raoSet  = true;
         cc->dClkSet = true;
@@ -315,7 +319,8 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
       else if ( messageType == COTYPE_GPSORBIT    || 
                 messageType == COTYPE_GLONASSORBIT ) {
         cc->rao.ReSize(3);
-        in >> cc->iod >> cc->rao[0] >> cc->rao[1] >> cc->rao[2];
+        in >> cc->iod >> cc->rao[0] >> cc->rao[1] >> cc->rao[2]
+           >> cc->dotRao[0] >> cc->dotRao[1] >> cc->dotRao[2];
         cc->raoSet  = true;
       }
       else if ( messageType == COTYPE_GPSCLOCK    || 
@@ -392,7 +397,7 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
         t_corr* cc = _corr.value(prn);
         if (ee->IOD() == cc->iod && (tt - cc->tt) < MAXAGE) {
           corr = true;
-          applyCorr(cc, xc, vv);
+          applyCorr(tt, cc, xc, vv);
           return success;
         }
       }
@@ -407,10 +412,13 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::applyCorr(const t_corr* cc, ColumnVector& xc, 
-                             ColumnVector& vv) {
+void bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc, 
+                             ColumnVector& xc, ColumnVector& vv) {
   ColumnVector dx(3);
-  RSW_to_XYZ(xc.Rows(1,3), vv, cc->rao, dx);
+
+  ColumnVector raoHlp = cc->rao + cc->dotRao * (tt - cc->tt);
+
+  RSW_to_XYZ(xc.Rows(1,3), vv, raoHlp, dx);
 
   xc[0] -= dx[0];
   xc[1] -= dx[1];
