@@ -91,6 +91,7 @@ class t_corr {
   int          iod;
   double       dClk;
   ColumnVector rao;
+  ColumnVector dotRao;
   bool         raoSet;
   bool         dClkSet;
 };
@@ -131,7 +132,8 @@ class bncPPPclient : public QObject {
   t_irc getSatPos(const bncTime& tt, const QString& prn, 
                   ColumnVector& xc, ColumnVector& vv, bool& corr);
   void processEpoch();
-  void applyCorr(const t_corr* cc, ColumnVector& xc, ColumnVector& vv);
+  void applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, 
+                 ColumnVector& vv);
   t_irc cmpToT(t_satData* satData);
 
   QByteArray             _staID;
