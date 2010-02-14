@@ -230,8 +230,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               QString line;
               line.sprintf("   %3d"
                            "   %8.3f %8.3f %8.3f %8.3f"
-                           "   %8.3f %8.3f %8.3f %8.3f"
-                           "   %8.3f %8.3f %8.3f %8.3f",
+                           "   %10.5f %10.5f %10.5f %10.5f"
+                           "   %10.5f %10.5f %10.5f %10.5f",
                            _co.Sat[ii].IOD, 
                            _co.Sat[ii].Clock.DeltaA0,
                            _co.Sat[ii].Orbit.DeltaRadial, 
@@ -255,8 +255,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               QString line;
               line.sprintf("   %3d"
                            "   %8.3f %8.3f %8.3f"
-                           "   %8.3f %8.3f %8.3f"
-                           "   %8.3f %8.3f %8.3f",
+                           "   %10.5f %10.5f %10.5f"
+                           "   %10.5f %10.5f %10.5f",
                            _co.Sat[ii].IOD, 
                            _co.Sat[ii].Orbit.DeltaRadial, 
                            _co.Sat[ii].Orbit.DeltaAlongTrack,
@@ -275,7 +275,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
             else if ( _co.messageType == COTYPE_GPSCLOCK     || 
                       _co.messageType == COTYPE_GLONASSCLOCK ) {
               QString line;
-              line.sprintf("   %3d   %8.3f   %8.3f   %8.3f",
+              line.sprintf("   %3d   %8.3f   %10.5f   %10.5f",
                            _co.Sat[ii].IOD, 
                            _co.Sat[ii].Clock.DeltaA0,
                            _co.Sat[ii].Clock.DeltaA1,
