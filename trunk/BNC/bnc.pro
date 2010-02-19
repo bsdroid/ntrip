@@ -1,8 +1,9 @@
 
 # Switch to debug configuration
 # -----------------------------
-CONFIG -= debug
-CONFIG += release
+CONFIG -= release
+CONFIG += debug
+
 
 DEFINES += NO_RTCM3_MAIN 
 ###DEFINES += DEBUG_RTCM2_2021
