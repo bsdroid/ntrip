@@ -448,7 +448,7 @@ bncWindow::bncWindow() {
   _pppGLONASSCheckBox->setWhatsThis(tr("<p>By default BNC does not use GLONASS observations in PPP mode.</p><p>Tick 'Use GLONASS' for a combined processing of both, GPS and GLONASS observations in PPP mode.</p>"));
   _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
   _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
-  _pppOriginComboBox->setWhatsThis(tr("<p>Select an origion for North/East/Up time series plots in the 'PPP Plot' tab. This option makes only sense for a stationary receiver.</p>"));
+  _pppOriginComboBox->setWhatsThis(tr("<p>Select an origin for North/East/Up time series plots in the 'PPP Plot' tab. This option makes only sense for a stationary receiver.</p>"));
   _pppRefCrdXLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown in the 'PPP Plot' tab will then be referred to these values.</p>"));
   _pppRefCrdYLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown in the 'PPP Plot' tab will then be referred to these values.</p>"));
   _pppRefCrdZLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown in the 'PPP Plot' tab will then be referred to these values.</p>"));
