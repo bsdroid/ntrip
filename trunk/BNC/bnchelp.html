@@ -77,7 +77,7 @@ Unless in offline mode, BNC
 This section describes BNC's top menu bar, its processing options, the 'Streams' and 'Log' sections, and the bottom menu bar.
 </p>
 <p>
-The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various configuration tabs to select a combination of input, processing and output options before you start the program ('Start'). Records of BNC's activities are shown in the 'Log' tab. The bandwidth consumtion per stream, the latency of incoming observations and PPP time series for coordinate components are shown in the 'Throughput', 'Latency' and 'PPP' tabs of the main window.
+The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various configuration tabs to select a combination of input, processing and output options before you start the program ('Start'). Records of BNC's activities are shown in the 'Log' tab. The bandwidth consumtion per stream, the latency of incoming observations and PPP time series for coordinate components are shown in the 'Throughput', 'Latency' and 'PPP Plot' tabs of the main window.
 </p>
 <p>
 As a default, configuration files for running BNC on Unix/Linux/Mac systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration file name is 'BNC.ini'.</p>
@@ -145,7 +145,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.2.2 <a href=#pppphase>Use Phase Obs</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2.3 <a href=#ppptropo>Estimate Tropo</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2.4 <a href=#pppglo>Use GLONASS</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppnmearef>Ref. Coordinates</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppnmearef>Plot Origin</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.4 <a href=#pppnmeaout>NMEA</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.4.1 <a href=#pppnmeafile>File</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.4.2 <a href=#pppnmeaport>Port</a><br>
@@ -157,7 +157,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.13.1 <a href=#logfile>Log</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.2 <a href=#throughput>Throughput</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.3 <a href=#latency>Latency</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.4 <a href=#ppptab>Static PPP</a><br>
+&nbsp; &nbsp; &nbsp; 3.13.4 <a href=#ppptab>PPP Plot</a><br>
 3.14. <a href=#bottom>Bottom Menu Bar</a><br>
 &nbsp; &nbsp; &nbsp; 3.14.1. <a href=#streamadd>Add Stream - Coming from Caster</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.1 <a href=#streamhost>Caster Host and Port</a><br>
@@ -952,29 +952,36 @@ BNC can derive coordinates for a rover position following the Precise Point Posi
 <p>
 PPP results are shown in the 'Log' tab on the bottom of BNC's main window. Depending on the processing options, the following values are shown about once per second (example):
 <pre>
-09-12-15 22:30:39  PPP CAS10 22:30:44.0 9  -901775.887 +- 0.058  2409382.427 +- 0.046  -5816746.721 +- 0.087  0.014 +- 0.005
+09-12-15 22:30:39  PPP CAS10 22:30:44.0 9  -901775.887 +- 0.058  2409382.427 +- 0.046  -5816746.721 +- 0.087
 </pre>
 </p>
 <p>
-The 'PPP' string in that is followed by the selected mounpoint, a PPP time stamp in GPS Time, the number of processed satellites, and XYZ coordinates with their formal errors as derived from the implemented filter in [m]. If the troposphere estimation flag is set then the estimated troposphere correction follows together with its formal error in [m]. The implemented algorithm includes an outlier and cycle slip detection. The maximum for accepted residuals is hard coded to 10 meters for code observations and 10 centimeters for phase observations.
+The 'PPP' string in that is followed by the selected mounpoint, a PPP time stamp in GPS Time, the number of processed satellites, and XYZ coordinates with their formal errors as derived from the implemented filter in [m]. The implemented algorithm includes an outlier and cycle slip detection. The maximum for accepted residuals is hard coded to 10 meters for code observations and 10 centimeters for phase observations.
 </p>
 <p>
-More detailed PPP results are saved in BNC's logfile. There you find the estimated
+More detailed PPP results are saved in BNC's logfile. Depending on the selected processing options you find
 <ul>
+<li>code and phase residuals for GPS and GLONASS in [m], </li>
 <li>receiver clock errors in [m], </li>
-<li>a-priori and correction values of tropospheric zenith delay in [m],' 
+<li>a-priori and correction values of tropospheric zenith delay in [m], 
 <li>L3 biases, also known as 'floated ambiguities', given per satellite.
 </ul>
 These parameters are saved together with their standard deviation. Example extract from a log file:
 <pre>
-10-01-07 15:18:02 Precise Point Positioning
-clk = -1.697 +-  0.801
-trp =   2.176 -0.000 +-  0.010
-amb G11 =  0.637 +-  0.256
-amb G17 =  4.773 +-  0.338
-amb G20 = -0.979 +-  0.312
-amb G23 = -5.682 +-  0.320
-amb G31 =  1.017 +-  0.689
+10-01-07 15:18:02
+residuals code  0.778 -0.608 -1.269 1.697
+residuals phase 0.002 0.001 -0.002 -0.002
+residuals glo   -0.000 0.000 0.001
+
+    clk = 112578.741 +-  9.345
+    trp =   2.339 +0.000 +-  0.010
+    amb G11 = -1.762 +-  3.590
+    amb G19 = -18.195 +-  5.386
+    amb G23 =  1.316 +-  4.843
+    amb G32 =  9.299 +-  3.920
+    amb R01 = -146.297 +-  4.568
+    amb R02 = -146.738 +- 15.037
+    amb R17 = -156.881 +- 13.671
 </pre>
 </p>
 
@@ -1014,9 +1021,16 @@ By default BNC does not estimate troposphere parameters. Tick 'Estimate tropo' t
 By default BNC does not process GLONASS observations in PPP mode. Tick 'Use GLONASS' to use GPS and GLONASS observations for estimating coordinates in Precise Point Positioning mode.
 </p>
 
-<p><a name="pppnmearef"><h4>3.11.3 Ref. Coordinates - optional</h4></p>
+<p><a name="pppnmearef"><h4>3.11.3 Plot Origin - optional</h4></p>
 <p>
-You may specify X,Y,Z reference coordinate components for the receiver's position if known. The North/East/Up time series plots shown in the 'PPP' tab will then be referred to these values. The default values for the coordinate components are empty option fields, meaning that BNC will refer time series plots to the first estimated position and not to any reference coordinate. 
+Select an origin for North/East/Up time series plots in the 'PPP Plot' tab. Note that this makes only sense for a stationary receiver. Available options are
+<ul>
+<li>'Start position', meaning that BNC will refer time series plots to the first estimated position.
+</li>
+<li>'X Y Z', meaning the known reference coordinate components for the receiver's position.
+</li>
+</ul>
+Default is the selection of an empty option field meaning that no PPP time series will be plotted in the "PPP Plot' tab..
 </p>
 
 <p><a name="pppnmeaout"><h4>3.11.4 NMEA</h4></p>
@@ -1107,9 +1121,9 @@ The bandwidth consumtion per stream is shown in the 'Throughput' tab in bits per
 The latency of observations in each incoming stream is shown in the 'Latency' tab in milliseconds or seconds. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) are not considered here. Note that the calculation of correct latencies requires the clock of the host computer to be properly synchronized.
 </p>
 
-<p><a name="ppptab"><h4>3.13.4 Static PPP</h4></p>
+<p><a name="ppptab"><h4>3.13.4 PPP Plot</h4></p>
 <p>
-Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP' tab when the 'Static' PPP option is applied. Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate components. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. Note that it may take up to 30 seconds or more till the first PPP solutions becomes available.
+Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when a 'Plot origin' option is defined. Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate components. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. Note that it may take up to 30 seconds or more till the first PPP solutions becomes available.
 </p>
 
 <p><a name="bottom"><h4>3.14. Bottom Menu Bar</h4></p>
@@ -1423,7 +1437,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 
 <tr>
 <td>Feb 2010 &nbsp;</td><td>Version 2.0 &nbsp;</td>
-<td>[Mod] Change sign of Broadcast Ephemeris correctors<br> [Add] Real-time PPP options</td>
+<td>[Mod] Change sign of Broadcast Ephemeris correctors<br> [Add] Real-time PPP option</td>
 </tr>
 
 </table>
@@ -1681,6 +1695,10 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>pppUsePhase=0</td><td>PPP Client: Use phase data </td></tr>
 <tr><td>pppEstTropo=0</td><td>PPP Client: Estimate troposphere</td></tr>
 <tr><td>pppGLONASS=0</td><td>PPP Client: Use GLONASS</td></tr>
+<tr><td>pppOrigin=</td><td>PPP Client: Origin of time series plot</td></tr>
+<tr><td>pppRefCrdX=</td><td>PPP Client: X coordinate of plot origin</td></tr>
+<tr><td>pppRefCrdY=</td><td>PPP Client: Y coordinate of plot origin</td></tr>
+<tr><td>pppRefCrdZ=</td><td>PPP Client: Z coordinate of plot origin</td></tr>
 <tr><td>nmeaFile=</td><td>PPP Client: NMEA outputfile</td></tr>
 <tr><td>nmeaPort=</td><td>PPP Client: NMEA IP output port</td></tr>
 </table>
