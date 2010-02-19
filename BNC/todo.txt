@@ -15,5 +15,8 @@ mixed then in the RINEX files. A 10 Hz stream to test the situation is
 available from GFZ caster 139.17.3.112:4080 through stream A17H. An account for
 accessing stream A17H is [bkgt:test].
 
-(3) GW: Keep an eye on www.igs-ip.net/PENC0.
+(3) Wenn man beim Laden einer Sourcetable eine falsche nicht existierende 
+Domain eingibt stürzt BNC ab.
+
+(4) GW: Keep an eye on www.igs-ip.net/PENC0.
 
