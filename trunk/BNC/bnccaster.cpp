@@ -48,8 +48,6 @@
 #include "bncsettings.h"
 #include "RTCM/GPSDecoder.h"
 
-static const int MAXRATE = 20; // Hz
-
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncCaster::bncCaster(const QString& outFileName, int port) {
@@ -160,8 +158,8 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
 
   obs->_status = t_obs::received;
 
-  long iSecXrate    = long(floor(obs->_o.GPSWeeks * MAXRATE + 0.5));
-  long newTimeXrate = obs->_o.GPSWeek * 7*24*3600 * MAXRATE + iSecXrate;
+  long iSecXrate    = long(floor(obs->_o.GPSWeeks * _maxRate + 0.5));
+  long newTimeXrate = obs->_o.GPSWeek * 7*24*3600 * _maxRate + iSecXrate;
 
   // Rename the Station
   // ------------------
@@ -212,10 +210,10 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
       if ( !settings.value("outFile").toString().isEmpty() || 
            !settings.value("outPort").toString().isEmpty() ) { 
 
-	QTime enomtime = QTime(0,0,0).addMSecs(iSecXrate/MAXRATE/1000);
+	QTime enomtime = QTime(0,0,0).addMSecs(iSecXrate/_maxRate/1000);
 
         emit( newMessage(QString("%1: Old epoch %2 (%3) thrown away")
-			 .arg(staID.data()).arg(iSecXrate/MAXRATE)
+			 .arg(staID.data()).arg(iSecXrate/_maxRate)
 			 .arg(enomtime.toString("HH:mm:ss"))
 			 .toAscii(), true) );
       }
@@ -416,8 +414,12 @@ void bncCaster::slotReadMountPoints() {
 
   // Reread several options
   // ----------------------
+  _maxRate = settings.value("maxRate").toInt();
+  if (_maxRate < 1) {
+    _maxRate = 1;
+  }
   _samplingRate  = settings.value("binSampl").toInt();
-  _waitTimeXrate = settings.value("waitTime").toInt() * MAXRATE; 
+  _waitTimeXrate = settings.value("waitTime").toInt() * _maxRate; 
   if (_waitTimeXrate < 1) {
     _waitTimeXrate = 1;
   }
