@@ -66,7 +66,7 @@ class bncCaster : public QObject {
    int                     _port;
    QTextStream*            _out;
    QMultiMap<long, p_obs>* _epochs;
-   long                    _lastDumpSec;
+   long                    _lastDumpSecXrate;
    QTcpServer*             _server;
    QTcpServer*             _uServer;
    QTcpServer*             _nmeaServer;
@@ -76,7 +76,7 @@ class bncCaster : public QObject {
    QList<QByteArray>       _staIDs;
    QList<bncGetThread*>    _threads;
    int                     _samplingRate;
-   long                    _waitTime;
+   long                    _waitTimeXrate;
    QMutex                  _mutex;
    int                     _confInterval;
 };
