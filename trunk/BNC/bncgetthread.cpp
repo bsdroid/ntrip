@@ -465,7 +465,7 @@ void bncGetThread::run() {
           double dt = fabs(sec - obs->_o.GPSWeeks);
           const double maxDt = 600.0;
           if (week != obs->_o.GPSWeek || dt > maxDt) {
-              emit( newMessage(_staID + ": Wrong observation epoch(s)", true) );
+              emit( newMessage(_staID + ": Wrong observation epoch(s)", false) );
             delete obs;
             continue;
           }
