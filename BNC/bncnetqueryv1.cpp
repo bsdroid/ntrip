@@ -65,11 +65,11 @@ void bncNetQueryV1::waitForRequestResult(const QUrl& url, QByteArray& outData){
 
   _eventLoop->exec();
 
-  outData = _socket->readAll();
-
-  delete _socket; _socket = 0;
-
-  _status = finished;
+  if (_socket) {
+    outData = _socket->readAll();
+    delete _socket; _socket = 0;
+    _status = finished;
+  }
 }
 
 // 
