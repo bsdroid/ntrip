@@ -159,6 +159,7 @@ class bncWindow : public QMainWindow {
     QLineEdit*   _LonLineEdit;
 
     QComboBox*  _onTheFlyComboBox;
+    QComboBox*  _pppOriginComboBox;
 
     QTextEdit*  _log;
 
