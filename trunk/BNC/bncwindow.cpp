@@ -1265,13 +1265,15 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
                    _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
         connect(thread, SIGNAL(newLatency(QByteArray, double)),
                 _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
-        disconnect(thread, 
-                   SIGNAL(newPosition(bncTime, double, double, double)),
-                   _bncFigurePPP, 
-                   SLOT(slotNewPosition(bncTime, double, double, double)));
-        connect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
-                _bncFigurePPP, 
-                SLOT(slotNewPosition(bncTime, double, double, double)));
+        if ( !settings.value("pppOrigin").toString().isEmpty() ) {
+          disconnect(thread, 
+                     SIGNAL(newPosition(bncTime, double, double, double)),
+                     _bncFigurePPP, 
+                     SLOT(slotNewPosition(bncTime, double, double, double)));
+          connect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
+                  _bncFigurePPP, 
+                  SLOT(slotNewPosition(bncTime, double, double, double)));
+        }
         break;
       }
     }
