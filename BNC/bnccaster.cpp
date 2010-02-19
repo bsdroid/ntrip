@@ -302,7 +302,7 @@ void bncCaster::slotGetThreadFinished(QByteArray staID) {
 
 // Dump Complete Epochs
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::dumpEpochs(long minTime, long maxTime) {
+void bncCaster::dumpEpochs(long minTimeXrate, long maxTimeXrate) {
 
   const char begEpoch[] = "BEGEPOCH";
   const char endEpoch[] = "ENDEPOCH";
@@ -310,16 +310,16 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
   const int begEpochNBytes = sizeof(begEpoch) - 1;
   const int endEpochNBytes = sizeof(endEpoch) - 1;
 
-  for (long sec = minTime; sec <= maxTime; sec++) {
+  for (long secXrate = minTimeXrate; secXrate <= maxTimeXrate; ++secXrate) {
 
     bool first = true;
-    QList<p_obs> allObs = _epochs->values(sec);
+    QList<p_obs> allObs = _epochs->values(secXrate);
 
     QListIterator<p_obs> it(allObs);
     while (it.hasNext()) {
       p_obs obs = it.next();
 
-      if (_samplingRate == 0 || sec % _samplingRate == 0) {
+      if (_samplingRate == 0 || (secXrate/_maxRate) % _samplingRate == 0) {
 
 	if (first) {
 	  QTime enomtime = QTime(0,0,0).addSecs(static_cast<int>(floor(obs->_o.GPSWeeks+0.5)));
@@ -400,7 +400,7 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
       }
 
       delete obs;
-      _epochs->remove(sec);
+      _epochs->remove(secXrate);
       first = false;
     }
   }
@@ -414,10 +414,8 @@ void bncCaster::slotReadMountPoints() {
 
   // Reread several options
   // ----------------------
-  _maxRate = settings.value("maxRate").toInt();
-  if (_maxRate < 1) {
-    _maxRate = 1;
-  }
+  _maxRate = 20;
+
   _samplingRate  = settings.value("binSampl").toInt();
   _waitTimeXrate = settings.value("waitTime").toInt() * _maxRate; 
   if (_waitTimeXrate < 1) {
