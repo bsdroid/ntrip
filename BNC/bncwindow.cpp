@@ -343,7 +343,7 @@ bncWindow::bncWindow() {
   _pppRefCrdZLineEdit  = new QLineEdit(settings.value("pppRefCrdZ").toString());
   _pppOriginComboBox = new QComboBox();
   _pppOriginComboBox->setEditable(false);
-  _pppOriginComboBox->addItems(QString(",Start position,X Y Z").split(","));
+  _pppOriginComboBox->addItems(QString("No plot,Start position,X Y Z").split(","));
   int ij = _pppOriginComboBox->findText(settings.value("pppOrigin").toString());
   if (ij != -1) {
     _pppOriginComboBox->setCurrentIndex(ij);
@@ -1265,7 +1265,7 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
                    _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
         connect(thread, SIGNAL(newLatency(QByteArray, double)),
                 _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
-        if ( !settings.value("pppOrigin").toString().isEmpty() ) {
+        if (settings.value("pppOrigin").toString() != "No plot") {
           disconnect(thread, 
                      SIGNAL(newPosition(bncTime, double, double, double)),
                      _bncFigurePPP, 
