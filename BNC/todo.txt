@@ -5,18 +5,10 @@ BNS
 
 BNC
 =========================
-(1) In case of problems with observation time stamps the progam outputs
-"Wrong observation epoch(s)". When BNC is run in Windows mode and the problem
-lasts for several minutes or more, the there is so much stuff to be printed
-in BNC's graphic log window that the system crashes.
-
-(2) BNC has a problem when the observation update rate is > 1Hz. Records get
+(1) BNC has a problem when the observation update rate is > 1Hz. Records get
 mixed then in the RINEX files. A 10 Hz stream to test the situation is 
 available from GFZ caster 139.17.3.112:4080 through stream A17H. An account for
 accessing stream A17H is [bkgt:test].
 
-(3) Wenn man beim Laden einer Sourcetable eine falsche nicht existierende 
-Domain eingibt stürzt BNC ab.
-
-(4) GW: Keep an eye on www.igs-ip.net/PENC0.
+(2) GW: Keep an eye on www.igs-ip.net/PENC0.
 
