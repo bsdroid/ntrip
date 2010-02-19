@@ -48,6 +48,8 @@
 #include "bncsettings.h"
 #include "RTCM/GPSDecoder.h"
 
+static const int MAXRATE = 20; // Hz
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncCaster::bncCaster(const QString& outFileName, int port) {
@@ -120,7 +122,7 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
 
   _epochs = new QMultiMap<long, p_obs>;
 
-  _lastDumpSec   = 0; 
+  _lastDumpSecXrate = 0; 
 
   _confInterval = -1;
 }
@@ -158,8 +160,8 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
 
   obs->_status = t_obs::received;
 
-  long iSec    = long(floor(obs->_o.GPSWeeks+0.5));
-  long newTime = obs->_o.GPSWeek * 7*24*3600 + iSec;
+  long iSecXrate    = long(floor(obs->_o.GPSWeeks * MAXRATE + 0.5));
+  long newTimeXrate = obs->_o.GPSWeek * 7*24*3600 * MAXRATE + iSecXrate;
 
   // Rename the Station
   // ------------------
@@ -198,22 +200,22 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
 
   // First time, set the _lastDumpSec immediately
   // --------------------------------------------
-  if (_lastDumpSec == 0) {
-    _lastDumpSec = newTime - 1;
+  if (_lastDumpSecXrate == 0) {
+    _lastDumpSecXrate = newTimeXrate - 1;
   }
 
   // An old observation - throw it away
   // ----------------------------------
-  if (newTime <= _lastDumpSec) {
+  if (newTimeXrate <= _lastDumpSecXrate) {
     if (firstObs) {
       bncSettings settings;
       if ( !settings.value("outFile").toString().isEmpty() || 
            !settings.value("outPort").toString().isEmpty() ) { 
 
-	QTime enomtime = QTime(0,0,0).addSecs(iSec);
+	QTime enomtime = QTime(0,0,0).addMSecs(iSecXrate/MAXRATE/1000);
 
         emit( newMessage(QString("%1: Old epoch %2 (%3) thrown away")
-			 .arg(staID.data()).arg(iSec)
+			 .arg(staID.data()).arg(iSecXrate/MAXRATE)
 			 .arg(enomtime.toString("HH:mm:ss"))
 			 .toAscii(), true) );
       }
@@ -224,13 +226,13 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
 
   // Save the observation
   // --------------------
-  _epochs->insert(newTime, obs);
+  _epochs->insert(newTimeXrate, obs);
 
   // Dump Epochs
   // -----------
-  if (newTime - _waitTime > _lastDumpSec) {
-    dumpEpochs(_lastDumpSec + 1, newTime - _waitTime);
-    _lastDumpSec = newTime - _waitTime;
+  if (newTimeXrate - _waitTimeXrate > _lastDumpSecXrate) {
+    dumpEpochs(_lastDumpSecXrate + 1, newTimeXrate - _waitTimeXrate);
+    _lastDumpSecXrate = newTimeXrate - _waitTimeXrate;
   }
 }
 
@@ -414,10 +416,10 @@ void bncCaster::slotReadMountPoints() {
 
   // Reread several options
   // ----------------------
-  _samplingRate = settings.value("binSampl").toInt();
-  _waitTime     = settings.value("waitTime").toInt();
-  if (_waitTime < 1) {
-    _waitTime = 1;
+  _samplingRate  = settings.value("binSampl").toInt();
+  _waitTimeXrate = settings.value("waitTime").toInt() * MAXRATE; 
+  if (_waitTimeXrate < 1) {
+    _waitTimeXrate = 1;
   }
 
   // Add new mountpoints
