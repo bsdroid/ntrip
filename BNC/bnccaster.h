@@ -79,6 +79,7 @@ class bncCaster : public QObject {
    long                    _waitTimeXrate;
    QMutex                  _mutex;
    int                     _confInterval;
+   int                     _maxRate;
 };
 
 #endif
