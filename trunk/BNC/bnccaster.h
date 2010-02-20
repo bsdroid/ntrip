@@ -59,14 +59,14 @@ class bncCaster : public QObject {
    void slotGetThreadFinished(QByteArray staID);
 
  private:
-   void dumpEpochs(long minTimeXrate, long maxTimeXrate);
+   void dumpEpochs(long minTime, long maxTime);
    static int myWrite(QTcpSocket* sock, const char* buf, int bufLen);
 
    QFile*                  _outFile;
    int                     _port;
    QTextStream*            _out;
    QMultiMap<long, p_obs>* _epochs;
-   long                    _lastDumpSecXrate;
+   long                    _lastDumpSec;
    QTcpServer*             _server;
    QTcpServer*             _uServer;
    QTcpServer*             _nmeaServer;
@@ -76,10 +76,9 @@ class bncCaster : public QObject {
    QList<QByteArray>       _staIDs;
    QList<bncGetThread*>    _threads;
    int                     _samplingRate;
-   long                    _waitTimeXrate;
+   long                    _waitTime;
    QMutex                  _mutex;
    int                     _confInterval;
-   int                     _maxRate;
 };
 
 #endif
