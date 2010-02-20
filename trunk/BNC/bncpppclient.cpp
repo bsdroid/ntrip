@@ -137,11 +137,11 @@ void bncPPPclient::putNewObs(p_obs pp) {
   // Set Code Observations
   // ---------------------  
   if      (obs->P1) {
-    satData->P1         = obs->P1 + (bb ? bb->p1 : 0.0);
+    satData->P1         = obs->P1;
     satData->codeTypeF1 = t_satData::P_CODE;
   }
   else if (obs->C1) {
-    satData->P1         = obs->C1 + (bb ? bb->c1 : 0.0);
+    satData->P1         = obs->C1 + (bb ? bb->p1c1 : 0.0);
     satData->codeTypeF1 = t_satData::C_CODE;
   }
   else {
@@ -150,11 +150,11 @@ void bncPPPclient::putNewObs(p_obs pp) {
   }
     
   if      (obs->P2) {
-    satData->P2         = obs->P2 + (bb ? bb->p2 : 0.0);
+    satData->P2         = obs->P2 + (bb ? bb->p1p2 : 0.0);
     satData->codeTypeF2 = t_satData::P_CODE;
   }
   else if (obs->C2) {
-    satData->P2         = obs->C2 + (bb ? bb->c2 : 0.0);
+    satData->P2         = obs->C2;
     satData->codeTypeF2 = t_satData::C_CODE;
   }
   else {
@@ -331,8 +331,7 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
         cc->dClkSet = true;
       }
     }
-    else if ( messageType == BTYPE_GPS     || 
-              messageType == BTYPE_GLONASS ) {
+    else if ( messageType == BTYPE_GPS ) { 
 
       t_bias* bb = 0;
       if (_bias.contains(prn)) {
@@ -351,17 +350,11 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
         int    bType;
         double bValue;
 	in >> bType >> bValue;
-        if      (bType == 0) {
-          bb->c1 = bValue;
+        if      (bType ==  0) {
+          bb->p1c1 = -bValue;
 	}
-        else if (bType >= 1 && bType <= 4) {
-          bb->p1 = bValue;
-	}
-        else if (bType == 5) {
-          bb->c2 = bValue;
-	}
-        else if (bType >= 6 && bType <= 13) {
-          bb->p2 = bValue;
+        else if (bType == 10) {
+          bb->p1p2 = -bValue;
 	}
       }
     }
