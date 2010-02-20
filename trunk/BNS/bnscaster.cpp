@@ -150,7 +150,7 @@ void t_bnscaster::open() {
 
   QByteArray msg = "SOURCE " + password.toAscii() + " /" + 
                    _mountpoint.toAscii() + "\r\n" +
-                   "Source-Agent: NTRIP BNS/1.0\r\n\r\n";
+                   "Source-Agent: NTRIP BNS/1.1\r\n\r\n";
 
   _outSocket->write(msg);
   _outSocket->waitForBytesWritten();
