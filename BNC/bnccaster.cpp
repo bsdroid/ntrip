@@ -120,7 +120,7 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
 
   _epochs = new QMultiMap<long, p_obs>;
 
-  _lastDumpSecXrate = 0; 
+  _lastDumpSec   = 0; 
 
   _confInterval = -1;
 }
@@ -158,8 +158,8 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
 
   obs->_status = t_obs::received;
 
-  long iSecXrate    = long(floor(obs->_o.GPSWeeks * _maxRate + 0.5));
-  long newTimeXrate = obs->_o.GPSWeek * 7*24*3600 * _maxRate + iSecXrate;
+  long iSec    = long(floor(obs->_o.GPSWeeks+0.5));
+  long newTime = obs->_o.GPSWeek * 7*24*3600 + iSec;
 
   // Rename the Station
   // ------------------
@@ -198,22 +198,22 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
 
   // First time, set the _lastDumpSec immediately
   // --------------------------------------------
-  if (_lastDumpSecXrate == 0) {
-    _lastDumpSecXrate = newTimeXrate - 1;
+  if (_lastDumpSec == 0) {
+    _lastDumpSec = newTime - 1;
   }
 
   // An old observation - throw it away
   // ----------------------------------
-  if (newTimeXrate <= _lastDumpSecXrate) {
+  if (newTime <= _lastDumpSec) {
     if (firstObs) {
       bncSettings settings;
       if ( !settings.value("outFile").toString().isEmpty() || 
            !settings.value("outPort").toString().isEmpty() ) { 
 
-	QTime enomtime = QTime(0,0,0).addMSecs(iSecXrate/_maxRate/1000);
+	QTime enomtime = QTime(0,0,0).addSecs(iSec);
 
         emit( newMessage(QString("%1: Old epoch %2 (%3) thrown away")
-			 .arg(staID.data()).arg(iSecXrate/_maxRate)
+			 .arg(staID.data()).arg(iSec)
 			 .arg(enomtime.toString("HH:mm:ss"))
 			 .toAscii(), true) );
       }
@@ -224,13 +224,13 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
 
   // Save the observation
   // --------------------
-  _epochs->insert(newTimeXrate, obs);
+  _epochs->insert(newTime, obs);
 
   // Dump Epochs
   // -----------
-  if (newTimeXrate - _waitTimeXrate > _lastDumpSecXrate) {
-    dumpEpochs(_lastDumpSecXrate + 1, newTimeXrate - _waitTimeXrate);
-    _lastDumpSecXrate = newTimeXrate - _waitTimeXrate;
+  if (newTime - _waitTime > _lastDumpSec) {
+    dumpEpochs(_lastDumpSec + 1, newTime - _waitTime);
+    _lastDumpSec = newTime - _waitTime;
   }
 }
 
@@ -302,7 +302,7 @@ void bncCaster::slotGetThreadFinished(QByteArray staID) {
 
 // Dump Complete Epochs
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::dumpEpochs(long minTimeXrate, long maxTimeXrate) {
+void bncCaster::dumpEpochs(long minTime, long maxTime) {
 
   const char begEpoch[] = "BEGEPOCH";
   const char endEpoch[] = "ENDEPOCH";
@@ -310,16 +310,16 @@ void bncCaster::dumpEpochs(long minTimeXrate, long maxTimeXrate) {
   const int begEpochNBytes = sizeof(begEpoch) - 1;
   const int endEpochNBytes = sizeof(endEpoch) - 1;
 
-  for (long secXrate = minTimeXrate; secXrate <= maxTimeXrate; ++secXrate) {
+  for (long sec = minTime; sec <= maxTime; sec++) {
 
     bool first = true;
-    QList<p_obs> allObs = _epochs->values(secXrate);
+    QList<p_obs> allObs = _epochs->values(sec);
 
     QListIterator<p_obs> it(allObs);
     while (it.hasNext()) {
       p_obs obs = it.next();
 
-      if (_samplingRate == 0 || (secXrate/_maxRate) % _samplingRate == 0) {
+      if (_samplingRate == 0 || sec % _samplingRate == 0) {
 
 	if (first) {
 	  QTime enomtime = QTime(0,0,0).addSecs(static_cast<int>(floor(obs->_o.GPSWeeks+0.5)));
@@ -400,7 +400,7 @@ void bncCaster::dumpEpochs(long minTimeXrate, long maxTimeXrate) {
       }
 
       delete obs;
-      _epochs->remove(secXrate);
+      _epochs->remove(sec);
       first = false;
     }
   }
@@ -414,12 +414,10 @@ void bncCaster::slotReadMountPoints() {
 
   // Reread several options
   // ----------------------
-  _maxRate = 20;
-
-  _samplingRate  = settings.value("binSampl").toInt();
-  _waitTimeXrate = settings.value("waitTime").toInt() * _maxRate; 
-  if (_waitTimeXrate < 1) {
-    _waitTimeXrate = 1;
+  _samplingRate = settings.value("binSampl").toInt();
+  _waitTime     = settings.value("waitTime").toInt();
+  if (_waitTime < 1) {
+    _waitTime = 1;
   }
 
   // Add new mountpoints
