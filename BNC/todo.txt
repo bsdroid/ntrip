@@ -7,8 +7,7 @@ BNC
 =========================
 (1) BNC has a problem when the observation update rate is > 1Hz. Records get
 mixed then in the RINEX files. A 10 Hz stream to test the situation is 
-available from GFZ caster 139.17.3.112:4080 through stream A17H. An account for
-accessing stream A17H is [bkgt:test].
+available from GFZ caster 139.17.3.112:4080 through stream A17H.
 
 (2) GW: Keep an eye on www.igs-ip.net/PENC0.
 
