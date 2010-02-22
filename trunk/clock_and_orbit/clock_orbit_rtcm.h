@@ -5,7 +5,7 @@
 
         Name:           clock_orbit_rtcm.h
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.h,v 1.11 2009/05/14 13:24:13 stoecker Exp $
+        Version:        $Id: clock_orbit_rtcm.h,v 1.6 2009/05/14 13:24:41 stoecker Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -49,6 +49,7 @@ GPS satellite is xxx->Sat[0]. */
 
 struct ClockOrbit
 {
+  enum ClockOrbitType messageType;
   int GPSEpochTime;                 /* 0 .. 604799 s */
   int GLONASSEpochTime;             /* 0 .. 86399 s (86400 for leap second) */
   int NumberOfGPSSat;               /* 0 .. 32 */
@@ -90,6 +91,7 @@ struct ClockOrbit
 
 struct Bias
 {
+  enum BiasType messageType;
   int GPSEpochTime;                 /* 0 .. 604799 s */
   int GLONASSEpochTime;             /* 0 .. 86399 s (86400 for leap second) */
   int NumberOfGPSSat;               /* 0 .. 32 */
