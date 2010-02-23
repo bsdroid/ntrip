@@ -2,19 +2,18 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.17.2.1 2009/11/25 15:11:47 mervart Exp $
+        Version:        $Id: clock_orbit_rtcm.c,v 1.9 2010/02/22 13:42:26 stoecker Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
 
 #include <stdio.h>
 #include <string.h>
-#include <sys/types.h>
-
 #ifndef sparc
 #include <stdint.h>
+#else
+#include <sys/types.h>
 #endif
-
 #include "clock_orbit_rtcm.h"
 
 static uint32_t CRC24(long size, const unsigned char *buf)
@@ -232,7 +231,8 @@ int moremessagesfollow, char *buffer, size_t size)
       left = nums - 28;
       nums = 28;
     }
-    else {
+    else
+    {
       left = 0;
     }
     while(nums)
@@ -427,7 +427,7 @@ int moremessagesfollow, char *buffer, size_t size)
 size_t MakeBias(const struct Bias *b, enum BiasType type,
 int moremessagesfollow, char *buffer, size_t size)
 {
-  int gps, glo, mmi, i, j;
+  int gps=0, glo=0, mmi, i, j;
 
   STARTDATA
 
