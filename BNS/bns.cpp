@@ -661,20 +661,20 @@ void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz, const QString trafo) {
     _t0  =    2000.0;
   }
   else if (trafo == "NAD83") {
-    _dx  =    0.9956;
-    _dy  =   -1.9013;
-    _dz  =   -0.5215;
-    _dxr =    0.0007;
-    _dyr =   -0.0007;
-    _dzr =    0.0005;
+    _dx  =    0.9963;
+    _dy  =   -1.9024;
+    _dz  =   -0.5210;
+    _dxr =    0.0005;
+    _dyr =   -0.0006;
+    _dzr =   -0.0013;
     _ox  =  0.025915;
     _oy  =  0.009426;
     _oz  =  0.011599;
     _oxr =  0.000067;
     _oyr = -0.000757;
     _ozr = -0.000051;
-    _sc  =      0.62;
-    _scr =     -0.18;
+    _sc  =      0.78;
+    _scr =     -0.10;
     _t0  =    1997.0;
   }
   else if (trafo == "GDA94") {
