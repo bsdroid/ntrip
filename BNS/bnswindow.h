@@ -49,6 +49,9 @@ Q_OBJECT
   void slotOutBytes1(int nBytes);
   void slotOutBytes2(int nBytes);
   void slotOutBytes3(int nBytes);
+  void slotOutBytes4(int nBytes);
+  void slotOutBytes5(int nBytes);
+  void slotOutBytes6(int nBytes);
   void slotOutEphBytes(int nBytes);
 
  protected:

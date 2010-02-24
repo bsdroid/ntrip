@@ -1131,6 +1131,9 @@ void bnsWindow::slotStart() {
   connect(_bns, SIGNAL(newOutBytes1(int)), this, SLOT(slotOutBytes1(int)));
   connect(_bns, SIGNAL(newOutBytes2(int)), this, SLOT(slotOutBytes2(int)));
   connect(_bns, SIGNAL(newOutBytes3(int)), this, SLOT(slotOutBytes3(int)));
+  connect(_bns, SIGNAL(newOutBytes4(int)), this, SLOT(slotOutBytes4(int)));
+  connect(_bns, SIGNAL(newOutBytes5(int)), this, SLOT(slotOutBytes5(int)));
+  connect(_bns, SIGNAL(newOutBytes6(int)), this, SLOT(slotOutBytes6(int)));
   connect(_bns, SIGNAL(newOutEphBytes(int)), this, SLOT(slotOutEphBytes(int)));
 
   _bns->start();
@@ -1153,8 +1156,17 @@ void bnsWindow::slotOutBytes2(int nBytes) {
 void bnsWindow::slotOutBytes3(int nBytes) {
   updateStatus(4, nBytes);
 }
-void bnsWindow::slotOutEphBytes(int nBytes) {
+void bnsWindow::slotOutBytes4(int nBytes) {
   updateStatus(5, nBytes);
+}
+void bnsWindow::slotOutBytes5(int nBytes) {
+  updateStatus(6, nBytes);
+}
+void bnsWindow::slotOutBytes6(int nBytes) {
+  updateStatus(7, nBytes);
+}
+void bnsWindow::slotOutEphBytes(int nBytes) {
+  updateStatus(8, nBytes);
 }
 
 void bnsWindow::updateStatus(int ii, int nBytes) {

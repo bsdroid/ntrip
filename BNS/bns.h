@@ -45,6 +45,9 @@ class t_bns : public QThread {
   void newOutBytes1(int nBytes);
   void newOutBytes2(int nBytes);
   void newOutBytes3(int nBytes);
+  void newOutBytes4(int nBytes);
+  void newOutBytes5(int nBytes);
+  void newOutBytes6(int nBytes);
   void newOutEphBytes(int nBytes);
   void newMessage(const QByteArray msg);
   void error(const QByteArray msg);
