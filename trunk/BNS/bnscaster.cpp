@@ -138,19 +138,19 @@ void t_bnscaster::open() {
   if (_ic == 4) {
     _outSocket->connectToHost(settings.value("outHost4").toString(),
                               settings.value("outPort4").toInt());
-    password = settings.value("password3").toString();
+    password = settings.value("password4").toString();
   }
 
   if (_ic == 5) {
     _outSocket->connectToHost(settings.value("outHost5").toString(),
                               settings.value("outPort5").toInt());
-    password = settings.value("password3").toString();
+    password = settings.value("password5").toString();
   }
 
   if (_ic == 6) {
     _outSocket->connectToHost(settings.value("outHost6").toString(),
                               settings.value("outPort6").toInt());
-    password = settings.value("password3").toString();
+    password = settings.value("password6").toString();
   }
 
   if (_ic == 0) {
