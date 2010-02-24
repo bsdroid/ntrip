@@ -113,6 +113,30 @@ Q_OBJECT
   QLineEdit* _outFile_3_LineEdit;
   QCheckBox* _CoM_3_CheckBox;
 
+  QLineEdit* _outHost_4_LineEdit;
+  QLineEdit* _outPort_4_LineEdit;
+  QLineEdit* _mountpoint_4_LineEdit;
+  QLineEdit* _password_4_LineEdit;
+  QComboBox* _refSys_4_ComboBox;
+  QLineEdit* _outFile_4_LineEdit;
+  QCheckBox* _CoM_4_CheckBox;
+
+  QLineEdit* _outHost_5_LineEdit;
+  QLineEdit* _outPort_5_LineEdit;
+  QLineEdit* _mountpoint_5_LineEdit;
+  QLineEdit* _password_5_LineEdit;
+  QComboBox* _refSys_5_ComboBox;
+  QLineEdit* _outFile_5_LineEdit;
+  QCheckBox* _CoM_5_CheckBox;
+
+  QLineEdit* _outHost_6_LineEdit;
+  QLineEdit* _outPort_6_LineEdit;
+  QLineEdit* _mountpoint_6_LineEdit;
+  QLineEdit* _password_6_LineEdit;
+  QComboBox* _refSys_6_ComboBox;
+  QLineEdit* _outFile_6_LineEdit;
+  QCheckBox* _CoM_6_CheckBox;
+
   QLineEdit* _outHost_Eph_LineEdit;
   QLineEdit* _outPort_Eph_LineEdit;
   QLineEdit* _mountpoint_Eph_LineEdit;
@@ -132,8 +156,8 @@ Q_OBJECT
   QTabWidget* tabs;
 //QWidget*    _status;
   QGroupBox*  _status;
-  QLabel*     _statusLbl[12];  
-  double      _statusCnt[6];
+  QLabel*     _statusLbl[18];  
+  double      _statusCnt[9];
   QMutex      _mutex;
 
   t_bns*      _bns;

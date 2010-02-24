@@ -61,6 +61,30 @@ bnsSettings::bnsSettings() :
     setValue("CoM_3",       "0");
     setValue("outFile_3",   "");
 
+    setValue("outHost4",    "");
+    setValue("outPort4",    "");
+    setValue("mountpoint_4","");
+    setValue("password4",   "");
+    setValue("refSys_4",    "IGS05");
+    setValue("CoM_4",       "0");
+    setValue("outFile_4",   "");
+
+    setValue("outHost5",    "");
+    setValue("outPort5",    "");
+    setValue("mountpoint_5","");
+    setValue("password5",   "");
+    setValue("refSys_5",    "IGS05");
+    setValue("CoM_5",       "0");
+    setValue("outFile_5",   "");
+
+    setValue("outHost6",    "");
+    setValue("outPort6",    "");
+    setValue("mountpoint_6","");
+    setValue("password6",   "");
+    setValue("refSys_6",    "IGS05");
+    setValue("CoM_6",       "0");
+    setValue("outFile_6",   "");
+
     setValue("outHostEph",    "");
     setValue("outPortEph",    "");
     setValue("mountpoint_Eph","");
