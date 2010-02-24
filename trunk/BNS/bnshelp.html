@@ -337,6 +337,7 @@ BNS refers its clock and orbit corrections to a specific reference system. Avail
 <ul>
 <li>IGS05 which stands for the GNSS-based IGS realization of the International Terrestrial Reference Frame 2005 (ITRF2005), and</li>
 <li>ETRF2000 which stands for the European Terestrial Reference Frame 2000 adopted by EUREF, and</li>
+<li>NAD83 which stands for the North American Datum 1983 as adopted for the U.S.A., and</li>
 <li>'Custom' which allows a transformation of Broadcast Corrections from the IGS05 system to any other system through specifying up to 14 Helmert Transformation Parameters.</li>
 </ul>
 </p>
@@ -344,6 +345,7 @@ BNS refers its clock and orbit corrections to a specific reference system. Avail
 <p>
 <u>IGS05:</u> As the clocks and orbits coming from real-time GNSS engine are expected to be in the IGS05 system, no transformation is carried out if this option is selected.
 </p>
+
 <p>
 <u>ETRF2000:</u> The formulars for the transformation 'ITRF2005-&gt;ETRF2000' are taken from 'Claude Boucher and Zuheir Altamimi 2008: Specifications for reference frame fixing in the analysis of EUREF GPS campaign', see <u>http://etrs89.ensg.ign.fr/memo-V7.pdf</u>. The following 14 Helmert Transformation Parameters were introduced:
 </p>
@@ -366,6 +368,31 @@ Scale rate: 0.00000000008 /y
 To: 2000.0
 </pre>
 </p>
+
+<p>
+<u>NAD83:</u>Parameters for the transformation 'ITRF2005-&gt;NAD83' are taken from <u> http://www.ngs.noaa.gov/CORS/metadata1/</u>, see section 'ITRF00 --> NAD83 (CORS96)'.
+</p>
+<p>
+<pre>
+Translation in X at epoch To:  0.9956 m
+Translation in Y at epoch To: -1.9013 m
+Translation in Z at epoch To: -0.5215 m
+Translation rate in X:  0.0007 m/y
+Translation rate in Y: -0.0007 m/y
+Translation rate in Z:  0.0005 m/y
+Rotation in X at epoch To: 25.915 mas
+Rotation in Y at epoch To:  9.426 mas
+Rotation in Z at epoch To: 11.599 mas
+Rotation rate in X:  0.067 mas/y 
+Rotation rate in Y: -0.757 mas/y
+Rotation rate in Z: -0.051 mas/y
+Scale at epoch To : 0.00000000062
+Scale rate: -0.00000000018 /y
+To: 1997.0
+</pre>
+</p>
+
+
 <p>
 <u>Custom:</u> The default numbers shown as examples are those for a transformation from ITRF2005 to ETRF2000'.
 </p>
@@ -671,6 +698,7 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>refSys_2=ETRF2000</td><td>Broadcast Corrections II: System</td></tr>
 <tr><td>outFile_2=/home/weber/rinex/CLCK2</td><td>Broadcast Corrections II: Save (full path)</td></tr>
 <tr><td>CoM_2=0</td><td>Broadcast Corrections II: Center of Mass</td></tr>
+
 <tr><td>outHost3=www.igs-.net</td><td>Broadcast Corrections III: Host</td></tr>
 <tr><td>outPort3=2101</td><td>Broadcast Corrections III: Port</td></tr>
 <tr><td>mountpoint_3=CLCK3</td><td>Broadcast Corrections III: Mountpoint</td></tr>
@@ -678,6 +706,31 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>refSys_3=ETRF2000</td><td>Broadcast Corrections III: System</td></tr>
 <tr><td>outFile_3=/home/weber/rinex/CLCK3</td><td>Broadcast Corrections III: Save (full path)</td></tr>
 <tr><td>CoM_3=0</td><td>Broadcast Corrections III: Center of Mass</td></tr>
+
+<tr><td>outHost4=www.igs-.net</td><td>Broadcast Corrections IV: Host</td></tr>
+<tr><td>outPort4=2101</td><td>Broadcast Corrections IV: Port</td></tr>
+<tr><td>mountpoint_4=CLCK4</td><td>Broadcast Corrections IV: Mountpoint</td></tr>
+<tr><td>password4=pw</td><td>Broadcast Corrections IV: Password</td></tr>
+<tr><td>refSys_4=ETRF2000</td><td>Broadcast Corrections IV: System</td></tr>
+<tr><td>outFile_4=/home/weber/rinex/CLCK4</td><td>Broadcast Corrections IV: Save (full path)</td></tr>
+<tr><td>CoM_4=0</td><td>Broadcast Corrections IV: Center of Mass</td></tr>
+
+<tr><td>outHost5=www.igs-.net</td><td>Broadcast Corrections V: Host</td></tr>
+<tr><td>outPort5=2101</td><td>Broadcast Corrections V: Port</td></tr>
+<tr><td>mountpoint_5=CLCK5</td><td>Broadcast Corrections V: Mountpoint</td></tr>
+<tr><td>password5=pw</td><td>Broadcast Corrections V: Password</td></tr>
+<tr><td>refSys_5=ETRF2000</td><td>Broadcast Corrections V: System</td></tr>
+<tr><td>outFile_5=/home/weber/rinex/CLCK5</td><td>Broadcast Corrections V: Save (full path)</td></tr>
+<tr><td>CoM_5=0</td><td>Broadcast Corrections V: Center of Mass</td></tr>
+
+<tr><td>outHost6=www.igs-.net</td><td>Broadcast Corrections VI: Host</td></tr>
+<tr><td>outPort6=2101</td><td>Broadcast Corrections VI: Port</td></tr>
+<tr><td>mountpoint_6=CLCK6</td><td>Broadcast Corrections VI: Mountpoint</td></tr>
+<tr><td>password6=pw</td><td>Broadcast Corrections VI: Password</td></tr>
+<tr><td>refSys_6=ETRF2000</td><td>Broadcast Corrections VI: System</td></tr>
+<tr><td>outFile_6=/home/weber/rinex/CLCK6</td><td>Broadcast Corrections VI: Save (full path)</td></tr>
+<tr><td>CoM_6=0</td><td>Broadcast Corrections VI: Center of Mass</td></tr>
+
 <tr><td>outHostEph=www.igs-ip.net</td><td>Broadcast Ephemeris: Host</td></tr>
 <tr><td>outPortEph=2101</td><td>Broadcast Ephemeris: Port</td></tr>
 <tr><td>mountpoint_Eph=BRDC0</td><td>Broadcast Ephemeris: Mountpoint</td></tr>

@@ -657,6 +657,23 @@ void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz, const QString trafo) {
     _scr =  0.08;
     _t0  =  2000.0;
   }
+  else if (trafo == "NAD83") {
+    _dx  =  0.9956;
+    _dy  = -1.9013;
+    _dz  = -0.5215;
+    _dxr =  0.0007;
+    _dyr = -0.0007;
+    _dzr =  0.0005;
+    _ox  =  25.915;
+    _oy  =   9.426;
+    _oz  =  11.599;
+    _oxr =  0.067;
+    _oyr = -0.757;
+    _ozr = -0.051;
+    _sc  =  0.62;
+    _scr = -0.18;
+    _t0  =  1997.0;
+  }
   else if (trafo == "Custom") {
     _dx  = settings.value("trafo_dx").toDouble();
     _dy  = settings.value("trafo_dy").toDouble();
