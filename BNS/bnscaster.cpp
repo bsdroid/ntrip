@@ -105,8 +105,8 @@ void t_bnscaster::open() {
   delete _outSocket; _outSocket = 0;
 
   double minDt = pow(2.0,_sOpenTrial);
-  if (++_sOpenTrial > 4) {
-    _sOpenTrial = 4;
+  if (++_sOpenTrial > 7) {
+    _sOpenTrial = 7;
   }
   if (_outSocketOpenTime.isValid() &&
       _outSocketOpenTime.secsTo(QDateTime::currentDateTime()) < minDt) {
