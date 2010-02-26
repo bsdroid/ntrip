@@ -336,6 +336,7 @@ bncWindow::bncWindow() {
   // PPP Options
   // -----------
   _pppMountLineEdit    = new QLineEdit(settings.value("pppMount").toString());
+  _pppUsePhaseCheckBox = new QCheckBox();
   _pppNMEALineEdit     = new QLineEdit(settings.value("nmeaFile").toString());
   _pppNMEAPortLineEdit = new QLineEdit(settings.value("nmeaPort").toString());
   _pppRefCrdXLineEdit  = new QLineEdit(settings.value("pppRefCrdX").toString());
@@ -348,6 +349,9 @@ bncWindow::bncWindow() {
   if (ij != -1) {
     _pppOriginComboBox->setCurrentIndex(ij);
   }
+  _pppNaviCheckBox     = new QCheckBox();
+  _pppNaviCheckBox->setCheckState(Qt::CheckState(
+                                    settings.value("pppNavi").toInt()));
   _pppStaticCheckBox   = new QCheckBox();
   _pppStaticCheckBox->setCheckState(Qt::CheckState(
                                     settings.value("pppStatic").toInt()));
@@ -442,6 +446,7 @@ bncWindow::bncWindow() {
   _serialFileNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved.</p>"));
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
   _pppMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint if you want BNC to estimate coordinates for the affected receiver position through a PPP solution.</p><p>Note that PPP in BNC requires to also pull a stream carrying RTCM Version 3 satellite orbit and clock corrections to Broadcast Ephemeris referring to the satellites' Antenna Phase Centers (APC). Stream CLK11 on NTRIP broadcaster www.igs-ip.net is an example.</p><p>Pulling in addition a third stream carrying Broadcast Ephemeris messages in high repetition rate is suggested if such messages are comeing from the receiver only in low repetition rate or dont come at all from there.</p>"));
+  _pppNaviCheckBox->setWhatsThis(tr("<p>Don't apply any Broadcast Ephemeris Corrections, carry out plain Navigation Solution.</p>"));
   _pppStaticCheckBox->setWhatsThis(tr("<p>By default BNC considers the rover receiver as mobile.</p><p>Tick 'Static' to consider a static observation sitatuion and adapt appropriate filter characteristics for that.</p>"));
   _pppUsePhaseCheckBox->setWhatsThis(tr("<p>By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations.</p><p>Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.</p>"));
   _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
@@ -692,7 +697,9 @@ bncWindow::bncWindow() {
   _pppOriginComboBox->setMaximumWidth(14*ww);
   pppLayout->setColumnMinimumWidth(0,14*ww);
   pppLayout->addWidget(new QLabel("Mountpoint"),             0, 0);
-  pppLayout->addWidget(_pppMountLineEdit,                    0, 1, 1, 3);
+  pppLayout->addWidget(_pppMountLineEdit,                    0, 1, 1, 2);
+  pppLayout->addWidget(_pppNaviCheckBox,                     0, 3);
+  pppLayout->addWidget(new QLabel("Navigation solution"),    0, 4);
   pppLayout->addWidget(new QLabel("Options"),                1, 0);
   pppLayout->addWidget(_pppStaticCheckBox,                   1, 1);
   pppLayout->addWidget(new QLabel("Static                "), 1, 2);
@@ -1026,6 +1033,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("logFile",     _logFileLineEdit->text());
   settings.setValue("miscMount",   _miscMountLineEdit->text());
   settings.setValue("pppMount",    _pppMountLineEdit->text());
+  settings.setValue("pppNavi",     _pppNaviCheckBox->checkState());
   settings.setValue("nmeaFile",    _pppNMEALineEdit->text());
   settings.setValue("nmeaPort",    _pppNMEAPortLineEdit->text());
   settings.setValue("pppRefCrdX",  _pppRefCrdXLineEdit->text());
@@ -1571,6 +1579,7 @@ void bncWindow::slotBncTextChanged(){
   if (sender() == 0 || sender() == _pppMountLineEdit 
      || sender() == _pppOriginComboBox) {
     if (!_pppMountLineEdit->text().isEmpty()) {
+      _pppNaviCheckBox->setPalette(palette_white);
       _pppNMEALineEdit->setPalette(palette_white);
       _pppNMEAPortLineEdit->setPalette(palette_white);
       _pppRefCrdXLineEdit->setPalette(palette_white);
@@ -1581,6 +1590,7 @@ void bncWindow::slotBncTextChanged(){
       _pppEstTropoCheckBox->setPalette(palette_white);
       _pppGLONASSCheckBox->setPalette(palette_white);
       _pppOriginComboBox->setPalette(palette_white);
+      _pppNaviCheckBox->setEnabled(true);
       _pppNMEALineEdit->setEnabled(true);
       _pppNMEAPortLineEdit->setEnabled(true);
       _pppRefCrdXLineEdit->setEnabled(true);
@@ -1608,6 +1618,7 @@ void bncWindow::slotBncTextChanged(){
         _pppRefCrdZLineEdit->setEnabled(false);
       }
     } else {
+      _pppNaviCheckBox->setPalette(palette_gray);
       _pppNMEALineEdit->setPalette(palette_gray);
       _pppNMEAPortLineEdit->setPalette(palette_gray);
       _pppRefCrdXLineEdit->setPalette(palette_gray);
@@ -1618,6 +1629,7 @@ void bncWindow::slotBncTextChanged(){
       _pppEstTropoCheckBox->setPalette(palette_gray);
       _pppGLONASSCheckBox->setPalette(palette_gray);
       _pppOriginComboBox->setPalette(palette_gray);
+      _pppNaviCheckBox->setEnabled(false);
       _pppNMEALineEdit->setEnabled(false);
       _pppNMEAPortLineEdit->setEnabled(false);
       _pppRefCrdXLineEdit->setEnabled(false);
