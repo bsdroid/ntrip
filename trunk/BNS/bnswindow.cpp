@@ -855,22 +855,23 @@ bnsWindow::bnsWindow() {
 
   layout_status->addWidget(_statusLbl[9],  0, 0);
   layout_status->addWidget(_statusLbl[0],  0, 1);
-  layout_status->addWidget(_statusLbl[17], 0, 2); 
-  layout_status->addWidget(_statusLbl[8],  0, 3); 
   layout_status->addWidget(_statusLbl[10], 1, 0);
   layout_status->addWidget(_statusLbl[1],  1, 1);
-  layout_status->addWidget(_statusLbl[11], 1, 2); 
-  layout_status->addWidget(_statusLbl[2],  1, 3); 
-  layout_status->addWidget(_statusLbl[12], 2, 2); 
-  layout_status->addWidget(_statusLbl[3],  2, 3); 
-  layout_status->addWidget(_statusLbl[13], 3, 2); 
-  layout_status->addWidget(_statusLbl[4],  3, 3); 
-  layout_status->addWidget(_statusLbl[14], 4, 2); 
-  layout_status->addWidget(_statusLbl[5],  4, 3); 
-  layout_status->addWidget(_statusLbl[15], 5, 2); 
-  layout_status->addWidget(_statusLbl[6],  5, 3); 
-  layout_status->addWidget(_statusLbl[16], 6, 2); 
-  layout_status->addWidget(_statusLbl[7],  6, 3); 
+  layout_status->addWidget(_statusLbl[17], 2, 0); 
+  layout_status->addWidget(_statusLbl[8],  2, 1); 
+
+  layout_status->addWidget(_statusLbl[11], 0, 2); 
+  layout_status->addWidget(_statusLbl[2],  0, 3); 
+  layout_status->addWidget(_statusLbl[12], 1, 2); 
+  layout_status->addWidget(_statusLbl[3],  1, 3); 
+  layout_status->addWidget(_statusLbl[13], 2, 2); 
+  layout_status->addWidget(_statusLbl[4],  2, 3); 
+  layout_status->addWidget(_statusLbl[14], 3, 2); 
+  layout_status->addWidget(_statusLbl[5],  3, 3); 
+  layout_status->addWidget(_statusLbl[15], 4, 2); 
+  layout_status->addWidget(_statusLbl[6],  4, 3); 
+  layout_status->addWidget(_statusLbl[16], 5, 2); 
+  layout_status->addWidget(_statusLbl[7],  5, 3); 
   _status->setLayout(layout_status);
 
   // Main Layout
