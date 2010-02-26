@@ -486,17 +486,17 @@ void t_bns::readEpoch() {
                 biasSat->Biases[0].Type = CODETYPEGPS_L1_P;
                 biasSat->Biases[0].Bias = 0.0;
                 biasSat->Biases[1].Type = CODETYPEGPS_L1_CA;
-                biasSat->Biases[1].Bias = -xx(9);     // - IGS P1C1 DCB
+                biasSat->Biases[1].Bias = -xx(9)  / 0.299792458; // - IGS P1C1 DCB
                 biasSat->Biases[2].Type = CODETYPEGPS_L2_P;
-                biasSat->Biases[2].Bias = -xx(10);    // - IGS P1P2 DCB
+                biasSat->Biases[2].Bias = -xx(10) / 0.299792458; // - IGS P1P2 DCB
               }
               else if (prn[0] == 'R') {
                 biasSat->Biases[0].Type = CODETYPEGLONASS_L1_P;
                 biasSat->Biases[0].Bias = 0.0;
                 biasSat->Biases[1].Type = CODETYPEGLONASS_L1_CA;
-                biasSat->Biases[1].Bias = -xx(9);     // - IGS P1C1 DCB
+                biasSat->Biases[1].Bias = -xx(9)  / 0.299792458; // - IGS P1C1 DCB
                 biasSat->Biases[2].Type = CODETYPEGLONASS_L2_P;
-                biasSat->Biases[2].Bias = -xx(10);    // - IGS P1P2 DCB
+                biasSat->Biases[2].Bias = -xx(10) / 0.299792458; // - IGS P1P2 DCB
               }
             }
           }
