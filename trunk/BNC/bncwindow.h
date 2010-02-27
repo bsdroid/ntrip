@@ -118,7 +118,6 @@ class bncWindow : public QMainWindow {
     QLineEdit* _pppRefCrdXLineEdit;
     QLineEdit* _pppRefCrdYLineEdit;
     QLineEdit* _pppRefCrdZLineEdit;
-    QCheckBox* _pppNaviCheckBox;
     QCheckBox* _pppStaticCheckBox;
     QCheckBox* _pppUsePhaseCheckBox;
     QCheckBox* _pppEstTropoCheckBox;
@@ -128,6 +127,7 @@ class bncWindow : public QMainWindow {
     QLineEdit* _rnxSkelLineEdit;
     QLineEdit* _rnxScrpLineEdit;
     QLineEdit* _logFileLineEdit;
+    QComboBox* _pppSPPComboBox;
     QComboBox* _rnxIntrComboBox;
     QComboBox* _ephIntrComboBox;
     QComboBox* _corrIntrComboBox;

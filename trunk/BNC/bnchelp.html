@@ -987,11 +987,19 @@ residuals glo   -0.000 0.000 0.001
 
 <p><a name="pppmount"><h4>3.11.1 Mountpoint - optional</h4></p>
 <p>
-Specify a mountpoint if you want BNC to derive coordinates for the affected rover position through a PPP solution.
+Specify a mountpoint if you want BNC to derive coordinates for the affected rover position through a Point Positioning solution. 
+</p>
+<p>
+Furthermore, specify the Point Positioning method you want to apply. Options are 
+<ul>
+<li> Precise Point Positioning (PPP, default), and </li>
+<li> Single Point Positioning (SPP).</li>
+</ul>
+Note that a plain SPP solution does not require to pull a stream carrying Broadcast Ephemeris Corrections. It only needs Broadcast Ephemeris.
 </p>
 
 <p><a name="pppopt"><h4>3.11.2 Options</h4></p>
-BNC allows to use different PPP processing options depending on the capability of the involved receiver and the application in mind.
+BNC allows to use different Point Positioning processing options depending on the capability of the involved receiver and the application in mind.
 </p>
 
 <p><a name="pppstatic"><h4>3.11.2.1 Static - optional</h4></p>
@@ -1001,7 +1009,7 @@ By default BNC considers the rover position as mobile. Tick 'Static' in a static
 
 <p><a name="pppphase"><h4>3.11.2.2 Use Phase Obs - optional</h4></p>
 <p>
-By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations. Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.
+By default BNC applies a Point Positioning solution using an ionosphere free P3 linear combination of code observations. Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.
 </p>
 
 <p><a name="ppptropo"><h4>3.11.2.3 Estimate Tropo - optional</h4></p>
@@ -1018,12 +1026,12 @@ By default BNC does not estimate troposphere parameters. Tick 'Estimate tropo' t
 
 <p><a name="pppglo"><h4>3.11.2.4 Use GLONASS - optional</h4></p>
 <p>
-By default BNC does not process GLONASS observations in PPP mode. Tick 'Use GLONASS' to use GPS and GLONASS observations for estimating coordinates in Precise Point Positioning mode.
+By default BNC does not process GLONASS observations when in Point Positioning mode. Tick 'Use GLONASS' to use GPS and GLONASS observations for estimating coordinates in Point Positioning mode.
 </p>
 
 <p><a name="pppnmearef"><h4>3.11.3 Plot Origin - optional</h4></p>
 <p>
-Select an origin for North/East/Up time series plots in the 'PPP Plot' tab. Note that this makes only sense for a stationary receiver. Available options are
+Select an origin for North/East/Up time series plots of derived coordinates in the 'PPP Plot' tab. Note that this makes only sense for a stationary receiver. Available options are
 <ul>
 <li>'Start position', meaning that BNC will refer time series plots to the first estimated position.
 </li>
@@ -1035,7 +1043,7 @@ Default is the selection of an empty option field meaning that no PPP time serie
 
 <p><a name="pppnmeaout"><h4>3.11.4 NMEA</h4></p>
 <p>
-BNC allows to output results from Precise Point Positioning in NMEA format. The NMEA messages generated are
+BNC allows to output results from Point Positioning in NMEA format. The NMEA messages generated are
 <ul>
 <li> one leading GPRMC message which carries only date and time information, plus</li>
 <li> about once per second a GPGGA message which mainly carries the estimated latitude, longitude, and height values.</li>
@@ -1044,12 +1052,12 @@ BNC allows to output results from Precise Point Positioning in NMEA format. The 
 
 <p><a name="pppnmeafile"><h4>3.11.4.1 File - optional</h4></p>
 <p>
-Specify the full path to a file where Precise Point Positioning results are saved as NMEA messages. The generated NMEA file begins with a single GPRMC message which carries only date and time information. The default value for 'File (full path)' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
+Specify the full path to a file where Point Positioning results are saved as NMEA messages. The generated NMEA file begins with a single GPRMC message which carries only date and time information. The default value for 'File (full path)' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
 </p>
 
 <p><a name="pppnmeaport"><h4>3.11.4.2 Port - optional</h4></p>
 <p>
-Specify the IP port number of a local port where Precise Point Positioning results become available as NMEA messages. The default value for 'Port' is an empty option field, meaning that BNC does not provide NMEA messsages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same. 
+Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'Port' is an empty option field, meaning that BNC does not provide NMEA messsages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same. 
 </p>
 
 <p><a name="streams"><h4>3.12. Streams</h4></p>
@@ -1696,6 +1704,7 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>statusTab=0</td><td>Internal memory: Bottom tab index</td></tr>
 <tr><td>waitTime=5</td><td>Feed Engine: Wait for full epoch</td></tr>
 <tr><td>pppMount=</td><td>PPP Client: Mountpoint</td></tr>
+<tr><td>pppSPP=</td><td>PPP Client: PPP/SPP</td></tr>
 <tr><td>pppStatic=0</td><td>PPP Client: Static mode</td></tr>
 <tr><td>pppUsePhase=0</td><td>PPP Client: Use phase data </td></tr>
 <tr><td>pppEstTropo=0</td><td>PPP Client: Estimate troposphere</td></tr>
