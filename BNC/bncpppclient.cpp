@@ -335,7 +335,7 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 
       t_bias* bb = 0;
       if (_bias.contains(prn)) {
-        bb = _bias.value(prn); 
+        bb = _bias.value(prn);
       }
       else {
         bb = new t_bias();
@@ -351,10 +351,10 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
         double bValue;
 	in >> bType >> bValue;
         if      (bType ==  0) {
-          bb->p1c1 = -bValue;
+          bb->p1c1 = -bValue * t_CST::c ; // Weber
 	}
         else if (bType == 10) {
-          bb->p1p2 = -bValue;
+          bb->p1p2 = -bValue * t_CST::c ; // Weber
 	}
       }
     }
@@ -376,8 +376,10 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn, 
                               ColumnVector& xc, ColumnVector& vv, bool& corr) {
 
-  const bool   CORR_REQUIRED = true;
+//const bool   CORR_REQUIRED = true;
+  bncSettings settings;
   const double MAXAGE        = 120.0;
+
 
   corr = false;
 
@@ -385,7 +387,8 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
     t_eph* ee = _eph.value(prn);
     ee->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
 
-    if (CORR_REQUIRED) {
+//  if (CORR_REQUIRED) {
+    if (settings.value("pppSPP").toString() == "PPP") {
       if (_corr.contains(prn)) {
         t_corr* cc = _corr.value(prn);
         if (ee->IOD() == cc->iod && (tt - cc->tt) < MAXAGE) {
@@ -413,10 +416,10 @@ void bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
 
   RSW_to_XYZ(xc.Rows(1,3), vv, raoHlp, dx);
 
-  xc[0] -= dx[0];
-  xc[1] -= dx[1];
-  xc[2] -= dx[2];
-  xc[3] -= cc->dClk;
+    xc[0] -= dx[0];
+    xc[1] -= dx[1];
+    xc[2] -= dx[2];
+    xc[3] -= cc->dClk;
 
   // Relativistic Correction
   // -----------------------
