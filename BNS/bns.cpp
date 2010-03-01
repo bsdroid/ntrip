@@ -694,6 +694,23 @@ void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz, const QString trafo) {
     _scr =    -0.538;
     _t0  =    2000.0;
   }
+  else if (trafo == "SIRGAS2000") {
+    _dx  =   -0.0510;
+    _dy  =   -0.0650;
+    _dz  =   -0.0990;
+    _dxr =    0.0000;
+    _dyr =    0.0000;
+    _dzr =    0.0000;
+    _ox  =  0.000150;
+    _oy  =  0.000020;
+    _oz  =  0.000021;
+    _oxr =  0.000000;
+    _oyr =  0.000000;
+    _ozr =  0.000000;
+    _sc  =     0.000;
+    _scr =     0.000;
+    _t0  =    0000.0;
+  }
   else if (trafo == "Custom") {
     _dx  = settings.value("trafo_dx").toDouble();
     _dy  = settings.value("trafo_dy").toDouble();
