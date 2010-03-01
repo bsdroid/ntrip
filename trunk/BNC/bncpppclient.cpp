@@ -351,10 +351,10 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
         double bValue;
 	in >> bType >> bValue;
         if      (bType ==  0) {
-          bb->p1c1 = -bValue * t_CST::c ; // Weber
+          bb->p1c1 = -bValue;
 	}
         else if (bType == 10) {
-          bb->p1p2 = -bValue * t_CST::c ; // Weber
+          bb->p1p2 = -bValue;
 	}
       }
     }
