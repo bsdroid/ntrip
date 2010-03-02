@@ -699,9 +699,9 @@ void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz, const QString trafo) {
     _t0  =    2000.0;
   }
   else if (trafo == "SIRGAS2000") {
-    _dx  =   -0.0510;
-    _dy  =   -0.0650;
-    _dz  =   -0.0990;
+    _dx  =   -0.0051;
+    _dy  =   -0.0065;
+    _dz  =   -0.0099;
     _dxr =    0.0000;
     _dyr =    0.0000;
     _dzr =    0.0000;
