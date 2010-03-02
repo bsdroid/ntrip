@@ -81,7 +81,7 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   // Socket and file for outputting the results
   // -------------------------------------------
-  for (int ic = 1; ic <= 6; ic++) {
+  for (int ic = 1; ic <= 10; ic++) {
     QString mountpoint  = settings.value(QString("mountpoint_%1").arg(ic)).toString();
     QString outFileName = settings.value(QString("outFile_%1").arg(ic)).toString();
     if (!mountpoint.isEmpty() || !outFileName.isEmpty()) {
@@ -515,12 +515,16 @@ void t_bns::readEpoch() {
 
           int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
           if (len > 0) {
-            if (_caster.at(ic)->ic() == 1) { emit(newOutBytes1(len));}
-            if (_caster.at(ic)->ic() == 2) { emit(newOutBytes2(len));}
-            if (_caster.at(ic)->ic() == 3) { emit(newOutBytes3(len));}
-            if (_caster.at(ic)->ic() == 4) { emit(newOutBytes4(len));}
-            if (_caster.at(ic)->ic() == 5) { emit(newOutBytes5(len));}
-            if (_caster.at(ic)->ic() == 6) { emit(newOutBytes6(len));}
+            if (_caster.at(ic)->ic() == 1)  { emit(newOutBytes1(len));}
+            if (_caster.at(ic)->ic() == 2)  { emit(newOutBytes2(len));}
+            if (_caster.at(ic)->ic() == 3)  { emit(newOutBytes3(len));}
+            if (_caster.at(ic)->ic() == 4)  { emit(newOutBytes4(len));}
+            if (_caster.at(ic)->ic() == 5)  { emit(newOutBytes5(len));}
+            if (_caster.at(ic)->ic() == 6)  { emit(newOutBytes6(len));}
+            if (_caster.at(ic)->ic() == 7)  { emit(newOutBytes7(len));}
+            if (_caster.at(ic)->ic() == 8)  { emit(newOutBytes8(len));}
+            if (_caster.at(ic)->ic() == 9)  { emit(newOutBytes9(len));}
+            if (_caster.at(ic)->ic() == 10) { emit(newOutBytes10(len));}
             _caster.at(ic)->write(obuffer, len);
           }
         }
