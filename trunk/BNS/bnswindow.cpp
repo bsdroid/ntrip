@@ -338,42 +338,42 @@ bnsWindow::bnsWindow() {
   _ephEchoLineEdit->setWhatsThis(tr("Specify the full path to a file where incoming Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that incoming Broadcast Ephemeris are not saved."));
   _clkPortLineEdit->setWhatsThis(tr("BNS reads Clocks & Orbits referring to the IGS system (X,Y,Z, ECEF) in SP3 format from an IP port. Specify a local IP port e.g. for an RTNet installation to provide this information."));
 
-  _outHost_1_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outHost_1_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
   _outPort_1_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
   _mountpoint_1_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
   _password_1_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _refSys_1_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
   _outFile_1_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
 
-  _outHost_2_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outHost_2_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
   _outPort_2_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
   _mountpoint_2_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
   _password_2_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _refSys_2_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
   _outFile_2_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
 
-  _outHost_3_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outHost_3_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
   _outPort_3_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
   _mountpoint_3_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
   _password_3_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _refSys_3_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
   _outFile_3_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
 
-  _outHost_4_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 4 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outHost_4_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 4 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
   _outPort_4_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
   _mountpoint_4_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
   _password_4_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _refSys_4_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
   _outFile_4_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
 
-  _outHost_5_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outHost_5_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
   _outPort_5_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
   _mountpoint_5_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
   _password_5_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _refSys_5_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
   _outFile_5_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
 
-  _outHost_6_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 6 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outHost_6_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 6 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
   _outPort_6_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
   _mountpoint_6_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
   _password_6_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
