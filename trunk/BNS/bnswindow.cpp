@@ -275,6 +275,78 @@ bnsWindow::bnsWindow() {
   _CoM_6_CheckBox  = new QCheckBox();
   _CoM_6_CheckBox->setCheckState(Qt::CheckState(settings.value("CoM_6").toInt()));
 
+  // Broadcast Corrections VII Options
+  // ---------------------------------
+  _outHost_7_LineEdit    = new QLineEdit(settings.value("outHost7").toString());
+  _outPort_7_LineEdit    = new QLineEdit(settings.value("outPort7").toString());
+  _password_7_LineEdit   = new QLineEdit(settings.value("password7").toString());
+  _password_7_LineEdit->setEchoMode(QLineEdit::Password);
+  _mountpoint_7_LineEdit = new QLineEdit(settings.value("mountpoint_7").toString());
+  _refSys_7_ComboBox = new QComboBox;
+  _refSys_7_ComboBox->setEditable(false);
+  _refSys_7_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  ii = _refSys_7_ComboBox->findText(settings.value("refSys_7").toString());
+  if (ii != -1) {
+    _refSys_7_ComboBox->setCurrentIndex(ii);
+  }
+  _outFile_7_LineEdit    = new QLineEdit(settings.value("outFile_7").toString());
+  _CoM_7_CheckBox  = new QCheckBox();
+  _CoM_7_CheckBox->setCheckState(Qt::CheckState(settings.value("CoM_7").toInt()));
+
+  // Broadcast Corrections VIII Options
+  // --------------------------------
+  _outHost_8_LineEdit    = new QLineEdit(settings.value("outHost8").toString());
+  _outPort_8_LineEdit    = new QLineEdit(settings.value("outPort8").toString());
+  _password_8_LineEdit   = new QLineEdit(settings.value("password8").toString());
+  _password_8_LineEdit->setEchoMode(QLineEdit::Password);
+  _mountpoint_8_LineEdit = new QLineEdit(settings.value("mountpoint_8").toString());
+  _refSys_8_ComboBox = new QComboBox;
+  _refSys_8_ComboBox->setEditable(false);
+  _refSys_8_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  ii = _refSys_8_ComboBox->findText(settings.value("refSys_8").toString());
+  if (ii != -1) {
+    _refSys_8_ComboBox->setCurrentIndex(ii);
+  }
+  _outFile_8_LineEdit    = new QLineEdit(settings.value("outFile_8").toString());
+  _CoM_8_CheckBox  = new QCheckBox();
+  _CoM_8_CheckBox->setCheckState(Qt::CheckState(settings.value("CoM_8").toInt()));
+
+  // Broadcast Corrections IX Options
+  // --------------------------------
+  _outHost_9_LineEdit    = new QLineEdit(settings.value("outHost9").toString());
+  _outPort_9_LineEdit    = new QLineEdit(settings.value("outPort9").toString());
+  _password_9_LineEdit   = new QLineEdit(settings.value("password9").toString());
+  _password_9_LineEdit->setEchoMode(QLineEdit::Password);
+  _mountpoint_9_LineEdit = new QLineEdit(settings.value("mountpoint_9").toString());
+  _refSys_9_ComboBox = new QComboBox;
+  _refSys_9_ComboBox->setEditable(false);
+  _refSys_9_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  ii = _refSys_9_ComboBox->findText(settings.value("refSys_9").toString());
+  if (ii != -1) {
+    _refSys_9_ComboBox->setCurrentIndex(ii);
+  }
+  _outFile_9_LineEdit    = new QLineEdit(settings.value("outFile_9").toString());
+  _CoM_9_CheckBox  = new QCheckBox();
+  _CoM_9_CheckBox->setCheckState(Qt::CheckState(settings.value("CoM_9").toInt()));
+
+  // Broadcast Corrections X Options
+  // -------------------------------
+  _outHost_10_LineEdit    = new QLineEdit(settings.value("outHost10").toString());
+  _outPort_10_LineEdit    = new QLineEdit(settings.value("outPort10").toString());
+  _password_10_LineEdit   = new QLineEdit(settings.value("password10").toString());
+  _password_10_LineEdit->setEchoMode(QLineEdit::Password);
+  _mountpoint_10_LineEdit = new QLineEdit(settings.value("mountpoint_10").toString());
+  _refSys_10_ComboBox = new QComboBox;
+  _refSys_10_ComboBox->setEditable(false);
+  _refSys_10_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  ii = _refSys_10_ComboBox->findText(settings.value("refSys_10").toString());
+  if (ii != -1) {
+    _refSys_10_ComboBox->setCurrentIndex(ii);
+  }
+  _outFile_10_LineEdit    = new QLineEdit(settings.value("outFile_10").toString());
+  _CoM_10_CheckBox  = new QCheckBox();
+  _CoM_10_CheckBox->setCheckState(Qt::CheckState(settings.value("CoM_10").toInt()));
+
   // Broadcast Ephemerides
   // ---------------------
   _outHost_Eph_LineEdit    = new QLineEdit(settings.value("outHostEph").toString());
@@ -359,7 +431,7 @@ bnsWindow::bnsWindow() {
   _refSys_3_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
   _outFile_3_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
 
-  _outHost_4_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 4 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outHost_4_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
   _outPort_4_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
   _mountpoint_4_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
   _password_4_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
@@ -373,12 +445,41 @@ bnsWindow::bnsWindow() {
   _refSys_5_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
   _outFile_5_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
 
-  _outHost_6_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 6 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+
+  _outHost_6_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
   _outPort_6_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
   _mountpoint_6_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
   _password_6_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _refSys_6_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
   _outFile_6_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
+
+  _outHost_7_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outPort_7_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
+  _mountpoint_7_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
+  _password_7_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
+  _refSys_7_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
+  _outFile_7_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
+
+  _outHost_8_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outPort_8_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
+  _mountpoint_8_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
+  _password_8_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
+  _refSys_8_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
+  _outFile_8_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
+
+  _outHost_9_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outPort_9_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
+  _mountpoint_9_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
+  _password_9_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
+  _refSys_9_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
+  _outFile_9_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
+
+  _outHost_10_LineEdit->setWhatsThis(tr("BNS can stream clock and orbit Corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload corrections."));
+  _outPort_10_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
+  _mountpoint_10_LineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
+  _password_10_LineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
+  _refSys_10_ComboBox->setWhatsThis(tr("Select the target reference system for outgoing clock and orbit corrections."));
+  _outFile_10_LineEdit->setWhatsThis(tr("Specify the full path to a file where outgoing clock and orbit corrections to Broadcast Ephemeris are saved. Beware that the size of this file can rapidly increase. Default is an empty option field meaning that outgoing corrections are not saved."));
 
   _outHost_Eph_LineEdit->setWhatsThis(tr("BNS can upload a Broadcast Ephemeris stream in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload Broadcast Ephemeris."));
   _outPort_Eph_LineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
@@ -723,6 +824,162 @@ bnsWindow::bnsWindow() {
   connect(_outHost_6_LineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBnsTextChanged()));
 
+  // Broadcast Corrections VII Tab
+  // -----------------------------
+  QWidget* tab_cas7 = new QWidget();
+  tabs->addTab(tab_cas7, "BC VII");
+
+  QGridLayout* layout_cas7 = new QGridLayout;
+
+  layout_cas7->setColumnMinimumWidth(0, 9*ww);
+  _outPort_7_LineEdit->setMaximumWidth(9*ww);
+  _password_7_LineEdit->setMaximumWidth(9*ww);
+  _mountpoint_7_LineEdit->setMaximumWidth(12*ww);
+  _refSys_7_ComboBox->setMaximumWidth(12*ww);
+
+  layout_cas7->addWidget(new QLabel("Host"),               0, 0);
+  layout_cas7->addWidget(_outHost_7_LineEdit,              0, 1, 1, 3);
+  layout_cas7->addWidget(new QLabel("  Port"),             0, 4, Qt::AlignRight);
+  layout_cas7->addWidget(_outPort_7_LineEdit,              0, 5, 1, 10);
+  layout_cas7->addWidget(new QLabel("Mountpoint"),         1, 0);
+  layout_cas7->addWidget(_mountpoint_7_LineEdit,           1, 1);
+  layout_cas7->addWidget(new QLabel("Password"),           1, 2, Qt::AlignRight);
+  layout_cas7->addWidget(_password_7_LineEdit,             1, 3);
+  layout_cas7->addWidget(new QLabel(" "),                  1, 4);
+  layout_cas7->addWidget(new QLabel(" "),                  1, 5);
+  layout_cas7->addWidget(new QLabel("System"),             2, 0);
+  layout_cas7->addWidget(_refSys_7_ComboBox,               2, 1);
+  layout_cas7->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
+  layout_cas7->addWidget(_outFile_7_LineEdit,              2, 3, 1, 30);
+  layout_cas7->addWidget(new QLabel("Center of Mass"),     3, 0);
+  layout_cas7->addWidget(_CoM_7_CheckBox,                  3, 1);
+  layout_cas7->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
+
+  tab_cas7->setLayout(layout_cas7);
+
+  connect(_refSys_7_ComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(customTrafo(const QString)));
+
+  connect(_outHost_7_LineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBnsTextChanged()));
+
+  // Broadcast Corrections VIII Tab
+  // ------------------------------
+  QWidget* tab_cas8 = new QWidget();
+  tabs->addTab(tab_cas8, "BC VIII");
+
+  QGridLayout* layout_cas8 = new QGridLayout;
+
+  layout_cas8->setColumnMinimumWidth(0, 9*ww);
+  _outPort_8_LineEdit->setMaximumWidth(9*ww);
+  _password_8_LineEdit->setMaximumWidth(9*ww);
+  _mountpoint_8_LineEdit->setMaximumWidth(12*ww);
+  _refSys_8_ComboBox->setMaximumWidth(12*ww);
+
+  layout_cas8->addWidget(new QLabel("Host"),               0, 0);
+  layout_cas8->addWidget(_outHost_8_LineEdit,              0, 1, 1, 3);
+  layout_cas8->addWidget(new QLabel("  Port"),             0, 4, Qt::AlignRight);
+  layout_cas8->addWidget(_outPort_8_LineEdit,              0, 5, 1, 10);
+  layout_cas8->addWidget(new QLabel("Mountpoint"),         1, 0);
+  layout_cas8->addWidget(_mountpoint_8_LineEdit,           1, 1);
+  layout_cas8->addWidget(new QLabel("Password"),           1, 2, Qt::AlignRight);
+  layout_cas8->addWidget(_password_8_LineEdit,             1, 3);
+  layout_cas8->addWidget(new QLabel(" "),                  1, 4);
+  layout_cas8->addWidget(new QLabel(" "),                  1, 5);
+  layout_cas8->addWidget(new QLabel("System"),             2, 0);
+  layout_cas8->addWidget(_refSys_8_ComboBox,               2, 1);
+  layout_cas8->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
+  layout_cas8->addWidget(_outFile_8_LineEdit,              2, 3, 1, 30);
+  layout_cas8->addWidget(new QLabel("Center of Mass"),     3, 0);
+  layout_cas8->addWidget(_CoM_8_CheckBox,                  3, 1);
+  layout_cas8->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
+
+  tab_cas8->setLayout(layout_cas8);
+
+  connect(_refSys_8_ComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(customTrafo(const QString)));
+
+  connect(_outHost_8_LineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBnsTextChanged()));
+
+  // Broadcast Corrections IX Tab
+  // ----------------------------
+  QWidget* tab_cas9 = new QWidget();
+  tabs->addTab(tab_cas9, "BC IX");
+
+  QGridLayout* layout_cas9 = new QGridLayout;
+
+  layout_cas9->setColumnMinimumWidth(0, 9*ww);
+  _outPort_9_LineEdit->setMaximumWidth(9*ww);
+  _password_9_LineEdit->setMaximumWidth(9*ww);
+  _mountpoint_9_LineEdit->setMaximumWidth(12*ww);
+  _refSys_9_ComboBox->setMaximumWidth(12*ww);
+
+  layout_cas9->addWidget(new QLabel("Host"),               0, 0);
+  layout_cas9->addWidget(_outHost_9_LineEdit,              0, 1, 1, 3);
+  layout_cas9->addWidget(new QLabel("  Port"),             0, 4, Qt::AlignRight);
+  layout_cas9->addWidget(_outPort_9_LineEdit,              0, 5, 1, 10);
+  layout_cas9->addWidget(new QLabel("Mountpoint"),         1, 0);
+  layout_cas9->addWidget(_mountpoint_9_LineEdit,           1, 1);
+  layout_cas9->addWidget(new QLabel("Password"),           1, 2, Qt::AlignRight);
+  layout_cas9->addWidget(_password_9_LineEdit,             1, 3);
+  layout_cas9->addWidget(new QLabel(" "),                  1, 4);
+  layout_cas9->addWidget(new QLabel(" "),                  1, 5);
+  layout_cas9->addWidget(new QLabel("System"),             2, 0);
+  layout_cas9->addWidget(_refSys_9_ComboBox,               2, 1);
+  layout_cas9->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
+  layout_cas9->addWidget(_outFile_9_LineEdit,              2, 3, 1, 30);
+  layout_cas9->addWidget(new QLabel("Center of Mass"),     3, 0);
+  layout_cas9->addWidget(_CoM_9_CheckBox,                  3, 1);
+  layout_cas9->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
+
+  tab_cas9->setLayout(layout_cas9);
+
+  connect(_refSys_9_ComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(customTrafo(const QString)));
+
+  connect(_outHost_9_LineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBnsTextChanged()));
+
+  // Broadcast Corrections X Tab
+  // ---------------------------
+  QWidget* tab_cas10 = new QWidget();
+  tabs->addTab(tab_cas10, "BC X");
+
+  QGridLayout* layout_cas10 = new QGridLayout;
+
+  layout_cas10->setColumnMinimumWidth(0, 9*ww);
+  _outPort_10_LineEdit->setMaximumWidth(9*ww);
+  _password_10_LineEdit->setMaximumWidth(9*ww);
+  _mountpoint_10_LineEdit->setMaximumWidth(12*ww);
+  _refSys_10_ComboBox->setMaximumWidth(12*ww);
+
+  layout_cas10->addWidget(new QLabel("Host"),               0, 0);
+  layout_cas10->addWidget(_outHost_10_LineEdit,             0, 1, 1, 3);
+  layout_cas10->addWidget(new QLabel("  Port"),             0, 4, Qt::AlignRight);
+  layout_cas10->addWidget(_outPort_10_LineEdit,             0, 5, 1, 10);
+  layout_cas10->addWidget(new QLabel("Mountpoint"),         1, 0);
+  layout_cas10->addWidget(_mountpoint_10_LineEdit,          1, 1);
+  layout_cas10->addWidget(new QLabel("Password"),           1, 2, Qt::AlignRight);
+  layout_cas10->addWidget(_password_10_LineEdit,            1, 3);
+  layout_cas10->addWidget(new QLabel(" "),                  1, 4);
+  layout_cas10->addWidget(new QLabel(" "),                  1, 5);
+  layout_cas10->addWidget(new QLabel("System"),             2, 0);
+  layout_cas10->addWidget(_refSys_10_ComboBox,              2, 1);
+  layout_cas10->addWidget(new QLabel("  Save (full path)"), 2, 2, Qt::AlignRight);
+  layout_cas10->addWidget(_outFile_10_LineEdit,             2, 3, 1, 30);
+  layout_cas10->addWidget(new QLabel("Center of Mass"),     3, 0);
+  layout_cas10->addWidget(_CoM_10_CheckBox,                 3, 1);
+  layout_cas10->addWidget(new QLabel("Produce broadcast ephemeris corrections, upload to caster, reference system, local storage."), 4, 0, 1, 50);
+
+  tab_cas10->setLayout(layout_cas10);
+
+  connect(_refSys_10_ComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(customTrafo(const QString)));
+
+  connect(_outHost_10_LineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBnsTextChanged()));
+
   // Broadcast Ephemerides
   // ---------------------
   QWidget* tab_casEph = new QWidget();
@@ -822,16 +1079,24 @@ bnsWindow::bnsWindow() {
   _statusLbl[6] = new QLabel("0 byte(s)"); _statusCnt[6] = 0;
   _statusLbl[7] = new QLabel("0 byte(s)"); _statusCnt[7] = 0;
   _statusLbl[8] = new QLabel("0 byte(s)"); _statusCnt[8] = 0;
+  _statusLbl[9] = new QLabel("0 byte(s)"); _statusCnt[9] = 0;
+  _statusLbl[10] = new QLabel("0 byte(s)"); _statusCnt[10] = 0;
+  _statusLbl[11] = new QLabel("0 byte(s)"); _statusCnt[11] = 0;
+  _statusLbl[12] = new QLabel("0 byte(s)"); _statusCnt[12] = 0;
 
-  _statusLbl[9]  = new QLabel("RINEX Ephemeris:");  
-  _statusLbl[10] = new QLabel("Clocks & Orbits:");
-  _statusLbl[11] = new QLabel("Broadcast Corrections I:");  
-  _statusLbl[12] = new QLabel("Broadcast Corrections II:");  
-  _statusLbl[13] = new QLabel("Broadcast Corrections III:");  
-  _statusLbl[14] = new QLabel("Broadcast Corrections IV:");  
-  _statusLbl[15] = new QLabel("Broadcast Corrections V:");  
-  _statusLbl[16] = new QLabel("Broadcast Corrections VI:");  
-  _statusLbl[17] = new QLabel("Broadcast Ephemeris:");  
+  _statusLbl[13]  = new QLabel("RINEX Ephemeris:");  
+  _statusLbl[14] = new QLabel("Clocks & Orbits:");
+  _statusLbl[15] = new QLabel("Broadcast Corrections I:");  
+  _statusLbl[16] = new QLabel("Broadcast Corrections II:");  
+  _statusLbl[17] = new QLabel("Broadcast Corrections III:");  
+  _statusLbl[18] = new QLabel("Broadcast Corrections IV:");  
+  _statusLbl[19] = new QLabel("Broadcast Corrections V:");  
+  _statusLbl[20] = new QLabel("Broadcast Corrections VI:");  
+  _statusLbl[21] = new QLabel("Broadcast Corrections VII:");  
+  _statusLbl[22] = new QLabel("Broadcast Corrections VIII:");  
+  _statusLbl[23] = new QLabel("Broadcast Corrections IX:");  
+  _statusLbl[24] = new QLabel("Broadcast Corrections X:");  
+  _statusLbl[25] = new QLabel("Broadcast Ephemeris:");  
 
   _statusLbl[0]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
   _statusLbl[1]->setWhatsThis(tr("Status of incoming stream of clocks and orbits."));
@@ -841,37 +1106,54 @@ bnsWindow::bnsWindow() {
   _statusLbl[5]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster IV."));
   _statusLbl[6]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster V."));
   _statusLbl[7]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster VI."));
-  _statusLbl[8]->setWhatsThis(tr("Status of outgoing Broadcast Ephemeris to NTRIP broadcaster"));
+  _statusLbl[8]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster VII."));
+  _statusLbl[9]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster VIII."));
+  _statusLbl[10]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster IX."));
+  _statusLbl[11]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster X."));
+  _statusLbl[12]->setWhatsThis(tr("Status of outgoing Broadcast Ephemeris to NTRIP broadcaster"));
 
-  _statusLbl[9]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
-  _statusLbl[10]->setWhatsThis(tr("Status of incoming stream of clocks and orbits I."));
-  _statusLbl[11]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster I."));
-  _statusLbl[12]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster II."));
-  _statusLbl[13]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster III."));
-  _statusLbl[14]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster IV."));
-  _statusLbl[15]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster V."));
-  _statusLbl[16]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster VI."));
-  _statusLbl[17]->setWhatsThis(tr("Status of outgoing Broadcast Ephemeris to NTRIP broadcaster"));
+  _statusLbl[13]->setWhatsThis(tr("Status of incoming broadcast ephemeris."));
+  _statusLbl[14]->setWhatsThis(tr("Status of incoming stream of clocks and orbits I."));
+  _statusLbl[15]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster I."));
+  _statusLbl[16]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster II."));
+  _statusLbl[17]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster III."));
+  _statusLbl[18]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster IV."));
+  _statusLbl[19]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster V."));
+  _statusLbl[20]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster VI."));
+  _statusLbl[21]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster VII."));
+  _statusLbl[22]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster VIII."));
+  _statusLbl[23]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster IX."));
+  _statusLbl[24]->setWhatsThis(tr("Status of outgoing corrections stream to NTRIP broadcaster X."));
+  _statusLbl[25]->setWhatsThis(tr("Status of outgoing Broadcast Ephemeris to NTRIP broadcaster"));
 
-  layout_status->addWidget(_statusLbl[9],  0, 0);
+  layout_status->addWidget(_statusLbl[13], 0, 0);
   layout_status->addWidget(_statusLbl[0],  0, 1);
-  layout_status->addWidget(_statusLbl[10], 1, 0);
+  layout_status->addWidget(_statusLbl[14], 1, 0);
   layout_status->addWidget(_statusLbl[1],  1, 1);
-  layout_status->addWidget(_statusLbl[17], 2, 0); 
-  layout_status->addWidget(_statusLbl[8],  2, 1); 
+  layout_status->addWidget(_statusLbl[25], 2, 0); 
+  layout_status->addWidget(_statusLbl[12], 2, 1); 
 
-  layout_status->addWidget(_statusLbl[11], 0, 2); 
+  layout_status->addWidget(_statusLbl[15], 0, 2); 
   layout_status->addWidget(_statusLbl[2],  0, 3); 
-  layout_status->addWidget(_statusLbl[12], 1, 2); 
+  layout_status->addWidget(_statusLbl[16], 1, 2); 
   layout_status->addWidget(_statusLbl[3],  1, 3); 
-  layout_status->addWidget(_statusLbl[13], 2, 2); 
+  layout_status->addWidget(_statusLbl[17], 2, 2); 
   layout_status->addWidget(_statusLbl[4],  2, 3); 
-  layout_status->addWidget(_statusLbl[14], 3, 2); 
+  layout_status->addWidget(_statusLbl[18], 3, 2); 
   layout_status->addWidget(_statusLbl[5],  3, 3); 
-  layout_status->addWidget(_statusLbl[15], 4, 2); 
+  layout_status->addWidget(_statusLbl[19], 4, 2); 
   layout_status->addWidget(_statusLbl[6],  4, 3); 
-  layout_status->addWidget(_statusLbl[16], 5, 2); 
+  layout_status->addWidget(_statusLbl[20], 5, 2); 
   layout_status->addWidget(_statusLbl[7],  5, 3); 
+  layout_status->addWidget(_statusLbl[21], 6, 2); 
+  layout_status->addWidget(_statusLbl[8],  6, 3); 
+  layout_status->addWidget(_statusLbl[22], 7, 2); 
+  layout_status->addWidget(_statusLbl[9],  7, 3); 
+  layout_status->addWidget(_statusLbl[23], 8, 2); 
+  layout_status->addWidget(_statusLbl[10], 8, 3); 
+  layout_status->addWidget(_statusLbl[24], 9, 2); 
+  layout_status->addWidget(_statusLbl[11], 9, 3); 
+
   _status->setLayout(layout_status);
 
   // Main Layout
@@ -1052,6 +1334,34 @@ void bnsWindow::slotSaveOptions() {
   settings.setValue("refSys_6",    _refSys_6_ComboBox->currentText());
   settings.setValue("outFile_6",   _outFile_6_LineEdit->text());
   settings.setValue("CoM_6",       _CoM_6_CheckBox->checkState());
+
+  settings.setValue("outHost7",    _outHost_7_LineEdit->text());
+  settings.setValue("outPort7",    _outPort_7_LineEdit->text());
+  settings.setValue("mountpoint_7",_mountpoint_7_LineEdit->text());
+  settings.setValue("password7",   _password_7_LineEdit->text());
+  settings.setValue("refSys_7",    _refSys_7_ComboBox->currentText());
+  settings.setValue("outFile_7",   _outFile_7_LineEdit->text());
+
+  settings.setValue("outHost8",    _outHost_8_LineEdit->text());
+  settings.setValue("outPort8",    _outPort_8_LineEdit->text());
+  settings.setValue("mountpoint_8",_mountpoint_8_LineEdit->text());
+  settings.setValue("password8",   _password_8_LineEdit->text());
+  settings.setValue("refSys_8",    _refSys_8_ComboBox->currentText());
+  settings.setValue("outFile_8",   _outFile_8_LineEdit->text());
+
+  settings.setValue("outHost9",    _outHost_9_LineEdit->text());
+  settings.setValue("outPort9",    _outPort_9_LineEdit->text());
+  settings.setValue("mountpoint_9",_mountpoint_9_LineEdit->text());
+  settings.setValue("password9",   _password_9_LineEdit->text());
+  settings.setValue("refSys_9",    _refSys_9_ComboBox->currentText());
+  settings.setValue("outFile_9",   _outFile_9_LineEdit->text());
+
+  settings.setValue("outHost10",    _outHost_10_LineEdit->text());
+  settings.setValue("outPort10",    _outPort_10_LineEdit->text());
+  settings.setValue("mountpoint_10",_mountpoint_10_LineEdit->text());
+  settings.setValue("password10",   _password_10_LineEdit->text());
+  settings.setValue("refSys_10",    _refSys_10_ComboBox->currentText());
+  settings.setValue("outFile_10",   _outFile_10_LineEdit->text());
 
   settings.setValue("outHostEph",    _outHost_Eph_LineEdit->text());
   settings.setValue("outPortEph",    _outPort_Eph_LineEdit->text());
@@ -1431,6 +1741,138 @@ void bnsWindow::slotBnsTextChanged(){
       _outFile_6_LineEdit->setEnabled(false);
       _refSys_6_ComboBox->setEnabled(false);
       _CoM_6_CheckBox->setEnabled(false);
+    }
+  }
+
+  // Enable/disable Broadcast Corrections VII Options
+  // ------------------------------------------------
+  if (sender() == 0 || sender() == _outHost_7_LineEdit) {
+    if (!_outHost_7_LineEdit->text().isEmpty()) {
+      _outPort_7_LineEdit->setStyleSheet("background-color: white");
+      _mountpoint_7_LineEdit->setStyleSheet("background-color: white");
+      _password_7_LineEdit->setStyleSheet("background-color: white");
+      _outFile_7_LineEdit->setStyleSheet("background-color: white");
+      _refSys_7_ComboBox->setStyleSheet("background-color: white");
+      _CoM_7_CheckBox->setPalette(palette_white);
+      _outPort_7_LineEdit->setEnabled(true);
+      _mountpoint_7_LineEdit->setEnabled(true);
+      _password_7_LineEdit->setEnabled(true);
+      _outFile_7_LineEdit->setEnabled(true);
+      _refSys_7_ComboBox->setEnabled(true);
+      _CoM_7_CheckBox->setEnabled(true);
+    } 
+    else {
+      _outPort_7_LineEdit->setStyleSheet("background-color: lightGray");
+      _mountpoint_7_LineEdit->setStyleSheet("background-color: lightGray");
+      _password_7_LineEdit->setStyleSheet("background-color: lightGray");
+      _outFile_7_LineEdit->setStyleSheet("background-color: lightGray");
+      _refSys_7_ComboBox->setStyleSheet("background-color: lightGray");
+      _CoM_7_CheckBox->setPalette(palette_gray);
+      _outPort_7_LineEdit->setEnabled(false);
+      _mountpoint_7_LineEdit->setEnabled(false);
+      _password_7_LineEdit->setEnabled(false);
+      _outFile_7_LineEdit->setEnabled(false);
+      _refSys_7_ComboBox->setEnabled(false);
+      _CoM_7_CheckBox->setEnabled(false);
+    }
+  }
+
+  // Enable/disable Broadcast Corrections VIII Options
+  // -------------------------------------------------
+  if (sender() == 0 || sender() == _outHost_8_LineEdit) {
+    if (!_outHost_8_LineEdit->text().isEmpty()) {
+      _outPort_8_LineEdit->setStyleSheet("background-color: white");
+      _mountpoint_8_LineEdit->setStyleSheet("background-color: white");
+      _password_8_LineEdit->setStyleSheet("background-color: white");
+      _outFile_8_LineEdit->setStyleSheet("background-color: white");
+      _refSys_8_ComboBox->setStyleSheet("background-color: white");
+      _CoM_8_CheckBox->setPalette(palette_white);
+      _outPort_8_LineEdit->setEnabled(true);
+      _mountpoint_8_LineEdit->setEnabled(true);
+      _password_8_LineEdit->setEnabled(true);
+      _outFile_8_LineEdit->setEnabled(true);
+      _refSys_8_ComboBox->setEnabled(true);
+      _CoM_8_CheckBox->setEnabled(true);
+    } 
+    else {
+      _outPort_8_LineEdit->setStyleSheet("background-color: lightGray");
+      _mountpoint_8_LineEdit->setStyleSheet("background-color: lightGray");
+      _password_8_LineEdit->setStyleSheet("background-color: lightGray");
+      _outFile_8_LineEdit->setStyleSheet("background-color: lightGray");
+      _refSys_8_ComboBox->setStyleSheet("background-color: lightGray");
+      _CoM_8_CheckBox->setPalette(palette_gray);
+      _outPort_8_LineEdit->setEnabled(false);
+      _mountpoint_8_LineEdit->setEnabled(false);
+      _password_8_LineEdit->setEnabled(false);
+      _outFile_8_LineEdit->setEnabled(false);
+      _refSys_8_ComboBox->setEnabled(false);
+      _CoM_8_CheckBox->setEnabled(false);
+    }
+  }
+
+  // Enable/disable Broadcast Corrections IX Options
+  // -----------------------------------------------
+  if (sender() == 0 || sender() == _outHost_9_LineEdit) {
+    if (!_outHost_9_LineEdit->text().isEmpty()) {
+      _outPort_9_LineEdit->setStyleSheet("background-color: white");
+      _mountpoint_9_LineEdit->setStyleSheet("background-color: white");
+      _password_9_LineEdit->setStyleSheet("background-color: white");
+      _outFile_9_LineEdit->setStyleSheet("background-color: white");
+      _refSys_9_ComboBox->setStyleSheet("background-color: white");
+      _CoM_9_CheckBox->setPalette(palette_white);
+      _outPort_9_LineEdit->setEnabled(true);
+      _mountpoint_9_LineEdit->setEnabled(true);
+      _password_9_LineEdit->setEnabled(true);
+      _outFile_9_LineEdit->setEnabled(true);
+      _refSys_9_ComboBox->setEnabled(true);
+      _CoM_9_CheckBox->setEnabled(true);
+    } 
+    else {
+      _outPort_9_LineEdit->setStyleSheet("background-color: lightGray");
+      _mountpoint_9_LineEdit->setStyleSheet("background-color: lightGray");
+      _password_9_LineEdit->setStyleSheet("background-color: lightGray");
+      _outFile_9_LineEdit->setStyleSheet("background-color: lightGray");
+      _refSys_9_ComboBox->setStyleSheet("background-color: lightGray");
+      _CoM_9_CheckBox->setPalette(palette_gray);
+      _outPort_9_LineEdit->setEnabled(false);
+      _mountpoint_9_LineEdit->setEnabled(false);
+      _password_9_LineEdit->setEnabled(false);
+      _outFile_9_LineEdit->setEnabled(false);
+      _refSys_9_ComboBox->setEnabled(false);
+      _CoM_9_CheckBox->setEnabled(false);
+    }
+  }
+
+  // Enable/disable Broadcast Corrections X Options
+  // ----------------------------------------------
+  if (sender() == 0 || sender() == _outHost_10_LineEdit) {
+    if (!_outHost_10_LineEdit->text().isEmpty()) {
+      _outPort_10_LineEdit->setStyleSheet("background-color: white");
+      _mountpoint_10_LineEdit->setStyleSheet("background-color: white");
+      _password_10_LineEdit->setStyleSheet("background-color: white");
+      _outFile_10_LineEdit->setStyleSheet("background-color: white");
+      _refSys_10_ComboBox->setStyleSheet("background-color: white");
+      _CoM_10_CheckBox->setPalette(palette_white);
+      _outPort_10_LineEdit->setEnabled(true);
+      _mountpoint_10_LineEdit->setEnabled(true);
+      _password_10_LineEdit->setEnabled(true);
+      _outFile_10_LineEdit->setEnabled(true);
+      _refSys_10_ComboBox->setEnabled(true);
+      _CoM_10_CheckBox->setEnabled(true);
+    } 
+    else {
+      _outPort_10_LineEdit->setStyleSheet("background-color: lightGray");
+      _mountpoint_10_LineEdit->setStyleSheet("background-color: lightGray");
+      _password_10_LineEdit->setStyleSheet("background-color: lightGray");
+      _outFile_10_LineEdit->setStyleSheet("background-color: lightGray");
+      _refSys_10_ComboBox->setStyleSheet("background-color: lightGray");
+      _CoM_10_CheckBox->setPalette(palette_gray);
+      _outPort_10_LineEdit->setEnabled(false);
+      _mountpoint_10_LineEdit->setEnabled(false);
+      _password_10_LineEdit->setEnabled(false);
+      _outFile_10_LineEdit->setEnabled(false);
+      _refSys_10_ComboBox->setEnabled(false);
+      _CoM_10_CheckBox->setEnabled(false);
     }
   }
 
