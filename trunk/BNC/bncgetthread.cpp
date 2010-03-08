@@ -645,6 +645,10 @@ void bncGetThread::scanRTCM() {
                        _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
                        antT));
   }
+
+  for (int ii = 0; ii <_decoder->_typeList.size(); ii++) {
+    emit(newRTCMMessage(_staID, _decoder->_typeList[ii]));
+  }
 #endif
 
 
