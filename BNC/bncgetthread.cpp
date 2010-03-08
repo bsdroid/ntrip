@@ -408,6 +408,7 @@ void bncGetThread::run() {
       if (nBytes == 0) {
         _latencyChecker->checkReconnect();
         emit(newMessage(_staID + ": Data timeout, reconnecting", true));
+        msleep(10000); //sleep 10 sec, G. Weber
         continue;
       }
       else {
