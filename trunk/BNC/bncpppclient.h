@@ -51,7 +51,6 @@ class t_satData {
   ColumnVector xx;
   ColumnVector vv;
   double       clk;
-  bool         clkCorr;
   double       eleSat;
   double       azSat;
   double       rho;
@@ -126,7 +125,7 @@ class bncPPPclient : public QObject {
 
  private:
   t_irc getSatPos(const bncTime& tt, const QString& prn, 
-                  ColumnVector& xc, ColumnVector& vv, bool& corr);
+                  ColumnVector& xc, ColumnVector& vv);
   void processEpoch();
   void applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, 
                  ColumnVector& vv);
@@ -140,6 +139,7 @@ class bncPPPclient : public QObject {
   t_epoData*             _epoData;
   bncModel*              _model;
   bool                   _useGlonass;
+  bool                   _pppMode;
 };
 
 #endif

@@ -67,6 +67,13 @@ bncPPPclient::bncPPPclient(QByteArray staID) {
     _useGlonass = false;
   }
 
+  if (settings.value("pppSPP").toString() == "PPP") {
+    _pppMode = true;
+  }
+  else {
+    _pppMode = false;
+  }
+
   connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
           this, SLOT(slotNewEphGPS(gpsephemeris)));
   connect(((bncApp*)qApp), SIGNAL(newEphGlonass(glonassephemeris)),
@@ -374,25 +381,18 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 // Satellite Position
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn, 
-                              ColumnVector& xc, ColumnVector& vv, bool& corr) {
+                              ColumnVector& xc, ColumnVector& vv) {
 
-//const bool   CORR_REQUIRED = true;
-  bncSettings settings;
   const double MAXAGE        = 120.0;
-
-
-  corr = false;
 
   if (_eph.contains(prn)) {
     t_eph* ee = _eph.value(prn);
     ee->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
 
-//  if (CORR_REQUIRED) {
-    if (settings.value("pppSPP").toString() == "PPP") {
+    if (_pppMode) {
       if (_corr.contains(prn)) {
         t_corr* cc = _corr.value(prn);
         if (ee->IOD() == cc->iod && (tt - cc->tt) < MAXAGE) {
-          corr = true;
           applyCorr(tt, cc, xc, vv);
           return success;
         }
@@ -442,8 +442,7 @@ t_irc bncPPPclient::cmpToT(t_satData* satData) {
 
     ColumnVector xc(4);
     ColumnVector vv(3);
-    bool corr = false;
-    if (getSatPos(ToT, satData->prn, xc, vv, corr) != success) {
+    if (getSatPos(ToT, satData->prn, xc, vv) != success) {
       return failure;
     }
 
@@ -454,7 +453,6 @@ t_irc bncPPPclient::cmpToT(t_satData* satData) {
       satData->xx      = xc.Rows(1,3);
       satData->vv      = vv;
       satData->clk     = clkSat * t_CST::c;
-      satData->clkCorr = corr;
       return success;
     } 
   }
