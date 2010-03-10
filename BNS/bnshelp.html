@@ -41,7 +41,7 @@ An alternative to the observation space approach is the so called 'sate space' a
 <p>In order to support applications following the state space approach, the purpose of BNS is to
 
 <ul>
-<li>read GNSS clocks and orbits in SP3 format from an IP port. They can be produced by a real-time GNSS engine such as RTNet and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system.</li> 
+<li>read GNSS clocks and orbits in a SP3-like format from an IP port. They can be produced by a real-time GNSS engine such as RTNet and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system.</li> 
 <li>read GNSS Broadcast Ephemeris in RINEX Navigation format from an IP port. This information can be provided in real-time by the 'BKG Ntrip Client' (BNC) program.</li>
 <li>convert the IGS Earth-Centered-Earth-Fixed clocks and and orbits into corrections to Broadcast Ephemeris with radial, along-track and cross-track components.</li>
 <li>refer the clock and orbit corretions to a specific reference system.</li>
@@ -63,7 +63,7 @@ The procedures taken by BNS to generate clock and orbit corrections to Broadcast
 <p>
 Then, epoch by epoch:
 <ul> 
-<li>Continuously receive the best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS05 reference system. Receive them every epoch in SP3 format as provided by a real-time GNSS engine such as RTNet.</li>
+<li>Continuously receive the best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS05 reference system. Receive them every epoch in a SP3-like format as provided by a real-time GNSS engine such as RTNet.</li>
 <li>Calculate X,Y,Z coordinates from Broadcast Ephemeris orbits.</li>
 <li>Calculate differences dX,dY,dZ between Broadcast Ephemeris and IGS05 orbits.</li>
 <li>Tranform these differences into radial, along-track and cross-track corrections to Broadcast Ephemeris orbits.</li>
@@ -255,11 +255,11 @@ Specify the full path to a file where received Broadcast Ephemeris will be logge
 
 <p><a name="co"><h4>4.5. Clocks &amp; Orbits</h4></p>
 <p>
-BNS requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system in SP3 format. They can be provided by a real-time GNSS engine such as RTNet. The sampling rate should not be much greater than 10 sec. Note that otherwise in IP streaming involved tools on the NTRIP Broadcaster or client side may respond with a timeout.
+BNS requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system in a SP3-like format. They can be provided by a real-time GNSS engine such as RTNet. The sampling rate should not be much greater than 10 sec. Note that otherwise in IP streaming involved tools on the NTRIP Broadcaster or client side may respond with a timeout.
 </p>
 
 <p>
-Below you find an example of precise clocks and orbits coming in SP3 format from a real-time GNSS engine. Each epoch starts with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records provide the following set of parameters for each satellite:
+Below you find an example of precise clocks and orbits coming in a SP3-like format from a real-time GNSS engine. Each epoch starts with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records provide the following set of parameters for each satellite:
 </p>
 
 <p>
@@ -289,12 +289,15 @@ PG05  14447.045279  -8140.619149  20744.274083     -7.120008     -0.004342  -0.3
 </pre>
 </p>
 <p>
-Note that the '2nd order relativistic effect' is not used in BNS although it is required to provide it. If the relativistic effect is unavailable for you then you must at least send a dummy value.
+Note that the '2nd order relativistic effect' is not used in BNS although it is required to provide it. If the relativistic effect is unavailable for you then you must at least send a dummy value. 
+</p>
+<p>
+In other words: The clocks in the ASCII stream from a real-time GNSS engine which feeds BNS must not contain the '2nd order relativistic effect'. Furthermore, BNS does not add this effect to the stream. 
 </p>
 
 <p><a name="coport"><h4>4.5.1 Listening Port - mandatory</h4></p>
 <p>
-BNS is listening at an IP port for incoming GNSS clocks and orbits in SP3 format. Enter the respective IP port number to setup a server socket for incoming data, see section 'Flow Chart' under 'Help' for socket communication details. Make sure that the software providing clocks and orbits is up and running before you start BNS.
+BNS is listening at an IP port for incoming GNSS clocks and orbits in a SP3-like format. Enter the respective IP port number to setup a server socket for incoming data, see section 'Flow Chart' under 'Help' for socket communication details. Make sure that the software providing clocks and orbits is up and running before you start BNS.
 </p>
 
 <p><a name="cosave"><h4>4.5.2 Save - optional</h4></p>
