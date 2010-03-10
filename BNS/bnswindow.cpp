@@ -176,7 +176,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_1_LineEdit = new QLineEdit(settings.value("mountpoint_1").toString());
   _refSys_1_ComboBox = new QComboBox;
   _refSys_1_ComboBox->setEditable(false);
-  _refSys_1_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  _refSys_1_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
   int ii = _refSys_1_ComboBox->findText(settings.value("refSys_1").toString());
   if (ii != -1) {
     _refSys_1_ComboBox->setCurrentIndex(ii);
@@ -194,7 +194,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_2_LineEdit = new QLineEdit(settings.value("mountpoint_2").toString());
   _refSys_2_ComboBox = new QComboBox;
   _refSys_2_ComboBox->setEditable(false);
-  _refSys_2_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  _refSys_2_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
   ii = _refSys_2_ComboBox->findText(settings.value("refSys_2").toString());
   if (ii != -1) {
     _refSys_2_ComboBox->setCurrentIndex(ii);
@@ -212,7 +212,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_3_LineEdit = new QLineEdit(settings.value("mountpoint_3").toString());
   _refSys_3_ComboBox = new QComboBox;
   _refSys_3_ComboBox->setEditable(false);
-  _refSys_3_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  _refSys_3_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
   ii = _refSys_3_ComboBox->findText(settings.value("refSys_3").toString());
   if (ii != -1) {
     _refSys_3_ComboBox->setCurrentIndex(ii);
@@ -230,7 +230,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_4_LineEdit = new QLineEdit(settings.value("mountpoint_4").toString());
   _refSys_4_ComboBox = new QComboBox;
   _refSys_4_ComboBox->setEditable(false);
-  _refSys_4_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  _refSys_4_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
   ii = _refSys_4_ComboBox->findText(settings.value("refSys_4").toString());
   if (ii != -1) {
     _refSys_4_ComboBox->setCurrentIndex(ii);
@@ -248,7 +248,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_5_LineEdit = new QLineEdit(settings.value("mountpoint_5").toString());
   _refSys_5_ComboBox = new QComboBox;
   _refSys_5_ComboBox->setEditable(false);
-  _refSys_5_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  _refSys_5_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
   ii = _refSys_5_ComboBox->findText(settings.value("refSys_5").toString());
   if (ii != -1) {
     _refSys_5_ComboBox->setCurrentIndex(ii);
@@ -266,7 +266,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_6_LineEdit = new QLineEdit(settings.value("mountpoint_6").toString());
   _refSys_6_ComboBox = new QComboBox;
   _refSys_6_ComboBox->setEditable(false);
-  _refSys_6_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  _refSys_6_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
   ii = _refSys_6_ComboBox->findText(settings.value("refSys_6").toString());
   if (ii != -1) {
     _refSys_6_ComboBox->setCurrentIndex(ii);
@@ -284,7 +284,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_7_LineEdit = new QLineEdit(settings.value("mountpoint_7").toString());
   _refSys_7_ComboBox = new QComboBox;
   _refSys_7_ComboBox->setEditable(false);
-  _refSys_7_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  _refSys_7_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
   ii = _refSys_7_ComboBox->findText(settings.value("refSys_7").toString());
   if (ii != -1) {
     _refSys_7_ComboBox->setCurrentIndex(ii);
@@ -302,7 +302,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_8_LineEdit = new QLineEdit(settings.value("mountpoint_8").toString());
   _refSys_8_ComboBox = new QComboBox;
   _refSys_8_ComboBox->setEditable(false);
-  _refSys_8_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  _refSys_8_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
   ii = _refSys_8_ComboBox->findText(settings.value("refSys_8").toString());
   if (ii != -1) {
     _refSys_8_ComboBox->setCurrentIndex(ii);
@@ -320,7 +320,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_9_LineEdit = new QLineEdit(settings.value("mountpoint_9").toString());
   _refSys_9_ComboBox = new QComboBox;
   _refSys_9_ComboBox->setEditable(false);
-  _refSys_9_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  _refSys_9_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
   ii = _refSys_9_ComboBox->findText(settings.value("refSys_9").toString());
   if (ii != -1) {
     _refSys_9_ComboBox->setCurrentIndex(ii);
@@ -338,7 +338,7 @@ bnsWindow::bnsWindow() {
   _mountpoint_10_LineEdit = new QLineEdit(settings.value("mountpoint_10").toString());
   _refSys_10_ComboBox = new QComboBox;
   _refSys_10_ComboBox->setEditable(false);
-  _refSys_10_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS2000,Custom").split(","));
+  _refSys_10_ComboBox->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
   ii = _refSys_10_ComboBox->findText(settings.value("refSys_10").toString());
   if (ii != -1) {
     _refSys_10_ComboBox->setCurrentIndex(ii);
