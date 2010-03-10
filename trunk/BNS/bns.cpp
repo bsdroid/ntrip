@@ -724,11 +724,11 @@ void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz, const QString trafo) {
     _dzr =    0.0000;
     _ox  =  0.000000;
     _oy  =  0.000000;
-    _oz  = -0.000003;
+    _oz  = -0.000030;
     _oxr =  0.000000;
     _oyr =  0.000000;
     _ozr =  0.000000;
-    _sc  =     0.000;
+    _sc  =     1.570;
     _scr =     0.000;
     _t0  =    1995.4;
   }
