@@ -313,28 +313,43 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 
       if      ( messageType == COTYPE_GPSCOMBINED    || 
                 messageType == COTYPE_GLONASSCOMBINED ) {
-        cc->rao.ReSize(3);
-        cc->dotRao.ReSize(3); 
-        cc->dotRao = 0.0;
-        double dummyDotClk;
-        in >> cc->iod >> cc->dClk >> cc->rao[0] >> cc->rao[1] >> cc->rao[2]
-           >> dummyDotClk >> cc->dotRao[0] >> cc->dotRao[1] >> cc->dotRao[2];
-        cc->dClk /= t_CST::c;
+        cc->rao.ReSize(3);       cc->rao       = 0.0;
+        cc->dotRao.ReSize(3);    cc->dotRao    = 0.0;
+        cc->dotDotRao.ReSize(3); cc->dotDotRao = 0.0;
+        cc->dClk       = 0.0;
+        cc->dotDClk    = 0.0;
+        cc->dotDotDClk = 0.0;
+        in >> cc->iod 
+           >> cc->dClk       >> cc->rao[0]       >> cc->rao[1]       >> cc->rao[2]
+           >> cc->dotDClk    >> cc->dotRao[0]    >> cc->dotRao[1]    >> cc->dotRao[2]
+           >> cc->dotDotDClk >> cc->dotDotRao[0] >> cc->dotDotRao[1] >> cc->dotDotRao[2];
+        cc->dClk       /= t_CST::c;
+        cc->dotDClk    /= t_CST::c;
+        cc->dotDotDClk /= t_CST::c;
         cc->raoSet  = true;
         cc->dClkSet = true;
       }
       else if ( messageType == COTYPE_GPSORBIT    || 
                 messageType == COTYPE_GLONASSORBIT ) {
-        cc->rao.ReSize(3);
-        in >> cc->iod >> cc->rao[0] >> cc->rao[1] >> cc->rao[2]
-           >> cc->dotRao[0] >> cc->dotRao[1] >> cc->dotRao[2];
+        cc->rao.ReSize(3);       cc->rao       = 0.0;
+        cc->dotRao.ReSize(3);    cc->dotRao    = 0.0;
+        cc->dotDotRao.ReSize(3); cc->dotDotRao = 0.0;
+        in >> cc->iod 
+          >> cc->rao[0]       >> cc->rao[1]       >> cc->rao[2]
+          >> cc->dotRao[0]    >> cc->dotRao[1]    >> cc->dotRao[2]
+          >> cc->dotDotRao[0] >> cc->dotDotRao[1] >> cc->dotDotRao[2];
         cc->raoSet  = true;
       }
       else if ( messageType == COTYPE_GPSCLOCK    || 
                 messageType == COTYPE_GLONASSCLOCK ) {
         int dummyIOD;
-        in >> dummyIOD >> cc->dClk;
-        cc->dClk /= t_CST::c;
+        cc->dClk       = 0.0;
+        cc->dotDClk    = 0.0;
+        cc->dotDotDClk = 0.0;
+        in >> dummyIOD >> cc->dClk >> cc->dotDClk >> cc->dotDotDClk;
+        cc->dClk       /= t_CST::c;
+        cc->dotDClk    /= t_CST::c;
+        cc->dotDotDClk /= t_CST::c;
         cc->dClkSet = true;
       }
     }
