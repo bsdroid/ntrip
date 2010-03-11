@@ -89,8 +89,11 @@ class t_corr {
   bncTime       tt;
   int          iod;
   double       dClk;
+  double       dotDClk;
+  double       dotDotDClk;
   ColumnVector rao;
   ColumnVector dotRao;
+  ColumnVector dotDotRao;
   bool         raoSet;
   bool         dClkSet;
 };
