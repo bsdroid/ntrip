@@ -357,11 +357,18 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
         int    bType;
         double bValue;
 	in >> bType >> bValue;
-        if      (bType ==  0) {
-          bb->p1c1 = -bValue;
+
+#define CODETYPEGPS_L1_CA  0
+#define CODETYPEGPS_L1_P   1
+#define CODETYPEGPS_L1_Z   2
+#define CODETYPEGPS_L2_P  10
+#define CODETYPEGPS_L2_Z  11
+
+        if      (bType ==  CODETYPEGPS_L1_CA) {
+          bb->p1c1 = bValue;
 	}
-        else if (bType == 10) {
-          bb->p1p2 = -bValue;
+        else if (bType == CODETYPEGPS_L2_Z) {
+          bb->p1p2 = bValue;
 	}
       }
     }
