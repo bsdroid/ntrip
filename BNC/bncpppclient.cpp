@@ -434,14 +434,15 @@ void bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
                              ColumnVector& xc, ColumnVector& vv) {
   ColumnVector dx(3);
 
-  ColumnVector raoHlp = cc->rao + cc->dotRao * (tt - cc->tt);
+  double dt = tt - cc->tt;
+  ColumnVector raoHlp = cc->rao + cc->dotRao * dt + cc->dotDotRao * dt * dt;
 
   RSW_to_XYZ(xc.Rows(1,3), vv, raoHlp, dx);
 
-    xc[0] -= dx[0];
-    xc[1] -= dx[1];
-    xc[2] -= dx[2];
-    xc[3] -= cc->dClk;
+  xc[0] -= dx[0];
+  xc[1] -= dx[1];
+  xc[2] -= dx[2];
+  xc[3] -= cc->dClk + cc->dotDClk * dt + cc->dotDotDClk * dt * dt;
 
   // Relativistic Correction
   // -----------------------
