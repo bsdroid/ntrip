@@ -730,7 +730,7 @@ void t_bns::crdTrafo(int GPSWeek, ColumnVector& xyz, const QString trafo) {
     _ozr =  0.000000;
     _sc  =     1.570;
     _scr =     0.000;
-    _t0  =    1995.4;
+    _t0  =    0000.0;
   }
   else if (trafo == "Custom") {
     _dx  = settings.value("trafo_dx").toDouble();
