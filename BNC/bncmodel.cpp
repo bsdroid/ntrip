@@ -730,7 +730,7 @@ t_irc bncModel::update(t_epoData* epoData) {
   // NEU Output
   // ----------
   bncSettings settings;
-  if (settings.value("pppOrigin").toString() != "No plot") {
+  if (settings.value("pppOrigin").toString() == "X Y Z") {
     double xyzRef[3];
     double ellRef[3];
     double _xyz[3];
