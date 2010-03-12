@@ -727,6 +727,32 @@ t_irc bncModel::update(t_epoData* epoData) {
   _log += strB.str().c_str();
   emit newMessage(_log, false);
 
+  // NEU Output
+  // ----------
+  bncSettings settings;
+  if (settings.value("pppOrigin").toString() != "No plot") {
+    double xyzRef[3];
+    double ellRef[3];
+    double _xyz[3];
+    double _neu[3];
+    xyzRef[0] = settings.value("pppRefCrdX").toDouble();
+    xyzRef[1] = settings.value("pppRefCrdY").toDouble();
+    xyzRef[2] = settings.value("pppRefCrdZ").toDouble();
+    _xyz[0] = x() - xyzRef[0];
+    _xyz[1] = y() - xyzRef[1];
+    _xyz[2] = z() - xyzRef[2];
+    xyz2ell(xyzRef, ellRef);
+    xyz2neu(ellRef, _xyz, _neu);
+    ostringstream strC;
+    strC.setf(ios::fixed);
+    strC << _staID.data() << ": NEU "
+         << epoData->tt.timestr(1) << " " << epoData->sizeAll() << " "
+         << setw(8)  << setprecision(3) << _neu[0]              << " "
+         << setw(8)  << setprecision(3) << _neu[1]              << " "
+         << setw(8)  << setprecision(3) << _neu[2];
+    emit newMessage(QByteArray(strC.str().c_str()), true);
+  }
+
   // NMEA Output
   // -----------
   double xyz[3]; 
