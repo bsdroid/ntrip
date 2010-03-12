@@ -958,6 +958,7 @@ PPP results are shown in the 'Log' tab on the bottom of BNC's main window. Depen
 <p>
 The 'PPP' string in that is followed by the selected mounpoint, a PPP time stamp in GPS Time, the number of processed satellites, and XYZ coordinates with their formal errors as derived from the implemented filter in [m]. The implemented algorithm includes an outlier and cycle slip detection. The maximum for accepted residuals is hard coded to 10 meters for code observations and 10 centimeters for phase observations.
 </p>
+
 <p>
 More detailed PPP results are saved in BNC's logfile. Depending on the selected processing options you find
 <ul>
@@ -1033,12 +1034,22 @@ By default BNC does not process GLONASS observations when in Point Positioning m
 <p>
 Select an origin for North/East/Up time series plots of derived coordinates in the 'PPP Plot' tab. Note that this makes only sense for a stationary receiver. Available options are
 <ul>
+<li>'No plot', meaning that BNC not plot a time series of estimated position.
 <li>'Start position', meaning that BNC will refer time series plots to the first estimated position.
 </li>
 <li>'X Y Z', meaning the known reference coordinate components for the receiver's position.
 </li>
 </ul>
 Default is the selection of an empty option field meaning that no PPP time series will be plotted in the "PPP Plot' tab..
+</p>
+<p>
+If an option 'Plot origin' is selected, the following line (example) is recorded in BNC's logfile
+</p>
+<pre>
+10-03-12 09:25:25 FFMJ1: NEU 09:25:24.0 8   -0.042   -0.084    0.026 
+</pre>
+<p>
+The 'NEU' string in that is followed by a PPP time stamp in GPS Time, the number of processed satellites, and the Nort, East and Up value of the current displacement in meter.
 </p>
 
 <p><a name="pppnmeaout"><h4>3.11.4 NMEA</h4></p>
