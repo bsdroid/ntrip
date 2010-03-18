@@ -235,7 +235,8 @@ void bncRinex::readSkeleton() {
 
   // Read downloaded file
   // --------------------
-  else if ( _ntripVersion != "N" && _ntripVersion != "UN" ) {
+  else if ( _ntripVersion != "N" && _ntripVersion != "UN" &&
+            _ntripVersion != "S" ) {
     QDate currDate = currentDateAndTimeGPS().date();
     if ( !_skeletonDate.isValid() || _skeletonDate != currDate ) {
       if ( downloadSkeleton() == success) {
