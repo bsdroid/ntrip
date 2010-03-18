@@ -248,7 +248,7 @@ When operating BNC online in 'no window' mode (command line option -nw), some co
 
 <p><a name="genstart"><h4>3.3.4 Auto Start - optional</h4></p>
 <p>
-You may like to auto-start BNC at startup time in window mode with preassigned configuration options. This may be required i.e. immediately after booting your system. Tick 'Auto start' to supersede the usage of the 'Start' button. Make sure that you maintain a link to BNC for that in your Autostart directory (Windows systems) or call BNC in a script below directory /etc/init.d (Unix/Linux/Mac systems).
+You may like to auto-start BNC at startup time in window mode with pre-assigned configuration options. This may be required i.e. immediately after booting your system. Tick 'Auto start' to supersede the usage of the 'Start' button. Make sure that you maintain a link to BNC for that in your Autostart directory (Windows systems) or call BNC in a script below directory /etc/init.d (Unix/Linux/Mac systems).
 </p>
 <p>
  See BNC's command line option -nw for an auto-start of BNC in 'no window' mode.
@@ -380,7 +380,7 @@ Broadcast ephemeris can be saved as RINEX Navigation files when received via RTC
 </ul> 
 
 <p>
-Note that streams dedicated to carry Broadcst Ephemeris messages in RTCM v3 format in high repetition rates are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>.
+Note that streams dedicated to carry Broadacst Ephemeris messages in RTCM v3 format in high repetition rates are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>.
 </p>
 
 <p><a name="ephdir"><h4>3.5.1 Directory - optional</h4></p>
@@ -406,7 +406,7 @@ The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that
 Default format for RINEX Navigation files containing broadcast ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format.
 </p>
 <p>
-Note that this does not concern the broadcast ephemeris output throug IP port which is always in RINEX Version 3 format.
+Note that this does not concern the broadcast ephemeris output through IP port which is always in RINEX Version 3 format.
 </p> 
 
 <p><a name="correct"><h4>3.6. Broadcast Corrections</h4></p>
@@ -431,7 +431,7 @@ RTCM is in the process of developing new Version 3 messages to transport satelli
 RTCM Version 3 streams carrying these messages may be used i.e. to support real-time Precise Point Positioning (PPP) applications. 
 </p>
 <p>
-When using clocks from Broadcast Ephemeris (with or without applied corrections) or clocks from SP3 files, it may beimportant to understand that they are not corrected for the 2nd-order relativistic effect. The 2nd-order relativistic effect is a priodic time correction defined as -2 (R * V) / c^2 and includes the scalar product of satallite position and velocity divided by the speed of light raised to the second power.
+When using clocks from Broadcast Ephemeris (with or without applied corrections) or clocks from SP3 files, it may beimportant to understand that they are not corrected for the 2nd-order relativistic effect. The 2nd-order relativistic effect is a periodic time correction defined as -2 (R * V) / c^2 and includes the scalar product of satellite position and velocity divided by the speed of light raised to the second power.
 </p>
 
 <p>
@@ -447,7 +447,7 @@ The orbit and clock corrections do not include local effects (like Ocean Loading
 </p>
 
 <p>
-Broadcast Corrrections can be saved by BNC in files. The file name convention for Broadcast Correction files follows the convention for RINEX files except for the last character of the file name suffix which is set to &quot;C&quot;.
+Broadcast Corrections can be saved by BNC in files. The file name convention for Broadcast Correction files follows the convention for RINEX files except for the last character of the file name suffix which is set to &quot;C&quot;.
 </p>
 
 <p>
@@ -485,7 +485,7 @@ In case of RTCM message types 1057 or 1063 these parameters are followed by
 </p>
 <p>
 <ul>
-<li>IOD refering to Broadcast Ephemeris set</li>
+<li>IOD referring to Broadcast Ephemeris set</li>
 <li>Radial Component of Orbit Correction to Broadcast Ephemeris [m]</li>
 <li>Along-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
 <li>Cross-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
@@ -538,7 +538,7 @@ Example:
 In case of RTCM message types 1060 or 1066 the first five parameters are followed by
 <p>
 <ul>
-<li>IOD refering to Broadcast Ephemeris set</li>
+<li>IOD referring to Broadcast Ephemeris set</li>
 <li>C0 polynomial coefficient for Clock Correction to Broadcast Ephemeris [m]</li>
 <li>Radial Component of Orbit Correction to Broadcast Ephemeris [m]</li>
 <li>Along-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
@@ -637,7 +637,7 @@ The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that
 
 <p><a name="corrwait"><h4>3.6.4 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
 <p>
-When feeding a real-time GNSS network engine waiting epoch by epoch for synchronized Broadcast Corrections, BNC drops (only concering IP port output) whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Broadcast Corrections stream and the delay acceptable by your application. A message such as &quot;COCK1: Correction overaged by 5 sec&quot; shows up in BNC's logfile if 'Wait for full epoch' is exceeded.
+When feeding a real-time GNSS network engine waiting epoch by epoch for synchronized Broadcast Corrections, BNC drops (only concerning IP port output) whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Broadcast Corrections stream and the delay acceptable by your application. A message such as &quot;COCK1: Correction overaged by 5 sec&quot; shows up in BNC's logfile if 'Wait for full epoch' is exceeded.
 </p>
 
 <p><a name="syncout"><h4>3.7. Feed Engine</h4></p>
@@ -647,7 +647,7 @@ BNC can generate synchronized or unsynchronized observations epoch by epoch from
 StatID, SVPRN, GPSWeek, GPSWeeks, C1, C2, P1, P2, L1, L2, slip_cnt_L1, slip_cnt_L2, lock_timei_L1, lock_timei_L2, S1, S2, SNR1, SNR2
 </p>
 <p>
-Note that slip_cnt stands for the cumulative loss of continuity indicator, lock_timei for the lock time indicator, and SNR for the signal-to-noise ratio 'S' mapped to integer numbers 1 to 9. In case an observation is not available, its value is set to zero '0.000'. Loss of continuity indicator and lock time indicator are set to nedative values if undefined.
+Note that slip_cnt stands for the cumulative loss of continuity indicator, lock_timei for the lock time indicator, and SNR for the signal-to-noise ratio 'S' mapped to integer numbers 1 to 9. In case an observation is not available, its value is set to zero '0.000'. Loss of continuity indicator and lock time indicator are set to negative values if undefined.
 </p>
 
 <p>The binary output is a continuous stream in the following order:</p>
@@ -704,7 +704,7 @@ Note that any socket connection of an application to BNC's synchronized or unsyn
 
 <p><a name="syncport"><h4>3.7.1 Port - optional</h4></p>
 <p>
-BNC can produce synchronized observations in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Scynchronized means that BNC collects all data for any specific epoch which become available within a certain number of latency seconds (see 'Wait for Full Epoch' option). It then - epoch by epoch - outputs whatever has been received. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary synchronized output is generated.</p>
+BNC can produce synchronized observations in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Synchronized means that BNC collects all data for any specific epoch which become available within a certain number of latency seconds (see 'Wait for Full Epoch' option). It then - epoch by epoch - outputs whatever has been received. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary synchronized output is generated.</p>
 <p>
 </p>
 
@@ -731,7 +731,7 @@ Beware that the size of this file can rapidly increase depending on the number o
 
 <p><a name="syncuport"><h4>3.7.5 Port (unsynchronized) - optional</h4></p>
 <p>
-BNC can produce unsynchronized observations from all configured streams in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Unscynchronized means that BNC immediately forwards any received observation to the port. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary unsynchronized output is generated.</p>
+BNC can produce unsynchronized observations from all configured streams in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Unsynchronized means that BNC immediately forwards any received observation to the port. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary unsynchronized output is generated.</p>
 <p>
 
 <p><a name="serial"><h4>3.8. Serial Output</h4></p>
@@ -797,7 +797,7 @@ Select 'Auto' to automatically forward all NMEA-GGA messages coming from your se
 Forwarding valid NMEA-GGA messages to the NTRIP broadcaster is required for receiving 'Virtual Reference Station' (VRS) streams. Thus, in case your serial connected receiver is not capable to provide them, the alternative for VRS streams is a 'Manual' simulation of an initial NMEA-GGA message. Its contents is based on the approximate (editable) latitude/longitude from the broadcaster's source-table and an approximate VRS height to be specified.
 </p>
 <p>
-In summary: select 'Manual' only when handling a VRS stream and your serial connected GNSS receiver doesn't generate NMEA-GGA messages. Select 'Auto' otherweise.
+In summary: select 'Manual' only when handling a VRS stream and your serial connected GNSS receiver doesn't generate NMEA-GGA messages. Select 'Auto' otherwise.
 </p>
 
 <p><a name="serfile"><h4>3.8.9 File - optional if 'Auto' NMEA is set</h4></p>
@@ -805,7 +805,7 @@ In summary: select 'Manual' only when handling a VRS stream and your serial conn
 </p>
 <p><a name="serheight"><h4>3.8.10 Height - mandatory if 'Manual' NMEA is set</h4></p>
 <p>
-Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message. Latitude and longitude for that (editable) are taken from the broadcaster's source-table.
+Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an initial NMEA-GGA message. Latitude and longitude for that (editable) are taken from the broadcaster's source-table.
 </p>
 <p>
 This option concerns only 'Virtual Reference Stations' (VRS). Its setting is ignored in case of streams coming from physical reference stations.
@@ -823,12 +823,12 @@ At various times, the incoming stream might become unavailable or corrupted. In 
 <u>Stream corruption:</u> Not all bits chunk transfers to BNC's internal decoders return valid observations. Sometimes several chunks might be needed before the next observation can be properly decoded. BNC buffers all the outputs (both valid and invalid) from the decoder for a short time span (size derived from the expected 'Observation rate') and then determines whether a stream is valid or corrupted.
 </p>
 <p>
-Outage and corruption events are reported in the 'Log' tab. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilise BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
+Outage and corruption events are reported in the 'Log' tab. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilize BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
 </p>
 
 <p><a name="obsrate"><h4>3.9.1 Observation Rate - mandatory if 'Failure threshold', 'Recovery threshold', and 'Script' is set</h4></p>
 <p>
-BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough a priory estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that can not be decoded.
+BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough a priory estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want an explicit information from BNC about stream outages and incoming streams that cannot be decoded.
 </p> 
 
 <p><a name="advfail"><h4>3.9.2 Failure Threshold - optional</h4></p>
@@ -931,7 +931,7 @@ Tick 'Scan RTCM' to scan RTCM Version 2.x or 3.x streams and log all contained
 </p>
 
 <p>
-Note that in RTCM Version 2.x the message types 18 and 19 carry only the observables of one frequence. Hence it needs two type 18 and 19 messages per epoch to transport the observations from dual frequency receivers.
+Note that in RTCM Version 2.x the message types 18 and 19 carry only the observables of one frequency. Hence it needs two type 18 and 19 messages per epoch to transport the observations from dual frequency receivers.
 </p>
 <p>
 
@@ -1098,7 +1098,7 @@ Streams selected for retrieval are listed under the 'Streams' canvas section on 
 BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.
 </li>
 <li>
-In case you need to log the raw data as is, BNC allows users to by-pass its decoders and and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'. The generated file names are created from the characters of the streams mountpoints plus two-digit numbers each for year, month, and day. Example: Setting the 'decoder' string for mountpoint WTZZ0 to 'ZERO' and running BNC on March 29, 2007 would save the raw data in a file named WTZZ0_070329.
+In case you need to log the raw data as is, BNC allows users to by-pass its decoders and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'. The generated file names are created from the characters of the streams mountpoints plus two-digit numbers each for year, month, and day. Example: Setting the 'decoder' string for mountpoint WTZZ0 to 'ZERO' and running BNC on March 29, 2007 would save the raw data in a file named WTZZ0_070329.
 </li>
 <li>
 BNC can also retrieve streams from virtual reference stations (VRS). To initiate these streams, an approximate rover position needs to be sent in NMEA format to the NTRIP broadcaster. In return, a user-specific data stream is generated, typically by a Network-RTK software. VRS streams are indicated by a 'yes' in the source-table as well as in the 'nmea' column on the 'Streams' canvas in BNC's main window. They are customized exactly to the latitude and longitude transmitted to the NTRIP broadcaster via NMEA-GGA messages.
@@ -1123,7 +1123,7 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 
 <p><a name="logs"><h4>3.13. Logging</h4></p>
 <p>
-A tabs section on the bottom of the main window provides online controle of BNC's activities. Tabs are available to show the records saved in a logfile, for a plot to controle the bandwidth consumtion, for a plot showing stream latencies, and for time series plots of PPP results.
+A tabs section on the bottom of the main window provides online control of BNC's activities. Tabs are available to show the records saved in a logfile, for a plot to control the bandwidth consumtion, for a plot showing stream latencies, and for time series plots of PPP results.
 </p>
 <p><a name="logfile"><h4>3.13.1 Log</h4></p>
 <p>
