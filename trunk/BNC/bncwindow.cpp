@@ -529,7 +529,7 @@ bncWindow::bncWindow() {
   gLayout->addWidget(_onTheFlyComboBox,                          2, 1);
   gLayout->addWidget(new QLabel("Auto start"),                   3, 0);
   gLayout->addWidget(_autoStartCheckBox,                         3, 1);
-  gLayout->addWidget(new QLabel("raw output file (full path)"),  4, 0);
+  gLayout->addWidget(new QLabel("Raw output file (full path)"),  4, 0);
   gLayout->addWidget(_rawOutFileLineEdit,                        4, 1, 1,30);
   gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, and auto-start."),5, 0, 1, 50, Qt::AlignLeft);
   gLayout->addWidget(new QLabel("    "),6,0);
