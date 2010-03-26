@@ -64,11 +64,14 @@ void RTCM3Error(const char*, ...) {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-RTCM3Decoder::RTCM3Decoder(const QString& staID) : GPSDecoder() {
+RTCM3Decoder::RTCM3Decoder(const QString& staID, bool inputFromFile) : 
+                GPSDecoder() {
+
+  _staID           = staID;
+  _inputFromFile   = inputFromFile;
 
   bncSettings settings;
   _checkMountPoint = settings.value("miscMount").toString();
-  _staID = staID;
 
   // Ensure, that the Decoder uses the "old" convention for the data structure for Rinex2. Perlt
   _Parser.rinex3 = 0;
@@ -117,8 +120,8 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
   if (_mode == unknown || _mode == corrections) {
     if ( _coDecoder->Decode(buffer, bufLen, errmsg) == success ) {
       decoded = true;
-      if (_mode == unknown) {
-        /////        _mode = corrections;
+      if (!_inputFromFile && _mode == unknown) {
+        _mode = corrections;
       }
     }
   }
@@ -339,8 +342,8 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         }
       }
     }
-    if (_mode == unknown && decoded) {
-      ////      _mode = observations;
+    if (!_inputFromFile && _mode == unknown && decoded) {
+      _mode = observations;
     }
   }
 
