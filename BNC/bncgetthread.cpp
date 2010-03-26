@@ -83,6 +83,8 @@ bncGetThread::bncGetThread(const QByteArray& rawInpFileName,
   _staID      = rawInpFileName.mid(
                        rawInpFileName.lastIndexOf(QDir::separator())+1,4);  
 
+  _rawOutput = false;
+
   initialize();
 }
 
@@ -102,6 +104,11 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   _longitude    = longitude;
   _nmea         = nmea;
   _ntripVersion = ntripVersion;
+
+  bncSettings settings;
+  if (!settings.value("rawOutFile").toString().isEmpty()) {
+    _rawOutput = true;
+  }
 
   initialize();
 }
@@ -409,8 +416,10 @@ void bncGetThread::run() {
 
       // Output Data
       // -----------
-      bncApp* app = (bncApp*) qApp;
-      app->writeRawData(data); 
+      if (_rawOutput) {
+        bncApp* app = (bncApp*) qApp;
+        app->writeRawData(data); 
+      }
 
       if (_serialPort) {
         slotSerialReadyRead();

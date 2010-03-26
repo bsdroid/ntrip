@@ -133,6 +133,7 @@ bncWindow::bncWindow() {
   // General Options
   // ---------------
   _logFileLineEdit    = new QLineEdit(settings.value("logFile").toString());
+  _rawOutFileLineEdit = new QLineEdit(settings.value("rawOutFile").toString());
   _rnxAppendCheckBox  = new QCheckBox();
   _rnxAppendCheckBox->setCheckState(Qt::CheckState(
                                     settings.value("rnxAppend").toInt()));
@@ -528,8 +529,10 @@ bncWindow::bncWindow() {
   gLayout->addWidget(_onTheFlyComboBox,                          2, 1);
   gLayout->addWidget(new QLabel("Auto start"),                   3, 0);
   gLayout->addWidget(_autoStartCheckBox,                         3, 1);
-  gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, and auto-start."),4, 0, 1, 50, Qt::AlignLeft);
-  gLayout->addWidget(new QLabel("    "),5,0);
+  gLayout->addWidget(new QLabel("raw output file (full path)"),  4, 0);
+  gLayout->addWidget(_rawOutFileLineEdit,                        4, 1, 1,30);
+  gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, and auto-start."),5, 0, 1, 50, Qt::AlignLeft);
+  gLayout->addWidget(new QLabel("    "),6,0);
   ggroup->setLayout(gLayout);
 
   // RINEX Observations
@@ -1034,6 +1037,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("ephPath",     _ephPathLineEdit->text());
   settings.setValue("ephV3",       _ephV3CheckBox->checkState());
   settings.setValue("logFile",     _logFileLineEdit->text());
+  settings.setValue("rawOutFile",  _rawOutFileLineEdit->text());
   settings.setValue("miscMount",   _miscMountLineEdit->text());
   settings.setValue("pppMount",    _pppMountLineEdit->text());
   settings.setValue("pppSPP",      _pppSPPComboBox->currentText());

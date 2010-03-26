@@ -118,7 +118,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     if ( _coDecoder->Decode(buffer, bufLen, errmsg) == success ) {
       decoded = true;
       if (_mode == unknown) {
-        _mode = corrections;
+        /////        _mode = corrections;
       }
     }
   }
@@ -340,7 +340,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
       }
     }
     if (_mode == unknown && decoded) {
-      _mode = observations;
+      ////      _mode = observations;
     }
   }
 

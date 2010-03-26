@@ -125,6 +125,7 @@ class bncGetThread : public QThread {
    t_serialNMEA    _serialNMEA;
    QMutex          _mutex;
    bncPPPclient*   _PPPclient;
+   bool            _rawOutput;
 };
 
 #endif
