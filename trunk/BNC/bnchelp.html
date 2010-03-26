@@ -94,6 +94,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.3.2. <a href=#genapp>Append Files</a><br>
 &nbsp; &nbsp; &nbsp; 3.3.3. <a href=#genconf>Reread Configuration</a><br>
 &nbsp; &nbsp; &nbsp; 3.3.4. <a href=#genstart>Auto Start</a><br>
+&nbsp; &nbsp; &nbsp; 3.3.5. <a href=#rawout>Raw Output File</a><br>
 3.4. <a href=#rinex>RINEX Observations</a><br>
 &nbsp; &nbsp; &nbsp; 3.4.1. <a href=#rnxname>File Names</a><br>
 &nbsp; &nbsp; &nbsp; 3.4.2. <a href=#rnxdir>Directory</a><br>
@@ -252,6 +253,14 @@ You may like to auto-start BNC at startup time in window mode with pre-assigned 
 </p>
 <p>
  See BNC's command line option -nw for an auto-start of BNC in 'no window' mode.
+</p>
+
+<p><a name="rawout"><h4>3.3.5 Raw Output File - optional</h4></p>
+<p>
+BNC can save all data coming in through various streams in the received order and format together in one single file. This is of importance i.e. when using the PPP option in offline mode where the contents of different streams carrying observations, orbit/clock correctors, and broadcast ephemeris are to be read from one file.
+</p>
+<p>
+The default value for 'Raw output file (full path)' is an empty option field, meaning that BNC will not save raw data into a file.
 </p>
 
 <p><a name="rinex"><h4>3.4. RINEX Observations</h4></p>
