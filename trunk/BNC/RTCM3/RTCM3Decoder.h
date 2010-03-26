@@ -40,7 +40,7 @@ extern "C" {
 class RTCM3Decoder : public QObject, public GPSDecoder {
 Q_OBJECT
  public:
-  RTCM3Decoder(const QString& fileName);
+  RTCM3Decoder(const QString& staID, bool inputFromFile);
   virtual ~RTCM3Decoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
   virtual int corrGPSEpochTime() const {
@@ -66,7 +66,7 @@ Q_OBJECT
 
   std::map<std::string, t_ephGPS> _ephList;
   double                 _antXYZ[3];
-
+  bool                   _inputFromFile;
 };
 
 #endif
