@@ -121,7 +121,6 @@ void bncGetThread::initialize() {
   _decoder       = 0;
   _query         = 0;
   _nextSleep     = 0;
-  _rawOutFile    = 0;
   _PPPclient     = 0;
 
   bncSettings settings;
@@ -277,12 +276,6 @@ void bncGetThread::initialize() {
     }
   }
 
-  // Raw Output
-  // ----------
-  // QByteArray rawOutFileName = "./" + _staID + ".raw";
-  // _rawOutFile = new QFile(rawOutFileName);
-  // _rawOutFile->open(QIODevice::WriteOnly);
-
   // Initialize PPP Client?
   // ----------------------
 #ifndef MLS_SOFTWARE
@@ -346,7 +339,6 @@ bncGetThread::~bncGetThread() {
   delete _decoder;
   delete _rnx;
   delete _rawInpFile;
-  delete _rawOutFile;
   delete _serialOutFile;
   delete _serialPort;
   delete _latencyChecker;
@@ -417,10 +409,9 @@ void bncGetThread::run() {
 
       // Output Data
       // -----------
-      if (_rawOutFile) {
-        _rawOutFile->write(data);
-        _rawOutFile->flush();
-      }
+      bncApp* app = (bncApp*) qApp;
+      app->writeRawData(data); 
+
       if (_serialPort) {
         slotSerialReadyRead();
         _serialPort->write(data);

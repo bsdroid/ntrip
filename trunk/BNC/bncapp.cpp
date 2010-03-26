@@ -60,6 +60,7 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
   _logFile     = 0;
   _logStream   = 0;
   _caster      = 0;
+  _rawOutFile  = 0;
 
   // Lists of Ephemeris
   // ------------------
@@ -127,6 +128,8 @@ bncApp::~bncApp() {
   delete _corrs;
 
   delete _currentDateAndTimeGPS;
+
+  delete _rawOutFile;
 }
 
 // Write a Program Message
@@ -701,4 +704,20 @@ void bncApp::setConfFileName(const QString& confFileName) {
   else {
     _confFileName = confFileName;
   }
+}
+
+// Raw Output
+////////////////////////////////////////////////////////////////////////////
+void bncApp::writeRawData(const QByteArray& data) {
+
+////  QMutexLocker locker(&_mutex);
+////
+////  if (!_rawOutFile) {
+////    QByteArray rawOutFileName = "./bnc.raw";
+////    _rawOutFile = new QFile(rawOutFileName);
+////    _rawOutFile->open(QIODevice::WriteOnly);
+////  }
+////
+////  _rawOutFile->write(data);
+////  _rawOutFile->flush();
 }

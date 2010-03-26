@@ -43,6 +43,7 @@ class bncApp : public QApplication {
     QDateTime* _currentDateAndTimeGPS;
     void setConfFileName(const QString& confFileName);
     QString confFileName() const {return _confFileName;}
+    void writeRawData(const QByteArray& data); 
 
   public slots:
     void slotMessage(QByteArray msg, bool showOnScreen);
@@ -72,6 +73,7 @@ class bncApp : public QApplication {
     void messagePrivate(const QByteArray& msg);
 
     QFile*            _logFile;
+    QFile*            _rawOutFile;
     QTextStream*      _logStream;
     int               _logFileFlag;
     QMutex            _mutex;
