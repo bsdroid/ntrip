@@ -85,6 +85,8 @@ bncGetThread::bncGetThread(const QByteArray& rawInpFileName,
 
   _rawOutput = false;
 
+  _ntripVersion = "N";
+
   initialize();
 }
 
