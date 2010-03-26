@@ -139,10 +139,6 @@ void bncGetThread::initialize() {
   _samplingRate = settings.value("rnxSampl").toInt();
   if ( settings.value("rnxPath").toString().isEmpty() ) { 
     _rnx = 0;
-    if (_rawInpFile) {
-      cerr << "no RINEX path specified" << endl;
-      ::exit(1);
-    }
   }
   else {
     _rnx = new bncRinex(_staID, _mountPoint, _format, _latitude, 
