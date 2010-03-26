@@ -127,6 +127,7 @@ class bncWindow : public QMainWindow {
     QLineEdit* _rnxSkelLineEdit;
     QLineEdit* _rnxScrpLineEdit;
     QLineEdit* _logFileLineEdit;
+    QLineEdit* _rawOutFileLineEdit;
     QComboBox* _pppSPPComboBox;
     QComboBox* _rnxIntrComboBox;
     QComboBox* _ephIntrComboBox;

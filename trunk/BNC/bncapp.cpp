@@ -710,14 +710,17 @@ void bncApp::setConfFileName(const QString& confFileName) {
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::writeRawData(const QByteArray& data) {
 
-////  QMutexLocker locker(&_mutex);
-////
-////  if (!_rawOutFile) {
-////    QByteArray rawOutFileName = "./bnc.raw";
-////    _rawOutFile = new QFile(rawOutFileName);
-////    _rawOutFile->open(QIODevice::WriteOnly);
-////  }
-////
-////  _rawOutFile->write(data);
-////  _rawOutFile->flush();
+  QMutexLocker locker(&_mutex);
+
+  if (!_rawOutFile) {
+    bncSettings settings;
+    QString rawOutFileName = settings.value("rawOutFile").toString();
+    _rawOutFile = new QFile(rawOutFileName);
+    _rawOutFile->open(QIODevice::WriteOnly);
+  }
+
+  if (_rawOutFile) {
+    _rawOutFile->write(data);
+    _rawOutFile->flush();
+  }
 }
