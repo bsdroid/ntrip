@@ -116,7 +116,6 @@ class bncGetThread : public QThread {
    int             _iMount;
    int             _samplingRate;
    bncRinex*       _rnx;
-   QFile*          _rawOutFile;
    QFile*          _rawInpFile;
    QextSerialPort* _serialPort;
    bool            _isToBeDeleted;
