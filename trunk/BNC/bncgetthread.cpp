@@ -81,7 +81,7 @@ bncGetThread::bncGetThread(const QByteArray& rawInpFileName,
   _rawInpFile->open(QIODevice::ReadOnly);
   _format     = format;
   _staID      = rawInpFileName.mid(
-                       rawInpFileName.lastIndexOf(QDir::separator())+1,4);  
+                       rawInpFileName.lastIndexOf(QDir::separator())+1,5);  
 
   _rawOutput = false;
 
@@ -399,6 +399,11 @@ void bncGetThread::run() {
       else if (_rawInpFile) {
         const qint64 maxBytes = 1024;
         data = _rawInpFile->read(maxBytes);
+
+        //// beg test
+        msleep(10);
+        //// end test
+
         if (data.isEmpty()) {
           cout << "no more data" << endl;
           ::exit(0);
