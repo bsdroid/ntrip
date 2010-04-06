@@ -42,6 +42,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("ephPath",          "");
     setValue("ephV3",            "0");
     setValue("logFile",          "");
+    setValue("rawOutFile",       "");
     setValue("miscMount",        "");  
     setValue("mountPoints",      "");
     setValue("ntripVersion",     "1");
