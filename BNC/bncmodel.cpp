@@ -771,8 +771,9 @@ t_irc bncModel::update(t_epoData* epoData) {
   }   
   char lamCh = 'E';
   if (lamDeg < 0) {
-    lamDeg = -lamDeg;
-    lamCh  =  'W';
+//  lamDeg = -lamDeg;      // GW, reason: RTKPlot cant handle 'W'
+//  lamCh  =  'W';         // GW, reason: RTKPlot cant handle 'W'
+    lamDeg = 360. +lamDeg; // GW, reason: RTKPlot cant handle 'W'
   }   
 
   double dop = 2.0; // TODO 
