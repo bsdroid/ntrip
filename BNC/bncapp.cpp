@@ -370,7 +370,7 @@ void bncApp::printEphHeader() {
       if (! (appendFlagGPS & QIODevice::Append)) {
         QString line;
         line.sprintf(
-          "%9.2f%11sN: GPS NAV DATA%25sRINEX VERSION / TYPE\n", 2.11, "", "");
+          "%9.2f%11sN: GPS NAV DATA%25sRINEX VERSION / TYPE\n", 2.10, "", "");
         *_ephStreamGPS << line;
          
         QString hlp = currentDateAndTimeGPS().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
@@ -387,7 +387,7 @@ void bncApp::printEphHeader() {
       if (! (appendFlagGlonass & QIODevice::Append)) {
         QString line;
         line.sprintf(
-          "%9.2f%11sG: GLONASS NAV DATA%21sRINEX VERSION / TYPE\n",2.11,"","");
+          "%9.2f%11sG: GLONASS NAV DATA%21sRINEX VERSION / TYPE\n",2.10,"","");
         *_ephStreamGlonass << line;
         
         QString hlp = currentDateAndTimeGPS().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
