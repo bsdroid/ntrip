@@ -41,7 +41,6 @@
 #include <iostream>
 #include <QMessageBox>
 #include <cmath>
-#include <unistd.h>
 
 #include "bncapp.h" 
 #include "bncutils.h" 
@@ -715,8 +714,10 @@ void bncApp::writeRawData(const QByteArray& data) {
   if (!_rawOutFile) {
     bncSettings settings;
     QString rawOutFileName = settings.value("rawOutFile").toString();
-    _rawOutFile = new QFile(rawOutFileName);
-    _rawOutFile->open(QIODevice::WriteOnly);
+    if (!rawOutFileName.isEmpty()) {
+      _rawOutFile = new QFile(rawOutFileName);
+      _rawOutFile->open(QIODevice::WriteOnly);
+    }
   }
 
   if (_rawOutFile) {
