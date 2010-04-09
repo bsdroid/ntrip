@@ -439,14 +439,10 @@ void bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
 
   RSW_to_XYZ(xc.Rows(1,3), vv, raoHlp, dx);
 
-  xc[0] -= dx[0];
-  xc[1] -= dx[1];
-  xc[2] -= dx[2];
-  xc[3] -= cc->dClk + cc->dotDClk * dt + cc->dotDotDClk * dt * dt;
-
-  // Relativistic Correction
-  // -----------------------
-  xc[3] -= 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c ;
+  xc[0] += dx[0];
+  xc[1] += dx[1];
+  xc[2] += dx[2];
+  xc[3] += cc->dClk + cc->dotDClk * dt + cc->dotDotDClk * dt * dt;
 }
 
 // Correct Time of Transmission
