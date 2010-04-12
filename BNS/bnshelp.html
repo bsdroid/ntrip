@@ -255,7 +255,7 @@ Specify the full path to a file where received Broadcast Ephemeris will be logge
 
 <p><a name="co"><h4>4.5. Clocks &amp; Orbits</h4></p>
 <p>
-BNS requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system in a SP3-like format refered to CoM. They can be provided by a real-time GNSS engine such as RTNet. The sampling rate should not be much greater than 10 sec. Note that otherwise in IP streaming involved tools on the NTRIP Broadcaster or client side may respond with a timeout.
+BNS requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system in a SP3-like format. They can be provided by a real-time GNSS engine such as RTNet. The sampling rate should not be much greater than 10 sec. Note that otherwise in IP streaming involved tools on the NTRIP Broadcaster or client side may respond with a timeout.
 </p>
 
 <p>
@@ -287,6 +287,9 @@ PG05  14447.045279  -8140.619149  20744.274083     -7.120008     -0.004342  -0.3
 ...
 ...
 </pre>
+</p>
+<p>
+Note that the '2nd order relativistic effect' is not used in BNS although it is required to provide it. If the relativistic effect is unavailable for you then you must at least send a dummy value. 
 </p>
 <p>
 In other words: The clocks in the ASCII stream from a real-time GNSS engine which feeds BNS must not contain the '2nd order relativistic effect'. Furthermore, BNS does not add this effect to the stream. 
