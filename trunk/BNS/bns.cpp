@@ -598,7 +598,7 @@ void t_bns::processSatellite(int oldEph, int iCaster, const QString trafo,
     
     if (ii == 1) {
       XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw);
-      dClk = (xx(4) + xx(5) - xB(4)) * 299792458.0;
+      dClk = (xB(4) - xx(4) - xx(5)) * 299792458.0;
     }
     else {
       XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw2);
