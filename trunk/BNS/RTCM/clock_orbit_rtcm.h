@@ -5,7 +5,7 @@
 
         Name:           clock_orbit_rtcm.h
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.h,v 1.8 2010/04/14 11:09:18 stoecker Exp $
+        Version:        $Id: clock_orbit_rtcm.h,v 1.14 2010/03/11 10:50:05 mervart Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -13,6 +13,7 @@
 #include <string.h>
 
 enum SatelliteReferenceDatum { DATUM_ITRF=0, DATUM_LOCAL=1 };
+enum SatelliteReferencePoint { POINT_IONOFREE=0, POINT_CENTER=1 };
 enum ClockOrbitType {
      COTYPE_GPSORBIT=1057, COTYPE_GPSCLOCK=1058,
      COTYPE_GPSCOMBINED=1060, COTYPE_GPSURA=1061, COTYPE_GPSHR=1062,
@@ -44,8 +45,6 @@ enum CodeType {
   CODETYPEGLONASS_L2_P       = 3,
 };
 
-#define SSR_MAXURA 5.5 /* > 5466.5mm in meter */
-
 /* GLONASS data is stored with offset CLOCKORBIT_NUMGPS in the data structures.
 So first GLONASS satellite is at xxx->Sat[CLOCKORBIT_NUMGPS], first
 GPS satellite is xxx->Sat[0]. */
@@ -64,11 +63,12 @@ struct ClockOrbit
   int epochGPS[101];                /* Weber, for latency */
   int epochSize;                    /* Weber, for latency */
   int UpdateInterval;
+  enum SatelliteReferencePoint SatRefPoint;
   enum SatelliteReferenceDatum SatRefDatum;
   struct SatData {
     int ID; /* GPS or GLONASS */
     int IOD; /* GPS or GLONASS */
-    double UserRangeAccuracy; /* accuracy values in [m] */
+    int URA;
     double hrclock;
     struct OrbitPart
     {
@@ -78,6 +78,9 @@ struct ClockOrbit
       double DotDeltaRadial;        /* m/s */
       double DotDeltaAlongTrack;    /* m/s */
       double DotDeltaCrossTrack;    /* m/s */
+      double DotDotDeltaRadial;     /* m/ss */
+      double DotDotDeltaAlongTrack; /* m/ss */
+      double DotDotDeltaCrossTrack; /* m/ss */
     } Orbit;
     struct ClockPart
     {

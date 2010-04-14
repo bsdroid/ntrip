@@ -2,12 +2,11 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.19 2010/04/14 13:11:26 mervart Exp $
+        Version:        $Id: clock_orbit_rtcm.c,v 1.20 2010/04/14 14:13:45 mervart Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
 
-#include <math.h>
 #include <stdio.h>
 #include <string.h>
 #ifndef sparc
@@ -93,7 +92,6 @@ modified variables are:
 
 /* standard values */
 #define T_MESSAGE_NUMBER(a)              ADDBITS(12, a) /* DF002 */
-#define T_RESERVED4                      ADDBITS(1, 0)  /* DF001 */
 #define T_RESERVED5                      ADDBITS(5, 0)  /* DF001 */
 #define T_GPS_SATELLITE_ID(a)            ADDBITS(6, a)  /* DF068 */
 #define T_GPS_IODE(a)                    ADDBITS(8, a)  /* DF071 */
@@ -106,6 +104,10 @@ modified variables are:
 #define T_DELTA_DOT_RADIAL(a)            SCALEADDBITS(21,  1000000.0, a)
 #define T_DELTA_DOT_ALONG_TRACK(a)       SCALEADDBITS(19,   250000.0, a)
 #define T_DELTA_DOT_CROSS_TRACK(a)       SCALEADDBITS(19,   250000.0, a)
+#define T_DELTA_DOT_DOT_RADIAL(a)        SCALEADDBITS(27, 50000000.0, a)
+#define T_DELTA_DOT_DOT_ALONG_TRACK(a)   SCALEADDBITS(25, 12500000.0, a)
+#define T_DELTA_DOT_DOT_CROSS_TRACK(a)   SCALEADDBITS(25, 12500000.0, a)
+#define T_SATELLITE_REFERENCE_POINT(a)   ADDBITS(1, a)
 
 #define T_SATELLITE_REFERENCE_DATUM(a)   ADDBITS(1, a)
 #define T_DELTA_CLOCK_C0(a)              SCALEADDBITS(22,    10000.0, a)
@@ -114,6 +116,7 @@ modified variables are:
 #define T_NO_OF_CODE_BIASES(a)           ADDBITS(5, a)
 #define T_GPS_SIGNAL_IDENTIFIER(a)       ADDBITS(5, a)
 #define T_GLONASS_SIGNAL_IDENTIFIER(a)   ADDBITS(5, a)
+#define T_GALILEO_SIGNAL_IDENTIFIER(a)   ADDBITS(5, a)
 #define T_CODE_BIAS(a)                   SCALEADDBITS(14,      100.0, a)
 #define T_GLONASS_SATELLITE_ID(a)        ADDBITS(5, a)
 
@@ -121,33 +124,9 @@ modified variables are:
 #define T_GLONASS_EPOCH_TIME(a)          ADDBITS(17, a)
 #define T_NO_OF_SATELLITES(a)            ADDBITS(6, a)
 #define T_MULTIPLE_MESSAGE_INDICATOR(a)  ADDBITS(1, a)
-#define T_SSR_URA(a)                     ADDBITS(6, a)
+#define T_SSR_URA(a)                     ADDBITS(4, a)
 #define T_HR_CLOCK_CORRECTION(a)         SCALEADDBITS(22,    10000.0, a)
 #define T_SSR_UPDATE_INTERVAL(a)         ADDBITS(4, a)
-
-static double URAToValue(int ura)
-{
-  int urac, urav;
-  urac = ura >> 3;
-  urav = ura & 7;
-  if(!ura)
-    return 0;
-  else if(ura == 63)
-    return SSR_MAXURA;
-  return (pow(3,urac)*(1.0+urav/4.0)-1.0)/1000.0;
-}
-
-static int ValueToURA(double val)
-{
-  int ura;
-  if(!val)
-    return 0;
-  else if(val > 5.4665)
-    return 63;
-  for(ura = 1; ura < 63 && val > URAToValue(ura); ++ura)
-    ;
-  return ura;
-}
 
 size_t MakeClockOrbit(const struct ClockOrbit *co, enum ClockOrbitType type,
 int moremessagesfollow, char *buffer, size_t size)
@@ -204,8 +183,7 @@ int moremessagesfollow, char *buffer, size_t size)
     T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
-    T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    T_RESERVED4
+    T_RESERVED5
     T_NO_OF_SATELLITES(co->NumberOfGPSSat)
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
@@ -217,6 +195,11 @@ int moremessagesfollow, char *buffer, size_t size)
       T_DELTA_DOT_RADIAL(co->Sat[i].Orbit.DotDeltaRadial)
       T_DELTA_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDeltaAlongTrack)
       T_DELTA_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDeltaCrossTrack)
+      T_DELTA_DOT_DOT_RADIAL(co->Sat[i].Orbit.DotDotDeltaRadial)
+      T_DELTA_DOT_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDotDeltaAlongTrack)
+      T_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDotDeltaCrossTrack)
+      T_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
+      T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
     }
     ENDBLOCK
   }
@@ -260,8 +243,7 @@ int moremessagesfollow, char *buffer, size_t size)
       T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
       T_MULTIPLE_MESSAGE_INDICATOR(/*mmi || */ left ? 1 : 0)
       --mmi;
-      T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-      T_RESERVED4
+      T_RESERVED5
       T_NO_OF_SATELLITES(nums)
       for(i = start; i < start+nums; ++i)
       {
@@ -273,6 +255,11 @@ int moremessagesfollow, char *buffer, size_t size)
         T_DELTA_DOT_RADIAL(co->Sat[i].Orbit.DotDeltaRadial)
         T_DELTA_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDeltaAlongTrack)
         T_DELTA_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDeltaCrossTrack)
+        T_DELTA_DOT_DOT_RADIAL(co->Sat[i].Orbit.DotDotDeltaRadial)
+        T_DELTA_DOT_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDotDeltaAlongTrack)
+        T_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDotDeltaCrossTrack)
+        T_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
+        T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
         T_DELTA_CLOCK_C0(co->Sat[i].Clock.DeltaA0)
         T_DELTA_CLOCK_C1(co->Sat[i].Clock.DeltaA1)
         T_DELTA_CLOCK_C2(co->Sat[i].Clock.DeltaA2)
@@ -312,7 +299,7 @@ int moremessagesfollow, char *buffer, size_t size)
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
       T_GPS_SATELLITE_ID(co->Sat[i].ID)
-      T_SSR_URA(ValueToURA(co->Sat[i].UserRangeAccuracy))
+      T_SSR_URA(co->Sat[i].URA)
     }
     ENDBLOCK
   }
@@ -324,8 +311,7 @@ int moremessagesfollow, char *buffer, size_t size)
     T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
-    T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    T_RESERVED4
+    T_RESERVED5
     T_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
@@ -338,6 +324,11 @@ int moremessagesfollow, char *buffer, size_t size)
       T_DELTA_DOT_RADIAL(co->Sat[i].Orbit.DotDeltaRadial)
       T_DELTA_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDeltaAlongTrack)
       T_DELTA_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDeltaCrossTrack)
+      T_DELTA_DOT_DOT_RADIAL(co->Sat[i].Orbit.DotDotDeltaRadial)
+      T_DELTA_DOT_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDotDeltaAlongTrack)
+      T_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDotDeltaCrossTrack)
+      T_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
+      T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
     }
     ENDBLOCK
   }
@@ -370,8 +361,7 @@ int moremessagesfollow, char *buffer, size_t size)
     T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
-    T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    T_RESERVED4
+    T_RESERVED5
     T_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
@@ -384,6 +374,11 @@ int moremessagesfollow, char *buffer, size_t size)
       T_DELTA_DOT_RADIAL(co->Sat[i].Orbit.DotDeltaRadial)
       T_DELTA_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDeltaAlongTrack)
       T_DELTA_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDeltaCrossTrack)
+      T_DELTA_DOT_DOT_RADIAL(co->Sat[i].Orbit.DotDotDeltaRadial)
+      T_DELTA_DOT_DOT_ALONG_TRACK(co->Sat[i].Orbit.DotDotDeltaAlongTrack)
+      T_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[i].Orbit.DotDotDeltaCrossTrack)
+      T_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
+      T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
       T_DELTA_CLOCK_C0(co->Sat[i].Clock.DeltaA0)
       T_DELTA_CLOCK_C1(co->Sat[i].Clock.DeltaA1)
       T_DELTA_CLOCK_C2(co->Sat[i].Clock.DeltaA2)
@@ -421,7 +416,7 @@ int moremessagesfollow, char *buffer, size_t size)
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
     {
       T_GPS_SATELLITE_ID(co->Sat[i].ID)
-      T_SSR_URA(ValueToURA(co->Sat[i].UserRangeAccuracy))
+      T_SSR_URA(co->Sat[i].URA)
     }
     ENDBLOCK
   }
@@ -536,7 +531,6 @@ int moremessagesfollow, char *buffer, size_t size)
 #define G_RESERVEDH(a)                   GETBITS(a,6)
 #define G_SIZE(a)                        GETBITS(a, 10)
 #define G_MESSAGE_NUMBER(a)              GETBITS(a, 12) /* DF002 */
-#define G_RESERVED4                      SKIPBITS(4)    /* DF001 */
 #define G_RESERVED5                      SKIPBITS(5)    /* DF001 */
 #define G_GPS_SATELLITE_ID(a)            GETBITS(a, 6)  /* DF068 */
 #define G_GPS_IODE(a)                    GETBITS(a, 8)  /* DF071 */
@@ -549,6 +543,10 @@ int moremessagesfollow, char *buffer, size_t size)
 #define G_DELTA_DOT_RADIAL(a)            GETFLOATSIGN(a, 21, 1/1000000.0)
 #define G_DELTA_DOT_ALONG_TRACK(a)       GETFLOATSIGN(a, 19, 1/250000.0)
 #define G_DELTA_DOT_CROSS_TRACK(a)       GETFLOATSIGN(a, 19, 1/250000.0)
+#define G_DELTA_DOT_DOT_RADIAL(a)        GETFLOATSIGN(a, 27, 1/50000000.0)
+#define G_DELTA_DOT_DOT_ALONG_TRACK(a)   GETFLOATSIGN(a, 25, 1/12500000.0)
+#define G_DELTA_DOT_DOT_CROSS_TRACK(a)   GETFLOATSIGN(a, 25, 1/12500000.0)
+#define G_SATELLITE_REFERENCE_POINT(a)   GETBITS(a, 1)
 
 #define G_SATELLITE_REFERENCE_DATUM(a)   GETBITS(a, 1)
 #define G_DELTA_CLOCK_C0(a)              GETFLOATSIGN(a, 22, 1/10000.0)
@@ -557,6 +555,7 @@ int moremessagesfollow, char *buffer, size_t size)
 #define G_NO_OF_CODE_BIASES(a)           GETBITS(a, 5)
 #define G_GPS_SIGNAL_IDENTIFIER(a)       GETBITS(a, 5)
 #define G_GLONASS_SIGNAL_IDENTIFIER(a)   GETBITS(a, 5)
+#define G_GALILEO_SIGNAL_IDENTIFIER(a)   GETBITS(a, 5)
 #define G_CODE_BIAS(a)                   GETFLOATSIGN(a, 14, 1/100.0)
 #define G_GLONASS_SATELLITE_ID(a)        GETBITS(a, 5)
 
@@ -566,8 +565,7 @@ int moremessagesfollow, char *buffer, size_t size)
  if(b && a != temp) return GCOBR_TIMEMISMATCH; a = temp;}
 #define G_NO_OF_SATELLITES(a)            GETBITS(a, 6)
 #define G_MULTIPLE_MESSAGE_INDICATOR(a)  GETBITS(a, 1)
-#define G_SSR_URA(a)                     {int temp; GETBITS(temp, 6) \
- (a) = URAToValue(temp);}
+#define G_SSR_URA(a)                     GETBITS(a, 4)
 #define G_HR_CLOCK_CORRECTION(a)         GETFLOATSIGN(a, 22, 1/10000.0)
 #define G_SSR_UPDATE_INTERVAL(a)         GETBITS(a, 4)
 
@@ -615,13 +613,12 @@ fprintf(stderr, "type %d size %d\n",type,sizeofrtcmblock);
     if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    G_RESERVED4
+    G_RESERVED5
     G_NO_OF_SATELLITES(nums)
     co->OrbitDataSupplied |= 1;
 #ifdef DEBUG
-fprintf(stderr, "epochtime %d ui %d mmi %d sats %d/%d rd %d\n",co->GPSEpochTime,
-co->UpdateInterval,mmi,co->NumberOfGPSSat,nums, co->SatRefDatum);
+fprintf(stderr, "epochtime %d ui %d mmi %d sats %d/%d\n",co->GPSEpochTime,
+co->UpdateInterval,mmi,co->NumberOfGPSSat,nums);
 #endif
     for(i = 0; i < nums; ++i)
     {
@@ -639,13 +636,23 @@ co->UpdateInterval,mmi,co->NumberOfGPSSat,nums, co->SatRefDatum);
       G_DELTA_DOT_RADIAL(co->Sat[pos].Orbit.DotDeltaRadial)
       G_DELTA_DOT_ALONG_TRACK(co->Sat[pos].Orbit.DotDeltaAlongTrack)
       G_DELTA_DOT_CROSS_TRACK(co->Sat[pos].Orbit.DotDeltaCrossTrack)
+      G_DELTA_DOT_DOT_RADIAL(co->Sat[pos].Orbit.DotDotDeltaRadial)
+      G_DELTA_DOT_DOT_ALONG_TRACK(co->Sat[pos].Orbit.DotDotDeltaAlongTrack)
+      G_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[pos].Orbit.DotDotDeltaCrossTrack)
+      G_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
+      G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
 #ifdef DEBUG
-fprintf(stderr, "id %2d iod %3d dr %8.3f da %8.3f dc %8.3f dr %8.3f da %8.3f dc %8.3f\n",
+fprintf(stderr, "id %2d iod %3d dr %8.3f da %8.3f dc %8.3f dr %8.3f da %8.3f dc %8.3f dr %8.3f da %8.3f dc %8.3f rp %d rd %d\n",
 co->Sat[pos].ID,co->Sat[pos].IOD,co->Sat[pos].Orbit.DeltaRadial,
 co->Sat[pos].Orbit.DeltaAlongTrack,co->Sat[pos].Orbit.DeltaCrossTrack,
 co->Sat[pos].Orbit.DotDeltaRadial,
 co->Sat[pos].Orbit.DotDeltaAlongTrack,
-co->Sat[pos].Orbit.DotDeltaCrossTrack);
+co->Sat[pos].Orbit.DotDeltaCrossTrack,
+co->Sat[pos].Orbit.DotDotDeltaRadial,
+co->Sat[pos].Orbit.DotDotDeltaAlongTrack,
+co->Sat[pos].Orbit.DotDotDeltaCrossTrack,
+co->SatRefPoint,
+co->SatRefDatum);
 #endif
     }
     break;
@@ -691,8 +698,7 @@ co->Sat[pos].Clock.DeltaA2);
     if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    G_RESERVED4
+    G_RESERVED5
     G_NO_OF_SATELLITES(nums)
     co->OrbitDataSupplied |= 1;
     co->ClockDataSupplied |= 1;
@@ -712,6 +718,11 @@ co->Sat[pos].Clock.DeltaA2);
       G_DELTA_DOT_RADIAL(co->Sat[pos].Orbit.DotDeltaRadial)
       G_DELTA_DOT_ALONG_TRACK(co->Sat[pos].Orbit.DotDeltaAlongTrack)
       G_DELTA_DOT_CROSS_TRACK(co->Sat[pos].Orbit.DotDeltaCrossTrack)
+      G_DELTA_DOT_DOT_RADIAL(co->Sat[pos].Orbit.DotDotDeltaRadial)
+      G_DELTA_DOT_DOT_ALONG_TRACK(co->Sat[pos].Orbit.DotDotDeltaAlongTrack)
+      G_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[pos].Orbit.DotDotDeltaCrossTrack)
+      G_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
+      G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
       G_DELTA_CLOCK_C0(co->Sat[pos].Clock.DeltaA0)
       G_DELTA_CLOCK_C1(co->Sat[pos].Clock.DeltaA1)
       G_DELTA_CLOCK_C2(co->Sat[pos].Clock.DeltaA2)
@@ -736,7 +747,7 @@ co->Sat[pos].Clock.DeltaA2);
       else if(pos == co->NumberOfGPSSat) ++co->NumberOfGPSSat;
       co->Sat[pos].ID = id;
 
-      G_SSR_URA(co->Sat[pos].UserRangeAccuracy)
+      G_SSR_URA(co->Sat[pos].URA)
     }
     break;
   case COTYPE_GPSHR:
@@ -768,13 +779,12 @@ co->Sat[pos].Clock.DeltaA2);
     G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    G_RESERVED4
+    G_RESERVED5
     G_NO_OF_SATELLITES(nums)
     co->OrbitDataSupplied |= 2;
 #ifdef DEBUG
-fprintf(stderr, "epochtime %d ui %d mmi %d sats %d/%d rd %d\n",co->GLONASSEpochTime,
-co->UpdateInterval,mmi,co->NumberOfGLONASSSat,nums, co->SatRefDatum);
+fprintf(stderr, "epochtime %d ui %d mmi %d sats %d/%d\n",co->GLONASSEpochTime,
+co->UpdateInterval,mmi,co->NumberOfGLONASSSat,nums);
 #endif
     for(i = 0; i < nums; ++i)
     {
@@ -792,13 +802,23 @@ co->UpdateInterval,mmi,co->NumberOfGLONASSSat,nums, co->SatRefDatum);
       G_DELTA_DOT_RADIAL(co->Sat[pos].Orbit.DotDeltaRadial)
       G_DELTA_DOT_ALONG_TRACK(co->Sat[pos].Orbit.DotDeltaAlongTrack)
       G_DELTA_DOT_CROSS_TRACK(co->Sat[pos].Orbit.DotDeltaCrossTrack)
+      G_DELTA_DOT_DOT_RADIAL(co->Sat[pos].Orbit.DotDotDeltaRadial)
+      G_DELTA_DOT_DOT_ALONG_TRACK(co->Sat[pos].Orbit.DotDotDeltaAlongTrack)
+      G_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[pos].Orbit.DotDotDeltaCrossTrack)
+      G_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
+      G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
 #ifdef DEBUG
-fprintf(stderr, "id %2d iod %3d dr %8.3f da %8.3f dc %8.3f dr %8.3f da %8.3f dc %8.3f\n",
+fprintf(stderr, "id %2d iod %3d dr %8.3f da %8.3f dc %8.3f dr %8.3f da %8.3f dc %8.3f dr %8.3f da %8.3f dc %8.3f rp %d rd %d\n",
 co->Sat[pos].ID,co->Sat[pos].IOD,co->Sat[pos].Orbit.DeltaRadial,
 co->Sat[pos].Orbit.DeltaAlongTrack,co->Sat[pos].Orbit.DeltaCrossTrack,
 co->Sat[pos].Orbit.DotDeltaRadial,
 co->Sat[pos].Orbit.DotDeltaAlongTrack,
-co->Sat[pos].Orbit.DotDeltaCrossTrack);
+co->Sat[pos].Orbit.DotDeltaCrossTrack,
+co->Sat[pos].Orbit.DotDotDeltaRadial,
+co->Sat[pos].Orbit.DotDotDeltaAlongTrack,
+co->Sat[pos].Orbit.DotDotDeltaCrossTrack,
+co->SatRefPoint,
+co->SatRefDatum);
 #endif
     }
     break;
@@ -840,8 +860,7 @@ co->Sat[pos].Clock.DeltaA2);
     G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    G_RESERVED4
+    G_RESERVED5
     G_NO_OF_SATELLITES(nums)
     co->OrbitDataSupplied |= 2;
     co->ClockDataSupplied |= 2;
@@ -861,6 +880,11 @@ co->Sat[pos].Clock.DeltaA2);
       G_DELTA_DOT_RADIAL(co->Sat[pos].Orbit.DotDeltaRadial)
       G_DELTA_DOT_ALONG_TRACK(co->Sat[pos].Orbit.DotDeltaAlongTrack)
       G_DELTA_DOT_CROSS_TRACK(co->Sat[pos].Orbit.DotDeltaCrossTrack)
+      G_DELTA_DOT_DOT_RADIAL(co->Sat[pos].Orbit.DotDotDeltaRadial)
+      G_DELTA_DOT_DOT_ALONG_TRACK(co->Sat[pos].Orbit.DotDotDeltaAlongTrack)
+      G_DELTA_DOT_DOT_CROSS_TRACK(co->Sat[pos].Orbit.DotDotDeltaCrossTrack)
+      G_SATELLITE_REFERENCE_POINT(co->SatRefPoint)
+      G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
       G_DELTA_CLOCK_C0(co->Sat[pos].Clock.DeltaA0)
       G_DELTA_CLOCK_C1(co->Sat[pos].Clock.DeltaA1)
       G_DELTA_CLOCK_C2(co->Sat[pos].Clock.DeltaA2)
@@ -883,7 +907,7 @@ co->Sat[pos].Clock.DeltaA2);
       else if(pos == CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
       co->Sat[pos].ID = id;
 
-      G_SSR_URA(co->Sat[pos].UserRangeAccuracy)
+      G_SSR_URA(co->Sat[pos].URA)
     }
     break;
   case COTYPE_GLONASSHR:
