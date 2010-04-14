@@ -144,11 +144,11 @@ void bncPPPclient::putNewObs(p_obs pp) {
   // Set Code Observations
   // ---------------------  
   if      (obs->P1) {
-    satData->P1         = obs->P1;
+    satData->P1         = obs->P1 + (bb ? bb->p1 : 0.0);
     satData->codeTypeF1 = t_satData::P_CODE;
   }
   else if (obs->C1) {
-    satData->P1         = obs->C1 + (bb ? bb->p1c1 : 0.0);
+    satData->P1         = obs->C1 + (bb ? bb->c1 : 0.0);
     satData->codeTypeF1 = t_satData::C_CODE;
   }
   else {
@@ -157,7 +157,7 @@ void bncPPPclient::putNewObs(p_obs pp) {
   }
     
   if      (obs->P2) {
-    satData->P2         = obs->P2 + (bb ? bb->p1p2 : 0.0);
+    satData->P2         = obs->P2 + (bb ? bb->p2 : 0.0);
     satData->codeTypeF2 = t_satData::P_CODE;
   }
   else if (obs->C2) {
@@ -372,18 +372,14 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
         int    bType;
         double bValue;
 	in >> bType >> bValue;
-
-#define CODETYPEGPS_L1_CA  0
-#define CODETYPEGPS_L1_P   1
-#define CODETYPEGPS_L1_Z   2
-#define CODETYPEGPS_L2_P  10
-#define CODETYPEGPS_L2_Z  11
-
-        if      (bType ==  CODETYPEGPS_L1_CA) {
-          bb->p1c1 = bValue;
+        if      (bType ==  CODETYPEGPS_L1_Z) {
+          bb->p1 = bValue;
+	}
+        else if (bType ==  CODETYPEGPS_L1_CA) {
+          bb->c1 = bValue;
 	}
         else if (bType == CODETYPEGPS_L2_Z) {
-          bb->p1p2 = bValue;
+          bb->p2 = bValue;
 	}
       }
     }

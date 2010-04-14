@@ -101,12 +101,14 @@ class t_corr {
 class t_bias {
  public:
   t_bias() {
-    p1c1 = 0.0;
-    p1p2 = 0.0;
+    p1 = 0.0;
+    p2 = 0.0;
+    c1 = 0.0;
   }
   bncTime tt;
-  double  p1c1;
-  double  p1p2;
+  double  p1;
+  double  p2;
+  double  c1;
 };
 
 class bncPPPclient : public QObject {
