@@ -59,8 +59,7 @@ int main(void)
         /* co.GLONASSEpochTime = 0; */
         co.ClockDataSupplied = 1;
         co.OrbitDataSupplied = 1;
-        co.SatRefPoint = DATUM_ITRF;
-        co.SatRefDatum = POINT_IONOFREE;
+        co.SatRefDatum = DATUM_ITRF;
       }
 
       sd = co.Sat + co.NumberOfGPSSat;
