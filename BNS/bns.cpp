@@ -479,6 +479,13 @@ void t_bns::readEpoch() {
 //              ++bias.NumberOfGLONASSSat;
 //            }
 
+            // Coefficient of Ionosphere-Free LC
+            // ---------------------------------
+            const static double a_L1_GPS =  2.54572778;
+            const static double a_L2_GPS = -1.54572778;
+            const static double a_L1_Glo =  2.53125000;
+            const static double a_L2_Glo = -1.53125000;
+
             if (biasSat) {
               biasSat->ID = prn.mid(1).toInt();
               biasSat->NumberOfCodeBiases = 3;
