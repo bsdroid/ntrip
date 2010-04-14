@@ -475,10 +475,10 @@ void t_bns::readEpoch() {
               biasSat = bias.Sat + bias.NumberOfGPSSat;
               ++bias.NumberOfGPSSat;
             }
-//            else if (prn[0] == 'R') {
-//              biasSat = bias.Sat + CLOCKORBIT_NUMGPS + bias.NumberOfGLONASSSat;
-//              ++bias.NumberOfGLONASSSat;
-//            }
+            else if (prn[0] == 'R') {
+              biasSat = bias.Sat + CLOCKORBIT_NUMGPS + bias.NumberOfGLONASSSat;
+              ++bias.NumberOfGLONASSSat;
+            }
 
             // Coefficient of Ionosphere-Free LC
             // ---------------------------------
