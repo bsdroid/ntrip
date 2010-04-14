@@ -231,7 +231,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               line.sprintf("   %3d"
                            "   %8.3f %8.3f %8.3f %8.3f"
                            "   %10.5f %10.5f %10.5f %10.5f"
-                           "   %10.5f %10.5f %10.5f %10.5f",
+                           "   %10.5f",
                            _co.Sat[ii].IOD, 
                            _co.Sat[ii].Clock.DeltaA0,
                            _co.Sat[ii].Orbit.DeltaRadial, 
@@ -241,10 +241,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                            _co.Sat[ii].Orbit.DotDeltaRadial, 
                            _co.Sat[ii].Orbit.DotDeltaAlongTrack,
                            _co.Sat[ii].Orbit.DotDeltaCrossTrack,
-                           _co.Sat[ii].Clock.DeltaA2,
-                           _co.Sat[ii].Orbit.DotDotDeltaRadial, 
-                           _co.Sat[ii].Orbit.DotDotDeltaAlongTrack,
-                           _co.Sat[ii].Orbit.DotDotDeltaCrossTrack);
+                           _co.Sat[ii].Clock.DeltaA2);
               printLine(linePart+line, coTime);
             }
 
@@ -255,7 +252,6 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               QString line;
               line.sprintf("   %3d"
                            "   %8.3f %8.3f %8.3f"
-                           "   %10.5f %10.5f %10.5f"
                            "   %10.5f %10.5f %10.5f",
                            _co.Sat[ii].IOD, 
                            _co.Sat[ii].Orbit.DeltaRadial, 
@@ -263,10 +259,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                            _co.Sat[ii].Orbit.DeltaCrossTrack,
                            _co.Sat[ii].Orbit.DotDeltaRadial, 
                            _co.Sat[ii].Orbit.DotDeltaAlongTrack,
-                           _co.Sat[ii].Orbit.DotDeltaCrossTrack,
-                           _co.Sat[ii].Orbit.DotDotDeltaRadial, 
-                           _co.Sat[ii].Orbit.DotDotDeltaAlongTrack,
-                           _co.Sat[ii].Orbit.DotDotDeltaCrossTrack);
+                           _co.Sat[ii].Orbit.DotDeltaCrossTrack);
               printLine(linePart+line, coTime);
             }
 
@@ -288,8 +281,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
             else if ( _co.messageType == COTYPE_GPSURA     || 
                       _co.messageType == COTYPE_GLONASSURA ) {
               QString line;
-              line.sprintf("   %3d   %d",
-                           _co.Sat[ii].IOD, _co.Sat[ii].URA);
+              line.sprintf("   %3d   %f",
+                           _co.Sat[ii].IOD, _co.Sat[ii].UserRangeAccuracy);
               printLine(linePart+line, coTime);
             }
 
