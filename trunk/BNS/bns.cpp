@@ -419,17 +419,18 @@ void t_bns::readEpoch() {
               in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) 
                  >> xx(6) >> xx(7) >> xx(8) >> xx(9) >> xx(10)
                  >> xx(11) >> xx(12) >> xx(13) >> xx(14);
-              xx(1) *= 1e3;     // x-crd
-              xx(2) *= 1e3;     // y-crd
-              xx(3) *= 1e3;     // z-crd
-              xx(4) *= 1e-6;    // clk
-              xx(5) *= 1e-6;    // rel. corr.
-                                // xx(6), xx(7), xx(8) ... PhaseCent - CoM
-                                // xx(9) .. P1-C1 DCB, xx(10) ... P1-P2 DCB
-                                // xx(11) ... dT
-              xx(12) *= 1e3;    // x-crd at time + dT
-              xx(13) *= 1e3;    // y-crd at time + dT
-              xx(14) *= 1e3;    // z-crd at time + dT
+              xx(1) *= 1e3;          // x-crd
+              xx(2) *= 1e3;          // y-crd
+              xx(3) *= 1e3;          // z-crd
+              xx(4) *= 1e-6;         // clk
+              xx(5) *= 1e-6;         // rel. corr.
+                                     // xx(6), xx(7), xx(8) ... PhaseCent - CoM
+              xx(9)  /= 0.299792458; // xx(9)  ... P1-C1 DCB in ns
+              xx(10) /= 0.299792458; // xx(10) ... P1-P2 DCB in ns
+                                     // xx(11) ... dT
+              xx(12) *= 1e3;         // x-crd at time + dT
+              xx(13) *= 1e3;         // y-crd at time + dT
+              xx(14) *= 1e3;         // z-crd at time + dT
 
               t_ephPair* pair = _ephList[prn];
               pair->xx = xx;
@@ -493,17 +494,17 @@ void t_bns::readEpoch() {
                 biasSat->Biases[0].Type = CODETYPEGPS_L1_Z;
                 biasSat->Biases[0].Bias = 0.0;
                 biasSat->Biases[1].Type = CODETYPEGPS_L1_CA;
-                biasSat->Biases[1].Bias = xx(9)  / 0.299792458; // IGS P1C1 DCB
+                biasSat->Biases[1].Bias = xx(9);
                 biasSat->Biases[2].Type = CODETYPEGPS_L2_Z;
-                biasSat->Biases[2].Bias = xx(10) / 0.299792458; // IGS P1P2 DCB
+                biasSat->Biases[2].Bias = xx(10);
               }
               else if (prn[0] == 'R') {
                 biasSat->Biases[0].Type = CODETYPEGLONASS_L1_P;
                 biasSat->Biases[0].Bias = 0.0;
                 biasSat->Biases[1].Type = CODETYPEGLONASS_L1_CA;
-                biasSat->Biases[1].Bias = xx(9)  / 0.299792458; // IGS P1C1 DCB
+                biasSat->Biases[1].Bias = xx(9);
                 biasSat->Biases[2].Type = CODETYPEGLONASS_L2_P;
-                biasSat->Biases[2].Bias = xx(10) / 0.299792458; // IGS P1P2 DCB
+                biasSat->Biases[2].Bias = xx(10);
               }
             }
           }
