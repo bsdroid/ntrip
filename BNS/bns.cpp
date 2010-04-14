@@ -514,13 +514,6 @@ void t_bns::readEpoch() {
              (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
           char obuffer[CLOCKORBIT_BUFFERSIZE];
 
-          if (_caster.at(ic)->CoM()) {
-            co.SatRefPoint = POINT_CENTER;
-          }
-          else {
-            co.SatRefPoint = POINT_IONOFREE;
-          }
-
           int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
           if (len > 0) {
             if (_caster.at(ic)->ic() == 1)  { emit(newOutBytes1(len));}
