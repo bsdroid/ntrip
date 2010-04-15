@@ -13,8 +13,8 @@ set ylabel "meters"
 ###set xlabel "29-Dec-2009"
 set yrange [-1.5:1.5]
 
-plot "neu" u 5:7 t "dH" w l 3, \
-     ""    u 5:8 t "dN" w l 1, \
-     ""    u 5:9 t "dE" w l 2
+plot "neu" u 5:9 t "dH" w l 3, \
+     ""    u 5:7 t "dN" w l 1, \
+     ""    u 5:8 t "dE" w l 2
 
 pause -1
