@@ -453,8 +453,7 @@ void t_ephGPS::position(int GPSweek, double GPSweeks, ColumnVector& xc,
   if (GPSweek != _GPSweek) {  
     tc += (GPSweek - _GPSweek) * secPerWeek;
   }
-  xc(4) = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc 
-          - 4.442807633e-10 * _e * sqrt(a0) *sin(E);
+  xc(4) = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc;
 
   // Velocity
   // --------
@@ -479,6 +478,12 @@ void t_ephGPS::position(int GPSweek, double GPSweeks, ColumnVector& xc,
                           - yp*sini*cosom*doti;
 
   vv(3)  = sini    *doty  + yp*cosi      *doti;
+
+  // Relativistic Correction
+  // -----------------------
+  //  xc(4) -= 4.442807633e-10 * _e * sqrt(a0) *sin(E);
+  const static double c_vel = 299792458.0;
+  xc(4) -= 2.0 * DotProduct(xc.Rows(1,3),vv) / c_vel / c_vel;
 }
 
 // Read Glonass Ephemeris
