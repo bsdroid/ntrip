@@ -121,8 +121,7 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
   if (GPSweek != _GPSweek) {  
     tc += (GPSweek - _GPSweek) * secPerWeek;
   }
-  xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc 
-          - 4.442807633e-10 * _e * sqrt(a0) *sin(E);
+  xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc;
 
   // Velocity
   // --------
@@ -147,6 +146,11 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
                           - yp*sini*cosom*doti;
 
   vv[2]  = sini    *doty  + yp*cosi      *doti;
+
+  // Relativistic Correction
+  // -----------------------
+  //  xc(4) -= 4.442807633e-10 * _e * sqrt(a0) *sin(E);
+  xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / t_CST::c / t_CST::c;
 }
 
 

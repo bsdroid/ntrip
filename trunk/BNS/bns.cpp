@@ -425,8 +425,8 @@ void t_bns::readEpoch() {
               xx(4) *= 1e-6;         // clk
               xx(5) *= 1e-6;         // rel. corr.
                                      // xx(6), xx(7), xx(8) ... PhaseCent - CoM
-              xx(9)  /= 0.299792458; // xx(9)  ... P1-C1 DCB in ns
-              xx(10) /= 0.299792458; // xx(10) ... P1-P2 DCB in ns
+                                     // xx(9)  ... P1-C1 DCB in meters
+                                     // xx(10) ... P1-P2 DCB in meters
                                      // xx(11) ... dT
               xx(12) *= 1e3;         // x-crd at time + dT
               xx(13) *= 1e3;         // y-crd at time + dT
