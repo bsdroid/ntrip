@@ -5,7 +5,7 @@
 
         Name:           clock_orbit_rtcm.h
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.h,v 1.15 2010/04/14 14:13:45 mervart Exp $
+        Version:        $Id: clock_orbit_rtcm.h,v 1.9 2010/04/16 06:14:00 stoecker Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -13,7 +13,6 @@
 #include <string.h>
 
 enum SatelliteReferenceDatum { DATUM_ITRF=0, DATUM_LOCAL=1 };
-enum SatelliteReferencePoint { POINT_IONOFREE=0, POINT_CENTER=1 };
 enum ClockOrbitType {
      COTYPE_GPSORBIT=1057, COTYPE_GPSCLOCK=1058,
      COTYPE_GPSCOMBINED=1060, COTYPE_GPSURA=1061, COTYPE_GPSHR=1062,
@@ -35,15 +34,25 @@ enum CodeType {
   CODETYPEGPS_L1_CA          = 0,
   CODETYPEGPS_L1_P           = 1,
   CODETYPEGPS_L1_Z           = 2,
-  /* ... */
+  CODETYPEGPS_SEMI_CODELESS  = 6,
+  CODETYPEGPS_L2_CM          = 7,
+  CODETYPEGPS_L2_CL          = 8,
+  CODETYPEGPS_L2_CML         = 9,
   CODETYPEGPS_L2_P           = 10,
   CODETYPEGPS_L2_Z           = 11,
-  /* ... */
+  CODETYPEGPS_L2_Y           = 12,
+  CODETYPEGPS_L2_M           = 13,
+  CODETYPEGPS_L2_I           = 14,
+  CODETYPEGPS_L2_Q           = 15,
+  CODETYPEGPS_L2_IQ          = 16,
+
   CODETYPEGLONASS_L1_CA      = 0,
   CODETYPEGLONASS_L1_P       = 1,
   CODETYPEGLONASS_L2_CA      = 2,
   CODETYPEGLONASS_L2_P       = 3,
 };
+
+#define SSR_MAXURA 5.5 /* > 5466.5mm in meter */
 
 /* GLONASS data is stored with offset CLOCKORBIT_NUMGPS in the data structures.
 So first GLONASS satellite is at xxx->Sat[CLOCKORBIT_NUMGPS], first
@@ -63,12 +72,11 @@ struct ClockOrbit
   int epochGPS[101];                /* Weber, for latency */
   int epochSize;                    /* Weber, for latency */
   int UpdateInterval;
-  enum SatelliteReferencePoint SatRefPoint;
   enum SatelliteReferenceDatum SatRefDatum;
   struct SatData {
     int ID; /* GPS or GLONASS */
     int IOD; /* GPS or GLONASS */
-    int URA;
+    double UserRangeAccuracy; /* accuracy values in [m] */
     double hrclock;
     struct OrbitPart
     {
@@ -78,9 +86,6 @@ struct ClockOrbit
       double DotDeltaRadial;        /* m/s */
       double DotDeltaAlongTrack;    /* m/s */
       double DotDeltaCrossTrack;    /* m/s */
-      double DotDotDeltaRadial;     /* m/ss */
-      double DotDotDeltaAlongTrack; /* m/ss */
-      double DotDotDeltaCrossTrack; /* m/ss */
     } Orbit;
     struct ClockPart
     {

@@ -281,8 +281,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
             else if ( _co.messageType == COTYPE_GPSURA     || 
                       _co.messageType == COTYPE_GLONASSURA ) {
               QString line;
-              line.sprintf("   %3d   %d",
-                           _co.Sat[ii].IOD, _co.Sat[ii].URA);
+              line.sprintf("   %3d   %f",
+                           _co.Sat[ii].IOD, _co.Sat[ii].UserRangeAccuracy);
               printLine(linePart+line, coTime);
             }
 
