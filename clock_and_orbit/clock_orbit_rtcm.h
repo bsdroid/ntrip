@@ -5,7 +5,7 @@
 
         Name:           clock_orbit_rtcm.h
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.h,v 1.7 2010/02/22 13:42:26 stoecker Exp $
+        Version:        $Id: clock_orbit_rtcm.h,v 1.8 2010/04/14 11:09:18 stoecker Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -34,7 +34,17 @@ enum CodeType {
   CODETYPEGPS_L1_CA          = 0,
   CODETYPEGPS_L1_P           = 1,
   CODETYPEGPS_L1_Z           = 2,
-  /* ... */
+  CODETYPEGPS_SEMI_CODELESS  = 6,
+  CODETYPEGPS_L2_CM          = 7,
+  CODETYPEGPS_L2_CL          = 8,
+  CODETYPEGPS_L2_CML         = 9,
+  CODETYPEGPS_L2_P           = 10,
+  CODETYPEGPS_L2_Z           = 11,
+  CODETYPEGPS_L2_Y           = 12,
+  CODETYPEGPS_L2_M           = 13,
+  CODETYPEGPS_L2_I           = 14,
+  CODETYPEGPS_L2_Q           = 15,
+  CODETYPEGPS_L2_IQ          = 16,
 
   CODETYPEGLONASS_L1_CA      = 0,
   CODETYPEGLONASS_L1_P       = 1,

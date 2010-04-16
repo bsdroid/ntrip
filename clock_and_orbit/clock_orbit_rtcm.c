@@ -2,7 +2,7 @@
 
         Name:           clock_orbit_rtcm.c
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.c,v 1.9 2010/02/22 13:42:26 stoecker Exp $
+        Version:        $Id: clock_orbit_rtcm.c,v 1.10 2010/04/14 11:09:18 stoecker Exp $
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
@@ -93,7 +93,7 @@ modified variables are:
 
 /* standard values */
 #define T_MESSAGE_NUMBER(a)              ADDBITS(12, a) /* DF002 */
-#define T_RESERVED4                      ADDBITS(1, 0)  /* DF001 */
+#define T_RESERVED4                      ADDBITS(4, 0)  /* DF001 */
 #define T_RESERVED5                      ADDBITS(5, 0)  /* DF001 */
 #define T_GPS_SATELLITE_ID(a)            ADDBITS(6, a)  /* DF068 */
 #define T_GPS_IODE(a)                    ADDBITS(8, a)  /* DF071 */
@@ -241,8 +241,9 @@ int moremessagesfollow, char *buffer, size_t size)
   }
   if(gpsco)
   {
-    int nums, left, start = 0;
-    nums = co->NumberOfGPSSat;
+#ifdef SPLITBLOCK
+    int nums = co->NumberOfGPSSat;
+    int left, start = 0;
     if(nums > 28) /* split block when more than 28 sats */
     {
       left = nums - 28;
@@ -254,16 +255,26 @@ int moremessagesfollow, char *buffer, size_t size)
     }
     while(nums)
     {
+#endif
       INITBLOCK
       T_MESSAGE_NUMBER(COTYPE_GPSCOMBINED)
       T_GPS_EPOCH_TIME(co->GPSEpochTime)
       T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
+#ifdef SPLITBLOCK
       T_MULTIPLE_MESSAGE_INDICATOR(/*mmi || */ left ? 1 : 0)
+#else
+      T_MULTIPLE_MESSAGE_INDICATOR(/*mmi || */ 0)
+#endif
       --mmi;
       T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
       T_RESERVED4
+#ifdef SPLITBLOCK
       T_NO_OF_SATELLITES(nums)
       for(i = start; i < start+nums; ++i)
+#else
+      T_NO_OF_SATELLITES(co->NumberOfGPSSat)
+      for(i = 0; i < co->NumberOfGPSSat; ++i)
+#endif
       {
         T_GPS_SATELLITE_ID(co->Sat[i].ID)
         T_GPS_IODE(co->Sat[i].IOD)
@@ -278,10 +289,12 @@ int moremessagesfollow, char *buffer, size_t size)
         T_DELTA_CLOCK_C2(co->Sat[i].Clock.DeltaA2)
       }
       ENDBLOCK
+#ifdef SPLITBLOCK
       start += nums;
       nums = left;
       left = 0;
     }
+#endif
   }
   if(gpshr)
   {
