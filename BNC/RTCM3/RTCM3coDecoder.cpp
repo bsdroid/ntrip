@@ -161,7 +161,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
         // Correction Epoch from GPSEpochTime
         // ----------------------------------
-        if (_co.NumberOfGPSSat > 0) {
+        if (_co.NumberOfGPSSat > 0 || _co.NumberOfGLONASSSat == 0) {
           if      (GPSweeksHlp > _co.GPSEpochTime + 86400.0) {
             GPSweek += 1;
           }
