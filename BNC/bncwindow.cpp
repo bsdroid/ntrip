@@ -206,7 +206,7 @@ bncWindow::bncWindow() {
   _corrPortLineEdit    = new QLineEdit(settings.value("corrPort").toString());
   _corrTimeSpinBox   = new QSpinBox();
   _corrTimeSpinBox->setMinimum(1);
-  _corrTimeSpinBox->setMaximum(30);
+  _corrTimeSpinBox->setMaximum(60);
   _corrTimeSpinBox->setSingleStep(1);
   _corrTimeSpinBox->setSuffix(" sec");
   _corrTimeSpinBox->setValue(settings.value("corrTime").toInt());
