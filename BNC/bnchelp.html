@@ -501,9 +501,6 @@ In case of RTCM message types 1057 or 1063 these parameters are followed by
 <li>Velocity of Radial Component of Orbit Correction to Broadcast Ephemeris [m/s]</li>
 <li>Velocity of Along-track Component of Orbit Correction to Broadcast Ephemeris [m/s]</li>
 <li>Velocity of Cross-track Component of Orbit Correction to Broadcast Ephemeris [m/s]</li>
-<li>Acceleration of Radial Component of Orbit Correction to Broadcast Ephemeris [m/s**2]</li>
-<li>Acceleration of Along-track Component of Orbit Correction to Broadcast Ephemeris [m/s**2]</li>
-<li>Acceleration of Cross-track Component of Orbit Correction to Broadcast Ephemeris [m/s**2]</li>
 <p>
 </ul>
 </p>
@@ -511,13 +508,13 @@ In case of RTCM message types 1057 or 1063 these parameters are followed by
 Undefined parameters are set to zero &quot;0.000&quot;.<br>Example:
 <pre>
 ...
-1057 0 1538 211151.0 G18     1      0.034    0.011   -0.064      0.000    0.000    0.000      0.000    0.000    0.000
-1057 0 1538 211151.0 G16    33     -0.005    0.194   -0.091      0.000    0.000    0.000      0.000    0.000    0.000
-1057 0 1538 211151.0 G22    50      0.008   -0.082   -0.001      0.000    0.000    0.000      0.000    0.000    0.000
+1057 0 1538 211151.0 G18     1      0.034    0.011   -0.064      0.000    0.000    0.000
+1057 0 1538 211151.0 G16    33     -0.005    0.194   -0.091      0.000    0.000    0.000
+1057 0 1538 211151.0 G22    50      0.008   -0.082   -0.001      0.000    0.000    0.000
 ...
-1063 0 1538 211151.0 R09   111     -0.011   -0.014    0.005      0.000    0.000    0.000      0.000    0.000    0.000 
-1063 0 1538 211151.0 R10    43      0.000   -0.009   -0.002      0.000    0.000    0.000      0.000    0.000    0.000 
-1063 0 1538 211151.0 R21    75     -0.029    0.108    0.107      0.000    0.000    0.000      0.000    0.000    0.000 
+1063 0 1538 211151.0 R09   111     -0.011   -0.014    0.005      0.000    0.000    0.000
+1063 0 1538 211151.0 R10    43      0.000   -0.009   -0.002      0.000    0.000    0.000
+1063 0 1538 211151.0 R21    75     -0.029    0.108    0.107      0.000    0.000    0.000
 ...
 </pre>
 <p>
@@ -557,21 +554,18 @@ In case of RTCM message types 1060 or 1066 the first five parameters are followe
 <li>Velocity of Along-track Component of Orbit Correction to Broadcast Ephemeris [m/s]</li>
 <li>Velocity of Cross-track Component of Orbit Correction to Broadcast Ephemeris [m/s]</li>
 <li>C2 polynomial coefficient for Clock Correction to Broadcast Ephemeris [m]</li>
-<li>Acceleration of Radial Component of Orbit Correction to Broadcast Ephemeris [m/s**2]</li>
-<li>Acceleration of Along-track Component of Orbit Correction to Broadcast Ephemeris [m/s**2]</li>
-<li>Acceleration of Cross-track Component of Orbit Correction to Broadcast Ephemeris [m/s**2]</li>
 </ul>
 Example:
 </p>
 <pre>
 ...
-1060 0 1538 211610.0 G30    82      2.533      0.635   -0.359   -0.598    0.000    0.000    0.000    0.000    0.000    0.000    0.000    0.000
-1060 0 1538 211610.0 G31     5     -4.218     -0.208    0.022    0.002    0.000    0.000    0.000    0.000    0.000    0.000    0.000    0.000
-1060 0 1538 211610.0 G32    28     -2.326      0.977   -0.576    0.142    0.000    0.000    0.000    0.000    0.000    0.000    0.000    0.000
+1060 0 1538 211610.0 G30    82      2.533      0.635   -0.359   -0.598    0.000    0.000    0.000    0.000    0.000
+1060 0 1538 211610.0 G31     5     -4.218     -0.208    0.022    0.002    0.000    0.000    0.000    0.000    0.000
+1060 0 1538 211610.0 G32    28     -2.326      0.977   -0.576    0.142    0.000    0.000    0.000    0.000    0.000
 ...
-1066 0 1538 211610.0 R22    27      1.585      2.024    2.615   -2.080    0.000    0.000    0.000    0.000    0.000    0.000    0.000    0.000
-1066 0 1538 211610.0 R23    27      6.277      2.853    4.181    1.304    0.000    0.000    0.000    0.000    0.000    0.000    0.000    0.000
-1066 0 1538 211610.0 R24    27      0.846      1.805   13.095    6.102    0.000    0.000    0.000    0.000    0.000    0.000    0.000    0.000
+1066 0 1538 211610.0 R22    27      1.585      2.024    2.615   -2.080    0.000    0.000    0.000    0.000    0.000
+1066 0 1538 211610.0 R23    27      6.277      2.853    4.181    1.304    0.000    0.000    0.000    0.000    0.000
+1066 0 1538 211610.0 R24    27      0.846      1.805   13.095    6.102    0.000    0.000    0.000    0.000    0.000
 ...
 </pre>
 </p>
