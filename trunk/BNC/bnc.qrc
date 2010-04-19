@@ -5,4 +5,7 @@
     <file>bnchelp.html</file>
     <file>bncabout.html</file>
 </qresource>
+<qresource prefix="/bnchelp">
+    <file alias="screenshot01.png">IMG/screenshot01.png</file>
+</qresource>
 </RCC>
