@@ -49,19 +49,6 @@ Please ensure that you have installed the latest version of BNC available from <
 </p>
 
 <p>
-Fig. 1 shows a flow chart of BNC connected to a GNSS receiver via serial or TCP communication link.
-</p>
-<p><img src=":/bnchelp/screenshot01.png"/></p>
-</p>Fig. 1: BNC connected to a GNSS receiver.<p>
-
-<p>
-Fig. 2 shows a flow chart of BNC feeding a real-time GNSS engine. The engine estimates satellite orbit and clock correctors.
-</p>
-<p><img src=":/bnchelp/screenshot02.png"/></p>
-</p>Fig. 2: BNC feeding a real-time GNSS engine.<p>
-
-
-<p>
 BNC supports decoding the following GNSS data formats:
 </p>
 <p>
@@ -72,6 +59,17 @@ BNC supports decoding the following GNSS data formats:
 </ul>
 BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
 </p>
+
+<p>
+Fig. 1 shows a flow chart of BNC connected to a GNSS receiver via serial or TCP communication link. Fig. 2 shows a flow chart of BNC feeding a real-time GNSS engine. The engine then estimates satellite orbit and clock correctors. The 'BKG Ntrip Server' (BNS) is used in this scenariy to encode correctors to RTCMv3.
+</p>
+<p><img src=":/bnchelp/screenshot01.png"/></p>
+<p><u>Fig. 1:</u> BNC connected to a GNSS receiver.</p>
+
+<p>
+</p>
+<p><img src=":/bnchelp/screenshot02.png"/></p>
+<p><u>Fig. 2:</u> BNC feeding a real-time GNSS engine.</p>
 
 <p><a name="resources"><h3>2. Modes &amp; Resources</h3></p>
 <p>
@@ -966,6 +964,11 @@ BNC can derive coordinates for a rover position following the Precise Point Posi
 <li>a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019 and 1020. This is a must when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream www.igs-ip.net:2101/RTCM3EPH is an example.</li>
 </ul>
 </p>
+<p>
+Fig. 3. provides the screenshot of an example PPP session with BNC.
+</p>
+<p><img src=":/bnchelp/screenshot03.png"/></p>
+<p><u>Fig. 3:</u> Precise Point Positioning (PPP) with BNC.</p>
 
 <p>
 PPP results are shown in the 'Log' tab on the bottom of BNC's main window. Depending on the processing options, the following values are shown about once per second (example):
@@ -1158,13 +1161,23 @@ Records of BNC's activities are shown in the 'Log' tab. They can be saved into a
 
 <p><a name="throughput"><h4>3.13.2 Throughput</h4></p>
 <p>
-The bandwidth consumption per stream is shown in the 'Throughput' tab in bits per second (bps) or kilo bits per second (kbps).
+The bandwidth consumption per stream is shown in the 'Throughput' tab in bits per second (bps) or kilo bits per second (kbps). Fig. 4 shows the bandwidth comsumption of a number of incoming streams.
 </p>
+
+<p>
+</p>
+<p><img src=":/bnchelp/screenshot08.png"/></p>
+<p><u>Fig. 4:</u> Bandwidth consumption of a number of incoming streams.</p>
 
 <p><a name="latency"><h4>3.13.3 Latency</h4></p>
 <p>
-The latency of observations in each incoming stream is shown in the 'Latency' tab in milliseconds or seconds. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) are not considered here. Note that the calculation of correct latencies requires the clock of the host computer to be properly synchronized.
+The latency of observations in each incoming stream is shown in the 'Latency' tab in milliseconds or seconds. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) are not considered here and shown in read color. Note that the calculation of correct latencies requires the clock of the host computer to be properly synchronized. Fig. 5. shows the latency of a number of incoming streams.
 </p>
+
+<p>
+</p>
+<p><img src=":/bnchelp/screenshot07.png"/></p>
+<p><u>Fig. 5:</u> Latency of incoming streams.</p>
 
 <p><a name="ppptab"><h4>3.13.4 PPP Plot</h4></p>
 <p>
@@ -1177,8 +1190,15 @@ The bottom menu bar allows to add or delete streams to BNC's configuration and t
 </p>
 
 <p><a name="streamadd"><h4>3.14.1 Add Stream - Coming from Caster</h4></p>
+
 <p>
-Button 'Add Stream' &gt; 'Coming from Caster' opens a window that allows user to select data streams from an NTRIP broadcaster according to their mountpoints.
+Button 'Add Stream' opens a window that allows user to select one of several input communication links, see Fig. 6.
+</p>
+<p><img src=":/bnchelp/screenshot06.png"/></p>
+<p><u>Fig. 6:</u> Steam input communication links.</p>
+
+<p>
+Button 'Add Stream' &gt; 'Coming from Caster' then opens a window that allows user to select data streams from an NTRIP broadcaster according to their mountpoints.
 </p> 
 
 <p><a name="streamhost"><h4>3.14.1.1 Caster Host and Port - mandatory</h4></p>
@@ -1188,8 +1208,11 @@ Enter the NTRIP broadcaster host IP and port number. Note that EUREF and IGS ope
 
 <p><a name="streamtable"><h4>3.14.1.2 Casters Table - optional</h4></p>
 <p>
-It may be that your are not sure about your NTRIP broadcasters host and port number or you are interested in other broadcaster installations operated elsewhere. Hit 'Show' for a table of known broadcasters maintained at <u>www.rtcm-ntrip.org/home</u>. A window opens which allows to select a broadcaster for stream retrieval.
+It may be that your are not sure about your NTRIP broadcasters host and port number or you are interested in other broadcaster installations operated elsewhere. Hit 'Show' for a table of known broadcasters maintained at <u>www.rtcm-ntrip.org/home</u>. A window opens which allows to select a broadcaster for stream retrieval, see Fig. 7.
 </p> 
+</p>
+<p><img src=":/bnchelp/screenshot04.png"/></p>
+<p><u>Fig. 7:</u> Casters table.</p>
 
 <p><a name="streamuser"><h4>3.14.1.3 User and Password - mandatory for protected streams</h4></p>
 <p>
@@ -1198,7 +1221,7 @@ Some streams on NTRIP broadcasters may be restricted. Enter a valid 'User' ID an
 
 <p><a name="gettable"><h4>3.14.1.4 Get Table</h4></p>
 <p>
-Use the 'Get Table' button to download the source-table from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. RTCM Version 2.x streams must contain message types 18 and 19 or 20 and 21 while RTCM Version 3.x streams must contain GPS or SBAS message types 1002 or 1004 and may contain GLONASS message types 1010 or 1012, see data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3.x streams containing message types 1019 (GPS) and 1020 (GLONASS) are required. Select your streams line by line, use +Shift and +Ctrl when necessary.
+Use the 'Get Table' button to download the source-table from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. RTCM Version 2.x streams must contain message types 18 and 19 or 20 and 21 while RTCM Version 3.x streams must contain GPS or SBAS message types 1002 or 1004 and may contain GLONASS message types 1010 or 1012, see data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3.x streams containing message types 1019 (GPS) and 1020 (GLONASS) are required. Select your streams line by line, use +Shift and +Ctrl when necessary. Fig. 8 provides an example source-table.
 </p> 
 <p>
 The contents of data field 'nmea' tells you whether a stream retrieval needs to be initiated by BNC through sending an NMEA-GGA message carrying approximate position coordinates (virtual reference station).
@@ -1206,6 +1229,10 @@ The contents of data field 'nmea' tells you whether a stream retrieval needs to 
 <p>
 Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream' and repeat the process again to retrieve streams from different casters.
 </p> 
+</p> 
+</p>
+<p><img src=":/bnchelp/screenshot05.png"/></p>
+<p><u>Fig. 8:</u> Broadcaster source-table.</p>
 
 <p><a name="ntripv"><h4>3.14.1.5 NTRIP Version - mandatory</h4></p>
 <p>
