@@ -7,5 +7,12 @@
 </qresource>
 <qresource prefix="/bnchelp">
     <file alias="screenshot01.png">IMG/screenshot01.png</file>
+    <file alias="screenshot02.png">IMG/screenshot02.png</file>
+    <file alias="screenshot03.png">IMG/screenshot03.png</file>
+    <file alias="screenshot04.png">IMG/screenshot04.png</file>
+    <file alias="screenshot05.png">IMG/screenshot05.png</file>
+    <file alias="screenshot06.png">IMG/screenshot06.png</file>
+    <file alias="screenshot07.png">IMG/screenshot07.png</file>
+    <file alias="screenshot08.png">IMG/screenshot08.png</file>
 </qresource>
 </RCC>
