@@ -648,12 +648,12 @@ The following is an example output for streams from Mountpoints RTCMSSR, CLK10 a
 1064 0 1538 211151.0 R08     0      8.956    0.000 RTCMSSR
 1064 0 1538 211151.0 R07     0     14.457    0.000 RTCMSSR
 1064 0 1538 211151.0 R23     0      6.436    0.000 RTCMSSR
-1066 0 1538 211610.0 R24    27      0.846      1.805   13.095    6.102    0.000    0.000    0.000    0.000 CLK11
-1066 0 1538 211610.0 R23    27      6.277      2.853    4.181    1.304    0.000    0.000    0.000    0.000 CLK11
-1066 0 1538 211610.0 R22    27      1.585      2.024    2.615   -2.080    0.000    0.000    0.000    0.000 CLK11
-1060 0 1538 211610.0 G32    28     -2.326      0.977   -0.576    0.142    0.000    0.000    0.000    0.000    0.000    0.000    0.000    0.000 CLK10
-1060 0 1538 211610.0 G31     5     -4.218     -0.208    0.022    0.002    0.000    0.000    0.000    0.000    0.000    0.000    0.000    0.000 CLK10
-1060 0 1538 211610.0 G30    82      2.533      0.635   -0.359   -0.598    0.000    0.000    0.000    0.000    0.000    0.000    0.000    0.000 CLK10
+1066 0 1538 211610.0 R24    27      0.846      1.805   13.095    6.102    0.000    0.000    0.000    0.000    0.000 CLK11
+1066 0 1538 211610.0 R23    27      6.277      2.853    4.181    1.304    0.000    0.000    0.000    0.000    0.000 CLK11
+1066 0 1538 211610.0 R22    27      1.585      2.024    2.615   -2.080    0.000    0.000    0.000    0.000    0.000 CLK11
+1060 0 1538 211610.0 G32    28     -2.326      0.977   -0.576    0.142    0.000    0.000    0.000    0.000    0.000 CLK10
+1060 0 1538 211610.0 G31     5     -4.218     -0.208    0.022    0.002    0.000    0.000    0.000    0.000    0.000 CLK10
+1060 0 1538 211610.0 G30    82      2.533      0.635   -0.359   -0.598    0.000    0.000    0.000    0.000    0.000 CLK10
 ...
 </pre>
 </p>
@@ -1022,7 +1022,7 @@ Note that BNC's 'PPP Client' option can also be used in 'Offline Mode'. Apply th
 </p>
 
 <p>
-bnc.exe -conf c:\temp\BNC.ppp -file c:\temp\FFMJ1 -date 2010-03-27 -time 06:58:00 -format RTCM_3
+bnc.exe --conf c:\temp\BNC.ppp --file c:\temp\FFMJ1 --date 2010-03-27 --time 06:58:00 --format RTCM_3
 </p>
 
 <p><a name="pppmount"><h4>3.11.1 Mountpoint - optional</h4></p>
@@ -1524,8 +1524,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 
 <tr>
 <td>April 2010 &nbsp;</td><td>Version 2.1 &nbsp;</td>
-<td>[Bug] SSR GLONASS message generation</td>
-<td>[Add] PPP in post-processing mode</td>
+<td>[Bug] SSR GLONASS message generation<br> [Add] PPP in post-processing mode<br> [Mod] Update of SSR messages following draft dated 2010-04-12</td>
 </tr>
 
 </table>
