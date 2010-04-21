@@ -98,7 +98,6 @@ This section describes BNC's top menu bar, its processing options, the 'Streams'
 <p><img src=":/bnchelp/screenshot09.png"/></p>
 <p><u>Figure:</u> Sections on BNC's main window.</p>
 
-</p>
 <p>
 The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various configuration tabs to select a combination of input, processing and output options before you start the program ('Start'). Records of BNC's activities are shown in the 'Log' tab. The bandwidth consumption per stream, the latency of incoming observations and PPP time series for coordinate components are shown in the 'Throughput', 'Latency' and 'PPP Plot' tabs of the main window.
 </p>
@@ -728,7 +727,7 @@ The source code for BNC comes with an example program called 'test_bnc_qt.cpp' t
 Note that any socket connection of an application to BNC's synchronized or unsynchronized observations ports is recorded in the 'Log' tab on the bottom of the main window together with a connection counter, resulting in log records like 'New client connection on sync/usync port: # 1'.
 </p>
 
-</p>
+<p>
 The following figure shows the screenshot of a BNC configuration where a number if streams is pulled from different NTRIP broadcasters to feed a GNSS engine via IP port output.
 </p>
 <p><img src=":/bnchelp/screenshot12.png"/></p>
@@ -737,7 +736,6 @@ The following figure shows the screenshot of a BNC configuration where a number 
 <p><a name="syncport"><h4>3.7.1 Port - optional</h4></p>
 <p>
 BNC can produce synchronized observations in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Synchronized means that BNC collects all data for any specific epoch which become available within a certain number of latency seconds (see 'Wait for Full Epoch' option). It then - epoch by epoch - outputs whatever has been received. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary synchronized output is generated.</p>
-<p>
 </p>
 
 <p><a name="syncwait"><h4>3.7.2 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
@@ -1197,7 +1195,7 @@ The bandwidth consumption per stream is shown in the 'Throughput' tab in bits pe
 
 <p><a name="latency"><h4>3.13.3 Latency</h4></p>
 <p>
-The latency of observations in each incoming stream is shown in the 'Latency' tab in milliseconds or seconds. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) or having an outage are not considered here and shown in read color. Note that the calculation of correct latencies requires the clock of the host computer to be properly synchronized. The next figure shows the latency of incoming streams.
+The latency of observations in each incoming stream is shown in the 'Latency' tab in milliseconds or seconds. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) or having an outage are not considered here and shown in red color. Note that the calculation of correct latencies requires the clock of the host computer to be properly synchronized. The next figure shows the latency of incoming streams.
 </p>
 
 <p>
