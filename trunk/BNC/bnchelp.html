@@ -1,5 +1,5 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-<h3>BKG Ntrip Client (BNC) Version 2.1</h3>
+<h3>BKG Ntrip Client (BNC) Version 2.1 Manual</h3>
 
 <p>
 The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding and converting real-time GNSS data streams from NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home</u>.
@@ -22,7 +22,7 @@ Please ensure that you have installed the latest version of BNC available from <
 <h4>
 <a href=#purpose>1. Purpose</a><br>
 <a href=#resources>2. Modes &amp; Resources</a><br>
-<a href=#options>3. Options</a><br>
+<a href=#options>3. Handling &amp; Settings</a><br>
 <a href=#limits>4. Limitations</a><br>
 <a href=#authors>5. Authors</a><br>
 <a href=#annex>6. Annex</a><br>
@@ -98,9 +98,9 @@ The main window of BNC shows a top menu bar section, a sections for tabs to set 
 <p><u>Figure:</u> Sections on BNC's main window.</p>
 
 
-<p><a name="options"><h3>3. Options</h3></p>
+<p><a name="options"><h3>3. Handling &amp; Settings</h3></p>
 <p>
-This chapter describes BNC's top menu bar, its processing options, the 'Streams' and 'Log' sections, and the bottom menu bar.
+This chapter describes BNC's settings and how to handle the program. It explains the top menu bar, the processing options, the 'Streams' and 'Log' sections, and the bottom menu bar.
 </p>
 
 <p>
@@ -294,6 +294,12 @@ The default value for 'Raw output file (full path)' is an empty option field, me
 <p>
 Observations will be converted to RINEX if they come in either RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. BNC's RINEX Observation files generally contain C1, C2, P1, P2, L1, L2, S1, and S2 observations. In case an observation is unavailable, its value is set to zero '0.000'. Note that the 'RINEX TYPE' field in the RINEX Observation file header is always set to 'M(MIXED)' even if the file does not contain any GLONASS or SABAS data.
 </p> 
+
+<p>
+The screenshot below shows an example setup of BNC when converting streams to RINEX. Streams are coming in from various NTRIP broadcasters as well as via a plain UDP and a serial communication link. Decoder 'ZERO' has been selected for one stream to not convert its contents but save it in original format.
+</p>
+<p><img src=":/bnchelp/screenshot16.png"/></p>
+<p><u>Figure:</u> BNC translating incoming streams to 15 min RINEX Version 3 files.</p>
 
 <p><a name="rnxname"><h4>3.4.1 RINEX File Names</h4></p>
 <p>
@@ -775,7 +781,7 @@ You may use BNC to feed a serial connected device like an GNSS receiver. For tha
 </p>
 </p>
 <p><img src=":/bnchelp/screenshot11.png"/></p>
-<p><u>Figure:</u> BNC pulling a VRS to feed a serial connected rover.</p>
+<p><u>Figure:</u> BNC pulling a VRS stream to feed a serial connected rover.</p>
 
 <p><a name="sermount"><h4>3.8.1 Mountpoint - optional</h4></p>
 <p>
