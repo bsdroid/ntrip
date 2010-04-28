@@ -45,6 +45,9 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   bnsSettings settings;
 
+  _GPSweek   = 0;
+  _GPSweeks  = 0;
+   
   // Set Proxy (application-wide)
   // ----------------------------
   QString proxyHost = settings.value("proxyHost").toString();
@@ -313,7 +316,7 @@ void t_bns::run() {
 
     if (_clkSocket && _clkSocket->state() == QAbstractSocket::ConnectedState) {
       if ( _clkSocket->canReadLine()) {
-        readEpoch();
+        readRecords();
       }
       else {
         _clkSocket->waitForReadyRead(10);
@@ -329,36 +332,40 @@ void t_bns::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::readEpoch() {
 
+  QTextStream in(_clkLine);
+
+  QString hlp;
+  in >> hlp >> _year >> _month >> _day >> _hour >> _min >> _sec;
+
+  GPSweekFromYMDhms(_year, _month, _day, _hour, _min, _sec, _GPSweek, _GPSweeks);
+
+  if (_echoStream) {
+    *_echoStream << _clkLine;
+    _echoStream->flush();
+  }
+  emit(newClkBytes(_clkLine.length()));
+}
+
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_bns::readRecords() {
+
   bnsSettings settings;
 
   // Read the first line (if not already read)
   // -----------------------------------------
-  if (_clkLine.indexOf('*') == -1) {
+  if ( _GPSweek == 0 and _clkLine.indexOf('*') == -1 ) {
+       
     _clkLine = _clkSocket->readLine();
-    if (_echoStream) {
-      *_echoStream << _clkLine;
-      _echoStream->flush();
-    }
-    emit(newClkBytes(_clkLine.length()));
+//  cout << "trying epoch:" << _clkLine.data() << endl;
+     
+    if (_clkLine.indexOf('*') == -1) {
+      return;
+    }else{
+      readEpoch();
+    }    
   }
-
-  if (_clkLine.indexOf('*') == -1) {
-    return;
-  }
-
-  QTextStream in(_clkLine);
-
-  QString hlp;
-  int     year, month, day, hour, min;
-  double  sec;
-  in >> hlp >> year >> month >> day >> hour >> min >> sec;
-
-  int     GPSweek;
-  double  GPSweeks;
-
-  GPSweekFromYMDhms(year, month, day, hour, min, sec, GPSweek, GPSweeks);
-
-  QStringList prns;
 
   // Loop over all satellites
   // ------------------------
@@ -367,20 +374,37 @@ void t_bns::readEpoch() {
     if (!_clkSocket->canReadLine()) {
       break;
     }
+
+    QByteArray tmp = _clkSocket->peek(80);
+
+    // found epoch, but not first record, break
+    if( tmp.indexOf('*') >= 0 and lines.size() > 0 ) {
+      // cout << "find epoch, not first, thus break" << endl;
+      break;
+    }
+     
     _clkLine = _clkSocket->readLine();
+
+    // found epoch, but still first record, continue
+    if (_clkLine[0] == '*') {
+      // cout << "epoch:" << _clkLine.data();
+      readEpoch();
+    }
+
+    if (_clkLine[0] == 'P') {
+      // cout << "data:" << _clkLine.data();
+      _clkLine.remove(0,1);
+      lines.push_back(_clkLine);
+    }
+     
     if (_echoStream) {
       *_echoStream << _clkLine;
       _echoStream->flush();
     }
-    if (_clkLine[0] == '*') {
-      return;
-    }
-    if (_clkLine[0] == 'P') {
-      _clkLine.remove(0,1);
-      lines.push_back(_clkLine);
-    } 
+     
   }
 
+  // some data records to be processed ?
   if (lines.size() > 0) {
 
     QStringList prns;
@@ -392,18 +416,18 @@ void t_bns::readEpoch() {
       
         struct ClockOrbit co;
         memset(&co, 0, sizeof(co));
-        co.GPSEpochTime      = (int)GPSweeks;
-        co.GLONASSEpochTime  = (int)fmod(GPSweeks, 86400.0) 
-                             + 3 * 3600 - gnumleap(year, month, day);
+        co.GPSEpochTime      = (int)_GPSweeks;
+        co.GLONASSEpochTime  = (int)fmod(_GPSweeks, 86400.0) 
+                             + 3 * 3600 - gnumleap(_year, _month, _day);
         co.ClockDataSupplied = 1;
         co.OrbitDataSupplied = 1;
         co.SatRefDatum       = DATUM_ITRF;
       
         struct Bias bias;
         memset(&bias, 0, sizeof(bias));
-        bias.GPSEpochTime      = (int)GPSweeks;
-        bias.GLONASSEpochTime  = (int)fmod(GPSweeks, 86400.0) 
-                               + 3 * 3600 - gnumleap(year, month, day);
+        bias.GPSEpochTime      = (int)_GPSweeks;
+        bias.GLONASSEpochTime  = (int)fmod(_GPSweeks, 86400.0) 
+                               + 3 * 3600 - gnumleap(_year, _month, _day);
 
         for (int ii = 0; ii < lines.size(); ii++) {
 
@@ -451,7 +475,6 @@ void t_bns::readEpoch() {
               }
             }
           }
-      
           if (ep != 0) {
             struct ClockOrbit::SatData* sd = 0;
             if      (prn[0] == 'G') {
@@ -466,7 +489,7 @@ void t_bns::readEpoch() {
               QString outLine;
               processSatellite(oldEph, ic, _caster.at(ic)->crdTrafo(), 
                                _caster.at(ic)->CoM(), ep, 
-                               GPSweek, GPSweeks, prn, xx, sd, outLine);
+                               _GPSweek, _GPSweeks, prn, xx, sd, outLine);
               _caster.at(ic)->printAscii(outLine);
             }
 
