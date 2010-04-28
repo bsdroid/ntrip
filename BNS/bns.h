@@ -68,6 +68,7 @@ class t_bns : public QThread {
   void deleteBnsEph();
   void openCaster();
   void readEpoch();
+  void readRecords();
   void processSatellite(int oldEph, int iCaster, const QString trafo, bool CoM,
                         t_eph* ep, int GPSweek, double GPSweeks, 
                         const QString& prn, const ColumnVector& xx, 
@@ -88,6 +89,16 @@ class t_bns : public QThread {
   bnsRinex*                 _rnx;
   bnsSP3*                   _sp3;
   QByteArray                _clkLine;
+  
+  int    _GPSweek;
+  double _GPSweeks;
+  int    _year;
+  int    _month;
+  int    _day;
+  int    _hour;
+  int    _min;
+  double _sec;
+
   double _dx;
   double _dy;
   double _dz;

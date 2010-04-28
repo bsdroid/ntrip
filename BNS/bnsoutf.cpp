@@ -109,7 +109,7 @@ QString bnsoutf::nextEpochStr(const QDateTime& datTim,
   }
 
   if (nextEpoch) {
-   *nextEpoch = QDateTime(nextDate, nextTime);
+    *nextEpoch = QDateTime(nextDate, nextTime, Qt::UTC);
   }
 
   return epoStr;
