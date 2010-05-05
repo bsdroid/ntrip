@@ -493,7 +493,14 @@ Broadcast Corrections can be saved by BNC in files. The file name convention for
 </p>
 
 <p>
-The saved files contain parameters in plain ASCII format. The first five parameters in each record are:
+Saved files contain parameters in plain ASCII format where - separate for GPS and GLONASS - the end of an epoch is indicated by a line like (examples):
+</p>
+<p>
+! Orbits/Clocks: 30 GPS 0 Glonass CLK11<br>
+or<br>
+! Orbits/Clocks: 0 GPS 19 Glonass CLK11
+<p>
+Such line informs you about the number of records (here 30 and 19) carrying GPS or GLONASS related parameters you should have received within a certain stream for a specific epoch. The first five parameters in each broadcast corrections record are:
 </p>
 <p>
 <ul>
