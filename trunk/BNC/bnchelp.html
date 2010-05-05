@@ -22,7 +22,7 @@ Please ensure that you have installed the latest version of BNC available from <
 <h4>
 <a href=#purpose>1. Purpose</a><br>
 <a href=#resources>2. Modes &amp; Resources</a><br>
-<a href=#options>3. Handling &amp; Settings</a><br>
+<a href=#options>3. Settings &amp; Handling</a><br>
 <a href=#limits>4. Limitations</a><br>
 <a href=#authors>5. Authors</a><br>
 <a href=#annex>6. Annex</a><br>
@@ -98,7 +98,7 @@ The main window of BNC shows a top menu bar section, a sections for tabs to set 
 <p><u>Figure:</u> Sections on BNC's main window.</p>
 
 
-<p><a name="options"><h3>3. Handling &amp; Settings</h3></p>
+<p><a name="options"><h3>3. Settings &amp; Handling</h3></p>
 <p>
 This chapter describes BNC's settings and how to handle the program. It explains the top menu bar, the processing options, the 'Streams' and 'Log' sections, and the bottom menu bar.
 </p>
@@ -493,14 +493,17 @@ Broadcast Corrections can be saved by BNC in files. The file name convention for
 </p>
 
 <p>
-Saved files contain parameters in plain ASCII format where - separate for GPS and GLONASS - the end of an epoch is indicated by a line like (examples):
+Saved files contain blocks of recordes in plain ASCII format where - separate for GPS and GLONASS and RTCM message types - the end of a block is indicated by a line like (examples):
 </p>
 <p>
 ! Orbits/Clocks: 30 GPS 0 Glonass CLK11<br>
 or<br>
 ! Orbits/Clocks: 0 GPS 19 Glonass CLK11
 <p>
-Such line informs you about the number of records (here 30 and 19) carrying GPS or GLONASS related parameters you should have received within a certain stream for a specific epoch. The first five parameters in each broadcast corrections record are:
+Such line informs you about the number of records (here 30 and 19) carrying GPS or GLONASS related parameters you should have received so far within a certain stream. It therefore indicates the end of an epoch with respect to a specific GNSS, message type and stream.
+</p>
+<p>
+The first five parameters in each broadcast corrections record are:
 </p>
 <p>
 <ul>
@@ -653,21 +656,27 @@ The following is an example output for streams from Mountpoints RTCMSSR, CLK10 a
 1057 0 1538 211151.0 G18     1      0.034    0.011   -0.064    0.000    0.000    0.000 RTCMSSR
 1057 0 1538 211151.0 G16    33     -0.005    0.194   -0.091    0.000    0.000    0.000 RTCMSSR
 1057 0 1538 211151.0 G22    50      0.008   -0.082   -0.001    0.000    0.000    0.000 RTCMSSR
+...
 1058 0 1538 211151.0 G18     0      1.846    0.000 RTCMSSR
 1058 0 1538 211151.0 G16     0      0.376    0.000 RTCMSSR
 1058 0 1538 211151.0 G22     0      2.727    0.000 RTCMSSR
+...
 1059 0 1538 211151.0 G18 2 0   -0.010 11   -0.750 RTCMSSR
 1059 0 1538 211151.0 G16 2 0   -0.040 11   -0.430 RTCMSSR
 1059 0 1538 211151.0 G22 2 0   -0.630 11   -2.400 RTCMSSR
+...
 1063 0 1538 211151.0 R09   111     -0.011   -0.014    0.005    0.0000    0.000    0.000 RTCMSSR
 1063 0 1538 211151.0 R10    43      0.000   -0.009   -0.002    0.0000    0.000    0.000 RTCMSSR
 1063 0 1538 211151.0 R21    75     -0.029    0.108    0.107    0.0000    0.000    0.000 RTCMSSR
+...
 1064 0 1538 211151.0 R08     0      8.956    0.000 RTCMSSR
 1064 0 1538 211151.0 R07     0     14.457    0.000 RTCMSSR
 1064 0 1538 211151.0 R23     0      6.436    0.000 RTCMSSR
+...
 1066 0 1538 211610.0 R24    27      0.846      1.805   13.095    6.102    0.000    0.000    0.000    0.000    0.000 CLK11
 1066 0 1538 211610.0 R23    27      6.277      2.853    4.181    1.304    0.000    0.000    0.000    0.000    0.000 CLK11
 1066 0 1538 211610.0 R22    27      1.585      2.024    2.615   -2.080    0.000    0.000    0.000    0.000    0.000 CLK11
+...
 1060 0 1538 211610.0 G32    28     -2.326      0.977   -0.576    0.142    0.000    0.000    0.000    0.000    0.000 CLK10
 1060 0 1538 211610.0 G31     5     -4.218     -0.208    0.022    0.002    0.000    0.000    0.000    0.000    0.000 CLK10
 1060 0 1538 211610.0 G30    82      2.533      0.635   -0.359   -0.598    0.000    0.000    0.000    0.000    0.000 CLK10
