@@ -304,16 +304,19 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         // ------------------------------------------
         for (int ii = 0; ii < CLOCKORBIT_NUMGPS + _bias.NumberOfGLONASSSat; ii++) {
           char sysCh = ' ';
+          int messageType;
           if      (ii < _bias.NumberOfGPSSat) {
             sysCh = 'G';
+            messageType = BTYPE_GPS;
           }
           else if (ii >= CLOCKORBIT_NUMGPS) {
             sysCh = 'R';
+            messageType = BTYPE_GLONASS;
           }
           if (sysCh != ' ') {
             QString line;
             line.sprintf("%d %d %d %.1f %c%2.2d %d", 
-                         _bias.messageType, _bias.UpdateInterval, GPSweek, _GPSweeks, 
+                         messageType, _bias.UpdateInterval, GPSweek, _GPSweeks, 
                          sysCh, _bias.Sat[ii].ID,
                          _bias.Sat[ii].NumberOfCodeBiases);
             for (int jj = 0; jj < _bias.Sat[ii].NumberOfCodeBiases; jj++) {
