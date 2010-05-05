@@ -210,6 +210,12 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
         // Loop over all satellites (GPS and Glonass)
         // ------------------------------------------
+        if (_co.NumberOfGPSSat > 0 || _co.NumberOfGLONASSSat > 0) {
+          QString line1;
+          line1.sprintf("! Orbits/Clocks: %d GPS %d Glonass",
+                        _co.NumberOfGPSSat, _co.NumberOfGLONASSSat);
+          printLine(line1, coTime);
+	}
         for (int ii = 0; ii < CLOCKORBIT_NUMGPS+_co.NumberOfGLONASSSat; ii++) {
           char sysCh = ' ';
           if      (ii < _co.NumberOfGPSSat) {
@@ -302,6 +308,12 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
         // Loop over all satellites (GPS and Glonass)
         // ------------------------------------------
+        if (_bias.NumberOfGPSSat > 0 || _bias.NumberOfGLONASSSat > 0) {
+          QString line1;
+          line1.sprintf("! Biases: %d GPS %d Glonass",
+                        _bias.NumberOfGPSSat, _bias.NumberOfGLONASSSat);
+          printLine(line1, coTime);
+	}
         for (int ii = 0; ii < CLOCKORBIT_NUMGPS + _bias.NumberOfGLONASSSat; ii++) {
           char sysCh = ' ';
           int messageType;
