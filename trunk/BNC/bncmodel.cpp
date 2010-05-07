@@ -65,7 +65,7 @@ const double   sig_trp_0        =    0.01;
 const double   sig_trp_p        =    1e-7;
 const double   sig_amb_0_GPS    =  100.0;
 const double   sig_amb_0_GLO    = 1000.0;
-const double   sig_P3           =    5.0; // was 20.0, GW
+//const double   sig_P3           =    20.0;
 const double   sig_L3_GPS       =    0.02;
 const double   sig_L3_GLO       =    0.02;
 
@@ -78,6 +78,7 @@ bncParam::bncParam(bncParam::parType typeIn, int indexIn,
   prn       = prnIn;
   index_old = 0;
   xx        = 0.0;
+
 }
 
 // Destructor
@@ -529,6 +530,16 @@ void bncModel::predict(t_epoData* epoData) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncModel::update(t_epoData* epoData) {
 
+  bncSettings settings;
+  double sig_P3;
+  sig_P3 = 5.0;
+  if ( Qt::CheckState(settings.value("pppUsePhase").toInt()) == Qt::Checked ) {
+    sig_P3 = settings.value("pppSigC").toDouble();
+    if (sig_P3 < 0.3 || sig_P3 > 50.0) {
+      sig_P3 = 5.0;
+    }
+  }
+
   _log.clear();  
 
   _time = epoData->tt;
@@ -729,7 +740,6 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   // NEU Output
   // ----------
-  bncSettings settings;
   if (settings.value("pppOrigin").toString() == "X Y Z") {
     double xyzRef[3];
     double ellRef[3];
