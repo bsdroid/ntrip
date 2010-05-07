@@ -173,10 +173,11 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.2.2 <a href=#pppphase>Use Phase Obs</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2.3 <a href=#ppptropo>Estimate Tropo</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2.4 <a href=#pppglo>Use GLONASS</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppnmearef>Plot Origin</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#pppnmeaout>NMEA</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4.1 <a href=#pppnmeafile>File</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4.2 <a href=#pppnmeaport>Port</a><br><br>
+&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppsigma>Sigma Code</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#pppnmearef>Plot Origin</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.5 <a href=#pppnmeaout>NMEA</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.5.1 <a href=#pppnmeafile>File</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.5.2 <a href=#pppnmeaport>Port</a><br><br>
 3.12. <a href=#streams>Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1 <a href=#streamedit>Edit Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.2 <a href=#streamdelete>Delete Stream</a><br>
@@ -1110,7 +1111,20 @@ By default BNC does not estimate troposphere parameters. Tick 'Estimate tropo' t
 By default BNC does not process GLONASS observations when in Point Positioning mode. Tick 'Use GLONASS' to use GPS and GLONASS observations for estimating coordinates in Point Positioning mode.
 </p>
 
-<p><a name="pppnmearef"><h4>3.11.3 Plot Origin - optional</h4></p>
+<p><a name="pppsigma"><h4>3.11.3 Sigma Code - mandatory if 'Use Phase Obs' is set</h4></p>
+<p>
+When 'Use phase obs' is set in BNC the PPP solution will be carried out using both code and phase observations. A sigma of 5.0 m for code observations and a sigma of 0.02 m for phase observations (defauls) is used to combine both types of observations. 
+As the convergence characteristic of a PPP solution can be influenced by the relation between the sigmas for code and phase observations, you may like to introduce you own sigma for code observations which differs from the default of 5.0 m.
+<ul>
+<li>Introducing a smaller sigma (higher accuracy) for code observations leads to better results shortly after the program start. However, it may take more time till you finally get the best possible coordinates.</li>
+<li>Introducing a higher sigma (lower accuracy) for code observations may lead to a prolonged convergence time but more rapidly provide the final accurate coordinates.</li>
+</ul>
+</p>
+<p>
+Note that only values between 0.3 m and 50.0 m are accepted as code sigma.
+</p>
+
+<p><a name="pppnmearef"><h4>3.11.4 Plot Origin - optional</h4></p>
 <p>
 Select an origin for North/East/Up time series plots of derived coordinates in the 'PPP Plot' tab. Note that this makes only sense for a stationary receiver. Available options are
 <ul>
@@ -1132,7 +1146,7 @@ If option 'X Y Z' is selected, the following line (example) is recorded in BNC's
 The 'NEU' string in that is followed by a PPP time stamp in GPS Time, the number of processed satellites, and the Nort, East and Up value of the current displacement in meter.
 </p>
 
-<p><a name="pppnmeaout"><h4>3.11.4 NMEA</h4></p>
+<p><a name="pppnmeaout"><h4>3.11.5 NMEA</h4></p>
 <p>
 BNC allows to output results from Point Positioning in NMEA format. The NMEA messages generated are
 <ul>
@@ -1141,12 +1155,12 @@ BNC allows to output results from Point Positioning in NMEA format. The NMEA mes
 </ul>
 </p>
 
-<p><a name="pppnmeafile"><h4>3.11.4.1 File - optional</h4></p>
+<p><a name="pppnmeafile"><h4>3.11.5.1 File - optional</h4></p>
 <p>
 Specify the full path to a file where Point Positioning results are saved as NMEA messages. The generated NMEA file begins with a single GPRMC message which carries only date and time information. The default value for 'File (full path)' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
 </p>
 
-<p><a name="pppnmeaport"><h4>3.11.4.2 Port - optional</h4></p>
+<p><a name="pppnmeaport"><h4>3.11.5.2 Port - optional</h4></p>
 <p>
 Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'Port' is an empty option field, meaning that BNC does not provide NMEA messsages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same. 
 </p>

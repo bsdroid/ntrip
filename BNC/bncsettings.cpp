@@ -78,6 +78,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("waitTime",         "5");
     setValue("pppMount",         "");
     setValue("pppSPP",           "PPP");
+    setValue("pppSigC",          "5.0");
     setValue("pppStatic",        "");
     setValue("pppUsePhase",      "");
     setValue("pppEstTropo",      "");

@@ -340,9 +340,11 @@ bncWindow::bncWindow() {
   _pppUsePhaseCheckBox = new QCheckBox();
   _pppNMEALineEdit     = new QLineEdit(settings.value("nmeaFile").toString());
   _pppNMEAPortLineEdit = new QLineEdit(settings.value("nmeaPort").toString());
+  _pppSigCLineEdit  = new QLineEdit(settings.value("pppSigC").toString());
   _pppRefCrdXLineEdit  = new QLineEdit(settings.value("pppRefCrdX").toString());
   _pppRefCrdYLineEdit  = new QLineEdit(settings.value("pppRefCrdY").toString());
   _pppRefCrdZLineEdit  = new QLineEdit(settings.value("pppRefCrdZ").toString());
+
   _pppOriginComboBox = new QComboBox();
   _pppOriginComboBox->setEditable(false);
   _pppOriginComboBox->addItems(QString("No plot,Start position,X Y Z").split(","));
@@ -350,6 +352,7 @@ bncWindow::bncWindow() {
   if (ij != -1) {
     _pppOriginComboBox->setCurrentIndex(ij);
   }
+
   _pppSPPComboBox = new QComboBox();
   _pppSPPComboBox->setEditable(false);
   _pppSPPComboBox->addItems(QString("PPP,SPP").split(","));
@@ -374,6 +377,9 @@ bncWindow::bncWindow() {
           this, SLOT(slotBncTextChanged()));
 
   connect(_pppOriginComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
+  connect(_pppUsePhaseCheckBox, SIGNAL(stateChanged(int)),
           this, SLOT(slotBncTextChanged()));
 
   // Streams
@@ -461,6 +467,7 @@ bncWindow::bncWindow() {
   _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
   _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
   _pppOriginComboBox->setWhatsThis(tr("<p>Select an origin for North/East/Up time series plots in the 'PPP Plot' tab. This option makes only sense for a stationary receiver.</p>"));
+  _pppSigCLineEdit->setWhatsThis(tr("<p>Enter a sigma for your code observations in meters.</p><p>5.0 (default) is likely to be an appropriate choice.</p>"));
   _pppRefCrdXLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown in the 'PPP Plot' tab will then be referred to these values.</p>"));
   _pppRefCrdYLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown in the 'PPP Plot' tab will then be referred to these values.</p>"));
   _pppRefCrdZLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown in the 'PPP Plot' tab will then be referred to these values.</p>"));
@@ -698,6 +705,7 @@ bncWindow::bncWindow() {
   // PPP Client
   // ----------
   QGridLayout* pppLayout = new QGridLayout;
+  _pppSigCLineEdit->setMaximumWidth(5*ww);
   _pppRefCrdXLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdYLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdZLineEdit->setMaximumWidth(14*ww);
@@ -717,20 +725,22 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Estimate tropo        "), 1, 6);
   pppLayout->addWidget(_pppGLONASSCheckBox,                  1, 7);
   pppLayout->addWidget(new QLabel("Use GLONASS"),            1, 8);
-  pppLayout->addWidget(new QLabel("Plot origin"),            2, 0);
-  pppLayout->addWidget(_pppOriginComboBox,                   2, 1, 1, 2);
-  pppLayout->addWidget(new QLabel("  "),                     2, 3);
-  pppLayout->addWidget(_pppRefCrdXLineEdit,                  2, 4);
-  pppLayout->addWidget(new QLabel("  "),                     2, 5);
-  pppLayout->addWidget(_pppRefCrdYLineEdit,                  2, 6); 
-  pppLayout->addWidget(new QLabel("  "),                     2, 7);
-  pppLayout->addWidget(_pppRefCrdZLineEdit,                  2, 8);
-  pppLayout->addWidget(new QLabel("NMEA File (full path)"),  3, 0); 
-  pppLayout->addWidget(_pppNMEALineEdit,                     3, 1, 1, 6);
-  pppLayout->addWidget(new QLabel("Port"),                   3, 7);
-  pppLayout->addWidget(_pppNMEAPortLineEdit,                 3, 8);
-  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),4, 0,1,15);
-  pppLayout->addWidget(new QLabel("    "),                   5, 0);
+  pppLayout->addWidget(new QLabel("Sigma code"),             2, 0);
+  pppLayout->addWidget(_pppSigCLineEdit,                     2, 1);
+  pppLayout->addWidget(new QLabel("Plot origin"),            3, 0);
+  pppLayout->addWidget(_pppOriginComboBox,                   3, 1, 1, 2);
+  pppLayout->addWidget(new QLabel("  "),                     3, 3);
+  pppLayout->addWidget(_pppRefCrdXLineEdit,                  3, 4);
+  pppLayout->addWidget(new QLabel("  "),                     3, 5);
+  pppLayout->addWidget(_pppRefCrdYLineEdit,                  3, 6); 
+  pppLayout->addWidget(new QLabel("  "),                     3, 7);
+  pppLayout->addWidget(_pppRefCrdZLineEdit,                  3, 8);
+  pppLayout->addWidget(new QLabel("NMEA File (full path)"),  4, 0); 
+  pppLayout->addWidget(_pppNMEALineEdit,                     4, 1, 1, 6);
+  pppLayout->addWidget(new QLabel("Port"),                   4, 7);
+  pppLayout->addWidget(_pppNMEAPortLineEdit,                 4, 8);
+
+  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),5, 0,1,15);
   pppgroup->setLayout(pppLayout);
 
   // Main Layout
@@ -1044,6 +1054,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppSPP",      _pppSPPComboBox->currentText());
   settings.setValue("nmeaFile",    _pppNMEALineEdit->text());
   settings.setValue("nmeaPort",    _pppNMEAPortLineEdit->text());
+  settings.setValue("pppSigC",     _pppSigCLineEdit->text());
   settings.setValue("pppRefCrdX",  _pppRefCrdXLineEdit->text());
   settings.setValue("pppRefCrdY",  _pppRefCrdYLineEdit->text());
   settings.setValue("pppRefCrdZ",  _pppRefCrdZLineEdit->text());
@@ -1396,6 +1407,7 @@ void bncWindow::slotBncTextChanged(){
 
   QPalette palette_white(QColor(255, 255, 255));
   QPalette palette_gray(QColor(230, 230, 230));
+  bncSettings settings;
 
   // Proxy
   //------
@@ -1585,7 +1597,7 @@ void bncWindow::slotBncTextChanged(){
   // PPP Client
   // ----------
   if (sender() == 0 || sender() == _pppMountLineEdit 
-     || sender() == _pppOriginComboBox) {
+     || sender() == _pppOriginComboBox || sender() == _pppUsePhaseCheckBox ) {
     if (!_pppMountLineEdit->text().isEmpty()) {
       _pppSPPComboBox->setPalette(palette_white);
       _pppNMEALineEdit->setPalette(palette_white);
@@ -1625,6 +1637,15 @@ void bncWindow::slotBncTextChanged(){
         _pppRefCrdZLineEdit->setPalette(palette_gray);
         _pppRefCrdZLineEdit->setEnabled(false);
       }
+      if (_pppUsePhaseCheckBox->isChecked() 
+         && !_pppMountLineEdit->text().isEmpty()) {
+        _pppSigCLineEdit->setPalette(palette_white);
+        _pppSigCLineEdit->setEnabled(true);
+      }
+      else {
+        _pppSigCLineEdit->setPalette(palette_gray);
+        _pppSigCLineEdit->setEnabled(false);
+      }
     } else {
       _pppSPPComboBox->setPalette(palette_gray);
       _pppNMEALineEdit->setPalette(palette_gray);
@@ -1637,6 +1658,7 @@ void bncWindow::slotBncTextChanged(){
       _pppEstTropoCheckBox->setPalette(palette_gray);
       _pppGLONASSCheckBox->setPalette(palette_gray);
       _pppOriginComboBox->setPalette(palette_gray);
+      _pppSigCLineEdit->setPalette(palette_gray);
       _pppSPPComboBox->setEnabled(false);
       _pppNMEALineEdit->setEnabled(false);
       _pppNMEAPortLineEdit->setEnabled(false);
@@ -1648,6 +1670,7 @@ void bncWindow::slotBncTextChanged(){
       _pppEstTropoCheckBox->setEnabled(false);
       _pppGLONASSCheckBox->setEnabled(false);
       _pppOriginComboBox->setEnabled(false);
+      _pppSigCLineEdit->setEnabled(false);
     }
   }
 }
