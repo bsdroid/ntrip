@@ -1427,8 +1427,8 @@ Although BNC is primarily a real-time online tool, it can be run in offline mode
 </p>
 <p>
 <ul>
-<li>'--file &#060;<u>inputFileName</u>&#062;' to enter the full path to an input file containing data in RTCM Version 2.x, or Version 3.x, or RTIGS/SOC format.</li>
-<li>'--format &#060;<u>format</u>&#062;' to enter one of the file format describing strings 'RTCM_2', 'RTCM_3' or 'RTIGS'.</li>
+<li>'--file &lt;<u>inputFileName</u>&gt;' to enter the full path to an input file containing data in RTCM Version 2.x, or Version 3.x, or RTIGS/SOC format.</li>
+<li>'--format &lt;<u>format</u>&gt;' to enter one of the file format describing strings 'RTCM_2', 'RTCM_3' or 'RTIGS'.</li>
 <li>'--date YYYY-MM-DD' to enter a date for the first epoch.</li>
 <li>'--time HH:MM:SS' to enter a time for the first epoch.</li>
 </ul>
@@ -1441,7 +1441,7 @@ Note that it is necessary to define a date and time for the first epoch because 
 </p> 
 
 <p><a name="conffile"><h4>3.15.3 Configuration File - optional</h4></p>
-The default configuration file name is 'BNC.ini'. You may change this name at startup time using the command line option '--conf &#060;<u>confFileName</u>&#062;'. This allows to run several BNC jobs in parallel on the same host using different sets of configuration options. <u>confFileName</u> stands either for the full path to a configuration file or just for a file name. If you introduce only a filename, the corresponding file will be saved in the current working directory from where BNC is started.
+The default configuration file name is 'BNC.ini'. You may change this name at startup time using the command line option '--conf &lt;<u>confFileName</u>&gt;'. This allows to run several BNC jobs in parallel on the same host using different sets of configuration options. <u>confFileName</u> stands either for the full path to a configuration file or just for a file name. If you introduce only a filename, the corresponding file will be saved in the current working directory from where BNC is started.
 </p>
 <p>
 Example:<br><br>
@@ -1465,7 +1465,7 @@ BNC currently will only handle C1, C2, P1, P2, L1, L2, S1, and S2 observations a
 <li>
 Using RTCM Version 3.x, BNC will properly handle message types 1002, 1004, 1010, and 1012. Note that when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
 </li>
-Concerning the RTCM Version 3.x premature message types 1057-1068 (see RTCM document 091-2009-SC104-542 'Version 3 Proposed Messages â&#8364;&#8220; Set 10'), a final decision is not yet made. Note the what's implemented in BNC is just a temporary solutions.
+Concerning the RTCM Version 3.x premature message types 1057-1068 (see RTCM document 091-2009-SC104-542 'Version 3 Proposed Messages - Set 10'), a final decision is not yet made. Note the what's implemented in BNC is just a temporary solutions.
 <li>
 Using RTCM Version 2.x, BNC will only handle message types 18 and 19 or 20 and 21 together with position and the antenna offset information carried in types 3 and 22. Note that processing carrier phase corrections and pseudo-range corrections contained in message types 20 and 21 needs access to broadcast ephemeris. Hence, whenever dealing with message types 20 and 21, make sure that broadcast ephemeris become available for BNC through also retrieving at least one RTCM Version 3.x stream carrying message types 1019 (GPS ephemeris) and 1020 (GLONASS ephemeris).
 </li>
@@ -1563,7 +1563,7 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 
 <tr>
 <td>Dec 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td>
-<td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCMv3 decoder for clock and orbit corrections<br>[Add] Check RTCMv3 streams for incoming message types<br> [Add] Decode RTCMv2 message types 3, 20, 21, and 22<br> [Add] Loss of lock and lock time indicator<br> [Bug] Rounding error in RTCMv3 decoder concerning GLONASS height<br> [Mod] Accept GLONASS in RTCMv3 when transmitted first<br> [Add] Leap second 1 January 2009<br> [Add] Offline mode, read data from file<br> [Add] Output antenna descriptor, coordinates and excentricities from RTCMv3<br> [Add] Reconfiguration on-the-fly<br> [Mod] Binary ouput of synchronized observations<br> [Add] Binary output of unsynchronized observations<br> [Bug] Fixed problem with joined RTCMv3 blocks</td>
+<td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCMv3 decoder for clock and orbit corrections<br>[Add] Check RTCMv3 streams for incoming message types<br> [Add] Decode RTCMv2 message types 3, 20, 21, and 22<br> [Add] Loss of lock and lock time indicator<br> [Bug] Rounding error in RTCMv3 decoder concerning GLONASS height<br> [Mod] Accept GLONASS in RTCMv3 when transmitted first<br> [Add] Leap second 1 January 2009<br> [Add] Offline mode, read data from file<br> [Add] Output antenna descriptor, coordinates and excentricities from RTCMv3<br> [Add] Reconfiguration on-the-fly<br> [Mod] Binary output of synchronized observations<br> [Add] Binary output of unsynchronized observations<br> [Bug] Fixed problem with joined RTCMv3 blocks</td>
 </tr>
 
 <tr>
