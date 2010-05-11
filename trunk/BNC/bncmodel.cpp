@@ -534,7 +534,7 @@ t_irc bncModel::update(t_epoData* epoData) {
   double sig_P3;
   sig_P3 = 5.0;
   if ( Qt::CheckState(settings.value("pppUsePhase").toInt()) == Qt::Checked ) {
-    sig_P3 = settings.value("pppSigC").toDouble();
+    sig_P3 = settings.value("pppSigmaCode").toDouble();
     if (sig_P3 < 0.3 || sig_P3 > 50.0) {
       sig_P3 = 5.0;
     }
