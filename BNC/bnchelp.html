@@ -1487,7 +1487,20 @@ The source code provided by NRCan for decoding RTIGS streams is 32-bit dependent
 <li>
 Once BNC has been started, many of its configuration options cannot be changed as long as it is stopped. See chapter 'Reread Configuration' for on-the-fly configuration exceptions.
 </li>
-<br>
+
+<li>
+The following effects are so far ignored in BNC's Precise Point Positioning (PPP) approach:<br>
+- Satellite antenna offset: horizontal effect = few cm, vertical effect = up to 10 cm<br>
+- Satellite antenna phase center variation: vertical effect =1 mm<br>
+- Phase wind up: horizontal and vertical effect = a few mm<br>
+- Earth tides: horizontal effect: a few cm, vertical effect: a few dm<br>
+- Earth’s rotation: horizontal effect = a few cm<br>
+- Atmospheric, hydrological, and ocean loading: vertical effect = up to 5 cm<br>
+- Offset of ground antenna: horizontal effect = a few mm, vertical effect:  up to 5 cm<br>
+- Ground antenna phase center variation: vertical effect = a few mm<br>
+It basically means that with BNC's PPP the horizontal position can actually not be better than 5 cm and the height component cannot be better than 10 cm.
+</li>
+
 </ul>
 <p><a name="authors"><h3>5. Authors</h3></p>
 <p>
