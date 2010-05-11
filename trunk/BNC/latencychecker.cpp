@@ -108,7 +108,7 @@ latencyChecker::latencyChecker(QByteArray staID) {
   else if ( perfIntr.indexOf("1 min")   != -1 ) { 
     _perfIntr = 60; 
   }
-  else if ( perfIntr.indexOf("5 min")   != -1 ) { 
+  else if ( perfIntr.left(5).indexOf("5 min")   != -1 ) { 
     _perfIntr = 300; 
   }
   else if ( perfIntr.indexOf("15 min")  != -1 ) { 
