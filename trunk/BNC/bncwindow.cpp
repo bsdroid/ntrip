@@ -340,7 +340,7 @@ bncWindow::bncWindow() {
   _pppUsePhaseCheckBox = new QCheckBox();
   _pppNMEALineEdit     = new QLineEdit(settings.value("nmeaFile").toString());
   _pppNMEAPortLineEdit = new QLineEdit(settings.value("nmeaPort").toString());
-  _pppSigCLineEdit  = new QLineEdit(settings.value("pppSigC").toString());
+  _pppSigCLineEdit  = new QLineEdit(settings.value("pppSigmaCode").toString());
   _pppRefCrdXLineEdit  = new QLineEdit(settings.value("pppRefCrdX").toString());
   _pppRefCrdYLineEdit  = new QLineEdit(settings.value("pppRefCrdY").toString());
   _pppRefCrdZLineEdit  = new QLineEdit(settings.value("pppRefCrdZ").toString());
@@ -1054,7 +1054,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppSPP",      _pppSPPComboBox->currentText());
   settings.setValue("nmeaFile",    _pppNMEALineEdit->text());
   settings.setValue("nmeaPort",    _pppNMEAPortLineEdit->text());
-  settings.setValue("pppSigC",     _pppSigCLineEdit->text());
+  settings.setValue("pppSigmaCode",_pppSigCLineEdit->text());
   settings.setValue("pppRefCrdX",  _pppRefCrdXLineEdit->text());
   settings.setValue("pppRefCrdY",  _pppRefCrdYLineEdit->text());
   settings.setValue("pppRefCrdZ",  _pppRefCrdZLineEdit->text());
