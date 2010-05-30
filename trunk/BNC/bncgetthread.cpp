@@ -462,17 +462,12 @@ void bncGetThread::run() {
           currentGPSWeeks(week, sec);
           const double secPerWeek = 7.0 * 24.0 * 3600.0;
           
-          if (week < obs->_o.GPSWeek) {
-            week += 1;
-            sec  -= secPerWeek;
-          }
-          if (week > obs->_o.GPSWeek) {
-            week -= 1;
-            sec  += secPerWeek;
-          }
-          double dt = fabs(sec - obs->_o.GPSWeeks);
+          double currSec = week            * secPerWeek + sec;
+          double obsSec  = obs->_o.GPSWeek * secPerWeek + obs->_o.GPSWeeks;
+
           const double maxDt = 600.0;
-          if (week != obs->_o.GPSWeek || dt > maxDt) {
+
+          if (fabs(currSec - obsSec) > maxDt) {
               emit( newMessage(_staID + ": Wrong observation epoch(s)", false) );
             delete obs;
             continue;
