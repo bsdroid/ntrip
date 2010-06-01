@@ -27,12 +27,12 @@ release:MOC_DIR=.moc/release
 
 # Include Path
 # ------------
-INCLUDEPATH = . ./newmat
+INCLUDEPATH = . ./newmat ./rtcm3torinex ./clock_and_orbit
 
 HEADERS =             bns.h   bnswindow.h   bnshlpdlg.h   bnshtml.h   \
           bnseph.h    bnsutils.h bnsrinex.h bnssp3.h bnsoutf.h        \
-          bnscaster.h RTCM/clock_orbit_rtcm.h bnssettings.h bnsapp.h  \
-          bnscustomtrafo.h RTCM/rtcm3torinex.h bnctime.h timeutils.h
+          bnscaster.h clock_and_orbit/clock_orbit_rtcm.h bnssettings.h bnsapp.h  \
+          bnscustomtrafo.h rtcm3torinex/rtcm3torinex.h bnctime.h timeutils.h
 
 HEADERS += newmat/controlw.h newmat/include.h newmat/myexcept.h  \
            newmat/newmatap.h newmat/newmat.h newmat/newmatio.h   \
@@ -41,8 +41,8 @@ HEADERS += newmat/controlw.h newmat/include.h newmat/myexcept.h  \
 SOURCES = bnsmain.cpp bns.cpp bnswindow.cpp bnshlpdlg.cpp bnshtml.cpp  \
           bnseph.cpp  bnsutils.cpp bnsrinex.cpp bnssp3.cpp bnsoutf.cpp \
           bnscaster.cpp bnssettings.cpp bnsapp.cpp bnscustomtrafo.cpp  \
-          RTCM/clock_orbit_rtcm.c RTCM/rtcm3torinex.c bnctime.cpp      \
-          timeutils.cpp
+          clock_and_orbit/clock_orbit_rtcm.c rtcm3torinex/rtcm3torinex.c \
+          bnctime.cpp timeutils.cpp
 
 SOURCES += newmat/bandmat.cpp newmat/cholesky.cpp newmat/evalue.cpp  \
            newmat/fft.cpp newmat/hholder.cpp newmat/jacobi.cpp       \

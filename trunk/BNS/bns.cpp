@@ -24,7 +24,7 @@
 #include "bnssp3.h" 
 #include "bnssettings.h" 
 extern "C" {
-#include "RTCM/rtcm3torinex.h" 
+#include "rtcm3torinex.h" 
 }
 
 using namespace std;
