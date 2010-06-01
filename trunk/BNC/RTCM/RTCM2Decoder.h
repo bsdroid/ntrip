@@ -32,8 +32,8 @@
 #include "GPSDecoder.h"
 #include "RTCM2.h"
 #include "RTCM2_2021.h"
-#include "../RTCM3/rtcm3torinex.h"
-#include "../RTCM3/ephemeris.h"
+#include "rtcm3torinex.h"
+#include "ephemeris.h"
 
 class RTCM2Decoder: public GPSDecoder {
 

@@ -56,7 +56,7 @@
 #include "bncnetqueryv2.h"
 #include "bncsettings.h"
 #include "bncversion.h"
-#include "RTCM3/rtcm3torinex.h"
+#include "rtcm3torinex.h"
 
 using namespace std;
 

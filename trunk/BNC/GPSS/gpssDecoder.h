@@ -5,7 +5,7 @@
 #include <QtCore>
 
 #include "RTCM/GPSDecoder.h"
-#include "RTCM3/rtcm3torinex.h"
+#include "rtcm3torinex.h"
 
 class gpssDecoder : public QObject, public GPSDecoder {
 Q_OBJECT

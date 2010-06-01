@@ -2,8 +2,8 @@
 #include <iostream>
 #include <math.h>
 #include <stdio.h>
-#include <RTCM3/rtcm3torinex.h>
-#include <RTCM3/ephemeris.h>
+#include <rtcm3torinex.h>
+#include <ephemeris.h>
 
 #include "rtcm_utils.h"
 
