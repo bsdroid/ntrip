@@ -306,12 +306,12 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                   else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
                     obs->_o.L1            = _Parser.Data.measdata[ii][pos] + modulusAmb;
                     obs->_o.SNR1          = _Parser.Data.snrL1[ii];
-                    obs->_o.lock_timei_L1 = _Parser.lastlockl1[isat];
+                    obs->_o.lock_timei_L1 = _Parser.lastlockGPSl1[isat];
                   }
                   else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
                     obs->_o.L2            = _Parser.Data.measdata[ii][pos] + modulusAmb;
                     obs->_o.SNR2          = _Parser.Data.snrL2[ii];
-                    obs->_o.lock_timei_L2 = _Parser.lastlockl2[isat];
+                    obs->_o.lock_timei_L2 = _Parser.lastlockGPSl2[isat];
                   }
                   else if (df & (GNSSDF_S1CDATA|GNSSDF_S1PDATA)) {
                     obs->_o.S1   = _Parser.Data.measdata[ii][pos];

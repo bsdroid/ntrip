@@ -31,7 +31,7 @@
 #include <QFile>
 
 #include "RTCM/GPSDecoder.h"
-#include "RTCM3/rtcm3torinex.h"
+#include "rtcm3torinex.h"
 #include "bncconst.h"
 #include "bncnetquery.h"
 #include "bnctime.h"

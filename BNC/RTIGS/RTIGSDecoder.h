@@ -32,7 +32,7 @@
 
 // 2/1/2008 SPG Start
 extern "C" {
-	#include "../RTCM3/rtcm3torinex.h"
+#include "rtcm3torinex.h"
 }
 
 class ephSenderRTIGS : public QObject {
