@@ -9,7 +9,7 @@
 #include "bnseph.h"
 #include "bnscaster.h"
 extern "C" {
-#include "RTCM/clock_orbit_rtcm.h"
+#include "clock_orbit_rtcm.h"
 }
 
 class bnsRinex;

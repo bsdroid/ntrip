@@ -21,7 +21,7 @@
 #include "bnssettings.h" 
 #include "bnctime.h" 
 extern "C" {
-#include "RTCM/rtcm3torinex.h"
+#include "rtcm3torinex.h"
 }
 
 #define PI          3.1415926535898
