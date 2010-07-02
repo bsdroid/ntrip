@@ -1,20 +1,35 @@
+#!/bin/sh
+
+if [ $# -lt 2 ]
+then
+ echo "Usage: $0 <input> <output>"
+ exit 1
+fi
+
+inpFile=$1
+outFile=$2
+
+grep NEU ${inpFile} > neu_tmp
+
+gnuplot << EOF
+
+set term png
+set output "${outFile}"
 
 set xdata time
 set timefmt "%H:%M:%S"
 
 set format x "%H:%M"
 
-##set term png
-##set output "ffmj1.png"
-
-set title "FFMJ1"
+set title "FFMJ1 (${inpFile})"
 
 set ylabel "meters"
-###set xlabel "29-Dec-2009"
 set yrange [-1.5:1.5]
 
-plot "neu" u 5:9 t "dH" w l lt 3, \
-     ""    u 5:7 t "dN" w l lt 1, \
-     ""    u 5:8 t "dE" w l lt 2
+plot "neu_tmp" u 5:9 t "dH" w l lt 3, \
+     ""        u 5:7 t "dN" w l lt 1, \
+     ""        u 5:8 t "dE" w l lt 2
 
-pause -1
+EOF
+
+rm neu_tmp
