@@ -134,6 +134,19 @@ void bncPPPclient::putNewObs(p_obs pp) {
     satData->prn = prn;
   }
 
+  // Check Slips
+  // -----------
+  slipInfo& sInfo  = _slips[satData->prn];
+  if ( sInfo.slipCntL1 == obs->slip_cnt_L1  &&
+       sInfo.slipCntL2 == obs->slip_cnt_L2 ) {
+    satData->slipFlag = false;
+  }
+  else {
+    satData->slipFlag = true;
+  }
+  sInfo.slipCntL1 = obs->slip_cnt_L1;
+  sInfo.slipCntL2 = obs->slip_cnt_L2;
+
   // Handle Code Biases
   // ------------------
   t_bias* bb = 0;
