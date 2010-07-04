@@ -54,6 +54,7 @@ class t_satData {
   double       eleSat;
   double       azSat;
   double       rho;
+  bool         slipFlag;
 };
 
 class t_epoData {
@@ -129,6 +130,17 @@ class bncPPPclient : public QObject {
   void newNMEAstr(QByteArray str);
 
  private:
+  class slipInfo {
+   public:
+    slipInfo() {
+      slipCntL1 = -1;
+      slipCntL2 = -1;
+    }
+    ~slipInfo(){}
+    int slipCntL1;
+    int slipCntL2;
+  };
+
   t_irc getSatPos(const bncTime& tt, const QString& prn, 
                   ColumnVector& xc, ColumnVector& vv);
   void processEpoch();
@@ -136,15 +148,16 @@ class bncPPPclient : public QObject {
                  ColumnVector& vv);
   t_irc cmpToT(t_satData* satData);
 
-  QByteArray             _staID;
-  QMutex                 _mutex;
-  QMap<QString, t_eph*>  _eph;
-  QMap<QString, t_corr*> _corr;
-  QMap<QString, t_bias*> _bias;
-  t_epoData*             _epoData;
-  bncModel*              _model;
-  bool                   _useGlonass;
-  bool                   _pppMode;
+  QByteArray              _staID;
+  QMutex                  _mutex;
+  QMap<QString, t_eph*>   _eph;
+  QMap<QString, t_corr*>  _corr;
+  QMap<QString, t_bias*>  _bias;
+  t_epoData*              _epoData;
+  bncModel*               _model;
+  bool                    _useGlonass;
+  bool                    _pppMode;
+  QMap<QString, slipInfo> _slips;
 };
 
 #endif
