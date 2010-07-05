@@ -483,7 +483,7 @@ int moremessagesfollow, char *buffer, size_t size)
   {
     INITBLOCK
     T_MESSAGE_NUMBER(BTYPE_GLONASS)
-    T_GPS_EPOCH_TIME(b->GLONASSEpochTime)
+    T_GLONASS_EPOCH_TIME(b->GLONASSEpochTime)
     T_SSR_UPDATE_INTERVAL(b->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
