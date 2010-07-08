@@ -32,7 +32,8 @@ INCLUDEPATH = . ./newmat ./rtcm3torinex ./clock_and_orbit
 HEADERS =             bns.h   bnswindow.h   bnshlpdlg.h   bnshtml.h   \
           bnseph.h    bnsutils.h bnsrinex.h bnssp3.h bnsoutf.h        \
           bnscaster.h clock_and_orbit/clock_orbit_rtcm.h bnssettings.h bnsapp.h  \
-          bnscustomtrafo.h rtcm3torinex/rtcm3torinex.h bnctime.h timeutils.h
+          bnscustomtrafo.h rtcm3torinex/rtcm3torinex.h bnctime.h timeutils.h \
+          bnsversion.h
 
 HEADERS += newmat/controlw.h newmat/include.h newmat/myexcept.h  \
            newmat/newmatap.h newmat/newmat.h newmat/newmatio.h   \

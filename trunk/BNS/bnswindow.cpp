@@ -21,6 +21,7 @@
 #include "bnshlpdlg.h" 
 #include "bnssettings.h" 
 #include "bnscustomtrafo.h" 
+#include "bnsversion.h"
 
 using namespace std;
 
@@ -43,7 +44,7 @@ bnsAboutDlg::bnsAboutDlg(QWidget* parent) :
   QLabel* img = new QLabel();
   img->setPixmap(QPixmap(":ntrip-logo.png"));
   dlgLayout->addWidget(img, 0,0);
-  dlgLayout->addWidget(new QLabel("BKG Ntrip State Space Server (BNS) Version 1.1"), 0,1);
+  dlgLayout->addWidget(new QLabel("BKG Ntrip State Space Server (BNS) Version " BNSVERSION), 0,1);
   dlgLayout->addWidget(tb,1,0,1,2);
   dlgLayout->addWidget(_closeButton,2,1,Qt::AlignRight);  
 
@@ -100,7 +101,7 @@ bnsWindow::bnsWindow() {
   
   int ww = QFontMetrics(this->font()).width('w');
   setMinimumSize(77*ww, 65*ww);
-  setWindowTitle(tr("BKG Ntrip State Space Server (BNS) Version 1.1"));
+  setWindowTitle(tr("BKG Ntrip State Space Server (BNS) Version " BNSVERSION));
   setWindowIcon(QPixmap(":ntrip-logo.png"));
 
   // Create Actions
