@@ -74,17 +74,12 @@ using namespace std;
 
 // Constructor 1
 ////////////////////////////////////////////////////////////////////////////
-bncGetThread::bncGetThread(const QByteArray& rawInpFileName, 
-                           const QByteArray& format) {
+bncGetThread::bncGetThread(bncRawFile* rawFile) {
 
-  _rawInpFile = new QFile(rawInpFileName);
-  _rawInpFile->open(QIODevice::ReadOnly);
-  _format     = format;
-  _staID      = rawInpFileName.mid(
-                       rawInpFileName.lastIndexOf(QDir::separator())+1,5);  
-
-  _rawOutput = false;
-
+  _rawFile      = rawFile;
+  _format       = rawFile->format();
+  _staID        = rawFile->staID();
+  _rawOutput    = false;
   _ntripVersion = "N";
 
   initialize();
@@ -98,7 +93,7 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
                            const QByteArray& longitude,
                            const QByteArray& nmea, 
                            const QByteArray& ntripVersion, const QByteArray& extraStaID) {
-  _rawInpFile   = 0;
+  _rawFile      = 0;
   _mountPoint   = mountPoint;
   _staID        = (extraStaID.size() == 0 ? mountPoint.path().mid(1).toAscii() : extraStaID);
   _format       = format;
@@ -304,11 +299,7 @@ void bncGetThread::initialize() {
   else if (_format.indexOf("RTCM_3") != -1 || _format.indexOf("RTCM3") != -1 ||
            _format.indexOf("RTCM 3") != -1 ) {
     emit(newMessage(_staID + ": Get data in RTCM 3.x format", true));
-    bool inputFromFile = false;
-    if (_rawInpFile != 0) {
-      inputFromFile = true;
-    }
-    _decoder = new RTCM3Decoder(_staID, inputFromFile);
+    _decoder = new RTCM3Decoder(_staID, bool(_rawFile != 0));
     connect((RTCM3Decoder*) _decoder, SIGNAL(newMessage(QByteArray,bool)), 
             this, SIGNAL(newMessage(QByteArray,bool)));
   }
@@ -347,7 +338,7 @@ bncGetThread::~bncGetThread() {
   delete _PPPclient;
   delete _decoder;
   delete _rnx;
-  delete _rawInpFile;
+  delete _rawFile;
   delete _serialOutFile;
   delete _serialPort;
   delete _latencyChecker;
@@ -394,13 +385,8 @@ void bncGetThread::run() {
       if      (_query) {
         _query->waitForReadyRead(data);
       }
-      else if (_rawInpFile) {
-        const qint64 maxBytes = 1024;
-        data = _rawInpFile->read(maxBytes);
-
-        //// beg test
-        msleep(10);
-        //// end test
+      else if (_rawFile) {
+        data = _rawFile->read();
 
         if (data.isEmpty()) {
           cout << "no more data" << endl;
@@ -456,7 +442,7 @@ void bncGetThread::run() {
       
         // Check observation epoch
         // -----------------------
-        if (!_rawInpFile && !dynamic_cast<gpssDecoder*>(_decoder)) {
+        if (!_rawFile && !dynamic_cast<gpssDecoder*>(_decoder)) {
           int week;
           double sec;
           currentGPSWeeks(week, sec);
@@ -524,7 +510,7 @@ t_irc bncGetThread::tryReconnect() {
 
   // Start a new query
   // -----------------
-  if (!_rawInpFile) {
+  if (!_rawFile) {
 
     sleep(_nextSleep);
     if (_nextSleep == 0) {

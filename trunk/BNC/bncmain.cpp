@@ -63,8 +63,6 @@ int main(int argc, char *argv[]) {
   bool       GUIenabled  = true;
   QByteArray rawFileName;
   QByteArray format; 
-  QString    dateString;
-  QString    timeString;
   QString    confFileName;
 
   for (int ii = 1; ii < argc; ii++) {
@@ -81,12 +79,6 @@ int main(int argc, char *argv[]) {
       }
       if (QByteArray(argv[ii]).indexOf("-format") != -1) {
         format = QByteArray(argv[ii+1]);
-      }
-      if (QByteArray(argv[ii]).indexOf("-date")   != -1) {
-        dateString = QString(argv[ii+1]);
-      }
-      if (QByteArray(argv[ii]).indexOf("-time")   != -1) {
-        timeString = QString(argv[ii+1]);
       }
     }
   }
@@ -157,16 +149,15 @@ int main(int argc, char *argv[]) {
     // Special case - data from file
     // -----------------------------
     else {
-      if ( format.isEmpty() || dateString.isEmpty() || timeString.isEmpty() ) {
+      if ( format.isEmpty() ) {
         cout << printHelp.toAscii().data() << endl;
         exit(0);
       }
 
-      app._currentDateAndTimeGPS = 
-        new QDateTime(QDate::fromString(dateString, Qt::ISODate), 
-                      QTime::fromString(timeString, Qt::ISODate), Qt::UTC);
+      bncRawFile* rawFile = new bncRawFile(rawFileName, format, 
+                                           bncRawFile::input);
 
-      bncGetThread* getThread = new bncGetThread(rawFileName, format);
+      bncGetThread* getThread = new bncGetThread(rawFile);
       caster->addGetThread(getThread);
     }
   }
