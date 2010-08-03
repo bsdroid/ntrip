@@ -758,7 +758,7 @@ t_irc bncModel::update(t_epoData* epoData) {
          << epoData->tt.timestr(1) << " " << epoData->sizeAll() << " "
          << setw(8)  << setprecision(3) << _neu[0]              << " "
          << setw(8)  << setprecision(3) << _neu[1]              << " "
-         << setw(8)  << setprecision(3) << _neu[2];
+         << setw(8)  << setprecision(3) << _neu[2]              << endl << endl;
     emit newMessage(QByteArray(strC.str().c_str()), true);
   }
 
