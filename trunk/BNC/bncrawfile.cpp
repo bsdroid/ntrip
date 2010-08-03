@@ -52,6 +52,7 @@ bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& format,
   _format     = format;
   _staID      = fileName.mid(fileName.lastIndexOf(QDir::separator())+1,5);  
   _inpOutFlag = ioFlg;
+  _outFile    = 0;
 
   // Initialize
   // ----------
