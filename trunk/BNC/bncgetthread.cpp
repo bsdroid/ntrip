@@ -425,7 +425,7 @@ void bncGetThread::run() {
       // -----------
       if (_rawOutput) {
         bncApp* app = (bncApp*) qApp;
-        app->writeRawData(data); 
+        app->writeRawData(data, _staID, _format); 
       }
 
       if (_serialPort) {

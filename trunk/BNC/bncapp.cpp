@@ -707,7 +707,8 @@ void bncApp::setConfFileName(const QString& confFileName) {
 
 // Raw Output
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::writeRawData(const QByteArray& data) {
+void bncApp::writeRawData(const QByteArray& data, const QByteArray& staID,
+                          const QByteArray& format) {
 
   QMutexLocker locker(&_mutex);
 
@@ -717,10 +718,19 @@ void bncApp::writeRawData(const QByteArray& data) {
     if (!rawOutFileName.isEmpty()) {
       _rawOutFile = new QFile(rawOutFileName);
       _rawOutFile->open(QIODevice::WriteOnly);
+
+      QByteArray header = 
+        "1 Version of BNC raw file\n" +
+	currentDateAndTimeGPS().toString(Qt::ISODate).toAscii();
+
+      _rawOutFile->write(header);
     }
   }
 
   if (_rawOutFile) {
+    QString chunkHeader = 
+      QString("\n%1 %2 %3\n").arg(QString(staID)).arg(QString(format)).arg(data.size());
+    _rawOutFile->write(chunkHeader.toAscii());
     _rawOutFile->write(data);
     _rawOutFile->flush();
   }
