@@ -44,6 +44,8 @@
 
 using namespace std;
 
+#define RAW_FILE_VERSION "1"
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& format,
@@ -63,11 +65,6 @@ bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& format,
     QString     line = _inpFile->readLine();
     QStringList lst  = line.split(' ');
     _version = lst.value(0).toInt();
-
-    line = _inpFile->readLine();
-    bncApp* app = (bncApp*) qApp;
-    app->_currentDateAndTimeGPS = 
-                   new QDateTime(QDateTime::fromString(line, Qt::ISODate));
   }
 
   // Initialize for Output
@@ -75,9 +72,7 @@ bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& format,
   else {
     _outFile = new QFile(_fileName);
     _outFile->open(QIODevice::WriteOnly);
-    QByteArray header = "1 Version of BNC raw file\n" +
-    	                currentDateAndTimeGPS().toString(Qt::ISODate).toAscii();
-    _outFile->write(header);
+    _outFile->write(RAW_FILE_VERSION " Version of BNC raw file");
   }
 }
 
@@ -93,8 +88,11 @@ bncRawFile::~bncRawFile() {
 void bncRawFile::writeRawData(const QByteArray& data, const QByteArray& staID,
                               const QByteArray& format) {
   if (_outFile) {
-    QString chunkHeader = 
-      QString("\n%1 %2 %3\n").arg(QString(staID)).arg(QString(format)).arg(data.size());
+    QString chunkHeader = QString("\n%1 %2 %3 %4\n")
+                 .arg(currentDateAndTimeGPS().toString(Qt::ISODate))
+                 .arg(QString(staID))
+                 .arg(QString(format))
+                 .arg(data.size());
     _outFile->write(chunkHeader.toAscii());
     _outFile->write(data);
     _outFile->flush();
@@ -112,9 +110,14 @@ QByteArray bncRawFile::readChunk(){
     QString     line = _inpFile->readLine();
     QStringList lst  = line.split(' ');
     
-    _staID  = lst.value(0).toAscii();
-    _format = lst.value(1).toAscii();
-    int nBytes = lst.value(2).toInt();
+    bncApp* app = (bncApp*) qApp;
+    delete app->_currentDateAndTimeGPS;
+    app->_currentDateAndTimeGPS = 
+      new QDateTime(QDateTime::fromString(lst.value(0), Qt::ISODate));
+
+    _staID  = lst.value(1).toAscii();
+    _format = lst.value(2).toAscii();
+    int nBytes = lst.value(3).toInt();
 
     data = _inpFile->read(nBytes);
 
