@@ -299,7 +299,7 @@ void bncGetThread::initialize() {
   else if (_format.indexOf("RTCM_3") != -1 || _format.indexOf("RTCM3") != -1 ||
            _format.indexOf("RTCM 3") != -1 ) {
     emit(newMessage(_staID + ": Get data in RTCM 3.x format", true));
-    _decoder = new RTCM3Decoder(_staID, bool(_rawFile != 0));
+    _decoder = new RTCM3Decoder(_staID, _rawFile);
     connect((RTCM3Decoder*) _decoder, SIGNAL(newMessage(QByteArray,bool)), 
             this, SIGNAL(newMessage(QByteArray,bool)));
   }
@@ -386,9 +386,7 @@ void bncGetThread::run() {
         _query->waitForReadyRead(data);
       }
       else if (_rawFile) {
-        QByteArray currStaID;
-        QByteArray currFormat;
-        data = _rawFile->readChunk(currStaID, currFormat);
+        data = _rawFile->readChunk();
 
         if (data.isEmpty()) {
           cout << "no more data" << endl;

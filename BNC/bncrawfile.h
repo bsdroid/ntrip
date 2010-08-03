@@ -29,7 +29,6 @@
 #include <QTextStream>
 
 #include "bnccaster.h"
-#include "RTCM3/RTCM3Decoder.h"
 
 class bncRawFile {
  public:
@@ -42,7 +41,7 @@ class bncRawFile {
   ~bncRawFile();  
   QByteArray format() const {return _format;}
   QByteArray staID() const {return _staID;}
-  QByteArray readChunk(QByteArray& currStaID, QByteArray& currFormat);
+  QByteArray readChunk();
   void writeRawData(const QByteArray& data, const QByteArray& staID,
                     const QByteArray& format);
  private:
