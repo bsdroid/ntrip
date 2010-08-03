@@ -108,20 +108,22 @@ QByteArray bncRawFile::readChunk(){
 
   if (_inpFile) {
     QString     line = _inpFile->readLine();
-    QStringList lst  = line.split(' ');
-    
-    bncApp* app = (bncApp*) qApp;
-    delete app->_currentDateAndTimeGPS;
-    app->_currentDateAndTimeGPS = 
-      new QDateTime(QDateTime::fromString(lst.value(0), Qt::ISODate));
-
-    _staID  = lst.value(1).toAscii();
-    _format = lst.value(2).toAscii();
-    int nBytes = lst.value(3).toInt();
-
-    data = _inpFile->read(nBytes);
-
-    _inpFile->read(1); // read '\n' character
+    if (!line.isEmpty()) {
+      QStringList lst  = line.split(' ');
+      
+      bncApp* app = (bncApp*) qApp;
+      delete app->_currentDateAndTimeGPS;
+      app->_currentDateAndTimeGPS = 
+        new QDateTime(QDateTime::fromString(lst.value(0), Qt::ISODate));
+      
+      _staID  = lst.value(1).toAscii();
+      _format = lst.value(2).toAscii();
+      int nBytes = lst.value(3).toInt();
+      
+      data = _inpFile->read(nBytes);
+      
+      _inpFile->read(1); // read '\n' character
+    }
   }
 
   return data;

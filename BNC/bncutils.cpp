@@ -115,10 +115,15 @@ void currentGPSWeeks(int& week, double& sec) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 QDateTime currentDateAndTimeGPS() {
-  int    GPSWeek;
-  double GPSWeeks;
-  currentGPSWeeks(GPSWeek, GPSWeeks);
-  return dateAndTimeFromGPSweek(GPSWeek, GPSWeeks);
+  if ( ((bncApp*) qApp)->_currentDateAndTimeGPS ) {
+    return *(((bncApp*) qApp)->_currentDateAndTimeGPS);
+  }
+  else {
+    int    GPSWeek;
+    double GPSWeeks;
+    currentGPSWeeks(GPSWeek, GPSWeeks);
+    return dateAndTimeFromGPSweek(GPSWeek, GPSWeeks);
+  }
 }
 
 // 
