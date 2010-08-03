@@ -60,9 +60,9 @@ bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& format,
   if (ioFlg == input) {
     _inpFile = new QFile(_fileName);
     _inpFile->open(QIODevice::ReadOnly);
-    QString line = _inpFile->readLine();
-    QStringList lst1 = line.split(' ');
-    _version = lst1.value(0).toInt();
+    QString     line = _inpFile->readLine();
+    QStringList lst  = line.split(' ');
+    _version = lst.value(0).toInt();
 
     line = _inpFile->readLine();
     bncApp* app = (bncApp*) qApp;
@@ -105,10 +105,23 @@ void bncRawFile::writeRawData(const QByteArray& data, const QByteArray& staID,
 ////////////////////////////////////////////////////////////////////////////
 QByteArray bncRawFile::readChunk() {
 
-  return "";
+  QByteArray data;
 
-  //// beg test
-  ////  msleep(10);
-  //// end test
+  if (_inpFile) {
+    QString     line = _inpFile->readLine();
+    QStringList lst  = line.split(' ');
+    
+    QByteArray staID_current  = lst.value(0).toAscii();
+    QByteArray format_current = lst.value(1).toAscii();
+    int        nBytes         = lst.value(2).toInt();
+
+    cout << line.toAscii().data() << endl;
+
+    data = _inpFile->read(nBytes);
+
+    _inpFile->read(1);
+  }
+
+  return data;
 }
 
