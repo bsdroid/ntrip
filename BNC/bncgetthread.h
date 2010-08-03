@@ -35,6 +35,7 @@
 #include "bncconst.h"
 #include "bncnetquery.h"
 #include "bnctime.h"
+#include "bncrawfile.h"
 
 class bncRinex;
 class QextSerialPort;
@@ -45,7 +46,7 @@ class bncGetThread : public QThread {
  Q_OBJECT
 
  public:
-   bncGetThread(const QByteArray&  rawInpFileName, const QByteArray& format);
+   bncGetThread(bncRawFile* rawFile);
    bncGetThread(const QUrl& mountPoint, 
                 const QByteArray& format,
                 const QByteArray& latitude,
@@ -116,7 +117,7 @@ class bncGetThread : public QThread {
    int             _iMount;
    int             _samplingRate;
    bncRinex*       _rnx;
-   QFile*          _rawInpFile;
+   bncRawFile*     _rawFile;
    QextSerialPort* _serialPort;
    bool            _isToBeDeleted;
    latencyChecker* _latencyChecker;

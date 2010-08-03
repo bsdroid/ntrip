@@ -30,6 +30,7 @@
 #include <QTextStream>
 
 #include "bnccaster.h"
+#include "bncrawfile.h"
 #include "RTCM3/RTCM3Decoder.h"
 
 class bncApp : public QApplication {
@@ -74,7 +75,6 @@ class bncApp : public QApplication {
     void messagePrivate(const QByteArray& msg);
 
     QFile*            _logFile;
-    QFile*            _rawOutFile;
     QTextStream*      _logStream;
     int               _logFileFlag;
     QMutex            _mutex;
@@ -104,6 +104,7 @@ class bncApp : public QApplication {
     long                _waitCoTime;
     QMultiMap<long, QString>* _corrs;
     QString             _confFileName;
-    QDate          _fileDate;
+    QDate               _fileDate;
+    bncRawFile*         _rawFile;
 };
 #endif

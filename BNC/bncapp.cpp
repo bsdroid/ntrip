@@ -59,7 +59,7 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
   _logFile     = 0;
   _logStream   = 0;
   _caster      = 0;
-  _rawOutFile  = 0;
+  _rawFile     = 0;
 
   // Lists of Ephemeris
   // ------------------
@@ -128,7 +128,7 @@ bncApp::~bncApp() {
 
   delete _currentDateAndTimeGPS;
 
-  delete _rawOutFile;
+  delete _rawFile;
 }
 
 // Write a Program Message
@@ -712,26 +712,15 @@ void bncApp::writeRawData(const QByteArray& data, const QByteArray& staID,
 
   QMutexLocker locker(&_mutex);
 
-  if (!_rawOutFile) {
+  if (!_rawFile) {
     bncSettings settings;
-    QString rawOutFileName = settings.value("rawOutFile").toString();
-    if (!rawOutFileName.isEmpty()) {
-      _rawOutFile = new QFile(rawOutFileName);
-      _rawOutFile->open(QIODevice::WriteOnly);
-
-      QByteArray header = 
-        "1 Version of BNC raw file\n" +
-	currentDateAndTimeGPS().toString(Qt::ISODate).toAscii();
-
-      _rawOutFile->write(header);
+    QByteArray fileName = settings.value("rawOutFile").toByteArray();
+    if (!fileName.isEmpty()) {
+      _rawFile = new bncRawFile(fileName, format, bncRawFile::output);
     }
   }
 
-  if (_rawOutFile) {
-    QString chunkHeader = 
-      QString("\n%1 %2 %3\n").arg(QString(staID)).arg(QString(format)).arg(data.size());
-    _rawOutFile->write(chunkHeader.toAscii());
-    _rawOutFile->write(data);
-    _rawOutFile->flush();
+  if (_rawFile) {
+    _rawFile->writeRawData(data, staID, format);
   }
 }
