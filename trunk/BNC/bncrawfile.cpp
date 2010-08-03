@@ -84,7 +84,8 @@ bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& format,
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncRawFile::~bncRawFile() {
-
+  delete _inpFile;
+  delete _outFile;
 }
 
 // Raw Output
@@ -115,11 +116,9 @@ QByteArray bncRawFile::readChunk() {
     QByteArray format_current = lst.value(1).toAscii();
     int        nBytes         = lst.value(2).toInt();
 
-    cout << line.toAscii().data() << endl;
-
     data = _inpFile->read(nBytes);
 
-    _inpFile->read(1);
+    _inpFile->read(1); // read '\n' character
   }
 
   return data;
