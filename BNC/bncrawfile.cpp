@@ -51,14 +51,33 @@ bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& format,
   _fileName   = fileName;
   _format     = format;
   _staID      = fileName.mid(fileName.lastIndexOf(QDir::separator())+1,5);  
-  _inpOutFlag = ioFlg;
+  _inpFile    = 0;
   _outFile    = 0;
+  _version    = 0;
 
-  // Initialize
-  // ----------
-  if (_inpOutFlag == input) {
+  // Initialize for Input
+  // --------------------
+  if (ioFlg == input) {
+    _inpFile = new QFile(_fileName);
+    _inpFile->open(QIODevice::ReadOnly);
+    QString line = _inpFile->readLine();
+    QStringList lst1 = line.split(' ');
+    _version = lst1.value(0).toInt();
+
+    line = _inpFile->readLine();
     bncApp* app = (bncApp*) qApp;
-    // TODO: set date and time
+    app->_currentDateAndTimeGPS = 
+                   new QDateTime(QDateTime::fromString(line, Qt::ISODate));
+  }
+
+  // Initialize for Output
+  // ---------------------
+  else {
+    _outFile = new QFile(_fileName);
+    _outFile->open(QIODevice::WriteOnly);
+    QByteArray header = "1 Version of BNC raw file\n" +
+    	                currentDateAndTimeGPS().toString(Qt::ISODate).toAscii();
+    _outFile->write(header);
   }
 }
 
@@ -72,15 +91,6 @@ bncRawFile::~bncRawFile() {
 ////////////////////////////////////////////////////////////////////////////
 void bncRawFile::writeRawData(const QByteArray& data, const QByteArray& staID,
                               const QByteArray& format) {
-
-  if ( !_outFile && !_fileName.isEmpty() ) {
-    _outFile = new QFile(_fileName);
-    _outFile->open(QIODevice::WriteOnly);
-    QByteArray header = "1 Version of BNC raw file\n" +
-    	                currentDateAndTimeGPS().toString(Qt::ISODate).toAscii();
-    _outFile->write(header);
-  }
-
   if (_outFile) {
     QString chunkHeader = 
       QString("\n%1 %2 %3\n").arg(QString(staID)).arg(QString(format)).arg(data.size());
@@ -93,7 +103,7 @@ void bncRawFile::writeRawData(const QByteArray& data, const QByteArray& staID,
 
 // Raw Input
 ////////////////////////////////////////////////////////////////////////////
-QByteArray bncRawFile::read() {
+QByteArray bncRawFile::readChunk() {
 
   return "";
 
