@@ -42,7 +42,7 @@ class bncRawFile {
   ~bncRawFile();  
   QByteArray format() const {return _format;}
   QByteArray staID() const {return _staID;}
-  QByteArray readChunk();
+  QByteArray readChunk(QByteArray& currStaID, QByteArray& currFormat);
   void writeRawData(const QByteArray& data, const QByteArray& staID,
                     const QByteArray& format);
  private:
