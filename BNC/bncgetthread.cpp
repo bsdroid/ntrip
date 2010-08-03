@@ -386,7 +386,9 @@ void bncGetThread::run() {
         _query->waitForReadyRead(data);
       }
       else if (_rawFile) {
-        data = _rawFile->readChunk();
+        QByteArray currStaID;
+        QByteArray currFormat;
+        data = _rawFile->readChunk(currStaID, currFormat);
 
         if (data.isEmpty()) {
           cout << "no more data" << endl;
