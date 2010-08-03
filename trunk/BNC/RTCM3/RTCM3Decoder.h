@@ -32,6 +32,7 @@
 #include "../RTCM/GPSDecoder.h"
 #include "RTCM3coDecoder.h"
 #include "ephemeris.h"
+#include "bncrawfile.h"
 
 extern "C" {
 #include "rtcm3torinex.h"
@@ -40,7 +41,7 @@ extern "C" {
 class RTCM3Decoder : public QObject, public GPSDecoder {
 Q_OBJECT
  public:
-  RTCM3Decoder(const QString& staID, bool inputFromFile);
+  RTCM3Decoder(const QString& staID, bncRawFile* rawFile);
   virtual ~RTCM3Decoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
   virtual int corrGPSEpochTime() const {
@@ -60,13 +61,13 @@ Q_OBJECT
 
   QString                _staID;
   QString                _checkMountPoint;
-  struct RTCM3ParserData _Parser;
+  QMap<QByteArray, RTCM3ParserData> _parsers;
   RTCM3coDecoder*        _coDecoder; 
   t_mode                 _mode;
 
   std::map<std::string, t_ephGPS> _ephList;
   double                 _antXYZ[3];
-  bool                   _inputFromFile;
+  bncRawFile*            _rawFile;
 };
 
 #endif

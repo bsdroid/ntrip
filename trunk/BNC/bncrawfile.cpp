@@ -104,7 +104,7 @@ void bncRawFile::writeRawData(const QByteArray& data, const QByteArray& staID,
 
 // Raw Input
 ////////////////////////////////////////////////////////////////////////////
-QByteArray bncRawFile::readChunk(QByteArray& currStaID, QByteArray& currFormat){
+QByteArray bncRawFile::readChunk(){
 
   QByteArray data;
 
@@ -112,8 +112,8 @@ QByteArray bncRawFile::readChunk(QByteArray& currStaID, QByteArray& currFormat){
     QString     line = _inpFile->readLine();
     QStringList lst  = line.split(' ');
     
-    currStaID  = lst.value(0).toAscii();
-    currFormat = lst.value(1).toAscii();
+    _staID  = lst.value(0).toAscii();
+    _format = lst.value(1).toAscii();
     int nBytes = lst.value(2).toInt();
 
     data = _inpFile->read(nBytes);
