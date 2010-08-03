@@ -86,7 +86,7 @@ class bncGetThread : public QThread {
    void newPosition(bncTime time, double x, double y, double z);
    void newNMEAstr(QByteArray str);
 
- protected:
+ public:
    virtual void run();
 
  public slots:

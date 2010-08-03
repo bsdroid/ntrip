@@ -256,7 +256,7 @@ void bncCaster::slotNewNMEAConnection() {
 
 // Add New Thread
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::addGetThread(bncGetThread* getThread) {
+void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
 
   qRegisterMetaType<p_obs>("p_obs");
 
@@ -275,7 +275,12 @@ void bncCaster::addGetThread(bncGetThread* getThread) {
   _staIDs.push_back(getThread->staID());
   _threads.push_back(getThread);
 
-  getThread->start();
+  if (noNewThread) {
+    getThread->run();
+  }
+  else {
+    getThread->start();
+  }
 }
 
 // Get Thread destroyed

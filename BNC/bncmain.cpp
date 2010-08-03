@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
                                            bncRawFile::input);
 
       bncGetThread* getThread = new bncGetThread(rawFile);
-      caster->addGetThread(getThread);
+      caster->addGetThread(getThread, true);
     }
   }
 

@@ -39,7 +39,7 @@ class bncCaster : public QObject {
  public:
    bncCaster(const QString& outFileName, int port);
    ~bncCaster();
-   void addGetThread(bncGetThread* getThread);
+   void addGetThread(bncGetThread* getThread, bool noNewThread = false);
    int  numStations() const {return _staIDs.size();}
 
  public slots:
