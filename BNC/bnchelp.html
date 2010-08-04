@@ -292,6 +292,9 @@ BNC can save all data coming in through various streams in the received order an
 This example block header tells you that 67 bytes are saved in the data block following this record. The information in this block is encoded in RTCM Version 3.x format, comes from Mountpoint RTCM3EPH and was received at 18:05:29 UTC on 2010-08-03. BNC adds its own time stamps because a complete time reference may not be provided for all incoming observations and epochs.
 </p>
 <p>
+Note that streams in a 'Raw output file' which shall later be used in an offline PPP calculation must all be encoded in the same format.
+</p>
+<p>
 The default value for 'Raw output file (full path)' is an empty option field, meaning that BNC will not save raw data into a file.
 </p>
 
@@ -478,7 +481,7 @@ RTCM is in the process of developing new Version 3 messages to transport satelli
 RTCM Version 3 streams carrying these messages may be used i.e. to support real-time Precise Point Positioning (PPP) applications. 
 </p>
 <p>
-When using clocks from Broadcast Ephemeris (with or without applied corrections) or clocks from SP3 files, it may beimportant to understand that they are not corrected for the 2nd-order relativistic effect. The 2nd-order relativistic effect is a periodic time correction defined as -2 (R * V) / c^2 where R * V is the scalar product of the satellite position and velocity and c is the speed of light.
+When using clocks from Broadcast Ephemeris (with or without applied corrections) or clocks from SP3 files, it may be important to understand that they are not corrected for the conventional periodic relativistic effect. Chapter 10 of the IERS Conventions 2003 mentions that the conventional periodic relativistic correction to the satellite clock (to be added to the broadcast clock) is computed as dt =  -2 (R * V) / c^2 where R * V is the scalar product of the satellite position and velocity and c is the speed of light. This can also be found in the GPS Interface Specification, IS-GPS-200, Revision D, 7 March 2006.
 </p>
 
 <p>
@@ -1064,11 +1067,15 @@ residuals glo   -0.000 0.000 0.001
 </p>
 
 <p>
-Note that BNC's 'PPP Client' option can also be used in 'Offline Mode'. Apply the 'Offline Mode' command line options for that to read a file containing synchronized observations, orbit and clock corretors, and broadcast ephemeris. Such a file can be generated using BNC's 'Raw Output File' option. The first five characters of the file name read in 'Offline Mode' must then be the same as the specified PPP 'Mounpoint': If you produce a 'Raw Output File' named 'FFMJ1' then the PPP 'Mountpoint' needs to be also specified as 'FFMJ1' and the command line to execute BNC on a Windows system in 'Offline Mode' could look like:
+Note that BNC's 'PPP Client' option can also be used in 'Offline Mode'. Apply the 'Offline Mode' command line options for that to read a file containing synchronized observations, orbit and clock corretors, and broadcast ephemeris. Such a file can be generated using BNC's 'Raw output file' option. The first five characters of the file name read in 'Offline Mode' must then be the same as the specified PPP 'Mounpoint': If you produce a 'Raw output file' named 'FFMJ1' then the PPP 'Mountpoint' needs to be also specified as 'FFMJ1' and the command line to execute BNC on a Windows system in 'Offline Mode' could look like:
 </p>
 
 <p>
 bnc.exe --conf c:\temp\BNC.ppp --file c:\temp\FFMJ1 --format RTCM_3
+</p>
+
+<p>
+Streams in a 'Raw output file' which shall later be used in an offline PPP calculation must all be encoded in the same format.
 </p>
 
 <p><a name="pppmount"><h4>3.11.1 Mountpoint - optional</h4></p>
@@ -1439,7 +1446,7 @@ Example:<br><br>
 ./bnc --file FFMJ.dat --format RTCM_3
 </p>
 <p>
-Note that when running BNC in offline mode, it will use options for file saving, interval, sampling, PPP etc. from its configuration file.
+Note that when running BNC in offline mode, it will use options for file saving, interval, sampling, PPP etc. from its configuration file. Note further that only those data in the file will be processd offline which are encoded as specified with the --format option. 
 </p> 
 
 <p><a name="conffile"><h4>3.15.3 Configuration File - optional</h4></p>
