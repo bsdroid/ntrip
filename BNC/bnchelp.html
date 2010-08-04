@@ -285,7 +285,11 @@ You may like to auto-start BNC at startup time in window mode with pre-assigned 
 
 <p><a name="rawout"><h4>3.3.5 Raw Output File - optional</h4></p>
 <p>
-BNC can save all data coming in through various streams in the received order and format together in one single file. This is of importance i.e. when using the PPP option in offline mode where the contents of different streams carrying observations, orbit/clock correctors, and broadcast ephemeris are to be read from one file.
+BNC can save all data coming in through various streams in the received order and format together in one single file. This is of importance i.e. when using the PPP option in offline mode where the contents of different streams carrying observations, orbit/clock correctors, and broadcast ephemeris are to be read from one file. Data will be saved in blocks in the received format seperated by ASCII records like (example):
+<pre>
+2010-08-03T18:05:28 RTCM3EPH RTCM_3 67
+</pre>
+This example block header tells you that 67 bytes are saved in the data block following this record. The information in this block is encoded in RTCM Version 3.x format, comes from Mountpoint RTCM3EPH and was received at 18:05:29 UTC on 2010-08-03. BNC adds its own time stamps because a complete time reference may not be provided for all incoming observations and epochs.
 </p>
 <p>
 The default value for 'Raw output file (full path)' is an empty option field, meaning that BNC will not save raw data into a file.
@@ -1064,7 +1068,7 @@ Note that BNC's 'PPP Client' option can also be used in 'Offline Mode'. Apply th
 </p>
 
 <p>
-bnc.exe --conf c:\temp\BNC.ppp --file c:\temp\FFMJ1 --date 2010-03-27 --time 06:58:00 --format RTCM_3
+bnc.exe --conf c:\temp\BNC.ppp --file c:\temp\FFMJ1 --format RTCM_3
 </p>
 
 <p><a name="pppmount"><h4>3.11.1 Mountpoint - optional</h4></p>
@@ -1423,21 +1427,19 @@ bnc.exe -nw
 
 <p><a name="post"><h4>3.15.2 Offline Mode - optional</h4></p>
 <p>
-Although BNC is primarily a real-time online tool, it can be run in offline mode to read data from a file for post-processing purposes. Enter the following four command line options for that:
+Although BNC is primarily a real-time online tool, it can be run in offline mode to read data from a previously saved file for post-processing purposes. Enter the following command line options for that:
 </p>
 <p>
 <ul>
-<li>'--file &lt;<u>inputFileName</u>&gt;' to enter the full path to an input file containing data in RTCM Version 2.x, or Version 3.x, or RTIGS/SOC format.</li>
+<li>'--file &lt;<u>inputFileName</u>&gt;' to enter the full path to an input file containing data previously saved by BNC.</li>
 <li>'--format &lt;<u>format</u>&gt;' to enter one of the file format describing strings 'RTCM_2', 'RTCM_3' or 'RTIGS'.</li>
-<li>'--date YYYY-MM-DD' to enter a date for the first epoch.</li>
-<li>'--time HH:MM:SS' to enter a time for the first epoch.</li>
 </ul>
 <p>
 Example:<br><br>
-./bnc --file FFMJ.dat --format RTCM_3 --date 2008-10-27 --time 23:12:56
+./bnc --file FFMJ.dat --format RTCM_3
 </p>
 <p>
-Note that it is necessary to define a date and time for the first epoch because RTCM streams do not contain complete time stamps as needed i.e. for RINEX files or for PPP in post-processing mode. Note further that when running BNC in offline mode, it will use options for file saving, interval, sampling etc. from its configuration file.
+Note that when running BNC in offline mode, it will use options for file saving, interval, sampling, PPP etc. from its configuration file.
 </p> 
 
 <p><a name="conffile"><h4>3.15.3 Configuration File - optional</h4></p>
@@ -1600,14 +1602,20 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 </tr>
 
 <tr>
-<td>June 2010 &nbsp;</td><td>Version 2.1 &nbsp;</td>
+<td>Jun 2010 &nbsp;</td><td>Version 2.1 &nbsp;</td>
 <td>[Bug] SSR GLONASS message generation<br> [Add] PPP in post-processing mode<br> [Mod] Update of SSR messages following draft dated 2010-04-12<br> [Mod] Generating error message when observation epoch is wrong</td>
 </tr>
 
 <tr>
-<td>July 2010 &nbsp;</td><td>Version 2.2 &nbsp;</td>
+<td>Jul 2010 &nbsp;</td><td>Version 2.2 &nbsp;</td>
 <td>[Bug] GLONASS ephemeris time</td>
 </tr>
+
+<tr>
+<td>Aug 2010 &nbsp;</td><td>Version 2.3 &nbsp;</td>
+<td>[Mod] Internal format for saving raw streams</td>
+</tr>
+
 
 </table>
 </p>
