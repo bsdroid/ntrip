@@ -63,7 +63,7 @@ const double   sig_crd_p        =  100.0;
 const double   sig_clk_0        = 1000.0;
 const double   sig_trp_0        =    0.10;
 const double   sig_trp_p        =    1e-8;
-const double   sig_amb_0_GPS    =  100.0;
+const double   sig_amb_0_GPS    = 1000.0;
 const double   sig_amb_0_GLO    = 1000.0;
 const double   sig_L3_GPS       =    0.02;
 const double   sig_L3_GLO       =    0.05;
@@ -559,12 +559,6 @@ t_irc bncModel::update(t_epoData* epoData) {
       return failure;
     }
 
-    if (epoData->sizeGPS() < MINOBS) {
-      _log += "\nNot enough data";
-      emit newMessage(_log, false);
-      return failure;
-    }
-
     // Status Prediction
     // -----------------
     predict(epoData);
@@ -580,6 +574,12 @@ t_irc bncModel::update(t_epoData* epoData) {
       nObs = epoData->sizeGPS();  // Glonass pseudoranges are not used
     }
     
+    if (nObs < nPar) {
+      _log += "\nnObs < nPar";
+      emit newMessage(_log, false);
+      return failure;
+    }
+
     Matrix          AA(nObs, nPar);  // first design matrix
     ColumnVector    ll(nObs);        // tems observed-computed
     DiagonalMatrix  PP(nObs); PP = 0.0;
@@ -645,12 +645,6 @@ t_irc bncModel::update(t_epoData* epoData) {
     // Compute Filter Update
     // ---------------------
     QQsav = _QQ;
-
-//    Matrix          ATP = AA.t() * PP;
-//    SymmetricMatrix NN = _QQ.i();
-//    NN    << NN + ATP * AA;
-//    _QQ   = NN.i();
-//    dx    = _QQ * ATP * ll; 
 
     kalman(AA, ll, PP, _QQ, dx);
 
