@@ -45,7 +45,8 @@ class bncRawFile {
   void writeRawData(const QByteArray& data, const QByteArray& staID,
                     const QByteArray& format);
  private:
-  QByteArray _fileName;
+  QString    _fileName;
+  QString    _currentFileName;
   QByteArray _format;
   QByteArray _staID;
   QFile*     _inpFile;

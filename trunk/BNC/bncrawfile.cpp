@@ -50,7 +50,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& format,
                        inpOutFlag ioFlg) {
-  _fileName   = fileName;
+  _fileName   = fileName; expandEnvVar(_fileName);
   _format     = format;
   _staID      = fileName.mid(fileName.lastIndexOf(QDir::separator())+1,5);  
   _inpFile    = 0;
@@ -70,7 +70,9 @@ bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& format,
   // Initialize for Output
   // ---------------------
   else {
-    _outFile = new QFile(_fileName);
+    QDate currDate = currentDateAndTimeGPS().date();
+    _currentFileName = _fileName + "_" + currDate.toString("yyMMdd");
+    _outFile = new QFile(_currentFileName);
     _outFile->open(QIODevice::WriteOnly);
     _outFile->write(RAW_FILE_VERSION " Version of BNC raw file");
   }
@@ -88,6 +90,16 @@ bncRawFile::~bncRawFile() {
 void bncRawFile::writeRawData(const QByteArray& data, const QByteArray& staID,
                               const QByteArray& format) {
   if (_outFile) {
+    QDate currDate = currentDateAndTimeGPS().date();
+    QString hlp = _fileName + "_" + currDate.toString("yyMMdd");
+    if (hlp != _currentFileName) {
+      _currentFileName = hlp;
+      delete _outFile;
+      _outFile = new QFile(_currentFileName);
+      _outFile->open(QIODevice::WriteOnly);
+      _outFile->write(RAW_FILE_VERSION " Version of BNC raw file");
+    }
+
     QString chunkHeader = QString("\n%1 %2 %3 %4\n")
                  .arg(currentDateAndTimeGPS().toString(Qt::ISODate))
                  .arg(QString(staID))
