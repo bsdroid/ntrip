@@ -120,6 +120,9 @@ QByteArray bncRawFile::readChunk(){
 
   if (_inpFile) {
     QString     line = _inpFile->readLine();
+    if (line.indexOf("Version of BNC raw file") != -1) {
+      line = _inpFile->readLine();
+    }
     if (!line.isEmpty()) {
       QStringList lst  = line.split(' ');
       
