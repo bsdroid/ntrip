@@ -75,11 +75,14 @@ bncPPPclient::bncPPPclient(QByteArray staID) {
   }
 
   connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
-          this, SLOT(slotNewEphGPS(gpsephemeris)));
+          this, SLOT(slotNewEphGPS(gpsephemeris)),
+          Qt::DirectConnection);
   connect(((bncApp*)qApp), SIGNAL(newEphGlonass(glonassephemeris)),
-          this, SLOT(slotNewEphGlonass(glonassephemeris)));
+          this, SLOT(slotNewEphGlonass(glonassephemeris)),
+          Qt::DirectConnection);
   connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
-          this, SLOT(slotNewCorrections(QList<QString>)));
+          this, SLOT(slotNewCorrections(QList<QString>)),
+          Qt::DirectConnection);
 
   _staID   = staID;
   _epoData = 0;
