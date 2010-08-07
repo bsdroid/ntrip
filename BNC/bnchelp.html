@@ -285,7 +285,7 @@ You may like to auto-start BNC at startup time in window mode with pre-assigned 
 
 <p><a name="rawout"><h4>3.3.5 Raw Output File - optional</h4></p>
 <p>
-BNC can save all data coming in through various streams in the received order and format together in one single file. This is of importance i.e. when using the PPP option in offline mode where the contents of different streams carrying observations, orbit/clock correctors, and broadcast ephemeris are to be read from one file. Data will be saved in blocks in the received format seperated by ASCII records like (example):
+BNC can save all data coming in through various streams in the received order and format together in one single daily file. This is of importance i.e. when using the PPP option in offline mode where the contents of different streams carrying observations, orbit/clock correctors, and broadcast ephemeris are to be read from one file. Data will be saved in blocks in the received format seperated by ASCII records like (example):
 <pre>
 2010-08-03T18:05:28 RTCM3EPH RTCM_3 67
 </pre>
@@ -295,7 +295,7 @@ This example block header tells you that 67 bytes are saved in the data block fo
 Note that streams in a 'Raw output file' which shall later be used in an offline PPP calculation must all be encoded in the same format.
 </p>
 <p>
-The default value for 'Raw output file (full path)' is an empty option field, meaning that BNC will not save raw data into a file.
+The default value for 'Raw output file (full path)' is an empty option field, meaning that BNC will not save raw data into a daily file.
 </p>
 
 <p><a name="rinex"><h4>3.4. RINEX Observations</h4></p>
