@@ -51,9 +51,11 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 ephSenderRTIGS::ephSenderRTIGS() {
   connect(this, SIGNAL(newGPSEph(gpsephemeris*)), 
-          (bncApp*) qApp, SLOT(slotNewGPSEph(gpsephemeris*)));
+          (bncApp*) qApp, SLOT(slotNewGPSEph(gpsephemeris*)),
+          Qt::DirectConnection);
   //connect(this, SIGNAL(newGlonassEph(glonassephemeris*)), 
-  //        (bncApp*) qApp, SLOT(slotNewGlonassEph(glonassephemeris*)));
+  //        (bncApp*) qApp, SLOT(slotNewGlonassEph(glonassephemeris*)),
+  //        Qt::DirectConnection);
 }
 
 // Constructor
