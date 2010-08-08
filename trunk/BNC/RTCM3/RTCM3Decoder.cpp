@@ -108,13 +108,29 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
   bool decoded = false;
 
+  // If read from file, we set the mode according to staID
+  // -----------------------------------------------------
+  if (!_staID_corrections.isEmpty() && _rawFile) {
+    if (_rawFile->staID() == _staID_corrections) {
+      _mode = corrections;
+    }
+    else {
+      _mode = observations;
+    }
+  }
+
   // Try to decode Clock and Orbit Corrections
   // -----------------------------------------
   if (_mode == unknown || _mode == corrections) {
     if ( _coDecoder->Decode(buffer, bufLen, errmsg) == success ) {
       decoded = true;
-      if (!_rawFile && _mode == unknown) {
-        _mode = corrections;
+      if (_mode == unknown) {
+        if (_rawFile) {
+          _staID_corrections = _rawFile->staID();
+	}
+	else {
+          _mode = corrections;
+	}
       }
     }
   }

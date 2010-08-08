@@ -68,6 +68,7 @@ Q_OBJECT
   std::map<std::string, t_ephGPS> _ephList;
   double                 _antXYZ[3];
   bncRawFile*            _rawFile;
+  QString                _staID_corrections;
 };
 
 #endif
