@@ -55,8 +55,6 @@ extern "C" {
 
 using namespace std;
 
-////#define DEBUG_OUTPUT
-
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncPPPclient::bncPPPclient(QByteArray staID) {
@@ -127,13 +125,6 @@ void bncPPPclient::putNewObs(p_obs pp) {
   QMutexLocker locker(&_mutex);
 
   t_obsInternal* obs = &(pp->_o);
-
-#ifdef DEBUG_OUTPUT
-  ostringstream str;
-  str.setf(ios::fixed);
-  str << "bncPPPclient::putNewObs: " << obs->satSys << obs->satNum;
-  emit newMessage(QByteArray(str.str().c_str()), false);
-#endif
 
   if (obs->satSys != 'G' && !_useGlonass) {
     return;
@@ -248,7 +239,6 @@ void bncPPPclient::putNewObs(p_obs pp) {
   else if (obs->satSys == 'R') {
     _epoData->satDataGlo[satData->prn] = satData;
   }
-
 }
 
 // 
@@ -257,13 +247,6 @@ void bncPPPclient::slotNewEphGPS(gpsephemeris gpseph) {
   QMutexLocker locker(&_mutex);
 
   QString prn = QString("G%1").arg(gpseph.satellite, 2, 10, QChar('0'));
-
-#ifdef DEBUG_OUTPUT
-  ostringstream str;
-  str.setf(ios::fixed);
-  str << "bncPPPclient::slotNewEphGPS: " << prn.toAscii().data();
-  emit newMessage(QByteArray(str.str().c_str()), false);
-#endif
 
   if (_eph.contains(prn)) {
     t_ephGPS* ee = static_cast<t_ephGPS*>(_eph.value(prn));
@@ -286,13 +269,6 @@ void bncPPPclient::slotNewEphGlonass(glonassephemeris gloeph) {
   QMutexLocker locker(&_mutex);
 
   QString prn = QString("R%1").arg(gloeph.almanac_number, 2, 10, QChar('0'));
-
-#ifdef DEBUG_OUTPUT
-  ostringstream str;
-  str.setf(ios::fixed);
-  str << "bncPPPclient::slotNewEphGlonass: " << prn.toAscii().data();
-  emit newMessage(QByteArray(str.str().c_str()), false);
-#endif
 
   if (_eph.contains(prn)) {
     int ww  = gloeph.GPSWeek;
@@ -319,12 +295,6 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
   if (corrList.size() == 0) {
     return;
   }
-
-#ifdef DEBUG_OUTPUT
-  ostringstream str;
-  str.setf(ios::fixed);
-  str << "bncPPPclient::slotNewCorrections: ";
-#endif
 
   // Remove All Corrections
   // ----------------------
@@ -361,10 +331,6 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
       }
 
       cc->tt.set(GPSweek, GPSweeks);
-
-#ifdef DEBUG_OUTPUT
-      str << prn.toAscii().data() << " ";
-#endif
 
       if      ( messageType == COTYPE_GPSCOMBINED    || 
                 messageType == COTYPE_GLONASSCOMBINED ) {
@@ -439,10 +405,6 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
       }
     }
   }
-
-#ifdef DEBUG_OUTPUT
-  emit newMessage(QByteArray(str.str().c_str()), false);
-#endif
 
   QMutableMapIterator<QString, t_corr*> im(_corr);
   while (im.hasNext()) {
