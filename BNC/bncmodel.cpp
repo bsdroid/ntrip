@@ -136,8 +136,7 @@ bncModel::bncModel(QByteArray staID) {
   _staID   = staID;
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          ((bncApp*)qApp), 
-          SLOT(slotMessage(const QByteArray,bool)));
+          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
 
   bncSettings settings;
 

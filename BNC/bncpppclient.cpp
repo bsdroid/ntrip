@@ -74,12 +74,17 @@ bncPPPclient::bncPPPclient(QByteArray staID) {
     _pppMode = false;
   }
 
+  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
+
   connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
           this, SLOT(slotNewEphGPS(gpsephemeris)),
           Qt::DirectConnection);
+
   connect(((bncApp*)qApp), SIGNAL(newEphGlonass(glonassephemeris)),
           this, SLOT(slotNewEphGlonass(glonassephemeris)),
           Qt::DirectConnection);
+
   connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
           this, SLOT(slotNewCorrections(QList<QString>)),
           Qt::DirectConnection);
