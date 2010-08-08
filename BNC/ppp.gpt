@@ -30,9 +30,9 @@ set ytics nomirror
 set y2range [0:50]
 set y2tics 0,10,20
 
-plot "neu_tmp" u 5:9 t "dH" w l lt 3, \
-     ""        u 5:7 t "dN" w l lt 1, \
-     ""        u 5:8 t "dE" w l lt 2, \
+plot "neu_tmp" u 5:17 t "dH" w l lt 3, \
+     ""        u 5:18 t "dN" w l lt 1, \
+     ""        u 5:19 t "dE" w l lt 2, \
      ""        u 5:6 t "# sat" axis x1y2 w l lt 4
 
 EOF
