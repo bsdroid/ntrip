@@ -136,7 +136,8 @@ bncModel::bncModel(QByteArray staID) {
   _staID   = staID;
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
+          ((bncApp*)qApp), 
+          SLOT(slotMessage(const QByteArray,bool)));
 
   bncSettings settings;
 
@@ -234,7 +235,7 @@ bncModel::~bncModel() {
 t_irc bncModel::cmpBancroft(t_epoData* epoData) {
 
   if (epoData->sizeGPS() < MINOBS) {
-    _log += "\nNot enough data";
+    _log += "bncModel::cmpBancroft: not enough data\n";
     return failure;
   }
 
@@ -543,6 +544,10 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   _time = epoData->tt;
 
+  _log += "Single Point Positioning of Epoch " 
+        + QByteArray(_time.timestr(1).c_str()) +
+          "\n--------------------------------------------------------------\n";
+
   SymmetricMatrix QQsav;
   ColumnVector    dx;
   ColumnVector    vv;
@@ -554,7 +559,6 @@ t_irc bncModel::update(t_epoData* epoData) {
     // Bancroft Solution
     // -----------------
     if (cmpBancroft(epoData) != success) {
-      _log += "\nBancroft failed";
       emit newMessage(_log, false);
       return failure;
     }
@@ -575,7 +579,7 @@ t_irc bncModel::update(t_epoData* epoData) {
     }
     
     if (nObs < nPar) {
-      _log += "\nnObs < nPar";
+      _log += "bncModel::update: nObs < nPar\n";
       emit newMessage(_log, false);
       return failure;
     }
@@ -650,8 +654,8 @@ t_irc bncModel::update(t_epoData* epoData) {
 
     vv = ll - AA * dx;
 
-    ostringstream str;
-    str.setf(ios::fixed);
+    ostringstream strA;
+    strA.setf(ios::fixed);
     ColumnVector vv_code(epoData->sizeGPS());
     ColumnVector vv_phase(epoData->sizeGPS());
     ColumnVector vv_glo(epoData->sizeGlo());
@@ -671,14 +675,14 @@ t_irc bncModel::update(t_epoData* epoData) {
       }
     }
 
-    str << "\nresiduals code  " << setprecision(3) << vv_code.t(); 
+    strA   << "residuals code  " << setw(8) << setprecision(3) << vv_code.t(); 
     if (_usePhase) {
-      str <<  "residuals phase " << setprecision(3) << vv_phase.t();
+      strA << "residuals phase " << setw(8) << setprecision(3) << vv_phase.t();
     }
     if (_useGlonass) {
-      str <<  "residuals glo   " << setprecision(3) << vv_glo.t();
+      strA << "residuals glo   " << setw(8) << setprecision(3) << vv_glo.t();
     }
-    _log += str.str().c_str();
+    _log += strA.str().c_str();
 
   } while (outlierDetection(QQsav, vv, epoData->satDataGPS, 
                             epoData->satDataGlo) != 0);
@@ -693,7 +697,7 @@ t_irc bncModel::update(t_epoData* epoData) {
     par->xx += dx(par->index);
 
     if      (par->type == bncParam::RECCLK) {
-      strB << "\n    clk = " << setw(6) << setprecision(3) << par->xx 
+      strB << "\n    clk     = " << setw(6) << setprecision(3) << par->xx 
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
     }
@@ -704,7 +708,7 @@ t_irc bncModel::update(t_epoData* epoData) {
            << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == bncParam::TROPO) {
-      strB << "\n    trp = " << par->prn.toAscii().data()
+      strB << "\n    trp     = " << par->prn.toAscii().data()
            << setw(7) << setprecision(3) << delay_saast(M_PI/2.0) << " "
            << setw(6) << setprecision(3) << showpos << par->xx << noshowpos
            << " +- " << setw(6) << setprecision(3) 
@@ -712,12 +716,14 @@ t_irc bncModel::update(t_epoData* epoData) {
     }
   }
   strB << '\n';
+  _log += strB.str().c_str();
+  emit newMessage(_log, false);
 
-  // Message (both log file and screen)
-  // ----------------------------------
-  ostringstream strA;
-  strA.setf(ios::fixed);
-  strA << _staID.data() << ": PPP " 
+  // Final Message (both log file and screen)
+  // ----------------------------------------
+  ostringstream strC;
+  strC.setf(ios::fixed);
+  strC << _staID.data() << "  PPP " 
        << epoData->tt.timestr(1) << " " << epoData->sizeAll() << " " 
        << setw(14) << setprecision(3) << x()                  << " +- "
        << setw(6)  << setprecision(3) << sqrt(_QQ(1,1))       << " "
@@ -725,11 +731,6 @@ t_irc bncModel::update(t_epoData* epoData) {
        << setw(6)  << setprecision(3) << sqrt(_QQ(2,2))       << " "
        << setw(14) << setprecision(3) << z()                  << " +- "
        << setw(6)  << setprecision(3) << sqrt(_QQ(3,3));
-
-  emit newMessage(QByteArray(strA.str().c_str()), true);
-
-  _log += strB.str().c_str();
-  emit newMessage(_log, false);
 
   // NEU Output
   // ----------
@@ -746,15 +747,15 @@ t_irc bncModel::update(t_epoData* epoData) {
     _xyz[2] = z() - xyzRef[2];
     xyz2ell(xyzRef, ellRef);
     xyz2neu(ellRef, _xyz, _neu);
-    ostringstream strC;
-    strC.setf(ios::fixed);
-    strC << _staID.data() << ": NEU "
-         << epoData->tt.timestr(1) << " " << epoData->sizeAll() << " "
-         << setw(8)  << setprecision(3) << _neu[0]              << " "
-         << setw(8)  << setprecision(3) << _neu[1]              << " "
-         << setw(8)  << setprecision(3) << _neu[2]              << endl;
-    emit newMessage(QByteArray(strC.str().c_str()), true);
+    strC << "  NEU "
+         << setw(8) << setprecision(3) << _neu[0] << " "
+         << setw(8) << setprecision(3) << _neu[1] << " "
+         << setw(8) << setprecision(3) << _neu[2];
   }
+
+  strC << endl;
+  
+  emit newMessage(QByteArray(strC.str().c_str()), true);
 
   // NMEA Output
   // -----------
@@ -858,8 +859,8 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
     itMaxPhaseGlo.remove();
     _QQ = QQsav;
 
-    _log += "\nOutlier Phase " + prn.toAscii() + " " 
-          + QByteArray::number(vvMaxPhaseGlo, 'f', 3);
+    _log += "Outlier Phase " + prn.toAscii() + " " 
+          + QByteArray::number(vvMaxPhaseGlo, 'f', 3) + "\n"; 
 
     return 1;
   }
@@ -871,8 +872,8 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
     itMaxCodeGPS.remove();
     _QQ = QQsav;
 
-    _log += "\nOutlier Code " + prn.toAscii() + " " 
-            + QByteArray::number(vvMaxCodeGPS, 'f', 3);
+    _log += "Outlier Code " + prn.toAscii() + " " 
+            + QByteArray::number(vvMaxCodeGPS, 'f', 3) + "\n";
 
     return 1;
   }
@@ -883,8 +884,8 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
     itMaxPhaseGPS.remove();
     _QQ = QQsav;
 
-    _log += "\nOutlier Phase " + prn.toAscii() + " " 
-          + QByteArray::number(vvMaxPhaseGPS, 'f', 3);
+    _log += "Outlier Phase " + prn.toAscii() + " " 
+          + QByteArray::number(vvMaxPhaseGPS, 'f', 3)  + "\n";
 
     return 1;
   }
