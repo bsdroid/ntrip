@@ -126,6 +126,7 @@ class bncPPPclient : public QObject {
   void slotNewCorrections(QList<QString> corrList);
 
  signals:
+  void newMessage(QByteArray msg, bool showOnScreen);
   void newPosition(bncTime time, double x, double y, double z);
   void newNMEAstr(QByteArray str);
 
