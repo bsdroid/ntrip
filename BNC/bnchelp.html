@@ -1049,20 +1049,26 @@ More detailed PPP results are saved in BNC's logfile. Depending on the selected 
 </ul>
 These parameters are saved together with their standard deviation. Example extract from a log file:
 <pre>
-10-01-07 15:18:02
-residuals code  0.778 -0.608 -1.269 1.697
-residuals phase 0.002 0.001 -0.002 -0.002
-residuals glo   -0.000 0.000 0.001
+10-08-09 06:04:11 Single Point Positioning of Epoch 06:04:09.0
+--------------------------------------------------------------
+residuals code     0.386    0.175   -0.378    0.032   -0.103   -2.409   -0.488   -0.576
+residuals phase   -0.007   -0.001    0.002    0.002   -0.007   -0.005    0.006    0.007
+residuals glo      0.015   -0.004    0.006
 
-    clk = 112578.741 +-  9.345
-    trp =   2.339 +0.000 +-  0.010
-    amb G11 = -1.762 +-  3.590
-    amb G19 = -18.195 +-  5.386
-    amb G23 =  1.316 +-  4.843
-    amb G32 =  9.299 +-  3.920
-    amb R01 = -146.297 +-  4.568
-    amb R02 = -146.738 +- 15.037
-    amb R17 = -156.881 +- 13.671
+    clk     = 68260.392 +-  1.353
+    trp     =   2.331 -0.006 +-  0.100
+    amb G02 = -0.974 +-  0.809
+    amb G10 =  3.250 +-  0.720
+    amb G26 = -5.192 +-  0.911
+    amb G28 = -0.741 +-  0.909
+    amb G08 =  1.317 +-  0.719
+    amb G05 = -1.928 +-  0.742
+    amb G07 =  4.887 +-  0.853
+    amb G13 = -1.190 +-  1.221
+    amb R07 = -145.700 +-  0.717
+    amb R08 = -140.476 +-  0.939
+    amb R10 = -128.820 +-  0.710
+
 </pre>
 </p>
 
@@ -1148,13 +1154,13 @@ Select an origin for North/East/Up time series plots of derived coordinates in t
 Default is the selection of an empty option field meaning that no PPP time series will be plotted in the "PPP Plot' tab..
 </p>
 <p>
-If option 'X Y Z' is selected, the following line (example) is recorded in BNC's logfile
+If option 'X Y Z' is selected, the 'PPP' line in BNC's logfile is extended to  (example):
 </p>
 <pre>
-10-03-12 09:25:25 FFMJ1: NEU 09:25:24.0 8   -0.042   -0.084    0.026 
+10-08-09 06:01:56 FFMJ1  PPP 06:02:09.0 11    4053457.628 +-  2.639     617729.438 +-  1.180    4869396.447 +-  1.921  NEU   -0.908   -0.571    1.629
 </pre>
 <p>
-The 'NEU' string in that is followed by a PPP time stamp in GPS Time, the number of processed satellites, and the Nort, East and Up value of the current displacement in meter.
+The parameters following the 'NEU' string provide Nort, East and Up compoments of the current coordinate displacement in meters.
 </p>
 
 <p><a name="pppnmeaout"><h4>3.11.5 NMEA</h4></p>
@@ -1620,10 +1626,8 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 
 <tr>
 <td>Aug 2010 &nbsp;</td><td>Version 2.3 &nbsp;</td>
-<td>[Mod] Internal format for saving raw streams</td>
-<td>[Bug] Outlier detection in GLONASS ambiguity resolution</td>
+<td>[Mod] Internal format for saving raw streams<br> [Bug] Outlier detection in GLONASS ambiguity resolution<br> [Mod] Format of PPP logs in logfile</td>
 </tr>
-
 
 </table>
 </p>
