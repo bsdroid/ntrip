@@ -30,7 +30,8 @@ void XYZ_to_RSW(const ColumnVector& rr, const ColumnVector& vv,
                 const ColumnVector& xyz, ColumnVector& rsw);
 
 ColumnVector rungeKutta4(double xi, const ColumnVector& yi, double dx,
-                         ColumnVector (*der)(double x, const ColumnVector& y));
+                         double* acc,
+	   ColumnVector (*der)(double x, const ColumnVector& y, double* acc));
 
 QByteArray waitForLine(QTcpSocket* socket);
 

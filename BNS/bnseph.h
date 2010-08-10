@@ -40,7 +40,8 @@ class t_ephGlo : public t_eph {
   virtual int  IOD() const;
   virtual int  RTCM3(unsigned char *);
  private:
-  static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv);
+  static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv,
+                                double* acc);
   mutable double       _tt;  // time in seconds of GPSweek
   mutable ColumnVector _xv;  // status vector (position, velocity) at time _tt
   double  _gps_utc;          // GPS - UTC in seconds      
