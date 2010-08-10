@@ -211,9 +211,9 @@ void t_ephGlo::position(int GPSweek, double GPSweeks,
   double step = dtPos / nSteps;
 
   double acc[3];
-  acc[0] = _x_acceleration;
-  acc[1] = _x_acceleration;
-  acc[2] = _x_acceleration;
+  acc[0] = _x_acceleration * 1.e3;
+  acc[1] = _x_acceleration * 1.e3;
+  acc[2] = _x_acceleration * 1.e3;
   for (int ii = 1; ii <= nSteps; ii++) { 
     _xv = rungeKutta4(_tt, _xv, step, acc, glo_deriv);
     _tt += step;
