@@ -646,7 +646,7 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv,
   static const double GM    = 398.60044e12;
   static const double AE    = 6378136.0;
   static const double OMEGA = 7292115.e-11;
-  static const double C20   = -1082.625e-6;
+  static const double C20   = -1082.6257e-6;
 
   double rho = rr.norm_Frobenius();
   double t1  = -GM/(rho*rho*rho);
