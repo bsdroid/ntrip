@@ -254,15 +254,16 @@ ColumnVector rungeKutta4(
   double xi,              // the initial x-value
   const ColumnVector& yi, // vector of the initial y-values
   double dx,              // the step size for the integration
-  ColumnVector (*der)(double x, const ColumnVector& y)
+  double* acc,            // aditional acceleration
+  ColumnVector (*der)(double x, const ColumnVector& y, double* acc)
                           // A pointer to a function that computes the 
                           // derivative of a function at a point (x,y)
                          ) {
 
-  ColumnVector k1 = der(xi       , yi       ) * dx;
-  ColumnVector k2 = der(xi+dx/2.0, yi+k1/2.0) * dx;
-  ColumnVector k3 = der(xi+dx/2.0, yi+k2/2.0) * dx;
-  ColumnVector k4 = der(xi+dx    , yi+k3    ) * dx;
+  ColumnVector k1 = der(xi       , yi       , acc) * dx;
+  ColumnVector k2 = der(xi+dx/2.0, yi+k1/2.0, acc) * dx;
+  ColumnVector k3 = der(xi+dx/2.0, yi+k2/2.0, acc) * dx;
+  ColumnVector k4 = der(xi+dx    , yi+k3    , acc) * dx;
 
   ColumnVector yf = yi + k1/6.0 + k2/3.0 + k3/3.0 + k4/6.0;
   

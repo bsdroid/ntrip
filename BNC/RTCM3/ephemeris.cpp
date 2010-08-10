@@ -156,7 +156,8 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
 
 // Derivative of the state vector using a simple force model (static)
 ////////////////////////////////////////////////////////////////////////////
-ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv) {
+ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv,
+                                 double* acc) {
 
   // State vector components
   // -----------------------
@@ -168,7 +169,7 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv) {
   static const double GM    = 398.60044e12;
   static const double AE    = 6378136.0;
   static const double OMEGA = 7292115.e-11;
-  static const double C20   = -1082.63e-6;
+  static const double C20   = -1082.625e-6;
 
   double rho = rr.norm_Frobenius();
   double t1  = -GM/(rho*rho*rho);
@@ -183,9 +184,9 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv) {
   va(1) = vv(1);
   va(2) = vv(2);
   va(3) = vv(3);
-  va(4) = (t1 + t2*(1.0-5.0*z2/(rho*rho)) + t3) * rr(1) + t4*vv(2); 
-  va(5) = (t1 + t2*(1.0-5.0*z2/(rho*rho)) + t3) * rr(2) - t4*vv(1); 
-  va(6) = (t1 + t2*(3.0-5.0*z2/(rho*rho))     ) * rr(3);
+  va(4) = (t1 + t2*(1.0-5.0*z2/(rho*rho)) + t3) * rr(1) + t4*vv(2) + acc[0]; 
+  va(5) = (t1 + t2*(1.0-5.0*z2/(rho*rho)) + t3) * rr(2) - t4*vv(1) + acc[1]; 
+  va(6) = (t1 + t2*(3.0-5.0*z2/(rho*rho))     ) * rr(3)            + acc[2];
 
   return va;
 }
@@ -209,8 +210,12 @@ void t_ephGlo::position(int GPSweek, double GPSweeks,
   int nSteps  = int(fabs(dtPos) / nominalStep) + 1;
   double step = dtPos / nSteps;
 
+  double acc[3];
+  acc[0] = _x_acceleration;
+  acc[1] = _x_acceleration;
+  acc[2] = _x_acceleration;
   for (int ii = 1; ii <= nSteps; ii++) { 
-    _xv = rungeKutta4(_tt, _xv, step, glo_deriv);
+    _xv = rungeKutta4(_tt, _xv, step, acc, glo_deriv);
     _tt += step;
   }
 
