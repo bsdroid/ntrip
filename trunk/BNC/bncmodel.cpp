@@ -782,9 +782,8 @@ t_irc bncModel::update(t_epoData* epoData) {
          << setw(3) << setfill('0') << int(lamDeg) 
          << setw(6) << setprecision(3) << setfill('0') 
          << fmod(60*lamDeg,60) << ',' << lamCh << ",,,"
-         <<  datestr[6] << datestr[7]
-         <<  datestr[4] << datestr[5]
-         <<  datestr[2] << datestr[3] << ",,,";
+         << datestr[6] << datestr[7] << datestr[4] << datestr[5]
+         << datestr[2] << datestr[3] << ",,";
 
   writeNMEAstr(QString(strRMC.str().c_str()));
 
@@ -802,7 +801,7 @@ t_irc bncModel::update(t_epoData* epoData) {
          << fmod(60*lamDeg,60) << ',' << lamCh 
          << ",1," << setw(2) << setfill('0') << epoData->sizeAll() << ','
          << setw(3) << setprecision(1) << dop << ','
-         << setprecision(3) << ell[2] << ",M,0.0,M,,,";
+         << setprecision(3) << ell[2] << ",M,0.0,M,,";
                  
   writeNMEAstr(QString(strGGA.str().c_str()));
 
