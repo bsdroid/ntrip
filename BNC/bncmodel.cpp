@@ -771,30 +771,40 @@ t_irc bncModel::update(t_epoData* epoData) {
     lamCh  =  'W';
   }   
 
+  string datestr = epoData->tt.datestr(0); // yyyymmdd
+  ostringstream strRMC;
+  strRMC.setf(ios::fixed);
+  strRMC << "GPRMC," 
+         << epoData->tt.timestr(0,0) << ",A,"
+         << setw(2) << setfill('0') << int(phiDeg) 
+         << setw(6) << setprecision(3) << setfill('0') 
+         << fmod(60*phiDeg,60) << ',' << phiCh << ','
+         << setw(3) << setfill('0') << int(lamDeg) 
+         << setw(6) << setprecision(3) << setfill('0') 
+         << fmod(60*lamDeg,60) << ',' << lamCh << ",,,"
+         <<  datestr[6] << datestr[7]
+         <<  datestr[4] << datestr[5]
+         <<  datestr[2] << datestr[3] << ",,,";
+
+  writeNMEAstr(QString(strRMC.str().c_str()));
+
   double dop = 2.0; // TODO 
 
-  ostringstream str3;
-  str3.setf(ios::fixed);
-  str3 << "GPGGA," 
-       << epoData->tt.timestr(0,0) << ','
-       << setw(2) << setfill('0') << int(phiDeg) 
-       << setw(10) << setprecision(7) << setfill('0') 
-       << fmod(60*phiDeg,60) << ',' << phiCh << ','
-       << setw(2) << setfill('0') << int(lamDeg) 
-       << setw(10) << setprecision(7) << setfill('0') 
-       << fmod(60*lamDeg,60) << ',' << lamCh 
-       << ",1," << setw(2) << setfill('0') << epoData->sizeAll() << ','
-       << setw(3) << setprecision(1) << dop << ','
-       << setprecision(3) << ell[2] << ",M,0.0,M,,,";
+  ostringstream strGGA;
+  strGGA.setf(ios::fixed);
+  strGGA << "GPGGA," 
+         << epoData->tt.timestr(0,0) << ','
+         << setw(2) << setfill('0') << int(phiDeg) 
+         << setw(10) << setprecision(7) << setfill('0') 
+         << fmod(60*phiDeg,60) << ',' << phiCh << ','
+         << setw(3) << setfill('0') << int(lamDeg) 
+         << setw(10) << setprecision(7) << setfill('0') 
+         << fmod(60*lamDeg,60) << ',' << lamCh 
+         << ",1," << setw(2) << setfill('0') << epoData->sizeAll() << ','
+         << setw(3) << setprecision(1) << dop << ','
+         << setprecision(3) << ell[2] << ",M,0.0,M,,,";
                  
-  writeNMEAstr(QString(str3.str().c_str()));
-
-  QDateTime dateTime = QDateTime::currentDateTime().toUTC();
-  QString nmStr = "GPRMC," + dateTime.time().toString("hhmmss")
-                + ",A,0.00,S,0.00,E,0.00,0.00,"
-                + dateTime.date().toString("ddMMyy")
-                + ",,";
-  writeNMEAstr(nmStr);
+  writeNMEAstr(QString(strGGA.str().c_str()));
 
   return success;
 }
