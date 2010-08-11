@@ -1165,12 +1165,16 @@ The parameters following the 'NEU' string provide Nort, East and Up components o
 
 <p><a name="pppnmeaout"><h4>3.11.5 NMEA</h4></p>
 <p>
-BNC allows to output results from Point Positioning in NMEA format. The NMEA messages generated are
+BNC allows to output results from Precise Point Positioning in NMEA format. The NMEA sentences generated about once per second are pairs of 
 <ul>
-<li> one leading GPRMC message which carries only date and time information, plus</li>
-<li> about once per second a GPGGA message which mainly carries the estimated latitude, longitude, and height values.</li>
+<li> GPGGA sentences which mainly carry the estimated latitude, longitude, and height values, plus</li>
+<li> GPRMC sentences which carry only date and time information.</li>
 </ul>
 </p>
+<p>
+Note that Tomoji Takasu has written a Windows program called RTKPlot for visualizing NMEA strings. It is available from <u>http://gpspp.sakura.ne.jp/rtklib/rtklib.htm</u> and compatible with the NMEA output of BNC's PPP option.
+</p>
+
 
 <p><a name="pppnmeafile"><h4>3.11.5.1 File - optional</h4></p>
 <p>
