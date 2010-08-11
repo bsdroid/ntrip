@@ -212,13 +212,6 @@ bncModel::bncModel(QByteArray staID) {
     }
     _nmeaStream = new QTextStream();
     _nmeaStream->setDevice(_nmeaFile);
-    QDateTime dateTime = QDateTime::currentDateTime().toUTC();
-    QString nmStr = "GPRMC," + dateTime.time().toString("hhmmss")
-                  + ",A,,,,,,," 
-                  + dateTime.date().toString("ddMMyy")
-                  + ",,";
-                   
-    writeNMEAstr(nmStr);
   }
 }
 
@@ -774,9 +767,8 @@ t_irc bncModel::update(t_epoData* epoData) {
   }   
   char lamCh = 'E';
   if (lamDeg < 0) {
-//  lamDeg = -lamDeg;      // GW, reason: RTKPlot cant handle 'W'
-//  lamCh  =  'W';         // GW, reason: RTKPlot cant handle 'W'
-    lamDeg = 360. +lamDeg; // GW, reason: RTKPlot cant handle 'W'
+    lamDeg = -lamDeg;
+    lamCh  =  'W';
   }   
 
   double dop = 2.0; // TODO 
@@ -796,6 +788,13 @@ t_irc bncModel::update(t_epoData* epoData) {
        << setprecision(3) << ell[2] << ",M,0.0,M,,,";
                  
   writeNMEAstr(QString(str3.str().c_str()));
+
+  QDateTime dateTime = QDateTime::currentDateTime().toUTC();
+  QString nmStr = "GPRMC," + dateTime.time().toString("hhmmss")
+                + ",A,0.00,S,0.00,E,0.00,0.00,"
+                + dateTime.date().toString("ddMMyy")
+                + ",,";
+  writeNMEAstr(nmStr);
 
   return success;
 }
