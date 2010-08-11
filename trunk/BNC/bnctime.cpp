@@ -116,6 +116,18 @@ double bncTime::operator-(const bncTime &time1) const {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
+void bncTime::civil_date (unsigned int& year, unsigned int& month,
+                          unsigned int& day) const {
+  double day_d;
+  long int yy, mm;
+  jmt(_mjd, yy, mm, day_d);
+  year  = yy;
+  month = mm;
+  day   = static_cast<unsigned int>(day_d);
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
 void bncTime::civil_time(unsigned int &hour, unsigned int &min, 
                           double &sec) const {
   hour = static_cast<unsigned int>(_sec/3600.0);
@@ -165,6 +177,21 @@ string bncTime::timestr(unsigned numdec, char sep) const {
   return str.str();
 }
 
+// 
+//////////////////////////////////////////////////////////////////////////////
+string bncTime::datestr(char sep) const {
+  unsigned int year, month, day;
+  civil_date(year,month,day);
+  ostringstream str;
+  str.setf(ios::fixed);
+  str << setfill('0');
+  str << setw(4)  << year;
+  if (sep) str << sep;
+  str << setw(2)  << month;
+  if (sep) str << sep;
+  str << setw(2)  << day;
+  return str.str();
+}
 
 // 
 //////////////////////////////////////////////////////////////////////////////

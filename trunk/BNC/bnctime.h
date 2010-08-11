@@ -17,6 +17,8 @@ class bncTime {
   double       daysec() const;
   unsigned int gpsw()   const;
   double       gpssec() const;
+  void         civil_date (unsigned int& year, unsigned int& month,
+                           unsigned int& day) const;
   void         civil_time (unsigned int& hour, unsigned int& min,
                            double& sec) const;
 
@@ -26,6 +28,7 @@ class bncTime {
   bncTime operator+(double sec) const;
 
   std::string timestr(unsigned numdec = 3, char sep = ':') const;  
+  std::string datestr(char sep = '-') const;  
 
  private:
   bncTime&     setmjd(double daysec, int mjd);
