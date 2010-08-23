@@ -250,13 +250,13 @@ void bncPPPclient::slotNewEphGPS(gpsephemeris gpseph) {
 
   if (_eph.contains(prn)) {
     t_ephGPS* eLast = static_cast<t_ephGPS*>(_eph.value(prn)->last);
-    t_ephGPS* ePrev = static_cast<t_ephGPS*>(_eph.value(prn)->prev);
     if ( (eLast->GPSweek() <  gpseph.GPSweek) || 
          (eLast->GPSweek() == gpseph.GPSweek &&  
           eLast->TOC()     <  gpseph.TOC) ) {
-      delete ePrev;
-      ePrev = new t_ephGPS(*eLast);  
-      eLast->set(&gpseph);
+      delete static_cast<t_ephGPS*>(_eph.value(prn)->prev);
+      _eph.value(prn)->prev = _eph.value(prn)->last;
+      _eph.value(prn)->last = new t_ephGPS();
+      static_cast<t_ephGPS*>(_eph.value(prn)->last)->set(&gpseph);
     }
   }
   else {
@@ -279,12 +279,12 @@ void bncPPPclient::slotNewEphGlonass(glonassephemeris gloeph) {
     int tow = gloeph.GPSTOW; 
     updatetime(&ww, &tow, gloeph.tb*1000, 0);  // Moscow -> GPS
     t_ephGlo* eLast = static_cast<t_ephGlo*>(_eph.value(prn)->last);
-    t_ephGlo* ePrev = static_cast<t_ephGlo*>(_eph.value(prn)->prev);
     if (eLast->GPSweek() < ww || 
         (eLast->GPSweek()  == ww &&  eLast->GPSweeks() <  tow)) {  
-      delete ePrev;
-      ePrev = new t_ephGlo(*eLast);  
-      eLast->set(&gloeph);
+      delete static_cast<t_ephGlo*>(_eph.value(prn)->prev);
+      _eph.value(prn)->prev = _eph.value(prn)->last;
+      _eph.value(prn)->last = new t_ephGlo();
+      static_cast<t_ephGlo*>(_eph.value(prn)->last)->set(&gloeph);
     }
   }
   else {
@@ -430,24 +430,35 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn, 
                               ColumnVector& xc, ColumnVector& vv) {
 
-  const double MAXAGE        = 120.0;
+  const double MAXAGE = 120.0;
 
   if (_eph.contains(prn)) {
-    t_eph* ee = _eph.value(prn)->last;
-    ee->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
 
     if (_pppMode) {
       if (_corr.contains(prn)) {
         t_corr* cc = _corr.value(prn);
-	if (ee->IOD() == cc->iod && (tt - cc->tt) < MAXAGE) {
-          applyCorr(tt, cc, xc, vv);
-          return success;
-        }
+        if (tt - cc->tt < MAXAGE) {
+          t_eph*  eLast = _eph.value(prn)->last;
+          t_eph*  ePrev = _eph.value(prn)->prev;
+	  if      (eLast && eLast->IOD() == cc->iod) {
+            eLast->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
+            applyCorr(tt, cc, xc, vv);
+            return success;
+          }
+	  else if (ePrev && ePrev->IOD() == cc->iod) {
+            ePrev->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
+            applyCorr(tt, cc, xc, vv);
+            return success;
+          }
+	}
       }
-      return failure;
     }
-    
-    return success;
+
+    else {
+      t_eph* ee = _eph.value(prn)->last;
+      ee->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
+      return success;
+    }
   }
 
   return failure;
