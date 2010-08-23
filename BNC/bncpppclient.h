@@ -142,6 +142,20 @@ class bncPPPclient : public QObject {
     int slipCntL2;
   };
 
+  class t_ephPair {
+   public:
+    t_ephPair() {
+      last = 0;
+      prev = 0;
+    }
+    ~t_ephPair() {
+      delete last;
+      delete prev;
+    }
+    t_eph* last;
+    t_eph* prev;
+  };
+
   t_irc getSatPos(const bncTime& tt, const QString& prn, 
                   ColumnVector& xc, ColumnVector& vv);
   void processEpoch();
@@ -151,7 +165,7 @@ class bncPPPclient : public QObject {
 
   QByteArray              _staID;
   QMutex                  _mutex;
-  QMap<QString, t_eph*>   _eph;
+  QMap<QString, t_ephPair*> _eph;
   QMap<QString, t_corr*>  _corr;
   QMap<QString, t_bias*>  _bias;
   t_epoData*              _epoData;

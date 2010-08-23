@@ -102,7 +102,7 @@ bncPPPclient::bncPPPclient(QByteArray staID) {
 bncPPPclient::~bncPPPclient() {
   delete _model;
   delete _epoData;
-  QMapIterator<QString, t_eph*> it(_eph);
+  QMapIterator<QString, t_ephPair*> it(_eph);
   while (it.hasNext()) {
     it.next();
     delete it.value();
@@ -249,17 +249,21 @@ void bncPPPclient::slotNewEphGPS(gpsephemeris gpseph) {
   QString prn = QString("G%1").arg(gpseph.satellite, 2, 10, QChar('0'));
 
   if (_eph.contains(prn)) {
-    t_ephGPS* ee = static_cast<t_ephGPS*>(_eph.value(prn));
-    if ( (ee->GPSweek() <  gpseph.GPSweek) || 
-         (ee->GPSweek() == gpseph.GPSweek &&  
-          ee->TOC()     <  gpseph.TOC) ) {  
-      ee->set(&gpseph);
+    t_ephGPS* eLast = static_cast<t_ephGPS*>(_eph.value(prn)->last);
+    t_ephGPS* ePrev = static_cast<t_ephGPS*>(_eph.value(prn)->prev);
+    if ( (eLast->GPSweek() <  gpseph.GPSweek) || 
+         (eLast->GPSweek() == gpseph.GPSweek &&  
+          eLast->TOC()     <  gpseph.TOC) ) {
+      delete ePrev;
+      ePrev = new t_ephGPS(*eLast);  
+      eLast->set(&gpseph);
     }
   }
   else {
-    t_ephGPS* ee = new t_ephGPS();
-    ee->set(&gpseph);
-    _eph[prn] = ee;
+    t_ephGPS* eLast = new t_ephGPS();
+    eLast->set(&gpseph);
+    _eph.insert(prn, new t_ephPair());
+    _eph[prn]->last = eLast;
   }
 }
 
@@ -274,16 +278,20 @@ void bncPPPclient::slotNewEphGlonass(glonassephemeris gloeph) {
     int ww  = gloeph.GPSWeek;
     int tow = gloeph.GPSTOW; 
     updatetime(&ww, &tow, gloeph.tb*1000, 0);  // Moscow -> GPS
-    t_ephGlo* ee = static_cast<t_ephGlo*>(_eph.value(prn));
-    if (ee->GPSweek() < ww || 
-        (ee->GPSweek()  == ww &&  ee->GPSweeks() <  tow)) {  
-      ee->set(&gloeph);
+    t_ephGlo* eLast = static_cast<t_ephGlo*>(_eph.value(prn)->last);
+    t_ephGlo* ePrev = static_cast<t_ephGlo*>(_eph.value(prn)->prev);
+    if (eLast->GPSweek() < ww || 
+        (eLast->GPSweek()  == ww &&  eLast->GPSweeks() <  tow)) {  
+      delete ePrev;
+      ePrev = new t_ephGlo(*eLast);  
+      eLast->set(&gloeph);
     }
   }
   else {
-    t_ephGlo* ee = new t_ephGlo();
-    ee->set(&gloeph);
-    _eph[prn] = ee;
+    t_ephGlo* eLast = new t_ephGlo();
+    eLast->set(&gloeph);
+    _eph.insert(prn, new t_ephPair());
+    _eph[prn]->last = eLast;
   }
 }
 
@@ -425,13 +433,13 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
   const double MAXAGE        = 120.0;
 
   if (_eph.contains(prn)) {
-    t_eph* ee = _eph.value(prn);
+    t_eph* ee = _eph.value(prn)->last;
     ee->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
 
     if (_pppMode) {
       if (_corr.contains(prn)) {
         t_corr* cc = _corr.value(prn);
-        if (ee->IOD() == cc->iod && (tt - cc->tt) < MAXAGE) {
+	if (ee->IOD() == cc->iod && (tt - cc->tt) < MAXAGE) {
           applyCorr(tt, cc, xc, vv);
           return success;
         }
