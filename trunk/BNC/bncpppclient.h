@@ -55,6 +55,7 @@ class t_satData {
   double       azSat;
   double       rho;
   bool         slipFlag;
+  double       lambda3;
 };
 
 class t_epoData {
