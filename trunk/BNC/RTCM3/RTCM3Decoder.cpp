@@ -74,11 +74,9 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID, bncRawFile* rawFile) :
   _checkMountPoint = settings.value("miscMount").toString();
 
   connect(this, SIGNAL(newGPSEph(gpsephemeris*)), 
-          (bncApp*) qApp, SLOT(slotNewGPSEph(gpsephemeris*)),
-          Qt::DirectConnection);
+          (bncApp*) qApp, SLOT(slotNewGPSEph(gpsephemeris*)));
   connect(this, SIGNAL(newGlonassEph(glonassephemeris*)), 
-          (bncApp*) qApp, SLOT(slotNewGlonassEph(glonassephemeris*)),
-          Qt::DirectConnection);
+          (bncApp*) qApp, SLOT(slotNewGlonassEph(glonassephemeris*)));
 
   // Sub-Decoder for Clock and Orbit Corrections
   // -------------------------------------------

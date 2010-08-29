@@ -259,6 +259,8 @@ void bncCaster::slotNewNMEAConnection() {
 void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
 
   qRegisterMetaType<p_obs>("p_obs");
+  qRegisterMetaType<gpsephemeris>("gpsephemeris");
+  qRegisterMetaType<glonassephemeris>("glonassephemeris");
 
   connect(getThread, SIGNAL(newObs(QByteArray, bool, p_obs)),
           this,      SLOT(newObs(QByteArray, bool, p_obs)));
@@ -270,8 +272,7 @@ void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
           this, SLOT(slotNewNMEAstr(QByteArray)));
 
   connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
-	  getThread, SLOT(slotNewEphGPS(gpsephemeris)),
-          Qt::DirectConnection);
+	  getThread, SLOT(slotNewEphGPS(gpsephemeris)));
 
   _staIDs.push_back(getThread->staID());
   _threads.push_back(getThread);
