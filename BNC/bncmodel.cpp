@@ -959,3 +959,85 @@ void bncModel::kalman(const Matrix& AA, const ColumnVector& ll,
   dx = KT.t() * ll;
   QQ << (SS.t() * SS);
 }
+
+// Phase Wind-Up Correction
+///////////////////////////////////////////////////////////////////////////
+double bncModel::windUp(const QString& prn, const ColumnVector& rSat,
+                        const ColumnVector& rRec) {
+
+  double Mjd = _time.mjd() + _time.daysec() / 86400.0;
+
+  // First time - initialize to zero
+  // -------------------------------
+  if (!_windUpTime.contains(prn)) {
+    _windUpTime[prn] = Mjd;
+    _windUpSum[prn]  = 0.0;
+  }
+
+  // Compute the correction for new time
+  // -----------------------------------
+  else if (_windUpTime[prn] != Mjd) {
+    _windUpTime[prn] = Mjd; 
+
+    // Unit Vector GPS Satellite --> Receiver
+    // --------------------------------------
+    ColumnVector rho = rRec - rSat;
+    rho /= rho.norm_Frobenius();
+    
+    // GPS Satellite unit Vectors sz, sy, sx
+    // -------------------------------------
+    ColumnVector sz = -rSat / rSat.norm_Frobenius();
+
+    ColumnVector xSun = Sun(Mjd);
+    xSun /= xSun.norm_Frobenius();
+
+    ColumnVector sy = crossproduct(sz, xSun);
+    ColumnVector sx = crossproduct(sy, sz);
+
+    // Effective Dipole of the GPS Satellite Antenna
+    // ---------------------------------------------
+    ColumnVector dipSat = sx - rho * DotProduct(rho,sx) 
+                                                - crossproduct(rho, sy);
+    
+    // Receiver unit Vectors rx, ry
+    // ----------------------------
+    ColumnVector rx(3);
+    ColumnVector ry(3);
+
+    double recEll[3]; xyz2ell(rRec.data(), recEll) ;
+    double neu[3];
+    
+    neu[0] = 1.0;
+    neu[1] = 0.0;
+    neu[2] = 0.0;
+    neu2xyz(recEll, neu, rx.data());
+    
+    neu[0] =  0.0;
+    neu[1] = -1.0;
+    neu[2] =  0.0;
+    neu2xyz(recEll, neu, ry.data());
+    
+    // Effective Dipole of the Receiver Antenna
+    // ----------------------------------------
+    ColumnVector dipRec = rx - rho * DotProduct(rho,rx) 
+                                                   + crossproduct(rho, ry);
+    
+    // Resulting Effect
+    // ----------------
+    double alpha = DotProduct(dipSat,dipRec) / 
+                      (dipSat.norm_Frobenius() * dipRec.norm_Frobenius());
+    
+    if (alpha >  1.0) alpha =  1.0;
+    if (alpha < -1.0) alpha = -1.0;
+    
+    double dphi = acos(alpha) / 2.0 / M_PI;  // in cycles
+    
+    if ( DotProduct(rho, crossproduct(dipSat, dipRec)) < 0.0 ) {
+      dphi = -dphi;
+    }
+
+    _windUpSum[prn] = floor(_windUpSum[prn] - dphi + 0.5) + dphi;
+  }
+
+  return _windUpSum[prn];  
+}

@@ -248,6 +248,27 @@ void xyz2neu(const double* Ell, const double* xyz, double* neu) {
            + sinPhi        * xyz[2];
 }
 
+// North, East, Up Components -> Rectangular Coordinates
+////////////////////////////////////////////////////////////////////////////
+void neu2xyz(const double* Ell, const double* neu, double* xyz) {
+
+  double sinPhi = sin(Ell[0]);
+  double cosPhi = cos(Ell[0]);
+  double sinLam = sin(Ell[1]);
+  double cosLam = cos(Ell[1]);
+
+  xyz[0] = - sinPhi*cosLam * neu[0]
+           - sinLam        * neu[1]
+           + cosPhi*cosLam * neu[2];
+
+  xyz[1] = - sinPhi*sinLam * neu[0]
+           + cosLam        * neu[1]
+           + cosPhi*sinLam * neu[2];
+
+  xyz[2] = + cosPhi        * neu[0]
+           + sinPhi        * neu[2];
+}
+
 // Fourth order Runge-Kutta numerical integrator for ODEs
 ////////////////////////////////////////////////////////////////////////////
 ColumnVector rungeKutta4(

@@ -91,19 +91,24 @@ class bncModel : public QObject {
                      const DiagonalMatrix& PP, 
                      SymmetricMatrix& QQ, ColumnVector& dx);
 
-  bncTime            _time;
-  QByteArray         _staID;
-  QVector<bncParam*> _params;
-  SymmetricMatrix    _QQ;
-  ColumnVector       _xcBanc;
-  ColumnVector       _ellBanc;
-  bool               _static;
-  bool               _usePhase;
-  bool               _estTropo;
-  QByteArray         _log;
-  QFile*             _nmeaFile;
-  QTextStream*       _nmeaStream;
-  bool               _useGlonass;
+  double windUp(const QString& prn, const ColumnVector& rSat,
+                const ColumnVector& rRec);
+
+  bncTime               _time;
+  QByteArray            _staID;
+  QVector<bncParam*>    _params;
+  SymmetricMatrix       _QQ;
+  ColumnVector          _xcBanc;
+  ColumnVector          _ellBanc;
+  bool                  _static;
+  bool                  _usePhase;
+  bool                  _estTropo;
+  QByteArray            _log;
+  QFile*                _nmeaFile;
+  QTextStream*          _nmeaStream;
+  bool                  _useGlonass;
+  QMap<QString, double> _windUpTime;
+  QMap<QString, double> _windUpSum;
 };
 
 #endif
