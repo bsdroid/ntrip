@@ -4,6 +4,8 @@
 #include <newmat.h>
 #include "bnctime.h"
 
-void tides(const bncTime& time, ColumnVector& xyz);
+ColumnVector Sun(double Mjd_TT);
+
+void         tides(const bncTime& time, ColumnVector& xyz);
 
 #endif
