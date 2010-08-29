@@ -1,7 +1,5 @@
 
 #include <cmath>
-#include <iostream>
-#include <iomanip>
 
 #include "bnctides.h"
 #include "bncutils.h"
@@ -112,7 +110,7 @@ ColumnVector Sun(double Mjd_TT) {
   const double T   = (Mjd_TT-MJD_J2000)/36525.0;
 
   double M = 2.0*M_PI * Frac ( 0.9931267 + 99.9973583*T);
-  double L = 2.0*M_PI * Frac ( 0.7859444 + M/2.0*M_PI + 
+  double L = 2.0*M_PI * Frac ( 0.7859444 + M/2.0/M_PI + 
                         (6892.0*sin(M)+72.0*sin(2.0*M)) / 1296.0e3);
   double r = 149.619e9 - 2.499e9*cos(M) - 0.021e9*cos(2*M);
   
