@@ -71,8 +71,7 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
   _GPSweeks = -1.0;
 
   connect(this, SIGNAL(newCorrLine(QString, QString, long)), 
-          (bncApp*) qApp, SLOT(slotNewCorrLine(QString, QString, long)),
-          Qt::DirectConnection);
+          (bncApp*) qApp, SLOT(slotNewCorrLine(QString, QString, long)));
 
   memset(&_co, 0, sizeof(_co));
 }
