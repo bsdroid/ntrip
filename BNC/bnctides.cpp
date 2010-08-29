@@ -173,8 +173,8 @@ ColumnVector Moon(double Mjd_TT) {
 void tides(const bncTime& time, ColumnVector& xyz) {
 
   static double       lastMjd = 0.0;
-  static ColumnVector xSun(3);
-  static ColumnVector xMoon(3);
+  static ColumnVector xSun;
+  static ColumnVector xMoon;
   static double       rSun;
   static double       rMoon;
 
@@ -215,16 +215,12 @@ void tides(const bncTime& time, ColumnVector& xyz) {
 
   double facSun  = gms / gmWGS * 
                    (rRec * rRec * rRec * rRec) / (rSun * rSun * rSun);
+
   double facMoon = gmm / gmWGS * 
                    (rRec * rRec * rRec * rRec) / (rMoon * rMoon * rMoon);
 
-  double theta = GMST(Mjd);
-
-  double Ell[3]; xyz2ell(xyz.data(), Ell);
-
   ColumnVector dX = facSun  * (x2Sun  * xSun  + p2Sun  * xyzUnit) + 
-                    facMoon * (x2Moon * xMoon + p2Moon * xyzUnit) -
-              0.025 * sin(Ell[0]) * cos(Ell[0]) * sin(theta+Ell[1]) * xyzUnit;
+                    facMoon * (x2Moon * xMoon + p2Moon * xyzUnit);
 
   xyz += dX;
 }
