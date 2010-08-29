@@ -218,6 +218,10 @@ void bncPPPclient::putNewObs(p_obs pp) {
   }
   satData->L3 =  c1 * satData->L1 + c2 * satData->L2;
 
+  // Set Ionosphere-Free Wavelength
+  // ------------------------------
+  satData->lambda3 = c1 * t_CST::c / f1 + c2 * t_CST::c / f2;
+
   // Add new Satellite to the epoch
   // ------------------------------
   bncTime tt(obs->GPSWeek, obs->GPSWeeks);

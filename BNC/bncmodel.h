@@ -78,7 +78,7 @@ class bncModel : public QObject {
   void newNMEAstr(QByteArray str);
 
  private:
-  double cmpValue(t_satData* satData);
+  double cmpValue(t_satData* satData, bool phase);
   double delay_saast(double Ele);
   void   predict(t_epoData* epoData);
   int    outlierDetection(const SymmetricMatrix& QQsav, 

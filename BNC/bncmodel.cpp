@@ -308,7 +308,7 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
 
 // Computed Value
 ////////////////////////////////////////////////////////////////////////////
-double bncModel::cmpValue(t_satData* satData) {
+double bncModel::cmpValue(t_satData* satData, bool phase) {
 
   ColumnVector xRec(3);
   xRec(1) = x();
@@ -329,7 +329,12 @@ double bncModel::cmpValue(t_satData* satData) {
   double tropDelay = delay_saast(satData->eleSat) + 
                      trp() / sin(satData->eleSat);
 
-  return satData->rho + clk() - satData->clk + tropDelay;
+  double wind = 0.0;
+  if (phase) {
+    wind = windUp(satData->prn, satData->xx, xRec) * satData->lambda3;
+  }
+
+  return satData->rho + clk() - satData->clk + tropDelay + wind;
 }
 
 // Tropospheric Model (Saastamoinen)
@@ -466,7 +471,7 @@ void bncModel::predict(t_epoData* epoData) {
       if (!found) {
         bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
         _params.push_back(par);
-        par->xx = satData->L3 - cmpValue(satData);
+        par->xx = satData->L3 - cmpValue(satData, true);
       }
     }
 
@@ -486,7 +491,7 @@ void bncModel::predict(t_epoData* epoData) {
       if (!found) {
         bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
         _params.push_back(par);
-        par->xx = satData->L3 - cmpValue(satData);
+        par->xx = satData->L3 - cmpValue(satData, true);
       }
     }
     
@@ -594,9 +599,7 @@ t_irc bncModel::update(t_epoData* epoData) {
       QString    prn     = itGPS.key();
       t_satData* satData = itGPS.value();
     
-      double rhoCmp = cmpValue(satData);
-    
-      ll(iObs)      = satData->P3 - rhoCmp;
+      ll(iObs)      = satData->P3 - cmpValue(satData, false);
       PP(iObs,iObs) = 1.0 / (sig_P3 * sig_P3);
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
@@ -604,7 +607,7 @@ t_irc bncModel::update(t_epoData* epoData) {
     
       if (_usePhase) {
         ++iObs;
-        ll(iObs)      = satData->L3 - rhoCmp;
+        ll(iObs)      = satData->L3 - cmpValue(satData, true);
         PP(iObs,iObs) = 1.0 / (sig_L3_GPS * sig_L3_GPS);
         for (int iPar = 1; iPar <= _params.size(); iPar++) {
           if (_params[iPar-1]->type == bncParam::AMB_L3 &&
@@ -626,10 +629,7 @@ t_irc bncModel::update(t_epoData* epoData) {
         QString    prn     = itGlo.key();
         t_satData* satData = itGlo.value();
 
-        double rhoCmp = cmpValue(satData);
-        
-        ll(iObs)      = satData->L3 - rhoCmp;
-
+        ll(iObs)      = satData->L3 - cmpValue(satData, true);
         PP(iObs,iObs) = 1.0 / (sig_L3_GLO * sig_L3_GLO);
         for (int iPar = 1; iPar <= _params.size(); iPar++) {
           if (_params[iPar-1]->type == bncParam::AMB_L3 &&
