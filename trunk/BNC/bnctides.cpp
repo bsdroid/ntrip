@@ -4,6 +4,7 @@
 #include <iomanip>
 
 #include "bnctides.h"
+#include "bncutils.h"
 
 using namespace std;
 
@@ -165,4 +166,65 @@ ColumnVector Moon(double Mjd_TT) {
           * NutMatrix(Mjd_TT) 
           * PrecMatrix(MJD_J2000, Mjd_TT)
           * r_Moon;
+}
+
+// Tidal Correction 
+////////////////////////////////////////////////////////////////////////////
+void tides(const bncTime& time, ColumnVector& xyz) {
+
+  static double       lastMjd = 0.0;
+  static ColumnVector xSun(3);
+  static ColumnVector xMoon(3);
+  static double       rSun;
+  static double       rMoon;
+
+  double Mjd = time.mjd() + time.daysec() / 86400.0;
+
+  if (Mjd != lastMjd) {
+    lastMjd = Mjd;
+    xSun = Sun(Mjd);
+    rSun = sqrt(DotProduct(xSun,xSun));
+    xSun /= rSun;
+    xMoon = Moon(Mjd);
+    rMoon = sqrt(DotProduct(xMoon,xMoon));
+    xMoon /= rMoon;
+  }
+
+  double       rRec    = sqrt(DotProduct(xyz, xyz));
+  ColumnVector xyzUnit = xyz / rRec;
+
+  // Love's Numbers
+  // --------------
+  const double H2 = 0.6090;
+  const double L2 = 0.0852;
+
+  // Tidal Displacement
+  // ------------------
+  double scSun  = DotProduct(xyzUnit, xSun);
+  double scMoon = DotProduct(xyzUnit, xMoon);
+
+  double p2Sun  = 3.0 * (H2/2.0-L2) * scSun  * scSun  - H2/2.0;
+  double p2Moon = 3.0 * (H2/2.0-L2) * scMoon * scMoon - H2/2.0;
+
+  double x2Sun  = 3.0 * L2 * scSun;
+  double x2Moon = 3.0 * L2 * scMoon;
+  
+  const double gmWGS = 398.6005e12;
+  const double gms   = 1.3271250e20;
+  const double gmm   = 4.9027890e12;
+
+  double facSun  = gms / gmWGS * 
+                   (rRec * rRec * rRec * rRec) / (rSun * rSun * rSun);
+  double facMoon = gmm / gmWGS * 
+                   (rRec * rRec * rRec * rRec) / (rMoon * rMoon * rMoon);
+
+  double theta = GMST(Mjd);
+
+  double Ell[3]; xyz2ell(xyz.data(), Ell);
+
+  ColumnVector dX = facSun  * (x2Sun  * xSun  + p2Sun  * xyzUnit) + 
+                    facMoon * (x2Moon * xMoon + p2Moon * xyzUnit) -
+              0.025 * sin(Ell[0]) * cos(Ell[0]) * sin(theta+Ell[1]) * xyzUnit;
+
+  xyz += dX;
 }
