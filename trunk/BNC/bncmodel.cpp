@@ -49,6 +49,7 @@
 #include "bancroft.h"
 #include "bncutils.h"
 #include "bncsettings.h"
+#include "bnctides.h"
 
 using namespace std;
 
@@ -320,6 +321,8 @@ double bncModel::cmpValue(t_satData* satData) {
   xRec(1) = x() * cos(dPhi) - y() * sin(dPhi); 
   xRec(2) = y() * cos(dPhi) + x() * sin(dPhi); 
   xRec(3) = z();
+
+  tides(_time, xRec);
 
   satData->rho = (satData->xx - xRec).norm_Frobenius();
 
