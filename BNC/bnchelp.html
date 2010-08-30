@@ -1084,6 +1084,17 @@ bnc.exe --conf c:\temp\BNC.ppp --file c:\temp\FFMJ1 --format RTCM_3
 Streams in a 'Raw output file' which shall later be used in an offline PPP calculation must all be encoded in the same format.
 </p>
 
+<p>
+Note further that BNC does correct positions derived in PPP mode for earth tides and phase windup. So far it does however not correct them for the following effects:
+</p>
+<ul>
+<li>Satellite antenna offset and phase center variation</li>
+<li>Ground antenna offset and phase center variation</li>
+<li>Atmospheric, hydrological, and ocean loading</li>
+<li>Earth rotation</li>
+</ul>
+</p>
+
 <p><a name="pppmount"><h4>3.11.1 Mountpoint - optional</h4></p>
 <p>
 Specify a mountpoint if you want BNC to derive coordinates for the affected rover position through a Point Positioning solution. 
@@ -1511,8 +1522,6 @@ Once BNC has been started, many of its configuration options cannot be changed a
 The following effects are so far ignored in BNC's Precise Point Positioning (PPP) approach:<br>
 - Satellite antenna offset: horizontal effect = few cm, vertical effect = up to 10 cm<br>
 - Satellite antenna phase center variation: vertical effect =1 mm<br>
-- Phase wind up: horizontal and vertical effect = a few mm<br>
-- Earth tides: horizontal effect: a few cm, vertical effect: a few dm<br>
 - Earth rotation: horizontal effect = a few cm<br>
 - Atmospheric, hydrological, and ocean loading: vertical effect = up to 5 cm<br>
 - Offset of ground antenna: horizontal effect = a few mm, vertical effect:  up to 5 cm<br>
