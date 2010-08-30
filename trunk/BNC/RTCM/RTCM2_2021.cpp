@@ -13,7 +13,7 @@ RTCM2_2021::RTCM2_2021() { }
 
 
 void RTCM2_2021::extract(const RTCM2packet& P) {
-  if ( !P.valid() || P.ID() != 20 && P.ID() != 21 ) {
+  if ( !P.valid() || (P.ID() != 20 && P.ID() != 21) ) {
     return;
   }
 
