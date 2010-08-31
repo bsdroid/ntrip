@@ -1084,14 +1084,16 @@ bnc.exe --conf c:\temp\BNC.ppp --file c:\temp\FFMJ1 --format RTCM_3
 Streams in a 'Raw output file' which shall later be used in an offline PPP calculation must all be encoded in the same format.
 </p>
 
-<p>
-Note further that BNC does correct positions derived in PPP mode for earth tides and phase windup. So far it does however not correct them for the following effects:
+<p>When using the PPP option, it is important to understand which effects are corrected by BNC.
 </p>
 <ul>
-<li>Satellite antenna offset and phase center variation</li>
-<li>Ground antenna offset and phase center variation</li>
-<li>Atmospheric, hydrological, and ocean loading</li>
-<li>Earth rotation</li>
+<li>BNC does correct for Solid Earth Tides and Phase Windup.</li>
+<li>Satellite Antenna Offsets are not corrected because applied orbit/clock correctors are referred to the satellite's antenna phase center.</li>
+<li>Satellite Antenna Offset Variations are neglected because this is a small effect usually less than 2 centimeters.</li>
+<li>Receiver Antenna Offsets are not corrected which means that the estimated position is that of the receiver's antenna phase center and not that of the receiver's Antenna Reference Point.</li>
+<li>Receiver Antenna Phase Center Variations are not included in the model. The bias caused by this neglect depends on the receiver antenna type. For most antennas it is smaller than a few centimeters.</li>
+<li>Ocean and atmospheric loading is neglected. Atmospheric loading is pretty small. Ocean loading is usually also a small effect but may reach up to about 10 centimeters for coastal stations.</li>
+<li>Rotational deformation due to polar motion (Polar Tides) is not corrected because this is a small effect usually less than 2 centimeters.</li>
 </ul>
 </p>
 
@@ -1516,17 +1518,6 @@ The source code provided by NRCan for decoding RTIGS streams is 32-bit dependent
 </li>
 <li>
 Once BNC has been started, many of its configuration options cannot be changed as long as it is stopped. See chapter 'Reread Configuration' for on-the-fly configuration exceptions.
-</li>
-
-<li>
-The following effects are so far ignored in BNC's Precise Point Positioning (PPP) approach:<br>
-- Satellite antenna offset: horizontal effect = few cm, vertical effect = up to 10 cm<br>
-- Satellite antenna phase center variation: vertical effect =1 mm<br>
-- Earth rotation: horizontal effect = a few cm<br>
-- Atmospheric, hydrological, and ocean loading: vertical effect = up to 5 cm<br>
-- Offset of ground antenna: horizontal effect = a few mm, vertical effect:  up to 5 cm<br>
-- Ground antenna phase center variation: vertical effect = a few mm<br>
-It basically means that with BNC's PPP the horizontal position can actually not be better than 5 cm and the height component cannot be better than 10 cm.
 </li>
 
 </ul>
