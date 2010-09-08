@@ -79,6 +79,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("pppMount",         "");
     setValue("pppSPP",           "PPP");
     setValue("pppSigmaCode",     "5.0");
+    setValue("pppAverage",       "");
     setValue("pppStatic",        "");
     setValue("pppUsePhase",      "");
     setValue("pppEstTropo",      "");
