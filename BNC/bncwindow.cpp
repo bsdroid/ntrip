@@ -114,7 +114,7 @@ bncWindow::bncWindow() {
   connect(_actStop, SIGNAL(triggered()), SLOT(slotStop()));
   _actStop->setEnabled(false);
 
-  _actwhatsthis= new QAction(tr("Help=Shift+F1"),this);
+  _actwhatsthis= new QAction(tr("Help ?=Shift+F1"),this);
   connect(_actwhatsthis, SIGNAL(triggered()), SLOT(slotWhatsThis()));
 
   CreateMenu();
@@ -341,6 +341,7 @@ bncWindow::bncWindow() {
   _pppNMEALineEdit     = new QLineEdit(settings.value("nmeaFile").toString());
   _pppNMEAPortLineEdit = new QLineEdit(settings.value("nmeaPort").toString());
   _pppSigCLineEdit  = new QLineEdit(settings.value("pppSigmaCode").toString());
+  _pppAverageLineEdit  = new QLineEdit(settings.value("pppAverage").toString());
   _pppRefCrdXLineEdit  = new QLineEdit(settings.value("pppRefCrdX").toString());
   _pppRefCrdYLineEdit  = new QLineEdit(settings.value("pppRefCrdY").toString());
   _pppRefCrdZLineEdit  = new QLineEdit(settings.value("pppRefCrdZ").toString());
@@ -468,6 +469,7 @@ bncWindow::bncWindow() {
   _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
   _pppOriginComboBox->setWhatsThis(tr("<p>Select an origin for North/East/Up time series plots in the 'PPP Plot' tab. This option makes only sense for a stationary receiver.</p>"));
   _pppSigCLineEdit->setWhatsThis(tr("<p>Enter a sigma for your code observations in meters.</p><p>5.0 (default) is likely to be an appropriate choice.</p>"));
+  _pppAverageLineEdit->setWhatsThis(tr("<p>Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions computed from those individual positions obtained most recently throughout this period.</p><p>An empty option field (default) means that you don't wont BNC to output moving average positions into the log file.</p>"));
   _pppRefCrdXLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown in the 'PPP Plot' tab will then be referred to these values.</p>"));
   _pppRefCrdYLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown in the 'PPP Plot' tab will then be referred to these values.</p>"));
   _pppRefCrdZLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown in the 'PPP Plot' tab will then be referred to these values.</p>"));
@@ -706,6 +708,7 @@ bncWindow::bncWindow() {
   // ----------
   QGridLayout* pppLayout = new QGridLayout;
   _pppSigCLineEdit->setMaximumWidth(5*ww);
+  _pppAverageLineEdit->setMaximumWidth(5*ww);
   _pppRefCrdXLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdYLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdZLineEdit->setMaximumWidth(14*ww);
@@ -725,8 +728,11 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Estimate tropo        "), 1, 6);
   pppLayout->addWidget(_pppGLONASSCheckBox,                  1, 7);
   pppLayout->addWidget(new QLabel("Use GLONASS"),            1, 8);
-  pppLayout->addWidget(new QLabel("Sigma code"),             2, 0);
+  pppLayout->addWidget(new QLabel("Options cont'd"),         2, 0);
   pppLayout->addWidget(_pppSigCLineEdit,                     2, 1);
+  pppLayout->addWidget(new QLabel("Sigma code"),             2, 2);
+  pppLayout->addWidget(_pppAverageLineEdit,                  2, 4);
+  pppLayout->addWidget(new QLabel("Averaging"),              2, 4, Qt::AlignRight);  
   pppLayout->addWidget(new QLabel("Plot origin"),            3, 0);
   pppLayout->addWidget(_pppOriginComboBox,                   3, 1, 1, 2);
   pppLayout->addWidget(new QLabel("  "),                     3, 3);
@@ -1055,6 +1061,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("nmeaFile",    _pppNMEALineEdit->text());
   settings.setValue("nmeaPort",    _pppNMEAPortLineEdit->text());
   settings.setValue("pppSigmaCode",_pppSigCLineEdit->text());
+  settings.setValue("pppAverage",  _pppAverageLineEdit->text());
   settings.setValue("pppRefCrdX",  _pppRefCrdXLineEdit->text());
   settings.setValue("pppRefCrdY",  _pppRefCrdYLineEdit->text());
   settings.setValue("pppRefCrdZ",  _pppRefCrdZLineEdit->text());
@@ -1637,6 +1644,14 @@ void bncWindow::slotBncTextChanged(){
         _pppRefCrdZLineEdit->setPalette(palette_gray);
         _pppRefCrdZLineEdit->setEnabled(false);
       }
+      if (_pppOriginComboBox->currentText() != "No plot" ) {
+        _pppAverageLineEdit->setPalette(palette_white);
+        _pppAverageLineEdit->setEnabled(true);
+      }
+      else {
+        _pppAverageLineEdit->setPalette(palette_gray);
+        _pppAverageLineEdit->setEnabled(false);
+      }
       if (_pppUsePhaseCheckBox->isChecked() 
          && !_pppMountLineEdit->text().isEmpty()) {
         _pppSigCLineEdit->setPalette(palette_white);
@@ -1659,6 +1674,7 @@ void bncWindow::slotBncTextChanged(){
       _pppGLONASSCheckBox->setPalette(palette_gray);
       _pppOriginComboBox->setPalette(palette_gray);
       _pppSigCLineEdit->setPalette(palette_gray);
+      _pppAverageLineEdit->setPalette(palette_gray);
       _pppSPPComboBox->setEnabled(false);
       _pppNMEALineEdit->setEnabled(false);
       _pppNMEAPortLineEdit->setEnabled(false);
@@ -1671,6 +1687,7 @@ void bncWindow::slotBncTextChanged(){
       _pppGLONASSCheckBox->setEnabled(false);
       _pppOriginComboBox->setEnabled(false);
       _pppSigCLineEdit->setEnabled(false);
+      _pppAverageLineEdit->setEnabled(false);
     }
   }
 }
