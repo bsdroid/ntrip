@@ -1161,7 +1161,7 @@ As the convergence characteristic of a PPP solution can be influenced by the rat
 Note that the 'Sigma code' you enter must be greater than 0.3 m and less than 50.0 m.
 </p>
 
-<p><a name="pppaverage"><h4>3.11.3.2 Averaging - optional</h4></p>
+<p><a name="pppaverage"><h4>3.11.3.2 Averaging - optional if 'Plot Origin' is set</h4></p>
 <p>
 Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions and their RMS as computed from those individual positions obtained most recently throughout this period. RMS values presented for XYZ coordinates are bias reduced while RMS values for Nort/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string "AVE-XYZ" in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string "AVE-NEU". Example:
 </p>
@@ -1170,18 +1170,16 @@ Enter the length of a sliding time window in minutes. BNC will continuously outp
 10-09-08 09:13:05 FFMJ1  AVE-NEU 09:13:04.0    1.043 +-  0.179    0.640 +-  0.456    1.624 +-  0.331
 </pre>
 <p>
-Entering any positive value up to 1440 (24h mean value) is allowed. An empty option field (default) means that you don't want BNC to output moving average positions into the log file and the 'Log' section.
+Entering any positive value up to 1440 (24h mean value) is allowed. An empty option field (default) means that you don't want BNC to output moving average positions into the log file and the 'Log' section. Note that averaging positions makes only sense for a stationary receiver.
 </p>
 
 <p><a name="pppnmearef"><h4>3.11.4 Plot Origin - optional</h4></p>
 <p>
 Select an origin for North/East/Up time series plots of derived coordinates in the 'PPP Plot' tab. Note that this makes only sense for a stationary receiver. Available options are
 <ul>
-<li>'No plot', meaning that BNC not plot a time series of estimated position.
-<li>'Start position', meaning that BNC will refer time series plots to the first estimated position.
-</li>
-<li>'X Y Z', meaning the known reference coordinate components for the receiver's position.
-</li>
+<li>'No plot', meaning that BNC will not plot a time series of estimated position, probably because the receiver is moving.</li>
+<li>'Start position', meaning that BNC will refer time series plots to the first estimated position.</li>
+<li>'X Y Z', meaning the known reference coordinate components for the receiver's position.</li>
 </ul>
 Default is the selection of an empty option field meaning that no PPP time series will be plotted in the "PPP Plot' tab..
 </p>
