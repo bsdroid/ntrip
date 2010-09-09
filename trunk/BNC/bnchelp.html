@@ -1163,14 +1163,14 @@ Note that the 'Sigma code' you enter must be greater than 0.3 m and less than 50
 
 <p><a name="pppaverage"><h4>3.11.3.2 Averaging - optional</h4></p>
 <p>
-Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions and their RMS as computed from those individual positions obtained most recently throughout this period. RMS values presented for XYZ coordinates are bias reduced while RMS values for Nort/East/Up (NEU)displacements are not. Average values for XYZ coordinates and their RMS are marked with string "AVE-XYZ" in BNC's log file while average values for NEU displacements and their RMS are marked with string "AVE-NEU", see examples below.
+Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions and their RMS as computed from those individual positions obtained most recently throughout this period. RMS values presented for XYZ coordinates are bias reduced while RMS values for Nort/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string "AVE-XYZ" in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string "AVE-NEU". Example:
 </p>
 <pre>
 10-09-08 09:13:05 FFMJ1  AVE-XYZ 09:13:04.0   4053455.948 +-  0.284     617730.422 +-  0.504    4869397.692 +-  0.089
 10-09-08 09:13:05 FFMJ1  AVE-NEU 09:13:04.0    1.043 +-  0.179    0.640 +-  0.456    1.624 +-  0.331
 </pre>
 <p>
-Entering any positive value up to 1440 (24h mean value) is allowed. An empty option field (default) means that you don't want BNC to output moving average positions into the log file.
+Entering any positive value up to 1440 (24h mean value) is allowed. An empty option field (default) means that you don't want BNC to output moving average positions into the log file and the 'Log' section.
 </p>
 
 <p><a name="pppnmearef"><h4>3.11.4 Plot Origin - optional</h4></p>
