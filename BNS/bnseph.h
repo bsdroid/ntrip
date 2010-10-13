@@ -8,6 +8,7 @@
 #include <QThread>
 #include <QtNetwork>
 
+#include "bnsutils.h" 
 
 class t_eph {
  public:
@@ -18,9 +19,10 @@ class t_eph {
 
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const = 0;
-  virtual void read(const QStringList& lines) = 0;
+  virtual t_irc read(const QStringList& lines) = 0;
   virtual int  IOD() const = 0;
   virtual int  RTCM3(unsigned char *) = 0;
+
  protected:  
   QString _prn;
   int     _GPSweek;
@@ -34,7 +36,7 @@ class t_ephGlo : public t_eph {
     _xv.ReSize(6); 
   };
   virtual ~t_ephGlo() {};
-  virtual void read(const QStringList& lines);
+  virtual t_irc  read(const QStringList& lines);
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const;
   virtual int  IOD() const;
@@ -68,7 +70,7 @@ class t_ephGPS : public t_eph {
  public:
   t_ephGPS() {};
   virtual ~t_ephGPS() {};
-  virtual void read(const QStringList& lines);
+  virtual t_irc  read(const QStringList& lines);
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const;
   virtual int  IOD() const {return int(_IODE);}
