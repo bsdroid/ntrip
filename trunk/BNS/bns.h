@@ -85,6 +85,7 @@ class t_bns : public QThread {
   QTextStream*              _echoStream;
   t_bnseph*                 _bnseph;
   QMutex                    _mutex;
+  QMutex                    _mutexmesg;
   QMap<QString, t_ephPair*> _ephList;
   bnsRinex*                 _rnx;
   bnsSP3*                   _sp3;

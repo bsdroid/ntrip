@@ -218,6 +218,9 @@ void t_bns::deleteBnsEph() {
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::slotMessage(const QByteArray msg) {
+
+  QMutexLocker locker(&_mutexmesg);
+
   if (_logStream) {
     QString txt = QDateTime::currentDateTime().toUTC().toString("yy-MM-dd hh:mm:ss ");
     *_logStream << txt << msg << endl;
@@ -229,6 +232,9 @@ void t_bns::slotMessage(const QByteArray msg) {
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
 void t_bns::slotError(const QByteArray msg) {
+
+  QMutexLocker locker(&_mutexmesg);
+
   if (_logStream) {
     *_logStream << msg << endl;
     _logStream->flush();
