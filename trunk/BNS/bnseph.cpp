@@ -17,7 +17,6 @@
 #include <iostream>
 
 #include "bnseph.h" 
-#include "bnsutils.h" 
 #include "bnssettings.h" 
 #include "bnctime.h" 
 extern "C" {
@@ -148,9 +147,13 @@ void t_bnseph::readEph() {
     eph = new t_ephGlo();
     numlines = 4;
   }
-  else {
+  else if (prn.indexOf('G') != -1) {
     eph = new t_ephGPS();
     numlines = 8;
+  }
+  else {
+    emit(newMessage(QString("Ephemeris server: line not recognized: %1")
+                    .arg(line.data()).toAscii().data()));
   }
 
   QStringList lines;
@@ -171,10 +174,16 @@ void t_bnseph::readEph() {
     nBytes += line.length();
     lines << line;
   }
-
-  eph->read(lines);
-
-  emit(newEph(eph, nBytes));
+   
+  if (eph->read(lines) == success) {
+    emit(newEph(eph, nBytes));
+  } 
+  else {
+    emit(newMessage(QString("Broadcast message too new, excluded.\n%1")
+                    .arg(lines.join("")).toAscii().data()));
+    delete eph;
+    return;
+  } 
 }
 
 // Compare Time
@@ -191,7 +200,7 @@ bool t_eph::isNewerThan(const t_eph* eph) const {
 
 // Read GPS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_ephGPS::read(const QStringList& lines) {
+t_irc t_ephGPS::read(const QStringList& lines) {
 
   for (int ii = 1; ii <= lines.size(); ii++) {
     QTextStream in(lines.at(ii-1).toAscii());
@@ -206,6 +215,13 @@ void t_ephGPS::read(const QStringList& lines) {
       QDateTime* dateTime = new QDateTime(QDate(int(year), int(month), int(day)), 
                                           QTime(int(hour), int(minute), int(second)), Qt::UTC);
 
+      // do not allow too new message (actually 12h) ! /JD
+      QDateTime currTime = QDateTime::currentDateTime();
+      if( dateTime->secsTo(currTime) < -3600*12 ){
+         delete dateTime;
+         return failure; 
+      }
+       
       GPSweekFromDateAndTime(*dateTime, _GPSweek, _GPSweeks); 
 
       delete dateTime;
@@ -235,6 +251,7 @@ void t_ephGPS::read(const QStringList& lines) {
       in >> _TOW;
     }
   }
+  return success;
 }
 
 // Returns nearest integer value
@@ -488,7 +505,7 @@ void t_ephGPS::position(int GPSweek, double GPSweeks, ColumnVector& xc,
 
 // Read Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_ephGlo::read(const QStringList& lines) {
+t_irc t_ephGlo::read(const QStringList& lines) {
 
   static const double secPerWeek = 7 * 86400.0;
 
@@ -504,6 +521,13 @@ void t_ephGlo::read(const QStringList& lines) {
       
       if (year < 100) year += 2000;
 
+      // do not allow too new message (actually 24h) ! /JD
+      QDateTime mesgTime = QDateTime::fromString(QString("%1-%2-%3 %4").arg(year).arg(month).arg(day).arg(hour), "yyyy-MM-dd hh");
+      QDateTime currTime = QDateTime::currentDateTime();
+      if (mesgTime.secsTo(currTime) < -3600*24) {
+        return failure;
+      }
+       
       bncTime tHlp; 
       tHlp.set(int(year), int(month), int(day), 
                int(hour), int(minute), second);
@@ -541,6 +565,8 @@ void t_ephGlo::read(const QStringList& lines) {
   _xv(4) = _x_velocity * 1.e3; 
   _xv(5) = _y_velocity * 1.e3; 
   _xv(6) = _z_velocity * 1.e3; 
+
+  return success;
 }
 
 
