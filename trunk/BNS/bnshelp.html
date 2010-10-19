@@ -1,5 +1,5 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-<h3>BKG Ntrip State Space Server (BNS) Version 1.2</h3>
+<h3>BKG Ntrip State Space Server (BNS) Version 1.3</h3>
 
 <p>
 The BKG Ntrip State Space Server (BNS) is a program for transforming GNSS satellite clocks and orbits into corrections to Broadcast Ephemeris. These corrections are then encode in a (premature) RTCM Version 3.x format and uploaded to NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home.</u> BNS is created as a tool for service providers with real-time access to a network of continentally or globally distributed GNSS reference stations.
@@ -669,8 +669,13 @@ Frankfurt, Germany<br>
 </tr>
 
 <tr>
-<td>Aug 2010 &nbsp;</td><td>Version 1.2 &nbsp;</td>
+<td>Oct 2010 &nbsp;</td><td>Version 1.2 &nbsp;</td>
 <td>[Bug] GLONASS ephemeris time<br> [Bug] Complete acceleration term in GLONASS ephemeris calculation</td>
+</tr>
+
+<tr>
+<td>Oct 2010 &nbsp;</td><td>Version 1.3 &nbsp;</td>
+<td>[Add] Plausibility check for incoming broadcast ephemeris<br> [Bug] Added Mutext in slotMessage to avoid freezing</td>
 </tr>
 
 </table>
