@@ -5,9 +5,21 @@ BNS
 
 BNC
 =========================
-(1) BNC has a problem when the observation update rate is > 1Hz. Records get
+(1) NMEA GGA string is not fully compatible with the standard.
+The following are observations by Tamas Horvath: 
+1. Time tag should refer to UTC time and not GPS system time.
+2. Time tag format is hhmmss.ss and not hhmmss.
+3. The GPS Quality indicator field is 1 (GPS SPS Mode), which is correct, as
+there is no category for PPP. In my opinion the NMEA protocol should be
+extended by a new indicator number for PPP to make a clear difference between
+autonomous GNSS and PPP.
+4. The HDOP value is constantly 2.0, which is obviously not real. I think this
+field is filled with 2.0 as a default value in BNC.
+5. The Age of Differential GPS data field is not populated. I believe here the
+age of RTCM SSR data should be put.
+(2) BNC has a problem when the observation update rate is > 1Hz. Records get
 mixed then in the RINEX files. A 10 Hz stream to test the situation is 
 available from GFZ caster 139.17.3.112:4080 through stream A17H.
 
-(2) GW: Keep an eye on www.igs-ip.net/PENC0.
+(3) GW: Keep an eye on www.igs-ip.net/PENC0.
 
