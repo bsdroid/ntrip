@@ -26,9 +26,34 @@ field is filled with 2.0 as a default value in BNC.
 5. The Age of Differential GPS data field is not populated. I believe here the
 age of RTCM SSR data should be put.
 
-(2) BNC has a problem when the observation update rate is > 1Hz. Records get
+(2) Should we spend time to improve BNC's convergence? Should we follow a
+procedure like the one Oscar implemented? If not: Can we do something which
+helps a bit and does not involve too much work?
+
+(a) Calculate, for each satellite, the STD of the code multipath in the 
+iono-free combination Pc, as a combination the carrier phase and the code.
+Do this continuously, using a circular register that contains the observations 
+of the previous 10 minutes.
+(b) Introduce a default STD that is used when, either at the beginning or
+after an interruption in the data, there is less than 10 minutes worth of
+data for finding the multipath STD as in (1), and the STD with insufficient
+data is less than this default.
+(c) Introduce use a "fudge factor" to multiply the data-based STD and get the
+actual value used to get the data. This is necessary, because the correct weight
+of the data depends on numerous factors, particularly the weights assigned to
+the phase and to the a priori values of the unknowns. This problem also is true
+for (b), (c), and (d). So the fudge factor really depends on the overall strategy
+and cannot be used in different software implementations. 
+Everyone has to find it the hard way, by trial and error, making lots of solutions.
+(The variance of unit weight is of very limited help for this purpose.)
+(d) Downweight the code by a large factor when a satellite is below 20 degrees 
+in elevation, or the 3-D precision of the coordinates being estimated falls
+below something like 25 cm (again, this will be a different threshold with
+different software).
+
+(3) BNC has a problem when the observation update rate is > 1Hz. Records get
 mixed then in the RINEX files. A 10 Hz stream to test the situation is 
 available from GFZ caster 139.17.3.112:4080 through stream A17H.
 
-(3) GW: Keep an eye on www.igs-ip.net/PENC0.
+(4) GW: Keep an eye on www.igs-ip.net/PENC0.
 
