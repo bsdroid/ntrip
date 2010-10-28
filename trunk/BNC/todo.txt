@@ -2,6 +2,14 @@ Todo's sorted by priority:
 
 BNS
 =========================
+(1) One would expect that a new ephemeris set always comes with a later validity
+time tag than a previously distributed ephemeris set. However, this is not always true.
+Sometimes new ephemeris sets come with a validity time tag which is earlier than the
+validity time tag of a previously distributed ephemeris set. This is something
+we should consider in BNS. Gerhard observed that we dont consider this right
+now. The consequence is that a satellite gets lost for PPP clients because
+they deal with another ephemeris set than the correctors provided by
+BNS.
 
 BNC
 =========================
@@ -17,6 +25,7 @@ autonomous GNSS and PPP.
 field is filled with 2.0 as a default value in BNC.
 5. The Age of Differential GPS data field is not populated. I believe here the
 age of RTCM SSR data should be put.
+
 (2) BNC has a problem when the observation update rate is > 1Hz. Records get
 mixed then in the RINEX files. A 10 Hz stream to test the situation is 
 available from GFZ caster 139.17.3.112:4080 through stream A17H.
