@@ -2,7 +2,12 @@ Todo's sorted by priority:
 
 BNS
 =========================
-(1) One would expect that a new ephemeris set always comes with a later validity
+(1) We often have small (~20...30 sec) outages in the CLK* streams. I dont
+know where this comes from. The situation can be checked through
+http://products.igs-ip.net/admin?mode=sources (ntrip:ntrip)
+(see column 'Connected for')
+
+(2) One would expect that a new ephemeris set always comes with a later validity
 time tag than a previously distributed ephemeris set. However, this is not always true.
 Sometimes new ephemeris sets come with a validity time tag which is earlier than the
 validity time tag of a previously distributed ephemeris set. This is something
@@ -13,22 +18,9 @@ BNS.
 
 BNC
 =========================
-(1) NMEA GGA string is not fully compatible with the standard.
-The following are observations by Tamas Horvath: 
-1. Time tag should refer to UTC time and not GPS system time.
-2. Time tag format is hhmmss.ss and not hhmmss.
-3. The GPS Quality indicator field is 1 (GPS SPS Mode), which is correct, as
-there is no category for PPP. In my opinion the NMEA protocol should be
-extended by a new indicator number for PPP to make a clear difference between
-autonomous GNSS and PPP.
-4. The HDOP value is constantly 2.0, which is obviously not real. I think this
-field is filled with 2.0 as a default value in BNC.
-5. The Age of Differential GPS data field is not populated. I believe here the
-age of RTCM SSR data should be put.
-
-(2) Should we spend time to improve BNC's convergence? Should we follow a
+(1) Should we spend time to improve BNC's convergence? Should we follow a
 procedure like the one Oscar implemented? If not: Can we do something which
-helps a bit and does not involve too much work?
+helps a bit and does not involve too much work? Or should we better do nothing?
 
 (a) Calculate, for each satellite, the STD of the code multipath in the 
 iono-free combination Pc, as a combination the carrier phase and the code.
@@ -51,9 +43,26 @@ in elevation, or the 3-D precision of the coordinates being estimated falls
 below something like 25 cm (again, this will be a different threshold with
 different software).
 
-(3) BNC has a problem when the observation update rate is > 1Hz. Records get
+(2) Could we use the XYZ from 'Plot origion' to improve BNC's conversion when
+we start the program (supposed the user has good a-priori coordinates)?
+So far the introduced XYZ is only used for the plot.
+
+(3) NMEA GGA string is not fully compatible with the standard.
+The following are observations by Tamas Horvath: 
+(a) Time tag should refer to UTC time and not GPS system time.
+(b) Time tag format is hhmmss.ss and not hhmmss.
+(c) The GPS Quality indicator field is 1 (GPS SPS Mode), which is correct, as
+there is no category for PPP. In my opinion the NMEA protocol should be
+extended by a new indicator number for PPP to make a clear difference between
+autonomous GNSS and PPP.
+(d) The HDOP value is constantly 2.0, which is obviously not real. I think this
+field is filled with 2.0 as a default value in BNC.
+(e) The Age of Differential GPS data field is not populated. I believe here the
+age of RTCM SSR data should be put.
+
+(4) BNC has a problem when the observation update rate is > 1Hz. Records get
 mixed then in the RINEX files. A 10 Hz stream to test the situation is 
 available from GFZ caster 139.17.3.112:4080 through stream A17H.
 
-(4) GW: Keep an eye on www.igs-ip.net/PENC0.
+(5) GW: Keep an eye on www.igs-ip.net/PENC0.
 
