@@ -16,6 +16,16 @@ now. The consequence is that a satellite gets lost for PPP clients because
 they deal with another ephemeris set than the correctors provided by
 BNS.
 
+(3)
+Shall We add the following validity check to BNS and BNS for the GLONASS broadcast
+ephemeris messages?
+(a) If the time of validity differs by more than +/- 30 min from the time
+of reception, then the 1019/1020 messages are rejected.
+(b) However, if correcting the time of validity of such rejected 1019/1020
+message by exactly 3 hours leads to a new validity time within +/- 30 min of
+the reception time, then the broadcast ephemeris are nevertheless accepted.
+
+
 BNC
 =========================
 (1) Should we spend time to improve BNC's convergence? Should we follow a
