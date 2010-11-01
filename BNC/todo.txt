@@ -24,6 +24,11 @@ of reception, then the 1019/1020 messages are rejected.
 (b) However, if correcting the time of validity of such rejected 1019/1020
 message by exactly 3 hours leads to a new validity time within +/- 30 min of
 the reception time, then the broadcast ephemeris are nevertheless accepted.
+(c) The following is Gerhard's opinion:
+Die 1020 Message ist sauber definiert. Es gab zwar in der Anfangsphase
+hier und da Probleme mit einigen Implementation, die sind aber meines Wissens
+gelöst.  Ich halte es für sehr kritisch, eine 3-Stunden Differenz automatisch zu
+akzeptieren und vielleicht sogar zu korrigieren. 
 
 
 BNC
