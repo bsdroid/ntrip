@@ -218,6 +218,7 @@ void t_bnscaster::open() {
 void t_bnscaster::write(char* buffer, unsigned len) {
   if (_outSocket) {
     unsigned bytesWritten = _outSocket->write(buffer, len);
+    _outSocket->flush();
     if (bytesWritten != len) {
       emit(newMessage("Broadcaster: cannot write to socket, closing"));
       delete _outSocket;
