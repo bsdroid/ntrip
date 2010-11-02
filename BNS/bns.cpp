@@ -291,7 +291,8 @@ void t_bns::slotNewEph(t_eph* ep, int nBytes) {
     pair->eph = ep;
   }
   else {
-    if (ep->isNewerThan(pair->eph)) {
+    /////    if (ep->isNewerThan(pair->eph)) {
+    if (true) { // simply take the last one
       delete pair->oldEph;
       pair->oldEph = pair->eph;
       pair->eph    = ep;
