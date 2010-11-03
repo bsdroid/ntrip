@@ -250,10 +250,11 @@ void bncPPPclient::slotNewEphGPS(gpsephemeris gpseph) {
   QString prn = QString("G%1").arg(gpseph.satellite, 2, 10, QChar('0'));
 
   if (_eph.contains(prn)) {
-    t_ephGPS* eLast = static_cast<t_ephGPS*>(_eph.value(prn)->last);
-    if ( (eLast->GPSweek() <  gpseph.GPSweek) || 
-         (eLast->GPSweek() == gpseph.GPSweek &&  
-          eLast->TOC()     <  gpseph.TOC) ) {
+////    t_ephGPS* eLast = static_cast<t_ephGPS*>(_eph.value(prn)->last);
+////    if ( (eLast->GPSweek() <  gpseph.GPSweek) || 
+////         (eLast->GPSweek() == gpseph.GPSweek &&  
+////          eLast->TOC()     <  gpseph.TOC) ) {
+    if (true) { // simply take the last one
       delete static_cast<t_ephGPS*>(_eph.value(prn)->prev);
       _eph.value(prn)->prev = _eph.value(prn)->last;
       _eph.value(prn)->last = new t_ephGPS();
@@ -279,9 +280,10 @@ void bncPPPclient::slotNewEphGlonass(glonassephemeris gloeph) {
     int ww  = gloeph.GPSWeek;
     int tow = gloeph.GPSTOW; 
     updatetime(&ww, &tow, gloeph.tb*1000, 0);  // Moscow -> GPS
-    t_ephGlo* eLast = static_cast<t_ephGlo*>(_eph.value(prn)->last);
-    if (eLast->GPSweek() < ww || 
-        (eLast->GPSweek()  == ww &&  eLast->GPSweeks() <  tow)) {  
+////    t_ephGlo* eLast = static_cast<t_ephGlo*>(_eph.value(prn)->last);
+////    if (eLast->GPSweek() < ww || 
+////        (eLast->GPSweek()  == ww &&  eLast->GPSweeks() <  tow)) {  
+    if (true) { // simply take the last one
       delete static_cast<t_ephGlo*>(_eph.value(prn)->prev);
       _eph.value(prn)->prev = _eph.value(prn)->last;
       _eph.value(prn)->last = new t_ephGlo();
