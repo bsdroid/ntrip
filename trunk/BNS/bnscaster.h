@@ -9,7 +9,7 @@ class t_bnscaster : public QObject {
   t_bnscaster(const QString& mountpoint, const QString& outFileName, int ic);
   t_bnscaster(const QString& mountpoint);
   virtual ~t_bnscaster();
-  void open(bool force = false);
+  void open();
   void write(char* buffer, unsigned len);
   void printAscii(const QString& line);
   bool usedSocket() const {return _outSocket;}

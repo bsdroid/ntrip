@@ -89,7 +89,8 @@ void t_bnseph::reconnect() {
 
   const int timeOut = 30*1000;  // 30 seconds
   if (!_socket->waitForConnected(timeOut)) {
-    emit(newMessage("bnseph::reconnect: Connect Timeout"));
+//  emit(newMessage("bnseph::run Connect Timeout"));
+    emit(newMessage("Ephemeris server: Connection timeout")); // weber
     msleep(1000);
   }
 }
@@ -98,12 +99,12 @@ void t_bnseph::reconnect() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bnseph::run() {
 
-  emit(newMessage("bnseph::run: Start"));
+//emit(newMessage("bnseph::run Start"));
+  emit(newMessage("Ephemeris server: Connection opened")); // weber
 
   while (true) {
     if ( _socket == 0 ||
-         (_socket->state() != QAbstractSocket::HostLookupState &&
-          _socket->state() != QAbstractSocket::ConnectingState &&
+         (_socket->state() != QAbstractSocket::ConnectingState &&
           _socket->state() != QAbstractSocket::ConnectedState) ) {
       reconnect();
     }

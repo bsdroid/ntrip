@@ -92,18 +92,15 @@ t_bnscaster::~t_bnscaster() {
 
 // Start the Communication with NTRIP Caster
 ////////////////////////////////////////////////////////////////////////////
-void t_bnscaster::open(bool force) {
+void t_bnscaster::open() {
 
   if (_mountpoint.isEmpty()) {
     return;
   }
 
-  if (_outSocket != 0) {
-    if ( _outSocket->state() == QAbstractSocket::HostLookupState ||
-         _outSocket->state() == QAbstractSocket::ConnectingState ||
-         _outSocket->state() == QAbstractSocket::ConnectedState ) {
-      return;
-    }
+  if (_outSocket != 0 && 
+      _outSocket->state() == QAbstractSocket::ConnectedState) {
+    return;
   }
 
   delete _outSocket; _outSocket = 0;
@@ -112,8 +109,7 @@ void t_bnscaster::open(bool force) {
   if (++_sOpenTrial > 4) {
     _sOpenTrial = 4;
   }
-  if (!force &&
-      _outSocketOpenTime.isValid() &&
+  if (_outSocketOpenTime.isValid() &&
       _outSocketOpenTime.secsTo(QDateTime::currentDateTime()) < minDt) {
     return;
   }
@@ -220,20 +216,9 @@ void t_bnscaster::open(bool force) {
 // Write buffer
 ////////////////////////////////////////////////////////////////////////////
 void t_bnscaster::write(char* buffer, unsigned len) {
-  for (int iTrial = 1; iTrial <= 2; ++iTrial) {
-    if (_outSocket) {
-      unsigned bytesWritten = _outSocket->write(buffer, len);
-      if (bytesWritten == len) {
-        _outSocket->flush();
-        break;
-      }
-      else {
-        emit(newMessage("Broadcaster: cannot write to socket, closing"));
-        delete _outSocket;
-        _outSocket = 0;
-        open(true);
-      }
-    }
+  if (_outSocket) {
+    _outSocket->write(buffer, len);
+    _outSocket->flush();
   }
 }
 
