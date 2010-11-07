@@ -59,8 +59,7 @@ const double   MINELE_GLO       = 10.0 * M_PI / 180.0;
 const double   MAXRES_CODE_GPS  = 10.0;
 const double   MAXRES_PHASE_GPS = 0.10;
 const double   MAXRES_PHASE_GLO = 0.05;
-const double   sig_crd_0        =  100.0;
-const double   sig_crd_p        =  100.0;
+const double   QUICKSTART       =  120.0;
 const double   sig_clk_0        = 1000.0;
 const double   sig_trp_0        =    0.10;
 const double   sig_trp_p        =    1e-8;
@@ -136,10 +135,19 @@ bncModel::bncModel(QByteArray staID) {
 
   _staID   = staID;
 
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
+  _startTime = QDateTime::currentDateTime();
 
   bncSettings settings;
+
+  double sig_crd_0 = 100.0;
+
+  if (settings.value("pppOrigin").toString() == "QuickStart - Static" ||
+      settings.value("pppOrigin").toString() == "QuickStart - Mobile") {
+    sig_crd_0 = 000.01;
+  } 
+
+  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
 
   _static = false;
   if ( Qt::CheckState(settings.value("pppStatic").toInt()) == Qt::Checked) {
@@ -165,14 +173,6 @@ bncModel::bncModel(QByteArray staID) {
   }
   else {
     _useGlonass = false;
-  }
-
-  _tRangeAverage = settings.value("pppAverage").toDouble() * 60.;
-  if (_tRangeAverage < 0) {
-    _tRangeAverage = 0;
-  }
-  if (_tRangeAverage > 86400) {
-    _tRangeAverage = 86400;
   }
 
   int nextPar = 0;
@@ -222,15 +222,6 @@ bncModel::bncModel(QByteArray staID) {
     _nmeaStream = new QTextStream();
     _nmeaStream->setDevice(_nmeaFile);
   }
-//Perlt Anfang
-  _xyzAverage[0] = 0.0; _xyzAverage[1] = 0.0; _xyzAverage[2] = 0.0;
-  _xyzAverage[3] = 0.0; _xyzAverage[4] = 0.0; _xyzAverage[5] = 0.0;
-  _xyzAverageSqr[0] = 0.0; _xyzAverageSqr[1] = 0.0; _xyzAverageSqr[2] = 0.0;
-  _xyzAverageSqr[3] = 0.0; _xyzAverageSqr[4] = 0.0; _xyzAverageSqr[5] = 0.0;
-  for (int ii = 0; ii < _posAverage.size(); ++ii) { delete _posAverage[ii]; }
-  _posAverage.clear();
-//Perlt Ende
-
 }
 
 // Destructor
@@ -238,9 +229,9 @@ bncModel::bncModel(QByteArray staID) {
 bncModel::~bncModel() {
   delete _nmeaStream;
   delete _nmeaFile;
-//Perlt Anfang
-  for (int ii = 0; ii < _posAverage.size(); ++ii) { delete _posAverage[ii]; }
-//Perlt Ende
+  for (int ii = 0; ii < _posAverage.size(); ++ii) { 
+    delete _posAverage[ii]; 
+  }
 }
 
 // Bancroft Solution
@@ -394,7 +385,22 @@ double bncModel::delay_saast(double Ele) {
 ////////////////////////////////////////////////////////////////////////////
 void bncModel::predict(t_epoData* epoData) {
 
-  bool firstCrd = x() == 0.0 && y() == 0.0 && z() == 0.0;
+  bncSettings settings;
+
+  bool firstCrd = false;
+  if (x() == 0.0 && y() == 0.0 && z() == 0.0) {
+    firstCrd = true;
+  }
+
+  bool   quickStartInit = false;
+  double sig_crd_p      = 100.0;
+
+  if ( (settings.value("pppOrigin").toString() == "QuickStart - Static" ||
+        settings.value("pppOrigin").toString() == "QuickStart - Mobile") &&
+       _startTime.secsTo(QDateTime::currentDateTime()) < QUICKSTART ) {
+    quickStartInit = true;
+    sig_crd_p       = 0.0;
+  }
 
   // Predict Parameter values, add white noise
   // -----------------------------------------
@@ -405,19 +411,34 @@ void bncModel::predict(t_epoData* epoData) {
     // -----------
     if      (pp->type == bncParam::CRD_X) {
       if (firstCrd || !_static) {
-        pp->xx = _xcBanc(1);
+        if (quickStartInit) {
+          pp->xx = settings.value("pppRefCrdX").toDouble();
+        }
+        else {
+          pp->xx = _xcBanc(1);
+        }
       }
       _QQ(iPar,iPar) += sig_crd_p * sig_crd_p;
     }
     else if (pp->type == bncParam::CRD_Y) {
       if (firstCrd || !_static) {
-        pp->xx = _xcBanc(2);
+        if (quickStartInit) {
+          pp->xx = settings.value("pppRefCrdY").toDouble();
+        }
+        else {
+          pp->xx = _xcBanc(2);
+        }
       }
       _QQ(iPar,iPar) += sig_crd_p * sig_crd_p;
     }
     else if (pp->type == bncParam::CRD_Z) {
       if (firstCrd || !_static) {
-        pp->xx = _xcBanc(3);
+        if (quickStartInit) {
+          pp->xx = settings.value("pppRefCrdZ").toDouble();
+        }
+        else {
+          pp->xx = _xcBanc(3);
+        }
       }
       _QQ(iPar,iPar) += sig_crd_p * sig_crd_p;
     }   
@@ -750,7 +771,8 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   // NEU Output
   // ----------
-  if (settings.value("pppOrigin").toString() == "X Y Z") {
+  if (settings.value("pppOrigin").toString() == "Plot - X Y Z" || 
+      settings.value("pppOrigin").toString() == "QuickStart - Static") {
     double xyzRef[3];
     double ellRef[3];
     double _xyz[3];
@@ -768,123 +790,94 @@ t_irc bncModel::update(t_epoData* epoData) {
          << setw(8) << setprecision(3) << _neu[1] << " "
          << setw(8) << setprecision(3) << _neu[2];
   }
-//Perlt Anfang
-//  strC << endl;
-//Perlt Ende
 
   emit newMessage(QByteArray(strC.str().c_str()), true);
 
-//Perlt Anfang
-  ostringstream strD;
-  strD.setf(ios::fixed);
-  ostringstream strE;
-  strE.setf(ios::fixed);
+  if (settings.value("pppOrigin").toString() != "None"                  &&
+      settings.value("pppOrigin").toString() != "QuickStart - Mobile"   &&
+      settings.value("pppOrigin").toString() != "Plot - Start position" && 
+      settings.value("pppAverage").toString() != "") {
 
-  if (settings.value("pppOrigin").toString() != "No plot"  && settings.value("pppAverage").toString() != "") {
-    double xyzRef[3];
-    if (settings.value("pppOrigin").toString() == "X Y Z") {
-    xyzRef[0] = settings.value("pppRefCrdX").toDouble();
-    xyzRef[1] = settings.value("pppRefCrdY").toDouble();
-    xyzRef[2] = settings.value("pppRefCrdZ").toDouble();
-    _xyzAverage[3]+=(x()-xyzRef[0]);
-    _xyzAverage[4]+=(y()-xyzRef[1]);
-    _xyzAverage[5]+=(z()-xyzRef[2]);
-    _xyzAverageSqr[3]+=((x()-xyzRef[0])*(x()-xyzRef[0]));
-    _xyzAverageSqr[4]+=((y()-xyzRef[1])*(y()-xyzRef[1]));
-    _xyzAverageSqr[5]+=((z()-xyzRef[2])*(z()-xyzRef[2]));
-    }
-
+    // Remember new position
+    // --------------------- 
     pppPos* newPos = new pppPos;
-    newPos->time   = epoData->tt;
-    newPos->xyz[0] = x();
-    newPos->xyz[1] = y();
-    newPos->xyz[2] = z();
+    newPos->time      = epoData->tt;
+    newPos->xyz[0]    = x();
+    newPos->xyz[1]    = y();
+    newPos->xyz[2]    = z();
+    newPos->xyzRef[0] = settings.value("pppRefCrdX").toDouble();
+    newPos->xyzRef[1] = settings.value("pppRefCrdY").toDouble();
+    newPos->xyzRef[2] = settings.value("pppRefCrdZ").toDouble();
+
     _posAverage.push_back(newPos);
 
-    _xyzAverage[0]+=x();
-    _xyzAverage[1]+=y();
-    _xyzAverage[2]+=z();
-    _xyzAverageSqr[0]+=(x()*x());
-    _xyzAverageSqr[1]+=(y()*y());
-    _xyzAverageSqr[2]+=(z()*z());
+    // Time Span for Average Computation
+    // ---------------------------------
+    double tRangeAverage = settings.value("pppAverage").toDouble() * 60.;
+    if (tRangeAverage < 0) {
+      tRangeAverage = 0;
+    }
+    if (tRangeAverage > 86400) {
+      tRangeAverage = 86400;
+    }
+
+    // Compute the Mean
+    // ----------------
+    double meanX = 0.0;
+    double meanY = 0.0;
+    double meanZ = 0.0;
 
     QMutableVectorIterator<pppPos*> it(_posAverage);
     while (it.hasNext()) {
       pppPos* pp = it.next();
-      if ( (epoData->tt - pp->time) >= _tRangeAverage ) {
-        _xyzAverage[0]-=pp->xyz[0];
-        _xyzAverage[1]-=pp->xyz[1];
-        _xyzAverage[2]-=pp->xyz[2];
-        _xyzAverageSqr[0]-=(pp->xyz[0]*pp->xyz[0]);
-        _xyzAverageSqr[1]-=(pp->xyz[1]*pp->xyz[1]);
-        _xyzAverageSqr[2]-=(pp->xyz[2]*pp->xyz[2]);
-        _xyzAverage[3]-=(pp->xyz[0]-xyzRef[0]);
-        _xyzAverage[4]-=(pp->xyz[1]-xyzRef[1]);
-        _xyzAverage[5]-=(pp->xyz[2]-xyzRef[2]);
-        _xyzAverageSqr[3]-=((pp->xyz[0]-xyzRef[0])*(pp->xyz[0]-xyzRef[0]));
-        _xyzAverageSqr[4]-=((pp->xyz[1]-xyzRef[1])*(pp->xyz[1]-xyzRef[1]));
-        _xyzAverageSqr[5]-=((pp->xyz[2]-xyzRef[2])*(pp->xyz[2]-xyzRef[2]));
+      if ( (epoData->tt - pp->time) >= tRangeAverage ) {
         delete pp;
         it.remove();
       }
+      else {
+        meanX += pp->xyz[0] - pp->xyzRef[0];
+        meanY += pp->xyz[1] - pp->xyzRef[1];
+        meanZ += pp->xyz[2] - pp->xyzRef[2];
+      }
     }
-    _xyzAverageN=_posAverage.size();
-    double AveX;
-    double AveY;
-    double AveZ;
-    double dAveX;
-    double dAveY;
-    double dAveZ;
-    if (_xyzAverageN>1) {
-      AveX= _xyzAverage[0]/_xyzAverageN;
-      AveY= _xyzAverage[1]/_xyzAverageN;
-      AveZ= _xyzAverage[2]/_xyzAverageN;
-      dAveX= sqrt((_xyzAverageSqr[0]-_xyzAverage[0]*_xyzAverage[0]/(_xyzAverageN))/(_xyzAverageN-1));
-      dAveY= sqrt((_xyzAverageSqr[1]-_xyzAverage[1]*_xyzAverage[1]/(_xyzAverageN))/(_xyzAverageN-1));
-      dAveZ= sqrt((_xyzAverageSqr[2]-_xyzAverage[2]*_xyzAverage[2]/(_xyzAverageN))/(_xyzAverageN-1));
-      strD << _staID.data() << "  AVE-XYZ " 
-           << epoData->tt.timestr(1) << " "
-           << setw(13) << setprecision(3) << AveX                  << " +- "
-           << setw(6)  << setprecision(3) << dAveX       << " "
-           << setw(14) << setprecision(3) << AveY                  << " +- "
-           << setw(6)  << setprecision(3) << dAveY       << " "
-           << setw(14) << setprecision(3) << AveZ                  << " +- "
-           << setw(6)  << setprecision(3) << dAveZ;
-      emit newMessage(QByteArray(strD.str().c_str()), true);
+
+    int nn = _posAverage.size();
+
+    meanX /= nn;
+    meanY /= nn;
+    meanZ /= nn;
+
+    // Compute the Deviation
+    // ---------------------
+    double stdX  = 0.0;
+    double stdY  = 0.0;
+    double stdZ  = 0.0;
+    QVectorIterator<pppPos*> it2(_posAverage);
+    while (it2.hasNext()) {
+      pppPos* pp = it2.next();
+      double dX = pp->xyz[0] - pp->xyzRef[0] - meanX;
+      double dY = pp->xyz[1] - pp->xyzRef[1] - meanY;
+      double dZ = pp->xyz[2] - pp->xyzRef[2] - meanZ;
+      stdX += dX * dX;
+      stdY += dY * dY;
+      stdZ += dZ * dZ;
     }
-    if (settings.value("pppOrigin").toString() == "X Y Z" && settings.value("pppAverage").toString() != "") {
-      double _xyz[3];
-      double ellRef[3];
-      double _dxyz[3];
-      double _neu[3];
-      double _dneu[3];
-      xyz2ell(xyzRef, ellRef);
-      _xyz[0]= _xyzAverage[3]/_xyzAverageN;
-      _xyz[1]= _xyzAverage[4]/_xyzAverageN;
-      _xyz[2]= _xyzAverage[5]/_xyzAverageN;
-      if (_xyzAverageN>1) {
-        _dxyz[0]= sqrt((_xyzAverageSqr[3]-_xyzAverage[3]*_xyzAverage[3]/(_xyzAverageN))/(_xyzAverageN-1));
-        _dxyz[1]= sqrt((_xyzAverageSqr[4]-_xyzAverage[4]*_xyzAverage[4]/(_xyzAverageN))/(_xyzAverageN-1));
-        _dxyz[2]= sqrt((_xyzAverageSqr[5]-_xyzAverage[5]*_xyzAverage[5]/(_xyzAverageN))/(_xyzAverageN-1));
-        xyz2neu(ellRef, _xyz, _neu);
-        xyz2neu(ellRef, _dxyz, _dneu);
-        _dneu[0]=sqrt(_dneu[0]*_dneu[0]);
-        _dneu[1]=sqrt(_dneu[1]*_dneu[1]);
-        _dneu[2]=sqrt(_dneu[2]*_dneu[2]);
-        strE << _staID.data() << "  AVE-NEU "  
-           << epoData->tt.timestr(1) << " "
-           << setw(8)  << setprecision(3) << _neu[0]                << " +- "
-           << setw(6)  << setprecision(3) << _dneu[0]               << " "
-           << setw(8)  << setprecision(3) << _neu[1]                << " +- "
-           << setw(6)  << setprecision(3) << _dneu[1]               << " "
-           << setw(8)  << setprecision(3) << _neu[2]                << " +- "
-           << setw(6)  << setprecision(3) << _dneu[2];
-        emit newMessage(QByteArray(strE.str().c_str()), true);
-      } 
-    }
+    
+    stdX = sqrt(stdX / nn);
+    stdY = sqrt(stdY / nn);
+    stdZ = sqrt(stdZ / nn);
+     
+    ostringstream strD; strD.setf(ios::fixed);
+    strD << _staID.data() << "  AVE-XYZ " 
+         << epoData->tt.timestr(1) << " "
+         << setw(13) << setprecision(3) << meanX  << " +- "
+         << setw(6)  << setprecision(3) << stdX   << " "
+         << setw(14) << setprecision(3) << meanY  << " +- "
+         << setw(6)  << setprecision(3) << stdY   << " "
+         << setw(14) << setprecision(3) << meanZ  << " +- "
+         << setw(6)  << setprecision(3) << stdZ;
+    emit newMessage(QByteArray(strD.str().c_str()), true);
   }
-//Perlt Ende
-  
 
   // NMEA Output
   // -----------
@@ -1056,7 +1049,6 @@ void bncModel::writeNMEAstr(const QString& nmStr) {
 
   emit newNMEAstr(outStr.toAscii());
 }
-
 
 //// 
 //////////////////////////////////////////////////////////////////////////////
