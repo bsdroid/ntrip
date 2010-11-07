@@ -485,7 +485,9 @@ void bncGetThread::run() {
         // ---------------------------
         bool firstObs = (obs == _decoder->_obsList.first());
         obs->_status = t_obs::posted;
-        emit newObs(_staID, firstObs, obs);
+         if (!_isToBeDeleted) {
+           emit newObs(_staID, firstObs, obs);
+         }
       }
       _decoder->_obsList.clear();
     }

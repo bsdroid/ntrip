@@ -128,6 +128,9 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncCaster::~bncCaster() {
+
+  QMutexLocker locker(&_mutex);
+
   QListIterator<bncGetThread*> it(_threads);
   while(it.hasNext()){
     bncGetThread* thread = it.next();
