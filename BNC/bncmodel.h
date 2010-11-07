@@ -99,8 +99,7 @@ class bncModel : public QObject {
   class pppPos {
    public:
     bncTime time;
-    double  xyz[3];
-    double  xyzRef[3];
+    double  xn[6];
   };
 
   bncTime               _time;
