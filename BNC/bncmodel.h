@@ -94,10 +94,13 @@ class bncModel : public QObject {
   double windUp(const QString& prn, const ColumnVector& rSat,
                 const ColumnVector& rRec);
 
+  QDateTime  _startTime;
+
   class pppPos {
    public:
     bncTime time;
     double  xyz[3];
+    double  xyzRef[3];
   };
 
   bncTime               _time;
@@ -115,15 +118,7 @@ class bncModel : public QObject {
   bool                  _useGlonass;
   QMap<QString, double> _windUpTime;
   QMap<QString, double> _windUpSum;
-
-//Perlt Anfang
-  double           _tRangeAverage;
-  QVector<pppPos*> _posAverage;
-  double           _xyzAverage[6];
-  double           _xyzAverageSqr[6];
-  int              _xyzAverageN;
-//Perlt Ende 
-
+  QVector<pppPos*>      _posAverage;
 };
 
 #endif

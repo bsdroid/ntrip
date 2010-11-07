@@ -340,7 +340,7 @@ bncWindow::bncWindow() {
   _pppUsePhaseCheckBox = new QCheckBox();
   _pppNMEALineEdit     = new QLineEdit(settings.value("nmeaFile").toString());
   _pppNMEAPortLineEdit = new QLineEdit(settings.value("nmeaPort").toString());
-  _pppSigCLineEdit  = new QLineEdit(settings.value("pppSigmaCode").toString());
+  _pppSigCLineEdit     = new QLineEdit(settings.value("pppSigmaCode").toString());
   _pppAverageLineEdit  = new QLineEdit(settings.value("pppAverage").toString());
   _pppRefCrdXLineEdit  = new QLineEdit(settings.value("pppRefCrdX").toString());
   _pppRefCrdYLineEdit  = new QLineEdit(settings.value("pppRefCrdY").toString());
@@ -348,7 +348,7 @@ bncWindow::bncWindow() {
 
   _pppOriginComboBox = new QComboBox();
   _pppOriginComboBox->setEditable(false);
-  _pppOriginComboBox->addItems(QString("No plot,Start position,X Y Z").split(","));
+  _pppOriginComboBox->addItems(QString("None,Plot - Start position,Plot - X Y Z,QuickStart - Static,QuickStart - Mobile").split(","));
   int ij = _pppOriginComboBox->findText(settings.value("pppOrigin").toString());
   if (ij != -1) {
     _pppOriginComboBox->setCurrentIndex(ij);
@@ -467,13 +467,13 @@ bncWindow::bncWindow() {
   _pppGLONASSCheckBox->setWhatsThis(tr("<p>By default BNC does not use GLONASS observations in PPP mode.</p><p>Tick 'Use GLONASS' for a combined processing of both, GPS and GLONASS observations in PPP mode.</p>"));
   _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
   _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
-  _pppOriginComboBox->setWhatsThis(tr("<p>Select an origin for North/East/Up time series plots in the 'PPP Plot' tab. This option makes only sense for a stationary receiver.</p>"));
+  _pppOriginComboBox->setWhatsThis(tr("<p>Select an origin for a North/East/Up displacements time series plot in the 'PPP Plot' section or for operating BNC in QuickStart mode starting at a known position.</p><p> - 'Plot - Start position' will let BNC plot a time series referred to the very first determined set of coordinate components.</p><p> - 'Plot - X Y Z' will let BNC plot a time series referred to entered coordinate components XYZ.</p><p> - 'QuickStart - Static' allows to run BNC in QuickStart mode with observations from a stationary receiver located at position XYZ</p><p> - 'QuickStart - Mobile' also allows to run BNC in QuickStart mode. However, the receiver may leave its initial XYZ start position after staying there for two minutes.</p><p>Note that displacements time series plots make only sense for a stationary receiver.</p>"));
   _pppSigCLineEdit->setWhatsThis(tr("<p>Enter a sigma for your code observations in meters.</p><p>5.0 (default) is likely to be an appropriate choice.</p>"));
   _pppAverageLineEdit->setWhatsThis(tr("<p>Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions computed from those individual positions obtained most recently throughout this period.</p><p>An empty option field (default) means that you don't wont BNC to output moving average positions.</p>"));
-  _pppRefCrdXLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown in the 'PPP Plot' tab will then be referred to these values.</p>"));
-  _pppRefCrdYLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown in the 'PPP Plot' tab will then be referred to these values.</p>"));
-  _pppRefCrdZLineEdit->setWhatsThis(tr("<p>You may enter reference coordinates of the receiver position if known. The time series plots shown in the 'PPP Plot' tab will then be referred to these values.</p>"));
-  _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when a 'Plot origin' PPP option is applied. Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate compoments. The sliding PPP time series window covers the period of the latest 5 minutes."));
+  _pppRefCrdXLineEdit->setWhatsThis(tr("<p>Enter reference coordinate X of the receiver's position.</p>"));
+  _pppRefCrdYLineEdit->setWhatsThis(tr("<p>Enter reference coordinate Y of the receiver's position.</p>"));
+  _pppRefCrdZLineEdit->setWhatsThis(tr("<p>Enter reference coordinate Z of the receiver's position.</p>"));
+  _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when a appropriate option is applied via 'Origin'. Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate compoments. The sliding PPP time series window covers the period of the latest 5 minutes."));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -713,7 +713,6 @@ bncWindow::bncWindow() {
   _pppRefCrdYLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdZLineEdit->setMaximumWidth(14*ww);
   _pppNMEAPortLineEdit->setMaximumWidth(14*ww);
-  _pppOriginComboBox->setMaximumWidth(14*ww);
   _pppSPPComboBox->setMaximumWidth(8*ww);
   pppLayout->setColumnMinimumWidth(0,14*ww);
   pppLayout->addWidget(new QLabel("Mountpoint"),             0, 0);
@@ -733,13 +732,13 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Sigma code"),             2, 2);
   pppLayout->addWidget(_pppAverageLineEdit,                  2, 4);
   pppLayout->addWidget(new QLabel("Averaging"),              2, 4, Qt::AlignRight);  
-  pppLayout->addWidget(new QLabel("Plot origin"),            3, 0);
+  pppLayout->addWidget(new QLabel("Origin"),                 3, 0);
   pppLayout->addWidget(_pppOriginComboBox,                   3, 1, 1, 2);
-  pppLayout->addWidget(new QLabel("  "),                     3, 3);
+  pppLayout->addWidget(new QLabel(" X"),                     3, 3, Qt::AlignRight);
   pppLayout->addWidget(_pppRefCrdXLineEdit,                  3, 4);
-  pppLayout->addWidget(new QLabel("  "),                     3, 5);
+  pppLayout->addWidget(new QLabel(" Y"),                     3, 5, Qt::AlignRight);
   pppLayout->addWidget(_pppRefCrdYLineEdit,                  3, 6); 
-  pppLayout->addWidget(new QLabel("  "),                     3, 7);
+  pppLayout->addWidget(new QLabel(" Z"),                     3, 7, Qt::AlignRight);
   pppLayout->addWidget(_pppRefCrdZLineEdit,                  3, 8);
   pppLayout->addWidget(new QLabel("NMEA File (full path)"),  4, 0); 
   pppLayout->addWidget(_pppNMEALineEdit,                     4, 1, 1, 6);
@@ -1299,7 +1298,8 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
                    _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
         connect(thread, SIGNAL(newLatency(QByteArray, double)),
                 _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
-        if (settings.value("pppOrigin").toString() != "No plot") {
+        if (settings.value("pppOrigin").toString() != "None"  &&
+            settings.value("pppOrigin").toString() != "QuickStart - Mobile") {
           disconnect(thread, 
                      SIGNAL(newPosition(bncTime, double, double, double)),
                      _bncFigurePPP, 
@@ -1628,7 +1628,9 @@ void bncWindow::slotBncTextChanged(){
       _pppEstTropoCheckBox->setEnabled(true);
       _pppGLONASSCheckBox->setEnabled(true);
       _pppOriginComboBox->setEnabled(true);
-      if (_pppOriginComboBox->currentText() == "X Y Z" ) {
+      if (_pppOriginComboBox->currentText() == "Plot - X Y Z" || 
+          _pppOriginComboBox->currentText() == "QuickStart - Static" || 
+          _pppOriginComboBox->currentText() == "QuickStart - Mobile" ) {
         _pppRefCrdXLineEdit->setPalette(palette_white);
         _pppRefCrdXLineEdit->setEnabled(true);
         _pppRefCrdYLineEdit->setPalette(palette_white);
@@ -1644,7 +1646,9 @@ void bncWindow::slotBncTextChanged(){
         _pppRefCrdZLineEdit->setPalette(palette_gray);
         _pppRefCrdZLineEdit->setEnabled(false);
       }
-      if (_pppOriginComboBox->currentText() != "No plot" ) {
+      if (_pppOriginComboBox->currentText() != "None" &&
+          _pppOriginComboBox->currentText() != "Plot - Start position" && 
+          _pppOriginComboBox->currentText() != "QuickStart - Mobile" ) {
         _pppAverageLineEdit->setPalette(palette_white);
         _pppAverageLineEdit->setEnabled(true);
       }

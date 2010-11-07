@@ -68,12 +68,13 @@ void bncFigurePPP::reset() {
 
   bncSettings settings;
 
-  if      (settings.value("pppOrigin").toString() == "X Y Z") {
+  if (settings.value("pppOrigin").toString() == "Plot - X Y Z" || 
+      settings.value("pppOrigin").toString() == "QuickStart - Static") {
     _xyzRef[0] = settings.value("pppRefCrdX").toDouble();
     _xyzRef[1] = settings.value("pppRefCrdY").toDouble();
     _xyzRef[2] = settings.value("pppRefCrdZ").toDouble();
   }
-  else if (settings.value("pppOrigin").toString() == "Start position") {
+  else if (settings.value("pppOrigin").toString() == "Plot - Start position") {
     _xyzRef[0] = 0.0;
     _xyzRef[1] = 0.0;
     _xyzRef[2] = 0.0;
