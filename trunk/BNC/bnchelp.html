@@ -2,7 +2,7 @@
 <h3>BKG Ntrip Client (BNC) Version 2.4 Manual</h3>
 
 <p>
-The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding and converting real-time GNSS data streams from NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home</u>.
+The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding and converting real-time GNSS data streams from NTRIP broadcasters like <u>http://www.euref-ip.net/home</u> or <u>http://www.igs-ip.net/home</u> or <u>http://products.igs-ip.net/home</u>.
 </p>
 
 <p>
@@ -23,7 +23,7 @@ Please ensure that you have installed the latest version of BNC available from <
 <a href=#purpose>1. Purpose</a><br>
 <a href=#resources>2. Modes &amp; Resources</a><br>
 <a href=#options>3. Settings &amp; Handling</a><br>
-<a href=#limits>4. Limitations</a><br>
+<a href=#limits>4. Limitations &amp; Known Bugs</a><br>
 <a href=#authors>5. Authors</a><br>
 <a href=#annex>6. Annex</a><br>
 </h4>
@@ -63,17 +63,17 @@ BNC allows to by-pass its decoding and conversion algorithms, leave whatever is 
 <p>
 The first of the following figures shows a flow chart of BNC connected to a GNSS receiver via serial or TCP communication link for the pupose of Precise Point Positioning. The second figure shows the conversion of RTCM streams to RINEX batches. The third figure shows a flow chart of BNC feeding a real-time GNSS engine. The engine then estimates satellite orbit and clock correctors. The 'BKG Ntrip Server' (BNS) is used in this scenario to encode correctors to RTCMv3.
 </p>
-<p><img src=":bnchelp/screenshot10.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> Flowchart, BNC connected to a GNSS receiver for Precise Point Positioning.</p>
 
 <p>
 </p>
-<p><img src=":bnchelp/screenshot01.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> Flowchart, BNC converting RTCM streams to RINEX batches.</p>
 
 <p>
 </p>
-<p><img src=":bnchelp/screenshot02.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> Flowchart, BNC feeding a real-time GNSS engine.</p>
 
 
@@ -94,7 +94,7 @@ Unless in offline mode, BNC
 <p>
 The main window of BNC shows a top menu bar section, a sections for tabs to set processing options, a 'Streams' section and a section for 'Log' tabs, and a bottom menu bar section, see figure below.
 </p>
-<p><img src=":bnchelp/screenshot09.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> Sections on BNC's main window.</p>
 
 
@@ -176,7 +176,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppoptcont>Options cont'd</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.3.1 <a href=#pppsigma>Sigma Code</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.3.2 <a href=#pppaverage>Averaging</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#pppnmearef>Plot Origin</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#ppporigin>Origin</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.5 <a href=#pppnmeaout>NMEA</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.5.1 <a href=#pppnmeafile>File</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.5.2 <a href=#pppnmeaport>Port</a><br><br>
@@ -308,7 +308,7 @@ Observations will be converted to RINEX if they come in either RTCM Version 2.x,
 <p>
 The screenshot below shows an example setup of BNC when converting streams to RINEX. Streams are coming in from various NTRIP broadcasters as well as via a plain UDP and a serial communication link. Decoder 'ZERO' has been selected for one stream to not convert its contents but save it in original format.
 </p>
-<p><img src=":bnchelp/screenshot16.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> BNC translating incoming streams to 15 min RINEX Version 3 files.</p>
 
 <p><a name="rnxname"><h4>3.4.1 RINEX File Names</h4></p>
@@ -767,7 +767,7 @@ Note that any socket connection of an application to BNC's synchronized or unsyn
 <p>
 The following figure shows the screenshot of a BNC configuration where a number if streams is pulled from different NTRIP broadcasters to feed a GNSS engine via IP port output.
 </p>
-<p><img src=":bnchelp/screenshot12.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> Synchronized BNC output via IP port to feed a GNSS real-time engine.</p>
 
 <p><a name="syncport"><h4>3.7.1 Port - optional</h4></p>
@@ -806,7 +806,7 @@ BNC can produce unsynchronized observations from all configured streams in binar
 You may use BNC to feed a serial connected device like an GNSS receiver. For that one of the incoming streams can be forwarded to a serial port. The following figure shows the screenshot of an example situation where BNC pulls a VRS stream from an NTRIP broadcaster to feed a serial connected rover. 
 </p>
 </p>
-<p><img src=":bnchelp/screenshot11.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> BNC pulling a VRS stream to feed a serial connected rover.</p>
 
 <p><a name="sermount"><h4>3.8.1 Mountpoint - optional</h4></p>
@@ -954,7 +954,7 @@ This section describes a number of miscellaneous options which can be applied fo
 <p>
 The following figure shows RTCM message numbers contained in stream 'CONZ0' and the message latencies recorded every 10 seconds.
 </p>
-<p><img src=":bnchelp/screenshot14.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> RTCM message numbers and latencies.</p>
 
 
@@ -1021,14 +1021,14 @@ Note that in RTCM Version 2.x the message types 18 and 19 carry only the observa
 <p>
 BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or code plus phase data in ionosphere free linear combinations P3 or L3. Besides pulling a stream of observations from a dual frequency receiver, this also requires pulling in addition
 <ul>
-<li>a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of 'State Space Representation' (SSR) messages as proposed by RTCM (i.e. premature message type 1060). Note that for BNC these correctors need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream www.igs-ip.net:2101/CLK11 is an example.</li>
-<li>a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019 and 1020. This is a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream www.igs-ip.net:2101/RTCM3EPH is an example.</li>
+<li>a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of 'State Space Representation' (SSR) messages as proposed by RTCM (i.e. premature message type 1060). Note that for BNC these correctors need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream products.igs-ip.net:2101/CLK11 is an example.</li>
+<li>a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019 and 1020. This is a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream products.igs-ip.net:2101/RTCM3EPH is an example.</li>
 </ul>
 </p>
 <p>
 The following figure provides the screenshot of an example PPP session with BNC.
 </p>
-<p><img src=":bnchelp/screenshot03.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> Precise Point Positioning (PPP) with BNC.</p>
 
 <p>
@@ -1161,9 +1161,9 @@ As the convergence characteristic of a PPP solution can be influenced by the rat
 Note that the 'Sigma code' you enter must be greater than 0.3 m and less than 50.0 m.
 </p>
 
-<p><a name="pppaverage"><h4>3.11.3.2 Averaging - optional if 'Plot Origin' is set</h4></p>
+<p><a name="pppaverage"><h4>3.11.3.2 Averaging - optional if appropriate 'Origin' option is set</h4></p>
 <p>
-Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions and their RMS as computed from those individual positions obtained most recently throughout this period. RMS values presented for XYZ coordinates are bias reduced while RMS values for Nort/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string "AVE-XYZ" in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string "AVE-NEU". Example:
+Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions and their RMS as computed from those individual positions obtained most recently throughout this period. RMS values presented for XYZ coordinates are bias reduced while RMS values for Nort/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string &quot;AVE-XYZ&quot; in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string &quot;AVE-NEU&quot;. Example:
 </p>
 <pre>
 10-09-08 09:13:05 FFMJ1  AVE-XYZ 09:13:04.0   4053455.948 +-  0.284     617730.422 +-  0.504    4869397.692 +-  0.089
@@ -1173,18 +1173,23 @@ Enter the length of a sliding time window in minutes. BNC will continuously outp
 Entering any positive value up to 1440 (24h mean value) is allowed. An empty option field (default) means that you don't want BNC to output moving average positions into the log file and the 'Log' section. Note that averaging positions makes only sense for a stationary receiver.
 </p>
 
-<p><a name="pppnmearef"><h4>3.11.4 Plot Origin - optional</h4></p>
+<p><a name="ppporigin"><h4>3.11.4 Origin - optional</h4></p>
 <p>
-Select an origin for North/East/Up time series plots of derived coordinates in the 'PPP Plot' tab. Note that this makes only sense for a stationary receiver. Available options are
-<ul>
-<li>'No plot', meaning that BNC will not plot a time series of estimated position, probably because the receiver is moving.</li>
-<li>'Start position', meaning that BNC will refer time series plots to the first estimated position.</li>
-<li>'X Y Z', meaning the known reference coordinate components for the receiver's position.</li>
-</ul>
-Default is the selection of an empty option field meaning that no PPP time series will be plotted in the "PPP Plot' tab..
+Select an origin for a North/East/Up displacements time series plot in the 'PPP Plot' section or for operating BNC in QuickStart mode starting at a known XYZ position.
 </p>
 <p>
-If option 'X Y Z' is selected, the 'PPP' line in BNC's logfile is extended to  (example):
+QuickStart means that BNC operates for the period of 2 minuts in a mode where introduced reference coordinates are constrained. The PPP solution is expected to converge within this time span.
+<ul>
+<li>Option 'None' means that BNC shall neither plot a time series of dispacements nor start in QuickStart mode.</li>
+<li>'Plot - Start position' will let run BNC normal mode and plot a time series referred to the very first determined set of coordinate components.</li>
+<li>'Plot - X Y Z' will let run BNC in normal mode and plot a time series referred to entered coordinate components XYZ.</li>
+<li>Select 'QuickStart - Static' to run BNC in QuickStart mode with observations from a stationary receiver located at known position XYZ.<li>
+<li>'QuickStart - Mobile' also allows to run BNC in QuickStart mode. However, the receiver may leave its known initial XYZ start position after staying there for two minutes.</li>
+</ul>
+Default selection for 'Origin' is 'None'. Note that displacements time series plots make only sense for a stationary receiver.</p>&quot;));
+</p>
+<p>
+If option 'Plot - X Y Z' or 'QuickStart - Static' is selected, the 'PPP' line in BNC's logfile is extended to  (example):
 </p>
 <pre>
 10-08-09 06:01:56 FFMJ1  PPP 06:02:09.0 11    4053457.628 +-  2.639     617729.438 +-  1.180    4869396.447 +-  1.921  NEU   -0.908   -0.571    1.629
@@ -1282,7 +1287,7 @@ The bandwidth consumption per stream is shown in the 'Throughput' tab in bits pe
 
 <p>
 </p>
-<p><img src=":bnchelp/screenshot08.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> Bandwidth consumption of incoming streams.</p>
 
 <p><a name="latency"><h4>3.13.3 Latency</h4></p>
@@ -1292,17 +1297,17 @@ The latency of observations in each incoming stream is shown in the 'Latency' ta
 
 <p>
 </p>
-<p><img src=":bnchelp/screenshot07.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> Latency of incoming streams.</p>
 
 <p><a name="ppptab"><h4>3.13.4 PPP Plot</h4></p>
 <p>
-Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when a 'Plot origin' option is defined. Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate components. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. Note that it may take up to 30 seconds or more till the first PPP solutions becomes available. The following figure shows the screenshot of a PPP time series plot of North, East and Up coordiate components.
+Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when a 'Origin' option is defined. Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate components. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. Note that it may take up to 30 seconds or more till the first PPP solutions becomes available. The following figure shows the screenshot of a PPP time series plot of North, East and Up coordiate components.
 </p>
 
 <p>
 </p>
-<p><img src=":bnchelp/screenshot13.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> Time series plot of PPP session.</p>
 
 <p><a name="bottom"><h4>3.14. Bottom Menu Bar</h4></p>
@@ -1310,7 +1315,7 @@ Precise Point Positioning time series of North (red), East (green) and Up (blue)
 The bottom menu bar allows to add or delete streams to BNC's configuration and to start or stop it. It also provides access to BNC's online help function. The 'Add Stream' button opens a window that allows user to select one of several input communication links, see figure below.
 </p>
 
-<p><img src=":bnchelp/screenshot06.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> Steam input communication links.</p>
 
 <p><a name="streamadd"><h4>3.14.1 Add Stream - Coming from Caster</h4></p>
@@ -1321,7 +1326,7 @@ Button 'Add Stream' &gt; 'Coming from Caster' then opens a window that allows us
 
 <p><a name="streamhost"><h4>3.14.1.1 Caster Host and Port - mandatory</h4></p>
 <p>
-Enter the NTRIP broadcaster host IP and port number. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.
+Enter the NTRIP broadcaster host IP and port number. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> and <u>http://www.products.igs-ip.net/home</u>.
 </p> 
 
 <p><a name="streamtable"><h4>3.14.1.2 Casters Table - optional</h4></p>
@@ -1329,13 +1334,13 @@ Enter the NTRIP broadcaster host IP and port number. Note that EUREF and IGS ope
 It may be that your are not sure about your NTRIP broadcasters host and port number or you are interested in other broadcaster installations operated elsewhere. Hit 'Show' for a table of known broadcasters maintained at <u>www.rtcm-ntrip.org/home</u>. A window opens which allows to select a broadcaster for stream retrieval, see figure below.
 </p> 
 </p>
-<p><img src=":bnchelp/screenshot04.png"/></p>
+<p><img src=""/></p>
 
 <p><u>Figure:</u> Casters table.</p>
 
 <p><a name="streamuser"><h4>3.14.1.3 User and Password - mandatory for protected streams</h4></p>
 <p>
-Some streams on NTRIP broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/ntrip/registeruser</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.
+Some streams on NTRIP broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/ntrip/registeruser</u> for access to protected streams on <u>www.euref-ip.net</u> or <u>www.igs-ip.net</u> or <u>products.igs-ip.net</u>.
 </p> 
 
 <p><a name="gettable"><h4>3.14.1.4 Get Table</h4></p>
@@ -1350,7 +1355,7 @@ Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream'
 </p> 
 </p> 
 </p>
-<p><img src=":bnchelp/screenshot05.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> Broadcaster source-table.</p>
 
 <p><a name="ntripv"><h4>3.14.1.5 NTRIP Version - mandatory</h4></p>
@@ -1445,7 +1450,7 @@ Streams received from a serial connected GNSS receiver show up with an 'S' (for 
 <p>
 The following figure shows a BNC example setup for pulling a stream via serial port on a Linux operating system.
 </p>
-<p><img src=":bnchelp/screenshot15.png"/></p>
+<p><img src=""/></p>
 <p><u>Figure:</u> BNC setup for pulling a stream via serial port.</p>
 
 <p><a name="start"><h4>3.14.5 Start</h4></p>
@@ -1507,7 +1512,7 @@ open -a /Applications/bnc.app --args -conf /Users/tsyan/MyConfig.ini
 if the program is in /Applications and the configuration file 'MyConfig.ini' in /Users/tsyan.
 </p> 
 
-<p><a name="limits"><h3>4. Limitations</h3></p>
+<p><a name="limits"><h3>4. Limitations &amp; Known Bugs</h3></p>
 <ul>
 <li>
 In Qt-based desktop environments (like KDE) on Unix/Linux platforms it may happen that you experience a crash of BNC at startup even when running the program in the background using the '-nw' option. This is a known bug most likely resulting from an incompatibility of Qt libraries in the environment and in BNC. Entering the command 'unset SESSION_MANAGER' before running BNC may help as a work-around. 
@@ -1532,7 +1537,7 @@ Streams coming in RTIGS format carry only GPS data.
 BNC's 'Get Table' function only shows the STR records of a source-table. You can use an Internet browser to download the full source-table contents of any NTRIP broadcaster by simply entering its URL in the form of <u>http://host:port</u>. Data field number 8 in the NET records may provide information about where to register for an NTRIP broadcaster account.
 </li>
 <li>
-EUREF as well as IGS adhere to an open data policy. Streams are made available through NTRIP broadcasters at <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u> free of charge to anyone for any purpose. There is no indication up until now how many users will need to be supported simultaneously. The given situation may develop in such a way that it might become difficult to serve all registered users at the same times. In cases where limited resources on the NTRIP broadcaster side (software restrictions, bandwidth limitation etc.) dictates, first priority in stream provision will be given to stream providers followed by re-broadcasting activities and real-time analysis centers while access to others might be temporarily denied.
+EUREF as well as IGS adhere to an open data policy. Streams are made available through NTRIP broadcasters at <u>www.euref-ip.net</u>, <u>www.igs-ip.net</u> and <u>products.igs-ip.net</u> free of charge to anyone for any purpose. There is no indication up until now how many users will need to be supported simultaneously. The given situation may develop in such a way that it might become difficult to serve all registered users at the same times. In cases where limited resources on the NTRIP broadcaster side (software restrictions, bandwidth limitation etc.) dictates, first priority in stream provision will be given to stream providers followed by re-broadcasting activities and real-time analysis centers while access to others might be temporarily denied.
 </li>
 <li>
 We experienced a limitation of the Standard Version of Microsoft Windows related to socket communication where sockets are not always handled properly. Since BNC makes intensive use of communication through sockets, we recommend to use the Server Version of Microsoft Windows when running BNC continuously for extended on a Windows platform.
