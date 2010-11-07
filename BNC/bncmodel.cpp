@@ -857,9 +857,11 @@ t_irc bncModel::update(t_epoData* epoData) {
            << setw(14) << setprecision(3) << mean[1]  << " +- "
            << setw(6)  << setprecision(3) << std[1]   << " "
            << setw(14) << setprecision(3) << mean[2]  << " +- "
-           << setw(6)  << setprecision(3) << std[2]   << endl;
+           << setw(6)  << setprecision(3) << std[2];
+      emit newMessage(QByteArray(strD.str().c_str()), true);
 
-      strD << _staID.data() << "  AVE-NEU " 
+      ostringstream strE; strE.setf(ios::fixed);
+      strE << _staID.data() << "  AVE-NEU " 
            << epoData->tt.timestr(1) << " "
            << setw(13) << setprecision(3) << mean[3]  << " +- "
            << setw(6)  << setprecision(3) << std[3]   << " "
@@ -868,7 +870,7 @@ t_irc bncModel::update(t_epoData* epoData) {
            << setw(14) << setprecision(3) << mean[5]  << " +- "
            << setw(6)  << setprecision(3) << std[5]   << endl;
 
-      emit newMessage(QByteArray(strD.str().c_str()), true);
+      emit newMessage(QByteArray(strE.str().c_str()), true);
     }
   }
 
