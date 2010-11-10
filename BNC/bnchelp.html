@@ -1175,15 +1175,20 @@ Entering any positive value up to 1440 (24h mean value) is allowed. An empty opt
 
 <p><a name="ppporigin"><h4>3.11.4 Origin - optional</h4></p>
 <p>
-Select an origin for a North/East/Up displacements time series plot in the 'PPP Plot' section or for operating BNC in QuickStart mode starting at a known XYZ position.
+Select an origin
+</p>
+<ul>
+<li>for a North/East/Up displacements time series plot in the 'PPP Plot' section, or</li>
+<li>for operating BNC in QuickStart mode starting at a known XYZ position.
+</ul>
 </p>
 <p>
-QuickStart means that BNC operates for the period of 2 minuts in a mode where introduced reference coordinates are constrained. The PPP solution is expected to converge within this time span.
+QuickStart means that BNC operates for the period of 2 minutes in a mode where an introduced reference coordinate is constrained. The PPP solution is expected to converge within this time span. You may need to create your own 'reference coordinate' through running BNC for an hour in normal mode before applying the QuickStart option. The following options are available:
 <ul>
 <li>Option 'None' means that BNC shall neither plot a time series of dispacements nor start in QuickStart mode.</li>
-<li>'Plot - Start position' will let run BNC normal mode and plot a time series referred to the very first determined set of coordinate components.</li>
+<li>'Plot - Start position' will let run BNC in normal mode and plot a time series referred to the very first determined set of coordinate components.</li>
 <li>'Plot - X Y Z' will let run BNC in normal mode and plot a time series referred to entered coordinate components XYZ.</li>
-<li>Select 'QuickStart - Static' to run BNC in QuickStart mode with observations from a stationary receiver located at known position XYZ.<li>
+<li>Select 'QuickStart - Static' to run BNC in QuickStart mode with observations from a stationary receiver located at known position XYZ.</li>
 <li>'QuickStart - Mobile' also allows to run BNC in QuickStart mode. However, the receiver may leave its known initial XYZ start position after staying there for two minutes.</li>
 </ul>
 Default selection for 'Origin' is 'None'. Note that displacements time series plots make only sense for a stationary receiver.
