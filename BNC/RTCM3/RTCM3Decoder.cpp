@@ -242,8 +242,8 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               else if (parser.Data.satellites[ii] <= PRN_GLONASS_END) {
                 obs->_o.satSys = 'R';
                 obs->_o.satNum = parser.Data.satellites[ii] - PRN_GLONASS_START + 1;
-                ////  obs->_o.slot   = parser.Data.channels[ii];
-                obs->_o.slot   = parser.GLOFreq[obs->_o.satNum];
+                ////  obs->_o.slotNum   = parser.Data.channels[ii];
+                obs->_o.slotNum   = parser.GLOFreq[obs->_o.satNum] - 100;
               }
               else {
                 obs->_o.satSys = 'S';

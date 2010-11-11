@@ -41,7 +41,7 @@ class t_obsInternal {
     flags(0),
     satSys(' '),
     satNum(0),
-    slot(0),
+    slotNum(0),
     GPSWeek(0),
     GPSWeeks(0.0),
     C1(0.0),
@@ -64,7 +64,7 @@ class t_obsInternal {
   char   StatID[20+1];  // Station ID
   char   satSys;        // Satellite System ('G' or 'R')
   int    satNum;        // Satellite Number (PRN for GPS NAVSTAR)
-  int    slot;          // Slot Number (for Glonass)
+  int    slotNum;       // Slot Number (for Glonass)
   int    GPSWeek;       // Week of GPS-Time
   double GPSWeeks;      // Second of Week (GPS-Time)
   double C1;            // CA-code pseudorange (meters)
@@ -94,7 +94,7 @@ class t_obs : public QObject{
     _o.StatID[0]     = '\0';
     _o.satSys        = 'G';
     _o.satNum        = 0;
-    _o.slot          = 0;
+    _o.slotNum       = 0;
     _o.GPSWeek       = 0;
     _o.GPSWeeks      = 0.0;
     _o.C1            = 0.0;
