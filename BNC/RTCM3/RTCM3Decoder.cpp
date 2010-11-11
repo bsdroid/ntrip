@@ -234,7 +234,6 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
             
             for (int ii = 0; ii < parser.Data.numsats; ii++) {
               p_obs obs = new t_obs();
-              _obsList.push_back(obs);
               if      (parser.Data.satellites[ii] <= PRN_GPS_END) {
                 obs->_o.satSys = 'G';
                 obs->_o.satNum = parser.Data.satellites[ii];
@@ -243,12 +242,27 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                 obs->_o.satSys = 'R';
                 obs->_o.satNum = parser.Data.satellites[ii] - PRN_GLONASS_START + 1;
                 ////  obs->_o.slotNum   = parser.Data.channels[ii];
-                obs->_o.slotNum   = parser.GLOFreq[obs->_o.satNum] - 100;
+                if (obs->_o.satNum <= PRN_GLONASS_NUM && 
+                    parser.GLOFreq[obs->_o.satNum-1] != 0) {
+                  obs->_o.slotNum   = parser.GLOFreq[obs->_o.satNum-1] - 100;
+                }
+                else { 
+                  delete obs;
+                  obs = 0;
+                }
               }
               else {
                 obs->_o.satSys = 'S';
                 obs->_o.satNum = parser.Data.satellites[ii] - PRN_WAAS_START + 20;
               }
+
+              if (obs) {
+                _obsList.push_back(obs);
+              }
+              else {
+                continue;
+              }
+
               obs->_o.GPSWeek  = parser.Data.week;
               obs->_o.GPSWeeks = parser.Data.timeofweek / 1000.0;
 
