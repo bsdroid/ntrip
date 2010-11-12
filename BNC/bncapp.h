@@ -46,6 +46,8 @@ class bncApp : public QApplication {
     QString confFileName() const {return _confFileName;}
     void writeRawData(const QByteArray& data, const QByteArray& staID,
                       const QByteArray& format);
+    void storeGlonassSlotNums(const int GLOFreq[]);
+    void getGlonassSlotNums(int GLOFreq[]);
 
   public slots:
     void slotMessage(QByteArray msg, bool showOnScreen);
@@ -106,5 +108,6 @@ class bncApp : public QApplication {
     QString             _confFileName;
     QDate               _fileDate;
     bncRawFile*         _rawFile;
+    int                 _GlonassSlotNums[PRN_GLONASS_NUM];
 };
 #endif
