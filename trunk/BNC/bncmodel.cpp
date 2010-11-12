@@ -723,6 +723,12 @@ t_irc bncModel::update(t_epoData* epoData) {
   } while (outlierDetection(QQsav, vv, epoData->satDataGPS, 
                             epoData->satDataGlo) != 0);
 
+  // Remember the Epoch-specific Results for the computation of means
+  // ----------------------------------------------------------------
+  pppPos* newPos = new pppPos;
+  newPos->time   = epoData->tt;
+  _posAverage.push_back(newPos); 
+
   // Set Solution Vector
   // -------------------
   ostringstream strB;
@@ -744,17 +750,18 @@ t_irc bncModel::update(t_epoData* epoData) {
            << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == bncParam::TROPO) {
+      double aprTrp = delay_saast(M_PI/2.0);
       strB << "\n    trp     = " << par->prn.toAscii().data()
-           << setw(7) << setprecision(3) << delay_saast(M_PI/2.0) << " "
+           << setw(7) << setprecision(3) << aprTrp << " "
            << setw(6) << setprecision(3) << showpos << par->xx << noshowpos
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
+      newPos->xnt[6] = aprTrp + par->xx;
     }
   }
   strB << '\n';
   _log += strB.str().c_str();
   emit newMessage(_log, false);
-
 
   // Final Message (both log file and screen)
   // ----------------------------------------
@@ -779,22 +786,19 @@ t_irc bncModel::update(t_epoData* epoData) {
     xyzRef[1] = settings.value("pppRefCrdY").toDouble();
     xyzRef[2] = settings.value("pppRefCrdZ").toDouble();
 
-    pppPos* newPos = new pppPos;
-    newPos->time   = epoData->tt;
-    newPos->xn[0] = x() - xyzRef[0];
-    newPos->xn[1] = y() - xyzRef[1];
-    newPos->xn[2] = z() - xyzRef[2];
+    newPos->xnt[0] = x() - xyzRef[0];
+    newPos->xnt[1] = y() - xyzRef[1];
+    newPos->xnt[2] = z() - xyzRef[2];
 
     double ellRef[3];
     xyz2ell(xyzRef, ellRef);
-    xyz2neu(ellRef, newPos->xn, &newPos->xn[3]);
+    xyz2neu(ellRef, newPos->xnt, &newPos->xnt[3]);
 
     strC << "  NEU "
-         << setw(8) << setprecision(3) << newPos->xn[3] << " "
-         << setw(8) << setprecision(3) << newPos->xn[4] << " "
-         << setw(8) << setprecision(3) << newPos->xn[5];
+         << setw(8) << setprecision(3) << newPos->xnt[3] << " "
+         << setw(8) << setprecision(3) << newPos->xnt[4] << " "
+         << setw(8) << setprecision(3) << newPos->xnt[5];
 
-    _posAverage.push_back(newPos); // remember for the computation of mean
   }
 
   emit newMessage(QByteArray(strC.str().c_str()), true);
@@ -813,7 +817,7 @@ t_irc bncModel::update(t_epoData* epoData) {
 
     // Compute the Mean
     // ----------------
-    ColumnVector mean(6); mean = 0.0;
+    ColumnVector mean(7); mean = 0.0;
 
     QMutableVectorIterator<pppPos*> it(_posAverage);
     while (it.hasNext()) {
@@ -823,8 +827,8 @@ t_irc bncModel::update(t_epoData* epoData) {
         it.remove();
       }
       else {
-        for (int ii = 0; ii < 6; ++ii) {
-          mean[ii] += pp->xn[ii];
+        for (int ii = 0; ii < 7; ++ii) {
+          mean[ii] += pp->xnt[ii];
         }
       }
     }
@@ -837,15 +841,15 @@ t_irc bncModel::update(t_epoData* epoData) {
       
       // Compute the Deviation
       // ---------------------
-      ColumnVector std(6); std = 0.0;
+      ColumnVector std(7); std = 0.0;
       QVectorIterator<pppPos*> it2(_posAverage);
       while (it2.hasNext()) {
         pppPos* pp = it2.next();
-        for (int ii = 0; ii < 6; ++ii) {
-          std[ii] += (pp->xn[ii] - mean[ii]) * (pp->xn[ii] - mean[ii]);
+        for (int ii = 0; ii < 7; ++ii) {
+          std[ii] += (pp->xnt[ii] - mean[ii]) * (pp->xnt[ii] - mean[ii]);
         }
       }
-      for (int ii = 0; ii < 6; ++ii) {
+      for (int ii = 0; ii < 7; ++ii) {
         std[ii] = sqrt(std[ii] / nn);
       }
        
@@ -868,9 +872,17 @@ t_irc bncModel::update(t_epoData* epoData) {
            << setw(14) << setprecision(3) << mean[4]  << " +- "
            << setw(6)  << setprecision(3) << std[4]   << " "
            << setw(14) << setprecision(3) << mean[5]  << " +- "
-           << setw(6)  << setprecision(3) << std[5]   << endl;
+           << setw(6)  << setprecision(3) << std[5];
 
       emit newMessage(QByteArray(strE.str().c_str()), true);
+
+      ostringstream strF; strF.setf(ios::fixed);
+      strF << _staID.data() << "  AVE-TRP " 
+           << epoData->tt.timestr(1) << " "
+           << setw(13) << setprecision(3) << mean[6]  << " +- "
+           << setw(6)  << setprecision(3) << std[6]   << endl;
+
+      emit newMessage(QByteArray(strF.str().c_str()), true);
     }
   }
 
