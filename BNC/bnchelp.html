@@ -1229,7 +1229,7 @@ Specify the full path to a file where Point Positioning results are saved as NME
 
 <p><a name="pppnmeaport"><h4>3.11.5.2 Port - optional</h4></p>
 <p>
-Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'Port' is an empty option field, meaning that BNC does not provide NMEA messsages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same. 
+Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'Port' is an empty option field, meaning that BNC does not provide NMEA messages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same. 
 </p>
 
 <p><a name="streams"><h4>3.12. Streams</h4></p>
@@ -1795,7 +1795,6 @@ RTCM Version 3.x has been developed as a more efficient alternative to RTCM Vers
 </p>
 <p>
 RTCM Version 3.x defines a number of message types. Messages that may be of interest here are:
-</p>
 <ul>
 <li>Type 1001, GPS L1 code and phase.</li>
 <li>Type 1002, GPS L1 code and phase and ambiguities and carrier to noise ratio.</li>
@@ -1816,6 +1815,52 @@ RTCM Version 3.x defines a number of message types. Messages that may be of inte
 <li>Type 4088 and 4095, Proprietary messages (under development).
 </li>
 </ul>
+</p>
+
+<p>
+The following are proposed 'Multiple System Messages' (MSM) under discussion for standardization:
+<ul>
+<li>Type 1071, Compact GPS pseudo-ranges</li>
+<li>Type 1072, Compact GPS carrier phases</li>
+<li>Type 1073, Compact GPS pseudo-ranges and carrier phases</li>
+<li>Type 1074, Full GPS pseudo-ranges and carrier phases plus signal strength</li>
+<li>Type 1075, Full GPS pseudo-ranges, carrier phases, Doppler and signal strength</li>
+<li>Type 1076, Full GPS pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
+<li>Type 1077, Full GPS pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)<br></li>
+<li>Type 1081, Compact GLONASS pseudo-ranges</li>
+<li>Type 1082, Compact GLONASS carrier phases</li>
+<li>Type 1083, Compact GLONASS pseudo-ranges and carrier phases</li>
+<li>Type 1084, Full GLONASS pseudo-ranges and carrier phases plus signal strength</li>
+<li>Type 1085, Full GLONASS pseudo-ranges, carrier phases, Doppler and signal strength</li>
+<li>Type 1086, Full GLONASS pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
+<li>Type 1087, Full GLONASS pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)<br></li>
+<li>Type 1091, Compact GALILEO pseudo-ranges</li>
+<li>Type 1092, Compact GALILEO carrier phases</li>
+<li>Type 1093, Compact GALILEO pseudo-ranges and carrier phases</li>
+<li>Type 1094, Full GALILEO pseudo-ranges and carrier phases plus signal strength</li>
+<li>Type 1095, Full GALILEO pseudo-ranges, carrier phases, Doppler and signal strength</li>
+<li>Type 1096, Full GALILEO pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
+<li>Type 1097, Full GALILEO pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)<br></li>
+</ul>
+</p>
+
+<p>
+The following are proposed 'State Space Representation' (SSR) messages under discussion for standardization:
+<ul>
+<li>Type 1057, GPS orbit corrections to Broadcast Ephemeris</li>
+<li>Type 1058, GPS clock corrections to Broadcast Ephemeris</li>
+<li>Type 1059, GPS code biases</li>
+<li>Type 1060, Combined orbit and clock corrections to GPS Broadcast Ephemeris</li>
+<li>Type 1061, GPS User Range Accuracy (URA)</li>
+<li>Type 1062, High-rate GPS clock corrections to Broadcast Ephemeris</li>
+<li>Type 1063, GLONASS orbit corrections to Broadcast Ephemeris</li>
+<li>Type 1064, GLONASS clock corrections to Broadcast Ephemeris</li>
+<li>Type 1065, GLONASS code biases</li>
+<li>Type 1066, Combined orbit and clock corrections to GLONASS Broadcast Ephemeris</li>
+<li>Type 1067, GLONASS User Range Accuracy (URA)</li>
+<li>Type 1068, High-rate GLONASS clock corrections to Broadcast Ephemeris</li>
+</ul>
+</p>
 
 <p><a name="rtigs"><h4>6.3. RTIGS</h4></p>
 <p>
