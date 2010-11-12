@@ -144,6 +144,11 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
   RTCM3ParserData& parser = _parsers[staID];
 
+  // Get Glonass Slot Numbers from Global Array
+  // ------------------------------------------
+  bncApp* app = (bncApp*) qApp;
+  app->getGlonassSlotNums(parser.GLOFreq);
+
   // Initialize a new parser
   // -----------------------
   if (newParser) {
@@ -391,6 +396,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
   }
 
   if (decoded) {
+    app->storeGlonassSlotNums(parser.GLOFreq);
     return success;
   }
   else {

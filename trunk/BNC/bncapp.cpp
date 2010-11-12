@@ -724,3 +724,19 @@ void bncApp::writeRawData(const QByteArray& data, const QByteArray& staID,
     _rawFile->writeRawData(data, staID, format);
   }
 }
+
+// Get Glonass Slot Numbers from Global Array
+////////////////////////////////////////////////////////////////////////////
+void bncApp::getGlonassSlotNums(int GLOFreq[]) {
+
+  QMutexLocker locker(&_mutex);
+
+}
+
+// Store Glonass Slot Numbers to Global Array
+////////////////////////////////////////////////////////////////////////////
+void bncApp::storeGlonassSlotNums(const int GLOFreq[]) {
+
+  QMutexLocker locker(&_mutex);
+
+}
