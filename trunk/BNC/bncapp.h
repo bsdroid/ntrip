@@ -108,6 +108,6 @@ class bncApp : public QApplication {
     QString             _confFileName;
     QDate               _fileDate;
     bncRawFile*         _rawFile;
-    int                 _GlonassSlotNums[PRN_GLONASS_NUM];
+    int                 _GLOFreq[PRN_GLONASS_NUM];
 };
 #endif
