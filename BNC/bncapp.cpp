@@ -100,6 +100,10 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
   _corrs = new QMultiMap<long, QString>;
 
   _currentDateAndTimeGPS = 0;
+
+  for (int ii = 0; ii < PRN_GLONASS_NUM; ++ii) {
+    _GLOFreq[ii] = 0;
+  }
 }
 
 // Destructor
@@ -731,6 +735,11 @@ void bncApp::getGlonassSlotNums(int GLOFreq[]) {
 
   QMutexLocker locker(&_mutex);
 
+  for (int ii = 0; ii < PRN_GLONASS_NUM; ++ii) {
+    if (_GLOFreq[ii] != 0) {
+      GLOFreq[ii] = _GLOFreq[ii];
+    }
+  }
 }
 
 // Store Glonass Slot Numbers to Global Array
@@ -739,4 +748,9 @@ void bncApp::storeGlonassSlotNums(const int GLOFreq[]) {
 
   QMutexLocker locker(&_mutex);
 
+  for (int ii = 0; ii < PRN_GLONASS_NUM; ++ii) {
+    if (GLOFreq[ii] != 0) {
+      _GLOFreq[ii] = GLOFreq[ii];
+    }
+  }
 }
