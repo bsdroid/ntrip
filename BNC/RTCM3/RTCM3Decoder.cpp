@@ -238,15 +238,21 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
             }
             
             for (int ii = 0; ii < parser.Data.numsats; ii++) {
-              p_obs obs = new t_obs();
-              if      (parser.Data.satellites[ii] <= PRN_GPS_END) {
+              p_obs obs   = new t_obs();
+              int   satID = parser.Data.satellites[ii];
+
+              // GPS
+              // ---
+              if      (satID >= PRN_GPS_START     && satID <= PRN_GPS_END) {
                 obs->_o.satSys = 'G';
-                obs->_o.satNum = parser.Data.satellites[ii];
+                obs->_o.satNum = satID;
               }
-              else if (parser.Data.satellites[ii] <= PRN_GLONASS_END) {
+
+              // Glonass
+              // -------
+              else if (satID >= PRN_GLONASS_START && satID <= PRN_GLONASS_END) {
                 obs->_o.satSys = 'R';
-                obs->_o.satNum = parser.Data.satellites[ii] - PRN_GLONASS_START + 1;
-                ////  obs->_o.slotNum   = parser.Data.channels[ii];
+                obs->_o.satNum = satID - PRN_GLONASS_START + 1;
                 if (obs->_o.satNum <= PRN_GLONASS_NUM && 
                     parser.GLOFreq[obs->_o.satNum-1] != 0) {
                   obs->_o.slotNum   = parser.GLOFreq[obs->_o.satNum-1] - 100;
@@ -256,10 +262,34 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                   obs = 0;
                 }
               }
-              else {
+
+              // Galileo
+              // -------
+              else if (satID >= PRN_GALILEO_START && satID <= PRN_GALILEO_END) {
+                obs->_o.satSys = 'E';
+                obs->_o.satNum = satID - PRN_GALILEO_START + 1;
+	      }
+
+              // WAAS
+              // ----
+              else if (satID >= PRN_WAAS_START && satID <= PRN_WAAS_END) {
                 obs->_o.satSys = 'S';
-                obs->_o.satNum = parser.Data.satellites[ii] - PRN_WAAS_START + 20;
+                obs->_o.satNum = satID - PRN_WAAS_START + 20;
               }
+
+              // Giove A and B
+              // -------------
+              else if (satID >= PRN_GIOVE_START && satID <= PRN_GIOVE_END) {
+                obs->_o.satSys = 'E';
+		obs->_o.satNum = satID - PRN_GIOVE_START + PRN_GIOVE_OFFSET;
+	      }
+
+              // Unknown System
+              // --------------
+              else {
+                delete obs;
+                obs = 0;
+	      }
 
               if (obs) {
                 _obsList.push_back(obs);
