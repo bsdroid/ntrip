@@ -727,7 +727,6 @@ t_irc bncModel::update(t_epoData* epoData) {
   // ----------------------------------------------------------------
   pppPos* newPos = new pppPos;
   newPos->time   = epoData->tt;
-  _posAverage.push_back(newPos); 
 
   // Set Solution Vector
   // -------------------
@@ -803,7 +802,12 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   emit newMessage(QByteArray(strC.str().c_str()), true);
 
-  if (settings.value("pppAverage").toString() != "") {
+  if (settings.value("pppAverage").toString() == "") {
+    delete newPos;
+  }
+  else {
+  
+   _posAverage.push_back(newPos); 
 
     // Time Span for Average Computation
     // ---------------------------------
