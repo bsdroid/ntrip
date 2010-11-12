@@ -98,8 +98,13 @@ class bncModel : public QObject {
 
   class pppPos {
    public:
+    pppPos() {
+      for (int ii = 0; ii < 7; ++ii) {
+        xnt[ii] = 0.0;
+      }
+    }
     bncTime time;
-    double  xn[6];
+    double  xnt[7];
   };
 
   bncTime               _time;
