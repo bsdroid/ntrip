@@ -164,8 +164,9 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
   if (_mode == unknown || _mode == observations || 
       _checkMountPoint == _staID || _checkMountPoint == "ALL") {
 
-    for (int ii = 0; ii < bufLen; ii++) {
-      parser.Message[parser.MessageSize++] = buffer[ii];
+    for (int iByte = 0; iByte < bufLen; iByte++) {
+
+      parser.Message[parser.MessageSize++] = buffer[iByte];
 
       if (parser.MessageSize >= parser.NeedBytes) {
 
@@ -231,9 +232,10 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                true));
             }
             
-            for (int ii = 0; ii < parser.Data.numsats; ii++) {
+            for (int iSat = 0; iSat < parser.Data.numsats; iSat++) {
+
               p_obs obs   = new t_obs();
-              int   satID = parser.Data.satellites[ii];
+              int   satID = parser.Data.satellites[iSat];
 
               // GPS
               // ---
@@ -297,65 +299,55 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
               // Loop over all data types
               // ------------------------
-              for (int jj = 0; jj < parser.numdatatypesGPS; jj++) {
-                int v = 0;
-                // sepearated declaration and initalization of df and pos. Perlt
-                int df;
-                int pos;
-                df = parser.dataflag[jj];
-                pos = parser.datapos[jj];
-                if ( (parser.Data.dataflags[ii] & df)
-                     && !isnan(parser.Data.measdata[ii][pos])
-                     && !isinf(parser.Data.measdata[ii][pos])) {
-                  v = 1;
+              for (int iDTyp = 0; iDTyp < parser.numdatatypesGPS; ++iDTyp) {
+
+                bool obsPresent = false;
+
+                int df  = parser.dataflag[iDTyp];
+                int pos = parser.datapos[iDTyp];
+                if ( (parser.Data.dataflags[iSat] & df)
+                     && !isnan(parser.Data.measdata[iSat][pos])
+                     && !isinf(parser.Data.measdata[iSat][pos])) {
+                  obsPresent = true;;
                 }
                 else {
-                  df = parser.dataflagGPS[jj];
-                  pos = parser.dataposGPS[jj];
-                  if ( (parser.Data.dataflags[ii] & df)
-                       && !isnan(parser.Data.measdata[ii][pos])
-                       && !isinf(parser.Data.measdata[ii][pos])) {
-                    v = 1;
+                  df  = parser.dataflagGPS[iDTyp];
+                  pos = parser.dataposGPS[iDTyp];
+                  if ( (parser.Data.dataflags[iSat] & df)
+                       && !isnan(parser.Data.measdata[iSat][pos])
+                       && !isinf(parser.Data.measdata[iSat][pos])) {
+                    obsPresent = true;
                   }
                 }
-                if (!v) { 
+                if (!obsPresent) { 
                   continue; 
                 }
-                else
-                {
-                  int isat = (parser.Data.satellites[ii] < 120 
-                              ? parser.Data.satellites[ii] 
-                              : parser.Data.satellites[ii] - 80);
-                  
-                  // variables df and pos are used consequently. Perlt
-                  if      (df & GNSSDF_C1DATA) {
-                    obs->_o.C1 = parser.Data.measdata[ii][pos];
-                  }
-                  else if (df & GNSSDF_C2DATA) {
-                    obs->_o.C2 = parser.Data.measdata[ii][pos];
-                  }
-                  else if (df & GNSSDF_P1DATA) {
-                    obs->_o.P1 = parser.Data.measdata[ii][pos];
-                  }
-                  else if (df & GNSSDF_P2DATA) {
-                    obs->_o.P2 = parser.Data.measdata[ii][pos];
-                  }
-                  else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
-                    obs->_o.L1            = parser.Data.measdata[ii][pos];
-                    obs->_o.SNR1          = parser.Data.snrL1[ii];
-                    obs->_o.lock_timei_L1 = parser.lastlockGPSl1[isat];
-                  }
-                  else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
-                    obs->_o.L2            = parser.Data.measdata[ii][pos];
-                    obs->_o.SNR2          = parser.Data.snrL2[ii];
-                    obs->_o.lock_timei_L2 = parser.lastlockGPSl2[isat];
-                  }
-                  else if (df & (GNSSDF_S1CDATA|GNSSDF_S1PDATA)) {
-                    obs->_o.S1   = parser.Data.measdata[ii][pos];
-                  }
-                  else if (df & (GNSSDF_S2CDATA|GNSSDF_S2PDATA)) {
-                    obs->_o.S2   = parser.Data.measdata[ii][pos];
-                  }
+
+                if      (df & GNSSDF_C1DATA) {
+                  obs->_o.C1 = parser.Data.measdata[iSat][pos];
+                }
+                else if (df & GNSSDF_C2DATA) {
+                  obs->_o.C2 = parser.Data.measdata[iSat][pos];
+                }
+                else if (df & GNSSDF_P1DATA) {
+                  obs->_o.P1 = parser.Data.measdata[iSat][pos];
+                }
+                else if (df & GNSSDF_P2DATA) {
+                  obs->_o.P2 = parser.Data.measdata[iSat][pos];
+                }
+                else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
+                  obs->_o.L1   = parser.Data.measdata[iSat][pos];
+                  obs->_o.SNR1 = parser.Data.snrL1[iSat];
+                }
+                else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
+                  obs->_o.L2   = parser.Data.measdata[iSat][pos];
+                  obs->_o.SNR2 = parser.Data.snrL2[iSat];
+                }
+                else if (df & (GNSSDF_S1CDATA|GNSSDF_S1PDATA)) {
+                  obs->_o.S1   = parser.Data.measdata[iSat][pos];
+                }
+                else if (df & (GNSSDF_S2CDATA|GNSSDF_S2PDATA)) {
+                  obs->_o.S2   = parser.Data.measdata[iSat][pos];
                 }
               }
             }
