@@ -412,9 +412,9 @@ void bncRinex::writeHeader(const QDateTime& datTim,
       }
       else if (line.indexOf("# / TYPES OF OBSERV") != -1) {
         if (_rinexVers == 3) {
-// Changed declaration of data types, consistent with Rinex3 Perlt  
-          _out << "G   10 C1C C1P L1C S1C C2X C2P L2X S2X L2P S2P              SYS / # / OBS TYPES" << endl;
+          _out << "G   10 C1C C1P L1C S1C C2W C2P L2W S2W L2P S2P              SYS / # / OBS TYPES" << endl;
           _out << "R   10 C1C C1P L1C S1C C2C C2P L2C S2C L2P S2P              SYS / # / OBS TYPES" << endl;
+          _out << "E    6 C1X L1X S1X C5X L5X S5X                              SYS / # / OBS TYPES" << endl;
           _out << "S    3 C1C L1C S1C                                          SYS / # / OBS TYPES" << endl;
         }
         else { 
@@ -430,7 +430,6 @@ void bncRinex::writeHeader(const QDateTime& datTim,
                       _mountPoint.path())).leftJustified(60, ' ', true);
         _out << hlp.toAscii().data() << "COMMENT" << endl;
       }
-// Added header line for Rinex3 regarding mandatory MARKER TYPE field Perlt
       else if (line.indexOf("MARKER NAME") != -1) {
         if (_rinexVers == 3) {
           _out << line.toAscii().data() << endl;
@@ -439,7 +438,6 @@ void bncRinex::writeHeader(const QDateTime& datTim,
         else {
           _out << line.toAscii().data() << endl;
         }
-// End
       }
       else {
         _out << line.toAscii().data() << endl;
@@ -466,11 +464,9 @@ void bncRinex::writeHeader(const QDateTime& datTim,
     }
     _out.setf(ios::left);
     _out << setw(60) << _statID.data()                               << "MARKER NAME"          << endl;
-// Added header line for Rinex3 regarding mandatory MARKER TYPE field Perlt
     if (_rinexVers == 3) {
       _out << setw(60) << "unknown"                                  << "MARKER TYPE      "    << endl;
     }
-// End
     _out << setw(60) << "unknown             unknown"                << "OBSERVER / AGENCY"    << endl;
     _out << setw(20) << "unknown"    
          << setw(20) << "unknown"
@@ -488,11 +484,10 @@ void bncRinex::writeHeader(const QDateTime& datTim,
          << setw(14) << setprecision(4) << antennaNEU[2] 
          << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
     if (_rinexVers == 3) {
-// Changed declaration of data types, consistent with Rinex3 Perlt  
-      _out << "G   10 C1C C1P L1C S1C C2X C2P L2X S2X L2P S2P              SYS / # / OBS TYPES" << endl;
+      _out << "G   10 C1C C1P L1C S1C C2W C2P L2W S2W L2P S2P              SYS / # / OBS TYPES" << endl;
       _out << "R   10 C1C C1P L1C S1C C2C C2P L2C S2C L2P S2P              SYS / # / OBS TYPES" << endl;
+      _out << "E    6 C1X L1X S1X C5X L5X S5X                              SYS / # / OBS TYPES" << endl;
       _out << "S    3 C1C L1C S1C                                          SYS / # / OBS TYPES" << endl;
-
     }
     else {
       _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
@@ -611,27 +606,27 @@ void bncRinex::dumpEpoch(long maxTime) {
     char lli2 = ' ';
     if      ( obs->_o.slip_cnt_L1 >= 0 ) {
       if ( _slip_cnt_L1.find(prn)         != _slip_cnt_L1.end() && 
-	   _slip_cnt_L1.find(prn).value() != obs->_o.slip_cnt_L1 ) {
-	lli1 = '1';
+           _slip_cnt_L1.find(prn).value() != obs->_o.slip_cnt_L1 ) {
+        lli1 = '1';
       }
     }
     else if ( obs->_o.lock_timei_L1 >= 0 ) {
       if ( _lock_timei_L1.find(prn)         != _lock_timei_L1.end() && 
-	   _lock_timei_L1.find(prn).value() != obs->_o.lock_timei_L1 ) {
-	lli1 = '1';
+           _lock_timei_L1.find(prn).value() != obs->_o.lock_timei_L1 ) {
+        lli1 = '1';
       }
     }
 
     if ( obs->_o.slip_cnt_L2 >= 0 ) {
       if ( _slip_cnt_L2.find(prn)         != _slip_cnt_L2.end() && 
-	   _slip_cnt_L2.find(prn).value() != obs->_o.slip_cnt_L2 ) {
-	lli2 = '1';
+           _slip_cnt_L2.find(prn).value() != obs->_o.slip_cnt_L2 ) {
+        lli2 = '1';
       }
     }
     else if ( obs->_o.lock_timei_L2 >= 0 ) {
       if ( _lock_timei_L2.find(prn)         != _lock_timei_L2.end() && 
-	   _lock_timei_L2.find(prn).value() != obs->_o.lock_timei_L2 ) {
-	lli2 = '1';
+           _lock_timei_L2.find(prn).value() != obs->_o.lock_timei_L2 ) {
+        lli2 = '1';
       }
     }
 
@@ -644,40 +639,48 @@ void bncRinex::dumpEpoch(long maxTime) {
     // RINEX Version 3
     // ---------------
     if (_rinexVers == 3) {
-      char sbasflag = 'S';
-      // Changed data output, C1P, C2C|X, L2C|X, S2C|X added. Changed Output for SBAS Perlt  
-      if (sbasflag != obs->_o.satSys) {
-	_out << obs->_o.satSys 
-	     << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
-	     << setw(14) << setprecision(3) << obs->_o.C1 << "  "  
-	     << setw(14) << setprecision(3) << obs->_o.P1 << "  "  
-	     << setw(14) << setprecision(3) << obs->_o.L1 << lli1
-	     << setw(1)                     << obs->_o.SNR1
-	     << setw(14) << setprecision(3) << obs->_o.S1 << "  " 
-	     << setw(14) << setprecision(3) << obs->_o.C2 << "  "  
-	     << setw(14) << setprecision(3) << obs->_o.P2 << "  " ;
-	if ((obs->_o.C2 != 0.0) && (obs->_o.P2 == 0.0)) {
-	  _out << setw(14) << setprecision(3) << obs->_o.L2 << lli2
-	       << setw(1)                     << obs->_o.SNR2
-	       << setw(14) << setprecision(3) << obs->_o.S2 << "  "
-	       << "         0.000           0.000  ";
-	}
-	else {
-	  _out << "         0.000           0.000  " 
-	       << setw(14) << setprecision(3) << obs->_o.L2 << " " 
-	       << setw(1)                     << obs->_o.SNR2
-	       << setw(14) << setprecision(3) << obs->_o.S2;
-	} 
-	_out << endl;
+      if (obs->_o.satSys == 'G' || obs->_o.satSys == 'R') { // GPS and Glonass
+        _out << obs->_o.satSys 
+             << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
+             << setw(14) << setprecision(3) << obs->_o.C1 << "  "  
+             << setw(14) << setprecision(3) << obs->_o.P1 << "  "  
+             << setw(14) << setprecision(3) << obs->_o.L1 << lli1
+             << setw(1)                     << obs->_o.SNR1
+             << setw(14) << setprecision(3) << obs->_o.S1 << "  " 
+             << setw(14) << setprecision(3) << obs->_o.C2 << "  "  
+             << setw(14) << setprecision(3) << obs->_o.P2 << "  " ;
+        if ((obs->_o.C2 != 0.0) && (obs->_o.P2 == 0.0)) {
+          _out << setw(14) << setprecision(3) << obs->_o.L2 << lli2
+               << setw(1)                     << obs->_o.SNR2
+               << setw(14) << setprecision(3) << obs->_o.S2 << "  "
+               << "         0.000           0.000  ";
+        }
+        else {
+          _out << "         0.000           0.000  " 
+               << setw(14) << setprecision(3) << obs->_o.L2 << " " 
+               << setw(1)                     << obs->_o.SNR2
+               << setw(14) << setprecision(3) << obs->_o.S2;
+        } 
+        _out << endl;
       }
-      else {
-	_out << obs->_o.satSys 
-	     << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
-	     << setw(14) << setprecision(3) << obs->_o.C1 << "  "  
-	     << setw(14) << setprecision(3) << obs->_o.P1 << "  "  
-	     << setw(14) << setprecision(3) << obs->_o.L1 << lli1
-	     << setw(1)                     << obs->_o.SNR1
-	     << setw(14) << setprecision(3) << obs->_o.S1 << endl; 
+      else if (obs->_o.satSys == 'S') { // SBAS
+        _out << obs->_o.satSys 
+             << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
+             << setw(14) << setprecision(3) << obs->_o.C1 << "  "  
+             << setw(14) << setprecision(3) << obs->_o.P1 << "  "  
+             << setw(14) << setprecision(3) << obs->_o.L1 << lli1
+             << setw(1)                     << obs->_o.SNR1
+             << setw(14) << setprecision(3) << obs->_o.S1 << endl; 
+      }
+      else if (obs->_o.satSys == 'E') { // Galileo
+        _out << obs->_o.satSys 
+             << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
+             << setw(14) << setprecision(3) << obs->_o.C1 << "  "  
+             << setw(14) << setprecision(3) << obs->_o.L1 << "  "
+             << setw(14) << setprecision(3) << obs->_o.S1 << "  " 
+             << setw(14) << setprecision(3) << obs->_o.C5 << "  "  
+             << setw(14) << setprecision(3) << obs->_o.L5 << "  "
+             << setw(14) << setprecision(3) << obs->_o.S5 << endl; 
       }
     }
 
