@@ -77,7 +77,7 @@ class bncRinex {
    QByteArray    _latitude;
    QByteArray    _longitude;
    QByteArray    _nmea;
-   QByteArray      _ntripVersion;
+   QByteArray    _ntripVersion;
    bool          _reconnectFlag;
    QDate         _skeletonDate;
    int           _rinexVers;
@@ -87,8 +87,10 @@ class bncRinex {
 
    QMap<int, int> _slip_cnt_L1;
    QMap<int, int> _slip_cnt_L2;
+   QMap<int, int> _slip_cnt_L5;
    QMap<int, int> _lock_timei_L1;
    QMap<int, int> _lock_timei_L2;
+   QMap<int, int> _lock_timei_L5;
 };
 
 #endif
