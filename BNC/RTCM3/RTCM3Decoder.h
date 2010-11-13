@@ -69,6 +69,10 @@ Q_OBJECT
   double                 _antXYZ[3];
   bncRawFile*            _rawFile;
   QString                _staID_corrections;
+
+  QMap<QString, int>  _slip_cnt_L1;
+  QMap<QString, int>  _slip_cnt_L2;
+  QMap<QString, int>  _slip_cnt_L5;
 };
 
 #endif
