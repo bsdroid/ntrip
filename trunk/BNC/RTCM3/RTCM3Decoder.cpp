@@ -356,10 +356,10 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                   obs->_o.C5 = parser.Data.measdata[iSat][pos];
                 }
                 else if (df & GNSSDF_L5DATA) {
-                  obs->_o.L5   = parser.Data.measdata[iSat][pos];
+                  obs->_o.L5 = parser.Data.measdata[iSat][pos];
                 }
                 else if (df & GNSSDF_S5DATA) {
-                  obs->_o.S5   = parser.Data.measdata[iSat][pos];
+                  obs->_o.S5 = parser.Data.measdata[iSat][pos];
                 }
               }
             }
