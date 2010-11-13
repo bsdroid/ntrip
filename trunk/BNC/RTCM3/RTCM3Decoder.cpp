@@ -299,20 +299,20 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
               // Loop over all data types
               // ------------------------
-              for (int iDTyp = 0; iDTyp < parser.numdatatypesGPS; ++iDTyp) {
+              for (int iType = 0; iType < parser.numdatatypesGPS; ++iType) {
 
                 bool obsPresent = false;
 
-                int df  = parser.dataflag[iDTyp];
-                int pos = parser.datapos[iDTyp];
+                int df  = parser.dataflag[iType];
+                int pos = parser.datapos[iType];
                 if ( (parser.Data.dataflags[iSat] & df)
                      && !isnan(parser.Data.measdata[iSat][pos])
                      && !isinf(parser.Data.measdata[iSat][pos])) {
                   obsPresent = true;;
                 }
                 else {
-                  df  = parser.dataflagGPS[iDTyp];
-                  pos = parser.dataposGPS[iDTyp];
+                  df  = parser.dataflagGPS[iType];
+                  pos = parser.dataposGPS[iType];
                   if ( (parser.Data.dataflags[iSat] & df)
                        && !isnan(parser.Data.measdata[iSat][pos])
                        && !isinf(parser.Data.measdata[iSat][pos])) {
