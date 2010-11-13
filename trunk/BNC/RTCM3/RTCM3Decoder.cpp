@@ -349,6 +349,18 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                 else if (df & (GNSSDF_S2CDATA|GNSSDF_S2PDATA)) {
                   obs->_o.S2   = parser.Data.measdata[iSat][pos];
                 }
+
+                // New Carriers
+                // ------------
+                else if (df & GNSSDF_C5DATA) {
+                  obs->_o.C5 = parser.Data.measdata[iSat][pos];
+                }
+                else if (df & GNSSDF_L5DATA) {
+                  obs->_o.L5   = parser.Data.measdata[iSat][pos];
+                }
+                else if (df & GNSSDF_S5DATA) {
+                  obs->_o.S5   = parser.Data.measdata[iSat][pos];
+                }
               }
             }
           }
