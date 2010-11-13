@@ -125,10 +125,10 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
       if (_mode == unknown) {
         if (_rawFile) {
           _staID_corrections = _rawFile->staID();
-	}
-	else {
+        }
+        else {
           _mode = corrections;
-	}
+        }
       }
     }
   }
@@ -152,8 +152,8 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
   // Initialize a new parser
   // -----------------------
   if (newParser) {
-    parser.rinex3 = 0;
     memset(&parser, 0, sizeof(parser));
+    parser.rinex3 = 0;
     double secGPS;
     currentGPSWeeks(parser.GPSWeek, secGPS);
     parser.GPSTOW = int(secGPS);
@@ -161,14 +161,15 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
   // Remaining part decodes the Observations
   // ---------------------------------------
-  if (_mode == unknown || _mode == observations || _checkMountPoint == _staID || _checkMountPoint == "ALL") {
+  if (_mode == unknown || _mode == observations || 
+      _checkMountPoint == _staID || _checkMountPoint == "ALL") {
 
     for (int ii = 0; ii < bufLen; ii++) {
       parser.Message[parser.MessageSize++] = buffer[ii];
 
       if (parser.MessageSize >= parser.NeedBytes) {
 
-        while(int rr = RTCM3Parser(&parser)) {
+        while (int rr = RTCM3Parser(&parser)) {
 
           // RTCMv3 message types
           // --------------------
@@ -176,45 +177,42 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
           // RTCMv3 antenna descriptor
           // -------------------------
-          if(rr == 1007 || rr == 1008 || rr == 1033)
-          {
-            _antType.push_back(parser.antenna); /* correct ? */
+          if (rr == 1007 || rr == 1008 || rr == 1033) {
+            _antType.push_back(parser.antenna);
           }
 
           // RTCMv3 antenna XYZ
           // ------------------
-          else if(rr == 1005)
-          {
-	    _antList.push_back(t_antInfo());
-	    _antList.back().type     = t_antInfo::ARP;
-	    _antList.back().xx       = parser.antX * 1e-4;
-	    _antList.back().yy       = parser.antY * 1e-4;
-	    _antList.back().zz       = parser.antZ * 1e-4;
-	    _antList.back().message  = rr;
+          else if (rr == 1005) {
+            _antList.push_back(t_antInfo());
+            _antList.back().type     = t_antInfo::ARP;
+            _antList.back().xx       = parser.antX * 1e-4;
+            _antList.back().yy       = parser.antY * 1e-4;
+            _antList.back().zz       = parser.antZ * 1e-4;
+            _antList.back().message  = rr;
 
-	    // Remember station position for 1003 message decoding
-	    _antXYZ[0] = parser.antX * 1e-4;
-	    _antXYZ[1] = parser.antY * 1e-4;
-	    _antXYZ[2] = parser.antZ * 1e-4;
+            // Remember station position for 1003 message decoding
+            _antXYZ[0] = parser.antX * 1e-4;
+            _antXYZ[1] = parser.antY * 1e-4;
+            _antXYZ[2] = parser.antZ * 1e-4;
           }
 
           // RTCMv3 antenna XYZ-H
           // --------------------
-          else if(rr == 1006)
-          {
-	    _antList.push_back(t_antInfo());
-	    _antList.back().type     = t_antInfo::ARP;
-	    _antList.back().xx       = parser.antX * 1e-4;
-	    _antList.back().yy       = parser.antY * 1e-4;
-	    _antList.back().zz       = parser.antZ * 1e-4;
-	    _antList.back().height   = parser.antH * 1e-4;
-	    _antList.back().height_f = true;
-	    _antList.back().message  = rr;
+          else if(rr == 1006) {
+            _antList.push_back(t_antInfo());
+            _antList.back().type     = t_antInfo::ARP;
+            _antList.back().xx       = parser.antX * 1e-4;
+            _antList.back().yy       = parser.antY * 1e-4;
+            _antList.back().zz       = parser.antZ * 1e-4;
+            _antList.back().height   = parser.antH * 1e-4;
+            _antList.back().height_f = true;
+            _antList.back().message  = rr;
 
-	    // Remember station position for 1003 message decoding
-	    _antXYZ[0] = parser.antX * 1e-4;
-	    _antXYZ[1] = parser.antY * 1e-4;
-	    _antXYZ[2] = parser.antZ * 1e-4;
+            // Remember station position for 1003 message decoding
+            _antXYZ[0] = parser.antX * 1e-4;
+            _antXYZ[1] = parser.antY * 1e-4;
+            _antXYZ[2] = parser.antZ * 1e-4;
           }
 
           // GNSS Observations
@@ -227,14 +225,10 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               parser.init = 1;
             }
             
-	    // apply "GPS Integer L1 Pseudorange Modulus Ambiguity"
-	    bool applyModulusAmb = false;
-            ///if (rr == 2) {
-	    ///  applyModulusAmb = true;
-            ///}
-
             if (rr == 2) {
-              emit(newMessage( (_staID + ": No valid RINEX! All values are modulo 299792.458!").toAscii(), true));
+              emit(newMessage( (_staID + 
+               ": No valid RINEX! All values are modulo 299792.458!").toAscii(),
+               true));
             }
             
             for (int ii = 0; ii < parser.Data.numsats; ii++) {
@@ -268,7 +262,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               else if (satID >= PRN_GALILEO_START && satID <= PRN_GALILEO_END) {
                 obs->_o.satSys = 'E';
                 obs->_o.satNum = satID - PRN_GALILEO_START + 1;
-	      }
+              }
 
               // WAAS
               // ----
@@ -281,15 +275,15 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               // -------------
               else if (satID >= PRN_GIOVE_START && satID <= PRN_GIOVE_END) {
                 obs->_o.satSys = 'E';
-		obs->_o.satNum = satID - PRN_GIOVE_START + PRN_GIOVE_OFFSET;
-	      }
+                obs->_o.satNum = satID - PRN_GIOVE_START + PRN_GIOVE_OFFSET;
+              }
 
               // Unknown System
               // --------------
               else {
                 delete obs;
                 obs = 0;
-	      }
+              }
 
               if (obs) {
                 _obsList.push_back(obs);
@@ -301,43 +295,8 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               obs->_o.GPSWeek  = parser.Data.week;
               obs->_o.GPSWeeks = parser.Data.timeofweek / 1000.0;
 
-	      // Estimate "GPS Integer L1 Pseudorange Modulus Ambiguity"
-	      // -------------------------------------------------------
-	      double modulusAmb = 0;
-	      if (applyModulusAmb) {
-		// Missing antenna coordinates: skip all data
-		if ( !_antXYZ[0] && !_antXYZ[1] && !_antXYZ[2] ) {
-		  continue;
-		}
-		
-		ostringstream prns;
-		prns << obs->_o.satSys << setfill('0') << setw(2) << obs->_o.satNum;
-
-		string prn = prns.str();
-
-		// Missing ephemerides, skip satellite
-		if (_ephList.find(prn) == _ephList.end()) {
-		  continue;
-		}
-		
-		const t_eph* eph = &(_ephList.find(prn)->second);
-		  
-		double rho, xSat, ySat, zSat, clkSat, GPSWeeks_tot;
-		int    GPSWeek_tot;
-		cmpRho(eph, _antXYZ[0], _antXYZ[1], _antXYZ[2], 
-		       obs->_o.GPSWeek, obs->_o.GPSWeeks,
-		       rho, GPSWeek_tot, GPSWeeks_tot,
-		       xSat, ySat, zSat, clkSat);
-
-		const double CC = 299792458.0;
-
-		int nn = static_cast<int>(rho / (CC * 0.001));
-
-		modulusAmb = nn * CC * 0.001;
-	      }
-            
-	      // Loop over all data types
-	      // ------------------------
+              // Loop over all data types
+              // ------------------------
               for (int jj = 0; jj < parser.numdatatypesGPS; jj++) {
                 int v = 0;
                 // sepearated declaration and initalization of df and pos. Perlt
@@ -370,24 +329,24 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                   
                   // variables df and pos are used consequently. Perlt
                   if      (df & GNSSDF_C1DATA) {
-                    obs->_o.C1 = parser.Data.measdata[ii][pos] + modulusAmb;
+                    obs->_o.C1 = parser.Data.measdata[ii][pos];
                   }
                   else if (df & GNSSDF_C2DATA) {
-                    obs->_o.C2 = parser.Data.measdata[ii][pos] + modulusAmb;
+                    obs->_o.C2 = parser.Data.measdata[ii][pos];
                   }
                   else if (df & GNSSDF_P1DATA) {
-                    obs->_o.P1 = parser.Data.measdata[ii][pos] + modulusAmb;
+                    obs->_o.P1 = parser.Data.measdata[ii][pos];
                   }
                   else if (df & GNSSDF_P2DATA) {
-                    obs->_o.P2 = parser.Data.measdata[ii][pos] + modulusAmb;
+                    obs->_o.P2 = parser.Data.measdata[ii][pos];
                   }
                   else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
-                    obs->_o.L1            = parser.Data.measdata[ii][pos] + modulusAmb;
+                    obs->_o.L1            = parser.Data.measdata[ii][pos];
                     obs->_o.SNR1          = parser.Data.snrL1[ii];
                     obs->_o.lock_timei_L1 = parser.lastlockGPSl1[isat];
                   }
                   else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
-                    obs->_o.L2            = parser.Data.measdata[ii][pos] + modulusAmb;
+                    obs->_o.L2            = parser.Data.measdata[ii][pos];
                     obs->_o.SNR2          = parser.Data.snrL2[ii];
                     obs->_o.lock_timei_L2 = parser.lastlockGPSl2[isat];
                   }
@@ -406,16 +365,14 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           // -------------
           else if (rr == 1019) {
             decoded = true;
-            gpsephemeris* ep = new gpsephemeris(parser.ephemerisGPS);
-            emit newGPSEph(ep);
+            emit newGPSEph(new gpsephemeris(parser.ephemerisGPS));
           }
     
           // GLONASS Ephemeris
           // -----------------
           else if (rr == 1020) {
             decoded = true;
-            glonassephemeris* ep = new glonassephemeris(parser.ephemerisGLONASS);
-            emit newGlonassEph(ep);
+            emit newGlonassEph(new glonassephemeris(parser.ephemerisGLONASS));
           }
         }
       }
@@ -435,7 +392,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 }
 
 // Store ephemerides
-////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 bool RTCM3Decoder::storeEph(const gpsephemeris& gpseph) {
   t_ephGPS eph; eph.set(&gpseph);
 
