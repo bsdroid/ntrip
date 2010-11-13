@@ -604,6 +604,7 @@ void bncRinex::dumpEpoch(long maxTime) {
 
     char lli1 = ' ';
     char lli2 = ' ';
+    char lli5 = ' ';
     if      ( obs->_o.slip_cnt_L1 >= 0 ) {
       if ( _slip_cnt_L1.find(prn)         != _slip_cnt_L1.end() && 
            _slip_cnt_L1.find(prn).value() != obs->_o.slip_cnt_L1 ) {
@@ -630,11 +631,26 @@ void bncRinex::dumpEpoch(long maxTime) {
       }
     }
 
+    if ( obs->_o.slip_cnt_L5 >= 0 ) {
+      if ( _slip_cnt_L5.find(prn)         != _slip_cnt_L5.end() && 
+           _slip_cnt_L5.find(prn).value() != obs->_o.slip_cnt_L5 ) {
+        lli5 = '1';
+      }
+    }
+    else if ( obs->_o.lock_timei_L5 >= 0 ) {
+      if ( _lock_timei_L5.find(prn)         != _lock_timei_L5.end() && 
+           _lock_timei_L5.find(prn).value() != obs->_o.lock_timei_L5 ) {
+        lli5 = '1';
+      }
+    }
+
     _slip_cnt_L1[prn]   = obs->_o.slip_cnt_L1;
     _slip_cnt_L2[prn]   = obs->_o.slip_cnt_L2;
+    _slip_cnt_L5[prn]   = obs->_o.slip_cnt_L5;
 
     _lock_timei_L1[prn] = obs->_o.lock_timei_L1;
     _lock_timei_L2[prn] = obs->_o.lock_timei_L2;
+    _lock_timei_L5[prn] = obs->_o.lock_timei_L5;
 
     // RINEX Version 3
     // ---------------
@@ -676,10 +692,10 @@ void bncRinex::dumpEpoch(long maxTime) {
         _out << obs->_o.satSys 
              << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
              << setw(14) << setprecision(3) << obs->_o.C1 << "  "  
-             << setw(14) << setprecision(3) << obs->_o.L1 << "  "
+             << setw(14) << setprecision(3) << obs->_o.L1 << lli1 << " "
              << setw(14) << setprecision(3) << obs->_o.S1 << "  " 
              << setw(14) << setprecision(3) << obs->_o.C5 << "  "  
-             << setw(14) << setprecision(3) << obs->_o.L5 << "  "
+             << setw(14) << setprecision(3) << obs->_o.L5 << lli5 << " "
              << setw(14) << setprecision(3) << obs->_o.S5 << endl; 
       }
     }
