@@ -305,6 +305,15 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
  
                 unsigned df = (1 << iEntry);
 
+                //// beg test
+                cout << obs->_o.satSys << obs->_o.satNum << " "
+                     << iEntry << " " << df;
+                if (df & gnssData.dataflags[iSat]) {
+                  cout << " present";
+                }
+                cout << endl;
+                //// end test
+
                 if (df & gnssData.dataflags[iSat]) {
 
                   if      (iEntry == GNSSENTRY_C1DATA) {
@@ -323,11 +332,17 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                            iEntry == GNSSENTRY_L1PDATA) {
                     obs->_o.L1   = gnssData.measdata[iSat][iEntry];
                     obs->_o.SNR1 = gnssData.snrL1[iSat];
+                    if (GNSSDF2_LOCKLOSSL1 & gnssData.dataflags2[iSat]) {
+                      ++obs->_o.slip_cnt_L1;
+                    }
                   }
                   else if (iEntry == GNSSENTRY_L2CDATA || 
                            iEntry == GNSSENTRY_L2PDATA) {
                     obs->_o.L2   = gnssData.measdata[iSat][iEntry];
                     obs->_o.SNR2 = gnssData.snrL2[iSat];
+                    if (GNSSDF2_LOCKLOSSL2 & gnssData.dataflags2[iSat]) {
+                      ++obs->_o.slip_cnt_L2;
+                    }
                   }
                   else if (iEntry == GNSSENTRY_S1CDATA ||
                            iEntry == GNSSENTRY_S1PDATA) {
@@ -345,6 +360,9 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                   }
                   else if (iEntry == GNSSENTRY_L5DATA) {
                     obs->_o.L5 = gnssData.measdata[iSat][iEntry];
+                    if (GNSSDF2_LOCKLOSSL5 & gnssData.dataflags2[iSat]) {
+                      ++obs->_o.slip_cnt_L5;
+                    }
                   }
                   else if (iEntry == GNSSENTRY_S5DATA) {
                     obs->_o.S5 = gnssData.measdata[iSat][iEntry];
