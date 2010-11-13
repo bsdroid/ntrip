@@ -231,11 +231,13 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                ": No valid RINEX! All values are modulo 299792.458!").toAscii(),
                true));
             }
+
+            gnssdata& gnssData = parser.Data;
             
-            for (int iSat = 0; iSat < parser.Data.numsats; iSat++) {
+            for (int iSat = 0; iSat < gnssData.numsats; iSat++) {
 
               p_obs obs   = new t_obs();
-              int   satID = parser.Data.satellites[iSat];
+              int   satID = gnssData.satellites[iSat];
 
               // GPS
               // ---
@@ -294,8 +296,8 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                 continue;
               }
 
-              obs->_o.GPSWeek  = parser.Data.week;
-              obs->_o.GPSWeeks = parser.Data.timeofweek / 1000.0;
+              obs->_o.GPSWeek  = gnssData.week;
+              obs->_o.GPSWeeks = gnssData.timeofweek / 1000.0;
 
               // Loop over all data types
               // ------------------------
@@ -305,61 +307,74 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
                 int df  = parser.dataflag[iType];
                 int pos = parser.datapos[iType];
-                if ( (parser.Data.dataflags[iSat] & df)
-                     && !isnan(parser.Data.measdata[iSat][pos])
-                     && !isinf(parser.Data.measdata[iSat][pos])) {
+                if ( (gnssData.dataflags[iSat] & df)
+                     && !isnan(gnssData.measdata[iSat][pos])
+                     && !isinf(gnssData.measdata[iSat][pos])) {
                   obsPresent = true;;
                 }
                 else {
                   df  = parser.dataflagGPS[iType];
                   pos = parser.dataposGPS[iType];
-                  if ( (parser.Data.dataflags[iSat] & df)
-                       && !isnan(parser.Data.measdata[iSat][pos])
-                       && !isinf(parser.Data.measdata[iSat][pos])) {
+                  if ( (gnssData.dataflags[iSat] & df)
+                       && !isnan(gnssData.measdata[iSat][pos])
+                       && !isinf(gnssData.measdata[iSat][pos])) {
                     obsPresent = true;
                   }
                 }
+
+                //// beg test
+                if (obs->_o.satSys == 'E') {
+                  cout << obs->_o.satSys << obs->_o.satNum << " " 
+                       << df;
+                  if (obsPresent) {
+                    cout << " present";
+                  }
+                  cout << endl;
+                }
+                //// end test
+
                 if (!obsPresent) { 
                   continue; 
                 }
 
+
                 if      (df & GNSSDF_C1DATA) {
-                  obs->_o.C1 = parser.Data.measdata[iSat][pos];
+                  obs->_o.C1 = gnssData.measdata[iSat][pos];
                 }
                 else if (df & GNSSDF_C2DATA) {
-                  obs->_o.C2 = parser.Data.measdata[iSat][pos];
+                  obs->_o.C2 = gnssData.measdata[iSat][pos];
                 }
                 else if (df & GNSSDF_P1DATA) {
-                  obs->_o.P1 = parser.Data.measdata[iSat][pos];
+                  obs->_o.P1 = gnssData.measdata[iSat][pos];
                 }
                 else if (df & GNSSDF_P2DATA) {
-                  obs->_o.P2 = parser.Data.measdata[iSat][pos];
+                  obs->_o.P2 = gnssData.measdata[iSat][pos];
                 }
                 else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
-                  obs->_o.L1   = parser.Data.measdata[iSat][pos];
-                  obs->_o.SNR1 = parser.Data.snrL1[iSat];
+                  obs->_o.L1   = gnssData.measdata[iSat][pos];
+                  obs->_o.SNR1 = gnssData.snrL1[iSat];
                 }
                 else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
-                  obs->_o.L2   = parser.Data.measdata[iSat][pos];
-                  obs->_o.SNR2 = parser.Data.snrL2[iSat];
+                  obs->_o.L2   = gnssData.measdata[iSat][pos];
+                  obs->_o.SNR2 = gnssData.snrL2[iSat];
                 }
                 else if (df & (GNSSDF_S1CDATA|GNSSDF_S1PDATA)) {
-                  obs->_o.S1   = parser.Data.measdata[iSat][pos];
+                  obs->_o.S1   = gnssData.measdata[iSat][pos];
                 }
                 else if (df & (GNSSDF_S2CDATA|GNSSDF_S2PDATA)) {
-                  obs->_o.S2   = parser.Data.measdata[iSat][pos];
+                  obs->_o.S2   = gnssData.measdata[iSat][pos];
                 }
 
                 // New Carriers
                 // ------------
                 else if (df & GNSSDF_C5DATA) {
-                  obs->_o.C5 = parser.Data.measdata[iSat][pos];
+                  obs->_o.C5 = gnssData.measdata[iSat][pos];
                 }
                 else if (df & GNSSDF_L5DATA) {
-                  obs->_o.L5 = parser.Data.measdata[iSat][pos];
+                  obs->_o.L5 = gnssData.measdata[iSat][pos];
                 }
                 else if (df & GNSSDF_S5DATA) {
-                  obs->_o.S5 = parser.Data.measdata[iSat][pos];
+                  obs->_o.S5 = gnssData.measdata[iSat][pos];
                 }
               }
             }
