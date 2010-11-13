@@ -307,42 +307,46 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
                 if (df & gnssData.dataflags[iSat]) {
 
-                  if      (df & GNSSDF_C1DATA) {
+                  if      (iEntry == GNSSENTRY_C1DATA) {
                     obs->_o.C1 = gnssData.measdata[iSat][iEntry];
                   }
-                  else if (df & GNSSDF_C2DATA) {
+                  else if (iEntry == GNSSENTRY_C2DATA) {
                     obs->_o.C2 = gnssData.measdata[iSat][iEntry];
                   }
-                  else if (df & GNSSDF_P1DATA) {
+                  else if (iEntry == GNSSENTRY_P1DATA) {
                     obs->_o.P1 = gnssData.measdata[iSat][iEntry];
                   }
-                  else if (df & GNSSDF_P2DATA) {
+                  else if (iEntry == GNSSENTRY_P2DATA) {
                     obs->_o.P2 = gnssData.measdata[iSat][iEntry];
                   }
-                  else if (df & (GNSSDF_L1CDATA|GNSSDF_L1PDATA)) {
+                  else if (iEntry == GNSSENTRY_L1CDATA ||
+                           iEntry == GNSSENTRY_L1PDATA) {
                     obs->_o.L1   = gnssData.measdata[iSat][iEntry];
                     obs->_o.SNR1 = gnssData.snrL1[iSat];
                   }
-                  else if (df & (GNSSDF_L2CDATA|GNSSDF_L2PDATA)) {
+                  else if (iEntry == GNSSENTRY_L2CDATA || 
+                           iEntry == GNSSENTRY_L2PDATA) {
                     obs->_o.L2   = gnssData.measdata[iSat][iEntry];
                     obs->_o.SNR2 = gnssData.snrL2[iSat];
                   }
-                  else if (df & (GNSSDF_S1CDATA|GNSSDF_S1PDATA)) {
+                  else if (iEntry == GNSSENTRY_S1CDATA ||
+                           iEntry == GNSSENTRY_S1PDATA) {
                     obs->_o.S1   = gnssData.measdata[iSat][iEntry];
                   }
-                  else if (df & (GNSSDF_S2CDATA|GNSSDF_S2PDATA)) {
+                  else if (iEntry == GNSSENTRY_S2CDATA ||
+                           iEntry == GNSSENTRY_S2PDATA) {
                     obs->_o.S2   = gnssData.measdata[iSat][iEntry];
                   }
   
                   // New Carriers
                   // ------------
-                  else if (df & GNSSDF_C5DATA) {
+                  else if (iEntry == GNSSENTRY_C5DATA) {
                     obs->_o.C5 = gnssData.measdata[iSat][iEntry];
                   }
-                  else if (df & GNSSDF_L5DATA) {
+                  else if (iEntry == GNSSENTRY_L5DATA) {
                     obs->_o.L5 = gnssData.measdata[iSat][iEntry];
                   }
-                  else if (df & GNSSDF_S5DATA) {
+                  else if (iEntry == GNSSENTRY_S5DATA) {
                     obs->_o.S5 = gnssData.measdata[iSat][iEntry];
                   }
                 }
