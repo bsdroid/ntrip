@@ -158,8 +158,6 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           obs->_o.L2            = _ObsBlock.resolvedPhase_L2(iSat);
 	  obs->_o.slip_cnt_L1   = _ObsBlock.slip_L1[iSat];
 	  obs->_o.slip_cnt_L2   = _ObsBlock.slip_L2[iSat];
-	  obs->_o.lock_timei_L1 = -1;
-	  obs->_o.lock_timei_L2 = -1;
         }
         _ObsBlock.clear();
       }
@@ -397,12 +395,10 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
 	case 0: // --- L1 ---
 	  new_obs->_o.L1 = *obsVal / LAMBDA_1;
 	  new_obs->_o.slip_cnt_L1   = corr->lock1;
-	  new_obs->_o.lock_timei_L1 = -1;
 	  break;
 	case 1: // --- L2 ---
 	  new_obs->_o.L2 = *obsVal / LAMBDA_2;
 	  new_obs->_o.slip_cnt_L2   = corr->lock2;
-	  new_obs->_o.lock_timei_L2 = -1;
 	  break;
 	case 2: // --- C1 / P1 ---
 	  if ( corr->Pind1 )

@@ -38,7 +38,6 @@ class t_obsInternal {
  public:
 
   t_obsInternal() {
-    flags         = 0;
     satSys        = 'G';
     satNum        = 0;
     slotNum       = 0;
@@ -55,9 +54,6 @@ class t_obsInternal {
     slip_cnt_L1   = -1;
     slip_cnt_L2   = -1;
     slip_cnt_L5   = -1;
-    lock_timei_L1 = -1;
-    lock_timei_L2 = -1;
-    lock_timei_L5 = -1;
     S1            = 0.0;
     S2            = 0.0;
     S5            = 0.0;
@@ -87,9 +83,6 @@ class t_obsInternal {
   int    slip_cnt_L1;   // L1 cumulative loss of continuity indicator (negative value = undefined)
   int    slip_cnt_L2;   // L2 cumulative loss of continuity indicator (negative value = undefined)
   int    slip_cnt_L5;   // L5 cumulative loss of continuity indicator (negative value = undefined)
-  int    lock_timei_L1; // L1 last lock time indicator                (negative value = undefined)
-  int    lock_timei_L2; // L2 last lock time indicator                (negative value = undefined)
-  int    lock_timei_L5; // L5 last lock time indicator                (negative value = undefined)
   double S1;            // L1 signal-to noise ratio
   double S2;            // L2 signal-to noise ratio
   double S5;            // L5 signal-to noise ratio
