@@ -42,6 +42,7 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
+#include <sstream>
 
 #include <QtCore>
 #include <QUrl>
@@ -629,51 +630,7 @@ void bncRinex::dumpEpoch(long maxTime) {
     // RINEX Version 3
     // ---------------
     if (_rinexVers == 3) {
-      if      (obs->_o.satSys == 'G') { // GPS
-        _out << obs->_o.satSys 
-             << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
-             << setw(14) << setprecision(3) << obs->_o.C1 << ' '  << ' '  
-             << setw(14) << setprecision(3) << obs->_o.P1 << ' '  << ' '  
-             << setw(14) << setprecision(3) << obs->_o.L1 << lli1 << ' '
-             << setw(14) << setprecision(3) << obs->_o.S1 << ' '  << ' ' 
-             << setw(14) << setprecision(3) << obs->_o.C2 << ' '  << ' '  
-             << setw(14) << setprecision(3) << obs->_o.P2 << ' '  << ' ' 
-             << setw(14) << setprecision(3) << obs->_o.L2 << lli2 << ' ' 
-             << setw(14) << setprecision(3) << obs->_o.S2 << ' '  << ' '
-             << setw(14) << setprecision(3) << obs->_o.C5 << ' '  << ' '  
-             << setw(14) << setprecision(3) << obs->_o.L5 << lli5 << ' ' 
-             << setw(14) << setprecision(3) << obs->_o.S5 << endl;
-      }
-      else if (obs->_o.satSys == 'R') { // Glonass
-        _out << obs->_o.satSys 
-             << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
-             << setw(14) << setprecision(3) << obs->_o.C1 << ' '  << ' '  
-             << setw(14) << setprecision(3) << obs->_o.P1 << ' '  << ' '  
-             << setw(14) << setprecision(3) << obs->_o.L1 << lli1 << ' '
-             << setw(14) << setprecision(3) << obs->_o.S1 << ' '  << ' ' 
-             << setw(14) << setprecision(3) << obs->_o.C2 << ' '  << ' '  
-             << setw(14) << setprecision(3) << obs->_o.P2 << ' '  << ' ' 
-             << setw(14) << setprecision(3) << obs->_o.L2 << lli2 << ' ' 
-             << setw(14) << setprecision(3) << obs->_o.S2 << endl;
-      }
-      else if (obs->_o.satSys == 'S') { // SBAS
-        _out << obs->_o.satSys 
-             << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
-             << setw(14) << setprecision(3) << obs->_o.C1 << ' '  << ' '  
-             << setw(14) << setprecision(3) << obs->_o.P1 << ' '  << ' '  
-             << setw(14) << setprecision(3) << obs->_o.L1 << lli1 << ' '
-             << setw(14) << setprecision(3) << obs->_o.S1 << endl; 
-      }
-      else if (obs->_o.satSys == 'E') { // Galileo
-        _out << obs->_o.satSys 
-             << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
-             << setw(14) << setprecision(3) << obs->_o.C1 << ' '  << ' '  
-             << setw(14) << setprecision(3) << obs->_o.L1 << lli1 << ' '
-             << setw(14) << setprecision(3) << obs->_o.S1 << ' '  << ' ' 
-             << setw(14) << setprecision(3) << obs->_o.C5 << ' '  << ' '  
-             << setw(14) << setprecision(3) << obs->_o.L5 << lli5 << ' '
-             << setw(14) << setprecision(3) << obs->_o.S5 << endl; 
-      }
+      _out << rinexSatLine(obs->_o, lli1, lli2, lli5); 
     }
 
     // RINEX Version 2
@@ -712,4 +669,59 @@ void bncRinex::closeFile() {
 #endif
 
   }
+}
+
+// One Line in RINEX v3 (static)
+////////////////////////////////////////////////////////////////////////////
+string bncRinex::rinexSatLine(const t_obsInternal& obs, 
+                              char lli1, char lli2, char lli5) {
+  ostringstream str;
+  str.setf(ios::showpoint | ios::fixed);
+
+  if      (obs.satSys == 'G') { // GPS
+    str << obs.satSys 
+        << setw(2) << setfill('0') << obs.satNum << setfill(' ')
+        << setw(14) << setprecision(3) << obs.C1 << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.P1 << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.L1 << lli1 << ' '
+        << setw(14) << setprecision(3) << obs.S1 << ' '  << ' ' 
+        << setw(14) << setprecision(3) << obs.C2 << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.P2 << ' '  << ' ' 
+        << setw(14) << setprecision(3) << obs.L2 << lli2 << ' ' 
+        << setw(14) << setprecision(3) << obs.S2 << ' '  << ' '
+        << setw(14) << setprecision(3) << obs.C5 << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.L5 << lli5 << ' ' 
+        << setw(14) << setprecision(3) << obs.S5 << endl;
+  }
+  else if (obs.satSys == 'R') { // Glonass
+    str << obs.satSys 
+        << setw(2) << setfill('0') << obs.satNum << setfill(' ')
+        << setw(14) << setprecision(3) << obs.C1 << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.P1 << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.L1 << lli1 << ' '
+        << setw(14) << setprecision(3) << obs.S1 << ' '  << ' ' 
+        << setw(14) << setprecision(3) << obs.C2 << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.P2 << ' '  << ' ' 
+        << setw(14) << setprecision(3) << obs.L2 << lli2 << ' ' 
+        << setw(14) << setprecision(3) << obs.S2 << endl;
+  }
+  else if (obs.satSys == 'S') { // SBAS
+    str << obs.satSys 
+        << setw(2) << setfill('0') << obs.satNum << setfill(' ')
+        << setw(14) << setprecision(3) << obs.C1 << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.P1 << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.L1 << lli1 << ' '
+        << setw(14) << setprecision(3) << obs.S1 << endl; 
+  }
+  else if (obs.satSys == 'E') { // Galileo
+    str << obs.satSys 
+        << setw(2) << setfill('0') << obs.satNum << setfill(' ')
+        << setw(14) << setprecision(3) << obs.C1 << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.L1 << lli1 << ' '
+        << setw(14) << setprecision(3) << obs.S1 << ' '  << ' ' 
+        << setw(14) << setprecision(3) << obs.C5 << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.L5 << lli5 << ' '
+        << setw(14) << setprecision(3) << obs.S5 << endl; 
+  }
+  return str.str();
 }

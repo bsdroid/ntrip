@@ -54,6 +54,9 @@ class bncRinex {
      _approxPos[2] = staz;
    }
 
+   static std::string rinexSatLine(const t_obsInternal& obs, 
+                                   char lli1, char lli2, char lli5);
+
  private:
    void resolveFileName(const QDateTime& datTim);
    void readSkeleton();
