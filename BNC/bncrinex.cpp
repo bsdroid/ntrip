@@ -412,7 +412,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
       }
       else if (line.indexOf("# / TYPES OF OBSERV") != -1) {
         if (_rinexVers == 3) {
-          _out << "G    8 C1C C1P L1C S1C C2W C2P L2W S2W                      SYS / # / OBS TYPES" << endl;
+          _out << "G   11 C1C C1P L1C S1C C2W C2P L2W S2W C5X L5X S5X          SYS / # / OBS TYPES" << endl;
           _out << "R    8 C1C C1P L1C S1C C2C C2P L2C S2C                      SYS / # / OBS TYPES" << endl;
           _out << "E    6 C1X L1X S1X C5X L5X S5X                              SYS / # / OBS TYPES" << endl;
           _out << "S    3 C1C L1C S1C                                          SYS / # / OBS TYPES" << endl;
@@ -484,7 +484,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
          << setw(14) << setprecision(4) << antennaNEU[2] 
          << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
     if (_rinexVers == 3) {
-      _out << "G    8 C1C C1P L1C S1C C2W C2P L2W S2W                      SYS / # / OBS TYPES" << endl;
+      _out << "G   11 C1C C1P L1C S1C C2W C2P L2W S2W C5X L5X S5X          SYS / # / OBS TYPES" << endl;
       _out << "R    8 C1C C1P L1C S1C C2C C2P L2C S2C                      SYS / # / OBS TYPES" << endl;
       _out << "E    6 C1X L1X S1X C5X L5X S5X                              SYS / # / OBS TYPES" << endl;
       _out << "S    3 C1C L1C S1C                                          SYS / # / OBS TYPES" << endl;
@@ -629,7 +629,22 @@ void bncRinex::dumpEpoch(long maxTime) {
     // RINEX Version 3
     // ---------------
     if (_rinexVers == 3) {
-      if (obs->_o.satSys == 'G' || obs->_o.satSys == 'R') { // GPS and Glonass
+      if      (obs->_o.satSys == 'G') { // GPS
+        _out << obs->_o.satSys 
+             << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
+             << setw(14) << setprecision(3) << obs->_o.C1 << ' '  << ' '  
+             << setw(14) << setprecision(3) << obs->_o.P1 << ' '  << ' '  
+             << setw(14) << setprecision(3) << obs->_o.L1 << lli1 << ' '
+             << setw(14) << setprecision(3) << obs->_o.S1 << ' '  << ' ' 
+             << setw(14) << setprecision(3) << obs->_o.C2 << ' '  << ' '  
+             << setw(14) << setprecision(3) << obs->_o.P2 << ' '  << ' ' 
+             << setw(14) << setprecision(3) << obs->_o.L2 << lli2 << ' ' 
+             << setw(14) << setprecision(3) << obs->_o.S2 << ' '  << ' '
+             << setw(14) << setprecision(3) << obs->_o.C5 << ' '  << ' '  
+             << setw(14) << setprecision(3) << obs->_o.L5 << lli5 << ' ' 
+             << setw(14) << setprecision(3) << obs->_o.S5 << endl;
+      }
+      else if (obs->_o.satSys == 'R') { // Glonass
         _out << obs->_o.satSys 
              << setw(2) << setfill('0') << obs->_o.satNum << setfill(' ')
              << setw(14) << setprecision(3) << obs->_o.C1 << ' '  << ' '  
