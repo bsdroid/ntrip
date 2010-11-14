@@ -57,9 +57,6 @@ class t_obsInternal {
     S1            = 0.0;
     S2            = 0.0;
     S5            = 0.0;
-    SNR1          = 0;
-    SNR2          = 0;
-    SNR5          = 0;
     StatID[0]     = '\x0';
   }
 
@@ -80,15 +77,12 @@ class t_obsInternal {
   double L1;            // L1 carrier phase (cycles)
   double L2;            // L2 carrier phase (cycles)
   double L5;            // L5 carrier phase (cycles)
+  double S1;            // raw L1 signal strength
+  double S2;            // raw L2 signal strength
+  double S5;            // raw L5 signal strength
   int    slip_cnt_L1;   // L1 cumulative loss of continuity indicator (negative value = undefined)
   int    slip_cnt_L2;   // L2 cumulative loss of continuity indicator (negative value = undefined)
   int    slip_cnt_L5;   // L5 cumulative loss of continuity indicator (negative value = undefined)
-  double S1;            // L1 signal-to noise ratio
-  double S2;            // L2 signal-to noise ratio
-  double S5;            // L5 signal-to noise ratio
-  int    SNR1;          // L1 signal-to noise ratio (mapped to integer)
-  int    SNR2;          // L2 signal-to noise ratio (mapped to integer)
-  int    SNR5;          // L5 signal-to noise ratio (mapped to integer)
 };
 
 class t_obs : public QObject{

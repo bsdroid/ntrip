@@ -128,8 +128,6 @@ t_irc RTIGSDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
       obs->_o.L2       = _GPSTrans.DecObs.Obs[ii].p2_phase;
       obs->_o.S1       = _GPSTrans.DecObs.Obs[ii].l1_sn;
       obs->_o.S2       = _GPSTrans.DecObs.Obs[ii].l2_sn;
-      obs->_o.SNR1     = int(ceil(_GPSTrans.DecObs.Obs[ii].l1_sn / 60.0 * 9.0));
-      obs->_o.SNR2     = int(ceil(_GPSTrans.DecObs.Obs[ii].l2_sn / 60.0 * 9.0));
     }
   }
   if(messType==300){
