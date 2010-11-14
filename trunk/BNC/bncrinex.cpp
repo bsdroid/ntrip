@@ -631,6 +631,7 @@ void bncRinex::dumpEpoch(long maxTime) {
     // ---------------
     if (_rinexVers == 3) {
       _out << rinexSatLine(obs->_o, lli1, lli2, lli5); 
+      _out << endl;
     }
 
     // RINEX Version 2
@@ -691,7 +692,7 @@ string bncRinex::rinexSatLine(const t_obsInternal& obs,
         << setw(14) << setprecision(3) << obs.S2 << ' '  << ' '
         << setw(14) << setprecision(3) << obs.C5 << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.L5 << lli5 << ' ' 
-        << setw(14) << setprecision(3) << obs.S5 << endl;
+        << setw(14) << setprecision(3) << obs.S5;
   }
   else if (obs.satSys == 'R') { // Glonass
     str << obs.satSys 
@@ -703,7 +704,7 @@ string bncRinex::rinexSatLine(const t_obsInternal& obs,
         << setw(14) << setprecision(3) << obs.C2 << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.P2 << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.L2 << lli2 << ' ' 
-        << setw(14) << setprecision(3) << obs.S2 << endl;
+        << setw(14) << setprecision(3) << obs.S2;
   }
   else if (obs.satSys == 'S') { // SBAS
     str << obs.satSys 
@@ -711,7 +712,7 @@ string bncRinex::rinexSatLine(const t_obsInternal& obs,
         << setw(14) << setprecision(3) << obs.C1 << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.P1 << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.L1 << lli1 << ' '
-        << setw(14) << setprecision(3) << obs.S1 << endl; 
+        << setw(14) << setprecision(3) << obs.S1;
   }
   else if (obs.satSys == 'E') { // Galileo
     str << obs.satSys 
@@ -721,7 +722,7 @@ string bncRinex::rinexSatLine(const t_obsInternal& obs,
         << setw(14) << setprecision(3) << obs.S1 << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.C5 << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.L5 << lli5 << ' '
-        << setw(14) << setprecision(3) << obs.S5 << endl; 
+        << setw(14) << setprecision(3) << obs.S5;
   }
   return str.str();
 }
