@@ -48,6 +48,57 @@
 #include "bncsettings.h"
 #include "RTCM/GPSDecoder.h"
 
+#define OLD_OBS_FORMAT 1
+
+class t_oldObsInternal {
+ public:
+
+  t_oldObsInternal(const t_obsInternal obs) {
+    strcpy(StatID, obs.StatID);
+    flags         = 0;
+    satSys        = obs.satSys;
+    satNum        = obs.satNum;
+    slot          = obs.slotNum;
+    GPSWeek       = obs.GPSWeek;
+    GPSWeeks      = obs.GPSWeeks;
+    C1            = obs.C1;
+    C2            = obs.C2;
+    P1            = obs.P1;
+    P2            = obs.P2;
+    L1            = obs.L1;
+    L2            = obs.L2;
+    slip_cnt_L1   = obs.slip_cnt_L1;
+    slip_cnt_L2   = obs.slip_cnt_L2;
+    lock_timei_L1 = -1;
+    lock_timei_L2 = -1;
+    S1            = obs.S1;
+    S2            = obs.S2;
+    SNR1          = 0;
+    SNR2          = 0;
+  }
+  int    flags;
+  char   StatID[20+1];  // Station ID
+  char   satSys;        // Satellite System ('G' or 'R')
+  int    satNum;        // Satellite Number (PRN for GPS NAVSTAR)
+  int    slot;          // Slot Number (for Glonass)
+  int    GPSWeek;       // Week of GPS-Time
+  double GPSWeeks;      // Second of Week (GPS-Time)
+  double C1;            // CA-code pseudorange (meters)
+  double C2;            // CA-code pseudorange (meters)
+  double P1;            // P1-code pseudorange (meters)
+  double P2;            // P2-code pseudorange (meters)
+  double L1;            // L1 carrier phase (cycles)
+  double L2;            // L2 carrier phase (cycles)
+  int    slip_cnt_L1;   // L1 cumulative loss of continuity indicator (negative$
+  int    slip_cnt_L2;   // L2 cumulative loss of continuity indicator (negative$
+  int    lock_timei_L1; // L1 last lock time indicator                (negative$
+  int    lock_timei_L2; // L2 last lock time indicator                (negative$
+  double S1;            // L1 signal-to noise ratio
+  double S2;            // L2 signal-to noise ratio
+  int    SNR1;          // L1 signal-to noise ratio (mapped to integer)
+  int    SNR2;          // L2 signal-to noise ratio (mapped to integer)
+};
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncCaster::bncCaster(const QString& outFileName, int port) {
@@ -183,9 +234,18 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
         if (myWrite(sock, begObs, begObsNBytes) != begObsNBytes) {
           ok = false;
         }
-        int numBytes = sizeof(obs->_o); 
-        if (myWrite(sock, (const char*)(&obs->_o), numBytes) != numBytes) {
-          ok = false;
+        if (OLD_OBS_FORMAT) {
+          t_oldObsInternal oldObs(obs->_o);
+          int numBytes = sizeof(oldObs);
+          if (myWrite(sock, (const char*)(&oldObs), numBytes) != numBytes) {
+            ok = false;
+          }
+        }
+        else {
+          int numBytes = sizeof(obs->_o); 
+          if (myWrite(sock, (const char*)(&obs->_o), numBytes) != numBytes) {
+            ok = false;
+          }
         }
         if (!ok) {
           delete sock;
@@ -387,9 +447,18 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
                   ok = false;
                 }
               }
-              int numBytes = sizeof(obs->_o); 
-              if (myWrite(sock, (const char*)(&obs->_o), numBytes) != numBytes) {
-                ok = false;
+              if (OLD_OBS_FORMAT) {
+                t_oldObsInternal oldObs(obs->_o);
+                int numBytes = sizeof(oldObs);
+                if (myWrite(sock, (const char*)(&oldObs), numBytes) != numBytes) {
+                  ok = false;
+                }
+              }
+              else {
+                int numBytes = sizeof(obs->_o); 
+                if (myWrite(sock, (const char*)(&obs->_o), numBytes) != numBytes) {
+                  ok = false;
+                }
               }
               if (!it.hasNext()) {
                 if (myWrite(sock, endEpoch, endEpochNBytes) != endEpochNBytes) {
