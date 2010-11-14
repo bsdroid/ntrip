@@ -38,51 +38,59 @@ class t_obsInternal {
  public:
 
   t_obsInternal() {
-    satSys        = 'G';
-    satNum        = 0;
-    slotNum       = 0;
-    GPSWeek       = 0;
-    GPSWeeks      = 0.0;
-    C1            = 0.0;
-    C2            = 0.0;
-    C5            = 0.0;
-    P1            = 0.0;
-    P2            = 0.0;
-    L1            = 0.0;
-    L2            = 0.0;
-    L5            = 0.0;
-    slip_cnt_L1   = -1;
-    slip_cnt_L2   = -1;
-    slip_cnt_L5   = -1;
-    S1            = 0.0;
-    S2            = 0.0;
-    S5            = 0.0;
-    StatID[0]     = '\x0';
+    satSys      = 'G';
+    satNum      = 0;
+    slotNum     = 0;
+    GPSWeek     = 0;
+    GPSWeeks    = 0.0;
+
+    C1          = 0.0;
+    P1          = 0.0;
+    L1          = 0.0;
+    S1          = 0.0;
+
+    C2          = 0.0;
+    P2          = 0.0;
+    L2          = 0.0;
+    S2          = 0.0;
+ 
+    C5          = 0.0;
+    L5          = 0.0;
+    S5          = 0.0;
+
+    slip_cnt_L1 = -1;
+    slip_cnt_L2 = -1;
+    slip_cnt_L5 = -1;
+    StatID[0]   = '\x0';
   }
 
   ~t_obsInternal() {}
 
   int    flags;
-  char   StatID[20+1];  // Station ID
-  char   satSys;        // Satellite System ('G' or 'R')
-  int    satNum;        // Satellite Number (PRN for GPS NAVSTAR)
-  int    slotNum;       // Slot Number (for Glonass)
-  int    GPSWeek;       // Week of GPS-Time
-  double GPSWeeks;      // Second of Week (GPS-Time)
-  double C1;            // CA-code pseudorange (meters)
-  double C2;            // CA-code pseudorange (meters)
-  double C5;
-  double P1;            // P1-code pseudorange (meters)
-  double P2;            // P2-code pseudorange (meters)
-  double L1;            // L1 carrier phase (cycles)
-  double L2;            // L2 carrier phase (cycles)
-  double L5;            // L5 carrier phase (cycles)
-  double S1;            // raw L1 signal strength
-  double S2;            // raw L2 signal strength
-  double S5;            // raw L5 signal strength
-  int    slip_cnt_L1;   // L1 cumulative loss of continuity indicator (negative value = undefined)
-  int    slip_cnt_L2;   // L2 cumulative loss of continuity indicator (negative value = undefined)
-  int    slip_cnt_L5;   // L5 cumulative loss of continuity indicator (negative value = undefined)
+  char   StatID[20+1]; // Station ID
+  char   satSys;       // Satellite System ('G' or 'R')
+  int    satNum;       // Satellite Number (PRN for GPS NAVSTAR)
+  int    slotNum;      // Slot Number (for Glonass)
+  int    GPSWeek;      // Week of GPS-Time
+  double GPSWeeks;     // Second of Week (GPS-Time)
+
+  double C1;           // CA-code pseudorange (meters)
+  double P1;           // P1-code pseudorange (meters)
+  double L1;           // L1 carrier phase (cycles)
+  double S1;           // raw L1 signal strength
+
+  double C2;           // CA-code pseudorange (meters)
+  double P2;           // P2-code pseudorange (meters)
+  double L2;           // L2 carrier phase (cycles)
+  double S2;           // raw L2 signal strength
+
+  double C5;           // Pseudorange (meters)
+  double L5;           // L5 carrier phase (cycles)
+  double S5;           // raw L5 signal strength
+
+  int    slip_cnt_L1;  // L1 cumulative loss of continuity indicator (negative value = undefined)
+  int    slip_cnt_L2;  // L2 cumulative loss of continuity indicator (negative value = undefined)
+  int    slip_cnt_L5;  // L5 cumulative loss of continuity indicator (negative value = undefined)
 };
 
 class t_obs : public QObject{
