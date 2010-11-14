@@ -370,12 +370,10 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                   else if (iEntry == GNSSENTRY_L1CDATA ||
                            iEntry == GNSSENTRY_L1PDATA) {
                     obs->_o.L1   = gnssData.measdata[iSat][iEntry];
-                    obs->_o.SNR1 = gnssData.snrL1[iSat];
                   }
                   else if (iEntry == GNSSENTRY_L2CDATA || 
                            iEntry == GNSSENTRY_L2PDATA) {
                     obs->_o.L2   = gnssData.measdata[iSat][iEntry];
-                    obs->_o.SNR2 = gnssData.snrL2[iSat];
                   }
                   else if (iEntry == GNSSENTRY_S1CDATA ||
                            iEntry == GNSSENTRY_S1PDATA) {
