@@ -383,9 +383,6 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                            iEntry == GNSSENTRY_S2PDATA) {
                     obs->_o.S2   = gnssData.measdata[iSat][iEntry];
                   }
-  
-                  // New Carriers
-                  // ------------
                   else if (iEntry == GNSSENTRY_C5DATA) {
                     obs->_o.C5 = gnssData.measdata[iSat][iEntry];
                   }
