@@ -595,12 +595,8 @@ void bncRinex::dumpEpoch(long maxTime) {
 
     // Cycle slips detection
     // ---------------------
-    int prn = 0;
-    switch (obs->_o.satSys) {
-    case 'G': prn = obs->_o.satNum;       break;
-    case 'R': prn = obs->_o.satNum + 200; break;
-    default:  prn = obs->_o.satNum;
-    }
+    QString prn = QString("%1%2").arg(obs->_o.satSys)
+                            .arg(obs->_o.satNum, 2, 10, QChar('0'));
 
     char lli1 = ' ';
     char lli2 = ' ';
@@ -611,22 +607,10 @@ void bncRinex::dumpEpoch(long maxTime) {
         lli1 = '1';
       }
     }
-    else if ( obs->_o.lock_timei_L1 >= 0 ) {
-      if ( _lock_timei_L1.find(prn)         != _lock_timei_L1.end() && 
-           _lock_timei_L1.find(prn).value() != obs->_o.lock_timei_L1 ) {
-        lli1 = '1';
-      }
-    }
 
     if ( obs->_o.slip_cnt_L2 >= 0 ) {
       if ( _slip_cnt_L2.find(prn)         != _slip_cnt_L2.end() && 
            _slip_cnt_L2.find(prn).value() != obs->_o.slip_cnt_L2 ) {
-        lli2 = '1';
-      }
-    }
-    else if ( obs->_o.lock_timei_L2 >= 0 ) {
-      if ( _lock_timei_L2.find(prn)         != _lock_timei_L2.end() && 
-           _lock_timei_L2.find(prn).value() != obs->_o.lock_timei_L2 ) {
         lli2 = '1';
       }
     }
@@ -637,20 +621,10 @@ void bncRinex::dumpEpoch(long maxTime) {
         lli5 = '1';
       }
     }
-    else if ( obs->_o.lock_timei_L5 >= 0 ) {
-      if ( _lock_timei_L5.find(prn)         != _lock_timei_L5.end() && 
-           _lock_timei_L5.find(prn).value() != obs->_o.lock_timei_L5 ) {
-        lli5 = '1';
-      }
-    }
 
     _slip_cnt_L1[prn]   = obs->_o.slip_cnt_L1;
     _slip_cnt_L2[prn]   = obs->_o.slip_cnt_L2;
     _slip_cnt_L5[prn]   = obs->_o.slip_cnt_L5;
-
-    _lock_timei_L1[prn] = obs->_o.lock_timei_L1;
-    _lock_timei_L2[prn] = obs->_o.lock_timei_L2;
-    _lock_timei_L5[prn] = obs->_o.lock_timei_L5;
 
     // RINEX Version 3
     // ---------------

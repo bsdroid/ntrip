@@ -85,12 +85,9 @@ class bncRinex {
    bool          _reloadDone;
    double        _approxPos[3];
 
-   QMap<int, int> _slip_cnt_L1;
-   QMap<int, int> _slip_cnt_L2;
-   QMap<int, int> _slip_cnt_L5;
-   QMap<int, int> _lock_timei_L1;
-   QMap<int, int> _lock_timei_L2;
-   QMap<int, int> _lock_timei_L5;
+   QMap<QString, int>  _slip_cnt_L1;
+   QMap<QString, int>  _slip_cnt_L2;
+   QMap<QString, int>  _slip_cnt_L5;
 };
 
 #endif
