@@ -66,7 +66,6 @@ class t_obsInternal {
 
   ~t_obsInternal() {}
 
-  int    flags;
   char   StatID[20+1]; // Station ID
   char   satSys;       // Satellite System ('G' or 'R')
   int    satNum;       // Satellite Number (PRN for GPS NAVSTAR)
