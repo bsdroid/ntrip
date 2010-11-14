@@ -9,7 +9,7 @@ fi
 inpFile=$1
 outFile=$2
 
-grep NEU ${inpFile} > neu_tmp
+grep " NEU " ${inpFile} > neu_tmp
 
 gnuplot << EOF
 
