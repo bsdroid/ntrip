@@ -42,6 +42,7 @@
 #include <unistd.h>
 
 #include "bnccaster.h"
+#include "bncrinex.h"
 #include "bncapp.h"
 #include "bncgetthread.h"
 #include "bncutils.h"
@@ -402,32 +403,14 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
           if (first) {
             _out->setFieldWidth(1); *_out << begEpoch << endl;
           }
-          _out->setFieldWidth(0); *_out << obs->_o.StatID; 
-          _out->setFieldWidth(1); *_out << " " << obs->_o.satSys;
-          _out->setPadChar('0');
-          _out->setFieldWidth(2); *_out << obs->_o.satNum; 
-          _out->setPadChar(' ');
-          _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(4); *_out << obs->_o.GPSWeek; 
-          _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(7); *_out << obs->_o.GPSWeeks; 
-          _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.C1; 
-          _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.C2; 
-          _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.P1; 
-          _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.P2; 
-          _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.L1; 
-          _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.L2; 
-          _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.S1; 
-          _out->setFieldWidth(1); *_out << " ";
-          _out->setFieldWidth(14); _out->setRealNumberPrecision(3); *_out << obs->_o.S2;
-          *_out << endl;
+
+          *_out << obs->_o.StatID << " " << obs->_o.GPSWeek << " ";  
+          _out->setRealNumberPrecision(7); 
+           *_out << obs->_o.GPSWeeks << " "; 
+
+           *_out << bncRinex::rinexSatLine(obs->_o, ' ', ' ', ' ').c_str() 
+                 << endl;
+
           if (!it.hasNext()) {
             _out->setFieldWidth(1); *_out << endEpoch << endl;
           }
