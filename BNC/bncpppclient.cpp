@@ -118,10 +118,10 @@ bncPPPclient::~bncPPPclient() {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::putNewObs(p_obs pp) {
+void bncPPPclient::putNewObs(p_obs pObs) {
   QMutexLocker locker(&_mutex);
 
-  t_obsInternal* obs = &(pp->_o);
+  t_obsInternal* obs = &(pObs->_o);
 
   if (obs->satSys != 'G' && !_useGlonass) {
     return;
@@ -205,9 +205,9 @@ void bncPPPclient::putNewObs(p_obs pp) {
 
   // Set Phase Observations
   // ----------------------  
-  if (obs->L1 && obs->L2) {
-    satData->L1 = obs->L1 * t_CST::c / f1;
-    satData->L2 = obs->L2 * t_CST::c / f2;
+  if (pObs->L1() && pObs->L2()) {
+    satData->L1 = pObs->L1() * t_CST::c / f1;
+    satData->L2 = pObs->L2() * t_CST::c / f2;
   }
   else {
     delete satData;

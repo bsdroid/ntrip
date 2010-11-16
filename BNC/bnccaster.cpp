@@ -54,26 +54,26 @@
 class t_oldObsInternal {
  public:
 
-  t_oldObsInternal(const t_obsInternal obs) {
-    strcpy(StatID, obs.StatID);
+  t_oldObsInternal(const t_obs* obs) {
+    strcpy(StatID, obs->_o.StatID);
     flags         = 0;
-    satSys        = obs.satSys;
-    satNum        = obs.satNum;
-    slot          = obs.slotNum;
-    GPSWeek       = obs.GPSWeek;
-    GPSWeeks      = obs.GPSWeeks;
-    C1            = obs.C1;
-    C2            = obs.C2;
-    P1            = obs.P1;
-    P2            = obs.P2;
-    L1            = obs.L1;
-    L2            = obs.L2;
-    slip_cnt_L1   = obs.slip_cnt_L1;
-    slip_cnt_L2   = obs.slip_cnt_L2;
+    satSys        = obs->_o.satSys;
+    satNum        = obs->_o.satNum;
+    slot          = obs->_o.slotNum;
+    GPSWeek       = obs->_o.GPSWeek;
+    GPSWeeks      = obs->_o.GPSWeeks;
+    C1            = obs->_o.C1;
+    C2            = obs->_o.C2;
+    P1            = obs->_o.P1;
+    P2            = obs->_o.P2;
+    L1            = obs->L1();
+    L2            = obs->L2();
+    slip_cnt_L1   = obs->_o.slip_cnt_L1;
+    slip_cnt_L2   = obs->_o.slip_cnt_L2;
     lock_timei_L1 = -1;
     lock_timei_L2 = -1;
-    S1            = obs.S1;
-    S2            = obs.S2;
+    S1            = obs->S1();
+    S2            = obs->S2();
     SNR1          = 0;
     SNR2          = 0;
   }
@@ -236,7 +236,7 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
           ok = false;
         }
         if (OLD_OBS_FORMAT) {
-          t_oldObsInternal oldObs(obs->_o);
+          t_oldObsInternal oldObs(obs);
           int numBytes = sizeof(oldObs);
           if (myWrite(sock, (const char*)(&oldObs), numBytes) != numBytes) {
             ok = false;
@@ -430,7 +430,7 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
                 }
               }
               if (OLD_OBS_FORMAT) {
-                t_oldObsInternal oldObs(obs->_o);
+                t_oldObsInternal oldObs(obs);
                 int numBytes = sizeof(oldObs);
                 if (myWrite(sock, (const char*)(&oldObs), numBytes) != numBytes) {
                   ok = false;

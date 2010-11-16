@@ -124,10 +124,10 @@ t_irc RTIGSDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
       obs->_o.C1       = _GPSTrans.DecObs.Obs[ii].l1_pseudo_range;
       obs->_o.P1       = _GPSTrans.DecObs.Obs[ii].p1_pseudo_range;
       obs->_o.P2       = _GPSTrans.DecObs.Obs[ii].p2_pseudo_range;
-      obs->_o.L1       = _GPSTrans.DecObs.Obs[ii].p1_phase;
-      obs->_o.L2       = _GPSTrans.DecObs.Obs[ii].p2_phase;
-      obs->_o.S1       = _GPSTrans.DecObs.Obs[ii].l1_sn;
-      obs->_o.S2       = _GPSTrans.DecObs.Obs[ii].l2_sn;
+      obs->_o.L1P      = _GPSTrans.DecObs.Obs[ii].p1_phase;
+      obs->_o.L2P      = _GPSTrans.DecObs.Obs[ii].p2_phase;
+      obs->_o.S1P      = _GPSTrans.DecObs.Obs[ii].l1_sn;
+      obs->_o.S2P      = _GPSTrans.DecObs.Obs[ii].l2_sn;
     }
   }
   if(messType==300){
