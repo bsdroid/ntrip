@@ -5,10 +5,9 @@ CONFIG += release console
 
 INCLUDEPATH = . ./RTCM3
 
-HEADERS = bnctime.h   RTCM3/rtcm3torinex.h RTCM3/timeutils.h
+HEADERS = bnctime.h
 
-SOURCES = test_bnc_qt.cpp \
-          bnctime.cpp RTCM3/rtcm3torinex.c RTCM3/timeutils.cpp
+SOURCES = test_bnc_qt.cpp
 
 QT += network
 
