@@ -327,8 +327,7 @@ void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
   qRegisterMetaType<glonassephemeris>("glonassephemeris");
 
   connect(getThread, SIGNAL(newObs(QByteArray, bool, p_obs)),
-          this,      SLOT(newObs(QByteArray, bool, p_obs)),
-          Qt::DirectConnection);
+          this,      SLOT(newObs(QByteArray, bool, p_obs))); /// Qt::DirectConnection);
 
   connect(getThread, SIGNAL(getThreadFinished(QByteArray)), 
           this, SLOT(slotGetThreadFinished(QByteArray)));
