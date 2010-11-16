@@ -413,10 +413,12 @@ void bncRinex::writeHeader(const QDateTime& datTim,
       }
       else if (line.indexOf("# / TYPES OF OBSERV") != -1) {
         if (_rinexVers == 3) {
-          _out << "G   11 C1C C1P L1C S1C C2W C2P L2W S2W C5X L5X S5X          SYS / # / OBS TYPES" << endl;
-          _out << "R    8 C1C C1P L1C S1C C2C C2P L2C S2C                      SYS / # / OBS TYPES" << endl;
-          _out << "E    6 C1X L1X S1X C5X L5X S5X                              SYS / # / OBS TYPES" << endl;
-          _out << "S    3 C1C L1C S1C                                          SYS / # / OBS TYPES" << endl;
+          _out << "G   20 C1C L1C D1C S1C C1W L1W D1W S1W C2P L2P D2P S2P C2X  SYS / # / OBS TYPES" << endl;
+          _out << "       L2X D2X S2X C5  L5  D5  S5                           SYS / # / OBS TYPES" << endl;
+          _out << "R   16 C1C L1C D1C S1C C1P L1P D1P S1P C2P L2P D2P S2P C2C  SYS / # / OBS TYPES" << endl;
+          _out << "       L2C D2C S2C                                          SYS / # / OBS TYPES" << endl;
+          _out << "S    8 C1C L1C D1C S1C C1W L1W D1W S1W                      SYS / # / OBS TYPES" << endl;
+          _out << "E    8 C1  L1  D1  S1  C5  L5  D5  S5                       SYS / # / OBS TYPES" << endl;
         }
         else { 
           _out << "     8    C1    P1    L1    S1    C2    P2    L2    S2"
@@ -485,10 +487,12 @@ void bncRinex::writeHeader(const QDateTime& datTim,
          << setw(14) << setprecision(4) << antennaNEU[2] 
          << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
     if (_rinexVers == 3) {
-      _out << "G   11 C1C C1P L1C S1C C2W C2P L2W S2W C5X L5X S5X          SYS / # / OBS TYPES" << endl;
-      _out << "R    8 C1C C1P L1C S1C C2C C2P L2C S2C                      SYS / # / OBS TYPES" << endl;
-      _out << "E    6 C1X L1X S1X C5X L5X S5X                              SYS / # / OBS TYPES" << endl;
-      _out << "S    3 C1C L1C S1C                                          SYS / # / OBS TYPES" << endl;
+      _out << "G   20 C1C L1C D1C S1C C1W L1W D1W S1W C2P L2P D2P S2P C2X  SYS / # / OBS TYPES" << endl;
+      _out << "       L2X D2X S2X C5  L5  D5  S5                           SYS / # / OBS TYPES" << endl;
+      _out << "R   16 C1C L1C D1C S1C C1P L1P D1P S1P C2P L2P D2P S2P C2C  SYS / # / OBS TYPES" << endl;
+      _out << "       L2C D2C S2C                                          SYS / # / OBS TYPES" << endl;
+      _out << "S    8 C1C L1C D1C S1C C1W L1W D1W S1W                      SYS / # / OBS TYPES" << endl;
+      _out << "E    8 C1  L1  D1  S1  C5  L5  D5  S5                       SYS / # / OBS TYPES" << endl;
     }
     else {
       _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
@@ -683,45 +687,68 @@ string bncRinex::rinexSatLine(const t_obsInternal& obs,
     str << obs.satSys 
         << setw(2) << setfill('0') << obs.satNum << setfill(' ')
         << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.L1C << lli1 << ' '
+        << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '
         << setw(14) << setprecision(3) << obs.S1C << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.C2  << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.L1P << lli1 << ' '
+        << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '
+        << setw(14) << setprecision(3) << obs.S1P << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.P2  << ' '  << ' ' 
+        << setw(14) << setprecision(3) << obs.L2P << lli2 << ' '
+        << setw(14) << setprecision(3) << obs.D2P << ' '  << ' '
+        << setw(14) << setprecision(3) << obs.S2P << ' '  << ' ' 
+        << setw(14) << setprecision(3) << obs.C2  << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.L2C << lli2 << ' ' 
+        << setw(14) << setprecision(3) << obs.D2C << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.S2C << ' '  << ' '
         << setw(14) << setprecision(3) << obs.C5  << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.L5  << lli5 << ' ' 
+        << setw(14) << setprecision(3) << obs.D5  << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.S5;
   }
   else if (obs.satSys == 'R') { // Glonass
     str << obs.satSys 
         << setw(2) << setfill('0') << obs.satNum << setfill(' ')
         << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.L1C << lli1 << ' '
+        << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.S1C << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.C2  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.P2  << ' '  << ' ' 
+        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.L1P << lli1 << ' '
+        << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.S1P << ' '  << ' ' 
+        << setw(14) << setprecision(3) << obs.P2  << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.L2P << lli2 << ' ' 
+        << setw(14) << setprecision(3) << obs.D2P << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.S2P << ' '  << ' '
+        << setw(14) << setprecision(3) << obs.C2  << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.L2C << lli2 << ' ' 
+        << setw(14) << setprecision(3) << obs.D2C << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.S2C;
   }
   else if (obs.satSys == 'S') { // SBAS
     str << obs.satSys 
         << setw(2) << setfill('0') << obs.satNum << setfill(' ')
         << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.L1C << lli1 << ' '
-        << setw(14) << setprecision(3) << obs.S1C;
+        << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.S1C << ' '  << ' '
+        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.L1P << lli1 << ' '
+        << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '  
+        << setw(14) << setprecision(3) << obs.S1P;
   }
   else if (obs.satSys == 'E') { // Galileo
     str << obs.satSys 
         << setw(2) << setfill('0') << obs.satNum << setfill(' ')
         << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.L1C << lli1 << ' '
+        << setw(14) << setprecision(3) << obs.D1C << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.S1C << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.C5  << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.L5  << lli5 << ' '
+        << setw(14) << setprecision(3) << obs.D5  << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.S5;
   }
   return str.str();
