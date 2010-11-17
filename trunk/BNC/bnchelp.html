@@ -704,10 +704,10 @@ When feeding a real-time GNSS network engine waiting epoch by epoch for synchron
 
 <p><a name="syncout"><h4>3.7. Feed Engine</h4></p>
 <p>
-BNC can generate synchronized or unsynchronized observations epoch by epoch from all stations and satellites to feed a real-time GNSS network engine. The output can be produced in a binary format through an IP port and/or a plain ASCII format to save the observations in a local file. Following StatID, GPSWeek, GPSWeekSeconds and SVPRN it comprises the following observations where available:
+BNC can generate synchronized or unsynchronized observations epoch by epoch from all stations and satellites to feed a real-time GNSS network engine. The output can be produced in a binary format through an IP port and/or a plain ASCII format to save the observations in a local file. Following StationID, GPSWeek, GPSWeekSeconds and SV-PRN it comprises the following observations where available:
 <ul>
-<li>For GPS satellites, 'G':   20 C1C L1C D1C S1C C1W L1W D1W S1W C2P L2P D2P S2P C2X L2X D2X S2X C5  L5  D5  S5</li>
-<li>For GLONASS satellites, 'R':   16 C1C L1C D1C S1C C1P L1P D1P S1P C2P L2P D2P S2P C2C L2C D2C S2C</li>
+<li>For GPS satellites, 'G': C1C L1C D1C S1C C1W L1W D1W S1W C2P L2P D2P S2P C2X L2X D2X S2X C5  L5  D5  S5</li>
+<li>For GLONASS satellites, 'R': C1C L1C D1C S1C C1P L1P D1P S1P C2P L2P D2P S2P C2C L2C D2C S2C</li>
 <li>For Geostationary signal payloads, 'S': C1C L1C D1C S1C C1W L1W D1W S1W</li>
 <li>For Galileo satellites, 'E': C1  L1  D1  S1  C5  L5  D5  S5</li>
 </ul>
