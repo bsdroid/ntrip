@@ -49,12 +49,19 @@ Please ensure that you have installed the latest version of BNC available from <
 </p>
 
 <p>
-BNC supports decoding the following GNSS data formats:
+BNC mainly supports decoding the following GNSS stream formats and message types:
 </p>
 <p>
 <ul>
 <li>RTCM Version 2.x containing message types 18 and 19 or 20 and 21 together with 3 and 22 (GPS and GLONASS), </li> 
-<li>RTCM Version 3.x containing message types 1002 (GPS, SBAS) or 1004 (GPS), 1010 or 1012 (GLONASS), 1019 or 1020 (GPS or GLONASS broadcast ephemeris), or the proposed State Space Representation messages for GPS and GLONASS type 1057-1068, or the proposed 'Multiple Signal Messages' (MSM) for GPS, GLONASS or Galileo type 1071-1077, 1081-1087, or 1091-1097.</li>
+<li>RTCM Version 3.x containing message types</li>
+<ul>
+<li>1002, 1004 (GPS, SBAS, observations)</li>
+<li>1010, 1012 (GLONASS, observations)</li>
+<li>1019, 1020 (GPS, GLONASS, ephemeris)</li>
+<li>1057-1068 (proposed State Space Representation messages for GPS and GLONASS ephemeris correctors)</li>
+<li> 1071-1077, 1081-1087, 1091-1097 (proposed 'Multiple Signal Messages' (MSM) for GPS, GLONASS and Galileo observations).</li>
+</ul>
 <li>RTIGS containing GPS record types 200 (observations) and 300 (ephemeris).</li>
 </ul>
 BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
@@ -302,7 +309,14 @@ The default value for 'Raw output file (full path)' is an empty option field, me
 
 <p><a name="rinex"><h4>3.4. RINEX Observations</h4></p>
 <p>
-Observations will be converted to RINEX if they come in either RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. BNC's RINEX Observation files generally contain  C1, P1, L1, S1, C2, P2, L2 and S2 observations. In case an observation is unavailable, its value is set to zero '0.000'. Note that the 'RINEX TYPE' field in the RINEX Observation file header is always set to 'M(MIXED)' even if the file does not contain any GLONASS or SABAS data.
+Observations will be converted to RINEX if they come in either RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. BNC's RINEX Version 2 observation files generally contain  C1, P1, L1, S1, C2, P2, L2 and S2 observations. RINEX Version 3 observation files generally contain the following observation types:
+<ul>
+<li>For GPS satellites, 'G': C1C L1C D1C S1C C1W L1W D1W S1W C2P L2P D2P S2P C2X L2X D2X S2X C5 L5 D5 S5</li>
+<li>For GLONASS satellites, 'R': C1C L1C D1C S1C C1P L1P D1P S1P C2P L2P D2P S2P C2C L2C D2C S2C</li>
+<li>For Geostationary signal payloads, 'S': C1C L1C D1C S1C C1W L1W D1W S1W</li>
+<li>For Galileo satellites, 'E': C1 L1 D1 S1 C5 L5 D5 S5</li>
+</ul>
+In case an observation is unavailable, its value is set to zero '0.000'. Note that the 'RINEX TYPE' field in the RINEX Observation file header is always set to 'M(MIXED)' even if the file does not contain any GLONASS or SABAS data.
 </p> 
 
 <p>
@@ -424,7 +438,7 @@ The default format for RINEX Observation files is RINEX Version 2.11. Select 'Ve
 
 <p><a name="ephemeris"><h4>3.5. RINEX Ephemeris</h4></p>
 <p>
-Broadcast ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3.x as message types 1019 (GPS) and 1020 (GLONASS) or via RTIGS records type 300. The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BRDC' and the last character is
+Broadcast ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3.x as message types 1019 (GPS) or 1020 (GLONASS) or 1045 (Galileo) or via RTIGS records type 300. The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BRDC' and the last character is
 </p>
 <ul>
 <li>'N' or 'G' for GPS or GLONASS ephemeris in two separate RINEX Version 2.11 Navigation files, or</li>
@@ -1358,7 +1372,14 @@ Some streams on NTRIP broadcasters may be restricted. Enter a valid 'User' ID an
 
 <p><a name="gettable"><h4>3.14.1.4 Get Table</h4></p>
 <p>
-Use the 'Get Table' button to download the source-table from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. RTCM Version 2.x streams must contain message types 18 and 19 or 20 and 21 while RTCM Version 3.x streams must contain GPS or SBAS message types 1002 or 1004, or GLONASS message types 1010 or 1012, or the proposed State Space Representation messages for GPS and GLONASS type 1057-1068, or the proposed 'Multiple Signal Messages' (MSM) for GPS, GLONASS or Galileo type 1071-1077, 1081-1087, or 1091-1097, see data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3.x streams containing message types 1019 (GPS) and 1020 (GLONASS) are required. Select your streams line by line, use +Shift and +Ctrl when necessary. The figure below provides an example source-table.
+Use the 'Get Table' button to download the source-table from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. For access to observations, ephemeris or ephemris correctiors, an RTCM Version 2.x streams must contain message types 18 and 19 or 20 and 21 while an RTCM Version 3.x streams must contain
+<ul>
+<li>GPS or SBAS message types 1002 or 1004, or</li>
+<li>GLONASS message types 1010 or 1012, or</li>
+<li>proposed State Space Representation messages for GPS and GLONASS, types 1057-1068, or</li>
+<li>proposed 'Multiple Signal Messages' (MSM) for GPS, GLONASS, or Galileo, types 1071-1077, 1081-1087, or 1091-1097.</li>
+</ul>
+see data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3.x streams containing message types 1019 (GPS) and 1020 (GLONASS) are required. Select your streams line by line, use +Shift and +Ctrl when necessary. The figure below provides an example source-table.
 </p> 
 <p>
 The contents of data field 'nmea' tells you whether a stream retrieval needs to be initiated by BNC through sending an NMEA-GGA message carrying approximate position coordinates (virtual reference station).
@@ -1541,9 +1562,10 @@ For Galileo satellites, 'E': C1 L1 D1 S1 C5 L5 D5 S5<br>
 Which observables and indicators are available on a particular stream will depend on the setup of source receiver and the data format used. RTCM Version 2.x streams do not carry signal-to-noise ratio 'S' values.
 </li>
 <li>
-Using RTCM Version 3.x, BNC will properly handle message types 1002, 1004, 1010, and 1012, or the proposed State Space Representation messages for GPS and GLONASS type 1057-1068, or the proposed 'Multiple Signal Messages' (MSM) for GPS, GLONASS or Galileo type 1071-1077, 1081-1087, or 1091-1097. Note that when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
+Using RTCM Version 3.x to produce RINEX files, BNC will properly handle message types 1002, 1004, 1010, 1012, 1071-1077, 1081-1087, or 1091-1097. However, when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
 </li>
-Concerning the RTCM Version 3.x premature message types 1057-1068 (see RTCM document 091-2009-SC104-542 'Version 3 Proposed Messages - Set 10'), a final decision is not yet made. Note the what's implemented in BNC is just a temporary solutions.
+<li>Concerning the RTCM Version 3.x premature message types 1057-1068 (see RTCM document 091-2009-SC104-542 'Version 3 Proposed Messages - Set 10'), a final decision is not yet made. Note the what's implemented in BNC is just a temporary solution.</li>
+<li>Concerning the RTCM Version 3.x premature message types 1071-1077, 1081-1087, 1091-1097 (see RTCM document 086-2010-SC104-587 'New RTCM-3 Multiple Signal Message Proposal for GPS, GLONASS and GALILEO'), a final decision is not yet made. Note the what's implemented in BNC is just a temporary solution.</li>
 <li>
 Using RTCM Version 2.x, BNC will only handle message types 18 and 19 or 20 and 21 together with position and the antenna offset information carried in types 3 and 22. Note that processing carrier phase corrections and pseudo-range corrections contained in message types 20 and 21 needs access to broadcast ephemeris. Hence, whenever dealing with message types 20 and 21, make sure that broadcast ephemeris become available for BNC through also retrieving at least one RTCM Version 3.x stream carrying message types 1019 (GPS ephemeris) and 1020 (GLONASS ephemeris).
 </li>
