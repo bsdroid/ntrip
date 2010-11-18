@@ -36,6 +36,7 @@
 class t_obs {
  public:
   t_obs() {
+    StatID[0]   = '\x0';
     satSys      = 'G';
     satNum      = 0;
     slotNum     = 0;
@@ -64,7 +65,6 @@ class t_obs {
     slip_cnt_L1 = -1;
     slip_cnt_L2 = -1;
     slip_cnt_L5 = -1;
-    StatID[0]   = '\x0';
   }
 
   ~t_obs() {}
