@@ -45,7 +45,7 @@
 
 using namespace std;
 
-class t_obsInternal {
+class t_obsOld {
   public:
   int    flags;
   char   StatID[20+1];  // Station ID
@@ -142,13 +142,13 @@ int main(int argc, char** argv) {
 
       // Interpret a portion of buffer as observation
       // --------------------------------------------
-      t_obsInternal* obs;
-      const int obsSize = sizeof(t_obsInternal);
+      t_obsOld* obs;
+      const int obsSize = sizeof(t_obsOld);
 
 
       while (buffer.size() >= obsSize) {
 
-        obs = (t_obsInternal*) (buffer.left(obsSize).data());
+        obs = (t_obsOld*) (buffer.left(obsSize).data());
 
         cout << obs->StatID                      << " "
              << obs->satSys << obs->satNum       << " "
@@ -159,13 +159,11 @@ int main(int argc, char** argv) {
              << setprecision(4) << obs->P1       << " "
              << setprecision(4) << obs->P2       << " "
              << setprecision(4) << obs->L1       << " "
-             << setprecision(4) << obs->L2       << " "
              <<                    obs->slip_cnt_L1 << " "
+             << setprecision(4) << obs->L2       << " "
              <<                    obs->slip_cnt_L2 << " "
              << setprecision(4) << obs->S1       << " "
-             << setprecision(4) << obs->S2       << " "
-             <<                    obs->SNR1     << " "
-             <<                    obs->SNR2     << endl;
+             << setprecision(4) << obs->S2       << endl;
 
         buffer.remove(0,obsSize);
       }
