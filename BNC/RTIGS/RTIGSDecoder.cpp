@@ -117,17 +117,17 @@ t_irc RTIGSDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     for (short ii = 0; ii < numObs; ii++) {
       p_obs obs = new t_obs();
       _obsList.push_back(obs);
-      obs->_o.satSys   = 'G';
-      obs->_o.satNum   = _GPSTrans.DecObs.Obs[ii].sat_prn;
-      obs->_o.GPSWeek  = _GPSTrans.DecObs.Obs[ii].GPSTime / (7 * 86400);
-      obs->_o.GPSWeeks = _GPSTrans.DecObs.Obs[ii].GPSTime % (7 * 86400);
-      obs->_o.C1       = _GPSTrans.DecObs.Obs[ii].l1_pseudo_range;
-      obs->_o.P1       = _GPSTrans.DecObs.Obs[ii].p1_pseudo_range;
-      obs->_o.P2       = _GPSTrans.DecObs.Obs[ii].p2_pseudo_range;
-      obs->_o.L1P      = _GPSTrans.DecObs.Obs[ii].p1_phase;
-      obs->_o.L2P      = _GPSTrans.DecObs.Obs[ii].p2_phase;
-      obs->_o.S1P      = _GPSTrans.DecObs.Obs[ii].l1_sn;
-      obs->_o.S2P      = _GPSTrans.DecObs.Obs[ii].l2_sn;
+      obs->satSys   = 'G';
+      obs->satNum   = _GPSTrans.DecObs.Obs[ii].sat_prn;
+      obs->GPSWeek  = _GPSTrans.DecObs.Obs[ii].GPSTime / (7 * 86400);
+      obs->GPSWeeks = _GPSTrans.DecObs.Obs[ii].GPSTime % (7 * 86400);
+      obs->C1       = _GPSTrans.DecObs.Obs[ii].l1_pseudo_range;
+      obs->P1       = _GPSTrans.DecObs.Obs[ii].p1_pseudo_range;
+      obs->P2       = _GPSTrans.DecObs.Obs[ii].p2_pseudo_range;
+      obs->L1P      = _GPSTrans.DecObs.Obs[ii].p1_phase;
+      obs->L2P      = _GPSTrans.DecObs.Obs[ii].p2_phase;
+      obs->S1P      = _GPSTrans.DecObs.Obs[ii].l1_sn;
+      obs->S2P      = _GPSTrans.DecObs.Obs[ii].l2_sn;
     }
   }
   if(messType==300){

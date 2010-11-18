@@ -142,22 +142,22 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           p_obs obs = new t_obs();
           _obsList.push_back(obs);
           if (_ObsBlock.PRN[iSat] > 100) {
-            obs->_o.satNum      = _ObsBlock.PRN[iSat] % 100;
-            obs->_o.satSys      = 'R';
+            obs->satNum      = _ObsBlock.PRN[iSat] % 100;
+            obs->satSys      = 'R';
 	  }		        
 	  else {	        
-            obs->_o.satNum      = _ObsBlock.PRN[iSat];
-            obs->_o.satSys      = 'G';
+            obs->satNum      = _ObsBlock.PRN[iSat];
+            obs->satSys      = 'G';
 	  }		        
-          obs->_o.GPSWeek       = epochWeek;
-          obs->_o.GPSWeeks      = epochSecs;
-          obs->_o.C1            = _ObsBlock.rng_C1[iSat];
-          obs->_o.P1            = _ObsBlock.rng_P1[iSat];
-          obs->_o.P2            = _ObsBlock.rng_P2[iSat];
-          obs->_o.L1P           = _ObsBlock.resolvedPhase_L1(iSat);
-          obs->_o.L2P           = _ObsBlock.resolvedPhase_L2(iSat);
-	  obs->_o.slip_cnt_L1   = _ObsBlock.slip_L1[iSat];
-	  obs->_o.slip_cnt_L2   = _ObsBlock.slip_L2[iSat];
+          obs->GPSWeek       = epochWeek;
+          obs->GPSWeeks      = epochSecs;
+          obs->C1            = _ObsBlock.rng_C1[iSat];
+          obs->P1            = _ObsBlock.rng_P1[iSat];
+          obs->P2            = _ObsBlock.rng_P2[iSat];
+          obs->L1P           = _ObsBlock.resolvedPhase_L1(iSat);
+          obs->L2P           = _ObsBlock.resolvedPhase_L2(iSat);
+	  obs->slip_cnt_L1   = _ObsBlock.slip_L1[iSat];
+	  obs->slip_cnt_L2   = _ObsBlock.slip_L2[iSat];
         }
         _ObsBlock.clear();
       }
@@ -381,36 +381,36 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
 	if ( !new_obs ) {
 	  new_obs = new t_obs();
 
-	  new_obs->_o.StatID[0] = '\x0';
-	  new_obs->_o.satSys    = (corr->PRN < 200 ? 'G'       : 'R');
-	  new_obs->_o.satNum    = (corr->PRN < 200 ? corr->PRN : corr->PRN - 200);
+	  new_obs->StatID[0] = '\x0';
+	  new_obs->satSys    = (corr->PRN < 200 ? 'G'       : 'R');
+	  new_obs->satNum    = (corr->PRN < 200 ? corr->PRN : corr->PRN - 200);
 	  
-	  new_obs->_o.GPSWeek   = GPSWeek_rcv;
-	  new_obs->_o.GPSWeeks  = GPSWeeks_rcv;
+	  new_obs->GPSWeek   = GPSWeek_rcv;
+	  new_obs->GPSWeeks  = GPSWeeks_rcv;
 	}
 	
 	// Store estimated measurements
 	// ----------------------------
 	switch (ii) {
 	case 0: // --- L1 ---
-	  new_obs->_o.L1P = *obsVal / LAMBDA_1;
-	  new_obs->_o.slip_cnt_L1   = corr->lock1;
+	  new_obs->L1P = *obsVal / LAMBDA_1;
+	  new_obs->slip_cnt_L1   = corr->lock1;
 	  break;
 	case 1: // --- L2 ---
-	  new_obs->_o.L2P = *obsVal / LAMBDA_2;
-	  new_obs->_o.slip_cnt_L2   = corr->lock2;
+	  new_obs->L2P = *obsVal / LAMBDA_2;
+	  new_obs->slip_cnt_L2   = corr->lock2;
 	  break;
 	case 2: // --- C1 / P1 ---
 	  if ( corr->Pind1 )
-	    new_obs->_o.P1 = *obsVal;
+	    new_obs->P1 = *obsVal;
 	  else
-	    new_obs->_o.C1 = *obsVal;
+	    new_obs->C1 = *obsVal;
 	  break;
 	case 3: // --- C2 / P2 ---
 	  if ( corr->Pind2 )
-	    new_obs->_o.P2 = *obsVal;
+	    new_obs->P2 = *obsVal;
 	  else
-	    new_obs->_o.C2 = *obsVal;
+	    new_obs->C2 = *obsVal;
 	  break;
 	default:
 	  continue;

@@ -55,21 +55,21 @@ class t_oldObsInternal {
  public:
 
   t_oldObsInternal(const t_obs* obs) {
-    strcpy(StatID, obs->_o.StatID);
+    strcpy(StatID, obs->StatID);
     flags         = 0;
-    satSys        = obs->_o.satSys;
-    satNum        = obs->_o.satNum;
-    slot          = obs->_o.slotNum;
-    GPSWeek       = obs->_o.GPSWeek;
-    GPSWeeks      = obs->_o.GPSWeeks;
-    C1            = obs->_o.C1;
-    C2            = obs->_o.C2;
-    P1            = obs->_o.P1;
-    P2            = obs->_o.P2;
+    satSys        = obs->satSys;
+    satNum        = obs->satNum;
+    slot          = obs->slotNum;
+    GPSWeek       = obs->GPSWeek;
+    GPSWeeks      = obs->GPSWeeks;
+    C1            = obs->C1;
+    C2            = obs->C2;
+    P1            = obs->P1;
+    P2            = obs->P2;
     L1            = obs->L1();
     L2            = obs->L2();
-    slip_cnt_L1   = obs->_o.slip_cnt_L1;
-    slip_cnt_L2   = obs->_o.slip_cnt_L2;
+    slip_cnt_L1   = obs->slip_cnt_L1;
+    slip_cnt_L2   = obs->slip_cnt_L2;
     lock_timei_L1 = -1;
     lock_timei_L2 = -1;
     S1            = obs->S1();
@@ -213,13 +213,13 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
 
   obs->_status = t_obs::received;
 
-  long iSec    = long(floor(obs->_o.GPSWeeks+0.5));
-  long newTime = obs->_o.GPSWeek * 7*24*3600 + iSec;
+  long iSec    = long(floor(obs->GPSWeeks+0.5));
+  long newTime = obs->GPSWeek * 7*24*3600 + iSec;
 
   // Rename the Station
   // ------------------
-  strncpy(obs->_o.StatID, staID.constData(),sizeof(obs->_o.StatID));
-  obs->_o.StatID[sizeof(obs->_o.StatID)-1] = '\0';
+  strncpy(obs->StatID, staID.constData(),sizeof(obs->StatID));
+  obs->StatID[sizeof(obs->StatID)-1] = '\0';
         
   const char begObs[] = "BEGOBS";
   const int begObsNBytes = sizeof(begObs) - 1;
@@ -243,8 +243,8 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
           }
         }
         else {
-          int numBytes = sizeof(obs->_o); 
-          if (myWrite(sock, (const char*)(&obs->_o), numBytes) != numBytes) {
+          int numBytes = sizeof(obs); 
+          if (myWrite(sock, (const char*)(&obs), numBytes) != numBytes) {
             ok = false;
           }
         }
@@ -393,7 +393,7 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
       if (_samplingRate == 0 || sec % _samplingRate == 0) {
 
 	if (first) {
-	  QTime enomtime = QTime(0,0,0).addSecs(static_cast<int>(floor(obs->_o.GPSWeeks+0.5)));
+	  QTime enomtime = QTime(0,0,0).addSecs(static_cast<int>(floor(obs->GPSWeeks+0.5)));
 //        emit( newMessage( QString("Epoch %1 dumped").arg(enomtime.toString("HH:mm:ss")).toAscii(), true) ); // weber
 	}
         // Output into the file
@@ -403,11 +403,11 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
             _out->setFieldWidth(1); *_out << begEpoch << endl;
           }
 
-          *_out << obs->_o.StatID << " " << obs->_o.GPSWeek << " ";  
+          *_out << obs->StatID << " " << obs->GPSWeek << " ";  
           _out->setRealNumberPrecision(7); 
-           *_out << obs->_o.GPSWeeks << " "; 
+           *_out << obs->GPSWeeks << " "; 
 
-           *_out << bncRinex::rinexSatLine(obs->_o, ' ', ' ', ' ').c_str() 
+           *_out << bncRinex::rinexSatLine(obs, ' ', ' ', ' ').c_str() 
                  << endl;
 
           if (!it.hasNext()) {
@@ -437,8 +437,8 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
                 }
               }
               else {
-                int numBytes = sizeof(obs->_o); 
-                if (myWrite(sock, (const char*)(&obs->_o), numBytes) != numBytes) {
+                int numBytes = sizeof(obs); 
+                if (myWrite(sock, (const char*)(&obs), numBytes) != numBytes) {
                   ok = false;
                 }
               }
