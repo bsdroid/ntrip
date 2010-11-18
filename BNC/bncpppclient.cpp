@@ -118,10 +118,10 @@ bncPPPclient::~bncPPPclient() {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::putNewObs(t_obs* obs) {
+void bncPPPclient::putNewObs(const t_obs& obs) {
   QMutexLocker locker(&_mutex);
 
-  if (obs->satSys != 'G' && !_useGlonass) {
+  if (obs.satSys != 'G' && !_useGlonass) {
     return;
   }
 
@@ -129,27 +129,27 @@ void bncPPPclient::putNewObs(t_obs* obs) {
 
   // Satellite Number
   // ----------------
-  if      (obs->satSys == 'G') {
-    QString prn = QString("G%1").arg(obs->satNum, 2, 10, QChar('0'));
+  if      (obs.satSys == 'G') {
+    QString prn = QString("G%1").arg(obs.satNum, 2, 10, QChar('0'));
     satData->prn = prn;
   }
-  else if (obs->satSys == 'R') {
-    QString prn = QString("R%1").arg(obs->satNum, 2, 10, QChar('0'));
+  else if (obs.satSys == 'R') {
+    QString prn = QString("R%1").arg(obs.satNum, 2, 10, QChar('0'));
     satData->prn = prn;
   }
 
   // Check Slips
   // -----------
   slipInfo& sInfo  = _slips[satData->prn];
-  if ( sInfo.slipCntL1 == obs->slip_cnt_L1  &&
-       sInfo.slipCntL2 == obs->slip_cnt_L2 ) {
+  if ( sInfo.slipCntL1 == obs.slip_cnt_L1  &&
+       sInfo.slipCntL2 == obs.slip_cnt_L2 ) {
     satData->slipFlag = false;
   }
   else {
     satData->slipFlag = true;
   }
-  sInfo.slipCntL1 = obs->slip_cnt_L1;
-  sInfo.slipCntL2 = obs->slip_cnt_L2;
+  sInfo.slipCntL1 = obs.slip_cnt_L1;
+  sInfo.slipCntL2 = obs.slip_cnt_L2;
 
   // Handle Code Biases
   // ------------------
@@ -160,12 +160,12 @@ void bncPPPclient::putNewObs(t_obs* obs) {
 
   // Set Code Observations
   // ---------------------  
-  if      (obs->P1) {
-    satData->P1         = obs->P1 + (bb ? bb->p1 : 0.0);
+  if      (obs.P1) {
+    satData->P1         = obs.P1 + (bb ? bb->p1 : 0.0);
     satData->codeTypeF1 = t_satData::P_CODE;
   }
-  else if (obs->C1) {
-    satData->P1         = obs->C1 + (bb ? bb->c1 : 0.0);
+  else if (obs.C1) {
+    satData->P1         = obs.C1 + (bb ? bb->c1 : 0.0);
     satData->codeTypeF1 = t_satData::C_CODE;
   }
   else {
@@ -173,12 +173,12 @@ void bncPPPclient::putNewObs(t_obs* obs) {
     return;
   }
     
-  if      (obs->P2) {
-    satData->P2         = obs->P2 + (bb ? bb->p2 : 0.0);
+  if      (obs.P2) {
+    satData->P2         = obs.P2 + (bb ? bb->p2 : 0.0);
     satData->codeTypeF2 = t_satData::P_CODE;
   }
-  else if (obs->C2) {
-    satData->P2         = obs->C2;
+  else if (obs.C2) {
+    satData->P2         = obs.C2;
     satData->codeTypeF2 = t_satData::C_CODE;
   }
   else {
@@ -189,9 +189,9 @@ void bncPPPclient::putNewObs(t_obs* obs) {
   double f1 = t_CST::freq1;
   double f2 = t_CST::freq2;
 
-  if (obs->satSys == 'R') {
-    f1 = 1602000000.0 + 562500.0 * obs->slotNum; 
-    f2 = 1246000000.0 + 437500.0 * obs->slotNum;
+  if (obs.satSys == 'R') {
+    f1 = 1602000000.0 + 562500.0 * obs.slotNum; 
+    f2 = 1246000000.0 + 437500.0 * obs.slotNum;
   }
 
   // Ionosphere-Free Combination
@@ -203,9 +203,9 @@ void bncPPPclient::putNewObs(t_obs* obs) {
 
   // Set Phase Observations
   // ----------------------  
-  if (obs->L1() && obs->L2()) {
-    satData->L1 = obs->L1() * t_CST::c / f1;
-    satData->L2 = obs->L2() * t_CST::c / f2;
+  if (obs.L1() && obs.L2()) {
+    satData->L1 = obs.L1() * t_CST::c / f1;
+    satData->L2 = obs.L2() * t_CST::c / f2;
   }
   else {
     delete satData;
@@ -219,7 +219,7 @@ void bncPPPclient::putNewObs(t_obs* obs) {
 
   // Add new Satellite to the epoch
   // ------------------------------
-  bncTime tt(obs->GPSWeek, obs->GPSWeeks);
+  bncTime tt(obs.GPSWeek, obs.GPSWeeks);
   
   if      (!_epoData) {
     _epoData = new t_epoData();
@@ -232,10 +232,10 @@ void bncPPPclient::putNewObs(t_obs* obs) {
     _epoData->tt = tt;
   }
 
-  if      (obs->satSys == 'G') {
+  if      (obs.satSys == 'G') {
     _epoData->satDataGPS[satData->prn] = satData;
   }
-  else if (obs->satSys == 'R') {
+  else if (obs.satSys == 'R') {
     _epoData->satDataGlo[satData->prn] = satData;
   }
 }

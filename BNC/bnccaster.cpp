@@ -54,26 +54,26 @@
 class t_oldObsInternal {
  public:
 
-  t_oldObsInternal(const t_obs* obs) {
-    strcpy(StatID, obs->StatID);
+  t_oldObsInternal(const t_obs& obs) {
+    strcpy(StatID, obs.StatID);
     flags         = 0;
-    satSys        = obs->satSys;
-    satNum        = obs->satNum;
-    slot          = obs->slotNum;
-    GPSWeek       = obs->GPSWeek;
-    GPSWeeks      = obs->GPSWeeks;
-    C1            = obs->C1;
-    C2            = obs->C2;
-    P1            = obs->P1;
-    P2            = obs->P2;
-    L1            = obs->L1();
-    L2            = obs->L2();
-    slip_cnt_L1   = obs->slip_cnt_L1;
-    slip_cnt_L2   = obs->slip_cnt_L2;
+    satSys        = obs.satSys;
+    satNum        = obs.satNum;
+    slot          = obs.slotNum;
+    GPSWeek       = obs.GPSWeek;
+    GPSWeeks      = obs.GPSWeeks;
+    C1            = obs.C1;
+    C2            = obs.C2;
+    P1            = obs.P1;
+    P2            = obs.P2;
+    L1            = obs.L1();
+    L2            = obs.L2();
+    slip_cnt_L1   = obs.slip_cnt_L1;
+    slip_cnt_L2   = obs.slip_cnt_L2;
     lock_timei_L1 = -1;
     lock_timei_L2 = -1;
-    S1            = obs->S1();
-    S2            = obs->S2();
+    S1            = obs.S1();
+    S2            = obs.S2();
     SNR1          = 0;
     SNR2          = 0;
   }
@@ -170,7 +170,7 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
     _nmeaSockets = 0;
   }
 
-  _epochs = new QMultiMap<long, t_obs*>;
+  _epochs = new QMultiMap<long, t_obs>;
 
   _lastDumpSec   = 0; 
 
@@ -196,31 +196,23 @@ bncCaster::~bncCaster() {
   delete _uSockets;
   delete _nmeaServer;
   delete _nmeaSockets;
-  if (_epochs) {
-    QListIterator<t_obs*> it(_epochs->values());
-    while (it.hasNext()) {
-      delete it.next();
-    }
-    delete _epochs;
-  }
+  delete _epochs;
 }
 
 // New Observations
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::newObs(const QByteArray staID, bool firstObs, t_obs* obs) {
+void bncCaster::newObs(const QByteArray staID, bool firstObs, t_obs obs) {
 
   QMutexLocker locker(&_mutex);
 
-  obs->_status = t_obs::received;
-
-  long iSec    = long(floor(obs->GPSWeeks+0.5));
-  long newTime = obs->GPSWeek * 7*24*3600 + iSec;
+  long iSec    = long(floor(obs.GPSWeeks+0.5));
+  long newTime = obs.GPSWeek * 7*24*3600 + iSec;
 
   // Rename the Station
   // ------------------
-  strncpy(obs->StatID, staID.constData(),sizeof(obs->StatID));
-  obs->StatID[sizeof(obs->StatID)-1] = '\0';
-        
+  strncpy(obs.StatID, staID.constData(),sizeof(obs.StatID));
+  obs.StatID[sizeof(obs.StatID)-1] = '\0';
+
   const char begObs[] = "BEGOBS";
   const int begObsNBytes = sizeof(begObs) - 1;
 
@@ -282,7 +274,6 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, t_obs* obs) {
 			 .toAscii(), true) );
       }
     }
-    delete obs;
     return;
   }
 
@@ -322,12 +313,12 @@ void bncCaster::slotNewNMEAConnection() {
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
 
-  ////  qRegisterMetaType<t_obs*>("p_obs");
+  qRegisterMetaType<t_obs>("t_obs");
   qRegisterMetaType<gpsephemeris>("gpsephemeris");
   qRegisterMetaType<glonassephemeris>("glonassephemeris");
 
-  connect(getThread, SIGNAL(newObs(QByteArray, bool, t_obs*)),
-          this,      SLOT(newObs(QByteArray, bool, t_obs*))); /// Qt::DirectConnection);
+  connect(getThread, SIGNAL(newObs(QByteArray, bool, t_obs)),
+          this,      SLOT(newObs(QByteArray, bool, t_obs)));
 
   connect(getThread, SIGNAL(getThreadFinished(QByteArray)), 
           this, SLOT(slotGetThreadFinished(QByteArray)));
@@ -384,16 +375,16 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
   for (long sec = minTime; sec <= maxTime; sec++) {
 
     bool first = true;
-    QList<t_obs*> allObs = _epochs->values(sec);
+    QList<t_obs> allObs = _epochs->values(sec);
 
-    QListIterator<t_obs*> it(allObs);
+    QListIterator<t_obs> it(allObs);
     while (it.hasNext()) {
-      t_obs* obs = it.next();
+      const t_obs& obs = it.next();
 
       if (_samplingRate == 0 || sec % _samplingRate == 0) {
 
 	if (first) {
-	  QTime enomtime = QTime(0,0,0).addSecs(static_cast<int>(floor(obs->GPSWeeks+0.5)));
+	  QTime enomtime = QTime(0,0,0).addSecs(static_cast<int>(floor(obs.GPSWeeks+0.5)));
 //        emit( newMessage( QString("Epoch %1 dumped").arg(enomtime.toString("HH:mm:ss")).toAscii(), true) ); // weber
 	}
         // Output into the file
@@ -403,9 +394,9 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
             _out->setFieldWidth(1); *_out << begEpoch << endl;
           }
 
-          *_out << obs->StatID << " " << obs->GPSWeek << " ";  
+          *_out << obs.StatID << " " << obs.GPSWeek << " ";  
           _out->setRealNumberPrecision(7); 
-           *_out << obs->GPSWeeks << " "; 
+           *_out << obs.GPSWeeks << " "; 
 
            *_out << bncRinex::rinexSatLine(obs, ' ', ' ', ' ').c_str() 
                  << endl;
@@ -460,7 +451,6 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
         }
       }
 
-      delete obs;
       _epochs->remove(sec);
       first = false;
     }

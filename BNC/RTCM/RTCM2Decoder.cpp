@@ -139,25 +139,26 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         _ObsBlock.resolveEpoch(refWeek, refSecs, epochWeek, epochSecs);
           
         for (int iSat=0; iSat < _ObsBlock.nSat; iSat++) {
-          t_obs* obs = new t_obs();
-          _obsList.push_back(obs);
+          t_obs obs;
           if (_ObsBlock.PRN[iSat] > 100) {
-            obs->satNum      = _ObsBlock.PRN[iSat] % 100;
-            obs->satSys      = 'R';
+            obs.satNum      = _ObsBlock.PRN[iSat] % 100;
+            obs.satSys      = 'R';
 	  }		        
 	  else {	        
-            obs->satNum      = _ObsBlock.PRN[iSat];
-            obs->satSys      = 'G';
+            obs.satNum      = _ObsBlock.PRN[iSat];
+            obs.satSys      = 'G';
 	  }		        
-          obs->GPSWeek       = epochWeek;
-          obs->GPSWeeks      = epochSecs;
-          obs->C1            = _ObsBlock.rng_C1[iSat];
-          obs->P1            = _ObsBlock.rng_P1[iSat];
-          obs->P2            = _ObsBlock.rng_P2[iSat];
-          obs->L1P           = _ObsBlock.resolvedPhase_L1(iSat);
-          obs->L2P           = _ObsBlock.resolvedPhase_L2(iSat);
-	  obs->slip_cnt_L1   = _ObsBlock.slip_L1[iSat];
-	  obs->slip_cnt_L2   = _ObsBlock.slip_L2[iSat];
+          obs.GPSWeek       = epochWeek;
+          obs.GPSWeeks      = epochSecs;
+          obs.C1            = _ObsBlock.rng_C1[iSat];
+          obs.P1            = _ObsBlock.rng_P1[iSat];
+          obs.P2            = _ObsBlock.rng_P2[iSat];
+          obs.L1P           = _ObsBlock.resolvedPhase_L1(iSat);
+          obs.L2P           = _ObsBlock.resolvedPhase_L2(iSat);
+	  obs.slip_cnt_L1   = _ObsBlock.slip_L1[iSat];
+	  obs.slip_cnt_L2   = _ObsBlock.slip_L2[iSat];
+
+          _obsList.push_back(obs);
         }
         _ObsBlock.clear();
       }
@@ -434,11 +435,7 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
 
     // Store new observation
     if ( new_obs ) {
-      _obsList.push_back( new_obs );
-
-      ////ostringstream hasIODstr;
-      ////copy(hasIOD.begin(), hasIOD.end(), ostream_iterator<string>(hasIODstr, "    "));
-      ////errmsg.push_back("decoded PRN " + PRN + " : " + hasIODstr.str());
+      _obsList.push_back(*new_obs);
     }
   }
 }

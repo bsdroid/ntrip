@@ -35,9 +35,7 @@
 
 class t_obs {
  public:
-  enum t_obs_status {initial, posted, received};
   t_obs() {
-    _status     = initial;
     satSys      = 'G';
     satNum      = 0;
     slotNum     = 0;
@@ -75,8 +73,6 @@ class t_obs {
   double L2() const {return (L2P != 0.0 ? L2P : L2C);}
   double S1() const {return (L1P != 0.0 ? S1P : S1C);}
   double S2() const {return (L2P != 0.0 ? S2P : S2C);}
-
-  t_obs_status  _status;
 
   char   StatID[20+1]; // Station ID
   char   satSys;       // Satellite System ('G' or 'R')
@@ -117,15 +113,7 @@ class GPSDecoder {
  public:
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg) = 0;
 
-  virtual ~GPSDecoder() {
-    QListIterator<t_obs*> it(_obsList);
-    while (it.hasNext()) {
-      t_obs* obs = it.next();
-      if (obs && obs->_status == t_obs::initial) {
-        delete obs;
-      }
-    }
-  }
+  virtual ~GPSDecoder() {}
 
   virtual int corrGPSEpochTime() const {return -1;}
 
@@ -148,7 +136,7 @@ class GPSDecoder {
     int    message;
   };
 
-  QList<t_obs*>    _obsList;
+  QList<t_obs>     _obsList;
   QList<int>       _typeList;  // RTCM   message types
   QStringList      _antType;   // RTCM   antenna descriptor
   QList<t_antInfo> _antList;   // RTCM   antenna XYZ
