@@ -119,7 +119,7 @@ class bncPPPclient : public QObject {
  public:
   bncPPPclient(QByteArray staID);
   ~bncPPPclient();
-  void putNewObs(t_obs* pp);
+  void putNewObs(const t_obs& pp);
 
  public slots:
   void slotNewEphGPS(gpsephemeris gpseph);

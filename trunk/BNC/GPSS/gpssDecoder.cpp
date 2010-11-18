@@ -98,8 +98,8 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
           if (crc == crcCal) {
             for (int is = 0; is < epochHdr.n_svs; is++) {
               obsFound = true;
-              t_obs* obs = new t_obs();
-              memcpy(obs, _buffer.data() + 2 + sizeof(recordSize) + 
+              t_obs obs;
+              memcpy(&obs, _buffer.data() + 2 + sizeof(recordSize) + 
                      sizeof(epochHdr) + is * sizeof(t_obs), sizeof(t_obs));
               _obsList.push_back(obs);
             }

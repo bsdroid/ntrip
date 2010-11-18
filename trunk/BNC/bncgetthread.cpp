@@ -373,10 +373,6 @@ void bncGetThread::run() {
 
       // Delete old observations
       // -----------------------
-      QListIterator<t_obs*> itOld(_decoder->_obsList);
-      while (itOld.hasNext()) {
-        delete itOld.next();
-      }
       _decoder->_obsList.clear();
 
       // Read Data
@@ -438,10 +434,11 @@ void bncGetThread::run() {
 
       // Loop over all observations (observations output)
       // ------------------------------------------------
-      QListIterator<t_obs*> it(_decoder->_obsList);
+      QListIterator<t_obs> it(_decoder->_obsList);
+      bool firstObs = true;
       while (it.hasNext()) {
-        t_obs* obs = it.next();
-      
+        const t_obs& obs = it.next();
+
         // Check observation epoch
         // -----------------------
         if (!_rawFile && !dynamic_cast<gpssDecoder*>(_decoder)) {
@@ -450,14 +447,13 @@ void bncGetThread::run() {
           currentGPSWeeks(week, sec);
           const double secPerWeek = 7.0 * 24.0 * 3600.0;
           
-          double currSec = week         * secPerWeek + sec;
-          double obsSec  = obs->GPSWeek * secPerWeek + obs->GPSWeeks;
+          double currSec = week        * secPerWeek + sec;
+          double obsSec  = obs.GPSWeek * secPerWeek + obs.GPSWeeks;
 
           const double maxDt = 600.0;
 
           if (fabs(currSec - obsSec) > maxDt) {
               emit( newMessage(_staID + ": Wrong observation epoch(s)", false) );
-            delete obs;
             continue;
           }
         }
@@ -465,8 +461,8 @@ void bncGetThread::run() {
         // RINEX Output
         // ------------
         if (_rnx) {
-          long iSec    = long(floor(obs->GPSWeeks+0.5));
-          long newTime = obs->GPSWeek * 7*24*3600 + iSec;
+          long iSec    = long(floor(obs.GPSWeeks+0.5));
+          long newTime = obs.GPSWeek * 7*24*3600 + iSec;
           if (_samplingRate == 0 || iSec % _samplingRate == 0) {
             _rnx->deepCopy(obs);
           }
@@ -483,11 +479,10 @@ void bncGetThread::run() {
 
         // Emit new observation signal
         // ---------------------------
-        bool firstObs = (obs == _decoder->_obsList.first());
-        obs->_status = t_obs::posted;
-         if (!_isToBeDeleted) {
-           emit newObs(_staID, firstObs, obs);
-         }
+        if (!_isToBeDeleted) {
+          emit newObs(_staID, firstObs, obs);
+        }
+        firstObs = false;
       }
       _decoder->_obsList.clear();
     }

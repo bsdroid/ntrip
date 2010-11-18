@@ -43,7 +43,7 @@ class bncCaster : public QObject {
    int  numStations() const {return _staIDs.size();}
 
  public slots:
-   void newObs(QByteArray staID, bool firstObs, t_obs* obs);
+   void newObs(QByteArray staID, bool firstObs, t_obs obs);
    void slotReadMountPoints();
    void slotNewNMEAstr(QByteArray str);
 
@@ -65,7 +65,7 @@ class bncCaster : public QObject {
    QFile*                   _outFile;
    int                      _port;
    QTextStream*             _out;
-   QMultiMap<long, t_obs*>* _epochs;
+   QMultiMap<long, t_obs>*  _epochs;
    long                     _lastDumpSec;
    QTcpServer*              _server;
    QTcpServer*              _uServer;

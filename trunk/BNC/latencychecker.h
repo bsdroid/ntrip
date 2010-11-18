@@ -37,7 +37,7 @@ Q_OBJECT
   ~latencyChecker();
   void checkReconnect();
   void checkOutage(bool decoded);
-  void checkObsLatency(const QList<t_obs*>& obsList);
+  void checkObsLatency(const QList<t_obs>& obsList);
   void checkCorrLatency(int corrGPSEpochTime);
   double currentLatency() const {return _curLat;}
 
