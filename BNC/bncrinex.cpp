@@ -106,7 +106,7 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncRinex::~bncRinex() {
-  QListIterator<p_obs> it(_obs);
+  QListIterator<t_obs*> it(_obs);
   while (it.hasNext()) {
     delete it.next();
   }
@@ -517,8 +517,8 @@ void bncRinex::writeHeader(const QDateTime& datTim,
 
 // Stores Observation into Internal Array
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::deepCopy(const p_obs obs) {
-  p_obs newObs = new t_obs();
+void bncRinex::deepCopy(const t_obs* obs) {
+  t_obs* newObs = new t_obs();
   memcpy(newObs, obs, sizeof(t_obs));
   _obs.push_back(newObs);
 }
@@ -529,10 +529,10 @@ void bncRinex::dumpEpoch(long maxTime) {
 
   // Select observations older than maxTime
   // --------------------------------------
-  QList<p_obs> dumpList;
-  QMutableListIterator<p_obs> mIt(_obs);
+  QList<t_obs*> dumpList;
+  QMutableListIterator<t_obs*> mIt(_obs);
   while (mIt.hasNext()) {
-    p_obs obs = mIt.next();
+    t_obs* obs = mIt.next();
     if (obs->GPSWeek * 7*24*3600 + obs->GPSWeeks < maxTime - 0.05) {
       dumpList.push_back(obs);
       mIt.remove();
@@ -547,7 +547,7 @@ void bncRinex::dumpEpoch(long maxTime) {
 
   // Time of Epoch
   // -------------
-  p_obs fObs = *dumpList.begin();
+  t_obs* fObs = *dumpList.begin();
   QDateTime datTim    = dateAndTimeFromGPSweek(fObs->GPSWeek, fObs->GPSWeeks);
   QDateTime datTimNom = dateAndTimeFromGPSweek(fObs->GPSWeek, 
                                                floor(fObs->GPSWeeks+0.5));
@@ -581,10 +581,10 @@ void bncRinex::dumpEpoch(long maxTime) {
          << setw(10) << setprecision(7) << sec
          << "  " << 0 << setw(3)  << dumpList.size();
 
-    QListIterator<p_obs> it(dumpList); int iSat = 0;
+    QListIterator<t_obs*> it(dumpList); int iSat = 0;
     while (it.hasNext()) {
       iSat++;
-      p_obs obs = it.next();
+      t_obs* obs = it.next();
       _out << obs->satSys << setw(2) << obs->satNum;
       if (iSat == 12 && it.hasNext()) {
         _out << endl << "                                ";
@@ -594,9 +594,9 @@ void bncRinex::dumpEpoch(long maxTime) {
     _out << endl;
   }
 
-  QListIterator<p_obs> it(dumpList);
+  QListIterator<t_obs*> it(dumpList);
   while (it.hasNext()) {
-    p_obs obs = it.next();
+    t_obs* obs = it.next();
 
     // Cycle slips detection
     // ---------------------

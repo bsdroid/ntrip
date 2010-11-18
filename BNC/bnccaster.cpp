@@ -170,7 +170,7 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
     _nmeaSockets = 0;
   }
 
-  _epochs = new QMultiMap<long, p_obs>;
+  _epochs = new QMultiMap<long, t_obs*>;
 
   _lastDumpSec   = 0; 
 
@@ -197,7 +197,7 @@ bncCaster::~bncCaster() {
   delete _nmeaServer;
   delete _nmeaSockets;
   if (_epochs) {
-    QListIterator<p_obs> it(_epochs->values());
+    QListIterator<t_obs*> it(_epochs->values());
     while (it.hasNext()) {
       delete it.next();
     }
@@ -207,7 +207,7 @@ bncCaster::~bncCaster() {
 
 // New Observations
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::newObs(const QByteArray staID, bool firstObs, p_obs obs) {
+void bncCaster::newObs(const QByteArray staID, bool firstObs, t_obs* obs) {
 
   QMutexLocker locker(&_mutex);
 
@@ -322,12 +322,12 @@ void bncCaster::slotNewNMEAConnection() {
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
 
-  qRegisterMetaType<p_obs>("p_obs");
+  ////  qRegisterMetaType<t_obs*>("p_obs");
   qRegisterMetaType<gpsephemeris>("gpsephemeris");
   qRegisterMetaType<glonassephemeris>("glonassephemeris");
 
-  connect(getThread, SIGNAL(newObs(QByteArray, bool, p_obs)),
-          this,      SLOT(newObs(QByteArray, bool, p_obs))); /// Qt::DirectConnection);
+  connect(getThread, SIGNAL(newObs(QByteArray, bool, t_obs*)),
+          this,      SLOT(newObs(QByteArray, bool, t_obs*))); /// Qt::DirectConnection);
 
   connect(getThread, SIGNAL(getThreadFinished(QByteArray)), 
           this, SLOT(slotGetThreadFinished(QByteArray)));
@@ -384,11 +384,11 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
   for (long sec = minTime; sec <= maxTime; sec++) {
 
     bool first = true;
-    QList<p_obs> allObs = _epochs->values(sec);
+    QList<t_obs*> allObs = _epochs->values(sec);
 
-    QListIterator<p_obs> it(allObs);
+    QListIterator<t_obs*> it(allObs);
     while (it.hasNext()) {
-      p_obs obs = it.next();
+      t_obs* obs = it.next();
 
       if (_samplingRate == 0 || sec % _samplingRate == 0) {
 

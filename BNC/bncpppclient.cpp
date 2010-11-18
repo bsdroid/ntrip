@@ -118,7 +118,7 @@ bncPPPclient::~bncPPPclient() {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::putNewObs(p_obs obs) {
+void bncPPPclient::putNewObs(t_obs* obs) {
   QMutexLocker locker(&_mutex);
 
   if (obs->satSys != 'G' && !_useGlonass) {

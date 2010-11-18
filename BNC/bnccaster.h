@@ -43,7 +43,7 @@ class bncCaster : public QObject {
    int  numStations() const {return _staIDs.size();}
 
  public slots:
-   void newObs(QByteArray staID, bool firstObs, p_obs obs);
+   void newObs(QByteArray staID, bool firstObs, t_obs* obs);
    void slotReadMountPoints();
    void slotNewNMEAstr(QByteArray str);
 
@@ -62,23 +62,23 @@ class bncCaster : public QObject {
    void dumpEpochs(long minTime, long maxTime);
    static int myWrite(QTcpSocket* sock, const char* buf, int bufLen);
 
-   QFile*                  _outFile;
-   int                     _port;
-   QTextStream*            _out;
-   QMultiMap<long, p_obs>* _epochs;
-   long                    _lastDumpSec;
-   QTcpServer*             _server;
-   QTcpServer*             _uServer;
-   QTcpServer*             _nmeaServer;
-   QList<QTcpSocket*>*     _sockets;
-   QList<QTcpSocket*>*     _uSockets;
-   QList<QTcpSocket*>*     _nmeaSockets;
-   QList<QByteArray>       _staIDs;
-   QList<bncGetThread*>    _threads;
-   int                     _samplingRate;
-   long                    _waitTime;
-   QMutex                  _mutex;
-   int                     _confInterval;
+   QFile*                   _outFile;
+   int                      _port;
+   QTextStream*             _out;
+   QMultiMap<long, t_obs*>* _epochs;
+   long                     _lastDumpSec;
+   QTcpServer*              _server;
+   QTcpServer*              _uServer;
+   QTcpServer*              _nmeaServer;
+   QList<QTcpSocket*>*      _sockets;
+   QList<QTcpSocket*>*      _uSockets;
+   QList<QTcpSocket*>*      _nmeaSockets;
+   QList<QByteArray>        _staIDs;
+   QList<bncGetThread*>     _threads;
+   int                      _samplingRate;
+   long                     _waitTime;
+   QMutex                   _mutex;
+   int                      _confInterval;
 };
 
 #endif
