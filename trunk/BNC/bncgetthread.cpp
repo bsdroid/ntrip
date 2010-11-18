@@ -450,8 +450,8 @@ void bncGetThread::run() {
           currentGPSWeeks(week, sec);
           const double secPerWeek = 7.0 * 24.0 * 3600.0;
           
-          double currSec = week            * secPerWeek + sec;
-          double obsSec  = obs->_o.GPSWeek * secPerWeek + obs->_o.GPSWeeks;
+          double currSec = week         * secPerWeek + sec;
+          double obsSec  = obs->GPSWeek * secPerWeek + obs->GPSWeeks;
 
           const double maxDt = 600.0;
 
@@ -465,8 +465,8 @@ void bncGetThread::run() {
         // RINEX Output
         // ------------
         if (_rnx) {
-          long iSec    = long(floor(obs->_o.GPSWeeks+0.5));
-          long newTime = obs->_o.GPSWeek * 7*24*3600 + iSec;
+          long iSec    = long(floor(obs->GPSWeeks+0.5));
+          long newTime = obs->GPSWeek * 7*24*3600 + iSec;
           if (_samplingRate == 0 || iSec % _samplingRate == 0) {
             _rnx->deepCopy(obs);
           }

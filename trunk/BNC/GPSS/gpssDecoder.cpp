@@ -1,4 +1,4 @@
-\
+
 /* -------------------------------------------------------------------------
  * BKG NTRIP Client
  * -------------------------------------------------------------------------
@@ -86,12 +86,12 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
         memcpy(&epochHdr, _buffer.data() + 2 + sizeof(recordSize), 
                sizeof(epochHdr));
         
-        reqLength += epochHdr.n_svs * sizeof(t_obsInternal) + sizeof(crc) + 1;
+        reqLength += epochHdr.n_svs * sizeof(t_obs) + sizeof(crc) + 1;
 
         if (_buffer.length() >= reqLength) {
 
           int checkLen = 2 + sizeof(recordSize) + sizeof(EPOCHHEADER) + 
-                         epochHdr.n_svs * sizeof(t_obsInternal);
+                         epochHdr.n_svs * sizeof(t_obs);
           memcpy(&crc, _buffer.data() + checkLen, sizeof(crc));
           int crcCal = cal_crc((unsigned char*) _buffer.data(), checkLen);
 
@@ -99,9 +99,8 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
             for (int is = 0; is < epochHdr.n_svs; is++) {
               obsFound = true;
               t_obs* obs = new t_obs();
-              memcpy(&(obs->_o), _buffer.data() + 2 + sizeof(recordSize) + 
-                                 sizeof(epochHdr) + is * sizeof(t_obsInternal), 
-                     sizeof(t_obsInternal));
+              memcpy(obs, _buffer.data() + 2 + sizeof(recordSize) + 
+                     sizeof(epochHdr) + is * sizeof(t_obs), sizeof(t_obs));
               _obsList.push_back(obs);
             }
           }

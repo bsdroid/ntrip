@@ -314,7 +314,7 @@ void latencyChecker::checkObsLatency(const QList<p_obs>& obsList) {
     while (it.hasNext()) {
       p_obs obs = it.next();
       
-      _newSecGPS = static_cast<int>(obs->_o.GPSWeeks);
+      _newSecGPS = static_cast<int>(obs->GPSWeeks);
       if (_newSecGPS != _oldSecGPS) {
         if (_newSecGPS % _perfIntr < _oldSecGPS % _perfIntr) {
           if (_numLat > 0) {
@@ -367,15 +367,15 @@ void latencyChecker::checkObsLatency(const QList<p_obs>& obsList) {
         double sec;
         currentGPSWeeks(week, sec);
         const double secPerWeek = 7.0 * 24.0 * 3600.0;
-        if (week < obs->_o.GPSWeek) {
+        if (week < obs->GPSWeek) {
           week += 1;
           sec  -= secPerWeek;
         }
-        if (week > obs->_o.GPSWeek) {
+        if (week > obs->GPSWeek) {
           week -= 1;
           sec  += secPerWeek;
         }
-         _curLat   = sec - obs->_o.GPSWeeks;
+         _curLat   = sec - obs->GPSWeeks;
         _sumLat  += _curLat;
         _sumLatQ += _curLat * _curLat;
         if (_curLat < _minLat) {

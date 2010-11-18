@@ -28,13 +28,56 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <QPointer>
 #include <QList>
 #include <QStringList>
 
 #include "bncconst.h"
 
-struct t_obsInternal {
+class t_obs {
+ public:
+  enum t_obs_status {initial, posted, received};
+  t_obs() {
+    _status     = initial;
+    satSys      = 'G';
+    satNum      = 0;
+    slotNum     = 0;
+    GPSWeek     = 0;
+    GPSWeeks    = 0.0;
+    C1          = 0.0;
+    P1          = 0.0;
+    L1C         = 0.0;
+    D1C         = 0.0;
+    S1C         = 0.0;
+    L1P         = 0.0;
+    D1P         = 0.0;
+    S1P         = 0.0;
+    C2          = 0.0;
+    P2          = 0.0;
+    L2C         = 0.0;
+    D2C         = 0.0;
+    S2C         = 0.0;
+    L2P         = 0.0;
+    D2P         = 0.0;
+    S2P         = 0.0;
+    C5          = 0.0;
+    L5          = 0.0;
+    D5          = 0.0;
+    S5          = 0.0;
+    slip_cnt_L1 = -1;
+    slip_cnt_L2 = -1;
+    slip_cnt_L5 = -1;
+    StatID[0]   = '\x0';
+  }
+
+  ~t_obs() {}
+
+  double L1() const {return (L1P != 0.0 ? L1P : L1C);}
+  double L2() const {return (L2P != 0.0 ? L2P : L2C);}
+  double S1() const {return (L1P != 0.0 ? S1P : S1C);}
+  double S2() const {return (L2P != 0.0 ? S2P : S2C);}
+
+  t_obs_status  _status;
+
   char   StatID[20+1]; // Station ID
   char   satSys;       // Satellite System ('G' or 'R')
   int    satNum;       // Satellite Number (PRN for GPS NAVSTAR)
@@ -70,51 +113,7 @@ struct t_obsInternal {
   int    slip_cnt_L5;  // L5 cumulative loss of continuity indicator (negative value = undefined)
 };
 
-class t_obs : public QObject{
- public:
-  enum t_obs_status {initial, posted, received};
-  t_obs() {
-    _status        = initial;
-    _o.satSys      = 'G';
-    _o.satNum      = 0;
-    _o.slotNum     = 0;
-    _o.GPSWeek     = 0;
-    _o.GPSWeeks    = 0.0;
-    _o.C1          = 0.0;
-    _o.P1          = 0.0;
-    _o.L1C         = 0.0;
-    _o.D1C         = 0.0;
-    _o.S1C         = 0.0;
-    _o.L1P         = 0.0;
-    _o.D1P         = 0.0;
-    _o.S1P         = 0.0;
-    _o.C2          = 0.0;
-    _o.P2          = 0.0;
-    _o.L2C         = 0.0;
-    _o.D2C         = 0.0;
-    _o.S2C         = 0.0;
-    _o.L2P         = 0.0;
-    _o.D2P         = 0.0;
-    _o.S2P         = 0.0;
-    _o.C5          = 0.0;
-    _o.L5          = 0.0;
-    _o.D5          = 0.0;
-    _o.S5          = 0.0;
-    _o.slip_cnt_L1 = -1;
-    _o.slip_cnt_L2 = -1;
-    _o.slip_cnt_L5 = -1;
-    _o.StatID[0]   = '\x0';
-  }
-  ~t_obs() {}
-  double L1() const {return (_o.L1P != 0.0 ? _o.L1P : _o.L1C);}
-  double L2() const {return (_o.L2P != 0.0 ? _o.L2P : _o.L2C);}
-  double S1() const {return (_o.L1P != 0.0 ? _o.S1P : _o.S1C);}
-  double S2() const {return (_o.L2P != 0.0 ? _o.S2P : _o.S2C);}
-  t_obsInternal _o;
-  t_obs_status  _status;
-};
-
-typedef QPointer<t_obs> p_obs;
+typedef t_obs* p_obs;
 
 class GPSDecoder {
  public:
@@ -124,7 +123,7 @@ class GPSDecoder {
     QListIterator<p_obs> it(_obsList);
     while (it.hasNext()) {
       p_obs obs = it.next();
-      if (!obs.isNull() && obs->_status == t_obs::initial) {
+      if (obs && obs->_status == t_obs::initial) {
         delete obs;
       }
     }
