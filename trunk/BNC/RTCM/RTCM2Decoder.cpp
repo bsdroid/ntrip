@@ -139,7 +139,7 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         _ObsBlock.resolveEpoch(refWeek, refSecs, epochWeek, epochSecs);
           
         for (int iSat=0; iSat < _ObsBlock.nSat; iSat++) {
-          p_obs obs = new t_obs();
+          t_obs* obs = new t_obs();
           _obsList.push_back(obs);
           if (_ObsBlock.PRN[iSat] > 100) {
             obs->satNum      = _ObsBlock.PRN[iSat] % 100;
@@ -313,7 +313,7 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
     string obsT = "";
 
     // new observation
-    p_obs new_obs = 0;
+    t_obs* new_obs = 0;
 
     // missing IOD
     vector<string> missingIOD;

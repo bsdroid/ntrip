@@ -373,7 +373,7 @@ void bncGetThread::run() {
 
       // Delete old observations
       // -----------------------
-      QListIterator<p_obs> itOld(_decoder->_obsList);
+      QListIterator<t_obs*> itOld(_decoder->_obsList);
       while (itOld.hasNext()) {
         delete itOld.next();
       }
@@ -438,9 +438,9 @@ void bncGetThread::run() {
 
       // Loop over all observations (observations output)
       // ------------------------------------------------
-      QListIterator<p_obs> it(_decoder->_obsList);
+      QListIterator<t_obs*> it(_decoder->_obsList);
       while (it.hasNext()) {
-        p_obs obs = it.next();
+        t_obs* obs = it.next();
       
         // Check observation epoch
         // -----------------------

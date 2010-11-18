@@ -20,10 +20,10 @@
 
 using namespace std;
 
-typedef struct epochHeader {
+struct t_epochHeader {
   double t_epoch;
   int    n_svs;
-} EPOCHHEADER;
+};
 
 // Cyclic Redundancy Check
 ////////////////////////////////////////////////////////////////////////////
@@ -79,10 +79,10 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
     // ------------
     if      (_buffer.length() > 0 && char(_buffer[1]) == 0x00) {
 
-      int reqLength = 2 + sizeof(recordSize) + sizeof(EPOCHHEADER);
+      int reqLength = 2 + sizeof(recordSize) + sizeof(t_epochHeader);
 
       if (_buffer.length() >= reqLength) {
-        EPOCHHEADER epochHdr;
+        t_epochHeader epochHdr;
         memcpy(&epochHdr, _buffer.data() + 2 + sizeof(recordSize), 
                sizeof(epochHdr));
         
@@ -90,7 +90,7 @@ t_irc gpssDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
         if (_buffer.length() >= reqLength) {
 
-          int checkLen = 2 + sizeof(recordSize) + sizeof(EPOCHHEADER) + 
+          int checkLen = 2 + sizeof(recordSize) + sizeof(t_epochHeader) + 
                          epochHdr.n_svs * sizeof(t_obs);
           memcpy(&crc, _buffer.data() + checkLen, sizeof(crc));
           int crcCal = cal_crc((unsigned char*) _buffer.data(), checkLen);

@@ -41,7 +41,7 @@ class bncRinex {
             const QByteArray& longitude, const QByteArray& nmea,
             const QByteArray& ntripVersion); 
    ~bncRinex();
-   void deepCopy(const p_obs obs);
+   void deepCopy(const t_obs* obs);
    void dumpEpoch(long maxTime);
    void setReconnectFlag(bool flag){_reconnectFlag = flag;}
    static QString nextEpochStr(const QDateTime& datTim,
@@ -66,7 +66,7 @@ class bncRinex {
 
    QByteArray    _statID;
    QByteArray    _fName;
-   QList<p_obs>  _obs;
+   QList<t_obs*> _obs;
    std::ofstream _out;
    QStringList   _headerLines;
    bool          _headerWritten;

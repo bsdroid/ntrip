@@ -115,7 +115,7 @@ t_irc RTIGSDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     short numObs = _GPSTrans.Decode_RTIGS_Obs(p_buf, numbytes, rtigs_obs);
 
     for (short ii = 0; ii < numObs; ii++) {
-      p_obs obs = new t_obs();
+      t_obs* obs = new t_obs();
       _obsList.push_back(obs);
       obs->satSys   = 'G';
       obs->satNum   = _GPSTrans.DecObs.Obs[ii].sat_prn;

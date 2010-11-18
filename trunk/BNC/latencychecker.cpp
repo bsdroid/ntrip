@@ -306,13 +306,13 @@ void latencyChecker::checkOutage(bool decoded) {
 
 // Perform latency checks (observations)
 //////////////////////////////////////////////////////////////////////////////
-void latencyChecker::checkObsLatency(const QList<p_obs>& obsList) {
+void latencyChecker::checkObsLatency(const QList<t_obs*>& obsList) {
 
   if (_perfIntr > 0 ) {
 
-    QListIterator<p_obs> it(obsList);
+    QListIterator<t_obs*> it(obsList);
     while (it.hasNext()) {
-      p_obs obs = it.next();
+      t_obs* obs = it.next();
       
       _newSecGPS = static_cast<int>(obs->GPSWeeks);
       if (_newSecGPS != _oldSecGPS) {

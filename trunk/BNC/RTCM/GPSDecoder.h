@@ -113,16 +113,14 @@ class t_obs {
   int    slip_cnt_L5;  // L5 cumulative loss of continuity indicator (negative value = undefined)
 };
 
-typedef t_obs* p_obs;
-
 class GPSDecoder {
  public:
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg) = 0;
 
   virtual ~GPSDecoder() {
-    QListIterator<p_obs> it(_obsList);
+    QListIterator<t_obs*> it(_obsList);
     while (it.hasNext()) {
-      p_obs obs = it.next();
+      t_obs* obs = it.next();
       if (obs && obs->_status == t_obs::initial) {
         delete obs;
       }
@@ -150,7 +148,7 @@ class GPSDecoder {
     int    message;
   };
 
-  QList<p_obs>     _obsList;
+  QList<t_obs*>    _obsList;
   QList<int>       _typeList;  // RTCM   message types
   QStringList      _antType;   // RTCM   antenna descriptor
   QList<t_antInfo> _antList;   // RTCM   antenna XYZ

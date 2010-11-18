@@ -236,8 +236,8 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
             
             for (int iSat = 0; iSat < gnssData.numsats; iSat++) {
 
-              p_obs obs   = new t_obs();
-              int   satID = gnssData.satellites[iSat];
+              t_obs* obs   = new t_obs();
+              int    satID = gnssData.satellites[iSat];
 
               // GPS
               // ---
