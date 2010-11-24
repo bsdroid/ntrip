@@ -635,14 +635,14 @@ void bncRinex::dumpEpoch(long maxTime) {
     // RINEX Version 2
     // ---------------
     else {
-      _out << setw(14) << setprecision(3) << obs.C1 << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.P1 << ' '  << ' '
+      _out << setw(14) << setprecision(3) << obs.C1    << ' '  << ' '
+           << setw(14) << setprecision(3) << obs.P1    << ' '  << ' '
            << setw(14) << setprecision(3) << obs.L1()  << lli1 << ' '
            << setw(14) << setprecision(3) << obs.S1()  << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.C2 << ' '  << ' ' << endl
-           << setw(14) << setprecision(3) << obs.P2 << ' '  << ' ' 
+           << setw(14) << setprecision(3) << obs.C2    << ' '  << ' ' << endl
+           << setw(14) << setprecision(3) << obs.P2    << ' '  << ' ' 
            << setw(14) << setprecision(3) << obs.L2()  << lli2 << ' '
-           << setw(16) << setprecision(3) << obs.S2()  << endl;
+           << setw(14) << setprecision(3) << obs.S2()  << endl;
     }
   }
 
