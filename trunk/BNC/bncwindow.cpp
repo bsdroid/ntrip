@@ -1331,8 +1331,7 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
                    _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
         connect(thread, SIGNAL(newLatency(QByteArray, double)),
                 _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
-        if (settings.value("pppOrigin").toString() != "None"  &&
-            settings.value("pppOrigin").toString() != "QuickStart - Mobile") {
+        if ( Qt::CheckState(settings.value("pppPlotCoordinates").toInt()) == Qt::Checked) {
           disconnect(thread, 
                      SIGNAL(newPosition(bncTime, double, double, double)),
                      _bncFigurePPP, 
