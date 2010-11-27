@@ -139,7 +139,7 @@ bncModel::bncModel(QByteArray staID) {
   }
   _sigL3 = 0.02;
   if (!settings.value("pppSigmaPhase").toString().isEmpty()) {
-    _sigP3 = settings.value("pppSigmaPhase").toDouble();
+    _sigL3 = settings.value("pppSigmaPhase").toDouble();
   }
 
   // Parameter Sigmas
