@@ -790,8 +790,7 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   // NEU Output
   // ----------
-  if (settings.value("pppOrigin").toString() == "Plot - X Y Z" || 
-      settings.value("pppOrigin").toString() == "QuickStart - Static") {
+  if (settings.value("pppOrigin").toString() != "None") {
 
     double xyzRef[3];
     xyzRef[0] = settings.value("pppRefCrdX").toDouble();
