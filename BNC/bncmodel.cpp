@@ -585,14 +585,6 @@ void bncModel::predict(t_epoData* epoData) {
 t_irc bncModel::update(t_epoData* epoData) {
 
   bncSettings settings;
-  double sig_P3;
-  sig_P3 = 5.0;
-  if ( Qt::CheckState(settings.value("pppUsePhase").toInt()) == Qt::Checked ) {
-    sig_P3 = settings.value("pppSigmaCode").toDouble();
-    if (sig_P3 < 0.3 || sig_P3 > 50.0) {
-      sig_P3 = 5.0;
-    }
-  }
 
   _log.clear();  
 
@@ -654,7 +646,7 @@ t_irc bncModel::update(t_epoData* epoData) {
       t_satData* satData = itGPS.value();
     
       ll(iObs)      = satData->P3 - cmpValue(satData, false);
-      PP(iObs,iObs) = 1.0 / (sig_P3 * sig_P3);
+      PP(iObs,iObs) = 1.0 / (_sigP3 * _sigP3);
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
       }
