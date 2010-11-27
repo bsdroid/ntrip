@@ -336,19 +336,20 @@ bncWindow::bncWindow() {
 
   // PPP Options
   // -----------
-  _pppMountLineEdit    = new QLineEdit(settings.value("pppMount").toString());
-  _pppNMEALineEdit     = new QLineEdit(settings.value("nmeaFile").toString());
-  _pppNMEAPortLineEdit = new QLineEdit(settings.value("nmeaPort").toString());
-  _pppSigCLineEdit     = new QLineEdit(settings.value("pppSigmaCode").toString());
-  _pppSigPLineEdit     = new QLineEdit(settings.value("pppSigmaPhase").toString());
-  _pppSigCrd0          = new QLineEdit(settings.value("pppSigCrd0").toString());
-  _pppSigCrdP          = new QLineEdit(settings.value("pppSigCrdP").toString());
-  _pppSigTrp0          = new QLineEdit(settings.value("pppSigTrp0").toString());
-  _pppSigTrpP          = new QLineEdit(settings.value("pppSigTrpP").toString());
-  _pppAverageLineEdit  = new QLineEdit(settings.value("pppAverage").toString());
-  _pppRefCrdXLineEdit  = new QLineEdit(settings.value("pppRefCrdX").toString());
-  _pppRefCrdYLineEdit  = new QLineEdit(settings.value("pppRefCrdY").toString());
-  _pppRefCrdZLineEdit  = new QLineEdit(settings.value("pppRefCrdZ").toString());
+  _pppMountLineEdit      = new QLineEdit(settings.value("pppMount").toString());
+  _pppNMEALineEdit       = new QLineEdit(settings.value("nmeaFile").toString());
+  _pppNMEAPortLineEdit   = new QLineEdit(settings.value("nmeaPort").toString());
+  _pppSigCLineEdit       = new QLineEdit(settings.value("pppSigmaCode").toString());
+  _pppSigPLineEdit       = new QLineEdit(settings.value("pppSigmaPhase").toString());
+  _pppSigCrd0            = new QLineEdit(settings.value("pppSigCrd0").toString());
+  _pppSigCrdP            = new QLineEdit(settings.value("pppSigCrdP").toString());
+  _pppSigTrp0            = new QLineEdit(settings.value("pppSigTrp0").toString());
+  _pppSigTrpP            = new QLineEdit(settings.value("pppSigTrpP").toString());
+  _pppAverageLineEdit    = new QLineEdit(settings.value("pppAverage").toString());
+  _pppQuickStartLineEdit = new QLineEdit(settings.value("pppQuickStart").toString());
+  _pppRefCrdXLineEdit    = new QLineEdit(settings.value("pppRefCrdX").toString());
+  _pppRefCrdYLineEdit    = new QLineEdit(settings.value("pppRefCrdY").toString());
+  _pppRefCrdZLineEdit    = new QLineEdit(settings.value("pppRefCrdZ").toString());
 
   _pppOriginComboBox = new QComboBox();
   _pppOriginComboBox->setEditable(false);
@@ -720,6 +721,7 @@ bncWindow::bncWindow() {
   _pppSigTrp0->setMaximumWidth(5*ww);
   _pppSigTrpP->setMaximumWidth(5*ww);
   _pppAverageLineEdit->setMaximumWidth(5*ww);
+  _pppQuickStartLineEdit->setMaximumWidth(5*ww);
   _pppRefCrdXLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdYLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdZLineEdit->setMaximumWidth(14*ww);
@@ -760,9 +762,11 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppRefCrdYLineEdit,                  4, 6); 
   pppLayout->addWidget(new QLabel(" Z"),                     4, 7, Qt::AlignRight);
   pppLayout->addWidget(_pppRefCrdZLineEdit,                  4, 8);
-  pppLayout->addWidget(new QLabel("Averaging") ,             5, 0);  
-  pppLayout->addWidget(_pppAverageLineEdit,                  5, 1);
-  pppLayout->addWidget(new QLabel("minutes")  ,              5, 2);  
+  pppLayout->addWidget(new QLabel("Time Span (min)") ,       5, 0);  
+  pppLayout->addWidget(_pppQuickStartLineEdit,               5, 1);
+  pppLayout->addWidget(new QLabel("Quick-Start") ,           5, 2);  
+  pppLayout->addWidget(_pppAverageLineEdit,                  5, 3);
+  pppLayout->addWidget(new QLabel("Averaging") ,             5, 4);  
   pppLayout->addWidget(new QLabel("NMEA File (full path)"),  6, 0); 
   pppLayout->addWidget(_pppNMEALineEdit,                     6, 1, 1, 6);
   pppLayout->addWidget(new QLabel("Port"),                   6, 7);
@@ -1089,6 +1093,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppSigTrp0",_pppSigTrp0->text());
   settings.setValue("pppSigTrpP",_pppSigTrpP->text());
   settings.setValue("pppAverage",  _pppAverageLineEdit->text());
+  settings.setValue("pppQuickStart", _pppQuickStartLineEdit->text());
   settings.setValue("pppRefCrdX",  _pppRefCrdXLineEdit->text());
   settings.setValue("pppRefCrdY",  _pppRefCrdYLineEdit->text());
   settings.setValue("pppRefCrdZ",  _pppRefCrdZLineEdit->text());
@@ -1665,10 +1670,6 @@ void bncWindow::slotBncTextChanged(){
         _pppRefCrdYLineEdit->setEnabled(true);
         _pppRefCrdZLineEdit->setPalette(palette_white);
         _pppRefCrdZLineEdit->setEnabled(true);
-        if (_pppOriginComboBox->currentText() == "PPP") {
-          _pppAverageLineEdit->setPalette(palette_white);
-          _pppAverageLineEdit->setEnabled(true);
-        }
       }
       else {
         _pppRefCrdXLineEdit->setPalette(palette_gray);
@@ -1677,8 +1678,18 @@ void bncWindow::slotBncTextChanged(){
         _pppRefCrdYLineEdit->setEnabled(false);
         _pppRefCrdZLineEdit->setPalette(palette_gray);
         _pppRefCrdZLineEdit->setEnabled(false);
+      }
+      if (_pppOriginComboBox->currentText() == "PPP") {
+        _pppAverageLineEdit->setPalette(palette_white);
+        _pppAverageLineEdit->setEnabled(true);
+        _pppQuickStartLineEdit->setPalette(palette_white);
+        _pppQuickStartLineEdit->setEnabled(true);
+      }
+      else {
         _pppAverageLineEdit->setPalette(palette_gray);
         _pppAverageLineEdit->setEnabled(false);
+        _pppQuickStartLineEdit->setPalette(palette_gray);
+        _pppQuickStartLineEdit->setEnabled(false);
       }
       _pppSigCLineEdit->setPalette(palette_white);
       _pppSigCLineEdit->setEnabled(true);
@@ -1718,6 +1729,7 @@ void bncWindow::slotBncTextChanged(){
       _pppSigTrp0->setPalette(palette_gray);
       _pppSigTrpP->setPalette(palette_gray);
       _pppAverageLineEdit->setPalette(palette_gray);
+      _pppQuickStartLineEdit->setPalette(palette_gray);
       _pppSPPComboBox->setEnabled(false);
       _pppNMEALineEdit->setEnabled(false);
       _pppNMEAPortLineEdit->setEnabled(false);
@@ -1736,6 +1748,7 @@ void bncWindow::slotBncTextChanged(){
       _pppSigTrp0->setEnabled(false);
       _pppSigTrpP->setEnabled(false);
       _pppAverageLineEdit->setEnabled(false);
+      _pppQuickStartLineEdit->setEnabled(false);
     }
   }
 }

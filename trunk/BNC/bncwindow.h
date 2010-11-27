@@ -122,6 +122,7 @@ class bncWindow : public QMainWindow {
     QLineEdit* _pppSigTrp0;
     QLineEdit* _pppSigTrpP;
     QLineEdit* _pppAverageLineEdit;
+    QLineEdit* _pppQuickStartLineEdit;
     QLineEdit* _pppRefCrdXLineEdit;
     QLineEdit* _pppRefCrdYLineEdit;
     QLineEdit* _pppRefCrdZLineEdit;
