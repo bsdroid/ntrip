@@ -117,11 +117,15 @@ class bncWindow : public QMainWindow {
     QLineEdit* _pppNMEAPortLineEdit;
     QLineEdit* _pppSigCLineEdit;
     QLineEdit* _pppSigPLineEdit;
+    QLineEdit* _pppSigCrd0;
+    QLineEdit* _pppSigCrdP;
+    QLineEdit* _pppSigTrp0;
+    QLineEdit* _pppSigTrpP;
     QLineEdit* _pppAverageLineEdit;
     QLineEdit* _pppRefCrdXLineEdit;
     QLineEdit* _pppRefCrdYLineEdit;
     QLineEdit* _pppRefCrdZLineEdit;
-    QCheckBox* _pppStaticCheckBox;
+    QCheckBox* _pppPlotCoordinates;
     QCheckBox* _pppUsePhaseCheckBox;
     QCheckBox* _pppEstTropoCheckBox;
     QCheckBox* _pppGLONASSCheckBox;
