@@ -59,14 +59,6 @@ const double   MINELE_GLO       = 10.0 * M_PI / 180.0;
 const double   MAXRES_CODE_GPS  = 10.0;
 const double   MAXRES_PHASE_GPS = 0.10;
 const double   MAXRES_PHASE_GLO = 0.05;
-const double   QUICKSTART       =  120.0;
-const double   sig_clk_0        = 1000.0;
-const double   sig_trp_0        =    0.10;
-const double   sig_trp_p        =    1e-8;
-const double   sig_amb_0_GPS    = 1000.0;
-const double   sig_amb_0_GLO    = 1000.0;
-const double   sig_L3_GPS       =    0.02;
-const double   sig_L3_GLO       =    0.05;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -139,20 +131,49 @@ bncModel::bncModel(QByteArray staID) {
 
   bncSettings settings;
 
-  double sig_crd_0 = 100.0;
+  // Observation Sigmas
+  // ------------------
+  _sigP3 = 5.0;
+  if (!settings.value("pppSigmaCode").toString().isEmpty()) {
+    _sigP3 = settings.value("pppSigmaCode").toDouble();
+  }
+  _sigL3 = 0.02;
+  if (!settings.value("pppSigmaPhase").toString().isEmpty()) {
+    _sigP3 = settings.value("pppSigmaPhase").toDouble();
+  }
 
-  if (settings.value("pppOrigin").toString() == "QuickStart - Static" ||
-      settings.value("pppOrigin").toString() == "QuickStart - Mobile") {
-    sig_crd_0 = 000.01;
-  } 
+  // Parameter Sigmas
+  // ----------------
+  _sigCrd0 = 100.0;
+  if (!settings.value("pppSigCrd0").toString().isEmpty()) {
+    _sigCrd0 = settings.value("pppSigCrd0").toDouble();
+  }
+  _sigCrdP = 100.0;
+  if (!settings.value("pppSigCrdP").toString().isEmpty()) {
+    _sigCrdP = settings.value("pppSigCrdP").toDouble();
+  }
+  _sigTrp0 = 0.1;
+  if (!settings.value("pppSigTrp0").toString().isEmpty()) {
+    _sigTrp0 = settings.value("pppSigTrp0").toDouble();
+  }
+  _sigTrpP = 1e-6;
+  if (!settings.value("pppSigTrpP").toString().isEmpty()) {
+    _sigTrpP = settings.value("pppSigTrpP").toDouble();
+  }
+  _sigClk0 = 1000.0;
+  _sigAmb0 = 1000.0;
+
+  // Quick-Start Mode
+  // ----------------
+  _quickStart = 0;
+  if (settings.value("pppOrigin").toString() == "PPP" &&
+      !settings.value("pppQuickStart").toString().isEmpty()) {
+    _quickStart = settings.value("pppQuickStart").toDouble() * 60.0;
+    _sigCrd0 = 0.01;
+  }
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
-
-  _static = false;
-  if ( Qt::CheckState(settings.value("pppStatic").toInt()) == Qt::Checked) {
-    _static = true;
-  }
 
   _usePhase = false;
   if ( Qt::CheckState(settings.value("pppUsePhase").toInt()) == Qt::Checked) {
@@ -193,13 +214,13 @@ bncModel::bncModel(QByteArray staID) {
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     bncParam* pp = _params[iPar-1];
     if      (pp->isCrd()) {
-      _QQ(iPar,iPar) = sig_crd_0 * sig_crd_0; 
+      _QQ(iPar,iPar) = _sigCrd0 * _sigCrd0; 
     }
     else if (pp->type == bncParam::RECCLK) {
-      _QQ(iPar,iPar) = sig_clk_0 * sig_clk_0; 
+      _QQ(iPar,iPar) = _sigClk0 * _sigClk0; 
     }
     else if (pp->type == bncParam::TROPO) {
-      _QQ(iPar,iPar) = sig_trp_0 * sig_trp_0; 
+      _QQ(iPar,iPar) = _sigTrp0 * _sigTrp0; 
     }
   }
 
@@ -392,14 +413,12 @@ void bncModel::predict(t_epoData* epoData) {
     firstCrd = true;
   }
 
-  bool   quickStartInit = false;
-  double sig_crd_p      = 100.0;
-
-  if ( (settings.value("pppOrigin").toString() == "QuickStart - Static" ||
-        settings.value("pppOrigin").toString() == "QuickStart - Mobile") &&
-       _startTime.secsTo(QDateTime::currentDateTime()) < QUICKSTART ) {
-    quickStartInit = true;
-    sig_crd_p       = 0.0;
+  // Use different white noise for quick-start mode
+  // ----------------------------------------------
+  double sigCrdP_used   = _sigCrdP;
+  if ( _quickStart > 0.0 &&
+       _quickStart > _startTime.secsTo(QDateTime::currentDateTime()) ) {
+    sigCrdP_used   = 0.0;
   }
 
   // Predict Parameter values, add white noise
@@ -410,37 +429,37 @@ void bncModel::predict(t_epoData* epoData) {
     // Coordinates
     // -----------
     if      (pp->type == bncParam::CRD_X) {
-      if (firstCrd || !_static) {
-        if (quickStartInit) {
+      if (firstCrd) {
+        if (settings.value("pppOrigin").toString() == "PPP") {
           pp->xx = settings.value("pppRefCrdX").toDouble();
         }
         else {
           pp->xx = _xcBanc(1);
         }
       }
-      _QQ(iPar,iPar) += sig_crd_p * sig_crd_p;
+      _QQ(iPar,iPar) += sigCrdP_used * sigCrdP_used;
     }
     else if (pp->type == bncParam::CRD_Y) {
-      if (firstCrd || !_static) {
-        if (quickStartInit) {
+      if (firstCrd) {
+        if (settings.value("pppOrigin").toString() == "PPP") {
           pp->xx = settings.value("pppRefCrdY").toDouble();
         }
         else {
           pp->xx = _xcBanc(2);
         }
       }
-      _QQ(iPar,iPar) += sig_crd_p * sig_crd_p;
+      _QQ(iPar,iPar) += sigCrdP_used * sigCrdP_used;
     }
     else if (pp->type == bncParam::CRD_Z) {
-      if (firstCrd || !_static) {
-        if (quickStartInit) {
+      if (firstCrd) {
+        if (settings.value("pppOrigin").toString() == "PPP") {
           pp->xx = settings.value("pppRefCrdZ").toDouble();
         }
         else {
           pp->xx = _xcBanc(3);
         }
       }
-      _QQ(iPar,iPar) += sig_crd_p * sig_crd_p;
+      _QQ(iPar,iPar) += sigCrdP_used * sigCrdP_used;
     }   
 
     // Receiver Clocks
@@ -450,13 +469,13 @@ void bncModel::predict(t_epoData* epoData) {
       for (int jj = 1; jj <= _params.size(); jj++) {
         _QQ(iPar, jj) = 0.0;
       }
-      _QQ(iPar,iPar) = sig_clk_0 * sig_clk_0;
+      _QQ(iPar,iPar) = _sigClk0 * _sigClk0;
     }
 
     // Tropospheric Delay
     // ------------------
     else if (pp->type == bncParam::TROPO) {
-      _QQ(iPar,iPar) += sig_trp_p * sig_trp_p;
+      _QQ(iPar,iPar) += _sigTrpP * _sigTrpP;
     }
   }
 
@@ -554,17 +573,11 @@ void bncModel::predict(t_epoData* epoData) {
     for (int ii = 1; ii <= nPar; ii++) {
       bncParam* par = _params[ii-1];
       if (par->index_old == 0) {
-        if (par->prn[0] == 'R') {
-          _QQ(par->index, par->index) = sig_amb_0_GLO * sig_amb_0_GLO;
-        }
-        else {
-          _QQ(par->index, par->index) = sig_amb_0_GPS * sig_amb_0_GPS;
-        }
+        _QQ(par->index, par->index) = _sigAmb0 * _sigAmb0;
       }
       par->index_old = par->index;
     }
   }
-
 }
 
 // Update Step of the Filter (currently just a single-epoch solution)
@@ -649,7 +662,7 @@ t_irc bncModel::update(t_epoData* epoData) {
       if (_usePhase) {
         ++iObs;
         ll(iObs)      = satData->L3 - cmpValue(satData, true);
-        PP(iObs,iObs) = 1.0 / (sig_L3_GPS * sig_L3_GPS);
+        PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3);
         for (int iPar = 1; iPar <= _params.size(); iPar++) {
           if (_params[iPar-1]->type == bncParam::AMB_L3 &&
               _params[iPar-1]->prn  == prn) {
@@ -671,7 +684,7 @@ t_irc bncModel::update(t_epoData* epoData) {
         t_satData* satData = itGlo.value();
 
         ll(iObs)      = satData->L3 - cmpValue(satData, true);
-        PP(iObs,iObs) = 1.0 / (sig_L3_GLO * sig_L3_GLO);
+        PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3);
         for (int iPar = 1; iPar <= _params.size(); iPar++) {
           if (_params[iPar-1]->type == bncParam::AMB_L3 &&
               _params[iPar-1]->prn  == prn) {

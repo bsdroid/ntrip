@@ -113,7 +113,6 @@ class bncModel : public QObject {
   SymmetricMatrix       _QQ;
   ColumnVector          _xcBanc;
   ColumnVector          _ellBanc;
-  bool                  _static;
   bool                  _usePhase;
   bool                  _estTropo;
   QByteArray            _log;
@@ -123,6 +122,15 @@ class bncModel : public QObject {
   QMap<QString, double> _windUpTime;
   QMap<QString, double> _windUpSum;
   QVector<pppPos*>      _posAverage;
+  double                _quickStart;
+  double                _sigCrd0;
+  double                _sigCrdP;
+  double                _sigTrp0;
+  double                _sigTrpP;
+  double                _sigL3;
+  double                _sigP3;
+  double                _sigAmb0;
+  double                _sigClk0;
 };
 
 #endif
