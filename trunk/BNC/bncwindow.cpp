@@ -1645,6 +1645,7 @@ void bncWindow::slotBncTextChanged(){
       _pppSPPComboBox->setPalette(palette_white);
       _pppNMEALineEdit->setPalette(palette_white);
       _pppNMEAPortLineEdit->setPalette(palette_white);
+      _pppRefCrdXLineEdit->setPalette(palette_white);
       _pppRefCrdYLineEdit->setPalette(palette_white);
       _pppRefCrdZLineEdit->setPalette(palette_white);
       _pppUsePhaseCheckBox->setPalette(palette_white);
@@ -1654,12 +1655,15 @@ void bncWindow::slotBncTextChanged(){
       _pppSPPComboBox->setEnabled(true);
       _pppNMEALineEdit->setEnabled(true);
       _pppNMEAPortLineEdit->setEnabled(true);
+      _pppRefCrdXLineEdit->setEnabled(true);
       _pppRefCrdYLineEdit->setEnabled(true);
       _pppRefCrdZLineEdit->setEnabled(true);
       _pppUsePhaseCheckBox->setEnabled(true);
       _pppPlotCoordinates->setEnabled(true);
       _pppEstTropoCheckBox->setEnabled(true);
       _pppGLONASSCheckBox->setEnabled(true);
+      _pppRefCrdXLineEdit->setPalette(palette_white);
+      _pppRefCrdXLineEdit->setEnabled(true);
       _pppRefCrdYLineEdit->setPalette(palette_white);
       _pppRefCrdYLineEdit->setEnabled(true);
       _pppRefCrdZLineEdit->setPalette(palette_white);
