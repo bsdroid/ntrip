@@ -351,14 +351,6 @@ bncWindow::bncWindow() {
   _pppRefCrdYLineEdit    = new QLineEdit(settings.value("pppRefCrdY").toString());
   _pppRefCrdZLineEdit    = new QLineEdit(settings.value("pppRefCrdZ").toString());
 
-  _pppOriginComboBox = new QComboBox();
-  _pppOriginComboBox->setEditable(false);
-  _pppOriginComboBox->addItems(QString("None,PPP,Plot-Only").split(","));
-  int ij = _pppOriginComboBox->findText(settings.value("pppOrigin").toString());
-  if (ij != -1) {
-    _pppOriginComboBox->setCurrentIndex(ij);
-  }
-
   _pppSPPComboBox = new QComboBox();
   _pppSPPComboBox->setEditable(false);
   _pppSPPComboBox->addItems(QString("PPP,SPP").split(","));
@@ -384,10 +376,17 @@ bncWindow::bncWindow() {
   connect(_pppMountLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
-  connect(_pppOriginComboBox, SIGNAL(currentIndexChanged(const QString &)),
+  connect(_pppUsePhaseCheckBox, SIGNAL(stateChanged(int)),
           this, SLOT(slotBncTextChanged()));
 
-  connect(_pppUsePhaseCheckBox, SIGNAL(stateChanged(int)),
+  connect(_pppRefCrdXLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+  connect(_pppRefCrdYLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+  connect(_pppRefCrdZLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
+  connect(_pppEstTropoCheckBox, SIGNAL(stateChanged(int)),
           this, SLOT(slotBncTextChanged()));
 
   // Streams
@@ -473,7 +472,6 @@ bncWindow::bncWindow() {
   _pppGLONASSCheckBox->setWhatsThis(tr("<p>By default BNC does not use GLONASS observations in PPP mode.</p><p>Tick 'Use GLONASS' for a combined processing of both, GPS and GLONASS observations in PPP mode.</p>"));
   _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
   _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
-  _pppOriginComboBox->setWhatsThis(tr("<p>Select an origin for a North/East/Up displacements time series plot in the 'PPP Plot' section or for operating BNC in QuickStart mode starting at a known position.</p><p> - 'Plot - Start position' will let BNC run in normal mode and plot a time series referred to the very first determined set of coordinate components.</p><p> - 'Plot - X Y Z' will let BNC run in normal mode and plot a time series referred to entered coordinate components XYZ.</p><p> - 'PPP' allows to run BNC in QuickStart mode with observations from a stationary receiver located at known position XYZ</p><p> Note that displacements time series plots make only sense for a stationary receiver.</p>"));
   _pppSigCLineEdit->setWhatsThis(tr("<p>Enter a sigma for your code observations in meters.</p><p>5.0 (default) is likely to be an appropriate choice.</p>"));
   _pppSigPLineEdit->setWhatsThis(tr("<p>Enter a sigma for your phase observations in meters.</p><p>0.02 (default) is likely to be an appropriate choice.</p>"));
   _pppAverageLineEdit->setWhatsThis(tr("<p>Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions computed from those individual positions obtained most recently throughout this period.</p><p>An empty option field (default) means that you don't wont BNC to output moving average positions.</p>"));
@@ -714,13 +712,13 @@ bncWindow::bncWindow() {
   // PPP Client
   // ----------
   QGridLayout* pppLayout = new QGridLayout;
-  _pppSigCLineEdit->setMaximumWidth(5*ww);
-  _pppSigPLineEdit->setMaximumWidth(5*ww);
-  _pppSigCrd0->setMaximumWidth(5*ww);
-  _pppSigCrdP->setMaximumWidth(5*ww);
-  _pppSigTrp0->setMaximumWidth(5*ww);
-  _pppSigTrpP->setMaximumWidth(5*ww);
-  _pppAverageLineEdit->setMaximumWidth(5*ww);
+  _pppSigCLineEdit->setMaximumWidth(9*ww);
+  _pppSigPLineEdit->setMaximumWidth(9*ww);
+  _pppSigCrd0->setMaximumWidth(9*ww);
+  _pppSigCrdP->setMaximumWidth(9*ww);
+  _pppSigTrp0->setMaximumWidth(9*ww);
+  _pppSigTrpP->setMaximumWidth(9*ww);
+  _pppAverageLineEdit->setMaximumWidth(9*ww);
   _pppQuickStartLineEdit->setMaximumWidth(5*ww);
   _pppRefCrdXLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdYLineEdit->setMaximumWidth(14*ww);
@@ -729,23 +727,33 @@ bncWindow::bncWindow() {
   _pppSPPComboBox->setMaximumWidth(8*ww);
   pppLayout->setColumnMinimumWidth(0,14*ww);
   pppLayout->addWidget(new QLabel("Mountpoint"),             0, 0);
-  pppLayout->addWidget(_pppMountLineEdit,                    0, 1, 1, 2);
-  pppLayout->addWidget(_pppSPPComboBox,                      0, 4);
-  pppLayout->addWidget(new QLabel("Options"),                1, 0);
+  pppLayout->addWidget(_pppMountLineEdit,                    0, 1);
+  pppLayout->addWidget(_pppSPPComboBox,                      0, 2);
+  pppLayout->addWidget(new QLabel("             X"),         0, 3, Qt::AlignRight);
+  pppLayout->addWidget(_pppRefCrdXLineEdit,                  0, 4);
+  pppLayout->addWidget(new QLabel("             Y"),         0, 5, Qt::AlignRight);
+  pppLayout->addWidget(_pppRefCrdYLineEdit,                  0, 6);
+  pppLayout->addWidget(new QLabel("             Z"),         0, 7, Qt::AlignRight);
+  pppLayout->addWidget(_pppRefCrdZLineEdit,                  0, 8);
+  pppLayout->addWidget(new QLabel("Options"),                1, 0, 1, 5);
   pppLayout->addWidget(_pppUsePhaseCheckBox,                 1, 1);
-  pppLayout->addWidget(new QLabel("Use phase obs         "), 1, 2);
+  pppLayout->addWidget(new QLabel("Use phase obs    "),      1, 2);
   pppLayout->addWidget(_pppEstTropoCheckBox,                 1, 3);
-  pppLayout->addWidget(new QLabel("Estimate tropo        "), 1, 4);
+  pppLayout->addWidget(new QLabel("Estimate tropo   "),      1, 4);
   pppLayout->addWidget(_pppGLONASSCheckBox,                  1, 5);
-  pppLayout->addWidget(new QLabel("Use GLONASS"),            1, 6);
+  pppLayout->addWidget(new QLabel("Use GLONASS      "),      1, 6);
   pppLayout->addWidget(_pppPlotCoordinates,                  1, 7);
-  pppLayout->addWidget(new QLabel("Plot Coordinates"),       1, 8);
-  pppLayout->addWidget(new QLabel("Observation Sigmas"),     2, 0);
+  pppLayout->addWidget(new QLabel("PPP Plot               "),1, 8);
+  pppLayout->addWidget(new QLabel("Options cont'd"),         2, 0);  
   pppLayout->addWidget(_pppSigCLineEdit,                     2, 1);
-  pppLayout->addWidget(new QLabel("Sigma code"),             2, 2);
+  pppLayout->addWidget(new QLabel("Sigma Code"),             2, 2);
   pppLayout->addWidget(_pppSigPLineEdit,                     2, 3);
-  pppLayout->addWidget(new QLabel("Sigma phase"),            2, 4);
-  pppLayout->addWidget(new QLabel("Parameter Sigmas"),       3, 0);
+  pppLayout->addWidget(new QLabel("Sigma Phase"),            2, 4);
+  pppLayout->addWidget(_pppQuickStartLineEdit,               2, 5);
+  pppLayout->addWidget(new QLabel("Quick-Start") ,           2, 6);  
+  pppLayout->addWidget(_pppAverageLineEdit,                  2, 7);
+  pppLayout->addWidget(new QLabel("Averaging") ,             2, 8);  
+  pppLayout->addWidget(new QLabel("Parameter sigmas"),       3, 0);
   pppLayout->addWidget(_pppSigCrd0,                          3, 1);
   pppLayout->addWidget(new QLabel("XYZ Init"),               3, 2);
   pppLayout->addWidget(_pppSigCrdP,                          3, 3);
@@ -754,25 +762,12 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Tropo Init"),             3, 6);
   pppLayout->addWidget(_pppSigTrpP,                          3, 7);
   pppLayout->addWidget(new QLabel("Tropo White Noise"),      3, 8);
-  pppLayout->addWidget(new QLabel("Origin"),                 4, 0);
-  pppLayout->addWidget(_pppOriginComboBox,                   4, 1, 1, 2);
-  pppLayout->addWidget(new QLabel(" X"),                     4, 3, Qt::AlignRight);
-  pppLayout->addWidget(_pppRefCrdXLineEdit,                  4, 4);
-  pppLayout->addWidget(new QLabel(" Y"),                     4, 5, Qt::AlignRight);
-  pppLayout->addWidget(_pppRefCrdYLineEdit,                  4, 6); 
-  pppLayout->addWidget(new QLabel(" Z"),                     4, 7, Qt::AlignRight);
-  pppLayout->addWidget(_pppRefCrdZLineEdit,                  4, 8);
-  pppLayout->addWidget(new QLabel("Time Span (min)") ,       5, 0);  
-  pppLayout->addWidget(_pppQuickStartLineEdit,               5, 1);
-  pppLayout->addWidget(new QLabel("Quick-Start") ,           5, 2);  
-  pppLayout->addWidget(_pppAverageLineEdit,                  5, 3);
-  pppLayout->addWidget(new QLabel("Averaging") ,             5, 4);  
-  pppLayout->addWidget(new QLabel("NMEA File (full path)"),  6, 0); 
-  pppLayout->addWidget(_pppNMEALineEdit,                     6, 1, 1, 6);
-  pppLayout->addWidget(new QLabel("Port"),                   6, 7);
-  pppLayout->addWidget(_pppNMEAPortLineEdit,                 6, 8);
+  pppLayout->addWidget(new QLabel("NMEA file (full path)"),  4, 0); 
+  pppLayout->addWidget(_pppNMEALineEdit,                     4, 1, 1, 4);
+  pppLayout->addWidget(new QLabel("Port"),                   4, 5, Qt::AlignRight);
+  pppLayout->addWidget(_pppNMEAPortLineEdit,                 4, 6);
 
-  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),7, 0,1,15);
+  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),5, 0,1,12);
   pppgroup->setLayout(pppLayout);
 
   // Main Layout
@@ -1101,7 +1096,6 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppPlotCoordinates", _pppPlotCoordinates->checkState());
   settings.setValue("pppEstTropo", _pppEstTropoCheckBox->checkState());
   settings.setValue("pppGLONASS",  _pppGLONASSCheckBox->checkState());
-  settings.setValue("pppOrigin",   _pppOriginComboBox->currentText());
   settings.setValue("mountPoints", mountPoints);
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
@@ -1637,58 +1631,48 @@ void bncWindow::slotBncTextChanged(){
   // ----------
   if (sender() == 0 
      || sender() == _pppMountLineEdit 
-     || sender() == _pppOriginComboBox 
+     || sender() == _pppRefCrdXLineEdit 
+     || sender() == _pppRefCrdYLineEdit 
+     || sender() == _pppRefCrdZLineEdit 
+     || sender() == _pppEstTropoCheckBox
      || sender() == _pppUsePhaseCheckBox ) {
     if (!_pppMountLineEdit->text().isEmpty()) {
       _pppSPPComboBox->setPalette(palette_white);
       _pppNMEALineEdit->setPalette(palette_white);
       _pppNMEAPortLineEdit->setPalette(palette_white);
-      _pppRefCrdXLineEdit->setPalette(palette_white);
       _pppRefCrdYLineEdit->setPalette(palette_white);
       _pppRefCrdZLineEdit->setPalette(palette_white);
       _pppUsePhaseCheckBox->setPalette(palette_white);
       _pppPlotCoordinates->setPalette(palette_white);
       _pppEstTropoCheckBox->setPalette(palette_white);
       _pppGLONASSCheckBox->setPalette(palette_white);
-      _pppOriginComboBox->setPalette(palette_white);
       _pppSPPComboBox->setEnabled(true);
       _pppNMEALineEdit->setEnabled(true);
       _pppNMEAPortLineEdit->setEnabled(true);
-      _pppRefCrdXLineEdit->setEnabled(true);
       _pppRefCrdYLineEdit->setEnabled(true);
       _pppRefCrdZLineEdit->setEnabled(true);
       _pppUsePhaseCheckBox->setEnabled(true);
       _pppPlotCoordinates->setEnabled(true);
       _pppEstTropoCheckBox->setEnabled(true);
       _pppGLONASSCheckBox->setEnabled(true);
-      _pppOriginComboBox->setEnabled(true);
-      if (_pppOriginComboBox->currentText() != "None") { 
-        _pppRefCrdXLineEdit->setPalette(palette_white);
-        _pppRefCrdXLineEdit->setEnabled(true);
-        _pppRefCrdYLineEdit->setPalette(palette_white);
-        _pppRefCrdYLineEdit->setEnabled(true);
-        _pppRefCrdZLineEdit->setPalette(palette_white);
-        _pppRefCrdZLineEdit->setEnabled(true);
+      _pppRefCrdYLineEdit->setPalette(palette_white);
+      _pppRefCrdYLineEdit->setEnabled(true);
+      _pppRefCrdZLineEdit->setPalette(palette_white);
+      _pppRefCrdZLineEdit->setEnabled(true);
+
+      if (!_pppRefCrdXLineEdit->text().isEmpty() &&
+          !_pppRefCrdYLineEdit->text().isEmpty() &&
+          !_pppRefCrdZLineEdit->text().isEmpty()) {
+      _pppAverageLineEdit->setPalette(palette_white);
+      _pppAverageLineEdit->setEnabled(true);
+      _pppQuickStartLineEdit->setPalette(palette_white);
+      _pppQuickStartLineEdit->setEnabled(true);
       }
       else {
-        _pppRefCrdXLineEdit->setPalette(palette_gray);
-        _pppRefCrdXLineEdit->setEnabled(false);
-        _pppRefCrdYLineEdit->setPalette(palette_gray);
-        _pppRefCrdYLineEdit->setEnabled(false);
-        _pppRefCrdZLineEdit->setPalette(palette_gray);
-        _pppRefCrdZLineEdit->setEnabled(false);
-      }
-      if (_pppOriginComboBox->currentText() == "PPP") {
-        _pppAverageLineEdit->setPalette(palette_white);
-        _pppAverageLineEdit->setEnabled(true);
-        _pppQuickStartLineEdit->setPalette(palette_white);
-        _pppQuickStartLineEdit->setEnabled(true);
-      }
-      else {
-        _pppAverageLineEdit->setPalette(palette_gray);
-        _pppAverageLineEdit->setEnabled(false);
-        _pppQuickStartLineEdit->setPalette(palette_gray);
-        _pppQuickStartLineEdit->setEnabled(false);
+      _pppAverageLineEdit->setPalette(palette_gray);
+      _pppAverageLineEdit->setEnabled(false);
+      _pppQuickStartLineEdit->setPalette(palette_gray);
+      _pppQuickStartLineEdit->setEnabled(false);
       }
       _pppSigCLineEdit->setPalette(palette_white);
       _pppSigCLineEdit->setEnabled(true);
@@ -1696,10 +1680,19 @@ void bncWindow::slotBncTextChanged(){
       _pppSigCrd0->setEnabled(true);
       _pppSigCrdP->setPalette(palette_white);
       _pppSigCrdP->setEnabled(true);
-      _pppSigTrp0->setPalette(palette_white);
-      _pppSigTrp0->setEnabled(true);
-      _pppSigTrpP->setPalette(palette_white);
-      _pppSigTrpP->setEnabled(true);
+      if (_pppEstTropoCheckBox->isChecked()
+         && !_pppMountLineEdit->text().isEmpty()) {
+        _pppSigTrp0->setPalette(palette_white);
+        _pppSigTrp0->setEnabled(true);
+        _pppSigTrpP->setPalette(palette_white);
+        _pppSigTrpP->setEnabled(true);
+      }
+      else {
+        _pppSigTrp0->setPalette(palette_gray);
+        _pppSigTrp0->setEnabled(false);
+        _pppSigTrpP->setPalette(palette_gray);
+        _pppSigTrpP->setEnabled(false);
+      }
       if (_pppUsePhaseCheckBox->isChecked() 
          && !_pppMountLineEdit->text().isEmpty()) {
         _pppSigPLineEdit->setPalette(palette_white);
@@ -1720,7 +1713,6 @@ void bncWindow::slotBncTextChanged(){
       _pppPlotCoordinates->setPalette(palette_gray);
       _pppEstTropoCheckBox->setPalette(palette_gray);
       _pppGLONASSCheckBox->setPalette(palette_gray);
-      _pppOriginComboBox->setPalette(palette_gray);
       _pppSigCLineEdit->setPalette(palette_gray);
       _pppSigPLineEdit->setPalette(palette_gray);
       _pppSigCrd0->setPalette(palette_gray);
@@ -1739,7 +1731,6 @@ void bncWindow::slotBncTextChanged(){
       _pppPlotCoordinates->setEnabled(false);
       _pppEstTropoCheckBox->setEnabled(false);
       _pppGLONASSCheckBox->setEnabled(false);
-      _pppOriginComboBox->setEnabled(false);
       _pppSigCLineEdit->setEnabled(false);
       _pppSigPLineEdit->setEnabled(false);
       _pppSigCrd0->setEnabled(false);
