@@ -139,7 +139,7 @@ bncModel::bncModel(QByteArray staID) {
   }
   _sigL3 = 0.02;
   if (!settings.value("pppSigmaPhase").toString().isEmpty()) {
-    _sigL3 = settings.value("pppSigmaPhase").toDouble();
+    _sigP3 = settings.value("pppSigmaPhase").toDouble();
   }
 
   // Parameter Sigmas
@@ -166,7 +166,9 @@ bncModel::bncModel(QByteArray staID) {
   // Quick-Start Mode
   // ----------------
   _quickStart = 0;
-  if (settings.value("pppOrigin").toString() == "PPP" &&
+  if (settings.value("pppRefCrdX").toString() != "" &&
+      settings.value("pppRefCrdY").toString() != "" &&
+      settings.value("pppRefCrdZ").toString() != "" &&
       !settings.value("pppQuickStart").toString().isEmpty()) {
     _quickStart = settings.value("pppQuickStart").toDouble() * 60.0;
     _sigCrd0 = 0.01;
@@ -413,7 +415,7 @@ void bncModel::predict(t_epoData* epoData) {
     firstCrd = true;
   }
 
-  // Use different white noise for quick-start mode
+  // Use different white noise for Quick-Start mode
   // ----------------------------------------------
   double sigCrdP_used   = _sigCrdP;
   if ( _quickStart > 0.0 &&
@@ -430,7 +432,9 @@ void bncModel::predict(t_epoData* epoData) {
     // -----------
     if      (pp->type == bncParam::CRD_X) {
       if (firstCrd) {
-        if (settings.value("pppOrigin").toString() == "PPP") {
+        if (settings.value("pppRefCrdX").toString() != "" &&
+            settings.value("pppRefCrdY").toString() != "" &&
+            settings.value("pppRefCrdZ").toString() != "") {
           pp->xx = settings.value("pppRefCrdX").toDouble();
         }
         else {
@@ -441,7 +445,9 @@ void bncModel::predict(t_epoData* epoData) {
     }
     else if (pp->type == bncParam::CRD_Y) {
       if (firstCrd) {
-        if (settings.value("pppOrigin").toString() == "PPP") {
+        if (settings.value("pppRefCrdX").toString() != "" &&
+            settings.value("pppRefCrdY").toString() != "" &&
+            settings.value("pppRefCrdZ").toString() != "") {
           pp->xx = settings.value("pppRefCrdY").toDouble();
         }
         else {
@@ -452,7 +458,9 @@ void bncModel::predict(t_epoData* epoData) {
     }
     else if (pp->type == bncParam::CRD_Z) {
       if (firstCrd) {
-        if (settings.value("pppOrigin").toString() == "PPP") {
+        if (settings.value("pppRefCrdX").toString() != "" &&
+            settings.value("pppRefCrdY").toString() != "" &&
+            settings.value("pppRefCrdZ").toString() != "") {
           pp->xx = settings.value("pppRefCrdZ").toDouble();
         }
         else {
@@ -585,6 +593,14 @@ void bncModel::predict(t_epoData* epoData) {
 t_irc bncModel::update(t_epoData* epoData) {
 
   bncSettings settings;
+  double sig_P3;
+  sig_P3 = 5.0;
+  if ( Qt::CheckState(settings.value("pppUsePhase").toInt()) == Qt::Checked ) {
+    sig_P3 = settings.value("pppSigmaCode").toDouble();
+    if (sig_P3 < 0.3 || sig_P3 > 50.0) {
+      sig_P3 = 5.0;
+    }
+  }
 
   _log.clear();  
 
@@ -646,7 +662,7 @@ t_irc bncModel::update(t_epoData* epoData) {
       t_satData* satData = itGPS.value();
     
       ll(iObs)      = satData->P3 - cmpValue(satData, false);
-      PP(iObs,iObs) = 1.0 / (_sigP3 * _sigP3);
+      PP(iObs,iObs) = 1.0 / (sig_P3 * sig_P3);
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
       }
@@ -782,7 +798,9 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   // NEU Output
   // ----------
-  if (settings.value("pppOrigin").toString() != "None") {
+  if (settings.value("pppRefCrdX").toString() != "" &&
+      settings.value("pppRefCrdY").toString() != "" &&
+      settings.value("pppRefCrdZ").toString() != "") {
 
     double xyzRef[3];
     xyzRef[0] = settings.value("pppRefCrdX").toDouble();
@@ -884,13 +902,14 @@ t_irc bncModel::update(t_epoData* epoData) {
 
       emit newMessage(QByteArray(strE.str().c_str()), true);
 
-      ostringstream strF; strF.setf(ios::fixed);
-      strF << _staID.data() << "  AVE-TRP " 
-           << epoData->tt.timestr(1) << " "
-           << setw(13) << setprecision(3) << mean[6]  << " +- "
-           << setw(6)  << setprecision(3) << std[6]   << endl;
-
-      emit newMessage(QByteArray(strF.str().c_str()), true);
+      if ( Qt::CheckState(settings.value("pppEstTropo").toInt()) == Qt::Checked) {
+        ostringstream strF; strF.setf(ios::fixed);
+        strF << _staID.data() << "  AVE-TRP " 
+             << epoData->tt.timestr(1) << " "
+             << setw(13) << setprecision(3) << mean[6]  << " +- "
+             << setw(6)  << setprecision(3) << std[6]   << endl;
+        emit newMessage(QByteArray(strF.str().c_str()), true);
+      }
     }
   }
 
