@@ -80,7 +80,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("pppSPP",           "PPP");
     setValue("pppSigmaCode",     "5.0");
     setValue("pppSigmaPhase",    "0.02");
-    setValue("pppQuickStart",    "200");
+    setValue("pppQuickStart",    "120");
     setValue("pppSigCrd0",       "100.0");
     setValue("pppSigCrdP",       "100.0");
     setValue("pppSigTrp0",       "0.1");
@@ -89,6 +89,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("pppUsePhase",      "");
     setValue("pppEstTropo",      "");
     setValue("pppGLONASS",       "");
+    setValue("pppPlotCoordinates", "");
     setValue("pppRefCrdX",       "");
     setValue("pppRefCrdY",       "");
     setValue("pppRefCrdZ",       "");
