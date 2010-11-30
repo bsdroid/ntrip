@@ -175,15 +175,21 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.10.3. <a href=#miscscan>Scan RTCM</a><br>
 3.11. <a href=#pppclient>PPP Client</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.1 <a href=#pppmount>Mountpoint</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.1.1 <a href=#pppxyz>XYZ</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2 <a href=#pppopt>Options</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.2.1 <a href=#pppstatic>Static</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.2.2 <a href=#pppphase>Use Phase Obs</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.2.3 <a href=#ppptropo>Estimate Tropo</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.2.4 <a href=#pppglo>Use GLONASS</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.2.1 <a href=#pppphase>Use Phase Obs</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.2.2 <a href=#ppptropo>Estimate Tropo</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.2.3 <a href=#pppglo>Use GLONASS</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.2.4 <a href=#pppplot>PPP Plot</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppoptcont>Options cont'd</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3.1 <a href=#pppsigma>Sigma Code</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3.2 <a href=#pppaverage>Averaging</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#ppporigin>Origin</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.3.1 <a href=#pppsigcp>Sigma Code/Phase</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.3.2 <a href=#pppquick>Quick-Start</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.3.3 <a href=#pppaverage>Averaging</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#pppparasig>Parameter Sigmas</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4.1 <a href=#pppsigxyzi>XYZ Init</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4.2 <a href=#pppsigxyzn>XYZ White Noise</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4.3 <a href=#pppsigtrpi>Tropo Init</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4.4 <a href=#pppsigtrpn>Tropo White Noise</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.5 <a href=#pppnmeaout>NMEA</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.5.1 <a href=#pppnmeafile>File</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.5.2 <a href=#pppnmeaport>Port</a><br><br>
@@ -1038,7 +1044,7 @@ Note that in RTCM Version 2.x the message types 18 and 19 carry only the observa
 BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or code plus phase data in ionosphere free linear combinations P3 or L3. Besides pulling a stream of observations from a dual frequency receiver, this also requires pulling in addition
 <ul>
 <li>a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of 'State Space Representation' (SSR) messages as proposed by RTCM (i.e. premature message type 1060). Note that for BNC these correctors need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream products.igs-ip.net:2101/CLK11 is an example.</li>
-<li>a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019 and 1020. This is a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream products.igs-ip.net:2101/RTCM3EPH is an example.</li>
+<li>a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019 and 1020. This is a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream RTCM3EPH on caster products.igs-ip.net:2101 is an example.</li>
 </ul>
 </p>
 <p>
@@ -1127,21 +1133,30 @@ Furthermore, specify the Point Positioning method you want to apply. Options are
 </ul>
 </p>
 
+<p><a name="pppxyz"><h4>3.11.1.1 XYZ - optional</h4></p>
+<p>
+Enter the reference coordinate components X,Y,Z of the receiver's position in meters if known. Default are empty option fields, meaning that the antenna's XYZ position is unknown. 
+</p>
+<p>
+Once XYZ coordinate components are defined, the 'PPP' line in BNC's logfile is extended by Nort, East and Up desplacements to (example):
+</p>
+<pre>
+10-08-09 06:01:56 FFMJ1  PPP 06:02:09.0 11    4053457.628 +-  2.639     617729.438 +-  1.180    4869396.447 +-  1.921  NEU   -0.908   -0.571    1.629
+</pre>
+<p>
+The parameters following the 'NEU' string provide Nort, East and Up components of the current coordinate displacement in meters.
+</p>
+
 <p><a name="pppopt"><h4>3.11.2 Options</h4></p>
 BNC allows to use different Point Positioning processing options depending on the capability of the involved receiver and the application in mind.
 </p>
 
-<p><a name="pppstatic"><h4>3.11.2.1 Static - optional</h4></p>
-<p>
-By default BNC considers the rover as mobile. It means that the rover coordinates are estimated as stochastic parameters with white noise 100 meters per epoch. Tick 'Static' in a static observation situation to adapt appropriate filter characteristics for that.
-</p>
-
-<p><a name="pppphase"><h4>3.11.2.2 Use Phase Obs - optional</h4></p>
+<p><a name="pppphase"><h4>3.11.2.1 Use Phase Obs - optional</h4></p>
 <p>
 By default BNC applies a Point Positioning solution using an ionosphere free P3 linear combination of code observations. Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.
 </p>
 
-<p><a name="ppptropo"><h4>3.11.2.3 Estimate Tropo - optional</h4></p>
+<p><a name="ppptropo"><h4>3.11.2.2 Estimate Tropo - optional</h4></p>
 <p>
 BNC estimates the tropospheric delay according to equation
 <pre>
@@ -1153,75 +1168,84 @@ where T_apr is the a-priori tropospheric delay derived from Saastamoinen model.
 By default BNC does not estimate troposphere parameters. Tick 'Estimate tropo' to estimate troposphere parameters together with the coordinates and save T_apr and dT in BNC's log file.
 </p>
 
-<p><a name="pppglo"><h4>3.11.2.4 Use GLONASS - optional</h4></p>
+<p><a name="pppglo"><h4>3.11.2.3 Use GLONASS - optional</h4></p>
 <p>
 By default BNC does not process GLONASS observations when in Point Positioning mode. Tick 'Use GLONASS' to use GPS and GLONASS observations for estimating coordinates in Point Positioning mode.
 </p>
 
+<p><a name="pppplot"><h4>3.11.2.4 PPP Plot - optional</h4></p>
+<p>
+PPP time series of North (red), East(green) and Up (blue) coordinate components will be plotted in the 'PPP Plot' tab when this option ticked. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated XYZ coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.
+</p>
+<p>
+Note that a PPP time series makes only sense for a stationary operated receiver.
+</p>
+
 <p><a name="pppoptcont"><h4>3.11.3 Options cont'd</h4></p>
 <p>
-You may like to introduce a specific ratio between the sigmas for code and phase observations. You may also like to output average position values.
+You may want to introduce specific sigmas for code and phase observations. You may also like to carry out your PPP solution in Quick-Start mode or output averaged position values.
 </p>
 
-<p><a name="pppsigma"><h4>3.11.3.1 Sigma Code - mandatory if 'Use Phase Obs' is set</h4></p>
+<p><a name="pppsigcp"><h4>3.11.3.1 Sigma Code/Phase - mandatory if 'Use Phase Obs' is set</h4></p>
 <p>
 When 'Use phase obs' is set in BNC the PPP solution will be carried out using both, code and phase observations. A sigma of 5.0 m for code observations and a sigma of 0.02 m for phase observations (defauls) is used to combine both types of observations. 
-As the convergence characteristic of a PPP solution can be influenced by the ratio of the sigmas for code and phase, you may like to introduce you own sigma for code observations which differs from the default of 5.0 m.
+As the convergence characteristic of a PPP solution can be influenced by the ratio of the sigmas for code and phase, you may like to introduce you own sigmas for code and phase observations which differ from the default of 5.0 m and 0.02 m respectively.
 <ul>
-<li>Introducing a smaller sigma (higher accuracy) for code observations leads to better results shortly after program start. However, it may take more time till you finally get the best possible solutions.</li>
-<li>Introducing a higher sigma (lower accuracy) for code observations may lead to less accurate results shortly after program start and thus a prolonged period of convergence but could provide better positions in the long run.</li>
+<li>Introducing a smaller sigma (higher accuracy) for code observations or a larger sigma for phase observations leads to better results shortly after program start. However, it may take more time till you finally get the best possible solutions.</li>
+<li>Introducing a larger sigma (lower accuracy) for code observations or a smaller sigma for phase observations may lead to less accurate results shortly after program start and thus a prolonged period of convergence but could provide better positions in the long run.</li>
 </ul>
 </p>
+
+<p><a name="pppquick"><h4>3.11.3.2 Quick-Start - optional if XYZ is set</h4></p>
 <p>
-Note that the 'Sigma code' you enter must be greater than 0.3 m and less than 50.0 m.
+Enter the lenght of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate. Constraining coordinate components is done in BNC through setting the 'XYZ White Noise' temporarily to zero.
+</p>
+<p>
+This so-called Quick-Start option allows the PPP solutions to rapidly converge after startup. It requires that the antenna remains unmoved on the know position throughout the defined period. A value of 120 (default) is likely to be an appropriate choice for 'Quick-Start'
+<p>
+<p>
+You may need to create your own reference coordinate through running BNC for an hour in normal mode before applying the Quick-Start option.
 </p>
 
-<p><a name="pppaverage"><h4>3.11.3.2 Averaging - optional if appropriate 'Origin' option is set</h4></p>
+<p><img src=":bnchelp/screenshot17.png"/></p>
+<p><u>Figure:</u> BNC in 'Quick-Start - Static' mode</p>
+
+<p><a name="pppaverage"><h4>3.11.3.3 Averaging - optional if XYZ is set</h4></p>
 <p>
-Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions and their RMS as computed from those individual positions obtained most recently throughout this period. RMS values presented for XYZ coordinates are bias reduced while RMS values for Nort/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string &quot;AVE-XYZ&quot; in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string &quot;AVE-NEU&quot;. Example:
+Enter the length of a sliding time window in minutes. BNC will continuously output moving average values ns and their RMS as computed from those individual values obtained most recently throughout this period. RMS values presented for XYZ coordinates and tropospheric zenit path delays are bias reduced while RMS values for Nort/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string &quot;AVE-XYZ&quot; in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string &quot;AVE-NEU&quot; and averaged values for the tropospheric delays and their RMS are marked with string &quot;AVE-TRP&quot;. Example:
 </p>
 <pre>
 10-09-08 09:13:05 FFMJ1  AVE-XYZ 09:13:04.0   4053455.948 +-  0.284     617730.422 +-  0.504    4869397.692 +-  0.089
 10-09-08 09:13:05 FFMJ1  AVE-NEU 09:13:04.0    1.043 +-  0.179    0.640 +-  0.456    1.624 +-  0.331
+10-09-08 09:13:05 FFMJ1  AVE-TRP 09:13:04.0         2.336 +-  0.002
 </pre>
 <p>
 Entering any positive value up to 1440 (24h mean value) is allowed. An empty option field (default) means that you don't want BNC to output moving average positions into the log file and the 'Log' section. Note that averaging positions makes only sense for a stationary receiver.
 </p>
 
-<p><a name="ppporigin"><h4>3.11.4 Origin - optional</h4></p>
+<p><a name="pppparasig"><h4>3.11.4 Parameter Sigmas</h4></p>
 <p>
-Select an origin
-</p>
-<ul>
-<li>for a North/East/Up displacements time series plot in the 'PPP Plot' section, or</li>
-<li>for operating BNC in QuickStart mode starting at a known XYZ position.
-</ul>
-</p>
-<p>
-QuickStart means that BNC operates for the period of 2 minutes in a mode where an introduced reference coordinate is constrained. The PPP solution is expected to converge within this time span. You may need to create your own reference coordinate through running BNC for an hour in normal mode before applying the QuickStart option. The following options are available:
-<ul>
-<li>Option 'None' means that BNC shall neither plot a time series of displacements nor start in QuickStart mode.</li>
-<li>'Plot - Start position' will let run BNC in normal mode for a stationary receiver and plot a time series referred to the very first determined set of coordinate components.</li>
-<li>'Plot - X Y Z' will let run BNC in normal mode for a stationary receiver and plot a time series referred to entered coordinate components XYZ.</li>
-<li>Select 'QuickStart - Static' to run BNC in QuickStart mode with observations from a stationary receiver located at known position XYZ.</li>
-<li>'QuickStart - Mobile' also allows running BNC in QuickStart mode. However, the receiver may leave its known initial XYZ start position after staying there for two minutes.</li>
-</ul>
-Default selection for 'Origin' is 'None'. Note that displacements time series plots make only sense for a stationary receiver.
+You may like to introduce specific estimates for sigmas of parameters to be estimated in the PPP solution.
 </p>
 
+<p><a name="pppsigxyzi"><h4>3.11.4.1 XYZ Init - mandatory</h4></p>
 <p>
+Enter a sigma in meters for the initial XYZ coordinate componentes. A value of 100.0 may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting from a station with a known XYZ position.
 </p>
-<p><img src=":bnchelp/screenshot17.png"/></p>
-<p><u>Figure:</u> BNC in 'QuickStart - Static' mode</p>
 
+<p><a name="pppsigxyzn"><h4>3.11.4.2 XYZ White Noise - mandatory</h4></p>
 <p>
-If option 'Plot - X Y Z' or 'QuickStart - Static' is selected, the 'PPP' line in BNC's logfile is extended to  (example):
+Enter a sigma in meters for the 'White Noise' of estimated XYZ coordinate components. A value of 100.0 may be appropriate considering the potential movement of a rover position.
 </p>
-<pre>
-10-08-09 06:01:56 FFMJ1  PPP 06:02:09.0 11    4053457.628 +-  2.639     617729.438 +-  1.180    4869396.447 +-  1.921  NEU   -0.908   -0.571    1.629
-</pre>
+
+<p><a name="pppsigtrpi"><h4>3.11.4.3 Tropo Init - mandatory if 'Estimate tropo' is set</h4></p>
 <p>
-The parameters following the 'NEU' string provide Nort, East and Up components of the current coordinate displacement in meters.
+Enter a sigma in meters for the a-priory model based tropospheric delay estimation. A value of 0.1 (default) may be an appropriate choice.
+</p>
+
+<p><a name="pppsigtrpn"><h4>3.11.4.4 Tropo White Noise - mandatory if 'Estimate tropo' is set</h4></p>
+<p>
+Enter a sigma in meters per second to describe the expected variation of the tropospheric effect. Supposing 1Hz observation data, a value of 1e-6 (default) would mean that the tropospheric effect may vary for 3600 * 1e-6 = 0.0036 meters per hour.
 </p>
 
 <p><a name="pppnmeaout"><h4>3.11.5 NMEA</h4></p>
@@ -1709,8 +1733,8 @@ Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended
 </tr>
 
 <tr>
-<td>Nov 2010 &nbsp;</td><td>Version 2.4 &nbsp;</td>
-<td>[Add] Output of averaged positions when in PPP mode<br> [Mod] Use always the latest received set of broadcast ephemeris<br> [Add] QuickStart PPP option<br> [Mod] Improvement of data sharing efficiency among different threads</td>
+<td>Dec 2010 &nbsp;</td><td>Version 2.4 &nbsp;</td>
+<td>[Add] Output of averaged positions when in PPP mode<br> [Mod] Use always the latest received set of broadcast ephemeris<br> [Add] QuickStart PPP option<br> [Mod] Improvement of data sharing efficiency among different threads<br> [Mod] Design of PPP tab section<br> [Add] Sigmas for observations and parameters </td>
 </tr>
 
 </table>
@@ -1830,7 +1854,7 @@ RTCM Version 3.x defines a number of message types. Messages that may be of inte
 <li>Type 1002, GPS L1 code and phase and ambiguities and carrier to noise ratio.</li>
 <li>Type 1003, GPS L1 and L2 code and phase.</li>
 <li>Type 1004, GPS L1 and L2 code and phase and ambiguities and carrier to noise ratio.</li>
-<li>Type 1005, Station coordinates XZY for antenna reference point.</li>
+<li>Type 1005, Station coordinates XYZ for antenna reference point.</li>
 <li>Type 1006, Station coordinates XYZ for antenna reference point and antenna height.</li>
 <li>Type 1007, Antenna descriptor and ID.</li>
 <li>Type 1008, Antenna serial number.</li>
@@ -2010,14 +2034,19 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>statusTab=0</td><td>Internal memory: Bottom tab index</td></tr>
 <tr><td>waitTime=5</td><td>Feed Engine: Wait for full epoch</td></tr>
 <tr><td>pppMount=</td><td>PPP Client: Mountpoint</td></tr>
-<tr><td>pppSPP=</td><td>PPP Client: PPP/SPP</td></tr>
-<tr><td>pppStatic=0</td><td>PPP Client: Static mode</td></tr>
+<tr><td>pppSPP=PPP</td><td>PPP Client: PPP/SPP</td></tr>
+<tr><td>pppSigmaCode=5.0</td><td>PPP Client: Sigma for Code observations</td></tr>
+<tr><td>pppSigmaPhase=0.02</td><td>PPP Client: Sigma for Phase observations</td></tr>
+<tr><td>pppQuickStart=200</td><td>PPP Client: Quick-Start period</td></tr>
+<tr><td>pppSigmaCrd0=100.0</td><td>PPP Client: Sigma for initial XYZ coordinate</td></tr>
+<tr><td>pppSigmaCrdP=100.0</td><td>PPP Client: White noise for XYZ</td></tr>
+<tr><td>pppSigmaTrp0=0.1</td><td>PPP Client: Sigma for initial tropospheric delay</td></tr>
+<tr><td>pppSigmaTrpP=1e-6</td><td>PPP Client: White noise for tropospheric delay</td></tr>
 <tr><td>pppUsePhase=0</td><td>PPP Client: Use phase data </td></tr>
 <tr><td>pppEstTropo=0</td><td>PPP Client: Estimate troposphere</td></tr>
 <tr><td>pppGLONASS=0</td><td>PPP Client: Use GLONASS</td></tr>
-<tr><td>pppSigmaCode=0</td><td>PPP Client: Sigma for Code observations</td></tr>
+<tr><td>pppPlotCoordinates=0</td><td>PPP Client: Plot NEU time series</td></tr>
 <tr><td>pppAverage=</td><td>PPP Client: Lenght of time window for moving average</td></tr>
-<tr><td>pppOrigin=</td><td>PPP Client: Origin of time series plot</td></tr>
 <tr><td>pppRefCrdX=</td><td>PPP Client: X coordinate of plot origin</td></tr>
 <tr><td>pppRefCrdY=</td><td>PPP Client: Y coordinate of plot origin</td></tr>
 <tr><td>pppRefCrdZ=</td><td>PPP Client: Z coordinate of plot origin</td></tr>
