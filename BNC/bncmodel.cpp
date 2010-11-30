@@ -170,7 +170,7 @@ bncModel::bncModel(QByteArray staID) {
       settings.value("pppRefCrdY").toString() != "" &&
       settings.value("pppRefCrdZ").toString() != "" &&
       !settings.value("pppQuickStart").toString().isEmpty()) {
-    _quickStart = settings.value("pppQuickStart").toDouble() * 60.0;
+    _quickStart = settings.value("pppQuickStart").toDouble();
   }
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
