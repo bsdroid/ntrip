@@ -127,8 +127,6 @@ bncModel::bncModel(QByteArray staID) {
 
   _staID   = staID;
 
-  _startTime = QDateTime::currentDateTime();
-
   bncSettings settings;
 
   // Observation Sigmas
@@ -412,6 +410,7 @@ void bncModel::predict(t_epoData* epoData) {
   bool firstCrd = false;
   if (x() == 0.0 && y() == 0.0 && z() == 0.0) {
     firstCrd = true;
+    _startTime = QDateTime::currentDateTime();
   }
 
   // Use different white noise for Quick-Start mode
