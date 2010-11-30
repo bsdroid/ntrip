@@ -724,7 +724,7 @@ bncWindow::bncWindow() {
   _pppSigTrp0->setMaximumWidth(9*ww);
   _pppSigTrpP->setMaximumWidth(9*ww);
   _pppAverageLineEdit->setMaximumWidth(9*ww);
-  _pppQuickStartLineEdit->setMaximumWidth(5*ww);
+  _pppQuickStartLineEdit->setMaximumWidth(9*ww);
   _pppRefCrdXLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdYLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdZLineEdit->setMaximumWidth(14*ww);
@@ -741,16 +741,16 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("             Z"),         0, 7, Qt::AlignRight);
   pppLayout->addWidget(_pppRefCrdZLineEdit,                  0, 8);
   pppLayout->addWidget(new QLabel("Options"),                1, 0, 1, 5);
-  pppLayout->addWidget(_pppUsePhaseCheckBox,                 1, 1);
+  pppLayout->addWidget(_pppUsePhaseCheckBox,                 1, 1, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Use phase obs    "),      1, 2);
-  pppLayout->addWidget(_pppEstTropoCheckBox,                 1, 3);
+  pppLayout->addWidget(_pppEstTropoCheckBox,                 1, 3, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Estimate tropo   "),      1, 4);
-  pppLayout->addWidget(_pppGLONASSCheckBox,                  1, 5);
+  pppLayout->addWidget(_pppGLONASSCheckBox,                  1, 5, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Use GLONASS      "),      1, 6);
-  pppLayout->addWidget(_pppPlotCoordinates,                  1, 7);
+  pppLayout->addWidget(_pppPlotCoordinates,                  1, 7, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("PPP Plot               "),1, 8);
   pppLayout->addWidget(new QLabel("Options cont'd"),         2, 0);  
-  pppLayout->addWidget(_pppSigCLineEdit,                     2, 1);
+  pppLayout->addWidget(_pppSigCLineEdit,                     2, 1, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Sigma Code"),             2, 2);
   pppLayout->addWidget(_pppSigPLineEdit,                     2, 3);
   pppLayout->addWidget(new QLabel("Sigma Phase"),            2, 4);
@@ -759,7 +759,7 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppAverageLineEdit,                  2, 7);
   pppLayout->addWidget(new QLabel("Averaging (min)") ,       2, 8);  
   pppLayout->addWidget(new QLabel("Parameter sigmas"),       3, 0);
-  pppLayout->addWidget(_pppSigCrd0,                          3, 1);
+  pppLayout->addWidget(_pppSigCrd0,                          3, 1, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("XYZ Init"),               3, 2);
   pppLayout->addWidget(_pppSigCrdP,                          3, 3);
   pppLayout->addWidget(new QLabel("XYZ White Noise"),        3, 4);
@@ -772,7 +772,7 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Port"),                   4, 5, Qt::AlignRight);
   pppLayout->addWidget(_pppNMEAPortLineEdit,                 4, 6);
 
-  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),5, 0,1,12);
+  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),5, 0,1,5);
   pppgroup->setLayout(pppLayout);
 
   // Main Layout
