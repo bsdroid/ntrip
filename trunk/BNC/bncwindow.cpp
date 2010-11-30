@@ -755,9 +755,9 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppSigPLineEdit,                     2, 3);
   pppLayout->addWidget(new QLabel("Sigma Phase"),            2, 4);
   pppLayout->addWidget(_pppQuickStartLineEdit,               2, 5);
-  pppLayout->addWidget(new QLabel("Quick-Start") ,           2, 6);  
+  pppLayout->addWidget(new QLabel("Quick-Start (sec)") ,     2, 6);  
   pppLayout->addWidget(_pppAverageLineEdit,                  2, 7);
-  pppLayout->addWidget(new QLabel("Averaging") ,             2, 8);  
+  pppLayout->addWidget(new QLabel("Averaging (min)") ,       2, 8);  
   pppLayout->addWidget(new QLabel("Parameter sigmas"),       3, 0);
   pppLayout->addWidget(_pppSigCrd0,                          3, 1);
   pppLayout->addWidget(new QLabel("XYZ Init"),               3, 2);
