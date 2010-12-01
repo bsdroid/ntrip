@@ -44,6 +44,7 @@
 #include "bncgetthread.h"
 #include "bncnetqueryv1.h"
 #include "bncsettings.h"
+#include "bncmap.h"
 
 using namespace std;
 
@@ -139,6 +140,10 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _buttonGet->setDefault(true);
   connect(_buttonGet, SIGNAL(clicked()), this, SLOT(slotGetTable()));
  
+  _buttonMap = new QPushButton(tr("Map"), this);
+  _buttonMap->setEnabled(false);
+  connect(_buttonMap, SIGNAL(clicked()), this, SLOT(slotShowMap()));
+ 
   _buttonCancel = new QPushButton(tr("Cancel"), this);
   connect(_buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
 
@@ -148,6 +153,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(_buttonWhatsThis);
   buttonLayout->addStretch(1);
+  buttonLayout->addWidget(_buttonMap);
   buttonLayout->addWidget(_buttonGet);
   buttonLayout->addWidget(_buttonCancel);
   buttonLayout->addWidget(_buttonOK);
@@ -218,6 +224,7 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
 void bncTableDlg::slotGetTable() {
 
   _buttonGet->setEnabled(false);
+  _buttonMap->setEnabled(true);
   _buttonCasterTable->setEnabled(false); 
 
   if ( getFullTable(_casterHostComboBox->currentText(),
@@ -227,7 +234,7 @@ void bncTableDlg::slotGetTable() {
     _buttonGet->setEnabled(true);
     return;
   }
-
+  
   static const QStringList labels = QString("mountpoint,identifier,format,"
     "format-details,carrier,system,network,country,lat,long,"
     "nmea,solution,generator,compress.,auth.,fee,bitrate,"
@@ -290,6 +297,53 @@ void bncTableDlg::slotGetTable() {
   }
 }
 
+// Show world map
+////////////////////////////////////////////////////////////////////////////
+void bncTableDlg::slotShowMap() {
+
+  bncMap* winMap = new bncMap(this);
+  winMap->setGeometry( x(), y()+height()*1.2, 860, 400 );
+
+  connect(this, SIGNAL(newPoint(QPointF, QString, QPen)),
+	  winMap, SLOT(slotNewPoint(QPointF, QString, QPen)));
+  connect(this, SIGNAL(resetMap()), winMap, SLOT(slotResetMap()));
+      
+  _buttonMap->setEnabled(false);
+  showSourceTable();
+  winMap->exec();
+  _buttonMap->setEnabled(true);
+
+  disconnect(this, SIGNAL(newPoint(QPointF, QString, QPen)),
+	     winMap, SLOT(slotNewPoint(QPointF, QString, QPen)));
+  disconnect(this, SIGNAL(resetMap()), winMap, SLOT(slotResetMap()));
+   
+  delete winMap;
+}
+
+// Show world map
+////////////////////////////////////////////////////////////////////////////
+void bncTableDlg::showSourceTable() {
+
+  for( int i = 0; i < _allLines.size(); i++ ){
+	
+    if( _allLines.at(i).startsWith("STR") == true ){
+	     
+       QStringList tmp = _allLines.at(i).split(';');
+       if( tmp.size() > 0 ){
+		  
+	 QPointF point;
+    	         point.setY( tmp.at(9).toDouble() );
+                 point.setX( tmp.at(10).toDouble() );
+	 QString site = tmp.at(1);
+	         site.resize(4);
+
+         emit newPoint(point, site, QPen(QBrush(QColor(0,0,255,180)), 5) );
+       }	     
+     }
+   }
+}
+
+
 // Accept slot
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::accept() {
@@ -305,10 +359,11 @@ void bncTableDlg::accept() {
   addUrl(url);
 
   QStringList* mountPoints = new QStringList;
-
   if (_table) {
+//  emit resetMap();
     for (int ir = 0; ir < _table->rowCount(); ir++) {
       QTableWidgetItem* item   = _table->item(ir,0);
+      QString             site = _table->item(ir,0)->text();
       QString           format = _table->item(ir,2)->text();
       QString         latitude = _table->item(ir,8)->text();
       QString        longitude = _table->item(ir,9)->text();
@@ -319,6 +374,10 @@ void bncTableDlg::accept() {
         url.setPath(item->text());
         mountPoints->push_back(url.toString() + " " + format + " " + latitude 
                         + " " + longitude + " " + nmea + " " + ntripVersion);
+	 
+	emit newPoint(QPointF(longitude.toDouble(),latitude.toDouble()), site,
+		      QPen(QBrush(QColor(255,0,0,180)), 13) );
+
       }
     }
   }
@@ -563,4 +622,3 @@ void bncCasterTableDlg::slotAcceptCasterTable() {
   }
   QDialog::accept();
 }
-

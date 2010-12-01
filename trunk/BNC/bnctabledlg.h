@@ -63,10 +63,13 @@ class bncTableDlg : public QDialog {
 
   signals:
     void newMountPoints(QStringList* mountPoints);
+    void newPoint(QPointF, QString, QPen);
+    void resetMap();
 
   private slots:
     virtual void accept();
     void slotGetTable();
+    void slotShowMap();
     void slotSelectionChanged();
     void slotWhatsThis();
     void slotCasterTable();
@@ -75,6 +78,7 @@ class bncTableDlg : public QDialog {
 
   private:
     void addUrl(const QUrl& url);
+    void showSourceTable();
     QComboBox*   _casterHostComboBox;
     QLineEdit*   _casterPortLineEdit;
     QLineEdit*   _casterUserLineEdit;
@@ -82,6 +86,7 @@ class bncTableDlg : public QDialog {
     QComboBox*   _ntripVersionComboBox;
 
     QPushButton* _buttonGet;
+    QPushButton* _buttonMap;
     QPushButton* _buttonCancel;
     QPushButton* _buttonOK;
     QPushButton* _buttonWhatsThis;
