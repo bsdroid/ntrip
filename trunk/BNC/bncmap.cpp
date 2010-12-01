@@ -49,24 +49,21 @@ bncMap::~bncMap(){
 // ------------
 void bncMap::slotReadMap()
 {   
-  QString mapFile = "worldmap.dat";
-  QFile world(mapFile);
+  QFile world(":worldmap.dat");
   float fi, la;
 
-  if( world.open(QIODevice::ReadOnly) ){
+  world.open(QIODevice::ReadOnly | QIODevice::Text);
      
-    QTextStream in(&world);
-    in.setRealNumberNotation(QTextStream::FixedNotation);
+  QTextStream in(&world);
+  in.setRealNumberNotation(QTextStream::FixedNotation);
 
-    while( ! in.atEnd() ){
+  while( ! in.atEnd() ){
 
-      in >> la >> fi;
-      _worldMap << QPointF( la, -fi );
-	 
-    }
-  }else{
-    std::cerr << QString("World map cannot be found : %1\n").arg(mapFile).toAscii().data();
+    in >> la >> fi;
+    _worldMap << QPointF( la, -fi );
+         
   }
+
   world.close();
 }
 
@@ -81,25 +78,25 @@ void bncMap::slotCreateMap()
   for( int i=0; i < _worldMap.size(); i++ ){
     if( _worldMap.at(i).x() == 0.0 and _worldMap.at(i).y() == 0.0 ){
       if( i > 0 ){
-	 endIdx = i-1;
+         endIdx = i-1;
         while( begIdx < endIdx ){
 
- 	  int l1 = 0;
-	  int l2 = 0;
+          int l1 = 0;
+          int l2 = 0;
 
           float la1 = _worldMap.at(begIdx+0).x() + _LaOff;
           float fi1 = _worldMap.at(begIdx+0).y();
           float la2 = _worldMap.at(begIdx+1).x() + _LaOff;
           float fi2 = _worldMap.at(begIdx+1).y();
           begIdx++;
-	    
-	  while( la1 <    0 ){ la1 += 360; l1++; }
-	  while( la1 >= 360 ){ la1 -= 360; l1--; }
-	  while( la2 <    0 ){ la2 += 360; l2++; }
-	  while( la2 >= 360 ){ la2 -= 360; l2--; }
+            
+          while( la1 <    0 ){ la1 += 360; l1++; }
+          while( la1 >= 360 ){ la1 -= 360; l1--; }
+          while( la2 <    0 ){ la2 += 360; l2++; }
+          while( la2 >= 360 ){ la2 -= 360; l2--; }
 
-	  if( l1 != 0 and l2 == 0 ){ continue; } // break this line
-	  if( l2 != 0 and l1 == 0 ){ continue; } // break this line
+          if( l1 != 0 and l2 == 0 ){ continue; } // break this line
+          if( l2 != 0 and l1 == 0 ){ continue; } // break this line
 
           _mapScen->addLine(la1*_scale, fi1*_scale, la2*_scale, fi2*_scale, QPen(QBrush(Qt::black),1));
         }
