@@ -4,6 +4,7 @@
     <file>bncflowchart.png</file>
     <file>bnchelp.html</file>
     <file>bncabout.html</file>
+    <file>worldmap.dat</file>
 </qresource>
 <qresource prefix="/bnchelp">
     <file alias="screenshot01.png">IMG/screenshot01.png</file>
