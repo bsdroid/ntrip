@@ -23,8 +23,8 @@ class bncMap : public QDialog
    
  private:
    
-   int             _scale;
-   float           _LaOff;
+   double          _scale;
+   double          _LaOff;
 
    QGraphicsView*  _mapView;
    QGraphicsScene* _mapScen;

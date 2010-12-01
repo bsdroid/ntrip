@@ -302,7 +302,7 @@ void bncTableDlg::slotGetTable() {
 void bncTableDlg::slotShowMap() {
 
   bncMap* winMap = new bncMap(this);
-  winMap->setGeometry( x(), y()+height()*1.2, 860, 400 );
+  winMap->setGeometry( x(), int(y()+height()*1.2), 860, 400 );
 
   connect(this, SIGNAL(newPoint(QPointF, QString, QPen)),
 	  winMap, SLOT(slotNewPoint(QPointF, QString, QPen)));
