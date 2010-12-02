@@ -1203,8 +1203,7 @@ Enter the lenght of a startup period in seconds for which you want to fix the PP
 <p>
 This so-called Quick-Start option allows the PPP solutions to rapidly converge after startup. It requires that the antenna remains unmoved on the know position throughout the defined period. A value of 120 (default) is likely to be an appropriate choice for 'Quick-Start'
 <p>
-<p>
-You may need to create your own reference coordinate through running BNC for an hour in normal mode before applying the Quick-Start option.
+You may need to create your own reference coordinate through running BNC for an hour in normal mode before applying the Quick-Start option. Don't forget to introduce a realistic sigma 'XYZ Ini' according to the coordinate's precision.
 </p>
 
 <p><img src=":bnchelp/screenshot17.png"/></p>
@@ -1230,12 +1229,12 @@ You may like to introduce specific estimates for sigmas of parameters to be esti
 
 <p><a name="pppsigxyzi"><h4>3.11.4.1 XYZ Init - mandatory</h4></p>
 <p>
-Enter a sigma in meters for the initial XYZ coordinate componentes. A value of 100.0 may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting from a station with a known XYZ position.
+Enter a sigma in meters for the initial XYZ coordinate componentes. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode.
 </p>
 
 <p><a name="pppsigxyzn"><h4>3.11.4.2 XYZ White Noise - mandatory</h4></p>
 <p>
-Enter a sigma in meters for the 'White Noise' of estimated XYZ coordinate components. A value of 100.0 may be appropriate considering the potential movement of a rover position.
+Enter a sigma in meters for the 'White Noise' of estimated XYZ coordinate components. A value of 100.0 (default) may be appropriate considering the potential movement of a rover.
 </p>
 
 <p><a name="pppsigtrpi"><h4>3.11.4.3 Tropo Init - mandatory if 'Estimate tropo' is set</h4></p>
