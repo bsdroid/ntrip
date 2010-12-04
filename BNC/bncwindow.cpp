@@ -734,11 +734,11 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Mountpoint"),             0, 0);
   pppLayout->addWidget(_pppMountLineEdit,                    0, 1);
   pppLayout->addWidget(_pppSPPComboBox,                      0, 2);
-  pppLayout->addWidget(new QLabel("            X "),         0, 3, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("           X  "),         0, 3, Qt::AlignRight);
   pppLayout->addWidget(_pppRefCrdXLineEdit,                  0, 4);
-  pppLayout->addWidget(new QLabel("            Y "),         0, 5, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("           Y  "),         0, 5, Qt::AlignRight);
   pppLayout->addWidget(_pppRefCrdYLineEdit,                  0, 6);
-  pppLayout->addWidget(new QLabel("            Z "),         0, 7, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("           Z  "),         0, 7, Qt::AlignRight);
   pppLayout->addWidget(_pppRefCrdZLineEdit,                  0, 8);
   pppLayout->addWidget(new QLabel("Options"),                1, 0, 1, 5);
   pppLayout->addWidget(_pppUsePhaseCheckBox,                 1, 1, Qt::AlignRight);
@@ -767,7 +767,7 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Tropo Init"),             3, 6);
   pppLayout->addWidget(_pppSigTrpP,                          3, 7);
   pppLayout->addWidget(new QLabel("Tropo White Noise"),      3, 8);
-  pppLayout->addWidget(new QLabel("NMEA file (full path)"),  4, 0); 
+  pppLayout->addWidget(new QLabel("NMEA file (full path)  "),4, 0); 
   pppLayout->addWidget(_pppNMEALineEdit,                     4, 1, 1, 4);
   pppLayout->addWidget(new QLabel("Port"),                   4, 5, Qt::AlignRight);
   pppLayout->addWidget(_pppNMEAPortLineEdit,                 4, 6);
