@@ -126,11 +126,11 @@ bncPPPclient::~bncPPPclient() {
 void bncPPPclient::putNewObs(const t_obs& obs) {
   QMutexLocker locker(&_mutex);
 
-  if      (obs.satSys == 'R' && !_useGlonass) {
-    return;
+  if      (obs.satSys == 'R') {
+    if (!_useGlonass) return;
   }
-  else if (obs.satSys == 'E' && !_useGalileo) {
-    return;
+  else if (obs.satSys == 'E') {
+    if (!_useGalileo) return;
   }
   else if (obs.satSys != 'G') {
     return;
@@ -140,14 +140,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
 
   // Satellite Number
   // ----------------
-  if      (obs.satSys == 'G') {
-    QString prn = QString("G%1").arg(obs.satNum, 2, 10, QChar('0'));
-    satData->prn = prn;
-  }
-  else if (obs.satSys == 'R') {
-    QString prn = QString("R%1").arg(obs.satNum, 2, 10, QChar('0'));
-    satData->prn = prn;
-  }
+  satData->prn = QString("%1%2").arg(obs.satSys).arg(obs.satNum,2,10,QChar('0'));
 
   // Check Slips
   // -----------
