@@ -37,7 +37,7 @@ class t_satData;
 
 class bncParam {
  public:
-  enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK, TROPO, AMB_L3};
+  enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK, TROPO, AMB_L3, GALILEO_OFFSET};
   bncParam(parType typeIn, int indexIn, const QString& prn);
   ~bncParam();
   double partial(t_satData* satData, bool phase);
@@ -67,6 +67,15 @@ class bncModel : public QObject {
     for (int ii = 0; ii < _params.size(); ++ii) {
       bncParam* pp = _params[ii];
       if (pp->type == bncParam::TROPO) {
+        return pp->xx;
+      }
+    }
+    return 0.0;
+  }
+  double Galileo_offset() const {
+    for (int ii = 0; ii < _params.size(); ++ii) {
+      bncParam* pp = _params[ii];
+      if (pp->type == bncParam::GALILEO_OFFSET) {
         return pp->xx;
       }
     }
@@ -129,6 +138,8 @@ class bncModel : public QObject {
   double                _sigCrdP;
   double                _sigTrp0;
   double                _sigTrpP;
+  double                _sigGalileoOffset0;
+  double                _sigGalileoOffsetP;
   double                _sigL3;
   double                _sigP3;
   double                _sigAmb0;

@@ -63,9 +63,6 @@ const double   MAXRES_PHASE_GLO = 0.05;
 const double   MAXRES_CODE_GAL  = 9999.0;
 const double   MAXRES_PHASE_GAL = 9999.10;
 
-const double   _sigP3_gal = 9999.0;
-const double   _sigL3_gal = 0.10;
-
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncParam::bncParam(bncParam::parType typeIn, int indexIn, 
@@ -109,6 +106,17 @@ double bncParam::partial(t_satData* satData, bool phase) {
   // -----------
   else if (type == TROPO) {
     return 1.0 / sin(satData->eleSat); 
+  }
+
+  // Galileo Offset
+  // --------------
+  else if (type == GALILEO_OFFSET) {
+    if (satData->prn[0] == 'E') {
+      return 1.0;
+    }
+    else {
+      return 0.0;
+    }
   }
 
   // Ambiguities
@@ -164,8 +172,10 @@ bncModel::bncModel(QByteArray staID) {
   if (!settings.value("pppSigTrpP").toString().isEmpty()) {
     _sigTrpP = settings.value("pppSigTrpP").toDouble();
   }
-  _sigClk0 = 1000.0;
-  _sigAmb0 = 1000.0;
+  _sigClk0           = 1000.0;
+  _sigAmb0           = 1000.0;
+  _sigGalileoOffset0 = 1000.0;
+  _sigGalileoOffsetP = 1000.0;
 
   // Quick-Start Mode
   // ----------------
@@ -209,7 +219,10 @@ bncModel::bncModel(QByteArray staID) {
   _params.push_back(new bncParam(bncParam::CRD_Z,  ++nextPar, ""));
   _params.push_back(new bncParam(bncParam::RECCLK, ++nextPar, ""));
   if (_estTropo) {
-    _params.push_back(new bncParam(bncParam::TROPO,       ++nextPar, ""));
+    _params.push_back(new bncParam(bncParam::TROPO, ++nextPar, ""));
+  }
+  if (_useGalileo) {
+    _params.push_back(new bncParam(bncParam::GALILEO_OFFSET, ++nextPar, ""));
   }
 
   unsigned nPar = _params.size();
@@ -228,6 +241,9 @@ bncModel::bncModel(QByteArray staID) {
     }
     else if (pp->type == bncParam::TROPO) {
       _QQ(iPar,iPar) = _sigTrp0 * _sigTrp0; 
+    }
+    else if (pp->type == bncParam::GALILEO_OFFSET) {
+      _QQ(iPar,iPar) = _sigGalileoOffset0 * _sigGalileoOffset0; 
     }
   }
 
@@ -521,6 +537,12 @@ void bncModel::predict(t_epoData* epoData) {
     else if (pp->type == bncParam::TROPO) {
       _QQ(iPar,iPar) += _sigTrpP * _sigTrpP;
     }
+
+    // Galileo Offset
+    // --------------
+    else if (pp->type == bncParam::GALILEO_OFFSET) {
+      _QQ(iPar,iPar) += _sigGalileoOffsetP * _sigGalileoOffsetP;
+    }
   }
 
   // Add New Ambiguities if necessary
@@ -762,7 +784,7 @@ t_irc bncModel::update(t_epoData* epoData) {
       t_satData* satData = itGal.value();
     
       ll(iObs)      = satData->P3 - cmpValue(satData, false);
-      PP(iObs,iObs) = 1.0 / (_sigP3_gal * _sigP3_gal);
+      PP(iObs,iObs) = 1.0 / (_sigP3 * _sigP3);
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
       }
@@ -770,7 +792,7 @@ t_irc bncModel::update(t_epoData* epoData) {
       if (_usePhase) {
         ++iObs;
         ll(iObs)      = satData->L3 - cmpValue(satData, true);
-        PP(iObs,iObs) = 1.0 / (_sigL3_gal * _sigL3_gal);
+        PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3);
         for (int iPar = 1; iPar <= _params.size(); iPar++) {
           if (_params[iPar-1]->type == bncParam::AMB_L3 &&
               _params[iPar-1]->prn  == prn) {
@@ -831,9 +853,9 @@ t_irc bncModel::update(t_epoData* epoData) {
       strA << "residuals glo   " << setw(8) << setprecision(3) << vv_glo.t();
     }
     if (_useGalileo) {
-      strA   << "res Galileo P " << setw(8) << setprecision(3) << vv_gal_code.t(); 
+      strA << "Galileo code    " << setw(8) << setprecision(3) << vv_gal_code.t(); 
       if (_usePhase) {
-        strA << "res Galileo C " << setw(8) << setprecision(3) << vv_gal_phase.t();
+        strA << "Galileo phase   " << setw(8) << setprecision(3) << vv_gal_phase.t();
       }
     }
     _log += strA.str().c_str();
@@ -874,6 +896,11 @@ t_irc bncModel::update(t_epoData* epoData) {
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
       newPos->xnt[6] = aprTrp + par->xx;
+    }
+    else if (par->type == bncParam::GALILEO_OFFSET) {
+      strB << "\n    offset  = " << setw(6) << setprecision(3) << par->xx 
+           << " +- " << setw(6) << setprecision(3) 
+           << sqrt(_QQ(par->index,par->index));
     }
   }
   strB << '\n';
