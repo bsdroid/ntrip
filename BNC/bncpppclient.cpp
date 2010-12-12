@@ -622,6 +622,19 @@ void bncPPPclient::processEpoch() {
     }
   }
 
+  QMutableMapIterator<QString, t_satData*> iGal(_epoData->satDataGal);
+  while (iGal.hasNext()) {
+    iGal.next();
+    QString    prn     = iGal.key();
+    t_satData* satData = iGal.value();
+
+    if (cmpToT(satData) != success) {
+      delete satData;
+      iGal.remove();
+      continue;
+    }
+  }
+
   // Filter Solution
   // ---------------
   if (_model->update(_epoData) == success) {
