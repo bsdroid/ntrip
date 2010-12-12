@@ -597,9 +597,9 @@ void bncApp::printGalileoEph(galileoephemeris* ep, bool printFile) {
   QString    line;
   QByteArray allLines;
 
-  QByteArray fmt4 = "     %18.11e %18.11e %18.11e %18.11e\n";
-  QByteArray fmt3 = "     %18.11e %18.11e %18.11e\n";
-  QByteArray fmt1 = "     %18.11e\n";
+  const QByteArray fmt4 = "     %18.11e %18.11e %18.11e %18.11e\n";
+  const QByteArray fmt3 = "     %18.11e %18.11e %18.11e\n";
+  const QByteArray fmt1 = "     %18.11e\n";
 
   line.sprintf(fmt4.data(), (double)ep->IODnav, ep->Crs, ep->Delta_n, ep->M0);
   allLines += line;
@@ -619,7 +619,7 @@ void bncApp::printGalileoEph(galileoephemeris* ep, bool printFile) {
 
   double health   = 0.0;          // TODO
   double BGD_1_5B = ep->BGD_1_5A; // TODO
-  line.sprintf(fmt4.data(), ep->SISA, health, ep->BGD_1_5A, BGD_1_5B);
+  line.sprintf(fmt4.data(), (double) ep->SISA, health, ep->BGD_1_5A, BGD_1_5B);
   allLines += line;
 
   double TOW = ep->TOC;           // TODO
