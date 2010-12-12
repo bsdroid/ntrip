@@ -60,8 +60,8 @@ const double   MINELE_GAL       = 10.0 * M_PI / 180.0;
 const double   MAXRES_CODE_GPS  = 10.0;
 const double   MAXRES_PHASE_GPS = 0.10;
 const double   MAXRES_PHASE_GLO = 0.05;
-const double   MAXRES_CODE_GAL  = 9999.0;
-const double   MAXRES_PHASE_GAL = 9999.10;
+const double   MAXRES_CODE_GAL  = 10.0;
+const double   MAXRES_PHASE_GAL = 0.10;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -175,7 +175,7 @@ bncModel::bncModel(QByteArray staID) {
   _sigClk0           = 1000.0;
   _sigAmb0           = 1000.0;
   _sigGalileoOffset0 = 1000.0;
-  _sigGalileoOffsetP = 1000.0;
+  _sigGalileoOffsetP =    0.0;
 
   // Quick-Start Mode
   // ----------------
