@@ -270,12 +270,6 @@ void t_bns::slotNewEph(t_eph* ep, int nBytes) {
       _casterEph->write((char*) Array, size);
       emit(newOutEphBytes(size));
     }
-    ////    QByteArray buffer = "New Ephemeris " + ep->prn().toAscii() + "\n";
-    ////    _casterEph->write(buffer.data(), buffer.length());
-    ////    int len = buffer.length();
-    ////    if (len > 0) {
-    ////      emit(newOutEphBytes(len));
-    ////    }
   }
 
   t_ephPair* pair;
@@ -418,154 +412,150 @@ void t_bns::readRecords() {
     for (int ic = 0; ic < _caster.size(); ic++) {
       _caster.at(ic)->open();
 
-      for (int oldEph = 0; oldEph <= 0; oldEph++) { // TODO: handle old ephemeris
+      struct ClockOrbit co;
+      memset(&co, 0, sizeof(co));
+      co.GPSEpochTime      = (int)_GPSweeks;
+      co.GLONASSEpochTime  = (int)fmod(_GPSweeks, 86400.0) 
+                           + 3 * 3600 - gnumleap(_year, _month, _day);
+      co.ClockDataSupplied = 1;
+      co.OrbitDataSupplied = 1;
+      co.SatRefDatum       = DATUM_ITRF;
       
-        struct ClockOrbit co;
-        memset(&co, 0, sizeof(co));
-        co.GPSEpochTime      = (int)_GPSweeks;
-        co.GLONASSEpochTime  = (int)fmod(_GPSweeks, 86400.0) 
+      struct Bias bias;
+      memset(&bias, 0, sizeof(bias));
+      bias.GPSEpochTime      = (int)_GPSweeks;
+      bias.GLONASSEpochTime  = (int)fmod(_GPSweeks, 86400.0) 
                              + 3 * 3600 - gnumleap(_year, _month, _day);
-        co.ClockDataSupplied = 1;
-        co.OrbitDataSupplied = 1;
-        co.SatRefDatum       = DATUM_ITRF;
+
+      for (int ii = 0; ii < lines.size(); ii++) {
+
+        QString      prn;
+        ColumnVector xx(14); xx = 0.0;
+        t_ephPair*   pair = 0;
       
-        struct Bias bias;
-        memset(&bias, 0, sizeof(bias));
-        bias.GPSEpochTime      = (int)_GPSweeks;
-        bias.GLONASSEpochTime  = (int)fmod(_GPSweeks, 86400.0) 
-                               + 3 * 3600 - gnumleap(_year, _month, _day);
+        if (ic == 0) {
+          QTextStream in(lines[ii].toAscii());
+          in >> prn;
+          prns << prn;
+          if ( _ephList.contains(prn) ) {
+            in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) 
+               >> xx(6) >> xx(7) >> xx(8) >> xx(9) >> xx(10)
+               >> xx(11) >> xx(12) >> xx(13) >> xx(14);
+            xx(1) *= 1e3;          // x-crd
+            xx(2) *= 1e3;          // y-crd
+            xx(3) *= 1e3;          // z-crd
+            xx(4) *= 1e-6;         // clk
+            xx(5) *= 1e-6;         // rel. corr.
+                                   // xx(6), xx(7), xx(8) ... PhaseCent - CoM
+                                   // xx(9)  ... P1-C1 DCB in meters
+                                   // xx(10) ... P1-P2 DCB in meters
+                                   // xx(11) ... dT
+            xx(12) *= 1e3;         // x-crd at time + dT
+            xx(13) *= 1e3;         // y-crd at time + dT
+            xx(14) *= 1e3;         // z-crd at time + dT
 
-        for (int ii = 0; ii < lines.size(); ii++) {
-
-          QString      prn;
-          ColumnVector xx(14); xx = 0.0;
-          t_eph*       ep = 0;
-      
-          if (oldEph == 0 && ic == 0) {
-            QTextStream in(lines[ii].toAscii());
-            in >> prn;
-            prns << prn;
-            if ( _ephList.contains(prn) ) {
-              in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) 
-                 >> xx(6) >> xx(7) >> xx(8) >> xx(9) >> xx(10)
-                 >> xx(11) >> xx(12) >> xx(13) >> xx(14);
-              xx(1) *= 1e3;          // x-crd
-              xx(2) *= 1e3;          // y-crd
-              xx(3) *= 1e3;          // z-crd
-              xx(4) *= 1e-6;         // clk
-              xx(5) *= 1e-6;         // rel. corr.
-                                     // xx(6), xx(7), xx(8) ... PhaseCent - CoM
-                                     // xx(9)  ... P1-C1 DCB in meters
-                                     // xx(10) ... P1-P2 DCB in meters
-                                     // xx(11) ... dT
-              xx(12) *= 1e3;         // x-crd at time + dT
-              xx(13) *= 1e3;         // y-crd at time + dT
-              xx(14) *= 1e3;         // z-crd at time + dT
-
-              t_ephPair* pair = _ephList[prn];
-              pair->xx = xx;
-              ep = pair->eph;
-            }
-          }
-          else {
-            prn = prns[ii];
-            if ( _ephList.contains(prn) ) {
-              t_ephPair* pair = _ephList[prn];
-              prn = pair->eph->prn();
-              xx  = pair->xx;
-              if (oldEph) {
-                ep  = pair->oldEph;
-              }
-              else {
-                ep  = pair->eph;
-              }
-            }
-          }
-          if (ep != 0) {
-            struct ClockOrbit::SatData* sd = 0;
-            if      (prn[0] == 'G') {
-              sd = co.Sat + co.NumberOfGPSSat;
-              ++co.NumberOfGPSSat;
-            }
-            else if (prn[0] == 'R') {
-              sd = co.Sat + CLOCKORBIT_NUMGPS + co.NumberOfGLONASSSat;
-              ++co.NumberOfGLONASSSat;
-            }
-            if (sd) {
-              QString outLine;
-              processSatellite(oldEph, ic, _caster.at(ic)->crdTrafo(), 
-                               _caster.at(ic)->CoM(), ep, 
-                               _GPSweek, _GPSweeks, prn, xx, sd, outLine);
-              _caster.at(ic)->printAscii(outLine);
-            }
-
-            struct Bias::BiasSat* biasSat = 0;
-            if      (prn[0] == 'G') {
-              biasSat = bias.Sat + bias.NumberOfGPSSat;
-              ++bias.NumberOfGPSSat;
-            }
-            else if (prn[0] == 'R') {
-              biasSat = bias.Sat + CLOCKORBIT_NUMGPS + bias.NumberOfGLONASSSat;
-              ++bias.NumberOfGLONASSSat;
-            }
-
-            // Coefficient of Ionosphere-Free LC
-            // ---------------------------------
-            const static double a_L1_GPS =  2.54572778;
-            const static double a_L2_GPS = -1.54572778;
-            const static double a_L1_Glo =  2.53125000;
-            const static double a_L2_Glo = -1.53125000;
-
-            if (biasSat) {
-              biasSat->ID = prn.mid(1).toInt();
-              biasSat->NumberOfCodeBiases = 3;
-              if      (prn[0] == 'G') {
-                biasSat->Biases[0].Type = CODETYPEGPS_L1_Z;
-                biasSat->Biases[0].Bias = - a_L2_GPS * xx(10);
-                biasSat->Biases[1].Type = CODETYPEGPS_L1_CA;
-                biasSat->Biases[1].Bias = - a_L2_GPS * xx(10) + xx(9);
-                biasSat->Biases[2].Type = CODETYPEGPS_L2_Z;
-                biasSat->Biases[2].Bias = a_L1_GPS * xx(10);
-              }
-              else if (prn[0] == 'R') {
-                biasSat->Biases[0].Type = CODETYPEGLONASS_L1_P;
-                biasSat->Biases[0].Bias = - a_L2_Glo * xx(10);
-                biasSat->Biases[1].Type = CODETYPEGLONASS_L1_CA;
-                biasSat->Biases[1].Bias = - a_L2_Glo * xx(10) + xx(9);
-                biasSat->Biases[2].Type = CODETYPEGLONASS_L2_P;
-                biasSat->Biases[2].Bias = a_L1_Glo * xx(10);
-              }
-            }
+            pair     = _ephList[prn];
+            pair->xx = xx;
           }
         }
-      
-        if ( _caster.at(ic)->usedSocket() && 
-             (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
-          char obuffer[CLOCKORBIT_BUFFERSIZE];
-
-          int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
-          if (len > 0) {
-            if (_caster.at(ic)->ic() == 1)  { emit(newOutBytes1(len));}
-            if (_caster.at(ic)->ic() == 2)  { emit(newOutBytes2(len));}
-            if (_caster.at(ic)->ic() == 3)  { emit(newOutBytes3(len));}
-            if (_caster.at(ic)->ic() == 4)  { emit(newOutBytes4(len));}
-            if (_caster.at(ic)->ic() == 5)  { emit(newOutBytes5(len));}
-            if (_caster.at(ic)->ic() == 6)  { emit(newOutBytes6(len));}
-            if (_caster.at(ic)->ic() == 7)  { emit(newOutBytes7(len));}
-            if (_caster.at(ic)->ic() == 8)  { emit(newOutBytes8(len));}
-            if (_caster.at(ic)->ic() == 9)  { emit(newOutBytes9(len));}
-            if (_caster.at(ic)->ic() == 10) { emit(newOutBytes10(len));}
-            _caster.at(ic)->write(obuffer, len);
+        else {
+          prn = prns[ii];
+          if ( _ephList.contains(prn) ) {
+            pair = _ephList[prn];
+            xx   = pair->xx;
           }
         }
 
-        if ( _caster.at(ic)->usedSocket() && 
-             (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) ) {
-          char obuffer[CLOCKORBIT_BUFFERSIZE];
-          int len = MakeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
-          if (len > 0) {
-            _caster.at(ic)->write(obuffer, len);
+        t_eph* ep = 0;
+        if (pair) {
+          ep = pair->eph;
+          //// ep = pair->oldEph;
+        }
+
+        if (ep != 0) {
+          struct ClockOrbit::SatData* sd = 0;
+          if      (prn[0] == 'G') {
+            sd = co.Sat + co.NumberOfGPSSat;
+            ++co.NumberOfGPSSat;
           }
+          else if (prn[0] == 'R') {
+            sd = co.Sat + CLOCKORBIT_NUMGPS + co.NumberOfGLONASSSat;
+            ++co.NumberOfGLONASSSat;
+          }
+          if (sd) {
+            QString outLine;
+            processSatellite(ic, _caster.at(ic)->crdTrafo(), 
+                             _caster.at(ic)->CoM(), ep, 
+                             _GPSweek, _GPSweeks, prn, xx, sd, outLine);
+            _caster.at(ic)->printAscii(outLine);
+          }
+
+          struct Bias::BiasSat* biasSat = 0;
+          if      (prn[0] == 'G') {
+            biasSat = bias.Sat + bias.NumberOfGPSSat;
+            ++bias.NumberOfGPSSat;
+          }
+          else if (prn[0] == 'R') {
+            biasSat = bias.Sat + CLOCKORBIT_NUMGPS + bias.NumberOfGLONASSSat;
+            ++bias.NumberOfGLONASSSat;
+          }
+
+          // Coefficient of Ionosphere-Free LC
+          // ---------------------------------
+          const static double a_L1_GPS =  2.54572778;
+          const static double a_L2_GPS = -1.54572778;
+          const static double a_L1_Glo =  2.53125000;
+          const static double a_L2_Glo = -1.53125000;
+
+          if (biasSat) {
+            biasSat->ID = prn.mid(1).toInt();
+            biasSat->NumberOfCodeBiases = 3;
+            if      (prn[0] == 'G') {
+              biasSat->Biases[0].Type = CODETYPEGPS_L1_Z;
+              biasSat->Biases[0].Bias = - a_L2_GPS * xx(10);
+              biasSat->Biases[1].Type = CODETYPEGPS_L1_CA;
+              biasSat->Biases[1].Bias = - a_L2_GPS * xx(10) + xx(9);
+              biasSat->Biases[2].Type = CODETYPEGPS_L2_Z;
+              biasSat->Biases[2].Bias = a_L1_GPS * xx(10);
+            }
+            else if (prn[0] == 'R') {
+              biasSat->Biases[0].Type = CODETYPEGLONASS_L1_P;
+              biasSat->Biases[0].Bias = - a_L2_Glo * xx(10);
+              biasSat->Biases[1].Type = CODETYPEGLONASS_L1_CA;
+              biasSat->Biases[1].Bias = - a_L2_Glo * xx(10) + xx(9);
+              biasSat->Biases[2].Type = CODETYPEGLONASS_L2_P;
+              biasSat->Biases[2].Bias = a_L1_Glo * xx(10);
+            }
+          }
+        }
+      }
+      
+      if ( _caster.at(ic)->usedSocket() && 
+           (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
+        char obuffer[CLOCKORBIT_BUFFERSIZE];
+
+        int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+        if (len > 0) {
+          if (_caster.at(ic)->ic() == 1)  { emit(newOutBytes1(len));}
+          if (_caster.at(ic)->ic() == 2)  { emit(newOutBytes2(len));}
+          if (_caster.at(ic)->ic() == 3)  { emit(newOutBytes3(len));}
+          if (_caster.at(ic)->ic() == 4)  { emit(newOutBytes4(len));}
+          if (_caster.at(ic)->ic() == 5)  { emit(newOutBytes5(len));}
+          if (_caster.at(ic)->ic() == 6)  { emit(newOutBytes6(len));}
+          if (_caster.at(ic)->ic() == 7)  { emit(newOutBytes7(len));}
+          if (_caster.at(ic)->ic() == 8)  { emit(newOutBytes8(len));}
+          if (_caster.at(ic)->ic() == 9)  { emit(newOutBytes9(len));}
+          if (_caster.at(ic)->ic() == 10) { emit(newOutBytes10(len));}
+          _caster.at(ic)->write(obuffer, len);
+        }
+      }
+
+      if ( _caster.at(ic)->usedSocket() && 
+           (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) ) {
+        char obuffer[CLOCKORBIT_BUFFERSIZE];
+        int len = MakeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+        if (len > 0) {
+          _caster.at(ic)->write(obuffer, len);
         }
       }
     }
@@ -574,7 +564,7 @@ void t_bns::readRecords() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_bns::processSatellite(int oldEph, int iCaster, const QString trafo, 
+void t_bns::processSatellite(int iCaster, const QString trafo, 
                              bool CoM, t_eph* ep, int GPSweek, 
                              double GPSweeks, const QString& prn, 
                              const ColumnVector& xx, 
@@ -647,12 +637,11 @@ void t_bns::processSatellite(int oldEph, int iCaster, const QString trafo,
     sd->Orbit.DotDeltaCrossTrack = (rsw2(3) - rsw(3)) / xx(11);
   }
 
-  char oldCh = (oldEph ? '!' : ' ');
-  outLine.sprintf("%c %d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n", 
-                  oldCh, GPSweek, GPSweeks, ep->prn().toAscii().data(),
+  outLine.sprintf("%d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n", 
+                  GPSweek, GPSweeks, ep->prn().toAscii().data(),
                   ep->IOD(), dClk, rsw(1), rsw(2), rsw(3));
 
-  if (!oldEph && iCaster == 0) {
+  if (iCaster == 0) {
     if (_rnx) {
       _rnx->write(GPSweek, GPSweeks, prn, xx);
     }
