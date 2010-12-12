@@ -413,7 +413,12 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
     wind = windUp(satData->prn, satData->xx, xRec) * satData->lambda3;
   }
 
-  return satData->rho + clk() - satData->clk + tropDelay + wind;
+  double offset = 0.0;
+  if (satData->prn[0] == 'E') {
+    offset = Galileo_offset();
+  }
+
+  return satData->rho + clk() + offset - satData->clk + tropDelay + wind;
 }
 
 // Tropospheric Model (Saastamoinen)
