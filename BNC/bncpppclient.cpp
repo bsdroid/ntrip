@@ -68,6 +68,8 @@ bncPPPclient::bncPPPclient(QByteArray staID) {
     _useGlonass = false;
   }
 
+  _useGalileo = true; // TODO
+
   if (settings.value("pppSPP").toString() == "PPP") {
     _pppMode = true;
   }
@@ -83,6 +85,9 @@ bncPPPclient::bncPPPclient(QByteArray staID) {
 
   connect(((bncApp*)qApp), SIGNAL(newEphGlonass(glonassephemeris)),
           this, SLOT(slotNewEphGlonass(glonassephemeris)));
+
+  connect(((bncApp*)qApp), SIGNAL(newEphGalileo(galileoephemeris)),
+          this, SLOT(slotNewEphGalileo(galileoephemeris)));
 
   connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
           this, SLOT(slotNewCorrections(QList<QString>)));
@@ -121,7 +126,13 @@ bncPPPclient::~bncPPPclient() {
 void bncPPPclient::putNewObs(const t_obs& obs) {
   QMutexLocker locker(&_mutex);
 
-  if (obs.satSys != 'G' && !_useGlonass) {
+  if      (obs.satSys == 'R' && !_useGlonass) {
+    return;
+  }
+  else if (obs.satSys == 'E' && !_useGalileo) {
+    return;
+  }
+  else if (obs.satSys != 'G') {
     return;
   }
 
@@ -553,3 +564,28 @@ void bncPPPclient::processEpoch() {
   }
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncPPPclient::slotNewEphGalileo(galileoephemeris galeph) {
+  QMutexLocker locker(&_mutex);
+
+  QString prn = QString("E%1").arg(galeph.satellite, 2, 10, QChar('0'));
+
+  if (_eph.contains(prn)) {
+    t_ephGal* eLast = static_cast<t_ephGal*>(_eph.value(prn)->last);
+    if ( (eLast->GPSweek() <  galeph.Week) || 
+         (eLast->GPSweek() == galeph.Week &&  
+          eLast->TOC()     <  galeph.TOC) ) {
+      delete static_cast<t_ephGal*>(_eph.value(prn)->prev);
+      _eph.value(prn)->prev = _eph.value(prn)->last;
+      _eph.value(prn)->last = new t_ephGal();
+      static_cast<t_ephGal*>(_eph.value(prn)->last)->set(&galeph);
+    }
+  }
+  else {
+    t_ephGal* eLast = new t_ephGal();
+    eLast->set(&galeph);
+    _eph.insert(prn, new t_ephPair());
+    _eph[prn]->last = eLast;
+  }
+}

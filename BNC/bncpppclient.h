@@ -124,6 +124,7 @@ class bncPPPclient : public QObject {
  public slots:
   void slotNewEphGPS(gpsephemeris gpseph);
   void slotNewEphGlonass(glonassephemeris gloeph);
+  void slotNewEphGalileo(galileoephemeris galeph);
   void slotNewCorrections(QList<QString> corrList);
 
  signals:
@@ -172,6 +173,7 @@ class bncPPPclient : public QObject {
   t_epoData*              _epoData;
   bncModel*               _model;
   bool                    _useGlonass;
+  bool                    _useGalileo;
   bool                    _pppMode;
   QMap<QString, slipInfo> _slips;
 };
