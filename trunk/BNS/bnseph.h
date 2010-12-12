@@ -16,6 +16,10 @@ class t_eph {
 
   bool    isNewerThan(const t_eph* eph) const;
   QString prn() const {return _prn;}
+  void    setRecepDateTime(const QDateTime& dateTime) {
+    _receptDateTime = dateTime;
+  }
+  const QDateTime& receptDateTime() const {return _receptDateTime;}
 
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const = 0;
@@ -24,9 +28,10 @@ class t_eph {
   virtual int  RTCM3(unsigned char *) = 0;
 
  protected:  
-  QString _prn;
-  int     _GPSweek;
-  double  _GPSweeks;
+  QString   _prn;
+  int       _GPSweek;
+  double    _GPSweeks;
+  QDateTime _receptDateTime;
 };
 
 class t_ephGlo : public t_eph {

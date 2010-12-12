@@ -466,10 +466,15 @@ void t_bns::readRecords() {
           }
         }
 
+        // Use old ephemeris if the new one is too recent
+        // ----------------------------------------------
         t_eph* ep = 0;
         if (pair) {
           ep = pair->eph;
-          //// ep = pair->oldEph;
+          if (pair->oldEph && ep && 
+              ep->receptDateTime().secsTo(QDateTime::currentDateTime()) < 60) {
+            ep = pair->oldEph;
+          }
         }
 
         if (ep != 0) {
