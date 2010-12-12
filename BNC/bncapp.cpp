@@ -262,9 +262,15 @@ void bncApp::slotNewGalileoEph(galileoephemeris* galileoeph) {
 
   printEphHeader();
 
-  galileoephemeris** ee = &_galileoEph[galileoeph->satellite-1];
+  int galIndex = galileoeph->satellite - 51;
+  if (galIndex > PRN_GALILEO_END - PRN_GALILEO_START) {
+    emit( newMessage("Wrong Galileo Satellite Number", true) );
+    exit(1);
+  }
 
-  if ( *ee == 0                         || 
+  galileoephemeris** ee = &_galileoEph[galIndex];
+
+  if ( *ee == 0                       || 
        galileoeph->Week > (*ee)->Week ||
        (galileoeph->Week == (*ee)->Week && galileoeph->TOC > (*ee)->TOC) ) {
     delete *ee;
