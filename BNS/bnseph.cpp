@@ -176,6 +176,7 @@ void t_bnseph::readEph() {
   }
    
   if (eph->read(lines) == success) {
+    eph->setRecepDateTime(QDateTime::currentDateTime());
     emit(newEph(eph, nBytes));
   } 
   else {
