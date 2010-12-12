@@ -372,7 +372,13 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
 ////////////////////////////////////////////////////////////////////////////
 double bncModel::delay_saast(double Ele) {
 
-  double height = _ellBanc(3);
+  double xyz[3]; 
+  xyz[0] = x();
+  xyz[1] = y();
+  xyz[2] = z();
+  double ell[3]; 
+  xyz2ell(xyz, ell);
+  double height = ell[2];
 
   double pp =  1013.25 * pow(1.0 - 2.26e-5 * height, 5.225);
   double TT =  18.0 - height * 0.0065 + 273.15;
