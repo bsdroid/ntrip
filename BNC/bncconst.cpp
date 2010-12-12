@@ -25,10 +25,12 @@
 #include "bncconst.h"
 
 const double t_CST::c       = 299792458.0;
-const double t_CST::freq1   = 1575420000.0;
-const double t_CST::freq2   = 1227600000.0;
+const double t_CST::freq1   = 1575420000.0; // GPS and Galileo E1
+const double t_CST::freq2   = 1227600000.0; // GPS only
+const double t_CST::freq5   = 1176450000.0; // GPS and Galileo E5a
 const double t_CST::lambda1 = c / freq1;
 const double t_CST::lambda2 = c / freq2;
+const double t_CST::lambda5 = c / freq5;
 const double t_CST::omega   = 7292115.1467e-11;
 const double t_CST::aell    = 6378137.000;
 const double t_CST::fInv    = 298.2572236;

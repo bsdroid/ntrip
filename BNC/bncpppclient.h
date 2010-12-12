@@ -42,12 +42,15 @@ class t_satData {
   QString      prn;
   double       P1;
   double       P2;
+  double       P5;
   double       P3;
   double       L1;
   double       L2;
+  double       L5;
   double       L3;
   codeType     codeTypeF1;
   codeType     codeTypeF2;
+  codeType     codeTypeF5;
   ColumnVector xx;
   ColumnVector vv;
   double       clk;
@@ -72,13 +75,21 @@ class t_epoData {
       itGlo.next();
       delete itGlo.value();
     }
+    QMapIterator<QString, t_satData*> itGal(satDataGal);
+    while (itGal.hasNext()) {
+      itGal.next();
+      delete itGal.value();
+    }
   }
   unsigned sizeGPS() const {return satDataGPS.size();}
   unsigned sizeGlo() const {return satDataGlo.size();}
-  unsigned sizeAll() const {return satDataGPS.size() + satDataGlo.size();}
+  unsigned sizeGal() const {return satDataGal.size();}
+  unsigned sizeAll() const {return satDataGPS.size() + satDataGlo.size() +
+                                   satDataGal.size();}
   bncTime                    tt;
   QMap<QString, t_satData*> satDataGPS;
   QMap<QString, t_satData*> satDataGlo;
+  QMap<QString, t_satData*> satDataGal;
 };
 
 class t_corr {
@@ -138,10 +149,12 @@ class bncPPPclient : public QObject {
     slipInfo() {
       slipCntL1 = -1;
       slipCntL2 = -1;
+      slipCntL5 = -1;
     }
     ~slipInfo(){}
     int slipCntL1;
     int slipCntL2;
+    int slipCntL5;
   };
 
   class t_ephPair {

@@ -29,11 +29,13 @@ enum t_irc {failure = -1, success, fatal}; // return code
 
 class t_CST {
   public:
-    static const double c      ;
-    static const double freq1  ;
-    static const double freq2  ;
+    static const double c;
+    static const double freq1; // GPS and Galileo E1 
+    static const double freq2; // GPS only           
+    static const double freq5; // GPS and Galileo E5a
     static const double lambda1;
     static const double lambda2;
+    static const double lambda5;
     static const double omega;
     static const double aell;
     static const double fInv;

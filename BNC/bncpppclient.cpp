@@ -146,7 +146,8 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   // -----------
   slipInfo& sInfo  = _slips[satData->prn];
   if ( sInfo.slipCntL1 == obs.slip_cnt_L1  &&
-       sInfo.slipCntL2 == obs.slip_cnt_L2 ) {
+       sInfo.slipCntL2 == obs.slip_cnt_L2  &&
+       sInfo.slipCntL5 == obs.slip_cnt_L5 ) {
     satData->slipFlag = false;
   }
   else {
@@ -162,64 +163,50 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
     bb = _bias.value(satData->prn); 
   }
 
-  // Set Code Observations
-  // ---------------------  
+  // Set Code Observations - P1 or C1
+  // --------------------------------
+  bool haveP1 = false;
   if      (obs.P1) {
     satData->P1         = obs.P1 + (bb ? bb->p1 : 0.0);
     satData->codeTypeF1 = t_satData::P_CODE;
+    haveP1 = true;
   }
   else if (obs.C1) {
     satData->P1         = obs.C1 + (bb ? bb->c1 : 0.0);
     satData->codeTypeF1 = t_satData::C_CODE;
+    haveP1 = true;
   }
-  else {
+
+  if (!haveP1) {
     delete satData;
     return;
   }
-    
+
+  // P2 or C2, and C5
+  // ----------------   
+  bool haveP2 = false;
   if      (obs.P2) {
     satData->P2         = obs.P2 + (bb ? bb->p2 : 0.0);
     satData->codeTypeF2 = t_satData::P_CODE;
+    haveP2 = true;
   }
   else if (obs.C2) {
     satData->P2         = obs.C2;
     satData->codeTypeF2 = t_satData::C_CODE;
+    haveP2 = true;
   }
-  else {
+
+  bool haveP5 = false;
+  if      (obs.C5) {
+    satData->P5         = obs.C5;
+    satData->codeTypeF2 = t_satData::P_CODE;
+    haveP5 = true;
+  }
+
+  if (!haveP2 && !haveP5) {
     delete satData;
     return;
   }
-
-  double f1 = t_CST::freq1;
-  double f2 = t_CST::freq2;
-
-  if (obs.satSys == 'R') {
-    f1 = 1602000000.0 + 562500.0 * obs.slotNum; 
-    f2 = 1246000000.0 + 437500.0 * obs.slotNum;
-  }
-
-  // Ionosphere-Free Combination
-  // ---------------------------
-  double c1 =   f1 * f1 / (f1 * f1 - f2 * f2);
-  double c2 = - f2 * f2 / (f1 * f1 - f2 * f2);
-  
-  satData->P3 =  c1 * satData->P1 + c2 * satData->P2;
-
-  // Set Phase Observations
-  // ----------------------  
-  if (obs.L1() && obs.L2()) {
-    satData->L1 = obs.L1() * t_CST::c / f1;
-    satData->L2 = obs.L2() * t_CST::c / f2;
-  }
-  else {
-    delete satData;
-    return;
-  }
-  satData->L3 =  c1 * satData->L1 + c2 * satData->L2;
-
-  // Set Ionosphere-Free Wavelength
-  // ------------------------------
-  satData->lambda3 = c1 * t_CST::c / f1 + c2 * t_CST::c / f2;
 
   // Add new Satellite to the epoch
   // ------------------------------
@@ -236,11 +223,70 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
     _epoData->tt = tt;
   }
 
+  // Set Ionosphere-Free Combinations
+  // --------------------------------
   if      (obs.satSys == 'G') {
+    double f1 = t_CST::freq1;
+    double f2 = t_CST::freq2;
+    double c1 =   f1 * f1 / (f1 * f1 - f2 * f2);
+    double c2 = - f2 * f2 / (f1 * f1 - f2 * f2);
+
+    if (obs.L1() && obs.L2()) {
+      satData->L1 = obs.L1() * t_CST::c / f1;
+      satData->L2 = obs.L2() * t_CST::c / f2;
+    }
+    else {
+      delete satData;
+      return;
+    }
+
+    satData->P3      = c1 * satData->P1 + c2 * satData->P2;
+    satData->L3      = c1 * satData->L1 + c2 * satData->L2;
+    satData->lambda3 = c1 * t_CST::c / f1 + c2 * t_CST::c / f2;
+
     _epoData->satDataGPS[satData->prn] = satData;
   }
   else if (obs.satSys == 'R') {
+    double f1 = 1602000000.0 + 562500.0 * obs.slotNum; 
+    double f2 = 1246000000.0 + 437500.0 * obs.slotNum;
+    double c1 =   f1 * f1 / (f1 * f1 - f2 * f2);
+    double c2 = - f2 * f2 / (f1 * f1 - f2 * f2);
+
+    if (obs.L1() && obs.L2()) {
+      satData->L1 = obs.L1() * t_CST::c / f1;
+      satData->L2 = obs.L2() * t_CST::c / f2;
+    }
+    else {
+      delete satData;
+      return;
+    }
+
+    satData->P3      = c1 * satData->P1 + c2 * satData->P2;
+    satData->L3      = c1 * satData->L1 + c2 * satData->L2;
+    satData->lambda3 = c1 * t_CST::c / f1 + c2 * t_CST::c / f2;
+
     _epoData->satDataGlo[satData->prn] = satData;
+  }
+  else if (obs.satSys == 'E') {
+    double f1 = t_CST::freq1;
+    double f5 = t_CST::freq5;
+    double c1 =   f1 * f1 / (f1 * f1 - f5 * f5);
+    double c5 = - f5 * f5 / (f1 * f1 - f5 * f5);
+
+    if (obs.L1() && obs.L5) {
+      satData->L1 = obs.L1() * t_CST::c / f1;
+      satData->L5 = obs.L5   * t_CST::c / f5;
+    }
+    else {
+      delete satData;
+      return;
+    }
+
+    satData->P3      = c1 * satData->P1 + c5 * satData->P5;
+    satData->L3      = c1 * satData->L1 + c5 * satData->L5;
+    satData->lambda3 = c1 * t_CST::c / f1 + c5 * t_CST::c / f5;
+
+    _epoData->satDataGal[satData->prn] = satData;
   }
 }
 
@@ -293,6 +339,32 @@ void bncPPPclient::slotNewEphGlonass(glonassephemeris gloeph) {
   else {
     t_ephGlo* eLast = new t_ephGlo();
     eLast->set(&gloeph);
+    _eph.insert(prn, new t_ephPair());
+    _eph[prn]->last = eLast;
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncPPPclient::slotNewEphGalileo(galileoephemeris galeph) {
+  QMutexLocker locker(&_mutex);
+
+  QString prn = QString("E%1").arg(galeph.satellite, 2, 10, QChar('0'));
+
+  if (_eph.contains(prn)) {
+    t_ephGal* eLast = static_cast<t_ephGal*>(_eph.value(prn)->last);
+    if ( (eLast->GPSweek() <  galeph.Week) || 
+         (eLast->GPSweek() == galeph.Week &&  
+          eLast->TOC()     <  galeph.TOC) ) {
+      delete static_cast<t_ephGal*>(_eph.value(prn)->prev);
+      _eph.value(prn)->prev = _eph.value(prn)->last;
+      _eph.value(prn)->last = new t_ephGal();
+      static_cast<t_ephGal*>(_eph.value(prn)->last)->set(&galeph);
+    }
+  }
+  else {
+    t_ephGal* eLast = new t_ephGal();
+    eLast->set(&galeph);
     _eph.insert(prn, new t_ephPair());
     _eph[prn]->last = eLast;
   }
@@ -554,31 +626,5 @@ void bncPPPclient::processEpoch() {
   // ---------------
   if (_model->update(_epoData) == success) {
     emit newPosition(_model->time(), _model->x(), _model->y(), _model->z());
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::slotNewEphGalileo(galileoephemeris galeph) {
-  QMutexLocker locker(&_mutex);
-
-  QString prn = QString("E%1").arg(galeph.satellite, 2, 10, QChar('0'));
-
-  if (_eph.contains(prn)) {
-    t_ephGal* eLast = static_cast<t_ephGal*>(_eph.value(prn)->last);
-    if ( (eLast->GPSweek() <  galeph.Week) || 
-         (eLast->GPSweek() == galeph.Week &&  
-          eLast->TOC()     <  galeph.TOC) ) {
-      delete static_cast<t_ephGal*>(_eph.value(prn)->prev);
-      _eph.value(prn)->prev = _eph.value(prn)->last;
-      _eph.value(prn)->last = new t_ephGal();
-      static_cast<t_ephGal*>(_eph.value(prn)->last)->set(&galeph);
-    }
-  }
-  else {
-    t_ephGal* eLast = new t_ephGal();
-    eLast->set(&galeph);
-    _eph.insert(prn, new t_ephPair());
-    _eph[prn]->last = eLast;
   }
 }
