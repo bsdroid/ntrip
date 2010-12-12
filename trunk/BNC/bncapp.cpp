@@ -622,8 +622,8 @@ void bncApp::printGalileoEph(galileoephemeris* ep, bool printFile) {
   line.sprintf(fmt4.data(), (double) ep->SISA, health, ep->BGD_1_5A, BGD_1_5B);
   allLines += line;
 
-  double TOW = ep->TOC;           // TODO
-  line.sprintf(fmt1.data(), TOW);
+  double transmissionTimeOfMessage = 0.9999e9; // unknown (Rinex v3 standard)
+  line.sprintf(fmt1.data(), transmissionTimeOfMessage);
   allLines += line;
 
   printOutput(printFile, _ephStreamGalileo, lineV2, lineV3, allLines);
