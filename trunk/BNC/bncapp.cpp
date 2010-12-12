@@ -257,6 +257,24 @@ void bncApp::slotNewGalileoEph(galileoephemeris* galileoeph) {
 
   QMutexLocker locker(&_mutex);
 
+  galileoephemeris copy_galileoeph = *galileoeph;
+  emit newEphGalileo(copy_galileoeph);
+
+  printEphHeader();
+
+  galileoephemeris** ee = &_galileoEph[galileoeph->satellite-1];
+
+  if ( *ee == 0                         || 
+       galileoeph->Week > (*ee)->Week ||
+       (galileoeph->Week == (*ee)->Week && galileoeph->TOC > (*ee)->TOC) ) {
+    delete *ee;
+    *ee = galileoeph;
+    printGalileoEph(galileoeph, true);
+  }
+  else {
+    printGalileoEph(galileoeph, false);
+    delete galileoeph;
+  }
 }
 
 // Print Header of the output File(s)
@@ -558,6 +576,51 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
 // Print One Galileo Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGalileoEph(galileoephemeris* ep, bool printFile) {
+
+  QString lineV2;
+  QString lineV3;
+
+  struct converttimeinfo cti;
+  converttime(&cti, ep->Week, ep->TOC);
+
+  lineV3.sprintf("E%02d %04d %02d %02d %02d %02d %02d %18.11e %18.11e %18.11e\n",
+                 ep->satellite, cti.year, cti.month, cti.day, cti.hour,
+                 cti.minute, cti.second, ep->clock_bias, ep->clock_drift,
+                 ep->clock_driftrate);
+
+  QString    line;
+  QByteArray allLines;
+
+  QByteArray fmt4 = "     %18.11e %18.11e %18.11e %18.11e\n";
+  QByteArray fmt3 = "     %18.11e %18.11e %18.11e\n";
+  QByteArray fmt1 = "     %18.11e\n";
+
+  line.sprintf(fmt4.data(), (double)ep->IODnav, ep->Crs, ep->Delta_n, ep->M0);
+  allLines += line;
+  
+  line.sprintf(fmt4.data(), ep->Cuc, ep->e, ep->Cus, ep->sqrt_A);
+  allLines += line;
+
+  line.sprintf(fmt4.data(), (double) ep->TOE, ep->Cic, ep->OMEGA0, ep->Cis);
+  allLines += line;
+  
+  line.sprintf(fmt4.data(), ep->i0, ep->Crc, ep->omega, ep->OMEGADOT);
+  allLines += line;
+
+  double dataSources = 0.0;       // TODO
+  line.sprintf(fmt3.data(), ep->IDOT, dataSources, (double) ep->Week);
+  allLines += line;
+
+  double health   = 0.0;          // TODO
+  double BGD_1_5B = ep->BGD_1_5A; // TODO
+  line.sprintf(fmt4.data(), ep->SISA, health, ep->BGD_1_5A, BGD_1_5B);
+  allLines += line;
+
+  double TOW = ep->TOC;           // TODO
+  line.sprintf(fmt1.data(), TOW);
+  allLines += line;
+
+  printOutput(printFile, _ephStreamGalileo, lineV2, lineV3, allLines);
 }
 
 // Output
