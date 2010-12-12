@@ -56,9 +56,15 @@ using namespace std;
 const unsigned MINOBS           =    4;
 const double   MINELE_GPS       = 10.0 * M_PI / 180.0;
 const double   MINELE_GLO       = 10.0 * M_PI / 180.0;
+const double   MINELE_GAL       = 10.0 * M_PI / 180.0;
 const double   MAXRES_CODE_GPS  = 10.0;
 const double   MAXRES_PHASE_GPS = 0.10;
 const double   MAXRES_PHASE_GLO = 0.05;
+const double   MAXRES_CODE_GAL  = 9999.0;
+const double   MAXRES_PHASE_GAL = 9999.10;
+
+const double   _sigP3_gal = 9999.0;
+const double   _sigL3_gal = 9999.0;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -194,6 +200,8 @@ bncModel::bncModel(QByteArray staID) {
   else {
     _useGlonass = false;
   }
+
+  _useGalileo = true; // TODO
 
   int nextPar = 0;
   _params.push_back(new bncParam(bncParam::CRD_X,  ++nextPar, ""));
@@ -331,6 +339,30 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
     if (satData->eleSat < MINELE_GLO) {
       delete satData;
       iGlo.remove();
+    }
+  }
+
+  QMutableMapIterator<QString, t_satData*> iGal(epoData->satDataGal);
+  while (iGal.hasNext()) {
+    iGal.next();
+    QString    prn     = iGal.key();
+    t_satData* satData = iGal.value();
+
+    ColumnVector rr = satData->xx - _xcBanc.Rows(1,3);
+    double       rho = rr.norm_Frobenius();
+
+    double neu[3];
+    xyz2neu(_ellBanc.data(), rr.data(), neu);
+
+    satData->eleSat = acos( sqrt(neu[0]*neu[0] + neu[1]*neu[1]) / rho );
+    if (neu[2] < 0) {
+      satData->eleSat *= -1.0;
+    }
+    satData->azSat  = atan2(neu[1], neu[0]);
+
+    if (satData->eleSat < MINELE_GAL) {
+      delete satData;
+      iGal.remove();
     }
   }
 
@@ -513,7 +545,8 @@ void bncModel::predict(t_epoData* epoData) {
       bool removed = false;
       if (par->type == bncParam::AMB_L3) {
         if (epoData->satDataGPS.find(par->prn) == epoData->satDataGPS.end() &&
-            epoData->satDataGlo.find(par->prn) == epoData->satDataGlo.end() ) {
+            epoData->satDataGlo.find(par->prn) == epoData->satDataGlo.end() && 
+            epoData->satDataGal.find(par->prn) == epoData->satDataGal.end() ) {
           removed = true;
           delete par;
           it.remove();
@@ -552,6 +585,26 @@ void bncModel::predict(t_epoData* epoData) {
       iGlo.next();
       QString prn        = iGlo.key();
       t_satData* satData = iGlo.value();
+      bool    found = false;
+      for (int iPar = 1; iPar <= _params.size(); iPar++) {
+        if (_params[iPar-1]->type == bncParam::AMB_L3 && 
+            _params[iPar-1]->prn == prn) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
+        _params.push_back(par);
+        par->xx = satData->L3 - cmpValue(satData, true);
+      }
+    }
+
+    QMapIterator<QString, t_satData*> iGal(epoData->satDataGal);
+    while (iGal.hasNext()) {
+      iGal.next();
+      QString prn        = iGal.key();
+      t_satData* satData = iGal.value();
       bool    found = false;
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         if (_params[iPar-1]->type == bncParam::AMB_L3 && 
@@ -630,10 +683,10 @@ t_irc bncModel::update(t_epoData* epoData) {
     unsigned nPar = _params.size();
     unsigned nObs = 0;
     if (_usePhase) {
-      nObs = 2 * epoData->sizeGPS() + epoData->sizeGlo();
+      nObs = 2 * (epoData->sizeGPS() + epoData->sizeGal()) + epoData->sizeGlo();
     }
     else {
-      nObs = epoData->sizeGPS();  // Glonass pseudoranges are not used
+      nObs = epoData->sizeGPS() + epoData->sizeGal(); // Glonass code not used
     }
     
     if (nObs < nPar) {
@@ -699,6 +752,35 @@ t_irc bncModel::update(t_epoData* epoData) {
       }
     }
 
+    // Galileo code and (optionally) phase observations
+    // ------------------------------------------------
+    QMapIterator<QString, t_satData*> itGal(epoData->satDataGal);
+    while (itGal.hasNext()) {
+      ++iObs;
+      itGal.next();
+      QString    prn     = itGal.key();
+      t_satData* satData = itGal.value();
+    
+      ll(iObs)      = satData->P3 - cmpValue(satData, false);
+      PP(iObs,iObs) = 1.0 / (_sigP3_gal * _sigP3_gal);
+      for (int iPar = 1; iPar <= _params.size(); iPar++) {
+        AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
+      }
+    
+      if (_usePhase) {
+        ++iObs;
+        ll(iObs)      = satData->L3 - cmpValue(satData, true);
+        PP(iObs,iObs) = 1.0 / (_sigL3_gal * _sigL3_gal);
+        for (int iPar = 1; iPar <= _params.size(); iPar++) {
+          if (_params[iPar-1]->type == bncParam::AMB_L3 &&
+              _params[iPar-1]->prn  == prn) {
+            ll(iObs) -= _params[iPar-1]->xx;
+          } 
+          AA(iObs, iPar) = _params[iPar-1]->partial(satData, true);
+        }
+      }
+    }
+
     // Compute Filter Update
     // ---------------------
     QQsav = _QQ;
@@ -712,6 +794,8 @@ t_irc bncModel::update(t_epoData* epoData) {
     ColumnVector vv_code(epoData->sizeGPS());
     ColumnVector vv_phase(epoData->sizeGPS());
     ColumnVector vv_glo(epoData->sizeGlo());
+    ColumnVector vv_gal_code(epoData->sizeGal());
+    ColumnVector vv_gal_phase(epoData->sizeGal());
 
     for (unsigned iobs = 1; iobs <= epoData->sizeGPS(); ++iobs) {
       if (_usePhase) {
@@ -727,6 +811,17 @@ t_irc bncModel::update(t_epoData* epoData) {
         vv_glo(iobs)  = vv(2*epoData->sizeGPS()+iobs);
       }
     }
+    if (_useGalileo) {
+      for (unsigned iobs = 1; iobs <= epoData->sizeGal(); ++iobs) {
+        if (_usePhase) {
+          vv_gal_code(iobs)  = vv(2*iobs-1);
+          vv_gal_phase(iobs) = vv(2*iobs);
+        }
+        else {
+          vv_gal_code(iobs)  = vv(iobs);
+        }
+      }
+    }
 
     strA   << "residuals code  " << setw(8) << setprecision(3) << vv_code.t(); 
     if (_usePhase) {
@@ -735,10 +830,16 @@ t_irc bncModel::update(t_epoData* epoData) {
     if (_useGlonass) {
       strA << "residuals glo   " << setw(8) << setprecision(3) << vv_glo.t();
     }
+    if (_useGalileo) {
+      strA   << "res Galileo P " << setw(8) << setprecision(3) << vv_gal_code.t(); 
+      if (_usePhase) {
+        strA << "res Galileo C " << setw(8) << setprecision(3) << vv_gal_phase.t();
+      }
+    }
     _log += strA.str().c_str();
 
   } while (outlierDetection(QQsav, vv, epoData->satDataGPS, 
-                            epoData->satDataGlo) != 0);
+                            epoData->satDataGlo, epoData->satDataGal) != 0);
 
   // Remember the Epoch-specific Results for the computation of means
   // ----------------------------------------------------------------
@@ -973,14 +1074,19 @@ t_irc bncModel::update(t_epoData* epoData) {
 int bncModel::outlierDetection(const SymmetricMatrix& QQsav, 
                                const ColumnVector& vv,
                                QMap<QString, t_satData*>& satDataGPS,
-                               QMap<QString, t_satData*>& satDataGlo) {
+                               QMap<QString, t_satData*>& satDataGlo,
+                               QMap<QString, t_satData*>& satDataGal) {
 
   double vvMaxCodeGPS  = 0.0;
   double vvMaxPhaseGPS = 0.0;
   double vvMaxPhaseGlo = 0.0;
+  double vvMaxCodeGal  = 0.0;
+  double vvMaxPhaseGal = 0.0;
   QMutableMapIterator<QString, t_satData*> itMaxCodeGPS(satDataGPS);
   QMutableMapIterator<QString, t_satData*> itMaxPhaseGPS(satDataGPS);
   QMutableMapIterator<QString, t_satData*> itMaxPhaseGlo(satDataGlo);
+  QMutableMapIterator<QString, t_satData*> itMaxCodeGal(satDataGPS);
+  QMutableMapIterator<QString, t_satData*> itMaxPhaseGal(satDataGPS);
 
   int ii = 0;
 
@@ -1019,6 +1125,27 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
     }
   }
 
+  // Galileo code and (optionally) phase residuals
+  // ---------------------------------------------
+  QMutableMapIterator<QString, t_satData*> itGal(satDataGal);
+  while (itGal.hasNext()) {
+    itGal.next();
+    ++ii;
+
+    if (vvMaxCodeGal == 0.0 || fabs(vv(ii)) > vvMaxCodeGal) {
+      vvMaxCodeGal    = fabs(vv(ii));
+      itMaxCodeGal = itGal;
+    }
+
+    if (_usePhase) {
+      ++ii;
+      if (vvMaxPhaseGal == 0.0 || fabs(vv(ii)) > vvMaxPhaseGal) {
+        vvMaxPhaseGal    = fabs(vv(ii));
+        itMaxPhaseGal = itGal;
+      }
+    }
+  }
+ 
   if (vvMaxPhaseGlo > MAXRES_PHASE_GLO) {
     QString    prn     = itMaxPhaseGlo.key();
     t_satData* satData = itMaxPhaseGlo.value();
@@ -1053,6 +1180,31 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
 
     _log += "Outlier Phase " + prn.toAscii() + " " 
           + QByteArray::number(vvMaxPhaseGPS, 'f', 3)  + "\n";
+
+    return 1;
+  }
+
+  else if (vvMaxCodeGal > MAXRES_CODE_GAL) {
+    QString    prn     = itMaxCodeGal.key();
+    t_satData* satData = itMaxCodeGal.value();
+    delete satData;
+    itMaxCodeGal.remove();
+    _QQ = QQsav;
+
+    _log += "Outlier Code " + prn.toAscii() + " " 
+            + QByteArray::number(vvMaxCodeGal, 'f', 3) + "\n";
+
+    return 1;
+  }
+  else if (vvMaxPhaseGal > MAXRES_PHASE_GAL) {
+    QString    prn     = itMaxPhaseGal.key();
+    t_satData* satData = itMaxPhaseGal.value();
+    delete satData;
+    itMaxPhaseGal.remove();
+    _QQ = QQsav;
+
+    _log += "Outlier Phase " + prn.toAscii() + " " 
+          + QByteArray::number(vvMaxPhaseGal, 'f', 3)  + "\n";
 
     return 1;
   }

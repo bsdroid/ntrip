@@ -84,7 +84,8 @@ class bncModel : public QObject {
   int    outlierDetection(const SymmetricMatrix& QQsav, 
                           const ColumnVector& vv,
                           QMap<QString, t_satData*>& satDataGPS,
-                          QMap<QString, t_satData*>& satDataGlo);
+                          QMap<QString, t_satData*>& satDataGlo,
+                          QMap<QString, t_satData*>& satDataGal);
   void writeNMEAstr(const QString& nmStr);
 
   static void kalman(const Matrix& AA, const ColumnVector& ll, 
@@ -119,6 +120,7 @@ class bncModel : public QObject {
   QFile*                _nmeaFile;
   QTextStream*          _nmeaStream;
   bool                  _useGlonass;
+  bool                  _useGalileo;
   QMap<QString, double> _windUpTime;
   QMap<QString, double> _windUpSum;
   QVector<pppPos*>      _posAverage;
