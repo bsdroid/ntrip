@@ -53,6 +53,7 @@ class bncApp : public QApplication {
     void slotMessage(QByteArray msg, bool showOnScreen);
     void slotNewGPSEph(gpsephemeris* gpseph);
     void slotNewGlonassEph(glonassephemeris* glonasseph);
+    void slotNewGalileoEph(galileoephemeris* galileoeph);
     void slotNewCorrLine(QString line, QString staID, long coTime);
     void slotQuit();
 
@@ -60,6 +61,7 @@ class bncApp : public QApplication {
     void newMessage(QByteArray msg, bool showOnScreen);
     void newEphGPS(gpsephemeris gpseph);
     void newEphGlonass(glonassephemeris glonasseph);
+    void newEphGalileo(galileoephemeris galileoeph);
     void newCorrections(QList<QString>);
     
  private slots:
@@ -69,6 +71,7 @@ class bncApp : public QApplication {
     void printEphHeader();
     void printGPSEph(gpsephemeris* ep, bool printFile);
     void printGlonassEph(glonassephemeris* ep, bool printFile);
+    void printGalileoEph(galileoephemeris* ep, bool printFile);
     void printOutput(bool printFile, QTextStream* stream, 
                      const QString& lineV2, 
                      const QString& lineV3,
@@ -88,8 +91,11 @@ class bncApp : public QApplication {
     QTextStream*      _ephStreamGPS;
     QFile*            _ephFileGlonass;
     QTextStream*      _ephStreamGlonass;
+    QFile*            _ephFileGalileo;
+    QTextStream*      _ephStreamGalileo;
     gpsephemeris*     _gpsEph[PRN_GPS_END - PRN_GPS_START + 1];
     glonassephemeris* _glonassEph[PRN_GLONASS_END - PRN_GLONASS_START + 1];
+    galileoephemeris* _galileoEph[PRN_GALILEO_END - PRN_GALILEO_START + 1];
     QString           _userName;
     QString           _pgmName;
     int                 _port;

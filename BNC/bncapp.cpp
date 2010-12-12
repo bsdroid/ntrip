@@ -69,6 +69,9 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
   for (int ii = PRN_GLONASS_START; ii <= PRN_GLONASS_END; ii++) {
     _glonassEph[ii-PRN_GLONASS_START] = 0;
   }
+  for (int ii = PRN_GALILEO_START; ii <= PRN_GALILEO_END; ii++) {
+    _galileoEph[ii-PRN_GALILEO_START] = 0;
+  }
 
   // Eph file(s)
   // -----------
@@ -77,6 +80,8 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
   _ephStreamGPS     = 0;
   _ephFileGlonass   = 0;
   _ephStreamGlonass = 0;
+  _ephFileGalileo   = 0;
+  _ephStreamGalileo = 0;
 
   _port    = 0;
   _server  = 0;
@@ -126,6 +131,9 @@ bncApp::~bncApp() {
   }
   for (int ii = PRN_GLONASS_START; ii <= PRN_GLONASS_END; ii++) {
     delete _glonassEph[ii-PRN_GLONASS_START];
+  }
+  for (int ii = PRN_GALILEO_START; ii <= PRN_GALILEO_END; ii++) {
+    delete _galileoEph[ii-PRN_GALILEO_START];
   }
 
   delete _corrs;
@@ -243,6 +251,14 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
   }
 }
 
+// New Galileo Ephemeris
+////////////////////////////////////////////////////////////////////////////
+void bncApp::slotNewGalileoEph(galileoephemeris* galileoeph) {
+
+  QMutexLocker locker(&_mutex);
+
+}
+
 // Print Header of the output File(s)
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printEphHeader() {
@@ -304,12 +320,17 @@ void bncApp::printEphHeader() {
       delete _glonassEph[ii-PRN_GLONASS_START];
       _glonassEph[ii-PRN_GLONASS_START] = 0;
     }
+    for (int ii = PRN_GALILEO_START; ii <= PRN_GALILEO_END; ii++) {
+      delete _galileoEph[ii-PRN_GALILEO_START];
+      _galileoEph[ii-PRN_GALILEO_START] = 0;
+    }
 
     delete _ephStreamGPS;
     delete _ephFileGPS;
 
     QFlags<QIODevice::OpenModeFlag> appendFlagGPS;
     QFlags<QIODevice::OpenModeFlag> appendFlagGlonass;
+    QFlags<QIODevice::OpenModeFlag> appendFlagGalileo;
 
     if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked &&
          QFile::exists(ephFileNameGPS) ) {
@@ -324,6 +345,8 @@ void bncApp::printEphHeader() {
     if      (_rinexVers == 3) {
       _ephFileGlonass   = _ephFileGPS;
       _ephStreamGlonass = _ephStreamGPS;
+      _ephFileGalileo   = _ephFileGPS;
+      _ephStreamGalileo = _ephStreamGPS;
     }
     else if (_rinexVers == 2) {
       QString ephFileNameGlonass = _ephPath + "BRDC" +
@@ -530,6 +553,11 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
   allLines += line;
 
   printOutput(printFile, _ephStreamGlonass, lineV2, lineV3, allLines);
+}
+
+// Print One Galileo Ephemeris
+////////////////////////////////////////////////////////////////////////////
+void bncApp::printGalileoEph(galileoephemeris* ep, bool printFile) {
 }
 
 // Output
