@@ -64,7 +64,7 @@ const double   MAXRES_CODE_GAL  = 9999.0;
 const double   MAXRES_PHASE_GAL = 9999.10;
 
 const double   _sigP3_gal = 9999.0;
-const double   _sigL3_gal = 9999.0;
+const double   _sigL3_gal = 0.10;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
