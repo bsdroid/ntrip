@@ -77,6 +77,8 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID, bncRawFile* rawFile) :
           (bncApp*) qApp, SLOT(slotNewGPSEph(gpsephemeris*)));
   connect(this, SIGNAL(newGlonassEph(glonassephemeris*)), 
           (bncApp*) qApp, SLOT(slotNewGlonassEph(glonassephemeris*)));
+  connect(this, SIGNAL(newGalileoEph(galileoephemeris*)), 
+          (bncApp*) qApp, SLOT(slotNewGalileoEph(galileoephemeris*)));
 
   // Sub-Decoder for Clock and Orbit Corrections
   // -------------------------------------------
@@ -424,6 +426,13 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           else if (rr == 1020) {
             decoded = true;
             emit newGlonassEph(new glonassephemeris(parser.ephemerisGLONASS));
+          }
+
+          // Galileo Ephemeris
+          // -----------------
+          else if (rr == 1045) {
+            decoded = true;
+            emit newGalileoEph(new galileoephemeris(parser.ephemerisGALILEO));
           }
         }
       }

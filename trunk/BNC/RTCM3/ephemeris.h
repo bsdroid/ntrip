@@ -126,4 +126,46 @@ class t_ephGlo : public t_eph {
   double  _tki;              // message frame time
 };
 
+class t_ephGal : public t_eph {
+ public:
+  t_ephGal() { }
+  virtual ~t_ephGal() {}
+  double TOC() const {return _TOC;}
+
+  void set(const galileoephemeris* ee);
+
+  virtual void position(int GPSweek, double GPSweeks, 
+                        double* xc,
+                        double* vv) const;
+
+  virtual int  IOD() const { return static_cast<int>(_IODnav); }
+
+ private:
+  double  _IODnav;             
+  double  _TOC;              //  [s]    
+  double  _TOE;              //  [s]    
+  double  _clock_bias;       //  [s]    
+  double  _clock_drift;      //  [s/s]  
+  double  _clock_driftrate;  //  [s/s^2]
+  double  _Crs;              //  [m]    
+  double  _Delta_n;          //  [rad/s]
+  double  _M0;               //  [rad]  
+  double  _Cuc;              //  [rad]  
+  double  _e;                //         
+  double  _Cus;              //  [rad]  
+  double  _sqrt_A;           //  [m^0.5]
+  double  _Cic;              //  [rad]  
+  double  _OMEGA0;           //  [rad]  
+  double  _Cis;              //  [rad]  
+  double  _i0;               //  [rad]  
+  double  _Crc;              //  [m]    
+  double  _omega;            //  [rad]  
+  double  _OMEGADOT;         //  [rad/s]
+  double  _IDOT;             //  [rad/s]
+  double  _BGD_1_5A;         //  group delay [s] 
+  int     _SISA;             //  Signal In Space Accuracy
+  int     _E5aHS;            //  E5a Health Status
+
+};
+
 #endif

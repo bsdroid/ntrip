@@ -55,6 +55,7 @@ Q_OBJECT
   void newMessage(QByteArray msg,bool showOnScreen);
   void newGPSEph(gpsephemeris* gpseph);
   void newGlonassEph(glonassephemeris* glonasseph);
+  void newGalileoEph(galileoephemeris* galileoeph);
 
  private:
   enum t_mode{unknown = 0, observations, corrections};
