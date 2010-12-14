@@ -799,7 +799,7 @@ t_irc bncModel::update(t_epoData* epoData) {
     strC << "  NEU "
          << setw(8) << setprecision(3) << newPos->xnt[3] << " "
          << setw(8) << setprecision(3) << newPos->xnt[4] << " "
-         << setw(8) << setprecision(3) << newPos->xnt[5];
+         << setw(8) << setprecision(3) << newPos->xnt[5] << endl;
 
   }
 
@@ -1240,12 +1240,13 @@ void bncModel::addObs(unsigned& iObs, t_satData* satData,
 void bncModel::printRes(const ColumnVector& vv, 
                         ostringstream& str, t_satData* satData) {
   if (satData->indexCode) {
-    str << "RES P3 " << satData->prn.toAscii().data() << " "
-        << setw(9) << setprecision(4) << vv(satData->indexCode) << endl;
-  }
-  if (satData->indexPhase) {
-    str << "RES L3 " << satData->prn.toAscii().data() << " "
-        << setw(9) << setprecision(4) << vv(satData->indexPhase) << endl;
+    str << _time.timestr(1)
+        << " RES " << satData->prn.toAscii().data() << "   P3 "
+        << setw(9) << setprecision(4) << vv(satData->indexCode);
+    if (satData->indexPhase) {
+      str << "   L3 " << setw(9) << setprecision(4) << vv(satData->indexPhase);
+    }
+    str << endl;
   }
 }
 
