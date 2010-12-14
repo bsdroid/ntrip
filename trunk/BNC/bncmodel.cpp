@@ -211,7 +211,12 @@ bncModel::bncModel(QByteArray staID) {
     _useGlonass = false;
   }
 
-  _useGalileo = true; // TODO
+  if ( Qt::CheckState(settings.value("pppGalileo").toInt()) == Qt::Checked) {
+    _useGalileo = true;
+  }
+  else {
+    _useGalileo = false;
+  }
 
   int nextPar = 0;
   _params.push_back(new bncParam(bncParam::CRD_X,  ++nextPar, ""));

@@ -252,7 +252,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   // Set Observations Galileo
   // ------------------------
   else if (obs.satSys == 'E') {
-    if ( obs.C1 && obs.C2 && obs.L1() && obs.L5) {
+    if ( obs.C1 && obs.C5 && obs.L1() && obs.L5) {
       double f1 = t_CST::freq1;
       double f5 = t_CST::freq5;
       double c1 =   f1 * f1 / (f1 * f1 - f5 * f5);
