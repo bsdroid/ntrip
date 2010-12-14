@@ -295,16 +295,16 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
   Matrix BB(epoData->sizeGPS(), 4);
 
   QMapIterator<QString, t_satData*> it(epoData->satDataGPS);
-  int iObs = 0;
+  int iObsBanc = 0;
   while (it.hasNext()) {
-    ++iObs;
+    ++iObsBanc;
     it.next();
     QString    prn     = it.key();
     t_satData* satData = it.value();
-    BB(iObs, 1) = satData->xx(1);
-    BB(iObs, 2) = satData->xx(2);
-    BB(iObs, 3) = satData->xx(3);
-    BB(iObs, 4) = satData->P3 + satData->clk;
+    BB(iObsBanc, 1) = satData->xx(1);
+    BB(iObsBanc, 2) = satData->xx(2);
+    BB(iObsBanc, 3) = satData->xx(3);
+    BB(iObsBanc, 4) = satData->P3 + satData->clk;
   }
 
   bancroft(BB, _xcBanc);
@@ -690,54 +690,32 @@ t_irc bncModel::update(t_epoData* epoData) {
 
     vv = ll - AA * dx;
 
-    ostringstream strA;
-    strA.setf(ios::fixed);
-    ColumnVector vv_code(epoData->sizeGPS());
-    ColumnVector vv_phase(epoData->sizeGPS());
-    ColumnVector vv_glo(epoData->sizeGlo());
-    ColumnVector vv_gal_code(epoData->sizeGal());
-    ColumnVector vv_gal_phase(epoData->sizeGal());
+    // Print Residuals
+    // ---------------
+    if (true) {
+      ostringstream str;
+      str.setf(ios::fixed);
 
-    for (unsigned iobs = 1; iobs <= epoData->sizeGPS(); ++iobs) {
-      if (_usePhase) {
-        vv_code(iobs)  = vv(2*iobs-1);
-        vv_phase(iobs) = vv(2*iobs);
+      QMapIterator<QString, t_satData*> itGPS(epoData->satDataGPS);
+      while (itGPS.hasNext()) {
+        itGPS.next();
+        t_satData* satData = itGPS.value();
+        printRes(vv, str, satData);
       }
-      else {
-        vv_code(iobs)  = vv(iobs);
+      QMapIterator<QString, t_satData*> itGlo(epoData->satDataGlo);
+      while (itGlo.hasNext()) {
+        itGlo.next();
+        t_satData* satData = itGlo.value();
+        printRes(vv, str, satData);
       }
-    }
-    if (_useGlonass) {
-      for (unsigned iobs = 1; iobs <= epoData->sizeGlo(); ++iobs) {
-        vv_glo(iobs)  = vv(2*epoData->sizeGPS()+iobs);
+      QMapIterator<QString, t_satData*> itGal(epoData->satDataGal);
+      while (itGal.hasNext()) {
+        itGal.next();
+        t_satData* satData = itGal.value();
+        printRes(vv, str, satData);
       }
+      _log += str.str().c_str();
     }
-    if (_useGalileo) {
-      for (unsigned iobs = 1; iobs <= epoData->sizeGal(); ++iobs) {
-        if (_usePhase) {
-          vv_gal_code(iobs)  = vv(2*iobs-1);
-          vv_gal_phase(iobs) = vv(2*iobs);
-        }
-        else {
-          vv_gal_code(iobs)  = vv(iobs);
-        }
-      }
-    }
-
-    strA   << "residuals code  " << setw(8) << setprecision(3) << vv_code.t(); 
-    if (_usePhase) {
-      strA << "residuals phase " << setw(8) << setprecision(3) << vv_phase.t();
-    }
-    if (_useGlonass) {
-      strA << "residuals glo   " << setw(8) << setprecision(3) << vv_glo.t();
-    }
-    if (_useGalileo) {
-      strA << "Galileo code    " << setw(8) << setprecision(3) << vv_gal_code.t(); 
-      if (_usePhase) {
-        strA << "Galileo phase   " << setw(8) << setprecision(3) << vv_gal_phase.t();
-      }
-    }
-    _log += strA.str().c_str();
 
   } while (outlierDetection(QQsav, vv, epoData->satDataGPS, 
                             epoData->satDataGlo, epoData->satDataGal) != 0);
@@ -1296,6 +1274,8 @@ void bncModel::addAmb(t_satData* satData) {
 void bncModel::addObs(unsigned& iObs, t_satData* satData,
                       Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP) {
 
+  // Code Observations
+  // -----------------
   if (satData->system() != 'R') {
     ++iObs;
     ll(iObs)      = satData->P3 - cmpValue(satData, false);
@@ -1303,8 +1283,11 @@ void bncModel::addObs(unsigned& iObs, t_satData* satData,
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
     }
+    satData->indexCode = iObs;
   }
   
+  // Phase Observations
+  // ------------------
   if (_usePhase) {
     ++iObs;
     ll(iObs)      = satData->L3 - cmpValue(satData, true);
@@ -1316,5 +1299,20 @@ void bncModel::addObs(unsigned& iObs, t_satData* satData,
       } 
       AA(iObs, iPar) = _params[iPar-1]->partial(satData, true);
     }
+    satData->indexPhase = iObs;
+  }
+}
+
+// 
+///////////////////////////////////////////////////////////////////////////
+void bncModel::printRes(const ColumnVector& vv, 
+                        ostringstream& str, t_satData* satData) {
+  if (satData->indexCode) {
+    str << "RES P3 " << satData->prn.toAscii().data() << " "
+        << setw(9) << setprecision(4) << vv(satData->indexCode) << endl;
+  }
+  if (satData->indexPhase) {
+    str << "RES L3 " << satData->prn.toAscii().data() << " "
+        << setw(9) << setprecision(4) << vv(satData->indexPhase) << endl;
   }
 }
