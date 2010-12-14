@@ -144,19 +144,19 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _buttonMap->setEnabled(false);
   connect(_buttonMap, SIGNAL(clicked()), this, SLOT(slotShowMap()));
  
-  _buttonCancel = new QPushButton(tr("Cancel"), this);
-  connect(_buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
+  _buttonClose = new QPushButton(tr("Close"), this);
+  connect(_buttonClose, SIGNAL(clicked()), this, SLOT(close()));
 
-  _buttonOK = new QPushButton(tr("OK"), this);
-  connect(_buttonOK, SIGNAL(clicked()), this, SLOT(accept()));
+  _buttonSelect = new QPushButton(tr("Select"), this);
+  connect(_buttonSelect, SIGNAL(clicked()), this, SLOT(select()));
 
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(_buttonWhatsThis);
   buttonLayout->addStretch(1);
   buttonLayout->addWidget(_buttonMap);
   buttonLayout->addWidget(_buttonGet);
-  buttonLayout->addWidget(_buttonCancel);
-  buttonLayout->addWidget(_buttonOK);
+  buttonLayout->addWidget(_buttonSelect);
+  buttonLayout->addWidget(_buttonClose);
 
   mainLayout->addLayout(buttonLayout);
 }
@@ -170,8 +170,8 @@ bncTableDlg::~bncTableDlg() {
   delete _casterPasswordLineEdit;
   delete _ntripVersionComboBox;
   delete _buttonGet;
-  delete _buttonCancel;
-  delete _buttonOK;
+  delete _buttonClose;
+  delete _buttonSelect;
   delete _buttonWhatsThis;
   delete _buttonCasterTable;
   delete _table;
@@ -302,11 +302,13 @@ void bncTableDlg::slotGetTable() {
 void bncTableDlg::slotShowMap() {
 
   bncMap* winMap = new bncMap(this);
-  winMap->setGeometry( x(), int(y()+height()*1.2), 860, 400 );
+  winMap->setGeometry( x(), int(y()+height()*1.3), 880, 440 );
 
   connect(this, SIGNAL(newPoint(QPointF, QString, QPen)),
 	  winMap, SLOT(slotNewPoint(QPointF, QString, QPen)));
-  connect(this, SIGNAL(resetMap()), winMap, SLOT(slotResetMap()));
+      
+  connect(this, SIGNAL(fitMap()),
+	  winMap, SLOT(slotFitMap() ));
       
   _buttonMap->setEnabled(false);
   showSourceTable();
@@ -315,7 +317,9 @@ void bncTableDlg::slotShowMap() {
 
   disconnect(this, SIGNAL(newPoint(QPointF, QString, QPen)),
 	     winMap, SLOT(slotNewPoint(QPointF, QString, QPen)));
-  disconnect(this, SIGNAL(resetMap()), winMap, SLOT(slotResetMap()));
+   
+  disconnect(this, SIGNAL(fitMap()),
+ 	     winMap, SLOT(slotFitMap() ));
    
   delete winMap;
 }
@@ -334,19 +338,21 @@ void bncTableDlg::showSourceTable() {
 	 QPointF point;
     	         point.setY( tmp.at(9).toDouble() );
                  point.setX( tmp.at(10).toDouble() );
+
 	 QString site = tmp.at(1);
 	         site.resize(4);
 
-         emit newPoint(point, site, QPen(QBrush(QColor(0,0,255,180)), 5) );
-       }	     
+         emit newPoint(point, site, QPen(QBrush(QColor(0,0,255,200)), 1.5) );
+       }
      }
    }
+   emit fitMap();
 }
 
 
-// Accept slot
+// Select slot
 ////////////////////////////////////////////////////////////////////////////
-void bncTableDlg::accept() {
+void bncTableDlg::select() {
 
   bncSettings settings;
   settings.setValue("ntripVersion", _ntripVersionComboBox->currentText());
@@ -360,7 +366,6 @@ void bncTableDlg::accept() {
 
   QStringList* mountPoints = new QStringList;
   if (_table) {
-//  emit resetMap();
     for (int ir = 0; ir < _table->rowCount(); ir++) {
       QTableWidgetItem* item   = _table->item(ir,0);
       QString             site = _table->item(ir,0)->text();
@@ -372,18 +377,16 @@ void bncTableDlg::accept() {
       format.replace(" ", "_");
       if (_table->isItemSelected(item)) {
         url.setPath(item->text());
-        mountPoints->push_back(url.toString() + " " + format + " " + latitude 
+        mountPoints->push_back(url.toString() + " " + format + " " + latitude
                         + " " + longitude + " " + nmea + " " + ntripVersion);
 	 
+        site.resize(4);
 	emit newPoint(QPointF(longitude.toDouble(),latitude.toDouble()), site,
-		      QPen(QBrush(QColor(255,0,0,180)), 13) );
-
+		      QPen(QBrush(QColor(255,0,0,200)), 3) );
       }
     }
   }
   emit newMountPoints(mountPoints);
-
-  QDialog::accept();
 }
 
 // User changed the selection of mountPoints
@@ -410,8 +413,8 @@ void bncTableDlg::slotCasterTable() {
   _ntripVersionComboBox->setEnabled(false);
   _buttonWhatsThis->setEnabled(false);
   _buttonGet->setEnabled(false);
-  _buttonCancel->setEnabled(false);
-  _buttonOK->setEnabled(false);
+  _buttonClose->setEnabled(false);
+  _buttonSelect->setEnabled(false);
 
   bncCasterTableDlg* dlg = new bncCasterTableDlg(this);
   dlg->move(this->pos().x()+50, this->pos().y()+50);
@@ -428,8 +431,8 @@ void bncTableDlg::slotCasterTable() {
   _ntripVersionComboBox->setEnabled(true);
   _buttonWhatsThis->setEnabled(true);
   _buttonGet->setEnabled(true);
-  _buttonCancel->setEnabled(true);
-  _buttonOK->setEnabled(true);
+  _buttonClose->setEnabled(true);
+  _buttonSelect->setEnabled(true);
 
 }
 
