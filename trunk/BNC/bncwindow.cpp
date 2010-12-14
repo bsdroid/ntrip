@@ -367,6 +367,9 @@ bncWindow::bncWindow() {
   _pppGLONASSCheckBox = new QCheckBox();
   _pppGLONASSCheckBox->setCheckState(Qt::CheckState(
                                     settings.value("pppGLONASS").toInt()));
+  _pppGalileoCheckBox = new QCheckBox();
+  _pppGalileoCheckBox->setCheckState(Qt::CheckState(
+                                    settings.value("pppGalileo").toInt()));
 
   _pppPlotCoordinates = new QCheckBox();
   _pppPlotCoordinates->setCheckState(Qt::CheckState(
@@ -469,6 +472,7 @@ bncWindow::bncWindow() {
   _pppUsePhaseCheckBox->setWhatsThis(tr("<p>By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations.</p><p>Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.</p>"));
   _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
   _pppGLONASSCheckBox->setWhatsThis(tr("<p>By default BNC does not use GLONASS observations in PPP mode.</p><p>Tick 'Use GLONASS' for a combined processing of both, GPS and GLONASS observations in PPP mode.</p>"));
+  _pppGalileoCheckBox->setWhatsThis(tr("<p>By default BNC does not use Galileo observations in PPP mode.</p><p>Tick 'Use Galileo' for a combined processing of both, GPS and Galileo observations in PPP mode.</p>"));
   _pppPlotCoordinates->setWhatsThis(tr("<p>PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when this option is selected. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.</p><p>Note that a PPP time series makes only sense for a stationary operated receiver."));
   _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
   _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
@@ -747,8 +751,10 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Estimate tropo"),         1, 4);
   pppLayout->addWidget(_pppGLONASSCheckBox,                  1, 5, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Use GLONASS"),            1, 6);
-  pppLayout->addWidget(_pppPlotCoordinates,                  1, 7, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("PPP Plot               "),1, 8);
+  pppLayout->addWidget(_pppGalileoCheckBox,                  1, 7, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Use Galileo"),            1, 8);
+  pppLayout->addWidget(_pppPlotCoordinates,                  1, 9, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("PPP Plot               "),1,10);
   pppLayout->addWidget(new QLabel("Options cont'd"),         2, 0);  
   pppLayout->addWidget(_pppSigCLineEdit,                     2, 1, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Sigma Code"),             2, 2);
@@ -1101,6 +1107,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppPlotCoordinates", _pppPlotCoordinates->checkState());
   settings.setValue("pppEstTropo", _pppEstTropoCheckBox->checkState());
   settings.setValue("pppGLONASS",  _pppGLONASSCheckBox->checkState());
+  settings.setValue("pppGalileo",  _pppGalileoCheckBox->checkState());
   settings.setValue("mountPoints", mountPoints);
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
@@ -1652,6 +1659,7 @@ void bncWindow::slotBncTextChanged(){
       _pppPlotCoordinates->setPalette(palette_white);
       _pppEstTropoCheckBox->setPalette(palette_white);
       _pppGLONASSCheckBox->setPalette(palette_white);
+      _pppGalileoCheckBox->setPalette(palette_white);
       _pppSPPComboBox->setEnabled(true);
       _pppNMEALineEdit->setEnabled(true);
       _pppNMEAPortLineEdit->setEnabled(true);
@@ -1662,6 +1670,7 @@ void bncWindow::slotBncTextChanged(){
       _pppPlotCoordinates->setEnabled(true);
       _pppEstTropoCheckBox->setEnabled(true);
       _pppGLONASSCheckBox->setEnabled(true);
+      _pppGalileoCheckBox->setEnabled(true);
       _pppRefCrdXLineEdit->setPalette(palette_white);
       _pppRefCrdXLineEdit->setEnabled(true);
       _pppRefCrdYLineEdit->setPalette(palette_white);
@@ -1722,6 +1731,7 @@ void bncWindow::slotBncTextChanged(){
       _pppPlotCoordinates->setPalette(palette_gray);
       _pppEstTropoCheckBox->setPalette(palette_gray);
       _pppGLONASSCheckBox->setPalette(palette_gray);
+      _pppGalileoCheckBox->setPalette(palette_gray);
       _pppSigCLineEdit->setPalette(palette_gray);
       _pppSigPLineEdit->setPalette(palette_gray);
       _pppSigCrd0->setPalette(palette_gray);
@@ -1740,6 +1750,7 @@ void bncWindow::slotBncTextChanged(){
       _pppPlotCoordinates->setEnabled(false);
       _pppEstTropoCheckBox->setEnabled(false);
       _pppGLONASSCheckBox->setEnabled(false);
+      _pppGalileoCheckBox->setEnabled(false);
       _pppSigCLineEdit->setEnabled(false);
       _pppSigPLineEdit->setEnabled(false);
       _pppSigCrd0->setEnabled(false);
