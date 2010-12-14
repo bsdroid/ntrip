@@ -38,7 +38,6 @@ class bncModel;
 
 class t_satData {
  public:
-  enum codeType {P_CODE, C_CODE};
   QString      prn;
   double       P1;
   double       P2;
@@ -48,9 +47,6 @@ class t_satData {
   double       L2;
   double       L5;
   double       L3;
-  codeType     codeTypeF1;
-  codeType     codeTypeF2;
-  codeType     codeTypeF5;
   ColumnVector xx;
   ColumnVector vv;
   double       clk;
