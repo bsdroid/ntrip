@@ -961,7 +961,6 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
                                QMap<QString, t_satData*>& satDataGlo,
                                QMap<QString, t_satData*>& satDataGal) {
 
-
   QString prnCode;
   QString prnPhase;
   double  maxResCode  = 0.0;
@@ -970,56 +969,63 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
   QString prnRemoved;
   double  maxRes;
 
-  // First check Glonass
-  // -------------------
-  findMaxRes(vv,satDataGlo, prnCode, maxResCode, prnPhase, maxResPhase);
-  if (maxResPhase > MAXRES_PHASE_GLO) {
-    satDataGlo.remove(prnPhase);
-    prnRemoved = prnPhase;
-    maxRes     = maxResPhase;
+  int irc = 0;
+
+  // Check Glonass
+  // -------------
+  if (irc == 0) {
+    findMaxRes(vv,satDataGlo, prnCode, maxResCode, prnPhase, maxResPhase);
+    if (maxResPhase > MAXRES_PHASE_GLO) {
+      satDataGlo.remove(prnPhase);
+      prnRemoved = prnPhase;
+      maxRes     = maxResPhase;
+      irc        = 1;
+    }
   }
 
-  // then check Galileo
-  // ------------------
-  else {
+  // Check Galileo
+  // -------------
+  if (irc == 0) {
     findMaxRes(vv,satDataGal, prnCode, maxResCode, prnPhase, maxResPhase);
     if      (maxResPhase > MAXRES_PHASE_GAL) {
       satDataGal.remove(prnPhase);
       prnRemoved = prnPhase;
       maxRes     = maxResPhase;
+      irc        = 1;
     }
     else if (maxResCode > MAXRES_CODE_GAL) {
       satDataGal.remove(prnCode);
       prnRemoved = prnCode;
       maxRes     = maxResCode;
+      irc        = 1;
     }
+  }
 
-    // and then check GPS
-    // ------------------
-    else {
-      findMaxRes(vv,satDataGPS, prnCode, maxResCode, prnPhase, maxResPhase);
-      if      (maxResPhase > MAXRES_PHASE_GPS) {
-        satDataGPS.remove(prnPhase);
-        prnRemoved = prnPhase;
-        maxRes     = maxResPhase;
-      }
-      else if (maxResCode > MAXRES_CODE_GPS) {
-        satDataGPS.remove(prnCode);
-        prnRemoved = prnCode;
-        maxRes     = maxResCode;
-      }
+  // Check GPS
+  // ---------
+  if (irc == 0) {
+    findMaxRes(vv,satDataGPS, prnCode, maxResCode, prnPhase, maxResPhase);
+    if      (maxResPhase > MAXRES_PHASE_GPS) {
+      satDataGPS.remove(prnPhase);
+      prnRemoved = prnPhase;
+      maxRes     = maxResPhase;
+      irc        = 1;
+    }
+    else if (maxResCode > MAXRES_CODE_GPS) {
+      satDataGPS.remove(prnCode);
+      prnRemoved = prnCode;
+      maxRes     = maxResCode;
+      irc        = 1;
     }
   }
  
-  if (!prnRemoved.isEmpty()) {
+  if (irc != 0) {
     _log += "Outlier " + prnRemoved.toAscii() + " " 
           + QByteArray::number(maxRes, 'f', 3) + "\n"; 
     _QQ = QQsav;
-    return 1;
   }
-  else {
-    return 0;
-  }
+
+  return irc;
 }
 
 // 
