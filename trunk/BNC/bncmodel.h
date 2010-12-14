@@ -138,8 +138,6 @@ class bncModel : public QObject {
   QByteArray            _log;
   QFile*                _nmeaFile;
   QTextStream*          _nmeaStream;
-  bool                  _useGlonass;
-  bool                  _useGalileo;
   QMap<QString, double> _windUpTime;
   QMap<QString, double> _windUpSum;
   QVector<pppPos*>      _posAverage;

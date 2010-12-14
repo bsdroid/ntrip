@@ -203,21 +203,6 @@ bncModel::bncModel(QByteArray staID) {
   _xcBanc.ReSize(4);  _xcBanc  = 0.0;
   _ellBanc.ReSize(3); _ellBanc = 0.0;
 
-  if (_usePhase && 
-      Qt::CheckState(settings.value("pppGLONASS").toInt()) == Qt::Checked) {
-    _useGlonass = true;
-  }
-  else {
-    _useGlonass = false;
-  }
-
-  if ( Qt::CheckState(settings.value("pppGalileo").toInt()) == Qt::Checked) {
-    _useGalileo = true;
-  }
-  else {
-    _useGalileo = false;
-  }
-
   int nextPar = 0;
   _params.push_back(new bncParam(bncParam::CRD_X,  ++nextPar, ""));
   _params.push_back(new bncParam(bncParam::CRD_Y,  ++nextPar, ""));
@@ -226,7 +211,7 @@ bncModel::bncModel(QByteArray staID) {
   if (_estTropo) {
     _params.push_back(new bncParam(bncParam::TROPO, ++nextPar, ""));
   }
-  if (_useGalileo) {
+  if ( Qt::CheckState(settings.value("pppGalileo").toInt()) == Qt::Checked) {
     _params.push_back(new bncParam(bncParam::GALILEO_OFFSET, ++nextPar, ""));
   }
 
