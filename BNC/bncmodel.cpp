@@ -1224,12 +1224,12 @@ void bncModel::addObs(unsigned& iObs, t_satData* satData,
 ///////////////////////////////////////////////////////////////////////////
 void bncModel::printRes(const ColumnVector& vv, 
                         ostringstream& str, t_satData* satData) {
-  if (satData->indexCode) {
+  if (satData->indexPhase) {
     str << _time.timestr(1)
-        << " RES " << satData->prn.toAscii().data() << "   P3 "
-        << setw(9) << setprecision(4) << vv(satData->indexCode);
-    if (satData->indexPhase) {
-      str << "   L3 " << setw(9) << setprecision(4) << vv(satData->indexPhase);
+        << " RES " << satData->prn.toAscii().data() << "   L3 "
+        << setw(9) << setprecision(4) << vv(satData->indexPhase);
+    if (satData->indexCode) {
+      str << "   P3 " << setw(9) << setprecision(4) << vv(satData->indexCode);
     }
     str << endl;
   }
