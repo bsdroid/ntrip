@@ -6,6 +6,7 @@
 #define BNCMAP_H
 
 #include <QtGui>
+#include "bncmapview.h"
 
 class bncMap : public QDialog
 {
@@ -16,9 +17,13 @@ class bncMap : public QDialog
    ~bncMap();
    
  public slots:
-   void slotNewPoint( QPointF, QString, QPen);
-   void slotCreateMap();
+   void slotNewPoint(QPointF, QString, QPen);
    void slotResetMap();
+   void slotFitMap();
+   void slotZoomIn();
+   void slotZoomOut();
+   void slotCreateMap();
+   void slotCleanMap();
    void slotReadMap();
    
  private:
@@ -26,9 +31,10 @@ class bncMap : public QDialog
    double          _scale;
    double          _LaOff;
 
-   QGraphicsView*  _mapView;
+   BncMapView*     _mapView;
    QGraphicsScene* _mapScen;
    QPolygonF       _worldMap;
+   QPolygonF       _allPoints;
    QMutex          _mutexMap;
 
 };

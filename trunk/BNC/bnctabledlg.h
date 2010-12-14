@@ -64,10 +64,10 @@ class bncTableDlg : public QDialog {
   signals:
     void newMountPoints(QStringList* mountPoints);
     void newPoint(QPointF, QString, QPen);
-    void resetMap();
+    void fitMap();
 
   private slots:
-    virtual void accept();
+    virtual void select();
     void slotGetTable();
     void slotShowMap();
     void slotSelectionChanged();
@@ -87,8 +87,8 @@ class bncTableDlg : public QDialog {
 
     QPushButton* _buttonGet;
     QPushButton* _buttonMap;
-    QPushButton* _buttonCancel;
-    QPushButton* _buttonOK;
+    QPushButton* _buttonClose;
+    QPushButton* _buttonSelect;
     QPushButton* _buttonWhatsThis;
     QPushButton* _buttonCasterTable;
 
