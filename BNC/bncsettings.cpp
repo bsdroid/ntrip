@@ -89,6 +89,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("pppUsePhase",      "");
     setValue("pppEstTropo",      "");
     setValue("pppGLONASS",       "");
+    setValue("pppGalileo",       "");
     setValue("pppPlotCoordinates", "");
     setValue("pppRefCrdX",       "");
     setValue("pppRefCrdY",       "");

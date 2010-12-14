@@ -130,6 +130,7 @@ class bncWindow : public QMainWindow {
     QCheckBox* _pppUsePhaseCheckBox;
     QCheckBox* _pppEstTropoCheckBox;
     QCheckBox* _pppGLONASSCheckBox;
+    QCheckBox* _pppGalileoCheckBox;
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;
     QLineEdit* _rnxSkelLineEdit;
