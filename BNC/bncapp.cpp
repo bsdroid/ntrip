@@ -263,7 +263,7 @@ void bncApp::slotNewGalileoEph(galileoephemeris* galileoeph) {
   printEphHeader();
 
   int galIndex = galileoeph->satellite - 51;
-  if (galIndex > PRN_GALILEO_END - PRN_GALILEO_START) {
+  if (galIndex < 0 || galIndex > PRN_GALILEO_END - PRN_GALILEO_START) {
     emit( newMessage("Wrong Galileo Satellite Number", true) );
     exit(1);
   }
