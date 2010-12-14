@@ -735,13 +735,13 @@ t_irc bncModel::update(t_epoData* epoData) {
     par->xx += dx(par->index);
 
     if      (par->type == bncParam::RECCLK) {
-      strB << "\n    clk     = " << setw(6) << setprecision(3) << par->xx 
+      strB << "\n    clk     = " << setw(10) << setprecision(3) << par->xx 
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == bncParam::AMB_L3) {
       strB << "\n    amb " << par->prn.toAscii().data() << " = "
-           << setw(6) << setprecision(3) << par->xx 
+           << setw(10) << setprecision(3) << par->xx 
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
     }
@@ -755,7 +755,7 @@ t_irc bncModel::update(t_epoData* epoData) {
       newPos->xnt[6] = aprTrp + par->xx;
     }
     else if (par->type == bncParam::GALILEO_OFFSET) {
-      strB << "\n    offset  = " << setw(6) << setprecision(3) << par->xx 
+      strB << "\n    offset  = " << setw(10) << setprecision(3) << par->xx 
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
     }
