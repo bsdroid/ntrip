@@ -318,21 +318,8 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
   QMutableMapIterator<QString, t_satData*> iGPS(epoData->satDataGPS);
   while (iGPS.hasNext()) {
     iGPS.next();
-    QString    prn     = iGPS.key();
     t_satData* satData = iGPS.value();
-
-    ColumnVector rr = satData->xx - _xcBanc.Rows(1,3);
-    double       rho = rr.norm_Frobenius();
-
-    double neu[3];
-    xyz2neu(_ellBanc.data(), rr.data(), neu);
-
-    satData->eleSat = acos( sqrt(neu[0]*neu[0] + neu[1]*neu[1]) / rho );
-    if (neu[2] < 0) {
-      satData->eleSat *= -1.0;
-    }
-    satData->azSat  = atan2(neu[1], neu[0]);
-
+    cmpEle(satData);
     if (satData->eleSat < MINELE_GPS) {
       delete satData;
       iGPS.remove();
@@ -342,21 +329,8 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
   QMutableMapIterator<QString, t_satData*> iGlo(epoData->satDataGlo);
   while (iGlo.hasNext()) {
     iGlo.next();
-    QString    prn     = iGlo.key();
     t_satData* satData = iGlo.value();
-
-    ColumnVector rr = satData->xx - _xcBanc.Rows(1,3);
-    double       rho = rr.norm_Frobenius();
-
-    double neu[3];
-    xyz2neu(_ellBanc.data(), rr.data(), neu);
-
-    satData->eleSat = acos( sqrt(neu[0]*neu[0] + neu[1]*neu[1]) / rho );
-    if (neu[2] < 0) {
-      satData->eleSat *= -1.0;
-    }
-    satData->azSat  = atan2(neu[1], neu[0]);
-
+    cmpEle(satData);
     if (satData->eleSat < MINELE_GLO) {
       delete satData;
       iGlo.remove();
@@ -366,21 +340,8 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
   QMutableMapIterator<QString, t_satData*> iGal(epoData->satDataGal);
   while (iGal.hasNext()) {
     iGal.next();
-    QString    prn     = iGal.key();
     t_satData* satData = iGal.value();
-
-    ColumnVector rr = satData->xx - _xcBanc.Rows(1,3);
-    double       rho = rr.norm_Frobenius();
-
-    double neu[3];
-    xyz2neu(_ellBanc.data(), rr.data(), neu);
-
-    satData->eleSat = acos( sqrt(neu[0]*neu[0] + neu[1]*neu[1]) / rho );
-    if (neu[2] < 0) {
-      satData->eleSat *= -1.0;
-    }
-    satData->azSat  = atan2(neu[1], neu[0]);
-
+    cmpEle(satData);
     if (satData->eleSat < MINELE_GAL) {
       delete satData;
       iGal.remove();
@@ -597,59 +558,21 @@ void bncModel::predict(t_epoData* epoData) {
       iGPS.next();
       QString prn        = iGPS.key();
       t_satData* satData = iGPS.value();
-      bool    found = false;
-      for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        if (_params[iPar-1]->type == bncParam::AMB_L3 && 
-            _params[iPar-1]->prn == prn) {
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
-        _params.push_back(par);
-        par->xx = satData->L3 - cmpValue(satData, true);
-      }
+      addAmb(satData);
     }
 
     QMapIterator<QString, t_satData*> iGlo(epoData->satDataGlo);
     while (iGlo.hasNext()) {
       iGlo.next();
-      QString prn        = iGlo.key();
       t_satData* satData = iGlo.value();
-      bool    found = false;
-      for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        if (_params[iPar-1]->type == bncParam::AMB_L3 && 
-            _params[iPar-1]->prn == prn) {
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
-        _params.push_back(par);
-        par->xx = satData->L3 - cmpValue(satData, true);
-      }
+      addAmb(satData);
     }
 
     QMapIterator<QString, t_satData*> iGal(epoData->satDataGal);
     while (iGal.hasNext()) {
       iGal.next();
-      QString prn        = iGal.key();
       t_satData* satData = iGal.value();
-      bool    found = false;
-      for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        if (_params[iPar-1]->type == bncParam::AMB_L3 && 
-            _params[iPar-1]->prn == prn) {
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        bncParam* par = new bncParam(bncParam::AMB_L3, _params.size()+1, prn);
-        _params.push_back(par);
-        par->xx = satData->L3 - cmpValue(satData, true);
-      }
+      addAmb(satData);
     }
     
     int nPar = _params.size();
@@ -1385,4 +1308,39 @@ double bncModel::windUp(const QString& prn, const ColumnVector& rSat,
   }
 
   return _windUpSum[prn];  
+}
+
+// 
+///////////////////////////////////////////////////////////////////////////
+void bncModel::cmpEle(t_satData* satData) {
+  ColumnVector rr = satData->xx - _xcBanc.Rows(1,3);
+  double       rho = rr.norm_Frobenius();
+
+  double neu[3];
+  xyz2neu(_ellBanc.data(), rr.data(), neu);
+
+  satData->eleSat = acos( sqrt(neu[0]*neu[0] + neu[1]*neu[1]) / rho );
+  if (neu[2] < 0) {
+    satData->eleSat *= -1.0;
+  }
+  satData->azSat  = atan2(neu[1], neu[0]);
+}
+
+// 
+///////////////////////////////////////////////////////////////////////////
+void bncModel::addAmb(t_satData* satData) {
+  bool    found = false;
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    if (_params[iPar-1]->type == bncParam::AMB_L3 && 
+        _params[iPar-1]->prn == satData->prn) {
+      found = true;
+      break;
+    }
+  }
+  if (!found) {
+    bncParam* par = new bncParam(bncParam::AMB_L3, 
+                                 _params.size()+1, satData->prn);
+    _params.push_back(par);
+    par->xx = satData->L3 - cmpValue(satData, true);
+  }
 }

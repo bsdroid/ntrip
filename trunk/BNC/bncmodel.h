@@ -87,6 +87,8 @@ class bncModel : public QObject {
   void newNMEAstr(QByteArray str);
 
  private:
+  void   cmpEle(t_satData* satData);
+  void   addAmb(t_satData* satData);
   double cmpValue(t_satData* satData, bool phase);
   double delay_saast(double Ele);
   void   predict(t_epoData* epoData);
