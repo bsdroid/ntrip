@@ -961,139 +961,65 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
                                QMap<QString, t_satData*>& satDataGlo,
                                QMap<QString, t_satData*>& satDataGal) {
 
-  double vvMaxCodeGPS  = 0.0;
-  double vvMaxPhaseGPS = 0.0;
-  double vvMaxPhaseGlo = 0.0;
-  double vvMaxCodeGal  = 0.0;
-  double vvMaxPhaseGal = 0.0;
-  QMutableMapIterator<QString, t_satData*> itMaxCodeGPS(satDataGPS);
-  QMutableMapIterator<QString, t_satData*> itMaxPhaseGPS(satDataGPS);
-  QMutableMapIterator<QString, t_satData*> itMaxPhaseGlo(satDataGlo);
-  QMutableMapIterator<QString, t_satData*> itMaxCodeGal(satDataGPS);
-  QMutableMapIterator<QString, t_satData*> itMaxPhaseGal(satDataGPS);
 
-  int ii = 0;
+  QString prnCode;
+  QString prnPhase;
+  double  maxResCode  = 0.0;
+  double  maxResPhase = 0.0;
 
-  // GPS code and (optionally) phase residuals
-  // -----------------------------------------
-  QMutableMapIterator<QString, t_satData*> itGPS(satDataGPS);
-  while (itGPS.hasNext()) {
-    itGPS.next();
-    ++ii;
+  QString prnRemoved;
+  double  maxRes;
 
-    if (vvMaxCodeGPS == 0.0 || fabs(vv(ii)) > vvMaxCodeGPS) {
-      vvMaxCodeGPS    = fabs(vv(ii));
-      itMaxCodeGPS = itGPS;
+  // First check Glonass
+  // -------------------
+  findMaxRes(vv,satDataGlo, prnCode, maxResCode, prnPhase, maxResPhase);
+  if (maxResPhase > MAXRES_PHASE_GLO) {
+    satDataGlo.remove(prnPhase);
+    prnRemoved = prnPhase;
+    maxRes     = maxResPhase;
+  }
+
+  // then check Galileo
+  // ------------------
+  else {
+    findMaxRes(vv,satDataGal, prnCode, maxResCode, prnPhase, maxResPhase);
+    if      (maxResPhase > MAXRES_PHASE_GAL) {
+      satDataGal.remove(prnPhase);
+      prnRemoved = prnPhase;
+      maxRes     = maxResPhase;
+    }
+    else if (maxResCode > MAXRES_CODE_GAL) {
+      satDataGal.remove(prnCode);
+      prnRemoved = prnCode;
+      maxRes     = maxResCode;
     }
 
-    if (_usePhase) {
-      ++ii;
-      if (vvMaxPhaseGPS == 0.0 || fabs(vv(ii)) > vvMaxPhaseGPS) {
-        vvMaxPhaseGPS    = fabs(vv(ii));
-        itMaxPhaseGPS = itGPS;
+    // and then check GPS
+    // ------------------
+    else {
+      findMaxRes(vv,satDataGPS, prnCode, maxResCode, prnPhase, maxResPhase);
+      if      (maxResPhase > MAXRES_PHASE_GPS) {
+        satDataGPS.remove(prnPhase);
+        prnRemoved = prnPhase;
+        maxRes     = maxResPhase;
+      }
+      else if (maxResCode > MAXRES_CODE_GPS) {
+        satDataGPS.remove(prnCode);
+        prnRemoved = prnCode;
+        maxRes     = maxResCode;
       }
     }
   }
  
-  // Glonass phase residuals
-  // -----------------------
-  if (_usePhase) {
-    QMutableMapIterator<QString, t_satData*> itGlo(satDataGlo);
-    while (itGlo.hasNext()) {
-      itGlo.next();
-      ++ii;
-      if (vvMaxPhaseGlo == 0.0 || fabs(vv(ii)) > vvMaxPhaseGlo) {
-        vvMaxPhaseGlo = fabs(vv(ii));
-        itMaxPhaseGlo = itGlo;
-      }
-    }
-  }
-
-  // Galileo code and (optionally) phase residuals
-  // ---------------------------------------------
-  QMutableMapIterator<QString, t_satData*> itGal(satDataGal);
-  while (itGal.hasNext()) {
-    itGal.next();
-    ++ii;
-
-    if (vvMaxCodeGal == 0.0 || fabs(vv(ii)) > vvMaxCodeGal) {
-      vvMaxCodeGal    = fabs(vv(ii));
-      itMaxCodeGal = itGal;
-    }
-
-    if (_usePhase) {
-      ++ii;
-      if (vvMaxPhaseGal == 0.0 || fabs(vv(ii)) > vvMaxPhaseGal) {
-        vvMaxPhaseGal    = fabs(vv(ii));
-        itMaxPhaseGal = itGal;
-      }
-    }
-  }
- 
-  if (vvMaxPhaseGlo > MAXRES_PHASE_GLO) {
-    QString    prn     = itMaxPhaseGlo.key();
-    t_satData* satData = itMaxPhaseGlo.value();
-    delete satData;
-    itMaxPhaseGlo.remove();
+  if (!prnRemoved.isEmpty()) {
+    _log += "Outlier " + prnRemoved.toAscii() + " " 
+          + QByteArray::number(maxRes, 'f', 3) + "\n"; 
     _QQ = QQsav;
-
-    _log += "Outlier Phase " + prn.toAscii() + " " 
-          + QByteArray::number(vvMaxPhaseGlo, 'f', 3) + "\n"; 
-
     return 1;
   }
-
-  else if (vvMaxCodeGPS > MAXRES_CODE_GPS) {
-    QString    prn     = itMaxCodeGPS.key();
-    t_satData* satData = itMaxCodeGPS.value();
-    delete satData;
-    itMaxCodeGPS.remove();
-    _QQ = QQsav;
-
-    _log += "Outlier Code " + prn.toAscii() + " " 
-            + QByteArray::number(vvMaxCodeGPS, 'f', 3) + "\n";
-
-    return 1;
+  else {
+    return 0;
   }
-  else if (vvMaxPhaseGPS > MAXRES_PHASE_GPS) {
-    QString    prn     = itMaxPhaseGPS.key();
-    t_satData* satData = itMaxPhaseGPS.value();
-    delete satData;
-    itMaxPhaseGPS.remove();
-    _QQ = QQsav;
-
-    _log += "Outlier Phase " + prn.toAscii() + " " 
-          + QByteArray::number(vvMaxPhaseGPS, 'f', 3)  + "\n";
-
-    return 1;
-  }
-
-  else if (vvMaxCodeGal > MAXRES_CODE_GAL) {
-    QString    prn     = itMaxCodeGal.key();
-    t_satData* satData = itMaxCodeGal.value();
-    delete satData;
-    itMaxCodeGal.remove();
-    _QQ = QQsav;
-
-    _log += "Outlier Code " + prn.toAscii() + " " 
-            + QByteArray::number(vvMaxCodeGal, 'f', 3) + "\n";
-
-    return 1;
-  }
-  else if (vvMaxPhaseGal > MAXRES_PHASE_GAL) {
-    QString    prn     = itMaxPhaseGal.key();
-    t_satData* satData = itMaxPhaseGal.value();
-    delete satData;
-    itMaxPhaseGal.remove();
-    _QQ = QQsav;
-
-    _log += "Outlier Phase " + prn.toAscii() + " " 
-          + QByteArray::number(vvMaxPhaseGal, 'f', 3)  + "\n";
-
-    return 1;
-  }
-
-  return 0;
 }
 
 // 
@@ -1316,3 +1242,32 @@ void bncModel::printRes(const ColumnVector& vv,
         << setw(9) << setprecision(4) << vv(satData->indexPhase) << endl;
   }
 }
+
+// 
+///////////////////////////////////////////////////////////////////////////
+void bncModel::findMaxRes(const ColumnVector& vv,
+                          const QMap<QString, t_satData*>& satData,
+                          QString& prnCode,  double& maxResCode, 
+                          QString& prnPhase, double& maxResPhase) {
+  maxResCode  = 0.0;
+  maxResPhase = 0.0;
+
+  QMapIterator<QString, t_satData*> it(satData);
+  while (it.hasNext()) {
+    it.next();
+    t_satData* satData = it.value();
+    if (satData->indexCode) {
+      if (fabs(vv(satData->indexCode)) > maxResCode) {
+        maxResCode = fabs(vv(satData->indexCode));
+        prnCode    = satData->prn;
+      }
+    }
+    if (satData->indexPhase) {
+      if (fabs(vv(satData->indexPhase)) > maxResPhase) {
+        maxResPhase = fabs(vv(satData->indexPhase));
+        prnPhase    = satData->prn;
+      }
+    }
+  }
+}
+ 

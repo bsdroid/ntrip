@@ -93,6 +93,10 @@ class bncModel : public QObject {
                 Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP);
   void   printRes(const ColumnVector& vv, 
                   std::ostringstream& str, t_satData* satData);
+  void   findMaxRes(const ColumnVector& vv,
+                    const QMap<QString, t_satData*>& satData,
+                    QString& prnCode,  double& maxResCode, 
+                    QString& prnPhase, double& maxResPhase);
   double cmpValue(t_satData* satData, bool phase);
   double delay_saast(double Ele);
   void   predict(t_epoData* epoData);
