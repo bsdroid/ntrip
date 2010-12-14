@@ -89,6 +89,8 @@ class bncModel : public QObject {
  private:
   void   cmpEle(t_satData* satData);
   void   addAmb(t_satData* satData);
+  void   addObs(unsigned& iObs, t_satData* satData,
+                Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP);
   double cmpValue(t_satData* satData, bool phase);
   double delay_saast(double Ele);
   void   predict(t_epoData* epoData);

@@ -556,7 +556,6 @@ void bncModel::predict(t_epoData* epoData) {
     QMapIterator<QString, t_satData*> iGPS(epoData->satDataGPS);
     while (iGPS.hasNext()) {
       iGPS.next();
-      QString prn        = iGPS.key();
       t_satData* satData = iGPS.value();
       addAmb(satData);
     }
@@ -660,80 +659,27 @@ t_irc bncModel::update(t_epoData* epoData) {
     // --------------------------------------------
     QMapIterator<QString, t_satData*> itGPS(epoData->satDataGPS);
     while (itGPS.hasNext()) {
-      ++iObs;
       itGPS.next();
-      QString    prn     = itGPS.key();
       t_satData* satData = itGPS.value();
-    
-      ll(iObs)      = satData->P3 - cmpValue(satData, false);
-      PP(iObs,iObs) = 1.0 / (_sigP3 * _sigP3);
-      for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
-      }
-    
-      if (_usePhase) {
-        ++iObs;
-        ll(iObs)      = satData->L3 - cmpValue(satData, true);
-        PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3);
-        for (int iPar = 1; iPar <= _params.size(); iPar++) {
-          if (_params[iPar-1]->type == bncParam::AMB_L3 &&
-              _params[iPar-1]->prn  == prn) {
-            ll(iObs) -= _params[iPar-1]->xx;
-          } 
-          AA(iObs, iPar) = _params[iPar-1]->partial(satData, true);
-        }
-      }
+      addObs(iObs, satData, AA, ll, PP);
     }
 
     // Glonass phase observations
     // --------------------------
-    if (_usePhase) {    
-      QMapIterator<QString, t_satData*> itGlo(epoData->satDataGlo);
-      while (itGlo.hasNext()) {
-        ++iObs;
-        itGlo.next();
-        QString    prn     = itGlo.key();
-        t_satData* satData = itGlo.value();
-
-        ll(iObs)      = satData->L3 - cmpValue(satData, true);
-        PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3);
-        for (int iPar = 1; iPar <= _params.size(); iPar++) {
-          if (_params[iPar-1]->type == bncParam::AMB_L3 &&
-              _params[iPar-1]->prn  == prn) {
-            ll(iObs) -= _params[iPar-1]->xx;
-          } 
-          AA(iObs, iPar) = _params[iPar-1]->partial(satData, true);
-        }
-      }
+    QMapIterator<QString, t_satData*> itGlo(epoData->satDataGlo);
+    while (itGlo.hasNext()) {
+      itGlo.next();
+      t_satData* satData = itGlo.value();
+      addObs(iObs, satData, AA, ll, PP);
     }
 
     // Galileo code and (optionally) phase observations
     // ------------------------------------------------
     QMapIterator<QString, t_satData*> itGal(epoData->satDataGal);
     while (itGal.hasNext()) {
-      ++iObs;
       itGal.next();
-      QString    prn     = itGal.key();
       t_satData* satData = itGal.value();
-    
-      ll(iObs)      = satData->P3 - cmpValue(satData, false);
-      PP(iObs,iObs) = 1.0 / (_sigP3 * _sigP3);
-      for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
-      }
-    
-      if (_usePhase) {
-        ++iObs;
-        ll(iObs)      = satData->L3 - cmpValue(satData, true);
-        PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3);
-        for (int iPar = 1; iPar <= _params.size(); iPar++) {
-          if (_params[iPar-1]->type == bncParam::AMB_L3 &&
-              _params[iPar-1]->prn  == prn) {
-            ll(iObs) -= _params[iPar-1]->xx;
-          } 
-          AA(iObs, iPar) = _params[iPar-1]->partial(satData, true);
-        }
-      }
+      addObs(iObs, satData, AA, ll, PP);
     }
 
     // Compute Filter Update
@@ -1342,5 +1288,33 @@ void bncModel::addAmb(t_satData* satData) {
                                  _params.size()+1, satData->prn);
     _params.push_back(par);
     par->xx = satData->L3 - cmpValue(satData, true);
+  }
+}
+
+// 
+///////////////////////////////////////////////////////////////////////////
+void bncModel::addObs(unsigned& iObs, t_satData* satData,
+                      Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP) {
+
+  if (satData->system() != 'R') {
+    ++iObs;
+    ll(iObs)      = satData->P3 - cmpValue(satData, false);
+    PP(iObs,iObs) = 1.0 / (_sigP3 * _sigP3);
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
+    }
+  }
+  
+  if (_usePhase) {
+    ++iObs;
+    ll(iObs)      = satData->L3 - cmpValue(satData, true);
+    PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3);
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      if (_params[iPar-1]->type == bncParam::AMB_L3 &&
+          _params[iPar-1]->prn  == satData->prn) {
+        ll(iObs) -= _params[iPar-1]->xx;
+      } 
+      AA(iObs, iPar) = _params[iPar-1]->partial(satData, true);
+    }
   }
 }
