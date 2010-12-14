@@ -55,6 +55,7 @@ class t_satData {
   double       rho;
   bool         slipFlag;
   double       lambda3;
+  char system() const {return prn.toAscii()[0];}
 };
 
 class t_epoData {
