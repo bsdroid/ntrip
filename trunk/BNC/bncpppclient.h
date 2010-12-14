@@ -38,6 +38,11 @@ class bncModel;
 
 class t_satData {
  public:
+  t_satData() {
+    indexCode  = 0;
+    indexPhase = 0;
+  }
+  ~t_satData() {}
   QString      prn;
   double       P1;
   double       P2;
@@ -55,6 +60,8 @@ class t_satData {
   double       rho;
   bool         slipFlag;
   double       lambda3;
+  unsigned     indexCode;
+  unsigned     indexPhase;
   char system() const {return prn.toAscii()[0];}
 };
 
