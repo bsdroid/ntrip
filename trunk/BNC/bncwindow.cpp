@@ -73,7 +73,7 @@ bncWindow::bncWindow() {
   
   static const QStringList labels = QString("account, Streams:   resource loader / mountpoint, decoder, lat, long, nmea, ntrip, bytes").split(",");
 
-  setMinimumSize(95*ww, 65*ww);
+  setMinimumSize(85*ww, 65*ww);
 
   setWindowTitle(tr("BKG Ntrip Client (BNC) Version " BNCVERSION));
 
@@ -473,7 +473,7 @@ bncWindow::bncWindow() {
   _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
   _pppGLONASSCheckBox->setWhatsThis(tr("<p>By default BNC does not use GLONASS observations in PPP mode.</p><p>Tick 'Use GLONASS' for a combined processing of both, GPS and GLONASS observations in PPP mode.</p>"));
   _pppGalileoCheckBox->setWhatsThis(tr("<p>By default BNC does not use Galileo observations in PPP mode.</p><p>Tick 'Use Galileo' for a combined processing of both, GPS and Galileo observations in PPP mode.</p>"));
-  _pppPlotCoordinates->setWhatsThis(tr("<p>PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when this option is selected. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.</p><p>Note that a PPP time series makes only sense for a stationary operated receiver."));
+  _pppPlotCoordinates->setWhatsThis(tr("<p>BNC will plot PPP results in the 'PPP Plot' tab as North (red), East (green) and Up (blue) displacements when this option is selected. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.</p><p>Note that a PPP time series makes only sense for a stationary operated receiver."));
   _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
   _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
   _pppSigCLineEdit->setWhatsThis(tr("<p>Enter a sigma for your code observations in meters.</p><p>The higher the sigma you enter, the less the contribution of code observations to a PPP solution based on a combination of code and phase data. 5.0 (default) is likely to be an appropriate choice.</p>"));
@@ -732,17 +732,17 @@ bncWindow::bncWindow() {
   _pppRefCrdXLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdYLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdZLineEdit->setMaximumWidth(14*ww);
-  _pppNMEAPortLineEdit->setMaximumWidth(14*ww);
   _pppSPPComboBox->setMaximumWidth(8*ww);
+  _pppNMEAPortLineEdit->setMaximumWidth(6*ww);
 //pppLayout->setColumnMinimumWidth(0,12*ww);
   pppLayout->addWidget(new QLabel("Mountpoint"),             0, 0);
   pppLayout->addWidget(_pppMountLineEdit,                    0, 1);
   pppLayout->addWidget(_pppSPPComboBox,                      0, 2);
-  pppLayout->addWidget(new QLabel("           X  "),         0, 3, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("          X   "),         0, 3, Qt::AlignRight);
   pppLayout->addWidget(_pppRefCrdXLineEdit,                  0, 4);
-  pppLayout->addWidget(new QLabel("           Y  "),         0, 5, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("          Y   "),         0, 5, Qt::AlignRight);
   pppLayout->addWidget(_pppRefCrdYLineEdit,                  0, 6);
-  pppLayout->addWidget(new QLabel("           Z  "),         0, 7, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("          Z   "),         0, 7, Qt::AlignRight);
   pppLayout->addWidget(_pppRefCrdZLineEdit,                  0, 8);
   pppLayout->addWidget(new QLabel("Options"),                1, 0, 1, 5);
   pppLayout->addWidget(_pppUsePhaseCheckBox,                 1, 1, Qt::AlignRight);
@@ -753,30 +753,31 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Use GLONASS"),            1, 6);
   pppLayout->addWidget(_pppGalileoCheckBox,                  1, 7, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Use Galileo"),            1, 8);
-  pppLayout->addWidget(_pppPlotCoordinates,                  1, 9, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("PPP Plot               "),1,10);
   pppLayout->addWidget(new QLabel("Options cont'd"),         2, 0);  
   pppLayout->addWidget(_pppSigCLineEdit,                     2, 1, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Sigma Code"),             2, 2);
   pppLayout->addWidget(_pppSigPLineEdit,                     2, 3);
   pppLayout->addWidget(new QLabel("Sigma Phase"),            2, 4);
-  pppLayout->addWidget(_pppQuickStartLineEdit,               2, 5);
-  pppLayout->addWidget(new QLabel("Quick-Start (sec)") ,     2, 6);  
+  pppLayout->addWidget(_pppQuickStartLineEdit,               2, 5, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Quick-Start (sec)   ") ,  2, 6);  
   pppLayout->addWidget(_pppAverageLineEdit,                  2, 7);
   pppLayout->addWidget(new QLabel("Averaging (min)") ,       2, 8);  
   pppLayout->addWidget(new QLabel("Parameter sigmas"),       3, 0);
   pppLayout->addWidget(_pppSigCrd0,                          3, 1, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("XYZ Init"),               3, 2);
   pppLayout->addWidget(_pppSigCrdP,                          3, 3);
-  pppLayout->addWidget(new QLabel("XYZ White Noise"),        3, 4);
-  pppLayout->addWidget(_pppSigTrp0,                          3, 5);
+  pppLayout->addWidget(new QLabel("XYZ White Noise   "),     3, 4);
+  pppLayout->addWidget(_pppSigTrp0,                          3, 5, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Tropo Init"),             3, 6);
   pppLayout->addWidget(_pppSigTrpP,                          3, 7);
   pppLayout->addWidget(new QLabel("Tropo White Noise"),      3, 8);
-  pppLayout->addWidget(new QLabel("NMEA file (full path)  "),4, 0); 
-  pppLayout->addWidget(_pppNMEALineEdit,                     4, 1, 1, 4);
-  pppLayout->addWidget(new QLabel("Port"),                   4, 5, Qt::AlignRight);
-  pppLayout->addWidget(_pppNMEAPortLineEdit,                 4, 6);
+  pppLayout->addWidget(new QLabel("Output"),                 4, 0); 
+  pppLayout->addWidget(_pppNMEALineEdit,                     4, 1, 1, 3);
+  pppLayout->addWidget(new QLabel("NMEA file"),              4, 4); 
+  pppLayout->addWidget(_pppNMEAPortLineEdit,                 4, 5);
+  pppLayout->addWidget(new QLabel("NMEA port"),              4, 6);
+  pppLayout->addWidget(_pppPlotCoordinates,                  4, 7, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("PPP Plot"),               4, 8);
 
   pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),5, 0,1,5);
   pppgroup->setLayout(pppLayout);
