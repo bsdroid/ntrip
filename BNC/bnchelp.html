@@ -192,7 +192,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.4.4 <a href=#pppsigtrpn>Tropo White Noise</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.5 <a href=#pppnmeaout>NMEA</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.5.1 <a href=#pppnmeafile>File</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.5.2 <a href=#pppnmeaport>Port</a><br><br>
+&nbsp; &nbsp; &nbsp; 3.11.5.2 <a href=#pppnmeaport>Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.6 <a href=#pppsync>Sync Corr</a><br><br>
 3.12. <a href=#streams>Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1 <a href=#streamedit>Edit Streams</a><br>
@@ -1276,7 +1276,10 @@ NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World
 
 <p><a name="pppsync"><h4>3.11.6 Sync Corr - optional</h4></p>
 <p>
-You may like to process only those observations which are received first within a maximum of 'Sync corr' seconds after the reception of a clock correction. Using only observations which come in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing all observations regardless of how late after a clock correction they were received.
+You may like to process only those observations which are received first within a maximum of 'Sync corr' seconds after the reception of a clock correction. 5 seconds could be an approriate choice for this option.
+<p>
+</p>
+Using only observations which come in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing all observations regardless of how late after a clock correction they were received.
 </p>
 <p>
 Default is an empty option field, meaning that you want BNC to determine a PPP solution from all incoming observations through applying the latest received clock correction.
