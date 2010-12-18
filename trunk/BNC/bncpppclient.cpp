@@ -631,24 +631,36 @@ void bncPPPclient::processFrontEpoch() {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::processEpochs() {
 
+  // Synchronization threshold (not used in SPP mode)
+  // ------------------------------------------------
   double maxDt = 0.0;
   if (!_pppMode) {
     maxDt = 0.0;
   }
 
+  // Make sure the buffer does not grow beyond any limit
+  // ---------------------------------------------------
+  const unsigned MAX_EPODATA_SIZE = 120;
+  if (_epoData.size() > MAX_EPODATA_SIZE) {
+    delete _epoData.front();
+    _epoData.pop();
+  }
+
+  // Loop over all unprocessed epochs
+  // --------------------------------
   while (!_epoData.empty()) {
+
     t_epoData* frontEpoData = _epoData.front();
 
     // No corrections yet, skip the epoch
     // ----------------------------------
     if (maxDt != 0.0 && !_corr_tt.valid()) {
-      delete _epoData.front();
-      _epoData.pop();
-      continue;
+      return;
     }
 
-    if (maxDt == 0 || 
-         (frontEpoData->tt - _corr_tt) < maxDt ) {
+    // Process the front epoch
+    // -----------------------
+    if (maxDt == 0 || frontEpoData->tt - _corr_tt < maxDt) {
       processFrontEpoch();
       delete _epoData.front();
       _epoData.pop();
