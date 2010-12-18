@@ -395,6 +395,9 @@ bncWindow::bncWindow() {
   connect(_pppSync, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
+  connect(_pppSPPComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
   // Streams
   // -------
   _mountPointsTable   = new QTableWidget(0,8);
@@ -492,6 +495,7 @@ bncWindow::bncWindow() {
   _pppRefCrdYLineEdit->setWhatsThis(tr("<p>Enter reference coordinate Y of the receiver's position.</p>"));
   _pppRefCrdZLineEdit->setWhatsThis(tr("<p>Enter reference coordinate Z of the receiver's position.</p>"));
   _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when the corresponting option is selected above. Values are either referred to an XYZ reference coordinate (if specified) or referred to the first estimated set of coordinate compoments. The sliding PPP time series window covers the period of the latest 5 minutes."));
+  _pppSync->setWhatsThis(tr("You may like to process only those observations which are received first within a maximum of 'Sync corr' seconds after the reception of a clock correction. Using only observations which come in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing all observations regardless of how late after a clock correction they were received.<p></p>Default is an empty option field, meaning that you want BNC to determine a PPP solution from all incomming observations through applying the latest received clock correction.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -1657,6 +1661,7 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _pppRefCrdYLineEdit 
      || sender() == _pppRefCrdZLineEdit 
      || sender() == _pppSync 
+     || sender() == _pppSPPComboBox
      || sender() == _pppEstTropoCheckBox
      || sender() == _pppUsePhaseCheckBox ) {
     if (!_pppMountLineEdit->text().isEmpty()) {
@@ -1666,7 +1671,6 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdXLineEdit->setPalette(palette_white);
       _pppRefCrdYLineEdit->setPalette(palette_white);
       _pppRefCrdZLineEdit->setPalette(palette_white);
-      _pppSync->setPalette(palette_white);
       _pppUsePhaseCheckBox->setPalette(palette_white);
       _pppPlotCoordinates->setPalette(palette_white);
       _pppEstTropoCheckBox->setPalette(palette_white);
@@ -1678,7 +1682,6 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdXLineEdit->setEnabled(true);
       _pppRefCrdYLineEdit->setEnabled(true);
       _pppRefCrdZLineEdit->setEnabled(true);
-      _pppSync->setEnabled(true);
       _pppUsePhaseCheckBox->setEnabled(true);
       _pppPlotCoordinates->setEnabled(true);
       _pppEstTropoCheckBox->setEnabled(true);
@@ -1690,9 +1693,6 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdYLineEdit->setEnabled(true);
       _pppRefCrdZLineEdit->setPalette(palette_white);
       _pppRefCrdZLineEdit->setEnabled(true);
-      _pppSync->setPalette(palette_white);
-      _pppSync->setEnabled(true);
-
       if (!_pppRefCrdXLineEdit->text().isEmpty() &&
           !_pppRefCrdYLineEdit->text().isEmpty() &&
           !_pppRefCrdZLineEdit->text().isEmpty()) {
@@ -1734,6 +1734,14 @@ void bncWindow::slotBncTextChanged(){
       else {
         _pppSigPLineEdit->setPalette(palette_gray);
         _pppSigPLineEdit->setEnabled(false);
+      }
+      if (_pppSPPComboBox->currentText() == "PPP") {
+      _pppSync->setPalette(palette_white);
+      _pppSync->setEnabled(true);
+      }
+      else {
+      _pppSync->setPalette(palette_gray);
+      _pppSync->setEnabled(false);
       }
     } else {
       _pppSPPComboBox->setPalette(palette_gray);
