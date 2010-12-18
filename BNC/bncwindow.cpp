@@ -350,6 +350,7 @@ bncWindow::bncWindow() {
   _pppRefCrdXLineEdit    = new QLineEdit(settings.value("pppRefCrdX").toString());
   _pppRefCrdYLineEdit    = new QLineEdit(settings.value("pppRefCrdY").toString());
   _pppRefCrdZLineEdit    = new QLineEdit(settings.value("pppRefCrdZ").toString());
+  _pppSync               = new QLineEdit(settings.value("pppSync").toString());
 
   _pppSPPComboBox = new QComboBox();
   _pppSPPComboBox->setEditable(false);
@@ -389,6 +390,9 @@ bncWindow::bncWindow() {
           this, SLOT(slotBncTextChanged()));
 
   connect(_pppEstTropoCheckBox, SIGNAL(stateChanged(int)),
+          this, SLOT(slotBncTextChanged()));
+
+  connect(_pppSync, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
   // Streams
@@ -732,6 +736,7 @@ bncWindow::bncWindow() {
   _pppRefCrdXLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdYLineEdit->setMaximumWidth(14*ww);
   _pppRefCrdZLineEdit->setMaximumWidth(14*ww);
+  _pppSync->setMaximumWidth(6*ww);
   _pppSPPComboBox->setMaximumWidth(8*ww);
   _pppNMEAPortLineEdit->setMaximumWidth(6*ww);
 //pppLayout->setColumnMinimumWidth(0,12*ww);
@@ -780,6 +785,9 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("PPP Plot"),               4, 8);
 
   pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),5, 0,1,5);
+  pppLayout->addWidget(_pppSync,                             5, 7);
+  pppLayout->addWidget(new QLabel("Sync Corr (sec)"),        5, 8);
+
   pppgroup->setLayout(pppLayout);
 
   // Main Layout
@@ -1104,6 +1112,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppRefCrdX",  _pppRefCrdXLineEdit->text());
   settings.setValue("pppRefCrdY",  _pppRefCrdYLineEdit->text());
   settings.setValue("pppRefCrdZ",  _pppRefCrdZLineEdit->text());
+  settings.setValue("pppSync",     _pppSync->text());
   settings.setValue("pppUsePhase", _pppUsePhaseCheckBox->checkState());
   settings.setValue("pppPlotCoordinates", _pppPlotCoordinates->checkState());
   settings.setValue("pppEstTropo", _pppEstTropoCheckBox->checkState());
@@ -1647,6 +1656,7 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _pppRefCrdXLineEdit 
      || sender() == _pppRefCrdYLineEdit 
      || sender() == _pppRefCrdZLineEdit 
+     || sender() == _pppSync 
      || sender() == _pppEstTropoCheckBox
      || sender() == _pppUsePhaseCheckBox ) {
     if (!_pppMountLineEdit->text().isEmpty()) {
@@ -1656,6 +1666,7 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdXLineEdit->setPalette(palette_white);
       _pppRefCrdYLineEdit->setPalette(palette_white);
       _pppRefCrdZLineEdit->setPalette(palette_white);
+      _pppSync->setPalette(palette_white);
       _pppUsePhaseCheckBox->setPalette(palette_white);
       _pppPlotCoordinates->setPalette(palette_white);
       _pppEstTropoCheckBox->setPalette(palette_white);
@@ -1667,6 +1678,7 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdXLineEdit->setEnabled(true);
       _pppRefCrdYLineEdit->setEnabled(true);
       _pppRefCrdZLineEdit->setEnabled(true);
+      _pppSync->setEnabled(true);
       _pppUsePhaseCheckBox->setEnabled(true);
       _pppPlotCoordinates->setEnabled(true);
       _pppEstTropoCheckBox->setEnabled(true);
@@ -1678,6 +1690,8 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdYLineEdit->setEnabled(true);
       _pppRefCrdZLineEdit->setPalette(palette_white);
       _pppRefCrdZLineEdit->setEnabled(true);
+      _pppSync->setPalette(palette_white);
+      _pppSync->setEnabled(true);
 
       if (!_pppRefCrdXLineEdit->text().isEmpty() &&
           !_pppRefCrdYLineEdit->text().isEmpty() &&
@@ -1728,6 +1742,7 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdXLineEdit->setPalette(palette_gray);
       _pppRefCrdYLineEdit->setPalette(palette_gray);
       _pppRefCrdZLineEdit->setPalette(palette_gray);
+      _pppSync->setPalette(palette_gray);
       _pppUsePhaseCheckBox->setPalette(palette_gray);
       _pppPlotCoordinates->setPalette(palette_gray);
       _pppEstTropoCheckBox->setPalette(palette_gray);
@@ -1747,6 +1762,7 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdXLineEdit->setEnabled(false);
       _pppRefCrdYLineEdit->setEnabled(false);
       _pppRefCrdZLineEdit->setEnabled(false);
+      _pppSync->setEnabled(false);
       _pppUsePhaseCheckBox->setEnabled(false);
       _pppPlotCoordinates->setEnabled(false);
       _pppEstTropoCheckBox->setEnabled(false);
