@@ -98,7 +98,6 @@ bncPPPclient::bncPPPclient(QByteArray staID) {
           this, SLOT(slotNewCorrections(QList<QString>)));
 
   _staID   = staID;
-  _epoData = 0;
   _model   = new bncModel(staID);
   connect(_model, SIGNAL(newNMEAstr(QByteArray)), 
           this,   SIGNAL(newNMEAstr(QByteArray)));
@@ -108,7 +107,10 @@ bncPPPclient::bncPPPclient(QByteArray staID) {
 ////////////////////////////////////////////////////////////////////////////
 bncPPPclient::~bncPPPclient() {
   delete _model;
-  delete _epoData;
+  while (!_epoData.empty()) {
+    delete _epoData.front();
+    _epoData.pop();
+  }
   QMapIterator<QString, t_ephPair*> it(_eph);
   while (it.hasNext()) {
     it.next();
@@ -142,6 +144,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   }
 
   t_satData* satData = new t_satData();
+  satData->tt = bncTime(obs.GPSWeek, obs.GPSWeeks);
 
   // Satellite Number
   // ----------------
@@ -168,19 +171,16 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
     bb = _bias.value(satData->prn); 
   }
 
-  // Add new Satellite to the epoch
-  // ------------------------------
-  bncTime tt(obs.GPSWeek, obs.GPSWeeks);
-  
-  if      (!_epoData) {
-    _epoData = new t_epoData();
-    _epoData->tt = tt;
+  // Add new epoch, process the older ones
+  // -------------------------------------
+  if      (_epoData.size() == 0) {
+    _epoData.push(new t_epoData());
+    _epoData.back()->tt = satData->tt;
   }
-  else if (tt != _epoData->tt) {
-    processEpoch();
-    delete _epoData;
-    _epoData = new t_epoData();
-    _epoData->tt = tt;
+  else if (satData->tt != _epoData.back()->tt) {
+    processEpochs();
+    _epoData.push(new t_epoData());
+    _epoData.back()->tt = satData->tt;
   }
 
   // Set Observations GPS
@@ -209,7 +209,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
       satData->L3      = c1 * satData->L1 + c2 * satData->L2;
       satData->lambda3 = c1 * t_CST::c / f1 + c2 * t_CST::c / f2;
 
-      _epoData->satDataGPS[satData->prn] = satData;
+      _epoData.back()->satDataGPS[satData->prn] = satData;
     }
     else {
       delete satData;
@@ -242,7 +242,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
       satData->L3      = c1 * satData->L1 + c2 * satData->L2;
       satData->lambda3 = c1 * t_CST::c / f1 + c2 * t_CST::c / f2;
 
-      _epoData->satDataGlo[satData->prn] = satData;
+      _epoData.back()->satDataGlo[satData->prn] = satData;
     }
     else {
       delete satData;
@@ -265,7 +265,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
       satData->P3      = c1 * satData->P1 + c5 * satData->P5;
       satData->L3      = c1 * satData->L1 + c5 * satData->L5;
       satData->lambda3 = c1 * t_CST::c / f1 + c5 * t_CST::c / f5;
-      _epoData->satDataGal[satData->prn] = satData;
+      _epoData.back()->satDataGal[satData->prn] = satData;
     }
     else {
       delete satData;
@@ -551,7 +551,7 @@ t_irc bncPPPclient::cmpToT(t_satData* satData) {
   double clkSat = 0.0;
   for (int ii = 1; ii <= 10; ii++) {
 
-    bncTime ToT = _epoData->tt - prange / t_CST::c - clkSat;
+    bncTime ToT = satData->tt - prange / t_CST::c - clkSat;
 
     ColumnVector xc(4);
     ColumnVector vv(3);
@@ -575,11 +575,11 @@ t_irc bncPPPclient::cmpToT(t_satData* satData) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::processEpoch() {
+void bncPPPclient::processFrontEpoch() {
 
   // Data Pre-Processing
   // -------------------
-  QMutableMapIterator<QString, t_satData*> iGPS(_epoData->satDataGPS);
+  QMutableMapIterator<QString, t_satData*> iGPS(_epoData.front()->satDataGPS);
   while (iGPS.hasNext()) {
     iGPS.next();
     QString    prn     = iGPS.key();
@@ -592,7 +592,7 @@ void bncPPPclient::processEpoch() {
     }
   }
 
-  QMutableMapIterator<QString, t_satData*> iGlo(_epoData->satDataGlo);
+  QMutableMapIterator<QString, t_satData*> iGlo(_epoData.front()->satDataGlo);
   while (iGlo.hasNext()) {
     iGlo.next();
     QString    prn     = iGlo.key();
@@ -605,7 +605,7 @@ void bncPPPclient::processEpoch() {
     }
   }
 
-  QMutableMapIterator<QString, t_satData*> iGal(_epoData->satDataGal);
+  QMutableMapIterator<QString, t_satData*> iGal(_epoData.front()->satDataGal);
   while (iGal.hasNext()) {
     iGal.next();
     QString    prn     = iGal.key();
@@ -620,7 +620,15 @@ void bncPPPclient::processEpoch() {
 
   // Filter Solution
   // ---------------
-  if (_model->update(_epoData) == success) {
+  if (_model->update(_epoData.front()) == success) {
     emit newPosition(_model->time(), _model->x(), _model->y(), _model->z());
   }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncPPPclient::processEpochs() {
+  processFrontEpoch();
+  delete _epoData.front();
+  _epoData.pop();
 }

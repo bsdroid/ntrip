@@ -25,6 +25,7 @@
 #ifndef BNCPPPCLIENT_H
 #define BNCPPPCLIENT_H
 
+#include <queue>
 #include <QtNetwork>
 
 #include <newmat.h>
@@ -43,6 +44,7 @@ class t_satData {
     indexPhase = 0;
   }
   ~t_satData() {}
+  bncTime      tt;
   QString      prn;
   double       P1;
   double       P2;
@@ -177,7 +179,8 @@ class bncPPPclient : public QObject {
 
   t_irc getSatPos(const bncTime& tt, const QString& prn, 
                   ColumnVector& xc, ColumnVector& vv);
-  void processEpoch();
+  void processEpochs();
+  void processFrontEpoch();
   void applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, 
                  ColumnVector& vv);
   t_irc cmpToT(t_satData* satData);
@@ -187,7 +190,7 @@ class bncPPPclient : public QObject {
   QMap<QString, t_ephPair*> _eph;
   QMap<QString, t_corr*>  _corr;
   QMap<QString, t_bias*>  _bias;
-  t_epoData*              _epoData;
+  std::queue<t_epoData*>  _epoData;
   bncModel*               _model;
   bool                    _useGlonass;
   bool                    _useGalileo;
