@@ -380,6 +380,7 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
     double  GPSweeks;
     QString prn;
     in >> messageType >> updateInterval >> GPSweek >> GPSweeks >> prn;
+
     if ( messageType == COTYPE_GPSCOMBINED     || 
          messageType == COTYPE_GLONASSCOMBINED ||
          messageType == COTYPE_GPSORBIT        ||
@@ -397,6 +398,7 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
       }
 
       cc->tt.set(GPSweek, GPSweeks);
+      _corr_tt.set(GPSweek, GPSweeks);
 
       if      ( messageType == COTYPE_GPSCOMBINED    || 
                 messageType == COTYPE_GLONASSCOMBINED ) {
@@ -628,7 +630,31 @@ void bncPPPclient::processFrontEpoch() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::processEpochs() {
-  processFrontEpoch();
-  delete _epoData.front();
-  _epoData.pop();
+
+  double maxDt = 0.0;
+  if (!_pppMode) {
+    maxDt = 0.0;
+  }
+
+  while (!_epoData.empty()) {
+    t_epoData* frontEpoData = _epoData.front();
+
+    // No corrections yet, skip the epoch
+    // ----------------------------------
+    if (maxDt != 0.0 && !_corr_tt.valid()) {
+      delete _epoData.front();
+      _epoData.pop();
+      continue;
+    }
+
+    if (maxDt == 0 || 
+         (frontEpoData->tt - _corr_tt) < maxDt ) {
+      processFrontEpoch();
+      delete _epoData.front();
+      _epoData.pop();
+    }
+    else {
+      return;
+    }
+  }
 }

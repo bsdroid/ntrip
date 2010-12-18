@@ -189,6 +189,7 @@ class bncPPPclient : public QObject {
   QMutex                  _mutex;
   QMap<QString, t_ephPair*> _eph;
   QMap<QString, t_corr*>  _corr;
+  bncTime                 _corr_tt;
   QMap<QString, t_bias*>  _bias;
   std::queue<t_epoData*>  _epoData;
   bncModel*               _model;
