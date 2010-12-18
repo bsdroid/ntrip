@@ -193,6 +193,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.5 <a href=#pppnmeaout>NMEA</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.5.1 <a href=#pppnmeafile>File</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.5.2 <a href=#pppnmeaport>Port</a><br><br>
+&nbsp; &nbsp; &nbsp; 3.11.6 <a href=#pppsync>Sync Corr</a><br><br>
 3.12. <a href=#streams>Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1 <a href=#streamedit>Edit Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.2 <a href=#streamdelete>Delete Stream</a><br>
@@ -1271,6 +1272,14 @@ Specify the IP port number of a local port where Point Positioning results becom
 </p>
 <p>
 NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World_Wind_Download</u>) can be used for real-time visualization of positions provided through BNC's NMEA IP output port. You need the 'GPS Tracker' plug-in available from <u>http://worldwindcentral.com/wiki/GPS_Tracker</u> for that. The 'Word Wind' is not meant for showing centimeter level details.
+</p>
+
+<p><a name="pppsync"><h4>3.11.6 Sync Corr - optional</h4></p>
+<p>
+You may like to process only those observations which are received first within a maximum of "Sync corr" seconds after the reception of a clock correction. Using only observations which come in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing all observations regardless of how late after a clock correction they were received.
+</p>
+<p>
+Default is an empty option field, meaning that you want BNC to determine a PPP solution from all incomming observations through applying the latest received clock correction.
 </p>
 
 <p><a name="streams"><h4>3.12. Streams</h4></p>
