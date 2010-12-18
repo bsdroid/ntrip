@@ -633,7 +633,8 @@ void bncPPPclient::processEpochs() {
 
   // Synchronization threshold (not used in SPP mode)
   // ------------------------------------------------
-  double maxDt = 0.0;
+  bncSettings settings;
+  double maxDt = settings.value("pppSync").toDouble();
   if (!_pppMode) {
     maxDt = 0.0;
   }
