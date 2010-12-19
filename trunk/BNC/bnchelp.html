@@ -1276,17 +1276,13 @@ NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World
 
 <p><a name="pppsync"><h4>3.11.6 Sync Corr - optional</h4></p>
 <p>
-Zero value (or empty field) means that BNC processes each epoch of data
-immediately after its arrival using satellite clock corrections available at
-that time. Non-zero value "pppSync" means that the epochs of data are buffered
-and the processing of each epoch is postponed till the satellite clock
-corrections not older than "pppSync" are available.
-<p>
-</p>
-Using only observations which come in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing all observations regardless of how late after a clock correction they were received.
+Zero value (or empty field) means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. Non-zero value 'pppSync' means that the epochs of data are buffered and the processing of each epoch is postponed till the satellite clock corrections not older than 'pppSync' are available. Specifying a value of half the update rate of the clock corrections as 'Sync Corr' (i.e. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of the update rate.
 </p>
 <p>
-Default is an empty option field, meaning that you want BNC to determine a PPP solution from all incoming observations through applying the latest received clock correction.
+Using observations in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing observations regardless of how late after a clock correction they were received.
+</p>
+<p>
+Default is an empty option field, meaning that you want BNC to process observations immediately after their arrival through applying the latest received clock correction.
 </p>
 
 <p><a name="streams"><h4>3.12. Streams</h4></p>
