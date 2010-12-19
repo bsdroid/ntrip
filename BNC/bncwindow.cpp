@@ -498,8 +498,8 @@ bncWindow::bncWindow() {
   _pppSync->setWhatsThis(tr(
     "<p> Zero value (or empty field) means that BNC processes each epoch of data "
     "immediately after its arrival using satellite clock corrections available at "
-    "that time. Non-zero value 'pppSync' means that the epochs of data are buffered "
-    "and the processing of each epoch is postponed till the satellite clock "
+    "that time. Non-zero value 'pppSync' (i.e. 5) means that the epochs of data "
+    "are buffered and the processing of each epoch is postponed till the satellite clock "
     "corrections not older than 'pppSync' are available.<p>"));
 
   // Canvas with Editable Fields
