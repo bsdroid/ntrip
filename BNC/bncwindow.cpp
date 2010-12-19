@@ -495,7 +495,12 @@ bncWindow::bncWindow() {
   _pppRefCrdYLineEdit->setWhatsThis(tr("<p>Enter reference coordinate Y of the receiver's position.</p>"));
   _pppRefCrdZLineEdit->setWhatsThis(tr("<p>Enter reference coordinate Z of the receiver's position.</p>"));
   _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when the corresponting option is selected above. Values are either referred to an XYZ reference coordinate (if specified) or referred to the first estimated set of coordinate compoments. The sliding PPP time series window covers the period of the latest 5 minutes."));
-  _pppSync->setWhatsThis(tr("<p>You may like to process only those observations which are received first within a maximum of 'Sync corr' seconds after the reception of a clock correction. 5 seconds could be an approriate choice for this option.</p><p>Using only observations which come in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing all observations regardless of how late after a clock correction they were received.<p></p>Default is an empty option field, meaning that you want BNC to determine a PPP solution from all incoming observations through applying the latest received clock correction.</p>"));
+  _pppSync->setWhatsThis(tr(
+    "<p> Zero value (or empty field) means that BNC processes each epoch of data "
+    "immediately after its arrival using satellite clock corrections available at "
+    "that time. Non-zero value 'pppSync' means that the epochs of data are buffered "
+    "and the processing of each epoch is postponed till the satellite clock "
+    "corrections not older than 'pppSync' are available.<p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
