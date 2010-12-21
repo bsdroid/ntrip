@@ -180,7 +180,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.2.1 <a href=#pppphase>Use Phase Obs</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2.2 <a href=#ppptropo>Estimate Tropo</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2.3 <a href=#pppglo>Use GLONASS</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.2.4 <a href=#pppplot>PPP Plot</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.2.4 <a href=#pppgal>Use Galileo</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppoptcont>Options cont'd</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.3.1 <a href=#pppsigcp>Sigma Code/Phase</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.3.2 <a href=#pppquick>Quick-Start</a><br>
@@ -190,9 +190,10 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.4.2 <a href=#pppsigxyzn>XYZ White Noise</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.4.3 <a href=#pppsigtrpi>Tropo Init</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.4.4 <a href=#pppsigtrpn>Tropo White Noise</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.5 <a href=#pppnmeaout>NMEA</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.5.1 <a href=#pppnmeafile>File</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.5.2 <a href=#pppnmeaport>Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.5 <a href=#pppout>Output</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.5.1 <a href=#pppnmeafile>NMEA File</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.5.2 <a href=#pppnmeaport>NMEA Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.5.3 <a href=#pppplot>PPP Plot</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.6 <a href=#pppsync>Sync Corr</a><br><br>
 3.12. <a href=#streams>Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1 <a href=#streamedit>Edit Streams</a><br>
@@ -1067,33 +1068,68 @@ The 'PPP' string in that is followed by the selected mounpoint, a PPP time stamp
 <p>
 More detailed PPP results are saved in BNC's logfile. Depending on the selected processing options you find
 <ul>
-<li>code and phase residuals for GPS and GLONASS in [m], </li>
+<li>code and phase residuals for GPS and GLONASS and Galileo in [m], </li>
 <li>receiver clock errors in [m], </li>
 <li>a-priori and correction values of tropospheric zenith delay in [m], 
+<li>time offset between GPS time and Galileo time, 
 <li>L3 biases, also known as 'floated ambiguities', given per satellite.
 </ul>
-These parameters are saved together with their standard deviation. Example extract from a log file:
+These parameters are saved together with their standard deviation. The following is an example extract from a log file when BNC was in 'Single Point Positioning' (SPP) mode:
 <pre>
-10-08-09 06:04:11 Single Point Positioning of Epoch 06:04:09.0
+10-12-06 18:10:50 Single Point Positioning of Epoch 18:10:48.0
 --------------------------------------------------------------
-residuals code     0.386    0.175   -0.378    0.032   -0.103   -2.409   -0.488   -0.576
-residuals phase   -0.007   -0.001    0.002    0.002   -0.007   -0.005    0.006    0.007
-residuals glo      0.015   -0.004    0.006
+18:10:48.0 RES G04   L3    0.0165   P3   -0.1250
+18:10:48.0 RES G11   L3    0.0150   P3    0.7904
+18:10:48.0 RES G13   L3    0.0533   P3    0.4854
+18:10:48.0 RES G17   L3   -0.0277   P3    1.2920
+18:10:48.0 RES G20   L3   -0.0860   P3   -0.1186
+18:10:48.0 RES G23   L3    0.0491   P3   -0.1052
+18:10:48.0 RES G31   L3    0.0095   P3   -3.2929
+18:10:48.0 RES G32   L3    0.0183   P3   -3.8800
+18:10:48.0 RES R05   L3   -0.0077
+18:10:48.0 RES R06   L3    0.0223
+18:10:48.0 RES R15   L3   -0.0020
+18:10:48.0 RES R16   L3    0.0156
+18:10:48.0 RES R20   L3   -0.0247
+18:10:48.0 RES R21   L3    0.0014
+18:10:48.0 RES R22   L3   -0.0072
+18:10:48.0 RES E52   L3   -0.0475   P3   -0.1628
+18:10:48.0 RES G04   L3    0.0166   P3   -0.1250
+18:10:48.0 RES G11   L3    0.0154   P3    0.7910
+18:10:48.0 RES G13   L3    0.0535   P3    0.4855
+18:10:48.0 RES G17   L3   -0.0272   P3    1.2925
+18:10:48.0 RES G20   L3   -0.0861   P3   -0.1188
+18:10:48.0 RES G23   L3    0.0489   P3   -0.1055
+18:10:48.0 RES G31   L3    0.0094   P3   -3.2930
+18:10:48.0 RES G32   L3    0.0183   P3   -3.8800
+18:10:48.0 RES R05   L3   -0.0079
+18:10:48.0 RES R06   L3    0.0223
+18:10:48.0 RES R15   L3   -0.0020
+18:10:48.0 RES R16   L3    0.0160
+18:10:48.0 RES R20   L3   -0.0242
+18:10:48.0 RES R21   L3    0.0016
+18:10:48.0 RES R22   L3   -0.0072
+18:10:48.0 RES E52   L3   -0.0474   P3    0.1385
 
-    clk     = 68260.392 +-  1.353
-    trp     =   2.331 -0.006 +-  0.100
-    amb G02 = -0.974 +-  0.809
-    amb G10 =  3.250 +-  0.720
-    amb G26 = -5.192 +-  0.911
-    amb G28 = -0.741 +-  0.909
-    amb G08 =  1.317 +-  0.719
-    amb G05 = -1.928 +-  0.742
-    amb G07 =  4.887 +-  0.853
-    amb G13 = -1.190 +-  1.221
-    amb R07 = -145.700 +-  0.717
-    amb R08 = -140.476 +-  0.939
-    amb R10 = -128.820 +-  0.710
-
+    clk     =  64394.754 +-  0.045
+    trp     =   2.185 +0.391 +-  0.001
+    offset  =   -415.400 +-  0.137
+    amb G17 =     11.942 +-  0.045
+    amb G23 =    248.892 +-  0.044
+    amb G31 =    254.200 +-  0.045
+    amb G11 =    -12.098 +-  0.044
+    amb G20 =   -367.765 +-  0.044
+    amb G04 =    259.588 +-  0.044
+    amb E52 =      6.124 +-  0.130
+    amb G32 =    201.496 +-  0.045
+    amb G13 =   -265.658 +-  0.044
+    amb R22 =   -106.246 +-  0.044
+    amb R21 =   -119.605 +-  0.045
+    amb R06 =     41.328 +-  0.044
+    amb R15 =    163.453 +-  0.044
+    amb R20 =   -532.746 +-  0.045
+    amb R05 =   -106.603 +-  0.044
+    amb R16 =   -107.830 +-  0.044
 </pre>
 </p>
 
@@ -1139,7 +1175,7 @@ Furthermore, specify the Point Positioning method you want to apply. Options are
 Enter the reference coordinate components X,Y,Z of the receiver's position in meters if known. Default are empty option fields, meaning that the antenna's XYZ position is unknown. 
 </p>
 <p>
-Once XYZ coordinate components are defined, the 'PPP' line in BNC's logfile is extended by Nort, East and Up desplacements to (example):
+Once XYZ coordinate components are defined, the 'PPP' line in BNC's logfile is extended by Nort, East and Up displacements to (example):
 </p>
 <pre>
 10-08-09 06:01:56 FFMJ1  PPP 06:02:09.0 11    4053457.628 +-  2.639     617729.438 +-  1.180    4869396.447 +-  1.921  NEU   -0.908   -0.571    1.629
@@ -1171,15 +1207,12 @@ By default BNC does not estimate troposphere parameters. Tick 'Estimate tropo' t
 
 <p><a name="pppglo"><h4>3.11.2.3 Use GLONASS - optional</h4></p>
 <p>
-By default BNC does not process GLONASS observations when in Point Positioning mode. Tick 'Use GLONASS' to use GPS and GLONASS observations for estimating coordinates in Point Positioning mode.
+By default BNC does not process GLONASS but only GPS observations when in Point Positioning mode. Tick 'Use GLONASS' to use GLONASS observations in addition to GPS (and Galileo if specified) for estimating coordinates in Point Positioning mode.
 </p>
 
-<p><a name="pppplot"><h4>3.11.2.4 PPP Plot - optional</h4></p>
+<p><a name="pppgal"><h4>3.11.2.4 Use Galileo - optional</h4></p>
 <p>
-PPP time series of North (red), East(green) and Up (blue) coordinate components will be plotted in the 'PPP Plot' tab when this option ticked. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated XYZ coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.
-</p>
-<p>
-Note that a PPP time series makes only sense for a stationary operated receiver.
+By default BNC does not process Galileo but only GPS observations when in Point Positioning mode. Tick 'Use Galileo' to use Galileo observations in addition to GPS (and GLONASS if specified) for estimating coordinates in Point Positioning mode.
 </p>
 
 <p><a name="pppoptcont"><h4>3.11.3 Options cont'd</h4></p>
@@ -1208,7 +1241,7 @@ You may need to create your own reference coordinate through running BNC for an 
 </p>
 
 <p><img src=":bnchelp/screenshot17.png"/></p>
-<p><u>Figure:</u> BNC in 'Quick-Start - Static' mode</p>
+<p><u>Figure:</u> BNC in 'Quick-Start' mode</p>
 
 <p><a name="pppaverage"><h4>3.11.3.3 Averaging - optional if XYZ is set</h4></p>
 <p>
@@ -1248,31 +1281,42 @@ Enter a sigma in meters for the a-priory model based tropospheric delay estimati
 Enter a sigma in meters per second to describe the expected variation of the tropospheric effect. Supposing 1Hz observation data, a value of 1e-6 (default) would mean that the tropospheric effect may vary for 3600 * 1e-6 = 0.0036 meters per hour.
 </p>
 
-<p><a name="pppnmeaout"><h4>3.11.5 NMEA</h4></p>
+<p><a name="pppout"><h4>3.11.5 Output - optional</h4></p>
 <p>
-BNC allows to output results from Precise Point Positioning in NMEA format. The NMEA sentences generated about once per second are pairs of 
+BNC allows to output results from Precise Point Positioning in NMEA format or as a time series plot of displacements.
+</p>
+
+<p><a name="pppnmeafile"><h4>3.11.5.1 NMEA File - optional</h4></p>
+<p>
+The NMEA sentences generated about once per second are pairs of 
 <ul>
 <li> GPGGA sentences which mainly carry the estimated latitude, longitude, and height values, plus</li>
 <li> GPRMC sentences which mainly carry date and time information.</li>
 </ul>
 </p>
 <p>
-Note that Tomoji Takasu has written a Windows program called RTKPlot for visualizing NMEA strings. It is available from <u>http://gpspp.sakura.ne.jp/rtklib/rtklib.htm</u> and compatible with the NMEA output of BNC's PPP option.
+Specify the full path to a file where Point Positioning results are saved as NMEA messages. The default value for 'NMEA file' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
+</p>
+<p>
+Note that Tomoji Takasu has written a Windows program called RTKPlot for visualizing NMEA strings. It is available from <u>http://gpspp.sakura.ne.jp/rtklib/rtklib.htm</u> and compatible with the NMEA output of BNC's 'PPP Client' option.
 </p>
 
-
-<p><a name="pppnmeafile"><h4>3.11.5.1 File - optional</h4></p>
+<p><a name="pppnmeaport"><h4>3.11.5.2 NMEA Port - optional</h4></p>
 <p>
-Specify the full path to a file where Point Positioning results are saved as NMEA messages. The generated NMEA file begins with a single GPRMC message which carries only date and time information. The default value for 'File (full path)' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
-</p>
-
-<p><a name="pppnmeaport"><h4>3.11.5.2 Port - optional</h4></p>
-<p>
-Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'Port' is an empty option field, meaning that BNC does not provide NMEA messages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same. 
+Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'NMEA Port' is an empty option field, meaning that BNC does not provide NMEA messages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same. 
 </p>
 <p>
 NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World_Wind_Download</u>) can be used for real-time visualization of positions provided through BNC's NMEA IP output port. You need the 'GPS Tracker' plug-in available from <u>http://worldwindcentral.com/wiki/GPS_Tracker</u> for that. The 'Word Wind' is not meant for showing centimeter level details.
 </p>
+
+<p><a name="pppplot"><h4>3.11.5.3 PPP Plot - optional</h4></p>
+<p>
+PPP time series of North (red), East(green) and Up (blue) coordinate components will be plotted in the 'PPP Plot' tab when this option ticked. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated XYZ coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.
+</p>
+<p>
+Note that a PPP time series makes only sense for a stationary operated receiver.
+</p>
+
 
 <p><a name="pppsync"><h4>3.11.6 Sync Corr - optional</h4></p>
 <p>
