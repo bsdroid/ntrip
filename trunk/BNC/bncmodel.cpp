@@ -594,9 +594,16 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   _time = epoData->tt;
 
-  _log += "Single Point Positioning of Epoch " 
-        + QByteArray(_time.timestr(1).c_str()) +
+  if (settings.value("pppSPP").toString() == "PPP") {
+    _log += "Precise Point Positioning of Epoch " 
+          + QByteArray(_time.timestr(1).c_str()) +
+          "\n---------------------------------------------------------------\n";
+  }
+  else {
+    _log += "Single Point Positioning of Epoch " 
+          + QByteArray(_time.timestr(1).c_str()) +
           "\n--------------------------------------------------------------\n";
+  }
 
   SymmetricMatrix QQsav;
   ColumnVector    dx;
