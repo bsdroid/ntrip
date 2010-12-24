@@ -49,7 +49,7 @@
 #include "bncsettings.h"
 #include "RTCM/GPSDecoder.h"
 
-#define OLD_OBS_FORMAT 1
+#define OLD_OBS_FORMAT 0
 
 class t_oldObsInternal {
  public:
