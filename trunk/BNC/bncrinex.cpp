@@ -731,8 +731,12 @@ string bncRinex::rinexSatLine(const t_obs& obs, bool usells,
   }
   else if (obs.satSys == 'R') { // Glonass
     str << obs.satSys 
-        << setw(2) << setfill('0') << obs.satNum << setfill(' ')
-        << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
+        << setw(2) << setfill('0') << obs.satNum << setfill(' ');
+    if (!usells) {
+      str << ' ' << obs.slotNum << ' ';
+    }
+
+    str << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.L1C;
     if (usells) {
       str << lli1 << ' ';
