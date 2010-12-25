@@ -162,6 +162,11 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, t_obs obs) {
   long iSec    = long(floor(obs.GPSWeeks+0.5));
   long newTime = obs.GPSWeek * 7*24*3600 + iSec;
 
+  // Rename the Station
+  // ------------------
+  strncpy(obs.StatID, staID.constData(),sizeof(obs.StatID));
+  obs.StatID[sizeof(obs.StatID)-1] = '\0';
+
   // Output into the socket
   // ----------------------
   if (_uSockets) {
