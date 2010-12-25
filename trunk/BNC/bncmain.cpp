@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
   QString    confFileName;
 
   for (int ii = 1; ii < argc; ii++) {
-    if (QByteArray(argv[ii]) == "-nw") {
+    if (QByteArray(argv[ii]) == "-nw" || QByteArray(argv[ii]) == "--nw") {
       GUIenabled = false;
     }
     if (ii + 1 < argc) {
