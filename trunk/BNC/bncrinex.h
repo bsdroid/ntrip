@@ -54,7 +54,7 @@ class bncRinex {
      _approxPos[2] = staz;
    }
 
-   static std::string rinexSatLine(const t_obs& obs, 
+   static std::string rinexSatLine(const t_obs& obs, bool usells,
                                    char lli1, char lli2, char lli5);
 
  private:
