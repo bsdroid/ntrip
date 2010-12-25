@@ -45,29 +45,46 @@
 
 using namespace std;
 
-class t_obsOld {
-  public:
-  int    flags;
-  char   StatID[20+1];  // Station ID
-  char   satSys;        // Satellite System ('G' or 'R')
-  int    satNum;        // Satellite Number (PRN for GPS NAVSTAR)
-  int    slot;          // Slot (Channel) Number (for Glonass)
-  int    GPSWeek;       // Week of GPS-Time
-  double GPSWeeks;      // Second of Week (GPS-Time)
-  double C1;            // CA-code pseudorange (meters)
-  double C2;            // CA-code pseudorange (meters)
-  double P1;            // P1-code pseudorange (meters)
-  double P2;            // P2-code pseudorange (meters)
-  double L1;            // L1 carrier phase (cycles)
-  double L2;            // L2 carrier phase (cycles)
-  int    slip_cnt_L1;   // L1 cumulative loss of continuity indicator (negative value = undefined)
-  int    slip_cnt_L2;   // L2 cumulative loss of continuity indicator (negative value = undefined)
-  int    lock_timei_L1; // L1 last lock time indicator                (negative value = undefined)
-  int    lock_timei_L2; // L2 last lock time indicator                (negative value = undefined)
-  double S1;            // L1 signal-to noise ratio
-  double S2;            // L2 signal-to noise ratio
-  int    SNR1;          // L1 signal-to noise ratio (mapped to integer)
-  int    SNR2;          // L2 signal-to noise ratio (mapped to integer)
+class t_obs {
+ public:
+  double L1() const {return (L1P != 0.0 ? L1P : L1C);}
+  double L2() const {return (L2P != 0.0 ? L2P : L2C);}
+  double S1() const {return (L1P != 0.0 ? S1P : S1C);}
+  double S2() const {return (L2P != 0.0 ? S2P : S2C);}
+
+  char   StatID[20+1]; // Station ID
+  char   satSys;       // Satellite System ('G' or 'R')
+  int    satNum;       // Satellite Number (PRN for GPS NAVSTAR)
+  int    slotNum;      // Slot Number (for Glonass)
+  int    GPSWeek;      // Week of GPS-Time
+  double GPSWeeks;     // Second of Week (GPS-Time)
+
+  double C1;           // CA-code pseudorange (meters)
+  double P1;           // P1-code pseudorange (meters)
+  double L1C;          // L1 carrier phase (cycles)
+  double D1C;          // Doppler L1
+  double S1C;          // raw L1 signal strength
+  double L1P;          // L1 carrier phase (cycles)
+  double D1P;          // Doppler L1
+  double S1P;          // raw L1 signal strength
+
+  double C2;           // CA-code pseudorange (meters)
+  double P2;           // P2-code pseudorange (meters)
+  double L2C;          // L2 carrier phase (cycles)
+  double D2C;          // Doppler L2
+  double S2C;          // raw L2 signal strength
+  double L2P;          // L2 carrier phase (cycles)
+  double D2P;          // Doppler L2
+  double S2P;          // raw L2 signal strength
+
+  double C5;           // Pseudorange (meters)
+  double L5;           // L5 carrier phase (cycles)
+  double D5;           // Doppler L5
+  double S5;           // raw L5 signal strength
+
+  int    slip_cnt_L1;  // L1 cumulative loss of continuity indicator (negative value = undefined)
+  int    slip_cnt_L2;  // L2 cumulative loss of continuity indicator (negative value = undefined)
+  int    slip_cnt_L5;  // L5 cumulative loss of continuity indicator (negative value = undefined)
 };
 
 int main(int argc, char** argv) {
@@ -142,13 +159,13 @@ int main(int argc, char** argv) {
 
       // Interpret a portion of buffer as observation
       // --------------------------------------------
-      t_obsOld* obs;
-      const int obsSize = sizeof(t_obsOld);
+      t_obs* obs;
+      const int obsSize = sizeof(t_obs);
 
 
       while (buffer.size() >= obsSize) {
 
-        obs = (t_obsOld*) (buffer.left(obsSize).data());
+        obs = (t_obs*) (buffer.left(obsSize).data());
 
         cout << obs->StatID                      << " "
              << obs->satSys << obs->satNum       << " "
@@ -158,12 +175,12 @@ int main(int argc, char** argv) {
              << setprecision(4) << obs->C2       << " "
              << setprecision(4) << obs->P1       << " "
              << setprecision(4) << obs->P2       << " "
-             << setprecision(4) << obs->L1       << " "
+             << setprecision(4) << obs->L1()     << " "
              <<                    obs->slip_cnt_L1 << " "
-             << setprecision(4) << obs->L2       << " "
+             << setprecision(4) << obs->L2()     << " "
              <<                    obs->slip_cnt_L2 << " "
-             << setprecision(4) << obs->S1       << " "
-             << setprecision(4) << obs->S2       << endl;
+             << setprecision(4) << obs->S1()     << " "
+             << setprecision(4) << obs->S2()     << endl;
 
         buffer.remove(0,obsSize);
       }
