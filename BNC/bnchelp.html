@@ -211,6 +211,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.3 <a href=#streamuser>User and Password</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.4 <a href=#gettable>Get Table</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.5 <a href=#ntripv>NTRIP Version</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.6 <a href=#map>Map</a><br>
 &nbsp; &nbsp; &nbsp; 3.14.2 <a href=#streamip>Add Stream - Coming from TCP/IP Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.14.3 <a href=#streamudp>Add Stream - Coming from UDP Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.14.4 <a href=#streamser>Add Stream - Coming from Serial Port</a><br>
@@ -446,11 +447,11 @@ The default format for RINEX Observation files is RINEX Version 2.11. Select 'Ve
 
 <p><a name="ephemeris"><h4>3.5. RINEX Ephemeris</h4></p>
 <p>
-Broadcast ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3.x as message types 1019 (GPS) or 1020 (GLONASS) or 1045 (drafted, Galileo) or via RTIGS records type 300. The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BRDC' and the last character is
+Broadcast ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3.x as message types 1019 (GPS) or 1020 (GLONASS) or 1045 (proposed, Galileo) or via RTIGS records type 300. The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BRDC' and the last character is
 </p>
 <ul>
 <li>'N' or 'G' for GPS or GLONASS ephemeris in two separate RINEX Version 2.11 Navigation files, or</li>
-<li>'P' for GPS plus GLONASS ephemeris saved together in one RINEX Version 3 Navigation file.
+<li>'P' for GPS plus GLONASS plus Galileo ephemeris saved together in one RINEX Version 3 Navigation file.
 </ul> 
 
 <p>
@@ -726,77 +727,45 @@ When feeding a real-time GNSS network engine waiting epoch by epoch for synchron
 
 <p><a name="syncout"><h4>3.7. Feed Engine</h4></p>
 <p>
-BNC can generate synchronized or unsynchronized observations epoch by epoch from all stations and satellites to feed a real-time GNSS network engine. The output can be produced in a binary format through an IP port and/or a plain ASCII format to save the observations in a local file. Following StationID, GPSWeek, GPSWeekSeconds and SV-PRN it comprises the following observations where available:
+BNC can generate synchronized or unsynchronized observations epoch by epoch from all stations and satellites to feed a real-time GNSS network engine. Observations can be streamed out through an IP port and/or saved in a local file. The output is always in plain ASCII format and comprises the following parameters:
 <ul>
-<li>For GPS satellites, 'G': C1C L1C D1C S1C C1W L1W D1W S1W C2P L2P D2P S2P C2X L2X D2X S2X C5  L5  D5  S5</li>
-<li>For GLONASS satellites, 'R': C1C L1C D1C S1C C1P L1P D1P S1P C2P L2P D2P S2P C2C L2C D2C S2C</li>
-<li>For Geostationary signal payloads, 'S': C1C L1C D1C S1C C1W L1W D1W S1W</li>
-<li>For Galileo satellites, 'E': C1  L1  D1  S1  C5  L5  D5  S5</li>
+<li>For GPS satellites:<br>StationID GPSWeek GPSWeekSec 'G'PRN C1C L1C SlipCountL1 D1C S1C C1W L1W SlipCountL1 D1W S1W C2P L2P SlipCountL2 D2P S2P C2X L2X SlipCountL2 D2X S2X C5  L5 SlipCountL5 D5  S5</li>
+<li>For GLONASS satellites:<br>StationID GPSWeek GPSWeekSec 'R'PRN SlotNumber C1C L1C SlipCountL1 D1C S1C C1P L1P SlipCountL1 D1P S1P C2P L2P SlipCountL2 D2P S2P C2C L2C SlipCountL2 D2C S2C</li>
+<li>For Geostationary signal payloads:<br>StationID GPSWeek GPSWeekSec 'S'PRN C1C L1C SlipCountL1 D1C S1C C1W L1W SlipCountL1 D1W S1W</li>
+<li>For Galileo satellites:<br>StationID GPSWeek GPSWeekSec 'E'PRN C1  L1  SlipCountL1 D1  S1  C5  L5 SlipCountL5 D5  S5</li>
 </ul>
 In case an observation is not available, its value is set to zero '0.000'.
 </p>
 
-<p>The binary output is a continuous stream in the following order:</p>
-<pre>
-begEpoch
-t_obsInternal
-t_obsInternal
-...
-t_obsInternal
-endEpoch
-begEpoch
-t_obsInternal
-...
-</pre>
-
-<p>The corresponding structures are defined as follow:</p>
-<pre>
-  const char begEpoch[] = &quot;BEGEPOCH&quot;;
-  const char endEpoch[] = &quot;ENDEPOCH&quot;;
-...
-...
-class t_obsInternal {
- public:
-  int    flags;
-  char   StatID[20+1];  // Station ID
-  char   satSys;        // Satellite System ('G' for GPS or 'R' for GLONASS or 'S' for Geostationary signal payload)
-  int    satNum;        // Satellite Number (PRN for GPS NAVSTAR)
-  int    slot;          // Slot Number (for Glonass)
-  int    GPSWeek;       // Week of GPS-Time
-  double GPSWeeks;      // Second of Week (GPS-Time)
-  double C1;            // CA-code pseudorange (meters)
-  double C2;            // CA-code pseudorange (meters)
-  double P1;            // P1-code pseudorange (meters)
-  double P2;            // P2-code pseudorange (meters)
-  double L1;            // L1 carrier phase (cycles)
-  double L2;            // L2 carrier phase (cycles)
-  int    slip_cnt_L1;   // L1 cumulative loss of continuity indicator (negative value = undefined)
-  int    slip_cnt_L2;   // L2 cumulative loss of continuity indicator (negative value = undefined)
-  int    lock_timei_L1; // L1 last lock time indicator                (negative value = undefined)
-  int    lock_timei_L2; // L2 last lock time indicator                (negative value = undefined)
-  double S1;            // L1 signal-to noise ratio
-  double S2;            // L2 signal-to noise ratio
-  int    SNR1;          // L1 signal-to noise ratio (mapped to integer)
-  int    SNR2;          // L2 signal-to noise ratio (mapped to integer)
-};
-</pre>
-
 <p>
-The source code for BNC comes with an example program called 'test_bnc_qt.cpp' that allows you to read BNC's (synchronized or unsynchronized) binary observation output from the IP port and print the observations in a plain ASCII format on standard output.
+The following is an output examples for GPS, GLONASS and Galileo satellites and a geostationary payload signal:
+<pre>
+...
+WTZX3 1616 149732.0000000 E52  27089285.092   142354765.663 -1       2212.322          45.500    27089287.942   106304461.365 -1       2212.404          42.300
+...
+WTZX3 1616 149732.0000000 G10  22608910.719   118810687.059 -1       2965.339          49.300    22608909.593   118810311.312 -1       2965.339          36.000    22608915.003    92579465.057 -1       2966.012          36.000           0.000           0.000 -1          0.000           0.000           0.000           0.000 -1          0.000           0.000
+...
+WTZX3 1616 149732.0000000 G07  23633028.684   124192961.644 -1       3686.418          48.800    23633026.847   124192961.885 -1       3686.418          35.000    23633032.480    96773737.419 -1       3685.139          35.000    23633033.547    96773738.190 -1       3685.172          43.500           0.000           0.000 -1          0.000           0.000
+...
+WTZX3 1616 149732.0000000 R20 2   24149338.926   129137949.211 48       2950.111          42.800    24149340.305   129137949.481 48       2950.111          41.800    24149356.146   100440627.082 48       2949.895          39.500    24149356.702   100440626.859 48       2949.896          40.000
+...
+</pre>
+<p>
+The source code for BNC comes with a perl script called 'test_tcpip_client.pl' that allows you to read BNC's (synchronized or unsynchronized) ASCII observation output from the IP port and print it on standard output.
 </p>
 <p>
 Note that any socket connection of an application to BNC's synchronized or unsynchronized observations ports is recorded in the 'Log' tab on the bottom of the main window together with a connection counter, resulting in log records like 'New client connection on sync/usync port: # 1'.
 </p>
 
 <p>
-The following figure shows the screenshot of a BNC configuration where a number if streams is pulled from different NTRIP broadcasters to feed a GNSS engine via IP port output.
+The following figure shows the screenshot of a BNC configuration where a number of streams is pulled from different NTRIP broadcasters to feed a GNSS engine via IP port output.
 </p>
 <p><img src=":bnchelp/screenshot12.png"/></p>
 <p><u>Figure:</u> Synchronized BNC output via IP port to feed a GNSS real-time engine.</p>
 
 <p><a name="syncport"><h4>3.7.1 Port - optional</h4></p>
 <p>
-BNC can produce synchronized observations in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Synchronized means that BNC collects all data for any specific epoch which become available within a certain number of latency seconds (see 'Wait for Full Epoch' option). It then - epoch by epoch - outputs whatever has been received. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary synchronized output is generated.</p>
+BNC can produce synchronized observations in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Synchronized means that BNC collects all data for any specific epoch which become available within a certain number of latency seconds (see 'Wait for Full Epoch' option). It then - epoch by epoch - outputs whatever has been received. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary synchronized output is generated.</p>
 </p>
 
 <p><a name="syncwait"><h4>3.7.2 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
@@ -822,7 +791,7 @@ Beware that the size of this file can rapidly increase depending on the number o
 
 <p><a name="syncuport"><h4>3.7.5 Port (unsynchronized) - optional</h4></p>
 <p>
-BNC can produce unsynchronized observations from all configured streams in binary format on your local host (IP 127.0.0.1) through an IP 'Port'. Unsynchronized means that BNC immediately forwards any received observation to the port. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary unsynchronized output is generated.</p>
+BNC can produce unsynchronized observations from all configured streams in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Unsynchronized means that BNC immediately forwards any received observation to the port. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary unsynchronized output is generated.</p>
 <p>
 
 <p><a name="serial"><h4>3.8. Serial Output</h4></p>
@@ -1046,7 +1015,7 @@ Note that in RTCM Version 2.x the message types 18 and 19 carry only the observa
 BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or code plus phase data in ionosphere free linear combinations P3 or L3. Besides pulling a stream of observations from a dual frequency receiver, this also requires pulling in addition
 <ul>
 <li>a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of 'State Space Representation' (SSR) messages as proposed by RTCM (i.e. premature message type 1060). Note that for BNC these correctors need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream products.igs-ip.net:2101/CLK11 is an example.</li>
-<li>a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019, 1020, and (drafted) 1045. This is a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream RTCM3EPH on caster products.igs-ip.net:2101 is an example.</li>
+<li>a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019, 1020, and (proposed) 1045. This is a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream RTCM3EPH on caster products.igs-ip.net:2101 is an example.</li>
 </ul>
 </p>
 <p>
@@ -1429,7 +1398,7 @@ The bottom menu bar allows to add or delete streams to BNC's configuration and t
 <p><a name="streamadd"><h4>3.14.1 Add Stream - Coming from Caster</h4></p>
 
 <p>
-Button 'Add Stream' &gt; 'Coming from Caster' then opens a window that allows user to select data streams from an NTRIP broadcaster according to their mountpoints.
+Button 'Add Stream' &gt; 'Coming from Caster' then opens a window that allows user to select data streams from an NTRIP broadcaster according to their mountpoints and show a distribution map of offered streams.
 </p> 
 
 <p><a name="streamhost"><h4>3.14.1.1 Caster Host and Port - mandatory</h4></p>
@@ -1492,6 +1461,11 @@ If NTRIP version 2 is supported by the broadcaster:
 </ul>
 <p>
 Select option '1' if you are not sure whether the broadcaster supports NTRIP version 2.</li>
+</p>
+
+<p><a name="map"><h4>3.14.1.6 Map - optional</h4></p>
+<p>
+Button 'Map' opens a window to show a distribution map of the casters's streams. You may like to zoom in or out using option 'Zoom +' or 'Zoom -'. You may also like to 'Clean' or 'Reset' a map or let it 'Fit' exactly to the current size of the window. Option 'Close' shuts the window.
 </p>
 
 <p><a name="streamip"><h4>3.14.2 Add Stream - Coming from TCP/IP Port</h4></p>
@@ -1646,7 +1620,7 @@ Which observables and indicators are available on a particular stream will depen
 Using RTCM Version 3.x to produce RINEX files, BNC will properly handle message types 1002, 1004, 1010, 1012, 1071-1077, 1081-1087, or 1091-1097. However, when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
 </li>
 <li>Concerning the RTCM Version 3.x premature message types 1057-1068 (see RTCM document 091-2009-SC104-542 'Version 3 Proposed Messages - Set 10'), a final decision is not yet made. Note the what's implemented in BNC is just a temporary solution.</li>
-<li>Concerning the RTCM Version 3.x premature message types 1071-1077, 1081-1087, 1091-1097 (see RTCM document 086-2010-SC104-587 'New RTCM-3 Multiple Signal Message Proposal for GPS, GLONASS and GALILEO'), a final decision is not yet made. Note the what's implemented in BNC is just a temporary solution.</li>
+<li>Concerning the RTCM Version 3.x premature message types 1071-1077, 1081-1087, 1091-1097 (see RTCM document 086-2010-SC104-587 'New RTCM-3 Multiple Signal Message Proposal for GPS, GLONASS and Galileo'), a final decision is not yet made. Note that what is implemented in BNC is just a temporary solution.</li>
 <li>
 Using RTCM Version 2.x, BNC will only handle message types 18 and 19 or 20 and 21 together with position and the antenna offset information carried in types 3 and 22. Note that processing carrier phase corrections and pseudo-range corrections contained in message types 20 and 21 needs access to broadcast ephemeris. Hence, whenever dealing with message types 20 and 21, make sure that broadcast ephemeris become available for BNC through also retrieving at least one RTCM Version 3.x stream carrying message types 1019 (GPS ephemeris) and 1020 (GLONASS ephemeris).
 </li>
@@ -1698,6 +1672,7 @@ James Perlt, BKG, helped fixing bugs and redesigned BNC's main window.<br>
 Andre Hauschild, German Space Operations Center, DLR, revised the RTCMv2 decoder.<br>
 Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended the RTCMv2 decoder to handle message types 3, 20, 21, and 22 and added loss of lock indicator.<br>
 Jan Dousa, Geodetic Observatory Pecny, Czech Republic, provided a tool for drawing stream distribution maps and also helped with fixing bugs.<br>
+Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested to synchronize observations and clock corrections to reduce high frequency noise in PPP solutions.
 </p>
 
 <p><a name="annex"><h3>6. Annex</h3></p>
@@ -1945,13 +1920,13 @@ The following are proposed 'Multiple Signal Messages' (MSM) under discussion for
 <li>Type 1085, Full GLONASS pseudo-ranges, carrier phases, Doppler and signal strength</li>
 <li>Type 1086, Full GLONASS pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
 <li>Type 1087, Full GLONASS pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)<br></li>
-<li>Type 1091, Compact GALILEO pseudo-ranges</li>
-<li>Type 1092, Compact GALILEO carrier phases</li>
-<li>Type 1093, Compact GALILEO pseudo-ranges and carrier phases</li>
-<li>Type 1094, Full GALILEO pseudo-ranges and carrier phases plus signal strength</li>
-<li>Type 1095, Full GALILEO pseudo-ranges, carrier phases, Doppler and signal strength</li>
-<li>Type 1096, Full GALILEO pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
-<li>Type 1097, Full GALILEO pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)<br></li>
+<li>Type 1091, Compact Galileo pseudo-ranges</li>
+<li>Type 1092, Compact Galileo carrier phases</li>
+<li>Type 1093, Compact Galileo pseudo-ranges and carrier phases</li>
+<li>Type 1094, Full Galileo pseudo-ranges and carrier phases plus signal strength</li>
+<li>Type 1095, Full Galileo pseudo-ranges, carrier phases, Doppler and signal strength</li>
+<li>Type 1096, Full Galileo pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
+<li>Type 1097, Full Galileo pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)<br></li>
 </ul>
 </p>
 
