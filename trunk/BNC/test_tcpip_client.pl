@@ -8,7 +8,7 @@ use IO::Socket;
 my($port) = @ARGV;
 
 if (!defined($port)) {
-  die "Usage: test_bnc_eph.pl portNumber\n";
+  die "Usage: test_tcpip_client.pl portNumber\n";
 }
 
 # Local Variables
