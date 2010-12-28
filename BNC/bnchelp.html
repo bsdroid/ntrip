@@ -473,7 +473,7 @@ Select the length of the RINEX Navigation file generated. The default value is 1
 BNC can output broadcast ephemeris in RINEX Version 3 ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. This function is introduced in order to support i.e. the 'BKG Ntrip Sate Space Server' (BNS) which transforms IGS clocks and orbits into corrections to broadcast ephemeris. Specify an IP port number to activate this function. The default is an empty option field, meaning that no ASCII ephemeris output via IP port is generated.
 </p>
 <p>
-The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that allows you to read BNC's ASCII ephemeris output from the IP port.
+The source code for BNC comes with an example perl script 'test_tcpip_client.pl' that allows you to read BNC's ASCII ephemeris output from the IP port.
 </p>
 
 <p><a name="ephvers"><h4>3.5.4 Version - optional</h4></p>
@@ -717,7 +717,7 @@ The following is an example output for streams from Mountpoints RTCMSSR, CLK10 a
 </pre>
 </p>
 <p>
-The source code for BNC comes with an example perl script 'test_bnc_eph.pl' that allows you to read BNC's Broadcast Corrections from the IP port.
+The source code for BNC comes with an example perl script 'test_tcpip_client.pl' that allows you to read BNC's Broadcast Corrections from the IP port.
 </p>
 
 <p><a name="corrwait"><h4>3.6.4 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
@@ -736,9 +736,12 @@ BNC can generate synchronized or unsynchronized observations epoch by epoch from
 </ul>
 In case an observation is not available, its value is set to zero '0.000'.
 </p>
+<p>Note on SlipCounts:<br>
+It is the current understanding of BNC's authors that different slip counts could be referred to different phase measurements (i.e. L1C and L1P). The 'loss-of-lock' flags in RINEX are an example for making such kind of information available per phase measurement. However, it looks like we do have only one slip count in RTCM Version 3 for all phase measurements. As it could be that a receiver generates different slip counts for different phase measurements, we forward one slip count per phase measurement to the real-time GNSS network engine.
+</p>
 
 <p>
-The following is an output examples for GPS, GLONASS and Galileo satellites and a geostationary payload signal:
+The following is an output examples for GPS, GLONASS and Galileo observations and observations obtained from a geostationary payload signal:
 <pre>
 ...
 WTZX3 1616 149732.0000000 E52  27089285.092   142354765.663 -1       2212.322          45.500    27089287.942   106304461.365 -1       2212.404          42.300
