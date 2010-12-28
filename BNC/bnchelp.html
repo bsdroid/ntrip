@@ -737,11 +737,11 @@ BNC can generate synchronized or unsynchronized observations epoch by epoch from
 In case an observation is not available, its value is set to zero '0.000'.
 </p>
 <p>Note on 'SlipCount':<br>
-It is the current understanding of BNC's authors that different slip counts could be referred to different phase measurements (i.e. L1C and L1P). The 'loss-of-lock' flags in RINEX are an example for making such kind of information available per phase measurement. However, it looks like we do have only one slip count in RTCM Version 3 for all phase measurements. As it could be that a receiver generates different slip counts for different phase measurements, we forward one slip count per phase measurement to the real-time GNSS network engine.
+It is the current understanding of BNC's authors that different slip counts could be referred to different phase measurements (i.e. L1C and L1P). The 'loss-of-lock' flags in RINEX are an example for making such kind of information available per phase measurement. However, it looks like we do have only one slip count in RTCM Version 3 for all phase measurements. As it could be that a receiver generates different slip counts for different phase measurements, we output one slip count per phase measurement to a listening real-time GNSS network engine.
 </p>
 
 <p>
-The following is an output examples for GPS, GLONASS and Galileo observations and observations obtained from a geostationary payload signal:
+The following is an output example for GPS, GLONASS and Galileo observations and observations obtained from a geostationary payload signal:
 <pre>
 ...
 WTZX3 1616 149732.0000000 E52  27089285.092   142354765.663 -1       2212.322          45.500    27089287.942   106304461.365 -1       2212.404          42.300
