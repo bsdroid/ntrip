@@ -465,12 +465,12 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
   struct converttimeinfo cti;
   converttime(&cti, ep->GPSweek, ep->TOC);
 
-  lineV3.sprintf("G%02d %04d %02d %02d %02d %02d %02d %18.11e %18.11e %18.11e\n",
+  lineV3.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
                  ep->satellite, cti.year, cti.month, cti.day, cti.hour,
                  cti.minute, cti.second, ep->clock_bias, ep->clock_drift,
                  ep->clock_driftrate);
 
-  lineV2.sprintf("%02d %02d %02d %02d %02d %02d%5.1f %18.11e %18.11e %18.11e\n",
+  lineV2.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e\n",
                  ep->satellite, cti.year%100, cti.month, cti.day, cti.hour,
                  cti.minute, (double) cti.second, ep->clock_bias, 
                  ep->clock_drift, ep->clock_driftrate);
@@ -481,12 +481,12 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
   QByteArray fmt;
   QByteArray fmt2;
   if (_rinexVers == 2) {
-    fmt  = "    %18.11e %18.11e %18.11e %18.11e\n";
-    fmt2 = "    %18.11e %18.11e\n";
+    fmt  = "   %19.12e%19.12e%19.12e%19.12e\n";
+    fmt2 = "   %19.12e%19.12e\n";
   }
   else {
-    fmt  = "     %18.11e %18.11e %18.11e %18.11e\n";
-    fmt2 = "     %18.11e %18.11e\n";
+    fmt  = "    %19.12e%19.12e%19.12e%19.12e\n";
+    fmt2 = "    %19.12e%19.12e\n";
   }
 
   line.sprintf(fmt.data(), (double)ep->IODE, ep->Crs, ep->Delta_n, ep->M0);
@@ -544,11 +544,11 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
   QString lineV2;
   QString lineV3;
 
-  lineV3.sprintf("R%02d %04d %02d %02d %02d %02d %02d %18.11e %18.11e %18.11e\n",
+  lineV3.sprintf("R%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
                  ep->almanac_number, cti.year, cti.month, cti.day, cti.hour, 
                  cti.minute, cti.second, -ep->tau, ep->gamma, (double) tk);
 
-  lineV2.sprintf("%02d %02d %02d %02d %02d %02d%5.1f %18.11e %18.11e %18.11e\n",
+  lineV2.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e\n",
                  ep->almanac_number, cti.year%100, cti.month, cti.day, 
                  cti.hour, cti.minute, (double) cti.second, -ep->tau, 
                  ep->gamma, (double) tk);
@@ -558,10 +558,10 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
 
   QByteArray fmt;
   if (_rinexVers == 2) {
-    fmt = "    %18.11e %18.11e %18.11e %18.11e\n";
+    fmt = "   %19.12e%19.12e%19.12e%19.12e\n";
   }
   else {
-    fmt = "     %18.11e %18.11e %18.11e %18.11e\n";
+    fmt = "    %19.12e%19.12e%19.12e%19.12e\n";
   }
 
   line.sprintf(fmt.data(), ep->x_pos, ep->x_velocity, ep->x_acceleration, 
@@ -589,7 +589,7 @@ void bncApp::printGalileoEph(galileoephemeris* ep, bool printFile) {
   struct converttimeinfo cti;
   converttime(&cti, ep->Week, ep->TOC);
 
-  lineV3.sprintf("E%02d %04d %02d %02d %02d %02d %02d %18.11e %18.11e %18.11e\n",
+  lineV3.sprintf("E%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
                  ep->satellite, cti.year, cti.month, cti.day, cti.hour,
                  cti.minute, cti.second, ep->clock_bias, ep->clock_drift,
                  ep->clock_driftrate);
@@ -597,9 +597,9 @@ void bncApp::printGalileoEph(galileoephemeris* ep, bool printFile) {
   QString    line;
   QByteArray allLines;
 
-  const QByteArray fmt4 = "     %18.11e %18.11e %18.11e %18.11e\n";
-  const QByteArray fmt3 = "     %18.11e %18.11e %18.11e\n";
-  const QByteArray fmt1 = "     %18.11e\n";
+  const QByteArray fmt4 = "    %19.12e%19.12e%19.12e%19.12e\n";
+  const QByteArray fmt3 = "    %19.12e%19.12e%19.12e\n";
+  const QByteArray fmt1 = "    %19.12e\n";
 
   line.sprintf(fmt4.data(), (double)ep->IODnav, ep->Crs, ep->Delta_n, ep->M0);
   allLines += line;
