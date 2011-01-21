@@ -771,11 +771,12 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   // NEU Output
   // ----------
+  double xyzRef[3];
+
   if (settings.value("pppRefCrdX").toString() != "" &&
       settings.value("pppRefCrdY").toString() != "" &&
       settings.value("pppRefCrdZ").toString() != "") {
 
-    double xyzRef[3];
     xyzRef[0] = settings.value("pppRefCrdX").toDouble();
     xyzRef[1] = settings.value("pppRefCrdY").toDouble();
     xyzRef[2] = settings.value("pppRefCrdZ").toDouble();
@@ -855,11 +856,14 @@ t_irc bncModel::update(t_epoData* epoData) {
       ostringstream strD; strD.setf(ios::fixed);
       strD << _staID.data() << "  AVE-XYZ " 
            << epoData->tt.timestr(1) << " "
-           << setw(13) << setprecision(3) << mean[0]  << " +- "
+//         << setw(13) << setprecision(3) << mean[0]  << " +- "
+           << setw(13) << setprecision(3) << mean[0] + xyzRef[0] << " +- "
            << setw(6)  << setprecision(3) << std[0]   << " "
-           << setw(14) << setprecision(3) << mean[1]  << " +- "
+//         << setw(14) << setprecision(3) << mean[1]  << " +- "
+           << setw(14) << setprecision(3) << mean[1] + xyzRef[1] << " +- "
            << setw(6)  << setprecision(3) << std[1]   << " "
-           << setw(14) << setprecision(3) << mean[2]  << " +- "
+//         << setw(14) << setprecision(3) << mean[2]  << " +- "
+           << setw(14) << setprecision(3) << mean[2] + xyzRef[2] << " +- "
            << setw(6)  << setprecision(3) << std[2];
       emit newMessage(QByteArray(strD.str().c_str()), true);
 
