@@ -47,6 +47,7 @@
 #include "bncrinex.h" 
 #include "bncsettings.h" 
 #include "bncversion.h" 
+#include "bnccomb.h" 
 
 using namespace std;
 
@@ -109,6 +110,8 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
   for (int ii = 0; ii < PRN_GLONASS_NUM; ++ii) {
     _GLOFreq[ii] = 0;
   }
+
+  _bncComb = new bncComb();
 }
 
 // Destructor
@@ -141,6 +144,8 @@ bncApp::~bncApp() {
   delete _currentDateAndTimeGPS;
 
   delete _rawFile;
+
+  delete _bncComb;
 }
 
 // Write a Program Message
@@ -748,6 +753,12 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
     messagePrivate(line.toAscii());
     emit( newMessage(line.toAscii(), true) );
     return;
+  }
+
+  // Combination of Corrections
+  // --------------------------
+  if (_bncComb) {
+    _bncComb->processCorrLine(staID, line);
   }
 
   _corrs->insert(coTime, QString(line + " " + staID));

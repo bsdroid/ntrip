@@ -33,6 +33,8 @@
 #include "bncrawfile.h"
 #include "RTCM3/RTCM3Decoder.h"
 
+class bncComb;
+
 class bncApp : public QApplication {
   Q_OBJECT
   public:
@@ -115,5 +117,6 @@ class bncApp : public QApplication {
     QDate               _fileDate;
     bncRawFile*         _rawFile;
     int                 _GLOFreq[PRN_GLONASS_NUM];
+    bncComb*            _bncComb;
 };
 #endif
