@@ -732,6 +732,12 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
 
   QMutexLocker locker(&_mutex);
 
+  // Combination of Corrections
+  // --------------------------
+  if (_bncComb) {
+    _bncComb->processCorrLine(staID, line);
+  }
+
   bncSettings settings;
   _waitCoTime    = settings.value("corrTime").toInt();
   if (_waitCoTime < 1) {
@@ -753,12 +759,6 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
     messagePrivate(line.toAscii());
     emit( newMessage(line.toAscii(), true) );
     return;
-  }
-
-  // Combination of Corrections
-  // --------------------------
-  if (_bncComb) {
-    _bncComb->processCorrLine(staID, line);
   }
 
   _corrs->insert(coTime, QString(line + " " + staID));
