@@ -33,15 +33,14 @@ class bncComb : public QObject {
  public:
   bncComb();
   ~bncComb();
+  void processCorrLine(const QString& staID, const QString& line);
 
  public slots:
-  void slotNewCorrections(QList<QString> corrList);
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
 
  private:
-  QMutex                  _mutex;
 };
 
 #endif

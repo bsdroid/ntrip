@@ -38,6 +38,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
+
 #include "bnccomb.h"
 #include "bncapp.h"
 
@@ -46,8 +48,6 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncComb::bncComb() {
-  connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
-          this, SLOT(slotNewCorrections(QList<QString>)));
 }
 
 // Destructor
@@ -57,12 +57,7 @@ bncComb::~bncComb() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncComb::slotNewCorrections(QList<QString> corrList) {
-  QMutexLocker locker(&_mutex);
-
-  if (corrList.size() == 0) {
-    return;
-  }
-
+void bncComb::processCorrLine(const QString& staID, const QString& line) {
+  ///  cout << staID.toAscii().data() << " " << line.toAscii().data() << endl;
 }
 
