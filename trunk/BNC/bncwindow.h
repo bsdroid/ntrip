@@ -86,6 +86,7 @@ class bncWindow : public QMainWindow {
 
   private:
     void populateMountPointsTable();
+    void populateCmbTable();
 
     QMenu*     _menuHlp;
     QMenu*     _menuFile;
