@@ -518,6 +518,7 @@ bncWindow::bncWindow() {
   QWidget* rgroup = new QWidget();
   QWidget* sergroup = new QWidget();
   QWidget* pppgroup = new QWidget();
+  QWidget* cmbgroup = new QWidget();
   _aogroup->addTab(pgroup,tr("Proxy"));
   _aogroup->addTab(ggroup,tr("General"));
   _aogroup->addTab(ogroup,tr("RINEX Observations"));
@@ -528,6 +529,7 @@ bncWindow::bncWindow() {
   _aogroup->addTab(agroup,tr("Outages"));
   _aogroup->addTab(rgroup,tr("Miscellaneous"));
   _aogroup->addTab(pppgroup,tr("PPP Client"));
+  _aogroup->addTab(cmbgroup,tr("Combination"));
 
   // Log Tab
   // -------
@@ -798,6 +800,25 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Sync Corr (sec)"),        5, 8);
 
   pppgroup->setLayout(pppLayout);
+
+  // Combination
+  // -----------
+  QGridLayout* cmbLayout = new QGridLayout;
+
+  _cmbTable = new QTableWidget(0,3);
+  _cmbTable->horizontalHeader()->setStretchLastSection(true);
+  _cmbTable->setHorizontalHeaderLabels(QString("Mountpoint, AC Name, Weight").split(","));
+  cmbLayout->addWidget(_cmbTable,0,0,6,1);
+
+  QPushButton* addRowButton = new QPushButton("Add Row");
+  cmbLayout->addWidget(addRowButton,0,1);
+  QPushButton* delRowButton = new QPushButton("Delete");
+  cmbLayout->addWidget(delRowButton,1,1);
+
+  cmbLayout->addWidget(new QLabel,0,2);
+  cmbLayout->setColumnStretch(2,1);
+
+  cmbgroup->setLayout(cmbLayout);
 
   // Main Layout
   // -----------
