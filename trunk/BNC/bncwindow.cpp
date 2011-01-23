@@ -811,6 +811,9 @@ bncWindow::bncWindow() {
   _cmbTable->setSelectionBehavior(QAbstractItemView::SelectRows);
   populateCmbTable();
   cmbLayout->addWidget(_cmbTable,0,0,6,3);
+  cmbLayout->setColumnStretch(0,1);
+  cmbLayout->setColumnStretch(1,1);
+  cmbLayout->setColumnStretch(2,1);
 
   QPushButton* addCmbRowButton = new QPushButton("Add Row");
   cmbLayout->addWidget(addCmbRowButton,0,3);
@@ -820,7 +823,7 @@ bncWindow::bncWindow() {
   cmbLayout->addWidget(delCmbRowButton,1,3);
   connect(delCmbRowButton, SIGNAL(clicked()), this, SLOT(slotDelCmbRow()));
 
-  cmbLayout->addWidget(new QLabel("   "), 0, 4);
+  cmbLayout->setColumnStretch(4,1);
 
   cmbLayout->addWidget(new QLabel("Host"), 0, 5);
   _cmbOutHostLineEdit    = new QLineEdit(settings.value("cmbOutHost").toString());
