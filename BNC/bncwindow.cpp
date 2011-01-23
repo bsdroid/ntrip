@@ -810,6 +810,7 @@ bncWindow::bncWindow() {
   _cmbTable->setHorizontalHeaderLabels(QString("Mountpoint, AC Name, Weight").split(","));
   _cmbTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _cmbTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+  populateCmbTable();
   cmbLayout->addWidget(_cmbTable,0,0,6,2);
 
   QPushButton* addCmbRowButton = new QPushButton("Add Row");
@@ -1114,6 +1115,15 @@ void bncWindow::slotSaveOptions() {
     }
   }
 
+  QStringList combineStreams;
+  for (int iRow = 0; iRow < _cmbTable->rowCount(); iRow++) {
+    QString hlp;
+    for (int iCol = 0; iCol < _cmbTable->columnCount(); iCol++) {
+      hlp += _cmbTable->item(iRow, iCol)->text() + " ";
+    }
+    combineStreams << hlp;
+  }
+
   bncSettings settings;
 
   settings.setValue("adviseFail",  _adviseFailSpinBox->value());
@@ -1183,6 +1193,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("startTab",    _aogroup->currentIndex());
   settings.setValue("statusTab",   _loggroup->currentIndex());
   settings.setValue("waitTime",    _waitTimeSpinBox->value());
+  settings.setValue("combineStreams", combineStreams);
 
   if (_caster) {
     _caster->slotReadMountPoints();
@@ -1844,6 +1855,30 @@ void bncWindow::slotDelCmbRow() {
   for (int iRow = nRows-1; iRow >= 0; iRow--) {
     if (flg[iRow]) {
       _cmbTable->removeRow(iRow);
+    }
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::populateCmbTable() {
+
+  for (int iRow = _cmbTable->rowCount()-1; iRow >=0; iRow--) {
+    _cmbTable->removeRow(iRow);
+  }
+
+  bncSettings settings;
+
+  int iRow = -1;
+  QListIterator<QString> it(settings.value("combineStreams").toStringList());
+  while (it.hasNext()) {
+    QStringList hlp = it.next().split(" ");
+    if (hlp.size() > 0) {
+      ++iRow;
+      _cmbTable->insertRow(iRow);
+    }
+    for (int iCol = 0; iCol < hlp.size(); iCol++) {
+      _cmbTable->setItem(iRow, iCol, new QTableWidgetItem(hlp[iCol]));
     }
   }
 }
