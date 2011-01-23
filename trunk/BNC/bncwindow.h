@@ -182,6 +182,8 @@ class bncWindow : public QMainWindow {
     bncFigureLate*  _bncFigureLate;
     bncFigurePPP*   _bncFigurePPP;
 
+    QTableWidget* _cmbTable;
+
     bncCaster* _caster;
 };
 #endif
