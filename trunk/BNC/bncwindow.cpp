@@ -806,17 +806,21 @@ bncWindow::bncWindow() {
   QGridLayout* cmbLayout = new QGridLayout;
 
   _cmbTable = new QTableWidget(0,3);
-  _cmbTable->horizontalHeader()->setStretchLastSection(true);
+  ////  _cmbTable->horizontalHeader()->setStretchLastSection(true);
   _cmbTable->setHorizontalHeaderLabels(QString("Mountpoint, AC Name, Weight").split(","));
-  cmbLayout->addWidget(_cmbTable,0,0,6,1);
+  _cmbTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  _cmbTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+  cmbLayout->addWidget(_cmbTable,0,0,6,2);
 
-  QPushButton* addRowButton = new QPushButton("Add Row");
-  cmbLayout->addWidget(addRowButton,0,1);
-  QPushButton* delRowButton = new QPushButton("Delete");
-  cmbLayout->addWidget(delRowButton,1,1);
+  QPushButton* addCmbRowButton = new QPushButton("Add Row");
+  cmbLayout->addWidget(addCmbRowButton,0,2);
+  connect(addCmbRowButton, SIGNAL(clicked()), this, SLOT(slotAddCmbRow()));
+  QPushButton* delCmbRowButton = new QPushButton("Delete");
+  cmbLayout->addWidget(delCmbRowButton,1,2);
+  connect(delCmbRowButton, SIGNAL(clicked()), this, SLOT(slotDelCmbRow()));
 
-  cmbLayout->addWidget(new QLabel,0,2);
-  cmbLayout->setColumnStretch(2,1);
+  cmbLayout->addWidget(new QLabel,0,3);
+  cmbLayout->setColumnStretch(3,1);
 
   cmbgroup->setLayout(cmbLayout);
 
@@ -1810,6 +1814,36 @@ void bncWindow::slotBncTextChanged(){
       _pppSigTrpP->setEnabled(false);
       _pppAverageLineEdit->setEnabled(false);
       _pppQuickStartLineEdit->setEnabled(false);
+    }
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotAddCmbRow() {
+  int iRow = _cmbTable->rowCount();
+  _cmbTable->insertRow(iRow);
+  for (int iCol = 0; iCol < _cmbTable->columnCount(); iCol++) {
+    _cmbTable->setItem(iRow, iCol, new QTableWidgetItem(""));
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotDelCmbRow() {
+  int nRows = _cmbTable->rowCount();
+  bool flg[nRows];
+  for (int iRow = 0; iRow < nRows; iRow++) {
+    if (_cmbTable->isItemSelected(_cmbTable->item(iRow,1))) {
+      flg[iRow] = true;
+    }
+    else {
+      flg[iRow] = false;
+    }
+  }
+  for (int iRow = nRows-1; iRow >= 0; iRow--) {
+    if (flg[iRow]) {
+      _cmbTable->removeRow(iRow);
     }
   }
 }

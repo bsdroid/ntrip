@@ -78,6 +78,8 @@ class bncWindow : public QMainWindow {
     void slotGetThreadsFinished();
     void slotSelectionChanged();
     void slotWhatsThis();
+    void slotAddCmbRow();
+    void slotDelCmbRow();
 
   protected:
     virtual void closeEvent(QCloseEvent *);
