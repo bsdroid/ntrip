@@ -186,6 +186,11 @@ class bncWindow : public QMainWindow {
     bncFigurePPP*   _bncFigurePPP;
 
     QTableWidget* _cmbTable;
+    QLineEdit*    _cmbOutHostLineEdit;
+    QLineEdit*    _cmbOutPortLineEdit;
+    QLineEdit*    _cmbMountpointLineEdit;
+    QLineEdit*    _cmbPasswordLineEdit;
+    QLineEdit*    _cmbOutFileLineEdit;
 
     bncCaster* _caster;
 };
