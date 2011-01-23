@@ -436,6 +436,7 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
     // Store new observation
     if ( new_obs ) {
       _obsList.push_back(*new_obs);
+      delete new_obs;
     }
   }
 }
