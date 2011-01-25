@@ -815,7 +815,7 @@ bncWindow::bncWindow() {
 
   _pppIgnoreSatAntCheckBox = new QCheckBox();
   _pppIgnoreSatAntCheckBox->setCheckState(Qt::CheckState(
-                                settings.value("pppIngoreSatAnt").toInt()));
+                                settings.value("pppIgnoreSatAnt").toInt()));
 
   ppp2Layout->addWidget(new QLabel("Antenna Name"),                     0, 0);
   ppp2Layout->addWidget(_pppAntennaLineEdit,                            0, 1);
@@ -1224,7 +1224,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppGalileo",  _pppGalileoCheckBox->checkState());
   settings.setValue("pppAntenna",      _pppAntennaLineEdit->text());
   settings.setValue("pppAntex",	       _pppAntexLineEdit->text());         
-  settings.setValue("pppIngoreSatAnt", _pppIgnoreSatAntCheckBox->checkState());
+  settings.setValue("pppIgnoreSatAnt", _pppIgnoreSatAntCheckBox->checkState());
   settings.setValue("mountPoints", mountPoints);
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
@@ -1263,9 +1263,6 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("cmbPassword",   _cmbPasswordLineEdit->text());
   settings.setValue("cmbOutFile",    _cmbOutFileLineEdit->text());
   settings.setValue("cmbSP3File",    _cmbSP3FileLineEdit->text());
-  settings.setValue("pppAntenna",      _pppAntennaLineEdit->text());
-  settings.setValue("pppAntex",	       _pppAntexLineEdit->text());         
-  settings.setValue("pppIngoreSatAnt", _pppIgnoreSatAntCheckBox->checkState());
 
   if (_caster) {
     _caster->slotReadMountPoints();
