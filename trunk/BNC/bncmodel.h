@@ -114,7 +114,7 @@ class bncModel : public QObject {
   double windUp(const QString& prn, const ColumnVector& rSat,
                 const ColumnVector& rRec);
 
-  QDateTime  _startTime;
+  bncTime  _startTime;
 
   class pppPos {
    public:
