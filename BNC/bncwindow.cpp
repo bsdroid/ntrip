@@ -518,6 +518,7 @@ bncWindow::bncWindow() {
   QWidget* rgroup = new QWidget();
   QWidget* sergroup = new QWidget();
   QWidget* pppgroup = new QWidget();
+  QWidget* ppp2group = new QWidget();
   QWidget* cmbgroup = new QWidget();
   _aogroup->addTab(pgroup,tr("Proxy"));
   _aogroup->addTab(ggroup,tr("General"));
@@ -528,7 +529,8 @@ bncWindow::bncWindow() {
   _aogroup->addTab(sergroup,tr("Serial Output"));
   _aogroup->addTab(agroup,tr("Outages"));
   _aogroup->addTab(rgroup,tr("Miscellaneous"));
-  _aogroup->addTab(pppgroup,tr("PPP Client"));
+  _aogroup->addTab(pppgroup,tr("PPP (1)"));
+  _aogroup->addTab(ppp2group,tr("PPP (2)"));
   _aogroup->addTab(cmbgroup,tr("Combination"));
 
   // Log Tab
@@ -800,6 +802,29 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Sync Corr (sec)"),        5, 8);
 
   pppgroup->setLayout(pppLayout);
+
+  // PPP Client (second panel)
+  // -------------------------
+  QGridLayout* ppp2Layout = new QGridLayout;
+  _pppAntennaLineEdit      = new QLineEdit();
+  _pppAntennaLineEdit->setMaximumWidth(12*ww);
+  _pppAntexLineEdit        = new QLineEdit();
+  _pppAntexLineEdit->setMaximumWidth(12*ww);
+  _pppIgnoreSatAntCheckBox = new QCheckBox;
+
+  ppp2Layout->addWidget(new QLabel("Antenna Name"),                     0, 0);
+  ppp2Layout->addWidget(_pppAntennaLineEdit,                            0, 1);
+  ppp2Layout->addWidget(new QLabel("ANTEX File"),                       1, 0);
+  ppp2Layout->addWidget(_pppAntexLineEdit,                              1, 1);
+  ppp2Layout->addWidget(new QLabel("Ignore Satellite Antenna Offsets"), 1, 2);
+  ppp2Layout->addWidget(_pppIgnoreSatAntCheckBox,                       1, 3);
+
+  ppp2Layout->setRowStretch(2,1);
+  ppp2Layout->setColumnStretch(4,1);
+
+  ppp2Layout->addWidget(new QLabel("Options for PPP (continuation)"), 3, 0, 1, 4);
+
+  ppp2group->setLayout(ppp2Layout);
 
   // Combination
   // -----------
