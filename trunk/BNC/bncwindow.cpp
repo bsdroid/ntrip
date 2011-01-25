@@ -849,6 +849,10 @@ bncWindow::bncWindow() {
   _cmbOutFileLineEdit = new QLineEdit(settings.value("cmbOutFile").toString());
   cmbLayout->addWidget(_cmbOutFileLineEdit, 2, 6);
 
+  cmbLayout->addWidget(new QLabel("Output SP3"), 3, 5);
+  _cmbSP3FileLineEdit = new QLineEdit(settings.value("cmbSP3File").toString());
+  cmbLayout->addWidget(_cmbSP3FileLineEdit, 3, 6);
+
   cmbgroup->setLayout(cmbLayout);
 
   // Main Layout
