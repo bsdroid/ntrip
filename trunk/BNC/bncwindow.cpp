@@ -806,11 +806,16 @@ bncWindow::bncWindow() {
   // PPP Client (second panel)
   // -------------------------
   QGridLayout* ppp2Layout = new QGridLayout;
-  _pppAntennaLineEdit      = new QLineEdit();
+
+  _pppAntennaLineEdit = new QLineEdit(settings.value("pppAntenna").toString());
   _pppAntennaLineEdit->setMaximumWidth(12*ww);
-  _pppAntexLineEdit        = new QLineEdit();
+
+  _pppAntexLineEdit = new QLineEdit(settings.value("pppAntex").toString());
   _pppAntexLineEdit->setMaximumWidth(12*ww);
-  _pppIgnoreSatAntCheckBox = new QCheckBox;
+
+  _pppIgnoreSatAntCheckBox = new QCheckBox();
+  _pppIgnoreSatAntCheckBox->setCheckState(Qt::CheckState(
+                                settings.value("pppIngoreSatAnt").toInt()));
 
   ppp2Layout->addWidget(new QLabel("Antenna Name"),                     0, 0);
   ppp2Layout->addWidget(_pppAntennaLineEdit,                            0, 1);
@@ -1217,6 +1222,9 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppEstTropo", _pppEstTropoCheckBox->checkState());
   settings.setValue("pppGLONASS",  _pppGLONASSCheckBox->checkState());
   settings.setValue("pppGalileo",  _pppGalileoCheckBox->checkState());
+  settings.setValue("pppAntenna",      _pppAntennaLineEdit->text());
+  settings.setValue("pppAntex",	       _pppAntexLineEdit->text());         
+  settings.setValue("pppIngoreSatAnt", _pppIgnoreSatAntCheckBox->checkState());
   settings.setValue("mountPoints", mountPoints);
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
@@ -1255,6 +1263,9 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("cmbPassword",   _cmbPasswordLineEdit->text());
   settings.setValue("cmbOutFile",    _cmbOutFileLineEdit->text());
   settings.setValue("cmbSP3File",    _cmbSP3FileLineEdit->text());
+  settings.setValue("pppAntenna",      _pppAntennaLineEdit->text());
+  settings.setValue("pppAntex",	       _pppAntexLineEdit->text());         
+  settings.setValue("pppIngoreSatAnt", _pppIgnoreSatAntCheckBox->checkState());
 
   if (_caster) {
     _caster->slotReadMountPoints();
