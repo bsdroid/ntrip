@@ -1249,6 +1249,12 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("statusTab",   _loggroup->currentIndex());
   settings.setValue("waitTime",    _waitTimeSpinBox->value());
   settings.setValue("combineStreams", combineStreams);
+  settings.setValue("cmbOutHost",    _cmbOutHostLineEdit->text());
+  settings.setValue("cmbOutPort",    _cmbOutPortLineEdit->text());
+  settings.setValue("cmbMountpoint", _cmbMountpointLineEdit->text());
+  settings.setValue("cmbPassword",   _cmbPasswordLineEdit->text());
+  settings.setValue("cmbOutFile",    _cmbOutFileLineEdit->text());
+  settings.setValue("cmbSP3File",    _cmbSP3FileLineEdit->text());
 
   if (_caster) {
     _caster->slotReadMountPoints();
