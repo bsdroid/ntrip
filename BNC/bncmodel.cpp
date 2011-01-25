@@ -420,14 +420,13 @@ void bncModel::predict(t_epoData* epoData) {
   bool firstCrd = false;
   if (x() == 0.0 && y() == 0.0 && z() == 0.0) {
     firstCrd = true;
-    _startTime = QDateTime::currentDateTime();
+    _startTime = epoData->tt;
   }
 
   // Use different white noise for Quick-Start mode
   // ----------------------------------------------
   double sigCrdP_used   = _sigCrdP;
-  if ( _quickStart > 0.0 &&
-       _quickStart > _startTime.secsTo(QDateTime::currentDateTime()) ) {
+  if ( _quickStart > 0.0 && _quickStart > (epoData->tt - _startTime) ) {
     sigCrdP_used   = 0.0;
   }
 
