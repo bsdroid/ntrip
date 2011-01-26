@@ -102,10 +102,17 @@ t_irc bncAntex::readFile(const QString& fileName) {
     else if (newAntMap) {
       t_frqMap* newFrqMap = 0;
       if      (line.indexOf("TYPE / SERIAL NO") == 60) {
-
+        if (line.indexOf("BLACK I") == 0 ||
+            line.indexOf("GLONASS") == 0) {
+          newAntMap->antName = line.mid(20,3);
+        }
+        else {
+          newAntMap->antName = line.mid(0,20);
+        }
       }
       else if (line.indexOf("ZEN1 / ZEN2 / DZEN") == 60) {
-
+        QTextStream inLine(&line, QIODevice::ReadOnly);
+        inLine >> newAntMap->zen1 >> newAntMap->zen2 >> newAntMap->dZen;  
       }
 
       else if (line.indexOf("START OF FREQUENCY") == 60) {
@@ -139,7 +146,10 @@ t_irc bncAntex::readFile(const QString& fileName) {
       }
 
       else if (newFrqMap) {
-        if (line.indexOf("NOAZI") == 3) {
+        if      (line.indexOf("NORTH / EAST / UP") == 3) {
+
+        }
+        else if (line.indexOf("NOAZI") == 3) {
 
         }
       }
