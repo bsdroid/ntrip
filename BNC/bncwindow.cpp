@@ -808,10 +808,12 @@ bncWindow::bncWindow() {
   QGridLayout* ppp2Layout = new QGridLayout;
 
   _pppAntennaLineEdit = new QLineEdit(settings.value("pppAntenna").toString());
-  _pppAntennaLineEdit->setMaximumWidth(12*ww);
+  _pppAntennaLineEdit->setMinimumWidth(20*ww);
+  _pppAntennaLineEdit->setMaximumWidth(20*ww);
 
   _pppAntexLineEdit = new QLineEdit(settings.value("pppAntex").toString());
-  _pppAntexLineEdit->setMaximumWidth(12*ww);
+  _pppAntexLineEdit->setMinimumWidth(20*ww);
+  _pppAntexLineEdit->setMaximumWidth(20*ww);
 
   _pppIgnoreSatAntCheckBox = new QCheckBox();
   _pppIgnoreSatAntCheckBox->setCheckState(Qt::CheckState(
