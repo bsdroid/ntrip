@@ -34,7 +34,8 @@ class bncAntex {
  public:
   bncAntex();
   ~bncAntex();
-  t_irc readFile(const QString& fileName);
+  t_irc readFile(const QString& fileName);  
+  void print() const;
 
  private:
 

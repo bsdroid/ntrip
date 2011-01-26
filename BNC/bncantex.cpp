@@ -61,6 +61,17 @@ bncAntex::~bncAntex() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
+void bncAntex::print() const {
+  QMapIterator<QString, t_antMap*> it(_maps);
+  while (it.hasNext()) {
+    it.next();
+    t_antMap* map = it.value();
+    cout << map->antName.toAscii().data() << endl;
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
 t_irc bncAntex::readFile(const QString& fileName) {
 
   QFile inFile(fileName);
