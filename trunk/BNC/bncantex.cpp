@@ -113,7 +113,7 @@ t_irc bncAntex::readFile(const QString& fileName) {
     // ---------------------------
     else if (newAntMap) {
       if      (line.indexOf("TYPE / SERIAL NO") == 60) {
-        if (line.indexOf("BLACK I") == 0 ||
+        if (line.indexOf("BLOCK I") == 0 ||
             line.indexOf("GLONASS") == 0) {
           newAntMap->antName = line.mid(20,3);
         }
