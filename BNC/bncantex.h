@@ -40,9 +40,7 @@ class bncAntex {
 
   class t_frqMap {
    public:
-    double       zen1;
-    double       zen2;
-    double       dZen;
+    double       neu[3];
     ColumnVector pattern;
   };
 
@@ -57,8 +55,9 @@ class bncAntex {
       delete frqMapL2;
     }
     QString   antName;
-    double    phaseCenterL1[3];
-    double    phaseCenterL2[3];
+    double       zen1;
+    double       zen2;
+    double       dZen;
     t_frqMap* frqMapL1;
     t_frqMap* frqMapL2;
     bncTime   validFrom;
