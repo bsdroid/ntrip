@@ -115,6 +115,8 @@ t_irc bncAntex::readFile(const QString& fileName) {
         inLine >> newAntMap->zen1 >> newAntMap->zen2 >> newAntMap->dZen;  
       }
 
+      // Start of Frequency
+      // ------------------
       else if (line.indexOf("START OF FREQUENCY") == 60) {
         if (newFrqMap) {
           delete newFrqMap;
@@ -126,6 +128,8 @@ t_irc bncAntex::readFile(const QString& fileName) {
         }
       }
 
+      // End of Frequency
+      // ----------------
       else if (line.indexOf("END OF FRQUENCY") == 60) {
         if (newFrqMap) {
           if      (line.indexOf("G01") == 3) {
@@ -145,11 +149,15 @@ t_irc bncAntex::readFile(const QString& fileName) {
         }
       }
 
+      // Frequency Reading in Progress
+      // -----------------------------
       else if (newFrqMap) {
         if      (line.indexOf("NORTH / EAST / UP") == 3) {
-
+          QTextStream inLine(&line, QIODevice::ReadOnly);
+          inLine >> newFrqMap->neu[0] >> newFrqMap->neu[1] >> newFrqMap->neu[2];
         }
         else if (line.indexOf("NOAZI") == 3) {
+          QTextStream inLine(&line, QIODevice::ReadOnly);
 
         }
       }
