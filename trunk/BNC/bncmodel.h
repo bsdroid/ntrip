@@ -154,6 +154,7 @@ class bncModel : public QObject {
   double                _sigAmb0;
   double                _sigClk0;
   bncAntex*             _antex;
+  QString               _antennaName;
 };
 
 #endif

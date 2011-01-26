@@ -266,6 +266,7 @@ bncModel::bncModel(QByteArray staID) {
       delete _antex;
       _antex = 0;
     }
+    _antennaName = settings.value("pppAntenna").toString();
   }
 
 ////  if (_antex) {
@@ -385,7 +386,13 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
     offset = Galileo_offset();
   }
 
-  return satData->rho + clk() + offset - satData->clk + tropDelay + wind;
+  double phaseCenter = 0.0;
+  if (_antex) {
+    phaseCenter = _antex->pco(_antennaName, satData->eleSat);
+  }
+
+  return satData->rho + phaseCenter + clk() 
+                      + offset - satData->clk + tropDelay + wind;
 }
 
 // Tropospheric Model (Saastamoinen)

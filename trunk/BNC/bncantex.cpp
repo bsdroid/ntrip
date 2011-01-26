@@ -60,7 +60,7 @@ bncAntex::~bncAntex() {
   }
 }
 
-// 
+// Print 
 ////////////////////////////////////////////////////////////////////////////
 void bncAntex::print() const {
   QMapIterator<QString, t_antMap*> it(_maps);
@@ -85,7 +85,7 @@ void bncAntex::print() const {
   }
 }
 
-// 
+// Read ANTEX File
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncAntex::readFile(const QString& fileName) {
 
@@ -181,6 +181,9 @@ t_irc bncAntex::readFile(const QString& fileName) {
         if      (line.indexOf("NORTH / EAST / UP") == 60) {
           QTextStream inLine(&line, QIODevice::ReadOnly);
           inLine >> newFrqMap->neu[0] >> newFrqMap->neu[1] >> newFrqMap->neu[2];
+          newFrqMap->neu[0] *= 1e-3;
+          newFrqMap->neu[1] *= 1e-3;
+          newFrqMap->neu[2] *= 1e-3;
         }
         else if (line.indexOf("NOAZI") == 3) {
           QTextStream inLine(&line, QIODevice::ReadOnly);
@@ -191,10 +194,33 @@ t_irc bncAntex::readFile(const QString& fileName) {
           for (int ii = 0; ii < nPat; ii++) {
             inLine >> newFrqMap->pattern[ii];
           }
+          newFrqMap->pattern *= 1e-3;
         }
       }
     }
   }
 
   return success;
+}
+
+// Phase Center Offset (Receiver Antenna and GPS only)
+////////////////////////////////////////////////////////////////////////////
+double bncAntex::pco(const QString& antName, double eleSat) {
+
+  static const double f1 = t_CST::freq1;
+  static const double f2 = t_CST::freq2;
+  static const double c1 =   f1 * f1 / (f1 * f1 - f2 * f2);
+  static const double c2 = - f2 * f2 / (f1 * f1 - f2 * f2);
+
+  QMap<QString, t_antMap*>::const_iterator it = _maps.find(antName);
+  if (it != _maps.end()) {
+    t_antMap* map = it.value();
+    if (map->frqMapL1 && map->frqMapL2) {
+      double corr1 = -map->frqMapL1->neu[2] * sin(eleSat);
+      double corr2 = -map->frqMapL2->neu[2] * sin(eleSat);
+      return c1 * corr1 + c2 * corr2;
+    }
+  }
+
+  return 0.0;
 }
