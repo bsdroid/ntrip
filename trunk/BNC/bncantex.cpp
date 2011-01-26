@@ -71,24 +71,77 @@ t_irc bncAntex::readFile(const QString& fileName) {
   while ( !in.atEnd() ) {
     QString line = in.readLine();
   
-    t_antMap* newMap = 0;
+    t_antMap* newAntMap = 0;
+
+    // Start of Antenna
+    // ----------------
     if      (line.indexOf("START OF ANTENNA") == 60) {
-      if (newMap) {
-        delete newMap;
+      if (newAntMap) {
+        delete newAntMap;
         return failure;
       }
       else {
-        newMap = new t_antMap();
+        newAntMap = new t_antMap();
       }
     } 
 
+    // End of Antenna
+    // --------------
     else if (line.indexOf("END OF ANTENNA") == 60) {
-      if (newMap) {
-        _maps[newMap->antName] = newMap;
-        newMap = 0;
+      if (newAntMap) {
+        _maps[newAntMap->antName] = newAntMap;
+        newAntMap = 0;
       }
       else {
         return failure;
+      }
+    }
+
+    // Antenna Reading in Progress
+    // ---------------------------
+    else if (newAntMap) {
+      t_frqMap* newFrqMap = 0;
+      if      (line.indexOf("TYPE / SERIAL NO") == 60) {
+
+      }
+      else if (line.indexOf("ZEN1 / ZEN2 / DZEN") == 60) {
+
+      }
+
+      else if (line.indexOf("START OF FREQUENCY") == 60) {
+        if (newFrqMap) {
+          delete newFrqMap;
+          delete newAntMap;
+          return failure;
+        }
+        else {
+          newFrqMap = new t_frqMap();
+        }
+      }
+
+      else if (line.indexOf("END OF FRQUENCY") == 60) {
+        if (newFrqMap) {
+          if      (line.indexOf("G01") == 3) {
+            newAntMap->frqMapL1 = newFrqMap;
+          }
+          else if (line.indexOf("G02") == 3) {
+            newAntMap->frqMapL2 = newFrqMap;
+          }
+          else {
+            delete newFrqMap;
+          }
+          newFrqMap = 0;
+        }
+        else {
+          delete newAntMap;
+          return failure;
+        }
+      }
+
+      else if (newFrqMap) {
+        if (line.indexOf("NOAZI") == 3) {
+
+        }
       }
     }
   }

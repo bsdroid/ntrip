@@ -261,7 +261,11 @@ bncModel::bncModel(QByteArray staID) {
   QString antexFileName = settings.value("pppAntex").toString();
   if (!antexFileName.isEmpty()) {
     _antex = new bncAntex();
-    _antex->readFile(antexFileName);
+    if (_antex->readFile(antexFileName) != success) {
+      emit newMessage("wrong ANTEX file", false);
+    }
+    delete _antex;
+    _antex = 0;
   }
 }
 
