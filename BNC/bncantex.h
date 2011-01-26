@@ -36,6 +36,7 @@ class bncAntex {
   ~bncAntex();
   t_irc readFile(const QString& fileName);  
   void print() const;
+  double pco(const QString& antName, double eleSat);
 
  private:
 
