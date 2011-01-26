@@ -268,9 +268,9 @@ bncModel::bncModel(QByteArray staID) {
     }
   }
 
-  if (_antex) {
-    _antex->print();
-  }
+////  if (_antex) {
+////    _antex->print();
+////  }
 }
 
 // Destructor
