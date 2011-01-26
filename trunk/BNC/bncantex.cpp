@@ -158,7 +158,13 @@ t_irc bncAntex::readFile(const QString& fileName) {
         }
         else if (line.indexOf("NOAZI") == 3) {
           QTextStream inLine(&line, QIODevice::ReadOnly);
-
+          int nPat = int((newAntMap->zen2-newAntMap->zen1)/newAntMap->dZen) + 1;
+          newFrqMap->pattern.ReSize(nPat);
+          QString dummy;
+          inLine >> dummy;
+          for (int ii = 0; ii < nPat; ii++) {
+            inLine >> newFrqMap->pattern[ii];
+          }
         }
       }
     }
