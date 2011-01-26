@@ -79,11 +79,12 @@ t_irc bncAntex::readFile(const QString& fileName) {
 
   QTextStream in(&inFile);
 
+  t_antMap* newAntMap = 0;
+  t_frqMap* newFrqMap = 0;
+
   while ( !in.atEnd() ) {
     QString line = in.readLine();
   
-    t_antMap* newAntMap = 0;
-
     // Start of Antenna
     // ----------------
     if      (line.indexOf("START OF ANTENNA") == 60) {
@@ -111,7 +112,6 @@ t_irc bncAntex::readFile(const QString& fileName) {
     // Antenna Reading in Progress
     // ---------------------------
     else if (newAntMap) {
-      t_frqMap* newFrqMap = 0;
       if      (line.indexOf("TYPE / SERIAL NO") == 60) {
         if (line.indexOf("BLACK I") == 0 ||
             line.indexOf("GLONASS") == 0) {
@@ -141,7 +141,7 @@ t_irc bncAntex::readFile(const QString& fileName) {
 
       // End of Frequency
       // ----------------
-      else if (line.indexOf("END OF FRQUENCY") == 60) {
+      else if (line.indexOf("END OF FREQUENCY") == 60) {
         if (newFrqMap) {
           if      (line.indexOf("G01") == 3) {
             newAntMap->frqMapL1 = newFrqMap;
