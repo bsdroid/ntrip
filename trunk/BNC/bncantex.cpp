@@ -58,4 +58,13 @@ bncAntex::~bncAntex() {
 ////////////////////////////////////////////////////////////////////////////
 void bncAntex::readFile(const QString& fileName) {
 
+  QFile inFile(fileName);
+  inFile.open(QIODevice::ReadOnly | QIODevice::Text);
+
+  QTextStream in(&inFile);
+
+  while ( !in.atEnd() ) {
+    QString line = in.readLine();
+
+  }
 }
