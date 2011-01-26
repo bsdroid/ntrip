@@ -97,7 +97,7 @@ RC_FILE = bnc.rc
 
 QT += network
 
-exists(combination/bnccomp.h) {
+exists(combination/bnccomb.h) {
   DEFINES += USE_COMBINATION
   HEADERS += combination/bnccomb.h 
   SOURCES += combination/bnccomb.cpp
