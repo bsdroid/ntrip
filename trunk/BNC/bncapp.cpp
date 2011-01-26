@@ -47,7 +47,10 @@
 #include "bncrinex.h" 
 #include "bncsettings.h" 
 #include "bncversion.h" 
-#include "bnccomb.h" 
+
+#ifdef USE_COMBINATION
+#include "combination/bnccomb.h" 
+#endif
 
 using namespace std;
 
@@ -111,7 +114,9 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
     _GLOFreq[ii] = 0;
   }
 
+#ifdef USE_COMBINATION
   _bncComb = new bncComb();
+#endif
 }
 
 // Destructor
@@ -145,7 +150,9 @@ bncApp::~bncApp() {
 
   delete _rawFile;
 
+#ifdef USE_COMBINATION
   delete _bncComb;
+#endif
 }
 
 // Write a Program Message
@@ -734,9 +741,11 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
 
   // Combination of Corrections
   // --------------------------
+#ifdef USE_COMBINATION
   if (_bncComb) {
     _bncComb->processCorrLine(staID, line);
   }
+#endif
 
   bncSettings settings;
   _waitCoTime    = settings.value("corrTime").toInt();
