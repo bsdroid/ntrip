@@ -263,9 +263,13 @@ bncModel::bncModel(QByteArray staID) {
     _antex = new bncAntex();
     if (_antex->readFile(antexFileName) != success) {
       emit newMessage("wrong ANTEX file", false);
+      delete _antex;
+      _antex = 0;
     }
-    delete _antex;
-    _antex = 0;
+  }
+
+  if (_antex) {
+    _antex->print();
   }
 }
 
