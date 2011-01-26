@@ -39,6 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+#include <newmatio.h>
 
 #include "bncantex.h"
 
@@ -67,6 +68,20 @@ void bncAntex::print() const {
     it.next();
     t_antMap* map = it.value();
     cout << map->antName.toAscii().data() << endl;
+    cout << "    " << map->zen1 << " " << map->zen2 << " " << map->dZen << endl;
+    if (map->frqMapL1) {
+      cout << "    " << map->frqMapL1->neu[0] << " "
+                     << map->frqMapL1->neu[1] << " "
+                     << map->frqMapL1->neu[2] << endl;
+      cout << "    " << map->frqMapL1->pattern.t();
+    }
+    if (map->frqMapL2) {
+      cout << "    " << map->frqMapL2->neu[0] << " "
+                     << map->frqMapL2->neu[1] << " "
+                     << map->frqMapL2->neu[2] << endl;
+      cout << "    " << map->frqMapL2->pattern.t();
+    }
+    cout << endl;
   }
 }
 
