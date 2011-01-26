@@ -258,6 +258,7 @@ bncModel::bncModel(QByteArray staID) {
     _nmeaStream->setDevice(_nmeaFile);
   }
 
+  _antex = 0;
   QString antexFileName = settings.value("pppAntex").toString();
   if (!antexFileName.isEmpty()) {
     _antex = new bncAntex();
