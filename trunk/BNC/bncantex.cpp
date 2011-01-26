@@ -52,11 +52,16 @@ bncAntex::bncAntex() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncAntex::~bncAntex() {
+  QMapIterator<QString, t_antMap*> it(_maps);
+  while (it.hasNext()) {
+    it.next();
+    delete it.value();
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncAntex::readFile(const QString& fileName) {
+t_irc bncAntex::readFile(const QString& fileName) {
 
   QFile inFile(fileName);
   inFile.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -65,6 +70,28 @@ void bncAntex::readFile(const QString& fileName) {
 
   while ( !in.atEnd() ) {
     QString line = in.readLine();
+  
+    t_antMap* newMap = 0;
+    if      (line.indexOf("START OF ANTENNA") == 60) {
+      if (newMap) {
+        delete newMap;
+        return failure;
+      }
+      else {
+        newMap = new t_antMap();
+      }
+    } 
 
+    else if (line.indexOf("END OF ANTENNA") == 60) {
+      if (newMap) {
+        _maps[newMap->antName] = newMap;
+        newMap = 0;
+      }
+      else {
+        return failure;
+      }
+    }
   }
+
+  return success;
 }

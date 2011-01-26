@@ -27,13 +27,14 @@
 
 #include <QtCore>
 #include <newmat.h>
+#include "bncconst.h"
 #include "bnctime.h"
 
 class bncAntex {
  public:
   bncAntex();
   ~bncAntex();
-  void readFile(const QString& fileName);
+  t_irc readFile(const QString& fileName);
 
  private:
 
@@ -47,16 +48,24 @@ class bncAntex {
 
   class t_antMap {
    public:
-    QString  antName;
-    double   phaseCenterL1[3];
-    double   phaseCenterL2[3];
-    t_frqMap frqMapL1;
-    t_frqMap frqMapL2;
-    bncTime  validFrom;
-    bncTime  validTo;
+    t_antMap() {
+      frqMapL1 = 0;
+      frqMapL2 = 0;
+    }
+    ~t_antMap() {
+      delete frqMapL1;
+      delete frqMapL2;
+    }
+    QString   antName;
+    double    phaseCenterL1[3];
+    double    phaseCenterL2[3];
+    t_frqMap* frqMapL1;
+    t_frqMap* frqMapL2;
+    bncTime   validFrom;
+    bncTime   validTo;
   };
 
-  QMap<QString, t_antMap> _maps;
+  QMap<QString, t_antMap*> _maps;
 };
 
 #endif
