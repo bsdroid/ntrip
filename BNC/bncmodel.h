@@ -34,6 +34,7 @@
 
 class t_epoData;
 class t_satData;
+class bncAntex;
 
 class bncParam {
  public:
@@ -152,6 +153,7 @@ class bncModel : public QObject {
   double                _sigP3;
   double                _sigAmb0;
   double                _sigClk0;
+  bncAntex*             _antex;
 };
 
 #endif

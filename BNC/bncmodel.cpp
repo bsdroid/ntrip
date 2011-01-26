@@ -50,6 +50,7 @@
 #include "bncutils.h"
 #include "bncsettings.h"
 #include "bnctides.h"
+#include "bncantex.h"
 
 using namespace std;
 
@@ -256,6 +257,12 @@ bncModel::bncModel(QByteArray staID) {
     _nmeaStream = new QTextStream();
     _nmeaStream->setDevice(_nmeaFile);
   }
+
+  QString antexFileName = settings.value("pppAntex").toString();
+  if (!antexFileName.isEmpty()) {
+    _antex = new bncAntex();
+    _antex->readFile(antexFileName);
+  }
 }
 
 // Destructor
@@ -266,6 +273,7 @@ bncModel::~bncModel() {
   for (int ii = 0; ii < _posAverage.size(); ++ii) { 
     delete _posAverage[ii]; 
   }
+  delete _antex;
 }
 
 // Bancroft Solution
