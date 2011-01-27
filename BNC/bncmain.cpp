@@ -131,6 +131,7 @@ int main(int argc, char *argv[]) {
     app.setCaster(caster);
     app.setPort(settings.value("outEphPort").toInt());
     app.setPortCorr(settings.value("corrPort").toInt());
+    app.initCombination();
 
     app.connect(caster, SIGNAL(getThreadsFinished()), &app, SLOT(quit()));
   
@@ -159,6 +160,7 @@ int main(int argc, char *argv[]) {
       bncGetThread* getThread = new bncGetThread(rawFile);
       caster->addGetThread(getThread, true);
     }
+
   }
 
   // Start the application

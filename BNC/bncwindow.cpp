@@ -1299,6 +1299,7 @@ void bncWindow::slotGetData() {
 
   ((bncApp*)qApp)->setPort(_outEphPortLineEdit->text().toInt());
   ((bncApp*)qApp)->setPortCorr(_corrPortLineEdit->text().toInt());
+  ((bncApp*)qApp)->initCombination();
 
   connect(_caster, SIGNAL(getThreadsFinished()), 
           this, SLOT(slotGetThreadsFinished()));

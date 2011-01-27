@@ -50,6 +50,7 @@ class bncApp : public QApplication {
                       const QByteArray& format);
     void storeGlonassSlotNums(const int GLOFreq[]);
     void getGlonassSlotNums(int GLOFreq[]);
+    void initCombination();
 
   public slots:
     void slotMessage(QByteArray msg, bool showOnScreen);
