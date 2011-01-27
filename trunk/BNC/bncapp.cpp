@@ -113,14 +113,6 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
   for (int ii = 0; ii < PRN_GLONASS_NUM; ++ii) {
     _GLOFreq[ii] = 0;
   }
-
-#ifdef USE_COMBINATION
-  _bncComb = new bncComb();
-  if (_bncComb->nStreams() < 2) {
-    delete _bncComb;
-    _bncComb = 0;
-  }
-#endif
 }
 
 // Destructor
@@ -874,4 +866,16 @@ void bncApp::storeGlonassSlotNums(const int GLOFreq[]) {
       _GLOFreq[ii] = GLOFreq[ii];
     }
   }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncApp::initCombination() {
+#ifdef USE_COMBINATION
+  _bncComb = new bncComb();
+  if (_bncComb->nStreams() < 2) {
+    delete _bncComb;
+    _bncComb = 0;
+  }
+#endif
 }
