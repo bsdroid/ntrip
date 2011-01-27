@@ -53,7 +53,7 @@ class t_corr {
              msgType == COTYPE_GLONASSCLOCK );
   }
 
-  void readLine(const QString& line);
+  t_irc readLine(const QString& line);
 
   bncTime      tt;
   int          iod;
