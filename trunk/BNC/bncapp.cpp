@@ -116,6 +116,10 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
 
 #ifdef USE_COMBINATION
   _bncComb = new bncComb();
+  if (_bncComb->nStreams() < 2) {
+    delete _bncComb;
+    _bncComb = 0;
+  }
 #endif
 }
 

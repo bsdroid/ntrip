@@ -531,7 +531,9 @@ bncWindow::bncWindow() {
   _aogroup->addTab(rgroup,tr("Miscellaneous"));
   _aogroup->addTab(pppgroup,tr("PPP (1)"));
   _aogroup->addTab(ppp2group,tr("PPP (2)"));
+#ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combination"));
+#endif
 
   // Log Tab
   // -------

@@ -38,6 +38,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
+
 #include "bncephuser.h"
 #include "bncapp.h"
 
@@ -74,6 +76,8 @@ void bncEphUser::slotNewEphGPS(gpsephemeris gpseph) {
 
   QString prn = QString("G%1").arg(gpseph.satellite, 2, 10, QChar('0'));
 
+  cout << "newEph " << prn.toAscii().data() << endl; 
+
   if (_eph.contains(prn)) {
     t_ephGPS* eLast = static_cast<t_ephGPS*>(_eph.value(prn)->last);
     if ( (eLast->GPSweek() <  gpseph.GPSweek) || 
@@ -99,6 +103,8 @@ void bncEphUser::slotNewEphGlonass(glonassephemeris gloeph) {
   QMutexLocker locker(&_mutex);
 
   QString prn = QString("R%1").arg(gloeph.almanac_number, 2, 10, QChar('0'));
+
+  cout << "newEph " << prn.toAscii().data() << endl; 
 
   if (_eph.contains(prn)) {
     int ww  = gloeph.GPSWeek;
@@ -127,6 +133,8 @@ void bncEphUser::slotNewEphGalileo(galileoephemeris galeph) {
   QMutexLocker locker(&_mutex);
 
   QString prn = QString("E%1").arg(galeph.satellite, 2, 10, QChar('0'));
+
+  cout << "newEph " << prn.toAscii().data() << endl; 
 
   if (_eph.contains(prn)) {
     t_ephGal* eLast = static_cast<t_ephGal*>(_eph.value(prn)->last);
