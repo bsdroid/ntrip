@@ -57,6 +57,10 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     return;
   }
 
-  cout << staID.toAscii().data() << " " << line.toAscii().data() << endl;
+  cout << staID.toAscii().data() << " " << newCorr->prn.toAscii().data() << " "
+       << newCorr->tt.datestr() << " " << newCorr->tt.timestr() << " "
+       << newCorr->iod << " " << newCorr->dClk << endl;
+
+  delete newCorr;
 }
 
