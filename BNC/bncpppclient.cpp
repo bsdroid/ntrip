@@ -49,10 +49,6 @@
 #include "bncmodel.h"
 #include "bncsettings.h"
 
-extern "C" {
-#include "clock_orbit_rtcm.h"
-}
-
 using namespace std;
 
 // Constructor
@@ -279,7 +275,9 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 
   QListIterator<QString> it(corrList);
   while (it.hasNext()) {
-    QTextStream in(it.next().toAscii());
+    QString line = it.next();
+
+    QTextStream in(&line);
     int     messageType;
     int     updateInterval;
     int     GPSweek;
@@ -287,13 +285,7 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
     QString prn;
     in >> messageType >> updateInterval >> GPSweek >> GPSweeks >> prn;
 
-    if ( messageType == COTYPE_GPSCOMBINED     || 
-         messageType == COTYPE_GLONASSCOMBINED ||
-         messageType == COTYPE_GPSORBIT        ||
-         messageType == COTYPE_GPSCLOCK        ||
-         messageType == COTYPE_GLONASSORBIT    ||
-         messageType == COTYPE_GLONASSCLOCK ) {
-
+    if ( t_corr::relevantMessageType(messageType) ) {
       t_corr* cc = 0;
       if (_corr.contains(prn)) {
         cc = _corr.value(prn); 
@@ -303,50 +295,8 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
         _corr[prn] = cc;
       }
 
-      cc->tt.set(GPSweek, GPSweeks);
-      _corr_tt.set(GPSweek, GPSweeks);
-
-      if      ( messageType == COTYPE_GPSCOMBINED    || 
-                messageType == COTYPE_GLONASSCOMBINED ) {
-        cc->rao.ReSize(3);       cc->rao       = 0.0;
-        cc->dotRao.ReSize(3);    cc->dotRao    = 0.0;
-        cc->dotDotRao.ReSize(3); cc->dotDotRao = 0.0;
-        cc->dClk       = 0.0;
-        cc->dotDClk    = 0.0;
-        cc->dotDotDClk = 0.0;
-        in >> cc->iod 
-           >> cc->dClk       >> cc->rao[0]       >> cc->rao[1]       >> cc->rao[2]
-           >> cc->dotDClk    >> cc->dotRao[0]    >> cc->dotRao[1]    >> cc->dotRao[2]
-           >> cc->dotDotDClk >> cc->dotDotRao[0] >> cc->dotDotRao[1] >> cc->dotDotRao[2];
-        cc->dClk       /= t_CST::c;
-        cc->dotDClk    /= t_CST::c;
-        cc->dotDotDClk /= t_CST::c;
-        cc->raoSet  = true;
-        cc->dClkSet = true;
-      }
-      else if ( messageType == COTYPE_GPSORBIT    || 
-                messageType == COTYPE_GLONASSORBIT ) {
-        cc->rao.ReSize(3);       cc->rao       = 0.0;
-        cc->dotRao.ReSize(3);    cc->dotRao    = 0.0;
-        cc->dotDotRao.ReSize(3); cc->dotDotRao = 0.0;
-        in >> cc->iod 
-          >> cc->rao[0]       >> cc->rao[1]       >> cc->rao[2]
-          >> cc->dotRao[0]    >> cc->dotRao[1]    >> cc->dotRao[2]
-          >> cc->dotDotRao[0] >> cc->dotDotRao[1] >> cc->dotDotRao[2];
-        cc->raoSet  = true;
-      }
-      else if ( messageType == COTYPE_GPSCLOCK    || 
-                messageType == COTYPE_GLONASSCLOCK ) {
-        int dummyIOD;
-        cc->dClk       = 0.0;
-        cc->dotDClk    = 0.0;
-        cc->dotDotDClk = 0.0;
-        in >> dummyIOD >> cc->dClk >> cc->dotDClk >> cc->dotDotDClk;
-        cc->dClk       /= t_CST::c;
-        cc->dotDClk    /= t_CST::c;
-        cc->dotDotDClk /= t_CST::c;
-        cc->dClkSet = true;
-      }
+      cc->readLine(line);
+      _corr_tt = cc->tt;
     }
     else if ( messageType == BTYPE_GPS ) { 
 
