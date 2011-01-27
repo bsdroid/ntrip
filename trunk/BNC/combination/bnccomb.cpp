@@ -32,8 +32,6 @@ bncComb::bncComb() {
   
   _nStreams = combineStreams.size();
   
-  cout << "HAHA " << _nStreams << endl;
-
   if (_nStreams >= 2) {
     QListIterator<QString> it(combineStreams);
     while (it.hasNext()) {
@@ -52,6 +50,13 @@ bncComb::~bncComb() {
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::processCorrLine(const QString& staID, const QString& line) {
   QMutexLocker locker(&_mutex);
+
+  t_corr* newCorr = new t_corr();
+  if (!newCorr->readLine(line) == success) {
+    delete newCorr;
+    return;
+  }
+
   cout << staID.toAscii().data() << " " << line.toAscii().data() << endl;
 }
 
