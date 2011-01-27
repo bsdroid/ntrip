@@ -14,7 +14,7 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
+#include <iomanip>
 
 #include "bnccomb.h"
 #include "bncapp.h"
@@ -157,11 +157,16 @@ void bncComb::processEpochsBefore(const bncTime& time) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::processSingleCorr(const cmbAC* AC, const t_corr* corr) {
-  cout << AC->name.toAscii().data() << " " 
-       << AC->mountPoint.toAscii().data() << " "
-       << corr->prn.toAscii().data() << " "
-       << corr->tt.datestr() << " " << corr->tt.timestr() << " "
-       << corr->iod << " " << corr->dClk << endl;
+  cout.setf(ios::fixed);
+  cout << AC->name.toAscii().data()                           << " " 
+       << AC->mountPoint.toAscii().data()                     << " "
+       << corr->prn.toAscii().data()                          << " "
+       << corr->tt.timestr()                                  << " "
+       << setw(4) << corr->iod                                << " " 
+       << setw(8) << setprecision(4) << corr->dClk * t_CST::c << "   "
+       << setw(8) << setprecision(4) << corr->rao[0]          << " "
+       << setw(8) << setprecision(4) << corr->rao[1]          << " "
+       << setw(8) << setprecision(4) << corr->rao[2]          << endl;
 }
 
 // 
