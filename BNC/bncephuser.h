@@ -55,6 +55,7 @@ class t_corr {
 
   t_irc readLine(const QString& line);
 
+  QString      prn;
   bncTime      tt;
   int          iod;
   double       dClk;

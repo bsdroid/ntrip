@@ -169,7 +169,6 @@ t_irc t_corr::readLine(const QString& line) {
   int     updateInterval;
   int     GPSweek;
   double  GPSweeks;
-  QString prn;
   in >> updateInterval >> GPSweek >> GPSweeks >> prn;
 
   tt.set(GPSweek, GPSweeks);
