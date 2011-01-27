@@ -92,9 +92,11 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   }
 
   if (newEpoch->corr.find(newCorr->prn) != newEpoch->corr.end()) {
-    delete newEpoch->corr[newCorr->prn];     
+    newEpoch->corr[newCorr->prn]->readLine(line); // merge (multiple messages)
   }
-  newEpoch->corr[newCorr->prn] = newCorr;
+  else {
+    newEpoch->corr[newCorr->prn] = newCorr;
+  }
 
   processEpochsBefore(newCorr->tt);
 }
@@ -103,7 +105,9 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::processEpochsBefore(const bncTime& time) {
 
-  const double waitTime = 10.0; // wait 10 seconds
+  const double waitTime = 20.0; // wait 10 seconds
+
+  bool corrProcessed = false;
 
   QMapIterator<QString, cmbAC*> itAC(_ACs);
   while (itAC.hasNext()) {
@@ -121,11 +125,8 @@ void bncComb::processEpochsBefore(const bncTime& time) {
         while (itCorr.hasNext()) {
           itCorr.next();
           t_corr* corr = itCorr.value();
-          cout << AC->name.toAscii().data() << " " 
-               << AC->mountPoint.toAscii().data() << " "
-               << corr->prn.toAscii().data() << " "
-               << corr->tt.datestr() << " " << corr->tt.timestr() << " "
-               << corr->iod << " " << corr->dClk << endl;
+          processSingleCorr(AC, corr);
+          corrProcessed = true;
         }
       }
 
@@ -135,4 +136,26 @@ void bncComb::processEpochsBefore(const bncTime& time) {
       }
     }
   }
+
+  if (corrProcessed) {
+    printResults();
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncComb::processSingleCorr(const cmbAC* AC, const t_corr* corr) {
+  cout << AC->name.toAscii().data() << " " 
+       << AC->mountPoint.toAscii().data() << " "
+       << corr->prn.toAscii().data() << " "
+       << corr->tt.datestr() << " " << corr->tt.timestr() << " "
+       << corr->iod << " " << corr->dClk << endl;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncComb::printResults() const {
+
+  cout << "Corrections processed" << endl << endl;
+
 }
