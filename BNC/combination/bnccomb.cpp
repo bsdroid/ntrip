@@ -74,6 +74,14 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     return;
   }
 
+  // Check Modulo Time
+  // -----------------
+  const int moduloTime = 10;
+  if (int(newCorr->tt.gpssec()) % moduloTime != 0.0) {
+    delete newCorr;
+    return;
+  }
+
   // Find/Create the instance of cmbEpoch class
   // ------------------------------------------
   cmbEpoch* newEpoch = 0;
@@ -105,7 +113,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::processEpochsBefore(const bncTime& time) {
 
-  const double waitTime = 20.0; // wait 10 seconds
+  const double waitTime = 10.0; // wait 10 seconds
 
   bool corrProcessed = false;
 
@@ -131,6 +139,10 @@ void bncComb::processEpochsBefore(const bncTime& time) {
       }
 
       if (dt >= waitTime) {
+        if (dt > waitTime) {
+          cout << "delete " << AC->name.toAscii().data() << " " 
+               << epoch->time.timestr() << " " << endl;
+        }
         delete epoch;
         itEpo.remove();
       }
