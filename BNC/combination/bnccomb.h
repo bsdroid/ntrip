@@ -11,13 +11,13 @@ class bncComb : public bncEphUser  {
   bncComb();
   ~bncComb();
   void processCorrLine(const QString& staID, const QString& line);
-
- public slots:
+  int  nStreams() const {return _nStreams;}
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
 
  private:
+  int _nStreams;
 };
 
 #endif
