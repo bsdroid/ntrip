@@ -26,14 +26,8 @@
 #define BNCPPPCLIENT_H
 
 #include <queue>
-#include <QtNetwork>
-
-#include <newmat.h>
-
-#include "bncconst.h"
-#include "bnctime.h"
+#include "bncephuser.h"
 #include "RTCM/GPSDecoder.h"
-#include "RTCM3/ephemeris.h"
 
 class bncModel;
 
@@ -98,25 +92,6 @@ class t_epoData {
   QMap<QString, t_satData*> satDataGal;
 };
 
-class t_corr {
- public:
-  t_corr() {
-    raoSet  = false;
-    dClkSet = false;
-  }
-  bool ready() {return raoSet && dClkSet;}
-  bncTime       tt;
-  int          iod;
-  double       dClk;
-  double       dotDClk;
-  double       dotDotDClk;
-  ColumnVector rao;
-  ColumnVector dotRao;
-  ColumnVector dotDotRao;
-  bool         raoSet;
-  bool         dClkSet;
-};
-
 class t_bias {
  public:
   t_bias() {
@@ -130,7 +105,7 @@ class t_bias {
   double  c1;
 };
 
-class bncPPPclient : public QObject {
+class bncPPPclient : public bncEphUser {
  Q_OBJECT
 
  public:
@@ -139,9 +114,6 @@ class bncPPPclient : public QObject {
   void putNewObs(const t_obs& pp);
 
  public slots:
-  void slotNewEphGPS(gpsephemeris gpseph);
-  void slotNewEphGlonass(glonassephemeris gloeph);
-  void slotNewEphGalileo(galileoephemeris galeph);
   void slotNewCorrections(QList<QString> corrList);
 
  signals:
@@ -163,20 +135,6 @@ class bncPPPclient : public QObject {
     int slipCntL5;
   };
 
-  class t_ephPair {
-   public:
-    t_ephPair() {
-      last = 0;
-      prev = 0;
-    }
-    ~t_ephPair() {
-      delete last;
-      delete prev;
-    }
-    t_eph* last;
-    t_eph* prev;
-  };
-
   t_irc getSatPos(const bncTime& tt, const QString& prn, 
                   ColumnVector& xc, ColumnVector& vv);
   void processEpochs();
@@ -186,8 +144,6 @@ class bncPPPclient : public QObject {
   t_irc cmpToT(t_satData* satData);
 
   QByteArray              _staID;
-  QMutex                  _mutex;
-  QMap<QString, t_ephPair*> _eph;
   QMap<QString, t_corr*>  _corr;
   bncTime                 _corr_tt;
   QMap<QString, t_bias*>  _bias;

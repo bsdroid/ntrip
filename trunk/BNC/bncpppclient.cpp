@@ -85,15 +85,6 @@ bncPPPclient::bncPPPclient(QByteArray staID) {
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
 
-  connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
-          this, SLOT(slotNewEphGPS(gpsephemeris)));
-
-  connect(((bncApp*)qApp), SIGNAL(newEphGlonass(glonassephemeris)),
-          this, SLOT(slotNewEphGlonass(glonassephemeris)));
-
-  connect(((bncApp*)qApp), SIGNAL(newEphGalileo(galileoephemeris)),
-          this, SLOT(slotNewEphGalileo(galileoephemeris)));
-
   connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
           this, SLOT(slotNewCorrections(QList<QString>)));
 
@@ -110,11 +101,6 @@ bncPPPclient::~bncPPPclient() {
   while (!_epoData.empty()) {
     delete _epoData.front();
     _epoData.pop();
-  }
-  QMapIterator<QString, t_ephPair*> it(_eph);
-  while (it.hasNext()) {
-    it.next();
-    delete it.value();
   }
   QMapIterator<QString, t_corr*> ic(_corr);
   while (ic.hasNext()) {
@@ -270,86 +256,6 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
     else {
       delete satData;
     }
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::slotNewEphGPS(gpsephemeris gpseph) {
-  QMutexLocker locker(&_mutex);
-
-  QString prn = QString("G%1").arg(gpseph.satellite, 2, 10, QChar('0'));
-
-  if (_eph.contains(prn)) {
-    t_ephGPS* eLast = static_cast<t_ephGPS*>(_eph.value(prn)->last);
-    if ( (eLast->GPSweek() <  gpseph.GPSweek) || 
-         (eLast->GPSweek() == gpseph.GPSweek &&  
-          eLast->TOC()     <  gpseph.TOC) ) {
-      delete static_cast<t_ephGPS*>(_eph.value(prn)->prev);
-      _eph.value(prn)->prev = _eph.value(prn)->last;
-      _eph.value(prn)->last = new t_ephGPS();
-      static_cast<t_ephGPS*>(_eph.value(prn)->last)->set(&gpseph);
-    }
-  }
-  else {
-    t_ephGPS* eLast = new t_ephGPS();
-    eLast->set(&gpseph);
-    _eph.insert(prn, new t_ephPair());
-    _eph[prn]->last = eLast;
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::slotNewEphGlonass(glonassephemeris gloeph) {
-  QMutexLocker locker(&_mutex);
-
-  QString prn = QString("R%1").arg(gloeph.almanac_number, 2, 10, QChar('0'));
-
-  if (_eph.contains(prn)) {
-    int ww  = gloeph.GPSWeek;
-    int tow = gloeph.GPSTOW; 
-    updatetime(&ww, &tow, gloeph.tb*1000, 0);  // Moscow -> GPS
-    t_ephGlo* eLast = static_cast<t_ephGlo*>(_eph.value(prn)->last);
-    if (eLast->GPSweek() < ww || 
-        (eLast->GPSweek()  == ww &&  eLast->GPSweeks() <  tow)) {  
-      delete static_cast<t_ephGlo*>(_eph.value(prn)->prev);
-      _eph.value(prn)->prev = _eph.value(prn)->last;
-      _eph.value(prn)->last = new t_ephGlo();
-      static_cast<t_ephGlo*>(_eph.value(prn)->last)->set(&gloeph);
-    }
-  }
-  else {
-    t_ephGlo* eLast = new t_ephGlo();
-    eLast->set(&gloeph);
-    _eph.insert(prn, new t_ephPair());
-    _eph[prn]->last = eLast;
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::slotNewEphGalileo(galileoephemeris galeph) {
-  QMutexLocker locker(&_mutex);
-
-  QString prn = QString("E%1").arg(galeph.satellite, 2, 10, QChar('0'));
-
-  if (_eph.contains(prn)) {
-    t_ephGal* eLast = static_cast<t_ephGal*>(_eph.value(prn)->last);
-    if ( (eLast->GPSweek() <  galeph.Week) || 
-         (eLast->GPSweek() == galeph.Week &&  
-          eLast->TOC()     <  galeph.TOC) ) {
-      delete static_cast<t_ephGal*>(_eph.value(prn)->prev);
-      _eph.value(prn)->prev = _eph.value(prn)->last;
-      _eph.value(prn)->last = new t_ephGal();
-      static_cast<t_ephGal*>(_eph.value(prn)->last)->set(&galeph);
-    }
-  }
-  else {
-    t_ephGal* eLast = new t_ephGal();
-    eLast->set(&galeph);
-    _eph.insert(prn, new t_ephPair());
-    _eph[prn]->last = eLast;
   }
 }
 

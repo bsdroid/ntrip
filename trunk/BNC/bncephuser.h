@@ -63,7 +63,7 @@ class bncEphUser : public QObject {
   void slotNewEphGlonass(glonassephemeris gloeph);
   void slotNewEphGalileo(galileoephemeris galeph);
 
- private:
+ protected:
 
   class t_ephPair {
    public:
