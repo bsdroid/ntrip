@@ -148,3 +148,62 @@ void bncEphUser::slotNewEphGalileo(galileoephemeris galeph) {
     _eph[prn]->last = eLast;
   }
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_corr::readLine(const QString& line) {
+
+  QTextStream in(line.toAscii());
+
+  int     messageType;
+  int     updateInterval;
+  int     GPSweek;
+  double  GPSweeks;
+  QString prn;
+
+  in >> messageType >> updateInterval >> GPSweek >> GPSweeks >> prn;
+
+  tt.set(GPSweek, GPSweeks);
+
+  if      ( messageType == COTYPE_GPSCOMBINED    || 
+            messageType == COTYPE_GLONASSCOMBINED ) {
+    rao.ReSize(3);       rao       = 0.0;
+    dotRao.ReSize(3);    dotRao    = 0.0;
+    dotDotRao.ReSize(3); dotDotRao = 0.0;
+    dClk       = 0.0;
+    dotDClk    = 0.0;
+    dotDotDClk = 0.0;
+    in >> iod 
+       >> dClk       >> rao[0]       >> rao[1]       >> rao[2]
+       >> dotDClk    >> dotRao[0]    >> dotRao[1]    >> dotRao[2]
+       >> dotDotDClk >> dotDotRao[0] >> dotDotRao[1] >> dotDotRao[2];
+    dClk       /= t_CST::c;
+    dotDClk    /= t_CST::c;
+    dotDotDClk /= t_CST::c;
+    raoSet  = true;
+    dClkSet = true;
+  }
+  else if ( messageType == COTYPE_GPSORBIT    || 
+            messageType == COTYPE_GLONASSORBIT ) {
+    rao.ReSize(3);       rao       = 0.0;
+    dotRao.ReSize(3);    dotRao    = 0.0;
+    dotDotRao.ReSize(3); dotDotRao = 0.0;
+    in >> iod 
+      >> rao[0]       >> rao[1]       >> rao[2]
+      >> dotRao[0]    >> dotRao[1]    >> dotRao[2]
+      >> dotDotRao[0] >> dotDotRao[1] >> dotDotRao[2];
+    raoSet  = true;
+  }
+  else if ( messageType == COTYPE_GPSCLOCK    || 
+            messageType == COTYPE_GLONASSCLOCK ) {
+    int dummyIOD;
+    dClk       = 0.0;
+    dotDClk    = 0.0;
+    dotDotDClk = 0.0;
+    in >> dummyIOD >> dClk >> dotDClk >> dotDotDClk;
+    dClk       /= t_CST::c;
+    dotDClk    /= t_CST::c;
+    dotDotDClk /= t_CST::c;
+    dClkSet = true;
+  }
+}

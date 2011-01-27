@@ -32,6 +32,10 @@
 #include "bnctime.h"
 #include "RTCM3/ephemeris.h"
 
+extern "C" {
+#include "clock_orbit_rtcm.h"
+}
+
 class t_corr {
  public:
   t_corr() {
@@ -39,6 +43,18 @@ class t_corr {
     dClkSet = false;
   }
   bool ready() {return raoSet && dClkSet;}
+
+  static bool relevantMessageType(int msgType) {
+    return ( msgType == COTYPE_GPSCOMBINED     || 
+             msgType == COTYPE_GLONASSCOMBINED ||
+             msgType == COTYPE_GPSORBIT        ||
+             msgType == COTYPE_GPSCLOCK        ||
+             msgType == COTYPE_GLONASSORBIT    ||
+             msgType == COTYPE_GLONASSCLOCK );
+  }
+
+  void readLine(const QString& line);
+
   bncTime      tt;
   int          iod;
   double       dClk;
