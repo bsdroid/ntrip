@@ -758,11 +758,13 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
   // An old correction - throw it away
   // ---------------------------------
   if (coTime <= _lastDumpCoSec) {
-    QString line = staID + ": Correction for one sat neglected because overaged by " +
-                    QString().sprintf(" %ld sec",
-                    _lastDumpCoSec - coTime + _waitCoTime);
-    messagePrivate(line.toAscii());
-    emit( newMessage(line.toAscii(), true) );
+    if (!_bncComb) {
+      QString line = staID + ": Correction for one sat neglected because overaged by " +
+                      QString().sprintf(" %ld sec",
+                      _lastDumpCoSec - coTime + _waitCoTime);
+      messagePrivate(line.toAscii());
+      emit( newMessage(line.toAscii(), true) );
+    }
     return;
   }
 
