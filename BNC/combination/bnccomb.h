@@ -11,13 +11,45 @@ class bncComb : public bncEphUser  {
   bncComb();
   ~bncComb();
   void processCorrLine(const QString& staID, const QString& line);
-  int  nStreams() const {return _nStreams;}
+  int  nStreams() const {return _ACs.size();}
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
 
  private:
-  int _nStreams;
+
+  class cmbEpoch {
+   public:
+    cmbEpoch() {}
+    ~cmbEpoch() {
+      QMapIterator<QString, t_corr*> it(corr);
+      while (it.hasNext()) {
+        it.next();
+        delete it.value();
+      }
+    }
+    bncTime                time;
+    QMap<QString, t_corr*> corr; // Corrections (key is PRN)
+  };
+
+  class cmbAC {
+   public:
+    cmbAC() {}
+    ~cmbAC() {
+      QListIterator<cmbEpoch*> it(epochs);
+      while (it.hasNext()) {
+        delete it.next();
+      }
+    }
+    QString           mountPoint;
+    QString           name;
+    double            weight;
+    QQueue<cmbEpoch*> epochs;  // List of Epochs with Corrections
+  };
+
+  void processEpochsBefore(const bncTime& time);
+
+  QMap<QString, cmbAC*> _ACs;   // Analytical Centers (key is mountpoint)
 };
 
 #endif
