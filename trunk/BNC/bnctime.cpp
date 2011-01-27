@@ -89,6 +89,13 @@ bool bncTime::operator!=(const bncTime &time1) const {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
+bool bncTime::operator==(const bncTime &time1) const {
+  if ( ((*this) - time1) == 0 ) return 1;
+  return 0;
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
 bncTime bncTime::operator+(double sec) const {
   int     mjd    = this->mjd();
   double  daysec = this->daysec();
