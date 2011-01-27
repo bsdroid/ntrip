@@ -34,6 +34,8 @@ bncComb::~bncComb() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::processCorrLine(const QString& staID, const QString& line) {
-  ///  cout << staID.toAscii().data() << " " << line.toAscii().data() << endl;
+  QMutexLocker locker(&_mutex);
+
+///  cout << staID.toAscii().data() << " " << line.toAscii().data() << endl;
 }
 
