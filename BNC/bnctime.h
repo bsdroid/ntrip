@@ -22,6 +22,7 @@ class bncTime {
   void         civil_time (unsigned int& hour, unsigned int& min,
                            double& sec) const;
   bool         valid() const {return _mjd != 0 || _sec != 0.0;}
+  bool         operator==(const bncTime &time1) const;
   bool         operator!=(const bncTime &time1) const;
   double       operator-(const bncTime &time1) const;
   bncTime      operator-(double sec) const;
