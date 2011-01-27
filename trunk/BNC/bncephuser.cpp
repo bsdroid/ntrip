@@ -151,17 +151,26 @@ void bncEphUser::slotNewEphGalileo(galileoephemeris galeph) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_corr::readLine(const QString& line) {
+t_irc t_corr::readLine(const QString& line) {
+
+  if (line[0] == '!') {
+    return failure;
+  }
 
   QTextStream in(line.toAscii());
 
   int     messageType;
+  in >> messageType;
+
+  if (!relevantMessageType(messageType)) {
+    return failure;
+  }
+
   int     updateInterval;
   int     GPSweek;
   double  GPSweeks;
   QString prn;
-
-  in >> messageType >> updateInterval >> GPSweek >> GPSweeks >> prn;
+  in >> updateInterval >> GPSweek >> GPSweeks >> prn;
 
   tt.set(GPSweek, GPSweeks);
 
@@ -206,4 +215,6 @@ void t_corr::readLine(const QString& line) {
     dotDotDClk /= t_CST::c;
     dClkSet = true;
   }
+
+  return success;
 }
