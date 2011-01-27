@@ -2,9 +2,9 @@
 #ifndef BNCCOMB_H
 #define BNCCOMB_H
 
-#include <QtCore>
+#include "bncephuser.h"
 
-class bncComb : public QObject {
+class bncComb : public bncEphUser  {
  Q_OBJECT
 
  public:
