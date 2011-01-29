@@ -74,6 +74,19 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     return;
   }
 
+  // Reject delayed corrections
+  // --------------------------
+  if (_processedBeforeTime.valid() && newCorr->tt < _processedBeforeTime) {
+    delete newCorr;
+    return;
+  }
+
+  // Process all older Epochs (if there are any)
+  // -------------------------------------------
+  const double waitTime = 5.0; // wait 5 sec
+  _processedBeforeTime = newCorr->tt - waitTime;
+  processEpochs();
+
   // Check Modulo Time
   // -----------------
   const int moduloTime = 10;
@@ -98,22 +111,20 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     newEpoch->time = newCorr->tt;
     AC->epochs.append(newEpoch);
   }
-
+  
+  // Merge or add the correction
+  // ---------------------------
   if (newEpoch->corr.find(newCorr->prn) != newEpoch->corr.end()) {
     newEpoch->corr[newCorr->prn]->readLine(line); // merge (multiple messages)
   }
   else {
     newEpoch->corr[newCorr->prn] = newCorr;
   }
-
-  processEpochsBefore(newCorr->tt);
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncComb::processEpochsBefore(const bncTime& time) {
-
-  const double waitTime = 10.0; // wait 10 seconds
+void bncComb::processEpochs() {
 
   bool corrProcessed = false;
 
@@ -122,26 +133,16 @@ void bncComb::processEpochsBefore(const bncTime& time) {
     itAC.next();
     cmbAC* AC = itAC.value();
 
-
     QMutableListIterator<cmbEpoch*> itEpo(AC->epochs);
     while (itEpo.hasNext()) {
       cmbEpoch* epoch = itEpo.next();
-      double dt = time - epoch->time;
-
-      if      (dt == waitTime) {
+      if (epoch->time < _processedBeforeTime) {
         QMapIterator<QString, t_corr*> itCorr(epoch->corr);
         while (itCorr.hasNext()) {
           itCorr.next();
           t_corr* corr = itCorr.value();
           processSingleCorr(AC, corr);
           corrProcessed = true;
-        }
-      }
-
-      if (dt >= waitTime) {
-        if (dt > waitTime) {
-          cout << "delete " << AC->name.toAscii().data() << " " 
-               << epoch->time.timestr() << " " << endl;
         }
         delete epoch;
         itEpo.remove();
