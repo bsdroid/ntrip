@@ -45,6 +45,12 @@ bncComb::bncComb() {
   }
 
   _caster = new cmbCaster();
+
+  connect(_caster, SIGNAL(error(const QByteArray)),
+          this, SLOT(slotError(const QByteArray)));
+
+  connect(_caster, SIGNAL(newMessage(const QByteArray)),
+          this, SLOT(slotMessage(const QByteArray)));
 }
 
 // Destructor
@@ -219,6 +225,18 @@ void bncComb::dumpResults(const bncTime& resTime,
       _caster->write(obuffer, len);
     }
   }
+}
+
+// Write an Error Message
+////////////////////////////////////////////////////////////////////////////
+void bncComb::slotError(const QByteArray msg) {
+  cout << msg.data() << endl;
+}
+
+// Write a Message
+////////////////////////////////////////////////////////////////////////////
+void bncComb::slotMessage(const QByteArray msg) {
+  cout << msg.data() << endl;
 }
 
 // Process Epochs

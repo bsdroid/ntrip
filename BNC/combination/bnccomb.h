@@ -18,6 +18,10 @@ class bncComb : public bncEphUser  {
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
 
+ private slots:
+  void slotMessage(const QByteArray msg);
+  void slotError(const QByteArray msg);
+
  private:
 
   class cmbEpoch {
