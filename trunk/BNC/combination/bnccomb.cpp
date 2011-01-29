@@ -405,7 +405,9 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       cmbParam* pp = _params[iPar-1];
       pp->xx += dx(iPar);
       if (pp->type == cmbParam::clk) {
-        resCorr[pp->prn]->dClk = pp->xx / t_CST::c;
+        if (resCorr.find(pp->prn) != resCorr.end()) {
+          resCorr[pp->prn]->dClk = pp->xx / t_CST::c;
+        }
       }
     }
  
