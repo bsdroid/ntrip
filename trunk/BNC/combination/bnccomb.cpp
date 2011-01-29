@@ -205,7 +205,7 @@ void bncComb::dumpResults(const bncTime& resTime,
     if (sd != 0) {
       sd->ID                       = corr->prn.mid(1).toInt();
       sd->IOD                      = corr->iod;
-      sd->Clock.DeltaA0            = corr->dClk;
+      sd->Clock.DeltaA0            = corr->dClk * t_CST::c;
       sd->Orbit.DeltaRadial        = corr->rao(1);
       sd->Orbit.DeltaAlongTrack    = corr->rao(2);
       sd->Orbit.DeltaCrossTrack    = corr->rao(3);
