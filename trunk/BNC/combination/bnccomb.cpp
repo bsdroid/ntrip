@@ -404,12 +404,12 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       cmbParam* pp = _params[iPar-1];
       pp->xx += dx(iPar);
+      if (pp->type == cmbParam::clk) {
+        resCorr[pp->prn]->dClk = pp->xx / t_CST::c;
+      }
     }
  
-    cout << "ll = " << ll.t();
-    cout << "dx = " << dx.t();
     cout << "vv = " << vv.t();
-    
   }
 
   dumpResults(resTime, resCorr);
