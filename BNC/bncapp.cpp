@@ -64,6 +64,9 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
   _logStream   = 0;
   _caster      = 0;
   _rawFile     = 0;
+#ifdef USE_COMBINATION
+  _bncComb     = 0;
+#endif
 
   // Lists of Ephemeris
   // ------------------
