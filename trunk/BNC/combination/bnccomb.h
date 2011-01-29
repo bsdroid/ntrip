@@ -47,11 +47,12 @@ class bncComb : public bncEphUser  {
     QQueue<cmbEpoch*> epochs;  // List of Epochs with Corrections
   };
 
-  void processEpochsBefore(const bncTime& time);
+  void processEpochs();
   void processSingleCorr(const cmbAC* AC, const t_corr* corr);
   void printResults() const;
 
   QMap<QString, cmbAC*> _ACs;   // Analytical Centers (key is mountpoint)
+  bncTime               _processedBeforeTime;
 };
 
 #endif
