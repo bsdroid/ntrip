@@ -18,6 +18,7 @@
 
 #include "bnccomb.h"
 #include "bncapp.h"
+#include "cmbcaster.h"
 #include "bncsettings.h"
 
 using namespace std;
@@ -42,6 +43,8 @@ bncComb::bncComb() {
       _ACs[newAC->mountPoint] = newAC;
     }
   }
+
+  _caster = new cmbCaster();
 }
 
 // Destructor
@@ -52,6 +55,7 @@ bncComb::~bncComb() {
     it.next();
     delete it.value();
   }
+  delete _caster;
 }
 
 // 
@@ -85,7 +89,27 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   // -------------------------------------------
   const double waitTime = 5.0; // wait 5 sec
   _processedBeforeTime = newCorr->tt - waitTime;
-  processEpochs();
+
+  QList<cmbEpoch*> epochsToProcess;
+
+  QMapIterator<QString, cmbAC*> itAC(_ACs);
+  while (itAC.hasNext()) {
+    itAC.next();
+    cmbAC* AC = itAC.value();
+
+    QMutableListIterator<cmbEpoch*> itEpo(AC->epochs);
+    while (itEpo.hasNext()) {
+      cmbEpoch* epoch = itEpo.next();
+      if (epoch->time < _processedBeforeTime) {
+        epochsToProcess.append(epoch);
+        itEpo.remove();
+      }
+    }
+  }
+
+  if (epochsToProcess.size()) {
+    processEpochs(epochsToProcess);
+  }
 
   // Check Modulo Time
   // -----------------
@@ -107,7 +131,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     }
   }
   if (newEpoch == 0) {
-    newEpoch = new cmbEpoch();
+    newEpoch = new cmbEpoch(AC->name);
     newEpoch->time = newCorr->tt;
     AC->epochs.append(newEpoch);
   }
@@ -124,43 +148,27 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncComb::processEpochs() {
+void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
 
-  bool corrProcessed = false;
-
-  QMapIterator<QString, cmbAC*> itAC(_ACs);
-  while (itAC.hasNext()) {
-    itAC.next();
-    cmbAC* AC = itAC.value();
-
-    QMutableListIterator<cmbEpoch*> itEpo(AC->epochs);
-    while (itEpo.hasNext()) {
-      cmbEpoch* epoch = itEpo.next();
-      if (epoch->time < _processedBeforeTime) {
-        QMapIterator<QString, t_corr*> itCorr(epoch->corr);
-        while (itCorr.hasNext()) {
-          itCorr.next();
-          t_corr* corr = itCorr.value();
-          processSingleCorr(AC, corr);
-          corrProcessed = true;
-        }
-        delete epoch;
-        itEpo.remove();
-      }
+  QListIterator<cmbEpoch*> itEpo(epochs);
+  while (itEpo.hasNext()) {
+    cmbEpoch* epo = itEpo.next();
+    QMapIterator<QString, t_corr*> itCorr(epo->corr);
+    while (itCorr.hasNext()) {
+      itCorr.next();
+      t_corr* corr = itCorr.value();
+      printSingleCorr(epo->acName, corr);
     }
   }
 
-  if (corrProcessed) {
-    printResults();
-  }
+  cout << "Corrections processed" << endl << endl;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncComb::processSingleCorr(const cmbAC* AC, const t_corr* corr) {
+void bncComb::printSingleCorr(const QString& acName, const t_corr* corr) {
   cout.setf(ios::fixed);
-  cout << AC->name.toAscii().data()                           << " " 
-       << AC->mountPoint.toAscii().data()                     << " "
+  cout << acName.toAscii().data()                             << " " 
        << corr->prn.toAscii().data()                          << " "
        << corr->tt.timestr()                                  << " "
        << setw(4) << corr->iod                                << " " 
@@ -170,10 +178,62 @@ void bncComb::processSingleCorr(const cmbAC* AC, const t_corr* corr) {
        << setw(8) << setprecision(4) << corr->rao[2]          << endl;
 }
 
+// // 
+// ////////////////////////////////////////////////////////////////////////////
+// void bncComb::printResults() const {
 // 
-////////////////////////////////////////////////////////////////////////////
-void bncComb::printResults() const {
-
-  cout << "Corrections processed" << endl << endl;
-
-}
+// //  _caster->open();      
+// //
+// //  //// beg test
+// //  cmbEpoch* resEpoch = 0;
+// //  if (_ACs->find("CLK10") != _ACs->end()) {
+// //    cmbAC* AC = _ACs["CLK10"];
+// //    QMutableListIterator<cmbEpoch*> itEpo(AC->epochs);
+// //    while (itEpo.hasNext()) {
+// //      
+// //
+// //  }
+// //  //// end test
+// 
+// struct ClockOrbit co;
+// 
+// //  memset(&co, 0, sizeof(co));
+// //  co.GPSEpochTime      = (int)_GPSweeks;
+// //  co.GLONASSEpochTime  = (int)fmod(_GPSweeks, 86400.0) 
+// //                       + 3 * 3600 - gnumleap(_year, _month, _day);
+// //  co.ClockDataSupplied = 1;
+// //  co.OrbitDataSupplied = 1;
+// //  co.SatRefDatum       = DATUM_ITRF;
+// //
+// //  // struct ClockOrbit::SatData* sd = 0;
+//   // if      (prn[0] == 'G') {
+//   //   sd = co.Sat + co.NumberOfGPSSat;
+//   //   ++co.NumberOfGPSSat;
+//   // }
+//   // else if (prn[0] == 'R') {
+//   //   sd = co.Sat + CLOCKORBIT_NUMGPS + co.NumberOfGLONASSSat;
+//   //   ++co.NumberOfGLONASSSat;
+//   // }
+// 
+//   // sd->ID                    = prn.mid(1).toInt();
+//   // sd->IOD                   = ep->IOD();
+//   // sd->Clock.DeltaA0         = dClk;
+//   // sd->Orbit.DeltaRadial     = rsw(1);
+//   // sd->Orbit.DeltaAlongTrack = rsw(2);
+//   // sd->Orbit.DeltaCrossTrack = rsw(3);
+//   // sd->Orbit.DotDeltaRadial     = (rsw2(1) - rsw(1)) / xx(11);
+//   // sd->Orbit.DotDeltaAlongTrack = (rsw2(2) - rsw(2)) / xx(11);
+//   // sd->Orbit.DotDeltaCrossTrack = (rsw2(3) - rsw(3)) / xx(11);
+// 
+//   if ( _caster->usedSocket() && 
+//        (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
+//     char obuffer[CLOCKORBIT_BUFFERSIZE];
+//     int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+//     if (len > 0) {
+//       _caster->write(obuffer, len);
+//     }
+//   }
+// 
+//   cout << "Corrections processed" << endl << endl;
+// 
+// }

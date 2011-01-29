@@ -4,6 +4,8 @@
 
 #include "bncephuser.h"
 
+class cmbCaster;
+
 class bncComb : public bncEphUser  {
  Q_OBJECT
 
@@ -20,7 +22,7 @@ class bncComb : public bncEphUser  {
 
   class cmbEpoch {
    public:
-    cmbEpoch() {}
+    cmbEpoch(const QString& name) {acName = name;}
     ~cmbEpoch() {
       QMapIterator<QString, t_corr*> it(corr);
       while (it.hasNext()) {
@@ -28,6 +30,7 @@ class bncComb : public bncEphUser  {
         delete it.value();
       }
     }
+    QString                acName;
     bncTime                time;
     QMap<QString, t_corr*> corr; // Corrections (key is PRN)
   };
@@ -47,12 +50,12 @@ class bncComb : public bncEphUser  {
     QQueue<cmbEpoch*> epochs;  // List of Epochs with Corrections
   };
 
-  void processEpochs();
-  void processSingleCorr(const cmbAC* AC, const t_corr* corr);
-  void printResults() const;
+  void processEpochs(const QList<cmbEpoch*>& epochs);
+  void printSingleCorr(const QString& acName, const t_corr* corr);
 
   QMap<QString, cmbAC*> _ACs;   // Analytical Centers (key is mountpoint)
   bncTime               _processedBeforeTime;
+  cmbCaster*            _caster;
 };
 
 #endif
