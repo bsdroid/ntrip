@@ -83,6 +83,10 @@ class bncModel : public QObject {
     return 0.0;
   }
 
+  static void kalman(const Matrix& AA, const ColumnVector& ll, 
+                     const DiagonalMatrix& PP, 
+                     SymmetricMatrix& QQ, ColumnVector& dx);
+
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
   void newNMEAstr(QByteArray str);
@@ -107,10 +111,6 @@ class bncModel : public QObject {
                           QMap<QString, t_satData*>& satDataGlo,
                           QMap<QString, t_satData*>& satDataGal);
   void writeNMEAstr(const QString& nmStr);
-
-  static void kalman(const Matrix& AA, const ColumnVector& ll, 
-                     const DiagonalMatrix& PP, 
-                     SymmetricMatrix& QQ, ColumnVector& dx);
 
   double windUp(const QString& prn, const ColumnVector& rSat,
                 const ColumnVector& rRec);
