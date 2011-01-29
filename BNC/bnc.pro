@@ -101,7 +101,7 @@ QT += network
 
 exists(combination/bnccomb.h) {
   DEFINES += USE_COMBINATION
-  HEADERS += combination/bnccomb.h 
-  SOURCES += combination/bnccomb.cpp
+  HEADERS += combination/bnccomb.h   combination/cmbcaster.h
+  SOURCES += combination/bnccomb.cpp combination/cmbcaster.cpp
 }
 
