@@ -14,14 +14,52 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <newmatio.h>
 #include <iomanip>
 
 #include "bnccomb.h"
 #include "bncapp.h"
 #include "cmbcaster.h"
 #include "bncsettings.h"
+#include "bncmodel.h"
 
 using namespace std;
+
+// Constructor
+////////////////////////////////////////////////////////////////////////////
+cmbParam::cmbParam(cmbParam::parType typeIn, int indexIn,
+                   const QString& acIn, const QString& prnIn) {
+  type  = typeIn;
+  index = indexIn;
+  AC    = acIn;
+  prn   = prnIn;
+  xx    = 0.0;
+}
+
+// Destructor
+////////////////////////////////////////////////////////////////////////////
+cmbParam::~cmbParam() {
+}
+
+// Partial
+////////////////////////////////////////////////////////////////////////////
+double cmbParam::partial(const QString& acIn, t_corr* corr) {
+  
+  if      (type == offset) {
+    if (AC == acIn && prn == corr->prn) {
+      return 1.0;
+    }
+  }
+  else if (type == clk) {
+    if (prn == corr->prn) {
+      return 1.0;
+    }
+  }
+
+  return 0.0;
+}
+
+
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -45,12 +83,41 @@ bncComb::bncComb() {
   }
 
   _caster = new cmbCaster();
-
   connect(_caster, SIGNAL(error(const QByteArray)),
           this, SLOT(slotError(const QByteArray)));
-
   connect(_caster, SIGNAL(newMessage(const QByteArray)),
           this, SLOT(slotMessage(const QByteArray)));
+
+  // Initialize Parameters
+  // ---------------------
+  int nextPar = 0;
+  for (int iGps = 1; iGps <= 32; iGps++) {
+    QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+    _params.push_back(new cmbParam(cmbParam::clk, ++nextPar, "", prn));
+    QMapIterator<QString, cmbAC*> it(_ACs);
+    while (it.hasNext()) {
+      it.next();
+      cmbAC* AC = it.value();
+      _params.push_back(new cmbParam(cmbParam::offset, ++nextPar, AC->name,prn));
+    }
+  }
+
+  unsigned nPar = _params.size();
+  _QQ.ReSize(nPar);
+  _QQ = 0.0;
+
+  _sigClk0 = 100.0;
+  _sigOff0 = 100.0;
+
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    cmbParam* pp = _params[iPar-1];
+    if      (pp->type == cmbParam::clk) {
+      _QQ(iPar,iPar) = _sigClk0 * _sigClk0; 
+    }
+    else if (pp->type == cmbParam::offset) {
+      _QQ(iPar,iPar) = _sigOff0 * _sigOff0; 
+    }
+  }
 }
 
 // Destructor
@@ -242,27 +309,90 @@ void bncComb::slotMessage(const QByteArray msg) {
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
 
+  // Predict Parameters Values, Add White Noise
+  // ------------------------------------------
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    cmbParam* pp = _params[iPar-1];
+    if      (pp->type == cmbParam::clk) {
+      pp->xx = 0.0;
+      for (int jj = 1; jj <= _params.size(); jj++) {
+        _QQ(iPar, jj) = 0.0;
+      }
+     _QQ(iPar,iPar) = _sigClk0 * _sigClk0;
+    }
+  }
+
   bncTime                resTime = epochs.first()->time;
   QMap<QString, t_corr*> resCorr;
 
+  int nPar = _params.size();
+  int nObs = 0;  
+
+  ColumnVector x0(nPar);
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    cmbParam* pp = _params[iPar-1];
+    x0(iPar) = pp->xx;
+  }
+
+  // Count Observations
+  // ------------------
   QListIterator<cmbEpoch*> itEpo(epochs);
   while (itEpo.hasNext()) {
     cmbEpoch* epo = itEpo.next();
     QMapIterator<QString, t_corr*> itCorr(epo->corr);
-
     while (itCorr.hasNext()) {
       itCorr.next();
-      t_corr* corr = itCorr.value();
-
-      //// beg test
-      if (epo->acName == "BKG") {
-        resCorr[corr->prn] = new t_corr(*corr);
-      }
-      //// end test
-
-      printSingleCorr(epo->acName, corr);
-      delete corr;
+      ++nObs;
     }
+  }
+
+  if (nObs > 0) {
+    Matrix         AA(nObs, nPar);
+    ColumnVector   ll(nObs);
+    DiagonalMatrix PP(nObs); PP = 1.0;
+
+    int iObs = 0;
+    QListIterator<cmbEpoch*> itEpo(epochs);
+    while (itEpo.hasNext()) {
+      cmbEpoch* epo = itEpo.next();
+      QMapIterator<QString, t_corr*> itCorr(epo->corr);
+    
+      while (itCorr.hasNext()) {
+        itCorr.next();
+        ++iObs;
+        t_corr* corr = itCorr.value();
+
+        //// beg test
+        if (epo->acName == "BKG") {
+          resCorr[corr->prn] = new t_corr(*corr);
+        }
+        //// end test
+
+        for (int iPar = 1; iPar <= _params.size(); iPar++) {
+          cmbParam* pp = _params[iPar-1];
+          AA(iObs, iPar) = pp->partial(epo->acName, corr);
+        }
+
+        ll(iObs) = corr->dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
+    
+        printSingleCorr(epo->acName, corr);
+        delete corr;
+      }
+    }
+
+    ColumnVector dx;
+    bncModel::kalman(AA, ll, PP, _QQ, dx);
+    ColumnVector vv = ll - AA * dx;
+
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      cmbParam* pp = _params[iPar-1];
+      pp->xx += dx(iPar);
+    }
+ 
+    cout << "ll = " << ll.t();
+    cout << "dx = " << dx.t();
+    cout << "vv = " << vv.t();
+    
   }
 
   dumpResults(resTime, resCorr);

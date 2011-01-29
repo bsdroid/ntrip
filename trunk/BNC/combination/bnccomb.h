@@ -2,9 +2,24 @@
 #ifndef BNCCOMB_H
 #define BNCCOMB_H
 
+#include <newmat.h>
 #include "bncephuser.h"
 
 class cmbCaster;
+
+class cmbParam {
+ public:
+  enum parType {offset, clk};
+  cmbParam(parType typeIn, int indexIn, 
+           const QString& acIn, const QString& prnIn);
+  ~cmbParam();
+  double partial(const QString& acIn, t_corr* corr);
+  parType type;
+  int     index;
+  QString AC;
+  QString prn;
+  double  xx;
+};
 
 class bncComb : public bncEphUser  {
  Q_OBJECT
@@ -62,6 +77,10 @@ class bncComb : public bncEphUser  {
   QMap<QString, cmbAC*> _ACs;   // Analytical Centers (key is mountpoint)
   bncTime               _processedBeforeTime;
   cmbCaster*            _caster;
+  QVector<cmbParam*>    _params;
+  double                _sigClk0;
+  double                _sigOff0;
+  SymmetricMatrix       _QQ;
 };
 
 #endif
