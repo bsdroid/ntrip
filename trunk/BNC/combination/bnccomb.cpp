@@ -186,13 +186,12 @@ void bncComb::dumpResults(const bncTime& resTime,
   co.OrbitDataSupplied = 1;
   co.SatRefDatum       = DATUM_ITRF;
 
-  struct ClockOrbit::SatData* sd = 0;
-
   QMapIterator<QString, t_corr*> it(resCorr);
   while (it.hasNext()) {
     it.next();
     t_corr* corr = it.value();
 
+    struct ClockOrbit::SatData* sd = 0;
     if      (corr->prn[0] == 'G') {
       sd = co.Sat + co.NumberOfGPSSat;
       ++co.NumberOfGPSSat;
