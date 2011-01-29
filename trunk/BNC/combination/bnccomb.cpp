@@ -58,7 +58,7 @@ bncComb::~bncComb() {
   delete _caster;
 }
 
-// 
+// Read and store one correction line
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::processCorrLine(const QString& staID, const QString& line) {
   QMutexLocker locker(&_mutex);
@@ -146,25 +146,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   }
 }
 
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
-
-  QListIterator<cmbEpoch*> itEpo(epochs);
-  while (itEpo.hasNext()) {
-    cmbEpoch* epo = itEpo.next();
-    QMapIterator<QString, t_corr*> itCorr(epo->corr);
-    while (itCorr.hasNext()) {
-      itCorr.next();
-      t_corr* corr = itCorr.value();
-      printSingleCorr(epo->acName, corr);
-    }
-  }
-
-  cout << "Corrections processed" << endl << endl;
-}
-
-// 
+// Print one correction
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::printSingleCorr(const QString& acName, const t_corr* corr) {
   cout.setf(ios::fixed);
@@ -178,62 +160,96 @@ void bncComb::printSingleCorr(const QString& acName, const t_corr* corr) {
        << setw(8) << setprecision(4) << corr->rao[2]          << endl;
 }
 
-// // 
-// ////////////////////////////////////////////////////////////////////////////
-// void bncComb::printResults() const {
-// 
-// //  _caster->open();      
-// //
-// //  //// beg test
-// //  cmbEpoch* resEpoch = 0;
-// //  if (_ACs->find("CLK10") != _ACs->end()) {
-// //    cmbAC* AC = _ACs["CLK10"];
-// //    QMutableListIterator<cmbEpoch*> itEpo(AC->epochs);
-// //    while (itEpo.hasNext()) {
-// //      
-// //
-// //  }
-// //  //// end test
-// 
-// struct ClockOrbit co;
-// 
-// //  memset(&co, 0, sizeof(co));
-// //  co.GPSEpochTime      = (int)_GPSweeks;
-// //  co.GLONASSEpochTime  = (int)fmod(_GPSweeks, 86400.0) 
-// //                       + 3 * 3600 - gnumleap(_year, _month, _day);
-// //  co.ClockDataSupplied = 1;
-// //  co.OrbitDataSupplied = 1;
-// //  co.SatRefDatum       = DATUM_ITRF;
-// //
-// //  // struct ClockOrbit::SatData* sd = 0;
-//   // if      (prn[0] == 'G') {
-//   //   sd = co.Sat + co.NumberOfGPSSat;
-//   //   ++co.NumberOfGPSSat;
-//   // }
-//   // else if (prn[0] == 'R') {
-//   //   sd = co.Sat + CLOCKORBIT_NUMGPS + co.NumberOfGLONASSSat;
-//   //   ++co.NumberOfGLONASSSat;
-//   // }
-// 
-//   // sd->ID                    = prn.mid(1).toInt();
-//   // sd->IOD                   = ep->IOD();
-//   // sd->Clock.DeltaA0         = dClk;
-//   // sd->Orbit.DeltaRadial     = rsw(1);
-//   // sd->Orbit.DeltaAlongTrack = rsw(2);
-//   // sd->Orbit.DeltaCrossTrack = rsw(3);
-//   // sd->Orbit.DotDeltaRadial     = (rsw2(1) - rsw(1)) / xx(11);
-//   // sd->Orbit.DotDeltaAlongTrack = (rsw2(2) - rsw(2)) / xx(11);
-//   // sd->Orbit.DotDeltaCrossTrack = (rsw2(3) - rsw(3)) / xx(11);
-// 
-//   if ( _caster->usedSocket() && 
-//        (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
-//     char obuffer[CLOCKORBIT_BUFFERSIZE];
-//     int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
-//     if (len > 0) {
-//       _caster->write(obuffer, len);
-//     }
-//   }
-// 
-//   cout << "Corrections processed" << endl << endl;
-// 
-// }
+// Send results to caster
+////////////////////////////////////////////////////////////////////////////
+void bncComb::dumpResults(const bncTime& resTime, 
+                          const QMap<QString, t_corr*>& resCorr) {
+
+  _caster->open();      
+
+  unsigned year, month, day;
+  resTime.civil_date (year, month, day);
+  double GPSweeks = resTime.gpssec();
+
+  struct ClockOrbit co;
+  memset(&co, 0, sizeof(co));
+  co.GPSEpochTime      = (int)GPSweeks;
+  co.GLONASSEpochTime  = (int)fmod(GPSweeks, 86400.0) 
+                       + 3 * 3600 - gnumleap(year, month, day);
+  co.ClockDataSupplied = 1;
+  co.OrbitDataSupplied = 1;
+  co.SatRefDatum       = DATUM_ITRF;
+
+  struct ClockOrbit::SatData* sd = 0;
+
+  QMapIterator<QString, t_corr*> it(resCorr);
+  while (it.hasNext()) {
+    it.next();
+    t_corr* corr = it.value();
+
+    if      (corr->prn[0] == 'G') {
+      sd = co.Sat + co.NumberOfGPSSat;
+      ++co.NumberOfGPSSat;
+    }
+    else if (corr->prn[0] == 'R') {
+      sd = co.Sat + CLOCKORBIT_NUMGPS + co.NumberOfGLONASSSat;
+      ++co.NumberOfGLONASSSat;
+    }
+
+    if (sd != 0) {
+      sd->ID                       = corr->prn.mid(1).toInt();
+      sd->IOD                      = corr->iod;
+      sd->Clock.DeltaA0            = corr->dClk;
+      sd->Orbit.DeltaRadial        = corr->rao(1);
+      sd->Orbit.DeltaAlongTrack    = corr->rao(2);
+      sd->Orbit.DeltaCrossTrack    = corr->rao(3);
+      sd->Orbit.DotDeltaRadial     = corr->dotRao(1);
+      sd->Orbit.DotDeltaAlongTrack = corr->dotRao(2);
+      sd->Orbit.DotDeltaCrossTrack = corr->dotRao(3);
+    }
+    
+    delete corr;
+  }
+
+  if ( _caster->usedSocket() && 
+       (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
+    char obuffer[CLOCKORBIT_BUFFERSIZE];
+    int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+    if (len > 0) {
+      _caster->write(obuffer, len);
+    }
+  }
+}
+
+// Process Epochs
+////////////////////////////////////////////////////////////////////////////
+void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
+
+  bncTime                resTime = epochs.first()->time;
+  QMap<QString, t_corr*> resCorr;
+
+  QListIterator<cmbEpoch*> itEpo(epochs);
+  while (itEpo.hasNext()) {
+    cmbEpoch* epo = itEpo.next();
+    QMapIterator<QString, t_corr*> itCorr(epo->corr);
+
+    while (itCorr.hasNext()) {
+      itCorr.next();
+      t_corr* corr = itCorr.value();
+
+      //// beg test
+      if (epo->acName == "BKG") {
+        resCorr[corr->prn] = new t_corr(*corr);
+      }
+      //// end test
+
+      printSingleCorr(epo->acName, corr);
+      delete corr;
+    }
+  }
+
+  dumpResults(resTime, resCorr);
+
+  cout << "Corrections processed" << endl << endl;
+}
+
