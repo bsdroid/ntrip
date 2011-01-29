@@ -52,6 +52,8 @@ class bncComb : public bncEphUser  {
 
   void processEpochs(const QList<cmbEpoch*>& epochs);
   void printSingleCorr(const QString& acName, const t_corr* corr);
+  void dumpResults(const bncTime& resTime, 
+                   const QMap<QString, t_corr*>& resCorr);
 
   QMap<QString, cmbAC*> _ACs;   // Analytical Centers (key is mountpoint)
   bncTime               _processedBeforeTime;
