@@ -83,15 +83,67 @@ double bncTime::gpssec() const {
 // 
 //////////////////////////////////////////////////////////////////////////////
 bool bncTime::operator!=(const bncTime &time1) const {
-  if ( ((*this) - time1) != 0 ) return 1;
-  return 0;
+  if ( ((*this) - time1) != 0.0 ) {
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 // 
 //////////////////////////////////////////////////////////////////////////////
 bool bncTime::operator==(const bncTime &time1) const {
-  if ( ((*this) - time1) == 0 ) return 1;
-  return 0;
+  if ( ((*this) - time1) == 0.0 ) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+bool bncTime::operator>(const bncTime &time1) const {
+  if ( ((*this) - time1) > 0.0 ) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+bool bncTime::operator>=(const bncTime &time1) const {
+  if ( ((*this) - time1) >= 0.0 ) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+bool bncTime::operator<(const bncTime &time1) const {
+  if ( ((*this) - time1) < 0.0 ) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+bool bncTime::operator<=(const bncTime &time1) const {
+  if ( ((*this) - time1) <= 0.0 ) {
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 // 
