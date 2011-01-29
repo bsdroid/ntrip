@@ -9,7 +9,7 @@ class cmbCaster;
 
 class cmbParam {
  public:
-  enum parType {offset, clk};
+  enum parType {AC_offset, Sat_offset, clk};
   cmbParam(parType typeIn, int indexIn, 
            const QString& acIn, const QString& prnIn);
   ~cmbParam();
@@ -78,8 +78,9 @@ class bncComb : public bncEphUser  {
   bncTime               _processedBeforeTime;
   cmbCaster*            _caster;
   QVector<cmbParam*>    _params;
-  double                _sigClk0;
-  double                _sigOff0;
+  double                _sigACOff;
+  double                _sigSatOff;
+  double                _sigClk;
   SymmetricMatrix       _QQ;
 };
 

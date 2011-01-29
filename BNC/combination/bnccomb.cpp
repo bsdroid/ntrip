@@ -45,7 +45,12 @@ cmbParam::~cmbParam() {
 ////////////////////////////////////////////////////////////////////////////
 double cmbParam::partial(const QString& acIn, t_corr* corr) {
   
-  if      (type == offset) {
+  if      (type == AC_offset) {
+    if (AC == acIn) {
+      return 1.0;
+    }
+  }
+  else if (type == Sat_offset) {
     if (AC == acIn && prn == corr->prn) {
       return 1.0;
     }
@@ -98,7 +103,10 @@ bncComb::bncComb() {
     while (it.hasNext()) {
       it.next();
       cmbAC* AC = it.value();
-      _params.push_back(new cmbParam(cmbParam::offset, ++nextPar, AC->name,prn));
+      if (iGps == 1) {
+        _params.push_back(new cmbParam(cmbParam::AC_offset, ++nextPar, AC->name, ""));
+      }
+      _params.push_back(new cmbParam(cmbParam::Sat_offset, ++nextPar, AC->name, prn));
     }
   }
 
@@ -106,16 +114,20 @@ bncComb::bncComb() {
   _QQ.ReSize(nPar);
   _QQ = 0.0;
 
-  _sigClk0 = 100.0;
-  _sigOff0 = 100.0;
+  _sigACOff  = 100.0;
+  _sigSatOff = 100.0;
+  _sigClk    = 100.0;
 
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
-    if      (pp->type == cmbParam::clk) {
-      _QQ(iPar,iPar) = _sigClk0 * _sigClk0; 
+    if      (pp->type == cmbParam::AC_offset) {
+      _QQ(iPar,iPar) = _sigACOff * _sigACOff; 
     }
-    else if (pp->type == cmbParam::offset) {
-      _QQ(iPar,iPar) = _sigOff0 * _sigOff0; 
+    else if (pp->type == cmbParam::Sat_offset) {
+      _QQ(iPar,iPar) = _sigSatOff * _sigSatOff; 
+    }
+    else if (pp->type == cmbParam::clk) {
+      _QQ(iPar,iPar) = _sigClk * _sigClk; 
     }
   }
 }
@@ -313,12 +325,17 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   // ------------------------------------------
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
-    if      (pp->type == cmbParam::clk) {
+    if  (pp->type == cmbParam::AC_offset || pp->type == cmbParam::clk) {
       pp->xx = 0.0;
       for (int jj = 1; jj <= _params.size(); jj++) {
         _QQ(iPar, jj) = 0.0;
       }
-     _QQ(iPar,iPar) = _sigClk0 * _sigClk0;
+    }
+    if      (pp->type == cmbParam::AC_offset) {
+     _QQ(iPar,iPar) = _sigACOff * _sigACOff;
+    }
+    else if (pp->type == cmbParam::clk) {
+     _QQ(iPar,iPar) = _sigClk * _sigClk;
     }
   }
 
