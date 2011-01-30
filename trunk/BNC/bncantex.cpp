@@ -205,7 +205,7 @@ t_irc bncAntex::readFile(const QString& fileName) {
 
 // Phase Center Offset (Receiver Antenna and GPS only)
 ////////////////////////////////////////////////////////////////////////////
-double bncAntex::pco(const QString& antName, double eleSat) {
+double bncAntex::pco(const QString& antName, double eleSat, bool& found) {
 
   static const double f1 = t_CST::freq1;
   static const double f2 = t_CST::freq2;
@@ -214,12 +214,16 @@ double bncAntex::pco(const QString& antName, double eleSat) {
 
   QMap<QString, t_antMap*>::const_iterator it = _maps.find(antName);
   if (it != _maps.end()) {
+    found = true;
     t_antMap* map = it.value();
     if (map->frqMapL1 && map->frqMapL2) {
       double corr1 = -map->frqMapL1->neu[2] * sin(eleSat);
       double corr2 = -map->frqMapL2->neu[2] * sin(eleSat);
       return c1 * corr1 + c2 * corr2;
     }
+  }
+  else {
+    found = false;
   }
 
   return 0.0;

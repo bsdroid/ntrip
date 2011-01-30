@@ -263,16 +263,14 @@ bncModel::bncModel(QByteArray staID) {
   if (!antexFileName.isEmpty()) {
     _antex = new bncAntex();
     if (_antex->readFile(antexFileName) != success) {
-      emit newMessage("wrong ANTEX file", false);
+      emit newMessage("wrong ANTEX file", true);
       delete _antex;
       _antex = 0;
     }
-    _antennaName = settings.value("pppAntenna").toString();
+    else {
+      _antennaName = settings.value("pppAntenna").toString();
+    }
   }
-
-////  if (_antex) {
-////    _antex->print();
-////  }
 }
 
 // Destructor
@@ -388,8 +386,13 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
   }
 
   double phaseCenter = 0.0;
-  if (_antex) {
-    phaseCenter = _antex->pco(_antennaName, satData->eleSat);
+  if (_antex) { 
+    bool found;
+    phaseCenter = _antex->pco(_antennaName, satData->eleSat, found);
+    if (!found) {
+      emit newMessage("ANTEX: antenna >" 
+                      + _antennaName.toAscii() + "< not found", true);
+    }
   }
 
   return satData->rho + phaseCenter + clk() 
