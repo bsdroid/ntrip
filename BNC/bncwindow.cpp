@@ -1332,6 +1332,12 @@ void bncWindow::slotGetData() {
     if (!advisefile.exists()) ((bncApp*)qApp)->slotMessage("Cannot find Outages script", true);
   }
 
+  QString ant_file = settings.value("pppAntex").toString();
+  if ( !ant_file.isEmpty() ) {
+    QFile anxfile(settings.value("pppAntex").toString());
+    if (!anxfile.exists()) ((bncApp*)qApp)->slotMessage("Cannot find IGS ANTEX file", true);
+  }
+
   _caster->slotReadMountPoints();
 }
 
