@@ -351,6 +351,9 @@ bncWindow::bncWindow() {
   _pppRefCrdYLineEdit    = new QLineEdit(settings.value("pppRefCrdY").toString());
   _pppRefCrdZLineEdit    = new QLineEdit(settings.value("pppRefCrdZ").toString());
   _pppSync               = new QLineEdit(settings.value("pppSync").toString());
+  _pppAntennaLineEdit    = new QLineEdit(settings.value("pppAntenna").toString());
+  _pppAntexLineEdit      = new QLineEdit(settings.value("pppAntex").toString());
+
 
   _pppSPPComboBox = new QComboBox();
   _pppSPPComboBox->setEditable(false);
@@ -375,6 +378,10 @@ bncWindow::bncWindow() {
   _pppPlotCoordinates = new QCheckBox();
   _pppPlotCoordinates->setCheckState(Qt::CheckState(
                                 settings.value("pppPlotCoordinates").toInt()));
+
+  _pppIgnoreSatAntCheckBox = new QCheckBox();
+  _pppIgnoreSatAntCheckBox->setCheckState(Qt::CheckState(
+                                settings.value("pppIgnoreSatAnt").toInt()));
 
   connect(_pppMountLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
@@ -501,6 +508,9 @@ bncWindow::bncWindow() {
     "that time. Non-zero value 'pppSync' (i.e. 5) means that the epochs of data "
     "are buffered and the processing of each epoch is postponed till the satellite clock "
     "corrections not older than 'pppSync' seconds are available.<p>"));
+  _pppAntexLineEdit->setWhatsThis(tr("<p>IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Enter the full path to such an ANTEX file.</p>"));
+  _pppAntennaLineEdit->setWhatsThis(tr("<p>Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna's offset which may result in a hight reduction of a few centimeters at max. Phase center variations are not yet applied by BNC."));
+  _pppIgnoreSatAntCheckBox->setWhatsThis(tr("<p>Tick this option to ignore satellite antenna offsets.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -795,18 +805,6 @@ bncWindow::bncWindow() {
   // PPP Client (second panel)
   // -------------------------
   QGridLayout* ppp2Layout = new QGridLayout;
-
-  _pppAntennaLineEdit = new QLineEdit(settings.value("pppAntenna").toString());
-//_pppAntennaLineEdit->setMinimumWidth(20*ww);
-//_pppAntennaLineEdit->setMaximumWidth(20*ww);
-
-  _pppAntexLineEdit = new QLineEdit(settings.value("pppAntex").toString());
-//_pppAntexLineEdit->setMinimumWidth(20*ww);
-//_pppAntexLineEdit->setMaximumWidth(20*ww);
-
-  _pppIgnoreSatAntCheckBox = new QCheckBox();
-  _pppIgnoreSatAntCheckBox->setCheckState(Qt::CheckState(
-                                settings.value("pppIgnoreSatAnt").toInt()));
 
 //ppp2Layout->setColumnMinimumWidth(0,12*ww);
   ppp2Layout->addWidget(new QLabel("Receiver antenna   "),      0, 0);
