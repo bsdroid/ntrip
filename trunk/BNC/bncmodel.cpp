@@ -1116,13 +1116,12 @@ double bncModel::windUp(const QString& prn, const ColumnVector& rSat,
   // First time - initialize to zero
   // -------------------------------
   if (!_windUpTime.contains(prn)) {
-    _windUpTime[prn] = Mjd;
     _windUpSum[prn]  = 0.0;
   }
 
   // Compute the correction for new time
   // -----------------------------------
-  else if (_windUpTime[prn] != Mjd) {
+  if (!_windUpTime.contains(prn) || _windUpTime[prn] != Mjd) {
     _windUpTime[prn] = Mjd; 
 
     // Unit Vector GPS Satellite --> Receiver
