@@ -484,11 +484,11 @@ bncWindow::bncWindow() {
   _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
   _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
   _pppSigCLineEdit->setWhatsThis(tr("<p>Enter a sigma for your code observations in meters.</p><p>The higher the sigma you enter, the less the contribution of code observations to a PPP solution based on a combination of code and phase data. 5.0 (default) is likely to be an appropriate choice.</p>"));
-  _pppQuickStartLineEdit->setWhatsThis(tr("<p>Enter the lenght of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate as introduced above and adjust a sigma 'XYZ Ini' according to the coordinate's precision. Fixing the coordinate is done in BNC through setting the 'XYZ White Noise' you define below temporarily to zero.</p><p>This so-called Quick-Start option allows the PPP solution to rapidly converge. It requires that the antenna remains unmoved on the know position throughout the startup period.</p><p>A value of 120 is likely to be an appropriate choice for 'Quick-Start'. Default is an empty option field, meaning that you don't want BNC to operate in Quick-Start mode.</p>"));
+  _pppQuickStartLineEdit->setWhatsThis(tr("<p>Enter the lenght of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate as introduced above and adjust a sigma 'XYZ Ini' according to the coordinate's precision. Fixing the coordinate is done in BNC through setting the 'Sigma XYZ Noise' you define below temporarily to zero.</p><p>This so-called Quick-Start option allows the PPP solution to rapidly converge. It requires that the antenna remains unmoved on the know position throughout the startup period.</p><p>A value of 120 is likely to be an appropriate choice for 'Quick-Start'. Default is an empty option field, meaning that you don't want BNC to operate in Quick-Start mode.</p>"));
   _pppSigPLineEdit->setWhatsThis(tr("<p>Enter a sigma for your phase observations in meters.</p><p>The higher the sigma you enter, the less the contribution of phase observations to a PPP solutions based on a combination of code and phase data. 0.02 (default) is likely to be an appropriate choice.</p>"));
   _pppAverageLineEdit->setWhatsThis(tr("<p>Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions computed from those individual positions obtained most recently throughout this period.</p><p>An empty option field (default) means that you don't want BNC to output moving average positions.</p>"));
   _pppSigCrd0->setWhatsThis(tr("<p>Enter a sigma in meters for the initial XYZ coordinate componentes. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode."));
-  _pppSigCrdP->setWhatsThis(tr("<p>Enter a sigma in meters for the 'White Noise' of estimated XYZ coordinate components. A value of 100.0 (default) may be appropriate considering the potential movement of a rover position.</p>"));
+  _pppSigCrdP->setWhatsThis(tr("<p>Enter a sigma in meters for the white noise of estimated XYZ coordinate components. A value of 100.0 (default) may be appropriate considering the potential movement of a rover position.</p>"));
   _pppSigTrp0->setWhatsThis(tr("<p>Enter a sigma in meters for the a-priory model based tropospheric delay estimation. A value of 0.1 (default) may be an appropriate choice.</p>"));
   _pppSigTrpP->setWhatsThis(tr("<p>Enter a sigma in meters per second to describe the variation of the tropospheric effect.</p><p>Supposing 1Hz observation data, a value of 1e-6 (default) would mean that the tropospheric effect may vary for 3600 * 1e-6 = 0.0036 meters per hour.</p>"));
   _pppRefCrdXLineEdit->setWhatsThis(tr("<p>Enter reference coordinate X of the receiver's position.</p>"));
@@ -774,34 +774,21 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppGalileoCheckBox,                  1, 7, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Use Galileo"),            1, 8);
   pppLayout->addWidget(new QLabel("Options cont'd"),         2, 0);  
-  pppLayout->addWidget(_pppSigCLineEdit,                     2, 1, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Sigma Code"),             2, 2);
-  pppLayout->addWidget(_pppSigPLineEdit,                     2, 3);
-  pppLayout->addWidget(new QLabel("Sigma Phase"),            2, 4);
+  pppLayout->addWidget(_pppSigCrd0,                          2, 1, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Sigma XYZ Init   "),      2, 2);
+  pppLayout->addWidget(_pppSigCrdP,                          2, 3, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Sigma XYZ Noise   "),     2, 4);
   pppLayout->addWidget(_pppQuickStartLineEdit,               2, 5, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Quick-Start (sec)   ") ,  2, 6);  
-  pppLayout->addWidget(_pppAverageLineEdit,                  2, 7);
-  pppLayout->addWidget(new QLabel("Averaging (min)") ,       2, 8);  
-  pppLayout->addWidget(new QLabel("Parameter sigmas"),       3, 0);
-  pppLayout->addWidget(_pppSigCrd0,                          3, 1, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("XYZ Init"),               3, 2);
-  pppLayout->addWidget(_pppSigCrdP,                          3, 3);
-  pppLayout->addWidget(new QLabel("XYZ White Noise   "),     3, 4);
-  pppLayout->addWidget(_pppSigTrp0,                          3, 5, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Tropo Init"),             3, 6);
-  pppLayout->addWidget(_pppSigTrpP,                          3, 7);
-  pppLayout->addWidget(new QLabel("Tropo White Noise"),      3, 8);
-  pppLayout->addWidget(new QLabel("Output"),                 4, 0); 
-  pppLayout->addWidget(_pppNMEALineEdit,                     4, 1, 1, 3);
-  pppLayout->addWidget(new QLabel("NMEA file"),              4, 4); 
-  pppLayout->addWidget(_pppNMEAPortLineEdit,                 4, 5);
-  pppLayout->addWidget(new QLabel("NMEA port"),              4, 6);
-  pppLayout->addWidget(_pppPlotCoordinates,                  4, 7, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("PPP Plot"),               4, 8);
-
-  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),5, 0,1,5);
-  pppLayout->addWidget(_pppSync,                             5, 7);
-  pppLayout->addWidget(new QLabel("Sync Corr (sec)"),        5, 8);
+  pppLayout->addWidget(new QLabel("Output"),                 3, 0); 
+  pppLayout->addWidget(_pppNMEALineEdit,                     3, 1, 1, 3);
+  pppLayout->addWidget(new QLabel("NMEA file"),              3, 4); 
+  pppLayout->addWidget(_pppNMEAPortLineEdit,                 3, 5, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("NMEA port"),              3, 6);
+  pppLayout->addWidget(_pppPlotCoordinates,                  3, 7, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("PPP Plot"),               3, 8);
+  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),4, 0,1,5);
+  pppLayout->addWidget(new QLabel("    "),                   5, 0);
 
   pppgroup->setLayout(pppLayout);
 
@@ -810,28 +797,45 @@ bncWindow::bncWindow() {
   QGridLayout* ppp2Layout = new QGridLayout;
 
   _pppAntennaLineEdit = new QLineEdit(settings.value("pppAntenna").toString());
-  _pppAntennaLineEdit->setMinimumWidth(20*ww);
-  _pppAntennaLineEdit->setMaximumWidth(20*ww);
+//_pppAntennaLineEdit->setMinimumWidth(20*ww);
+//_pppAntennaLineEdit->setMaximumWidth(20*ww);
 
   _pppAntexLineEdit = new QLineEdit(settings.value("pppAntex").toString());
-  _pppAntexLineEdit->setMinimumWidth(20*ww);
-  _pppAntexLineEdit->setMaximumWidth(20*ww);
+//_pppAntexLineEdit->setMinimumWidth(20*ww);
+//_pppAntexLineEdit->setMaximumWidth(20*ww);
 
   _pppIgnoreSatAntCheckBox = new QCheckBox();
   _pppIgnoreSatAntCheckBox->setCheckState(Qt::CheckState(
                                 settings.value("pppIgnoreSatAnt").toInt()));
 
-  ppp2Layout->addWidget(new QLabel("Antenna Name"),                     0, 0);
-  ppp2Layout->addWidget(_pppAntennaLineEdit,                            0, 1);
-  ppp2Layout->addWidget(new QLabel("ANTEX File"),                       1, 0);
-  ppp2Layout->addWidget(_pppAntexLineEdit,                              1, 1);
-  ppp2Layout->addWidget(new QLabel("Ignore Satellite Antenna Offsets"), 1, 2);
-  ppp2Layout->addWidget(_pppIgnoreSatAntCheckBox,                       1, 3);
+//ppp2Layout->setColumnMinimumWidth(0,12*ww);
+  ppp2Layout->addWidget(new QLabel("Receiver antenna   "),      0, 0);
+  ppp2Layout->addWidget(_pppAntexLineEdit,                      0, 1, 1, 4);
+  ppp2Layout->addWidget(new QLabel("ANTEX File   "),            0, 5);
+  ppp2Layout->addWidget(_pppAntennaLineEdit,                    0, 6, 1,2);
+  ppp2Layout->addWidget(new QLabel("Name"),                     0, 8);
+  ppp2Layout->addWidget(new QLabel("Satellite antenna"),        1, 0);
+  ppp2Layout->addWidget(_pppIgnoreSatAntCheckBox,               1, 1, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Ignore Offsets"),           1, 2, Qt::AlignLeft);
+  ppp2Layout->addWidget(new QLabel("Sigmas"),                   2, 0);
+  ppp2Layout->addWidget(_pppSigCLineEdit,                       2, 1, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Code"),                     2, 2);
+  ppp2Layout->addWidget(_pppSigPLineEdit,                       2, 3);
+  ppp2Layout->addWidget(new QLabel("Phase"),                    2, 4);
+  ppp2Layout->addWidget(_pppSigTrp0,                            2, 5, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Tropo Init        "),       2, 6);
+  ppp2Layout->addWidget(_pppSigTrpP,                            2, 7);
+  ppp2Layout->addWidget(new QLabel("Tropo White Noise"),        2, 8);
+  ppp2Layout->addWidget(new QLabel("Options"),                  3, 0);
+  ppp2Layout->addWidget(_pppSync,                               3, 1);
+  ppp2Layout->addWidget(new QLabel("Sync Corr (sec)   "),       3, 2);
+  ppp2Layout->addWidget(_pppAverageLineEdit,                    3, 3, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Averaging (min)") ,         3, 4);  
+  ppp2Layout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP), continuted."), 4, 0, 1, 6);
+  ppp2Layout->addWidget(new QLabel("    "),                      5, 0);
 
-  ppp2Layout->setRowStretch(2,1);
-  ppp2Layout->setColumnStretch(4,1);
-
-  ppp2Layout->addWidget(new QLabel("Options for PPP (continuation)"), 3, 0, 1, 4);
+//ppp2Layout->setRowStretch(2,1);
+//ppp2Layout->setColumnStretch(4,1);
 
   ppp2group->setLayout(ppp2Layout);
 
