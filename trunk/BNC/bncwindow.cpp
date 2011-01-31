@@ -808,10 +808,10 @@ bncWindow::bncWindow() {
 
 //ppp2Layout->setColumnMinimumWidth(0,12*ww);
   ppp2Layout->addWidget(new QLabel("Receiver antenna   "),      0, 0);
-  ppp2Layout->addWidget(_pppAntexLineEdit,                      0, 1, 1, 4);
-  ppp2Layout->addWidget(new QLabel("ANTEX File   "),            0, 5);
-  ppp2Layout->addWidget(_pppAntennaLineEdit,                    0, 6, 1,2);
-  ppp2Layout->addWidget(new QLabel("Name"),                     0, 8);
+  ppp2Layout->addWidget(_pppAntexLineEdit,                      0, 1, 1, 3);
+  ppp2Layout->addWidget(new QLabel("ANTEX File   "),            0, 4);
+  ppp2Layout->addWidget(_pppAntennaLineEdit,                    0, 5, 1, 3);
+  ppp2Layout->addWidget(new QLabel("Antenna Name"),             0, 8);
   ppp2Layout->addWidget(new QLabel("Satellite antenna"),        1, 0);
   ppp2Layout->addWidget(_pppIgnoreSatAntCheckBox,               1, 1, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("Ignore Offsets"),           1, 2, Qt::AlignLeft);
