@@ -405,6 +405,9 @@ bncWindow::bncWindow() {
   connect(_pppSPPComboBox, SIGNAL(currentIndexChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
+  connect(_pppAntexLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
   // Streams
   // -------
   _mountPointsTable   = new QTableWidget(0,8);
@@ -1781,7 +1784,8 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _pppSync 
      || sender() == _pppSPPComboBox
      || sender() == _pppEstTropoCheckBox
-     || sender() == _pppUsePhaseCheckBox ) {
+     || sender() == _pppUsePhaseCheckBox    
+     || sender() == _pppAntexLineEdit ) {
     if (!_pppMountLineEdit->text().isEmpty()) {
       _pppSPPComboBox->setPalette(palette_white);
       _pppNMEALineEdit->setPalette(palette_white);
@@ -1795,8 +1799,6 @@ void bncWindow::slotBncTextChanged(){
       _pppGLONASSCheckBox->setPalette(palette_white);
       _pppGalileoCheckBox->setPalette(palette_white);
       _pppAntexLineEdit->setPalette(palette_white);
-      _pppAntennaLineEdit->setPalette(palette_white);
-      _pppIgnoreSatAntCheckBox->setPalette(palette_white);
       _pppSPPComboBox->setEnabled(true);
       _pppNMEALineEdit->setEnabled(true);
       _pppNMEAPortLineEdit->setEnabled(true);
@@ -1809,20 +1811,15 @@ void bncWindow::slotBncTextChanged(){
       _pppGLONASSCheckBox->setEnabled(true);
       _pppGalileoCheckBox->setEnabled(true);
       _pppRefCrdXLineEdit->setPalette(palette_white);
-      _pppRefCrdXLineEdit->setEnabled(true);
       _pppRefCrdYLineEdit->setPalette(palette_white);
-      _pppRefCrdYLineEdit->setEnabled(true);
       _pppRefCrdZLineEdit->setPalette(palette_white);
-      _pppRefCrdZLineEdit->setEnabled(true);
       _pppAntexLineEdit->setEnabled(true);
-      _pppAntennaLineEdit->setEnabled(true);
-      _pppIgnoreSatAntCheckBox->setEnabled(true);
       if (!_pppRefCrdXLineEdit->text().isEmpty() &&
           !_pppRefCrdYLineEdit->text().isEmpty() &&
           !_pppRefCrdZLineEdit->text().isEmpty()) {
       _pppAverageLineEdit->setPalette(palette_white);
-      _pppAverageLineEdit->setEnabled(true);
       _pppQuickStartLineEdit->setPalette(palette_white);
+      _pppAverageLineEdit->setEnabled(true);
       _pppQuickStartLineEdit->setEnabled(true);
       }
       else {
@@ -1830,6 +1827,18 @@ void bncWindow::slotBncTextChanged(){
       _pppAverageLineEdit->setEnabled(false);
       _pppQuickStartLineEdit->setPalette(palette_gray);
       _pppQuickStartLineEdit->setEnabled(false);
+      }
+      if (!_pppAntexLineEdit->text().isEmpty() ) {
+      _pppAntennaLineEdit->setEnabled(true);
+      _pppIgnoreSatAntCheckBox->setEnabled(true);
+      _pppAntennaLineEdit->setPalette(palette_white);
+      _pppIgnoreSatAntCheckBox->setPalette(palette_white);
+      }
+      else {
+      _pppAntennaLineEdit->setEnabled(false);
+      _pppIgnoreSatAntCheckBox->setEnabled(false);
+      _pppAntennaLineEdit->setPalette(palette_gray);
+      _pppIgnoreSatAntCheckBox->setPalette(palette_gray);
       }
       _pppSigCLineEdit->setPalette(palette_white);
       _pppSigCLineEdit->setEnabled(true);
