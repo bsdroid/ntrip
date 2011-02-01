@@ -497,20 +497,20 @@ bncWindow::bncWindow() {
   _pppSigCrd0->setWhatsThis(tr("<p>Enter a sigma in meters for the initial XYZ coordinate componentes. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode."));
   _pppSigCrdP->setWhatsThis(tr("<p>Enter a sigma in meters for the white noise of estimated XYZ coordinate components. A value of 100.0 (default) may be appropriate considering the potential movement of a rover position.</p>"));
   _pppSigTrp0->setWhatsThis(tr("<p>Enter a sigma in meters for the a-priory model based tropospheric delay estimation. A value of 0.1 (default) may be an appropriate choice.</p>"));
-  _pppSigTrpP->setWhatsThis(tr("<p>Enter a sigma in meters per second to describe the variation of the tropospheric effect.</p><p>Supposing 1Hz observation data, a value of 1e-6 (default) would mean that the tropospheric effect may vary for 3600 * 1e-6 = 0.0036 meters per hour.</p>"));
+  _pppSigTrpP->setWhatsThis(tr("<p>Enter a sigma in meters per second to describe the expected variation of the tropospheric effect.</p><p>Supposing 1Hz observation data, a value of 1e-6 (default) would mean that the tropospheric effect may vary for 3600 * 1e-6 = 0.0036 meters per hour.</p>"));
   _pppRefCrdXLineEdit->setWhatsThis(tr("<p>Enter reference coordinate X of the receiver's position.</p>"));
   _pppRefCrdYLineEdit->setWhatsThis(tr("<p>Enter reference coordinate Y of the receiver's position.</p>"));
   _pppRefCrdZLineEdit->setWhatsThis(tr("<p>Enter reference coordinate Z of the receiver's position.</p>"));
   _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when the corresponting option is selected above. Values are either referred to an XYZ reference coordinate (if specified) or referred to the first estimated set of coordinate compoments. The sliding PPP time series window covers the period of the latest 5 minutes."));
   _pppSync->setWhatsThis(tr(
-    "<p> Zero value (or empty field) means that BNC processes each epoch of data "
+    "<p> Zero value (or empty field, default) means that BNC processes each epoch of data "
     "immediately after its arrival using satellite clock corrections available at "
-    "that time. Non-zero value 'pppSync' (i.e. 5) means that the epochs of data "
+    "that time.</p><p> Non-zero value 'Sync Corr' (i.e. 5) means that the epochs of data "
     "are buffered and the processing of each epoch is postponed till the satellite clock "
-    "corrections not older than 'pppSync' seconds are available.<p>"));
-  _pppAntexLineEdit->setWhatsThis(tr("<p>IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Enter the full path to such an ANTEX file.</p>"));
-  _pppAntennaLineEdit->setWhatsThis(tr("<p>Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna's offset which may result in a hight reduction of a few centimeters at max. Phase center variations are not yet applied by BNC."));
-  _pppIgnoreSatAntCheckBox->setWhatsThis(tr("<p>Tick this option to ignore satellite antenna offsets.</p>"));
+    "corrections not older than 'Sync Corr' seconds are available.<p>"));
+  _pppAntexLineEdit->setWhatsThis(tr("<p>IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets and variations.</p>"));
+  _pppAntennaLineEdit->setWhatsThis(tr("<p>Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Phase center variations are not yet applied by BNC.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets.</p>"));
+  _pppIgnoreSatAntCheckBox->setWhatsThis(tr("<p>Satellite orbit and clock corrections refer to the satellite's antenna phase centers and hence observations are actually to be corrected for satellite antenna offsets. Tick 'Ignore Offsets' to not correct observations for satellite antenna phase center offsets.</p><p>Default is to correct observations for satellite antenna phase center offsets."));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -764,7 +764,6 @@ bncWindow::bncWindow() {
   _pppSync->setMaximumWidth(6*ww);
   _pppSPPComboBox->setMaximumWidth(8*ww);
   _pppNMEAPortLineEdit->setMaximumWidth(6*ww);
-//pppLayout->setColumnMinimumWidth(0,12*ww);
   pppLayout->addWidget(new QLabel("Mountpoint"),             0, 0);
   pppLayout->addWidget(_pppMountLineEdit,                    0, 1);
   pppLayout->addWidget(_pppSPPComboBox,                      0, 2);
@@ -790,13 +789,13 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Sigma XYZ Noise   "),     2, 4);
   pppLayout->addWidget(_pppQuickStartLineEdit,               2, 5, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Quick-Start (sec)   ") ,  2, 6);  
-  pppLayout->addWidget(new QLabel("Output"),                 3, 0); 
+  pppLayout->addWidget(_pppPlotCoordinates,                  2, 7, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("PPP Plot"),               2, 8);
+  pppLayout->addWidget(new QLabel("NMEA"),                   3, 0); 
   pppLayout->addWidget(_pppNMEALineEdit,                     3, 1, 1, 3);
-  pppLayout->addWidget(new QLabel("NMEA file"),              3, 4); 
+  pppLayout->addWidget(new QLabel("File"),                   3, 4); 
   pppLayout->addWidget(_pppNMEAPortLineEdit,                 3, 5, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("NMEA port"),              3, 6);
-  pppLayout->addWidget(_pppPlotCoordinates,                  3, 7, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("PPP Plot"),               3, 8);
+  pppLayout->addWidget(new QLabel("Port"),                   3, 6);
   pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),4, 0,1,5);
   pppLayout->addWidget(new QLabel("    "),                   5, 0);
 
@@ -806,13 +805,12 @@ bncWindow::bncWindow() {
   // -------------------------
   QGridLayout* ppp2Layout = new QGridLayout;
 
-//ppp2Layout->setColumnMinimumWidth(0,12*ww);
-  ppp2Layout->addWidget(new QLabel("Receiver antenna   "),      0, 0);
+  ppp2Layout->addWidget(new QLabel("Receiver Antenna   "),      0, 0);
   ppp2Layout->addWidget(_pppAntexLineEdit,                      0, 1, 1, 3);
   ppp2Layout->addWidget(new QLabel("ANTEX File   "),            0, 4);
   ppp2Layout->addWidget(_pppAntennaLineEdit,                    0, 5, 1, 3);
   ppp2Layout->addWidget(new QLabel("Antenna Name"),             0, 8);
-  ppp2Layout->addWidget(new QLabel("Satellite antenna"),        1, 0);
+  ppp2Layout->addWidget(new QLabel("Satellite Antenna"),        1, 0);
   ppp2Layout->addWidget(_pppIgnoreSatAntCheckBox,               1, 1, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("Ignore Offsets"),           1, 2, Qt::AlignLeft);
   ppp2Layout->addWidget(new QLabel("Sigmas"),                   2, 0);
@@ -831,9 +829,6 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(new QLabel("Averaging (min)") ,         3, 4);  
   ppp2Layout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP), continuted."), 4, 0, 1, 6);
   ppp2Layout->addWidget(new QLabel("    "),                      5, 0);
-
-//ppp2Layout->setRowStretch(2,1);
-//ppp2Layout->setColumnStretch(4,1);
 
   ppp2group->setLayout(ppp2Layout);
 
