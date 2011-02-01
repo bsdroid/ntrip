@@ -1794,6 +1794,9 @@ void bncWindow::slotBncTextChanged(){
       _pppEstTropoCheckBox->setPalette(palette_white);
       _pppGLONASSCheckBox->setPalette(palette_white);
       _pppGalileoCheckBox->setPalette(palette_white);
+      _pppAntexLineEdit->setPalette(palette_white);
+      _pppAntennaLineEdit->setPalette(palette_white);
+      _pppIgnoreSatAntCheckBox->setPalette(palette_white);
       _pppSPPComboBox->setEnabled(true);
       _pppNMEALineEdit->setEnabled(true);
       _pppNMEAPortLineEdit->setEnabled(true);
@@ -1811,6 +1814,9 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdYLineEdit->setEnabled(true);
       _pppRefCrdZLineEdit->setPalette(palette_white);
       _pppRefCrdZLineEdit->setEnabled(true);
+      _pppAntexLineEdit->setEnabled(true);
+      _pppAntennaLineEdit->setEnabled(true);
+      _pppIgnoreSatAntCheckBox->setEnabled(true);
       if (!_pppRefCrdXLineEdit->text().isEmpty() &&
           !_pppRefCrdYLineEdit->text().isEmpty() &&
           !_pppRefCrdZLineEdit->text().isEmpty()) {
@@ -1882,6 +1888,9 @@ void bncWindow::slotBncTextChanged(){
       _pppSigTrpP->setPalette(palette_gray);
       _pppAverageLineEdit->setPalette(palette_gray);
       _pppQuickStartLineEdit->setPalette(palette_gray);
+      _pppAntexLineEdit->setPalette(palette_gray);
+      _pppAntennaLineEdit->setPalette(palette_gray);
+      _pppIgnoreSatAntCheckBox->setPalette(palette_gray);
       _pppSPPComboBox->setEnabled(false);
       _pppNMEALineEdit->setEnabled(false);
       _pppNMEAPortLineEdit->setEnabled(false);
@@ -1902,6 +1911,9 @@ void bncWindow::slotBncTextChanged(){
       _pppSigTrpP->setEnabled(false);
       _pppAverageLineEdit->setEnabled(false);
       _pppQuickStartLineEdit->setEnabled(false);
+      _pppAntexLineEdit->setEnabled(false);
+      _pppAntennaLineEdit->setEnabled(false);
+      _pppIgnoreSatAntCheckBox->setEnabled(false);
     }
   }
 }
