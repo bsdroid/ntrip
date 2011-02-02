@@ -1825,7 +1825,7 @@ Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested to synch
 
 <tr>
 <td>Jan 2011 &nbsp;</td><td>Version 2.5 &nbsp;</td>
-<td>[Add] PPP option for sync of clock observations and corrections<br> [Add] Drafted RTCMv3 Galileo ephemeris messages 1045<br> [Add] Drafted RTCMv3 Multipe Signal Messages<br> [Add] Optional specification of sigmas for coordinates and troposphere in PPP<br> [Add] Include Galileo in SPP<br> [Add] Include Galileo observations in output via IP port<br> [Add] Include Galileo observations in output via RINEXv3 files<br> [Mod] Interface format for feeding a real-time engine with observations</td>
+<td>[Add] PPP option for sync of clock observations and corrections<br> [Add] Drafted RTCMv3 Galileo ephemeris messages 1045<br> [Add] Drafted RTCMv3 Multipe Signal Messages<br> [Add] Optional specification of sigmas for coordinates and troposphere in PPP<br> [Add] Include Galileo in SPP<br> [Add] Include Galileo observations in output via IP port<br> [Add] Include Galileo observations in output via RINEXv3 files<br> [Mod] Interface format for feeding a real-time engine with observations<br> [Add] Correct observations for antenna phase center offsets<br> [Add] Combine orbit/clock correctors streams</td>
 </tr>
 
 
@@ -2137,18 +2137,28 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>pppSigmaCrdP=100.0</td><td>PPP Client: White noise for XYZ</td></tr>
 <tr><td>pppSigmaTrp0=0.1</td><td>PPP Client: Sigma for initial tropospheric delay</td></tr>
 <tr><td>pppSigmaTrpP=1e-6</td><td>PPP Client: White noise for tropospheric delay</td></tr>
+<tr><td>pppAverage=</td><td>PPP Client: Lenght of time window for moving average</td></tr>
 <tr><td>pppUsePhase=0</td><td>PPP Client: Use phase data </td></tr>
 <tr><td>pppEstTropo=0</td><td>PPP Client: Estimate troposphere</td></tr>
 <tr><td>pppGLONASS=0</td><td>PPP Client: Use GLONASS</td></tr>
 <tr><td>pppGalileo=0</td><td>PPP Client: Use Galileo</td></tr>
 <tr><td>pppPlotCoordinates=0</td><td>PPP Client: Plot NEU time series</td></tr>
-<tr><td>pppAverage=</td><td>PPP Client: Lenght of time window for moving average</td></tr>
 <tr><td>pppRefCrdX=</td><td>PPP Client: X coordinate of plot origin</td></tr>
 <tr><td>pppRefCrdY=</td><td>PPP Client: Y coordinate of plot origin</td></tr>
 <tr><td>pppRefCrdZ=</td><td>PPP Client: Z coordinate of plot origin</td></tr>
+<tr><td>pppAntenna=</td><td>PPP Client: Antenna name</td></tr>
+<tr><td>pppAntex=</td><td>PPP Client: Path to ANTEX file</td></tr>
+<tr><td>pppApplySatAnt=</td><td>PPP Client: Apply sat antenna phase center Offset</td></tr>
+<tr><td>pppSync=</td><td>PPP Client: Sync observations and corrections</td></tr>
 <tr><td>nmeaFile=</td><td>PPP Client: NMEA outputfile</td></tr>
 <tr><td>nmeaPort=</td><td>PPP Client: NMEA IP output port</td></tr>
-<tr><td>pppSync=</td><td>PPP Client: Sync observations and corrections</td></tr>
+<tr><td>combineStreams=</td><td>Combination: List of correctors streams</td></tr>
+<tr><td>cmbOutHost=</td><td>Combination: Ntrip caster for stream upload</td></tr>
+<tr><td>cmbOutPort=</td><td>Combination: Port of Ntrip caster</td></tr>
+<tr><td>cmbMountpoint=</td><td>Combination: Mountpoint on Ntrip caster</td></tr>
+<tr><td>cmbPassword=</td><td>Combination: Stream upload password</td></tr>
+<tr><td>cmbOutFile=</td><td>Combination: Raw output file</td></tr>
+<tr><td>cmbSP3File=</td><td>Combination: SP3 output file</td></tr>
 </table>
 </p>
 <p>
