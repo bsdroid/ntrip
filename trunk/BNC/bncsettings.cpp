@@ -94,9 +94,20 @@ bncSettings::bncSettings(bool noInit) :
     setValue("pppRefCrdX",       "");
     setValue("pppRefCrdY",       "");
     setValue("pppRefCrdZ",       "");
+    setValue("pppAntenna",       "");
+    setValue("pppAntex",         "");
+    setValue("pppApplySatAnt",   "0");
     setValue("nmeaFile",         "");
     setValue("nmeaPort",         "");
+    setValue("combineStreams",   "");
+    setValue("cmbOutHost",       "");
+    setValue("cmbOutPort",       "");
+    setValue("cmbMountpoint",    "");
+    setValue("cmbPassword",      "");
+    setValue("cmbOutFile",       "");
+    setValue("cmbSP3File",       "");
     sync();
   }
 }
+
 
