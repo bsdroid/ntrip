@@ -379,9 +379,9 @@ bncWindow::bncWindow() {
   _pppPlotCoordinates->setCheckState(Qt::CheckState(
                                 settings.value("pppPlotCoordinates").toInt()));
 
-  _pppIgnoreSatAntCheckBox = new QCheckBox();
-  _pppIgnoreSatAntCheckBox->setCheckState(Qt::CheckState(
-                                settings.value("pppIgnoreSatAnt").toInt()));
+  _pppApplySatAntCheckBox = new QCheckBox();
+  _pppApplySatAntCheckBox->setCheckState(Qt::CheckState(
+                                settings.value("pppApplySatAnt").toInt()));
 
   connect(_pppMountLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
@@ -513,7 +513,7 @@ bncWindow::bncWindow() {
     "corrections not older than 'Sync Corr' seconds are available.<p>"));
   _pppAntexLineEdit->setWhatsThis(tr("<p>IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets and variations.</p>"));
   _pppAntennaLineEdit->setWhatsThis(tr("<p>Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Phase center variations are not yet applied by BNC.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets.</p>"));
-  _pppIgnoreSatAntCheckBox->setWhatsThis(tr("<p>Satellite orbit and clock corrections refer to the satellite's antenna phase centers and hence observations are actually to be corrected for satellite antenna offsets. Tick 'Ignore Offsets' to not correct observations for satellite antenna phase center offsets.</p><p>Default is to correct observations for satellite antenna phase center offsets."));
+  _pppApplySatAntCheckBox->setWhatsThis(tr("<p>Satellite orbit and clock corrections refer to the satellite's antenna phase centers and hence observations are actually <u>not</u> to be corrected for satellite antenna phase center offsets. However, you may like to tick 'Apply Offsets' to force BNC to correct observations for satellite antenna phase center offsets.</p><p>Default is to <u>not</u> correct observations for satellite antenna phase center offsets."));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -814,8 +814,8 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(_pppAntennaLineEdit,                    0, 5, 1, 3);
   ppp2Layout->addWidget(new QLabel("Antenna Name"),             0, 8);
   ppp2Layout->addWidget(new QLabel("Satellite Antenna"),        1, 0);
-  ppp2Layout->addWidget(_pppIgnoreSatAntCheckBox,               1, 1, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Ignore Offsets"),           1, 2, Qt::AlignLeft);
+  ppp2Layout->addWidget(_pppApplySatAntCheckBox,                1, 1, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Apply Offsets"),            1, 2, Qt::AlignLeft);
   ppp2Layout->addWidget(new QLabel("Sigmas"),                   2, 0);
   ppp2Layout->addWidget(_pppSigCLineEdit,                       2, 1, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("Code"),                     2, 2);
@@ -825,7 +825,7 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(new QLabel("Tropo Init        "),       2, 6);
   ppp2Layout->addWidget(_pppSigTrpP,                            2, 7);
   ppp2Layout->addWidget(new QLabel("Tropo White Noise"),        2, 8);
-  ppp2Layout->addWidget(new QLabel("Options"),                  3, 0);
+  ppp2Layout->addWidget(new QLabel("Options cont'd"),           3, 0);
   ppp2Layout->addWidget(_pppSync,                               3, 1);
   ppp2Layout->addWidget(new QLabel("Sync Corr (sec)   "),       3, 2);
   ppp2Layout->addWidget(_pppAverageLineEdit,                    3, 3, Qt::AlignRight);
@@ -1228,7 +1228,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppGalileo",  _pppGalileoCheckBox->checkState());
   settings.setValue("pppAntenna",      _pppAntennaLineEdit->text());
   settings.setValue("pppAntex",	       _pppAntexLineEdit->text());         
-  settings.setValue("pppIgnoreSatAnt", _pppIgnoreSatAntCheckBox->checkState());
+  settings.setValue("pppApplySatAnt", _pppApplySatAntCheckBox->checkState());
   settings.setValue("mountPoints", mountPoints);
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
@@ -1830,15 +1830,15 @@ void bncWindow::slotBncTextChanged(){
       }
       if (!_pppAntexLineEdit->text().isEmpty() ) {
       _pppAntennaLineEdit->setEnabled(true);
-      _pppIgnoreSatAntCheckBox->setEnabled(true);
+      _pppApplySatAntCheckBox->setEnabled(true);
       _pppAntennaLineEdit->setPalette(palette_white);
-      _pppIgnoreSatAntCheckBox->setPalette(palette_white);
+      _pppApplySatAntCheckBox->setPalette(palette_white);
       }
       else {
       _pppAntennaLineEdit->setEnabled(false);
-      _pppIgnoreSatAntCheckBox->setEnabled(false);
+      _pppApplySatAntCheckBox->setEnabled(false);
       _pppAntennaLineEdit->setPalette(palette_gray);
-      _pppIgnoreSatAntCheckBox->setPalette(palette_gray);
+      _pppApplySatAntCheckBox->setPalette(palette_gray);
       }
       _pppSigCLineEdit->setPalette(palette_white);
       _pppSigCLineEdit->setEnabled(true);
@@ -1899,7 +1899,7 @@ void bncWindow::slotBncTextChanged(){
       _pppQuickStartLineEdit->setPalette(palette_gray);
       _pppAntexLineEdit->setPalette(palette_gray);
       _pppAntennaLineEdit->setPalette(palette_gray);
-      _pppIgnoreSatAntCheckBox->setPalette(palette_gray);
+      _pppApplySatAntCheckBox->setPalette(palette_gray);
       _pppSPPComboBox->setEnabled(false);
       _pppNMEALineEdit->setEnabled(false);
       _pppNMEAPortLineEdit->setEnabled(false);
@@ -1922,7 +1922,7 @@ void bncWindow::slotBncTextChanged(){
       _pppQuickStartLineEdit->setEnabled(false);
       _pppAntexLineEdit->setEnabled(false);
       _pppAntennaLineEdit->setEnabled(false);
-      _pppIgnoreSatAntCheckBox->setEnabled(false);
+      _pppApplySatAntCheckBox->setEnabled(false);
     }
   }
 }
