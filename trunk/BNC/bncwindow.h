@@ -137,7 +137,7 @@ class bncWindow : public QMainWindow {
     QCheckBox* _pppGalileoCheckBox;
     QLineEdit* _pppAntennaLineEdit;
     QLineEdit* _pppAntexLineEdit;
-    QCheckBox* _pppIgnoreSatAntCheckBox;
+    QCheckBox* _pppApplySatAntCheckBox;
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;
     QLineEdit* _rnxSkelLineEdit;
