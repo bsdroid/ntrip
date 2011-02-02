@@ -830,7 +830,7 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(new QLabel("Sync Corr (sec)   "),       3, 2);
   ppp2Layout->addWidget(_pppAverageLineEdit,                    3, 3, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("Averaging (min)") ,         3, 4);  
-  ppp2Layout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP), continuted."), 4, 0, 1, 6);
+  ppp2Layout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP), continued."), 4, 0, 1, 6);
   ppp2Layout->addWidget(new QLabel("    "),                      5, 0);
 
   ppp2group->setLayout(ppp2Layout);
