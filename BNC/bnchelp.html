@@ -181,25 +181,32 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.2.2 <a href=#ppptropo>Estimate Tropo</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2.3 <a href=#pppglo>Use GLONASS</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2.4 <a href=#pppgal>Use Galileo</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppoptcont>Options cont'd</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3.1 <a href=#pppsigcp>Sigma Code/Phase</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3.2 <a href=#pppquick>Quick-Start</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3.3 <a href=#pppaverage>Averaging</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#pppparasig>Parameter Sigmas</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4.1 <a href=#pppsigxyzi>XYZ Init</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4.2 <a href=#pppsigxyzn>XYZ White Noise</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4.3 <a href=#pppsigtrpi>Tropo Init</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.4.4 <a href=#pppsigtrpn>Tropo White Noise</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.5 <a href=#pppout>Output</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.5.1 <a href=#pppnmeafile>NMEA File</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.5.2 <a href=#pppnmeaport>NMEA Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.5.3 <a href=#pppplot>PPP Plot</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.6 <a href=#pppsync>Sync Corr</a><br><br>
+&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppoptcont1>Options cont'd</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.3.1 <a href=#pppsigxyzi>XYZ Init</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.3.2 <a href=#pppsigxyzn>XYZ White Noise</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.3.3 <a href=#pppquick>Quick-Start</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.3.4 <a href=#pppplot>PPP Plot</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4 <a href=#pppnmea>NMEA</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4.1 <a href=#pppnmeafile>NMEA File</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4.2 <a href=#pppnmeaport>NMEA Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.5 <a href=#ppprecant>Receiver Antenna</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.5.1 <a href=#pppantex>ANTEX File</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.5.2 <a href=#ppprecantenna>Antenna Name</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.6 <a href=#pppsatant>Satellite Antenna</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.6.1 <a href=#pppsatantignore>Ignore Offsets</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.7 <a href=#pppsigmas>Sigmas</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.7.1 <a href=#pppsigc>Code</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.7.2 <a href=#pppsigp>Phase</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.7.3 <a href=#pppsigtrpi>Tropo Init</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.7.4 <a href=#pppsigtrpn>Tropo White Noise</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.8 <a href=#pppoptcont2>Options cont'd</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.8.1 <a href=#pppsync>Sync Corr</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.8.2 <a href=#pppaverage>Averaging</a><br><br>
 3.12. <a href=#streams>Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1 <a href=#streamedit>Edit Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.2 <a href=#streamdelete>Delete Stream</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.3 <a href=#streamconf>Reconfigure Streams On-the-fly</a><br><br>
-3.13. <a href=#logs>Logging</a><br>
+3.13. <a href=#logs>Logging</a><br><br>
 &nbsp; &nbsp; &nbsp; 3.13.1 <a href=#logfile>Log</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.2 <a href=#throughput>Throughput</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.3 <a href=#latency>Latency</a><br>
@@ -1121,9 +1128,9 @@ Streams in a 'Raw output file' which shall later be used in an offline PPP calcu
 </p>
 <ul>
 <li>BNC does correct for Solid Earth Tides and Phase Windup.</li>
-<li>Satellite Antenna Offsets are not corrected because applied orbit/clock correctors are referred to the satellite's antenna phase center.</li>
-<li>Satellite Antenna Offset Variations are neglected because this is a small effect usually less than 2 centimeters.</li>
-<li>Receiver Antenna Offsets are not corrected which means that the estimated position is that of the receiver's antenna phase center and not that of the receiver's Antenna Reference Point.</li>
+<li>Satellite Antenna Phase Center Offsets are not corrected because applied orbit/clock correctors are referred to the satellite's antenna phase center.</li>
+<li>Satellite Antenna Phase Center Variations are neglected because this is a small effect usually less than 2 centimeters.</li>
+<li>Observations can be corrected for a Receiver Antenna Offset. Depending on whether or not this correction is applied, the estimated position is either that of the receiver's antenna phase center or that of the receiver's Antenna Reference Point.</li>
 <li>Receiver Antenna Phase Center Variations are not included in the model. The bias caused by this neglect depends on the receiver antenna type. For most antennas it is smaller than a few centimeters.</li>
 <li>Ocean and atmospheric loading is neglected. Atmospheric loading is pretty small. Ocean loading is usually also a small effect but may reach up to about 10 centimeters for coastal stations.</li>
 <li>Rotational deformation due to polar motion (Polar Tides) is not corrected because this is a small effect usually less than 2 centimeters.</li>
@@ -1187,22 +1194,22 @@ By default BNC does not process GLONASS but only GPS observations when in Point 
 By default BNC does not process Galileo but only GPS observations when in Point Positioning mode. Tick 'Use Galileo' to use Galileo observations in addition to GPS (and GLONASS if specified) for estimating coordinates in Point Positioning mode.
 </p>
 
-<p><a name="pppoptcont"><h4>3.11.3 Options cont'd</h4></p>
+<p><a name="pppoptcont1"><h4>3.11.3 Options cont'd</h4></p>
 <p>
-You may want to introduce specific sigmas for code and phase observations. You may also like to carry out your PPP solution in Quick-Start mode or output averaged position values.
+You may want to introduce specific sigmas for code and phase observations. You may also like to carry out your PPP solution in Quick-Start mode or output a time series of displacement compoments.
 </p>
 
-<p><a name="pppsigcp"><h4>3.11.3.1 Sigma Code/Phase - mandatory if 'Use Phase Obs' is set</h4></p>
+<p><a name="pppsigxyzi"><h4>3.11.3.1 XYZ Init - mandatory</h4></p>
 <p>
-When 'Use phase obs' is set in BNC the PPP solution will be carried out using both, code and phase observations. A sigma of 5.0 m for code observations and a sigma of 0.02 m for phase observations (defauls) is used to combine both types of observations. 
-As the convergence characteristic of a PPP solution can be influenced by the ratio of the sigmas for code and phase, you may like to introduce you own sigmas for code and phase observations which differ from the default of 5.0 m and 0.02 m respectively.
-<ul>
-<li>Introducing a smaller sigma (higher accuracy) for code observations or a larger sigma for phase observations leads to better results shortly after program start. However, it may take more time till you finally get the best possible solutions.</li>
-<li>Introducing a larger sigma (lower accuracy) for code observations or a smaller sigma for phase observations may lead to less accurate results shortly after program start and thus a prolonged period of convergence but could provide better positions in the long run.</li>
-</ul>
+Enter a sigma in meters for the initial XYZ coordinate componentes. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode.
 </p>
 
-<p><a name="pppquick"><h4>3.11.3.2 Quick-Start - optional if XYZ is set</h4></p>
+<p><a name="pppsigxyzn"><h4>3.11.3.2 XYZ White Noise - mandatory</h4></p>
+<p>
+Enter a sigma in meters for the 'White Noise' of estimated XYZ coordinate components. A value of 100.0 (default) may be appropriate considering the potential movement of a rover.
+</p>
+
+<p><a name="pppquick"><h4>3.11.3.3 Quick-Start - optional if XYZ is set</h4></p>
 <p>
 Enter the lenght of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate. Constraining coordinate components is done in BNC through setting the 'XYZ White Noise' temporarily to zero.
 </p>
@@ -1215,50 +1222,20 @@ You may need to create your own reference coordinate through running BNC for an 
 <p><img src=":bnchelp/screenshot17.png"/></p>
 <p><u>Figure:</u> BNC in 'Quick-Start' mode</p>
 
-<p><a name="pppaverage"><h4>3.11.3.3 Averaging - optional if XYZ is set</h4></p>
+<p><a name="pppplot"><h4>3.11.3.4 PPP Plot - optional</h4></p>
 <p>
-Enter the length of a sliding time window in minutes. BNC will continuously output moving average values ns and their RMS as computed from those individual values obtained most recently throughout this period. RMS values presented for XYZ coordinates and tropospheric zenit path delays are bias reduced while RMS values for Nort/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string &quot;AVE-XYZ&quot; in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string &quot;AVE-NEU&quot; and averaged values for the tropospheric delays and their RMS are marked with string &quot;AVE-TRP&quot;. Example:
+PPP time series of North (red), East(green) and Up (blue) coordinate components will be plotted in the 'PPP Plot' tab when this option is ticked. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated XYZ coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.
 </p>
-<pre>
-10-09-08 09:13:05 FFMJ1  AVE-XYZ 09:13:04.0   4053455.948 +-  0.284     617730.422 +-  0.504    4869397.692 +-  0.089
-10-09-08 09:13:05 FFMJ1  AVE-NEU 09:13:04.0    1.043 +-  0.179    0.640 +-  0.456    1.624 +-  0.331
-10-09-08 09:13:05 FFMJ1  AVE-TRP 09:13:04.0         2.336 +-  0.002
-</pre>
 <p>
-Entering any positive value up to 1440 (24h mean value) is allowed. An empty option field (default) means that you don't want BNC to output moving average positions into the log file and the 'Log' section. Note that averaging positions makes only sense for a stationary receiver.
+Note that a PPP time series makes only sense for a stationary operated receiver.
 </p>
 
-<p><a name="pppparasig"><h4>3.11.4 Parameter Sigmas</h4></p>
+<p><a name="pppnmea"><h4>3.11.4 NMEA - optional</h4></p>
 <p>
-You may like to introduce specific estimates for sigmas of parameters to be estimated in the PPP solution.
+BNC allows to output results from Precise Point Positioning in NMEA format.
 </p>
 
-<p><a name="pppsigxyzi"><h4>3.11.4.1 XYZ Init - mandatory</h4></p>
-<p>
-Enter a sigma in meters for the initial XYZ coordinate componentes. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode.
-</p>
-
-<p><a name="pppsigxyzn"><h4>3.11.4.2 XYZ White Noise - mandatory</h4></p>
-<p>
-Enter a sigma in meters for the 'White Noise' of estimated XYZ coordinate components. A value of 100.0 (default) may be appropriate considering the potential movement of a rover.
-</p>
-
-<p><a name="pppsigtrpi"><h4>3.11.4.3 Tropo Init - mandatory if 'Estimate tropo' is set</h4></p>
-<p>
-Enter a sigma in meters for the a-priory model based tropospheric delay estimation. A value of 0.1 (default) may be an appropriate choice.
-</p>
-
-<p><a name="pppsigtrpn"><h4>3.11.4.4 Tropo White Noise - mandatory if 'Estimate tropo' is set</h4></p>
-<p>
-Enter a sigma in meters per second to describe the expected variation of the tropospheric effect. Supposing 1Hz observation data, a value of 1e-6 (default) would mean that the tropospheric effect may vary for 3600 * 1e-6 = 0.0036 meters per hour.
-</p>
-
-<p><a name="pppout"><h4>3.11.5 Output - optional</h4></p>
-<p>
-BNC allows to output results from Precise Point Positioning in NMEA format or as a time series plot of displacements.
-</p>
-
-<p><a name="pppnmeafile"><h4>3.11.5.1 NMEA File - optional</h4></p>
+<p><a name="pppnmeafile"><h4>3.11.4.1 NMEA File - optional</h4></p>
 <p>
 The NMEA sentences generated about once per second are pairs of 
 <ul>
@@ -1273,7 +1250,7 @@ Specify the full path to a file where Point Positioning results are saved as NME
 Note that Tomoji Takasu has written a Windows program called RTKPlot for visualizing NMEA strings. It is available from <u>http://gpspp.sakura.ne.jp/rtklib/rtklib.htm</u> and compatible with the NMEA output of BNC's 'PPP Client' option.
 </p>
 
-<p><a name="pppnmeaport"><h4>3.11.5.2 NMEA Port - optional</h4></p>
+<p><a name="pppnmeaport"><h4>3.11.4.2 NMEA Port - optional</h4></p>
 <p>
 Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'NMEA Port' is an empty option field, meaning that BNC does not provide NMEA messages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same. 
 </p>
@@ -1281,24 +1258,99 @@ Specify the IP port number of a local port where Point Positioning results becom
 NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World_Wind_Download</u>) can be used for real-time visualization of positions provided through BNC's NMEA IP output port. You need the 'GPS Tracker' plug-in available from <u>http://worldwindcentral.com/wiki/GPS_Tracker</u> for that. The 'Word Wind' is not meant for showing centimeter level details.
 </p>
 
-<p><a name="pppplot"><h4>3.11.5.3 PPP Plot - optional</h4></p>
+<p><a name="ppprecant"><h4>3.11.5 Receiver Antenna - optional</h4></p>
 <p>
-PPP time series of North (red), East(green) and Up (blue) coordinate components will be plotted in the 'PPP Plot' tab when this option ticked. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated XYZ coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.
-</p>
-<p>
-Note that a PPP time series makes only sense for a stationary operated receiver.
+BNC allows to correct observations for receiver antenna phase center offsets and variations.
 </p>
 
-
-<p><a name="pppsync"><h4>3.11.6 Sync Corr - optional</h4></p>
+<p><a name="pppantex"><h4>3.11.5.1 ANTEX File - optional</h4></p>
 <p>
-Zero value (or empty field) means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. Non-zero value 'pppSync' means that the epochs of data are buffered and the processing of each epoch is postponed till the satellite clock corrections not older than 'pppSync' are available. Specifying a value of half the update rate of the clock corrections as 'Sync Corr' (i.e. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of the update rate.
+IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.
+</p>
+<p>
+Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets and variations.
+</p>
+
+<p><a name="ppprecantenna"><h4>3.11.5.2 Antenna Name - optional if 'ANTEX File' is set</h4></p>
+<p>
+Specify the receiver's antenna name as defined in your ANTEX file.Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Phase center variations are not yet applied by BNC.
+</p>
+<p>
+Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets.
+</p>
+
+<p><a name="pppsatant"><h4>3.11.6 Satellite Antenna - optional</h4></p>
+<p>
+BNC allows to correct observations for satellite antenna phase center offsets.
+</p>
+
+<p><a name="pppsatantapply"><h4>3.11.6.1 Apply Offsets - optional if 'ANTEX File' is set</h4></p>
+<p>
+Satellite orbit and clock corrections refer to the satellite's antenna phase centers and hence observations are <u>not</u> to be corrected for satellite antenna phase center offsets. Tick 'Ignore Offsets' to force BNC to not correct observations for satellite antenna phase center offsets. So far satellite antenna phase center variations remain unconsidered in BNC.
+</p>
+<p>
+Default is to <u>not</u> correct observations for satellite antenna phase center offsets.
+</p>
+
+<p><a name="pppsigmas"><h4>3.11.7 Parameter Sigmas</h4></p>
+<p>
+You may like to introduce specific sigmas for code and phase observations and for the estimation of troposphere parameters.
+</p>
+
+<p><a name="pppsigc"><h4>3.11.7.1 Code - mandatory if 'Use Phase Obs' is set</h4></p>
+<p>
+When 'Use phase obs' is set in BNC, the PPP solution will be carried out using both, code and phase observations. A sigma of 5.0 m for code observations and a sigma of 0.02 m for phase observations (defauls) is used to combine both types of observations. As the convergence characteristic of a PPP solution can be influenced by the ratio of the sigmas for code and phase, you may like to introduce you own sigmas for code and phase observations which differ from the default values.
+<ul>
+<li>Introducing a smaller sigma (higher accuracy) for code observations or a larger sigma for phase observations leads to better results shortly after program start. However, it may take more time till you finally get the best possible solutions.</li>
+<li>Introducing a larger sigma (lower accuracy) for code observations or a smaller sigma for phase observations may lead to less accurate results shortly after program start and thus a prolonged period of convergence but could provide better positions in the long run.</li>
+</ul>
+</p>
+<p>
+Specify a sigma for code observations. Default is 5.0 m.
+</p>
+
+<p><a name="pppsigp"><h4>3.11.7.2 Phase - mandatory if 'Use Phase Obs' is set</h4></p>
+<p>
+Specify a sigma for phase observations. Default is 0.02 m.
+</p>
+
+<p><a name="pppsigtrpi"><h4>3.11.7.3 Tropo Init - mandatory if 'Estimate tropo' is set</h4></p>
+<p>
+Enter a sigma in meters for the a-priory model based tropospheric delay estimation. A value of 0.1 (default) may be an appropriate choice.
+</p>
+
+<p><a name="pppsigtrpn"><h4>3.11.7.4 Tropo White Noise - mandatory if 'Estimate tropo' is set</h4></p>
+<p>
+Enter a sigma in meters per second to describe the expected variation of the tropospheric effect. Supposing 1Hz observation data, a value of 1e-6 (default) would mean that the tropospheric effect may vary for 3600 * 1e-6 = 0.0036 meters per hour.
+</p>
+
+<p><a name="pppoptcont2"><h4>3.11.8 Options cont'd - optional</h4></p>
+<p>
+You may like to introduce sigmas for code and phase observations and the estimation of troposphere parameters.
+</p>
+
+<p><a name="pppsync"><h4>3.11.8.1 Sync Corr - optional</h4></p>
+<p>
+Zero value (or empty field) means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. Non-zero value 'Sync Corr' means that the epochs of data are buffered and the processing of each epoch is postponed till the satellite clock corrections not older than 'Sync Corr' are available. Specifying a value of half the update rate of the clock corrections as 'Sync Corr' (i.e. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of the update rate.
 </p>
 <p>
 Using observations in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing observations regardless of how late after a clock correction they were received. Note that applying the 'Sync Corr' option significantly reduces the PPP computation effort for BNC.
 </p>
 <p>
 Default is an empty option field, meaning that you want BNC to process observations immediately after their arrival through applying the latest received clock correction.
+</p>
+
+<p><a name="pppaverage"><h4>3.11.8.2 Averaging - optional if XYZ is set</h4></p>
+<p>
+Enter the length of a sliding time window in minutes. BNC will continuously output moving average values ns and their RMS as computed from those individual values obtained most recently throughout this period. RMS values presented for XYZ coordinates and tropospheric zenit path delays are bias reduced while RMS values for Nort/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string &quot;AVE-XYZ&quot; in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string &quot;AVE-NEU&quot; and averaged values for the tropospheric delays and their RMS are marked with string &quot;AVE-TRP&quot;. Example:
+</p>
+<pre>
+10-09-08 09:13:05 FFMJ1  AVE-XYZ 09:13:04.0   4053455.948 +-  0.284     617730.422 +-  0.504    4869397.692 +-  0.089
+10-09-08 09:13:05 FFMJ1  AVE-NEU 09:13:04.0    1.043 +-  0.179    0.640 +-  0.456    1.624 +-  0.331
+10-09-08 09:13:05 FFMJ1  AVE-TRP 09:13:04.0         2.336 +-  0.002
+</pre>
+<p>
+Entering any positive value up to 1440 (24h mean value) is allowed. An empty option field (default) means that you don't want BNC to output moving average positions into the log file and the 'Log' section. Note that averaging positions makes only sense for a stationary receiver.
 </p>
 
 <p><a name="streams"><h4>3.12. Streams</h4></p>
