@@ -1277,7 +1277,12 @@ Default is an empty option field meaning that you don't want to correct observat
 
 <p><a name="ppprecantenna"><h4>3.11.5.2 Antenna Name - optional if 'ANTEX File' is set</h4></p>
 <p>
-Specify the receiver's antenna name as defined in your ANTEX file.Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Phase center variations are not yet applied by BNC.
+Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Phase center variations are not yet applied by BNC. The specified name must consist of 20 characters. Add trailing blanks if the antenna name has less then 20 characters. Examples:
+<pre>
+'JPSREGANT_SD_E      ' (no radome)
+'LEIAT504        NONE' (no radome)
+'LEIAR25.R3      LEIT' (radome)
+</pre>
 </p>
 <p>
 Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets.
