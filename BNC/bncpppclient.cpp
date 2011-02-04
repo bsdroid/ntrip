@@ -88,6 +88,8 @@ bncPPPclient::bncPPPclient(QByteArray staID) {
   _model   = new bncModel(staID);
   connect(_model, SIGNAL(newNMEAstr(QByteArray)), 
           this,   SIGNAL(newNMEAstr(QByteArray)));
+
+  _pppCorrMountpoint = settings.value("pppCorrMountpoint").toString();
 }
 
 // Destructor
@@ -259,6 +261,21 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
   QMutexLocker locker(&_mutex);
+
+  // Check the Mountpoint (source of corrections)
+  // --------------------------------------------
+  if (_pppCorrMountpoint.isEmpty() ) {
+    QMutableListIterator<QString> itm(corrList);
+    while (itm.hasNext()) {
+      QStringList hlp = itm.next().split(" ");
+      if (hlp.size() > 0) {
+        QString mountpoint = hlp[hlp.size()-1];
+        if (mountpoint != _pppCorrMountpoint) {
+          itm.remove();     
+        }
+      }
+    }
+  }
 
   if (corrList.size() == 0) {
     return;

@@ -153,6 +153,7 @@ class bncPPPclient : public bncEphUser {
   bool                    _useGalileo;
   bool                    _pppMode;
   QMap<QString, slipInfo> _slips;
+  QString                 _pppCorrMountpoint;
 };
 
 #endif
