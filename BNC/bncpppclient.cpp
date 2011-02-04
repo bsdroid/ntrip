@@ -264,7 +264,7 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 
   // Check the Mountpoint (source of corrections)
   // --------------------------------------------
-  if (_pppCorrMount.isEmpty() ) {
+  if (!_pppCorrMount.isEmpty()) {
     QMutableListIterator<QString> itm(corrList);
     while (itm.hasNext()) {
       QStringList hlp = itm.next().split(" ");
