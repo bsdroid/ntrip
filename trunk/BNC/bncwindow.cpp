@@ -1183,9 +1183,13 @@ void bncWindow::slotSaveOptions() {
   for (int iRow = 0; iRow < _cmbTable->rowCount(); iRow++) {
     QString hlp;
     for (int iCol = 0; iCol < _cmbTable->columnCount(); iCol++) {
-      hlp += _cmbTable->item(iRow, iCol)->text() + " ";
+      if (_cmbTable->item(iRow, iCol)) {
+        hlp += _cmbTable->item(iRow, iCol)->text() + " ";
+      }
     }
-    combineStreams << hlp;
+    if (!hlp.isEmpty()) {
+      combineStreams << hlp;
+    }
   }
 
   bncSettings settings;
@@ -1260,7 +1264,9 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("startTab",    _aogroup->currentIndex());
   settings.setValue("statusTab",   _loggroup->currentIndex());
   settings.setValue("waitTime",    _waitTimeSpinBox->value());
-  settings.setValue("combineStreams", combineStreams);
+  if (!combineStreams.isEmpty()) {
+    settings.setValue("combineStreams", combineStreams);
+  }
   settings.setValue("cmbOutHost",    _cmbOutHostLineEdit->text());
   settings.setValue("cmbOutPort",    _cmbOutPortLineEdit->text());
   settings.setValue("cmbMountpoint", _cmbMountpointLineEdit->text());
@@ -1971,7 +1977,7 @@ void bncWindow::populateCmbTable() {
   QListIterator<QString> it(settings.value("combineStreams").toStringList());
   while (it.hasNext()) {
     QStringList hlp = it.next().split(" ");
-    if (hlp.size() > 0) {
+    if (hlp.size() > 2) {
       ++iRow;
       _cmbTable->insertRow(iRow);
     }
