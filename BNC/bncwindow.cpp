@@ -337,6 +337,7 @@ bncWindow::bncWindow() {
   // PPP Options
   // -----------
   _pppMountLineEdit      = new QLineEdit(settings.value("pppMount").toString());
+  _pppCorrMountLineEdit  = new QLineEdit(settings.value("pppCorrMount").toString());
   _pppNMEALineEdit       = new QLineEdit(settings.value("nmeaFile").toString());
   _pppNMEAPortLineEdit   = new QLineEdit(settings.value("nmeaPort").toString());
   _pppSigCLineEdit       = new QLineEdit(settings.value("pppSigmaCode").toString());
@@ -384,6 +385,9 @@ bncWindow::bncWindow() {
                                 settings.value("pppApplySatAnt").toInt()));
 
   connect(_pppMountLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
+  connect(_pppCorrMountLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
   connect(_pppUsePhaseCheckBox, SIGNAL(stateChanged(int)),
@@ -767,6 +771,7 @@ bncWindow::bncWindow() {
   _pppSync->setMaximumWidth(6*ww);
   _pppSPPComboBox->setMaximumWidth(8*ww);
   _pppNMEAPortLineEdit->setMaximumWidth(6*ww);
+  _pppCorrMountLineEdit->setMaximumWidth(5*ww);
   pppLayout->addWidget(new QLabel("Mountpoint"),             0, 0);
   pppLayout->addWidget(_pppMountLineEdit,                    0, 1);
   pppLayout->addWidget(_pppSPPComboBox,                      0, 2);
@@ -799,6 +804,8 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("File"),                   3, 4); 
   pppLayout->addWidget(_pppNMEAPortLineEdit,                 3, 5, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Port"),                   3, 6);
+  pppLayout->addWidget(_pppCorrMountLineEdit,                3, 7);
+  pppLayout->addWidget(new QLabel("Corr Mountpoint"),        3, 8, Qt::AlignLeft);
   pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),4, 0,1,5);
   pppLayout->addWidget(new QLabel("    "),                   5, 0);
 
@@ -1210,6 +1217,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("rawOutFile",  _rawOutFileLineEdit->text());
   settings.setValue("miscMount",   _miscMountLineEdit->text());
   settings.setValue("pppMount",    _pppMountLineEdit->text());
+  settings.setValue("pppCorrMount",_pppCorrMountLineEdit->text());
   settings.setValue("pppSPP",      _pppSPPComboBox->currentText());
   settings.setValue("nmeaFile",    _pppNMEALineEdit->text());
   settings.setValue("nmeaPort",    _pppNMEAPortLineEdit->text());
@@ -1784,6 +1792,7 @@ void bncWindow::slotBncTextChanged(){
   // ----------
   if (sender() == 0 
      || sender() == _pppMountLineEdit 
+     || sender() == _pppCorrMountLineEdit 
      || sender() == _pppRefCrdXLineEdit 
      || sender() == _pppRefCrdYLineEdit 
      || sender() == _pppRefCrdZLineEdit 
