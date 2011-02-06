@@ -77,6 +77,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("statusTab",        "0");
     setValue("waitTime",         "5");
     setValue("pppMount",         "");
+    setValue("pppCorrMount",     "");
     setValue("pppSPP",           "PPP");
     setValue("pppSigmaCode",     "5.0");
     setValue("pppSigmaPhase",    "0.02");
