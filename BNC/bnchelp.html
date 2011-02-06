@@ -1144,7 +1144,7 @@ Streams in a 'Raw output file' which shall later be used in an offline PPP calcu
 
 <p><a name="pppmount"><h4>3.11.1 Obs Mountpoint - optional</h4></p>
 <p>
-Specify an observations mountpoint from the selected 'Streams' list if you want BNC to derive coordinates for the affected rover position through a Point Positioning solution. 
+Specify an 'Observations Mountpoint' from the list of selected 'Streams' if you want BNC to derive coordinates for the affected rover position through a Point Positioning solution. 
 </p>
 <p>
 Furthermore, specify the Point Positioning method you want to apply. Options are 
@@ -1169,7 +1169,7 @@ The parameters following the 'NEU' string provide Nort, East and Up components o
 </p>
 
 <p><a name="pppcorrmount"><h4>3.11.2 Corr Mountpoint - optional</h4></p>
-Specify an orbit/clock corrections mountpoint from the selected 'Streams' list if you want BNC to correct your positioning solution accordingly.
+Specify an orbit/clock 'Corrections mountpoint' from the list of selected 'Streams' if you want BNC to correct your positioning solution accordingly.
 </p>
 
 <p><a name="pppopt"><h4>3.11.3 Options</h4></p>
@@ -2142,7 +2142,8 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>startTab=0</td><td>Internal memory: Top tab index</td></tr>
 <tr><td>statusTab=0</td><td>Internal memory: Bottom tab index</td></tr>
 <tr><td>waitTime=5</td><td>Feed Engine: Wait for full epoch</td></tr>
-<tr><td>pppMount=</td><td>PPP Client: Mountpoint</td></tr>
+<tr><td>pppMount=</td><td>PPP Client: Observations Mountpoint</td></tr>
+<tr><td>pppCorrMount=</td><td>PPP Client: Corrections Mountpoint</td></tr>
 <tr><td>pppSPP=PPP</td><td>PPP Client: PPP/SPP</td></tr>
 <tr><td>pppSigmaCode=5.0</td><td>PPP Client: Sigma for Code observations</td></tr>
 <tr><td>pppSigmaPhase=0.02</td><td>PPP Client: Sigma for Phase observations</td></tr>
