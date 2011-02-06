@@ -488,7 +488,8 @@ bncWindow::bncWindow() {
   _serialAutoNMEAComboBox->setWhatsThis(tr("<p>Select 'Auto' to automatically forward NMEA-GGA messages coming from your serial connected receiver to the NTRIP broadcaster and/or save them in a file.</p><p>Select 'Manual' only when handling a VRS stream and your serial connected receiver doesn't generate NMEA-GGA messages.</p>"));
   _serialFileNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved.</p>"));
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
-  _pppMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint if you want BNC to estimate coordinates for the affected receiver position through a PPP solution.</p><p>Note that PPP in BNC requires to also pull a stream carrying RTCM Version 3 satellite orbit and clock corrections to Broadcast Ephemeris referring to the satellites' Antenna Phase Centers (APC). Stream CLK11 on NTRIP broadcaster products.igs-ip.net is an example.</p><p>Pulling in addition a third stream carrying Broadcast Ephemeris messages in high repetition rate is suggested if such messages are comeing from the receiver in low repetition rate or don't come at all from there.</p>"));
+  _pppMountLineEdit->setWhatsThis(tr("<p>Specify an observations mountpoint from the selected 'Streams' list below if you want BNC to estimate coordinates for the affected receiver position through a PPP solution. Example: 'FFMJ1'</p><p>Note that PPP in BNC requires to also pull a stream carrying RTCM Version 3 satellite orbit and clock corrections to Broadcast Ephemeris referring to the satellites' Antenna Phase Centers (APC). Stream CLK11 on NTRIP broadcaster products.igs-ip.net is an example.</p><p>Pulling in addition a third stream carrying Broadcast Ephemeris messages in high repetition rate is suggested if such messages are comeing from the receiver in low repetition rate or don't come at all from there.</p>"));
+  _pppCorrMountLineEdit->setWhatsThis(tr("<p>Specify an orbit/clock corrections mountpoint from the selected 'Streams' list below if you want BNC to correct your positioning solution accordingly. Example: 'CLK10'</p>"));
   _pppSPPComboBox->setWhatsThis(tr("<p>Choose between plain Single Point Positioning (SPP) and Precise Point Positioning (PPP).</p>"));
   _pppUsePhaseCheckBox->setWhatsThis(tr("<p>By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations.</p><p>Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.</p>"));
   _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
@@ -771,8 +772,7 @@ bncWindow::bncWindow() {
   _pppSync->setMaximumWidth(6*ww);
   _pppSPPComboBox->setMaximumWidth(8*ww);
   _pppNMEAPortLineEdit->setMaximumWidth(6*ww);
-  _pppCorrMountLineEdit->setMaximumWidth(5*ww);
-  pppLayout->addWidget(new QLabel("Mountpoint"),             0, 0);
+  pppLayout->addWidget(new QLabel("Obs Mountpoint"),         0, 0);
   pppLayout->addWidget(_pppMountLineEdit,                    0, 1);
   pppLayout->addWidget(_pppSPPComboBox,                      0, 2);
   pppLayout->addWidget(new QLabel("          X   "),         0, 3, Qt::AlignRight);
@@ -781,33 +781,34 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppRefCrdYLineEdit,                  0, 6);
   pppLayout->addWidget(new QLabel("          Z   "),         0, 7, Qt::AlignRight);
   pppLayout->addWidget(_pppRefCrdZLineEdit,                  0, 8);
-  pppLayout->addWidget(new QLabel("Options"),                1, 0, 1, 5);
-  pppLayout->addWidget(_pppUsePhaseCheckBox,                 1, 1, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Use phase obs"),          1, 2);
-  pppLayout->addWidget(_pppEstTropoCheckBox,                 1, 3, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Estimate tropo"),         1, 4);
-  pppLayout->addWidget(_pppGLONASSCheckBox,                  1, 5, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Use GLONASS"),            1, 6);
-  pppLayout->addWidget(_pppGalileoCheckBox,                  1, 7, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Use Galileo"),            1, 8);
-  pppLayout->addWidget(new QLabel("Options cont'd"),         2, 0);  
-  pppLayout->addWidget(_pppSigCrd0,                          2, 1, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Sigma XYZ Init   "),      2, 2);
-  pppLayout->addWidget(_pppSigCrdP,                          2, 3, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Sigma XYZ Noise   "),     2, 4);
-  pppLayout->addWidget(_pppQuickStartLineEdit,               2, 5, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Quick-Start (sec)   ") ,  2, 6);  
-  pppLayout->addWidget(_pppPlotCoordinates,                  2, 7, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("PPP Plot"),               2, 8);
-  pppLayout->addWidget(new QLabel("NMEA"),                   3, 0); 
-  pppLayout->addWidget(_pppNMEALineEdit,                     3, 1, 1, 3);
-  pppLayout->addWidget(new QLabel("File"),                   3, 4); 
-  pppLayout->addWidget(_pppNMEAPortLineEdit,                 3, 5, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Port"),                   3, 6);
-  pppLayout->addWidget(_pppCorrMountLineEdit,                3, 7);
-  pppLayout->addWidget(new QLabel("Corr Mountpoint"),        3, 8, Qt::AlignLeft);
-  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),4, 0,1,5);
-  pppLayout->addWidget(new QLabel("    "),                   5, 0);
+  pppLayout->addWidget(new QLabel("Corr Mountpoint   "),     1, 0);
+  pppLayout->addWidget(_pppCorrMountLineEdit,                1, 1);
+  pppLayout->addWidget(new QLabel("Options"),                2, 0, 1, 5);
+  pppLayout->addWidget(_pppUsePhaseCheckBox,                 2, 1, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Use phase obs"),          2, 2);
+  pppLayout->addWidget(_pppEstTropoCheckBox,                 2, 3, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Estimate tropo"),         2, 4);
+  pppLayout->addWidget(_pppGLONASSCheckBox,                  2, 5, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Use GLONASS"),            2, 6);
+  pppLayout->addWidget(_pppGalileoCheckBox,                  2, 7, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Use Galileo"),            2, 8);
+  pppLayout->addWidget(new QLabel("Options cont'd"),         3, 0);  
+  pppLayout->addWidget(_pppSigCrd0,                          3, 1, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Sigma XYZ Init   "),      3, 2);
+  pppLayout->addWidget(_pppSigCrdP,                          3, 3, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Sigma XYZ Noise   "),     3, 4);
+  pppLayout->addWidget(_pppQuickStartLineEdit,               3, 5, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Quick-Start (sec)   ") ,  3, 6);  
+  pppLayout->addWidget(_pppPlotCoordinates,                  3, 7, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("PPP Plot"),               3, 8);
+  pppLayout->addWidget(new QLabel("NMEA"),                   4, 0); 
+  pppLayout->addWidget(_pppNMEALineEdit,                     4, 1, 1, 3);
+  pppLayout->addWidget(new QLabel("File"),                   4, 4); 
+  pppLayout->addWidget(_pppNMEAPortLineEdit,                 4, 5, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Port"),                   4, 6);
+
+
+  pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),5, 0,1,5);
 
   pppgroup->setLayout(pppLayout);
 
@@ -1801,7 +1802,8 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _pppEstTropoCheckBox
      || sender() == _pppUsePhaseCheckBox    
      || sender() == _pppAntexLineEdit ) {
-    if (!_pppMountLineEdit->text().isEmpty()) {
+    if (!_pppMountLineEdit->text().isEmpty() &&
+        !_pppCorrMountLineEdit->text().isEmpty()) {
       _pppSPPComboBox->setPalette(palette_white);
       _pppNMEALineEdit->setPalette(palette_white);
       _pppNMEAPortLineEdit->setPalette(palette_white);
@@ -1939,6 +1941,22 @@ void bncWindow::slotBncTextChanged(){
       _pppAntennaLineEdit->setEnabled(false);
       _pppApplySatAntCheckBox->setEnabled(false);
     }
+// 
+    if (_pppMountLineEdit->text().isEmpty()) {
+      _pppCorrMountLineEdit->setPalette(palette_gray);
+      _pppCorrMountLineEdit->setEnabled(false);
+    } else {
+      _pppCorrMountLineEdit->setPalette(palette_white);
+      _pppCorrMountLineEdit->setEnabled(true);
+      if (_pppCorrMountLineEdit->text().isEmpty()) {
+        _pppSPPComboBox->setPalette(palette_white);
+        _pppSPPComboBox->setEnabled(true);
+      }
+    }
+    if (_pppSPPComboBox->currentText() == "SPP") {
+      _pppCorrMountLineEdit->setPalette(palette_gray);
+      _pppCorrMountLineEdit->setEnabled(false);
+    } 
   }
 }
 
