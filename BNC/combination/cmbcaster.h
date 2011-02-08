@@ -13,8 +13,7 @@ class cmbCaster : public QObject {
   bool usedSocket() const {return _outSocket;}
 
  signals:
-  void error(const QByteArray msg);
-  void newMessage(const QByteArray msg);
+  void newMessage(QByteArray msg, bool showOnScreen);
 
  private:
   QString      _mountpoint;

@@ -14,6 +14,7 @@ class cmbParam {
            const QString& acIn, const QString& prnIn);
   ~cmbParam();
   double partial(const QString& acIn, t_corr* corr);
+  QString toString() const;
   parType type;
   int     index;
   QString AC;
@@ -33,12 +34,7 @@ class bncComb : public bncEphUser  {
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
 
- private slots:
-  void slotMessage(const QByteArray msg);
-  void slotError(const QByteArray msg);
-
  private:
-
   class cmbEpoch {
    public:
     cmbEpoch(const QString& name) {acName = name;}
@@ -70,7 +66,6 @@ class bncComb : public bncEphUser  {
   };
 
   void processEpochs(const QList<cmbEpoch*>& epochs);
-  void printSingleCorr(const QString& acName, const t_corr* corr);
   void dumpResults(const bncTime& resTime, 
                    const QMap<QString, t_corr*>& resCorr);
   void switchToLastEph(const t_eph* lastEph, const t_eph* prevEph, 
@@ -84,6 +79,7 @@ class bncComb : public bncEphUser  {
   double                _sigSatOff;
   double                _sigClk;
   SymmetricMatrix       _QQ;
+  QByteArray            _log;
 };
 
 #endif
