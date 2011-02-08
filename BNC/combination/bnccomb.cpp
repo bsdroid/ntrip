@@ -351,8 +351,19 @@ void bncComb::switchToLastEph(const t_eph* lastEph, const t_eph* prevEph,
                     newXC.data(), newVV.data());
 
   ColumnVector dX = newXC.Rows(1,3) - oldXC.Rows(1,3);
+  ColumnVector dV = newVV           - oldVV;
+  double       dC = newXC(4)        - oldXC(4);
+
   ColumnVector dRAO(3);
   XYZ_to_RSW(newXC.Rows(1,3), newVV, dX, dRAO);
+
+  ColumnVector dDotRAO(3);
+  XYZ_to_RSW(newXC.Rows(1,3), newVV, dV, dDotRAO);
+
+  newCorr->iod = lastEph->IOD();
+  newCorr->rao    += dRAO;
+  newCorr->dotRao += dDotRAO;
+  newCorr->dClk   += dC;
 }
 
 // Process Epochs
