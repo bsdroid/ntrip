@@ -1802,10 +1802,10 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _pppEstTropoCheckBox
      || sender() == _pppUsePhaseCheckBox    
      || sender() == _pppAntexLineEdit ) {
-    if (!_pppMountLineEdit->text().isEmpty() &&
-        !_pppCorrMountLineEdit->text().isEmpty() ||
-        !_pppMountLineEdit->text().isEmpty() &&
-        _pppSPPComboBox->currentText() == "SPP") {
+    if ((!_pppMountLineEdit->text().isEmpty() &&
+         !_pppCorrMountLineEdit->text().isEmpty()) ||
+       ( !_pppMountLineEdit->text().isEmpty() &&
+        _pppSPPComboBox->currentText() == "SPP")) {
       _pppSPPComboBox->setPalette(palette_white);
       _pppNMEALineEdit->setPalette(palette_white);
       _pppNMEAPortLineEdit->setPalette(palette_white);
