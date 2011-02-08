@@ -190,6 +190,21 @@ void RSW_to_XYZ(const ColumnVector& rr, const ColumnVector& vv,
   xyz = RR * rsw;
 }
 
+// Transformation xyz --> radial, along track, out-of-plane
+////////////////////////////////////////////////////////////////////////////
+void XYZ_to_RSW(const ColumnVector& rr, const ColumnVector& vv,
+                const ColumnVector& xyz, ColumnVector& rsw) {
+
+  ColumnVector along  = vv / vv.norm_Frobenius();
+  ColumnVector cross  = crossproduct(rr, vv); cross /= cross.norm_Frobenius();
+  ColumnVector radial = crossproduct(along, cross);
+
+  rsw.ReSize(3);
+  rsw(1) = DotProduct(xyz, radial);
+  rsw(2) = DotProduct(xyz, along);
+  rsw(3) = DotProduct(xyz, cross);
+}
+
 // Rectangular Coordinates -> Ellipsoidal Coordinates
 ////////////////////////////////////////////////////////////////////////////
 t_irc xyz2ell(const double* XYZ, double* Ell) {
