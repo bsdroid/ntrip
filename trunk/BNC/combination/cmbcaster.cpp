@@ -18,6 +18,7 @@
 #include "cmbcaster.h" 
 #include "bncsettings.h"
 #include "bncversion.h"
+#include "bncapp.h"
 
 using namespace std;
 
@@ -28,6 +29,8 @@ cmbCaster::cmbCaster() {
   _mountpoint = settings.value("cmbMountpoint").toString();
   _outSocket  = 0;
   _sOpenTrial = 0;
+  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
 }
 
 // Destructor
@@ -74,7 +77,7 @@ void cmbCaster::open() {
   if (!_outSocket->waitForConnected(timeOut)) {
     delete _outSocket;
     _outSocket = 0;
-    emit(newMessage("Broadcaster: Connect timeout"));
+    emit(newMessage("Broadcaster: Connect timeout", true));
     return;
   }
 
@@ -91,10 +94,10 @@ void cmbCaster::open() {
   if (ans.indexOf("OK") == -1) {
     delete _outSocket;
     _outSocket = 0;
-    emit(newMessage("Broadcaster: Connection broken"));
+    emit(newMessage("Broadcaster: Connection broken", true));
   }
   else {
-    emit(newMessage("Broadcaster: Connection opened"));
+    emit(newMessage("Broadcaster: Connection opened", true));
     _sOpenTrial = 0;
   }
 }

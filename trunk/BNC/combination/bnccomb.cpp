@@ -65,7 +65,24 @@ double cmbParam::partial(const QString& acIn, t_corr* corr) {
   return 0.0;
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+QString cmbParam::toString() const {
 
+  QString outStr;
+ 
+  if      (type == AC_offset) {
+    outStr = "AC offset  " + AC;
+  }
+  else if (type == Sat_offset) {
+    outStr = "Sat Offset " + prn;
+  }
+  else if (type == clk) {
+    outStr = "Clk Corr   " + prn;
+  }
+
+  return outStr;
+}
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -89,10 +106,8 @@ bncComb::bncComb() {
   }
 
   _caster = new cmbCaster();
-  connect(_caster, SIGNAL(error(const QByteArray)),
-          this, SLOT(slotError(const QByteArray)));
-  connect(_caster, SIGNAL(newMessage(const QByteArray)),
-          this, SLOT(slotMessage(const QByteArray)));
+  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
 
   // Initialize Parameters
   // ---------------------
@@ -250,20 +265,6 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   }
 }
 
-// Print one correction
-////////////////////////////////////////////////////////////////////////////
-void bncComb::printSingleCorr(const QString& acName, const t_corr* corr) {
-  cout.setf(ios::fixed);
-  cout << acName.toAscii().data()                             << " " 
-       << corr->prn.toAscii().data()                          << " "
-       << corr->tt.timestr()                                  << " "
-       << setw(4) << corr->iod                                << " " 
-       << setw(8) << setprecision(4) << corr->dClk * t_CST::c << "   "
-       << setw(8) << setprecision(4) << corr->rao[0]          << " "
-       << setw(8) << setprecision(4) << corr->rao[1]          << " "
-       << setw(8) << setprecision(4) << corr->rao[2]          << endl;
-}
-
 // Send results to caster
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::dumpResults(const bncTime& resTime, 
@@ -324,18 +325,6 @@ void bncComb::dumpResults(const bncTime& resTime,
   }
 }
 
-// Write an Error Message
-////////////////////////////////////////////////////////////////////////////
-void bncComb::slotError(const QByteArray msg) {
-  cout << msg.data() << endl;
-}
-
-// Write a Message
-////////////////////////////////////////////////////////////////////////////
-void bncComb::slotMessage(const QByteArray msg) {
-  cout << msg.data() << endl;
-}
-
 // Change the correction so that it refers to last received ephemeris 
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::switchToLastEph(const t_eph* lastEph, const t_eph* prevEph, 
@@ -369,6 +358,13 @@ void bncComb::switchToLastEph(const t_eph* lastEph, const t_eph* prevEph,
 // Process Epochs
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
+
+  _log.clear();
+
+  QTextStream out(&_log, QIODevice::WriteOnly);
+
+  out <<                  "Combination:" << endl 
+      << "-----------------------------" << endl;
 
   // Predict Parameters Values, Add White Noise
   // ------------------------------------------
@@ -440,8 +436,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
         }
 
         ll(iObs) = corr->dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
-    
-        printSingleCorr(epo->acName, corr);
+
         delete corr;
       }
     }
@@ -458,12 +453,15 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
           resCorr[pp->prn]->dClk = pp->xx / t_CST::c;
         }
       }
+      out.setRealNumberNotation(QTextStream::FixedNotation);
+      out.setFieldWidth(8);
+      out.setRealNumberPrecision(4);
+      out << pp->toString() << " "
+          << pp->xx << " +- " << _QQ(pp->index,pp->index) << endl;
     }
- 
-    cout << "vv = " << vv.t();
   }
 
   dumpResults(resTime, resCorr);
 
-  cout << "Corrections processed" << endl << endl;
+  emit newMessage(_log, false);
 }
