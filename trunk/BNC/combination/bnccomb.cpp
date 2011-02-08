@@ -112,18 +112,24 @@ bncComb::bncComb() {
   // Initialize Parameters
   // ---------------------
   int nextPar = 0;
+  QMapIterator<QString, cmbAC*> it(_ACs);
+  while (it.hasNext()) {
+    it.next();
+    cmbAC* AC = it.value();
+    _params.push_back(new cmbParam(cmbParam::AC_offset, ++nextPar, AC->name, ""));
+  }
+  it.toFront();
+  while (it.hasNext()) {
+    it.next();
+    cmbAC* AC = it.value();
+    for (int iGps = 1; iGps <= 32; iGps++) {
+      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+      _params.push_back(new cmbParam(cmbParam::Sat_offset, ++nextPar, AC->name, prn));
+    }
+  }
   for (int iGps = 1; iGps <= 32; iGps++) {
     QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
     _params.push_back(new cmbParam(cmbParam::clk, ++nextPar, "", prn));
-    QMapIterator<QString, cmbAC*> it(_ACs);
-    while (it.hasNext()) {
-      it.next();
-      cmbAC* AC = it.value();
-      if (iGps == 1) {
-        _params.push_back(new cmbParam(cmbParam::AC_offset, ++nextPar, AC->name, ""));
-      }
-      _params.push_back(new cmbParam(cmbParam::Sat_offset, ++nextPar, AC->name, prn));
-    }
   }
 
   unsigned nPar = _params.size();
@@ -363,8 +369,8 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
 
   QTextStream out(&_log, QIODevice::WriteOnly);
 
-  out <<                  "Combination:" << endl 
-      << "-----------------------------" << endl;
+  out <<                   "Combination:" << endl 
+      << "------------------------------" << endl;
 
   // Predict Parameters Values, Add White Noise
   // ------------------------------------------
@@ -457,7 +463,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       out.setFieldWidth(8);
       out.setRealNumberPrecision(4);
       out << pp->toString() << " "
-          << pp->xx << " +- " << _QQ(pp->index,pp->index) << endl;
+          << pp->xx << " +- " << sqrt(_QQ(pp->index,pp->index)) << endl;
     }
   }
 
