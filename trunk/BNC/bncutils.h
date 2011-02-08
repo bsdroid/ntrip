@@ -46,6 +46,9 @@ QByteArray ggaString(const QByteArray& latitude,
 void RSW_to_XYZ(const ColumnVector& rr, const ColumnVector& vv,
                 const ColumnVector& rsw, ColumnVector& xyz);
 
+void XYZ_to_RSW(const ColumnVector& rr, const ColumnVector& vv,
+                const ColumnVector& xyz, ColumnVector& rsw);
+
 t_irc xyz2ell(const double* XYZ, double* Ell);
 
 void xyz2neu(const double* Ell, const double* xyz, double* neu);

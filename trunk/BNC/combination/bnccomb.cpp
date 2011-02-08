@@ -22,6 +22,7 @@
 #include "cmbcaster.h"
 #include "bncsettings.h"
 #include "bncmodel.h"
+#include "bncutils.h"
 
 using namespace std;
 
@@ -343,10 +344,15 @@ void bncComb::switchToLastEph(const t_eph* lastEph, const t_eph* prevEph,
   ColumnVector oldVV(3);
   prevEph->position(newCorr->tt.gpsw(), newCorr->tt.gpssec(), 
                     oldXC.data(), oldVV.data());
+
   ColumnVector newXC(4);
   ColumnVector newVV(3);
   lastEph->position(newCorr->tt.gpsw(), newCorr->tt.gpssec(), 
                     newXC.data(), newVV.data());
+
+  ColumnVector dX = newXC.Rows(1,3) - oldXC.Rows(1,3);
+  ColumnVector dRAO(3);
+  XYZ_to_RSW(newXC.Rows(1,3), newVV, dX, dRAO);
 }
 
 // Process Epochs
