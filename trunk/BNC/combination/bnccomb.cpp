@@ -72,13 +72,13 @@ QString cmbParam::toString() const {
   QString outStr;
  
   if      (type == AC_offset) {
-    outStr = "AC offset  " + AC;
+    outStr = "AC offset " + AC;
   }
   else if (type == Sat_offset) {
-    outStr = "Sat Offset " + prn;
+    outStr = "Sat Offset " + AC + " " + prn;
   }
   else if (type == clk) {
-    outStr = "Clk Corr   " + prn;
+    outStr = "Clk Corr " + prn;
   }
 
   return outStr;
