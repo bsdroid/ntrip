@@ -170,6 +170,24 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     return;
   }
 
+  // Check the IOD
+  //--------------
+  if (_eph.find(newCorr->prn) == _eph.end()) {
+    delete newCorr;
+    return;
+  }
+  else {
+    t_eph* lastEph = _eph[newCorr->prn]->last;
+    t_eph* prevEph = _eph[newCorr->prn]->prev;
+    if (prevEph && prevEph->IOD() == newCorr->iod) {
+      switchToLastEph(lastEph, prevEph, newCorr);
+    }
+    else if (!lastEph || lastEph->IOD() != newCorr->iod) {
+      delete newCorr;
+      return;
+    }
+  }
+
   // Process all older Epochs (if there are any)
   // -------------------------------------------
   const double waitTime = 5.0; // wait 5 sec
@@ -317,6 +335,13 @@ void bncComb::slotMessage(const QByteArray msg) {
   cout << msg.data() << endl;
 }
 
+// Change the correction so that it refers to last received ephemeris 
+////////////////////////////////////////////////////////////////////////////
+void bncComb::switchToLastEph(const t_eph* lastEph, const t_eph* prevEph, 
+                              t_corr* newCorr) {
+
+}
+
 // Process Epochs
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
@@ -418,4 +443,3 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
 
   cout << "Corrections processed" << endl << endl;
 }
-
