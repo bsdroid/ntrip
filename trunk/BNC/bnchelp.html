@@ -1023,10 +1023,10 @@ Note that in RTCM Version 2.x the message types 18 and 19 carry only the observa
 
 <p><a name="pppclient"><h4>3.11. PPP Client</h4></p>
 <p>
-BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or code plus phase data in ionosphere free linear combinations P3 or L3. Besides pulling a stream of observations from a dual frequency receiver, this also requires pulling in addition
+BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or code plus phase data in ionosphere free linear combinations P3 or L3. Besides pulling a stream of observations from a dual frequency receiver, this also
 <ul>
-<li>a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of 'State Space Representation' (SSR) messages as proposed by RTCM (i.e. premature message type 1060). Note that for BNC these correctors need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream products.igs-ip.net:2101/CLK11 is an example.</li>
-<li>a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019, 1020, and (proposed) 1045. This is a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream RTCM3EPH on caster products.igs-ip.net:2101 is an example.</li>
+<li>requires pulling in addition a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of 'State Space Representation' (SSR) messages as proposed by RTCM (i.e. premature message type 1060). Note that for BNC these correctors need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream products.igs-ip.net:2101/CLK11 is an example.</li>
+<li>may require pulling a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019, 1020, and (proposed) 1045. This is a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream RTCM3EPH on caster products.igs-ip.net:2101 is an example.</li>
 </ul>
 </p>
 <p>
