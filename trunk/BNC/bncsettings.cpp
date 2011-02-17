@@ -98,6 +98,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("pppAntenna",       "");
     setValue("pppAntex",         "");
     setValue("pppApplySatAnt",   "0");
+    setValue("pppSync",          "");
     setValue("nmeaFile",         "");
     setValue("nmeaPort",         "");
     setValue("combineStreams",   "");
