@@ -136,9 +136,11 @@ bncComb::bncComb() {
   _QQ.ReSize(nPar);
   _QQ = 0.0;
 
-  _sigACOff  = 100.0;
-  _sigSatOff = 100.0;
-  _sigClk    = 100.0;
+  // Clk_Corr = AC_Offset + Sat_Offset + Clk
+  // ---------------------------------------
+  _sigACOff  = 100.0; // per analysis center stream and epoch, sigma in meters
+  _sigSatOff = 100.0; // per analysis center stream and satellite, sigma in meters
+  _sigClk    = 100.0; // per satellite and epoch, sigma in meters
 
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
