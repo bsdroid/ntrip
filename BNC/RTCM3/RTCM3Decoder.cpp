@@ -114,16 +114,17 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     _staID = _rawFile->staID();
   }
 
-  // Find the corresponding coDecoder, initialize a new one if necessary
-  // -------------------------------------------------------------------
-  if (!_coDecoders.contains(_staID.toAscii())) {
-    _coDecoders[_staID.toAscii()] = new RTCM3coDecoder(_staID); 
-  }
-  RTCM3coDecoder* coDecoder = _coDecoders[_staID.toAscii()];
-
   // Try to decode Clock and Orbit Corrections
   // -----------------------------------------
   if (_mode == unknown || _mode == corrections) {
+
+    // Find the corresponding coDecoder
+    // --------------------------------
+    if (!_coDecoders.contains(_staID.toAscii())) {
+      _coDecoders[_staID.toAscii()] = new RTCM3coDecoder(_staID); 
+    }
+    RTCM3coDecoder* coDecoder = _coDecoders[_staID.toAscii()];
+
     if ( coDecoder->Decode(buffer, bufLen, errmsg) == success ) {
       decoded = true;
       if  (!_rawFile && _mode == unknown) {
