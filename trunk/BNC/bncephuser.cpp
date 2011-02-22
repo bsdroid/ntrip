@@ -90,8 +90,7 @@ void bncEphUser::slotNewEphGPS(gpsephemeris gpseph) {
   else {
     t_ephGPS* eLast = new t_ephGPS();
     eLast->set(&gpseph);
-    _eph.insert(prn, new t_ephPair());
-    _eph[prn]->last = eLast;
+    _eph.insert(prn, new t_ephPair(eLast));
   }
 }
 
@@ -118,8 +117,7 @@ void bncEphUser::slotNewEphGlonass(glonassephemeris gloeph) {
   else {
     t_ephGlo* eLast = new t_ephGlo();
     eLast->set(&gloeph);
-    _eph.insert(prn, new t_ephPair());
-    _eph[prn]->last = eLast;
+    _eph.insert(prn, new t_ephPair(eLast));
   }
 }
 
@@ -144,8 +142,7 @@ void bncEphUser::slotNewEphGalileo(galileoephemeris galeph) {
   else {
     t_ephGal* eLast = new t_ephGal();
     eLast->set(&galeph);
-    _eph.insert(prn, new t_ephPair());
-    _eph[prn]->last = eLast;
+    _eph.insert(prn, new t_ephPair(eLast));
   }
 }
 
