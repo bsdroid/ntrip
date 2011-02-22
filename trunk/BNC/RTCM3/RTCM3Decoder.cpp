@@ -95,7 +95,8 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID, bncRawFile* rawFile) :
 RTCM3Decoder::~RTCM3Decoder() {
   QMapIterator<QByteArray, RTCM3coDecoder*> it(_coDecoders);
   while (it.hasNext()) {
-    delete it.next();
+    it.next();
+    delete it.value();
   }
 }
 
