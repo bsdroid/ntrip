@@ -210,6 +210,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
       delete newCorr;
       return;
     }
+    newCorr->eph = lastEph;
   }
 
   // Process all older Epochs (if there are any)
