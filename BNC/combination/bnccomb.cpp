@@ -477,7 +477,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
     }
   }
 
-  printResults(out, resCorr);
+  printResults(out, resTime, resCorr);
   dumpResults(resTime, resCorr);
 
   emit newMessage(_log, false);
@@ -485,17 +485,26 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
 
 // Print results to caster
 ////////////////////////////////////////////////////////////////////////////
-void bncComb::printResults(QTextStream& out,
+void bncComb::printResults(QTextStream& out, const bncTime& resTime,
                            const QMap<QString, t_corr*>& resCorr) {
 
   QMapIterator<QString, t_corr*> it(resCorr);
   while (it.hasNext()) {
     it.next();
     t_corr* corr = it.value();
-    out << currentDateAndTimeGPS().toString("yy-MM-dd hh:mm:ss ").toAscii().data();
-    out.setFieldWidth(3);
-    out << "Full Clock " << corr->prn << " " << corr->iod << " ";
-    out.setFieldWidth(8);
-    out << corr->dClk * t_CST::c << endl;
+    t_eph* eph = corr->eph;
+    if (eph) {
+      double xx, yy, zz, cc;
+      eph->position(resTime.gpsw(), resTime.gpssec(), xx, yy, zz, cc);
+
+      out << currentDateAndTimeGPS().toString("yy-MM-dd hh:mm:ss ").toAscii().data();
+      out.setFieldWidth(3);
+      out << "Full Clock " << corr->prn << " " << corr->iod << " ";
+      out.setFieldWidth(14);
+      out << (cc + corr->dClk) * t_CST::c << endl;
+    }
+    else {
+      out << "bncComb::printResuls bug" << endl;
+    }
   }
 }
