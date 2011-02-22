@@ -838,7 +838,7 @@ void bncApp::writeRawData(const QByteArray& data, const QByteArray& staID,
     bncSettings settings;
     QByteArray fileName = settings.value("rawOutFile").toByteArray();
     if (!fileName.isEmpty()) {
-      _rawFile = new bncRawFile(fileName, format, bncRawFile::output);
+      _rawFile = new bncRawFile(fileName, staID, format, bncRawFile::output);
     }
   }
 
