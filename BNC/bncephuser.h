@@ -41,7 +41,6 @@ class t_corr {
   t_corr() {
     raoSet  = false;
     dClkSet = false;
-    eph     = 0;
   }
   bool ready() {return raoSet && dClkSet;}
 
@@ -67,7 +66,6 @@ class t_corr {
   ColumnVector dotDotRao;
   bool         raoSet;
   bool         dClkSet;
-  t_eph*       eph;
 };
 
 class bncEphUser : public QObject {
@@ -86,8 +84,8 @@ class bncEphUser : public QObject {
 
   class t_ephPair {
    public:
-    t_ephPair(t_eph* lastEph) {
-      last = lastEph;
+    t_ephPair() {
+      last = 0;
       prev = 0;
     }
     ~t_ephPair() {
