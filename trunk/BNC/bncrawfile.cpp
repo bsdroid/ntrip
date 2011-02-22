@@ -48,11 +48,12 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& format,
-                       inpOutFlag ioFlg) {
+bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& staID,
+                       const QByteArray& format, inpOutFlag ioFlg) {
+
   _fileName   = fileName; expandEnvVar(_fileName);
+  _staID      = staID;
   _format     = format;
-  _staID      = fileName.mid(fileName.lastIndexOf(QDir::separator())+1,5);  
   _inpFile    = 0;
   _outFile    = 0;
   _version    = 0;
