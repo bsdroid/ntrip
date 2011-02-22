@@ -1,7 +1,0 @@
-.cvsignore
-.obj
-.moc
-Makefile
-bnc
-qrc_bnc.cpp
-*.conf
