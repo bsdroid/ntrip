@@ -359,9 +359,9 @@ void bncComb::switchToLastEph(const t_eph* lastEph, const t_eph* prevEph,
   XYZ_to_RSW(newXC.Rows(1,3), newVV, dV, dDotRAO);
 
   newCorr->iod = lastEph->IOD();
-  newCorr->rao    += dRAO;
-  newCorr->dotRao += dDotRAO;
-  newCorr->dClk   += dC;
+  newCorr->rao    -= dRAO;
+  newCorr->dotRao -= dDotRAO;
+  newCorr->dClk   -= dC;
 
   QString msg = "switch " + newCorr->prn 
     + QString(" %1 -> %2 %3").arg(prevEph->IOD(),3)
