@@ -80,10 +80,6 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID, bncRawFile* rawFile) :
   connect(this, SIGNAL(newGalileoEph(galileoephemeris*)), 
           (bncApp*) qApp, SLOT(slotNewGalileoEph(galileoephemeris*)));
 
-  // Sub-Decoder for Clock and Orbit Corrections
-  // -------------------------------------------
-  _coDecoder = new RTCM3coDecoder(staID);
-
   // Mode can be either observations or corrections
   // ----------------------------------------------
   _mode = unknown;
@@ -97,7 +93,10 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID, bncRawFile* rawFile) :
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 RTCM3Decoder::~RTCM3Decoder() {
-  delete _coDecoder;
+  QMapIterator<QByteArray, RTCM3coDecoder*> it(_coDecoders);
+  while (it.hasNext()) {
+    delete it.next();
+  }
 }
 
 // 
@@ -108,58 +107,47 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
   bool decoded = false;
 
-  // If read from file, we set the mode according to staID
-  // -----------------------------------------------------
-  if (!_staID_corrections.isEmpty() && _rawFile) {
-    if (_rawFile->staID() == _staID_corrections) {
-      _mode = corrections;
-    }
-    else {
-      _mode = observations;
-    }
+  // If read from file, mode is always uknown
+  // ----------------------------------------
+  if (_rawFile) {
+    _mode  = unknown;
+    _staID = _rawFile->staID();
   }
+
+  // Find the corresponding coDecoder, initialize a new one if necessary
+  // -------------------------------------------------------------------
+  if (!_coDecoders.contains(_staID.toAscii())) {
+    _coDecoders[_staID.toAscii()] = new RTCM3coDecoder(_staID); 
+  }
+  RTCM3coDecoder* coDecoder = _coDecoders[_staID.toAscii()];
 
   // Try to decode Clock and Orbit Corrections
   // -----------------------------------------
   if (_mode == unknown || _mode == corrections) {
-    if ( _coDecoder->Decode(buffer, bufLen, errmsg) == success ) {
+    if ( coDecoder->Decode(buffer, bufLen, errmsg) == success ) {
       decoded = true;
-      if (_mode == unknown) {
-        if (_rawFile) {
-          _staID_corrections = _rawFile->staID();
-        }
-        else {
-          _mode = corrections;
-        }
+      if  (!_rawFile && _mode == unknown) {
+        _mode = corrections;
       }
     }
   }
 
-  // Find the corresponding parser
-  // -----------------------------
-  QByteArray staID("default");
-  if (_rawFile) {
-    staID = _rawFile->staID();
-  }
-
-  bool newParser = !_parsers.contains(staID);
-
-  RTCM3ParserData& parser = _parsers[staID];
-
-  // Get Glonass Slot Numbers from Global Array
-  // ------------------------------------------
-  bncApp* app = (bncApp*) qApp;
-  app->getGlonassSlotNums(parser.GLOFreq);
-
-  // Initialize a new parser
-  // -----------------------
-  if (newParser) {
+  // Find the corresponding parser, initialize a new parser if necessary
+  // -------------------------------------------------------------------
+  bool newParser = !_parsers.contains(_staID.toAscii());
+  RTCM3ParserData& parser = _parsers[_staID.toAscii()];
+  if (newParser) {  
     memset(&parser, 0, sizeof(parser));
     parser.rinex3 = 0;
     double secGPS;
     currentGPSWeeks(parser.GPSWeek, secGPS);
     parser.GPSTOW = int(secGPS);
   }
+
+  // Get Glonass Slot Numbers from Global Array
+  // ------------------------------------------
+  bncApp* app = (bncApp*) qApp;
+  app->getGlonassSlotNums(parser.GLOFreq);
 
   // Remaining part decodes the Observations
   // ---------------------------------------
@@ -337,15 +325,6 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
  
                 unsigned df = (1 << iEntry);
 
-                //// beg test
-                ////  cout << prn.toAscii().data() << " "
-                ////       << iEntry << " " << df;
-                ////  if (df & gnssData.dataflags[iSat]) {
-                ////    cout << " present";
-                ////  }
-                ////  cout << endl;
-                //// end test
-
                 if (df & gnssData.dataflags[iSat]) {
 
                   if      (iEntry == GNSSENTRY_C1DATA) {
@@ -476,4 +455,15 @@ bool RTCM3Decoder::storeEph(const t_ephGPS& gpseph) {
   }
 
   return false;
+}
+
+// Time of Corrections
+//////////////////////////////////////////////////////////////////////////////
+int RTCM3Decoder::corrGPSEpochTime() const {
+  if (_mode == corrections && _coDecoders.size() > 0) {
+    return _coDecoders.begin().value()->corrGPSEpochTime();
+  }
+  else {
+    return -1;
+  }
 }

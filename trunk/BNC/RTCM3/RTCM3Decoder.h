@@ -44,9 +44,7 @@ Q_OBJECT
   RTCM3Decoder(const QString& staID, bncRawFile* rawFile);
   virtual ~RTCM3Decoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
-  virtual int corrGPSEpochTime() const {
-    return (_mode == corrections ? _coDecoder->corrGPSEpochTime() : -1);
-  }
+  virtual int corrGPSEpochTime() const;
 
   bool  storeEph(const gpsephemeris& gpseph);
   bool  storeEph(const t_ephGPS&     gpseph);
@@ -63,13 +61,12 @@ Q_OBJECT
   QString                _staID;
   QString                _checkMountPoint;
   QMap<QByteArray, RTCM3ParserData> _parsers;
-  RTCM3coDecoder*        _coDecoder; 
+  QMap<QByteArray, RTCM3coDecoder*> _coDecoders; 
   t_mode                 _mode;
 
   std::map<std::string, t_ephGPS> _ephList;
   double                 _antXYZ[3];
   bncRawFile*            _rawFile;
-  QString                _staID_corrections;
 
   QMap<QString, int>  _slip_cnt_L1;
   QMap<QString, int>  _slip_cnt_L2;
