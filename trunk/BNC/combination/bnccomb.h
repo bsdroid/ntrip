@@ -68,7 +68,7 @@ class bncComb : public bncEphUser  {
   void processEpochs(const QList<cmbEpoch*>& epochs);
   void dumpResults(const bncTime& resTime, 
                    const QMap<QString, t_corr*>& resCorr);
-  void printResults(QTextStream& out,
+  void printResults(QTextStream& out, const bncTime& resTime,
                     const QMap<QString, t_corr*>& resCorr);
   void switchToLastEph(const t_eph* lastEph, const t_eph* prevEph, 
                        t_corr* newCorr);
