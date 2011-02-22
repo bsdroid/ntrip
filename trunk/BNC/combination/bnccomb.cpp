@@ -361,6 +361,12 @@ void bncComb::switchToLastEph(const t_eph* lastEph, const t_eph* prevEph,
   newCorr->rao    += dRAO;
   newCorr->dotRao += dDotRAO;
   newCorr->dClk   += dC;
+
+  QString msg = "switch " + newCorr->prn 
+    + QString(" %1 -> %2 %3").arg(prevEph->IOD(),3)
+    .arg(lastEph->IOD(),3).arg(dC*t_CST::c, 8, 'f', 4);
+
+  emit newMessage(msg.toAscii(), false);
 }
 
 // Process Epochs
@@ -486,10 +492,9 @@ void bncComb::printResults(QTextStream& out,
     it.next();
     t_corr* corr = it.value();
     out << currentDateAndTimeGPS().toString("yy-MM-dd hh:mm:ss ").toAscii().data();
-    out << corr->prn << " " << corr->iod << " ";
-    out.setRealNumberNotation(QTextStream::FixedNotation);
+    out.setFieldWidth(3);
+    out << "Full Clock " << corr->prn << " " << corr->iod << " ";
     out.setFieldWidth(8);
-    out.setRealNumberPrecision(4);
     out << corr->dClk * t_CST::c << endl;
   }
 }
