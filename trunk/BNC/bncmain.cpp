@@ -53,7 +53,7 @@ using namespace std;
 
 void catch_signal(int) {
   cout << "Program Interrupted by Ctrl-C" << endl;
-  ((bncApp*)qApp)->slotQuit();
+  exit(0);
 }
 
 // Main Program
