@@ -415,7 +415,7 @@ void bncCaster::slotReadMountPoints() {
       QByteArray ntripVersion = hlp[5].toAscii();
       
       bncGetThread* getThread = new bncGetThread(url, format, latitude, 
-                                        longitude, nmea, ntripVersion, "");
+                                        longitude, nmea, ntripVersion);
       addGetThread(getThread);
     }
   }

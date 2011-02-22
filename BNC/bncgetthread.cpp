@@ -92,10 +92,10 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
                            const QByteArray& latitude,
                            const QByteArray& longitude,
                            const QByteArray& nmea, 
-                           const QByteArray& ntripVersion, const QByteArray& extraStaID) {
+                           const QByteArray& ntripVersion) {
   _rawFile      = 0;
   _mountPoint   = mountPoint;
-  _staID        = (extraStaID.size() == 0 ? mountPoint.path().mid(1).toAscii() : extraStaID);
+  _staID        = mountPoint.path().mid(1).toAscii();
   _format       = format;
   _latitude     = latitude;
   _longitude    = longitude;
