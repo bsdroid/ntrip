@@ -461,6 +461,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
           resCorr[pp->prn]->dClk = pp->xx / t_CST::c;
         }
       }
+      out << currentDateAndTimeGPS().toString("yy-MM-dd hh:mm:ss ").toAscii().data();
       out.setRealNumberNotation(QTextStream::FixedNotation);
       out.setFieldWidth(8);
       out.setRealNumberPrecision(4);
@@ -469,7 +470,26 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
     }
   }
 
+  printResults(out, resCorr);
   dumpResults(resTime, resCorr);
 
   emit newMessage(_log, false);
+}
+
+// Print results to caster
+////////////////////////////////////////////////////////////////////////////
+void bncComb::printResults(QTextStream& out,
+                           const QMap<QString, t_corr*>& resCorr) {
+
+  QMapIterator<QString, t_corr*> it(resCorr);
+  while (it.hasNext()) {
+    it.next();
+    t_corr* corr = it.value();
+    out << currentDateAndTimeGPS().toString("yy-MM-dd hh:mm:ss ").toAscii().data();
+    out << corr->prn << " " << corr->iod << " ";
+    out.setRealNumberNotation(QTextStream::FixedNotation);
+    out.setFieldWidth(8);
+    out.setRealNumberPrecision(4);
+    out << corr->dClk * t_CST::c << endl;
+  }
 }
