@@ -29,14 +29,17 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-cmbParam::cmbParam(cmbParam::parType typeIn, int indexIn,
-                   const QString& acIn, const QString& prnIn) {
-  type  = typeIn;
-  index = indexIn;
-  AC    = acIn;
-  prn   = prnIn;
+cmbParam::cmbParam(cmbParam::parType type_, int index_,
+                   const QString& ac_, const QString& prn_,
+                   double sig_0_, double sig_P_) {
+
+  type  = type_;
+  index = index_;
+  AC    = ac_;
+  prn   = prn_;
+  sig_0 = sig_0_;
+  sig_P = sig_P_;
   xx    = 0.0;
-  iod   = -1;
 }
 
 // Destructor
@@ -46,15 +49,15 @@ cmbParam::~cmbParam() {
 
 // Partial
 ////////////////////////////////////////////////////////////////////////////
-double cmbParam::partial(const QString& acIn, t_corr* corr) {
+double cmbParam::partial(const QString& AC_, t_corr* corr) {
   
   if      (type == AC_offset) {
-    if (AC == acIn) {
+    if (AC == AC_) {
       return 1.0;
     }
   }
   else if (type == Sat_offset) {
-    if (AC == acIn && prn == corr->prn) {
+    if (AC == AC_ && prn == corr->prn) {
       return 1.0;
     }
   }
@@ -94,6 +97,8 @@ bncComb::bncComb() {
 
   QStringList combineStreams = settings.value("combineStreams").toStringList();
 
+  _masterAC = "BKG"; // TODO: make it an option
+
   if (combineStreams.size() >= 2) {
     QListIterator<QString> it(combineStreams);
     while (it.hasNext()) {
@@ -111,52 +116,46 @@ bncComb::bncComb() {
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
 
-  // Initialize Parameters
-  // ---------------------
+
+  // A Priori Sigmas (in Meters)
+  // ---------------------------
+  double sigAC_0  = 100.0;
+  double sigAC_P  = 100.0;
+  double sigSat_0 = 100.0;
+  double sigSat_P =   0.0;
+  double sigClk_0 = 100.0;
+  double sigClk_P = 100.0;
+
+  // Initialize Parameters (model: Clk_Corr = AC_Offset + Sat_Offset + Clk)
+  // ----------------------------------------------------------------------
   int nextPar = 0;
   QMapIterator<QString, cmbAC*> it(_ACs);
-  it.next(); // skip first AC
   while (it.hasNext()) {
     it.next();
     cmbAC* AC = it.value();
-    _params.push_back(new cmbParam(cmbParam::AC_offset, ++nextPar, AC->name, ""));
-  }
-  it.toFront();
-  it.next();
-  while (it.hasNext()) {
-    it.next();
-    cmbAC* AC = it.value();
-    for (int iGps = 1; iGps <= 32; iGps++) {
-      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
-      _params.push_back(new cmbParam(cmbParam::Sat_offset, ++nextPar, AC->name, prn));
+    if (AC->name != _masterAC) {
+      _params.push_back(new cmbParam(cmbParam::AC_offset, ++nextPar, 
+                                     AC->name, "", sigAC_0, sigAC_P));
+      for (int iGps = 1; iGps <= 32; iGps++) {
+        QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+        _params.push_back(new cmbParam(cmbParam::Sat_offset, ++nextPar, 
+                                       AC->name, prn, sigSat_0, sigSat_P));
+      }
     }
   }
   for (int iGps = 1; iGps <= 32; iGps++) {
     QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
-    _params.push_back(new cmbParam(cmbParam::clk, ++nextPar, "", prn));
+    _params.push_back(new cmbParam(cmbParam::clk, ++nextPar, "", prn,
+                                   sigClk_0, sigClk_P));
   }
 
-  unsigned nPar = _params.size();
-  _QQ.ReSize(nPar);
+  // Initialize Variance-Covariance Matrix
+  // -------------------------------------
+  _QQ.ReSize(_params.size());
   _QQ = 0.0;
-
-  // Clk_Corr = AC_Offset + Sat_Offset + Clk
-  // ---------------------------------------
-  _sigACOff  = 100.0; // per analysis center stream and epoch, sigma in meters
-  _sigSatOff = 100.0; // per analysis center stream and satellite, sigma in meters
-  _sigClk    = 100.0; // per satellite and epoch, sigma in meters
-
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
-    if      (pp->type == cmbParam::AC_offset) {
-      _QQ(iPar,iPar) = _sigACOff * _sigACOff; 
-    }
-    else if (pp->type == cmbParam::Sat_offset) {
-      _QQ(iPar,iPar) = _sigSatOff * _sigSatOff; 
-    }
-    else if (pp->type == cmbParam::clk) {
-      _QQ(iPar,iPar) = _sigClk * _sigClk; 
-    }
+    _QQ(iPar,iPar) = pp->sig_0 * pp->sig_0;
   }
 }
 
@@ -191,8 +190,6 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     return;
   }
 
-  newCorr->AC = AC->name;
-   
   // Reject delayed corrections
   // --------------------------
   if (_processedBeforeTime.valid() && newCorr->tt < _processedBeforeTime) {
@@ -220,7 +217,6 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
       return;
     }
   }
-    
 
   // Process all older Epochs (if there are any)
   // -------------------------------------------
@@ -396,17 +392,6 @@ void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
   corr->rao    += dRAO;
   corr->dotRao += dDotRAO;
   corr->dClk   -= dC;
-
-//  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-//    cmbParam* pp = _params[iPar-1];
-//    if (pp->type == cmbParam::Sat_offset           &&
-//        pp->prn == corr->prn && pp->AC == corr->AC) {
-//      if (pp->iod != corr->iod) {
-//        pp->xx  += dC * t_CST::c;
-//        pp->iod = corr->iod;
-//      }
-//    }
-//  }
 }
 
 // Process Epochs
@@ -424,17 +409,12 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   // ------------------------------------------
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
-    if  (pp->type == cmbParam::AC_offset || pp->type == cmbParam::clk) {
+    if (pp->sig_P != 0.0) {
       pp->xx = 0.0;
       for (int jj = 1; jj <= _params.size(); jj++) {
         _QQ(iPar, jj) = 0.0;
       }
-    }
-    if      (pp->type == cmbParam::AC_offset) {
-     _QQ(iPar,iPar) = _sigACOff * _sigACOff;
-    }
-    else if (pp->type == cmbParam::clk) {
-     _QQ(iPar,iPar) = _sigClk * _sigClk;
+      _QQ(iPar,iPar) = pp->sig_P * pp->sig_P;
     }
   }
 
@@ -460,8 +440,8 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       itCorr.next();
       t_corr* corr = itCorr.value();
 
-      // Switch to new ephemeris
-      // -----------------------
+      // Switch to last ephemeris
+      // ------------------------
       t_eph* lastEph = _eph[corr->prn]->last;
       if (lastEph == corr->eph) {      
         ++nObs;
@@ -494,11 +474,9 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
         ++iObs;
         t_corr* corr = itCorr.value();
 
-        //// beg test
-        if (epo->acName == "BKG") {
+        if (epo->acName == _masterAC) {
           resCorr[corr->prn] = new t_corr(*corr);
         }
-        //// end test
 
         for (int iPar = 1; iPar <= _params.size(); iPar++) {
           cmbParam* pp = _params[iPar-1];

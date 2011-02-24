@@ -68,7 +68,6 @@ class t_corr {
   bool         raoSet;
   bool         dClkSet;
   const t_eph* eph;
-  QString      AC;
 };
 
 class bncEphUser : public QObject {
