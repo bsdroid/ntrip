@@ -45,7 +45,7 @@ Q_OBJECT
   virtual int corrGPSEpochTime() const {return (int) _GPSweeks;}
 
   static QStringList corrsToASCIIlines(int GPSweek, double GPSweeks, 
-                                       const ClockOrbit& co, const Bias& _bias);
+                                       const ClockOrbit& co, const Bias* bias);
 
  signals:
   void newCorrLine(QString line, QString staID, long coTime);
