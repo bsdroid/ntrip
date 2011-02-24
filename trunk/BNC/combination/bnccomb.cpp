@@ -36,6 +36,7 @@ cmbParam::cmbParam(cmbParam::parType typeIn, int indexIn,
   AC    = acIn;
   prn   = prnIn;
   xx    = 0.0;
+  iod   = -1;
 }
 
 // Destructor
@@ -205,7 +206,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     t_eph* lastEph = _eph[newCorr->prn]->last;
     t_eph* prevEph = _eph[newCorr->prn]->prev;
     if (prevEph && prevEph->IOD() == newCorr->iod) {
-      switchToLastEph(lastEph, prevEph, newCorr);
+      switchToLastEph(AC->name, lastEph, prevEph, newCorr);
     }
     else if (!lastEph || lastEph->IOD() != newCorr->iod) {
       delete newCorr;
@@ -355,8 +356,9 @@ void bncComb::dumpResults(const bncTime& resTime,
 
 // Change the correction so that it refers to last received ephemeris 
 ////////////////////////////////////////////////////////////////////////////
-void bncComb::switchToLastEph(const t_eph* lastEph, const t_eph* prevEph, 
-                              t_corr* newCorr) {
+void bncComb::switchToLastEph(const QString& ACname, const t_eph* lastEph, 
+                              const t_eph* prevEph, t_corr* newCorr) {
+
   ColumnVector oldXC(4);
   ColumnVector oldVV(3);
   prevEph->position(newCorr->tt.gpsw(), newCorr->tt.gpssec(), 
@@ -385,6 +387,20 @@ void bncComb::switchToLastEph(const t_eph* lastEph, const t_eph* prevEph,
   QString msg = "switch " + newCorr->prn 
     + QString(" %1 -> %2 %3").arg(prevEph->IOD(),3)
     .arg(lastEph->IOD(),3).arg(dC*t_CST::c, 8, 'f', 4);
+
+  // Check/change the static offset parameters
+  // -----------------------------------------
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    cmbParam* pp = _params[iPar-1];
+    if (pp->type == cmbParam::Sat_offset &&
+        pp->prn  == newCorr->prn         &&
+        pp->AC   == ACname) {
+      if (pp->iod != lastEph->IOD()) {
+        pp->iod = lastEph->IOD();
+        msg += " need corr ";
+      }
+    }
+  }
 
   emit newMessage(msg.toAscii(), false);
 }
