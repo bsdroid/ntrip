@@ -116,6 +116,8 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
   for (int ii = 0; ii < PRN_GLONASS_NUM; ++ii) {
     _GLOFreq[ii] = 0;
   }
+
+  _bncPPPclient = 0;
 }
 
 // Destructor

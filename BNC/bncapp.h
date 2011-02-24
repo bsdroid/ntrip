@@ -34,6 +34,7 @@
 #include "RTCM3/RTCM3Decoder.h"
 
 class bncComb;
+class bncPPPclient;
 
 class bncApp : public QApplication {
   Q_OBJECT
@@ -119,5 +120,7 @@ class bncApp : public QApplication {
     bncRawFile*         _rawFile;
     int                 _GLOFreq[PRN_GLONASS_NUM];
     bncComb*            _bncComb;
+ public:
+    bncPPPclient*       _bncPPPclient;
 };
 #endif

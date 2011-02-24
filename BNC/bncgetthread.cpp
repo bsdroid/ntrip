@@ -281,6 +281,7 @@ void bncGetThread::initialize() {
 #ifndef MLS_SOFTWARE
   if (settings.value("pppMount").toString() == _staID) {
     _PPPclient = new bncPPPclient(_staID);
+    app->_bncPPPclient = _PPPclient;
     qRegisterMetaType<bncTime>("bncTime");
     connect(_PPPclient, SIGNAL(newPosition(bncTime, double, double, double)), 
             this, SIGNAL(newPosition(bncTime, double, double, double)));
