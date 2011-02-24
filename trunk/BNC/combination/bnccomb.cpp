@@ -23,6 +23,7 @@
 #include "bncsettings.h"
 #include "bncmodel.h"
 #include "bncutils.h"
+#include "bncpppclient.h"
 
 using namespace std;
 
@@ -335,17 +336,20 @@ void bncComb::dumpResults(const bncTime& resTime,
     }
   }
 
-  // Emit new Corrections
-  // --------------------
-  co.messageType = COTYPE_GPSCOMBINED;
-  QStringList asciiLines = 
-    RTCM3coDecoder::corrsToASCIIlines(resTime.gpsw(), resTime.gpssec(), co, 0);
+  // Optionall send new Corrections to PPP client
+  // --------------------------------------------
+  bncApp* app = (bncApp*) qApp;
+  if (app->_bncPPPclient) {
+    QStringList corrLines;
+    co.messageType = COTYPE_GPSCOMBINED;
+    QStringListIterator il(RTCM3coDecoder::corrsToASCIIlines(resTime.gpsw(), 
+                                                  resTime.gpssec(), co, 0));
+    while (il.hasNext()) {
+      QString line = il.next() + " " + _caster->mountpoint();
+      corrLines << line;
+    }
 
-  long coTime = resTime.gpsw() * 7*24*3600 + long(floor(resTime.gpssec()+0.5));
-  QStringListIterator il(asciiLines);
-  while (il.hasNext()) {
-    QString line = il.next();
-    emit newCorrLine(line, _caster->mountpoint(), coTime);
+    app->_bncPPPclient->slotNewCorrections(corrLines);
   }
 }
 
