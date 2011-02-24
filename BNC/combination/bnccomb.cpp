@@ -332,6 +332,17 @@ void bncComb::dumpResults(const bncTime& resTime,
       _caster->write(obuffer, len);
     }
   }
+
+  co.messageType = COTYPE_GPSCOMBINED;
+
+  QStringList asciiLines = 
+    RTCM3coDecoder::corrsToASCIIlines(resTime.gpsw(), resTime.gpssec(), co, 0);
+
+  QStringListIterator il(asciiLines);
+  while (il.hasNext()) {
+    QString line = il.next();
+    cout << line.toAscii().data() << endl;
+  }
 }
 
 // Change the correction so that it refers to last received ephemeris 

@@ -33,6 +33,7 @@ class bncComb : public bncEphUser  {
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
+  void newCorrLine(QString line, QString staID, long coTime);
 
  private:
   class cmbEpoch {

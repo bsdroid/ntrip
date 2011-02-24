@@ -207,7 +207,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         }
 
         QStringList asciiLines = corrsToASCIIlines(GPSweek, _GPSweeks, 
-                                                   _co, _bias);
+                                                   _co, &_bias);
 
         long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
 
@@ -245,7 +245,7 @@ void RTCM3coDecoder::printLine(const QString& line, long coTime) {
 ////////////////////////////////////////////////////////////////////////////
 QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
                                               const ClockOrbit& co,
-                                              const Bias& bias) {
+                                              const Bias* bias) {
 
   QStringList retLines;
 
@@ -265,6 +265,7 @@ QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
     else if (ii >= CLOCKORBIT_NUMGPS) {
       sysCh = 'R';
     }
+
     if (sysCh != ' ') {
 
       QString linePart;
@@ -349,36 +350,38 @@ QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
 
   // Loop over all satellites (GPS and Glonass)
   // ------------------------------------------
-  if (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) {
-    QString line1;
-    line1.sprintf("! Biases: %d GPS %d Glonass",
-                  bias.NumberOfGPSSat, bias.NumberOfGLONASSSat);
-    retLines << line1;
-  }
-  for (int ii = 0; ii < CLOCKORBIT_NUMGPS + bias.NumberOfGLONASSSat; ii++) {
-    char sysCh = ' ';
-    int messageType;
-    if      (ii < bias.NumberOfGPSSat) {
-      sysCh = 'G';
-      messageType = BTYPE_GPS;
+  if (bias) {
+    if (bias->NumberOfGPSSat > 0 || bias->NumberOfGLONASSSat > 0) {
+      QString line1;
+      line1.sprintf("! Biases: %d GPS %d Glonass",
+                    bias->NumberOfGPSSat, bias->NumberOfGLONASSSat);
+      retLines << line1;
     }
-    else if (ii >= CLOCKORBIT_NUMGPS) {
-      sysCh = 'R';
-      messageType = BTYPE_GLONASS;
-    }
-    if (sysCh != ' ') {
-      QString line;
-      line.sprintf("%d %d %d %.1f %c%2.2d %d", 
-                   messageType, bias.UpdateInterval, GPSweek, GPSweeks, 
-                   sysCh, bias.Sat[ii].ID,
-                   bias.Sat[ii].NumberOfCodeBiases);
-      for (int jj = 0; jj < bias.Sat[ii].NumberOfCodeBiases; jj++) {
-        QString hlp;
-        hlp.sprintf(" %d %8.3f",  bias.Sat[ii].Biases[jj].Type,
-                    bias.Sat[ii].Biases[jj].Bias);
-        line += hlp;
+    for (int ii = 0; ii < CLOCKORBIT_NUMGPS + bias->NumberOfGLONASSSat; ii++) {
+      char sysCh = ' ';
+      int messageType;
+      if      (ii < bias->NumberOfGPSSat) {
+        sysCh = 'G';
+        messageType = BTYPE_GPS;
       }
-      retLines << line;
+      else if (ii >= CLOCKORBIT_NUMGPS) {
+        sysCh = 'R';
+        messageType = BTYPE_GLONASS;
+      }
+      if (sysCh != ' ') {
+        QString line;
+        line.sprintf("%d %d %d %.1f %c%2.2d %d", 
+                     messageType, bias->UpdateInterval, GPSweek, GPSweeks, 
+                     sysCh, bias->Sat[ii].ID,
+                     bias->Sat[ii].NumberOfCodeBiases);
+        for (int jj = 0; jj < bias->Sat[ii].NumberOfCodeBiases; jj++) {
+          QString hlp;
+          hlp.sprintf(" %d %8.3f",  bias->Sat[ii].Biases[jj].Type,
+                      bias->Sat[ii].Biases[jj].Bias);
+          line += hlp;
+        }
+        retLines << line;
+      }
     }
   }
 
