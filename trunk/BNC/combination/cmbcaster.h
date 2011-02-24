@@ -11,6 +11,7 @@ class cmbCaster : public QObject {
   void open();
   void write(char* buffer, unsigned len);
   bool usedSocket() const {return _outSocket;}
+  QString mountpoint() const {return _mountpoint;}
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
