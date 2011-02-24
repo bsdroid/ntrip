@@ -324,6 +324,8 @@ void bncComb::dumpResults(const bncTime& resTime,
     delete corr;
   }
 
+  // Send Corrections to Caster
+  // --------------------------
   if ( _caster->usedSocket() && 
        (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
@@ -333,15 +335,17 @@ void bncComb::dumpResults(const bncTime& resTime,
     }
   }
 
+  // Emit new Corrections
+  // --------------------
   co.messageType = COTYPE_GPSCOMBINED;
-
   QStringList asciiLines = 
     RTCM3coDecoder::corrsToASCIIlines(resTime.gpsw(), resTime.gpssec(), co, 0);
 
+  long coTime = resTime.gpsw() * 7*24*3600 + long(floor(resTime.gpssec()+0.5));
   QStringListIterator il(asciiLines);
   while (il.hasNext()) {
     QString line = il.next();
-    cout << line.toAscii().data() << endl;
+    emit newCorrLine(line, _caster->mountpoint(), coTime);
   }
 }
 
