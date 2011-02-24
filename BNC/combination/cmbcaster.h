@@ -18,6 +18,9 @@ class cmbCaster : public QObject {
 
  private:
   QString      _mountpoint;
+  QString      _cmbOutHost;
+  int          _cmbOutPort;
+  QString      _password;
   QTcpSocket*  _outSocket;
   int          _sOpenTrial;
   QDateTime    _outSocketOpenTime;

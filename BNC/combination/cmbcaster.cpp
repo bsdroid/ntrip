@@ -27,6 +27,9 @@ using namespace std;
 cmbCaster::cmbCaster() {
   bncSettings settings;
   _mountpoint = settings.value("cmbMountpoint").toString();
+  _cmbOutHost = settings.value("cmbOutHost").toString();
+  _cmbOutPort = settings.value("cmbOutPort").toInt();
+  _password   = settings.value("cmbPassword").toString();
   _outSocket  = 0;
   _sOpenTrial = 0;
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
@@ -43,7 +46,7 @@ cmbCaster::~cmbCaster() {
 ////////////////////////////////////////////////////////////////////////////
 void cmbCaster::open() {
 
-  if (_mountpoint.isEmpty()) {
+  if (_cmbOutHost.isEmpty()) {
     return;
   }
 
@@ -66,22 +69,18 @@ void cmbCaster::open() {
     _outSocketOpenTime = QDateTime::currentDateTime();
   }
 
-  bncSettings settings;
   _outSocket = new QTcpSocket();
-  QString password;
-  _outSocket->connectToHost(settings.value("cmbOutHost").toString(),
-                            settings.value("cmbOutPort").toInt());
-  password = settings.value("cmbPassword").toString();
+  _outSocket->connectToHost(_cmbOutHost, _cmbOutPort);
 
   const int timeOut = 5000;  // 5 seconds
   if (!_outSocket->waitForConnected(timeOut)) {
     delete _outSocket;
     _outSocket = 0;
-    emit(newMessage("Broadcaster: Connect timeout", true));
+    emit(newMessage("cmbcaster:: Broadcaster: Connect timeout", true));
     return;
   }
 
-  QByteArray msg = "SOURCE " + password.toAscii() + " /" + 
+  QByteArray msg = "SOURCE " + _password.toAscii() + " /" + 
                    _mountpoint.toAscii() + "\r\n" +
                    "Source-Agent: NTRIP BNC/" BNCVERSION "\r\n\r\n";
 
