@@ -10,17 +10,18 @@ class cmbCaster;
 class cmbParam {
  public:
   enum parType {AC_offset, Sat_offset, clk};
-  cmbParam(parType typeIn, int indexIn, 
-           const QString& acIn, const QString& prnIn);
+  cmbParam(parType type_, int index_, const QString& ac_, 
+           const QString& prn_, double sig_0_, double sig_P_);
   ~cmbParam();
-  double partial(const QString& acIn, t_corr* corr);
+  double partial(const QString& AC_, t_corr* corr);
   QString toString() const;
   parType type;
   int     index;
   QString AC;
   QString prn;
   double  xx;
-  int     iod;
+  double  sig_0;
+  double  sig_P;
 };
 
 class bncComb : public bncEphUser  {
@@ -77,11 +78,9 @@ class bncComb : public bncEphUser  {
   bncTime               _processedBeforeTime;
   cmbCaster*            _caster;
   QVector<cmbParam*>    _params;
-  double                _sigACOff;
-  double                _sigSatOff;
-  double                _sigClk;
   SymmetricMatrix       _QQ;
   QByteArray            _log;
+  QString               _masterAC;
 };
 
 #endif
