@@ -115,12 +115,14 @@ bncComb::bncComb() {
   // ---------------------
   int nextPar = 0;
   QMapIterator<QString, cmbAC*> it(_ACs);
+  it.next(); // skip first AC
   while (it.hasNext()) {
     it.next();
     cmbAC* AC = it.value();
     _params.push_back(new cmbParam(cmbParam::AC_offset, ++nextPar, AC->name, ""));
   }
   it.toFront();
+  it.next();
   while (it.hasNext()) {
     it.next();
     cmbAC* AC = it.value();
