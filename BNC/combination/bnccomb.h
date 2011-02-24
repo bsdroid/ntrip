@@ -71,8 +71,7 @@ class bncComb : public bncEphUser  {
                    const QMap<QString, t_corr*>& resCorr);
   void printResults(QTextStream& out, const bncTime& resTime,
                     const QMap<QString, t_corr*>& resCorr);
-  void switchToLastEph(const QString& ACname, const t_eph* lastEph, 
-                       const t_eph* prevEph, t_corr* newCorr);
+  void switchToLastEph(const t_eph* lastEph, t_corr* corr);
 
   QMap<QString, cmbAC*> _ACs;   // Analytical Centers (key is mountpoint)
   bncTime               _processedBeforeTime;

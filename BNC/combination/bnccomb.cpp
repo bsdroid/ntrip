@@ -189,6 +189,8 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     return;
   }
 
+  newCorr->AC = AC->name;
+   
   // Reject delayed corrections
   // --------------------------
   if (_processedBeforeTime.valid() && newCorr->tt < _processedBeforeTime) {
@@ -196,8 +198,8 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     return;
   }
 
-  // Check the IOD
-  //--------------
+  // Check the Ephemeris
+  //--------------------
   if (_eph.find(newCorr->prn) == _eph.end()) {
     delete newCorr;
     return;
@@ -205,15 +207,18 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   else {
     t_eph* lastEph = _eph[newCorr->prn]->last;
     t_eph* prevEph = _eph[newCorr->prn]->prev;
-    if (prevEph && prevEph->IOD() == newCorr->iod) {
-      switchToLastEph(AC->name, lastEph, prevEph, newCorr);
+    if      (lastEph && lastEph->IOD() == newCorr->iod) {
+      newCorr->eph = lastEph;
     }
-    else if (!lastEph || lastEph->IOD() != newCorr->iod) {
+    else if (prevEph && prevEph->IOD() == newCorr->iod) {
+      newCorr->eph = prevEph;
+    }
+    else {
       delete newCorr;
       return;
     }
-    newCorr->eph = lastEph;
   }
+    
 
   // Process all older Epochs (if there are any)
   // -------------------------------------------
@@ -356,17 +361,16 @@ void bncComb::dumpResults(const bncTime& resTime,
 
 // Change the correction so that it refers to last received ephemeris 
 ////////////////////////////////////////////////////////////////////////////
-void bncComb::switchToLastEph(const QString& ACname, const t_eph* lastEph, 
-                              const t_eph* prevEph, t_corr* newCorr) {
+void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
 
   ColumnVector oldXC(4);
   ColumnVector oldVV(3);
-  prevEph->position(newCorr->tt.gpsw(), newCorr->tt.gpssec(), 
-                    oldXC.data(), oldVV.data());
+  corr->eph->position(corr->tt.gpsw(), corr->tt.gpssec(), 
+                      oldXC.data(), oldVV.data());
 
   ColumnVector newXC(4);
   ColumnVector newVV(3);
-  lastEph->position(newCorr->tt.gpsw(), newCorr->tt.gpssec(), 
+  lastEph->position(corr->tt.gpsw(), corr->tt.gpssec(), 
                     newXC.data(), newVV.data());
 
   ColumnVector dX = newXC.Rows(1,3) - oldXC.Rows(1,3);
@@ -379,30 +383,28 @@ void bncComb::switchToLastEph(const QString& ACname, const t_eph* lastEph,
   ColumnVector dDotRAO(3);
   XYZ_to_RSW(newXC.Rows(1,3), newVV, dV, dDotRAO);
 
-  newCorr->iod = lastEph->IOD();
-  newCorr->rao    -= dRAO;
-  newCorr->dotRao -= dDotRAO;
-  newCorr->dClk   -= dC;
-
-  QString msg = "switch " + newCorr->prn 
-    + QString(" %1 -> %2 %3").arg(prevEph->IOD(),3)
+  QString msg = "switch " + corr->prn 
+    + QString(" %1 -> %2 %3").arg(corr->iod,3)
     .arg(lastEph->IOD(),3).arg(dC*t_CST::c, 8, 'f', 4);
 
-  // Check/change the static offset parameters
-  // -----------------------------------------
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    cmbParam* pp = _params[iPar-1];
-    if (pp->type == cmbParam::Sat_offset &&
-        pp->prn  == newCorr->prn         &&
-        pp->AC   == ACname) {
-      if (pp->iod != lastEph->IOD()) {
-        pp->iod = lastEph->IOD();
-        msg += " need corr ";
-      }
-    }
-  }
-
   emit newMessage(msg.toAscii(), false);
+
+  corr->iod     = lastEph->IOD();
+  corr->eph     = lastEph;
+  corr->rao    -= dRAO;
+  corr->dotRao -= dDotRAO;
+  corr->dClk   -= dC;
+
+//  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+//    cmbParam* pp = _params[iPar-1];
+//    if (pp->type == cmbParam::Sat_offset           &&
+//        pp->prn == corr->prn && pp->AC == corr->AC) {
+//      if (pp->iod != corr->iod) {
+//        pp->xx  += dC * t_CST::c;
+//        pp->iod = corr->iod;
+//      }
+//    }
+//  }
 }
 
 // Process Epochs
@@ -451,10 +453,26 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   QListIterator<cmbEpoch*> itEpo(epochs);
   while (itEpo.hasNext()) {
     cmbEpoch* epo = itEpo.next();
-    QMapIterator<QString, t_corr*> itCorr(epo->corr);
+    QMutableMapIterator<QString, t_corr*> itCorr(epo->corr);
     while (itCorr.hasNext()) {
       itCorr.next();
-      ++nObs;
+      t_corr* corr = itCorr.value();
+
+      // Switch to new ephemeris
+      // -----------------------
+      t_eph* lastEph = _eph[corr->prn]->last;
+      if (lastEph == corr->eph) {      
+        ++nObs;
+      }
+      else {
+        if (corr->eph == _eph[corr->prn]->prev) {
+          switchToLastEph(lastEph, corr);
+          ++nObs;
+        }
+        else {
+          itCorr.remove();
+        }
+      }
     }
   }
 
@@ -527,7 +545,7 @@ void bncComb::printResults(QTextStream& out, const bncTime& resTime,
   while (it.hasNext()) {
     it.next();
     t_corr* corr = it.value();
-    t_eph* eph = corr->eph;
+    const t_eph* eph = corr->eph;
     if (eph) {
       double xx, yy, zz, cc;
       eph->position(resTime.gpsw(), resTime.gpssec(), xx, yy, zz, cc);

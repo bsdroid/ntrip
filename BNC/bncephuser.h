@@ -67,7 +67,8 @@ class t_corr {
   ColumnVector dotDotRao;
   bool         raoSet;
   bool         dClkSet;
-  t_eph*       eph;
+  const t_eph* eph;
+  QString      AC;
 };
 
 class bncEphUser : public QObject {
