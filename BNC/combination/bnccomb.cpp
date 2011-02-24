@@ -393,8 +393,8 @@ void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
 
   corr->iod     = lastEph->IOD();
   corr->eph     = lastEph;
-  corr->rao    -= dRAO;
-  corr->dotRao -= dDotRAO;
+  corr->rao    += dRAO;
+  corr->dotRao += dDotRAO;
   corr->dClk   -= dC;
 
 //  for (int iPar = 1; iPar <= _params.size(); iPar++) {
