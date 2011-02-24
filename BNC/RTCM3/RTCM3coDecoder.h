@@ -44,6 +44,9 @@ Q_OBJECT
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
   virtual int corrGPSEpochTime() const {return (int) _GPSweeks;}
 
+  static QStringList corrsToASCIIlines(int GPSweek, double GPSweeks, 
+                                       const ClockOrbit& co, const Bias& _bias);
+
  signals:
   void newCorrLine(QString line, QString staID, long coTime);
 
