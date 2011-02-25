@@ -25,6 +25,7 @@
 #include "bncutils.h"
 #include "bncpppclient.h"
 #include "bnssp3.h"
+#include "bncantex.h"
 
 using namespace std;
 
@@ -186,6 +187,19 @@ bncComb::bncComb() {
   }
 
   _append = Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked;
+
+  // ANTEX File
+  // ----------
+  _antex = 0;
+  QString antexFileName = settings.value("pppAntex").toString();
+  if (!antexFileName.isEmpty()) {
+    _antex = new bncAntex();
+    if (_antex->readFile(antexFileName) != success) {
+      emit newMessage("wrong ANTEX file", true);
+      delete _antex;
+      _antex = 0;
+    }
+  }
 }
 
 // Destructor
@@ -199,6 +213,7 @@ bncComb::~bncComb() {
   delete _caster;
   delete _out;
   delete _sp3;
+  delete _antex;
 }
 
 // Read and store one correction line
@@ -366,6 +381,15 @@ void bncComb::dumpResults(const bncTime& resTime,
                           xc.data(), vv.data());
       bncPPPclient::applyCorr(resTime, corr, xc, vv);
       xc(4) += 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
+      if (_antex) {
+        ColumnVector neu(3);
+        if (_antex->offset(corr->prn, neu) == success) {
+          cout << neu.t();
+        }
+        else {
+          cout << "antenna not found" << endl;
+        }
+      }
       _sp3->write(resTime.gpsw(), resTime.gpssec(), corr->prn, xc, _append);
     }
 

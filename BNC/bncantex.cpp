@@ -206,6 +206,22 @@ t_irc bncAntex::readFile(const QString& fileName) {
   return success;
 }
 
+// Satellite Antenna Offset
+////////////////////////////////////////////////////////////////////////////
+t_irc bncAntex::offset(const QString& prn, ColumnVector& neu) {
+  QMap<QString, t_antMap*>::const_iterator it = _maps.find(prn);
+  if (it != _maps.end()) {
+    t_antMap* map = it.value();
+    neu[0] = map->frqMapL1->neu[0];
+    neu[1] = map->frqMapL1->neu[1];
+    neu[2] = map->frqMapL1->neu[2];
+    return success;
+  }
+  else {
+    return failure;
+  }
+}
+
 // Phase Center Offset (Receiver Antenna and GPS only)
 ////////////////////////////////////////////////////////////////////////////
 double bncAntex::pco(const QString& antName, double eleSat, bool& found) {

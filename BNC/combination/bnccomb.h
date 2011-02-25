@@ -8,6 +8,7 @@
 
 class cmbCaster;
 class bnsSP3;
+class bncAntex;
 
 class cmbParam {
  public:
@@ -88,6 +89,7 @@ class bncComb : public bncEphUser  {
   std::ofstream*        _out;
   bnsSP3*               _sp3;
   bool                  _append;
+  bncAntex*             _antex;
 };
 
 #endif
