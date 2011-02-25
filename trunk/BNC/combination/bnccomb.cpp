@@ -24,6 +24,7 @@
 #include "bncmodel.h"
 #include "bncutils.h"
 #include "bncpppclient.h"
+#include "bnssp3.h"
 
 using namespace std;
 
@@ -169,6 +170,20 @@ bncComb::bncComb() {
     _outNameSkl = path + _caster->mountpoint();
   }
   _out = 0;
+
+  // SP3 writer
+  // ----------
+  if ( settings.value("sp3Path").toString().isEmpty() ) { 
+    _sp3 = 0;
+  }
+  else {
+    QString prep  = "BNS";
+    QString ext   = ".sp3";
+    QString path  = settings.value("sp3Path").toString();
+    QString intr  = settings.value("sp3Intr").toString();
+    int     sampl = settings.value("sp3Sampl").toInt();
+    _sp3 = new bnsSP3(prep, ext, path, intr, sampl);
+  }
 }
 
 // Destructor
@@ -181,6 +196,7 @@ bncComb::~bncComb() {
   }
   delete _caster;
   delete _out;
+  delete _sp3;
 }
 
 // Read and store one correction line
@@ -376,6 +392,10 @@ void bncComb::dumpResults(const bncTime& resTime,
       app->_bncPPPclient->slotNewCorrections(corrLines);
     }
   }
+
+  //if (_sp3) {
+  //  _sp3->write(GPSweek, GPSweeks, prn, xx, _append);
+  //}
 }
 
 // Change the correction so that it refers to last received ephemeris 
