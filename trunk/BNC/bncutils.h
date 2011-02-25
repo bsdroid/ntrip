@@ -58,4 +58,10 @@ void neu2xyz(const double* Ell, const double* neu, double* xyz);
 ColumnVector rungeKutta4(double xi, const ColumnVector& yi, double dx,
                          double* acc,
 	    ColumnVector (*der)(double x, const ColumnVector& y, double* acc));
+
+void GPSweekFromDateAndTime(const QDateTime& dateTime, 
+                            int& GPSWeek, double& GPSWeeks);
+
+void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac);
+
 #endif
