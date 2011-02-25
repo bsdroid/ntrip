@@ -37,7 +37,8 @@ class bncAntex {
   t_irc readFile(const QString& fileName);  
   void print() const;
   double pco(const QString& antName, double eleSat, bool& found);
-  t_irc  offset(const QString& prn, ColumnVector& neu);
+  t_irc  satCoMcorrection(const QString& prn, double Mjd, 
+                          const ColumnVector& xSat, ColumnVector& dx);
 
  private:
 

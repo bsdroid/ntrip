@@ -42,6 +42,7 @@
 #include <newmatio.h>
 
 #include "bncantex.h"
+#include "bnctides.h"
 
 using namespace std;
 
@@ -208,13 +209,31 @@ t_irc bncAntex::readFile(const QString& fileName) {
 
 // Satellite Antenna Offset
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncAntex::offset(const QString& prn, ColumnVector& neu) {
+t_irc bncAntex::satCoMcorrection(const QString& prn, double Mjd, 
+                                 const ColumnVector& xSat, ColumnVector& dx) {
+
   QMap<QString, t_antMap*>::const_iterator it = _maps.find(prn);
   if (it != _maps.end()) {
     t_antMap* map = it.value();
-    neu[0] = map->frqMapL1->neu[0];
-    neu[1] = map->frqMapL1->neu[1];
-    neu[2] = map->frqMapL1->neu[2];
+    double* neu = map->frqMapL1->neu;
+
+    // Unit Vectors sz, sy, sx
+    // -----------------------
+    ColumnVector sz = -xSat;
+    sz /= sqrt(DotProduct(sz,sz));
+
+    ColumnVector xSun = Sun(Mjd);
+    xSun /= sqrt(DotProduct(xSun,xSun));
+  
+    ColumnVector sy = crossproduct(sz, xSun);
+    sy /= sqrt(DotProduct(sy,sy));
+  
+    ColumnVector sx = crossproduct(sy, sz);
+
+    dx[0] = sx[0] * neu[0] + sy[0] * neu[1] + sz[0] * neu[2];
+    dx[1] = sx[1] * neu[0] + sy[1] * neu[1] + sz[1] * neu[2];
+    dx[2] = sx[2] * neu[0] + sy[2] * neu[1] + sz[2] * neu[2];
+
     return success;
   }
   else {

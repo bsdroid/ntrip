@@ -26,6 +26,7 @@
 #include "bncpppclient.h"
 #include "bnssp3.h"
 #include "bncantex.h"
+#include "bnctides.h"
 
 using namespace std;
 
@@ -388,13 +389,12 @@ void bncComb::dumpResults(const bncTime& resTime,
       // Correction Phase Center --> CoM
       // -------------------------------
       if (_antex) {
-        ColumnVector neu(3);
-        if (_antex->offset(corr->prn, neu) == success) {
-          ColumnVector dx;
-          RSW_to_XYZ(xc.Rows(1,3), vv, neu, dx);
-          xc(1) += dx(1);
-          xc(2) += dx(2);
-          xc(3) += dx(3);
+        ColumnVector dx(3); dx = 0.0;
+        double Mjd = resTime.mjd() + resTime.daysec()/86400.0;
+        if (_antex->satCoMcorrection(corr->prn, Mjd, xc.Rows(1,3), dx) == success) {
+          xc(1) -= dx(1);
+          xc(2) -= dx(2);
+          xc(3) -= dx(3);
         }
         else {
           cout << "antenna not found" << endl;
