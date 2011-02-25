@@ -384,7 +384,7 @@ void bncComb::dumpResults(const bncTime& resTime,
       if (_antex) {
         ColumnVector neu(3);
         if (_antex->offset(corr->prn, neu) == success) {
-          cout << neu.t();
+
         }
         else {
           cout << "antenna not found" << endl;
