@@ -380,11 +380,21 @@ void bncComb::dumpResults(const bncTime& resTime,
       corr->eph->position(resTime.gpsw(), resTime.gpssec(), 
                           xc.data(), vv.data());
       bncPPPclient::applyCorr(resTime, corr, xc, vv);
+
+      // Relativistic Correction
+      // -----------------------
       xc(4) += 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
+
+      // Correction Phase Center --> CoM
+      // -------------------------------
       if (_antex) {
         ColumnVector neu(3);
         if (_antex->offset(corr->prn, neu) == success) {
-
+          ColumnVector dx;
+          RSW_to_XYZ(xc.Rows(1,3), vv, neu, dx);
+          xc(1) += dx(1);
+          xc(2) += dx(2);
+          xc(3) += dx(3);
         }
         else {
           cout << "antenna not found" << endl;
