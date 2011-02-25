@@ -173,17 +173,19 @@ bncComb::bncComb() {
 
   // SP3 writer
   // ----------
-  if ( settings.value("sp3Path").toString().isEmpty() ) { 
+  if ( settings.value("cmbSP3Path").toString().isEmpty() ) { 
     _sp3 = 0;
   }
   else {
-    QString prep  = "BNS";
-    QString ext   = ".sp3";
-    QString path  = settings.value("sp3Path").toString();
-    QString intr  = settings.value("sp3Intr").toString();
-    int     sampl = settings.value("sp3Sampl").toInt();
-    _sp3 = new bnsSP3(prep, ext, path, intr, sampl);
+    QString prep      = "BNC";
+    QString ext       = ".sp3";
+    QString path      = settings.value("cmbSP3Path").toString();
+    QString interval  = "";
+    int     sampl     = 0;
+    _sp3 = new bnsSP3(prep, ext, path, interval, sampl);
   }
+
+  _append = Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked;
 }
 
 // Destructor
@@ -355,6 +357,13 @@ void bncComb::dumpResults(const bncTime& resTime,
       sd->Orbit.DotDeltaCrossTrack = corr->dotRao(3);
     }
     
+    // SP3 Output
+    // ----------
+    if (_sp3) {
+      ColumnVector xx(4); xx = 0.0;
+      _sp3->write(resTime.gpsw(), resTime.gpssec(), corr->prn, xx, _append);
+    }
+
     delete corr;
   }
 
@@ -392,10 +401,6 @@ void bncComb::dumpResults(const bncTime& resTime,
       app->_bncPPPclient->slotNewCorrections(corrLines);
     }
   }
-
-  //if (_sp3) {
-  //  _sp3->write(GPSweek, GPSweeks, prn, xx, _append);
-  //}
 }
 
 // Change the correction so that it refers to last received ephemeris 
