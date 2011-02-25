@@ -362,9 +362,10 @@ void bncComb::dumpResults(const bncTime& resTime,
     if (_sp3) {
       ColumnVector xc(4);
       ColumnVector vv(3);
-      corr->eph->position(corr->tt.gpsw(), corr->tt.gpssec(), 
+      corr->eph->position(resTime.gpsw(), resTime.gpssec(), 
                           xc.data(), vv.data());
-      xc(4) -= 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
+      bncPPPclient::applyCorr(resTime, corr, xc, vv);
+      xc(4) += 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
       _sp3->write(resTime.gpsw(), resTime.gpssec(), corr->prn, xc, _append);
     }
 
