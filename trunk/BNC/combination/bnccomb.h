@@ -2,6 +2,7 @@
 #ifndef BNCCOMB_H
 #define BNCCOMB_H
 
+#include <fstream>
 #include <newmat.h>
 #include "bncephuser.h"
 
@@ -81,6 +82,9 @@ class bncComb : public bncEphUser  {
   SymmetricMatrix       _QQ;
   QByteArray            _log;
   QString               _masterAC;
+  QString               _outNameSkl;
+  QString               _outName;
+  std::ofstream*        _out;
 };
 
 #endif

@@ -194,8 +194,8 @@ class bncWindow : public QMainWindow {
     QLineEdit*    _cmbOutPortLineEdit;
     QLineEdit*    _cmbMountpointLineEdit;
     QLineEdit*    _cmbPasswordLineEdit;
-    QLineEdit*    _cmbOutFileLineEdit;
-    QLineEdit*    _cmbSP3FileLineEdit;
+    QLineEdit*    _cmbOutPathLineEdit;
+    QLineEdit*    _cmbSP3PathLineEdit;
 
     bncCaster* _caster;
 };

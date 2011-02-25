@@ -887,13 +887,13 @@ bncWindow::bncWindow() {
   _cmbPasswordLineEdit->setMaximumWidth(9*ww);
   cmbLayout->addWidget(_cmbPasswordLineEdit, 1, 8);
 
-  cmbLayout->addWidget(new QLabel("Output File"), 2, 5);
-  _cmbOutFileLineEdit = new QLineEdit(settings.value("cmbOutFile").toString());
-  cmbLayout->addWidget(_cmbOutFileLineEdit, 2, 6);
+  cmbLayout->addWidget(new QLabel("Output Path"), 2, 5);
+  _cmbOutPathLineEdit = new QLineEdit(settings.value("cmbOutPath").toString());
+  cmbLayout->addWidget(_cmbOutPathLineEdit, 2, 6);
 
-  cmbLayout->addWidget(new QLabel("Output SP3"), 3, 5);
-  _cmbSP3FileLineEdit = new QLineEdit(settings.value("cmbSP3File").toString());
-  cmbLayout->addWidget(_cmbSP3FileLineEdit, 3, 6);
+  cmbLayout->addWidget(new QLabel("Output SP3 Path"), 3, 5);
+  _cmbSP3PathLineEdit = new QLineEdit(settings.value("cmbSP3Path").toString());
+  cmbLayout->addWidget(_cmbSP3PathLineEdit, 3, 6);
 
   cmbgroup->setLayout(cmbLayout);
 
@@ -1280,8 +1280,8 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("cmbOutPort",    _cmbOutPortLineEdit->text());
   settings.setValue("cmbMountpoint", _cmbMountpointLineEdit->text());
   settings.setValue("cmbPassword",   _cmbPasswordLineEdit->text());
-  settings.setValue("cmbOutFile",    _cmbOutFileLineEdit->text());
-  settings.setValue("cmbSP3File",    _cmbSP3FileLineEdit->text());
+  settings.setValue("cmbOutPath",    _cmbOutPathLineEdit->text());
+  settings.setValue("cmbSP3Path",    _cmbSP3PathLineEdit->text());
 
   if (_caster) {
     _caster->slotReadMountPoints();

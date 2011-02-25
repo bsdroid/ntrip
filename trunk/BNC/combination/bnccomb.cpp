@@ -157,6 +157,18 @@ bncComb::bncComb() {
     cmbParam* pp = _params[iPar-1];
     _QQ(iPar,iPar) = pp->sig_0 * pp->sig_0;
   }
+
+  // Output File (skeleton name)
+  // ---------------------------
+  QString path = settings.value("cmbOutPath").toString();
+  if (!path.isEmpty() && !_caster->mountpoint().isEmpty()) {
+    expandEnvVar(path);
+    if ( path.length() > 0 && path[path.length()-1] != QDir::separator() ) {
+      path += QDir::separator();
+    }
+    _outNameSkl = path + _caster->mountpoint();
+  }
+  _out = 0;
 }
 
 // Destructor
@@ -168,6 +180,7 @@ bncComb::~bncComb() {
     delete it.value();
   }
   delete _caster;
+  delete _out;
 }
 
 // Read and store one correction line
@@ -340,20 +353,28 @@ void bncComb::dumpResults(const bncTime& resTime,
     }
   }
 
-  // Optionall send new Corrections to PPP client
-  // --------------------------------------------
+  // Optionall send new Corrections to PPP client and/or write into file
+  // -------------------------------------------------------------------
+  RTCM3coDecoder::reopen(_outNameSkl, _outName, _out);
   bncApp* app = (bncApp*) qApp;
-  if (app->_bncPPPclient) {
+  if (app->_bncPPPclient || _out) {
     QStringList corrLines;
     co.messageType = COTYPE_GPSCOMBINED;
     QStringListIterator il(RTCM3coDecoder::corrsToASCIIlines(resTime.gpsw(), 
                                                   resTime.gpssec(), co, 0));
     while (il.hasNext()) {
-      QString line = il.next() + " " + _caster->mountpoint();
+      QString line = il.next();
+      if (_out) {
+        *_out << line.toAscii().data() << endl;
+        _out->flush(); 
+      }
+      line += " " + _caster->mountpoint();
       corrLines << line;
     }
-
-    app->_bncPPPclient->slotNewCorrections(corrLines);
+    
+    if (app->_bncPPPclient) {
+      app->_bncPPPclient->slotNewCorrections(corrLines);
+    }
   }
 }
 

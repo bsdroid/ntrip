@@ -106,8 +106,8 @@ bncSettings::bncSettings(bool noInit) :
     setValue("cmbOutPort",       "");
     setValue("cmbMountpoint",    "");
     setValue("cmbPassword",      "");
-    setValue("cmbOutFile",       "");
-    setValue("cmbSP3File",       "");
+    setValue("cmbOutPath",       "");
+    setValue("cmbSP3Path",       "");
     sync();
   }
 }
