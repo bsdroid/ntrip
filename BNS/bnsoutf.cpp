@@ -136,7 +136,7 @@ void bnsoutf::resolveFileName(int GPSweek, const QDateTime& datTim) {
 // Write One Epoch
 ////////////////////////////////////////////////////////////////////////////
 t_irc bnsoutf::write(int GPSweek, double GPSweeks, const QString&, 
-                     const ColumnVector&) {
+                     const ColumnVector&, bool append) {
 
   if (_sampl != 0 && fmod(GPSweeks, _sampl) != 0.0) {
     return failure;
@@ -157,8 +157,7 @@ t_irc bnsoutf::write(int GPSweek, double GPSweeks, const QString&,
     resolveFileName(GPSweek, datTim);
     _out.setf(ios::showpoint | ios::fixed);
     bnsSettings settings;
-    if (QFile::exists(_fName) &&
-        Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked) {
+    if (append && QFile::exists(_fName)) {
       _out.open(_fName.data(), ios::out | ios::app);
     }
     else {
