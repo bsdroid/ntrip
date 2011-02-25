@@ -22,7 +22,6 @@
 #include <QDateTime>
 
 #include "bnsutils.h"
-#include "bnseph.h"
 
 using namespace std;
 
