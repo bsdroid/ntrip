@@ -87,6 +87,7 @@ class bncComb : public bncEphUser  {
   QString               _outName;
   std::ofstream*        _out;
   bnsSP3*               _sp3;
+  bool                  _append;
 };
 
 #endif
