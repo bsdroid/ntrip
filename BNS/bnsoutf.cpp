@@ -19,7 +19,6 @@
 #include <iomanip>
 
 #include "bnsoutf.h"
-#include "bnssettings.h"
 
 using namespace std;
 
@@ -156,7 +155,6 @@ t_irc bnsoutf::write(int GPSweek, double GPSweeks, const QString&,
   if (!_headerWritten) {
     resolveFileName(GPSweek, datTim);
     _out.setf(ios::showpoint | ios::fixed);
-    bnsSettings settings;
     if (append && QFile::exists(_fName)) {
       _out.open(_fName.data(), ios::out | ios::app);
     }
