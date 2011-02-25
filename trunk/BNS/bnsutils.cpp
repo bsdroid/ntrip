@@ -25,6 +25,8 @@
 
 using namespace std;
 
+namespace BNS {
+
 // 
 ////////////////////////////////////////////////////////////////////////////
 void expandEnvVar(QString& str) {
@@ -208,3 +210,4 @@ void GPSweekFromYMDhms(int year, int month, int day, int hour, int min,
   GPSWeeks += hour * 3600.0 + min * 60.0 + sec;  
 }
 
+} // namespace BNS

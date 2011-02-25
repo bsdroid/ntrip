@@ -23,7 +23,7 @@ class t_eph {
 
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const = 0;
-  virtual t_irc read(const QStringList& lines) = 0;
+  virtual BNS::t_irc read(const QStringList& lines) = 0;
   virtual int  IOD() const = 0;
   virtual int  RTCM3(unsigned char *) = 0;
 
@@ -41,7 +41,7 @@ class t_ephGlo : public t_eph {
     _xv.ReSize(6); 
   };
   virtual ~t_ephGlo() {};
-  virtual t_irc  read(const QStringList& lines);
+  virtual BNS::t_irc  read(const QStringList& lines);
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const;
   virtual int  IOD() const;
@@ -75,7 +75,7 @@ class t_ephGPS : public t_eph {
  public:
   t_ephGPS() {};
   virtual ~t_ephGPS() {};
-  virtual t_irc  read(const QStringList& lines);
+  virtual BNS::t_irc  read(const QStringList& lines);
   virtual void position(int GPSweek, double GPSweeks, ColumnVector& xc,
                         ColumnVector& vv) const;
   virtual int  IOD() const {return int(_IODE);}
