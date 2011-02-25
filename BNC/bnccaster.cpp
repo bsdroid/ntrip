@@ -126,8 +126,8 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
 
   _epochs = new QMultiMap<long, t_obs>;
 
-  _lastDumpSec   = 0; 
-
+  _lastDumpSec  = 0; 
+  _waitTime     = 0;
   _confInterval = -1;
 }
 
