@@ -282,6 +282,9 @@ bncModel::~bncModel() {
     delete _posAverage[ii]; 
   }
   delete _antex;
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    delete _params[iPar-1];
+  }
 }
 
 // Bancroft Solution

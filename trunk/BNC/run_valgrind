@@ -1,7 +1,7 @@
 #/bin/bash
 if [ "$1" == "start" ]
 then
-  valgrind --leak-check=full ./bnc -nw 2> valgrind.txt &
+  valgrind --num-callers=50 --leak-check=full ./bnc --file bnc_cmb.raw_110221 --staID "FFMJ1" --conf POST.conf --format RTCM_3 2> valgrind.txt &
 elif [ "$1" == "stop" ]
 then
   kill -SIGINT `ps | grep memcheck | cut -b 1-6`

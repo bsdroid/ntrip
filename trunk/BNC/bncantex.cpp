@@ -200,6 +200,9 @@ t_irc bncAntex::readFile(const QString& fileName) {
     }
   }
 
+  delete newFrqMap;
+  delete newAntMap;
+
   return success;
 }
 

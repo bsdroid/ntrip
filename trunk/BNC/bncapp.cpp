@@ -174,7 +174,8 @@ void bncApp::messagePrivate(const QByteArray& msg) {
   // ------------------------------------
   QDate currDate = currentDateAndTimeGPS().date();
   if (_logFileFlag == 0 || _fileDate != currDate) {
-    delete _logFile;
+    delete _logStream; _logStream = 0;
+    delete _logFile;   _logFile   = 0;
     _logFileFlag = 1;
     bncSettings settings;
     QString logFileName = settings.value("logFile").toString();

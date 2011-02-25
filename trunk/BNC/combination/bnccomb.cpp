@@ -484,9 +484,9 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
         }
 
         ll(iObs) = corr->dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
-
-        delete corr;
       }
+
+      delete epo;
     }
 
     ColumnVector dx;
