@@ -306,3 +306,32 @@ ColumnVector rungeKutta4(
   return yf;
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void GPSweekFromDateAndTime(const QDateTime& dateTime, 
+                            int& GPSWeek, double& GPSWeeks) {
+
+  static const QDateTime zeroEpoch(QDate(1980, 1, 6),QTime(),Qt::UTC);
+ 
+  GPSWeek = zeroEpoch.daysTo(dateTime) / 7;
+
+  int weekDay = dateTime.date().dayOfWeek() + 1;  // Qt: Monday = 1
+  if (weekDay > 7) weekDay = 1;
+
+  GPSWeeks = (weekDay - 1) * 86400.0
+             - dateTime.time().msecsTo(QTime()) / 1e3; 
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac) {
+
+  static const QDate zeroDate(1858, 11, 17);
+
+  mjd     = zeroDate.daysTo(dateTime.date());
+
+  dayfrac = (dateTime.time().hour() +
+             (dateTime.time().minute() +
+              (dateTime.time().second() + 
+               dateTime.time().msec() / 1000.0) / 60.0) / 60.0) / 24.0;
+}
