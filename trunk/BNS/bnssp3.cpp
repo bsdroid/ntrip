@@ -41,9 +41,9 @@ bnsSP3::~bnsSP3() {
 // Write One Epoch
 ////////////////////////////////////////////////////////////////////////////
 t_irc bnsSP3::write(int GPSweek, double GPSweeks, const QString& prn, 
-                   const ColumnVector& xx) {
+                    const ColumnVector& xx, bool append) {
 
-  if ( bnsoutf::write(GPSweek, GPSweeks, prn, xx) == success) {
+  if ( bnsoutf::write(GPSweek, GPSweeks, prn, xx, append) == success) {
 
     if (_lastGPSweek != GPSweek || _lastGPSweeks != GPSweeks) {
       _lastGPSweek  = GPSweek;

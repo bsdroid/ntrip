@@ -90,6 +90,7 @@ class t_bns : public QThread {
   bnsRinex*                 _rnx;
   bnsSP3*                   _sp3;
   QByteArray                _clkLine;
+  bool                      _append;
   
   int    _GPSweek;
   double _GPSweeks;

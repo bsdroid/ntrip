@@ -17,6 +17,7 @@ class bnsRinex : public bnsoutf {
 
  private:
   virtual void writeHeader(const QDateTime& datTim);
+  bool _append;
 };
 
 #endif

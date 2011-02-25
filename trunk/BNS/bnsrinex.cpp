@@ -19,6 +19,7 @@
 #include <iomanip>
 
 #include "bnsrinex.h"
+#include "bnssettings.h"
 
 using namespace std;
 
@@ -27,6 +28,8 @@ using namespace std;
 bnsRinex::bnsRinex(const QString& prep, const QString& ext, const QString& path,
                const QString& intr, int sampl) 
   : bnsoutf(prep, ext, path, intr, sampl) {
+  bnsSettings settings;
+  _append = Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked;
 }
 
 // Destructor
@@ -39,7 +42,7 @@ bnsRinex::~bnsRinex() {
 t_irc bnsRinex::write(int GPSweek, double GPSweeks, const QString& prn, 
                    const ColumnVector& xx) {
 
-  if (bnsoutf::write(GPSweek, GPSweeks, prn, xx) == success) {
+  if (bnsoutf::write(GPSweek, GPSweeks, prn, xx, _append) == success) {
 
       QDateTime datTim = dateAndTimeFromGPSweek(GPSweek, GPSweeks);
       double sec = fmod(GPSweeks, 60.0);

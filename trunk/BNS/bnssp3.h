@@ -13,7 +13,7 @@ class bnsSP3 : public bnsoutf {
          const QString& intr, int sampl);
   virtual ~bnsSP3();
   virtual t_irc write(int GPSweek, double GPSweeks, const QString& prn, 
-                      const ColumnVector& xx);
+                      const ColumnVector& xx, bool append);
 
  private:
   virtual void writeHeader(const QDateTime& datTim);

@@ -112,8 +112,10 @@ t_bns::t_bns(QObject* parent) : QThread(parent) {
 
   // Log File
   // --------
+  _append = Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked;
+
   QIODevice::OpenMode oMode;
-  if (Qt::CheckState(settings.value("fileAppend").toInt()) == Qt::Checked) {
+  if (_append) {
     oMode = QIODevice::WriteOnly | QIODevice::Unbuffered | QIODevice::Append;
   }
   else {
@@ -651,7 +653,7 @@ void t_bns::processSatellite(int iCaster, const QString trafo,
       _rnx->write(GPSweek, GPSweeks, prn, xx);
     }
     if (_sp3) {
-      _sp3->write(GPSweek, GPSweeks, prn, xx);
+      _sp3->write(GPSweek, GPSweeks, prn, xx, _append);
     }
   }
 }
