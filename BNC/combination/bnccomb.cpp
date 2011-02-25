@@ -360,8 +360,17 @@ void bncComb::dumpResults(const bncTime& resTime,
     // SP3 Output
     // ----------
     if (_sp3) {
-      ColumnVector xx(4); xx = 0.0;
-      _sp3->write(resTime.gpsw(), resTime.gpssec(), corr->prn, xx, _append);
+      ColumnVector xc(4);
+      ColumnVector vv(3);
+      corr->eph->position(corr->tt.gpsw(), corr->tt.gpssec(), 
+                          xc.data(), vv.data());
+
+      xc(1) *= 1e3;  // x-crd
+      xc(2) *= 1e3;  // y-crd
+      xc(3) *= 1e3;  // z-crd
+      xc(4) *= 1e-6; // clk
+
+      _sp3->write(resTime.gpsw(), resTime.gpssec(), corr->prn, xc, _append);
     }
 
     delete corr;
