@@ -364,7 +364,7 @@ void bncComb::dumpResults(const bncTime& resTime,
       ColumnVector vv(3);
       corr->eph->position(corr->tt.gpsw(), corr->tt.gpssec(), 
                           xc.data(), vv.data());
-
+      xc(4) -= 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
       _sp3->write(resTime.gpsw(), resTime.gpssec(), corr->prn, xc, _append);
     }
 
