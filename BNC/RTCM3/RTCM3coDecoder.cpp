@@ -84,9 +84,10 @@ RTCM3coDecoder::~RTCM3coDecoder() {
 
 // Reopen Output File
 //////////////////////////////////////////////////////////////////////// 
-void RTCM3coDecoder::reopen() {
+void RTCM3coDecoder::reopen(const QString& fileNameSkl, QString& fileName,
+                            ofstream*& out) {
 
-  if (!_fileNameSkl.isEmpty()) {
+  if (!fileNameSkl.isEmpty()) {
 
     bncSettings settings;
 
@@ -95,24 +96,24 @@ void RTCM3coDecoder::reopen() {
     QString hlpStr = bncRinex::nextEpochStr(datTim,
                                       settings.value("corrIntr").toString());
 
-    QString fileName = _fileNameSkl 
+    QString fileNameHlp = fileNameSkl 
       + QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0'))
       + hlpStr + datTim.toString(".yyC");
 
-    if (_fileName == fileName) {
+    if (fileName == fileNameHlp) {
       return;
     }
     else {
-      _fileName = fileName;
+      fileName = fileNameHlp;
     }
 
-    delete _out;
+    delete out;
     if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
-      _out = new ofstream( _fileName.toAscii().data(),
+      out = new ofstream( fileName.toAscii().data(),
                            ios_base::out | ios_base::app );
     }
     else {
-      _out = new ofstream( _fileName.toAscii().data() );
+      out = new ofstream( fileName.toAscii().data() );
     }
   }
 }
@@ -153,7 +154,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
       if ( irc == GCOBR_OK && 
            (_co.NumberOfGPSSat > 0 || _co.NumberOfGLONASSSat > 0) ) {
 
-        reopen();
+        reopen(_fileNameSkl, _fileName, _out);
 
         // Guess GPS week and sec using system time
         // ----------------------------------------

@@ -46,12 +46,12 @@ Q_OBJECT
 
   static QStringList corrsToASCIIlines(int GPSweek, double GPSweeks, 
                                        const ClockOrbit& co, const Bias* bias);
-
+  static void reopen(const QString& fileNameSkl, QString& fileName,
+                     std::ofstream*& out);
  signals:
   void newCorrLine(QString line, QString staID, long coTime);
 
  private:
-  void reopen();
   void printLine(const QString& line, long coTime);
 
   int            _port;
