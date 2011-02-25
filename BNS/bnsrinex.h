@@ -12,8 +12,8 @@ class bnsRinex : public bnsoutf {
   bnsRinex(const QString& prep, const QString& ext, const QString& path,
            const QString& intr, int sampl);
   virtual ~bnsRinex();
-  virtual t_irc write(int GPSweek, double GPSweeks, const QString& prn, 
-                      const ColumnVector& xx);
+  virtual BNS::t_irc write(int GPSweek, double GPSweeks, const QString& prn, 
+                           const ColumnVector& xx);
 
  private:
   virtual void writeHeader(const QDateTime& datTim);

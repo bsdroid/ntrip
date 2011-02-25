@@ -339,7 +339,7 @@ void t_bns::readEpoch() {
   QString hlp;
   in >> hlp >> _year >> _month >> _day >> _hour >> _min >> _sec;
 
-  GPSweekFromYMDhms(_year, _month, _day, _hour, _min, _sec, _GPSweek, _GPSweeks);
+  BNS::GPSweekFromYMDhms(_year, _month, _day, _hour, _min, _sec, _GPSweek, _GPSweeks);
 
   if (_echoStream) {
     *_echoStream << _clkLine;
@@ -624,11 +624,11 @@ void t_bns::processSatellite(int iCaster, const QString trafo,
     ColumnVector dx = xB.Rows(1,3) - xyz ;
     
     if (ii == 1) {
-      XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw);
+      BNS::XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw);
       dClk = (xx(4) + xx(5) - xB(4)) * 299792458.0;
     }
     else {
-      XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw2);
+      BNS::XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw2);
     }
   }
 

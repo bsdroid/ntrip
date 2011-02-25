@@ -13,8 +13,8 @@ class bnsoutf {
           const QString& intr, int sampl);
   virtual ~bnsoutf();
 
-  virtual t_irc write(int GPSweek, double GPSweeks, const QString& prn, 
-                      const ColumnVector& xx, bool append);
+  virtual BNS::t_irc write(int GPSweek, double GPSweeks, const QString& prn, 
+                           const ColumnVector& xx, bool append);
 
  protected:
   virtual void writeHeader(const QDateTime& datTim) = 0;
