@@ -112,6 +112,8 @@ class bncPPPclient : public bncEphUser {
   bncPPPclient(QByteArray staID);
   ~bncPPPclient();
   void putNewObs(const t_obs& pp);
+  static void applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, 
+                        ColumnVector& vv);
 
  public slots:
   void slotNewCorrections(QList<QString> corrList);
@@ -139,8 +141,6 @@ class bncPPPclient : public bncEphUser {
                   ColumnVector& xc, ColumnVector& vv);
   void processEpochs();
   void processFrontEpoch();
-  void applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, 
-                 ColumnVector& vv);
   t_irc cmpToT(t_satData* satData);
 
   QByteArray              _staID;
