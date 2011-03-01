@@ -851,7 +851,7 @@ bncWindow::bncWindow() {
   _cmbTable->setHorizontalHeaderLabels(QString("Mountpoint, AC Name, Weight").split(","));
   _cmbTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _cmbTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-  _cmbTable->setMaximumWidth(30*ww); // weber
+  _cmbTable->setMaximumWidth(30*ww);
   _cmbTable->horizontalHeader()->resizeSection(0,10*ww); 
   _cmbTable->horizontalHeader()->resizeSection(1,8*ww); 
   _cmbTable->horizontalHeader()->resizeSection(2,8*ww); 
