@@ -542,15 +542,15 @@ bncWindow::bncWindow() {
   _pppAntexLineEdit->setWhatsThis(tr("<p>IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets and variations.</p>"));
   _pppAntennaLineEdit->setWhatsThis(tr("<p>Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Corrections for phase center variations are not yet applied by BNC. The specified name must consist of 20 characters. Add trailing blanks if the antenna name has less then 20 characters.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets.</p>"));
   _pppApplySatAntCheckBox->setWhatsThis(tr("<p>This option is not yet working.</p><p>Satellite orbit and clock corrections refer to the satellite's antenna phase centers and hence observations are actually <u>not</u> to be corrected for satellite antenna phase center offsets. However, you may like to tick 'Apply Offsets' to force BNC to correct observations for satellite antenna phase center offsets.</p><p>Default is to <u>not</u> correct observations for satellite antenna phase center offsets."));
-  _cmbTable->setWhatsThis(tr("<p>Double click on the 'Mountpoint' field, enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied in the combination specifically for this stream.</p><p>Note that an appropriate option 'Wait for full epoch' under the 'Broadcast Corrections' tab needs to be specified for the combination. A value of i.e. 15 seconds would make sense if the update rate for orbit and clock corrections is 10 seconds.</p>"));
+  _cmbTable->setWhatsThis(tr("<p>Double click on the 'Mountpoint' field, enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied for this stream in the combination.</p><p>Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense for that if the update rate of incoming clock corrections is i.e. 10 seconds.</p>"));
   addCmbRowButton->setWhatsThis(tr("Hit 'Add Row' button to add another line to the mountpoints table."));
   delCmbRowButton->setWhatsThis(tr("Hit 'Delete' button to delete the highlited line from the mountpoints table."));
   _cmbOutHostLineEdit->setWhatsThis(tr("Specify the domain name or IP number of an Ntrip Broadcaster for uploading the combination stream."));
   _cmbOutPortLineEdit->setWhatsThis(tr("Enter the listening IP port of the specified Ntrip Broadcaster for uploading the combination stream."));
-  _cmbMountpointLineEdit->setWhatsThis(tr("<p>Enter a mountpoint for the combination stream. The combination will only be carried out if a mountpoint is defined.</p><p>If 'Host', 'Port', and 'Password' are set the combination stream will be uploaded to the specified Ntrip Broadcaster.</p><p>Note that this mountpoint can be introduce as 'Obs Mountpoint' under the 'PPP (1)' tab to carry out a Precise Point Positioning using the combination stream without pulling it from the Ntrip Broadcaster."));
+  _cmbMountpointLineEdit->setWhatsThis(tr("<p>Enter a mountpoint for the combination stream. The combination will only be carried out if a mountpoint is defined.</p><p>If 'Host', 'Port' and 'Password' are set, the combination stream will be uploaded to the specified Ntrip Broadcaster.</p><p>Note that the mountpoint defined here can be introduce as 'Obs Mountpoint' under the 'PPP (1)' tab to carry out a Precise Point Positioning through using the combination stream without pulling it from the Ntrip Broadcaster."));
   _cmbPasswordLineEdit->setWhatsThis(tr("Enter the password for uploading the combination stream to the specified Ntrip Broadcaster."));
-  _cmbOutPathLineEdit->setWhatsThis(tr("Specify a directory for saving the combinatoin stream on disc in a plain ASCII format."));
-  _cmbSP3PathLineEdit->setWhatsThis(tr("Specify a directory for saving the combination stream on disc in SP3 format."));
+  _cmbOutPathLineEdit->setWhatsThis(tr("Specify a directory for saving the combined Broadcast Ephemeris corrections on disc in a plain ASCII format."));
+  _cmbSP3PathLineEdit->setWhatsThis(tr("Specify a directory for saving the combined Broadcast Ephemeris corrections on disc in SP3 format."));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -899,7 +899,7 @@ bncWindow::bncWindow() {
   _cmbOutPortLineEdit->setMaximumWidth(9*ww);
   cmbLayout->addWidget(_cmbOutPortLineEdit, 0, 7);
   cmbLayout->addWidget(new QLabel("    Mountpoint"), 1, 4);
-  _cmbMountpointLineEdit->setMaximumWidth(10*ww);
+  _cmbMountpointLineEdit->setMaximumWidth(9*ww);
   cmbLayout->addWidget(_cmbMountpointLineEdit, 1, 5);
   cmbLayout->addWidget(new QLabel("    Password"), 1, 6);
   _cmbPasswordLineEdit->setEchoMode(QLineEdit::Password);
@@ -909,7 +909,7 @@ bncWindow::bncWindow() {
   cmbLayout->addWidget(_cmbOutPathLineEdit, 2, 5, 1, 3);
   cmbLayout->addWidget(new QLabel("    Directory, SP3"), 3, 4);
   cmbLayout->addWidget(_cmbSP3PathLineEdit, 3, 5, 1, 3);
-  cmbLayout->addWidget(new QLabel("   Combining Broadcast Ephemeris correction streams."),5,3,1,5);
+  cmbLayout->addWidget(new QLabel("   Combine Broadcast Ephemeris correction streams."),5,3,1,5);
 
   cmbgroup->setLayout(cmbLayout);
 
