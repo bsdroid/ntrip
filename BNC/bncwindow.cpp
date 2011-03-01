@@ -851,6 +851,14 @@ bncWindow::bncWindow() {
   _cmbTable->setHorizontalHeaderLabels(QString("Mountpoint, AC Name, Weight").split(","));
   _cmbTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _cmbTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+  _cmbTable->setMaximumWidth(30*ww); // weber
+  _cmbTable->horizontalHeader()->resizeSection(0,10*ww); 
+  _cmbTable->horizontalHeader()->resizeSection(1,8*ww); 
+  _cmbTable->horizontalHeader()->resizeSection(2,8*ww); 
+  _cmbTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+  _cmbTable->horizontalHeader()->setStretchLastSection(true);
+  _cmbTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+
   populateCmbTable();
   cmbLayout->addWidget(_cmbTable,0,0,6,3);
   cmbLayout->setColumnStretch(0,1);
@@ -867,33 +875,33 @@ bncWindow::bncWindow() {
 
   cmbLayout->setColumnStretch(4,1);
 
-  cmbLayout->addWidget(new QLabel("Host"), 0, 5);
+  cmbLayout->addWidget(new QLabel("    Host"), 0, 4);
   _cmbOutHostLineEdit    = new QLineEdit(settings.value("cmbOutHost").toString());
-  cmbLayout->addWidget(_cmbOutHostLineEdit, 0, 6);
+  cmbLayout->addWidget(_cmbOutHostLineEdit, 0, 5);
 
-  cmbLayout->addWidget(new QLabel("Port"), 0, 7);
+  cmbLayout->addWidget(new QLabel("    Port"), 0, 6);
   _cmbOutPortLineEdit    = new QLineEdit(settings.value("cmbOutPort").toString());
   _cmbOutPortLineEdit->setMaximumWidth(9*ww);
-  cmbLayout->addWidget(_cmbOutPortLineEdit, 0, 8);
+  cmbLayout->addWidget(_cmbOutPortLineEdit, 0, 7);
 
-  cmbLayout->addWidget(new QLabel("Mountpoint"), 1, 5);
+  cmbLayout->addWidget(new QLabel("    Mountpoint"), 1, 4);
   _cmbMountpointLineEdit = new QLineEdit(settings.value("cmbMountpoint").toString());
-  _cmbMountpointLineEdit->setMaximumWidth(12*ww);
-  cmbLayout->addWidget(_cmbMountpointLineEdit, 1, 6);
+  _cmbMountpointLineEdit->setMaximumWidth(10*ww);
+  cmbLayout->addWidget(_cmbMountpointLineEdit, 1, 5);
 
-  cmbLayout->addWidget(new QLabel("Password"), 1, 7);
+  cmbLayout->addWidget(new QLabel("    Password"), 1, 6);
   _cmbPasswordLineEdit   = new QLineEdit(settings.value("cmbPassword").toString());
   _cmbPasswordLineEdit->setEchoMode(QLineEdit::Password);
   _cmbPasswordLineEdit->setMaximumWidth(9*ww);
-  cmbLayout->addWidget(_cmbPasswordLineEdit, 1, 8);
+  cmbLayout->addWidget(_cmbPasswordLineEdit, 1, 7);
 
-  cmbLayout->addWidget(new QLabel("Output Path"), 2, 5);
+  cmbLayout->addWidget(new QLabel("    Directory, output"), 2, 4);
   _cmbOutPathLineEdit = new QLineEdit(settings.value("cmbOutPath").toString());
-  cmbLayout->addWidget(_cmbOutPathLineEdit, 2, 6);
+  cmbLayout->addWidget(_cmbOutPathLineEdit, 2, 5, 1, 3);
 
-  cmbLayout->addWidget(new QLabel("Output SP3 Path"), 3, 5);
+  cmbLayout->addWidget(new QLabel("    Directory, SP3"), 3, 4);
   _cmbSP3PathLineEdit = new QLineEdit(settings.value("cmbSP3Path").toString());
-  cmbLayout->addWidget(_cmbSP3PathLineEdit, 3, 6);
+  cmbLayout->addWidget(_cmbSP3PathLineEdit, 3, 5, 1, 3);
 
   cmbgroup->setLayout(cmbLayout);
 
