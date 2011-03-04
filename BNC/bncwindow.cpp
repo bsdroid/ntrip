@@ -1374,10 +1374,10 @@ void bncWindow::slotGetData() {
   }
 
   QDir cmbOutDir(settings.value("cmbOutPath").toString());
-  if (!cmbOutDir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find directory for combination results in ASCII format", true);
+  if (!cmbOutDir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find directory for saving combination results in ASCII format", true);
 
   QDir cmbSP3dir(settings.value("cmbSP3Path").toString());
-  if (!cmbSP3dir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find directory for combination results in SP3 format", true);
+  if (!cmbSP3dir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find directory for saving combination results in SP3 format", true);
 
   _caster->slotReadMountPoints();
 }
