@@ -100,8 +100,6 @@ bncComb::bncComb() {
 
   QStringList combineStreams = settings.value("combineStreams").toStringList();
 
-  _masterAC = "BKG"; // TODO: make it an option
-
   if (combineStreams.size() >= 2) {
     QListIterator<QString> it(combineStreams);
     while (it.hasNext()) {
@@ -110,7 +108,9 @@ bncComb::bncComb() {
       newAC->mountPoint = hlp[0];
       newAC->name       = hlp[1];
       newAC->weight     = hlp[2].toDouble();
-
+      if (_masterAC.isEmpty()) {
+        _masterAC = newAC->name;
+      }
       _ACs[newAC->mountPoint] = newAC;
     }
   }
