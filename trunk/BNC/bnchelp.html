@@ -1377,7 +1377,8 @@ Entering any positive value up to 1440 (24h mean value) is allowed. An empty opt
 
 <p><a name="combi"><h4>3.12. Combination</h4></p>
 <p>
-BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors from various sources following a Kalman Filter approach. It is only the satellite clock corrections which are combined here while orbit correctors in the combination product are just taken over from one of the incoming corrections streams. The update rates of incoming clock corrections are expected to be 10 seconds or less while the combination product will be updated every 10 seconds.
+BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors from various sources following a Kalman Filter approach. It is only the satellite clock corrections which are combined here while orbit correctors in the combination product as well as the product update rates are just taken over from one of the incoming corrections streams. 
+
 </p>
 <p>
 The 'Combination' functionality has been integrated in BNC because it 
@@ -1400,7 +1401,7 @@ Hit the 'Add Row' button then double click on the 'Mountpoint' field, enter a Br
 Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of '15' sec would make sense for that if the update rate of incoming clock corrections is i.e. 10 sec.
 </p>
 <p>
-The sequence of entries in the 'Combination Table' is of importance because the orbit information in the final combination stream is just copied from the orbits in the stream listed first in the table.
+Note further that the sequence of entries in the 'Combination Table' is of importance. BNC considers the first AC in the 'Combination Table' as the 'Master AC'. The orbit information in the final combination stream is just copied from the 'Master AC's orbits. Moreover, the update rate of the combination product is defined by the update rate of the 'Master AC's stream. If the incoming streams have different rates, only epochs that correspond to the 'Master AC's update rate are used. Skipped epochs are however stored in the plain ASCII formated files mentioned below. It means that the 'Master AC' is responsible for two things: the satellite positions and the combination rate.
 </p>
 <p>
 Default is an empty 'Combination Table' meaning that you don't want BNC to combine orbit and clock corrections streams.
