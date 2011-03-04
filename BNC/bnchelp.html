@@ -45,7 +45,7 @@ Please ensure that you have installed the latest version of BNC available from <
 <li>scan RTCM streams for incoming antenna information as well as message types and their repetition rates, and/or</li>
 <li>feed a stream into a GNSS receiver via serial communication link, and/or</li>
 <li>carry out a real-time Precise Point Positioning to determine a GNSS rover position, and/or</li>
-<li>simultaneously process several incoming orbit and clock corrections streams to produce, upload and save a combination solution.</li>
+<li>simultaneously process several incoming orbit and clock corrections streams to produce, encode, upload and save a combination solution.</li>
 </ul>
 </p>
 
@@ -191,9 +191,9 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.5 <a href=#pppnmea>NMEA</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.5.1 <a href=#pppnmeafile>NMEA File</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.5.2 <a href=#pppnmeaport>NMEA Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.6 <a href=#ppprecant>Receiver Antenna</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.6 <a href=#ppprecant>Antennas</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.6.1 <a href=#pppantex>ANTEX File</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.6.2 <a href=#ppprecantenna>Antenna Name</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.6.2 <a href=#ppprecantenna>Receiver Antenna Name</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.7 <a href=#pppsatant>Satellite Antenna</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.7.1 <a href=#pppsatantignore>Ignore Offsets</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.8 <a href=#pppsigmas>Sigmas</a><br>
@@ -1275,9 +1275,9 @@ Specify the IP port number of a local port where Point Positioning results becom
 NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World_Wind_Download</u>) can be used for real-time visualization of positions provided through BNC's NMEA IP output port. You need the 'GPS Tracker' plug-in available from <u>http://worldwindcentral.com/wiki/GPS_Tracker</u> for that. The 'Word Wind' is not meant for showing centimeter level details.
 </p>
 
-<p><a name="ppprecant"><h4>3.11.6 Receiver Antenna - optional</h4></p>
+<p><a name="ppprecant"><h4>3.11.6 Antennas - optional</h4></p>
 <p>
-BNC allows to correct observations for receiver antenna phase center offsets and variations.
+BNC allows to correct observations for antenna phase center offsets and variations.
 </p>
 
 <p><a name="pppantex"><h4>3.11.6.1 ANTEX File - optional</h4></p>
@@ -1288,7 +1288,7 @@ IGS provides a file containing absolute phase center corrections for GNSS satell
 Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets and variations.
 </p>
 
-<p><a name="ppprecantenna"><h4>3.11.6.2 Antenna Name - optional if 'ANTEX File' is set</h4></p>
+<p><a name="ppprecantenna"><h4>3.11.6.2 Receiver Antenna Name - optional if 'ANTEX File' is set</h4></p>
 <p>
 Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Corrections for phase center variations are not yet applied by BNC. The specified name must consist of 20 characters. Add trailing blanks if the antenna name has less then 20 characters. Examples:
 <pre>
@@ -1303,7 +1303,7 @@ Default is an empty option field meaning that you don't want to correct observat
 
 <p><a name="pppsatant"><h4>3.11.7 Satellite Antenna - optional</h4></p>
 <p>
-BNC allows to correct observations for satellite antenna phase center offsets.
+BNC allows to correct observations for satellite antenna phase center offsets. (This option is not yet implemented.)
 </p>
 
 <p><a name="pppsatantapply"><h4>3.11.7.1 Apply Offsets - optional if 'ANTEX File' is set</h4></p>
@@ -1395,13 +1395,13 @@ Note that the combination process requires real-time access to Broadcast Ephemer
 
 <p><a name="combimounttab"><h4>3.12.1 Combination Table - optional</h4></p>
 <p>
-Hit the 'Add Row' button then double click on the 'Mountpoint' field, enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. The combination process will start when at least two corrections streams are configured for the combination.
+Hit the 'Add Row' button then double click on the 'Mountpoint' field, enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. The combination process will start when at least two corrections streams are configured for combination.
 </p>
 <p>
-Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of '15' sec would make sense for that if the update rate of incoming clock corrections is i.e. 10 sec.
+Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. Example: a value of '15' sec would make sense if the update rate of incoming clock corrections is 10 sec.
 </p>
 <p>
-Note further that the sequence of entries in the 'Combination Table' is of importance. BNC considers the first AC in the 'Combination Table' as the 'Master AC'. The orbit information in the final combination stream is just copied from the 'Master AC's orbits. Moreover, the update rate of the combination product is defined by the update rate of the 'Master AC's stream. If the incoming streams have different rates, only epochs that correspond to the 'Master AC's update rate are used. Skipped epochs are however stored in the plain ASCII formated files mentioned below. It means that the 'Master AC' is responsible for two things: the satellite positions and the combination rate.
+Note further that the sequence of entries in the 'Combination Table' is of importance. BNC considers the first AC in the 'Combination Table' as the 'Master AC'. The orbit information in the final combination stream is then just copied from the 'Master AC's orbits. Moreover, the update rate of the combination product is defined by the update rate of the 'Master AC's stream. If incoming streams have different rates, only epochs that correspond to the 'Master AC's update rate are used. Skipped epochs show however up in plain ASCII formated files described below. This means that the 'Master AC' is responsible for two things: the satellite positions and the combination rate.
 </p>
 <p>
 Default is an empty 'Combination Table' meaning that you don't want BNC to combine orbit and clock corrections streams.
@@ -1414,21 +1414,18 @@ Hit 'Add Row' button to add another row to the 'Combination Table' or hit the 'D
 
 <p><a name="combimountpnt"><h4>3.12.2 Mountpoint - optional if 'Combination Table' entries are specified</h4></p>
 <p>
-Enter a mountpoint string for the combination stream. The combination will only be carried out if such a mountpoint is defined.
-</p>
-<p>
-If 'Host', 'Port' and 'Password' are set, the combination stream will be encoded in RTCM's premature so-called 'State Space Representation' (SSR) messages and uploaded to the specified broadcaster following the NTRIP Version 1.0 transport protocol. The update rate of messages is 10 seconds.
+Enter a mountpoint string for the combination stream. If 'Host', 'Port' and 'Password' are set, the combination stream will be encoded in RTCM's premature so-called 'State Space Representation' (SSR) messages and uploaded to the specified broadcaster following the NTRIP Version 1.0 transport protocol.
 </p>
 <p>
 Note that the mountpoint defined here can be introduced as 'Obs Mountpoint' under the 'PPP (1)' tab to carry out a Precise Point Positioning through directly applying the combination stream without pulling it from the Ntrip Broadcaster.
 </p>
 <p>
-Default is an empty option field meaning that you don't want BNC to combine orbit and clock corrections streams.
+Default is an empty option field meaning that you don't want BNC to upload combined orbit and clock corrections streams to an NTRIP Broadcaster and you also don't want to save correctors in plain ASCII formated files.
 </p>
 
 <p><a name="combihost"><h4>3.12.3 Host, Port, Password - optional if 'Mountpoint' is set</h4></p>
 <p>
-Specify the domain name or IP number of an Ntrip Broadcaster for uploading the combination stream. Furthermore, specify the caster's listening IP port and an upload password.
+Specify the domain name or IP number of an NTRIP Broadcaster for uploading the combination stream. Furthermore, specify the caster's listening IP port and an upload password.
 </p>
 
 <p><a name="combioutdir"><h4>3.12.4 Directory, ASCII - optional if 'Mountpoint' is set</h4></p>
@@ -1436,7 +1433,7 @@ Specify the domain name or IP number of an Ntrip Broadcaster for uploading the c
 Specify a directory for saving the combined Broadcast Ephemeris corrections in a plain ASCII format on disc, see also 'Directory, ASCII' option under 'Broadcast Corrections' tab.
 </p>
 <p>
-The interval for saving the ASCII files (or: length of the files) is defined by option 'Interval' under the 'Broadcast Corrections' tab. File names are generated from the 'Mountpoint' string specified for the combination and follow the RINEX observation file name convention.
+The interval for saving the ASCII files (or: length of the files) is defined by option 'Interval' under the 'Broadcast Corrections' tab. File names are generated from the 'Mountpoint' string specified for the combination. They follow the RINEX observation file name convention.
 </p>
 <p>
 Default is an empty option field meaning that you don't want BNC to save the combination product in a plain ASCII formatted files.
@@ -1447,9 +1444,9 @@ Default is an empty option field meaning that you don't want BNC to save the com
 Specify a directory for saving the combined Broadcast Ephemeris corrections in SP3 format on disc. Default is an empty option field meaning that you don't want BNC to save the combination product in daily SP3 files.
 </p>
 <p>
-As an SP3 file contents should be refered to the satellite's Center of Mass (CoM) while correctors are refered to the satellite's Antenna Phase Center (APC), an offset has to be applied as taken from an IGS ANTEX file (see section 'ANTEX File'). You should therefore specify the &quot;ANTEX File' path under tab 'PPP (2)' if you want to save a combination product in SP3 format. If you don't specify an 'ANTEX File' path, the SP3 file contents will be refered to the satellites APCs.
+As an SP3 file contents should be refered to the satellite's Center of Mass (CoM) while correctors are refered to the satellite's Antenna Phase Center (APC), an offset has to be applied as which is available from an IGS ANTEX file (see section 'ANTEX File'). You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save a combination product in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be refered to the satellites APCs.
 <p>
-The file names for the daily SP3 files follows the convention for SP3 file names. The first three characters of each file name is set to 'BNC'.
+The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'.
 </p>
 
 <p><a name="streams"><h4>3.13. Streams</h4></p>
