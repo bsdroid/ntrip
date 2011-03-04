@@ -461,6 +461,11 @@ bncWindow::bncWindow() {
   _cmbOutPathLineEdit = new QLineEdit(settings.value("cmbOutPath").toString());
   _cmbSP3PathLineEdit = new QLineEdit(settings.value("cmbSP3Path").toString());
 
+  connect(_cmbTable, SIGNAL(itemSelectionChanged()), 
+          SLOT(slotBncTextChanged()));
+  connect(_cmbMountpointLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
   // WhatsThis
   // ---------
   _proxyHostLineEdit->setWhatsThis(tr("<p>If you are running BNC within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you do not know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is sometimes not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNC outside your LAN on a network that has unobstructed connection to the Internet.</p>"));
@@ -542,15 +547,15 @@ bncWindow::bncWindow() {
   _pppAntexLineEdit->setWhatsThis(tr("<p>IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets and variations.</p>"));
   _pppAntennaLineEdit->setWhatsThis(tr("<p>Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Corrections for phase center variations are not yet applied by BNC. The specified name must consist of 20 characters. Add trailing blanks if the antenna name has less then 20 characters.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets.</p>"));
   _pppApplySatAntCheckBox->setWhatsThis(tr("<p>This option is not yet working.</p><p>Satellite orbit and clock corrections refer to the satellite's antenna phase centers and hence observations are actually <u>not</u> to be corrected for satellite antenna phase center offsets. However, you may like to tick 'Apply Offsets' to force BNC to correct observations for satellite antenna phase center offsets.</p><p>Default is to <u>not</u> correct observations for satellite antenna phase center offsets."));
-  _cmbTable->setWhatsThis(tr("<p>Double click on the 'Mountpoint' field, enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied for this stream in the combination.</p><p>Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense for that if the update rate of incoming clock corrections is i.e. 10 seconds.</p>"));
+  _cmbTable->setWhatsThis(tr("<p>Double click on the 'Mountpoint' field to enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied for this stream in the combination.</p><p>Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense there if the update rate of incoming clock corrections is i.e. 10 seconds.</p><p>Note further that the sequence of rows in the 'Combination Table' is of importance because the orbit information in the final combination stream is just copied from the orbits in the stream listed in the first row.</p><p>Note also that the combination process requires Broadcast Ephemeris. Besides the orbit and clock corrections streams BNC must therefore pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 message. Stream RTCM3EPH on caster products.igs-ip.net:2101 is an example for that.</p>"));
   addCmbRowButton->setWhatsThis(tr("Hit 'Add Row' button to add another line to the mountpoints table."));
   delCmbRowButton->setWhatsThis(tr("Hit 'Delete' button to delete the highlited line from the mountpoints table."));
   _cmbOutHostLineEdit->setWhatsThis(tr("Specify the domain name or IP number of an Ntrip Broadcaster for uploading the combination stream."));
   _cmbOutPortLineEdit->setWhatsThis(tr("Enter the listening IP port of the specified Ntrip Broadcaster for uploading the combination stream."));
   _cmbMountpointLineEdit->setWhatsThis(tr("<p>Enter a mountpoint for the combination stream. The combination will only be carried out if a mountpoint is defined.</p><p>If 'Host', 'Port' and 'Password' are set, the combination stream will be uploaded to the specified Ntrip Broadcaster.</p><p>Note that the mountpoint defined here can be introduce as 'Obs Mountpoint' under the 'PPP (1)' tab to carry out a Precise Point Positioning through using the combination stream without pulling it from the Ntrip Broadcaster."));
   _cmbPasswordLineEdit->setWhatsThis(tr("Enter the password for uploading the combination stream to the specified Ntrip Broadcaster."));
-  _cmbOutPathLineEdit->setWhatsThis(tr("Specify a directory for saving the combined Broadcast Ephemeris corrections on disc in a plain ASCII format."));
-  _cmbSP3PathLineEdit->setWhatsThis(tr("Specify a directory for saving the combined Broadcast Ephemeris corrections on disc in SP3 format."));
+  _cmbOutPathLineEdit->setWhatsThis(tr("<p>Specify a directory for saving the combined Broadcast Ephemeris corrections in a plain ASCII format on disk.</p><p>The length of the Broadcast Ephemeris corrections files is defined through option 'Interval' under the 'Broadcast Corrections' tab.</p>"));
+  _cmbSP3PathLineEdit->setWhatsThis(tr("<p>Specify a directory for saving the combined Broadcast Ephemeris corrections in SP3 format on disk.</p><p>Note that this normally requires to also specify the full path to an 'ANTEX File' under the 'PPP (2)' tab.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -678,7 +683,7 @@ bncWindow::bncWindow() {
   _corrPortLineEdit->setMaximumWidth(9*ww);
   _corrTimeSpinBox->setMaximumWidth(9*ww);
 
-  cLayout->addWidget(new QLabel("Directory"),                     0, 0);
+  cLayout->addWidget(new QLabel("Directory, ASCII"),              0, 0);
   cLayout->addWidget(_corrPathLineEdit,                           0, 1,1,20);
   cLayout->addWidget(new QLabel("Interval"),                      1, 0);
   cLayout->addWidget(_corrIntrComboBox,                           1, 1);
@@ -885,10 +890,9 @@ bncWindow::bncWindow() {
   cmbLayout->setColumnStretch(1,1);
   cmbLayout->setColumnStretch(2,1);
 
-  cmbLayout->addWidget(addCmbRowButton,0,3);
+  cmbLayout->addWidget(addCmbRowButton,1,3);
   connect(addCmbRowButton, SIGNAL(clicked()), this, SLOT(slotAddCmbRow()));
-
-  cmbLayout->addWidget(delCmbRowButton,1,3);
+  cmbLayout->addWidget(delCmbRowButton,2,3);
   connect(delCmbRowButton, SIGNAL(clicked()), this, SLOT(slotDelCmbRow()));
 
   cmbLayout->setColumnStretch(4,1);
@@ -905,11 +909,11 @@ bncWindow::bncWindow() {
   _cmbPasswordLineEdit->setEchoMode(QLineEdit::Password);
   _cmbPasswordLineEdit->setMaximumWidth(9*ww);
   cmbLayout->addWidget(_cmbPasswordLineEdit, 1, 7);
-  cmbLayout->addWidget(new QLabel("    Directory, output"), 2, 4);
+  cmbLayout->addWidget(new QLabel("    Directory, ASCII"), 2, 4);
   cmbLayout->addWidget(_cmbOutPathLineEdit, 2, 5, 1, 3);
   cmbLayout->addWidget(new QLabel("    Directory, SP3"), 3, 4);
   cmbLayout->addWidget(_cmbSP3PathLineEdit, 3, 5, 1, 3);
-  cmbLayout->addWidget(new QLabel("   Combine Broadcast Ephemeris correction streams."),5,3,1,5);
+  cmbLayout->addWidget(new QLabel(" Combine Broadcast Ephemeris corrections streams."),5,3,1,5);
 
   cmbgroup->setLayout(cmbLayout);
 
@@ -1369,6 +1373,12 @@ void bncWindow::slotGetData() {
     if (!anxfile.exists()) ((bncApp*)qApp)->slotMessage("Cannot find IGS ANTEX file", true);
   }
 
+  QDir cmbOutDir(settings.value("cmbOutPath").toString());
+  if (!cmbOutDir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find directory for combination results in ASCII format", true);
+
+  QDir cmbSP3dir(settings.value("cmbSP3Path").toString());
+  if (!cmbSP3dir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find directory for combination results in SP3 format", true);
+
   _caster->slotReadMountPoints();
 }
 
@@ -1691,8 +1701,8 @@ void bncWindow::slotBncTextChanged(){
       _corrIntrComboBox->setEnabled(true);
     } 
     else {
-      _corrIntrComboBox->setStyleSheet("background-color: lightGray");
-      _corrIntrComboBox->setEnabled(false); 
+      _corrIntrComboBox->setStyleSheet("background-color: white");
+      _corrIntrComboBox->setEnabled(true); 
     }
   }
 
@@ -1932,7 +1942,7 @@ void bncWindow::slotBncTextChanged(){
       _pppSigTrpP->setPalette(palette_gray);
       _pppAverageLineEdit->setPalette(palette_gray);
       _pppQuickStartLineEdit->setPalette(palette_gray);
-      _pppAntexLineEdit->setPalette(palette_gray);
+      _pppAntexLineEdit->setPalette(palette_white);
       _pppAntennaLineEdit->setPalette(palette_gray);
       _pppApplySatAntCheckBox->setPalette(palette_gray);
       _pppSPPComboBox->setEnabled(false);
@@ -1955,7 +1965,7 @@ void bncWindow::slotBncTextChanged(){
       _pppSigTrpP->setEnabled(false);
       _pppAverageLineEdit->setEnabled(false);
       _pppQuickStartLineEdit->setEnabled(false);
-      _pppAntexLineEdit->setEnabled(false);
+      _pppAntexLineEdit->setEnabled(true);
       _pppAntennaLineEdit->setEnabled(false);
       _pppApplySatAntCheckBox->setEnabled(false);
     }
@@ -1975,6 +1985,51 @@ void bncWindow::slotBncTextChanged(){
       _pppCorrMountLineEdit->setPalette(palette_gray);
       _pppCorrMountLineEdit->setEnabled(false);
     } 
+  }
+
+  // Combination
+  // ----------
+  if (sender() == 0 
+     || sender() == _cmbTable
+     || sender() == _cmbMountpointLineEdit) {
+    if (_cmbTable->rowCount() > 0) {
+      _cmbMountpointLineEdit->setPalette(palette_white);
+      _cmbOutPathLineEdit->setPalette(palette_white);
+      _cmbMountpointLineEdit->setEnabled(true);
+      _cmbOutPathLineEdit->setEnabled(true);
+      if (!_cmbMountpointLineEdit->text().isEmpty()) {
+        _cmbOutHostLineEdit->setPalette(palette_white);
+        _cmbOutPortLineEdit->setPalette(palette_white);
+        _cmbPasswordLineEdit->setPalette(palette_white);
+        _cmbSP3PathLineEdit->setPalette(palette_white);
+        _cmbOutHostLineEdit->setEnabled(true);
+        _cmbOutPortLineEdit->setEnabled(true);
+        _cmbPasswordLineEdit->setEnabled(true);
+        _cmbSP3PathLineEdit->setEnabled(true);
+      } else {
+      _cmbOutHostLineEdit->setPalette(palette_gray);
+      _cmbOutPortLineEdit->setPalette(palette_gray);
+      _cmbPasswordLineEdit->setPalette(palette_gray);
+      _cmbSP3PathLineEdit->setPalette(palette_gray);
+      _cmbOutHostLineEdit->setEnabled(false);
+      _cmbOutPortLineEdit->setEnabled(false);
+      _cmbPasswordLineEdit->setEnabled(false);
+      _cmbSP3PathLineEdit->setEnabled(false);
+      }
+    } else {
+      _cmbMountpointLineEdit->setPalette(palette_gray);
+      _cmbOutHostLineEdit->setPalette(palette_gray);
+      _cmbOutPortLineEdit->setPalette(palette_gray);
+      _cmbPasswordLineEdit->setPalette(palette_gray);
+      _cmbOutPathLineEdit->setPalette(palette_gray);
+      _cmbSP3PathLineEdit->setPalette(palette_gray);
+      _cmbMountpointLineEdit->setEnabled(false);
+      _cmbOutHostLineEdit->setEnabled(false);
+      _cmbOutPortLineEdit->setEnabled(false);
+      _cmbPasswordLineEdit->setEnabled(false);
+      _cmbOutPathLineEdit->setEnabled(false);
+      _cmbSP3PathLineEdit->setEnabled(false);
+    }
   }
 }
 
