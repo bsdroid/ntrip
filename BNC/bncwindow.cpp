@@ -1994,27 +1994,27 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _cmbMountpointLineEdit) {
     if (_cmbTable->rowCount() > 0) {
       _cmbMountpointLineEdit->setPalette(palette_white);
-      _cmbOutPathLineEdit->setPalette(palette_white);
+      _cmbSP3PathLineEdit->setPalette(palette_white);
       _cmbMountpointLineEdit->setEnabled(true);
-      _cmbOutPathLineEdit->setEnabled(true);
+      _cmbSP3PathLineEdit->setEnabled(true);
       if (!_cmbMountpointLineEdit->text().isEmpty()) {
         _cmbOutHostLineEdit->setPalette(palette_white);
         _cmbOutPortLineEdit->setPalette(palette_white);
         _cmbPasswordLineEdit->setPalette(palette_white);
-        _cmbSP3PathLineEdit->setPalette(palette_white);
+        _cmbOutPathLineEdit->setPalette(palette_white);
         _cmbOutHostLineEdit->setEnabled(true);
         _cmbOutPortLineEdit->setEnabled(true);
         _cmbPasswordLineEdit->setEnabled(true);
-        _cmbSP3PathLineEdit->setEnabled(true);
+        _cmbOutPathLineEdit->setEnabled(true);
       } else {
       _cmbOutHostLineEdit->setPalette(palette_gray);
       _cmbOutPortLineEdit->setPalette(palette_gray);
       _cmbPasswordLineEdit->setPalette(palette_gray);
-      _cmbSP3PathLineEdit->setPalette(palette_gray);
+      _cmbOutPathLineEdit->setPalette(palette_gray);
       _cmbOutHostLineEdit->setEnabled(false);
       _cmbOutPortLineEdit->setEnabled(false);
       _cmbPasswordLineEdit->setEnabled(false);
-      _cmbSP3PathLineEdit->setEnabled(false);
+      _cmbOutPathLineEdit->setEnabled(false);
       }
     } else {
       _cmbMountpointLineEdit->setPalette(palette_gray);
