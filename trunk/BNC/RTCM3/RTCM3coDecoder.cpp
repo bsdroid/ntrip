@@ -74,6 +74,7 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
           (bncApp*) qApp, SLOT(slotNewCorrLine(QString, QString, long)));
 
   memset(&_co, 0, sizeof(_co));
+  memset(&_bias, 0, sizeof(_bias));
 }
 
 // Destructor
