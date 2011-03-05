@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
       if (QByteArray(argv[ii]).indexOf("-format") != -1) {
         format = QByteArray(argv[ii+1]);
       }
-      if (QByteArray(argv[ii]).indexOf("-staID") != -1) {
+      if (QByteArray(argv[ii]).indexOf("-mountpoint") != -1) {
         staID = QByteArray(argv[ii+1]);
       }
     }
@@ -91,11 +91,11 @@ int main(int argc, char *argv[]) {
     confFileName = QString(argv[1]);
   }
 
-  QString printHelp = "Usage: bnc -nw\n" 
-                      "           --conf   <confFileName>\n" 
-                      "           --file   <rawFileName>\n"
-                      "           --staID  <station>\n"
-                      "           --format <RTIGS | RTCM_2 | RTCM_3>\n";
+  QString printHelp = "Usage: bnc --nw\n" 
+                      "           --conf       <confFileName>\n" 
+                      "           --file       <rawFileName>\n"
+                      "           --mountpoint <station>\n"
+                      "           --format     <RTIGS | RTCM_2 | RTCM_3>\n";
 
   bncApp app(argc, argv, GUIenabled);
 
