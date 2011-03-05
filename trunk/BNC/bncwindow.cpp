@@ -1296,6 +1296,9 @@ void bncWindow::slotSaveOptions() {
   if (!combineStreams.isEmpty()) {
     settings.setValue("combineStreams", combineStreams);
   }
+  else {
+    settings.setValue("combineStreams", "");
+  }
   settings.setValue("cmbOutHost",    _cmbOutHostLineEdit->text());
   settings.setValue("cmbOutPort",    _cmbOutPortLineEdit->text());
   settings.setValue("cmbMountpoint", _cmbMountpointLineEdit->text());
