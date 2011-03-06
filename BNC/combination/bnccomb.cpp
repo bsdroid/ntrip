@@ -630,6 +630,11 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
     ColumnVector dx;
     bncModel::kalman(AA, ll, PP, _QQ, dx);
     ColumnVector vv = ll - AA * dx;
+    int    maxResIndex = 0;
+    double maxRes      = vv.maximum_absolute_value1(maxResIndex);   
+    out.setRealNumberNotation(QTextStream::FixedNotation);
+    out.setRealNumberPrecision(3);
+    out << "Maximum Residuum " << maxRes << " (index " << maxResIndex << ")\n";
 
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       cmbParam* pp = _params[iPar-1];
