@@ -627,14 +627,31 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       delete epo;
     }
 
+    const double MAXRES = 0.10;  // TODO: make it an option
+
     ColumnVector dx;
-    bncModel::kalman(AA, ll, PP, _QQ, dx);
-    ColumnVector vv = ll - AA * dx;
-    int    maxResIndex = 0;
-    double maxRes      = vv.maximum_absolute_value1(maxResIndex);   
-    out.setRealNumberNotation(QTextStream::FixedNotation);
-    out.setRealNumberPrecision(3);
-    out << "Maximum Residuum " << maxRes << " (index " << maxResIndex << ")\n";
+    SymmetricMatrix QQ_sav = _QQ;
+
+    for (int ii = 1; ii < 10; ii++) {
+      bncModel::kalman(AA, ll, PP, _QQ, dx);
+      ColumnVector vv = ll - AA * dx;
+
+      int    maxResIndex;
+      double maxRes = vv.maximum_absolute_value1(maxResIndex);   
+      out.setRealNumberNotation(QTextStream::FixedNotation);
+      out.setRealNumberPrecision(3);  
+      out << "Maximum Residuum " << maxRes << " (index " << maxResIndex << ")\n";
+
+      if (maxRes > MAXRES) {
+        out << "Outlier Detected" << endl;
+        _QQ = QQ_sav;
+        AA.Row(maxResIndex) = 0.0;
+        ll.Row(maxResIndex) = 0.0;
+      }
+      else {
+        break;
+      }
+    }
 
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       cmbParam* pp = _params[iPar-1];
