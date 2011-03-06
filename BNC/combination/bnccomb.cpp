@@ -346,6 +346,12 @@ void bncComb::dumpResults(const bncTime& resTime,
   co.OrbitDataSupplied = 1;
   co.SatRefDatum       = DATUM_ITRF;
 
+  struct Bias bias;
+  memset(&bias, 0, sizeof(bias));
+  bias.GPSEpochTime      = (int)GPSweeks;
+  bias.GLONASSEpochTime  = (int)fmod(GPSweeks, 86400.0) 
+                         + 3 * 3600 - gnumleap(year, month, day);
+
   QMapIterator<QString, t_corr*> it(resCorr);
   while (it.hasNext()) {
     it.next();
@@ -373,6 +379,44 @@ void bncComb::dumpResults(const bncTime& resTime,
       sd->Orbit.DotDeltaCrossTrack = corr->dotRao(3);
     }
     
+    struct Bias::BiasSat* biasSat = 0;
+    if      (corr->prn[0] == 'G') {
+      biasSat = bias.Sat + bias.NumberOfGPSSat;
+      ++bias.NumberOfGPSSat;
+    }
+    else if (corr->prn[0] == 'R') {
+      biasSat = bias.Sat + CLOCKORBIT_NUMGPS + bias.NumberOfGLONASSSat;
+      ++bias.NumberOfGLONASSSat;
+    }
+
+    // Coefficient of Ionosphere-Free LC
+    // ---------------------------------
+    const static double a_L1_GPS =  2.54572778;
+    const static double a_L2_GPS = -1.54572778;
+    const static double a_L1_Glo =  2.53125000;
+    const static double a_L2_Glo = -1.53125000;
+
+    if (biasSat) {
+      biasSat->ID = corr->prn.mid(1).toInt();
+      biasSat->NumberOfCodeBiases = 3;
+      if      (corr->prn[0] == 'G') {
+        biasSat->Biases[0].Type = CODETYPEGPS_L1_Z;
+        biasSat->Biases[0].Bias = - a_L2_GPS * 0.0; // xx(10);
+        biasSat->Biases[1].Type = CODETYPEGPS_L1_CA;
+        biasSat->Biases[1].Bias = - a_L2_GPS * 0.0; // xx(10) + xx(9);
+        biasSat->Biases[2].Type = CODETYPEGPS_L2_Z;
+        biasSat->Biases[2].Bias = a_L1_GPS * 0.0; // xx(10);
+      }
+      else if (corr->prn[0] == 'R') {
+        biasSat->Biases[0].Type = CODETYPEGLONASS_L1_P;
+        biasSat->Biases[0].Bias = - a_L2_Glo * 0.0; // xx(10);
+        biasSat->Biases[1].Type = CODETYPEGLONASS_L1_CA;
+        biasSat->Biases[1].Bias = - a_L2_Glo * 0.0; // xx(10) + xx(9);
+        biasSat->Biases[2].Type = CODETYPEGLONASS_L2_P;
+        biasSat->Biases[2].Bias = a_L1_Glo * 0.0; // xx(10);
+      }
+    }
+
     // SP3 Output
     // ----------
     if (_sp3) {
@@ -412,6 +456,15 @@ void bncComb::dumpResults(const bncTime& resTime,
        (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
     int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+    if (len > 0) {
+      _caster->write(obuffer, len);
+    }
+  }
+
+  if ( _caster->usedSocket() && 
+       (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) ) {
+    char obuffer[CLOCKORBIT_BUFFERSIZE];
+    int len = MakeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
     if (len > 0) {
       _caster->write(obuffer, len);
     }
