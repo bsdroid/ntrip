@@ -627,7 +627,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       delete epo;
     }
 
-    const double MAXRES = 0.10;  // TODO: make it an option
+    const double MAXRES = 999.10;  // TODO: make it an option
 
     ColumnVector dx;
     SymmetricMatrix QQ_sav = _QQ;
