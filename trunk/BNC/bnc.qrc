@@ -27,5 +27,6 @@
     <file alias="screenshot18.png">IMG/screenshot18.png</file>
     <file alias="screenshot19.png">IMG/screenshot19.png</file>
     <file alias="screenshot20.png">IMG/screenshot20.png</file>
+    <file alias="screenshot21.png">IMG/screenshot21.png</file>
 </qresource>
 </RCC>
