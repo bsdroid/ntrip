@@ -1401,7 +1401,7 @@ Hit the 'Add Row' button then double click on the 'Mountpoint' field, enter a Br
 Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. Example: a value of '15' sec would make sense if the update rate of incoming clock corrections is 10 sec.
 </p>
 <p>
-Note further that the sequence of entries in the 'Combination Table' is of importance. BNC considers the first AC in the 'Combination Table' as the 'Master AC'. The orbit information in the final combination stream is then just copied from the 'Master AC's orbits. Moreover, the update rate of the combination product is defined by the update rate of the 'Master AC's stream. If incoming streams have different rates, only epochs that correspond to the 'Master AC's update rate are used. Skipped epochs show however up in plain ASCII formated files described below. This means that the 'Master AC' is responsible for two things: the satellite positions and the combination rate.
+Note further that the sequence of entries in the 'Combination Table' is of importance. BNC considers the first AC in the 'Combination Table' as the 'Master AC'. The orbit information in the final combination stream is then just copied from the 'Master AC's orbits. Moreover, the update rate of the combination product is defined by the update rate of the 'Master AC's stream. If incoming streams have different rates, only epochs that correspond to the 'Master AC's update rate are used. Skipped epochs show however up in plain ASCII formatted files described below. This means that the 'Master AC' is responsible for two things: the satellite positions and the combination rate.
 </p>
 <p>
 Default is an empty 'Combination Table' meaning that you don't want BNC to combine orbit and clock corrections streams.
@@ -1409,7 +1409,7 @@ Default is an empty 'Combination Table' meaning that you don't want BNC to combi
 
 <p><a name="combiadd"><h4>3.12.1.1 Add Row, Delete - optional</h4></p>
 <p>
-Hit 'Add Row' button to add another row to the 'Combination Table' or hit the 'Delete' button to delete the highlited row.
+Hit 'Add Row' button to add another row to the 'Combination Table' or hit the 'Delete' button to delete the highlighted row.
 </p>
 
 <p><a name="combimountpnt"><h4>3.12.2 Mountpoint - optional if 'Combination Table' entries are specified</h4></p>
@@ -1420,7 +1420,7 @@ Enter a mountpoint string for the combination stream. If 'Host', 'Port' and 'Pas
 Note that the mountpoint defined here can be introduced as 'Obs Mountpoint' under the 'PPP (1)' tab to carry out a Precise Point Positioning through directly applying the combination stream without pulling it from the Ntrip Broadcaster.
 </p>
 <p>
-Default is an empty option field meaning that you don't want BNC to upload combined orbit and clock corrections streams to an NTRIP Broadcaster and you also don't want to save correctors in plain ASCII formated files.
+Default is an empty option field meaning that you don't want BNC to upload combined orbit and clock corrections streams to an NTRIP Broadcaster and you also don't want to save correctors in plain ASCII formatted files.
 </p>
 
 <p><a name="combihost"><h4>3.12.3 Host, Port, Password - optional if 'Mountpoint' is set</h4></p>
@@ -1444,7 +1444,7 @@ Default is an empty option field meaning that you don't want BNC to save the com
 Specify a directory for saving the combined Broadcast Ephemeris corrections in SP3 format on disc. Default is an empty option field meaning that you don't want BNC to save the combination product in daily SP3 files.
 </p>
 <p>
-As an SP3 file contents should be refered to the satellite's Center of Mass (CoM) while correctors are refered to the satellite's Antenna Phase Center (APC), an offset has to be applied as which is available from an IGS ANTEX file (see section 'ANTEX File'). You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save a combination product in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be refered to the satellites APCs.
+As an SP3 file contents should be referred to the satellite's Center of Mass (CoM) while correctors are referred to the satellite's Antenna Phase Center (APC), an offset has to be applied as which is available from an IGS ANTEX file (see section 'ANTEX File'). You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save a combination product in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs.
 <p>
 The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'.
 </p>
