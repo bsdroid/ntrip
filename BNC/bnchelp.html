@@ -1385,27 +1385,27 @@ BNC allows to process several orbit and clock corrections streams in real-time t
 
 </p>
 <p>
-The 'Combination' functionality has been integrated in BNC because it 
+The 'Combination' functionality has been integrated in BNC because it enables
 <ul>
-<li>allows a service providing Combination Center (CC) to reduce outliers and outages of individual Analysis Center (AC) product streams through merging several streams to a combined product which is then disseminated via NTRIP broadcast.</li>
-<li>allows a BNC PPP client to follow his own preference in combining streams from individual ACs. This could be of interest i.e. when re-broadcasting correctors over radio modem data links.</li>
-<li>allows an instantaneous quality control of the combination product not only in the time domain but also in the space domain. This can be done through direct application of the combination stream in a PPP solution even without prior stream upload to an NTRIP Broadcaster.</li>
-<li>allows to output SP3 files containing precise orbit and clock information for further offline processing.</li>
+<li>a service providing Combination Center (CC) to reduce outliers and outages of individual Analysis Center (AC) product streams through merging several streams to a combined product which is then disseminated via NTRIP broadcast.</li>
+<li>a BNC PPP client to follow his own preference in combining streams from individual ACs. This could be of interest i.e. when re-broadcasting correctors over radio modem data links.</li>
+<li>an instantaneous quality control of the combination product not only in the time domain but also in the space domain. This can be done through direct application of the combination stream in a PPP solution even without prior stream upload to an NTRIP Broadcaster.</li>
+<li>to output SP3 files containing precise orbit and clock information for further processing using other tools than BNC.</li>
 </ul>
 </p>
 <p>
-Note that the combination process requires real-time access to Broadcast Ephemeris. So, in addition to the orbit and clock corrections streams BNC must pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 message types 1019, 1020, and (proposed) 1045. Stream RTCM3EPH on caster products.igs-ip.net:2101 is an example for such a stream.
+Note that the combination process requires real-time access to Broadcast Ephemeris. So, in addition to the orbit and clock corrections streams BNC must pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 message types 1019, 1020, and (proposed) 1045. Stream RTCM3EPH on caster <u>products.igs-ip.net</u> is an example for such a stream.
 </p>
 
 <p><a name="combimounttab"><h4>3.12.1 Combination Table - optional</h4></p>
 <p>
-Hit the 'Add Row' button then double click on the 'Mountpoint' field, enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. The combination process will start when at least two corrections streams are configured for combination.
+Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. The combination process will start when at least two corrections streams are configured for combination.
 </p>
 <p>
-Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. Example: a value of '15' sec would make sense if the update rate of incoming clock corrections is 10 sec.
+Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. To give an example: a value of '15' sec would make sense if the update rate of incoming clock corrections is 10 sec.
 </p>
 <p>
-Note further that the sequence of entries in the 'Combination Table' is of importance. BNC considers the first AC in the 'Combination Table' as the 'Master AC'. The orbit information in the final combination stream is then just copied from the 'Master AC's orbits. Moreover, the update rate of the combination product is defined by the update rate of the 'Master AC's stream. If incoming streams have different rates, only epochs that correspond to the 'Master AC's update rate are used. Skipped epochs show however up in plain ASCII formatted files described below. This means that the 'Master AC' is responsible for two things: the satellite positions and the combination rate.
+Note further that the sequence of entries in the 'Combination Table' is of importance. BNC considers the first AC in the 'Combination Table' as the 'Master AC'. The orbit information in the final combination stream is then just copied from the 'Master AC's orbits. Moreover, the update rate of the combination product is defined by the update rate of the 'Master AC's stream. If incoming streams have different rates, only epochs that correspond to the 'Master AC's update rate are used. Skipped epochs will however show up in plain ASCII formatted files described below. This means that the 'Master AC' is responsible for two things: the satellite positions and the combination rate.
 </p>
 <p>
 Default is an empty 'Combination Table' meaning that you don't want BNC to combine orbit and clock corrections streams.
@@ -1413,7 +1413,7 @@ Default is an empty 'Combination Table' meaning that you don't want BNC to combi
 
 <p><a name="combiadd"><h4>3.12.1.1 Add Row, Delete - optional</h4></p>
 <p>
-Hit 'Add Row' button to add another row to the 'Combination Table' or hit the 'Delete' button to delete the highlighted row.
+Hit 'Add Row' button to add another row to the 'Combination Table' or hit the 'Delete' button to delete the highlighted row(s).
 </p>
 
 <p><a name="combimountpnt"><h4>3.12.2 Mountpoint - optional if 'Combination Table' entries are specified</h4></p>
@@ -1448,13 +1448,13 @@ Default is an empty option field meaning that you don't want BNC to save the com
 Specify a directory for saving the combined Broadcast Ephemeris corrections in SP3 format on disc. Default is an empty option field meaning that you don't want BNC to save the combination product in daily SP3 files.
 </p>
 <p>
-As an SP3 file contents should be referred to the satellite's Center of Mass (CoM) while correctors are referred to the satellite's Antenna Phase Center (APC), an offset has to be applied as which is available from an IGS ANTEX file (see section 'ANTEX File'). You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save a combination product in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs.
+As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while correctors are referred to the satellites Antenna Phase Center (APC), an offset has to be applied which is available from an IGS ANTEX file (see section 'ANTEX File'). You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save a combination product in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs.
 <p>
 The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'.
 </p>
 
 <p>
-The following screenshots describe an example setup of BNC when combining orbit and clock correctors streams. Note that it requires to specify options at least under the three tabs 'Combination', 'Broadcast Corrections' and 'PPP (2)'. The example given here uses the combination product in addition to simultaneously carry out a PPP solution with options shown in tab 'PPP (1)' - which enables to monitor the quality of the combination product in the space domain.
+The following screenshots describe an example setup of BNC when combining orbit and clock correctors streams. Note that it requires to specify options under the tabs 'Combination', 'Broadcast Corrections' and 'PPP (2)'. The example also uses the combination product to simultaneously carry out a PPP solution with options shown in tab 'PPP (1)' - which enables to monitor the quality of the combination product in the space domain.
 </p>
 
 <br>
