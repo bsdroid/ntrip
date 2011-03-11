@@ -1400,7 +1400,10 @@ In view of IGS real-time products, the 'Combination' functionality has been inte
 Note that the combination process requires real-time access to Broadcast Ephemeris. So, in addition to the orbit and clock corrections streams BNC must pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages. Stream RTCM3EPH on caster <u>products.igs-ip.net</u> is an example for that.
 </p>
 <p>
-With respect to IGS, it is important to understand that the biggest effect in the combination of GNSS orbit and clock corrections streams is the selection of ACs to include. It is likely that a combination product could be improved in accuracy by using only the best two or three ACs. However, with only a few  ACs to depend on, the reliability of the combination product could suffer and the risk of total failures increase. So there is an important tradeoff here that must be considered when selecting streams for a combination. The major strength of a combination product is its reliability and stable median performance which can be much better than that of any single AC product.
+With respect to IGS, it is important to understand that a major effect in the combination of GNSS orbit and clock corrections streams is the selection of ACs to include. It is likely that a combination product could be improved in accuracy by using only the best two or three ACs. However, with only a few  ACs to depend on, the reliability of the combination product could suffer and the risk of total failures increase. So there is an important tradeoff here that must be considered when selecting streams for a combination. The major strength of a combination product is its reliability and stable median performance which can be much better than that of any single AC product.
+</p>
+<p>
+This comment applies in situations where we have a limited number of solutions to combine and their quality varies significantly. The situation may be different when the total number of ACs is larger and the range of AC variation is smaller. In that case, a standard full combination is probably the best. 
 </p>
 
 <p><a name="combimounttab"><h4>3.12.1 Combination Table - optional</h4></p>
