@@ -1381,14 +1381,18 @@ Entering any positive value up to 1440 (24h mean value) is allowed. An empty opt
 
 <p><a name="combi"><h4>3.12. Combination</h4></p>
 <p>
-BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors from various providers following a Kalman Filter approach. It is only the satellite clock corrections which are combined here while orbit correctors in the combination product as well as the product update rates are just taken over from one of the incoming corrections streams. 
+BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors from various providers. It is so far only the satellite clock corrections which are combined here while orbit correctors in the combination product as well as the product update rates are just taken over from one of the incoming corrections streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach.
+<p>
+</p>
+The combination is based on a Kalman Filter. Satellite clocks estimated by individual Analyses Centers (ACs) are used as (pseudo-) observations within the adjustment process. Each observation is modeled as a linear function (actually a simple sum) of three estimated parameters: AC specific offset, satellite specific offset (common to all ACs), and the actual satellite clock correction (which represents the result of the combination). These three parameter types differ in their statistical properties. The satellite clock offsets are assumed to be static parameters while AC specific and satellite specific offsets are stochastic parameters with appropriate white noise.
+ The solution is regularized by a set of minimal constraints.
 </p>
 <p>
 In view of IGS real-time products, the 'Combination' functionality has been integrated in BNC because
 <ul>
 <li>the software with its Graphic User Interface and wide range of supported Operation Systems represents a perfect platform to process many broadcast corrections streams in parallel;</li>
-<li>outages of single Analysis Center (AC) product streams can be neutralized through merging several incoming streams into a combined product;</li>
-<li>generating a combination product allows detecting and rejecting outliers;</li> 
+<li>outages of single AC product streams can be mitigated through merging several incoming streams into a combined product;</li>
+<li>generating a combination product from several AC products allows detecting and rejecting outliers;</li> 
 <li>a Combination Center (CC) can operate BNC to globally disseminate a combination product via NTRIP broadcast;</li>
 <li>an individual AC could prefer to disseminate a stream combined from primary and backup IT resources to reduce outages;</li>
 <li>it enables a BNC PPP user to follow his own preference in combining streams from individual ACs for Precise Point Positioning;</li>
@@ -1400,7 +1404,7 @@ In view of IGS real-time products, the 'Combination' functionality has been inte
 Note that the combination process requires real-time access to Broadcast Ephemeris. So, in addition to the orbit and clock corrections streams BNC must pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages. Stream RTCM3EPH on caster <u>products.igs-ip.net</u> is an example for that.
 </p>
 <p>
-With respect to IGS, it is important to understand that a major effect in the combination of GNSS orbit and clock corrections streams is the selection of ACs to include. It is likely that a combination product could be improved in accuracy by using only the best two or three ACs. However, with only a few  ACs to depend on, the reliability of the combination product could suffer and the risk of total failures increase. So there is an important tradeoff here that must be considered when selecting streams for a combination. The major strength of a combination product is its reliability and stable median performance which can be much better than that of any single AC product.
+With respect to IGS, it is important to understand that a major effect in the combination of GNSS orbit and clock corrections streams is the selection of ACs to include. It is likely that a combination product could be improved in accuracy by using only the best two or three ACs. However, with only a few  ACs to depend on, the reliability of the combination product could suffer and the risk of total failures increases. So there is an important tradeoff here that must be considered when selecting streams for a combination. The major strength of a combination product is its reliability and stable median performance which can be much better than that of any single AC product.
 </p>
 <p>
 This comment applies in situations where we have a limited number of solutions to combine and their quality varies significantly. The situation may be different when the total number of ACs is larger and the range of AC variation is smaller. In that case, a standard full combination is probably the best. 
@@ -1414,7 +1418,7 @@ Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadc
 Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. To give an example: a value of '15' sec would make sense if the update rate of incoming clock corrections is 10 sec.
 </p>
 <p>
-Note further that the sequence of entries in the 'Combination Table' is of importance. BNC considers the first AC in the 'Combination Table' as the 'Master AC'. The orbit information in the final combination stream is then just copied from the 'Master AC's orbits. Moreover, the update rate of the combination product is defined by the update rate of the 'Master AC's stream. If incoming streams have different rates, only epochs that correspond to the 'Master AC's update rate are used. Skipped epochs will however show up in plain ASCII formatted files described below. This means that the 'Master AC' is responsible for two things: the satellite positions and the combination rate.
+Note further that the sequence of entries in the 'Combination Table' is of importance. BNC considers the first AC in the 'Combination Table' as the 'Master AC'. The orbit information in the final combination stream is then just copied from the 'Master AC's orbits. Moreover, the update rate of the combination product is defined by the update rate of the 'Master AC's stream. If incoming streams have different rates, only epochs that correspond to the 'Master AC's update rate are used. The skipped epochs will be stored in the binary (raw) BNC file. The plain ASCII formated files described below will contain only the combination. This means that the 'Master AC' is responsible for two things: the satellite positions and the combination rate.
 </p>
 <p>
 Default is an empty 'Combination Table' meaning that you don't want BNC to combine orbit and clock corrections streams.
