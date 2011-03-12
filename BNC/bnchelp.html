@@ -1382,10 +1382,13 @@ Entering any positive value up to 1440 (24h mean value) is allowed. An empty opt
 <p><a name="combi"><h4>3.12. Combination</h4></p>
 <p>
 BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors from various providers. It is so far only the satellite clock corrections which are combined here while orbit correctors in the combination product as well as the product update rates are just taken over from one of the incoming corrections streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach.
-<p>
 </p>
-The combination is based on a Kalman Filter. Satellite clocks estimated by individual Analyses Centers (ACs) are used as (pseudo-) observations within the adjustment process. Each observation is modeled as a linear function (actually a simple sum) of three estimated parameters: AC specific offset, satellite specific offset (common to all ACs), and the actual satellite clock correction (which represents the result of the combination). These three parameter types differ in their statistical properties. The satellite clock offsets are assumed to be static parameters while AC specific and satellite specific offsets are stochastic parameters with appropriate white noise.
+<p>
+The clock combination is based on a Kalman Filter. Satellite clocks estimated by individual Analyses Centers (ACs) are used as pseudo observations within the adjustment process. Each observation is modeled as a linear function (actually a simple sum) of three estimated parameters: AC specific offset, satellite specific offset common to all ACs, and the actual satellite clock correction which represents the result of the combination. These three parameter types differ in their statistical properties. The satellite clock offsets are assumed to be static parameters while AC specific and satellite specific offsets are stochastic parameters with appropriate white noise.
  The solution is regularized by a set of minimal constraints.
+</p>
+<p>
+Removing the AC-dependent biases as well as possible is a major issue with clock combinations. Since they vary in time, it can be tricky to do this. Otherwise, there will be artificial jumps in the combined clock stream if one or more AC contributions drop out for certain epochs. Here the Kalman Filter approach is expected to do better than other approaches.
 </p>
 <p>
 In view of IGS real-time products, the 'Combination' functionality has been integrated in BNC because
