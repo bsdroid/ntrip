@@ -129,6 +129,7 @@ class bncModel : public QObject {
   };
 
   bncTime               _time;
+  bncTime               _lastTimeOK;
   QByteArray            _staID;
   QVector<bncParam*>    _params;
   SymmetricMatrix       _QQ;

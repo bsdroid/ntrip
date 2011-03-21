@@ -216,28 +216,6 @@ bncModel::bncModel(QByteArray staID) {
     _params.push_back(new bncParam(bncParam::GALILEO_OFFSET, ++nextPar, ""));
   }
 
-  unsigned nPar = _params.size();
-
-  _QQ.ReSize(nPar); 
-
-  _QQ = 0.0;
-
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    bncParam* pp = _params[iPar-1];
-    if      (pp->isCrd()) {
-      _QQ(iPar,iPar) = _sigCrd0 * _sigCrd0; 
-    }
-    else if (pp->type == bncParam::RECCLK) {
-      _QQ(iPar,iPar) = _sigClk0 * _sigClk0; 
-    }
-    else if (pp->type == bncParam::TROPO) {
-      _QQ(iPar,iPar) = _sigTrp0 * _sigTrp0; 
-    }
-    else if (pp->type == bncParam::GALILEO_OFFSET) {
-      _QQ(iPar,iPar) = _sigGalileoOffset0 * _sigGalileoOffset0; 
-    }
-  }
-
   // NMEA Output
   // -----------
   QString nmeaFileName = settings.value("nmeaFile").toString();
@@ -447,10 +425,34 @@ void bncModel::predict(t_epoData* epoData) {
 
   bncSettings settings;
 
+  _time = epoData->tt; // current epoch time
+
+  const double MAXSOLGAP = 60.0;
+
   bool firstCrd = false;
-  if (x() == 0.0 && y() == 0.0 && z() == 0.0) {
+  if (!_lastTimeOK.valid() || _time - _lastTimeOK > MAXSOLGAP) {
     firstCrd = true;
     _startTime = epoData->tt;
+
+    unsigned nPar = _params.size();
+    _QQ.ReSize(nPar); 
+    _QQ = 0.0;
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      bncParam* pp = _params[iPar-1];
+      pp->xx = 0.0;
+      if      (pp->isCrd()) {
+        _QQ(iPar,iPar) = _sigCrd0 * _sigCrd0; 
+      }
+      else if (pp->type == bncParam::RECCLK) {
+        _QQ(iPar,iPar) = _sigClk0 * _sigClk0; 
+      }
+      else if (pp->type == bncParam::TROPO) {
+        _QQ(iPar,iPar) = _sigTrp0 * _sigTrp0; 
+      }
+      else if (pp->type == bncParam::GALILEO_OFFSET) {
+        _QQ(iPar,iPar) = _sigGalileoOffset0 * _sigGalileoOffset0; 
+      }
+    }
   }
 
   // Use different white noise for Quick-Start mode
@@ -620,8 +622,6 @@ t_irc bncModel::update(t_epoData* epoData) {
   bncSettings settings;
 
   _log.clear();  
-
-  _time = epoData->tt;
 
   if (settings.value("pppSPP").toString() == "PPP") {
     _log += "Precise Point Positioning of Epoch " 
@@ -975,6 +975,7 @@ t_irc bncModel::update(t_epoData* epoData) {
                  
   writeNMEAstr(QString(strGGA.str().c_str()));
 
+  _lastTimeOK = _time; // remember time of last successful update
   return success;
 }
 
