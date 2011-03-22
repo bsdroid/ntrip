@@ -142,6 +142,9 @@ bncModel::bncModel(QByteArray staID) {
 
   _staID   = staID;
 
+  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
+
   bncSettings settings;
 
   // Observation Sigmas
@@ -188,9 +191,8 @@ bncModel::bncModel(QByteArray staID) {
     _quickStart = settings.value("pppQuickStart").toDouble();
   }
 
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
-
+  // Several options
+  // ---------------
   _usePhase = false;
   if ( Qt::CheckState(settings.value("pppUsePhase").toInt()) == Qt::Checked) {
     _usePhase = true;
@@ -201,19 +203,9 @@ bncModel::bncModel(QByteArray staID) {
     _estTropo = true;
   }
 
-  _xcBanc.ReSize(4);  _xcBanc  = 0.0;
-  _ellBanc.ReSize(3); _ellBanc = 0.0;
-
-  int nextPar = 0;
-  _params.push_back(new bncParam(bncParam::CRD_X,  ++nextPar, ""));
-  _params.push_back(new bncParam(bncParam::CRD_Y,  ++nextPar, ""));
-  _params.push_back(new bncParam(bncParam::CRD_Z,  ++nextPar, ""));
-  _params.push_back(new bncParam(bncParam::RECCLK, ++nextPar, ""));
-  if (_estTropo) {
-    _params.push_back(new bncParam(bncParam::TROPO, ++nextPar, ""));
-  }
+  _useGalileo = false;
   if ( Qt::CheckState(settings.value("pppGalileo").toInt()) == Qt::Checked) {
-    _params.push_back(new bncParam(bncParam::GALILEO_OFFSET, ++nextPar, ""));
+    _useGalileo = true;
   }
 
   // NMEA Output
@@ -236,6 +228,8 @@ bncModel::bncModel(QByteArray staID) {
     _nmeaStream->setDevice(_nmeaFile);
   }
 
+  // Antenna Name, ANTEX File
+  // ------------------------
   _antex = 0;
   QString antexFileName = settings.value("pppAntex").toString();
   if (!antexFileName.isEmpty()) {
@@ -247,6 +241,52 @@ bncModel::bncModel(QByteArray staID) {
     }
     else {
       _antennaName = settings.value("pppAntenna").toString();
+    }
+  }
+
+  // Bancroft Coordinates
+  // --------------------
+  _xcBanc.ReSize(4);  _xcBanc  = 0.0;
+  _ellBanc.ReSize(3); _ellBanc = 0.0;
+}
+
+// Reset
+////////////////////////////////////////////////////////////////////////////
+void bncModel::reset() {
+
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    delete _params[iPar-1];
+  }
+  _params.clear();
+
+  int nextPar = 0;
+  _params.push_back(new bncParam(bncParam::CRD_X,  ++nextPar, ""));
+  _params.push_back(new bncParam(bncParam::CRD_Y,  ++nextPar, ""));
+  _params.push_back(new bncParam(bncParam::CRD_Z,  ++nextPar, ""));
+  _params.push_back(new bncParam(bncParam::RECCLK, ++nextPar, ""));
+  if (_estTropo) {
+    _params.push_back(new bncParam(bncParam::TROPO, ++nextPar, ""));
+  }
+  if (_useGalileo) {
+    _params.push_back(new bncParam(bncParam::GALILEO_OFFSET, ++nextPar, ""));
+  }
+
+  _QQ.ReSize(_params.size()); 
+  _QQ = 0.0;
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    bncParam* pp = _params[iPar-1];
+    pp->xx = 0.0;
+    if      (pp->isCrd()) {
+      _QQ(iPar,iPar) = _sigCrd0 * _sigCrd0; 
+    }
+    else if (pp->type == bncParam::RECCLK) {
+      _QQ(iPar,iPar) = _sigClk0 * _sigClk0; 
+    }
+    else if (pp->type == bncParam::TROPO) {
+      _QQ(iPar,iPar) = _sigTrp0 * _sigTrp0; 
+    }
+    else if (pp->type == bncParam::GALILEO_OFFSET) {
+      _QQ(iPar,iPar) = _sigGalileoOffset0 * _sigGalileoOffset0; 
     }
   }
 }
@@ -427,32 +467,13 @@ void bncModel::predict(t_epoData* epoData) {
 
   _time = epoData->tt; // current epoch time
 
-  const double MAXSOLGAP = 60.0;
+  const double MAXSOLGAP = 10.0;
 
   bool firstCrd = false;
   if (!_lastTimeOK.valid() || _time - _lastTimeOK > MAXSOLGAP) {
     firstCrd = true;
     _startTime = epoData->tt;
-
-    unsigned nPar = _params.size();
-    _QQ.ReSize(nPar); 
-    _QQ = 0.0;
-    for (int iPar = 1; iPar <= _params.size(); iPar++) {
-      bncParam* pp = _params[iPar-1];
-      pp->xx = 0.0;
-      if      (pp->isCrd()) {
-        _QQ(iPar,iPar) = _sigCrd0 * _sigCrd0; 
-      }
-      else if (pp->type == bncParam::RECCLK) {
-        _QQ(iPar,iPar) = _sigClk0 * _sigClk0; 
-      }
-      else if (pp->type == bncParam::TROPO) {
-        _QQ(iPar,iPar) = _sigTrp0 * _sigTrp0; 
-      }
-      else if (pp->type == bncParam::GALILEO_OFFSET) {
-        _QQ(iPar,iPar) = _sigGalileoOffset0 * _sigGalileoOffset0; 
-      }
-    }
+    reset();
   }
 
   // Use different white noise for Quick-Start mode
