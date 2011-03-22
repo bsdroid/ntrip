@@ -348,6 +348,7 @@ bncWindow::bncWindow() {
   _pppSigTrpP            = new QLineEdit(settings.value("pppSigTrpP").toString());
   _pppAverageLineEdit    = new QLineEdit(settings.value("pppAverage").toString());
   _pppQuickStartLineEdit = new QLineEdit(settings.value("pppQuickStart").toString());
+  _pppMaxSolGapLineEdit  = new QLineEdit(settings.value("pppMaxSolGap").toString());
   _pppRefCrdXLineEdit    = new QLineEdit(settings.value("pppRefCrdX").toString());
   _pppRefCrdYLineEdit    = new QLineEdit(settings.value("pppRefCrdY").toString());
   _pppRefCrdZLineEdit    = new QLineEdit(settings.value("pppRefCrdZ").toString());
@@ -410,6 +411,9 @@ bncWindow::bncWindow() {
           this, SLOT(slotBncTextChanged()));
 
   connect(_pppAntexLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
+  connect(_pppQuickStartLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
   // Streams
@@ -528,6 +532,7 @@ bncWindow::bncWindow() {
   _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
   _pppSigCLineEdit->setWhatsThis(tr("<p>Enter a sigma for your code observations in meters.</p><p>The higher the sigma you enter, the less the contribution of code observations to a PPP solution based on a combination of code and phase data. 5.0 (default) is likely to be an appropriate choice.</p>"));
   _pppQuickStartLineEdit->setWhatsThis(tr("<p>Enter the lenght of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate as introduced above and adjust a sigma 'XYZ Ini' according to the coordinate's precision. Fixing the coordinate is done in BNC through setting the 'Sigma XYZ Noise' you define below temporarily to zero.</p><p>This so-called Quick-Start option allows the PPP solution to rapidly converge. It requires that the antenna remains unmoved on the know position throughout the startup period.</p><p>A value of 120 is likely to be an appropriate choice for 'Quick-Start'. Default is an empty option field, meaning that you don't want BNC to operate in Quick-Start mode.</p>"));
+  _pppMaxSolGapLineEdit->setWhatsThis(tr("<p>Specify a maximum PPP solution gap in seconds.</p><p>Default is an empty option field, meaning that you don't want the PPP solution to restart.</p>"));
   _pppSigPLineEdit->setWhatsThis(tr("<p>Enter a sigma for your phase observations in meters.</p><p>The higher the sigma you enter, the less the contribution of phase observations to a PPP solutions based on a combination of code and phase data. 0.02 (default) is likely to be an appropriate choice.</p>"));
   _pppAverageLineEdit->setWhatsThis(tr("<p>Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions computed from those individual positions obtained most recently throughout this period.</p><p>An empty option field (default) means that you don't want BNC to output moving average positions.</p>"));
   _pppSigCrd0->setWhatsThis(tr("<p>Enter a sigma in meters for the initial XYZ coordinate componentes. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode."));
@@ -803,6 +808,7 @@ bncWindow::bncWindow() {
   _pppSigTrpP->setMaximumWidth(6*ww);
   _pppAverageLineEdit->setMaximumWidth(6*ww);
   _pppQuickStartLineEdit->setMaximumWidth(6*ww);
+  _pppMaxSolGapLineEdit->setMaximumWidth(6*ww);
   _pppRefCrdXLineEdit->setMaximumWidth(10*ww);
   _pppRefCrdYLineEdit->setMaximumWidth(10*ww);
   _pppRefCrdZLineEdit->setMaximumWidth(10*ww);
@@ -836,13 +842,15 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("Sigma XYZ Noise  "),      3, 4);
   pppLayout->addWidget(_pppQuickStartLineEdit,               3, 5, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Quick-Start (sec)"),      3, 6);  
-  pppLayout->addWidget(_pppPlotCoordinates,                  3, 7, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("PPP Plot"),               3, 8);
-  pppLayout->addWidget(new QLabel("NMEA"),                   4, 0); 
+  pppLayout->addWidget(_pppMaxSolGapLineEdit,                3, 7, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Max Solution Gap (sec)"), 3, 8);  
+  pppLayout->addWidget(new QLabel("Output"),                 4, 0); 
   pppLayout->addWidget(_pppNMEALineEdit,                     4, 1, 1, 3);
-  pppLayout->addWidget(new QLabel("File"),                   4, 4); 
+  pppLayout->addWidget(new QLabel("NMEA File"),              4, 4); 
   pppLayout->addWidget(_pppNMEAPortLineEdit,                 4, 5, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Port"),                   4, 6);
+  pppLayout->addWidget(new QLabel("NMEA Port"),              4, 6);
+  pppLayout->addWidget(_pppPlotCoordinates,                  4, 7, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("PPP Plot"),               4, 8);
 
 
   pppLayout->addWidget(new QLabel("Coordinates from Precise Point Positioning (PPP)."),5, 0,1,5);
@@ -1250,6 +1258,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppSigTrpP",_pppSigTrpP->text());
   settings.setValue("pppAverage",  _pppAverageLineEdit->text());
   settings.setValue("pppQuickStart", _pppQuickStartLineEdit->text());
+  settings.setValue("pppMaxSolGap",  _pppMaxSolGapLineEdit->text());
   settings.setValue("pppRefCrdX",  _pppRefCrdXLineEdit->text());
   settings.setValue("pppRefCrdY",  _pppRefCrdYLineEdit->text());
   settings.setValue("pppRefCrdZ",  _pppRefCrdZLineEdit->text());
@@ -1828,6 +1837,7 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _pppRefCrdZLineEdit 
      || sender() == _pppSync 
      || sender() == _pppSPPComboBox
+     || sender() == _pppQuickStartLineEdit
      || sender() == _pppEstTropoCheckBox
      || sender() == _pppUsePhaseCheckBox    
      || sender() == _pppAntexLineEdit ) {
@@ -1862,19 +1872,31 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdYLineEdit->setPalette(palette_white);
       _pppRefCrdZLineEdit->setPalette(palette_white);
       _pppAntexLineEdit->setEnabled(true);
+      if (!_pppQuickStartLineEdit->text().isEmpty()) {
+      _pppMaxSolGapLineEdit->setPalette(palette_white);
+      _pppMaxSolGapLineEdit->setEnabled(true);
+      }
+      else {
+      _pppMaxSolGapLineEdit->setPalette(palette_gray);
+      _pppMaxSolGapLineEdit->setEnabled(false);
+      }
       if (!_pppRefCrdXLineEdit->text().isEmpty() &&
           !_pppRefCrdYLineEdit->text().isEmpty() &&
           !_pppRefCrdZLineEdit->text().isEmpty()) {
       _pppAverageLineEdit->setPalette(palette_white);
       _pppQuickStartLineEdit->setPalette(palette_white);
+      _pppMaxSolGapLineEdit->setPalette(palette_white);
       _pppAverageLineEdit->setEnabled(true);
       _pppQuickStartLineEdit->setEnabled(true);
+      _pppMaxSolGapLineEdit->setEnabled(true);
       }
       else {
       _pppAverageLineEdit->setPalette(palette_gray);
       _pppAverageLineEdit->setEnabled(false);
       _pppQuickStartLineEdit->setPalette(palette_gray);
       _pppQuickStartLineEdit->setEnabled(false);
+      _pppMaxSolGapLineEdit->setPalette(palette_gray);
+      _pppMaxSolGapLineEdit->setEnabled(false);
       }
       if (!_pppAntexLineEdit->text().isEmpty() ) {
       _pppAntennaLineEdit->setEnabled(true);
@@ -1945,6 +1967,7 @@ void bncWindow::slotBncTextChanged(){
       _pppSigTrpP->setPalette(palette_gray);
       _pppAverageLineEdit->setPalette(palette_gray);
       _pppQuickStartLineEdit->setPalette(palette_gray);
+      _pppMaxSolGapLineEdit->setPalette(palette_gray);
       _pppAntexLineEdit->setPalette(palette_white);
       _pppAntennaLineEdit->setPalette(palette_gray);
       _pppApplySatAntCheckBox->setPalette(palette_gray);
@@ -1968,6 +1991,7 @@ void bncWindow::slotBncTextChanged(){
       _pppSigTrpP->setEnabled(false);
       _pppAverageLineEdit->setEnabled(false);
       _pppQuickStartLineEdit->setEnabled(false);
+      _pppMaxSolGapLineEdit->setEnabled(false);
       _pppAntexLineEdit->setEnabled(true);
       _pppAntennaLineEdit->setEnabled(false);
       _pppApplySatAntCheckBox->setEnabled(false);
