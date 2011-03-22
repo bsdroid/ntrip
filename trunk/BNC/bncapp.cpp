@@ -800,6 +800,13 @@ void bncApp::dumpCorrs(long minTime, long maxTime) {
 // Dump all corrections
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::dumpCorrs() {
+  QList<QString> allCorrs;
+  QMutableMapIterator<long, QString> it(*_corrs);
+  while (it.hasNext()) {
+    allCorrs << it.next().value();
+    it.remove();
+  }
+  dumpCorrs(allCorrs);
 }
 
 // Dump List of Corrections 
