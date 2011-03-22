@@ -250,7 +250,21 @@ bncModel::bncModel(QByteArray staID) {
   _ellBanc.ReSize(3); _ellBanc = 0.0;
 }
 
-// Reset
+// Destructor
+////////////////////////////////////////////////////////////////////////////
+bncModel::~bncModel() {
+  delete _nmeaStream;
+  delete _nmeaFile;
+  for (int ii = 0; ii < _posAverage.size(); ++ii) { 
+    delete _posAverage[ii]; 
+  }
+  delete _antex;
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    delete _params[iPar-1];
+  }
+}
+
+// Reset Parameters and Variance-Covariance Matrix
 ////////////////////////////////////////////////////////////////////////////
 void bncModel::reset() {
 
@@ -288,20 +302,6 @@ void bncModel::reset() {
     else if (pp->type == bncParam::GALILEO_OFFSET) {
       _QQ(iPar,iPar) = _sigGalileoOffset0 * _sigGalileoOffset0; 
     }
-  }
-}
-
-// Destructor
-////////////////////////////////////////////////////////////////////////////
-bncModel::~bncModel() {
-  delete _nmeaStream;
-  delete _nmeaFile;
-  for (int ii = 0; ii < _posAverage.size(); ++ii) { 
-    delete _posAverage[ii]; 
-  }
-  delete _antex;
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    delete _params[iPar-1];
   }
 }
 
@@ -467,7 +467,7 @@ void bncModel::predict(t_epoData* epoData) {
 
   _time = epoData->tt; // current epoch time
 
-  const double MAXSOLGAP = 10.0;
+  const double MAXSOLGAP = 60.0;
 
   bool firstCrd = false;
   if (!_lastTimeOK.valid() || _time - _lastTimeOK > MAXSOLGAP) {
