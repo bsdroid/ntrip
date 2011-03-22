@@ -81,6 +81,8 @@ class bncApp : public QApplication {
                      const QString& lineV3,
                      const QByteArray& allLines);
     void dumpCorrs(long minTime, long maxTime);
+    void dumpCorrs();
+    void dumpCorrs(const QList<QString>& allCorrs);
     void messagePrivate(const QByteArray& msg);
 
     QFile*            _logFile;
