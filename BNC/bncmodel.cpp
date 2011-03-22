@@ -467,10 +467,8 @@ void bncModel::predict(t_epoData* epoData) {
 
   _time = epoData->tt; // current epoch time
 
-  const double MAXSOLGAP = 60.0;
-
   bool firstCrd = false;
-  if (!_lastTimeOK.valid() || _time - _lastTimeOK > MAXSOLGAP) {
+  if (!_lastTimeOK.valid() || _time - _lastTimeOK > settings.value("pppMaxSolGap").toDouble() ) {
     firstCrd = true;
     _startTime = epoData->tt;
     reset();
