@@ -92,6 +92,7 @@ class bncModel : public QObject {
   void newNMEAstr(QByteArray str);
 
  private:
+  void   reset();
   void   cmpEle(t_satData* satData);
   void   addAmb(t_satData* satData);
   void   addObs(unsigned& iObs, t_satData* satData,
@@ -137,6 +138,7 @@ class bncModel : public QObject {
   ColumnVector          _ellBanc;
   bool                  _usePhase;
   bool                  _estTropo;
+  bool                  _useGalileo;
   QByteArray            _log;
   QFile*                _nmeaFile;
   QTextStream*          _nmeaStream;
