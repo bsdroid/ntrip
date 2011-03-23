@@ -843,7 +843,7 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppQuickStartLineEdit,               3, 5, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Quick-Start (sec)  "),    3, 6);  
   pppLayout->addWidget(_pppMaxSolGapLineEdit,                3, 7, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Max Solution Gap (sec)"), 3, 8);  
+  pppLayout->addWidget(new QLabel("Max Sol. Gap (sec)"),     3, 8);  
   pppLayout->addWidget(new QLabel("Output"),                 4, 0); 
   pppLayout->addWidget(_pppNMEALineEdit,                     4, 1, 1, 3);
   pppLayout->addWidget(new QLabel("NMEA File"),              4, 4); 
