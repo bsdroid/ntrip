@@ -532,7 +532,7 @@ bncWindow::bncWindow() {
   _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
   _pppSigCLineEdit->setWhatsThis(tr("<p>Enter a sigma for your code observations in meters.</p><p>The higher the sigma you enter, the less the contribution of code observations to a PPP solution based on a combination of code and phase data. 5.0 (default) is likely to be an appropriate choice.</p>"));
   _pppQuickStartLineEdit->setWhatsThis(tr("<p>Enter the lenght of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate as introduced above and adjust a sigma 'XYZ Ini' according to the coordinate's precision. Fixing the coordinate is done in BNC through setting the 'Sigma XYZ Noise' you define below temporarily to zero.</p><p>This so-called Quick-Start option allows the PPP solution to rapidly converge. It requires that the antenna remains unmoved on the know position throughout the startup period.</p><p>A value of 120 is likely to be an appropriate choice for 'Quick-Start'. Default is an empty option field, meaning that you don't want BNC to operate in Quick-Start mode.</p>"));
-  _pppMaxSolGapLineEdit->setWhatsThis(tr("<p>Specify a maximum PPP solution gap in seconds. Whenever this limit is exceeded, the PPP solution will return into the Quick-Start mode and fix the introduced reference station coordinates for the specified Quick-Start period.</p><p>This option makes only sense for a stationary operated receiver where solution conversion can be enforced because the receiver position is known. Default is an empty option field, meaning that you don't want the PPP solution to return into the Quick-Start mode any time the PPP solution failes i.e. because of longer lasting outages.</p>"));
+  _pppMaxSolGapLineEdit->setWhatsThis(tr("<p>Specify a 'Maximum Solution Gap' in seconds. Should the time span between two consecutive positioning solutions exceed this limit, the algorithm returns into the Quick-Start mode and fixes the introduced reference coordinate for the specified Quick-Start period. A value of '120' seconds could be an appropriate choice.</p><p>This option makes only sense for a stationary operated receiver where solution convergence can be enforced because the (approximate) receiver position is known. Default is an empty option field, meaning that you don't want BNC to return into the Quick-Start mode after failures caused i.e. by longer lasting outages.</p>"));
   _pppSigPLineEdit->setWhatsThis(tr("<p>Enter a sigma for your phase observations in meters.</p><p>The higher the sigma you enter, the less the contribution of phase observations to a PPP solutions based on a combination of code and phase data. 0.02 (default) is likely to be an appropriate choice.</p>"));
   _pppAverageLineEdit->setWhatsThis(tr("<p>Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions computed from those individual positions obtained most recently throughout this period.</p><p>An empty option field (default) means that you don't want BNC to output moving average positions.</p>"));
   _pppSigCrd0->setWhatsThis(tr("<p>Enter a sigma in meters for the initial XYZ coordinate componentes. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode."));
@@ -1872,50 +1872,49 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdYLineEdit->setPalette(palette_white);
       _pppRefCrdZLineEdit->setPalette(palette_white);
       _pppAntexLineEdit->setEnabled(true);
-      if (!_pppQuickStartLineEdit->text().isEmpty()) {
-      _pppMaxSolGapLineEdit->setPalette(palette_white);
-      _pppMaxSolGapLineEdit->setEnabled(true);
-      }
-      else {
-      _pppMaxSolGapLineEdit->setPalette(palette_gray);
-      _pppMaxSolGapLineEdit->setEnabled(false);
-      }
       if (!_pppRefCrdXLineEdit->text().isEmpty() &&
           !_pppRefCrdYLineEdit->text().isEmpty() &&
           !_pppRefCrdZLineEdit->text().isEmpty()) {
-      _pppAverageLineEdit->setPalette(palette_white);
-      _pppQuickStartLineEdit->setPalette(palette_white);
-      _pppMaxSolGapLineEdit->setPalette(palette_white);
-      _pppAverageLineEdit->setEnabled(true);
-      _pppQuickStartLineEdit->setEnabled(true);
-      _pppMaxSolGapLineEdit->setEnabled(true);
+        _pppAverageLineEdit->setPalette(palette_white);
+        _pppQuickStartLineEdit->setPalette(palette_white);
+        _pppAverageLineEdit->setEnabled(true);
+        _pppQuickStartLineEdit->setEnabled(true);
       }
       else {
-      _pppAverageLineEdit->setPalette(palette_gray);
-      _pppAverageLineEdit->setEnabled(false);
-      _pppQuickStartLineEdit->setPalette(palette_gray);
-      _pppQuickStartLineEdit->setEnabled(false);
-      _pppMaxSolGapLineEdit->setPalette(palette_gray);
-      _pppMaxSolGapLineEdit->setEnabled(false);
+        _pppAverageLineEdit->setPalette(palette_gray);
+        _pppQuickStartLineEdit->setPalette(palette_gray);
+        _pppAverageLineEdit->setEnabled(false);
+        _pppQuickStartLineEdit->setEnabled(false);
+      }
+      if (!_pppRefCrdXLineEdit->text().isEmpty() &&
+          !_pppRefCrdYLineEdit->text().isEmpty() &&
+          !_pppRefCrdZLineEdit->text().isEmpty() &&
+          !_pppQuickStartLineEdit->text().isEmpty()) {
+        _pppMaxSolGapLineEdit->setPalette(palette_white);
+        _pppMaxSolGapLineEdit->setEnabled(true);
+      }
+      else {
+        _pppMaxSolGapLineEdit->setPalette(palette_gray);
+        _pppMaxSolGapLineEdit->setEnabled(false);
       }
       if (!_pppAntexLineEdit->text().isEmpty() ) {
-      _pppAntennaLineEdit->setEnabled(true);
-      _pppApplySatAntCheckBox->setEnabled(true);
-      _pppAntennaLineEdit->setPalette(palette_white);
-      _pppApplySatAntCheckBox->setPalette(palette_white);
+        _pppAntennaLineEdit->setEnabled(true);
+        _pppApplySatAntCheckBox->setEnabled(true);
+        _pppAntennaLineEdit->setPalette(palette_white);
+        _pppApplySatAntCheckBox->setPalette(palette_white);
       }
       else {
-      _pppAntennaLineEdit->setEnabled(false);
-      _pppApplySatAntCheckBox->setEnabled(false);
-      _pppAntennaLineEdit->setPalette(palette_gray);
-      _pppApplySatAntCheckBox->setPalette(palette_gray);
+        _pppAntennaLineEdit->setEnabled(false);
+        _pppApplySatAntCheckBox->setEnabled(false);
+        _pppAntennaLineEdit->setPalette(palette_gray);
+        _pppApplySatAntCheckBox->setPalette(palette_gray);
       }
-      _pppSigCLineEdit->setPalette(palette_white);
-      _pppSigCLineEdit->setEnabled(true);
-      _pppSigCrd0->setPalette(palette_white);
-      _pppSigCrd0->setEnabled(true);
-      _pppSigCrdP->setPalette(palette_white);
-      _pppSigCrdP->setEnabled(true);
+        _pppSigCLineEdit->setPalette(palette_white);
+        _pppSigCLineEdit->setEnabled(true);
+        _pppSigCrd0->setPalette(palette_white);
+        _pppSigCrd0->setEnabled(true);
+        _pppSigCrdP->setPalette(palette_white);
+        _pppSigCrdP->setEnabled(true);
       if (_pppEstTropoCheckBox->isChecked()
          && !_pppMountLineEdit->text().isEmpty()) {
         _pppSigTrp0->setPalette(palette_white);
@@ -1939,12 +1938,12 @@ void bncWindow::slotBncTextChanged(){
         _pppSigPLineEdit->setEnabled(false);
       }
       if (_pppSPPComboBox->currentText() == "PPP") {
-      _pppSync->setPalette(palette_white);
-      _pppSync->setEnabled(true);
+        _pppSync->setPalette(palette_white);
+        _pppSync->setEnabled(true);
       }
       else {
-      _pppSync->setPalette(palette_gray);
-      _pppSync->setEnabled(false);
+        _pppSync->setPalette(palette_gray);
+        _pppSync->setEnabled(false);
       }
     } else {
       _pppSPPComboBox->setPalette(palette_gray);
