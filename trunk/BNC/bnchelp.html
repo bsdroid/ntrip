@@ -747,7 +747,7 @@ The source code for BNC comes with an example perl script 'test_tcpip_client.pl'
 When feeding a real-time GNSS network engine waiting epoch by epoch for synchronized Broadcast Corrections, BNC drops (only concerning IP port output) whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Broadcast Corrections stream and the delay acceptable by your application. A message such as &quot;COCK1: Correction overaged by 5 sec&quot; shows up in BNC's logfile if 'Wait for full epoch' is exceeded.
 </p>
 <p>
-Specifying a value of '0' means that BNC immediately outputs all incoming Broadcast Epemeris Corrections and does not drop any of them for latency reasions.
+Specifying a value of '0' means that BNC immediately outputs all incoming Broadcast Epemeris Corrections and does not drop any of them for latency reasons.
 </p>
 
 <p><a name="syncout"><h4>3.7. Feed Engine</h4></p>
