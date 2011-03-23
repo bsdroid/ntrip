@@ -146,6 +146,7 @@ class bncModel : public QObject {
   QMap<QString, double> _windUpSum;
   QVector<pppPos*>      _posAverage;
   double                _quickStart;
+  double                _maxSolGap;
   double                _sigCrd0;
   double                _sigCrdP;
   double                _sigTrp0;
