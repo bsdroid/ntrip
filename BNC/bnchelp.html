@@ -1393,6 +1393,9 @@ Entering any positive value up to 1440 (24h mean value) is allowed. An empty opt
 
 <p><a name="combi"><h4>3.12. Combination</h4></p>
 <p>
+The part of BNC which enables the combination of orbit and clock corrections streams is not intended for publication under GNU General Public License (GPL). However, personal copies of pre-compiled BNC binaries which support the 'Combination' option may be made available as freeware. This would be done on request and only in exceptional cases.
+</p>
+<p>
 BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors from various providers. It is so far only the satellite clock corrections which are combined here while orbit correctors in the combination product as well as the product update rates are just taken over from one of the incoming corrections streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach.
 </p>
 <p>
@@ -1957,12 +1960,12 @@ Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested to synch
 
 <tr>
 <td>Feb 2011 &nbsp;</td><td>Version 2.5 &nbsp;</td>
-<td>[Add] PPP option for sync of clock observations and corrections<br> [Add] Drafted RTCMv3 Galileo ephemeris messages 1045<br> [Add] Drafted RTCMv3 Multipe Signal Messages<br> [Add] Optional specification of sigmas for coordinates and troposphere in PPP<br> [Add] Include Galileo in SPP<br> [Add] Include Galileo observations in output via IP port<br> [Add] Include Galileo observations in output via RINEXv3 files<br> [Mod] Interface format for feeding a real-time engine with observations<br> [Add] Correct observations for antenna phase center offsets<br> [Add] Combine orbit/clock correctors streams<br> [Add] SP3 output<br> [Add] Specify corrections mountpoint in PPP tab</td>
+<td>[Add] PPP option for sync of clock observations and corrections<br> [Add] Drafted RTCMv3 Galileo ephemeris messages 1045<br> [Add] Drafted RTCMv3 Multipe Signal Messages<br> [Add] Optional specification of sigmas for coordinates and troposphere in PPP<br> [Add] Include Galileo in SPP<br> [Add] Include Galileo observations in output via IP port<br> [Add] Include Galileo observations in output via RINEXv3 files<br> [Mod] Interface format for feeding a real-time engine with observations<br> [Add] Correct observations for antenna phase center offsets<br> [Add] Combine orbit/clock correctors streams<br> [Add] Specify corrections mountpoint in PPP tab</td>
 </tr>
 
 <tr>
 <td>Apr 2011 &nbsp;</td><td>Version 2.6 &nbsp;</td>
-<td>[Add]</td>
+<td>[Add] SP3 output<br> [Mod] RTCMv3 Galileo Broadcast Ephemeris message 1045</td>
 </tr>
 
 </table>
