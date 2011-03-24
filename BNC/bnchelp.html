@@ -1249,9 +1249,10 @@ You may need to create your own reference coordinate through running BNC for an 
 
 <p><a name="pppgap"><h4>3.11.4.4 Max Solution Gap - optional if XYZ is set</h4></p>
 <p>
-Specify a 'Maximum Solution Gap' in seconds. Should the time span between two consecutive positioning solutions exceed this limit, the algorithm returns into the Quick-Start mode and fixes the introduced reference coordinate for the specified Quick-Start period. A value of '120' seconds could be an appropriate choice.
+Specify a 'Maximum Solution Gap' in seconds. Should the time span between two consecutive solutions exceed this limit, the algorithm returns into the Quick-Start mode and fixes the introduced reference coordinate for the specified Quick-Start period. A value of '120' seconds could be an appropriate choice.
 </p>
-<p>This option makes only sense for a stationary operated receiver where solution convergence can be enforced because the (approximate) receiver position is known. Default is an empty option field, meaning that you don't want BNC to return into the Quick-Start mode after failures caused i.e. by longer lasting outages.
+<p>
+This option makes only sense for a stationary operated receiver where solution convergence can be enforced because a good approximation for the receiver position is known. Default is an empty option field, meaning that you don't want BNC to return into the Quick-Start mode after failures caused i.e. by longer lasting outages.
 </p>
 
 <p><a name="pppoutput"><h4>3.11.5 Output</h4></p>
