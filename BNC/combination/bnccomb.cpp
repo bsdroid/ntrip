@@ -658,8 +658,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       PP(nObs+1+iGps) = Ph;
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         cmbParam* pp = _params[iPar-1];
-        if (pp->type == cmbParam::Sat_offset && pp->prn == prn &&
-            AA.Column(iPar).maximum_absolute_value() > 0.0) {
+        if (pp->type == cmbParam::Sat_offset && pp->prn == prn) {
           AA(nObs+iCond, iPar) = 1.0;
         }
       }
