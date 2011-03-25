@@ -102,7 +102,7 @@ bncComb::bncComb() {
 
   QStringList combineStreams = settings.value("combineStreams").toStringList();
 
-  if (combineStreams.size() >= 2) {
+  if (combineStreams.size() >= 1) {
     QListIterator<QString> it(combineStreams);
     while (it.hasNext()) {
       QStringList hlp = it.next().split(" ");
