@@ -155,6 +155,7 @@ void t_bnseph::readEph() {
   else {
     emit(newMessage(QString("Ephemeris server: line not recognized: %1")
                     .arg(line.data()).toAscii().data()));
+    return;
   }
 
   QStringList lines;
