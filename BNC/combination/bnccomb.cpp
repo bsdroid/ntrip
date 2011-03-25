@@ -603,7 +603,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   if (nObs > 0) {
     const double Pl = 1.0 / (0.05 * 0.05);
 
-    const int nCon = (_firstReg == false) ? 2 + MAXPRN_GPS : 2;
+    const int nCon = (_firstReg == false) ? 1 + MAXPRN_GPS : 1;
     Matrix         AA(nObs+nCon, nPar);  AA = 0.0;
     ColumnVector   ll(nObs+nCon);        ll = 0.0;
     DiagonalMatrix PP(nObs+nCon);        PP = Pl;
@@ -641,15 +641,6 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
     PP(nObs+iCond) = Ph;
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       cmbParam* pp = _params[iPar-1];
-      if      (pp->type == cmbParam::AC_offset) {
-        AA(nObs+iCond, iPar) = 1.0;
-      }
-    }
-
-    ++iCond;
-    PP(nObs+iCond) = Ph;
-    for (int iPar = 1; iPar <= _params.size(); iPar++) {
-      cmbParam* pp = _params[iPar-1];
       if (pp->type == cmbParam::clk &&
           AA.Column(iPar).maximum_absolute_value() > 0.0) {
         AA(nObs+iCond, iPar) = 1.0;
@@ -679,6 +670,11 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
     for (int ii = 1; ii < 10; ii++) {
       bncModel::kalman(AA, ll, PP, _QQ, dx);
       ColumnVector vv = ll - AA * dx;
+
+      for (int iv = 1; iv < vv.Nrows(); iv++) {
+        out << vv(iv) << " ";
+      }
+      out << endl;
 
       int    maxResIndex;
       double maxRes = vv.maximum_absolute_value1(maxResIndex);   
