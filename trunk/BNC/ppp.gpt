@@ -24,7 +24,7 @@ set format x "%H:%M"
 set title "FFMJ1 (${inpFile})"
 
 set ylabel "meters"
-###set yrange [-1.5:1.5]
+set yrange [-0.5:0.5]
 
 set ytics nomirror
 set y2range [0:50]
