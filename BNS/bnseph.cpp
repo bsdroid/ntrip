@@ -24,6 +24,7 @@ extern "C" {
 }
 
 #define PI          3.1415926535898
+const static double c_vel = 299792458.0;
 
 using namespace std;
 using namespace BNS;
@@ -150,6 +151,10 @@ void t_bnseph::readEph() {
   }
   else if (prn.indexOf('G') != -1) {
     eph = new t_ephGPS();
+    numlines = 8;
+  }
+  else if (prn.indexOf('E') != -1) {
+    eph = new t_ephGal();
     numlines = 8;
   }
   else {
@@ -502,7 +507,6 @@ void t_ephGPS::position(int GPSweek, double GPSweeks, ColumnVector& xc,
   // Relativistic Correction
   // -----------------------
   //  xc(4) -= 4.442807633e-10 * _e * sqrt(a0) *sin(E);
-  const static double c_vel = 299792458.0;
   xc(4) -= 2.0 * DotProduct(xc.Rows(1,3),vv) / c_vel / c_vel;
 }
 
@@ -764,4 +768,104 @@ int t_ephGlo::IOD() const {
     bncTime tMoscow = tGPS + diffSec;
     return int(tMoscow.daysec() / 900);
   }
+}
+
+// Compute Galileo Satellite Position
+////////////////////////////////////////////////////////////////////////////
+void t_ephGal::position(int GPSweek, double GPSweeks, ColumnVector& xc,
+                        ColumnVector& vv) const {
+
+  static const double secPerWeek = 7 * 86400.0;
+  static const double omegaEarth = 7292115.1467e-11;
+  static const double gmWGS      = 398.6005e12;
+
+  xc.ReSize(4); xc = 0.0;
+  vv.ReSize(3); vv = 0.0;
+
+  double a0 = _sqrt_A * _sqrt_A;
+  if (a0 == 0) {
+    return;
+  }
+
+  double n0 = sqrt(gmWGS/(a0*a0*a0));
+  double tk = GPSweeks - _TOE;
+  if (GPSweek != _GPSweek) {  
+    tk += (GPSweek - _GPSweek) * secPerWeek;
+  }
+  double n  = n0 + _Delta_n;
+  double M  = _M0 + n*tk;
+  double E  = M;
+  double E_last;
+  do {
+    E_last = E;
+    E = M + _e*sin(E);
+  } while ( fabs(E-E_last)*a0 > 0.001 );
+  double v      = 2.0*atan( sqrt( (1.0 + _e)/(1.0 - _e) )*tan( E/2 ) );
+  double u0     = v + _omega;
+  double sin2u0 = sin(2*u0);
+  double cos2u0 = cos(2*u0);
+  double r      = a0*(1 - _e*cos(E)) + _Crc*cos2u0 + _Crs*sin2u0;
+  double i      = _i0 + _IDOT*tk + _Cic*cos2u0 + _Cis*sin2u0;
+  double u      = u0 + _Cuc*cos2u0 + _Cus*sin2u0;
+  double xp     = r*cos(u);
+  double yp     = r*sin(u);
+  double OM     = _OMEGA0 + (_OMEGADOT - omegaEarth)*tk - 
+                   omegaEarth*_TOE;
+  
+  double sinom = sin(OM);
+  double cosom = cos(OM);
+  double sini  = sin(i);
+  double cosi  = cos(i);
+  xc[0] = xp*cosom - yp*cosi*sinom;
+  xc[1] = xp*sinom + yp*cosi*cosom;
+  xc[2] = yp*sini;                 
+  
+  double tc = GPSweeks - _TOC;
+  if (GPSweek != _GPSweek) {  
+    tc += (GPSweek - _GPSweek) * secPerWeek;
+  }
+  xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc;
+
+  // Velocity
+  // --------
+  double tanv2 = tan(v/2);
+  double dEdM  = 1 / (1 - _e*cos(E));
+  double dotv  = sqrt((1.0 + _e)/(1.0 - _e)) / cos(E/2)/cos(E/2) / (1 + tanv2*tanv2) 
+               * dEdM * n;
+  double dotu  = dotv + (-_Cuc*sin2u0 + _Cus*cos2u0)*2*dotv;
+  double dotom = _OMEGADOT - omegaEarth;
+  double doti  = _IDOT + (-_Cic*sin2u0 + _Cis*cos2u0)*2*dotv;
+  double dotr  = a0 * _e*sin(E) * dEdM * n 
+                + (-_Crc*sin2u0 + _Crs*cos2u0)*2*dotv;
+  double dotx  = dotr*cos(u) - r*sin(u)*dotu;
+  double doty  = dotr*sin(u) + r*cos(u)*dotu;
+
+  vv[0]  = cosom   *dotx  - cosi*sinom   *doty      // dX / dr
+           - xp*sinom*dotom - yp*cosi*cosom*dotom   // dX / dOMEGA
+                       + yp*sini*sinom*doti;        // dX / di
+
+  vv[1]  = sinom   *dotx  + cosi*cosom   *doty
+           + xp*cosom*dotom - yp*cosi*sinom*dotom
+                          - yp*sini*cosom*doti;
+
+  vv[2]  = sini    *doty  + yp*cosi      *doti;
+
+  // Relativistic Correction
+  // -----------------------
+  //  xc(4) -= 4.442807633e-10 * _e * sqrt(a0) *sin(E);
+  xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / c_vel / c_vel;
+}
+
+// Read Galileo Ephemeris
+////////////////////////////////////////////////////////////////////////////
+t_irc t_ephGal::read(const QStringList& lines) {
+
+  return success;
+}
+
+// build up RTCM3 for Galileo
+////////////////////////////////////////////////////////////////////////////
+int t_ephGal::RTCM3(unsigned char *buffer) {
+
+  return 0;
 }
