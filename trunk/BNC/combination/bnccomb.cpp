@@ -597,10 +597,12 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   }
 
   if (nObs > 0) {
+    const double Pl = 1.0 / (0.05 * 0.05);
+
     const int nCon = 2 + MAXPRN_GPS;
     Matrix         AA(nObs+nCon, nPar);  AA = 0.0;
     ColumnVector   ll(nObs+nCon);        ll = 0.0;
-    DiagonalMatrix PP(nObs+nCon);        PP = 1.0;
+    DiagonalMatrix PP(nObs+nCon);        PP = Pl;
 
     int iObs = 0;
     QListIterator<cmbEpoch*> itEpo(epochs);
@@ -643,9 +645,11 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
     ++iCond;
     PP(nObs+iCond) = Ph;
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
-      cmbParam* pp = _params[iPar-1];
-      if      (pp->type == cmbParam::clk) {
-        AA(nObs+iCond, iPar) = 1.0;
+      if (AA.Column(iPar).maximum_absolute_value() > 0.0) {
+        cmbParam* pp = _params[iPar-1];
+        if      (pp->type == cmbParam::clk) {
+          AA(nObs+iCond, iPar) = 1.0;
+        }
       }
     }
 
@@ -654,9 +658,11 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
       PP(nObs+1+iGps) = Ph;
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        cmbParam* pp = _params[iPar-1];
-        if (pp->type == cmbParam::Sat_offset && pp->prn == prn) {
-          AA(nObs+iCond, iPar) = 1.0;
+        if (AA.Column(iPar).maximum_absolute_value() > 0.0) {
+          cmbParam* pp = _params[iPar-1];
+          if (pp->type == cmbParam::Sat_offset && pp->prn == prn) {
+            AA(nObs+iCond, iPar) = 1.0;
+          }
         }
       }
     }
