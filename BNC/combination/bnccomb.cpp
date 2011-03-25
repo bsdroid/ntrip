@@ -102,7 +102,7 @@ bncComb::bncComb() {
 
   QStringList combineStreams = settings.value("combineStreams").toStringList();
 
-  if (combineStreams.size() >= 1) {
+  if (combineStreams.size() >= 1 && !combineStreams[0].isEmpty()) {
     QListIterator<QString> it(combineStreams);
     while (it.hasNext()) {
       QStringList hlp = it.next().split(" ");
@@ -670,11 +670,6 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
     for (int ii = 1; ii < 10; ii++) {
       bncModel::kalman(AA, ll, PP, _QQ, dx);
       ColumnVector vv = ll - AA * dx;
-
-      for (int iv = 1; iv < vv.Nrows(); iv++) {
-        out << vv(iv) << " ";
-      }
-      out << endl;
 
       int    maxResIndex;
       double maxRes = vv.maximum_absolute_value1(maxResIndex);   
