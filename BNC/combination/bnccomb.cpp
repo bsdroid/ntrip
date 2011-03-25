@@ -30,6 +30,8 @@
 
 using namespace std;
 
+const int MAXPRN_GPS = 32;
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 cmbParam::cmbParam(cmbParam::parType type_, int index_,
@@ -136,17 +138,15 @@ bncComb::bncComb() {
   while (it.hasNext()) {
     it.next();
     cmbAC* AC = it.value();
-    if (AC->name != _masterAC) {
-      _params.push_back(new cmbParam(cmbParam::AC_offset, ++nextPar, 
-                                     AC->name, "", sigAC_0, sigAC_P));
-      for (int iGps = 1; iGps <= 32; iGps++) {
-        QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
-        _params.push_back(new cmbParam(cmbParam::Sat_offset, ++nextPar, 
-                                       AC->name, prn, sigSat_0, sigSat_P));
-      }
+    _params.push_back(new cmbParam(cmbParam::AC_offset, ++nextPar, 
+                                   AC->name, "", sigAC_0, sigAC_P));
+    for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
+      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+      _params.push_back(new cmbParam(cmbParam::Sat_offset, ++nextPar, 
+                                     AC->name, prn, sigSat_0, sigSat_P));
     }
   }
-  for (int iGps = 1; iGps <= 32; iGps++) {
+  for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
     QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
     _params.push_back(new cmbParam(cmbParam::clk, ++nextPar, "", prn,
                                    sigClk_0, sigClk_P));
@@ -597,9 +597,10 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   }
 
   if (nObs > 0) {
-    Matrix         AA(nObs, nPar);
-    ColumnVector   ll(nObs);
-    DiagonalMatrix PP(nObs); PP = 1.0;
+    const int nCon = 2 + MAXPRN_GPS;
+    Matrix         AA(nObs+nCon, nPar);  AA = 0.0;
+    ColumnVector   ll(nObs+nCon);        ll = 0.0;
+    DiagonalMatrix PP(nObs+nCon);        PP = 1.0;
 
     int iObs = 0;
     QListIterator<cmbEpoch*> itEpo(epochs);
@@ -625,6 +626,39 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       }
 
       delete epo;
+    }
+
+    // Regularization
+    // --------------
+    const double Ph = 1.e6;
+    int iCond = 1;
+    PP(nObs+iCond) = Ph;
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      cmbParam* pp = _params[iPar-1];
+      if      (pp->type == cmbParam::AC_offset) {
+        AA(nObs+iCond, iPar) = 1.0;
+      }
+    }
+
+    ++iCond;
+    PP(nObs+iCond) = Ph;
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      cmbParam* pp = _params[iPar-1];
+      if      (pp->type == cmbParam::clk) {
+        AA(nObs+iCond, iPar) = 1.0;
+      }
+    }
+
+    for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
+      ++iCond;
+      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+      PP(nObs+1+iGps) = Ph;
+      for (int iPar = 1; iPar <= _params.size(); iPar++) {
+        cmbParam* pp = _params[iPar-1];
+        if (pp->type == cmbParam::Sat_offset && pp->prn == prn) {
+          AA(nObs+iCond, iPar) = 1.0;
+        }
+      }
     }
 
     const double MAXRES = 999.10;  // TODO: make it an option
