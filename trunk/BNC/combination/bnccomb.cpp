@@ -201,6 +201,10 @@ bncComb::bncComb() {
       _antex = 0;
     }
   }
+
+  // Not yet regularized
+  // -------------------
+  _firstReg = false;
 }
 
 // Destructor
@@ -599,7 +603,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   if (nObs > 0) {
     const double Pl = 1.0 / (0.05 * 0.05);
 
-    const int nCon = 2 + MAXPRN_GPS;
+    const int nCon = (_firstReg == false) ? 2 + MAXPRN_GPS : 2;
     Matrix         AA(nObs+nCon, nPar);  AA = 0.0;
     ColumnVector   ll(nObs+nCon);        ll = 0.0;
     DiagonalMatrix PP(nObs+nCon);        PP = Pl;
@@ -652,14 +656,17 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       }
     }
 
-    for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
-      ++iCond;
-      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
-      PP(nObs+1+iGps) = Ph;
-      for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        cmbParam* pp = _params[iPar-1];
-        if (pp->type == cmbParam::Sat_offset && pp->prn == prn) {
-          AA(nObs+iCond, iPar) = 1.0;
+    if (!_firstReg) {
+      _firstReg = true;
+      for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
+        ++iCond;
+        QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+        PP(nObs+1+iGps) = Ph;
+        for (int iPar = 1; iPar <= _params.size(); iPar++) {
+          cmbParam* pp = _params[iPar-1];
+          if (pp->type == cmbParam::Sat_offset && pp->prn == prn) {
+            AA(nObs+iCond, iPar) = 1.0;
+          }
         }
       }
     }
