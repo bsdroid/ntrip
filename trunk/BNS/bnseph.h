@@ -147,6 +147,7 @@ class t_ephGal : public t_eph {
   double  _OMEGADOT;         //  [rad/s]
   double  _IDOT;             //  [rad/s]
   double  _BGD_1_5A;         //  group delay [s] 
+  double  _BGD_1_5B;         //  group delay [s] 
   int     _SISA;             //  Signal In Space Accuracy
   int     _E5aHS;            //  E5a Health Status
 

@@ -860,6 +860,56 @@ void t_ephGal::position(int GPSweek, double GPSweeks, ColumnVector& xc,
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephGal::read(const QStringList& lines) {
 
+  for (int ii = 1; ii <= lines.size(); ii++) {
+    QTextStream in(lines.at(ii-1).toAscii());
+
+    if (ii == 1) {
+      double  year, month, day, hour, minute, second;
+      in >> _prn >> year >> month >> day >> hour >> minute >> second
+         >> _clock_bias >> _clock_drift >> _clock_driftrate;
+      
+      if (year < 100) year += 2000;
+      
+      QDateTime* dateTime = new QDateTime(QDate(int(year), int(month), int(day)), 
+                                          QTime(int(hour), int(minute), int(second)), Qt::UTC);
+
+      // do not allow too new message (actually 12h) ! /JD
+      QDateTime currTime = QDateTime::currentDateTime();
+      if( dateTime->secsTo(currTime) < -3600*12 ){
+         delete dateTime;
+         return failure; 
+      }
+       
+      GPSweekFromDateAndTime(*dateTime, _GPSweek, _GPSweeks); 
+
+      delete dateTime;
+
+      _TOC = _GPSweeks;
+    }
+    else if (ii == 2) {
+      in >> _IODnav >> _Crs >> _Delta_n >> _M0;
+    }  
+    else if (ii == 3) {
+      in >> _Cuc >> _e >> _Cus >> _sqrt_A;
+    }
+    else if (ii == 4) {
+      in >> _TOE >> _Cic >> _OMEGA0 >> _Cis;
+    }  
+    else if (ii == 5) {
+      in >> _i0 >> _Crc >> _omega >> _OMEGADOT;
+    }
+    else if (ii == 6) {
+      double GPSweek, dummy;
+      in >>  _IDOT >> dummy >> GPSweek;
+    }
+    else if (ii == 7) {
+      in >> _SISA >> _E5aHS >> _BGD_1_5A >> _BGD_1_5B;
+    }
+    else if (ii == 8) {
+      double TOW;
+      in >> TOW;
+    }
+  }
   return success;
 }
 
