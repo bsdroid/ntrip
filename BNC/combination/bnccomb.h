@@ -82,6 +82,7 @@ class bncComb : public bncEphUser  {
   cmbCaster*            _caster;
   QVector<cmbParam*>    _params;
   SymmetricMatrix       _QQ;
+  bool                  _firstReg;
   QByteArray            _log;
   QString               _masterAC;
   QString               _outNameSkl;
