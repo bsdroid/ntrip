@@ -1393,9 +1393,6 @@ Entering any positive value up to 1440 (24h mean value) is allowed. An empty opt
 
 <p><a name="combi"><h4>3.12. Combination</h4></p>
 <p>
-The part of BNC which enables the combination of orbit and clock corrections streams is not intended for publication under GNU General Public License (GPL). However, copies of pre-compiled BNC binaries which support the 'Combination' option may be made available for personal usage. This would be done on request and only in exceptional cases.
-</p>
-<p>
 BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors from various providers. It is so far only the satellite clock corrections which are combined here while orbit correctors in the combination product as well as the product update rates are just taken over from one of the incoming corrections streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach.
 </p>
 <p>
@@ -1426,6 +1423,9 @@ With respect to IGS, it is important to understand that a major effect in the co
 </p>
 <p>
 This comment applies in situations where we have a limited number of solutions to combine and their quality varies significantly. The situation may be different when the total number of ACs is larger and the range of AC variation is smaller. In that case, a standard full combination is probably the best. 
+</p>
+<p>
+The part of BNC which enables the combination of orbit and clock corrections streams is not intended for publication under GNU General Public License (GPL). However, copies of pre-compiled BNC binaries which support the 'Combination' option may be made available for personal usage. This would be done on request and only in exceptional cases.
 </p>
 
 <p><a name="combimounttab"><h4>3.12.1 Combination Table - optional</h4></p>
