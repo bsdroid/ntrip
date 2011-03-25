@@ -901,7 +901,7 @@ void bncApp::storeGlonassSlotNums(const int GLOFreq[]) {
 void bncApp::initCombination() {
 #ifdef USE_COMBINATION
   _bncComb = new bncComb();
-  if (_bncComb->nStreams() < 2) {
+  if (_bncComb->nStreams() < 1) {
     delete _bncComb;
     _bncComb = 0;
   }
