@@ -40,12 +40,13 @@ Please ensure that you have installed the latest version of BNC available from <
 <li>generate high-rate RINEX Observation and Navigation files to support near real-time GNSS post-processing applications, and/or</li> 
 <li>generate ephemeris and synchronized or unsynchronized observations epoch by epoch through an IP port to support real-time GNSS network engines, and/or</li> 
 <li>generate clock and orbit corrections to broadcast ephemeris through an IP port to support real-time Precise Point Positioning on GNSS rovers, and/or</li> 
-<li>generate synchronized clock and orbit corrections to broadcast ephemeris epoch by epoch through an IP port to support the combination of such streams as coming simultaneously from various correction providers, and/or</li> 
+<li>generate synchronized  or unsynchronized clock and orbit corrections to broadcast ephemeris epoch by epoch through an IP port to support the combination of such streams as coming simultaneously from various correction providers, and/or</li> 
 <li>monitor the performance of a network of real-time GNSS data streams to generate advisory notes in case of outages or corrupted streams, and/or</li>
 <li>scan RTCM streams for incoming antenna information as well as message types and their repetition rates, and/or</li>
 <li>feed a stream into a GNSS receiver via serial communication link, and/or</li>
 <li>carry out a real-time Precise Point Positioning to determine a GNSS rover position, and/or</li>
-<li>simultaneously process several incoming orbit and clock corrections streams to produce, encode, upload and save a combination solution.</li>
+<li>simultaneously process several incoming orbit and clock corrections streams to produce, encode and upload a combination solution, and/or</li>
+<li>translate the combination of brodcast ephemeris and broadcast ephemeris corrections to SP3 for further processing using other tools than BNC.</li>
 </ul>
 </p>
 
@@ -1393,7 +1394,7 @@ Entering any positive value up to 1440 (24h mean value) is allowed. An empty opt
 
 <p><a name="combi"><h4>3.12. Combination</h4></p>
 <p>
-BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors from various providers. It is so far only the satellite clock corrections which are combined here while orbit correctors in the combination product as well as the product update rates are just taken over from one of the incoming corrections streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach.
+BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors from various providers. It is so far only the satellite clock corrections which are combined while orbit correctors in the combination product as well as the product update rates are just taken over from one of the incoming corrections streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach.
 </p>
 <p>
 The clock combination is based on a Kalman Filter. Satellite clocks estimated by individual Analyses Centers (ACs) are used as pseudo observations within the adjustment process. Each observation is modeled as a linear function (actually a simple sum) of three estimated parameters: AC specific offset, satellite specific offset common to all ACs, and the actual satellite clock correction which represents the result of the combination. These three parameter types differ in their statistical properties. The satellite clock offsets are assumed to be static parameters while AC specific and satellite specific offsets are stochastic parameters with appropriate white noise.
@@ -1430,7 +1431,7 @@ The part of BNC which enables the combination of orbit and clock corrections str
 
 <p><a name="combimounttab"><h4>3.12.1 Combination Table - optional</h4></p>
 <p>
-Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. The combination process will start when at least two corrections streams are configured for combination.
+Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. The stream processing can already be startet whith only one corrections stream configured for combination.
 </p>
 <p>
 Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. To give an example: a value of '15' sec would make sense if the update rate of incoming clock corrections is 10 sec.
@@ -1476,10 +1477,11 @@ Default is an empty option field meaning that you don't want BNC to save the com
 
 <p><a name="combisp3dir"><h4>3.12.5 Directory, SP3 - optional if 'Mountpoint' is set</h4></p>
 <p>
-Specify a directory for saving the combined Broadcast Ephemeris corrections in SP3 format on disc. Default is an empty option field meaning that you don't want BNC to save the combination product in daily SP3 files.
+Specify a directory for saving the combination of Broadcast Ephemeris and Broadcast Ephemeris corrections in SP3 format on disc. Default is an empty option field meaning that you don't want BNC to save the combination product in daily SP3 files. Note that the SP3 file output already works with only one corrections stream specified for combination.
 </p>
 <p>
 As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while correctors are referred to the satellites Antenna Phase Center (APC), an offset has to be applied which is available from an IGS ANTEX file (see section 'ANTEX File'). You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save a combination product in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs.
+</p>
 <p>
 The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'.
 </p>
