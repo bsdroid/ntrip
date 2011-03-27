@@ -470,6 +470,30 @@ bncWindow::bncWindow() {
   connect(_cmbMountpointLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
+  // RTNet Results
+  // -------------
+  _rtnetTable = new QTableWidget(0,7);
+  _rtnetTable->setHorizontalHeaderLabels(QString("Host, Port, Mountpoint, Password, System, CoM, File").split(","));
+  _rtnetTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  _rtnetTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+  _rtnetTable->setMaximumWidth(70*ww);
+  _rtnetTable->horizontalHeader()->resizeSection(0,8*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(1,8*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(2,8*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(3,8*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(4,8*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(5,8*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(6,8*ww); 
+  _rtnetTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+  _rtnetTable->horizontalHeader()->setStretchLastSection(true);
+  _rtnetTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+
+  QPushButton* addRtnetRowButton = new QPushButton("Add Row");
+  QPushButton* delRtnetRowButton = new QPushButton("Delete");
+
+  connect(_rtnetTable, SIGNAL(itemSelectionChanged()), 
+          SLOT(slotBncTextChanged()));
+
   // WhatsThis
   // ---------
   _proxyHostLineEdit->setWhatsThis(tr("<p>If you are running BNC within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you do not know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is sometimes not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNC outside your LAN on a network that has unobstructed connection to the Internet.</p>"));
@@ -580,6 +604,7 @@ bncWindow::bncWindow() {
   QWidget* pppgroup = new QWidget();
   QWidget* ppp2group = new QWidget();
   QWidget* cmbgroup = new QWidget();
+  QWidget* rtnetgroup = new QWidget();
   _aogroup->addTab(pgroup,tr("Proxy"));
   _aogroup->addTab(ggroup,tr("General"));
   _aogroup->addTab(ogroup,tr("RINEX Observations"));
@@ -594,6 +619,7 @@ bncWindow::bncWindow() {
 #ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combination"));
 #endif
+  _aogroup->addTab(rtnetgroup,tr("RTNet"));
 
   // Log Tab
   // -------
@@ -924,6 +950,30 @@ bncWindow::bncWindow() {
   cmbLayout->addWidget(new QLabel(" Combine Broadcast Ephemeris corrections streams."),5,3,1,5);
 
   cmbgroup->setLayout(cmbLayout);
+
+  // RTNet output
+  // ------------
+  QGridLayout* rtnetLayout = new QGridLayout;
+
+  populateRtnetTable();
+  rtnetLayout->addWidget(_rtnetTable,0,0,6,7);
+  rtnetLayout->setColumnStretch(0,1);
+  rtnetLayout->setColumnStretch(1,1);
+  rtnetLayout->setColumnStretch(2,1);
+  rtnetLayout->setColumnStretch(3,1);
+  rtnetLayout->setColumnStretch(4,1);
+  rtnetLayout->setColumnStretch(5,1);
+
+  rtnetLayout->addWidget(addRtnetRowButton,1,8);
+  connect(addRtnetRowButton, SIGNAL(clicked()), this, SLOT(slotAddRtnetRow()));
+  rtnetLayout->addWidget(delRtnetRowButton,2,8);
+  connect(delRtnetRowButton, SIGNAL(clicked()), this, SLOT(slotDelRtnetRow()));
+
+  rtnetLayout->setColumnStretch(7,1);
+
+  rtnetLayout->addWidget(new QLabel(" Upload RTNet results to NTRIP caster"),5,8,1,5);
+
+  rtnetgroup->setLayout(rtnetLayout);
 
   // Main Layout
   // -----------
@@ -2111,4 +2161,39 @@ void bncWindow::populateCmbTable() {
       _cmbTable->setItem(iRow, iCol, new QTableWidgetItem(hlp[iCol]));
     }
   }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotAddRtnetRow() {
+  int iRow = _rtnetTable->rowCount();
+  _rtnetTable->insertRow(iRow);
+  for (int iCol = 0; iCol < _rtnetTable->columnCount(); iCol++) {
+    _rtnetTable->setItem(iRow, iCol, new QTableWidgetItem(""));
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotDelRtnetRow() {
+  int nRows = _rtnetTable->rowCount();
+  bool flg[nRows];
+  for (int iRow = 0; iRow < nRows; iRow++) {
+    if (_rtnetTable->isItemSelected(_rtnetTable->item(iRow,1))) {
+      flg[iRow] = true;
+    }
+    else {
+      flg[iRow] = false;
+    }
+  }
+  for (int iRow = nRows-1; iRow >= 0; iRow--) {
+    if (flg[iRow]) {
+      _rtnetTable->removeRow(iRow);
+    }
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::populateRtnetTable() {
 }

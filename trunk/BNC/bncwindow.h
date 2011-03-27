@@ -80,6 +80,8 @@ class bncWindow : public QMainWindow {
     void slotWhatsThis();
     void slotAddCmbRow();
     void slotDelCmbRow();
+    void slotAddRtnetRow();
+    void slotDelRtnetRow();
 
   protected:
     virtual void closeEvent(QCloseEvent *);
@@ -87,6 +89,7 @@ class bncWindow : public QMainWindow {
   private:
     void populateMountPointsTable();
     void populateCmbTable();
+    void populateRtnetTable();
 
     QMenu*     _menuHlp;
     QMenu*     _menuFile;
@@ -197,6 +200,8 @@ class bncWindow : public QMainWindow {
     QLineEdit*    _cmbPasswordLineEdit;
     QLineEdit*    _cmbOutPathLineEdit;
     QLineEdit*    _cmbSP3PathLineEdit;
+
+    QTableWidget* _rtnetTable;
 
     bncCaster* _caster;
 };
