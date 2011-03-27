@@ -1285,8 +1285,24 @@ void bncWindow::slotSaveOptions() {
   for (int iRow = 0; iRow < _rtnetTable->rowCount(); iRow++) {
     QString hlp;
     for (int iCol = 0; iCol < _rtnetTable->columnCount(); iCol++) {
-      if (_rtnetTable->item(iRow, iCol)) {
-        hlp += _rtnetTable->item(iRow, iCol)->text() + " ";
+      if (_rtnetTable->cellWidget(iRow, iCol) && 
+          (iCol == 3 || iCol == 4 || iCol == 5)) {
+        if      (iCol == 3) {
+          QLineEdit* passwd = (QLineEdit*)(_rtnetTable->cellWidget(iRow, iCol));
+          hlp += passwd->text() + ",";
+        }
+        else if (iCol == 4) {
+          QComboBox* system = (QComboBox*)(_rtnetTable->cellWidget(iRow, iCol));
+          hlp += system->currentText() + ",";
+        }
+        else if (iCol == 5) {
+          QCheckBox* com    = (QCheckBox*)(_rtnetTable->cellWidget(iRow, iCol));
+          QString state; state.setNum(com->checkState());
+          hlp +=  state + ",";
+        }
+      }
+      else if (_rtnetTable->item(iRow, iCol)) {
+        hlp += _rtnetTable->item(iRow, iCol)->text() + ",";
       }
     }
     if (!hlp.isEmpty()) {
@@ -2199,11 +2215,11 @@ void bncWindow::slotAddRtnetRow() {
       _rtnetTable->setCellWidget(iRow, iCol, passwd);
     }
     else if (iCol == 4) {
-      QComboBox* systemCombo = new QComboBox();
-      systemCombo->setEditable(false);
-      systemCombo->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
-      systemCombo->setFrame(false);
-      _rtnetTable->setCellWidget(iRow, iCol, systemCombo);
+      QComboBox* system = new QComboBox();
+      system->setEditable(false);
+      system->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
+      system->setFrame(false);
+      _rtnetTable->setCellWidget(iRow, iCol, system);
     }
     else if (iCol == 5) {
       QCheckBox* com = new QCheckBox();
