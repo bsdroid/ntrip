@@ -940,7 +940,7 @@ bncWindow::bncWindow() {
   _cmbMountpointLineEdit->setMaximumWidth(9*ww);
   cmbLayout->addWidget(_cmbMountpointLineEdit, 1, 5);
   cmbLayout->addWidget(new QLabel("    Password"), 1, 6);
-  _cmbPasswordLineEdit->setEchoMode(QLineEdit::Password);
+  _cmbPasswordLineEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
   _cmbPasswordLineEdit->setMaximumWidth(9*ww);
   cmbLayout->addWidget(_cmbPasswordLineEdit, 1, 7);
   cmbLayout->addWidget(new QLabel("    Directory, ASCII"), 2, 4);
@@ -2189,10 +2189,17 @@ void bncWindow::slotAddRtnetRow() {
   int iRow = _rtnetTable->rowCount();
   _rtnetTable->insertRow(iRow);
   for (int iCol = 0; iCol < _rtnetTable->columnCount(); iCol++) {
-    if      (iCol == 4) {
+    if      (iCol == 3) {
+      QLineEdit* passwd = new QLineEdit();
+      passwd->setFrame(false);
+      passwd->setEchoMode(QLineEdit::PasswordEchoOnEdit);
+      _rtnetTable->setCellWidget(iRow, iCol, passwd);
+    }
+    else if (iCol == 4) {
       QComboBox* systemCombo = new QComboBox();
       systemCombo->setEditable(false);
       systemCombo->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
+      systemCombo->setFrame(false);
       _rtnetTable->setCellWidget(iRow, iCol, systemCombo);
     }
     else if (iCol == 5) {
