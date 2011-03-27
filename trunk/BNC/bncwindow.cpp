@@ -491,7 +491,7 @@ bncWindow::bncWindow() {
   QPushButton* addRtnetRowButton = new QPushButton("Add Row");
   QPushButton* delRtnetRowButton = new QPushButton("Delete");
   QPushButton* setRtnetTrafoButton = new QPushButton("Set");
-  _rtnetMountpointIn = new QLineEdit(settings.value("rtnetMounpointIn").toString());
+  _rtnetMountpointIn = new QLineEdit(settings.value("rtnetMountpointIn").toString());
 
   connect(_rtnetTable, SIGNAL(itemSelectionChanged()), 
           SLOT(slotBncTextChanged()));
