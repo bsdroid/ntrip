@@ -473,17 +473,17 @@ bncWindow::bncWindow() {
   // RTNet Results
   // -------------
   _rtnetTable = new QTableWidget(0,7);
-  _rtnetTable->setHorizontalHeaderLabels(QString("Host, Port, Mountpoint, Password, System, CoM, File").split(","));
+  _rtnetTable->setHorizontalHeaderLabels(QString("Host, Port, Mount, Password, System, CoM, File").split(","));
   _rtnetTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _rtnetTable->setSelectionBehavior(QAbstractItemView::SelectRows);
   _rtnetTable->setMaximumWidth(70*ww);
-  _rtnetTable->horizontalHeader()->resizeSection(0,8*ww); 
-  _rtnetTable->horizontalHeader()->resizeSection(1,8*ww); 
-  _rtnetTable->horizontalHeader()->resizeSection(2,8*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(0,15*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(1,5*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(2,5*ww); 
   _rtnetTable->horizontalHeader()->resizeSection(3,8*ww); 
-  _rtnetTable->horizontalHeader()->resizeSection(4,8*ww); 
-  _rtnetTable->horizontalHeader()->resizeSection(5,8*ww); 
-  _rtnetTable->horizontalHeader()->resizeSection(6,8*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(4,6*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(5,4*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(6,20*ww); 
   _rtnetTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
   _rtnetTable->horizontalHeader()->setStretchLastSection(true);
   _rtnetTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
