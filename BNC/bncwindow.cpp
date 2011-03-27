@@ -2263,13 +2263,37 @@ void bncWindow::populateRtnetTable() {
   int iRow = -1;
   QListIterator<QString> it(settings.value("rtnetUploadMountpoints").toStringList());
   while (it.hasNext()) {
-    QStringList hlp = it.next().split(" ");
-    if (hlp.size() > 2) {
+    QStringList hlp = it.next().split(",");
+    if (hlp.size() > 6) {
       ++iRow;
       _rtnetTable->insertRow(iRow);
     }
     for (int iCol = 0; iCol < hlp.size(); iCol++) {
-      _rtnetTable->setItem(iRow, iCol, new QTableWidgetItem(hlp[iCol]));
+      if      (iCol == 3) {
+        QLineEdit* passwd = new QLineEdit();
+        passwd->setFrame(false);
+        passwd->setEchoMode(QLineEdit::PasswordEchoOnEdit);
+        passwd->setText(hlp[iCol]);
+        _rtnetTable->setCellWidget(iRow, iCol, passwd);
+      }
+      else if (iCol == 4) {
+        QComboBox* system = new QComboBox();
+        system->setEditable(false);
+        system->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
+        system->setFrame(false);
+        system->setCurrentIndex(system->findText(hlp[iCol]));
+        _rtnetTable->setCellWidget(iRow, iCol, system);
+      }
+      else if (iCol == 5) {
+        QCheckBox* com = new QCheckBox();
+        if (hlp[iCol].toInt() == Qt::Checked) {
+          com->setCheckState(Qt::Checked);
+        }
+        _rtnetTable->setCellWidget(iRow, iCol, com);
+      }
+      else {
+        _rtnetTable->setItem(iRow, iCol, new QTableWidgetItem(hlp[iCol]));
+      }
     }
   }
 }
