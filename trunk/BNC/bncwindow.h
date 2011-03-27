@@ -82,6 +82,7 @@ class bncWindow : public QMainWindow {
     void slotDelCmbRow();
     void slotAddRtnetRow();
     void slotDelRtnetRow();
+    void slotSetRtnetTrafo();
 
   protected:
     virtual void closeEvent(QCloseEvent *);

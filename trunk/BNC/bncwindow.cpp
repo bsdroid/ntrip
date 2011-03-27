@@ -951,7 +951,7 @@ bncWindow::bncWindow() {
 
   cmbgroup->setLayout(cmbLayout);
 
-  // RTNet output
+  // RTNet Layout
   // ------------
   QGridLayout* rtnetLayout = new QGridLayout;
 
@@ -1278,6 +1278,19 @@ void bncWindow::slotSaveOptions() {
     }
   }
 
+  QStringList rtnetUploadMountpoints;
+  for (int iRow = 0; iRow < _rtnetTable->rowCount(); iRow++) {
+    QString hlp;
+    for (int iCol = 0; iCol < _rtnetTable->columnCount(); iCol++) {
+      if (_rtnetTable->item(iRow, iCol)) {
+        hlp += _rtnetTable->item(iRow, iCol)->text() + " ";
+      }
+    }
+    if (!hlp.isEmpty()) {
+      rtnetUploadMountpoints << hlp;
+    }
+  }
+
   bncSettings settings;
 
   settings.setValue("adviseFail",  _adviseFailSpinBox->value());
@@ -1364,6 +1377,13 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("cmbPassword",   _cmbPasswordLineEdit->text());
   settings.setValue("cmbOutPath",    _cmbOutPathLineEdit->text());
   settings.setValue("cmbSP3Path",    _cmbSP3PathLineEdit->text());
+
+  if (!rtnetUploadMountpoints.isEmpty()) {
+    settings.setValue("rtnetUploadMountpoints", rtnetUploadMountpoints);
+  }
+  else {
+    settings.setValue("rtnetUploadMountpoints", "");
+  }
 
   if (_caster) {
     _caster->slotReadMountPoints();
@@ -2196,4 +2216,27 @@ void bncWindow::slotDelRtnetRow() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::populateRtnetTable() {
+  for (int iRow = _rtnetTable->rowCount()-1; iRow >=0; iRow--) {
+    _rtnetTable->removeRow(iRow);
+  }
+
+  bncSettings settings;
+
+  int iRow = -1;
+  QListIterator<QString> it(settings.value("rtnetUploadMountpoints").toStringList());
+  while (it.hasNext()) {
+    QStringList hlp = it.next().split(" ");
+    if (hlp.size() > 2) {
+      ++iRow;
+      _rtnetTable->insertRow(iRow);
+    }
+    for (int iCol = 0; iCol < hlp.size(); iCol++) {
+      _rtnetTable->setItem(iRow, iCol, new QTableWidgetItem(hlp[iCol]));
+    }
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotSetRtnetTrafo() {
 }
