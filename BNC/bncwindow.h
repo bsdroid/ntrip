@@ -203,6 +203,7 @@ class bncWindow : public QMainWindow {
     QLineEdit*    _cmbSP3PathLineEdit;
 
     QTableWidget* _rtnetTable;
+    QLineEdit*    _rtnetMountpointIn;
 
     bncCaster* _caster;
 };
