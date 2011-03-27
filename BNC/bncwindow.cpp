@@ -490,6 +490,7 @@ bncWindow::bncWindow() {
 
   QPushButton* addRtnetRowButton = new QPushButton("Add Row");
   QPushButton* delRtnetRowButton = new QPushButton("Delete");
+  QPushButton* setRtnetTrafoButton = new QPushButton("Set");
   _rtnetMountpointIn = new QLineEdit(settings.value("rtnetMounpointIn").toString());
 
   connect(_rtnetTable, SIGNAL(itemSelectionChanged()), 
@@ -973,6 +974,10 @@ bncWindow::bncWindow() {
 
   rtnetLayout->addWidget(new QLabel("Mountpoint"),3,8);
   rtnetLayout->addWidget(_rtnetMountpointIn,3,9,1,2);
+
+  rtnetLayout->addWidget(new QLabel("Custom Trafo"),4,8);
+  rtnetLayout->addWidget(setRtnetTrafoButton,4,9);
+  connect(setRtnetTrafoButton, SIGNAL(clicked()), this, SLOT(slotSetRtnetTrafo()));
 
   rtnetLayout->addWidget(new QLabel("Upload RTNet results to NTRIP caster"),5,8,1,5);
 
