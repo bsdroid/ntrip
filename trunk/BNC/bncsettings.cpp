@@ -110,6 +110,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("cmbOutPath",       "");
     setValue("cmbSP3Path",       "");
     setValue("rtnetUploadMountpoints",   "");
+    setValue("rtnetMountpointIn", "");
     sync();
   }
 }

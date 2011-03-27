@@ -1408,6 +1408,7 @@ void bncWindow::slotSaveOptions() {
   else {
     settings.setValue("rtnetUploadMountpoints", "");
   }
+  settings.setValue("rtnetMountpointIn", _rtnetMountpointIn->text());
 
   if (_caster) {
     _caster->slotReadMountPoints();
