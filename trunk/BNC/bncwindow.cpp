@@ -490,6 +490,7 @@ bncWindow::bncWindow() {
 
   QPushButton* addRtnetRowButton = new QPushButton("Add Row");
   QPushButton* delRtnetRowButton = new QPushButton("Delete");
+  _rtnetMountpointIn = new QLineEdit(settings.value("rtnetMounpointIn").toString());
 
   connect(_rtnetTable, SIGNAL(itemSelectionChanged()), 
           SLOT(slotBncTextChanged()));
@@ -619,7 +620,7 @@ bncWindow::bncWindow() {
 #ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combination"));
 #endif
-  _aogroup->addTab(rtnetgroup,tr("RTNet"));
+  _aogroup->addTab(rtnetgroup,tr("Upload"));
 
   // Log Tab
   // -------
@@ -963,15 +964,17 @@ bncWindow::bncWindow() {
   rtnetLayout->setColumnStretch(3,1);
   rtnetLayout->setColumnStretch(4,1);
   rtnetLayout->setColumnStretch(5,1);
-
-  rtnetLayout->addWidget(addRtnetRowButton,1,8);
-  connect(addRtnetRowButton, SIGNAL(clicked()), this, SLOT(slotAddRtnetRow()));
-  rtnetLayout->addWidget(delRtnetRowButton,2,8);
-  connect(delRtnetRowButton, SIGNAL(clicked()), this, SLOT(slotDelRtnetRow()));
-
   rtnetLayout->setColumnStretch(7,1);
 
-  rtnetLayout->addWidget(new QLabel(" Upload RTNet results to NTRIP caster"),5,8,1,5);
+  rtnetLayout->addWidget(addRtnetRowButton,0,8);
+  connect(addRtnetRowButton, SIGNAL(clicked()), this, SLOT(slotAddRtnetRow()));
+  rtnetLayout->addWidget(delRtnetRowButton,1,8);
+  connect(delRtnetRowButton, SIGNAL(clicked()), this, SLOT(slotDelRtnetRow()));
+
+  rtnetLayout->addWidget(new QLabel("Mountpoint"),3,8);
+  rtnetLayout->addWidget(_rtnetMountpointIn,3,9,1,2);
+
+  rtnetLayout->addWidget(new QLabel("Upload RTNet results to NTRIP caster"),5,8,1,5);
 
   rtnetgroup->setLayout(rtnetLayout);
 
