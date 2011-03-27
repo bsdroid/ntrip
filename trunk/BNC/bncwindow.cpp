@@ -477,15 +477,15 @@ bncWindow::bncWindow() {
   _rtnetTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _rtnetTable->setSelectionBehavior(QAbstractItemView::SelectRows);
   _rtnetTable->setMaximumWidth(70*ww);
-  _rtnetTable->horizontalHeader()->resizeSection(0,15*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(0,13*ww); 
   _rtnetTable->horizontalHeader()->resizeSection(1,5*ww); 
-  _rtnetTable->horizontalHeader()->resizeSection(2,5*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(2,6*ww); 
   _rtnetTable->horizontalHeader()->resizeSection(3,8*ww); 
-  _rtnetTable->horizontalHeader()->resizeSection(4,6*ww); 
+  _rtnetTable->horizontalHeader()->resizeSection(4,11*ww); 
   _rtnetTable->horizontalHeader()->resizeSection(5,4*ww); 
   _rtnetTable->horizontalHeader()->resizeSection(6,20*ww); 
   _rtnetTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-  _rtnetTable->horizontalHeader()->setStretchLastSection(true);
+  ///  _rtnetTable->horizontalHeader()->setStretchLastSection(true);
   _rtnetTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
   QPushButton* addRtnetRowButton = new QPushButton("Add Row");
@@ -2189,7 +2189,19 @@ void bncWindow::slotAddRtnetRow() {
   int iRow = _rtnetTable->rowCount();
   _rtnetTable->insertRow(iRow);
   for (int iCol = 0; iCol < _rtnetTable->columnCount(); iCol++) {
-    _rtnetTable->setItem(iRow, iCol, new QTableWidgetItem(""));
+    if      (iCol == 4) {
+      QComboBox* systemCombo = new QComboBox();
+      systemCombo->setEditable(false);
+      systemCombo->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
+      _rtnetTable->setCellWidget(iRow, iCol, systemCombo);
+    }
+    else if (iCol == 5) {
+      QCheckBox* com = new QCheckBox();
+      _rtnetTable->setCellWidget(iRow, iCol, com);
+    }
+    else {
+      _rtnetTable->setItem(iRow, iCol, new QTableWidgetItem(""));
+    }
   }
 }
 
