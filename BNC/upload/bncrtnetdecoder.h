@@ -27,9 +27,10 @@
 
 #include <fstream>
 #include <QtCore>
+#include "bncephuser.h"
 #include "RTCM/GPSDecoder.h"
 
-class bncRtnetDecoder: public GPSDecoder {
+class bncRtnetDecoder: public GPSDecoder, public bncEphUser {
  public:
   bncRtnetDecoder(const QString& fileName);
   ~bncRtnetDecoder();
