@@ -80,9 +80,9 @@ class bncWindow : public QMainWindow {
     void slotWhatsThis();
     void slotAddCmbRow();
     void slotDelCmbRow();
-    void slotAddRtnetRow();
-    void slotDelRtnetRow();
-    void slotSetRtnetTrafo();
+    void slotAddUploadRow();
+    void slotDelUploadRow();
+    void slotSetUploadTrafo();
 
   protected:
     virtual void closeEvent(QCloseEvent *);
@@ -90,7 +90,7 @@ class bncWindow : public QMainWindow {
   private:
     void populateMountPointsTable();
     void populateCmbTable();
-    void populateRtnetTable();
+    void populateUploadTable();
 
     QMenu*     _menuHlp;
     QMenu*     _menuFile;
@@ -202,8 +202,8 @@ class bncWindow : public QMainWindow {
     QLineEdit*    _cmbOutPathLineEdit;
     QLineEdit*    _cmbSP3PathLineEdit;
 
-    QTableWidget* _rtnetTable;
-    QLineEdit*    _rtnetMountpointIn;
+    QTableWidget* _uploadTable;
+    QLineEdit*    _uploadMountpointIn;
 
     bncCaster* _caster;
 };
