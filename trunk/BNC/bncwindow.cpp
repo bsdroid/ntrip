@@ -470,30 +470,30 @@ bncWindow::bncWindow() {
   connect(_cmbMountpointLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
-  // RTNet Results
+  // Upload Results
   // -------------
-  _rtnetTable = new QTableWidget(0,7);
-  _rtnetTable->setHorizontalHeaderLabels(QString("Host, Port, Mount, Password, System, CoM, File").split(","));
-  _rtnetTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
-  _rtnetTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-  _rtnetTable->setMaximumWidth(70*ww);
-  _rtnetTable->horizontalHeader()->resizeSection(0,13*ww); 
-  _rtnetTable->horizontalHeader()->resizeSection(1,5*ww); 
-  _rtnetTable->horizontalHeader()->resizeSection(2,6*ww); 
-  _rtnetTable->horizontalHeader()->resizeSection(3,8*ww); 
-  _rtnetTable->horizontalHeader()->resizeSection(4,11*ww); 
-  _rtnetTable->horizontalHeader()->resizeSection(5,4*ww); 
-  _rtnetTable->horizontalHeader()->resizeSection(6,20*ww); 
-  _rtnetTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-  ///  _rtnetTable->horizontalHeader()->setStretchLastSection(true);
-  _rtnetTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+  _uploadTable = new QTableWidget(0,7);
+  _uploadTable->setHorizontalHeaderLabels(QString("Host, Port, Mount, Password, System, CoM, File").split(","));
+  _uploadTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  _uploadTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+  _uploadTable->setMaximumWidth(70*ww);
+  _uploadTable->horizontalHeader()->resizeSection(0,13*ww); 
+  _uploadTable->horizontalHeader()->resizeSection(1,5*ww); 
+  _uploadTable->horizontalHeader()->resizeSection(2,6*ww); 
+  _uploadTable->horizontalHeader()->resizeSection(3,8*ww); 
+  _uploadTable->horizontalHeader()->resizeSection(4,11*ww); 
+  _uploadTable->horizontalHeader()->resizeSection(5,4*ww); 
+  _uploadTable->horizontalHeader()->resizeSection(6,20*ww); 
+  _uploadTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+  ///  _uploadTable->horizontalHeader()->setStretchLastSection(true);
+  _uploadTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
-  QPushButton* addRtnetRowButton = new QPushButton("Add Row");
-  QPushButton* delRtnetRowButton = new QPushButton("Delete");
-  QPushButton* setRtnetTrafoButton = new QPushButton("Set");
-  _rtnetMountpointIn = new QLineEdit(settings.value("rtnetMountpointIn").toString());
+  QPushButton* addUploadRowButton = new QPushButton("Add Row");
+  QPushButton* delUploadRowButton = new QPushButton("Delete");
+  QPushButton* setUploadTrafoButton = new QPushButton("Set");
+  _uploadMountpointIn = new QLineEdit(settings.value("uploadMountpointIn").toString());
 
-  connect(_rtnetTable, SIGNAL(itemSelectionChanged()), 
+  connect(_uploadTable, SIGNAL(itemSelectionChanged()), 
           SLOT(slotBncTextChanged()));
 
   // WhatsThis
@@ -606,7 +606,7 @@ bncWindow::bncWindow() {
   QWidget* pppgroup = new QWidget();
   QWidget* ppp2group = new QWidget();
   QWidget* cmbgroup = new QWidget();
-  QWidget* rtnetgroup = new QWidget();
+  QWidget* uploadgroup = new QWidget();
   _aogroup->addTab(pgroup,tr("Proxy"));
   _aogroup->addTab(ggroup,tr("General"));
   _aogroup->addTab(ogroup,tr("RINEX Observations"));
@@ -621,7 +621,7 @@ bncWindow::bncWindow() {
 #ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combination"));
 #endif
-  _aogroup->addTab(rtnetgroup,tr("Upload"));
+  _aogroup->addTab(uploadgroup,tr("Upload"));
 
   // Log Tab
   // -------
@@ -953,35 +953,35 @@ bncWindow::bncWindow() {
 
   cmbgroup->setLayout(cmbLayout);
 
-  // RTNet Layout
+  // Upload Layout
   // ------------
-  QGridLayout* rtnetLayout = new QGridLayout;
+  QGridLayout* uploadLayout = new QGridLayout;
 
-  populateRtnetTable();
-  rtnetLayout->addWidget(_rtnetTable,0,0,6,7);
-  rtnetLayout->setColumnStretch(0,1);
-  rtnetLayout->setColumnStretch(1,1);
-  rtnetLayout->setColumnStretch(2,1);
-  rtnetLayout->setColumnStretch(3,1);
-  rtnetLayout->setColumnStretch(4,1);
-  rtnetLayout->setColumnStretch(5,1);
-  rtnetLayout->setColumnStretch(7,1);
+  populateUploadTable();
+  uploadLayout->addWidget(_uploadTable,0,0,6,7);
+  uploadLayout->setColumnStretch(0,1);
+  uploadLayout->setColumnStretch(1,1);
+  uploadLayout->setColumnStretch(2,1);
+  uploadLayout->setColumnStretch(3,1);
+  uploadLayout->setColumnStretch(4,1);
+  uploadLayout->setColumnStretch(5,1);
+  uploadLayout->setColumnStretch(7,1);
 
-  rtnetLayout->addWidget(addRtnetRowButton,0,8);
-  connect(addRtnetRowButton, SIGNAL(clicked()), this, SLOT(slotAddRtnetRow()));
-  rtnetLayout->addWidget(delRtnetRowButton,1,8);
-  connect(delRtnetRowButton, SIGNAL(clicked()), this, SLOT(slotDelRtnetRow()));
+  uploadLayout->addWidget(addUploadRowButton,0,8);
+  connect(addUploadRowButton, SIGNAL(clicked()), this, SLOT(slotAddUploadRow()));
+  uploadLayout->addWidget(delUploadRowButton,1,8);
+  connect(delUploadRowButton, SIGNAL(clicked()), this, SLOT(slotDelUploadRow()));
 
-  rtnetLayout->addWidget(new QLabel("Mountpoint"),3,8);
-  rtnetLayout->addWidget(_rtnetMountpointIn,3,9,1,2);
+  uploadLayout->addWidget(new QLabel("Mountpoint"),3,8);
+  uploadLayout->addWidget(_uploadMountpointIn,3,9,1,2);
 
-  rtnetLayout->addWidget(new QLabel("Custom Trafo"),4,8);
-  rtnetLayout->addWidget(setRtnetTrafoButton,4,9);
-  connect(setRtnetTrafoButton, SIGNAL(clicked()), this, SLOT(slotSetRtnetTrafo()));
+  uploadLayout->addWidget(new QLabel("Custom Trafo"),4,8);
+  uploadLayout->addWidget(setUploadTrafoButton,4,9);
+  connect(setUploadTrafoButton, SIGNAL(clicked()), this, SLOT(slotSetUploadTrafo()));
 
-  rtnetLayout->addWidget(new QLabel("Upload RTNet results to NTRIP caster"),5,8,1,5);
+  uploadLayout->addWidget(new QLabel("Upload RTNet results to NTRIP caster"),5,8,1,5);
 
-  rtnetgroup->setLayout(rtnetLayout);
+  uploadgroup->setLayout(uploadLayout);
 
   // Main Layout
   // -----------
@@ -1286,32 +1286,32 @@ void bncWindow::slotSaveOptions() {
     }
   }
 
-  QStringList rtnetUploadMountpoints;
-  for (int iRow = 0; iRow < _rtnetTable->rowCount(); iRow++) {
+  QStringList uploadMountpointsOut;
+  for (int iRow = 0; iRow < _uploadTable->rowCount(); iRow++) {
     QString hlp;
-    for (int iCol = 0; iCol < _rtnetTable->columnCount(); iCol++) {
-      if (_rtnetTable->cellWidget(iRow, iCol) && 
+    for (int iCol = 0; iCol < _uploadTable->columnCount(); iCol++) {
+      if (_uploadTable->cellWidget(iRow, iCol) && 
           (iCol == 3 || iCol == 4 || iCol == 5)) {
         if      (iCol == 3) {
-          QLineEdit* passwd = (QLineEdit*)(_rtnetTable->cellWidget(iRow, iCol));
+          QLineEdit* passwd = (QLineEdit*)(_uploadTable->cellWidget(iRow, iCol));
           hlp += passwd->text() + ",";
         }
         else if (iCol == 4) {
-          QComboBox* system = (QComboBox*)(_rtnetTable->cellWidget(iRow, iCol));
+          QComboBox* system = (QComboBox*)(_uploadTable->cellWidget(iRow, iCol));
           hlp += system->currentText() + ",";
         }
         else if (iCol == 5) {
-          QCheckBox* com    = (QCheckBox*)(_rtnetTable->cellWidget(iRow, iCol));
+          QCheckBox* com    = (QCheckBox*)(_uploadTable->cellWidget(iRow, iCol));
           QString state; state.setNum(com->checkState());
           hlp +=  state + ",";
         }
       }
-      else if (_rtnetTable->item(iRow, iCol)) {
-        hlp += _rtnetTable->item(iRow, iCol)->text() + ",";
+      else if (_uploadTable->item(iRow, iCol)) {
+        hlp += _uploadTable->item(iRow, iCol)->text() + ",";
       }
     }
     if (!hlp.isEmpty()) {
-      rtnetUploadMountpoints << hlp;
+      uploadMountpointsOut << hlp;
     }
   }
 
@@ -1402,13 +1402,13 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("cmbOutPath",    _cmbOutPathLineEdit->text());
   settings.setValue("cmbSP3Path",    _cmbSP3PathLineEdit->text());
 
-  if (!rtnetUploadMountpoints.isEmpty()) {
-    settings.setValue("rtnetUploadMountpoints", rtnetUploadMountpoints);
+  if (!uploadMountpointsOut.isEmpty()) {
+    settings.setValue("uploadMountpointsOut", uploadMountpointsOut);
   }
   else {
-    settings.setValue("rtnetUploadMountpoints", "");
+    settings.setValue("uploadMountpointsOut", "");
   }
-  settings.setValue("rtnetMountpointIn", _rtnetMountpointIn->text());
+  settings.setValue("uploadMountpointIn", _uploadMountpointIn->text());
 
   if (_caster) {
     _caster->slotReadMountPoints();
@@ -2210,40 +2210,40 @@ void bncWindow::populateCmbTable() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotAddRtnetRow() {
-  int iRow = _rtnetTable->rowCount();
-  _rtnetTable->insertRow(iRow);
-  for (int iCol = 0; iCol < _rtnetTable->columnCount(); iCol++) {
+void bncWindow::slotAddUploadRow() {
+  int iRow = _uploadTable->rowCount();
+  _uploadTable->insertRow(iRow);
+  for (int iCol = 0; iCol < _uploadTable->columnCount(); iCol++) {
     if      (iCol == 3) {
       QLineEdit* passwd = new QLineEdit();
       passwd->setFrame(false);
       passwd->setEchoMode(QLineEdit::PasswordEchoOnEdit);
-      _rtnetTable->setCellWidget(iRow, iCol, passwd);
+      _uploadTable->setCellWidget(iRow, iCol, passwd);
     }
     else if (iCol == 4) {
       QComboBox* system = new QComboBox();
       system->setEditable(false);
       system->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
       system->setFrame(false);
-      _rtnetTable->setCellWidget(iRow, iCol, system);
+      _uploadTable->setCellWidget(iRow, iCol, system);
     }
     else if (iCol == 5) {
       QCheckBox* com = new QCheckBox();
-      _rtnetTable->setCellWidget(iRow, iCol, com);
+      _uploadTable->setCellWidget(iRow, iCol, com);
     }
     else {
-      _rtnetTable->setItem(iRow, iCol, new QTableWidgetItem(""));
+      _uploadTable->setItem(iRow, iCol, new QTableWidgetItem(""));
     }
   }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotDelRtnetRow() {
-  int nRows = _rtnetTable->rowCount();
+void bncWindow::slotDelUploadRow() {
+  int nRows = _uploadTable->rowCount();
   bool flg[nRows];
   for (int iRow = 0; iRow < nRows; iRow++) {
-    if (_rtnetTable->isItemSelected(_rtnetTable->item(iRow,1))) {
+    if (_uploadTable->isItemSelected(_uploadTable->item(iRow,1))) {
       flg[iRow] = true;
     }
     else {
@@ -2252,27 +2252,27 @@ void bncWindow::slotDelRtnetRow() {
   }
   for (int iRow = nRows-1; iRow >= 0; iRow--) {
     if (flg[iRow]) {
-      _rtnetTable->removeRow(iRow);
+      _uploadTable->removeRow(iRow);
     }
   }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::populateRtnetTable() {
-  for (int iRow = _rtnetTable->rowCount()-1; iRow >=0; iRow--) {
-    _rtnetTable->removeRow(iRow);
+void bncWindow::populateUploadTable() {
+  for (int iRow = _uploadTable->rowCount()-1; iRow >=0; iRow--) {
+    _uploadTable->removeRow(iRow);
   }
 
   bncSettings settings;
 
   int iRow = -1;
-  QListIterator<QString> it(settings.value("rtnetUploadMountpoints").toStringList());
+  QListIterator<QString> it(settings.value("uploadMountpointsOut").toStringList());
   while (it.hasNext()) {
     QStringList hlp = it.next().split(",");
     if (hlp.size() > 6) {
       ++iRow;
-      _rtnetTable->insertRow(iRow);
+      _uploadTable->insertRow(iRow);
     }
     for (int iCol = 0; iCol < hlp.size(); iCol++) {
       if      (iCol == 3) {
@@ -2280,7 +2280,7 @@ void bncWindow::populateRtnetTable() {
         passwd->setFrame(false);
         passwd->setEchoMode(QLineEdit::PasswordEchoOnEdit);
         passwd->setText(hlp[iCol]);
-        _rtnetTable->setCellWidget(iRow, iCol, passwd);
+        _uploadTable->setCellWidget(iRow, iCol, passwd);
       }
       else if (iCol == 4) {
         QComboBox* system = new QComboBox();
@@ -2288,17 +2288,17 @@ void bncWindow::populateRtnetTable() {
         system->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
         system->setFrame(false);
         system->setCurrentIndex(system->findText(hlp[iCol]));
-        _rtnetTable->setCellWidget(iRow, iCol, system);
+        _uploadTable->setCellWidget(iRow, iCol, system);
       }
       else if (iCol == 5) {
         QCheckBox* com = new QCheckBox();
         if (hlp[iCol].toInt() == Qt::Checked) {
           com->setCheckState(Qt::Checked);
         }
-        _rtnetTable->setCellWidget(iRow, iCol, com);
+        _uploadTable->setCellWidget(iRow, iCol, com);
       }
       else {
-        _rtnetTable->setItem(iRow, iCol, new QTableWidgetItem(hlp[iCol]));
+        _uploadTable->setItem(iRow, iCol, new QTableWidgetItem(hlp[iCol]));
       }
     }
   }
@@ -2306,5 +2306,5 @@ void bncWindow::populateRtnetTable() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotSetRtnetTrafo() {
+void bncWindow::slotSetUploadTrafo() {
 }
