@@ -63,7 +63,7 @@
 #include "bncsettings.h"
 #include "latencychecker.h"
 #include "bncpppclient.h"
-
+#include "upload/bncrtnetdecoder.h"
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
 #include "RTIGS/RTIGSDecoder.h"
@@ -315,6 +315,10 @@ void bncGetThread::initialize() {
   else if (_format.indexOf("ZERO") != -1) {
     emit(newMessage(_staID + ": Get data in original format", true));
     _decoder = new bncZeroDecoder(_staID);
+  }
+  else if (_format.indexOf("RTNET") != -1) {
+    emit(newMessage(_staID + ": Get data in RTNet format", true));
+    _decoder = new bncRtnetDecoder(_staID);
   }
   else {
     emit(newMessage(_staID + ": Unknown data format " + _format, true));
