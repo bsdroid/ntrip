@@ -124,7 +124,7 @@ t_irc bncRtnetDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) 
           QTextStream in(lines[ii].toAscii());
           in >> prn;
           prns << prn;
-          if ( _ephList.contains(prn) ) {
+          if ( _eph.contains(prn) ) {
             in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) 
                >> xx(6) >> xx(7) >> xx(8) >> xx(9) >> xx(10)
                >> xx(11) >> xx(12) >> xx(13) >> xx(14);
@@ -141,14 +141,14 @@ t_irc bncRtnetDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) 
             xx(13) *= 1e3;         // y-crd at time + dT
             xx(14) *= 1e3;         // z-crd at time + dT
 
-            pair     = _ephList[prn];
+            pair     = _eph[prn];
             pair->xx = xx;
           }
         }
         else {
           prn = prns[ii];
-          if ( _ephList.contains(prn) ) {
-            pair = _ephList[prn];
+          if ( _eph.contains(prn) ) {
+            pair = _eph[prn];
             xx   = pair->xx;
           }
         }
@@ -157,10 +157,10 @@ t_irc bncRtnetDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) 
         // ----------------------------------------------
         t_eph* ep = 0;
         if (pair) {
-          ep = pair->eph;
-          if (pair->oldEph && ep && 
+          ep = pair->last;
+          if (pair->prev && ep && 
               ep->receptDateTime().secsTo(QDateTime::currentDateTime()) < 60) {
-            ep = pair->oldEph;
+            ep = pair->prev;
           }
         }
 
@@ -228,16 +228,6 @@ t_irc bncRtnetDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) 
 
         int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
         if (len > 0) {
-          if (_caster.at(ic)->ic() == 1)  { emit(newOutBytes1(len));}
-          if (_caster.at(ic)->ic() == 2)  { emit(newOutBytes2(len));}
-          if (_caster.at(ic)->ic() == 3)  { emit(newOutBytes3(len));}
-          if (_caster.at(ic)->ic() == 4)  { emit(newOutBytes4(len));}
-          if (_caster.at(ic)->ic() == 5)  { emit(newOutBytes5(len));}
-          if (_caster.at(ic)->ic() == 6)  { emit(newOutBytes6(len));}
-          if (_caster.at(ic)->ic() == 7)  { emit(newOutBytes7(len));}
-          if (_caster.at(ic)->ic() == 8)  { emit(newOutBytes8(len));}
-          if (_caster.at(ic)->ic() == 9)  { emit(newOutBytes9(len));}
-          if (_caster.at(ic)->ic() == 10) { emit(newOutBytes10(len));}
           _caster.at(ic)->write(obuffer, len);
         }
       }
@@ -286,7 +276,7 @@ void bncRtnetDecoder::processSatellite(int iCaster, const QString trafo,
     ColumnVector xB(4);
     ColumnVector vv(3);
 
-    ep->position(GPSweek12, GPSweeks12, xB, vv);
+    ep->position(GPSweek12, GPSweeks12, xB.data(), vv.data());
     
     ColumnVector xyz;
     if (ii == 1) {
@@ -332,7 +322,7 @@ void bncRtnetDecoder::processSatellite(int iCaster, const QString trafo,
   }
 
   outLine.sprintf("%d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n", 
-                  GPSweek, GPSweeks, ep->prn().toAscii().data(),
+                  GPSweek, GPSweeks, ep->prn().c_str(),
                   ep->IOD(), dClk, rsw(1), rsw(2), rsw(3));
 
   if (iCaster == 0) {
@@ -350,7 +340,7 @@ void bncRtnetDecoder::processSatellite(int iCaster, const QString trafo,
 void bncRtnetDecoder::crdTrafo(int GPSWeek, ColumnVector& xyz, 
                                const QString& trafo) {
 
-  bnsSettings settings;
+  bncSettings settings;
 
   if (trafo == "ETRF2000") {
     _dx  =    0.0541;

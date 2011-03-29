@@ -94,6 +94,7 @@ class bncEphUser : public QObject {
       delete last;
       delete prev;
     }
+    ColumnVector xx;
     t_eph* last;
     t_eph* prev;
   };
