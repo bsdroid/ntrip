@@ -3,6 +3,9 @@
 
 #include <QtNetwork>
 
+class bncClockRinex;
+class bncSP3;
+
 class bncUploadCaster : public QObject {
  Q_OBJECT
  public:
@@ -24,17 +27,19 @@ class bncUploadCaster : public QObject {
   void newMessage(const QByteArray msg);
 
  private:
-  QString      _mountpoint;
-  QString      _outHost;
-  int          _outPort;
-  QString      _password;
-  QString      _crdTrafo;
-  bool         _CoM;
-  QTcpSocket*  _outSocket;
-  int          _sOpenTrial;
-  QDateTime    _outSocketOpenTime;
-  QFile*       _outFile;
-  QTextStream* _outStream;
+  QString        _mountpoint;
+  QString        _outHost;
+  int            _outPort;
+  QString        _password;
+  QString        _crdTrafo;
+  bool           _CoM;
+  QTcpSocket*    _outSocket;
+  int            _sOpenTrial;
+  QDateTime      _outSocketOpenTime;
+  QFile*         _outFile;
+  QTextStream*   _outStream;
+  bncClockRinex* _rnx;
+  bncSP3*        _sp3;
 };
 
 #endif
