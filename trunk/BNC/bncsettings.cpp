@@ -33,7 +33,8 @@ bncSettings::bncSettings(bool noInit) :
     setValue("binSampl",         "0");
     setValue("casterUrlList", (QStringList() 
                                << "http://user:pass@www.euref-ip.net:2101" 
-                               << "http://user:pass@www.igs-ip.net:2101"));
+                               << "http://user:pass@www.igs-ip.net:2101" 
+                               << "http://user:pass@products.igs-ip.net:2101"));
     setValue("corrIntr",         "1 day");
     setValue("corrPath",         "");
     setValue("corrPort",         "");
