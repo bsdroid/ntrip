@@ -51,8 +51,6 @@ bncRtnetDecoder::bncRtnetDecoder() {
 
   bncSettings settings;
 
-  _year = 0;
-
   // List of upload casters
   // ----------------------
 
@@ -68,8 +66,10 @@ bncRtnetDecoder::~bncRtnetDecoder() {
 void bncRtnetDecoder::readEpochTime(const QString& line) {
   QTextStream in(line.toAscii());
   QString hlp;
-  in >> hlp >> _year >> _month >> _day >> _hour >> _min >> _sec;
-  GPSweekFromYMDhms(_year, _month, _day, _hour, _min, _sec, _GPSweek, _GPSweeks);
+  int     year, month, day, hour, min;
+  double  sec;
+  in >> hlp >> year >> month >> day >> hour >> min >> sec;
+  _epoTime.set( year, month, day, hour, min, sec);
 }
 
 // Decode Method
@@ -90,7 +90,7 @@ t_irc bncRtnetDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) 
       if      (hlpLines[ii].indexOf('*') != -1) {
         readEpochTime(hlpLines[ii]);
       }
-      else if (_year != 0) {
+      else if (_epoTime.valid()) {
         lines << hlpLines[ii];
       }
     }
@@ -100,8 +100,7 @@ t_irc bncRtnetDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) 
   // -----------------------------------
   if (lines.size() > 0) {
     for (int ic = 0; ic < _caster.size(); ic++) {
-      _caster.at(ic)->uploadClockOrbitBias(lines, _eph, _year, _month, _day,
-                                           _GPSweek, _GPSweeks);
+      _caster.at(ic)->uploadClockOrbitBias(_epoTime, _eph, lines);
     }
   }
 

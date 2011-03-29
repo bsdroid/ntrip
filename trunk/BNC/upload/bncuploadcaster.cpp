@@ -261,17 +261,18 @@ void bncUploadCaster::write(char* buffer, unsigned len) {
 
 // Encode and Upload Clocks, Orbits, and Biases
 ////////////////////////////////////////////////////////////////////////////
-void bncUploadCaster::uploadClockOrbitBias(const QStringList& lines,
-                           const QMap<QString, bncEphUser::t_ephPair*>& ephMap,
-                           int year, int month, int day,
-                           int GPSweek, double GPSweeks) {
-
+void bncUploadCaster::uploadClockOrbitBias(const bncTime& epoTime, 
+                            const QMap<QString, bncEphUser::t_ephPair*>& ephMap,
+                            const QStringList& lines) {
   this->open();
+
+  unsigned year, month, day;
+  epoTime.civil_date(year, month, day);
   
   struct ClockOrbit co;
   memset(&co, 0, sizeof(co));
-  co.GPSEpochTime      = (int)GPSweeks;
-  co.GLONASSEpochTime  = (int)fmod(GPSweeks, 86400.0) 
+  co.GPSEpochTime      = static_cast<int>(epoTime.gpssec());
+  co.GLONASSEpochTime  = static_cast<int>(fmod(epoTime.gpssec(), 86400.0))
                        + 3 * 3600 - gnumleap(year, month, day);
   co.ClockDataSupplied = 1;
   co.OrbitDataSupplied = 1;
@@ -279,9 +280,8 @@ void bncUploadCaster::uploadClockOrbitBias(const QStringList& lines,
   
   struct Bias bias;
   memset(&bias, 0, sizeof(bias));
-  bias.GPSEpochTime      = (int)GPSweeks;
-  bias.GLONASSEpochTime  = (int)fmod(GPSweeks, 86400.0) 
-                         + 3 * 3600 - gnumleap(year, month, day);
+  bias.GPSEpochTime      = co.GPSEpochTime;
+  bias.GLONASSEpochTime  = co.GLONASSEpochTime;
   
   for (int ii = 0; ii < lines.size(); ii++) {
   
@@ -334,9 +334,9 @@ void bncUploadCaster::uploadClockOrbitBias(const QStringList& lines,
       }
       if (sd) {
         QString outLine;
-        processSatellite(ep, GPSweek, GPSweeks, prn, xx, sd, outLine);
+        processSatellite(ep, epoTime.gpsw(), epoTime.gpssec(), prn, xx, sd, outLine);
         if (_outFile) {
-          _outFile->write(GPSweek, GPSweeks, outLine);
+          _outFile->write(epoTime.gpsw(), epoTime.gpssec(), outLine);
         }
       }
   

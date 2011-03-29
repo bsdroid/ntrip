@@ -3,6 +3,7 @@
 
 #include <QtNetwork>
 #include "bncephuser.h"
+#include "bnctime.h"
 
 class bncoutf;
 class bncClockRinex;
@@ -23,10 +24,9 @@ class bncUploadCaster : public QObject {
   void write(char* buffer, unsigned len);
   void printAscii(const QString& line);
   bool usedSocket() const {return _outSocket;}
-  void uploadClockOrbitBias(const QStringList& lines,
+  void uploadClockOrbitBias(const bncTime& epoTime, 
                             const QMap<QString, bncEphUser::t_ephPair*>& ephMap,
-                            int year, int month, int day,
-                            int GPSweek, double GPSweeks);
+                            const QStringList& lines);
 
  signals:
   void error(const QByteArray msg);
