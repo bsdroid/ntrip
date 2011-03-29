@@ -31,9 +31,6 @@
 #include "bncuploadcaster.h"
 #include "RTCM/GPSDecoder.h"
 
-class bncClockRinex;
-class bncSP3;
-
 class bncRtnetDecoder: public GPSDecoder, public bncEphUser {
  public:
   bncRtnetDecoder();
@@ -41,17 +38,7 @@ class bncRtnetDecoder: public GPSDecoder, public bncEphUser {
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
  private:
   void readEpochTime(const QString& line);
-  void processSatellite(int iCaster, const QString trafo, 
-                        bool CoM, t_eph* ep, int GPSweek, 
-                        double GPSweeks, const QString& prn, 
-                        const ColumnVector& xx, 
-                        struct ClockOrbit::SatData* sd,
-                        QString& outLine);
-  void crdTrafo(int GPSWeek, ColumnVector& xyz, 
-                const QString& trafo);
-
   QList<bncUploadCaster*> _caster;
-  bool                    _append;
   QString                 _buffer;
   int                     _GPSweek;
   double                  _GPSweeks;
@@ -61,23 +48,6 @@ class bncRtnetDecoder: public GPSDecoder, public bncEphUser {
   int                     _hour;
   int                     _min;
   double                  _sec;
-  double                  _dx;
-  double                  _dy;
-  double                  _dz;
-  double                  _dxr;
-  double                  _dyr;
-  double                  _dzr;
-  double                  _ox;
-  double                  _oy;
-  double                  _oz;
-  double                  _oxr;
-  double                  _oyr;
-  double                  _ozr;
-  double                  _sc;
-  double                  _scr;
-  double                  _t0;
-  bncClockRinex*          _rnx;
-  bncSP3*                 _sp3;
 };
 
 #endif  // include blocker

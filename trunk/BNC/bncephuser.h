@@ -77,13 +77,6 @@ class bncEphUser : public QObject {
   bncEphUser();
   ~bncEphUser();
 
- public slots:
-  void slotNewEphGPS(gpsephemeris gpseph);
-  void slotNewEphGlonass(glonassephemeris gloeph);
-  void slotNewEphGalileo(galileoephemeris galeph);
-
- protected:
-
   class t_ephPair {
    public:
     t_ephPair(t_eph* lastEph) {
@@ -94,11 +87,17 @@ class bncEphUser : public QObject {
       delete last;
       delete prev;
     }
-    ColumnVector xx;
     t_eph* last;
     t_eph* prev;
   };
 
+
+ public slots:
+  void slotNewEphGPS(gpsephemeris gpseph);
+  void slotNewEphGlonass(glonassephemeris gloeph);
+  void slotNewEphGalileo(galileoephemeris galeph);
+
+ protected:
   QMutex                    _mutex;
   QMap<QString, t_ephPair*> _eph;
 };
