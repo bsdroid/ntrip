@@ -290,7 +290,12 @@ void bncUploadCaster::uploadClockOrbitBias(const bncTime& epoTime,
     bncEphUser::t_ephPair*   pair = 0;
   
     QTextStream in(lines[ii].toAscii());
+
     in >> prn;
+    if (prn[0] == 'P') {
+      prn.remove(0,1);
+    }
+
     if ( ephMap.contains(prn) ) {
       in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) 
          >> xx(6) >> xx(7) >> xx(8) >> xx(9) >> xx(10)
@@ -335,6 +340,7 @@ void bncUploadCaster::uploadClockOrbitBias(const bncTime& epoTime,
       if (sd) {
         QString outLine;
         processSatellite(ep, epoTime.gpsw(), epoTime.gpssec(), prn, xx, sd, outLine);
+        cout << "outLine: " << outLine.toAscii().data() << endl;
         if (_outFile) {
           _outFile->write(epoTime.gpsw(), epoTime.gpssec(), outLine);
         }
@@ -385,6 +391,7 @@ void bncUploadCaster::uploadClockOrbitBias(const bncTime& epoTime,
     char obuffer[CLOCKORBIT_BUFFERSIZE];
   
     int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+    cout << "write clock " << len << endl;
     if (len > 0) {
       this->write(obuffer, len);
     }
@@ -394,6 +401,7 @@ void bncUploadCaster::uploadClockOrbitBias(const bncTime& epoTime,
        (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) ) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
     int len = MakeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+    cout << "write bias " << len << endl;
     if (len > 0) {
       this->write(obuffer, len);
     }
