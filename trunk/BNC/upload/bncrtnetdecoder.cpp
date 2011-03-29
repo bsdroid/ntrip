@@ -47,53 +47,50 @@ using namespace std;
 
 // Constructor
 //////////////////////////////////////////////////////////////////////// 
-bncRtnetDecoder::bncRtnetDecoder(const QString& fileName) {
-
+bncRtnetDecoder::bncRtnetDecoder() {
   bncSettings settings;
-  QString path = settings.value("rnxPath").toString();
-  expandEnvVar(path);
-
-  if ( path.length() > 0 && path[path.length()-1] != QDir::separator() ) {
-    path += QDir::separator();
-  }
-
-  _fileName = path + fileName;
-
-  _out = 0;
+  _year = 0;
 }
 
 // Destructor
 //////////////////////////////////////////////////////////////////////// 
 bncRtnetDecoder::~bncRtnetDecoder() {
-  delete _out;
 }
 
-// Reopen Output File
+// Decode Method
 //////////////////////////////////////////////////////////////////////// 
-void bncRtnetDecoder::reopen() {
-  QDate currDate = currentDateAndTimeGPS().date();
-  if (!_out || _fileDate != currDate) {
-    delete _out;
-    QByteArray fileName = 
-           (_fileName + "_" + currDate.toString("yyMMdd")).toAscii();
-    bncSettings settings;
-    if (Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
-      _out = new ofstream(fileName.data(), ios::out | ios::app);
-    }
-    else {
-      _out = new ofstream(fileName.data());
-    }
-    _fileDate = currDate;
-  }
+void bncRtnetDecoder::readEpochTime(const QString& line) {
+  QTextStream in(line.toAscii());
+  QString hlp;
+  in >> hlp >> _year >> _month >> _day >> _hour >> _min >> _sec;
+  GPSweekFromYMDhms(_year, _month, _day, _hour, _min, _sec, _GPSweek, _GPSweeks);
 }
 
 // Decode Method
 //////////////////////////////////////////////////////////////////////// 
 t_irc bncRtnetDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
+
   errmsg.clear();
-  reopen();
-  _out->write(buffer, bufLen);
-  _out->flush();
+
+  _buffer.append(QByteArray(buffer, bufLen));
+
+  int iLast = _buffer.lastIndexOf('\n');
+
+  if (iLast != -1) {
+    QStringList lines = _buffer.split('\n', QString::SkipEmptyParts);
+    _buffer = _buffer.mid(iLast+1);
+    cout << "number of lines = " << lines.size() << endl;
+    for (int ii = 0; ii < lines.size(); ii++) {
+      if (lines[ii].indexOf('*') != -1) {
+        readEpochTime(lines[ii]);
+        cout << "epoch: " << lines[ii].toAscii().data() << endl;
+      }
+      else if (_year != 0) {
+        cout << "pos: " << lines[ii].toAscii().data() << endl;
+      }
+    }
+  }
+
   return success;
 }
 

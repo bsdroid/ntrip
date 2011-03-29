@@ -308,6 +308,33 @@ ColumnVector rungeKutta4(
 
 // 
 ////////////////////////////////////////////////////////////////////////////
+double djul(int jj, int mm, double tt) {
+  int    ii, kk;
+  double  djul ;
+  if( mm <= 2 ) {
+    jj = jj - 1;
+    mm = mm + 12;
+  }  
+  ii   = jj/100;
+  kk   = 2 - ii + ii/4;
+  djul = (365.25*jj - fmod( 365.25*jj, 1.0 )) - 679006.0;
+  djul = djul + floor( 30.6001*(mm + 1) ) + tt + kk;
+  return djul;
+} 
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void jdgp(double tjul, double & second, int & nweek) {
+  double      deltat;
+  deltat = tjul - 44244.0 ;
+  // current gps week
+  nweek = (int) floor(deltat/7.0);
+  // seconds past midnight of last weekend
+  second = (deltat - (nweek)*7.0)*86400.0;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
 void GPSweekFromDateAndTime(const QDateTime& dateTime, 
                             int& GPSWeek, double& GPSWeeks) {
 
@@ -320,6 +347,17 @@ void GPSweekFromDateAndTime(const QDateTime& dateTime,
 
   GPSWeeks = (weekDay - 1) * 86400.0
              - dateTime.time().msecsTo(QTime()) / 1e3; 
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void GPSweekFromYMDhms(int year, int month, int day, int hour, int min,
+                       double sec, int& GPSWeek, double& GPSWeeks) {
+
+  double mjd = djul(year, month, day);
+
+  jdgp(mjd, GPSWeeks, GPSWeek);
+  GPSWeeks += hour * 3600.0 + min * 60.0 + sec;  
 }
 
 // 

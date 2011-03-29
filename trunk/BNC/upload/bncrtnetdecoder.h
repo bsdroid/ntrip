@@ -22,8 +22,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-#ifndef INC_BNCRTNETDECODER_H
-#define INC_BNCRTNETDECODER_H
+#ifndef BNCRTNETDECODER_H
+#define BNCRTNETDECODER_H
 
 #include <fstream>
 #include <QtCore>
@@ -32,14 +32,38 @@
 
 class bncRtnetDecoder: public GPSDecoder, public bncEphUser {
  public:
-  bncRtnetDecoder(const QString& fileName);
+  bncRtnetDecoder();
   ~bncRtnetDecoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
  private:
-  void reopen();
-  QString        _fileName;
-  std::ofstream* _out;
-  QDate          _fileDate;
+  void readEpochTime(const QString& line);
+
+  QString _buffer;
+
+  int    _GPSweek;
+  double _GPSweeks;
+  int    _year;
+  int    _month;
+  int    _day;
+  int    _hour;
+  int    _min;
+  double _sec;
+
+  double _dx;
+  double _dy;
+  double _dz;
+  double _dxr;
+  double _dyr;
+  double _dzr;
+  double _ox;
+  double _oy;
+  double _oz;
+  double _oxr;
+  double _oyr;
+  double _ozr;
+  double _sc;
+  double _scr;
+  double _t0;
 };
 
 #endif  // include blocker
