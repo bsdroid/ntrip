@@ -7,7 +7,7 @@
 #include "bncephuser.h"
 
 class cmbCaster;
-class bnsSP3;
+class bncSP3;
 class bncAntex;
 
 class cmbParam {
@@ -88,7 +88,7 @@ class bncComb : public bncEphUser  {
   QString               _outNameSkl;
   QString               _outName;
   std::ofstream*        _out;
-  bnsSP3*               _sp3;
+  bncSP3*               _sp3;
   bool                  _append;
   bncAntex*             _antex;
 };
