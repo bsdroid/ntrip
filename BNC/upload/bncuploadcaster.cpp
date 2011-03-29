@@ -26,7 +26,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncUploadCaster::bncUploadCaster(const QString& mountpoint,
                                  const QString& outHost, int outPort,
-                                 const QString& password,  
+                                 const QString& password, 
+                                 const QString& crdTrafo, bool  CoM, 
                                  const QString& outFileName) {
 
   bncSettings settings;
@@ -35,6 +36,8 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   _outHost    = outHost;
   _outPort    = outPort;
   _password   = password;
+  _crdTrafo   = crdTrafo;
+  _CoM        = CoM;
 
   _outSocket  = 0;
   _sOpenTrial = 0;

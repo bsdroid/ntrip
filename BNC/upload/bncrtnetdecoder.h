@@ -28,6 +28,7 @@
 #include <fstream>
 #include <QtCore>
 #include "bncephuser.h"
+#include "bncuploadcaster.h"
 #include "RTCM/GPSDecoder.h"
 
 class bncRtnetDecoder: public GPSDecoder, public bncEphUser {
@@ -47,7 +48,7 @@ class bncRtnetDecoder: public GPSDecoder, public bncEphUser {
                 const QString& trafo);
 
   QString _buffer;
-
+  QList<bncUploadCaster*> _caster;
   int    _GPSweek;
   double _GPSweeks;
   int    _year;

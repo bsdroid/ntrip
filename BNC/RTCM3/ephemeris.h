@@ -2,7 +2,7 @@
 #define EPHEMERIS_H
 
 #include <newmat.h>
-
+#include <QtCore>
 #include <stdio.h>
 #include <string>
 extern "C" {
@@ -15,6 +15,10 @@ class t_eph {
 
   bool        isNewerThan(const t_eph* eph) const;
   std::string prn() const {return _prn;}
+  void    setReceptDateTime(const QDateTime& dateTime) {
+    _receptDateTime = dateTime;
+  }
+  const QDateTime& receptDateTime() const {return _receptDateTime;}
 
   int    GPSweek()  const { return _GPSweek; }
   double GPSweeks() const { return _GPSweeks; }
@@ -41,6 +45,7 @@ class t_eph {
   std::string _prn;
   int         _GPSweek;
   double      _GPSweeks;
+  QDateTime   _receptDateTime;
 };
 
 
