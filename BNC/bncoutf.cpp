@@ -101,7 +101,7 @@ QString bncoutf::resolveFileName(int GPSweek, const QDateTime& datTim) {
   if (dayOfWeek == 7) {
     dayOfWeek = 0;
   }
-  QString gpswd    = QString().arg(GPSweek).arg(dayOfWeek);
+  QString gpswd    = QString("%1%2").arg(GPSweek).arg(dayOfWeek);
   QString baseName = _sklBaseName.replace("${GPSWD}", gpswd);
   QString epoStr   = epochStr(datTim, _intr);
 
