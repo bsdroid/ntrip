@@ -24,7 +24,7 @@
 #include "bncmodel.h"
 #include "bncutils.h"
 #include "bncpppclient.h"
-#include "bnssp3.h"
+#include "bncsp3.h"
 #include "bncantex.h"
 #include "bnctides.h"
 
@@ -184,7 +184,7 @@ bncComb::bncComb() {
     QString path      = settings.value("cmbSP3Path").toString();
     QString interval  = "";
     int     sampl     = 0;
-    _sp3 = new bnsSP3(prep, ext, path, interval, sampl);
+    _sp3 = new bncSP3(prep, ext, path, interval, sampl);
   }
 
   _append = Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked;
