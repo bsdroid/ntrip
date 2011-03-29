@@ -25,11 +25,10 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncClockRinex::bncClockRinex(const QString& prep, const QString& ext, const QString& path,
-                             const QString& intr, int sampl) 
-  : bncoutf(prep, ext, path, intr, sampl) {
+bncClockRinex::bncClockRinex(const QString& sklFileName, const QString& intr, 
+                             int sampl) 
+  : bncoutf(sklFileName, intr, sampl) {
   bncSettings settings;
-  _append = Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked;
 }
 
 // Destructor
@@ -42,7 +41,7 @@ bncClockRinex::~bncClockRinex() {
 t_irc bncClockRinex::write(int GPSweek, double GPSweeks, const QString& prn, 
                    const ColumnVector& xx) {
 
-  if (bncoutf::write(GPSweek, GPSweeks, prn, xx, _append) == success) {
+  if (reopen(GPSweek, GPSweeks) == success) {
 
       QDateTime datTim = dateAndTimeFromGPSweek(GPSweek, GPSweeks);
       double sec = fmod(GPSweeks, 60.0);

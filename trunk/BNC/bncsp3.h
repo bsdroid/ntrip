@@ -9,11 +9,10 @@
 
 class bncSP3 : public bncoutf {
  public:
-  bncSP3(const QString& prep, const QString& ext, const QString& path,
-         const QString& intr, int sampl);
+  bncSP3(const QString& sklFileName, const QString& intr, int sampl);
   virtual ~bncSP3();
-  virtual t_irc write(int GPSweek, double GPSweeks, const QString& prn, 
-                      const ColumnVector& xx, bool append);
+  t_irc write(int GPSweek, double GPSweeks, const QString& prn, 
+              const ColumnVector& xx);
 
  private:
   virtual void writeHeader(const QDateTime& datTim);

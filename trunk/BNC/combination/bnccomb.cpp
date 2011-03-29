@@ -179,15 +179,12 @@ bncComb::bncComb() {
     _sp3 = 0;
   }
   else {
-    QString prep      = "BNC";
-    QString ext       = ".sp3";
-    QString path      = settings.value("cmbSP3Path").toString();
+    QString sklFileName = settings.value("cmbSP3Path").toString() 
+                        + QDir::separator() + "BNC.sp3";
     QString interval  = "";
     int     sampl     = 0;
-    _sp3 = new bncSP3(prep, ext, path, interval, sampl);
+    _sp3 = new bncSP3(sklFileName, interval, sampl);
   }
-
-  _append = Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked;
 
   // ANTEX File
   // ----------
@@ -448,7 +445,7 @@ void bncComb::dumpResults(const bncTime& resTime,
           cout << "antenna not found" << endl;
         }
       }
-      _sp3->write(resTime.gpsw(), resTime.gpssec(), corr->prn, xc, _append);
+      _sp3->write(resTime.gpsw(), resTime.gpssec(), corr->prn, xc);
     }
 
     delete corr;

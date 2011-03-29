@@ -19,24 +19,31 @@
 #include <iomanip>
 
 #include "bncoutf.h"
+#include "bncsettings.h"
 
 using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncoutf::bncoutf(const QString& prep, const QString& ext, const QString& path,
-                 const QString& intr, int sampl) {
+bncoutf::bncoutf(const QString& sklFileName, const QString& intr, int sampl) {
+
+  bncSettings settings;
 
   _headerWritten = false;
-  _prep          = prep;
-  _ext           = ext;
   _sampl         = sampl;
   _intr          = intr;
-  _path          = path;
+
+  QFileInfo fileInfo(sklFileName);
+  _path        = fileInfo.absolutePath() + QDir::separator();
+  _sklBaseName = fileInfo.baseName();
+  _extension   = fileInfo.completeSuffix(); 
+
   expandEnvVar(_path);
-  if ( _path.length() > 0 && _path[_path.length()-1] != QDir::separator() ) {
-    _path += QDir::separator();
+  if (!_extension.isEmpty()) {
+    _extension = "." + _extension;
   }
+
+  _append = Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked;
 }
 
 // Destructor
@@ -51,15 +58,11 @@ void bncoutf::closeFile() {
   _out.close();
 }
 
-// Next File Epoch (static)
+// Epoch String
 ////////////////////////////////////////////////////////////////////////////
-QString bncoutf::nextEpochStr(const QDateTime& datTim, 
-                             const QString& intStr, QDateTime* nextEpoch) {
+QString bncoutf::epochStr(const QDateTime& datTim, const QString& intStr) {
 
   QString epoStr;
-
-  QTime nextTime;
-  QDate nextDate;
 
   int indHlp = intStr.indexOf("min");
 
@@ -69,21 +72,11 @@ QString bncoutf::nextEpochStr(const QDateTime& datTim,
     epoStr = QString("_") + ch;
     if (datTim.time().minute() >= 60-step) {
       epoStr += QString("%1").arg(60-step, 2, 10, QChar('0'));
-      if (datTim.time().hour() < 23) {
-        nextTime.setHMS(datTim.time().hour() + 1 , 0, 0);
-        nextDate = datTim.date();
-      }
-      else {
-        nextTime.setHMS(0, 0, 0);
-        nextDate = datTim.date().addDays(1);
-      }
     }
     else {
       for (int limit = step; limit <= 60-step; limit += step) {
         if (datTim.time().minute() < limit) {
           epoStr += QString("%1").arg(limit-step, 2, 10, QChar('0'));
-          nextTime.setHMS(datTim.time().hour(), limit, 0);
-          nextDate = datTim.date();
           break;
         }
       }
@@ -92,23 +85,9 @@ QString bncoutf::nextEpochStr(const QDateTime& datTim,
   else if (intStr == "1 hour") {
     char ch = 'A' + datTim.time().hour();
     epoStr = QString("_") + ch;
-    if (datTim.time().hour() < 23) {
-      nextTime.setHMS(datTim.time().hour() + 1 , 0, 0);
-      nextDate = datTim.date();
-    }
-    else {
-      nextTime.setHMS(0, 0, 0);
-      nextDate = datTim.date().addDays(1);
-    }
   }
   else {
     epoStr = "";
-    nextTime.setHMS(0, 0, 0);
-    nextDate = datTim.date().addDays(1);
-  }
-
-  if (nextEpoch) {
-    *nextEpoch = QDateTime(nextDate, nextTime, Qt::UTC);
   }
 
   return epoStr;
@@ -116,26 +95,22 @@ QString bncoutf::nextEpochStr(const QDateTime& datTim,
 
 // File Name according to RINEX Standards
 ////////////////////////////////////////////////////////////////////////////
-void bncoutf::resolveFileName(int GPSweek, const QDateTime& datTim) {
-
-  QString epoStr = nextEpochStr(datTim, _intr, &_nextCloseEpoch);
+QString bncoutf::resolveFileName(int GPSweek, const QDateTime& datTim) {
 
   int dayOfWeek = datTim.date().dayOfWeek();
   if (dayOfWeek == 7) {
     dayOfWeek = 0;
   }
+  QString gpswd    = QString().arg(GPSweek).arg(dayOfWeek);
+  QString baseName = _sklBaseName.replace("${GPSWD}", gpswd);
+  QString epoStr   = epochStr(datTim, _intr);
 
-  _fName = (_path + _prep
-            + QString("%1").arg(GPSweek)
-            + QString("%1").arg(dayOfWeek)
-            + epoStr 
-            + _ext).toAscii();
+  return _path + baseName + epoStr + _extension;
 }
 
-// Write One Epoch
+// Re-Open Output File
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncoutf::write(int GPSweek, double GPSweeks, const QString&, 
-                     const ColumnVector&, bool append) {
+t_irc bncoutf::reopen(int GPSweek, double GPSweeks) {
 
   if (_sampl != 0 && fmod(GPSweeks, _sampl) != 0.0) {
     return failure;
@@ -143,27 +118,38 @@ t_irc bncoutf::write(int GPSweek, double GPSweeks, const QString&,
 
   QDateTime datTim = dateAndTimeFromGPSweek(GPSweek, GPSweeks);
 
+  QString newFileName = resolveFileName(GPSweek, datTim);
+
   // Close the file
   // --------------
-  if (_nextCloseEpoch.isValid() && datTim >= _nextCloseEpoch) {
+  if (newFileName != _fName) {
     closeFile();
     _headerWritten = false;
+    _fName = newFileName;
   }
 
-  // Write Header
-  // ------------
+  // Re-Open File, Write Header
+  // --------------------------
   if (!_headerWritten) {
-    resolveFileName(GPSweek, datTim);
     _out.setf(ios::showpoint | ios::fixed);
-    if (append && QFile::exists(_fName)) {
-      _out.open(_fName.data(), ios::out | ios::app);
+    if (_append && QFile::exists(_fName)) {
+      _out.open(_fName.toAscii().data(), ios::out | ios::app);
     }
     else {
-      _out.open(_fName.data());
+      _out.open(_fName.toAscii().data());
       writeHeader(datTim);
     }
     _headerWritten = true;
   }
 
+  return success;
+}
+
+// Write String
+////////////////////////////////////////////////////////////////////////////
+t_irc bncoutf::write(int GPSweek, double GPSweeks, const QString& str) {
+  reopen(GPSweek, GPSweeks);
+  _out << str.toAscii().data();
+  _out.flush();
   return success;
 }
