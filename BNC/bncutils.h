@@ -62,6 +62,9 @@ ColumnVector rungeKutta4(double xi, const ColumnVector& yi, double dx,
 void GPSweekFromDateAndTime(const QDateTime& dateTime, 
                             int& GPSWeek, double& GPSWeeks);
 
+void GPSweekFromYMDhms(int year, int month, int day, int hour, int min,
+                       double sec, int& GPSWeek, double& GPSWeeks);
+
 void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac);
 
 #endif
