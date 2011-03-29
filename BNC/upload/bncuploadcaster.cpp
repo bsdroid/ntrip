@@ -225,7 +225,7 @@ void bncUploadCaster::open() {
   if (!_outSocket->waitForConnected(timeOut)) {
     delete _outSocket;
     _outSocket = 0;
-    emit(newMessage("Broadcaster: Connect timeout"));
+    emit(newMessage("Broadcaster: Connect timeout", true));
     return;
   }
 
@@ -242,10 +242,10 @@ void bncUploadCaster::open() {
   if (ans.indexOf("OK") == -1) {
     delete _outSocket;
     _outSocket = 0;
-    emit(newMessage("Broadcaster: Connection broken"));
+    emit(newMessage("Broadcaster: Connection broken", true));
   }
   else {
-    emit(newMessage("Broadcaster: Connection opened"));
+    emit(newMessage("Broadcaster: Connection opened", true));
     _sOpenTrial = 0;
   }
 }
