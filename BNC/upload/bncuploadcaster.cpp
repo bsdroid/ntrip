@@ -49,8 +49,6 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   _outSocket  = 0;
   _sOpenTrial = 0;
 
-  _append = Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked;
-
   if (outFileName.isEmpty()) {
     _outFile   = 0;
     _outStream = 0;

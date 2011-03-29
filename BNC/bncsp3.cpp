@@ -25,9 +25,8 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncSP3::bncSP3(const QString& prep, const QString& ext, const QString& path,
-               const QString& intr, int sampl) 
-  : bncoutf(prep, ext, path, intr, sampl) {
+bncSP3::bncSP3(const QString& sklFileName, const QString& intr, int sampl) 
+  : bncoutf(sklFileName, intr, sampl) {
 
   _lastGPSweek  = 0;
   _lastGPSweeks = 0.0;
@@ -41,9 +40,9 @@ bncSP3::~bncSP3() {
 // Write One Epoch
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncSP3::write(int GPSweek, double GPSweeks, const QString& prn, 
-                    const ColumnVector& xx, bool append) {
+                    const ColumnVector& xx) {
 
-  if ( bncoutf::write(GPSweek, GPSweeks, prn, xx, append) == success) {
+  if (reopen(GPSweek, GPSweeks) == success) {
 
     if (_lastGPSweek != GPSweek || _lastGPSweeks != GPSweeks) {
       _lastGPSweek  = GPSweek;

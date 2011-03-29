@@ -9,32 +9,28 @@
 
 class bncoutf {
  public:
-  bncoutf(const QString& prep, const QString& ext, const QString& path,
-          const QString& intr, int sampl);
+  bncoutf(const QString& sklFileName, const QString& intr, int sampl);
   virtual ~bncoutf();
-
-  virtual t_irc write(int GPSweek, double GPSweeks, const QString& prn, 
-                      const ColumnVector& xx, bool append);
+  t_irc write(int GPSweek, double GPSweeks, const QString& str);
 
  protected:
-  virtual void writeHeader(const QDateTime& /* datTim */) {}
-  virtual void closeFile();
+  virtual t_irc reopen(int GPSweek, double GPSweeks);
+  virtual void  writeHeader(const QDateTime& /* datTim */) {}
+  virtual void  closeFile();
   std::ofstream _out;
   int           _sampl;
 
  private:
-  QString nextEpochStr(const QDateTime& datTim,
-                       const QString& intStr, 
-                       QDateTime* nextEpoch = 0);
-  void resolveFileName(int GPSweek, const QDateTime& datTim);
+  QString epochStr(const QDateTime& datTim, const QString& intStr);
+  QString resolveFileName(int GPSweek, const QDateTime& datTim);
 
-  bool          _headerWritten;
-  QDateTime     _nextCloseEpoch;
-  QString       _path;
-  QString       _intr;
-  QString       _ext;
-  QString       _prep;
-  QByteArray    _fName;
+  bool    _headerWritten;
+  QString _path;
+  QString _sklBaseName;
+  QString _extension;
+  QString _intr;
+  QString _fName;
+  bool    _append;
 };
 
 #endif
