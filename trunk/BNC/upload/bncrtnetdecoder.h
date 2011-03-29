@@ -31,6 +31,9 @@
 #include "bncuploadcaster.h"
 #include "RTCM/GPSDecoder.h"
 
+class bncClockRinex;
+class bncSP3;
+
 class bncRtnetDecoder: public GPSDecoder, public bncEphUser {
  public:
   bncRtnetDecoder();
@@ -47,32 +50,34 @@ class bncRtnetDecoder: public GPSDecoder, public bncEphUser {
   void crdTrafo(int GPSWeek, ColumnVector& xyz, 
                 const QString& trafo);
 
-  QString _buffer;
   QList<bncUploadCaster*> _caster;
-  int    _GPSweek;
-  double _GPSweeks;
-  int    _year;
-  int    _month;
-  int    _day;
-  int    _hour;
-  int    _min;
-  double _sec;
-
-  double _dx;
-  double _dy;
-  double _dz;
-  double _dxr;
-  double _dyr;
-  double _dzr;
-  double _ox;
-  double _oy;
-  double _oz;
-  double _oxr;
-  double _oyr;
-  double _ozr;
-  double _sc;
-  double _scr;
-  double _t0;
+  bool                    _append;
+  QString                 _buffer;
+  int                     _GPSweek;
+  double                  _GPSweeks;
+  int                     _year;
+  int                     _month;
+  int                     _day;
+  int                     _hour;
+  int                     _min;
+  double                  _sec;
+  double                  _dx;
+  double                  _dy;
+  double                  _dz;
+  double                  _dxr;
+  double                  _dyr;
+  double                  _dzr;
+  double                  _ox;
+  double                  _oy;
+  double                  _oz;
+  double                  _oxr;
+  double                  _oyr;
+  double                  _ozr;
+  double                  _sc;
+  double                  _scr;
+  double                  _t0;
+  bncClockRinex*          _rnx;
+  bncSP3*                 _sp3;
 };
 
 #endif  // include blocker
