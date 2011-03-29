@@ -43,7 +43,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bnctides.h bncmap.h bncmapview.h bncantex.h                 \
           bncephuser.h bncoutf.h                                      \
           upload/bncrtnetdecoder.h upload/bncuploadcaster.h           \
-          upload/bncclockrinex.h bncsp3.h                             \
+          upload/bncclockrinex.h upload/bncsp3.h                      \
           RTCM/GPSDecoder.h RTCM/RTCM2.h RTCM/RTCM2Decoder.h          \
           RTCM/RTCM2_2021.h RTCM/rtcm_utils.h                         \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex/rtcm3torinex.h      \
