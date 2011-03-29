@@ -28,6 +28,7 @@
 #include <fstream>
 #include <QtCore>
 #include "bncephuser.h"
+#include "bnctime.h"
 #include "bncuploadcaster.h"
 #include "RTCM/GPSDecoder.h"
 
@@ -40,14 +41,7 @@ class bncRtnetDecoder: public GPSDecoder, public bncEphUser {
   void readEpochTime(const QString& line);
   QList<bncUploadCaster*> _caster;
   QString                 _buffer;
-  int                     _GPSweek;
-  double                  _GPSweeks;
-  int                     _year;
-  int                     _month;
-  int                     _day;
-  int                     _hour;
-  int                     _min;
-  double                  _sec;
+  bncTime                 _epoTime;
 };
 
 #endif  // include blocker
