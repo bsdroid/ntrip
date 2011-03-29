@@ -39,9 +39,9 @@ class bncRtnetDecoder: public GPSDecoder, public bncEphUser {
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
  private:
   void readEpochTime(const QString& line);
-  QList<bncUploadCaster*> _caster;
-  QString                 _buffer;
-  bncTime                 _epoTime;
+  QVector<bncUploadCaster*> _caster;
+  QString                   _buffer;
+  bncTime                   _epoTime;
 };
 
 #endif  // include blocker

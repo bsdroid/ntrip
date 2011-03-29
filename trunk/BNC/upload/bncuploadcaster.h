@@ -16,8 +16,8 @@ class bncUploadCaster : public QObject {
                   const QString& outHost, int outPort,
                   const QString& password, 
                   const QString& crdTrafo, bool  CoM, 
-                  const QString& rnxFileName,
                   const QString& sp3FileName,
+                  const QString& rnxFileName,
                   const QString& outFileName);
   virtual ~bncUploadCaster();
   void open();

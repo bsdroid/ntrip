@@ -53,12 +53,25 @@ bncRtnetDecoder::bncRtnetDecoder() {
 
   // List of upload casters
   // ----------------------
-
+  QListIterator<QString> it(settings.value("uploadMountpointsOut").toStringList());
+  while (it.hasNext()) {
+    QStringList hlp = it.next().split(",");
+    if (hlp.size() > 6) {
+      int  outPort = hlp[1].toInt();
+      bool CoM     = (hlp[5].toInt() == Qt::Checked);
+      _caster.push_back(new bncUploadCaster(hlp[2], hlp[0], outPort,
+                                            hlp[3], hlp[4], CoM,
+                                            hlp[6], "", ""));
+    }
+  }
 }
 
 // Destructor
 //////////////////////////////////////////////////////////////////////// 
 bncRtnetDecoder::~bncRtnetDecoder() {
+  for (int ic = 0; ic < _caster.size(); ic++) {
+    delete _caster[ic];
+  }
 }
 
 // 
@@ -100,7 +113,7 @@ t_irc bncRtnetDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) 
   // -----------------------------------
   if (lines.size() > 0) {
     for (int ic = 0; ic < _caster.size(); ic++) {
-      _caster.at(ic)->uploadClockOrbitBias(_epoTime, _eph, lines);
+      _caster[ic]->uploadClockOrbitBias(_epoTime, _eph, lines);
     }
   }
 
