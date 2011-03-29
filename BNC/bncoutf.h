@@ -17,7 +17,7 @@ class bncoutf {
                       const ColumnVector& xx, bool append);
 
  protected:
-  virtual void writeHeader(const QDateTime& datTim) = 0;
+  virtual void writeHeader(const QDateTime& /* datTim */) {}
   virtual void closeFile();
   std::ofstream _out;
   int           _sampl;
