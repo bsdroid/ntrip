@@ -42,6 +42,8 @@
 #include "bncrtnetdecoder.h"
 #include "bncutils.h"
 #include "bncsettings.h"
+#include "bncclockrinex.h"
+#include "bncsp3.h"
 
 using namespace std;
 
@@ -50,11 +52,42 @@ using namespace std;
 bncRtnetDecoder::bncRtnetDecoder() {
   bncSettings settings;
   _year = 0;
+  _append = Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked;
+
+  // RINEX writer
+  // ------------
+  if ( settings.value("rnxPath").toString().isEmpty() ) { 
+    _rnx = 0;
+  }
+  else {
+    QString prep  = "BNC";
+    QString ext   = ".clk";
+    QString path  = settings.value("rnxPath").toString();
+    QString intr  = settings.value("rnxIntr").toString();
+    int     sampl = settings.value("rnxSampl").toInt();
+    _rnx = new bncClockRinex(prep, ext, path, intr, sampl);
+  }
+
+  // SP3 writer
+  // ----------
+  if ( settings.value("sp3Path").toString().isEmpty() ) { 
+    _sp3 = 0;
+  }
+  else {
+    QString prep  = "BNC";
+    QString ext   = ".sp3";
+    QString path  = settings.value("sp3Path").toString();
+    QString intr  = settings.value("sp3Intr").toString();
+    int     sampl = settings.value("sp3Sampl").toInt();
+    _sp3 = new bncSP3(prep, ext, path, intr, sampl);
+  }
 }
 
 // Destructor
 //////////////////////////////////////////////////////////////////////// 
 bncRtnetDecoder::~bncRtnetDecoder() {
+  delete _rnx;
+  delete _sp3;
 }
 
 // 

@@ -3,9 +3,6 @@
 
 #include <QtNetwork>
 
-class bncClockRinex;
-class bncSP3;
-
 class bncUploadCaster : public QObject {
  Q_OBJECT
  public:
@@ -38,8 +35,6 @@ class bncUploadCaster : public QObject {
   QDateTime      _outSocketOpenTime;
   QFile*         _outFile;
   QTextStream*   _outStream;
-  bncClockRinex* _rnx;
-  bncSP3*        _sp3;
 };
 
 #endif
