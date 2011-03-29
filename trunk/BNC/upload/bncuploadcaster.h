@@ -29,8 +29,7 @@ class bncUploadCaster : public QObject {
                             const QStringList& lines);
 
  signals:
-  void error(const QByteArray msg);
-  void newMessage(const QByteArray msg);
+  void newMessage(const QByteArray msg, bool showOnScreen);
 
  private:
   void processSatellite(t_eph* eph, int GPSweek, 
