@@ -4,6 +4,7 @@
 #include <QtNetwork>
 #include "bncephuser.h"
 
+class bncoutf;
 class bncClockRinex;
 class bncSP3;
 
@@ -47,9 +48,6 @@ class bncUploadCaster : public QObject {
   QTcpSocket*    _outSocket;
   int            _sOpenTrial;
   QDateTime      _outSocketOpenTime;
-  QFile*         _outFile;
-  QTextStream*   _outStream;
-  bool           _append;
   double         _dx;
   double         _dy;
   double         _dz;
@@ -65,6 +63,7 @@ class bncUploadCaster : public QObject {
   double         _sc;
   double         _scr;
   double         _t0;
+  bncoutf*       _outFile;
   bncClockRinex* _rnx;
   bncSP3*        _sp3;
 };

@@ -49,51 +49,31 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   _outSocket  = 0;
   _sOpenTrial = 0;
 
-  if (outFileName.isEmpty()) {
-    _outFile   = 0;
-    _outStream = 0;
+  // Raw Output
+  // ----------
+  if (!outFileName.isEmpty()) {
+    _outFile = new bncoutf(outFileName, "", 0);
   }
   else {
-    _outFile = new QFile(outFileName);
-    QIODevice::OpenMode oMode;
-    if (_append) {
-      oMode = QIODevice::WriteOnly | QIODevice::Unbuffered | QIODevice::Append;
-    }
-    else {
-      oMode = QIODevice::WriteOnly | QIODevice::Unbuffered;
-    }
-
-    if (_outFile->open(oMode)) {
-      _outStream = new QTextStream(_outFile);
-    }
+    _outFile = 0;
   }
 
   // RINEX writer
   // ------------
-  if ( settings.value("rnxPath").toString().isEmpty() ) { 
-    _rnx = 0;
+  if (!rnxFileName.isEmpty()) {
+    _rnx = new bncClockRinex(rnxFileName, "", 0);
   }
   else {
-    QString prep  = "BNC";
-    QString ext   = ".clk";
-    QString path  = settings.value("rnxPath").toString();
-    QString intr  = settings.value("rnxIntr").toString();
-    int     sampl = settings.value("rnxSampl").toInt();
-    _rnx = new bncClockRinex(prep, ext, path, intr, sampl);
+    _rnx = 0;
   }
 
   // SP3 writer
   // ----------
-  if ( settings.value("sp3Path").toString().isEmpty() ) { 
-    _sp3 = 0;
+  if (!sp3FileName.isEmpty()) {
+    _sp3 = new bncSP3(sp3FileName, "", 0);
   }
   else {
-    QString prep  = "BNC";
-    QString ext   = ".sp3";
-    QString path  = settings.value("sp3Path").toString();
-    QString intr  = settings.value("sp3Intr").toString();
-    int     sampl = settings.value("sp3Sampl").toInt();
-    _sp3 = new bncSP3(prep, ext, path, intr, sampl);
+    _sp3 = 0;
   }
 
   // Set Transformation Parameters
@@ -205,9 +185,9 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncUploadCaster::~bncUploadCaster() {
-  delete _outSocket;
-  delete _outStream;
   delete _outFile;
+  delete _rnx;
+  delete _sp3;
 }
 
 // Start the Communication with NTRIP Caster
@@ -276,15 +256,6 @@ void bncUploadCaster::write(char* buffer, unsigned len) {
   if (_outSocket) {
     _outSocket->write(buffer, len);
     _outSocket->flush();
-  }
-}
-
-// Print Ascii Output
-////////////////////////////////////////////////////////////////////////////
-void bncUploadCaster::printAscii(const QString& line) {
-  if (_outStream) {
-    *_outStream << line;
-     _outStream->flush();
   }
 }
 
@@ -364,7 +335,9 @@ void bncUploadCaster::uploadClockOrbitBias(const QStringList& lines,
       if (sd) {
         QString outLine;
         processSatellite(ep, GPSweek, GPSweeks, prn, xx, sd, outLine);
-        this->printAscii(outLine);
+        if (_outFile) {
+          _outFile->write(GPSweek, GPSweeks, outLine);
+        }
       }
   
       struct Bias::BiasSat* biasSat = 0;
@@ -509,7 +482,7 @@ void bncUploadCaster::processSatellite(t_eph* eph, int GPSweek,
     _rnx->write(GPSweek, GPSweeks, prn, xx);
   }
   if (_sp3) {
-    _sp3->write(GPSweek, GPSweeks, prn, xx, _append);
+    _sp3->write(GPSweek, GPSweeks, prn, xx);
   }
 }
 
