@@ -37,6 +37,14 @@ class bncRtnetDecoder: public GPSDecoder, public bncEphUser {
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
  private:
   void readEpochTime(const QString& line);
+  void processSatellite(int iCaster, const QString trafo, 
+                        bool CoM, t_eph* ep, int GPSweek, 
+                        double GPSweeks, const QString& prn, 
+                        const ColumnVector& xx, 
+                        struct ClockOrbit::SatData* sd,
+                        QString& outLine);
+  void crdTrafo(int GPSWeek, ColumnVector& xyz, 
+                const QString& trafo);
 
   QString _buffer;
 
