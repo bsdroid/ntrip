@@ -301,68 +301,6 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   }
 }
 
-// Send results to RTNet Decoder and directly to PPP Client
-////////////////////////////////////////////////////////////////////////////
-void bncComb::dumpResults(const bncTime& resTime, 
-                          const QMap<QString, t_corr*>& resCorr) {
-
-  QMapIterator<QString, t_corr*> it(resCorr);
-  while (it.hasNext()) {
-    it.next();
-    t_corr* corr = it.value();
-
-//    // SP3 Output
-//    // ----------
-//    if (_sp3) {
-//      ColumnVector xc(4);
-//      ColumnVector vv(3);
-//      corr->eph->position(resTime.gpsw(), resTime.gpssec(), 
-//                          xc.data(), vv.data());
-//      bncPPPclient::applyCorr(resTime, corr, xc, vv);
-//
-//      // Relativistic Correction
-//      // -----------------------
-//      xc(4) += 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
-//
-//      // Correction Phase Center --> CoM
-//      // -------------------------------
-//      if (_antex) {
-//        ColumnVector dx(3); dx = 0.0;
-//        double Mjd = resTime.mjd() + resTime.daysec()/86400.0;
-//        if (_antex->satCoMcorrection(corr->prn, Mjd, xc.Rows(1,3), dx) == success) {
-//          xc(1) -= dx(1);
-//          xc(2) -= dx(2);
-//          xc(3) -= dx(3);
-//        }
-//        else {
-//          cout << "antenna not found" << endl;
-//        }
-//      }
-//      _sp3->write(resTime.gpsw(), resTime.gpssec(), corr->prn, xc);
-//    }
-//
-//    delete corr;
-//  }
-
-    // Optionally send new Corrections to PPP
-    // --------------------------------------
-    bncApp* app = (bncApp*) qApp;
-    if (app->_bncPPPclient) {
-//    QStringList corrLines;
-//    co.messageType = COTYPE_GPSCOMBINED;
-//    QStringListIterator il(RTCM3coDecoder::corrsToASCIIlines(resTime.gpsw(), 
-//                                                  resTime.gpssec(), co, 0));
-//    while (il.hasNext()) {
-//      QString line = il.next();
-//      line += " COMB";
-//      corrLines << line;
-//    }
-//    
-//    app->_bncPPPclient->slotNewCorrections(corrLines);
-    }
-  }
-}
-
 // Change the correction so that it refers to last received ephemeris 
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
@@ -597,6 +535,68 @@ void bncComb::printResults(QTextStream& out, const bncTime& resTime,
     }
     else {
       out << "bncComb::printResuls bug" << endl;
+    }
+  }
+}
+
+// Send results to RTNet Decoder and directly to PPP Client
+////////////////////////////////////////////////////////////////////////////
+void bncComb::dumpResults(const bncTime& resTime, 
+                          const QMap<QString, t_corr*>& resCorr) {
+
+  QMapIterator<QString, t_corr*> it(resCorr);
+  while (it.hasNext()) {
+    it.next();
+    t_corr* corr = it.value();
+
+//    // SP3 Output
+//    // ----------
+//    if (_sp3) {
+//      ColumnVector xc(4);
+//      ColumnVector vv(3);
+//      corr->eph->position(resTime.gpsw(), resTime.gpssec(), 
+//                          xc.data(), vv.data());
+//      bncPPPclient::applyCorr(resTime, corr, xc, vv);
+//
+//      // Relativistic Correction
+//      // -----------------------
+//      xc(4) += 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
+//
+//      // Correction Phase Center --> CoM
+//      // -------------------------------
+//      if (_antex) {
+//        ColumnVector dx(3); dx = 0.0;
+//        double Mjd = resTime.mjd() + resTime.daysec()/86400.0;
+//        if (_antex->satCoMcorrection(corr->prn, Mjd, xc.Rows(1,3), dx) == success) {
+//          xc(1) -= dx(1);
+//          xc(2) -= dx(2);
+//          xc(3) -= dx(3);
+//        }
+//        else {
+//          cout << "antenna not found" << endl;
+//        }
+//      }
+//      _sp3->write(resTime.gpsw(), resTime.gpssec(), corr->prn, xc);
+//    }
+//
+//    delete corr;
+//  }
+
+    // Optionally send new Corrections to PPP
+    // --------------------------------------
+    bncApp* app = (bncApp*) qApp;
+    if (app->_bncPPPclient) {
+//    QStringList corrLines;
+//    co.messageType = COTYPE_GPSCOMBINED;
+//    QStringListIterator il(RTCM3coDecoder::corrsToASCIIlines(resTime.gpsw(), 
+//                                                  resTime.gpssec(), co, 0));
+//    while (il.hasNext()) {
+//      QString line = il.next();
+//      line += " COMB";
+//      corrLines << line;
+//    }
+//    
+//    app->_bncPPPclient->slotNewCorrections(corrLines);
     }
   }
 }
