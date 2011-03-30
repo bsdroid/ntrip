@@ -955,15 +955,16 @@ bncWindow::bncWindow() {
 
   // Upload Layout
   // ------------
-  
   QGridLayout* uploadHlpLayout = new QGridLayout();
 
   uploadHlpLayout->addWidget(new QLabel("Upload RTNet results to NTRIP caster"),0,0);
 
   uploadHlpLayout->addWidget(addUploadRowButton,0,1);
   connect(addUploadRowButton, SIGNAL(clicked()), this, SLOT(slotAddUploadRow()));
+
   uploadHlpLayout->addWidget(delUploadRowButton,0,2);
   connect(delUploadRowButton, SIGNAL(clicked()), this, SLOT(slotDelUploadRow()));
+
   uploadHlpLayout->addWidget(setUploadTrafoButton,0,3);
   connect(setUploadTrafoButton, SIGNAL(clicked()), this, SLOT(slotSetUploadTrafo()));
 
