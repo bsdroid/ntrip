@@ -19,7 +19,10 @@ class bncUploadCaster : public QThread {
                   const QString& sp3FileName,
                   const QString& rnxFileName,
                   const QString& outFileName);
+ protected:
   virtual ~bncUploadCaster();
+ public:
+  void deleteSafely();
   virtual void run();
   void decodeRtnetStream(char* buffer, int bufLen,
                          const QMap<QString, bncEphUser::t_ephPair*>& ephMap);
@@ -39,6 +42,7 @@ class bncUploadCaster : public QThread {
   void crdTrafo(int GPSWeek, ColumnVector& xyz);
 
   QMap<QString, t_eph*>* _ephMap;
+  bool                   _isToBeDeleted;
   QMutex                 _mutex;  
   QString                _rtnetStreamBuffer;
   bncTime                _epoTime;

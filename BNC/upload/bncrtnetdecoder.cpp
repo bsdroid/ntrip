@@ -71,7 +71,7 @@ bncRtnetDecoder::bncRtnetDecoder() {
 //////////////////////////////////////////////////////////////////////// 
 bncRtnetDecoder::~bncRtnetDecoder() {
   for (int ic = 0; ic < _casters.size(); ic++) {
-    delete _casters[ic];
+    _casters[ic]->deleteSafely();
   }
 }
 
