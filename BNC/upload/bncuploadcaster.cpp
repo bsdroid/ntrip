@@ -192,11 +192,17 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
 void bncUploadCaster::deleteSafely() {
   QMutexLocker locker(&_mutex);
   _isToBeDeleted = true;
+  if (!isRunning()) {
+    delete this;
+  }
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncUploadCaster::~bncUploadCaster() {
+  if (isRunning()) {
+    wait();
+  }
   if (_ephMap) {
     QMapIterator<QString, t_eph*> it(*_ephMap);
     while (it.hasNext()) {
@@ -215,6 +221,14 @@ bncUploadCaster::~bncUploadCaster() {
 ////////////////////////////////////////////////////////////////////////////
 void bncUploadCaster::run() {
   while (true) {
+    {
+      QMutexLocker locker(&_mutex);
+      if (_isToBeDeleted) {
+        QThread::quit();
+        deleteLater();
+        return;
+      }
+    }
     uploadClockOrbitBias();
     msleep(10);
   }
@@ -345,14 +359,6 @@ void bncUploadCaster::decodeRtnetStream(char* buffer, int bufLen,
 void bncUploadCaster::uploadClockOrbitBias() {
 
   QMutexLocker locker(&_mutex);
-
-  // Safely stop and delete
-  // ----------------------
-  if (_isToBeDeleted) {
-    QThread::quit();
-    deleteLater();
-    return;
-  }
 
   // Prepare list of lines with satellite positions in SP3-like format
   // -----------------------------------------------------------------
