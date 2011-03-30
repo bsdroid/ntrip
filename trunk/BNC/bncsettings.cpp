@@ -111,7 +111,6 @@ bncSettings::bncSettings(bool noInit) :
     setValue("cmbOutPath",       "");
     setValue("cmbSP3Path",       "");
     setValue("uploadMountpointsOut",   "");
-    setValue("uploadMountpointIn", "");
     sync();
   }
 }
