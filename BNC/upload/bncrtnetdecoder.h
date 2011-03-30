@@ -32,16 +32,19 @@
 #include "bncuploadcaster.h"
 #include "RTCM/GPSDecoder.h"
 
-class bncRtnetDecoder: public GPSDecoder, public bncEphUser {
+class bncRtnetDecoder: public GPSDecoder, public bncEphUser, public QThread {
  public:
   bncRtnetDecoder();
   ~bncRtnetDecoder();
-  virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
+  virtual void run();
+  virtual t_irc Decode(char* buffer, int bufLen, 
+                       std::vector<std::string>& errmsg);
  private:
-  void readEpochTime(const QString& line);
-  QVector<bncUploadCaster*> _caster;
-  QString                   _buffer;
-  bncTime                   _epoTime;
+  void DecodeInThread();
+  QVector<bncUploadCaster*>* _casters;
+  QString                    _buffer;
+  bncTime                    _epoTime;
+  QMutex                     _mutex;
 };
 
 #endif  // include blocker
