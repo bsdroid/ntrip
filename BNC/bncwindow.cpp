@@ -2222,6 +2222,11 @@ void bncWindow::slotAddUploadRow() {
       QCheckBox* com = new QCheckBox();
       _uploadTable->setCellWidget(iRow, iCol, com);
     }
+    else if (iCol == 8) {
+      bncTableItem* bncIt = new bncTableItem();
+      bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
+      _uploadTable->setItem(iRow, iCol, bncIt);
+    }
     else {
       _uploadTable->setItem(iRow, iCol, new QTableWidgetItem(""));
     }
@@ -2287,6 +2292,11 @@ void bncWindow::populateUploadTable() {
           com->setCheckState(Qt::Checked);
         }
         _uploadTable->setCellWidget(iRow, iCol, com);
+      }
+      else if (iCol == 8) {
+        bncTableItem* bncIt = new bncTableItem();
+        bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
+        _uploadTable->setItem(iRow, iCol, bncIt);
       }
       else {
         _uploadTable->setItem(iRow, iCol, new QTableWidgetItem(hlp[iCol]));
