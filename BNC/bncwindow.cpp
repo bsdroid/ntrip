@@ -458,17 +458,9 @@ bncWindow::bncWindow() {
 
   QPushButton* addCmbRowButton = new QPushButton("Add Row");
   QPushButton* delCmbRowButton = new QPushButton("Delete");
-  _cmbOutHostLineEdit    = new QLineEdit(settings.value("cmbOutHost").toString());
-  _cmbOutPortLineEdit    = new QLineEdit(settings.value("cmbOutPort").toString());
-  _cmbMountpointLineEdit = new QLineEdit(settings.value("cmbMountpoint").toString());
-  _cmbPasswordLineEdit   = new QLineEdit(settings.value("cmbPassword").toString());
-  _cmbOutPathLineEdit = new QLineEdit(settings.value("cmbOutPath").toString());
-  _cmbSP3PathLineEdit = new QLineEdit(settings.value("cmbSP3Path").toString());
 
   connect(_cmbTable, SIGNAL(itemSelectionChanged()), 
           SLOT(slotBncTextChanged()));
-  connect(_cmbMountpointLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
 
   // Upload Results
   // -------------
@@ -596,12 +588,6 @@ bncWindow::bncWindow() {
   _cmbTable->setWhatsThis(tr("<p>BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors from various providers. Hit the 'Add Row' button, Double click on the 'Mountpoint' field to enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter the weight to be applied for this stream in the combination.</p><p>Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense there if the update rate of incoming clock corrections is i.e. 10 seconds.</p><p>Note further that the sequence of rows in the 'Combination Table' is of importance because the orbit information in the final combination stream is just copied from the stream listed in the first row. Hence the first line in the 'Combination Table' defines a kind of 'Master AC'. The update rate of the combination product follows the 'Master AC's update rate.</p><p>The combination process requires Broadcast Ephemeris. Besides the orbit and clock corrections stream(s) BNC must therefore pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages.</p>"));
   addCmbRowButton->setWhatsThis(tr("Hit 'Add Row' button to add another line to the mountpoints table."));
   delCmbRowButton->setWhatsThis(tr("Hit 'Delete' button to delete the highlighted line from the mountpoints table."));
-  _cmbOutHostLineEdit->setWhatsThis(tr("Specify the domain name or IP number of an Ntrip Broadcaster for uploading the combination stream."));
-  _cmbOutPortLineEdit->setWhatsThis(tr("Enter the listening IP port of the specified Ntrip Broadcaster for uploading the combination stream."));
-  _cmbMountpointLineEdit->setWhatsThis(tr("<p>Enter a mountpoint for the combination stream. If 'Host', 'Port' and 'Password' are set, the combination stream will be uploaded to the specified Ntrip Broadcaster.</p><p>Note that the mountpoint defined here can be introduce as 'Obs Mountpoint' under the 'PPP (1)' tab to carry out a Precise Point Positioning through directly using the combination stream without prior upload to the Ntrip Broadcaster."));
-  _cmbPasswordLineEdit->setWhatsThis(tr("Enter the password for uploading the combination stream to the specified Ntrip Broadcaster."));
-  _cmbOutPathLineEdit->setWhatsThis(tr("<p>Specify a directory for saving the combined Broadcast Ephemeris corrections in a plain ASCII format on disk.</p><p>The length of the Broadcast Ephemeris corrections files is defined through option 'Interval' under the 'Broadcast Corrections' tab.</p>"));
-  _cmbSP3PathLineEdit->setWhatsThis(tr("<p>Specify a directory for saving the combination of Broadcast Ephemeris and Broadcast Ephemeris corrections in SP3 format on disk. The SP3 file output already works with only one corrections stream specified for combination.</p><p>Note that this normally requires to also specify the full path to an 'ANTEX File' under the 'PPP (2)' tab.</p>"));
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -937,34 +923,13 @@ bncWindow::bncWindow() {
 
   populateCmbTable();
   cmbLayout->addWidget(_cmbTable,0,0,6,3);
-  cmbLayout->setColumnStretch(0,1);
-  cmbLayout->setColumnStretch(1,1);
-  cmbLayout->setColumnStretch(2,1);
 
   cmbLayout->addWidget(addCmbRowButton,1,3);
   connect(addCmbRowButton, SIGNAL(clicked()), this, SLOT(slotAddCmbRow()));
   cmbLayout->addWidget(delCmbRowButton,2,3);
   connect(delCmbRowButton, SIGNAL(clicked()), this, SLOT(slotDelCmbRow()));
 
-  cmbLayout->setColumnStretch(4,1);
-
-  cmbLayout->addWidget(new QLabel("    Host"), 0, 4);
-  cmbLayout->addWidget(_cmbOutHostLineEdit, 0, 5);
-  cmbLayout->addWidget(new QLabel("    Port"), 0, 6);
-  _cmbOutPortLineEdit->setMaximumWidth(9*ww);
-  cmbLayout->addWidget(_cmbOutPortLineEdit, 0, 7);
-  cmbLayout->addWidget(new QLabel("    Mountpoint"), 1, 4);
-  _cmbMountpointLineEdit->setMaximumWidth(9*ww);
-  cmbLayout->addWidget(_cmbMountpointLineEdit, 1, 5);
-  cmbLayout->addWidget(new QLabel("    Password"), 1, 6);
-  _cmbPasswordLineEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
-  _cmbPasswordLineEdit->setMaximumWidth(9*ww);
-  cmbLayout->addWidget(_cmbPasswordLineEdit, 1, 7);
-  cmbLayout->addWidget(new QLabel("    Directory, ASCII"), 2, 4);
-  cmbLayout->addWidget(_cmbOutPathLineEdit, 2, 5, 1, 3);
-  cmbLayout->addWidget(new QLabel("    Directory, SP3"), 3, 4);
-  cmbLayout->addWidget(_cmbSP3PathLineEdit, 3, 5, 1, 3);
-  cmbLayout->addWidget(new QLabel(" Combine Broadcast Ephemeris corrections streams."),5,3,1,5);
+  cmbLayout->addWidget(new QLabel(" Combine Broadcast Ephemeris corrections streams."),5,3,1,3);
 
   cmbgroup->setLayout(cmbLayout);
 
@@ -972,7 +937,7 @@ bncWindow::bncWindow() {
   // ------------
   QGridLayout* uploadHlpLayout = new QGridLayout();
 
-  uploadHlpLayout->addWidget(new QLabel("Upload RTNet results to NTRIP caster"),0,0);
+  uploadHlpLayout->addWidget(new QLabel("Upload RTNet or Combination Results"),0,0);
 
   uploadHlpLayout->addWidget(addUploadRowButton,0,1);
   connect(addUploadRowButton, SIGNAL(clicked()), this, SLOT(slotAddUploadRow()));
@@ -1409,12 +1374,6 @@ void bncWindow::slotSaveOptions() {
   else {
     settings.setValue("combineStreams", "");
   }
-  settings.setValue("cmbOutHost",    _cmbOutHostLineEdit->text());
-  settings.setValue("cmbOutPort",    _cmbOutPortLineEdit->text());
-  settings.setValue("cmbMountpoint", _cmbMountpointLineEdit->text());
-  settings.setValue("cmbPassword",   _cmbPasswordLineEdit->text());
-  settings.setValue("cmbOutPath",    _cmbOutPathLineEdit->text());
-  settings.setValue("cmbSP3Path",    _cmbSP3PathLineEdit->text());
 
   if (!uploadMountpointsOut.isEmpty()) {
     settings.setValue("uploadMountpointsOut", uploadMountpointsOut);
@@ -1494,12 +1453,6 @@ void bncWindow::slotGetData() {
     QFile anxfile(settings.value("pppAntex").toString());
     if (!anxfile.exists()) ((bncApp*)qApp)->slotMessage("Cannot find IGS ANTEX file", true);
   }
-
-  QDir cmbOutDir(settings.value("cmbOutPath").toString());
-  if (!cmbOutDir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find directory for saving combination results in ASCII format", true);
-
-  QDir cmbSP3dir(settings.value("cmbSP3Path").toString());
-  if (!cmbSP3dir.exists()) ((bncApp*)qApp)->slotMessage("Cannot find directory for saving combination results in SP3 format", true);
 
   _caster->slotReadMountPoints();
 }
@@ -2121,51 +2074,6 @@ void bncWindow::slotBncTextChanged(){
       _pppCorrMountLineEdit->setPalette(palette_gray);
       _pppCorrMountLineEdit->setEnabled(false);
     } 
-  }
-
-  // Combination
-  // ----------
-  if (sender() == 0 
-     || sender() == _cmbTable
-     || sender() == _cmbMountpointLineEdit) {
-    if (_cmbTable->rowCount() > 0) {
-      _cmbMountpointLineEdit->setPalette(palette_white);
-      _cmbSP3PathLineEdit->setPalette(palette_white);
-      _cmbMountpointLineEdit->setEnabled(true);
-      _cmbSP3PathLineEdit->setEnabled(true);
-      if (!_cmbMountpointLineEdit->text().isEmpty()) {
-        _cmbOutHostLineEdit->setPalette(palette_white);
-        _cmbOutPortLineEdit->setPalette(palette_white);
-        _cmbPasswordLineEdit->setPalette(palette_white);
-        _cmbOutPathLineEdit->setPalette(palette_white);
-        _cmbOutHostLineEdit->setEnabled(true);
-        _cmbOutPortLineEdit->setEnabled(true);
-        _cmbPasswordLineEdit->setEnabled(true);
-        _cmbOutPathLineEdit->setEnabled(true);
-      } else {
-      _cmbOutHostLineEdit->setPalette(palette_gray);
-      _cmbOutPortLineEdit->setPalette(palette_gray);
-      _cmbPasswordLineEdit->setPalette(palette_gray);
-      _cmbOutPathLineEdit->setPalette(palette_gray);
-      _cmbOutHostLineEdit->setEnabled(false);
-      _cmbOutPortLineEdit->setEnabled(false);
-      _cmbPasswordLineEdit->setEnabled(false);
-      _cmbOutPathLineEdit->setEnabled(false);
-      }
-    } else {
-      _cmbMountpointLineEdit->setPalette(palette_gray);
-      _cmbOutHostLineEdit->setPalette(palette_gray);
-      _cmbOutPortLineEdit->setPalette(palette_gray);
-      _cmbPasswordLineEdit->setPalette(palette_gray);
-      _cmbOutPathLineEdit->setPalette(palette_gray);
-      _cmbSP3PathLineEdit->setPalette(palette_gray);
-      _cmbMountpointLineEdit->setEnabled(false);
-      _cmbOutHostLineEdit->setEnabled(false);
-      _cmbOutPortLineEdit->setEnabled(false);
-      _cmbPasswordLineEdit->setEnabled(false);
-      _cmbOutPathLineEdit->setEnabled(false);
-      _cmbSP3PathLineEdit->setEnabled(false);
-    }
   }
 }
 

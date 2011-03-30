@@ -104,12 +104,6 @@ bncSettings::bncSettings(bool noInit) :
     setValue("nmeaFile",         "");
     setValue("nmeaPort",         "");
     setValue("combineStreams",   "");
-    setValue("cmbOutHost",       "");
-    setValue("cmbOutPort",       "");
-    setValue("cmbMountpoint",    "");
-    setValue("cmbPassword",      "");
-    setValue("cmbOutPath",       "");
-    setValue("cmbSP3Path",       "");
     setValue("uploadMountpointsOut",   "");
     sync();
   }
