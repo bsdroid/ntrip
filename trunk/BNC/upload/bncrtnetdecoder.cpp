@@ -48,49 +48,59 @@ using namespace std;
 // Constructor
 //////////////////////////////////////////////////////////////////////// 
 bncRtnetDecoder::bncRtnetDecoder() {
+}
+
+// Destructor
+//////////////////////////////////////////////////////////////////////// 
+bncRtnetDecoder::~bncRtnetDecoder() {
+  for (int ic = 0; ic < _casters->size(); ic++) {
+    delete _casters->at(ic);
+  }
+  delete _casters;
+}
+
+// Run
+//////////////////////////////////////////////////////////////////////// 
+void bncRtnetDecoder::run() {
 
   bncSettings settings;
 
   // List of upload casters
   // ----------------------
+  _casters = new QVector<bncUploadCaster*>;
   QListIterator<QString> it(settings.value("uploadMountpointsOut").toStringList());
   while (it.hasNext()) {
     QStringList hlp = it.next().split(",");
     if (hlp.size() > 6) {
       int  outPort = hlp[1].toInt();
       bool CoM     = (hlp[5].toInt() == Qt::Checked);
-      _caster.push_back(new bncUploadCaster(hlp[2], hlp[0], outPort,
-                                            hlp[3], hlp[4], CoM,
-                                            hlp[6], "", ""));
+      _casters->push_back(new bncUploadCaster(hlp[2], hlp[0], outPort,
+                                             hlp[3], hlp[4], CoM,
+                                             hlp[6], "", ""));
     }
   }
-}
 
-// Destructor
-//////////////////////////////////////////////////////////////////////// 
-bncRtnetDecoder::~bncRtnetDecoder() {
-  for (int ic = 0; ic < _caster.size(); ic++) {
-    delete _caster[ic];
+  // Endless Loop - Decode
+  // ---------------------
+  while (true) {
+    DecodeInThread();
+    msleep(10);
   }
-}
-
-// 
-//////////////////////////////////////////////////////////////////////// 
-void bncRtnetDecoder::readEpochTime(const QString& line) {
-  QTextStream in(line.toAscii());
-  QString hlp;
-  int     year, month, day, hour, min;
-  double  sec;
-  in >> hlp >> year >> month >> day >> hour >> min >> sec;
-  _epoTime.set( year, month, day, hour, min, sec);
 }
 
 // Decode Method
 //////////////////////////////////////////////////////////////////////// 
 t_irc bncRtnetDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
-
+  QMutexLocker locker(&_mutex);
   errmsg.clear();
   _buffer.append(QByteArray(buffer, bufLen));
+  return success;
+}
+
+// Decode and upload in separate thread
+//////////////////////////////////////////////////////////////////////// 
+void bncRtnetDecoder::DecodeInThread() {
+  QMutexLocker locker(&_mutex);
 
   // Prepare list of lines with satellite positions in SP3-like format
   // -----------------------------------------------------------------
@@ -101,7 +111,12 @@ t_irc bncRtnetDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) 
     _buffer = _buffer.mid(iLast+1);
     for (int ii = 0; ii < hlpLines.size(); ii++) {
       if      (hlpLines[ii].indexOf('*') != -1) {
-        readEpochTime(hlpLines[ii]);
+        QTextStream in(hlpLines[ii].toAscii());
+        QString hlp;
+        int     year, month, day, hour, min;
+        double  sec;
+        in >> hlp >> year >> month >> day >> hour >> min >> sec;
+        _epoTime.set( year, month, day, hour, min, sec);
       }
       else if (_epoTime.valid()) {
         lines << hlpLines[ii];
@@ -112,11 +127,9 @@ t_irc bncRtnetDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) 
   // Satellite positions to be processed
   // -----------------------------------
   if (lines.size() > 0) {
-    for (int ic = 0; ic < _caster.size(); ic++) {
-      _caster[ic]->uploadClockOrbitBias(_epoTime, _eph, lines);
+    for (int ic = 0; ic < _casters->size(); ic++) {
+      _casters->at(ic)->uploadClockOrbitBias(_epoTime, _eph, lines);
     }
   }
-
-  return success;
 }
 
