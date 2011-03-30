@@ -91,6 +91,14 @@ class bncEphUser : public QObject {
     t_eph* prev;
   };
 
+  const t_ephPair* ephPair(const QString& prn) {
+    if (_eph.contains(prn)) {
+      return _eph[prn];
+    }
+    else {
+      return 0;
+    }
+  }
 
  public slots:
   void slotNewEphGPS(gpsephemeris gpseph);

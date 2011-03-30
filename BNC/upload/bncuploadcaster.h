@@ -24,8 +24,7 @@ class bncUploadCaster : public QThread {
  public:
   void deleteSafely();
   virtual void run();
-  void decodeRtnetStream(char* buffer, int bufLen,
-                         const QMap<QString, bncEphUser::t_ephPair*>& ephMap);
+  void decodeRtnetStream(char* buffer, int bufLen);
 
  signals:
   void newMessage(const QByteArray msg, bool showOnScreen);
@@ -41,11 +40,11 @@ class bncUploadCaster : public QThread {
                         QString& outLine);
   void crdTrafo(int GPSWeek, ColumnVector& xyz);
 
-  QMap<QString, t_eph*>* _ephMap;
-  bool                   _isToBeDeleted;
-  QMutex                 _mutex;  
-  QString                _rtnetStreamBuffer;
-  bncTime                _epoTime;
+  bncEphUser*    _ephUser;
+  bool           _isToBeDeleted;
+  QMutex         _mutex;  
+  QString        _rtnetStreamBuffer;
+  bncTime        _epoTime;
   QString        _mountpoint;
   QString        _outHost;
   int            _outPort;
