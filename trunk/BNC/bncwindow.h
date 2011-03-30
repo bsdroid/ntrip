@@ -203,6 +203,8 @@ class bncWindow : public QMainWindow {
     QLineEdit*    _cmbSP3PathLineEdit;
 
     QTableWidget* _uploadTable;
+    QComboBox*    _uploadIntrComboBox;
+    QSpinBox*     _uploadSamplSpinBox;
 
     bncCaster* _caster;
 };
