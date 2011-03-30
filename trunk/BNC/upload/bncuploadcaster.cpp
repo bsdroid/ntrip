@@ -48,6 +48,8 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   _outSocket  = 0;
   _sOpenTrial = 0;
 
+  _isToBeDeleted = false;
+
   // Raw Output
   // ----------
   if (!outFileName.isEmpty()) {
@@ -183,6 +185,13 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   // Deep copy of ephemerides
   // ------------------------
   _ephMap = 0;
+}
+
+// Safe Desctructor
+////////////////////////////////////////////////////////////////////////////
+void bncUploadCaster::deleteSafely() {
+  QMutexLocker locker(&_mutex);
+  _isToBeDeleted = true;
 }
 
 // Destructor
@@ -336,6 +345,14 @@ void bncUploadCaster::decodeRtnetStream(char* buffer, int bufLen,
 void bncUploadCaster::uploadClockOrbitBias() {
 
   QMutexLocker locker(&_mutex);
+
+  // Safely stop and delete
+  // ----------------------
+  if (_isToBeDeleted) {
+    QThread::quit();
+    deleteLater();
+    return;
+  }
 
   // Prepare list of lines with satellite positions in SP3-like format
   // -----------------------------------------------------------------
