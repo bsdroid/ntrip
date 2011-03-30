@@ -9,7 +9,7 @@ class bncoutf;
 class bncClockRinex;
 class bncSP3;
 
-class bncUploadCaster : public QObject {
+class bncUploadCaster : public QThread {
  Q_OBJECT
  public:
   bncUploadCaster(const QString& mountpoint,
@@ -20,24 +20,28 @@ class bncUploadCaster : public QObject {
                   const QString& rnxFileName,
                   const QString& outFileName);
   virtual ~bncUploadCaster();
-  void open();
-  void write(char* buffer, unsigned len);
-  void printAscii(const QString& line);
-  bool usedSocket() const {return _outSocket;}
-  void uploadClockOrbitBias(const bncTime& epoTime, 
-                            const QMap<QString, bncEphUser::t_ephPair*>& ephMap,
-                            const QStringList& lines);
+  virtual void run();
+  void decodeRtnetStream(char* buffer, int bufLen,
+                         const QMap<QString, bncEphUser::t_ephPair*>& ephMap);
 
  signals:
   void newMessage(const QByteArray msg, bool showOnScreen);
 
  private:
+  void open();
+  void write(char* buffer, unsigned len);
+  void uploadClockOrbitBias();
   void processSatellite(t_eph* eph, int GPSweek, 
                         double GPSweeks, const QString& prn, 
                         const ColumnVector& xx, 
                         struct ClockOrbit::SatData* sd,
                         QString& outLine);
   void crdTrafo(int GPSWeek, ColumnVector& xyz);
+
+  QMap<QString, t_eph*>* _ephMap;
+  QMutex                 _mutex;  
+  QString                _rtnetStreamBuffer;
+  bncTime                _epoTime;
   QString        _mountpoint;
   QString        _outHost;
   int            _outPort;
