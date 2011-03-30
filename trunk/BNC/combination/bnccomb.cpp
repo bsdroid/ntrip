@@ -19,7 +19,7 @@
 
 #include "bnccomb.h"
 #include "bncapp.h"
-#include "cmbcaster.h"
+#include "upload/bncrtnetdecoder.h"
 #include "bncsettings.h"
 #include "bncmodel.h"
 #include "bncutils.h"
@@ -117,7 +117,8 @@ bncComb::bncComb() {
     }
   }
 
-  _caster = new cmbCaster();
+  _rtnetDecoder = new bncRtnetDecoder();
+
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
 
@@ -161,31 +162,6 @@ bncComb::bncComb() {
     _QQ(iPar,iPar) = pp->sig_0 * pp->sig_0;
   }
 
-  // Output File (skeleton name)
-  // ---------------------------
-  QString path = settings.value("cmbOutPath").toString();
-  if (!path.isEmpty() && !_caster->mountpoint().isEmpty()) {
-    expandEnvVar(path);
-    if ( path.length() > 0 && path[path.length()-1] != QDir::separator() ) {
-      path += QDir::separator();
-    }
-    _outNameSkl = path + _caster->mountpoint();
-  }
-  _out = 0;
-
-  // SP3 writer
-  // ----------
-  if ( settings.value("cmbSP3Path").toString().isEmpty() ) { 
-    _sp3 = 0;
-  }
-  else {
-    QString sklFileName = settings.value("cmbSP3Path").toString() 
-                        + QDir::separator() + "BNC.sp3";
-    QString interval  = "";
-    int     sampl     = 0;
-    _sp3 = new bncSP3(sklFileName, interval, sampl);
-  }
-
   // ANTEX File
   // ----------
   _antex = 0;
@@ -212,9 +188,7 @@ bncComb::~bncComb() {
     it.next();
     delete it.value();
   }
-  delete _caster;
-  delete _out;
-  delete _sp3;
+  delete _rtnetDecoder;
   delete _antex;
 }
 
@@ -327,171 +301,64 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   }
 }
 
-// Send results to caster
+// Send results to RTNet Decoder and directly to PPP Client
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::dumpResults(const bncTime& resTime, 
                           const QMap<QString, t_corr*>& resCorr) {
-
-  _caster->open();      
-
-  unsigned year, month, day;
-  resTime.civil_date (year, month, day);
-  double GPSweeks = resTime.gpssec();
-
-  struct ClockOrbit co;
-  memset(&co, 0, sizeof(co));
-  co.GPSEpochTime      = (int)GPSweeks;
-  co.GLONASSEpochTime  = (int)fmod(GPSweeks, 86400.0) 
-                       + 3 * 3600 - gnumleap(year, month, day);
-  co.ClockDataSupplied = 1;
-  co.OrbitDataSupplied = 1;
-  co.SatRefDatum       = DATUM_ITRF;
-
-  struct Bias bias;
-  memset(&bias, 0, sizeof(bias));
-  bias.GPSEpochTime      = (int)GPSweeks;
-  bias.GLONASSEpochTime  = (int)fmod(GPSweeks, 86400.0) 
-                         + 3 * 3600 - gnumleap(year, month, day);
 
   QMapIterator<QString, t_corr*> it(resCorr);
   while (it.hasNext()) {
     it.next();
     t_corr* corr = it.value();
 
-    struct ClockOrbit::SatData* sd = 0;
-    if      (corr->prn[0] == 'G') {
-      sd = co.Sat + co.NumberOfGPSSat;
-      ++co.NumberOfGPSSat;
-    }
-    else if (corr->prn[0] == 'R') {
-      sd = co.Sat + CLOCKORBIT_NUMGPS + co.NumberOfGLONASSSat;
-      ++co.NumberOfGLONASSSat;
-    }
+//    // SP3 Output
+//    // ----------
+//    if (_sp3) {
+//      ColumnVector xc(4);
+//      ColumnVector vv(3);
+//      corr->eph->position(resTime.gpsw(), resTime.gpssec(), 
+//                          xc.data(), vv.data());
+//      bncPPPclient::applyCorr(resTime, corr, xc, vv);
+//
+//      // Relativistic Correction
+//      // -----------------------
+//      xc(4) += 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
+//
+//      // Correction Phase Center --> CoM
+//      // -------------------------------
+//      if (_antex) {
+//        ColumnVector dx(3); dx = 0.0;
+//        double Mjd = resTime.mjd() + resTime.daysec()/86400.0;
+//        if (_antex->satCoMcorrection(corr->prn, Mjd, xc.Rows(1,3), dx) == success) {
+//          xc(1) -= dx(1);
+//          xc(2) -= dx(2);
+//          xc(3) -= dx(3);
+//        }
+//        else {
+//          cout << "antenna not found" << endl;
+//        }
+//      }
+//      _sp3->write(resTime.gpsw(), resTime.gpssec(), corr->prn, xc);
+//    }
+//
+//    delete corr;
+//  }
 
-    if (sd != 0) {
-      sd->ID                       = corr->prn.mid(1).toInt();
-      sd->IOD                      = corr->iod;
-      sd->Clock.DeltaA0            = corr->dClk * t_CST::c;
-      sd->Orbit.DeltaRadial        = corr->rao(1);
-      sd->Orbit.DeltaAlongTrack    = corr->rao(2);
-      sd->Orbit.DeltaCrossTrack    = corr->rao(3);
-      sd->Orbit.DotDeltaRadial     = corr->dotRao(1);
-      sd->Orbit.DotDeltaAlongTrack = corr->dotRao(2);
-      sd->Orbit.DotDeltaCrossTrack = corr->dotRao(3);
-    }
-    
-    struct Bias::BiasSat* biasSat = 0;
-    if      (corr->prn[0] == 'G') {
-      biasSat = bias.Sat + bias.NumberOfGPSSat;
-      ++bias.NumberOfGPSSat;
-    }
-    else if (corr->prn[0] == 'R') {
-      biasSat = bias.Sat + CLOCKORBIT_NUMGPS + bias.NumberOfGLONASSSat;
-      ++bias.NumberOfGLONASSSat;
-    }
-
-    // Coefficient of Ionosphere-Free LC
-    // ---------------------------------
-    const static double a_L1_GPS =  2.54572778;
-    const static double a_L2_GPS = -1.54572778;
-    const static double a_L1_Glo =  2.53125000;
-    const static double a_L2_Glo = -1.53125000;
-
-    if (biasSat) {
-      biasSat->ID = corr->prn.mid(1).toInt();
-      biasSat->NumberOfCodeBiases = 3;
-      if      (corr->prn[0] == 'G') {
-        biasSat->Biases[0].Type = CODETYPEGPS_L1_Z;
-        biasSat->Biases[0].Bias = - a_L2_GPS * 0.0; // xx(10);
-        biasSat->Biases[1].Type = CODETYPEGPS_L1_CA;
-        biasSat->Biases[1].Bias = - a_L2_GPS * 0.0; // xx(10) + xx(9);
-        biasSat->Biases[2].Type = CODETYPEGPS_L2_Z;
-        biasSat->Biases[2].Bias = a_L1_GPS * 0.0; // xx(10);
-      }
-      else if (corr->prn[0] == 'R') {
-        biasSat->Biases[0].Type = CODETYPEGLONASS_L1_P;
-        biasSat->Biases[0].Bias = - a_L2_Glo * 0.0; // xx(10);
-        biasSat->Biases[1].Type = CODETYPEGLONASS_L1_CA;
-        biasSat->Biases[1].Bias = - a_L2_Glo * 0.0; // xx(10) + xx(9);
-        biasSat->Biases[2].Type = CODETYPEGLONASS_L2_P;
-        biasSat->Biases[2].Bias = a_L1_Glo * 0.0; // xx(10);
-      }
-    }
-
-    // SP3 Output
-    // ----------
-    if (_sp3) {
-      ColumnVector xc(4);
-      ColumnVector vv(3);
-      corr->eph->position(resTime.gpsw(), resTime.gpssec(), 
-                          xc.data(), vv.data());
-      bncPPPclient::applyCorr(resTime, corr, xc, vv);
-
-      // Relativistic Correction
-      // -----------------------
-      xc(4) += 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
-
-      // Correction Phase Center --> CoM
-      // -------------------------------
-      if (_antex) {
-        ColumnVector dx(3); dx = 0.0;
-        double Mjd = resTime.mjd() + resTime.daysec()/86400.0;
-        if (_antex->satCoMcorrection(corr->prn, Mjd, xc.Rows(1,3), dx) == success) {
-          xc(1) -= dx(1);
-          xc(2) -= dx(2);
-          xc(3) -= dx(3);
-        }
-        else {
-          cout << "antenna not found" << endl;
-        }
-      }
-      _sp3->write(resTime.gpsw(), resTime.gpssec(), corr->prn, xc);
-    }
-
-    delete corr;
-  }
-
-  // Send Corrections to Caster
-  // --------------------------
-  if ( _caster->usedSocket() && 
-       (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
-    char obuffer[CLOCKORBIT_BUFFERSIZE];
-    int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
-    if (len > 0) {
-      _caster->write(obuffer, len);
-    }
-  }
-
-  if ( _caster->usedSocket() && 
-       (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) ) {
-    char obuffer[CLOCKORBIT_BUFFERSIZE];
-    int len = MakeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
-    if (len > 0) {
-      _caster->write(obuffer, len);
-    }
-  }
-
-  // Optionall send new Corrections to PPP client and/or write into file
-  // -------------------------------------------------------------------
-  RTCM3coDecoder::reopen(_outNameSkl, _outName, _out);
-  bncApp* app = (bncApp*) qApp;
-  if (app->_bncPPPclient || _out) {
-    QStringList corrLines;
-    co.messageType = COTYPE_GPSCOMBINED;
-    QStringListIterator il(RTCM3coDecoder::corrsToASCIIlines(resTime.gpsw(), 
-                                                  resTime.gpssec(), co, 0));
-    while (il.hasNext()) {
-      QString line = il.next();
-      if (_out) {
-        *_out << line.toAscii().data() << endl;
-        _out->flush(); 
-      }
-      line += " " + _caster->mountpoint();
-      corrLines << line;
-    }
-    
+    // Optionally send new Corrections to PPP
+    // --------------------------------------
+    bncApp* app = (bncApp*) qApp;
     if (app->_bncPPPclient) {
-      app->_bncPPPclient->slotNewCorrections(corrLines);
+//    QStringList corrLines;
+//    co.messageType = COTYPE_GPSCOMBINED;
+//    QStringListIterator il(RTCM3coDecoder::corrsToASCIIlines(resTime.gpsw(), 
+//                                                  resTime.gpssec(), co, 0));
+//    while (il.hasNext()) {
+//      QString line = il.next();
+//      line += " COMB";
+//      corrLines << line;
+//    }
+//    
+//    app->_bncPPPclient->slotNewCorrections(corrLines);
     }
   }
 }
@@ -708,7 +575,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   emit newMessage(_log, false);
 }
 
-// Print results to caster
+// Print results
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::printResults(QTextStream& out, const bncTime& resTime,
                            const QMap<QString, t_corr*>& resCorr) {

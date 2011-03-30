@@ -6,7 +6,7 @@
 #include <newmat.h>
 #include "bncephuser.h"
 
-class cmbCaster;
+class bncRtnetDecoder;
 class bncSP3;
 class bncAntex;
 
@@ -79,16 +79,12 @@ class bncComb : public bncEphUser  {
 
   QMap<QString, cmbAC*> _ACs;   // Analytical Centers (key is mountpoint)
   bncTime               _processedBeforeTime;
-  cmbCaster*            _caster;
   QVector<cmbParam*>    _params;
+  bncRtnetDecoder*      _rtnetDecoder;
   SymmetricMatrix       _QQ;
   bool                  _firstReg;
   QByteArray            _log;
   QString               _masterAC;
-  QString               _outNameSkl;
-  QString               _outName;
-  std::ofstream*        _out;
-  bncSP3*               _sp3;
   bncAntex*             _antex;
 };
 
