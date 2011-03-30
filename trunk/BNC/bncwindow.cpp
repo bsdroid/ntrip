@@ -983,10 +983,10 @@ bncWindow::bncWindow() {
   uploadHlpLayout->addWidget(setUploadTrafoButton,1,1);
   connect(setUploadTrafoButton, SIGNAL(clicked()), this, SLOT(slotSetUploadTrafo()));
 
-  uploadHlpLayout->addWidget(new QLabel("Interval"),0,3);
+  uploadHlpLayout->addWidget(new QLabel("Interval"),0,3, Qt::AlignRight);
   uploadHlpLayout->addWidget(_uploadIntrComboBox,0,4);
 
-  uploadHlpLayout->addWidget(new QLabel("Sampling"),1,3);
+  uploadHlpLayout->addWidget(new QLabel("Sampling"),1,3, Qt::AlignRight);
   uploadHlpLayout->addWidget(_uploadSamplSpinBox,1,4);
 
 
