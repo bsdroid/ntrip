@@ -318,9 +318,7 @@ void bncGetThread::initialize() {
   }
   else if (_format.indexOf("RTNET") != -1) {
     emit(newMessage(_staID + ": Get data in RTNet format", true));
-    bncRtnetDecoder* rtnetDecoder = new bncRtnetDecoder();
-    rtnetDecoder->start();
-    _decoder = rtnetDecoder;
+    _decoder = new bncRtnetDecoder();
   }
   else {
     emit(newMessage(_staID + ": Unknown data format " + _format, true));

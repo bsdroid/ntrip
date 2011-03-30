@@ -118,7 +118,6 @@ bncComb::bncComb() {
   }
 
   _rtnetDecoder = new bncRtnetDecoder();
-  _rtnetDecoder->start();
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));

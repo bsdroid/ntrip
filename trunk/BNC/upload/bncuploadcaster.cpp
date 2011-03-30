@@ -33,7 +33,6 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
                                  const QString& sp3FileName,
                                  const QString& rnxFileName,
                                  const QString& outFileName) {
-
   bncSettings settings;
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
@@ -180,14 +179,36 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
     _scr = settings.value("trafo_scr").toDouble();
     _t0  = settings.value("trafo_t0").toDouble();
   }
+ 
+  // Deep copy of ephemerides
+  // ------------------------
+  _ephMap = 0;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncUploadCaster::~bncUploadCaster() {
+  if (_ephMap) {
+    QMapIterator<QString, t_eph*> it(*_ephMap);
+    while (it.hasNext()) {
+      it.next();
+      t_eph* eph = it.value();
+      delete eph;
+    }
+    delete _ephMap;
+  }
   delete _outFile;
   delete _rnx;
   delete _sp3;
+}
+
+// Endless Loop
+////////////////////////////////////////////////////////////////////////////
+void bncUploadCaster::run() {
+  while (true) {
+    uploadClockOrbitBias();
+    msleep(10);
+  }
 }
 
 // Start the Communication with NTRIP Caster
@@ -259,20 +280,98 @@ void bncUploadCaster::write(char* buffer, unsigned len) {
   }
 }
 
-// Encode and Upload Clocks, Orbits, and Biases
+// 
 ////////////////////////////////////////////////////////////////////////////
-void bncUploadCaster::uploadClockOrbitBias(const bncTime& epoTime, 
-                            const QMap<QString, bncEphUser::t_ephPair*>& ephMap,
-                            const QStringList& lines) {
+void bncUploadCaster::decodeRtnetStream(char* buffer, int bufLen,
+                      const QMap<QString, bncEphUser::t_ephPair*>& ephPairMap) {
+                                        
+  QMutexLocker locker(&_mutex);
+
+  // Delete old ephemeris
+  // --------------------
+  if (_ephMap) {
+    QMapIterator<QString, t_eph*> it(*_ephMap);
+    while (it.hasNext()) {
+      it.next();
+      t_eph* eph = it.value();
+      delete eph;
+    }
+    delete _ephMap;
+  }
+  _ephMap = new QMap<QString, t_eph*>;
+
+  // Make a deep copy of ephemeris
+  // -----------------------------
+  QMapIterator<QString, bncEphUser::t_ephPair*> it(ephPairMap);
+  while (it.hasNext()) {
+    it.next();
+    bncEphUser::t_ephPair* pair = it.value();
+    t_eph* ep = pair->last;
+    if (pair->prev && ep && 
+        ep->receptDateTime().secsTo(QDateTime::currentDateTime()) < 60) {
+      ep = pair->prev;
+    }
+    QString prn(ep->prn().c_str());
+    if      (prn[0] == 'G') {
+      t_ephGPS* epGPS = static_cast<t_ephGPS*>(ep);
+      (*_ephMap)[prn] = new t_ephGPS(*epGPS);
+    }
+    else if (prn[0] == 'R') {
+      t_ephGlo* epGlo = static_cast<t_ephGlo*>(ep);
+      (*_ephMap)[prn] = new t_ephGlo(*epGlo);
+    }
+    else if (prn[0] == 'E') {
+      t_ephGal* epGal = static_cast<t_ephGal*>(ep);
+      (*_ephMap)[prn] = new t_ephGal(*epGal);
+    }
+  }
+
+  // Append to buffer
+  // ----------------
+  _rtnetStreamBuffer.append(QByteArray(buffer, bufLen));
+}
+
+// Function called in separate thread
+//////////////////////////////////////////////////////////////////////// 
+void bncUploadCaster::uploadClockOrbitBias() {
+
+  QMutexLocker locker(&_mutex);
+
+  // Prepare list of lines with satellite positions in SP3-like format
+  // -----------------------------------------------------------------
+  QStringList lines;
+  int iLast = _rtnetStreamBuffer.lastIndexOf('\n');
+  if (iLast != -1) {
+    QStringList hlpLines = _rtnetStreamBuffer.split('\n', QString::SkipEmptyParts);
+    _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iLast+1);
+    for (int ii = 0; ii < hlpLines.size(); ii++) {
+      if      (hlpLines[ii].indexOf('*') != -1) {
+        QTextStream in(hlpLines[ii].toAscii());
+        QString hlp;
+        int     year, month, day, hour, min;
+        double  sec;
+        in >> hlp >> year >> month >> day >> hour >> min >> sec;
+        _epoTime.set( year, month, day, hour, min, sec);
+      }
+      else if (_epoTime.valid()) {
+        lines << hlpLines[ii];
+      }
+    }
+  }
+
+  if (lines.size() == 0) {
+    return;
+  }
+
   this->open();
 
   unsigned year, month, day;
-  epoTime.civil_date(year, month, day);
+  _epoTime.civil_date(year, month, day);
   
   struct ClockOrbit co;
   memset(&co, 0, sizeof(co));
-  co.GPSEpochTime      = static_cast<int>(epoTime.gpssec());
-  co.GLONASSEpochTime  = static_cast<int>(fmod(epoTime.gpssec(), 86400.0))
+  co.GPSEpochTime      = static_cast<int>(_epoTime.gpssec());
+  co.GLONASSEpochTime  = static_cast<int>(fmod(_epoTime.gpssec(), 86400.0))
                        + 3 * 3600 - gnumleap(year, month, day);
   co.ClockDataSupplied = 1;
   co.OrbitDataSupplied = 1;
@@ -287,7 +386,6 @@ void bncUploadCaster::uploadClockOrbitBias(const bncTime& epoTime,
   
     QString      prn;
     ColumnVector xx(14); xx = 0.0;
-    bncEphUser::t_ephPair*   pair = 0;
   
     QTextStream in(lines[ii].toAscii());
 
@@ -296,7 +394,9 @@ void bncUploadCaster::uploadClockOrbitBias(const bncTime& epoTime,
       prn.remove(0,1);
     }
 
-    if ( ephMap.contains(prn) ) {
+    if ( _ephMap->contains(prn) ) {
+      t_eph* ep = (*_ephMap)[prn];
+
       in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) 
          >> xx(6) >> xx(7) >> xx(8) >> xx(9) >> xx(10)
          >> xx(11) >> xx(12) >> xx(13) >> xx(14);
@@ -313,21 +413,6 @@ void bncUploadCaster::uploadClockOrbitBias(const bncTime& epoTime,
       xx(13) *= 1e3;         // y-crd at time + dT
       xx(14) *= 1e3;         // z-crd at time + dT
   
-      pair = ephMap[prn];
-    }
-  
-    // Use old ephemeris if the new one is too recent
-    // ----------------------------------------------
-    t_eph* ep = 0;
-    if (pair) {
-      ep = pair->last;
-      if (pair->prev && ep && 
-          ep->receptDateTime().secsTo(QDateTime::currentDateTime()) < 60) {
-        ep = pair->prev;
-      }
-    }
-  
-    if (ep != 0) {
       struct ClockOrbit::SatData* sd = 0;
       if      (prn[0] == 'G') {
         sd = co.Sat + co.NumberOfGPSSat;
@@ -339,9 +424,9 @@ void bncUploadCaster::uploadClockOrbitBias(const bncTime& epoTime,
       }
       if (sd) {
         QString outLine;
-        processSatellite(ep, epoTime.gpsw(), epoTime.gpssec(), prn, xx, sd, outLine);
+        processSatellite(ep, _epoTime.gpsw(), _epoTime.gpssec(), prn, xx, sd, outLine);
         if (_outFile) {
-          _outFile->write(epoTime.gpsw(), epoTime.gpssec(), outLine);
+          _outFile->write(_epoTime.gpsw(), _epoTime.gpssec(), outLine);
         }
       }
   
@@ -385,8 +470,7 @@ void bncUploadCaster::uploadClockOrbitBias(const bncTime& epoTime,
     }
   }
   
-  if ( this->usedSocket() && 
-       (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) ) {
+  if (_outSocket && (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0)) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
   
     int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
@@ -395,8 +479,7 @@ void bncUploadCaster::uploadClockOrbitBias(const bncTime& epoTime,
     }
   }
   
-  if ( this->usedSocket() && 
-       (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) ) {
+  if (_outSocket && (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0)) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
     int len = MakeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
     if (len > 0) {
@@ -526,3 +609,4 @@ void bncUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz) {
 
   xyz = sc * rMat * xyz + dx;
 }
+
