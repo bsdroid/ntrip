@@ -472,26 +472,26 @@ bncWindow::bncWindow() {
 
   // Upload Results
   // -------------
-  _uploadTable = new QTableWidget(0,7);
-  _uploadTable->setHorizontalHeaderLabels(QString("Host, Port, Mount, Password, System, CoM, File").split(","));
+  _uploadTable = new QTableWidget(0,9);
+  _uploadTable->setHorizontalHeaderLabels(QString("Host, Port, Mount, Password, System, CoM, SP3 File, RNX File, bytes").split(","));
   _uploadTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _uploadTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-  _uploadTable->setMaximumWidth(70*ww);
   _uploadTable->horizontalHeader()->resizeSection(0,13*ww); 
   _uploadTable->horizontalHeader()->resizeSection(1,5*ww); 
   _uploadTable->horizontalHeader()->resizeSection(2,6*ww); 
   _uploadTable->horizontalHeader()->resizeSection(3,8*ww); 
   _uploadTable->horizontalHeader()->resizeSection(4,11*ww); 
   _uploadTable->horizontalHeader()->resizeSection(5,4*ww); 
-  _uploadTable->horizontalHeader()->resizeSection(6,20*ww); 
+  _uploadTable->horizontalHeader()->resizeSection(6,15*ww); 
+  _uploadTable->horizontalHeader()->resizeSection(7,15*ww); 
+  _uploadTable->horizontalHeader()->resizeSection(8,10*ww); 
   _uploadTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-  ///  _uploadTable->horizontalHeader()->setStretchLastSection(true);
+  _uploadTable->horizontalHeader()->setStretchLastSection(true);
   _uploadTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
   QPushButton* addUploadRowButton = new QPushButton("Add Row");
-  QPushButton* delUploadRowButton = new QPushButton("Delete");
-  QPushButton* setUploadTrafoButton = new QPushButton("Set");
-  _uploadMountpointIn = new QLineEdit(settings.value("uploadMountpointIn").toString());
+  QPushButton* delUploadRowButton = new QPushButton("Del Row");
+  QPushButton* setUploadTrafoButton = new QPushButton("Custom Trafo");
 
   connect(_uploadTable, SIGNAL(itemSelectionChanged()), 
           SLOT(slotBncTextChanged()));
@@ -955,31 +955,22 @@ bncWindow::bncWindow() {
 
   // Upload Layout
   // ------------
-  QGridLayout* uploadLayout = new QGridLayout;
+  
+  QGridLayout* uploadHlpLayout = new QGridLayout();
 
-  populateUploadTable();
-  uploadLayout->addWidget(_uploadTable,0,0,6,7);
-  uploadLayout->setColumnStretch(0,1);
-  uploadLayout->setColumnStretch(1,1);
-  uploadLayout->setColumnStretch(2,1);
-  uploadLayout->setColumnStretch(3,1);
-  uploadLayout->setColumnStretch(4,1);
-  uploadLayout->setColumnStretch(5,1);
-  uploadLayout->setColumnStretch(7,1);
+  uploadHlpLayout->addWidget(new QLabel("Upload RTNet results to NTRIP caster"),0,0);
 
-  uploadLayout->addWidget(addUploadRowButton,0,8);
+  uploadHlpLayout->addWidget(addUploadRowButton,0,1);
   connect(addUploadRowButton, SIGNAL(clicked()), this, SLOT(slotAddUploadRow()));
-  uploadLayout->addWidget(delUploadRowButton,1,8);
+  uploadHlpLayout->addWidget(delUploadRowButton,0,2);
   connect(delUploadRowButton, SIGNAL(clicked()), this, SLOT(slotDelUploadRow()));
-
-  uploadLayout->addWidget(new QLabel("Mountpoint"),3,8);
-  uploadLayout->addWidget(_uploadMountpointIn,3,9,1,2);
-
-  uploadLayout->addWidget(new QLabel("Custom Trafo"),4,8);
-  uploadLayout->addWidget(setUploadTrafoButton,4,9);
+  uploadHlpLayout->addWidget(setUploadTrafoButton,0,3);
   connect(setUploadTrafoButton, SIGNAL(clicked()), this, SLOT(slotSetUploadTrafo()));
 
-  uploadLayout->addWidget(new QLabel("Upload RTNet results to NTRIP caster"),5,8,1,5);
+  QBoxLayout* uploadLayout = new QBoxLayout(QBoxLayout::TopToBottom);
+  populateUploadTable();
+  uploadLayout->addWidget(_uploadTable);
+  uploadLayout->addLayout(uploadHlpLayout);
 
   uploadgroup->setLayout(uploadLayout);
 
@@ -1408,7 +1399,6 @@ void bncWindow::slotSaveOptions() {
   else {
     settings.setValue("uploadMountpointsOut", "");
   }
-  settings.setValue("uploadMountpointIn", _uploadMountpointIn->text());
 
   if (_caster) {
     _caster->slotReadMountPoints();
