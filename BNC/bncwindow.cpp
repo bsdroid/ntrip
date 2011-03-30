@@ -492,6 +492,21 @@ bncWindow::bncWindow() {
   QPushButton* addUploadRowButton = new QPushButton("Add Row");
   QPushButton* delUploadRowButton = new QPushButton("Del Row");
   QPushButton* setUploadTrafoButton = new QPushButton("Custom Trafo");
+  _uploadIntrComboBox = new QComboBox;
+  _uploadSamplSpinBox = new QSpinBox; 
+  _uploadIntrComboBox->setEditable(false);
+  _uploadIntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
+  ii = _uploadIntrComboBox->findText(settings.value("uploadIntr").toString());
+  if (ii != -1) {
+    _uploadIntrComboBox->setCurrentIndex(ii);
+  }
+  _uploadSamplSpinBox = new QSpinBox;
+  _uploadSamplSpinBox->setMinimum(0);
+  _uploadSamplSpinBox->setMaximum(60);
+  _uploadSamplSpinBox->setSingleStep(5);
+  _uploadSamplSpinBox->setMaximumWidth(9*ww);
+  _uploadSamplSpinBox->setValue(settings.value("uploadSampl").toInt());
+  _uploadSamplSpinBox->setSuffix(" sec");
 
   connect(_uploadTable, SIGNAL(itemSelectionChanged()), 
           SLOT(slotBncTextChanged()));
@@ -965,8 +980,15 @@ bncWindow::bncWindow() {
   uploadHlpLayout->addWidget(delUploadRowButton,0,2);
   connect(delUploadRowButton, SIGNAL(clicked()), this, SLOT(slotDelUploadRow()));
 
-  uploadHlpLayout->addWidget(setUploadTrafoButton,0,3);
+  uploadHlpLayout->addWidget(setUploadTrafoButton,1,1);
   connect(setUploadTrafoButton, SIGNAL(clicked()), this, SLOT(slotSetUploadTrafo()));
+
+  uploadHlpLayout->addWidget(new QLabel("Interval"),0,3);
+  uploadHlpLayout->addWidget(_uploadIntrComboBox,0,4);
+
+  uploadHlpLayout->addWidget(new QLabel("Sampling"),1,3);
+  uploadHlpLayout->addWidget(_uploadSamplSpinBox,1,4);
+
 
   QBoxLayout* uploadLayout = new QBoxLayout(QBoxLayout::TopToBottom);
   populateUploadTable();
@@ -1400,6 +1422,8 @@ void bncWindow::slotSaveOptions() {
   else {
     settings.setValue("uploadMountpointsOut", "");
   }
+  settings.setValue("uploadIntr",     _uploadIntrComboBox->currentText());
+  settings.setValue("uploadSampl",    _uploadSamplSpinBox->value());
 
   if (_caster) {
     _caster->slotReadMountPoints();
