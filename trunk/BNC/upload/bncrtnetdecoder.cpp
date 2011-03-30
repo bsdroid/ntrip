@@ -40,7 +40,6 @@
 
 #include <iostream>
 #include "bncrtnetdecoder.h"
-#include "bncutils.h"
 #include "bncsettings.h"
 
 using namespace std;
@@ -78,10 +77,9 @@ bncRtnetDecoder::~bncRtnetDecoder() {
 // Decode Method
 //////////////////////////////////////////////////////////////////////// 
 t_irc bncRtnetDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
-  QMutexLocker locker(&_mutex);
   errmsg.clear();
   for (int ic = 0; ic < _casters.size(); ic++) {
-    _casters[ic]->decodeRtnetStream(buffer, bufLen, _eph);
+    _casters[ic]->decodeRtnetStream(buffer, bufLen);
   }
   return success;
 }

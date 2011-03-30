@@ -181,10 +181,10 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
     _scr = settings.value("trafo_scr").toDouble();
     _t0  = settings.value("trafo_t0").toDouble();
   }
- 
-  // Deep copy of ephemerides
-  // ------------------------
-  _ephMap = 0;
+
+  // Member that receives the ephemeris
+  // ----------------------------------
+  _ephUser = new bncEphUser();
 }
 
 // Safe Desctructor
@@ -203,18 +203,10 @@ bncUploadCaster::~bncUploadCaster() {
   if (isRunning()) {
     wait();
   }
-  if (_ephMap) {
-    QMapIterator<QString, t_eph*> it(*_ephMap);
-    while (it.hasNext()) {
-      it.next();
-      t_eph* eph = it.value();
-      delete eph;
-    }
-    delete _ephMap;
-  }
   delete _outFile;
   delete _rnx;
   delete _sp3;
+  delete _ephUser;
 }
 
 // Endless Loop
@@ -305,49 +297,9 @@ void bncUploadCaster::write(char* buffer, unsigned len) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncUploadCaster::decodeRtnetStream(char* buffer, int bufLen,
-                      const QMap<QString, bncEphUser::t_ephPair*>& ephPairMap) {
+void bncUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
                                         
   QMutexLocker locker(&_mutex);
-
-  // Delete old ephemeris
-  // --------------------
-  if (_ephMap) {
-    QMapIterator<QString, t_eph*> it(*_ephMap);
-    while (it.hasNext()) {
-      it.next();
-      t_eph* eph = it.value();
-      delete eph;
-    }
-    delete _ephMap;
-  }
-  _ephMap = new QMap<QString, t_eph*>;
-
-  // Make a deep copy of ephemeris
-  // -----------------------------
-  QMapIterator<QString, bncEphUser::t_ephPair*> it(ephPairMap);
-  while (it.hasNext()) {
-    it.next();
-    bncEphUser::t_ephPair* pair = it.value();
-    t_eph* ep = pair->last;
-    if (pair->prev && ep && 
-        ep->receptDateTime().secsTo(QDateTime::currentDateTime()) < 60) {
-      ep = pair->prev;
-    }
-    QString prn(ep->prn().c_str());
-    if      (prn[0] == 'G') {
-      t_ephGPS* epGPS = static_cast<t_ephGPS*>(ep);
-      (*_ephMap)[prn] = new t_ephGPS(*epGPS);
-    }
-    else if (prn[0] == 'R') {
-      t_ephGlo* epGlo = static_cast<t_ephGlo*>(ep);
-      (*_ephMap)[prn] = new t_ephGlo(*epGlo);
-    }
-    else if (prn[0] == 'E') {
-      t_ephGal* epGal = static_cast<t_ephGal*>(ep);
-      (*_ephMap)[prn] = new t_ephGal(*epGal);
-    }
-  }
 
   // Append to buffer
   // ----------------
@@ -417,8 +369,13 @@ void bncUploadCaster::uploadClockOrbitBias() {
       prn.remove(0,1);
     }
 
-    if ( _ephMap->contains(prn) ) {
-      t_eph* ep = (*_ephMap)[prn];
+    const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(prn);
+    if (ephPair) {
+      t_eph* eph = ephPair->last;
+      if (ephPair->prev && 
+           eph->receptDateTime().secsTo(QDateTime::currentDateTime()) < 60) {
+        eph = ephPair->prev;
+      }
 
       in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) 
          >> xx(6) >> xx(7) >> xx(8) >> xx(9) >> xx(10)
@@ -447,7 +404,8 @@ void bncUploadCaster::uploadClockOrbitBias() {
       }
       if (sd) {
         QString outLine;
-        processSatellite(ep, _epoTime.gpsw(), _epoTime.gpssec(), prn, xx, sd, outLine);
+        processSatellite(eph, _epoTime.gpsw(), _epoTime.gpssec(), prn, 
+                         xx, sd, outLine);
         if (_outFile) {
           _outFile->write(_epoTime.gpsw(), _epoTime.gpssec(), outLine);
         }
