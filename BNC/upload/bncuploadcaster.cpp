@@ -190,7 +190,6 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
 // Safe Desctructor
 ////////////////////////////////////////////////////////////////////////////
 void bncUploadCaster::deleteSafely() {
-  QMutexLocker locker(&_mutex);
   _isToBeDeleted = true;
   if (!isRunning()) {
     delete this;
@@ -213,14 +212,12 @@ bncUploadCaster::~bncUploadCaster() {
 ////////////////////////////////////////////////////////////////////////////
 void bncUploadCaster::run() {
   while (true) {
-    {
-      QMutexLocker locker(&_mutex);
-      if (_isToBeDeleted) {
-        QThread::quit();
-        deleteLater();
-        return;
-      }
+    if (_isToBeDeleted) {
+      QThread::quit();
+      deleteLater();
+      return;
     }
+    open();
     uploadClockOrbitBias();
     msleep(10);
   }
@@ -289,7 +286,7 @@ void bncUploadCaster::open() {
 // Write buffer
 ////////////////////////////////////////////////////////////////////////////
 void bncUploadCaster::write(char* buffer, unsigned len) {
-  if (_outSocket) {
+  if (_outSocket && _outSocket->state() == QAbstractSocket::ConnectedState) {
     _outSocket->write(buffer, len);
     _outSocket->flush();
   }
@@ -303,7 +300,11 @@ void bncUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   // Append to buffer
   // ----------------
+  const int MAXBUFFSIZE = 1000;
   _rtnetStreamBuffer.append(QByteArray(buffer, bufLen));
+  if (_rtnetStreamBuffer.size() > MAXBUFFSIZE) {
+    _rtnetStreamBuffer = _rtnetStreamBuffer.right(MAXBUFFSIZE);
+  }
 }
 
 // Function called in separate thread
@@ -321,6 +322,7 @@ void bncUploadCaster::uploadClockOrbitBias() {
     _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iLast+1);
     for (int ii = 0; ii < hlpLines.size(); ii++) {
       if      (hlpLines[ii].indexOf('*') != -1) {
+        lines.clear();
         QTextStream in(hlpLines[ii].toAscii());
         QString hlp;
         int     year, month, day, hour, min;
@@ -337,8 +339,6 @@ void bncUploadCaster::uploadClockOrbitBias() {
   if (lines.size() == 0) {
     return;
   }
-
-  this->open();
 
   unsigned year, month, day;
   _epoTime.civil_date(year, month, day);
@@ -451,7 +451,7 @@ void bncUploadCaster::uploadClockOrbitBias() {
     }
   }
   
-  if (_outSocket && (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0)) {
+  if (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
   
     int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
@@ -460,7 +460,7 @@ void bncUploadCaster::uploadClockOrbitBias() {
     }
   }
   
-  if (_outSocket && (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0)) {
+  if (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
     int len = MakeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
     if (len > 0) {
