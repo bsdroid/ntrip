@@ -4,11 +4,12 @@
 #include <newmat.h>
 #include "bncuploadcaster.h"
 #include "bnctime.h"
+#include "ephemeris.h"
+extern "C" {
 #include "clock_orbit_rtcm.h"
-#include "RTCM3/ephemeris.h"
+}
 
 class bncEphUser;
-
 class bncoutf;
 class bncClockRinex;
 class bncSP3;

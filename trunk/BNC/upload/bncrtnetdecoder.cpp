@@ -57,7 +57,8 @@ bncRtnetDecoder::bncRtnetDecoder() {
     if (hlp.size() > 6) {
       int  outPort = hlp[1].toInt();
       bool CoM     = (hlp[5].toInt() == Qt::Checked);
-      bncUploadCaster* newCaster = new bncUploadCaster(hlp[2], hlp[0], outPort, 
+      bncRtnetUploadCaster* newCaster = new bncRtnetUploadCaster(
+                                                       hlp[2], hlp[0], outPort, 
                                                        hlp[3], hlp[4], CoM,
                                                        hlp[6], hlp[7], "");
       newCaster->start();

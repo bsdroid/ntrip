@@ -27,7 +27,7 @@
 
 #include <fstream>
 #include <QtCore>
-#include "bncuploadcaster.h"
+#include "bncrtnetuploadcaster.h"
 #include "RTCM/GPSDecoder.h"
 
 class bncRtnetDecoder: public GPSDecoder {
@@ -37,7 +37,7 @@ class bncRtnetDecoder: public GPSDecoder {
   virtual t_irc Decode(char* buffer, int bufLen, 
                        std::vector<std::string>& errmsg);
  private:
-  QVector<bncUploadCaster*> _casters;
+  QVector<bncRtnetUploadCaster*> _casters;
 };
 
 #endif  // include blocker
