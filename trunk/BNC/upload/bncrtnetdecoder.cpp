@@ -59,7 +59,7 @@ bncRtnetDecoder::bncRtnetDecoder() {
       bool CoM     = (hlp[5].toInt() == Qt::Checked);
       bncUploadCaster* newCaster = new bncUploadCaster(hlp[2], hlp[0], outPort, 
                                                        hlp[3], hlp[4], CoM,
-                                                       hlp[6], "", "");
+                                                       hlp[6], hlp[7], "");
       newCaster->start();
       _casters.push_back(newCaster);
     }
