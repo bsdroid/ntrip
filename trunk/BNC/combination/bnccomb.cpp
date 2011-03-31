@@ -653,8 +653,9 @@ void bncComb::dumpResults(const bncTime& resTime,
   if (!_rtnetDecoder) {
     _rtnetDecoder = new bncRtnetDecoder();
   }
+
   vector<string> errmsg;
-  _rtnetDecoder->Decode((char*) out.str().c_str(), out.str().size(), errmsg);
+  _rtnetDecoder->Decode((char*) out.str().data(), out.str().size(), errmsg);
 
   // Optionally send new Corrections to PPP
   // --------------------------------------
