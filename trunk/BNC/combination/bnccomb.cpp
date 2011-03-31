@@ -625,20 +625,19 @@ void bncComb::dumpResults(const bncTime& resTime,
                      "   %3d"
                      "   %8.3f %8.3f %8.3f %8.3f"
                      "   %10.5f %10.5f %10.5f %10.5f"
-                     "   %10.5f",
+                     "   %10.5f INTERNAL",
                      messageType, updateInt, time12.gpsw(), time12.gpssec(),
                      corr->prn.toAscii().data(),
                      corr->iod,
-                     corr->dClk,
+                     corr->dClk * t_CST::c,
                      corr->rao[0],
                      corr->rao[1],
                      corr->rao[2],
-                     corr->dotDClk,
+                     corr->dotDClk * t_CST::c,
                      corr->dotRao[0],
                      corr->dotRao[1],
                      corr->dotRao[2],
-                     corr->dotDotDClk);
-        corrLines << line;
+                     corr->dotDotDClk * t_CST::c);
       }
       else {
         out << setw(14) << setprecision(6) << xc(1) / 1000.0
