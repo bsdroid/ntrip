@@ -2,7 +2,7 @@
  * BKG NTRIP Server
  * -------------------------------------------------------------------------
  *
- * Class:      bncUploadCaster
+ * Class:      bncRtnetUploadCaster
  *
  * Purpose:    Connection to NTRIP Caster
  *
@@ -15,10 +15,9 @@
  * -----------------------------------------------------------------------*/
 
 #include <math.h>
-#include "bncuploadcaster.h" 
+#include "bncrtnetuploadcaster.h" 
 #include "bncsettings.h"
-#include "bncversion.h"
-#include "bncapp.h"
+#include "bncephuser.h"
 #include "bncclockrinex.h"
 #include "bncsp3.h"
 
@@ -26,29 +25,22 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncUploadCaster::bncUploadCaster(const QString& mountpoint,
+bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
                                  const QString& outHost, int outPort,
                                  const QString& password, 
                                  const QString& crdTrafo, bool  CoM, 
                                  const QString& sp3FileName,
                                  const QString& rnxFileName,
-                                 const QString& outFileName) {
+                                 const QString& outFileName) :
+                      bncUploadCaster(mountpoint, outHost, outPort, password) {
+
   bncSettings settings;
-
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
-
-  _mountpoint = mountpoint;
-  _outHost    = outHost;
-  _outPort    = outPort;
-  _password   = password;
   _crdTrafo   = crdTrafo;
   _CoM        = CoM;
 
-  _outSocket  = 0;
-  _sOpenTrial = 0;
-
-  _isToBeDeleted = false;
+  // Member that receives the ephemeris
+  // ----------------------------------
+  _ephUser = new bncEphUser();
 
   // Raw Output
   // ----------
@@ -181,24 +173,11 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
     _scr = settings.value("trafo_scr").toDouble();
     _t0  = settings.value("trafo_t0").toDouble();
   }
-
-  // Member that receives the ephemeris
-  // ----------------------------------
-  _ephUser = new bncEphUser();
-}
-
-// Safe Desctructor
-////////////////////////////////////////////////////////////////////////////
-void bncUploadCaster::deleteSafely() {
-  _isToBeDeleted = true;
-  if (!isRunning()) {
-    delete this;
-  }
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-bncUploadCaster::~bncUploadCaster() {
+bncRtnetUploadCaster::~bncRtnetUploadCaster() {
   if (isRunning()) {
     wait();
   }
@@ -210,7 +189,7 @@ bncUploadCaster::~bncUploadCaster() {
 
 // Endless Loop
 ////////////////////////////////////////////////////////////////////////////
-void bncUploadCaster::run() {
+void bncRtnetUploadCaster::run() {
   while (true) {
     if (_isToBeDeleted) {
       QThread::quit();
@@ -223,78 +202,9 @@ void bncUploadCaster::run() {
   }
 }
 
-// Start the Communication with NTRIP Caster
-////////////////////////////////////////////////////////////////////////////
-void bncUploadCaster::open() {
-
-  if (_mountpoint.isEmpty()) {
-    return;
-  }
-
-  if (_outSocket != 0 && 
-      _outSocket->state() == QAbstractSocket::ConnectedState) {
-    return;
-  }
-
-  delete _outSocket; _outSocket = 0;
-
-  double minDt = pow(2.0,_sOpenTrial);
-  if (++_sOpenTrial > 4) {
-    _sOpenTrial = 4;
-  }
-  if (_outSocketOpenTime.isValid() &&
-      _outSocketOpenTime.secsTo(QDateTime::currentDateTime()) < minDt) {
-    return;
-  }
-  else {
-    _outSocketOpenTime = QDateTime::currentDateTime();
-  }
-
-  bncSettings settings;
-  _outSocket = new QTcpSocket();
-  _outSocket->connectToHost(_outHost, _outPort);
-
-  const int timeOut = 5000;  // 5 seconds
-  if (!_outSocket->waitForConnected(timeOut)) {
-    delete _outSocket;
-    _outSocket = 0;
-    emit(newMessage("Broadcaster: Connect timeout", true));
-    return;
-  }
-
-  QByteArray msg = "SOURCE " + _password.toAscii() + " /" + 
-                   _mountpoint.toAscii() + "\r\n" +
-                   "Source-Agent: NTRIP BNC/" BNCVERSION "\r\n\r\n";
-
-  _outSocket->write(msg);
-  _outSocket->waitForBytesWritten();
-
-  _outSocket->waitForReadyRead();
-  QByteArray ans = _outSocket->readLine();
-
-  if (ans.indexOf("OK") == -1) {
-    delete _outSocket;
-    _outSocket = 0;
-    emit(newMessage("Broadcaster: Connection broken", true));
-  }
-  else {
-    emit(newMessage("Broadcaster: Connection opened", true));
-    _sOpenTrial = 0;
-  }
-}
-
-// Write buffer
-////////////////////////////////////////////////////////////////////////////
-void bncUploadCaster::write(char* buffer, unsigned len) {
-  if (_outSocket && _outSocket->state() == QAbstractSocket::ConnectedState) {
-    _outSocket->write(buffer, len);
-    _outSocket->flush();
-  }
-}
-
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
+void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
                                         
   QMutexLocker locker(&_mutex);
 
@@ -309,7 +219,7 @@ void bncUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
 // Function called in separate thread
 //////////////////////////////////////////////////////////////////////// 
-void bncUploadCaster::uploadClockOrbitBias() {
+void bncRtnetUploadCaster::uploadClockOrbitBias() {
 
   QMutexLocker locker(&_mutex);
 
@@ -471,7 +381,7 @@ void bncUploadCaster::uploadClockOrbitBias() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncUploadCaster::processSatellite(t_eph* eph, int GPSweek, 
+void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek, 
                                        double GPSweeks, const QString& prn, 
                                        const ColumnVector& xx, 
                                        struct ClockOrbit::SatData* sd,
@@ -557,7 +467,7 @@ void bncUploadCaster::processSatellite(t_eph* eph, int GPSweek,
 
 // Transform Coordinates
 ////////////////////////////////////////////////////////////////////////////
-void bncUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz) {
+void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz) {
 
   // Current epoch minus 2000.0 in years
   // ------------------------------------
