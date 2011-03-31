@@ -117,7 +117,7 @@ bncComb::bncComb() {
     }
   }
 
-  _rtnetDecoder = new bncRtnetDecoder();
+  _rtnetDecoder = 0;
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
@@ -543,6 +543,10 @@ void bncComb::printResults(QTextStream& out, const bncTime& resTime,
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::dumpResults(const bncTime& resTime, 
                           const QMap<QString, t_corr*>& resCorr) {
+
+  if (!_rtnetDecoder) {
+    _rtnetDecoder = new bncRtnetDecoder();
+  }
 
   QMapIterator<QString, t_corr*> it(resCorr);
   while (it.hasNext()) {
