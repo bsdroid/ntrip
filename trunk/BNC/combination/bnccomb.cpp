@@ -546,6 +546,7 @@ void bncComb::dumpResults(const bncTime& resTime,
                           const QMap<QString, t_corr*>& resCorr) {
 
   ostringstream out; out.setf(std::ios::fixed);
+  QStringList   corrLines;
 
   unsigned year, month, day, hour, minute;
   double   sec;
@@ -616,6 +617,10 @@ void bncComb::dumpResults(const bncTime& resTime,
             << setw(8)  << setprecision(3) << dcbP1C1
             << setw(8)  << setprecision(3) << dcbP1P2
             << setw(6)  << setprecision(1) << dT;
+        ostringstream outLine; outLine.setf(std::ios::fixed);
+
+        outLine << " COMB";
+        corrLines << QString(outLine.str().c_str());
       }
       else {
         out << setw(14) << setprecision(6) << xc(1) / 1000.0
@@ -633,20 +638,10 @@ void bncComb::dumpResults(const bncTime& resTime,
   vector<string> errmsg;
   _rtnetDecoder->Decode((char*) out.str().c_str(), out.str().size(), errmsg);
 
-    // Optionally send new Corrections to PPP
-    // --------------------------------------
-    bncApp* app = (bncApp*) qApp;
-    if (app->_bncPPPclient) {
-//    QStringList corrLines;
-//    co.messageType = COTYPE_GPSCOMBINED;
-//    QStringListIterator il(RTCM3coDecoder::corrsToASCIIlines(resTime.gpsw(), 
-//                                                  resTime.gpssec(), co, 0));
-//    while (il.hasNext()) {
-//      QString line = il.next();
-//      line += " COMB";
-//      corrLines << line;
-//    }
-//    
-//    app->_bncPPPclient->slotNewCorrections(corrLines);
-    }
+  // Optionally send new Corrections to PPP
+  // --------------------------------------
+  bncApp* app = (bncApp*) qApp;
+  if (app->_bncPPPclient) {
+    app->_bncPPPclient->slotNewCorrections(corrLines);
+  }
 }
