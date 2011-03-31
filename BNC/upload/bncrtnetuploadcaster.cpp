@@ -34,7 +34,6 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
                                  const QString& outFileName) :
                       bncUploadCaster(mountpoint, outHost, outPort, password) {
 
-  bncSettings settings;
   _crdTrafo   = crdTrafo;
   _CoM        = CoM;
 
@@ -157,6 +156,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _t0  =    0000.0;
   }
   else if (_crdTrafo == "Custom") {
+    bncSettings settings;
     _dx  = settings.value("trafo_dx").toDouble();
     _dy  = settings.value("trafo_dy").toDouble();
     _dz  = settings.value("trafo_dz").toDouble();
@@ -187,21 +187,6 @@ bncRtnetUploadCaster::~bncRtnetUploadCaster() {
   delete _ephUser;
 }
 
-// Endless Loop
-////////////////////////////////////////////////////////////////////////////
-void bncRtnetUploadCaster::run() {
-  while (true) {
-    if (_isToBeDeleted) {
-      QThread::quit();
-      deleteLater();
-      return;
-    }
-    open();
-    uploadClockOrbitBias();
-    msleep(10);
-  }
-}
-
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
@@ -210,53 +195,44 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   // Append to buffer
   // ----------------
-  const int MAXBUFFSIZE = 100000;
   _rtnetStreamBuffer.append(QByteArray(buffer, bufLen));
-  if (_rtnetStreamBuffer.size() > MAXBUFFSIZE) {
-    _rtnetStreamBuffer = _rtnetStreamBuffer.right(MAXBUFFSIZE);
+  int iLastAsterix = _rtnetStreamBuffer.lastIndexOf('*'); // begin of last epoch
+  if (iLastAsterix == -1) {
+    _rtnetStreamBuffer.clear();
+    return;
   }
-}
-
-// Function called in separate thread
-//////////////////////////////////////////////////////////////////////// 
-void bncRtnetUploadCaster::uploadClockOrbitBias() {
-
-  QMutexLocker locker(&_mutex);
+  else {
+    _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iLastAsterix);
+  }
 
   // Prepare list of lines with satellite positions in SP3-like format
   // -----------------------------------------------------------------
-  QStringList lines;
-  int iLast = _rtnetStreamBuffer.lastIndexOf('\n');
-  if (iLast != -1) {
-    QStringList hlpLines = _rtnetStreamBuffer.split('\n', QString::SkipEmptyParts);
-    _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iLast+1);
-    for (int ii = 0; ii < hlpLines.size(); ii++) {
-      if      (hlpLines[ii].indexOf('*') != -1) {
-        lines.clear();
-        QTextStream in(hlpLines[ii].toAscii());
-        QString hlp;
-        int     year, month, day, hour, min;
-        double  sec;
-        in >> hlp >> year >> month >> day >> hour >> min >> sec;
-        _epoTime.set( year, month, day, hour, min, sec);
-      }
-      else if (_epoTime.valid()) {
-        lines << hlpLines[ii];
-      }
-    }
-  }
+  QStringList lines = _rtnetStreamBuffer.split('\n', QString::SkipEmptyParts);
 
-  if (lines.size() == 0) {
+  if (lines.size() < 2) {
     return;
   }
 
-  unsigned year, month, day;
-  _epoTime.civil_date(year, month, day);
-  
+  // Keep the last unfinished line in buffer
+  // ---------------------------------------
+  int iLastEOL = _rtnetStreamBuffer.lastIndexOf('\n');
+  if (iLastEOL != -1) {
+    _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iLastEOL+1);
+  }
+
+  // Read first line (with epoch time)
+  // ---------------------------------
+  QTextStream in(lines[0].toAscii());
+  QString hlp;
+  int     year, month, day, hour, min;
+  double  sec;
+  in >> hlp >> year >> month >> day >> hour >> min >> sec;
+  bncTime epoTime; epoTime.set( year, month, day, hour, min, sec);
+
   struct ClockOrbit co;
   memset(&co, 0, sizeof(co));
-  co.GPSEpochTime      = static_cast<int>(_epoTime.gpssec());
-  co.GLONASSEpochTime  = static_cast<int>(fmod(_epoTime.gpssec(), 86400.0))
+  co.GPSEpochTime      = static_cast<int>(epoTime.gpssec());
+  co.GLONASSEpochTime  = static_cast<int>(fmod(epoTime.gpssec(), 86400.0))
                        + 3 * 3600 - gnumleap(year, month, day);
   co.ClockDataSupplied = 1;
   co.OrbitDataSupplied = 1;
@@ -264,11 +240,11 @@ void bncRtnetUploadCaster::uploadClockOrbitBias() {
   
   struct Bias bias;
   memset(&bias, 0, sizeof(bias));
-  bias.GPSEpochTime      = co.GPSEpochTime;
-  bias.GLONASSEpochTime  = co.GLONASSEpochTime;
+  bias.GPSEpochTime     = co.GPSEpochTime;
+  bias.GLONASSEpochTime = co.GLONASSEpochTime;
   
-  for (int ii = 0; ii < lines.size(); ii++) {
-  
+  for (int ii = 1; ii < lines.size(); ii++) {
+ 
     QString      prn;
     ColumnVector xx(14); xx = 0.0;
   
@@ -314,10 +290,10 @@ void bncRtnetUploadCaster::uploadClockOrbitBias() {
       }
       if (sd) {
         QString outLine;
-        processSatellite(eph, _epoTime.gpsw(), _epoTime.gpssec(), prn, 
+        processSatellite(eph, epoTime.gpsw(), epoTime.gpssec(), prn, 
                          xx, sd, outLine);
         if (_outFile) {
-          _outFile->write(_epoTime.gpsw(), _epoTime.gpssec(), outLine);
+          _outFile->write(epoTime.gpsw(), epoTime.gpssec(), outLine);
         }
       }
   
@@ -366,7 +342,7 @@ void bncRtnetUploadCaster::uploadClockOrbitBias() {
   
     int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
     if (len > 0) {
-      this->write(obuffer, len);
+      _outBuffer.append(QByteArray(obuffer, len));
     }
   }
   
@@ -374,7 +350,7 @@ void bncRtnetUploadCaster::uploadClockOrbitBias() {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
     int len = MakeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
     if (len > 0) {
-      this->write(obuffer, len);
+      _outBuffer.append(QByteArray(obuffer, len));
     }
   }
 }
