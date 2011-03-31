@@ -70,11 +70,6 @@ void bncUploadCaster::run() {
       QMutexLocker locker(&_mutex);
       _outSocket->write(_outBuffer);
       _outSocket->flush();
-      _outBuffer.clear();
-    }
-    else {
-      QMutexLocker locker(&_mutex);
-      _outBuffer.clear();
     }
     sleep(5);
   }
