@@ -16,6 +16,7 @@
 
 #include <newmatio.h>
 #include <iomanip>
+#include <sstream>
 
 #include "bnccomb.h"
 #include "bncapp.h"
@@ -548,43 +549,87 @@ void bncComb::dumpResults(const bncTime& resTime,
     _rtnetDecoder = new bncRtnetDecoder();
   }
 
+  ostringstream out; out.setf(std::ios::fixed);
+
+  unsigned year, month, day, hour, minute;
+  double   sec;
+  resTime.civil_date(year, month, day);
+  resTime.civil_time(hour, minute, sec);
+
+  out << "*  " 
+      << setw(4)  << year   << " " 
+      << setw(2)  << month  << " " 
+      << setw(2)  << day    << " " 
+      << setw(2)  << hour   << " " 
+      << setw(2)  << minute << " " 
+      << setw(12) << setprecision(8) << sec << " "
+      << endl; 
+
   QMapIterator<QString, t_corr*> it(resCorr);
   while (it.hasNext()) {
     it.next();
     t_corr* corr = it.value();
 
-//    // SP3 Output
-//    // ----------
-//    if (_sp3) {
-//      ColumnVector xc(4);
-//      ColumnVector vv(3);
-//      corr->eph->position(resTime.gpsw(), resTime.gpssec(), 
-//                          xc.data(), vv.data());
-//      bncPPPclient::applyCorr(resTime, corr, xc, vv);
-//
-//      // Relativistic Correction
-//      // -----------------------
-//      xc(4) += 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
-//
-//      // Correction Phase Center --> CoM
-//      // -------------------------------
-//      if (_antex) {
-//        ColumnVector dx(3); dx = 0.0;
-//        double Mjd = resTime.mjd() + resTime.daysec()/86400.0;
-//        if (_antex->satCoMcorrection(corr->prn, Mjd, xc.Rows(1,3), dx) == success) {
-//          xc(1) -= dx(1);
-//          xc(2) -= dx(2);
-//          xc(3) -= dx(3);
-//        }
-//        else {
-//          cout << "antenna not found" << endl;
-//        }
-//      }
-//      _sp3->write(resTime.gpsw(), resTime.gpssec(), corr->prn, xc);
-//    }
-//
-//    delete corr;
-//  }
+    double dT = 60.0;
+
+    for (int iTime = 1; iTime <= 2; iTime++) {
+
+      bncTime time12 = (iTime == 1) ? resTime : resTime + dT;
+
+      ColumnVector xc(4);
+      ColumnVector vv(3);
+      corr->eph->position(time12.gpsw(), time12.gpssec(), 
+                          xc.data(), vv.data());
+      bncPPPclient::applyCorr(time12, corr, xc, vv);
+      
+      // Relativistic Correction
+      // -----------------------
+      double relCorr = - 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
+      xc(4) -= relCorr;
+      
+      // Code Biases
+      // -----------
+      double dcbP1C1 = 0.0;
+      double dcbP1P2 = 0.0;
+      
+      // Correction Phase Center --> CoM
+      // -------------------------------
+      ColumnVector dx(3); dx = 0.0;
+      if (_antex) {
+        double Mjd = time12.mjd() + time12.daysec()/86400.0;
+        if (_antex->satCoMcorrection(corr->prn, Mjd, xc.Rows(1,3), dx) == success) {
+          xc(1) -= dx(1);
+          xc(2) -= dx(2);
+          xc(3) -= dx(3);
+        }
+        else {
+          cout << "antenna not found" << endl;
+        }
+      }
+      
+      if (iTime == 1) {
+        out << 'P' << corr->prn.toAscii().data()
+            << setw(14) << setprecision(6) << xc(1) / 1000.0
+            << setw(14) << setprecision(6) << xc(2) / 1000.0
+            << setw(14) << setprecision(6) << xc(3) / 1000.0
+            << setw(14) << setprecision(6) << xc(4) * 1e6
+            << setw(14) << setprecision(6) << relCorr * 1e6
+            << setw(8)  << setprecision(3) << dx(1)
+            << setw(8)  << setprecision(3) << dx(2)
+            << setw(8)  << setprecision(3) << dx(3)
+            << setw(8)  << setprecision(3) << dcbP1C1
+            << setw(8)  << setprecision(3) << dcbP1P2
+            << setw(6)  << setprecision(1) << dT;
+      }
+      else {
+        out << setw(14) << setprecision(6) << xc(1) / 1000.0
+            << setw(14) << setprecision(6) << xc(2) / 1000.0
+            << setw(14) << setprecision(6) << xc(3) / 1000.0 << endl;
+      }
+    }
+
+    delete corr;
+  }
 
     // Optionally send new Corrections to PPP
     // --------------------------------------
@@ -602,5 +647,4 @@ void bncComb::dumpResults(const bncTime& resTime,
 //    
 //    app->_bncPPPclient->slotNewCorrections(corrLines);
     }
-  }
 }
