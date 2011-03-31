@@ -649,6 +649,7 @@ void bncComb::dumpResults(const bncTime& resTime,
 
     delete corr;
   }
+  out << "EOE" << endl; // End Of Epoch flag
 
   if (!_rtnetDecoder) {
     _rtnetDecoder = new bncRtnetDecoder();
