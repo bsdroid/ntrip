@@ -617,24 +617,28 @@ void bncComb::dumpResults(const bncTime& resTime,
             << setw(8)  << setprecision(3) << dcbP1C1
             << setw(8)  << setprecision(3) << dcbP1P2
             << setw(6)  << setprecision(1) << dT;
-        ostringstream outLine; outLine.setf(std::ios::fixed);
 
+        QString line;
         int messageType = COTYPE_GPSCOMBINED;
-        int updateInterval = 0;
-        outLine << messageType    << " " 
-                << updateInterval << " " 
-                << time12.gpsw()  << " " 
-                << setprecision(8) << time12.gpssec() << " "
-                << corr->prn.toAscii().data() << " "
-                << corr->iod << " " 
-                << corr->dClk * t_CST::c << " " 
-                << corr->rao[0] << " " << corr->rao[1] << " " << corr->rao[2] << " "
-                << corr->dotDClk * t_CST::c << " " 
-                << corr->dotRao[0] << " " << corr->dotRao[1] << " " << corr->dotRao[2] << " "
-                << corr->dotDotDClk * t_CST::c << " " 
-                << corr->dotDotRao[0] << " " << corr->dotDotRao[1] << " " << corr->dotDotRao[2] << " "
-                << " COMB";
-        corrLines << QString(outLine.str().c_str());
+        int updateInt   = 0;
+        line.sprintf("%d %d %d %.1f %s"
+                     "   %3d"
+                     "   %8.3f %8.3f %8.3f %8.3f"
+                     "   %10.5f %10.5f %10.5f %10.5f"
+                     "   %10.5f",
+                     messageType, updateInt, time12.gpsw(), time12.gpssec(),
+                     corr->prn.toAscii().data(),
+                     corr->iod,
+                     corr->dClk,
+                     corr->rao[0],
+                     corr->rao[1],
+                     corr->rao[2],
+                     corr->dotDClk,
+                     corr->dotRao[0],
+                     corr->dotRao[1],
+                     corr->dotRao[2],
+                     corr->dotDotDClk);
+        corrLines << line;
       }
       else {
         out << setw(14) << setprecision(6) << xc(1) / 1000.0
