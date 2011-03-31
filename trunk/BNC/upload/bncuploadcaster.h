@@ -10,26 +10,26 @@ class bncUploadCaster : public QThread {
                   const QString& outHost, int outPort,
                   const QString& password);
   virtual void deleteSafely();
-  virtual void run() = 0;
 
  protected:
-  virtual ~bncUploadCaster();
-  void    open();
-  void    write(char* buffer, unsigned len);
-  QMutex  _mutex;  
-  bool    _isToBeDeleted;
+  virtual    ~bncUploadCaster();
+  QMutex     _mutex;  
+  QByteArray _outBuffer;
 
  signals:
   void newMessage(const QByteArray msg, bool showOnScreen);
 
  private:
-  QString        _mountpoint;
-  QString        _outHost;
-  int            _outPort;
-  QString        _password;
-  QTcpSocket*    _outSocket;
-  int            _sOpenTrial;
-  QDateTime      _outSocketOpenTime;
+  void         open();
+  virtual void run();
+  bool        _isToBeDeleted;
+  QString     _mountpoint;
+  QString     _outHost;
+  int         _outPort;
+  QString     _password;
+  QTcpSocket* _outSocket;
+  int         _sOpenTrial;
+  QDateTime   _outSocketOpenTime;
 };
 
 #endif

@@ -37,7 +37,6 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   _outSocket     = 0;
   _sOpenTrial    = 0;
   _isToBeDeleted = false;
-
 }
 
 // Safe Desctructor
@@ -54,6 +53,30 @@ void bncUploadCaster::deleteSafely() {
 bncUploadCaster::~bncUploadCaster() {
   if (isRunning()) {
     wait();
+  }
+}
+
+// Endless Loop
+////////////////////////////////////////////////////////////////////////////
+void bncUploadCaster::run() {
+  while (true) {
+    if (_isToBeDeleted) {
+      QThread::quit();
+      deleteLater();
+      return;
+    }
+    open();
+    if (_outSocket && _outSocket->state() == QAbstractSocket::ConnectedState) {
+      QMutexLocker locker(&_mutex);
+      _outSocket->write(_outBuffer);
+      _outSocket->flush();
+      _outBuffer.clear();
+    }
+    else {
+      QMutexLocker locker(&_mutex);
+      _outBuffer.clear();
+    }
+    sleep(5);
   }
 }
 
@@ -113,15 +136,6 @@ void bncUploadCaster::open() {
   else {
     emit(newMessage("Broadcaster: Connection opened", true));
     _sOpenTrial = 0;
-  }
-}
-
-// Write buffer
-////////////////////////////////////////////////////////////////////////////
-void bncUploadCaster::write(char* buffer, unsigned len) {
-  if (_outSocket && _outSocket->state() == QAbstractSocket::ConnectedState) {
-    _outSocket->write(buffer, len);
-    _outSocket->flush();
   }
 }
 

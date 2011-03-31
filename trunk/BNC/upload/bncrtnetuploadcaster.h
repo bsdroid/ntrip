@@ -24,11 +24,9 @@ class bncRtnetUploadCaster : public bncUploadCaster {
                   const QString& sp3FileName,
                   const QString& rnxFileName,
                   const QString& outFileName);
+  void decodeRtnetStream(char* buffer, int bufLen);
  protected:
   virtual ~bncRtnetUploadCaster();
- public:
-  virtual void run();
-  void decodeRtnetStream(char* buffer, int bufLen);
  private:
   void uploadClockOrbitBias();
   void processSatellite(t_eph* eph, int GPSweek, 
@@ -40,7 +38,6 @@ class bncRtnetUploadCaster : public bncUploadCaster {
 
   bncEphUser*    _ephUser;
   QString        _rtnetStreamBuffer;
-  bncTime        _epoTime;
   QString        _crdTrafo;
   bool           _CoM;
   double         _dx;
