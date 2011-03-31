@@ -619,7 +619,21 @@ void bncComb::dumpResults(const bncTime& resTime,
             << setw(6)  << setprecision(1) << dT;
         ostringstream outLine; outLine.setf(std::ios::fixed);
 
-        outLine << " COMB";
+        int messageType = COTYPE_GPSCOMBINED;
+        int updateInterval = 0;
+        outLine << messageType    << " " 
+                << updateInterval << " " 
+                << time12.gpsw()  << " " 
+                << setprecision(8) << time12.gpssec() << " "
+                << corr->prn.toAscii().data() << " "
+                << corr->iod << " " 
+                << corr->dClk * t_CST::c << " " 
+                << corr->rao[0] << " " << corr->rao[1] << " " << corr->rao[2] << " "
+                << corr->dotDClk * t_CST::c << " " 
+                << corr->dotRao[0] << " " << corr->dotRao[1] << " " << corr->dotRao[2] << " "
+                << corr->dotDotDClk * t_CST::c << " " 
+                << corr->dotDotRao[0] << " " << corr->dotDotRao[1] << " " << corr->dotDotRao[2] << " "
+                << " COMB";
         corrLines << QString(outLine.str().c_str());
       }
       else {
