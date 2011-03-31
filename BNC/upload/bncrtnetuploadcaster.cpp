@@ -336,22 +336,28 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       }
     }
   }
-  
+
+  QByteArray hlpBufferCo;  
   if (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
   
     int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
     if (len > 0) {
-      _outBuffer.append(QByteArray(obuffer, len));
+      hlpBufferCo = QByteArray(obuffer, len);
     }
   }
   
+  QByteArray hlpBufferBias;  
   if (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
     int len = MakeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
     if (len > 0) {
-      _outBuffer.append(QByteArray(obuffer, len));
+      hlpBufferBias = QByteArray(obuffer, len);
     }
+  }
+
+  if (hlpBufferCo.size() > 0) {
+    _outBuffer = hlpBufferCo + hlpBufferBias;
   }
 }
 
