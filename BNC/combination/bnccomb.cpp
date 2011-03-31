@@ -638,6 +638,7 @@ void bncComb::dumpResults(const bncTime& resTime,
                      corr->dotRao[1],
                      corr->dotRao[2],
                      corr->dotDotDClk * t_CST::c);
+        corrLines << line;
       }
       else {
         out << setw(14) << setprecision(6) << xc(1) / 1000.0
