@@ -545,10 +545,6 @@ void bncComb::printResults(QTextStream& out, const bncTime& resTime,
 void bncComb::dumpResults(const bncTime& resTime, 
                           const QMap<QString, t_corr*>& resCorr) {
 
-  if (!_rtnetDecoder) {
-    _rtnetDecoder = new bncRtnetDecoder();
-  }
-
   ostringstream out; out.setf(std::ios::fixed);
 
   unsigned year, month, day, hour, minute;
@@ -630,6 +626,12 @@ void bncComb::dumpResults(const bncTime& resTime,
 
     delete corr;
   }
+
+  if (!_rtnetDecoder) {
+    _rtnetDecoder = new bncRtnetDecoder();
+  }
+  vector<string> errmsg;
+  _rtnetDecoder->Decode((char*) out.str().c_str(), out.str().size(), errmsg);
 
     // Optionally send new Corrections to PPP
     // --------------------------------------
