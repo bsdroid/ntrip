@@ -193,21 +193,28 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
                                         
   QMutexLocker locker(&_mutex);
 
-  // Append to buffer
-  // ----------------
+  // Append to internal buffer
+  // -------------------------
   _rtnetStreamBuffer.append(QByteArray(buffer, bufLen));
-  int iLastAsterix = _rtnetStreamBuffer.lastIndexOf('*'); // begin of last epoch
-  if (iLastAsterix == -1) {
+
+  // Select buffer part that contains last epoch
+  // -------------------------------------------
+  QStringList lines;
+  int iEpoBeg = _rtnetStreamBuffer.lastIndexOf('*');   // begin of last epoch
+  if (iEpoBeg == -1) {
     _rtnetStreamBuffer.clear();
     return;
   }
-  else {
-    _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iLastAsterix);
-  }
+  _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iEpoBeg);
 
-  // Prepare list of lines with satellite positions in SP3-like format
-  // -----------------------------------------------------------------
-  QStringList lines = _rtnetStreamBuffer.split('\n', QString::SkipEmptyParts);
+  int iEpoEnd = _rtnetStreamBuffer.lastIndexOf("EOE"); // end   of last epoch
+  if (iEpoEnd == -1) {
+    return;
+  }
+  else {
+    lines = _rtnetStreamBuffer.left(iEpoEnd).split('\n', QString::SkipEmptyParts);
+    _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iEpoEnd+3);
+  }
 
   if (lines.size() < 2) {
     return;
