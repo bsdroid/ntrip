@@ -28,7 +28,6 @@ class bncRtnetUploadCaster : public bncUploadCaster {
  protected:
   virtual ~bncRtnetUploadCaster();
  private:
-  void uploadClockOrbitBias();
   void processSatellite(t_eph* eph, int GPSweek, 
                         double GPSweeks, const QString& prn, 
                         const ColumnVector& xx, 
