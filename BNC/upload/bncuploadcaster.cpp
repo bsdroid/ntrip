@@ -300,7 +300,7 @@ void bncUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   // Append to buffer
   // ----------------
-  const int MAXBUFFSIZE = 1000;
+  const int MAXBUFFSIZE = 100000;
   _rtnetStreamBuffer.append(QByteArray(buffer, bufLen));
   if (_rtnetStreamBuffer.size() > MAXBUFFSIZE) {
     _rtnetStreamBuffer = _rtnetStreamBuffer.right(MAXBUFFSIZE);
