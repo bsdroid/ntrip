@@ -18,6 +18,7 @@
 #include "bncuploadcaster.h" 
 #include "bncversion.h"
 #include "bncapp.h"
+#include "bnctableitem.h"
 
 using namespace std;
 
@@ -26,10 +27,6 @@ using namespace std;
 bncUploadCaster::bncUploadCaster(const QString& mountpoint,
                                  const QString& outHost, int outPort,
                                  const QString& password, int iRow) {
-
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
-
   _mountpoint    = mountpoint;
   _outHost       = outHost;
   _outPort       = outPort;
@@ -38,6 +35,16 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   _sOpenTrial    = 0;
   _iRow          = iRow;
   _isToBeDeleted = false;
+
+  bncApp* app = (bncApp*) qApp;
+  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+          app, SLOT(slotMessage(const QByteArray,bool)));
+
+  if (app->_uploadTableItems.find(_iRow) != app->_uploadTableItems.end()){
+    connect(this, SIGNAL(newBytes(QByteArray,double)), 
+            app->_uploadTableItems.value(iRow), 
+            SLOT(newBytes(const QByteArray,double)));
+  }
 }
 
 // Safe Desctructor
