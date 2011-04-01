@@ -1464,6 +1464,7 @@ void bncWindow::slotStop() {
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
+    ((bncApp*)qApp)->stopCombination();
     delete _caster; _caster = 0;
     _actGetData->setEnabled(true);
     _actStop->setEnabled(false);
