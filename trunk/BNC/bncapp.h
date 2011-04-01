@@ -35,6 +35,7 @@
 
 class bncComb;
 class bncPPPclient;
+class bncTableItem;
 
 class bncApp : public QApplication {
   Q_OBJECT
@@ -125,5 +126,6 @@ class bncApp : public QApplication {
     bncComb*            _bncComb;
  public:
     bncPPPclient*       _bncPPPclient;
+    QMap<int, bncTableItem*> _uploadTableItems;
 };
 #endif

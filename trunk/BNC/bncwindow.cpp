@@ -2159,6 +2159,7 @@ void bncWindow::slotAddUploadRow() {
       bncTableItem* bncIt = new bncTableItem();
       bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
       _uploadTable->setItem(iRow, iCol, bncIt);
+      ((bncApp*)qApp)->_uploadTableItems[iRow] = bncIt;
     }
     else {
       _uploadTable->setItem(iRow, iCol, new QTableWidgetItem(""));
@@ -2169,6 +2170,7 @@ void bncWindow::slotAddUploadRow() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotDelUploadRow() {
+  ((bncApp*)qApp)->_uploadTableItems.clear();
   int nRows = _uploadTable->rowCount();
   bool flg[nRows];
   for (int iRow = 0; iRow < nRows; iRow++) {
@@ -2183,6 +2185,10 @@ void bncWindow::slotDelUploadRow() {
     if (flg[iRow]) {
       _uploadTable->removeRow(iRow);
     }
+  }
+  for (int iRow = 0; iRow < _uploadTable->rowCount(); iRow++) {
+    ((bncApp*)qApp)->_uploadTableItems[iRow] = 
+                                (bncTableItem*) _uploadTable->item(iRow, 8);
   }
 }
 
@@ -2230,6 +2236,7 @@ void bncWindow::populateUploadTable() {
         bncTableItem* bncIt = new bncTableItem();
         bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
         _uploadTable->setItem(iRow, iCol, bncIt);
+        ((bncApp*)qApp)->_uploadTableItems[iRow] = bncIt;
       }
       else {
         _uploadTable->setItem(iRow, iCol, new QTableWidgetItem(hlp[iCol]));
