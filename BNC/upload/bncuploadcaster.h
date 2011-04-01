@@ -18,6 +18,7 @@ class bncUploadCaster : public QThread {
 
  signals:
   void newMessage(const QByteArray msg, bool showOnScreen);
+  void newBytes(QByteArray staID, double nbyte);
 
  private:
   void         open();
