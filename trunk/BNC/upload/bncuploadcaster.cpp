@@ -71,6 +71,7 @@ void bncUploadCaster::run() {
       QMutexLocker locker(&_mutex);
       _outSocket->write(_outBuffer);
       _outSocket->flush();
+      emit newBytes(_mountpoint.toAscii(), _outBuffer.size());
     }
     sleep(5);
   }
