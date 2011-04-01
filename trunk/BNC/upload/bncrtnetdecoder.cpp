@@ -51,16 +51,18 @@ bncRtnetDecoder::bncRtnetDecoder() {
 
   // List of upload casters
   // ----------------------
+  int iRow = -1;
   QListIterator<QString> it(settings.value("uploadMountpointsOut").toStringList());
   while (it.hasNext()) {
     QStringList hlp = it.next().split(",");
     if (hlp.size() > 6) {
+      ++iRow;
       int  outPort = hlp[1].toInt();
       bool CoM     = (hlp[5].toInt() == Qt::Checked);
       bncRtnetUploadCaster* newCaster = new bncRtnetUploadCaster(
                                                        hlp[2], hlp[0], outPort, 
                                                        hlp[3], hlp[4], CoM,
-                                                       hlp[6], hlp[7], "");
+                                                       hlp[6], hlp[7], "", iRow);
       newCaster->start();
       _casters.push_back(newCaster);
     }
