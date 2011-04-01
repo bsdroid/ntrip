@@ -907,3 +907,12 @@ void bncApp::initCombination() {
   }
 #endif
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncApp::stopCombination() {
+#ifdef USE_COMBINATION
+  delete _bncComb;
+  _bncComb = 0;
+#endif
+}
