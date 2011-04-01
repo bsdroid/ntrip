@@ -43,7 +43,7 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   if (app->_uploadTableItems.find(_iRow) != app->_uploadTableItems.end()){
     connect(this, SIGNAL(newBytes(QByteArray,double)), 
             app->_uploadTableItems.value(iRow), 
-            SLOT(newBytes(const QByteArray,double)));
+            SLOT(slotNewBytes(const QByteArray,double)));
   }
 }
 
