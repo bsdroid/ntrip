@@ -23,7 +23,7 @@ class bncRtnetUploadCaster : public bncUploadCaster {
                   const QString& crdTrafo, bool  CoM, 
                   const QString& sp3FileName,
                   const QString& rnxFileName,
-                  const QString& outFileName);
+                  const QString& outFileName, int iRow);
   void decodeRtnetStream(char* buffer, int bufLen);
  protected:
   virtual ~bncRtnetUploadCaster();

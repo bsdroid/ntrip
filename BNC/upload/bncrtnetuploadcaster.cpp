@@ -31,8 +31,8 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
                                  const QString& crdTrafo, bool  CoM, 
                                  const QString& sp3FileName,
                                  const QString& rnxFileName,
-                                 const QString& outFileName) :
-                      bncUploadCaster(mountpoint, outHost, outPort, password) {
+                                 const QString& outFileName, int iRow) :
+               bncUploadCaster(mountpoint, outHost, outPort, password, iRow) {
 
   _crdTrafo   = crdTrafo;
   _CoM        = CoM;

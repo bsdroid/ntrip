@@ -25,7 +25,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncUploadCaster::bncUploadCaster(const QString& mountpoint,
                                  const QString& outHost, int outPort,
-                                 const QString& password) {
+                                 const QString& password, int iRow) {
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
@@ -36,6 +36,7 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   _password      = password;
   _outSocket     = 0;
   _sOpenTrial    = 0;
+  _iRow          = iRow;
   _isToBeDeleted = false;
 }
 

@@ -8,7 +8,7 @@ class bncUploadCaster : public QThread {
  public:
   bncUploadCaster(const QString& mountpoint,
                   const QString& outHost, int outPort,
-                  const QString& password);
+                  const QString& password, int iRow);
   virtual void deleteSafely();
 
  protected:
@@ -30,6 +30,7 @@ class bncUploadCaster : public QThread {
   QTcpSocket* _outSocket;
   int         _sOpenTrial;
   QDateTime   _outSocketOpenTime;
+  int         _iRow;
 };
 
 #endif
