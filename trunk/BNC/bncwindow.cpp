@@ -56,6 +56,7 @@
 #include "bncfigurelate.h"
 #include "bncfigureppp.h"
 #include "bncversion.h"
+#include "upload/bnccustomtrafo.h"
 
 using namespace std;
 
@@ -2248,4 +2249,7 @@ void bncWindow::populateUploadTable() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotSetUploadTrafo() {
+  bncCustomTrafo* dlg = new bncCustomTrafo(this);
+  dlg->exec();
+  delete dlg;
 }
