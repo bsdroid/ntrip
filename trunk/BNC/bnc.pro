@@ -42,6 +42,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bancroft.h bncmodel.h bncfigureppp.h bncrawfile.h           \ 
           bnctides.h bncmap.h bncmapview.h bncantex.h                 \
           bncephuser.h bncoutf.h bncclockrinex.h bncsp3.h             \
+          bncbytescounter.h                                           \
           upload/bncrtnetdecoder.h upload/bncuploadcaster.h           \
           upload/bncrtnetuploadcaster.h upload/bnccustomtrafo.h       \
           RTCM/GPSDecoder.h RTCM/RTCM2.h RTCM/RTCM2Decoder.h          \
@@ -75,6 +76,7 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bancroft.cpp bncmodel.cpp bncfigureppp.cpp bncrawfile.cpp   \
           bnctides.cpp bncmap.cpp bncmapview.cpp bncantex.cpp         \
           bncephuser.cpp bncoutf.cpp bncclockrinex.cpp bncsp3.cpp     \
+          bncbytescounter.cpp                                         \
           upload/bncrtnetdecoder.cpp upload/bncuploadcaster.cpp       \
           upload/bncrtnetuploadcaster.cpp upload/bnccustomtrafo.cpp   \
           RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp                        \
