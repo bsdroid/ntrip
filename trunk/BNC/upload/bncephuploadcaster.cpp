@@ -32,6 +32,10 @@ bncEphUploadCaster::bncEphUploadCaster() {
 
   _ephUploadCaster = new bncUploadCaster(mountpoint, outHost, outPort, 
                                          password, -1);
+
+  connect(_ephUploadCaster, SIGNAL(newBytes(QByteArray,double)), 
+          this, SIGNAL(newBytes(QByteArray,double)));
+
   _ephUploadCaster->start();
 }
 
