@@ -92,6 +92,7 @@ void bncEphUser::slotNewEphGPS(gpsephemeris gpseph) {
     eLast->set(&gpseph);
     _eph.insert(prn, new t_ephPair(eLast));
   }
+  ephBufferChanged();
 }
 
 // 
@@ -119,6 +120,7 @@ void bncEphUser::slotNewEphGlonass(glonassephemeris gloeph) {
     eLast->set(&gloeph);
     _eph.insert(prn, new t_ephPair(eLast));
   }
+  ephBufferChanged();
 }
 
 // 
@@ -144,6 +146,7 @@ void bncEphUser::slotNewEphGalileo(galileoephemeris galeph) {
     eLast->set(&galeph);
     _eph.insert(prn, new t_ephPair(eLast));
   }
+  ephBufferChanged();
 }
 
 // 
