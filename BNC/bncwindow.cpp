@@ -58,6 +58,7 @@
 #include "bncversion.h"
 #include "bncbytescounter.h"
 #include "upload/bnccustomtrafo.h"
+#include "upload/bncephuploadcaster.h"
 
 using namespace std;
 
@@ -65,7 +66,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::bncWindow() {
 
-  _caster = 0;
+  _caster    = 0;
+  _casterEph = 0;
 
   _bncFigure = new bncFigure(this);
   _bncFigureLate = new bncFigureLate(this);
@@ -1035,6 +1037,7 @@ bncWindow::bncWindow() {
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::~bncWindow() {
   delete _caster;
+  delete _casterEph;
 }
 
 // 
@@ -1447,7 +1450,8 @@ void bncWindow::slotSaveOptions() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotGetThreadsFinished() {
   ((bncApp*)qApp)->slotMessage("All Get Threads Terminated", true);
-  delete _caster; _caster = 0;
+  delete _caster;    _caster    = 0;
+  delete _casterEph; _casterEph = 0;
   _actGetData->setEnabled(true);
   _actStop->setEnabled(false);
 }
@@ -1508,6 +1512,8 @@ void bncWindow::slotGetData() {
   }
 
   _caster->slotReadMountPoints();
+
+  ///  _casterEph = new bncEphUploadCaster();
 }
 
 // Retrieve Data
@@ -1518,7 +1524,8 @@ void bncWindow::slotStop() {
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
     ((bncApp*)qApp)->stopCombination();
-    delete _caster; _caster = 0;
+    delete _caster;    _caster    = 0;
+    delete _casterEph; _casterEph = 0;
     _actGetData->setEnabled(true);
     _actStop->setEnabled(false);
   }

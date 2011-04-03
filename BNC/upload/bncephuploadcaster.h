@@ -8,9 +8,7 @@
 class bncEphUploadCaster : public bncEphUser {
  Q_OBJECT
  public:
-  bncEphUploadCaster(const QString& mountpoint,
-                     const QString& outHost, int outPort,
-                     const QString& password); 
+  bncEphUploadCaster();
   virtual ~bncEphUploadCaster();
  protected:
   virtual void ephBufferChanged();
