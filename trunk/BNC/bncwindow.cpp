@@ -1428,6 +1428,12 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("uploadIntr",     _uploadIntrComboBox->currentText());
   settings.setValue("uploadSampl",    _uploadSamplSpinBox->value());
 
+  settings.setValue("uploadEphHost",      _uploadEphHostLineEdit->text());
+  settings.setValue("uploadEphPort",      _uploadEphPortLineEdit->text());
+  settings.setValue("uploadEphPassword",  _uploadEphPasswordLineEdit->text());
+  settings.setValue("uploadEphMountpoint",_uploadEphMountpointLineEdit->text());
+  settings.setValue("uploadEphSample",    _uploadEphSampleSpinBox->value());
+
   if (_caster) {
     _caster->slotReadMountPoints();
   }
