@@ -21,9 +21,11 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncEphUploadCaster::bncEphUploadCaster(const QString& mountpoint,
-                                       const QString& outHost, int outPort,
-                                       const QString& password) {
+bncEphUploadCaster::bncEphUploadCaster() {
+  QString mountpoint;
+  QString outHost;
+  int     outPort;
+  QString password;
   _ephUploadCaster = new bncUploadCaster(mountpoint, outHost, outPort, 
                                          password, -1);
 }

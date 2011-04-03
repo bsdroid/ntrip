@@ -50,6 +50,7 @@ class bncFigure;
 class bncFigureLate;
 class bncFigurePPP;
 class bncBytesCounter;
+class bncEphUploadCaster;
 
 class bncWindow : public QMainWindow {
   Q_OBJECT
@@ -209,5 +210,7 @@ class bncWindow : public QMainWindow {
     bncBytesCounter* _uploadEphBytesCounter;
 
     bncCaster* _caster;
+
+    bncEphUploadCaster* _casterEph;
 };
 #endif
