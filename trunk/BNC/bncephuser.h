@@ -106,6 +106,7 @@ class bncEphUser : public QObject {
   void slotNewEphGalileo(galileoephemeris galeph);
 
  protected:
+  virtual void ephBufferChanged() {}
   QMutex                    _mutex;
   QMap<QString, t_ephPair*> _eph;
 };
