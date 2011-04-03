@@ -49,6 +49,7 @@ class bncFlowchartDlg : public QDialog {
 class bncFigure;
 class bncFigureLate;
 class bncFigurePPP;
+class bncBytesCounter;
 
 class bncWindow : public QMainWindow {
   Q_OBJECT
@@ -200,11 +201,12 @@ class bncWindow : public QMainWindow {
     QComboBox*    _uploadIntrComboBox;
     QSpinBox*     _uploadSamplSpinBox;
 
-    QLineEdit* _uploadEphHostLineEdit;
-    QLineEdit* _uploadEphPortLineEdit;
-    QLineEdit* _uploadEphPasswordLineEdit;
-    QLineEdit* _uploadEphMountpointLineEdit;
-    QSpinBox*  _uploadEphSampleSpinBox;
+    QLineEdit*       _uploadEphHostLineEdit;
+    QLineEdit*       _uploadEphPortLineEdit;
+    QLineEdit*       _uploadEphPasswordLineEdit;
+    QLineEdit*       _uploadEphMountpointLineEdit;
+    QSpinBox*        _uploadEphSampleSpinBox;
+    bncBytesCounter* _uploadEphBytesCounter;
 
     bncCaster* _caster;
 };
