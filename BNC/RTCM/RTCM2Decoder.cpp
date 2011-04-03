@@ -233,7 +233,7 @@ bool RTCM2Decoder::storeEph(const gpsephemeris& gpseph, string& storedPRN, vecto
 bool RTCM2Decoder::storeEph(const t_ephGPS& gpseph, string& storedPRN, vector<int>& IODs) {
   t_ephGPS* eph = new t_ephGPS(gpseph);
 
-  string prn = eph->prn();
+  string prn = eph->prn().toAscii().data();
 
   t_listMap::iterator ip = _ephList.find(prn);
   if (ip == _ephList.end() ) {
@@ -244,7 +244,7 @@ bool RTCM2Decoder::storeEph(const t_ephGPS& gpseph, string& storedPRN, vector<in
   bool stored = ephList->store(eph);
 
   if ( stored ) {
-    storedPRN = eph->prn();
+    storedPRN = string(eph->prn().toAscii().data());
     ephList->getIODs(IODs);
     return true;
   }
