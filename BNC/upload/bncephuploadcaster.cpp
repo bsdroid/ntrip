@@ -56,7 +56,23 @@ bncEphUploadCaster::~bncEphUploadCaster() {
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUploadCaster::ephBufferChanged() {
   if (_ephUploadCaster) {
-    QByteArray dummy = "from bncEphUploadCaster";
-    _ephUploadCaster->setOutBuffer(dummy);
+    QMutexLocker locker(&_mutex);
+
+    QMapIterator<QString, t_ephPair*> it(_eph);
+    while (it.hasNext()) {
+      it.next();
+      QByteArray outBuffer;
+
+      t_eph* eph = it.value()->last;
+      unsigned char Array[67];
+      int size = eph->RTCM3(Array);
+      if (size > 0) {
+        outBuffer += QByteArray((char*) Array, size);
+      }
+   
+      if (outBuffer.size() > 0) {
+        _ephUploadCaster->setOutBuffer(outBuffer);
+      }
+    }
   }
 }
