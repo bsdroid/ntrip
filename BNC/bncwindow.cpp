@@ -624,6 +624,7 @@ bncWindow::bncWindow() {
   QWidget* ppp2group = new QWidget();
   QWidget* cmbgroup = new QWidget();
   QWidget* uploadgroup = new QWidget();
+  QWidget* uploadEphgroup = new QWidget();
   _aogroup->addTab(pgroup,tr("Proxy"));
   _aogroup->addTab(ggroup,tr("General"));
   _aogroup->addTab(ogroup,tr("RINEX Observations"));
@@ -638,7 +639,8 @@ bncWindow::bncWindow() {
 #ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combination"));
 #endif
-  _aogroup->addTab(uploadgroup,tr("Upload"));
+  _aogroup->addTab(uploadgroup,tr("Upload (clk)"));
+  _aogroup->addTab(uploadEphgroup,tr("Upload (eph)"));
 
   // Log Tab
   // -------
@@ -949,8 +951,8 @@ bncWindow::bncWindow() {
 
   cmbgroup->setLayout(cmbLayout);
 
-  // Upload Layout
-  // ------------
+  // Upload Layout (Clocks)
+  // ----------------------
   QGridLayout* uploadHlpLayout = new QGridLayout();
 
   uploadHlpLayout->addWidget(new QLabel("Upload RTNet or Combination Results"),0,0);
@@ -977,6 +979,32 @@ bncWindow::bncWindow() {
   uploadLayout->addLayout(uploadHlpLayout);
 
   uploadgroup->setLayout(uploadLayout);
+
+  // Upload Layout (Ephemeris)
+  // -------------------------
+  QGridLayout* uploadLayoutEph = new QGridLayout;
+
+  uploadLayoutEph->setColumnMinimumWidth(0, 9*ww);
+  _uploadEphPortLineEdit->setMaximumWidth(9*ww);
+  _uploadEphPasswordLineEdit->setMaximumWidth(9*ww);
+  _uploadEphMountpointLineEdit->setMaximumWidth(12*ww);
+
+  uploadLayoutEph->addWidget(new QLabel("Host"),                  0, 0);
+  uploadLayoutEph->addWidget(_uploadEphHostLineEdit,              0, 1, 1, 3);
+  uploadLayoutEph->addWidget(new QLabel("  Port"),                0, 4, Qt::AlignRight);
+  uploadLayoutEph->addWidget(_uploadEphPortLineEdit,              0, 5, 1, 10);
+  uploadLayoutEph->addWidget(new QLabel("Mountpoint           "), 1, 0);
+  uploadLayoutEph->addWidget(_uploadEphMountpointLineEdit,        1, 1);
+  uploadLayoutEph->addWidget(new QLabel("          Password"),    1, 2, Qt::AlignRight);
+  uploadLayoutEph->addWidget(_uploadEphPasswordLineEdit,          1, 3);
+  uploadLayoutEph->addWidget(new QLabel("Sampling"),              2, 0);
+  uploadLayoutEph->addWidget(_uploadEphSampleSpinBox,             2, 1);
+  uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster."), 3, 0, 1, 50);
+
+  uploadEphgroup->setLayout(uploadLayoutEph);
+
+  connect(_uploadEphHostLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
 
   // Main Layout
   // -----------
