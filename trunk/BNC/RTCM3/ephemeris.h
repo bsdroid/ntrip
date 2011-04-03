@@ -13,8 +13,8 @@ class t_eph {
  public:
   virtual ~t_eph() {};
 
-  bool        isNewerThan(const t_eph* eph) const;
-  std::string prn() const {return _prn;}
+  bool     isNewerThan(const t_eph* eph) const;
+  QString  prn() const {return _prn;}
   void    setReceptDateTime(const QDateTime& dateTime) {
     _receptDateTime = dateTime;
   }
@@ -40,12 +40,14 @@ class t_eph {
   }
 
   virtual int  IOD() const = 0;
+  
+  virtual int  RTCM3(unsigned char *) = 0;
 
  protected:  
-  std::string _prn;
-  int         _GPSweek;
-  double      _GPSweeks;
-  QDateTime   _receptDateTime;
+  QString   _prn;
+  int       _GPSweek;
+  double    _GPSweeks;
+  QDateTime _receptDateTime;
 };
 
 
@@ -62,6 +64,8 @@ class t_ephGPS : public t_eph {
                         double* vv) const;
 
   virtual int  IOD() const { return static_cast<int>(_IODC); }
+
+  virtual int  RTCM3(unsigned char *);
 
  private:
   double  _TOW;              //  [s]    
@@ -91,6 +95,10 @@ class t_ephGPS : public t_eph {
   double  _IDOT;             //  [rad/s]
 
   double  _TGD;              //  [s]    
+  double _health;            //  SV health
+  double _ura;               //  SV accuracy
+  double _L2PFlag;           //  L2 P data flag
+  double _L2Codes;           //  Codes on L2 channel 
 };
 
 class t_ephGlo : public t_eph {
@@ -105,6 +113,8 @@ class t_ephGlo : public t_eph {
 
   virtual int  IOD() const;
 
+  virtual int  RTCM3(unsigned char *);
+
   void set(const glonassephemeris* ee);
 
  private:
@@ -114,6 +124,7 @@ class t_ephGlo : public t_eph {
   mutable double       _tt;  // time in seconds of GPSweek
   mutable ColumnVector _xv;  // status vector (position, velocity) at time _tt
 
+  double  _gps_utc;
   double  _E;                // [days]   
   double  _tau;              // [s]      
   double  _gamma;            //          
@@ -145,6 +156,8 @@ class t_ephGal : public t_eph {
 
   virtual int  IOD() const { return static_cast<int>(_IODnav); }
 
+  virtual int  RTCM3(unsigned char *);
+
  private:
   double  _IODnav;             
   double  _TOC;              //  [s]    
@@ -168,6 +181,7 @@ class t_ephGal : public t_eph {
   double  _OMEGADOT;         //  [rad/s]
   double  _IDOT;             //  [rad/s]
   double  _BGD_1_5A;         //  group delay [s] 
+  double  _BGD_1_5B;         //  group delay [s] 
   int     _SISA;             //  Signal In Space Accuracy
   int     _E5aHS;            //  E5a Health Status
 

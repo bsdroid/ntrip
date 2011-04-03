@@ -443,7 +443,7 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
   }
 
   outLine.sprintf("%d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n", 
-                  GPSweek, GPSweeks, eph->prn().c_str(),
+                  GPSweek, GPSweeks, eph->prn().toAscii().data(),
                   eph->IOD(), dClk, rsw(1), rsw(2), rsw(3));
 
   if (_rnx) {
