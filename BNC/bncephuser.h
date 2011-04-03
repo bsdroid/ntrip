@@ -75,7 +75,7 @@ class bncEphUser : public QObject {
 
  public:
   bncEphUser();
-  ~bncEphUser();
+  virtual ~bncEphUser();
 
   class t_ephPair {
    public:
