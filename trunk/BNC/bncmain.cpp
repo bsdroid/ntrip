@@ -48,6 +48,7 @@
 #include "bncwindow.h"
 #include "bncsettings.h"
 #include "bncversion.h"
+#include "upload/bncephuploadcaster.h"
 
 using namespace std;
 
@@ -129,6 +130,8 @@ int main(int argc, char *argv[]) {
   else {
 
     signal(SIGINT, catch_signal);
+
+    bncEphUploadCaster* casterEph = new bncEphUploadCaster(); (void) casterEph;
 
     bncCaster* caster = new bncCaster(settings.value("outFile").toString(),
                                       settings.value("outPort").toInt());
