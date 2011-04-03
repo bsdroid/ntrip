@@ -504,6 +504,21 @@ bncWindow::bncWindow() {
   connect(_uploadTable, SIGNAL(itemSelectionChanged()), 
           SLOT(slotBncTextChanged()));
 
+  // Upload RTCM3 Ephemeris
+  // ----------------------
+  _uploadEphHostLineEdit       = new QLineEdit(settings.value("uploadEphHost").toString());
+  _uploadEphPortLineEdit       = new QLineEdit(settings.value("uploadEphPort").toString());
+  _uploadEphPasswordLineEdit   = new QLineEdit(settings.value("uploadEphPassword").toString());
+  _uploadEphPasswordLineEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
+  _uploadEphMountpointLineEdit = new QLineEdit(settings.value("uploadEphMountpoint").toString());
+  _uploadEphSampleSpinBox      = new QSpinBox;
+  _uploadEphSampleSpinBox->setMinimum(0);
+  _uploadEphSampleSpinBox->setMaximum(60);
+  _uploadEphSampleSpinBox->setSingleStep(5);
+  _uploadEphSampleSpinBox->setMaximumWidth(9*ww);
+  _uploadEphSampleSpinBox->setValue(settings.value("uploadEphSample").toInt());
+  _uploadEphSampleSpinBox->setSuffix(" sec");
+
   // WhatsThis
   // ---------
   _proxyHostLineEdit->setWhatsThis(tr("<p>If you are running BNC within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you do not know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is sometimes not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP broadcasters. If these are not possible, you might need to run BNC outside your LAN on a network that has unobstructed connection to the Internet.</p>"));

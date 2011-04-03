@@ -200,6 +200,12 @@ class bncWindow : public QMainWindow {
     QComboBox*    _uploadIntrComboBox;
     QSpinBox*     _uploadSamplSpinBox;
 
+    QLineEdit* _uploadEphHostLineEdit;
+    QLineEdit* _uploadEphPortLineEdit;
+    QLineEdit* _uploadEphPasswordLineEdit;
+    QLineEdit* _uploadEphMountpointLineEdit;
+    QSpinBox*  _uploadEphSampleSpinBox;
+
     bncCaster* _caster;
 };
 #endif
