@@ -992,14 +992,16 @@ bncWindow::bncWindow() {
   uploadLayoutEph->addWidget(new QLabel("Host"),                  0, 0);
   uploadLayoutEph->addWidget(_uploadEphHostLineEdit,              0, 1, 1, 3);
   uploadLayoutEph->addWidget(new QLabel("  Port"),                0, 4, Qt::AlignRight);
-  uploadLayoutEph->addWidget(_uploadEphPortLineEdit,              0, 5, 1, 10);
+  uploadLayoutEph->addWidget(_uploadEphPortLineEdit,              0, 5, 1, 1);
   uploadLayoutEph->addWidget(new QLabel("Mountpoint           "), 1, 0);
   uploadLayoutEph->addWidget(_uploadEphMountpointLineEdit,        1, 1);
   uploadLayoutEph->addWidget(new QLabel("          Password"),    1, 2, Qt::AlignRight);
   uploadLayoutEph->addWidget(_uploadEphPasswordLineEdit,          1, 3);
   uploadLayoutEph->addWidget(new QLabel("Sampling"),              2, 0);
   uploadLayoutEph->addWidget(_uploadEphSampleSpinBox,             2, 1);
-  uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster."), 3, 0, 1, 50);
+  uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster."), 3, 0, 1, 5);
+
+  uploadLayoutEph->addWidget(new QLabel("0 byte(s)"), 3, 5); 
 
   uploadEphgroup->setLayout(uploadLayoutEph);
 
