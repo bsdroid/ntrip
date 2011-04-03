@@ -14,6 +14,7 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
 #include <math.h>
 #include "bncephuploadcaster.h" 
 #include "bncsettings.h"
@@ -56,8 +57,6 @@ bncEphUploadCaster::~bncEphUploadCaster() {
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUploadCaster::ephBufferChanged() {
   if (_ephUploadCaster) {
-    QMutexLocker locker(&_mutex);
-
     QMapIterator<QString, t_ephPair*> it(_eph);
     while (it.hasNext()) {
       it.next();
