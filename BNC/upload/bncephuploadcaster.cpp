@@ -16,18 +16,23 @@
 
 #include <math.h>
 #include "bncephuploadcaster.h" 
+#include "bncsettings.h"
 
 using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncEphUploadCaster::bncEphUploadCaster() {
-  QString mountpoint;
-  QString outHost;
-  int     outPort;
-  QString password;
+  bncSettings settings;
+
+  QString mountpoint = settings.value("uploadEphMountpoint").toString();
+  QString outHost    = settings.value("uploadEphHost").toString();
+  int     outPort    = settings.value("uploadEphPort").toInt();
+  QString password   = settings.value("uploadEphPassword").toString();
+
   _ephUploadCaster = new bncUploadCaster(mountpoint, outHost, outPort, 
                                          password, -1);
+  _ephUploadCaster->start();
 }
 
 // Destructor
