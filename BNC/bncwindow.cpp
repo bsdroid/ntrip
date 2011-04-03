@@ -1513,7 +1513,7 @@ void bncWindow::slotGetData() {
 
   _caster->slotReadMountPoints();
 
-  ///  _casterEph = new bncEphUploadCaster();
+  _casterEph = new bncEphUploadCaster();
 }
 
 // Retrieve Data
