@@ -105,6 +105,11 @@ bncSettings::bncSettings(bool noInit) :
     setValue("nmeaPort",         "");
     setValue("combineStreams",   "");
     setValue("uploadMountpointsOut",   "");
+    setValue("uploadEphHost",       "");
+    setValue("uploadEphPort",       "");
+    setValue("uploadEphPassword",   "");
+    setValue("uploadEphMountpoint", "");
+    setValue("uploadEphSample",     "");
     sync();
   }
 }
