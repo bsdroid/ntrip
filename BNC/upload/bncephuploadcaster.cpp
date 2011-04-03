@@ -26,27 +26,37 @@ bncEphUploadCaster::bncEphUploadCaster() {
   bncSettings settings;
 
   QString mountpoint = settings.value("uploadEphMountpoint").toString();
-  QString outHost    = settings.value("uploadEphHost").toString();
-  int     outPort    = settings.value("uploadEphPort").toInt();
-  QString password   = settings.value("uploadEphPassword").toString();
+  if (mountpoint.isEmpty()) {
+    _ephUploadCaster = 0;
+  }
+  else {
+    QString outHost    = settings.value("uploadEphHost").toString();
+    int     outPort    = settings.value("uploadEphPort").toInt();
+    QString password   = settings.value("uploadEphPassword").toString();
 
-  _ephUploadCaster = new bncUploadCaster(mountpoint, outHost, outPort, 
+    _ephUploadCaster = new bncUploadCaster(mountpoint, outHost, outPort, 
                                          password, -1);
 
-  connect(_ephUploadCaster, SIGNAL(newBytes(QByteArray,double)), 
+    connect(_ephUploadCaster, SIGNAL(newBytes(QByteArray,double)), 
           this, SIGNAL(newBytes(QByteArray,double)));
 
-  _ephUploadCaster->start();
+    _ephUploadCaster->start();
+  }
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncEphUploadCaster::~bncEphUploadCaster() {
-  _ephUploadCaster->deleteSafely();
+  if (_ephUploadCaster) {
+    _ephUploadCaster->deleteSafely();
+  }
 }
 
 // List of Stored Ephemeris changed (virtual)
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUploadCaster::ephBufferChanged() {
-
+  if (_ephUploadCaster) {
+    QByteArray dummy = "from bncEphUploadCaster";
+    _ephUploadCaster->setOutBuffer(dummy);
+  }
 }

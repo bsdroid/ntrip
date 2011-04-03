@@ -13,6 +13,41 @@
 
 using namespace std;
 
+#define PI          3.1415926535898
+// Returns nearest integer value
+////////////////////////////////////////////////////////////////////////////
+static double NearestInt(double fl, double * remain)
+{
+  bool isneg = fl < 0.0;
+  double intval;
+  if(isneg) fl *= -1.0;
+  intval = (double)((unsigned long)(fl+0.5));
+  if(isneg) {fl *= -1.0; intval *= -1.0;}
+  if(remain)
+    *remain = fl-intval;
+  return intval;
+} /* NearestInt() */
+
+// Returns CRC24
+////////////////////////////////////////////////////////////////////////////
+static unsigned long CRC24(long size, const unsigned char *buf)
+{
+  unsigned long crc = 0;
+  int i;
+
+  while(size--)
+  {
+    crc ^= (*buf++) << (16);
+    for(i = 0; i < 8; i++)
+    {
+      crc <<= 1;
+      if(crc & 0x1000000)
+        crc ^= 0x01864cfb;
+    }
+  }
+  return crc;
+} /* CRC24 */
+
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool t_eph::isNewerThan(const t_eph* eph) const {
@@ -28,10 +63,8 @@ bool t_eph::isNewerThan(const t_eph* eph) const {
 // Set GPS Satellite Position
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGPS::set(const gpsephemeris* ee) {
-  ostringstream prn;
-  prn << 'G' << setfill('0') << setw(2) << ee->satellite;
 
-  _prn = prn.str();
+  _prn = QString("G%1").arg(ee->satellite, 2, 10, QChar('0'));
 
   // TODO: check if following two lines are correct
   _GPSweek  = ee->GPSweek;
@@ -153,6 +186,125 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
   xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / t_CST::c / t_CST::c;
 }
 
+// build up RTCM3 for GPS
+////////////////////////////////////////////////////////////////////////////
+#define GPSTOINT(type, value) static_cast<type>(NearestInt(value,0))
+
+#define GPSADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
+                       |(GPSTOINT(long long,b)&((1ULL<<a)-1)); \
+                       numbits += (a); \
+                       while(numbits >= 8) { \
+                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
+#define GPSADDBITSFLOAT(a,b,c) {long long i = GPSTOINT(long long,(b)/(c)); \
+                             GPSADDBITS(a,i)};
+
+int t_ephGPS::RTCM3(unsigned char *buffer)
+{
+
+  unsigned char *startbuffer = buffer;
+  buffer= buffer+3;
+  int size = 0;
+  int numbits = 0;
+  unsigned long long bitbuffer = 0;
+  if (_ura <= 2.40){
+    _ura = 0;
+  }
+  else if (_ura <= 3.40){
+    _ura = 1;
+  }
+  else if (_ura <= 6.85){
+    _ura = 2;
+  }
+  else if (_ura <= 9.65){
+    _ura = 3;
+  }
+  else if (_ura <= 13.65){
+    _ura = 4;
+  }
+  else if (_ura <= 24.00){
+    _ura = 5;
+  }
+  else if (_ura <= 48.00){
+    _ura = 6;
+  }
+  else if (_ura <= 96.00){
+    _ura = 7;
+  }
+  else if (_ura <= 192.00){
+    _ura = 8;
+  }
+  else if (_ura <= 384.00){
+    _ura = 9;
+  }
+  else if (_ura <= 768.00){
+    _ura = 10;
+  }
+  else if (_ura <= 1536.00){
+    _ura = 11;
+  }
+  else if (_ura <= 1536.00){
+    _ura = 12;
+  }
+  else if (_ura <= 2072.00){
+    _ura = 13;
+  }
+  else if (_ura <= 6144.00){
+    _ura = 14;
+  }
+  else{
+    _ura = 15;
+  }
+
+  GPSADDBITS(12, 1019)
+  GPSADDBITS(6,_prn.right((_prn.length()-1)).toInt())
+  GPSADDBITS(10, _GPSweek)
+  GPSADDBITS(4, _ura)
+  GPSADDBITS(2,_L2Codes)
+  GPSADDBITSFLOAT(14, _IDOT, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<13))
+  GPSADDBITS(8, _IODE)
+  GPSADDBITS(16, static_cast<int>(_TOC)>>4)
+  GPSADDBITSFLOAT(8, _clock_driftrate, 1.0/static_cast<double>(1<<30)
+  /static_cast<double>(1<<25))
+  GPSADDBITSFLOAT(16, _clock_drift, 1.0/static_cast<double>(1<<30)
+  /static_cast<double>(1<<13))
+  GPSADDBITSFLOAT(22, _clock_bias, 1.0/static_cast<double>(1<<30)
+  /static_cast<double>(1<<1))
+  GPSADDBITS(10, _IODC)
+  GPSADDBITSFLOAT(16, _Crs, 1.0/static_cast<double>(1<<5))
+  GPSADDBITSFLOAT(16, _Delta_n, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<13))
+  GPSADDBITSFLOAT(32, _M0, PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  GPSADDBITSFLOAT(16, _Cuc, 1.0/static_cast<double>(1<<29))
+  GPSADDBITSFLOAT(32, _e, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
+  GPSADDBITSFLOAT(16, _Cus, 1.0/static_cast<double>(1<<29))
+  GPSADDBITSFLOAT(32, _sqrt_A, 1.0/static_cast<double>(1<<19))
+  GPSADDBITS(16, static_cast<int>(_TOE)>>4)
+  GPSADDBITSFLOAT(16, _Cic, 1.0/static_cast<double>(1<<29))
+  GPSADDBITSFLOAT(32, _OMEGA0, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<1))
+  GPSADDBITSFLOAT(16, _Cis, 1.0/static_cast<double>(1<<29))
+  GPSADDBITSFLOAT(32, _i0, PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  GPSADDBITSFLOAT(16, _Crc, 1.0/static_cast<double>(1<<5))
+  GPSADDBITSFLOAT(32, _omega, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<1))
+  GPSADDBITSFLOAT(24, _OMEGADOT, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<13))
+  GPSADDBITSFLOAT(8, _TGD, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  GPSADDBITS(6, _health) 
+  GPSADDBITS(1, _L2PFlag)
+  GPSADDBITS(1, 0) /* GPS fit interval */
+
+  startbuffer[0]=0xD3;
+  startbuffer[1]=(size >> 8);
+  startbuffer[2]=size;
+  unsigned long  i = CRC24(size+3, startbuffer);
+  buffer[size++] = i >> 16;
+  buffer[size++] = i >> 8;
+  buffer[size++] = i;
+  size += 3;
+  return size;
+}
 
 // Derivative of the state vector using a simple force model (static)
 ////////////////////////////////////////////////////////////////////////////
@@ -267,13 +419,16 @@ int t_ephGlo::IOD() const {
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGlo::set(const glonassephemeris* ee) {
 
-  ostringstream prn;
-  prn << 'R' << setfill('0') << setw(2) << ee->almanac_number;
-  _prn = prn.str();
+  _prn = QString("R%1").arg(ee->almanac_number, 2, 10, QChar('0'));
 
   int ww  = ee->GPSWeek;
   int tow = ee->GPSTOW; 
   updatetime(&ww, &tow, ee->tb*1000, 0);  // Moscow -> GPS
+
+  bncTime hlpTime(ee->GPSWeek, ee->GPSTOW);
+  unsigned year, month, day;
+  hlpTime.civil_date(year, month, day);
+  _gps_utc = gnumleap(year, month, day);
 
   _GPSweek           = ww;
   _GPSweeks          = tow;
@@ -305,13 +460,98 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   _xv(6) = _z_velocity * 1.e3; 
 }
 
+// build up RTCM3 for GLONASS
+////////////////////////////////////////////////////////////////////////////
+#define GLONASSTOINT(type, value) static_cast<type>(NearestInt(value,0))
+
+#define GLONASSADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
+                       |(GLONASSTOINT(long long,b)&((1ULL<<(a))-1)); \
+                       numbits += (a); \
+                       while(numbits >= 8) { \
+                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
+#define GLONASSADDBITSFLOATM(a,b,c) {int s; long long i; \
+                       if(b < 0.0) \
+                       { \
+                         s = 1; \
+                         i = GLONASSTOINT(long long,(-b)/(c)); \
+                         if(!i) s = 0; \
+                       } \
+                       else \
+                       { \
+                         s = 0; \
+                         i = GLONASSTOINT(long long,(b)/(c)); \
+                       } \
+                       GLONASSADDBITS(1,s) \
+                       GLONASSADDBITS(a-1,i)}
+
+int t_ephGlo::RTCM3(unsigned char *buffer)
+{
+
+  int size = 0;
+  int numbits = 0;
+  long long bitbuffer = 0;
+  unsigned char *startbuffer = buffer;
+  buffer= buffer+3;
+
+  GLONASSADDBITS(12, 1020)
+  GLONASSADDBITS(6, _prn.right((_prn.length()-1)).toInt())
+  GLONASSADDBITS(5, 7+_frequency_number)
+  GLONASSADDBITS(1, 0)
+  GLONASSADDBITS(1, 0)
+  GLONASSADDBITS(2, 0)
+  _tki=_tki+3*60*60;
+  GLONASSADDBITS(5, static_cast<int>(_tki)/(60*60))
+  GLONASSADDBITS(6, (static_cast<int>(_tki)/60)%60)
+  GLONASSADDBITS(1, (static_cast<int>(_tki)/30)%30)
+  GLONASSADDBITS(1, _health) 
+  GLONASSADDBITS(1, 0)
+  unsigned long long timeofday = (static_cast<int>(_tt+3*60*60-_gps_utc)%86400);
+  GLONASSADDBITS(7, timeofday/60/15)
+  GLONASSADDBITSFLOATM(24, _x_velocity*1000, 1000.0/static_cast<double>(1<<20))
+  GLONASSADDBITSFLOATM(27, _x_pos*1000, 1000.0/static_cast<double>(1<<11))
+  GLONASSADDBITSFLOATM(5, _x_acceleration*1000, 1000.0/static_cast<double>(1<<30))
+  GLONASSADDBITSFLOATM(24, _y_velocity*1000, 1000.0/static_cast<double>(1<<20))
+  GLONASSADDBITSFLOATM(27, _y_pos*1000, 1000.0/static_cast<double>(1<<11))
+  GLONASSADDBITSFLOATM(5, _y_acceleration*1000, 1000.0/static_cast<double>(1<<30))
+  GLONASSADDBITSFLOATM(24, _z_velocity*1000, 1000.0/static_cast<double>(1<<20))
+  GLONASSADDBITSFLOATM(27,_z_pos*1000, 1000.0/static_cast<double>(1<<11))
+  GLONASSADDBITSFLOATM(5, _z_acceleration*1000, 1000.0/static_cast<double>(1<<30))
+  GLONASSADDBITS(1, 0)
+  GLONASSADDBITSFLOATM(11, _gamma, 1.0/static_cast<double>(1<<30)
+  /static_cast<double>(1<<10))
+  GLONASSADDBITS(2, 0) /* GLONASS-M P */
+  GLONASSADDBITS(1, 0) /* GLONASS-M ln(3) */
+  GLONASSADDBITSFLOATM(22, _tau, 1.0/static_cast<double>(1<<30))
+  GLONASSADDBITS(5, 0) /* GLONASS-M delta tau */
+  GLONASSADDBITS(5, _E)
+  GLONASSADDBITS(1, 0) /* GLONASS-M P4 */
+  GLONASSADDBITS(4, 0) /* GLONASS-M FT */
+  GLONASSADDBITS(11, 0) /* GLONASS-M NT */
+  GLONASSADDBITS(2, 0) /* GLONASS-M active? */
+  GLONASSADDBITS(1, 0) /* GLONASS additional data */
+  GLONASSADDBITS(11, 0) /* GLONASS NA */
+  GLONASSADDBITS(32, 0) /* GLONASS tau C */
+  GLONASSADDBITS(5, 0) /* GLONASS-M N4 */
+  GLONASSADDBITS(22, 0) /* GLONASS-M tau GPS */
+  GLONASSADDBITS(1, 0) /* GLONASS-M ln(5) */
+  GLONASSADDBITS(7, 0) /* Reserved */
+
+  startbuffer[0]=0xD3;
+  startbuffer[1]=(size >> 8);
+  startbuffer[2]=size;
+  unsigned long i = CRC24(size+3, startbuffer);
+  buffer[size++] = i >> 16;
+  buffer[size++] = i >> 8;
+  buffer[size++] = i;
+  size += 3;
+  return size;
+}
+
 // Set Galileo Satellite Position
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGal::set(const galileoephemeris* ee) {
-  ostringstream prn;
-  prn << 'E' << setfill('0') << setw(2) << ee->satellite;
 
-  _prn = prn.str();
+  _prn = QString("E%1").arg(ee->satellite, 2, 10, QChar('0'));
 
   _GPSweek  = ee->Week;
   _GPSweeks = ee->TOE;
@@ -428,3 +668,9 @@ void t_ephGal::position(int GPSweek, double GPSweeks,
   xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / t_CST::c / t_CST::c;
 }
 
+// build up RTCM3 for Galileo
+////////////////////////////////////////////////////////////////////////////
+int t_ephGal::RTCM3(unsigned char *buffer) {
+
+  return 0;
+}
