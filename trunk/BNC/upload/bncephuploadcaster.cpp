@@ -57,10 +57,10 @@ bncEphUploadCaster::~bncEphUploadCaster() {
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUploadCaster::ephBufferChanged() {
   if (_ephUploadCaster) {
+    QByteArray outBuffer;
     QMapIterator<QString, t_ephPair*> it(_eph);
     while (it.hasNext()) {
       it.next();
-      QByteArray outBuffer;
 
       t_eph* eph = it.value()->last;
       unsigned char Array[67];
@@ -68,10 +68,9 @@ void bncEphUploadCaster::ephBufferChanged() {
       if (size > 0) {
         outBuffer += QByteArray((char*) Array, size);
       }
-   
-      if (outBuffer.size() > 0) {
-        _ephUploadCaster->setOutBuffer(outBuffer);
-      }
+    }
+    if (outBuffer.size() > 0) {
+      _ephUploadCaster->setOutBuffer(outBuffer);
     }
   }
 }
