@@ -56,6 +56,7 @@
 #include "bncfigurelate.h"
 #include "bncfigureppp.h"
 #include "bncversion.h"
+#include "bncbytescounter.h"
 #include "upload/bnccustomtrafo.h"
 
 using namespace std;
@@ -518,6 +519,7 @@ bncWindow::bncWindow() {
   _uploadEphSampleSpinBox->setMaximumWidth(9*ww);
   _uploadEphSampleSpinBox->setValue(settings.value("uploadEphSample").toInt());
   _uploadEphSampleSpinBox->setSuffix(" sec");
+  _uploadEphBytesCounter       = new bncBytesCounter;
 
   // WhatsThis
   // ---------
@@ -1000,8 +1002,7 @@ bncWindow::bncWindow() {
   uploadLayoutEph->addWidget(new QLabel("Sampling"),              2, 0);
   uploadLayoutEph->addWidget(_uploadEphSampleSpinBox,             2, 1);
   uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster."), 3, 0, 1, 5);
-
-  uploadLayoutEph->addWidget(new QLabel("0 byte(s)"), 3, 5); 
+  uploadLayoutEph->addWidget(_uploadEphBytesCounter, 3, 5); 
 
   uploadEphgroup->setLayout(uploadLayoutEph);
 
