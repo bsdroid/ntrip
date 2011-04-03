@@ -10,6 +10,8 @@ class bncEphUploadCaster : public bncEphUser {
  public:
   bncEphUploadCaster();
   virtual ~bncEphUploadCaster();
+ signals:
+  void newBytes(QByteArray staID, double nbyte);
  protected:
   virtual void ephBufferChanged();
  private:

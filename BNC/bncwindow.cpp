@@ -1514,6 +1514,8 @@ void bncWindow::slotGetData() {
   _caster->slotReadMountPoints();
 
   _casterEph = new bncEphUploadCaster();
+  connect(_casterEph, SIGNAL(newBytes(QByteArray,double)), 
+          _uploadEphBytesCounter, SLOT(slotNewBytes(QByteArray,double)));
 }
 
 // Retrieve Data
