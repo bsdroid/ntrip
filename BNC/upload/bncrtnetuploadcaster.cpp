@@ -265,10 +265,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(prn);
     if (ephPair) {
       t_eph* eph = ephPair->last;
-      if (ephPair->prev && 
-           eph->receptDateTime().secsTo(QDateTime::currentDateTime()) < 60) {
-        eph = ephPair->prev;
-      }
+
+// receptDateTime() not (yet?) defined 
+//      if (ephPair->prev && 
+//           eph->receptDateTime().secsTo(QDateTime::currentDateTime()) < 60) {
+//        eph = ephPair->prev;
+//      }
 
       in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) 
          >> xx(6) >> xx(7) >> xx(8) >> xx(9) >> xx(10)
