@@ -10,6 +10,10 @@ class bncUploadCaster : public QThread {
                   const QString& outHost, int outPort,
                   const QString& password, int iRow);
   virtual void deleteSafely();
+  void setOutBuffer(const QByteArray& outBuffer) {
+    QMutexLocker locker(&_mutex);
+    _outBuffer = outBuffer;
+  }
 
  protected:
   virtual    ~bncUploadCaster();
