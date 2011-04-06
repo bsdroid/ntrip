@@ -425,7 +425,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   int tow = ee->GPSTOW; 
   updatetime(&ww, &tow, ee->tb*1000, 0);  // Moscow -> GPS
 
-  bncTime hlpTime(ee->GPSWeek, ee->GPSTOW);
+  bncTime hlpTime(ww, (double) tow);
   unsigned year, month, day;
   hlpTime.civil_date(year, month, day);
   _gps_utc = gnumleap(year, month, day);
