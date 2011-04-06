@@ -428,6 +428,8 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   // Check the day once more 
   // -----------------------
   {
+    const double secPerDay  = 24 * 3600.0;
+    const double secPerWeek = 7 * secPerDay;
     int ww_old  = ww;
     int tow_old = tow;
     int    currentWeek;
@@ -435,22 +437,23 @@ void t_ephGlo::set(const glonassephemeris* ee) {
     currentGPSWeeks(currentWeek, currentSec);
     bncTime currentTime(currentWeek, currentSec);
     bncTime hTime(ww, (double) tow);
-    bncTime oldHTime = hTime;
 
     bool changed = false;
-    if      (hTime - currentTime > 12 * 3600.0) {
+    if      (hTime - currentTime >  secPerDay/2.0) {
       changed = true;
-      hTime = hTime - 24 * 3600.0;
-      ww  = hTime.gpsw();
-      tow = (int) hTime.gpssec();
-      updatetime(&ww, &tow, ee->tb*1000, 0);  // Moscow -> GPS
+      tow -= secPerDay;
+      if (tow < 0) {
+        tow += secPerWeek;
+        ww  -= 1;
+      }
     }
-    else if (hTime - currentTime < 12 * 3600.0) {
+    else if (hTime - currentTime < -secPerDay/2.0) {
       changed = true;
-      hTime = hTime + 24 * 3600.0;
-      ww  = hTime.gpsw();
-      tow = (int) hTime.gpssec();
-      updatetime(&ww, &tow, ee->tb*1000, 0);  // Moscow -> GPS
+      tow += secPerDay;
+      if (tow > secPerWeek) {
+        tow -= secPerWeek;
+        ww  += 1;
+      }
     }
 
     if (changed) {
@@ -458,7 +461,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
       cout << "GLONASS Time Changed at " 
            << currentTime.datestr()         << " " << currentTime.timestr() 
            << endl
-           << "old: " << oldHTime.datestr() << " " << oldHTime.timestr()       
+           << "old: " << hTime.datestr()    << " " << hTime.timestr()       
            << endl
            << "new: " << newHTime.datestr() << " " << newHTime.timestr()    
            << endl
