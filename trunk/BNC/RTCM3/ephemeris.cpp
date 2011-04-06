@@ -425,6 +425,36 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   int tow = ee->GPSTOW; 
   updatetime(&ww, &tow, ee->tb*1000, 0);  // Moscow -> GPS
 
+  // Check the day once more 
+  // -----------------------
+  {
+    int    currentWeek;
+    double currentSec;
+    currentGPSWeeks(currentWeek, currentSec);
+    bncTime currentTime(currentWeek, currentSec);
+    bncTime hTime(ww, (double) tow);
+
+    bool changed = false;
+    if      (hTime - currentTime > 12 * 3600.0) {
+      changed = true;
+      hTime = hTime - 24 * 3600.0;
+      ww  = hTime.gpsw();
+      tow = hTime.gpssec();
+    }
+    else if (hTime - currentTime < 12 * 3600.0) {
+      changed = true;
+      hTime = hTime + 24 * 3600.0;
+      ww  = hTime.gpsw();
+      tow = hTime.gpssec();
+    }
+
+    if (changed) {
+      cout << "GLONASS Time Changed: " << currentTime.timestr() << endl
+           << ee->GPSWeek << " " << ee->GPSTOW << " " << ee->tb << endl
+           << ww << " " << tow << endl;
+    }
+  }
+
   bncTime hlpTime(ww, (double) tow);
   unsigned year, month, day;
   hlpTime.civil_date(year, month, day);
