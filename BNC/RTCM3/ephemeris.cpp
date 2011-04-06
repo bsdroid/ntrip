@@ -428,6 +428,8 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   // Check the day once more 
   // -----------------------
   {
+    int ww_old  = ww;
+    int tow_old = tow;
     int    currentWeek;
     double currentSec;
     currentGPSWeeks(currentWeek, currentSec);
@@ -452,10 +454,19 @@ void t_ephGlo::set(const glonassephemeris* ee) {
 
     if (changed) {
       bncTime newHTime(ww, (double) tow);
-      cout << "GLONASS Time Changed: " << currentTime.timestr() << " " 
-           << hTime.timestr() << " " << newHTime.timestr() << endl
-           << ee->GPSWeek << " " << ee->GPSTOW << " " << ee->tb << endl
-           << ww << " " << tow << endl;
+      cout << "GLONASS Time Changed at " 
+           << currentTime.datestr()         << " " << currentTime.timestr() 
+           << endl
+           << "old: " << hTime.datestr()    << " " << hTime.timestr()       
+           << endl
+           << "new: " << newHTime.datestr() << " " << newHTime.timestr()    
+           << endl
+           << "eph: " << ee->GPSWeek << " " << ee->GPSTOW << " " << ee->tb 
+           << endl
+           << "ww, tow (old): " << ww_old << " " << tow_old 
+           << endl
+           << "ww, tow (new): " << ww     << " " << tow 
+           << endl;
     }
   }
 
