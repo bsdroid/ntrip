@@ -625,7 +625,7 @@ void bncComb::dumpResults(const bncTime& resTime,
                      "   %3d"
                      "   %8.3f %8.3f %8.3f %8.3f"
                      "   %10.5f %10.5f %10.5f %10.5f"
-                     "   %10.5f INTERNAL",
+                     "   %10.5f  %10.5f %10.5f %10.5f INTERNAL",
                      messageType, updateInt, time12.gpsw(), time12.gpssec(),
                      corr->prn.toAscii().data(),
                      corr->iod,
@@ -637,7 +637,10 @@ void bncComb::dumpResults(const bncTime& resTime,
                      corr->dotRao[0],
                      corr->dotRao[1],
                      corr->dotRao[2],
-                     corr->dotDotDClk * t_CST::c);
+                     corr->dotDotDClk * t_CST::c,
+                     corr->dotDotRao[0],
+                     corr->dotDotRao[1],
+                     corr->dotDotRao[2]);
         corrLines << line;
       }
       else {
