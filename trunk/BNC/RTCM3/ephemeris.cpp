@@ -458,7 +458,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
 
     if (changed) {
       bncTime newHTime(ww, (double) tow);
-      cout << "GLONASS Time Changed at " 
+      cout << "GLONASS " << ee->almanac_number <<  " Time Changed at " 
            << currentTime.datestr()         << " " << currentTime.timestr() 
            << endl
            << "old: " << hTime.datestr()    << " " << hTime.timestr()       
