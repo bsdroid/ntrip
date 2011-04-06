@@ -435,6 +435,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
     currentGPSWeeks(currentWeek, currentSec);
     bncTime currentTime(currentWeek, currentSec);
     bncTime hTime(ww, (double) tow);
+    bncTime oldHTime = hTime;
 
     bool changed = false;
     if      (hTime - currentTime > 12 * 3600.0) {
@@ -457,7 +458,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
       cout << "GLONASS Time Changed at " 
            << currentTime.datestr()         << " " << currentTime.timestr() 
            << endl
-           << "old: " << hTime.datestr()    << " " << hTime.timestr()       
+           << "old: " << oldHTime.datestr() << " " << oldHTime.timestr()       
            << endl
            << "new: " << newHTime.datestr() << " " << newHTime.timestr()    
            << endl
@@ -466,7 +467,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
            << "ww, tow (old): " << ww_old << " " << tow_old 
            << endl
            << "ww, tow (new): " << ww     << " " << tow 
-           << endl;
+           << endl << endl;
     }
   }
 
