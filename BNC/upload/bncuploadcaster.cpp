@@ -26,7 +26,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncUploadCaster::bncUploadCaster(const QString& mountpoint,
                                  const QString& outHost, int outPort,
-                                 const QString& password, int iRow) {
+                                 const QString& password, int iRow, 
+                                 int rate) {
   _mountpoint    = mountpoint;
   _outHost       = outHost;
   _outPort       = outPort;
@@ -34,6 +35,13 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   _outSocket     = 0;
   _sOpenTrial    = 0;
   _iRow          = iRow;
+  _rate          = rate;
+  if      (_rate < 5) {
+    _rate = 5;
+  }
+  else if (_rate > 60) {
+    _rate = 60;
+  }
   _isToBeDeleted = false;
 
   bncApp* app = (bncApp*) qApp;
@@ -80,7 +88,7 @@ void bncUploadCaster::run() {
       _outSocket->flush();
       emit newBytes(_mountpoint.toAscii(), _outBuffer.size());
     }
-    sleep(5);
+    sleep(_rate);
   }
 }
 
