@@ -41,10 +41,14 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
   // ----------------------------------
   _ephUser = new bncEphUser();
 
+  bncSettings settings;
+  QString     intr  = settings.value("uploadIntr").toString();
+  int         sampl = settings.value("uploadSampl").toInt();
+
   // Raw Output
   // ----------
   if (!outFileName.isEmpty()) {
-    _outFile = new bncoutf(outFileName, "", 0);
+    _outFile = new bncoutf(outFileName, intr, sampl);
   }
   else {
     _outFile = 0;
@@ -53,7 +57,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
   // RINEX writer
   // ------------
   if (!rnxFileName.isEmpty()) {
-    _rnx = new bncClockRinex(rnxFileName, "", 0);
+    _rnx = new bncClockRinex(rnxFileName, intr, sampl);
   }
   else {
     _rnx = 0;
@@ -62,7 +66,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
   // SP3 writer
   // ----------
   if (!sp3FileName.isEmpty()) {
-    _sp3 = new bncSP3(sp3FileName, "", 0);
+    _sp3 = new bncSP3(sp3FileName, intr, sampl);
   }
   else {
     _sp3 = 0;
