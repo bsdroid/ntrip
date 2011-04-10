@@ -31,12 +31,13 @@ bncEphUploadCaster::bncEphUploadCaster() {
     _ephUploadCaster = 0;
   }
   else {
-    QString outHost    = settings.value("uploadEphHost").toString();
-    int     outPort    = settings.value("uploadEphPort").toInt();
-    QString password   = settings.value("uploadEphPassword").toString();
+    QString outHost  = settings.value("uploadEphHost").toString();
+    int     outPort  = settings.value("uploadEphPort").toInt();
+    QString password = settings.value("uploadEphPassword").toString();
+    int     sampl    = settings.value("uploadSampl").toInt();
 
     _ephUploadCaster = new bncUploadCaster(mountpoint, outHost, outPort, 
-                                         password, -1);
+                                           password, -1, sampl);
 
     connect(_ephUploadCaster, SIGNAL(newBytes(QByteArray,double)), 
           this, SIGNAL(newBytes(QByteArray,double)));
