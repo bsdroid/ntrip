@@ -491,7 +491,7 @@ bncWindow::bncWindow() {
   _uploadIntrComboBox = new QComboBox;
   _uploadSamplSpinBox = new QSpinBox; 
   _uploadIntrComboBox->setEditable(false);
-  _uploadIntrComboBox->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
+  _uploadIntrComboBox->addItems(QString("1 day,1 hour, 30 min,15 min,10 min,5 min,2 min,1 min").split(","));
   ii = _uploadIntrComboBox->findText(settings.value("uploadIntr").toString());
   if (ii != -1) {
     _uploadIntrComboBox->setCurrentIndex(ii);
@@ -515,7 +515,7 @@ bncWindow::bncWindow() {
   _uploadEphPasswordLineEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
   _uploadEphMountpointLineEdit = new QLineEdit(settings.value("uploadEphMountpoint").toString());
   _uploadEphSampleSpinBox      = new QSpinBox;
-  _uploadEphSampleSpinBox->setMinimum(0);
+  _uploadEphSampleSpinBox->setMinimum(5);
   _uploadEphSampleSpinBox->setMaximum(60);
   _uploadEphSampleSpinBox->setSingleStep(5);
   _uploadEphSampleSpinBox->setMaximumWidth(9*ww);

@@ -104,12 +104,14 @@ bncSettings::bncSettings(bool noInit) :
     setValue("nmeaFile",         "");
     setValue("nmeaPort",         "");
     setValue("combineStreams",   "");
-    setValue("uploadMountpointsOut",   "");
+    setValue("uploadMountpointsOut","");
+    setValue("uploadIntr",          "1 day");
+    setValue("uploadSampl",         "0");
     setValue("uploadEphHost",       "");
     setValue("uploadEphPort",       "");
     setValue("uploadEphPassword",   "");
     setValue("uploadEphMountpoint", "");
-    setValue("uploadEphSample",     "");
+    setValue("uploadEphSample",     "5");
     sync();
   }
 }
