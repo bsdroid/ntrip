@@ -251,7 +251,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Process all older Epochs (if there are any)
   // -------------------------------------------
-  const double waitTime = moduloTime/2.0;
+  const double waitTime = moduloTime;
   _processedBeforeTime = newCorr->tt - waitTime;
 
   QList<cmbEpoch*> epochsToProcess;
