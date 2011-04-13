@@ -213,6 +213,14 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     return;
   }
 
+  // Check Modulo Time
+  // -----------------
+  const int moduloTime = 10;
+  if (int(newCorr->tt.gpssec()) % moduloTime != 0.0) {
+    delete newCorr;
+    return;
+  }
+
   // Reject delayed corrections
   // --------------------------
   if (_processedBeforeTime.valid() && newCorr->tt < _processedBeforeTime) {
@@ -243,7 +251,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Process all older Epochs (if there are any)
   // -------------------------------------------
-  const double waitTime = 5.0; // wait 5 sec
+  const double waitTime = moduloTime/2.0;
   _processedBeforeTime = newCorr->tt - waitTime;
 
   QList<cmbEpoch*> epochsToProcess;
@@ -265,14 +273,6 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   if (epochsToProcess.size()) {
     processEpochs(epochsToProcess);
-  }
-
-  // Check Modulo Time
-  // -----------------
-  const int moduloTime = 10;
-  if (int(newCorr->tt.gpssec()) % moduloTime != 0.0) {
-    delete newCorr;
-    return;
   }
 
   // Find/Create the instance of cmbEpoch class
@@ -348,7 +348,8 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   QTextStream out(&_log, QIODevice::WriteOnly);
 
   out <<                   "Combination:" << endl 
-      << "------------------------------" << endl;
+      << "------------------------------" << endl
+      << "Processed Epochs: "             << endl;
 
   // Predict Parameters Values, Add White Noise
   // ------------------------------------------
@@ -379,7 +380,10 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   // ------------------
   QListIterator<cmbEpoch*> itEpo(epochs);
   while (itEpo.hasNext()) {
-    cmbEpoch* epo = itEpo.next();
+    cmbEpoch* epo     = itEpo.next();
+    bncTime   epoTime = epo->time;
+    out << epoTime.datestr().c_str() << " " << epoTime.timestr().c_str() << endl;
+
     QMutableMapIterator<QString, t_corr*> itCorr(epo->corr);
     while (itCorr.hasNext()) {
       itCorr.next();
