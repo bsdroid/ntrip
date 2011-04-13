@@ -348,8 +348,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   QTextStream out(&_log, QIODevice::WriteOnly);
 
   out <<                   "Combination:" << endl 
-      << "------------------------------" << endl
-      << "Processed Epochs: "             << endl;
+      << "------------------------------" << endl;
 
   // Predict Parameters Values, Add White Noise
   // ------------------------------------------
@@ -382,7 +381,9 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   while (itEpo.hasNext()) {
     cmbEpoch* epo     = itEpo.next();
     bncTime   epoTime = epo->time;
-    out << epoTime.datestr().c_str() << " " << epoTime.timestr().c_str() << endl;
+    out << epo->acName.toAscii().data() << " " 
+        << epoTime.datestr().c_str()    << " " 
+        << epoTime.timestr().c_str() << endl;
 
     QMutableMapIterator<QString, t_corr*> itCorr(epo->corr);
     while (itCorr.hasNext()) {
