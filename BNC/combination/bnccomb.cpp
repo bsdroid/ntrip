@@ -350,6 +350,23 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   out <<                   "Combination:" << endl 
       << "------------------------------" << endl;
 
+  // Check whether master AC present
+  // -------------------------------
+  if (epochs.first()->acName != _masterAC) {
+    QListIterator<cmbEpoch*> itEpo(epochs);
+    while (itEpo.hasNext()) {
+      cmbEpoch* epo = itEpo.next();
+      bncTime   epoTime = epo->time;
+      out << epo->acName.toAscii().data() << " " 
+          << epoTime.datestr().c_str()    << " " 
+          << epoTime.timestr().c_str() << endl;
+      delete epo;
+    }
+    out << "Missing Master AC" << endl;
+    emit newMessage(_log, false);
+    return;
+  }
+
   // Predict Parameters Values, Add White Noise
   // ------------------------------------------
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
