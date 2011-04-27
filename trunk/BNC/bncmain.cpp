@@ -111,6 +111,8 @@ int main(int argc, char *argv[]) {
   // ---------------------------------------
   if (GUIenabled) {
 
+    app.setMode(bncApp::interactive);
+
     QString fontString = settings.value("font").toString();
     if ( !fontString.isEmpty() ) {
       QFont newFont;
@@ -148,6 +150,7 @@ int main(int argc, char *argv[]) {
     // Normal case - data from Internet
     // --------------------------------
     if ( rawFileName.isEmpty() ) {
+      app.setMode(bncApp::nonInteractive);
       caster->slotReadMountPoints();
       if (caster->numStations() == 0) {
         exit(0);
@@ -157,6 +160,8 @@ int main(int argc, char *argv[]) {
     // Special case - data from file
     // -----------------------------
     else {
+      app.setMode(bncApp::batchPostProcessing);
+
       if ( format.isEmpty() || staID.isEmpty() ) {
         cout << printHelp.toAscii().data() << endl;
         exit(0);

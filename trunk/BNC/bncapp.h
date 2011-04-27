@@ -40,8 +40,11 @@ class bncTableItem;
 class bncApp : public QApplication {
   Q_OBJECT
   public:
+    enum e_mode {interactive, nonInteractive, batchPostProcessing};
     bncApp(int& argc, char* argv[], bool GUIenabled);
     virtual ~bncApp();  
+    e_mode mode() const {return _mode;}
+    void   setMode(e_mode mode) {_mode = mode;}
     void setPort(int port);
     void setPortCorr(int port);
     void setCaster(bncCaster* caster) {_caster = caster;}
@@ -124,6 +127,7 @@ class bncApp : public QApplication {
     bncRawFile*         _rawFile;
     int                 _GLOFreq[PRN_GLONASS_NUM];
     bncComb*            _bncComb;
+    e_mode              _mode;
  public:
     bncPPPclient*       _bncPPPclient;
     QMap<int, bncTableItem*> _uploadTableItems;
