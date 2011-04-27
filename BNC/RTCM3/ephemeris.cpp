@@ -10,6 +10,7 @@
 #include "bncutils.h"
 #include "timeutils.h"
 #include "bnctime.h"
+#include "bncapp.h"
 
 using namespace std;
 
@@ -456,7 +457,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
       }
     }
 
-    if (changed) {
+    if (changed && ((bncApp*) qApp)->mode() == bncApp::batchPostProcessing) {
       bncTime newHTime(ww, (double) tow);
       cout << "GLONASS " << ee->almanac_number <<  " Time Changed at " 
            << currentTime.datestr()         << " " << currentTime.timestr() 
