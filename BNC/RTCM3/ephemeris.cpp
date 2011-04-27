@@ -719,7 +719,82 @@ void t_ephGal::position(int GPSweek, double GPSweeks,
 
 // build up RTCM3 for Galileo
 ////////////////////////////////////////////////////////////////////////////
-int t_ephGal::RTCM3(unsigned char *buffer) {
+#define GALILEOTOINT(type, value) static_cast<type>(NearestInt(value, 0))
 
-  return 0;
+#define GALILEOADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
+                       |(GALILEOTOINT(long long,b)&((1LL<<a)-1)); \
+                       numbits += (a); \
+                       while(numbits >= 8) { \
+                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
+#define GALILEOADDBITSFLOAT(a,b,c) {long long i = GALILEOTOINT(long long,(b)/(c)); \
+                             GALILEOADDBITS(a,i)};
+
+int t_ephGal::RTCM3(unsigned char *buffer) {
+  int size = 0;
+  int numbits = 0;
+  long long bitbuffer = 0;
+  unsigned char *startbuffer = buffer;
+  buffer= buffer+3;
+
+  GALILEOADDBITS(12, /*inav ? 1046 :*/ 1045)
+  GALILEOADDBITS(6, _prn.right((_prn.length()-1)).toInt())
+  GALILEOADDBITS(12, _GPSweek)
+  GALILEOADDBITS(10, _IODnav)
+  GALILEOADDBITS(8, _SISA)
+  GALILEOADDBITSFLOAT(14, _IDOT, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<13))
+  GALILEOADDBITS(14, _TOC/60)
+  GALILEOADDBITSFLOAT(6, _clock_driftrate, 1.0/static_cast<double>(1<<30)
+  /static_cast<double>(1<<29))
+  GALILEOADDBITSFLOAT(21, _clock_drift, 1.0/static_cast<double>(1<<30)
+  /static_cast<double>(1<<16))
+  GALILEOADDBITSFLOAT(31, _clock_bias, 1.0/static_cast<double>(1<<30)
+  /static_cast<double>(1<<4))
+  GALILEOADDBITSFLOAT(16, _Crs, 1.0/static_cast<double>(1<<5))
+  GALILEOADDBITSFLOAT(16, _Delta_n, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<13))
+  GALILEOADDBITSFLOAT(32, _M0, PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  GALILEOADDBITSFLOAT(16, _Cuc, 1.0/static_cast<double>(1<<29))
+  GALILEOADDBITSFLOAT(32, _e, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
+  GALILEOADDBITSFLOAT(16, _Cus, 1.0/static_cast<double>(1<<29))
+  GALILEOADDBITSFLOAT(32, _sqrt_A, 1.0/static_cast<double>(1<<19))
+  GALILEOADDBITS(14, _TOE/60)
+  GALILEOADDBITSFLOAT(16, _Cic, 1.0/static_cast<double>(1<<29))
+  GALILEOADDBITSFLOAT(32, _OMEGA0, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<1))
+  GALILEOADDBITSFLOAT(16, _Cis, 1.0/static_cast<double>(1<<29))
+  GALILEOADDBITSFLOAT(32, _i0, PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  GALILEOADDBITSFLOAT(16, _Crc, 1.0/static_cast<double>(1<<5))
+  GALILEOADDBITSFLOAT(32, _omega, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<1))
+  GALILEOADDBITSFLOAT(24, _OMEGADOT, PI/static_cast<double>(1<<30)
+  /static_cast<double>(1<<13))
+  GALILEOADDBITSFLOAT(10, _BGD_1_5A, 1.0/static_cast<double>(1<<30)
+  /static_cast<double>(1<<2))
+  /*if(inav)
+  {
+    GALILEOADDBITSFLOAT(10, _BGD_1_5B, 1.0/static_cast<double>(1<<30)
+    /static_cast<double>(1<<2))
+    GALILEOADDBITS(2, _E5bHS)
+    GALILEOADDBITS(1, flags & MNFGALEPHF_E5BDINVALID)
+  }
+  else*/
+  {
+    GALILEOADDBITS(2, _E5aHS)
+    GALILEOADDBITS(1, /*flags & MNFGALEPHF_E5ADINVALID*/0)
+  }
+  _TOE = 0.9999E9;
+  GALILEOADDBITS(20, _TOE)
+
+  GALILEOADDBITS(/*inav ? 1 :*/ 3, 0) /* fill up */
+
+  startbuffer[0]=0xD3;
+  startbuffer[1]=(size >> 8);
+  startbuffer[2]=size;
+  unsigned long i = CRC24(size+3, startbuffer);
+  buffer[size++] = i >> 16;
+  buffer[size++] = i >> 8;
+  buffer[size++] = i;
+  size += 3;
+  return size;
 }
