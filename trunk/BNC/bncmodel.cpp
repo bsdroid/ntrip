@@ -1019,8 +1019,32 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
 
   int irc = 0;
 
-  // Check Glonass
-  // -------------
+  // Check GPS Code
+  // --------------
+  if (irc == 0) {
+    findMaxRes(vv,satDataGPS, prnCode, maxResCode, prnPhase, maxResPhase);
+    if (maxResCode > MAXRES_CODE_GPS) {
+      satDataGPS.remove(prnCode);
+      prnRemoved = prnCode;
+      maxRes     = maxResCode;
+      irc        = 1;
+    }
+  }
+
+  // Check Galileo Code
+  // ------------------
+  if (irc == 0) {
+    findMaxRes(vv,satDataGal, prnCode, maxResCode, prnPhase, maxResPhase);
+    if (maxResCode > MAXRES_CODE_GAL) {
+      satDataGal.remove(prnCode);
+      prnRemoved = prnCode;
+      maxRes     = maxResCode;
+      irc        = 1;
+    }
+  }
+
+  // Check Glonass Phase
+  // -------------------
   if (irc == 0) {
     findMaxRes(vv,satDataGlo, prnCode, maxResCode, prnPhase, maxResPhase);
     if (maxResPhase > MAXRES_PHASE_GLO) {
@@ -1031,8 +1055,8 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
     }
   }
 
-  // Check Galileo
-  // -------------
+  // Check Galileo Phase
+  // -------------------
   if (irc == 0) {
     findMaxRes(vv,satDataGal, prnCode, maxResCode, prnPhase, maxResPhase);
     if      (maxResPhase > MAXRES_PHASE_GAL) {
@@ -1041,28 +1065,16 @@ int bncModel::outlierDetection(const SymmetricMatrix& QQsav,
       maxRes     = maxResPhase;
       irc        = 1;
     }
-    else if (maxResCode > MAXRES_CODE_GAL) {
-      satDataGal.remove(prnCode);
-      prnRemoved = prnCode;
-      maxRes     = maxResCode;
-      irc        = 1;
-    }
   }
 
-  // Check GPS
-  // ---------
+  // Check GPS Phase
+  // ---------------
   if (irc == 0) {
     findMaxRes(vv,satDataGPS, prnCode, maxResCode, prnPhase, maxResPhase);
     if      (maxResPhase > MAXRES_PHASE_GPS) {
       satDataGPS.remove(prnPhase);
       prnRemoved = prnPhase;
       maxRes     = maxResPhase;
-      irc        = 1;
-    }
-    else if (maxResCode > MAXRES_CODE_GPS) {
-      satDataGPS.remove(prnCode);
-      prnRemoved = prnCode;
-      maxRes     = maxResCode;
       irc        = 1;
     }
   }
