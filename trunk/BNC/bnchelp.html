@@ -32,21 +32,27 @@ Please ensure that you have installed the latest version of BNC available from <
 <p><a name="purpose"><h3>1. Purpose</h3></p>
 
 <p> The purpose of BNC is to
-
 <ul>
 <li>retrieve real-time GNSS data streams available through NTRIP transport protocol,</li>
 <li>retrieve real-time GNSS data streams via TCP directly from an IP address without using the NTRIP transport protocol, and/or</li>
 <li>retrieve real-time GNSS data streams from a local UDP or serial port without using the NTRIP transport protocol, and/or</li>
-<li>generate high-rate RINEX Observation and Navigation files to support near real-time GNSS post-processing applications, and/or</li> 
-<li>generate ephemeris and synchronized or unsynchronized observations epoch by epoch through an IP port to support real-time GNSS network engines, and/or</li> 
-<li>generate clock and orbit corrections to broadcast ephemeris through an IP port to support real-time Precise Point Positioning on GNSS rovers, and/or</li> 
-<li>generate synchronized  or unsynchronized clock and orbit corrections to broadcast ephemeris epoch by epoch through an IP port to support the combination of such streams as coming simultaneously from various correction providers, and/or</li> 
+<li>generate high-rate RINEX Observation and Navigation files to support near real-time GNSS post-processing applications, and/or</li>
+<li>generate ephemeris and synchronized or unsynchronized observations epoch by epoch through an IP port to support real-time GNSS network engines, and/or</li>
+<li>generate clock and orbit corrections to broadcast ephemeris through an IP port to support real-time Precise Point Positioning on GNSS rovers, and/or</li>
+<li>generate synchronized or unsynchronized clock and orbit corrections to broadcast ephemeris epoch by epoch through an IP port to support the (outside) combination of such streams as coming simultaneously from various correction providers, and/or</li>
 <li>monitor the performance of a network of real-time GNSS data streams to generate advisory notes in case of outages or corrupted streams, and/or</li>
 <li>scan RTCM streams for incoming antenna information as well as message types and their repetition rates, and/or</li>
 <li>feed a stream into a GNSS receiver via serial communication link, and/or</li>
 <li>carry out a real-time Precise Point Positioning to determine a GNSS rover position, and/or</li>
 <li>simultaneously process several incoming orbit and clock corrections streams to produce, encode and upload a combination solution, and/or</li>
-<li>translate the combination of brodcast ephemeris and broadcast ephemeris corrections to SP3 for further processing using other tools than BNC.</li>
+<li>read GNSS clocks and orbits in a SP3-like format from an IP port - they can be produced by a real-time GNSS engine such as RTNet and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system - and</li>
+<ul>
+<li>convert the IGS Earth-Centered-Earth-Fixed clocks and and orbits into corrections to Broadcast Ephemeris with radial, along-track and cross-track components.</li>
+<li>upload the clock and orbit corrections as an RTCM Version 3.x stream to an NTRIP Broadcaster.</li>
+<li>refer the clock and orbit corretions to a specific reference system.</li>
+<li>log the Broadcast Ephemeris clock corrections as files in Clock RINEX files for further processing using other tools than BNC.</li>
+<li>log the Broadcast Ephemeris orbit corrections as files in SP3 files for further processing using other tools than BNC.</li>
+</ul>
 </ul>
 </p>
 
@@ -214,36 +220,38 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 3.12. <a href=#combi>Combination</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1 <a href=#combimounttab>Combination Table</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1.1 <a href=#combiadd>Add Row, Delete</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.2 <a href=#combimountpnt>Mountpoint</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.3 <a href=#combihost>Host</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.4 <a href=#combioutdir>Directory, ASCII</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.5 <a href=#combisp3dir>Directory, SP3</a><br><br>
-3.13. <a href=#streams>Streams</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.1 <a href=#streamedit>Edit Streams</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.2 <a href=#streamdelete>Delete Stream</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.3 <a href=#streamconf>Reconfigure Streams On-the-fly</a><br><br>
-3.14. <a href=#logs>Logging</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.1 <a href=#logfile>Log</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.2 <a href=#throughput>Throughput</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.3 <a href=#latency>Latency</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.4 <a href=#ppptab>PPP Plot</a><br><br>
-3.15. <a href=#bottom>Bottom Menu Bar</a><br>
-&nbsp; &nbsp; &nbsp; 3.15.1. <a href=#streamadd>Add Stream - Coming from Caster</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.15.1.1 <a href=#streamhost>Caster Host and Port</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.15.1.2 <a href=#streamtable>Casters Table</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.15.1.3 <a href=#streamuser>User and Password</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.15.1.4 <a href=#gettable>Get Table</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.15.1.5 <a href=#ntripv>NTRIP Version</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.15.1.6 <a href=#map>Map</a><br>
-&nbsp; &nbsp; &nbsp; 3.15.2 <a href=#streamip>Add Stream - Coming from TCP/IP Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.15.3 <a href=#streamudp>Add Stream - Coming from UDP Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.15.4 <a href=#streamser>Add Stream - Coming from Serial Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.15.5 <a href=#start>Start</a><br>
-&nbsp; &nbsp; &nbsp; 3.15.6 <a href=#stop>Stop</a><br><br>
-3.16. <a href=#cmd>Command Line Options</a><br>
-&nbsp; &nbsp; &nbsp; 3.16.1. <a href=#nw>No Window Mode</a><br>
-&nbsp; &nbsp; &nbsp; 3.16.2. <a href=#post>Offline Mode</a><br>
-&nbsp; &nbsp; &nbsp; 3.16.3. <a href=#conffile>Configuration File</a><br>
+3.13. <a href=#upclk>Upload (clk)</a><br>
+&nbsp; &nbsp; &nbsp; 3.13.1 <a href=#upmntp>Mountpoint</a><br>
+&nbsp; &nbsp; &nbsp; 3.13.2 <a href=#uphost>Host, Port, Password</a><br>
+&nbsp; &nbsp; &nbsp; 3.13.3 <a href=#upascii>Directory, ASCII</a><br>
+&nbsp; &nbsp; &nbsp; 3.13.4 <a href=#upsp3>Directory, SP3</a><br>
+3.14. <a href=#upeph>Upload (eph)</a><br><br>
+3.15. <a href=#streams>Streams</a><br>
+&nbsp; &nbsp; &nbsp; 3.15.1 <a href=#streamedit>Edit Streams</a><br>
+&nbsp; &nbsp; &nbsp; 3.15.2 <a href=#streamdelete>Delete Stream</a><br>
+&nbsp; &nbsp; &nbsp; 3.15.3 <a href=#streamconf>Reconfigure Streams On-the-fly</a><br><br>
+3.16. <a href=#logs>Logging</a><br>
+&nbsp; &nbsp; &nbsp; 3.16.1 <a href=#logfile>Log</a><br>
+&nbsp; &nbsp; &nbsp; 3.16.2 <a href=#throughput>Throughput</a><br>
+&nbsp; &nbsp; &nbsp; 3.16.3 <a href=#latency>Latency</a><br>
+&nbsp; &nbsp; &nbsp; 3.16.4 <a href=#ppptab>PPP Plot</a><br><br>
+3.17. <a href=#bottom>Bottom Menu Bar</a><br>
+&nbsp; &nbsp; &nbsp; 3.17.1. <a href=#streamadd>Add Stream - Coming from Caster</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.17.1.1 <a href=#streamhost>Caster Host and Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.17.1.2 <a href=#streamtable>Casters Table</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.17.1.3 <a href=#streamuser>User and Password</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.17.1.4 <a href=#gettable>Get Table</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.17.1.5 <a href=#ntripv>NTRIP Version</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.17.1.6 <a href=#map>Map</a><br>
+&nbsp; &nbsp; &nbsp; 3.17.2 <a href=#streamip>Add Stream - Coming from TCP/IP Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.17.3 <a href=#streamudp>Add Stream - Coming from UDP Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.17.4 <a href=#streamser>Add Stream - Coming from Serial Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.17.5 <a href=#start>Start</a><br>
+&nbsp; &nbsp; &nbsp; 3.17.6 <a href=#stop>Stop</a><br><br>
+3.18. <a href=#cmd>Command Line Options</a><br>
+&nbsp; &nbsp; &nbsp; 3.18.1. <a href=#nw>No Window Mode</a><br>
+&nbsp; &nbsp; &nbsp; 3.18.2. <a href=#post>Offline Mode</a><br>
+&nbsp; &nbsp; &nbsp; 3.18.3. <a href=#conffile>Configuration File</a><br>
 </p>
 
 <p><a name="topmenu"><h4>3.1. Top Menu Bar</h4></p>
@@ -509,8 +517,13 @@ Note that this does not concern the broadcast ephemeris output through IP port w
 
 <p><a name="correct"><h4>3.6. Broadcast Corrections</h4></p>
 <p>
+Differential GNSS and RTK operation using RTCM streams is currently based on corrections and/or raw measurements from single or multiple reference stations. This approach to differential positioning is using 'observation space' information. The representation with the RTCM standard can be called 'ObservationSpace Representation' (OSR). 
 </p>
-RTCM is in the process of developing new Version 3 messages to transport satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following premature so-called 'State Space Representation' (SSR) messages currently under discussion have been implemented in BNC. The information below should not be misunderstood as a programmers guide. Programming efforts would definitely require access to the RTCM documentation of SSR messages.
+<p>
+An alternative to the observation space approach is the so called 'sate space' approach. The principle here is to provide information on individual error sources and can be called 'State Space Representation' (SSR). For a rover position, state space information concerning precise satellite clocks, orbits, ionosphere, troposphere et cetera can be converted into observation space and used to correct the rover observables for more accurate positioning. Alternatively the state information can directly be used in the rover's processing or adjustment model. 
+</p>
+<p>
+RTCM is in the process of developing new Version 3 messages to transport satellite clock and orbit corrections in real-time. Based on the latest available proposal, the following premature 'State Space Representation' (SSR) messages currently under discussion have been implemented in BNC. The information below should not be misunderstood as a programmers guide. Programming efforts would definitely require access to the RTCM documentation of SSR messages. 
 <ul>
 <li>Message type 1057: GPS orbit corrections to Broadcast Ephemeris</li>
 <li>Message type 1058: GPS clock corrections to Broadcast Ephemeris</li>
@@ -1437,7 +1450,7 @@ Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadc
 Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. To give an example: a value of '15' sec would make sense if the update rate of incoming clock corrections is 10 sec.
 </p>
 <p>
-Note further that the sequence of entries in the 'Combination Table' is of importance. BNC considers the first AC in the 'Combination Table' as the 'Master AC'. The orbit information in the final combination stream is then just copied from the 'Master AC's orbits. Moreover, the update rate of the combination product is defined by the update rate of the 'Master AC's stream. If incoming streams have different rates, only epochs that correspond to the 'Master AC's update rate are used. The skipped epochs will be stored in the binary (raw) BNC file. The plain ASCII formated files described below will contain only the combination. This means that the 'Master AC' is responsible for two things: the satellite positions and the combination rate.
+Note further that the sequence of entries in the 'Combination Table' is of importance. BNC considers the first AC in the 'Combination Table' as the 'Master AC'. The orbit information in the final combination stream is then just copied from the 'Master AC' orbits. Moreover, the update rate of the combination product is defined by the update rate of the 'Master AC' stream. If incoming streams have different rates, only epochs that correspond to the 'Master AC' update rate are used. The skipped epochs will be stored in the binary (raw) BNC file. The plain ASCII formated files described below will contain only the combination. This means that the 'Master AC' is responsible for two things: the satellite positions and the combination rate. 
 </p>
 <p>
 Default is an empty 'Combination Table' meaning that you don't want BNC to combine orbit and clock corrections streams.
@@ -1448,48 +1461,6 @@ Default is an empty 'Combination Table' meaning that you don't want BNC to combi
 Hit 'Add Row' button to add another row to the 'Combination Table' or hit the 'Delete' button to delete the highlighted row(s).
 </p>
 
-<p><a name="combimountpnt"><h4>3.12.2 Mountpoint - optional if 'Combination Table' entries are specified</h4></p>
-<p>
-Enter a mountpoint string for the combination stream. If 'Host', 'Port' and 'Password' are set, the combination stream will be encoded in RTCM's premature so-called 'State Space Representation' (SSR) messages and uploaded to the specified broadcaster following the NTRIP Version 1.0 transport protocol.
-</p>
-<p>
-Note that the mountpoint defined here can be introduced as 'Obs Mountpoint' under the 'PPP (1)' tab to carry out a Precise Point Positioning through directly applying the combination stream without pulling it from the Ntrip Broadcaster.
-</p>
-<p>
-Default is an empty option field meaning that you don't want BNC to upload combined orbit and clock corrections streams to an NTRIP Broadcaster and you also don't want to save correctors in plain ASCII formatted files.
-</p>
-
-<p><a name="combihost"><h4>3.12.3 Host, Port, Password - optional if 'Mountpoint' is set</h4></p>
-<p>
-Specify the domain name or IP number of an NTRIP Broadcaster for uploading the combination stream. Furthermore, specify the caster's listening IP port and an upload password.
-</p>
-
-<p><a name="combioutdir"><h4>3.12.4 Directory, ASCII - optional if 'Mountpoint' is set</h4></p>
-<p>
-Specify a directory for saving the combined Broadcast Ephemeris corrections in a plain ASCII format on disc, see also 'Directory, ASCII' option under 'Broadcast Corrections' tab.
-</p>
-<p>
-The interval for saving the ASCII files (or: length of the files) is defined by option 'Interval' under the 'Broadcast Corrections' tab. File names are generated from the 'Mountpoint' string specified for the combination. They follow the RINEX observation file name convention.
-</p>
-<p>
-Default is an empty option field meaning that you don't want BNC to save the combination product in a plain ASCII formatted files.
-</p>
-
-<p><a name="combisp3dir"><h4>3.12.5 Directory, SP3 - optional if 'Mountpoint' is set</h4></p>
-<p>
-Specify a directory for saving the combination of Broadcast Ephemeris and Broadcast Ephemeris corrections in SP3 format on disc. Default is an empty option field meaning that you don't want BNC to save the combination product in daily SP3 files. Note that the SP3 file output already works with only one corrections stream specified for combination.
-</p>
-<p>
-As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while correctors are referred to the satellites Antenna Phase Center (APC), an offset has to be applied which is available from an IGS ANTEX file (see section 'ANTEX File'). You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save a combination product in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs.
-</p>
-<p>
-The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'.
-</p>
-
-<p>
-The following screenshots describe an example setup of BNC when combining orbit and clock correctors streams. Note that it requires to specify options under the tabs 'Combination', 'Broadcast Corrections' and 'PPP (2)'. The example also uses the combination product to simultaneously carry out a PPP solution with options shown in tab 'PPP (1)' - which enables to monitor the quality of the combination product in the space domain.
-</p>
-
 <br>
 <p><img src=":bnchelp/screenshot21.png"/></p>
 <p><u>Figure:</u> BNC combining orbit/clock correctors streams, part 1.</p>
@@ -1497,7 +1468,78 @@ The following screenshots describe an example setup of BNC when combining orbit 
 <p><img src=":bnchelp/screenshot20.png"/></p>
 <p><u>Figure:</u> BNC combining orbit/clock correctors streams, part 2.</p>
 
-<p><a name="streams"><h4>3.13. Streams</h4></p>
+
+<p><a name="upclk"><h4>3.13. Upload (clk)</h4></p>
+<p>
+BNC can upload streams carrying orbit and clock corrections to Broadcaste Ephemeris in radial, along-track and cross-track components if they are either<ol type=a> 
+<li>
+generated by BNC as a combination of several individual correctors streams coming in from an number of real-time Analysis Centers (ACs), see section 'Combination', or </li>
+<li>
+generated by BNC because the program receives an ASCII stream of satellite orbits and clocks via IP port (no NTRIP transport protocol) from a connected real-time GNSS engine in an SP3-like format named 'RTNET'. </li>
+</ol>
+The procedures taken by BNC to generate the clock and orbit corrections to Broadcast Ephemeris and upload them to an NTRIP Broadcaster are as follow:
+<ul>
+<li>Continuously receive up-to-date Broadcast Ephemeris carrying approximate orbits and clocks for all satellites. Read new Broadcast Ephemeris immediately whenever they become available. This information may come via RTCM messages from Tools like the 'BKG Ntrip Client' (BNC) provide this information.</li>
+</ul>
+Then, epoch by epoch: 
+<ul>
+<li>Continuously receive the best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS05 reference system. Receive them every epoch in a SP3-like format as provided by a real-time GNSS engine such as RTNet. </li>
+<li>Calculate X,Y,Z coordinates from Broadcast Ephemeris orbits. </li>
+<li>Calculate differences dX,dY,dZ between Broadcast Ephemeris and IGS05 orbits. </li>
+<li>Tranform these differences into radial, along-track and cross-track corrections to Broadcast Ephemeris orbits. </li>
+<li>Calculate corrections to Broadcast Ephemeris clocks as differences between Broadcast Ephemeris and IGS05 clocks. </li>
+<li>Encode Broadcast Ephemeris clock and orbit corrections in RTCM Version 3.x format. </li>
+<li>Upload corrections stream to NTRIP Broadcaster. </li>
+</ul>
+Although it is not compulsory, because BNS puts a significant load on the communication link, it is recommended that BNS, the Broadcast Ephemeris server (i.e. BNC), and the server providing orbits and clocks (i.e. RTNet) are run on the same host. 
+</p>
+
+<p><a name="upmntp"><h4>3.13.1 Mountpoint - optional if 'Combination Table' entries are specified</h4></p>
+
+<p>Enter a mountpoint string for the combination stream. If 'Host', 'Port' and 'Password' are set, the combination stream will be encoded in RTCM's premature so-called 'State Space Representation' (SSR) messages and uploaded to the specified broadcaster following the NTRIP Version 1.0 transport protocol. 
+</p>
+<p>
+Note that the mountpoint defined here can be introduced as 'Obs Mountpoint' under the 'PPP (1)' tab to carry out a Precise Point Positioning through directly applying the combination stream without pulling it from the NTRIP Broadcaster. 
+</p>
+<p>
+Default is an empty option field meaning that you don't want BNC to upload combined orbit and clock corrections streams to an NTRIP Broadcaster and you also don't want to save correctors in plain ASCII formatted files. 
+</p>
+
+<p><a name="uphost"><h4>3.13.2 Host, Port, Password - optional if 'Mountpoint' is set</h4></p>
+
+<p>
+Specify the domain name or IP number of an NTRIP Broadcaster for uploading the combination stream. Furthermore, specify the caster's listening IP port and an upload password. 
+</p>
+
+
+<p><a name="upascii"><h4>3.13.3 Directory, ASCII - optional if 'Mountpoint' is set</h4></p>
+<p>
+Specify a directory for saving the combined Broadcast Ephemeris corrections in a plain ASCII format on disc, see also 'Directory, ASCII' option under 'Broadcast Corrections' tab. 
+</p>
+<p>
+The interval for saving the ASCII files (or: length of the files) is defined by option 'Interval' under the 'Broadcast Corrections' tab. File names are generated from the 'Mountpoint' string specified for the combination. They follow the RINEX observation file name convention. 
+</p>
+<p>
+Default is an empty option field meaning that you don't want BNC to save the combination product in a plain ASCII formatted files. 
+</p>
+
+<p><a name="upsp3"><h4>3.13.4 Directory, SP3 - optional if 'Mountpoint' is set</h4></p>
+<p>
+Specify a directory for saving the combination of Broadcast Ephemeris and Broadcast Ephemeris corrections in SP3 format on disc. Default is an empty option field meaning that you don't want BNC to save the combination product in daily SP3 files. Note that the SP3 file output already works with only one corrections stream specified for combination. 
+</p>
+<p>
+As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while correctors are referred to the satellites Antenna Phase Center (APC), an offset has to be applied which is available from an IGS ANTEX file (see section 'ANTEX File'). You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save a combination product in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs. 
+</p>
+<p>
+The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'. 
+</p>
+<p>
+The following screenshots describe an example setup of BNC when combining orbit and clock correctors streams. Note that it requires to specify options under the tabs 'Combination', 'Broadcast Corrections' and 'PPP (2)'. The example also uses the combination product to simultaneously carry out a PPP solution with options shown in tab 'PPP (1)' - which enables to monitor the quality of the combination product in the space domain. 
+</p>
+
+<p><a name="upeph"><h4>3.14. Upload (eph) </h4></p>
+
+<p><a name="streams"><h4>3.15. Streams</h4></p>
 <p>
 Each stream on an NTRIP broadcaster (and consequently on BNC) is defined using a unique source ID called mountpoint. An NTRIP client like BNC access the desired data stream by referring to its mountpoint. Information about streams and their mountpoints is available through the source-table maintained by the NTRIP broadcaster. Note that mountpoints could show up in BNC more than once when retrieving streams from several NTRIP broadcasters.
 </p>
@@ -1518,7 +1560,7 @@ Streams selected for retrieval are listed under the 'Streams' canvas section on 
 </table>
 </p>
 
-<p><a name="streamedit"><h4>3.13.1 Edit Streams</h4></p>
+<p><a name="streamedit"><h4>3.15.1 Edit Streams</h4></p>
 <ul>
 <li>
 BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x', and 'RTIGS'.
@@ -1533,11 +1575,11 @@ BNC can also retrieve streams from virtual reference stations (VRS). To initiate
 </li>
 </ul> 
 
-<p><a name="streamdelete"><h4>3.13.2 Delete Stream</h4></p>
+<p><a name="streamdelete"><h4>3.15.2 Delete Stream</h4></p>
 <p>
 To remove a stream from the 'Streams' canvas in the main window, highlight it by clicking on it and hit the 'Delete Stream' button. You can also remove multiple streams simultaneously by highlighting them using +Shift and +Ctrl.</p>
 
-<p><a name="streamconf"><h4>3.13.3 Reconfigure Streams On-the-fly</h4></p>
+<p><a name="streamconf"><h4>3.15.3 Reconfigure Streams On-the-fly</h4></p>
 <p>
 The streams selection can be changed on-the-fly without interrupting uninvolved threads in the running BNC process.
 </p>
@@ -1547,16 +1589,16 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 <u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option from disk at pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file become effective without terminating uninvolved threads. See annexed section 'Configuration Example' for a configuration file example and a list of other on-the-fly changeable options.
 </p>
 
-<p><a name="logs"><h4>3.14. Logging</h4></p>
+<p><a name="logs"><h4>3.16. Logging</h4></p>
 <p>
 A tabs section on the bottom of the main window provides online control of BNC's activities. Tabs are available to show the records saved in a logfile, for a plot to control the bandwidth consumtion, for a plot showing stream latencies, and for time series plots of PPP results.
 </p>
-<p><a name="logfile"><h4>3.14.1 Log</h4></p>
+<p><a name="logfile"><h4>3.16.1 Log</h4></p>
 <p>
 Records of BNC's activities are shown in the 'Log' tab. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field.
 </p>
 
-<p><a name="throughput"><h4>3.14.2 Throughput</h4></p>
+<p><a name="throughput"><h4>3.16.2 Throughput</h4></p>
 <p>
 The bandwidth consumption per stream is shown in the 'Throughput' tab in bits per second (bps) or kilo bits per second (kbps). The following figure shows the bandwidth comsumption of incoming streams.
 </p>
@@ -1564,7 +1606,7 @@ The bandwidth consumption per stream is shown in the 'Throughput' tab in bits pe
 <p><img src=":bnchelp/screenshot08.png"/></p>
 <p><u>Figure:</u> Bandwidth consumption of incoming streams.</p>
 
-<p><a name="latency"><h4>3.14.3 Latency</h4></p>
+<p><a name="latency"><h4>3.16.3 Latency</h4></p>
 <p>
 The latency of observations in each incoming stream is shown in the 'Latency' tab in milliseconds or seconds. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) or having an outage are not considered here and shown in red color. Note that the calculation of correct latencies requires the clock of the host computer to be properly synchronized. The next figure shows the latency of incoming streams.
 </p>
@@ -1572,7 +1614,7 @@ The latency of observations in each incoming stream is shown in the 'Latency' ta
 <p><img src=":bnchelp/screenshot07.png"/></p>
 <p><u>Figure:</u> Latency of incoming streams.</p>
 
-<p><a name="ppptab"><h4>3.14.4 PPP Plot</h4></p>
+<p><a name="ppptab"><h4>3.16.4 PPP Plot</h4></p>
 <p>
 Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when a 'Origin' option is defined. Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate components. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. Note that it may take up to 30 seconds or more till the first PPP solutions becomes available. The following figure shows the screenshot of a PPP time series plot of North, East and Up coordiate components.
 </p>
@@ -1580,7 +1622,7 @@ Precise Point Positioning time series of North (red), East (green) and Up (blue)
 <p><img src=":bnchelp/screenshot13.png"/></p>
 <p><u>Figure:</u> Time series plot of PPP session.</p>
 
-<p><a name="bottom"><h4>3.15. Bottom Menu Bar</h4></p>
+<p><a name="bottom"><h4>3.17. Bottom Menu Bar</h4></p>
 <p>
 The bottom menu bar allows to add or delete streams to BNC's configuration and to start or stop it. It also provides access to BNC's online help function. The 'Add Stream' button opens a window that allows user to select one of several input communication links, see figure below.
 </p>
@@ -1588,18 +1630,18 @@ The bottom menu bar allows to add or delete streams to BNC's configuration and t
 <p><img src=":bnchelp/screenshot06.png"/></p>
 <p><u>Figure:</u> Steam input communication links.</p>
 
-<p><a name="streamadd"><h4>3.15.1 Add Stream - Coming from Caster</h4></p>
+<p><a name="streamadd"><h4>3.17.1 Add Stream - Coming from Caster</h4></p>
 
 <p>
 Button 'Add Stream' &gt; 'Coming from Caster' then opens a window that allows user to select data streams from an NTRIP broadcaster according to their mountpoints and show a distribution map of offered streams.
 </p> 
 
-<p><a name="streamhost"><h4>3.15.1.1 Caster Host and Port - mandatory</h4></p>
+<p><a name="streamhost"><h4>3.17.1.1 Caster Host and Port - mandatory</h4></p>
 <p>
 Enter the NTRIP broadcaster host IP and port number. Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> and <u>http://www.products.igs-ip.net/home</u>.
 </p> 
 
-<p><a name="streamtable"><h4>3.15.1.2 Casters Table - optional</h4></p>
+<p><a name="streamtable"><h4>3.17.1.2 Casters Table - optional</h4></p>
 <p>
 It may be that your are not sure about your NTRIP broadcasters host and port number or you are interested in other broadcaster installations operated elsewhere. Hit 'Show' for a table of known broadcasters maintained at <u>www.rtcm-ntrip.org/home</u>. A window opens which allows to select a broadcaster for stream retrieval, see figure below.
 </p> 
@@ -1608,12 +1650,12 @@ It may be that your are not sure about your NTRIP broadcasters host and port num
 
 <p><u>Figure:</u> Casters table.</p>
 
-<p><a name="streamuser"><h4>3.15.1.3 User and Password - mandatory for protected streams</h4></p>
+<p><a name="streamuser"><h4>3.17.1.3 User and Password - mandatory for protected streams</h4></p>
 <p>
 Some streams on NTRIP broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/ntrip/registeruser</u> for access to protected streams on <u>www.euref-ip.net</u> or <u>www.igs-ip.net</u> or <u>products.igs-ip.net</u>.
 </p> 
 
-<p><a name="gettable"><h4>3.15.1.4 Get Table</h4></p>
+<p><a name="gettable"><h4>3.17.1.4 Get Table</h4></p>
 <p>
 Use the 'Get Table' button to download the source-table from the NTRIP broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, RTCM Version 3.x, or RTIGS format. For access to observations, ephemeris or ephemris correctiors, an RTCM Version 2.x streams must contain message types 18 and 19 or 20 and 21 while an RTCM Version 3.x streams must contain
 <ul>
@@ -1633,7 +1675,7 @@ Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream'
 <p><img src=":bnchelp/screenshot05.png"/></p>
 <p><u>Figure:</u> Broadcaster source-table.</p>
 
-<p><a name="ntripv"><h4>3.15.1.5 NTRIP Version - mandatory</h4></p>
+<p><a name="ntripv"><h4>3.17.1.5 NTRIP Version - mandatory</h4></p>
 <p>
 Some limitations and deficiencies of the NTRIP version 1 stream transport protocol are solved in NTRIP version 2. Improvements mainly concern a full HTTP compatibility in view of requirements coming from proxy servers. Version 2 is backwards compatible to Version 1. Options implemented in BNC are:
 </p>
@@ -1654,12 +1696,12 @@ If NTRIP version 2 is supported by the broadcaster:
 Select option '1' if you are not sure whether the broadcaster supports NTRIP version 2.</li>
 </p>
 
-<p><a name="map"><h4>3.15.1.6 Map - optional</h4></p>
+<p><a name="map"><h4>3.17.1.6 Map - optional</h4></p>
 <p>
 Button 'Map' opens a window to show a distribution map of the casters's streams. You may like to zoom in or out using option 'Zoom +' or 'Zoom -'. You may also like to 'Clean' or 'Reset' a map or let it 'Fit' exactly to the current size of the window. Option 'Close' shuts the window.
 </p>
 
-<p><a name="streamip"><h4>3.15.2 Add Stream - Coming from TCP/IP Port</h4></p>
+<p><a name="streamip"><h4>3.17.2 Add Stream - Coming from TCP/IP Port</h4></p>
 <p>
 Button 'Add Stream' &gt; 'Coming from TCP/IP Port' allows to retrieve streams via TCP directly from an IP address without using the NTRIP transport protocol. For that you:
 <ul>
@@ -1678,7 +1720,7 @@ Streams directly received from a TCP/IP port show up with an 'N' for 'No NTRIP' 
 Note that this option works only if no proxy server is involved in the communication link.
 </p>
 
-<p><a name="streamudp"><h4>3.15.3 Add Stream - Coming from UDP Port</h4></p>
+<p><a name="streamudp"><h4>3.17.3 Add Stream - Coming from UDP Port</h4></p>
 <p>
 Button 'Add Stream' &gt; 'Coming from UDP Port' allows to pick up streams arriving directly at one of the local host's UDP ports without using the NTRIP transport protocol. For that you:
 <ul>
@@ -1693,7 +1735,7 @@ Button 'Add Stream' &gt; 'Coming from UDP Port' allows to pick up streams arrivi
 Streams directly received at a UDP port show up with a 'UN' for 'UDP, No NTRIP' in the 'Streams' canvas section on BNC's main window . Latitude and longitude are to be entered just for informal reasons.
 <p>
 
-<p><a name="streamser"><h4>3.15.4 Add Stream - Coming from Serial Port</h4></p>
+<p><a name="streamser"><h4>3.17.4 Add Stream - Coming from Serial Port</h4></p>
 <p>
 Button 'Add Stream' &gt; 'Coming from Serial Port' allows to retrieve streams from a GNSS receiver via serial port without using the NTRIP transport protocol. For that you:
 <ul>
@@ -1733,22 +1775,22 @@ The following figure shows a BNC example setup for pulling a stream via serial p
 <p><img src=":bnchelp/screenshot15.png"/></p>
 <p><u>Figure:</u> BNC setup for pulling a stream via serial port.</p>
 
-<p><a name="start"><h4>3.15.5 Start</h4></p>
+<p><a name="start"><h4>3.17.5 Start</h4></p>
 <p>
 Hit 'Start' to start retrieving, decoding, and converting GNSS data streams in real-time. Note that 'Start' generally forces BNC to begin with fresh RINEX which might overwrite existing files when necessary unless the option 'Append files' is ticked.
 </p> 
 
-<p><a name="stop"><h4>3.15.6 Stop</h4></p>
+<p><a name="stop"><h4>3.17.6 Stop</h4></p>
 <p>
 Hit the 'Stop' button in order to stop BNC. 
 </p> 
 
-<p><a name="cmd"><h4>3.16. Command Line Options</h4></p>
+<p><a name="cmd"><h4>3.18. Command Line Options</h4></p>
 <p> 
 Command line options are available to run BNC in 'no window' mode or let it read data from a file in offline mode. BNC will then use processing options from the configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration file name instead of using the default name 'BNC.ini'.
 </p> 
 
-<p><a name="nw"><h4>3.16.1 No Window Mode - optional</h4></p>
+<p><a name="nw"><h4>3.18.1 No Window Mode - optional</h4></p>
 <p>
 Apart from its regular windows mode, BNC can be started on all systems as a background/batch job with command line option '-nw'. BNC will then run in 'no window' mode, using processing options from its configuration file on disk. Terminate BNC using Windows Task Manager when running it in 'no window' mode on Windows systems.
 </p> 
@@ -1757,7 +1799,7 @@ Example:<br><br>
 bnc.exe -nw
 </p>
 
-<p><a name="post"><h4>3.16.2 Offline Mode - optional</h4></p>
+<p><a name="post"><h4>3.18.2 Offline Mode - optional</h4></p>
 <p>
 Although BNC is primarily a real-time online tool, it can be run in offline mode to read data from a previously saved file (see chapter on saving 'Raw Output File') for post-processing purposes. Enter the following command line options for that:
 </p>
@@ -1780,7 +1822,7 @@ Example:<br><br>
 Note that when running BNC in offline mode, it will use options for file saving, interval, sampling, PPP etc. from its configuration file. Note further that only those data in the file will be processd offline which are encoded as specified with the --format option. 
 </p> 
 
-<p><a name="conffile"><h4>3.16.3 Configuration File - optional</h4></p>
+<p><a name="conffile"><h4>3.18.3 Configuration File - optional</h4></p>
 The default configuration file name is 'BNC.ini'. You may change this name at startup time using the command line option '--conf &lt;<u>confFileName</u>&gt;'. This allows to run several BNC jobs in parallel on the same host using different sets of configuration options. <u>confFileName</u> stands either for the full path to a configuration file or just for a file name. If you introduce only a filename, the corresponding file will be saved in the current working directory from where BNC is started.
 </p>
 <p>
