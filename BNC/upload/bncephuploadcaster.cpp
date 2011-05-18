@@ -64,7 +64,7 @@ void bncEphUploadCaster::ephBufferChanged() {
       it.next();
 
       t_eph* eph = it.value()->last;
-      unsigned char Array[67];
+      unsigned char Array[80];
       int size = eph->RTCM3(Array);
       if (size > 0) {
         outBuffer += QByteArray((char*) Array, size);
