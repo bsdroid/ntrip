@@ -97,6 +97,9 @@ bncSettings::bncSettings(bool noInit) :
     setValue("pppRefCrdX",       "");
     setValue("pppRefCrdY",       "");
     setValue("pppRefCrdZ",       "");
+    setValue("pppRefdN",       "");
+    setValue("pppRefdE",       "");
+    setValue("pppRefdU",       "");
     setValue("pppAntenna",       "");
     setValue("pppAntex",         "");
     setValue("pppApplySatAnt",   "0");
