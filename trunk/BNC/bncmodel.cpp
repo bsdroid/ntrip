@@ -424,7 +424,11 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
 
   double antennaOffset = 0.0;
   if (_dN != 0.0 || _dE != 0.0 || _dU != 0.0) {
-
+    double cosa = cos(satData->azSat);
+    double sina = sin(satData->azSat);
+    double cose = cos(satData->eleSat);
+    double sine = sin(satData->eleSat);
+    antennaOffset = -_dN * cosa*cose - _dE * sina*cose - _dU * sine;
   }
 
   return satData->rho + phaseCenter + antennaOffset + clk() 
