@@ -244,6 +244,12 @@ bncModel::bncModel(QByteArray staID) {
     }
   }
 
+  // Antenna Eccentricities
+  // ----------------------
+  _dN = settings.value("pppRefdN").toDouble();
+  _dE = settings.value("pppRefdE").toDouble();
+  _dU = settings.value("pppRefdU").toDouble();
+
   // Bancroft Coordinates
   // --------------------
   _xcBanc.ReSize(4);  _xcBanc  = 0.0;
@@ -416,7 +422,12 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
     }
   }
 
-  return satData->rho + phaseCenter + clk() 
+  double antennaOffset = 0.0;
+  if (_dN != 0.0 || _dE != 0.0 || _dU != 0.0) {
+
+  }
+
+  return satData->rho + phaseCenter + antennaOffset + clk() 
                       + offset - satData->clk + tropDelay + wind;
 }
 
