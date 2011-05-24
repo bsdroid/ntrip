@@ -356,6 +356,9 @@ bncWindow::bncWindow() {
   _pppRefCrdXLineEdit    = new QLineEdit(settings.value("pppRefCrdX").toString());
   _pppRefCrdYLineEdit    = new QLineEdit(settings.value("pppRefCrdY").toString());
   _pppRefCrdZLineEdit    = new QLineEdit(settings.value("pppRefCrdZ").toString());
+  _pppRefdNLineEdit      = new QLineEdit(settings.value("pppRefdN").toString());
+  _pppRefdELineEdit      = new QLineEdit(settings.value("pppRefdE").toString());
+  _pppRefdULineEdit      = new QLineEdit(settings.value("pppRefdU").toString());
   _pppSync               = new QLineEdit(settings.value("pppSync").toString());
   _pppAntennaLineEdit    = new QLineEdit(settings.value("pppAntenna").toString());
   _pppAntexLineEdit      = new QLineEdit(settings.value("pppAntex").toString());
@@ -403,6 +406,12 @@ bncWindow::bncWindow() {
   connect(_pppRefCrdYLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
   connect(_pppRefCrdZLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+  connect(_pppRefdNLineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+  connect(_pppRefdELineEdit, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+  connect(_pppRefdULineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
   connect(_pppEstTropoCheckBox, SIGNAL(stateChanged(int)),
@@ -595,6 +604,9 @@ bncWindow::bncWindow() {
   _pppRefCrdXLineEdit->setWhatsThis(tr("<p>Enter reference coordinate X of the receiver's position.</p>"));
   _pppRefCrdYLineEdit->setWhatsThis(tr("<p>Enter reference coordinate Y of the receiver's position.</p>"));
   _pppRefCrdZLineEdit->setWhatsThis(tr("<p>Enter reference coordinate Z of the receiver's position.</p>"));
+  _pppRefdNLineEdit->setWhatsThis(tr("<p>Enter north antenna excentricity.</p>"));
+  _pppRefdELineEdit->setWhatsThis(tr("<p>Enter east antenna excentricity.</p>"));
+  _pppRefdULineEdit->setWhatsThis(tr("<p>Enter up antenna excentricity.</p>"));
   _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when the corresponting option is selected above. Values are either referred to an XYZ reference coordinate (if specified) or referred to the first estimated set of coordinate compoments. The sliding PPP time series window covers the period of the latest 5 minutes."));
   _pppSync->setWhatsThis(tr(
     "<p> Zero value (or empty field, default) means that BNC processes each epoch of data "
@@ -863,6 +875,9 @@ bncWindow::bncWindow() {
   _pppRefCrdXLineEdit->setMaximumWidth(10*ww);
   _pppRefCrdYLineEdit->setMaximumWidth(10*ww);
   _pppRefCrdZLineEdit->setMaximumWidth(10*ww);
+  _pppRefdNLineEdit->setMaximumWidth(5*ww);
+  _pppRefdELineEdit->setMaximumWidth(5*ww);
+  _pppRefdULineEdit->setMaximumWidth(5*ww);
   _pppSync->setMaximumWidth(6*ww);
   _pppSPPComboBox->setMaximumWidth(8*ww);
   _pppNMEAPortLineEdit->setMaximumWidth(6*ww);
@@ -877,6 +892,12 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppRefCrdZLineEdit,                  0, 8);
   pppLayout->addWidget(new QLabel("Corr Mountpoint "),       1, 0);
   pppLayout->addWidget(_pppCorrMountLineEdit,                1, 1);
+  pppLayout->addWidget(new QLabel("         dN   "),         1, 3, Qt::AlignRight);
+  pppLayout->addWidget(_pppRefdNLineEdit,                    1, 4);
+  pppLayout->addWidget(new QLabel("       dE   "),           1, 5, Qt::AlignRight);
+  pppLayout->addWidget(_pppRefdELineEdit,                    1, 6);
+  pppLayout->addWidget(new QLabel("     dU   "),             1, 7, Qt::AlignRight);
+  pppLayout->addWidget(_pppRefdULineEdit,                    1, 8);
   pppLayout->addWidget(new QLabel("Options"),                2, 0, 1, 5);
   pppLayout->addWidget(_pppUsePhaseCheckBox,                 2, 1, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Use phase obs"),          2, 2);
@@ -1378,6 +1399,9 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppRefCrdX",  _pppRefCrdXLineEdit->text());
   settings.setValue("pppRefCrdY",  _pppRefCrdYLineEdit->text());
   settings.setValue("pppRefCrdZ",  _pppRefCrdZLineEdit->text());
+  settings.setValue("pppRefdN",  _pppRefdNLineEdit->text());
+  settings.setValue("pppRefdE",  _pppRefdELineEdit->text());
+  settings.setValue("pppRefdU",  _pppRefdULineEdit->text());
   settings.setValue("pppSync",     _pppSync->text());
   settings.setValue("pppUsePhase", _pppUsePhaseCheckBox->checkState());
   settings.setValue("pppPlotCoordinates", _pppPlotCoordinates->checkState());
@@ -1961,6 +1985,9 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _pppRefCrdXLineEdit 
      || sender() == _pppRefCrdYLineEdit 
      || sender() == _pppRefCrdZLineEdit 
+     || sender() == _pppRefdNLineEdit 
+     || sender() == _pppRefdELineEdit 
+     || sender() == _pppRefdULineEdit 
      || sender() == _pppSync 
      || sender() == _pppSPPComboBox
      || sender() == _pppQuickStartLineEdit
@@ -1977,6 +2004,9 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdXLineEdit->setPalette(palette_white);
       _pppRefCrdYLineEdit->setPalette(palette_white);
       _pppRefCrdZLineEdit->setPalette(palette_white);
+      _pppRefdNLineEdit->setPalette(palette_white);
+      _pppRefdELineEdit->setPalette(palette_white);
+      _pppRefdULineEdit->setPalette(palette_white);
       _pppUsePhaseCheckBox->setPalette(palette_white);
       _pppPlotCoordinates->setPalette(palette_white);
       _pppEstTropoCheckBox->setPalette(palette_white);
@@ -1989,6 +2019,9 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdXLineEdit->setEnabled(true);
       _pppRefCrdYLineEdit->setEnabled(true);
       _pppRefCrdZLineEdit->setEnabled(true);
+      _pppRefdNLineEdit->setEnabled(true);
+      _pppRefdELineEdit->setEnabled(true);
+      _pppRefdULineEdit->setEnabled(true);
       _pppUsePhaseCheckBox->setEnabled(true);
       _pppPlotCoordinates->setEnabled(true);
       _pppEstTropoCheckBox->setEnabled(true);
@@ -1997,6 +2030,9 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdXLineEdit->setPalette(palette_white);
       _pppRefCrdYLineEdit->setPalette(palette_white);
       _pppRefCrdZLineEdit->setPalette(palette_white);
+      _pppRefdNLineEdit->setPalette(palette_white);
+      _pppRefdELineEdit->setPalette(palette_white);
+      _pppRefdULineEdit->setPalette(palette_white);
       _pppAntexLineEdit->setEnabled(true);
       if (!_pppRefCrdXLineEdit->text().isEmpty() &&
           !_pppRefCrdYLineEdit->text().isEmpty() &&
@@ -2078,6 +2114,9 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdXLineEdit->setPalette(palette_gray);
       _pppRefCrdYLineEdit->setPalette(palette_gray);
       _pppRefCrdZLineEdit->setPalette(palette_gray);
+      _pppRefdNLineEdit->setPalette(palette_gray);
+      _pppRefdELineEdit->setPalette(palette_gray);
+      _pppRefdULineEdit->setPalette(palette_gray);
       _pppSync->setPalette(palette_gray);
       _pppUsePhaseCheckBox->setPalette(palette_gray);
       _pppPlotCoordinates->setPalette(palette_gray);
@@ -2102,6 +2141,9 @@ void bncWindow::slotBncTextChanged(){
       _pppRefCrdXLineEdit->setEnabled(false);
       _pppRefCrdYLineEdit->setEnabled(false);
       _pppRefCrdZLineEdit->setEnabled(false);
+      _pppRefdNLineEdit->setEnabled(false);
+      _pppRefdELineEdit->setEnabled(false);
+      _pppRefdULineEdit->setEnabled(false);
       _pppSync->setEnabled(false);
       _pppUsePhaseCheckBox->setEnabled(false);
       _pppPlotCoordinates->setEnabled(false);
