@@ -9,12 +9,11 @@
 // ------------
 bncMap::bncMap(QWidget* parent) : QDialog(parent)
 {
-  _scale  =  2.8;   // scale the map
-  _LaOff  =   25;   // shift longitude
+  _LaOff   = 25;   // shift longitude
   _mapScen = new QGraphicsScene();
   _mapView = new BncMapView();
   _mapView->setScene(_mapScen);
-  _mapView->setMatrix(QMatrix(_scale,0,0,_scale,0,0));
+  _mapView->resetScale();
   slotReadMap();
   slotCreateMap();
   _mapScen->setSceneRect(QRect(0,-90,360,180));
@@ -26,12 +25,8 @@ bncMap::bncMap(QWidget* parent) : QDialog(parent)
   connect(buttClose, SIGNAL(clicked()), this, SLOT(close()));
    
   /* rescale button */
-  QPushButton* buttClean = new QPushButton("Clean");
-  connect(buttClean, SIGNAL(clicked()), this, SLOT(slotCleanMap()));
-
-  /* reset button */
-  QPushButton* buttReset = new QPushButton("Reset");
-  connect(buttReset, SIGNAL(clicked()), this, SLOT(slotResetMap()));
+//  QPushButton* buttClean = new QPushButton("Clean");
+//  connect(buttClean, SIGNAL(clicked()), this, SLOT(slotCleanMap()));
 
   /* zoom button */
   QPushButton* buttZoomIn = new QPushButton("Zoom +");
@@ -41,9 +36,17 @@ bncMap::bncMap(QWidget* parent) : QDialog(parent)
   QPushButton* buttZoomOut = new QPushButton("Zoom -");
   connect(buttZoomOut, SIGNAL(clicked()), this, SLOT(slotZoomOut()));
 
+  /* reset button */
+  QPushButton* buttReset = new QPushButton("World");
+  connect(buttReset, SIGNAL(clicked()), this, SLOT(slotResetMap()));
+
   /* fit button */
-  QPushButton* buttFit = new QPushButton("Fit");
+  QPushButton* buttFit = new QPushButton("Fit Map");
   connect(buttFit, SIGNAL(clicked()), this, SLOT(slotFitMap()));
+
+  /* font reset button */
+  QPushButton* buttFont = new QPushButton("Fit Font");
+  connect(buttFont, SIGNAL(clicked()), this, SLOT(slotFitFont()));
 
   /* layout */
   QVBoxLayout* MapLayout = new QVBoxLayout;
@@ -51,9 +54,10 @@ bncMap::bncMap(QWidget* parent) : QDialog(parent)
    
   ButLayout->addWidget(buttZoomIn);
   ButLayout->addWidget(buttZoomOut);
-  ButLayout->addWidget(buttClean);
+//  ButLayout->addWidget(buttClean);
   ButLayout->addWidget(buttReset);
   ButLayout->addWidget(buttFit);
+  ButLayout->addWidget(buttFont);
   ButLayout->addWidget(buttClose);
    
   MapLayout->addWidget(_mapView);
@@ -144,27 +148,14 @@ void bncMap::slotCleanMap()
   _mapScen->clear();
   slotCreateMap();
   slotResetMap();
+  slotFitFont();
 }
 
 
 // ------------
 void bncMap::slotResetMap()
 {
-  _mapView->setMatrix(QMatrix(_scale,0,0,_scale,0,0));
-}
-
-
-// ------------
-void bncMap::slotZoomIn()
-{  
-  _mapView->scale( 1.2, 1.2 );
-}
-
-
-// ------------
-void bncMap::slotZoomOut()
-{  
-  _mapView->scale( 1/1.2, 1/1.2 );
+  _mapView->resetScale();
 }
 
 
@@ -173,14 +164,78 @@ void bncMap::slotFitMap()
 {  
   QRectF reg = _allPoints.boundingRect().adjusted(-10,-10,10,10);
    
+  _mapView->resetScale();
   _mapView->updateSceneRect(reg);
   _mapView->centerOn(reg.center());
   _mapView->fitInView(reg,Qt::KeepAspectRatio);
+
+  slotFitFont();
 }
 
 
 // ------------
-void bncMap::slotNewPoint(QPointF point, QString name, QPen pen)
+void bncMap::slotFitFont()
+{  
+  _mapScen->clear();
+  slotCreateMap();
+
+  float fontsize  = _mapView->scale_rate();
+  float pointsize = _mapView->scale_rate();
+   
+  QMapIterator<QString, QList<QVariant> >  it(_allNames);
+  while( it.hasNext() ){  
+     
+     it.next();
+     QString name = it.key();     
+     QList<QVariant> tmp = it.value();
+       
+     double la    = tmp.at(0).toPointF().x();
+     double fi    = tmp.at(0).toPointF().y();
+     QPen   pen   = tmp.at(1).value<QPen>();
+     double basPT = tmp.at(2).toDouble();
+     double basFT = tmp.at(3).toDouble();
+     
+     float tmpPT = pointsize * basPT;
+     float tmpFT =  fontsize * basFT;
+     
+     QFont font(QFont("Arial", 2, 1));
+           font.setPointSizeF( tmpFT );
+
+     QGraphicsTextItem* nameItem = new QGraphicsTextItem( name );
+     nameItem->setFont( font );
+     
+     if( floor(fontsize) < 1 ){
+       nameItem->setPos( la - 4.0 - floor(fontsize), fi - 5.0 - floor(fontsize) );
+     }else{
+       nameItem->setPos( la - 1.0 - floor(fontsize), fi - 4.0 - floor(fontsize) );
+     }
+
+     if( tmpPT < 0.25 ) tmpPT = 0.25;
+     pen.setWidthF(tmpPT);
+
+    _mapScen->addItem( nameItem );
+    _mapScen->addEllipse( la, fi, tmpPT, tmpPT, pen );
+  }
+  _mapView->zoom( 1.0 );
+}
+
+
+// ------------
+void bncMap::slotZoomIn()
+{  
+  _mapView->zoom( 1.2 );
+}
+
+
+// ------------
+void bncMap::slotZoomOut()
+{  
+  _mapView->zoom( 1/1.2 );
+}
+
+
+// ------------
+void bncMap::slotNewPoint(QPointF point, QString name, QPen pen, double size)
 {
   float la =   point.x() + _LaOff;
   float fi = - point.y();
@@ -188,14 +243,15 @@ void bncMap::slotNewPoint(QPointF point, QString name, QPen pen)
   while( la <    0 ){ la += 360; }
   while( la >= 360 ){ la -= 360; }
    
-  _allPoints << QPointF(la, fi);
-  _mapScen->addEllipse( la, fi, 1.5, 1.5, pen );
+  QPointF tmppoint(la,fi);
+  _allPoints << tmppoint;
 
   if( ! name.isEmpty() ){
-    QGraphicsTextItem* nameItem = new QGraphicsTextItem( name );
-    nameItem->setPos( QPointF(la-1, fi-2));
-    nameItem->setFont( QFont("Arial", 2, 1) );
 
-    _mapScen->addItem( nameItem );
+    QList<QVariant> tmp;
+    tmp << tmppoint      // QPoint
+        << pen           // QPen
+        << size << 4.5;  // base pointsize, fontsize
+    _allNames.insert( name, tmp );
   }
 }
