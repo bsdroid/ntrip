@@ -17,8 +17,9 @@ class bncMap : public QDialog
    ~bncMap();
    
  public slots:
-   void slotNewPoint(QPointF, QString, QPen);
+   void slotNewPoint(QPointF, QString, QPen, double);
    void slotResetMap();
+   void slotFitFont();
    void slotFitMap();
    void slotZoomIn();
    void slotZoomOut();
@@ -28,7 +29,6 @@ class bncMap : public QDialog
    
  private:
    
-   double          _scale;
    double          _LaOff;
 
    BncMapView*     _mapView;
@@ -36,6 +36,7 @@ class bncMap : public QDialog
    QPolygonF       _worldMap;
    QPolygonF       _allPoints;
    QMutex          _mutexMap;
+   QMultiMap< QString, QList<QVariant> > _allNames;
 
 };
 
