@@ -63,8 +63,9 @@ class bncTableDlg : public QDialog {
 
   signals:
     void newMountPoints(QStringList* mountPoints);
-    void newPoint(QPointF, QString, QPen);
+    void newPoint(QPointF, QString, QPen, double);
     void fitMap();
+    void fitFont();
 
   private slots:
     virtual void select();
