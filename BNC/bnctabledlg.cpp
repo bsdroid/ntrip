@@ -67,7 +67,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   _casterPasswordLineEdit = new QLineEdit();
   _casterPasswordLineEdit->setMaximumWidth(9*ww);
-  _casterPasswordLineEdit->setEchoMode(QLineEdit::Password);
+  _casterPasswordLineEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
 
   _casterHostComboBox = new QComboBox();
   _casterHostComboBox->setMaxCount(10);
