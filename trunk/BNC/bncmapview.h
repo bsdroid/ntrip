@@ -4,6 +4,7 @@
  
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
+#include <iostream>
  
 class BncMapView : public QGraphicsView
 {
@@ -11,6 +12,14 @@ class BncMapView : public QGraphicsView
    
  public:
     BncMapView(QWidget* parent = NULL);
+
+    virtual void resetScale();
+    virtual void zoom(qreal scale);
+
+    double scale(){ return _scale; }
+    double scale_curr(){ return _scCur; }
+    double scale_rate(){ return _scale/_scCur; }
+
     
  protected:    
     QPointF _currentCenterPoint;                       // centerpoint for for panning and zooming
@@ -24,6 +33,10 @@ class BncMapView : public QGraphicsView
     virtual void mouseMoveEvent(QMouseEvent* event);
     virtual void wheelEvent(QWheelEvent* event);
     virtual void resizeEvent(QResizeEvent* event);
+   
+  private:
+    double          _scale;  // scale
+    double          _scCur;  // current relative scale
 };
  
 #endif
