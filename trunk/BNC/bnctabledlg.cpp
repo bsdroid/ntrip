@@ -67,7 +67,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   _casterPasswordLineEdit = new QLineEdit();
   _casterPasswordLineEdit->setMaximumWidth(9*ww);
-  _casterPasswordLineEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
+  _casterPasswordLineEdit->setEchoMode(QLineEdit::Password);
 
   _casterHostComboBox = new QComboBox();
   _casterHostComboBox->setMaxCount(10);
@@ -304,23 +304,29 @@ void bncTableDlg::slotShowMap() {
   bncMap* winMap = new bncMap(this);
   winMap->setGeometry( x(), int(y()+height()*1.3), 880, 440 );
 
-  connect(this, SIGNAL(newPoint(QPointF, QString, QPen)),
-	  winMap, SLOT(slotNewPoint(QPointF, QString, QPen)));
+  connect(this, SIGNAL(newPoint(QPointF, QString, QPen, double)),
+	  winMap, SLOT(slotNewPoint(QPointF, QString, QPen, double)));
       
   connect(this, SIGNAL(fitMap()),
 	  winMap, SLOT(slotFitMap() ));
+   
+  connect(this, SIGNAL(fitFont()),
+	  winMap, SLOT(slotFitFont() ));
       
   _buttonMap->setEnabled(false);
   showSourceTable();
   winMap->exec();
   _buttonMap->setEnabled(true);
 
-  disconnect(this, SIGNAL(newPoint(QPointF, QString, QPen)),
-	     winMap, SLOT(slotNewPoint(QPointF, QString, QPen)));
+  disconnect(this, SIGNAL(newPoint(QPointF, QString, QPen, double)),
+	     winMap, SLOT(slotNewPoint(QPointF, QString, QPen, double)));
    
   disconnect(this, SIGNAL(fitMap()),
  	     winMap, SLOT(slotFitMap() ));
    
+  disconnect(this, SIGNAL(fitFont()),
+  	     winMap, SLOT(slotFitFont() ));
+      
   delete winMap;
 }
 
@@ -342,7 +348,7 @@ void bncTableDlg::showSourceTable() {
 	 QString site = tmp.at(1);
 	         site.resize(4);
 
-         emit newPoint(point, site, QPen(QBrush(QColor(0,0,255,200)), 1.5) );
+         emit newPoint(point, site, QPen(QBrush(QColor(0,0,255,200)), 1.5), 1.5 );
        }
      }
    }
@@ -382,11 +388,12 @@ void bncTableDlg::select() {
 	 
         site.resize(4);
 	emit newPoint(QPointF(longitude.toDouble(),latitude.toDouble()), site,
-		      QPen(QBrush(QColor(255,0,0,200)), 3) );
+		      QPen(QBrush(QColor(255,0,0,200)), 3.0), 3.0 );
       }
     }
   }
   emit newMountPoints(mountPoints);
+  emit fitFont();
 }
 
 // User changed the selection of mountPoints
