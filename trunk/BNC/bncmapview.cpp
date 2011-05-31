@@ -16,6 +16,7 @@ BncMapView::BncMapView(QWidget* parent) : QGraphicsView(parent)
 {
   setCursor(Qt::OpenHandCursor);
   setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+  resetScale();
 }
 
 /* -------------
@@ -89,7 +90,7 @@ void BncMapView::mousePressEvent(QMouseEvent* event)
 
 
 // -------------
-void BncMapView::mouseReleaseEvent(QMouseEvent* /* event */) 
+void BncMapView::mouseReleaseEvent(QMouseEvent* event) 
 {   
    setCursor(Qt::OpenHandCursor);
    _lastPanPoint = QPoint();
@@ -125,12 +126,12 @@ void BncMapView::wheelEvent(QWheelEvent* event)
    if( event->delta() > 0 ){
 
      // zooming in
-     scale( scaleFactor, scaleFactor );
+     zoom( scaleFactor );
       
    }else{
 
      // zooming out
-     scale( 1.0/scaleFactor, 1.0/scaleFactor );
+     zoom( 1.0/scaleFactor );
    }
    
    // get the position after scaling, in scene coords
@@ -154,4 +155,20 @@ void BncMapView::resizeEvent(QResizeEvent* event)
    
    // call the subclass resize so the scrollbars are updated correctly
    QGraphicsView::resizeEvent(event);
+}
+
+
+// -------------
+void BncMapView::resetScale()
+{
+  _scale = _scCur = 2.0;
+  setMatrix(QMatrix(_scale,0,0,_scale,0,0));
+}
+
+
+// -------------
+void BncMapView::zoom(qreal scale)
+{
+   QGraphicsView::scale( scale, scale );
+  _scCur = _scCur * scale;
 }
