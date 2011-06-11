@@ -191,6 +191,9 @@ bncComb::~bncComb() {
   }
   delete _rtnetDecoder;
   delete _antex;
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    delete _params[iPar-1];
+  }
 }
 
 // Read and store one correction line
@@ -455,8 +458,6 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
 
         ll(iObs) = corr->dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
       }
-
-      delete epo;
     }
 
     // Regularization
@@ -534,6 +535,12 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   dumpResults(resTime, resCorr);
 
   emit newMessage(_log, false);
+
+  QListIterator<cmbEpoch*> itEpo2(epochs);
+  while (itEpo2.hasNext()) {
+    cmbEpoch* epo = itEpo2.next();
+    delete epo;
+  }
 }
 
 // Print results
