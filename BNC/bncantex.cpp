@@ -109,6 +109,7 @@ t_irc bncAntex::readFile(const QString& fileName) {
         return failure;
       }
       else {
+        delete newAntMap;
         newAntMap = new t_antMap();
       }
     } 
@@ -121,6 +122,7 @@ t_irc bncAntex::readFile(const QString& fileName) {
         newAntMap = 0;
       }
       else {
+        delete newAntMap;
         return failure;
       }
     }
