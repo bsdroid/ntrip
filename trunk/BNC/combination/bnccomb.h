@@ -32,7 +32,7 @@ class bncComb : public bncEphUser  {
 
  public:
   bncComb();
-  ~bncComb();
+  virtual ~bncComb();
   void processCorrLine(const QString& staID, const QString& line);
   int  nStreams() const {return _ACs.size();}
 
