@@ -299,6 +299,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   // ---------------------------
   if (newEpoch->corr.find(newCorr->prn) != newEpoch->corr.end()) {
     newEpoch->corr[newCorr->prn]->readLine(line); // merge (multiple messages)
+    delete newCorr;
   }
   else {
     newEpoch->corr[newCorr->prn] = newCorr;
