@@ -224,9 +224,17 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     return;
   }
 
-  // Reject delayed corrections
-  // --------------------------
-  if (_processedBeforeTime.valid() && newCorr->tt < _processedBeforeTime) {
+  // Remember last correction time
+  // -----------------------------
+  if (!_lastCorrTime.valid() || _lastCorrTime < newCorr->tt) {
+    _lastCorrTime = newCorr->tt;
+  }
+
+  bncTime processTime = _lastCorrTime - 1.5 * moduloTime;
+
+  // Delete old corrections
+  // ----------------------
+  if (newCorr->tt < processTime) {
     delete newCorr;
     return;
   }
@@ -254,20 +262,15 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Process all older Epochs (if there are any)
   // -------------------------------------------
-  const double waitTime = moduloTime;
-  _processedBeforeTime = newCorr->tt - waitTime;
-
   QList<cmbEpoch*> epochsToProcess;
-
   QMapIterator<QString, cmbAC*> itAC(_ACs);
   while (itAC.hasNext()) {
     itAC.next();
     cmbAC* AC = itAC.value();
-
     QMutableListIterator<cmbEpoch*> itEpo(AC->epochs);
     while (itEpo.hasNext()) {
       cmbEpoch* epoch = itEpo.next();
-      if (epoch->time < _processedBeforeTime) {
+      if (epoch->time <= processTime) {
         epochsToProcess.append(epoch);
         itEpo.remove();
       }
