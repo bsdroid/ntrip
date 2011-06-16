@@ -78,7 +78,7 @@ class bncComb : public bncEphUser  {
   void switchToLastEph(const t_eph* lastEph, t_corr* corr);
 
   QMap<QString, cmbAC*> _ACs;   // Analytical Centers (key is mountpoint)
-  bncTime               _processedBeforeTime;
+  bncTime               _lastCorrTime;
   QVector<cmbParam*>    _params;
   bncRtnetDecoder*      _rtnetDecoder;
   SymmetricMatrix       _QQ;
