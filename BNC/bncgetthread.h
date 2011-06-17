@@ -127,6 +127,7 @@ class bncGetThread : public QThread {
    QMutex          _mutex;
    bncPPPclient*   _PPPclient;
    bool            _rawOutput;
+   QMap<QString, long> _prnLastEpo;
 };
 
 #endif
