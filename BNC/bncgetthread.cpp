@@ -456,7 +456,7 @@ void bncGetThread::run() {
           int    week;
           double sec;
           currentGPSWeeks(week, sec);
-          long currTime = week * 7*24*3600 + sec;
+          long currTime = week * 7*24*3600 + long(sec);
           const double maxDt = 600.0;
           if (fabs(currTime - obsTime) > maxDt) {
               emit( newMessage(_staID + ": Wrong observation epoch(s)", false) );
