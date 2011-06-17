@@ -442,24 +442,23 @@ void bncGetThread::run() {
       // ------------------------------------------------
       QListIterator<t_obs> it(_decoder->_obsList);
       bool firstObs = true;
-      QMap<QString, long> prnLastEpo;
       while (it.hasNext()) {
         const t_obs& obs = it.next();
+
+        QString prn  = QString("%1%2").arg(obs.satSys)
+                                      .arg(obs.satNum, 2, 10, QChar('0'));
+        long iSec    = long(floor(obs.GPSWeeks+0.5));
+        long obsTime = obs.GPSWeek * 7*24*3600 + iSec;
 
         // Check observation epoch
         // -----------------------
         if (!_rawFile && !dynamic_cast<gpssDecoder*>(_decoder)) {
-          int week;
+          int    week;
           double sec;
           currentGPSWeeks(week, sec);
-          const double secPerWeek = 7.0 * 24.0 * 3600.0;
-          
-          double currSec = week        * secPerWeek + sec;
-          double obsSec  = obs.GPSWeek * secPerWeek + obs.GPSWeeks;
-
+          long currTime = week * 7*24*3600 + sec;
           const double maxDt = 600.0;
-
-          if (fabs(currSec - obsSec) > maxDt) {
+          if (fabs(currTime - obsTime) > maxDt) {
               emit( newMessage(_staID + ": Wrong observation epoch(s)", false) );
             continue;
           }
@@ -467,29 +466,24 @@ void bncGetThread::run() {
       
         // Check observations comming twice (e.g. KOUR0 Problem)
         // -----------------------------------------------------
-        long iSec    = long(floor(obs.GPSWeeks+0.5));
-        long newTime = obs.GPSWeek * 7*24*3600 + iSec;
-        QString prn  = QString("%1%2").arg(obs.satSys)
-                                      .arg(obs.satNum, 2, 10, QChar('0'));
-
-        QMap<QString, long>::const_iterator it = prnLastEpo.find(prn);
-        if (it == prnLastEpo.end()) {
-          prnLastEpo[prn] = newTime;
+        QMap<QString, long>::const_iterator it = _prnLastEpo.find(prn);
+        if (it == _prnLastEpo.end()) {
+          _prnLastEpo[prn] = obsTime;
         }
         else {
           long oldTime = it.value();
-          if      (newTime <  oldTime) {
+          if      (obsTime <  oldTime) {
             emit( newMessage(_staID + 
                ": old observation " + prn.toAscii(), false));
             continue;
           }
-          else if (newTime == oldTime) {
+          else if (obsTime == oldTime) {
             emit( newMessage(_staID + 
                ": observation comming more than once " + prn.toAscii(), false));
             continue;
           }
           else {
-            prnLastEpo[prn] = newTime;
+            _prnLastEpo[prn] = obsTime;
           }
         }
 
@@ -499,7 +493,7 @@ void bncGetThread::run() {
           if (_samplingRate == 0 || iSec % _samplingRate == 0) {
             _rnx->deepCopy(obs);
           }
-          _rnx->dumpEpoch(newTime);
+          _rnx->dumpEpoch(obsTime);
         }
       
         // PPP Client
