@@ -425,6 +425,7 @@ void bncGetThread::run() {
       // Decode Data
       // -----------
       vector<string> errmsg;
+      _decoder->_obsList.clear();
       t_irc irc = _decoder->Decode(data.data(), data.size(), errmsg);
 
       // Perform various scans and checks
@@ -445,19 +446,6 @@ void bncGetThread::run() {
       while (it.hasNext()) {
         const t_obs& obs = it.next();
 
-        // Check observations comming twice (e.g. KOUR0 Problem)
-        // -----------------------------------------------------
-        QString prn = QString("%1%2").arg(obs.satSys)
-                                     .arg(obs.satNum, 2, 10, QChar('0'));
-        if (prnList.indexOf(prn) == -1) {
-          prnList << prn;
-        }
-        else {
-          emit( newMessage(_staID + 
-             ": observation comming more than once " + prn.toAscii(), false) );
-          continue;
-        }
-
         // Check observation epoch
         // -----------------------
         if (!_rawFile && !dynamic_cast<gpssDecoder*>(_decoder)) {
@@ -477,6 +465,19 @@ void bncGetThread::run() {
           }
         }
       
+        // Check observations comming twice (e.g. KOUR0 Problem)
+        // -----------------------------------------------------
+        QString prn = QString("%1%2").arg(obs.satSys)
+                                     .arg(obs.satNum, 2, 10, QChar('0'));
+        if (prnList.indexOf(prn) == -1) {
+          prnList << prn;
+        }
+        else {
+          emit( newMessage(_staID + 
+             ": observation comming more than once " + prn.toAscii(), false) );
+          continue;
+        }
+
         // RINEX Output
         // ------------
         if (_rnx) {
