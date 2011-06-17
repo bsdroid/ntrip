@@ -441,8 +441,22 @@ void bncGetThread::run() {
       // ------------------------------------------------
       QListIterator<t_obs> it(_decoder->_obsList);
       bool firstObs = true;
+      QList<QString> prnList;
       while (it.hasNext()) {
         const t_obs& obs = it.next();
+
+        // Check observations comming twice (e.g. KOUR0 Problem)
+        // -----------------------------------------------------
+        QString prn = QString("%1%2").arg(obs.satSys)
+                                     .arg(obs.satNum, 2, 10, QChar('0'));
+        if (prnList.indexOf(prn) == -1) {
+          prnList << prn;
+        }
+        else {
+          emit( newMessage(_staID + 
+             ": observation comming more than once " + prn.toAscii(), false) );
+          continue;
+        }
 
         // Check observation epoch
         // -----------------------
