@@ -442,7 +442,7 @@ void bncGetThread::run() {
       // ------------------------------------------------
       QListIterator<t_obs> it(_decoder->_obsList);
       bool firstObs = true;
-      QList<QString> prnList;
+      QMap<QString, long> prnLastEpo;
       while (it.hasNext()) {
         const t_obs& obs = it.next();
 
@@ -467,22 +467,35 @@ void bncGetThread::run() {
       
         // Check observations comming twice (e.g. KOUR0 Problem)
         // -----------------------------------------------------
-        QString prn = QString("%1%2").arg(obs.satSys)
-                                     .arg(obs.satNum, 2, 10, QChar('0'));
-        if (prnList.indexOf(prn) == -1) {
-          prnList << prn;
+        long iSec    = long(floor(obs.GPSWeeks+0.5));
+        long newTime = obs.GPSWeek * 7*24*3600 + iSec;
+        QString prn  = QString("%1%2").arg(obs.satSys)
+                                      .arg(obs.satNum, 2, 10, QChar('0'));
+
+        QMap<QString, long>::const_iterator it = prnLastEpo.find(prn);
+        if (it == prnLastEpo.end()) {
+          prnLastEpo[prn] = newTime;
         }
         else {
-          emit( newMessage(_staID + 
-             ": observation comming more than once " + prn.toAscii(), false) );
-          continue;
+          long oldTime = it.value();
+          if      (newTime <  oldTime) {
+            emit( newMessage(_staID + 
+               ": old observation " + prn.toAscii(), false));
+            continue;
+          }
+          else if (newTime == oldTime) {
+            emit( newMessage(_staID + 
+               ": observation comming more than once " + prn.toAscii(), false));
+            continue;
+          }
+          else {
+            prnLastEpo[prn] = newTime;
+          }
         }
 
         // RINEX Output
         // ------------
         if (_rnx) {
-          long iSec    = long(floor(obs.GPSWeeks+0.5));
-          long newTime = obs.GPSWeek * 7*24*3600 + iSec;
           if (_samplingRate == 0 || iSec % _samplingRate == 0) {
             _rnx->deepCopy(obs);
           }
