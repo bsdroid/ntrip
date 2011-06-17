@@ -464,8 +464,8 @@ void bncGetThread::run() {
           }
         }
       
-        // Check observations comming twice (e.g. KOUR0 Problem)
-        // -----------------------------------------------------
+        // Check observations coming twice (e.g. KOUR0 Problem)
+        // ----------------------------------------------------
         QMap<QString, long>::const_iterator it = _prnLastEpo.find(prn);
         if (it == _prnLastEpo.end()) {
           _prnLastEpo[prn] = obsTime;
@@ -479,7 +479,7 @@ void bncGetThread::run() {
           }
           else if (obsTime == oldTime) {
             emit( newMessage(_staID + 
-               ": observation comming more than once " + prn.toAscii(), false));
+               ": observation coming more than once " + prn.toAscii(), false));
             continue;
           }
           else {
