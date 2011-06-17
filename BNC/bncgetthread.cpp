@@ -467,10 +467,7 @@ void bncGetThread::run() {
         // Check observations coming twice (e.g. KOUR0 Problem)
         // ----------------------------------------------------
         QMap<QString, long>::const_iterator it = _prnLastEpo.find(prn);
-        if (it == _prnLastEpo.end()) {
-          _prnLastEpo[prn] = obsTime;
-        }
-        else {
+        if (it != _prnLastEpo.end()) {
           long oldTime = it.value();
           if      (obsTime <  oldTime) {
             emit( newMessage(_staID + 
@@ -482,10 +479,8 @@ void bncGetThread::run() {
                ": observation coming more than once " + prn.toAscii(), false));
             continue;
           }
-          else {
-            _prnLastEpo[prn] = obsTime;
-          }
         }
+        _prnLastEpo[prn] = obsTime;
 
         // RINEX Output
         // ------------
