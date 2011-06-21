@@ -1215,7 +1215,7 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
 
   Tracer tracer("bncModel::addObs");
 
-  const double ELEWGHT = 60.0;
+  const double ELEWGHT = 20.0;
   double ellWgtCoef = 1.0;
   double eleD = satData->eleSat * 180.0 / M_PI; 
   if (eleD < ELEWGHT) {
