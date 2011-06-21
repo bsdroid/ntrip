@@ -478,93 +478,96 @@ double bncModel::delay_saast(double Ele) {
 ////////////////////////////////////////////////////////////////////////////
 void bncModel::predict(int iPhase, t_epoData* epoData) {
 
-  bncSettings settings;
+  if (iPhase == 0) {
 
-  _time = epoData->tt; // current epoch time
-
-  _maxSolGap = settings.value("pppMaxSolGap").toDouble();
-
-  bool firstCrd = false;
-  if (!_lastTimeOK.valid() || (_maxSolGap > 0 && _time - _lastTimeOK > _maxSolGap)) {
-    firstCrd = true;
-    _startTime = epoData->tt;
-    reset();
-  }
-
-  // Use different white noise for Quick-Start mode
-  // ----------------------------------------------
-  double sigCrdP_used   = _sigCrdP;
-  if ( _quickStart > 0.0 && _quickStart > (epoData->tt - _startTime) ) {
-    sigCrdP_used   = 0.0;
-  }
-
-  // Predict Parameter values, add white noise
-  // -----------------------------------------
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    bncParam* pp = _params[iPar-1];
- 
-    // Coordinates
-    // -----------
-    if      (pp->type == bncParam::CRD_X) {
-      if (firstCrd) {
-        if (settings.value("pppRefCrdX").toString() != "" &&
-            settings.value("pppRefCrdY").toString() != "" &&
-            settings.value("pppRefCrdZ").toString() != "") {
-          pp->xx = settings.value("pppRefCrdX").toDouble();
-        }
-        else {
-          pp->xx = _xcBanc(1);
-        }
-      }
-      _QQ(iPar,iPar) += sigCrdP_used * sigCrdP_used;
+    bncSettings settings;
+    
+    _time = epoData->tt; // current epoch time
+    
+    _maxSolGap = settings.value("pppMaxSolGap").toDouble();
+    
+    bool firstCrd = false;
+    if (!_lastTimeOK.valid() || (_maxSolGap > 0 && _time - _lastTimeOK > _maxSolGap)) {
+      firstCrd = true;
+      _startTime = epoData->tt;
+      reset();
     }
-    else if (pp->type == bncParam::CRD_Y) {
-      if (firstCrd) {
-        if (settings.value("pppRefCrdX").toString() != "" &&
-            settings.value("pppRefCrdY").toString() != "" &&
-            settings.value("pppRefCrdZ").toString() != "") {
-          pp->xx = settings.value("pppRefCrdY").toDouble();
-        }
-        else {
-          pp->xx = _xcBanc(2);
-        }
-      }
-      _QQ(iPar,iPar) += sigCrdP_used * sigCrdP_used;
-    }
-    else if (pp->type == bncParam::CRD_Z) {
-      if (firstCrd) {
-        if (settings.value("pppRefCrdX").toString() != "" &&
-            settings.value("pppRefCrdY").toString() != "" &&
-            settings.value("pppRefCrdZ").toString() != "") {
-          pp->xx = settings.value("pppRefCrdZ").toDouble();
-        }
-        else {
-          pp->xx = _xcBanc(3);
-        }
-      }
-      _QQ(iPar,iPar) += sigCrdP_used * sigCrdP_used;
-    }   
-
-    // Receiver Clocks
-    // ---------------
-    else if (pp->type == bncParam::RECCLK) {
-      pp->xx = _xcBanc(4);
-      for (int jj = 1; jj <= _params.size(); jj++) {
-        _QQ(iPar, jj) = 0.0;
-      }
-      _QQ(iPar,iPar) = _sigClk0 * _sigClk0;
+    
+    // Use different white noise for Quick-Start mode
+    // ----------------------------------------------
+    double sigCrdP_used   = _sigCrdP;
+    if ( _quickStart > 0.0 && _quickStart > (epoData->tt - _startTime) ) {
+      sigCrdP_used   = 0.0;
     }
 
-    // Tropospheric Delay
-    // ------------------
-    else if (pp->type == bncParam::TROPO) {
-      _QQ(iPar,iPar) += _sigTrpP * _sigTrpP;
-    }
-
-    // Galileo Offset
-    // --------------
-    else if (pp->type == bncParam::GALILEO_OFFSET) {
-      _QQ(iPar,iPar) += _sigGalileoOffsetP * _sigGalileoOffsetP;
+    // Predict Parameter values, add white noise
+    // -----------------------------------------
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      bncParam* pp = _params[iPar-1];
+    
+      // Coordinates
+      // -----------
+      if      (pp->type == bncParam::CRD_X) {
+        if (firstCrd) {
+          if (settings.value("pppRefCrdX").toString() != "" &&
+              settings.value("pppRefCrdY").toString() != "" &&
+              settings.value("pppRefCrdZ").toString() != "") {
+            pp->xx = settings.value("pppRefCrdX").toDouble();
+          }
+          else {
+            pp->xx = _xcBanc(1);
+          }
+        }
+        _QQ(iPar,iPar) += sigCrdP_used * sigCrdP_used;
+      }
+      else if (pp->type == bncParam::CRD_Y) {
+        if (firstCrd) {
+          if (settings.value("pppRefCrdX").toString() != "" &&
+              settings.value("pppRefCrdY").toString() != "" &&
+              settings.value("pppRefCrdZ").toString() != "") {
+            pp->xx = settings.value("pppRefCrdY").toDouble();
+          }
+          else {
+            pp->xx = _xcBanc(2);
+          }
+        }
+        _QQ(iPar,iPar) += sigCrdP_used * sigCrdP_used;
+      }
+      else if (pp->type == bncParam::CRD_Z) {
+        if (firstCrd) {
+          if (settings.value("pppRefCrdX").toString() != "" &&
+              settings.value("pppRefCrdY").toString() != "" &&
+              settings.value("pppRefCrdZ").toString() != "") {
+            pp->xx = settings.value("pppRefCrdZ").toDouble();
+          }
+          else {
+            pp->xx = _xcBanc(3);
+          }
+        }
+        _QQ(iPar,iPar) += sigCrdP_used * sigCrdP_used;
+      }   
+    
+      // Receiver Clocks
+      // ---------------
+      else if (pp->type == bncParam::RECCLK) {
+        pp->xx = _xcBanc(4);
+        for (int jj = 1; jj <= _params.size(); jj++) {
+          _QQ(iPar, jj) = 0.0;
+        }
+        _QQ(iPar,iPar) = _sigClk0 * _sigClk0;
+      }
+    
+      // Tropospheric Delay
+      // ------------------
+      else if (pp->type == bncParam::TROPO) {
+        _QQ(iPar,iPar) += _sigTrpP * _sigTrpP;
+      }
+    
+      // Galileo Offset
+      // --------------
+      else if (pp->type == bncParam::GALILEO_OFFSET) {
+        _QQ(iPar,iPar) += _sigGalileoOffsetP * _sigGalileoOffsetP;
+      }
     }
   }
 
