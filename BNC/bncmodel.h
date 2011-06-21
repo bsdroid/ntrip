@@ -95,7 +95,7 @@ class bncModel : public QObject {
   void   reset();
   void   cmpEle(t_satData* satData);
   void   addAmb(t_satData* satData);
-  void   addObs(unsigned& iObs, t_satData* satData,
+  void   addObs(int phase, unsigned& iObs, t_satData* satData,
                 Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP);
   void   printRes(const ColumnVector& vv, 
                   std::ostringstream& str, t_satData* satData);
@@ -106,6 +106,7 @@ class bncModel : public QObject {
   double cmpValue(t_satData* satData, bool phase);
   double delay_saast(double Ele);
   void   predict(t_epoData* epoData);
+  t_irc  update_p(t_epoData* epoData, ColumnVector& dx);
   int    outlierDetection(const SymmetricMatrix& QQsav, 
                           const ColumnVector& vv,
                           QMap<QString, t_satData*>& satDataGPS,
