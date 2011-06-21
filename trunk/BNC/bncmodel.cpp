@@ -670,112 +670,12 @@ t_irc bncModel::update(t_epoData* epoData) {
           "\n--------------------------------------------------------------\n";
   }
 
-  SymmetricMatrix QQsav;
-  ColumnVector    dx;
-  ColumnVector    vv;
-
-  // Loop over all outliers
+  // Outlier Detection Loop
   // ----------------------
-  do {
-    
-    // Bancroft Solution
-    // -----------------
-    if (cmpBancroft(epoData) != success) {
-      emit newMessage(_log, false);
-      return failure;
-    }
-
-    // Status Prediction
-    // -----------------
-    predict(epoData);
-    
-    // Create First-Design Matrix
-    // --------------------------
-    unsigned nPar = _params.size();
-    unsigned nObs = 0;
-    if (_usePhase) {
-      nObs = 2 * (epoData->sizeGPS() + epoData->sizeGal()) + epoData->sizeGlo();
-    }
-    else {
-      nObs = epoData->sizeGPS() + epoData->sizeGal(); // Glonass code not used
-    }
-    
-    if (nObs < nPar) {
-      _log += "bncModel::update: nObs < nPar\n";
-      emit newMessage(_log, false);
-      return failure;
-    }
-
-    Matrix          AA(nObs, nPar);  // first design matrix
-    ColumnVector    ll(nObs);        // tems observed-computed
-    DiagonalMatrix  PP(nObs); PP = 0.0;
-    
-    unsigned iObs = 0;
-
-    // GPS code and (optionally) phase observations
-    // --------------------------------------------
-    QMapIterator<QString, t_satData*> itGPS(epoData->satDataGPS);
-    while (itGPS.hasNext()) {
-      itGPS.next();
-      t_satData* satData = itGPS.value();
-      addObs(iObs, satData, AA, ll, PP);
-    }
-
-    // Glonass phase observations
-    // --------------------------
-    QMapIterator<QString, t_satData*> itGlo(epoData->satDataGlo);
-    while (itGlo.hasNext()) {
-      itGlo.next();
-      t_satData* satData = itGlo.value();
-      addObs(iObs, satData, AA, ll, PP);
-    }
-
-    // Galileo code and (optionally) phase observations
-    // ------------------------------------------------
-    QMapIterator<QString, t_satData*> itGal(epoData->satDataGal);
-    while (itGal.hasNext()) {
-      itGal.next();
-      t_satData* satData = itGal.value();
-      addObs(iObs, satData, AA, ll, PP);
-    }
-
-    // Compute Filter Update
-    // ---------------------
-    QQsav = _QQ;
-
-    kalman(AA, ll, PP, _QQ, dx);
-
-    vv = ll - AA * dx;
-
-    // Print Residuals
-    // ---------------
-    if (true) {
-      ostringstream str;
-      str.setf(ios::fixed);
-
-      QMapIterator<QString, t_satData*> itGPS(epoData->satDataGPS);
-      while (itGPS.hasNext()) {
-        itGPS.next();
-        t_satData* satData = itGPS.value();
-        printRes(vv, str, satData);
-      }
-      QMapIterator<QString, t_satData*> itGlo(epoData->satDataGlo);
-      while (itGlo.hasNext()) {
-        itGlo.next();
-        t_satData* satData = itGlo.value();
-        printRes(vv, str, satData);
-      }
-      QMapIterator<QString, t_satData*> itGal(epoData->satDataGal);
-      while (itGal.hasNext()) {
-        itGal.next();
-        t_satData* satData = itGal.value();
-        printRes(vv, str, satData);
-      }
-      _log += str.str().c_str();
-    }
-
-  } while (outlierDetection(QQsav, vv, epoData->satDataGPS, 
-                            epoData->satDataGlo, epoData->satDataGal) != 0);
+  ColumnVector dx;
+  if (update_p(epoData, dx) != success) {
+    return failure;
+  }
 
   // Remember the Epoch-specific Results for the computation of means
   // ----------------------------------------------------------------
@@ -1277,24 +1177,12 @@ void bncModel::addAmb(t_satData* satData) {
 
 // 
 ///////////////////////////////////////////////////////////////////////////
-void bncModel::addObs(unsigned& iObs, t_satData* satData,
+void bncModel::addObs(int phase, unsigned& iObs, t_satData* satData,
                       Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP) {
 
-  // Code Observations
-  // -----------------
-  if (satData->system() != 'R') {
-    ++iObs;
-    ll(iObs)      = satData->P3 - cmpValue(satData, false);
-    PP(iObs,iObs) = 1.0 / (_sigP3 * _sigP3);
-    for (int iPar = 1; iPar <= _params.size(); iPar++) {
-      AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
-    }
-    satData->indexCode = iObs;
-  }
-  
   // Phase Observations
   // ------------------
-  if (_usePhase) {
+  if (phase == 1) {
     ++iObs;
     ll(iObs)      = satData->L3 - cmpValue(satData, true);
     PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3);
@@ -1307,6 +1195,18 @@ void bncModel::addObs(unsigned& iObs, t_satData* satData,
     }
     satData->indexPhase = iObs;
   }
+
+  // Code Observations
+  // -----------------
+  else {
+    ++iObs;
+    ll(iObs)      = satData->P3 - cmpValue(satData, false);
+    PP(iObs,iObs) = 1.0 / (_sigP3 * _sigP3);
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
+    }
+    satData->indexCode = iObs;
+  }
 }
 
 // 
@@ -1316,11 +1216,12 @@ void bncModel::printRes(const ColumnVector& vv,
   if (satData->indexPhase) {
     str << _time.timestr(1)
         << " RES " << satData->prn.toAscii().data() << "   L3 "
-        << setw(9) << setprecision(4) << vv(satData->indexPhase);
-    if (satData->indexCode) {
-      str << "   P3 " << setw(9) << setprecision(4) << vv(satData->indexCode);
-    }
-    str << endl;
+        << setw(9) << setprecision(4) << vv(satData->indexPhase) << endl;
+  }
+  if (satData->indexCode) {
+    str << _time.timestr(1)
+        << " RES " << satData->prn.toAscii().data() << "   P3 "
+        << setw(9) << setprecision(4) << vv(satData->indexCode) << endl;
   }
 }
 
@@ -1352,3 +1253,99 @@ void bncModel::findMaxRes(const ColumnVector& vv,
   }
 }
  
+// Update Step (private - loop over outliers)
+////////////////////////////////////////////////////////////////////////////
+t_irc bncModel::update_p(t_epoData* epoData, ColumnVector& dx) {
+
+  SymmetricMatrix QQsav;
+  ColumnVector    vv;
+
+  for (int iPhase = 0; iPhase <= 1; iPhase++) {
+
+    do {
+
+      if (iPhase == 0) {      
+
+        // Bancroft Solution
+        // -----------------
+        if (cmpBancroft(epoData) != success) {
+          emit newMessage(_log, false);
+          return failure;
+        }
+      
+        // Status Prediction
+        // -----------------
+        predict(epoData);
+      }
+      
+      // Create First-Design Matrix
+      // --------------------------
+      unsigned nPar = _params.size();
+      unsigned nObs = 0;
+      nObs = epoData->sizeGPS() + epoData->sizeGal(); // Glonass code not used
+    
+      Matrix          AA(nObs, nPar);  // first design matrix
+      ColumnVector    ll(nObs);        // tems observed-computed
+      DiagonalMatrix  PP(nObs); PP = 0.0;
+      
+      unsigned iObs = 0;
+    
+      // GPS
+      // ---
+      QMapIterator<QString, t_satData*> itGPS(epoData->satDataGPS);
+      while (itGPS.hasNext()) {
+        itGPS.next();
+        t_satData* satData = itGPS.value();
+        addObs(iPhase, iObs, satData, AA, ll, PP);
+      }
+    
+      // Galileo
+      // -------
+      QMapIterator<QString, t_satData*> itGal(epoData->satDataGal);
+      while (itGal.hasNext()) {
+        itGal.next();
+        t_satData* satData = itGal.value();
+        addObs(iPhase, iObs, satData, AA, ll, PP);
+      }
+    
+      // Compute Filter Update
+      // ---------------------
+      QQsav = _QQ;
+    
+      kalman(AA, ll, PP, _QQ, dx);
+    
+      vv = ll - AA * dx;
+    
+      // Print Residuals
+      // ---------------
+      if (true) {
+        ostringstream str;
+        str.setf(ios::fixed);
+    
+        QMapIterator<QString, t_satData*> itGPS(epoData->satDataGPS);
+        while (itGPS.hasNext()) {
+          itGPS.next();
+          t_satData* satData = itGPS.value();
+          printRes(vv, str, satData);
+        }
+        QMapIterator<QString, t_satData*> itGlo(epoData->satDataGlo);
+        while (itGlo.hasNext()) {
+          itGlo.next();
+          t_satData* satData = itGlo.value();
+          printRes(vv, str, satData);
+        }
+        QMapIterator<QString, t_satData*> itGal(epoData->satDataGal);
+        while (itGal.hasNext()) {
+          itGal.next();
+          t_satData* satData = itGal.value();
+          printRes(vv, str, satData);
+        }
+        _log += str.str().c_str();
+      }
+    
+    } while (outlierDetection(QQsav, vv, epoData->satDataGPS, 
+                              epoData->satDataGlo, epoData->satDataGal) != 0);
+  }
+
+  return success;
+}
