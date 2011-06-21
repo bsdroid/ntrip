@@ -958,7 +958,7 @@ int bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav,
     // Check GPS Code
     // --------------
     if (irc == 0) {
-      findMaxRes(vv,satDataGPS, prnCode, maxResCode, prnPhase, maxResPhase);
+      findMaxRes(iPhase, vv,satDataGPS, prnCode, maxResCode, prnPhase, maxResPhase);
       if (maxResCode > MAXRES_CODE_GPS) {
         satDataGPS.remove(prnCode);
         prnRemoved = prnCode;
@@ -970,7 +970,7 @@ int bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav,
     // Check Galileo Code
     // ------------------
     if (irc == 0) {
-      findMaxRes(vv,satDataGal, prnCode, maxResCode, prnPhase, maxResPhase);
+      findMaxRes(iPhase, vv,satDataGal, prnCode, maxResCode, prnPhase, maxResPhase);
       if (maxResCode > MAXRES_CODE_GAL) {
         satDataGal.remove(prnCode);
         prnRemoved = prnCode;
@@ -985,7 +985,7 @@ int bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav,
     // Check Glonass Phase
     // -------------------
     if (irc == 0) {
-      findMaxRes(vv,satDataGlo, prnCode, maxResCode, prnPhase, maxResPhase);
+      findMaxRes(iPhase, vv,satDataGlo, prnCode, maxResCode, prnPhase, maxResPhase);
       if (maxResPhase > MAXRES_PHASE_GLO) {
         satDataGlo.remove(prnPhase);
         prnRemoved = prnPhase;
@@ -997,7 +997,7 @@ int bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav,
     // Check Galileo Phase
     // -------------------
     if (irc == 0) {
-      findMaxRes(vv,satDataGal, prnCode, maxResCode, prnPhase, maxResPhase);
+      findMaxRes(iPhase, vv,satDataGal, prnCode, maxResCode, prnPhase, maxResPhase);
       if      (maxResPhase > MAXRES_PHASE_GAL) {
         satDataGal.remove(prnPhase);
         prnRemoved = prnPhase;
@@ -1009,7 +1009,7 @@ int bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav,
     // Check GPS Phase
     // ---------------
     if (irc == 0) {
-      findMaxRes(vv,satDataGPS, prnCode, maxResCode, prnPhase, maxResPhase);
+      findMaxRes(iPhase, vv,satDataGPS, prnCode, maxResCode, prnPhase, maxResPhase);
       if      (maxResPhase > MAXRES_PHASE_GPS) {
         satDataGPS.remove(prnPhase);
         prnRemoved = prnPhase;
@@ -1263,7 +1263,7 @@ void bncModel::printRes(int iPhase, const ColumnVector& vv,
 
 // 
 ///////////////////////////////////////////////////////////////////////////
-void bncModel::findMaxRes(const ColumnVector& vv,
+void bncModel::findMaxRes(int iPhase, const ColumnVector& vv,
                           const QMap<QString, t_satData*>& satData,
                           QString& prnCode,  double& maxResCode, 
                           QString& prnPhase, double& maxResPhase) {
@@ -1275,16 +1275,20 @@ void bncModel::findMaxRes(const ColumnVector& vv,
   while (it.hasNext()) {
     it.next();
     t_satData* satData = it.value();
-    if (satData->indexCode) {
-      if (fabs(vv(satData->indexCode)) > maxResCode) {
-        maxResCode = fabs(vv(satData->indexCode));
-        prnCode    = satData->prn;
+    if (iPhase == 0) {
+      if (satData->indexCode) {
+        if (fabs(vv(satData->indexCode)) > maxResCode) {
+          maxResCode = fabs(vv(satData->indexCode));
+          prnCode    = satData->prn;
+        }
       }
     }
-    if (satData->indexPhase) {
-      if (fabs(vv(satData->indexPhase)) > maxResPhase) {
-        maxResPhase = fabs(vv(satData->indexPhase));
-        prnPhase    = satData->prn;
+    else {
+      if (satData->indexPhase) {
+        if (fabs(vv(satData->indexPhase)) > maxResPhase) {
+          maxResPhase = fabs(vv(satData->indexPhase));
+          prnPhase    = satData->prn;
+        }
       }
     }
   }
