@@ -476,7 +476,7 @@ double bncModel::delay_saast(double Ele) {
 
 // Prediction Step of the Filter
 ////////////////////////////////////////////////////////////////////////////
-void bncModel::predict(t_epoData* epoData) {
+void bncModel::predict(int iPhase, t_epoData* epoData) {
 
   bncSettings settings;
 
@@ -918,7 +918,7 @@ t_irc bncModel::update(t_epoData* epoData) {
 
 // Outlier Detection
 ////////////////////////////////////////////////////////////////////////////
-int bncModel::outlierDetection(int phase, const SymmetricMatrix& QQsav, 
+int bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav, 
                                const ColumnVector& vv,
                                QMap<QString, t_satData*>& satDataGPS,
                                QMap<QString, t_satData*>& satDataGlo,
@@ -934,7 +934,7 @@ int bncModel::outlierDetection(int phase, const SymmetricMatrix& QQsav,
 
   int irc = 0;
 
-  if (phase == 0) {
+  if (iPhase == 0) {
 
     // Check GPS Code
     // --------------
@@ -962,6 +962,7 @@ int bncModel::outlierDetection(int phase, const SymmetricMatrix& QQsav,
   }
 
   else {
+
     // Check Glonass Phase
     // -------------------
     if (irc == 0) {
@@ -1182,12 +1183,12 @@ void bncModel::addAmb(t_satData* satData) {
 
 // 
 ///////////////////////////////////////////////////////////////////////////
-void bncModel::addObs(int phase, unsigned& iObs, t_satData* satData,
+void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
                       Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP) {
 
   // Phase Observations
   // ------------------
-  if (phase == 1) {
+  if (iPhase == 1) {
     ++iObs;
     ll(iObs)      = satData->L3 - cmpValue(satData, true);
     PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3);
@@ -1216,9 +1217,9 @@ void bncModel::addObs(int phase, unsigned& iObs, t_satData* satData,
 
 // 
 ///////////////////////////////////////////////////////////////////////////
-void bncModel::printRes(int phase, const ColumnVector& vv, 
+void bncModel::printRes(int iPhase, const ColumnVector& vv, 
                         ostringstream& str, t_satData* satData) {
-  if (phase) {
+  if (iPhase == 1) {
     str << _time.timestr(1)
         << " RES " << satData->prn.toAscii().data() << "   L3 "
         << setw(9) << setprecision(4) << vv(satData->indexPhase) << endl;
@@ -1269,10 +1270,9 @@ t_irc bncModel::update_p(t_epoData* epoData, ColumnVector& dx) {
 
     do {
 
+      // Bancroft Solution
+      // -----------------
       if (iPhase == 0) {      
-
-        // Bancroft Solution
-        // -----------------
         if (cmpBancroft(epoData) != success) {
           emit newMessage(_log, false);
           return failure;
@@ -1281,7 +1281,7 @@ t_irc bncModel::update_p(t_epoData* epoData, ColumnVector& dx) {
       
       // Status Prediction
       // -----------------
-      predict(epoData);
+      predict(iPhase, epoData);
       
       // Create First-Design Matrix
       // --------------------------
