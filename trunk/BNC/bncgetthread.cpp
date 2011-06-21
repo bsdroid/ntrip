@@ -508,8 +508,12 @@ void bncGetThread::run() {
       }
       _decoder->_obsList.clear();
     }
+    catch (Exception& exc) {
+      emit(newMessage(_staID + " " + exc.what(), true));
+      _isToBeDeleted = true;
+    }
     catch (...) {
-      emit(newMessage(_staID + "bncGetThread exception", true));
+      emit(newMessage(_staID + " bncGetThread exception", true));
       _isToBeDeleted = true;
     }
   }
