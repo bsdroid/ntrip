@@ -1219,7 +1219,7 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
   double ellWgtCoef = 1.0;
   double eleD = satData->eleSat * 180.0 / M_PI; 
   if (eleD < ELEWGHT) {
-    ellWgtCoef = 2.5 - 1.5 / (ELEWGHT - 10.0) * (eleD - 10.0);
+    ellWgtCoef = 1.5 - 0.5 / (ELEWGHT - 10.0) * (eleD - 10.0);
   }
 
   // Phase Observations
