@@ -59,10 +59,10 @@ const double   MINELE_GPS       = 10.0 * M_PI / 180.0;
 const double   MINELE_GLO       = 10.0 * M_PI / 180.0;
 const double   MINELE_GAL       = 10.0 * M_PI / 180.0;
 const double   MAXRES_CODE_GPS  = 10.0;
-const double   MAXRES_PHASE_GPS = 0.10;
-const double   MAXRES_PHASE_GLO = 0.05;
+const double   MAXRES_PHASE_GPS = 0.03;
+const double   MAXRES_PHASE_GLO = 0.03;
 const double   MAXRES_CODE_GAL  = 10.0;
-const double   MAXRES_PHASE_GAL = 0.10;
+const double   MAXRES_PHASE_GAL = 0.03;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -1215,12 +1215,19 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
 
   Tracer tracer("bncModel::addObs");
 
+  const double ELEWGHT = 60.0;
+  double ellWgtCoef = 1.0;
+  double eleD = satData->eleSat * 180.0 / M_PI; 
+  if (eleD < ELEWGHT) {
+    ellWgtCoef = 2.5 - 1.5 / (ELEWGHT - 10.0) * (eleD - 10.0);
+  }
+
   // Phase Observations
   // ------------------
   if (iPhase == 1) {
     ++iObs;
     ll(iObs)      = satData->L3 - cmpValue(satData, true);
-    PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3);
+    PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3) / (ellWgtCoef * ellWgtCoef);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       if (_params[iPar-1]->type == bncParam::AMB_L3 &&
           _params[iPar-1]->prn  == satData->prn) {
@@ -1236,7 +1243,7 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
   else {
     ++iObs;
     ll(iObs)      = satData->P3 - cmpValue(satData, false);
-    PP(iObs,iObs) = 1.0 / (_sigP3 * _sigP3);
+    PP(iObs,iObs) = 1.0 / (_sigP3 * _sigP3) / (ellWgtCoef * ellWgtCoef);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
     }
