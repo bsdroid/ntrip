@@ -85,6 +85,8 @@ bncParam::~bncParam() {
 ////////////////////////////////////////////////////////////////////////////
 double bncParam::partial(t_satData* satData, bool phase) {
 
+  Tracer tracer("bncParam::partial");
+
   // Coordinates
   // -----------
   if      (type == CRD_X) {
@@ -274,6 +276,8 @@ bncModel::~bncModel() {
 ////////////////////////////////////////////////////////////////////////////
 void bncModel::reset() {
 
+  Tracer tracer("bncModel::reset");
+
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     delete _params[iPar-1];
   }
@@ -314,6 +318,8 @@ void bncModel::reset() {
 // Bancroft Solution
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncModel::cmpBancroft(t_epoData* epoData) {
+
+  Tracer tracer("bncModel::cmpBancroft");
 
   if (epoData->sizeGPS() < MINOBS) {
     _log += "bncModel::cmpBancroft: not enough data\n";
@@ -383,6 +389,8 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
 ////////////////////////////////////////////////////////////////////////////
 double bncModel::cmpValue(t_satData* satData, bool phase) {
 
+  Tracer tracer("bncModel::cmpValue");
+
   ColumnVector xRec(3);
   xRec(1) = x();
   xRec(2) = y();
@@ -439,6 +447,8 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
 ////////////////////////////////////////////////////////////////////////////
 double bncModel::delay_saast(double Ele) {
 
+  Tracer tracer("bncModel::delay_saast");
+
   double xyz[3]; 
   xyz[0] = x();
   xyz[1] = y();
@@ -477,6 +487,8 @@ double bncModel::delay_saast(double Ele) {
 // Prediction Step of the Filter
 ////////////////////////////////////////////////////////////////////////////
 void bncModel::predict(int iPhase, t_epoData* epoData) {
+
+  Tracer tracer("bncModel::predict");
 
   if (iPhase == 0) {
 
@@ -657,6 +669,8 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
 // Update Step of the Filter (currently just a single-epoch solution)
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncModel::update(t_epoData* epoData) {
+
+  Tracer tracer("bncModel::update");
 
   bncSettings settings;
 
@@ -927,6 +941,8 @@ int bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav,
                                QMap<QString, t_satData*>& satDataGlo,
                                QMap<QString, t_satData*>& satDataGal) {
 
+  Tracer tracer("bncModel::outlierDetection");
+
   QString prnCode;
   QString prnPhase;
   double  maxResCode  = 0.0;
@@ -1016,6 +1032,8 @@ int bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav,
 ////////////////////////////////////////////////////////////////////////////
 void bncModel::writeNMEAstr(const QString& nmStr) {
 
+  Tracer tracer("bncModel::writeNMEAstr");
+
   unsigned char XOR = 0;
   for (int ii = 0; ii < nmStr.length(); ii++) {
     XOR ^= (unsigned char) nmStr[ii].toAscii();
@@ -1037,6 +1055,8 @@ void bncModel::writeNMEAstr(const QString& nmStr) {
 void bncModel::kalman(const Matrix& AA, const ColumnVector& ll, 
                       const DiagonalMatrix& PP, 
                       SymmetricMatrix& QQ, ColumnVector& dx) {
+
+  Tracer tracer("bncModel::kalman");
 
   int nObs = AA.Nrows();
   int nPar = AA.Ncols();
@@ -1072,6 +1092,8 @@ void bncModel::kalman(const Matrix& AA, const ColumnVector& ll,
 ///////////////////////////////////////////////////////////////////////////
 double bncModel::windUp(const QString& prn, const ColumnVector& rSat,
                         const ColumnVector& rRec) {
+
+  Tracer tracer("bncModel::windUp");
 
   double Mjd = _time.mjd() + _time.daysec() / 86400.0;
 
@@ -1152,6 +1174,7 @@ double bncModel::windUp(const QString& prn, const ColumnVector& rSat,
 // 
 ///////////////////////////////////////////////////////////////////////////
 void bncModel::cmpEle(t_satData* satData) {
+  Tracer tracer("bncModel::cmpEle");
   ColumnVector rr = satData->xx - _xcBanc.Rows(1,3);
   double       rho = rr.norm_Frobenius();
 
@@ -1168,6 +1191,7 @@ void bncModel::cmpEle(t_satData* satData) {
 // 
 ///////////////////////////////////////////////////////////////////////////
 void bncModel::addAmb(t_satData* satData) {
+  Tracer tracer("bncModel::addAmb");
   bool    found = false;
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     if (_params[iPar-1]->type == bncParam::AMB_L3 && 
@@ -1188,6 +1212,8 @@ void bncModel::addAmb(t_satData* satData) {
 ///////////////////////////////////////////////////////////////////////////
 void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
                       Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP) {
+
+  Tracer tracer("bncModel::addObs");
 
   // Phase Observations
   // ------------------
@@ -1222,6 +1248,7 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
 ///////////////////////////////////////////////////////////////////////////
 void bncModel::printRes(int iPhase, const ColumnVector& vv, 
                         ostringstream& str, t_satData* satData) {
+  Tracer tracer("bncModel::printRes");
   if (iPhase == 1) {
     str << _time.timestr(1)
         << " RES " << satData->prn.toAscii().data() << "   L3 "
@@ -1240,6 +1267,7 @@ void bncModel::findMaxRes(const ColumnVector& vv,
                           const QMap<QString, t_satData*>& satData,
                           QString& prnCode,  double& maxResCode, 
                           QString& prnPhase, double& maxResPhase) {
+  Tracer tracer("bncModel::findMaxRes");
   maxResCode  = 0.0;
   maxResPhase = 0.0;
 
@@ -1265,6 +1293,8 @@ void bncModel::findMaxRes(const ColumnVector& vv,
 // Update Step (private - loop over outliers)
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncModel::update_p(t_epoData* epoData, ColumnVector& dx) {
+
+  Tracer tracer("bncModel::update_p");
 
   SymmetricMatrix QQsav;
   ColumnVector    vv;
