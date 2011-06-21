@@ -59,10 +59,10 @@ const double   MINELE_GPS       = 10.0 * M_PI / 180.0;
 const double   MINELE_GLO       = 10.0 * M_PI / 180.0;
 const double   MINELE_GAL       = 10.0 * M_PI / 180.0;
 const double   MAXRES_CODE_GPS  = 10.0;
-const double   MAXRES_PHASE_GPS = 0.03;
-const double   MAXRES_PHASE_GLO = 0.03;
+const double   MAXRES_PHASE_GPS = 0.05;
+const double   MAXRES_PHASE_GLO = 0.05;
 const double   MAXRES_CODE_GAL  = 10.0;
-const double   MAXRES_PHASE_GAL = 0.03;
+const double   MAXRES_PHASE_GAL = 0.05;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
