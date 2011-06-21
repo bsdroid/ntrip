@@ -99,7 +99,7 @@ class bncModel : public QObject {
                 Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP);
   void   printRes(int iPhase, const ColumnVector& vv, 
                   std::ostringstream& str, t_satData* satData);
-  void   findMaxRes(const ColumnVector& vv,
+  void   findMaxRes(int iPhase, const ColumnVector& vv,
                     const QMap<QString, t_satData*>& satData,
                     QString& prnCode,  double& maxResCode, 
                     QString& prnPhase, double& maxResPhase);
