@@ -375,13 +375,11 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
           t_eph*  ePrev = _eph.value(prn)->prev;
 	  if      (eLast && eLast->IOD() == cc->iod) {
             eLast->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
-            applyCorr(tt, cc, xc, vv);
-            return success;
+            return applyCorr(tt, cc, xc, vv);
           }
 	  else if (ePrev && ePrev->IOD() == cc->iod) {
             ePrev->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
-            applyCorr(tt, cc, xc, vv);
-            return success;
+            return applyCorr(tt, cc, xc, vv);
           }
 	}
       }
@@ -399,12 +397,16 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc, 
+t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc, 
                              ColumnVector& xc, ColumnVector& vv) {
   ColumnVector dx(3);
 
   double dt = tt - cc->tt;
   ColumnVector raoHlp = cc->rao + cc->dotRao * dt + cc->dotDotRao * dt * dt;
+
+  if (raoHlp.norm_Frobenius() > 20.0) {
+    return failure;
+  }
 
   RSW_to_XYZ(xc.Rows(1,3), vv, raoHlp, dx);
 
@@ -412,6 +414,8 @@ void bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
   xc[1] -= dx[1];
   xc[2] -= dx[2];
   xc[3] += cc->dClk + cc->dotDClk * dt + cc->dotDotDClk * dt * dt;
+
+  return success;
 }
 
 // Correct Time of Transmission
