@@ -106,7 +106,7 @@ class bncModel : public QObject {
   double cmpValue(t_satData* satData, bool phase);
   double delay_saast(double Ele);
   void   predict(int iPhase, t_epoData* epoData);
-  t_irc  update_p(t_epoData* epoData, ColumnVector& dx);
+  t_irc  update_p(t_epoData* epoData);
   int    outlierDetection(int iPhase, const SymmetricMatrix& QQsav, 
                           const ColumnVector& vv,
                           QMap<QString, t_satData*>& satDataGPS,
