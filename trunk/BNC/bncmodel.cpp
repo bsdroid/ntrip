@@ -689,8 +689,7 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   // Outlier Detection Loop
   // ----------------------
-  ColumnVector dx;
-  if (update_p(epoData, dx) != success) {
+  if (update_p(epoData) != success) {
     return failure;
   }
 
@@ -706,7 +705,6 @@ t_irc bncModel::update(t_epoData* epoData) {
   QVectorIterator<bncParam*> itPar(_params);
   while (itPar.hasNext()) {
     bncParam* par = itPar.next();
-    par->xx += dx(par->index);
 
     if      (par->type == bncParam::RECCLK) {
       strB << "\n    clk     = " << setw(10) << setprecision(3) << par->xx 
@@ -1306,7 +1304,7 @@ void bncModel::findMaxRes(int iPhase, const ColumnVector& vv,
  
 // Update Step (private - loop over outliers)
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncModel::update_p(t_epoData* epoData, ColumnVector& dx) {
+t_irc bncModel::update_p(t_epoData* epoData) {
 
   Tracer tracer("bncModel::update_p");
 
@@ -1314,6 +1312,8 @@ t_irc bncModel::update_p(t_epoData* epoData, ColumnVector& dx) {
   ColumnVector    vv;
 
   for (int iPhase = 0; iPhase <= (_usePhase ? 1 : 0); iPhase++) {
+
+    ColumnVector dx;
 
     do {
 
@@ -1415,6 +1415,14 @@ t_irc bncModel::update_p(t_epoData* epoData, ColumnVector& dx) {
     
     } while (outlierDetection(iPhase, QQsav, vv, epoData->satDataGPS, 
                               epoData->satDataGlo, epoData->satDataGal) != 0);
+
+    // Update Parameters
+    // -----------------
+    QVectorIterator<bncParam*> itPar(_params);
+    while (itPar.hasNext()) {
+      bncParam* par = itPar.next();
+      par->xx += dx(par->index);
+    }
   }
 
   return success;
