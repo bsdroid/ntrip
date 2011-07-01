@@ -1308,16 +1308,7 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
   Tracer tracer("bncModel::update_p");
 
-  // Remeber Original State Vector and Variance-Covariance Matrix
-  // ------------------------------------------------------------
-  SymmetricMatrix QQ_orig = _QQ;
-
-  QVectorIterator<bncParam*> itPar(_params);
-  QVector<bncParam*> params_orig;
-  while (itPar.hasNext()) {
-    bncParam* par = itPar.next();
-    params_orig.push_back(new bncParam(*par));
-  }
+  rememberState();
 
   for (int iPhase = 0; iPhase <= (_usePhase ? 1 : 0); iPhase++) {
 
@@ -1331,32 +1322,14 @@ t_irc bncModel::update_p(t_epoData* epoData) {
       // -----------------
       if (iPhase == 0) {      
         if (cmpBancroft(epoData) != success) {
-          QVectorIterator<bncParam*> itParOrig(params_orig);
-          while (itParOrig.hasNext()) {
-            bncParam* par = itParOrig.next();
-            delete par;
-          }
+          restoreState();
           emit newMessage(_log, false);
           return failure;
         }
       }
       else {
         if (epoData->sizeGPS() < MINOBS) {
-
-          _QQ = QQ_orig;
-          QVectorIterator<bncParam*> itPar(_params);
-          while (itPar.hasNext()) {
-            bncParam* par = itPar.next();
-            delete par;
-          }
-          _params.clear();
-
-          QVectorIterator<bncParam*> itParOrig(params_orig);
-          while (itParOrig.hasNext()) {
-            bncParam* par = itParOrig.next();
-            _params.push_back(par);
-          }
-
+          restoreState();
           _log += "bncModel::update_p: not enough data\n";
           emit newMessage(_log, false);
           return failure;
@@ -1462,10 +1435,46 @@ t_irc bncModel::update_p(t_epoData* epoData) {
     }
   }
 
-  QVectorIterator<bncParam*> itParOrig(params_orig);
-  while (itParOrig.hasNext()) {
-    bncParam* par = itParOrig.next();
-    delete par;
-  }
   return success;
 }
+
+// Remeber Original State Vector and Variance-Covariance Matrix
+////////////////////////////////////////////////////////////////////////////
+void bncModel::rememberState() {
+
+  _QQ_sav = _QQ;
+
+  QVectorIterator<bncParam*> itSav(_params_sav);
+  while (itSav.hasNext()) {
+    bncParam* par = itSav.next();
+    delete par;
+  }
+  _params_sav.clear();
+
+  QVectorIterator<bncParam*> it(_params);
+  while (it.hasNext()) {
+    bncParam* par = it.next();
+    _params_sav.push_back(new bncParam(*par));
+  }
+}
+
+// Restore Original State Vector and Variance-Covariance Matrix
+////////////////////////////////////////////////////////////////////////////
+void bncModel::restoreState() {
+
+  _QQ = _QQ_sav;
+
+  QVectorIterator<bncParam*> it(_params);
+  while (it.hasNext()) {
+    bncParam* par = it.next();
+    delete par;
+  }
+  _params.clear();
+
+  QVectorIterator<bncParam*> itSav(_params_sav);
+  while (itSav.hasNext()) {
+    bncParam* par = itSav.next();
+    _params.push_back(new bncParam(*par));
+  }
+}
+

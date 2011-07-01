@@ -119,6 +119,9 @@ class bncModel : public QObject {
 
   bncTime  _startTime;
 
+  void rememberState();
+  void restoreState();
+
   class pppPos {
    public:
     pppPos() {
@@ -135,6 +138,8 @@ class bncModel : public QObject {
   QByteArray            _staID;
   QVector<bncParam*>    _params;
   SymmetricMatrix       _QQ;
+  QVector<bncParam*>    _params_sav;
+  SymmetricMatrix       _QQ_sav;
   ColumnVector          _xcBanc;
   ColumnVector          _ellBanc;
   bool                  _usePhase;
