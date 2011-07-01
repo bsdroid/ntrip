@@ -54,7 +54,7 @@
 
 using namespace std;
 
-const unsigned MINOBS           =    4;
+const unsigned MINOBS           =    5;
 const double   MINELE_GPS       = 10.0 * M_PI / 180.0;
 const double   MINELE_GLO       = 10.0 * M_PI / 180.0;
 const double   MINELE_GAL       = 10.0 * M_PI / 180.0;
@@ -1308,12 +1308,22 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
   Tracer tracer("bncModel::update_p");
 
-  SymmetricMatrix QQsav;
-  ColumnVector    vv;
+  // Remeber Original State Vector and Variance-Covariance Matrix
+  // ------------------------------------------------------------
+  SymmetricMatrix QQ_orig = _QQ;
+
+  QVectorIterator<bncParam*> itPar(_params);
+  QVector<bncParam*> params_orig;
+  while (itPar.hasNext()) {
+    bncParam* par = itPar.next();
+    params_orig.push_back(new bncParam(*par));
+  }
 
   for (int iPhase = 0; iPhase <= (_usePhase ? 1 : 0); iPhase++) {
 
-    ColumnVector dx;
+    SymmetricMatrix QQsav;
+    ColumnVector    vv;
+    ColumnVector    dx;
 
     do {
 
@@ -1321,6 +1331,33 @@ t_irc bncModel::update_p(t_epoData* epoData) {
       // -----------------
       if (iPhase == 0) {      
         if (cmpBancroft(epoData) != success) {
+          QVectorIterator<bncParam*> itParOrig(params_orig);
+          while (itParOrig.hasNext()) {
+            bncParam* par = itParOrig.next();
+            delete par;
+          }
+          emit newMessage(_log, false);
+          return failure;
+        }
+      }
+      else {
+        if (epoData->sizeGPS() < MINOBS) {
+
+          _QQ = QQ_orig;
+          QVectorIterator<bncParam*> itPar(_params);
+          while (itPar.hasNext()) {
+            bncParam* par = itPar.next();
+            delete par;
+          }
+          _params.clear();
+
+          QVectorIterator<bncParam*> itParOrig(params_orig);
+          while (itParOrig.hasNext()) {
+            bncParam* par = itParOrig.next();
+            _params.push_back(par);
+          }
+
+          _log += "bncModel::update_p: not enough data\n";
           emit newMessage(_log, false);
           return failure;
         }
@@ -1425,5 +1462,10 @@ t_irc bncModel::update_p(t_epoData* epoData) {
     }
   }
 
+  QVectorIterator<bncParam*> itParOrig(params_orig);
+  while (itParOrig.hasNext()) {
+    bncParam* par = itParOrig.next();
+    delete par;
+  }
   return success;
 }
