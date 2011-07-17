@@ -828,6 +828,18 @@ string bncRinex::rinexSatLine(const t_obs& obs, bool usells,
   return str.str();
 }
 
+string obsToStr(double val) {
+  if (val != 0.0) {
+    ostringstream str;
+    str.setf(ios::showpoint | ios::fixed);
+    str << setw(14) << setprecision(3) << val;
+    return str.str();
+  }
+  else {
+    return "0.0";
+  }
+}
+
 // One Line in ASCII (Internal) Format
 ////////////////////////////////////////////////////////////////////////////
 string bncRinex::asciiSatLine(const t_obs& obs) {
@@ -838,90 +850,90 @@ string bncRinex::asciiSatLine(const t_obs& obs) {
   str << obs.satSys << setw(2) << setfill('0') << obs.satNum << setfill(' ');
 
   if      (obs.satSys == 'G') { // GPS
-    str << " 1C "
-        << setw(14) << setprecision(3) << obs.C1  << ' '  
-        << setw(14) << setprecision(3) << obs.L1C << ' '
-        << setw(14) << setprecision(3) << obs.D1C << ' '
-        << setw(14) << setprecision(3) << obs.S1C << ' '
+    str << " 1C " 
+        << obsToStr(obs.C1)  << ' '  
+        << obsToStr(obs.L1C) << ' '
+        << obsToStr(obs.D1C) << ' '
+        << obsToStr(obs.S1C) << ' '
         << setw(2)  << obs.slip_cnt_L1;
     str << " 1W "
-        << setw(14) << setprecision(3) << obs.P1  << ' '  
-        << setw(14) << setprecision(3) << obs.L1P << ' '
-        << setw(14) << setprecision(3) << obs.D1P << ' '
-        << setw(14) << setprecision(3) << obs.S1P << ' '
+        << obsToStr(obs.P1)  << ' '  
+        << obsToStr(obs.L1P) << ' '
+        << obsToStr(obs.D1P) << ' '
+        << obsToStr(obs.S1P) << ' '
         << setw(2)  << obs.slip_cnt_L1;
     str << " 2P "
-        << setw(14) << setprecision(3) << obs.P2  << ' '
-        << setw(14) << setprecision(3) << obs.L2P << ' '
-        << setw(14) << setprecision(3) << obs.D2P << ' '
-        << setw(14) << setprecision(3) << obs.S2P << ' '
+        << obsToStr(obs.P2)  << ' '
+        << obsToStr(obs.L2P) << ' '
+        << obsToStr(obs.D2P) << ' '
+        << obsToStr(obs.S2P) << ' '
         << setw(2)  << obs.slip_cnt_L2;
     str << " 2X "
-        << setw(14) << setprecision(3) << obs.C2  << ' '  
-        << setw(14) << setprecision(3) << obs.L2C << ' '
-        << setw(14) << setprecision(3) << obs.D2C << ' ' 
-        << setw(14) << setprecision(3) << obs.S2C << ' '
+        << obsToStr(obs.C2)  << ' '  
+        << obsToStr(obs.L2C) << ' '
+        << obsToStr(obs.D2C) << ' ' 
+        << obsToStr(obs.S2C) << ' '
         << setw(2)  << obs.slip_cnt_L2;
-    str << " 5  "
-        << setw(14) << setprecision(3) << obs.C5  << ' '
-        << setw(14) << setprecision(3) << obs.L5  << ' '
-        << setw(14) << setprecision(3) << obs.D5  << ' '
-        << setw(14) << setprecision(3) << obs.S5  << ' '
+    str << " 5C "
+        << obsToStr(obs.C5)  << ' '
+        << obsToStr(obs.L5)  << ' '
+        << obsToStr(obs.D5)  << ' '
+        << obsToStr(obs.S5)  << ' '
         << setw(2)  << obs.slip_cnt_L5;
   }
   else if (obs.satSys == 'R') { // Glonass
-    str << ' ' << setw(3) << obs.slotNum;
+    str << ' ' << setw(2) << obs.slotNum;
     str << " 1C "
-        << setw(14) << setprecision(3) << obs.C1  << ' '  
-        << setw(14) << setprecision(3) << obs.L1C << ' '
-        << setw(14) << setprecision(3) << obs.D1C << ' '
-        << setw(14) << setprecision(3) << obs.S1C << ' '
+        << obsToStr(obs.C1)  << ' '  
+        << obsToStr(obs.L1C) << ' '
+        << obsToStr(obs.D1C) << ' '
+        << obsToStr(obs.S1C) << ' '
         << setw(2)  << obs.slip_cnt_L1;
     str << " 1P "
-        << setw(14) << setprecision(3) << obs.P1  << ' '  
-        << setw(14) << setprecision(3) << obs.L1P << ' '
-        << setw(14) << setprecision(3) << obs.D1P << ' '
-        << setw(14) << setprecision(3) << obs.S1P << ' '
+        << obsToStr(obs.P1)  << ' '  
+        << obsToStr(obs.L1P) << ' '
+        << obsToStr(obs.D1P) << ' '
+        << obsToStr(obs.S1P) << ' '
         << setw(2)  << obs.slip_cnt_L1;
     str << " 2P "
-        << setw(14) << setprecision(3) << obs.P2  << ' '
-        << setw(14) << setprecision(3) << obs.L2P << ' '
-        << setw(14) << setprecision(3) << obs.D2P << ' '
-        << setw(14) << setprecision(3) << obs.S2P << ' '
+        << obsToStr(obs.P2)  << ' '
+        << obsToStr(obs.L2P) << ' '
+        << obsToStr(obs.D2P) << ' '
+        << obsToStr(obs.S2P) << ' '
         << setw(2)  << obs.slip_cnt_L2;
     str << " 2C "
-        << setw(14) << setprecision(3) << obs.C2  << ' '  
-        << setw(14) << setprecision(3) << obs.L2C << ' '
-        << setw(14) << setprecision(3) << obs.D2C << ' ' 
-        << setw(14) << setprecision(3) << obs.S2C << ' '
+        << obsToStr(obs.C2)  << ' '  
+        << obsToStr(obs.L2C) << ' '
+        << obsToStr(obs.D2C) << ' ' 
+        << obsToStr(obs.S2C) << ' '
         << setw(2)  << obs.slip_cnt_L2;
   }
   else if (obs.satSys == 'S') { // SBAS
     str << " 1C "
-        << setw(14) << setprecision(3) << obs.C1  << ' '  
-        << setw(14) << setprecision(3) << obs.L1C << ' '
-        << setw(14) << setprecision(3) << obs.D1C << ' '
-        << setw(14) << setprecision(3) << obs.S1C << ' '
+        << obsToStr(obs.C1)  << ' '  
+        << obsToStr(obs.L1C) << ' '
+        << obsToStr(obs.D1C) << ' '
+        << obsToStr(obs.S1C) << ' '
         << setw(2)  << obs.slip_cnt_L1;
     str << " 1W "
-        << setw(14) << setprecision(3) << obs.P1  << ' '  
-        << setw(14) << setprecision(3) << obs.L1P << ' '
-        << setw(14) << setprecision(3) << obs.D1P << ' '
-        << setw(14) << setprecision(3) << obs.S1P << ' '
+        << obsToStr(obs.P1)  << ' '  
+        << obsToStr(obs.L1P) << ' '
+        << obsToStr(obs.D1P) << ' '
+        << obsToStr(obs.S1P) << ' '
         << setw(2)  << obs.slip_cnt_L1;
   }
   else if (obs.satSys == 'E') { // Galileo
     str << " 1C "
-        << setw(14) << setprecision(3) << obs.C1  << ' '  
-        << setw(14) << setprecision(3) << obs.L1C << ' '
-        << setw(14) << setprecision(3) << obs.D1C << ' '
-        << setw(14) << setprecision(3) << obs.S1C << ' '
+        << obsToStr(obs.C1)  << ' '  
+        << obsToStr(obs.L1C) << ' '
+        << obsToStr(obs.D1C) << ' '
+        << obsToStr(obs.S1C) << ' '
         << setw(2)  << obs.slip_cnt_L1;
-    str << " 5  "
-        << setw(14) << setprecision(3) << obs.C5  << ' '
-        << setw(14) << setprecision(3) << obs.L5  << ' '
-        << setw(14) << setprecision(3) << obs.D5  << ' '
-        << setw(14) << setprecision(3) << obs.S5  << ' '
+    str << " 5C "
+        << obsToStr(obs.C5)  << ' '
+        << obsToStr(obs.L5)  << ' '
+        << obsToStr(obs.D5)  << ' '
+        << obsToStr(obs.S5)  << ' '
         << setw(2)  << obs.slip_cnt_L5;
   }
   return str.str();
