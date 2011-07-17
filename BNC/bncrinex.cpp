@@ -835,88 +835,94 @@ string bncRinex::asciiSatLine(const t_obs& obs) {
   ostringstream str;
   str.setf(ios::showpoint | ios::fixed);
 
+  str << obs.satSys << setw(2) << setfill('0') << obs.satNum << setfill(' ');
+
   if      (obs.satSys == 'G') { // GPS
-    str << obs.satSys 
-        << setw(2) << setfill('0') << obs.satNum << setfill(' ')
-        << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1C; 
-    str << ' ' << obs.slip_cnt_L1 << ' ';
-    str << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '
-        << setw(14) << setprecision(3) << obs.S1C << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1P; 
-    str << ' ' << obs.slip_cnt_L1 << ' ';
-    str << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '
-        << setw(14) << setprecision(3) << obs.S1P << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.P2  << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.L2P;
-    str << ' ' << obs.slip_cnt_L2 << ' ';
-    str << setw(14) << setprecision(3) << obs.D2P << ' '  << ' '
-        << setw(14) << setprecision(3) << obs.S2P << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.C2  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L2C;
-    str << ' ' << obs.slip_cnt_L2 << ' ';
-    str << setw(14) << setprecision(3) << obs.D2C << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.S2C << ' '  << ' '
-        << setw(14) << setprecision(3) << obs.C5  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L5;
-    str << ' ' << obs.slip_cnt_L5 << ' ';
-    str << setw(14) << setprecision(3) << obs.D5  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.S5;
+    str << " 1C "
+        << setw(14) << setprecision(3) << obs.C1  << ' '  
+        << setw(14) << setprecision(3) << obs.L1C << ' '
+        << setw(14) << setprecision(3) << obs.D1C << ' '
+        << setw(14) << setprecision(3) << obs.S1C << ' '
+        << setw(2)  << obs.slip_cnt_L1;
+    str << " 1W "
+        << setw(14) << setprecision(3) << obs.P1  << ' '  
+        << setw(14) << setprecision(3) << obs.L1P << ' '
+        << setw(14) << setprecision(3) << obs.D1P << ' '
+        << setw(14) << setprecision(3) << obs.S1P << ' '
+        << setw(2)  << obs.slip_cnt_L1;
+    str << " 2P "
+        << setw(14) << setprecision(3) << obs.P2  << ' '
+        << setw(14) << setprecision(3) << obs.L2P << ' '
+        << setw(14) << setprecision(3) << obs.D2P << ' '
+        << setw(14) << setprecision(3) << obs.S2P << ' '
+        << setw(2)  << obs.slip_cnt_L2;
+    str << " 2X "
+        << setw(14) << setprecision(3) << obs.C2  << ' '  
+        << setw(14) << setprecision(3) << obs.L2C << ' '
+        << setw(14) << setprecision(3) << obs.D2C << ' ' 
+        << setw(14) << setprecision(3) << obs.S2C << ' '
+        << setw(2)  << obs.slip_cnt_L2;
+    str << " 5  "
+        << setw(14) << setprecision(3) << obs.C5  << ' '
+        << setw(14) << setprecision(3) << obs.L5  << ' '
+        << setw(14) << setprecision(3) << obs.D5  << ' '
+        << setw(14) << setprecision(3) << obs.S5  << ' '
+        << setw(2)  << obs.slip_cnt_L5;
   }
   else if (obs.satSys == 'R') { // Glonass
-    str << obs.satSys 
-        << setw(2) << setfill('0') << obs.satNum << setfill(' ');
-    str << ' ' << obs.slotNum << ' ';
-
-    str << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1C;
-    str << ' ' << obs.slip_cnt_L1 << ' ';
-    str << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.S1C << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1P; 
-    str << ' ' << obs.slip_cnt_L1 << ' ';
-    str << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.S1P << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.P2  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L2P;
-    str << ' ' << obs.slip_cnt_L2 << ' ';
-    str << setw(14) << setprecision(3) << obs.D2P << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.S2P << ' '  << ' '
-        << setw(14) << setprecision(3) << obs.C2  << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.L2C;
-    str << ' ' << obs.slip_cnt_L2 << ' ';
-    str << setw(14) << setprecision(3) << obs.D2C << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.S2C;
+    str << ' ' << setw(3) << obs.slotNum;
+    str << " 1C "
+        << setw(14) << setprecision(3) << obs.C1  << ' '  
+        << setw(14) << setprecision(3) << obs.L1C << ' '
+        << setw(14) << setprecision(3) << obs.D1C << ' '
+        << setw(14) << setprecision(3) << obs.S1C << ' '
+        << setw(2)  << obs.slip_cnt_L1;
+    str << " 1P "
+        << setw(14) << setprecision(3) << obs.P1  << ' '  
+        << setw(14) << setprecision(3) << obs.L1P << ' '
+        << setw(14) << setprecision(3) << obs.D1P << ' '
+        << setw(14) << setprecision(3) << obs.S1P << ' '
+        << setw(2)  << obs.slip_cnt_L1;
+    str << " 2P "
+        << setw(14) << setprecision(3) << obs.P2  << ' '
+        << setw(14) << setprecision(3) << obs.L2P << ' '
+        << setw(14) << setprecision(3) << obs.D2P << ' '
+        << setw(14) << setprecision(3) << obs.S2P << ' '
+        << setw(2)  << obs.slip_cnt_L2;
+    str << " 2C "
+        << setw(14) << setprecision(3) << obs.C2  << ' '  
+        << setw(14) << setprecision(3) << obs.L2C << ' '
+        << setw(14) << setprecision(3) << obs.D2C << ' ' 
+        << setw(14) << setprecision(3) << obs.S2C << ' '
+        << setw(2)  << obs.slip_cnt_L2;
   }
   else if (obs.satSys == 'S') { // SBAS
-    str << obs.satSys 
-        << setw(2) << setfill('0') << obs.satNum << setfill(' ')
-        << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1C;
-    str << ' ' << obs.slip_cnt_L1 << ' ';
-    str << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.S1C << ' '  << ' '
-        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1P; 
-    str << ' ' << obs.slip_cnt_L1 << ' ';
-    str << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.S1P;
+    str << " 1C "
+        << setw(14) << setprecision(3) << obs.C1  << ' '  
+        << setw(14) << setprecision(3) << obs.L1C << ' '
+        << setw(14) << setprecision(3) << obs.D1C << ' '
+        << setw(14) << setprecision(3) << obs.S1C << ' '
+        << setw(2)  << obs.slip_cnt_L1;
+    str << " 1W "
+        << setw(14) << setprecision(3) << obs.P1  << ' '  
+        << setw(14) << setprecision(3) << obs.L1P << ' '
+        << setw(14) << setprecision(3) << obs.D1P << ' '
+        << setw(14) << setprecision(3) << obs.S1P << ' '
+        << setw(2)  << obs.slip_cnt_L1;
   }
   else if (obs.satSys == 'E') { // Galileo
-    str << obs.satSys 
-        << setw(2) << setfill('0') << obs.satNum << setfill(' ')
-        << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1C;
-    str << ' ' << obs.slip_cnt_L1 << ' ';
-    str << setw(14) << setprecision(3) << obs.D1C << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.S1C << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.C5  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L5;
-    str << ' ' << obs.slip_cnt_L5 << ' ';
-    str << setw(14) << setprecision(3) << obs.D5  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.S5;
+    str << " 1C "
+        << setw(14) << setprecision(3) << obs.C1  << ' '  
+        << setw(14) << setprecision(3) << obs.L1C << ' '
+        << setw(14) << setprecision(3) << obs.D1C << ' '
+        << setw(14) << setprecision(3) << obs.S1C << ' '
+        << setw(2)  << obs.slip_cnt_L1;
+    str << " 5  "
+        << setw(14) << setprecision(3) << obs.C5  << ' '
+        << setw(14) << setprecision(3) << obs.L5  << ' '
+        << setw(14) << setprecision(3) << obs.D5  << ' '
+        << setw(14) << setprecision(3) << obs.S5  << ' '
+        << setw(2)  << obs.slip_cnt_L5;
   }
   return str.str();
 }
