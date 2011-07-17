@@ -176,7 +176,8 @@ void bncCaster::newObs(const QByteArray staID, bool firstObs, t_obs obs) {
     oStr << obs.StatID                                        << " " 
          << obs.GPSWeek                                       << " "
          << setprecision(7) << obs.GPSWeeks                   << " "
-         << bncRinex::rinexSatLine(obs, false, ' ', ' ', ' ') << endl;
+////     << bncRinex::rinexSatLine(obs, false, ' ', ' ', ' ') << endl;
+         << bncRinex::asciiSatLine(obs) << endl;
 
     string hlpStr = oStr.str();
 
