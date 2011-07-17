@@ -179,6 +179,13 @@ bncComb::bncComb() {
   // Not yet regularized
   // -------------------
   _firstReg = false;
+
+  // Maximal Residuum
+  // ----------------
+  _MAXRES = settings.value("cmbMaxres").toDouble();
+  if (_MAXRES <= 0.0) {
+    _MAXRES = 999.0;
+  }
 }
 
 // Destructor
@@ -492,8 +499,6 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       }
     }
 
-    const double MAXRES = 999.10;  // TODO: make it an option
-
     ColumnVector dx;
     SymmetricMatrix QQ_sav = _QQ;
 
@@ -507,7 +512,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       out.setRealNumberPrecision(3);  
       out << "Maximum Residuum " << maxRes << " (index " << maxResIndex << ")\n";
 
-      if (maxRes > MAXRES) {
+      if (maxRes > _MAXRES) {
         out << "Outlier Detected" << endl;
         _QQ = QQ_sav;
         AA.Row(maxResIndex) = 0.0;
