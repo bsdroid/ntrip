@@ -41,6 +41,7 @@
 #include "bncrawfile.h" 
 #include "bncapp.h"
 #include "bncutils.h"
+#include "bncsettings.h"
 
 using namespace std;
 
@@ -70,12 +71,19 @@ bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& staID,
 
   // Initialize for Output
   // ---------------------
-  else {
+  else {    
     QDate currDate = currentDateAndTimeGPS().date();
     _currentFileName = _fileName + "_" + currDate.toString("yyMMdd");
-    _outFile = new QFile(_currentFileName);
-    _outFile->open(QIODevice::WriteOnly);
-    _outFile->write(RAW_FILE_VERSION " Version of BNC raw file");
+    _outFile = new QFile(_currentFileName);     
+    bncSettings settings;
+    if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked &&
+         QFile::exists(_currentFileName) ) {
+      _outFile->open(QIODevice::WriteOnly | QIODevice::Append);
+    }
+    else {
+      _outFile->open(QIODevice::WriteOnly);
+      _outFile->write(RAW_FILE_VERSION " Version of BNC raw file");
+    }
   }
 }
 
