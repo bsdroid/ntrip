@@ -468,6 +468,8 @@ bncWindow::bncWindow() {
   _cmbTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
   _cmbTable->horizontalHeader()->setStretchLastSection(true);
   _cmbTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+  
+  _cmbMaxresLineEdit = new QLineEdit(settings.value("cmbMaxres").toString());
 
   QPushButton* addCmbRowButton = new QPushButton("Add Row");
   QPushButton* delCmbRowButton = new QPushButton("Delete");
@@ -970,6 +972,8 @@ bncWindow::bncWindow() {
   cmbLayout->addWidget(addCmbRowButton,1,3);
   connect(addCmbRowButton, SIGNAL(clicked()), this, SLOT(slotAddCmbRow()));
   cmbLayout->addWidget(delCmbRowButton,2,3);
+  cmbLayout->addWidget(new QLabel("Maximal Residuum"), 4, 3);
+  cmbLayout->addWidget(_cmbMaxresLineEdit,             4, 4, Qt::AlignRight);
   connect(delCmbRowButton, SIGNAL(clicked()), this, SLOT(slotDelCmbRow()));
 
   cmbLayout->addWidget(new QLabel(" Combine Broadcast Ephemeris corrections streams."),5,3,1,3);
@@ -1448,6 +1452,7 @@ void bncWindow::slotSaveOptions() {
   else {
     settings.setValue("combineStreams", "");
   }
+  settings.setValue("cmbMaxres", _cmbMaxresLineEdit->text());
 
   if (!uploadMountpointsOut.isEmpty()) {
     settings.setValue("uploadMountpointsOut", uploadMountpointsOut);
