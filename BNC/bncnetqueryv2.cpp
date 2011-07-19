@@ -134,6 +134,8 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
   // ---------------
   connect(_reply, SIGNAL(finished()), this, SLOT(slotFinished()));
   connect(_reply, SIGNAL(finished()), _eventLoop, SLOT(quit()));
+  connect(_reply, SIGNAL(sslErrors(QList<QSslError>)),
+          this, SLOT(slotSslErrors(QList<QSslError>)));
   if (!full) {
     connect(_reply, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
   }
@@ -179,3 +181,10 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
   }
 }
 
+// TSL/SSL 
+////////////////////////////////////////////////////////////////////////////
+void bncNetQueryV2::slotSslErrors(QList<QSslError>) {
+
+  std::cout << "slotSslErrors" << std::endl;
+  _reply->ignoreSslErrors();
+}
