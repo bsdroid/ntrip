@@ -1023,6 +1023,13 @@ int bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav,
     _log += "Outlier " + prnRemoved.toAscii() + " " 
           + QByteArray::number(maxRes, 'f', 3) + "\n"; 
     _QQ = QQsav;
+    QVectorIterator<bncParam*> itPar(_params);
+    while (itPar.hasNext()) {
+      bncParam* par = itPar.next();
+      if (par->type == bncParam::AMB_L3 && par->prn == prnRemoved) {
+        par->numEpo = 0;
+      }
+    }
   }
 
   return irc;
@@ -1333,6 +1340,22 @@ t_irc bncModel::update_p(t_epoData* epoData) {
         if (epoData->sizeGPS() < MINOBS) {
           restoreState();
           _log += "bncModel::update_p: not enough data\n";
+          emit newMessage(_log, false);
+          return failure;
+        }
+        unsigned numSatNoSlip = 0;
+        QVectorIterator<bncParam*> itPar(_params);
+        while (itPar.hasNext()) {
+          bncParam* par = itPar.next();
+          if (par->type == bncParam::AMB_L3 && par->prn[0] == 'G') {
+            if (par->numEpo >= 1) {
+              ++numSatNoSlip;
+            }
+          }
+        }
+        if (numSatNoSlip > 0 && numSatNoSlip < MINOBS) {
+          restoreState();
+          _log += "bncModel::update_p: not enough GPS satellites without cycle-slips\n";
           emit newMessage(_log, false);
           return failure;
         }
