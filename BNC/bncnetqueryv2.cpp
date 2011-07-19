@@ -191,6 +191,6 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::slotSslErrors(QList<QSslError>) {
 
-  std::cout << "slotSslErrors" << std::endl;
+  ////  std::cout << "slotSslErrors" << std::endl;
   _reply->ignoreSslErrors();
 }
