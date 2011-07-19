@@ -73,7 +73,7 @@ bncParam::bncParam(bncParam::parType typeIn, int indexIn,
   prn       = prnIn;
   index_old = 0;
   xx        = 0.0;
-
+  numEpo    = 0;
 }
 
 // Destructor
@@ -712,10 +712,12 @@ t_irc bncModel::update(t_epoData* epoData) {
            << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == bncParam::AMB_L3) {
+      ++par->numEpo;
       strB << "\n    amb " << par->prn.toAscii().data() << " = "
            << setw(10) << setprecision(3) << par->xx 
            << " +- " << setw(6) << setprecision(3) 
-           << sqrt(_QQ(par->index,par->index));
+           << sqrt(_QQ(par->index,par->index))
+           << "   nEpo = " << par->numEpo;
     }
     else if (par->type == bncParam::TROPO) {
       double aprTrp = delay_saast(M_PI/2.0);

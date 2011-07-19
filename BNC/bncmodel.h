@@ -49,6 +49,7 @@ class bncParam {
   double   xx;
   int      index;
   int      index_old;
+  int      numEpo;
   QString  prn;
 };
 
