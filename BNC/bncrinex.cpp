@@ -54,6 +54,7 @@
 #include "bncconst.h"
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
+#include "bncnetqueryv1.h"
 #include "bncnetqueryv2.h"
 #include "bncsettings.h"
 #include "bncversion.h"
@@ -159,10 +160,20 @@ t_irc bncRinex::downloadSkeleton() {
       url.setPort(80);
     }
 
-    bncNetQueryV2 query;
+    bncNetQuery* query;
+    if      (_ntripVersion == "2s") {
+      query = new bncNetQueryV2(true);
+    }
+    else if (_ntripVersion == "2") {
+      query = new bncNetQueryV2(false);
+    }
+    else {
+      query = new bncNetQueryV1;
+    }
+
     QByteArray outData;
-    query.waitForRequestResult(url, outData);
-    if (query.status() == bncNetQuery::finished) {
+    query->waitForRequestResult(url, outData);
+    if (query->status() == bncNetQuery::finished) {
       _headerLines.clear();
       bool firstLineRead = false;
       QTextStream in(outData);
@@ -205,10 +216,12 @@ t_irc bncRinex::downloadSkeleton() {
       }
     } 
     else {
+      delete query;
       return failure;
     }
-
+    delete query;
   }
+
   return irc;
 }
 

@@ -22,7 +22,8 @@
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncNetQueryV2::bncNetQueryV2() {
+bncNetQueryV2::bncNetQueryV2(bool secure) {
+  _secure    = secure;
   _manager   = new QNetworkAccessManager(this);
   connect(_manager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, 
                                                        QAuthenticator*)),
@@ -92,7 +93,12 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
   // -----------------------
   _url = url;
   if (_url.scheme().isEmpty()) {
-    _url.setScheme("http");
+    if (_secure) {
+      _url.setScheme("https");
+    }
+    else {
+      _url.setScheme("http");
+    }
   }
   if (_url.path().isEmpty()) {
     _url.setPath("/");

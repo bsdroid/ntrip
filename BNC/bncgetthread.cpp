@@ -570,10 +570,10 @@ t_irc bncGetThread::tryReconnect() {
       _query = new bncNetQueryUdp0();
     }
     else if (_ntripVersion == "2") {
-      _query = new bncNetQueryV2();
+      _query = new bncNetQueryV2(false);
     }
     else if (_ntripVersion == "2s") {
-      _query = new bncNetQueryV2();
+      _query = new bncNetQueryV2(true);
     }
     else {
       _query = new bncNetQueryV1();
