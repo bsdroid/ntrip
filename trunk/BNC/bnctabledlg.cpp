@@ -43,6 +43,7 @@
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
 #include "bncnetqueryv1.h"
+#include "bncnetqueryv2.h"
 #include "bncsettings.h"
 #include "bncmap.h"
 
@@ -90,7 +91,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   }
 
   _ntripVersionComboBox = new QComboBox();
-  _ntripVersionComboBox->addItems(QString("1,2,R,U").split(","));
+  _ntripVersionComboBox->addItems(QString("1,2,2s,R,U").split(","));
   int kk = _ntripVersionComboBox->findText(settings.value("ntripVersion").toString());
   if (kk != -1) {
     _ntripVersionComboBox->setCurrentIndex(kk);
@@ -179,7 +180,8 @@ bncTableDlg::~bncTableDlg() {
 
 // Read full caster table (static)
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncTableDlg::getFullTable(const QString& casterHost, 
+t_irc bncTableDlg::getFullTable(const QString& ntripVersion, 
+                                const QString& casterHost, 
                                 int casterPort, QStringList& allLines, 
                                 bool alwaysRead) {
 
@@ -195,16 +197,28 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
 
   allLines.clear();
 
+  bncNetQuery* query = 0;
+  if (ntripVersion == "2" || ntripVersion == "2s") {
+    query = new bncNetQueryV2();
+  }
+  else {
+    query = new bncNetQueryV1();
+  }
+
   QUrl url;
   url.setHost(casterHost);
   url.setPort(casterPort);
-  url.setScheme("http");
   url.setPath("/");
+  if (ntripVersion == "2s") {
+    url.setScheme("https");
+  }
+  else {
+    url.setScheme("http");
+  }
 
-  bncNetQueryV1 query;
   QByteArray outData;
-  query.waitForRequestResult(url, outData);
-  if (query.status() == bncNetQuery::finished) {
+  query->waitForRequestResult(url, outData);
+  if (query->status() == bncNetQuery::finished) {
     QTextStream in(outData);
     QString line = in.readLine();
     while ( !line.isNull() ) {
@@ -212,9 +226,11 @@ t_irc bncTableDlg::getFullTable(const QString& casterHost,
       line = in.readLine();
     } 
     allTables.insert(casterHost, allLines);
+    delete query;
     return success;
   }
   else {
+    delete query;
     return failure;
   }
 }
@@ -227,7 +243,8 @@ void bncTableDlg::slotGetTable() {
   _buttonMap->setEnabled(true);
   _buttonCasterTable->setEnabled(false); 
 
-  if ( getFullTable(_casterHostComboBox->currentText(),
+  if ( getFullTable(_ntripVersionComboBox->currentText(),
+                    _casterHostComboBox->currentText(),
                     _casterPortLineEdit->text().toInt(),
                     _allLines, true) != success ) {
     QMessageBox::warning(0, "BNC", "Cannot retrieve table of data");
@@ -361,9 +378,15 @@ void bncTableDlg::showSourceTable() {
 void bncTableDlg::select() {
 
   bncSettings settings;
-  settings.setValue("ntripVersion", _ntripVersionComboBox->currentText());
+  QString ntripVersion = _ntripVersionComboBox->currentText();
+  settings.setValue("ntripVersion", ntripVersion);
   QUrl url;
-  url.setScheme("http");
+  if (ntripVersion == "2s") {
+    url.setScheme("https");
+  }
+  else {
+    url.setScheme("http");
+  }
   url.setHost(_casterHostComboBox->currentText());
   url.setPort(_casterPortLineEdit->text().toInt());
   url.setUserName(QUrl::toPercentEncoding(_casterUserLineEdit->text()));
@@ -379,7 +402,6 @@ void bncTableDlg::select() {
       QString         latitude = _table->item(ir,8)->text();
       QString        longitude = _table->item(ir,9)->text();
       QString             nmea = _table->item(ir,10)->text();
-      QString     ntripVersion = _ntripVersionComboBox->currentText();
       format.replace(" ", "_");
       if (_table->isItemSelected(item)) {
         url.setPath(item->text());
@@ -423,7 +445,8 @@ void bncTableDlg::slotCasterTable() {
   _buttonClose->setEnabled(false);
   _buttonSelect->setEnabled(false);
 
-  bncCasterTableDlg* dlg = new bncCasterTableDlg(this);
+  bncCasterTableDlg* dlg = 
+          new bncCasterTableDlg(_ntripVersionComboBox->currentText(), this);
   dlg->move(this->pos().x()+50, this->pos().y()+50);
   connect(dlg, SIGNAL(newCaster(QString, QString)),
           this, SLOT(slotNewCaster(QString, QString)));
@@ -503,7 +526,8 @@ void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
 
 // Caster table
 ////////////////////////////////////////////////////////////////////////////
-bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) : 
+bncCasterTableDlg::bncCasterTableDlg(const QString& ntripVersion,
+                                     QWidget* parent) : 
    QDialog(parent) {
 
   static const QStringList labels = QString("host,port,identifier,operator,nmea,country,lat,long,link").split(",");
@@ -516,12 +540,19 @@ bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) :
   url.setScheme("http");
   url.setPath("/");
 
-  bncNetQueryV1 query;
+  bncNetQuery* query = 0;
+  if (ntripVersion == "2" || ntripVersion == "2s") {
+    query = new bncNetQueryV2();
+  }
+  else {
+    query = new bncNetQueryV1();
+  }
+
   QByteArray outData;
-  query.waitForRequestResult(url, outData);
+  query->waitForRequestResult(url, outData);
 
   QStringList lines;
-  if (query.status() == bncNetQuery::finished) {
+  if (query->status() == bncNetQuery::finished) {
     QTextStream in(outData);
     QString line = in.readLine();
     while ( !line.isNull() ) {
@@ -534,6 +565,8 @@ bncCasterTableDlg::bncCasterTableDlg(QWidget* parent) :
       }
     }
   }
+
+  delete query;
 
   if (lines.size() > 0) {
     _casterTable->setSelectionMode(QAbstractItemView::ExtendedSelection);

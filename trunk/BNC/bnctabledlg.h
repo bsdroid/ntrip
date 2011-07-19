@@ -35,7 +35,7 @@ class bncCasterTableDlg : public QDialog {
   Q_OBJECT
 
   public:
-    bncCasterTableDlg(QWidget* parent);
+    bncCasterTableDlg(const QString& ntripVersion, QWidget* parent);
     ~bncCasterTableDlg();
 
   signals:
@@ -58,7 +58,8 @@ class bncTableDlg : public QDialog {
   public:
     bncTableDlg(QWidget* parent);
     ~bncTableDlg();
-    static t_irc getFullTable(const QString& casterHost, int casterPort,
+    static t_irc getFullTable(const QString& ntripVersion, 
+                              const QString& casterHost, int casterPort,
                               QStringList& allLines, bool alwaysRead = true);
 
   signals:
