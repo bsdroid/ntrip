@@ -198,8 +198,11 @@ t_irc bncTableDlg::getFullTable(const QString& ntripVersion,
   allLines.clear();
 
   bncNetQuery* query = 0;
-  if (ntripVersion == "2" || ntripVersion == "2s") {
-    query = new bncNetQueryV2();
+  if      (ntripVersion == "2") {
+    query = new bncNetQueryV2(false);
+  }
+  else if (ntripVersion == "2s") {
+    query = new bncNetQueryV2(true);
   }
   else {
     query = new bncNetQueryV1();
@@ -553,8 +556,11 @@ bncCasterTableDlg::bncCasterTableDlg(const QString& ntripVersion,
   }
 
   bncNetQuery* query = 0;
-  if (ntripVersion == "2" || ntripVersion == "2s") {
-    query = new bncNetQueryV2();
+  if (ntripVersion == "2") {
+    query = new bncNetQueryV2(false);
+  }
+  else if (ntripVersion == "2s") {
+    query = new bncNetQueryV2(true);
   }
   else {
     query = new bncNetQueryV1();
