@@ -1093,7 +1093,7 @@ void bncWindow::populateMountPointsTable() {
     if (hlp[5] == "S") {
       fullPath = hlp[0].replace(0,2,"");
     }
-    QString ntripVersion = "1";
+    QString ntripVersion = "2";
     if (hlp.size() >= 6) {
       ntripVersion = (hlp[5]);
     }
@@ -1245,7 +1245,7 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
     if (hlp[5] == "S") {
       fullPath = hlp[0].replace(0,2,"");
     }
-    QString ntripVersion = "1";
+    QString ntripVersion = "2";
     if (hlp.size() >= 6) {
       ntripVersion = (hlp[5]);
     }
