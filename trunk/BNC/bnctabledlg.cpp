@@ -377,9 +377,8 @@ void bncTableDlg::showSourceTable() {
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::select() {
 
-  bncSettings settings;
   QString ntripVersion = _ntripVersionComboBox->currentText();
-  settings.setValue("ntripVersion", ntripVersion);
+
   QUrl url;
   if (ntripVersion == "2s") {
     url.setScheme("https");
@@ -476,8 +475,15 @@ void bncTableDlg::slotNewCaster(QString newCasterHost, QString newCasterPort) {
   _casterPasswordLineEdit->setText("");
   _casterPortLineEdit->setText(newCasterPort);
 
+  QString ntripVersion = _ntripVersionComboBox->currentText();
+
   QUrl url;
-  url.setScheme("http");
+  if (ntripVersion == "2s") {
+    url.setScheme("https");
+  }
+  else {
+    url.setScheme("http");
+  }
   url.setHost(newCasterHost);
   url.setPort(newCasterPort.toInt());
   addUrl(url);
@@ -536,9 +542,15 @@ bncCasterTableDlg::bncCasterTableDlg(const QString& ntripVersion,
 
   QUrl url;
   url.setHost("www.rtcm-ntrip.org");
-  url.setPort(2101);
-  url.setScheme("http");
   url.setPath("/");
+  if (ntripVersion == "2s") {
+    url.setPort(443);
+    url.setScheme("https");
+  }
+  else {
+    url.setPort(2101);
+    url.setScheme("http");
+  }
 
   bncNetQuery* query = 0;
   if (ntripVersion == "2" || ntripVersion == "2s") {
