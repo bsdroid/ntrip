@@ -367,18 +367,30 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
   // Check whether master AC present
   // -------------------------------
   if (epochs.first()->acName != _masterAC) {
-    QListIterator<cmbEpoch*> itEpo(epochs);
-    while (itEpo.hasNext()) {
-      cmbEpoch* epo = itEpo.next();
+    if (true) {  // version with master switch
+      cmbEpoch* epo     = epochs.first();
       bncTime   epoTime = epo->time;
-      out << epo->acName.toAscii().data() << " " 
+      out << "Switching Master AC "
+          << epo->acName.toAscii().data() << " --> " 
+          << _masterAC.toAscii().data()   << " " 
           << epoTime.datestr().c_str()    << " " 
-          << epoTime.timestr().c_str() << endl;
-      delete epo;
+          << epoTime.timestr().c_str()    << endl;
+      _masterAC = epo->acName;
     }
-    out << "Missing Master AC" << endl;
-    emit newMessage(_log, false);
-    return;
+    else {       // original version
+      QListIterator<cmbEpoch*> itEpo(epochs);
+      while (itEpo.hasNext()) {
+        cmbEpoch* epo = itEpo.next();
+        bncTime   epoTime = epo->time;
+        out << epo->acName.toAscii().data() << " " 
+            << epoTime.datestr().c_str()    << " " 
+            << epoTime.timestr().c_str() << endl;
+        delete epo;
+      }
+      out << "Missing Master AC" << endl;
+      emit newMessage(_log, false);
+      return;
+    }
   }
 
   // Predict Parameters Values, Add White Noise
