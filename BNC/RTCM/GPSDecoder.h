@@ -82,27 +82,34 @@ class t_obs {
   double GPSWeeks;     // Second of Week (GPS-Time)
 
   double C1;           // CA-code pseudorange (meters)
-  double P1;           // P1-code pseudorange (meters)
   double L1C;          // L1 carrier phase (cycles)
   double D1C;          // Doppler L1
   double S1C;          // raw L1 signal strength
+  bool has1C() const {return C1 != 0.0 || L1C != 0.0 || D1C != 0.0 || S1C != 0.0;}
+
+  double P1;           // P1-code pseudorange (meters)
   double L1P;          // L1 carrier phase (cycles)
   double D1P;          // Doppler L1
   double S1P;          // raw L1 signal strength
+  bool has1P() const {return P1 != 0.0 || L1P != 0.0 || D1P != 0.0 || S1P != 0.0;}
 
   double C2;           // CA-code pseudorange (meters)
-  double P2;           // P2-code pseudorange (meters)
   double L2C;          // L2 carrier phase (cycles)
   double D2C;          // Doppler L2
   double S2C;          // raw L2 signal strength
+  bool has2C() const {return C2 != 0.0 || L2C != 0.0 || D2C != 0.0 || S2C != 0.0;}
+
+  double P2;           // P2-code pseudorange (meters)
   double L2P;          // L2 carrier phase (cycles)
   double D2P;          // Doppler L2
   double S2P;          // raw L2 signal strength
+  bool has2P() const {return P2 != 0.0 || L2P != 0.0 || D2P != 0.0 || S2P != 0.0;}
 
   double C5;           // Pseudorange (meters)
   double L5;           // L5 carrier phase (cycles)
   double D5;           // Doppler L5
   double S5;           // raw L5 signal strength
+  bool has5C() const {return C5 != 0.0 || L5 != 0.0 || D5 != 0.0 || S5 != 0.0;}
 
   int    slip_cnt_L1;  // L1 cumulative loss of continuity indicator (negative value = undefined)
   int    slip_cnt_L2;  // L2 cumulative loss of continuity indicator (negative value = undefined)
