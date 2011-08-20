@@ -58,6 +58,7 @@ class bncRinex {
                                    char lli5);
 
    static std::string asciiSatLine(const t_obs& obs);
+   static std::string obsToStr(double val, int width = 14, int precision = 3);
 
  private:
    void resolveFileName(const QDateTime& datTim);

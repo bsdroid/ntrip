@@ -772,11 +772,13 @@ string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2,
   return str.str();
 }
 
-string obsToStr(double val) {
+// 
+////////////////////////////////////////////////////////////////////////////
+string bncRinex::obsToStr(double val, int width, int precision) {
   if (val != 0.0) {
     ostringstream str;
     str.setf(ios::showpoint | ios::fixed);
-    str << setw(14) << setprecision(3) << val;
+    str << setw(width) << setprecision(precision) << val;
     return str.str();
   }
   else {
@@ -793,98 +795,104 @@ string bncRinex::asciiSatLine(const t_obs& obs) {
 
   str << obs.satSys << setw(2) << setfill('0') << obs.satNum << setfill(' ');
 
+  if (obs.satSys == 'R') { // Glonass
+    str << ' ' << setw(2) << obs.slotNum;
+  }
+  else {
+    str << "   ";
+  }
+
   if      (obs.satSys == 'G') { // GPS
     if (obs.has1C()) {
-      str << " 1C " 
+      str << "  1C " 
           << obsToStr(obs.C1)  << ' '  
           << obsToStr(obs.L1C) << ' '
           << obsToStr(obs.D1C) << ' '
-          << obsToStr(obs.S1C) << ' '
+          << obsToStr(obs.S1C, 8, 3) << ' '
           << setw(2)  << obs.slip_cnt_L1;
     }
     if (obs.has1P()) {
-      str << " 1W "
+      str << "  1W "
           << obsToStr(obs.P1)  << ' '  
           << obsToStr(obs.L1P) << ' '
           << obsToStr(obs.D1P) << ' '
-          << obsToStr(obs.S1P) << ' '
+          << obsToStr(obs.S1P, 8, 3) << ' '
           << setw(2)  << obs.slip_cnt_L1;
     }
     if (obs.has2P()) {
-      str << " 2P "
+      str << "  2P "
           << obsToStr(obs.P2)  << ' '
           << obsToStr(obs.L2P) << ' '
           << obsToStr(obs.D2P) << ' '
-          << obsToStr(obs.S2P) << ' '
+          << obsToStr(obs.S2P, 8, 3) << ' '
           << setw(2)  << obs.slip_cnt_L2;
     }
     if (obs.has2C()) {
-      str << " 2X "
+      str << "  2X "
           << obsToStr(obs.C2)  << ' '  
           << obsToStr(obs.L2C) << ' '
           << obsToStr(obs.D2C) << ' ' 
-          << obsToStr(obs.S2C) << ' '
+          << obsToStr(obs.S2C, 8, 3) << ' '
           << setw(2)  << obs.slip_cnt_L2;
     }
     if (obs.has5C()) {
-      str << " 5C "
+      str << "  5C "
           << obsToStr(obs.C5)  << ' '
           << obsToStr(obs.L5)  << ' '
           << obsToStr(obs.D5)  << ' '
-          << obsToStr(obs.S5)  << ' '
+          << obsToStr(obs.S5, 8, 3)  << ' '
           << setw(2)  << obs.slip_cnt_L5;
     }
   }
   else if (obs.satSys == 'R') { // Glonass
-    str << ' ' << setw(2) << obs.slotNum;
     if (obs.has1C()) {
-      str << " 1C "
+      str << "  1C "
           << obsToStr(obs.C1)  << ' '  
           << obsToStr(obs.L1C) << ' '
           << obsToStr(obs.D1C) << ' '
-          << obsToStr(obs.S1C) << ' '
+          << obsToStr(obs.S1C, 8, 3) << ' '
           << setw(2)  << obs.slip_cnt_L1;
     }
     if (obs.has1P()) {
-      str << " 1P "
+      str << "  1P "
           << obsToStr(obs.P1)  << ' '  
           << obsToStr(obs.L1P) << ' '
           << obsToStr(obs.D1P) << ' '
-          << obsToStr(obs.S1P) << ' '
+          << obsToStr(obs.S1P, 8, 3) << ' '
           << setw(2)  << obs.slip_cnt_L1;
     }
     if (obs.has2P()) {
-      str << " 2P "
+      str << "  2P "
           << obsToStr(obs.P2)  << ' '
           << obsToStr(obs.L2P) << ' '
           << obsToStr(obs.D2P) << ' '
-          << obsToStr(obs.S2P) << ' '
+          << obsToStr(obs.S2P, 8, 3) << ' '
           << setw(2)  << obs.slip_cnt_L2;
     }
     if (obs.has2C()) {
-      str << " 2C "
+      str << "  2C "
           << obsToStr(obs.C2)  << ' '  
           << obsToStr(obs.L2C) << ' '
           << obsToStr(obs.D2C) << ' ' 
-          << obsToStr(obs.S2C) << ' '
+          << obsToStr(obs.S2C, 8, 3) << ' '
           << setw(2)  << obs.slip_cnt_L2;
     }
   }
   else if (obs.satSys == 'S') { // SBAS
     if (obs.has1C()) {
-      str << " 1C "
+      str << "  1C "
           << obsToStr(obs.C1)  << ' '  
           << obsToStr(obs.L1C) << ' '
           << obsToStr(obs.D1C) << ' '
-          << obsToStr(obs.S1C) << ' '
+          << obsToStr(obs.S1C, 8, 3) << ' '
           << setw(2)  << obs.slip_cnt_L1;
     }
     if (obs.has1P()) {
-      str << " 1W "
+      str << "  1W "
           << obsToStr(obs.P1)  << ' '  
           << obsToStr(obs.L1P) << ' '
           << obsToStr(obs.D1P) << ' '
-          << obsToStr(obs.S1P) << ' '
+          << obsToStr(obs.S1P, 8, 3) << ' '
           << setw(2)  << obs.slip_cnt_L1;
     }
   }
@@ -894,15 +902,15 @@ string bncRinex::asciiSatLine(const t_obs& obs) {
           << obsToStr(obs.C1)  << ' '  
           << obsToStr(obs.L1C) << ' '
           << obsToStr(obs.D1C) << ' '
-          << obsToStr(obs.S1C) << ' '
+          << obsToStr(obs.S1C, 8, 3) << ' '
           << setw(2)  << obs.slip_cnt_L1;
     }
     if (obs.has5C()) {
-      str << " 5C "
+      str << "  5C "
           << obsToStr(obs.C5)  << ' '
           << obsToStr(obs.L5)  << ' '
           << obsToStr(obs.D5)  << ' '
-          << obsToStr(obs.S5)  << ' '
+          << obsToStr(obs.S5, 8, 3)  << ' '
           << setw(2)  << obs.slip_cnt_L5;
     }
   }
