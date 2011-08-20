@@ -641,7 +641,7 @@ void bncRinex::dumpEpoch(long maxTime) {
     // RINEX Version 3
     // ---------------
     if (_rinexVers == 3) {
-      _out << rinexSatLine(obs, true, lli1, lli2, lli5); 
+      _out << rinexSatLine(obs, lli1, lli2, lli5); 
       _out << endl;
     }
 
@@ -683,8 +683,8 @@ void bncRinex::closeFile() {
 
 // One Line in RINEX v3 (static)
 ////////////////////////////////////////////////////////////////////////////
-string bncRinex::rinexSatLine(const t_obs& obs, bool usells,
-                              char lli1, char lli2, char lli5) {
+string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2, 
+                              char lli5) {
   ostringstream str;
   str.setf(ios::showpoint | ios::fixed);
 
@@ -692,101 +692,52 @@ string bncRinex::rinexSatLine(const t_obs& obs, bool usells,
     str << obs.satSys 
         << setw(2) << setfill('0') << obs.satNum << setfill(' ')
         << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1C; 
-    if (usells) {
-      str << lli1 << ' ';
-    }
-    else {
-      str << ' ' << obs.slip_cnt_L1 << ' ';
-    }
+        << setw(14) << setprecision(3) << obs.L1C
+        << lli1 << ' ';
     str << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '
         << setw(14) << setprecision(3) << obs.S1C << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1P; 
-    if (usells) {
-      str << lli1 << ' ';
-    }
-    else {
-      str << ' ' << obs.slip_cnt_L1 << ' ';
-    }
+        << setw(14) << setprecision(3) << obs.L1P
+        << lli1 << ' ';
     str << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '
         << setw(14) << setprecision(3) << obs.S1P << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.P2  << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.L2P;
-    if (usells) {
-      str << lli2 << ' ';
-    }
-    else {
-      str << ' ' << obs.slip_cnt_L2 << ' ';
-    }
+        << setw(14) << setprecision(3) << obs.L2P
+        << lli2 << ' ';
     str << setw(14) << setprecision(3) << obs.D2P << ' '  << ' '
         << setw(14) << setprecision(3) << obs.S2P << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.C2  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L2C;
-    if (usells) {
-      str << lli2 << ' ';
-    }
-    else {
-      str << ' ' << obs.slip_cnt_L2 << ' ';
-    }
+        << setw(14) << setprecision(3) << obs.L2C
+        << lli2 << ' ';
     str << setw(14) << setprecision(3) << obs.D2C << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.S2C << ' '  << ' '
         << setw(14) << setprecision(3) << obs.C5  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L5;
-    if (usells) {
-      str << lli5 << ' ';
-    }
-    else {
-      str << ' ' << obs.slip_cnt_L5 << ' ';
-    }
+        << setw(14) << setprecision(3) << obs.L5
+        << lli5 << ' ';
     str << setw(14) << setprecision(3) << obs.D5  << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.S5;
   }
   else if (obs.satSys == 'R') { // Glonass
     str << obs.satSys 
         << setw(2) << setfill('0') << obs.satNum << setfill(' ');
-    if (!usells) {
-      str << ' ' << obs.slotNum << ' ';
-    }
-
     str << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1C;
-    if (usells) {
-      str << lli1 << ' ';
-    }
-    else {
-      str << ' ' << obs.slip_cnt_L1 << ' ';
-    }
+        << setw(14) << setprecision(3) << obs.L1C
+        << lli1 << ' ';
     str << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.S1C << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1P; 
-    if (usells) {
-      str << lli1 << ' ';
-    }
-    else {
-      str << ' ' << obs.slip_cnt_L1 << ' ';
-    }
+        << setw(14) << setprecision(3) << obs.L1P
+        << lli1 << ' ';
     str << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.S1P << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.P2  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L2P;
-    if (usells) {
-      str << lli2 << ' ';
-    }
-    else {
-      str << ' ' << obs.slip_cnt_L2 << ' ';
-    }
+        << setw(14) << setprecision(3) << obs.L2P
+        << lli2 << ' ';
     str << setw(14) << setprecision(3) << obs.D2P << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.S2P << ' '  << ' '
         << setw(14) << setprecision(3) << obs.C2  << ' '  << ' ' 
-        << setw(14) << setprecision(3) << obs.L2C;
-    if (usells) {
-      str << lli2 << ' ';
-    }
-    else {
-      str << ' ' << obs.slip_cnt_L2 << ' ';
-    }
+        << setw(14) << setprecision(3) << obs.L2C
+        << lli2 << ' ';
     str << setw(14) << setprecision(3) << obs.D2C << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.S2C;
   }
@@ -794,23 +745,13 @@ string bncRinex::rinexSatLine(const t_obs& obs, bool usells,
     str << obs.satSys 
         << setw(2) << setfill('0') << obs.satNum << setfill(' ')
         << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1C;
-    if (usells) {
-      str << lli1 << ' ';
-    }
-    else {
-      str << ' ' << obs.slip_cnt_L1 << ' ';
-    }
+        << setw(14) << setprecision(3) << obs.L1C
+        << lli1 << ' ';
     str << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.S1C << ' '  << ' '
         << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1P; 
-    if (usells) {
-      str << lli1 << ' ';
-    }
-    else {
-      str << ' ' << obs.slip_cnt_L1 << ' ';
-    }
+        << setw(14) << setprecision(3) << obs.L1P
+        << lli1 << ' ';
     str << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.S1P;
   }
@@ -818,23 +759,13 @@ string bncRinex::rinexSatLine(const t_obs& obs, bool usells,
     str << obs.satSys 
         << setw(2) << setfill('0') << obs.satNum << setfill(' ')
         << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L1C;
-    if (usells) {
-      str << lli1 << ' ';
-    }
-    else {
-      str << ' ' << obs.slip_cnt_L1 << ' ';
-    }
+        << setw(14) << setprecision(3) << obs.L1C
+        << lli1 << ' ';
     str << setw(14) << setprecision(3) << obs.D1C << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.S1C << ' '  << ' ' 
         << setw(14) << setprecision(3) << obs.C5  << ' '  << ' '  
-        << setw(14) << setprecision(3) << obs.L5;
-    if (usells) {
-      str << lli5 << ' ';
-    }
-    else {
-      str << ' ' << obs.slip_cnt_L5 << ' ';
-    }
+        << setw(14) << setprecision(3) << obs.L5
+        << lli5 << ' ';
     str << setw(14) << setprecision(3) << obs.D5  << ' '  << ' '  
         << setw(14) << setprecision(3) << obs.S5;
   }
