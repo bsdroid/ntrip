@@ -71,7 +71,7 @@ bncUdpPort::bncUdpPort(QWidget* parent) : QDialog(parent) {
   // ---------
   _ipPortLineEdit->setWhatsThis(tr("<p>BNC allows to pick up streams arriving directly at one of the local host's UDP ports without using the NTRIP transport protocol.</p><p>Enter the local port number where the UDP stream arrives.</p>"));
   _ipMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint.</p><p>Recommended is a 4-character station ID.<br>Example: FFMJ</p>"));
-  _ipFormatLineEdit->setWhatsThis(tr("<p>Specify the stream format.</p><p>Available options are 'RTCM_2', 'RTCM_3', 'RTIGS', and 'ZERO'.</p>"));
+  _ipFormatLineEdit->setWhatsThis(tr("<p>Specify the stream format.</p><p>Available options are 'RTCM_2', 'RTCM_3', and 'ZERO'.</p>"));
   _ipLatLineEdit->setWhatsThis(tr("<p>Enter the approximate latitude of the stream providing receiver in degrees.<p></p>Example: 45.32</p>"));
   _ipLonLineEdit->setWhatsThis(tr("<p>Enter the approximate longitude of the stream providing receiver in degrees.<p></p>Example: -15.20</p>"));
 
