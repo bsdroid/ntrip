@@ -189,8 +189,14 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
 
 // TSL/SSL 
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV2::slotSslErrors(QList<QSslError>) {
+void bncNetQueryV2::slotSslErrors(QList<QSslError> /* errors */) {
 
-  ////  std::cout << "slotSslErrors" << std::endl;
+   // std::cout << "slotSslErrors" << std::endl;
+   // QListIterator<QSslError> it(errors);
+   // while (it.hasNext()) {
+   //   const QSslError& err = it.next();
+   //   std::cout << err.errorString().toAscii().data() << std::endl;
+   // }
+
   _reply->ignoreSslErrors();
 }
