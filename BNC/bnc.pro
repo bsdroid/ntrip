@@ -55,9 +55,6 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           RTCM3/RTCM3coDecoder.h                                      \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.h                    \
           RTCM3/ephemeris.h RTCM3/timeutils.h                         \
-          RTIGS/RTIGSDecoder.h RTIGS/rtigs_records.h                  \
-          RTIGS/cgps_transform.h RTIGS/rtstruct.h                     \
-          RTIGS/rtacp.h RTIGS/gpswro.h                                \
           GPSS/gpssDecoder.h
 
 HEADERS       += serial/qextserialbase.h serial/qextserialport.h
@@ -90,7 +87,6 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           RTCM3/RTCM3coDecoder.cpp                                    \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.c                    \
           RTCM3/ephemeris.cpp RTCM3/timeutils.cpp                     \
-          RTIGS/RTIGSDecoder.cpp RTIGS/cgps_transform.cpp             \
           GPSS/gpssDecoder.cpp
 
 SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp

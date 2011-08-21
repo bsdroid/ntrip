@@ -66,7 +66,6 @@
 #include "upload/bncrtnetdecoder.h"
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
-#include "RTIGS/RTIGSDecoder.h"
 #include "GPSS/gpssDecoder.h"
 #include "serial/qextserialport.h"
 
@@ -303,10 +302,6 @@ void bncGetThread::initialize() {
     _decoder = new RTCM3Decoder(_staID, _rawFile);
     connect((RTCM3Decoder*) _decoder, SIGNAL(newMessage(QByteArray,bool)), 
             this, SIGNAL(newMessage(QByteArray,bool)));
-  }
-  else if (_format.indexOf("RTIGS") != -1) {
-    emit(newMessage(_staID + ": Get data in RTIGS format", true));
-    _decoder = new RTIGSDecoder();
   }
   else if (_format.indexOf("GPSS") != -1 || _format.indexOf("BNC") != -1) {
     emit(newMessage(_staID + ": Get Data in GPSS format", true));
