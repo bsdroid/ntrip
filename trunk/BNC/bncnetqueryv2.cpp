@@ -201,10 +201,10 @@ void bncNetQueryV2::slotSslErrors(QList<QSslError> errors) {
   QString msg = "SSL Error\n";
   QSslCertificate cert = _reply->sslConfiguration().peerCertificate();
   if (!cert.isNull()) {
-    msg = QString("Server Certificate Issued by:\n"
-                  "%1\n%2\nCannot be verified\n")
-      .arg(cert.issuerInfo(QSslCertificate::OrganizationalUnitName))
-      .arg(cert.issuerInfo(QSslCertificate::Organization));
+    msg += QString("Server Certificate Issued by:\n"
+                   "%1\n%2\nCannot be verified\n")
+           .arg(cert.issuerInfo(QSslCertificate::OrganizationalUnitName))
+           .arg(cert.issuerInfo(QSslCertificate::Organization));
   }
   else {
     QListIterator<QSslError> it(errors);
