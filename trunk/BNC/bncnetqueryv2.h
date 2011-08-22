@@ -28,6 +28,7 @@ class bncNetQueryV2 : public bncNetQuery {
   QEventLoop*            _eventLoop;
   bool                   _firstData;
   bool                   _secure;
+  bool                   _ignoreSslErrors;
 };
 
 #endif
