@@ -19,6 +19,7 @@
 #include "bncnetqueryv2.h"
 #include "bncsettings.h"
 #include "bncversion.h"
+#include "bncsslconfig.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -118,6 +119,7 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
   // Network Request
   // ---------------
   QNetworkRequest request;
+  request.setSslConfiguration(bncSslConfig::Instance());
   request.setUrl(_url);
   request.setRawHeader("Host"         , _url.host().toAscii());
   request.setRawHeader("Ntrip-Version", "Ntrip/2.0");
@@ -189,14 +191,15 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
 
 // TSL/SSL 
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV2::slotSslErrors(QList<QSslError> /* errors */) {
+void bncNetQueryV2::slotSslErrors(QList<QSslError> errors) {
 
-   // std::cout << "slotSslErrors" << std::endl;
-   // QListIterator<QSslError> it(errors);
-   // while (it.hasNext()) {
-   //   const QSslError& err = it.next();
-   //   std::cout << err.errorString().toAscii().data() << std::endl;
-   // }
+  QString msg = "SSL Errors";
+  QListIterator<QSslError> it(errors);
+  while (it.hasNext()) {
+    const QSslError& err = it.next();
+    msg += "\n" + err.errorString();
+  }
+  ((bncApp*)qApp)->slotMessage(msg.toAscii(), true);
 
   _reply->ignoreSslErrors();
 }

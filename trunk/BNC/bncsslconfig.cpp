@@ -23,7 +23,6 @@
 bncSslConfig::bncSslConfig() {
   QList<QSslCertificate> caCerts = 
     QSslCertificate::fromPath("/home/mervart/certs/bkg.crt");
-  std::cout << "caCerts: " << caCerts.size() << std::endl;
   this->setCaCertificates(caCerts);
 }
 
