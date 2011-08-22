@@ -169,6 +169,9 @@ bncTableDlg::~bncTableDlg() {
   delete _casterPortLineEdit;
   delete _casterUserLineEdit;
   delete _casterPasswordLineEdit;
+  bncSettings settings;
+  settings.setValue("ntripVersion", _ntripVersionComboBox->currentText());
+  settings.sync();
   delete _ntripVersionComboBox;
   delete _buttonGet;
   delete _buttonClose;
