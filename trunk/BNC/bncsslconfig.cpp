@@ -20,9 +20,28 @@
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncSslConfig::bncSslConfig() {
-  QList<QSslCertificate> caCerts = 
-    QSslCertificate::fromPath("/home/mervart/certs/bkg.crt");
+bncSslConfig::bncSslConfig() : 
+  QSslConfiguration(QSslConfiguration::defaultConfiguration()) 
+{
+
+  QString dirName =  QDir::homePath() + QDir::separator() 
+                  + ".config" + QDir::separator() + qApp->organizationName();
+
+  QList<QSslCertificate> caCerts = this->caCertificates();
+
+  // Bug in Qt: the wildcard does not work here:
+  // -------------------------------------------
+  // caCerts += QSslCertificate::fromPath(dirName + QDir::separator() + "*crt",
+  //                                      QSsl::Pem, QRegExp::Wildcard);
+  QDir dir(dirName);
+  QStringList nameFilters; nameFilters << "*.crt";
+  QStringList fileNames = dir.entryList(nameFilters, QDir::Files);
+  QStringListIterator it(fileNames);
+  while (it.hasNext()) {
+    QString fileName = it.next();
+    caCerts += QSslCertificate::fromPath(dirName+QDir::separator()+fileName);
+  }
+ 
   this->setCaCertificates(caCerts);
 }
 
