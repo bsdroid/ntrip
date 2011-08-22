@@ -126,13 +126,18 @@ bncWindow::bncWindow() {
 
   bncSettings settings;
 
-  // Proxy Options
-  // -------------
+  // Netowrk Options
+  // ---------------
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
 
   connect(_proxyHostLineEdit, SIGNAL(textChanged(const QString &)), 
           this, SLOT(slotBncTextChanged()));
+
+  _sslCaCertPathLineEdit   = new QLineEdit(settings.value("sslCaCertPath").toString());
+  _ignoreSslErrorsCheckBox = new QCheckBox();
+  _ignoreSslErrorsCheckBox->setCheckState(Qt::CheckState(
+                                          settings.value("ignoreSslErrors").toInt()));
 
   // General Options
   // ---------------
@@ -643,7 +648,7 @@ bncWindow::bncWindow() {
   QWidget* cmbgroup = new QWidget();
   QWidget* uploadgroup = new QWidget();
   QWidget* uploadEphgroup = new QWidget();
-  _aogroup->addTab(pgroup,tr("Proxy"));
+  _aogroup->addTab(pgroup,tr("Network"));
   _aogroup->addTab(ggroup,tr("General"));
   _aogroup->addTab(ogroup,tr("RINEX Observations"));
   _aogroup->addTab(egroup,tr("RINEX Ephemeris"));
@@ -668,8 +673,8 @@ bncWindow::bncWindow() {
   _loggroup->addTab(_bncFigureLate,tr("Latency"));
   _loggroup->addTab(_bncFigurePPP,tr("PPP Plot"));
 
-  // Proxy Tab
-  // ---------
+  // Netowork (Proxy and SSL) Tab
+  // ----------------------------
   QGridLayout* pLayout = new QGridLayout;
   pLayout->setColumnMinimumWidth(0,13*ww);
   _proxyPortLineEdit->setMaximumWidth(9*ww);
@@ -681,7 +686,11 @@ bncWindow::bncWindow() {
   pLayout->addWidget(new QLabel("Settings for proxy in protected networks, leave boxes blank if none."),2, 0, 1, 50, Qt::AlignLeft);
   pLayout->addWidget(new QLabel("    "),3,0);
   pLayout->addWidget(new QLabel("    "),4,0);
-  pLayout->addWidget(new QLabel("    "),5,0);
+  pLayout->addWidget(new QLabel("Path to SSL Certificates"),     5, 0);
+  pLayout->addWidget(_sslCaCertPathLineEdit,                     5, 1, 1,10);
+  pLayout->addWidget(new QLabel("Ignore SSL Authorization Errors"), 6,0);
+  pLayout->addWidget(_ignoreSslErrorsCheckBox,                     6, 1, 1,10);
+  pLayout->addWidget(new QLabel("Settings for SSL Authorization."),7, 0, 1, 50, Qt::AlignLeft);
   pgroup->setLayout(pLayout);
 
   // General Tab
@@ -1425,6 +1434,8 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("perfIntr",    _perfIntrComboBox->currentText());
   settings.setValue("proxyHost",   _proxyHostLineEdit->text());
   settings.setValue("proxyPort",   _proxyPortLineEdit->text());
+  settings.setValue("sslCaCertPath",   _sslCaCertPathLineEdit->text());
+  settings.setValue("ignoreSslErrors",  _ignoreSslErrorsCheckBox->checkState());
   settings.setValue("rnxAppend",   _rnxAppendCheckBox->checkState());
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
   settings.setValue("rnxPath",     _rnxPathLineEdit->text());
