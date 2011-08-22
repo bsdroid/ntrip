@@ -24,8 +24,9 @@ bncSslConfig::bncSslConfig() :
   QSslConfiguration(QSslConfiguration::defaultConfiguration()) 
 {
 
-  QString dirName =  QDir::homePath() + QDir::separator() 
-                  + ".config" + QDir::separator() + qApp->organizationName();
+  std::cout << "HAHAHA" << std::endl;
+
+  QString dirName =  defaultPath();
 
   QList<QSslCertificate> caCerts = this->caCertificates();
 
@@ -48,5 +49,12 @@ bncSslConfig::bncSslConfig() :
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncSslConfig::~bncSslConfig() {
+}
+
+// Destructor
+////////////////////////////////////////////////////////////////////////////
+QString bncSslConfig::defaultPath() {
+  return QDir::homePath() + QDir::separator() 
+         + ".config" + QDir::separator() + qApp->organizationName();
 }
 
