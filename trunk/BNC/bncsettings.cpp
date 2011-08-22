@@ -56,6 +56,8 @@ bncSettings::bncSettings(bool noInit) :
     setValue("perfIntr",         "");
     setValue("proxyHost",        "");
     setValue("proxyPort",        "");
+    setValue("sslCaCertPath",    "");
+    setValue("ignoreSslErrors",  "0");
     setValue("rnxAppend",        "0");
     setValue("rnxIntr",          "1 day");
     setValue("rnxPath",          "");
