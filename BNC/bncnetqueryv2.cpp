@@ -20,6 +20,7 @@
 #include "bncsettings.h"
 #include "bncversion.h"
 #include "bncsslconfig.h"
+#include "bncsettings.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -34,7 +35,11 @@ bncNetQueryV2::bncNetQueryV2(bool secure) {
   _eventLoop = new QEventLoop(this);
   _firstData = true;
   _status    = init;
-  _ignoreSslErrors = false;
+
+  bncSettings settings;
+  _ignoreSslErrors = 
+     (Qt::CheckState(settings.value("ignoreSslErrors").toInt()) == Qt::Checked);
+
   if (_secure && !QSslSocket::supportsSsl()) {
     ((bncApp*)qApp)->slotMessage("No SSL support, install OpenSSL run-time libraries", true);
     stop();
