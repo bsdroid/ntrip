@@ -199,6 +199,15 @@ void bncNetQueryV2::slotSslErrors(QList<QSslError> errors) {
     const QSslError& err = it.next();
     msg += "\n" + err.errorString();
   }
+
+  QSslCertificate cert = _reply->sslConfiguration().peerCertificate();
+  if (!cert.isNull()) {
+    QString issuer = QString("\nIssued by:\n%1\n%2\n")
+      .arg(cert.issuerInfo(QSslCertificate::OrganizationalUnitName))
+      .arg(cert.issuerInfo(QSslCertificate::Organization));
+    msg += issuer;
+  }
+
   ((bncApp*)qApp)->slotMessage(msg.toAscii(), true);
 
   _reply->ignoreSslErrors();
