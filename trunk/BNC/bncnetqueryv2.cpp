@@ -129,7 +129,8 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
   // Network Request
   // ---------------
   QNetworkRequest request;
-  request.setSslConfiguration(bncSslConfig::Instance());
+  bncSslConfig sslConfig;
+  request.setSslConfiguration(sslConfig);
   request.setUrl(_url);
   request.setRawHeader("Host"         , _url.host().toAscii());
   request.setRawHeader("Ntrip-Version", "Ntrip/2.0");

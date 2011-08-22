@@ -7,14 +7,10 @@
 // ---------------
 class bncSslConfig : public QSslConfiguration {
  public:
-  static bncSslConfig& Instance() {
-    static bncSslConfig _sslConfig;
-    return _sslConfig;
-  }
-  static QString defaultPath();
- private:
   bncSslConfig();
   ~bncSslConfig();
+  static QString defaultPath();
+ private:
 };
 
 #endif
