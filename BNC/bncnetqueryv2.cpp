@@ -38,6 +38,7 @@ bncNetQueryV2::bncNetQueryV2(bool secure) {
     ((bncApp*)qApp)->slotMessage("No SSL support, install OpenSSL run-time libraries", true);
     stop();
   }
+  _ignoreSslErrors = false;
 }
 
 // Destructor
@@ -197,22 +198,28 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::slotSslErrors(QList<QSslError> errors) {
 
-  QString msg = "SSL Errors";
-  QListIterator<QSslError> it(errors);
-  while (it.hasNext()) {
-    const QSslError& err = it.next();
-    msg += "\n" + err.errorString();
-  }
-
+  QString msg = "SSL Error\n";
   QSslCertificate cert = _reply->sslConfiguration().peerCertificate();
   if (!cert.isNull()) {
-    QString issuer = QString("\nIssued by:\n%1\n%2\n")
+    msg = QString("Server Certificate Issued by:\n"
+                  "%1\n%2\nCannot be verified\n")
       .arg(cert.issuerInfo(QSslCertificate::OrganizationalUnitName))
       .arg(cert.issuerInfo(QSslCertificate::Organization));
-    msg += issuer;
+  }
+  else {
+    QListIterator<QSslError> it(errors);
+    while (it.hasNext()) {
+      const QSslError& err = it.next();
+      msg += "\n" + err.errorString();
+    }
   }
 
   ((bncApp*)qApp)->slotMessage(msg.toAscii(), true);
 
-  _reply->ignoreSslErrors();
+  if (_ignoreSslErrors) {
+    _reply->ignoreSslErrors();
+  }
+  else {
+    stop();
+  }
 }
