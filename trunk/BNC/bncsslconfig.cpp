@@ -17,16 +17,19 @@
 #include <iostream>
 
 #include "bncsslconfig.h"
+#include "bncsettings.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncSslConfig::bncSslConfig() : 
   QSslConfiguration(QSslConfiguration::defaultConfiguration()) 
 {
-
-  std::cout << "HAHAHA" << std::endl;
-
-  QString dirName =  defaultPath();
+  
+  bncSettings settings;
+  QString dirName = settings.value("sslCaCertPath").toString();
+  if (dirName.isEmpty()) {
+    dirName =  defaultPath();
+  }
 
   QList<QSslCertificate> caCerts = this->caCertificates();
 
