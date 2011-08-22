@@ -11,6 +11,7 @@ class bncSslConfig : public QSslConfiguration {
     static bncSslConfig _sslConfig;
     return _sslConfig;
   }
+  static QString defaultPath();
  private:
   bncSslConfig();
   ~bncSslConfig();

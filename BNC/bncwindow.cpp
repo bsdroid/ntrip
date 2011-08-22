@@ -57,6 +57,7 @@
 #include "bncfigureppp.h"
 #include "bncversion.h"
 #include "bncbytescounter.h"
+#include "bncsslconfig.h"
 #include "upload/bnccustomtrafo.h"
 #include "upload/bncephuploadcaster.h"
 
@@ -688,6 +689,7 @@ bncWindow::bncWindow() {
   pLayout->addWidget(new QLabel("    "),4,0);
   pLayout->addWidget(new QLabel("Path to SSL Certificates"),     5, 0);
   pLayout->addWidget(_sslCaCertPathLineEdit,                     5, 1, 1,10);
+  pLayout->addWidget(new QLabel("default:  " + bncSslConfig::defaultPath()), 5, 12, 1,20);
   pLayout->addWidget(new QLabel("Ignore SSL Authorization Errors"), 6,0);
   pLayout->addWidget(_ignoreSslErrorsCheckBox,                     6, 1, 1,10);
   pLayout->addWidget(new QLabel("Settings for SSL Authorization."),7, 0, 1, 50, Qt::AlignLeft);
