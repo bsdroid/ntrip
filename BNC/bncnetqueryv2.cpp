@@ -34,6 +34,10 @@ bncNetQueryV2::bncNetQueryV2(bool secure) {
   _eventLoop = new QEventLoop(this);
   _firstData = true;
   _status    = init;
+  if (_secure && !QSslSocket::supportsSsl()) {
+    ((bncApp*)qApp)->slotMessage("No SSL support, install OpenSSL run-time libraries", true);
+    stop();
+  }
 }
 
 // Destructor
