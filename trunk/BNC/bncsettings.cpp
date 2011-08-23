@@ -82,14 +82,14 @@ bncSettings::bncSettings(bool noInit) :
     setValue("pppMount",         "");
     setValue("pppCorrMount",     "");
     setValue("pppSPP",           "PPP");
-    setValue("pppSigmaCode",     "5.0");
+    setValue("pppSigmaCode",     "10.0");
     setValue("pppSigmaPhase",    "0.02");
     setValue("pppQuickStart",    "");
     setValue("pppMaxSolGap",     "");
     setValue("pppSigCrd0",       "100.0");
     setValue("pppSigCrdP",       "100.0");
     setValue("pppSigTrp0",       "0.1");
-    setValue("pppSigTrpP",       "1e-6");
+    setValue("pppSigTrpP",       "5e-6");
     setValue("pppAverage",       "");
     setValue("pppUsePhase",      "");
     setValue("pppEstTropo",      "");
@@ -117,6 +117,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("uploadEphPassword",   "");
     setValue("uploadEphMountpoint", "");
     setValue("uploadEphSample",     "5");
+    setvalue("cmbMaxres",           "");
     sync();
   }
 }
