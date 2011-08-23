@@ -1173,6 +1173,10 @@ void bncWindow::slotAddMountPoints() {
     }
   }
 
+  settings.setValue("sslCaCertPath",   _sslCaCertPathLineEdit->text());
+  settings.setValue("ignoreSslErrors", _ignoreSslErrorsCheckBox->checkState());
+  settings.sync();
+
   QMessageBox msgBox;
   msgBox.setIcon(QMessageBox::Question);
   msgBox.setWindowTitle("Add Stream");
