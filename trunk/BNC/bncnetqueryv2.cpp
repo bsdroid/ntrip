@@ -212,12 +212,10 @@ void bncNetQueryV2::slotSslErrors(QList<QSslError> errors) {
            .arg(cert.issuerInfo(QSslCertificate::OrganizationalUnitName))
            .arg(cert.issuerInfo(QSslCertificate::Organization));
   }
-  else {
-    QListIterator<QSslError> it(errors);
-    while (it.hasNext()) {
-      const QSslError& err = it.next();
-      msg += "\n" + err.errorString();
-    }
+  QListIterator<QSslError> it(errors);
+  while (it.hasNext()) {
+    const QSslError& err = it.next();
+    msg += "\n" + err.errorString();
   }
 
   ((bncApp*)qApp)->slotMessage(msg.toAscii(), true);
