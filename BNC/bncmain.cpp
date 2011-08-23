@@ -96,7 +96,7 @@ int main(int argc, char *argv[]) {
                       "           --conf       <confFileName>\n" 
                       "           --file       <rawFileName>\n"
                       "           --mountpoint <station>\n"
-                      "           --format     <RTIGS | RTCM_2 | RTCM_3>\n";
+                      "           --format     <RTCM_2 | RTCM_3>\n";
 
   bncApp app(argc, argv, GUIenabled);
 
