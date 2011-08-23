@@ -117,7 +117,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("uploadEphPassword",   "");
     setValue("uploadEphMountpoint", "");
     setValue("uploadEphSample",     "5");
-    setvalue("cmbMaxres",           "");
+    setValue("cmbMaxres",           "");
     sync();
   }
 }
