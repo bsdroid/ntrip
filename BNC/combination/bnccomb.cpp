@@ -524,7 +524,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       double  maxRes = vv.maximum_absolute_value1(maxResIndex);   
       out.setRealNumberNotation(QTextStream::FixedNotation);
       out.setRealNumberPrecision(3);  
-      out << currentDateAndTimeGPS().toString("yy-MM-dd hh:mm:ss")
+      out << resTime.datestr().c_str() << " " << resTime.timestr().c_str()
           << " Maximum Residuum " << maxRes << ' '
           << llInfo[maxResIndex-1];
 
@@ -548,12 +548,14 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
           resCorr[pp->prn]->dClk = pp->xx / t_CST::c;
         }
       }
-      out << currentDateAndTimeGPS().toString("yy-MM-dd hh:mm:ss ").toAscii().data();
+      out << resTime.datestr().c_str() << " " 
+          << resTime.timestr().c_str() << " ";
       out.setRealNumberNotation(QTextStream::FixedNotation);
       out.setFieldWidth(8);
       out.setRealNumberPrecision(4);
       out << pp->toString() << " "
           << pp->xx << " +- " << sqrt(_QQ(pp->index,pp->index)) << endl;
+      out.setFieldWidth(0);
     }
   }
 
@@ -583,11 +585,13 @@ void bncComb::printResults(QTextStream& out, const bncTime& resTime,
       double xx, yy, zz, cc;
       eph->position(resTime.gpsw(), resTime.gpssec(), xx, yy, zz, cc);
 
-      out << currentDateAndTimeGPS().toString("yy-MM-dd hh:mm:ss ").toAscii().data();
+      out << resTime.datestr().c_str() << " " 
+          << resTime.timestr().c_str() << " ";
       out.setFieldWidth(3);
       out << "Full Clock " << corr->prn << " " << corr->iod << " ";
       out.setFieldWidth(14);
       out << (cc + corr->dClk) * t_CST::c << endl;
+      out.setFieldWidth(0);
     }
     else {
       out << "bncComb::printResuls bug" << endl;
