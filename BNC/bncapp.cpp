@@ -196,8 +196,13 @@ void bncApp::messagePrivate(const QByteArray& msg) {
   }
 
   if (_logStream) {
+    QByteArray msgLocal = msg;
+    if (msg.indexOf('\n') == 0) {
+      *_logStream << endl;
+      msgLocal = msg.mid(1);
+    }
     *_logStream << currentDateAndTimeGPS().toString("yy-MM-dd hh:mm:ss ").toAscii().data();
-    *_logStream << msg.data() << endl;
+    *_logStream << msgLocal.data() << endl;
     _logStream->flush();
   }
 }
