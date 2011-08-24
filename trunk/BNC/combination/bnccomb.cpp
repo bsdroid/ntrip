@@ -361,7 +361,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
 
   QTextStream out(&_log, QIODevice::WriteOnly);
 
-  out <<                   "Combination:" << endl 
+  out << endl <<           "Combination:" << endl 
       << "------------------------------" << endl;
 
   // Check whether master AC present
