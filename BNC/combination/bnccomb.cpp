@@ -529,13 +529,13 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
           << llInfo[maxResIndex-1];
 
       if (maxRes > _MAXRES) {
-        out << "Outlier" << endl;
+        out << "  Outlier" << endl;
         _QQ = QQ_sav;
         AA.Row(maxResIndex) = 0.0;
         ll.Row(maxResIndex) = 0.0;
       }
       else {
-        out << "OK" << endl;
+        out << "  OK" << endl;
         break;
       }
     }
