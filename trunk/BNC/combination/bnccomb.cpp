@@ -461,6 +461,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
 
     int iObs = 0;
     QListIterator<cmbEpoch*> itEpo(epochs);
+    QVector<QString> llInfo(ll.Nrows());
     while (itEpo.hasNext()) {
       cmbEpoch* epo = itEpo.next();
       QMapIterator<QString, t_corr*> itCorr(epo->corr);
@@ -480,6 +481,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
         }
 
         ll(iObs) = corr->dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
+        llInfo[iObs-1] = QString("%1  %2").arg(epo->acName).arg(corr->prn);
       }
     }
 
@@ -518,19 +520,22 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       bncModel::kalman(AA, ll, PP, _QQ, dx);
       ColumnVector vv = ll - AA * dx;
 
-      int    maxResIndex;
-      double maxRes = vv.maximum_absolute_value1(maxResIndex);   
+      int     maxResIndex;
+      double  maxRes = vv.maximum_absolute_value1(maxResIndex);   
       out.setRealNumberNotation(QTextStream::FixedNotation);
       out.setRealNumberPrecision(3);  
-      out << "Maximum Residuum " << maxRes << " (index " << maxResIndex << ")\n";
+      out << currentDateAndTimeGPS().toString("yy-MM-dd hh:mm:ss")
+          << " Maximum Residuum " << maxRes << ' '
+          << llInfo[maxResIndex-1];
 
       if (maxRes > _MAXRES) {
-        out << "Outlier Detected" << endl;
+        out << "Outlier" << endl;
         _QQ = QQ_sav;
         AA.Row(maxResIndex) = 0.0;
         ll.Row(maxResIndex) = 0.0;
       }
       else {
+        out << "OK" << endl;
         break;
       }
     }
