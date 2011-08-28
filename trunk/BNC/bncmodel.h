@@ -59,7 +59,6 @@ class bncModel : public QObject {
  public:
   bncModel(QByteArray staID);
   ~bncModel();
-  t_irc cmpBancroft(t_epoData* epoData);
   t_irc update(t_epoData* epoData);
   bncTime time()  const {return _time;}
   double x()      const {return _params[0]->xx;}
@@ -94,6 +93,7 @@ class bncModel : public QObject {
   void newNMEAstr(QByteArray str);
 
  private:
+  t_irc cmpBancroft(t_epoData* epoData);
   void   reset();
   void   cmpEle(t_satData* satData);
   void   addAmb(t_satData* satData);
