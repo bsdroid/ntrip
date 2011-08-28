@@ -1567,8 +1567,26 @@ void bncModel::restoreState(t_epoData* epoData) {
     _params.push_back(new bncParam(*par));
   }
 
-  delete epoData;
-  epoData = new t_epoData(*_epoData_sav);
+  epoData->tt = _epoData_sav->tt;
+  QMapIterator<QString, t_satData*> itGPS(_epoData_sav->satDataGPS);
+  while (itGPS.hasNext()) {
+    itGPS.next();
+    epoData->satDataGPS.remove(itGPS.key());
+    epoData->satDataGPS[itGPS.key()] = new t_satData(*itGPS.value());
+  }
+  QMapIterator<QString, t_satData*> itGlo(_epoData_sav->satDataGlo);
+  while (itGlo.hasNext()) {
+    itGlo.next();
+    epoData->satDataGlo.remove(itGlo.key());
+    epoData->satDataGlo[itGlo.key()] = new t_satData(*itGlo.value());
+  }
+  QMapIterator<QString, t_satData*> itGal(_epoData_sav->satDataGal);
+  while (itGal.hasNext()) {
+    itGal.next();
+    epoData->satDataGal.remove(itGal.key());
+    epoData->satDataGal[itGal.key()] = new t_satData(*itGal.value());
+  }
+
 }
 
 // 
