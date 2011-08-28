@@ -65,42 +65,51 @@ class t_epoData {
  public:
   t_epoData() {}
 
-  t_epoData(const t_epoData& ed) {
-    tt = ed.tt;
-    QMapIterator<QString, t_satData*> itGPS(ed.satDataGPS);
+  ~t_epoData() {
+    clear();
+  }
+
+  void clear() {
+    QMapIterator<QString, t_satData*> itGPS(satDataGPS);
+    while (itGPS.hasNext()) {
+      itGPS.next();
+      delete itGPS.value();
+    }
+    satDataGPS.clear();
+    QMapIterator<QString, t_satData*> itGlo(satDataGlo);
+    while (itGlo.hasNext()) {
+      itGlo.next();
+      delete itGlo.value();
+    }
+    satDataGlo.clear();
+    QMapIterator<QString, t_satData*> itGal(satDataGal);
+    while (itGal.hasNext()) {
+      itGal.next();
+      delete itGal.value();
+    }
+    satDataGal.clear();
+  }
+
+  void deepCopy(const t_epoData* from) {
+    clear();
+    tt = from->tt;
+    QMapIterator<QString, t_satData*> itGPS(from->satDataGPS);
     while (itGPS.hasNext()) {
       itGPS.next();
       satDataGPS[itGPS.key()] = new t_satData(*itGPS.value());
     }
-    QMapIterator<QString, t_satData*> itGlo(ed.satDataGlo);
+    QMapIterator<QString, t_satData*> itGlo(from->satDataGlo);
     while (itGlo.hasNext()) {
       itGlo.next();
       satDataGlo[itGlo.key()] = new t_satData(*itGlo.value());
     }
-    QMapIterator<QString, t_satData*> itGal(ed.satDataGal);
+    QMapIterator<QString, t_satData*> itGal(from->satDataGal);
     while (itGal.hasNext()) {
       itGal.next();
       satDataGal[itGal.key()] = new t_satData(*itGal.value());
     }
   }
 
-  ~t_epoData() {
-    QMapIterator<QString, t_satData*> itGPS(satDataGPS);
-    while (itGPS.hasNext()) {
-      itGPS.next();
-      delete itGPS.value();
-    }
-    QMapIterator<QString, t_satData*> itGlo(satDataGlo);
-    while (itGlo.hasNext()) {
-      itGlo.next();
-      delete itGlo.value();
-    }
-    QMapIterator<QString, t_satData*> itGal(satDataGal);
-    while (itGal.hasNext()) {
-      itGal.next();
-      delete itGal.value();
-    }
-  }
   unsigned sizeGPS() const {return satDataGPS.size();}
   unsigned sizeGlo() const {return satDataGlo.size();}
   unsigned sizeGal() const {return satDataGal.size();}

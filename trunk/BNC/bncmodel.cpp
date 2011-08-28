@@ -258,9 +258,9 @@ bncModel::bncModel(QByteArray staID) {
   _xcBanc.ReSize(4);  _xcBanc  = 0.0;
   _ellBanc.ReSize(3); _ellBanc = 0.0;
 
-  // Save for Outlier Detection
-  // --------------------------
-  _epoData_sav = 0;
+  // Save copy of data (used in outlier detection)
+  // ---------------------------------------------
+  _epoData_sav = new t_epoData();
 }
 
 // Destructor
@@ -1373,8 +1373,7 @@ t_irc bncModel::update_p(t_epoData* epoData) {
           }
           else {
             if (nNeglected == 0) {
-              delete _epoData_sav;
-              _epoData_sav = new t_epoData(*epoData);
+              _epoData_sav->deepCopy(epoData);
             }
           }
         }
@@ -1544,8 +1543,7 @@ void bncModel::rememberState(t_epoData* epoData) {
     _params_sav.push_back(new bncParam(*par));
   }
 
-  delete _epoData_sav;
-  _epoData_sav = new t_epoData(*epoData);
+  _epoData_sav->deepCopy(epoData);
 }
 
 // Restore Original State Vector and Variance-Covariance Matrix
@@ -1567,26 +1565,7 @@ void bncModel::restoreState(t_epoData* epoData) {
     _params.push_back(new bncParam(*par));
   }
 
-  epoData->tt = _epoData_sav->tt;
-  QMapIterator<QString, t_satData*> itGPS(_epoData_sav->satDataGPS);
-  while (itGPS.hasNext()) {
-    itGPS.next();
-    epoData->satDataGPS.remove(itGPS.key());
-    epoData->satDataGPS[itGPS.key()] = new t_satData(*itGPS.value());
-  }
-  QMapIterator<QString, t_satData*> itGlo(_epoData_sav->satDataGlo);
-  while (itGlo.hasNext()) {
-    itGlo.next();
-    epoData->satDataGlo.remove(itGlo.key());
-    epoData->satDataGlo[itGlo.key()] = new t_satData(*itGlo.value());
-  }
-  QMapIterator<QString, t_satData*> itGal(_epoData_sav->satDataGal);
-  while (itGal.hasNext()) {
-    itGal.next();
-    epoData->satDataGal.remove(itGal.key());
-    epoData->satDataGal[itGal.key()] = new t_satData(*itGal.value());
-  }
-
+  epoData->deepCopy(_epoData_sav);
 }
 
 // 
@@ -1594,6 +1573,8 @@ void bncModel::restoreState(t_epoData* epoData) {
 void bncModel::getAllPrns(const t_epoData* epoData, 
                           std::vector<QString>* allPrns) {
 
+  // GPS
+  // ---
   QMapIterator<QString, t_satData*> itGPS(epoData->satDataGPS);
   while (itGPS.hasNext()) {
     itGPS.next();
