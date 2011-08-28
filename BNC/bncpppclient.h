@@ -80,7 +80,7 @@ class t_epoData {
     QMapIterator<QString, t_satData*> itGal(ed.satDataGal);
     while (itGal.hasNext()) {
       itGal.next();
-      satDataGPS[itGal.key()] = new t_satData(*itGal.value());
+      satDataGal[itGal.key()] = new t_satData(*itGal.value());
     }
   }
 
