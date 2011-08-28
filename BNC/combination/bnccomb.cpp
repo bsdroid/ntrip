@@ -126,8 +126,8 @@ bncComb::bncComb() {
 
   // A Priori Sigmas (in Meters)
   // ---------------------------
-  double sigAC_0  = 100.0;
-  double sigAC_P  = 100.0;
+  double sigAC_0  = 1000.0;
+  double sigAC_P  = 1000.0;
   double sigSat_0 = 100.0;
   double sigSat_P =   0.0;
   double sigClk_0 = 100.0;
