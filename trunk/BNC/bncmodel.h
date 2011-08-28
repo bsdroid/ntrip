@@ -28,6 +28,7 @@
 #include <QtCore>
 #include <QtNetwork>
 #include <newmat.h>
+#include <vector>
 
 #include "bncconst.h"
 #include "bnctime.h"
@@ -108,8 +109,7 @@ class bncModel : public QObject {
   double delay_saast(double Ele);
   void   predict(int iPhase, t_epoData* epoData);
   t_irc  update_p(t_epoData* epoData);
-  int    outlierDetection(int iPhase, const SymmetricMatrix& QQsav, 
-                          const ColumnVector& vv,
+  bool   outlierDetection(int iPhase, const ColumnVector& vv,
                           QMap<QString, t_satData*>& satDataGPS,
                           QMap<QString, t_satData*>& satDataGlo,
                           QMap<QString, t_satData*>& satDataGal);
@@ -118,10 +118,12 @@ class bncModel : public QObject {
   double windUp(const QString& prn, const ColumnVector& rSat,
                 const ColumnVector& rRec);
 
+  void getAllPrns(const t_epoData* epoData, std::vector<QString>* allPrns);
+
   bncTime  _startTime;
 
-  void rememberState();
-  void restoreState();
+  void rememberState(t_epoData* epoData);
+  void restoreState(t_epoData* epoData);
 
   class pppPos {
    public:
@@ -141,6 +143,7 @@ class bncModel : public QObject {
   SymmetricMatrix       _QQ;
   QVector<bncParam*>    _params_sav;
   SymmetricMatrix       _QQ_sav;
+  t_epoData*            _epoData_sav;
   ColumnVector          _xcBanc;
   ColumnVector          _ellBanc;
   bool                  _usePhase;

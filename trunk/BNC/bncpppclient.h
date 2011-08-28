@@ -64,6 +64,26 @@ class t_satData {
 class t_epoData {
  public:
   t_epoData() {}
+
+  t_epoData(const t_epoData& ed) {
+    tt = ed.tt;
+    QMapIterator<QString, t_satData*> itGPS(ed.satDataGPS);
+    while (itGPS.hasNext()) {
+      itGPS.next();
+      satDataGPS[itGPS.key()] = new t_satData(*itGPS.value());
+    }
+    QMapIterator<QString, t_satData*> itGlo(ed.satDataGlo);
+    while (itGlo.hasNext()) {
+      itGlo.next();
+      satDataGlo[itGPS.key()] = new t_satData(*itGlo.value());
+    }
+    QMapIterator<QString, t_satData*> itGal(ed.satDataGal);
+    while (itGal.hasNext()) {
+      itGal.next();
+      satDataGPS[itGal.key()] = new t_satData(*itGal.value());
+    }
+  }
+
   ~t_epoData() {
     QMapIterator<QString, t_satData*> itGPS(satDataGPS);
     while (itGPS.hasNext()) {
@@ -86,7 +106,7 @@ class t_epoData {
   unsigned sizeGal() const {return satDataGal.size();}
   unsigned sizeAll() const {return satDataGPS.size() + satDataGlo.size() +
                                    satDataGal.size();}
-  bncTime                    tt;
+  bncTime                   tt;
   QMap<QString, t_satData*> satDataGPS;
   QMap<QString, t_satData*> satDataGlo;
   QMap<QString, t_satData*> satDataGal;
