@@ -1371,6 +1371,12 @@ t_irc bncModel::update_p(t_epoData* epoData) {
             restoreState(epoData);
             return failure;
           }
+          else {
+            if (nNeglected == 0) {
+              delete _epoData_sav;
+              _epoData_sav = new t_epoData(*epoData);
+            }
+          }
         }
         else {
           if (epoData->sizeGPS() < MINOBS) {
