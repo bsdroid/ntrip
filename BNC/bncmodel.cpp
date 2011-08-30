@@ -1337,7 +1337,7 @@ t_irc bncModel::update_p(t_epoData* epoData) {
     } while ( next_combination(allPrns.begin(), allPrns.end(),
                                  usedPrns.begin(), usedPrns.end()) );
 
-  } // for (unsigned nUsed = allPrns.size(); nUsed >= MINOBS; nUsed--)
+  } // for (unsigned nNeglected
 
   return failure;
 }
