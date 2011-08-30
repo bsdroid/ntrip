@@ -1237,6 +1237,12 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
   Tracer tracer("bncModel::update_p");
 
+  // Bancroft Solution
+  // -----------------
+  if (cmpBancroft(epoData) != success) {
+    return failure;
+  }
+
   rememberState(epoData);
 
   ColumnVector dx;
@@ -1248,7 +1254,6 @@ t_irc bncModel::update_p(t_epoData* epoData) {
     t_satData* satData = it.value();
     allPrns.push_back(satData->prn);
   }
-
   std::vector<QString> usedPrns;
 
   // Try with all satellites, then with all minus one, etc.
@@ -1274,53 +1279,22 @@ t_irc bncModel::update_p(t_epoData* epoData) {
         _log += '\n';
       }
 
+      // Remove Neglected Satellites form epoData
+      // ----------------------------------------
       for (unsigned ip = 0; ip < allPrns.size(); ip++) {
         QString prn = allPrns[ip];
         if ( !findInVector(usedPrns, prn) ) {
           epoData->satData.remove(prn);
         }
       }
+      if (epoData->sizeSys('G') < MINOBS) {
+        continue;
+      }
 
       // First update using code observations, then phase observations
       // -------------------------------------------------------------      
       for (int iPhase = 0; iPhase <= (_usePhase ? 1 : 0); iPhase++) {
       
-        // Bancroft Solution
-        // -----------------
-        if (iPhase == 0) {      
-          if (cmpBancroft(epoData) != success) {
-            restoreState(epoData);
-            return failure;
-          }
-          else {
-            if (nNeglected == 0) {
-              _epoData_sav->deepCopy(epoData);
-            }
-          }
-        }
-        else {
-          if (epoData->sizeSys('G') < MINOBS) {
-            restoreState(epoData);
-            _log += "bncModel::update_p: not enough data\n";
-            return failure;
-          }
-          unsigned numSatNoSlip = 0;
-          QVectorIterator<bncParam*> itPar(_params);
-          while (itPar.hasNext()) {
-            bncParam* par = itPar.next();
-            if (par->type == bncParam::AMB_L3 && par->prn[0] == 'G') {
-              if (par->numEpo >= 1) {
-                ++numSatNoSlip;
-              }
-            }
-          }
-          if (numSatNoSlip > 0 && numSatNoSlip < MINOBS) {
-            restoreState(epoData);
-            _log += "bncModel::update_p: not enough GPS satellites without cycle-slips\n";
-            return failure;
-          }
-        }
-        
         // Status Prediction
         // -----------------
         predict(iPhase, epoData);
