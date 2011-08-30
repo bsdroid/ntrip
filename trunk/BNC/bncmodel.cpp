@@ -1228,8 +1228,8 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
     bool outlierDetected = false;
 
-    // Loop over all Combinations of "nUsed" Satellites
-    // ------------------------------------------------
+    // Loop over all Combinations of used Satellites
+    // ---------------------------------------------
     do {
 
       if (outlierDetected) {
