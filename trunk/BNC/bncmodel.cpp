@@ -1126,6 +1126,7 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
     PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3) / (ellWgtCoef * ellWgtCoef);
     if (satData->system() == 'R') {
       ////      PP(iObs,iObs) /= 25.0;
+      PP(iObs,iObs) /= 9.0;
     }
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       if (_params[iPar-1]->type == bncParam::AMB_L3 &&
