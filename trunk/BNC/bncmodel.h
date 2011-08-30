@@ -110,15 +110,11 @@ class bncModel : public QObject {
   void   predict(int iPhase, t_epoData* epoData);
   t_irc  update_p(t_epoData* epoData);
   bool   outlierDetection(int iPhase, const ColumnVector& vv,
-                          QMap<QString, t_satData*>& satDataGPS,
-                          QMap<QString, t_satData*>& satDataGlo,
-                          QMap<QString, t_satData*>& satDataGal);
+                          QMap<QString, t_satData*>& satData);
   void writeNMEAstr(const QString& nmStr);
 
   double windUp(const QString& prn, const ColumnVector& rSat,
                 const ColumnVector& rRec);
-
-  void getAllPrns(const t_epoData* epoData, std::vector<QString>* allPrns);
 
   bncTime  _startTime;
 
