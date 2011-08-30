@@ -270,6 +270,7 @@ bncModel::~bncModel() {
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     delete _params[iPar-1];
   }
+  delete _epoData_sav;
 }
 
 // Reset Parameters and Variance-Covariance Matrix
@@ -905,44 +906,18 @@ bool bncModel::outlierDetection(int iPhase, const ColumnVector& vv,
 
   Tracer tracer("bncModel::outlierDetection");
 
-  QString prnCode;
-  QString prnPhase;
-  double  maxResCode  = 0.0;
-  double  maxResPhase = 0.0;
+  QString prn;
+  double  maxRes  = 0.0;
+  findMaxRes(vv, satData, prn, maxRes);
 
-  QString prnRemoved;
-  double  maxRes;
-
-  bool irc = false;
-
-  // Check Code
-  // ----------
-  if (iPhase == 0) {
-    findMaxRes(iPhase, vv, satData, prnCode, maxResCode, prnPhase, maxResPhase);
-    if (maxResCode > MAXRES_CODE) {
-      prnRemoved = prnCode;
-      maxRes     = maxResCode;
-      irc        = true;
-    }
-  }
-
-  // Check Phase
-  // -----------
-  else {
-    findMaxRes(iPhase, vv, satData, prnCode, maxResCode, prnPhase, maxResPhase);
-    if (maxResPhase > MAXRES_PHASE) {
-      prnRemoved = prnPhase;
-      maxRes     = maxResPhase;
-      irc        = true;
-    }
-  }
- 
-  if (irc) {
-    _log += "Outlier " + prnRemoved.toAscii() + " " 
+  if ( maxRes > (iPhase == 1 ? MAXRES_PHASE : MAXRES_CODE) ) {
+    _log += "Outlier " + prn + " " 
           + QByteArray::number(maxRes, 'f', 3) + "\n"; 
+    return true;
   }
-
-  return irc;
+  else {
+    return false;
+  }
 }
 
 // 
@@ -967,7 +942,7 @@ void bncModel::writeNMEAstr(const QString& nmStr) {
   emit newNMEAstr(outStr.toAscii());
 }
 
-//// 
+//
 //////////////////////////////////////////////////////////////////////////////
 void bncModel::kalman(const Matrix& AA, const ColumnVector& ll, 
                       const DiagonalMatrix& PP, 
@@ -1139,10 +1114,14 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
     ellWgtCoef = 1.5 - 0.5 / (ELEWGHT - 10.0) * (eleD - 10.0);
   }
 
+  // Remember Observation Index
+  // --------------------------
+  ++iObs;
+  satData->index = iObs;
+
   // Phase Observations
   // ------------------
   if (iPhase == 1) {
-    ++iObs;
     ll(iObs)      = satData->L3 - cmpValue(satData, true);
     PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3) / (ellWgtCoef * ellWgtCoef);
     if (satData->system() == 'R') {
@@ -1155,19 +1134,16 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
       } 
       AA(iObs, iPar) = _params[iPar-1]->partial(satData, true);
     }
-    satData->indexPhase = iObs;
   }
 
   // Code Observations
   // -----------------
   else {
-    ++iObs;
     ll(iObs)      = satData->P3 - cmpValue(satData, false);
     PP(iObs,iObs) = 1.0 / (_sigP3 * _sigP3) / (ellWgtCoef * ellWgtCoef);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
     }
-    satData->indexCode = iObs;
   }
 }
 
@@ -1176,47 +1152,32 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
 void bncModel::printRes(int iPhase, const ColumnVector& vv, 
                         ostringstream& str, t_satData* satData) {
   Tracer tracer("bncModel::printRes");
-  if (iPhase == 1) {
+
+  if (satData->index != 0) {
     str << _time.timestr(1)
-        << " RES " << satData->prn.toAscii().data() << "   L3 "
-        << setw(9) << setprecision(4) << vv(satData->indexPhase) << endl;
-  }
-  else {
-    str << _time.timestr(1)
-        << " RES " << satData->prn.toAscii().data() << "   P3 "
-        << setw(9) << setprecision(4) << vv(satData->indexCode) << endl;
+        << " RES " << satData->prn.toAscii().data() 
+        << (iPhase ? "   L3 " : "   P3 ")
+        << setw(9) << setprecision(4) << vv(satData->index) << endl;
   }
 }
 
 // 
 ///////////////////////////////////////////////////////////////////////////
-void bncModel::findMaxRes(int iPhase, const ColumnVector& vv,
+void bncModel::findMaxRes(const ColumnVector& vv,
                           const QMap<QString, t_satData*>& satData,
-                          QString& prnCode,  double& maxResCode, 
-                          QString& prnPhase, double& maxResPhase) {
+                          QString& prn,  double& maxRes) { 
+
   Tracer tracer("bncModel::findMaxRes");
-  maxResCode  = 0.0;
-  maxResPhase = 0.0;
+
+  maxRes  = 0.0;
 
   QMapIterator<QString, t_satData*> it(satData);
   while (it.hasNext()) {
     it.next();
     t_satData* satData = it.value();
-    if (iPhase == 0) {
-      if (satData->indexCode) {
-        if (fabs(vv(satData->indexCode)) > maxResCode) {
-          maxResCode = fabs(vv(satData->indexCode));
-          prnCode    = satData->prn;
-        }
-      }
-    }
-    else {
-      if (satData->indexPhase) {
-        if (fabs(vv(satData->indexPhase)) > maxResPhase) {
-          maxResPhase = fabs(vv(satData->indexPhase));
-          prnPhase    = satData->prn;
-        }
-      }
+    if (satData->index != 0 && fabs(vv(satData->index)) > maxRes) {
+      maxRes = fabs(vv(satData->index));
+      prn    = satData->prn;
     }
   }
 }
@@ -1279,7 +1240,7 @@ t_irc bncModel::update_p(t_epoData* epoData) {
         _log += '\n';
       }
 
-      // Remove Neglected Satellites form epoData
+      // Remove Neglected Satellites from epoData
       // ----------------------------------------
       for (unsigned ip = 0; ip < allPrns.size(); ip++) {
         QString prn = allPrns[ip];
