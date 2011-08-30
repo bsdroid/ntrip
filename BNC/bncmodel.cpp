@@ -1285,9 +1285,7 @@ t_irc bncModel::update_p(t_epoData* epoData) {
           t_satData* satData = it.value();
           if (iPhase == 1 || satData->system() != 'R') {
             QString prn = satData->prn;
-            if (findInVector(usedPrns, satData->prn)) {
-              addObs(iPhase, iObs, satData, AA, ll, PP);
-            }
+            addObs(iPhase, iObs, satData, AA, ll, PP);
           }
         }
 
