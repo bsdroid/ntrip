@@ -1302,7 +1302,7 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
         // Set estimated values
         // --------------------
-        else if (_usePhase || iPhase == 1) {
+        else if (!_usePhase || iPhase == 1) {
           QVectorIterator<bncParam*> itPar(_params);
           while (itPar.hasNext()) {
             bncParam* par = itPar.next();
