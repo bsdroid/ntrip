@@ -55,10 +55,11 @@
 
 using namespace std;
 
-const unsigned MINOBS       =    5;
-const double   MINELE       = 10.0 * M_PI / 180.0;
-const double   MAXRES_CODE  = 10.0;
-const double   MAXRES_PHASE = 0.04;
+const unsigned MINOBS                = 5;
+const double   MINELE                = 10.0 * M_PI / 180.0;
+const double   MAXRES_CODE           = 10.0;
+const double   MAXRES_PHASE          = 0.04;
+const double   GLONASS_WEIGHT_FACTOR = 10.0;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -1117,17 +1118,17 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
   // Remember Observation Index
   // --------------------------
   ++iObs;
-  satData->index = iObs;
+  satData->obsIndex = iObs;
 
   // Phase Observations
   // ------------------
   if (iPhase == 1) {
     ll(iObs)      = satData->L3 - cmpValue(satData, true);
-    PP(iObs,iObs) = 1.0 / (_sigL3 * _sigL3) / (ellWgtCoef * ellWgtCoef);
+    double sigL3 = _sigL3;
     if (satData->system() == 'R') {
-      ////      PP(iObs,iObs) /= 25.0;
-      PP(iObs,iObs) /= 9.0;
+      sigL3 /= GLONASS_WEIGHT_FACTOR;
     }
+    PP(iObs,iObs) = 1.0 / (sigL3 * sigL3) / (ellWgtCoef * ellWgtCoef);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       if (_params[iPar-1]->type == bncParam::AMB_L3 &&
           _params[iPar-1]->prn  == satData->prn) {
@@ -1154,11 +1155,11 @@ void bncModel::printRes(int iPhase, const ColumnVector& vv,
                         ostringstream& str, t_satData* satData) {
   Tracer tracer("bncModel::printRes");
 
-  if (satData->index != 0) {
+  if (satData->obsIndex != 0) {
     str << _time.timestr(1)
         << " RES " << satData->prn.toAscii().data() 
         << (iPhase ? "   L3 " : "   P3 ")
-        << setw(9) << setprecision(4) << vv(satData->index) << endl;
+        << setw(9) << setprecision(4) << vv(satData->obsIndex) << endl;
   }
 }
 
@@ -1176,8 +1177,8 @@ void bncModel::findMaxRes(const ColumnVector& vv,
   while (it.hasNext()) {
     it.next();
     t_satData* satData = it.value();
-    if (satData->index != 0 && fabs(vv(satData->index)) > maxRes) {
-      maxRes = fabs(vv(satData->index));
+    if (satData->obsIndex != 0 && fabs(vv(satData->obsIndex)) > maxRes) {
+      maxRes = fabs(vv(satData->obsIndex));
       prn    = satData->prn;
     }
   }
