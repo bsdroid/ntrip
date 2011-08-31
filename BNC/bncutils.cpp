@@ -373,3 +373,16 @@ void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac) {
               (dateTime.time().second() + 
                dateTime.time().msec() / 1000.0) / 60.0) / 60.0) / 24.0;
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+bool findInVector(const vector<QString>& vv, const QString& str) {
+  std::vector<QString>::const_iterator it;
+  for (it = vv.begin(); it != vv.end(); ++it) {
+    if ( (*it) == str) {
+      return true;
+    }
+  }
+  return false;
+}
+
