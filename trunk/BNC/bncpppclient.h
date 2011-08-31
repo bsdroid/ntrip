@@ -34,7 +34,7 @@ class bncModel;
 class t_satData {
  public:
   t_satData() {
-    index = 0;
+    obsIndex = 0;
   }
   ~t_satData() {}
   bncTime      tt;
@@ -55,7 +55,7 @@ class t_satData {
   double       rho;
   bool         slipFlag;
   double       lambda3;
-  unsigned     index;
+  unsigned     obsIndex;
   char system() const {return prn.toAscii()[0];}
 };
 
