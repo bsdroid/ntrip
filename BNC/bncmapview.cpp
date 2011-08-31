@@ -90,7 +90,7 @@ void BncMapView::mousePressEvent(QMouseEvent* event)
 
 
 // -------------
-void BncMapView::mouseReleaseEvent(QMouseEvent* event) 
+void BncMapView::mouseReleaseEvent(QMouseEvent* /* event */) 
 {   
    setCursor(Qt::OpenHandCursor);
    _lastPanPoint = QPoint();
