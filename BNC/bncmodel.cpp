@@ -1228,19 +1228,9 @@ t_irc bncModel::update_p(t_epoData* epoData) {
       usedPrns.pop_back();
     }
 
-    bool outlierDetected = false;
-
     // Loop over all Combinations of used Satellites
     // ---------------------------------------------
     do {
-
-      if (outlierDetected) {
-        _log += "TRY WITH PRNs: ";
-        for (unsigned ip = 0; ip < usedPrns.size(); ip++) {
-          _log += usedPrns[ip] + ' ';
-        }
-        _log += '\n';
-      }
 
       // Remove Neglected Satellites from epoData
       // ----------------------------------------
@@ -1273,14 +1263,13 @@ t_irc bncModel::update_p(t_epoData* epoData) {
           nObs = epoData->sizeAll();
         }
         
+        // Prepare first-design Matrix, vector observed-computed
+        // -----------------------------------------------------
         Matrix          AA(nObs, nPar);  // first design matrix
         ColumnVector    ll(nObs);        // tems observed-computed
         DiagonalMatrix  PP(nObs); PP = 0.0;
         
         unsigned iObs = 0;
-        
-        // GPS
-        // ---
         QMapIterator<QString, t_satData*> it(epoData->satData);
         while (it.hasNext()) {
           it.next();
@@ -1316,25 +1305,23 @@ t_irc bncModel::update_p(t_epoData* epoData) {
         
         // Check the residuals
         // -------------------
-        outlierDetected = outlierDetection(iPhase, vv, epoData->satData); 
-
-        if (outlierDetected) {
+        if ( outlierDetection(iPhase, vv, epoData->satData) ) {
           restoreState(epoData);
           break;
         }
 
-      } // for (int iPhase = 0; iPhase <= (_usePhase ? 1 : 0); iPhase++)
-
-      // Update Parameters
-      // -----------------
-      if (!outlierDetected) {
-        QVectorIterator<bncParam*> itPar(_params);
-        while (itPar.hasNext()) {
-          bncParam* par = itPar.next();
-          par->xx += dx(par->index);
+        // Set estimated values
+        // --------------------
+        else if (_usePhase || iPhase == 1) {
+          QVectorIterator<bncParam*> itPar(_params);
+          while (itPar.hasNext()) {
+            bncParam* par = itPar.next();
+            par->xx += dx(par->index);
+          }
+          return success;
         }
-        return success;
-      }
+
+      } // for (int iPhase = 0; iPhase <= (_usePhase ? 1 : 0); iPhase++)
 
     } while ( next_combination(allPrns.begin(), allPrns.end(),
                                  usedPrns.begin(), usedPrns.end()) );
