@@ -1184,16 +1184,6 @@ void bncModel::findMaxRes(const ColumnVector& vv,
   }
 }
  
-bool findInVector(const std::vector<QString>& vv, const QString& str) {
-  std::vector<QString>::const_iterator it;
-  for (it = vv.begin(); it != vv.end(); ++it) {
-    if ( (*it) == str) {
-      return true;
-    }
-  }
-  return false;
-}
-
 // Update Step (private - loop over outliers)
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncModel::update_p(t_epoData* epoData) {
