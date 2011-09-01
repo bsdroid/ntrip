@@ -911,8 +911,13 @@ bool bncModel::outlierDetection(int iPhase, const ColumnVector& vv,
   double  maxRes  = 0.0;
   findMaxRes(vv, satData, prn, maxRes);
 
-  if ( maxRes > (iPhase == 1 ? MAXRES_PHASE : MAXRES_CODE) ) {
-    _log += "Outlier " + prn + " " 
+  if      (iPhase == 1 && maxRes > MAXRES_PHASE) {
+    _log += "Outlier Phase " + prn + " " 
+          + QByteArray::number(maxRes, 'f', 3) + "\n"; 
+    return true;
+  }
+  else if (iPhase == 0 && maxRes > MAXRES_CODE) {
+    _log += "Outlier Code  " + prn + " " 
           + QByteArray::number(maxRes, 'f', 3) + "\n"; 
     return true;
   }
@@ -1229,12 +1234,17 @@ t_irc bncModel::update_p(t_epoData* epoData) {
     // ---------------------------------------------
     do {
 
+      QByteArray strResCode;
+      QByteArray strResPhase;
+      QString    strNeglected;
+
       // Remove Neglected Satellites from epoData
       // ----------------------------------------
       for (unsigned ip = 0; ip < allPrns.size(); ip++) {
         QString prn = allPrns[ip];
         if ( !findInVector(usedPrns, prn) ) {
           epoData->satData.remove(prn);
+          strNeglected += prn + " ";
         }
       }
       if (epoData->sizeSys('G') < MINOBS) {
@@ -1246,9 +1256,6 @@ t_irc bncModel::update_p(t_epoData* epoData) {
       if (cmpBancroft(epoData) != success) {
         continue;
       }
-
-      QByteArray strResCode;
-      QByteArray strResPhase;
 
       // First update using code observations, then phase observations
       // -------------------------------------------------------------      
@@ -1320,14 +1327,7 @@ t_irc bncModel::update_p(t_epoData* epoData) {
           // Print Neglected PRNs
           // --------------------
           if (nNeglected > 0) {
-            _log += "Neglected PRNs: ";
-            for (unsigned ip = 0; ip < allPrns.size(); ip++) {
-              QString prn = allPrns[ip];
-              if ( !findInVector(usedPrns, prn) ) {
-                _log += prn + " ";
-              }
-            }
-            _log += '\n';
+            _log += "Neglected PRNs: " + strNeglected + '\n';
           }
 
           _log += strResCode + strResPhase;
