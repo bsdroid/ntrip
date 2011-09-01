@@ -59,7 +59,7 @@ const unsigned MINOBS                = 5;
 const double   MINELE                = 10.0 * M_PI / 180.0;
 const double   MAXRES_CODE           = 10.0;
 const double   MAXRES_PHASE          = 0.04;
-const double   GLONASS_WEIGHT_FACTOR = 10.0;
+const double   GLONASS_WEIGHT_FACTOR = 3.0;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -1126,7 +1126,7 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
     ll(iObs)      = satData->L3 - cmpValue(satData, true);
     double sigL3 = _sigL3;
     if (satData->system() == 'R') {
-      sigL3 /= GLONASS_WEIGHT_FACTOR;
+      sigL3 *= GLONASS_WEIGHT_FACTOR;
     }
     PP(iObs,iObs) = 1.0 / (sigL3 * sigL3) / (ellWgtCoef * ellWgtCoef);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
