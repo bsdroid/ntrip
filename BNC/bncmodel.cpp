@@ -59,7 +59,7 @@ const unsigned MINOBS                = 5;
 const double   MINELE                = 10.0 * M_PI / 180.0;
 const double   MAXRES_CODE           = 10.0;
 const double   MAXRES_PHASE          = 0.04;
-const double   GLONASS_WEIGHT_FACTOR = 3.0;
+const double   GLONASS_WEIGHT_FACTOR = 5.0;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
