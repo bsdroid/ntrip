@@ -1190,12 +1190,8 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
   Tracer tracer("bncModel::update_p");
 
-  // Bancroft Solution
-  // -----------------
-  if (cmpBancroft(epoData) != success) {
-    return failure;
-  }
-
+  // Save Variance-Covariance Matrix, and Status Vector
+  // --------------------------------------------------
   rememberState(epoData);
 
   ColumnVector dx;
@@ -1231,6 +1227,12 @@ t_irc bncModel::update_p(t_epoData* epoData) {
         }
       }
       if (epoData->sizeSys('G') < MINOBS) {
+        continue;
+      }
+
+      // Bancroft Solution
+      // -----------------
+      if (cmpBancroft(epoData) != success) {
         continue;
       }
 
@@ -1276,23 +1278,6 @@ t_irc bncModel::update_p(t_epoData* epoData) {
         
         ColumnVector vv = ll - AA * dx;
         
-        // Print Residuals
-        // ---------------
-        if (true) {
-          ostringstream str;
-          str.setf(ios::fixed);
-        
-          QMapIterator<QString, t_satData*> it(epoData->satData);
-          while (it.hasNext()) {
-            it.next();
-            t_satData* satData = it.value();
-            if (iPhase == 1 || satData->system() != 'R') {
-              printRes(iPhase, vv, str, satData);
-            }
-          }
-          _log += str.str().c_str();
-        }
-        
         // Check the residuals
         // -------------------
         if ( outlierDetection(iPhase, vv, epoData->satData) ) {
@@ -1308,13 +1293,42 @@ t_irc bncModel::update_p(t_epoData* epoData) {
             bncParam* par = itPar.next();
             par->xx += dx(par->index);
           }
+
+          // Print Neglected PRNs
+          // --------------------
+          if (nNeglected > 0) {
+            _log += "Neglected PRNs: ";
+            for (unsigned ip = 0; ip < allPrns.size(); ip++) {
+              QString prn = allPrns[ip];
+              if ( !findInVector(usedPrns, prn) ) {
+                _log += prn + " ";
+              }
+            }
+            _log += '\n';
+          }
+
+          // Print Residuals
+          // ---------------
+          ostringstream str;
+          str.setf(ios::fixed);
+        
+          QMapIterator<QString, t_satData*> it(epoData->satData);
+          while (it.hasNext()) {
+            it.next();
+            t_satData* satData = it.value();
+            if (iPhase == 1 || satData->system() != 'R') {
+              printRes(iPhase, vv, str, satData);
+            }
+          }
+          _log += str.str().c_str();
+        
           return success;
         }
 
       } // for (int iPhase = 0; iPhase <= (_usePhase ? 1 : 0); iPhase++)
 
     } while ( next_combination(allPrns.begin(), allPrns.end(),
-                                 usedPrns.begin(), usedPrns.end()) );
+                               usedPrns.begin(), usedPrns.end()) );
 
   } // for (unsigned nNeglected
 
