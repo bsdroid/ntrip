@@ -99,8 +99,8 @@ class bncModel : public QObject {
   void   addAmb(t_satData* satData);
   void   addObs(int iPhase, unsigned& iObs, t_satData* satData,
                 Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP);
-  void   printRes(int iPhase, const ColumnVector& vv, 
-                  std::ostringstream& str, t_satData* satData);
+  QByteArray printRes(int iPhase, const ColumnVector& vv, 
+                      const QMap<QString, t_satData*>& satDataMap);
   void   findMaxRes(const ColumnVector& vv,
                     const QMap<QString, t_satData*>& satData,
                     QString& prn,  double& maxRes); 

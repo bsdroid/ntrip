@@ -1151,16 +1151,27 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
 
 // 
 ///////////////////////////////////////////////////////////////////////////
-void bncModel::printRes(int iPhase, const ColumnVector& vv, 
-                        ostringstream& str, t_satData* satData) {
+QByteArray bncModel::printRes(int iPhase, const ColumnVector& vv, 
+                              const QMap<QString, t_satData*>& satDataMap) {
+
   Tracer tracer("bncModel::printRes");
 
-  if (satData->obsIndex != 0) {
-    str << _time.timestr(1)
-        << " RES " << satData->prn.toAscii().data() 
-        << (iPhase ? "   L3 " : "   P3 ")
-        << setw(9) << setprecision(4) << vv(satData->obsIndex) << endl;
+  ostringstream str;
+  str.setf(ios::fixed);
+        
+  QMapIterator<QString, t_satData*> it(satDataMap);
+  while (it.hasNext()) {
+    it.next();
+    t_satData* satData = it.value();
+    if (satData->obsIndex != 0) {
+      str << _time.timestr(1)
+          << " RES " << satData->prn.toAscii().data() 
+          << (iPhase ? "   L3 " : "   P3 ")
+          << setw(9) << setprecision(4) << vv(satData->obsIndex) << endl;
+    }
   }
+
+  return QByteArray(str.str().c_str());
 }
 
 // 
@@ -1236,6 +1247,9 @@ t_irc bncModel::update_p(t_epoData* epoData) {
         continue;
       }
 
+      QByteArray strResCode;
+      QByteArray strResPhase;
+
       // First update using code observations, then phase observations
       // -------------------------------------------------------------      
       for (int iPhase = 0; iPhase <= (_usePhase ? 1 : 0); iPhase++) {
@@ -1278,6 +1292,15 @@ t_irc bncModel::update_p(t_epoData* epoData) {
         
         ColumnVector vv = ll - AA * dx;
         
+        // Print Residuals
+        // ---------------
+        if (iPhase == 0) {
+          strResCode  = printRes(iPhase, vv, epoData->satData);
+        }
+        else {
+          strResPhase = printRes(iPhase, vv, epoData->satData);
+        }
+
         // Check the residuals
         // -------------------
         if ( outlierDetection(iPhase, vv, epoData->satData) ) {
@@ -1307,20 +1330,7 @@ t_irc bncModel::update_p(t_epoData* epoData) {
             _log += '\n';
           }
 
-          // Print Residuals
-          // ---------------
-          ostringstream str;
-          str.setf(ios::fixed);
-        
-          QMapIterator<QString, t_satData*> it(epoData->satData);
-          while (it.hasNext()) {
-            it.next();
-            t_satData* satData = it.value();
-            if (iPhase == 1 || satData->system() != 'R') {
-              printRes(iPhase, vv, str, satData);
-            }
-          }
-          _log += str.str().c_str();
+          _log += strResCode + strResPhase;
         
           return success;
         }
