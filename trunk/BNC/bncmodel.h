@@ -108,11 +108,11 @@ class bncModel : public QObject {
   double delay_saast(double Ele);
   void   predict(int iPhase, t_epoData* epoData);
   t_irc  update_p(t_epoData* epoData);
-  int    outlierDetection(int iPhase, const SymmetricMatrix& QQsav, 
-                          const ColumnVector& vv,
-                          QMap<QString, t_satData*>& satDataGPS,
-                          QMap<QString, t_satData*>& satDataGlo,
-                          QMap<QString, t_satData*>& satDataGal);
+  QString outlierDetection(int iPhase, const SymmetricMatrix& QQsav, 
+                           const ColumnVector& vv,
+                           QMap<QString, t_satData*>& satDataGPS,
+                           QMap<QString, t_satData*>& satDataGlo,
+                           QMap<QString, t_satData*>& satDataGal);
   void writeNMEAstr(const QString& nmStr);
 
   double windUp(const QString& prn, const ColumnVector& rSat,
