@@ -25,8 +25,6 @@
 #ifndef BNCUTILS_H
 #define BNCUTILS_H
 
-#include <vector>
-
 #include <QString>
 #include <QDateTime>
 
@@ -68,7 +66,5 @@ void GPSweekFromYMDhms(int year, int month, int day, int hour, int min,
                        double sec, int& GPSWeek, double& GPSWeeks);
 
 void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac);
-
-bool findInVector(const std::vector<QString>& vv, const QString& str);
 
 #endif
