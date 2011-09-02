@@ -1325,7 +1325,9 @@ t_irc bncModel::update_p(t_epoData* epoData) {
     ColumnVector    vv;
     ColumnVector    dx;
 
-    do {
+    unsigned numOutliers = 0;
+
+    for (;;) {
 
       // Bancroft Solution
       // -----------------
@@ -1448,8 +1450,22 @@ t_irc bncModel::update_p(t_epoData* epoData) {
         _log += str.str().c_str();
       }
     
-    } while (outlierDetection(iPhase, QQsav, vv, epoData->satDataGPS, 
-                              epoData->satDataGlo, epoData->satDataGal) != 0);
+      if (outlierDetection(iPhase, QQsav, vv, epoData->satDataGPS, 
+                           epoData->satDataGlo, epoData->satDataGal) == 0) {
+        break;
+      }
+      else {
+        ++numOutliers;
+      }
+
+      if (numOutliers > 1) {
+        restoreState();
+        _log += "bncModel::update_p: too many outliers\n";
+        emit newMessage(_log, false);
+        return failure;
+      }
+
+    }
 
     // Update Parameters
     // -----------------
