@@ -935,11 +935,11 @@ t_irc bncModel::update(t_epoData* epoData) {
 
 // Outlier Detection
 ////////////////////////////////////////////////////////////////////////////
-int bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav, 
-                               const ColumnVector& vv,
-                               QMap<QString, t_satData*>& satDataGPS,
-                               QMap<QString, t_satData*>& satDataGlo,
-                               QMap<QString, t_satData*>& satDataGal) {
+QString bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav, 
+                                   const ColumnVector& vv,
+                                   QMap<QString, t_satData*>& satDataGPS,
+                                   QMap<QString, t_satData*>& satDataGlo,
+                                   QMap<QString, t_satData*>& satDataGal) {
 
   Tracer tracer("bncModel::outlierDetection");
 
@@ -951,31 +951,27 @@ int bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav,
   QString prnRemoved;
   double  maxRes;
 
-  int irc = 0;
-
   if (iPhase == 0) {
 
     // Check GPS Code
     // --------------
-    if (irc == 0) {
+    if (prnRemoved.isEmpty()) {
       findMaxRes(iPhase, vv,satDataGPS, prnCode, maxResCode, prnPhase, maxResPhase);
       if (maxResCode > MAXRES_CODE_GPS) {
         satDataGPS.remove(prnCode);
         prnRemoved = prnCode;
         maxRes     = maxResCode;
-        irc        = 1;
       }
     }
     
     // Check Galileo Code
     // ------------------
-    if (irc == 0) {
+    if (prnRemoved.isEmpty()) {
       findMaxRes(iPhase, vv,satDataGal, prnCode, maxResCode, prnPhase, maxResPhase);
       if (maxResCode > MAXRES_CODE_GAL) {
         satDataGal.remove(prnCode);
         prnRemoved = prnCode;
         maxRes     = maxResCode;
-        irc        = 1;
       }
     }
   }
@@ -984,42 +980,39 @@ int bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav,
 
     // Check Glonass Phase
     // -------------------
-    if (irc == 0) {
+    if (prnRemoved.isEmpty()) {
       findMaxRes(iPhase, vv,satDataGlo, prnCode, maxResCode, prnPhase, maxResPhase);
       if (maxResPhase > MAXRES_PHASE_GLO) {
         satDataGlo.remove(prnPhase);
         prnRemoved = prnPhase;
         maxRes     = maxResPhase;
-        irc        = 1;
       }
     }
     
     // Check Galileo Phase
     // -------------------
-    if (irc == 0) {
+    if (prnRemoved.isEmpty()) {
       findMaxRes(iPhase, vv,satDataGal, prnCode, maxResCode, prnPhase, maxResPhase);
       if      (maxResPhase > MAXRES_PHASE_GAL) {
         satDataGal.remove(prnPhase);
         prnRemoved = prnPhase;
         maxRes     = maxResPhase;
-        irc        = 1;
       }
     }
     
     // Check GPS Phase
     // ---------------
-    if (irc == 0) {
+    if (prnRemoved.isEmpty()) {
       findMaxRes(iPhase, vv,satDataGPS, prnCode, maxResCode, prnPhase, maxResPhase);
       if      (maxResPhase > MAXRES_PHASE_GPS) {
         satDataGPS.remove(prnPhase);
         prnRemoved = prnPhase;
         maxRes     = maxResPhase;
-        irc        = 1;
       }
     }
   }
  
-  if (irc != 0) {
+  if (!prnRemoved.isEmpty()) {
     _log += "Outlier " + prnRemoved.toAscii() + " " 
           + QByteArray::number(maxRes, 'f', 3) + "\n"; 
     _QQ = QQsav;
@@ -1032,7 +1025,7 @@ int bncModel::outlierDetection(int iPhase, const SymmetricMatrix& QQsav,
     }
   }
 
-  return irc;
+  return prnRemoved;
 }
 
 // 
@@ -1450,11 +1443,14 @@ t_irc bncModel::update_p(t_epoData* epoData) {
         _log += str.str().c_str();
       }
     
-      if (outlierDetection(iPhase, QQsav, vv, epoData->satDataGPS, 
-                           epoData->satDataGlo, epoData->satDataGal) == 0) {
+      QString prnRemoved = outlierDetection(iPhase, QQsav, vv, 
+                                            epoData->satDataGPS, 
+                                            epoData->satDataGlo, 
+                                            epoData->satDataGal);
+      if (prnRemoved.isEmpty()) {
         break;
       }
-      else {
+      else if (prnRemoved[0] == 'G') {
         ++numOutliers;
       }
 
