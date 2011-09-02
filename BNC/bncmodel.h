@@ -28,6 +28,7 @@
 #include <QtCore>
 #include <QtNetwork>
 #include <newmat.h>
+#include <vector>
 
 #include "bncconst.h"
 #include "bnctime.h"
@@ -58,7 +59,6 @@ class bncModel : public QObject {
  public:
   bncModel(QByteArray staID);
   ~bncModel();
-  t_irc cmpBancroft(t_epoData* epoData);
   t_irc update(t_epoData* epoData);
   bncTime time()  const {return _time;}
   double x()      const {return _params[0]->xx;}
@@ -93,26 +93,23 @@ class bncModel : public QObject {
   void newNMEAstr(QByteArray str);
 
  private:
+  t_irc cmpBancroft(t_epoData* epoData);
   void   reset();
   void   cmpEle(t_satData* satData);
   void   addAmb(t_satData* satData);
   void   addObs(int iPhase, unsigned& iObs, t_satData* satData,
                 Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP);
-  void   printRes(int iPhase, const ColumnVector& vv, 
-                  std::ostringstream& str, t_satData* satData);
-  void   findMaxRes(int iPhase, const ColumnVector& vv,
+  QByteArray printRes(int iPhase, const ColumnVector& vv, 
+                      const QMap<QString, t_satData*>& satDataMap);
+  void   findMaxRes(const ColumnVector& vv,
                     const QMap<QString, t_satData*>& satData,
-                    QString& prnCode,  double& maxResCode, 
-                    QString& prnPhase, double& maxResPhase);
+                    QString& prn,  double& maxRes); 
   double cmpValue(t_satData* satData, bool phase);
   double delay_saast(double Ele);
   void   predict(int iPhase, t_epoData* epoData);
   t_irc  update_p(t_epoData* epoData);
-  QString outlierDetection(int iPhase, const SymmetricMatrix& QQsav, 
-                           const ColumnVector& vv,
-                           QMap<QString, t_satData*>& satDataGPS,
-                           QMap<QString, t_satData*>& satDataGlo,
-                           QMap<QString, t_satData*>& satDataGal);
+  bool   outlierDetection(int iPhase, const ColumnVector& vv,
+                          QMap<QString, t_satData*>& satData);
   void writeNMEAstr(const QString& nmStr);
 
   double windUp(const QString& prn, const ColumnVector& rSat,
@@ -120,8 +117,8 @@ class bncModel : public QObject {
 
   bncTime  _startTime;
 
-  void rememberState();
-  void restoreState();
+  void rememberState(t_epoData* epoData);
+  void restoreState(t_epoData* epoData);
 
   class pppPos {
    public:
@@ -141,6 +138,7 @@ class bncModel : public QObject {
   SymmetricMatrix       _QQ;
   QVector<bncParam*>    _params_sav;
   SymmetricMatrix       _QQ_sav;
+  t_epoData*            _epoData_sav;
   ColumnVector          _xcBanc;
   ColumnVector          _ellBanc;
   bool                  _usePhase;

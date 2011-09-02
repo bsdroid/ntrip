@@ -34,8 +34,7 @@ class bncModel;
 class t_satData {
  public:
   t_satData() {
-    indexCode  = 0;
-    indexPhase = 0;
+    obsIndex = 0;
   }
   ~t_satData() {}
   bncTime      tt;
@@ -56,40 +55,52 @@ class t_satData {
   double       rho;
   bool         slipFlag;
   double       lambda3;
-  unsigned     indexCode;
-  unsigned     indexPhase;
+  unsigned     obsIndex;
   char system() const {return prn.toAscii()[0];}
 };
 
 class t_epoData {
  public:
   t_epoData() {}
+
   ~t_epoData() {
-    QMapIterator<QString, t_satData*> itGPS(satDataGPS);
-    while (itGPS.hasNext()) {
-      itGPS.next();
-      delete itGPS.value();
+    clear();
+  }
+
+  void clear() {
+    QMapIterator<QString, t_satData*> it(satData);
+    while (it.hasNext()) {
+      it.next();
+      delete it.value();
     }
-    QMapIterator<QString, t_satData*> itGlo(satDataGlo);
-    while (itGlo.hasNext()) {
-      itGlo.next();
-      delete itGlo.value();
-    }
-    QMapIterator<QString, t_satData*> itGal(satDataGal);
-    while (itGal.hasNext()) {
-      itGal.next();
-      delete itGal.value();
+    satData.clear();
+  }
+
+  void deepCopy(const t_epoData* from) {
+    clear();
+    tt = from->tt;
+    QMapIterator<QString, t_satData*> it(from->satData);
+    while (it.hasNext()) {
+      it.next();
+      satData[it.key()] = new t_satData(*it.value());
     }
   }
-  unsigned sizeGPS() const {return satDataGPS.size();}
-  unsigned sizeGlo() const {return satDataGlo.size();}
-  unsigned sizeGal() const {return satDataGal.size();}
-  unsigned sizeAll() const {return satDataGPS.size() + satDataGlo.size() +
-                                   satDataGal.size();}
-  bncTime                    tt;
-  QMap<QString, t_satData*> satDataGPS;
-  QMap<QString, t_satData*> satDataGlo;
-  QMap<QString, t_satData*> satDataGal;
+
+  unsigned sizeSys(char system) const {
+    unsigned ans = 0;
+    QMapIterator<QString, t_satData*> it(satData);
+    while (it.hasNext()) {
+      it.next();
+      if (it.value()->system() == system) {
+        ++ans;
+      }
+    }
+    return ans;
+  }
+  unsigned sizeAll() const {return satData.size();}
+
+  bncTime                   tt;
+  QMap<QString, t_satData*> satData;
 };
 
 class t_bias {
