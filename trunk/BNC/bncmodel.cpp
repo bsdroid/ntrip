@@ -58,7 +58,7 @@ using namespace std;
 const unsigned MINOBS                = 5;
 const double   MINELE                = 10.0 * M_PI / 180.0;
 const double   MAXRES_CODE           = 10.0;
-const double   MAXRES_PHASE          = 0.02;
+const double   MAXRES_PHASE          = 0.04;
 const double   GLONASS_WEIGHT_FACTOR = 5.0;
 
 // Constructor
@@ -1223,8 +1223,7 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
   // Try with all satellites, then with all minus one, etc.
   // ------------------------------------------------------
-  const unsigned MAX_NEGLECT = 1;
-  for (unsigned nNeglected = 0; nNeglected <= MAX_NEGLECT; nNeglected++) {
+  for (unsigned nNeglected = 0; nNeglected <= allPrns.size() - MINOBS; nNeglected++) {
     usedPrns = allPrns;
 
     for (unsigned ii = 0; ii < nNeglected && usedPrns.size() > 0; ii++) {
@@ -1241,12 +1240,19 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
       // Remove Neglected Satellites from epoData
       // ----------------------------------------
+      unsigned neglectedGPS = 0;
       for (unsigned ip = 0; ip < allPrns.size(); ip++) {
         QString prn = allPrns[ip];
         if ( !findInVector(usedPrns, prn) ) {
           epoData->satData.remove(prn);
           strNeglected += prn + " ";
+          if (prn[0] == 'G') {
+            ++neglectedGPS;
+          }
         }
+      }
+      if (neglectedGPS > 1) {
+        continue;
       }
       if (epoData->sizeSys('G') < MINOBS) {
         continue;
