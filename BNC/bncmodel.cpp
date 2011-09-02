@@ -58,7 +58,8 @@ using namespace std;
 const unsigned MINOBS                = 5;
 const double   MINELE                = 10.0 * M_PI / 180.0;
 const double   MAXRES_CODE           = 10.0;
-const double   MAXRES_PHASE          = 0.02;
+const double   MAXRES_PHASE_GPS      = 0.02;
+const double   MAXRES_PHASE_GLONASS  = 0.04;
 const double   GLONASS_WEIGHT_FACTOR = 5.0;
 
 // Constructor
@@ -911,7 +912,8 @@ bool bncModel::outlierDetection(int iPhase, const ColumnVector& vv,
   double  maxRes  = 0.0;
   findMaxRes(vv, satData, prn, maxRes);
 
-  if      (iPhase == 1 && maxRes > MAXRES_PHASE) {
+  if      (iPhase == 1 && 
+           maxRes > (prn[0] == 'G' ? MAXRES_PHASE_GPS : MAXRES_PHASE_GLONASS)) {
     _log += "Outlier Phase " + prn + " " 
           + QByteArray::number(maxRes, 'f', 3) + "\n"; 
     return true;
