@@ -193,7 +193,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
       satData->L3      = c1 * satData->L1 + c2 * satData->L2;
       satData->lambda3 = c1 * t_CST::c / f1 + c2 * t_CST::c / f2;
 
-      _epoData.back()->satDataGPS[satData->prn] = satData;
+      _epoData.back()->satData[satData->prn] = satData;
     }
     else {
       delete satData;
@@ -226,7 +226,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
       satData->L3      = c1 * satData->L1 + c2 * satData->L2;
       satData->lambda3 = c1 * t_CST::c / f1 + c2 * t_CST::c / f2;
 
-      _epoData.back()->satDataGlo[satData->prn] = satData;
+      _epoData.back()->satData[satData->prn] = satData;
     }
     else {
       delete satData;
@@ -249,7 +249,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
       satData->P3      = c1 * satData->P1 + c5 * satData->P5;
       satData->L3      = c1 * satData->L1 + c5 * satData->L5;
       satData->lambda3 = c1 * t_CST::c / f1 + c5 * t_CST::c / f5;
-      _epoData.back()->satDataGal[satData->prn] = satData;
+      _epoData.back()->satData[satData->prn] = satData;
     }
     else {
       delete satData;
@@ -458,41 +458,15 @@ void bncPPPclient::processFrontEpoch() {
 
   // Data Pre-Processing
   // -------------------
-  QMutableMapIterator<QString, t_satData*> iGPS(_epoData.front()->satDataGPS);
-  while (iGPS.hasNext()) {
-    iGPS.next();
-    QString    prn     = iGPS.key();
-    t_satData* satData = iGPS.value();
+  QMutableMapIterator<QString, t_satData*> it(_epoData.front()->satData);
+  while (it.hasNext()) {
+    it.next();
+    QString    prn     = it.key();
+    t_satData* satData = it.value();
 
     if (cmpToT(satData) != success) {
       delete satData;
-      iGPS.remove();
-      continue;
-    }
-  }
-
-  QMutableMapIterator<QString, t_satData*> iGlo(_epoData.front()->satDataGlo);
-  while (iGlo.hasNext()) {
-    iGlo.next();
-    QString    prn     = iGlo.key();
-    t_satData* satData = iGlo.value();
-
-    if (cmpToT(satData) != success) {
-      delete satData;
-      iGlo.remove();
-      continue;
-    }
-  }
-
-  QMutableMapIterator<QString, t_satData*> iGal(_epoData.front()->satDataGal);
-  while (iGal.hasNext()) {
-    iGal.next();
-    QString    prn     = iGal.key();
-    t_satData* satData = iGal.value();
-
-    if (cmpToT(satData) != success) {
-      delete satData;
-      iGal.remove();
+      it.remove();
       continue;
     }
   }
