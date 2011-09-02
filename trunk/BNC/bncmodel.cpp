@@ -1223,7 +1223,8 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
   // Try with all satellites, then with all minus one, etc.
   // ------------------------------------------------------
-  for (unsigned nNeglected = 0; nNeglected <= allPrns.size() - MINOBS; nNeglected++) {
+  const unsigned MAX_NEGLECT = 1;
+  for (unsigned nNeglected = 0; MAX_NEGLECT; nNeglected++) {
     usedPrns = allPrns;
 
     for (unsigned ii = 0; ii < nNeglected && usedPrns.size() > 0; ii++) {
