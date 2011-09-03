@@ -907,24 +907,31 @@ QString bncModel::outlierDetection(int iPhase, const ColumnVector& vv,
 
   Tracer tracer("bncModel::outlierDetection");
 
-  QString prn;
-  double  maxRes  = 0.0;
-  findMaxRes(vv, satData, prn, maxRes);
+  QString prnGPS;
+  QString prnGlo;
+  double  maxResGPS = 0.0;
+  double  maxResGlo = 0.0;
+  findMaxRes(vv, satData, prnGPS, prnGlo, maxResGPS, maxResGlo);
 
-  if      (iPhase == 1 && 
-           maxRes > (prn[0] == 'G' ? MAXRES_PHASE_GPS : MAXRES_PHASE_GLONASS)) {
-    _log += "Outlier Phase " + prn + " " 
-          + QByteArray::number(maxRes, 'f', 3) + "\n"; 
-    return prn;
+  if      (iPhase == 1) {
+    if      (maxResGlo > MAXRES_PHASE_GLONASS) { 
+      _log += "Outlier Phase " + prnGlo + " " 
+            + QByteArray::number(maxResGlo, 'f', 3) + "\n"; 
+      return prnGlo;
+    }
+    else if (maxResGPS > MAXRES_PHASE_GPS) { 
+      _log += "Outlier Phase " + prnGPS + " " 
+            + QByteArray::number(maxResGPS, 'f', 3) + "\n"; 
+      return prnGPS;
+    }
   }
-  else if (iPhase == 0 && maxRes > MAXRES_CODE) {
-    _log += "Outlier Code  " + prn + " " 
-          + QByteArray::number(maxRes, 'f', 3) + "\n"; 
-    return prn;
+  else if (iPhase == 0 && maxResGPS > MAXRES_CODE) {
+    _log += "Outlier Code  " + prnGPS + " " 
+          + QByteArray::number(maxResGPS, 'f', 3) + "\n"; 
+    return prnGPS;
   }
-  else {
-    return QString();
-  }
+
+  return QString();
 }
 
 // 
@@ -1184,19 +1191,32 @@ QByteArray bncModel::printRes(int iPhase, const ColumnVector& vv,
 ///////////////////////////////////////////////////////////////////////////
 void bncModel::findMaxRes(const ColumnVector& vv,
                           const QMap<QString, t_satData*>& satData,
-                          QString& prn,  double& maxRes) { 
+                          QString& prnGPS, QString& prnGlo, 
+                          double& maxResGPS, double& maxResGlo) { 
 
   Tracer tracer("bncModel::findMaxRes");
 
-  maxRes  = 0.0;
+  maxResGPS  = 0.0;
+  maxResGlo  = 0.0;
 
   QMapIterator<QString, t_satData*> it(satData);
   while (it.hasNext()) {
     it.next();
     t_satData* satData = it.value();
-    if (satData->obsIndex != 0 && fabs(vv(satData->obsIndex)) > maxRes) {
-      maxRes = fabs(vv(satData->obsIndex));
-      prn    = satData->prn;
+    if (satData->obsIndex != 0) {
+      QString prn = satData->prn;
+      if (prn[0] == 'R') {
+        if (fabs(vv(satData->obsIndex)) > maxResGlo) {
+          maxResGlo = fabs(vv(satData->obsIndex));
+          prnGlo    = prn;
+        }
+      }
+      else {
+        if (fabs(vv(satData->obsIndex)) > maxResGPS) {
+          maxResGPS = fabs(vv(satData->obsIndex));
+          prnGPS    = prn;
+        }
+      }
     }
   }
 }
