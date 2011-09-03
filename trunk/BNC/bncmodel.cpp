@@ -51,7 +51,6 @@
 #include "bncsettings.h"
 #include "bnctides.h"
 #include "bncantex.h"
-#include "bnccomb.h"
 
 using namespace std;
 
@@ -903,8 +902,8 @@ t_irc bncModel::update(t_epoData* epoData) {
 
 // Outlier Detection
 ////////////////////////////////////////////////////////////////////////////
-bool bncModel::outlierDetection(int iPhase, const ColumnVector& vv,
-                                QMap<QString, t_satData*>& satData) {
+QString bncModel::outlierDetection(int iPhase, const ColumnVector& vv,
+                                   QMap<QString, t_satData*>& satData) {
 
   Tracer tracer("bncModel::outlierDetection");
 
@@ -916,15 +915,15 @@ bool bncModel::outlierDetection(int iPhase, const ColumnVector& vv,
            maxRes > (prn[0] == 'G' ? MAXRES_PHASE_GPS : MAXRES_PHASE_GLONASS)) {
     _log += "Outlier Phase " + prn + " " 
           + QByteArray::number(maxRes, 'f', 3) + "\n"; 
-    return true;
+    return prn;
   }
   else if (iPhase == 0 && maxRes > MAXRES_CODE) {
     _log += "Outlier Code  " + prn + " " 
           + QByteArray::number(maxRes, 'f', 3) + "\n"; 
-    return true;
+    return prn;
   }
   else {
-    return false;
+    return QString();
   }
 }
 
@@ -1214,143 +1213,102 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
   ColumnVector dx;
 
-  std::vector<QString> allPrns; 
-  QMapIterator<QString, t_satData*> it(epoData->satData);
-  while (it.hasNext()) {
-    it.next();
-    t_satData* satData = it.value();
-    allPrns.push_back(satData->prn);
-  }
-  std::vector<QString> usedPrns;
+  QString lastOutlierPrn;
 
   // Try with all satellites, then with all minus one, etc.
   // ------------------------------------------------------
-  for (unsigned nNeglected = 0; nNeglected <= allPrns.size() - MINOBS; nNeglected++) {
-    usedPrns = allPrns;
+  while (selectSatellites(lastOutlierPrn, epoData->satData) == success) {
 
-    for (unsigned ii = 0; ii < nNeglected && usedPrns.size() > 0; ii++) {
-      usedPrns.pop_back();
+    QByteArray strResCode;
+    QByteArray strResPhase;
+
+    // Bancroft Solution
+    // -----------------
+    if (cmpBancroft(epoData) != success) {
+      break;
     }
 
-    // Loop over all Combinations of used Satellites
-    // ---------------------------------------------
-    do {
-
-      QByteArray strResCode;
-      QByteArray strResPhase;
-      QString    strNeglected;
-
-      // Remove Neglected Satellites from epoData
-      // ----------------------------------------
-      unsigned neglectedGPS = 0;
-      for (unsigned ip = 0; ip < allPrns.size(); ip++) {
-        QString prn = allPrns[ip];
-        if ( !findInVector(usedPrns, prn) ) {
-          epoData->satData.remove(prn);
-          strNeglected += prn + " ";
-          if (prn[0] == 'G') {
-            ++neglectedGPS;
-          }
-        }
-      }
-      if (neglectedGPS > 1) {
-        continue;
-      }
-      if (epoData->sizeSys('G') < MINOBS) {
-        continue;
-      }
-
-      // Bancroft Solution
+    // First update using code observations, then phase observations
+    // -------------------------------------------------------------      
+    for (int iPhase = 0; iPhase <= (_usePhase ? 1 : 0); iPhase++) {
+    
+      // Status Prediction
       // -----------------
-      if (cmpBancroft(epoData) != success) {
-        continue;
+      predict(iPhase, epoData);
+      
+      // Create First-Design Matrix
+      // --------------------------
+      unsigned nPar = _params.size();
+      unsigned nObs = 0;
+      if (iPhase == 0) {
+        nObs = epoData->sizeAll() - epoData->sizeSys('R'); // Glonass code not used
+      }
+      else {
+        nObs = epoData->sizeAll();
+      }
+      
+      // Prepare first-design Matrix, vector observed-computed
+      // -----------------------------------------------------
+      Matrix          AA(nObs, nPar);  // first design matrix
+      ColumnVector    ll(nObs);        // tems observed-computed
+      DiagonalMatrix  PP(nObs); PP = 0.0;
+      
+      unsigned iObs = 0;
+      QMapIterator<QString, t_satData*> it(epoData->satData);
+      while (it.hasNext()) {
+        it.next();
+        t_satData* satData = it.value();
+        if (iPhase == 1 || satData->system() != 'R') {
+          QString prn = satData->prn;
+          addObs(iPhase, iObs, satData, AA, ll, PP);
+        }
       }
 
-      // First update using code observations, then phase observations
-      // -------------------------------------------------------------      
-      for (int iPhase = 0; iPhase <= (_usePhase ? 1 : 0); iPhase++) {
+      // Compute Filter Update
+      // ---------------------
+      kalman(AA, ll, PP, _QQ, dx);
       
-        // Status Prediction
-        // -----------------
-        predict(iPhase, epoData);
-        
-        // Create First-Design Matrix
-        // --------------------------
-        unsigned nPar = _params.size();
-        unsigned nObs = 0;
-        if (iPhase == 0) {
-          nObs = epoData->sizeAll() - epoData->sizeSys('R'); // Glonass code not used
-        }
-        else {
-          nObs = epoData->sizeAll();
-        }
-        
-        // Prepare first-design Matrix, vector observed-computed
-        // -----------------------------------------------------
-        Matrix          AA(nObs, nPar);  // first design matrix
-        ColumnVector    ll(nObs);        // tems observed-computed
-        DiagonalMatrix  PP(nObs); PP = 0.0;
-        
-        unsigned iObs = 0;
-        QMapIterator<QString, t_satData*> it(epoData->satData);
-        while (it.hasNext()) {
-          it.next();
-          t_satData* satData = it.value();
-          if (iPhase == 1 || satData->system() != 'R') {
-            QString prn = satData->prn;
-            addObs(iPhase, iObs, satData, AA, ll, PP);
-          }
-        }
+      ColumnVector vv = ll - AA * dx;
+      
+      // Print Residuals
+      // ---------------
+      if (iPhase == 0) {
+        strResCode  = printRes(iPhase, vv, epoData->satData);
+      }
+      else {
+        strResPhase = printRes(iPhase, vv, epoData->satData);
+      }
 
-        // Compute Filter Update
-        // ---------------------
-        kalman(AA, ll, PP, _QQ, dx);
-        
-        ColumnVector vv = ll - AA * dx;
-        
-        // Print Residuals
-        // ---------------
-        if (iPhase == 0) {
-          strResCode  = printRes(iPhase, vv, epoData->satData);
-        }
-        else {
-          strResPhase = printRes(iPhase, vv, epoData->satData);
-        }
+      // Check the residuals
+      // -------------------
+      lastOutlierPrn = outlierDetection(iPhase, vv, epoData->satData);
 
-        // Check the residuals
-        // -------------------
-        if ( outlierDetection(iPhase, vv, epoData->satData) ) {
-          restoreState(epoData);
-          break;
-        }
-
-        // Set estimated values
-        // --------------------
-        else if (!_usePhase || iPhase == 1) {
+      // No Outlier Detected
+      // -------------------
+      if (lastOutlierPrn.isEmpty()) {
+        if (!_usePhase || iPhase == 1) {
           QVectorIterator<bncParam*> itPar(_params);
           while (itPar.hasNext()) {
             bncParam* par = itPar.next();
             par->xx += dx(par->index);
           }
-
-          // Print Neglected PRNs
-          // --------------------
-          if (nNeglected > 0) {
-            _log += "Neglected PRNs: " + strNeglected + '\n';
-          }
-
           _log += strResCode + strResPhase;
-        
           return success;
         }
+      }
 
-      } // for (int iPhase = 0; iPhase <= (_usePhase ? 1 : 0); iPhase++)
+      // Outlier Found
+      // -------------
+      else {
+        restoreState(epoData);
+        break;
+      }
 
-    } while ( next_combination(allPrns.begin(), allPrns.end(),
-                               usedPrns.begin(), usedPrns.end()) );
+    } // for iPhase
 
-  } // for (unsigned nNeglected
+  } // while selectSatellites
 
+  restoreState(epoData);
   return failure;
 }
 
@@ -1396,4 +1354,55 @@ void bncModel::restoreState(t_epoData* epoData) {
   }
 
   epoData->deepCopy(_epoData_sav);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+t_irc bncModel::selectSatellites(const QString& lastOutlierPrn, 
+                                 QMap<QString, t_satData*>& satData) {
+
+  // First Call 
+  // ----------
+  if (lastOutlierPrn.isEmpty()) {
+    _outlierGPS.clear();
+    _outlierGlo.clear();
+    return success;
+  }
+
+  // Second and next trials
+  // ----------------------
+  else {
+
+    if (lastOutlierPrn[0] == 'R') {
+      _outlierGlo << lastOutlierPrn;
+    }
+
+    // Remove all Glonass Outliers
+    // ---------------------------
+    QStringListIterator it(_outlierGlo);
+    while (it.hasNext()) {
+      QString prn = it.next();
+      if (satData.contains(prn)) {
+        delete satData.take(prn);
+      }
+    }
+
+    if (lastOutlierPrn[0] == 'R') {
+      _outlierGPS.clear();
+      return success;
+    }
+
+    // GPS Outlier appeared for the first time - try to delete it
+    // ----------------------------------------------------------
+    if (_outlierGPS.indexOf(lastOutlierPrn) == -1) {
+      _outlierGPS << lastOutlierPrn;
+      if (satData.contains(lastOutlierPrn)) {
+        delete satData.take(lastOutlierPrn);
+      }
+      return success;
+    }
+
+  }
+
+  return failure;
 }
