@@ -28,7 +28,6 @@
 #include <QtCore>
 #include <QtNetwork>
 #include <newmat.h>
-#include <vector>
 
 #include "bncconst.h"
 #include "bnctime.h"
@@ -108,8 +107,8 @@ class bncModel : public QObject {
   double delay_saast(double Ele);
   void   predict(int iPhase, t_epoData* epoData);
   t_irc  update_p(t_epoData* epoData);
-  bool   outlierDetection(int iPhase, const ColumnVector& vv,
-                          QMap<QString, t_satData*>& satData);
+  QString outlierDetection(int iPhase, const ColumnVector& vv,
+                           QMap<QString, t_satData*>& satData);
   void writeNMEAstr(const QString& nmStr);
 
   double windUp(const QString& prn, const ColumnVector& rSat,
@@ -119,6 +118,9 @@ class bncModel : public QObject {
 
   void rememberState(t_epoData* epoData);
   void restoreState(t_epoData* epoData);
+  
+  t_irc selectSatellites(const QString& lastOutlierPrn, 
+                         QMap<QString, t_satData*>& satData);
 
   class pppPos {
    public:
@@ -167,6 +169,8 @@ class bncModel : public QObject {
   double                _dU;
   bncAntex*             _antex;
   QString               _antennaName;
+  QStringList           _outlierGPS;
+  QStringList           _outlierGlo;
 };
 
 #endif
