@@ -1316,10 +1316,8 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
           if (_outlierGPS.size() > 0 || _outlierGlo.size() > 0) {
             _log += "Neglected PRNs: ";
-            QStringListIterator itGPS(_outlierGPS);
-            while (itGPS.hasNext()) {
-              QString prn = itGPS.next();
-              _log += prn + ' ';
+            if (!_outlierGPS.isEmpty()) {
+              _log += _outlierGPS.last() + ' ';
             }
             QStringListIterator itGlo(_outlierGlo);
             while (itGlo.hasNext()) {
