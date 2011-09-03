@@ -102,7 +102,8 @@ class bncModel : public QObject {
                       const QMap<QString, t_satData*>& satDataMap);
   void   findMaxRes(const ColumnVector& vv,
                     const QMap<QString, t_satData*>& satData,
-                    QString& prn,  double& maxRes); 
+                    QString& prnGPS, QString& prnGlo,  
+                    double& maxResGPS, double& maxResGlo); 
   double cmpValue(t_satData* satData, bool phase);
   double delay_saast(double Ele);
   void   predict(int iPhase, t_epoData* epoData);
