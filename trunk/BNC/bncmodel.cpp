@@ -1287,12 +1287,30 @@ t_irc bncModel::update_p(t_epoData* epoData) {
       // -------------------
       if (lastOutlierPrn.isEmpty()) {
         if (!_usePhase || iPhase == 1) {
+
           QVectorIterator<bncParam*> itPar(_params);
           while (itPar.hasNext()) {
             bncParam* par = itPar.next();
             par->xx += dx(par->index);
           }
+
+          if (_outlierGPS.size() > 0 || _outlierGlo.size() > 0) {
+            _log += "Neglected PRNs: ";
+            QStringListIterator itGPS(_outlierGPS);
+            while (itGPS.hasNext()) {
+              QString prn = itGPS.next();
+              _log += prn + ' ';
+            }
+            QStringListIterator itGlo(_outlierGlo);
+            while (itGlo.hasNext()) {
+              QString prn = itGlo.next();
+              _log += prn + ' ';
+            }
+          }
+          _log += '\n';
+
           _log += strResCode + strResPhase;
+
           return success;
         }
       }
