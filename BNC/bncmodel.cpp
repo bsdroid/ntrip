@@ -57,7 +57,7 @@ using namespace std;
 const unsigned MINOBS                = 5;
 const double   MINELE                = 10.0 * M_PI / 180.0;
 const double   MAXRES_CODE           = 10.0;
-const double   MAXRES_PHASE_GPS      = 0.02;
+const double   MAXRES_PHASE_GPS      = 0.04;
 const double   MAXRES_PHASE_GLONASS  = 0.08;
 const double   GLONASS_WEIGHT_FACTOR = 5.0;
 
