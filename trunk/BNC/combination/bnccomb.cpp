@@ -537,7 +537,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
               pp->prn  == llInfo[maxResIndex-1].prn) { 
             QQ_sav.Row(iPar)    = 0.0;
             QQ_sav.Column(iPar) = 0.0;
-            QQ_sav(iPar,iPar)   = pp->sig_0;
+            QQ_sav(iPar,iPar)   = pp->sig_0 * pp->sig_0;
           }
         }
 
