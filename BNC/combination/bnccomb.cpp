@@ -461,7 +461,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
 
     int iObs = 0;
     QListIterator<cmbEpoch*> itEpo(epochs);
-    QVector<QString> llInfo(ll.Nrows());
+    QVector<t_llInfo> llInfo(ll.Nrows());
     while (itEpo.hasNext()) {
       cmbEpoch* epo = itEpo.next();
       QMapIterator<QString, t_corr*> itCorr(epo->corr);
@@ -481,7 +481,8 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
         }
 
         ll(iObs) = corr->dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
-        llInfo[iObs-1] = QString("%1  %2").arg(epo->acName).arg(corr->prn);
+        llInfo[iObs-1].AC  = epo->acName;
+        llInfo[iObs-1].prn = corr->prn;
       }
     }
 
@@ -526,7 +527,7 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       out.setRealNumberPrecision(3);  
       out << resTime.datestr().c_str() << " " << resTime.timestr().c_str()
           << " Maximum Residuum " << maxRes << ' '
-          << llInfo[maxResIndex-1];
+          << llInfo[maxResIndex-1].AC << ' ' << llInfo[maxResIndex-1].prn;
 
       if (maxRes > _MAXRES) {
         out << "  Outlier" << endl;
