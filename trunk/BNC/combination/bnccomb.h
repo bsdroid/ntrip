@@ -70,6 +70,12 @@ class bncComb : public bncEphUser  {
     QQueue<cmbEpoch*> epochs;  // List of Epochs with Corrections
   };
 
+  class t_llInfo {
+   public:
+    QString AC;
+    QString prn;
+  };
+
   void processEpochs(const QList<cmbEpoch*>& epochs);
   void dumpResults(const bncTime& resTime, 
                    const QMap<QString, t_corr*>& resCorr);
