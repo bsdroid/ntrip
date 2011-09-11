@@ -530,6 +530,17 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
           << llInfo[maxResIndex-1].AC << ' ' << llInfo[maxResIndex-1].prn;
 
       if (maxRes > _MAXRES) {
+        for (int iPar = 1; iPar <= _params.size(); iPar++) {
+          cmbParam* pp = _params[iPar-1];
+          if (pp->type == cmbParam::Sat_offset     && 
+              pp->AC   == llInfo[maxResIndex-1].AC &&
+              pp->prn  == llInfo[maxResIndex-1].prn) { 
+            QQ_sav.Row(iPar)    = 0.0;
+            QQ_sav.Column(iPar) = 0.0;
+            QQ_sav(iPar,iPar)   = pp->sig_0;
+          }
+        }
+
         out << "  Outlier" << endl;
         _QQ = QQ_sav;
         AA.Row(maxResIndex) = 0.0;
