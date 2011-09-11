@@ -1231,8 +1231,6 @@ t_irc bncModel::update_p(t_epoData* epoData) {
   // --------------------------------------------------
   rememberState(epoData);
 
-  ColumnVector dx;
-
   QString lastOutlierPrn;
 
   // Try with all satellites, then with all minus one, etc.
@@ -1286,8 +1284,8 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
       // Compute Filter Update
       // ---------------------
+      ColumnVector dx;
       kalman(AA, ll, PP, _QQ, dx);
-      
       ColumnVector vv = ll - AA * dx;
       
       // Print Residuals
@@ -1306,14 +1304,14 @@ t_irc bncModel::update_p(t_epoData* epoData) {
       // No Outlier Detected
       // -------------------
       if (lastOutlierPrn.isEmpty()) {
+
+        QVectorIterator<bncParam*> itPar(_params);
+        while (itPar.hasNext()) {
+          bncParam* par = itPar.next();
+          par->xx += dx(par->index);
+        }
+
         if (!_usePhase || iPhase == 1) {
-
-          QVectorIterator<bncParam*> itPar(_params);
-          while (itPar.hasNext()) {
-            bncParam* par = itPar.next();
-            par->xx += dx(par->index);
-          }
-
           if (_outlierGPS.size() > 0 || _outlierGlo.size() > 0) {
             _log += "Neglected PRNs: ";
             if (!_outlierGPS.isEmpty()) {
