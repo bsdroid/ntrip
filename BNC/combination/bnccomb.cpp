@@ -490,7 +490,8 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
     // --------------
     const double Ph = 1.e6;
     int iCond = 1;
-    PP(nObs+iCond) = Ph;
+    PP(nObs+iCond)          = Ph;
+    llInfo[nObs+iCond-1].AC = "regularization";
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       cmbParam* pp = _params[iPar-1];
       if (pp->type == cmbParam::clk &&
@@ -504,7 +505,9 @@ void bncComb::processEpochs(const QList<cmbEpoch*>& epochs) {
       for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
         ++iCond;
         QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
-        PP(nObs+1+iGps) = Ph;
+        PP(nObs+1+iGps)       = Ph;
+        llInfo[nObs+iGps].AC  = "regularization";
+        llInfo[nObs+iGps].prn = prn;
         for (int iPar = 1; iPar <= _params.size(); iPar++) {
           cmbParam* pp = _params[iPar-1];
           if (pp->type == cmbParam::Sat_offset && pp->prn == prn) {
