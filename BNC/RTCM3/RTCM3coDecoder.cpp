@@ -168,7 +168,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         // ----------------------------------
         if (_co.NumberOfGPSSat > 0 || _bias.NumberOfGPSSat > 0) {
           int GPSEpochTime = (_co.NumberOfGPSSat > 0) ? 
-                             _co.NumberOfGPSSat : _bias.NumberOfGPSSat;
+                             _co.GPSEpochTime : _bias.GPSEpochTime;
           if      (GPSweeksHlp > GPSEpochTime + 86400.0) {
             GPSweek += 1;
           }
@@ -182,7 +182,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         // -----------------------------------
         else if (_co.NumberOfGLONASSSat > 0 || _bias.NumberOfGLONASSSat > 0){
           int GLONASSEpochTime = (_co.NumberOfGLONASSSat > 0) ? 
-                              _co.NumberOfGLONASSSat : _bias.NumberOfGLONASSSat;
+                              _co.GLONASSEpochTime : _bias.GLONASSEpochTime;
 
           // Second of day (GPS time) from Glonass Epoch
           // -------------------------------------------
