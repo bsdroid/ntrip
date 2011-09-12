@@ -153,7 +153,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
       _buffer = _buffer.mid(bytesused);
 
       if ( irc == GCOBR_OK && 
-           (_co.NumberOfGPSSat > 0 || _co.NumberOfGLONASSSat > 0) ) {
+           (_co.NumberOfGPSSat   > 0 || _co.NumberOfGLONASSSat   > 0 ||
+            _bias.NumberOfGPSSat > 0 || _bias.NumberOfGLONASSSat > 0) ) {
 
         reopen(_fileNameSkl, _fileName, _out);
 
@@ -165,25 +166,29 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
         // Correction Epoch from GPSEpochTime
         // ----------------------------------
-        if (_co.NumberOfGPSSat > 0) {
-          if      (GPSweeksHlp > _co.GPSEpochTime + 86400.0) {
+        if (_co.NumberOfGPSSat > 0 || _bias.NumberOfGPSSat > 0) {
+          int GPSEpochTime = (_co.NumberOfGPSSat > 0) ? 
+                             _co.NumberOfGPSSat : _bias.NumberOfGPSSat;
+          if      (GPSweeksHlp > GPSEpochTime + 86400.0) {
             GPSweek += 1;
           }
-          else if (GPSweeksHlp < _co.GPSEpochTime - 86400.0) {
+          else if (GPSweeksHlp < GPSEpochTime - 86400.0) {
             GPSweek -= 1;
           }
-          _GPSweeks = _co.GPSEpochTime;
+          _GPSweeks = GPSEpochTime;
         }
 
         // Correction Epoch from Glonass Epoch
         // -----------------------------------
-        else if (_co.NumberOfGLONASSSat > 0){
+        else if (_co.NumberOfGLONASSSat > 0 || _bias.NumberOfGLONASSSat > 0){
+          int GLONASSEpochTime = (_co.NumberOfGLONASSSat > 0) ? 
+                              _co.NumberOfGLONASSSat : _bias.NumberOfGLONASSSat;
 
           // Second of day (GPS time) from Glonass Epoch
           // -------------------------------------------
           QDate date = dateAndTimeFromGPSweek(GPSweek, GPSweeksHlp).date();
           int leapSecond = gnumleap(date.year(), date.month(), date.day());
-          int GPSDaySec  = _co.GLONASSEpochTime - 3 * 3600 + leapSecond;
+          int GPSDaySec  = GLONASSEpochTime - 3 * 3600 + leapSecond;
 
           int weekDay      = int(GPSweeksHlp/86400.0); 
           int GPSDaySecHlp = int(GPSweeksHlp) - weekDay * 86400;
