@@ -267,12 +267,19 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     }
   }
 
+  // Remember Last Correction Time
+  // -----------------------------
+  if (!_lastCorrTime.valid() || _lastCorrTime < newCorr->tt) {
+    _lastCorrTime = newCorr->tt;
+  }
+
   // Process previous Epoch(s)
   // -------------------------
+  const double waitTime = 20.0; // wait 20 seconds
   QListIterator<bncTime> itTime(_buffer.keys());
   while (itTime.hasNext()) {
     bncTime epoTime = itTime.next();
-    if (epoTime < newCorr->tt) {
+    if (epoTime < _lastCorrTime - waitTime) {
       _resTime = epoTime;
       processEpoch();
     }
