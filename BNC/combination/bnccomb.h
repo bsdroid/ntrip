@@ -62,7 +62,7 @@ class bncComb : public bncEphUser  {
   QList<cmbAC*>      _ACs;
   bncTime            _resTime;
   QVector<cmbParam*> _params;
-  QList<cmbCorr*>    _corrs;
+  QVector<cmbCorr*>  _corrs;
   bncRtnetDecoder*   _rtnetDecoder;
   SymmetricMatrix    _QQ;
   bool               _firstReg;
