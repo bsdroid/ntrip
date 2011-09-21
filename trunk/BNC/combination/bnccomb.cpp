@@ -195,7 +195,7 @@ bncComb::~bncComb() {
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     delete _params[iPar-1];
   }
-  QListIterator<cmbCorr*> itCorr(_corrs);
+  QVectorIterator<cmbCorr*> itCorr(_corrs);
   while (itCorr.hasNext()) {
     delete itCorr.next();
   }
@@ -280,7 +280,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   // Merge or add the correction
   // ---------------------------
   cmbCorr* existingCorr = 0;
-  QListIterator<cmbCorr*> itCorr(_corrs);
+  QVectorIterator<cmbCorr*> itCorr(_corrs);
   while (itCorr.hasNext()) {
     cmbCorr* hlp = itCorr.next();
     if (hlp->prn == newCorr->prn && hlp->acName == newCorr->prn) {
@@ -378,7 +378,7 @@ void bncComb::processEpoch() {
 
   QMap<QString, t_corr*> resCorr;
 
-  QListIterator<cmbCorr*> itCorr(_corrs);
+  QVectorIterator<cmbCorr*> itCorr(_corrs);
   while (itCorr.hasNext()) {
     cmbCorr* corr = itCorr.next();
     QString  prn  = corr->prn;
@@ -428,7 +428,9 @@ void bncComb::processEpoch() {
   ColumnVector dx;
   SymmetricMatrix QQ_sav = _QQ;
 
-  //  for (int ii = 1; ii < 10; ii++) {
+  // Update and outlier detection loop
+  // ---------------------------------
+  for (int ii = 1; ii < 10; ii++) {
     bncModel::kalman(AA, ll, PP, _QQ, dx);
     ColumnVector vv = ll - AA * dx;
 
@@ -437,32 +439,34 @@ void bncComb::processEpoch() {
     out.setRealNumberNotation(QTextStream::FixedNotation);
     out.setRealNumberPrecision(3);  
     out << _resTime.datestr().c_str() << " " << _resTime.timestr().c_str()
-        << " Maximum Residuum " << maxRes << ' ' << endl;
-//        << llInfo[maxResIndex-1].AC << ' ' << llInfo[maxResIndex-1].prn;
-//
-//    if (maxRes > _MAXRES) {
-//      for (int iPar = 1; iPar <= _params.size(); iPar++) {
-//        cmbParam* pp = _params[iPar-1];
-//        if (pp->type == cmbParam::offACSat     && 
-//            pp->AC   == llInfo[maxResIndex-1].AC &&
-//            pp->prn  == llInfo[maxResIndex-1].prn) { 
-//          QQ_sav.Row(iPar)    = 0.0;
-//          QQ_sav.Column(iPar) = 0.0;
-//          QQ_sav(iPar,iPar)   = pp->sig_0 * pp->sig_0;
-//        }
-//      }
-//
-//      out << "  Outlier" << endl;
-//      _QQ = QQ_sav;
-//      AA.Row(maxResIndex) = 0.0;
-//      ll.Row(maxResIndex) = 0.0;
-//    }
-//    else {
-//      out << "  OK" << endl;
-//      break;
-//    }
-//  }
+        << " Maximum Residuum " << maxRes << ' '
+        << _corrs[maxResIndex-1]->acName << ' ' << _corrs[maxResIndex-1]->prn;
 
+    if (maxRes > _MAXRES) {
+      for (int iPar = 1; iPar <= _params.size(); iPar++) {
+        cmbParam* pp = _params[iPar-1];
+        if (pp->type == cmbParam::offACSat            && 
+            pp->AC   == _corrs[maxResIndex-1]->acName &&
+            pp->prn  == _corrs[maxResIndex-1]->prn) { 
+          QQ_sav.Row(iPar)    = 0.0;
+          QQ_sav.Column(iPar) = 0.0;
+          QQ_sav(iPar,iPar)   = pp->sig_0 * pp->sig_0;
+        }
+      }
+
+      out << "  Outlier" << endl;
+      _QQ = QQ_sav;
+      AA.Row(maxResIndex) = 0.0;
+      ll.Row(maxResIndex) = 0.0;
+    }
+    else {
+      out << "  OK" << endl;
+      break;
+    }
+  }
+
+  // Update Parameter Values
+  // -----------------------
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
     pp->xx += dx(iPar);
@@ -481,12 +485,16 @@ void bncComb::processEpoch() {
     out.setFieldWidth(0);
   }
 
+  // Print Results
+  // -------------
   printResults(out, resCorr);
   dumpResults(resCorr);
 
   emit newMessage(_log, false);
 
-  QListIterator<cmbCorr*> it(_corrs);
+  // Delete Data
+  // -----------
+  QVectorIterator<cmbCorr*> it(_corrs);
   while (it.hasNext()) {
     delete it.next();
   }
