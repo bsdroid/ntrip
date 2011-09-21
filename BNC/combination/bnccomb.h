@@ -12,11 +12,10 @@ class bncAntex;
 
 class cmbParam {
  public:
-  enum parType {AC_offset, Sat_offset, clk};
-  cmbParam(parType type_, int index_, const QString& ac_, 
-           const QString& prn_, double sig_0_, double sig_P_);
+  enum parType {offAC, offACSat, clkSat};
+  cmbParam(parType type_, int index_, const QString& ac_, const QString& prn_);
   ~cmbParam();
-  double partial(const QString& AC_, t_corr* corr);
+  double partial(const QString& AC_, const QString& prn_);
   QString toString() const;
   parType type;
   int     index;
@@ -40,59 +39,36 @@ class bncComb : public bncEphUser  {
   void newMessage(QByteArray msg, bool showOnScreen);
 
  private:
-  class cmbEpoch {
-   public:
-    cmbEpoch(const QString& name) {acName = name;}
-    ~cmbEpoch() {
-      QMapIterator<QString, t_corr*> it(corr);
-      while (it.hasNext()) {
-        it.next();
-        delete it.value();
-      }
-    }
-    QString                acName;
-    bncTime                time;
-    QMap<QString, t_corr*> corr; // Corrections (key is PRN)
-  };
 
   class cmbAC {
    public:
     cmbAC() {}
-    ~cmbAC() {
-      QListIterator<cmbEpoch*> it(epochs);
-      while (it.hasNext()) {
-        delete it.next();
-      }
-    }
+    ~cmbAC() {}
     QString           mountPoint;
     QString           name;
     double            weight;
-    QQueue<cmbEpoch*> epochs;  // List of Epochs with Corrections
   };
 
-  class t_llInfo {
+  class cmbCorr : public t_corr {
    public:
-    QString AC;
-    QString prn;
+    QString acName;
   };
 
-  void processEpochs(const QList<cmbEpoch*>& epochs);
-  void dumpResults(const bncTime& resTime, 
-                   const QMap<QString, t_corr*>& resCorr);
-  void printResults(QTextStream& out, const bncTime& resTime,
-                    const QMap<QString, t_corr*>& resCorr);
+  void processEpoch();
+  void dumpResults(const QMap<QString, t_corr*>& resCorr);
+  void printResults(QTextStream& out, const QMap<QString, t_corr*>& resCorr);
   void switchToLastEph(const t_eph* lastEph, t_corr* corr);
 
-  QMap<QString, cmbAC*> _ACs;   // Analytical Centers (key is mountpoint)
-  bncTime               _lastCorrTime;
-  QVector<cmbParam*>    _params;
-  bncRtnetDecoder*      _rtnetDecoder;
-  SymmetricMatrix       _QQ;
-  bool                  _firstReg;
-  QByteArray            _log;
-  QString               _masterAC;
-  bncAntex*             _antex;
-  double                _MAXRES;
+  QList<cmbAC*>      _ACs;
+  bncTime            _resTime;
+  QVector<cmbParam*> _params;
+  QList<cmbCorr*>    _corrs;
+  bncRtnetDecoder*   _rtnetDecoder;
+  SymmetricMatrix    _QQ;
+  bool               _firstReg;
+  QByteArray         _log;
+  bncAntex*          _antex;
+  double             _MAXRES;
 };
 
 #endif
