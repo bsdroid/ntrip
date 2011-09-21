@@ -38,11 +38,11 @@ const int MAXPRN_GPS = 32;
 cmbParam::cmbParam(parType type_, int index_,
                    const QString& ac_, const QString& prn_) {
 
-  type  = type_;
-  index = index_;
-  AC    = ac_;
-  prn   = prn_;
-  xx    = 0.0;
+  type   = type_;
+  index  = index_;
+  AC     = ac_;
+  prn    = prn_;
+  xx     = 0.0;
 
   if      (type == offAC) {
     sig_0 = 1000.0;
@@ -355,6 +355,22 @@ void bncComb::processEpoch() {
 
   out << endl <<           "Combination:" << endl 
       << "------------------------------" << endl;
+
+  // Observation Statistics
+  // ----------------------
+  QListIterator<cmbAC*> icAC(_ACs);
+  while (icAC.hasNext()) {
+    cmbAC* AC = icAC.next();
+    AC->numObs = 0;
+    QVectorIterator<cmbCorr*> itCorr(_corrs);
+    while (itCorr.hasNext()) {
+      cmbCorr* corr = itCorr.next();
+      if (corr->acName == AC->name) {
+        AC->numObs += 1;
+      }
+    }
+    out << AC->name.toAscii().data() << ": " << AC->numObs << endl;
+  }
 
   // Prediction Step
   // ---------------

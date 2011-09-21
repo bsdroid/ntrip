@@ -42,11 +42,15 @@ class bncComb : public bncEphUser  {
 
   class cmbAC {
    public:
-    cmbAC() {}
+    cmbAC() {
+      weight = 0.0;
+      numObs = 0;
+    }
     ~cmbAC() {}
     QString           mountPoint;
     QString           name;
     double            weight;
+    unsigned          numObs;
   };
 
   class cmbCorr : public t_corr {
