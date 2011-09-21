@@ -240,7 +240,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Delete old corrections
   // ----------------------
-  if (newCorr->tt < _resTime) {
+  if (_resTime.valid() && newCorr->tt < _resTime) {
     delete newCorr;
     return;
   }
@@ -267,20 +267,22 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     }
   }
 
-  // Process previous Epoch
-  // ----------------------
-  if (_resTime.valid() && _resTime < newCorr->tt) {
-    processEpoch();
+  // Process previous Epoch(s)
+  // -------------------------
+  QListIterator<bncTime> itTime(_buffer.keys());
+  while (itTime.hasNext()) {
+    bncTime epoTime = itTime.next();
+    if (epoTime < newCorr->tt) {
+      _resTime = epoTime;
+      processEpoch();
+    }
   }
-
-  // Remember last correction time
-  // -----------------------------
-  _resTime = newCorr->tt;
 
   // Merge or add the correction
   // ---------------------------
+  QVector<cmbCorr*>& corrs = _buffer[newCorr->tt].corrs;
   cmbCorr* existingCorr = 0;
-  QVectorIterator<cmbCorr*> itCorr(corrs());
+  QVectorIterator<cmbCorr*> itCorr(corrs);
   while (itCorr.hasNext()) {
     cmbCorr* hlp = itCorr.next();
     if (hlp->prn == newCorr->prn && hlp->acName == newCorr->prn) {
@@ -293,7 +295,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     existingCorr->readLine(line); // merge (multiple messages)
   }
   else {
-    corrs().append(newCorr);
+    corrs.append(newCorr);
   }
 }
 
