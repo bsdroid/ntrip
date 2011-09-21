@@ -47,10 +47,10 @@ class bncComb : public bncEphUser  {
       numObs = 0;
     }
     ~cmbAC() {}
-    QString           mountPoint;
-    QString           name;
-    double            weight;
-    unsigned          numObs;
+    QString  mountPoint;
+    QString  name;
+    double   weight;
+    unsigned numObs;
   };
 
   class cmbCorr : public t_corr {
@@ -58,21 +58,35 @@ class bncComb : public bncEphUser  {
     QString acName;
   };
 
+  class cmbEpoch {
+   public:
+    cmbEpoch() {}
+    ~cmbEpoch() {
+      QVectorIterator<cmbCorr*> it(corrs);
+      while (it.hasNext()) {
+        delete it.next();
+      }
+    }
+    QVector<cmbCorr*> corrs;
+  };
+
   void processEpoch();
   void dumpResults(const QMap<QString, t_corr*>& resCorr);
   void printResults(QTextStream& out, const QMap<QString, t_corr*>& resCorr);
   void switchToLastEph(const t_eph* lastEph, t_corr* corr);
 
-  QList<cmbAC*>      _ACs;
-  bncTime            _resTime;
-  QVector<cmbParam*> _params;
-  QVector<cmbCorr*>  _corrs;
-  bncRtnetDecoder*   _rtnetDecoder;
-  SymmetricMatrix    _QQ;
-  bool               _firstReg;
-  QByteArray         _log;
-  bncAntex*          _antex;
-  double             _MAXRES;
+  QVector<cmbCorr*>& corrs() {return _buffer[_resTime].corrs;}
+
+  QList<cmbAC*>           _ACs;
+  bncTime                 _resTime;
+  QVector<cmbParam*>      _params;
+  QMap<bncTime, cmbEpoch> _buffer;
+  bncRtnetDecoder*        _rtnetDecoder;
+  SymmetricMatrix         _QQ;
+  bool                    _firstReg;
+  QByteArray              _log;
+  bncAntex*               _antex;
+  double                  _MAXRES;
 };
 
 #endif

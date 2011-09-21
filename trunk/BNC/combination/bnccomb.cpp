@@ -195,7 +195,7 @@ bncComb::~bncComb() {
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     delete _params[iPar-1];
   }
-  QVectorIterator<cmbCorr*> itCorr(_corrs);
+  QVectorIterator<cmbCorr*> itCorr(corrs());
   while (itCorr.hasNext()) {
     delete itCorr.next();
   }
@@ -280,7 +280,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   // Merge or add the correction
   // ---------------------------
   cmbCorr* existingCorr = 0;
-  QVectorIterator<cmbCorr*> itCorr(_corrs);
+  QVectorIterator<cmbCorr*> itCorr(corrs());
   while (itCorr.hasNext()) {
     cmbCorr* hlp = itCorr.next();
     if (hlp->prn == newCorr->prn && hlp->acName == newCorr->prn) {
@@ -293,7 +293,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     existingCorr->readLine(line); // merge (multiple messages)
   }
   else {
-    _corrs.append(newCorr);
+    corrs().append(newCorr);
   }
 }
 
@@ -343,7 +343,7 @@ void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
 void bncComb::processEpoch() {
 
   int nPar = _params.size();
-  int nObs = _corrs.size(); 
+  int nObs = corrs().size(); 
 
   if (nObs == 0) {
     return;
@@ -362,7 +362,7 @@ void bncComb::processEpoch() {
   while (icAC.hasNext()) {
     cmbAC* AC = icAC.next();
     AC->numObs = 0;
-    QVectorIterator<cmbCorr*> itCorr(_corrs);
+    QVectorIterator<cmbCorr*> itCorr(corrs());
     while (itCorr.hasNext()) {
       cmbCorr* corr = itCorr.next();
       if (corr->acName == AC->name) {
@@ -394,7 +394,7 @@ void bncComb::processEpoch() {
 
   QMap<QString, t_corr*> resCorr;
 
-  QVectorIterator<cmbCorr*> itCorr(_corrs);
+  QVectorIterator<cmbCorr*> itCorr(corrs());
   while (itCorr.hasNext()) {
     cmbCorr* corr = itCorr.next();
     QString  prn  = corr->prn;
@@ -456,14 +456,14 @@ void bncComb::processEpoch() {
     out.setRealNumberPrecision(3);  
     out << _resTime.datestr().c_str() << " " << _resTime.timestr().c_str()
         << " Maximum Residuum " << maxRes << ' '
-        << _corrs[maxResIndex-1]->acName << ' ' << _corrs[maxResIndex-1]->prn;
+        << corrs()[maxResIndex-1]->acName << ' ' << corrs()[maxResIndex-1]->prn;
 
     if (maxRes > _MAXRES) {
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         cmbParam* pp = _params[iPar-1];
         if (pp->type == cmbParam::offACSat            && 
-            pp->AC   == _corrs[maxResIndex-1]->acName &&
-            pp->prn  == _corrs[maxResIndex-1]->prn) { 
+            pp->AC   == corrs()[maxResIndex-1]->acName &&
+            pp->prn  == corrs()[maxResIndex-1]->prn) { 
           QQ_sav.Row(iPar)    = 0.0;
           QQ_sav.Column(iPar) = 0.0;
           QQ_sav(iPar,iPar)   = pp->sig_0 * pp->sig_0;
@@ -510,11 +510,7 @@ void bncComb::processEpoch() {
 
   // Delete Data
   // -----------
-  QVectorIterator<cmbCorr*> it(_corrs);
-  while (it.hasNext()) {
-    delete it.next();
-  }
-  _corrs.clear();
+  _buffer.remove(_resTime);
 }
 
 // Print results
