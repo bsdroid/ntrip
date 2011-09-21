@@ -206,10 +206,25 @@ bncComb::~bncComb() {
 void bncComb::processCorrLine(const QString& staID, const QString& line) {
   QMutexLocker locker(&_mutex);
 
+  // Find the AC Name
+  // ----------------
+  QString acName;
+  QListIterator<cmbAC*> icAC(_ACs);
+  while (icAC.hasNext()) {
+    cmbAC* AC = icAC.next();
+    if (AC->mountPoint == staID) {
+      acName = AC->name;
+      break;
+    }
+  }
+  if (acName.isEmpty()) {
+    return;
+  }
+
   // Read the Correction
   // -------------------
   cmbCorr* newCorr = new cmbCorr();
-  newCorr->acName = staID;
+  newCorr->acName = acName;
   if (!newCorr->readLine(line) == success) {
     delete newCorr;
     return;
@@ -413,7 +428,7 @@ void bncComb::processEpoch() {
   ColumnVector dx;
   SymmetricMatrix QQ_sav = _QQ;
 
-  for (int ii = 1; ii < 10; ii++) {
+  //  for (int ii = 1; ii < 10; ii++) {
     bncModel::kalman(AA, ll, PP, _QQ, dx);
     ColumnVector vv = ll - AA * dx;
 
@@ -446,7 +461,7 @@ void bncComb::processEpoch() {
 //      out << "  OK" << endl;
 //      break;
 //    }
-  }
+//  }
 
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
