@@ -32,7 +32,6 @@
 const int moduloTime = 10;
 
 const double sig0_offAC    = 1000.0;
-const double sigP_offAC    = 1000.0;
 const double sig0_offACSat =  100.0;
 const double sigP_offACSat =    0.0;
 const double sig0_clkSat   =  100.0;
@@ -54,16 +53,19 @@ cmbParam::cmbParam(parType type_, int index_,
   xx     = 0.0;
 
   if      (type == offAC) {
-    sig_0 = sig0_offAC;
-    sig_P = sigP_offAC;
+    epoSpec = true;
+    sig0    = sig0_offAC;
+    sigP    = sig0;
   }
   else if (type == offACSat) {
-    sig_0 = sig0_offACSat;
-    sig_P = sigP_offACSat;
+    epoSpec = false;
+    sig0    = sig0_offACSat;
+    sigP    = sigP_offACSat;
   }
   else if (type == clkSat) {
-    sig_0 = sig0_clkSat;
-    sig_P = sigP_clkSat;
+    epoSpec = false;
+    sig0    = sig0_clkSat;
+    sigP    = sigP_clkSat;
   }
 }
 
@@ -164,7 +166,7 @@ bncComb::bncComb() {
   _QQ = 0.0;
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
-    _QQ(iPar,iPar) = pp->sig_0 * pp->sig_0;
+    _QQ(iPar,iPar) = pp->sig0 * pp->sig0;
   }
 
   // ANTEX File
@@ -387,7 +389,15 @@ void bncComb::processEpoch() {
   ColumnVector x0(nPar);
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
-    _QQ(iPar,iPar) += pp->sig_P * pp->sig_P;
+    if (pp->epoSpec) {
+      pp->xx = 0.0;
+      _QQ.Row(iPar)    = 0.0;
+      _QQ.Column(iPar) = 0.0;
+      _QQ(iPar,iPar) = pp->sig0 * pp->sig0;
+    }
+    else {
+      _QQ(iPar,iPar) += pp->sigP * pp->sigP;
+    }
     x0(iPar) = pp->xx;
   }
 
@@ -476,7 +486,7 @@ void bncComb::processEpoch() {
             pp->prn  == corrs()[maxResIndex-1]->prn) { 
           QQ_sav.Row(iPar)    = 0.0;
           QQ_sav.Column(iPar) = 0.0;
-          QQ_sav(iPar,iPar)   = pp->sig_0 * pp->sig_0;
+          QQ_sav(iPar,iPar)   = pp->sig0 * pp->sig0;
         }
       }
 
