@@ -35,7 +35,6 @@ const double sig0_offAC    = 1000.0;
 const double sig0_offACSat =  100.0;
 const double sigP_offACSat =    0.0;
 const double sig0_clkSat   =  100.0;
-const double sigP_clkSat   =  100.0;
 
 const int MAXPRN_GPS = 32;
 
@@ -63,9 +62,9 @@ cmbParam::cmbParam(parType type_, int index_,
     sigP    = sigP_offACSat;
   }
   else if (type == clkSat) {
-    epoSpec = false;
+    epoSpec = true;
     sig0    = sig0_clkSat;
-    sigP    = sigP_clkSat;
+    sigP    = sig0;
   }
 }
 
