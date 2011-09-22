@@ -25,7 +25,6 @@ class cmbParam {
   double  sig0;
   double  sigP;
   bool    epoSpec;
-  const t_eph* eph;
 };
 
 class bncComb : public bncEphUser  {
@@ -73,12 +72,9 @@ class bncComb : public bncEphUser  {
   };
 
   void processEpoch();
-  t_irc createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
-                   const ColumnVector& x0, QMap<QString, t_corr*>& resCorr);
   void dumpResults(const QMap<QString, t_corr*>& resCorr);
   void printResults(QTextStream& out, const QMap<QString, t_corr*>& resCorr);
   void switchToLastEph(const t_eph* lastEph, t_corr* corr);
-  void switchToLastEph(const t_eph* lastEph, cmbParam* pp);
 
   QVector<cmbCorr*>& corrs() {return _buffer[_resTime].corrs;}
 
@@ -88,6 +84,7 @@ class bncComb : public bncEphUser  {
   QMap<bncTime, cmbEpoch> _buffer;
   bncRtnetDecoder*        _rtnetDecoder;
   SymmetricMatrix         _QQ;
+  bool                    _firstReg;
   QByteArray              _log;
   bncAntex*               _antex;
   double                  _MAXRES;
