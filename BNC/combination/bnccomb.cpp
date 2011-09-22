@@ -240,7 +240,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Delete old corrections
   // ----------------------
-  if (_resTime.valid() && newCorr->tt < _resTime) {
+  if (_resTime.valid() && newCorr->tt <= _resTime) {
     delete newCorr;
     return;
   }
