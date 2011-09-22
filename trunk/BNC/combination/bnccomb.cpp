@@ -29,9 +29,18 @@
 #include "bncantex.h"
 #include "bnctides.h"
 
-using namespace std;
+const int moduloTime = 10;
+
+const double sig0_offAC    = 1000.0;
+const double sigP_offAC    = 1000.0;
+const double sig0_offACSat =  100.0;
+const double sigP_offACSat =    0.0;
+const double sig0_clkSat   =  100.0;
+const double sigP_clkSat   =  100.0;
 
 const int MAXPRN_GPS = 32;
+
+using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -45,16 +54,16 @@ cmbParam::cmbParam(parType type_, int index_,
   xx     = 0.0;
 
   if      (type == offAC) {
-    sig_0 = 1000.0;
-    sig_P = 1000.0;
+    sig_0 = sig0_offAC;
+    sig_P = sigP_offAC;
   }
   else if (type == offACSat) {
-    sig_0 = 100.0;
-    sig_P =   0.0;
+    sig_0 = sig0_offACSat;
+    sig_P = sigP_offACSat;
   }
   else if (type == clkSat) {
-    sig_0 = 100.0;
-    sig_P = 100.0;
+    sig_0 = sig0_clkSat;
+    sig_P = sigP_clkSat;
   }
 }
 
@@ -232,7 +241,6 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Check Modulo Time
   // -----------------
-  const int moduloTime = 10;
   if (int(newCorr->tt.gpssec()) % moduloTime != 0.0) {
     delete newCorr;
     return;
@@ -267,19 +275,12 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     }
   }
 
-  // Remember Last Correction Time
-  // -----------------------------
-  if (!_lastCorrTime.valid() || _lastCorrTime < newCorr->tt) {
-    _lastCorrTime = newCorr->tt;
-  }
-
   // Process previous Epoch(s)
   // -------------------------
-  const double waitTime = 20.0; // wait 20 seconds
   QListIterator<bncTime> itTime(_buffer.keys());
   while (itTime.hasNext()) {
     bncTime epoTime = itTime.next();
-    if (epoTime < _lastCorrTime - waitTime) {
+    if (epoTime < newCorr->tt - moduloTime) {
       _resTime = epoTime;
       processEpoch();
     }

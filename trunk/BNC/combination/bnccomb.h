@@ -78,7 +78,6 @@ class bncComb : public bncEphUser  {
   QVector<cmbCorr*>& corrs() {return _buffer[_resTime].corrs;}
 
   QList<cmbAC*>           _ACs;
-  bncTime                 _lastCorrTime;
   bncTime                 _resTime;
   QVector<cmbParam*>      _params;
   QMap<bncTime, cmbEpoch> _buffer;
