@@ -72,6 +72,8 @@ class bncComb : public bncEphUser  {
   };
 
   void processEpoch();
+  t_irc createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
+                   const ColumnVector& x0, QMap<QString, t_corr*>& resCorr);
   void dumpResults(const QMap<QString, t_corr*>& resCorr);
   void printResults(QTextStream& out, const QMap<QString, t_corr*>& resCorr);
   void switchToLastEph(const t_eph* lastEph, t_corr* corr);

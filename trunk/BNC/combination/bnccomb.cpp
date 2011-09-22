@@ -37,6 +37,8 @@ const double sigP_offACSat =    0.0;
 const double sig0_clkSat   =  100.0;
 const double sigP_clkSat   =  100.0;
 
+const double sigObs        =   0.05;
+
 const int MAXPRN_GPS = 32;
 
 using namespace std;
@@ -355,11 +357,6 @@ void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
 void bncComb::processEpoch() {
 
   int nPar = _params.size();
-  int nObs = corrs().size(); 
-
-  if (nObs == 0) {
-    return;
-  }
 
   _log.clear();
 
@@ -401,64 +398,13 @@ void bncComb::processEpoch() {
     x0(iPar) = pp->xx;
   }
 
-  // Create First Design Matrix and Vector of Measurements
-  // -----------------------------------------------------
-  const double Pl = 1.0 / (0.05 * 0.05);
-
-  const int nCon = (_firstReg == false) ? 1 + MAXPRN_GPS : 1;
-  Matrix         AA(nObs+nCon, nPar);  AA = 0.0;
-  ColumnVector   ll(nObs+nCon);        ll = 0.0;
-  DiagonalMatrix PP(nObs+nCon);        PP = Pl;
-
-  int iObs = 0;
-
+  Matrix         AA;
+  ColumnVector   ll;
+  DiagonalMatrix PP;
   QMap<QString, t_corr*> resCorr;
 
-  QVectorIterator<cmbCorr*> itCorr(corrs());
-  while (itCorr.hasNext()) {
-    cmbCorr* corr = itCorr.next();
-    QString  prn  = corr->prn;
-    switchToLastEph(_eph[prn]->last, corr);
-    ++iObs;
-
-    if (resCorr.find(prn) == resCorr.end()) {
-      resCorr[prn] = new t_corr(*corr);
-    }
-
-    for (int iPar = 1; iPar <= _params.size(); iPar++) {
-      cmbParam* pp = _params[iPar-1];
-      AA(iObs, iPar) = pp->partial(corr->acName, prn);
-    }
-
-    ll(iObs) = corr->dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
-  }
-
-  // Regularization
-  // --------------
-  const double Ph = 1.e6;
-  int iCond = 1;
-  PP(nObs+iCond)          = Ph;
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    cmbParam* pp = _params[iPar-1];
-    if (pp->type == cmbParam::clkSat &&
-        AA.Column(iPar).maximum_absolute_value() > 0.0) {
-      AA(nObs+iCond, iPar) = 1.0;
-    }
-  }
-
-  if (!_firstReg) {
-    _firstReg = true;
-    for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
-      ++iCond;
-      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
-      PP(nObs+1+iGps)       = Ph;
-      for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        cmbParam* pp = _params[iPar-1];
-        if (pp->type == cmbParam::offACSat && pp->prn == prn) {
-          AA(nObs+iCond, iPar) = 1.0;
-        }
-      }
-    }
+  if (createAmat(AA, ll, PP, x0, resCorr) != success) {
+    return;
   }
 
   ColumnVector dx;
@@ -687,4 +633,85 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
   if (app->_bncPPPclient) {
     app->_bncPPPclient->slotNewCorrections(corrLines);
   }
+}
+
+// Create First Design Matrix and Vector of Measurements
+////////////////////////////////////////////////////////////////////////////
+t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
+                          const ColumnVector& x0, 
+                          QMap<QString, t_corr*>& resCorr) {
+
+  unsigned nPar = _params.size();
+  unsigned nObs = corrs().size(); 
+
+  if (nObs == 0) {
+    return failure;
+  }
+
+  const int nCon = (_firstReg == false) ? 2 + MAXPRN_GPS : 2;
+
+  AA.ReSize(nObs+nCon, nPar);  AA = 0.0;
+  ll.ReSize(nObs+nCon);        ll = 0.0;
+  PP.ReSize(nObs+nCon);        PP = 1.0 / (sigObs * sigObs);
+
+  int iObs = 0;
+
+  QVectorIterator<cmbCorr*> itCorr(corrs());
+  while (itCorr.hasNext()) {
+    cmbCorr* corr = itCorr.next();
+    QString  prn  = corr->prn;
+    switchToLastEph(_eph[prn]->last, corr);
+    ++iObs;
+
+    if (resCorr.find(prn) == resCorr.end()) {
+      resCorr[prn] = new t_corr(*corr);
+    }
+
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      cmbParam* pp = _params[iPar-1];
+      AA(iObs, iPar) = pp->partial(corr->acName, prn);
+    }
+
+    ll(iObs) = corr->dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
+  }
+
+  // Regularization
+  // --------------
+  const double Ph = 1.e6;
+  int iCond = 1;
+  PP(nObs+iCond)          = Ph;
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    cmbParam* pp = _params[iPar-1];
+    if (pp->type == cmbParam::clkSat &&
+        AA.Column(iPar).maximum_absolute_value() > 0.0) {
+      AA(nObs+iCond, iPar) = 1.0;
+    }
+  }
+
+  ++iCond;
+  PP(nObs+iCond) = Ph;
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    cmbParam* pp = _params[iPar-1];
+    if (pp->type == cmbParam::offAC &&
+        AA.Column(iPar).maximum_absolute_value() > 0.0) {
+      AA(nObs+iCond, iPar) = 1.0;
+    }
+  }
+
+  if (!_firstReg) {
+    _firstReg = true;
+    for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
+      ++iCond;
+      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+      PP(nObs+1+iGps)       = Ph;
+      for (int iPar = 1; iPar <= _params.size(); iPar++) {
+        cmbParam* pp = _params[iPar-1];
+        if (pp->type == cmbParam::offACSat && pp->prn == prn) {
+          AA(nObs+iCond, iPar) = 1.0;
+        }
+      }
+    }
+  }
+
+  return success;
 }
