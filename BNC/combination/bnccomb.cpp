@@ -379,7 +379,13 @@ void bncComb::processEpoch() {
   ColumnVector x0(nPar);
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
-    _QQ(iPar,iPar) += pp->sig_P * pp->sig_P;
+    if (pp->sig_P != 0.0) {
+      pp->xx = 0.0;
+      for (int jj = 1; jj <= _params.size(); jj++) {
+        _QQ(iPar, jj) = 0.0;
+      }
+      _QQ(iPar,iPar) = pp->sig_P * pp->sig_P;
+    }
     x0(iPar) = pp->xx;
   }
 
