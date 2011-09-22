@@ -32,10 +32,10 @@
 const int moduloTime = 10;
 
 const double sig0_offAC    = 1000.0;
-const double sig0_offACSat =  100.0;
+const double sig0_offACSat = 1000.0;
 const double sigP_offACSat =    0.0;
-const double sig0_clkSat   =  100.0;
-const double sigP_clkSat   =  100.0;
+const double sig0_clkSat   =   10.0;
+const double sigP_clkSat   =    0.1;
 
 const double sigObs        =   0.05;
 
@@ -53,6 +53,7 @@ cmbParam::cmbParam(parType type_, int index_,
   AC     = ac_;
   prn    = prn_;
   xx     = 0.0;
+  eph    = 0;
 
   if      (type == offAC) {
     epoSpec = true;
@@ -183,10 +184,6 @@ bncComb::bncComb() {
       _antex = 0;
     }
   }
-
-  // Not yet regularized
-  // -------------------
-  _firstReg = false;
 
   // Maximal Residuum
   // ----------------
@@ -339,7 +336,7 @@ void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
   ColumnVector dDotRAO(3);
   XYZ_to_RSW(newXC.Rows(1,3), newVV, dV, dDotRAO);
 
-  QString msg = "switch " + corr->prn 
+  QString msg = "switch corr " + corr->prn 
     + QString(" %1 -> %2 %3").arg(corr->iod,3)
     .arg(lastEph->IOD(),3).arg(dC*t_CST::c, 8, 'f', 4);
 
@@ -385,7 +382,11 @@ void bncComb::processEpoch() {
   // ---------------
   ColumnVector x0(nPar);
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    cmbParam* pp = _params[iPar-1];
+    cmbParam* pp  = _params[iPar-1];
+    QString   prn = pp->prn;
+    if (!prn.isEmpty() && _eph.find(prn) != _eph.end()) {
+      switchToLastEph(_eph[prn]->last, pp);
+    }
     if (pp->epoSpec) {
       pp->xx = 0.0;
       _QQ.Row(iPar)    = 0.0;
@@ -649,7 +650,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
     return failure;
   }
 
-  const int nCon = (_firstReg == false) ? 2 + MAXPRN_GPS : 2;
+  const int nCon = 2;
 
   AA.ReSize(nObs+nCon, nPar);  AA = 0.0;
   ll.ReSize(nObs+nCon);        ll = 0.0;
@@ -679,40 +680,57 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
   // Regularization
   // --------------
   const double Ph = 1.e6;
-  int iCond = 1;
-  PP(nObs+iCond)          = Ph;
+  PP(nObs+1) = Ph;
+  PP(nObs+2) = Ph;
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
-    if (pp->type == cmbParam::clkSat &&
-        AA.Column(iPar).maximum_absolute_value() > 0.0) {
-      AA(nObs+iCond, iPar) = 1.0;
+    if      (pp->type == cmbParam::clkSat) {
+      AA(nObs+1, iPar) = 1.0;
     }
-  }
-
-  ++iCond;
-  PP(nObs+iCond) = Ph;
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    cmbParam* pp = _params[iPar-1];
-    if (pp->type == cmbParam::offAC &&
-        AA.Column(iPar).maximum_absolute_value() > 0.0) {
-      AA(nObs+iCond, iPar) = 1.0;
-    }
-  }
-
-  if (!_firstReg) {
-    _firstReg = true;
-    for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
-      ++iCond;
-      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
-      PP(nObs+1+iGps)       = Ph;
-      for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        cmbParam* pp = _params[iPar-1];
-        if (pp->type == cmbParam::offACSat && pp->prn == prn) {
-          AA(nObs+iCond, iPar) = 1.0;
-        }
-      }
+    else if (pp->type == cmbParam::offAC) {
+      AA(nObs+2, iPar) = 1.0;
     }
   }
 
   return success;
 }
+
+// Change the parameter so that it refers to last received ephemeris 
+////////////////////////////////////////////////////////////////////////////
+void bncComb::switchToLastEph(const t_eph* lastEph, cmbParam* pp) {
+
+  if (pp->type != cmbParam::clkSat) {
+    return;
+  }
+
+  if (pp->eph == 0) {
+    pp->eph = lastEph;
+    return;
+  }
+
+  if (pp->eph == lastEph) {
+    return;
+  }
+
+  ColumnVector oldXC(4);
+  ColumnVector oldVV(3);
+  pp->eph->position(_resTime.gpsw(), _resTime.gpssec(), 
+                      oldXC.data(), oldVV.data());
+
+  ColumnVector newXC(4);
+  ColumnVector newVV(3);
+  lastEph->position(_resTime.gpsw(), _resTime.gpssec(), 
+                    newXC.data(), newVV.data());
+
+  double       dC = newXC(4)        - oldXC(4);
+
+  QString msg = "switch param " + pp->prn 
+    + QString(" %1 -> %2 %3").arg(pp->eph->IOD(),3)
+    .arg(lastEph->IOD(),3).arg(dC*t_CST::c, 8, 'f', 4);
+
+  emit newMessage(msg.toAscii(), false);
+
+  pp->eph = lastEph;
+  pp->xx  += dC * t_CST::c;
+}
+
