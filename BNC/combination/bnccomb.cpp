@@ -374,6 +374,21 @@ void bncComb::processEpoch() {
     out << AC->name.toAscii().data() << ": " << AC->numObs << endl;
   }
 
+  // Check Number of Observations per Satellite
+  // ------------------------------------------
+  QMap<QString, int> numObs;
+  for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
+    QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+    numObs[prn] = 0;
+    QVectorIterator<cmbCorr*> itCorr(corrs());
+    while (itCorr.hasNext()) {
+      cmbCorr* corr = itCorr.next();
+      if (corr->prn == prn) {
+        ++numObs[prn];
+      }
+    }
+  }
+
   // Prediction Step
   // ---------------
   ColumnVector x0(nPar);
@@ -409,7 +424,7 @@ void bncComb::processEpoch() {
     switchToLastEph(_eph[prn]->last, corr);
     ++iObs;
 
-    if (resCorr.find(prn) == resCorr.end()) {
+    if (numObs[prn] >= 3 && resCorr.find(prn) == resCorr.end()) {
       resCorr[prn] = new t_corr(*corr);
     }
 
