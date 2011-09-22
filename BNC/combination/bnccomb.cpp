@@ -398,21 +398,23 @@ void bncComb::processEpoch() {
     x0(iPar) = pp->xx;
   }
 
-  Matrix         AA;
-  ColumnVector   ll;
-  DiagonalMatrix PP;
-  QMap<QString, t_corr*> resCorr;
-
-  if (createAmat(AA, ll, PP, x0, resCorr) != success) {
-    return;
-  }
-
-  ColumnVector dx;
   SymmetricMatrix QQ_sav = _QQ;
 
+  ColumnVector dx;
+  QMap<QString, t_corr*> resCorr;
+    
   // Update and outlier detection loop
   // ---------------------------------
-  for (int ii = 1; ii < 10; ii++) {
+  while (true) {
+
+    Matrix         AA;
+    ColumnVector   ll;
+    DiagonalMatrix PP;
+
+    if (createAmat(AA, ll, PP, x0, resCorr) != success) {
+      return;
+    }
+
     bncModel::kalman(AA, ll, PP, _QQ, dx);
     ColumnVector vv = ll - AA * dx;
 
@@ -438,8 +440,7 @@ void bncComb::processEpoch() {
 
       out << "  Outlier" << endl;
       _QQ = QQ_sav;
-      AA.Row(maxResIndex) = 0.0;
-      ll.Row(maxResIndex) = 0.0;
+      corrs().remove(maxResIndex-1);
     }
     else {
       out << "  OK" << endl;
