@@ -34,8 +34,8 @@ const int moduloTime = 10;
 const double sig0_offAC    = 1000.0;
 const double sig0_offACSat =  100.0;
 const double sigP_offACSat =    0.0;
-const double sig0_clkSat   =  100.0;
-const double sigP_clkSat   =  100.0;
+const double sig0_clkSat   =   10.0;
+const double sigP_clkSat   =   10.0;
 
 const double sigObs        =   0.05;
 
@@ -699,7 +699,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::switchToLastEph(const t_eph* lastEph, cmbParam* pp) {
 
-  if (pp->type != cmbParam::clkSat) {
+  if (pp->type != cmbParam::offACSat) {
     return;
   }
 
