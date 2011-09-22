@@ -22,9 +22,8 @@ class cmbParam {
   QString AC;
   QString prn;
   double  xx;
-  double  sig0;
-  double  sigP;
-  bool    epoSpec;
+  double  sig_0;
+  double  sig_P;
 };
 
 class bncComb : public bncEphUser  {
