@@ -731,6 +731,6 @@ void bncComb::switchToLastEph(const t_eph* lastEph, cmbParam* pp) {
   emit newMessage(msg.toAscii(), false);
 
   pp->eph = lastEph;
-  pp->xx  += dC * t_CST::c;
+  pp->xx  -= dC * t_CST::c;
 }
 
