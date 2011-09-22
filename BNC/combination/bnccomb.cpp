@@ -35,7 +35,7 @@ const double sig0_offAC    = 1000.0;
 const double sig0_offACSat =  100.0;
 const double sigP_offACSat =    0.0;
 const double sig0_clkSat   =   10.0;
-const double sigP_clkSat   =   10.0;
+const double sigP_clkSat   =    0.1;
 
 const double sigObs        =   0.05;
 
@@ -699,7 +699,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::switchToLastEph(const t_eph* lastEph, cmbParam* pp) {
 
-  if (pp->type != cmbParam::offACSat) {
+  if (pp->type != cmbParam::clkSat) {
     return;
   }
 
@@ -722,7 +722,7 @@ void bncComb::switchToLastEph(const t_eph* lastEph, cmbParam* pp) {
   lastEph->position(_resTime.gpsw(), _resTime.gpssec(), 
                     newXC.data(), newVV.data());
 
-  double       dC = newXC(4)        - oldXC(4);
+  double dC = newXC(4) - oldXC(4);
 
   QString msg = "switch param " + pp->prn 
     + QString(" %1 -> %2 %3").arg(pp->eph->IOD(),3)
