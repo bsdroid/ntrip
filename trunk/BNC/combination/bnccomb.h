@@ -93,7 +93,6 @@ class bncComb : public bncEphUser  {
   double                  _MAXRES;
   QString                 _masterOrbitAC;
   unsigned                _masterMissingEpochs;
-  bool                    _firstReg;
 };
 
 #endif
