@@ -189,10 +189,6 @@ bncComb::bncComb() {
     }
   }
 
-  // Not yet regularized
-  // -------------------
-  _firstReg = false;
-
   // Maximal Residuum
   // ----------------
   _MAXRES = settings.value("cmbMaxres").toDouble();
@@ -373,6 +369,7 @@ void bncComb::processEpoch() {
   // Observation Statistics
   // ----------------------
   bool masterPresent = false;
+  int  numACwithObs  = 0;
   QListIterator<cmbAC*> icAC(_ACs);
   while (icAC.hasNext()) {
     cmbAC* AC = icAC.next();
@@ -388,6 +385,13 @@ void bncComb::processEpoch() {
       }
     }
     out << AC->name.toAscii().data() << ": " << AC->numObs << endl;
+    if (AC->numObs > 0) {
+      ++numACwithObs;
+    }
+  }
+
+  if (numACwithObs < 3) {
+    return;
   }
 
   // If Master not present, switch to another one
@@ -493,8 +497,6 @@ void bncComb::processEpoch() {
       break;
     }
   }
-
-  _firstReg = true;
 
   // Update Parameter Values
   // -----------------------
@@ -697,7 +699,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
     return failure;
   }
 
-  const int nCon = (_firstReg == false) ? 1 + MAXPRN_GPS : 1;
+  const int nCon = 1 + MAXPRN_GPS;
 
   AA.ReSize(nObs+nCon, nPar);  AA = 0.0;
   ll.ReSize(nObs+nCon);        ll = 0.0;
@@ -727,26 +729,24 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
   // Regularization
   // --------------
   const double Ph = 1.e6;
-  int iCond = 1;
-  PP(nObs+iCond) = Ph;
+  PP(nObs+1) = Ph;
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
-    if (pp->type == cmbParam::clkSat &&
-        AA.Column(iPar).maximum_absolute_value() > 0.0) {
-      AA(nObs+iCond, iPar) = 1.0;
+    if (AA.Column(iPar).maximum_absolute_value() > 0.0) {
+      if      (pp->type == cmbParam::clkSat) {
+        AA(nObs+1, iPar) = 1.0;
+      }
     }
   }
-
-  if (!_firstReg) {
-    for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
-      ++iCond;
-      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
-      PP(nObs+1+iGps) = Ph;
-      for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        cmbParam* pp = _params[iPar-1];
-        if (pp->type == cmbParam::offACSat && pp->prn == prn) {
-          AA(nObs+iCond, iPar) = 1.0;
-        }
+  int iCond = 1;
+  for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
+    QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+    ++iCond;
+    PP(nObs+iCond) = Ph;
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      cmbParam* pp = _params[iPar-1];
+      if (pp->type == cmbParam::offACSat && pp->prn == prn) {
+        AA(nObs+iCond, iPar) = 1.0;
       }
     }
   }
