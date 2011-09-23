@@ -758,7 +758,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::switchToLastEph(const t_eph* lastEph, cmbParam* pp) {
 
-  if (pp->type != cmbParam::offACSat) {
+  if (pp->type != cmbParam::clkSat) {
     return;
   }
 
