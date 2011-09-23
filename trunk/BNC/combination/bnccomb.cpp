@@ -29,9 +29,18 @@
 #include "bncantex.h"
 #include "bnctides.h"
 
-using namespace std;
+const int moduloTime = 10;
+
+const double sig0_offAC    = 1000.0;
+const double sig0_offACSat =  100.0;
+const double sigP_offACSat =    0.0;
+const double sig0_clkSat   =  100.0;
+
+const double sigObs        =   0.05;
 
 const int MAXPRN_GPS = 32;
+
+using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -43,18 +52,22 @@ cmbParam::cmbParam(parType type_, int index_,
   AC     = ac_;
   prn    = prn_;
   xx     = 0.0;
+  eph    = 0;
 
   if      (type == offAC) {
-    sig_0 = 1000.0;
-    sig_P = 1000.0;
+    epoSpec = true;
+    sig0    = sig0_offAC;
+    sigP    = sig0;
   }
   else if (type == offACSat) {
-    sig_0 = 100.0;
-    sig_P =   0.0;
+    epoSpec = false;
+    sig0    = sig0_offACSat;
+    sigP    = sigP_offACSat;
   }
   else if (type == clkSat) {
-    sig_0 = 100.0;
-    sig_P = 100.0;
+    epoSpec = true;
+    sig0    = sig0_clkSat;
+    sigP    = sig0;
   }
 }
 
@@ -113,6 +126,8 @@ bncComb::bncComb() {
 
   QStringList combineStreams = settings.value("combineStreams").toStringList();
 
+  _masterMissingEpochs = 0;
+
   if (combineStreams.size() >= 1 && !combineStreams[0].isEmpty()) {
     QListIterator<QString> it(combineStreams);
     while (it.hasNext()) {
@@ -158,7 +173,7 @@ bncComb::bncComb() {
   _QQ = 0.0;
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
-    _QQ(iPar,iPar) = pp->sig_0 * pp->sig_0;
+    _QQ(iPar,iPar) = pp->sig0 * pp->sig0;
   }
 
   // ANTEX File
@@ -235,7 +250,6 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Check Modulo Time
   // -----------------
-  const int moduloTime = 10;
   if (int(newCorr->tt.gpssec()) % moduloTime != 0.0) {
     delete newCorr;
     return;
@@ -330,7 +344,7 @@ void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
   ColumnVector dDotRAO(3);
   XYZ_to_RSW(newXC.Rows(1,3), newVV, dV, dDotRAO);
 
-  QString msg = "switch " + corr->prn 
+  QString msg = "switch corr " + corr->prn 
     + QString(" %1 -> %2 %3").arg(corr->iod,3)
     .arg(lastEph->IOD(),3).arg(dC*t_CST::c, 8, 'f', 4);
 
@@ -348,11 +362,6 @@ void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
 void bncComb::processEpoch() {
 
   int nPar = _params.size();
-  int nObs = corrs().size(); 
-
-  if (nObs == 0) {
-    return;
-  }
 
   _log.clear();
 
@@ -363,8 +372,7 @@ void bncComb::processEpoch() {
 
   // Observation Statistics
   // ----------------------
-  bool    masterPresent = false;
-
+  bool masterPresent = false;
   QListIterator<cmbAC*> icAC(_ACs);
   while (icAC.hasNext()) {
     cmbAC* AC = icAC.next();
@@ -385,32 +393,27 @@ void bncComb::processEpoch() {
   // If Master not present, switch to another one
   // --------------------------------------------
   if (!masterPresent) {
-    QListIterator<cmbAC*> icAC(_ACs);
-    while (icAC.hasNext()) {
-      cmbAC* AC = icAC.next();
-      if (AC->numObs > 0) {
-        out << "Switching Master AC "
-            << _masterOrbitAC.toAscii().data() << " --> " 
-            << AC->name.toAscii().data()   << " " 
-            << _resTime.datestr().c_str()    << " " 
-            << _resTime.timestr().c_str()    << endl;
-        _masterOrbitAC = AC->name;
-        break;
-      }
+    ++_masterMissingEpochs;
+    if (_masterMissingEpochs < 2) {
+      out << "Missing Master, Epoch skipped\n";
+      _buffer.remove(_resTime);
+      emit newMessage(_log, false);
+      return;
     }
-  }
-
-  // Check Number of Observations per Satellite
-  // ------------------------------------------
-  QMap<QString, int> numObs;
-  for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
-    QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
-    numObs[prn] = 0;
-    QVectorIterator<cmbCorr*> itCorr(corrs());
-    while (itCorr.hasNext()) {
-      cmbCorr* corr = itCorr.next();
-      if (corr->prn == prn) {
-        ++numObs[prn];
+    else {
+      _masterMissingEpochs = 0;
+      QListIterator<cmbAC*> icAC(_ACs);
+      while (icAC.hasNext()) {
+        cmbAC* AC = icAC.next();
+        if (AC->numObs > 0) {
+          out << "Switching Master AC "
+              << _masterOrbitAC.toAscii().data() << " --> " 
+              << AC->name.toAscii().data()   << " " 
+              << _resTime.datestr().c_str()    << " " 
+              << _resTime.timestr().c_str()    << endl;
+          _masterOrbitAC = AC->name;
+          break;
+        }
       }
     }
   }
@@ -419,83 +422,42 @@ void bncComb::processEpoch() {
   // ---------------
   ColumnVector x0(nPar);
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    cmbParam* pp = _params[iPar-1];
-    if (pp->sig_P != 0.0) {
+    cmbParam* pp  = _params[iPar-1];
+    QString   prn = pp->prn;
+    if (!prn.isEmpty() && _eph.find(prn) != _eph.end()) {
+      switchToLastEph(_eph[prn]->last, pp);
+    }
+    if (pp->epoSpec) {
       pp->xx = 0.0;
-      for (int jj = 1; jj <= _params.size(); jj++) {
-        _QQ(iPar, jj) = 0.0;
-      }
-      _QQ(iPar,iPar) = pp->sig_P * pp->sig_P;
+      _QQ.Row(iPar)    = 0.0;
+      _QQ.Column(iPar) = 0.0;
+      _QQ(iPar,iPar) = pp->sig0 * pp->sig0;
+    }
+    else {
+      _QQ(iPar,iPar) += pp->sigP * pp->sigP;
     }
     x0(iPar) = pp->xx;
   }
 
-  // Create First Design Matrix and Vector of Measurements
-  // -----------------------------------------------------
-  const double Pl = 1.0 / (0.05 * 0.05);
-
-  const int nCon = (_firstReg == false) ? 1 + MAXPRN_GPS : 1;
-  Matrix         AA(nObs+nCon, nPar);  AA = 0.0;
-  ColumnVector   ll(nObs+nCon);        ll = 0.0;
-  DiagonalMatrix PP(nObs+nCon);        PP = Pl;
-
-  int iObs = 0;
-
-  QMap<QString, t_corr*> resCorr;
-
-  QVectorIterator<cmbCorr*> itCorr(corrs());
-  while (itCorr.hasNext()) {
-    cmbCorr* corr = itCorr.next();
-    QString  prn  = corr->prn;
-    switchToLastEph(_eph[prn]->last, corr);
-    ++iObs;
-
-    if (corr->acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
-      resCorr[prn] = new t_corr(*corr);
-    }
-
-    for (int iPar = 1; iPar <= _params.size(); iPar++) {
-      cmbParam* pp = _params[iPar-1];
-      AA(iObs, iPar) = pp->partial(corr->acName, prn);
-    }
-
-    ll(iObs) = corr->dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
-  }
-
-  // Regularization
-  // --------------
-  const double Ph = 1.e6;
-  int iCond = 1;
-  PP(nObs+iCond)          = Ph;
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    cmbParam* pp = _params[iPar-1];
-    if (pp->type == cmbParam::clkSat &&
-        AA.Column(iPar).maximum_absolute_value() > 0.0) {
-      AA(nObs+iCond, iPar) = 1.0;
-    }
-  }
-
-  if (!_firstReg) {
-    _firstReg = true;
-    for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
-      ++iCond;
-      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
-      PP(nObs+1+iGps)       = Ph;
-      for (int iPar = 1; iPar <= _params.size(); iPar++) {
-        cmbParam* pp = _params[iPar-1];
-        if (pp->type == cmbParam::offACSat && pp->prn == prn) {
-          AA(nObs+iCond, iPar) = 1.0;
-        }
-      }
-    }
-  }
-
-  ColumnVector dx;
   SymmetricMatrix QQ_sav = _QQ;
 
+  ColumnVector dx;
+  QMap<QString, t_corr*> resCorr;
+    
   // Update and outlier detection loop
   // ---------------------------------
-  for (int ii = 1; ii < 10; ii++) {
+  while (true) {
+
+    Matrix         AA;
+    ColumnVector   ll;
+    DiagonalMatrix PP;
+
+    if (createAmat(AA, ll, PP, x0, resCorr) != success) {
+      _buffer.remove(_resTime);
+      emit newMessage(_log, false);
+      return;
+    }
+
     bncModel::kalman(AA, ll, PP, _QQ, dx);
     ColumnVector vv = ll - AA * dx;
 
@@ -515,20 +477,21 @@ void bncComb::processEpoch() {
             pp->prn  == corrs()[maxResIndex-1]->prn) { 
           QQ_sav.Row(iPar)    = 0.0;
           QQ_sav.Column(iPar) = 0.0;
-          QQ_sav(iPar,iPar)   = pp->sig_0 * pp->sig_0;
+          QQ_sav(iPar,iPar)   = pp->sig0 * pp->sig0;
         }
       }
 
       out << "  Outlier" << endl;
       _QQ = QQ_sav;
-      AA.Row(maxResIndex) = 0.0;
-      ll.Row(maxResIndex) = 0.0;
+      corrs().remove(maxResIndex-1);
     }
     else {
       out << "  OK" << endl;
       break;
     }
   }
+
+  _firstReg = true;
 
   // Update Parameter Values
   // -----------------------
@@ -717,3 +680,113 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
     app->_bncPPPclient->slotNewCorrections(corrLines);
   }
 }
+
+// Create First Design Matrix and Vector of Measurements
+////////////////////////////////////////////////////////////////////////////
+t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
+                          const ColumnVector& x0, 
+                          QMap<QString, t_corr*>& resCorr) {
+
+  unsigned nPar = _params.size();
+  unsigned nObs = corrs().size(); 
+
+  if (nObs == 0) {
+    return failure;
+  }
+
+  const int nCon = (_firstReg == false) ? 1 + MAXPRN_GPS : 1;
+
+  AA.ReSize(nObs+nCon, nPar);  AA = 0.0;
+  ll.ReSize(nObs+nCon);        ll = 0.0;
+  PP.ReSize(nObs+nCon);        PP = 1.0 / (sigObs * sigObs);
+
+  int iObs = 0;
+
+  QVectorIterator<cmbCorr*> itCorr(corrs());
+  while (itCorr.hasNext()) {
+    cmbCorr* corr = itCorr.next();
+    QString  prn  = corr->prn;
+    switchToLastEph(_eph[prn]->last, corr);
+    ++iObs;
+
+    if (corr->acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
+      resCorr[prn] = new t_corr(*corr);
+    }
+
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      cmbParam* pp = _params[iPar-1];
+      AA(iObs, iPar) = pp->partial(corr->acName, prn);
+    }
+
+    ll(iObs) = corr->dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
+  }
+
+  // Regularization
+  // --------------
+  const double Ph = 1.e6;
+  int iCond = 1;
+  PP(nObs+iCond) = Ph;
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    cmbParam* pp = _params[iPar-1];
+    if (pp->type == cmbParam::clkSat &&
+        AA.Column(iPar).maximum_absolute_value() > 0.0) {
+      AA(nObs+iCond, iPar) = 1.0;
+    }
+  }
+
+  if (!_firstReg) {
+    for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
+      ++iCond;
+      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+      PP(nObs+1+iGps) = Ph;
+      for (int iPar = 1; iPar <= _params.size(); iPar++) {
+        cmbParam* pp = _params[iPar-1];
+        if (pp->type == cmbParam::offACSat && pp->prn == prn) {
+          AA(nObs+iCond, iPar) = 1.0;
+        }
+      }
+    }
+  }
+
+  return success;
+}
+
+// Change the parameter so that it refers to last received ephemeris 
+////////////////////////////////////////////////////////////////////////////
+void bncComb::switchToLastEph(const t_eph* lastEph, cmbParam* pp) {
+
+  if (pp->type != cmbParam::clkSat) {
+    return;
+  }
+
+  if (pp->eph == 0) {
+    pp->eph = lastEph;
+    return;
+  }
+
+  if (pp->eph == lastEph) {
+    return;
+  }
+
+  ColumnVector oldXC(4);
+  ColumnVector oldVV(3);
+  pp->eph->position(_resTime.gpsw(), _resTime.gpssec(), 
+                      oldXC.data(), oldVV.data());
+
+  ColumnVector newXC(4);
+  ColumnVector newVV(3);
+  lastEph->position(_resTime.gpsw(), _resTime.gpssec(), 
+                    newXC.data(), newVV.data());
+
+  double dC = newXC(4) - oldXC(4);
+
+  QString msg = "switch param " + pp->prn 
+    + QString(" %1 -> %2 %3").arg(pp->eph->IOD(),3)
+    .arg(lastEph->IOD(),3).arg(dC*t_CST::c, 8, 'f', 4);
+
+  emit newMessage(msg.toAscii(), false);
+
+  pp->eph = lastEph;
+  pp->xx  -= dC * t_CST::c;
+}
+
