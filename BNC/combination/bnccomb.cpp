@@ -121,6 +121,9 @@ bncComb::bncComb() {
       newAC->mountPoint = hlp[0];
       newAC->name       = hlp[1];
       newAC->weight     = hlp[2].toDouble();
+      if (_masterOrbitAC.isEmpty()) {
+        _masterOrbitAC = newAC->name;
+      }
       _ACs.append(newAC);
     }
   }
@@ -360,6 +363,8 @@ void bncComb::processEpoch() {
 
   // Observation Statistics
   // ----------------------
+  bool    masterPresent = false;
+
   QListIterator<cmbAC*> icAC(_ACs);
   while (icAC.hasNext()) {
     cmbAC* AC = icAC.next();
@@ -369,9 +374,29 @@ void bncComb::processEpoch() {
       cmbCorr* corr = itCorr.next();
       if (corr->acName == AC->name) {
         AC->numObs += 1;
+        if (AC->name == _masterOrbitAC) {
+          masterPresent = true;
+        }
       }
     }
     out << AC->name.toAscii().data() << ": " << AC->numObs << endl;
+  }
+
+  // If Master not present, switch to another one
+  // --------------------------------------------
+  if (!masterPresent) {
+    QListIterator<cmbAC*> icAC(_ACs);
+    while (icAC.hasNext()) {
+      cmbAC* AC = icAC.next();
+      if (AC->numObs > 0) {
+        out << "Switching Master AC "
+            << _masterOrbitAC.toAscii().data() << " --> " 
+            << AC->name.toAscii().data()   << " " 
+            << _resTime.datestr().c_str()    << " " 
+            << _resTime.timestr().c_str()    << endl;
+        _masterOrbitAC = AC->name;
+      }
+    }
   }
 
   // Check Number of Observations per Satellite
@@ -424,7 +449,7 @@ void bncComb::processEpoch() {
     switchToLastEph(_eph[prn]->last, corr);
     ++iObs;
 
-    if (numObs[prn] >= 3 && resCorr.find(prn) == resCorr.end()) {
+    if (corr->acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
       resCorr[prn] = new t_corr(*corr);
     }
 
