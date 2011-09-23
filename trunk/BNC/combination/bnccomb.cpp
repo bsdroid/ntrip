@@ -426,10 +426,10 @@ void bncComb::processEpoch() {
   ColumnVector x0(nPar);
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp  = _params[iPar-1];
-    QString   prn = pp->prn;
-    if (!prn.isEmpty() && _eph.find(prn) != _eph.end()) {
-      switchToLastEph(_eph[prn]->last, pp);
-    }
+////    QString   prn = pp->prn;
+////    if (!prn.isEmpty() && _eph.find(prn) != _eph.end()) {
+////      switchToLastEph(_eph[prn]->last, pp);
+////    }
     if (pp->epoSpec) {
       pp->xx = 0.0;
       _QQ.Row(iPar)    = 0.0;
