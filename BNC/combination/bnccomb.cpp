@@ -392,7 +392,10 @@ void bncComb::processEpoch() {
 
   // If Master not present, switch to another one
   // --------------------------------------------
-  if (!masterPresent) {
+  if (masterPresent) {
+    _masterMissingEpochs = 0;
+  }
+  else {
     ++_masterMissingEpochs;
     if (_masterMissingEpochs < 2) {
       out << "Missing Master, Epoch skipped\n";
