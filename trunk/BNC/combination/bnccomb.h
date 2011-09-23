@@ -78,7 +78,6 @@ class bncComb : public bncEphUser  {
   void dumpResults(const QMap<QString, t_corr*>& resCorr);
   void printResults(QTextStream& out, const QMap<QString, t_corr*>& resCorr);
   void switchToLastEph(const t_eph* lastEph, t_corr* corr);
-  void switchToLastEph(const t_eph* lastEph, cmbParam* pp);
 
   QVector<cmbCorr*>& corrs() {return _buffer[_resTime].corrs;}
 

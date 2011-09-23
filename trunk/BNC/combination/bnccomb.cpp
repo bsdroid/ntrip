@@ -33,7 +33,7 @@ const int moduloTime = 10;
 
 const double sig0_offAC    = 1000.0;
 const double sig0_offACSat =  100.0;
-const double sigP_offACSat =    0.1;
+const double sigP_offACSat =   0.01;
 const double sig0_clkSat   =  100.0;
 
 const double sigObs        =   0.05;
@@ -422,10 +422,6 @@ void bncComb::processEpoch() {
   ColumnVector x0(nPar);
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp  = _params[iPar-1];
-////    QString   prn = pp->prn;
-////    if (!prn.isEmpty() && _eph.find(prn) != _eph.end()) {
-////      switchToLastEph(_eph[prn]->last, pp);
-////    }
     if (pp->epoSpec) {
       pp->xx = 0.0;
       _QQ.Row(iPar)    = 0.0;
@@ -745,43 +741,3 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 
   return success;
 }
-
-// Change the parameter so that it refers to last received ephemeris 
-////////////////////////////////////////////////////////////////////////////
-void bncComb::switchToLastEph(const t_eph* lastEph, cmbParam* pp) {
-
-  if (pp->type != cmbParam::clkSat) {
-    return;
-  }
-
-  if (pp->eph == 0) {
-    pp->eph = lastEph;
-    return;
-  }
-
-  if (pp->eph == lastEph) {
-    return;
-  }
-
-  ColumnVector oldXC(4);
-  ColumnVector oldVV(3);
-  pp->eph->position(_resTime.gpsw(), _resTime.gpssec(), 
-                      oldXC.data(), oldVV.data());
-
-  ColumnVector newXC(4);
-  ColumnVector newVV(3);
-  lastEph->position(_resTime.gpsw(), _resTime.gpssec(), 
-                    newXC.data(), newVV.data());
-
-  double dC = newXC(4) - oldXC(4);
-
-  QString msg = "switch param " + pp->prn 
-    + QString(" %1 -> %2 %3").arg(pp->eph->IOD(),3)
-    .arg(lastEph->IOD(),3).arg(dC*t_CST::c, 8, 'f', 4);
-
-  emit newMessage(msg.toAscii(), false);
-
-  pp->eph = lastEph;
-  pp->xx  -= dC * t_CST::c;
-}
-
