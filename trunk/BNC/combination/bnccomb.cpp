@@ -369,7 +369,6 @@ void bncComb::processEpoch() {
   // Observation Statistics
   // ----------------------
   bool masterPresent = false;
-  int  numACwithObs  = 0;
   QListIterator<cmbAC*> icAC(_ACs);
   while (icAC.hasNext()) {
     cmbAC* AC = icAC.next();
@@ -385,13 +384,6 @@ void bncComb::processEpoch() {
       }
     }
     out << AC->name.toAscii().data() << ": " << AC->numObs << endl;
-    if (AC->numObs > 0) {
-      ++numACwithObs;
-    }
-  }
-
-  if (numACwithObs < 3) {
-    return;
   }
 
   // If Master not present, switch to another one
