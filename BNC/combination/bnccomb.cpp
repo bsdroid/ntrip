@@ -398,7 +398,7 @@ void bncComb::processEpoch() {
   else {
     ++_masterMissingEpochs;
     if (_masterMissingEpochs < 2) {
-      out << "Missing Master, Epoch skipped\n";
+      out << "Missing Master, Epoch skipped" << endl;
       _buffer.remove(_resTime);
       emit newMessage(_log, false);
       return;
@@ -758,7 +758,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::switchToLastEph(const t_eph* lastEph, cmbParam* pp) {
 
-  if (pp->type != cmbParam::clkSat) {
+  if (pp->type != cmbParam::offACSat) {
     return;
   }
 
