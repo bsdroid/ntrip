@@ -33,7 +33,7 @@ const int moduloTime = 10;
 
 const double sig0_offAC    = 1000.0;
 const double sig0_offACSat =  100.0;
-const double sigP_offACSat =    0.0;
+const double sigP_offACSat =    0.1;
 const double sig0_clkSat   =  100.0;
 
 const double sigObs        =   0.05;
