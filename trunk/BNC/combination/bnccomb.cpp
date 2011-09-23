@@ -397,7 +397,7 @@ void bncComb::processEpoch() {
   }
   else {
     ++_masterMissingEpochs;
-    if (_masterMissingEpochs < 2) {
+    if (_masterMissingEpochs < 10) {
       out << "Missing Master, Epoch skipped" << endl;
       _buffer.remove(_resTime);
       emit newMessage(_log, false);
