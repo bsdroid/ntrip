@@ -33,7 +33,7 @@ const int moduloTime = 10;
 
 const double sig0_offAC    = 1000.0;
 const double sig0_offACSat =  100.0;
-const double sigP_offACSat =   0.01;
+const double sigP_offACSat =   0.05;
 const double sig0_clkSat   =  100.0;
 
 const double sigObs        =   0.05;
@@ -720,10 +720,9 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
   PP(nObs+1) = Ph;
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp = _params[iPar-1];
-    if (AA.Column(iPar).maximum_absolute_value() > 0.0) {
-      if      (pp->type == cmbParam::clkSat) {
-        AA(nObs+1, iPar) = 1.0;
-      }
+    if ( AA.Column(iPar).maximum_absolute_value() > 0.0 &&
+         pp->type == cmbParam::clkSat ) {
+      AA(nObs+1, iPar) = 1.0;
     }
   }
   int iCond = 1;
@@ -733,7 +732,9 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
     PP(nObs+iCond) = Ph;
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       cmbParam* pp = _params[iPar-1];
-      if (pp->type == cmbParam::offACSat && pp->prn == prn) {
+      if ( AA.Column(iPar).maximum_absolute_value() > 0.0 &&
+           pp->type == cmbParam::offACSat                 && 
+           pp->prn == prn) {
         AA(nObs+iCond, iPar) = 1.0;
       }
     }
