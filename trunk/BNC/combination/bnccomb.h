@@ -87,6 +87,7 @@ class bncComb : public bncEphUser  {
   QByteArray              _log;
   bncAntex*               _antex;
   double                  _MAXRES;
+  QString                 _masterOrbitAC;
 };
 
 #endif
