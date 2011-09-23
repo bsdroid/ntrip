@@ -395,6 +395,7 @@ void bncComb::processEpoch() {
             << _resTime.datestr().c_str()    << " " 
             << _resTime.timestr().c_str()    << endl;
         _masterOrbitAC = AC->name;
+        break;
       }
     }
   }
