@@ -383,8 +383,8 @@ void bncComb::processEpoch_filter() {
 
   QTextStream out(&_log, QIODevice::WriteOnly);
 
-  out << endl <<           "Combination:" << endl 
-      << "------------------------------" << endl;
+  out << endl <<           "Combination (Filter):" << endl 
+      << "---------------------------------------" << endl;
 
   // Observation Statistics
   // ----------------------
@@ -767,5 +767,40 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::processEpoch_singleEpoch() {
 
+  _log.clear();
 
+  QTextStream out(&_log, QIODevice::WriteOnly);
+
+  out << endl <<           "Combination (Single-Epoch):" << endl 
+      << "---------------------------------------------" << endl;
+
+  // Observation Statistics
+  // ----------------------
+  QListIterator<cmbAC*> icAC(_ACs);
+  while (icAC.hasNext()) {
+    cmbAC* AC = icAC.next();
+    AC->numObs = 0;
+    QVectorIterator<cmbCorr*> itCorr(corrs());
+    while (itCorr.hasNext()) {
+      cmbCorr* corr = itCorr.next();
+      if (corr->acName == AC->name) {
+        AC->numObs += 1;
+      }
+    }
+    out << AC->name.toAscii().data() << ": " << AC->numObs << endl;
+  }
+
+  QMap<QString, t_corr*> resCorr;
+
+
+  // Print Results
+  // -------------
+  printResults(out, resCorr);
+  dumpResults(resCorr);
+
+  emit newMessage(_log, false);
+
+  // Delete Data
+  // -----------
+  _buffer.remove(_resTime);
 }
