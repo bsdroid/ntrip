@@ -775,5 +775,23 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
                                         QMap<QString, t_corr*>& resCorr) {
 
-  return failure;
+  int iObs = 0;
+  QVectorIterator<cmbCorr*> itCorr(corrs());
+  while (itCorr.hasNext()) {
+    cmbCorr* corr = itCorr.next();
+    QString  prn  = corr->prn;
+    switchToLastEph(_eph[prn]->last, corr);
+    ++iObs;
+
+    if (corr->acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
+      resCorr[prn] = new t_corr(*corr);
+    }
+  }
+
+  if (iObs == 0) {
+    return failure;
+  }
+  else {
+    return success;
+  }
 }
