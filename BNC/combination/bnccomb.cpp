@@ -366,25 +366,13 @@ void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
 // Process Epoch
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::processEpoch() {
-  if (_method == filter) {
-    return processEpoch_filter();
-  }
-  else {
-    return processEpoch_singleEpoch();
-  }
-}
-
-// Process Epoch - Filter Method
-////////////////////////////////////////////////////////////////////////////
-void bncComb::processEpoch_filter() {
-  int nPar = _params.size();
 
   _log.clear();
 
   QTextStream out(&_log, QIODevice::WriteOnly);
 
-  out << endl <<           "Combination (Filter):" << endl 
-      << "---------------------------------------" << endl;
+  out << endl <<           "Combination:" << endl 
+      << "------------------------------" << endl;
 
   // Observation Statistics
   // ----------------------
@@ -437,8 +425,39 @@ void bncComb::processEpoch_filter() {
     }
   }
 
+  QMap<QString, t_corr*> resCorr;
+
+  // Perform the actual Combination using selected Method
+  // ----------------------------------------------------
+  t_irc irc;
+  if (_method == filter) {
+    irc = processEpoch_filter(out, resCorr);
+  }
+  else {
+    irc = processEpoch_singleEpoch(out, resCorr);
+  }
+
+  // Print Results
+  // -------------
+  if (irc == success) {
+    printResults(out, resCorr);
+    dumpResults(resCorr);
+  }
+
+  // Delete Data, emit Message
+  // -------------------------
+  _buffer.remove(_resTime);
+  emit newMessage(_log, false);
+}
+
+// Process Epoch - Filter Method
+////////////////////////////////////////////////////////////////////////////
+t_irc bncComb::processEpoch_filter(QTextStream& out,
+                                   QMap<QString, t_corr*>& resCorr) {
+
   // Prediction Step
   // ---------------
+  int nPar = _params.size();
   ColumnVector x0(nPar);
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     cmbParam* pp  = _params[iPar-1];
@@ -457,7 +476,6 @@ void bncComb::processEpoch_filter() {
   SymmetricMatrix QQ_sav = _QQ;
 
   ColumnVector dx;
-  QMap<QString, t_corr*> resCorr;
     
   // Update and outlier detection loop
   // ---------------------------------
@@ -468,9 +486,7 @@ void bncComb::processEpoch_filter() {
     DiagonalMatrix PP;
 
     if (createAmat(AA, ll, PP, x0, resCorr) != success) {
-      _buffer.remove(_resTime);
-      emit newMessage(_log, false);
-      return;
+      return failure;
     }
 
     bncModel::kalman(AA, ll, PP, _QQ, dx);
@@ -526,16 +542,7 @@ void bncComb::processEpoch_filter() {
     out.setFieldWidth(0);
   }
 
-  // Print Results
-  // -------------
-  printResults(out, resCorr);
-  dumpResults(resCorr);
-
-  emit newMessage(_log, false);
-
-  // Delete Data
-  // -----------
-  _buffer.remove(_resTime);
+  return success;
 }
 
 // Print results
@@ -765,42 +772,8 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 
 // Process Epoch - Single-Epoch Method
 ////////////////////////////////////////////////////////////////////////////
-void bncComb::processEpoch_singleEpoch() {
+t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
+                                        QMap<QString, t_corr*>& resCorr) {
 
-  _log.clear();
-
-  QTextStream out(&_log, QIODevice::WriteOnly);
-
-  out << endl <<           "Combination (Single-Epoch):" << endl 
-      << "---------------------------------------------" << endl;
-
-  // Observation Statistics
-  // ----------------------
-  QListIterator<cmbAC*> icAC(_ACs);
-  while (icAC.hasNext()) {
-    cmbAC* AC = icAC.next();
-    AC->numObs = 0;
-    QVectorIterator<cmbCorr*> itCorr(corrs());
-    while (itCorr.hasNext()) {
-      cmbCorr* corr = itCorr.next();
-      if (corr->acName == AC->name) {
-        AC->numObs += 1;
-      }
-    }
-    out << AC->name.toAscii().data() << ": " << AC->numObs << endl;
-  }
-
-  QMap<QString, t_corr*> resCorr;
-
-
-  // Print Results
-  // -------------
-  printResults(out, resCorr);
-  dumpResults(resCorr);
-
-  emit newMessage(_log, false);
-
-  // Delete Data
-  // -----------
-  _buffer.remove(_resTime);
+  return failure;
 }
