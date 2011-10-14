@@ -42,6 +42,8 @@ class bncComb : public bncEphUser  {
 
  private:
 
+  enum e_method{singleEpoch, filter};
+
   class cmbAC {
    public:
     cmbAC() {
@@ -73,6 +75,8 @@ class bncComb : public bncEphUser  {
   };
 
   void processEpoch();
+  void processEpoch_filter();
+  void processEpoch_singleEpoch();
   t_irc createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
                    const ColumnVector& x0, QMap<QString, t_corr*>& resCorr);
   void dumpResults(const QMap<QString, t_corr*>& resCorr);
@@ -92,6 +96,7 @@ class bncComb : public bncEphUser  {
   double                  _MAXRES;
   QString                 _masterOrbitAC;
   unsigned                _masterMissingEpochs;
+  e_method                _method;
 };
 
 #endif

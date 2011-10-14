@@ -148,32 +148,42 @@ bncComb::bncComb() {
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
 
+  // Combination Method
+  // ------------------
+  if (settings.value("cmbMethod").toString() == "Filter") {
+    _method = filter;
+  }
+  else {
+    _method = singleEpoch;
+  }
 
   // Initialize Parameters (model: Clk_Corr = AC_Offset + Sat_Offset + Clk)
   // ----------------------------------------------------------------------
-  int nextPar = 0;
-  QListIterator<cmbAC*> it(_ACs);
-  while (it.hasNext()) {
-    cmbAC* AC = it.next();
-    _params.push_back(new cmbParam(cmbParam::offAC, ++nextPar, AC->name, ""));
+  if (_method == filter) {
+    int nextPar = 0;
+    QListIterator<cmbAC*> it(_ACs);
+    while (it.hasNext()) {
+      cmbAC* AC = it.next();
+      _params.push_back(new cmbParam(cmbParam::offAC, ++nextPar, AC->name, ""));
+      for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
+        QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+        _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar, 
+                                       AC->name, prn));
+      }
+    }
     for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
       QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
-      _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar, 
-                                     AC->name, prn));
+      _params.push_back(new cmbParam(cmbParam::clkSat, ++nextPar, "", prn));
     }
-  }
-  for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
-    QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
-    _params.push_back(new cmbParam(cmbParam::clkSat, ++nextPar, "", prn));
-  }
-
-  // Initialize Variance-Covariance Matrix
-  // -------------------------------------
-  _QQ.ReSize(_params.size());
-  _QQ = 0.0;
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    cmbParam* pp = _params[iPar-1];
-    _QQ(iPar,iPar) = pp->sig0 * pp->sig0;
+    
+    // Initialize Variance-Covariance Matrix
+    // -------------------------------------
+    _QQ.ReSize(_params.size());
+    _QQ = 0.0;
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      cmbParam* pp = _params[iPar-1];
+      _QQ(iPar,iPar) = pp->sig0 * pp->sig0;
+    }
   }
 
   // ANTEX File
@@ -356,7 +366,17 @@ void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
 // Process Epoch
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::processEpoch() {
+  if (_method == filter) {
+    return processEpoch_filter();
+  }
+  else {
+    return processEpoch_singleEpoch();
+  }
+}
 
+// Process Epoch - Filter Method
+////////////////////////////////////////////////////////////////////////////
+void bncComb::processEpoch_filter() {
   int nPar = _params.size();
 
   _log.clear();
@@ -741,4 +761,11 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
   }
 
   return success;
+}
+
+// Process Epoch - Single-Epoch Method
+////////////////////////////////////////////////////////////////////////////
+void bncComb::processEpoch_singleEpoch() {
+
+
 }
