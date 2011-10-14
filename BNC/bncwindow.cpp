@@ -483,6 +483,14 @@ bncWindow::bncWindow() {
   connect(_cmbTable, SIGNAL(itemSelectionChanged()), 
           SLOT(slotBncTextChanged()));
 
+  _cmbMethodComboBox = new QComboBox();
+  _cmbMethodComboBox->setEditable(false);
+  _cmbMethodComboBox->addItems(QString("Single-Epoch,Filter").split(","));
+  int im = _cmbMethodComboBox->findText(settings.value("cmbMethod").toString());
+  if (im != -1) {
+    _cmbMethodComboBox->setCurrentIndex(im);
+  }
+
   // Upload Results
   // -------------
   _uploadTable = new QTableWidget(0,9);
@@ -983,6 +991,8 @@ bncWindow::bncWindow() {
   cmbLayout->addWidget(addCmbRowButton,1,3);
   connect(addCmbRowButton, SIGNAL(clicked()), this, SLOT(slotAddCmbRow()));
   cmbLayout->addWidget(delCmbRowButton,2,3);
+  cmbLayout->addWidget(new QLabel("Method"), 3, 3);
+  cmbLayout->addWidget(_cmbMethodComboBox,             3, 4, Qt::AlignRight);
   cmbLayout->addWidget(new QLabel("Maximal Residuum"), 4, 3);
   cmbLayout->addWidget(_cmbMaxresLineEdit,             4, 4, Qt::AlignRight);
   connect(delCmbRowButton, SIGNAL(clicked()), this, SLOT(slotDelCmbRow()));
@@ -1470,6 +1480,7 @@ void bncWindow::slotSaveOptions() {
     settings.setValue("combineStreams", "");
   }
   settings.setValue("cmbMaxres", _cmbMaxresLineEdit->text());
+  settings.setValue("cmbMethod", _cmbMethodComboBox->currentText());
 
   if (!uploadMountpointsOut.isEmpty()) {
     settings.setValue("uploadMountpointsOut", uploadMountpointsOut);

@@ -203,6 +203,7 @@ class bncWindow : public QMainWindow {
 
     QTableWidget* _cmbTable;
     QLineEdit*    _cmbMaxresLineEdit;
+    QComboBox*    _cmbMethodComboBox;
 
     QTableWidget* _uploadTable;
     QComboBox*    _uploadIntrComboBox;
