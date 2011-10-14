@@ -42,6 +42,13 @@ const int MAXPRN_GPS = 32;
 
 using namespace std;
 
+// Auxiliary Class for Single-Differences
+////////////////////////////////////////////////////////////////////////////
+class t_sDiff {
+ public:
+  QMap<QString, double> diff;
+};
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 cmbParam::cmbParam(parType type_, int index_,
@@ -714,7 +721,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
     return failure;
   }
 
-  const int nCon = 1 + MAXPRN_GPS;
+  const int nCon = (_method == filter) ? 1 + MAXPRN_GPS : 0;
 
   AA.ReSize(nObs+nCon, nPar);  AA = 0.0;
   ll.ReSize(nObs+nCon);        ll = 0.0;
@@ -729,8 +736,10 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
     switchToLastEph(_eph[prn]->last, corr);
     ++iObs;
 
-    if (corr->acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
-      resCorr[prn] = new t_corr(*corr);
+    if (_method == filter) {
+      if (corr->acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
+        resCorr[prn] = new t_corr(*corr);
+      }
     }
 
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
@@ -743,26 +752,28 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 
   // Regularization
   // --------------
-  const double Ph = 1.e6;
-  PP(nObs+1) = Ph;
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    cmbParam* pp = _params[iPar-1];
-    if ( AA.Column(iPar).maximum_absolute_value() > 0.0 &&
-         pp->type == cmbParam::clkSat ) {
-      AA(nObs+1, iPar) = 1.0;
-    }
-  }
-  int iCond = 1;
-  for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
-    QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
-    ++iCond;
-    PP(nObs+iCond) = Ph;
+  if (_method == filter) {
+    const double Ph = 1.e6;
+    PP(nObs+1) = Ph;
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       cmbParam* pp = _params[iPar-1];
       if ( AA.Column(iPar).maximum_absolute_value() > 0.0 &&
-           pp->type == cmbParam::offACSat                 && 
-           pp->prn == prn) {
-        AA(nObs+iCond, iPar) = 1.0;
+           pp->type == cmbParam::clkSat ) {
+        AA(nObs+1, iPar) = 1.0;
+      }
+    }
+    int iCond = 1;
+    for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
+      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+      ++iCond;
+      PP(nObs+iCond) = Ph;
+      for (int iPar = 1; iPar <= _params.size(); iPar++) {
+        cmbParam* pp = _params[iPar-1];
+        if ( AA.Column(iPar).maximum_absolute_value() > 0.0 &&
+             pp->type == cmbParam::offACSat                 && 
+             pp->prn == prn) {
+          AA(nObs+iCond, iPar) = 1.0;
+        }
       }
     }
   }
@@ -775,23 +786,99 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
                                         QMap<QString, t_corr*>& resCorr) {
 
-  int iObs = 0;
+  // Initialize resCorr
+  // ------------------
   QVectorIterator<cmbCorr*> itCorr(corrs());
   while (itCorr.hasNext()) {
     cmbCorr* corr = itCorr.next();
     QString  prn  = corr->prn;
     switchToLastEph(_eph[prn]->last, corr);
-    ++iObs;
-
     if (corr->acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
       resCorr[prn] = new t_corr(*corr);
     }
   }
 
-  if (iObs == 0) {
+  // Count Number of Observations per Satellite and per AC
+  // -----------------------------------------------------
+  QMap<QString, int> numObsPrn;
+  QMap<QString, int> numObsAC;
+  QMapIterator<QString, t_corr*> itRes(resCorr);
+  while (itRes.hasNext()) {
+    itRes.next();
+    const QString& prnRes = itRes.key();
+    QVectorIterator<cmbCorr*> itCorr(corrs());
+    while (itCorr.hasNext()) {
+      cmbCorr* corr = itCorr.next();
+      QString  prn  = corr->prn;
+      QString  AC   = corr->acName;
+      if (prn == prnRes) {
+        if (numObsPrn.find(prn) == numObsPrn.end()) {
+          numObsPrn[prn]  = 1;
+        }
+        else {
+          numObsPrn[prn] += 1;
+        }
+        if (numObsAC.find(prn) == numObsAC.end()) {
+          numObsAC[AC]  = 1;
+        }
+        else {
+          numObsAC[AC] += 1;
+        }
+      }
+    }
+  }
+
+  // Clean-Up the Paramters
+  // ----------------------
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    delete _params[iPar-1];
+  }
+  _params.clear();
+
+  // Set new Parameters
+  // ------------------
+  int nextPar = 0;
+
+  QMapIterator<QString, int> itAC(numObsAC);
+  while (itAC.hasNext()) {
+    itAC.next();
+    const QString& AC     = itAC.key();
+    int            numObs = itAC.value();
+    if (numObs > 0) {
+      _params.push_back(new cmbParam(cmbParam::offAC, ++nextPar, AC, ""));
+    }
+  } 
+
+  QMapIterator<QString, int> itPrn(numObsPrn);
+  while (itPrn.hasNext()) {
+    itPrn.next();
+    const QString& prn    = itPrn.key();
+    int            numObs = itPrn.value();
+    if (numObs > 0) {
+      _params.push_back(new cmbParam(cmbParam::clkSat, ++nextPar, "", prn));
+    }
+  }  
+
+  int nPar = _params.size();
+  ColumnVector x0(nPar); 
+  x0 = 0.0;
+
+  // Create First-Design Matrix
+  // --------------------------
+  Matrix         AA;
+  ColumnVector   ll;
+  DiagonalMatrix PP;
+  if (createAmat(AA, ll, PP, x0, resCorr) != success) {
     return failure;
   }
-  else {
-    return success;
-  }
+
+  SymmetricMatrix NN; NN << AA.t() * PP * AA;
+  ColumnVector    bb = AA.t() * PP * ll;
+  SymmetricMatrix QQ = NN.i();
+
+  ColumnVector    xx = QQ * bb;
+
+  cout << xx.t() << endl;
+
+  return success;
 }
