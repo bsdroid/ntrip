@@ -437,16 +437,34 @@ void bncComb::processEpoch() {
   // Perform the actual Combination using selected Method
   // ----------------------------------------------------
   t_irc irc;
+  ColumnVector dx;
   if (_method == filter) {
-    irc = processEpoch_filter(out, resCorr);
+    irc = processEpoch_filter(out, resCorr, dx);
   }
   else {
-    irc = processEpoch_singleEpoch(out, resCorr);
+    irc = processEpoch_singleEpoch(out, resCorr, dx);
   }
 
-  // Print Results
-  // -------------
+  // Update Parameter Values, Print Results
+  // --------------------------------------
   if (irc == success) {
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      cmbParam* pp = _params[iPar-1];
+      pp->xx += dx(iPar);
+      if (pp->type == cmbParam::clkSat) {
+        if (resCorr.find(pp->prn) != resCorr.end()) {
+          resCorr[pp->prn]->dClk = pp->xx / t_CST::c;
+        }
+      }
+      out << _resTime.datestr().c_str() << " " 
+          << _resTime.timestr().c_str() << " ";
+      out.setRealNumberNotation(QTextStream::FixedNotation);
+      out.setFieldWidth(8);
+      out.setRealNumberPrecision(4);
+      out << pp->toString() << " "
+          << pp->xx << " +- " << sqrt(_QQ(pp->index,pp->index)) << endl;
+      out.setFieldWidth(0);
+    }
     printResults(out, resCorr);
     dumpResults(resCorr);
   }
@@ -460,7 +478,8 @@ void bncComb::processEpoch() {
 // Process Epoch - Filter Method
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncComb::processEpoch_filter(QTextStream& out,
-                                   QMap<QString, t_corr*>& resCorr) {
+                                   QMap<QString, t_corr*>& resCorr,
+                                   ColumnVector& dx) {
 
   // Prediction Step
   // ---------------
@@ -482,8 +501,6 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
 
   SymmetricMatrix QQ_sav = _QQ;
 
-  ColumnVector dx;
-    
   // Update and outlier detection loop
   // ---------------------------------
   while (true) {
@@ -527,26 +544,6 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
       out << "  OK" << endl;
       break;
     }
-  }
-
-  // Update Parameter Values
-  // -----------------------
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    cmbParam* pp = _params[iPar-1];
-    pp->xx += dx(iPar);
-    if (pp->type == cmbParam::clkSat) {
-      if (resCorr.find(pp->prn) != resCorr.end()) {
-        resCorr[pp->prn]->dClk = pp->xx / t_CST::c;
-      }
-    }
-    out << _resTime.datestr().c_str() << " " 
-        << _resTime.timestr().c_str() << " ";
-    out.setRealNumberNotation(QTextStream::FixedNotation);
-    out.setFieldWidth(8);
-    out.setRealNumberPrecision(4);
-    out << pp->toString() << " "
-        << pp->xx << " +- " << sqrt(_QQ(pp->index,pp->index)) << endl;
-    out.setFieldWidth(0);
   }
 
   return success;
@@ -784,7 +781,8 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 // Process Epoch - Single-Epoch Method
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
-                                        QMap<QString, t_corr*>& resCorr) {
+                                        QMap<QString, t_corr*>& resCorr,
+                                        ColumnVector& dx) {
 
   // Initialize resCorr
   // ------------------
@@ -874,11 +872,9 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
 
   SymmetricMatrix NN; NN << AA.t() * PP * AA;
   ColumnVector    bb = AA.t() * PP * ll;
-  SymmetricMatrix QQ = NN.i();
 
-  ColumnVector    xx = QQ * bb;
-
-  cout << xx.t() << endl;
+  _QQ = NN.i();
+  dx = _QQ * bb;
 
   return success;
 }
