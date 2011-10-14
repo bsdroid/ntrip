@@ -877,5 +877,15 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
   _QQ = NN.i();
   dx = _QQ * bb;
 
+  ColumnVector vv = ll - AA * dx;
+
+  int     maxResIndex;
+  double  maxRes = vv.maximum_absolute_value1(maxResIndex);   
+  out.setRealNumberNotation(QTextStream::FixedNotation);
+  out.setRealNumberPrecision(3);  
+  out << _resTime.datestr().c_str() << " " << _resTime.timestr().c_str()
+      << " Maximum Residuum " << maxRes << ' '
+      << corrs()[maxResIndex-1]->acName << ' ' << corrs()[maxResIndex-1]->prn;
+
   return success;
 }
