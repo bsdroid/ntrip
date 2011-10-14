@@ -733,10 +733,8 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
     switchToLastEph(_eph[prn]->last, corr);
     ++iObs;
 
-    if (_method == filter) {
-      if (corr->acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
-        resCorr[prn] = new t_corr(*corr);
-      }
+    if (corr->acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
+      resCorr[prn] = new t_corr(*corr);
     }
 
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
@@ -784,15 +782,25 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
                                         QMap<QString, t_corr*>& resCorr,
                                         ColumnVector& dx) {
 
-  // Initialize resCorr
-  // ------------------
-  QVectorIterator<cmbCorr*> itCorr(corrs());
-  while (itCorr.hasNext()) {
-    cmbCorr* corr = itCorr.next();
+  // Remove Satellites that are not in Master
+  // ----------------------------------------
+  QMutableVectorIterator<cmbCorr*> itCorr1(corrs());
+  while (itCorr1.hasNext()) {
+    cmbCorr* corr = itCorr1.next();
     QString  prn  = corr->prn;
-    switchToLastEph(_eph[prn]->last, corr);
-    if (corr->acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
-      resCorr[prn] = new t_corr(*corr);
+    bool foundMaster = false;
+    QVectorIterator<cmbCorr*> it(corrs());
+    while (it.hasNext()) {
+      cmbCorr* corr2 = it.next();
+      QString  prn2  = corr2->prn;
+      QString  AC   = corr2->acName;
+      if (AC == _masterOrbitAC && prn == prn2) {
+        foundMaster = true;
+        break;
+      }
+    }
+    if (!foundMaster) {
+      itCorr1.remove();
     }
   }
 
@@ -800,29 +808,22 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
   // -----------------------------------------------------
   QMap<QString, int> numObsPrn;
   QMap<QString, int> numObsAC;
-  QMapIterator<QString, t_corr*> itRes(resCorr);
-  while (itRes.hasNext()) {
-    itRes.next();
-    const QString& prnRes = itRes.key();
-    QVectorIterator<cmbCorr*> itCorr(corrs());
-    while (itCorr.hasNext()) {
-      cmbCorr* corr = itCorr.next();
-      QString  prn  = corr->prn;
-      QString  AC   = corr->acName;
-      if (prn == prnRes) {
-        if (numObsPrn.find(prn) == numObsPrn.end()) {
-          numObsPrn[prn]  = 1;
-        }
-        else {
-          numObsPrn[prn] += 1;
-        }
-        if (numObsAC.find(prn) == numObsAC.end()) {
-          numObsAC[AC]  = 1;
-        }
-        else {
-          numObsAC[AC] += 1;
-        }
-      }
+  QVectorIterator<cmbCorr*> itCorr(corrs());
+  while (itCorr.hasNext()) {
+    cmbCorr* corr = itCorr.next();
+    QString  prn  = corr->prn;
+    QString  AC   = corr->acName;
+    if (numObsPrn.find(prn) == numObsPrn.end()) {
+      numObsPrn[prn]  = 1;
+    }
+    else {
+      numObsPrn[prn] += 1;
+    }
+    if (numObsAC.find(AC) == numObsAC.end()) {
+      numObsAC[AC]  = 1;
+    }
+    else {
+      numObsAC[AC] += 1;
     }
   }
 
@@ -842,7 +843,7 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
     itAC.next();
     const QString& AC     = itAC.key();
     int            numObs = itAC.value();
-    if (numObs > 0) {
+    if (AC != _masterOrbitAC && numObs > 0) {
       _params.push_back(new cmbParam(cmbParam::offAC, ++nextPar, AC, ""));
     }
   } 
