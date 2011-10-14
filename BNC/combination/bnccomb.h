@@ -76,9 +76,11 @@ class bncComb : public bncEphUser  {
 
   void processEpoch();
   t_irc processEpoch_filter(QTextStream& out,
-                            QMap<QString, t_corr*>& resCorr);
+                            QMap<QString, t_corr*>& resCorr,
+                            ColumnVector& dx);
   t_irc processEpoch_singleEpoch(QTextStream& out,
-                                 QMap<QString, t_corr*>& resCorr);
+                                 QMap<QString, t_corr*>& resCorr,
+                                 ColumnVector& dx);
   t_irc createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
                    const ColumnVector& x0, QMap<QString, t_corr*>& resCorr);
   void dumpResults(const QMap<QString, t_corr*>& resCorr);
