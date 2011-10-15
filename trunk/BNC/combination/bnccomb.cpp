@@ -784,23 +784,23 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
 
   // Remove Satellites that are not in Master
   // ----------------------------------------
-  QMutableVectorIterator<cmbCorr*> itCorr1(corrs());
-  while (itCorr1.hasNext()) {
-    cmbCorr* corr = itCorr1.next();
+  QMutableVectorIterator<cmbCorr*> it(corrs());
+  while (it.hasNext()) {
+    cmbCorr* corr = it.next();
     QString  prn  = corr->prn;
     bool foundMaster = false;
-    QVectorIterator<cmbCorr*> it(corrs());
-    while (it.hasNext()) {
-      cmbCorr* corr2 = it.next();
-      QString  prn2  = corr2->prn;
-      QString  AC   = corr2->acName;
-      if (AC == _masterOrbitAC && prn == prn2) {
+    QVectorIterator<cmbCorr*> itHlp(corrs());
+    while (itHlp.hasNext()) {
+      cmbCorr* corrHlp = itHlp.next();
+      QString  prnHlp  = corrHlp->prn;
+      QString  ACHlp   = corrHlp->acName;
+      if (ACHlp == _masterOrbitAC && prn == prnHlp) {
         foundMaster = true;
         break;
       }
     }
     if (!foundMaster) {
-      itCorr1.remove();
+      it.remove();
     }
   }
 
@@ -871,21 +871,29 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
     return failure;
   }
 
-  SymmetricMatrix NN; NN << AA.t() * PP * AA;
-  ColumnVector    bb = AA.t() * PP * ll;
+  ColumnVector vv;
+  try {
+    Matrix          ATP = AA.t() * PP;
+    SymmetricMatrix NN; NN << ATP * AA;
+    ColumnVector    bb = ATP * ll;
+    _QQ = NN.i();
+    dx  = _QQ * bb;
+    vv  = ll - AA * dx;
+  }
+  catch (Exception& exc) {
+    out << exc.what() << endl;
+    return failure;
+  }
 
-  _QQ = NN.i();
-  dx = _QQ * bb;
-
-  ColumnVector vv = ll - AA * dx;
-
-  int     maxResIndex;
-  double  maxRes = vv.maximum_absolute_value1(maxResIndex);   
   out.setRealNumberNotation(QTextStream::FixedNotation);
   out.setRealNumberPrecision(3);  
-  out << _resTime.datestr().c_str() << " " << _resTime.timestr().c_str()
-      << " Maximum Residuum " << maxRes << ' '
-      << corrs()[maxResIndex-1]->acName << ' ' << corrs()[maxResIndex-1]->prn;
+  for (int ii = 0; ii < vv.Nrows(); ii++) {
+    const cmbCorr* corr = corrs()[ii];
+    out << _resTime.datestr().c_str() << ' ' 
+        << _resTime.timestr().c_str() << " "
+        << corr->acName << ' ' << corr->prn << ' '
+        << " dClk = " << corr->dClk << " res = " << vv[ii] << endl;
+  }
 
   return success;
 }
