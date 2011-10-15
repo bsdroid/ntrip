@@ -157,11 +157,11 @@ bncComb::bncComb() {
 
   // Combination Method
   // ------------------
-  if (settings.value("cmbMethod").toString() == "Filter") {
-    _method = filter;
+  if (settings.value("cmbMethod").toString() == "Single-Epoch") {
+    _method = singleEpoch;
   }
   else {
-    _method = singleEpoch;
+    _method = filter;
   }
 
   // Initialize Parameters (model: Clk_Corr = AC_Offset + Sat_Offset + Clk)
