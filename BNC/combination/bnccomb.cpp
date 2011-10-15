@@ -891,8 +891,10 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
     const cmbCorr* corr = corrs()[ii];
     out << _resTime.datestr().c_str() << ' ' 
         << _resTime.timestr().c_str() << " "
-        << corr->acName << ' ' << corr->prn << ' '
-        << " dClk = " << corr->dClk << " res = " << vv[ii] << endl;
+        << corr->acName << ' ' << corr->prn;
+    out.setFieldWidth(6);
+    out << " dClk = " << corr->dClk * t_CST::c << " res = " << vv[ii] << endl;
+    out.setFieldWidth(0);
   }
 
   return success;
