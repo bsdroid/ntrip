@@ -485,7 +485,7 @@ bncWindow::bncWindow() {
 
   _cmbMethodComboBox = new QComboBox();
   _cmbMethodComboBox->setEditable(false);
-  _cmbMethodComboBox->addItems(QString("Single-Epoch,Filter").split(","));
+  _cmbMethodComboBox->addItems(QString("Filter,Single-Epoch").split(","));
   int im = _cmbMethodComboBox->findText(settings.value("cmbMethod").toString());
   if (im != -1) {
     _cmbMethodComboBox->setCurrentIndex(im);
