@@ -782,120 +782,142 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
                                         QMap<QString, t_corr*>& resCorr,
                                         ColumnVector& dx) {
 
-  // Remove Satellites that are not in Master
-  // ----------------------------------------
-  QMutableVectorIterator<cmbCorr*> it(corrs());
-  while (it.hasNext()) {
-    cmbCorr* corr = it.next();
-    QString  prn  = corr->prn;
-    bool foundMaster = false;
-    QVectorIterator<cmbCorr*> itHlp(corrs());
-    while (itHlp.hasNext()) {
-      cmbCorr* corrHlp = itHlp.next();
-      QString  prnHlp  = corrHlp->prn;
-      QString  ACHlp   = corrHlp->acName;
-      if (ACHlp == _masterOrbitAC && prn == prnHlp) {
-        foundMaster = true;
-        break;
+  // Outlier Detection Loop
+  // ----------------------
+  while (true) {
+    
+    // Remove Satellites that are not in Master
+    // ----------------------------------------
+    QMutableVectorIterator<cmbCorr*> it(corrs());
+    while (it.hasNext()) {
+      cmbCorr* corr = it.next();
+      QString  prn  = corr->prn;
+      bool foundMaster = false;
+      QVectorIterator<cmbCorr*> itHlp(corrs());
+      while (itHlp.hasNext()) {
+        cmbCorr* corrHlp = itHlp.next();
+        QString  prnHlp  = corrHlp->prn;
+        QString  ACHlp   = corrHlp->acName;
+        if (ACHlp == _masterOrbitAC && prn == prnHlp) {
+          foundMaster = true;
+          break;
+        }
+      }
+      if (!foundMaster) {
+        it.remove();
       }
     }
-    if (!foundMaster) {
-      it.remove();
+    
+    // Count Number of Observations per Satellite and per AC
+    // -----------------------------------------------------
+    QMap<QString, int> numObsPrn;
+    QMap<QString, int> numObsAC;
+    QVectorIterator<cmbCorr*> itCorr(corrs());
+    while (itCorr.hasNext()) {
+      cmbCorr* corr = itCorr.next();
+      QString  prn  = corr->prn;
+      QString  AC   = corr->acName;
+      if (numObsPrn.find(prn) == numObsPrn.end()) {
+        numObsPrn[prn]  = 1;
+      }
+      else {
+        numObsPrn[prn] += 1;
+      }
+      if (numObsAC.find(AC) == numObsAC.end()) {
+        numObsAC[AC]  = 1;
+      }
+      else {
+        numObsAC[AC] += 1;
+      }
     }
-  }
+    
+    // Clean-Up the Paramters
+    // ----------------------
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      delete _params[iPar-1];
+    }
+    _params.clear();
+    
+    // Set new Parameters
+    // ------------------
+    int nextPar = 0;
+    
+    QMapIterator<QString, int> itAC(numObsAC);
+    while (itAC.hasNext()) {
+      itAC.next();
+      const QString& AC     = itAC.key();
+      int            numObs = itAC.value();
+      if (AC != _masterOrbitAC && numObs > 0) {
+        _params.push_back(new cmbParam(cmbParam::offAC, ++nextPar, AC, ""));
+      }
+    } 
+    
+    QMapIterator<QString, int> itPrn(numObsPrn);
+    while (itPrn.hasNext()) {
+      itPrn.next();
+      const QString& prn    = itPrn.key();
+      int            numObs = itPrn.value();
+      if (numObs > 0) {
+        _params.push_back(new cmbParam(cmbParam::clkSat, ++nextPar, "", prn));
+      }
+    }  
+    
+    int nPar = _params.size();
+    ColumnVector x0(nPar); 
+    x0 = 0.0;
+    
+    // Create First-Design Matrix
+    // --------------------------
+    Matrix         AA;
+    ColumnVector   ll;
+    DiagonalMatrix PP;
+    if (createAmat(AA, ll, PP, x0, resCorr) != success) {
+      return failure;
+    }
+    
+    ColumnVector vv;
+    try {
+      Matrix          ATP = AA.t() * PP;
+      SymmetricMatrix NN; NN << ATP * AA;
+      ColumnVector    bb = ATP * ll;
+      _QQ = NN.i();
+      dx  = _QQ * bb;
+      vv  = ll - AA * dx;
+    }
+    catch (Exception& exc) {
+      out << exc.what() << endl;
+      return failure;
+    }
 
-  // Count Number of Observations per Satellite and per AC
-  // -----------------------------------------------------
-  QMap<QString, int> numObsPrn;
-  QMap<QString, int> numObsAC;
-  QVectorIterator<cmbCorr*> itCorr(corrs());
-  while (itCorr.hasNext()) {
-    cmbCorr* corr = itCorr.next();
-    QString  prn  = corr->prn;
-    QString  AC   = corr->acName;
-    if (numObsPrn.find(prn) == numObsPrn.end()) {
-      numObsPrn[prn]  = 1;
+    int     maxResIndex;
+    double  maxRes = vv.maximum_absolute_value1(maxResIndex);   
+    out.setRealNumberNotation(QTextStream::FixedNotation);
+    out.setRealNumberPrecision(3);  
+    out << _resTime.datestr().c_str() << " " << _resTime.timestr().c_str()
+        << " Maximum Residuum " << maxRes << ' '
+        << corrs()[maxResIndex-1]->acName << ' ' << corrs()[maxResIndex-1]->prn;
+
+    if (maxRes > _MAXRES) {
+      out << "  Outlier" << endl;
+      corrs().remove(maxResIndex-1);
     }
     else {
-      numObsPrn[prn] += 1;
+      out << "  OK" << endl;
+      out.setRealNumberNotation(QTextStream::FixedNotation);
+      out.setRealNumberPrecision(3);  
+      for (int ii = 0; ii < vv.Nrows(); ii++) {
+        const cmbCorr* corr = corrs()[ii];
+        out << _resTime.datestr().c_str() << ' ' 
+            << _resTime.timestr().c_str() << " "
+            << corr->acName << ' ' << corr->prn;
+        out.setFieldWidth(6);
+        out << " dClk = " << corr->dClk * t_CST::c << " res = " << vv[ii] << endl;
+        out.setFieldWidth(0);
+      }
+      return success;
     }
-    if (numObsAC.find(AC) == numObsAC.end()) {
-      numObsAC[AC]  = 1;
-    }
-    else {
-      numObsAC[AC] += 1;
-    }
+
   }
 
-  // Clean-Up the Paramters
-  // ----------------------
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    delete _params[iPar-1];
-  }
-  _params.clear();
-
-  // Set new Parameters
-  // ------------------
-  int nextPar = 0;
-
-  QMapIterator<QString, int> itAC(numObsAC);
-  while (itAC.hasNext()) {
-    itAC.next();
-    const QString& AC     = itAC.key();
-    int            numObs = itAC.value();
-    if (AC != _masterOrbitAC && numObs > 0) {
-      _params.push_back(new cmbParam(cmbParam::offAC, ++nextPar, AC, ""));
-    }
-  } 
-
-  QMapIterator<QString, int> itPrn(numObsPrn);
-  while (itPrn.hasNext()) {
-    itPrn.next();
-    const QString& prn    = itPrn.key();
-    int            numObs = itPrn.value();
-    if (numObs > 0) {
-      _params.push_back(new cmbParam(cmbParam::clkSat, ++nextPar, "", prn));
-    }
-  }  
-
-  int nPar = _params.size();
-  ColumnVector x0(nPar); 
-  x0 = 0.0;
-
-  // Create First-Design Matrix
-  // --------------------------
-  Matrix         AA;
-  ColumnVector   ll;
-  DiagonalMatrix PP;
-  if (createAmat(AA, ll, PP, x0, resCorr) != success) {
-    return failure;
-  }
-
-  ColumnVector vv;
-  try {
-    Matrix          ATP = AA.t() * PP;
-    SymmetricMatrix NN; NN << ATP * AA;
-    ColumnVector    bb = ATP * ll;
-    _QQ = NN.i();
-    dx  = _QQ * bb;
-    vv  = ll - AA * dx;
-  }
-  catch (Exception& exc) {
-    out << exc.what() << endl;
-    return failure;
-  }
-
-  out.setRealNumberNotation(QTextStream::FixedNotation);
-  out.setRealNumberPrecision(3);  
-  for (int ii = 0; ii < vv.Nrows(); ii++) {
-    const cmbCorr* corr = corrs()[ii];
-    out << _resTime.datestr().c_str() << ' ' 
-        << _resTime.timestr().c_str() << " "
-        << corr->acName << ' ' << corr->prn;
-    out.setFieldWidth(6);
-    out << " dClk = " << corr->dClk * t_CST::c << " res = " << vv[ii] << endl;
-    out.setFieldWidth(0);
-  }
-
-  return success;
+  return failure;
 }
