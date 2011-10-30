@@ -12,7 +12,7 @@ class bncAntex;
 
 class cmbParam {
  public:
-  enum parType {offAC, offACSat, clkSat};
+  enum parType {offACgps, offACglo, offACSat, clkSat};
   cmbParam(parType type_, int index_, const QString& ac_, const QString& prn_);
   ~cmbParam();
   double partial(const QString& AC_, const QString& prn_);
