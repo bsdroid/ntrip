@@ -765,9 +765,9 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
   }
 
   int MAXPRN = MAXPRN_GPS;
-  if (_useGlonass) {
-    MAXPRN = MAXPRN_GPS + MAXPRN_GLONASS;
-  }
+//  if (_useGlonass) {
+//    MAXPRN = MAXPRN_GPS + MAXPRN_GLONASS;
+//  }
 
   const int nCon = (_method == filter) ? 1 + MAXPRN : 0;
 
@@ -822,21 +822,21 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
         }
       }
     }
-    if (_useGlonass) {
-      for (int iGlo = 1; iGlo <= MAXPRN_GLONASS; iGlo++) {
-        QString prn = QString("R%1").arg(iGlo, 2, 10, QChar('0'));
-        ++iCond;
-        PP(nObs+iCond) = Ph;
-        for (int iPar = 1; iPar <= _params.size(); iPar++) {
-          cmbParam* pp = _params[iPar-1];
-          if ( AA.Column(iPar).maximum_absolute_value() > 0.0 &&
-               pp->type == cmbParam::offACSat                 && 
-               pp->prn == prn) {
-            AA(nObs+iCond, iPar) = 1.0;
-          }
-        }
-      }
-    }
+//    if (_useGlonass) {
+//      for (int iGlo = 1; iGlo <= MAXPRN_GLONASS; iGlo++) {
+//        QString prn = QString("R%1").arg(iGlo, 2, 10, QChar('0'));
+//        ++iCond;
+//        PP(nObs+iCond) = Ph;
+//        for (int iPar = 1; iPar <= _params.size(); iPar++) {
+//          cmbParam* pp = _params[iPar-1];
+//          if ( AA.Column(iPar).maximum_absolute_value() > 0.0 &&
+//               pp->type == cmbParam::offACSat                 && 
+//               pp->prn == prn) {
+//            AA(nObs+iCond, iPar) = 1.0;
+//          }
+//        }
+//      }
+//    }
   }
 
   return success;
