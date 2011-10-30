@@ -165,6 +165,15 @@ bncComb::bncComb() {
     _method = filter;
   }
 
+  // Use Glonass
+  // -----------
+  if ( Qt::CheckState(settings.value("pppGLONASS").toInt()) == Qt::Checked) {
+    _useGlonass = true;
+  }
+  else {
+    _useGlonass = false;
+  }
+
   // Initialize Parameters (model: Clk_Corr = AC_Offset + Sat_Offset + Clk)
   // ----------------------------------------------------------------------
   if (_method == filter) {
@@ -225,15 +234,6 @@ bncComb::bncComb() {
   _MAXRES = settings.value("cmbMaxres").toDouble();
   if (_MAXRES <= 0.0) {
     _MAXRES = 999.0;
-  }
-
-  // Use Glonass
-  // -----------
-  if ( Qt::CheckState(settings.value("pppGLONASS").toInt()) == Qt::Checked) {
-    _useGlonass = true;
-  }
-  else {
-    _useGlonass = false;
   }
 }
 
