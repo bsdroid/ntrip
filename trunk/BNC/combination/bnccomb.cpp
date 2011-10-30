@@ -62,7 +62,12 @@ cmbParam::cmbParam(parType type_, int index_,
   xx     = 0.0;
   eph    = 0;
 
-  if      (type == offAC) {
+  if      (type == offACgps) {
+    epoSpec = true;
+    sig0    = sig0_offAC;
+    sigP    = sig0;
+  }
+  else if (type == offACglo) {
     epoSpec = true;
     sig0    = sig0_offAC;
     sigP    = sig0;
@@ -88,8 +93,13 @@ cmbParam::~cmbParam() {
 ////////////////////////////////////////////////////////////////////////////
 double cmbParam::partial(const QString& AC_, const QString& prn_) {
   
-  if      (type == offAC) {
-    if (AC == AC_) {
+  if      (type == offACgps) {
+    if (AC == AC_ && prn_[0] == 'G') {
+      return 1.0;
+    }
+  }
+  else if (type == offACglo) {
+    if (AC == AC_ && prn_[0] == 'R') {
       return 1.0;
     }
   }
@@ -113,8 +123,11 @@ QString cmbParam::toString() const {
 
   QString outStr;
  
-  if      (type == offAC) {
-    outStr = "AC offset " + AC;
+  if      (type == offACgps) {
+    outStr = "AC offset GPS " + AC;
+  }
+  else if (type == offACglo) {
+    outStr = "AC offset GLO " + AC;
   }
   else if (type == offACSat) {
     outStr = "Sat Offset " + AC + " " + prn;
@@ -181,13 +194,14 @@ bncComb::bncComb() {
     QListIterator<cmbAC*> it(_ACs);
     while (it.hasNext()) {
       cmbAC* AC = it.next();
-      _params.push_back(new cmbParam(cmbParam::offAC, ++nextPar, AC->name, ""));
+      _params.push_back(new cmbParam(cmbParam::offACgps, ++nextPar, AC->name, ""));
       for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
         QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
         _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar, 
                                        AC->name, prn));
       }
       if (_useGlonass) {
+        _params.push_back(new cmbParam(cmbParam::offACglo, ++nextPar, AC->name, ""));
         for (int iGlo = 1; iGlo <= MAXPRN_GLONASS; iGlo++) {
           QString prn = QString("R%1").arg(iGlo, 2, 10, QChar('0'));
           _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar, 
@@ -900,7 +914,10 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
       const QString& AC     = itAC.key();
       int            numObs = itAC.value();
       if (AC != _masterOrbitAC && numObs > 0) {
-        _params.push_back(new cmbParam(cmbParam::offAC, ++nextPar, AC, ""));
+        _params.push_back(new cmbParam(cmbParam::offACgps, ++nextPar, AC, ""));
+        if (_useGlonass) {
+          _params.push_back(new cmbParam(cmbParam::offACglo, ++nextPar, AC, ""));
+        }
       }
     } 
     
