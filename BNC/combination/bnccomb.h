@@ -59,7 +59,8 @@ class bncComb : public bncEphUser  {
 
   class cmbCorr : public t_corr {
    public:
-    QString acName;
+    QString      acName;
+    ColumnVector diffRao;
   };
 
   class cmbEpoch {
