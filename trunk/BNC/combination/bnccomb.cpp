@@ -43,13 +43,6 @@ const int MAXPRN_GLONASS = 24;
 
 using namespace std;
 
-// Auxiliary Class for Single-Differences
-////////////////////////////////////////////////////////////////////////////
-class t_sDiff {
- public:
-  QMap<QString, double> diff;
-};
-
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 cmbParam::cmbParam(parType type_, int index_,
@@ -545,10 +538,15 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
     x0(iPar) = pp->xx;
   }
 
-  SymmetricMatrix QQ_sav = _QQ;
+  // Check Satellite Positions for Outliers
+  // --------------------------------------
+  if (checkOrbits() != success) {
+    return failure;
+  }
 
   // Update and outlier detection loop
   // ---------------------------------
+  SymmetricMatrix QQ_sav = _QQ;
   while (true) {
 
     Matrix         AA;
@@ -781,7 +779,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
   while (itCorr.hasNext()) {
     cmbCorr* corr = itCorr.next();
     QString  prn  = corr->prn;
-    switchToLastEph(_eph[prn]->last, corr);
+
     ++iObs;
 
     if (corr->acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
@@ -847,6 +845,12 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
                                         QMap<QString, t_corr*>& resCorr,
                                         ColumnVector& dx) {
+
+  // Check Satellite Positions for Outliers
+  // --------------------------------------
+  if (checkOrbits() != success) {
+    return failure;
+  }
 
   // Outlier Detection Loop
   // ----------------------
@@ -989,4 +993,42 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
   }
 
   return failure;
+}
+
+// Check Satellite Positions for Outliers
+////////////////////////////////////////////////////////////////////////////
+t_irc bncComb::checkOrbits() {
+
+  // Compute Mean Corrections for all Satellites
+  // -------------------------------------------
+  QMap<QString, ColumnVector> meanRao;
+  QVectorIterator<cmbCorr*> itCorr(corrs());
+  while (itCorr.hasNext()) {
+    cmbCorr* corr = itCorr.next();
+    QString  prn  = corr->prn;
+    if (meanRao.find(prn) == meanRao.end()) {
+      meanRao[prn].ReSize(4);
+      meanRao[prn].Rows(1,3) = corr->rao;
+      meanRao[prn](4)        = 1; 
+    }
+    else {
+      meanRao[prn].Rows(1,3) += corr->rao;
+      meanRao[prn](4)        += 1; 
+    }
+    switchToLastEph(_eph[prn]->last, corr);
+  }
+
+  QMutableVectorIterator<cmbCorr*> it(corrs());
+  while (it.hasNext()) {
+    cmbCorr* corr = it.next();
+    QString  prn  = corr->prn;
+    if (meanRao[prn](4) != 0) {
+      meanRao[prn] /= meanRao[prn](4);
+      meanRao[prn](4) = 0;
+    }
+    ColumnVector dRao = corr->rao - meanRao[prn].Rows(1,3);
+  }
+
+
+  return success;
 }
