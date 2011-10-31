@@ -1060,7 +1060,6 @@ t_irc bncComb::checkOrbits() {
     while (im.hasNext()) {
       cmbCorr* corr = im.next();
       QString  prn  = corr->prn;
-      cout << prn.toAscii().data() << " " << numCorr[prn] << endl;
       if      (numCorr[prn] < 2) {
         im.remove();
       }
