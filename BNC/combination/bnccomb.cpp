@@ -999,12 +999,13 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncComb::checkOrbits() {
 
-  const double MAX_DISPLACEMENT = 0.10;
+  const double MAX_DISPLACEMENT = 0.20;
 
   while (true) {
 
     // Compute Mean Corrections for all Satellites
     // -------------------------------------------
+    QMap<QString, int>          numCorr;
     QMap<QString, ColumnVector> meanRao;
     QVectorIterator<cmbCorr*> it(corrs());
     while (it.hasNext()) {
@@ -1018,6 +1019,12 @@ t_irc bncComb::checkOrbits() {
       else {
         meanRao[prn].Rows(1,3) += corr->rao;
         meanRao[prn](4)        += 1; 
+      }
+      if (numCorr.find(prn) == numCorr.end()) {
+        numCorr[prn] = 1;
+      }
+      else {
+        numCorr[prn] += 1;
       }
       switchToLastEph(_eph[prn]->last, corr);
     }
@@ -1053,7 +1060,11 @@ t_irc bncComb::checkOrbits() {
     while (im.hasNext()) {
       cmbCorr* corr = im.next();
       QString  prn  = corr->prn;
-      if (corr == maxDiff[prn]) {
+      cout << prn.toAscii().data() << " " << numCorr[prn] << endl;
+      if      (numCorr[prn] < 2) {
+        im.remove();
+      }
+      else if (corr == maxDiff[prn]) {
         double norm = corr->diffRao.norm_Frobenius();
         if (norm > MAX_DISPLACEMENT) {
           im.remove();
