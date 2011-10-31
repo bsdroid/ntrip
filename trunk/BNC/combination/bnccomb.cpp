@@ -999,36 +999,84 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncComb::checkOrbits() {
 
-  // Compute Mean Corrections for all Satellites
-  // -------------------------------------------
-  QMap<QString, ColumnVector> meanRao;
-  QVectorIterator<cmbCorr*> itCorr(corrs());
-  while (itCorr.hasNext()) {
-    cmbCorr* corr = itCorr.next();
-    QString  prn  = corr->prn;
-    if (meanRao.find(prn) == meanRao.end()) {
-      meanRao[prn].ReSize(4);
-      meanRao[prn].Rows(1,3) = corr->rao;
-      meanRao[prn](4)        = 1; 
+  const double MAX_DISPLACEMENT = 0.10;
+
+  while (true) {
+
+    // Compute Mean Corrections for all Satellites
+    // -------------------------------------------
+    QMap<QString, ColumnVector> meanRao;
+    QVectorIterator<cmbCorr*> it(corrs());
+    while (it.hasNext()) {
+      cmbCorr* corr = it.next();
+      QString  prn  = corr->prn;
+      if (meanRao.find(prn) == meanRao.end()) {
+        meanRao[prn].ReSize(4);
+        meanRao[prn].Rows(1,3) = corr->rao;
+        meanRao[prn](4)        = 1; 
+      }
+      else {
+        meanRao[prn].Rows(1,3) += corr->rao;
+        meanRao[prn](4)        += 1; 
+      }
+      switchToLastEph(_eph[prn]->last, corr);
     }
-    else {
-      meanRao[prn].Rows(1,3) += corr->rao;
-      meanRao[prn](4)        += 1; 
+    
+    // Compute Differences wrt Mean, find Maximum
+    // ------------------------------------------
+    QMap<QString, cmbCorr*> maxDiff;
+    it.toFront();
+    while (it.hasNext()) {
+      cmbCorr* corr = it.next();
+      QString  prn  = corr->prn;
+      if (meanRao[prn](4) != 0) {
+        meanRao[prn] /= meanRao[prn](4);
+        meanRao[prn](4) = 0;
+      }
+      corr->diffRao = corr->rao - meanRao[prn].Rows(1,3);
+      if (maxDiff.find(prn) == maxDiff.end()) {
+        maxDiff[prn] = corr;
+      }
+      else {
+        double normMax = maxDiff[prn]->diffRao.norm_Frobenius();
+        double norm    = corr->diffRao.norm_Frobenius();
+        if (norm > normMax) {
+          maxDiff[prn] = corr;
+        }
+      } 
     }
-    switchToLastEph(_eph[prn]->last, corr);
+    
+    // Remove Outliers
+    // ---------------
+    bool removed = false;
+    QMutableVectorIterator<cmbCorr*> im(corrs());
+    while (im.hasNext()) {
+      cmbCorr* corr = im.next();
+      QString  prn  = corr->prn;
+      if (corr == maxDiff[prn]) {
+        double norm = corr->diffRao.norm_Frobenius();
+        if (norm > MAX_DISPLACEMENT) {
+          im.remove();
+          removed = true;
+        }
+      }
+    }
+    
+    if (!removed) {
+      break;
+    }
   }
 
-  QMutableVectorIterator<cmbCorr*> it(corrs());
-  while (it.hasNext()) {
-    cmbCorr* corr = it.next();
-    QString  prn  = corr->prn;
-    if (meanRao[prn](4) != 0) {
-      meanRao[prn] /= meanRao[prn](4);
-      meanRao[prn](4) = 0;
-    }
-    ColumnVector dRao = corr->rao - meanRao[prn].Rows(1,3);
-  }
-
+//  //// beg test
+//  QVectorIterator<cmbCorr*> it(corrs());
+//  while (it.hasNext()) {
+//    cmbCorr* corr = it.next();
+//    QString  prn  = corr->prn;
+//    cout << corr->acName.toAscii().data() << " " << prn.toAscii().data() << " "
+//         << corr->iod << " " << corr->diffRao.t();
+//  }
+//  cout << endl;
+//  //// end tets
 
   return success;
 }
