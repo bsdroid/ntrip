@@ -351,15 +351,54 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   }
 
   QByteArray hlpBufferCo;  
-  if (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) {
-    char obuffer[CLOCKORBIT_BUFFERSIZE];
-  
-    int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
-    if (len > 0) {
-      hlpBufferCo = QByteArray(obuffer, len);
+
+  const double ORBIT_RATE = 0.0;
+
+  // Orbit and Clock Corrections together
+  // ------------------------------------
+  if (ORBIT_RATE == 0.0) {
+    if (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) {
+      char obuffer[CLOCKORBIT_BUFFERSIZE];
+      int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+      if (len > 0) {
+        hlpBufferCo = QByteArray(obuffer, len);
+      }
+    }
+  }
+
+  // Orbit and Clock Corrections separately
+  // --------------------------------------
+  else {
+    if (co.NumberOfGPSSat > 0) {
+      char obuffer[CLOCKORBIT_BUFFERSIZE];
+      if (fmod(epoTime.gpssec(), ORBIT_RATE) == 0.0) {
+        int len1 = MakeClockOrbit(&co, COTYPE_GPSORBIT, 0, obuffer, sizeof(obuffer));
+        if (len1 > 0) {
+          hlpBufferCo += QByteArray(obuffer, len1);
+        }
+      }
+      int len2 = MakeClockOrbit(&co, COTYPE_GPSCLOCK, 0, obuffer, sizeof(obuffer));
+      if (len2 > 0) {
+        hlpBufferCo += QByteArray(obuffer, len2);
+      }
+    }
+    if (co.NumberOfGLONASSSat > 0) {
+      char obuffer[CLOCKORBIT_BUFFERSIZE];
+      if (fmod(epoTime.gpssec(), ORBIT_RATE) == 0.0) {
+        int len1 = MakeClockOrbit(&co, COTYPE_GLONASSORBIT, 0, obuffer, sizeof(obuffer));
+        if (len1 > 0) {
+          hlpBufferCo += QByteArray(obuffer, len1);
+        }
+      }
+      int len2 = MakeClockOrbit(&co, COTYPE_GLONASSCLOCK, 0, obuffer, sizeof(obuffer));
+      if (len2 > 0) {
+        hlpBufferCo += QByteArray(obuffer, len2);
+      }
     }
   }
   
+  // Biases
+  // ------
   QByteArray hlpBufferBias;  
   if (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
