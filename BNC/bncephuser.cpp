@@ -214,6 +214,18 @@ t_irc t_corr::readLine(const QString& line) {
     dotDotDClk /= t_CST::c;
     dClkSet = true;
   }
+  else if ( messageType == COTYPE_GPSHR    ||
+            messageType == COTYPE_GLONASSHR ) {
+    if (!dClkSet) {
+      return failure;
+    }
+    else {
+      int dummyIOD;
+      double diff_dClk = 0.0;
+      in >> dummyIOD >> diff_dClk;
+      dClk += diff_dClk / t_CST::c; 
+    }
+  }
 
   return success;
 }

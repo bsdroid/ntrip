@@ -283,12 +283,12 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 
   // Remove All Corrections
   // ----------------------
-  QMapIterator<QString, t_corr*> ic(_corr);
-  while (ic.hasNext()) {
-    ic.next();
-    delete ic.value();
-  }
-  _corr.clear();
+  //  QMapIterator<QString, t_corr*> ic(_corr);
+  //  while (ic.hasNext()) {
+  //    ic.next();
+  //    delete ic.value();
+  //  }
+  //  _corr.clear();
 
   QListIterator<QString> it(corrList);
   while (it.hasNext()) {
