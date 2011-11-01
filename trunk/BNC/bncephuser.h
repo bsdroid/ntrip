@@ -51,7 +51,9 @@ class t_corr {
              msgType == COTYPE_GPSORBIT        ||
              msgType == COTYPE_GPSCLOCK        ||
              msgType == COTYPE_GLONASSORBIT    ||
-             msgType == COTYPE_GLONASSCLOCK );
+             msgType == COTYPE_GLONASSCLOCK    ||
+             msgType == COTYPE_GPSHR           ||
+             msgType == COTYPE_GLONASSHR );
   }
 
   t_irc readLine(const QString& line);
