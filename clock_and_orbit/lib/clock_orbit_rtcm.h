@@ -5,7 +5,7 @@
 
         Name:           clock_orbit_rtcm.h
         Project:        RTCM3
-        Version:        $Id: clock_orbit_rtcm.h,v 1.8 2010/04/14 11:09:18 stoecker Exp $
+        Version:        $Id$
         Authors:        Dirk Stöcker
         Description:    state space approach for RTCM3
 */
