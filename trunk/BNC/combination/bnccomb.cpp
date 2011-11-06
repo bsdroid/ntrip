@@ -540,7 +540,7 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
 
   // Check Satellite Positions for Outliers
   // --------------------------------------
-  if (checkOrbits() != success) {
+  if (checkOrbits(out) != success) {
     return failure;
   }
 
@@ -848,7 +848,7 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
 
   // Check Satellite Positions for Outliers
   // --------------------------------------
-  if (checkOrbits() != success) {
+  if (checkOrbits(out) != success) {
     return failure;
   }
 
@@ -997,7 +997,7 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
 
 // Check Satellite Positions for Outliers
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncComb::checkOrbits() {
+t_irc bncComb::checkOrbits(QTextStream& out) {
 
   const double MAX_DISPLACEMENT = 0.20;
 
@@ -1066,6 +1066,13 @@ t_irc bncComb::checkOrbits() {
       else if (corr == maxDiff[prn]) {
         double norm = corr->diffRao.norm_Frobenius();
         if (norm > MAX_DISPLACEMENT) {
+          out << _resTime.datestr().c_str()    << " "
+              << _resTime.timestr().c_str()    << " "
+              << "Orbit Outlier: " 
+              << corr->acName.toAscii().data() << " " 
+              << prn.toAscii().data()          << " "
+              << corr->iod                     << " " 
+              << norm                          << endl;
           im.remove();
           removed = true;
         }
@@ -1076,17 +1083,6 @@ t_irc bncComb::checkOrbits() {
       break;
     }
   }
-
-//  //// beg test
-//  QVectorIterator<cmbCorr*> it(corrs());
-//  while (it.hasNext()) {
-//    cmbCorr* corr = it.next();
-//    QString  prn  = corr->prn;
-//    cout << corr->acName.toAscii().data() << " " << prn.toAscii().data() << " "
-//         << corr->iod << " " << corr->diffRao.t();
-//  }
-//  cout << endl;
-//  //// end tets
 
   return success;
 }
