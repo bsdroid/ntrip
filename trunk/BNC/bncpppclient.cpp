@@ -413,7 +413,8 @@ t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
   xc[0] -= dx[0];
   xc[1] -= dx[1];
   xc[2] -= dx[2];
-  xc[3] += cc->dClk + cc->dotDClk * dt + cc->dotDotDClk * dt * dt;
+  xc[3] += cc->dClk + cc->dotDClk * dt + cc->dotDotDClk * dt * dt
+        + cc->hrClk;
 
   return success;
 }

@@ -42,6 +42,7 @@ class t_corr {
     raoSet  = false;
     dClkSet = false;
     eph     = 0;
+    hrClk   = 0.0;
   }
   bool ready() {return raoSet && dClkSet;}
 
@@ -64,6 +65,7 @@ class t_corr {
   double       dClk;
   double       dotDClk;
   double       dotDotDClk;
+  double       hrClk;
   ColumnVector rao;
   ColumnVector dotRao;
   ColumnVector dotDotRao;
