@@ -1011,6 +1011,7 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
     while (it.hasNext()) {
       cmbCorr* corr = it.next();
       QString  prn  = corr->prn;
+      switchToLastEph(_eph[prn]->last, corr);
       if (meanRao.find(prn) == meanRao.end()) {
         meanRao[prn].ReSize(4);
         meanRao[prn].Rows(1,3) = corr->rao;
@@ -1026,7 +1027,6 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
       else {
         numCorr[prn] += 1;
       }
-      switchToLastEph(_eph[prn]->last, corr);
     }
     
     // Compute Differences wrt Mean, find Maximum
