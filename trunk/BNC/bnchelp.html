@@ -1438,6 +1438,23 @@ With respect to IGS, it is important to understand that a major effect in the co
 <p>
 This comment applies in situations where we have a limited number of solutions to combine and their quality varies significantly. The situation may be different when the total number of ACs is larger and the range of AC variation is smaller. In that case, a standard full combination is probably the best. 
 </p>
+
+<p>
+The following recursive algorithm is used to detect orbit outliers in the combination when corrections are provided by several ACs:
+<br>
+Step 1: We don’t produce a combination for a certain satellite if only one AC provides corrections for it.
+<br>
+Step 2: A mean satellite position is calculated as the average of positions from all ACs.
+<br>
+Step 3: For each AC and satellite the 3D distance between individual and mean satellite position is calculated.
+<br>
+Step 4: We find the greatest difference between AC specific and mean satellite positions.
+<br>
+Step 5: If that is less than 0.2 m the conclusion is that we don’t have an outlier and can proceed to the next epoch.
+<br>
+Step 6: If that is greater 0.2 m then corrections of the affiliated AC are ignored for the affected epoch and the outlier detection restarts with step 1.
+</p>
+
 <p>
 The part of BNC which enables the combination of orbit and clock corrections streams is not intended for publication under GNU General Public License (GPL). However, copies of pre-compiled BNC binaries which support the 'Combination' option may be made available for personal usage. This would be done on request and only in exceptional cases.
 </p>
