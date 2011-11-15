@@ -326,7 +326,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     if      (lastEph && lastEph->IOD() == newCorr->iod) {
       newCorr->eph = lastEph;
     }
-    else if (prevEph && prevEph->IOD() == newCorr->iod) {
+    else if (lastEph && prevEph && prevEph->IOD() == newCorr->iod) {
       newCorr->eph = prevEph;
       switchToLastEph(lastEph, newCorr);
     }
@@ -1000,6 +1000,17 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
 t_irc bncComb::checkOrbits(QTextStream& out) {
 
   const double MAX_DISPLACEMENT = 0.20;
+
+  //// beg test
+  QMutableVectorIterator<cmbCorr*> im(corrs());
+  while (im.hasNext()) {
+    cmbCorr* corr = im.next();
+    if (!corr->eph) {
+      out << "checkOrbit: missing eph " << corr->prn << endl;
+      im.remove();
+    }
+  }
+  //// end test
 
   while (true) {
 
