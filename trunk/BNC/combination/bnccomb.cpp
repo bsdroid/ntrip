@@ -1001,16 +1001,26 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
 
   const double MAX_DISPLACEMENT = 0.20;
 
-  //// beg test
+  // Switch to last ephemeris (if possible)
+  // --------------------------------------
   QMutableVectorIterator<cmbCorr*> im(corrs());
   while (im.hasNext()) {
     cmbCorr* corr = im.next();
-    if (!corr->eph) {
-      out << "checkOrbit: missing eph " << corr->prn << endl;
+    QString  prn  = corr->prn;
+    if (_eph.find(prn) == _eph.end()) {
+      out << "checkOrbit: missing eph (not found) " << corr->prn << endl;
       im.remove();
     }
+    else {
+      if ( corr->eph == _eph[prn]->last || corr->eph == _eph[prn]->prev ) {
+        switchToLastEph(_eph[prn]->last, corr);
+      }
+      else {
+        out << "checkOrbit: missing eph (deleted) " << corr->prn << endl;
+        im.remove();
+      }
+    }
   }
-  //// end test
 
   while (true) {
 
@@ -1022,7 +1032,6 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
     while (it.hasNext()) {
       cmbCorr* corr = it.next();
       QString  prn  = corr->prn;
-      switchToLastEph(_eph[prn]->last, corr);
       if (meanRao.find(prn) == meanRao.end()) {
         meanRao[prn].ReSize(4);
         meanRao[prn].Rows(1,3) = corr->rao;
