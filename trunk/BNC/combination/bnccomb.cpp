@@ -1007,8 +1007,12 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
   while (im.hasNext()) {
     cmbCorr* corr = im.next();
     QString  prn  = corr->prn;
-    if (_eph.find(prn) == _eph.end()) {
+    if      (_eph.find(prn) == _eph.end()) {
       out << "checkOrbit: missing eph (not found) " << corr->prn << endl;
+      im.remove();
+    }
+    else if (corr->eph == 0) {
+      out << "checkOrbit: missing eph (zero) " << corr->prn << endl;
       im.remove();
     }
     else {
