@@ -67,6 +67,7 @@
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
 #include "GPSS/gpssDecoder.h"
+#include "GPSS/hassDecoder.h"
 #include "serial/qextserialport.h"
 
 using namespace std;
@@ -316,6 +317,10 @@ void bncGetThread::initialize() {
   else if (_format.indexOf("RTNET") != -1) {
     emit(newMessage(_staID + ": Get data in RTNet format", true));
     _decoder = new bncRtnetDecoder();
+  }
+  else if (_format.indexOf("HASS") != -1) {
+    emit(newMessage(_staID + ": Get data in HASS format", true));
+    _decoder = new hassDecoder();
   }
   else {
     emit(newMessage(_staID + ": Unknown data format " + _format, true));
