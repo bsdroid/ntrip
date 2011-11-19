@@ -16,6 +16,7 @@
  * -----------------------------------------------------------------------*/
 
 #include "hassDecoder.h"
+#include "bnctime.h"
 
 using namespace std;
 
@@ -61,6 +62,28 @@ t_irc hassDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
     in >> mjd >> daySec >> prn >> IOD >> deltaX >> deltaY >> deltaZ
        >> deltaClk >> rateDeltaX >> rateDeltaY >> rateDeltaZ;
 
+    bncTime tt; 
+    tt.setmjd(daySec, mjd);
+
+    _GPSweeks = tt.gpssec();
+    long coTime = tt.gpsw() * 7*24*3600 + long(floor(_GPSweeks+0.5));
+
+    QString corrLine;
+
+    int messageType    = -1;
+    int updateInterval =  0;
+
+    corrLine.sprintf("%d %d %d %.1f %s"
+                     "   %3d"
+                     "   %8.3f %8.3f %8.3f %8.3f"
+                     "   %10.5f %10.5f %10.5f %10.5f"
+                     "   %10.5f",
+                     messageType, updateInterval, tt.gpsw(), _GPSweeks,
+                     prn.toAscii().data(), IOD, 
+                     deltaClk, deltaX, deltaY, deltaZ, 
+                     0.0, rateDeltaX, rateDeltaY, rateDeltaZ, 0.0);
+    
+    printLine(corrLine, coTime);
   }
 
   if (corrFound) {
