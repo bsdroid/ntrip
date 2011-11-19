@@ -16,13 +16,12 @@
  * -----------------------------------------------------------------------*/
 
 #include "hassDecoder.h"
-#include "bncapp.h"
 
 using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-hassDecoder::hassDecoder() : GPSDecoder() {
+hassDecoder::hassDecoder(const QString& staID) : RTCM3coDecoder(staID) {
 }
 
 // Destructor

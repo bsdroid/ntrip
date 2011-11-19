@@ -4,22 +4,17 @@
 
 #include <QtCore>
 
-#include "RTCM/GPSDecoder.h"
-#include "rtcm3torinex.h"
+#include "RTCM3/RTCM3coDecoder.h"
 
-class hassDecoder : public QObject, public GPSDecoder {
+class hassDecoder : public RTCM3coDecoder {
 Q_OBJECT
 
  public:
-  hassDecoder();
+  hassDecoder(const QString& staID);
   virtual ~hassDecoder();
   virtual t_irc Decode(char* data, int dataLen, std::vector<std::string>& errmsg);
 
- signals:
-  void newMessage(QByteArray msg, bool showOnScreen);
-
  private:
-  QByteArray _buffer;
 } ;
 
 #endif

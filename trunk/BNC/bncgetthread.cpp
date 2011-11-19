@@ -320,7 +320,7 @@ void bncGetThread::initialize() {
   }
   else if (_format.indexOf("HASS") != -1) {
     emit(newMessage(_staID + ": Get data in HASS format", true));
-    _decoder = new hassDecoder();
+    _decoder = new hassDecoder(_staID);
   }
   else {
     emit(newMessage(_staID + ": Unknown data format " + _format, true));

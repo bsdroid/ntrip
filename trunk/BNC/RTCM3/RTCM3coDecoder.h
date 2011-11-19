@@ -51,18 +51,18 @@ Q_OBJECT
  signals:
   void newCorrLine(QString line, QString staID, long coTime);
 
- private:
+ protected:
   void printLine(const QString& line, long coTime);
-
-  int            _port;
   std::ofstream* _out;
   QString        _staID;
   QString        _fileNameSkl;
   QString        _fileName;
   QByteArray     _buffer;
+  double         _GPSweeks;
+
+ private:
   ClockOrbit     _co;
   Bias           _bias;
-  double         _GPSweeks;
 };
 
 #endif
