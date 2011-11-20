@@ -408,7 +408,12 @@ t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
     return failure;
   }
 
-  RSW_to_XYZ(xc.Rows(1,3), vv, raoHlp, dx);
+  if (cc->xyzCorr) {
+    dx = raoHlp;
+  }
+  else {
+    RSW_to_XYZ(xc.Rows(1,3), vv, raoHlp, dx);
+  }
 
   xc[0] -= dx[0];
   xc[1] -= dx[1];
