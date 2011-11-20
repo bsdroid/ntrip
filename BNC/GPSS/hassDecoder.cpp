@@ -70,8 +70,14 @@ t_irc hassDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
     QString corrLine;
 
-    int messageType    = -1;
     int updateInterval =  0;
+    int messageType = 0;
+    if      (prn[0] == 'G') {
+      messageType = -COTYPE_GPSCOMBINED;
+    }
+    else if (prn[0] == 'R') {
+      messageType = -COTYPE_GLONASSCOMBINED;
+    }
 
     corrLine.sprintf("%d %d %d %.1f %s"
                      "   %3d"
