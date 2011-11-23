@@ -318,7 +318,7 @@ void bncGetThread::initialize() {
     emit(newMessage(_staID + ": Get data in RTNet format", true));
     _decoder = new bncRtnetDecoder();
   }
-  else if (_format.indexOf("HASS") != -1) {
+  else if (_format.indexOf("HASS2ASCII") != -1) {
     emit(newMessage(_staID + ": Get data in HASS format", true));
     _decoder = new hassDecoder(_staID);
   }
