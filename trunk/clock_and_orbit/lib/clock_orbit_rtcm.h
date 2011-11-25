@@ -71,6 +71,9 @@ struct ClockOrbit
   int URADataSupplied;              /* boolean */
   int epochGPS[101];                /* Weber, for latency */
   int epochSize;                    /* Weber, for latency */
+  int SSRIOD;
+  int SSRProviderID;
+  int SSRSolutionID;
   int UpdateInterval;
   enum SatelliteReferenceDatum SatRefDatum;
   struct SatData {
@@ -104,6 +107,9 @@ struct Bias
   int NumberOfGPSSat;               /* 0 .. 32 */
   int NumberOfGLONASSSat;           /* 0 .. 24 */
   int UpdateInterval;
+  int SSRIOD;
+  int SSRProviderID;
+  int SSRSolutionID;
   struct BiasSat
   {
     int ID; /* GPS or GLONASS */
