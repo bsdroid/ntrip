@@ -93,8 +93,6 @@ modified variables are:
 
 /* standard values */
 #define T_MESSAGE_NUMBER(a)              ADDBITS(12, a) /* DF002 */
-#define T_RESERVED4                      ADDBITS(4, 0)  /* DF001 */
-#define T_RESERVED5                      ADDBITS(5, 0)  /* DF001 */
 #define T_GPS_SATELLITE_ID(a)            ADDBITS(6, a)  /* DF068 */
 #define T_GPS_IODE(a)                    ADDBITS(8, a)  /* DF071 */
 #define T_GLONASS_IOD(a)                 ADDBITS(8, a)  /* DF237 */
@@ -124,6 +122,10 @@ modified variables are:
 #define T_SSR_URA(a)                     ADDBITS(6, a)
 #define T_HR_CLOCK_CORRECTION(a)         SCALEADDBITS(22,    10000.0, a)
 #define T_SSR_UPDATE_INTERVAL(a)         ADDBITS(4, a)
+
+#define T_SSR_IOD(a)                     ADDBITS(4, a)
+#define T_SSR_PROVIDER_ID(a)             ADDBITS(16, a)
+#define T_SSR_SOLUTION_ID(a)             ADDBITS(4, a)
 
 static double URAToValue(int ura)
 {
@@ -205,7 +207,9 @@ int moremessagesfollow, char *buffer, size_t size)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
     T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    T_RESERVED4
+    T_SSR_IOD(co->SSRIOD)
+    T_SSR_PROVIDER_ID(co->SSRProviderID)
+    T_SSR_SOLUTION_ID(co->SSRSolutionID)
     T_NO_OF_SATELLITES(co->NumberOfGPSSat)
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
@@ -228,7 +232,9 @@ int moremessagesfollow, char *buffer, size_t size)
     T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
-    T_RESERVED5
+    T_SSR_IOD(co->SSRIOD)
+    T_SSR_PROVIDER_ID(co->SSRProviderID)
+    T_SSR_SOLUTION_ID(co->SSRSolutionID)
     T_NO_OF_SATELLITES(co->NumberOfGPSSat)
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
@@ -267,7 +273,9 @@ int moremessagesfollow, char *buffer, size_t size)
 #endif
       --mmi;
       T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-      T_RESERVED4
+      T_SSR_IOD(co->SSRIOD)
+      T_SSR_PROVIDER_ID(co->SSRProviderID)
+      T_SSR_SOLUTION_ID(co->SSRSolutionID)
 #ifdef SPLITBLOCK
       T_NO_OF_SATELLITES(nums)
       for(i = start; i < start+nums; ++i)
@@ -304,7 +312,9 @@ int moremessagesfollow, char *buffer, size_t size)
     T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
-    T_RESERVED5
+    T_SSR_IOD(co->SSRIOD)
+    T_SSR_PROVIDER_ID(co->SSRProviderID)
+    T_SSR_SOLUTION_ID(co->SSRSolutionID)
     T_NO_OF_SATELLITES(co->NumberOfGPSSat)
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
@@ -320,7 +330,9 @@ int moremessagesfollow, char *buffer, size_t size)
     T_GPS_EPOCH_TIME(co->GPSEpochTime)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
-    T_RESERVED5
+    T_SSR_IOD(co->SSRIOD)
+    T_SSR_PROVIDER_ID(co->SSRProviderID)
+    T_SSR_SOLUTION_ID(co->SSRSolutionID)
     T_NO_OF_SATELLITES(co->NumberOfGPSSat)
     for(i = 0; i < co->NumberOfGPSSat; ++i)
     {
@@ -338,7 +350,9 @@ int moremessagesfollow, char *buffer, size_t size)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
     T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    T_RESERVED4
+    T_SSR_IOD(co->SSRIOD)
+    T_SSR_PROVIDER_ID(co->SSRProviderID)
+    T_SSR_SOLUTION_ID(co->SSRSolutionID)
     T_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
@@ -362,7 +376,9 @@ int moremessagesfollow, char *buffer, size_t size)
     T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
-    T_RESERVED5
+    T_SSR_IOD(co->SSRIOD)
+    T_SSR_PROVIDER_ID(co->SSRProviderID)
+    T_SSR_SOLUTION_ID(co->SSRSolutionID)
     T_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
@@ -384,7 +400,9 @@ int moremessagesfollow, char *buffer, size_t size)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
     T_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    T_RESERVED4
+    T_SSR_IOD(co->SSRIOD)
+    T_SSR_PROVIDER_ID(co->SSRProviderID)
+    T_SSR_SOLUTION_ID(co->SSRSolutionID)
     T_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
@@ -411,7 +429,9 @@ int moremessagesfollow, char *buffer, size_t size)
     T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
-    T_RESERVED5
+    T_SSR_IOD(co->SSRIOD)
+    T_SSR_PROVIDER_ID(co->SSRProviderID)
+    T_SSR_SOLUTION_ID(co->SSRSolutionID)
     T_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
@@ -428,7 +448,9 @@ int moremessagesfollow, char *buffer, size_t size)
     T_GLONASS_EPOCH_TIME(co->GLONASSEpochTime)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
-    T_RESERVED5
+    T_SSR_IOD(co->SSRIOD)
+    T_SSR_PROVIDER_ID(co->SSRProviderID)
+    T_SSR_SOLUTION_ID(co->SSRSolutionID)
     T_NO_OF_SATELLITES(co->NumberOfGLONASSSat)
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
@@ -465,7 +487,9 @@ int moremessagesfollow, char *buffer, size_t size)
     T_SSR_UPDATE_INTERVAL(b->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
-    T_RESERVED5
+    T_SSR_IOD(b->SSRIOD)
+    T_SSR_PROVIDER_ID(b->SSRProviderID)
+    T_SSR_SOLUTION_ID(b->SSRSolutionID)
     T_NO_OF_SATELLITES(b->NumberOfGPSSat)
     for(i = 0; i < b->NumberOfGPSSat; ++i)
     {
@@ -487,7 +511,9 @@ int moremessagesfollow, char *buffer, size_t size)
     T_SSR_UPDATE_INTERVAL(b->UpdateInterval)
     T_MULTIPLE_MESSAGE_INDICATOR(/*mmi ? 1 :*/0)
     --mmi;
-    T_RESERVED5
+    T_SSR_IOD(b->SSRIOD)
+    T_SSR_PROVIDER_ID(b->SSRProviderID)
+    T_SSR_SOLUTION_ID(b->SSRSolutionID)
     T_NO_OF_SATELLITES(b->NumberOfGLONASSSat)
     for(i = CLOCKORBIT_NUMGPS;
     i < CLOCKORBIT_NUMGPS+b->NumberOfGLONASSSat; ++i)
@@ -549,8 +575,6 @@ int moremessagesfollow, char *buffer, size_t size)
 #define G_RESERVEDH(a)                   GETBITS(a,6)
 #define G_SIZE(a)                        GETBITS(a, 10)
 #define G_MESSAGE_NUMBER(a)              GETBITS(a, 12) /* DF002 */
-#define G_RESERVED4                      SKIPBITS(4)    /* DF001 */
-#define G_RESERVED5                      SKIPBITS(5)    /* DF001 */
 #define G_GPS_SATELLITE_ID(a)            GETBITS(a, 6)  /* DF068 */
 #define G_GPS_IODE(a)                    GETBITS(a, 8)  /* DF071 */
 #define G_GLONASS_IOD(a)                 GETBITS(a, 8)  /* DF237 */
@@ -583,6 +607,10 @@ int moremessagesfollow, char *buffer, size_t size)
  (a) = URAToValue(temp);}
 #define G_HR_CLOCK_CORRECTION(a)         GETFLOATSIGN(a, 22, 1/10000.0)
 #define G_SSR_UPDATE_INTERVAL(a)         GETBITS(a, 4)
+
+#define G_SSR_IOD(a)                     GETBITS(a, 4)
+#define G_SSR_PROVIDER_ID(a)             GETBITS(a, 16)
+#define G_SSR_SOLUTION_ID(a)             GETBITS(a, 4)
 
 enum GCOB_RETURN GetClockOrbitBias(struct ClockOrbit *co, struct Bias *b,
 const char *buffer, size_t size, int *bytesused)
@@ -629,7 +657,9 @@ fprintf(stderr, "type %d size %d\n",type,sizeofrtcmblock);
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    G_RESERVED4
+    G_SSR_IOD(co->SSRIOD)
+    G_SSR_PROVIDER_ID(co->SSRProviderID)
+    G_SSR_SOLUTION_ID(co->SSRSolutionID)
     G_NO_OF_SATELLITES(nums)
     co->OrbitDataSupplied |= 1;
 #ifdef DEBUG
@@ -670,7 +700,9 @@ co->Sat[pos].Orbit.DotDeltaCrossTrack);
     if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED5
+    G_SSR_IOD(co->SSRIOD)
+    G_SSR_PROVIDER_ID(co->SSRProviderID)
+    G_SSR_SOLUTION_ID(co->SSRSolutionID)
     G_NO_OF_SATELLITES(nums)
     co->ClockDataSupplied |= 1;
 #ifdef DEBUG
@@ -705,7 +737,9 @@ co->Sat[pos].Clock.DeltaA2);
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    G_RESERVED4
+    G_SSR_IOD(co->SSRIOD)
+    G_SSR_PROVIDER_ID(co->SSRProviderID)
+    G_SSR_SOLUTION_ID(co->SSRSolutionID)
     G_NO_OF_SATELLITES(nums)
     co->OrbitDataSupplied |= 1;
     co->ClockDataSupplied |= 1;
@@ -737,7 +771,9 @@ co->Sat[pos].Clock.DeltaA2);
     co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
     if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED5
+    G_SSR_IOD(co->SSRIOD)
+    G_SSR_PROVIDER_ID(co->SSRProviderID)
+    G_SSR_SOLUTION_ID(co->SSRSolutionID)
     G_NO_OF_SATELLITES(nums)
     co->URADataSupplied |= 1;
     for(i = 0; i < nums; ++i)
@@ -760,7 +796,9 @@ co->Sat[pos].Clock.DeltaA2);
     if(co->epochSize < 100) {co->epochSize += 1;}     /* Weber, for latency */
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED5
+    G_SSR_IOD(co->SSRIOD)
+    G_SSR_PROVIDER_ID(co->SSRProviderID)
+    G_SSR_SOLUTION_ID(co->SSRSolutionID)
     G_NO_OF_SATELLITES(nums)
     co->HRDataSupplied |= 1;
     for(i = 0; i < nums; ++i)
@@ -782,7 +820,9 @@ co->Sat[pos].Clock.DeltaA2);
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    G_RESERVED4
+    G_SSR_IOD(co->SSRIOD)
+    G_SSR_PROVIDER_ID(co->SSRProviderID)
+    G_SSR_SOLUTION_ID(co->SSRSolutionID)
     G_NO_OF_SATELLITES(nums)
     co->OrbitDataSupplied |= 2;
 #ifdef DEBUG
@@ -821,7 +861,9 @@ co->Sat[pos].Orbit.DotDeltaCrossTrack);
     G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED5
+    G_SSR_IOD(co->SSRIOD)
+    G_SSR_PROVIDER_ID(co->SSRProviderID)
+    G_SSR_SOLUTION_ID(co->SSRSolutionID)
     G_NO_OF_SATELLITES(nums)
     co->ClockDataSupplied |= 2;
 #ifdef DEBUG
@@ -854,7 +896,9 @@ co->Sat[pos].Clock.DeltaA2);
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
     G_SATELLITE_REFERENCE_DATUM(co->SatRefDatum)
-    G_RESERVED4
+    G_SSR_IOD(co->SSRIOD)
+    G_SSR_PROVIDER_ID(co->SSRProviderID)
+    G_SSR_SOLUTION_ID(co->SSRSolutionID)
     G_NO_OF_SATELLITES(nums)
     co->OrbitDataSupplied |= 2;
     co->ClockDataSupplied |= 2;
@@ -884,7 +928,9 @@ co->Sat[pos].Clock.DeltaA2);
     co->messageType = COTYPE_GLONASSURA;
     G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED5
+    G_SSR_IOD(co->SSRIOD)
+    G_SSR_PROVIDER_ID(co->SSRProviderID)
+    G_SSR_SOLUTION_ID(co->SSRSolutionID)
     G_NO_OF_SATELLITES(nums)
     co->URADataSupplied |= 2;
     for(i = 0; i < nums; ++i)
@@ -905,7 +951,9 @@ co->Sat[pos].Clock.DeltaA2);
     G_GLONASS_EPOCH_TIME(co->GLONASSEpochTime, co->NumberOfGLONASSSat)
     G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED5
+    G_SSR_IOD(co->SSRIOD)
+    G_SSR_PROVIDER_ID(co->SSRProviderID)
+    G_SSR_SOLUTION_ID(co->SSRSolutionID)
     G_NO_OF_SATELLITES(nums)
     co->HRDataSupplied |= 2;
     for(i = 0; i < nums; ++i)
@@ -926,7 +974,9 @@ co->Sat[pos].Clock.DeltaA2);
     G_GPS_EPOCH_TIME(b->GPSEpochTime, b->NumberOfGPSSat)
     G_SSR_UPDATE_INTERVAL(b->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED5
+    G_SSR_IOD(b->SSRIOD)
+    G_SSR_PROVIDER_ID(b->SSRProviderID)
+    G_SSR_SOLUTION_ID(b->SSRSolutionID)
     G_NO_OF_SATELLITES(nums)
     for(i = 0; i < nums; ++i)
     {
@@ -951,7 +1001,9 @@ co->Sat[pos].Clock.DeltaA2);
     G_GLONASS_EPOCH_TIME(b->GLONASSEpochTime, b->NumberOfGLONASSSat)
     G_SSR_UPDATE_INTERVAL(b->UpdateInterval)
     G_MULTIPLE_MESSAGE_INDICATOR(mmi)
-    G_RESERVED5
+    G_SSR_IOD(b->SSRIOD)
+    G_SSR_PROVIDER_ID(b->SSRProviderID)
+    G_SSR_SOLUTION_ID(b->SSRSolutionID)
     G_NO_OF_SATELLITES(nums)
     for(i = 0; i < nums; ++i)
     {
