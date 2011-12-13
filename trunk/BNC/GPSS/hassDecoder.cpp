@@ -15,6 +15,7 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
 #include "hassDecoder.h"
 #include "bnctime.h"
 
@@ -43,9 +44,9 @@ t_irc hassDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
   int indexEOL = -1;
   while ( (indexEOL = _buffer.indexOf('\n')) != -1) {
     QByteArray line = _buffer.left(indexEOL-1);
-    _buffer = _buffer.mid(indexEOL);
+    _buffer = _buffer.mid(indexEOL+1);
 
-    if (QString(line).split(QRegExp("\\s+")).count() != 11) {
+    if (QString(line).split(QRegExp("\\s+"), QString::SkipEmptyParts).count() != 11) {
       continue;
     }
     else {
