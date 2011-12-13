@@ -89,7 +89,8 @@ t_irc hassDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
                      prn.toAscii().data(), IOD, 
                      deltaClk, deltaX, deltaY, deltaZ, 
                      0.0, rateDeltaX, rateDeltaY, rateDeltaZ, 0.0);
-    
+
+    reopen(_fileNameSkl, _fileName, _out);    
     printLine(corrLine, coTime);
   }
 
