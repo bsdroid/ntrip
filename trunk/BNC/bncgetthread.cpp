@@ -400,7 +400,7 @@ void bncGetThread::run() {
         if (_rawFile->format() == "HASS2ASCII") {
           if (_decoderAux == 0) {
             emit(newMessage(_staID + ": Get data in HASS format", true));
-            _decoderAux = new hassDecoder(_staID);
+            _decoderAux = new hassDecoder(_rawFile->staID());
           }
           decoderUsed = _decoderAux;
         }
