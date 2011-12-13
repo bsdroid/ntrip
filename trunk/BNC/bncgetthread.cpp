@@ -125,6 +125,7 @@ void bncGetThread::initialize() {
 
   _isToBeDeleted = false;
   _decoder       = 0;
+  _decoderAux    = 0;
   _query         = 0;
   _nextSleep     = 0;
   _PPPclient     = 0;
@@ -344,6 +345,7 @@ bncGetThread::~bncGetThread() {
   }
   delete _PPPclient;
   delete _decoder;
+  delete _decoderAux;
   delete _rnx;
   delete _rawFile;
   delete _serialOutFile;
@@ -381,6 +383,11 @@ void bncGetThread::run() {
       // Delete old observations
       // -----------------------
       _decoder->_obsList.clear();
+      if (_decoderAux) {
+        _decoderAux->_obsList.clear();
+      }
+
+      GPSDecoder* decoderUsed = _decoder;
 
       // Read Data
       // ---------
@@ -390,6 +397,13 @@ void bncGetThread::run() {
       }
       else if (_rawFile) {
         data = _rawFile->readChunk();
+        if (_rawFile->format() == "HASS2ASCII") {
+          if (_decoderAux == 0) {
+            emit(newMessage(_staID + ": Get data in HASS format", true));
+            _decoderAux = new hassDecoder(_staID);
+          }
+          decoderUsed = _decoderAux;
+        }
 
         if (data.isEmpty()) {
           cout << "no more data" << endl;
@@ -427,14 +441,14 @@ void bncGetThread::run() {
       // Decode Data
       // -----------
       vector<string> errmsg;
-      _decoder->_obsList.clear();
-      t_irc irc = _decoder->Decode(data.data(), data.size(), errmsg);
+      decoderUsed->_obsList.clear();
+      t_irc irc = decoderUsed->Decode(data.data(), data.size(), errmsg);
 
       // Perform various scans and checks
       // --------------------------------
       _latencyChecker->checkOutage(irc == success);
-      _latencyChecker->checkObsLatency(_decoder->_obsList);
-      _latencyChecker->checkCorrLatency(_decoder->corrGPSEpochTime());
+      _latencyChecker->checkObsLatency(decoderUsed->_obsList);
+      _latencyChecker->checkCorrLatency(decoderUsed->corrGPSEpochTime());
 
       emit newLatency(_staID, _latencyChecker->currentLatency());
 
@@ -442,7 +456,7 @@ void bncGetThread::run() {
 
       // Loop over all observations (observations output)
       // ------------------------------------------------
-      QListIterator<t_obs> it(_decoder->_obsList);
+      QListIterator<t_obs> it(decoderUsed->_obsList);
       bool firstObs = true;
       while (it.hasNext()) {
         const t_obs& obs = it.next();
@@ -454,7 +468,7 @@ void bncGetThread::run() {
 
         // Check observation epoch
         // -----------------------
-        if (!_rawFile && !dynamic_cast<gpssDecoder*>(_decoder)) {
+        if (!_rawFile && !dynamic_cast<gpssDecoder*>(decoderUsed)) {
           int    week;
           double sec;
           currentGPSWeeks(week, sec);
@@ -508,7 +522,7 @@ void bncGetThread::run() {
         }
         firstObs = false;
       }
-      _decoder->_obsList.clear();
+      decoderUsed->_obsList.clear();
     }
     catch (Exception& exc) {
       emit(newMessage(_staID + " " + exc.what(), true));
