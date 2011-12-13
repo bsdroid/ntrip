@@ -320,7 +320,7 @@ void bncGetThread::initialize() {
     _decoder = new bncRtnetDecoder();
   }
   else if (_format.indexOf("HASS2ASCII") != -1) {
-    emit(newMessage(_staID + ": Get data in HASS format", true));
+    emit(newMessage(_staID + ": Get data in HASS2ASCII format", true));
     _decoder = new hassDecoder(_staID);
   }
   else {
@@ -399,7 +399,7 @@ void bncGetThread::run() {
         data = _rawFile->readChunk();
         if (_rawFile->format() == "HASS2ASCII") {
           if (_decoderAux == 0) {
-            emit(newMessage(_staID + ": Get data in HASS format", true));
+            emit(newMessage(_rawFile->staID() + ": Get data in HASS2ASCII format", true));
             _decoderAux = new hassDecoder(_rawFile->staID());
           }
           decoderUsed = _decoderAux;
