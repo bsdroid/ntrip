@@ -27,7 +27,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryV0::bncNetQueryV0() {
   _socket  = 0;
-  _timeOut = 20000;
+  _timeOut = 120000;
 }
 
 // Destructor
