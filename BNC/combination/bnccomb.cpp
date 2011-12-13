@@ -657,7 +657,7 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
       ColumnVector vv(3);
       corr->eph->position(time12.gpsw(), time12.gpssec(), 
                           xc.data(), vv.data());
-      bncPPPclient::applyCorr(time12, corr, xc, vv);
+      bncPPPclient::applyCorr(time12, corr, xc, vv, corr->eph);
       
       // Relativistic Correction
       // -----------------------

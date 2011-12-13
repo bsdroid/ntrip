@@ -375,11 +375,11 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
           t_eph*  ePrev = _eph.value(prn)->prev;
 	  if      (eLast && eLast->IOD() == cc->iod) {
             eLast->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
-            return applyCorr(tt, cc, xc, vv);
+            return applyCorr(tt, cc, xc, vv, eLast);
           }
 	  else if (ePrev && ePrev->IOD() == cc->iod) {
             ePrev->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
-            return applyCorr(tt, cc, xc, vv);
+            return applyCorr(tt, cc, xc, vv, ePrev);
           }
 	}
       }
@@ -398,8 +398,8 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc, 
-                             ColumnVector& xc, ColumnVector& vv) {
-  ColumnVector dx(3);
+                              ColumnVector& xc, ColumnVector& vv,
+                              const t_eph* eph) {
 
   double dt = tt - cc->tt;
   ColumnVector raoHlp = cc->rao + cc->dotRao * dt + cc->dotDotRao * dt * dt;
@@ -409,17 +409,23 @@ t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
   }
 
   if (cc->xyzCorr) {
-    dx = raoHlp;
+    xc[0] += raoHlp[0];
+    xc[1] += raoHlp[1];
+    xc[2] += raoHlp[2];
+    ColumnVector xcHlp(4);
+    ColumnVector vvHlp(3);
+    eph->position(cc->tt.gpsw(), cc->tt.gpssec(), xcHlp.data(), vvHlp.data());
+    xc[3] += cc->dClk - xcHlp[3];
   }
   else {
+    ColumnVector dx(3);
     RSW_to_XYZ(xc.Rows(1,3), vv, raoHlp, dx);
+    xc[0] -= dx[0];
+    xc[1] -= dx[1];
+    xc[2] -= dx[2];
+    xc[3] += cc->dClk + cc->dotDClk * dt + cc->dotDotDClk * dt * dt
+          + cc->hrClk;
   }
-
-  xc[0] -= dx[0];
-  xc[1] -= dx[1];
-  xc[2] -= dx[2];
-  xc[3] += cc->dClk + cc->dotDClk * dt + cc->dotDotDClk * dt * dt
-        + cc->hrClk;
 
   return success;
 }
