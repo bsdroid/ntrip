@@ -105,6 +105,7 @@ class bncGetThread : public QThread {
    void  scanRTCM();
 
    GPSDecoder*     _decoder;
+   GPSDecoder*     _decoderAux;
    bncNetQuery*    _query;
    QUrl            _mountPoint;
    QByteArray      _staID;
