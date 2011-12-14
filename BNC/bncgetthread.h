@@ -99,38 +99,39 @@ class bncGetThread : public QThread {
 
  private:
    enum t_serialNMEA {NO_NMEA, MANUAL_NMEA, AUTO_NMEA};
+   t_irc        initDecoder();
+   GPSDecoder* decoder();
 
    void  initialize();
    t_irc tryReconnect();
    void  scanRTCM();
 
-   GPSDecoder*     _decoder;
-   GPSDecoder*     _decoderAux;
-   bncNetQuery*    _query;
-   QUrl            _mountPoint;
-   QByteArray      _staID;
-   QByteArray      _staID_extra;
-   QByteArray      _format;
-   QByteArray      _latitude;
-   QByteArray      _longitude;
-   QByteArray      _height;
-   QByteArray      _nmea;
-   QByteArray      _ntripVersion;
-   int             _nextSleep;
-   int             _iMount;
-   int             _samplingRate;
-   bncRinex*       _rnx;
-   bncRawFile*     _rawFile;
-   QextSerialPort* _serialPort;
-   bool            _isToBeDeleted;
-   latencyChecker* _latencyChecker;
-   QString         _miscMount;
-   QFile*          _serialOutFile;
-   t_serialNMEA    _serialNMEA;
-   QMutex          _mutex;
-   bncPPPclient*   _PPPclient;
-   bool            _rawOutput;
-   QMap<QString, long> _prnLastEpo;
+   QMap<QString, GPSDecoder*> _decoders;
+   bncNetQuery*               _query;
+   QUrl                       _mountPoint;
+   QByteArray                 _staID;
+   QByteArray                 _staID_extra;
+   QByteArray                 _format;
+   QByteArray                 _latitude;
+   QByteArray                 _longitude;
+   QByteArray                 _height;
+   QByteArray                 _nmea;
+   QByteArray                 _ntripVersion;
+   int                        _nextSleep;
+   int                        _iMount;
+   int                        _samplingRate;
+   bncRinex*                  _rnx;
+   bncRawFile*                _rawFile;
+   QextSerialPort*            _serialPort;
+   bool                       _isToBeDeleted;
+   latencyChecker*            _latencyChecker;
+   QString                    _miscMount;
+   QFile*                     _serialOutFile;
+   t_serialNMEA               _serialNMEA;
+   QMutex                     _mutex;
+   bncPPPclient*              _PPPclient;
+   bool                       _rawOutput;
+   QMap<QString, long>        _prnLastEpo;
 };
 
 #endif
