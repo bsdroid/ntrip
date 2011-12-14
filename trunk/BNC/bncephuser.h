@@ -43,14 +43,10 @@ class t_corr {
     dClkSet = false;
     eph     = 0;
     hrClk   = 0.0;
-    xyzCorr = false;
   }
   bool ready() {return raoSet && dClkSet;}
 
   static bool relevantMessageType(int msgType) {
-    if (msgType < 0) {
-      msgType = -msgType;
-    }
     return ( msgType == COTYPE_GPSCOMBINED     || 
              msgType == COTYPE_GLONASSCOMBINED ||
              msgType == COTYPE_GPSORBIT        ||
@@ -75,7 +71,6 @@ class t_corr {
   ColumnVector dotDotRao;
   bool         raoSet;
   bool         dClkSet;
-  bool         xyzCorr;
   const t_eph* eph;
 };
 

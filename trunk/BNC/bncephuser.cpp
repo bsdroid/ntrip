@@ -166,11 +166,6 @@ t_irc t_corr::readLine(const QString& line) {
     return failure;
   }
 
-  if (messageType < 0) {
-    messageType = -messageType;
-    xyzCorr = true;  // correction in xyz instead of rao
-  }
-
   int     updateInterval;
   int     GPSweek;
   double  GPSweeks;
