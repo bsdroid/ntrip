@@ -124,7 +124,7 @@ class bncPPPclient : public bncEphUser {
   ~bncPPPclient();
   void putNewObs(const t_obs& pp);
   static t_irc applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, 
-                         ColumnVector& vv, const t_eph* eph);
+                         ColumnVector& vv);
 
  public slots:
   void slotNewCorrections(QList<QString> corrList);
