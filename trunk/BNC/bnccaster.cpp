@@ -261,6 +261,7 @@ void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
   qRegisterMetaType<t_obs>("t_obs");
   qRegisterMetaType<gpsephemeris>("gpsephemeris");
   qRegisterMetaType<glonassephemeris>("glonassephemeris");
+  qRegisterMetaType<galileoephemeris>("galileoephemeris");
 
   connect(getThread, SIGNAL(newObs(QByteArray, bool, t_obs)),
           this,      SLOT(newObs(QByteArray, bool, t_obs)));
