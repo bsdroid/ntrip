@@ -18,6 +18,7 @@
 #include <iostream>
 #include "hassDecoder.h"
 #include "bnctime.h"
+#include "bncutils.h"
 
 using namespace std;
 
@@ -56,28 +57,64 @@ t_irc hassDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
     QTextStream in(line, QIODevice::ReadOnly | QIODevice::Text);
     int     mjd, IOD;
     double  daySec;
-    double  deltaX, deltaY, deltaZ, deltaClk;
-    double  rateDeltaX, rateDeltaY, rateDeltaZ;
+    ColumnVector dx(3);
+    ColumnVector dxRate(3);
+    double clkFull;
+
     QString prn;
     
-    in >> mjd >> daySec >> prn >> IOD >> deltaX >> deltaY >> deltaZ
-       >> deltaClk >> rateDeltaX >> rateDeltaY >> rateDeltaZ;
+    in >> mjd >> daySec >> prn >> IOD >> dx[0] >> dx[1] >> dx[2] >> clkFull
+       >> dxRate[0] >> dxRate[1] >> dxRate[2];
 
+    // Correction Time
+    // ---------------
     bncTime tt; 
     tt.setmjd(daySec, mjd);
 
     _GPSweeks = tt.gpssec();
     long coTime = tt.gpsw() * 7*24*3600 + long(floor(_GPSweeks+0.5));
 
+    // Transform Correction
+    // --------------------
+    dx     = -dx;
+    dxRate = -dxRate;
+
+    t_eph* eph = 0;
+    if (_eph.contains(prn)) {
+      if      (_eph.value(prn)->last && _eph.value(prn)->last->IOD() == IOD) {
+        eph = _eph.value(prn)->last;
+      }
+      else if (_eph.value(prn)->prev && _eph.value(prn)->prev->IOD() == IOD) {
+        eph = _eph.value(prn)->prev;
+      }
+    }
+    if (!eph) {
+      continue;
+    }
+
+    ColumnVector xc(4);
+    ColumnVector vv(3);
+    eph->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
+
+    ColumnVector rao(3);
+    XYZ_to_RSW(xc.Rows(1,3), vv, dx,     rao);
+
+    ColumnVector dotRao(3);
+    XYZ_to_RSW(xc.Rows(1,3), vv, dxRate, dotRao);
+
+    double dClk = clkFull - xc[3] * t_CST::c;
+
+    // Print Correction Line
+    // ---------------------
     QString corrLine;
 
-    int updateInterval =  0;
-    int messageType = 0;
+    int updateInterval = 0;
+    int messageType    = 0;
     if      (prn[0] == 'G') {
-      messageType = -COTYPE_GPSCOMBINED;
+      messageType = COTYPE_GPSCOMBINED;
     }
     else if (prn[0] == 'R') {
-      messageType = -COTYPE_GLONASSCOMBINED;
+      messageType = COTYPE_GLONASSCOMBINED;
     }
 
     corrLine.sprintf("%d %d %d %.1f %s"
@@ -87,8 +124,8 @@ t_irc hassDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
                      "   %10.5f",
                      messageType, updateInterval, tt.gpsw(), _GPSweeks,
                      prn.toAscii().data(), IOD, 
-                     deltaClk, deltaX, deltaY, deltaZ, 
-                     0.0, rateDeltaX, rateDeltaY, rateDeltaZ, 0.0);
+                     dClk, rao[0], rao[1], rao[2],
+                     0.0, dotRao[0], dotRao[1], dotRao[2], 0.0);
 
     reopen(_fileNameSkl, _fileName, _out);    
     printLine(corrLine, coTime);

@@ -30,13 +30,14 @@
 #include <QtCore>
 #include <QtNetwork>
 
+#include "bncephuser.h"
 #include "RTCM/GPSDecoder.h"
 
 extern "C" {
 #include "clock_orbit_rtcm.h"
 }
 
-class RTCM3coDecoder : public QObject, public GPSDecoder {
+class RTCM3coDecoder : public bncEphUser, public GPSDecoder {
 Q_OBJECT
  public:
   RTCM3coDecoder(const QString& staID);
