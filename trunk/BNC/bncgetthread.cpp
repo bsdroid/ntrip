@@ -110,6 +110,7 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   }
 
   initialize();
+  initDecoder();
 }
 
 // Initialization (common part of the constructor)
@@ -124,8 +125,6 @@ void bncGetThread::initialize() {
           app, SLOT(slotMessage(const QByteArray,bool)));
 
   _isToBeDeleted = false;
-  _decoder       = 0;
-  _decoderAux    = 0;
   _query         = 0;
   _nextSleep     = 0;
   _PPPclient     = 0;
@@ -293,44 +292,61 @@ void bncGetThread::initialize() {
   }
 #endif
 
-  // Instantiate the decoder
-  // -----------------------
+  _latencyChecker = new latencyChecker(_staID);
+}
+
+// Instantiate the decoder
+//////////////////////////////////////////////////////////////////////////////
+t_irc bncGetThread::initDecoder() {
+
   if      (_format.indexOf("RTCM_2") != -1 || _format.indexOf("RTCM2") != -1 ||
            _format.indexOf("RTCM 2") != -1 ) {
     emit(newMessage(_staID + ": Get data in RTCM 2.x format", true));
-    _decoder = new RTCM2Decoder(_staID.data());
+    _decoders[_staID] = new RTCM2Decoder(_staID.data());
   }
   else if (_format.indexOf("RTCM_3") != -1 || _format.indexOf("RTCM3") != -1 ||
            _format.indexOf("RTCM 3") != -1 ) {
     emit(newMessage(_staID + ": Get data in RTCM 3.x format", true));
-    _decoder = new RTCM3Decoder(_staID, _rawFile);
-    connect((RTCM3Decoder*) _decoder, SIGNAL(newMessage(QByteArray,bool)), 
+    _decoders[_staID] = new RTCM3Decoder(_staID, _rawFile);
+    connect((RTCM3Decoder*) decoder(), SIGNAL(newMessage(QByteArray,bool)), 
             this, SIGNAL(newMessage(QByteArray,bool)));
   }
   else if (_format.indexOf("GPSS") != -1 || _format.indexOf("BNC") != -1) {
     emit(newMessage(_staID + ": Get Data in GPSS format", true));
-    _decoder = new gpssDecoder();
+    _decoders[_staID] = new gpssDecoder();
   }
   else if (_format.indexOf("ZERO") != -1) {
     emit(newMessage(_staID + ": Get data in original format", true));
-    _decoder = new bncZeroDecoder(_staID);
+    _decoders[_staID] = new bncZeroDecoder(_staID);
   }
   else if (_format.indexOf("RTNET") != -1) {
     emit(newMessage(_staID + ": Get data in RTNet format", true));
-    _decoder = new bncRtnetDecoder();
+    _decoders[_staID] = new bncRtnetDecoder();
   }
   else if (_format.indexOf("HASS2ASCII") != -1) {
     emit(newMessage(_staID + ": Get data in HASS2ASCII format", true));
-    _decoder = new hassDecoder(_staID);
+    _decoders[_staID] = new hassDecoder(_staID);
   }
   else {
     emit(newMessage(_staID + ": Unknown data format " + _format, true));
     _isToBeDeleted = true;
+    return failure;
   }
 
-  _latencyChecker = new latencyChecker(_staID);
-
   msleep(100); //sleep 0.1 sec
+  
+  return success;
+}
+
+// Current decoder in use
+////////////////////////////////////////////////////////////////////////////
+GPSDecoder* bncGetThread::decoder() {
+  if (_decoders.contains(_staID) || initDecoder() == success) {
+    return _decoders.value(_staID);
+  }
+  else {
+    return 0;
+  }
 }
 
 // Destructor
@@ -344,8 +360,11 @@ bncGetThread::~bncGetThread() {
     _query->deleteLater();
   }
   delete _PPPclient;
-  delete _decoder;
-  delete _decoderAux;
+  QMapIterator<QString, GPSDecoder*> it(_decoders);
+  while (it.hasNext()) {
+    it.next();
+    delete it.value();
+  }
   delete _rnx;
   delete _rawFile;
   delete _serialOutFile;
@@ -382,12 +401,12 @@ void bncGetThread::run() {
 
       // Delete old observations
       // -----------------------
-      _decoder->_obsList.clear();
-      if (_decoderAux) {
-        _decoderAux->_obsList.clear();
+      QMapIterator<QString, GPSDecoder*> itDec(_decoders);
+      while (itDec.hasNext()) {
+        itDec.next();
+        GPSDecoder* decoder = itDec.value();
+        decoder->_obsList.clear();
       }
-
-      GPSDecoder* decoderUsed = _decoder;
 
       // Read Data
       // ---------
@@ -397,13 +416,8 @@ void bncGetThread::run() {
       }
       else if (_rawFile) {
         data = _rawFile->readChunk();
-        if (_rawFile->format() == "HASS2ASCII") {
-          if (_decoderAux == 0) {
-            emit(newMessage(_rawFile->staID() + ": Get data in HASS2ASCII format", true));
-            _decoderAux = new hassDecoder(_rawFile->staID());
-          }
-          decoderUsed = _decoderAux;
-        }
+        _format = _rawFile->format();
+        _staID  = _rawFile->staID();
 
         if (data.isEmpty()) {
           cout << "no more data" << endl;
@@ -441,14 +455,14 @@ void bncGetThread::run() {
       // Decode Data
       // -----------
       vector<string> errmsg;
-      decoderUsed->_obsList.clear();
-      t_irc irc = decoderUsed->Decode(data.data(), data.size(), errmsg);
+      decoder()->_obsList.clear();
+      t_irc irc = decoder()->Decode(data.data(), data.size(), errmsg);
 
       // Perform various scans and checks
       // --------------------------------
       _latencyChecker->checkOutage(irc == success);
-      _latencyChecker->checkObsLatency(decoderUsed->_obsList);
-      _latencyChecker->checkCorrLatency(decoderUsed->corrGPSEpochTime());
+      _latencyChecker->checkObsLatency(decoder()->_obsList);
+      _latencyChecker->checkCorrLatency(decoder()->corrGPSEpochTime());
 
       emit newLatency(_staID, _latencyChecker->currentLatency());
 
@@ -456,7 +470,7 @@ void bncGetThread::run() {
 
       // Loop over all observations (observations output)
       // ------------------------------------------------
-      QListIterator<t_obs> it(decoderUsed->_obsList);
+      QListIterator<t_obs> it(decoder()->_obsList);
       bool firstObs = true;
       while (it.hasNext()) {
         const t_obs& obs = it.next();
@@ -468,7 +482,7 @@ void bncGetThread::run() {
 
         // Check observation epoch
         // -----------------------
-        if (!_rawFile && !dynamic_cast<gpssDecoder*>(decoderUsed)) {
+        if (!_rawFile && !dynamic_cast<gpssDecoder*>(decoder())) {
           int    week;
           double sec;
           currentGPSWeeks(week, sec);
@@ -522,7 +536,7 @@ void bncGetThread::run() {
         }
         firstObs = false;
       }
-      decoderUsed->_obsList.clear();
+      decoder()->_obsList.clear();
     }
     catch (Exception& exc) {
       emit(newMessage(_staID + " " + exc.what(), true));
@@ -624,71 +638,71 @@ void bncGetThread::scanRTCM() {
 
       // RTCM message types
       // ------------------
-      for (int ii = 0; ii <_decoder->_typeList.size(); ii++) {
-        QString type =  QString("%1 ").arg(_decoder->_typeList[ii]);
+      for (int ii = 0; ii <decoder()->_typeList.size(); ii++) {
+        QString type =  QString("%1 ").arg(decoder()->_typeList[ii]);
         emit(newMessage(_staID + ": Received message type " + type.toAscii(), true));
       }
   
       // RTCMv3 antenna descriptor
       // -------------------------
-      for (int ii=0;ii<_decoder->_antType.size();ii++) {
-        QString ant1 =  QString("%1 ").arg(_decoder->_antType[ii]);
+      for (int ii=0;ii<decoder()->_antType.size();ii++) {
+        QString ant1 =  QString("%1 ").arg(decoder()->_antType[ii]);
         emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii(), true));
       }
 
       // RTCM Antenna Coordinates
       // ------------------------
-      for (int ii=0; ii <_decoder->_antList.size(); ii++) {
+      for (int ii=0; ii <decoder()->_antList.size(); ii++) {
         QByteArray antT;
-        if      (_decoder->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
+        if      (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
           antT = "ARP";
         }
-        else if (_decoder->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
+        else if (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
           antT = "APC";
         }
         QByteArray ant1, ant2, ant3;
-        ant1 = QString("%1 ").arg(_decoder->_antList[ii].xx,0,'f',4).toAscii();
-        ant2 = QString("%1 ").arg(_decoder->_antList[ii].yy,0,'f',4).toAscii();
-        ant3 = QString("%1 ").arg(_decoder->_antList[ii].zz,0,'f',4).toAscii();
+        ant1 = QString("%1 ").arg(decoder()->_antList[ii].xx,0,'f',4).toAscii();
+        ant2 = QString("%1 ").arg(decoder()->_antList[ii].yy,0,'f',4).toAscii();
+        ant3 = QString("%1 ").arg(decoder()->_antList[ii].zz,0,'f',4).toAscii();
         emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m", true));
         emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m", true));
         emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m", true));
-        if (_decoder->_antList[ii].height_f) {
-          QByteArray ant4 = QString("%1 ").arg(_decoder->_antList[ii].height,0,'f',4).toAscii();
+        if (decoder()->_antList[ii].height_f) {
+          QByteArray ant4 = QString("%1 ").arg(decoder()->_antList[ii].height,0,'f',4).toAscii();
           emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m", true));
         }
-        emit(newAntCrd(_staID, _decoder->_antList[ii].xx, 
-                       _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
+        emit(newAntCrd(_staID, decoder()->_antList[ii].xx, 
+                       decoder()->_antList[ii].yy, decoder()->_antList[ii].zz, 
                        antT));
       }
     }
   }
 
 #ifdef MLS_SOFTWARE
-  for (int ii=0; ii <_decoder->_antList.size(); ii++) {
+  for (int ii=0; ii <decoder()->_antList.size(); ii++) {
         QByteArray antT;
-        if      (_decoder->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
+        if      (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
           antT = "ARP";
         }
-        else if (_decoder->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
+        else if (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
           antT = "APC";
         }
-        emit(newAntCrd(_staID, _decoder->_antList[ii].xx, 
-                       _decoder->_antList[ii].yy, _decoder->_antList[ii].zz, 
+        emit(newAntCrd(_staID, decoder()->_antList[ii].xx, 
+                       decoder()->_antList[ii].yy, decoder()->_antList[ii].zz, 
                        antT));
   }
 
-  for (int ii = 0; ii <_decoder->_typeList.size(); ii++) {
-    emit(newRTCMMessage(_staID, _decoder->_typeList[ii]));
+  for (int ii = 0; ii <decoder()->_typeList.size(); ii++) {
+    emit(newRTCMMessage(_staID, decoder()->_typeList[ii]));
   }
 #endif
 
 
 
 
-  _decoder->_typeList.clear();
-  _decoder->_antType.clear();
-  _decoder->_antList.clear();
+  decoder()->_typeList.clear();
+  decoder()->_antType.clear();
+  decoder()->_antList.clear();
 }
 
 // Handle Data from Serial Port
@@ -721,8 +735,8 @@ void bncGetThread::slotSerialReadyRead() {
 //
 //////////////////////////////////////////////////////////////////////////////
 void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
-  RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(_decoder);
-  RTCM3Decoder* decoder3 = dynamic_cast<RTCM3Decoder*>(_decoder);
+  RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(decoder());
+  RTCM3Decoder* decoder3 = dynamic_cast<RTCM3Decoder*>(decoder());
 
   if ( decoder2 ) {
     QMutexLocker locker(&_mutex);
