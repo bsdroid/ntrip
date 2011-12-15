@@ -65,13 +65,11 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint, 
-                   const QByteArray& format, const QByteArray& latitude,
-                   const QByteArray& longitude, const QByteArray& nmea,
-                   const QByteArray& ntripVersion) {
+                   const QByteArray& latitude, const QByteArray& longitude, 
+                   const QByteArray& nmea, const QByteArray& ntripVersion) {
 
   _statID        = statID;
   _mountPoint    = mountPoint;
-  _format        = format.left(6);
   _latitude      = latitude;
   _longitude     = longitude;
   _nmea          = nmea;
@@ -376,7 +374,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
 
 // Write RINEX Header
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::writeHeader(const QDateTime& datTim, 
+void bncRinex::writeHeader(const QByteArray& format, const QDateTime& datTim, 
                            const QDateTime& datTimNom) {
 
   bncSettings settings;
@@ -438,7 +436,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
         _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
         _out << "     GPS         TIME OF FIRST OBS"    << endl;
-        QString hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
+        QString hlp = (format.left(6) + QString(" %1").arg(_mountPoint.host() + 
                       _mountPoint.path())).leftJustified(60, ' ', true);
         _out << hlp.toAscii().data() << "COMMENT" << endl;
       }
@@ -510,7 +508,7 @@ void bncRinex::writeHeader(const QDateTime& datTim,
     _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
     _out << "     GPS         TIME OF FIRST OBS"    << endl;
-    QString hlp = (_format + QString(" %1").arg(_mountPoint.host() + 
+    QString hlp = (format.left(6) + QString(" %1").arg(_mountPoint.host() + 
           _mountPoint.path())).leftJustified(60, ' ', true);
     _out << hlp.toAscii().data() << "COMMENT" << endl;
 
@@ -532,7 +530,7 @@ void bncRinex::deepCopy(t_obs obs) {
 
 // Write One Epoch into the RINEX File
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::dumpEpoch(long maxTime) {
+void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
 
   // Select observations older than maxTime
   // --------------------------------------
@@ -569,7 +567,7 @@ void bncRinex::dumpEpoch(long maxTime) {
   // Write RINEX Header
   // ------------------
   if (!_headerWritten) {
-    writeHeader(datTim, datTimNom);
+    writeHeader(format, datTim, datTimNom);
   }
 
   double sec = double(datTim.time().second()) + fmod(fObs.GPSWeeks,1.0);
