@@ -36,7 +36,7 @@ class bncRawFile {
   enum inpOutFlag {input, output};
 
   bncRawFile(const QByteArray& fileName, const QByteArray& staID,
-             const QByteArray& format, inpOutFlag ioflg);
+             inpOutFlag ioflg);
 
   ~bncRawFile();  
   QByteArray format() const {return _format;}
