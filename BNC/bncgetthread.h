@@ -52,8 +52,7 @@ class bncGetThread : public QThread {
                 const QByteArray& latitude,
                 const QByteArray& longitude,
                 const QByteArray& nmea, 
-                const QByteArray& ntripVersion,
-                const QByteArray& staIDextra = "");
+                const QByteArray& ntripVersion);
 
    bncNetQuery::queryStatus queryStatus() {
      if (_query) {
@@ -71,7 +70,6 @@ class bncGetThread : public QThread {
    void terminate();
 
    QByteArray staID() const {return _staID;}
-   QByteArray staIDextra() const {return _staID_extra;}
    QUrl       mountPoint() const {return _mountPoint;}
    QByteArray latitude() const {return _latitude;}
    QByteArray longitude() const {return _longitude;}
@@ -110,7 +108,6 @@ class bncGetThread : public QThread {
    bncNetQuery*               _query;
    QUrl                       _mountPoint;
    QByteArray                 _staID;
-   QByteArray                 _staID_extra;
    QByteArray                 _format;
    QByteArray                 _latitude;
    QByteArray                 _longitude;
