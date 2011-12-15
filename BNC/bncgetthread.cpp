@@ -140,8 +140,8 @@ void bncGetThread::initialize() {
     _rnx = 0;
   }
   else {
-    _rnx = new bncRinex(_staID, _mountPoint, _format, _latitude, 
-                        _longitude, _nmea, _ntripVersion);
+    _rnx = new bncRinex(_staID, _mountPoint, _latitude, _longitude, 
+                        _nmea, _ntripVersion);
   }
 
   // Serial Port
@@ -518,7 +518,7 @@ void bncGetThread::run() {
           if (_samplingRate == 0 || iSec % _samplingRate == 0) {
             _rnx->deepCopy(obs);
           }
-          _rnx->dumpEpoch(obsTime);
+          _rnx->dumpEpoch(_format, obsTime);
         }
       
         // PPP Client

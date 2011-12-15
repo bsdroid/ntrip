@@ -37,12 +37,11 @@
 class bncRinex {
  public:
    bncRinex(const QByteArray& statID, const QUrl& mountPoint, 
-            const QByteArray& format, const QByteArray& latitude,
-            const QByteArray& longitude, const QByteArray& nmea,
-            const QByteArray& ntripVersion); 
+            const QByteArray& latitude, const QByteArray& longitude,
+            const QByteArray& nmea, const QByteArray& ntripVersion); 
    ~bncRinex();
    void deepCopy(t_obs obs);
-   void dumpEpoch(long maxTime);
+   void dumpEpoch(const QByteArray& format, long maxTime);
    void setReconnectFlag(bool flag){_reconnectFlag = flag;}
    static QString nextEpochStr(const QDateTime& datTim,
                                const QString& intStr, 
@@ -63,7 +62,8 @@ class bncRinex {
  private:
    void resolveFileName(const QDateTime& datTim);
    void readSkeleton();
-   void writeHeader(const QDateTime& datTim, const QDateTime& datTimNom);
+   void writeHeader(const QByteArray& format, const QDateTime& datTim, 
+                    const QDateTime& datTimNom);
    void closeFile();
    t_irc downloadSkeleton();
 
@@ -79,7 +79,6 @@ class bncRinex {
    QString       _pgmName;
    QString       _userName;
    QString       _sklName;
-   QByteArray    _format;
    QByteArray    _latitude;
    QByteArray    _longitude;
    QByteArray    _nmea;
