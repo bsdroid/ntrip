@@ -455,6 +455,10 @@ void bncGetThread::run() {
       // Decode Data
       // -----------
       vector<string> errmsg;
+      if (!decoder()) {
+        _isToBeDeleted = true;
+        continue;
+      }
       decoder()->_obsList.clear();
       t_irc irc = decoder()->Decode(data.data(), data.size(), errmsg);
 
