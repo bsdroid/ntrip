@@ -63,7 +63,6 @@ int main(int argc, char *argv[]) {
 
   bool       GUIenabled  = true;
   QByteArray rawFileName;
-  QByteArray format; 
   QByteArray staID; 
   QString    confFileName;
 
@@ -79,9 +78,6 @@ int main(int argc, char *argv[]) {
         GUIenabled = false;
         rawFileName = QByteArray(argv[ii+1]);
       }
-      if (QByteArray(argv[ii]).indexOf("-format") != -1) {
-        format = QByteArray(argv[ii+1]);
-      }
       if (QByteArray(argv[ii]).indexOf("-mountpoint") != -1) {
         staID = QByteArray(argv[ii+1]);
       }
@@ -95,8 +91,7 @@ int main(int argc, char *argv[]) {
   QString printHelp = "Usage: bnc --nw\n" 
                       "           --conf       <confFileName>\n" 
                       "           --file       <rawFileName>\n"
-                      "           --mountpoint <station>\n"
-                      "           --format     <RTCM_2 | RTCM_3>\n";
+                      "           --mountpoint <station>\n";
 
   bncApp app(argc, argv, GUIenabled);
 
@@ -162,12 +157,12 @@ int main(int argc, char *argv[]) {
     else {
       app.setMode(bncApp::batchPostProcessing);
 
-      if ( format.isEmpty() || staID.isEmpty() ) {
+      if ( staID.isEmpty() ) {
         cout << printHelp.toAscii().data() << endl;
         exit(0);
       }
 
-      bncRawFile* rawFile = new bncRawFile(rawFileName, staID, format, 
+      bncRawFile* rawFile = new bncRawFile(rawFileName, staID, 
                                            bncRawFile::input);
 
       bncGetThread* getThread = new bncGetThread(rawFile);

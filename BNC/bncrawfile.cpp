@@ -50,11 +50,11 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& staID,
-                       const QByteArray& format, inpOutFlag ioFlg) {
+                       inpOutFlag ioFlg) {
 
   _fileName   = fileName; expandEnvVar(_fileName);
+  _format     = "unset";
   _staID      = staID;
-  _format     = format;
   _inpFile    = 0;
   _outFile    = 0;
   _version    = 0;
