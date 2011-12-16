@@ -421,9 +421,7 @@ void bncGetThread::run() {
 
         if (data.isEmpty()) {
           cout << "no more data" << endl;
-          QThread::exit(0);
-          this->deleteLater();
-          return;
+          ::exit(0);
         }
       }
       qint64 nBytes = data.size();
