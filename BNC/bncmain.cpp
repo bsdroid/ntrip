@@ -86,8 +86,7 @@ int main(int argc, char *argv[]) {
 
   QString printHelp = "Usage: bnc --nw\n" 
                       "           --conf       <confFileName>\n" 
-                      "           --file       <rawFileName>\n"
-                      "           --mountpoint <station>\n";
+                      "           --file       <rawFileName>\n";
 
   bncApp app(argc, argv, GUIenabled);
 
