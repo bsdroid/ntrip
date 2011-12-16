@@ -502,28 +502,30 @@ void bncGetThread::run() {
       
         // Check observations coming twice (e.g. KOUR0 Problem)
         // ----------------------------------------------------
-        QMap<QString, long>::const_iterator it = _prnLastEpo.find(prn);
-        if (it != _prnLastEpo.end()) {
-          long oldTime = it.value();
-          if      (obsTime <  oldTime) {
-            emit( newMessage(_staID + 
-               ": old observation " + prn.toAscii(), false));
-            continue;
+        if (!_rawFile) {
+          QMap<QString, long>::const_iterator it = _prnLastEpo.find(prn);
+          if (it != _prnLastEpo.end()) {
+            long oldTime = it.value();
+            if      (obsTime <  oldTime) {
+              emit( newMessage(_staID + 
+                 ": old observation " + prn.toAscii(), false));
+              continue;
+            }
+            else if (obsTime == oldTime) {
+              emit( newMessage(_staID + 
+                 ": observation coming more than once " + prn.toAscii(), false));
+              continue;
+            }
           }
-          else if (obsTime == oldTime) {
-            emit( newMessage(_staID + 
-               ": observation coming more than once " + prn.toAscii(), false));
-            continue;
-          }
+          _prnLastEpo[prn] = obsTime;
         }
-        _prnLastEpo[prn] = obsTime;
 
         decoder()->dumpRinexEpoch(obs, _format);
 
         // PPP Client
         // ----------
 #ifndef MLS_SOFTWARE
-        if (_PPPclient) {
+        if (_PPPclient && _staID == _PPPclient->staID()) {
           _PPPclient->putNewObs(obs);
         }
 #endif

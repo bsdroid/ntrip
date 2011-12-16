@@ -125,6 +125,7 @@ class bncPPPclient : public bncEphUser {
   void putNewObs(const t_obs& pp);
   static t_irc applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, 
                          ColumnVector& vv);
+  QByteArray staID() const {return _staID;}
 
  public slots:
   void slotNewCorrections(QList<QString> corrList);
