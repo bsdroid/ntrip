@@ -129,6 +129,10 @@ class GPSDecoder {
 
   virtual int corrGPSEpochTime() const {return -1;}
 
+  void initRinex(const QByteArray& staID, const QUrl& mountPoint,
+                 const QByteArray& latitude, const QByteArray& longitude, 
+                 const QByteArray& nmea, const QByteArray& ntripVersion);
+
   void dumpRinexEpoch(const t_obs& obs, const QByteArray& format);
 
   void setRinexReconnectFlag(bool flag);
