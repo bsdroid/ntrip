@@ -51,7 +51,6 @@
 #include "bnctabledlg.h"
 #include "bncapp.h"
 #include "bncutils.h"
-#include "bncrinex.h"
 #include "bnczerodecoder.h"
 #include "bncnetqueryv0.h"
 #include "bncnetqueryv1.h"
@@ -115,6 +114,8 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::initialize() {
 
+  bncSettings settings;
+
   setTerminationEnabled(true);
 
   bncApp* app = (bncApp*) qApp;
@@ -126,21 +127,7 @@ void bncGetThread::initialize() {
   _query         = 0;
   _nextSleep     = 0;
   _PPPclient     = 0;
-
-  bncSettings settings;
-
-  _miscMount = settings.value("miscMount").toString();
-
-  // RINEX writer
-  // ------------
-  _samplingRate = settings.value("rnxSampl").toInt();
-  if ( settings.value("rnxPath").toString().isEmpty() ) { 
-    _rnx = 0;
-  }
-  else {
-    _rnx = new bncRinex(_staID, _mountPoint, _latitude, _longitude, 
-                        _nmea, _ntripVersion);
-  }
+  _miscMount     = settings.value("miscMount").toString();
 
   // Serial Port
   // -----------
@@ -363,7 +350,6 @@ bncGetThread::~bncGetThread() {
     it.next();
     delete it.value();
   }
-  delete _rnx;
   delete _rawFile;
   delete _serialOutFile;
   delete _serialPort;
@@ -514,15 +500,8 @@ void bncGetThread::run() {
         }
         _prnLastEpo[prn] = obsTime;
 
-        // RINEX Output
-        // ------------
-        if (_rnx) {
-          if (_samplingRate == 0 || iSec % _samplingRate == 0) {
-            _rnx->deepCopy(obs);
-          }
-          _rnx->dumpEpoch(_format, obsTime);
-        }
-      
+        decoder()->dumpRinexEpoch(obs, _format);
+
         // PPP Client
         // ----------
 #ifndef MLS_SOFTWARE
@@ -559,8 +538,11 @@ t_irc bncGetThread::tryReconnect() {
   // -----------
   if (_query && _query->status() == bncNetQuery::running) {
     _nextSleep = 0;
-    if (_rnx) {
-      _rnx->setReconnectFlag(false);
+    QMapIterator<QString, GPSDecoder*> itDec(_decoders);
+    while (itDec.hasNext()) {
+      itDec.next();
+      GPSDecoder* decoder = itDec.value();
+      decoder->setRinexReconnectFlag(false);
     }
     return success;
   }
@@ -622,8 +604,11 @@ t_irc bncGetThread::tryReconnect() {
     }
   }
 
-  if (_rnx) {
-    _rnx->setReconnectFlag(true);
+  QMapIterator<QString, GPSDecoder*> itDec(_decoders);
+  while (itDec.hasNext()) {
+    itDec.next();
+    GPSDecoder* decoder = itDec.value();
+    decoder->setRinexReconnectFlag(false);
   }
 
   return success;

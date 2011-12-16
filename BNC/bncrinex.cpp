@@ -100,6 +100,8 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
   }
 
   _approxPos[0] = _approxPos[1] = _approxPos[2] = 0.0;
+
+  _samplingRate = settings.value("rnxSampl").toInt();
 }
 
 // Destructor

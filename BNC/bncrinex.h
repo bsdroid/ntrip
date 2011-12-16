@@ -25,14 +25,12 @@
 #ifndef BNCRINEX_H
 #define BNCRINEX_H
 
-#include <QByteArray>
-#include <QDateTime>
-#include <QList>
-
+#include <QtCore>
 #include <fstream>
 
 #include "bncconst.h"
-#include "RTCM/GPSDecoder.h"
+
+class t_obs;
 
 class bncRinex {
  public:
@@ -46,6 +44,8 @@ class bncRinex {
    static QString nextEpochStr(const QDateTime& datTim,
                                const QString& intStr, 
                                QDateTime* nextEpoch = 0);
+
+   int samplingRate() const {return _samplingRate;}
 
    void setApproxPos(double stax, double stay, double staz) {
      _approxPos[0] = stax;
@@ -89,6 +89,7 @@ class bncRinex {
    bool          _reloadTable;
    bool          _reloadDone;
    double        _approxPos[3];
+   int           _samplingRate;
 
    QMap<QString, int>  _slip_cnt_L1;
    QMap<QString, int>  _slip_cnt_L2;
