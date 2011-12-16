@@ -320,6 +320,12 @@ t_irc bncGetThread::initDecoder() {
 
   msleep(100); //sleep 0.1 sec
   
+  if (decoder()) {
+    decoder()->initRinex(_staID, _mountPoint, _latitude, _longitude, 
+                         _nmea, _ntripVersion);
+
+  }
+
   return success;
 }
 
