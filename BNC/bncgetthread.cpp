@@ -135,7 +135,8 @@ void bncGetThread::initialize() {
   _serialOutFile = 0;
   _serialPort    = 0;
 
-  if (settings.value("serialMountPoint").toString() == _staID) {
+  if (!_staID.isEmpty() &&
+      settings.value("serialMountPoint").toString() == _staID) {
     _serialPort = new QextSerialPort(settings.value("serialPortName").toString() );
     _serialPort->setTimeout(0,100);
 
@@ -263,21 +264,12 @@ void bncGetThread::initialize() {
     }
   }
 
-  // Initialize PPP Client?
-  // ----------------------
-#ifndef MLS_SOFTWARE
-  if (settings.value("pppMount").toString() == _staID) {
-    _PPPclient = new bncPPPclient(_staID);
-    app->_bncPPPclient = _PPPclient;
-    qRegisterMetaType<bncTime>("bncTime");
-    connect(_PPPclient, SIGNAL(newPosition(bncTime, double, double, double)), 
-            this, SIGNAL(newPosition(bncTime, double, double, double)));
-    connect(_PPPclient, SIGNAL(newNMEAstr(QByteArray)), 
-            this,       SIGNAL(newNMEAstr(QByteArray)));
+  if (!_staID.isEmpty()) {
+    _latencyChecker = new latencyChecker(_staID);
   }
-#endif
-
-  _latencyChecker = new latencyChecker(_staID);
+  else {
+    _latencyChecker = 0;
+  }
 }
 
 // Instantiate the decoder
@@ -325,6 +317,22 @@ t_irc bncGetThread::initDecoder() {
                          _nmea, _ntripVersion);
 
   }
+
+  // Initialize PPP Client?
+  // ----------------------
+#ifndef MLS_SOFTWARE
+  bncSettings settings;
+  if (settings.value("pppMount").toString() == _staID) {
+    _PPPclient = new bncPPPclient(_staID);
+    bncApp* app = (bncApp*) qApp;
+    app->_bncPPPclient = _PPPclient;
+    qRegisterMetaType<bncTime>("bncTime");
+    connect(_PPPclient, SIGNAL(newPosition(bncTime, double, double, double)), 
+            this, SIGNAL(newPosition(bncTime, double, double, double)));
+    connect(_PPPclient, SIGNAL(newNMEAstr(QByteArray)), 
+            this,       SIGNAL(newNMEAstr(QByteArray)));
+  }
+#endif
 
   return success;
 }
@@ -385,7 +393,9 @@ void bncGetThread::run() {
       }
 
       if (tryReconnect() != success) {
-        _latencyChecker->checkReconnect();
+        if (_latencyChecker) {
+          _latencyChecker->checkReconnect();
+        }
         continue;
       }
 
@@ -421,7 +431,9 @@ void bncGetThread::run() {
       // Timeout, reconnect
       // ------------------
       if (nBytes == 0) {
-        _latencyChecker->checkReconnect();
+        if (_latencyChecker) {
+          _latencyChecker->checkReconnect();
+        }
         emit(newMessage(_staID + ": Data timeout, reconnecting", true));
         msleep(10000); //sleep 10 sec, G. Weber
         continue;
@@ -454,11 +466,13 @@ void bncGetThread::run() {
 
       // Perform various scans and checks
       // --------------------------------
-      _latencyChecker->checkOutage(irc == success);
-      _latencyChecker->checkObsLatency(decoder()->_obsList);
-      _latencyChecker->checkCorrLatency(decoder()->corrGPSEpochTime());
-
-      emit newLatency(_staID, _latencyChecker->currentLatency());
+      if (_latencyChecker) {
+        _latencyChecker->checkOutage(irc == success);
+        _latencyChecker->checkObsLatency(decoder()->_obsList);
+        _latencyChecker->checkCorrLatency(decoder()->corrGPSEpochTime());
+        
+        emit newLatency(_staID, _latencyChecker->currentLatency());
+      }
 
       scanRTCM();            
 
