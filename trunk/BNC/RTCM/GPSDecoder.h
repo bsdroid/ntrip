@@ -32,6 +32,7 @@
 #include <QStringList>
 
 #include "bncconst.h"
+#include "bncrinex.h"
 
 class t_obs {
  public:
@@ -118,11 +119,19 @@ class t_obs {
 
 class GPSDecoder {
  public:
-  virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg) = 0;
+  GPSDecoder();
 
-  virtual ~GPSDecoder() {}
+  virtual ~GPSDecoder() {delete _rnx;}
+
+  virtual t_irc Decode(char* buffer, int bufLen, 
+                       std::vector<std::string>& errmsg) = 0;
+
 
   virtual int corrGPSEpochTime() const {return -1;}
+
+  void dumpRinexEpoch(const t_obs& obs, const QByteArray& format);
+
+  void setRinexReconnectFlag(bool flag);
 
   struct t_antInfo {
     enum t_type { ARP, APC };
@@ -144,9 +153,10 @@ class GPSDecoder {
   };
 
   QList<t_obs>     _obsList;
-  QList<int>       _typeList;  // RTCM   message types
-  QStringList      _antType;   // RTCM   antenna descriptor
-  QList<t_antInfo> _antList;   // RTCM   antenna XYZ
+  QList<int>       _typeList;  // RTCM message types
+  QStringList      _antType;   // RTCM antenna descriptor
+  QList<t_antInfo> _antList;   // RTCM antenna XYZ
+  bncRinex*        _rnx;       // RINEX writer
 };
 
 #endif

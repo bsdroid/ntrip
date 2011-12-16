@@ -81,7 +81,7 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           upload/bncrtnetdecoder.cpp upload/bncuploadcaster.cpp       \
           upload/bncrtnetuploadcaster.cpp upload/bnccustomtrafo.cpp   \
           upload/bncephuploadcaster.cpp                               \
-          RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp                        \
+          RTCM/GPSDecoder.cpp RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp    \
           RTCM/RTCM2_2021.cpp RTCM/rtcm_utils.cpp                     \
           RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex/rtcm3torinex.c    \
           RTCM3/RTCM3coDecoder.cpp                                    \

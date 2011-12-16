@@ -37,7 +37,6 @@
 #include "bnctime.h"
 #include "bncrawfile.h"
 
-class bncRinex;
 class QextSerialPort;
 class latencyChecker;
 class bncPPPclient;
@@ -116,8 +115,6 @@ class bncGetThread : public QThread {
    QByteArray                 _ntripVersion;
    int                        _nextSleep;
    int                        _iMount;
-   int                        _samplingRate;
-   bncRinex*                  _rnx;
    bncRawFile*                _rawFile;
    QextSerialPort*            _serialPort;
    bool                       _isToBeDeleted;
