@@ -49,13 +49,22 @@ using namespace std;
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
 GPSDecoder::GPSDecoder() {
-  bncSettings settings;
-  if ( settings.value("rnxPath").toString().isEmpty() ) { 
-    _rnx = 0;
+  _rnx = 0;
+}
+
+// Initialize RINEX Writer
+//////////////////////////////////////////////////////////////////////////////
+void GPSDecoder::initRinex(const QByteArray& staID, const QUrl& mountPoint,
+                           const QByteArray& latitude, 
+                           const QByteArray& longitude, const QByteArray& nmea,
+                           const QByteArray& ntripVersion) {
+  if (_rnx) {
+    return;
   }
-  else {
-//    _rnx = new bncRinex(_staID, _mountPoint, _latitude, _longitude, 
-//                        _nmea, _ntripVersion);
+  bncSettings settings;
+  if ( !settings.value("rnxPath").toString().isEmpty() ) { 
+    _rnx = new bncRinex(staID, mountPoint, latitude, longitude, 
+                        nmea, ntripVersion);
   }
 } 
 
