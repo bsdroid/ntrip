@@ -394,26 +394,9 @@ void t_ephGlo::position(int GPSweek, double GPSweeks,
 // IOD of Glonass Ephemeris (virtual)
 ////////////////////////////////////////////////////////////////////////////
 int t_ephGlo::IOD() const {
-
-  bool old = false;
-
-  if (old) { // 5 LSBs of iod are equal to 5 LSBs of tb
-    unsigned int tb  = int(fmod(_GPSweeks,86400.0)); //sec of day
-    const int shift = sizeof(tb) * 8 - 5;
-    unsigned int iod = tb << shift;
-    return (iod >> shift);
-  }
-  else     {  
-    bncTime tGPS(_GPSweek, _GPSweeks);
-    int hlpWeek = _GPSweek;
-    int hlpSec  = int(_GPSweeks);
-    int hlpMsec = int(_GPSweeks * 1000);
-    updatetime(&hlpWeek, &hlpSec, hlpMsec, 0);
-    bncTime tHlp(hlpWeek, hlpSec);
-    double diffSec = tGPS - tHlp;
-    bncTime tMoscow = tGPS + diffSec;
-    return int(tMoscow.daysec() / 900);
-  }
+  bncTime tGPS(_GPSweek, _GPSweeks);
+  bncTime tMoscow = tGPS - _gps_utc + 3 * 3600.0;
+  return int(tMoscow.daysec() / 900);
 }
 
 // Set Glonass Ephemeris
