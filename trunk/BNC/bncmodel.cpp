@@ -476,8 +476,6 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
 
     bncSettings settings;
     
-    _time = epoData->tt; // current epoch time
-    
     _maxSolGap = settings.value("pppMaxSolGap").toDouble();
     
     bool firstCrd = false;
@@ -641,6 +639,8 @@ t_irc bncModel::update(t_epoData* epoData) {
   bncSettings settings;
 
   _log.clear();  
+
+  _time = epoData->tt; // current epoch time
 
   if (settings.value("pppSPP").toString() == "PPP") {
     _log += "Precise Point Positioning of Epoch " 
