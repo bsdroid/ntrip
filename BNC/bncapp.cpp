@@ -246,10 +246,20 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
 
   glonassephemeris** ee = &_glonassEph[glonasseph->almanac_number-1];
 
+  int wwOld, towOld, wwNew, towNew;
+  if (*ee != 0) {
+    wwOld  = (*ee)->GPSWeek;
+    towOld = (*ee)->GPSTOW; 
+    updatetime(&wwOld, &towOld, (*ee)->tb*1000, 0);  // Moscow -> GPS
+
+    wwNew  = glonasseph->GPSWeek;
+    towNew = glonasseph->GPSTOW; 
+    updatetime(&wwNew, &towNew, glonasseph->tb*1000, 0); // Moscow -> GPS
+  }
+
   if ( *ee == 0      || 
-       glonasseph->GPSWeek > (*ee)->GPSWeek ||
-         ( glonasseph->GPSWeek == (*ee)->GPSWeek && 
-           glonasseph->GPSTOW > (*ee)->GPSTOW ) ) {
+       wwNew > wwOld ||
+       (wwNew == wwOld && towNew > towOld) ) {
     delete *ee;
     *ee = glonasseph;
     printGlonassEph(glonasseph, true);
