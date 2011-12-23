@@ -366,6 +366,16 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   else {
     corrs.append(newCorr);
   }
+
+  if (_resTime.valid()) {
+    QListIterator<unsigned long> it(_buffer.keys());
+    while (it.hasNext()) {
+      unsigned long epoTime = it.next();
+      if (epoTime <= _resTime.longSec()) {
+        _buffer.remove(epoTime);
+      }
+    }
+  }
 }
 
 // Change the correction so that it refers to last received ephemeris 
