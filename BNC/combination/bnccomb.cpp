@@ -354,7 +354,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   QVectorIterator<cmbCorr*> itCorr(corrs);
   while (itCorr.hasNext()) {
     cmbCorr* hlp = itCorr.next();
-    if (hlp->prn == newCorr->prn && hlp->acName == newCorr->prn) {
+    if (hlp->prn == newCorr->prn && hlp->acName == newCorr->acName) {
       existingCorr = hlp;
       break;
     }
