@@ -271,6 +271,9 @@ bncModel::~bncModel() {
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     delete _params[iPar-1];
   }
+  for (int iPar = 1; iPar <= _params_sav.size(); iPar++) {
+    delete _params_sav[iPar-1];
+  }
   delete _epoData_sav;
 }
 
