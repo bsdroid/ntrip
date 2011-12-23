@@ -421,6 +421,8 @@ void bncGetThread::run() {
 
         if (data.isEmpty()) {
           cout << "no more data" << endl;
+          QThread::exit(0);
+          delete this;
           ::exit(0);
         }
       }
