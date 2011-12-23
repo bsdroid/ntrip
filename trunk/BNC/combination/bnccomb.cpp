@@ -256,7 +256,7 @@ bncComb::~bncComb() {
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     delete _params[iPar-1];
   }
-  QListIterator<bncTime> itTime(_buffer.keys());
+  QListIterator<unsigned long> itTime(_buffer.keys());
   while (itTime.hasNext()) {
     _buffer.remove(itTime.next());
   }
@@ -338,18 +338,18 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Process previous Epoch(s)
   // -------------------------
-  QListIterator<bncTime> itTime(_buffer.keys());
+  QListIterator<unsigned long> itTime(_buffer.keys());
   while (itTime.hasNext()) {
-    bncTime epoTime = itTime.next();
-    if (epoTime < newCorr->tt - moduloTime) {
-      _resTime = epoTime;
+    unsigned long epoTime = itTime.next();
+    if (epoTime < (newCorr->tt - moduloTime).longSec()) {
+      _resTime = _buffer[epoTime].tt();
       processEpoch();
     }
   }
 
   // Merge or add the correction
   // ---------------------------
-  QVector<cmbCorr*>& corrs = _buffer[newCorr->tt].corrs;
+  QVector<cmbCorr*>& corrs = _buffer[newCorr->tt.longSec()].corrs;
   cmbCorr* existingCorr = 0;
   QVectorIterator<cmbCorr*> itCorr(corrs);
   while (itCorr.hasNext()) {
@@ -449,7 +449,7 @@ void bncComb::processEpoch() {
     ++_masterMissingEpochs;
     if (_masterMissingEpochs < 10) {
       out << "Missing Master, Epoch skipped" << endl;
-      _buffer.remove(_resTime);
+      _buffer.remove(_resTime.longSec());
       emit newMessage(_log, false);
       return;
     }
@@ -510,7 +510,7 @@ void bncComb::processEpoch() {
 
   // Delete Data, emit Message
   // -------------------------
-  _buffer.remove(_resTime);
+  _buffer.remove(_resTime.longSec());
   emit newMessage(_log, false);
 }
 
