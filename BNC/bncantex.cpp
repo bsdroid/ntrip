@@ -118,6 +118,9 @@ t_irc bncAntex::readFile(const QString& fileName) {
     // --------------
     else if (line.indexOf("END OF ANTENNA") == 60) {
       if (newAntMap) {
+        if (_maps.contains(newAntMap->antName)) {
+          delete _maps[newAntMap->antName];
+        }
         _maps[newAntMap->antName] = newAntMap;
         newAntMap = 0;
       }
