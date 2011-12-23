@@ -77,7 +77,9 @@ bncGetThread::bncGetThread(bncRawFile* rawFile) {
 
   _rawFile      = rawFile;
   _format       = rawFile->format();
-  _staID        = rawFile->staID();
+  if (!_staID.isEmpty()) {
+    _staID        = rawFile->staID();
+  }
   _rawOutput    = false;
   _ntripVersion = "N";
 
