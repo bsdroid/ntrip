@@ -18,6 +18,9 @@ class bncTime {
   double       daysec() const;
   unsigned int gpsw()   const;
   double       gpssec() const;
+  unsigned long longSec() {
+    return (unsigned long) gpsw() * 604800UL + (unsigned long) gpssec();
+  }
   void         civil_date (unsigned int& year, unsigned int& month,
                            unsigned int& day) const;
   void         civil_time (unsigned int& hour, unsigned int& min,
