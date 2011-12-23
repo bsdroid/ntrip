@@ -151,7 +151,7 @@ int main(int argc, char *argv[]) {
     // -----------------------------
     else {
       app.setMode(bncApp::batchPostProcessing);
-      bncRawFile*   rawFile   = new bncRawFile(rawFileName, "unset", 
+      bncRawFile*   rawFile   = new bncRawFile(rawFileName, "", 
                                                bncRawFile::input);
       bncGetThread* getThread = new bncGetThread(rawFile);
       caster->addGetThread(getThread, true);
