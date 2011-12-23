@@ -421,6 +421,7 @@ void bncGetThread::run() {
 
         if (data.isEmpty()) {
           cout << "no more data" << endl;
+          ((bncApp*) qApp)->stopCombination();
           QThread::exit(0);
           delete this;
           ::exit(0);
