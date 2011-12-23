@@ -165,9 +165,11 @@ t_irc bncAntex::readFile(const QString& fileName) {
       else if (line.indexOf("END OF FREQUENCY") == 60) {
         if (newFrqMap) {
           if      (line.indexOf("G01") == 3 || line.indexOf("R01") == 3) {
+            delete newAntMap->frqMapL1;
             newAntMap->frqMapL1 = newFrqMap;
           }
           else if (line.indexOf("G02") == 3 || line.indexOf("R02") == 3) {
+            delete newAntMap->frqMapL2;
             newAntMap->frqMapL2 = newFrqMap;
           }
           else {
