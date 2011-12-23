@@ -256,9 +256,9 @@ bncComb::~bncComb() {
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     delete _params[iPar-1];
   }
-  QVectorIterator<cmbCorr*> itCorr(corrs());
-  while (itCorr.hasNext()) {
-    delete itCorr.next();
+  QListIterator<bncTime> itTime(_buffer.keys());
+  while (itTime.hasNext()) {
+    _buffer.remove(itTime.next());
   }
 }
 
