@@ -54,6 +54,7 @@ bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& staID,
 
   _fileName   = fileName; expandEnvVar(_fileName);
   _format     = "unset";
+  _staID      = staID;
   _inpFile    = 0;
   _outFile    = 0;
   _version    = 0;
@@ -71,7 +72,6 @@ bncRawFile::bncRawFile(const QByteArray& fileName, const QByteArray& staID,
   // Initialize for Output
   // ---------------------
   else {    
-    _staID = staID;
     QDate currDate = currentDateAndTimeGPS().date();
     _currentFileName = _fileName + "_" + currDate.toString("yyMMdd");
     _outFile = new QFile(_currentFileName);     
