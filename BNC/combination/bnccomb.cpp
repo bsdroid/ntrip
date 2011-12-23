@@ -256,9 +256,10 @@ bncComb::~bncComb() {
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     delete _params[iPar-1];
   }
-  QListIterator<unsigned long> itTime(_buffer.keys());
+  QListIterator<bncTime> itTime(_buffer.keys());
   while (itTime.hasNext()) {
-    _buffer.remove(itTime.next());
+    bncTime epoTime = itTime.next();
+    _buffer.remove(epoTime);
   }
 }
 
@@ -338,18 +339,18 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Process previous Epoch(s)
   // -------------------------
-  QListIterator<unsigned long> itTime(_buffer.keys());
+  QListIterator<bncTime> itTime(_buffer.keys());
   while (itTime.hasNext()) {
-    unsigned long epoTime = itTime.next();
-    if (epoTime < (newCorr->tt - moduloTime).longSec()) {
-      _resTime = _buffer[epoTime].tt();
+    bncTime epoTime = itTime.next();
+    if (epoTime < newCorr->tt - moduloTime) {
+      _resTime = epoTime;
       processEpoch();
     }
   }
 
   // Merge or add the correction
   // ---------------------------
-  QVector<cmbCorr*>& corrs = _buffer[newCorr->tt.longSec()].corrs;
+  QVector<cmbCorr*>& corrs = _buffer[newCorr->tt].corrs;
   cmbCorr* existingCorr = 0;
   QVectorIterator<cmbCorr*> itCorr(corrs);
   while (itCorr.hasNext()) {
@@ -365,16 +366,6 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   }
   else {
     corrs.append(newCorr);
-  }
-
-  if (_resTime.valid()) {
-    QListIterator<unsigned long> it(_buffer.keys());
-    while (it.hasNext()) {
-      unsigned long epoTime = it.next();
-      if (epoTime <= _resTime.longSec()) {
-        _buffer.remove(epoTime);
-      }
-    }
   }
 }
 
@@ -459,7 +450,7 @@ void bncComb::processEpoch() {
     ++_masterMissingEpochs;
     if (_masterMissingEpochs < 10) {
       out << "Missing Master, Epoch skipped" << endl;
-      _buffer.remove(_resTime.longSec());
+      _buffer.remove(_resTime);
       emit newMessage(_log, false);
       return;
     }
@@ -520,7 +511,7 @@ void bncComb::processEpoch() {
 
   // Delete Data, emit Message
   // -------------------------
-  _buffer.remove(_resTime.longSec());
+  _buffer.remove(_resTime);
   emit newMessage(_log, false);
 }
 
@@ -884,6 +875,7 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
         }
       }
       if (!foundMaster) {
+        delete corr;
         it.remove();
       }
     }
@@ -982,6 +974,7 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
 
     if (maxRes > _MAXRES) {
       out << "  Outlier" << endl;
+      delete corrs()[maxResIndex-1];
       corrs().remove(maxResIndex-1);
     }
     else {
@@ -1019,10 +1012,12 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
     QString  prn  = corr->prn;
     if      (_eph.find(prn) == _eph.end()) {
       out << "checkOrbit: missing eph (not found) " << corr->prn << endl;
+      delete corr;
       im.remove();
     }
     else if (corr->eph == 0) {
       out << "checkOrbit: missing eph (zero) " << corr->prn << endl;
+      delete corr;
       im.remove();
     }
     else {
@@ -1031,6 +1026,7 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
       }
       else {
         out << "checkOrbit: missing eph (deleted) " << corr->prn << endl;
+        delete corr;
         im.remove();
       }
     }
@@ -1095,6 +1091,7 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
       cmbCorr* corr = im.next();
       QString  prn  = corr->prn;
       if      (numCorr[prn] < 2) {
+        delete corr;
         im.remove();
       }
       else if (corr == maxDiff[prn]) {
@@ -1107,6 +1104,7 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
               << prn.toAscii().data()          << " "
               << corr->iod                     << " " 
               << norm                          << endl;
+          delete corr;
           im.remove();
           removed = true;
         }

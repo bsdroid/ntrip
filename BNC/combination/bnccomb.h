@@ -72,14 +72,6 @@ class bncComb : public bncEphUser  {
         delete it.next();
       }
     }
-    bncTime tt() const {
-      if (corrs.size() > 0) {
-        return corrs[0]->tt;
-      }
-      else {
-        return bncTime();
-      }
-    }
     QVector<cmbCorr*> corrs;
   };
 
@@ -97,12 +89,12 @@ class bncComb : public bncEphUser  {
   void switchToLastEph(const t_eph* lastEph, t_corr* corr);
   t_irc checkOrbits(QTextStream& out);
 
-  QVector<cmbCorr*>& corrs() {return _buffer[_resTime.longSec()].corrs;}
+  QVector<cmbCorr*>& corrs() {return _buffer[_resTime].corrs;}
 
   QList<cmbAC*>           _ACs;
   bncTime                 _resTime;
   QVector<cmbParam*>      _params;
-  QMap<unsigned long, cmbEpoch> _buffer;
+  QMap<bncTime, cmbEpoch> _buffer;
   bncRtnetDecoder*        _rtnetDecoder;
   SymmetricMatrix         _QQ;
   QByteArray              _log;
