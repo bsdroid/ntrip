@@ -122,7 +122,8 @@ class bncGetThread : public QThread {
    QString                    _miscMount;
    QFile*                     _serialOutFile;
    t_serialNMEA               _serialNMEA;
-   QMutex                     _mutex;
+   QMutex                     _mutexSlot;
+   QMutex                     _mutexDecoder;
    bncPPPclient*              _PPPclient;
    bool                       _rawOutput;
    QMap<QString, long>        _prnLastEpo;
