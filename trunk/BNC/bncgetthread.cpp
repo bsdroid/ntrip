@@ -345,6 +345,8 @@ t_irc bncGetThread::initDecoder() {
 // Current decoder in use
 ////////////////////////////////////////////////////////////////////////////
 GPSDecoder* bncGetThread::decoder() {
+  QMutexLocker locker(&_mutexDecoder);
+
   if (_decoders.contains(_staID) || initDecoder() == success) {
     return _decoders[_staID];
   }
@@ -754,6 +756,7 @@ void bncGetThread::slotSerialReadyRead() {
 //
 //////////////////////////////////////////////////////////////////////////////
 void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
+  QMutexLocker locker(&_mutexSlot);
 
   if (!decoder()) {
     return;
@@ -763,8 +766,6 @@ void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
   RTCM3Decoder* decoder3 = dynamic_cast<RTCM3Decoder*>(decoder());
 
   if ( decoder2 ) {
-    QMutexLocker locker(&_mutex);
-  
     string storedPRN;
     vector<int> IODs;
     
@@ -782,8 +783,6 @@ void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
   }
 
   if ( decoder3 ) {
-    QMutexLocker locker(&_mutex);
-  
     if ( decoder3->storeEph(gpseph) ) {
 #ifdef DEBUG_RTCM3
       QString msg = _staID + QString(": RTCM3Decoder, stored eph for satellite %1").arg(gpseph.satellite);
