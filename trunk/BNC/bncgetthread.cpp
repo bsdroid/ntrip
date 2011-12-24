@@ -284,8 +284,9 @@ t_irc bncGetThread::initDecoder() {
   else if (_format.indexOf("RTCM_3") != -1 || _format.indexOf("RTCM3") != -1 ||
            _format.indexOf("RTCM 3") != -1 ) {
     emit(newMessage(_staID + ": Get data in RTCM 3.x format", true));
-    _decoders[_staID] = new RTCM3Decoder(_staID, _rawFile);
-    connect((RTCM3Decoder*) decoder(), SIGNAL(newMessage(QByteArray,bool)), 
+    RTCM3Decoder* newDecoder = new RTCM3Decoder(_staID, _rawFile);
+    _decoders[_staID] = newDecoder;
+    connect((RTCM3Decoder*) newDecoder, SIGNAL(newMessage(QByteArray,bool)), 
             this, SIGNAL(newMessage(QByteArray,bool)));
   }
   else if (_format.indexOf("GPSS") != -1 || _format.indexOf("BNC") != -1) {
@@ -312,10 +313,14 @@ t_irc bncGetThread::initDecoder() {
 
   msleep(100); //sleep 0.1 sec
   
-  if (decoder()) {
-    decoder()->initRinex(_staID, _mountPoint, _latitude, _longitude, 
-                         _nmea, _ntripVersion);
-
+  if (_decoders.contains(_staID)) {
+    _decoders[_staID]->initRinex(_staID, _mountPoint, _latitude, _longitude, 
+                                 _nmea, _ntripVersion);
+  }
+  else {
+    emit(newMessage(_staID + ": no decoder initialized " + _format, true));
+    _isToBeDeleted = true;
+    return failure;
   }
 
   // Initialize PPP Client?
@@ -341,7 +346,7 @@ t_irc bncGetThread::initDecoder() {
 ////////////////////////////////////////////////////////////////////////////
 GPSDecoder* bncGetThread::decoder() {
   if (_decoders.contains(_staID) || initDecoder() == success) {
-    return _decoders.value(_staID);
+    return _decoders[_staID];
   }
   else {
     return 0;
@@ -641,6 +646,10 @@ t_irc bncGetThread::tryReconnect() {
 //////////////////////////////////////////////////////////////////////////////
 void bncGetThread::scanRTCM() {
 
+  if (!decoder()) {
+    return;
+  }
+
   bncSettings settings;
   if ( Qt::CheckState(settings.value("scanRTCM").toInt()) == Qt::Checked ) {
 
@@ -745,6 +754,11 @@ void bncGetThread::slotSerialReadyRead() {
 //
 //////////////////////////////////////////////////////////////////////////////
 void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
+
+  if (!decoder()) {
+    return;
+  }
+
   RTCM2Decoder* decoder2 = dynamic_cast<RTCM2Decoder*>(decoder());
   RTCM3Decoder* decoder3 = dynamic_cast<RTCM3Decoder*>(decoder());
 
