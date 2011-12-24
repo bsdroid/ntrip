@@ -345,8 +345,6 @@ t_irc bncGetThread::initDecoder() {
 // Current decoder in use
 ////////////////////////////////////////////////////////////////////////////
 GPSDecoder* bncGetThread::decoder() {
-  QMutexLocker locker(&_mutexDecoder);
-
   if (!_rawFile) {
     return _decoder;
   }
@@ -355,7 +353,6 @@ GPSDecoder* bncGetThread::decoder() {
       return _decodersRaw[_staID];
     }
   }
-
   return 0;
 }
 
@@ -742,9 +739,6 @@ void bncGetThread::scanRTCM() {
   }
 #endif
 
-
-
-
   decoder()->_typeList.clear();
   decoder()->_antType.clear();
   decoder()->_antList.clear();
@@ -780,7 +774,7 @@ void bncGetThread::slotSerialReadyRead() {
 //
 //////////////////////////////////////////////////////////////////////////////
 void bncGetThread::slotNewEphGPS(gpsephemeris gpseph) {
-  QMutexLocker locker(&_mutexSlot);
+  QMutexLocker locker(&_mutex);
 
   if (!decoder()) {
     return;
