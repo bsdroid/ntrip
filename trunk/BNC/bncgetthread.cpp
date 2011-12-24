@@ -128,6 +128,7 @@ void bncGetThread::initialize() {
   _nextSleep     = 0;
   _PPPclient     = 0;
   _miscMount     = settings.value("miscMount").toString();
+  _decoder   = 0;
 
   // Serial Port
   // -----------
@@ -276,34 +277,36 @@ void bncGetThread::initialize() {
 //////////////////////////////////////////////////////////////////////////////
 t_irc bncGetThread::initDecoder() {
 
+  _decoder = 0;
+
   if      (_format.indexOf("RTCM_2") != -1 || _format.indexOf("RTCM2") != -1 ||
            _format.indexOf("RTCM 2") != -1 ) {
     emit(newMessage(_staID + ": Get data in RTCM 2.x format", true));
-    _decoders[_staID] = new RTCM2Decoder(_staID.data());
+    _decoder = new RTCM2Decoder(_staID.data());
   }
   else if (_format.indexOf("RTCM_3") != -1 || _format.indexOf("RTCM3") != -1 ||
            _format.indexOf("RTCM 3") != -1 ) {
     emit(newMessage(_staID + ": Get data in RTCM 3.x format", true));
     RTCM3Decoder* newDecoder = new RTCM3Decoder(_staID, _rawFile);
-    _decoders[_staID] = newDecoder;
+    _decoder = newDecoder;
     connect((RTCM3Decoder*) newDecoder, SIGNAL(newMessage(QByteArray,bool)), 
             this, SIGNAL(newMessage(QByteArray,bool)));
   }
   else if (_format.indexOf("GPSS") != -1 || _format.indexOf("BNC") != -1) {
     emit(newMessage(_staID + ": Get Data in GPSS format", true));
-    _decoders[_staID] = new gpssDecoder();
+    _decoder = new gpssDecoder();
   }
   else if (_format.indexOf("ZERO") != -1) {
     emit(newMessage(_staID + ": Get data in original format", true));
-    _decoders[_staID] = new bncZeroDecoder(_staID);
+    _decoder = new bncZeroDecoder(_staID);
   }
   else if (_format.indexOf("RTNET") != -1) {
     emit(newMessage(_staID + ": Get data in RTNet format", true));
-    _decoders[_staID] = new bncRtnetDecoder();
+    _decoder = new bncRtnetDecoder();
   }
   else if (_format.indexOf("HASS2ASCII") != -1) {
     emit(newMessage(_staID + ": Get data in HASS2ASCII format", true));
-    _decoders[_staID] = new hassDecoder(_staID);
+    _decoder = new hassDecoder(_staID);
   }
   else {
     emit(newMessage(_staID + ": Unknown data format " + _format, true));
@@ -313,14 +316,11 @@ t_irc bncGetThread::initDecoder() {
 
   msleep(100); //sleep 0.1 sec
   
-  if (_decoders.contains(_staID)) {
-    _decoders[_staID]->initRinex(_staID, _mountPoint, _latitude, _longitude, 
-                                 _nmea, _ntripVersion);
-  }
-  else {
-    emit(newMessage(_staID + ": no decoder initialized " + _format, true));
-    _isToBeDeleted = true;
-    return failure;
+  _decoder->initRinex(_staID, _mountPoint, _latitude, _longitude, 
+                               _nmea, _ntripVersion);
+
+  if (_rawFile) {
+    _decodersRaw[_staID] = _decoder;
   }
 
   // Initialize PPP Client?
@@ -347,12 +347,16 @@ t_irc bncGetThread::initDecoder() {
 GPSDecoder* bncGetThread::decoder() {
   QMutexLocker locker(&_mutexDecoder);
 
-  if (_decoders.contains(_staID) || initDecoder() == success) {
-    return _decoders[_staID];
+  if (!_rawFile) {
+    return _decoder;
   }
   else {
-    return 0;
+    if (_decodersRaw.contains(_staID) || initDecoder() == success) {
+      return _decodersRaw[_staID];
+    }
   }
+
+  return 0;
 }
 
 // Destructor
@@ -366,10 +370,15 @@ bncGetThread::~bncGetThread() {
     _query->deleteLater();
   }
   delete _PPPclient;
-  QMapIterator<QString, GPSDecoder*> it(_decoders);
-  while (it.hasNext()) {
-    it.next();
-    delete it.value();
+  if (_rawFile) {
+    QMapIterator<QString, GPSDecoder*> it(_decodersRaw);
+    while (it.hasNext()) {
+      it.next();
+      delete it.value();
+    }
+  }
+  else {
+    delete _decoder;
   }
   delete _rawFile;
   delete _serialOutFile;
@@ -408,11 +417,16 @@ void bncGetThread::run() {
 
       // Delete old observations
       // -----------------------
-      QMapIterator<QString, GPSDecoder*> itDec(_decoders);
-      while (itDec.hasNext()) {
-        itDec.next();
-        GPSDecoder* decoder = itDec.value();
-        decoder->_obsList.clear();
+      if (_rawFile) {
+        QMapIterator<QString, GPSDecoder*> itDec(_decodersRaw);
+        while (itDec.hasNext()) {
+          itDec.next();
+          GPSDecoder* decoder = itDec.value();
+          decoder->_obsList.clear();
+        }
+      }
+      else {
+        _decoder->_obsList.clear();
       }
 
       // Read Data
@@ -568,11 +582,16 @@ t_irc bncGetThread::tryReconnect() {
   // -----------
   if (_query && _query->status() == bncNetQuery::running) {
     _nextSleep = 0;
-    QMapIterator<QString, GPSDecoder*> itDec(_decoders);
-    while (itDec.hasNext()) {
-      itDec.next();
-      GPSDecoder* decoder = itDec.value();
-      decoder->setRinexReconnectFlag(false);
+    if (_rawFile) {
+      QMapIterator<QString, GPSDecoder*> itDec(_decodersRaw);
+      while (itDec.hasNext()) {
+        itDec.next();
+        GPSDecoder* decoder = itDec.value();
+        decoder->setRinexReconnectFlag(false);
+      }
+    }
+    else {
+      _decoder->setRinexReconnectFlag(false);
     }
     return success;
   }
@@ -634,11 +653,16 @@ t_irc bncGetThread::tryReconnect() {
     }
   }
 
-  QMapIterator<QString, GPSDecoder*> itDec(_decoders);
-  while (itDec.hasNext()) {
-    itDec.next();
-    GPSDecoder* decoder = itDec.value();
-    decoder->setRinexReconnectFlag(false);
+  if (_rawFile) {
+    QMapIterator<QString, GPSDecoder*> itDec(_decodersRaw);
+    while (itDec.hasNext()) {
+      itDec.next();
+      GPSDecoder* decoder = itDec.value();
+      decoder->setRinexReconnectFlag(false);
+    }
+  }
+  else {
+   _decoder->setRinexReconnectFlag(false);
   }
 
   return success;

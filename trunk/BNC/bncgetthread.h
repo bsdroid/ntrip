@@ -103,7 +103,8 @@ class bncGetThread : public QThread {
    t_irc tryReconnect();
    void  scanRTCM();
 
-   QMap<QString, GPSDecoder*> _decoders;
+   QMap<QString, GPSDecoder*> _decodersRaw;
+   GPSDecoder*                _decoder;
    bncNetQuery*               _query;
    QUrl                       _mountPoint;
    QByteArray                 _staID;
