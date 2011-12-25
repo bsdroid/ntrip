@@ -312,7 +312,6 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
 
   for (long sec = minTime; sec <= maxTime; sec++) {
 
-    bool first = true;
     QList<t_obs> allObs = _epochs->values(sec);
 
     QListIterator<t_obs> it(allObs);
@@ -363,7 +362,6 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
       }
 
       _epochs->remove(sec);
-      first = false;
     }
   }
 }
