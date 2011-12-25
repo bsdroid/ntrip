@@ -64,9 +64,6 @@ RTCM2Decoder::RTCM2Decoder(const std::string& ID) {
 // 
 
 RTCM2Decoder::~RTCM2Decoder() {
-  for (t_listMap::iterator ii = _ephList.begin(); ii != _ephList.end(); ii++) {
-    delete ii->second;
-  }
 }
 
 
@@ -221,40 +218,6 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
   return success;
 }
 
-
-
-bool RTCM2Decoder::storeEph(const gpsephemeris& gpseph, string& storedPRN, vector<int>& IODs) {
-  t_ephGPS eph; eph.set(&gpseph);
-
-  return storeEph(eph, storedPRN, IODs);
-}
-
-
-bool RTCM2Decoder::storeEph(const t_ephGPS& gpseph, string& storedPRN, vector<int>& IODs) {
-  t_ephGPS* eph = new t_ephGPS(gpseph);
-
-  string prn = eph->prn().toAscii().data();
-
-  t_listMap::iterator ip = _ephList.find(prn);
-  if (ip == _ephList.end() ) {
-    ip = _ephList.insert(pair<string, t_ephList*>(prn, new t_ephList)).first;
-  }
-  t_ephList* ephList = ip->second;
-
-  bool stored = ephList->store(eph);
-
-  if ( stored ) {
-    storedPRN = string(eph->prn().toAscii().data());
-    ephList->getIODs(IODs);
-    return true;
-  }
-
-  delete eph;
-
-  return false;
-}
-  
-  
 void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
 
   if ( !_msg03.validMsg || !_msg2021.valid() ) {
@@ -297,15 +260,15 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
     }
     // end test
 
+    QString prn;
+    if (corr->PRN < 200) {
+      prn = 'G' + QString("%1").arg(corr->PRN, 2, 10, QChar('0'));
+    }
+    else {
+      prn = 'R' + QString("%1").arg(corr->PRN - 200, 2, 10, QChar('0'));
+    }
 
-    ostringstream oPRN; oPRN.fill('0');
-
-    oPRN <<            (corr->PRN < 200 ? 'G'       : 'R')
-	 << setw(2) << (corr->PRN < 200 ? corr->PRN : corr->PRN - 200);
-
-    string PRN(oPRN.str());
-
-    t_listMap::const_iterator ieph = _ephList.find(PRN);
+    const t_ephPair* ePair = ephPair(prn); 
 
     double L1 = 0;
     double L2 = 0;
@@ -355,8 +318,13 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
       }
 
       // Select corresponding ephemerides
-      if ( ieph != _ephList.end() ) {
-	eph = ieph->second->getEph(IODcorr);
+      if (ePair) {
+        if      (ePair->last && ePair->last->IOD() == IODcorr) {
+          eph = ePair->last;
+        }
+        else if (ePair->prev && ePair->prev->IOD() == IODcorr) {
+          eph = ePair->prev;
+        }
       }
 
       if ( eph ) {
@@ -430,7 +398,7 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
 
       copy(missingIOD.begin(), missingIOD.end(), ostream_iterator<string>(missingIODstr, "   "));
 
-      errmsg.push_back("missing eph for " + PRN + " , IODs " + missingIODstr.str());
+      errmsg.push_back("missing eph for " + string(prn.toAscii().data()) + " , IODs " + missingIODstr.str());
     }
 
     // Store new observation

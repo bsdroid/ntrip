@@ -88,9 +88,6 @@ class bncGetThread : public QThread {
  public:
    virtual void run();
 
- public slots:
-   void slotNewEphGPS(gpsephemeris gpseph);
-
  private slots:
    void slotSerialReadyRead();
 
@@ -123,7 +120,6 @@ class bncGetThread : public QThread {
    QString                    _miscMount;
    QFile*                     _serialOutFile;
    t_serialNMEA               _serialNMEA;
-   QMutex                     _mutex;
    bncPPPclient*              _PPPclient;
    bool                       _rawOutput;
    QMap<QString, long>        _prnLastEpo;
