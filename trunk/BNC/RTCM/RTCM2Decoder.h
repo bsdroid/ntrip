@@ -34,16 +34,14 @@
 #include "RTCM2_2021.h"
 #include "rtcm3torinex.h"
 #include "ephemeris.h"
+#include "bncephuser.h"
 
-class RTCM2Decoder: public GPSDecoder {
+class RTCM2Decoder: public bncEphUser, public GPSDecoder {
 
   public:
     RTCM2Decoder(const std::string& ID);
     virtual ~RTCM2Decoder();
     virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
-
-    bool  storeEph(const gpsephemeris& gpseph, std::string& storedPRN, std::vector<int>& IODs);
-    bool  storeEph(const t_ephGPS&     gpseph, std::string& storedPRN, std::vector<int>& IODs);
 
     t_irc getStaCrd(double& xx, double& yy, double& zz);
 
@@ -56,68 +54,6 @@ class RTCM2Decoder: public GPSDecoder {
     std::string ID() const { return _ID; }
 
   private:
-
-    class t_ephList {
-    public:
-      t_ephList() {}
-      
-      ~t_ephList() {
-        for (std::list<t_eph*>::iterator ii = _eph.begin(); ii != _eph.end(); ii++) {
-          delete  (*ii);
-        }
-      }
-
-      bool store(t_eph* eph) {
-        if ( _eph.size() == 0 ) {
-          _eph.push_back(eph);
-          return true;
-        }
-          
-        std::list<t_eph*>::iterator ii = _eph.begin();
-        while (ii != _eph.end()) {
-          if ( eph->IOD() == (*ii)->IOD() ) {
-            return false;
-          }
-          if ( ! eph->isNewerThan(*ii) ) {
-            break;
-          }
-          ++ii;
-        }
-
-        if ( ii == _eph.begin() && _eph.size() == MAXSIZE) {
-          return false;
-        }
-
-        _eph.insert(ii, eph);
-
-        while ( _eph.size() > MAXSIZE ) {
-          delete _eph.front();
-          _eph.pop_front();
-        }
-
-        return true;
-      }
-      
-      const t_eph* getEph(int IOD) const {
-        for (std::list<t_eph*>::const_iterator ii = _eph.begin(); ii != _eph.end(); ii++) {
-          if ( (*ii)->IOD() == IOD ) {
-            return (*ii);
-          }
-        }
-        return 0;
-      }
-
-      void getIODs(std::vector<int>& IODs) const {
-        IODs.clear();
-        for (std::list<t_eph*>::const_iterator ii = _eph.begin(); ii != _eph.end(); ii++) {
-          IODs.push_back((*ii)->IOD());
-        }
-      }
-
-      static const unsigned MAXSIZE = 5;
-
-      std::list<t_eph*> _eph;
-    };
 
     void translateCorr2Obs(std::vector<std::string>& errmsg);
 
@@ -135,9 +71,6 @@ class RTCM2Decoder: public GPSDecoder {
     rtcm2::RTCM2_23           _msg23;
     rtcm2::RTCM2_24           _msg24;
     rtcm2::RTCM2_2021         _msg2021;
-    std::map<std::string, t_ephList*> _ephList;
-
-    typedef std::map<std::string, t_ephList*> t_listMap;
 };
 
 #endif  // include blocker

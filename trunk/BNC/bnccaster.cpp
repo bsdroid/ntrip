@@ -273,9 +273,6 @@ void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
   connect(getThread, SIGNAL(newNMEAstr(QByteArray)), 
           this, SLOT(slotNewNMEAstr(QByteArray)));
 
-  connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
-	  getThread, SLOT(slotNewEphGPS(gpsephemeris)));
-
   _staIDs.push_back(getThread->staID());
   _threads.push_back(getThread);
 
