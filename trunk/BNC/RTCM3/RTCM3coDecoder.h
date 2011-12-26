@@ -30,14 +30,13 @@
 #include <QtCore>
 #include <QtNetwork>
 
-#include "bncephuser.h"
 #include "RTCM/GPSDecoder.h"
 
 extern "C" {
 #include "clock_orbit_rtcm.h"
 }
 
-class RTCM3coDecoder : public bncEphUser, public GPSDecoder {
+class RTCM3coDecoder : public QObject, public GPSDecoder {
 Q_OBJECT
  public:
   RTCM3coDecoder(const QString& staID);
@@ -52,7 +51,7 @@ Q_OBJECT
  signals:
   void newCorrLine(QString line, QString staID, long coTime);
 
- protected:
+ private:
   void printLine(const QString& line, long coTime);
   std::ofstream* _out;
   QString        _staID;
@@ -60,8 +59,6 @@ Q_OBJECT
   QString        _fileName;
   QByteArray     _buffer;
   double         _GPSweeks;
-
- private:
   ClockOrbit     _co;
   Bias           _bias;
 };
