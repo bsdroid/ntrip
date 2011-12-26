@@ -31,7 +31,6 @@
 #include "../RTCM/GPSDecoder.h"
 #include "../RTCM/GPSDecoder.h"
 #include "RTCM3coDecoder.h"
-#include "ephemeris.h"
 #include "bncrawfile.h"
 
 extern "C" {
@@ -45,9 +44,6 @@ Q_OBJECT
   virtual ~RTCM3Decoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
   virtual int corrGPSEpochTime() const;
-
-  bool  storeEph(const gpsephemeris& gpseph);
-  bool  storeEph(const t_ephGPS&     gpseph);
 
  signals:
   void newMessage(QByteArray msg,bool showOnScreen);
@@ -64,7 +60,6 @@ Q_OBJECT
   QMap<QByteArray, RTCM3coDecoder*> _coDecoders; 
   t_mode                 _mode;
 
-  std::map<std::string, t_ephGPS> _ephList;
   double                 _antXYZ[3];
   bncRawFile*            _rawFile;
 

@@ -19,12 +19,13 @@
 #include "hassDecoder.h"
 #include "bnctime.h"
 #include "bncutils.h"
+#include "RTCM3/RTCM3coDecoder.h"
 
 using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-hassDecoder::hassDecoder(const QString& staID) : RTCM3coDecoder(staID) {
+hassDecoder::hassDecoder(const QString& staID) {
   _GPSweeks = -1.0;
 }
 
@@ -127,8 +128,12 @@ t_irc hassDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
                      dClk, rao[0], rao[1], rao[2],
                      0.0, dotRao[0], dotRao[1], dotRao[2], 0.0);
 
-    reopen(_fileNameSkl, _fileName, _out);    
-    printLine(corrLine, coTime);
+    RTCM3coDecoder::reopen(_fileNameSkl, _fileName, _out);    
+    if (_out) {
+      *_out << corrLine.toAscii().data() << endl;
+      _out->flush();
+    }
+    emit newCorrLine(corrLine, _staID, coTime);
   }
 
   if (corrFound) {

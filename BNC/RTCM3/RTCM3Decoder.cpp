@@ -432,34 +432,6 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
   }
 }
 
-// Store ephemerides
-//////////////////////////////////////////////////////////////////////////////
-bool RTCM3Decoder::storeEph(const gpsephemeris& gpseph) {
-  t_ephGPS eph; eph.set(&gpseph);
-
-  return storeEph(eph);
-}
-
-
-bool RTCM3Decoder::storeEph(const t_ephGPS& gpseph) {
-  const double secPerWeek = 7.0 * 24.0 * 3600.0;
-  double weekold = 0.0;
-  double weeknew = gpseph.GPSweek() + gpseph.GPSweeks() / secPerWeek;
-  string prn = gpseph.prn().toAscii().data();
-  if ( _ephList.find(prn) != _ephList.end() ) {
-    weekold = _ephList.find(prn)->second.GPSweek() 
-            + _ephList.find(prn)->second.GPSweeks() / secPerWeek; 
-  }
-
-  if ( weeknew - weekold > 1.0/secPerWeek ) {
-    _ephList[prn] = gpseph;
-
-    return true;
-  }
-
-  return false;
-}
-
 // Time of Corrections
 //////////////////////////////////////////////////////////////////////////////
 int RTCM3Decoder::corrGPSEpochTime() const {
