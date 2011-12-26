@@ -16,9 +16,12 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+
 #include "hassDecoder.h"
+#include "bncapp.h"
 #include "bnctime.h"
 #include "bncutils.h"
+#include "bncsettings.h"
 #include "RTCM3/RTCM3coDecoder.h"
 
 using namespace std;
@@ -26,12 +29,30 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 hassDecoder::hassDecoder(const QString& staID) {
+  _staID = staID;
+
+  // File Output
+  // -----------
+  bncSettings settings;
+  QString path = settings.value("corrPath").toString();
+  if (!path.isEmpty()) {
+    expandEnvVar(path);
+    if ( path.length() > 0 && path[path.length()-1] != QDir::separator() ) {
+      path += QDir::separator();
+    }
+    _fileNameSkl = path + staID;
+  }
+  _out      = 0;
   _GPSweeks = -1.0;
+
+  connect(this, SIGNAL(newCorrLine(QString, QString, long)), 
+          (bncApp*) qApp, SLOT(slotNewCorrLine(QString, QString, long)));
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 hassDecoder::~hassDecoder() {
+  delete _out;
 }
 
 // 
