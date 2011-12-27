@@ -58,6 +58,7 @@ hassDecoder::~hassDecoder() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_irc hassDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
+  QMutexLocker locker(&_mutex);
 
   errmsg.clear();
 

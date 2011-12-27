@@ -220,6 +220,8 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
 void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
 
+  QMutexLocker locker(&_mutex);
+
   if ( !_msg03.validMsg || !_msg2021.valid() ) {
     return;
   }
