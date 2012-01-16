@@ -34,7 +34,7 @@ bncEphUploadCaster::bncEphUploadCaster() {
     QString outHost  = settings.value("uploadEphHost").toString();
     int     outPort  = settings.value("uploadEphPort").toInt();
     QString password = settings.value("uploadEphPassword").toString();
-    int     sampl    = settings.value("uploadSampl").toInt();
+    int     sampl    = settings.value("uploadEphSampl").toInt();
 
     _ephUploadCaster = new bncUploadCaster(mountpoint, outHost, outPort, 
                                            password, -1, sampl);
