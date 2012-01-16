@@ -514,7 +514,6 @@ bncWindow::bncWindow() {
   QPushButton* delUploadRowButton = new QPushButton("Del Row");
   QPushButton* setUploadTrafoButton = new QPushButton("Custom Trafo");
   _uploadIntrComboBox = new QComboBox;
-  _uploadSamplSpinBox = new QSpinBox; 
   _uploadIntrComboBox->setEditable(false);
   _uploadIntrComboBox->addItems(QString("1 day,1 hour, 30 min,15 min,10 min,5 min,2 min,1 min").split(","));
   ii = _uploadIntrComboBox->findText(settings.value("uploadIntr").toString());
