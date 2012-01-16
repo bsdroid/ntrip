@@ -521,7 +521,7 @@ bncWindow::bncWindow() {
     _uploadIntrComboBox->setCurrentIndex(ii);
   }
   _uploadSamplSpinBox = new QSpinBox;
-  _uploadSamplSpinBox->setMinimum(0);
+  _uploadSamplSpinBox->setMinimum(5);
   _uploadSamplSpinBox->setMaximum(60);
   _uploadSamplSpinBox->setSingleStep(5);
   _uploadSamplSpinBox->setMaximumWidth(9*ww);
