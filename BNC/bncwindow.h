@@ -208,6 +208,7 @@ class bncWindow : public QMainWindow {
     QTableWidget* _uploadTable;
     QComboBox*    _uploadIntrComboBox;
     QSpinBox*     _uploadSamplSpinBox;
+    QSpinBox*     _uploadSamplOrbSpinBox;
 
     QLineEdit*       _uploadEphHostLineEdit;
     QLineEdit*       _uploadEphPortLineEdit;

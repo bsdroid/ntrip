@@ -510,6 +510,9 @@ bncWindow::bncWindow() {
   _uploadTable->horizontalHeader()->setStretchLastSection(true);
   _uploadTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
+  connect(_uploadTable, SIGNAL(itemSelectionChanged()), 
+          SLOT(slotBncTextChanged()));
+
   QPushButton* addUploadRowButton = new QPushButton("Add Row");
   QPushButton* delUploadRowButton = new QPushButton("Del Row");
   QPushButton* setUploadTrafoButton = new QPushButton("Custom Trafo");
@@ -528,8 +531,13 @@ bncWindow::bncWindow() {
   _uploadSamplSpinBox->setValue(settings.value("uploadSampl").toInt());
   _uploadSamplSpinBox->setSuffix(" sec");
 
-  connect(_uploadTable, SIGNAL(itemSelectionChanged()), 
-          SLOT(slotBncTextChanged()));
+  _uploadSamplOrbSpinBox = new QSpinBox;
+  _uploadSamplOrbSpinBox->setMinimum(0);
+  _uploadSamplOrbSpinBox->setMaximum(60);
+  _uploadSamplOrbSpinBox->setSingleStep(5);
+  _uploadSamplOrbSpinBox->setMaximumWidth(9*ww);
+  _uploadSamplOrbSpinBox->setValue(settings.value("uploadSamplOrb").toInt());
+  _uploadSamplOrbSpinBox->setSuffix(" sec");
 
   // Upload RTCM3 Ephemeris
   // ----------------------
@@ -1021,6 +1029,8 @@ bncWindow::bncWindow() {
   uploadHlpLayout->addWidget(new QLabel("Sampling"),1,3, Qt::AlignRight);
   uploadHlpLayout->addWidget(_uploadSamplSpinBox,1,4);
 
+  uploadHlpLayout->addWidget(new QLabel("Sampling (Orb)"),1,5, Qt::AlignRight);
+  uploadHlpLayout->addWidget(_uploadSamplOrbSpinBox,1,6);
 
   QBoxLayout* uploadLayout = new QBoxLayout(QBoxLayout::TopToBottom);
   populateUploadTable();
