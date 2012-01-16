@@ -111,7 +111,8 @@ bncSettings::bncSettings(bool noInit) :
     setValue("combineStreams",   "");
     setValue("uploadMountpointsOut","");
     setValue("uploadIntr",          "1 day");
-    setValue("uploadSampl",         "0");
+    setValue("uploadSampl",         "5");
+    setValue("uploadSamplOrb",      "0");
     setValue("uploadEphHost",       "");
     setValue("uploadEphPort",       "");
     setValue("uploadEphPassword",   "");

@@ -1499,6 +1499,7 @@ void bncWindow::slotSaveOptions() {
   }
   settings.setValue("uploadIntr",     _uploadIntrComboBox->currentText());
   settings.setValue("uploadSampl",    _uploadSamplSpinBox->value());
+  settings.setValue("uploadSamplOrb", _uploadSamplOrbSpinBox->value());
 
   settings.setValue("uploadEphHost",      _uploadEphHostLineEdit->text());
   settings.setValue("uploadEphPort",      _uploadEphPortLineEdit->text());
