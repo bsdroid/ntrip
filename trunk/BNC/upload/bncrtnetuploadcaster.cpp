@@ -44,6 +44,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
   bncSettings settings;
   QString     intr  = settings.value("uploadIntr").toString();
   int         sampl = settings.value("uploadSampl").toInt();
+  _samplOrb = settings.value("uploadSamplOrb").toDouble();
 
   // Raw Output
   // ----------
@@ -160,7 +161,6 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _t0  =    0000.0;
   }
   else if (_crdTrafo == "Custom") {
-    bncSettings settings;
     _dx  = settings.value("trafo_dx").toDouble();
     _dy  = settings.value("trafo_dy").toDouble();
     _dz  = settings.value("trafo_dz").toDouble();
@@ -352,11 +352,9 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   QByteArray hlpBufferCo;  
 
-  const double ORBIT_RATE = 0.0;
-
   // Orbit and Clock Corrections together
   // ------------------------------------
-  if (ORBIT_RATE == 0.0) {
+  if (_samplOrb == 0.0) {
     if (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
@@ -371,7 +369,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   else {
     if (co.NumberOfGPSSat > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
-      if (fmod(epoTime.gpssec(), ORBIT_RATE) == 0.0) {
+      if (fmod(epoTime.gpssec(), _samplOrb) == 0.0) {
         int len1 = MakeClockOrbit(&co, COTYPE_GPSORBIT, 0, obuffer, sizeof(obuffer));
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
@@ -384,7 +382,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     }
     if (co.NumberOfGLONASSSat > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
-      if (fmod(epoTime.gpssec(), ORBIT_RATE) == 0.0) {
+      if (fmod(epoTime.gpssec(), _samplOrb) == 0.0) {
         int len1 = MakeClockOrbit(&co, COTYPE_GLONASSORBIT, 0, obuffer, sizeof(obuffer));
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);

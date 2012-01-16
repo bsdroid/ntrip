@@ -39,6 +39,7 @@ class bncRtnetUploadCaster : public bncUploadCaster {
   QString        _rtnetStreamBuffer;
   QString        _crdTrafo;
   bool           _CoM;
+  double         _samplOrb;
   double         _dx;
   double         _dy;
   double         _dz;
