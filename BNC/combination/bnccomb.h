@@ -61,6 +61,7 @@ class bncComb : public bncEphUser  {
    public:
     QString      acName;
     ColumnVector diffRao;
+    QString ID() {return acName + "_" + prn;}
   };
 
   class cmbEpoch {
@@ -91,6 +92,8 @@ class bncComb : public bncEphUser  {
 
   QVector<cmbCorr*>& corrs() {return _buffer[_resTime].corrs;}
 
+  t_irc mergeOrbitCorr(const cmbCorr* orbitCorr, cmbCorr* clkCorr);
+
   QList<cmbAC*>           _ACs;
   bncTime                 _resTime;
   QVector<cmbParam*>      _params;
@@ -104,6 +107,7 @@ class bncComb : public bncEphUser  {
   unsigned                _masterMissingEpochs;
   e_method                _method;
   bool                    _useGlonass;
+  QMap<QString, cmbCorr*> _orbitCorrs;
 };
 
 #endif
