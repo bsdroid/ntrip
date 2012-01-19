@@ -313,7 +313,17 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     if (_orbitCorrs.find(corrID) != _orbitCorrs.end()) {
       delete _orbitCorrs[corrID];
     }
-    _orbitCorrs[corrID] = new cmbCorr(*newCorr);
+    _orbitCorrs[corrID] = newCorr;
+    return;
+  }
+
+  // Merge with saved orbit correction
+  // ---------------------------------
+  else if (newCorr->dClkSet && !newCorr->raoSet) {
+    QString corrID = newCorr->ID();
+    if (_orbitCorrs.find(corrID) != _orbitCorrs.end()) {
+      mergeOrbitCorr(_orbitCorrs[corrID], newCorr);
+    }
   }
 
   // Check Modulo Time
@@ -328,15 +338,6 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   if (_resTime.valid() && newCorr->tt <= _resTime) {
     delete newCorr;
     return;
-  }
-
-  // Merge with saved orbit correction
-  // ---------------------------------
-  if (newCorr->dClkSet && !newCorr->raoSet) {
-    QString corrID = newCorr->ID();
-    if (_orbitCorrs.find(corrID) != _orbitCorrs.end()) {
-      mergeOrbitCorr(_orbitCorrs[corrID], newCorr);
-    }
   }
 
   // Check the Ephemeris
