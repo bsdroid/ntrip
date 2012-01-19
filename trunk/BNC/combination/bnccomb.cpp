@@ -261,6 +261,11 @@ bncComb::~bncComb() {
     bncTime epoTime = itTime.next();
     _buffer.remove(epoTime);
   }
+  QMapIterator<QString, cmbCorr*> itOrbCorr(_orbitCorrs);
+  while (itOrbCorr.hasNext()) {
+    itOrbCorr.next();
+    delete itOrbCorr.value();
+  }
 }
 
 // Read and store one correction line
@@ -301,6 +306,16 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     }
   }
 
+  // Save Orbit-Only Corrections
+  // ---------------------------
+  if (newCorr->raoSet && !newCorr->dClkSet) {
+    QString corrID = newCorr->ID();
+    if (_orbitCorrs.find(corrID) != _orbitCorrs.end()) {
+      delete _orbitCorrs[corrID];
+    }
+    _orbitCorrs[corrID] = new cmbCorr(*newCorr);
+  }
+
   // Check Modulo Time
   // -----------------
   if (int(newCorr->tt.gpssec()) % moduloTime != 0.0) {
@@ -313,6 +328,15 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   if (_resTime.valid() && newCorr->tt <= _resTime) {
     delete newCorr;
     return;
+  }
+
+  // Merge with saved orbit correction
+  // ---------------------------------
+  if (newCorr->dClkSet && !newCorr->raoSet) {
+    QString corrID = newCorr->ID();
+    if (_orbitCorrs.find(corrID) != _orbitCorrs.end()) {
+      mergeOrbitCorr(_orbitCorrs[corrID], newCorr);
+    }
   }
 
   // Check the Ephemeris
@@ -361,8 +385,9 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
     }
   }
   if (existingCorr) {
-    delete newCorr;
+    delete newCorr; newCorr = 0;
     existingCorr->readLine(line); // merge (multiple messages)
+   
   }
   else {
     corrs.append(newCorr);
@@ -1115,6 +1140,14 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
       break;
     }
   }
+
+  return success;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+t_irc bncComb::mergeOrbitCorr(const cmbCorr* orbitCorr, cmbCorr* clkCorr) {
+
 
   return success;
 }
