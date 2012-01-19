@@ -1148,6 +1148,21 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncComb::mergeOrbitCorr(const cmbCorr* orbitCorr, cmbCorr* clkCorr) {
 
+  double dt = clkCorr->tt - orbitCorr->tt;
+
+  clkCorr->iod = orbitCorr->iod; // is it always correct?
+  clkCorr->eph = orbitCorr->eph; 
+
+  clkCorr->rao = orbitCorr->rao 
+               + orbitCorr->dotRao    * dt
+               + orbitCorr->dotDotRao * dt * dt;
+
+  clkCorr->dotRao = orbitCorr->dotRao
+                  + orbitCorr->dotDotRao * dt;
+
+  clkCorr->dotDotRao = orbitCorr->dotDotRao;
+
+  clkCorr->raoSet = true;
 
   return success;
 }
