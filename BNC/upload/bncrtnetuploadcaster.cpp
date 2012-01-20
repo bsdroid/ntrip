@@ -370,12 +370,13 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     if (co.NumberOfGPSSat > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplOrb) == 0.0) {
-        int len1 = MakeClockOrbit(&co, COTYPE_GPSORBIT, 0, obuffer, sizeof(obuffer));
+        int len1 = MakeClockOrbit(&co, COTYPE_GPSORBIT, 1, obuffer, sizeof(obuffer));
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
       }
-      int len2 = MakeClockOrbit(&co, COTYPE_GPSCLOCK, 0, obuffer, sizeof(obuffer));
+      int mmsg = (co.NumberOfGLONASSSat > 0) ? 1 : 0;
+      int len2 = MakeClockOrbit(&co, COTYPE_GPSCLOCK, mmsg, obuffer, sizeof(obuffer));
       if (len2 > 0) {
         hlpBufferCo += QByteArray(obuffer, len2);
       }
@@ -383,7 +384,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     if (co.NumberOfGLONASSSat > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplOrb) == 0.0) {
-        int len1 = MakeClockOrbit(&co, COTYPE_GLONASSORBIT, 0, obuffer, sizeof(obuffer));
+        int len1 = MakeClockOrbit(&co, COTYPE_GLONASSORBIT, 1, obuffer, sizeof(obuffer));
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
