@@ -879,6 +879,7 @@ co->UpdateInterval,mmi,co->NumberOfGLONASSSat,nums);
       else if(pos == CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
       co->Sat[pos].ID = id;
 
+      G_GLONASS_IOD(co->Sat[pos].IOD)
       G_DELTA_CLOCK_C0(co->Sat[pos].Clock.DeltaA0)
       G_DELTA_CLOCK_C1(co->Sat[pos].Clock.DeltaA1)
       G_DELTA_CLOCK_C2(co->Sat[pos].Clock.DeltaA2)
