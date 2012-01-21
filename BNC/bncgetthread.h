@@ -81,7 +81,8 @@ class bncGetThread : public QThread {
    void newBytes(QByteArray staID, double nbyte);
    void newLatency(QByteArray staID, double clate);
    void newObs(QByteArray staID, bool firstObs, t_obs obs);
-   void newAntCrd(QByteArray staID, double xx, double yy, double zz, QByteArray antType);
+   void newAntCrd(QByteArray staID, double xx, double yy, double zz, 
+                  double hh, QByteArray antType);
    void newMessage(QByteArray msg, bool showOnScreen);
    void newRTCMMessage(QByteArray staID, int msgID);
    void getThreadFinished(QByteArray staID);
