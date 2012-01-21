@@ -724,13 +724,15 @@ void bncGetThread::scanRTCM() {
         emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m", true));
         emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m", true));
         emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m", true));
+        double hh = 0.0;
         if (decoder()->_antList[ii].height_f) {
-          QByteArray ant4 = QString("%1 ").arg(decoder()->_antList[ii].height,0,'f',4).toAscii();
+          hh = decoder()->_antList[ii].height;
+          QByteArray ant4 = QString("%1 ").arg(hh,0,'f',4).toAscii();
           emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m", true));
         }
         emit(newAntCrd(_staID, decoder()->_antList[ii].xx, 
                        decoder()->_antList[ii].yy, decoder()->_antList[ii].zz, 
-                       antT));
+                       hh, antT));
       }
     }
   }
@@ -744,9 +746,13 @@ void bncGetThread::scanRTCM() {
         else if (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
           antT = "APC";
         }
+        double hh = 0.0;
+        if (decoder()->_antList[ii].height_f) {
+          hh = decoder()->_antList[ii].height;
+        }
         emit(newAntCrd(_staID, decoder()->_antList[ii].xx, 
                        decoder()->_antList[ii].yy, decoder()->_antList[ii].zz, 
-                       antT));
+                       hh, antT));
   }
 
   for (int ii = 0; ii <decoder()->_typeList.size(); ii++) {
