@@ -1170,6 +1170,7 @@ void bncWindow::populateMountPointsTable() {
   }
 
   _mountPointsTable->sortItems(1);
+  _mountPointsTable->setSortingEnabled(true);
 }
 
 // Retrieve Table
