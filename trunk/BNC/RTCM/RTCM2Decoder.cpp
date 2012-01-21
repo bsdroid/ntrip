@@ -209,6 +209,9 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 	_antList.back().xx = _msg24.x;
 	_antList.back().yy = _msg24.y;
 	_antList.back().zz = _msg24.z;
+
+	_antList.back().height_f = true;
+	_antList.back().height   = _msg24.h;
 	
 	_antList.back().type     = t_antInfo::ARP;
 	_antList.back().message  = _PP.ID();
