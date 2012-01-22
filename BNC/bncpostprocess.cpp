@@ -70,10 +70,10 @@ void t_postProcessing::run() {
   int MAXI = 5;
   for (int ii = 1; ii < MAXI; ii++) {
     cout << "ii = " << ii << endl;
+    emit progress(float(ii)/float(MAXI));
     sleep(1);
   }
 
   emit finished();
-
   deleteLater();
 }

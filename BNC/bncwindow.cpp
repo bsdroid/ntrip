@@ -2255,6 +2255,7 @@ void bncWindow::slotStartPostProcessing() {
 
   t_postProcessing* postProcessing = new t_postProcessing(this);
   connect(postProcessing, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessing()));
+  connect(postProcessing, SIGNAL(progress(float)), this, SLOT(slotPostProgress(float)));
 
   postProcessing->start();
 }
@@ -2271,7 +2272,8 @@ void bncWindow::slotFinishedPostProcessing() {
 
 // Progress Bar Change
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::postProgress(float progress) {
+void bncWindow::slotPostProgress(float progress) {
+  cout << "slotPostProgress" << endl;
   if (_postProgressBar) {
     _postProgressBar->setValue(int(progress*100.0));
   }
