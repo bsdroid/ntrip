@@ -972,16 +972,16 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppPlotCoordinates,            ir, 8);
   ++ir;
   pppLayout->addWidget(new QLabel("<b>Post-Processing  </b>"));
-  QHBoxLayout* hlpLayout = new QHBoxLayout;
   {
+    QHBoxLayout* hlpLayout = new QHBoxLayout;
     hlpLayout->addWidget(new QLabel("Obs"));
     hlpLayout->addWidget(_postObsFileChooser);
     hlpLayout->addWidget(new QLabel("    Nav"));
     hlpLayout->addWidget(_postNavFileChooser);
     hlpLayout->addWidget(new QLabel("    Corr"));
     hlpLayout->addWidget(_postCorrFileChooser);
+    pppLayout->addLayout(hlpLayout, ir, 1, 1, 8);
   }
-  pppLayout->addLayout(hlpLayout, ir, 1, 1, 8);
   ++ir;
   pppLayout->addWidget(new QLabel("Output"), ir, 1);
   pppLayout->addWidget(_postOutLineEdit, ir, 2, 1, 2);
@@ -995,16 +995,16 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 2)</b>"), ir, 0, 1, 8);
   ++ir;
   ppp2Layout->addWidget(new QLabel("Antennas"),             ir, 0);
-  QHBoxLayout* hlp2Layout = new QHBoxLayout;
   {
-    hlp2Layout->addWidget(_pppAntexFileChooser);
-    hlp2Layout->addWidget(new QLabel("ANTEX File"));
-    hlp2Layout->addWidget(_pppAntennaLineEdit);
-    hlp2Layout->addWidget(new QLabel("Antenna Name"));
-    hlp2Layout->addWidget(_pppApplySatAntCheckBox);
-    hlp2Layout->addWidget(new QLabel("Apply Sat. Ant. Offsets"));
+    QHBoxLayout* hlpLayout = new QHBoxLayout;
+    hlpLayout->addWidget(_pppAntexFileChooser);
+    hlpLayout->addWidget(new QLabel("ANTEX File"));
+    hlpLayout->addWidget(_pppAntennaLineEdit);
+    hlpLayout->addWidget(new QLabel("Antenna Name"));
+    hlpLayout->addWidget(_pppApplySatAntCheckBox);
+    hlpLayout->addWidget(new QLabel("Apply Sat. Ant. Offsets"));
+    ppp2Layout->addLayout(hlpLayout, ir, 1, 1, 8);
   }
-  ppp2Layout->addLayout(hlp2Layout, ir, 1, 1, 8);
   ++ir;
   ppp2Layout->addWidget(new QLabel("Sigmas"),               ir, 0);
   ppp2Layout->addWidget(_pppSigCLineEdit,                   ir, 1, Qt::AlignRight);
