@@ -359,7 +359,9 @@ bncWindow::bncWindow() {
   // PPP Options
   // -----------
   _pppMountLineEdit      = new QLineEdit(settings.value("pppMount").toString());
+  _pppMountLineEdit->setMaximumWidth(6*ww);
   _pppCorrMountLineEdit  = new QLineEdit(settings.value("pppCorrMount").toString());
+  _pppCorrMountLineEdit->setMaximumWidth(6*ww);
   _pppNMEALineEdit       = new QLineEdit(settings.value("nmeaFile").toString());
   _pppNMEAPortLineEdit   = new QLineEdit(settings.value("nmeaPort").toString());
   _pppSigCLineEdit       = new QLineEdit(settings.value("pppSigmaCode").toString());
@@ -960,27 +962,27 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppRefdULineEdit,              ir, 8);
   ++ir;
   pppLayout->addWidget(new QLabel("Output"),           ir, 0); 
-  pppLayout->addWidget(_pppNMEALineEdit,               ir, 1, 1, 3);
-  pppLayout->addWidget(new QLabel("NMEA File"),        ir, 4); 
-  pppLayout->addWidget(_pppNMEAPortLineEdit,           ir, 5, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("NMEA Port"),        ir, 6);
-  pppLayout->addWidget(_pppPlotCoordinates,            ir, 7, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("PPP Plot"),         ir, 8);
+  pppLayout->addWidget(new QLabel("NMEA File"),        ir, 1, Qt::AlignRight); 
+  pppLayout->addWidget(_pppNMEALineEdit,               ir, 2, 1, 2);
+  pppLayout->addWidget(new QLabel("NMEA Port"),        ir, 5, Qt::AlignRight);
+  pppLayout->addWidget(_pppNMEAPortLineEdit,           ir, 6);
+  pppLayout->addWidget(new QLabel("PPP Plot"),         ir, 7, Qt::AlignRight);
+  pppLayout->addWidget(_pppPlotCoordinates,            ir, 8);
   ++ir;
-  pppLayout->addWidget(new QLabel("<b>Post-Processing</b>"));
+  pppLayout->addWidget(new QLabel("<b>Post-Processing  </b>"));
   QHBoxLayout* hlpLayout = new QHBoxLayout;
   {
-    hlpLayout->addWidget(_postObsFileChooser);
     hlpLayout->addWidget(new QLabel("Obs"));
+    hlpLayout->addWidget(_postObsFileChooser);
+    hlpLayout->addWidget(new QLabel("    Nav"));
     hlpLayout->addWidget(_postNavFileChooser);
-    hlpLayout->addWidget(new QLabel("Nav"));
+    hlpLayout->addWidget(new QLabel("    Corr"));
     hlpLayout->addWidget(_postCorrFileChooser);
-    hlpLayout->addWidget(new QLabel("Corr"));
   }
   pppLayout->addLayout(hlpLayout, ir, 1, 1, 7);
   ++ir;
-  pppLayout->addWidget(_postOutLineEdit, ir, 1);
-  pppLayout->addWidget(new QLabel("Output"), ir, 2);
+  pppLayout->addWidget(new QLabel("Output"), ir, 1);
+  pppLayout->addWidget(_postOutLineEdit, ir, 2, 1, 2);
 
   pppgroup->setLayout(pppLayout);
 
