@@ -26,7 +26,7 @@
  * BKG NTRIP Client
  * -------------------------------------------------------------------------
  *
- * Function:   postProcessing
+ * Class:      t_postProcessing
  *
  * Purpose:    Precise Point Positioning in Post-Processing Mode
  *
@@ -44,24 +44,46 @@
 
 using namespace std;
 
-// 
+// Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_irc postProcessingInit(t_postInput& input) {
-  bncSettings settings;
-  input.obsFileName  = settings.value("postObsFile").toString();
-  input.navFileName  = settings.value("postNavFile").toString();
-  input.corrFileName = settings.value("postcorrFile").toString();
+t_postProcessing::t_postProcessing(QObject* parent) : QThread(parent) {
 
-  return success;
+  bncSettings settings;
+  _input.obsFileName  = settings.value("postObsFile").toString();
+  _input.navFileName  = settings.value("postNavFile").toString();
+  _input.corrFileName = settings.value("postcorrFile").toString();
+
+  _isToBeDeleted = false;
+}
+
+// Destructor
+////////////////////////////////////////////////////////////////////////////
+t_postProcessing::~t_postProcessing() {
+  if (isRunning()) {
+    wait();
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_irc postProcessingRun(const t_postInput& input) {
+void t_postProcessing::terminate() {
+  _isToBeDeleted = true;
+  if (!isRunning()) {
+    delete this;
+  }
+}
 
-  cout << "obsFile: "  << input.obsFileName.toAscii().data()  << endl;
-  cout << "navFile: "  << input.navFileName.toAscii().data()  << endl;
-  cout << "corrFile: " << input.corrFileName.toAscii().data() << endl;
+//  
+////////////////////////////////////////////////////////////////////////////
+void t_postProcessing::run() {
 
-  return success;
+  cout << "obsFile: "  << _input.obsFileName.toAscii().data()  << endl;
+  cout << "navFile: "  << _input.navFileName.toAscii().data()  << endl;
+  cout << "corrFile: " << _input.corrFileName.toAscii().data() << endl;
+
+  int MAXI = 10;
+  for (int ii = 1; ii < MAXI; ii++) {
+    cout << "ii = " << ii << endl;
+    sleep(1);
+  }
 }
