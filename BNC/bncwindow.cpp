@@ -116,6 +116,9 @@ bncWindow::bncWindow() {
   _actGetData = new QAction(tr("Sta&rt"),this);
   connect(_actGetData, SIGNAL(triggered()), SLOT(slotGetData()));
 
+  _actPostProcessing = new QAction(tr("Start PP"),this);
+  connect(_actPostProcessing, SIGNAL(triggered()), SLOT(slotPostProcessing()));
+
   _actStop = new QAction(tr("Sto&p"),this);
   connect(_actStop, SIGNAL(triggered()), SLOT(slotStop()));
   _actStop->setEnabled(false);
@@ -2020,6 +2023,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable8, _postObsFileChooser);
     enableWidget(enable8, _postNavFileChooser);
     enableWidget(enable8, _postCorrFileChooser);
+    _actPostProcessing->setEnabled(enable8);
 
     enableWidget(!enable8, _pppMountLineEdit);
   }
@@ -2198,4 +2202,12 @@ void bncWindow::slotSetUploadTrafo() {
   bncCustomTrafo* dlg = new bncCustomTrafo(this);
   dlg->exec();
   delete dlg;
+}
+
+// Post-Processing
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotPostProcessing() {
+  _actPostProcessing->setEnabled(false);
+  slotSaveOptions();
+  cout << "slotPostProcessing" << endl;
 }
