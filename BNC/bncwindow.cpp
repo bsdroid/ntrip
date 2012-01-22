@@ -910,7 +910,7 @@ bncWindow::bncWindow() {
   _pppSPPComboBox->setMaximumWidth(8*ww);
   _pppNMEAPortLineEdit->setMaximumWidth(6*ww);
   int ir = 0;
-  pppLayout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 1)</b>"), ir, 0);
+  pppLayout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 1)</b>"), ir, 0, 1, 8);
   ++ir;
   pppLayout->addWidget(new QLabel("Obs Mountpoint"),   ir, 0);
   pppLayout->addWidget(_pppMountLineEdit,              ir, 1);
@@ -949,6 +949,8 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppPlotCoordinates,            ir, 7, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("PPP Plot"),         ir, 8);
   ++ir;
+  pppLayout->addWidget(new QLabel("<b>Post-Processing</b>"), ir, 0);
+  ++ir;
   pppLayout->addWidget(new QLabel(" "),                ir, 0);
   pppLayout->setRowStretch(ir, 99);
 
@@ -958,7 +960,7 @@ bncWindow::bncWindow() {
   // -------------------------
   QGridLayout* ppp2Layout = new QGridLayout;
   ir = 0;
-  ppp2Layout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 2)</b>"), 0, 0);
+  ppp2Layout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 2)</b>"), ir, 0, 1, 8);
   ++ir;
   ppp2Layout->addWidget(new QLabel("Antennas"),             ir, 0);
   ppp2Layout->addWidget(_pppAntexLineEdit,                  ir, 1, 1, 3);
