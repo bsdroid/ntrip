@@ -94,6 +94,7 @@ class bncWindow : public QMainWindow {
     void populateMountPointsTable();
     void populateCmbTable();
     void populateUploadTable();
+    void enableWidget(bool enable, QWidget* widget);
 
     QMenu*     _menuHlp;
     QMenu*     _menuFile;
