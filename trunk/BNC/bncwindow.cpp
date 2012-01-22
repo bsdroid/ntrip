@@ -1874,9 +1874,6 @@ void bncWindow::enableWidget(bool enable, QWidget* widget) {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotBncTextChanged(){
 
-  QPalette palette_white(QColor(255, 255, 255));
-  QPalette palette_gray(QColor(230, 230, 230));
-
   bool enable = true;
 
   // Proxy
@@ -2023,6 +2020,8 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable8, _postObsFileChooser);
     enableWidget(enable8, _postNavFileChooser);
     enableWidget(enable8, _postCorrFileChooser);
+
+    enableWidget(!enable8, _pppMountLineEdit);
   }
 }
 
