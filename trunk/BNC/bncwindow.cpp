@@ -379,7 +379,8 @@ bncWindow::bncWindow() {
   _pppRefdULineEdit      = new QLineEdit(settings.value("pppRefdU").toString());
   _pppSync               = new QLineEdit(settings.value("pppSync").toString());
   _pppAntennaLineEdit    = new QLineEdit(settings.value("pppAntenna").toString());
-  _pppAntexLineEdit      = new QLineEdit(settings.value("pppAntex").toString());
+  _pppAntexFileChooser   = new qtFileChooser;
+  _pppAntexFileChooser->setFileName(settings.value("pppAntex").toString());
 
 
   _pppSPPComboBox = new QComboBox();
@@ -441,7 +442,7 @@ bncWindow::bncWindow() {
   connect(_pppSPPComboBox, SIGNAL(currentIndexChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
-  connect(_pppAntexLineEdit, SIGNAL(textChanged(const QString &)),
+  connect(_pppAntexFileChooser, SIGNAL(fileNameChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
   connect(_pppQuickStartLineEdit, SIGNAL(textChanged(const QString &)),
@@ -649,7 +650,7 @@ bncWindow::bncWindow() {
     "that time.</p><p> Non-zero value 'Sync Corr' (i.e. 5) means that the epochs of data "
     "are buffered and the processing of each epoch is postponed till the satellite clock "
     "corrections not older than 'Sync Corr' seconds are available.<p>"));
-  _pppAntexLineEdit->setWhatsThis(tr("<p>IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets and variations.</p>"));
+  _pppAntexFileChooser->setWhatsThis(tr("<p>IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets and variations.</p>"));
   _pppAntennaLineEdit->setWhatsThis(tr("<p>Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Corrections for phase center variations are not yet applied by BNC. The specified name must consist of 20 characters. Add trailing blanks if the antenna name has less then 20 characters.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets.</p>"));
   _pppApplySatAntCheckBox->setWhatsThis(tr("<p>This option is not yet working.</p><p>Satellite orbit and clock corrections refer to the satellite's antenna phase centers and hence observations are actually <u>not</u> to be corrected for satellite antenna phase center offsets. However, you may like to tick 'Apply Offsets' to force BNC to correct observations for satellite antenna phase center offsets.</p><p>Default is to <u>not</u> correct observations for satellite antenna phase center offsets."));
   _cmbTable->setWhatsThis(tr("<p>BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors from various providers. Hit the 'Add Row' button, Double click on the 'Mountpoint' field to enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter the weight to be applied for this stream in the combination.</p><p>Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense there if the update rate of incoming clock corrections is i.e. 10 seconds.</p><p>Note further that the sequence of rows in the 'Combination Table' is of importance because the orbit information in the final combination stream is just copied from the stream listed in the first row. Hence the first line in the 'Combination Table' defines a kind of 'Master AC'. The update rate of the combination product follows the 'Master AC's update rate.</p><p>The combination process requires Broadcast Ephemeris. Besides the orbit and clock corrections stream(s) BNC must therefore pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages.</p>"));
@@ -990,7 +991,7 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 2)</b>"), ir, 0, 1, 8);
   ++ir;
   ppp2Layout->addWidget(new QLabel("Antennas"),             ir, 0);
-  ppp2Layout->addWidget(_pppAntexLineEdit,                  ir, 1, 1, 3);
+  ppp2Layout->addWidget(_pppAntexFileChooser,               ir, 1, 1, 3);
   ppp2Layout->addWidget(new QLabel("ANTEX File   "),        ir, 4);
   ppp2Layout->addWidget(_pppAntennaLineEdit,                ir, 5, 1, 3);
   ppp2Layout->addWidget(new QLabel("Rec. Ant. Name"),       ir, 8);
@@ -1496,7 +1497,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppGLONASS",  _pppGLONASSCheckBox->checkState());
   settings.setValue("pppGalileo",  _pppGalileoCheckBox->checkState());
   settings.setValue("pppAntenna",      _pppAntennaLineEdit->text());
-  settings.setValue("pppAntex",	       _pppAntexLineEdit->text());         
+  settings.setValue("pppAntex",	       _pppAntexFileChooser->fileName());
   settings.setValue("pppApplySatAnt", _pppApplySatAntCheckBox->checkState());
   settings.setValue("mountPoints", mountPoints);
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
@@ -1999,7 +2000,7 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _pppQuickStartLineEdit
      || sender() == _pppEstTropoCheckBox
      || sender() == _pppUsePhaseCheckBox    
-     || sender() == _pppAntexLineEdit ) {
+     || sender() == _pppAntexFileChooser ) {
 
     enable = (!_pppMountLineEdit->text().isEmpty() && !_pppCorrMountLineEdit->text().isEmpty()) ||
              (!_pppMountLineEdit->text().isEmpty() && _pppSPPComboBox->currentText() == "SPP")  ||
@@ -2018,7 +2019,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _pppEstTropoCheckBox);
     enableWidget(enable, _pppGLONASSCheckBox);
     enableWidget(enable, _pppGalileoCheckBox);
-    enableWidget(enable, _pppAntexLineEdit);
+    enableWidget(enable, _pppAntexFileChooser);
     enableWidget(enable, _pppSigCLineEdit);
     enableWidget(enable, _pppSigCrd0);
     enableWidget(enable, _pppSigCrdP);
@@ -2033,7 +2034,7 @@ void bncWindow::slotBncTextChanged(){
     bool enable3 = enable2 && !_pppQuickStartLineEdit->text().isEmpty();
     enableWidget(enable3, _pppMaxSolGapLineEdit);
 
-    bool enable4 = enable && !_pppAntexLineEdit->text().isEmpty();
+    bool enable4 = enable && !_pppAntexFileChooser->fileName().isEmpty();
     enableWidget(enable4, _pppAntennaLineEdit);
     enableWidget(enable4, _pppApplySatAntCheckBox);
 
