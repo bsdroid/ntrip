@@ -61,6 +61,7 @@
 #include "upload/bnccustomtrafo.h"
 #include "upload/bncephuploadcaster.h"
 #include "qtfilechooser.h"
+#include "bncpostprocess.h"
 
 using namespace std;
 
@@ -2237,11 +2238,11 @@ void bncWindow::slotPostProcessing() {
   _postProgressBar->reset();
   enableWidget(true, _postProgressLabel);
   enableWidget(true, _postProgressBar);
-  //// beg test
-  for (int ii = 0; ii <= 10000; ++ii) {
-    _postProgressBar->setValue(ii/100);
-  }
-  //// end test
+
+  t_postInput input;
+
+  QFuture<void> future = QtConcurrent::run(postProcessing, input);
+
   enableWidget(false, _postProgressLabel);
   enableWidget(false, _postProgressBar);
   _postProgressBar->reset();
