@@ -40,12 +40,24 @@
 
 #include <iostream>
 #include "bncpostprocess.h"
+#include "bncsettings.h"
 
 using namespace std;
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_irc postProcessing(const t_postInput& input) {
+t_irc postProcessingInit(t_postInput& input) {
+  bncSettings settings;
+  input.obsFileName  = settings.value("postObsFile").toString();
+  input.navFileName  = settings.value("postNavFile").toString();
+  input.corrFileName = settings.value("postcorrFile").toString();
+
+  return success;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+t_irc postProcessingRun(const t_postInput& input) {
 
   cout << "obsFile: "  << input.obsFileName.toAscii().data()  << endl;
   cout << "navFile: "  << input.navFileName.toAscii().data()  << endl;
