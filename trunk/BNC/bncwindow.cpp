@@ -934,6 +934,8 @@ bncWindow::bncWindow() {
   _postCorrFileChooser->setFileName(settings.value("postCorrFile").toString());
   _postCorrFileChooser->setWhatsThis(tr("Full Path to DGPS Correction File"));
 
+  _postOutLineEdit = new QLineEdit(settings.value("postOutFile").toString());
+
   int ir = 0;
   pppLayout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 1)</b>"), ir, 0, 1, 8);
   ++ir;
@@ -975,6 +977,9 @@ bncWindow::bncWindow() {
     hlpLayout->addWidget(new QLabel("Corr"));
   }
   pppLayout->addLayout(hlpLayout, ir, 1, 1, 7);
+  ++ir;
+  pppLayout->addWidget(_postOutLineEdit);
+  pppLayout->addWidget(new QLabel("Output"));
 
   pppgroup->setLayout(pppLayout);
 
@@ -1029,9 +1034,6 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(new QLabel("Sync Corr (sec)   "),   ir, 2);
   ppp2Layout->addWidget(_pppAverageLineEdit,                ir, 3, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("Averaging (min)") ,     ir, 4);  
-  ++ir;
-  ppp2Layout->addWidget(new QLabel(" "),                    ir, 0);
-  ppp2Layout->setRowStretch(ir, 99);
 
   ppp2group->setLayout(ppp2Layout);
 
@@ -1557,6 +1559,7 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("postObsFile", _postObsFileChooser->fileName());
   settings.setValue("postNavFile", _postNavFileChooser->fileName());
   settings.setValue("postCorrFile", _postCorrFileChooser->fileName());
+  settings.setValue("postOutFile", _postOutLineEdit->text());
 
   if (_caster) {
     _caster->slotReadMountPoints();
