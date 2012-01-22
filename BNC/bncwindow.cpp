@@ -60,6 +60,7 @@
 #include "bncsslconfig.h"
 #include "upload/bnccustomtrafo.h"
 #include "upload/bncephuploadcaster.h"
+#include "qtfilechooser.h"
 
 using namespace std;
 
@@ -909,6 +910,11 @@ bncWindow::bncWindow() {
   _pppSync->setMaximumWidth(6*ww);
   _pppSPPComboBox->setMaximumWidth(8*ww);
   _pppNMEAPortLineEdit->setMaximumWidth(6*ww);
+
+  _postObsFileChooser = new qtFileChooser;
+  _postNavFileChooser = new qtFileChooser;
+  _postCorrFileChooser = new qtFileChooser;
+
   int ir = 0;
   pppLayout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 1)</b>"), ir, 0, 1, 8);
   ++ir;
@@ -950,6 +956,10 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("PPP Plot"),         ir, 8);
   ++ir;
   pppLayout->addWidget(new QLabel("<b>Post-Processing</b>"), ir, 0);
+  pppLayout->addWidget(_postObsFileChooser,            ir, 8);
+  pppLayout->addWidget(_postNavFileChooser,            ir, 8);
+  ++ir;
+  pppLayout->addWidget(_postCorrFileChooser,           ir, 8);
   ++ir;
   pppLayout->addWidget(new QLabel(" "),                ir, 0);
   pppLayout->setRowStretch(ir, 99);
