@@ -45,7 +45,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bancroft.h bncmodel.h bncfigureppp.h bncrawfile.h           \ 
           bnctides.h bncmap.h bncmapview.h bncantex.h                 \
           bncephuser.h bncoutf.h bncclockrinex.h bncsp3.h             \
-          bncbytescounter.h bncsslconfig.h                            \
+          bncbytescounter.h bncsslconfig.h bncpostprocess.h           \
           upload/bncrtnetdecoder.h upload/bncuploadcaster.h           \
           upload/bncrtnetuploadcaster.h upload/bnccustomtrafo.h       \
           upload/bncephuploadcaster.h bnccomb.h qtfilechooser.h       \
@@ -77,7 +77,7 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bancroft.cpp bncmodel.cpp bncfigureppp.cpp bncrawfile.cpp   \
           bnctides.cpp bncmap.cpp bncmapview.cpp bncantex.cpp         \
           bncephuser.cpp bncoutf.cpp bncclockrinex.cpp bncsp3.cpp     \
-          bncbytescounter.cpp bncsslconfig.cpp                        \
+          bncbytescounter.cpp bncsslconfig.cpp bncpostprocess.cpp     \
           upload/bncrtnetdecoder.cpp upload/bncuploadcaster.cpp       \
           upload/bncrtnetuploadcaster.cpp upload/bnccustomtrafo.cpp   \
           upload/bncephuploadcaster.cpp qtfilechooser.cpp             \
