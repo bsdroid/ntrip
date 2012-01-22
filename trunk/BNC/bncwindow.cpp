@@ -2239,7 +2239,12 @@ void bncWindow::slotPostProcessing() {
   enableWidget(true, _postProgressLabel);
   enableWidget(true, _postProgressBar);
 
+  bncSettings settings;
+
   t_postInput input;
+  input.obsFileName  = settings.value("postObsFile").toString();
+  input.navFileName  = settings.value("navObsFile").toString();
+  input.corrFileName = settings.value("corrtObsFile").toString();
 
   QFuture<void> future = QtConcurrent::run(postProcessing, input);
 
