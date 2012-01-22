@@ -2226,9 +2226,8 @@ void bncWindow::slotPostProcessing() {
   enableWidget(true, _postProgressLabel);
   enableWidget(true, _postProgressBar);
   //// beg test
-  for (int ii = 0; ii <= 100; ii += 20) {
-    _postProgressBar->setValue(ii);
-    sleep(1);
+  for (int ii = 0; ii <= 10000; ++ii) {
+    _postProgressBar->setValue(ii/100);
   }
   //// end test
   enableWidget(false, _postProgressLabel);
