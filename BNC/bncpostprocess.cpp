@@ -74,4 +74,6 @@ void t_postProcessing::run() {
   }
 
   emit finished();
+
+  deleteLater();
 }
