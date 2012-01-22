@@ -161,6 +161,7 @@ class bncWindow : public QMainWindow {
     qtFileChooser* _postCorrFileChooser;
     QProgressBar*  _postProgressBar;
     QLabel*        _postProgressLabel;
+    QLineEdit*     _postOutLineEdit;
 
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;
