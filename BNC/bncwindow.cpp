@@ -955,17 +955,17 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppPlotCoordinates,            ir, 7, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("PPP Plot"),         ir, 8);
   ++ir;
-  pppLayout->addWidget(new QLabel("<b>Post-Processing</b>"), ir, 0);
-  pppLayout->addWidget(new QLabel("Input (RINEX)"),    ir, 1); 
-  pppLayout->addWidget(_postObsFileChooser,            ir, 2);
-  pppLayout->addWidget(new QLabel("Obs"),              ir, 3); 
-  pppLayout->addWidget(_postNavFileChooser,            ir, 4);
-  pppLayout->addWidget(new QLabel("Nav"),              ir, 5); 
-  ++ir;
-  pppLayout->addWidget(_postCorrFileChooser,           ir, 2);
-  ++ir;
-  pppLayout->addWidget(new QLabel(" "),                ir, 0);
-  pppLayout->setRowStretch(ir, 99);
+  pppLayout->addWidget(new QLabel("<b>Post-Processing</b>"));
+  QHBoxLayout* hlpLayout = new QHBoxLayout;
+  {
+    hlpLayout->addWidget(_postObsFileChooser);
+    hlpLayout->addWidget(new QLabel("Obs"));
+    hlpLayout->addWidget(_postNavFileChooser);
+    hlpLayout->addWidget(new QLabel("Nav"));
+    hlpLayout->addWidget(_postCorrFileChooser);
+    hlpLayout->addWidget(new QLabel("Corr"));
+  }
+  pppLayout->addLayout(hlpLayout, ir, 1, 1, 7);
 
   pppgroup->setLayout(pppLayout);
 
