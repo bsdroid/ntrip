@@ -61,11 +61,11 @@ class bncWindow : public QMainWindow {
     ~bncWindow();
     void CreateMenu();
     void AddToolbar();
-    void postProgress(float progress);
 
   public slots:  
     void slotMountPointsRead(QList<bncGetThread*>);
     void slotBncTextChanged();
+    void slotPostProgress(float);
 
   private slots:
     void slotWindowMessage(const QByteArray msg, bool showOnScreen);

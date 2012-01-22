@@ -45,6 +45,7 @@ Q_OBJECT
   ~t_postProcessing();
 
  signals:
+  void progress(float);
   void finished();
    
  public:
