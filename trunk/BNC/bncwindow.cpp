@@ -956,10 +956,13 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("PPP Plot"),         ir, 8);
   ++ir;
   pppLayout->addWidget(new QLabel("<b>Post-Processing</b>"), ir, 0);
-  pppLayout->addWidget(_postObsFileChooser,            ir, 8);
-  pppLayout->addWidget(_postNavFileChooser,            ir, 8);
+  pppLayout->addWidget(new QLabel("Input (RINEX)"),    ir, 1); 
+  pppLayout->addWidget(_postObsFileChooser,            ir, 2);
+  pppLayout->addWidget(new QLabel("Obs"),              ir, 3); 
+  pppLayout->addWidget(_postNavFileChooser,            ir, 4);
+  pppLayout->addWidget(new QLabel("Nav"),              ir, 5); 
   ++ir;
-  pppLayout->addWidget(_postCorrFileChooser,           ir, 8);
+  pppLayout->addWidget(_postCorrFileChooser,           ir, 2);
   ++ir;
   pppLayout->addWidget(new QLabel(" "),                ir, 0);
   pppLayout->setRowStretch(ir, 99);
