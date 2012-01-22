@@ -2254,7 +2254,7 @@ void bncWindow::slotStartPostProcessing() {
   enableWidget(true, _postProgressLabel);
 
   t_postProcessing* postProcessing = new t_postProcessing(this);
-  connect(postProcessing, SLOT(finished()), this, SIGNAL(slotFinishedPostProcessing));
+  connect(postProcessing, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessing()));
 
   postProcessing->start();
 }
