@@ -2261,8 +2261,6 @@ void bncWindow::slotStartPostProcessing() {
 // Post-Processing Finished
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFinishedPostProcessing() {
-  cout << "slotFinishedPostProcessing" << endl;
-
   enableWidget(false, _postProgressLabel);
   _postProgressBar->reset();
   _actPostProcessing->setEnabled(true);
@@ -2271,7 +2269,6 @@ void bncWindow::slotFinishedPostProcessing() {
 // Progress Bar Change
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotPostProgress(float progress) {
-  cout << "slotPostProgress" << endl;
   if (_postProgressBar) {
     _postProgressBar->setValue(int(progress*100.0));
   }
