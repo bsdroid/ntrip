@@ -30,12 +30,30 @@
 
 class t_postInput {
  public:
-  QString obsFileName;
-  QString navFileName;
-  QString corrFileName;
+  QString    obsFileName;
+  QString    navFileName;
+  QString    corrFileName;
 };
 
-t_irc postProcessingInit(t_postInput& input);
-t_irc postProcessingRun(const t_postInput& input);
+class t_postProcessing : public QThread {
+Q_OBJECT
+ 
+ public:
+  t_postProcessing(QObject* parent);
+
+ protected:
+  ~t_postProcessing();
+
+ signals:
+  void finished();
+   
+ public:
+  void terminate();
+  virtual void run();
+ 
+ private:
+  t_postInput _input;
+  bool        _isToBeDeleted;
+};
 
 #endif

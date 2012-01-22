@@ -1143,10 +1143,6 @@ bncWindow::bncWindow() {
   if ( Qt::CheckState(settings.value("autoStart").toInt()) == Qt::Checked) {
     slotGetData();
   }
-
-  // Post-Processing Watcher
-  // -----------------------
-  _postWatcher = 0;
 }
 
 // Destructor
@@ -2249,30 +2245,34 @@ void bncWindow::slotSetUploadTrafo() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotStartPostProcessing() {
 
+  _actPostProcessing->setEnabled(false);
+
   slotSaveOptions();
 
-  _actPostProcessing->setEnabled(false);
   _postProgressBar->reset();
   _postProgressBar->show();
   enableWidget(true, _postProgressLabel);
 
-  t_postInput input;
-  postProcessingInit(input);
+  t_postProcessing* postProcessing = new t_postProcessing(this);
+  connect(postProcessing, SLOT(finished()), this, SIGNAL(slotFinishedPostProcessing));
 
-  _postWatcher = new QFutureWatcher<t_irc>;
-  connect(_postWatcher, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessing()));
-
-  _postFuture = QtConcurrent::run(postProcessingRun, input);
-  _postWatcher->setFuture(_postFuture);
+  postProcessing->start();
 }
 
 // Post-Processing Finished
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFinishedPostProcessing() {
   cout << "slotFinishedPostProcessing" << endl;
-  delete _postWatcher;
-  _postWatcher = 0;
+
   enableWidget(false, _postProgressLabel);
   _postProgressBar->hide();
   _actPostProcessing->setEnabled(true);
+}
+
+// Progress Bar Change
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::postProgress(float progress) {
+  if (_postProgressBar) {
+    _postProgressBar->setValue(int(progress*100.0));
+  }
 }

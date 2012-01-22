@@ -61,6 +61,7 @@ class bncWindow : public QMainWindow {
     ~bncWindow();
     void CreateMenu();
     void AddToolbar();
+    void postProgress(float progress);
 
   public slots:  
     void slotMountPointsRead(QList<bncGetThread*>);
@@ -163,8 +164,6 @@ class bncWindow : public QMainWindow {
     QProgressBar*  _postProgressBar;
     QLabel*        _postProgressLabel;
     QLineEdit*     _postOutLineEdit;
-    QFutureWatcher<t_irc>* _postWatcher;
-    QFuture<t_irc>         _postFuture;
 
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;
