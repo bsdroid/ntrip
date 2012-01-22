@@ -119,6 +119,13 @@ bncWindow::bncWindow() {
   _actPostProcessing = new QAction(tr("Start PP"),this);
   connect(_actPostProcessing, SIGNAL(triggered()), SLOT(slotPostProcessing()));
 
+  _postProgressBar = new QProgressBar;
+  _postProgressBar->setTextVisible(true);
+  _postProgressBar->setMinimum(0);
+  _postProgressBar->setMaximum(100);
+  _postProgressBar->setMinimumWidth(20*ww);
+  _postProgressBar->setMaximumWidth(20*ww);
+
   _actStop = new QAction(tr("Sto&p"),this);
   connect(_actStop, SIGNAL(triggered()), SLOT(slotStop()));
   _actStop->setEnabled(false);
@@ -1795,7 +1802,12 @@ void bncWindow::AddToolbar() {
   toolBar->addAction(_actGetData);
   toolBar->addAction(_actStop);
   toolBar->addAction(_actPostProcessing);
-  toolBar->addWidget(new QLabel("                                   "));
+  _postProgressLabel = new QLabel("  Progress");
+  toolBar->addWidget(_postProgressLabel);
+  toolBar->addWidget(_postProgressBar);
+  enableWidget(false, _postProgressLabel);
+  enableWidget(false, _postProgressBar);
+  toolBar->addWidget(new QLabel("                                           "));
   toolBar->addAction(_actwhatsthis);
 } 
 
@@ -2210,5 +2222,17 @@ void bncWindow::slotSetUploadTrafo() {
 void bncWindow::slotPostProcessing() {
   _actPostProcessing->setEnabled(false);
   slotSaveOptions();
-  cout << "slotPostProcessing" << endl;
+  _postProgressBar->reset();
+  enableWidget(true, _postProgressLabel);
+  enableWidget(true, _postProgressBar);
+  //// beg test
+  for (int ii = 0; ii <= 100; ii += 20) {
+    _postProgressBar->setValue(ii);
+    sleep(1);
+  }
+  //// end test
+  enableWidget(false, _postProgressLabel);
+  enableWidget(false, _postProgressBar);
+  _postProgressBar->reset();
+  _actPostProcessing->setEnabled(true);
 }

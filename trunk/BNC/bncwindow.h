@@ -159,6 +159,8 @@ class bncWindow : public QMainWindow {
     qtFileChooser* _postObsFileChooser;
     qtFileChooser* _postNavFileChooser;
     qtFileChooser* _postCorrFileChooser;
+    QProgressBar*  _postProgressBar;
+    QLabel*        _postProgressLabel;
 
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;
