@@ -978,8 +978,8 @@ bncWindow::bncWindow() {
   }
   pppLayout->addLayout(hlpLayout, ir, 1, 1, 7);
   ++ir;
-  pppLayout->addWidget(_postOutLineEdit);
-  pppLayout->addWidget(new QLabel("Output"));
+  pppLayout->addWidget(_postOutLineEdit, ir, 1);
+  pppLayout->addWidget(new QLabel("Output"), ir, 2);
 
   pppgroup->setLayout(pppLayout);
 
