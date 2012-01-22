@@ -930,8 +930,8 @@ bncWindow::bncWindow() {
   _postNavFileChooser->setWhatsThis(tr("Full Path to RINEX Navigation File"));
 
   _postCorrFileChooser = new qtFileChooser;
-  _postNavFileChooser->setFileName(settings.value("postCorrFile").toString());
-  _postNavFileChooser->setWhatsThis(tr("Full Path to DGPS Correction File"));
+  _postCorrFileChooser->setFileName(settings.value("postCorrFile").toString());
+  _postCorrFileChooser->setWhatsThis(tr("Full Path to DGPS Correction File"));
 
   int ir = 0;
   pppLayout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 1)</b>"), ir, 0, 1, 8);
