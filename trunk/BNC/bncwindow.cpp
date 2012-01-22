@@ -2243,8 +2243,8 @@ void bncWindow::slotPostProcessing() {
 
   t_postInput input;
   input.obsFileName  = settings.value("postObsFile").toString();
-  input.navFileName  = settings.value("navObsFile").toString();
-  input.corrFileName = settings.value("corrtObsFile").toString();
+  input.navFileName  = settings.value("postNavFile").toString();
+  input.corrFileName = settings.value("postcorrFile").toString();
 
   QFuture<void> future = QtConcurrent::run(postProcessing, input);
 
