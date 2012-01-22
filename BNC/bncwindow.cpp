@@ -380,8 +380,10 @@ bncWindow::bncWindow() {
   _pppRefdELineEdit      = new QLineEdit(settings.value("pppRefdE").toString());
   _pppRefdULineEdit      = new QLineEdit(settings.value("pppRefdU").toString());
   _pppSync               = new QLineEdit(settings.value("pppSync").toString());
-  _pppAntennaLineEdit    = new QLineEdit(settings.value("pppAntenna").toString());
   _pppAntexFileChooser   = new qtFileChooser;
+  _pppAntexFileChooser->setMinimumWidth(12*ww);
+  _pppAntennaLineEdit    = new QLineEdit(settings.value("pppAntenna").toString());
+  _pppAntennaLineEdit->setMinimumWidth(14*ww);
   _pppAntexFileChooser->setFileName(settings.value("pppAntex").toString());
 
 
@@ -979,7 +981,7 @@ bncWindow::bncWindow() {
     hlpLayout->addWidget(new QLabel("    Corr"));
     hlpLayout->addWidget(_postCorrFileChooser);
   }
-  pppLayout->addLayout(hlpLayout, ir, 1, 1, 7);
+  pppLayout->addLayout(hlpLayout, ir, 1, 1, 8);
   ++ir;
   pppLayout->addWidget(new QLabel("Output"), ir, 1);
   pppLayout->addWidget(_postOutLineEdit, ir, 2, 1, 2);
@@ -993,14 +995,16 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 2)</b>"), ir, 0, 1, 8);
   ++ir;
   ppp2Layout->addWidget(new QLabel("Antennas"),             ir, 0);
-  ppp2Layout->addWidget(_pppAntexFileChooser,               ir, 1, 1, 3);
-  ppp2Layout->addWidget(new QLabel("ANTEX File   "),        ir, 4);
-  ppp2Layout->addWidget(_pppAntennaLineEdit,                ir, 5, 1, 3);
-  ppp2Layout->addWidget(new QLabel("Rec. Ant. Name"),       ir, 8);
-  ++ir;
-  ppp2Layout->addWidget(new QLabel("Satellite Antenna   "), ir, 0);
-  ppp2Layout->addWidget(_pppApplySatAntCheckBox,            ir, 1, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Apply Offsets"),        ir, 2, Qt::AlignLeft);
+  QHBoxLayout* hlp2Layout = new QHBoxLayout;
+  {
+    hlp2Layout->addWidget(_pppAntexFileChooser);
+    hlp2Layout->addWidget(new QLabel("ANTEX File"));
+    hlp2Layout->addWidget(_pppAntennaLineEdit);
+    hlp2Layout->addWidget(new QLabel("Antenna Name"));
+    hlp2Layout->addWidget(_pppApplySatAntCheckBox);
+    hlp2Layout->addWidget(new QLabel("Apply Sat. Ant. Offsets"));
+  }
+  ppp2Layout->addLayout(hlp2Layout, ir, 1, 1, 8);
   ++ir;
   ppp2Layout->addWidget(new QLabel("Sigmas"),               ir, 0);
   ppp2Layout->addWidget(_pppSigCLineEdit,                   ir, 1, Qt::AlignRight);
