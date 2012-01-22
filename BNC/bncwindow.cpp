@@ -1794,6 +1794,7 @@ void bncWindow::AddToolbar() {
   toolBar->addAction(_actDeleteMountPoints);
   toolBar->addAction(_actGetData);
   toolBar->addAction(_actStop);
+  toolBar->addAction(_actPostProcessing);
   toolBar->addWidget(new QLabel("                                   "));
   toolBar->addAction(_actwhatsthis);
 } 
