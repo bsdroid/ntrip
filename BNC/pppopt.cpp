@@ -39,7 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
-#include "bncopt.h"
+#include "pppopt.h"
 #include "bncsettings.h"
 
 using namespace std;
@@ -63,12 +63,12 @@ t_pppOpt::t_pppOpt() {
   antEccNEU[2] = settingsToDouble("pppRefdU");
   maxSolGap    = settingsToDouble("pppMaxSolGap");
   quickStart   = settingsToDouble("pppQuickStart"); if (!refCrdSet()) quickStart = 0.0;
-  corrSync     = settingsToDouble("pppSync");       if (!pppMode) corrSynC = 0.0;
+  corrSync     = settingsToDouble("pppSync");       if (!pppMode) corrSync = 0.0;
 
-  pppCorrMount = setting.value("pppCorrMount").toString();
-  nmeaFile     = setting.value("nmeaFile").toString();
-  antexFile    = setting.value("pppAntex").toString();
-  antennaName  = setting.value("pppAntenna").toString();
+  pppCorrMount = settings.value("pppCorrMount").toString();
+  nmeaFile     = settings.value("nmeaFile").toString();
+  antexFile    = settings.value("pppAntex").toString();
+  antennaName  = settings.value("pppAntenna").toString();
 
   pppMode      = settings.value("pppSPP").toString() == "PPP";
   rnxAppend    = settingsChecked("rnxAppend");
@@ -88,7 +88,6 @@ t_pppOpt::~t_pppOpt() {
 double t_pppOpt::settingsToDouble(const QByteArray& keyName, 
                                   double defaultValue) const {
   bncSettings settings;
-
   if (settings.value(keyName).toString().isEmpty()) {
     return defaultValue;
   }
@@ -100,6 +99,7 @@ double t_pppOpt::settingsToDouble(const QByteArray& keyName,
 // Settings Checked
 ////////////////////////////////////////////////////////////////////////////
 bool t_pppOpt::settingsChecked(const QByteArray& keyName) const {
+  bncSettings settings;
   if (Qt::CheckState(settings.value(keyName).toInt()) == Qt::Checked) {
     return true;
   }
