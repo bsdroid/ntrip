@@ -1976,7 +1976,6 @@ void bncWindow::slotBncTextChanged(){
              (!_pppMountLineEdit->text().isEmpty() && _pppSPPComboBox->currentText() == "SPP")  ||
              (_pppSPPComboBox->currentText() == "Post-Processing");
 
-    enableWidget(enable, _pppSPPComboBox);
     enableWidget(enable, _pppNMEALineEdit);
     enableWidget(enable, _pppNMEAPortLineEdit);
     enableWidget(enable, _pppRefCrdXLineEdit);
@@ -2019,6 +2018,11 @@ void bncWindow::slotBncTextChanged(){
     bool enable7 = enable && _pppSPPComboBox->currentText() == "PPP";
     enableWidget(enable7, _pppSync);
     enableWidget(enable7, _pppCorrMountLineEdit);
+
+    bool enable8 = _pppSPPComboBox->currentText() == "Post-Processing";
+    enableWidget(enable8, _postObsFileChooser);
+    enableWidget(enable8, _postNavFileChooser);
+    enableWidget(enable8, _postCorrFileChooser);
   }
 }
 
