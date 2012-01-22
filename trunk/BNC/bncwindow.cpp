@@ -939,8 +939,8 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppGLONASSCheckBox,            ir, 5, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Use GLONASS"),      ir, 6);
   pppLayout->addWidget(_pppGalileoCheckBox,            ir, 7, Qt::AlignRight);
-  ++ir;
   pppLayout->addWidget(new QLabel("Use Galileo     "), ir, 8);
+  ++ir;
   pppLayout->addWidget(new QLabel("Output"),           ir, 0); 
   pppLayout->addWidget(_pppNMEALineEdit,               ir, 1, 1, 3);
   pppLayout->addWidget(new QLabel("NMEA File"),        ir, 4); 
@@ -988,8 +988,8 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(_pppQuickStartLineEdit,             ir, 5, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("Quick-Start (sec)  "),  ir, 6);  
   ppp2Layout->addWidget(_pppMaxSolGapLineEdit,              ir, 7, Qt::AlignRight);
-  ++ir;
   ppp2Layout->addWidget(new QLabel("Max Sol. Gap (sec)"),   ir, 8);  
+  ++ir;
   ppp2Layout->addWidget(new QLabel("Options cont'd"),       ir, 0);
   ppp2Layout->addWidget(_pppSync,                           ir, 1);
   ppp2Layout->addWidget(new QLabel("Sync Corr (sec)   "),   ir, 2);
