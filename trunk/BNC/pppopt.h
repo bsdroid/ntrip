@@ -25,6 +25,8 @@
 #ifndef PPPOPT_H
 #define PPPOPT_H
 
+#include <QtCore>
+
 class t_pppOpt {
  public:
   t_pppOpt();
@@ -40,10 +42,10 @@ class t_pppOpt {
   double  sigTrpP;
   double  refCrd[3];
   double  antEccNEU[3];
-  double  pppCorrMount;
   double  maxSolGap;
   double  quickStart;
   double  corrSync;
+  QString pppCorrMount;
   QString nmeaFile;
   QString antexFile;
   QString antennaName;

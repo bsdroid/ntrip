@@ -39,7 +39,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bncnetquery.h bncnetqueryv1.h bncnetqueryv2.h               \
           bncnetqueryrtp.h bncsettings.h latencychecker.h             \
           bncipport.h bncnetqueryv0.h bncnetqueryudp.h                \ 
-          bncnetqueryudp0.h bncudpport.h bnctime.h                    \ 
+          bncnetqueryudp0.h bncudpport.h bnctime.h pppopt.h           \ 
           bncserialport.h bncnetquerys.h bncfigure.h                  \ 
           bncfigurelate.h bncpppclient.h bncversion.h                 \ 
           bancroft.h bncmodel.h bncfigureppp.h bncrawfile.h           \ 
@@ -71,7 +71,7 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bnczerodecoder.cpp bncnetqueryv1.cpp bncnetqueryv2.cpp      \
           bncnetqueryrtp.cpp bncsettings.cpp latencychecker.cpp       \
           bncipport.cpp bncnetqueryv0.cpp bncnetqueryudp.cpp          \
-          bncnetqueryudp0.cpp bncudpport.cpp                          \
+          bncnetqueryudp0.cpp bncudpport.cpp pppopt.cpp               \
           bncserialport.cpp bncnetquerys.cpp bncfigure.cpp            \
           bncfigurelate.cpp bncpppclient.cpp bnctime.cpp              \
           bancroft.cpp bncmodel.cpp bncfigureppp.cpp bncrawfile.cpp   \
