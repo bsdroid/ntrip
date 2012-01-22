@@ -75,6 +75,7 @@ class bncWindow : public QMainWindow {
     void slotSaveOptions();
     void slotAddMountPoints();
     void slotGetData();
+    void slotPostProcessing();
     void slotStop();
     void slotNewMountPoints(QStringList* mountPoints);
     void slotDeleteMountPoints();
@@ -106,6 +107,7 @@ class bncWindow : public QMainWindow {
     QAction*   _actSaveOpt;
     QAction*   _actQuit; 
     QAction*   _actGetData;
+    QAction*   _actPostProcessing;
     QAction*   _actStop;
     QAction*   _actAddMountPoints;
     QAction*   _actDeleteMountPoints;
