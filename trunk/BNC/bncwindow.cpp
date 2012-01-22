@@ -121,7 +121,7 @@ bncWindow::bncWindow() {
   connect(_actPostProcessing, SIGNAL(triggered()), SLOT(slotPostProcessing()));
 
   _postProgressBar = new QProgressBar;
-  _postProgressBar->setTextVisible(true);
+  _postProgressBar->hide();
   _postProgressBar->setMinimum(0);
   _postProgressBar->setMaximum(100);
   _postProgressBar->setMinimumWidth(20*ww);
@@ -940,6 +940,7 @@ bncWindow::bncWindow() {
   _postCorrFileChooser->setWhatsThis(tr("Full Path to DGPS Correction File"));
 
   _postOutLineEdit = new QLineEdit(settings.value("postOutFile").toString());
+  _postOutLineEdit->setWhatsThis(tr("Full Path to DGPS Correction File"));
 
   int ir = 0;
   pppLayout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 1)</b>"), ir, 0, 1, 8);
@@ -1829,7 +1830,6 @@ void bncWindow::AddToolbar() {
   toolBar->addWidget(_postProgressLabel);
   toolBar->addWidget(_postProgressBar);
   enableWidget(false, _postProgressLabel);
-  enableWidget(false, _postProgressBar);
   toolBar->addWidget(new QLabel("                                           "));
   toolBar->addAction(_actwhatsthis);
 } 
@@ -2059,6 +2059,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable8, _postObsFileChooser);
     enableWidget(enable8, _postNavFileChooser);
     enableWidget(enable8, _postCorrFileChooser);
+    enableWidget(enable8, _postOutLineEdit);
     _actPostProcessing->setEnabled(enable8);
 
     enableWidget(!enable8, _pppMountLineEdit);
@@ -2246,8 +2247,8 @@ void bncWindow::slotPostProcessing() {
   _actPostProcessing->setEnabled(false);
   slotSaveOptions();
   _postProgressBar->reset();
+  _postProgressBar->show();
   enableWidget(true, _postProgressLabel);
-  enableWidget(true, _postProgressBar);
 
   bncSettings settings;
 
@@ -2259,7 +2260,6 @@ void bncWindow::slotPostProcessing() {
   QFuture<void> future = QtConcurrent::run(postProcessing, input);
 
   enableWidget(false, _postProgressLabel);
-  enableWidget(false, _postProgressBar);
-  _postProgressBar->reset();
+  _postProgressBar->hide();
   _actPostProcessing->setEnabled(true);
 }
