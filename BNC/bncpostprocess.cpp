@@ -47,30 +47,16 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_postProcessing::t_postProcessing(QObject* parent) : QThread(parent) {
-
   bncSettings settings;
   _input.obsFileName  = settings.value("postObsFile").toString();
   _input.navFileName  = settings.value("postNavFile").toString();
   _input.corrFileName = settings.value("postcorrFile").toString();
-
-  _isToBeDeleted = false;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_postProcessing::~t_postProcessing() {
-  if (isRunning()) {
-    wait();
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void t_postProcessing::terminate() {
-  _isToBeDeleted = true;
-  if (!isRunning()) {
-    delete this;
-  }
+  cout << "~t_postProcessing" << endl;
 }
 
 //  
@@ -81,9 +67,11 @@ void t_postProcessing::run() {
   cout << "navFile: "  << _input.navFileName.toAscii().data()  << endl;
   cout << "corrFile: " << _input.corrFileName.toAscii().data() << endl;
 
-  int MAXI = 10;
+  int MAXI = 5;
   for (int ii = 1; ii < MAXI; ii++) {
     cout << "ii = " << ii << endl;
     sleep(1);
   }
+
+  emit finished();
 }

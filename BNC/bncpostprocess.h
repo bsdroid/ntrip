@@ -48,12 +48,10 @@ Q_OBJECT
   void finished();
    
  public:
-  void terminate();
   virtual void run();
  
  private:
   t_postInput _input;
-  bool        _isToBeDeleted;
 };
 
 #endif
