@@ -35,6 +35,7 @@ class t_postInput {
   QString corrFileName;
 };
 
-t_irc postProcessing(const t_postInput& input);
+t_irc postProcessingInit(t_postInput& input);
+t_irc postProcessingRun(const t_postInput& input);
 
 #endif

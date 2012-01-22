@@ -118,7 +118,7 @@ bncWindow::bncWindow() {
   connect(_actGetData, SIGNAL(triggered()), SLOT(slotGetData()));
 
   _actPostProcessing = new QAction(tr("Start PP"),this);
-  connect(_actPostProcessing, SIGNAL(triggered()), SLOT(slotPostProcessing()));
+  connect(_actPostProcessing, SIGNAL(triggered()), SLOT(slotStartPostProcessing()));
 
   _postProgressBar = new QProgressBar;
   _postProgressBar->hide();
@@ -1143,6 +1143,10 @@ bncWindow::bncWindow() {
   if ( Qt::CheckState(settings.value("autoStart").toInt()) == Qt::Checked) {
     slotGetData();
   }
+
+  // Post-Processing Watcher
+  // -----------------------
+  _postWatcher = 0;
 }
 
 // Destructor
@@ -2241,24 +2245,33 @@ void bncWindow::slotSetUploadTrafo() {
   delete dlg;
 }
 
-// Post-Processing
+// Start Post-Processing
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotPostProcessing() {
-  _actPostProcessing->setEnabled(false);
+void bncWindow::slotStartPostProcessing() {
+
   slotSaveOptions();
+
+  _actPostProcessing->setEnabled(false);
   _postProgressBar->reset();
   _postProgressBar->show();
   enableWidget(true, _postProgressLabel);
 
-  bncSettings settings;
-
   t_postInput input;
-  input.obsFileName  = settings.value("postObsFile").toString();
-  input.navFileName  = settings.value("postNavFile").toString();
-  input.corrFileName = settings.value("postcorrFile").toString();
+  postProcessingInit(input);
 
-  QFuture<void> future = QtConcurrent::run(postProcessing, input);
+  _postWatcher = new QFutureWatcher<t_irc>;
+  connect(_postWatcher, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessing()));
 
+  _postFuture = QtConcurrent::run(postProcessingRun, input);
+  _postWatcher->setFuture(_postFuture);
+}
+
+// Post-Processing Finished
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotFinishedPostProcessing() {
+  cout << "slotFinishedPostProcessing" << endl;
+  delete _postWatcher;
+  _postWatcher = 0;
   enableWidget(false, _postProgressLabel);
   _postProgressBar->hide();
   _actPostProcessing->setEnabled(true);

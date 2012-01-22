@@ -75,7 +75,8 @@ class bncWindow : public QMainWindow {
     void slotSaveOptions();
     void slotAddMountPoints();
     void slotGetData();
-    void slotPostProcessing();
+    void slotStartPostProcessing();
+    void slotFinishedPostProcessing();
     void slotStop();
     void slotNewMountPoints(QStringList* mountPoints);
     void slotDeleteMountPoints();
@@ -162,6 +163,8 @@ class bncWindow : public QMainWindow {
     QProgressBar*  _postProgressBar;
     QLabel*        _postProgressLabel;
     QLineEdit*     _postOutLineEdit;
+    QFutureWatcher<t_irc>* _postWatcher;
+    QFuture<t_irc>         _postFuture;
 
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;
