@@ -373,7 +373,7 @@ bncWindow::bncWindow() {
 
   _pppSPPComboBox = new QComboBox();
   _pppSPPComboBox->setEditable(false);
-  _pppSPPComboBox->addItems(QString("PPP,SPP").split(","));
+  _pppSPPComboBox->addItems(QString("PPP,SPP,Post-Processing").split(","));
   int ik = _pppSPPComboBox->findText(settings.value("pppSPP").toString());
   if (ik != -1) {
     _pppSPPComboBox->setCurrentIndex(ik);
@@ -908,7 +908,7 @@ bncWindow::bncWindow() {
   _pppRefdELineEdit->setMaximumWidth(5*ww);
   _pppRefdULineEdit->setMaximumWidth(5*ww);
   _pppSync->setMaximumWidth(6*ww);
-  _pppSPPComboBox->setMaximumWidth(8*ww);
+  _pppSPPComboBox->setMaximumWidth(15*ww);
   _pppNMEAPortLineEdit->setMaximumWidth(6*ww);
 
   _postObsFileChooser = new qtFileChooser;
@@ -1855,197 +1855,103 @@ bncFlowchartDlg::bncFlowchartDlg(QWidget* parent) :
 bncFlowchartDlg::~bncFlowchartDlg() {
 };
 
+// Enable/Disable Widget (and change its color)
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::enableWidget(bool enable, QWidget* widget) {
+  const static QPalette paletteWhite(QColor(255, 255, 255));
+  const static QPalette paletteGray(QColor(230, 230, 230));
+
+  widget->setEnabled(enable);
+  if (enable) {
+    widget->setPalette(paletteWhite);
+  }
+  else {
+    widget->setPalette(paletteGray);
+  }
+}
+
 //  Bnc Text
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotBncTextChanged(){
 
   QPalette palette_white(QColor(255, 255, 255));
   QPalette palette_gray(QColor(230, 230, 230));
-  bncSettings settings;
+
+  bool enable = true;
 
   // Proxy
   //------
   if (sender() == 0 || sender() == _proxyHostLineEdit) {
-    if (!_proxyHostLineEdit->text().isEmpty()) {
-      _proxyPortLineEdit->setStyleSheet("background-color: white");
-      _proxyPortLineEdit->setEnabled(true);
-    } 
-    else {
-      _proxyPortLineEdit->setStyleSheet("background-color: lightGray");
-      _proxyPortLineEdit->setEnabled(false);
-    }
+    enable = !_proxyHostLineEdit->text().isEmpty();
+    enableWidget(enable, _proxyPortLineEdit);
   }
 
   // RINEX Observations
   // ------------------
   if (sender() == 0 || sender() == _rnxPathLineEdit) {
-    if (!_rnxPathLineEdit->text().isEmpty()) {
-      _rnxSamplSpinBox->setStyleSheet("background-color: white");
-      _rnxSkelLineEdit->setStyleSheet("background-color: white");
-      _rnxScrpLineEdit->setStyleSheet("background-color: white");
-      _rnxV3CheckBox->setPalette(palette_white);
-      _rnxIntrComboBox->setStyleSheet("background-color: white");
-      _rnxSamplSpinBox->setEnabled(true);
-      _rnxSkelLineEdit->setEnabled(true);
-      _rnxScrpLineEdit->setEnabled(true);
-      _rnxV3CheckBox->setEnabled(true);
-      _rnxIntrComboBox->setEnabled(true);
-    } 
-    else {
-      _rnxSamplSpinBox->setStyleSheet("background-color: lightGray");
-      _rnxSkelLineEdit->setStyleSheet("background-color: lightGray");
-      _rnxScrpLineEdit->setStyleSheet("background-color: lightGray");
-      _rnxV3CheckBox->setPalette(palette_gray);
-      _rnxIntrComboBox->setStyleSheet("background-color: lightGray");
-      _rnxSamplSpinBox->setEnabled(false);
-      _rnxSkelLineEdit->setEnabled(false);
-      _rnxScrpLineEdit->setEnabled(false);
-      _rnxV3CheckBox->setEnabled(false);
-      _rnxIntrComboBox->setEnabled(false);
-    }
+    enable = !_rnxPathLineEdit->text().isEmpty();
+    enableWidget(enable, _rnxSamplSpinBox);
+    enableWidget(enable, _rnxSkelLineEdit);
+    enableWidget(enable, _rnxScrpLineEdit);
+    enableWidget(enable, _rnxV3CheckBox);
+    enableWidget(enable, _rnxIntrComboBox);
   }
 
   // RINEX Ephemeris
   // ---------------
-  if (sender() == 0 || 
-      sender() == _ephPathLineEdit || sender() == _outEphPortLineEdit) {
-    if (!_ephPathLineEdit->text().isEmpty() || 
-        !_outEphPortLineEdit->text().isEmpty()) { 
-      _ephIntrComboBox->setStyleSheet("background-color: white");
-      _ephV3CheckBox->setPalette(palette_white);
-      _ephIntrComboBox->setEnabled(true);
-      _ephV3CheckBox->setEnabled(true);
-    }
-    else {
-      _ephIntrComboBox->setStyleSheet("background-color: lightGray");
-      _ephV3CheckBox->setPalette(palette_gray);
-      _ephIntrComboBox->setEnabled(false);
-      _ephV3CheckBox->setEnabled(false);
-    }
+  if (sender() == 0 || sender() == _ephPathLineEdit || sender() == _outEphPortLineEdit) {
+    enable = !_ephPathLineEdit->text().isEmpty() || !_outEphPortLineEdit->text().isEmpty();
+    enableWidget(enable, _ephIntrComboBox);
+    enableWidget(enable, _ephV3CheckBox);
   }
 
   // Broadcast Corrections
   // ---------------------
-  if (sender() == 0 || 
-      sender() == _corrPathLineEdit || sender() == _corrPortLineEdit) {
-    if (!_corrPathLineEdit->text().isEmpty() || 
-        !_corrPortLineEdit->text().isEmpty()) { 
-      _corrIntrComboBox->setStyleSheet("background-color: white");
-      _corrIntrComboBox->setEnabled(true);
-    } 
-    else {
-      _corrIntrComboBox->setStyleSheet("background-color: white");
-      _corrIntrComboBox->setEnabled(true); 
-    }
+  if (sender() == 0 || sender() == _corrPathLineEdit || sender() == _corrPortLineEdit) {
+    enable = !_corrPathLineEdit->text().isEmpty() || !_corrPortLineEdit->text().isEmpty();
+    enableWidget(enable, _corrIntrComboBox); 
   }
 
   // Feed Engine
   // -----------
-  if (sender() == 0 || 
-      sender() == _outPortLineEdit || sender() == _outFileLineEdit) {
-    if ( !_outPortLineEdit->text().isEmpty() || 
-         !_outFileLineEdit->text().isEmpty()) {
-      _waitTimeSpinBox->setStyleSheet("background-color: white");
-      _binSamplSpinBox->setStyleSheet("background-color: white");
-      _waitTimeSpinBox->setEnabled(true);
-      _binSamplSpinBox->setEnabled(true);
-    } 
-    else {
-      _waitTimeSpinBox->setStyleSheet("background-color: lightGray");
-      _binSamplSpinBox->setStyleSheet("background-color: lightGray");
-      _waitTimeSpinBox->setEnabled(false);
-      _binSamplSpinBox->setEnabled(false); 
-    }
+  if (sender() == 0 || sender() == _outPortLineEdit || sender() == _outFileLineEdit) {
+    enable = !_outPortLineEdit->text().isEmpty() || !_outFileLineEdit->text().isEmpty();
+    enableWidget(enable, _waitTimeSpinBox);
+    enableWidget(enable, _binSamplSpinBox);
   }
 
   // Serial Output
   // -------------
   if (sender() == 0 || sender() == _serialMountPointLineEdit || 
       sender() == _serialAutoNMEAComboBox) {
-    if (!_serialMountPointLineEdit->text().isEmpty()) {
-      _serialPortNameLineEdit->setStyleSheet("background-color: white");
-      _serialBaudRateComboBox->setStyleSheet("background-color: white");
-      _serialParityComboBox->setStyleSheet("background-color: white");
-      _serialDataBitsComboBox->setStyleSheet("background-color: white");
-      _serialStopBitsComboBox->setStyleSheet("background-color: white");
-      _serialFlowControlComboBox->setStyleSheet("background-color: white");
-      _serialAutoNMEAComboBox->setStyleSheet("background-color: white");
-      _serialPortNameLineEdit->setEnabled(true);
-      _serialBaudRateComboBox->setEnabled(true);
-      _serialParityComboBox->setEnabled(true);
-      _serialDataBitsComboBox->setEnabled(true);
-      _serialStopBitsComboBox->setEnabled(true);
-      _serialFlowControlComboBox->setEnabled(true);
-      _serialAutoNMEAComboBox->setEnabled(true);
-      if (_serialAutoNMEAComboBox->currentText() != "Auto" ) {
-        _serialHeightNMEALineEdit->setStyleSheet("background-color: white");
-        _serialHeightNMEALineEdit->setEnabled(true);
-        _serialFileNMEALineEdit->setStyleSheet("background-color: lightGray");
-        _serialFileNMEALineEdit->setEnabled(false);
-      } 
-      else {
-        _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
-        _serialHeightNMEALineEdit->setEnabled(false);
-        _serialFileNMEALineEdit->setStyleSheet("background-color: white");
-        _serialFileNMEALineEdit->setEnabled(true);
-      }
-    } 
-    else {
-      _serialPortNameLineEdit->setStyleSheet("background-color: lightGray");
-      _serialBaudRateComboBox->setStyleSheet("background-color: lightGray");
-      _serialParityComboBox->setStyleSheet("background-color: lightGray");
-      _serialDataBitsComboBox->setStyleSheet("background-color: lightGray");
-      _serialStopBitsComboBox->setStyleSheet("background-color: lightGray");
-      _serialFlowControlComboBox->setStyleSheet("background-color: lightGray");
-      _serialAutoNMEAComboBox->setStyleSheet("background-color: lightGray");
-      _serialFileNMEALineEdit->setStyleSheet("background-color: lightGray");
-      _serialHeightNMEALineEdit->setStyleSheet("background-color: lightGray");
-      _serialPortNameLineEdit->setEnabled(false);
-      _serialBaudRateComboBox->setEnabled(false);
-      _serialParityComboBox->setEnabled(false);
-      _serialDataBitsComboBox->setEnabled(false);
-      _serialStopBitsComboBox->setEnabled(false);
-      _serialFlowControlComboBox->setEnabled(false);
-      _serialAutoNMEAComboBox->setEnabled(false);
-      _serialHeightNMEALineEdit->setEnabled(false);
-      _serialFileNMEALineEdit->setEnabled(false);
-    }
+    enable = !_serialMountPointLineEdit->text().isEmpty();
+    enableWidget(enable, _serialPortNameLineEdit);
+    enableWidget(enable, _serialBaudRateComboBox);
+    enableWidget(enable, _serialParityComboBox);
+    enableWidget(enable, _serialDataBitsComboBox);
+    enableWidget(enable, _serialStopBitsComboBox);
+    enableWidget(enable, _serialFlowControlComboBox);
+    enableWidget(enable, _serialAutoNMEAComboBox);
+   
+    bool enable2 = enable && _serialAutoNMEAComboBox->currentText() != "Auto";
+    enableWidget(enable2, _serialFileNMEALineEdit);
   }
 
   // Outages
   // -------
   if (sender() == 0 || sender() == _obsRateComboBox) {
-    if (!_obsRateComboBox->currentText().isEmpty()) {
-      _adviseScriptLineEdit->setStyleSheet("background-color: white");
-      _adviseFailSpinBox->setStyleSheet("background-color: white");
-      _adviseRecoSpinBox->setStyleSheet("background-color: white");
-      _adviseFailSpinBox->setEnabled(true);
-      _adviseRecoSpinBox->setEnabled(true);
-      _adviseScriptLineEdit->setEnabled(true);
-    } else {
-      _adviseScriptLineEdit->setStyleSheet("background-color: lightGray");
-      _adviseFailSpinBox->setStyleSheet("background-color: lightGray");
-      _adviseRecoSpinBox->setStyleSheet("background-color: lightGray");
-      _adviseFailSpinBox->setEnabled(false);
-      _adviseRecoSpinBox->setEnabled(false);
-      _adviseScriptLineEdit->setEnabled(false);
-    }
+    enable = !_obsRateComboBox->currentText().isEmpty();
+    enableWidget(enable, _adviseFailSpinBox);
+    enableWidget(enable, _adviseRecoSpinBox);
+    enableWidget(enable, _adviseScriptLineEdit);
   }
 
   // Miscellaneous
   // -------------
   if (sender() == 0 || sender() == _miscMountLineEdit) {
-    if (!_miscMountLineEdit->text().isEmpty()) {
-      _perfIntrComboBox->setStyleSheet("background-color: white");
-      _scanRTCMCheckBox->setPalette(palette_white);
-      _perfIntrComboBox->setEnabled(true);
-      _scanRTCMCheckBox->setEnabled(true);
-    } else {
-      _perfIntrComboBox->setStyleSheet("background-color: lightGray");
-      _scanRTCMCheckBox->setPalette(palette_gray);
-      _perfIntrComboBox->setEnabled(false);
-      _scanRTCMCheckBox->setEnabled(false);
-    }
+    enable = !_miscMountLineEdit->text().isEmpty();
+    enableWidget(enable, _perfIntrComboBox);
+    enableWidget(enable, _scanRTCMCheckBox);
   }
 
   // PPP Client
@@ -2065,191 +1971,54 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _pppEstTropoCheckBox
      || sender() == _pppUsePhaseCheckBox    
      || sender() == _pppAntexLineEdit ) {
-    if ((!_pppMountLineEdit->text().isEmpty() &&
-         !_pppCorrMountLineEdit->text().isEmpty()) ||
-       ( !_pppMountLineEdit->text().isEmpty() &&
-        _pppSPPComboBox->currentText() == "SPP")) {
-      _pppSPPComboBox->setPalette(palette_white);
-      _pppNMEALineEdit->setPalette(palette_white);
-      _pppNMEAPortLineEdit->setPalette(palette_white);
-      _pppRefCrdXLineEdit->setPalette(palette_white);
-      _pppRefCrdYLineEdit->setPalette(palette_white);
-      _pppRefCrdZLineEdit->setPalette(palette_white);
-      _pppRefdNLineEdit->setPalette(palette_white);
-      _pppRefdELineEdit->setPalette(palette_white);
-      _pppRefdULineEdit->setPalette(palette_white);
-      _pppUsePhaseCheckBox->setPalette(palette_white);
-      _pppPlotCoordinates->setPalette(palette_white);
-      _pppEstTropoCheckBox->setPalette(palette_white);
-      _pppGLONASSCheckBox->setPalette(palette_white);
-      _pppGalileoCheckBox->setPalette(palette_white);
-      _pppAntexLineEdit->setPalette(palette_white);
-      _pppSPPComboBox->setEnabled(true);
-      _pppNMEALineEdit->setEnabled(true);
-      _pppNMEAPortLineEdit->setEnabled(true);
-      _pppRefCrdXLineEdit->setEnabled(true);
-      _pppRefCrdYLineEdit->setEnabled(true);
-      _pppRefCrdZLineEdit->setEnabled(true);
-      _pppRefdNLineEdit->setEnabled(true);
-      _pppRefdELineEdit->setEnabled(true);
-      _pppRefdULineEdit->setEnabled(true);
-      _pppUsePhaseCheckBox->setEnabled(true);
-      _pppPlotCoordinates->setEnabled(true);
-      _pppEstTropoCheckBox->setEnabled(true);
-      _pppGLONASSCheckBox->setEnabled(true);
-      _pppGalileoCheckBox->setEnabled(true);
-      _pppRefCrdXLineEdit->setPalette(palette_white);
-      _pppRefCrdYLineEdit->setPalette(palette_white);
-      _pppRefCrdZLineEdit->setPalette(palette_white);
-      _pppRefdNLineEdit->setPalette(palette_white);
-      _pppRefdELineEdit->setPalette(palette_white);
-      _pppRefdULineEdit->setPalette(palette_white);
-      _pppAntexLineEdit->setEnabled(true);
-      if (!_pppRefCrdXLineEdit->text().isEmpty() &&
-          !_pppRefCrdYLineEdit->text().isEmpty() &&
-          !_pppRefCrdZLineEdit->text().isEmpty()) {
-        _pppAverageLineEdit->setPalette(palette_white);
-        _pppQuickStartLineEdit->setPalette(palette_white);
-        _pppAverageLineEdit->setEnabled(true);
-        _pppQuickStartLineEdit->setEnabled(true);
-      }
-      else {
-        _pppAverageLineEdit->setPalette(palette_gray);
-        _pppQuickStartLineEdit->setPalette(palette_gray);
-        _pppAverageLineEdit->setEnabled(false);
-        _pppQuickStartLineEdit->setEnabled(false);
-      }
-      if (!_pppRefCrdXLineEdit->text().isEmpty() &&
-          !_pppRefCrdYLineEdit->text().isEmpty() &&
-          !_pppRefCrdZLineEdit->text().isEmpty() &&
-          !_pppQuickStartLineEdit->text().isEmpty()) {
-        _pppMaxSolGapLineEdit->setPalette(palette_white);
-        _pppMaxSolGapLineEdit->setEnabled(true);
-      }
-      else {
-        _pppMaxSolGapLineEdit->setPalette(palette_gray);
-        _pppMaxSolGapLineEdit->setEnabled(false);
-      }
-      if (!_pppAntexLineEdit->text().isEmpty() ) {
-        _pppAntennaLineEdit->setEnabled(true);
-        _pppApplySatAntCheckBox->setEnabled(true);
-        _pppAntennaLineEdit->setPalette(palette_white);
-        _pppApplySatAntCheckBox->setPalette(palette_white);
-      }
-      else {
-        _pppAntennaLineEdit->setEnabled(false);
-        _pppApplySatAntCheckBox->setEnabled(false);
-        _pppAntennaLineEdit->setPalette(palette_gray);
-        _pppApplySatAntCheckBox->setPalette(palette_gray);
-      }
-        _pppSigCLineEdit->setPalette(palette_white);
-        _pppSigCLineEdit->setEnabled(true);
-        _pppSigCrd0->setPalette(palette_white);
-        _pppSigCrd0->setEnabled(true);
-        _pppSigCrdP->setPalette(palette_white);
-        _pppSigCrdP->setEnabled(true);
-      if (_pppEstTropoCheckBox->isChecked()
-         && !_pppMountLineEdit->text().isEmpty()) {
-        _pppSigTrp0->setPalette(palette_white);
-        _pppSigTrp0->setEnabled(true);
-        _pppSigTrpP->setPalette(palette_white);
-        _pppSigTrpP->setEnabled(true);
-      }
-      else {
-        _pppSigTrp0->setPalette(palette_gray);
-        _pppSigTrp0->setEnabled(false);
-        _pppSigTrpP->setPalette(palette_gray);
-        _pppSigTrpP->setEnabled(false);
-      }
-      if (_pppUsePhaseCheckBox->isChecked() 
-         && !_pppMountLineEdit->text().isEmpty()) {
-        _pppSigPLineEdit->setPalette(palette_white);
-        _pppSigPLineEdit->setEnabled(true);
-      }
-      else {
-        _pppSigPLineEdit->setPalette(palette_gray);
-        _pppSigPLineEdit->setEnabled(false);
-      }
-      if (_pppSPPComboBox->currentText() == "PPP") {
-        _pppSync->setPalette(palette_white);
-        _pppSync->setEnabled(true);
-      }
-      else {
-        _pppSync->setPalette(palette_gray);
-        _pppSync->setEnabled(false);
-      }
-    } else {
-      _pppSPPComboBox->setPalette(palette_gray);
-      _pppNMEALineEdit->setPalette(palette_gray);
-      _pppNMEAPortLineEdit->setPalette(palette_gray);
-      _pppRefCrdXLineEdit->setPalette(palette_gray);
-      _pppRefCrdYLineEdit->setPalette(palette_gray);
-      _pppRefCrdZLineEdit->setPalette(palette_gray);
-      _pppRefdNLineEdit->setPalette(palette_gray);
-      _pppRefdELineEdit->setPalette(palette_gray);
-      _pppRefdULineEdit->setPalette(palette_gray);
-      _pppSync->setPalette(palette_gray);
-      _pppUsePhaseCheckBox->setPalette(palette_gray);
-      _pppPlotCoordinates->setPalette(palette_gray);
-      _pppEstTropoCheckBox->setPalette(palette_gray);
-      _pppGLONASSCheckBox->setPalette(palette_gray);
-      _pppGalileoCheckBox->setPalette(palette_gray);
-      _pppSigCLineEdit->setPalette(palette_gray);
-      _pppSigPLineEdit->setPalette(palette_gray);
-      _pppSigCrd0->setPalette(palette_gray);
-      _pppSigCrdP->setPalette(palette_gray);
-      _pppSigTrp0->setPalette(palette_gray);
-      _pppSigTrpP->setPalette(palette_gray);
-      _pppAverageLineEdit->setPalette(palette_gray);
-      _pppQuickStartLineEdit->setPalette(palette_gray);
-      _pppMaxSolGapLineEdit->setPalette(palette_gray);
-      _pppAntexLineEdit->setPalette(palette_white);
-      _pppAntennaLineEdit->setPalette(palette_gray);
-      _pppApplySatAntCheckBox->setPalette(palette_gray);
-      _pppSPPComboBox->setEnabled(false);
-      _pppNMEALineEdit->setEnabled(false);
-      _pppNMEAPortLineEdit->setEnabled(false);
-      _pppRefCrdXLineEdit->setEnabled(false);
-      _pppRefCrdYLineEdit->setEnabled(false);
-      _pppRefCrdZLineEdit->setEnabled(false);
-      _pppRefdNLineEdit->setEnabled(false);
-      _pppRefdELineEdit->setEnabled(false);
-      _pppRefdULineEdit->setEnabled(false);
-      _pppSync->setEnabled(false);
-      _pppUsePhaseCheckBox->setEnabled(false);
-      _pppPlotCoordinates->setEnabled(false);
-      _pppEstTropoCheckBox->setEnabled(false);
-      _pppGLONASSCheckBox->setEnabled(false);
-      _pppGalileoCheckBox->setEnabled(false);
-      _pppSigCLineEdit->setEnabled(false);
-      _pppSigPLineEdit->setEnabled(false);
-      _pppSigCrd0->setEnabled(false);
-      _pppSigCrdP->setEnabled(false);
-      _pppSigTrp0->setEnabled(false);
-      _pppSigTrpP->setEnabled(false);
-      _pppAverageLineEdit->setEnabled(false);
-      _pppQuickStartLineEdit->setEnabled(false);
-      _pppMaxSolGapLineEdit->setEnabled(false);
-      _pppAntexLineEdit->setEnabled(true);
-      _pppAntennaLineEdit->setEnabled(false);
-      _pppApplySatAntCheckBox->setEnabled(false);
-    }
-// 
-    if (_pppMountLineEdit->text().isEmpty()) {
-      _pppCorrMountLineEdit->setPalette(palette_gray);
-      _pppCorrMountLineEdit->setEnabled(false);
-    } else {
-      _pppCorrMountLineEdit->setPalette(palette_white);
-      _pppCorrMountLineEdit->setEnabled(true);
-      if (_pppCorrMountLineEdit->text().isEmpty()) {
-        _pppSPPComboBox->setPalette(palette_white);
-        _pppSPPComboBox->setEnabled(true);
-      }
-    }
-    if (_pppSPPComboBox->currentText() == "SPP") {
-      _pppCorrMountLineEdit->setPalette(palette_gray);
-      _pppCorrMountLineEdit->setEnabled(false);
-    } 
+
+    enable = (!_pppMountLineEdit->text().isEmpty() && !_pppCorrMountLineEdit->text().isEmpty()) ||
+             (!_pppMountLineEdit->text().isEmpty() && _pppSPPComboBox->currentText() == "SPP")  ||
+             (_pppSPPComboBox->currentText() == "Post-Processing");
+
+    enableWidget(enable, _pppSPPComboBox);
+    enableWidget(enable, _pppNMEALineEdit);
+    enableWidget(enable, _pppNMEAPortLineEdit);
+    enableWidget(enable, _pppRefCrdXLineEdit);
+    enableWidget(enable, _pppRefCrdYLineEdit);
+    enableWidget(enable, _pppRefCrdZLineEdit);
+    enableWidget(enable, _pppRefdNLineEdit);
+    enableWidget(enable, _pppRefdELineEdit);
+    enableWidget(enable, _pppRefdULineEdit);
+    enableWidget(enable, _pppUsePhaseCheckBox);
+    enableWidget(enable, _pppPlotCoordinates);
+    enableWidget(enable, _pppEstTropoCheckBox);
+    enableWidget(enable, _pppGLONASSCheckBox);
+    enableWidget(enable, _pppGalileoCheckBox);
+    enableWidget(enable, _pppAntexLineEdit);
+    enableWidget(enable, _pppSigCLineEdit);
+    enableWidget(enable, _pppSigCrd0);
+    enableWidget(enable, _pppSigCrdP);
+
+    bool enable2 = enable && !_pppRefCrdXLineEdit->text().isEmpty() &&
+                             !_pppRefCrdYLineEdit->text().isEmpty() &&
+                             !_pppRefCrdZLineEdit->text().isEmpty();
+
+    enableWidget(enable2, _pppAverageLineEdit);
+    enableWidget(enable2, _pppQuickStartLineEdit);
+
+    bool enable3 = enable2 && !_pppQuickStartLineEdit->text().isEmpty();
+    enableWidget(enable3, _pppMaxSolGapLineEdit);
+
+    bool enable4 = enable && !_pppAntexLineEdit->text().isEmpty();
+    enableWidget(enable4, _pppAntennaLineEdit);
+    enableWidget(enable4, _pppApplySatAntCheckBox);
+
+    bool enable5 = enable && _pppEstTropoCheckBox->isChecked() && !_pppMountLineEdit->text().isEmpty();
+    enableWidget(enable5, _pppSigTrp0);
+    enableWidget(enable5, _pppSigTrpP);
+
+    bool enable6 = enable && _pppUsePhaseCheckBox->isChecked();
+    enableWidget(enable6, _pppSigPLineEdit);
+
+    bool enable7 = enable && _pppSPPComboBox->currentText() == "PPP";
+    enableWidget(enable7, _pppSync);
+    enableWidget(enable7, _pppCorrMountLineEdit);
   }
 }
 
