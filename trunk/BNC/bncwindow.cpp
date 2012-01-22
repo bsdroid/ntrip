@@ -922,8 +922,16 @@ bncWindow::bncWindow() {
   _pppNMEAPortLineEdit->setMaximumWidth(6*ww);
 
   _postObsFileChooser = new qtFileChooser;
+  _postObsFileChooser->setFileName(settings.value("postObsFile").toString());
+  _postObsFileChooser->setWhatsThis(tr("Full Path to RINEX Observation File"));
+
   _postNavFileChooser = new qtFileChooser;
+  _postNavFileChooser->setFileName(settings.value("postNavFile").toString());
+  _postNavFileChooser->setWhatsThis(tr("Full Path to RINEX Navigation File"));
+
   _postCorrFileChooser = new qtFileChooser;
+  _postNavFileChooser->setFileName(settings.value("postCorrFile").toString());
+  _postNavFileChooser->setWhatsThis(tr("Full Path to DGPS Correction File"));
 
   int ir = 0;
   pppLayout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 1)</b>"), ir, 0, 1, 8);
@@ -1544,6 +1552,10 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("uploadEphPassword",  _uploadEphPasswordLineEdit->text());
   settings.setValue("uploadEphMountpoint",_uploadEphMountpointLineEdit->text());
   settings.setValue("uploadEphSample",    _uploadEphSampleSpinBox->value());
+
+  settings.setValue("postObsFile", _postObsFileChooser->fileName());
+  settings.setValue("postNavFile", _postNavFileChooser->fileName());
+  settings.setValue("postCorrFile", _postCorrFileChooser->fileName());
 
   if (_caster) {
     _caster->slotReadMountPoints();
