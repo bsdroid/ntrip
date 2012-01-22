@@ -51,6 +51,7 @@ class bncFigureLate;
 class bncFigurePPP;
 class bncBytesCounter;
 class bncEphUploadCaster;
+class qtFileChooser;
 
 class bncWindow : public QMainWindow {
   Q_OBJECT
@@ -151,6 +152,11 @@ class bncWindow : public QMainWindow {
     QLineEdit* _pppAntennaLineEdit;
     QLineEdit* _pppAntexLineEdit;
     QCheckBox* _pppApplySatAntCheckBox;
+
+    qtFileChooser* _postObsFileChooser;
+    qtFileChooser* _postNavFileChooser;
+    qtFileChooser* _postCorrFileChooser;
+
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;
     QLineEdit* _rnxSkelLineEdit;
