@@ -47,36 +47,25 @@
 #include "bncutils.h"
 #include "bncconst.h"
 #include "bncmodel.h"
-#include "bncsettings.h"
+#include "pppopt.h"
 
 using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncPPPclient::bncPPPclient(QByteArray staID) {
+bncPPPclient::bncPPPclient(QByteArray staID, t_pppOpt* opt) {
 
-  bncSettings settings;
-
-  if ( Qt::CheckState(settings.value("pppGLONASS").toInt()) == Qt::Checked) {
-    _useGlonass = true;
+  if (opt) {
+    _opt      = opt;
+    _optOwner = false;
   }
   else {
-    _useGlonass = false;
+    _opt      = new t_pppOpt();
+    _optOwner = true;
   }
 
-  if ( Qt::CheckState(settings.value("pppGalileo").toInt()) == Qt::Checked) {
-    _useGalileo = true;
-  }
-  else {
-    _useGalileo = false;
-  }
-
-  if (settings.value("pppSPP").toString() == "PPP") {
-    _pppMode = true;
-  }
-  else {
-    _pppMode = false;
-  }
+  _staID = staID;
+  _model = new bncModel(staID);
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
@@ -84,12 +73,8 @@ bncPPPclient::bncPPPclient(QByteArray staID) {
   connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
           this, SLOT(slotNewCorrections(QList<QString>)));
 
-  _staID   = staID;
-  _model   = new bncModel(staID);
   connect(_model, SIGNAL(newNMEAstr(QByteArray)), 
           this,   SIGNAL(newNMEAstr(QByteArray)));
-
-  _pppCorrMount = settings.value("pppCorrMount").toString();
 }
 
 // Destructor
@@ -110,6 +95,9 @@ bncPPPclient::~bncPPPclient() {
     ib.next();
     delete ib.value();
   }
+  if (_optOwner) {
+    delete _opt;
+  }
 }
 
 //
@@ -118,10 +106,10 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   QMutexLocker locker(&_mutex);
 
   if      (obs.satSys == 'R') {
-    if (!_useGlonass) return;
+    if (!_opt->useGlonass) return;
   }
   else if (obs.satSys == 'E') {
-    if (!_useGalileo) return;
+    if (!_opt->useGalileo) return;
   }
   else if (obs.satSys != 'G') {
     return;
@@ -264,13 +252,13 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 
   // Check the Mountpoint (source of corrections)
   // --------------------------------------------
-  if (!_pppCorrMount.isEmpty()) {
+  if (!_opt->pppCorrMount.isEmpty()) {
     QMutableListIterator<QString> itm(corrList);
     while (itm.hasNext()) {
       QStringList hlp = itm.next().split(" ");
       if (hlp.size() > 0) {
         QString mountpoint = hlp[hlp.size()-1];
-        if (mountpoint != _pppCorrMount) {
+        if (mountpoint != _opt->pppCorrMount) {
           itm.remove();     
         }
       }
@@ -367,7 +355,7 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
 
   if (_eph.contains(prn)) {
 
-    if (_pppMode) {
+    if (_opt->pppMode) {
       if (_corr.contains(prn)) {
         t_corr* cc = _corr.value(prn);
         if (tt - cc->tt < MAXAGE) {
@@ -482,14 +470,6 @@ void bncPPPclient::processFrontEpoch() {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::processEpochs() {
 
-  // Synchronization threshold (not used in SPP mode)
-  // ------------------------------------------------
-  bncSettings settings;
-  double maxDt = settings.value("pppSync").toDouble();
-  if (!_pppMode) {
-    maxDt = 0.0;
-  }
-
   // Make sure the buffer does not grow beyond any limit
   // ---------------------------------------------------
   const unsigned MAX_EPODATA_SIZE = 120;
@@ -506,13 +486,13 @@ void bncPPPclient::processEpochs() {
 
     // No corrections yet, skip the epoch
     // ----------------------------------
-    if (maxDt != 0.0 && !_corr_tt.valid()) {
+    if (_opt->corrSync != 0.0 && !_corr_tt.valid()) {
       return;
     }
 
     // Process the front epoch
     // -----------------------
-    if (maxDt == 0 || frontEpoData->tt - _corr_tt < maxDt) {
+    if (_opt->corrSync == 0 || frontEpoData->tt - _corr_tt < _opt->corrSync) {
       processFrontEpoch();
       delete _epoData.front();
       _epoData.pop();

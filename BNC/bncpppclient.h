@@ -30,6 +30,7 @@
 #include "RTCM/GPSDecoder.h"
 
 class bncModel;
+class t_pppOpt;
 
 class t_satData {
  public:
@@ -120,7 +121,7 @@ class bncPPPclient : public bncEphUser {
  Q_OBJECT
 
  public:
-  bncPPPclient(QByteArray staID);
+  bncPPPclient(QByteArray staID, t_pppOpt* opt = 0);
   ~bncPPPclient();
   void putNewObs(const t_obs& pp);
   static t_irc applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, 
@@ -155,17 +156,15 @@ class bncPPPclient : public bncEphUser {
   void processFrontEpoch();
   t_irc cmpToT(t_satData* satData);
 
+  t_pppOpt*               _opt;
+  bool                    _optOwner;
   QByteArray              _staID;
   QMap<QString, t_corr*>  _corr;
   bncTime                 _corr_tt;
   QMap<QString, t_bias*>  _bias;
   std::queue<t_epoData*>  _epoData;
   bncModel*               _model;
-  bool                    _useGlonass;
-  bool                    _useGalileo;
-  bool                    _pppMode;
   QMap<QString, slipInfo> _slips;
-  QString                 _pppCorrMount;
 };
 
 #endif
