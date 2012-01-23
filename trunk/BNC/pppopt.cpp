@@ -62,8 +62,8 @@ t_pppOpt::t_pppOpt() {
   antEccNEU[1] = settingsToDouble("pppRefdE");
   antEccNEU[2] = settingsToDouble("pppRefdU");
   maxSolGap    = settingsToDouble("pppMaxSolGap");
-  quickStart   = settingsToDouble("pppQuickStart"); if (!refCrdSet()) quickStart = 0.0;
-  corrSync     = settingsToDouble("pppSync");       if (!pppMode) corrSync = 0.0;
+  quickStart   = settingsToDouble("pppQuickStart"); 
+  corrSync     = settingsToDouble("pppSync");       
 
   pppCorrMount = settings.value("pppCorrMount").toString();
   nmeaFile     = settings.value("nmeaFile").toString();
@@ -76,6 +76,9 @@ t_pppOpt::t_pppOpt() {
   estTropo     = settingsChecked("pppEstTropo");
   useGlonass   = settingsChecked("pppGLONASS");
   useGalileo   = settingsChecked("pppGalileo");
+
+  if (!refCrdSet()) quickStart = 0.0;
+  if (!pppMode)     corrSync   = 0.0;
 }
 
 // Destructor
