@@ -31,11 +31,14 @@ class t_pppOpt {
  public:
   t_pppOpt();
   ~t_pppOpt();
-  bool refCrdSet() {
+  bool refCrdSet() const {
     return refCrd[0] != 0.0 || refCrd[1] != 0 || refCrd[2] != 0.0;
   }
-  double  sigmaCode;
-  double  sigmaPhase;
+  bool antEccSet() const {
+    return antEccNEU[0] != 0.0 || antEccNEU[1] != 0.0 || antEccNEU[2] != 0.0;
+  }
+  double  sigL3;
+  double  sigP3;
   double  sigCrd0;
   double  sigCrdP;
   double  sigTrp0;
@@ -45,6 +48,7 @@ class t_pppOpt {
   double  maxSolGap;
   double  quickStart;
   double  corrSync;
+  double  pppAverage;
   QString pppCorrMount;
   QString nmeaFile;
   QString antexFile;
@@ -55,6 +59,10 @@ class t_pppOpt {
   bool    estTropo;
   bool    useGlonass;
   bool    useGalileo;
+  double  sigGalileoOffset0;
+  double  sigGalileoOffsetP;
+  double  sigAmb0;
+  double  sigClk0;
  private:
   double settingsToDouble(const QByteArray& keyName, double defaultValue = 0.0) const;
   bool   settingsChecked(const QByteArray& keyName) const;

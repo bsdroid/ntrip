@@ -49,8 +49,8 @@ using namespace std;
 t_pppOpt::t_pppOpt() {
   bncSettings settings;
 
-  sigmaCode    = settingsToDouble("pppSigmaCode",    5.0);
-  sigmaPhase   = settingsToDouble("pppSigmaPhase",  0.02);
+  sigP3        = settingsToDouble("pppSigmaCode",    5.0);
+  sigL3        = settingsToDouble("pppSigmaPhase",  0.02);
   sigCrd0      = settingsToDouble("pppSigCrd0",    100.0);
   sigCrdP      = settingsToDouble("pppSigCrdP",    100.0);
   sigTrp0      = settingsToDouble("pppSigTrp0",      0.1);
@@ -64,6 +64,13 @@ t_pppOpt::t_pppOpt() {
   maxSolGap    = settingsToDouble("pppMaxSolGap");
   quickStart   = settingsToDouble("pppQuickStart"); 
   corrSync     = settingsToDouble("pppSync");       
+  pppAverage   = settingsToDouble("pppAverage") * 60.0;
+  if (pppAverage < 0.0) {
+    pppAverage = 0.0;
+  }
+  else if (pppAverage > 86400.0) {
+    pppAverage = 86400.0;
+  }
 
   pppCorrMount = settings.value("pppCorrMount").toString();
   nmeaFile     = settings.value("nmeaFile").toString();
@@ -79,6 +86,11 @@ t_pppOpt::t_pppOpt() {
 
   if (!refCrdSet()) quickStart = 0.0;
   if (!pppMode)     corrSync   = 0.0;
+
+  sigGalileoOffset0 = 1000.0;
+  sigGalileoOffsetP =    0.0;
+  sigClk0           = 1000.0;
+  sigAmb0           = 1000.0;
 }
 
 // Destructor

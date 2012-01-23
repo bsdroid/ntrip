@@ -48,9 +48,9 @@
 #include "bncpppclient.h"
 #include "bancroft.h"
 #include "bncutils.h"
-#include "bncsettings.h"
 #include "bnctides.h"
 #include "bncantex.h"
+#include "pppopt.h"
 
 using namespace std;
 
@@ -137,87 +137,24 @@ double bncParam::partial(t_satData* satData, bool phase) {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncModel::bncModel(QByteArray staID) {
+bncModel::bncModel(QByteArray staID, const t_pppOpt* opt) {
 
-  _staID   = staID;
+  _staID = staID;
+  _opt   = opt;
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
 
-  bncSettings settings;
-
-  // Observation Sigmas
-  // ------------------
-  _sigP3 = 5.0;
-  if (!settings.value("pppSigmaCode").toString().isEmpty()) {
-    _sigP3 = settings.value("pppSigmaCode").toDouble();
-  }
-  _sigL3 = 0.02;
-  if (!settings.value("pppSigmaPhase").toString().isEmpty()) {
-    _sigL3 = settings.value("pppSigmaPhase").toDouble();
-  }
-
-  // Parameter Sigmas
-  // ----------------
-  _sigCrd0 = 100.0;
-  if (!settings.value("pppSigCrd0").toString().isEmpty()) {
-    _sigCrd0 = settings.value("pppSigCrd0").toDouble();
-  }
-  _sigCrdP = 100.0;
-  if (!settings.value("pppSigCrdP").toString().isEmpty()) {
-    _sigCrdP = settings.value("pppSigCrdP").toDouble();
-  }
-  _sigTrp0 = 0.1;
-  if (!settings.value("pppSigTrp0").toString().isEmpty()) {
-    _sigTrp0 = settings.value("pppSigTrp0").toDouble();
-  }
-  _sigTrpP = 1e-6;
-  if (!settings.value("pppSigTrpP").toString().isEmpty()) {
-    _sigTrpP = settings.value("pppSigTrpP").toDouble();
-  }
-  _sigClk0           = 1000.0;
-  _sigAmb0           = 1000.0;
-  _sigGalileoOffset0 = 1000.0;
-  _sigGalileoOffsetP =    0.0;
-
-  // Quick-Start Mode
-  // ----------------
-  _quickStart = 0;
-  if (settings.value("pppRefCrdX").toString() != "" &&
-      settings.value("pppRefCrdY").toString() != "" &&
-      settings.value("pppRefCrdZ").toString() != "" &&
-      !settings.value("pppQuickStart").toString().isEmpty()) {
-    _quickStart = settings.value("pppQuickStart").toDouble();
-  }
-
-  // Several options
-  // ---------------
-  _usePhase = false;
-  if ( Qt::CheckState(settings.value("pppUsePhase").toInt()) == Qt::Checked) {
-    _usePhase = true;
-  }
-
-  _estTropo = false;
-  if ( Qt::CheckState(settings.value("pppEstTropo").toInt()) == Qt::Checked) {
-    _estTropo = true;
-  }
-
-  _useGalileo = false;
-  if ( Qt::CheckState(settings.value("pppGalileo").toInt()) == Qt::Checked) {
-    _useGalileo = true;
-  }
-
   // NMEA Output
   // -----------
-  QString nmeaFileName = settings.value("nmeaFile").toString();
-  if (nmeaFileName.isEmpty()) {
+  if (_opt->nmeaFile.isEmpty()) {
     _nmeaFile   = 0;
     _nmeaStream = 0;
   }
   else {
-    expandEnvVar(nmeaFileName);
-    _nmeaFile = new QFile(nmeaFileName);
-    if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
+    QString hlpName = _opt->nmeaFile; expandEnvVar(hlpName);
+    _nmeaFile = new QFile(hlpName);
+    if (_opt->rnxAppend) {
       _nmeaFile->open(QIODevice::WriteOnly | QIODevice::Append);
     }
     else {
@@ -230,24 +167,14 @@ bncModel::bncModel(QByteArray staID) {
   // Antenna Name, ANTEX File
   // ------------------------
   _antex = 0;
-  QString antexFileName = settings.value("pppAntex").toString();
-  if (!antexFileName.isEmpty()) {
+  if (!_opt->antexFile.isEmpty()) {
     _antex = new bncAntex();
-    if (_antex->readFile(antexFileName) != success) {
+    if (_antex->readFile(_opt->antexFile) != success) {
       emit newMessage("wrong ANTEX file", true);
       delete _antex;
       _antex = 0;
     }
-    else {
-      _antennaName = settings.value("pppAntenna").toString();
-    }
   }
-
-  // Antenna Eccentricities
-  // ----------------------
-  _dN = settings.value("pppRefdN").toDouble();
-  _dE = settings.value("pppRefdE").toDouble();
-  _dU = settings.value("pppRefdU").toDouble();
 
   // Bancroft Coordinates
   // --------------------
@@ -293,10 +220,10 @@ void bncModel::reset() {
   _params.push_back(new bncParam(bncParam::CRD_Y,  ++nextPar, ""));
   _params.push_back(new bncParam(bncParam::CRD_Z,  ++nextPar, ""));
   _params.push_back(new bncParam(bncParam::RECCLK, ++nextPar, ""));
-  if (_estTropo) {
+  if (_opt->estTropo) {
     _params.push_back(new bncParam(bncParam::TROPO, ++nextPar, ""));
   }
-  if (_useGalileo) {
+  if (_opt->useGalileo) {
     _params.push_back(new bncParam(bncParam::GALILEO_OFFSET, ++nextPar, ""));
   }
 
@@ -306,16 +233,16 @@ void bncModel::reset() {
     bncParam* pp = _params[iPar-1];
     pp->xx = 0.0;
     if      (pp->isCrd()) {
-      _QQ(iPar,iPar) = _sigCrd0 * _sigCrd0; 
+      _QQ(iPar,iPar) = _opt->sigCrd0 * _opt->sigCrd0; 
     }
     else if (pp->type == bncParam::RECCLK) {
-      _QQ(iPar,iPar) = _sigClk0 * _sigClk0; 
+      _QQ(iPar,iPar) = _opt->sigClk0 * _opt->sigClk0; 
     }
     else if (pp->type == bncParam::TROPO) {
-      _QQ(iPar,iPar) = _sigTrp0 * _sigTrp0; 
+      _QQ(iPar,iPar) = _opt->sigTrp0 * _opt->sigTrp0; 
     }
     else if (pp->type == bncParam::GALILEO_OFFSET) {
-      _QQ(iPar,iPar) = _sigGalileoOffset0 * _sigGalileoOffset0; 
+      _QQ(iPar,iPar) = _opt->sigGalileoOffset0 * _opt->sigGalileoOffset0; 
     }
   }
 }
@@ -408,20 +335,22 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
   double phaseCenter = 0.0;
   if (_antex) { 
     bool found;
-    phaseCenter = _antex->pco(_antennaName, satData->eleSat, found);
+    phaseCenter = _antex->pco(_opt->antennaName, satData->eleSat, found);
     if (!found) {
       emit newMessage("ANTEX: antenna >" 
-                      + _antennaName.toAscii() + "< not found", true);
+                      + _opt->antennaName.toAscii() + "< not found", true);
     }
   }
 
   double antennaOffset = 0.0;
-  if (_dN != 0.0 || _dE != 0.0 || _dU != 0.0) {
+  if (_opt->antEccSet()) {
     double cosa = cos(satData->azSat);
     double sina = sin(satData->azSat);
     double cose = cos(satData->eleSat);
     double sine = sin(satData->eleSat);
-    antennaOffset = -_dN * cosa*cose - _dE * sina*cose - _dU * sine;
+    antennaOffset = -_opt->antEccNEU[0] * cosa*cose 
+                    -_opt->antEccNEU[1] * sina*cose 
+                    -_opt->antEccNEU[2] * sine;
   }
 
   return satData->rho + phaseCenter + antennaOffset + clk() 
@@ -477,12 +406,8 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
 
   if (iPhase == 0) {
 
-    bncSettings settings;
-    
-    _maxSolGap = settings.value("pppMaxSolGap").toDouble();
-    
     bool firstCrd = false;
-    if (!_lastTimeOK.valid() || (_maxSolGap > 0 && _time - _lastTimeOK > _maxSolGap)) {
+    if (!_lastTimeOK.valid() || (_opt->maxSolGap > 0 && _time - _lastTimeOK > _opt->maxSolGap)) {
       firstCrd = true;
       _startTime = epoData->tt;
       reset();
@@ -490,8 +415,8 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
     
     // Use different white noise for Quick-Start mode
     // ----------------------------------------------
-    double sigCrdP_used   = _sigCrdP;
-    if ( _quickStart > 0.0 && _quickStart > (epoData->tt - _startTime) ) {
+    double sigCrdP_used = _opt->sigCrdP;
+    if ( _opt->quickStart > 0.0 && _opt->quickStart > (epoData->tt - _startTime) ) {
       sigCrdP_used   = 0.0;
     }
 
@@ -504,10 +429,8 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
       // -----------
       if      (pp->type == bncParam::CRD_X) {
         if (firstCrd) {
-          if (settings.value("pppRefCrdX").toString() != "" &&
-              settings.value("pppRefCrdY").toString() != "" &&
-              settings.value("pppRefCrdZ").toString() != "") {
-            pp->xx = settings.value("pppRefCrdX").toDouble();
+          if (_opt->refCrdSet()) {
+            pp->xx = _opt->refCrd[0];
           }
           else {
             pp->xx = _xcBanc(1);
@@ -517,10 +440,8 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
       }
       else if (pp->type == bncParam::CRD_Y) {
         if (firstCrd) {
-          if (settings.value("pppRefCrdX").toString() != "" &&
-              settings.value("pppRefCrdY").toString() != "" &&
-              settings.value("pppRefCrdZ").toString() != "") {
-            pp->xx = settings.value("pppRefCrdY").toDouble();
+          if (_opt->refCrdSet()) {
+            pp->xx = _opt->refCrd[1];
           }
           else {
             pp->xx = _xcBanc(2);
@@ -530,10 +451,8 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
       }
       else if (pp->type == bncParam::CRD_Z) {
         if (firstCrd) {
-          if (settings.value("pppRefCrdX").toString() != "" &&
-              settings.value("pppRefCrdY").toString() != "" &&
-              settings.value("pppRefCrdZ").toString() != "") {
-            pp->xx = settings.value("pppRefCrdZ").toDouble();
+          if (_opt->refCrdSet()) {
+            pp->xx = _opt->refCrd[2];
           }
           else {
             pp->xx = _xcBanc(3);
@@ -549,26 +468,26 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
         for (int jj = 1; jj <= _params.size(); jj++) {
           _QQ(iPar, jj) = 0.0;
         }
-        _QQ(iPar,iPar) = _sigClk0 * _sigClk0;
+        _QQ(iPar,iPar) = _opt->sigClk0 * _opt->sigClk0;
       }
     
       // Tropospheric Delay
       // ------------------
       else if (pp->type == bncParam::TROPO) {
-        _QQ(iPar,iPar) += _sigTrpP * _sigTrpP;
+        _QQ(iPar,iPar) += _opt->sigTrpP * _opt->sigTrpP;
       }
     
       // Galileo Offset
       // --------------
       else if (pp->type == bncParam::GALILEO_OFFSET) {
-        _QQ(iPar,iPar) += _sigGalileoOffsetP * _sigGalileoOffsetP;
+        _QQ(iPar,iPar) += _opt->sigGalileoOffsetP * _opt->sigGalileoOffsetP;
       }
     }
   }
 
   // Add New Ambiguities if necessary
   // --------------------------------
-  if (_usePhase) {
+  if (_opt->usePhase) {
 
     // Make a copy of QQ and xx, set parameter indices
     // -----------------------------------------------
@@ -626,7 +545,7 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
     for (int ii = 1; ii <= nPar; ii++) {
       bncParam* par = _params[ii-1];
       if (par->index_old == 0) {
-        _QQ(par->index, par->index) = _sigAmb0 * _sigAmb0;
+        _QQ(par->index, par->index) = _opt->sigAmb0 * _opt->sigAmb0;
       }
       par->index_old = par->index;
     }
@@ -639,13 +558,11 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   Tracer tracer("bncModel::update");
 
-  bncSettings settings;
-
   _log.clear();  
 
   _time = epoData->tt; // current epoch time
 
-  if (settings.value("pppSPP").toString() == "PPP") {
+  if (_opt->pppMode) {
     _log += "Precise Point Positioning of Epoch " 
           + QByteArray(_time.timestr(1).c_str()) +
           "\n---------------------------------------------------------------\n";
@@ -723,22 +640,13 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   // NEU Output
   // ----------
-  double xyzRef[3];
-
-  if (settings.value("pppRefCrdX").toString() != "" &&
-      settings.value("pppRefCrdY").toString() != "" &&
-      settings.value("pppRefCrdZ").toString() != "") {
-
-    xyzRef[0] = settings.value("pppRefCrdX").toDouble();
-    xyzRef[1] = settings.value("pppRefCrdY").toDouble();
-    xyzRef[2] = settings.value("pppRefCrdZ").toDouble();
-
-    newPos->xnt[0] = x() - xyzRef[0];
-    newPos->xnt[1] = y() - xyzRef[1];
-    newPos->xnt[2] = z() - xyzRef[2];
+  if (_opt->refCrdSet()) {
+    newPos->xnt[0] = x() - _opt->refCrd[0];
+    newPos->xnt[1] = y() - _opt->refCrd[1];
+    newPos->xnt[2] = z() - _opt->refCrd[2];
 
     double ellRef[3];
-    xyz2ell(xyzRef, ellRef);
+    xyz2ell(_opt->refCrd, ellRef);
     xyz2neu(ellRef, newPos->xnt, &newPos->xnt[3]);
 
     strC << "  NEU "
@@ -750,22 +658,12 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   emit newMessage(QByteArray(strC.str().c_str()), true);
 
-  if (settings.value("pppAverage").toString() == "") {
+  if (_opt->pppAverage == 0.0) {
     delete newPos;
   }
   else {
   
    _posAverage.push_back(newPos); 
-
-    // Time Span for Average Computation
-    // ---------------------------------
-    double tRangeAverage = settings.value("pppAverage").toDouble() * 60.;
-    if (tRangeAverage < 0) {
-      tRangeAverage = 0;
-    }
-    if (tRangeAverage > 86400) {
-      tRangeAverage = 86400;
-    }
 
     // Compute the Mean
     // ----------------
@@ -774,7 +672,7 @@ t_irc bncModel::update(t_epoData* epoData) {
     QMutableVectorIterator<pppPos*> it(_posAverage);
     while (it.hasNext()) {
       pppPos* pp = it.next();
-      if ( (epoData->tt - pp->time) >= tRangeAverage ) {
+      if ( (epoData->tt - pp->time) >= _opt->pppAverage ) {
         delete pp;
         it.remove();
       }
@@ -805,18 +703,15 @@ t_irc bncModel::update(t_epoData* epoData) {
         std[ii] = sqrt(std[ii] / nn);
       }
 
-      if (settings.value("pppRefCrdX").toString() != "" &&
-          settings.value("pppRefCrdY").toString() != "" &&
-          settings.value("pppRefCrdZ").toString() != "") {
-       
+      if (_opt->refCrdSet()) {
         ostringstream strD; strD.setf(ios::fixed);
         strD << _staID.data() << "  AVE-XYZ " 
              << epoData->tt.timestr(1) << " "
-             << setw(13) << setprecision(3) << mean[0] + xyzRef[0] << " +- "
+             << setw(13) << setprecision(3) << mean[0] + _opt->refCrd[0] << " +- "
              << setw(6)  << setprecision(3) << std[0]   << " "
-             << setw(14) << setprecision(3) << mean[1] + xyzRef[1] << " +- "
+             << setw(14) << setprecision(3) << mean[1] + _opt->refCrd[1] << " +- "
              << setw(6)  << setprecision(3) << std[1]   << " "
-             << setw(14) << setprecision(3) << mean[2] + xyzRef[2] << " +- "
+             << setw(14) << setprecision(3) << mean[2] + _opt->refCrd[2] << " +- "
              << setw(6)  << setprecision(3) << std[2];
         emit newMessage(QByteArray(strD.str().c_str()), true);
 
@@ -831,7 +726,7 @@ t_irc bncModel::update(t_epoData* epoData) {
              << setw(6)  << setprecision(3) << std[5];
         emit newMessage(QByteArray(strE.str().c_str()), true);
 
-        if ( Qt::CheckState(settings.value("pppEstTropo").toInt()) == Qt::Checked) {
+        if (_opt->estTropo) {
           ostringstream strF; strF.setf(ios::fixed);
           strF << _staID.data() << "  AVE-TRP " 
                << epoData->tt.timestr(1) << " "
@@ -1140,7 +1035,7 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
   // ------------------
   if (iPhase == 1) {
     ll(iObs)      = satData->L3 - cmpValue(satData, true);
-    double sigL3 = _sigL3;
+    double sigL3 = _opt->sigL3;
     if (satData->system() == 'R') {
       sigL3 *= GLONASS_WEIGHT_FACTOR;
     }
@@ -1158,7 +1053,7 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
   // -----------------
   else {
     ll(iObs)      = satData->P3 - cmpValue(satData, false);
-    PP(iObs,iObs) = 1.0 / (_sigP3 * _sigP3) / (ellWgtCoef * ellWgtCoef);
+    PP(iObs,iObs) = 1.0 / (_opt->sigP3 * _opt->sigP3) / (ellWgtCoef * ellWgtCoef);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
     }
@@ -1251,7 +1146,7 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
     // First update using code observations, then phase observations
     // -------------------------------------------------------------      
-    for (int iPhase = 0; iPhase <= (_usePhase ? 1 : 0); iPhase++) {
+    for (int iPhase = 0; iPhase <= (_opt->usePhase ? 1 : 0); iPhase++) {
     
       // Status Prediction
       // -----------------
@@ -1314,7 +1209,7 @@ t_irc bncModel::update_p(t_epoData* epoData) {
           par->xx += dx(par->index);
         }
 
-        if (!_usePhase || iPhase == 1) {
+        if (!_opt->usePhase || iPhase == 1) {
           if (_outlierGPS.size() > 0 || _outlierGlo.size() > 0) {
             _log += "Neglected PRNs: ";
             if (!_outlierGPS.isEmpty()) {

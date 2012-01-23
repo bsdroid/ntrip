@@ -65,7 +65,7 @@ bncPPPclient::bncPPPclient(QByteArray staID, t_pppOpt* opt) {
   }
 
   _staID = staID;
-  _model = new bncModel(staID);
+  _model = new bncModel(staID, _opt);
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));

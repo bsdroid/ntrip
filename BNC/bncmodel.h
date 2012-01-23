@@ -35,6 +35,7 @@
 class t_epoData;
 class t_satData;
 class bncAntex;
+class t_pppOpt;
 
 class bncParam {
  public:
@@ -56,7 +57,7 @@ class bncParam {
 class bncModel : public QObject {
  Q_OBJECT
  public:
-  bncModel(QByteArray staID);
+  bncModel(QByteArray staID, const t_pppOpt* opt);
   ~bncModel();
   t_irc update(t_epoData* epoData);
   bncTime time()  const {return _time;}
@@ -134,6 +135,7 @@ class bncModel : public QObject {
     double  xnt[7];
   };
 
+  const t_pppOpt*       _opt;
   bncTime               _time;
   bncTime               _lastTimeOK;
   QByteArray            _staID;
@@ -144,34 +146,15 @@ class bncModel : public QObject {
   t_epoData*            _epoData_sav;
   ColumnVector          _xcBanc;
   ColumnVector          _ellBanc;
-  bool                  _usePhase;
-  bool                  _estTropo;
-  bool                  _useGalileo;
   QByteArray            _log;
   QFile*                _nmeaFile;
   QTextStream*          _nmeaStream;
   QMap<QString, double> _windUpTime;
   QMap<QString, double> _windUpSum;
   QVector<pppPos*>      _posAverage;
-  double                _quickStart;
-  double                _maxSolGap;
-  double                _sigCrd0;
-  double                _sigCrdP;
-  double                _sigTrp0;
-  double                _sigTrpP;
-  double                _sigGalileoOffset0;
-  double                _sigGalileoOffsetP;
-  double                _sigL3;
-  double                _sigP3;
-  double                _sigAmb0;
-  double                _sigClk0;
-  double                _dN;
-  double                _dE;
-  double                _dU;
-  bncAntex*             _antex;
-  QString               _antennaName;
   QStringList           _outlierGPS;
   QStringList           _outlierGlo;
+  bncAntex*             _antex;
 };
 
 #endif
