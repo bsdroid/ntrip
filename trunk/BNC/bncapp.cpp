@@ -204,6 +204,7 @@ void bncApp::messagePrivate(const QByteArray& msg) {
     *_logStream << currentDateAndTimeGPS().toString("yy-MM-dd hh:mm:ss ").toAscii().data();
     *_logStream << msgLocal.data() << endl;
     _logStream->flush();
+    _logFile->flush();
   }
 }
 
