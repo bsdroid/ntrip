@@ -384,7 +384,6 @@ int moremessagesfollow, char *buffer, size_t size)
     i < CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat; ++i)
     {
       T_GLONASS_SATELLITE_ID(co->Sat[i].ID)
-      T_GLONASS_IOD(co->Sat[i].IOD)
       T_DELTA_CLOCK_C0(co->Sat[i].Clock.DeltaA0)
       T_DELTA_CLOCK_C1(co->Sat[i].Clock.DeltaA1)
       T_DELTA_CLOCK_C2(co->Sat[i].Clock.DeltaA2)
@@ -879,7 +878,6 @@ co->UpdateInterval,mmi,co->NumberOfGLONASSSat,nums);
       else if(pos == CLOCKORBIT_NUMGPS+co->NumberOfGLONASSSat) ++co->NumberOfGLONASSSat;
       co->Sat[pos].ID = id;
 
-      G_GLONASS_IOD(co->Sat[pos].IOD)
       G_DELTA_CLOCK_C0(co->Sat[pos].Clock.DeltaA0)
       G_DELTA_CLOCK_C1(co->Sat[pos].Clock.DeltaA1)
       G_DELTA_CLOCK_C2(co->Sat[pos].Clock.DeltaA2)
