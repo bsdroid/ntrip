@@ -42,6 +42,7 @@
 #include "bncpostprocess.h"
 #include "bncsettings.h"
 #include "pppopt.h"
+#include "bncpppclient.h"
 
 using namespace std;
 
@@ -56,11 +57,16 @@ t_postProcessing::t_postProcessing(QObject* parent) : QThread(parent) {
 t_postProcessing::~t_postProcessing() {
   cout << "~t_postProcessing" << endl;
   delete _opt;
+  delete _pppClient;
 }
 
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_postProcessing::run() {
+
+  if (!_pppClient) {
+    _pppClient = new bncPPPclient("POST", _opt, false);
+  }
 
   cout << "obsFile: "  << _opt->obsFileName.toAscii().data()  << endl;
   cout << "navFile: "  << _opt->navFileName.toAscii().data()  << endl;
