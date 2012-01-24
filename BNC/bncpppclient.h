@@ -127,6 +127,13 @@ class bncPPPclient : public bncEphUser {
   static t_irc applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, 
                          ColumnVector& vv);
   QByteArray staID() const {return _staID;}
+  const t_pppOpt* opt() const {return _opt;}
+  void emitNewMessage(QByteArray msg, bool showOnScreen) {
+    emit newMessage(msg, showOnScreen);
+  }
+  void emitNewNMEAstr(QByteArray str) {
+    emit newNMEAstr(str);
+  }
 
  public slots:
   void slotNewCorrections(QList<QString> corrList);
