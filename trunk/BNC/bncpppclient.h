@@ -121,7 +121,7 @@ class bncPPPclient : public bncEphUser {
  Q_OBJECT
 
  public:
-  bncPPPclient(QByteArray staID, t_pppOpt* opt = 0);
+  bncPPPclient(QByteArray staID, t_pppOpt* opt = 0, bool connectSlots = true);
   ~bncPPPclient();
   void putNewObs(const t_obs& pp);
   static t_irc applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, 
