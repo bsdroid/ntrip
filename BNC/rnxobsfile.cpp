@@ -59,7 +59,7 @@ t_rnxObsFile::t_rnxObsHeader::~t_rnxObsHeader() {
 t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream) {
   while (stream->status() == QTextStream::Ok) {
     QString line = stream->readLine();
-    cout << line.toAscii().data() << cout;
+    cout << line.toAscii().data() << endl;
   }
 
   return success;
