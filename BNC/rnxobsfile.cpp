@@ -65,13 +65,21 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream) {
     if      (key == "END OF HEADER") {
       break;
     }
-    QTextStream in(value.toAscii(), QIODevice::ReadOnly);
-    if (key == "RINEX VERSION / TYPE") {
+    else if (key == "RINEX VERSION / TYPE") {
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
       in >> _version;
+    }
+    else if (key == "MARKER NAME") {
+      _markerName = value;
+    }
+    else if (key == "ANT # / TYPE") {
+      _antennaName = value.mid(20);
     }
   }
 
   cout << "RINEX Version = " << _version << endl;
+  cout << "Antenna Name >" << _antennaName.toAscii().data() << "<\n";
+  cout << "Marker Name >" << _markerName.toAscii().data() << "<\n";
 
   return success;
 }

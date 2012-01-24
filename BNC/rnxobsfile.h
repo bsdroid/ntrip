@@ -39,7 +39,9 @@ class t_rnxObsFile {
     ~t_rnxObsHeader();
     t_irc read(QTextStream* stream);
    private:
-    float _version;
+    float   _version;
+    QString _antennaName;
+    QString _markerName;
   };
  
  public:
