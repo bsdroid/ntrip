@@ -53,7 +53,8 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncPPPclient::bncPPPclient(QByteArray staID, t_pppOpt* opt) {
+bncPPPclient::bncPPPclient(QByteArray staID, t_pppOpt* opt, bool connectSlots) :
+  bncEphUser(connectSlots) {
 
   if (opt) {
     _opt      = opt;
@@ -68,11 +69,13 @@ bncPPPclient::bncPPPclient(QByteArray staID, t_pppOpt* opt) {
 
   _model = new bncModel(this);
 
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
+  if (connectSlots) {
+    connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+            ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
 
-  connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
-          this, SLOT(slotNewCorrections(QList<QString>)));
+    connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
+            this, SLOT(slotNewCorrections(QList<QString>)));
+  }
 }
 
 // Destructor

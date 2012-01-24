@@ -78,7 +78,7 @@ class bncEphUser : public QObject {
  Q_OBJECT
 
  public:
-  bncEphUser();
+  bncEphUser(bool connectSlots = true);
   virtual ~bncEphUser();
 
   class t_ephPair {
