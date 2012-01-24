@@ -59,7 +59,12 @@ t_rnxObsFile::t_rnxObsHeader::~t_rnxObsHeader() {
 t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream) {
   while (stream->status() == QTextStream::Ok && !stream->atEnd()) {
     QString line = stream->readLine();
-    cout << line.toAscii().data() << endl;
+    QString value = line.left(60);
+    QString key   = line.mid(60);
+    if (key == "END OF HEADER") {
+      break;
+    }
+    cout << key.toAscii().data() << ": >" << value.toAscii().data() << "<\n";
   }
 
   return success;
