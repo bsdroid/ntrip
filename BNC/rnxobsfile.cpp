@@ -47,6 +47,7 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_rnxObsFile::t_rnxObsHeader::t_rnxObsHeader() {
+  _version = 0.0;
 }
 
 // Destructor
@@ -59,13 +60,18 @@ t_rnxObsFile::t_rnxObsHeader::~t_rnxObsHeader() {
 t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream) {
   while (stream->status() == QTextStream::Ok && !stream->atEnd()) {
     QString line = stream->readLine();
-    QString value = line.left(60);
-    QString key   = line.mid(60);
-    if (key == "END OF HEADER") {
+    QString value = line.left(60).trimmed();
+    QString key   = line.mid(60).trimmed();
+    if      (key == "END OF HEADER") {
       break;
     }
-    cout << key.toAscii().data() << ": >" << value.toAscii().data() << "<\n";
+    QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+    if (key == "RINEX VERSION / TYPE") {
+      in >> _version;
+    }
   }
+
+  cout << "RINEX Version = " << _version << endl;
 
   return success;
 }
