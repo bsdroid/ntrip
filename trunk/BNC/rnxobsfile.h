@@ -32,14 +32,25 @@ class t_pppOpt;
 class bncPPPclient;
 
 class t_rnxObsFile {
+
+  class t_rnxObsHeader {
+   public:
+    t_rnxObsHeader();
+    ~t_rnxObsHeader();
+    t_irc read(QTextStream* stream);
+   private:
+  };
  
  public:
-  t_rnxObsFile(const QString& fileName);
+  t_rnxObsFile(QString fileName);
   ~t_rnxObsFile();
 
   t_irc getEpoch(); 
 
  private:
+  t_rnxObsHeader _header;
+  QFile*         _file;
+  QTextStream*   _stream;
 };
 
 #endif

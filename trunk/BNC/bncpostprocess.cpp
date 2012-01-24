@@ -43,21 +43,28 @@
 #include "bncsettings.h"
 #include "pppopt.h"
 #include "bncpppclient.h"
+#include "rnxobsfile.h"
+#include "rnxnavfile.h"
 
 using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_postProcessing::t_postProcessing(QObject* parent) : QThread(parent) {
-  _opt = new t_pppOpt();
+  _opt        = new t_pppOpt();
+  _rnxObsFile = 0;
+  _rnxNavFile = 0;
+  _pppClient  = 0;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_postProcessing::~t_postProcessing() {
   cout << "~t_postProcessing" << endl;
-  delete _opt;
   delete _pppClient;
+  delete _rnxNavFile;
+  delete _rnxObsFile;
+  delete _opt;
 }
 
 // Write a Program Message
@@ -74,7 +81,9 @@ void t_postProcessing::run() {
     return;
   }
   else {
-    _pppClient = new bncPPPclient("POST", _opt, false);
+    _rnxObsFile = new t_rnxObsFile(_opt->obsFileName);
+    _rnxNavFile = new t_rnxNavFile(_opt->navFileName);
+    _pppClient  = new bncPPPclient("POST", _opt, false);
 
     connect(this, SIGNAL(newEphGPS(gpsephemeris)),
             _pppClient, SLOT(slotNewEphGPS(gpsephemeris)), Qt::DirectConnection);
