@@ -76,6 +76,9 @@ t_pppOpt::t_pppOpt() {
   nmeaFile     = settings.value("nmeaFile").toString();
   antexFile    = settings.value("pppAntex").toString();
   antennaName  = settings.value("pppAntenna").toString();
+  obsFileName  = settings.value("postObsFile").toString();
+  navFileName  = settings.value("postNavFile").toString();
+  corrFileName = settings.value("postcorrFile").toString();
 
   pppMode      = settings.value("pppSPP").toString() == "PPP";
   rnxAppend    = settingsChecked("rnxAppend");

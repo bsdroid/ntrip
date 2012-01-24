@@ -53,6 +53,9 @@ class t_pppOpt {
   QString nmeaFile;
   QString antexFile;
   QString antennaName;
+  QString obsFileName;
+  QString navFileName;
+  QString corrFileName;
   bool    pppMode;
   bool    rnxAppend;
   bool    usePhase;

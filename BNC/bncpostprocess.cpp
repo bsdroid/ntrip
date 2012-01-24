@@ -41,31 +41,30 @@
 #include <iostream>
 #include "bncpostprocess.h"
 #include "bncsettings.h"
+#include "pppopt.h"
 
 using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_postProcessing::t_postProcessing(QObject* parent) : QThread(parent) {
-  bncSettings settings;
-  _input.obsFileName  = settings.value("postObsFile").toString();
-  _input.navFileName  = settings.value("postNavFile").toString();
-  _input.corrFileName = settings.value("postcorrFile").toString();
+  _opt = new t_pppOpt();
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_postProcessing::~t_postProcessing() {
   cout << "~t_postProcessing" << endl;
+  delete _opt;
 }
 
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_postProcessing::run() {
 
-  cout << "obsFile: "  << _input.obsFileName.toAscii().data()  << endl;
-  cout << "navFile: "  << _input.navFileName.toAscii().data()  << endl;
-  cout << "corrFile: " << _input.corrFileName.toAscii().data() << endl;
+  cout << "obsFile: "  << _opt->obsFileName.toAscii().data()  << endl;
+  cout << "navFile: "  << _opt->navFileName.toAscii().data()  << endl;
+  cout << "corrFile: " << _opt->corrFileName.toAscii().data() << endl;
 
   int MAXI = 5;
   for (int ii = 1; ii < MAXI; ii++) {
