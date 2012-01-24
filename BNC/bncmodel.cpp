@@ -144,9 +144,6 @@ bncModel::bncModel(bncPPPclient* pppClient) {
   _staID     = pppClient->staID();
   _opt       = pppClient->opt();
 
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
-
   // NMEA Output
   // -----------
   if (_opt->nmeaFile.isEmpty()) {

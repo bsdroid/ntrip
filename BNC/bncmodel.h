@@ -55,7 +55,7 @@ class bncParam {
   QString  prn;
 };
 
-class bncModel : public QObject {
+class bncModel {
  public:
   bncModel(bncPPPclient* pppClient);
   ~bncModel();

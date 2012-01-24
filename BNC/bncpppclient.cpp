@@ -73,9 +73,6 @@ bncPPPclient::bncPPPclient(QByteArray staID, t_pppOpt* opt) {
 
   connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
           this, SLOT(slotNewCorrections(QList<QString>)));
-
-  connect(_model, SIGNAL(newNMEAstr(QByteArray)), 
-          this,   SIGNAL(newNMEAstr(QByteArray)));
 }
 
 // Destructor
