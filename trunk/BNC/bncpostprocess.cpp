@@ -60,12 +60,36 @@ t_postProcessing::~t_postProcessing() {
   delete _pppClient;
 }
 
+// Write a Program Message
+////////////////////////////////////////////////////////////////////////////
+void t_postProcessing::slotMessage(QByteArray msg, bool /* showOnScreen */) {
+  cout << msg.data();
+}
+
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_postProcessing::run() {
 
-  if (!_pppClient) {
+  if (_pppClient) {
+    return;
+  }
+  else {
     _pppClient = new bncPPPclient("POST", _opt, false);
+
+    connect(this, SIGNAL(newEphGPS(gpsephemeris)),
+            _pppClient, SLOT(slotNewEphGPS(gpsephemeris)), Qt::DirectConnection);
+    
+    connect(this, SIGNAL(newEphGlonass(glonassephemeris)),
+            _pppClient, SLOT(slotNewEphGlonass(glonassephemeris)), Qt::DirectConnection);
+    
+    connect(this, SIGNAL(newEphGalileo(galileoephemeris)),
+            _pppClient, SLOT(slotNewEphGalileo(galileoephemeris)), Qt::DirectConnection);
+
+    connect(this, SIGNAL(newCorrections(QList<QString>)),
+            _pppClient, SLOT(slotNewCorrections(QList<QString>)));
+
+    connect(_pppClient, SIGNAL(newMessage(QByteArray,bool)), 
+            this, SLOT(slotMessage(const QByteArray,bool)));
   }
 
   cout << "obsFile: "  << _opt->obsFileName.toAscii().data()  << endl;
