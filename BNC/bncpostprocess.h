@@ -27,6 +27,9 @@
 
 #include <QtCore>
 #include "bncconst.h"
+extern "C" {
+#include "rtcm3torinex.h"
+}
 
 class t_pppOpt;
 class bncPPPclient;
@@ -43,7 +46,14 @@ Q_OBJECT
  signals:
   void progress(float);
   void finished();
+  void newEphGPS(gpsephemeris gpseph);
+  void newEphGlonass(glonassephemeris glonasseph);
+  void newEphGalileo(galileoephemeris galileoeph);
+  void newCorrections(QList<QString>);
    
+ public slots:
+  void slotMessage(QByteArray msg, bool showOnScreen);
+
  public:
   virtual void run();
  
