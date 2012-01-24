@@ -44,6 +44,7 @@
 #include <sstream>
 
 #include "bncmodel.h"
+#include "bncpppclient.h"
 #include "bncapp.h"
 #include "bncpppclient.h"
 #include "bancroft.h"
@@ -137,10 +138,11 @@ double bncParam::partial(t_satData* satData, bool phase) {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncModel::bncModel(QByteArray staID, const t_pppOpt* opt) {
+bncModel::bncModel(bncPPPclient* pppClient) {
 
-  _staID = staID;
-  _opt   = opt;
+  _pppClient = pppClient;
+  _staID     = pppClient->staID();
+  _opt       = pppClient->opt();
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
@@ -170,7 +172,7 @@ bncModel::bncModel(QByteArray staID, const t_pppOpt* opt) {
   if (!_opt->antexFile.isEmpty()) {
     _antex = new bncAntex();
     if (_antex->readFile(_opt->antexFile) != success) {
-      emit newMessage("wrong ANTEX file", true);
+      _pppClient->emitNewMessage("wrong ANTEX file", true);
       delete _antex;
       _antex = 0;
     }
@@ -337,7 +339,7 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
     bool found;
     phaseCenter = _antex->pco(_opt->antennaName, satData->eleSat, found);
     if (!found) {
-      emit newMessage("ANTEX: antenna >" 
+      _pppClient->emitNewMessage("ANTEX: antenna >" 
                       + _opt->antennaName.toAscii() + "< not found", true);
     }
   }
@@ -576,7 +578,7 @@ t_irc bncModel::update(t_epoData* epoData) {
   // Outlier Detection Loop
   // ----------------------
   if (update_p(epoData) != success) {
-    emit newMessage(_log, false);
+    _pppClient->emitNewMessage(_log, false);
     return failure;
   }
 
@@ -623,7 +625,7 @@ t_irc bncModel::update(t_epoData* epoData) {
   }
   strB << '\n';
   _log += strB.str().c_str();
-  emit newMessage(_log, false);
+  _pppClient->emitNewMessage(_log, false);
 
   // Final Message (both log file and screen)
   // ----------------------------------------
@@ -656,7 +658,7 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   }
 
-  emit newMessage(QByteArray(strC.str().c_str()), true);
+  _pppClient->emitNewMessage(QByteArray(strC.str().c_str()), true);
 
   if (_opt->pppAverage == 0.0) {
     delete newPos;
@@ -713,7 +715,7 @@ t_irc bncModel::update(t_epoData* epoData) {
              << setw(6)  << setprecision(3) << std[1]   << " "
              << setw(14) << setprecision(3) << mean[2] + _opt->refCrd[2] << " +- "
              << setw(6)  << setprecision(3) << std[2];
-        emit newMessage(QByteArray(strD.str().c_str()), true);
+        _pppClient->emitNewMessage(QByteArray(strD.str().c_str()), true);
 
         ostringstream strE; strE.setf(ios::fixed);
         strE << _staID.data() << "  AVE-NEU " 
@@ -724,7 +726,7 @@ t_irc bncModel::update(t_epoData* epoData) {
              << setw(6)  << setprecision(3) << std[4]   << " "
              << setw(14) << setprecision(3) << mean[5]  << " +- "
              << setw(6)  << setprecision(3) << std[5];
-        emit newMessage(QByteArray(strE.str().c_str()), true);
+        _pppClient->emitNewMessage(QByteArray(strE.str().c_str()), true);
 
         if (_opt->estTropo) {
           ostringstream strF; strF.setf(ios::fixed);
@@ -732,7 +734,7 @@ t_irc bncModel::update(t_epoData* epoData) {
                << epoData->tt.timestr(1) << " "
                << setw(13) << setprecision(3) << mean[6]  << " +- "
                << setw(6)  << setprecision(3) << std[6]   << endl;
-          emit newMessage(QByteArray(strF.str().c_str()), true);
+          _pppClient->emitNewMessage(QByteArray(strF.str().c_str()), true);
         }
       }
     }
@@ -851,7 +853,7 @@ void bncModel::writeNMEAstr(const QString& nmStr) {
     _nmeaStream->flush();
   }
 
-  emit newNMEAstr(outStr.toAscii());
+  _pppClient->emitNewNMEAstr(outStr.toAscii());
 }
 
 //

@@ -36,6 +36,7 @@ class t_epoData;
 class t_satData;
 class bncAntex;
 class t_pppOpt;
+class bncPPPclient;
 
 class bncParam {
  public:
@@ -55,9 +56,8 @@ class bncParam {
 };
 
 class bncModel : public QObject {
- Q_OBJECT
  public:
-  bncModel(QByteArray staID, const t_pppOpt* opt);
+  bncModel(bncPPPclient* pppClient);
   ~bncModel();
   t_irc update(t_epoData* epoData);
   bncTime time()  const {return _time;}
@@ -87,10 +87,6 @@ class bncModel : public QObject {
   static void kalman(const Matrix& AA, const ColumnVector& ll, 
                      const DiagonalMatrix& PP, 
                      SymmetricMatrix& QQ, ColumnVector& dx);
-
- signals:
-  void newMessage(QByteArray msg, bool showOnScreen);
-  void newNMEAstr(QByteArray str);
 
  private:
   t_irc cmpBancroft(t_epoData* epoData);
@@ -135,6 +131,7 @@ class bncModel : public QObject {
     double  xnt[7];
   };
 
+  bncPPPclient*         _pppClient;
   const t_pppOpt*       _opt;
   bncTime               _time;
   bncTime               _lastTimeOK;
