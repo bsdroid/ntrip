@@ -40,17 +40,47 @@
 
 #include <iostream>
 #include "rnxobsfile.h"
+#include "bncutils.h"
 
 using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_rnxObsFile::t_rnxObsFile(const QString& fileName) {
+t_rnxObsFile::t_rnxObsHeader::t_rnxObsHeader() {
+}
+
+// Destructor
+////////////////////////////////////////////////////////////////////////////
+t_rnxObsFile::t_rnxObsHeader::~t_rnxObsHeader() {
+}
+
+// Read Header
+////////////////////////////////////////////////////////////////////////////
+t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream) {
+  while (stream->status() == QTextStream::Ok) {
+    QString line = stream->readLine();
+    cout << line.toAscii().data();
+  }
+
+  return success;
+}
+
+// Constructor
+////////////////////////////////////////////////////////////////////////////
+t_rnxObsFile::t_rnxObsFile(QString fileName) {
+  expandEnvVar(fileName);
+  _file   = new QFile(fileName);
+  _file->open(QIODevice::ReadOnly | QIODevice::Text);
+  _stream = new QTextStream();
+  _stream->setDevice(_file);
+  _header.read(_stream);
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_rnxObsFile::~t_rnxObsFile() {
+  delete _stream;
+  delete _file;
 }
 
 // Retrieve single Epoch

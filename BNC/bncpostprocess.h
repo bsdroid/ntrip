@@ -33,6 +33,8 @@ extern "C" {
 
 class t_pppOpt;
 class bncPPPclient;
+class t_rnxObsFile;
+class t_rnxNavFile;
 
 class t_postProcessing : public QThread {
 Q_OBJECT
@@ -60,6 +62,8 @@ Q_OBJECT
  private:
   t_pppOpt*     _opt;
   bncPPPclient* _pppClient;
+  t_rnxObsFile* _rnxObsFile;
+  t_rnxNavFile* _rnxNavFile;
 };
 
 #endif
