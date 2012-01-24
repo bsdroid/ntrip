@@ -28,12 +28,7 @@
 #include <QtCore>
 #include "bncconst.h"
 
-class t_postInput {
- public:
-  QString    obsFileName;
-  QString    navFileName;
-  QString    corrFileName;
-};
+class t_pppOpt;
 
 class t_postProcessing : public QThread {
 Q_OBJECT
@@ -52,7 +47,7 @@ Q_OBJECT
   virtual void run();
  
  private:
-  t_postInput _input;
+  t_pppOpt* _opt;
 };
 
 #endif
