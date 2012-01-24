@@ -39,6 +39,7 @@ class t_rnxObsFile {
     ~t_rnxObsHeader();
     t_irc read(QTextStream* stream);
    private:
+    float _version;
   };
  
  public:
