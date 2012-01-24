@@ -2261,6 +2261,8 @@ void bncWindow::slotStartPostProcessing() {
 // Post-Processing Finished
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFinishedPostProcessing() {
+  QMessageBox::information(this, "Information",
+                           "Post-Processing Thread Finished");
   enableWidget(false, _postProgressLabel);
   _postProgressBar->reset();
   _actPostProcessing->setEnabled(true);
