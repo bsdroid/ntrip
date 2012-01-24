@@ -29,6 +29,7 @@
 #include "bncconst.h"
 
 class t_pppOpt;
+class bncPPPclient;
 
 class t_postProcessing : public QThread {
 Q_OBJECT
@@ -47,7 +48,8 @@ Q_OBJECT
   virtual void run();
  
  private:
-  t_pppOpt* _opt;
+  t_pppOpt*     _opt;
+  bncPPPclient* _pppClient;
 };
 
 #endif
