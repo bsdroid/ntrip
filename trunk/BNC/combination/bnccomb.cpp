@@ -1109,6 +1109,10 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
       } 
     }
     
+    if (_ACs.size() == 1) {
+      break;
+    }
+
     // Remove Outliers
     // ---------------
     bool removed = false;
