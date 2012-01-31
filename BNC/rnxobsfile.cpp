@@ -47,7 +47,9 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_rnxObsFile::t_rnxObsHeader::t_rnxObsHeader() {
-  _version = 0.0;
+  _antNEU[0] = _antNEU[1] = _antNEU[2] = 0.0;
+  _xyz[0]    = _xyz[1]    = _xyz[2]    = 0.0;
+  _version   = 0.0;
 }
 
 // Destructor
@@ -60,6 +62,9 @@ t_rnxObsFile::t_rnxObsHeader::~t_rnxObsHeader() {
 t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream) {
   while (stream->status() == QTextStream::Ok && !stream->atEnd()) {
     QString line = stream->readLine();
+    if (line.isEmpty()) {
+      continue;
+    }
     QString value = line.left(60).trimmed();
     QString key   = line.mid(60).trimmed();
     if      (key == "END OF HEADER") {
@@ -74,6 +79,14 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream) {
     }
     else if (key == "ANT # / TYPE") {
       _antennaName = value.mid(20);
+    }
+    else if (key == "APPROX POSITION XYZ") {
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      in >> _xyz[0] >> _xyz[1] >> _xyz[2];
+    }
+    else if (key == "ANTENNA: DELTA H/E/N") {
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      in >> _antNEU[2] >> _antNEU[1] >> _antNEU[0];
     }
   }
 
@@ -105,6 +118,11 @@ t_rnxObsFile::~t_rnxObsFile() {
 // Retrieve single Epoch
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_rnxObsFile::getEpoch() {
-
+  while (_stream->status() == QTextStream::Ok && !_stream->atEnd()) {
+    QString line = _stream->readLine();
+    if (line.isEmpty()) {
+      continue;
+    }
+  }
   return success;
 }
