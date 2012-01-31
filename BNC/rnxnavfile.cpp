@@ -40,16 +40,58 @@
 
 #include <iostream>
 #include "rnxnavfile.h"
+#include "bncutils.h"
 
 using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_rnxNavFile::t_rnxNavFile(const QString& fileName) {
+t_rnxNavFile::t_rnxNavHeader::t_rnxNavHeader() {
+  _version = 0.0;
+}
+
+// Destructor
+////////////////////////////////////////////////////////////////////////////
+t_rnxNavFile::t_rnxNavHeader::~t_rnxNavHeader() {
+}
+
+// Read Header
+////////////////////////////////////////////////////////////////////////////
+t_irc t_rnxNavFile::t_rnxNavHeader::read(QTextStream* stream) {
+  while (stream->status() == QTextStream::Ok && !stream->atEnd()) {
+    QString line = stream->readLine();
+    if (line.isEmpty()) {
+      continue;
+    }
+    QString value = line.left(60).trimmed();
+    QString key   = line.mid(60).trimmed();
+    if      (key == "END OF HEADER") {
+      break;
+    }
+    else if (key == "RINEX VERSION / TYPE") {
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      in >> _version;
+    }
+  }
+
+  return success;
+}
+
+// Constructor
+////////////////////////////////////////////////////////////////////////////
+t_rnxNavFile::t_rnxNavFile(QString& fileName) {
+  expandEnvVar(fileName);
+  _file   = new QFile(fileName);
+  _file->open(QIODevice::ReadOnly | QIODevice::Text);
+  _stream = new QTextStream();
+  _stream->setDevice(_file);
+  _header.read(_stream);
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_rnxNavFile::~t_rnxNavFile() {
+  delete _stream;
+  delete _file;
 }
 

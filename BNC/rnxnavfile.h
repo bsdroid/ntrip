@@ -32,12 +32,24 @@ class t_pppOpt;
 class bncPPPclient;
 
 class t_rnxNavFile {
+
+  class t_rnxNavHeader {
+   public:
+    t_rnxNavHeader();
+    ~t_rnxNavHeader();
+    t_irc read(QTextStream* stream);
+   private:
+    float   _version;
+  };
  
  public:
-  t_rnxNavFile(const QString& fileName);
+  t_rnxNavFile(QString& fileName);
   ~t_rnxNavFile();
 
  private:
+  t_rnxNavHeader _header;
+  QFile*         _file;
+  QTextStream*   _stream;
 };
 
 #endif
