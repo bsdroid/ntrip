@@ -42,6 +42,8 @@ class t_rnxObsFile {
     float   _version;
     QString _antennaName;
     QString _markerName;
+    double  _antNEU[3];
+    double  _xyz[3];
   };
  
  public:
