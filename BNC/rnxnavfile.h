@@ -43,7 +43,7 @@ class t_rnxNavFile {
   };
  
  public:
-  t_rnxNavFile(QString& fileName);
+  t_rnxNavFile(QString fileName);
   ~t_rnxNavFile();
 
  private:

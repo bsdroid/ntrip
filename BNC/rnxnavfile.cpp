@@ -79,7 +79,7 @@ t_irc t_rnxNavFile::t_rnxNavHeader::read(QTextStream* stream) {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_rnxNavFile::t_rnxNavFile(QString& fileName) {
+t_rnxNavFile::t_rnxNavFile(QString fileName) {
   expandEnvVar(fileName);
   _file   = new QFile(fileName);
   _file->open(QIODevice::ReadOnly | QIODevice::Text);
