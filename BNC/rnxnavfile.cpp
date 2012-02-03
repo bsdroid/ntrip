@@ -104,6 +104,8 @@ t_rnxNavFile::~t_rnxNavFile() {
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_rnxNavFile::getNextEph(t_eph* eph) {
 
+  eph = 0;
+
   while (_stream->status() == QTextStream::Ok && !_stream->atEnd()) {
     QString line = _stream->readLine();
     if (line.isEmpty()) {
@@ -141,15 +143,12 @@ t_irc t_rnxNavFile::getNextEph(t_eph* eph) {
       }
       eph = new t_ephGal(version(), lines);
     }
-    else {
-      return failure;
-    }
-    if (!eph->ok()) {
-      delete eph;
-      eph = 0;
-      return failure;
+    if (eph && eph->ok()) {
+      return success;
     }
   }
 
-  return success;
+  delete eph;
+  eph = 0;
+  return failure;
 }
