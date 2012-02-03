@@ -30,6 +30,7 @@
 
 class t_pppOpt;
 class bncPPPclient;
+class t_eph;
 
 class t_rnxNavFile {
 
@@ -38,13 +39,19 @@ class t_rnxNavFile {
     t_rnxNavHeader();
     ~t_rnxNavHeader();
     t_irc read(QTextStream* stream);
+    float version() const {return _version;}
+    bool  glonass() const {return _glonass;}
    private:
     float   _version;
+    bool    _glonass;
   };
  
  public:
   t_rnxNavFile(QString fileName);
   ~t_rnxNavFile();
+  t_irc getNextEph(t_eph* eph);
+  float version() const {return _header.version();}
+  bool  glonass() const {return _header.glonass();}
 
  private:
   t_rnxNavHeader _header;

@@ -41,6 +41,7 @@
 #include <iostream>
 #include "rnxnavfile.h"
 #include "bncutils.h"
+#include "RTCM3/ephemeris.h"
 
 using namespace std;
 
@@ -48,6 +49,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 t_rnxNavFile::t_rnxNavHeader::t_rnxNavHeader() {
   _version = 0.0;
+  _glonass = false;
 }
 
 // Destructor
@@ -71,6 +73,9 @@ t_irc t_rnxNavFile::t_rnxNavHeader::read(QTextStream* stream) {
     else if (key == "RINEX VERSION / TYPE") {
       QTextStream in(value.toAscii(), QIODevice::ReadOnly);
       in >> _version;
+      if (value.indexOf("GLONASS") != -1) {
+        _glonass = true;
+      }
     }
   }
 
@@ -95,3 +100,56 @@ t_rnxNavFile::~t_rnxNavFile() {
   delete _file;
 }
 
+// Read Next Ephemeris
+////////////////////////////////////////////////////////////////////////////
+t_irc t_rnxNavFile::getNextEph(t_eph* eph) {
+
+  while (_stream->status() == QTextStream::Ok && !_stream->atEnd()) {
+    QString line = _stream->readLine();
+    if (line.isEmpty()) {
+      continue;
+    }
+    QStringList hlp = line.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+    QString prn;
+    if (version() >= 3.0) {
+      prn = hlp.at(0);
+    }
+    else {
+      if (glonass()) {
+        prn = 'R' + QString("%1").arg(hlp.at(0).toInt(), 2, QChar('0'));
+      }
+      else {
+        prn = 'G' + QString("%1").arg(hlp.at(0).toInt(), 2, QChar('0'));
+      }
+    }
+    QStringList lines; lines << line;
+    if      (prn[0] == 'G') {
+      for (int ii = 1; ii < 8; ii++) {
+        lines << _stream->readLine();
+      }
+      eph = new t_ephGPS(version(), lines);
+    }
+    else if (prn[0] == 'R') {
+      for (int ii = 1; ii < 4; ii++) {
+        lines << _stream->readLine();
+      }
+      eph = new t_ephGlo(version(), lines);
+    }
+    else if (prn[0] == 'E') {
+      for (int ii = 1; ii < 8; ii++) {
+        lines << _stream->readLine();
+      }
+      eph = new t_ephGal(version(), lines);
+    }
+    else {
+      return failure;
+    }
+    if (!eph->ok()) {
+      delete eph;
+      eph = 0;
+      return failure;
+    }
+  }
+
+  return success;
+}

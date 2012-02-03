@@ -11,8 +11,10 @@ extern "C" {
 
 class t_eph {
  public:
+  t_eph() {_ok = false;}
   virtual ~t_eph() {};
 
+  bool     ok() const {return _ok;}
   bool     isNewerThan(const t_eph* eph) const;
   QString  prn() const {return _prn;}
   void    setReceptDateTime(const QDateTime& dateTime) {
@@ -48,12 +50,14 @@ class t_eph {
   int       _GPSweek;
   double    _GPSweeks;
   QDateTime _receptDateTime;
+  bool      _ok;
 };
 
 
 class t_ephGPS : public t_eph {
  public:
   t_ephGPS() { }
+  t_ephGPS(float rnxVersion, const QStringList& lines);
   virtual ~t_ephGPS() {}
   double TOC() const {return _TOC;}
 
@@ -104,6 +108,7 @@ class t_ephGPS : public t_eph {
 class t_ephGlo : public t_eph {
  public:
   t_ephGlo() { _xv.ReSize(6); }
+  t_ephGlo(float rnxVersion, const QStringList& lines);
 
   virtual ~t_ephGlo() {}
 
@@ -145,6 +150,7 @@ class t_ephGlo : public t_eph {
 class t_ephGal : public t_eph {
  public:
   t_ephGal() { }
+  t_ephGal(float rnxVersion, const QStringList& lines);
   virtual ~t_ephGal() {}
   double TOC() const {return _TOC;}
 
