@@ -792,28 +792,28 @@ int t_ephGal::RTCM3(unsigned char *buffer) {
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
 t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
-  cout << "t_ephGPS: " << rnxVersion << " " << lines.size() << endl;
   if (lines.size() != 8) {
     _ok = false;
     return;
   }
   QRegExp rex;
   if (rnxVersion < 3.0) {
-    rex.setPattern("(.{2}).(.{2}).(.{2}).(.{2}).(.{2}).(.{2}).(.{5})(.{19})(.{19})(.{19})");
-    cout << lines[0].toAscii().data() << endl;
+    rex.setPattern("(.{2}).(.{2}).(.{2}).(.{2}).(.{2}).(.{2})(.{5})(.{19})(.{19})(.{19})\\s*");
     if (rex.exactMatch(lines[0])) {
       QStringList hlp = rex.capturedTexts();
-      _prn = 'G' + QString("%1").arg(hlp[0], 2, QChar('0'));
-      int    year  = hlp[1].toInt();
-      int    month = hlp[2].toInt();
-      int    day   = hlp[3].toInt();
-      int    hour  = hlp[4].toInt();
-      int    min   = hlp[5].toInt();
-      double sec   = hlp[6].toDouble();
+      _prn = QString("G%1").arg(hlp[1], 2, QChar('0'));
+      int    year  = hlp[2].toInt();
+      int    month = hlp[3].toInt();
+      int    day   = hlp[4].toInt();
+      int    hour  = hlp[5].toInt();
+      int    min   = hlp[6].toInt();
+      double sec   = hlp[7].toDouble();
       cout << _prn.toAscii().data() << " " << year << " " << month << " "
-           << day << " " << hour << " " << min << " " << sec << endl;
+           << day << " " << hour << " " << min << " " << sec << "<<<" << endl;
     }
   }
+
+  _ok = true;
 }
 
 // Constructor
