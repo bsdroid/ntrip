@@ -98,6 +98,8 @@ void t_ephGPS::set(const gpsephemeris* ee) {
   _IDOT     = ee->IDOT;
 
   _TGD      = ee->TGD;
+
+  _ok       = true;
 }
 
 // Compute GPS Satellite Position (virtual)
@@ -491,6 +493,8 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   _xv(4) = _x_velocity * 1.e3; 
   _xv(5) = _y_velocity * 1.e3; 
   _xv(6) = _z_velocity * 1.e3; 
+
+  _ok = true;
 }
 
 // build up RTCM3 for GLONASS
@@ -612,6 +616,8 @@ void t_ephGal::set(const galileoephemeris* ee) {
   _omega    = ee->omega;
   _OMEGADOT = ee->OMEGADOT;
   _IDOT     = ee->IDOT;
+
+  _ok = true;
 }
 
 // Compute Galileo Satellite Position (virtual)
@@ -781,4 +787,25 @@ int t_ephGal::RTCM3(unsigned char *buffer) {
   buffer[size++] = i;
   size += 3;
   return size;
+}
+
+// Constructor
+//////////////////////////////////////////////////////////////////////////////
+t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
+
+  _ok = false;
+}
+
+// Constructor
+//////////////////////////////////////////////////////////////////////////////
+t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
+
+  _ok = false;
+}
+
+// Constructor
+//////////////////////////////////////////////////////////////////////////////
+t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
+
+  _ok = false;
 }
