@@ -105,6 +105,10 @@ void t_postProcessing::run() {
   cout << "navFile: "  << _opt->navFileName.toAscii().data()  << endl;
   cout << "corrFile: " << _opt->corrFileName.toAscii().data() << endl;
 
+  t_eph* eph;
+  while (_rnxNavFile->getNextEph(eph) == success) {
+  }
+
   int MAXI = 5;
   for (int ii = 1; ii < MAXI; ii++) {
     cout << "ii = " << ii << endl;
