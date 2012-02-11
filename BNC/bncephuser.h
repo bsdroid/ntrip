@@ -104,7 +104,7 @@ class bncEphUser : public QObject {
     }
   }
 
-  void putNewEph(t_eph* eph);
+  t_irc putNewEph(t_eph* eph);
 
  public slots:
   void slotNewEphGPS(gpsephemeris gpseph);

@@ -96,9 +96,11 @@ void t_postProcessing::run() {
   cout << "navFile: "  << _opt->navFileName.toAscii().data()  << endl;
   cout << "corrFile: " << _opt->corrFileName.toAscii().data() << endl;
 
-  t_eph* eph;
+  t_eph* eph = 0;
   while (_rnxNavFile->getNextEph(eph) == success) {
-    _pppClient->putNewEph(eph);
+    if (_pppClient->putNewEph(eph) != success) {
+      delete eph; eph = 0;
+    }
   }
 
   int MAXI = 5;
