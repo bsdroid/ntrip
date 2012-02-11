@@ -792,24 +792,124 @@ int t_ephGal::RTCM3(unsigned char *buffer) {
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
 t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
+
   if (lines.size() != 8) {
     _ok = false;
     return;
   }
-  QRegExp rex;
-  if (rnxVersion < 3.0) {
-    rex.setPattern("(.{2}).(.{2}).(.{2}).(.{2}).(.{2}).(.{2})(.{5})(.{19})(.{19})(.{19})\\s*");
-    if (rex.exactMatch(lines[0])) {
-      QStringList hlp = rex.capturedTexts();
-      _prn = QString("G%1").arg(hlp[1], 2, QChar('0'));
-      int    year  = hlp[2].toInt();
-      int    month = hlp[3].toInt();
-      int    day   = hlp[4].toInt();
-      int    hour  = hlp[5].toInt();
-      int    min   = hlp[6].toInt();
-      double sec   = hlp[7].toDouble();
-      cout << _prn.toAscii().data() << " " << year << " " << month << " "
-           << day << " " << hour << " " << min << " " << sec << "<<<" << endl;
+
+  unsigned off = (rnxVersion < 2.12) ? 0 : 1;
+
+  // Read eight lines
+  // ----------------
+  for (unsigned iLine = 0; iLine < 8; iLine++) {
+    QString line = lines[iLine];
+
+    if      ( iLine == 0 ) {
+      int year, month, day, hour, min;
+      double sec = 0.0;
+      if (rnxVersion < 3.0) {
+        if ( readInt(line,  3 + off,  2, year            ) ||
+             readInt(line,  6 + off,  2, month           ) ||
+             readInt(line,  9 + off,  2, day             ) ||
+             readInt(line, 12 + off,  2, hour            ) ||
+             readInt(line, 15 + off,  2, min             ) ||
+             readDbl(line, 17 + off,  5, sec             ) ||
+             readDbl(line, 22 + off, 19, _clock_bias     ) ||
+             readDbl(line, 41 + off, 19, _clock_drift    ) ||
+             readDbl(line, 60 + off, 19, _clock_driftrate) ) {
+          return;
+        }
+        if (year < 80) {
+          year += 2000;
+        }
+        else {
+          year += 1900;
+        }
+      }
+      else {
+        int iSec;
+        if ( readInt(line,  4,  4, year            ) ||
+             readInt(line,  9,  2, month           ) ||
+             readInt(line, 12,  2, day             ) ||
+             readInt(line, 15,  2, hour            ) ||
+             readInt(line, 18,  2, min             ) ||
+             readInt(line, 21,  2, iSec            ) ||
+             readDbl(line, 23, 19, _clock_bias     ) ||
+             readDbl(line, 42, 19, _clock_drift    ) ||
+             readDbl(line, 61, 19, _clock_driftrate) ) {
+          return;
+        }
+        sec = iSec;
+      }
+      bncTime hlpTime;
+      hlpTime.set(year, month, day, hour, min, sec);
+      _GPSweek  = hlpTime.gpsw();
+      _GPSweeks = hlpTime.gpssec();
+      _TOC      = _GPSweeks;
+    }
+
+    else if      ( iLine == 1 ) {
+      if ( readDbl(line, off +  3, 19, _IODE   ) ||
+           readDbl(line, off + 22, 19, _Crs    ) ||
+           readDbl(line, off + 41, 19, _Delta_n) ||
+           readDbl(line, off + 60, 19, _M0     ) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 2 ) {
+      if ( readDbl(line, off +  3, 19, _Cuc   ) ||
+           readDbl(line, off + 22, 19, _e     ) ||
+           readDbl(line, off + 41, 19, _Cus   ) ||
+           readDbl(line, off + 60, 19, _sqrt_A) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 3 ) {
+      if ( readDbl(line, off +  3, 19, _TOE   )  ||
+           readDbl(line, off + 22, 19, _Cic   )  ||
+           readDbl(line, off + 41, 19, _OMEGA0)  ||
+           readDbl(line, off + 60, 19, _Cis   ) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 4 ) {
+      if ( readDbl(line, off +  3, 19, _i0      ) ||
+           readDbl(line, off + 22, 19, _Crc     ) ||
+           readDbl(line, off + 41, 19, _omega   ) ||
+           readDbl(line, off + 60, 19, _OMEGADOT) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 5 ) {
+      double dummy, TOEw;
+      if ( readDbl(line, off +  3, 19, _IDOT) ||
+           readDbl(line, off + 22, 19, dummy) ||
+           readDbl(line, off + 41, 19, TOEw ) ||
+           readDbl(line, off + 60, 19, dummy) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 6 ) {
+      double dummy;
+      if ( readDbl(line, off +  3, 19, dummy  ) ||
+           readDbl(line, off + 22, 19, _health) ||
+           readDbl(line, off + 41, 19, _TGD   ) ||
+           readDbl(line, off + 60, 19, _IODC  ) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 7 ) {
+      double TOT;
+      if ( readDbl(line, off +  3, 19, TOT) ) {
+        return;
+      }
     }
   }
 

@@ -71,4 +71,8 @@ void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac);
 
 bool findInVector(const std::vector<QString>& vv, const QString& str);
 
+int readInt(const QString& str, int pos, int len, int& value);
+
+int readDbl(const QString& str, int pos, int len, double& value);
+
 #endif
