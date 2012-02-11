@@ -119,10 +119,10 @@ t_irc t_rnxNavFile::getNextEph(t_eph* eph) {
     }
     else {
       if (glonass()) {
-        prn = QString("R%1").arg(hlp.at(0).toInt(), 2, QChar('0'));
+        prn = QString("R%1").arg(hlp.at(0).toInt(), 2, 10, QChar('0'));
       }
       else {
-        prn = QString("G%1").arg(hlp.at(0).toInt(), 2, QChar('0'));
+        prn = QString("G%1").arg(hlp.at(0).toInt(), 2, 10, QChar('0'));
       }
     }
     QStringList lines; lines << line;
