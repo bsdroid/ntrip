@@ -386,3 +386,24 @@ bool findInVector(const vector<QString>& vv, const QString& str) {
   return false;
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+int readInt(const QString& str, int pos, int len, int& value) {
+  bool ok;
+  value = str.mid(pos, len).toInt(&ok);
+  return ok ? 0 : 1;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+int readDbl(const QString& str, int pos, int len, double& value) {
+  QString hlp = str.mid(pos, len);
+  for (int ii = 0; ii < hlp.length(); ii++) {
+    if (hlp[ii]=='D' || hlp[ii]=='d' || hlp[ii] == 'E') {
+      hlp[ii]='e';
+    }
+  }
+  bool ok;
+  value = hlp.toDouble(&ok);
+  return ok ? 0 : 1;
+}
