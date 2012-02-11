@@ -821,9 +821,9 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
       in >> _prn >> year >> month >> day >> hour >> min >> sec;
 
       if (_prn.at(0) != 'G') {
-        _prn = QString("G%1").arg(_prn.toInt(), 2, QChar('0'));
+        _prn = QString("G%1").arg(_prn.toInt(), 2, 10, QLatin1Char('0'));
       }
-
+   
       if      (year <  80) {
         year += 2000;
       }
