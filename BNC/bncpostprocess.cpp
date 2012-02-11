@@ -85,15 +85,6 @@ void t_postProcessing::run() {
     _rnxNavFile = new t_rnxNavFile(_opt->navFileName);
     _pppClient  = new bncPPPclient("POST", _opt, false);
 
-    connect(this, SIGNAL(newEphGPS(gpsephemeris)),
-            _pppClient, SLOT(slotNewEphGPS(gpsephemeris)), Qt::DirectConnection);
-    
-    connect(this, SIGNAL(newEphGlonass(glonassephemeris)),
-            _pppClient, SLOT(slotNewEphGlonass(glonassephemeris)), Qt::DirectConnection);
-    
-    connect(this, SIGNAL(newEphGalileo(galileoephemeris)),
-            _pppClient, SLOT(slotNewEphGalileo(galileoephemeris)), Qt::DirectConnection);
-
     connect(this, SIGNAL(newCorrections(QList<QString>)),
             _pppClient, SLOT(slotNewCorrections(QList<QString>)));
 
@@ -107,6 +98,7 @@ void t_postProcessing::run() {
 
   t_eph* eph;
   while (_rnxNavFile->getNextEph(eph) == success) {
+    _pppClient->putNewEph(eph);
   }
 
   int MAXI = 5;
