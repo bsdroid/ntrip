@@ -799,7 +799,13 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
     return;
   }
 
-  unsigned off = (rnxVersion < 2.12) ? 0 : 1;
+  int pos[4];
+  pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
+  pos[1] = (rnxVersion <= 2.12) ? 22 : 23;
+  pos[2] = (rnxVersion <= 2.12) ? 41 : 42;
+  pos[3] = (rnxVersion <= 2.12) ? 60 : 61;
+
+  int fieldLen = 19;
 
   // Read eight lines
   // ----------------
@@ -807,108 +813,96 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
     QString line = lines[iLine];
 
     if      ( iLine == 0 ) {
-      int year, month, day, hour, min;
-      double sec = 0.0;
-      if (rnxVersion < 3.0) {
-        if ( readInt(line,  3 + off,  2, year            ) ||
-             readInt(line,  6 + off,  2, month           ) ||
-             readInt(line,  9 + off,  2, day             ) ||
-             readInt(line, 12 + off,  2, hour            ) ||
-             readInt(line, 15 + off,  2, min             ) ||
-             readDbl(line, 17 + off,  5, sec             ) ||
-             readDbl(line, 22 + off, 19, _clock_bias     ) ||
-             readDbl(line, 41 + off, 19, _clock_drift    ) ||
-             readDbl(line, 60 + off, 19, _clock_driftrate) ) {
-          return;
-        }
-        if (year < 80) {
-          year += 2000;
-        }
-        else {
-          year += 1900;
-        }
+      QTextStream in(line.left(pos[1]).toAscii());
+
+      int    year, month, day, hour, min;
+      double sec;
+      
+      in >> _prn >> year >> month >> day >> hour >> min >> sec;
+
+      if (_prn.at(0) != 'G') {
+        _prn = QString("G%1").arg(_prn.toInt(), 2, QChar('0'));
       }
-      else {
-        int iSec;
-        if ( readInt(line,  4,  4, year            ) ||
-             readInt(line,  9,  2, month           ) ||
-             readInt(line, 12,  2, day             ) ||
-             readInt(line, 15,  2, hour            ) ||
-             readInt(line, 18,  2, min             ) ||
-             readInt(line, 21,  2, iSec            ) ||
-             readDbl(line, 23, 19, _clock_bias     ) ||
-             readDbl(line, 42, 19, _clock_drift    ) ||
-             readDbl(line, 61, 19, _clock_driftrate) ) {
-          return;
-        }
-        sec = iSec;
+
+      if      (year <  80) {
+        year += 2000;
       }
+      else if (year < 100) {
+        year += 1900;
+      }
+
       bncTime hlpTime;
       hlpTime.set(year, month, day, hour, min, sec);
       _GPSweek  = hlpTime.gpsw();
       _GPSweeks = hlpTime.gpssec();
       _TOC      = _GPSweeks;
+
+      if ( readDbl(line, pos[1], fieldLen, _clock_bias     ) ||
+           readDbl(line, pos[2], fieldLen, _clock_drift    ) ||
+           readDbl(line, pos[3], fieldLen, _clock_driftrate) ) {
+        return;
+      }
     }
 
     else if      ( iLine == 1 ) {
-      if ( readDbl(line, off +  3, 19, _IODE   ) ||
-           readDbl(line, off + 22, 19, _Crs    ) ||
-           readDbl(line, off + 41, 19, _Delta_n) ||
-           readDbl(line, off + 60, 19, _M0     ) ) {
+      if ( readDbl(line, pos[0], fieldLen, _IODE   ) ||
+           readDbl(line, pos[1], fieldLen, _Crs    ) ||
+           readDbl(line, pos[2], fieldLen, _Delta_n) ||
+           readDbl(line, pos[3], fieldLen, _M0     ) ) {
         return;
       }
     }
 
     else if ( iLine == 2 ) {
-      if ( readDbl(line, off +  3, 19, _Cuc   ) ||
-           readDbl(line, off + 22, 19, _e     ) ||
-           readDbl(line, off + 41, 19, _Cus   ) ||
-           readDbl(line, off + 60, 19, _sqrt_A) ) {
+      if ( readDbl(line, pos[0], fieldLen, _Cuc   ) ||
+           readDbl(line, pos[1], fieldLen, _e     ) ||
+           readDbl(line, pos[2], fieldLen, _Cus   ) ||
+           readDbl(line, pos[3], fieldLen, _sqrt_A) ) {
         return;
       }
     }
 
     else if ( iLine == 3 ) {
-      if ( readDbl(line, off +  3, 19, _TOE   )  ||
-           readDbl(line, off + 22, 19, _Cic   )  ||
-           readDbl(line, off + 41, 19, _OMEGA0)  ||
-           readDbl(line, off + 60, 19, _Cis   ) ) {
+      if ( readDbl(line, pos[0], fieldLen, _TOE   )  ||
+           readDbl(line, pos[1], fieldLen, _Cic   )  ||
+           readDbl(line, pos[2], fieldLen, _OMEGA0)  ||
+           readDbl(line, pos[3], fieldLen, _Cis   ) ) {
         return;
       }
     }
 
     else if ( iLine == 4 ) {
-      if ( readDbl(line, off +  3, 19, _i0      ) ||
-           readDbl(line, off + 22, 19, _Crc     ) ||
-           readDbl(line, off + 41, 19, _omega   ) ||
-           readDbl(line, off + 60, 19, _OMEGADOT) ) {
+      if ( readDbl(line, pos[0], fieldLen, _i0      ) ||
+           readDbl(line, pos[1], fieldLen, _Crc     ) ||
+           readDbl(line, pos[2], fieldLen, _omega   ) ||
+           readDbl(line, pos[3], fieldLen, _OMEGADOT) ) {
         return;
       }
     }
 
     else if ( iLine == 5 ) {
       double dummy, TOEw;
-      if ( readDbl(line, off +  3, 19, _IDOT) ||
-           readDbl(line, off + 22, 19, dummy) ||
-           readDbl(line, off + 41, 19, TOEw ) ||
-           readDbl(line, off + 60, 19, dummy) ) {
+      if ( readDbl(line, pos[0], fieldLen, _IDOT) ||
+           readDbl(line, pos[1], fieldLen, dummy) ||
+           readDbl(line, pos[2], fieldLen, TOEw ) ||
+           readDbl(line, pos[3], fieldLen, dummy) ) {
         return;
       }
     }
 
     else if ( iLine == 6 ) {
       double dummy;
-      if ( readDbl(line, off +  3, 19, dummy  ) ||
-           readDbl(line, off + 22, 19, _health) ||
-           readDbl(line, off + 41, 19, _TGD   ) ||
-           readDbl(line, off + 60, 19, _IODC  ) ) {
+      if ( readDbl(line, pos[0], fieldLen, dummy  ) ||
+           readDbl(line, pos[1], fieldLen, _health) ||
+           readDbl(line, pos[2], fieldLen, _TGD   ) ||
+           readDbl(line, pos[3], fieldLen, _IODC  ) ) {
         return;
       }
     }
 
     else if ( iLine == 7 ) {
       double TOT;
-      if ( readDbl(line, off +  3, 19, TOT) ) {
+      if ( readDbl(line, pos[0], fieldLen, TOT) ) {
         return;
       }
     }
