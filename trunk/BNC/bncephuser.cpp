@@ -153,6 +153,32 @@ void bncEphUser::slotNewEphGalileo(galileoephemeris galeph) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
+void bncEphUser::putNewEph(t_eph* newEph) {
+
+  QMutexLocker locker(&_mutex);
+
+  if (!newEph) {
+    return;
+  }
+
+  QString prn = newEph->prn();
+
+  if (_eph.contains(prn)) {
+    t_eph* eLast = _eph.value(prn)->last;
+    if (newEph->isNewerThan(eLast)) {
+      delete _eph.value(prn)->prev;
+      _eph.value(prn)->prev = _eph.value(prn)->last;
+      _eph.value(prn)->last = newEph;
+    }
+  }
+  else {
+    _eph.insert(prn, new t_ephPair(newEph));
+  }
+  ephBufferChanged();
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
 t_irc t_corr::readLine(const QString& line) {
 
   if (line[0] == '!') {
