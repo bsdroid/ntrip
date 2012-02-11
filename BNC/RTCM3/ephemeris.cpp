@@ -799,13 +799,15 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
     return;
   }
 
+  // RINEX Format
+  // ------------
+  int fieldLen = 19;
+
   int pos[4];
   pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
-  pos[1] = (rnxVersion <= 2.12) ? 22 : 23;
-  pos[2] = (rnxVersion <= 2.12) ? 41 : 42;
-  pos[3] = (rnxVersion <= 2.12) ? 60 : 61;
-
-  int fieldLen = 19;
+  pos[1] = pos[0] + fieldLen;
+  pos[2] = pos[1] + fieldLen;
+  pos[3] = pos[2] + fieldLen;
 
   // Read eight lines
   // ----------------
