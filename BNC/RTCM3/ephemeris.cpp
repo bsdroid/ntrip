@@ -793,8 +793,9 @@ int t_ephGal::RTCM3(unsigned char *buffer) {
 //////////////////////////////////////////////////////////////////////////////
 t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
 
+  _ok = false;
+
   if (lines.size() != 8) {
-    _ok = false;
     return;
   }
 
