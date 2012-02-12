@@ -65,7 +65,7 @@ class bncWindow : public QMainWindow {
   public slots:  
     void slotMountPointsRead(QList<bncGetThread*>);
     void slotBncTextChanged();
-    void slotPostProgress(float);
+    void slotPostProgress(int);
 
   private slots:
     void slotWindowMessage(const QByteArray msg, bool showOnScreen);
@@ -161,7 +161,6 @@ class bncWindow : public QMainWindow {
     qtFileChooser* _postObsFileChooser;
     qtFileChooser* _postNavFileChooser;
     qtFileChooser* _postCorrFileChooser;
-    QProgressBar*  _postProgressBar;
     QLabel*        _postProgressLabel;
     QLineEdit*     _postOutLineEdit;
 

@@ -120,12 +120,6 @@ bncWindow::bncWindow() {
   _actPostProcessing = new QAction(tr("Start PP"),this);
   connect(_actPostProcessing, SIGNAL(triggered()), SLOT(slotStartPostProcessing()));
 
-  _postProgressBar = new QProgressBar;
-  _postProgressBar->setMinimum(0);
-  _postProgressBar->setMaximum(100);
-  _postProgressBar->setMinimumWidth(15*ww);
-  _postProgressBar->setMaximumWidth(15*ww);
-
   _actStop = new QAction(tr("Sto&p"),this);
   connect(_actStop, SIGNAL(triggered()), SLOT(slotStop()));
   _actStop->setEnabled(false);
@@ -1815,8 +1809,6 @@ void bncWindow::CreateMenu() {
 // Toolbar
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::AddToolbar() {
-  // Tool (Command) Bar
-  // ------------------
   QToolBar* toolBar = new QToolBar;
   addToolBar(Qt::BottomToolBarArea, toolBar); 
   toolBar->setMovable(false);
@@ -1825,9 +1817,8 @@ void bncWindow::AddToolbar() {
   toolBar->addAction(_actGetData);
   toolBar->addAction(_actStop);
   toolBar->addAction(_actPostProcessing);
-  _postProgressLabel = new QLabel("  Progress");
+  _postProgressLabel = new QLabel("0 Epochs");
   toolBar->addWidget(_postProgressLabel);
-  toolBar->addWidget(_postProgressBar);
   enableWidget(false, _postProgressLabel);
   toolBar->addWidget(new QLabel("                                           "));
   toolBar->addAction(_actwhatsthis);
@@ -2248,12 +2239,12 @@ void bncWindow::slotStartPostProcessing() {
 
   slotSaveOptions();
 
-  _postProgressBar->reset();
+  _postProgressLabel->setText("0 Epochs");
   enableWidget(true, _postProgressLabel);
 
   t_postProcessing* postProcessing = new t_postProcessing(this);
   connect(postProcessing, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessing()));
-  connect(postProcessing, SIGNAL(progress(float)), this, SLOT(slotPostProgress(float)));
+  connect(postProcessing, SIGNAL(progress(int)), this, SLOT(slotPostProgress(int)));
 
   postProcessing->start();
 }
@@ -2264,14 +2255,13 @@ void bncWindow::slotFinishedPostProcessing() {
   QMessageBox::information(this, "Information",
                            "Post-Processing Thread Finished");
   enableWidget(false, _postProgressLabel);
-  _postProgressBar->reset();
   _actPostProcessing->setEnabled(true);
 }
 
 // Progress Bar Change
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotPostProgress(float progress) {
-  if (_postProgressBar) {
-    _postProgressBar->setValue(int(progress*100.0));
+void bncWindow::slotPostProgress(int nEpo) {
+  if (_postProgressLabel) {
+    _postProgressLabel->setText(QString("%1 Epochs").arg(nEpo));
   }
 }

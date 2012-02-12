@@ -46,7 +46,7 @@ Q_OBJECT
   ~t_postProcessing();
 
  signals:
-  void progress(float);
+  void progress(int);
   void finished();
   void newEphGPS(gpsephemeris gpseph);
   void newEphGlonass(glonassephemeris glonasseph);
