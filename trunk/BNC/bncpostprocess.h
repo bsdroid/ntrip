@@ -35,6 +35,7 @@ class t_pppOpt;
 class bncPPPclient;
 class t_rnxObsFile;
 class t_rnxNavFile;
+class t_corrFile;
 
 class t_postProcessing : public QThread {
 Q_OBJECT
@@ -48,10 +49,6 @@ Q_OBJECT
  signals:
   void progress(int);
   void finished();
-  void newEphGPS(gpsephemeris gpseph);
-  void newEphGlonass(glonassephemeris glonasseph);
-  void newEphGalileo(galileoephemeris galileoeph);
-  void newCorrections(QList<QString>);
    
  public slots:
   void slotMessage(QByteArray msg, bool showOnScreen);
@@ -64,6 +61,7 @@ Q_OBJECT
   bncPPPclient* _pppClient;
   t_rnxObsFile* _rnxObsFile;
   t_rnxNavFile* _rnxNavFile;
+  t_corrFile*   _corrFile;
 };
 
 #endif
