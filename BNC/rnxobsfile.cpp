@@ -206,7 +206,9 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
 
       cout.setf(ios::fixed);
       cout << "prn: " << prn.toAscii().data() << " "
-           << setprecision(3) << _currEpo.satObs[iSat][0] << endl;
+           << setprecision(3) << _currEpo.satObs[iSat][0] << " " 
+           << setprecision(3) << _currEpo.satObs[iSat][5] << " "
+           << setprecision(3) << _currEpo.satObs[iSat][6] << endl;
     }
 
     return &_currEpo;
