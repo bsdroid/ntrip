@@ -27,6 +27,7 @@
 
 #include <QtCore>
 #include "bncconst.h"
+#include "bnctime.h"
 
 class t_corrFile : public QObject {
  Q_OBJECT
@@ -34,6 +35,7 @@ class t_corrFile : public QObject {
  public:
   t_corrFile(QString fileName);
   ~t_corrFile();
+  void syncRead(const bncTime& tt);
 
  signals:
   void newCorrections(QList<QString>);

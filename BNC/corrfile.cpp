@@ -61,3 +61,9 @@ t_corrFile::~t_corrFile() {
   delete _file;
 }
 
+// Read till a given time
+////////////////////////////////////////////////////////////////////////////
+void t_corrFile::syncRead(const bncTime& tt) {
+
+
+}
