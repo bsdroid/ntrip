@@ -40,6 +40,7 @@
 
 #include <iostream>
 #include "bncpostprocess.h"
+#include "bncapp.h"
 #include "bncsettings.h"
 #include "pppopt.h"
 #include "bncpppclient.h"
@@ -60,7 +61,6 @@ t_postProcessing::t_postProcessing(QObject* parent) : QThread(parent) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_postProcessing::~t_postProcessing() {
-  cout << "~t_postProcessing" << endl;
   delete _pppClient;
   delete _rnxNavFile;
   delete _rnxObsFile;
@@ -70,7 +70,7 @@ t_postProcessing::~t_postProcessing() {
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
 void t_postProcessing::slotMessage(QByteArray msg, bool /* showOnScreen */) {
-  cout << msg.data();
+  ((bncApp*) qApp)->slotMessage(msg, false);
 }
 
 //  
@@ -91,10 +91,6 @@ void t_postProcessing::run() {
     connect(_pppClient, SIGNAL(newMessage(QByteArray,bool)), 
             this, SLOT(slotMessage(const QByteArray,bool)));
   }
-
-  cout << "obsFile: "  << _opt->obsFileName.toAscii().data()  << endl;
-  cout << "navFile: "  << _opt->navFileName.toAscii().data()  << endl;
-  cout << "corrFile: " << _opt->corrFileName.toAscii().data() << endl;
 
   // Read Ephemerides
   // ----------------
@@ -143,14 +139,14 @@ void t_postProcessing::run() {
     }
   }
 
-  ///// beg test
-  int MAXI = 5;
-  for (int ii = 1; ii < MAXI; ii++) {
-    cout << "ii = " << ii << endl;
-    emit progress(float(ii)/float(MAXI));
-    sleep(1);
-  }
-  //// end test
+//  ///// beg test
+//  int MAXI = 5;
+//  for (int ii = 1; ii < MAXI; ii++) {
+//    cout << "ii = " << ii << endl;
+//    emit progress(float(ii)/float(MAXI));
+//    sleep(1);
+//  }
+//  //// end test
 
   emit finished();
   deleteLater();
