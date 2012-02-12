@@ -26,6 +26,7 @@
 #define RNXOBSFILE_H
 
 #include <QtCore>
+#include "newmat.h"
 #include "bncconst.h"
 
 class t_pppOpt;
@@ -38,12 +39,20 @@ class t_rnxObsFile {
     t_rnxObsHeader();
     ~t_rnxObsHeader();
     t_irc read(QTextStream* stream);
+    float version() const {return _version;}
+    int   nTypes() const {return _obsTypes.size();}
+    const QString& obsType(int index) const {return _obsTypes.at(index);}
+    const QString& antennaName() const {return _antennaName;}
+    const QString& markerName() const {return _markerName;}
+    const ColumnVector& xyz() const {return _xyz;}
+    const ColumnVector& antNEU() const {return _antNEU;}
    private:
-    float   _version;
-    QString _antennaName;
-    QString _markerName;
-    double  _antNEU[3];
-    double  _xyz[3];
+    float        _version;
+    QString      _antennaName;
+    QString      _markerName;
+    ColumnVector _antNEU;
+    ColumnVector _xyz;
+    QStringList  _obsTypes;
   };
  
  public:
