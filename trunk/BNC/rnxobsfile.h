@@ -59,9 +59,13 @@ class t_rnxObsFile {
   t_rnxObsFile(QString fileName);
   ~t_rnxObsFile();
 
+  float version() const {return _header.version();}
   t_irc getEpoch(); 
 
  private:
+  t_irc getEpochV2();
+  t_irc getEpochV3();
+
   t_rnxObsHeader _header;
   QFile*         _file;
   QTextStream*   _stream;

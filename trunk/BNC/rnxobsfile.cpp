@@ -130,11 +130,41 @@ t_rnxObsFile::~t_rnxObsFile() {
 // Retrieve single Epoch
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_rnxObsFile::getEpoch() {
+  if (version() < 3.0) {
+    return getEpochV2();
+  }
+  else {
+    return getEpochV3();
+  }
+}
+
+// Retrieve single Epoch (RINEX Version 3)
+////////////////////////////////////////////////////////////////////////////
+t_irc t_rnxObsFile::getEpochV3() {
+  return failure; // TODO
+}
+
+// Retrieve single Epoch (RINEX Version 2)
+////////////////////////////////////////////////////////////////////////////
+t_irc t_rnxObsFile::getEpochV2() {
   while (_stream->status() == QTextStream::Ok && !_stream->atEnd()) {
     QString line = _stream->readLine();
     if (line.isEmpty()) {
       continue;
     }
+    QTextStream in(line.toAscii());
+    int    year, month, day, hour, min, flag;
+    double sec;
+    in >> year >> month >> day >> hour >> min >> sec >> flag;
+    if      (year <  80) {
+      year += 2000;
+    }
+    else if (year < 100) {
+      year += 1900;
+    }
+
+    int numSat;
+    readInt(line, 29, 3, numSat);
   }
   return success;
 }
