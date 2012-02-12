@@ -47,6 +47,8 @@
 #include "rnxobsfile.h"
 #include "rnxnavfile.h"
 #include "corrfile.h"
+#include "bncsettings.h"
+#include "bncutils.h"
 
 using namespace std;
 
@@ -58,6 +60,21 @@ t_postProcessing::t_postProcessing(QObject* parent) : QThread(parent) {
   _rnxNavFile = 0;
   _corrFile   = 0;
   _pppClient  = 0;
+
+  bncSettings settings;
+
+  QString outFileName = settings.value("postOutFile").toString();
+  if (outFileName.isEmpty()) {
+    _outFile   = 0;
+    _outStream = 0;
+  }
+  else {
+    expandEnvVar(outFileName);
+    _outFile = new QFile(outFileName);
+    _outFile->open(QIODevice::WriteOnly | QIODevice::Text);
+    _outStream = new QTextStream();
+    _outStream->setDevice(_outFile);
+  }
 }
 
 // Destructor
@@ -68,12 +85,20 @@ t_postProcessing::~t_postProcessing() {
   delete _rnxObsFile;
   delete _corrFile;
   delete _opt;
+  delete _outStream;
+  delete _outFile;
 }
 
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
 void t_postProcessing::slotMessage(QByteArray msg, bool /* showOnScreen */) {
-  ((bncApp*) qApp)->slotMessage(msg, false);
+  if (_outStream) {
+    *_outStream << msg;
+    _outStream->flush();
+  }
+  else {
+    ((bncApp*) qApp)->slotMessage(msg, false);
+  }
 }
 
 //  
