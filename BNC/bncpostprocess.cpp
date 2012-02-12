@@ -101,10 +101,12 @@ void t_postProcessing::run() {
     }
   }
 
-  // Read Observations
-  // -----------------
+  // Read/Process Observations
+  // -------------------------
+  int   nEpo = 0;
   const t_rnxObsFile::t_epo* epo = 0;
   while ( (epo = _rnxObsFile->nextEpoch()) != 0 ) {
+    ++nEpo;
     for (int iObs = 0; iObs < epo->satObs.size(); iObs++) {
       const t_rnxObsFile::t_satObs& satObs = epo->satObs[iObs];
       t_obs obs;
@@ -137,16 +139,10 @@ void t_postProcessing::run() {
       }
       _pppClient->putNewObs(obs);
     }
+    if (nEpo % 10 == 0) {
+      emit progress(nEpo);
+    }
   }
-
-//  ///// beg test
-//  int MAXI = 5;
-//  for (int ii = 1; ii < MAXI; ii++) {
-//    cout << "ii = " << ii << endl;
-//    emit progress(float(ii)/float(MAXI));
-//    sleep(1);
-//  }
-//  //// end test
 
   emit finished();
   deleteLater();
