@@ -103,10 +103,6 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream) {
     }
   }
 
-  cout << "RINEX Version = " << _version << endl;
-  cout << "Antenna Name >" << _antennaName.toAscii().data() << "<\n";
-  cout << "Marker Name >" << _markerName.toAscii().data() << "<\n";
-
   return success;
 }
 
@@ -212,12 +208,6 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
         readInt(line, pos + 15, 1, _currEpo.satObs[iSat].snr);
         pos += 16;
       }
-
-      cout.setf(ios::fixed);
-      cout << "prn: " << prn.toAscii().data() << " "
-           << setprecision(3) << _currEpo.satObs[iSat][0] << " " 
-           << setprecision(3) << _currEpo.satObs[iSat][5] << " "
-           << setprecision(3) << _currEpo.satObs[iSat][6] << endl;
     }
 
     return &_currEpo;

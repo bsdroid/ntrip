@@ -145,12 +145,6 @@ t_irc t_rnxNavFile::getNextEph(t_eph* eph) {
       eph = new t_ephGal(version(), lines);
     }
     if (eph && eph->ok()) {
-      //// beg test
-      ColumnVector xc(4);
-      ColumnVector vv(3);
-      eph->position(eph->GPSweek(), eph->GPSweeks(), xc.data(), vv.data());
-      cout << "haha " << eph->prn().toAscii().data() << " " << xc.t();
-      //// end test
       return success;
     }
   }
