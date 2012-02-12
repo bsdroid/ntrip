@@ -93,7 +93,7 @@ t_postProcessing::~t_postProcessing() {
 ////////////////////////////////////////////////////////////////////////////
 void t_postProcessing::slotMessage(QByteArray msg, bool /* showOnScreen */) {
   if (_outStream) {
-    *_outStream << msg;
+    *_outStream << endl << msg;
     _outStream->flush();
   }
   else {
