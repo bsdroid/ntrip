@@ -39,6 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+#include <iomanip>
 #include "rnxobsfile.h"
 #include "bncutils.h"
 
@@ -169,6 +170,8 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
     int numSat;
     readInt(line, 29, 3, numSat);
   
+    _currEpo.satObs.resize(numSat);
+
     // Read Satellite Numbers
     // ----------------------
     int pos = 32;
@@ -180,8 +183,8 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
       QString prn = line.mid(pos, 3);
       pos += 3;
 
-      _currEpo.prns << prn;
-      _currEpo.satObs[prn].ReSize(_header.nTypes());
+      _currEpo.satObs[iSat].prn = prn;
+      _currEpo.satObs[iSat].ReSize(_header.nTypes());
     }
 
     // Read Observation Records
@@ -189,20 +192,21 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
     for (int iSat = 0; iSat < numSat; iSat++) {
       line = _stream->readLine();
       pos  = 0;
-      QString prn = _currEpo.prns[iSat];
+      QString prn = _currEpo.satObs[iSat].prn;
       for (int iType = 0; iType < _header.nTypes(); iType++) {
         if (iType > 0 && iType % 5 == 0) {
           line = _stream->readLine();
           pos  = 0;
         }
-        readDbl(line, pos,     14, _currEpo.satObs[prn][iType]);
-        readInt(line, pos + 14, 1, _currEpo.satObs[prn].lli);
-        readInt(line, pos + 15, 1, _currEpo.satObs[prn].snr);
+        readDbl(line, pos,     14, _currEpo.satObs[iSat][iType]);
+        readInt(line, pos + 14, 1, _currEpo.satObs[iSat].lli);
+        readInt(line, pos + 15, 1, _currEpo.satObs[iSat].snr);
         pos += 16;
       }
 
+      cout.setf(ios::fixed);
       cout << "prn: " << prn.toAscii().data() << " "
-           << _currEpo.satObs[prn][0] << endl;
+           << setprecision(3) << _currEpo.satObs[iSat][0] << endl;
     }
 
     //// beg test

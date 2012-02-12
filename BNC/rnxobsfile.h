@@ -61,18 +61,17 @@ class t_rnxObsFile {
 
   class t_satObs : public ColumnVector {
    public:
-    int lli;
-    int snr;
+    QString prn;
+    int     lli;
+    int     snr;
   };
 
   class t_epo {
    public:
     void clear() {
-      prns.clear(); 
       satObs.clear();
     }
-    QStringList             prns;
-    QMap<QString, t_satObs> satObs;
+    QVector<t_satObs> satObs;
   };
 
   float version() const {return _header.version();}
