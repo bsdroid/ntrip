@@ -129,24 +129,24 @@ t_rnxObsFile::~t_rnxObsFile() {
 
 // Retrieve single Epoch
 ////////////////////////////////////////////////////////////////////////////
-t_irc t_rnxObsFile::getEpoch() {
+const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpoch() {
   if (version() < 3.0) {
-    return getEpochV2();
+    return nextEpochV2();
   }
   else {
-    return getEpochV3();
+    return nextEpochV3();
   }
 }
 
 // Retrieve single Epoch (RINEX Version 3)
 ////////////////////////////////////////////////////////////////////////////
-t_irc t_rnxObsFile::getEpochV3() {
-  return failure; // TODO
+const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV3() {
+  return 0; // TODO
 }
 
 // Retrieve single Epoch (RINEX Version 2)
 ////////////////////////////////////////////////////////////////////////////
-t_irc t_rnxObsFile::getEpochV2() {
+const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
   while (_stream->status() == QTextStream::Ok && !_stream->atEnd()) {
     QString line = _stream->readLine();
     if (line.isEmpty()) {
@@ -173,14 +173,15 @@ t_irc t_rnxObsFile::getEpochV2() {
         pos = 32;
       }
       QString prn = line.mid(pos, 3);
+      
       cout << "prn = " << prn.toAscii().data() << endl;
       pos += 3;
     }
 
     //// beg test
-    return failure;
+    return 0;
     //// end test
   }
 
-  return success;
+  return &_currEpo;
 }

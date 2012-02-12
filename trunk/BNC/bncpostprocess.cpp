@@ -107,7 +107,8 @@ void t_postProcessing::run() {
 
   // Read Observations
   // -----------------
-  while (_rnxObsFile->getEpoch() == success) {
+  const t_rnxObsFile::t_epo* epo = 0;
+  while ( (epo = _rnxObsFile->nextEpoch()) != 0) {
 
   }
 

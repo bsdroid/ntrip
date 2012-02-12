@@ -59,16 +59,22 @@ class t_rnxObsFile {
   t_rnxObsFile(QString fileName);
   ~t_rnxObsFile();
 
+  class t_epo {
+   public:
+    QMap<QString, ColumnVector> satObs;
+  };
+
   float version() const {return _header.version();}
-  t_irc getEpoch(); 
+  const t_epo* nextEpoch(); 
 
  private:
-  t_irc getEpochV2();
-  t_irc getEpochV3();
+  const t_epo* nextEpochV2();
+  const t_epo* nextEpochV3();
 
   t_rnxObsHeader _header;
   QFile*         _file;
   QTextStream*   _stream;
+  t_epo          _currEpo;
 };
 
 #endif
