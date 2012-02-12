@@ -117,7 +117,7 @@ bncWindow::bncWindow() {
   _actGetData = new QAction(tr("Sta&rt"),this);
   connect(_actGetData, SIGNAL(triggered()), SLOT(slotGetData()));
 
-  _actPostProcessing = new QAction(tr("Start PP"),this);
+  _actPostProcessing = new QAction(tr("Start Post-Processing"),this);
   connect(_actPostProcessing, SIGNAL(triggered()), SLOT(slotStartPostProcessing()));
 
   _actStop = new QAction(tr("Sto&p"),this);
@@ -1817,9 +1817,6 @@ void bncWindow::AddToolbar() {
   toolBar->addAction(_actGetData);
   toolBar->addAction(_actStop);
   toolBar->addAction(_actPostProcessing);
-  _postProgressLabel = new QLabel("0 Epochs");
-  toolBar->addWidget(_postProgressLabel);
-  enableWidget(false, _postProgressLabel);
   toolBar->addWidget(new QLabel("                                           "));
   toolBar->addAction(_actwhatsthis);
 } 
@@ -2236,11 +2233,9 @@ void bncWindow::slotSetUploadTrafo() {
 void bncWindow::slotStartPostProcessing() {
 
   _actPostProcessing->setEnabled(false);
+  _actPostProcessing->setText("0 Epochs");
 
   slotSaveOptions();
-
-  _postProgressLabel->setText("0 Epochs");
-  enableWidget(true, _postProgressLabel);
 
   t_postProcessing* postProcessing = new t_postProcessing(this);
   connect(postProcessing, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessing()));
@@ -2254,14 +2249,14 @@ void bncWindow::slotStartPostProcessing() {
 void bncWindow::slotFinishedPostProcessing() {
   QMessageBox::information(this, "Information",
                            "Post-Processing Thread Finished");
-  enableWidget(false, _postProgressLabel);
+  _actPostProcessing->setText("Start Post-Processing");
   _actPostProcessing->setEnabled(true);
 }
 
 // Progress Bar Change
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotPostProgress(int nEpo) {
-  if (_postProgressLabel) {
-    _postProgressLabel->setText(QString("%1 Epochs").arg(nEpo));
+  if (_actPostProcessing) {
+    _actPostProcessing->setText(QString("%1 Epochs").arg(nEpo));
   }
 }
