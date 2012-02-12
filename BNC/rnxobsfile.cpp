@@ -130,6 +130,9 @@ t_rnxObsFile::~t_rnxObsFile() {
 // Retrieve single Epoch
 ////////////////////////////////////////////////////////////////////////////
 const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpoch() {
+
+  _currEpo.clear();
+
   if (version() < 3.0) {
     return nextEpochV2();
   }
@@ -166,6 +169,8 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
     int numSat;
     readInt(line, 29, 3, numSat);
   
+    // Read Satellite Numbers
+    // ----------------------
     int pos = 32;
     for (int iSat = 0; iSat < numSat; iSat++) {
       if (iSat > 0 && iSat % 12 == 0) {
@@ -173,9 +178,31 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
         pos = 32;
       }
       QString prn = line.mid(pos, 3);
-      
-      cout << "prn = " << prn.toAscii().data() << endl;
       pos += 3;
+
+      _currEpo.prns << prn;
+      _currEpo.satObs[prn].ReSize(_header.nTypes());
+    }
+
+    // Read Observation Records
+    // ------------------------
+    for (int iSat = 0; iSat < numSat; iSat++) {
+      line = _stream->readLine();
+      pos  = 0;
+      QString prn = _currEpo.prns[iSat];
+      for (int iType = 0; iType < _header.nTypes(); iType++) {
+        if (iType > 0 && iType % 5 == 0) {
+          line = _stream->readLine();
+          pos  = 0;
+        }
+        readDbl(line, pos,     14, _currEpo.satObs[prn][iType]);
+        readInt(line, pos + 14, 1, _currEpo.satObs[prn].lli);
+        readInt(line, pos + 15, 1, _currEpo.satObs[prn].snr);
+        pos += 16;
+      }
+
+      cout << "prn: " << prn.toAscii().data() << " "
+           << _currEpo.satObs[prn][0] << endl;
     }
 
     //// beg test

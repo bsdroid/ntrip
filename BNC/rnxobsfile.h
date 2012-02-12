@@ -59,9 +59,20 @@ class t_rnxObsFile {
   t_rnxObsFile(QString fileName);
   ~t_rnxObsFile();
 
+  class t_satObs : public ColumnVector {
+   public:
+    int lli;
+    int snr;
+  };
+
   class t_epo {
    public:
-    QMap<QString, ColumnVector> satObs;
+    void clear() {
+      prns.clear(); 
+      satObs.clear();
+    }
+    QStringList             prns;
+    QMap<QString, t_satObs> satObs;
   };
 
   float version() const {return _header.version();}
