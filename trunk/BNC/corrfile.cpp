@@ -65,10 +65,17 @@ t_corrFile::~t_corrFile() {
 ////////////////////////////////////////////////////////////////////////////
 void t_corrFile::syncRead(const bncTime& tt) {
 
+  cout << "tt = " << tt.gpssec() << endl;
+
+  if (stopRead(tt)) {
+    return;
+  }
+
   QList<QString> corrs;
 
   if (!_lastLine.isEmpty() && !stopRead(tt)) {
     corrs << _lastLine;
+    cout << _lastLine.toAscii().data() << endl;
   }
 
   while (_stream->status() == QTextStream::Ok && !_stream->atEnd()) {
@@ -79,12 +86,15 @@ void t_corrFile::syncRead(const bncTime& tt) {
     _lastLine = line;
 
     if (stopRead(tt)) {
+      cout << "stop " << endl;
       if (corrs.size()) {
         emit newCorrections(corrs);
       }
+      return;
     }
     else {
       corrs << _lastLine;
+      cout << _lastLine.toAscii().data() << endl;
     }
   }
 }

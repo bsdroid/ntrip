@@ -80,7 +80,21 @@ t_pppOpt::t_pppOpt() {
   navFileName  = settings.value("postNavFile").toString();
   corrFileName = settings.value("postcorrFile").toString();
 
-  pppMode      = settings.value("pppSPP").toString() == "PPP";
+  if      (settings.value("pppSPP").toString() == "Post-Processing") {
+    if (corrFileName.isEmpty()) {
+      pppMode = false;
+    }
+    else {
+      pppMode = true;
+    }
+  }
+  else if (settings.value("pppSPP").toString() == "PPP") {
+    pppMode = true;
+  }
+  else {
+    pppMode = false;
+  }
+      
   rnxAppend    = settingsChecked("rnxAppend");
   usePhase     = settingsChecked("pppUsePhase");
   estTropo     = settingsChecked("pppEstTropo");
