@@ -113,6 +113,11 @@ void t_postProcessing::run() {
   const t_rnxObsFile::t_epo* epo = 0;
   while ( (epo = _rnxObsFile->nextEpoch()) != 0 ) {
     ++nEpo;
+
+    if (_corrFile) {
+      _corrFile->syncRead(epo->tt);
+    }
+
     for (int iObs = 0; iObs < epo->satObs.size(); iObs++) {
       const t_rnxObsFile::t_satObs& satObs = epo->satObs[iObs];
       t_obs obs;
