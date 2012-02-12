@@ -49,7 +49,7 @@ class t_rnxNavFile {
  public:
   t_rnxNavFile(QString fileName);
   ~t_rnxNavFile();
-  t_irc getNextEph(t_eph* eph);
+  t_eph* getNextEph();
   float version() const {return _header.version();}
   bool  glonass() const {return _header.glonass();}
 

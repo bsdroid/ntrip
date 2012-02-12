@@ -99,7 +99,7 @@ void t_postProcessing::run() {
   // Read Ephemerides
   // ----------------
   t_eph* eph = 0;
-  while (_rnxNavFile->getNextEph(eph) == success) {
+  while ( (eph = _rnxNavFile->getNextEph()) != 0 ) {
     if (_pppClient->putNewEph(eph) != success) {
       delete eph; eph = 0;
     }
@@ -108,7 +108,7 @@ void t_postProcessing::run() {
   // Read Observations
   // -----------------
   const t_rnxObsFile::t_epo* epo = 0;
-  while ( (epo = _rnxObsFile->nextEpoch()) != 0) {
+  while ( (epo = _rnxObsFile->nextEpoch()) != 0 ) {
     for (int iObs = 0; iObs < epo->satObs.size(); iObs++) {
       const t_rnxObsFile::t_satObs& satObs = epo->satObs[iObs];
       t_obs obs;
