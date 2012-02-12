@@ -209,10 +209,8 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
            << setprecision(3) << _currEpo.satObs[iSat][0] << endl;
     }
 
-    //// beg test
-    return 0;
-    //// end test
+    return &_currEpo;
   }
 
-  return &_currEpo;
+  return 0;
 }
