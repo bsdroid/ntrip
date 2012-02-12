@@ -65,5 +65,49 @@ t_corrFile::~t_corrFile() {
 ////////////////////////////////////////////////////////////////////////////
 void t_corrFile::syncRead(const bncTime& tt) {
 
+  QList<QString> corrs;
 
+  if (!_lastLine.isEmpty() && !stopRead(tt)) {
+    corrs << _lastLine;
+  }
+
+  while (_stream->status() == QTextStream::Ok && !_stream->atEnd()) {
+    QString line = _stream->readLine();
+    if (line.isEmpty() || line[0] == '!') {
+      continue;
+    }
+    _lastLine = line;
+
+    if (stopRead(tt)) {
+      if (corrs.size()) {
+        emit newCorrections(corrs);
+      }
+    }
+    else {
+      corrs << _lastLine;
+    }
+  }
+}
+
+// Read till a given time
+////////////////////////////////////////////////////////////////////////////
+bool t_corrFile::stopRead(const bncTime& tt) {
+
+  if (_lastLine.isEmpty()) {
+    return false;
+  }
+
+  QTextStream in(_lastLine.toAscii(), QIODevice::ReadOnly);
+  int    messageType, updateInterval, GPSweek;
+  double GPSweeks;
+  in >> messageType >> updateInterval >> GPSweek >> GPSweeks;
+
+  bncTime tNew(GPSweek, GPSweeks);
+
+  if (tNew >= tt) {
+    return true;
+  }    
+  else {
+    return false;
+  }
 }

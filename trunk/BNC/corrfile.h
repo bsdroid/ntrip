@@ -41,8 +41,10 @@ class t_corrFile : public QObject {
   void newCorrections(QList<QString>);
 
  private:
-  QFile*         _file;
-  QTextStream*   _stream;
+  bool stopRead(const bncTime& tt);
+  QFile*       _file;
+  QTextStream* _stream;
+  QString      _lastLine;
 };
 
 #endif
