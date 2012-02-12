@@ -118,6 +118,28 @@ void t_postProcessing::run() {
       obs.satNum   = satObs.prn.mid(1).toInt();
       obs.GPSWeek  = epo->tt.gpsw();
       obs.GPSWeeks = epo->tt.gpssec();
+      for (int iType = 0; iType < _rnxObsFile->nTypes(); iType++) {
+        QByteArray type = _rnxObsFile->obsType(iType).toAscii();
+        if      (type == "C1") {
+          obs.C1 = satObs[iType];
+        }
+        else if (type == "P1") {
+          obs.P1 = satObs[iType];
+        }
+        else if (type == "L1") {
+          obs.L1C = satObs[iType];
+        }
+        else if (type == "C2") {
+          obs.C2 = satObs[iType];
+        }
+        else if (type == "P2") {
+          obs.P2 = satObs[iType];
+        }
+        else if (type == "L2") {
+          obs.L2C = satObs[iType];
+        }
+      }
+      _pppClient->putNewObs(obs);
     }
   }
 
