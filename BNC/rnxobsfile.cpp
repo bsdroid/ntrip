@@ -152,11 +152,17 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV3() {
 ////////////////////////////////////////////////////////////////////////////
 const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
   while (_stream->status() == QTextStream::Ok && !_stream->atEnd()) {
+
     QString line = _stream->readLine();
+
     if (line.isEmpty()) {
       continue;
     }
+
     QTextStream in(line.toAscii());
+
+    // Epoch Time
+    // ----------
     int    year, month, day, hour, min, flag;
     double sec;
     in >> year >> month >> day >> hour >> min >> sec >> flag;
@@ -166,7 +172,10 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
     else if (year < 100) {
       year += 1900;
     }
+    _currEpo.tt.set(year, month, day, hour, min, sec);
 
+    // Number of Satellites
+    // --------------------
     int numSat;
     readInt(line, 29, 3, numSat);
   

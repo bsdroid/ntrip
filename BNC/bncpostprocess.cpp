@@ -109,7 +109,16 @@ void t_postProcessing::run() {
   // -----------------
   const t_rnxObsFile::t_epo* epo = 0;
   while ( (epo = _rnxObsFile->nextEpoch()) != 0) {
-
+    for (int iObs = 0; iObs < epo->satObs.size(); iObs++) {
+      const t_rnxObsFile::t_satObs& satObs = epo->satObs[iObs];
+      t_obs obs;
+      strncpy(obs.StatID, _rnxObsFile->markerName().toAscii().constData(),
+              sizeof(obs.StatID));
+      obs.satSys   = satObs.prn.toAscii().data()[0];
+      obs.satNum   = satObs.prn.mid(1).toInt();
+      obs.GPSWeek  = epo->tt.gpsw();
+      obs.GPSWeeks = epo->tt.gpssec();
+    }
   }
 
   ///// beg test
