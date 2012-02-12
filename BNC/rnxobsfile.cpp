@@ -47,9 +47,11 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_rnxObsFile::t_rnxObsHeader::t_rnxObsHeader() {
-  _antNEU[0] = _antNEU[1] = _antNEU[2] = 0.0;
-  _xyz[0]    = _xyz[1]    = _xyz[2]    = 0.0;
-  _version   = 0.0;
+  _antNEU.ReSize(3); 
+  _xyz.ReSize(3);    
+  _antNEU  = 0.0;
+  _xyz     = 0.0;
+  _version = 0.0;
 }
 
 // Destructor
@@ -87,6 +89,16 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream) {
     else if (key == "ANTENNA: DELTA H/E/N") {
       QTextStream in(value.toAscii(), QIODevice::ReadOnly);
       in >> _antNEU[2] >> _antNEU[1] >> _antNEU[0];
+    }
+    else if (key == "# / TYPES OF OBSERV") {
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      int nTypes;
+      in >> nTypes;
+      for (int ii = 0; ii < nTypes; ii++) {
+        QString hlp;
+        in >> hlp;
+        _obsTypes << hlp;
+      }
     }
   }
 
