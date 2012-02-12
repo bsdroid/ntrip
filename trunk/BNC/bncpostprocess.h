@@ -62,6 +62,8 @@ Q_OBJECT
   t_rnxObsFile* _rnxObsFile;
   t_rnxNavFile* _rnxNavFile;
   t_corrFile*   _corrFile;
+  QFile*        _outFile;
+  QTextStream*  _outStream;
 };
 
 #endif
