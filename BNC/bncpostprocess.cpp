@@ -46,6 +46,7 @@
 #include "bncpppclient.h"
 #include "rnxobsfile.h"
 #include "rnxnavfile.h"
+#include "corrfile.h"
 
 using namespace std;
 
@@ -55,6 +56,7 @@ t_postProcessing::t_postProcessing(QObject* parent) : QThread(parent) {
   _opt        = new t_pppOpt();
   _rnxObsFile = 0;
   _rnxNavFile = 0;
+  _corrFile   = 0;
   _pppClient  = 0;
 }
 
@@ -64,6 +66,7 @@ t_postProcessing::~t_postProcessing() {
   delete _pppClient;
   delete _rnxNavFile;
   delete _rnxObsFile;
+  delete _corrFile;
   delete _opt;
 }
 
@@ -85,8 +88,11 @@ void t_postProcessing::run() {
     _rnxNavFile = new t_rnxNavFile(_opt->navFileName);
     _pppClient  = new bncPPPclient("POST", _opt, false);
 
-    connect(this, SIGNAL(newCorrections(QList<QString>)),
-            _pppClient, SLOT(slotNewCorrections(QList<QString>)));
+    if (!_opt->corrFileName.isEmpty()) {
+      _corrFile = new t_corrFile(_opt->corrFileName);
+      connect(_corrFile, SIGNAL(newCorrections(QList<QString>)),
+              _pppClient, SLOT(slotNewCorrections(QList<QString>)));
+    }
 
     connect(_pppClient, SIGNAL(newMessage(QByteArray,bool)), 
             this, SLOT(slotMessage(const QByteArray,bool)));

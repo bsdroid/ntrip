@@ -28,10 +28,15 @@
 #include <QtCore>
 #include "bncconst.h"
 
-class t_corrFile {
+class t_corrFile : public QObject {
+ Q_OBJECT
+
  public:
   t_corrFile(QString fileName);
   ~t_corrFile();
+
+ signals:
+  void newCorrections(QList<QString>);
 
  private:
   QFile*         _file;
