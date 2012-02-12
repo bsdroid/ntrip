@@ -28,6 +28,7 @@
 #include <QtCore>
 #include "newmat.h"
 #include "bncconst.h"
+#include "bnctime.h"
 
 class t_pppOpt;
 class bncPPPclient;
@@ -59,6 +60,13 @@ class t_rnxObsFile {
   t_rnxObsFile(QString fileName);
   ~t_rnxObsFile();
 
+  int   nTypes() const {return _header.nTypes();}
+  const QString& obsType(int index) const {return _header.obsType(index);}
+  const QString& antennaName() const {return _header.antennaName();}
+  const QString& markerName() const {return _header.markerName();}
+  const ColumnVector& xyz() const {return _header.xyz();}
+  const ColumnVector& antNEU() const {return _header.antNEU();}
+
   class t_satObs : public ColumnVector {
    public:
     QString prn;
@@ -71,6 +79,7 @@ class t_rnxObsFile {
     void clear() {
       satObs.clear();
     }
+    bncTime           tt;
     QVector<t_satObs> satObs;
   };
 
