@@ -81,7 +81,8 @@ t_pppOpt::t_pppOpt() {
   corrFileName = settings.value("postcorrFile").toString();
 
   if      (settings.value("pppSPP").toString() == "Post-Processing") {
-    corrSync = 0.0;
+    corrSync     = 0.0;
+    pppCorrMount = "";
     if (corrFileName.isEmpty()) {
       pppMode = false;
     }
