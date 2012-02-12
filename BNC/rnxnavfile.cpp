@@ -103,9 +103,9 @@ t_rnxNavFile::~t_rnxNavFile() {
 
 // Read Next Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-t_irc t_rnxNavFile::getNextEph(t_eph* eph) {
+t_eph* t_rnxNavFile::getNextEph() {
 
-  eph = 0;
+  t_eph* eph = 0;
 
   while (_stream->status() == QTextStream::Ok && !_stream->atEnd()) {
     QString line = _stream->readLine();
@@ -145,11 +145,10 @@ t_irc t_rnxNavFile::getNextEph(t_eph* eph) {
       eph = new t_ephGal(version(), lines);
     }
     if (eph && eph->ok()) {
-      return success;
+      return eph;
     }
   }
 
   delete eph;
-  eph = 0;
-  return failure;
+  return 0;
 }
