@@ -165,6 +165,22 @@ t_irc t_rnxObsFile::getEpochV2() {
 
     int numSat;
     readInt(line, 29, 3, numSat);
+  
+    int pos = 32;
+    for (int iSat = 0; iSat < numSat; iSat++) {
+      if (iSat > 0 && iSat % 12 == 0) {
+        line = _stream->readLine();
+        pos = 32;
+      }
+      QString prn = line.mid(pos, 3);
+      cout << "prn = " << prn.toAscii().data() << endl;
+      pos += 3;
+    }
+
+    //// beg test
+    return failure;
+    //// end test
   }
+
   return success;
 }

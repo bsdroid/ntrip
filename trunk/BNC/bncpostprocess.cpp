@@ -96,6 +96,8 @@ void t_postProcessing::run() {
   cout << "navFile: "  << _opt->navFileName.toAscii().data()  << endl;
   cout << "corrFile: " << _opt->corrFileName.toAscii().data() << endl;
 
+  // Read Ephemerides
+  // ----------------
   t_eph* eph = 0;
   while (_rnxNavFile->getNextEph(eph) == success) {
     if (_pppClient->putNewEph(eph) != success) {
@@ -103,12 +105,20 @@ void t_postProcessing::run() {
     }
   }
 
+  // Read Observations
+  // -----------------
+  while (_rnxObsFile->getEpoch() == success) {
+
+  }
+
+  ///// beg test
   int MAXI = 5;
   for (int ii = 1; ii < MAXI; ii++) {
     cout << "ii = " << ii << endl;
     emit progress(float(ii)/float(MAXI));
     sleep(1);
   }
+  //// end test
 
   emit finished();
   deleteLater();
