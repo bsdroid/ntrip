@@ -141,7 +141,45 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpoch() {
 // Retrieve single Epoch (RINEX Version 3)
 ////////////////////////////////////////////////////////////////////////////
 const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV3() {
-  return 0; // TODO
+  while (_stream->status() == QTextStream::Ok && !_stream->atEnd()) {
+
+    QString line = _stream->readLine();
+
+    if (line.isEmpty()) {
+      continue;
+    }
+
+    QTextStream in(line.mid(1).toAscii());
+
+    // Epoch Time
+    // ----------
+    int    year, month, day, hour, min, flag;
+    double sec;
+    in >> year >> month >> day >> hour >> min >> sec >> flag;
+    _currEpo.tt.set(year, month, day, hour, min, sec);
+
+    // Number of Satellites
+    // --------------------
+    int numSat;
+    readInt(line, 32, 3, numSat);
+  
+    _currEpo.satObs.resize(numSat);
+
+    // Observations
+    // ------------
+    for (int iSat = 0; iSat < numSat; iSat++) {
+      line = _stream->readLine();
+      QString prn = line.mid(0,3);
+      for (int iType = 0; iType < _header.nTypes(); iType++) {
+        int pos = 16*iType;
+        readDbl(line, pos,     14, _currEpo.satObs[iSat][iType]);
+        readInt(line, pos + 14, 1, _currEpo.satObs[iSat].lli);
+        readInt(line, pos + 15, 1, _currEpo.satObs[iSat].snr);
+      }
+    }
+  }
+
+  return 0;
 }
 
 // Retrieve single Epoch (RINEX Version 2)
