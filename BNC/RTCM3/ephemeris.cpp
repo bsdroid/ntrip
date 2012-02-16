@@ -967,7 +967,7 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
       _GPSweeks = hlpTime.gpssec();
 
       _gps_utc = gnumleap(year, month, day);
-      // double  _tki;              // message frame time
+      _tki     = 0.0; // TODO ?
 
       double second_tot;
       if ( readDbl(line, pos[1], fieldLen, _tau      ) ||
