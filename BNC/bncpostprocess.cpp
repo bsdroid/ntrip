@@ -152,8 +152,8 @@ void t_postProcessing::run() {
       obs.satNum   = satObs.prn.mid(1).toInt();
       obs.GPSWeek  = epo->tt.gpsw();
       obs.GPSWeeks = epo->tt.gpssec();
-      for (int iType = 0; iType < _rnxObsFile->nTypes(); iType++) {
-        QByteArray type = _rnxObsFile->obsType(iType).toAscii();
+      for (int iType = 0; iType < _rnxObsFile->nTypes(obs.satSys); iType++) {
+        QByteArray type = _rnxObsFile->obsType(obs.satSys,iType).toAscii();
         if      (type == "C1") {
           obs.C1 = satObs[iType];
         }

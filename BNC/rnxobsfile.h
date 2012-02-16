@@ -41,27 +41,52 @@ class t_rnxObsFile {
     ~t_rnxObsHeader();
     t_irc read(QTextStream* stream);
     float version() const {return _version;}
-    int   nTypes() const {return _obsTypes.size();}
-    const QString& obsType(int index) const {return _obsTypes.at(index);}
+    int   nTypes(char sys) const {
+      if (_version < 3.0) {
+        return _obsTypesV2.size();
+      }
+      else {
+        if (_obsTypesV3.find(sys) != _obsTypesV3.end()) {
+          return _obsTypesV3.size();
+        }
+        else {
+          return 0;
+        }
+      }
+    }
+    QString obsType(char sys, int index) const {
+      if (_version < 3.0) {
+        return _obsTypesV2.at(index);
+      }
+      else {
+        if (_obsTypesV3.find(sys) != _obsTypesV3.end()) {
+          return _obsTypesV3[sys].at(index);
+        }
+        else {
+          return QString();
+        }
+      }
+    }
     const QString& antennaName() const {return _antennaName;}
     const QString& markerName() const {return _markerName;}
     const ColumnVector& xyz() const {return _xyz;}
     const ColumnVector& antNEU() const {return _antNEU;}
    private:
-    float        _version;
-    QString      _antennaName;
-    QString      _markerName;
-    ColumnVector _antNEU;
-    ColumnVector _xyz;
-    QStringList  _obsTypes;
+    float                   _version;
+    QString                 _antennaName;
+    QString                 _markerName;
+    ColumnVector            _antNEU;
+    ColumnVector            _xyz;
+    QStringList             _obsTypesV2;
+    QMap<char, QStringList> _obsTypesV3;
   };
  
  public:
   t_rnxObsFile(QString fileName);
   ~t_rnxObsFile();
 
-  int   nTypes() const {return _header.nTypes();}
-  const QString& obsType(int index) const {return _header.obsType(index);}
+  int   nTypes(char sys) const {return _header.nTypes(sys);}
+  QString obsType(char sys, int index) const {return _header.obsType(sys, index);}
   const QString& antennaName() const {return _header.antennaName();}
   const QString& markerName() const {return _header.markerName();}
   const ColumnVector& xyz() const {return _header.xyz();}

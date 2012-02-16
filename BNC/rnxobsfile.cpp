@@ -98,7 +98,7 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream) {
       for (int ii = 0; ii < nTypes; ii++) {
         QString hlp;
         in >> hlp;
-        _obsTypes << hlp;
+        _obsTypesV2 << hlp;
       }
     }
   }
@@ -180,7 +180,8 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV3() {
     for (int iSat = 0; iSat < numSat; iSat++) {
       line = _stream->readLine();
       _currEpo.satObs[iSat].prn = line.mid(0,3);
-      for (int iType = 0; iType < _header.nTypes(); iType++) {
+      char sys = _currEpo.satObs[iSat].prn[0].toAscii();
+      for (int iType = 0; iType < _header.nTypes(sys); iType++) {
         int pos = 16*iType;
         readDbl(line, pos,     14, _currEpo.satObs[iSat][iType]);
         readInt(line, pos + 14, 1, _currEpo.satObs[iSat].lli);
@@ -247,7 +248,8 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
       pos += 3;
 
       _currEpo.satObs[iSat].prn = prn;
-      _currEpo.satObs[iSat].ReSize(_header.nTypes());
+      char sys = prn[0].toAscii();
+      _currEpo.satObs[iSat].ReSize(_header.nTypes(sys));
     }
 
     // Read Observation Records
@@ -256,7 +258,8 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
       line = _stream->readLine();
       pos  = 0;
       QString prn = _currEpo.satObs[iSat].prn;
-      for (int iType = 0; iType < _header.nTypes(); iType++) {
+      char sys = prn[0].toAscii();
+      for (int iType = 0; iType < _header.nTypes(sys); iType++) {
         if (iType > 0 && iType % 5 == 0) {
           line = _stream->readLine();
           pos  = 0;
