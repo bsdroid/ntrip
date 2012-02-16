@@ -154,22 +154,22 @@ void t_postProcessing::run() {
       obs.GPSWeeks = epo->tt.gpssec();
       for (int iType = 0; iType < _rnxObsFile->nTypes(obs.satSys); iType++) {
         QByteArray type = _rnxObsFile->obsType(obs.satSys,iType).toAscii();
-        if      (type == "C1") {
+        if      (type.indexOf("C1") == 0 && obs.C1  == 0.0) {
           obs.C1 = satObs[iType];
         }
-        else if (type == "P1") {
+        else if (type.indexOf("P1") == 0 && obs.P1  == 0.0) {
           obs.P1 = satObs[iType];
         }
-        else if (type == "L1") {
+        else if (type.indexOf("L1") == 0 && obs.L1C == 0.0) {
           obs.L1C = satObs[iType];
         }
-        else if (type == "C2") {
+        else if (type.indexOf("C2") == 0 && obs.C2  == 0.0) {
           obs.C2 = satObs[iType];
         }
-        else if (type == "P2") {
+        else if (type.indexOf("P2") == 0 && obs.P2  == 0.0) {
           obs.P2 = satObs[iType];
         }
-        else if (type == "L2") {
+        else if (type.indexOf("L2") == 0 && obs.L2C == 0.0) {
           obs.L2C = satObs[iType];
         }
       }
