@@ -160,7 +160,7 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV3() {
       continue;
     }
 
-    if (line.indexOf("END OF FILE")) {
+    if (line.indexOf("END OF FILE") != -1) {
       break;
     }
 
@@ -215,7 +215,7 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
       continue;
     }
 
-    if (line.indexOf("END OF FILE")) {
+    if (line.indexOf("END OF FILE") != -1) {
       break;
     }
 
