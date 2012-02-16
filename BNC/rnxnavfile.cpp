@@ -145,6 +145,10 @@ t_eph* t_rnxNavFile::getNextEph() {
       eph = new t_ephGal(version(), lines);
     }
     if (eph && eph->ok()) {
+      // ColumnVector xc(4);
+      // ColumnVector vv(3);
+      // eph->position(eph->GPSweek(), eph->GPSweeks(), xc.data(), vv.data());
+      // cout << eph->prn().toAscii().data() << " " << xc.t();
       return eph;
     }
   }
