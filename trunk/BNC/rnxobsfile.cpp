@@ -101,6 +101,17 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream) {
         _obsTypesV2 << hlp;
       }
     }
+    else if (key == "SYS / # / OBS TYPES") {
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      char sys;
+      int nTypes;
+      in >> sys >> nTypes;
+      for (int ii = 0; ii < nTypes; ii++) {
+        QString hlp;
+        in >> hlp;
+        _obsTypesV3[sys] << hlp;
+      }
+    }
   }
 
   return success;
