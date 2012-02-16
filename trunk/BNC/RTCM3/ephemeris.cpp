@@ -793,9 +793,11 @@ int t_ephGal::RTCM3(unsigned char *buffer) {
 //////////////////////////////////////////////////////////////////////////////
 t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
 
+  const int nLines = 8;
+
   _ok = false;
 
-  if (lines.size() != 8) {
+  if (lines.size() != nLines) {
     return;
   }
 
@@ -811,7 +813,7 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
 
   // Read eight lines
   // ----------------
-  for (unsigned iLine = 0; iLine < 8; iLine++) {
+  for (int iLine = 0; iLine < nLines; iLine++) {
     QString line = lines[iLine];
 
     if      ( iLine == 0 ) {
@@ -917,12 +919,111 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
 //////////////////////////////////////////////////////////////////////////////
 t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
 
+  const int nLines = 4;
+
   _ok = false;
+
+  if (lines.size() != nLines) {
+    return;
+  }
+
+  // RINEX Format
+  // ------------
+  int fieldLen = 19;
+
+  int pos[4];
+  pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
+  pos[1] = pos[0] + fieldLen;
+  pos[2] = pos[1] + fieldLen;
+  pos[3] = pos[2] + fieldLen;
+
+  // Read four lines
+  // ---------------
+  for (int iLine = 0; iLine < nLines; iLine++) {
+    QString line = lines[iLine];
+
+    if      ( iLine == 0 ) {
+      QTextStream in(line.left(pos[1]).toAscii());
+
+      int    year, month, day, hour, min;
+      double sec;
+      
+      in >> _prn >> year >> month >> day >> hour >> min >> sec;
+
+      if (_prn.at(0) != 'R') {
+        _prn = QString("R%1").arg(_prn.toInt(), 2, 10, QLatin1Char('0'));
+      }
+   
+      if      (year <  80) {
+        year += 2000;
+      }
+      else if (year < 100) {
+        year += 1900;
+      }
+
+      bncTime hlpTime;
+      hlpTime.set(year, month, day, hour, min, sec);
+      _GPSweek  = hlpTime.gpsw();
+      _GPSweeks = hlpTime.gpssec();
+
+      _gps_utc = gnumleap(year, month, day);
+      // double  _tki;              // message frame time
+
+      double second_tot;
+      if ( readDbl(line, pos[1], fieldLen, _tau      ) ||
+           readDbl(line, pos[2], fieldLen, _gamma    ) ||
+           readDbl(line, pos[3], fieldLen, second_tot) ) {
+        return;
+      }
+    }
+
+    else if      ( iLine == 1 ) {
+      if ( readDbl(line, pos[0], fieldLen, _x_pos         ) ||
+           readDbl(line, pos[1], fieldLen, _x_velocity    ) ||
+           readDbl(line, pos[2], fieldLen, _x_acceleration) ||
+           readDbl(line, pos[3], fieldLen, _health        ) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 2 ) {
+      if ( readDbl(line, pos[0], fieldLen, _y_pos           ) ||
+           readDbl(line, pos[1], fieldLen, _y_velocity      ) ||
+           readDbl(line, pos[2], fieldLen, _y_acceleration  ) ||
+           readDbl(line, pos[3], fieldLen, _frequency_number) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 3 ) {
+      if ( readDbl(line, pos[0], fieldLen, _z_pos         )  ||
+           readDbl(line, pos[1], fieldLen, _z_velocity    )  ||
+           readDbl(line, pos[2], fieldLen, _z_acceleration)  ||
+           readDbl(line, pos[3], fieldLen, _E             ) ) {
+        return;
+      }
+    }
+  }
+
+  // Initialize status vector
+  // ------------------------
+  _tt = _GPSweeks;
+
+   _xv.ReSize(6); 
+
+  _xv(1) = _x_pos * 1.e3; 
+  _xv(2) = _y_pos * 1.e3; 
+  _xv(3) = _z_pos * 1.e3; 
+  _xv(4) = _x_velocity * 1.e3; 
+  _xv(5) = _y_velocity * 1.e3; 
+  _xv(6) = _z_velocity * 1.e3; 
+
+  _ok = true;
 }
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
+t_ephGal::t_ephGal(float /* rnxVersion */, const QStringList& /* lines */) {
 
   _ok = false;
 }
