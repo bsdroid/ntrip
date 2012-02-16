@@ -198,8 +198,11 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV3() {
       line = _stream->readLine();
       _currEpo.satObs[iSat].prn = line.mid(0,3);
       char sys = _currEpo.satObs[iSat].prn[0].toAscii();
+      if (_currEpo.satObs[iSat].size() != _header.nTypes(sys)) {
+        _currEpo.satObs[iSat].ReSize(_header.nTypes(sys));
+      }
       for (int iType = 0; iType < _header.nTypes(sys); iType++) {
-        int pos = 16*iType;
+        int pos = 3 + 16*iType;
         readDbl(line, pos,     14, _currEpo.satObs[iSat][iType]);
         readInt(line, pos + 14, 1, _currEpo.satObs[iSat].lli);
         readInt(line, pos + 15, 1, _currEpo.satObs[iSat].snr);
