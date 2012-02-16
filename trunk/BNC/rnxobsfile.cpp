@@ -208,6 +208,8 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV3() {
         readInt(line, pos + 15, 1, _currEpo.satObs[iSat].snr);
       }
     }
+
+    return &_currEpo;
   }
 
   return 0;
