@@ -145,7 +145,6 @@ t_eph* t_rnxNavFile::getNextEph() {
       eph = new t_ephGal(version(), lines);
     }
     if (eph && eph->ok()) {
-      cout << "prn: " << eph->prn().toAscii().data() << endl;
       return eph;
     }
   }
