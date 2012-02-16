@@ -149,13 +149,23 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV3() {
       continue;
     }
 
+    if (line.indexOf("END OF FILE")) {
+      break;
+    }
+
+    int flag;
+    readInt(line, 31, 1, flag);
+    if (flag > 1) {  // TODO
+      break; 
+    }
+
     QTextStream in(line.mid(1).toAscii());
 
     // Epoch Time
     // ----------
-    int    year, month, day, hour, min, flag;
+    int    year, month, day, hour, min;
     double sec;
-    in >> year >> month >> day >> hour >> min >> sec >> flag;
+    in >> year >> month >> day >> hour >> min >> sec;
     _currEpo.tt.set(year, month, day, hour, min, sec);
 
     // Number of Satellites
@@ -193,13 +203,23 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV2() {
       continue;
     }
 
+    if (line.indexOf("END OF FILE")) {
+      break;
+    }
+
+    int flag;
+    readInt(line, 28, 1, flag);
+    if (flag > 1) {  // TODO
+      break; 
+    }
+
     QTextStream in(line.toAscii());
 
     // Epoch Time
     // ----------
-    int    year, month, day, hour, min, flag;
+    int    year, month, day, hour, min;
     double sec;
-    in >> year >> month >> day >> hour >> min >> sec >> flag;
+    in >> year >> month >> day >> hour >> min >> sec;
     if      (year <  80) {
       year += 2000;
     }
