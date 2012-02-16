@@ -102,15 +102,21 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream) {
       }
     }
     else if (key == "SYS / # / OBS TYPES") {
-      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
       char sys;
       int nTypes;
-      in >> sys >> nTypes;
+      *in >> sys >> nTypes;
       for (int ii = 0; ii < nTypes; ii++) {
+        if (ii > 0 && ii % 13 == 0) {
+          line = stream->readLine();
+          delete in;
+          in = new QTextStream(line.toAscii(), QIODevice::ReadOnly);
+        }
         QString hlp;
-        in >> hlp;
+        *in >> hlp;
         _obsTypesV3[sys] << hlp;
       }
+      delete in;
     }
   }
 

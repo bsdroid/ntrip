@@ -47,7 +47,7 @@ class t_rnxObsFile {
       }
       else {
         if (_obsTypesV3.find(sys) != _obsTypesV3.end()) {
-          return _obsTypesV3.size();
+          return _obsTypesV3[sys].size();
         }
         else {
           return 0;
