@@ -169,7 +169,7 @@ const t_rnxObsFile::t_epo* t_rnxObsFile::nextEpochV3() {
     // ------------
     for (int iSat = 0; iSat < numSat; iSat++) {
       line = _stream->readLine();
-      QString prn = line.mid(0,3);
+      _currEpo.satObs[iSat].prn = line.mid(0,3);
       for (int iType = 0; iType < _header.nTypes(); iType++) {
         int pos = 16*iType;
         readDbl(line, pos,     14, _currEpo.satObs[iSat][iType]);
