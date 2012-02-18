@@ -81,7 +81,7 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream) {
       _markerName = value;
     }
     else if (key == "ANT # / TYPE") {
-      _antennaName = value.mid(20);
+      _antennaName = line.mid(20,20);
     }
     else if (key == "APPROX POSITION XYZ") {
       QTextStream in(value.toAscii(), QIODevice::ReadOnly);
