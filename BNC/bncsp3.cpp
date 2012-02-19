@@ -99,10 +99,10 @@ void bncSP3::writeHeader(const QDateTime& datTim) {
        << setw(6)  << mjd
        << setw(16) << setprecision(13) << dayfrac << endl;
 
-  _out << "+   32   G01G02G03G04G05G06G07G08G09G10G11G12G13G14G15G16G17\n"
-       << "+        G18G19G20G21G22G23G24G25G26G27G28G29G30G31G32  0  0\n"
-       << "+          0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0\n"
-       << "+          0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0\n"
+  _out << "+   56   G01G02G03G04G05G06G07G08G09G10G11G12G13G14G15G16G17\n"
+       << "+        G18G19G20G21G22G23G24G25G26G27G28G29G30G31G32R01R02\n"
+       << "+        R03R04R05R06R07R08R09R10R11R12R13R14R15R16R17R18R19\n"
+       << "+        R20R21R22R23R24  0  0  0  0  0  0  0  0  0  0  0  0\n"
        << "+          0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0\n"
        << "++         0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0\n"
        << "++         0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0\n"
