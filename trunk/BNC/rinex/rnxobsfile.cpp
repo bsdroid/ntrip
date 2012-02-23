@@ -41,7 +41,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include "rinex/rnxobsfile.h"
+#include "rnxobsfile.h"
 #include "bncutils.h"
 
 using namespace std;

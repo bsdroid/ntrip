@@ -61,7 +61,9 @@
 #include "upload/bnccustomtrafo.h"
 #include "upload/bncephuploadcaster.h"
 #include "qtfilechooser.h"
-#include "bncpostprocess.h"
+#ifdef USE_POSTPROCESSING
+#  include "rinex/bncpostprocess.h"
+#endif
 
 using namespace std;
 
@@ -2231,7 +2233,7 @@ void bncWindow::slotSetUploadTrafo() {
 // Start Post-Processing
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotStartPostProcessing() {
-
+#ifdef USE_POSTPROCESSING
   _actPostProcessing->setEnabled(false);
   _actPostProcessing->setText("0 Epochs");
 
@@ -2242,6 +2244,10 @@ void bncWindow::slotStartPostProcessing() {
   connect(postProcessing, SIGNAL(progress(int)), this, SLOT(slotPostProgress(int)));
 
   postProcessing->start();
+#else
+  QMessageBox::information(this, "Information",
+                           "Post-Processing Not Permitted");
+#endif
 }
 
 // Post-Processing Finished
