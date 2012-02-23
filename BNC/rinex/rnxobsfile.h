@@ -25,8 +25,9 @@
 #ifndef RNXOBSFILE_H
 #define RNXOBSFILE_H
 
+#include <QString>
+
 #include <fstream>
-#include <string>
 #include <vector>
 #include <map>
 
@@ -57,16 +58,16 @@ class t_rnxObsFile {
     std::vector<t_rnxSat> rnxSat;
   };
 
-  t_rnxObsFile(const std::string& fileName);
+  t_rnxObsFile(const QString& fileName);
   ~t_rnxObsFile();
   
   float               version() const {return _header._version;}
   double              interval() const {return _header._interval;}
   int                 nTypes(char sys) const {return _header.nTypes(sys);}
-  const std::string&  fileName() const {return _fileName;}
-  const std::string&  obsType(char sys, int index) const {return _header.obsType(sys, index);}
-  const std::string&  antennaName() const {return _header._antennaName;}
-  const std::string&  markerName() const {return _header._markerName;}
+  const QString&      fileName() const {return _fileName;}
+  const QString&      obsType(char sys, int index) const {return _header.obsType(sys, index);}
+  const QString&      antennaName() const {return _header._antennaName;}
+  const QString&      markerName() const {return _header._markerName;}
   const ColumnVector& xyz() const {return _header._xyz;}
   const ColumnVector& antNEU() const {return _header._antNEU;}
   const ColumnVector& antXYZ() const {return _header._antXYZ;}
@@ -81,7 +82,7 @@ class t_rnxObsFile {
 
  protected:
   t_rnxObsFile() {};
-  void open(const std::string& fileName);
+  void open(const QString& fileName);
   void close();
 
  private: 
@@ -90,30 +91,30 @@ class t_rnxObsFile {
     t_rnxObsHeader();
     ~t_rnxObsHeader();
 
-    t_irc               read(std::ifstream* stream, int maxLines = 0);
-    int                 nTypes(char sys) const;
-    const std::string&  obsType(char sys, int index) const;
+    t_irc           read(std::ifstream* stream, int maxLines = 0);
+    int             nTypes(char sys) const;
+    const QString&  obsType(char sys, int index) const;
  
-    static const std::string                  _emptyStr;
-    float                                     _version;
-    double                                    _interval;
-    std::string                               _antennaName;
-    std::string                               _markerName;
-    ColumnVector                              _antNEU;
-    ColumnVector                              _antXYZ;
-    ColumnVector                              _antBSG;
-    ColumnVector                              _xyz;
-    std::vector<std::string>                  _obsTypesV2;
-    std::map<char, std::vector<std::string> > _obsTypesV3;
-    int                                       _wlFactorsL1[MAXPRN_GPS+1];
-    int                                       _wlFactorsL2[MAXPRN_GPS+1];
+    static const QString                  _emptyStr;
+    float                                 _version;
+    double                                _interval;
+    QString                               _antennaName;
+    QString                               _markerName;
+    ColumnVector                          _antNEU;
+    ColumnVector                          _antXYZ;
+    ColumnVector                          _antBSG;
+    ColumnVector                          _xyz;
+    std::vector<QString>                  _obsTypesV2;
+    std::map<char, std::vector<QString> > _obsTypesV3;
+    int                                   _wlFactorsL1[MAXPRN_GPS+1];
+    int                                   _wlFactorsL2[MAXPRN_GPS+1];
   };
 
   const t_rnxEpo* nextEpochV2();
   const t_rnxEpo* nextEpochV3();
-  void handleEpochFlag(int flag, const std::string& line);
+  void handleEpochFlag(int flag, const QString& line);
 
-  std::string    _fileName;
+  QString        _fileName;
   t_rnxObsHeader _header;
   std::ifstream* _stream;
   t_rnxEpo       _currEpo;

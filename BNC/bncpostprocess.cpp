@@ -44,7 +44,7 @@
 #include "bncsettings.h"
 #include "pppopt.h"
 #include "bncpppclient.h"
-#include "rnxobsfile.h"
+#include "rinex/rnxobsfile.h"
 #include "rnxnavfile.h"
 #include "corrfile.h"
 #include "bncsettings.h"
@@ -135,7 +135,7 @@ void t_postProcessing::run() {
   // Read/Process Observations
   // -------------------------
   int   nEpo = 0;
-  const t_rnxObsFile::t_epo* epo = 0;
+  const t_rnxObsFile::t_rnxEpo* epo = 0;
   while ( (epo = _rnxObsFile->nextEpoch()) != 0 ) {
     ++nEpo;
 
@@ -143,34 +143,34 @@ void t_postProcessing::run() {
       _corrFile->syncRead(epo->tt);
     }
 
-    for (int iObs = 0; iObs < epo->satObs.size(); iObs++) {
-      const t_rnxObsFile::t_satObs& satObs = epo->satObs[iObs];
+    for (unsigned iObs = 0; iObs < epo->rnxSat.size(); iObs++) {
+      const t_rnxObsFile::t_rnxSat& rnxSat = epo->rnxSat[iObs];
       t_obs obs;
       strncpy(obs.StatID, _rnxObsFile->markerName().toAscii().constData(),
               sizeof(obs.StatID));
-      obs.satSys   = satObs.prn.toAscii().data()[0];
-      obs.satNum   = satObs.prn.mid(1).toInt();
+      obs.satSys   = rnxSat.satSys;
+      obs.satNum   = rnxSat.satNum;
       obs.GPSWeek  = epo->tt.gpsw();
       obs.GPSWeeks = epo->tt.gpssec();
       for (int iType = 0; iType < _rnxObsFile->nTypes(obs.satSys); iType++) {
         QByteArray type = _rnxObsFile->obsType(obs.satSys,iType).toAscii();
         if      (type.indexOf("C1") == 0 && obs.C1  == 0.0) {
-          obs.C1 = satObs[iType];
+          obs.C1 = rnxSat.obs[iType];
         }
         else if (type.indexOf("P1") == 0 && obs.P1  == 0.0) {
-          obs.P1 = satObs[iType];
+          obs.P1 = rnxSat.obs[iType];
         }
         else if (type.indexOf("L1") == 0 && obs.L1C == 0.0) {
-          obs.L1C = satObs[iType];
+          obs.L1C = rnxSat.obs[iType];
         }
         else if (type.indexOf("C2") == 0 && obs.C2  == 0.0) {
-          obs.C2 = satObs[iType];
+          obs.C2 = rnxSat.obs[iType];
         }
         else if (type.indexOf("P2") == 0 && obs.P2  == 0.0) {
-          obs.P2 = satObs[iType];
+          obs.P2 = rnxSat.obs[iType];
         }
         else if (type.indexOf("L2") == 0 && obs.L2C == 0.0) {
-          obs.L2C = satObs[iType];
+          obs.L2C = rnxSat.obs[iType];
         }
       }
       _pppClient->putNewObs(obs);
