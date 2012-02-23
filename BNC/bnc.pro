@@ -112,7 +112,7 @@ exists(combination/bnccomb.h) {
   SOURCES += combination/bnccomb.cpp
 }
 
-exists(rinex/postprocess.h) {
+exists(rinex/bncpostprocess.h) {
   DEFINES += USE_POSTPROCESSING
   HEADERS += rinex/bncpostprocess.h   rinex/rnxobsfile.h   \
              rinex/rnxnavfile.h       rinex/corrfile.h
