@@ -49,7 +49,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           upload/bncrtnetdecoder.h upload/bncuploadcaster.h           \
           upload/bncrtnetuploadcaster.h upload/bnccustomtrafo.h       \
           upload/bncephuploadcaster.h bnccomb.h qtfilechooser.h       \
-          rnxobsfile.h rnxnavfile.h corrfile.h                        \
+          rnxnavfile.h corrfile.h                                     \
           RTCM/GPSDecoder.h RTCM/RTCM2.h RTCM/RTCM2Decoder.h          \
           RTCM/RTCM2_2021.h RTCM/rtcm_utils.h                         \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex/rtcm3torinex.h      \
@@ -82,7 +82,7 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           upload/bncrtnetdecoder.cpp upload/bncuploadcaster.cpp       \
           upload/bncrtnetuploadcaster.cpp upload/bnccustomtrafo.cpp   \
           upload/bncephuploadcaster.cpp qtfilechooser.cpp             \
-          rnxobsfile.cpp rnxnavfile.cpp corrfile.cpp                  \
+          rnxnavfile.cpp corrfile.cpp                                 \
           RTCM/GPSDecoder.cpp RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp    \
           RTCM/RTCM2_2021.cpp RTCM/rtcm_utils.cpp                     \
           RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex/rtcm3torinex.c    \
@@ -112,5 +112,11 @@ exists(combination/bnccomb.h) {
   DEFINES += USE_COMBINATION
   HEADERS += combination/bnccomb.h
   SOURCES += combination/bnccomb.cpp
+}
+
+exists(rinex/rnxobsfile.h) {
+  DEFINES += USE_POSTPROCESSING
+  HEADERS += rinex/rnxobsfile.h
+  SOURCES += rinex/rnxobsfile.cpp
 }
 
