@@ -341,7 +341,7 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
     int    year, month, day, hour, min;
     double sec;
     in >> year >> month >> day >> hour >> min >> sec;
-    _currEpo.tt.set(hour, min, sec, day, month, year);
+    _currEpo.tt.set(year, month, day, hour, min, sec);
 
     // Number of Satellites
     // --------------------
@@ -416,7 +416,7 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
     else if (year < 100) {
       year += 1900;
     }
-    _currEpo.tt.set(hour, min, sec, day, month, year);
+    _currEpo.tt.set(year, month, day, hour, min, sec);
 
     // Number of Satellites
     // --------------------
