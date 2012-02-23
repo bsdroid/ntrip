@@ -25,7 +25,7 @@
 #ifndef RNXOBSFILE_H
 #define RNXOBSFILE_H
 
-#include <QString>
+#include <QtCore>
 
 #include <fstream>
 #include <vector>
@@ -91,7 +91,7 @@ class t_rnxObsFile {
     t_rnxObsHeader();
     ~t_rnxObsHeader();
 
-    t_irc           read(std::ifstream* stream, int maxLines = 0);
+    t_irc           read(QTextStream* stream, int maxLines = 0);
     int             nTypes(char sys) const;
     const QString&  obsType(char sys, int index) const;
  
@@ -114,9 +114,10 @@ class t_rnxObsFile {
   const t_rnxEpo* nextEpochV3();
   void handleEpochFlag(int flag, const QString& line);
 
+  QFile*         _file;
   QString        _fileName;
+  QTextStream*   _stream;
   t_rnxObsHeader _header;
-  std::ifstream* _stream;
   t_rnxEpo       _currEpo;
   bool           _flgPowerFail;
 };

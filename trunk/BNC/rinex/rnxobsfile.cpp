@@ -46,7 +46,7 @@
 
 using namespace std;
 
-const string t_rnxObsFile::t_rnxObsHeader::_emptyStr;
+const QString t_rnxObsFile::t_rnxObsHeader::_emptyStr;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -70,38 +70,37 @@ t_rnxObsFile::t_rnxObsHeader::~t_rnxObsHeader() {
 
 // Read Header
 ////////////////////////////////////////////////////////////////////////////
-t_irc t_rnxObsFile::t_rnxObsHeader::read(ifstream* stream, int maxLines) {
+t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
   int numLines = 0;
-  while ( stream->good() ) {
-    string line;
-    getline(*stream, line); ++numLines;
-    if (line.empty()) {
+  while ( stream->status() == QTextStream::Ok && !stream->atEnd() ) {
+    QString line = stream->readLine(); ++ numLines;
+    if (line.isEmpty()) {
       continue;
     }
-    if (line.find("END OF FILE") != string::npos) {
+    if (line.indexOf("END OF FILE") != -1) {
       break;
     }
-    string value = line.substr(0,60); stripWhiteSpace(value);
-    string key   = line.substr(60);   stripWhiteSpace(key);
+    QString value = line.mid(0,60).trimmed();
+    QString key   = line.mid(60).trimmed();
     if      (key == "END OF HEADER") {
       break;
     }
     else if (key == "RINEX VERSION / TYPE") {
-      istringstream in(value);
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
       in >> _version;
     }
     else if (key == "MARKER NAME") {
       _markerName = value;
     }
     else if (key == "ANT # / TYPE") {
-      _antennaName = line.substr(20,20); stripWhiteSpace(_antennaName);
+      _antennaName = line.mid(20,20).trimmed();
     }
     else if (key == "INTERVAL") {
-      istringstream in(value);
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
       in >> _interval;
     }
     else if (key == "WAVELENGTH FACT L1/2") {
-      istringstream in(value);
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
       int wlFactL1 = 0;
       int wlFactL2 = 0;
       int numSat   = 0;
@@ -114,7 +113,7 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(ifstream* stream, int maxLines) {
       }
       else {
         for (int ii = 0; ii < numSat; ii++) {
-          string prn; in >> prn;
+          QString prn; in >> prn;
           if (prn[0] == 'G') {
             int iPrn;
             readInt(prn, 1, 2, iPrn);
@@ -125,45 +124,45 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(ifstream* stream, int maxLines) {
       }
     }
     else if (key == "APPROX POSITION XYZ") {
-      istringstream in(value);
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
       in >> _xyz[0] >> _xyz[1] >> _xyz[2];
     }
     else if (key == "ANTENNA: DELTA H/E/N") {
-      istringstream in(value);
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
       in >> _antNEU[2] >> _antNEU[1] >> _antNEU[0];
     }
     else if (key == "ANTENNA: DELTA X/Y/Z") {
-      istringstream in(value);
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
       in >> _antXYZ[0] >> _antXYZ[1] >> _antXYZ[2];
     }
     else if (key == "ANTENNA: B.SIGHT XYZ") {
-      istringstream in(value);
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
       in >> _antBSG[0] >> _antBSG[1] >> _antBSG[2];
     }
     else if (key == "# / TYPES OF OBSERV") {
-      istringstream in(value);
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
       int nTypes;
       in >> nTypes;
       _obsTypesV2.clear();
       for (int ii = 0; ii < nTypes; ii++) {
-        string hlp;
+        QString hlp;
         in >> hlp;
         _obsTypesV2.push_back(hlp);
       }
     }
     else if (key == "SYS / # / OBS TYPES") {
-      istringstream* in = new istringstream(value);
+      QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
       char sys;
       int nTypes;
       *in >> sys >> nTypes;
       _obsTypesV3[sys].clear();
       for (int ii = 0; ii < nTypes; ii++) {
         if (ii > 0 && ii % 13 == 0) {
-          getline(*stream, line);  ++numLines;
+          line = stream->readLine(); ++numLines;
           delete in;
-          in = new istringstream(line);
+          in = new QTextStream(line.toAscii(), QIODevice::ReadOnly);
         }
-        string hlp;
+        QString hlp;
         *in >> hlp;
         _obsTypesV3[sys].push_back(hlp);
       }
@@ -184,7 +183,7 @@ int t_rnxObsFile::t_rnxObsHeader::nTypes(char sys) const {
     return _obsTypesV2.size();
   }
   else {
-    map<char, vector<string> >::const_iterator it = _obsTypesV3.find(sys);
+    map<char, vector<QString> >::const_iterator it = _obsTypesV3.find(sys);
     if (it != _obsTypesV3.end()) {
       return it->second.size();
     }
@@ -196,12 +195,12 @@ int t_rnxObsFile::t_rnxObsHeader::nTypes(char sys) const {
 
 // Observation Type (satellite-system specific)
 ////////////////////////////////////////////////////////////////////////////
-const string& t_rnxObsFile::t_rnxObsHeader::obsType(char sys, int index) const {
+const QString& t_rnxObsFile::t_rnxObsHeader::obsType(char sys, int index) const {
   if (_version < 3.0) {
     return _obsTypesV2.at(index);
   }
   else {
-    map<char, vector<string> >::const_iterator it = _obsTypesV3.find(sys);
+    map<char, vector<QString> >::const_iterator it = _obsTypesV3.find(sys);
     if (it != _obsTypesV3.end()) {
       return it->second.at(index);
     }
@@ -213,7 +212,7 @@ const string& t_rnxObsFile::t_rnxObsHeader::obsType(char sys, int index) const {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_rnxObsFile::t_rnxObsFile(const string& fileName) {
+t_rnxObsFile::t_rnxObsFile(const QString& fileName) {
   _stream       = 0;
   _flgPowerFail = false;
   open(fileName);
@@ -221,8 +220,14 @@ t_rnxObsFile::t_rnxObsFile(const string& fileName) {
 
 // Open
 ////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::open(const string& fileName) {
-  _stream = new ifstream(expandEnvVar(fileName).c_str());
+void t_rnxObsFile::open(const QString& fileName) {
+
+  _fileName = fileName; expandEnvVar(_fileName);
+  _file     = new QFile(_fileName);
+  _file->open(QIODevice::ReadOnly | QIODevice::Text);
+  _stream = new QTextStream();
+  _stream->setDevice(_file);
+
   _header.read(_stream);
 
   // Guess Observation Interval
@@ -232,7 +237,7 @@ void t_rnxObsFile::open(const string& fileName) {
     for (int iEpo = 0; iEpo < 10; iEpo++) {
       const t_rnxEpo* rnxEpo = nextEpoch();
       if (!rnxEpo) {
-        throw string("t_rnxObsFile: not enough epochs");
+        throw QString("t_rnxObsFile: not enough epochs");
       }
       if (iEpo > 0) {
         double dt = rnxEpo->tt - ttPrev;
@@ -258,11 +263,12 @@ t_rnxObsFile::~t_rnxObsFile() {
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::close() {
   delete _stream; _stream = 0;
+  delete _file;   _file = 0;
 }
 
 // Handle Special Epoch Flag
 ////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::handleEpochFlag(int flag, const string& line) {
+void t_rnxObsFile::handleEpochFlag(int flag, const QString& line) {
 
   // Power Failure
   // -------------
@@ -292,7 +298,7 @@ void t_rnxObsFile::handleEpochFlag(int flag, const string& line) {
   // Unhandled Flag
   // --------------
   else {
-    throw string("t_rnxObsFile: unhandled flag\n" + line);
+    throw QString("t_rnxObsFile: unhandled flag\n" + line);
   }
 }
 
@@ -314,13 +320,11 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpoch() {
 ////////////////////////////////////////////////////////////////////////////
 const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
 
-  while ( _stream->good() ) {
+  while ( _stream->->status() == QTextStream::Ok && !_stream->atEnd() ) {
 
-    string line;
+    QString line = _stream->readLine();
 
-    getline(*_stream, line);
-
-    if (line.empty()) {
+    if (line.isEmpty()) {
       continue;
     }
 
@@ -331,7 +335,7 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
       continue;
     }
 
-    istringstream in(line.substr(1));
+    QTextStream in(line.mid(1).toAscii(), QIODevice::ReadOnly);
 
     // Epoch Time
     // ----------
@@ -350,7 +354,7 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
     // Observations
     // ------------
     for (int iSat = 0; iSat < numSat; iSat++) {
-      getline(*_stream, line);
+      line = _stream->readLine();
       _currEpo.rnxSat[iSat].satSys = line[0];
       readInt(line, 1, 2, _currEpo.rnxSat[iSat].satNum);
       char sys = line[0];
@@ -385,13 +389,11 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
 ////////////////////////////////////////////////////////////////////////////
 const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
 
-  while ( _stream->good() ) {
+  while ( _stream->->status() == QTextStream::Ok && !_stream->atEnd() ) {
 
-    string line;
+    QString line = _stream->readLine();
 
-    getline(*_stream, line);
-
-    if (line.empty()) {
+    if (line.isEmpty()) {
       continue;
     }
 
@@ -402,7 +404,7 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
       continue;
     }
 
-    istringstream in(line);
+    QTextStream in(line.toAscii(), QIODevice::ReadOnly);
 
     // Epoch Time
     // ----------
@@ -429,7 +431,7 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
     int pos = 32;
     for (int iSat = 0; iSat < numSat; iSat++) {
       if (iSat > 0 && iSat % 12 == 0) {
-        getline(*_stream, line);
+        line = _stream->readLine();
         pos = 32;
       }
 
@@ -442,11 +444,11 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
     // Read Observation Records
     // ------------------------
     for (int iSat = 0; iSat < numSat; iSat++) {
-      getline(*_stream, line);
+      line = _stream->readLine();
       pos  = 0;
       for (int iType = 0; iType < _header.nTypes(_currEpo.rnxSat[iSat].satSys); iType++) {
         if (iType > 0 && iType % 5 == 0) {
-          getline(*_stream, line);
+          line = _stream->readLine();
           pos  = 0;
         }
         double obsValue = 0.0;
