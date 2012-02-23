@@ -247,8 +247,7 @@ void t_rnxObsFile::open(const QString& fileName) {
       }
       ttPrev = rnxEpo->tt;
     }
-    _stream->clear();
-    _stream->seekg(0, ios::beg);
+    _stream->seek(0);
     _header.read(_stream);
   }
 }
@@ -320,7 +319,7 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpoch() {
 ////////////////////////////////////////////////////////////////////////////
 const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
 
-  while ( _stream->->status() == QTextStream::Ok && !_stream->atEnd() ) {
+  while ( _stream->status() == QTextStream::Ok && !_stream->atEnd() ) {
 
     QString line = _stream->readLine();
 
@@ -355,9 +354,9 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
     // ------------
     for (int iSat = 0; iSat < numSat; iSat++) {
       line = _stream->readLine();
-      _currEpo.rnxSat[iSat].satSys = line[0];
+      _currEpo.rnxSat[iSat].satSys = line.toAscii()[0];
       readInt(line, 1, 2, _currEpo.rnxSat[iSat].satNum);
-      char sys = line[0];
+      char sys = line.toAscii()[0];
       for (int iType = 0; iType < _header.nTypes(sys); iType++) {
         int pos = 3 + 16*iType;
         double obsValue = 0.0;
@@ -389,7 +388,7 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
 ////////////////////////////////////////////////////////////////////////////
 const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
 
-  while ( _stream->->status() == QTextStream::Ok && !_stream->atEnd() ) {
+  while ( _stream->status() == QTextStream::Ok && !_stream->atEnd() ) {
 
     QString line = _stream->readLine();
 
@@ -435,7 +434,7 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
         pos = 32;
       }
 
-      _currEpo.rnxSat[iSat].satSys = line[pos];
+      _currEpo.rnxSat[iSat].satSys = line.toAscii()[pos];
       readInt(line, pos + 1, 2, _currEpo.rnxSat[iSat].satNum);
 
       pos += 3;
