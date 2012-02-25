@@ -405,6 +405,7 @@ void bncRinex::writeHeader(const QByteArray& format, const QDateTime& datTim,
   // --------------------
   readSkeleton();
   if (_headerLines.size() > 0) {
+    bool typesOfObservationsWritten = false;
     QStringListIterator it(_headerLines);
     while (it.hasNext()) {
       QString line = it.next();
@@ -420,7 +421,10 @@ void bncRinex::writeHeader(const QByteArray& format, const QDateTime& datTim,
                << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
         }
       }
-      else if (line.indexOf("# / TYPES OF OBSERV") != -1) {
+      else if ( !typesOfObservationsWritten &&
+                (line.indexOf("# / TYPES OF OBSERV") != -1 || 
+                 line.indexOf("SYS / # / OBS TYPES") != -1) ) {
+        typesOfObservationsWritten = true;
         if (_rinexVers == 3) {
           _out << "G   20 C1C L1C D1C S1C C1W L1W D1W S1W C2P L2P D2P S2P C2X  SYS / # / OBS TYPES" << endl;
           _out << "       L2X D2X S2X C5  L5  D5  S5                           SYS / # / OBS TYPES" << endl;
