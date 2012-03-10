@@ -2042,16 +2042,18 @@ void bncWindow::slotBncTextChanged(){
 
     bool enable7 = enable && _pppSPPComboBox->currentText() == "PPP";
     enableWidget(enable7, _pppSync);
-    enableWidget(enable7, _pppCorrMountLineEdit);
 
-    bool enable8 = _pppSPPComboBox->currentText() == "Post-Processing";
-    enableWidget(enable8, _postObsFileChooser);
-    enableWidget(enable8, _postNavFileChooser);
-    enableWidget(enable8, _postCorrFileChooser);
-    enableWidget(enable8, _postOutLineEdit);
-    _actPostProcessing->setEnabled(enable8);
+    bool enable8 = _pppSPPComboBox->currentText() == "PPP";
+    enableWidget(enable8, _pppCorrMountLineEdit);
 
-    enableWidget(!enable8, _pppMountLineEdit);
+    bool enable9 = _pppSPPComboBox->currentText() == "Post-Processing";
+    enableWidget(enable9, _postObsFileChooser);
+    enableWidget(enable9, _postNavFileChooser);
+    enableWidget(enable9, _postCorrFileChooser);
+    enableWidget(enable9, _postOutLineEdit);
+    _actPostProcessing->setEnabled(enable9);
+
+    enableWidget(!enable9, _pppMountLineEdit);
   }
 }
 
