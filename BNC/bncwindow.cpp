@@ -356,7 +356,7 @@ bncWindow::bncWindow() {
   _pppMountLineEdit      = new QLineEdit(settings.value("pppMount").toString());
   _pppMountLineEdit->setMaximumWidth(6*ww);
   _pppCorrMountLineEdit  = new QLineEdit(settings.value("pppCorrMount").toString());
-  _pppCorrMountLineEdit->setMaximumWidth(6*ww);
+  _pppCorrMountLineEdit->setMaximumWidth(8*ww);
   _pppNMEALineEdit       = new QLineEdit(settings.value("nmeaFile").toString());
   _pppNMEAPortLineEdit   = new QLineEdit(settings.value("nmeaPort").toString());
   _pppSigCLineEdit       = new QLineEdit(settings.value("pppSigmaCode").toString());
