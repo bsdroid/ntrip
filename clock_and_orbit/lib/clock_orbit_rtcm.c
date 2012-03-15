@@ -728,7 +728,7 @@ co->Sat[pos].Clock.DeltaA2);
     }
     break;
   case COTYPE_GPSCOMBINED:
-    if(!co) return -5;
+    if(!co) return GCOBR_NOCLOCKORBITPARAMETER;
     co->messageType = COTYPE_GPSCOMBINED;
     G_GPS_EPOCH_TIME(co->GPSEpochTime, co->NumberOfGPSSat)
     co->epochGPS[co->epochSize] = co->GPSEpochTime;   /* Weber, for latency */
