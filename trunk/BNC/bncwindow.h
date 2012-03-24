@@ -77,7 +77,9 @@ class bncWindow : public QMainWindow {
     void slotAddMountPoints();
     void slotGetData();
     void slotStartPostProcessing();
+    void slotStartTeqcProcessing();
     void slotFinishedPostProcessing();
+    void slotFinishedTeqcProcessing();
     void slotStop();
     void slotNewMountPoints(QStringList* mountPoints);
     void slotDeleteMountPoints();
@@ -110,6 +112,7 @@ class bncWindow : public QMainWindow {
     QAction*   _actQuit; 
     QAction*   _actGetData;
     QAction*   _actPostProcessing;
+    QAction*   _actTeqcProcessing;
     QAction*   _actStop;
     QAction*   _actAddMountPoints;
     QAction*   _actDeleteMountPoints;
@@ -163,6 +166,11 @@ class bncWindow : public QMainWindow {
     qtFileChooser* _postCorrFileChooser;
     QLineEdit*     _postOutLineEdit;
 
+    qtFileChooser* _teqcObsFileChooser;
+    qtFileChooser* _teqcNavFileChooser;
+    qtFileChooser* _teqcCorrFileChooser;
+    QLineEdit*     _teqcOutLineEdit;
+
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;
     QLineEdit* _rnxSkelLineEdit;
@@ -170,7 +178,7 @@ class bncWindow : public QMainWindow {
     QLineEdit* _logFileLineEdit;
     QLineEdit* _rawOutFileLineEdit;
     QComboBox* _pppSPPComboBox;
-    QComboBox* _postProcComboBox;
+    QComboBox* _teqcActionComboBox;
     QComboBox* _rnxIntrComboBox;
     QComboBox* _ephIntrComboBox;
     QComboBox* _corrIntrComboBox;
