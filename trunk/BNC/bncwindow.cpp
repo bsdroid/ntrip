@@ -2066,7 +2066,7 @@ void bncWindow::slotBncTextChanged(){
 
     enable = (!_pppMountLineEdit->text().isEmpty() && !_pppCorrMountLineEdit->text().isEmpty()) ||
              (!_pppMountLineEdit->text().isEmpty() && _pppSPPComboBox->currentText() == "SPP")  ||
-             (_pppSPPComboBox->currentText() == "Post-Processing");
+             (_pppSPPComboBox->currentText() == "RNX");
 
     enableWidget(enable, _pppNMEALineEdit);
     enableWidget(enable, _pppNMEAPortLineEdit);
@@ -2113,7 +2113,7 @@ void bncWindow::slotBncTextChanged(){
     bool enable8 = _pppSPPComboBox->currentText() == "PPP";
     enableWidget(enable8, _pppCorrMountLineEdit);
 
-    bool enable9 = _pppSPPComboBox->currentText() == "Post-Processing";
+    bool enable9 = _pppSPPComboBox->currentText() == "RNX";
     enableWidget(enable9, _postObsFileChooser);
     enableWidget(enable9, _postNavFileChooser);
     enableWidget(enable9, _postCorrFileChooser);
