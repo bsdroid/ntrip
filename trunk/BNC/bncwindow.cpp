@@ -119,7 +119,7 @@ bncWindow::bncWindow() {
   _actGetData = new QAction(tr("Sta&rt"),this);
   connect(_actGetData, SIGNAL(triggered()), SLOT(slotGetData()));
 
-  _actPostProcessing = new QAction(tr("Start Post-Processing"),this);
+  _actPostProcessing = new QAction(tr("Start PPP"),this);
   connect(_actPostProcessing, SIGNAL(triggered()), SLOT(slotStartPostProcessing()));
 
   _actTeqcProcessing = new QAction(tr("Start Teqc"),this);
@@ -387,7 +387,7 @@ bncWindow::bncWindow() {
 
   _pppSPPComboBox = new QComboBox();
   _pppSPPComboBox->setEditable(false);
-  _pppSPPComboBox->addItems(QString("PPP,SPP,Post-Processing").split(","));
+  _pppSPPComboBox->addItems(QString("PPP,SPP,RNX").split(","));
   int ik = _pppSPPComboBox->findText(settings.value("pppSPP").toString());
   if (ik != -1) {
     _pppSPPComboBox->setCurrentIndex(ik);
@@ -2340,7 +2340,7 @@ void bncWindow::slotPostProgress(int nEpo) {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotStartTeqcProcessing() {
   QMessageBox::information(this, "Information",
-                           "Teqc-Processing Not Permitted");
+                           "Teqc-Processing Not Yet Implemented");
 }
 
 // Teqc-Processing Finished
