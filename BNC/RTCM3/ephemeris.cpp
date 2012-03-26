@@ -74,11 +74,11 @@ void t_ephGPS::set(const gpsephemeris* ee) {
   _TOW  = ee->TOW;
   _TOC  = ee->TOC;
   _TOE  = ee->TOE;
-  _IODE = ee->IODE;             
-  _IODC = ee->IODC;             
+  _IODE = ee->IODE;
+  _IODC = ee->IODC;
 
-  _clock_bias      = ee->clock_bias     ;
-  _clock_drift     = ee->clock_drift    ;
+  _clock_bias      = ee->clock_bias;
+  _clock_drift     = ee->clock_drift;
   _clock_driftrate = ee->clock_driftrate;
 
   _Crs      = ee->Crs;
@@ -100,6 +100,12 @@ void t_ephGPS::set(const gpsephemeris* ee) {
   _TGD      = ee->TGD;
 
   _ok       = true;
+
+  /* FIXME: convert URAindex and flags! */
+  _ura = 0;
+  _L2Codes = 0;
+  _L2PFlag = 0;
+  _health = ee->SVhealth;
 }
 
 // Compute GPS Satellite Position (virtual)
@@ -595,10 +601,10 @@ void t_ephGal::set(const galileoephemeris* ee) {
 
   _TOC    = ee->TOC;
   _TOE    = ee->TOE;
-  _IODnav = ee->IODnav;             
+  _IODnav = ee->IODnav;
 
-  _clock_bias      = ee->clock_bias     ;
-  _clock_drift     = ee->clock_drift    ;
+  _clock_bias      = ee->clock_bias;
+  _clock_drift     = ee->clock_drift;
   _clock_driftrate = ee->clock_driftrate;
 
   _Crs      = ee->Crs;
@@ -616,6 +622,10 @@ void t_ephGal::set(const galileoephemeris* ee) {
   _omega    = ee->omega;
   _OMEGADOT = ee->OMEGADOT;
   _IDOT     = ee->IDOT;
+  _SISA     = ee->SISA;
+  _BGD_1_5A = ee->BGD_1_5A;
+  _BGD_1_5B = ee->BGD_1_5B;
+  _E5aHS    = ee->E5aHS;
 
   _ok = true;
 }
