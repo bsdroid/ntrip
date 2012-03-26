@@ -107,6 +107,8 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   bncSettings settings;
   if (!settings.value("rawOutFile").toString().isEmpty()) {
     _rawOutput = true;
+  } else {
+    _rawOutput = false;
   }
 
   initialize();
