@@ -77,6 +77,7 @@ bncWindow::bncWindow() {
   _bncFigure = new bncFigure(this);
   _bncFigureLate = new bncFigureLate(this);
   _bncFigurePPP = new bncFigurePPP(this);
+  _postProcessingRunning = false;
 
   int ww = QFontMetrics(this->font()).width('w');
   
@@ -119,11 +120,8 @@ bncWindow::bncWindow() {
   _actGetData = new QAction(tr("Sta&rt"),this);
   connect(_actGetData, SIGNAL(triggered()), SLOT(slotGetData()));
 
-  _actPostProcessing = new QAction(tr("Start PPP"),this);
+  _actPostProcessing = new QAction(tr("Start PPP/Teqc"),this);
   connect(_actPostProcessing, SIGNAL(triggered()), SLOT(slotStartPostProcessing()));
-
-  _actTeqcProcessing = new QAction(tr("Start Teqc"),this);
-  connect(_actTeqcProcessing, SIGNAL(triggered()), SLOT(slotStartTeqcProcessing()));
 
   _actStop = new QAction(tr("Sto&p"),this);
   connect(_actStop, SIGNAL(triggered()), SLOT(slotStop()));
@@ -600,9 +598,9 @@ bncWindow::bncWindow() {
   _aogroup->addTab(sergroup,tr("Serial Output"));
   _aogroup->addTab(agroup,tr("Outages"));
   _aogroup->addTab(rgroup,tr("Miscellaneous"));
-  _aogroup->addTab(pppgroup,tr("PPP (1)"));
-  _aogroup->addTab(ppp2group,tr("PPP (2)"));
-  _aogroup->addTab(teqcgroup,tr("teqc"));
+  _aogroup->addTab(pppgroup,tr("PPP (1)"));  _tabIndexPPP1 = _aogroup->count() - 1;
+  _aogroup->addTab(ppp2group,tr("PPP (2)")); _tabIndexPPP2 = _aogroup->count() - 1;
+  _aogroup->addTab(teqcgroup,tr("teqc"));    _tabIndexTeqc = _aogroup->count() - 1;
 #ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combination"));
 #endif
@@ -1885,7 +1883,6 @@ void bncWindow::AddToolbar() {
   toolBar->addAction(_actGetData);
   toolBar->addAction(_actStop);
   toolBar->addAction(_actPostProcessing);
-  toolBar->addAction(_actTeqcProcessing);
   toolBar->addWidget(new QLabel("                                           "));
   toolBar->addAction(_actwhatsthis);
 } 
@@ -2299,9 +2296,21 @@ void bncWindow::slotSetUploadTrafo() {
   delete dlg;
 }
 
-// Start Post-Processing
+// Start Post-Processing PPP or Teqc (slot)
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotStartPostProcessing() {
+  if      (_aogroup->currentIndex() == _tabIndexPPP1 ||
+      _aogroup->currentIndex() == _tabIndexPPP2) {
+    startPostProcessingPPP();
+  }
+  else if (_aogroup->currentIndex() == _tabIndexTeqc) {
+    startPostProcessingTeqc();
+  }
+}
+
+// Start Post-Processing PPP
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::startPostProcessingPPP() {
 #ifdef USE_POSTPROCESSING
   _actPostProcessing->setEnabled(false);
   _actPostProcessing->setText("0 Epochs");
@@ -2319,7 +2328,7 @@ void bncWindow::slotStartPostProcessing() {
 #endif
 }
 
-// Post-Processing Finished
+// Post-Processing PPP Finished
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFinishedPostProcessing() {
   QMessageBox::information(this, "Information",
@@ -2336,18 +2345,16 @@ void bncWindow::slotPostProgress(int nEpo) {
   }
 }
 
-// Start Teqc
+// Start Post-Processing Teqc
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotStartTeqcProcessing() {
+void bncWindow::startPostProcessingTeqc() {
   QMessageBox::information(this, "Information",
                            "Teqc-Processing Not Yet Implemented");
 }
 
-// Teqc-Processing Finished
+// Post-Processing Teqc Finished
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFinishedTeqcProcessing() {
   QMessageBox::information(this, "Information",
                            "Teqc-Processing Thread Finished");
-  _actTeqcProcessing->setText("Start Teqc-Processing");
-  _actTeqcProcessing->setEnabled(true);
 }
