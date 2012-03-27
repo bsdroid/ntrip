@@ -77,8 +77,8 @@ class bncWindow : public QMainWindow {
     void slotAddMountPoints();
     void slotGetData();
     void slotStartPostProcessing();
-    void slotFinishedPostProcessing();
-    void slotFinishedTeqcProcessing();
+    void slotFinishedPostProcessingPPP();
+    void slotFinishedPostProcessingTeqc();
     void slotStop();
     void slotNewMountPoints(QStringList* mountPoints);
     void slotDeleteMountPoints();
@@ -90,6 +90,7 @@ class bncWindow : public QMainWindow {
     void slotAddUploadRow();
     void slotDelUploadRow();
     void slotSetUploadTrafo();
+    void slotEnablePostProcessing();
 
   protected:
     virtual void closeEvent(QCloseEvent *);
@@ -101,7 +102,6 @@ class bncWindow : public QMainWindow {
     void enableWidget(bool enable, QWidget* widget);
     void startPostProcessingPPP();
     void startPostProcessingTeqc();
-    void enablePostProcessing();
 
     QMenu*     _menuHlp;
     QMenu*     _menuFile;
@@ -246,6 +246,7 @@ class bncWindow : public QMainWindow {
     int _tabIndexPPP1;
     int _tabIndexPPP2;
     int _tabIndexTeqc;
-    bool _postProcessingRunning;
+    bool _postProcessingRunningPPP;
+    bool _postProcessingRunningTeqc;
 };
 #endif

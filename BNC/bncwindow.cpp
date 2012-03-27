@@ -77,7 +77,8 @@ bncWindow::bncWindow() {
   _bncFigure = new bncFigure(this);
   _bncFigureLate = new bncFigureLate(this);
   _bncFigurePPP = new bncFigurePPP(this);
-  _postProcessingRunning = false;
+  _postProcessingRunningPPP  = false;
+  _postProcessingRunningTeqc = false;
 
   int ww = QFontMetrics(this->font()).width('w');
   
@@ -606,6 +607,9 @@ bncWindow::bncWindow() {
 #endif
   _aogroup->addTab(uploadgroup,tr("Upload (clk)"));
   _aogroup->addTab(uploadEphgroup,tr("Upload (eph)"));
+
+  connect(_aogroup, SIGNAL(currentChanged(int)), 
+          this, SLOT(slotEnablePostProcessing()));
 
   // Log Tab
   // -------
@@ -2115,9 +2119,9 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable9, _postNavFileChooser);
     enableWidget(enable9, _postCorrFileChooser);
     enableWidget(enable9, _postOutLineEdit);
-    _actPostProcessing->setEnabled(enable9);
-
     enableWidget(!enable9, _pppMountLineEdit);
+
+    slotEnablePostProcessing();
   }
 }
 
@@ -2300,7 +2304,7 @@ void bncWindow::slotSetUploadTrafo() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotStartPostProcessing() {
   if      (_aogroup->currentIndex() == _tabIndexPPP1 ||
-      _aogroup->currentIndex() == _tabIndexPPP2) {
+           _aogroup->currentIndex() == _tabIndexPPP2) {
     startPostProcessingPPP();
   }
   else if (_aogroup->currentIndex() == _tabIndexTeqc) {
@@ -2312,13 +2316,14 @@ void bncWindow::slotStartPostProcessing() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::startPostProcessingPPP() {
 #ifdef USE_POSTPROCESSING
-  _actPostProcessing->setEnabled(false);
+  _postProcessingRunningPPP = true;
+  slotEnablePostProcessing();
   _actPostProcessing->setText("0 Epochs");
 
   slotSaveOptions();
 
   t_postProcessing* postProcessing = new t_postProcessing(this);
-  connect(postProcessing, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessing()));
+  connect(postProcessing, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessingPPP()));
   connect(postProcessing, SIGNAL(progress(int)), this, SLOT(slotPostProgress(int)));
 
   postProcessing->start();
@@ -2330,11 +2335,11 @@ void bncWindow::startPostProcessingPPP() {
 
 // Post-Processing PPP Finished
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotFinishedPostProcessing() {
+void bncWindow::slotFinishedPostProcessingPPP() {
+  _postProcessingRunningPPP = false;
   QMessageBox::information(this, "Information",
                            "Post-Processing Thread Finished");
-  _actPostProcessing->setText("Start Post-Processing");
-  _actPostProcessing->setEnabled(true);
+  slotEnablePostProcessing();
 }
 
 // Progress Bar Change
@@ -2348,13 +2353,42 @@ void bncWindow::slotPostProgress(int nEpo) {
 // Start Post-Processing Teqc
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::startPostProcessingTeqc() {
+  _postProcessingRunningTeqc = false;  // TODO
   QMessageBox::information(this, "Information",
                            "Teqc-Processing Not Yet Implemented");
+  slotEnablePostProcessing();
 }
 
 // Post-Processing Teqc Finished
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotFinishedTeqcProcessing() {
+void bncWindow::slotFinishedPostProcessingTeqc() {
+  _postProcessingRunningTeqc = false;
   QMessageBox::information(this, "Information",
                            "Teqc-Processing Thread Finished");
+  slotEnablePostProcessing();
 }
+
+// Enable/Disable Post-Processing Action
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotEnablePostProcessing() {
+  if (_actPostProcessing) {
+    if (_postProcessingRunningPPP || _postProcessingRunningTeqc) {
+      _actPostProcessing->setEnabled(false);
+    }
+    else {
+      _actPostProcessing->setText("Start PPP/Teqc");
+      if      (_aogroup->currentIndex() == _tabIndexPPP1 ||
+               _aogroup->currentIndex() == _tabIndexPPP2) {
+        bool enable = _pppSPPComboBox->currentText() == "RNX";
+        _actPostProcessing->setEnabled(enable);
+      }
+      else if (_aogroup->currentIndex() == _tabIndexTeqc) {
+        _actPostProcessing->setEnabled(true);
+      }
+      else {
+        _actPostProcessing->setEnabled(false);
+      }
+    }
+  }
+}
+
