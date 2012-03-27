@@ -967,6 +967,8 @@ bncWindow::bncWindow() {
   if (ik != -1) {
     _teqcActionComboBox->setCurrentIndex(ik);
   }
+  connect(_teqcActionComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
 
   QGridLayout* teqcLayout = new QGridLayout;
   teqcLayout->setColumnMinimumWidth(0,14*ww);
@@ -2113,14 +2115,16 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable9, _postCorrFileChooser);
     enableWidget(enable9, _postOutLineEdit);
     enableWidget(!enable9, _pppMountLineEdit);
+  }
 
+  if (sender() == 0 || sender() == _teqcActionComboBox) {
     bool enable10 = _teqcActionComboBox->currentText() == "Edit";
     enableWidget(enable10, _teqcEditOptionButton);
     enableWidget(!enable10, _teqcNavFileChooser);
     enableWidget(!enable10, _teqcOutLineEdit);
-
-    slotEnablePostProcessing();
   }
+
+  slotEnablePostProcessing();
 }
 
 // Enable/Disable Post-Processing Action
