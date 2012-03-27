@@ -167,9 +167,10 @@ class bncWindow : public QMainWindow {
     qtFileChooser* _postCorrFileChooser;
     QLineEdit*     _postOutLineEdit;
 
+    QComboBox*     _teqcActionComboBox;
+    QPushButton*   _teqcEditOptionButton;
     qtFileChooser* _teqcObsFileChooser;
     qtFileChooser* _teqcNavFileChooser;
-    qtFileChooser* _teqcCorrFileChooser;
     QLineEdit*     _teqcOutLineEdit;
 
     QCheckBox* _rnxV3CheckBox;
@@ -179,7 +180,6 @@ class bncWindow : public QMainWindow {
     QLineEdit* _logFileLineEdit;
     QLineEdit* _rawOutFileLineEdit;
     QComboBox* _pppSPPComboBox;
-    QComboBox* _teqcActionComboBox;
     QComboBox* _rnxIntrComboBox;
     QComboBox* _ephIntrComboBox;
     QComboBox* _corrIntrComboBox;

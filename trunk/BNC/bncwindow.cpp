@@ -962,7 +962,7 @@ bncWindow::bncWindow() {
   // ---------------
   _teqcActionComboBox = new QComboBox();
   _teqcActionComboBox->setEditable(false);
-  _teqcActionComboBox->addItems(QString("Obs,Nav").split(","));
+  _teqcActionComboBox->addItems(QString("Edit, Analyze").split(","));
   ik = _teqcActionComboBox->findText(settings.value("teqcAction").toString());
   if (ik != -1) {
     _teqcActionComboBox->setCurrentIndex(ik);
@@ -980,30 +980,24 @@ bncWindow::bncWindow() {
   _teqcNavFileChooser->setFileName(settings.value("teqcNavFile").toString());
   _teqcNavFileChooser->setWhatsThis(tr("Specify the full path to a RINEX v2 or v3 navigation file."));
 
-  _teqcCorrFileChooser = new qtFileChooser;
-  _teqcCorrFileChooser->setFileName(settings.value("teqcCorrFile").toString());
-  _teqcCorrFileChooser->setWhatsThis(tr("Specify the full path to an orbit/clock corrections file in plain ASCII format."));
-
   _teqcOutLineEdit = new QLineEdit(settings.value("teqcOutFile").toString());
   _teqcOutLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
 
-  teqcLayout->addWidget(new QLabel("Mode"),                     0, 0);
-  teqcLayout->addWidget(_teqcActionComboBox,                      0, 1);
-  teqcLayout->addWidget(new QLabel("Input files (full path)"),  1, 0);
-
-  teqcLayout->addWidget(_teqcObsFileChooser,                    1, 1);
-  teqcLayout->addWidget(new QLabel("Obs   "),                   1, 2);
-  teqcLayout->addWidget(_teqcNavFileChooser,                    1, 3);
-  teqcLayout->addWidget(new QLabel("Nav   "),                   1, 4);
-  teqcLayout->addWidget(_teqcCorrFileChooser,                   1, 5);
-  teqcLayout->addWidget(new QLabel("Corr"),                     1, 6);
-
-  teqcLayout->addWidget(new QLabel("Output file (full path)"),  2, 0);
-  teqcLayout->addWidget(_teqcOutLineEdit,                       2, 1, 1, 2);
+  ir = 0;
+  teqcLayout->addWidget(new QLabel("Action"),                   ir, 0);
+  teqcLayout->addWidget(_teqcActionComboBox,                    ir, 1);
+  _teqcEditOptionButton = new QPushButton("Set Edit Options");
+  teqcLayout->addWidget(_teqcEditOptionButton,                  ir, 2);
+  ++ir;
+  teqcLayout->addWidget(new QLabel("Input files (full path)"),  ir, 0);
+  teqcLayout->addWidget(_teqcObsFileChooser,                    ir, 1);
+  teqcLayout->addWidget(new QLabel("Obs   "),                   ir, 2);
+  teqcLayout->addWidget(_teqcNavFileChooser,                    ir, 3);
+  teqcLayout->addWidget(new QLabel("Nav   "),                   ir, 4);
+  ++ir;
+  teqcLayout->addWidget(new QLabel("Output file (full path)"),  ir, 0);
+  teqcLayout->addWidget(_teqcOutLineEdit,                       ir, 1, 1, 2);
   teqcLayout->addWidget(new QLabel("Teqc-processing, input, output, options."), 3, 0, 1, 5);
-  teqcLayout->addWidget(new QLabel("    "),                     4, 0);
-  teqcLayout->addWidget(new QLabel("    "),                     5, 0);
-  teqcLayout->addWidget(new QLabel("    "),                     6, 0);
 
   teqcgroup->setLayout(teqcLayout);
 
@@ -1629,7 +1623,6 @@ void bncWindow::slotSaveOptions() {
 
   settings.setValue("teqcObsFile", _teqcObsFileChooser->fileName());
   settings.setValue("teqcNavFile", _teqcNavFileChooser->fileName());
-  settings.setValue("teqcCorrFile", _teqcCorrFileChooser->fileName());
   settings.setValue("teqcOutFile", _teqcOutLineEdit->text());
 
   if (_caster) {
@@ -2120,6 +2113,11 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable9, _postCorrFileChooser);
     enableWidget(enable9, _postOutLineEdit);
     enableWidget(!enable9, _pppMountLineEdit);
+
+    bool enable10 = _teqcActionComboBox->currentText() == "Edit";
+    enableWidget(enable10, _teqcEditOptionButton);
+    enableWidget(!enable10, _teqcNavFileChooser);
+    enableWidget(!enable10, _teqcOutLineEdit);
 
     slotEnablePostProcessing();
   }
