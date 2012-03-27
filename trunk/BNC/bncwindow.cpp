@@ -2125,6 +2125,32 @@ void bncWindow::slotBncTextChanged(){
   }
 }
 
+// Enable/Disable Post-Processing Action
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotEnablePostProcessing() {
+  if (_actPostProcessing) {
+    if (_postProcessingRunningPPP || _postProcessingRunningTeqc) {
+      _actPostProcessing->setEnabled(false);
+    }
+    else {
+      if      (_aogroup->currentIndex() == _tabIndexPPP1 ||
+               _aogroup->currentIndex() == _tabIndexPPP2) {
+        _actPostProcessing->setText("Start PPP");
+        bool enable = _pppSPPComboBox->currentText() == "RNX";
+        _actPostProcessing->setEnabled(enable);
+      }
+      else if (_aogroup->currentIndex() == _tabIndexTeqc) {
+        _actPostProcessing->setText("Start Teqc");
+        _actPostProcessing->setEnabled(true);
+      }
+      else {
+        _actPostProcessing->setText("Start PPP/Teqc");
+        _actPostProcessing->setEnabled(false);
+      }
+    }
+  }
+}
+
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotAddCmbRow() {
@@ -2366,29 +2392,5 @@ void bncWindow::slotFinishedPostProcessingTeqc() {
   QMessageBox::information(this, "Information",
                            "Teqc-Processing Thread Finished");
   slotEnablePostProcessing();
-}
-
-// Enable/Disable Post-Processing Action
-////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotEnablePostProcessing() {
-  if (_actPostProcessing) {
-    if (_postProcessingRunningPPP || _postProcessingRunningTeqc) {
-      _actPostProcessing->setEnabled(false);
-    }
-    else {
-      _actPostProcessing->setText("Start PPP/Teqc");
-      if      (_aogroup->currentIndex() == _tabIndexPPP1 ||
-               _aogroup->currentIndex() == _tabIndexPPP2) {
-        bool enable = _pppSPPComboBox->currentText() == "RNX";
-        _actPostProcessing->setEnabled(enable);
-      }
-      else if (_aogroup->currentIndex() == _tabIndexTeqc) {
-        _actPostProcessing->setEnabled(true);
-      }
-      else {
-        _actPostProcessing->setEnabled(false);
-      }
-    }
-  }
 }
 
