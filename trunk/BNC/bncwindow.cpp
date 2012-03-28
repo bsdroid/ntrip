@@ -61,6 +61,7 @@
 #include "upload/bnccustomtrafo.h"
 #include "upload/bncephuploadcaster.h"
 #include "qtfilechooser.h"
+#include "teqcdlg.h"
 #ifdef USE_POSTPROCESSING
 #  include "rinex/bncpostprocess.h"
 #endif
@@ -1002,6 +1003,9 @@ bncWindow::bncWindow() {
   teqcLayout->addWidget(new QLabel("Teqc-processing, input, output, options."), 3, 0, 1, 5);
 
   teqcgroup->setLayout(teqcLayout);
+
+  connect(_teqcEditOptionButton, SIGNAL(clicked()), 
+          this, SLOT(slotTeqcEditOption()));
 
   // Combination
   // -----------
@@ -2396,3 +2400,11 @@ void bncWindow::slotFinishedPostProcessingTeqc() {
   slotEnablePostProcessing();
 }
 
+// Edit teqc-like editing options
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotTeqcEditOption() {
+  teqcDlg* dlg = new teqcDlg(this);
+  dlg->move(this->pos().x()+50, this->pos().y()+50);
+  dlg->exec();
+  delete dlg;
+}
