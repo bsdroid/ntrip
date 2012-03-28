@@ -45,9 +45,16 @@ class teqcDlg : public QDialog {
     void slotWhatsThis();
 
   private:
-    QPushButton* _buttonOK;
-    QPushButton* _buttonCancel;
-    QPushButton* _buttonWhatsThis;
+   QLineEdit* _teqcOldMarkerName;
+   QLineEdit* _teqcNewMarkerName;
+   QLineEdit* _teqcOldAntennaName;
+   QLineEdit* _teqcNewAntennaName;
+   QLineEdit* _teqcOldReceiverName;
+   QLineEdit* _teqcNewReceiverName;
+
+   QPushButton* _buttonOK;
+   QPushButton* _buttonCancel;
+   QPushButton* _buttonWhatsThis;
 };
 
 #endif
