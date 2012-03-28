@@ -62,7 +62,7 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
   connect(_buttonOK, SIGNAL(clicked()), this, SLOT(slotOK()));
 
   _buttonCancel = new QPushButton(tr("Cancel"), this);
-  connect(_buttonCancel, SIGNAL(clicked()), this, SLOT(cancel()));
+  connect(_buttonCancel, SIGNAL(clicked()), this, SLOT(close()));
 
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(_buttonWhatsThis);
@@ -81,3 +81,14 @@ teqcDlg::~teqcDlg() {
   delete _buttonWhatsThis;
 }
 
+// Accept the Options
+////////////////////////////////////////////////////////////////////////////
+void teqcDlg::slotOK() {
+
+}
+
+// Whats This Help
+////////////////////////////////////////////////////////////////////////////
+void teqcDlg::slotWhatsThis() {
+  QWhatsThis::enterWhatsThisMode();
+}

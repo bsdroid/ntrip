@@ -41,6 +41,8 @@ class teqcDlg : public QDialog {
   signals:
 
   private slots:
+    void slotOK();
+    void slotWhatsThis();
 
   private:
     QPushButton* _buttonOK;
