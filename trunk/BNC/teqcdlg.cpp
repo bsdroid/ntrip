@@ -49,11 +49,36 @@ using namespace std;
 teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
 
   setMinimumSize(600,400);
-  setWindowTitle(tr("Editing Options"));
+  setWindowTitle(tr("Teqc Editing Options"));
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
   int ww = QFontMetrics(font()).width('w');
+
+  QGridLayout* grid = new QGridLayout;
+
+  _teqcOldMarkerName   = new QLineEdit(this);
+  _teqcNewMarkerName   = new QLineEdit(this);
+  _teqcOldAntennaName  = new QLineEdit(this);
+  _teqcNewAntennaName  = new QLineEdit(this);
+  _teqcOldReceiverName = new QLineEdit(this);
+  _teqcNewReceiverName = new QLineEdit(this);
+
+  int ir = 0;
+  grid->addWidget(new QLabel("Old"),          ir, 1, Qt::AlignCenter);
+  grid->addWidget(new QLabel("New"),          ir, 2, Qt::AlignCenter);
+  ++ir;
+  grid->addWidget(new QLabel("Marker Name"),  ir, 0);
+  grid->addWidget(_teqcOldMarkerName,         ir, 1);
+  grid->addWidget(_teqcNewMarkerName,         ir, 2);
+  ++ir;
+  grid->addWidget(new QLabel("Antenna Name") , ir, 0);
+  grid->addWidget(_teqcOldAntennaName,         ir, 1);
+  grid->addWidget(_teqcNewAntennaName,         ir, 2);
+  ++ir;
+  grid->addWidget(new QLabel("Receiver Name"), ir, 0);
+  grid->addWidget(_teqcOldReceiverName,        ir, 1);
+  grid->addWidget(_teqcNewReceiverName,        ir, 2);
 
   _buttonWhatsThis = new QPushButton(tr("Help=Shift+F1"), this);
   connect(_buttonWhatsThis, SIGNAL(clicked()), this, SLOT(slotWhatsThis()));
@@ -70,6 +95,7 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
   buttonLayout->addWidget(_buttonOK);
   buttonLayout->addWidget(_buttonCancel);
 
+  mainLayout->addLayout(grid);
   mainLayout->addLayout(buttonLayout);
 }
 
