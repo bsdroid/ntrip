@@ -91,6 +91,7 @@ class bncWindow : public QMainWindow {
     void slotDelUploadRow();
     void slotSetUploadTrafo();
     void slotEnablePostProcessing();
+    void slotTeqcEditOption();
 
   protected:
     virtual void closeEvent(QCloseEvent *);
