@@ -45,16 +45,19 @@ class teqcDlg : public QDialog {
     void slotWhatsThis();
 
   private:
-   QLineEdit* _teqcOldMarkerName;
-   QLineEdit* _teqcNewMarkerName;
-   QLineEdit* _teqcOldAntennaName;
-   QLineEdit* _teqcNewAntennaName;
-   QLineEdit* _teqcOldReceiverName;
-   QLineEdit* _teqcNewReceiverName;
-
-   QPushButton* _buttonOK;
-   QPushButton* _buttonCancel;
-   QPushButton* _buttonWhatsThis;
+   QComboBox*     _teqcRnxVersion;
+   QSpinBox*      _teqcSampling;
+   QDateTimeEdit* _teqcStartDateTime;
+   QDateTimeEdit* _teqcEndDateTime;
+   QLineEdit*     _teqcOldMarkerName;
+   QLineEdit*     _teqcNewMarkerName;
+   QLineEdit*     _teqcOldAntennaName;
+   QLineEdit*     _teqcNewAntennaName;
+   QLineEdit*     _teqcOldReceiverName;
+   QLineEdit*     _teqcNewReceiverName;
+   QPushButton*   _buttonOK;
+   QPushButton*   _buttonCancel;
+   QPushButton*   _buttonWhatsThis;
 };
 
 #endif

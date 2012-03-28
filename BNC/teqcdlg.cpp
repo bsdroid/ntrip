@@ -48,7 +48,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
 
-  setMinimumSize(600,400);
+  ////  setMinimumSize(600,400);
   setWindowTitle(tr("Teqc Editing Options"));
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -57,6 +57,10 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
 
   QGridLayout* grid = new QGridLayout;
 
+  _teqcRnxVersion      = new QComboBox(this);
+  _teqcSampling        = new QSpinBox(this);
+  _teqcStartDateTime   = new QDateTimeEdit(this);
+  _teqcEndDateTime     = new QDateTimeEdit(this);
   _teqcOldMarkerName   = new QLineEdit(this);
   _teqcNewMarkerName   = new QLineEdit(this);
   _teqcOldAntennaName  = new QLineEdit(this);
@@ -65,20 +69,34 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
   _teqcNewReceiverName = new QLineEdit(this);
 
   int ir = 0;
-  grid->addWidget(new QLabel("Old"),          ir, 1, Qt::AlignCenter);
-  grid->addWidget(new QLabel("New"),          ir, 2, Qt::AlignCenter);
+  grid->addWidget(new QLabel(""),              ir, 0, 1, 4);
   ++ir;
-  grid->addWidget(new QLabel("Marker Name"),  ir, 0);
-  grid->addWidget(_teqcOldMarkerName,         ir, 1);
-  grid->addWidget(_teqcNewMarkerName,         ir, 2);
+  grid->addWidget(new QLabel("RNX Version"),   ir, 1);
+  grid->addWidget(_teqcRnxVersion,             ir, 2);
+  grid->addWidget(new QLabel("Sampling"),      ir, 3);
+  grid->addWidget(_teqcSampling,               ir, 4);
   ++ir;
-  grid->addWidget(new QLabel("Antenna Name") , ir, 0);
-  grid->addWidget(_teqcOldAntennaName,         ir, 1);
-  grid->addWidget(_teqcNewAntennaName,         ir, 2);
+  grid->addWidget(new QLabel("Start"),         ir, 1);
+  grid->addWidget(_teqcStartDateTime,          ir, 2);
+  grid->addWidget(new QLabel("End"),           ir, 3);
+  grid->addWidget(_teqcEndDateTime,            ir, 4);
+  ++ir;
+  grid->addWidget(new QLabel("Old"),           ir, 1, 1, 2, Qt::AlignCenter);
+  grid->addWidget(new QLabel("New"),           ir, 3, 1, 2, Qt::AlignCenter);
+  ++ir;
+  grid->addWidget(new QLabel("Marker Name"),   ir, 0);
+  grid->addWidget(_teqcOldMarkerName,          ir, 1, 1, 2);
+  grid->addWidget(_teqcNewMarkerName,          ir, 3, 1, 2);
+  ++ir;
+  grid->addWidget(new QLabel("Antenna Name"),  ir, 0);
+  grid->addWidget(_teqcOldAntennaName,         ir, 1, 1, 2);
+  grid->addWidget(_teqcNewAntennaName,         ir, 3, 1, 2);
   ++ir;
   grid->addWidget(new QLabel("Receiver Name"), ir, 0);
-  grid->addWidget(_teqcOldReceiverName,        ir, 1);
-  grid->addWidget(_teqcNewReceiverName,        ir, 2);
+  grid->addWidget(_teqcOldReceiverName,        ir, 1, 1, 2);
+  grid->addWidget(_teqcNewReceiverName,        ir, 3, 1, 2);
+  ++ir;
+  grid->addWidget(new QLabel(""),              ir, 0, 1, 4);
 
   _buttonWhatsThis = new QPushButton(tr("Help=Shift+F1"), this);
   connect(_buttonWhatsThis, SIGNAL(clicked()), this, SLOT(slotWhatsThis()));
