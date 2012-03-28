@@ -69,8 +69,6 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
   _teqcNewReceiverName = new QLineEdit(this);
 
   int ir = 0;
-  grid->addWidget(new QLabel(""),              ir, 0, 1, 4);
-  ++ir;
   grid->addWidget(new QLabel("RNX Version"),   ir, 1);
   grid->addWidget(_teqcRnxVersion,             ir, 2);
   grid->addWidget(new QLabel("Sampling"),      ir, 3);
@@ -95,8 +93,6 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
   grid->addWidget(new QLabel("Receiver Name"), ir, 0);
   grid->addWidget(_teqcOldReceiverName,        ir, 1, 1, 2);
   grid->addWidget(_teqcNewReceiverName,        ir, 3, 1, 2);
-  ++ir;
-  grid->addWidget(new QLabel(""),              ir, 0, 1, 4);
 
   _buttonWhatsThis = new QPushButton(tr("Help=Shift+F1"), this);
   connect(_buttonWhatsThis, SIGNAL(clicked()), this, SLOT(slotWhatsThis()));
