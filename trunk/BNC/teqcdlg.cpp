@@ -48,14 +48,9 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
 
-  ////  setMinimumSize(600,400);
   setWindowTitle(tr("Teqc Editing Options"));
 
-  QVBoxLayout* mainLayout = new QVBoxLayout(this);
-
   int ww = QFontMetrics(font()).width('w');
-
-  QGridLayout* grid = new QGridLayout;
 
   _teqcRnxVersion      = new QComboBox(this);
   _teqcSampling        = new QSpinBox(this);
@@ -68,15 +63,27 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
   _teqcOldReceiverName = new QLineEdit(this);
   _teqcNewReceiverName = new QLineEdit(this);
 
+  _teqcRnxVersion->setEditable(false);
+  _teqcRnxVersion->addItems(QString("2,3").split(","));
+  _teqcRnxVersion->setMaximumWidth(7*ww);
+
+  _teqcSampling->setMinimum(0);
+  _teqcSampling->setMaximum(60);
+  _teqcSampling->setSingleStep(5);
+  _teqcSampling->setSuffix(" sec");
+  _teqcSampling->setMaximumWidth(7*ww);
+
+  QGridLayout* grid = new QGridLayout;
+
   int ir = 0;
   grid->addWidget(new QLabel("RNX Version"),   ir, 1);
   grid->addWidget(_teqcRnxVersion,             ir, 2);
-  grid->addWidget(new QLabel("Sampling"),      ir, 3);
+  grid->addWidget(new QLabel("  Sampling"),    ir, 3);
   grid->addWidget(_teqcSampling,               ir, 4);
   ++ir;
   grid->addWidget(new QLabel("Start"),         ir, 1);
   grid->addWidget(_teqcStartDateTime,          ir, 2);
-  grid->addWidget(new QLabel("End"),           ir, 3);
+  grid->addWidget(new QLabel("  End"),         ir, 3);
   grid->addWidget(_teqcEndDateTime,            ir, 4);
   ++ir;
   grid->addWidget(new QLabel("Old"),           ir, 1, 1, 2, Qt::AlignCenter);
@@ -109,6 +116,7 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
   buttonLayout->addWidget(_buttonOK);
   buttonLayout->addWidget(_buttonCancel);
 
+  QVBoxLayout* mainLayout = new QVBoxLayout(this);
   mainLayout->addLayout(grid);
   mainLayout->addLayout(buttonLayout);
 }
