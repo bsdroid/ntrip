@@ -14,6 +14,7 @@ class bncTime {
   bncTime& set(int year, int month, int day, double daysec);
   bncTime& setmjd(double daysec, int mjd);
 
+  void         reset() {_mjd = 0; _sec = 0;}
   unsigned int mjd()    const;
   double       daysec() const;
   unsigned int gpsw()   const;
@@ -37,8 +38,6 @@ class bncTime {
   std::string datestr(char sep = '-') const;  
 
  private:
-  void        reset() {_mjd = 0; _sec = 0;}
-
   unsigned int _mjd;
   double       _sec;
 };

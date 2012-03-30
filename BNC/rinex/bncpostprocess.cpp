@@ -116,7 +116,8 @@ void t_postProcessing::run() {
     if (!_opt->corrFileName.isEmpty()) {
       _corrFile = new t_corrFile(_opt->corrFileName);
       connect(_corrFile, SIGNAL(newCorrections(QList<QString>)),
-              _pppClient, SLOT(slotNewCorrections(QList<QString>)));
+              _pppClient, SLOT(slotNewCorrections(QList<QString>)),
+              Qt::DirectConnection);
     }
 
     connect(_pppClient, SIGNAL(newMessage(QByteArray,bool)), 
