@@ -131,6 +131,9 @@ void t_postProcessing::run() {
   while ( (epo = _rnxObsFile->nextEpoch()) != 0 ) {
     ++nEpo;
 
+    cout << "process " << epo->tt.datestr() << " "
+         << epo->tt.timestr() << endl;
+
     // Get Corrections
     // ---------------
     if (_corrFile) {

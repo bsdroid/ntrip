@@ -45,6 +45,12 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
   QString     intr  = settings.value("uploadIntr").toString();
   int         sampl = settings.value("uploadSampl").toInt();
   _samplOrb = settings.value("uploadSamplOrb").toDouble();
+  if (_samplOrb == 0.0) {
+    _usedEph = 0;
+  }
+  else {
+    _usedEph = new QMap<QString, t_eph*>;
+  }
 
   // Raw Output
   // ----------
@@ -189,6 +195,7 @@ bncRtnetUploadCaster::~bncRtnetUploadCaster() {
   delete _rnx;
   delete _sp3;
   delete _ephUser;
+  delete _usedEph;
 }
 
 // 
@@ -266,15 +273,39 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       prn.remove(0,1);
     }
 
+    t_eph* eph = 0;
     const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(prn);
     if (ephPair) {
-      t_eph* eph = ephPair->last;
 
-// receptDateTime() not (yet?) defined 
-//      if (ephPair->prev && 
-//           eph->receptDateTime().secsTo(QDateTime::currentDateTime()) < 60) {
-//        eph = ephPair->prev;
-//      }
+      // Make sure the clock messages refer to same IOD as orbit messages
+      // ----------------------------------------------------------------
+      eph = ephPair->last;
+      if (_usedEph) {
+        if (fmod(epoTime.gpssec(), _samplOrb) == 0.0) {
+          (*_usedEph)[prn] = eph;
+        }
+        else {
+          eph = 0;
+          if (_usedEph->contains(prn)) {
+            t_eph* usedEph = _usedEph->value(prn);
+            if      (usedEph == ephPair->last) {
+              eph = ephPair->last;
+            }
+            else if (usedEph == ephPair->prev) {
+              eph = ephPair->prev;
+            }
+          }
+        }
+      }
+
+      // receptDateTime() not (yet?) defined 
+      //      if (ephPair->prev && 
+      //           eph->receptDateTime().secsTo(QDateTime::currentDateTime()) < 60) {
+      //        eph = ephPair->prev;
+      //      }
+    }
+
+    if (eph) {
 
       in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) 
          >> xx(6) >> xx(7) >> xx(8) >> xx(9) >> xx(10)

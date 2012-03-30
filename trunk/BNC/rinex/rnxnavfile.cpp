@@ -165,7 +165,7 @@ t_eph* t_rnxNavFile::getNextEph(const bncTime& tt) {
     t_eph* eph = _ephs.front();
     bncTime ephTime(eph->GPSweek(), eph->GPSweeks());
     double dt = ephTime - tt;
-    if (dt < 4*3600.0) {
+    if (dt < 2*3600.0) {
       _ephs.pop();
       return eph;
     }
