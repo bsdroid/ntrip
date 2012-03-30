@@ -160,11 +160,18 @@ void t_rnxNavFile::read(QTextStream* stream) {
 
 // Read Next Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-t_eph* t_rnxNavFile::getNextEph() {
-  if (!_ephs.empty()) {
+t_eph* t_rnxNavFile::getNextEph(const bncTime& tt) {
+  while (!_ephs.empty()) {
     t_eph* eph = _ephs.front();
-    _ephs.pop();
-    return eph;
+    bncTime ephTime(eph->GPSweek(), eph->GPSweeks());
+    double dt = ephTime - tt;
+    if (dt < 4*3600.0) {
+      _ephs.pop();
+      return eph;
+    }
+    else {
+      return 0;
+    }
   }
   return 0;
 }
