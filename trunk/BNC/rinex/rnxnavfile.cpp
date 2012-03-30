@@ -87,28 +87,27 @@ t_irc t_rnxNavFile::t_rnxNavHeader::read(QTextStream* stream) {
 ////////////////////////////////////////////////////////////////////////////
 t_rnxNavFile::t_rnxNavFile(QString fileName) {
   expandEnvVar(fileName);
-  _file   = new QFile(fileName);
-  _file->open(QIODevice::ReadOnly | QIODevice::Text);
-  _stream = new QTextStream();
-  _stream->setDevice(_file);
-  _header.read(_stream);
+  QFile*       file   = new QFile(fileName);
+  file->open(QIODevice::ReadOnly | QIODevice::Text);
+  QTextStream* stream = new QTextStream();
+  stream->setDevice(file);
+  _header.read(stream);
+  this->read(stream);
+  delete stream;
+  delete file;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_rnxNavFile::~t_rnxNavFile() {
-  delete _stream;
-  delete _file;
 }
 
-// Read Next Ephemeris
+// Read File Content
 ////////////////////////////////////////////////////////////////////////////
-t_eph* t_rnxNavFile::getNextEph() {
+void t_rnxNavFile::read(QTextStream* stream) {
 
-  t_eph* eph = 0;
-
-  while (_stream->status() == QTextStream::Ok && !_stream->atEnd()) {
-    QString line = _stream->readLine();
+  while (stream->status() == QTextStream::Ok && !stream->atEnd()) {
+    QString line = stream->readLine();
     if (line.isEmpty()) {
       continue;
     }
@@ -125,34 +124,42 @@ t_eph* t_rnxNavFile::getNextEph() {
         prn = QString("G%1").arg(hlp.at(0).toInt(), 2, 10, QChar('0'));
       }
     }
+    t_eph* eph = 0;
     QStringList lines; lines << line;
     if      (prn[0] == 'G') {
       for (int ii = 1; ii < 8; ii++) {
-        lines << _stream->readLine();
+        lines << stream->readLine();
       }
       eph = new t_ephGPS(version(), lines);
     }
     else if (prn[0] == 'R') {
       for (int ii = 1; ii < 4; ii++) {
-        lines << _stream->readLine();
+        lines << stream->readLine();
       }
       eph = new t_ephGlo(version(), lines);
     }
     else if (prn[0] == 'E') {
       for (int ii = 1; ii < 8; ii++) {
-        lines << _stream->readLine();
+        lines << stream->readLine();
       }
       eph = new t_ephGal(version(), lines);
     }
     if (eph && eph->ok()) {
-      // ColumnVector xc(4);
-      // ColumnVector vv(3);
-      // eph->position(eph->GPSweek(), eph->GPSweeks(), xc.data(), vv.data());
-      // cout << eph->prn().toAscii().data() << " " << xc.t();
-      return eph;
+      _ephs.push(eph);
+    }
+    else {
+      delete eph;
     }
   }
+}
 
-  delete eph;
+// Read Next Ephemeris
+////////////////////////////////////////////////////////////////////////////
+t_eph* t_rnxNavFile::getNextEph() {
+  if (!_ephs.empty()) {
+    t_eph* eph = _ephs.front();
+    _ephs.pop();
+    return eph;
+  }
   return 0;
 }

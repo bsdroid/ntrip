@@ -25,6 +25,7 @@
 #ifndef RNXNAVFILE_H
 #define RNXNAVFILE_H
 
+#include <queue>
 #include <QtCore>
 #include "bncconst.h"
 
@@ -54,9 +55,9 @@ class t_rnxNavFile {
   bool  glonass() const {return _header.glonass();}
 
  private:
-  t_rnxNavHeader _header;
-  QFile*         _file;
-  QTextStream*   _stream;
+  void               read(QTextStream* stream);
+  std::queue<t_eph*> _ephs;
+  t_rnxNavHeader     _header;
 };
 
 #endif
