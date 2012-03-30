@@ -80,7 +80,7 @@ t_pppOpt::t_pppOpt() {
   navFileName  = settings.value("postNavFile").toString();
   corrFileName = settings.value("postcorrFile").toString();
 
-  if      (settings.value("pppSPP").toString() == "Post-Processing") {
+  if      (settings.value("pppSPP").toString() == "RNX") {
     corrSync     = 0.0;
     pppCorrMount = "";
     if (corrFileName.isEmpty()) {
