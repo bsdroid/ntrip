@@ -100,6 +100,11 @@ t_rnxNavFile::t_rnxNavFile(QString fileName) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_rnxNavFile::~t_rnxNavFile() {
+  while (!_ephs.empty()) {
+    t_eph* eph = _ephs.front();
+    _ephs.pop();
+    delete eph;
+  }
 }
 
 // Read File Content
