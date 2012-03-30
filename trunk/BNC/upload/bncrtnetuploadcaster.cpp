@@ -277,9 +277,16 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(prn);
     if (ephPair) {
 
+      eph = ephPair->last;
+
+      // receptDateTime() not (yet?) defined 
+      // if (ephPair->prev && 
+      //     eph->receptDateTime().secsTo(QDateTime::currentDateTime()) < 60) {
+      //   eph = ephPair->prev;
+      // }
+
       // Make sure the clock messages refer to same IOD as orbit messages
       // ----------------------------------------------------------------
-      eph = ephPair->last;
       if (_usedEph) {
         if (fmod(epoTime.gpssec(), _samplOrb) == 0.0) {
           (*_usedEph)[prn] = eph;
@@ -297,12 +304,6 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           }
         }
       }
-
-      // receptDateTime() not (yet?) defined 
-      //      if (ephPair->prev && 
-      //           eph->receptDateTime().secsTo(QDateTime::currentDateTime()) < 60) {
-      //        eph = ephPair->prev;
-      //      }
     }
 
     if (eph) {
