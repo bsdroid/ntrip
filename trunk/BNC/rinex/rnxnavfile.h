@@ -28,6 +28,7 @@
 #include <queue>
 #include <QtCore>
 #include "bncconst.h"
+#include "bnctime.h"
 
 class t_pppOpt;
 class bncPPPclient;
@@ -50,7 +51,7 @@ class t_rnxNavFile {
  public:
   t_rnxNavFile(QString fileName);
   ~t_rnxNavFile();
-  t_eph* getNextEph();
+  t_eph* getNextEph(const bncTime& tt);
   float version() const {return _header.version();}
   bool  glonass() const {return _header.glonass();}
 

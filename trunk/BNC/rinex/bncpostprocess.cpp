@@ -123,15 +123,6 @@ void t_postProcessing::run() {
             this, SLOT(slotMessage(const QByteArray,bool)));
   }
 
-  // Read Ephemerides
-  // ----------------
-  t_eph* eph = 0;
-  while ( (eph = _rnxNavFile->getNextEph()) != 0 ) {
-    if (_pppClient->putNewEph(eph) != success) {
-      delete eph; eph = 0;
-    }
-  }
-
   // Read/Process Observations
   // -------------------------
   int   nEpo = 0;
@@ -139,8 +130,19 @@ void t_postProcessing::run() {
   while ( (epo = _rnxObsFile->nextEpoch()) != 0 ) {
     ++nEpo;
 
+    // Get Corrections
+    // ---------------
     if (_corrFile) {
       _corrFile->syncRead(epo->tt);
+    }
+
+    // Get Ephemerides
+    // ----------------
+    t_eph* eph = 0;
+    while ( (eph = _rnxNavFile->getNextEph(epo->tt)) != 0 ) {
+      if (_pppClient->putNewEph(eph) != success) {
+        delete eph; eph = 0;
+      }
     }
 
     for (unsigned iObs = 0; iObs < epo->rnxSat.size(); iObs++) {
