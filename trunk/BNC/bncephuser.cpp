@@ -208,8 +208,6 @@ t_irc t_corr::readLine(const QString& line) {
   double  GPSweeks;
   in >> updateInterval >> GPSweek >> GPSweeks >> prn;
 
-  tt.set(GPSweek, GPSweeks);
-
   if      ( messageType == COTYPE_GPSCOMBINED    || 
             messageType == COTYPE_GLONASSCOMBINED ) {
     rao.ReSize(3);       rao       = 0.0;
@@ -225,8 +223,9 @@ t_irc t_corr::readLine(const QString& line) {
     dClk       /= t_CST::c;
     dotDClk    /= t_CST::c;
     dotDotDClk /= t_CST::c;
-    raoSet  = true;
-    dClkSet = true;
+
+    tClk.set(GPSweek, GPSweeks);
+    tRao.set(GPSweek, GPSweeks);
   }
   else if ( messageType == COTYPE_GPSORBIT    || 
             messageType == COTYPE_GLONASSORBIT ) {
@@ -237,25 +236,31 @@ t_irc t_corr::readLine(const QString& line) {
       >> rao[0]       >> rao[1]       >> rao[2]
       >> dotRao[0]    >> dotRao[1]    >> dotRao[2]
       >> dotDotRao[0] >> dotDotRao[1] >> dotDotRao[2];
-    raoSet  = true;
+
+    tRao.set(GPSweek, GPSweeks);
   }
   else if ( messageType == COTYPE_GPSCLOCK    || 
             messageType == COTYPE_GLONASSCLOCK ) {
-    int dummyIOD;
-    dClk       = 0.0;
-    dotDClk    = 0.0;
-    dotDotDClk = 0.0;
-    in >> dummyIOD >> dClk >> dotDClk >> dotDotDClk;
-    dClk       /= t_CST::c;
-    dotDClk    /= t_CST::c;
-    dotDotDClk /= t_CST::c;
-    dClkSet = true;
+    if (tRao.valid()) {
+      int dummyIOD;
+      dClk       = 0.0;
+      dotDClk    = 0.0;
+      dotDotDClk = 0.0;
+      in >> dummyIOD >> dClk >> dotDClk >> dotDotDClk;
+      dClk       /= t_CST::c;
+      dotDClk    /= t_CST::c;
+      dotDotDClk /= t_CST::c;
+
+      tClk.set(GPSweek, GPSweeks);
+    }
   }
   else if ( messageType == COTYPE_GPSHR    ||
             messageType == COTYPE_GLONASSHR ) {
-    int dummyIOD;
-    in >> dummyIOD >> hrClk;
-    hrClk /= t_CST::c; 
+    if (tRao.valid() && tClk.valid()) {
+      int dummyIOD;
+      in >> dummyIOD >> hrClk;
+      hrClk /= t_CST::c; 
+    }
   }
 
   return success;
