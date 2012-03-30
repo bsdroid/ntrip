@@ -327,6 +327,19 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
     }
   }
 
+  //// beg test
+  QMapIterator<QString, t_corr*> ic(_corr);
+  while (ic.hasNext()) {
+    ic.next();
+    const t_corr* corr = ic.value();
+    cout.setf(ios::fixed);
+    cout << corr->prn.toAscii().data() << " " 
+         << setw(3) << corr->iod << " "
+         << setw(8) << setprecision(3) << corr->dClk * t_CST::c << " "
+         << corr->tRao.datestr() << " " << corr->tRao.timestr() << "     "    
+         << corr->tClk.datestr() << " " << corr->tClk.timestr() << endl;
+  }
+  //// end test
 }
 
 // Satellite Position

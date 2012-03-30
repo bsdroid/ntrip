@@ -58,6 +58,7 @@ class bncRtnetUploadCaster : public bncUploadCaster {
   bncoutf*       _outFile;
   bncClockRinex* _rnx;
   bncSP3*        _sp3;
+  QMap<QString, t_eph*>* _usedEph;
 };
 
 #endif
