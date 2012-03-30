@@ -602,7 +602,7 @@ bncWindow::bncWindow() {
   _aogroup->addTab(rgroup,tr("Miscellaneous"));
   _aogroup->addTab(pppgroup,tr("PPP (1)"));  _tabIndexPPP1 = _aogroup->count() - 1;
   _aogroup->addTab(ppp2group,tr("PPP (2)")); _tabIndexPPP2 = _aogroup->count() - 1;
-  _aogroup->addTab(teqcgroup,tr("teqc"));    _tabIndexTeqc = _aogroup->count() - 1;
+  _aogroup->addTab(teqcgroup,tr("Teqc"));    _tabIndexTeqc = _aogroup->count() - 1;
 #ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combination"));
 #endif
