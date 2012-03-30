@@ -109,7 +109,7 @@ bool t_corrFile::stopRead(const bncTime& tt) {
 
   bncTime tNew(GPSweek, GPSweeks);
 
-  if (tNew >= tt) {
+  if (tNew > tt) {
     return true;
   }    
   else {
