@@ -39,12 +39,23 @@ extern "C" {
 class t_corr {
  public:
   t_corr() {
-    raoSet  = false;
-    dClkSet = false;
-    eph     = 0;
-    hrClk   = 0.0;
+    rao.ReSize(3);       
+    dotRao.ReSize(3);    
+    dotDotRao.ReSize(3); 
+    iod        = 0;
+    dClk       = 0.0;
+    dotDClk    = 0.0;
+    dotDotDClk = 0.0;
+    hrClk      = 0.0;
+    rao        = 0.0;
+    dotRao     = 0.0;
+    dotDotRao  = 0.0;
+    eph        = 0;
   }
-  bool ready() {return raoSet && dClkSet;}
+  
+  ~t_corr() {}
+
+  bool ready() {return tRao.valid() && tClk.valid();}
 
   static bool relevantMessageType(int msgType) {
     return ( msgType == COTYPE_GPSCOMBINED     || 
@@ -60,7 +71,8 @@ class t_corr {
   t_irc readLine(const QString& line);
 
   QString      prn;
-  bncTime      tt;
+  bncTime      tClk;
+  bncTime      tRao;
   int          iod;
   double       dClk;
   double       dotDClk;
@@ -69,8 +81,6 @@ class t_corr {
   ColumnVector rao;
   ColumnVector dotRao;
   ColumnVector dotDotRao;
-  bool         raoSet;
-  bool         dClkSet;
   const t_eph* eph;
 };
 

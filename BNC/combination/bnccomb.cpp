@@ -308,7 +308,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Save Orbit-Only Corrections
   // ---------------------------
-  if (newCorr->raoSet && !newCorr->dClkSet) {
+  if (newCorr->tRao.valid() && !newCorr->tClk.valid()) {
     QString corrID = newCorr->ID();
     if (_orbitCorrs.find(corrID) != _orbitCorrs.end()) {
       delete _orbitCorrs[corrID];
@@ -319,7 +319,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Merge with saved orbit correction
   // ---------------------------------
-  else if (newCorr->dClkSet && !newCorr->raoSet) {
+  else if (newCorr->tClk.valid() && !newCorr->tRao.valid()) {
     QString corrID = newCorr->ID();
     if (_orbitCorrs.find(corrID) != _orbitCorrs.end()) {
       mergeOrbitCorr(_orbitCorrs[corrID], newCorr);
@@ -328,14 +328,14 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Check Modulo Time
   // -----------------
-  if (int(newCorr->tt.gpssec()) % moduloTime != 0.0) {
+  if (int(newCorr->tClk.gpssec()) % moduloTime != 0.0) {
     delete newCorr;
     return;
   }
 
   // Delete old corrections
   // ----------------------
-  if (_resTime.valid() && newCorr->tt <= _resTime) {
+  if (_resTime.valid() && newCorr->tClk <= _resTime) {
     delete newCorr;
     return;
   }
@@ -367,7 +367,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   QListIterator<bncTime> itTime(_buffer.keys());
   while (itTime.hasNext()) {
     bncTime epoTime = itTime.next();
-    if (epoTime < newCorr->tt - moduloTime) {
+    if (epoTime < newCorr->tClk - moduloTime) {
       _resTime = epoTime;
       processEpoch();
     }
@@ -375,7 +375,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Merge or add the correction
   // ---------------------------
-  QVector<cmbCorr*>& corrs = _buffer[newCorr->tt].corrs;
+  QVector<cmbCorr*>& corrs = _buffer[newCorr->tClk].corrs;
   cmbCorr* existingCorr = 0;
   QVectorIterator<cmbCorr*> itCorr(corrs);
   while (itCorr.hasNext()) {
@@ -405,12 +405,12 @@ void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
 
   ColumnVector oldXC(4);
   ColumnVector oldVV(3);
-  corr->eph->position(corr->tt.gpsw(), corr->tt.gpssec(), 
+  corr->eph->position(corr->tRao.gpsw(), corr->tRao.gpssec(), 
                       oldXC.data(), oldVV.data());
 
   ColumnVector newXC(4);
   ColumnVector newVV(3);
-  lastEph->position(corr->tt.gpsw(), corr->tt.gpssec(), 
+  lastEph->position(corr->tRao.gpsw(), corr->tRao.gpssec(), 
                     newXC.data(), newVV.data());
 
   ColumnVector dX = newXC.Rows(1,3) - oldXC.Rows(1,3);
@@ -1153,21 +1153,12 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncComb::mergeOrbitCorr(const cmbCorr* orbitCorr, cmbCorr* clkCorr) {
 
-  double dt = clkCorr->tt - orbitCorr->tt;
-
-  clkCorr->iod = orbitCorr->iod; // is it always correct?
-  clkCorr->eph = orbitCorr->eph; 
-
-  clkCorr->rao = orbitCorr->rao 
-               + orbitCorr->dotRao    * dt
-               + orbitCorr->dotDotRao * dt * dt;
-
-  clkCorr->dotRao = orbitCorr->dotRao
-                  + orbitCorr->dotDotRao * dt;
-
+  clkCorr->iod       = orbitCorr->iod; // is it always correct?
+  clkCorr->eph       = orbitCorr->eph; 
+  clkCorr->tRao      = orbitCorr->tRao;
+  clkCorr->rao       = orbitCorr->rao;
+  clkCorr->dotRao    = orbitCorr->dotRao;
   clkCorr->dotDotRao = orbitCorr->dotDotRao;
-
-  clkCorr->raoSet = true;
 
   return success;
 }

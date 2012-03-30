@@ -270,15 +270,6 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
     return;
   }
 
-  // Remove All Corrections
-  // ----------------------
-  //  QMapIterator<QString, t_corr*> ic(_corr);
-  //  while (ic.hasNext()) {
-  //    ic.next();
-  //    delete ic.value();
-  //  }
-  //  _corr.clear();
-
   QListIterator<QString> it(corrList);
   while (it.hasNext()) {
     QString line = it.next();
@@ -302,7 +293,7 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
       }
 
       cc->readLine(line);
-      _corr_tt = cc->tt;
+      _corr_tt = cc->tClk;
     }
     else if ( messageType == BTYPE_GPS ) { 
 
@@ -336,15 +327,6 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
     }
   }
 
-  QMutableMapIterator<QString, t_corr*> im(_corr);
-  while (im.hasNext()) {
-    im.next();
-    t_corr* cc = im.value();
-    if (!cc->ready()) {
-      delete cc;
-      im.remove();
-    }
-  }
 }
 
 // Satellite Position
@@ -359,7 +341,7 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
     if (_opt->pppMode) {
       if (_corr.contains(prn)) {
         t_corr* cc = _corr.value(prn);
-        if (tt - cc->tt < MAXAGE) {
+        if (cc->ready() && tt - cc->tClk < MAXAGE) {
           t_eph*  eLast = _eph.value(prn)->last;
           t_eph*  ePrev = _eph.value(prn)->prev;
 	  if      (eLast && eLast->IOD() == cc->iod) {
@@ -389,8 +371,9 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
 t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc, 
                               ColumnVector& xc, ColumnVector& vv) {
 
-  double dt = tt - cc->tt;
-  ColumnVector raoHlp = cc->rao + cc->dotRao * dt + cc->dotDotRao * dt * dt;
+  double dtRao = tt - cc->tRao;
+  ColumnVector raoHlp = cc->rao + cc->dotRao * dtRao 
+                      + cc->dotDotRao * dtRao * dtRao;
 
   if (raoHlp.norm_Frobenius() > 20.0) {
     return failure;
@@ -401,7 +384,10 @@ t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
   xc[0] -= dx[0];
   xc[1] -= dx[1];
   xc[2] -= dx[2];
-  xc[3] += cc->dClk + cc->dotDClk * dt + cc->dotDotDClk * dt * dt
+
+  double dtClk = tt - cc->tClk;
+
+  xc[3] += cc->dClk + cc->dotDClk * dtClk + cc->dotDotDClk * dtClk * dtClk
         + cc->hrClk;
 
   return success;
