@@ -973,10 +973,13 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
 
       bncTime hlpTime;
       hlpTime.set(year, month, day, hour, min, sec);
+
+      _gps_utc = gnumleap(year, month, day);
+      hlpTime  = hlpTime + _gps_utc;
+
       _GPSweek  = hlpTime.gpsw();
       _GPSweeks = hlpTime.gpssec();
 
-      _gps_utc = gnumleap(year, month, day);
       _tki     = 0.0; // TODO ?
 
       double second_tot;
