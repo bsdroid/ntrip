@@ -122,6 +122,8 @@ class t_ephGlo : public t_eph {
 
   void set(const glonassephemeris* ee);
 
+  int  slotNum() const {return int(_frequency_number);}
+
  private:
   static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv,
                                 double* acc);
