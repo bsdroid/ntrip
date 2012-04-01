@@ -100,10 +100,8 @@ t_rnxNavFile::t_rnxNavFile(QString fileName) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_rnxNavFile::~t_rnxNavFile() {
-  while (!_ephs.empty()) {
-    t_eph* eph = _ephs.front();
-    _ephs.pop();
-    delete eph;
+  for (unsigned ii = 0; ii < _ephs.size(); ii++) {
+    delete _ephs[ii];
   }
 }
 
@@ -150,7 +148,7 @@ void t_rnxNavFile::read(QTextStream* stream) {
       eph = new t_ephGal(version(), lines);
     }
     if (eph && eph->ok()) {
-      _ephs.push(eph);
+      _ephs.push_back(eph);
     }
     else {
       delete eph;
@@ -162,17 +160,37 @@ void t_rnxNavFile::read(QTextStream* stream) {
 ////////////////////////////////////////////////////////////////////////////
 t_eph* t_rnxNavFile::getNextEph(const bncTime& tt, 
                                 const QMap<QString, int>* corrIODs) {
-  while (!_ephs.empty()) {
-    t_eph* eph = _ephs.front();
-    bncTime ephTime(eph->GPSweek(), eph->GPSweeks());
-    double dt = ephTime - tt;
-    if (dt < 2*3600.0) {
-      _ephs.pop();
-      return eph;
-    }
-    else {
-      return 0;
+
+  if (corrIODs) {
+    QMapIterator<QString, int> itIOD(*corrIODs);
+    while (itIOD.hasNext()) {
+      itIOD.next();
+      QString prn = itIOD.key();
+      int     iod = itIOD.value();
+      vector<t_eph*>::iterator it = _ephs.begin();
+      while (it != _ephs.end()) {
+        t_eph* eph = *it;
+        if (eph->prn() == prn && eph->IOD() == iod) {
+          it = _ephs.erase(it);
+          return eph;
+        }
+        ++it;
+      }
     }
   }
+
+//  while (!_ephs.empty()) {
+//    t_eph* eph = _ephs.front();
+//    bncTime ephTime(eph->GPSweek(), eph->GPSweeks());
+//    double dt = ephTime - tt;
+//    if (dt < 2*3600.0) {
+//      _ephs.pop();
+//      return eph;
+//    }
+//    else {
+//      return 0;
+//    }
+//  }
+
   return 0;
 }
