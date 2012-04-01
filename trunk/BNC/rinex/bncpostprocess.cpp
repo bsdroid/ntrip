@@ -177,6 +177,20 @@ void t_postProcessing::run() {
           obs.L2C = rnxSat.obs[iType];
         }
       }
+
+      // Get Glonass Channel Number
+      // -------------------------
+      if (obs.satSys == 'R') {
+        QString prn = QString("%1%2").arg(obs.satSys)
+                                     .arg(obs.satNum, 2, 10, QChar('0'));
+        const bncEphUser::t_ephPair* ephPair = _pppClient->ephPair(prn);
+        if (ephPair && ephPair->last) {
+          obs.slotNum = ((t_ephGlo*) ephPair->last)->slotNum();
+        }
+      }
+
+      // Put the new Observation to the Client
+      // -------------------------------------
       _pppClient->putNewObs(obs);
     }
     if (nEpo % 10 == 0) {
