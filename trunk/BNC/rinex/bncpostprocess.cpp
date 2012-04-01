@@ -140,7 +140,8 @@ void t_postProcessing::run() {
     // Get Ephemerides
     // ----------------
     t_eph* eph = 0;
-    while ( (eph = _rnxNavFile->getNextEph(epo->tt)) != 0 ) {
+    const QMap<QString, int>* corrIODs = _corrFile ? &_corrFile->corrIODs() : 0;
+    while ( (eph = _rnxNavFile->getNextEph(epo->tt, corrIODs)) != 0 ) {
       if (_pppClient->putNewEph(eph) != success) {
         delete eph; eph = 0;
       }

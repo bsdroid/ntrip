@@ -160,7 +160,8 @@ void t_rnxNavFile::read(QTextStream* stream) {
 
 // Read Next Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-t_eph* t_rnxNavFile::getNextEph(const bncTime& tt) {
+t_eph* t_rnxNavFile::getNextEph(const bncTime& tt, 
+                                const QMap<QString, int>* corrIODs) {
   while (!_ephs.empty()) {
     t_eph* eph = _ephs.front();
     bncTime ephTime(eph->GPSweek(), eph->GPSweeks());

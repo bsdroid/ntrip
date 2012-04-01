@@ -51,7 +51,7 @@ class t_rnxNavFile {
  public:
   t_rnxNavFile(QString fileName);
   ~t_rnxNavFile();
-  t_eph* getNextEph(const bncTime& tt);
+  t_eph* getNextEph(const bncTime& tt, const QMap<QString, int>* corrIODs);
   float version() const {return _header.version();}
   bool  glonass() const {return _header.glonass();}
 
