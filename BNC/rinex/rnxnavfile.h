@@ -56,9 +56,10 @@ class t_rnxNavFile {
   bool  glonass() const {return _header.glonass();}
 
  private:
-  void               read(QTextStream* stream);
-  std::queue<t_eph*> _ephs;
-  t_rnxNavHeader     _header;
+  void read(QTextStream* stream);
+
+  std::vector<t_eph*> _ephs;
+  t_rnxNavHeader      _header;
 };
 
 #endif
