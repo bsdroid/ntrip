@@ -41,6 +41,7 @@
 #include <iostream>
 #include "corrfile.h"
 #include "bncutils.h"
+#include "bncephuser.h"
 
 using namespace std;
 
@@ -84,6 +85,17 @@ void t_corrFile::syncRead(const bncTime& tt) {
 
     if (stopRead(tt)) {
       if (corrs.size()) {
+
+        QListIterator<QString> it(corrs);
+        while (it.hasNext()) {
+          const QString& cLine = it.next();
+          t_corr* corr = new t_corr();
+          corr->readLine(cLine);
+          if (corr->tRao.valid()) {
+            _corrIODs[corr->prn] = corr->iod;
+          }
+        }
+
         emit newCorrections(corrs);
       }
       return;

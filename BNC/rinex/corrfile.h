@@ -36,15 +36,17 @@ class t_corrFile : public QObject {
   t_corrFile(QString fileName);
   ~t_corrFile();
   void syncRead(const bncTime& tt);
+  const QMap<QString, int>& corrIODs() const {return _corrIODs;}
 
  signals:
   void newCorrections(QList<QString>);
 
  private:
   bool stopRead(const bncTime& tt);
-  QFile*       _file;
-  QTextStream* _stream;
-  QString      _lastLine;
+  QFile*             _file;
+  QTextStream*       _stream;
+  QString            _lastLine;
+  QMap<QString, int> _corrIODs;
 };
 
 #endif
