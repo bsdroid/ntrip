@@ -161,6 +161,8 @@ void t_rnxNavFile::read(QTextStream* stream) {
 t_eph* t_rnxNavFile::getNextEph(const bncTime& tt, 
                                 const QMap<QString, int>* corrIODs) {
 
+  // Get Ephemeris according to IOD
+  // ------------------------------
   if (corrIODs) {
     QMapIterator<QString, int> itIOD(*corrIODs);
     while (itIOD.hasNext()) {
@@ -179,18 +181,23 @@ t_eph* t_rnxNavFile::getNextEph(const bncTime& tt,
     }
   }
 
-//  while (!_ephs.empty()) {
-//    t_eph* eph = _ephs.front();
-//    bncTime ephTime(eph->GPSweek(), eph->GPSweeks());
-//    double dt = ephTime - tt;
-//    if (dt < 2*3600.0) {
-//      _ephs.pop();
-//      return eph;
-//    }
-//    else {
-//      return 0;
-//    }
-//  }
+  // Get Ephemeris according to time
+  // -------------------------------
+  else {
+    vector<t_eph*>::iterator it = _ephs.begin();
+    while (it != _ephs.end()) {
+      t_eph* eph = *it;
+
+      bncTime ephTime(eph->GPSweek(), eph->GPSweeks());
+      double dt = ephTime - tt;
+
+      if (dt < 2*3600.0) {
+        it = _ephs.erase(it);
+        return eph;
+      }
+      ++it;
+    }
+  }
 
   return 0;
 }
