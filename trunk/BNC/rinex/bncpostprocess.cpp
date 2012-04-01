@@ -148,6 +148,7 @@ void t_postProcessing::run() {
     }
 
     for (unsigned iObs = 0; iObs < epo->rnxSat.size(); iObs++) {
+      bool obsOK = true;
       const t_rnxObsFile::t_rnxSat& rnxSat = epo->rnxSat[iObs];
       t_obs obs;
       strncpy(obs.StatID, _rnxObsFile->markerName().toAscii().constData(),
@@ -187,11 +188,16 @@ void t_postProcessing::run() {
         if (ephPair && ephPair->last) {
           obs.slotNum = ((t_ephGlo*) ephPair->last)->slotNum();
         }
+        else {
+          obsOK = false;
+        }
       }
 
       // Put the new Observation to the Client
       // -------------------------------------
-      _pppClient->putNewObs(obs);
+      if (obsOK) {
+        _pppClient->putNewObs(obs);
+      }
     }
     if (nEpo % 10 == 0) {
       emit progress(nEpo);
