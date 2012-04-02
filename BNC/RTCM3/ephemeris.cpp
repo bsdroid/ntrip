@@ -988,6 +988,8 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[3], fieldLen, second_tot) ) {
         return;
       }
+
+      _tau = -_tau;
     }
 
     else if      ( iLine == 1 ) {
