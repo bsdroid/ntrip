@@ -359,6 +359,8 @@ bncWindow::bncWindow() {
   _pppMountLineEdit      = new QLineEdit(settings.value("pppMount").toString());
   _pppMountLineEdit->setMaximumWidth(8*ww);
   _pppCorrMountLineEdit  = new QLineEdit(settings.value("pppCorrMount").toString());
+  _pppMountLineEdit->setMinimumWidth(8*ww);
+  _pppCorrMountLineEdit->setMinimumWidth(8*ww);
   _pppCorrMountLineEdit->setMaximumWidth(8*ww);
   _pppNMEALineEdit       = new QLineEdit(settings.value("nmeaFile").toString());
   _pppNMEAPortLineEdit   = new QLineEdit(settings.value("nmeaPort").toString());
@@ -381,9 +383,9 @@ bncWindow::bncWindow() {
   _pppAntexFileChooser   = new qtFileChooser;
   _pppAntexFileChooser->setMinimumWidth(12*ww);
   _pppAntennaLineEdit    = new QLineEdit(settings.value("pppAntenna").toString());
-  _pppAntennaLineEdit->setMinimumWidth(14*ww);
+//_pppAntennaLineEdit->setMinimumWidth(20*ww); // weber 14
+//_pppAntennaLineEdit->setMaximumWidth(20*ww); // weber 14
   _pppAntexFileChooser->setFileName(settings.value("pppAntex").toString());
-
 
   _pppSPPComboBox = new QComboBox();
   _pppSPPComboBox->setEditable(false);
@@ -626,19 +628,19 @@ bncWindow::bncWindow() {
   pLayout->setColumnMinimumWidth(0,13*ww);
   _proxyPortLineEdit->setMaximumWidth(9*ww);
 
-  pLayout->addWidget(new QLabel("Proxy host"),                   0, 0);
-  pLayout->addWidget(_proxyHostLineEdit,                         0, 1, 1,10);
-  pLayout->addWidget(new QLabel("Proxy port"),                   1, 0);
-  pLayout->addWidget(_proxyPortLineEdit,                         1, 1);
-  pLayout->addWidget(new QLabel("Settings for proxy in protected networks, leave boxes blank if none."),2, 0, 1, 50, Qt::AlignLeft);
-  pLayout->addWidget(new QLabel("    "),3,0);
-  pLayout->addWidget(new QLabel("    "),4,0);
-  pLayout->addWidget(new QLabel("Path to SSL Certificates"),     5, 0);
-  pLayout->addWidget(_sslCaCertPathLineEdit,                     5, 1, 1,10);
-  pLayout->addWidget(new QLabel("default:  " + bncSslConfig::defaultPath()), 5, 12, 1,20);
-  pLayout->addWidget(new QLabel("Ignore SSL Authorization Errors"), 6,0);
-  pLayout->addWidget(_ignoreSslErrorsCheckBox,                     6, 1, 1,10);
-  pLayout->addWidget(new QLabel("Settings for SSL Authorization."),7, 0, 1, 50, Qt::AlignLeft);
+  pLayout->addWidget(new QLabel("Settings for proxy in protected networks and for SSL authorization, leave boxes blank if none."),0, 0, 1, 50);
+  pLayout->addWidget(new QLabel("Proxy host"),                               1, 0);
+  pLayout->addWidget(_proxyHostLineEdit,                                     1, 1, 1,10);
+  pLayout->addWidget(new QLabel("Proxy port"),                               2, 0);
+  pLayout->addWidget(_proxyPortLineEdit,                                     2, 1);
+  pLayout->addWidget(new QLabel("Path to SSL Certificates"),                 3, 0);
+  pLayout->addWidget(_sslCaCertPathLineEdit,                                 3, 1, 1,10);
+  pLayout->addWidget(new QLabel("Default:  " + bncSslConfig::defaultPath()), 3,12, 1,20);
+  pLayout->addWidget(new QLabel("Ignore SSL Authorization Errors"),          4, 0);
+  pLayout->addWidget(_ignoreSslErrorsCheckBox,                               4, 1, 1,10);
+  pLayout->addWidget(new QLabel(" "),                                        4, 0);
+  pLayout->addWidget(new QLabel(" "),                                        5, 0);
+  pLayout->addWidget(new QLabel(" "),                                        6, 0);
   pgroup->setLayout(pLayout);
 
   // General Tab
@@ -647,17 +649,18 @@ bncWindow::bncWindow() {
   gLayout->setColumnMinimumWidth(0,14*ww);
   _onTheFlyComboBox->setMaximumWidth(9*ww);
 
-  gLayout->addWidget(new QLabel("Logfile (full path)"),          0, 0);
-  gLayout->addWidget(_logFileLineEdit,                           0, 1, 1,30); // 1
-  gLayout->addWidget(new QLabel("Append files"),                 1, 0);
-  gLayout->addWidget(_rnxAppendCheckBox,                         1, 1);
-  gLayout->addWidget(new QLabel("Reread configuration"),         2, 0);
-  gLayout->addWidget(_onTheFlyComboBox,                          2, 1);
-  gLayout->addWidget(new QLabel("Auto start"),                   3, 0);
-  gLayout->addWidget(_autoStartCheckBox,                         3, 1);
-  gLayout->addWidget(new QLabel("Raw output file (full path)"),  4, 0);
-  gLayout->addWidget(_rawOutFileLineEdit,                        4, 1, 1,30);
-  gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, and auto-start."),5, 0, 1, 50, Qt::AlignLeft);
+  gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, and auto-start."),0, 0, 1, 50);
+  gLayout->addWidget(new QLabel("Logfile (full path)"),          1, 0);
+  gLayout->addWidget(_logFileLineEdit,                           1, 1, 1,30);
+  gLayout->addWidget(new QLabel("Append files"),                 2, 0);
+  gLayout->addWidget(_rnxAppendCheckBox,                         2, 1);
+  gLayout->addWidget(new QLabel("Reread configuration"),         3, 0);
+  gLayout->addWidget(_onTheFlyComboBox,                          3, 1);
+  gLayout->addWidget(new QLabel("Auto start"),                   4, 0);
+  gLayout->addWidget(_autoStartCheckBox,                         4, 1);
+  gLayout->addWidget(new QLabel("Raw output file (full path)"),  5, 0);
+  gLayout->addWidget(_rawOutFileLineEdit,                        5, 1, 1,30);
+  gLayout->addWidget(new QLabel(" "),                            6, 0);
   ggroup->setLayout(gLayout);
 
   // RINEX Observations
@@ -667,19 +670,20 @@ bncWindow::bncWindow() {
   _rnxIntrComboBox->setMaximumWidth(9*ww);
   _rnxSamplSpinBox->setMaximumWidth(9*ww);
 
-  oLayout->addWidget(new QLabel("Directory"),                     0, 0);
-  oLayout->addWidget(_rnxPathLineEdit,                            0, 1,1,24);
-  oLayout->addWidget(new QLabel("Interval"),                      1, 0);
-  oLayout->addWidget(_rnxIntrComboBox,                            1, 1);
-  oLayout->addWidget(new QLabel("  Sampling"),                    1, 2, Qt::AlignRight);
-  oLayout->addWidget(_rnxSamplSpinBox,                            1, 3, Qt::AlignLeft);
-  oLayout->addWidget(new QLabel("Skeleton extension"),            2, 0);
-  oLayout->addWidget(_rnxSkelLineEdit,                            2, 1,1,1, Qt::AlignLeft);
-  oLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
-  oLayout->addWidget(_rnxScrpLineEdit,                            3, 1,1,24);
-  oLayout->addWidget(new QLabel("Version 3"),                     4, 0);
-  oLayout->addWidget(_rnxV3CheckBox,                              4, 1);
-  oLayout->addWidget(new QLabel("Saving RINEX observation files."),5,0,1,50, Qt::AlignLeft);
+  oLayout->addWidget(new QLabel("Saving RINEX observation files."),0, 0, 1,50);
+  oLayout->addWidget(new QLabel("Directory"),                      1, 0);
+  oLayout->addWidget(_rnxPathLineEdit,                             1, 1, 1,24);
+  oLayout->addWidget(new QLabel("Interval"),                       2, 0);
+  oLayout->addWidget(_rnxIntrComboBox,                             2, 1);
+  oLayout->addWidget(new QLabel("  Sampling"),                     2, 2, Qt::AlignRight);
+  oLayout->addWidget(_rnxSamplSpinBox,                             2, 3, Qt::AlignLeft);
+  oLayout->addWidget(new QLabel("Skeleton extension"),             3, 0);
+  oLayout->addWidget(_rnxSkelLineEdit,                             3, 1, 1, 1, Qt::AlignLeft);
+  oLayout->addWidget(new QLabel("Script (full path)"),             4, 0);
+  oLayout->addWidget(_rnxScrpLineEdit,                             4, 1, 1,24);
+  oLayout->addWidget(new QLabel("Version 3"),                      5, 0);
+  oLayout->addWidget(_rnxV3CheckBox,                               5, 1);
+  oLayout->addWidget(new QLabel(" "),                              6, 0);
   ogroup->setLayout(oLayout);
 
   // RINEX Ephemeris
@@ -689,16 +693,17 @@ bncWindow::bncWindow() {
   _ephIntrComboBox->setMaximumWidth(9*ww);
   _outEphPortLineEdit->setMaximumWidth(9*ww);
 
-  eLayout->addWidget(new QLabel("Directory"),                     0, 0);
-  eLayout->addWidget(_ephPathLineEdit,                            0, 1, 1,30);
-  eLayout->addWidget(new QLabel("Interval"),                      1, 0);
-  eLayout->addWidget(_ephIntrComboBox,                            1, 1);
-  eLayout->addWidget(new QLabel("Port"),                          2, 0);
-  eLayout->addWidget(_outEphPortLineEdit,                         2, 1);
-  eLayout->addWidget(new QLabel("Version 3"),                     3, 0);
-  eLayout->addWidget(_ephV3CheckBox,                              3, 1);
-  eLayout->addWidget(new QLabel("Saving RINEX ephemeris files and ephemeris output through IP port."),4,0,1,50,Qt::AlignLeft);
-  eLayout->addWidget(new QLabel("    "),5,0);
+  eLayout->addWidget(new QLabel("Saving RINEX ephemeris files and ephemeris output through IP port."),0,0,1,50);
+  eLayout->addWidget(new QLabel("Directory"),                     1, 0);
+  eLayout->addWidget(_ephPathLineEdit,                            1, 1, 1,30);
+  eLayout->addWidget(new QLabel("Interval"),                      2, 0);
+  eLayout->addWidget(_ephIntrComboBox,                            2, 1);
+  eLayout->addWidget(new QLabel("Port"),                          3, 0);
+  eLayout->addWidget(_outEphPortLineEdit,                         3, 1);
+  eLayout->addWidget(new QLabel("Version 3"),                     4, 0);
+  eLayout->addWidget(_ephV3CheckBox,                              4, 1);
+  eLayout->addWidget(new QLabel(" "),                             5, 0);
+  eLayout->addWidget(new QLabel(" "),                             6, 0);
   egroup->setLayout(eLayout);
 
 
@@ -710,17 +715,18 @@ bncWindow::bncWindow() {
   _corrPortLineEdit->setMaximumWidth(9*ww);
   _corrTimeSpinBox->setMaximumWidth(9*ww);
 
-  cLayout->addWidget(new QLabel("Directory, ASCII"),              0, 0);
-  cLayout->addWidget(_corrPathLineEdit,                           0, 1,1,20);
-  cLayout->addWidget(new QLabel("Interval"),                      1, 0);
-  cLayout->addWidget(_corrIntrComboBox,                           1, 1);
-  cLayout->addWidget(new QLabel("Port"),                          2, 0);
-  cLayout->addWidget(_corrPortLineEdit,                           2, 1);
-  cLayout->addWidget(new QLabel("  Wait for full epoch"),         2, 2, Qt::AlignRight);
-  cLayout->addWidget(_corrTimeSpinBox,                            2, 3, Qt::AlignLeft);
-  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),3,0,1,50);
-  cLayout->addWidget(new QLabel("    "),4,0);
-  cLayout->addWidget(new QLabel("    "),5,0);
+  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),0,0,1,50);
+  cLayout->addWidget(new QLabel("Directory, ASCII"),              1, 0);
+  cLayout->addWidget(_corrPathLineEdit,                           1, 1, 1,20);
+  cLayout->addWidget(new QLabel("Interval"),                      2, 0);
+  cLayout->addWidget(_corrIntrComboBox,                           2, 1);
+  cLayout->addWidget(new QLabel("Port"),                          3, 0);
+  cLayout->addWidget(_corrPortLineEdit,                           3, 1);
+  cLayout->addWidget(new QLabel("  Wait for full epoch"),         3, 2, Qt::AlignRight);
+  cLayout->addWidget(_corrTimeSpinBox,                            3, 3, Qt::AlignLeft);
+  cLayout->addWidget(new QLabel(" "),                             4, 0);
+  cLayout->addWidget(new QLabel(" "),                             5, 0);
+  cLayout->addWidget(new QLabel(" "),                             6, 0);
   cgroup->setLayout(cLayout);
 
   // Feed Engine
@@ -732,18 +738,19 @@ bncWindow::bncWindow() {
   _binSamplSpinBox->setMaximumWidth(9*ww);
   _outUPortLineEdit->setMaximumWidth(9*ww);
 
-  sLayout->addWidget(new QLabel("Port"),                          0, 0);
-  sLayout->addWidget(_outPortLineEdit,                            0, 1);
-  sLayout->addWidget(new QLabel("Wait for full epoch"),           0, 2, Qt::AlignRight);
-  sLayout->addWidget(_waitTimeSpinBox,                            0, 3, Qt::AlignLeft);
-  sLayout->addWidget(new QLabel("Sampling"),                      1, 0);
-  sLayout->addWidget(_binSamplSpinBox,                            1, 1, Qt::AlignLeft);
-  sLayout->addWidget(new QLabel("File (full path)"),              2, 0);
-  sLayout->addWidget(_outFileLineEdit,                            2, 1, 1, 20);
-  sLayout->addWidget(new QLabel("Port (unsynchronized)"),         3, 0);
-  sLayout->addWidget(_outUPortLineEdit,                           3, 1);
-  sLayout->addWidget(new QLabel("Output decoded observations in a binary format to feed a real-time GNSS network engine."),4,0,1,50);
-  sLayout->addWidget(new QLabel("    "),5,0);
+  sLayout->addWidget(new QLabel("Output decoded observations in a binary format to feed a real-time GNSS network engine."),0,0,1,50);
+  sLayout->addWidget(new QLabel("Port"),                          1, 0);
+  sLayout->addWidget(_outPortLineEdit,                            1, 1);
+  sLayout->addWidget(new QLabel("Wait for full epoch"),           1, 2, Qt::AlignRight);
+  sLayout->addWidget(_waitTimeSpinBox,                            1, 3, Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("Sampling"),                      2, 0);
+  sLayout->addWidget(_binSamplSpinBox,                            2, 1, Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("File (full path)"),              3, 0);
+  sLayout->addWidget(_outFileLineEdit,                            3, 1, 1, 20);
+  sLayout->addWidget(new QLabel("Port (unsynchronized)"),         4, 0);
+  sLayout->addWidget(_outUPortLineEdit,                           4, 1);
+  sLayout->addWidget(new QLabel(" "),                             5, 0);
+  sLayout->addWidget(new QLabel(" "),                             6, 0);
   sgroup->setLayout(sLayout);
 
   // Serial Output
@@ -758,27 +765,28 @@ bncWindow::bncWindow() {
   _serialAutoNMEAComboBox->setMaximumWidth(9*ww);
   _serialHeightNMEALineEdit->setMaximumWidth(8*ww);
 
-  serLayout->addWidget(new QLabel("Mountpoint"),                  0,0, Qt::AlignLeft);
-  serLayout->addWidget(_serialMountPointLineEdit,                 0,1,1,2);
-  serLayout->addWidget(new QLabel("Port name"),                   1,0, Qt::AlignLeft);
-  serLayout->addWidget(_serialPortNameLineEdit,                   1,1,1,2);
-  serLayout->addWidget(new QLabel("Baud rate"),                   2,0, Qt::AlignLeft);
-  serLayout->addWidget(_serialBaudRateComboBox,                   2,1);
-  serLayout->addWidget(new QLabel("Flow control"),                2,2, Qt::AlignRight);
-  serLayout->addWidget(_serialFlowControlComboBox,                2,3);
-  serLayout->addWidget(new QLabel("Data bits"),                   3,0, Qt::AlignLeft);
-  serLayout->addWidget(_serialDataBitsComboBox,                   3,1);
-  serLayout->addWidget(new QLabel("Parity"),                      3,2, Qt::AlignRight);
-  serLayout->addWidget(_serialParityComboBox,                     3,3);
-  serLayout->addWidget(new QLabel("   Stop bits"),                3,4, Qt::AlignRight);
-  serLayout->addWidget(_serialStopBitsComboBox,                   3,5);
-  serLayout->addWidget(new QLabel("NMEA"),                        4,0);
-  serLayout->addWidget(_serialAutoNMEAComboBox,                   4,1);
-  serLayout->addWidget(new QLabel("   File (full path)"),         4,2, Qt::AlignRight);
-  serLayout->addWidget(_serialFileNMEALineEdit,                   4,3,1,15);
-  serLayout->addWidget(new QLabel("Height"),                      4,20, Qt::AlignRight);
-  serLayout->addWidget(_serialHeightNMEALineEdit,                 4,21,1,11);
-  serLayout->addWidget(new QLabel("Port settings to feed a serial connected receiver."),5,0,1,30);
+  serLayout->addWidget(new QLabel("Port settings to feed a serial connected receiver."),0,0,1,30);
+  serLayout->addWidget(new QLabel("Mountpoint"),                  1, 0, Qt::AlignLeft);
+  serLayout->addWidget(_serialMountPointLineEdit,                 1, 1, 1, 2);
+  serLayout->addWidget(new QLabel("Port name"),                   2, 0, Qt::AlignLeft);
+  serLayout->addWidget(_serialPortNameLineEdit,                   2, 1, 1, 2);
+  serLayout->addWidget(new QLabel("Baud rate"),                   3, 0, Qt::AlignLeft);
+  serLayout->addWidget(_serialBaudRateComboBox,                   3, 1);
+  serLayout->addWidget(new QLabel("Flow control"),                3, 2, Qt::AlignRight);
+  serLayout->addWidget(_serialFlowControlComboBox,                3, 3);
+  serLayout->addWidget(new QLabel("Data bits"),                   4, 0, Qt::AlignLeft);
+  serLayout->addWidget(_serialDataBitsComboBox,                   4, 1);
+  serLayout->addWidget(new QLabel("Parity"),                      4, 2, Qt::AlignRight);
+  serLayout->addWidget(_serialParityComboBox,                     4, 3);
+  serLayout->addWidget(new QLabel("   Stop bits"),                4, 4, Qt::AlignRight);
+  serLayout->addWidget(_serialStopBitsComboBox,                   4, 5);
+  serLayout->addWidget(new QLabel("NMEA"),                        5, 0);
+  serLayout->addWidget(_serialAutoNMEAComboBox,                   5, 1);
+  serLayout->addWidget(new QLabel("   File (full path)"),         5, 2, Qt::AlignRight);
+  serLayout->addWidget(_serialFileNMEALineEdit,                   5, 3, 1,15);
+  serLayout->addWidget(new QLabel("Height"),                      5,20, Qt::AlignRight);
+  serLayout->addWidget(_serialHeightNMEALineEdit,                 5,21, 1,11);
+  serLayout->addWidget(new QLabel(" "),                           6, 0);
 
   sergroup->setLayout(serLayout);
 
@@ -790,16 +798,17 @@ bncWindow::bncWindow() {
   _adviseFailSpinBox->setMaximumWidth(9*ww);
   _adviseRecoSpinBox->setMaximumWidth(9*ww);
 
-  aLayout->addWidget(new QLabel("Observation rate"),              0, 0);
-  aLayout->addWidget(_obsRateComboBox,                            0, 1);
-  aLayout->addWidget(new QLabel("Failure threshold"),             1, 0);
-  aLayout->addWidget(_adviseFailSpinBox,                          1, 1);
-  aLayout->addWidget(new QLabel("Recovery threshold"),            2, 0);
-  aLayout->addWidget(_adviseRecoSpinBox,                          2, 1);
-  aLayout->addWidget(new QLabel("Script (full path)"),            3, 0);
-  aLayout->addWidget(_adviseScriptLineEdit,                       3, 1,1,30);
-  aLayout->addWidget(new QLabel("Failure and recovery reports, advisory notes."),4,0,1,50,Qt::AlignLeft);
+  aLayout->addWidget(new QLabel("Failure and recovery reports, advisory notes."),0,0,1,50,Qt::AlignLeft);
+  aLayout->addWidget(new QLabel("Observation rate"),              1, 0);
+  aLayout->addWidget(_obsRateComboBox,                            1, 1);
+  aLayout->addWidget(new QLabel("Failure threshold"),             2, 0);
+  aLayout->addWidget(_adviseFailSpinBox,                          2, 1);
+  aLayout->addWidget(new QLabel("Recovery threshold"),            3, 0);
+  aLayout->addWidget(_adviseRecoSpinBox,                          3, 1);
+  aLayout->addWidget(new QLabel("Script (full path)"),            4, 0);
+  aLayout->addWidget(_adviseScriptLineEdit,                       4, 1, 1,30);
   aLayout->addWidget(new QLabel("    "),                          5, 0);
+  aLayout->addWidget(new QLabel("    "),                          6, 0);
   agroup->setLayout(aLayout);
 
   // Miscellaneous
@@ -808,15 +817,16 @@ bncWindow::bncWindow() {
   rLayout->setColumnMinimumWidth(0,14*ww);
   _perfIntrComboBox->setMaximumWidth(9*ww);
 
-  rLayout->addWidget(new QLabel("Mountpoint"),                    0, 0);
-  rLayout->addWidget(_miscMountLineEdit,                          0, 1, 1,7);
-  rLayout->addWidget(new QLabel("Log latency"),                   1, 0);
-  rLayout->addWidget(_perfIntrComboBox,                           1, 1);
-  rLayout->addWidget(new QLabel("Scan RTCM"),                     2, 0);
-  rLayout->addWidget(_scanRTCMCheckBox,                           2, 1);
-  rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for numbers of message types and antenna information."),3, 0,1,30);
-  rLayout->addWidget(new QLabel("    "),                          4, 0);
-  rLayout->addWidget(new QLabel("    "),                          5, 0);
+  rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for numbers of message types and antenna information."),0, 0,1,30);
+  rLayout->addWidget(new QLabel("Mountpoint"),                    1, 0);
+  rLayout->addWidget(_miscMountLineEdit,                          1, 1, 1,7);
+  rLayout->addWidget(new QLabel("Log latency"),                   2, 0);
+  rLayout->addWidget(_perfIntrComboBox,                           2, 1);
+  rLayout->addWidget(new QLabel("Scan RTCM"),                     3, 0);
+  rLayout->addWidget(_scanRTCMCheckBox,                           3, 1);
+  rLayout->addWidget(new QLabel(" "),                             4, 0);
+  rLayout->addWidget(new QLabel(" "),                             5, 0);
+  rLayout->addWidget(new QLabel(" "),                             6, 0);
   rgroup->setLayout(rLayout);
 
   // PPP Client
@@ -839,67 +849,59 @@ bncWindow::bncWindow() {
   _pppRefdULineEdit->setMaximumWidth(5*ww);
   _pppSync->setMaximumWidth(6*ww);
   _pppSPPComboBox->setMaximumWidth(15*ww);
-  _pppNMEAPortLineEdit->setMaximumWidth(6*ww);
+  _pppNMEAPortLineEdit->setMaximumWidth(10*ww);
 
   _postObsFileChooser = new qtFileChooser;
   _postObsFileChooser->setFileName(settings.value("postObsFile").toString());
-  _postObsFileChooser->setWhatsThis(tr("Full Path to RINEX Observation File"));
-
   _postNavFileChooser = new qtFileChooser;
   _postNavFileChooser->setFileName(settings.value("postNavFile").toString());
-  _postNavFileChooser->setWhatsThis(tr("Full Path to RINEX Navigation File"));
-
   _postCorrFileChooser = new qtFileChooser;
   _postCorrFileChooser->setFileName(settings.value("postCorrFile").toString());
-  _postCorrFileChooser->setWhatsThis(tr("Full Path to DGPS Correction File"));
-
   _postOutLineEdit = new QLineEdit(settings.value("postOutFile").toString());
-  _postOutLineEdit->setWhatsThis(tr("Full Path to DGPS Correction File"));
 
   int ir = 0;
-  pppLayout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 1)</b>"), ir, 0, 1, 8);
+  pppLayout->addWidget(new QLabel("Precise Point Positioning, Panel 1"), ir, 0, 1, 80);
   ++ir;
-  pppLayout->addWidget(new QLabel("Obs Mountpoint"),   ir, 0);
-  pppLayout->addWidget(_pppMountLineEdit,              ir, 1);
-  pppLayout->addWidget(_pppSPPComboBox,                ir, 2);
-  pppLayout->addWidget(new QLabel("          X   "),   ir, 3, Qt::AlignRight);
-  pppLayout->addWidget(_pppRefCrdXLineEdit,            ir, 4);
-  pppLayout->addWidget(new QLabel("        Y   "),     ir, 5, Qt::AlignRight);
-  pppLayout->addWidget(_pppRefCrdYLineEdit,            ir, 6);
-  pppLayout->addWidget(new QLabel("      Z   "),       ir, 7, Qt::AlignRight);
-  pppLayout->addWidget(_pppRefCrdZLineEdit,            ir, 8);
+  pppLayout->addWidget(new QLabel("Obs Mountpoint"),   ir, 0, 1, 10);
+  pppLayout->addWidget(_pppMountLineEdit,              ir,10, 1, 10);
+  pppLayout->addWidget(_pppSPPComboBox,                ir,20, 1, 10);
+  pppLayout->addWidget(new QLabel("          X   "),   ir,30, 1, 10, Qt::AlignRight);
+  pppLayout->addWidget(_pppRefCrdXLineEdit,            ir,40, 1, 10);
+  pppLayout->addWidget(new QLabel("        Y   "),     ir,50, 1, 10, Qt::AlignRight);
+  pppLayout->addWidget(_pppRefCrdYLineEdit,            ir,60, 1, 10);
+  pppLayout->addWidget(new QLabel("      Z   "),       ir,70, 1, 10, Qt::AlignRight);
+  pppLayout->addWidget(_pppRefCrdZLineEdit,            ir,80, 1, 10);
   ++ir;
-  pppLayout->addWidget(new QLabel("Corr Mountpoint "), ir, 0);
-  pppLayout->addWidget(_pppCorrMountLineEdit,          ir, 1);
-  pppLayout->addWidget(new QLabel("         dN   "),   ir, 3, Qt::AlignRight);
-  pppLayout->addWidget(_pppRefdNLineEdit,              ir, 4);
-  pppLayout->addWidget(new QLabel("       dE   "),     ir, 5, Qt::AlignRight);
-  pppLayout->addWidget(_pppRefdELineEdit,              ir, 6);
-  pppLayout->addWidget(new QLabel("     dU   "),       ir, 7, Qt::AlignRight);
-  pppLayout->addWidget(_pppRefdULineEdit,              ir, 8);
+  pppLayout->addWidget(new QLabel("Corr Mountpoint "), ir, 0, 1, 10);
+  pppLayout->addWidget(_pppCorrMountLineEdit,          ir,10, 1, 20);
+  pppLayout->addWidget(new QLabel("         dN   "),   ir,30, 1, 10, Qt::AlignRight);
+  pppLayout->addWidget(_pppRefdNLineEdit,              ir,40, 1, 10);
+  pppLayout->addWidget(new QLabel("       dE   "),     ir,50, 1, 10, Qt::AlignRight);
+  pppLayout->addWidget(_pppRefdELineEdit,              ir,60, 1, 10);
+  pppLayout->addWidget(new QLabel("     dU   "),       ir,70, 1, 10, Qt::AlignRight);
+  pppLayout->addWidget(_pppRefdULineEdit,              ir,80, 1, 10);
   ++ir;
-  pppLayout->addWidget(new QLabel("Output"),           ir, 0); 
-  pppLayout->addWidget(new QLabel("NMEA File"),        ir, 1, Qt::AlignRight); 
-  pppLayout->addWidget(_pppNMEALineEdit,               ir, 2, 1, 2);
-  pppLayout->addWidget(new QLabel("NMEA Port"),        ir, 5, Qt::AlignRight);
-  pppLayout->addWidget(_pppNMEAPortLineEdit,           ir, 6);
-  pppLayout->addWidget(new QLabel("PPP Plot"),         ir, 7, Qt::AlignRight);
-  pppLayout->addWidget(_pppPlotCoordinates,            ir, 8);
+  pppLayout->addWidget(new QLabel("Output"),           ir, 0, 1, 10); 
+  pppLayout->addWidget(_pppNMEALineEdit,               ir,10, 1, 20);
+  pppLayout->addWidget(new QLabel("NMEA File"),        ir,30, 1, 10, Qt::AlignLeft); 
+  pppLayout->addWidget(_pppNMEAPortLineEdit,           ir,40, 1, 10);
+  pppLayout->addWidget(new QLabel("NMEA Port"),        ir,50, 1, 10);
+  pppLayout->addWidget(_pppPlotCoordinates,            ir,60, 1, 3);
+  pppLayout->addWidget(new QLabel("PPP Plot"),         ir,63, 1, 10);
   ++ir;
-  pppLayout->addWidget(new QLabel("<b>Post-Processing  </b>"));
-  {
-    QHBoxLayout* hlpLayout = new QHBoxLayout;
-    hlpLayout->addWidget(new QLabel("Obs"));
-    hlpLayout->addWidget(_postObsFileChooser);
-    hlpLayout->addWidget(new QLabel("    Nav"));
-    hlpLayout->addWidget(_postNavFileChooser);
-    hlpLayout->addWidget(new QLabel("    Corr"));
-    hlpLayout->addWidget(_postCorrFileChooser);
-    pppLayout->addLayout(hlpLayout, ir, 1, 1, 8);
-  }
+  pppLayout->addWidget(new QLabel("Post-Processing"),  ir, 0, 1, 10);
+  pppLayout->addWidget(_postObsFileChooser,            ir,10, 1, 25);
+  pppLayout->addWidget(new QLabel("Obs    "),          ir,35, 1,  5);
+  pppLayout->addWidget(_postNavFileChooser,            ir,40, 1, 20);
+  pppLayout->addWidget(new QLabel("Nav   "),           ir,60, 1, 5);
+  pppLayout->addWidget(_postCorrFileChooser,           ir,65, 1, 22);
+  pppLayout->addWidget(new QLabel("Corr"),             ir,87, 1, 5);
   ++ir;
-  pppLayout->addWidget(new QLabel("Output"), ir, 1);
-  pppLayout->addWidget(_postOutLineEdit, ir, 2, 1, 2);
+  pppLayout->addWidget(new QLabel("Post-Proc. cont'd"),ir, 0, 1, 10);
+  pppLayout->addWidget(_postOutLineEdit,               ir,10, 1, 40);
+  pppLayout->addWidget(new QLabel("Output"),           ir,50);
+  ++ir;
+  pppLayout->addWidget(new QLabel(" "),                ir, 0, 1, 10);
 
   pppgroup->setLayout(pppLayout);
 
@@ -907,55 +909,53 @@ bncWindow::bncWindow() {
   // -------------------------
   QGridLayout* ppp2Layout = new QGridLayout;
   ir = 0;
-  ppp2Layout->addWidget(new QLabel("<b>Precise Point Positioning (Panel 2)</b>"), ir, 0, 1, 8);
+  ppp2Layout->addWidget(new QLabel("Precise Point Positioning, Panel 2"), ir, 0, 1, 8);
   ++ir;
-  ppp2Layout->addWidget(new QLabel("Antennas"),             ir, 0);
-  {
-    QHBoxLayout* hlpLayout = new QHBoxLayout;
-    hlpLayout->addWidget(_pppAntexFileChooser);
-    hlpLayout->addWidget(new QLabel("ANTEX File"));
-    hlpLayout->addWidget(_pppAntennaLineEdit);
-    hlpLayout->addWidget(new QLabel("Antenna Name"));
-    hlpLayout->addWidget(_pppApplySatAntCheckBox);
-    hlpLayout->addWidget(new QLabel("Apply Sat. Ant. Offsets"));
-    ppp2Layout->addLayout(hlpLayout, ir, 1, 1, 8);
-  }
+  ppp2Layout->addWidget(new QLabel("Antennas"),               ir, 0);
+  ppp2Layout->addWidget(_pppAntexFileChooser,                 ir, 1,1,3);
+  ppp2Layout->addWidget(new QLabel("ANTEX File"),             ir, 4);
+  ppp2Layout->addWidget(_pppAntennaLineEdit,                  ir, 5,1,3);
+  ppp2Layout->addWidget(new QLabel("Antenna Name"),           ir, 8);
+  ppp2Layout->addWidget(_pppApplySatAntCheckBox,              ir, 9);
+  ppp2Layout->addWidget(new QLabel("Apply Sat. Ant. Offsets"),ir, 10);
   ++ir;
-  ppp2Layout->addWidget(new QLabel("Sigmas"),               ir, 0);
-  ppp2Layout->addWidget(_pppSigCLineEdit,                   ir, 1, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Code"),                 ir, 2);
-  ppp2Layout->addWidget(_pppSigPLineEdit,                   ir, 3);
-  ppp2Layout->addWidget(new QLabel("Phase"),                ir, 4);
-  ppp2Layout->addWidget(_pppSigTrp0,                        ir, 5, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Tropo Init        "),   ir, 6);
-  ppp2Layout->addWidget(_pppSigTrpP,                        ir, 7);
-  ppp2Layout->addWidget(new QLabel("Tropo White Noise"),    ir, 8);
+  ppp2Layout->addWidget(new QLabel("Sigmas"),                 ir, 0);
+  ppp2Layout->addWidget(_pppSigCLineEdit,                     ir, 1, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Code"),                   ir, 2);
+  ppp2Layout->addWidget(_pppSigPLineEdit,                     ir, 3);
+  ppp2Layout->addWidget(new QLabel("Phase"),                  ir, 4);
+  ppp2Layout->addWidget(_pppSigTrp0,                          ir, 5, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Tropo Init        "),     ir, 6);
+  ppp2Layout->addWidget(_pppSigTrpP,                          ir, 7);
+  ppp2Layout->addWidget(new QLabel("Tropo White Noise"),      ir, 8);
   ++ir;
-  ppp2Layout->addWidget(new QLabel("Options"),              ir, 0, 1, 5);
-  ppp2Layout->addWidget(_pppUsePhaseCheckBox,               ir, 1, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Use phase obs"),        ir, 2);
-  ppp2Layout->addWidget(_pppEstTropoCheckBox,               ir, 3, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Estimate tropo"),       ir, 4);
-  ppp2Layout->addWidget(_pppGLONASSCheckBox,                ir, 5, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Use GLONASS"),          ir, 6);
-  ppp2Layout->addWidget(_pppGalileoCheckBox,                ir, 7, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Use Galileo     "),     ir, 8);
+  ppp2Layout->addWidget(new QLabel("Options"),                ir, 0, 1, 5);
+  ppp2Layout->addWidget(_pppUsePhaseCheckBox,                 ir, 1, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Use phase obs"),          ir, 2);
+  ppp2Layout->addWidget(_pppEstTropoCheckBox,                 ir, 3, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Estimate tropo"),         ir, 4);
+  ppp2Layout->addWidget(_pppGLONASSCheckBox,                  ir, 5, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Use GLONASS"),            ir, 6);
+  ppp2Layout->addWidget(_pppGalileoCheckBox,                  ir, 7, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Use Galileo     "),       ir, 8);
   ++ir;
-  ppp2Layout->addWidget(new QLabel("Options cont'd"),       ir, 0);  
-  ppp2Layout->addWidget(_pppSigCrd0,                        ir, 1, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Sigma XYZ Init "),      ir, 2);
-  ppp2Layout->addWidget(_pppSigCrdP,                        ir, 3, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Sigma XYZ Noise  "),    ir, 4);
-  ppp2Layout->addWidget(_pppQuickStartLineEdit,             ir, 5, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Quick-Start (sec)  "),  ir, 6);  
-  ppp2Layout->addWidget(_pppMaxSolGapLineEdit,              ir, 7, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Max Sol. Gap (sec)"),   ir, 8);  
+  ppp2Layout->addWidget(new QLabel("Options cont'd"),         ir, 0);  
+  ppp2Layout->addWidget(_pppSigCrd0,                          ir, 1, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Sigma XYZ Init "),        ir, 2);
+  ppp2Layout->addWidget(_pppSigCrdP,                          ir, 3, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Sigma XYZ Noise    "),    ir, 4);
+  ppp2Layout->addWidget(_pppQuickStartLineEdit,               ir, 5, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Quick-Start (sec)    "),  ir, 6);  
+  ppp2Layout->addWidget(_pppMaxSolGapLineEdit,                ir, 7, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Max Sol. Gap (sec)"),     ir, 8);  
   ++ir;
-  ppp2Layout->addWidget(new QLabel("Options cont'd"),       ir, 0);
-  ppp2Layout->addWidget(_pppSync,                           ir, 1);
-  ppp2Layout->addWidget(new QLabel("Sync Corr (sec)   "),   ir, 2);
-  ppp2Layout->addWidget(_pppAverageLineEdit,                ir, 3, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Averaging (min)") ,     ir, 4);  
+  ppp2Layout->addWidget(new QLabel("Options cont'd"),         ir, 0);
+  ppp2Layout->addWidget(_pppSync,                             ir, 1);
+  ppp2Layout->addWidget(new QLabel("Sync Corr (sec)     "),   ir, 2);
+  ppp2Layout->addWidget(_pppAverageLineEdit,                  ir, 3, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Averaging (min)") ,       ir, 4);  
+  ++ir;
+  ppp2Layout->addWidget(new QLabel(""),                       ir, 0);
 
   ppp2group->setLayout(ppp2Layout);
 
@@ -1188,7 +1188,10 @@ bncWindow::bncWindow() {
   _cmbMaxresLineEdit->setWhatsThis(tr("<p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p></p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p><p>Default is a value of '999.0'.</p>"));
   _cmbMethodComboBox->setWhatsThis(tr("<p>Select a clock combination approach. Options are 'Single-Epoch' and Kalman 'Filter'. It is suggested to use the Kalman filter approach for the purpose of Precise Point Positioning.</p>"));
   _uploadTable->setWhatsThis(tr("<p>BNC can upload clock and orbit corrections to broadcast ephemeris (Broadcast Corrections) in RTCM Version 3 SSR format. The clock and orbit corrections may either come from a Real-time Network Engine or from a combination of incoming orbit/clock streams.</p><p>Hit the 'Add Row' button, double click on the 'Host' field to enter the IP or URL of an NTRIP broadcaster and hit Enter. Then double click on the 'Port' field to enter the NTRIP broadcaster IP port.</p>"));
-
+  _postObsFileChooser->setWhatsThis(tr("Full Path to RINEX Observation File"));
+  _postNavFileChooser->setWhatsThis(tr("Full Path to RINEX Navigation File"));
+  _postCorrFileChooser->setWhatsThis(tr("Full Path to DGPS Correction File"));
+  _postOutLineEdit->setWhatsThis(tr("Full Path to DGPS Correction File"));
   addCmbRowButton->setWhatsThis(tr("Hit 'Add Row' button to add another line to the mountpoints table."));
   delCmbRowButton->setWhatsThis(tr("Hit 'Delete' button to delete the highlighted line from the mountpoints table."));
 
