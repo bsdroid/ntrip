@@ -830,7 +830,7 @@ bncWindow::bncWindow() {
   // PPP Client
   // ----------
   QGridLayout* pppLayout = new QGridLayout;
-  pppLayout->setColumnMinimumWidth(0,14*ww); // weber
+  pppLayout->setColumnMinimumWidth(0,14*ww);
   _pppSigCLineEdit->setMaximumWidth(6*ww);
   _pppSigPLineEdit->setMaximumWidth(6*ww);
   _pppSigCrd0->setMaximumWidth(6*ww);
@@ -859,7 +859,7 @@ bncWindow::bncWindow() {
   _postOutLineEdit = new QLineEdit(settings.value("postOutFile").toString());
 
   int ir = 0;
-  pppLayout->addWidget(new QLabel("Precise Point Positioning, Panel 1."), ir, 0, 1, 80);
+  pppLayout->addWidget(new QLabel("Precise Point Positioning, Panel 1."), ir, 0, 1, 100);
   ++ir;
   pppLayout->addWidget(new QLabel("Obs. Mountpoint"),  ir, 0, 1, 10);
   pppLayout->addWidget(_pppMountLineEdit,              ir,10, 1, 10);
@@ -907,8 +907,9 @@ bncWindow::bncWindow() {
   // PPP Client (second panel)
   // -------------------------
   QGridLayout* ppp2Layout = new QGridLayout;
+  ppp2Layout->setColumnMinimumWidth(0,14*ww);
   ir = 0;
-  ppp2Layout->addWidget(new QLabel("Precise Point Positioning, Panel 2."), ir, 0, 1, 8);
+  ppp2Layout->addWidget(new QLabel("Precise Point Positioning, Panel 2."), ir, 0, 1, 10);
   ++ir;
   ppp2Layout->addWidget(new QLabel("Antennas"),               ir, 0);
   ppp2Layout->addWidget(_pppAntexFileChooser,                 ir, 1,1,3);
@@ -956,7 +957,7 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(_pppAverageLineEdit,                  ir, 3, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("Averaging (min)") ,       ir, 4);  
   ++ir;
-  ppp2Layout->addWidget(new QLabel(""),                       ir, 0);
+//ppp2Layout->addWidget(new QLabel(""),                       ir, 0);
 
   ppp2group->setLayout(ppp2Layout);
 
@@ -988,7 +989,7 @@ bncWindow::bncWindow() {
   _teqcOutLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
 
   ir = 0;
-  teqcLayout->addWidget(new QLabel("RINEX file editing or concatination and file or stream quality control."),         ir, 0, 1, 10);
+  teqcLayout->addWidget(new QLabel("RINEX file editing or concatination and file or stream quality control."),         ir, 0, 1, 20);
   ++ir;
   teqcLayout->addWidget(new QLabel("Action"),                   ir, 0);
   teqcLayout->addWidget(_teqcActionComboBox,                    ir, 1);
@@ -998,8 +999,8 @@ bncWindow::bncWindow() {
   teqcLayout->addWidget(new QLabel("Input files (full path)"),  ir, 0);
   teqcLayout->addWidget(_teqcObsFileChooser,                    ir, 1, 1, 4);
   teqcLayout->addWidget(new QLabel("Obs "),                     ir, 5);
-  teqcLayout->addWidget(_teqcNavFileChooser,                    ir, 6, 1, 5);
-  teqcLayout->addWidget(new QLabel("Nav"),                      ir, 11);
+  teqcLayout->addWidget(_teqcNavFileChooser,                    ir, 6, 1, 8);
+  teqcLayout->addWidget(new QLabel("Nav"),                      ir, 15);
   ++ir;
   teqcLayout->addWidget(new QLabel("Output file (full path)"),  ir, 0);
   teqcLayout->addWidget(_teqcOutLineEdit,                       ir, 1, 1, 4);
@@ -1073,7 +1074,7 @@ bncWindow::bncWindow() {
   _uploadEphPasswordLineEdit->setMaximumWidth(9*ww);
   _uploadEphMountpointLineEdit->setMaximumWidth(12*ww);
 
-  uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster."), 0, 0, 1, 18);
+  uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster."), 0, 0, 1, 30);
   uploadLayoutEph->addWidget(new QLabel("Host"),                  1, 0);
   uploadLayoutEph->addWidget(_uploadEphHostLineEdit,              1, 1, 1, 3);
   uploadLayoutEph->addWidget(new QLabel("  Port"),                1, 4, Qt::AlignRight);
