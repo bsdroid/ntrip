@@ -80,7 +80,7 @@ t_pppOpt::t_pppOpt() {
   navFileName  = settings.value("postNavFile").toString();
   corrFileName = settings.value("postcorrFile").toString();
 
-  if      (settings.value("pppSPP").toString() == "RNX") {
+  if      (settings.value("pppSPP").toString() == "Post-Processing") {
     corrSync     = 0.0;
     pppCorrMount = "";
     if (corrFileName.isEmpty()) {
@@ -90,7 +90,7 @@ t_pppOpt::t_pppOpt() {
       pppMode = true;
     }
   }
-  else if (settings.value("pppSPP").toString() == "PPP") {
+  else if (settings.value("pppSPP").toString() == "Realtime-PPP") {
     pppMode = true;
   }
   else {
