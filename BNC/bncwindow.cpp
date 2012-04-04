@@ -387,7 +387,7 @@ bncWindow::bncWindow() {
 
   _pppSPPComboBox = new QComboBox();
   _pppSPPComboBox->setEditable(false);
-  _pppSPPComboBox->addItems(QString("PPP,SPP,RNX").split(","));
+  _pppSPPComboBox->addItems(QString("Realtime-PPP,Realtime-SPP,Post-Processing").split(","));
   int ik = _pppSPPComboBox->findText(settings.value("pppSPP").toString());
   if (ik != -1) {
     _pppSPPComboBox->setCurrentIndex(ik);
@@ -848,7 +848,6 @@ bncWindow::bncWindow() {
   _pppRefdULineEdit->setMaximumWidth(5*ww);
   _pppSync->setMaximumWidth(6*ww);
   _pppSPPComboBox->setMinimumWidth(15*ww); 
-//_pppSPPComboBox->setMaximumWidth(15*ww); // weber
   _pppNMEAPortLineEdit->setMaximumWidth(10*ww);
 
   _postObsFileChooser = new qtFileChooser;
@@ -1160,7 +1159,7 @@ bncWindow::bncWindow() {
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
   _pppMountLineEdit->setWhatsThis(tr("<p>Specify an observations stream by its mountpoint from the 'Streams' list compiled below if you want BNC to estimate coordinates for the affected receiver position through a PPP solution. Example: 'FFMJ1'</p><p>Note that PPP in BNC requires to also pull a stream carrying RTCM Version 3 satellite orbit and clock corrections to Broadcast Ephemeris referring to the satellites' Antenna Phase Centers (APC). Stream CLK11 on NTRIP broadcaster products.igs-ip.net is an example.</p><p>Pulling in addition a third stream carrying Broadcast Ephemeris messages in high repetition rate is suggested if such messages are comeing from the receiver in low repetition rate or don't come at all from there.</p>"));
   _pppCorrMountLineEdit->setWhatsThis(tr("<p>You must specify an orbit/clock corrections stream by its mountpoint from the 'Streams' list compiled below. Example: 'CLK10'</p>"));
-  _pppSPPComboBox->setWhatsThis(tr("<p>Choose between plain Single Point Positioning (SPP) and Precise Point Positioning (PPP).</p>"));
+  _pppSPPComboBox->setWhatsThis(tr("<p>Choose between plain Single Point Positioning (SPP) and Precise Point Positioning (PPP) in real-time and post processing mode.</p>"));
   _teqcActionComboBox->setWhatsThis(tr("<p>Select an editing action.</p>"));
   _pppUsePhaseCheckBox->setWhatsThis(tr("<p>By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations.</p><p>Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.</p>"));
   _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
@@ -2078,8 +2077,8 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _pppAntexFileChooser ) {
 
     enable = (!_pppMountLineEdit->text().isEmpty() && !_pppCorrMountLineEdit->text().isEmpty()) ||
-             (!_pppMountLineEdit->text().isEmpty() && _pppSPPComboBox->currentText() == "SPP")  ||
-             (_pppSPPComboBox->currentText() == "RNX");
+             (!_pppMountLineEdit->text().isEmpty() && _pppSPPComboBox->currentText() == "Realtime-SPP")  ||
+             (_pppSPPComboBox->currentText() == "Post-Processing");
 
     enableWidget(enable, _pppNMEALineEdit);
     enableWidget(enable, _pppNMEAPortLineEdit);
@@ -2120,13 +2119,13 @@ void bncWindow::slotBncTextChanged(){
     bool enable6 = enable && _pppUsePhaseCheckBox->isChecked();
     enableWidget(enable6, _pppSigPLineEdit);
 
-    bool enable7 = enable && _pppSPPComboBox->currentText() == "PPP";
+    bool enable7 = enable && _pppSPPComboBox->currentText() == "Realtime-PPP";
     enableWidget(enable7, _pppSync);
 
-    bool enable8 = _pppSPPComboBox->currentText() == "PPP";
+    bool enable8 = _pppSPPComboBox->currentText() == "Realtime-PPP";
     enableWidget(enable8, _pppCorrMountLineEdit);
 
-    bool enable9 = _pppSPPComboBox->currentText() == "RNX";
+    bool enable9 = _pppSPPComboBox->currentText() == "Post-Processing";
     enableWidget(enable9, _postObsFileChooser);
     enableWidget(enable9, _postNavFileChooser);
     enableWidget(enable9, _postCorrFileChooser);
@@ -2155,7 +2154,7 @@ void bncWindow::slotEnablePostProcessing() {
       if      (_aogroup->currentIndex() == _tabIndexPPP1 ||
                _aogroup->currentIndex() == _tabIndexPPP2) {
         _actPostProcessing->setText("Start PPP");
-        bool enable = _pppSPPComboBox->currentText() == "RNX";
+        bool enable = _pppSPPComboBox->currentText() == "Post-Processing";
         _actPostProcessing->setEnabled(enable);
       }
       else if (_aogroup->currentIndex() == _tabIndexTeqc) {
