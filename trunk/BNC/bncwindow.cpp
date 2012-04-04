@@ -830,6 +830,7 @@ bncWindow::bncWindow() {
   // PPP Client
   // ----------
   QGridLayout* pppLayout = new QGridLayout;
+  pppLayout->setColumnMinimumWidth(0,14*ww); // weber
   _pppSigCLineEdit->setMaximumWidth(6*ww);
   _pppSigPLineEdit->setMaximumWidth(6*ww);
   _pppSigCrd0->setMaximumWidth(6*ww);
@@ -846,7 +847,8 @@ bncWindow::bncWindow() {
   _pppRefdELineEdit->setMaximumWidth(5*ww);
   _pppRefdULineEdit->setMaximumWidth(5*ww);
   _pppSync->setMaximumWidth(6*ww);
-  _pppSPPComboBox->setMaximumWidth(15*ww);
+  _pppSPPComboBox->setMinimumWidth(15*ww); 
+//_pppSPPComboBox->setMaximumWidth(15*ww); // weber
   _pppNMEAPortLineEdit->setMaximumWidth(10*ww);
 
   _postObsFileChooser = new qtFileChooser;
@@ -860,19 +862,19 @@ bncWindow::bncWindow() {
   int ir = 0;
   pppLayout->addWidget(new QLabel("Precise Point Positioning, Panel 1."), ir, 0, 1, 80);
   ++ir;
-  pppLayout->addWidget(new QLabel("Obs Mountpoint"),   ir, 0, 1, 10);
+  pppLayout->addWidget(new QLabel("Obs. Mountpoint"),  ir, 0, 1, 10);
   pppLayout->addWidget(_pppMountLineEdit,              ir,10, 1, 10);
-  pppLayout->addWidget(_pppSPPComboBox,                ir,20, 1, 10);
-  pppLayout->addWidget(new QLabel("          X   "),   ir,30, 1, 10, Qt::AlignRight);
-  pppLayout->addWidget(_pppRefCrdXLineEdit,            ir,40, 1, 10);
+  pppLayout->addWidget(_pppSPPComboBox,                ir,20, 1, 15);
+  pppLayout->addWidget(new QLabel("     X   "),        ir,35, 1,  5, Qt::AlignRight);
+  pppLayout->addWidget(_pppRefCrdXLineEdit,            ir,40, 1, 13);
   pppLayout->addWidget(new QLabel("        Y   "),     ir,50, 1, 10, Qt::AlignRight);
-  pppLayout->addWidget(_pppRefCrdYLineEdit,            ir,60, 1, 10);
+  pppLayout->addWidget(_pppRefCrdYLineEdit,            ir,60, 1, 13);
   pppLayout->addWidget(new QLabel("      Z   "),       ir,70, 1, 10, Qt::AlignRight);
-  pppLayout->addWidget(_pppRefCrdZLineEdit,            ir,80, 1, 10);
+  pppLayout->addWidget(_pppRefCrdZLineEdit,            ir,80, 1, 13);
   ++ir;
-  pppLayout->addWidget(new QLabel("Corr Mountpoint "), ir, 0, 1, 10);
+  pppLayout->addWidget(new QLabel("Corr. Mountpoint "),ir, 0, 1, 10);
   pppLayout->addWidget(_pppCorrMountLineEdit,          ir,10, 1, 20);
-  pppLayout->addWidget(new QLabel("         dN   "),   ir,30, 1, 10, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("    dN   "),   ir,30, 1, 10, Qt::AlignRight);
   pppLayout->addWidget(_pppRefdNLineEdit,              ir,40, 1, 10);
   pppLayout->addWidget(new QLabel("       dE   "),     ir,50, 1, 10, Qt::AlignRight);
   pppLayout->addWidget(_pppRefdELineEdit,              ir,60, 1, 10);
