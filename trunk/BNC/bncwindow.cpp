@@ -383,8 +383,6 @@ bncWindow::bncWindow() {
   _pppAntexFileChooser   = new qtFileChooser;
   _pppAntexFileChooser->setMinimumWidth(12*ww);
   _pppAntennaLineEdit    = new QLineEdit(settings.value("pppAntenna").toString());
-//_pppAntennaLineEdit->setMinimumWidth(20*ww); // weber 14
-//_pppAntennaLineEdit->setMaximumWidth(20*ww); // weber 14
   _pppAntexFileChooser->setFileName(settings.value("pppAntex").toString());
 
   _pppSPPComboBox = new QComboBox();
@@ -916,8 +914,10 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(new QLabel("ANTEX File"),             ir, 4);
   ppp2Layout->addWidget(_pppAntennaLineEdit,                  ir, 5,1,3);
   ppp2Layout->addWidget(new QLabel("Antenna Name"),           ir, 8);
-  ppp2Layout->addWidget(_pppApplySatAntCheckBox,              ir, 9);
-  ppp2Layout->addWidget(new QLabel("Apply Sat. Ant. Offsets"),ir, 10);
+  ++ir;
+  ppp2Layout->addWidget(new QLabel("Antennas cont'd"),        ir, 0);
+  ppp2Layout->addWidget(_pppApplySatAntCheckBox,              ir, 1, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Apply Sat. Ant. Offsets"),ir, 2);
   ++ir;
   ppp2Layout->addWidget(new QLabel("Sigmas"),                 ir, 0);
   ppp2Layout->addWidget(_pppSigCLineEdit,                     ir, 1, Qt::AlignRight);
@@ -1012,18 +1012,21 @@ bncWindow::bncWindow() {
   QGridLayout* cmbLayout = new QGridLayout;
 
   populateCmbTable();
-  cmbLayout->addWidget(_cmbTable,0,0,6,3);
+//cmbLayout->addWidget(new QLabel(" "),                                              0, 0);
+  cmbLayout->addWidget(_cmbTable,                                                    0, 0, 6, 3);
+  cmbLayout->addWidget(new QLabel("Combine Broadcast Ephemeris correction streams."),0, 5, 1, 5);
+  cmbLayout->addWidget(addCmbRowButton,                                              1, 5);
+  cmbLayout->addWidget(delCmbRowButton,                                              1, 6);
+  cmbLayout->addWidget(new QLabel("Method"),                                         2, 5);
+  cmbLayout->addWidget(_cmbMethodComboBox,                                           2, 6, Qt::AlignRight);
+  cmbLayout->addWidget(new QLabel("Maximal Residuum"),                               3, 5);
+  cmbLayout->addWidget(_cmbMaxresLineEdit,                                           3, 6, Qt::AlignRight);
+  cmbLayout->addWidget(new QLabel("    "),                                           4, 0);
+  cmbLayout->addWidget(new QLabel("    "),                                           5, 0);
+  cmbLayout->addWidget(new QLabel("    "),                                           6, 0);
 
-  cmbLayout->addWidget(addCmbRowButton,1,3);
   connect(addCmbRowButton, SIGNAL(clicked()), this, SLOT(slotAddCmbRow()));
-  cmbLayout->addWidget(delCmbRowButton,2,3);
-  cmbLayout->addWidget(new QLabel("Method"), 3, 3);
-  cmbLayout->addWidget(_cmbMethodComboBox,             3, 4, Qt::AlignRight);
-  cmbLayout->addWidget(new QLabel("Maximal Residuum"), 4, 3);
-  cmbLayout->addWidget(_cmbMaxresLineEdit,             4, 4, Qt::AlignRight);
   connect(delCmbRowButton, SIGNAL(clicked()), this, SLOT(slotDelCmbRow()));
-
-  cmbLayout->addWidget(new QLabel(" Combine Broadcast Ephemeris corrections streams."),5,3,1,3);
 
   cmbgroup->setLayout(cmbLayout);
 
@@ -1031,30 +1034,26 @@ bncWindow::bncWindow() {
   // ----------------------
   QGridLayout* uploadHlpLayout = new QGridLayout();
 
-  uploadHlpLayout->addWidget(new QLabel("Upload RTNet or Combination Results"),0,0);
-
-  uploadHlpLayout->addWidget(addUploadRowButton,0,1);
   connect(addUploadRowButton, SIGNAL(clicked()), this, SLOT(slotAddUploadRow()));
-
-  uploadHlpLayout->addWidget(delUploadRowButton,0,2);
   connect(delUploadRowButton, SIGNAL(clicked()), this, SLOT(slotDelUploadRow()));
-
-  uploadHlpLayout->addWidget(setUploadTrafoButton,1,1);
   connect(setUploadTrafoButton, SIGNAL(clicked()), this, SLOT(slotSetUploadTrafo()));
 
-  uploadHlpLayout->addWidget(new QLabel("Interval"),0,3, Qt::AlignRight);
-  uploadHlpLayout->addWidget(_uploadIntrComboBox,0,4);
-
-  uploadHlpLayout->addWidget(new QLabel("Sampling"),1,3, Qt::AlignRight);
-  uploadHlpLayout->addWidget(_uploadSamplSpinBox,1,4);
-
-  uploadHlpLayout->addWidget(new QLabel("Sampling (Orb)"),1,5, Qt::AlignRight);
-  uploadHlpLayout->addWidget(_uploadSamplOrbSpinBox,1,6);
+  uploadHlpLayout->addWidget(addUploadRowButton,             0,0);
+  uploadHlpLayout->addWidget(delUploadRowButton,             0,1);
+  uploadHlpLayout->addWidget(new QLabel("Interval"),         0,2, Qt::AlignRight);
+  uploadHlpLayout->addWidget(_uploadIntrComboBox,            0,3);
+  uploadHlpLayout->addWidget(new QLabel("   Sampling (Clk)"),0,4, Qt::AlignRight);
+  uploadHlpLayout->addWidget(_uploadSamplSpinBox,            0,5);
+  uploadHlpLayout->addWidget(new QLabel("   Sampling (Orb)"),0,6, Qt::AlignRight);
+  uploadHlpLayout->addWidget(_uploadSamplOrbSpinBox,         0,7);
+  uploadHlpLayout->addWidget(setUploadTrafoButton,           0,8);
 
   QBoxLayout* uploadLayout = new QBoxLayout(QBoxLayout::TopToBottom);
   populateUploadTable();
+
   uploadLayout->addWidget(_uploadTable);
   uploadLayout->addLayout(uploadHlpLayout);
+  uploadLayout->addWidget(new QLabel("Upload orbit/clock stream coming from Real-time Network Engine or upload orbit/clock combination stream."));
 
   uploadgroup->setLayout(uploadLayout);
 
