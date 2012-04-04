@@ -858,7 +858,7 @@ bncWindow::bncWindow() {
   _postOutLineEdit = new QLineEdit(settings.value("postOutFile").toString());
 
   int ir = 0;
-  pppLayout->addWidget(new QLabel("Precise Point Positioning, Panel 1"), ir, 0, 1, 80);
+  pppLayout->addWidget(new QLabel("Precise Point Positioning, Panel 1."), ir, 0, 1, 80);
   ++ir;
   pppLayout->addWidget(new QLabel("Obs Mountpoint"),   ir, 0, 1, 10);
   pppLayout->addWidget(_pppMountLineEdit,              ir,10, 1, 10);
@@ -907,7 +907,7 @@ bncWindow::bncWindow() {
   // -------------------------
   QGridLayout* ppp2Layout = new QGridLayout;
   ir = 0;
-  ppp2Layout->addWidget(new QLabel("Precise Point Positioning, Panel 2"), ir, 0, 1, 8);
+  ppp2Layout->addWidget(new QLabel("Precise Point Positioning, Panel 2."), ir, 0, 1, 8);
   ++ir;
   ppp2Layout->addWidget(new QLabel("Antennas"),               ir, 0);
   ppp2Layout->addWidget(_pppAntexFileChooser,                 ir, 1,1,3);
@@ -987,20 +987,27 @@ bncWindow::bncWindow() {
   _teqcOutLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
 
   ir = 0;
+  teqcLayout->addWidget(new QLabel("Teqc-processing."),         ir, 0, 1, 10);
+  ++ir;
   teqcLayout->addWidget(new QLabel("Action"),                   ir, 0);
   teqcLayout->addWidget(_teqcActionComboBox,                    ir, 1);
   _teqcEditOptionButton = new QPushButton("Set Edit Options");
   teqcLayout->addWidget(_teqcEditOptionButton,                  ir, 2);
   ++ir;
   teqcLayout->addWidget(new QLabel("Input files (full path)"),  ir, 0);
-  teqcLayout->addWidget(_teqcObsFileChooser,                    ir, 1);
-  teqcLayout->addWidget(new QLabel("Obs   "),                   ir, 2);
-  teqcLayout->addWidget(_teqcNavFileChooser,                    ir, 3);
-  teqcLayout->addWidget(new QLabel("Nav   "),                   ir, 4);
+  teqcLayout->addWidget(_teqcObsFileChooser,                    ir, 1, 1, 4);
+  teqcLayout->addWidget(new QLabel("Obs "),                     ir, 5);
+  teqcLayout->addWidget(_teqcNavFileChooser,                    ir, 6, 1, 5);
+  teqcLayout->addWidget(new QLabel("Nav"),                      ir, 11);
   ++ir;
   teqcLayout->addWidget(new QLabel("Output file (full path)"),  ir, 0);
-  teqcLayout->addWidget(_teqcOutLineEdit,                       ir, 1, 1, 2);
-  teqcLayout->addWidget(new QLabel("Teqc-processing, input, output, options."), 3, 0, 1, 5);
+  teqcLayout->addWidget(_teqcOutLineEdit,                       ir, 1, 1, 4);
+  ++ir;
+  teqcLayout->addWidget(new QLabel(" "),                        ir, 0);
+  ++ir;
+  teqcLayout->addWidget(new QLabel(" "),                        ir, 0);
+  ++ir;
+  teqcLayout->addWidget(new QLabel(" "),                        ir, 0);
 
   teqcgroup->setLayout(teqcLayout);
 
@@ -1012,7 +1019,6 @@ bncWindow::bncWindow() {
   QGridLayout* cmbLayout = new QGridLayout;
 
   populateCmbTable();
-//cmbLayout->addWidget(new QLabel(" "),                                              0, 0);
   cmbLayout->addWidget(_cmbTable,                                                    0, 0, 6, 3);
   cmbLayout->addWidget(new QLabel("Combine Broadcast Ephemeris correction streams."),0, 5, 1, 5);
   cmbLayout->addWidget(addCmbRowButton,                                              1, 5);
@@ -1051,9 +1057,9 @@ bncWindow::bncWindow() {
   QBoxLayout* uploadLayout = new QBoxLayout(QBoxLayout::TopToBottom);
   populateUploadTable();
 
+  uploadLayout->addWidget(new QLabel("Upload orbit/clock stream coming from Real-time Network Engine or upload orbit/clock combination stream."));
   uploadLayout->addWidget(_uploadTable);
   uploadLayout->addLayout(uploadHlpLayout);
-  uploadLayout->addWidget(new QLabel("Upload orbit/clock stream coming from Real-time Network Engine or upload orbit/clock combination stream."));
 
   uploadgroup->setLayout(uploadLayout);
 
@@ -1066,18 +1072,21 @@ bncWindow::bncWindow() {
   _uploadEphPasswordLineEdit->setMaximumWidth(9*ww);
   _uploadEphMountpointLineEdit->setMaximumWidth(12*ww);
 
-  uploadLayoutEph->addWidget(new QLabel("Host"),                  0, 0);
-  uploadLayoutEph->addWidget(_uploadEphHostLineEdit,              0, 1, 1, 3);
-  uploadLayoutEph->addWidget(new QLabel("  Port"),                0, 4, Qt::AlignRight);
-  uploadLayoutEph->addWidget(_uploadEphPortLineEdit,              0, 5, 1, 1);
-  uploadLayoutEph->addWidget(new QLabel("Mountpoint           "), 1, 0);
-  uploadLayoutEph->addWidget(_uploadEphMountpointLineEdit,        1, 1);
-  uploadLayoutEph->addWidget(new QLabel("          Password"),    1, 2, Qt::AlignRight);
-  uploadLayoutEph->addWidget(_uploadEphPasswordLineEdit,          1, 3);
-  uploadLayoutEph->addWidget(new QLabel("Sampling"),              2, 0);
-  uploadLayoutEph->addWidget(_uploadEphSampleSpinBox,             2, 1);
-  uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster."), 3, 0, 1, 5);
-  uploadLayoutEph->addWidget(_uploadEphBytesCounter, 3, 5); 
+  uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster."), 0, 0, 1, 18);
+  uploadLayoutEph->addWidget(new QLabel("Host"),                  1, 0);
+  uploadLayoutEph->addWidget(_uploadEphHostLineEdit,              1, 1, 1, 3);
+  uploadLayoutEph->addWidget(new QLabel("  Port"),                1, 4, Qt::AlignRight);
+  uploadLayoutEph->addWidget(_uploadEphPortLineEdit,              1, 5, 1, 1);
+  uploadLayoutEph->addWidget(new QLabel("Mountpoint           "), 2, 0);
+  uploadLayoutEph->addWidget(_uploadEphMountpointLineEdit,        2, 1);
+  uploadLayoutEph->addWidget(new QLabel("          Password"),    2, 2, Qt::AlignRight);
+  uploadLayoutEph->addWidget(_uploadEphPasswordLineEdit,          2, 3);
+  uploadLayoutEph->addWidget(new QLabel("Sampling"),              3, 0);
+  uploadLayoutEph->addWidget(_uploadEphSampleSpinBox,             3, 1);
+  uploadLayoutEph->addWidget(new QLabel("Uploaded"),              4, 0);
+  uploadLayoutEph->addWidget(_uploadEphBytesCounter,              4, 1); 
+  uploadLayoutEph->addWidget(new QLabel(" "),                     5, 0);
+  uploadLayoutEph->addWidget(new QLabel(" "),                     6, 0);
 
   uploadEphgroup->setLayout(uploadLayoutEph);
 
