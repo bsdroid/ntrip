@@ -987,7 +987,7 @@ bncWindow::bncWindow() {
   _teqcOutLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
 
   ir = 0;
-  teqcLayout->addWidget(new QLabel("Teqc-processing."),         ir, 0, 1, 10);
+  teqcLayout->addWidget(new QLabel("RINEX file editing or concatination and file or stream quality control."),         ir, 0, 1, 10);
   ++ir;
   teqcLayout->addWidget(new QLabel("Action"),                   ir, 0);
   teqcLayout->addWidget(_teqcActionComboBox,                    ir, 1);
