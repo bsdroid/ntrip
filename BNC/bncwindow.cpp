@@ -1074,7 +1074,7 @@ bncWindow::bncWindow() {
   _uploadEphPasswordLineEdit->setMaximumWidth(9*ww);
   _uploadEphMountpointLineEdit->setMaximumWidth(12*ww);
 
-  uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster."), 0, 0, 1, 30);
+  uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster."), 0, 0, 1, 50);
   uploadLayoutEph->addWidget(new QLabel("Host"),                  1, 0);
   uploadLayoutEph->addWidget(_uploadEphHostLineEdit,              1, 1, 1, 3);
   uploadLayoutEph->addWidget(new QLabel("  Port"),                1, 4, Qt::AlignRight);
