@@ -2351,6 +2351,8 @@ void bncWindow::slotFinishedPostProcessingPPP() {
   _runningPostProcessingPPP = false;
   QMessageBox::information(this, "Information",
                            "Post-Processing Thread Finished");
+  _actStart->setText("Start");
+  _actStart->setEnabled(true);
 }
 
 // Progress Bar Change
