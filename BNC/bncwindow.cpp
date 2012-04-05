@@ -2148,10 +2148,12 @@ void bncWindow::slotBncTextChanged(){
   }
 
   if (sender() == 0 || sender() == _teqcActionComboBox) {
+    enable = !_teqcActionComboBox->currentText().isEmpty();
     bool enable10 = _teqcActionComboBox->currentText() == "Edit";
-    enableWidget(enable10, _teqcEditOptionButton);
-    enableWidget(!enable10, _teqcNavFileChooser);
-    enableWidget(!enable10, _teqcOutLineEdit);
+    enableWidget(enable &&  enable10, _teqcEditOptionButton);
+    enableWidget(enable,              _teqcObsFileChooser);
+    enableWidget(enable && !enable10, _teqcNavFileChooser);
+    enableWidget(enable && !enable10, _teqcOutLineEdit);
   }
 }
 
