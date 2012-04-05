@@ -1000,7 +1000,7 @@ bncWindow::bncWindow() {
   teqcLayout->addWidget(_teqcObsFileChooser,                    ir, 1, 1, 4);
   teqcLayout->addWidget(new QLabel("Obs "),                     ir, 5);
   teqcLayout->addWidget(_teqcNavFileChooser,                    ir, 6, 1, 8);
-  teqcLayout->addWidget(new QLabel("Nav"),                      ir, 15);
+  teqcLayout->addWidget(new QLabel("Nav"),                      ir, 14);
   ++ir;
   teqcLayout->addWidget(new QLabel("Output file (full path)"),  ir, 0);
   teqcLayout->addWidget(_teqcOutLineEdit,                       ir, 1, 1, 4);
