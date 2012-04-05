@@ -491,7 +491,7 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
       xyz(3) += xx(8);
     }
     
-    if (_crdTrafo != "IGS05") {
+    if (_crdTrafo != "IGS08") {
       crdTrafo(GPSweek12, xyz);
     }
     
