@@ -633,7 +633,7 @@ bncWindow::bncWindow() {
   pLayout->addWidget(_proxyPortLineEdit,                                     2, 1);
   pLayout->addWidget(new QLabel("Path to SSL Certificates"),                 3, 0);
   pLayout->addWidget(_sslCaCertPathLineEdit,                                 3, 1, 1,10);
-  pLayout->addWidget(new QLabel("Default:  " + bncSslConfig::defaultPath()), 3,12, 1,20);
+  pLayout->addWidget(new QLabel("Default:  " + bncSslConfig::defaultPath()), 3,11, 1,20);
   pLayout->addWidget(new QLabel("Ignore SSL Authorization Errors"),          4, 0);
   pLayout->addWidget(_ignoreSslErrorsCheckBox,                               4, 1, 1,10);
   pLayout->addWidget(new QLabel(" "),                                        4, 0);
