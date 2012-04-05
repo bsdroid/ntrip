@@ -90,7 +90,7 @@ void bncSP3::writeHeader(const QDateTime& datTim) {
 
   _out << "#aP" << datTim.toString("yyyy MM dd hh mm").toAscii().data() 
        << setw(12) << setprecision(8) << sec
-       << "      96 ORBIT IGS05 HLM  IGS" << endl;
+       << "      96 ORBIT IGS08 HLM  IGS" << endl;
 
   _out << "## " 
        << setw(4)  << GPSWeek
