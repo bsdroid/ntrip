@@ -1191,13 +1191,20 @@ bncWindow::bncWindow() {
   _cmbTable->setWhatsThis(tr("<p>BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors coming from various providers. Hit the 'Add Row' button, double click on the 'Mountpoint' field to enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter the weight to be applied for this stream in the combination.</p><p>Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense there if the update rate of incoming clock corrections is i.e. 10 seconds.</p><p>Note further that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining streams to get hold of the orbit information.</p><p>The combination process requires Broadcast Ephemeris. Besides the orbit and clock corrections stream(s) BNC must therefore pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages.</p>"));
   _cmbMaxresLineEdit->setWhatsThis(tr("<p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p></p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p><p>Default is a value of '999.0'.</p>"));
   _cmbMethodComboBox->setWhatsThis(tr("<p>Select a clock combination approach. Options are 'Single-Epoch' and Kalman 'Filter'. It is suggested to use the Kalman filter approach for the purpose of Precise Point Positioning.</p>"));
-  _uploadTable->setWhatsThis(tr("<p>BNC can upload clock and orbit corrections to broadcast ephemeris (Broadcast Corrections) in RTCM Version 3 SSR format. The clock and orbit corrections may either come from a Real-time Network Engine or from a combination of incoming orbit/clock streams.</p><p>Hit the 'Add Row' button, double click on the 'Host' field to enter the IP or URL of an NTRIP broadcaster and hit Enter. Then double click on the 'Port' field to enter the NTRIP broadcaster IP port.</p>"));
+  _uploadTable->setWhatsThis(tr("<p>BNC can upload clock and orbit corrections to broadcast ephemeris (Broadcast Corrections) in RTCM Version 3 SSR format. The clock and orbit corrections may either come from a Real-time Network Engine or from a combination of incoming orbit/clock streams.</p><p>Hit the 'Add Row' button, double click on the 'Host' field to enter the IP or URL of an NTRIP broadcaster and hit Enter. Then double click on the 'Port', 'Mount' and 'Password' fields to enter the NTRIP broadcaster IP port (default is 80), the mountpoint and the stream upload password. An empty 'Host' option field means that you don't want to upload corrections.</p><p>Select target reference system (e.g. IGS08) for outgoing clock and orbit corrections.</p><p>By default orbit and clock corrections refer to Antenna Phase Center (APC). Tick 'CoM' to refer uploaded corrections to Center of Mass instead of APC.</p><p>Specify a path for saving the generated orbit corrections as SP3 orbit files. If the specified directory does not exist, BNC will not create SP3 orbit files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p><p>Specify a path for saving the generated clock corrections as Clock RINEX files. If the specified directory does not exist, BNC will not create Clock RINEX files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.clk<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p>"));
+
   _postObsFileChooser->setWhatsThis(tr("Full path to RINEX v2/v3 Observation file."));
   _postNavFileChooser->setWhatsThis(tr("Full path to RINEX v2/v3 Navigation file."));
   _postCorrFileChooser->setWhatsThis(tr("Full path to Broadcast Corrections file as previously saved with BNC in plain ASCII format."));
   _postOutLineEdit->setWhatsThis(tr("Full path to file with post processing PPP results. "));
   addCmbRowButton->setWhatsThis(tr("Hit 'Add Row' button to add another line to the mountpoints table."));
   delCmbRowButton->setWhatsThis(tr("Hit 'Delete' button to delete the highlighted line from the mountpoints table."));
+  addUploadRowButton->setWhatsThis(tr("Hit 'Add Row' button to add another line to the stream upload table."));
+  delUploadRowButton->setWhatsThis(tr("Hit 'Del Row' button to delete the highlighted line from the stream upload table."));
+  _uploadIntrComboBox->setWhatsThis(tr("Select the length of the SP3 and Clock RINEX files."));
+  _uploadSamplSpinBox->setWhatsThis(tr("Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into Clock RINEX files."));
+  _uploadSamplOrbSpinBox->setWhatsThis(tr("Select the SP3 orbit file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into SP3 orbit files."));
+  setUploadTrafoButton->setWhatsThis(tr("Hit 'Custom Trafo' to specify your own 14 parameter Helmert Transformation instead of selecting a predefined transformation through 'System' button."));
 
   // Enable/Disable all Widgets
   // --------------------------
@@ -2226,7 +2233,7 @@ void bncWindow::slotAddUploadRow() {
     else if (iCol == 4) {
       QComboBox* system = new QComboBox();
       system->setEditable(false);
-      system->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
+      system->addItems(QString("IGS08,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
       system->setFrame(false);
       _uploadTable->setCellWidget(iRow, iCol, system);
     }
@@ -2299,7 +2306,7 @@ void bncWindow::populateUploadTable() {
       else if (iCol == 4) {
         QComboBox* system = new QComboBox();
         system->setEditable(false);
-        system->addItems(QString("IGS05,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
+        system->addItems(QString("IGS08,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
         system->setFrame(false);
         system->setCurrentIndex(system->findText(hlp[iCol]));
         _uploadTable->setCellWidget(iRow, iCol, system);
