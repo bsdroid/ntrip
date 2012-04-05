@@ -157,6 +157,7 @@ void t_postProcessing::run() {
       obs.satNum   = rnxSat.satNum;
       obs.GPSWeek  = epo->tt.gpsw();
       obs.GPSWeeks = epo->tt.gpssec();
+      //// TODO: check RINEX Version 3 types
       for (int iType = 0; iType < _rnxObsFile->nTypes(obs.satSys); iType++) {
         QByteArray type = _rnxObsFile->obsType(obs.satSys,iType).toAscii();
         if      (type.indexOf("C1") == 0 && obs.C1  == 0.0) {
