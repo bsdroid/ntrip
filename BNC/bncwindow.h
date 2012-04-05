@@ -75,8 +75,7 @@ class bncWindow : public QMainWindow {
     void slotFontSel();
     void slotSaveOptions();
     void slotAddMountPoints();
-    void slotGetData();
-    void slotStartPostProcessing();
+    void slotStart();
     void slotFinishedPostProcessingPPP();
     void slotFinishedPostProcessingTeqc();
     void slotStop();
@@ -90,7 +89,6 @@ class bncWindow : public QMainWindow {
     void slotAddUploadRow();
     void slotDelUploadRow();
     void slotSetUploadTrafo();
-    void slotEnablePostProcessing();
     void slotTeqcEditOption();
 
   protected:
@@ -101,6 +99,7 @@ class bncWindow : public QMainWindow {
     void populateCmbTable();
     void populateUploadTable();
     void enableWidget(bool enable, QWidget* widget);
+    void startRealTime();
     void startPostProcessingPPP();
     void startPostProcessingTeqc();
 
@@ -113,8 +112,7 @@ class bncWindow : public QMainWindow {
     QAction*   _actFontSel;
     QAction*   _actSaveOpt;
     QAction*   _actQuit; 
-    QAction*   _actGetData;
-    QAction*   _actPostProcessing;
+    QAction*   _actStart;
     QAction*   _actStop;
     QAction*   _actAddMountPoints;
     QAction*   _actDeleteMountPoints;
@@ -247,7 +245,9 @@ class bncWindow : public QMainWindow {
     int _tabIndexPPP1;
     int _tabIndexPPP2;
     int _tabIndexTeqc;
-    bool _postProcessingRunningPPP;
-    bool _postProcessingRunningTeqc;
+    bool _realTimeRunning;
+    bool _runningRealTime;
+    bool _runningPostProcessingPPP;
+    bool _runningPostProcessingTeqc;
 };
 #endif

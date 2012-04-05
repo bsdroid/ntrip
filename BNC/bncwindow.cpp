@@ -78,8 +78,9 @@ bncWindow::bncWindow() {
   _bncFigure = new bncFigure(this);
   _bncFigureLate = new bncFigureLate(this);
   _bncFigurePPP = new bncFigurePPP(this);
-  _postProcessingRunningPPP  = false;
-  _postProcessingRunningTeqc = false;
+  _runningRealTime           = false;
+  _runningPostProcessingPPP  = false;
+  _runningPostProcessingTeqc = false;
 
   int ww = QFontMetrics(this->font()).width('w');
   
@@ -119,11 +120,8 @@ bncWindow::bncWindow() {
   connect(_actDeleteMountPoints, SIGNAL(triggered()), SLOT(slotDeleteMountPoints()));
   _actDeleteMountPoints->setEnabled(false);
 
-  _actGetData = new QAction(tr("Sta&rt"),this);
-  connect(_actGetData, SIGNAL(triggered()), SLOT(slotGetData()));
-
-  _actPostProcessing = new QAction(tr("Start PPP/Teqc"),this);
-  connect(_actPostProcessing, SIGNAL(triggered()), SLOT(slotStartPostProcessing()));
+  _actStart = new QAction(tr("Sta&rt"),this);
+  connect(_actStart, SIGNAL(triggered()), SLOT(slotStart()));
 
   _actStop = new QAction(tr("Sto&p"),this);
   connect(_actStop, SIGNAL(triggered()), SLOT(slotStop()));
@@ -608,9 +606,6 @@ bncWindow::bncWindow() {
 #endif
   _aogroup->addTab(uploadgroup,tr("Upload (clk)"));
   _aogroup->addTab(uploadEphgroup,tr("Upload (eph)"));
-
-  connect(_aogroup, SIGNAL(currentChanged(int)), 
-          this, SLOT(slotEnablePostProcessing()));
 
   // Log Tab
   // -------
@@ -1212,7 +1207,7 @@ bncWindow::bncWindow() {
   // Auto start
   // ----------
   if ( Qt::CheckState(settings.value("autoStart").toInt()) == Qt::Checked) {
-    slotGetData();
+    slotStart();
   }
 }
 
@@ -1235,7 +1230,7 @@ void bncWindow::populateMountPointsTable() {
 
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
   if (!it.hasNext()) {
-    _actGetData->setEnabled(false);
+    _actStart->setEnabled(false);
   }
   int iRow = 0;
   while (it.hasNext()) {
@@ -1389,7 +1384,7 @@ void bncWindow::slotDeleteMountPoints() {
   _actDeleteMountPoints->setEnabled(false);
 
   if (_mountPointsTable->rowCount() == 0) {
-    _actGetData->setEnabled(false);
+    _actStart->setEnabled(false);
   }
 }
 
@@ -1456,7 +1451,7 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
   _mountPointsTable->hideColumn(0);
   _mountPointsTable->sortItems(1);
   if (mountPoints->count() > 0 && !_actStop->isEnabled()) {
-    _actGetData->setEnabled(true);
+    _actStart->setEnabled(true);
   }
   delete mountPoints;
 }
@@ -1656,19 +1651,19 @@ void bncWindow::slotGetThreadsFinished() {
   ((bncApp*)qApp)->slotMessage("All Get Threads Terminated", true);
   delete _caster;    _caster    = 0;
   delete _casterEph; _casterEph = 0;
-  _actGetData->setEnabled(true);
+  _actStart->setEnabled(true);
   _actStop->setEnabled(false);
 }
 
 // Retrieve Data
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotGetData() {
+void bncWindow::slotStart() {
   slotSaveOptions();
 
   _bncFigurePPP->reset();
 
   _actDeleteMountPoints->setEnabled(false);
-  _actGetData->setEnabled(false);
+  _actStart->setEnabled(false);
   _actStop->setEnabled(true);
 
   _caster = new bncCaster(_outFileLineEdit->text(), 
@@ -1732,7 +1727,7 @@ void bncWindow::slotStop() {
     ((bncApp*)qApp)->stopCombination();
     delete _caster;    _caster    = 0;
     delete _casterEph; _casterEph = 0;
-    _actGetData->setEnabled(true);
+    _actStart->setEnabled(true);
     _actStop->setEnabled(false);
   }
 }
@@ -1896,9 +1891,8 @@ void bncWindow::AddToolbar() {
   toolBar->setMovable(false);
   toolBar->addAction(_actAddMountPoints);
   toolBar->addAction(_actDeleteMountPoints);
-  toolBar->addAction(_actGetData);
+  toolBar->addAction(_actStart);
   toolBar->addAction(_actStop);
-  toolBar->addAction(_actPostProcessing);
   toolBar->addWidget(new QLabel("                                           "));
   toolBar->addAction(_actwhatsthis);
 } 
@@ -2140,34 +2134,6 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(!enable10, _teqcNavFileChooser);
     enableWidget(!enable10, _teqcOutLineEdit);
   }
-
-  slotEnablePostProcessing();
-}
-
-// Enable/Disable Post-Processing Action
-////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotEnablePostProcessing() {
-  if (_actPostProcessing) {
-    if (_postProcessingRunningPPP || _postProcessingRunningTeqc) {
-      _actPostProcessing->setEnabled(false);
-    }
-    else {
-      if      (_aogroup->currentIndex() == _tabIndexPPP1 ||
-               _aogroup->currentIndex() == _tabIndexPPP2) {
-        _actPostProcessing->setText("Start PPP");
-        bool enable = _pppSPPComboBox->currentText() == "Post-Processing";
-        _actPostProcessing->setEnabled(enable);
-      }
-      else if (_aogroup->currentIndex() == _tabIndexTeqc) {
-        _actPostProcessing->setText("Start Teqc");
-        _actPostProcessing->setEnabled(true);
-      }
-      else {
-        _actPostProcessing->setText("Start PPP/Teqc");
-        _actPostProcessing->setEnabled(false);
-      }
-    }
-  }
 }
 
 // 
@@ -2345,25 +2311,12 @@ void bncWindow::slotSetUploadTrafo() {
   delete dlg;
 }
 
-// Start Post-Processing PPP or Teqc (slot)
-////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotStartPostProcessing() {
-  if      (_aogroup->currentIndex() == _tabIndexPPP1 ||
-           _aogroup->currentIndex() == _tabIndexPPP2) {
-    startPostProcessingPPP();
-  }
-  else if (_aogroup->currentIndex() == _tabIndexTeqc) {
-    startPostProcessingTeqc();
-  }
-}
-
 // Start Post-Processing PPP
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::startPostProcessingPPP() {
 #ifdef USE_POSTPROCESSING
-  _postProcessingRunningPPP = true;
-  slotEnablePostProcessing();
-  _actPostProcessing->setText("0 Epochs");
+  _runningPostProcessingPPP = true;
+  _actStart->setText("0 Epochs");
 
   slotSaveOptions();
 
@@ -2381,36 +2334,33 @@ void bncWindow::startPostProcessingPPP() {
 // Post-Processing PPP Finished
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFinishedPostProcessingPPP() {
-  _postProcessingRunningPPP = false;
+  _runningPostProcessingPPP = false;
   QMessageBox::information(this, "Information",
                            "Post-Processing Thread Finished");
-  slotEnablePostProcessing();
 }
 
 // Progress Bar Change
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotPostProgress(int nEpo) {
-  if (_actPostProcessing) {
-    _actPostProcessing->setText(QString("%1 Epochs").arg(nEpo));
+  if (_actStart) {
+    _actStart->setText(QString("%1 Epochs").arg(nEpo));
   }
 }
 
 // Start Post-Processing Teqc
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::startPostProcessingTeqc() {
-  _postProcessingRunningTeqc = false;  // TODO
+  _runningPostProcessingTeqc = false;  // TODO
   QMessageBox::information(this, "Information",
                            "Teqc-Processing Not Yet Implemented");
-  slotEnablePostProcessing();
 }
 
 // Post-Processing Teqc Finished
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFinishedPostProcessingTeqc() {
-  _postProcessingRunningTeqc = false;
+  _runningPostProcessingTeqc = false;
   QMessageBox::information(this, "Information",
                            "Teqc-Processing Thread Finished");
-  slotEnablePostProcessing();
 }
 
 // Edit teqc-like editing options
