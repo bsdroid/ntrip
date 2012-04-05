@@ -2390,11 +2390,11 @@ void bncWindow::slotTeqcEditOption() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::enableStartStop() {
 
-  if      ( _pppSPPComboBox->currentText() == "Post-Processing" ) {
+  if      ( _pppSPPComboBox && _pppSPPComboBox->currentText() == "Post-Processing" ) {
     _actStart->setEnabled(true);
     _actStop->setEnabled(false);
   }
-  else if ( !_teqcActionComboBox->currentText().isEmpty() ) {
+  else if ( _teqcActionComboBox && !_teqcActionComboBox->currentText().isEmpty() ) {
     _actStart->setEnabled(true);
     _actStop->setEnabled(false);
   }
