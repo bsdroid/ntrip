@@ -2084,9 +2084,15 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _pppUsePhaseCheckBox    
      || sender() == _pppAntexFileChooser ) {
 
-    enable = (!_pppMountLineEdit->text().isEmpty() && !_pppCorrMountLineEdit->text().isEmpty()) ||
-             (!_pppMountLineEdit->text().isEmpty() && _pppSPPComboBox->currentText() == "Realtime-SPP")  ||
-             (_pppSPPComboBox->currentText() == "Post-Processing");
+    enable = !_pppSPPComboBox->currentText().isEmpty();
+    if (enable) {
+      enable = (!_pppMountLineEdit->text().isEmpty() && !_pppCorrMountLineEdit->text().isEmpty()) ||
+               (!_pppMountLineEdit->text().isEmpty() && _pppSPPComboBox->currentText() == "Realtime-SPP")  ||
+               (_pppSPPComboBox->currentText() == "Post-Processing");
+    } 
+    else {
+      enableWidget(enable, _pppMountLineEdit);
+    }
 
     enableWidget(enable, _pppNMEALineEdit);
     enableWidget(enable, _pppNMEAPortLineEdit);
@@ -2120,7 +2126,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable4, _pppAntennaLineEdit);
     enableWidget(enable4, _pppApplySatAntCheckBox);
 
-    bool enable5 = enable && _pppEstTropoCheckBox->isChecked() && !_pppMountLineEdit->text().isEmpty();
+    bool enable5 = enable && _pppEstTropoCheckBox->isChecked();
     enableWidget(enable5, _pppSigTrp0);
     enableWidget(enable5, _pppSigTrpP);
 
@@ -2138,7 +2144,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable9, _postNavFileChooser);
     enableWidget(enable9, _postCorrFileChooser);
     enableWidget(enable9, _postOutLineEdit);
-    enableWidget(!enable9, _pppMountLineEdit);
+    enableWidget(enable && !enable9, _pppMountLineEdit);
   }
 
   if (sender() == 0 || sender() == _teqcActionComboBox) {
