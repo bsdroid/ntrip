@@ -112,7 +112,7 @@ bncCustomTrafo::bncCustomTrafo(QWidget* parent) : QDialog(parent) {
   editLayout->addWidget(_scrLineEdit,                     4, 3);
   editLayout->addWidget(new QLabel(tr("t0 [y]")),         4, 4, Qt::AlignRight);
   editLayout->addWidget(_t0LineEdit,                      4, 5);
-  editLayout->addWidget(new QLabel("Specify up to 14 Helmert Transformation Parameters for transformation from IGS05"), 5, 0, 1, 6, Qt::AlignCenter);
+  editLayout->addWidget(new QLabel("Specify up to 14 Helmert Transformation Parameters for transformation from IGS08"), 5, 0, 1, 6, Qt::AlignCenter);
   editLayout->addWidget(new QLabel("into target reference system."), 6, 0, 1, 6, Qt::AlignCenter);
 
   mainLayout->addLayout(editLayout);
