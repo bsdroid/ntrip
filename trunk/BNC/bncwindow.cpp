@@ -125,7 +125,6 @@ bncWindow::bncWindow() {
 
   _actStop = new QAction(tr("Sto&p"),this);
   connect(_actStop, SIGNAL(triggered()), SLOT(slotStop()));
-  enableStartStop();
 
   _actwhatsthis= new QAction(tr("Help ?=Shift+F1"),this);
   connect(_actwhatsthis, SIGNAL(triggered()), SLOT(slotWhatsThis()));
@@ -135,7 +134,7 @@ bncWindow::bncWindow() {
 
   bncSettings settings;
 
-  // Netowrk Options
+  // Network Options
   // ---------------
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
@@ -1203,6 +1202,7 @@ bncWindow::bncWindow() {
   // Enable/Disable all Widgets
   // --------------------------
   slotBncTextChanged();
+  enableStartStop();
 
   // Auto start
   // ----------
