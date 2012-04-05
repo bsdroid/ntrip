@@ -2330,6 +2330,7 @@ void bncWindow::startPostProcessingPPP() {
 #ifdef USE_POSTPROCESSING
   _runningPostProcessingPPP = true;
   _actStart->setText("0 Epochs");
+  enableStartStop();
 
   slotSaveOptions();
 
@@ -2366,6 +2367,7 @@ void bncWindow::slotPostProgress(int nEpo) {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::startPostProcessingTeqc() {
   _runningPostProcessingTeqc = false;  // TODO
+  enableStartStop();
   QMessageBox::information(this, "Information",
                            "Teqc-Processing Not Yet Implemented");
 }
@@ -2376,6 +2378,7 @@ void bncWindow::slotFinishedPostProcessingTeqc() {
   _runningPostProcessingTeqc = false;
   QMessageBox::information(this, "Information",
                            "Teqc-Processing Thread Finished");
+  enableStartStop();
 }
 
 // Edit teqc-like editing options
@@ -2392,11 +2395,21 @@ void bncWindow::slotTeqcEditOption() {
 void bncWindow::enableStartStop() {
 
   if      ( _pppSPPComboBox && _pppSPPComboBox->currentText() == "Post-Processing" ) {
-    _actStart->setEnabled(true);
+    if (_runningPostProcessingPPP) {
+      _actStart->setEnabled(false);
+    }
+    else {
+      _actStart->setEnabled(true);
+    }
     _actStop->setEnabled(false);
   }
   else if ( _teqcActionComboBox && !_teqcActionComboBox->currentText().isEmpty() ) {
-    _actStart->setEnabled(true);
+    if (_runningPostProcessingTeqc) {
+      _actStart->setEnabled(false);
+    }
+    else {
+      _actStart->setEnabled(true);
+    }
     _actStop->setEnabled(false);
   }
   else {
