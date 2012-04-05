@@ -89,7 +89,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("pppSigCrd0",       "100.0");
     setValue("pppSigCrdP",       "100.0");
     setValue("pppSigTrp0",       "0.1");
-    setValue("pppSigTrpP",       "5e-6");
+    setValue("pppSigTrpP",       "3e-6");
     setValue("pppAverage",       "");
     setValue("pppUsePhase",      "");
     setValue("pppEstTropo",      "");
