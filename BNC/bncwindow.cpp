@@ -125,7 +125,7 @@ bncWindow::bncWindow() {
 
   _actStop = new QAction(tr("Sto&p"),this);
   connect(_actStop, SIGNAL(triggered()), SLOT(slotStop()));
-  _actStop->setEnabled(false);
+  enableStartStop();
 
   _actwhatsthis= new QAction(tr("Help ?=Shift+F1"),this);
   connect(_actwhatsthis, SIGNAL(triggered()), SLOT(slotWhatsThis()));
@@ -1229,9 +1229,6 @@ void bncWindow::populateMountPointsTable() {
   bncSettings settings;
 
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
-  if (!it.hasNext()) {
-    _actStart->setEnabled(false);
-  }
   int iRow = 0;
   while (it.hasNext()) {
     QStringList hlp = it.next().split(" ");
@@ -1293,6 +1290,8 @@ void bncWindow::populateMountPointsTable() {
   }
 
   _mountPointsTable->sortItems(1);
+
+  enableStartStop();
 }
 
 // Retrieve Table
@@ -1360,6 +1359,8 @@ void bncWindow::slotAddMountPoints() {
   } else if (msgBox.clickedButton() == buttonCancel) {
     // Cancel
   }
+
+  enableStartStop();
 }
 
 // Delete Selected Mount Points
@@ -1383,9 +1384,7 @@ void bncWindow::slotDeleteMountPoints() {
   }
   _actDeleteMountPoints->setEnabled(false);
 
-  if (_mountPointsTable->rowCount() == 0) {
-    _actStart->setEnabled(false);
-  }
+  enableStartStop();
 }
 
 // New Mount Points Selected
@@ -1450,10 +1449,9 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
   }
   _mountPointsTable->hideColumn(0);
   _mountPointsTable->sortItems(1);
-  if (mountPoints->count() > 0 && !_actStop->isEnabled()) {
-    _actStart->setEnabled(true);
-  }
   delete mountPoints;
+
+  enableStartStop();
 }
 
 // Save Options
@@ -1651,8 +1649,7 @@ void bncWindow::slotGetThreadsFinished() {
   ((bncApp*)qApp)->slotMessage("All Get Threads Terminated", true);
   delete _caster;    _caster    = 0;
   delete _casterEph; _casterEph = 0;
-  _actStart->setEnabled(true);
-  _actStop->setEnabled(false);
+  _runningRealTime = false;
 }
 
 // Start It!
@@ -1674,11 +1671,13 @@ void bncWindow::slotStart() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::startRealTime() {
 
+  _runningRealTime = true;
+
   _bncFigurePPP->reset();
 
   _actDeleteMountPoints->setEnabled(false);
-  _actStart->setEnabled(false);
-  _actStop->setEnabled(true);
+
+  enableStartStop();
 
   _caster = new bncCaster(_outFileLineEdit->text(), 
                           _outPortLineEdit->text().toInt());
@@ -1741,8 +1740,7 @@ void bncWindow::slotStop() {
     ((bncApp*)qApp)->stopCombination();
     delete _caster;    _caster    = 0;
     delete _casterEph; _casterEph = 0;
-    _actStart->setEnabled(true);
-    _actStop->setEnabled(false);
+    _runningRealTime = false;
   }
 }
 
@@ -2352,7 +2350,7 @@ void bncWindow::slotFinishedPostProcessingPPP() {
   QMessageBox::information(this, "Information",
                            "Post-Processing Thread Finished");
   _actStart->setText("Start");
-  _actStart->setEnabled(true);
+  enableStartStop();
 }
 
 // Progress Bar Change
@@ -2386,4 +2384,33 @@ void bncWindow::slotTeqcEditOption() {
   dlg->move(this->pos().x()+50, this->pos().y()+50);
   dlg->exec();
   delete dlg;
+}
+
+// Enable/Disable Start and Stop Buttons
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::enableStartStop() {
+
+  if      ( _pppSPPComboBox->currentText() == "Post-Processing" ) {
+    _actStart->setEnabled(true);
+    _actStop->setEnabled(false);
+  }
+  else if ( !_teqcActionComboBox->currentText().isEmpty() ) {
+    _actStart->setEnabled(true);
+    _actStop->setEnabled(false);
+  }
+  else {
+    if (_runningRealTime) {
+      _actStart->setEnabled(false);
+      _actStop->setEnabled(true);
+    }
+    else {
+      _actStop->setEnabled(false);
+      if (_mountPointsTable->rowCount() == 0) {
+        _actStart->setEnabled(false);
+      }
+      else {
+        _actStart->setEnabled(true);
+      }
+    }
+  }
 }

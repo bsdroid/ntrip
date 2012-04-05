@@ -102,6 +102,7 @@ class bncWindow : public QMainWindow {
     void startRealTime();
     void startPostProcessingPPP();
     void startPostProcessingTeqc();
+    void enableStartStop();
 
     QMenu*     _menuHlp;
     QMenu*     _menuFile;
