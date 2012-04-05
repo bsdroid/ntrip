@@ -1198,10 +1198,10 @@ bncWindow::bncWindow() {
   _cmbMaxresLineEdit->setWhatsThis(tr("<p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p></p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p><p>Default is a value of '999.0'.</p>"));
   _cmbMethodComboBox->setWhatsThis(tr("<p>Select a clock combination approach. Options are 'Single-Epoch' and Kalman 'Filter'. It is suggested to use the Kalman filter approach for the purpose of Precise Point Positioning.</p>"));
   _uploadTable->setWhatsThis(tr("<p>BNC can upload clock and orbit corrections to broadcast ephemeris (Broadcast Corrections) in RTCM Version 3 SSR format. The clock and orbit corrections may either come from a Real-time Network Engine or from a combination of incoming orbit/clock streams.</p><p>Hit the 'Add Row' button, double click on the 'Host' field to enter the IP or URL of an NTRIP broadcaster and hit Enter. Then double click on the 'Port' field to enter the NTRIP broadcaster IP port.</p>"));
-  _postObsFileChooser->setWhatsThis(tr("Full Path to RINEX Observation File"));
-  _postNavFileChooser->setWhatsThis(tr("Full Path to RINEX Navigation File"));
-  _postCorrFileChooser->setWhatsThis(tr("Full Path to DGPS Correction File"));
-  _postOutLineEdit->setWhatsThis(tr("Full Path to DGPS Correction File"));
+  _postObsFileChooser->setWhatsThis(tr("Full path to RINEX v2/v3 Observation file."));
+  _postNavFileChooser->setWhatsThis(tr("Full path to RINEX v2/v3 Navigation file."));
+  _postCorrFileChooser->setWhatsThis(tr("Full path to Broadcast Corrections file as previously saved with BNC in plain ASCII format."));
+  _postOutLineEdit->setWhatsThis(tr("Full path to file with post processing PPP results. "));
   addCmbRowButton->setWhatsThis(tr("Hit 'Add Row' button to add another line to the mountpoints table."));
   delCmbRowButton->setWhatsThis(tr("Hit 'Delete' button to delete the highlighted line from the mountpoints table."));
 
