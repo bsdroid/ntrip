@@ -1741,6 +1741,7 @@ void bncWindow::slotStop() {
     delete _caster;    _caster    = 0;
     delete _casterEph; _casterEph = 0;
     _runningRealTime = false;
+    enableStartStop();
   }
 }
 
