@@ -385,7 +385,7 @@ bncWindow::bncWindow() {
 
   _pppSPPComboBox = new QComboBox();
   _pppSPPComboBox->setEditable(false);
-  _pppSPPComboBox->addItems(QString("Realtime-PPP,Realtime-SPP,Post-Processing").split(","));
+  _pppSPPComboBox->addItems(QString(",Realtime-PPP,Realtime-SPP,Post-Processing").split(","));
   int ik = _pppSPPComboBox->findText(settings.value("pppSPP").toString());
   if (ik != -1) {
     _pppSPPComboBox->setCurrentIndex(ik);
@@ -960,7 +960,7 @@ bncWindow::bncWindow() {
   // ---------------
   _teqcActionComboBox = new QComboBox();
   _teqcActionComboBox->setEditable(false);
-  _teqcActionComboBox->addItems(QString("Edit, Analyze").split(","));
+  _teqcActionComboBox->addItems(QString(",Edit,Analyze").split(","));
   ik = _teqcActionComboBox->findText(settings.value("teqcAction").toString());
   if (ik != -1) {
     _teqcActionComboBox->setCurrentIndex(ik);
@@ -1655,10 +1655,24 @@ void bncWindow::slotGetThreadsFinished() {
   _actStop->setEnabled(false);
 }
 
-// Retrieve Data
+// Start It!
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotStart() {
   slotSaveOptions();
+  if      ( _pppSPPComboBox->currentText() == "Post-Processing" ) {
+    startPostProcessingPPP();
+  }
+  else if ( !_teqcActionComboBox->currentText().isEmpty() ) {
+    startPostProcessingTeqc();
+  }
+  else {
+    startRealTime();
+  }
+}
+
+// Start Real-Time (Retrieve Data etc.)
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::startRealTime() {
 
   _bncFigurePPP->reset();
 
