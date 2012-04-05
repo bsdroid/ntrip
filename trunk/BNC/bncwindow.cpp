@@ -861,7 +861,7 @@ bncWindow::bncWindow() {
   int ir = 0;
   pppLayout->addWidget(new QLabel("Precise Point Positioning, Panel 1."), ir, 0, 1, 100);
   ++ir;
-  pppLayout->addWidget(new QLabel("Obs. Mountpoint"),  ir, 0, 1, 10);
+  pppLayout->addWidget(new QLabel("Obs. Mountpnt"),    ir, 0, 1, 10);
   pppLayout->addWidget(_pppMountLineEdit,              ir,10, 1, 10);
   pppLayout->addWidget(_pppSPPComboBox,                ir,20, 1, 15);
   pppLayout->addWidget(new QLabel("     X   "),        ir,35, 1,  5, Qt::AlignRight);
@@ -871,7 +871,7 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(new QLabel("      Z   "),       ir,70, 1, 10, Qt::AlignRight);
   pppLayout->addWidget(_pppRefCrdZLineEdit,            ir,80, 1, 13);
   ++ir;
-  pppLayout->addWidget(new QLabel("Corr. Mountpoint "),ir, 0, 1, 10);
+  pppLayout->addWidget(new QLabel("Corr. Mountpnt "),  ir, 0, 1, 10);
   pppLayout->addWidget(_pppCorrMountLineEdit,          ir,10, 1, 20);
   pppLayout->addWidget(new QLabel("    dN   "),   ir,30, 1, 10, Qt::AlignRight);
   pppLayout->addWidget(_pppRefdNLineEdit,              ir,40, 1, 10);
