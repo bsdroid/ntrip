@@ -957,7 +957,7 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(_pppAverageLineEdit,                  ir, 3, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("Averaging (min)") ,       ir, 4);  
   ++ir;
-//ppp2Layout->addWidget(new QLabel(""),                       ir, 0);
+  ppp2Layout->addWidget(new QLabel(""),                       ir, 0);
 
   ppp2group->setLayout(ppp2Layout);
 
