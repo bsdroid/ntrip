@@ -82,6 +82,9 @@ bncWindow::bncWindow() {
   _runningPostProcessingPPP  = false;
   _runningPostProcessingTeqc = false;
 
+  _pppSPPComboBox     = 0; // necessary for enableStartStop()
+  _teqcActionComboBox = 0; // necessary for enableStartStop()
+
   int ww = QFontMetrics(this->font()).width('w');
   
   static const QStringList labels = QString("account, Streams:   resource loader / mountpoint, decoder, lat, long, nmea, ntrip, bytes").split(",");
