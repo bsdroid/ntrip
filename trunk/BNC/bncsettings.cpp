@@ -119,6 +119,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("uploadEphMountpoint", "");
     setValue("uploadEphSample",     "5");
     setValue("cmbMaxres",           "");
+    setValue("teqcAction", "");
     sync();
   }
 }
