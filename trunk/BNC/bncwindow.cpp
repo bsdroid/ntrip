@@ -897,9 +897,9 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_postCorrFileChooser,           ir,61, 1, 22);
   pppLayout->addWidget(new QLabel("Corr"),             ir,83, 1, 9);
   ++ir;
-  pppLayout->addWidget(new QLabel("Post-Proc. cont'd"),ir, 0, 1, 10);
+  pppLayout->addWidget(new QLabel("Post-Proc. Output"),ir, 0, 1, 10);
   pppLayout->addWidget(_postOutLineEdit,               ir,10, 1, 40);
-  pppLayout->addWidget(new QLabel("Output"),           ir,50);
+  pppLayout->addWidget(new QLabel("      "),           ir,50);
 
   pppgroup->setLayout(pppLayout);
 
