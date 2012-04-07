@@ -873,7 +873,7 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppRefCrdZLineEdit,             ir,57, 1, 10, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Z"),                 ir,67, 1, 10);
   ++ir;
-  pppLayout->addWidget(new QLabel("Excentricity"),      ir, 0, 1, 10);
+  pppLayout->addWidget(new QLabel("Antenna excentricity"),ir, 0, 1, 10);
   pppLayout->addWidget(_pppRefdNLineEdit,               ir,10, 1, 20, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("dN"),                ir,30, 1,  5);
   pppLayout->addWidget(_pppRefdELineEdit,               ir,35, 1, 15, Qt::AlignRight);
