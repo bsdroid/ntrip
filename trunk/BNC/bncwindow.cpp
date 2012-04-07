@@ -2135,9 +2135,6 @@ void bncWindow::slotBncTextChanged(){
                (!_pppMountLineEdit->text().isEmpty() && _pppSPPComboBox->currentText() == "Realtime-SPP")  ||
                (_pppSPPComboBox->currentText() == "Post-Processing");
     } 
-    else {
-      enableWidget(enable, _pppMountLineEdit);
-    }
 
     enableWidget(enable, _pppNMEALineEdit);
     enableWidget(enable, _pppNMEAPortLineEdit);
@@ -2189,7 +2186,9 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable9, _postNavFileChooser);
     enableWidget(enable9, _postCorrFileChooser);
     enableWidget(enable9, _postOutLineEdit);
-    enableWidget(enable && !enable9, _pppMountLineEdit);
+
+    bool enable10 = !_pppSPPComboBox->currentText().isEmpty() && !enable9;
+    enableWidget(enable10, _pppMountLineEdit);
   }
 
   if (sender() == 0 || sender() == _teqcActionComboBox) {
