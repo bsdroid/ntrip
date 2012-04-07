@@ -495,8 +495,8 @@ bncWindow::bncWindow() {
   QPushButton* addCmbRowButton = new QPushButton("Add Row");
   QPushButton* delCmbRowButton = new QPushButton("Delete");
 
-  connect(_cmbTable, SIGNAL(itemSelectionChanged()), 
-          SLOT(slotBncTextChanged()));
+  connect(_cmbTable, SIGNAL(itemSelectionChanged()),
+          SLOT(slotBncTextChanged())); 
 
   _cmbMethodComboBox = new QComboBox();
   _cmbMethodComboBox->setEditable(false);
@@ -504,6 +504,18 @@ bncWindow::bncWindow() {
   int im = _cmbMethodComboBox->findText(settings.value("cmbMethod").toString());
   if (im != -1) {
     _cmbMethodComboBox->setCurrentIndex(im);
+  }
+
+  int iRow = _cmbTable->rowCount();
+  if (iRow > 0) {
+    enableWidget(true, _cmbMethodComboBox);
+    _cmbMaxresLineEdit->setStyleSheet("background-color: white");
+    _cmbMaxresLineEdit->setEnabled(true);
+  } 
+  else {
+    enableWidget(false, _cmbMethodComboBox);
+    _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
+    _cmbMaxresLineEdit->setEnabled(false);
   }
 
   // Upload Results
@@ -553,6 +565,20 @@ bncWindow::bncWindow() {
   _uploadSamplOrbSpinBox->setMaximumWidth(9*ww);
   _uploadSamplOrbSpinBox->setValue(settings.value("uploadSamplOrb").toInt());
   _uploadSamplOrbSpinBox->setSuffix(" sec");
+
+  int iRowT = _uploadTable->rowCount();
+  if (iRowT > 0) {
+    enableWidget(true, _uploadIntrComboBox);
+    enableWidget(true, _uploadSamplSpinBox);
+    enableWidget(true, _uploadSamplOrbSpinBox);
+//  enableWidget(true, setUploadTrafoButton); // weber
+  } 
+  else {
+    enableWidget(false, _uploadIntrComboBox);
+    enableWidget(false, _uploadSamplSpinBox);
+    enableWidget(false, _uploadSamplOrbSpinBox);
+//  enableWidget(false, setUploadTrafoButton); // weber
+  }
 
   // Upload RTCM3 Ephemeris
   // ----------------------
@@ -1194,7 +1220,7 @@ bncWindow::bncWindow() {
   _pppAntexFileChooser->setWhatsThis(tr("<p>IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets and variations.</p>"));
   _pppAntennaLineEdit->setWhatsThis(tr("<p>Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Corrections for phase center variations are not yet applied by BNC. The specified name must consist of 20 characters. Add trailing blanks if the antenna name has less then 20 characters.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets.</p>"));
   _pppApplySatAntCheckBox->setWhatsThis(tr("<p>This option is not yet working.</p><p>Satellite orbit and clock corrections refer to the satellite's antenna phase centers and hence observations are actually <u>not</u> to be corrected for satellite antenna phase center offsets. However, you may like to tick 'Apply Offsets' to force BNC to correct observations for satellite antenna phase center offsets.</p><p>Default is to <u>not</u> correct observations for satellite antenna phase center offsets."));
-  _cmbTable->setWhatsThis(tr("<p>BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors coming from various providers. Hit the 'Add Row' button, double click on the 'Mountpoint' field to enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter the weight to be applied for this stream in the combination.</p><p>Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense there if the update rate of incoming clock corrections is i.e. 10 seconds.</p><p>Note further that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining streams to get hold of the orbit information.</p><p>The combination process requires Broadcast Ephemeris. Besides the orbit and clock corrections stream(s) BNC must therefore pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages.</p>"));
+  _cmbTable->setWhatsThis(tr("<p>BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors coming from various providers. Hit the 'Add Row' button, double click on the 'Mountpoint' field to enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter the weight to be applied for this stream in the combination.</p><p>Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense there if the update rate of incoming clock corrections is i.e. 10 seconds.</p><p>Note also that you need to tick 'Use GLONASS' which is part ot the 'PPP (2)' panel in case you want to produce an GPS plus GLONASS combination.</p><p>Note further that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p><p>The combination process requires Broadcast Ephemeris. Besides the orbit and clock corrections stream(s) BNC must therefore pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages.</p>"));
   _cmbMaxresLineEdit->setWhatsThis(tr("<p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p></p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p><p>Default is a value of '999.0'.</p>"));
   _cmbMethodComboBox->setWhatsThis(tr("<p>Select a clock combination approach. Options are 'Single-Epoch' and Kalman 'Filter'. It is suggested to use the Kalman filter approach for the purpose of Precise Point Positioning.</p>"));
   _uploadTable->setWhatsThis(tr("<p>BNC can upload clock and orbit corrections to broadcast ephemeris (Broadcast Corrections) in RTCM Version 3 SSR format. The clock and orbit corrections may either come (1) from a Real-time Network Engine or (2) be calculated as a combination of incoming orbit/clock streams.</p><p>(1) BNC identifies a stream as coming from a Real-time Network Engine if its format is specified as 'RTNET' in the 'Add Stream from TCP/IP Port' window. It encodes and uploads that stream to the specified NTRIP broadcaster</p><p>(2) BNC understands that it is expected to encode an upload combined Broadcast Ephemeris corrections if you specified correction streams in the 'Combination' stream table.</p><p>Hit the 'Add Row' button, double click on the 'Host' field to enter the IP or URL of an NTRIP broadcaster and hit Enter. Then double click on the 'Port', 'Mount' and 'Password' fields to enter the NTRIP broadcaster IP port (default is 80), the mountpoint and the stream upload password. An empty 'Host' option field means that you don't want to upload corrections.</p><p>Select a target coordinate reference system (e.g. IGS08) for outgoing clock and orbit corrections.</p><p>By default orbit and clock corrections refer to Antenna Phase Center (APC). Tick 'CoM' to refer uploaded corrections to Center of Mass instead of APC.</p><p>Specify a path for saving the generated orbit corrections as SP3 orbit files. If the specified directory does not exist, BNC will not create SP3 orbit files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p><p>Specify a path for saving the generated clock corrections as Clock RINEX files. If the specified directory does not exist, BNC will not create Clock RINEX files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.clk<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p>"));
@@ -2086,7 +2112,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _scanRTCMCheckBox);
   }
 
-  // Enable/disable Broadcast Ephemerides // weber
+  // Enable/disable Broadcast Ephemerides
   // ------------------------------------
   if (sender() == 0 || sender() == _uploadEphHostLineEdit) {
     if (!_uploadEphHostLineEdit->text().isEmpty()) {
@@ -2109,6 +2135,38 @@ void bncWindow::slotBncTextChanged(){
       _uploadEphPasswordLineEdit->setEnabled(false);
       _uploadEphSampleSpinBox->setEnabled(false);
     }
+  }
+
+  // Combination
+  // -----------
+  if (sender() == 0 || sender() == _cmbTable) {
+    int iRow = _cmbTable->rowCount();
+    if (iRow > 0) {
+      enableWidget(true, _cmbMethodComboBox);
+      _cmbMaxresLineEdit->setStyleSheet("background-color: white");
+      _cmbMaxresLineEdit->setEnabled(true);
+    } 
+    else {
+      enableWidget(false, _cmbMethodComboBox);
+      _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
+      _cmbMaxresLineEdit->setEnabled(false);
+    }
+  }
+
+  // Upload(clk)
+  // -----------
+  int iRow = _uploadTable->rowCount();
+  if (iRow > 0) {
+    enableWidget(true, _uploadIntrComboBox);
+    enableWidget(true, _uploadSamplSpinBox);
+    enableWidget(true, _uploadSamplOrbSpinBox);
+//  enableWidget(true, setUploadTrafoButton); // weber
+  } 
+  else {
+    enableWidget(false, _uploadIntrComboBox);
+    enableWidget(false, _uploadSamplSpinBox);
+    enableWidget(false, _uploadSamplOrbSpinBox);
+//  enableWidget(false, setUploadTrafoButton); // weber
   }
 
   // PPP Client
@@ -2229,6 +2287,12 @@ void bncWindow::slotDelCmbRow() {
       _cmbTable->removeRow(iRow);
     }
   }
+  nRows = _cmbTable->rowCount();
+  if (nRows < 1) {
+    enableWidget(false, _cmbMethodComboBox);
+    _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
+    _cmbMaxresLineEdit->setEnabled(false);
+  }
 }
 
 // 
@@ -2312,6 +2376,13 @@ void bncWindow::slotDelUploadRow() {
   for (int iRow = 0; iRow < _uploadTable->rowCount(); iRow++) {
     ((bncApp*)qApp)->_uploadTableItems[iRow] = 
                                 (bncTableItem*) _uploadTable->item(iRow, 8);
+  }
+  nRows = _uploadTable->rowCount();
+  if (nRows < 1) {
+    enableWidget(false, _uploadIntrComboBox);
+    enableWidget(false, _uploadSamplSpinBox);
+    enableWidget(false, _uploadSamplOrbSpinBox);
+//  enableWidget(false, setUploadTrafoButton); // weber
   }
 }
 
