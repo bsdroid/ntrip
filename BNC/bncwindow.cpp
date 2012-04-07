@@ -2086,6 +2086,31 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _scanRTCMCheckBox);
   }
 
+  // Enable/disable Broadcast Ephemerides // weber
+  // ------------------------------------
+  if (sender() == 0 || sender() == _uploadEphHostLineEdit) {
+    if (!_uploadEphHostLineEdit->text().isEmpty()) {
+      _uploadEphPortLineEdit->setStyleSheet("background-color: white");
+      _uploadEphMountpointLineEdit->setStyleSheet("background-color: white");
+      _uploadEphPasswordLineEdit->setStyleSheet("background-color: white");
+      _uploadEphSampleSpinBox->setStyleSheet("background-color: white");
+      _uploadEphPortLineEdit->setEnabled(true);
+      _uploadEphMountpointLineEdit->setEnabled(true);
+      _uploadEphPasswordLineEdit->setEnabled(true);
+      _uploadEphSampleSpinBox->setEnabled(true);
+    } 
+    else {
+      _uploadEphPortLineEdit->setStyleSheet("background-color: lightGray");
+      _uploadEphMountpointLineEdit->setStyleSheet("background-color: lightGray");
+      _uploadEphPasswordLineEdit->setStyleSheet("background-color: lightGray");
+      _uploadEphSampleSpinBox->setStyleSheet("background-color: lightGray");
+      _uploadEphPortLineEdit->setEnabled(false);
+      _uploadEphMountpointLineEdit->setEnabled(false);
+      _uploadEphPasswordLineEdit->setEnabled(false);
+      _uploadEphSampleSpinBox->setEnabled(false);
+    }
+  }
+
   // PPP Client
   // ----------
   if (sender() == 0 
