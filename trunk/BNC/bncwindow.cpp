@@ -571,13 +571,13 @@ bncWindow::bncWindow() {
     enableWidget(true, _uploadIntrComboBox);
     enableWidget(true, _uploadSamplSpinBox);
     enableWidget(true, _uploadSamplOrbSpinBox);
-//  setUploadTrafoButton->setEnabled(true); // weber
+// TODO  setUploadTrafoButton
   } 
   else {
     enableWidget(false, _uploadIntrComboBox);
     enableWidget(false, _uploadSamplSpinBox);
     enableWidget(false, _uploadSamplOrbSpinBox);
-//  setUploadTrafoButton->setEnabled(false); // weber
+// TODO  setUploadTrafoButton
   }
 
   // Upload RTCM3 Ephemeris
@@ -2160,13 +2160,13 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(true, _uploadIntrComboBox);
     enableWidget(true, _uploadSamplSpinBox);
     enableWidget(true, _uploadSamplOrbSpinBox);
-//  setUploadTrafoButton->setEnabled(true); // weber
+// TODO  setUploadTrafoButton
   } 
   else {
     enableWidget(false, _uploadIntrComboBox);
     enableWidget(false, _uploadSamplSpinBox);
     enableWidget(false, _uploadSamplOrbSpinBox);
-//  setUploadTrafoButton->setEnabled(false); // weber
+// TODO  setUploadTrafoButton
   }
 
   // PPP Client
@@ -2382,7 +2382,7 @@ void bncWindow::slotDelUploadRow() {
     enableWidget(false, _uploadIntrComboBox);
     enableWidget(false, _uploadSamplSpinBox);
     enableWidget(false, _uploadSamplOrbSpinBox);
-//  setUploadTrafoButton->setEnabled(false); // weber
+// TODO  setUploadTrafoButton
   }
 }
 
