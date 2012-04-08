@@ -967,6 +967,12 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(new QLabel("Max Sol. Gap (sec)"),     ir, 8);  
   ++ir;
   ppp2Layout->addWidget(new QLabel("Sigmas"),                 ir, 0);
+  ppp2Layout->addWidget(_pppSigCLineEdit,                     ir, 1, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Code"),                   ir, 2);
+  ppp2Layout->addWidget(_pppSigPLineEdit,                     ir, 3);
+  ppp2Layout->addWidget(new QLabel("Phase"),                  ir, 4);
+  ++ir;
+  ppp2Layout->addWidget(new QLabel("Sigmas cont'd"),          ir, 0);
   ppp2Layout->addWidget(_pppSigCrd0,                          ir, 1, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("XYZ Init "),              ir, 2);
   ppp2Layout->addWidget(_pppSigCrdP,                          ir, 3, Qt::AlignRight);
@@ -975,14 +981,6 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(new QLabel("Tropo Init        "),     ir, 6);
   ppp2Layout->addWidget(_pppSigTrpP,                          ir, 7);
   ppp2Layout->addWidget(new QLabel("Tropo White Noise"),      ir, 8);
-  ++ir;
-  ppp2Layout->addWidget(new QLabel("Sigmas cont'd"),          ir, 0);
-  ppp2Layout->addWidget(_pppSigCLineEdit,                     ir, 1, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Code"),                   ir, 2);
-  ppp2Layout->addWidget(_pppSigPLineEdit,                     ir, 3);
-  ppp2Layout->addWidget(new QLabel("Phase"),                  ir, 4);
-//++ir;
-//ppp2Layout->addWidget(new QLabel(""),                       ir, 0);
 
   ppp2group->setLayout(ppp2Layout);
 
