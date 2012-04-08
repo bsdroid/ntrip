@@ -81,7 +81,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("waitTime",         "5");
     setValue("pppMount",         "");
     setValue("pppCorrMount",     "");
-    setValue("pppSPP",           "Realtime-PPP");
+    setValue("pppSPP",           "");
     setValue("pppSigmaCode",     "10.0");
     setValue("pppSigmaPhase",    "0.02");
     setValue("pppQuickStart",    "");
