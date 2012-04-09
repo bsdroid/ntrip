@@ -171,7 +171,9 @@ class bncWindow : public QMainWindow {
     QPushButton*   _teqcEditOptionButton;
     qtFileChooser* _teqcObsFileChooser;
     qtFileChooser* _teqcNavFileChooser;
-    QLineEdit*     _teqcOutLineEdit;
+    QLineEdit*     _teqcOutObsLineEdit;
+    QLineEdit*     _teqcOutNavLineEdit;
+    QLineEdit*     _teqcOutLogLineEdit;
 
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;

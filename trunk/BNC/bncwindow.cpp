@@ -993,7 +993,7 @@ bncWindow::bncWindow() {
   // ---------------
   _teqcActionComboBox = new QComboBox();
   _teqcActionComboBox->setEditable(false);
-  _teqcActionComboBox->addItems(QString(",Edit,Analyze").split(","));
+  _teqcActionComboBox->addItems(QString(",Edit/Concatenate,Analyze").split(","));
   ik = _teqcActionComboBox->findText(settings.value("teqcAction").toString());
   if (ik != -1) {
     _teqcActionComboBox->setCurrentIndex(ik);
@@ -1002,42 +1002,64 @@ bncWindow::bncWindow() {
           this, SLOT(slotBncTextChanged()));
 
   QGridLayout* teqcLayout = new QGridLayout;
-  teqcLayout->setColumnMinimumWidth(0,14*ww);
-  _teqcActionComboBox->setMaximumWidth(10*ww);
+  _teqcActionComboBox->setMinimumWidth(15*ww);
+  _teqcActionComboBox->setMaximumWidth(15*ww);
 
   _teqcObsFileChooser = new qtFileChooser;
   _teqcObsFileChooser->setFileName(settings.value("teqcObsFile").toString());
   _teqcObsFileChooser->setWhatsThis(tr("Specify the full path to an observation file in RINEX v2 or v3 format."));
+  _teqcObsFileChooser->setMinimumWidth(15*ww);
+  _teqcObsFileChooser->setMaximumWidth(15*ww);
 
   _teqcNavFileChooser = new qtFileChooser;
   _teqcNavFileChooser->setFileName(settings.value("teqcNavFile").toString());
   _teqcNavFileChooser->setWhatsThis(tr("Specify the full path to a RINEX v2 or v3 navigation file."));
+  _teqcNavFileChooser->setMinimumWidth(15*ww);
+  _teqcNavFileChooser->setMaximumWidth(15*ww);
 
-  _teqcOutLineEdit = new QLineEdit(settings.value("teqcOutFile").toString());
-  _teqcOutLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
+  _teqcOutObsLineEdit = new QLineEdit(settings.value("teqcOutObsFile").toString());
+  _teqcOutObsLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
+  _teqcOutObsLineEdit->setMinimumWidth(15*ww);
+  _teqcOutObsLineEdit->setMaximumWidth(15*ww);
+
+  _teqcOutNavLineEdit = new QLineEdit(settings.value("teqcOutNavFile").toString());
+  _teqcOutNavLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
+  _teqcOutNavLineEdit->setMinimumWidth(15*ww);
+  _teqcOutNavLineEdit->setMaximumWidth(15*ww);
+
+  _teqcOutLogLineEdit = new QLineEdit(settings.value("teqcOutLogFile").toString());
+  _teqcOutLogLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
+  _teqcOutLogLineEdit->setMinimumWidth(15*ww);
+  _teqcOutLogLineEdit->setMaximumWidth(15*ww);
 
   ir = 0;
   teqcLayout->addWidget(new QLabel("RINEX file editing, quality control or concatination."),ir, 0, 1, 20);
   ++ir;
-  teqcLayout->addWidget(new QLabel("Action"),                   ir, 0);
-  teqcLayout->addWidget(_teqcActionComboBox,                    ir, 1);
+  teqcLayout->addWidget(new QLabel("Action"),                   ir, 0, Qt::AlignLeft);
+  teqcLayout->addWidget(_teqcActionComboBox,                    ir, 1, Qt::AlignLeft);
   _teqcEditOptionButton = new QPushButton("Set Edit Options");
-  teqcLayout->addWidget(_teqcEditOptionButton,                  ir, 2);
+  teqcLayout->addWidget(_teqcEditOptionButton,                  ir, 3, Qt::AlignRight);
   ++ir;
-  teqcLayout->addWidget(new QLabel("Input files (full path)"),  ir, 0);
-  teqcLayout->addWidget(_teqcObsFileChooser,                    ir, 1, 1, 4);
-  teqcLayout->addWidget(new QLabel("Obs "),                     ir, 5);
-  teqcLayout->addWidget(_teqcNavFileChooser,                    ir, 6, 1, 8);
-  teqcLayout->addWidget(new QLabel("Nav"),                      ir,14);
+  teqcLayout->addWidget(new QLabel("Input files (full path)"),  ir, 0, Qt::AlignLeft);
+  teqcLayout->addWidget(_teqcObsFileChooser,                    ir, 1, Qt::AlignRight);
+  teqcLayout->addWidget(new QLabel("Obs"),                      ir, 2, Qt::AlignLeft);
+  teqcLayout->addWidget(_teqcNavFileChooser,                    ir, 3, Qt::AlignRight);
+  teqcLayout->addWidget(new QLabel("Nav"),                      ir, 4, Qt::AlignLeft);
   ++ir;
-  teqcLayout->addWidget(new QLabel("Output file (full path)"),  ir, 0);
-  teqcLayout->addWidget(_teqcOutLineEdit,                       ir, 1, 1, 4);
+  teqcLayout->addWidget(new QLabel("Output files (full path)"),  ir, 0, Qt::AlignLeft);
+  teqcLayout->addWidget(_teqcOutObsLineEdit,                     ir, 1, Qt::AlignRight);
+  teqcLayout->addWidget(new QLabel("Obs"),                       ir, 2, Qt::AlignLeft);
+  teqcLayout->addWidget(_teqcOutNavLineEdit,                     ir, 3, Qt::AlignRight);
+  teqcLayout->addWidget(new QLabel("Nav"),                       ir, 4, Qt::AlignLeft);
   ++ir;
-  teqcLayout->addWidget(new QLabel(" "),                        ir, 0);
+  teqcLayout->addWidget(_teqcOutLogLineEdit,                     ir, 1, Qt::AlignRight);
+  teqcLayout->addWidget(new QLabel("Log"),                       ir, 2, Qt::AlignLeft);
   ++ir;
-  teqcLayout->addWidget(new QLabel(" "),                        ir, 0);
-  ++ir;
-  teqcLayout->addWidget(new QLabel(" "),                        ir, 0);
+  teqcLayout->addWidget(new QLabel(""), ir, 1);
+  teqcLayout->setRowStretch(ir, 999);
+
+  teqcLayout->setColumnMinimumWidth(2, 8*ww);
+  teqcLayout->setColumnMinimumWidth(4, 8*ww);
 
   teqcgroup->setLayout(teqcLayout);
 
@@ -1684,7 +1706,9 @@ void bncWindow::slotSaveOptions() {
 
   settings.setValue("teqcObsFile", _teqcObsFileChooser->fileName());
   settings.setValue("teqcNavFile", _teqcNavFileChooser->fileName());
-  settings.setValue("teqcOutFile", _teqcOutLineEdit->text());
+  settings.setValue("teqcOutObsFile", _teqcOutObsLineEdit->text());
+  settings.setValue("teqcOutNavFile", _teqcOutNavLineEdit->text());
+  settings.setValue("teqcOutLogFile", _teqcOutLogLineEdit->text());
 
   if (_caster) {
     _caster->slotReadMountPoints();
@@ -2254,11 +2278,13 @@ void bncWindow::slotBncTextChanged(){
 
   if (sender() == 0 || sender() == _teqcActionComboBox) {
     enable = !_teqcActionComboBox->currentText().isEmpty();
-    bool enable10 = _teqcActionComboBox->currentText() == "Edit";
+    bool enable10 = _teqcActionComboBox->currentText() == "Edit/Concatenate";
     enableWidget(enable &&  enable10, _teqcEditOptionButton);
     enableWidget(enable,              _teqcObsFileChooser);
-    enableWidget(enable && !enable10, _teqcNavFileChooser);
-    enableWidget(enable && !enable10, _teqcOutLineEdit);
+    enableWidget(enable,              _teqcNavFileChooser);
+    enableWidget(enable &&  enable10, _teqcOutObsLineEdit);
+    enableWidget(enable &&  enable10, _teqcOutNavLineEdit);
+    enableWidget(enable && !enable10, _teqcOutLogLineEdit);
   }
 }
 
