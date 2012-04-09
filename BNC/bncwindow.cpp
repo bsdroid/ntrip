@@ -363,7 +363,10 @@ bncWindow::bncWindow() {
   _pppCorrMountLineEdit->setMinimumWidth(8*ww);
   _pppCorrMountLineEdit->setMaximumWidth(8*ww);
   _pppNMEALineEdit       = new QLineEdit(settings.value("nmeaFile").toString());
+  _pppNMEALineEdit->setMinimumWidth(15*ww);
   _pppNMEAPortLineEdit   = new QLineEdit(settings.value("nmeaPort").toString());
+  _pppNMEAPortLineEdit->setMaximumWidth(8*ww);
+  _pppNMEAPortLineEdit->setMinimumWidth(8*ww);
   _pppSigCLineEdit       = new QLineEdit(settings.value("pppSigmaCode").toString());
   _pppSigPLineEdit       = new QLineEdit(settings.value("pppSigmaPhase").toString());
   _pppSigCrd0            = new QLineEdit(settings.value("pppSigCrd0").toString());
@@ -871,7 +874,6 @@ bncWindow::bncWindow() {
   _pppRefdULineEdit->setMaximumWidth(6*ww);
   _pppSync->setMaximumWidth(6*ww);
   _pppSPPComboBox->setMinimumWidth(15*ww); 
-  _pppNMEAPortLineEdit->setMaximumWidth(10*ww);
 
   _postObsFileChooser = new qtFileChooser;
   _postObsFileChooser->setFileName(settings.value("postObsFile").toString());
@@ -895,13 +897,13 @@ bncWindow::bncWindow() {
   pppLayout->addWidget(_pppCorrMountLineEdit,           ir, 5, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("Corr."),             ir, 6, Qt::AlignLeft);
   ++ir;
-  pppLayout->addWidget(new QLabel("Marker coordinate"), ir, 0, Qt::AlignLeft);
-  pppLayout->addWidget(_pppRefCrdXLineEdit,             ir, 1, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("X     "),            ir, 2, Qt::AlignLeft);
-  pppLayout->addWidget(_pppRefCrdYLineEdit,             ir, 3, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Y"),                 ir, 4, Qt::AlignLeft);
-  pppLayout->addWidget(_pppRefCrdZLineEdit,             ir, 5, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Z"),                 ir, 6, Qt::AlignLeft);
+  pppLayout->addWidget(new QLabel("Marker coordinates"), ir, 0, Qt::AlignLeft);
+  pppLayout->addWidget(_pppRefCrdXLineEdit,              ir, 1, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("X     "),             ir, 2, Qt::AlignLeft);
+  pppLayout->addWidget(_pppRefCrdYLineEdit,              ir, 3, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Y"),                  ir, 4, Qt::AlignLeft);
+  pppLayout->addWidget(_pppRefCrdZLineEdit,              ir, 5, Qt::AlignRight);
+  pppLayout->addWidget(new QLabel("Z"),                  ir, 6, Qt::AlignLeft);
   ++ir;
   pppLayout->addWidget(new QLabel("Antenna excentricity"), ir, 0, Qt::AlignLeft);
   pppLayout->addWidget(_pppRefdNLineEdit,                  ir, 1, Qt::AlignRight);
