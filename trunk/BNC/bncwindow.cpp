@@ -64,6 +64,8 @@
 #include "teqcdlg.h"
 #ifdef USE_POSTPROCESSING
 #  include "rinex/bncpostprocess.h"
+#  include "rinex/teqcedit.h"
+#  include "rinex/teqcanalyze.h"
 #endif
 
 using namespace std;
@@ -2514,10 +2516,20 @@ void bncWindow::slotPostProgress(int nEpo) {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::startPostProcessingTeqc() {
 #ifdef USE_POSTPROCESSING
-  _runningPostProcessingTeqc = false;  // TODO
+  _runningPostProcessingTeqc = true;
   enableStartStop();
-  QMessageBox::information(this, "Information",
-                           "Teqc-Processing Not Yet Implemented");
+  if (_teqcActionComboBox->currentText() == "Analyze") {
+    t_teqcAnalyze* teqcAnalyze = new t_teqcAnalyze(this);
+    connect(teqcAnalyze, SIGNAL(finished()), 
+            this, SLOT(slotFinishedPostProcessingTeqc()));
+    teqcAnalyze->start();
+  }
+  else {
+    t_teqcEdit* teqcEdit = new t_teqcEdit(this);
+    connect(teqcEdit, SIGNAL(finished()), 
+            this, SLOT(slotFinishedPostProcessingTeqc()));
+    teqcEdit->start();
+  }
 #else
   QMessageBox::information(this, "Information",
                            "Post-Processing Not Permitted");
