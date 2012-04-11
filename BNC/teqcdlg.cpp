@@ -45,6 +45,8 @@
 
 using namespace std;
 
+const QString timeFmtString = "yyyy-MM-dd hh:mm:ss";
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
@@ -56,7 +58,9 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
   _teqcRnxVersion      = new QComboBox(this);
   _teqcSampling        = new QSpinBox(this);
   _teqcStartDateTime   = new QDateTimeEdit(this);
+  _teqcStartDateTime->setDisplayFormat(timeFmtString);
   _teqcEndDateTime     = new QDateTimeEdit(this);
+  _teqcEndDateTime->setDisplayFormat(timeFmtString);
   _teqcOldMarkerName   = new QLineEdit(this);
   _teqcNewMarkerName   = new QLineEdit(this);
   _teqcOldAntennaName  = new QLineEdit(this);
@@ -170,8 +174,8 @@ void teqcDlg::saveOptions() {
 
   settings.setValue("teqcRnxVersion"     , _teqcRnxVersion->currentText());    
   settings.setValue("teqcSampling"       , _teqcSampling->value());      
-  settings.setValue("teqcStartDateTime"  , _teqcStartDateTime->dateTime().toString()); 
-  settings.setValue("teqcEndDateTime"    , _teqcEndDateTime->dateTime().toString());   
+  settings.setValue("teqcStartDateTime"  , _teqcStartDateTime->dateTime().toString(timeFmtString)); 
+  settings.setValue("teqcEndDateTime"    , _teqcEndDateTime->dateTime().toString(timeFmtString));   
   settings.setValue("teqcOldMarkerName"  , _teqcOldMarkerName->text()); 
   settings.setValue("teqcNewMarkerName"  , _teqcNewMarkerName->text()); 
   settings.setValue("teqcOldAntennaName" , _teqcOldAntennaName->text());
