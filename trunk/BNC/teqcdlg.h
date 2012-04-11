@@ -48,6 +48,8 @@ class teqcDlg : public QDialog {
     virtual void closeEvent(QCloseEvent *);
 
   private:
+   void saveOptions();
+
    QComboBox*     _teqcRnxVersion;
    QSpinBox*      _teqcSampling;
    QDateTimeEdit* _teqcStartDateTime;
