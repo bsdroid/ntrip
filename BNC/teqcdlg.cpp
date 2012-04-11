@@ -41,6 +41,7 @@
 #include <iostream>
 
 #include "teqcdlg.h"
+#include "bncsettings.h"
 
 using namespace std;
 
@@ -165,4 +166,18 @@ void teqcDlg::closeEvent(QCloseEvent* event) {
 ////////////////////////////////////////////////////////////////////////////
 void teqcDlg::saveOptions() {
 
+  bncSettings settings;
+
+  settings.setValue("teqcRnxVersion"     , _teqcRnxVersion->currentText());    
+  settings.setValue("teqcSampling"       , _teqcSampling->value());      
+  settings.setValue("teqcStartDateTime"  , _teqcStartDateTime->dateTime().toString()); 
+  settings.setValue("teqcEndDateTime"    , _teqcEndDateTime->dateTime().toString());   
+  settings.setValue("teqcOldMarkerName"  , _teqcOldMarkerName->text()); 
+  settings.setValue("teqcNewMarkerName"  , _teqcNewMarkerName->text()); 
+  settings.setValue("teqcOldAntennaName" , _teqcOldAntennaName->text());
+  settings.setValue("teqcNewAntennaName" , _teqcNewAntennaName->text());
+  settings.setValue("teqcOldReceiverName", _teqcOldReceiverName->text());
+  settings.setValue("teqcNewReceiverName", _teqcNewReceiverName->text());
+   
+  settings.sync();
 }
