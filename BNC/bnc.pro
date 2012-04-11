@@ -115,8 +115,10 @@ exists(combination/bnccomb.h) {
 exists(rinex/bncpostprocess.h) {
   DEFINES += USE_POSTPROCESSING
   HEADERS += rinex/bncpostprocess.h   rinex/rnxobsfile.h   \
-             rinex/rnxnavfile.h       rinex/corrfile.h
+             rinex/rnxnavfile.h       rinex/corrfile.h     \
+             rinex/teqcedit.h         rinex/teqcanalyze.h
   SOURCES += rinex/bncpostprocess.cpp rinex/rnxobsfile.cpp \
-             rinex/rnxnavfile.cpp     rinex/corrfile.cpp
+             rinex/rnxnavfile.cpp     rinex/corrfile.cpp   \
+             rinex/teqcedit.cpp       rinex/teqcanalyze.cpp
 }
 
