@@ -83,14 +83,6 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
   // ------------
   // settings.setValue("teqcRnxVersion"     , _teqcRnxVersion->currentText());    
   // settings.setValue("teqcSampling"       , _teqcSampling->value());      
-  // settings.setValue("teqcStartDateTime"  , _teqcStartDateTime->dateTime().toString(Qt::ISODate)); 
-  // settings.setValue("teqcEndDateTime"    , _teqcEndDateTime->dateTime().toString(Qt::ISODate));   
-  // settings.setValue("teqcOldMarkerName"  , _teqcOldMarkerName->text()); 
-  // settings.setValue("teqcNewMarkerName"  , _teqcNewMarkerName->text()); 
-  // settings.setValue("teqcOldAntennaName" , _teqcOldAntennaName->text());
-  // settings.setValue("teqcNewAntennaName" , _teqcNewAntennaName->text());
-  // settings.setValue("teqcOldReceiverName", _teqcOldReceiverName->text());
-  // settings.setValue("teqcNewReceiverName", _teqcNewReceiverName->text());
 
   bncSettings settings;
 
@@ -100,6 +92,18 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
   else {
     _teqcStartDateTime->setDateTime(settings.value("teqcStartDateTime").toDateTime());
   }
+  if (settings.value("teqcEndDateTime").toString().isEmpty()) {
+    _teqcEndDateTime->setDateTime(QDateTime::fromString("1967-11-02T00:00:00", Qt::ISODate));
+  }
+  else {
+    _teqcEndDateTime->setDateTime(settings.value("teqcEndDateTime").toDateTime());
+  }
+  _teqcOldMarkerName->setText(settings.value("teqcOldMarkerName").toString());
+  _teqcNewMarkerName->setText(settings.value("teqcNewMarkerName").toString());
+  _teqcOldAntennaName->setText(settings.value("teqcOldAntennaName").toString());
+  _teqcNewAntennaName->setText(settings.value("teqcNewAntennaName").toString());
+  _teqcOldReceiverName->setText(settings.value("teqcOldReceiverName").toString());
+  _teqcNewReceiverName->setText(settings.value("teqcNewReceiverName").toString());
 
   // Dialog Layout
   // -------------
