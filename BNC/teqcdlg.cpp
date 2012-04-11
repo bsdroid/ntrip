@@ -104,7 +104,7 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
   _buttonWhatsThis = new QPushButton(tr("Help=Shift+F1"), this);
   connect(_buttonWhatsThis, SIGNAL(clicked()), this, SLOT(slotWhatsThis()));
 
-  _buttonOK = new QPushButton(tr("OK"), this);
+  _buttonOK = new QPushButton(tr("OK / Save"), this);
   connect(_buttonOK, SIGNAL(clicked()), this, SLOT(slotOK()));
 
   _buttonCancel = new QPushButton(tr("Cancel"), this);
@@ -132,11 +132,31 @@ teqcDlg::~teqcDlg() {
 // Accept the Options
 ////////////////////////////////////////////////////////////////////////////
 void teqcDlg::slotOK() {
-
+  // saveOptions();
+  done(0);
 }
 
 // Whats This Help
 ////////////////////////////////////////////////////////////////////////////
 void teqcDlg::slotWhatsThis() {
   QWhatsThis::enterWhatsThisMode();
+}
+
+// Close Dialog gracefully
+////////////////////////////////////////////////////////////////////////////
+void teqcDlg::closeEvent(QCloseEvent* event) {
+
+  int iRet = QMessageBox::question(this, "Close", "Save Options?", 
+                                   QMessageBox::Yes, QMessageBox::No,
+                                   QMessageBox::Cancel);
+
+  if      (iRet == QMessageBox::Cancel) {
+    event->ignore();
+    return;
+  }
+  else if (iRet == QMessageBox::Yes) {
+    //    saveOptions();
+  }
+
+  QDialog::closeEvent(event);
 }
