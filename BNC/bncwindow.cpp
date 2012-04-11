@@ -1699,13 +1699,14 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("uploadEphMountpoint",_uploadEphMountpointLineEdit->text());
   settings.setValue("uploadEphSample",    _uploadEphSampleSpinBox->value());
 
-  settings.setValue("postObsFile", _postObsFileChooser->fileName());
-  settings.setValue("postNavFile", _postNavFileChooser->fileName());
+  settings.setValue("postObsFile",  _postObsFileChooser->fileName());
+  settings.setValue("postNavFile",  _postNavFileChooser->fileName());
   settings.setValue("postCorrFile", _postCorrFileChooser->fileName());
-  settings.setValue("postOutFile", _postOutLineEdit->text());
+  settings.setValue("postOutFile",  _postOutLineEdit->text());
 
-  settings.setValue("teqcObsFile", _teqcObsFileChooser->fileName());
-  settings.setValue("teqcNavFile", _teqcNavFileChooser->fileName());
+  settings.setValue("teqcAction",     _teqcActionComboBox->currentText());
+  settings.setValue("teqcObsFile",    _teqcObsFileChooser->fileName());
+  settings.setValue("teqcNavFile",    _teqcNavFileChooser->fileName());
   settings.setValue("teqcOutObsFile", _teqcOutObsLineEdit->text());
   settings.setValue("teqcOutNavFile", _teqcOutNavLineEdit->text());
   settings.setValue("teqcOutLogFile", _teqcOutLogLineEdit->text());
