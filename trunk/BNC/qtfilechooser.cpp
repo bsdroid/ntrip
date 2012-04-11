@@ -18,7 +18,8 @@
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////
-qtFileChooser::qtFileChooser(QWidget* parent) : QWidget(parent), _mode(File) {
+qtFileChooser::qtFileChooser(QWidget* parent, qtFileChooser::Mode mode) : 
+  QWidget(parent), _mode(mode) {
 
   QHBoxLayout* layout = new QHBoxLayout( this );
   layout->setMargin(0);
@@ -58,8 +59,12 @@ QString qtFileChooser::fileName() const {
 ////////////////////////////////////////////////////////////////////////////////
 void qtFileChooser::chooseFile() {
   QString fileName;
-  if (mode() == File) {
+  if      (mode() == File) {
     fileName = QFileDialog::getOpenFileName(this);
+  }
+  else if (mode() == Files) {
+    QStringList fileNames = QFileDialog::getOpenFileNames(this);
+    fileName = fileNames.join(",");
   }
   else {
     fileName = QFileDialog::getExistingDirectory(this);

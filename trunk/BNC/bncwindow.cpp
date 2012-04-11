@@ -1003,13 +1003,13 @@ bncWindow::bncWindow() {
   _teqcActionComboBox->setMinimumWidth(15*ww);
   _teqcActionComboBox->setMaximumWidth(15*ww);
 
-  _teqcObsFileChooser = new qtFileChooser;
+  _teqcObsFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _teqcObsFileChooser->setFileName(settings.value("teqcObsFile").toString());
   _teqcObsFileChooser->setWhatsThis(tr("Specify the full path to an observation file in RINEX v2 or v3 format."));
   _teqcObsFileChooser->setMinimumWidth(15*ww);
   _teqcObsFileChooser->setMaximumWidth(15*ww);
 
-  _teqcNavFileChooser = new qtFileChooser;
+  _teqcNavFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _teqcNavFileChooser->setFileName(settings.value("teqcNavFile").toString());
   _teqcNavFileChooser->setWhatsThis(tr("Specify the full path to a RINEX v2 or v3 navigation file."));
   _teqcNavFileChooser->setMinimumWidth(15*ww);
@@ -2513,10 +2513,15 @@ void bncWindow::slotPostProgress(int nEpo) {
 // Start Post-Processing Teqc
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::startPostProcessingTeqc() {
+#ifdef USE_POSTPROCESSING
   _runningPostProcessingTeqc = false;  // TODO
   enableStartStop();
   QMessageBox::information(this, "Information",
                            "Teqc-Processing Not Yet Implemented");
+#else
+  QMessageBox::information(this, "Information",
+                           "Post-Processing Not Permitted");
+#endif
 }
 
 // Post-Processing Teqc Finished
