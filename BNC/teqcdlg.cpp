@@ -45,7 +45,6 @@
 
 using namespace std;
 
-const QString timeFmtString = "yyyy-MM-dd hh:mm:ss";
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -54,6 +53,8 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
   setWindowTitle(tr("Teqc Editing Options"));
 
   int ww = QFontMetrics(font()).width('w');
+
+  const QString timeFmtString = "yyyy-MM-dd hh:mm:ss";
 
   _teqcRnxVersion      = new QComboBox(this);
   _teqcSampling        = new QSpinBox(this);
@@ -78,6 +79,30 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
   _teqcSampling->setSuffix(" sec");
   _teqcSampling->setMaximumWidth(7*ww);
 
+  // Read Options
+  // ------------
+  // settings.setValue("teqcRnxVersion"     , _teqcRnxVersion->currentText());    
+  // settings.setValue("teqcSampling"       , _teqcSampling->value());      
+  // settings.setValue("teqcStartDateTime"  , _teqcStartDateTime->dateTime().toString(Qt::ISODate)); 
+  // settings.setValue("teqcEndDateTime"    , _teqcEndDateTime->dateTime().toString(Qt::ISODate));   
+  // settings.setValue("teqcOldMarkerName"  , _teqcOldMarkerName->text()); 
+  // settings.setValue("teqcNewMarkerName"  , _teqcNewMarkerName->text()); 
+  // settings.setValue("teqcOldAntennaName" , _teqcOldAntennaName->text());
+  // settings.setValue("teqcNewAntennaName" , _teqcNewAntennaName->text());
+  // settings.setValue("teqcOldReceiverName", _teqcOldReceiverName->text());
+  // settings.setValue("teqcNewReceiverName", _teqcNewReceiverName->text());
+
+  bncSettings settings;
+
+  if (settings.value("teqcStartDateTime").toString().isEmpty()) {
+    _teqcStartDateTime->setDateTime(QDateTime::fromString("1967-11-02T00:00:00", Qt::ISODate));
+  }
+  else {
+    _teqcStartDateTime->setDateTime(settings.value("teqcStartDateTime").toDateTime());
+  }
+
+  // Dialog Layout
+  // -------------
   QGridLayout* grid = new QGridLayout;
 
   int ir = 0;
@@ -174,8 +199,8 @@ void teqcDlg::saveOptions() {
 
   settings.setValue("teqcRnxVersion"     , _teqcRnxVersion->currentText());    
   settings.setValue("teqcSampling"       , _teqcSampling->value());      
-  settings.setValue("teqcStartDateTime"  , _teqcStartDateTime->dateTime().toString(timeFmtString)); 
-  settings.setValue("teqcEndDateTime"    , _teqcEndDateTime->dateTime().toString(timeFmtString));   
+  settings.setValue("teqcStartDateTime"  , _teqcStartDateTime->dateTime().toString(Qt::ISODate)); 
+  settings.setValue("teqcEndDateTime"    , _teqcEndDateTime->dateTime().toString(Qt::ISODate));   
   settings.setValue("teqcOldMarkerName"  , _teqcOldMarkerName->text()); 
   settings.setValue("teqcNewMarkerName"  , _teqcNewMarkerName->text()); 
   settings.setValue("teqcOldAntennaName" , _teqcOldAntennaName->text());
