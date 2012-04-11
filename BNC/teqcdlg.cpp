@@ -132,7 +132,7 @@ teqcDlg::~teqcDlg() {
 // Accept the Options
 ////////////////////////////////////////////////////////////////////////////
 void teqcDlg::slotOK() {
-  // saveOptions();
+  saveOptions();
   done(0);
 }
 
@@ -155,8 +155,14 @@ void teqcDlg::closeEvent(QCloseEvent* event) {
     return;
   }
   else if (iRet == QMessageBox::Yes) {
-    //    saveOptions();
+    saveOptions();
   }
 
   QDialog::closeEvent(event);
+}
+
+// Save Selected Options
+////////////////////////////////////////////////////////////////////////////
+void teqcDlg::saveOptions() {
+
 }
