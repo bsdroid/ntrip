@@ -245,9 +245,6 @@ class bncWindow : public QMainWindow {
 
     bncEphUploadCaster* _casterEph;
 
-    int _tabIndexPPP1;
-    int _tabIndexPPP2;
-    int _tabIndexTeqc;
     bool _realTimeRunning;
     bool _runningRealTime;
     bool _runningPostProcessingPPP;

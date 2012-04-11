@@ -574,13 +574,11 @@ bncWindow::bncWindow() {
     enableWidget(true, _uploadIntrComboBox);
     enableWidget(true, _uploadSamplSpinBox);
     enableWidget(true, _uploadSamplOrbSpinBox);
-// TODO  setUploadTrafoButton
   } 
   else {
     enableWidget(false, _uploadIntrComboBox);
     enableWidget(false, _uploadSamplSpinBox);
     enableWidget(false, _uploadSamplOrbSpinBox);
-// TODO  setUploadTrafoButton
   }
 
   // Upload RTCM3 Ephemeris
@@ -629,9 +627,9 @@ bncWindow::bncWindow() {
   _aogroup->addTab(sergroup,tr("Serial Output"));
   _aogroup->addTab(agroup,tr("Outages"));
   _aogroup->addTab(rgroup,tr("Miscellaneous"));
-  _aogroup->addTab(pppgroup,tr("PPP (1)"));  _tabIndexPPP1 = _aogroup->count() - 1;
-  _aogroup->addTab(ppp2group,tr("PPP (2)")); _tabIndexPPP2 = _aogroup->count() - 1;
-  _aogroup->addTab(teqcgroup,tr("Teqc"));    _tabIndexTeqc = _aogroup->count() - 1;
+  _aogroup->addTab(pppgroup,tr("PPP (1)"));
+  _aogroup->addTab(ppp2group,tr("PPP (2)"));
+  _aogroup->addTab(teqcgroup,tr("Teqc"));
 #ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combination"));
 #endif
@@ -2187,13 +2185,11 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(true, _uploadIntrComboBox);
     enableWidget(true, _uploadSamplSpinBox);
     enableWidget(true, _uploadSamplOrbSpinBox);
-// TODO  setUploadTrafoButton
   } 
   else {
     enableWidget(false, _uploadIntrComboBox);
     enableWidget(false, _uploadSamplSpinBox);
     enableWidget(false, _uploadSamplOrbSpinBox);
-// TODO  setUploadTrafoButton
   }
 
   // PPP Client
@@ -2411,7 +2407,6 @@ void bncWindow::slotDelUploadRow() {
     enableWidget(false, _uploadIntrComboBox);
     enableWidget(false, _uploadSamplSpinBox);
     enableWidget(false, _uploadSamplOrbSpinBox);
-// TODO  setUploadTrafoButton
   }
 }
 
