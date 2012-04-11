@@ -12,10 +12,10 @@ class qtFileChooser : public QWidget {
   Q_PROPERTY( QString fileName READ fileName WRITE setFileName )
 
  public:
-  qtFileChooser(QWidget* parent = 0);
-  ~qtFileChooser();
+  enum Mode {File, Files, Directory};
 
-  enum Mode {File, Directory};
+  qtFileChooser(QWidget* parent = 0, qtFileChooser::Mode mode = File);
+  ~qtFileChooser();
 
   QString fileName() const;
   Mode mode() const {return _mode;}
