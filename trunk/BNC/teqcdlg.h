@@ -44,6 +44,9 @@ class teqcDlg : public QDialog {
     void slotOK();
     void slotWhatsThis();
 
+  protected:
+    virtual void closeEvent(QCloseEvent *);
+
   private:
    QComboBox*     _teqcRnxVersion;
    QSpinBox*      _teqcSampling;
