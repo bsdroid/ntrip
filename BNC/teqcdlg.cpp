@@ -93,7 +93,7 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
     _teqcStartDateTime->setDateTime(settings.value("teqcStartDateTime").toDateTime());
   }
   if (settings.value("teqcEndDateTime").toString().isEmpty()) {
-    _teqcEndDateTime->setDateTime(QDateTime::fromString("1967-11-02T00:00:00", Qt::ISODate));
+    _teqcEndDateTime->setDateTime(QDateTime::fromString("2099-01-01T00:00:00", Qt::ISODate));
   }
   else {
     _teqcEndDateTime->setDateTime(settings.value("teqcEndDateTime").toDateTime());
