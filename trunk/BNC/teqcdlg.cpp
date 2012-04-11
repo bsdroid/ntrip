@@ -81,11 +81,13 @@ teqcDlg::teqcDlg(QWidget* parent) : QDialog(parent) {
 
   // Read Options
   // ------------
-  // settings.setValue("teqcRnxVersion"     , _teqcRnxVersion->currentText());    
-  // settings.setValue("teqcSampling"       , _teqcSampling->value());      
-
   bncSettings settings;
 
+  int kk = _teqcRnxVersion->findText(settings.value("teqcRnxVersion").toString());
+  if (kk != -1) {
+    _teqcRnxVersion->setCurrentIndex(kk);
+  }
+  _teqcSampling->setValue(settings.value("teqcSampling").toInt());
   if (settings.value("teqcStartDateTime").toString().isEmpty()) {
     _teqcStartDateTime->setDateTime(QDateTime::fromString("1967-11-02T00:00:00", Qt::ISODate));
   }
