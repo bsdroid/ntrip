@@ -90,6 +90,7 @@ class t_rnxObsFile {
  protected:
   t_rnxObsFile() {};
   void openRead(const QString& fileName);
+  void openWrite(const QString& fileName);
   void close();
 
  private: 
@@ -121,6 +122,8 @@ class t_rnxObsFile {
  public:
   const t_rnxObsHeader& header() const {return _header;}
   void setHeader(const t_rnxObsHeader& header);
+  void writeHeader();
+  void writeEpoch(const t_rnxEpo* epo);
 
  private:
   const t_rnxEpo* nextEpochV2();

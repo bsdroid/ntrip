@@ -227,10 +227,11 @@ t_rnxObsFile::t_rnxObsFile(const QString& fileName, e_inpOut inpOut) {
     openRead(fileName);
   }
   else {
+    openWrite(fileName);
   }
 }
 
-// Open
+// Open for input
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::openRead(const QString& fileName) {
 
@@ -274,6 +275,17 @@ void t_rnxObsFile::openRead(const QString& fileName) {
     _stream->seek(0);
     _header.read(_stream);
   }
+}
+
+// Open for output
+////////////////////////////////////////////////////////////////////////////
+void t_rnxObsFile::openWrite(const QString& fileName) {
+
+  _fileName = fileName; expandEnvVar(_fileName);
+  _file     = new QFile(_fileName);
+  _file->open(QIODevice::WriteOnly | QIODevice::Text);
+  _stream = new QTextStream();
+  _stream->setDevice(_file);
 }
 
 // Destructor
@@ -528,4 +540,16 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header) {
       _header._obsTypesV3[sys].push_back(typesV3[ii]);
     }
   }
+}
+
+// Write Header
+////////////////////////////////////////////////////////////////////////////
+void t_rnxObsFile::writeHeader() {
+
+}
+
+// Write Data Epoch
+////////////////////////////////////////////////////////////////////////////
+void t_rnxObsFile::writeEpoch(const t_rnxEpo* epo) {
+
 }
