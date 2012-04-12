@@ -57,13 +57,16 @@ t_teqcEdit::t_teqcEdit(QObject* parent) : QThread(parent) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_teqcEdit::~t_teqcEdit() {
+  for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
+    delete _rnxObsFiles[ii];
+  }
 }
 
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_teqcEdit::run() {
 
-  // Initialize Input Observation Files, Sort them according to start time
+  // Initialize input observation files, sort them according to start time
   // ---------------------------------------------------------------------
   QStringListIterator it(_obsFileNames);
   while (it.hasNext()) {
