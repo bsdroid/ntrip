@@ -578,8 +578,23 @@ void t_rnxObsFile::writeHeader() {
 
   *_stream << QString("%1%2")
     .arg("xxxx", -20)      // TODO
-    .arg(_header._antennaName, -40)
+    .arg(_header._antennaName, -20)
+    .leftJustified(60)
            << "ANT # / TYPE\n";
+
+  *_stream << QString("%1%2%3")
+    .arg(_header._xyz(1), 14, 'f', 4)
+    .arg(_header._xyz(2), 14, 'f', 4)
+    .arg(_header._xyz(3), 14, 'f', 4)
+    .leftJustified(60)
+           << "APPROX POSITION XYZ\n";
+
+  *_stream << QString("%1%2%3")
+    .arg(_header._antNEU(3), 14, 'f', 4)
+    .arg(_header._antNEU(2), 14, 'f', 4)
+    .arg(_header._antNEU(1), 14, 'f', 4)
+    .leftJustified(60)
+           << "ANTENNA: DELTA H/E/N\n";
 
   *_stream << QString()
     .leftJustified(60)
