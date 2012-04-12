@@ -43,6 +43,7 @@
 #include <sstream>
 #include "rnxobsfile.h"
 #include "bncutils.h"
+#include "bncversion.h"
 
 using namespace std;
 
@@ -551,7 +552,7 @@ void t_rnxObsFile::writeHeader() {
            << "RINEX VERSION / TYPE\n";
 
   *_stream << QString("%1%2%3")
-    .arg("BNC", -20)
+    .arg("BNC "BNCVERSION, -20)
     .arg("BKG", -20)
     .arg(currentDateAndTimeGPS().date().toString("dd-MMM-yyyy"), -20)
     .leftJustified(60)
