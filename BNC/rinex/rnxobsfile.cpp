@@ -604,6 +604,26 @@ void t_rnxObsFile::writeHeader() {
     .leftJustified(60)
           << "# / TYPES OF OBSERV\n";
 
+  *_stream << QString("%1")
+    .arg(_header._interval, 10, 'f', 3)
+    .leftJustified(60)
+           << "INTERVAL\n";
+
+  unsigned year, month, day, hour, min;
+  double sec;
+  _header._startTime.civil_date(year, month, day);
+  _header._startTime.civil_time(hour, min, sec);
+  *_stream << QString("%1%2%3%4%5%6%7")
+    .arg(year, 6)
+    .arg(month, 6)
+    .arg(day, 6)
+    .arg(hour, 6)
+    .arg(min, 6)
+    .arg(sec, 13, 'f', 7)
+    .arg("GPS", 8)
+    .leftJustified(60)
+           << "TIME OF FIRST OBS\n";
+
   *_stream << QString()
     .leftJustified(60)
            << "END OF HEADER\n";
