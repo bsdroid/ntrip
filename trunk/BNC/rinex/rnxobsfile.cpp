@@ -650,14 +650,32 @@ void t_rnxObsFile::writeEpoch(const t_rnxEpo* epo) {
   int flag = 0;
   *_stream << dateStr 
            << QString("%1%2").arg(flag, 3).arg(epo->rnxSat.size(), 3);
-  for (unsigned ii = 0; ii < epo->rnxSat.size(); ii++) {
-    if (ii > 0 && ii % 12 == 0) {
+  for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
+    if (iSat > 0 && iSat % 12 == 0) {
       *_stream << endl << QString().leftJustified(32);
     }
-    *_stream << epo->rnxSat[ii].satSys
-             << QString("%1").arg(epo->rnxSat[ii].satNum, 2);
+    *_stream << epo->rnxSat[iSat].satSys
+             << QString("%1").arg(epo->rnxSat[iSat].satNum, 2);
   }
   *_stream << endl;
+  for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
+    const t_rnxSat& rnxSat = epo->rnxSat[iSat];
+    for (unsigned iType = 0; iType < rnxSat.obs.size(); iType++) {
+      if (iType > 0 && iType % 5 == 0) {
+        *_stream << endl;
+      }
+      if (rnxSat.obs[iType] == 0.0) {
+        *_stream << QString().leftJustified(16);
+      }
+      else {
+        *_stream << QString("%1%2%3")
+          .arg(rnxSat.obs[iType], 14, 'f', 3)
+          .arg(rnxSat.lli[iType],1)
+          .arg(rnxSat.snr[iType],1);
+      }
+    }
+    *_stream << endl;
+  }
 
 // 09  1 13  2  0  0.0000000  0  9G28G27G20G19G17G11G 8R 7R20
 //  -5564703.685 9  -4336133.864 7  21186297.708    21186297.708    21186299.597
