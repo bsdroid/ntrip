@@ -168,6 +168,13 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       }
       delete in;
     }
+    else if (key == "TIME OF FIRST OBS") {
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      int year, month, day, hour, min;
+      double sec;
+      in >> year >> month >> day >> hour >> min >> sec;
+      _startTime.set(year, month, day, hour, min, sec);
+    }
     if (maxLines > 0 && numLines == maxLines) {
       break;
     }
@@ -247,6 +254,18 @@ void t_rnxObsFile::open(const QString& fileName) {
       }
       ttPrev = rnxEpo->tt;
     }
+    _stream->seek(0);
+    _header.read(_stream);
+  }
+
+  // Time of first observation
+  // -------------------------
+  if (!_header._startTime.valid()) {
+    const t_rnxEpo* rnxEpo = nextEpoch();
+    if (!rnxEpo) {
+      throw QString("t_rnxObsFile: not enough epochs");
+    }
+    _header._startTime = rnxEpo->tt;
     _stream->seek(0);
     _header.read(_stream);
   }

@@ -49,6 +49,8 @@ using namespace std;
 t_teqcEdit::t_teqcEdit(QObject* parent) : QThread(parent) {
 
   bncSettings settings;
+
+  _obsFileNames = settings.value("teqcObsFile").toString().split("'", QString::SkipEmptyParts);
 }
 
 // Destructor
@@ -61,6 +63,11 @@ t_teqcEdit::~t_teqcEdit() {
 void t_teqcEdit::run() {
 
   cout << "Teqc Edit Running ..." << endl;
+
+  QStringListIterator it(_obsFileNames);
+  while (it.hasNext()) {
+    t_rnxObsFile* rnxObsFile = new t_rnxObsFile(it.next());
+  }
 
   emit finished();
   deleteLater();
