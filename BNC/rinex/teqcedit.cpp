@@ -62,12 +62,11 @@ t_teqcEdit::~t_teqcEdit() {
 ////////////////////////////////////////////////////////////////////////////
 void t_teqcEdit::run() {
 
-  cout << "t_teqcEdit::run" << endl;
-
+  // Initialize Input Observation Files, Sort them according to start time
+  // ---------------------------------------------------------------------
   QStringListIterator it(_obsFileNames);
   while (it.hasNext()) {
     QString fileName = it.next();
-    cout << "file " << fileName.toAscii().data() << endl;
     t_rnxObsFile* rnxObsFile = new t_rnxObsFile(fileName);
     _rnxObsFiles.append(rnxObsFile);
   }
