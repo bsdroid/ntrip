@@ -545,15 +545,44 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header) {
 // Write Header
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::writeHeader() {
-  *_stream << QString("%1           OBSERVATION DATA    M (MIXED)           ")
+  *_stream << QString("%1           Observation data    Mixed")
     .arg(_header._version, 9, 'f', 2)
+    .leftJustified(60)
            << "RINEX VERSION / TYPE\n";
 
   *_stream << QString("%1%2%3")
     .arg("BNC", -20)
     .arg("BKG", -20)
     .arg(currentDateAndTimeGPS().date().toString("dd-MMM-yyyy"), -20)
+    .leftJustified(60)
            << "PGM / RUN BY / DATE\n";
+
+  *_stream << QString("%1")
+    .arg(_header._markerName, -60)
+    .leftJustified(60)
+           << "MARKER NAME\n";
+
+  *_stream << QString("%1%2")
+    .arg("Observer", -20)  // TODO
+    .arg("Agency", -40)    // TODO
+    .leftJustified(60)
+           << "OBSERVER / AGENCY\n";
+
+  *_stream << QString("%1%2%3")
+    .arg("xxxx", -20)      // TODO
+    .arg("Receiver", -20)  // TODO
+    .arg("yyyy", -20)      // TODO
+    .leftJustified(60)
+           << "REC # / TYPE / VERS\n";
+
+  *_stream << QString("%1%2")
+    .arg("xxxx", -20)      // TODO
+    .arg(_header._antennaName, -40)
+           << "ANT # / TYPE\n";
+
+  *_stream << QString()
+    .leftJustified(60)
+           << "END OF HEADER\n";
 }
 
 // Write Data Epoch
