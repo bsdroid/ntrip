@@ -62,7 +62,9 @@ class t_rnxObsFile {
     std::vector<t_rnxSat> rnxSat;
   };
 
-  t_rnxObsFile(const QString& fileName);
+  enum e_inpOut {input, output};
+
+  t_rnxObsFile(const QString& fileName, e_inpOut inpOut);
   ~t_rnxObsFile();
   
   float               version() const {return _header._version;}
@@ -87,7 +89,7 @@ class t_rnxObsFile {
 
  protected:
   t_rnxObsFile() {};
-  void open(const QString& fileName);
+  void openRead(const QString& fileName);
   void close();
 
  private: 
@@ -120,6 +122,7 @@ class t_rnxObsFile {
   const t_rnxEpo* nextEpochV3();
   void handleEpochFlag(int flag, const QString& line);
 
+  e_inpOut       _inpOut;
   QFile*         _file;
   QString        _fileName;
   QTextStream*   _stream;

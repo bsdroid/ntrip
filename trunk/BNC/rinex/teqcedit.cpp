@@ -67,7 +67,7 @@ void t_teqcEdit::run() {
   QStringListIterator it(_obsFileNames);
   while (it.hasNext()) {
     QString fileName = it.next();
-    t_rnxObsFile* rnxObsFile = new t_rnxObsFile(fileName);
+    t_rnxObsFile* rnxObsFile = new t_rnxObsFile(fileName, t_rnxObsFile::input);
     _rnxObsFiles.append(rnxObsFile);
   }
   qStableSort(_rnxObsFiles.begin(), _rnxObsFiles.end(), 

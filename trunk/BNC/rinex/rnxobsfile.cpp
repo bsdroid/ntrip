@@ -219,15 +219,20 @@ const QString& t_rnxObsFile::t_rnxObsHeader::obsType(char sys, int index) const 
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_rnxObsFile::t_rnxObsFile(const QString& fileName) {
+t_rnxObsFile::t_rnxObsFile(const QString& fileName, e_inpOut inpOut) {
+  _inpOut       = inpOut;
   _stream       = 0;
   _flgPowerFail = false;
-  open(fileName);
+  if (_inpOut == input) {
+    openRead(fileName);
+  }
+  else {
+  }
 }
 
 // Open
 ////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::open(const QString& fileName) {
+void t_rnxObsFile::openRead(const QString& fileName) {
 
   _fileName = fileName; expandEnvVar(_fileName);
   _file     = new QFile(_fileName);
