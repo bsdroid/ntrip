@@ -596,6 +596,14 @@ void t_rnxObsFile::writeHeader() {
     .leftJustified(60)
            << "ANTENNA: DELTA H/E/N\n";
 
+  QString hlp;
+  for (unsigned ii = 0; ii < _header._obsTypesV2.size(); ii++) {
+    hlp += QString("%1").arg(_header._obsTypesV2[ii], 4);
+  }
+  *_stream << (QString("%1").arg(_header._obsTypesV2.size(),6) + hlp)
+    .leftJustified(60)
+          << "# / TYPES OF OBSERV\n";
+
   *_stream << QString()
     .leftJustified(60)
            << "END OF HEADER\n";
