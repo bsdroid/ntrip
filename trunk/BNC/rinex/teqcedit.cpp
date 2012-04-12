@@ -67,6 +67,7 @@ void t_teqcEdit::run() {
   QStringListIterator it(_obsFileNames);
   while (it.hasNext()) {
     t_rnxObsFile* rnxObsFile = new t_rnxObsFile(it.next());
+    _rnxObsFiles.append(rnxObsFile);
   }
 
   emit finished();
