@@ -598,7 +598,7 @@ void t_rnxObsFile::writeHeader() {
 
   QString hlp;
   for (unsigned ii = 0; ii < _header._obsTypesV2.size(); ii++) {
-    hlp += QString("%1").arg(_header._obsTypesV2[ii], 4);
+    hlp += QString("%1").arg(_header._obsTypesV2[ii], 6);
   }
   *_stream << (QString("%1").arg(_header._obsTypesV2.size(),6) + hlp)
     .leftJustified(60)
