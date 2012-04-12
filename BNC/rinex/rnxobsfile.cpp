@@ -632,6 +632,20 @@ void t_rnxObsFile::writeHeader() {
 // Write Data Epoch
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::writeEpoch(const t_rnxEpo* epo) {
-  *_stream << "Epoch " << epo->tt.datestr().c_str() << " " 
-           << epo->tt.timestr().c_str() << endl;
+
+  unsigned year, month, day, hour, min;
+  double sec;
+  epo->tt.civil_date(year, month, day);
+  epo->tt.civil_time(hour, min, sec);
+
+  QString dateStr;
+  QTextStream(&dateStr) << QString("%1%2%3%4%5%6")
+    .arg(year / 100, 3, 2)
+    .arg(month, 3)
+    .arg(day, 3)
+    .arg(hour, 3)
+    .arg(min, 3)
+    .arg(sec, 11, 'f', 7);
+
+  *_stream << dateStr << endl;
 }
