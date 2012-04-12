@@ -26,6 +26,7 @@
 #define TEQCEDIT_H
 
 #include <QtCore>
+#include "rnxobsfile.h"
 
 class t_teqcEdit : public QThread {
 Q_OBJECT
@@ -45,6 +46,8 @@ Q_OBJECT
   virtual void run();
  
  private:
+  QStringList            _obsFileNames;
+  QVector<t_rnxObsFile*> _rnxObsFiles;
 };
 
 #endif

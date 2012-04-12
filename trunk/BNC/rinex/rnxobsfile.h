@@ -108,6 +108,7 @@ class t_rnxObsFile {
     std::map<char, std::vector<QString> > _obsTypesV3;
     int                                   _wlFactorsL1[MAXPRN_GPS+1];
     int                                   _wlFactorsL2[MAXPRN_GPS+1];
+    bncTime                               _startTime;
   };
 
   const t_rnxEpo* nextEpochV2();
