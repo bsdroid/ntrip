@@ -118,6 +118,11 @@ class t_rnxObsFile {
     bncTime                               _startTime;
   };
 
+ public:
+  const t_rnxObsHeader& header() const {return _header;}
+  void setHeader(const t_rnxObsHeader& header);
+
+ private:
   const t_rnxEpo* nextEpochV2();
   const t_rnxEpo* nextEpochV3();
   void handleEpochFlag(int flag, const QString& line);
