@@ -40,6 +40,10 @@
 class t_rnxObsFile {
  public:
 
+  static bool earlierStartTime(const t_rnxObsFile* file1, const t_rnxObsFile* file2) {
+    return file1->startTime() < file2->startTime();
+  }
+
   class t_rnxSat {
    public:
     char                satSys;

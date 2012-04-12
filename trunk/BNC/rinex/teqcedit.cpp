@@ -69,6 +69,8 @@ void t_teqcEdit::run() {
     t_rnxObsFile* rnxObsFile = new t_rnxObsFile(it.next());
     _rnxObsFiles.append(rnxObsFile);
   }
+  qStableSort(_rnxObsFiles.begin(), _rnxObsFiles.end(), 
+              t_rnxObsFile::earlierStartTime);
 
   emit finished();
   deleteLater();
