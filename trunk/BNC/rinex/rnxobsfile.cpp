@@ -501,3 +501,31 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
   return 0;
 }
 
+// Set Header Information
+////////////////////////////////////////////////////////////////////////////
+void t_rnxObsFile::setHeader(const t_rnxObsHeader& header) {
+  _header._version     =  header._version;     
+  _header._interval    =  header._interval;    
+  _header._antennaName =  header._antennaName; 
+  _header._markerName  =  header._markerName;  
+  _header._antNEU      =  header._antNEU;      
+  _header._antXYZ      =  header._antXYZ;      
+  _header._antBSG      =  header._antBSG;      
+  _header._xyz         =  header._xyz;         
+  for (unsigned iPrn = 1; iPrn <= MAXPRN_GPS; iPrn++) {
+    _header._wlFactorsL1[iPrn] =  header._wlFactorsL1[iPrn]; 
+    _header._wlFactorsL2[iPrn] =  header._wlFactorsL2[iPrn]; 
+  }
+  _header._startTime   =  header._startTime;   
+  for (unsigned ii = 0; ii < header._obsTypesV2.size(); ii++) {
+    _header._obsTypesV2.push_back(header._obsTypesV2[ii]);
+  }
+  map<char, vector<QString> >::const_iterator it;
+  for (it = header._obsTypesV3.begin(); it != header._obsTypesV3.end(); it++) {
+    char                   sys     = it->first;
+    const vector<QString>& typesV3 = it->second;
+    for (unsigned ii = 0; ii < typesV3.size(); ii++) {
+      _header._obsTypesV3[sys].push_back(typesV3[ii]);
+    }
+  }
+}
