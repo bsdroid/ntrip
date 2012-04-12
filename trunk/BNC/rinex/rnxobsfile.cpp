@@ -545,7 +545,15 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header) {
 // Write Header
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::writeHeader() {
-  *_stream << "writeHeader" << endl;
+  *_stream << QString("%1           OBSERVATION DATA    M (MIXED)           ")
+    .arg(_header._version, 9, 'f', 2)
+           << "RINEX VERSION / TYPE\n";
+
+  *_stream << QString("%1%2%3")
+    .arg("BNC", -20)
+    .arg("BKG", -20)
+    .arg(currentDateAndTimeGPS().date().toString("dd-MMM-yyyy"), -20)
+           << "PGM / RUN BY / DATE\n";
 }
 
 // Write Data Epoch
