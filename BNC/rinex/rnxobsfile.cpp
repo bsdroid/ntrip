@@ -639,8 +639,8 @@ void t_rnxObsFile::writeEpoch(const t_rnxEpo* epo) {
   epo->tt.civil_time(hour, min, sec);
 
   QString dateStr;
-  QTextStream(&dateStr) << QString("%1%2%3%4%5%6")
-    .arg(year / 100, 3, 2)
+  QTextStream(&dateStr) << QString(" %1%2%3%4%5%6")
+    .arg(int(fmod(year, 100)), 2, 10, QChar('0'))
     .arg(month, 3)
     .arg(day, 3)
     .arg(hour, 3)
