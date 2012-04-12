@@ -647,5 +647,19 @@ void t_rnxObsFile::writeEpoch(const t_rnxEpo* epo) {
     .arg(min, 3)
     .arg(sec, 11, 'f', 7);
 
-  *_stream << dateStr << endl;
+  int flag = 0;
+  *_stream << dateStr 
+           << QString("%1%2").arg(flag, 3).arg(epo->rnxSat.size(), 3);
+  for (unsigned ii = 0; ii < epo->rnxSat.size(); ii++) {
+    if (ii > 0 && ii % 12 == 0) {
+      *_stream << endl << QString().leftJustified(32);
+    }
+    *_stream << epo->rnxSat[ii].satSys
+             << QString("%1").arg(epo->rnxSat[ii].satNum, 2);
+  }
+  *_stream << endl;
+
+// 09  1 13  2  0  0.0000000  0  9G28G27G20G19G17G11G 8R 7R20
+//  -5564703.685 9  -4336133.864 7  21186297.708    21186297.708    21186299.597
+//      1280.878         998.081
 }
