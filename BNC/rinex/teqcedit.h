@@ -48,6 +48,7 @@ Q_OBJECT
  private:
   QStringList            _obsFileNames;
   QVector<t_rnxObsFile*> _rnxObsFiles;
+  QString                _outObsFileName;
 };
 
 #endif

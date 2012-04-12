@@ -50,7 +50,8 @@ t_teqcEdit::t_teqcEdit(QObject* parent) : QThread(parent) {
 
   bncSettings settings;
 
-  _obsFileNames = settings.value("teqcObsFile").toString().split(",", QString::SkipEmptyParts);
+  _obsFileNames   = settings.value("teqcObsFile").toString().split(",", QString::SkipEmptyParts);
+  _outObsFileName = settings.value("teqcOutObsFile").toString();
 }
 
 // Destructor
@@ -73,14 +74,23 @@ void t_teqcEdit::run() {
   qStableSort(_rnxObsFiles.begin(), _rnxObsFiles.end(), 
               t_rnxObsFile::earlierStartTime);
 
-  //// beg test
+  // Initialize output observation file
+  // ----------------------------------
+  t_rnxObsFile outObsFile(_outObsFileName, t_rnxObsFile::output);
+  
+  // Loop over all input observation files
+  // -------------------------------------
   for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
-    t_rnxObsFile* rnxObsFile = _rnxObsFiles[ii];
-    cout << rnxObsFile->fileName().toAscii().data() << " "
-         << rnxObsFile->startTime().datestr() << " "
-         << rnxObsFile->startTime().timestr() << endl;
+    t_rnxObsFile* obsFile = _rnxObsFiles[ii];
+    if (ii == 0) {
+      outObsFile.setHeader(obsFile->header());
+      outObsFile.writeHeader();
+    }
+    const t_rnxObsFile::t_rnxEpo* epo = 0;
+    while ( (epo = obsFile->nextEpoch()) != 0) {
+      outObsFile.writeEpoch(epo);
+    }
   }
-  //// end test
 
   emit finished();
   deleteLater();
