@@ -545,11 +545,12 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header) {
 // Write Header
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::writeHeader() {
-
+  *_stream << "writeHeader" << endl;
 }
 
 // Write Data Epoch
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::writeEpoch(const t_rnxEpo* epo) {
-
+  *_stream << "Epoch " << epo->tt.datestr().c_str() << " " 
+           << epo->tt.timestr().c_str() << endl;
 }
