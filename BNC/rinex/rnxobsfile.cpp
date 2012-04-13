@@ -607,7 +607,7 @@ void t_rnxObsFile::writeHeader() {
     QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2[ii], 6);   
     if (ii > 0 && (ii % 8 == 0 || ii == _header._obsTypesV2.size()-1)) {
       *_stream << hlp.leftJustified(60) << "# / TYPES OF OBSERV\n";
-      hlp = QString().leftJusified(6);
+      hlp = QString().leftJustified(6);
     }
   }
 
