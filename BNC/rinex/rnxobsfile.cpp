@@ -705,5 +705,17 @@ void t_rnxObsFile::writeEpochV3(const t_rnxEpo* epo) {
   epo->tt.civil_date(year, month, day);
   epo->tt.civil_time(hour, min, sec);
 
+  QString dateStr;
+  QTextStream(&dateStr) << QString("> %1 %2 %3 %4 %5 %6")
+    .arg(year,  4)
+    .arg(month, 2, 10, QChar('0'))
+    .arg(day,   2, 10, QChar('0'))
+    .arg(hour,  2, 10, QChar('0'))
+    .arg(min,   2, 10, QChar('0'))
+    .arg(sec,  11, 'f', 7);
+
+  int flag = 0;
+  *_stream << dateStr 
+           << QString("%1%2\n").arg(flag, 3).arg(epo->rnxSat.size(), 3);
 
 }
