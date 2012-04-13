@@ -141,13 +141,18 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       in >> _antBSG[0] >> _antBSG[1] >> _antBSG[2];
     }
     else if (key == "# / TYPES OF OBSERV") {
-      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
       int nTypes;
-      in >> nTypes;
+      *in >> nTypes;
       _obsTypesV2.clear();
       for (int ii = 0; ii < nTypes; ii++) {
+        if (ii > 0 && ii % 9 == 0) {
+          line = stream->readLine(); ++numLines;
+          delete in;
+          in = new QTextStream(line.toAscii(), QIODevice::ReadOnly);
+        }
         QString hlp;
-        in >> hlp;
+        *in >> hlp;
         _obsTypesV2.push_back(hlp);
       }
     }
@@ -597,12 +602,14 @@ void t_rnxObsFile::writeHeader() {
            << "ANTENNA: DELTA H/E/N\n";
 
   QString hlp;
+  QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2.size(), 6);
   for (unsigned ii = 0; ii < _header._obsTypesV2.size(); ii++) {
-    hlp += QString("%1").arg(_header._obsTypesV2[ii], 6);
+    QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2[ii], 6);   
+    if (ii > 0 && (ii % 8 == 0 || ii == _header._obsTypesV2.size()-1)) {
+      *_stream << hlp.leftJustified(60) << "# / TYPES OF OBSERV\n";
+      hlp = QString().leftJusified(6);
+    }
   }
-  *_stream << (QString("%1").arg(_header._obsTypesV2.size(),6) + hlp)
-    .leftJustified(60)
-          << "# / TYPES OF OBSERV\n";
 
   *_stream << QString("%1")
     .arg(_header._interval, 10, 'f', 3)
