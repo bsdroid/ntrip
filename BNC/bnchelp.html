@@ -2088,25 +2088,19 @@ bnc.exe -nw
 
 <p><a name="post"><h4>3.19.2 Offline Mode - optional</h4></p>
 <p>
-Although BNC is primarily a real-time online tool, it can be run in offline mode to read data from a previously saved file (see chapter on saving 'Raw Output File') for post-processing purposes. Enter the following command line options for that:
+Although BNC is primarily a real-time online tool, for debugging purposes it can be run in offline mode to read data from a file previously saved through option 'Raw output file'. Enter the following command line option for that
 </p>
 <p>
-<ul>
-<li>'--file &lt;<u>inputFileName</u>&gt;' to enter the full path to an input file containing data previously saved by BNC.</li>
-<li>'--format &lt;<u>format</u>&gt;' to enter one of the file format describing strings 'RTCM_2' or 'RTCM_3'.</li>
-<li>'--staID &lt;<u>stationID</u>&gt;' to enter the mountpoint of one of the streams contained in the input file. This allows you to</li>
-<ul>
-<li>carry out an offline PPP solution using one particular (of probably several) orbit/clock corrections stream contained in the input file.</li>
-<li>offline convert one specific stream (of probably several streams) contained in the input file into a RINEX file.</li>
-</ul>
+--file &lt;<u>inputFileName</u>&gt;
+</p>
 
-</ul>
-<p>
-Example:<br><br>
-./bnc --file raw.output_110301 --format RTCM_3 --staID FFMJ1
+and specify the full path to an input file containing previously saved data. Example:<br><br>
+./bnc --file /home/user/raw.output_110301
 </p>
 <p>
-Note that when running BNC in offline mode, it will use options for file saving, interval, sampling, PPP etc. from its configuration file. Note further that only those data in the file will be processd offline which are encoded as specified with the --format option. 
+Note that when running BNC in offline mode, it will use options for file saving, interval, sampling, PPP etc. from its configuration file.
+</p>
+<p>Note further that option '--file' forces BNC to appy the '-nw' option for running in 'no Window' mode.
 </p> 
 
 <p><a name="conffile"><h4>3.19.3 Configuration File - optional</h4></p>
