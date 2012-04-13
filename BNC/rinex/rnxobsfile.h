@@ -126,6 +126,8 @@ class t_rnxObsFile {
   void writeEpoch(const t_rnxEpo* epo);
 
  private:
+  void writeEpochV2(const t_rnxEpo* epo);
+  void writeEpochV3(const t_rnxEpo* epo);
   const t_rnxEpo* nextEpochV2();
   const t_rnxEpo* nextEpochV3();
   void handleEpochFlag(int flag, const QString& line);

@@ -639,6 +639,17 @@ void t_rnxObsFile::writeHeader() {
 // Write Data Epoch
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::writeEpoch(const t_rnxEpo* epo) {
+  if (version() < 3.0) {
+    return writeEpochV2(epo);
+  }
+  else {
+    return writeEpochV3(epo);
+  }
+}
+
+// Write Data Epoch (RINEX Version 2)
+////////////////////////////////////////////////////////////////////////////
+void t_rnxObsFile::writeEpochV2(const t_rnxEpo* epo) {
 
   unsigned year, month, day, hour, min;
   double sec;
@@ -683,4 +694,16 @@ void t_rnxObsFile::writeEpoch(const t_rnxEpo* epo) {
     }
     *_stream << endl;
   }
+}
+
+// Write Data Epoch (RINEX Version 3)
+////////////////////////////////////////////////////////////////////////////
+void t_rnxObsFile::writeEpochV3(const t_rnxEpo* epo) {
+
+  unsigned year, month, day, hour, min;
+  double sec;
+  epo->tt.civil_date(year, month, day);
+  epo->tt.civil_time(hour, min, sec);
+
+
 }
