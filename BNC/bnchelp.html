@@ -133,9 +133,11 @@ As a default, configuration files for running BNC on Unix/Linux/Mac systems are 
 The default file name 'BNC.ini' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac systems). Some configuration options can be changed on-the-fly. See annexed 'Configuration Example' for a complete set of configuration options.
 </p>
 <p>
+<b>Top Menu Bar</b><br>
 3.1. <a href=#topmenu>Top Menu Bar</a><br>
 3.1.1 <a href=#file>File</a><br>
 3.1.2 <a href=#help>Help</a><br><br>
+<b>Settings Canvas</b><br>
 3.2. <a href=#network>Network</a><br>
 3.2.1 <a href=#proxy>Proxy</a><br>
 3.2.2 <a href=#ssl>SSL</a><br>
@@ -213,7 +215,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.7.5 <a href=#pppsync>Sync Corr</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.7.6 <a href=#pppaverage>Averaging</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.7.7 <a href=#pppquick>Quick-Start</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.7.8 <a href=#pppgap>Max Solution Gap</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.7.8 <a href=#pppgap>Maximal Solution Gap</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.8 <a href=#pppsigmas>Sigmas</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.8.1 <a href=#pppsigc>Code</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.8.2 <a href=#pppsigp>Phase</a><br>
@@ -235,22 +237,25 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.14.5 <a href=#upsp3>SP3 File</a><br>
 &nbsp; &nbsp; &nbsp; 3.14.6 <a href=#uprinex>RNX File</a><br>
 &nbsp; &nbsp; &nbsp; 3.14.7 <a href=#upinter>Interval</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.8 <a href=#upclksmpl>Clk Sampling</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.9 <a href=#uporbsmpl>Orb Sampling</a><br>
+&nbsp; &nbsp; &nbsp; 3.14.8 <a href=#upclksmpl>Sampling (Clk)</a><br>
+&nbsp; &nbsp; &nbsp; 3.14.9 <a href=#uporbsmpl>Sampling (Orb)</a><br>
 &nbsp; &nbsp; &nbsp; 3.14.10 <a href=#upcustom>Custom Trafo</a><br>
 3.15. <a href=#upeph>Upload (eph)</a><br>
 &nbsp; &nbsp; &nbsp; 3.15.1 <a href=#brdcserver>Host &amp; Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.15.2 <a href=#brdcmount>Mountpoint &amp; Password</a><br>
 &nbsp; &nbsp; &nbsp; 3.15.3 <a href=#brdcsmpl>Sampling</a><br><br>
+<b>Streams Canvas</b><br>
 3.16. <a href=#streams>Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.16.1 <a href=#streamedit>Edit Streams</a><br>
 &nbsp; &nbsp; &nbsp; 3.16.2 <a href=#streamdelete>Delete Stream</a><br>
 &nbsp; &nbsp; &nbsp; 3.16.3 <a href=#streamconf>Reconfigure Streams On-the-fly</a><br><br>
+<b>Logging Canvas</b><br>
 3.17. <a href=#logs>Logging</a><br>
 &nbsp; &nbsp; &nbsp; 3.17.1 <a href=#logfile>Log</a><br>
 &nbsp; &nbsp; &nbsp; 3.17.2 <a href=#throughput>Throughput</a><br>
 &nbsp; &nbsp; &nbsp; 3.17.3 <a href=#latency>Latency</a><br>
 &nbsp; &nbsp; &nbsp; 3.17.4 <a href=#ppptab>PPP Plot</a><br><br>
+<b>Bottom Menu Bar</b><br>
 3.18. <a href=#bottom>Bottom Menu Bar</a><br>
 &nbsp; &nbsp; &nbsp; 3.18.1. <a href=#streamadd>Add Stream - Coming from Caster</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.1 <a href=#streamhost>Caster Host and Port</a><br>
@@ -264,6 +269,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.18.4 <a href=#streamser>Add Stream - Coming from Serial Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.18.5 <a href=#start>Start</a><br>
 &nbsp; &nbsp; &nbsp; 3.18.6 <a href=#stop>Stop</a><br><br>
+<b>Command Line</b><br>
 3.19. <a href=#cmd>Command Line Options</a><br>
 &nbsp; &nbsp; &nbsp; 3.19.1. <a href=#nw>No Window Mode</a><br>
 &nbsp; &nbsp; &nbsp; 3.19.2. <a href=#post>Offline Mode</a><br>
@@ -1387,7 +1393,7 @@ You may need to create your own reference coordinate through running BNC for an 
 <p><img src=":bnchelp/screenshot17.png"/></p>
 <p><u>Figure:</u> BNC in 'Quick-Start' mode</p>
 
-<p><a name="pppgap"><h4>3.11.7.8 Max Solution Gap - optional if Quick-Start is set</h4></p>
+<p><a name="pppgap"><h4>3.11.7.8 Maximal Solution Gap - optional if Quick-Start is set</h4></p>
 <p>
 Specify a 'Maximum Solution Gap' in seconds. Should the time span between two consecutive solutions exceed this limit, the algorithm returns into the Quick-Start mode and fixes the introduced reference coordinate for the specified Quick-Start period. A value of '120' seconds could be an appropriate choice.
 </p>
@@ -1858,10 +1864,10 @@ Note further that clocks in the Clock RINEX files are not corrected for the conv
 Select the length of Clock RINEX files and SP3 Orbit files. The default value is 1 day.
 </p>
 
-<p><a name="upclksmpl"><h4>3.14.8 Clk Sampling - mandatory if 'Upload Table' entries specified</h4></p>
+<p><a name="upclksmpl"><h4>3.14.8 Sampling (Clk) - mandatory if 'Upload Table' entries specified</h4></p>
 <p>Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into Clock RINEX files.</p>
 
-<p><a name="uporbsmpl"><h4>3.14.9 Orb Sampling - mandatory if 'Upload Table' entries specified</h4></p>
+<p><a name="uporbsmpl"><h4>3.14.9 Sampling (Orb) - mandatory if 'Upload Table' entries specified</h4></p>
 <p>Select the SP3 Orbit file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into SP3 Orbit files.</p>
 
 <p><a name="upcustom"><h4>3.14.10 Custom Trafo - optional if 'Upload Table' entries specified</h4></p>
@@ -2336,7 +2342,12 @@ Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested to synch
 
 <tr>
 <td>Apr 2011 &nbsp;</td><td>Version 2.6 &nbsp;</td>
-<td>[Add] SP3 output<br> [Mod] RTCMv3 Galileo Broadcast Ephemeris message 1045</td>
+<td>[Add] Complete integration of BNS in BNC<br> [Add] SP3 and Clock RINEX output<br> [Add] PPP in Post Processing Mode<br> [Add] Some first Teqc functionality<br> [Add] Threshold for orbit outliers in combination solution<br> [Add] Real-time engine becomes orbit/clock server instead of client<br> [Mod] 'EOE' added to orbit/clock stream from engine<br> [Add] Correction for antenna excentricities<br> [Add] Quick start mode for PPP<br> [Mod] Design of format for feeding engine changed to follow RINEX v3<br> [Mod] Implementation of SSR message encoding modified according to standard<br> [Add] SSL/TLS Support of Ntrip Version 2<br> [Mod] Switch to Qt version 4.7.3<br> [Mod] RTCMv3 Galileo Broadcast Ephemeris message 1045</td>
+</tr>
+
+<tr>
+<td>May 2012 &nbsp;</td><td>Version 2.6 &nbsp;</td>
+<td>[ADD] Version 2.6 published</td>
 </tr>
 
 </table>
@@ -2404,7 +2415,7 @@ The major changes of NTRIP version 2.0 compared to version 1.0 are:
 <li>RTSP communication.</li>
 </ul>
 
-<p>NTRIP version 2 allows to either communicate in TCP/IP mode or in RTSP/RTP mode or in UDP mode whereas version 1 is limited to TCP/IP only.
+<p>NTRIP version 2 allows to either communicate in TCP/IP mode or in RTSP/RTP mode or in UDP mode whereas version 1 is limited to TCP/IP only. It furthermore allows to use the Transport Layer Security (TLS) and its predecessor, Secure Sockets Layer (SSL) cryptographic protocols for secure NTRIP communication over the Internet.
 </p>
 
 <p><a name="rtcm2"><h4>6.2.3 RTCM Version 2.x</h4></p>
@@ -2502,7 +2513,7 @@ The following are proposed 'Multiple Signal Messages' (MSM) under discussion for
 </p>
 
 <p>
-The following are proposed 'State Space Representation' (SSR) messages under discussion for standardization:
+The following are so-called 'State Space Representation' (SSR) messages:
 <ul>
 <li>Type 1057, GPS orbit corrections to Broadcast Ephemeris</li>
 <li>Type 1058, GPS clock corrections to Broadcast Ephemeris</li>
