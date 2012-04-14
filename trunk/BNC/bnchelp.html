@@ -2192,21 +2192,13 @@ if the program is in /Applications and the configuration file 'MyConfig.ini' in 
 <li>
 In Qt-based desktop environments (like KDE) on Unix/Linux platforms it may happen that you experience a crash of BNC at startup even when running the program in the background using the '-nw' option. This is a known bug most likely resulting from an incompatibility of Qt libraries in the environment and in BNC. Entering the command 'unset SESSION_MANAGER' before running BNC may help as a work-around. 
 </li>
-<li>
-Currently BNC only handles GPS, SBAS, GLONASS and Galileo data.
-</li>
-<li>BNC currently will only handle the following observation types:<br>
-For GPS satellites, 'G': C1C L1C D1C S1C C1W L1W D1W S1W C2P L2P D2P S2P C2X L2X D2X S2X C5 L5 D5 S5<br>
-For GLONASS satellites, 'R': C1C L1C D1C S1C C1P L1P D1P S1P C2P L2P D2P S2P C2C L2C D2C S2C<br>
-For Geostationary signal payloads, 'S': C1C L1C D1C S1C C1W L1W D1W S1W<br>
-For Galileo satellites, 'E': C1 L1 D1 S1 C5 L5 D5 S5<br>
-Which observables and indicators are available on a particular stream will depend on the setup of source receiver and the data format used. RTCM Version 2.x streams do not carry signal-to-noise ratio 'S' values.
+
+<li>BNC has some limits with regards to handling data from new GNSS like COMPAS and QZSS.
+Which observables become available on a particular stream also depends on the setup of source receiver and the data format used.
 </li>
 <li>
-Using RTCM Version 3.x to produce RINEX files, BNC will properly handle message types 1002, 1004, 1010, 1012, 1071-1077, 1081-1087, or 1091-1097. However, when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
+Using RTCM Version 3.x to produce RINEX files, BNC will properly handle most message types. However, when handling message types 1001, 1003, 1009 and 1011 where the ambiguity field is not set, the output will be no valid RINEX. All values will be stored modulo 299792.458 (speed of light).
 </li>
-<li>Concerning the RTCM Version 3.x premature message types 1057-1068 (see RTCM document 091-2009-SC104-542 'Version 3 Proposed Messages - Set 10'), a final decision is not yet made. Note the what's implemented in BNC is just a temporary solution.</li>
-<li>Concerning the RTCM Version 3.x premature message types 1071-1077, 1081-1087, 1091-1097 (see RTCM document 086-2010-SC104-587 'New RTCM-3 Multiple Signal Message Proposal for GPS, GLONASS and Galileo'), a final decision is not yet made. Note that what is implemented in BNC is just a temporary solution.</li>
 <li>
 Using RTCM Version 2.x, BNC will only handle message types 18 and 19 or 20 and 21 together with position and the antenna offset information carried in types 3 and 22. Note that processing carrier phase corrections and pseudo-range corrections contained in message types 20 and 21 needs access to broadcast ephemeris. Hence, whenever dealing with message types 20 and 21, make sure that broadcast ephemeris become available for BNC through also retrieving at least one RTCM Version 3.x stream carrying message types 1019 (GPS ephemeris) and 1020 (GLONASS ephemeris).
 </li>
@@ -2215,9 +2207,6 @@ BNC's 'Get Table' function only shows the STR records of a source-table. You can
 </li>
 <li>
 EUREF as well as IGS adhere to an open data policy. Streams are made available through NTRIP broadcasters at <u>www.euref-ip.net</u>, <u>www.igs-ip.net</u> and <u>products.igs-ip.net</u> free of charge to anyone for any purpose. There is no indication up until now how many users will need to be supported simultaneously. The given situation may develop in such a way that it might become difficult to serve all registered users at the same times. In cases where limited resources on the NTRIP broadcaster side (software restrictions, bandwidth limitation etc.) dictates, first priority in stream provision will be given to stream providers followed by re-broadcasting activities and real-time analysis centers while access to others might be temporarily denied.
-</li>
-<li>
-We experienced a limitation of the Standard Version of Microsoft Windows related to socket communication where sockets are not always handled properly. Since BNC makes intensive use of communication through sockets, we recommend to use the Server Version of Microsoft Windows when running BNC continuously for extended on a Windows platform.
 </li>
 <li>
 Once BNC has been started, many of its configuration options cannot be changed as long as it is stopped. See chapter 'Reread Configuration' for on-the-fly configuration exceptions.
