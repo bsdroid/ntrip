@@ -1596,92 +1596,114 @@ void bncWindow::slotSaveOptions() {
 
   bncSettings settings;
 
+  settings.setValue("startTab",    _aogroup->currentIndex());
+  settings.setValue("statusTab",   _loggroup->currentIndex());
+  settings.setValue("mountPoints", mountPoints);
+// Network 
+  settings.setValue("proxyHost",   _proxyHostLineEdit->text());
+  settings.setValue("proxyPort",   _proxyPortLineEdit->text());
+  settings.setValue("sslCaCertPath",   _sslCaCertPathLineEdit->text());
+  settings.setValue("ignoreSslErrors",  _ignoreSslErrorsCheckBox->checkState());
+// General
+  settings.setValue("logFile",     _logFileLineEdit->text());
+  settings.setValue("rnxAppend",   _rnxAppendCheckBox->checkState());
+  settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
+  settings.setValue("autoStart",   _autoStartCheckBox->checkState());
+  settings.setValue("rawOutFile",  _rawOutFileLineEdit->text());
+// RINEX Observations
+  settings.setValue("rnxPath",     _rnxPathLineEdit->text());
+  settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
+  settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
+  settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
+  settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
+  settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
+// RINEX Ephemeris
+  settings.setValue("ephPath",     _ephPathLineEdit->text());
+  settings.setValue("ephIntr",     _ephIntrComboBox->currentText());
+  settings.setValue("outEphPort",  _outEphPortLineEdit->text());
+  settings.setValue("ephV3",       _ephV3CheckBox->checkState());
+// Broadcast Corrections
+  settings.setValue("corrPath",    _corrPathLineEdit->text());
+  settings.setValue("corrIntr",    _corrIntrComboBox->currentText());
+  settings.setValue("corrPort",    _corrPortLineEdit->text());
+  settings.setValue("corrTime",    _corrTimeSpinBox->value());
+// Feed Engine
+  settings.setValue("outPort",     _outPortLineEdit->text());
+  settings.setValue("waitTime",    _waitTimeSpinBox->value());
+  settings.setValue("binSampl",    _binSamplSpinBox->value());
+  settings.setValue("outFile",     _outFileLineEdit->text());
+  settings.setValue("outUPort",    _outUPortLineEdit->text());
+// Serial Output
+  settings.setValue("serialMountPoint",_serialMountPointLineEdit->text());
+  settings.setValue("serialPortName",  _serialPortNameLineEdit->text());
+  settings.setValue("serialBaudRate",  _serialBaudRateComboBox->currentText());
+  settings.setValue("serialFlowControl",_serialFlowControlComboBox->currentText());
+  settings.setValue("serialDataBits",  _serialDataBitsComboBox->currentText());
+  settings.setValue("serialParity",    _serialParityComboBox->currentText());
+  settings.setValue("serialStopBits",  _serialStopBitsComboBox->currentText());
+  settings.setValue("serialAutoNMEA",  _serialAutoNMEAComboBox->currentText());
+  settings.setValue("serialFileNMEA",_serialFileNMEALineEdit->text());
+  settings.setValue("serialHeightNMEA",_serialHeightNMEALineEdit->text());
+// Outages
+  settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("adviseFail",  _adviseFailSpinBox->value());
   settings.setValue("adviseReco",  _adviseRecoSpinBox->value());
   settings.setValue("adviseScript",_adviseScriptLineEdit->text());
-  settings.setValue("autoStart",   _autoStartCheckBox->checkState());
-  settings.setValue("binSampl",    _binSamplSpinBox->value());
-  settings.setValue("corrIntr",    _corrIntrComboBox->currentText());
-  settings.setValue("corrPath",    _corrPathLineEdit->text());
-  settings.setValue("corrPort",    _corrPortLineEdit->text());
-  settings.setValue("corrTime",    _corrTimeSpinBox->value());
-  settings.setValue("ephIntr",     _ephIntrComboBox->currentText());
-  settings.setValue("ephPath",     _ephPathLineEdit->text());
-  settings.setValue("ephV3",       _ephV3CheckBox->checkState());
-  settings.setValue("logFile",     _logFileLineEdit->text());
-  settings.setValue("rawOutFile",  _rawOutFileLineEdit->text());
+// Miscellaneous 
   settings.setValue("miscMount",   _miscMountLineEdit->text());
+  settings.setValue("perfIntr",    _perfIntrComboBox->currentText());
+  settings.setValue("scanRTCM",    _scanRTCMCheckBox->checkState());
+// PPPP
+  settings.setValue("pppSPP",      _pppSPPComboBox->currentText());
   settings.setValue("pppMount",    _pppMountLineEdit->text());
   settings.setValue("pppCorrMount",_pppCorrMountLineEdit->text());
-  settings.setValue("pppSPP",      _pppSPPComboBox->currentText());
-  settings.setValue("nmeaFile",    _pppNMEALineEdit->text());
-  settings.setValue("nmeaPort",    _pppNMEAPortLineEdit->text());
-  settings.setValue("pppSigmaCode",_pppSigCLineEdit->text());
-  settings.setValue("pppSigmaPhase",_pppSigPLineEdit->text());
-  settings.setValue("pppSigCrd0",_pppSigCrd0->text());
-  settings.setValue("pppSigCrdP",_pppSigCrdP->text());
-  settings.setValue("pppSigTrp0",_pppSigTrp0->text());
-  settings.setValue("pppSigTrpP",_pppSigTrpP->text());
-  settings.setValue("pppAverage",  _pppAverageLineEdit->text());
-  settings.setValue("pppQuickStart", _pppQuickStartLineEdit->text());
-  settings.setValue("pppMaxSolGap",  _pppMaxSolGapLineEdit->text());
   settings.setValue("pppRefCrdX",  _pppRefCrdXLineEdit->text());
   settings.setValue("pppRefCrdY",  _pppRefCrdYLineEdit->text());
   settings.setValue("pppRefCrdZ",  _pppRefCrdZLineEdit->text());
   settings.setValue("pppRefdN",  _pppRefdNLineEdit->text());
   settings.setValue("pppRefdE",  _pppRefdELineEdit->text());
   settings.setValue("pppRefdU",  _pppRefdULineEdit->text());
-  settings.setValue("pppSync",     _pppSync->text());
-  settings.setValue("pppUsePhase", _pppUsePhaseCheckBox->checkState());
+  settings.setValue("nmeaFile",    _pppNMEALineEdit->text());
+  settings.setValue("nmeaPort",    _pppNMEAPortLineEdit->text());
   settings.setValue("pppPlotCoordinates", _pppPlotCoordinates->checkState());
-  settings.setValue("pppEstTropo", _pppEstTropoCheckBox->checkState());
-  settings.setValue("pppGLONASS",  _pppGLONASSCheckBox->checkState());
-  settings.setValue("pppGalileo",  _pppGalileoCheckBox->checkState());
+  settings.setValue("postObsFile",  _postObsFileChooser->fileName());
+  settings.setValue("postNavFile",  _postNavFileChooser->fileName());
+  settings.setValue("postCorrFile", _postCorrFileChooser->fileName());
+  settings.setValue("postOutFile",  _postOutLineEdit->text());
   settings.setValue("pppAntenna",      _pppAntennaLineEdit->text());
   settings.setValue("pppAntex",	       _pppAntexFileChooser->fileName());
   settings.setValue("pppApplySatAnt", _pppApplySatAntCheckBox->checkState());
-  settings.setValue("mountPoints", mountPoints);
-  settings.setValue("obsRate",     _obsRateComboBox->currentText());
-  settings.setValue("onTheFlyInterval", _onTheFlyComboBox->currentText());
-  settings.setValue("outEphPort",  _outEphPortLineEdit->text());
-  settings.setValue("outFile",     _outFileLineEdit->text());
-  settings.setValue("outPort",     _outPortLineEdit->text());
-  settings.setValue("outUPort",    _outUPortLineEdit->text());
-  settings.setValue("perfIntr",    _perfIntrComboBox->currentText());
-  settings.setValue("proxyHost",   _proxyHostLineEdit->text());
-  settings.setValue("proxyPort",   _proxyPortLineEdit->text());
-  settings.setValue("sslCaCertPath",   _sslCaCertPathLineEdit->text());
-  settings.setValue("ignoreSslErrors",  _ignoreSslErrorsCheckBox->checkState());
-  settings.setValue("rnxAppend",   _rnxAppendCheckBox->checkState());
-  settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
-  settings.setValue("rnxPath",     _rnxPathLineEdit->text());
-  settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
-  settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
-  settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
-  settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
-  settings.setValue("scanRTCM",    _scanRTCMCheckBox->checkState());
-  settings.setValue("serialFileNMEA",_serialFileNMEALineEdit->text());
-  settings.setValue("serialHeightNMEA",_serialHeightNMEALineEdit->text());
-  settings.setValue("serialAutoNMEA",  _serialAutoNMEAComboBox->currentText());
-  settings.setValue("serialBaudRate",  _serialBaudRateComboBox->currentText());
-  settings.setValue("serialDataBits",  _serialDataBitsComboBox->currentText());
-  settings.setValue("serialMountPoint",_serialMountPointLineEdit->text());
-  settings.setValue("serialParity",    _serialParityComboBox->currentText());
-  settings.setValue("serialPortName",  _serialPortNameLineEdit->text());
-  settings.setValue("serialStopBits",  _serialStopBitsComboBox->currentText());
-  settings.setValue("serialFlowControl",_serialFlowControlComboBox->currentText());
-  settings.setValue("startTab",    _aogroup->currentIndex());
-  settings.setValue("statusTab",   _loggroup->currentIndex());
-  settings.setValue("waitTime",    _waitTimeSpinBox->value());
+  settings.setValue("pppUsePhase", _pppUsePhaseCheckBox->checkState());
+  settings.setValue("pppEstTropo", _pppEstTropoCheckBox->checkState());
+  settings.setValue("pppGLONASS",  _pppGLONASSCheckBox->checkState());
+  settings.setValue("pppGalileo",  _pppGalileoCheckBox->checkState());
+  settings.setValue("pppSync",     _pppSync->text());
+  settings.setValue("pppAverage",  _pppAverageLineEdit->text());
+  settings.setValue("pppQuickStart", _pppQuickStartLineEdit->text());
+  settings.setValue("pppMaxSolGap",  _pppMaxSolGapLineEdit->text());
+  settings.setValue("pppSigmaCode",_pppSigCLineEdit->text());
+  settings.setValue("pppSigmaPhase",_pppSigPLineEdit->text());
+  settings.setValue("pppSigCrd0",_pppSigCrd0->text());
+  settings.setValue("pppSigCrdP",_pppSigCrdP->text());
+  settings.setValue("pppSigTrp0",_pppSigTrp0->text());
+  settings.setValue("pppSigTrpP",_pppSigTrpP->text());
+// Teqc
+  settings.setValue("teqcAction",     _teqcActionComboBox->currentText());
+  settings.setValue("teqcObsFile",    _teqcObsFileChooser->fileName());
+  settings.setValue("teqcNavFile",    _teqcNavFileChooser->fileName());
+  settings.setValue("teqcOutObsFile", _teqcOutObsLineEdit->text());
+  settings.setValue("teqcOutNavFile", _teqcOutNavLineEdit->text());
+  settings.setValue("teqcOutLogFile", _teqcOutLogLineEdit->text());
+// Combination
   if (!combineStreams.isEmpty()) {
     settings.setValue("combineStreams", combineStreams);
   }
   else {
     settings.setValue("combineStreams", "");
   }
-  settings.setValue("cmbMaxres", _cmbMaxresLineEdit->text());
   settings.setValue("cmbMethod", _cmbMethodComboBox->currentText());
-
+  settings.setValue("cmbMaxres", _cmbMaxresLineEdit->text());
+// Upload (clk)
   if (!uploadMountpointsOut.isEmpty()) {
     settings.setValue("uploadMountpointsOut", uploadMountpointsOut);
   }
@@ -1691,25 +1713,12 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("uploadIntr",     _uploadIntrComboBox->currentText());
   settings.setValue("uploadSampl",    _uploadSamplSpinBox->value());
   settings.setValue("uploadSamplOrb", _uploadSamplOrbSpinBox->value());
-
+// Upload (eph)
   settings.setValue("uploadEphHost",      _uploadEphHostLineEdit->text());
   settings.setValue("uploadEphPort",      _uploadEphPortLineEdit->text());
-  settings.setValue("uploadEphPassword",  _uploadEphPasswordLineEdit->text());
   settings.setValue("uploadEphMountpoint",_uploadEphMountpointLineEdit->text());
+  settings.setValue("uploadEphPassword",  _uploadEphPasswordLineEdit->text());
   settings.setValue("uploadEphSample",    _uploadEphSampleSpinBox->value());
-
-  settings.setValue("postObsFile",  _postObsFileChooser->fileName());
-  settings.setValue("postNavFile",  _postNavFileChooser->fileName());
-  settings.setValue("postCorrFile", _postCorrFileChooser->fileName());
-  settings.setValue("postOutFile",  _postOutLineEdit->text());
-
-  settings.setValue("teqcAction",     _teqcActionComboBox->currentText());
-  settings.setValue("teqcObsFile",    _teqcObsFileChooser->fileName());
-  settings.setValue("teqcNavFile",    _teqcNavFileChooser->fileName());
-  settings.setValue("teqcOutObsFile", _teqcOutObsLineEdit->text());
-  settings.setValue("teqcOutNavFile", _teqcOutNavLineEdit->text());
-  settings.setValue("teqcOutLogFile", _teqcOutLogLineEdit->text());
-
   if (_caster) {
     _caster->slotReadMountPoints();
   }
