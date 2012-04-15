@@ -224,6 +224,10 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.8.5 <a href=#pppsigtrpi>Tropo Init</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.8.6 <a href=#pppsigtrpn>Tropo White Noise</a><br>
 3.12. <a href=#teqc>Teqc</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.1 <a href=#teqcact>Action</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.2 <a href=#teqcedit>Set Edit Options</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.3 <a href=#teqcinput>Input files</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.4 <a href=#teqcoutput>Output files</a><br>
 3.13. <a href=#combi>Combination</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.1 <a href=#combimounttab>Combination Table</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.1.1 <a href=#combiadd>Add Row, Delete</a><br>
@@ -1444,6 +1448,45 @@ Enter a sigma in meters per second to describe the expected variation of the tro
 </p>
 
 <p><a name="teqc"><h4>3.12. Teqc</h4></p>
+<p>
+BNC allows to concatinate RINEX files and edit their contents. Observation and navigation files can be handled. BNC can also carry out a quality control of the contents of RINEX files. This functionality in BNC is named 'Teqc' which stands for 
+<ul>
+<li>t = translation (from RTCM to RINEX)</li>
+<li>e = editing</li>
+<li>q = quality control</li>
+<li>c = concatination</li>
+</ul>
+to follow UNAVCO's famous 'teqc' program. The remarkable thing about BNC is that it supports RINEX Version 3 under GNU General Public License.
+
+<p><a name="teqcact"><h4>3.12.1 Action - optional</h4></p>
+<p>Select an action. Options are 'Edit/Concatinate' and 'Analyze'.
+<ul>
+<li>Select 'Edit/Concatinate' of you want to edit a RINEX file contents according to options specified under 'Set Edit Options' or if you want to concatinate several RINEX files.</li>
+<li>Select 'Analyze' if you are interested in a quality controle of your RINEX file contents.</li>
+</ul>
+</p>
+
+<p><a name="teqcedit"><h4>3.12.2 Set Edit Options - mandatory if 'Edit/Concatinate' is set</h4></p>
+<p>Once action 'Edit/Concationate' is selected, you have to specify editing options. BNC lets you specify the RINEX version, sampling rate, begin and end of file and marker, antenna or receiver details.
+</p>
+
+<p><a name="teqcinput"><h4>3.12.3 Input Files - mandatory if 'Action' is set</h4></p>
+<p>
+Specify full path to input RINEX observation file(s), and<br> 
+specify full path to input RINEX navigation file(s).
+</p> 
+
+<p><a name="teqcoutput"><h4>3.12.4 Output Files - mandatory if 'Action' is set</h4></p>
+<p>
+Mandatory if 'Edit/Concatinate' selected:<br>
+Specify full path to output RINEX observation file(s), and<br> 
+specify full path to output RINEX navigation file(s).
+</p> 
+
+<p>
+Mandatory if 'Analyze' selected:<br>
+Specify logfile to output analysis results.<br> 
+</p> 
 
 <p><a name="combi"><h4>3.13. Combination</h4></p>
 <p>
