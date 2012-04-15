@@ -2538,96 +2538,109 @@ The following table's left column is an example for the contents of a configurat
 <tr></tr>
 <tr><td><b>Option</b></td><td><b>Affiliation</b></td></tr>
 <tr><td>[General]</td><td>Settings: Group</td></tr>
-<tr><td>adviseFail=15</td><td>Outages: Failure threshold</td></tr>
-<tr><td>adviseReco=5</td><td>Outages: Recovery threshold</td></tr>
-<tr><td>adviseScript=</td><td>Outages: Script (full path)</td></tr>
-<tr><td>autoStart=0</td><td>General: Auto start</td></tr>
-<tr><td>binSampl=0</td><td>Feed Engine: Sampling</td></tr>
-<tr><td>casterUrlList=http://user:pass@euref-ip:2101</td><td>Internal memory: Visited URLs</td></tr>
-<tr><td>corrIntr=1 day</td><td>Broadcast Corrections: Interval</td></tr>
-<tr><td>corrPath=</td><td>Broadcast Corrections: Directory, ASCII </td></tr>
-<tr><td>corrPort=</td><td>Broadcast Corrections: Port</td></tr>
-<tr><td>corrTime=5</td><td>Broadcast Corrections: Wait for full epoch</td></tr>
-<tr><td>ephIntr=15 min</td><td>RINEX Ephemeris: Interval</td></tr>
-<tr><td>ephPath=</td><td>RINEX Ephemeris: Directory</td></tr>
-<tr><td>ephV3=0</td><td>RINEX Ephemeris: Version 3</td></tr>
-<tr><td>font=</td><td>Internal memory: Used font</td></tr>
-<tr><td>logFile=/home/weber/bnc.log</td><td>General: Logfile (full path)</td></tr>
-<tr><td>rawOutFile=</td><td>General: Raw output file (full path)</td></tr>
-<tr><td>miscMount=</td><td>Miscellaneous: Mountpoint</td></tr>
-<tr><td>mountPoints=//user:pass@www.euref-ip.net:2101<br>/ACOR0 RTCM_2.3 43.36 351.60 no 1</td><td>Streams: broadcaster:port/mountpoint</td></tr>
+<tr><td>startTab=0</td><td>Internal: Top tab index</td></tr>
+<tr><td>statusTab=0</td><td>Internal: Bottom tab index</td></tr>
+<tr><td>font=</td><td>Internal: Used font</td></tr>
+<tr><td>casterUrlList=http://user:pass@euref-ip:2101</td><td>Internal: Visited URLs</td></tr>
+<tr><td>mountPoints=//user:pass@www.euref-ip.net:2101<br>/ACOR0 RTCM_2.3 43.36 351.60 no 1</td><td>Add Streams: broadcaster:port/mountpoint</td></tr>
 <tr><td>ntripVersion=1</td><td>Add Stream: NTRIP Version</td></tr>
-<tr><td>obsRate=</td><td>Outages: Observation rate</td></tr>
-<tr><td>onTheFlyInterval=1 day</td><td>General: Reread configuration</td></tr>
-<tr><td>outEphPort=</td><td>RINEX Ephemeris: Port</td></tr>
-<tr><td>outFile=</td><td>Feed Engine: File (full path)</td></tr>
-<tr><td>outPort=</td><td>Feed Engine: Port</td></tr>
-<tr><td>outUPort=</td><td>Feed Engine: Port (unsynchronized)</td></tr>
-<tr><td>perfIntr=</td><td>Miscellaneous: Log latency</td></tr>
+
 <tr><td>proxyHost=</td><td>Network: Proxy host</td></tr>
 <tr><td>proxyPort=</td><td>Network: Proxy port</td></tr>
 <tr><td>sslCaCertPath=</td><td>Network: Path to SSL certificates</td></tr>
 <tr><td>ignoreSslErrors=0</td><td>Network: Ignore ssl authorization errors</td></tr>
+
+<tr><td>logFile=/home/weber/bnc.log</td><td>General: Logfile (full path)</td></tr>
 <tr><td>rnxAppend=2</td><td>General: Append files</td></tr>
-<tr><td>rnxIntr=15 min</td><td>RINEX Observations: Interval</td></tr>
+<tr><td>onTheFlyInterval=1 day</td><td>General: Reread configuration</td></tr>
+<tr><td>autoStart=0</td><td>General: Auto start</td></tr>
+<tr><td>rawOutFile=</td><td>General: Raw output file (full path)</td></tr>
+
 <tr><td>rnxPath=/home/user/rinex</td><td>RINEX Observations: Directory</td></tr>
+<tr><td>rnxIntr=15 min</td><td>RINEX Observations: Interval</td></tr>
 <tr><td>rnxSample=0</td><td>RINEX Observations: Sampling</td></tr>
-<tr><td>rnxScript=</td><td>RINEX Observations: Uplod script</td></tr>
 <tr><td>rnxSkel=</td><td>RINEX Observations: Skeleton extension</td></tr>
+<tr><td>rnxScript=</td><td>RINEX Observations: Uplod script</td></tr>
 <tr><td>rnxV3=0</td><td>RINEX Observation: Version 3</td></tr>
-<tr><td>scanRTCM=0</td><td>Miscellaneous: Scan RTCM</td></tr>
-<tr><td>serialAutoNMEA=Auto</td><td>Serial Output: NMEA</td></tr>
+
+<tr><td>ephPath=</td><td>RINEX Ephemeris: Directory</td></tr>
+<tr><td>ephIntr=15 min</td><td>RINEX Ephemeris: Interval</td></tr>
+<tr><td>outEphPort=</td><td>RINEX Ephemeris: Port</td></tr>
+<tr><td>ephV3=0</td><td>RINEX Ephemeris: Version 3</td></tr>
+
+<tr><td>corrPath=</td><td>Broadcast Corrections: Directory, ASCII </td></tr>
+<tr><td>corrIntr=1 day</td><td>Broadcast Corrections: Interval</td></tr>
+<tr><td>corrPort=</td><td>Broadcast Corrections: Port</td></tr>
+<tr><td>corrTime=5</td><td>Broadcast Corrections: Wait for full epoch</td></tr>
+
+<tr><td>outPort=</td><td>Feed Engine: Port</td></tr>
+<tr><td>waitTime=5</td><td>Feed Engine: Wait for full epoch</td></tr>
+<tr><td>binSampl=0</td><td>Feed Engine: Sampling</td></tr>
+<tr><td>outFile=</td><td>Feed Engine: File (full path)</td></tr>
+<tr><td>outUPort=</td><td>Feed Engine: Port (unsynchronized)</td></tr>
+
+<tr><td>serialMountPoint=</td><td>Serial Output: Mountpoint</td></tr>
+<tr><td>serialPortName=</td><td>Serial Output: Port name</td></tr>
 <tr><td>serialBaudRate=9600</td><td>Serial Output: Baud rate</td></tr>
+<tr><td>serialFlowControl=</td><td>Serial Output: Flow control</td></tr>
 <tr><td>serialDataBits=8</td><td>Serial Output: Data bits</td></tr>
+<tr><td>serialParity=NONE</td><td>Serial Output: Parity</td></tr>
+<tr><td>serialStopBits=1</td><td>Serial Output: Stop bits</td></tr>
+<tr><td>serialAutoNMEA=Auto</td><td>Serial Output: NMEA</td></tr>
 <tr><td>serialFileNMEA=</td><td>Serial Output: NMEA file name</td></tr>
 <tr><td>serialHeightNMEA=</td><td>Serial Output: Height</td></tr>
-<tr><td>serialMountPoint=</td><td>Serial Output: Mountpoint</td></tr>
-<tr><td>serialParity=NONE</td><td>Serial Output: Parity</td></tr>
-<tr><td>serialPortName=</td><td>Serial Output: Port name</td></tr>
-<tr><td>serialStopBits=1</td><td>Serial Output: Stop bits</td></tr>
-<tr><td>serialFlowControl=</td><td>Serial Output: Flow control</td></tr>
-<tr><td>startTab=0</td><td>Internal memory: Top tab index</td></tr>
-<tr><td>statusTab=0</td><td>Internal memory: Bottom tab index</td></tr>
-<tr><td>waitTime=5</td><td>Feed Engine: Wait for full epoch</td></tr>
+
+<tr><td>obsRate=</td><td>Outages: Observation rate</td></tr>
+<tr><td>adviseFail=15</td><td>Outages: Failure threshold</td></tr>
+<tr><td>adviseReco=5</td><td>Outages: Recovery threshold</td></tr>
+<tr><td>adviseScript=</td><td>Outages: Script (full path)</td></tr>
+
+<tr><td>miscMount=</td><td>Miscellaneous: Mountpoint</td></tr>
+<tr><td>perfIntr=</td><td>Miscellaneous: Log latency</td></tr>
+<tr><td>scanRTCM=0</td><td>Miscellaneous: Scan RTCM</td></tr>
+
+<tr><td>pppSPP=PPP</td><td>PPP Client: PPP/SPP</td></tr>
 <tr><td>pppMount=</td><td>PPP Client: Observations Mountpoint</td></tr>
 <tr><td>pppCorrMount=</td><td>PPP Client: Corrections Mountpoint</td></tr>
-<tr><td>pppSPP=PPP</td><td>PPP Client: PPP/SPP</td></tr>
-<tr><td>pppSigmaCode=5.0</td><td>PPP Client: Sigma for Code observations</td></tr>
-<tr><td>pppSigmaPhase=0.02</td><td>PPP Client: Sigma for Phase observations</td></tr>
-<tr><td>pppQuickStart=200</td><td>PPP Client: Quick-Start period</td></tr>
-<tr><td>pppMaxSolGap=</td><td>PPP Client: Maximal Solution Gap</td></tr>
-<tr><td>pppSigmaCrd0=100.0</td><td>PPP Client: Sigma for initial XYZ coordinate</td></tr>
-<tr><td>pppSigmaCrdP=100.0</td><td>PPP Client: White noise for XYZ</td></tr>
-<tr><td>pppSigmaTrp0=0.1</td><td>PPP Client: Sigma for initial tropospheric delay</td></tr>
-<tr><td>pppSigmaTrpP=1e-6</td><td>PPP Client: White noise for tropospheric delay</td></tr>
-<tr><td>pppAverage=</td><td>PPP Client: Lenght of time window for moving average</td></tr>
-<tr><td>pppUsePhase=0</td><td>PPP Client: Use phase data </td></tr>
-<tr><td>pppEstTropo=0</td><td>PPP Client: Estimate troposphere</td></tr>
-<tr><td>pppGLONASS=0</td><td>PPP Client: Use GLONASS</td></tr>
-<tr><td>pppGalileo=0</td><td>PPP Client: Use Galileo</td></tr>
-<tr><td>pppPlotCoordinates=0</td><td>PPP Client: Plot NEU time series</td></tr>
 <tr><td>pppRefCrdX=</td><td>PPP Client: X coordinate of plot origin</td></tr>
 <tr><td>pppRefCrdY=</td><td>PPP Client: Y coordinate of plot origin</td></tr>
 <tr><td>pppRefCrdZ=</td><td>PPP Client: Z coordinate of plot origin</td></tr>
 <tr><td>pppRefdN=</td><td>PPP Client: North excentricity</td></tr>
 <tr><td>pppRefdE=</td><td>PPP Client: East excentricity</td></tr>
 <tr><td>pppRefdU=</td><td>PPP Client: Up excentricity</td></tr>
-<tr><td>pppAntenna=</td><td>PPP Client: Antenna name</td></tr>
-<tr><td>pppAntex=</td><td>PPP Client: Path to ANTEX file</td></tr>
-<tr><td>pppApplySatAnt=</td><td>PPP Client: Apply sat antenna phase center Offset</td></tr>
-<tr><td>pppSync=</td><td>PPP Client: Sync observations and corrections</td></tr>
 <tr><td>nmeaFile=</td><td>PPP Client: NMEA outputfile</td></tr>
 <tr><td>nmeaPort=</td><td>PPP Client: NMEA IP output port</td></tr>
+<tr><td>pppPlotCoordinates=0</td><td>PPP Client: Plot NEU time series</td></tr>
 <tr><td>postObsFile=</td><td>PPP Client: Observations file</td></tr>
 <tr><td>postNavFile=</td><td>PPP Client: Navigation file</td></tr>
 <tr><td>postCorrFile=</td><td>PPP Client: Correctors file</td></tr>
 <tr><td>postOutFile=</td><td>PPP Client: Output file</td></tr>
+<tr><td>pppAntenna=</td><td>PPP Client: Antenna name</td></tr>
+<tr><td>pppAntex=</td><td>PPP Client: Path to ANTEX file</td></tr>
+<tr><td>pppApplySatAnt=</td><td>PPP Client: Apply sat antenna phase center Offset</td></tr>
+<tr><td>pppUsePhase=0</td><td>PPP Client: Use phase data </td></tr>
+<tr><td>pppEstTropo=0</td><td>PPP Client: Estimate troposphere</td></tr>
+<tr><td>pppGLONASS=0</td><td>PPP Client: Use GLONASS</td></tr>
+<tr><td>pppGalileo=0</td><td>PPP Client: Use Galileo</td></tr>
+<tr><td>pppSync=</td><td>PPP Client: Sync observations and corrections</td></tr>
+<tr><td>pppAverage=</td><td>PPP Client: Lenght of time window for moving average</td></tr>
+<tr><td>pppQuickStart=200</td><td>PPP Client: Quick-Start period</td></tr>
+<tr><td>pppMaxSolGap=</td><td>PPP Client: Maximal Solution Gap</td></tr>
+<tr><td>pppSigmaCode=5.0</td><td>PPP Client: Sigma for Code observations</td></tr>
+<tr><td>pppSigmaPhase=0.02</td><td>PPP Client: Sigma for Phase observations</td></tr>
+<tr><td>pppSigmaCrd0=100.0</td><td>PPP Client: Sigma for initial XYZ coordinate</td></tr>
+<tr><td>pppSigmaCrdP=100.0</td><td>PPP Client: White noise for XYZ</td></tr>
+<tr><td>pppSigmaTrp0=0.1</td><td>PPP Client: Sigma for initial tropospheric delay</td></tr>
+<tr><td>pppSigmaTrpP=1e-6</td><td>PPP Client: White noise for tropospheric delay</td></tr>
+
 <tr><td>teqcAction=</td><td>Teqc: Action</td></tr>
 <tr><td>teqcObsFile=</td><td>Teqc: Observations file</td></tr>
 <tr><td>teqcNavFile=</td><td>Teqc: Navigation file</td></tr>
 <tr><td>teqcOutObsFile=</td><td>Teqc: Output observations file</td></tr>
 <tr><td>teqcOutNavFile=</td><td>Teqc: Output navigation file</td></tr>
 <tr><td>teqcOutLogFile=</td><td>Teqc: Output logfile</td></tr>
+<tr><td>teqcRnxVersion=</td><td>Teqc: RINEX version</td></tr>
+<tr><td>teqcSampling=</td><td>Teqc: RINEX sampling</td></tr>
 <tr><td>teqcStartDateTime=</td><td>Teqc: Start time</td></tr>
 <tr><td>teqcEndDateTime=</td><td>Teqc: Stop time</td></tr>
 <tr><td>teqcOldMarkerName=</td><td>Teqc: Old marker</td></tr>
@@ -2636,18 +2649,35 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>teqcNewAntennaName=</td><td>Teqc: New antenna</td></tr>
 <tr><td>teqcOldReceiverName=</td><td>Teqc: Old receiver</td></tr>
 <tr><td>teqcNewReceiverName=</td><td>Teqc:  New receiver</td></tr>
-<tr><td>combineStreams=</td><td>Combination: List of correctors streams</td></tr></td></tr>
-<tr><td>cmbMethod=Filter</td><td>Combination: Approach</td></tr></td></tr>
-<tr><td>cmbMaxres=</td><td>Combination: Clock outlier threshold</td></tr></td></tr>
-<tr><td>uploadMountpointsOut=</td><td>Upload(clk): Upload streams</td></tr></td></tr>
-<tr><td>uploadIntr=1 day</td><td>Upload(clk): File interval</td></tr></td></tr>
-<tr><td>uploadSampl=5</td><td>Upload(clk): Clock sampling</td></tr></td></tr>
-<tr><td>uploadSamplOrb=0</td><td>Upload(clk): Orbit sampling</td></tr></td></tr>
-<tr><td>uploadEphHost=</td><td>Upload(eph): Host</td></tr></td></tr>
-<tr><td>uploadEphPort=</td><td>Upload(eph): Port</td></tr></td></tr>
-<tr><td>uploadEphMountpoint=</td><td>Upload(eph): Moutpoint</td></tr></td></tr>
-<tr><td>uploadEphPassword=</td><td>Upload(eph): Password</td></tr></td></tr>
-<tr><td>uploadEphSample=5</td><td>aUpload(eph): Samplig</td></tr></td></tr>
+
+<tr><td>combineStreams=</td><td>Combination: List of correctors streams</td></tr>
+<tr><td>cmbMethod=Filter</td><td>Combination: Approach</td></tr>
+<tr><td>cmbMaxres=</td><td>Combination: Clock outlier threshold</td></tr>
+
+<tr><td>uploadMountpointsOut=</td><td>Upload(clk): Upload streams</td></tr>
+<tr><td>uploadIntr=1 day</td><td>Upload(clk): File interval</td></tr>
+<tr><td>uploadSampl=5</td><td>Upload(clk): Clock sampling</td></tr>
+<tr><td>uploadSamplOrb=0</td><td>Upload(clk): Orbit sampling</td></tr>
+<tr><td>trafo_dx=</td><td>Upload(clk): Translation X</td></tr>
+<tr><td>trafo_dy=</td><td>Upload(clk): Translation Y</td></tr>
+<tr><td>trafo_dz=</td><td>Upload(clk): Translation Z</td></tr>
+<tr><td>trafo_dxr=</td><td>Upload(clk): Translation change X</td></tr>
+<tr><td>trafo_dyr=</td><td>Upload(clk): Translation change Y</td></tr>
+<tr><td>trafo_dzr=</td><td>Upload(clk): Translation change Z</td></tr>
+<tr><td>trafo_ox=</td><td>Upload(clk): Rotation X</td></tr>
+<tr><td>trafo_oy=</td><td>Upload(clk): Rotation Y</td></tr>
+<tr><td>trafo_oz=</td><td>Upload(clk): Rotation Z</td></tr>
+<tr><td>trafo_oxr=</td><td>Upload(clk): Rotation change X</td></tr>
+<tr><td>trafo_oyr=</td><td>Upload(clk): Rotation change Y</td></tr>
+<tr><td>trafo_ozr=</td><td>Upload(clk): Rotation change Z</td></tr>
+<tr><td>trafo_sc=</td><td>Upload(clk): Scale</td></tr>
+<tr><td>trafo_scr=</td><td>Upload(clk): Scale change</td></tr>
+<tr><td>trafo_t0=</td><td>Upload(clk): Reference year</td></tr>
+<tr><td>uploadEphHost=</td><td>Upload(eph): Host</td></tr>
+<tr><td>uploadEphPort=</td><td>Upload(eph): Port</td></tr>
+<tr><td>uploadEphMountpoint=</td><td>Upload(eph): Moutpoint</td></tr>
+<tr><td>uploadEphPassword=</td><td>Upload(eph): Password</td></tr>
+<tr><td>uploadEphSample=5</td><td>Upload(eph): Samplig</td></tr>
 </table>
 </p>
 <p>
