@@ -64,7 +64,7 @@ bncSettings::bncSettings(bool noInit) :
     setValue("corrIntr",            "1 day");
     setValue("corrPort",            "");
     setValue("corrTime",            "5");
-// Feed engine
+// Feed Engine
     setValue("outPort",             "");
     setValue("waitTime",            "5");
     setValue("binSampl",            "0");
