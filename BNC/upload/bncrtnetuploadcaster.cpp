@@ -82,10 +82,10 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
   // Set Transformation Parameters
   // -----------------------------
   if      (_crdTrafo == "ETRF2000") {
-    _dx  =    0.0541;
-    _dy  =    0.0502;
-    _dz  =   -0.0538;
-    _dxr =   -0.0002;
+    _dx  =    0.0521;
+    _dy  =    0.0493;
+    _dz  =   -0.0585;
+    _dxr =    0.0001;
     _dyr =    0.0001;
     _dzr =   -0.0018;
     _ox  =  0.000891;
@@ -94,7 +94,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _oxr =  0.000081;
     _oyr =  0.000490;
     _ozr = -0.000792;
-    _sc  =      0.40;
+    _sc  =      1.34;
     _scr =      0.08;
     _t0  =    2000.0;
   }
