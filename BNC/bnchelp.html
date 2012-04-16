@@ -1456,12 +1456,12 @@ BNC allows to concatinate RINEX files and edit their contents. Observation and n
 <li>q = quality control</li>
 <li>c = concatination</li>
 </ul>
-to follow UNAVCO's famous 'teqc' program. The remarkable thing about BNC is that it supports RINEX Version 3 under GNU General Public License.
+to follow UNAVCO's famous 'teqc' program written by Lou Estey. The remarkable thing about BNC in this context is that it supports RINEX Version 3 under GNU General Public License.
 
 <p><a name="teqcact"><h4>3.12.1 Action - optional</h4></p>
 <p>Select an action. Options are 'Edit/Concatinate' and 'Analyze'.
 <ul>
-<li>Select 'Edit/Concatinate' of you want to edit a RINEX file contents according to options specified under 'Set Edit Options' or if you want to concatinate several RINEX files.</li>
+<li>Select 'Edit/Concatinate' of you want to edit RINEX file contents according to options specified under 'Set Edit Options' or if you want to concatinate several RINEX files.</li>
 <li>Select 'Analyze' if you are interested in a quality controle of your RINEX file contents.</li>
 </ul>
 </p>
@@ -1485,7 +1485,7 @@ specify full path to output RINEX navigation file(s).
 
 <p>
 Mandatory if 'Analyze' selected:<br>
-Specify logfile to output analysis results.<br> 
+Specify logfile(s) to output analysis results.<br> 
 </p> 
 
 <p><a name="combi"><h4>3.13. Combination</h4></p>
@@ -1735,7 +1735,7 @@ If 'Host', 'Port', 'Mountpoint' and 'Password' are set, the stream will be encod
 
 <p><a name="upsystem"><h4>3.14.3 System - mandatory if 'Host' is set</h4></p>
 <p>
-BNC allows to configure several Broadcast Ephemeris correction streams referring to different reference systems for upload to different NTRIP broadcasters. You may use this functionality for parallel support of a backup NTRIP broadcaster or for simultaneous support of several reference systems. Available options for referring clock and orbit corrections to specific target reference systems are
+BNC allows to configure several Broadcast Ephemeris correction streams for upload so that they refere to different reference systems and different NTRIP broadcasters. You may use this functionality for parallel support of a backup NTRIP broadcaster or for simultaneous support of several reference systems. Available options for referring clock and orbit corrections to specific target reference systems are
 <p>
 <ul>
 <li>IGS08 which stands for the GNSS-based IGS realization of the International Terrestrial Reference Frame 2008 (ITRF2008), and</li>
@@ -1746,6 +1746,13 @@ BNC allows to configure several Broadcast Ephemeris correction streams referring
 <li>SIRGAS95 which stands for the Geodetic Datum adopted i.e. for Venezuela, and</li>
 <li>'Custom' which allows a transformation of Broadcast Corrections from the IGS08 system to any other system through specifying up to 14 Helmert Transformation Parameters.</li>
 </ul>
+</p>
+
+<p>
+BNC only transforms the original IGS08 <u>orbits</u> in the Broadcast Ephemeris corrections stream to a target reference system while leaving the clocks unchanged. From a theoretical point of view this leads to inconsistencies between orbits and clocks and is therefore not allowed. However, it has been shown by L. Huisman et al. 2012 that as long as involved scale parameters are small enough, this way of transforming corrections stream contents only leads to hight biases less than about one centimeter. With regards to the systems listed above, the approach has therefore been implemented in BNC for practical reasons.
+</p>
+<p>
+The transformation to GDA94 is an exception in this because it involves a ten times higher scale parameter compared to the other transformation implementations. Note that hence the resulting hight biases for a BNC-transformed GDA94 corrections stream can increase up to about 10 centimeters.
 </p>
 
 <p>
