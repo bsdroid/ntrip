@@ -61,11 +61,11 @@
 #include "upload/bnccustomtrafo.h"
 #include "upload/bncephuploadcaster.h"
 #include "qtfilechooser.h"
-#include "teqcdlg.h"
+#include "reqcdlg.h"
 #ifdef USE_POSTPROCESSING
 #  include "rinex/bncpostprocess.h"
-#  include "rinex/teqcedit.h"
-#  include "rinex/teqcanalyze.h"
+#  include "rinex/reqcedit.h"
+#  include "rinex/reqcanalyze.h"
 #endif
 
 using namespace std;
@@ -82,10 +82,10 @@ bncWindow::bncWindow() {
   _bncFigurePPP = new bncFigurePPP(this);
   _runningRealTime           = false;
   _runningPostProcessingPPP  = false;
-  _runningPostProcessingTeqc = false;
+  _runningPostProcessingReqc = false;
 
   _pppSPPComboBox     = 0; // necessary for enableStartStop()
-  _teqcActionComboBox = 0; // necessary for enableStartStop()
+  _reqcActionComboBox = 0; // necessary for enableStartStop()
 
   int ww = QFontMetrics(this->font()).width('w');
   
@@ -616,7 +616,7 @@ bncWindow::bncWindow() {
   QWidget* sergroup = new QWidget();
   QWidget* pppgroup = new QWidget();
   QWidget* ppp2group = new QWidget();
-  QWidget* teqcgroup = new QWidget();
+  QWidget* reqcgroup = new QWidget();
   QWidget* cmbgroup = new QWidget();
   QWidget* uploadgroup = new QWidget();
   QWidget* uploadEphgroup = new QWidget();
@@ -624,6 +624,7 @@ bncWindow::bncWindow() {
   _aogroup->addTab(ggroup,tr("General"));
   _aogroup->addTab(ogroup,tr("RINEX Observations"));
   _aogroup->addTab(egroup,tr("RINEX Ephemeris"));
+  _aogroup->addTab(reqcgroup,tr("RINEX Editing && QC"));
   _aogroup->addTab(cgroup,tr("Broadcast Corrections"));
   _aogroup->addTab(sgroup,tr("Feed Engine"));
   _aogroup->addTab(sergroup,tr("Serial Output"));
@@ -631,7 +632,6 @@ bncWindow::bncWindow() {
   _aogroup->addTab(rgroup,tr("Miscellaneous"));
   _aogroup->addTab(pppgroup,tr("PPP (1)"));
   _aogroup->addTab(ppp2group,tr("PPP (2)"));
-  _aogroup->addTab(teqcgroup,tr("Teqc"));
 #ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combination"));
 #endif
@@ -989,82 +989,82 @@ bncWindow::bncWindow() {
 
   ppp2group->setLayout(ppp2Layout);
 
-  // Teqc Processing
+  // Reqc Processing
   // ---------------
-  _teqcActionComboBox = new QComboBox();
-  _teqcActionComboBox->setEditable(false);
-  _teqcActionComboBox->addItems(QString(",Edit/Concatenate,Analyze").split(","));
-  ik = _teqcActionComboBox->findText(settings.value("teqcAction").toString());
+  _reqcActionComboBox = new QComboBox();
+  _reqcActionComboBox->setEditable(false);
+  _reqcActionComboBox->addItems(QString(",Edit/Concatenate,Analyze").split(","));
+  ik = _reqcActionComboBox->findText(settings.value("reqcAction").toString());
   if (ik != -1) {
-    _teqcActionComboBox->setCurrentIndex(ik);
+    _reqcActionComboBox->setCurrentIndex(ik);
   }
-  connect(_teqcActionComboBox, SIGNAL(currentIndexChanged(const QString &)),
+  connect(_reqcActionComboBox, SIGNAL(currentIndexChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
-  QGridLayout* teqcLayout = new QGridLayout;
-  _teqcActionComboBox->setMinimumWidth(15*ww);
-  _teqcActionComboBox->setMaximumWidth(15*ww);
+  QGridLayout* reqcLayout = new QGridLayout;
+  _reqcActionComboBox->setMinimumWidth(15*ww);
+  _reqcActionComboBox->setMaximumWidth(15*ww);
 
-  _teqcObsFileChooser = new qtFileChooser(0, qtFileChooser::Files);
-  _teqcObsFileChooser->setFileName(settings.value("teqcObsFile").toString());
-  _teqcObsFileChooser->setWhatsThis(tr("Specify the full path to an observation file in RINEX v2 or v3 format."));
-  _teqcObsFileChooser->setMinimumWidth(15*ww);
-  _teqcObsFileChooser->setMaximumWidth(15*ww);
+  _reqcObsFileChooser = new qtFileChooser(0, qtFileChooser::Files);
+  _reqcObsFileChooser->setFileName(settings.value("reqcObsFile").toString());
+  _reqcObsFileChooser->setWhatsThis(tr("Specify the full path to an observation file in RINEX v2 or v3 format."));
+  _reqcObsFileChooser->setMinimumWidth(15*ww);
+  _reqcObsFileChooser->setMaximumWidth(15*ww);
 
-  _teqcNavFileChooser = new qtFileChooser(0, qtFileChooser::Files);
-  _teqcNavFileChooser->setFileName(settings.value("teqcNavFile").toString());
-  _teqcNavFileChooser->setWhatsThis(tr("Specify the full path to a RINEX v2 or v3 navigation file."));
-  _teqcNavFileChooser->setMinimumWidth(15*ww);
-  _teqcNavFileChooser->setMaximumWidth(15*ww);
+  _reqcNavFileChooser = new qtFileChooser(0, qtFileChooser::Files);
+  _reqcNavFileChooser->setFileName(settings.value("reqcNavFile").toString());
+  _reqcNavFileChooser->setWhatsThis(tr("Specify the full path to a RINEX v2 or v3 navigation file."));
+  _reqcNavFileChooser->setMinimumWidth(15*ww);
+  _reqcNavFileChooser->setMaximumWidth(15*ww);
 
-  _teqcOutObsLineEdit = new QLineEdit(settings.value("teqcOutObsFile").toString());
-  _teqcOutObsLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
-  _teqcOutObsLineEdit->setMinimumWidth(15*ww);
-  _teqcOutObsLineEdit->setMaximumWidth(15*ww);
+  _reqcOutObsLineEdit = new QLineEdit(settings.value("reqcOutObsFile").toString());
+  _reqcOutObsLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
+  _reqcOutObsLineEdit->setMinimumWidth(15*ww);
+  _reqcOutObsLineEdit->setMaximumWidth(15*ww);
 
-  _teqcOutNavLineEdit = new QLineEdit(settings.value("teqcOutNavFile").toString());
-  _teqcOutNavLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
-  _teqcOutNavLineEdit->setMinimumWidth(15*ww);
-  _teqcOutNavLineEdit->setMaximumWidth(15*ww);
+  _reqcOutNavLineEdit = new QLineEdit(settings.value("reqcOutNavFile").toString());
+  _reqcOutNavLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
+  _reqcOutNavLineEdit->setMinimumWidth(15*ww);
+  _reqcOutNavLineEdit->setMaximumWidth(15*ww);
 
-  _teqcOutLogLineEdit = new QLineEdit(settings.value("teqcOutLogFile").toString());
-  _teqcOutLogLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
-  _teqcOutLogLineEdit->setMinimumWidth(15*ww);
-  _teqcOutLogLineEdit->setMaximumWidth(15*ww);
+  _reqcOutLogLineEdit = new QLineEdit(settings.value("reqcOutLogFile").toString());
+  _reqcOutLogLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
+  _reqcOutLogLineEdit->setMinimumWidth(15*ww);
+  _reqcOutLogLineEdit->setMaximumWidth(15*ww);
 
   ir = 0;
-  teqcLayout->addWidget(new QLabel("RINEX file editing, quality control or concatenation."),ir, 0, 1, 20);
+  reqcLayout->addWidget(new QLabel("RINEX file editing, quality control or concatenation."),ir, 0, 1, 20);
   ++ir;
-  teqcLayout->addWidget(new QLabel("Action"),                   ir, 0, Qt::AlignLeft);
-  teqcLayout->addWidget(_teqcActionComboBox,                    ir, 1, Qt::AlignLeft);
-  _teqcEditOptionButton = new QPushButton("Set Edit Options");
-  teqcLayout->addWidget(_teqcEditOptionButton,                  ir, 3, Qt::AlignRight);
+  reqcLayout->addWidget(new QLabel("Action"),                   ir, 0, Qt::AlignLeft);
+  reqcLayout->addWidget(_reqcActionComboBox,                    ir, 1, Qt::AlignLeft);
+  _reqcEditOptionButton = new QPushButton("Set Edit Options");
+  reqcLayout->addWidget(_reqcEditOptionButton,                  ir, 3, Qt::AlignRight);
   ++ir;
-  teqcLayout->addWidget(new QLabel("Input files (full path)"),  ir, 0, Qt::AlignLeft);
-  teqcLayout->addWidget(_teqcObsFileChooser,                    ir, 1, Qt::AlignRight);
-  teqcLayout->addWidget(new QLabel("Obs"),                      ir, 2, Qt::AlignLeft);
-  teqcLayout->addWidget(_teqcNavFileChooser,                    ir, 3, Qt::AlignRight);
-  teqcLayout->addWidget(new QLabel("Nav"),                      ir, 4, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("Input files (full path)"),  ir, 0, Qt::AlignLeft);
+  reqcLayout->addWidget(_reqcObsFileChooser,                    ir, 1, Qt::AlignRight);
+  reqcLayout->addWidget(new QLabel("Obs"),                      ir, 2, Qt::AlignLeft);
+  reqcLayout->addWidget(_reqcNavFileChooser,                    ir, 3, Qt::AlignRight);
+  reqcLayout->addWidget(new QLabel("Nav"),                      ir, 4, Qt::AlignLeft);
   ++ir;
-  teqcLayout->addWidget(new QLabel("Output files (full path)"),  ir, 0, Qt::AlignLeft);
-  teqcLayout->addWidget(_teqcOutObsLineEdit,                     ir, 1, Qt::AlignRight);
-  teqcLayout->addWidget(new QLabel("Obs"),                       ir, 2, Qt::AlignLeft);
-  teqcLayout->addWidget(_teqcOutNavLineEdit,                     ir, 3, Qt::AlignRight);
-  teqcLayout->addWidget(new QLabel("Nav"),                       ir, 4, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("Output files (full path)"),  ir, 0, Qt::AlignLeft);
+  reqcLayout->addWidget(_reqcOutObsLineEdit,                     ir, 1, Qt::AlignRight);
+  reqcLayout->addWidget(new QLabel("Obs"),                       ir, 2, Qt::AlignLeft);
+  reqcLayout->addWidget(_reqcOutNavLineEdit,                     ir, 3, Qt::AlignRight);
+  reqcLayout->addWidget(new QLabel("Nav"),                       ir, 4, Qt::AlignLeft);
   ++ir;
-  teqcLayout->addWidget(_teqcOutLogLineEdit,                     ir, 1, Qt::AlignRight);
-  teqcLayout->addWidget(new QLabel("Log"),                       ir, 2, Qt::AlignLeft);
+  reqcLayout->addWidget(_reqcOutLogLineEdit,                     ir, 1, Qt::AlignRight);
+  reqcLayout->addWidget(new QLabel("Log"),                       ir, 2, Qt::AlignLeft);
   ++ir;
-  teqcLayout->addWidget(new QLabel(""), ir, 1);
-  teqcLayout->setRowStretch(ir, 999);
+  reqcLayout->addWidget(new QLabel(""), ir, 1);
+  reqcLayout->setRowStretch(ir, 999);
 
-  teqcLayout->setColumnMinimumWidth(2, 8*ww);
-  teqcLayout->setColumnMinimumWidth(4, 8*ww);
+  reqcLayout->setColumnMinimumWidth(2, 8*ww);
+  reqcLayout->setColumnMinimumWidth(4, 8*ww);
 
-  teqcgroup->setLayout(teqcLayout);
+  reqcgroup->setLayout(reqcLayout);
 
-  connect(_teqcEditOptionButton, SIGNAL(clicked()), 
-          this, SLOT(slotTeqcEditOption()));
+  connect(_reqcEditOptionButton, SIGNAL(clicked()), 
+          this, SLOT(slotReqcEditOption()));
 
   // Combination
   // -----------
@@ -1211,8 +1211,8 @@ bncWindow::bncWindow() {
   _pppMountLineEdit->setWhatsThis(tr("<p>Specify an observations stream by its mountpoint from the 'Streams' list compiled below if you want BNC to estimate coordinates for the affected receiver position through a PPP solution. Example: 'FFMJ1'</p><p>Note that PPP in BNC requires to also pull a stream carrying RTCM Version 3 satellite orbit and clock corrections to Broadcast Ephemeris referring to the satellites' Antenna Phase Centers (APC). Stream CLK11 on NTRIP broadcaster products.igs-ip.net is an example.</p><p>Pulling in addition a third stream carrying Broadcast Ephemeris messages in high repetition rate is suggested if such messages are comeing from the receiver in low repetition rate or don't come at all from there.</p>"));
   _pppCorrMountLineEdit->setWhatsThis(tr("<p>You must specify an orbit/clock Broadcast Ephemeris corrections stream by its mountpoint from the 'Streams' list below. Example: 'CLK10'</p><p>Note that BNC can produce an internal PPP solution from combined Broadcast Ephemeris corrections as specified under 'Combination' if you introduce keyword 'INTERNAL' as the corrections mountpoint.</p>"));
   _pppSPPComboBox->setWhatsThis(tr("<p>Choose between plain Single Point Positioning (SPP) and Precise Point Positioning (PPP) in 'Realtime' or 'Post-Processing' mode.</p><p>When in 'Post-Processing mode:<ul><li>Specifying a RINEX Observation, a RINEX Navigation and a Broadcast Correction file leads to a PPP solution.</li><li>Specifying only a RINEX Observation and a RINEX Navigation file and no Broadcast Correction file leads to a SPP solution.</ul></p>"));
-  _teqcActionComboBox->setWhatsThis(tr("<p>BNC allows to edit or concatenate RINEX v2 or v3 files or to perform a quality control.</p><p>In this it follows UNAVCO's famous 'teqc' program developed by Lou Estey.</p>"));
-  _teqcEditOptionButton->setWhatsThis(tr("<p>Specify options for editing RINEX v2 or v3 files.</p>"));
+  _reqcActionComboBox->setWhatsThis(tr("<p>BNC allows to edit or concatenate RINEX v2 or v3 files or to perform a quality check.</p><p>In this it follows UNAVCO's famous 'teqc' program.</p>"));
+  _reqcEditOptionButton->setWhatsThis(tr("<p>Specify options for editing RINEX v2 or v3 files.</p>"));
   _pppUsePhaseCheckBox->setWhatsThis(tr("<p>By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations.</p><p>Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.</p>"));
   _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
   _pppGLONASSCheckBox->setWhatsThis(tr("<p>By default BNC does not use GLONASS observations in PPP mode.</p><p>Tick 'Use GLONASS' for adding GLONASS observations to GPS and Galileo (optional) in a PPP solution.</p>"));
@@ -1687,13 +1687,13 @@ void bncWindow::slotSaveOptions() {
   settings.setValue("pppSigCrdP",_pppSigCrdP->text());
   settings.setValue("pppSigTrp0",_pppSigTrp0->text());
   settings.setValue("pppSigTrpP",_pppSigTrpP->text());
-// Teqc
-  settings.setValue("teqcAction",     _teqcActionComboBox->currentText());
-  settings.setValue("teqcObsFile",    _teqcObsFileChooser->fileName());
-  settings.setValue("teqcNavFile",    _teqcNavFileChooser->fileName());
-  settings.setValue("teqcOutObsFile", _teqcOutObsLineEdit->text());
-  settings.setValue("teqcOutNavFile", _teqcOutNavLineEdit->text());
-  settings.setValue("teqcOutLogFile", _teqcOutLogLineEdit->text());
+// Reqc
+  settings.setValue("reqcAction",     _reqcActionComboBox->currentText());
+  settings.setValue("reqcObsFile",    _reqcObsFileChooser->fileName());
+  settings.setValue("reqcNavFile",    _reqcNavFileChooser->fileName());
+  settings.setValue("reqcOutObsFile", _reqcOutObsLineEdit->text());
+  settings.setValue("reqcOutNavFile", _reqcOutNavLineEdit->text());
+  settings.setValue("reqcOutLogFile", _reqcOutLogLineEdit->text());
 // Combination
   if (!combineStreams.isEmpty()) {
     settings.setValue("combineStreams", combineStreams);
@@ -1741,8 +1741,8 @@ void bncWindow::slotStart() {
   if      ( _pppSPPComboBox->currentText() == "Post-Processing" ) {
     startPostProcessingPPP();
   }
-  else if ( !_teqcActionComboBox->currentText().isEmpty() ) {
-    startPostProcessingTeqc();
+  else if ( !_reqcActionComboBox->currentText().isEmpty() ) {
+    startPostProcessingReqc();
   }
   else {
     startRealTime();
@@ -2283,15 +2283,15 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable10, _pppMountLineEdit);
   }
 
-  if (sender() == 0 || sender() == _teqcActionComboBox) {
-    enable = !_teqcActionComboBox->currentText().isEmpty();
-    bool enable10 = _teqcActionComboBox->currentText() == "Edit/Concatenate";
-    enableWidget(enable &&  enable10, _teqcEditOptionButton);
-    enableWidget(enable,              _teqcObsFileChooser);
-    enableWidget(enable,              _teqcNavFileChooser);
-    enableWidget(enable &&  enable10, _teqcOutObsLineEdit);
-    enableWidget(enable &&  enable10, _teqcOutNavLineEdit);
-    enableWidget(enable && !enable10, _teqcOutLogLineEdit);
+  if (sender() == 0 || sender() == _reqcActionComboBox) {
+    enable = !_reqcActionComboBox->currentText().isEmpty();
+    bool enable10 = _reqcActionComboBox->currentText() == "Edit/Concatenate";
+    enableWidget(enable &&  enable10, _reqcEditOptionButton);
+    enableWidget(enable,              _reqcObsFileChooser);
+    enableWidget(enable,              _reqcNavFileChooser);
+    enableWidget(enable &&  enable10, _reqcOutObsLineEdit);
+    enableWidget(enable &&  enable10, _reqcOutNavLineEdit);
+    enableWidget(enable && !enable10, _reqcOutLogLineEdit);
   }
 }
 
@@ -2521,23 +2521,23 @@ void bncWindow::slotPostProgress(int nEpo) {
   }
 }
 
-// Start Post-Processing Teqc
+// Start Post-Processing Reqc
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::startPostProcessingTeqc() {
+void bncWindow::startPostProcessingReqc() {
 #ifdef USE_POSTPROCESSING
-  _runningPostProcessingTeqc = true;
+  _runningPostProcessingReqc = true;
   enableStartStop();
-  if (_teqcActionComboBox->currentText() == "Analyze") {
-    t_teqcAnalyze* teqcAnalyze = new t_teqcAnalyze(this);
-    connect(teqcAnalyze, SIGNAL(finished()), 
-            this, SLOT(slotFinishedPostProcessingTeqc()));
-    teqcAnalyze->start();
+  if (_reqcActionComboBox->currentText() == "Analyze") {
+    t_reqcAnalyze* reqcAnalyze = new t_reqcAnalyze(this);
+    connect(reqcAnalyze, SIGNAL(finished()), 
+            this, SLOT(slotFinishedPostProcessingReqc()));
+    reqcAnalyze->start();
   }
   else {
-    t_teqcEdit* teqcEdit = new t_teqcEdit(this);
-    connect(teqcEdit, SIGNAL(finished()), 
-            this, SLOT(slotFinishedPostProcessingTeqc()));
-    teqcEdit->start();
+    t_reqcEdit* reqcEdit = new t_reqcEdit(this);
+    connect(reqcEdit, SIGNAL(finished()), 
+            this, SLOT(slotFinishedPostProcessingReqc()));
+    reqcEdit->start();
   }
 #else
   QMessageBox::information(this, "Information",
@@ -2545,19 +2545,19 @@ void bncWindow::startPostProcessingTeqc() {
 #endif
 }
 
-// Post-Processing Teqc Finished
+// Post-Processing Reqc Finished
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotFinishedPostProcessingTeqc() {
-  _runningPostProcessingTeqc = false;
+void bncWindow::slotFinishedPostProcessingReqc() {
+  _runningPostProcessingReqc = false;
   QMessageBox::information(this, "Information",
-                           "Teqc-Processing Thread Finished");
+                           "Reqc-Processing Thread Finished");
   enableStartStop();
 }
 
 // Edit teqc-like editing options
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotTeqcEditOption() {
-  teqcDlg* dlg = new teqcDlg(this);
+void bncWindow::slotReqcEditOption() {
+  reqcDlg* dlg = new reqcDlg(this);
   dlg->move(this->pos().x()+50, this->pos().y()+50);
   dlg->exec();
   delete dlg;
@@ -2576,8 +2576,8 @@ void bncWindow::enableStartStop() {
     }
     _actStop->setEnabled(false);
   }
-  else if ( _teqcActionComboBox && !_teqcActionComboBox->currentText().isEmpty() ) {
-    if (_runningPostProcessingTeqc) {
+  else if ( _reqcActionComboBox && !_reqcActionComboBox->currentText().isEmpty() ) {
+    if (_runningPostProcessingReqc) {
       _actStart->setEnabled(false);
     }
     else {
