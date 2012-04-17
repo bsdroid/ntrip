@@ -77,7 +77,7 @@ class bncWindow : public QMainWindow {
     void slotAddMountPoints();
     void slotStart();
     void slotFinishedPostProcessingPPP();
-    void slotFinishedPostProcessingTeqc();
+    void slotFinishedPostProcessingReqc();
     void slotStop();
     void slotNewMountPoints(QStringList* mountPoints);
     void slotDeleteMountPoints();
@@ -89,7 +89,7 @@ class bncWindow : public QMainWindow {
     void slotAddUploadRow();
     void slotDelUploadRow();
     void slotSetUploadTrafo();
-    void slotTeqcEditOption();
+    void slotReqcEditOption();
 
   protected:
     virtual void closeEvent(QCloseEvent *);
@@ -101,7 +101,7 @@ class bncWindow : public QMainWindow {
     void enableWidget(bool enable, QWidget* widget);
     void startRealTime();
     void startPostProcessingPPP();
-    void startPostProcessingTeqc();
+    void startPostProcessingReqc();
     void enableStartStop();
 
     QMenu*     _menuHlp;
@@ -167,13 +167,13 @@ class bncWindow : public QMainWindow {
     qtFileChooser* _postCorrFileChooser;
     QLineEdit*     _postOutLineEdit;
 
-    QComboBox*     _teqcActionComboBox;
-    QPushButton*   _teqcEditOptionButton;
-    qtFileChooser* _teqcObsFileChooser;
-    qtFileChooser* _teqcNavFileChooser;
-    QLineEdit*     _teqcOutObsLineEdit;
-    QLineEdit*     _teqcOutNavLineEdit;
-    QLineEdit*     _teqcOutLogLineEdit;
+    QComboBox*     _reqcActionComboBox;
+    QPushButton*   _reqcEditOptionButton;
+    qtFileChooser* _reqcObsFileChooser;
+    qtFileChooser* _reqcNavFileChooser;
+    QLineEdit*     _reqcOutObsLineEdit;
+    QLineEdit*     _reqcOutNavLineEdit;
+    QLineEdit*     _reqcOutLogLineEdit;
 
     QCheckBox* _rnxV3CheckBox;
     QCheckBox* _ephV3CheckBox;
@@ -248,6 +248,6 @@ class bncWindow : public QMainWindow {
     bool _realTimeRunning;
     bool _runningRealTime;
     bool _runningPostProcessingPPP;
-    bool _runningPostProcessingTeqc;
+    bool _runningPostProcessingReqc;
 };
 #endif
