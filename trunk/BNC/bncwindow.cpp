@@ -1033,7 +1033,7 @@ bncWindow::bncWindow() {
   _reqcOutLogLineEdit->setMaximumWidth(15*ww);
 
   ir = 0;
-  reqcLayout->addWidget(new QLabel("RINEX file editing, quality control or concatenation."),ir, 0, 1, 20);
+  reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 20);
   ++ir;
   reqcLayout->addWidget(new QLabel("Action"),                   ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcActionComboBox,                    ir, 1, Qt::AlignLeft);
