@@ -223,11 +223,11 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.11.8.4 <a href=#pppsigxyzn>XYZ White Noise</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.8.5 <a href=#pppsigtrpi>Tropo Init</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.8.6 <a href=#pppsigtrpn>Tropo White Noise</a><br>
-3.12. <a href=#teqc>Teqc</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.1 <a href=#teqcact>Action</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.2 <a href=#teqcedit>Set Edit Options</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.3 <a href=#teqcinput>Input files</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.4 <a href=#teqcoutput>Output files</a><br>
+3.12. <a href=#reqc>Reqc</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.1 <a href=#reqcact>Action</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.2 <a href=#reqcedit>Set Edit Options</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.3 <a href=#reqcinput>Input files</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.4 <a href=#reqcoutput>Output files</a><br>
 3.13. <a href=#combi>Combination</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.1 <a href=#combimounttab>Combination Table</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.1.1 <a href=#combiadd>Add Row, Delete</a><br>
@@ -1447,18 +1447,17 @@ Enter a sigma in meters for the a-priory model based tropospheric delay estimati
 Enter a sigma in meters per second to describe the expected variation of the tropospheric effect. Supposing 1Hz observation data, a value of 3e-6 (default) would mean that the tropospheric effect may vary for 3600 * 3e-6 = 0.01 meters per hour.
 </p>
 
-<p><a name="teqc"><h4>3.12. Teqc</h4></p>
+<p><a name="reqc"><h4>3.12. Reqc</h4></p>
 <p>
-BNC allows to concatenate RINEX files and edit their contents. Observation and navigation files can be handled. BNC can also carry out a quality control of the contents of RINEX files. This functionality in BNC is named 'Teqc' which stands for 
+BNC allows to concatenate RINEX files and edit their contents. Observation and navigation files can be handled. BNC can also carry out a quality check of the contents of RINEX files. This functionality in BNC stands for 
 <ul>
 <li>t = translation (from RTCM to RINEX)</li>
-<li>e = editing</li>
-<li>q = quality control</li>
-<li>c = concatination</li>
+<li>e = editing and concatenation</li>
+<li>qc = quality check</li>
 </ul>
-to follow UNAVCO's famous 'teqc' program developed by Lou Estey. The remarkable thing about BNC in this context is that it supports RINEX Version 3 under GNU General Public License.
+to follow UNAVCO's famous 'teqc' program. The remarkable thing about BNC in this context is that it supports RINEX Version 3 under GNU General Public License.
 
-<p><a name="teqcact"><h4>3.12.1 Action - optional</h4></p>
+<p><a name="reqcact"><h4>3.12.1 Action - optional</h4></p>
 <p>Select an action. Options are 'Edit/Concatenate' and 'Analyze'.
 <ul>
 <li>Select 'Edit/Concatenate' of you want to edit RINEX file contents according to options specified under 'Set Edit Options' or if you want to concatenate several RINEX files.</li>
@@ -1466,17 +1465,17 @@ to follow UNAVCO's famous 'teqc' program developed by Lou Estey. The remarkable 
 </ul>
 </p>
 
-<p><a name="teqcedit"><h4>3.12.2 Set Edit Options - mandatory if 'Edit/Concatenate' is set</h4></p>
+<p><a name="reqcedit"><h4>3.12.2 Set Edit Options - mandatory if 'Edit/Concatenate' is set</h4></p>
 <p>Once action 'Edit/Concationate' is selected, you have to specify editing options. BNC lets you specify the RINEX version, sampling rate, begin and end of file and marker, antenna or receiver details.
 </p>
 
-<p><a name="teqcinput"><h4>3.12.3 Input Files - mandatory if 'Action' is set</h4></p>
+<p><a name="reqcinput"><h4>3.12.3 Input Files - mandatory if 'Action' is set</h4></p>
 <p>
 Specify full path to input RINEX observation file(s), and<br> 
 specify full path to input RINEX navigation file(s).
 </p> 
 
-<p><a name="teqcoutput"><h4>3.12.4 Output Files - mandatory if 'Action' is set</h4></p>
+<p><a name="reqcoutput"><h4>3.12.4 Output Files - mandatory if 'Action' is set</h4></p>
 <p>
 Mandatory if 'Edit/Concatenate' selected:<br>
 Specify full path to output RINEX observation file(s), and<br> 
@@ -2392,7 +2391,7 @@ Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested to synch
 
 <tr>
 <td>Apr 2011 &nbsp;</td><td>Version 2.6 &nbsp;</td>
-<td>[Add] Complete integration of BNS in BNC<br> [Add] SP3 and Clock RINEX output<br> [Add] PPP in Post Processing Mode<br> [Add] Some first Teqc functionality<br> [Add] Threshold for orbit outliers in combination solution<br> [Add] Real-time engine becomes orbit/clock server instead of client<br> [Mod] 'EOE' added to orbit/clock stream from engine<br> [Add] Correction for antenna excentricities<br> [Add] Quick start mode for PPP<br> [Mod] Design of format for feeding engine changed to follow RINEX v3<br> [Mod] Implementation of SSR message encoding modified according to standard<br> [Add] SSL/TLS Support of Ntrip Version 2<br> [Mod] Switch to Qt version 4.7.3<br> [Mod] RTCMv3 Galileo Broadcast Ephemeris message 1045</td>
+<td>[Add] Complete integration of BNS in BNC<br> [Add] SP3 and Clock RINEX output<br> [Add] PPP in Post Processing Mode<br> [Add] Some RINEX editing & QC functionality<br> [Add] Threshold for orbit outliers in combination solution<br> [Add] Real-time engine becomes orbit/clock server instead of client<br> [Mod] 'EOE' added to orbit/clock stream from engine<br> [Add] Correction for antenna excentricities<br> [Add] Quick start mode for PPP<br> [Mod] Design of format for feeding engine changed to follow RINEX v3<br> [Mod] Implementation of SSR message encoding modified according to standard<br> [Add] SSL/TLS Support of Ntrip Version 2<br> [Mod] Switch to Qt version 4.7.3<br> [Mod] RTCMv3 Galileo Broadcast Ephemeris message 1045</td>
 </tr>
 
 <tr>
@@ -2683,22 +2682,22 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>pppSigmaTrp0=0.1</td><td>PPP Client: Sigma for initial tropospheric delay</td></tr>
 <tr><td>pppSigmaTrpP=1e-6</td><td>PPP Client: White noise for tropospheric delay</td></tr>
 
-<tr><td>teqcAction=</td><td>Teqc: Action</td></tr>
-<tr><td>teqcObsFile=</td><td>Teqc: Observations file</td></tr>
-<tr><td>teqcNavFile=</td><td>Teqc: Navigation file</td></tr>
-<tr><td>teqcOutObsFile=</td><td>Teqc: Output observations file</td></tr>
-<tr><td>teqcOutNavFile=</td><td>Teqc: Output navigation file</td></tr>
-<tr><td>teqcOutLogFile=</td><td>Teqc: Output logfile</td></tr>
-<tr><td>teqcRnxVersion=</td><td>Teqc: RINEX version</td></tr>
-<tr><td>teqcSampling=</td><td>Teqc: RINEX sampling</td></tr>
-<tr><td>teqcStartDateTime=</td><td>Teqc: Start time</td></tr>
-<tr><td>teqcEndDateTime=</td><td>Teqc: Stop time</td></tr>
-<tr><td>teqcOldMarkerName=</td><td>Teqc: Old marker</td></tr>
-<tr><td>teqcNewMarkerName=</td><td>Teqc: New marker</td></tr>
-<tr><td>teqcOldAntennaName=</td><td>Teqc: Old antenna</td></tr>
-<tr><td>teqcNewAntennaName=</td><td>Teqc: New antenna</td></tr>
-<tr><td>teqcOldReceiverName=</td><td>Teqc: Old receiver</td></tr>
-<tr><td>teqcNewReceiverName=</td><td>Teqc:  New receiver</td></tr>
+<tr><td>reqcAction=</td><td>Reqc: Action</td></tr>
+<tr><td>reqcObsFile=</td><td>Reqc: Observations file</td></tr>
+<tr><td>reqcNavFile=</td><td>Reqc: Navigation file</td></tr>
+<tr><td>reqcOutObsFile=</td><td>Reqc: Output observations file</td></tr>
+<tr><td>reqcOutNavFile=</td><td>Reqc: Output navigation file</td></tr>
+<tr><td>reqcOutLogFile=</td><td>Reqc: Output logfile</td></tr>
+<tr><td>reqcRnxVersion=</td><td>Reqc: RINEX version</td></tr>
+<tr><td>reqcSampling=</td><td>Reqc: RINEX sampling</td></tr>
+<tr><td>reqcStartDateTime=</td><td>Reqc: Start time</td></tr>
+<tr><td>reqcEndDateTime=</td><td>Reqc: Stop time</td></tr>
+<tr><td>reqcOldMarkerName=</td><td>Reqc: Old marker</td></tr>
+<tr><td>reqcNewMarkerName=</td><td>Reqc: New marker</td></tr>
+<tr><td>reqcOldAntennaName=</td><td>Reqc: Old antenna</td></tr>
+<tr><td>reqcNewAntennaName=</td><td>Reqc: New antenna</td></tr>
+<tr><td>reqcOldReceiverName=</td><td>Reqc: Old receiver</td></tr>
+<tr><td>reqcNewReceiverName=</td><td>Reqc:  New receiver</td></tr>
 
 <tr><td>combineStreams=</td><td>Combination: List of correctors streams</td></tr>
 <tr><td>cmbMethod=Filter</td><td>Combination: Approach</td></tr>
