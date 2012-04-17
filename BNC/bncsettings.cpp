@@ -124,23 +124,23 @@ bncSettings::bncSettings(bool noInit) :
     setValue("pppSigCrdP",          "100.0");
     setValue("pppSigTrp0",          "0.1");
     setValue("pppSigTrpP",          "3e-6");
-// Teqc
-    setValue("teqcAction",          "");
-    setValue("teqcObsFile",         "");
-    setValue("teqcNavFile",         "");
-    setValue("teqcOutObsFile",      "");
-    setValue("teqcOutNavFile",      "");
-    setValue("teqcOutLogFile",      "");
-    setValue("teqcRnxVersion",      "");
-    setValue("teqcSampling",        "");
-    setValue("teqcStartDateTime",   "");
-    setValue("teqcEndDateTime",     "");
-    setValue("teqcOldMarkerName",   "");
-    setValue("teqcNewMarkerName",   "");
-    setValue("teqcOldAntennaName",  "");
-    setValue("teqcNewAntennaName",  "");
-    setValue("teqcOldReceiverName", "");
-    setValue("teqcNewReceiverName", "");
+// Reqc
+    setValue("reqcAction",          "");
+    setValue("reqcObsFile",         "");
+    setValue("reqcNavFile",         "");
+    setValue("reqcOutObsFile",      "");
+    setValue("reqcOutNavFile",      "");
+    setValue("reqcOutLogFile",      "");
+    setValue("reqcRnxVersion",      "");
+    setValue("reqcSampling",        "");
+    setValue("reqcStartDateTime",   "");
+    setValue("reqcEndDateTime",     "");
+    setValue("reqcOldMarkerName",   "");
+    setValue("reqcNewMarkerName",   "");
+    setValue("reqcOldAntennaName",  "");
+    setValue("reqcNewAntennaName",  "");
+    setValue("reqcOldReceiverName", "");
+    setValue("reqcNewReceiverName", "");
 // Combination
     setValue("combineStreams",      "");
     setValue("cmbMethod",           "");
