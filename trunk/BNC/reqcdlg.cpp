@@ -50,7 +50,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
 
-  setWindowTitle(tr("Reqc Editing Options"));
+  setWindowTitle(tr("RINEX Editing Options"));
 
   int ww = QFontMetrics(font()).width('w');
 
