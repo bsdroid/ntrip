@@ -986,6 +986,8 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(new QLabel("Tropo Init        "),     ir, 6);
   ppp2Layout->addWidget(_pppSigTrpP,                          ir, 7);
   ppp2Layout->addWidget(new QLabel("Tropo White Noise"),      ir, 8);
+  ++ir;
+  ppp2Layout->addWidget(new QLabel(""),                       ir, 0);
 
   ppp2group->setLayout(ppp2Layout);
 
@@ -2550,7 +2552,7 @@ void bncWindow::startPostProcessingReqc() {
 void bncWindow::slotFinishedPostProcessingReqc() {
   _runningPostProcessingReqc = false;
   QMessageBox::information(this, "Information",
-                           "Reqc-Processing Thread Finished");
+                           "RINEX Processing Thread Finished");
   enableStartStop();
 }
 
