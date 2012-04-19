@@ -52,6 +52,7 @@ t_reqcEdit::t_reqcEdit(QObject* parent) : QThread(parent) {
 
   _obsFileNames   = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
   _outObsFileName = settings.value("reqcOutObsFile").toString();
+  _rnxVersion     = settings.value("reqcRnxVersion").toDouble();
 }
 
 // Destructor

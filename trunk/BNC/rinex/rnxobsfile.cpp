@@ -642,13 +642,31 @@ void t_rnxObsFile::writeHeader() {
              << "WAVELENGTH FACT L1/2\n";
   }
 
-  QString hlp;
-  QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2.size(), 6);
-  for (unsigned ii = 0; ii < _header._obsTypesV2.size(); ii++) {
-    QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2[ii], 6);   
-    if (ii > 0 && (ii % 8 == 0 || ii == _header._obsTypesV2.size()-1)) {
-      *_stream << hlp.leftJustified(60) << "# / TYPES OF OBSERV\n";
-      hlp = QString().leftJustified(6);
+  if (_header._version < 3.0) {
+    QString hlp;
+    QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2.size(), 6);
+    for (unsigned ii = 0; ii < _header._obsTypesV2.size(); ii++) {
+      QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2[ii], 6);   
+      if (ii > 0 && (ii % 8 == 0 || ii == _header._obsTypesV2.size()-1)) {
+        *_stream << hlp.leftJustified(60) << "# / TYPES OF OBSERV\n";
+        hlp = QString().leftJustified(6);
+      }
+    }
+  }
+  else {
+    map<char, vector<QString> >::const_iterator it;
+    for (it = _header._obsTypesV3.begin(); it != _header._obsTypesV3.end(); it++) {
+      char sys                     = it->first;
+      const vector<QString>& types = it->second;
+      QString hlp;
+      QTextStream(&hlp) << QString("%1").arg(types.size(), 6);
+      for (unsigned ii = 0; ii < types.size(); ii++) {
+        QTextStream(&hlp) << QString("%1").arg(types[ii], 6);   
+        if (ii > 0 && (ii % 8 == 0 || ii == types.size()-1)) {
+          *_stream << hlp.leftJustified(60) << "SYS / # / OBS TYPES\n";
+          hlp = QString().leftJustified(6);
+        }
+      }
     }
   }
 

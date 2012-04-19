@@ -49,6 +49,7 @@ Q_OBJECT
   QStringList            _obsFileNames;
   QVector<t_rnxObsFile*> _rnxObsFiles;
   QString                _outObsFileName;
+  double                 _rnxVersion;
 };
 
 #endif
