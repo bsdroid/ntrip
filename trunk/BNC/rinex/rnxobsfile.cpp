@@ -571,6 +571,13 @@ void t_rnxObsFile::writeHeader() {
     .leftJustified(60)
            << "MARKER NAME\n";
 
+  if (!_header._markerNumber.isEmpty()) {
+    *_stream << QString("%1")
+      .arg(_header._markerNumber, -20)
+      .leftJustified(60)
+             << "MARKER NUMBER\n";
+  }
+
   *_stream << QString("%1%2")
     .arg(_header._observer, -20)
     .arg(_header._agency,   -20)
