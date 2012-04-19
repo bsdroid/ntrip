@@ -106,6 +106,7 @@ class t_rnxObsFile {
     static const QString                  _emptyStr;
     float                                 _version;
     double                                _interval;
+    QString                               _antennaNumber;
     QString                               _antennaName;
     QString                               _markerName;
     QString                               _markerNumber;
