@@ -57,6 +57,8 @@ class bncApp : public QApplication {
     void getGlonassSlotNums(int GLOFreq[]);
     void initCombination();
     void stopCombination();
+    const QString& pgmName() {return _pgmName;}
+    const QString& userName() {return _userName;}
 
   public slots:
     void slotMessage(QByteArray msg, bool showOnScreen);

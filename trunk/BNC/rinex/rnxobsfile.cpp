@@ -43,7 +43,7 @@
 #include <sstream>
 #include "rnxobsfile.h"
 #include "bncutils.h"
-#include "bncversion.h"
+#include "bncapp.h"
 
 using namespace std;
 
@@ -551,14 +551,17 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header) {
 // Write Header
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::writeHeader() {
+
+  bncApp* app = (bncApp*) qApp;
+
   *_stream << QString("%1           Observation data    Mixed")
     .arg(_header._version, 9, 'f', 2)
     .leftJustified(60)
            << "RINEX VERSION / TYPE\n";
 
   *_stream << QString("%1%2%3")
-    .arg("BNC "BNCVERSION, -20)
-    .arg("BKG", -20)
+    .arg(app->pgmName(), -20)
+    .arg(app->userName(), -20)
     .arg(currentDateAndTimeGPS().date().toString("dd-MMM-yyyy"), -20)
     .leftJustified(60)
            << "PGM / RUN BY / DATE\n";
@@ -569,15 +572,15 @@ void t_rnxObsFile::writeHeader() {
            << "MARKER NAME\n";
 
   *_stream << QString("%1%2")
-    .arg("Observer", -20)  // TODO
-    .arg("Agency", -40)    // TODO
+    .arg(_header._observer, -20)
+    .arg(_header._agency,   -20)
     .leftJustified(60)
            << "OBSERVER / AGENCY\n";
 
   *_stream << QString("%1%2%3")
-    .arg("xxxx", -20)      // TODO
-    .arg("Receiver", -20)  // TODO
-    .arg("yyyy", -20)      // TODO
+    .arg(_header._receiverNumber,  -20)
+    .arg(_header._receiverType,    -20)
+    .arg(_header._receiverVersion, -20)
     .leftJustified(60)
            << "REC # / TYPE / VERS\n";
 
