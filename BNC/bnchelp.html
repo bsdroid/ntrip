@@ -2,7 +2,7 @@
 <h3>BKG Ntrip Client (BNC) Version 2.6 Manual</h3>
 
 <p>
-The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing real-time GNSS data streams from NTRIP broadcasters like <u>http://www.euref-ip.net/home</u>, <u>http://www.igs-ip.net/home</u> or <u>http://products.igs-ip.net/home</u>. It furthermore allows to edit, concatenate or control the quality of RINEX files.
+The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing real-time GNSS data streams from NTRIP broadcasters like <u>http://www.euref-ip.net/home</u>, <u>http://www.igs-ip.net/home</u> or <u>http://products.igs-ip.net/home</u>. It furthermore allows to edit, concatenate or check the quality of RINEX files.
 </p>
 
 <p>
@@ -51,9 +51,10 @@ Please ensure that you have installed the latest version of BNC available from <
 <li>convert the IGS Earth-Centered-Earth-Fixed clocks and and orbits into corrections to Broadcast Ephemeris with radial, along-track and cross-track components.</li>
 <li>upload the clock and orbit corrections as an RTCM Version 3.x stream to an NTRIP Broadcaster.</li>
 <li>refer the clock and orbit corretions to a specific reference system.</li>
-<li>log the Broadcast Ephemeris clock corrections as files in Clock RINEX files for further processing using other tools than BNC.</li>
-<li>log the Broadcast Ephemeris orbit corrections as files in SP3 files for further processing using other tools than BNC.</li>
+<li>log the Broadcast Ephemeris clock corrections as Clock RINEX files for further processing using other tools than BNC</li>
+<li>log the Broadcast Ephemeris orbit corrections as SP3 files for further processing using other tools than BNC.</li>
 </ul>
+<li>edit or concatenate RINEX files or check their quality.</li>
 </ul>
 </p>
 
@@ -558,8 +559,8 @@ to follow UNAVCO's famous 'teqc' program. The remarkable thing about BNC in this
 <p><a name="reqcact"><h4>3.6.1 Action - optional</h4></p>
 <p>Select an action. Options are 'Edit/Concatenate' and 'Analyze'.
 <ul>
-<li>Select 'Edit/Concatenate' of you want to edit RINEX file contents according to options specified under 'Set Edit Options' or if you want to concatenate several RINEX files.</li>
-<li>Select 'Analyze' if you are interested in a quality controle of your RINEX file contents.</li>
+<li>Select 'Edit/Concatenate' if you want to edit RINEX file contents according to options specified under 'Set Edit Options' or if you want to concatenate several RINEX files.</li>
+<li>Select 'Analyze' if you are interested in a quality check of your RINEX file contents.</li>
 </ul>
 </p>
 
@@ -572,6 +573,7 @@ to follow UNAVCO's famous 'teqc' program. The remarkable thing about BNC in this
 Specify full path to input RINEX observation file(s), and<br> 
 specify full path to input RINEX navigation file(s).
 </p> 
+<p>When specifying several input files BNC will concatenate their contents.</p>
 
 <p><a name="reqcoutput"><h4>3.6.4 Output Files - mandatory if 'Action' is set</h4></p>
 <p>
@@ -2397,7 +2399,7 @@ Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested to synch
 
 <tr>
 <td>Apr 2011 &nbsp;</td><td>Version 2.6 &nbsp;</td>
-<td>[Add] Complete integration of BNS in BNC<br> [Add] SP3 and Clock RINEX output<br> [Add] PPP in Post Processing Mode<br> [Add] Some RINEX editing & QC functionality<br> [Add] Threshold for orbit outliers in combination solution<br> [Add] Real-time engine becomes orbit/clock server instead of client<br> [Mod] 'EOE' added to orbit/clock stream from engine<br> [Add] Correction for antenna excentricities<br> [Add] Quick start mode for PPP<br> [Mod] Design of format for feeding engine changed to follow RINEX v3<br> [Mod] Implementation of SSR message encoding modified according to standard<br> [Add] SSL/TLS Support of Ntrip Version 2<br> [Mod] Switch to Qt version 4.7.3<br> [Mod] RTCMv3 Galileo Broadcast Ephemeris message 1045</td>
+<td>[Add] Complete integration of BNS in BNC<br> [Add] SP3 and Clock RINEX output<br> [Add] PPP in Post Processing Mode<br> [Add] Some RINEX editing & QC functionality<br> [Add] Threshold for orbit outliers in combination solution<br> [Add] Real-time engine becomes orbit/clock server instead of client<br> [Mod] 'EOE' added to orbit/clock stream from engine<br> [Add] Correction for antenna excentricities<br> [Add] Quick start mode for PPP<br> [Mod] Design of format for feeding engine changed to follow RINEX v3<br> [Mod] Implementation of SSR message encoding modified according to standard<br> [Add] SSL/TLS Support of Ntrip Version 2<br> [Mod] Switch to Qt version 4.7.3<br> [Add] RINEX editing, concatenation and quality check<br> [Mod] RTCMv3 Galileo Broadcast Ephemeris message 1045</td>
 </tr>
 
 <tr>
