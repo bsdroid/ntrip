@@ -659,10 +659,10 @@ void t_rnxObsFile::writeHeader() {
       char sys                     = it->first;
       const vector<QString>& types = it->second;
       QString hlp;
-      QTextStream(&hlp) << QString("%1").arg(types.size(), 6);
+      QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(types.size(), 3);
       for (unsigned ii = 0; ii < types.size(); ii++) {
-        QTextStream(&hlp) << QString("%1").arg(types[ii], 6);   
-        if (ii > 0 && (ii % 8 == 0 || ii == types.size()-1)) {
+        QTextStream(&hlp) << QString(" %1").arg(types[ii], 3);   
+        if (ii > 0 && (ii % 12 == 0 || ii == types.size()-1)) {
           *_stream << hlp.leftJustified(60) << "SYS / # / OBS TYPES\n";
           hlp = QString().leftJustified(6);
         }
