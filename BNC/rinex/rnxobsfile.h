@@ -108,6 +108,7 @@ class t_rnxObsFile {
     double                                _interval;
     QString                               _antennaName;
     QString                               _markerName;
+    QString                               _markerNumber;
     QString                               _observer;
     QString                               _agency;
     QString                               _receiverNumber;
