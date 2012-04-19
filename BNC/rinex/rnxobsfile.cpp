@@ -93,8 +93,21 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
     else if (key == "MARKER NAME") {
       _markerName = value;
     }
+    else if (key == "MARKER NUMBER") {
+      _markerNumber = line.mid(0,20).trimmed();
+    }
     else if (key == "ANT # / TYPE") {
-      _antennaName = line.mid(20,20).trimmed();
+      _antennaNumber = line.mid( 0,20).trimmed();
+      _antennaName   = line.mid(20,20).trimmed();
+    }
+    else if (key == "OBSERVER / AGENCY") {
+      _observer = line.mid( 0,20).trimmed();
+      _agency   = line.mid(20,40).trimmed();
+    }
+    else if (key == "REC # / TYPE / VERS") {
+      _receiverNumber  = line.mid( 0,20).trimmed();
+      _receiverType    = line.mid(20,20).trimmed();
+      _receiverVersion = line.mid(40,20).trimmed();
     }
     else if (key == "INTERVAL") {
       QTextStream in(value.toAscii(), QIODevice::ReadOnly);
@@ -522,14 +535,22 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
 // Set Header Information
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::setHeader(const t_rnxObsHeader& header) {
-  _header._version     =  header._version;     
-  _header._interval    =  header._interval;    
-  _header._antennaName =  header._antennaName; 
-  _header._markerName  =  header._markerName;  
-  _header._antNEU      =  header._antNEU;      
-  _header._antXYZ      =  header._antXYZ;      
-  _header._antBSG      =  header._antBSG;      
-  _header._xyz         =  header._xyz;         
+  _header._version         = header._version;     
+  _header._interval        = header._interval;    
+  _header._antennaNumber   = header._antennaNumber; 
+  _header._antennaName     = header._antennaName; 
+  _header._markerName      = header._markerName;  
+  _header._markerNumber    = header._markerNumber;  
+  _header._antNEU          = header._antNEU;      
+  _header._antXYZ          = header._antXYZ;      
+  _header._antBSG          = header._antBSG;      
+  _header._xyz             = header._xyz;         
+  _header._observer        = header._observer;       
+  _header._agency          = header._agency;         
+  _header._receiverNumber  = header._receiverNumber; 
+  _header._receiverType    = header._receiverType;   
+  _header._receiverVersion = header._receiverVersion;
+
   for (unsigned iPrn = 1; iPrn <= MAXPRN_GPS; iPrn++) {
     _header._wlFactorsL1[iPrn] =  header._wlFactorsL1[iPrn]; 
     _header._wlFactorsL2[iPrn] =  header._wlFactorsL2[iPrn]; 
@@ -580,7 +601,7 @@ void t_rnxObsFile::writeHeader() {
 
   *_stream << QString("%1%2")
     .arg(_header._observer, -20)
-    .arg(_header._agency,   -20)
+    .arg(_header._agency,   -40)
     .leftJustified(60)
            << "OBSERVER / AGENCY\n";
 
@@ -592,8 +613,8 @@ void t_rnxObsFile::writeHeader() {
            << "REC # / TYPE / VERS\n";
 
   *_stream << QString("%1%2")
-    .arg("xxxx", -20)      // TODO
-    .arg(_header._antennaName, -20)
+    .arg(_header._antennaNumber, -20)
+    .arg(_header._antennaName,   -20)
     .leftJustified(60)
            << "ANT # / TYPE\n";
 
