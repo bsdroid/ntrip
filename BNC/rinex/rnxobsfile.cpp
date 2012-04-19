@@ -632,6 +632,16 @@ void t_rnxObsFile::writeHeader() {
     .leftJustified(60)
            << "ANTENNA: DELTA H/E/N\n";
 
+  if (_header._version < 3.0) {
+    int defaultWlFact1 = _header._wlFactorsL1[1];
+    int defaultWlFact2 = _header._wlFactorsL2[1];  // TODO check all prns
+    *_stream << QString("%1%2")
+      .arg(defaultWlFact1, 6)
+      .arg(defaultWlFact2, 6)
+      .leftJustified(60)
+             << "WAVELENGTH FACT L1/2\n";
+  }
+
   QString hlp;
   QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2.size(), 6);
   for (unsigned ii = 0; ii < _header._obsTypesV2.size(); ii++) {
