@@ -122,14 +122,22 @@ int main(int argc, char *argv[]) {
     bncWin->show();
   }
 
-  // Non-Interactive (Batch) Mode
-  // ----------------------------
+  // Post-Processing reqc edit
+  // -------------------------
+  else if (settings.value("reqcAction").toString() == "Edit/Concatenate") {
+    app.setMode(bncApp::batchPostProcessing);
+    t_reqcEdit* reqcEdit = new t_reqcEdit(0);
+    reqcEdit->start();
+  }
+
+  // Non-Interactive (data gathering)
+  // --------------------------------
   else {
 
     signal(SIGINT, catch_signal);
 
     bncEphUploadCaster* casterEph = new bncEphUploadCaster(); (void) casterEph;
-
+    
     bncCaster* caster = new bncCaster(settings.value("outFile").toString(),
                                       settings.value("outPort").toInt());
     
@@ -137,29 +145,21 @@ int main(int argc, char *argv[]) {
     app.setPort(settings.value("outEphPort").toInt());
     app.setPortCorr(settings.value("corrPort").toInt());
     app.initCombination();
-
+    
     app.connect(caster, SIGNAL(getThreadsFinished()), &app, SLOT(quit()));
-  
+    
     ((bncApp*)qApp)->slotMessage("========== Start BNC v" BNCVERSION " =========", true);
-
-    // Post-Processing reqc edit
-    // -------------------------
-    if      (settings.value("reqcAction").toString() == "Edit/Concatenate") {
-      app.setMode(bncApp::batchPostProcessing);
-      t_reqcEdit* reqcEdit = new t_reqcEdit(0);
-      reqcEdit->start();
-    }
-
+    
     // Normal case - data from Internet
     // --------------------------------
-     else if ( rawFileName.isEmpty() ) {
+    if ( rawFileName.isEmpty() ) {
       app.setMode(bncApp::nonInteractive);
       caster->slotReadMountPoints();
       if (caster->numStations() == 0) {
         exit(0);
       }
     }
-
+    
     // Special case - data from file
     // -----------------------------
     else {
@@ -169,7 +169,6 @@ int main(int argc, char *argv[]) {
       bncGetThread* getThread = new bncGetThread(rawFile);
       caster->addGetThread(getThread, true);
     }
-
   }
 
   // Start the application
