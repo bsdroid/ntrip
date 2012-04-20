@@ -40,6 +40,7 @@
 
 #include <iostream>
 #include "reqcedit.h"
+#include "bncapp.h"
 #include "bncsettings.h"
 
 using namespace std;
@@ -96,6 +97,12 @@ void t_reqcEdit::run() {
     }
   }
 
-  emit finished();
-  deleteLater();
+  bncApp* app = (bncApp*) qApp;
+  if ( app->mode() != bncApp::interactive) {
+    app->exit(0);
+  }
+  else {
+    emit finished();
+    deleteLater();
+  }
 }

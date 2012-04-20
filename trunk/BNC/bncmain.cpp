@@ -49,6 +49,11 @@
 #include "bncsettings.h"
 #include "bncversion.h"
 #include "upload/bncephuploadcaster.h"
+#ifdef USE_POSTPROCESSING
+#  include "rinex/bncpostprocess.h"
+#  include "rinex/reqcedit.h"
+#  include "rinex/reqcanalyze.h"
+#endif
 
 using namespace std;
 
@@ -137,9 +142,17 @@ int main(int argc, char *argv[]) {
   
     ((bncApp*)qApp)->slotMessage("========== Start BNC v" BNCVERSION " =========", true);
 
+    // Post-Processing reqc edit
+    // -------------------------
+    if      (settings.value("reqcAction").toString() == "Edit/Concatenate") {
+      app.setMode(bncApp::batchPostProcessing);
+      t_reqcEdit* reqcEdit = new t_reqcEdit(0);
+      reqcEdit->start();
+    }
+
     // Normal case - data from Internet
     // --------------------------------
-    if ( rawFileName.isEmpty() ) {
+     else if ( rawFileName.isEmpty() ) {
       app.setMode(bncApp::nonInteractive);
       caster->slotReadMountPoints();
       if (caster->numStations() == 0) {
