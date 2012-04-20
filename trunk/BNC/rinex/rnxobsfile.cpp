@@ -618,18 +618,20 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
         for (unsigned i3 = 0; i3 < typesV3.size(); i3++) {
           const QString& typeV3 = typesV3[i3];
           QString        typeV2 = type3to2(typeV3);
-          bool found = false;
-          for (unsigned i2 = 0; i2 < _header._obsTypesV2.size(); i2++) {
-            if (_header._obsTypesV2[i2] == typeV2) {
-              found = true;
-              _indexMap2to3[sys][i2] = i3;
-              break;
+          if (!typeV2.isEmpty()) {
+            bool found = false;
+            for (unsigned i2 = 0; i2 < _header._obsTypesV2.size(); i2++) {
+              if (_header._obsTypesV2[i2] == typeV2) {
+                found = true;
+                _indexMap2to3[sys][i2] = i3;
+                break;
+              }
             }
-          }
-          if (!found) {
-            _header._obsTypesV2.push_back(typeV2);
-            int i2 = _header._obsTypesV2.size() - 1;
-            _indexMap2to3[sys][i2] = i3; 
+            if (!found) {
+              _header._obsTypesV2.push_back(typeV2);
+              int i2 = _header._obsTypesV2.size() - 1;
+              _indexMap2to3[sys][i2] = i3; 
+            }
           }
         }
       }
