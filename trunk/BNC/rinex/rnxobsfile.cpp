@@ -828,15 +828,28 @@ void t_rnxObsFile::writeEpochV3(const t_rnxEpo* epo) {
     const t_rnxSat& rnxSat = epo->rnxSat[iSat];
     *_stream << rnxSat.satSys 
              << QString("%1").arg(rnxSat.satNum, 2, 10, QChar('0'));
-    for (unsigned iType = 0; iType < rnxSat.obs.size(); iType++) {
-      if (rnxSat.obs[iType] == 0.0) {
+
+    for (unsigned iTypeOld = 0; iTypeOld < rnxSat.obs.size(); iTypeOld++) {
+
+      int iTypeNew;
+      if   (_trafo == trafoNone) {
+        iTypeNew = iTypeOld;
+      }
+      else {
+        iTypeNew = _indexMap2to3[rnxSat.satSys][iTypeOld];
+        if (iTypeNew == -1) {
+          continue;
+        }
+      }
+
+      if (rnxSat.obs[iTypeNew] == 0.0) {
         *_stream << QString().leftJustified(16);
       }
       else {
         *_stream << QString("%1%2%3")
-          .arg(rnxSat.obs[iType], 14, 'f', 3)
-          .arg(rnxSat.lli[iType],1)
-          .arg(rnxSat.snr[iType],1);
+          .arg(rnxSat.obs[iTypeNew], 14, 'f', 3)
+          .arg(rnxSat.lli[iTypeNew],1)
+          .arg(rnxSat.snr[iTypeNew],1);
       }
     }
     *_stream << endl;
