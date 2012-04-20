@@ -598,12 +598,12 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
       for (unsigned iSys = 0; iSys < systems.length(); iSys++) {
         char    sys    = systems[iSys];
         QString typeV3 =  type2to3(sys, typeV2);
-        if (!typeV3.isEmpty()) {
-          _header._obsTypesV3[sys].push_back(typeV3);
-          _indexMap2to3[sys][ii] = _header._obsTypesV3[sys].size() - 1;
+        if (typeV3.isEmpty()) {
+          _indexMap2to3[sys][ii] = -1;
         }
         else {
-          _indexMap2to3[sys][ii] = -1;
+          _header._obsTypesV3[sys].push_back(typeV3);
+          _indexMap2to3[sys][ii] = _header._obsTypesV3[sys].size() - 1;
         }
       }
     }
@@ -612,7 +612,34 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
   // Translate Observation Types v3 --> v2
   // -------------------------------------
   else if (_trafo == trafo3to2) {
-
+    for (unsigned iSys = 0; iSys < systems.length(); iSys++) {
+      char sys = systems[iSys];
+      map<char, vector<QString> >::const_iterator it = header._obsTypesV3.find(sys);
+      if (it != header._obsTypesV3.end()) {
+        const vector<QString>& typesV3 = it->second;
+        for (unsigned ii = 0; ii < typesV3.size(); ii++) {
+          const QString& typeV3 = typesV3[ii];
+          QString        typeV2 = type3to2(typeV3);
+          if (typeV2.isEmpty()) {
+            _indexMap3to2[sys][ii] = -1;
+          }
+          else {
+            bool found = false;
+            for (unsigned i2 = 0; i2 < _header._obsTypesV2.size(); i2++) {
+              if (_header._obsTypesV2[i2] == typeV2) {
+                found = true;
+                _indexMap3to2[sys][ii] = i2;
+                break;
+              }
+            }
+            if (!found) {
+              _header._obsTypesV2.push_back(typeV2);
+              _indexMap3to2[sys][ii] = _header._obsTypesV2.size() - 1;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -939,4 +966,6 @@ QString t_rnxObsFile::type3to2(const QString& typeV3) {
   else {
     return typeV3.left(2);
   }
+
+  return "";
 }
