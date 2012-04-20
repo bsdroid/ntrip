@@ -623,7 +623,10 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
             for (unsigned i2 = 0; i2 < _header._obsTypesV2.size(); i2++) {
               if (_header._obsTypesV2[i2] == typeV2) {
                 found = true;
-                _indexMap2to3[sys][i2] = i3;
+                map<int, int>::const_iterator it2 = _indexMap2to3[sys].find(i2);
+                if (it2 == _indexMap2to3[sys].end()) {
+                  _indexMap2to3[sys][i2] = i3;
+                }
                 break;
               }
             }
