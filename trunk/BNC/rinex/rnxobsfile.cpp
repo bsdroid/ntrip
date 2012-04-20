@@ -572,25 +572,27 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
 
   _header._startTime   =  header._startTime;   
 
+  static const string systems = "GRES";
+
   // Copy Observation Types
   // ----------------------
-  for (unsigned ii = 0; ii < header._obsTypesV2.size(); ii++) {
-    _header._obsTypesV2.push_back(header._obsTypesV2[ii]);
-  }
-  map<char, vector<QString> >::const_iterator it;
-  for (it = header._obsTypesV3.begin(); it != header._obsTypesV3.end(); it++) {
-    char                   sys     = it->first;
-    const vector<QString>& typesV3 = it->second;
-    for (unsigned ii = 0; ii < typesV3.size(); ii++) {
-      _header._obsTypesV3[sys].push_back(typesV3[ii]);
+  if      (_trafo == trafoNone) {
+    for (unsigned ii = 0; ii < header._obsTypesV2.size(); ii++) {
+      _header._obsTypesV2.push_back(header._obsTypesV2[ii]);
+    }
+    map<char, vector<QString> >::const_iterator it;
+    for (it = header._obsTypesV3.begin(); it != header._obsTypesV3.end(); it++) {
+      char                   sys     = it->first;
+      const vector<QString>& typesV3 = it->second;
+      for (unsigned ii = 0; ii < typesV3.size(); ii++) {
+        _header._obsTypesV3[sys].push_back(typesV3[ii]);
+      }
     }
   }
 
-  static const string systems = "GRES";
-
   // Translate Observation Types v2 --> v3
   // -------------------------------------
-  if      (_trafo == trafo2to3) {
+  else if (_trafo == trafo2to3) {
     for (unsigned ii = 0; ii < header._obsTypesV2.size(); ii++) {
       const QString& typeV2 = header._obsTypesV2[ii];
       for (unsigned iSys = 0; iSys < systems.length(); iSys++) {
@@ -910,4 +912,18 @@ QString t_rnxObsFile::type2to3(char sys, const QString& typeV2) {
   }
 
   return "";
+}
+
+// Translate Observation Type v3 --> v2
+////////////////////////////////////////////////////////////////////////////
+QString t_rnxObsFile::type3to2(const QString& typeV3) {
+  if      (typeV3 == "C1P") {
+    return "P1";
+  }
+  else if (typeV3 == "C2P") {
+    return "P2";
+  }
+  else {
+    return typeV3.left(2);
+  }
 }
