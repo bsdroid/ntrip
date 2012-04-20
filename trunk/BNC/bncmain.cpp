@@ -122,6 +122,16 @@ int main(int argc, char *argv[]) {
     bncWin->show();
   }
 
+#ifdef USE_POSTPROCESSING
+
+  // Post-Processing PPP
+  // -------------------
+  else if (settings.value("pppSPP").toString() == "Post-Processing") {
+    app.setMode(bncApp::batchPostProcessing);
+    t_postProcessing* postProcessing = new t_postProcessing(0);
+    postProcessing->start();
+  }
+
   // Post-Processing reqc edit
   // -------------------------
   else if (settings.value("reqcAction").toString() == "Edit/Concatenate") {
@@ -129,6 +139,16 @@ int main(int argc, char *argv[]) {
     t_reqcEdit* reqcEdit = new t_reqcEdit(0);
     reqcEdit->start();
   }
+
+  // Post-Processing reqc analyze
+  // ----------------------------
+  else if (settings.value("reqcAction").toString() == "Analyze") {
+    app.setMode(bncApp::batchPostProcessing);
+    t_reqcAnalyze* reqcAnalyze = new t_reqcAnalyze(0);
+    reqcAnalyze->start();
+  }
+
+#endif
 
   // Non-Interactive (data gathering)
   // --------------------------------
