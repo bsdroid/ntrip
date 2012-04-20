@@ -594,8 +594,15 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
     for (unsigned ii = 0; ii < header._obsTypesV2.size(); ii++) {
       const QString& typeV2 = header._obsTypesV2[ii];
       for (unsigned iSys = 0; iSys < systems.length(); iSys++) {
-        char sys = systems[iSys];
-        _header._obsTypesV3[sys].push_back( type2to3(sys, typeV2) );
+        char    sys    = systems[iSys];
+        QString typeV3 =  type2to3(sys, typeV2);
+        if (!typeV3.isEmpty()) {
+          _header._obsTypesV3[sys].push_back(typeV3);
+          _indexMap2to3[sys][ii] = _header._obsTypesV3[sys].size() - 1;
+        }
+        else {
+          _indexMap2to3[sys][ii] = -1;
+        }
       }
     }
   }
