@@ -242,6 +242,7 @@ t_rnxObsFile::t_rnxObsFile(const QString& fileName, e_inpOut inpOut) {
   _inpOut       = inpOut;
   _stream       = 0;
   _flgPowerFail = false;
+  _trafo        = trafoNone;
   if (_inpOut == input) {
     openRead(fileName);
   }
@@ -534,8 +535,21 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
 
 // Set Header Information
 ////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::setHeader(const t_rnxObsHeader& header) {
-  _header._version         = header._version;     
+void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
+
+  if      (int(header._version) == int(version)) {
+    _trafo           = trafoNone;
+    _header._version = header._version;
+  }
+  else if (version >= 3.0) {
+    _trafo           = trafo2to3;
+    _header._version = 3.01;
+  }
+  else {
+    _trafo           = trafo3to2;
+    _header._version = 2.11;
+  }
+
   _header._interval        = header._interval;    
   _header._antennaNumber   = header._antennaNumber; 
   _header._antennaName     = header._antennaName; 
@@ -555,7 +569,11 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header) {
     _header._wlFactorsL1[iPrn] =  header._wlFactorsL1[iPrn]; 
     _header._wlFactorsL2[iPrn] =  header._wlFactorsL2[iPrn]; 
   }
+
   _header._startTime   =  header._startTime;   
+
+  // Copy Observation Types
+  // ----------------------
   for (unsigned ii = 0; ii < header._obsTypesV2.size(); ii++) {
     _header._obsTypesV2.push_back(header._obsTypesV2[ii]);
   }
@@ -566,6 +584,26 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header) {
     for (unsigned ii = 0; ii < typesV3.size(); ii++) {
       _header._obsTypesV3[sys].push_back(typesV3[ii]);
     }
+  }
+
+  static const string systems = "GRES";
+
+  // Translate Observation Types v2 --> v3
+  // -------------------------------------
+  if      (_trafo == trafo2to3) {
+    for (unsigned ii = 0; ii < header._obsTypesV2.size(); ii++) {
+      const QString& typeV2 = header._obsTypesV2[ii];
+      for (unsigned iSys = 0; iSys < systems.length(); iSys++) {
+        char sys = systems[iSys];
+        _header._obsTypesV3[sys].push_back( type2to3(sys, typeV2) );
+      }
+    }
+  }
+
+  // Translate Observation Types v3 --> v2
+  // -------------------------------------
+  else if (_trafo == trafo3to2) {
+
   }
 }
 
@@ -794,4 +832,75 @@ void t_rnxObsFile::writeEpochV3(const t_rnxEpo* epo) {
     }
     *_stream << endl;
   }
+}
+
+// Translate Observation Type v2 --> v3
+////////////////////////////////////////////////////////////////////////////
+QString t_rnxObsFile::type2to3(char sys, const QString& typeV2) {
+
+  if      (sys == 'G') {
+    if (typeV2 == "C1") return "C1C";
+    if (typeV2 == "C2") return "C2C";
+    if (typeV2 == "C5") return "C5C";
+    if (typeV2 == "P1") return "C1P";
+    if (typeV2 == "P2") return "C2P";
+    if (typeV2 == "L1") return "L1";
+    if (typeV2 == "L2") return "L2";
+    if (typeV2 == "L5") return "L5";
+    if (typeV2 == "D1") return "D1";
+    if (typeV2 == "D2") return "D2";
+    if (typeV2 == "D5") return "D5";
+    if (typeV2 == "S1") return "S1";
+    if (typeV2 == "S2") return "S2";
+    if (typeV2 == "S5") return "S5";
+  }
+
+  else if (sys == 'R') {
+    if (typeV2 == "C1") return "C1C";
+    if (typeV2 == "C2") return "C2C";
+    if (typeV2 == "P1") return "C1P";
+    if (typeV2 == "P2") return "C2P";
+    if (typeV2 == "L1") return "L1";
+    if (typeV2 == "L2") return "L2";
+    if (typeV2 == "D1") return "D1";
+    if (typeV2 == "D2") return "D2";
+    if (typeV2 == "S1") return "S1";
+    if (typeV2 == "S2") return "S2";
+  }
+
+  else if (sys == 'E') {
+    if (typeV2 == "C1") return "C1";
+    if (typeV2 == "C5") return "C5";
+    if (typeV2 == "C6") return "C6";
+    if (typeV2 == "C7") return "C7";
+    if (typeV2 == "C8") return "C8";
+    if (typeV2 == "L1") return "L1";
+    if (typeV2 == "L5") return "L5";
+    if (typeV2 == "L6") return "L6";
+    if (typeV2 == "L7") return "L7";
+    if (typeV2 == "L8") return "L8";
+    if (typeV2 == "D1") return "D1";
+    if (typeV2 == "D5") return "D5";
+    if (typeV2 == "D6") return "D6";
+    if (typeV2 == "D7") return "D7";
+    if (typeV2 == "D8") return "D8";
+    if (typeV2 == "S1") return "S1";
+    if (typeV2 == "S5") return "S5";
+    if (typeV2 == "S6") return "S6";
+    if (typeV2 == "S7") return "S7";
+    if (typeV2 == "S8") return "S8";
+  }
+
+  else if (sys == 'S') {
+    if (typeV2 == "C1") return "C1C";
+    if (typeV2 == "C5") return "C5C";
+    if (typeV2 == "L1") return "L1";
+    if (typeV2 == "L5") return "L5";
+    if (typeV2 == "D1") return "D1";
+    if (typeV2 == "D5") return "D5";
+    if (typeV2 == "S1") return "S1";
+    if (typeV2 == "S5") return "S5";
+  }
+
+  return "";
 }
