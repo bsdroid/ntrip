@@ -128,16 +128,19 @@ class t_rnxObsFile {
 
  public:
   const t_rnxObsHeader& header() const {return _header;}
-  void setHeader(const t_rnxObsHeader& header);
+  void setHeader(const t_rnxObsHeader& header, double version);
   void writeHeader();
   void writeEpoch(const t_rnxEpo* epo);
 
  private:
+  enum e_trafo {trafoNone, trafo2to3, trafo3to2};
+
   void writeEpochV2(const t_rnxEpo* epo);
   void writeEpochV3(const t_rnxEpo* epo);
   const t_rnxEpo* nextEpochV2();
   const t_rnxEpo* nextEpochV3();
   void handleEpochFlag(int flag, const QString& line);
+  QString type2to3(char sys, const QString& typeV2);
 
   e_inpOut       _inpOut;
   QFile*         _file;
@@ -146,6 +149,7 @@ class t_rnxObsFile {
   t_rnxObsHeader _header;
   t_rnxEpo       _currEpo;
   bool           _flgPowerFail;
+  e_trafo        _trafo;
 };
 
 #endif

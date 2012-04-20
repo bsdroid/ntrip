@@ -87,7 +87,7 @@ void t_reqcEdit::run() {
   for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
     t_rnxObsFile* obsFile = _rnxObsFiles[ii];
     if (ii == 0) {
-      outObsFile.setHeader(obsFile->header());
+      outObsFile.setHeader(obsFile->header(), _rnxVersion);
       outObsFile.writeHeader();
     }
     const t_rnxObsFile::t_rnxEpo* epo = 0;
