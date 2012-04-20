@@ -623,8 +623,7 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
             for (unsigned i2 = 0; i2 < _header._obsTypesV2.size(); i2++) {
               if (_header._obsTypesV2[i2] == typeV2) {
                 found = true;
-                map<int, int>::const_iterator it2 = _indexMap2to3[sys].find(i2);
-                if (it2 == _indexMap2to3[sys].end()) {
+                if (_indexMap2to3[sys].find(i2) == _indexMap2to3[sys].end()) {
                   _indexMap2to3[sys][i2] = i3;
                 }
                 break;
@@ -811,22 +810,25 @@ void t_rnxObsFile::writeEpochV2(const t_rnxEpo* epo) {
   for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
 
     const t_rnxSat& rnxSat = epo->rnxSat[iSat];
+    char            sys    = rnxSat.satSys;
 
-    for (int iTypeV2 = 0; iTypeV2 < nTypes(rnxSat.satSys); iTypeV2++) {
+    for (int iTypeV2 = 0; iTypeV2 < nTypes(sys); iTypeV2++) {
 
       if (iTypeV2 > 0 && iTypeV2 % 5 == 0) {
         *_stream << endl;
       }
 
-      int iType;
+      int iType = -1;
       if   (_trafo == trafoNone) {
         iType = iTypeV2;
       }
       else {
-        iType = _indexMap2to3[rnxSat.satSys][iTypeV2];
+        if (_indexMap2to3[sys].find(iTypeV2) != _indexMap2to3[sys].end()) {
+          iType = _indexMap2to3[sys][iTypeV2];
+        }
       }
 
-      if (rnxSat.obs[iType] == 0.0) {
+      if (iType == -1 || rnxSat.obs[iType] == 0.0) {
         *_stream << QString().leftJustified(16);
       }
       else {
@@ -864,20 +866,23 @@ void t_rnxObsFile::writeEpochV3(const t_rnxEpo* epo) {
 
   for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
     const t_rnxSat& rnxSat = epo->rnxSat[iSat];
-    *_stream << rnxSat.satSys 
+    char            sys    = rnxSat.satSys;
+    *_stream << sys 
              << QString("%1").arg(rnxSat.satNum, 2, 10, QChar('0'));
 
-    for (int iTypeV3 = 0; iTypeV3 < nTypes(rnxSat.satSys); iTypeV3++) {
+    for (int iTypeV3 = 0; iTypeV3 < nTypes(sys); iTypeV3++) {
 
-      int iType;
+      int iType = -1;
       if   (_trafo == trafoNone) {
         iType = iTypeV3;
       }
       else {
-        iType = _indexMap3to2[rnxSat.satSys][iTypeV3];
+        if (_indexMap3to2[sys].find(iTypeV3) != _indexMap3to2[sys].end()) {
+          iType = _indexMap3to2[sys][iTypeV3];
+        }
       }
 
-      if (rnxSat.obs[iType] == 0.0) {
+      if (iType == -1 || rnxSat.obs[iType] == 0.0) {
         *_stream << QString().leftJustified(16);
       }
       else {
