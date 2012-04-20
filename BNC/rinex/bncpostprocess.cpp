@@ -205,6 +205,12 @@ void t_postProcessing::run() {
     }
   }
 
-  emit finished();
-  deleteLater();
+  bncApp* app = (bncApp*) qApp;
+  if ( app->mode() != bncApp::interactive) {
+    app->exit(0);
+  }
+  else {
+    emit finished();
+    deleteLater();
+  }
 }
