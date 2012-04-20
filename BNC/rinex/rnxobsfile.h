@@ -142,7 +142,7 @@ class t_rnxObsFile {
   void handleEpochFlag(int flag, const QString& line);
 
   QString type2to3(char sys, const QString& typeV2);
-  QString type3to2(char sys, const QString& typeV3);
+  QString type3to2(const QString& typeV3);
 
   std::map<char, std::map<int, int> > _indexMap2to3;
   std::map<char, std::map<int, int> > _indexMap3to2;
