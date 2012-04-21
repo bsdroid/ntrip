@@ -832,10 +832,19 @@ void t_rnxObsFile::writeEpochV2(const t_rnxEpo* epo) {
         *_stream << QString().leftJustified(16);
       }
       else {
-        *_stream << QString("%1%2%3")
-          .arg(rnxSat.obs[iType], 14, 'f', 3)
-          .arg(rnxSat.lli[iType],1)
-          .arg(rnxSat.snr[iType],1);
+        *_stream << QString("%1").arg(rnxSat.obs[iType], 14, 'f', 3);
+        if (rnxSat.lli[iType] != 0.0) {
+          *_stream << QString("%1").arg(rnxSat.lli[iType],1);
+        }
+        else {
+          *_stream << ' ';
+        }
+        if (rnxSat.snr[iType] != 0.0) {
+          *_stream << QString("%1").arg(rnxSat.snr[iType],1);
+        }
+        else {
+          *_stream << ' ';
+        }
       }
     }
     *_stream << endl;
@@ -886,10 +895,19 @@ void t_rnxObsFile::writeEpochV3(const t_rnxEpo* epo) {
         *_stream << QString().leftJustified(16);
       }
       else {
-        *_stream << QString("%1%2%3")
-          .arg(rnxSat.obs[iType], 14, 'f', 3)
-          .arg(rnxSat.lli[iType],1)
-          .arg(rnxSat.snr[iType],1);
+        *_stream << QString("%1").arg(rnxSat.obs[iType], 14, 'f', 3);
+        if (rnxSat.lli[iType] != 0.0) {
+          *_stream << QString("%1").arg(rnxSat.lli[iType],1);
+        }
+        else {
+          *_stream << ' ';
+        }
+        if (rnxSat.snr[iType] != 0.0) {
+          *_stream << QString("%1").arg(rnxSat.snr[iType],1);
+        }
+        else {
+          *_stream << ' ';
+        }
       }
     }
     *_stream << endl;
