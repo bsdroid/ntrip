@@ -85,7 +85,10 @@ class t_rnxObsFile {
   const ColumnVector& antNEU() const {return _header._antNEU;}
   const ColumnVector& antXYZ() const {return _header._antXYZ;}
   const ColumnVector& antBSG() const {return _header._antBSG;}
+
   const bncTime&      startTime() const {return _header._startTime;}
+  void  setStartTime(const bncTime& startTime) {_header._startTime = startTime;}
+
   const t_rnxEpo*     nextEpoch(); 
   int wlFactorL1(unsigned iPrn) {
     return iPrn <= MAXPRN_GPS ? _header._wlFactorsL1[iPrn] : 1;
