@@ -102,6 +102,7 @@ void t_reqcEdit::run() {
     t_rnxObsFile* obsFile = _rnxObsFiles[ii];
     if (ii == 0) {
       outObsFile.setHeader(obsFile->header(), _rnxVersion);
+      editRnxObsHeader(outObsFile);
       outObsFile.writeHeader();
     }
     const t_rnxObsFile::t_rnxEpo* epo = 0;
@@ -118,4 +119,10 @@ void t_reqcEdit::run() {
     emit finished();
     deleteLater();
   }
+}
+
+// Change RINEX Header Content  
+////////////////////////////////////////////////////////////////////////////
+void t_reqcEdit::editRnxObsHeader(t_rnxObsFile& outObsFile) {
+
 }

@@ -46,6 +46,8 @@ Q_OBJECT
   virtual void run();
  
  private:
+  void editRnxObsHeader(t_rnxObsFile& outObsFile);
+
   QStringList            _obsFileNames;
   QVector<t_rnxObsFile*> _rnxObsFiles;
   QString                _outObsFileName;
