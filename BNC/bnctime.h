@@ -8,6 +8,7 @@ class bncTime {
  public:
   bncTime() {this->reset();}
   bncTime(int gpsw, double gpssec);
+  bncTime(const std::string& isoString);
 
   bncTime& set(int gpsw, double gpssec);
   bncTime& set(int year, int month, int day, int hour, int min, double sec);
