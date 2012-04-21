@@ -1,3 +1,5 @@
+
+#include <qdatetime.h>
 #include <time.h>
 #include <cmath>
 #include <cstdio>
@@ -15,6 +17,14 @@ bncTime::bncTime(int gpsw, double gpssec) {
   this->set(gpsw, gpssec);
 }
   
+// Constructor (from ISO String yyyy-mm-ddThh:mm:ss)
+//////////////////////////////////////////////////////////////////////////////
+bncTime::bncTime(const std::string& isoString) {
+  if (!isoString.empty()) {
+    QDateTime dateTime = QDateTime::fromString(isoString.c_str(), Qt::ISODate);
+  }
+}
+
 // 
 //////////////////////////////////////////////////////////////////////////////
 bncTime& bncTime::set(int gpsw, double gpssec) {
