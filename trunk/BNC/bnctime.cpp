@@ -21,7 +21,10 @@ bncTime::bncTime(int gpsw, double gpssec) {
 //////////////////////////////////////////////////////////////////////////////
 bncTime::bncTime(const std::string& isoString) {
   if (!isoString.empty()) {
-    QDateTime dateTime = QDateTime::fromString(isoString.c_str(), Qt::ISODate);
+    QDateTime dt = QDateTime::fromString(isoString.c_str(), Qt::ISODate);
+    this->set(dt.date().year(), dt.date().month(), dt.date().day(),
+              dt.time().hour(), dt.time().minute(), 
+              dt.time().second() + dt.time().msec()/1000.0);
   }
   else {
     this->reset();
