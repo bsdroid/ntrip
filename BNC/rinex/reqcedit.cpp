@@ -125,4 +125,13 @@ void t_reqcEdit::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::editRnxObsHeader(t_rnxObsFile& outObsFile) {
 
+  bncSettings settings;
+
+  QString oldMarkerName   = settings.value("reqcOldMarkerName").toString();
+  QString newMarkerName   = settings.value("reqcNewMarkerName").toString();
+  QString oldAntennaName  = settings.value("reqcOldAntennaName").toString();
+  QString newAntennaName  = settings.value("reqcNewAntennaName").toString();
+  QString oldReceiverName = settings.value("reqcOldReceiverName").toString();
+  QString newReceiverName = settings.value("reqcNewReceiverName").toString();
+
 }
