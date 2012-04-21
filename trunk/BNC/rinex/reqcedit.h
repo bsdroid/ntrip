@@ -50,6 +50,9 @@ Q_OBJECT
   QVector<t_rnxObsFile*> _rnxObsFiles;
   QString                _outObsFileName;
   double                 _rnxVersion;
+  int                    _samplingRate;
+  QDateTime              _startDateTime;
+  QDateTime              _endDateTime;
 };
 
 #endif

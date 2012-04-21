@@ -54,6 +54,19 @@ t_reqcEdit::t_reqcEdit(QObject* parent) : QThread(parent) {
   _obsFileNames   = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
   _outObsFileName = settings.value("reqcOutObsFile").toString();
   _rnxVersion     = settings.value("reqcRnxVersion").toDouble();
+  _samplingRate   = settings.value("reqcSampling").toInt();
+  if (settings.value("reqcStartDateTime").toString().isEmpty()) {
+    _startDateTime = QDateTime::fromString("1967-11-02T00:00:00", Qt::ISODate);
+  }
+  else {
+    _startDateTime = settings.value("reqcStartDateTime").toDateTime();
+  }
+  if (settings.value("reqcEndDateTime").toString().isEmpty()) {
+    _endDateTime = QDateTime::fromString("2099-01-01T00:00:00", Qt::ISODate);
+  }
+  else {
+    _endDateTime = settings.value("reqcEndDateTime").toDateTime();
+  }
 }
 
 // Destructor
