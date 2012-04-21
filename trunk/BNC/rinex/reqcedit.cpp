@@ -97,7 +97,10 @@ void t_reqcEdit::run() {
     }
     const t_rnxObsFile::t_rnxEpo* epo = 0;
     while ( (epo = obsFile->nextEpoch()) != 0) {
-      outObsFile.writeEpoch(epo);
+      if ( (!_begTime.valid() || epo->tt >= _begTime) && 
+           (!_endTime.valid() || epo->tt <= _endTime) ) {
+        outObsFile.writeEpoch(epo);
+      }
     }
   }
 
