@@ -70,15 +70,24 @@ int main(int argc, char *argv[]) {
   QByteArray rawFileName;
   QString    confFileName;
 
+  QByteArray printHelp = "Usage: bnc --nw                       \n" 
+                         "           --conf <confFileName>      \n" 
+                         "           --file <rawFileName>       \n"
+                         "           --key  <keyName> <keyValue>\n";
+
   for (int ii = 1; ii < argc; ii++) {
-    if (QByteArray(argv[ii]) == "-nw" || QByteArray(argv[ii]) == "--nw") {
+    if (QRegExp("--?help").exactMatch(argv[ii])) {
+      cout << printHelp.data();
+      exit(0);
+    }
+    if (QRegExp("--?nw").exactMatch(argv[ii])) {
       GUIenabled = false;
     }
     if (ii + 1 < argc) {
-      if (QByteArray(argv[ii]).indexOf("-conf")   != -1) {
+      if (QRegExp("--?conf").exactMatch(argv[ii])) {
         confFileName = QString(argv[ii+1]);
       }
-      if (QByteArray(argv[ii]).indexOf("-file")   != -1) {
+      if (QRegExp("--?file").exactMatch(argv[ii])) {
         GUIenabled = false;
         rawFileName = QByteArray(argv[ii+1]);
       }
@@ -88,10 +97,6 @@ int main(int argc, char *argv[]) {
   if (argc == 2 && GUIenabled) {
     confFileName = QString(argv[1]);
   }
-
-  QString printHelp = "Usage: bnc --nw\n" 
-                      "           --conf       <confFileName>\n" 
-                      "           --file       <rawFileName>\n";
 
   bncApp app(argc, argv, GUIenabled);
 
