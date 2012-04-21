@@ -102,6 +102,14 @@ int main(int argc, char *argv[]) {
 
   bncSettings settings;
 
+  for (int ii = 1; ii < argc - 2; ii++) {
+    if (QByteArray(argv[ii]).indexOf("-key") != -1) {
+      QString key(argv[ii+1]);
+      QString val(argv[ii+2]);
+      settings.setValue(key, val);
+    }
+  }
+
   // Interactive Mode - open the main window
   // ---------------------------------------
   if (GUIenabled) {
