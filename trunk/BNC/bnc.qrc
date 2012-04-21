@@ -6,31 +6,31 @@
     <file>bncabout.html</file>
     <file>worldmap.dat</file>
 </qresource>
-<qresource prefix="/bnchelp">
-    <file alias="screenshot01.png">IMG/screenshot01.png</file>
-    <file alias="screenshot02.png">IMG/screenshot02.png</file>
-    <file alias="screenshot03.png">IMG/screenshot03.png</file>
-    <file alias="screenshot04.png">IMG/screenshot04.png</file>
-    <file alias="screenshot05.png">IMG/screenshot05.png</file>
-    <file alias="screenshot06.png">IMG/screenshot06.png</file>
-    <file alias="screenshot07.png">IMG/screenshot07.png</file>
-    <file alias="screenshot08.png">IMG/screenshot08.png</file>
-    <file alias="screenshot09.png">IMG/screenshot09.png</file>
-    <file alias="screenshot10.png">IMG/screenshot10.png</file>
-    <file alias="screenshot11.png">IMG/screenshot11.png</file>
-    <file alias="screenshot12.png">IMG/screenshot12.png</file>
-    <file alias="screenshot13.png">IMG/screenshot13.png</file>
-    <file alias="screenshot14.png">IMG/screenshot14.png</file>
-    <file alias="screenshot15.png">IMG/screenshot15.png</file>
-    <file alias="screenshot16.png">IMG/screenshot16.png</file>
-    <file alias="screenshot17.png">IMG/screenshot17.png</file>
-    <file alias="screenshot18.png">IMG/screenshot18.png</file>
-    <file alias="screenshot19.png">IMG/screenshot19.png</file>
-    <file alias="screenshot20.png">IMG/screenshot20.png</file>
-    <file alias="screenshot21.png">IMG/screenshot21.png</file>
-    <file alias="screenshot22.png">IMG/screenshot22.png</file>
-    <file alias="screenshot23.png">IMG/screenshot23.png</file>
-    <file alias="screenshot24.png">IMG/screenshot24.png</file>
-    <file alias="screenshot25.png">IMG/screenshot25.png</file>
+<qresource>
+    <file>IMG/screenshot01.png</file>
+    <file>IMG/screenshot02.png</file>
+    <file>IMG/screenshot03.png</file>
+    <file>IMG/screenshot04.png</file>
+    <file>IMG/screenshot05.png</file>
+    <file>IMG/screenshot06.png</file>
+    <file>IMG/screenshot07.png</file>
+    <file>IMG/screenshot08.png</file>
+    <file>IMG/screenshot09.png</file>
+    <file>IMG/screenshot10.png</file>
+    <file>IMG/screenshot11.png</file>
+    <file>IMG/screenshot12.png</file>
+    <file>IMG/screenshot13.png</file>
+    <file>IMG/screenshot14.png</file>
+    <file>IMG/screenshot15.png</file>
+    <file>IMG/screenshot16.png</file>
+    <file>IMG/screenshot17.png</file>
+    <file>IMG/screenshot18.png</file>
+    <file>IMG/screenshot19.png</file>
+    <file>IMG/screenshot20.png</file>
+    <file>IMG/screenshot21.png</file>
+    <file>IMG/screenshot22.png</file>
+    <file>IMG/screenshot23.png</file>
+    <file>IMG/screenshot24.png</file>
+    <file>IMG/screenshot25.png</file>
 </qresource>
 </RCC>
