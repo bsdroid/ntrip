@@ -123,15 +123,28 @@ void t_reqcEdit::run() {
 
 // Change RINEX Header Content  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcEdit::editRnxObsHeader(t_rnxObsFile& outObsFile) {
+void t_reqcEdit::editRnxObsHeader(t_rnxObsFile& obsFile) {
 
   bncSettings settings;
 
   QString oldMarkerName   = settings.value("reqcOldMarkerName").toString();
   QString newMarkerName   = settings.value("reqcNewMarkerName").toString();
+  if (oldMarkerName.isEmpty() || 
+      QRegExp(oldMarkerName).exactMatch(obsFile.markerName())) {
+    obsFile.setMarkerName(newMarkerName);
+  }
+
   QString oldAntennaName  = settings.value("reqcOldAntennaName").toString();
   QString newAntennaName  = settings.value("reqcNewAntennaName").toString();
-  QString oldReceiverName = settings.value("reqcOldReceiverName").toString();
-  QString newReceiverName = settings.value("reqcNewReceiverName").toString();
+  if (oldAntennaName.isEmpty() || 
+      QRegExp(oldAntennaName).exactMatch(obsFile.antennaName())) {
+    obsFile.setAntennaName(newAntennaName);
+  }
 
+  QString oldReceiverType = settings.value("reqcOldReceiverName").toString();
+  QString newReceiverType = settings.value("reqcNewReceiverName").toString();
+  if (oldReceiverType.isEmpty() || 
+      QRegExp(oldReceiverType).exactMatch(obsFile.receiverType())) {
+    obsFile.setReceiverType(newReceiverType);
+  }
 }
