@@ -23,6 +23,9 @@ bncTime::bncTime(const std::string& isoString) {
   if (!isoString.empty()) {
     QDateTime dateTime = QDateTime::fromString(isoString.c_str(), Qt::ISODate);
   }
+  else {
+    this->reset();
+  }
 }
 
 // 
