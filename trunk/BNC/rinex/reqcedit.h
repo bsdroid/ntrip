@@ -53,8 +53,8 @@ Q_OBJECT
   QString                _outObsFileName;
   double                 _rnxVersion;
   int                    _samplingRate;
-  QDateTime              _startDateTime;
-  QDateTime              _endDateTime;
+  bncTime                _begTime;
+  bncTime                _endTime;
 };
 
 #endif
