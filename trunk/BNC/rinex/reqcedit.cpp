@@ -92,6 +92,9 @@ void t_reqcEdit::run() {
     t_rnxObsFile* obsFile = _rnxObsFiles[ii];
     if (ii == 0) {
       outObsFile.setHeader(obsFile->header(), _rnxVersion);
+      if (_begTime.valid() && _begTime > outObsFile.startTime()) {
+        outObsFile.setStartTime(_begTime);
+      }
       editRnxObsHeader(outObsFile);
       outObsFile.writeHeader();
     }
