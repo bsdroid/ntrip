@@ -72,8 +72,15 @@ class t_rnxObsFile {
   int                 nTypes(char sys) const {return _header.nTypes(sys);}
   const QString&      fileName() const {return _fileName;}
   const QString&      obsType(char sys, int index) const {return _header.obsType(sys, index);}
+
   const QString&      antennaName() const {return _header._antennaName;}
   const QString&      markerName() const {return _header._markerName;}
+  const QString&      receiverType() const {return _header._receiverType;}
+
+  void setAntennaName(const QString& antennaName) {_header._antennaName = antennaName;}
+  void setMarkerName(const QString& markerName) {_header._markerName = markerName;}
+  void setReceiverType(const QString& receiverType) {_header._receiverType = receiverType;}
+
   const ColumnVector& xyz() const {return _header._xyz;}
   const ColumnVector& antNEU() const {return _header._antNEU;}
   const ColumnVector& antXYZ() const {return _header._antXYZ;}
