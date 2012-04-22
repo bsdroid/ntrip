@@ -110,7 +110,7 @@ void t_postProcessing::run() {
   }
   else {
     _rnxObsFile = new t_rnxObsFile(_opt->obsFileName, t_rnxObsFile::input);
-    _rnxNavFile = new t_rnxNavFile(_opt->navFileName);
+    _rnxNavFile = new t_rnxNavFile(_opt->navFileName, t_rnxNavFile::input);
     _pppClient  = new bncPPPclient("POST", _opt, false);
 
     if (!_opt->corrFileName.isEmpty()) {

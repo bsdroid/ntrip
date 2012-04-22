@@ -55,6 +55,8 @@ Q_OBJECT
   QStringList            _obsFileNames;
   QVector<t_rnxObsFile*> _rnxObsFiles;
   QString                _outObsFileName;
+  QStringList            _navFileNames;
+  QString                _outNavFileName;
   double                 _rnxVersion;
   int                    _samplingRate;
   bncTime                _begTime;

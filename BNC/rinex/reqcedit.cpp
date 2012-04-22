@@ -42,6 +42,7 @@
 #include "reqcedit.h"
 #include "bncapp.h"
 #include "bncsettings.h"
+#include "rnxnavfile.h"
 
 using namespace std;
 
@@ -53,6 +54,8 @@ t_reqcEdit::t_reqcEdit(QObject* parent) : QThread(parent) {
 
   _obsFileNames   = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
   _outObsFileName = settings.value("reqcOutObsFile").toString();
+  _navFileNames   = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
+  _outNavFileName = settings.value("reqcOutNavFile").toString();
   _rnxVersion     = settings.value("reqcRnxVersion").toDouble();
   _samplingRate   = settings.value("reqcSampling").toInt();
   _begTime        = bncTime(settings.value("reqcStartDateTime").toString().toAscii().data());
@@ -217,5 +220,11 @@ void t_reqcEdit::applyLLI(const t_rnxObsFile* obsFile,
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::editEphemerides() {
+
+  QStringListIterator it(_navFileNames);
+  while (it.hasNext()) {
+    QString fileName = it.next();
+    t_rnxNavFile rnxNavFile(fileName, t_rnxNavFile::input);
+  }
 
 }

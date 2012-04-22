@@ -36,6 +36,10 @@ class t_eph;
 
 class t_rnxNavFile {
 
+ public:
+  enum e_inpOut {input, output};
+
+ private:
   class t_rnxNavHeader {
    public:
     t_rnxNavHeader();
@@ -49,15 +53,25 @@ class t_rnxNavFile {
   };
  
  public:
-  t_rnxNavFile(QString fileName);
+  t_rnxNavFile(const QString& fileName, e_inpOut inpOut);
   ~t_rnxNavFile();
   t_eph* getNextEph(const bncTime& tt, const QMap<QString, int>* corrIODs);
   float version() const {return _header.version();}
   bool  glonass() const {return _header.glonass();}
 
+ protected:
+  t_rnxNavFile() {};
+  void openRead(const QString& fileName);
+  void openWrite(const QString& fileName);
+  void close();
+
  private:
   void read(QTextStream* stream);
 
+  e_inpOut            _inpOut;
+  QFile*              _file;
+  QString             _fileName;
+  QTextStream*        _stream;
   std::vector<t_eph*> _ephs;
   t_rnxNavHeader      _header;
 };
