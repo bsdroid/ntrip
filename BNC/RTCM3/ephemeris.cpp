@@ -64,7 +64,7 @@ void t_ephGPS::set(const gpsephemeris* ee) {
 
   _IDOT     = ee->IDOT;
   _L2Codes  = 0.0;
-  _TOEweek  = ee->TOW;
+  _TOEweek  = ee->GPSweek;
   _L2PFlag  = 0.0;
 
   _ura      = 0.0;
