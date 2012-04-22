@@ -12,6 +12,8 @@ extern "C" {
 class t_eph {
  public:
 
+  enum e_type {unknown, GPS, GLONASS, Galileo};
+
   static bool earlierTime(const t_eph* eph1, const t_eph* eph2) {
     if      (eph1->_GPSweek < eph2->_GPSweek) {
       return true;
@@ -26,6 +28,8 @@ class t_eph {
 
   t_eph() {_ok = false;}
   virtual ~t_eph() {};
+
+  virtual e_type type() const = 0;
 
   bool     ok() const {return _ok;}
   bool     isNewerThan(const t_eph* eph) const;
@@ -72,6 +76,9 @@ class t_ephGPS : public t_eph {
   t_ephGPS() { }
   t_ephGPS(float rnxVersion, const QStringList& lines);
   virtual ~t_ephGPS() {}
+
+  virtual e_type type() const {return t_eph::GPS;}
+
   double TOC() const {return _TOC;}
 
   void set(const gpsephemeris* ee);
@@ -125,6 +132,8 @@ class t_ephGlo : public t_eph {
 
   virtual ~t_ephGlo() {}
 
+  virtual e_type type() const {return t_eph::GLONASS;}
+
   virtual void position(int GPSweek, double GPSweeks, 
                         double* xc,
                         double* vv) const;
@@ -167,6 +176,9 @@ class t_ephGal : public t_eph {
   t_ephGal() { }
   t_ephGal(float rnxVersion, const QStringList& lines);
   virtual ~t_ephGal() {}
+
+  virtual e_type type() const {return t_eph::Galileo;}
+
   double TOC() const {return _TOC;}
 
   void set(const galileoephemeris* ee);
