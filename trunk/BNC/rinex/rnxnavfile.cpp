@@ -41,6 +41,7 @@
 #include <iostream>
 #include <newmatio.h>
 #include "rnxnavfile.h"
+#include "bncapp.h"
 #include "bncutils.h"
 #include "RTCM3/ephemeris.h"
 
@@ -238,7 +239,32 @@ t_eph* t_rnxNavFile::getNextEph(const bncTime& tt,
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxNavFile::writeHeader() {
-  *_stream << "Writing header ..." << endl;
+
+  bncApp* app = (bncApp*) qApp;
+
+  if (version() < 3.0) {
+    *_stream << QString("%1           Navigation data")
+      .arg(_header._version, 9, 'f', 2)
+      .leftJustified(60)
+             << "RINEX VERSION / TYPE\n";
+  }
+  else {
+    *_stream << QString("%1           Navigation data     Mixed")
+      .arg(_header._version, 9, 'f', 2)
+      .leftJustified(60)
+             << "RINEX VERSION / TYPE\n";
+  }
+
+  *_stream << QString("%1%2%3")
+    .arg(app->pgmName(), -20)
+    .arg(app->userName(), -20)
+    .arg(currentDateAndTimeGPS().date().toString("dd-MMM-yyyy"), -20)
+    .leftJustified(60)
+           << "PGM / RUN BY / DATE\n";
+
+  *_stream << QString()
+    .leftJustified(60)
+           << "END OF HEADER\n";
 }
 
 // 
