@@ -109,11 +109,11 @@ void t_reqcEdit::run() {
     
       if (_samplingRate == 0 || 
           fmod(round(epo->tt.gpssec()), _samplingRate) == 0) {
-        applyLLI(epo);
+        applyLLI(obsFile, epo);
         outObsFile.writeEpoch(epo);
       }
       else {
-        rememberLLI(epo);
+        rememberLLI(obsFile, epo);
       }
     }
   }
@@ -158,12 +158,26 @@ void t_reqcEdit::editRnxObsHeader(t_rnxObsFile& obsFile) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcEdit::rememberLLI(const t_rnxObsFile::t_rnxEpo* epo) {
+void t_reqcEdit::rememberLLI(const t_rnxObsFile* obsFile, 
+                             const t_rnxObsFile::t_rnxEpo* epo) {
 
+  if (_samplingRate == 0) {
+    return;
+  }
+
+  for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
+    const t_rnxObsFile::t_rnxSat& rnxSat = epo->rnxSat[iSat];
+    char                          sys    = rnxSat.satSys;
+    for (int iType = 0; iType < obsFile->nTypes(sys); iType++) {
+    }
+  }
 }
   
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcEdit::applyLLI(t_rnxObsFile::t_rnxEpo* epo) {
-
+void t_reqcEdit::applyLLI(const t_rnxObsFile* obsFile, 
+                          t_rnxObsFile::t_rnxEpo* epo) {
+  if (_samplingRate == 0) {
+    return;
+  }
 }
