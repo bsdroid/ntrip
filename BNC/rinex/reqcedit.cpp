@@ -230,18 +230,15 @@ void t_reqcEdit::editEphemerides() {
     QString fileName = it.next();
     t_rnxNavFile rnxNavFile(fileName, t_rnxNavFile::input);
     for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
-      t_eph*    eph = rnxNavFile.ephs()[ii];
-      t_ephGPS* ephGPS = dynamic_cast<t_ephGPS*>(eph);
-      t_ephGlo* ephGlo = dynamic_cast<t_ephGlo*>(eph);
-      t_ephGal* ephGal = dynamic_cast<t_ephGal*>(eph);
-      if      (ephGPS) {
-        _ephs.append(new t_ephGPS(*ephGPS));
+      t_eph* eph = rnxNavFile.ephs()[ii];
+      if      (eph->type() == t_eph::GPS) {
+        _ephs.append(new t_ephGPS(*dynamic_cast<t_ephGPS*>(eph)));
       }
-      else if (ephGlo) {
-        _ephs.append(new t_ephGlo(*ephGlo));
+      else if (eph->type() == t_eph::GLONASS) {
+        _ephs.append(new t_ephGlo(*dynamic_cast<t_ephGlo*>(eph)));
       }
-      else if (ephGal) {
-        _ephs.append(new t_ephGal(*ephGal));
+      else if (eph->type() == t_eph::Galileo) {
+        _ephs.append(new t_ephGal(*dynamic_cast<t_ephGal*>(eph)));
       }
     }
   }
