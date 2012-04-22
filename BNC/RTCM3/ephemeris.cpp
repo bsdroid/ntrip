@@ -1070,7 +1070,8 @@ QString t_ephGPS::toString(double version) const {
   QTextStream out(&rnxStr);
 
   if (version < 3.0) {
-    out << _prn.mid(1,2) << QString(" %1 %2 %3 %4 %5%6")
+    QString prnHlp = _prn.mid(1,2); if (prnHlp[0] == '0') prnHlp[0] = ' ';
+    out << prnHlp << QString(" %1 %2 %3 %4 %5%6")
       .arg(year % 100, 2, 10, QChar('0'))
       .arg(month,      2)
       .arg(day,        2)
