@@ -247,14 +247,13 @@ void t_reqcEdit::editEphemerides() {
   // Initialize output navigation file
   // ---------------------------------
   t_rnxNavFile outNavFile(_outNavFileName, t_rnxNavFile::output);
-  
+  outNavFile.setVersion(_rnxVersion);
+  outNavFile.writeHeader();
+
   // Loop over all ephemerides
   // -------------------------
   for (int ii = 0; ii < _ephs.size(); ii++) {
     const t_eph* eph = _ephs[ii];
-    if (ii == 0) {
-      outNavFile.writeHeader();
-    }
     outNavFile.writeEph(eph);
   }
 }
