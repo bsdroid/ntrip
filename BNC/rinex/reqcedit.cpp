@@ -100,6 +100,12 @@ void t_reqcEdit::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::editObservations() {
 
+  // Easy Exit
+  // ---------
+  if (_obsFileNames.isEmpty() || _outObsFileName.isEmpty()) {
+    return;
+  }
+
   // Initialize input observation files, sort them according to start time
   // ---------------------------------------------------------------------
   QStringListIterator it(_obsFileNames);
@@ -228,6 +234,12 @@ void t_reqcEdit::applyLLI(const t_rnxObsFile* obsFile,
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::editEphemerides() {
+
+  // Easy Exit
+  // ---------
+  if (_navFileNames.isEmpty() || _outNavFileName.isEmpty()) {
+    return;
+  }
 
   // Read All Ephemerides
   // --------------------
