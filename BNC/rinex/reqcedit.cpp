@@ -245,7 +245,6 @@ void t_reqcEdit::editEphemerides() {
       }
     }
   }
-  qStableSort(_ephs.begin(), _ephs.end(), 
-              t_eph::earlierTime);
+  qStableSort(_ephs.begin(), _ephs.end(), t_eph::earlierTime);
 
 }
