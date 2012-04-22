@@ -70,6 +70,24 @@ t_reqcEdit::~t_reqcEdit() {
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::run() {
+ 
+  editObservations();
+
+  editEphemerides();
+
+  bncApp* app = (bncApp*) qApp;
+  if ( app->mode() != bncApp::interactive) {
+    app->exit(0);
+  }
+  else {
+    emit finished();
+    deleteLater();
+  }
+}
+
+//  
+////////////////////////////////////////////////////////////////////////////
+void t_reqcEdit::editObservations() {
 
   // Initialize input observation files, sort them according to start time
   // ---------------------------------------------------------------------
@@ -116,15 +134,6 @@ void t_reqcEdit::run() {
         rememberLLI(obsFile, epo);
       }
     }
-  }
-
-  bncApp* app = (bncApp*) qApp;
-  if ( app->mode() != bncApp::interactive) {
-    app->exit(0);
-  }
-  else {
-    emit finished();
-    deleteLater();
   }
 }
 
@@ -203,4 +212,10 @@ void t_reqcEdit::applyLLI(const t_rnxObsFile* obsFile,
   }
 
   _lli.clear();
+}
+
+//  
+////////////////////////////////////////////////////////////////////////////
+void t_reqcEdit::editEphemerides() {
+
 }
