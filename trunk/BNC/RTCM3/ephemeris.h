@@ -31,6 +31,8 @@ class t_eph {
 
   virtual e_type type() const = 0;
 
+  virtual QString toString(double version) const = 0;
+
   bool     ok() const {return _ok;}
   bool     isNewerThan(const t_eph* eph) const;
   QString  prn() const {return _prn;}
@@ -78,6 +80,8 @@ class t_ephGPS : public t_eph {
   virtual ~t_ephGPS() {}
 
   virtual e_type type() const {return t_eph::GPS;}
+
+  virtual QString toString(double version) const;
 
   double TOC() const {return _TOC;}
 
@@ -134,6 +138,8 @@ class t_ephGlo : public t_eph {
 
   virtual e_type type() const {return t_eph::GLONASS;}
 
+  virtual QString toString(double version) const;
+
   virtual void position(int GPSweek, double GPSweeks, 
                         double* xc,
                         double* vv) const;
@@ -176,6 +182,8 @@ class t_ephGal : public t_eph {
   t_ephGal() { }
   t_ephGal(float rnxVersion, const QStringList& lines);
   virtual ~t_ephGal() {}
+
+  virtual QString toString(double version) const;
 
   virtual e_type type() const {return t_eph::Galileo;}
 

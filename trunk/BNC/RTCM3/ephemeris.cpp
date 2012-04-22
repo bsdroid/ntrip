@@ -1042,3 +1042,96 @@ t_ephGal::t_ephGal(float /* rnxVersion */, const QStringList& /* lines */) {
 
   _ok = false;
 }
+
+// RINEX Format String
+//////////////////////////////////////////////////////////////////////////////
+QString t_ephGlo::toString(double /* version */) const {
+  return "";
+}
+
+// RINEX Format String
+//////////////////////////////////////////////////////////////////////////////
+QString t_ephGal::toString(double /* version */) const {
+  return "";
+}
+
+// RINEX Format String
+//////////////////////////////////////////////////////////////////////////////
+QString t_ephGPS::toString(double version) const {
+
+  QString rnxStr;
+  
+  bncTime tt(_GPSweek, _GPSweeks);
+  unsigned year, month, day, hour, min;
+  double sec;
+  tt.civil_date(year, month, day);
+  tt.civil_time(hour, min, sec);
+  
+  QTextStream out(&rnxStr);
+
+  if (version < 3.0) {
+    out << _prn << QString(" %1 %2 %3 %4 %5 %6")
+      .arg(year % 100, 2, 10, QChar('0'))
+      .arg(month,      2)
+      .arg(day,        2)
+      .arg(hour,       2)
+      .arg(min,        2)
+      .arg(int(sec),   2);
+  }
+  else {
+    out << _prn << QString(" %1 %2 %3 %4 %5 %6")
+      .arg(year,     4)
+      .arg(month,    2, 10, QChar('0'))
+      .arg(day,      2, 10, QChar('0'))
+      .arg(hour,     2, 10, QChar('0'))
+      .arg(min,      2, 10, QChar('0'))
+      .arg(int(sec), 2, 10, QChar('0'));
+  }
+  
+  out << QString("%1%2%3\n")
+    .arg(_clock_bias,      19, 'e', 12)
+    .arg(_clock_drift,     19, 'e', 12)
+    .arg(_clock_driftrate, 19, 'e', 12);
+
+  out << QString("    %1%2%3%4\n")
+    .arg(_IODE,    19, 'e', 12)
+    .arg(_Crs,     19, 'e', 12)
+    .arg(_Delta_n, 19, 'e', 12)
+    .arg(_M0,      19, 'e', 12);
+
+  out << QString("    %1%2%3%4\n")
+    .arg(_Cuc,    19, 'e', 12)
+    .arg(_e,      19, 'e', 12)
+    .arg(_Cus,    19, 'e', 12)
+    .arg(_sqrt_A, 19, 'e', 12);
+
+  out << QString("    %1%2%3%4\n")
+    .arg(_TOE,    19, 'e', 12)
+    .arg(_Cic,    19, 'e', 12)
+    .arg(_OMEGA0, 19, 'e', 12)
+    .arg(_Cis,    19, 'e', 12);
+
+  out << QString("    %1%2%3%4\n")
+    .arg(_i0,       19, 'e', 12)
+    .arg(_Crc,      19, 'e', 12)
+    .arg(_omega,    19, 'e', 12)
+    .arg(_OMEGADOT, 19, 'e', 12);
+
+  out << QString("    %1%2%3%4\n")
+    .arg(_IDOT, 19, 'e', 12)
+    .arg(0.0,   19, 'e', 12)
+    .arg(0.0,   19, 'e', 12)
+    .arg(0.0,   19, 'e', 12);
+
+  out << QString("    %1%2%3%4\n")
+    .arg(0.0,     19, 'e', 12)
+    .arg(_health, 19, 'e', 12)
+    .arg(_TGD,    19, 'e', 12)
+    .arg(_IODC,   19, 'e', 12);
+
+  out << QString("    %1%2\n")
+    .arg(0.0,19, 'e', 12)
+    .arg(0.0,19, 'e', 12);
+
+  return rnxStr;
+}

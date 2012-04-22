@@ -270,38 +270,5 @@ void t_rnxNavFile::writeHeader() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxNavFile::writeEph(const t_eph* eph) {
-  if (version() < 3.0) {
-    writeEphV2(eph);
-  }
-  else {
-    writeEphV3(eph);
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void t_rnxNavFile::writeEphV2(const t_eph* eph) {
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void t_rnxNavFile::writeEphV3(const t_eph* eph) {
-
-  bncTime tt(eph->GPSweek(), eph->GPSweeks());
-
-  unsigned year, month, day, hour, min;
-  double sec;
-  tt.civil_date(year, month, day);
-  tt.civil_time(hour, min, sec);
-
-  QString dateStr;
-  QTextStream(&dateStr) << QString(" %1 %2 %3 %4 %5 %6")
-    .arg(year,     4)
-    .arg(month,    2, 10, QChar('0'))
-    .arg(day,      2, 10, QChar('0'))
-    .arg(hour,     2, 10, QChar('0'))
-    .arg(min,      2, 10, QChar('0'))
-    .arg(int(sec), 2, 10, QChar('0'));
-
-  *_stream << eph->prn() << dateStr << endl;
+  *_stream << eph->toString(version());
 }
