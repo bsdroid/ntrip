@@ -53,7 +53,7 @@ class t_eph {
   }
 
  protected:  
-  QString rinexDateStr(double version) const;
+  QString rinexDateStr(double version, double gps_utc) const;
 
   QString   _prn;
   bncTime   _TOC;

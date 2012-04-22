@@ -992,14 +992,16 @@ t_ephGal::t_ephGal(float /* rnxVersion */, const QStringList& /* lines */) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-QString t_eph::rinexDateStr(double version) const {
+QString t_eph::rinexDateStr(double version, double gps_utc) const {
 
   QString datStr;
   
   unsigned year, month, day, hour, min;
   double   sec;
-  _TOC.civil_date(year, month, day);
-  _TOC.civil_time(hour, min, sec);
+
+  bncTime hlp = _TOC - gps_utc;
+  hlp.civil_date(year, month, day);
+  hlp.civil_time(hour, min, sec);
   
   QTextStream out(&datStr);
 
@@ -1030,7 +1032,7 @@ QString t_eph::rinexDateStr(double version) const {
 //////////////////////////////////////////////////////////////////////////////
 QString t_ephGPS::toString(double version) const {
 
-  QString rnxStr = rinexDateStr(version);
+  QString rnxStr = rinexDateStr(version, 0.0);
   
   QTextStream out(&rnxStr);
   
@@ -1090,7 +1092,7 @@ QString t_ephGPS::toString(double version) const {
 //////////////////////////////////////////////////////////////////////////////
 QString t_ephGlo::toString(double version) const {
 
-  QString rnxStr = rinexDateStr(version);
+  QString rnxStr = rinexDateStr(version, _gps_utc);
 
   QTextStream out(&rnxStr);
 
@@ -1126,7 +1128,7 @@ QString t_ephGlo::toString(double version) const {
 //////////////////////////////////////////////////////////////////////////////
 QString t_ephGal::toString(double version) const {
 
-  QString rnxStr = rinexDateStr(version);
+  QString rnxStr = rinexDateStr(version, 0.0);
 
   QTextStream out(&rnxStr);
 
