@@ -244,8 +244,8 @@ void t_reqcEdit::editEphemerides() {
   }
   qStableSort(_ephs.begin(), _ephs.end(), t_eph::earlierTime);
 
-  // Initialize output observation file
-  // ----------------------------------
+  // Initialize output navigation file
+  // ---------------------------------
   t_rnxNavFile outNavFile(_outNavFileName, t_rnxNavFile::output);
   
   // Loop over all ephemerides
