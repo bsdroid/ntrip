@@ -169,6 +169,12 @@ void t_reqcEdit::rememberLLI(const t_rnxObsFile* obsFile,
     const t_rnxObsFile::t_rnxSat& rnxSat = epo->rnxSat[iSat];
     char                          sys    = rnxSat.satSys;
     for (int iType = 0; iType < obsFile->nTypes(sys); iType++) {
+      if (!_lli.contains(iType)) {
+        _lli[iType] = 0;
+      }
+      if (rnxSat.lli[iType] & 1) {
+        _lli[iType] |= 1;
+      }
     }
   }
 }
@@ -177,7 +183,20 @@ void t_reqcEdit::rememberLLI(const t_rnxObsFile* obsFile,
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::applyLLI(const t_rnxObsFile* obsFile, 
                           t_rnxObsFile::t_rnxEpo* epo) {
-  if (_samplingRate == 0) {
+ 
+ if (_samplingRate == 0) {
     return;
   }
+
+  for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
+    t_rnxObsFile::t_rnxSat& rnxSat = epo->rnxSat[iSat];
+    char                    sys    = rnxSat.satSys;
+    for (int iType = 0; iType < obsFile->nTypes(sys); iType++) {
+      if (_lli.contains(iType) && _lli[iType] & 1) {
+         rnxSat.lli[iType] |= 1;
+      }
+    }
+  }
+
+  _lli.clear();
 }
