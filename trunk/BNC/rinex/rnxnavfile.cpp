@@ -85,24 +85,57 @@ t_irc t_rnxNavFile::t_rnxNavHeader::read(QTextStream* stream) {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_rnxNavFile::t_rnxNavFile(QString fileName) {
-  expandEnvVar(fileName);
-  QFile*       file   = new QFile(fileName);
-  file->open(QIODevice::ReadOnly | QIODevice::Text);
-  QTextStream* stream = new QTextStream();
-  stream->setDevice(file);
-  _header.read(stream);
-  this->read(stream);
-  delete stream;
-  delete file;
+t_rnxNavFile::t_rnxNavFile(const QString& fileName, e_inpOut inpOut) {
+  _inpOut = inpOut;
+  _stream = 0;
+  _file   = 0;
+  if (_inpOut == input) {
+    openRead(fileName);
+  }
+  else {
+    openWrite(fileName);
+  }
+}
+
+// Open for input
+////////////////////////////////////////////////////////////////////////////
+void t_rnxNavFile::openRead(const QString& fileName) {
+
+  _fileName = fileName; expandEnvVar(_fileName);
+  _file     = new QFile(_fileName);
+  _file->open(QIODevice::ReadOnly | QIODevice::Text);
+  _stream = new QTextStream();
+  _stream->setDevice(_file);
+
+  _header.read(_stream);
+  this->read(_stream);
+}
+
+// Open for output
+////////////////////////////////////////////////////////////////////////////
+void t_rnxNavFile::openWrite(const QString& fileName) {
+
+  _fileName = fileName; expandEnvVar(_fileName);
+  _file     = new QFile(_fileName);
+  _file->open(QIODevice::WriteOnly | QIODevice::Text);
+  _stream = new QTextStream();
+  _stream->setDevice(_file);
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_rnxNavFile::~t_rnxNavFile() {
+  close();
   for (unsigned ii = 0; ii < _ephs.size(); ii++) {
     delete _ephs[ii];
-  }
+  }  
+}
+
+// Close
+////////////////////////////////////////////////////////////////////////////
+void t_rnxNavFile::close() {
+  delete _stream; _stream = 0;
+  delete _file;   _file = 0;
 }
 
 // Read File Content
