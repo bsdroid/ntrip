@@ -985,30 +985,18 @@ t_ephGal::t_ephGal(float /* rnxVersion */, const QStringList& /* lines */) {
   _ok = false;
 }
 
-// RINEX Format String
+// 
 //////////////////////////////////////////////////////////////////////////////
-QString t_ephGlo::toString(double /* version */) const {
-  return "";
-}
+QString t_eph::rinexDateStr(double version) const {
 
-// RINEX Format String
-//////////////////////////////////////////////////////////////////////////////
-QString t_ephGal::toString(double /* version */) const {
-  return "";
-}
-
-// RINEX Format String
-//////////////////////////////////////////////////////////////////////////////
-QString t_ephGPS::toString(double version) const {
-
-  QString rnxStr;
+  QString datStr;
   
   unsigned year, month, day, hour, min;
   double   sec;
   _TOC.civil_date(year, month, day);
   _TOC.civil_time(hour, min, sec);
   
-  QTextStream out(&rnxStr);
+  QTextStream out(&datStr);
 
   if (version < 3.0) {
     QString prnHlp = _prn.mid(1,2); if (prnHlp[0] == '0') prnHlp[0] = ' ';
@@ -1029,6 +1017,31 @@ QString t_ephGPS::toString(double version) const {
       .arg(min,      2, 10, QChar('0'))
       .arg(int(sec), 2, 10, QChar('0'));
   }
+
+  return datStr;
+}
+
+// RINEX Format String
+//////////////////////////////////////////////////////////////////////////////
+QString t_ephGlo::toString(double version) const {
+  QString rnxStr = rinexDateStr(version);
+  return rnxStr + "\n";
+}
+
+// RINEX Format String
+//////////////////////////////////////////////////////////////////////////////
+QString t_ephGal::toString(double version) const {
+  QString rnxStr = rinexDateStr(version);
+  return rnxStr + "\n";
+}
+
+// RINEX Format String
+//////////////////////////////////////////////////////////////////////////////
+QString t_ephGPS::toString(double version) const {
+
+  QString rnxStr = rinexDateStr(version);
+  
+  QTextStream out(&rnxStr);
   
   out << QString("%1%2%3\n")
     .arg(_clock_bias,      19, 'e', 12)
