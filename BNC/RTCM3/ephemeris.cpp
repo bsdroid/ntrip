@@ -992,21 +992,20 @@ t_ephGal::t_ephGal(float /* rnxVersion */, const QStringList& /* lines */) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-QString t_eph::rinexDateStr(double version, double gps_utc) const {
+QString t_eph::rinexDateStr(const bncTime& tt, const QString& prn,
+                            double version) {
 
   QString datStr;
   
   unsigned year, month, day, hour, min;
   double   sec;
-
-  bncTime hlp = _TOC - gps_utc;
-  hlp.civil_date(year, month, day);
-  hlp.civil_time(hour, min, sec);
+  tt.civil_date(year, month, day);
+  tt.civil_time(hour, min, sec);
   
   QTextStream out(&datStr);
 
   if (version < 3.0) {
-    QString prnHlp = _prn.mid(1,2); if (prnHlp[0] == '0') prnHlp[0] = ' ';
+    QString prnHlp = prn.mid(1,2); if (prnHlp[0] == '0') prnHlp[0] = ' ';
     out << prnHlp << QString(" %1 %2 %3 %4 %5%6")
       .arg(year % 100, 2, 10, QChar('0'))
       .arg(month,      2)
@@ -1016,7 +1015,7 @@ QString t_eph::rinexDateStr(double version, double gps_utc) const {
       .arg(sec, 5, 'f',1);
   }
   else {
-    out << _prn << QString(" %1 %2 %3 %4 %5 %6")
+    out << prn << QString(" %1 %2 %3 %4 %5 %6")
       .arg(year,     4)
       .arg(month,    2, 10, QChar('0'))
       .arg(day,      2, 10, QChar('0'))
@@ -1032,7 +1031,7 @@ QString t_eph::rinexDateStr(double version, double gps_utc) const {
 //////////////////////////////////////////////////////////////////////////////
 QString t_ephGPS::toString(double version) const {
 
-  QString rnxStr = rinexDateStr(version, 0.0);
+  QString rnxStr = rinexDateStr(_TOC, _prn, version);
   
   QTextStream out(&rnxStr);
   
@@ -1092,7 +1091,7 @@ QString t_ephGPS::toString(double version) const {
 //////////////////////////////////////////////////////////////////////////////
 QString t_ephGlo::toString(double version) const {
 
-  QString rnxStr = rinexDateStr(version, _gps_utc);
+  QString rnxStr = rinexDateStr(_TOC-_gps_utc, _prn, version);
 
   QTextStream out(&rnxStr);
 
@@ -1128,7 +1127,7 @@ QString t_ephGlo::toString(double version) const {
 //////////////////////////////////////////////////////////////////////////////
 QString t_ephGal::toString(double version) const {
 
-  QString rnxStr = rinexDateStr(version, 0.0);
+  QString rnxStr = rinexDateStr(_TOC, _prn, version);
 
   QTextStream out(&rnxStr);
 

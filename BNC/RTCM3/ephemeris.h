@@ -52,9 +52,10 @@ class t_eph {
     cc = tmp_xx[3];
   }
 
- protected:  
-  QString rinexDateStr(double version, double gps_utc) const;
+  static QString rinexDateStr(const bncTime& tt, const QString& prn,
+                              double version);
 
+ protected:  
   QString   _prn;
   bncTime   _TOC;
   QDateTime _receptDateTime;
