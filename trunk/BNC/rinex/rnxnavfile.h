@@ -44,12 +44,9 @@ class t_rnxNavFile {
    public:
     t_rnxNavHeader();
     ~t_rnxNavHeader();
-    t_irc read(QTextStream* stream);
-    float version() const {return _version;}
-    bool  glonass() const {return _glonass;}
-   private:
-    float   _version;
-    bool    _glonass;
+    t_irc  read(QTextStream* stream);
+    double _version;
+    bool   _glonass;
   };
  
  public:
@@ -57,10 +54,11 @@ class t_rnxNavFile {
   ~t_rnxNavFile();
   t_eph* getNextEph(const bncTime& tt, const QMap<QString, int>* corrIODs);
   const std::vector<t_eph*> ephs() const {return _ephs;}
-  float version() const {return _header.version();}
-  bool  glonass() const {return _header.glonass();}
-  void  writeHeader();
-  void  writeEph(const t_eph* eph);
+  double version() const {return _header._version;}
+  void   setVersion(double version) {_header._version = version;}
+  bool   glonass() const {return _header._glonass;}
+  void   writeHeader();
+  void   writeEph(const t_eph* eph);
 
  protected:
   t_rnxNavFile() {};
