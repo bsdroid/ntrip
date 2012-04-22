@@ -68,6 +68,8 @@ class t_rnxNavFile {
 
  private:
   void read(QTextStream* stream);
+  void writeEphV2(const t_eph* eph);
+  void writeEphV3(const t_eph* eph);
 
   e_inpOut            _inpOut;
   QFile*              _file;

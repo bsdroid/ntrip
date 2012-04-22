@@ -270,5 +270,20 @@ void t_rnxNavFile::writeHeader() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxNavFile::writeEph(const t_eph* eph) {
-  *_stream << "PRN = " << eph->prn() << endl;
+  if (version() < 3.0) {
+    writeEphV2(eph);
+  }
+  else {
+    writeEphV3(eph);
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_rnxNavFile::writeEphV2(const t_eph* eph) {
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_rnxNavFile::writeEphV3(const t_eph* eph) {
 }
