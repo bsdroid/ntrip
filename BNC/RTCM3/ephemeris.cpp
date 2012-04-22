@@ -1075,8 +1075,8 @@ QString t_ephGPS::toString(double version) const {
   out << QString(fmt)
     .arg(_TOT,         19, 'e', 12)
     .arg(_fitInterval, 19, 'e', 12)
-    .arg("")
-    .arg("");
+    .arg("",           19, QChar(' '))
+    .arg("",           19, QChar(' '));
 
   return rnxStr;
 }
@@ -1158,9 +1158,9 @@ QString t_ephGal::toString(double version) const {
 
   out << QString(fmt)
     .arg(_IDOT,    19, 'e', 12)
-    .arg("")
+    .arg("",       19, QChar(' '))
     .arg(_TOEweek, 19, 'e', 12)
-    .arg("");
+    .arg("",       19, QChar(' '));
 
   out << QString(fmt)
     .arg(_SISA,     19, 'e', 12)
@@ -1170,9 +1170,9 @@ QString t_ephGal::toString(double version) const {
 
   out << QString(fmt)
     .arg(_TOT,    19, 'e', 12)
-    .arg("")
-    .arg("")
-    .arg("");
+    .arg("",      19, QChar(' '))
+    .arg("",      19, QChar(' '))
+    .arg("",      19, QChar(' '));
 
   return rnxStr;
 }
