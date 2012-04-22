@@ -222,8 +222,7 @@ t_eph* t_rnxNavFile::getNextEph(const bncTime& tt,
     while (it != _ephs.end()) {
       t_eph* eph = *it;
 
-      bncTime ephTime(eph->GPSweek(), eph->GPSweeks());
-      double dt = ephTime - tt;
+      double dt = eph->TOC() - tt;
 
       if (dt < 2*3600.0) {
         it = _ephs.erase(it);

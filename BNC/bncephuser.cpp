@@ -80,9 +80,8 @@ void bncEphUser::slotNewEphGPS(gpsephemeris gpseph) {
 
   if (_eph.contains(prn)) {
     t_ephGPS* eLast = static_cast<t_ephGPS*>(_eph.value(prn)->last);
-    if ( (eLast->GPSweek() <  gpseph.GPSweek) || 
-         (eLast->GPSweek() == gpseph.GPSweek &&  
-          eLast->TOC()     <  gpseph.TOC) ) {
+    bncTime toc(gpseph.GPSweek, gpseph.TOC);
+    if (eLast->TOC() < toc) {
       delete static_cast<t_ephGPS*>(_eph.value(prn)->prev);
       _eph.value(prn)->prev = _eph.value(prn)->last;
       _eph.value(prn)->last = new t_ephGPS();
@@ -109,8 +108,8 @@ void bncEphUser::slotNewEphGlonass(glonassephemeris gloeph) {
     int tow = gloeph.GPSTOW; 
     updatetime(&ww, &tow, gloeph.tb*1000, 0);  // Moscow -> GPS
     t_ephGlo* eLast = static_cast<t_ephGlo*>(_eph.value(prn)->last);
-    if (eLast->GPSweek() < ww || 
-        (eLast->GPSweek()  == ww &&  eLast->GPSweeks() <  tow)) {  
+    bncTime toc(ww, tow);
+    if (eLast->TOC() < toc) {
       delete static_cast<t_ephGlo*>(_eph.value(prn)->prev);
       _eph.value(prn)->prev = _eph.value(prn)->last;
       _eph.value(prn)->last = new t_ephGlo();
@@ -134,9 +133,8 @@ void bncEphUser::slotNewEphGalileo(galileoephemeris galeph) {
 
   if (_eph.contains(prn)) {
     t_ephGal* eLast = static_cast<t_ephGal*>(_eph.value(prn)->last);
-    if ( (eLast->GPSweek() <  galeph.Week) || 
-         (eLast->GPSweek() == galeph.Week &&  
-          eLast->TOC()     <  galeph.TOC) ) {
+    bncTime toc(galeph.Week, galeph.TOC);
+    if (eLast->TOC() < toc) {
       delete static_cast<t_ephGal*>(_eph.value(prn)->prev);
       _eph.value(prn)->prev = _eph.value(prn)->last;
       _eph.value(prn)->last = new t_ephGal();
