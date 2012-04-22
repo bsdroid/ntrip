@@ -1129,9 +1129,11 @@ QString t_ephGPS::toString(double version) const {
     .arg(_TGD,    19, 'e', 12)
     .arg(_IODC,   19, 'e', 12);
 
-  out << QString("    %1%2\n")
-    .arg(0.0,19, 'e', 12)
-    .arg(0.0,19, 'e', 12);
+  out << QString("    %1%2%3%4\n")
+    .arg(0.0, 19, 'e', 12)
+    .arg(0.0, 19, 'e', 12)
+    .arg("")
+    .arg("");
 
   return rnxStr;
 }
