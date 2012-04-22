@@ -1093,43 +1093,45 @@ QString t_ephGPS::toString(double version) const {
     .arg(_clock_drift,     19, 'e', 12)
     .arg(_clock_driftrate, 19, 'e', 12);
 
-  out << QString("    %1%2%3%4\n")
+  QString fmt = version < 3.0 ? "   %1%2%3%4\n" : "    %1%2%3%4\n";
+
+  out << QString(fmt)
     .arg(_IODE,    19, 'e', 12)
     .arg(_Crs,     19, 'e', 12)
     .arg(_Delta_n, 19, 'e', 12)
     .arg(_M0,      19, 'e', 12);
 
-  out << QString("    %1%2%3%4\n")
+  out << QString(fmt)
     .arg(_Cuc,    19, 'e', 12)
     .arg(_e,      19, 'e', 12)
     .arg(_Cus,    19, 'e', 12)
     .arg(_sqrt_A, 19, 'e', 12);
 
-  out << QString("    %1%2%3%4\n")
+  out << QString(fmt)
     .arg(_TOE,    19, 'e', 12)
     .arg(_Cic,    19, 'e', 12)
     .arg(_OMEGA0, 19, 'e', 12)
     .arg(_Cis,    19, 'e', 12);
 
-  out << QString("    %1%2%3%4\n")
+  out << QString(fmt)
     .arg(_i0,       19, 'e', 12)
     .arg(_Crc,      19, 'e', 12)
     .arg(_omega,    19, 'e', 12)
     .arg(_OMEGADOT, 19, 'e', 12);
 
-  out << QString("    %1%2%3%4\n")
+  out << QString(fmt)
     .arg(_IDOT, 19, 'e', 12)
     .arg(0.0,   19, 'e', 12)
     .arg(0.0,   19, 'e', 12)
     .arg(0.0,   19, 'e', 12);
 
-  out << QString("    %1%2%3%4\n")
+  out << QString(fmt)
     .arg(0.0,     19, 'e', 12)
     .arg(_health, 19, 'e', 12)
     .arg(_TGD,    19, 'e', 12)
     .arg(_IODC,   19, 'e', 12);
 
-  out << QString("    %1%2%3%4\n")
+  out << QString(fmt)
     .arg(0.0, 19, 'e', 12)
     .arg(0.0, 19, 'e', 12)
     .arg("")
