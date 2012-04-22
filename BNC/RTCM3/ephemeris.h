@@ -11,6 +11,19 @@ extern "C" {
 
 class t_eph {
  public:
+
+  static bool earlierTime(const t_eph* eph1, const t_eph* eph2) {
+    if      (eph1->_GPSweek < eph2->_GPSweek) {
+      return true;
+    }
+    else if (eph1->_GPSweek == eph2->_GPSweek) {
+      return eph1->_GPSweeks < eph2->_GPSweeks;
+    }
+    else {
+      return false;
+    }
+  }
+
   t_eph() {_ok = false;}
   virtual ~t_eph() {};
 
