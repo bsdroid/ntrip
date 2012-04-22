@@ -67,7 +67,12 @@ void t_ephGPS::set(const gpsephemeris* ee) {
   _TOEweek  = ee->GPSweek;
   _L2PFlag  = 0.0;
 
-  _ura      = ee->URAindex;
+  if (ee->URAindex <= 6) {
+    _ura = ceil(10.0*pow(2.0, 1.0+((double)ee->URAindex)/2.0))/10.0;
+  }
+  else {
+    _ura = ceil(10.0*pow(2.0, ((double)ee->URAindex)/2.0))/10.0;
+  }
   _health   = ee->SVhealth;
   _TGD      = ee->TGD;
   _IODC     = ee->IODC;
