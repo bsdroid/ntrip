@@ -27,6 +27,8 @@
 
 #include <QtCore>
 #include "rnxobsfile.h"
+#include "rnxnavfile.h"
+#include "RTCM3/ephemeris.h"
 
 class t_reqcEdit : public QThread {
 Q_OBJECT
@@ -62,6 +64,7 @@ Q_OBJECT
   bncTime                _begTime;
   bncTime                _endTime;
   QMap<QString, QMap<int, int> > _lli;
+  QVector<t_eph*>        _ephs;
 };
 
 #endif
