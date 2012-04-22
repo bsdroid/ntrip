@@ -56,6 +56,7 @@ class t_rnxNavFile {
   t_rnxNavFile(const QString& fileName, e_inpOut inpOut);
   ~t_rnxNavFile();
   t_eph* getNextEph(const bncTime& tt, const QMap<QString, int>* corrIODs);
+  const std::vector<t_eph*> ephs() const {return _ephs;}
   float version() const {return _header.version();}
   bool  glonass() const {return _header.glonass();}
 

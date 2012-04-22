@@ -42,7 +42,6 @@
 #include "reqcedit.h"
 #include "bncapp.h"
 #include "bncsettings.h"
-#include "rnxnavfile.h"
 
 using namespace std;
 
@@ -221,10 +220,27 @@ void t_reqcEdit::applyLLI(const t_rnxObsFile* obsFile,
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::editEphemerides() {
 
+  // Read All Ephemerides
+  // --------------------
   QStringListIterator it(_navFileNames);
   while (it.hasNext()) {
     QString fileName = it.next();
     t_rnxNavFile rnxNavFile(fileName, t_rnxNavFile::input);
+    for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
+      t_eph*    eph = rnxNavFile.ephs()[ii];
+      t_ephGPS* ephGPS = dynamic_cast<t_ephGPS*>(eph);
+      t_ephGlo* ephGlo = dynamic_cast<t_ephGlo*>(eph);
+      t_ephGal* ephGal = dynamic_cast<t_ephGal*>(eph);
+      if      (ephGPS) {
+        _ephs.append(new t_ephGPS(*ephGPS));
+      }
+      else if (ephGlo) {
+        _ephs.append(new t_ephGlo(*ephGlo));
+      }
+      else if (ephGal) {
+        _ephs.append(new t_ephGal(*ephGal));
+      }
+    }
   }
 
 }
