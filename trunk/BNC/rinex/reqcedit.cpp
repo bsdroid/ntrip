@@ -100,8 +100,15 @@ void t_reqcEdit::run() {
     }
     const t_rnxObsFile::t_rnxEpo* epo = 0;
     while ( (epo = obsFile->nextEpoch()) != 0) {
-      if ( (!_begTime.valid() || epo->tt >= _begTime) && 
-           (!_endTime.valid() || epo->tt <= _endTime) ) {
+      if (_begTime.valid() && epo->tt < _begTime) {
+        continue;
+      }
+      if (_endTime.valid() && epo->tt > _endTime) {
+        break;
+      }
+    
+      if (_samplingRate == 0 || 
+          fmod(round(epo->tt.gpssec()), _samplingRate) == 0) {
         outObsFile.writeEpoch(epo);
       }
     }
