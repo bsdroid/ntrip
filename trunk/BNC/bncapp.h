@@ -84,9 +84,7 @@ class bncApp : public QApplication {
     void printGlonassEph(glonassephemeris* ep, bool printFile);
     void printGalileoEph(galileoephemeris* ep, bool printFile);
     void printOutput(bool printFile, QTextStream* stream, 
-                     const QString& lineV2, 
-                     const QString& lineV3,
-                     const QByteArray& allLines);
+                     const QString& strV2, const QString& strV3);
     void dumpCorrs(long minTime, long maxTime);
     void dumpCorrs();
     void dumpCorrs(const QList<QString>& allCorrs);

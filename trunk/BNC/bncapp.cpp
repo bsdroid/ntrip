@@ -482,192 +482,55 @@ void bncApp::printEphHeader() {
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
 
-  QString lineV2;
-  QString lineV3;
+  t_ephGPS eph;
+  eph.set(ep);
 
-  struct converttimeinfo cti;
-  converttime(&cti, ep->GPSweek, ep->TOC);
+  QString strV2 = eph.toString(2.11);
+  QString strV3 = eph.toString(3.01);
 
-  lineV3.sprintf("G%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
-                 ep->satellite, cti.year, cti.month, cti.day, cti.hour,
-                 cti.minute, cti.second, ep->clock_bias, ep->clock_drift,
-                 ep->clock_driftrate);
-
-  lineV2.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e\n",
-                 ep->satellite, cti.year%100, cti.month, cti.day, cti.hour,
-                 cti.minute, (double) cti.second, ep->clock_bias, 
-                 ep->clock_drift, ep->clock_driftrate);
-
-  QString    line;
-  QByteArray allLines;
-
-  QByteArray fmt;
-  QByteArray fmt2;
-  if (_rinexVers == 2) {
-    fmt  = "   %19.12e%19.12e%19.12e%19.12e\n";
-    fmt2 = "   %19.12e%19.12e\n";
-  }
-  else {
-    fmt  = "    %19.12e%19.12e%19.12e%19.12e\n";
-    fmt2 = "    %19.12e%19.12e\n";
-  }
-
-  line.sprintf(fmt.data(), (double)ep->IODE, ep->Crs, ep->Delta_n, ep->M0);
-  allLines += line;
-  
-  line.sprintf(fmt.data(), ep->Cuc, ep->e, ep->Cus, ep->sqrt_A);
-  allLines += line;
-
-  line.sprintf(fmt.data(), (double) ep->TOE, ep->Cic, ep->OMEGA0, ep->Cis);
-  allLines += line;
-  
-  line.sprintf(fmt.data(), ep->i0, ep->Crc, ep->omega, ep->OMEGADOT);
-  allLines += line;
-
-  double dd = 0;
-  unsigned long ii = ep->flags;
-  if(ii & GPSEPHF_L2CACODE)
-    dd += 2.0;
-  if(ii & GPSEPHF_L2PCODE)
-    dd += 1.0;
-  line.sprintf(fmt.data(), ep->IDOT, dd, (double) ep->GPSweek, 
-               ii & GPSEPHF_L2PCODEDATA ? 1.0 : 0.0);
-  allLines += line;
-
-  if(ep->URAindex <= 6) /* URA index */
-    dd = ceil(10.0*pow(2.0, 1.0+((double)ep->URAindex)/2.0))/10.0;
-  else
-    dd = ceil(10.0*pow(2.0, ((double)ep->URAindex)/2.0))/10.0;
-  line.sprintf(fmt.data(), dd, ((double) ep->SVhealth), ep->TGD, 
-               ((double) ep->IODC));
-  allLines += line;
-
-  line.sprintf(fmt2.data(), ((double)ep->TOW), 0.0);
-  allLines += line;
-
-  printOutput(printFile, _ephStreamGPS, lineV2, lineV3, allLines);
+  printOutput(printFile, _ephStreamGPS, strV2, strV3);
 }
 
 // Print One Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
 
-  int ww  = ep->GPSWeek;
-  int tow = ep->GPSTOW; 
-  struct converttimeinfo cti;
+  t_ephGlo eph;
+  eph.set(ep);
 
-  updatetime(&ww, &tow, ep->tb*1000, 1);  // Moscow -> UTC
-  converttime(&cti, ww, tow);
+  QString strV2 = eph.toString(2.11);
+  QString strV3 = eph.toString(3.01);
 
-  int tk = ep->tk-3*60*60; 
-  if (tk < 0) {
-    tk += 86400;
-  }
-
-  QString lineV2;
-  QString lineV3;
-
-  lineV3.sprintf("R%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
-                 ep->almanac_number, cti.year, cti.month, cti.day, cti.hour, 
-                 cti.minute, cti.second, -ep->tau, ep->gamma, (double) tk);
-
-  lineV2.sprintf("%02d %02d %02d %02d %02d %02d%5.1f%19.12e%19.12e%19.12e\n",
-                 ep->almanac_number, cti.year%100, cti.month, cti.day, 
-                 cti.hour, cti.minute, (double) cti.second, -ep->tau, 
-                 ep->gamma, (double) tk);
-  
-  QString    line;
-  QByteArray allLines;
-
-  QByteArray fmt;
-  if (_rinexVers == 2) {
-    fmt = "   %19.12e%19.12e%19.12e%19.12e\n";
-  }
-  else {
-    fmt = "    %19.12e%19.12e%19.12e%19.12e\n";
-  }
-
-  line.sprintf(fmt.data(), ep->x_pos, ep->x_velocity, ep->x_acceleration, 
-               (ep->flags & GLOEPHF_UNHEALTHY) ? 1.0 : 0.0);
-  allLines += line;
-   
-  line.sprintf(fmt.data(), ep->y_pos, ep->y_velocity, ep->y_acceleration, 
-               (double) ep->frequency_number);
-  allLines += line;
-  
-  line.sprintf(fmt.data(), ep->z_pos, ep->z_velocity, ep->z_acceleration, 
-               (double) ep->E);
-  allLines += line;
-
-  printOutput(printFile, _ephStreamGlonass, lineV2, lineV3, allLines);
+  printOutput(printFile, _ephStreamGPS, strV2, strV3);
 }
 
 // Print One Galileo Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printGalileoEph(galileoephemeris* ep, bool printFile) {
 
-  QString lineV2;
-  QString lineV3;
+  t_ephGal eph;
+  eph.set(ep);
 
-  struct converttimeinfo cti;
-  converttime(&cti, ep->Week, ep->TOC);
+  QString strV2 = eph.toString(2.11);
+  QString strV3 = eph.toString(3.01);
 
-  lineV3.sprintf("E%02d %04d %02d %02d %02d %02d %02d%19.12e%19.12e%19.12e\n",
-                 ep->satellite, cti.year, cti.month, cti.day, cti.hour,
-                 cti.minute, cti.second, ep->clock_bias, ep->clock_drift,
-                 ep->clock_driftrate);
-
-  QString    line;
-  QByteArray allLines;
-
-  const QByteArray fmt4 = "    %19.12e%19.12e%19.12e%19.12e\n";
-  const QByteArray fmt3 = "    %19.12e%19.12e%19.12e\n";
-  const QByteArray fmt1 = "    %19.12e\n";
-
-  line.sprintf(fmt4.data(), (double)ep->IODnav, ep->Crs, ep->Delta_n, ep->M0);
-  allLines += line;
-  
-  line.sprintf(fmt4.data(), ep->Cuc, ep->e, ep->Cus, ep->sqrt_A);
-  allLines += line;
-
-  line.sprintf(fmt4.data(), (double) ep->TOE, ep->Cic, ep->OMEGA0, ep->Cis);
-  allLines += line;
-  
-  line.sprintf(fmt4.data(), ep->i0, ep->Crc, ep->omega, ep->OMEGADOT);
-  allLines += line;
-
-  double dataSources = 0.0;       // TODO
-  line.sprintf(fmt3.data(), ep->IDOT, dataSources, (double) ep->Week);
-  allLines += line;
-
-  double health   = 0.0;          // TODO
-  double BGD_1_5B = ep->BGD_1_5A; // TODO
-  line.sprintf(fmt4.data(), (double) ep->SISA, health, ep->BGD_1_5A, BGD_1_5B);
-  allLines += line;
-
-  double transmissionTimeOfMessage = 0.9999e9; // unknown (Rinex v3 standard)
-  line.sprintf(fmt1.data(), transmissionTimeOfMessage);
-  allLines += line;
-
-  printOutput(printFile, _ephStreamGalileo, lineV2, lineV3, allLines);
+  printOutput(printFile, _ephStreamGPS, strV2, strV3);
 }
 
 // Output
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::printOutput(bool printFile, QTextStream* stream,
-                         const QString& lineV2, 
-                         const QString& lineV3,
-                         const QByteArray& allLines) {
+                         const QString& strV2, const QString& strV3) {
+
   // Output into file
   // ----------------
   if (printFile && stream) {
     if (_rinexVers == 2) {
-      *stream << lineV2.toAscii();
+      *stream << strV2.toAscii();
     }
     else {
-      *stream << lineV3.toAscii();
+      *stream << strV3.toAscii();
     }
-    *stream << allLines;
     stream->flush();
   }
 
@@ -678,8 +541,7 @@ void bncApp::printOutput(bool printFile, QTextStream* stream,
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
       if (sock->state() == QAbstractSocket::ConnectedState) {
-        if (sock->write(lineV3.toAscii())   == -1 ||
-            sock->write(allLines)           == -1) {
+        if (sock->write(strV3.toAscii()) == -1) {
           delete sock;
           is.remove();
         }
