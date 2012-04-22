@@ -32,7 +32,7 @@ class t_eph {
   bool ok() const {return _ok;}
   bncTime TOC() const {return _TOC;}
   bool isNewerThan(const t_eph* eph) const {
-    return earlierTime(this, eph);
+    return earlierTime(eph, this);
   }
   QString prn() const {return _prn;}
   void  setReceptDateTime(const QDateTime& dateTime) {
