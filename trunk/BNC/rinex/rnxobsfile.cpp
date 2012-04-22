@@ -359,7 +359,7 @@ void t_rnxObsFile::handleEpochFlag(int flag, const QString& line) {
 
 // Retrieve single Epoch
 ////////////////////////////////////////////////////////////////////////////
-const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpoch() {
+t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpoch() {
 
   _currEpo.clear();
 
@@ -373,7 +373,7 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpoch() {
 
 // Retrieve single Epoch (RINEX Version 3)
 ////////////////////////////////////////////////////////////////////////////
-const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
+t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
 
   while ( _stream->status() == QTextStream::Ok && !_stream->atEnd() ) {
 
@@ -442,7 +442,7 @@ const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
 
 // Retrieve single Epoch (RINEX Version 2)
 ////////////////////////////////////////////////////////////////////////////
-const t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
+t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
 
   while ( _stream->status() == QTextStream::Ok && !_stream->atEnd() ) {
 

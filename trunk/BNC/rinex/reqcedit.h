@@ -47,6 +47,8 @@ Q_OBJECT
  
  private:
   void editRnxObsHeader(t_rnxObsFile& obsFile);
+  void rememberLLI(const t_rnxObsFile::t_rnxEpo* epo);
+  void applyLLI(t_rnxObsFile::t_rnxEpo* epo);
 
   QStringList            _obsFileNames;
   QVector<t_rnxObsFile*> _rnxObsFiles;

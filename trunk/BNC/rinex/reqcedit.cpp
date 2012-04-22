@@ -98,7 +98,7 @@ void t_reqcEdit::run() {
       editRnxObsHeader(outObsFile);
       outObsFile.writeHeader();
     }
-    const t_rnxObsFile::t_rnxEpo* epo = 0;
+    t_rnxObsFile::t_rnxEpo* epo = 0;
     while ( (epo = obsFile->nextEpoch()) != 0) {
       if (_begTime.valid() && epo->tt < _begTime) {
         continue;
@@ -109,7 +109,11 @@ void t_reqcEdit::run() {
     
       if (_samplingRate == 0 || 
           fmod(round(epo->tt.gpssec()), _samplingRate) == 0) {
+        applyLLI(epo);
         outObsFile.writeEpoch(epo);
+      }
+      else {
+        rememberLLI(epo);
       }
     }
   }
@@ -150,4 +154,16 @@ void t_reqcEdit::editRnxObsHeader(t_rnxObsFile& obsFile) {
       QRegExp(oldReceiverType).exactMatch(obsFile.receiverType())) {
     obsFile.setReceiverType(newReceiverType);
   }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_reqcEdit::rememberLLI(const t_rnxObsFile::t_rnxEpo* epo) {
+
+}
+  
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_reqcEdit::applyLLI(t_rnxObsFile::t_rnxEpo* epo) {
+
 }
