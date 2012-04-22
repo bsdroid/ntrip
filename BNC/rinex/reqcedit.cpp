@@ -55,7 +55,13 @@ t_reqcEdit::t_reqcEdit(QObject* parent) : QThread(parent) {
   _outObsFileName = settings.value("reqcOutObsFile").toString();
   _navFileNames   = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
   _outNavFileName = settings.value("reqcOutNavFile").toString();
-  _rnxVersion     = settings.value("reqcRnxVersion").toDouble();
+  int version     = settings.value("reqcRnxVersion").toInt();
+  if (version < 3) {
+    _rnxVersion = 2.11;
+  }
+  else {
+    _rnxVersion = 3.01;
+  }
   _samplingRate   = settings.value("reqcSampling").toInt();
   _begTime        = bncTime(settings.value("reqcStartDateTime").toString().toAscii().data());
   _endTime        = bncTime(settings.value("reqcEndDateTime").toString().toAscii().data());
@@ -254,6 +260,8 @@ void t_reqcEdit::editEphemerides() {
   // -------------------------
   for (int ii = 0; ii < _ephs.size(); ii++) {
     const t_eph* eph = _ephs[ii];
-    outNavFile.writeEph(eph);
+    if (eph->type() == t_eph::GPS || _rnxVersion >= 3.0) {
+      outNavFile.writeEph(eph);
+    }
   }
 }
