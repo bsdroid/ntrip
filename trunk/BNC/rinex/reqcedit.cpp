@@ -67,6 +67,9 @@ t_reqcEdit::~t_reqcEdit() {
   for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
     delete _rnxObsFiles[ii];
   }
+  for (int ii = 0; ii < _ephs.size(); ii++) {
+    delete _ephs[ii];
+  }
 }
 
 //  
