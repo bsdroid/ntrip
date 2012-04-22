@@ -89,7 +89,7 @@ class t_rnxObsFile {
   const bncTime&      startTime() const {return _header._startTime;}
   void  setStartTime(const bncTime& startTime) {_header._startTime = startTime;}
 
-  const t_rnxEpo*     nextEpoch(); 
+  t_rnxEpo* nextEpoch(); 
   int wlFactorL1(unsigned iPrn) {
     return iPrn <= MAXPRN_GPS ? _header._wlFactorsL1[iPrn] : 1;
   }
@@ -147,8 +147,8 @@ class t_rnxObsFile {
 
   void writeEpochV2(const t_rnxEpo* epo);
   void writeEpochV3(const t_rnxEpo* epo);
-  const t_rnxEpo* nextEpochV2();
-  const t_rnxEpo* nextEpochV3();
+  t_rnxEpo* nextEpochV2();
+  t_rnxEpo* nextEpochV3();
   void handleEpochFlag(int flag, const QString& line);
 
   QString type2to3(char sys, const QString& typeV2);
