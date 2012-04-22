@@ -57,7 +57,7 @@ Q_OBJECT
   int                    _samplingRate;
   bncTime                _begTime;
   bncTime                _endTime;
-  QMap<int, int>         _lli;
+  QMap<QString, QMap<int, int> > _lli;
 };
 
 #endif

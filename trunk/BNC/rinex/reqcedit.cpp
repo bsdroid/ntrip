@@ -168,12 +168,14 @@ void t_reqcEdit::rememberLLI(const t_rnxObsFile* obsFile,
   for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
     const t_rnxObsFile::t_rnxSat& rnxSat = epo->rnxSat[iSat];
     char                          sys    = rnxSat.satSys;
+    QString prn = QString("%1%2").arg(sys).arg(rnxSat.satNum,2,10,QChar('0'));
+
     for (int iType = 0; iType < obsFile->nTypes(sys); iType++) {
-      if (!_lli.contains(iType)) {
-        _lli[iType] = 0;
+      if (!_lli[prn].contains(iType)) {
+        _lli[prn][iType] = 0;
       }
       if (rnxSat.lli[iType] & 1) {
-        _lli[iType] |= 1;
+        _lli[prn][iType] |= 1;
       }
     }
   }
@@ -191,8 +193,10 @@ void t_reqcEdit::applyLLI(const t_rnxObsFile* obsFile,
   for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
     t_rnxObsFile::t_rnxSat& rnxSat = epo->rnxSat[iSat];
     char                    sys    = rnxSat.satSys;
+    QString prn = QString("%1%2").arg(sys).arg(rnxSat.satNum,2,10,QChar('0'));
+
     for (int iType = 0; iType < obsFile->nTypes(sys); iType++) {
-      if (_lli.contains(iType) && _lli[iType] & 1) {
+      if (_lli[prn].contains(iType) && _lli[prn][iType] & 1) {
          rnxSat.lli[iType] |= 1;
       }
     }
