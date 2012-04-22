@@ -234,3 +234,15 @@ t_eph* t_rnxNavFile::getNextEph(const bncTime& tt,
 
   return 0;
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_rnxNavFile::writeHeader() {
+  *_stream << "Writing header ..." << endl;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_rnxNavFile::writeEph(const t_eph* eph) {
+  *_stream << "PRN = " << eph->prn() << endl;
+}

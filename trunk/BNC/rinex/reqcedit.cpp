@@ -247,4 +247,17 @@ void t_reqcEdit::editEphemerides() {
   }
   qStableSort(_ephs.begin(), _ephs.end(), t_eph::earlierTime);
 
+  // Initialize output observation file
+  // ----------------------------------
+  t_rnxNavFile outNavFile(_outNavFileName, t_rnxNavFile::output);
+  
+  // Loop over all ephemerides
+  // -------------------------
+  for (int ii = 0; ii < _ephs.size(); ii++) {
+    const t_eph* eph = _ephs[ii];
+    if (ii == 0) {
+      outNavFile.writeHeader();
+    }
+    outNavFile.writeEph(eph);
+  }
 }

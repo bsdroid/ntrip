@@ -59,6 +59,8 @@ class t_rnxNavFile {
   const std::vector<t_eph*> ephs() const {return _ephs;}
   float version() const {return _header.version();}
   bool  glonass() const {return _header.glonass();}
+  void  writeHeader();
+  void  writeEph(const t_eph* eph);
 
  protected:
   t_rnxNavFile() {};
