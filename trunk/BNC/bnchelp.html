@@ -279,6 +279,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.19.1. <a href=#nw>No Window Mode</a><br>
 &nbsp; &nbsp; &nbsp; 3.19.2. <a href=#post>Offline Mode</a><br>
 &nbsp; &nbsp; &nbsp; 3.19.3. <a href=#conffile>Configuration File</a><br>
+&nbsp; &nbsp; &nbsp; 3.19.4. <a href=#confopt>Configuration Options</a><br>
 </p>
 
 <p><a name="topmenu"><h4>3.1. Top Menu Bar</h4></p>
@@ -2258,6 +2259,26 @@ On a Mac-OS X v10.6 (or higher) system the command line would be
 open -a /Applications/bnc.app --args -conf /Users/tsyan/MyConfig.ini
 <br><br>
 if the program is in /Applications and the configuration file 'MyConfig.ini' in /Users/tsyan.
+</p> 
+
+<p><a name="confopt"><h4>3.19.4 Configuration Options - optional</h4></p>
+<p> 
+BNC applies options from the configuration file but allows updating any of them through options specified on the command line while the contents of the configuration file remains unchanged. The command line syntax for that looks as follows
+</p>
+<p>
+--key &lt;keyName&gt; &lt;keyValue&gt;
+</p>
+<p>
+where &lt;keyName&gt; stands for the name of an option contained in the configuration file and &lt;keyValue&gt; stands for the value you want to assign to it. The following is a syntax example for a complete command line:
+</p>
+<p>
+bnc --nw --conf &lt;confFileName&gt --key &lt;keyName1&gt; &lt;keyValue1&gt; --key &lt;keyName2&gt; &lt;keyValue2&gt; ...
+</p>
+<p>
+Example:
+</p>
+<p>
+./bnc -conf CONFIG.bnc --key proxyPort=8001 --key rnxIntr="1 day"
 </p> 
 
 <p><a name="limits"><h3>4. Limitations &amp; Known Bugs</h3></p>
