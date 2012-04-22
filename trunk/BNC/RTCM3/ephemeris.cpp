@@ -14,51 +14,21 @@
 
 using namespace std;
 
-#define PI          3.1415926535898
-// Returns nearest integer value
-////////////////////////////////////////////////////////////////////////////
-static double NearestInt(double fl, double * remain)
-{
-  bool isneg = fl < 0.0;
-  double intval;
-  if(isneg) fl *= -1.0;
-  intval = (double)((unsigned long)(fl+0.5));
-  if(isneg) {fl *= -1.0; intval *= -1.0;}
-  if(remain)
-    *remain = fl-intval;
-  return intval;
-} /* NearestInt() */
-
 // Returns CRC24
 ////////////////////////////////////////////////////////////////////////////
-static unsigned long CRC24(long size, const unsigned char *buf)
-{
+static unsigned long CRC24(long size, const unsigned char *buf) {
   unsigned long crc = 0;
-  int i;
-
-  while(size--)
-  {
+  int ii;
+  while (size--) {
     crc ^= (*buf++) << (16);
-    for(i = 0; i < 8; i++)
-    {
+    for(ii = 0; ii < 8; ii++) {
       crc <<= 1;
-      if(crc & 0x1000000)
+      if (crc & 0x1000000) {
         crc ^= 0x01864cfb;
+      }
     }
   }
   return crc;
-} /* CRC24 */
-
-// 
-////////////////////////////////////////////////////////////////////////////
-bool t_eph::isNewerThan(const t_eph* eph) const {
-  if (_GPSweek >  eph->_GPSweek ||
-      (_GPSweek == eph->_GPSweek && _GPSweeks > eph->_GPSweeks)) {
-    return true;
-  }
-  else {
-    return false;
-  }
 }
 
 // Set GPS Satellite Position
@@ -67,54 +37,54 @@ void t_ephGPS::set(const gpsephemeris* ee) {
 
   _prn = QString("G%1").arg(ee->satellite, 2, 10, QChar('0'));
 
-  // TODO: check if following two lines are correct
-  _GPSweek  = ee->GPSweek;
-  _GPSweeks = ee->TOE;
-
-  _TOW  = ee->TOW;
-  _TOC  = ee->TOC;
-  _TOE  = ee->TOE;
-  _IODE = ee->IODE;
-  _IODC = ee->IODC;
-
+  _TOC.set(ee->GPSweek, ee->TOC);
   _clock_bias      = ee->clock_bias;
   _clock_drift     = ee->clock_drift;
   _clock_driftrate = ee->clock_driftrate;
 
+  _IODE     = ee->IODE;
   _Crs      = ee->Crs;
   _Delta_n  = ee->Delta_n;
   _M0       = ee->M0;
+
   _Cuc      = ee->Cuc;
   _e        = ee->e;
   _Cus      = ee->Cus;
   _sqrt_A   = ee->sqrt_A;
+
+  _TOEsec   = ee->TOE;
   _Cic      = ee->Cic;
   _OMEGA0   = ee->OMEGA0;
   _Cis      = ee->Cis;
+
   _i0       = ee->i0;
   _Crc      = ee->Crc;
   _omega    = ee->omega;
   _OMEGADOT = ee->OMEGADOT;
-  _IDOT     = ee->IDOT;
 
+  _IDOT     = ee->IDOT;
+  _L2Codes  = 0.0;
+  _TOEweek  = ee->TOW;
+  _L2PFlag  = 0.0;
+
+  _ura      = 0.0;
+  _health   = ee->SVhealth;
   _TGD      = ee->TGD;
+  _IODC     = ee->IODC;
+
+  _TOT         = 0.9999e9;
+  _fitInterval = 0.0;
 
   _ok       = true;
-
-  /* FIXME: convert URAindex and flags! */
-  _ura = 0;
-  _L2Codes = 0;
-  _L2PFlag = 0;
-  _health = ee->SVhealth;
 }
 
 // Compute GPS Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGPS::position(int GPSweek, double GPSweeks, 
-			double* xc,
-			double* vv) const {
+                        double* xc,
+                        double* vv) const {
 
-  static const double secPerWeek = 7 * 86400.0;
+
   static const double omegaEarth = 7292115.1467e-11;
   static const double gmWGS      = 398.6005e12;
 
@@ -127,10 +97,10 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
   }
 
   double n0 = sqrt(gmWGS/(a0*a0*a0));
-  double tk = GPSweeks - _TOE;
-  if (GPSweek != _GPSweek) {  
-    tk += (GPSweek - _GPSweek) * secPerWeek;
-  }
+
+  bncTime tt(GPSweek, GPSweeks);
+  double tk = tt - bncTime(_TOEweek, _TOEsec);
+
   double n  = n0 + _Delta_n;
   double M  = _M0 + n*tk;
   double E  = M;
@@ -149,7 +119,7 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
   double xp     = r*cos(u);
   double yp     = r*sin(u);
   double OM     = _OMEGA0 + (_OMEGADOT - omegaEarth)*tk - 
-                   omegaEarth*_TOE;
+                   omegaEarth*_TOEsec;
   
   double sinom = sin(OM);
   double cosom = cos(OM);
@@ -159,10 +129,7 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
   xc[1] = xp*sinom + yp*cosi*cosom;
   xc[2] = yp*sini;                 
   
-  double tc = GPSweeks - _TOC;
-  if (GPSweek != _GPSweek) {  
-    tc += (GPSweek - _GPSweek) * secPerWeek;
-  }
+  double tc = tt - _TOC;
   xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc;
 
   // Velocity
@@ -191,24 +158,23 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
 
   // Relativistic Correction
   // -----------------------
-  //  xc(4) -= 4.442807633e-10 * _e * sqrt(a0) *sin(E);
   xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / t_CST::c / t_CST::c;
 }
 
 // build up RTCM3 for GPS
 ////////////////////////////////////////////////////////////////////////////
-#define GPSTOINT(type, value) static_cast<type>(NearestInt(value,0))
+#define GPSTOINT(type, value) static_cast<type>(round(value))
 
 #define GPSADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
                        |(GPSTOINT(long long,b)&((1ULL<<a)-1)); \
                        numbits += (a); \
                        while(numbits >= 8) { \
                        buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
+
 #define GPSADDBITSFLOAT(a,b,c) {long long i = GPSTOINT(long long,(b)/(c)); \
                              GPSADDBITS(a,i)};
 
-int t_ephGPS::RTCM3(unsigned char *buffer)
-{
+int t_ephGPS::RTCM3(unsigned char *buffer) {
 
   unsigned char *startbuffer = buffer;
   buffer= buffer+3;
@@ -266,13 +232,13 @@ int t_ephGPS::RTCM3(unsigned char *buffer)
 
   GPSADDBITS(12, 1019)
   GPSADDBITS(6,_prn.right((_prn.length()-1)).toInt())
-  GPSADDBITS(10, _GPSweek)
+  GPSADDBITS(10, _TOC.gpsw())
   GPSADDBITS(4, _ura)
   GPSADDBITS(2,_L2Codes)
-  GPSADDBITSFLOAT(14, _IDOT, PI/static_cast<double>(1<<30)
+  GPSADDBITSFLOAT(14, _IDOT, M_PI/static_cast<double>(1<<30)
   /static_cast<double>(1<<13))
   GPSADDBITS(8, _IODE)
-  GPSADDBITS(16, static_cast<int>(_TOC)>>4)
+  GPSADDBITS(16, static_cast<int>(_TOC.gpssec())>>4)
   GPSADDBITSFLOAT(8, _clock_driftrate, 1.0/static_cast<double>(1<<30)
   /static_cast<double>(1<<25))
   GPSADDBITSFLOAT(16, _clock_drift, 1.0/static_cast<double>(1<<30)
@@ -281,23 +247,23 @@ int t_ephGPS::RTCM3(unsigned char *buffer)
   /static_cast<double>(1<<1))
   GPSADDBITS(10, _IODC)
   GPSADDBITSFLOAT(16, _Crs, 1.0/static_cast<double>(1<<5))
-  GPSADDBITSFLOAT(16, _Delta_n, PI/static_cast<double>(1<<30)
+  GPSADDBITSFLOAT(16, _Delta_n, M_PI/static_cast<double>(1<<30)
   /static_cast<double>(1<<13))
-  GPSADDBITSFLOAT(32, _M0, PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  GPSADDBITSFLOAT(32, _M0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
   GPSADDBITSFLOAT(16, _Cuc, 1.0/static_cast<double>(1<<29))
   GPSADDBITSFLOAT(32, _e, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
   GPSADDBITSFLOAT(16, _Cus, 1.0/static_cast<double>(1<<29))
   GPSADDBITSFLOAT(32, _sqrt_A, 1.0/static_cast<double>(1<<19))
-  GPSADDBITS(16, static_cast<int>(_TOE)>>4)
+  GPSADDBITS(16, static_cast<int>(_TOEsec)>>4)
   GPSADDBITSFLOAT(16, _Cic, 1.0/static_cast<double>(1<<29))
-  GPSADDBITSFLOAT(32, _OMEGA0, PI/static_cast<double>(1<<30)
+  GPSADDBITSFLOAT(32, _OMEGA0, M_PI/static_cast<double>(1<<30)
   /static_cast<double>(1<<1))
   GPSADDBITSFLOAT(16, _Cis, 1.0/static_cast<double>(1<<29))
-  GPSADDBITSFLOAT(32, _i0, PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  GPSADDBITSFLOAT(32, _i0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
   GPSADDBITSFLOAT(16, _Crc, 1.0/static_cast<double>(1<<5))
-  GPSADDBITSFLOAT(32, _omega, PI/static_cast<double>(1<<30)
+  GPSADDBITSFLOAT(32, _omega, M_PI/static_cast<double>(1<<30)
   /static_cast<double>(1<<1))
-  GPSADDBITSFLOAT(24, _OMEGADOT, PI/static_cast<double>(1<<30)
+  GPSADDBITSFLOAT(24, _OMEGADOT, M_PI/static_cast<double>(1<<30)
   /static_cast<double>(1<<13))
   GPSADDBITSFLOAT(8, _TGD, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
   GPSADDBITS(6, _health) 
@@ -357,16 +323,12 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv,
 void t_ephGlo::position(int GPSweek, double GPSweeks, 
                         double* xc, double* vv) const {
 
-  static const double secPerWeek  = 7 * 86400.0;
   static const double nominalStep = 10.0;
 
   memset(xc, 0, 4*sizeof(double));
   memset(vv, 0, 3*sizeof(double));
 
-  double dtPos = GPSweeks - _tt;
-  if (GPSweek != _GPSweek) {  
-    dtPos += (GPSweek - _GPSweek) * secPerWeek;
-  }
+  double dtPos = bncTime(GPSweek, GPSweeks) - _tt;
 
   int nSteps  = int(fabs(dtPos) / nominalStep) + 1;
   double step = dtPos / nSteps;
@@ -376,8 +338,8 @@ void t_ephGlo::position(int GPSweek, double GPSweeks,
   acc[1] = _y_acceleration * 1.e3;
   acc[2] = _z_acceleration * 1.e3;
   for (int ii = 1; ii <= nSteps; ii++) { 
-    _xv = rungeKutta4(_tt, _xv, step, acc, glo_deriv);
-    _tt += step;
+    _xv = rungeKutta4(_tt.gpssec(), _xv, step, acc, glo_deriv);
+    _tt = _tt + step;
   }
 
   // Position and Velocity
@@ -392,18 +354,14 @@ void t_ephGlo::position(int GPSweek, double GPSweeks,
 
   // Clock Correction
   // ----------------
-  double dtClk = GPSweeks - _GPSweeks;
-  if (GPSweek != _GPSweek) {  
-    dtClk += (GPSweek - _GPSweek) * secPerWeek;
-  }
+  double dtClk = bncTime(GPSweek, GPSweeks) - _TOC;
   xc[3] = -_tau + _gamma * dtClk;
 }
 
 // IOD of Glonass Ephemeris (virtual)
 ////////////////////////////////////////////////////////////////////////////
 int t_ephGlo::IOD() const {
-  bncTime tGPS(_GPSweek, _GPSweeks);
-  bncTime tMoscow = tGPS - _gps_utc + 3 * 3600.0;
+  bncTime tMoscow = _TOC - _gps_utc + 3 * 3600.0;
   return int(tMoscow.daysec() / 900);
 }
 
@@ -471,8 +429,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   hlpTime.civil_date(year, month, day);
   _gps_utc = gnumleap(year, month, day);
 
-  _GPSweek           = ww;
-  _GPSweeks          = tow;
+  _TOC.set(ww, tow);
   _E                 = ee->E;
   _tau               = ee->tau;
   _gamma             = ee->gamma;
@@ -491,7 +448,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
 
   // Initialize status vector
   // ------------------------
-  _tt = _GPSweeks;
+  _tt = _TOC;
 
   _xv(1) = _x_pos * 1.e3; 
   _xv(2) = _y_pos * 1.e3; 
@@ -505,7 +462,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
 
 // build up RTCM3 for GLONASS
 ////////////////////////////////////////////////////////////////////////////
-#define GLONASSTOINT(type, value) static_cast<type>(NearestInt(value,0))
+#define GLONASSTOINT(type, value) static_cast<type>(round(value))
 
 #define GLONASSADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
                        |(GLONASSTOINT(long long,b)&((1ULL<<(a))-1)); \
@@ -548,7 +505,7 @@ int t_ephGlo::RTCM3(unsigned char *buffer)
   GLONASSADDBITS(1, (static_cast<int>(_tki)/30)%30)
   GLONASSADDBITS(1, _health) 
   GLONASSADDBITS(1, 0)
-  unsigned long long timeofday = (static_cast<int>(_tt+3*60*60-_gps_utc)%86400);
+  unsigned long long timeofday = (static_cast<int>(_tt.gpssec()+3*60*60-_gps_utc)%86400);
   GLONASSADDBITS(7, timeofday/60/15)
   GLONASSADDBITSFLOATM(24, _x_velocity*1000, 1000.0/static_cast<double>(1<<20))
   GLONASSADDBITSFLOATM(27, _x_pos*1000, 1000.0/static_cast<double>(1<<11))
@@ -596,36 +553,40 @@ void t_ephGal::set(const galileoephemeris* ee) {
 
   _prn = QString("E%1").arg(ee->satellite, 2, 10, QChar('0'));
 
-  _GPSweek  = ee->Week;
-  _GPSweeks = ee->TOE;
-
-  _TOC    = ee->TOC;
-  _TOE    = ee->TOE;
-  _IODnav = ee->IODnav;
-
+  _TOC.set(ee->Week, ee->TOC);
   _clock_bias      = ee->clock_bias;
   _clock_drift     = ee->clock_drift;
   _clock_driftrate = ee->clock_driftrate;
 
+  _IODnav   = ee->IODnav;
   _Crs      = ee->Crs;
   _Delta_n  = ee->Delta_n;
   _M0       = ee->M0;
+
   _Cuc      = ee->Cuc;
   _e        = ee->e;
   _Cus      = ee->Cus;
   _sqrt_A   = ee->sqrt_A;
+
+  _TOEsec   = ee->TOE;
   _Cic      = ee->Cic;
   _OMEGA0   = ee->OMEGA0;
   _Cis      = ee->Cis;
+
   _i0       = ee->i0;
   _Crc      = ee->Crc;
   _omega    = ee->omega;
   _OMEGADOT = ee->OMEGADOT;
+
   _IDOT     = ee->IDOT;
+  _TOEweek  = ee->Week;
+
   _SISA     = ee->SISA;
+  _E5aHS    = ee->E5aHS;
   _BGD_1_5A = ee->BGD_1_5A;
   _BGD_1_5B = ee->BGD_1_5B;
-  _E5aHS    = ee->E5aHS;
+
+  _TOT      = 0.9999e9;
 
   _ok = true;
 }
@@ -633,10 +594,9 @@ void t_ephGal::set(const galileoephemeris* ee) {
 // Compute Galileo Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGal::position(int GPSweek, double GPSweeks, 
-			double* xc,
-			double* vv) const {
+                        double* xc,
+                        double* vv) const {
 
-  static const double secPerWeek = 7 * 86400.0;
   static const double omegaEarth = 7292115.1467e-11;
   static const double gmWGS      = 398.6005e12;
 
@@ -649,10 +609,10 @@ void t_ephGal::position(int GPSweek, double GPSweeks,
   }
 
   double n0 = sqrt(gmWGS/(a0*a0*a0));
-  double tk = GPSweeks - _TOE;
-  if (GPSweek != _GPSweek) {  
-    tk += (GPSweek - _GPSweek) * secPerWeek;
-  }
+
+  bncTime tt(GPSweek, GPSweeks);
+  double tk = tt - bncTime(_TOC.gpsw(), _TOEsec);
+
   double n  = n0 + _Delta_n;
   double M  = _M0 + n*tk;
   double E  = M;
@@ -671,7 +631,7 @@ void t_ephGal::position(int GPSweek, double GPSweeks,
   double xp     = r*cos(u);
   double yp     = r*sin(u);
   double OM     = _OMEGA0 + (_OMEGADOT - omegaEarth)*tk - 
-                   omegaEarth*_TOE;
+                  omegaEarth*_TOEsec;
   
   double sinom = sin(OM);
   double cosom = cos(OM);
@@ -681,10 +641,7 @@ void t_ephGal::position(int GPSweek, double GPSweeks,
   xc[1] = xp*sinom + yp*cosi*cosom;
   xc[2] = yp*sini;                 
   
-  double tc = GPSweeks - _TOC;
-  if (GPSweek != _GPSweek) {  
-    tc += (GPSweek - _GPSweek) * secPerWeek;
-  }
+  double tc = tt - _TOC;
   xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc;
 
   // Velocity
@@ -719,7 +676,7 @@ void t_ephGal::position(int GPSweek, double GPSweeks,
 
 // build up RTCM3 for Galileo
 ////////////////////////////////////////////////////////////////////////////
-#define GALILEOTOINT(type, value) static_cast<type>(NearestInt(value, 0))
+#define GALILEOTOINT(type, value) static_cast<type>(round(value))
 
 #define GALILEOADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
                        |(GALILEOTOINT(long long,b)&((1LL<<a)-1)); \
@@ -738,12 +695,12 @@ int t_ephGal::RTCM3(unsigned char *buffer) {
 
   GALILEOADDBITS(12, /*inav ? 1046 :*/ 1045)
   GALILEOADDBITS(6, _prn.right((_prn.length()-1)).toInt())
-  GALILEOADDBITS(12, _GPSweek)
+  GALILEOADDBITS(12, _TOC.gpsw())
   GALILEOADDBITS(10, _IODnav)
   GALILEOADDBITS(8, _SISA)
-  GALILEOADDBITSFLOAT(14, _IDOT, PI/static_cast<double>(1<<30)
+  GALILEOADDBITSFLOAT(14, _IDOT, M_PI/static_cast<double>(1<<30)
   /static_cast<double>(1<<13))
-  GALILEOADDBITS(14, _TOC/60)
+  GALILEOADDBITS(14, _TOC.gpssec()/60)
   GALILEOADDBITSFLOAT(6, _clock_driftrate, 1.0/static_cast<double>(1<<30)
   /static_cast<double>(1<<29))
   GALILEOADDBITSFLOAT(21, _clock_drift, 1.0/static_cast<double>(1<<30)
@@ -751,23 +708,23 @@ int t_ephGal::RTCM3(unsigned char *buffer) {
   GALILEOADDBITSFLOAT(31, _clock_bias, 1.0/static_cast<double>(1<<30)
   /static_cast<double>(1<<4))
   GALILEOADDBITSFLOAT(16, _Crs, 1.0/static_cast<double>(1<<5))
-  GALILEOADDBITSFLOAT(16, _Delta_n, PI/static_cast<double>(1<<30)
+  GALILEOADDBITSFLOAT(16, _Delta_n, M_PI/static_cast<double>(1<<30)
   /static_cast<double>(1<<13))
-  GALILEOADDBITSFLOAT(32, _M0, PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  GALILEOADDBITSFLOAT(32, _M0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
   GALILEOADDBITSFLOAT(16, _Cuc, 1.0/static_cast<double>(1<<29))
   GALILEOADDBITSFLOAT(32, _e, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
   GALILEOADDBITSFLOAT(16, _Cus, 1.0/static_cast<double>(1<<29))
   GALILEOADDBITSFLOAT(32, _sqrt_A, 1.0/static_cast<double>(1<<19))
-  GALILEOADDBITS(14, _TOE/60)
+  GALILEOADDBITS(14, _TOEsec/60)
   GALILEOADDBITSFLOAT(16, _Cic, 1.0/static_cast<double>(1<<29))
-  GALILEOADDBITSFLOAT(32, _OMEGA0, PI/static_cast<double>(1<<30)
+  GALILEOADDBITSFLOAT(32, _OMEGA0, M_PI/static_cast<double>(1<<30)
   /static_cast<double>(1<<1))
   GALILEOADDBITSFLOAT(16, _Cis, 1.0/static_cast<double>(1<<29))
-  GALILEOADDBITSFLOAT(32, _i0, PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  GALILEOADDBITSFLOAT(32, _i0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
   GALILEOADDBITSFLOAT(16, _Crc, 1.0/static_cast<double>(1<<5))
-  GALILEOADDBITSFLOAT(32, _omega, PI/static_cast<double>(1<<30)
+  GALILEOADDBITSFLOAT(32, _omega, M_PI/static_cast<double>(1<<30)
   /static_cast<double>(1<<1))
-  GALILEOADDBITSFLOAT(24, _OMEGADOT, PI/static_cast<double>(1<<30)
+  GALILEOADDBITSFLOAT(24, _OMEGADOT, M_PI/static_cast<double>(1<<30)
   /static_cast<double>(1<<13))
   GALILEOADDBITSFLOAT(10, _BGD_1_5A, 1.0/static_cast<double>(1<<30)
   /static_cast<double>(1<<2))
@@ -783,8 +740,8 @@ int t_ephGal::RTCM3(unsigned char *buffer) {
     GALILEOADDBITS(2, _E5aHS)
     GALILEOADDBITS(1, /*flags & MNFGALEPHF_E5ADINVALID*/0)
   }
-  _TOE = 0.9999E9;
-  GALILEOADDBITS(20, _TOE)
+  _TOEsec = 0.9999E9;
+  GALILEOADDBITS(20, _TOEsec)
 
   GALILEOADDBITS(/*inav ? 1 :*/ 3, 0) /* fill up */
 
@@ -845,11 +802,7 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
         year += 1900;
       }
 
-      bncTime hlpTime;
-      hlpTime.set(year, month, day, hour, min, sec);
-      _GPSweek  = hlpTime.gpsw();
-      _GPSweeks = hlpTime.gpssec();
-      _TOC      = _GPSweeks;
+      _TOC.set(year, month, day, hour, min, sec);
 
       if ( readDbl(line, pos[1], fieldLen, _clock_bias     ) ||
            readDbl(line, pos[2], fieldLen, _clock_drift    ) ||
@@ -877,7 +830,7 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
     }
 
     else if ( iLine == 3 ) {
-      if ( readDbl(line, pos[0], fieldLen, _TOE   )  ||
+      if ( readDbl(line, pos[0], fieldLen, _TOEsec)  ||
            readDbl(line, pos[1], fieldLen, _Cic   )  ||
            readDbl(line, pos[2], fieldLen, _OMEGA0)  ||
            readDbl(line, pos[3], fieldLen, _Cis   ) ) {
@@ -895,18 +848,16 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
     }
 
     else if ( iLine == 5 ) {
-      double dummy, TOEw;
-      if ( readDbl(line, pos[0], fieldLen, _IDOT) ||
-           readDbl(line, pos[1], fieldLen, dummy) ||
-           readDbl(line, pos[2], fieldLen, TOEw ) ||
-           readDbl(line, pos[3], fieldLen, dummy) ) {
+      if ( readDbl(line, pos[0], fieldLen, _IDOT   ) ||
+           readDbl(line, pos[1], fieldLen, _L2Codes) ||
+           readDbl(line, pos[2], fieldLen, _TOEweek  ) ||
+           readDbl(line, pos[3], fieldLen, _L2PFlag) ) {
         return;
       }
     }
 
     else if ( iLine == 6 ) {
-      double dummy;
-      if ( readDbl(line, pos[0], fieldLen, dummy  ) ||
+      if ( readDbl(line, pos[0], fieldLen, _ura   ) ||
            readDbl(line, pos[1], fieldLen, _health) ||
            readDbl(line, pos[2], fieldLen, _TGD   ) ||
            readDbl(line, pos[3], fieldLen, _IODC  ) ) {
@@ -915,8 +866,8 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
     }
 
     else if ( iLine == 7 ) {
-      double TOT;
-      if ( readDbl(line, pos[0], fieldLen, TOT) ) {
+      if ( readDbl(line, pos[0], fieldLen, _TOT)         ||
+           readDbl(line, pos[1], fieldLen, _fitInterval) ) {
         return;
       }
     }
@@ -971,21 +922,14 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
         year += 1900;
       }
 
-      bncTime hlpTime;
-      hlpTime.set(year, month, day, hour, min, sec);
-
       _gps_utc = gnumleap(year, month, day);
-      hlpTime  = hlpTime + _gps_utc;
 
-      _GPSweek  = hlpTime.gpsw();
-      _GPSweeks = hlpTime.gpssec();
+      _TOC.set(year, month, day, hour, min, sec);
+      _TOC  = _TOC + _gps_utc;
 
-      _tki     = 0.0; // TODO ?
-
-      double second_tot;
-      if ( readDbl(line, pos[1], fieldLen, _tau      ) ||
-           readDbl(line, pos[2], fieldLen, _gamma    ) ||
-           readDbl(line, pos[3], fieldLen, second_tot) ) {
+      if ( readDbl(line, pos[1], fieldLen, _tau  ) ||
+           readDbl(line, pos[2], fieldLen, _gamma) ||
+           readDbl(line, pos[3], fieldLen, _tki  ) ) {
         return;
       }
 
@@ -1022,10 +966,8 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
 
   // Initialize status vector
   // ------------------------
-  _tt = _GPSweeks;
-
-   _xv.ReSize(6); 
-
+  _tt = _TOC;
+  _xv.ReSize(6); 
   _xv(1) = _x_pos * 1.e3; 
   _xv(2) = _y_pos * 1.e3; 
   _xv(3) = _z_pos * 1.e3; 
@@ -1061,11 +1003,10 @@ QString t_ephGPS::toString(double version) const {
 
   QString rnxStr;
   
-  bncTime tt(_GPSweek, _GPSweeks);
   unsigned year, month, day, hour, min;
-  double sec;
-  tt.civil_date(year, month, day);
-  tt.civil_time(hour, min, sec);
+  double   sec;
+  _TOC.civil_date(year, month, day);
+  _TOC.civil_time(hour, min, sec);
   
   QTextStream out(&rnxStr);
 
@@ -1109,7 +1050,7 @@ QString t_ephGPS::toString(double version) const {
     .arg(_sqrt_A, 19, 'e', 12);
 
   out << QString(fmt)
-    .arg(_TOE,    19, 'e', 12)
+    .arg(_TOEsec, 19, 'e', 12)
     .arg(_Cic,    19, 'e', 12)
     .arg(_OMEGA0, 19, 'e', 12)
     .arg(_Cis,    19, 'e', 12);
@@ -1121,20 +1062,20 @@ QString t_ephGPS::toString(double version) const {
     .arg(_OMEGADOT, 19, 'e', 12);
 
   out << QString(fmt)
-    .arg(_IDOT, 19, 'e', 12)
-    .arg(0.0,   19, 'e', 12)
-    .arg(0.0,   19, 'e', 12)
-    .arg(0.0,   19, 'e', 12);
+    .arg(_IDOT,    19, 'e', 12)
+    .arg(_L2Codes, 19, 'e', 12)
+    .arg(_TOEweek, 19, 'e', 12)
+    .arg(_L2PFlag, 19, 'e', 12);
 
   out << QString(fmt)
-    .arg(0.0,     19, 'e', 12)
+    .arg(_ura,    19, 'e', 12)
     .arg(_health, 19, 'e', 12)
     .arg(_TGD,    19, 'e', 12)
     .arg(_IODC,   19, 'e', 12);
 
   out << QString(fmt)
-    .arg(0.0, 19, 'e', 12)
-    .arg(0.0, 19, 'e', 12)
+    .arg(_TOT,         19, 'e', 12)
+    .arg(_fitInterval, 19, 'e', 12)
     .arg("")
     .arg("");
 
