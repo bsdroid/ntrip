@@ -1023,20 +1023,6 @@ QString t_eph::rinexDateStr(double version) const {
 
 // RINEX Format String
 //////////////////////////////////////////////////////////////////////////////
-QString t_ephGlo::toString(double version) const {
-  QString rnxStr = rinexDateStr(version);
-  return rnxStr + "\n";
-}
-
-// RINEX Format String
-//////////////////////////////////////////////////////////////////////////////
-QString t_ephGal::toString(double version) const {
-  QString rnxStr = rinexDateStr(version);
-  return rnxStr + "\n";
-}
-
-// RINEX Format String
-//////////////////////////////////////////////////////////////////////////////
 QString t_ephGPS::toString(double version) const {
 
   QString rnxStr = rinexDateStr(version);
@@ -1094,3 +1080,100 @@ QString t_ephGPS::toString(double version) const {
 
   return rnxStr;
 }
+
+// RINEX Format String
+//////////////////////////////////////////////////////////////////////////////
+QString t_ephGlo::toString(double version) const {
+
+  QString rnxStr = rinexDateStr(version);
+
+  QTextStream out(&rnxStr);
+
+  out << QString("%1%2%3\n")
+    .arg(-_tau,  19, 'e', 12)
+    .arg(_gamma, 19, 'e', 12)
+    .arg(_tki,   19, 'e', 12);
+
+  QString fmt = version < 3.0 ? "   %1%2%3%4\n" : "    %1%2%3%4\n";
+
+  out << QString(fmt)
+    .arg(_x_pos,          19, 'e', 12)
+    .arg(_x_velocity,     19, 'e', 12)
+    .arg(_x_acceleration, 19, 'e', 12)
+    .arg(_health,         19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_y_pos,            19, 'e', 12)
+    .arg(_y_velocity,       19, 'e', 12)
+    .arg(_y_acceleration,   19, 'e', 12)
+    .arg(_frequency_number, 19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_z_pos,          19, 'e', 12)
+    .arg(_z_velocity,     19, 'e', 12)
+    .arg(_z_acceleration, 19, 'e', 12)
+    .arg(_E,              19, 'e', 12);
+
+  return rnxStr;
+}
+
+// RINEX Format String
+//////////////////////////////////////////////////////////////////////////////
+QString t_ephGal::toString(double version) const {
+
+  QString rnxStr = rinexDateStr(version);
+
+  QTextStream out(&rnxStr);
+
+  out << QString("%1%2%3\n")
+    .arg(_clock_bias,      19, 'e', 12)
+    .arg(_clock_drift,     19, 'e', 12)
+    .arg(_clock_driftrate, 19, 'e', 12);
+
+  QString fmt = version < 3.0 ? "   %1%2%3%4\n" : "    %1%2%3%4\n";
+
+  out << QString(fmt)
+    .arg(_IODnav,  19, 'e', 12)
+    .arg(_Crs,     19, 'e', 12)
+    .arg(_Delta_n, 19, 'e', 12)
+    .arg(_M0,      19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_Cuc,    19, 'e', 12)
+    .arg(_e,      19, 'e', 12)
+    .arg(_Cus,    19, 'e', 12)
+    .arg(_sqrt_A, 19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_TOEsec, 19, 'e', 12)
+    .arg(_Cic,    19, 'e', 12)
+    .arg(_OMEGA0, 19, 'e', 12)
+    .arg(_Cis,    19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_i0,       19, 'e', 12)
+    .arg(_Crc,      19, 'e', 12)
+    .arg(_omega,    19, 'e', 12)
+    .arg(_OMEGADOT, 19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_IDOT,    19, 'e', 12)
+    .arg("")
+    .arg(_TOEweek, 19, 'e', 12)
+    .arg("");
+
+  out << QString(fmt)
+    .arg(_SISA,     19, 'e', 12)
+    .arg(_E5aHS,    19, 'e', 12)
+    .arg(_BGD_1_5A, 19, 'e', 12)
+    .arg(_BGD_1_5B, 19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_TOT,    19, 'e', 12)
+    .arg("")
+    .arg("")
+    .arg("");
+
+  return rnxStr;
+}
+

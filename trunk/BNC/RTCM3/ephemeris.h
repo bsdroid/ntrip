@@ -222,8 +222,8 @@ class t_ephGal : public t_eph {
   double _TOEweek;
   // spare
 
-  int     _SISA;             //  Signal In Space Accuracy
-  int     _E5aHS;            //  E5a Health Status
+  double  _SISA;             //  Signal In Space Accuracy
+  double  _E5aHS;            //  E5a Health Status
   double  _BGD_1_5A;         //  group delay [s] 
   double  _BGD_1_5B;         //  group delay [s] 
 
