@@ -75,22 +75,22 @@ Furtermore, BNC allows to by-pass its decoding and conversion algorithms, leave 
 <p>
 The first of the following figures shows a flow chart of BNC connected to a GNSS receiver via serial or TCP communication link for the pupose of Precise Point Positioning. The second figure shows the conversion of RTCM streams to RINEX files. The third figure shows a flow chart of BNC feeding a real-time GNSS engine. The engine then estimates satellite orbit and clock correctors. BNC is used in this scenario to encode correctors to RTCM Version 3 and upload them to an NTRIP Broadcaster..
 </p>
-<p><img src="IMG/screenshot10.png"/></p>
+<p><img src=":bnchelp/screenshot10.png"/></p>
 <p><u>Figure:</u> Flowchart, BNC connected to a GNSS receiver for Precise Point Positioning.</p>
 
 <p>
 </p>
-<p><img src="IMG/screenshot01.png"/></p>
+<p><img src=":bnchelp/screenshot01.png"/></p>
 <p><u>Figure:</u> Flowchart, BNC converting RTCM streams to RINEX batches.</p>
 
 <p>
 </p>
-<p><img src="IMG/screenshot02.png"/></p>
+<p><img src=":bnchelp/screenshot02.png"/></p>
 <p><u>Figure:</u> Flowchart, BNC feeding a real-time GNSS engine and uploading an encoded Broadcast Ephemeris corrections stream.</p>
 
 <p>
 </p>
-<p><img src="IMG/screenshot19.png"/></p>
+<p><img src=":bnchelp/screenshot19.png"/></p>
 <p><u>Figure:</u> Flowchart, BNC combining orbit/clock correctors streams.</p>
 
 
@@ -116,7 +116,7 @@ Unless in offline mode, BNC
 <p>
 The main window of BNC shows a top menu bar section, a sections for tabs to set processing options, a 'Streams' section and a section for 'Log' tabs, and a bottom menu bar section, see figure below.
 </p>
-<p><img src="IMG/screenshot09.png"/></p>
+<p><img src=":bnchelp/screenshot09.png"/></p>
 <p><u>Figure:</u> Sections on BNC's main window.</p>
 
 
@@ -392,7 +392,7 @@ Observations will be converted to RINEX if they come in either RTCM Version 2.x 
 <p>
 The screenshot below shows an example setup of BNC when converting streams to RINEX. Streams are coming from various NTRIP broadcasters as well as via a plain UDP and a serial communication link. Decoder 'ZERO' has been selected for one stream to not convert its contents but save it in original format.
 </p>
-<p><img src="IMG/screenshot16.png"/></p>
+<p><img src=":bnchelp/screenshot16.png"/></p>
 <p><u>Figure:</u> BNC translating incoming streams to 15 min RINEX Version 3 files.</p>
 
 <p><a name="rnxname"><h4>3.4.1 RINEX File Names</h4></p>
@@ -577,7 +577,7 @@ specify full path to input RINEX navigation file(s).
 <p>When specifying several input files BNC will concatenate their contents.</p>
 
 </p>
-<p><img src="IMG/screenshot25.png"/></p>
+<p><img src=":bnchelp/screenshot25.png"/></p>
 <p><u>Figure:</u> Example for RINEX file editing with BNC in post-processing mode.</p>
 
 <p><a name="reqcoutput"><h4>3.6.4 Output Files - mandatory if 'Action' is set</h4></p>
@@ -890,7 +890,7 @@ Note that any socket connection of an application to BNC's synchronized or unsyn
 <p>
 The following figure shows the screenshot of a BNC configuration where a number of streams is pulled from different NTRIP broadcasters to feed a GNSS engine via IP port output.
 </p>
-<p><img src="IMG/screenshot12.png"/></p>
+<p><img src=":bnchelp/screenshot12.png"/></p>
 <p><u>Figure:</u> Synchronized BNC output via IP port to feed a GNSS real-time engine.</p>
 
 <p><a name="syncport"><h4>3.8.1 Port - optional</h4></p>
@@ -928,7 +928,7 @@ BNC can produce unsynchronized observations from all configured streams in ASCII
 <p>
 You may use BNC to feed a serial connected device like an GNSS receiver. For that one of the incoming streams can be forwarded to a serial port. The following figure shows the screenshot of an example situation where BNC pulls a VRS stream from an NTRIP broadcaster to feed a serial connected rover. 
 </p>
-<p><img src="IMG/screenshot11.png"/></p>
+<p><img src=":bnchelp/screenshot11.png"/></p>
 <p><u>Figure:</u> BNC pulling a VRS stream to feed a serial connected rover.</p>
 
 <p><a name="sermount"><h4>3.9.1 Mountpoint - optional</h4></p>
@@ -1076,7 +1076,7 @@ This section describes several miscellaneous options which can be applied for a 
 <p>
 The following figure shows RTCM message numbers contained in stream 'CONZ0' and the message latencies recorded every 10 seconds.
 </p>
-<p><img src="IMG/screenshot14.png"/></p>
+<p><img src=":bnchelp/screenshot14.png"/></p>
 <p><u>Figure:</u> RTCM message numbers and latencies.</p>
 
 
@@ -1151,10 +1151,10 @@ BNC can derive coordinates for a rover position following the Precise Point Posi
 The following figure provides the screenshot of an example PPP session with BNC.
 </p>
 
-<p><img src="IMG/screenshot03.png"/></p>
+<p><img src=":bnchelp/screenshot03.png"/></p>
 <p><u>Figure:</u> Precise Point Positioning with BNC, PPP Panel 1.</p>
 
-<p><img src="IMG/screenshot18.png"/></p>
+<p><img src=":bnchelp/screenshot18.png"/></p>
 <p><u>Figure:</u> Precise Point Positioning with BNC, PPP Panel 2.</p>
 
 <p>
@@ -1441,10 +1441,10 @@ This so-called Quick-Start option allows the PPP solutions to rapidly converge a
 You may need to create your own reference coordinate through running BNC for an hour in normal mode before applying the Quick-Start option. Don't forget to introduce a realistic sigma 'XYZ Ini' according to the coordinate's precision.
 </p>
 
-<p><img src="IMG/screenshot17.png"/></p>
+<p><img src=":bnchelp/screenshot17.png"/></p>
 <p><u>Figure:</u> BNC in 'Quick-Start' mode (PPP, Panel 1)</p>
 
-<p><img src="IMG/screenshot22.png"/></p>
+<p><img src=":bnchelp/screenshot22.png"/></p>
 <p><u>Figure:</u> BNC in 'Quick-Start' mode (PPP, Panel 2)</p>
 
 <p><a name="pppgap"><h4>3.12.7.8 Maximal Solution Gap - optional if Quick-Start is set</h4></p>
@@ -1580,13 +1580,13 @@ Hit 'Add Row' button to add another row to the 'Combination Table' or hit the 'D
 </p>
 
 <br>
-<p><img src="IMG/screenshot20.png"/></p>
+<p><img src=":bnchelp/screenshot20.png"/></p>
 <p><u>Figure:</u> BNC combining orbit/clock correctors streams.</p>
 <p></p>
-<p><img src="IMG/screenshot21.png"/></p>
+<p><img src=":bnchelp/screenshot21.png"/></p>
 <p><u>Figure:</u> BNC uploading the combined orbit/clock correctors stream.</p>
 <p></p>
-<p><img src="IMG/screenshot23.png"/></p>
+<p><img src=":bnchelp/screenshot23.png"/></p>
 <p><u>Figure:</u> 'INTERNAL' PPP with BNC using combined orbit/clock correctors stream.</p>
 
 <p><a name="combimethod"><h4>3.13.1.2 Method - mandatory if 'Combination Table' is populated</h4></p>
@@ -2023,7 +2023,7 @@ Records of BNC's activities are shown in the 'Log' tab. They can be saved into a
 The bandwidth consumption per stream is shown in the 'Throughput' tab in bits per second (bps) or kilo bits per second (kbps). The following figure shows the bandwidth comsumption of incoming streams.
 </p>
 
-<p><img src="IMG/screenshot08.png"/></p>
+<p><img src=":bnchelp/screenshot08.png"/></p>
 <p><u>Figure:</u> Bandwidth consumption of incoming streams.</p>
 
 <p><a name="latency"><h4>3.17.3 Latency</h4></p>
@@ -2031,7 +2031,7 @@ The bandwidth consumption per stream is shown in the 'Throughput' tab in bits pe
 The latency of observations in each incoming stream is shown in the 'Latency' tab in milliseconds or seconds. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) or having an outage are not considered here and shown in red color. Note that the calculation of correct latencies requires the clock of the host computer to be properly synchronized. The next figure shows the latency of incoming streams.
 </p>
 
-<p><img src="IMG/screenshot07.png"/></p>
+<p><img src=":bnchelp/screenshot07.png"/></p>
 <p><u>Figure:</u> Latency of incoming streams.</p>
 
 <p><a name="ppptab"><h4>3.17.4 PPP Plot</h4></p>
@@ -2039,7 +2039,7 @@ The latency of observations in each incoming stream is shown in the 'Latency' ta
 Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when a 'Origin' option is defined. Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate components. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. Note that it may take up to 30 seconds or more till the first PPP solutions becomes available. The following figure shows the screenshot of a PPP time series plot of North, East and Up coordiate components.
 </p>
 
-<p><img src="IMG/screenshot13.png"/></p>
+<p><img src=":bnchelp/screenshot13.png"/></p>
 <p><u>Figure:</u> Time series plot of PPP session.</p>
 
 <p><a name="bottom"><h4>3.18. Bottom Menu Bar</h4></p>
@@ -2047,7 +2047,7 @@ Precise Point Positioning time series of North (red), East (green) and Up (blue)
 The bottom menu bar allows to add or delete streams to BNC's configuration and to start or stop it. It also provides access to BNC's online help function. The 'Add Stream' button opens a window that allows user to select one of several input communication links, see figure below.
 </p>
 
-<p><img src="IMG/screenshot06.png"/></p>
+<p><img src=":bnchelp/screenshot06.png"/></p>
 <p><u>Figure:</u> Steam input communication links.</p>
 
 <p><a name="streamadd"><h4>3.18.1 Add Stream - Coming from Caster</h4></p>
@@ -2066,7 +2066,7 @@ Enter the NTRIP broadcaster host IP and port number. Note that EUREF and IGS ope
 It may be that your are not sure about your NTRIP broadcasters host and port number or you are interested in other broadcaster installations operated elsewhere. Hit 'Show' for a table of known broadcasters maintained at <u>www.rtcm-ntrip.org/home</u>. A window opens which allows to select a broadcaster for stream retrieval, see figure below.
 </p> 
 </p>
-<p><img src="IMG/screenshot04.png"/></p>
+<p><img src=":bnchelp/screenshot04.png"/></p>
 
 <p><u>Figure:</u> Casters table.</p>
 
@@ -2092,13 +2092,13 @@ The contents of data field 'nmea' tells you whether a stream retrieval needs to 
 <p>
 Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream' and repeat the process again to retrieve streams from different casters.
 </p> 
-<p><img src="IMG/screenshot05.png"/></p>
+<p><img src=":bnchelp/screenshot05.png"/></p>
 <p><u>Figure:</u> Broadcaster source-table.</p>
 
 <p>Button 'Map' leads to the presentation of a map showing the distribution of streams offered through the downloaded source-table.</p>
 
 </p> 
-<p><img src="IMG/screenshot24.png"/></p>
+<p><img src=":bnchelp/screenshot24.png"/></p>
 <p><u>Figure:</u> Stream distribution map derived from NTRIP Caster source-table.</p>
 
 <p><a name="ntripv"><h4>3.18.1.5 NTRIP Version - mandatory</h4></p>
@@ -2199,7 +2199,7 @@ Streams received from a serial connected GNSS receiver show up with an 'S' (for 
 <p>
 The following figure shows a BNC example setup for pulling a stream via serial port on a Linux operating system.
 </p>
-<p><img src="IMG/screenshot15.png"/></p>
+<p><img src=":bnchelp/screenshot15.png"/></p>
 <p><u>Figure:</u> BNC setup for pulling a stream via serial port.</p>
 
 <p><a name="start"><h4>3.18.5 Start</h4></p>
