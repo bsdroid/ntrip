@@ -248,15 +248,25 @@ void t_reqcEdit::editEphemerides() {
     QString fileName = it.next();
     t_rnxNavFile rnxNavFile(fileName, t_rnxNavFile::input);
     for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
-      t_eph* eph = rnxNavFile.ephs()[ii];
-      if      (eph->type() == t_eph::GPS) {
-        _ephs.append(new t_ephGPS(*dynamic_cast<t_ephGPS*>(eph)));
+      t_eph* eph   = rnxNavFile.ephs()[ii];
+      bool   isNew = true;
+      for (int iOld = 0; iOld < _ephs.size(); iOld++) {
+        const t_eph* ephOld = _ephs[iOld];
+        if (ephOld->prn() == eph->prn() && ephOld->IOD() == eph->IOD()) {
+          isNew = false;
+          break;
+        }
       }
-      else if (eph->type() == t_eph::GLONASS) {
-        _ephs.append(new t_ephGlo(*dynamic_cast<t_ephGlo*>(eph)));
-      }
-      else if (eph->type() == t_eph::Galileo) {
-        _ephs.append(new t_ephGal(*dynamic_cast<t_ephGal*>(eph)));
+      if (isNew) {
+        if      (eph->type() == t_eph::GPS) {
+          _ephs.append(new t_ephGPS(*dynamic_cast<t_ephGPS*>(eph)));
+        }
+        else if (eph->type() == t_eph::GLONASS) {
+          _ephs.append(new t_ephGlo(*dynamic_cast<t_ephGlo*>(eph)));
+        }
+        else if (eph->type() == t_eph::Galileo) {
+          _ephs.append(new t_ephGal(*dynamic_cast<t_ephGal*>(eph)));
+        }
       }
     }
   }
