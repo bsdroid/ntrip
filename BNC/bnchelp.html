@@ -568,6 +568,14 @@ to follow UNAVCO's famous 'teqc' program. The remarkable thing about BNC in this
 <p><a name="reqcedit"><h4>3.6.2 Set Edit Options - mandatory if 'Edit/Concatenate' is set</h4></p>
 <p>Once action 'Edit/Concationate' is selected, you have to specify editing options. BNC lets you specify the RINEX version, sampling rate, begin and end of file and marker, antenna or receiver details.
 </p>
+<p>
+When converting RINEX version2 to RINEX version 3, the tracking mode or channel information in the (last character out of the three character) observation code is left blank if unknown. When converting RINEX version 3 to RINEX version 2
+<ul>
+<li>C1P in RINEX version 3 is mapped to P1 in RINEX version 2</li>
+<li>C2P in RINEX version 3 is mapped to P2 in RINEX version 2</li>
+<li>If several observations in RINEX version 3 come with the same observation type, same band/frequency but different tracking modes, BNC uses only the one provided first for creating RINEX version 2 while ignoring the others.</li>
+</ul>
+</p>
 
 <p><a name="reqcinput"><h4>3.6.3 Input Files - mandatory if 'Action' is set</h4></p>
 <p>
