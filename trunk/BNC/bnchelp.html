@@ -46,7 +46,7 @@ Please ensure that you have installed the latest version of BNC available from <
 <li>carry out a real-time Precise Point Positioning to determine a GNSS rover position,</li>
 <li>simultaneously process several incoming orbit and clock corrections streams to produce, encode and upload a combination solution,</li>
 <li>upload a Broadcast Ephemeris stream in RTCM Version 3 format,</li>
-<li>read GNSS clocks and orbits in a SP3-like format from an IP port - they can be produced by a real-time GNSS engine such as RTNet and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and</li>
+<li>read GNSS clocks and orbits in a plain ASCII format from an IP port - they can be produced by a real-time GNSS engine such as RTNet and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and</li>
 <ul>
 <li>convert the IGS Earth-Centered-Earth-Fixed clocks and and orbits into corrections to Broadcast Ephemeris with radial, along-track and cross-track components,</li>
 <li>upload the clock and orbit corrections as an RTCM Version 3.x stream to an NTRIP Broadcaster,</li>
@@ -935,7 +935,7 @@ BNC can produce unsynchronized observations from all configured streams in ASCII
 
 <p><a name="serial"><h4>3.9. Serial Output</h4></p>
 <p>
-You may use BNC to feed a serial connected device like an GNSS receiver. For that one of the incoming streams can be forwarded to a serial port. The following figure shows the screenshot of an example situation where BNC pulls a VRS stream from an NTRIP broadcaster to feed a serial connected rover. 
+You may use BNC to feed a serial connected device like an GNSS receiver. For that an incoming streams can be forwarded to a serial port. The following figure shows the screenshot of an example situation where BNC pulls a VRS stream from an NTRIP broadcaster to feed a serial connected rover. 
 </p>
 <p><img src="IMG/screenshot11.png"/></p>
 <p><u>Figure:</u> BNC pulling a VRS stream to feed a serial connected rover.</p>
@@ -1323,7 +1323,7 @@ The NMEA sentences generated about once per second are pairs of
 Specify the full path to a file where Point Positioning results are saved as NMEA messages. The default value for 'NMEA file' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
 </p>
 <p>
-Note that Tomoji Takasu has written a Windows program called RTKPlot for visualizing NMEA strings. It is available from <u>http://gpspp.sakura.ne.jp/rtklib/rtklib.htm</u> and compatible with the NMEA output of BNC's 'PPP Client' option.
+Note that Tomoji Takasu has written a program called RTKPlot for visualizing NMEA strings. It is available from <u>http://gpspp.sakura.ne.jp/rtklib/rtklib.htm</u> and compatible with the NMEA output of BNC's 'PPP Client' option.
 </p>
 
 <p><a name="pppnmeaport"><h4>3.12.4.2 NMEA Port - optional</h4></p>
@@ -1336,7 +1336,7 @@ NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World
 
 <p><a name="pppplot"><h4>3.12.4.3 PPP Plot - optional</h4></p>
 <p>
-PPP time series of North (red), East(green) and Up (blue) coordinate components will be plotted in the 'PPP Plot' tab when this option is ticked. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated XYZ coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.
+PPP time series of North (red), East(green) and Up (blue) displacements will be plotted in the 'PPP Plot' tab when this option is ticked. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated XYZ coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.
 </p>
 <p>
 Note that a PPP time series makes only sense for a stationary operated receiver.
@@ -1344,9 +1344,9 @@ Note that a PPP time series makes only sense for a stationary operated receiver.
 
 <p><a name="ppppost"><h4>3.12.5 Post Processing - optional</h4></p>
 	<p>When in 'Post-Processing mode<ul><li>specifying a RINEX Observation, a RINEX Navigation and a Broadcast Ephemeris corrections file leads to a PPP solution.</li><li>specifying only a RINEX Observation and a RINEX Navigation file and no Broadcast Ephemeris corrections file leads to a SPP solution.</ul></p>
-<p>BNC accepts RINEX v2 as well as RINEX v3 observation or navigation file formats. Files carrying Broadcast Ephemeris corrections must have the format produced by BNC in the 'Broadcast Corrections' option.
+<p>BNC accepts RINEX v2 as well as RINEX v3 observation or navigation file formats. Files carrying Broadcast Ephemeris corrections must have the format produced by BNC in the 'Broadcast Corrections' tab.
 <p>
-Post Processing PPP results can be save in a specific output file.
+Post Processing PPP results can be saved in a specific output file.
 </p>
 
 <p><a name="ppprecant"><h4>3.12.6 Antennas - optional</h4></p>
@@ -1564,7 +1564,7 @@ Step 6: If that is greater 0.2 m then corrections of the affiliated AC are ignor
 Note that BNC can produce an internal PPP solution from combined Broadcast Ephemeris corrections. For that you have to  specify the keyword 'INTERNAL' as 'Corrections Mounpoint' in the PPP (1) panel.
 </p>
 <p>
-Note that the combination procedure in BNC also - formally - works with only one Broadcast Ephemeris corrections stream specified for combination. 
+Note further that the combination procedure in BNC also - formally - works with only one Broadcast Ephemeris corrections stream specified for combination. 
 </p>
 <p>
 The part of BNC which enables the combination of orbit and clock corrections streams is not intended for publication under GNU General Public License (GPL). However, pre-compiled BNC binaries which support the 'Combination' option will be available for personal usage.
@@ -1607,7 +1607,7 @@ Selecet a clock combination method. Available options are Kalman 'Filter' and 'S
 
 <p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p>
 </p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p>
-<p>Default is a 'Maximal Residuum' 999.0 meters</p>
+<p>Default is a 'Maximal Residuum' of 999.0 meters</p>
 
 <p><a name="upclk"><h4>3.14. Upload (clk)</h4></p>
 <p>
@@ -1615,7 +1615,7 @@ BNC can upload streams carrying orbit and clock corrections to Broadcast Ephemer
 <li>
 either generated by BNC as a combination of several individual correctors streams coming from an number of real-time Analysis Centers (ACs), see section 'Combination',</li>
 <li>
-or generated by BNC because the program receives an ASCII stream of satellite orbits and clocks via IP port from a connected real-time GNSS engine. Such a stream would be expected in an SP3-like format and the associated 'decoder' string would have to be 'RTNET'. </li>
+or generated by BNC because the program receives an ASCII stream of satellite orbits and clocks via IP port from a connected real-time GNSS engine. Such a stream would be expected in a plain ASCII format and the associated 'decoder' string would have to be 'RTNET'. </li>
 </ol>
 The procedure taken by BNC to generate the clock and orbit corrections to Broadcast Ephemeris and upload them to an NTRIP Broadcaster is as follow:
 <ul>
@@ -1623,7 +1623,7 @@ The procedure taken by BNC to generate the clock and orbit corrections to Broadc
 </ul>
 Then, epoch by epoch: 
 <ul>
-<li>Continuously receive the best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS08 reference system. Receive them every epoch in a SP3-like format as provided by a real-time GNSS engine such as RTNet or generate them following a 'Combination' approach. </li>
+<li>Continuously receive the best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS08 reference system. Receive them every epoch in plain ASCII format as provided by a real-time GNSS engine such as RTNet or generate them following a 'Combination' approach. </li>
 <li>Calculate X,Y,Z coordinates from Broadcast Ephemeris orbits. </li>
 <li>Calculate differences dX,dY,dZ between Broadcast Ephemeris and IGS08 orbits. </li>
 <li>Tranform these differences into radial, along-track and cross-track corrections to Broadcast Ephemeris orbits. </li>
@@ -1637,12 +1637,11 @@ Because the encoding process may put a significant load on the communication lin
 The usual handling of BNC when uploading a stream with orbit and clock correctors is that you first specify Broadcast Ephemeris and Broadcast Ephemeris correction streams. You then specify an NTRIP broadcaster for stream upload before you start the program. 
 </p>
 <p>
-BNC requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and in a specific SP3-like format. The clocks and orbits must be referred to satellite Center of Mass (CoM) and must not containing the conventional periodic relativistic effect. They may be provided by a real-time GNSS engine such as RTNet. The sampling rate for data transmission should not exceed 15 sec. Note that otherwise tools involved in IP streaming such as NTRIP Broadcasters or NTRIP clients may respond with a timeout.
-
+BNC requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and in a specific ASCII format. The clocks and orbits must be referred to satellite Center of Mass (CoM) and must not containing the conventional periodic relativistic effect. They may be provided by a real-time GNSS engine such as RTNet. The sampling rate for data transmission should not exceed 15 sec. Note that otherwise tools involved in IP streaming such as NTRIP Broadcasters or NTRIP clients may respond with a timeout.
 </p>
 
 <p>
-Below you find an example of precise clocks and orbits coming in a SP3-like format from a real-time GNSS engine. Each epoch starts with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records provide the following set of parameters for each satellite:
+Below you find an example of precise clocks and orbits coming in ASCII format from a real-time GNSS engine. Each epoch starts with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records provide the following set of parameters for each satellite:
 </p>
 
 <p>
