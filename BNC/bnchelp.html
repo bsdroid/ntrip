@@ -126,7 +126,9 @@ This chapter describes how to handle BNC and how to set the program options. It 
 </p>
 
 <p>
-The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various configuration tabs to select a combination of input, processing and output options before you start the program ('Start'). Records of BNC's activities are shown in the 'Log' tab. The bandwidth consumption per stream, the latency of incoming observations and a PPP time series for coordinates are shown in the 'Throughput', 'Latency' and 'PPP Plot' tabs of the main window.
+The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various configuration tabs to select a combination of input, processing and output options before you start the program ('Start'). Most configuration tabs are dedicated to a certain functionality of BNC. If the first option field on such a configuration tab is empty, the affected functionality is - appart from a few exceptions -  deactivated.</p>
+
+Records of BNC's activities are shown in the 'Log' tab. The bandwidth consumption per stream, the latency of incoming observations and a PPP time series for coordinates are shown in the 'Throughput', 'Latency' and 'PPP Plot' tabs of the main window.
 </p>
 <p>
 As a default, configuration files for running BNC on Unix/Linux/Mac systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration file name is 'BNC.ini'.</p>
@@ -213,7 +215,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.12.6.1 <a href=#pppantex>ANTEX File</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.6.2 <a href=#ppprecantenna>Antenna Name</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.6.3 <a href=#pppsatant>Apply Satellite Antenna Offsets</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.7 <a href=#pppopt>PPP Options</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.7 <a href=#pppopt>Basic Options</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.7.1 <a href=#pppphase>Use Phase Obs</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.7.2 <a href=#ppptropo>Estimate Tropo</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.7.3 <a href=#pppglo>Use GLONASS</a><br>
@@ -338,8 +340,7 @@ Note that IP streaming is often not allowed in a LAN. In this case you need to a
 
 <p><a name="ssl"><h4>3.2.2 SSL - Transport Layer Security</h4></p>
 <p>Communication with an NTRIP broadcaster over SSL requires the exchange of client and/or server certificates. Specify the path to a directory where you save certificates on your system. You may like to check out <u>http://software.rtcm-ntrip.org/wiki/Certificates</u> for a list of known NTRIP server certificates. Don't try communication via SSL if you are not sure wheter this is supported by the involved NTRIP broadcaster. </p>
-<p>SSL communication may involve queries coming from the NTRIP broadcaster. Tick 'Ignore SSL authorization erros' if you don't want to be bothered with this.</p>
-<p>Note that SSL communication is usually done over port 443.</p>
+<p>SSL communication may involve queries coming from the NTRIP broadcaster. Tick 'Ignore SSL authorization erros' if you don't want to be bothered with this. Note that SSL communication is usually done over port 443.</p>
 
 <p><a name="general"><h4>3.3. General</h4></p>
 <p>
@@ -371,26 +372,26 @@ You may like to auto-start BNC at startup time in window mode with pre-assigned 
 
 <p><a name="rawout"><h4>3.3.5 Raw Output File - optional</h4></p>
 <p>
-BNC can save all data coming in through various streams in one daily file. The information is recorded in the specified 'Raw output file' in the received order and format. This feature allows a BNC user to run the PPP option in offline mode with observations, orbit/clock correctors, and broadcast ephemeris being read from a previously saved file. It supports the offline replay/repetition of a real-time situation for debugging purposes. It is not meant for post-processing purposes.
+BNC can save all data coming in through various streams in one daily file. The information is recorded in the specified 'Raw output file' in the received order and format. This feature allows a BNC user to run the PPP option in offline mode with observations, orbit/clock correctors, and broadcast ephemeris being read from a previously saved file. It supports the offline repetition of a real-time situation for debugging purposes. It is not meant for post-processing.
 </p>
 <p>
 Data will be saved in blocks in the received format seperated by ASCII time stamps like (example):
 <pre>
 2010-08-03T18:05:28 RTCM3EPH RTCM_3 67
 </pre>
-This example block header tells you that 67 bytes weree saved in the data block following this record. The information in this block is encoded in RTCM Version 3.x format, comes from mountpoint RTCM3EPH and was received at 18:05:29 UTC on 2010-08-03. BNC adds its own time stamps in order to allow the complete reconstruction of a recorded situation.
+This example block header tells you that 67 bytes were saved in the data block following this time stamp. The information in this block is encoded in RTCM Version 3.x format, comes from mountpoint RTCM3EPH and was received at 18:05:29 UTC on 2010-08-03. BNC adds its own time stamps in order to allow the reconstruction of a recorded real-time situation.
 </p>
 <p>
-The default value for 'Raw output file (full path)' is an empty option field, meaning that BNC will not save all raw data into one single daily file.
+The default value for 'Raw output file' is an empty option field, meaning that BNC will not save all raw data into one single daily file.
 </p>
 
 <p><a name="rinex"><h4>3.4. RINEX Observations</h4></p>
 <p>
-Observations will be converted to RINEX if they come in either RTCM Version 2.x or RTCM Version 3.x format. Depending on the RINEX version and incoming RTCM message types, the files generated by BNC may contain data from GPS, GLONASS, Galileo, SBAS, QZSS, and COMPASS. In case an observation type is listed in the RINEX header but the corresponding observation is unavailable, its value is set to zero '0.000'. Note that the 'RINEX TYPE' field in the RINEX Version 3 Observation file header is always set to 'M(MIXED)' even if the file only contains data from one system.
+Observations will be converted to RINEX if they come in either RTCM Version 2.x or RTCM Version 3.x format. Depending on the RINEX version and incoming RTCM message types, the files generated by BNC may contain data from GPS, GLONASS, Galileo, SBAS, QZSS, and COMPASS. In case an observation type is listed in the RINEX header but the corresponding observation is unavailable, its value is set to zero '0.000'. Note that the 'RINEX TYPE' field in the RINEX Version 3 Observation file header is always set to 'M(MIXED)' or 'Mixed' even if the file only contains data from one system.
 </p> 
 
 <p>
-The screenshot below shows an example setup of BNC when converting streams to RINEX. Streams are coming from various NTRIP broadcasters as well as via a plain UDP and a serial communication link. Decoder 'ZERO' has been selected for one stream to not convert its contents but save it in original format.
+The screenshot below shows an example setup of BNC when converting streams to RINEX. Streams are coming from various NTRIP broadcasters as well as from a serial communication link. Specifying a decoder string 'ZERO' would have meant to not convert the affected stream contents but save its contents as received.
 </p>
 <p><img src="IMG/screenshot16.png"/></p>
 <p><u>Figure:</u> BNC translating incoming streams to 15 min RINEX Version 3 files.</p>
@@ -500,7 +501,7 @@ Whenever a RINEX Observation file is saved, you might want to compress, copy or 
 The triggering event for calling the script or batch file is the end of a RINEX Observation  file 'Interval'. If that is overridden by a stream outage, the triggering event is the stream reconnection.
 </p> 
 <p> 
-As an alternative to initiating file uploads through BNC, you may like to call an upload script or batch file through your crontable or Task Scheduler (independent from BNC) once every 2 or 3 minutes after the end of each RINEX file 'Interval'.
+As an alternative to initiating file uploads through BNC, you may like to call an upload script or batch file through your crontable or Task Scheduler (independent from BNC) once every one or two minutes after the end of each RINEX file 'Interval'.
 </p> 
 
 <p><a name="rnxvers"><h4>3.4.7 Version - optional</h4></p>
@@ -591,7 +592,7 @@ specify full path to input RINEX navigation file(s).
 <p><a name="reqcoutput"><h4>3.6.4 Output Files - mandatory if 'Action' is set</h4></p>
 <p>
 Mandatory if 'Edit/Concatenate' selected:<br>
-Specify full path to output RINEX observation file(s), and<br> 
+Specify full path to output RINEX observation file(s) and
 specify full path to output RINEX navigation file(s).
 </p> 
 
@@ -648,7 +649,7 @@ Saved files contain blocks of records in plain ASCII format where - separate for
 or<br>
 ! Orbits/Clocks: 0 GPS 19 Glonass CLK11
 <p>
-Such line informs you about the number of records (here 30 and 19) carrying GPS or GLONASS related parameters you should receive next as part of a certain stream. 
+Such line informs you about the number of records (here 30 and 19) carrying GPS or GLONASS related parameters you should receive next. 
 </p>
 <p>
 The first five parameters in each broadcast corrections record are:
@@ -1384,7 +1385,7 @@ Satellite orbit and clock corrections refer to the satellite's antenna phase cen
 Default is to <u>not</u> correct observations for satellite antenna phase center offsets.
 </p>
 
-<p><a name="pppopt"><h4>3.12.7 PPP Options</h4></p>
+<p><a name="pppopt"><h4>3.12.7 Basic Options</h4></p>
 <p>BNC allows to use different Point Positioning processing options depending on the capability of the involved receiver and the application in mind. It also allows to introduce specific sigmas for code and phase observations as well as for reference coordinates and troposphere estimates. You may also like to carry out your PPP solution in Quick-Start mode or enforce BNC to restart a solution if the length of an outage exceeds a certain threshold.
 </p>
 
