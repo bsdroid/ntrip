@@ -762,7 +762,7 @@ bncWindow::bncWindow() {
   _binSamplSpinBox->setMaximumWidth(9*ww);
   _outUPortLineEdit->setMaximumWidth(9*ww);
 
-  sLayout->addWidget(new QLabel("Output decoded observations in a binary format to feed a real-time GNSS network engine."),0,0,1,50);
+  sLayout->addWidget(new QLabel("Output decoded observations in ASCII format to feed a real-time GNSS network engine."),0,0,1,50);
   sLayout->addWidget(new QLabel("Port"),                          1, 0);
   sLayout->addWidget(_outPortLineEdit,                            1, 1);
   sLayout->addWidget(new QLabel("Wait for full epoch"),           1, 2, Qt::AlignRight);
