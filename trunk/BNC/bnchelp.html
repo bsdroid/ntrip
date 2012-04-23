@@ -2263,7 +2263,7 @@ if the program is in /Applications and the configuration file 'MyConfig.ini' in 
 
 <p><a name="confopt"><h4>3.19.4 Configuration Options - optional</h4></p>
 <p> 
-BNC applies options from the configuration file but allows updating any of them through options specified on the command line while the contents of the configuration file remains unchanged. The command line syntax for that looks as follows
+BNC applies options from the configuration file but allows updating any of them on the command line while the contents of the configuration file remains unchanged. The command line syntax for that looks as follows
 </p>
 <p>
 --key &lt;keyName&gt; &lt;keyValue&gt;
@@ -2278,7 +2278,7 @@ bnc --nw --conf &lt;confFileName&gt --key &lt;keyName1&gt; &lt;keyValue1&gt; --k
 Example:
 </p>
 <p>
-./bnc -conf CONFIG.bnc --key proxyPort=8001 --key rnxIntr="1 day"
+./bnc --conf CONFIG.bnc --key proxyPort=8001 --key rnxIntr="1 day"
 </p> 
 
 <p><a name="limits"><h3>4. Limitations &amp; Known Bugs</h3></p>
