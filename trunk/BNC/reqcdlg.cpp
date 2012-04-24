@@ -155,6 +155,18 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   mainLayout->addLayout(grid);
   mainLayout->addLayout(buttonLayout);
+
+  _reqcRnxVersion->setWhatsThis(tr("<p>Select version number of target RINEX file.</p>"));
+  _reqcSampling->setWhatsThis(tr("<p>Select sampling rate of target RINEX file.</p>"));
+  _reqcStartDateTime->setWhatsThis(tr("<p>Specify begin of target RINEX file.</p>"));
+  _reqcEndDateTime->setWhatsThis(tr("<p>Specify end of target RINEX file.</p>"));
+  _reqcOldMarkerName->setWhatsThis(tr("<p>Enter old marker name.</p>"));
+  _reqcNewMarkerName->setWhatsThis(tr("<p>Enter new marker name.</p>"));
+  _reqcOldAntennaName->setWhatsThis(tr("<p>Enter old antenna name.</p>"));
+  _reqcNewAntennaName->setWhatsThis(tr("<p>Enter new antenna name.</p>"));
+  _reqcOldReceiverName->setWhatsThis(tr("<p>Enter old receiver name.</p>"));
+  _reqcNewReceiverName->setWhatsThis(tr("<p>Enter new receiver name.</p>"));
+
 }
 
 // Destructor
