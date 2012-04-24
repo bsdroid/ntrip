@@ -104,7 +104,7 @@ Although BNC is mainly a real-time tool to be operated online, it can be run off
 Furthermore, apart from its regular window mode, BNC can be run as a batch/background job in a 'no window' mode using processing options from a previously saved configuration.
 </p>
 <p>
-Unless in offline mode, BNC
+Unless it runs offline, BNC
 </p>
 <ul>
 <li>requires access to the Internet with a minimum of about 2 to 6 kbits/sec per stream depending on the stream format and the number of visible satellites. You need to make sure that the connection can sustain the required bandwidth.</li>
@@ -279,7 +279,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 <b>Command Line</b><br>
 3.19. <a href=#cmd>Command Line Options</a><br>
 &nbsp; &nbsp; &nbsp; 3.19.1. <a href=#nw>No Window Mode</a><br>
-&nbsp; &nbsp; &nbsp; 3.19.2. <a href=#post>Offline Mode</a><br>
+&nbsp; &nbsp; &nbsp; 3.19.2. <a href=#post>File Mode</a><br>
 &nbsp; &nbsp; &nbsp; 3.19.3. <a href=#conffile>Configuration File</a><br>
 &nbsp; &nbsp; &nbsp; 3.19.4. <a href=#confopt>Configuration Options</a><br>
 </p>
@@ -372,7 +372,7 @@ You may like to auto-start BNC at startup time in window mode with pre-assigned 
 
 <p><a name="rawout"><h4>3.3.5 Raw Output File - optional</h4></p>
 <p>
-BNC can save all data coming in through various streams in one daily file. The information is recorded in the specified 'Raw output file' in the received order and format. This feature allows a BNC user to run the PPP option in offline mode with observations, orbit/clock correctors, and broadcast ephemeris being read from a previously saved file. It supports the offline repetition of a real-time situation for debugging purposes. It is not meant for post-processing.
+BNC can save all data coming in through various streams in one daily file. The information is recorded in the specified 'Raw output file' in the received order and format. This feature allows a BNC user to run the PPP option offline with observations, orbit/clock correctors, and broadcast ephemeris being read from a previously saved file. It supports the offline repetition of a real-time situation for debugging purposes. It is not meant for post-processing.
 </p>
 <p>
 Data will be saved in blocks in the received format seperated by ASCII time stamps like (example):
@@ -1245,15 +1245,11 @@ These parameters are saved together with their standard deviation. The following
 </p>
 
 <p>
-Note that BNC's 'PPP Client' option can also be used in 'Offline Mode'. Apply the 'Offline Mode' command line options for that to read a file containing synchronized observations, orbit and clock corretors, and broadcast ephemeris. Such a file can be generated using BNC's 'Raw output file' option. The first five characters of the file name read in 'Offline Mode' must then be the same as the specified PPP 'Mounpoint': If you produce a 'Raw output file' named 'FFMJ1' then the PPP 'Mountpoint' needs to be also specified as 'FFMJ1' and the command line to execute BNC on a Windows system in 'Offline Mode' could look like:
+Note that BNC's 'PPP Client' option can also be used offline for debugging purposes. Apply the 'File Mode' command line options for that to read a file containing synchronized observations, orbit and clock corretors, and broadcast ephemeris. Such a file must be generated using BNC's 'Raw output file' option. Example:
 </p>
 
 <p>
-bnc.exe --conf c:\temp\BNC.ppp --file c:\temp\FFMJ1 --format RTCM_3
-</p>
-
-<p>
-Streams in a 'Raw output file' which shall later be used in an offline PPP calculation must all be encoded in the same format.
+bnc.exe --conf c:\temp\BNC.ppp --file c:\temp\FFMJ1
 </p>
 
 <p>When using the PPP option, it is important to understand which effects are corrected by BNC.
@@ -2186,7 +2182,7 @@ Hit the 'Stop' button in order to stop BNC.
 
 <p><a name="cmd"><h4>3.19. Command Line Options</h4></p>
 <p> 
-Command line options are available to run BNC in 'no window' mode or let it read data from one file or several files in offline mode for debugging or post processing purposes. BNC will then use processing options from the configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration file name instead of using the default name 'BNC.ini'.
+Command line options are available to run BNC in 'no window' mode or let it read data offline from one file or several files for debugging or post processing purposes. BNC will then use processing options from the configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration file name instead of using the default name 'BNC.ini'.
 </p> 
 
 <p><a name="nw"><h4>3.19.1 No Window Mode - optional</h4></p>
@@ -2198,9 +2194,9 @@ Example:<br><br>
 bnc.exe -nw
 </p>
 
-<p><a name="post"><h4>3.19.2 Offline Mode - optional</h4></p>
+<p><a name="post"><h4>3.19.2 File Mode - optional</h4></p>
 <p>
-Although BNC is primarily a real-time online tool, for debugging purposes it can be run in offline mode to read data from a file previously saved through option 'Raw output file'. Enter the following command line option for that
+Although BNC is primarily a real-time online tool, for debugging purposes it can be run offline to read data from a file previously saved through option 'Raw output file'. Enter the following command line option for that
 </p>
 <p>
 --file &lt;<u>inputFileName</u>&gt;
@@ -2210,7 +2206,7 @@ and specify the full path to an input file containing previously saved data. Exa
 ./bnc --file /home/user/raw.output_110301
 </p>
 <p>
-Note that when running BNC in offline mode, it will use options for file saving, interval, sampling, PPP etc. from its configuration file.
+Note that when running BNC offline, it will use options for file saving, interval, sampling, PPP etc. from its configuration file.
 </p>
 <p>Note further that option '--file' forces BNC to appy the '-nw' option for running in 'no Window' mode.
 </p> 
