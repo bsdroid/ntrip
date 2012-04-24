@@ -156,10 +156,10 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(grid);
   mainLayout->addLayout(buttonLayout);
 
-  _reqcRnxVersion->setWhatsThis(tr("<p>Select version number of target RINEX file.</p>"));
-  _reqcSampling->setWhatsThis(tr("<p>Select sampling rate of target RINEX file.</p>"));
-  _reqcStartDateTime->setWhatsThis(tr("<p>Specify begin of target RINEX file.</p>"));
-  _reqcEndDateTime->setWhatsThis(tr("<p>Specify end of target RINEX file.</p>"));
+  _reqcRnxVersion->setWhatsThis(tr("<p>Select version number of emerging new RINEX file.</p>"));
+  _reqcSampling->setWhatsThis(tr("<p>Select sampling rate of emerging new RINEX file.</p>"));
+  _reqcStartDateTime->setWhatsThis(tr("<p>Specify begin of emerging new RINEX file.</p>"));
+  _reqcEndDateTime->setWhatsThis(tr("<p>Specify end of emerging new RINEX file.</p>"));
   _reqcOldMarkerName->setWhatsThis(tr("<p>Enter old marker name.</p>"));
   _reqcNewMarkerName->setWhatsThis(tr("<p>Enter new marker name.</p>"));
   _reqcOldAntennaName->setWhatsThis(tr("<p>Enter old antenna name.</p>"));
