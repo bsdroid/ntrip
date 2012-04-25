@@ -2241,9 +2241,9 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _pppUsePhaseCheckBox);
     enableWidget(enable, _pppPlotCoordinates);
     enableWidget(enable, _pppEstTropoCheckBox);
-    enableWidget(enable, _pppGLONASSCheckBox);
+//  enableWidget(enable, _pppGLONASSCheckBox);
     enableWidget(enable, _pppGalileoCheckBox);
-    enableWidget(enable, _pppAntexFileChooser);
+//  enableWidget(enable, _pppAntexFileChooser);
     enableWidget(enable, _pppSigCLineEdit);
     enableWidget(enable, _pppSigCrd0);
     enableWidget(enable, _pppSigCrdP);
