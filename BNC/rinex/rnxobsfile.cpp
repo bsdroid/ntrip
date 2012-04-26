@@ -1045,7 +1045,7 @@ void t_rnxObsFile::checkNewHeader(const t_rnxObsHeader& header) {
 
   if (!same) {
     QStringList strLst = obsTypesStrings();
-    *_stream << QString().leftJustified(30)
+    *_stream << QString().leftJustified(29)
              << QString("  4%1\n").arg(strLst.size(), 3)
              << strLst.join("");
   }
