@@ -1010,9 +1010,29 @@ void t_rnxObsFile::checkNewHeader(const t_rnxObsHeader& header) {
   t_rnxObsHeader oldHeader(_header);
   setHeader(header, oldHeader._version);
 
-  if (header._obsTypesV2 != oldHeader._obsTypesV2 ||
-      header._obsTypesV3 != oldHeader._obsTypesV3) {
+  // Check Observation Types
+  // -----------------------
+  bool same = true;
+  if (_header._version < 3.0) {
+    if (_header._obsTypesV2 != oldHeader._obsTypesV2) {
+      same = false;
+    }
+  }
+  else {
+    QMapIterator<char, QVector<QString> > it(_header._obsTypesV3);
+    while (it.hasNext()) {
+      it.next();
+      char                    sys     = it.key();
+      const QVector<QString>& typesV3 = it.value();
+      if (!oldHeader._obsTypesV3.contains(sys) ||
+          oldHeader._obsTypesV3[sys] != typesV3) {
+        same = false;
+        break;
+      }
+    }
+  }
 
+  if (!same) {
     writeHeader();
   }
 }
