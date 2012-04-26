@@ -715,34 +715,7 @@ void t_rnxObsFile::writeHeader() {
              << "WAVELENGTH FACT L1/2\n";
   }
 
-  if (_header._version < 3.0) {
-    QString hlp;
-    QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2.size(), 6);
-    for (int ii = 0; ii < _header._obsTypesV2.size(); ii++) {
-      QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2[ii], 6);   
-      if (ii > 0 && (ii % 8 == 0 || ii == _header._obsTypesV2.size()-1)) {
-        *_stream << hlp.leftJustified(60) << "# / TYPES OF OBSERV\n";
-        hlp = QString().leftJustified(6);
-      }
-    }
-  }
-  else {
-    QMapIterator<char, QVector<QString> > it(_header._obsTypesV3);
-    while (it.hasNext()) {
-      it.next();
-      char sys                      = it.key();
-      const QVector<QString>& types = it.value();
-      QString hlp;
-      QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(types.size(), 3);
-      for (int ii = 0; ii < types.size(); ii++) {
-        QTextStream(&hlp) << QString(" %1").arg(types[ii], -3);   
-        if (ii > 0 && (ii % 12 == 0 || ii == types.size()-1)) {
-          *_stream << hlp.leftJustified(60) << "SYS / # / OBS TYPES\n";
-          hlp = QString().leftJustified(6);
-        }
-      }
-    }
-  }
+  *_stream << obsTypesStrings().join("");
 
   *_stream << QString("%1")
     .arg(_header._interval, 10, 'f', 3)
@@ -767,6 +740,44 @@ void t_rnxObsFile::writeHeader() {
   *_stream << QString()
     .leftJustified(60)
            << "END OF HEADER\n";
+}
+
+// Write Observation Types
+////////////////////////////////////////////////////////////////////////////
+QStringList t_rnxObsFile::obsTypesStrings() {
+
+  QStringList strList;
+
+  if (_header._version < 3.0) {
+    QString hlp;
+    QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2.size(), 6);
+    for (int ii = 0; ii < _header._obsTypesV2.size(); ii++) {
+      QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2[ii], 6);   
+      if (ii > 0 && (ii % 8 == 0 || ii == _header._obsTypesV2.size()-1)) {
+        strList.append(hlp.leftJustified(60) + "# / TYPES OF OBSERV\n");
+        hlp = QString().leftJustified(6);
+      }
+    }
+  }
+  else {
+    QMapIterator<char, QVector<QString> > it(_header._obsTypesV3);
+    while (it.hasNext()) {
+      it.next();
+      char sys                      = it.key();
+      const QVector<QString>& types = it.value();
+      QString hlp;
+      QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(types.size(), 3);
+      for (int ii = 0; ii < types.size(); ii++) {
+        QTextStream(&hlp) << QString(" %1").arg(types[ii], -3);   
+        if (ii > 0 && (ii % 12 == 0 || ii == types.size()-1)) {
+          strList.append(hlp.leftJustified(60) + "SYS / # / OBS TYPES\n");
+          hlp = QString().leftJustified(6);
+        }
+      }
+    }
+  }
+
+  return strList;
 }
 
 // Write Data Epoch
@@ -1033,6 +1044,6 @@ void t_rnxObsFile::checkNewHeader(const t_rnxObsHeader& header) {
   }
 
   if (!same) {
-    writeHeader();
+    *_stream << obsTypesStrings().join("");
   }
 }
