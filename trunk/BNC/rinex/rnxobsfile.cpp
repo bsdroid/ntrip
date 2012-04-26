@@ -166,7 +166,7 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
         }
         QString hlp;
         *in >> hlp;
-        _obsTypesV2.push_back(hlp);
+        _obsTypesV2.append(hlp);
       }
     }
     else if (key == "SYS / # / OBS TYPES") {
@@ -209,9 +209,8 @@ int t_rnxObsFile::t_rnxObsHeader::nTypes(char sys) const {
     return _obsTypesV2.size();
   }
   else {
-    map<char, vector<QString> >::const_iterator it = _obsTypesV3.find(sys);
-    if (it != _obsTypesV3.end()) {
-      return it->second.size();
+    if (_obsTypesV3.contains(sys)) {
+      return _obsTypesV3[sys].size();
     }
     else {
       return 0;
@@ -226,9 +225,8 @@ const QString& t_rnxObsFile::t_rnxObsHeader::obsType(char sys, int index) const 
     return _obsTypesV2.at(index);
   }
   else {
-    map<char, vector<QString> >::const_iterator it = _obsTypesV3.find(sys);
-    if (it != _obsTypesV3.end()) {
-      return it->second.at(index);
+    if (_obsTypesV3.contains(sys)) {
+      return _obsTypesV3[sys].at(index);
     }
     else {
       return _emptyStr;
@@ -574,17 +572,21 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
 
   static const string systems = "GRES";
 
+  _header._obsTypesV2.clear();
+  _header._obsTypesV3.clear();
+
   // Copy Observation Types
   // ----------------------
   if      (_trafo == trafoNone) {
-    for (unsigned ii = 0; ii < header._obsTypesV2.size(); ii++) {
-      _header._obsTypesV2.push_back(header._obsTypesV2[ii]);
+    for (int ii = 0; ii < header._obsTypesV2.size(); ii++) {
+      _header._obsTypesV2.append(header._obsTypesV2[ii]);
     }
-    map<char, vector<QString> >::const_iterator it;
-    for (it = header._obsTypesV3.begin(); it != header._obsTypesV3.end(); it++) {
-      char                   sys     = it->first;
-      const vector<QString>& typesV3 = it->second;
-      for (unsigned ii = 0; ii < typesV3.size(); ii++) {
+    QMapIterator<char, QVector<QString> > it(header._obsTypesV3);
+    while (it.hasNext()) {
+      it.next();
+      char                    sys     = it.key();
+      const QVector<QString>& typesV3 = it.value();
+      for (int ii = 0; ii < typesV3.size(); ii++) {
         _header._obsTypesV3[sys].push_back(typesV3[ii]);
       }
     }
@@ -593,7 +595,7 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
   // Translate Observation Types v2 --> v3
   // -------------------------------------
   else if (_trafo == trafo2to3) {
-    for (unsigned i2 = 0; i2 < header._obsTypesV2.size(); i2++) {
+    for (int i2 = 0; i2 < header._obsTypesV2.size(); i2++) {
       const QString& typeV2 = header._obsTypesV2[i2];
       for (unsigned iSys = 0; iSys < systems.length(); iSys++) {
         char    sys    = systems[iSys];
@@ -612,15 +614,14 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
   else if (_trafo == trafo3to2) {
     for (unsigned iSys = 0; iSys < systems.length(); iSys++) {
       char sys = systems[iSys];
-      map<char, vector<QString> >::const_iterator it = header._obsTypesV3.find(sys);
-      if (it != header._obsTypesV3.end()) {
-        const vector<QString>& typesV3 = it->second;
-        for (unsigned i3 = 0; i3 < typesV3.size(); i3++) {
+      if (header._obsTypesV3.contains(sys)) {
+        const QVector<QString>& typesV3 = header._obsTypesV3[sys];
+        for (int i3 = 0; i3 < typesV3.size(); i3++) {
           const QString& typeV3 = typesV3[i3];
           QString        typeV2 = type3to2(typeV3);
           if (!typeV2.isEmpty()) {
             bool found = false;
-            for (unsigned i2 = 0; i2 < _header._obsTypesV2.size(); i2++) {
+            for (int i2 = 0; i2 < _header._obsTypesV2.size(); i2++) {
               if (_header._obsTypesV2[i2] == typeV2) {
                 found = true;
                 if (_indexMap2to3[sys].find(i2) == _indexMap2to3[sys].end()) {
@@ -630,7 +631,7 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
               }
             }
             if (!found) {
-              _header._obsTypesV2.push_back(typeV2);
+              _header._obsTypesV2.append(typeV2);
               int i2 = _header._obsTypesV2.size() - 1;
               _indexMap2to3[sys][i2] = i3; 
             }
@@ -717,7 +718,7 @@ void t_rnxObsFile::writeHeader() {
   if (_header._version < 3.0) {
     QString hlp;
     QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2.size(), 6);
-    for (unsigned ii = 0; ii < _header._obsTypesV2.size(); ii++) {
+    for (int ii = 0; ii < _header._obsTypesV2.size(); ii++) {
       QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2[ii], 6);   
       if (ii > 0 && (ii % 8 == 0 || ii == _header._obsTypesV2.size()-1)) {
         *_stream << hlp.leftJustified(60) << "# / TYPES OF OBSERV\n";
@@ -726,13 +727,14 @@ void t_rnxObsFile::writeHeader() {
     }
   }
   else {
-    map<char, vector<QString> >::const_iterator it;
-    for (it = _header._obsTypesV3.begin(); it != _header._obsTypesV3.end(); it++) {
-      char sys                     = it->first;
-      const vector<QString>& types = it->second;
+    QMapIterator<char, QVector<QString> > it(_header._obsTypesV3);
+    while (it.hasNext()) {
+      it.next();
+      char sys                      = it.key();
+      const QVector<QString>& types = it.value();
       QString hlp;
       QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(types.size(), 3);
-      for (unsigned ii = 0; ii < types.size(); ii++) {
+      for (int ii = 0; ii < types.size(); ii++) {
         QTextStream(&hlp) << QString(" %1").arg(types[ii], -3);   
         if (ii > 0 && (ii % 12 == 0 || ii == types.size()-1)) {
           *_stream << hlp.leftJustified(60) << "SYS / # / OBS TYPES\n";
@@ -999,4 +1001,18 @@ QString t_rnxObsFile::type3to2(const QString& typeV3) {
   }
 
   return "";
+}
+
+// Check for Changes in Header
+////////////////////////////////////////////////////////////////////////////
+void t_rnxObsFile::checkNewHeader(const t_rnxObsHeader& header) {
+
+  t_rnxObsHeader oldHeader(_header);
+  setHeader(header, oldHeader._version);
+
+  if (header._obsTypesV2 != oldHeader._obsTypesV2 ||
+      header._obsTypesV3 != oldHeader._obsTypesV3) {
+
+    writeHeader();
+  }
 }
