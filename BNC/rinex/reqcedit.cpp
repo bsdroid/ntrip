@@ -133,6 +133,9 @@ void t_reqcEdit::editObservations() {
       editRnxObsHeader(outObsFile);
       outObsFile.writeHeader();
     }
+    else {
+      outObsFile.checkNewHeader(obsFile->header());
+    }
     t_rnxObsFile::t_rnxEpo* epo = 0;
     while ( (epo = obsFile->nextEpoch()) != 0) {
       if (_begTime.valid() && epo->tt < _begTime) {
