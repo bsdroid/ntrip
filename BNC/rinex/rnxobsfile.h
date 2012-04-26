@@ -113,32 +113,33 @@ class t_rnxObsFile {
     int             nTypes(char sys) const;
     const QString&  obsType(char sys, int index) const;
  
-    static const QString                  _emptyStr;
-    float                                 _version;
-    double                                _interval;
-    QString                               _antennaNumber;
-    QString                               _antennaName;
-    QString                               _markerName;
-    QString                               _markerNumber;
-    QString                               _observer;
-    QString                               _agency;
-    QString                               _receiverNumber;
-    QString                               _receiverType;
-    QString                               _receiverVersion;
-    ColumnVector                          _antNEU;
-    ColumnVector                          _antXYZ;
-    ColumnVector                          _antBSG;
-    ColumnVector                          _xyz;
-    std::vector<QString>                  _obsTypesV2;
-    std::map<char, std::vector<QString> > _obsTypesV3;
-    int                                   _wlFactorsL1[MAXPRN_GPS+1];
-    int                                   _wlFactorsL2[MAXPRN_GPS+1];
-    bncTime                               _startTime;
+    static const QString          _emptyStr;
+    float                         _version;
+    double                        _interval;
+    QString                       _antennaNumber;
+    QString                       _antennaName;
+    QString                       _markerName;
+    QString                       _markerNumber;
+    QString                       _observer;
+    QString                       _agency;
+    QString                       _receiverNumber;
+    QString                       _receiverType;
+    QString                       _receiverVersion;
+    ColumnVector                  _antNEU;
+    ColumnVector                  _antXYZ;
+    ColumnVector                  _antBSG;
+    ColumnVector                  _xyz;
+    QVector<QString>              _obsTypesV2;
+    QMap<char, QVector<QString> > _obsTypesV3;
+    int                           _wlFactorsL1[MAXPRN_GPS+1];
+    int                           _wlFactorsL2[MAXPRN_GPS+1];
+    bncTime                       _startTime;
   };
 
  public:
   const t_rnxObsHeader& header() const {return _header;}
   void setHeader(const t_rnxObsHeader& header, double version);
+  void checkNewHeader(const t_rnxObsHeader& header);
   void writeHeader();
   void writeEpoch(const t_rnxEpo* epo);
 
@@ -154,8 +155,8 @@ class t_rnxObsFile {
   QString type2to3(char sys, const QString& typeV2);
   QString type3to2(const QString& typeV3);
 
-  std::map<char, std::map<int, int> > _indexMap2to3;
-  std::map<char, std::map<int, int> > _indexMap3to2;
+  QMap<char, QMap<int, int> > _indexMap2to3;
+  QMap<char, QMap<int, int> > _indexMap3to2;
 
   e_inpOut       _inpOut;
   QFile*         _file;
