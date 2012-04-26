@@ -141,6 +141,7 @@ class t_rnxObsFile {
   void setHeader(const t_rnxObsHeader& header, double version);
   void checkNewHeader(const t_rnxObsHeader& header);
   void writeHeader();
+  QStringList obsTypesStrings();
   void writeEpoch(const t_rnxEpo* epo);
 
  private:
