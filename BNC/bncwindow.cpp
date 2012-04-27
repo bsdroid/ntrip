@@ -1074,7 +1074,7 @@ bncWindow::bncWindow() {
 
   populateCmbTable();
   cmbLayout->addWidget(_cmbTable,                                                    0, 0, 6, 3);
-  cmbLayout->addWidget(new QLabel("Combine Broadcast Ephemeris correction streams."),0, 5, 1, 5);
+  cmbLayout->addWidget(new QLabel("Combine Broadcast Ephemeris correction streams."),0, 5, 1, 20);
   cmbLayout->addWidget(addCmbRowButton,                                              1, 5);
   cmbLayout->addWidget(delCmbRowButton,                                              1, 6);
   cmbLayout->addWidget(new QLabel("Method"),                                         2, 5);
