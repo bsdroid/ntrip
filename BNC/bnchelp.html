@@ -1710,7 +1710,7 @@ Having an empty 'Upload Table' is default and means that you don't want BNC to u
 BNC uploads a stream to the Caster by referring to a dedicated mountpoint that has been set by the Caster operator. Specify here the mountpoint based on the details you received for your stream from the operator. It is often a four character ID (capital letters) plus an integer number.</p>
 <p>The stream upload may be protected through an upload 'Password'. Enter the password you received from the Caster operator along with the mountpoint(s).</p>
 <p>
-If 'Host', 'Port', 'Mountpoint' and 'Password' are set, the stream will be encoded in RTCM's 'State Space Representation' (SSR) messages and uploaded to the specified broadcaster following the NTRIP Version 1.0 transport protocol. 
+If 'Host', 'Port', 'Mountpoint' and 'Password' are set, the stream will be encoded in RTCM's 'State Space Representation' (SSR) messages and uploaded to the specified broadcaster following the NTRIP Version 1 transport protocol. 
 </p>
 
 <p><a name="upsystem"><h4>3.14.3 System - mandatory if 'Host' is set</h4></p>
@@ -2074,24 +2074,24 @@ Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream'
 
 <p><a name="ntripv"><h4>3.18.1.5 NTRIP Version - mandatory</h4></p>
 <p>
-Some limitations and deficiencies of the NTRIP version 1 stream transport protocol are solved in NTRIP version 2. Improvements mainly concern a full HTTP compatibility in view of requirements coming from proxy servers. Version 2 is backwards compatible to Version 1. Options implemented in BNC are:
+Some limitations and deficiencies of the NTRIP Version 1 stream transport protocol are solved in NTRIP Version 2. Improvements mainly concern a full HTTP compatibility in view of requirements coming from proxy servers. Version 2 is backwards compatible to Version 1. Options implemented in BNC are:
 </p>
 <p>
-&nbsp; 1:&nbsp; NTRIP version 1, TCP/IP.<br>
-&nbsp; 2:&nbsp; NTRIP version 2 in TCP/IP mode.<br>
-&nbsp; 2s:&nbsp; NTRIP version 2 in TCP/IP mode via SSL.<br>
-&nbsp; R:&nbsp; NTRIP version 2 in RTSP/RTP mode.<br>
-&nbsp; U:&nbsp; NTRIP version 2 in UDP mode.
+&nbsp; 1:&nbsp; NTRIP Version 1, TCP/IP.<br>
+&nbsp; 2:&nbsp; NTRIP Version 2 in TCP/IP mode.<br>
+&nbsp; 2s:&nbsp; NTRIP Version 2 in TCP/IP mode via SSL.<br>
+&nbsp; R:&nbsp; NTRIP Version 2 in RTSP/RTP mode.<br>
+&nbsp; U:&nbsp; NTRIP Version 2 in UDP mode.
 </p>
 <p>
-If NTRIP version 2 is supported by the broadcaster:
+If NTRIP Version 2 is supported by the broadcaster:
 </p>
 <ul>
 <li>Try using option '2' if your streams are otherwise blocked by a proxy server operated in front of BNC.</li>
 <li>Option 'R' or 'U' may be selected if latency is more important than completeness for your application. Note that the latency reduction is likely to be in the order of 0.5 sec or less. Note further that options 'R' (RTSP/RTP mode) and 'U' (UDP mode) are not accepted by proxy servers and a mobile Internet Service Provider may not support it.</li>
 </ul>
 <p>
-Select option '1' if you are not sure whether the broadcaster supports NTRIP version 2.</li>
+Select option '1' if you are not sure whether the broadcaster supports NTRIP Version 2.</li>
 </p>
 
 <p><a name="map"><h4>3.18.1.6 Map - optional</h4></p>
@@ -2401,7 +2401,7 @@ Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested synchron
 
 <tr>
 <td>Apr 2011 &nbsp;</td><td>Version 2.6 &nbsp;</td>
-<td>[Add] Complete integration of BNS in BNC<br> [Add] SP3 and Clock RINEX output<br> [Add] PPP in Post Processing Mode<br> [Add] Some RINEX editing & QC functionality<br> [Add] Threshold for orbit outliers in combination solution<br> [Add] Real-time engine becomes orbit/clock server instead of client<br> [Mod] 'EOE' added to orbit/clock stream from engine<br> [Add] Correction for antenna eccentricities<br> [Add] Quick start mode for PPP<br> [Mod] Design of format for feeding engine changed to follow RINEX v3<br> [Mod] Implementation of SSR message encoding modified according to standard<br> [Add] SSL/TLS Support of Ntrip Version 2<br> [Mod] Switch to Qt version 4.7.3<br> [Add] RINEX editing, concatenation and quality check<br> [Mod] RTCMv3 Galileo Broadcast Ephemeris message 1045</td>
+<td>[Add] Complete integration of BNS in BNC<br> [Add] SP3 and Clock RINEX output<br> [Add] PPP in Post Processing Mode<br> [Add] Some RINEX editing & QC functionality<br> [Add] Threshold for orbit outliers in combination solution<br> [Add] Real-time engine becomes orbit/clock server instead of client<br> [Mod] 'EOE' added to orbit/clock stream from engine<br> [Add] Correction for antenna eccentricities<br> [Add] Quick start mode for PPP<br> [Mod] Design of format for feeding engine changed to follow RINEX v3<br> [Mod] Implementation of SSR message encoding modified according to standard<br> [Add] SSL/TLS Support of NTRIP Version 2<br> [Mod] Switch to Qt version 4.7.3<br> [Add] RINEX editing, concatenation and quality check<br> [Mod] RTCMv3 Galileo Broadcast Ephemeris message 1045</td>
 </tr>
 
 <tr>
@@ -2427,7 +2427,7 @@ Personal copies of RTCM Recommended Standards can be ordered through <u>http://w
 </p>
 
 <p>
-NTRIP Version 1.0 is an RTCM standard designed for disseminating differential correction data (e.g. in the RTCM-104 format) or other kinds of GNSS streaming data to stationary or mobile users over the Internet, allowing simultaneous PC, Laptop, PDA, or receiver connections to a broadcasting host. NTRIP supports wireless Internet access through Mobile IP Networks like GSM, GPRS, EDGE, or UMTS.
+NTRIP Version 1 is an RTCM standard designed for disseminating differential correction data (e.g. in the RTCM-104 format) or other kinds of GNSS streaming data to stationary or mobile users over the Internet, allowing simultaneous PC, Laptop, PDA, or receiver connections to a broadcasting host. NTRIP supports wireless Internet access through Mobile IP Networks like GSM, GPRS, EDGE, or UMTS.
 </p>
 
 <p>
@@ -2462,7 +2462,7 @@ Source-table records of type CAS contain the following data fields: 'host', 'por
 <p><a name="ntrip2"><h4>6.2.1 NTRIP Version 2</h4></p>
 
 <p>
-The major changes of NTRIP version 2.0 compared to version 1.0 are:
+The major changes of NTRIP Version 2 compared to Version 1.0 are:
 </p>
 
 <ul>
@@ -2474,7 +2474,7 @@ The major changes of NTRIP version 2.0 compared to version 1.0 are:
 <li>RTSP communication.</li>
 </ul>
 
-<p>NTRIP version 2 allows to either communicate in TCP/IP mode or in RTSP/RTP mode or in UDP mode whereas version 1 is limited to TCP/IP only. It furthermore allows using the Transport Layer Security (TLS) and its predecessor, Secure Sockets Layer (SSL) cryptographic protocols for secure NTRIP communication over the Internet.
+<p>NTRIP Version 2 allows to either communicate in TCP/IP mode or in RTSP/RTP mode or in UDP mode whereas Version 1 is limited to TCP/IP only. It furthermore allows using the Transport Layer Security (TLS) and its predecessor, Secure Sockets Layer (SSL) cryptographic protocols for secure NTRIP communication over the Internet.
 </p>
 
 <p><a name="rtcm2"><h4>6.2.3 RTCM Version 2</h4></p>
