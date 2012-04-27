@@ -156,7 +156,7 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(grid);
   mainLayout->addLayout(buttonLayout);
 
-  _reqcRnxVersion->setWhatsThis(tr("<p>Select version number of emerging new RINEX file.</p>"));
+  _reqcRnxVersion->setWhatsThis(tr("<p>Select version number of emerging new RINEX file.</p><p>When converting RINEX Version 2 to RINEX Version 3, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. When converting RINEX Version 3 to RINEX Version 2<ul><li>C1P in RINEX Version 3 is mapped to P1 in RINEX Version 2</li><li>C2P in RINEX Version 3 is mapped to P2 in RINEX Version 2</li><li>If several observations in RINEX Version 3 come with the same observation type, same band/frequency but different tracking modes, BNC uses only the one provided first for creating RINEX Version 2 while ignoring others.</li></ul></p>"));
   _reqcSampling->setWhatsThis(tr("<p>Select sampling rate of emerging new RINEX file.</p>"));
   _reqcStartDateTime->setWhatsThis(tr("<p>Specify begin of emerging new RINEX file.</p>"));
   _reqcEndDateTime->setWhatsThis(tr("<p>Specify end of emerging new RINEX file.</p>"));
