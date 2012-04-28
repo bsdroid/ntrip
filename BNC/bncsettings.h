@@ -15,6 +15,7 @@ class bncSettings {
   void remove(const QString& key );
   void sync();
  private:
+  void setValue_p(const QString &key, const QVariant& value);
   bncApp*       _bncApp;
   static QMutex _mutex;
 };

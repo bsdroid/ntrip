@@ -46,150 +46,150 @@ bncSettings::bncSettings() {
     // Set Defaults
     // ------------
     else {
-      setValue("startTab",            "0");
-      setValue("statusTab",           "0");
-      setValue("casterUrlList", (QStringList() 
+      setValue_p("startTab",            "0");
+      setValue_p("statusTab",           "0");
+      setValue_p("casterUrlList", (QStringList() 
                                  << "http://user:pass@www.euref-ip.net:2101" 
                                  << "http://user:pass@www.igs-ip.net:2101" 
                                  << "http://user:pass@products.igs-ip.net:2101"
                                  << "http://user:pass@mgex.igs-ip.net:2101"));
-      setValue("mountPoints",         "");
-      setValue("ntripVersion",        "1");
+      setValue_p("mountPoints",         "");
+      setValue_p("ntripVersion",        "1");
       // Network
-      setValue("proxyHost",           "");
-      setValue("proxyPort",           "");
-      setValue("sslCaCertPath",       "");
-      setValue("ignoreSslErrors",     "0");
+      setValue_p("proxyHost",           "");
+      setValue_p("proxyPort",           "");
+      setValue_p("sslCaCertPath",       "");
+      setValue_p("ignoreSslErrors",     "0");
       // General
-      setValue("logFile",             "");
-      setValue("rnxAppend",           "0");
-      setValue("onTheFlyInterval",    "1 day");
-      setValue("autoStart",           "0");
-      setValue("rawOutFile",          "");
+      setValue_p("logFile",             "");
+      setValue_p("rnxAppend",           "0");
+      setValue_p("onTheFlyInterval",    "1 day");
+      setValue_p("autoStart",           "0");
+      setValue_p("rawOutFile",          "");
       // RINEX Observations
-      setValue("rnxPath",             "");
-      setValue("rnxIntr",             "1 day");
-      setValue("rnxSampl",            "0");
-      setValue("rnxSkel",             "SKL");
-      setValue("rnxScript",           "");
-      setValue("rnxV3",               "0");
+      setValue_p("rnxPath",             "");
+      setValue_p("rnxIntr",             "1 day");
+      setValue_p("rnxSampl",            "0");
+      setValue_p("rnxSkel",             "SKL");
+      setValue_p("rnxScript",           "");
+      setValue_p("rnxV3",               "0");
       // RINEX Ephemeris
-      setValue("ephPath",             "");
-      setValue("ephIntr",             "1 day");
-      setValue("outEphPort",          "");
-      setValue("ephV3",               "0");
+      setValue_p("ephPath",             "");
+      setValue_p("ephIntr",             "1 day");
+      setValue_p("outEphPort",          "");
+      setValue_p("ephV3",               "0");
       // Braodcast Corrections
-      setValue("corrPath",            "");
-      setValue("corrIntr",            "1 day");
-      setValue("corrPort",            "");
-      setValue("corrTime",            "5");
+      setValue_p("corrPath",            "");
+      setValue_p("corrIntr",            "1 day");
+      setValue_p("corrPort",            "");
+      setValue_p("corrTime",            "5");
       // Feed Engine
-      setValue("outPort",             "");
-      setValue("waitTime",            "5");
-      setValue("binSampl",            "0");
-      setValue("outFile",             "");
-      setValue("outUPort",            "");
+      setValue_p("outPort",             "");
+      setValue_p("waitTime",            "5");
+      setValue_p("binSampl",            "0");
+      setValue_p("outFile",             "");
+      setValue_p("outUPort",            "");
       // Serial Output
-      setValue("serialMountPoint",    "");
-      setValue("serialPortName",      "");
-      setValue("serialBaudRate",      "9600");
-      setValue("serialFlowControl",   "OFF");
-      setValue("serialDataBits",      "8");
-      setValue("serialParity",        "NONE");
-      setValue("serialStopBits",      "1");
-      setValue("serialAutoNMEA",      "Auto");
-      setValue("serialFileNMEA",      "");
-      setValue("serialHeightNMEA",    "");
+      setValue_p("serialMountPoint",    "");
+      setValue_p("serialPortName",      "");
+      setValue_p("serialBaudRate",      "9600");
+      setValue_p("serialFlowControl",   "OFF");
+      setValue_p("serialDataBits",      "8");
+      setValue_p("serialParity",        "NONE");
+      setValue_p("serialStopBits",      "1");
+      setValue_p("serialAutoNMEA",      "Auto");
+      setValue_p("serialFileNMEA",      "");
+      setValue_p("serialHeightNMEA",    "");
       // Outages
-      setValue("obsRate",             "");
-      setValue("adviseFail",          "15");
-      setValue("adviseReco",          "5");
-      setValue("adviseScript",        "");
+      setValue_p("obsRate",             "");
+      setValue_p("adviseFail",          "15");
+      setValue_p("adviseReco",          "5");
+      setValue_p("adviseScript",        "");
       // Miscellaneous
-      setValue("miscMount",           "");  
-      setValue("perfIntr",            "");
-      setValue("scanRTCM",            "0");
+      setValue_p("miscMount",           "");  
+      setValue_p("perfIntr",            "");
+      setValue_p("scanRTCM",            "0");
       // PPP
-      setValue("pppSPP",              "");
-      setValue("pppMount",            "");
-      setValue("pppCorrMount",        "");
-      setValue("pppRefCrdX",          "");
-      setValue("pppRefCrdY",          "");
-      setValue("pppRefCrdZ",          "");
-      setValue("pppRefdN",            "");
-      setValue("pppRefdE",            "");
-      setValue("pppRefdU",            "");
-      setValue("nmeaFile",            "");
-      setValue("nmeaPort",            "");
-      setValue("pppPlotCoordinates",  "");
-      setValue("postObsFile",         "");
-      setValue("postNavFile",         "");
-      setValue("postCorrFile",        "");
-      setValue("postOutFile",         "");
-      setValue("pppAntenna",          "");
-      setValue("pppAntex",            "");
-      setValue("pppApplySatAnt",      "0");
-      setValue("pppUsePhase",         "");
-      setValue("pppEstTropo",         "");
-      setValue("pppGLONASS",          "");
-      setValue("pppGalileo",          "");
-      setValue("pppSync",             "");
-      setValue("pppAverage",          "");
-      setValue("pppQuickStart",       "");
-      setValue("pppMaxSolGap",        "");
-      setValue("pppSigmaCode",        "10.0");
-      setValue("pppSigmaPhase",       "0.02");
-      setValue("pppSigCrd0",          "100.0");
-      setValue("pppSigCrdP",          "100.0");
-      setValue("pppSigTrp0",          "0.1");
-      setValue("pppSigTrpP",          "3e-6");
+      setValue_p("pppSPP",              "");
+      setValue_p("pppMount",            "");
+      setValue_p("pppCorrMount",        "");
+      setValue_p("pppRefCrdX",          "");
+      setValue_p("pppRefCrdY",          "");
+      setValue_p("pppRefCrdZ",          "");
+      setValue_p("pppRefdN",            "");
+      setValue_p("pppRefdE",            "");
+      setValue_p("pppRefdU",            "");
+      setValue_p("nmeaFile",            "");
+      setValue_p("nmeaPort",            "");
+      setValue_p("pppPlotCoordinates",  "");
+      setValue_p("postObsFile",         "");
+      setValue_p("postNavFile",         "");
+      setValue_p("postCorrFile",        "");
+      setValue_p("postOutFile",         "");
+      setValue_p("pppAntenna",          "");
+      setValue_p("pppAntex",            "");
+      setValue_p("pppApplySatAnt",      "0");
+      setValue_p("pppUsePhase",         "");
+      setValue_p("pppEstTropo",         "");
+      setValue_p("pppGLONASS",          "");
+      setValue_p("pppGalileo",          "");
+      setValue_p("pppSync",             "");
+      setValue_p("pppAverage",          "");
+      setValue_p("pppQuickStart",       "");
+      setValue_p("pppMaxSolGap",        "");
+      setValue_p("pppSigmaCode",        "10.0");
+      setValue_p("pppSigmaPhase",       "0.02");
+      setValue_p("pppSigCrd0",          "100.0");
+      setValue_p("pppSigCrdP",          "100.0");
+      setValue_p("pppSigTrp0",          "0.1");
+      setValue_p("pppSigTrpP",          "3e-6");
       // Reqc
-      setValue("reqcAction",          "");
-      setValue("reqcObsFile",         "");
-      setValue("reqcNavFile",         "");
-      setValue("reqcOutObsFile",      "");
-      setValue("reqcOutNavFile",      "");
-      setValue("reqcOutLogFile",      "");
-      setValue("reqcRnxVersion",      "");
-      setValue("reqcSampling",        "");
-      setValue("reqcStartDateTime",   "");
-      setValue("reqcEndDateTime",     "");
-      setValue("reqcOldMarkerName",   "");
-      setValue("reqcNewMarkerName",   "");
-      setValue("reqcOldAntennaName",  "");
-      setValue("reqcNewAntennaName",  "");
-      setValue("reqcOldReceiverName", "");
-      setValue("reqcNewReceiverName", "");
+      setValue_p("reqcAction",          "");
+      setValue_p("reqcObsFile",         "");
+      setValue_p("reqcNavFile",         "");
+      setValue_p("reqcOutObsFile",      "");
+      setValue_p("reqcOutNavFile",      "");
+      setValue_p("reqcOutLogFile",      "");
+      setValue_p("reqcRnxVersion",      "");
+      setValue_p("reqcSampling",        "");
+      setValue_p("reqcStartDateTime",   "");
+      setValue_p("reqcEndDateTime",     "");
+      setValue_p("reqcOldMarkerName",   "");
+      setValue_p("reqcNewMarkerName",   "");
+      setValue_p("reqcOldAntennaName",  "");
+      setValue_p("reqcNewAntennaName",  "");
+      setValue_p("reqcOldReceiverName", "");
+      setValue_p("reqcNewReceiverName", "");
       // Combination
-      setValue("combineStreams",      "");
-      setValue("cmbMethod",           "");
-      setValue("cmbMaxres",           "");
+      setValue_p("combineStreams",      "");
+      setValue_p("cmbMethod",           "");
+      setValue_p("cmbMaxres",           "");
       // Upload (clk)
-      setValue("uploadMountpointsOut","");
-      setValue("uploadIntr",          "1 day");
-      setValue("uploadSampl",         "5");
-      setValue("uploadSamplOrb",      "0");
-      setValue("trafo_dx",            "");
-      setValue("trafo_dy",            "");
-      setValue("trafo_dz",            "");
-      setValue("trafo_dxr",           "");
-      setValue("trafo_dyr",           "");
-      setValue("trafo_dzr",           "");
-      setValue("trafo_ox",            "");
-      setValue("trafo_oy",            "");
-      setValue("trafo_oz",            "");
-      setValue("trafo_oxr",           "");
-      setValue("trafo_oyr",           "");
-      setValue("trafo_ozr",           "");
-      setValue("trafo_sc",            "");
-      setValue("trafo_scr",           "");
-      setValue("trafo_t0",            "");
+      setValue_p("uploadMountpointsOut","");
+      setValue_p("uploadIntr",          "1 day");
+      setValue_p("uploadSampl",         "5");
+      setValue_p("uploadSamplOrb",      "0");
+      setValue_p("trafo_dx",            "");
+      setValue_p("trafo_dy",            "");
+      setValue_p("trafo_dz",            "");
+      setValue_p("trafo_dxr",           "");
+      setValue_p("trafo_dyr",           "");
+      setValue_p("trafo_dzr",           "");
+      setValue_p("trafo_ox",            "");
+      setValue_p("trafo_oy",            "");
+      setValue_p("trafo_oz",            "");
+      setValue_p("trafo_oxr",           "");
+      setValue_p("trafo_oyr",           "");
+      setValue_p("trafo_ozr",           "");
+      setValue_p("trafo_sc",            "");
+      setValue_p("trafo_scr",           "");
+      setValue_p("trafo_t0",            "");
       // Upload (eph)
-      setValue("uploadEphHost",       "");
-      setValue("uploadEphPort",       "");
-      setValue("uploadEphMountpoint", "");
-      setValue("uploadEphPassword",   "");
-      setValue("uploadEphSample",     "5");
+      setValue_p("uploadEphHost",       "");
+      setValue_p("uploadEphPort",       "");
+      setValue_p("uploadEphMountpoint", "");
+      setValue_p("uploadEphPassword",   "");
+      setValue_p("uploadEphSample",     "5");
     }
   }
 }
@@ -197,8 +197,6 @@ bncSettings::bncSettings() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncSettings::~bncSettings() {
-  QMutexLocker locker(&_mutex);
-
 }
 
 // 
@@ -218,6 +216,13 @@ QVariant bncSettings::value(const QString& key,
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::setValue(const QString &key, const QVariant& value) {
+  QMutexLocker locker(&_mutex);
+  setValue_p(key, value);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncSettings::setValue_p(const QString &key, const QVariant& value) {
   _bncApp->_settings[key] = value;
 }
 
