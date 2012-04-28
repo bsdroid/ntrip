@@ -262,28 +262,18 @@ void t_reqcEdit::editEphemerides() {
   QStringListIterator it(_navFileNames);
   while (it.hasNext()) {
     QString fileName = it.next();
-    t_rnxNavFile rnxNavFile(fileName, t_rnxNavFile::input);
-    for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
-      t_eph* eph   = rnxNavFile.ephs()[ii];
-      bool   isNew = true;
-      for (int iOld = 0; iOld < _ephs.size(); iOld++) {
-        const t_eph* ephOld = _ephs[iOld];
-        if (ephOld->prn() == eph->prn() && ephOld->IOD() == eph->IOD()) {
-          isNew = false;
-          break;
-        }
+    if (fileName.indexOf('*') != -1 || fileName.indexOf('?') != -1) {
+      QFileInfo fileInfo(fileName);
+      QDir dir = fileInfo.dir();
+      QStringList filters; filters << fileInfo.fileName();
+      QListIterator<QFileInfo> it(dir.entryInfoList(filters));
+      while (it.hasNext()) {
+        QString filePath = it.next().filePath(); 
+        appendEphemerides(filePath);
       }
-      if (isNew) {
-        if      (eph->type() == t_eph::GPS) {
-          _ephs.append(new t_ephGPS(*dynamic_cast<t_ephGPS*>(eph)));
-        }
-        else if (eph->type() == t_eph::GLONASS) {
-          _ephs.append(new t_ephGlo(*dynamic_cast<t_ephGlo*>(eph)));
-        }
-        else if (eph->type() == t_eph::Galileo) {
-          _ephs.append(new t_ephGal(*dynamic_cast<t_ephGal*>(eph)));
-        }
-      }
+    }
+    else {
+      appendEphemerides(fileName);
     }
   }
   qStableSort(_ephs.begin(), _ephs.end(), t_eph::earlierTime);
@@ -300,6 +290,35 @@ void t_reqcEdit::editEphemerides() {
     const t_eph* eph = _ephs[ii];
     if (eph->type() == t_eph::GPS || _rnxVersion >= 3.0) {
       outNavFile.writeEph(eph);
+    }
+  }
+}
+
+//  
+////////////////////////////////////////////////////////////////////////////
+void t_reqcEdit::appendEphemerides(const QString& fileName) {
+
+  t_rnxNavFile rnxNavFile(fileName, t_rnxNavFile::input);
+  for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
+    t_eph* eph   = rnxNavFile.ephs()[ii];
+    bool   isNew = true;
+    for (int iOld = 0; iOld < _ephs.size(); iOld++) {
+      const t_eph* ephOld = _ephs[iOld];
+      if (ephOld->prn() == eph->prn() && ephOld->IOD() == eph->IOD()) {
+        isNew = false;
+        break;
+      }
+    }
+    if (isNew) {
+      if      (eph->type() == t_eph::GPS) {
+        _ephs.append(new t_ephGPS(*dynamic_cast<t_ephGPS*>(eph)));
+      }
+      else if (eph->type() == t_eph::GLONASS) {
+        _ephs.append(new t_ephGlo(*dynamic_cast<t_ephGlo*>(eph)));
+      }
+      else if (eph->type() == t_eph::Galileo) {
+        _ephs.append(new t_ephGal(*dynamic_cast<t_ephGal*>(eph)));
+      }
     }
   }
 }
