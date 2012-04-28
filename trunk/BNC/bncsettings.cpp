@@ -232,5 +232,12 @@ void bncSettings::remove(const QString& key ) {
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::sync() {
   QMutexLocker locker(&_mutex);
-
+  QSettings settings(_bncApp->confFileName(), QSettings::IniFormat);
+  settings.clear();
+  QMapIterator<QString, QVariant> it(_bncApp->_settings);
+  while (it.hasNext()) {
+    it.next();
+    settings.setValue(it.key(), it.value());
+  }
+  settings.sync();
 }
