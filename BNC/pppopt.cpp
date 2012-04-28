@@ -78,7 +78,7 @@ t_pppOpt::t_pppOpt() {
   antennaName  = settings.value("pppAntenna").toString();
   obsFileName  = settings.value("postObsFile").toString();
   navFileName  = settings.value("postNavFile").toString();
-  corrFileName = settings.value("postcorrFile").toString();
+  corrFileName = settings.value("postCorrFile").toString();
 
   if      (settings.value("pppSPP").toString() == "Post-Processing") {
     corrSync     = 0.0;
