@@ -23,7 +23,7 @@ QMutex bncSettings::_mutex;  // static mutex
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncSettings::bncSettings(bool noInit) {
+bncSettings::bncSettings() {
   QMutexLocker locker(&_mutex);
 
   _bncApp = static_cast<bncApp*>(qApp);
@@ -45,7 +45,7 @@ bncSettings::bncSettings(bool noInit) {
 
     // Set Defaults
     // ------------
-    else if (!noInit) {
+    else {
       setValue("startTab",            "0");
       setValue("statusTab",           "0");
       setValue("casterUrlList", (QStringList() 
