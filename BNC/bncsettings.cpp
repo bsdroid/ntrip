@@ -225,7 +225,7 @@ void bncSettings::setValue(const QString &key, const QVariant& value) {
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::remove(const QString& key ) {
   QMutexLocker locker(&_mutex);
-
+  _bncApp->_settings.remove(key);
 }
 
 // 
