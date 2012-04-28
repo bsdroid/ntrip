@@ -19,9 +19,12 @@
 #include "bncsettings.h"
 #include "bncapp.h"
 
+QMutex bncSettings::_mutex;  // static mutex 
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncSettings::bncSettings(bool noInit) {
+  QMutexLocker locker(&_mutex);
 
   _bncApp = static_cast<bncApp*>(qApp);
 
@@ -194,6 +197,7 @@ bncSettings::bncSettings(bool noInit) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncSettings::~bncSettings() {
+  QMutexLocker locker(&_mutex);
 
 }
 
@@ -201,7 +205,8 @@ bncSettings::~bncSettings() {
 ////////////////////////////////////////////////////////////////////////////
 QVariant bncSettings::value(const QString& key,
                             const QVariant& defaultValue) const {
-  
+  QMutexLocker locker(&_mutex);
+
   if (_bncApp->_settings.contains(key)) {
     return _bncApp->_settings[key];
   }
@@ -219,11 +224,13 @@ void bncSettings::setValue(const QString &key, const QVariant& value) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::remove(const QString& key ) {
+  QMutexLocker locker(&_mutex);
 
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::sync() {
+  QMutexLocker locker(&_mutex);
 
 }
