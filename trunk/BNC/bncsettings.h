@@ -7,7 +7,7 @@ class bncApp;
 
 class bncSettings {
  public:
-  bncSettings(bool noInit = false);
+  bncSettings();
   ~bncSettings();
   QVariant value(const QString& key, 
                  const QVariant& defaultValue = QVariant()) const;
