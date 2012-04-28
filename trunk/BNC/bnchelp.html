@@ -166,9 +166,9 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 3.6. <a href=#reqc>RINEX Editing & QC</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.1 <a href=#reqcact>Action</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.2 <a href=#reqcedit>Set Edit Options</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.3 <a href=#reqcinput>Input files</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.4 <a href=#reqcoutput>Output files</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.5 <a href=#reqccommand>No Windows</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.3 <a href=#reqcinput>Input Files</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.4 <a href=#reqcoutput>Output Files</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.5 <a href=#reqccommand>Command Line, No Windows</a><br>
 3.7. <a href=#correct>Broadcast Corrections</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.1. <a href=#corrdir>Directory, ASCII</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.2. <a href=#corrint>Interval</a><br>
@@ -605,17 +605,28 @@ Mandatory if 'Analyze' selected:<br>
 Specify logfile(s) to output analysis results.<br> 
 </p> 
 
-<p><a name="reqccommand"><h4>3.6.5 No Windows - optional</h4></p>
+<p><a name="reqccommand"><h4>3.6.5 Command Line, No Windows - optional</h4></p>
 <p>
-The following example calls BNC in 'no window' mode with a local configuration file 'rnx.conf' for concatenating four 15min high-rate RINEX files to produce an hourly RINEX Version 3 file with 30 seconds sampling rate:
+BNC applies options from the configuration file but allows updating any of them on the command line while the contents of the configuration file remains unchanged, see 'Command Line Options' section below. The syntax for that looks as follows
+</p>
+<p>
+--key &lt;keyName&gt; &lt;keyValue&gt;
+</p>
+<p>
+where &lt;keyName&gt; stands for the name of an option contained in the configuration file and &lt;keyValue&gt; stands for the value you want to assign to it. This functionality may be helpful in the 'RINEX Editing & QC' context when running BNC on a routine bases for maintaining a RINEX file archive.
+</p>
+The following Linux example calls BNC in 'no window' mode with a local configuration file 'rnx.conf' for concatenating four 15min high-rate RINEX files residing in the local directory to produce an hourly RINEX Version 3 file with 30 seconds sampling rate:
 </p>
 <p>
 ./bnc -nw --conf rnx.conf --key --key reqcAction Edit/Concatenate --key reqcObsFile "tlse119b00.12o,tlse119b15.12o,tlse119b30.12o,tlse119b45.12o" --key reqcOutObsFile tlse119b.12o --key reqcRnxVersion 3 --key reqcSampling 30
 </p>
+<p>
+The following is a list of availalbel keynames for 'RINEX Editing & QC' options and their meaning (cf. section 'Configuration Example'):
+</p>
 
 <table>
 <tr></tr>
-<tr><td><b>Key</b></td><td><b>Value</b></td></tr>
+<tr><td><b>Keyname</b></td><td><b>Meaning</b></td></tr>
 <tr><td>reqcAction</td><td>RINEX Editing % QC action</td></tr>
 <tr><td>reqcObsFile</td><td>RINEX observation input file(s)</td></tr>
 <tr><td>reqcNavFile</td><td>RINEX navigation input files(s)</td></tr>
