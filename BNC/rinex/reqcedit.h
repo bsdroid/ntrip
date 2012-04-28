@@ -53,6 +53,7 @@ Q_OBJECT
   void editRnxObsHeader(t_rnxObsFile& obsFile);
   void rememberLLI(const t_rnxObsFile* obsFile, const t_rnxObsFile::t_rnxEpo* epo);
   void applyLLI(const t_rnxObsFile* obsFile, t_rnxObsFile::t_rnxEpo* epo);
+  void appendEphemerides(const QString& fileName);
 
   QStringList            _obsFileNames;
   QVector<t_rnxObsFile*> _rnxObsFiles;
