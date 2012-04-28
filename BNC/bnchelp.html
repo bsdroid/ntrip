@@ -168,6 +168,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.6.2 <a href=#reqcedit>Set Edit Options</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.3 <a href=#reqcinput>Input files</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.4 <a href=#reqcoutput>Output files</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.5 <a href=#reqccommand>No Windows</a><br>
 3.7. <a href=#correct>Broadcast Corrections</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.1. <a href=#corrdir>Directory, ASCII</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.2. <a href=#corrint>Interval</a><br>
@@ -603,6 +604,35 @@ specify full path to output RINEX navigation file(s).
 Mandatory if 'Analyze' selected:<br>
 Specify logfile(s) to output analysis results.<br> 
 </p> 
+
+<p><a name="reqccommand"><h4>3.6.5 No Windows - optional</h4></p>
+<p>
+The following example calls BNC in 'no window' mode with a local configuration file 'rnx.conf' for concatenating four 15min high-rate RINEX files to produce an hourly RINEX Version 3 file with 30 seconds sampling rate:
+</p>
+<p>
+./bnc -nw --conf rnx.conf --key --key reqcAction Edit/Concatenate --key reqcObsFile "tlse119b00.12o,tlse119b15.12o,tlse119b30.12o,tlse119b45.12o" --key reqcOutObsFile tlse119b.12o --key reqcRnxVersion 3 --key reqcSampling 30
+</p>
+
+<table>
+<tr></tr>
+<tr><td><b>Key</b></td><td><b>Value</b></td></tr>
+<tr><td>reqcAction</td><td>RINEX Editing % QC action</td></tr>
+<tr><td>reqcObsFile</td><td>RINEX observation input file(s)</td></tr>
+<tr><td>reqcNavFile</td><td>RINEX navigation input files(s)</td></tr>
+<tr><td>reqcOutObsFile</td><td>RINEX observation output file</td></tr>
+<tr><td>reqcOutNavFile</td><td>RINEX navigation output file</td></tr>
+<tr><td>reqcOutLogFile</td><td>Logfile</td></tr>
+<tr><td>reqcRnxVersion</td><td>RINEX version of emerging new file</td></tr>
+<tr><td>reqcSampling</td><td>Sampling rate of emerging new RINEX file</td></tr>
+<tr><td>reqcStartDateTime</td><td>Begin of emerging new RINEX file</td></tr>
+<tr><td>reqcEndDateTime</td><td>End of emerging new RINEX file</td></tr>
+<tr><td>reqcOldMarkerName</td><td>Old marker name</td></tr>
+<tr><td>reqcNewMarkerName</td><td>New marker name</td></tr>
+<tr><td>reqcOldAntennaName</td><td>Old antenna name</td></tr>
+<tr><td>reqcNewAntennaName</td><td>New antenna name</td></tr>
+<tr><td>reqcOldReceiverName</td><td>Old receiver name</td></tr>
+<tr><td>reqcNewReceiverName</td><td>New receiver name</td></tr>
+</table>
 
 <p><a name="correct"><h4>3.7. Broadcast Corrections</h4></p>
 <p>
