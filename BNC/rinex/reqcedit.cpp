@@ -111,8 +111,21 @@ void t_reqcEdit::editObservations() {
   QStringListIterator it(_obsFileNames);
   while (it.hasNext()) {
     QString fileName = it.next();
-    t_rnxObsFile* rnxObsFile = new t_rnxObsFile(fileName, t_rnxObsFile::input);
-    _rnxObsFiles.append(rnxObsFile);
+    if (fileName.indexOf('*') != -1 || fileName.indexOf('?') != -1) {
+      QFileInfo fileInfo(fileName);
+      QDir dir = fileInfo.dir();
+      QStringList filters; filters << fileInfo.fileName();
+      QListIterator<QFileInfo> it(dir.entryInfoList(filters));
+      while (it.hasNext()) {
+        QString filePath = it.next().filePath(); 
+        t_rnxObsFile* rnxObsFile = new t_rnxObsFile(filePath, t_rnxObsFile::input);
+        _rnxObsFiles.append(rnxObsFile);
+      }
+    }
+    else {
+      t_rnxObsFile* rnxObsFile = new t_rnxObsFile(fileName, t_rnxObsFile::input);
+      _rnxObsFiles.append(rnxObsFile);
+    }
   }
   qStableSort(_rnxObsFiles.begin(), _rnxObsFiles.end(), 
               t_rnxObsFile::earlierStartTime);
