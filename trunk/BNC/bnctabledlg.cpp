@@ -171,7 +171,6 @@ bncTableDlg::~bncTableDlg() {
   delete _casterPasswordLineEdit;
   bncSettings settings;
   settings.setValue("ntripVersion", _ntripVersionComboBox->currentText());
-  settings.sync();
   delete _ntripVersionComboBox;
   delete _buttonGet;
   delete _buttonClose;
@@ -511,7 +510,6 @@ void bncTableDlg::addUrl(const QUrl& url) {
     }
   }
   settings.setValue("casterUrlList", newUrlList);
-  settings.sync();
 }
 
 // New caster selected in combobox

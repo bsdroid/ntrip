@@ -3,11 +3,19 @@
 
 #include <QSettings>
 
-class bncSettings : public QSettings {
+class bncApp;
+
+class bncSettings {
  public:
   bncSettings(bool noInit = false);
-  virtual ~bncSettings() {};
+  ~bncSettings();
+  QVariant value(const QString& key, 
+                 const QVariant& defaultValue = QVariant()) const;
+  void setValue(const QString &key, const QVariant& value);
+  void remove(const QString& key );
+  void sync();
  private:
+  bncApp* _bncApp;
 };
 
 #endif
