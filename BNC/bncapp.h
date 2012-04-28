@@ -25,9 +25,7 @@
 #ifndef BNCAPP_H
 #define BNCAPP_H
 
-#include <QApplication>
-#include <QFile>
-#include <QTextStream>
+#include <QtGui>
 
 #include "bnccaster.h"
 #include "bncrawfile.h"
@@ -39,6 +37,10 @@ class bncTableItem;
 
 class bncApp : public QApplication {
   Q_OBJECT
+
+    friend class bncSettings;
+    QSettings::SettingsMap   _settings;
+
   public:
     enum e_mode {interactive, nonInteractive, batchPostProcessing};
     bncApp(int& argc, char* argv[], bool GUIenabled);

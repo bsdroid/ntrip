@@ -225,6 +225,4 @@ void reqcDlg::saveOptions() {
   settings.setValue("reqcNewAntennaName" , _reqcNewAntennaName->text());
   settings.setValue("reqcOldReceiverName", _reqcOldReceiverName->text());
   settings.setValue("reqcNewReceiverName", _reqcNewReceiverName->text());
-   
-  settings.sync();
 }

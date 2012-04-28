@@ -1382,13 +1382,11 @@ void bncWindow::slotAddMountPoints() {
     if      (iRet == QMessageBox::Yes) {
       settings.setValue("proxyHost",   _proxyHostLineEdit->text());
       settings.setValue("proxyPort",   _proxyPortLineEdit->text());
-      settings.sync();
     }
   }
 
   settings.setValue("sslCaCertPath",   _sslCaCertPathLineEdit->text());
   settings.setValue("ignoreSslErrors", _ignoreSslErrorsCheckBox->checkState());
-  settings.sync();
 
   QMessageBox msgBox;
   msgBox.setIcon(QMessageBox::Question);
@@ -1724,7 +1722,6 @@ void bncWindow::slotSaveOptions() {
   if (_caster) {
     _caster->slotReadMountPoints();
   }
-  settings.sync();
 }
 
 // All get slots terminated
@@ -1843,6 +1840,8 @@ void bncWindow::closeEvent(QCloseEvent* event) {
   }
   else if (iRet == QMessageBox::Yes) {
     slotSaveOptions();
+    bncSettings settings;
+    settings.sync();
   }
 
   QMainWindow::closeEvent(event);
