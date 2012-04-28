@@ -95,6 +95,7 @@ class bncWindow : public QMainWindow {
     virtual void closeEvent(QCloseEvent *);
 
   private:
+    void saveOptions();
     void populateMountPointsTable();
     void populateCmbTable();
     void populateUploadTable();

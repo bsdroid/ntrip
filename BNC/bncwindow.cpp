@@ -1524,9 +1524,17 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
   enableStartStop();
 }
 
-// Save Options
+// Save Options (serialize)
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotSaveOptions() {
+  saveOptions();
+  bncSettings settings;
+  settings.sync();
+}
+
+// Save Options (memory only)
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::saveOptions() {
 
   QStringList mountPoints;
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
@@ -1736,7 +1744,7 @@ void bncWindow::slotGetThreadsFinished() {
 // Start It!
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotStart() {
-  slotSaveOptions();
+  saveOptions();
   if      ( _pppSPPComboBox->currentText() == "Post-Processing" ) {
     startPostProcessingPPP();
   }
@@ -1840,8 +1848,6 @@ void bncWindow::closeEvent(QCloseEvent* event) {
   }
   else if (iRet == QMessageBox::Yes) {
     slotSaveOptions();
-    bncSettings settings;
-    settings.sync();
   }
 
   QMainWindow::closeEvent(event);
@@ -2490,8 +2496,6 @@ void bncWindow::startPostProcessingPPP() {
   _runningPostProcessingPPP = true;
   _actStart->setText("0 Epochs");
   enableStartStop();
-
-  slotSaveOptions();
 
   t_postProcessing* postProcessing = new t_postProcessing(this);
   connect(postProcessing, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessingPPP()));
