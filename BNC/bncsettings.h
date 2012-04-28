@@ -1,7 +1,7 @@
 #ifndef BNCSETTINGS_H
 #define BNCSETTINGS_H
 
-#include <QSettings>
+#include <QMutex>
 
 class bncApp;
 
@@ -15,7 +15,8 @@ class bncSettings {
   void remove(const QString& key );
   void sync();
  private:
-  bncApp* _bncApp;
+  bncApp*       _bncApp;
+  static QMutex _mutex;
 };
 
 #endif

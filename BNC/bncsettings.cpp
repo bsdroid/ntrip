@@ -14,6 +14,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <QSettings>
+
 #include "bncsettings.h"
 #include "bncapp.h"
 
