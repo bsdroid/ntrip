@@ -551,7 +551,7 @@ Note that this does not concern the Broadcast Ephemeris output through IP port w
 
 <p><a name="reqc"><h4>3.6. RINEX Editing & QC</h4></p>
 <p>
-BNC allows to concatenate RINEX files and edit their contents. Observation and navigation files can be handled. BNC can also carry out a quality check of the contents of RINEX files. This functionality in BNC stands for 
+Besides stream conversion from RTCM to RINEX, BNC allows to concatenate RINEX files and edit their contents. RINEX observation and navigation files can be handled. BNC can also carry out a quality check of the contents of RINEX files. This functionality in BNC stands for 
 <ul>
 <li>t = translation (from RTCM to RINEX)</li>
 <li>e = editing and concatenation</li>
@@ -607,7 +607,7 @@ Specify logfile(s) to output analysis results.<br>
 
 <p><a name="reqccommand"><h4>3.6.5 Command Line, No Windows - optional</h4></p>
 <p>
-BNC applies options from the configuration file but allows updating any of them on the command line while the contents of the configuration file remains unchanged, see 'Command Line Options' section below. The syntax for that looks as follows
+BNC applies options from the configuration file but allows updating any of them on the command line while the contents of the configuration file remains unchanged, see 'Command Line Options' section. The syntax for that looks as follows
 </p>
 <p>
 --key &lt;keyName&gt; &lt;keyValue&gt;
@@ -621,13 +621,13 @@ The following Linux example calls BNC in 'no window' mode with a local configura
 ./bnc -nw --conf rnx.conf --key --key reqcAction Edit/Concatenate --key reqcObsFile "tlse119b00.12o,tlse119b15.12o,tlse119b30.12o,tlse119b45.12o" --key reqcOutObsFile tlse119b.12o --key reqcRnxVersion 3 --key reqcSampling 30
 </p>
 <p>
-The following is a list of available keynames for 'RINEX Editing & QC' options and their meaning (cf. section 'Configuration Example'):
+The following is a list of available keynames for 'RINEX Editing & QC' (short: reqc, pronounced 'rek') options and their meaning, cf. section 'Configuration Example':
 </p>
 
 <table>
 <tr></tr>
 <tr><td><b>Keyname</b></td><td><b>Meaning</b></td></tr>
-<tr><td>reqcAction</td><td>RINEX Editing % QC action</td></tr>
+<tr><td>reqcAction</td><td>RINEX Editing & QC action</td></tr>
 <tr><td>reqcObsFile</td><td>RINEX observation input file(s)</td></tr>
 <tr><td>reqcNavFile</td><td>RINEX navigation input files(s)</td></tr>
 <tr><td>reqcOutObsFile</td><td>RINEX observation output file</td></tr>
