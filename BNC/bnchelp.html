@@ -571,7 +571,7 @@ and hence follows UNAVCO's famous 'TEQC' program. The remarkable thing about BNC
 <p>Once the 'Edit/Concatenate' action is selected, you have to 'Set Edit Options'. BNC lets you specify the RINEX version, sampling rate, begin and end of file and marker, antenna, receiver details.
 </p>
 <p>
-When converting RINEX Version 2 to RINEX Version 3, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. When converting RINEX Version 3 to RINEX Version 2
+When converting RINEX Version 2 to RINEX Version 3, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. When converting RINEX Version 3 to RINEX Version 2:
 <ul>
 <li>C1P in RINEX Version 3 is mapped to P1 in RINEX Version 2</li>
 <li>C2P in RINEX Version 3 is mapped to P2 in RINEX Version 2</li>
@@ -595,14 +595,10 @@ specify full path to input RINEX navigation file(s).
 
 <p><a name="reqcoutput"><h4>3.6.4 Output Files - mandatory if 'Action' is set</h4></p>
 <p>
-Mandatory if 'Edit/Concatenate' selected:<br>
-Specify full path to output RINEX observation file(s) and
-specify full path to output RINEX navigation file(s).
-</p> 
+If 'Edit/Concatenate' is selected, specifying the a path to output RINEX observation file(s) and specifying a full path to output RINEX navigation file(s) is mandatory.</p> 
 
 <p>
-Mandatory if 'Analyze' selected:<br>
-Specify logfile(s) to output analysis results.<br> 
+If if 'Analyze' is selected, specifying logfile(s) to output analysis results is mandatory.<br> 
 </p> 
 
 <p><a name="reqccommand"><h4>3.6.5 Command Line, No Window - optional</h4></p>
@@ -613,15 +609,15 @@ BNC applies options from the configuration file but allows updating every one of
 --key &lt;keyName&gt; &lt;keyValue&gt;
 </p>
 <p>
-where &lt;keyName&gt; stands for the name of an option contained in the configuration file and &lt;keyValue&gt; stands for the value you want to assign to it. This functionality may be helpful in the 'RINEX Editing & QC' context when running BNC on a routine bases for maintaining a RINEX file archive.
+where &lt;keyName&gt; stands for the name of an option contained in the configuration file and &lt;keyValue&gt; stands for the value you want to assign to it. This functionality may be helpful in the 'RINEX Editing & QC' context when running BNC on a routine basis for maintaining a RINEX file archive.
 </p>
-The following Linux example calls BNC in 'no window' mode with a local configuration file 'rnx.conf' for concatenating four 15min high-rate RINEX files residing in the local directory to produce an hourly RINEX Version 3 file with 30 seconds sampling rate:
+The following example for a Linux platform calls BNC in 'no window' mode with a local configuration file 'rnx.conf' for concatenating four 15min high-rate RINEX files residing in the local directory to produce an hourly RINEX Version 3 file with 30 seconds sampling rate:
 </p>
 <p>
 ./bnc --nw --conf rnx.conf --key --key reqcAction Edit/Concatenate --key reqcObsFile "tlse119b00.12o,tlse119b15.12o,tlse119b30.12o,tlse119b45.12o" --key reqcOutObsFile tlse119b.12o --key reqcRnxVersion 3 --key reqcSampling 30
 </p>
 <p>
-You may use the asterisk charakter '*' as a wildcard as shown in the following comand line option to specify a selection of files in a certain directory:
+You may use the asterisk '*' wildcard charakter as shown in the following command line options to specify a selection of files in a certain directory:
 </p>
 <p>
 --key reqcObsFile "tlse*"<br>
@@ -630,7 +626,7 @@ or:<br>
 </p>
 
 <p>
-The following is a list of available keynames for 'RINEX Editing & QC' (short: reqc, pronounced 'rek') options and their meaning, cf. section 'Configuration Example':
+The following is a list of available keynames for '<u>R</u>INEX <u>E</u>diting & <u>QC</u>' (short: REQC, pronounced 'rek') options and their meaning, cf. section 'Configuration Example':
 </p>
 
 <table>
