@@ -2300,6 +2300,8 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable &&  enable10, _reqcOutNavLineEdit);
     enableWidget(enable && !enable10, _reqcOutLogLineEdit);
   }
+
+  enableStartStop();
 }
 
 // 
