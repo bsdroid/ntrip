@@ -168,7 +168,7 @@ The default file name 'BNC.ini' can be changed and the file contents can easily 
 &nbsp; &nbsp; &nbsp; 3.6.2 <a href=#reqcedit>Set Edit Options</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.3 <a href=#reqcinput>Input Files</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.4 <a href=#reqcoutput>Output Files</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.5 <a href=#reqccommand>Command Line, No Windows</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.5 <a href=#reqccommand>Command Line, No Window</a><br>
 3.7. <a href=#correct>Broadcast Corrections</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.1. <a href=#corrdir>Directory, ASCII</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.2. <a href=#corrint>Interval</a><br>
@@ -551,13 +551,13 @@ Note that this does not concern the Broadcast Ephemeris output through IP port w
 
 <p><a name="reqc"><h4>3.6. RINEX Editing & QC</h4></p>
 <p>
-Besides stream conversion from RTCM to RINEX, BNC allows to concatenate RINEX files or edit their contents. RINEX observation and navigation files can be handled. BNC can also carry out a quality check of the contents of RINEX files. This functionality in BNC stands for 
+Besides stream conversion from RTCM to RINEX, BNC allows editing RINEX files or concatenate their contents. RINEX observation and navigation files can be handled. BNC can also carry out a RINEX file contents quality check. In summary this functionality in BNC covers
 <ul>
-<li>t = translation</li>
-<li>e = editing and concatenation</li>
-<li>qc = quality check</li>
+<li>stream <u>T</u>ranslation</li>
+<li>file <u>E</u>diting and concatenation</li>
+<li>file <u>Q</b></u>uality <u>C</u>heck</li>
 </ul>
-to follow UNAVCO's famous 'teqc' program. The remarkable thing about BNC in this context is that it supports RINEX Version 3 under GNU General Public License.
+and hence follows UNAVCO's famous 'TEQC' program. The remarkable thing about BNC in this context is that it supports RINEX Version 3 under GNU General Public License.
 
 <p><a name="reqcact"><h4>3.6.1 Action - optional</h4></p>
 <p>Select an action. Options are 'Edit/Concatenate' and 'Analyze'.
@@ -605,9 +605,9 @@ Mandatory if 'Analyze' selected:<br>
 Specify logfile(s) to output analysis results.<br> 
 </p> 
 
-<p><a name="reqccommand"><h4>3.6.5 Command Line, No Windows - optional</h4></p>
+<p><a name="reqccommand"><h4>3.6.5 Command Line, No Window - optional</h4></p>
 <p>
-BNC applies options from the configuration file but allows updating any of them on the command line while the contents of the configuration file remains unchanged, see 'Command Line Options' section. The syntax for that looks as follows
+BNC applies options from the configuration file but allows updating every one of them on the command line while the contents of the configuration file remains unchanged, see section on 'Command Line Options'. The syntax for that looks as follows
 </p>
 <p>
 --key &lt;keyName&gt; &lt;keyValue&gt;
@@ -618,7 +618,7 @@ where &lt;keyName&gt; stands for the name of an option contained in the configur
 The following Linux example calls BNC in 'no window' mode with a local configuration file 'rnx.conf' for concatenating four 15min high-rate RINEX files residing in the local directory to produce an hourly RINEX Version 3 file with 30 seconds sampling rate:
 </p>
 <p>
-./bnc -nw --conf rnx.conf --key --key reqcAction Edit/Concatenate --key reqcObsFile "tlse119b00.12o,tlse119b15.12o,tlse119b30.12o,tlse119b45.12o" --key reqcOutObsFile tlse119b.12o --key reqcRnxVersion 3 --key reqcSampling 30
+./bnc --nw --conf rnx.conf --key --key reqcAction Edit/Concatenate --key reqcObsFile "tlse119b00.12o,tlse119b15.12o,tlse119b30.12o,tlse119b45.12o" --key reqcOutObsFile tlse119b.12o --key reqcRnxVersion 3 --key reqcSampling 30
 </p>
 <p>
 The following is a list of available keynames for 'RINEX Editing & QC' (short: reqc, pronounced 'rek') options and their meaning, cf. section 'Configuration Example':
@@ -2252,7 +2252,7 @@ and specify the full path to an input file containing previously saved data. Exa
 <p>
 Note that when running BNC offline, it will use options for file saving, interval, sampling, PPP etc. from its configuration file.
 </p>
-<p>Note further that option '--file' forces BNC to appy the '-nw' option for running in 'no Window' mode.
+<p>Note further that option '--file' forces BNC to appy the '-nw' option for running in 'no window' mode.
 </p> 
 
 <p><a name="conffile"><h4>3.19.3 Configuration File - optional</h4></p>
@@ -2275,7 +2275,7 @@ if the program is in /Applications and the configuration file 'MyConfig.ini' in 
 
 <p><a name="confopt"><h4>3.19.4 Configuration Options - optional</h4></p>
 <p> 
-BNC applies options from the configuration file but allows updating any of them on the command line while the contents of the configuration file remains unchanged. The command line syntax for that looks as follows
+BNC applies options from the configuration file but allows updating every one of them on the command line while the contents of the configuration file remains unchanged. The command line syntax for that looks as follows
 </p>
 <p>
 --key &lt;keyName&gt; &lt;keyValue&gt;
