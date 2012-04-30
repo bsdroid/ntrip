@@ -611,13 +611,13 @@ BNC applies options from the configuration file but allows updating every one of
 <p>
 where &lt;keyName&gt; stands for the name of an option contained in the configuration file and &lt;keyValue&gt; stands for the value you want to assign to it. This functionality may be helpful in the 'RINEX Editing & QC' context when running BNC on a routine basis for maintaining a RINEX file archive.
 </p>
-The following example for a Linux platform calls BNC in 'no window' mode with a local configuration file 'rnx.conf' for concatenating four 15min high-rate RINEX files residing in the local directory to produce an hourly RINEX Version 3 file with 30 seconds sampling rate:
+The following example for a Linux platform calls BNC in 'no window' mode with a local configuration file 'rnx.conf' for concatenating four 15min RINEX files residing in the local directory to produce an hourly RINEX Version 3 file with 30 seconds sampling rate:
 </p>
 <p>
-./bnc --nw --conf rnx.conf --key --key reqcAction Edit/Concatenate --key reqcObsFile "tlse119b00.12o,tlse119b15.12o,tlse119b30.12o,tlse119b45.12o" --key reqcOutObsFile tlse119b.12o --key reqcRnxVersion 3 --key reqcSampling 30
+./bnc --nw --conf rnx.conf --key reqcAction Edit/Concatenate --key reqcObsFile "tlse119b00.12o,tlse119b15.12o,tlse119b30.12o,tlse119b45.12o" --key reqcOutObsFile tlse119b.12o --key reqcRnxVersion 3 --key reqcSampling 30
 </p>
 <p>
-You may use the asterisk '*' wildcard charakter as shown with the following command line options to specify a selection of files in a certain directory:
+You may use asterisk '*' and/or question mark '?' wildcard charakters as shown with the following globbing command line options to specify a selection of files in a local directory:
 </p>
 <p>
 --key reqcObsFile "tlse*"<br>
