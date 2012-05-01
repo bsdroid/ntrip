@@ -35,6 +35,8 @@ static unsigned long CRC24(long size, const unsigned char *buf) {
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGPS::set(const gpsephemeris* ee) {
 
+  _receptDateTime = currentDateAndTimeGPS();
+
   _prn = QString("G%1").arg(ee->satellite, 2, 10, QChar('0'));
 
   _TOC.set(ee->GPSweek, ee->TOC);
@@ -374,6 +376,8 @@ int t_ephGlo::IOD() const {
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGlo::set(const glonassephemeris* ee) {
 
+  _receptDateTime = currentDateAndTimeGPS();
+
   _prn = QString("R%1").arg(ee->almanac_number, 2, 10, QChar('0'));
 
   int ww  = ee->GPSWeek;
@@ -555,6 +559,8 @@ int t_ephGlo::RTCM3(unsigned char *buffer)
 // Set Galileo Satellite Position
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGal::set(const galileoephemeris* ee) {
+
+  _receptDateTime = currentDateAndTimeGPS();
 
   _prn = QString("E%1").arg(ee->satellite, 2, 10, QChar('0'));
 
