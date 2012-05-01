@@ -279,11 +279,13 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
       eph = ephPair->last;
 
-      // receptDateTime() not (yet?) defined 
-      // if (ephPair->prev && 
-      //     eph->receptDateTime().secsTo(QDateTime::currentDateTime()) < 60) {
-      //   eph = ephPair->prev;
-      // }
+      // Use previous ephemeris if the last one is too recent
+      // ----------------------------------------------------
+      const int MINAGE = 60; // seconds
+      if (ephPair->prev && eph->receptDateTime().isValid() &&
+          eph->receptDateTime().secsTo(currentDateAndTimeGPS()) < MINAGE) {
+        eph = ephPair->prev;
+      }
 
       // Make sure the clock messages refer to same IOD as orbit messages
       // ----------------------------------------------------------------
