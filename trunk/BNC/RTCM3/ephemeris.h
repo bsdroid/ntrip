@@ -35,9 +35,6 @@ class t_eph {
     return earlierTime(eph, this);
   }
   QString prn() const {return _prn;}
-  void  setReceptDateTime(const QDateTime& dateTime) {
-    _receptDateTime = dateTime;
-  }
   const QDateTime& receptDateTime() const {return _receptDateTime;}
 
   void position(int GPSweek, double GPSweeks, 
