@@ -244,18 +244,16 @@ t_irc t_corr::readLine(const QString& line) {
   }
   else if ( messageType == COTYPE_GPSCLOCK    || 
             messageType == COTYPE_GLONASSCLOCK ) {
-    if (tRao.valid()) {
-      int dummyIOD;
-      dClk       = 0.0;
-      dotDClk    = 0.0;
-      dotDotDClk = 0.0;
-      in >> dummyIOD >> dClk >> dotDClk >> dotDotDClk;
-      dClk       /= t_CST::c;
-      dotDClk    /= t_CST::c;
-      dotDotDClk /= t_CST::c;
+    int dummyIOD;
+    dClk       = 0.0;
+    dotDClk    = 0.0;
+    dotDotDClk = 0.0;
+    in >> dummyIOD >> dClk >> dotDClk >> dotDotDClk;
+    dClk       /= t_CST::c;
+    dotDClk    /= t_CST::c;
+    dotDotDClk /= t_CST::c;
 
-      tClk.set(GPSweek, GPSweeks);
-    }
+    tClk.set(GPSweek, GPSweeks);
   }
   else if ( messageType == COTYPE_GPSHR    ||
             messageType == COTYPE_GLONASSHR ) {
