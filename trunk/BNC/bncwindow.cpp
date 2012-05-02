@@ -951,7 +951,7 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(_pppApplySatAntCheckBox,              ir, 1, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("Apply Sat. Ant. Offsets"),ir, 2);
   ++ir;
-  ppp2Layout->addWidget(new QLabel("Options"),                ir, 0, 1, 5);
+  ppp2Layout->addWidget(new QLabel("Basics"),                 ir, 0, 1, 5);
   ppp2Layout->addWidget(_pppUsePhaseCheckBox,                 ir, 1, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("Use phase obs"),          ir, 2);
   ppp2Layout->addWidget(_pppEstTropoCheckBox,                 ir, 3, Qt::AlignRight);
@@ -961,7 +961,7 @@ bncWindow::bncWindow() {
   ppp2Layout->addWidget(_pppGalileoCheckBox,                  ir, 7, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("Use Galileo     "),       ir, 8);
   ++ir;
-  ppp2Layout->addWidget(new QLabel("Options cont'd"),         ir, 0);  
+  ppp2Layout->addWidget(new QLabel("Basics cont'd"),          ir, 0);  
   ppp2Layout->addWidget(_pppSync,                             ir, 1);
   ppp2Layout->addWidget(new QLabel("Sync Corr (sec)     "),   ir, 2);
   ppp2Layout->addWidget(_pppAverageLineEdit,                  ir, 3, Qt::AlignRight);
