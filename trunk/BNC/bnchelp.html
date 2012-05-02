@@ -22,10 +22,11 @@ Please ensure that you have installed the latest version of BNC available from <
 <h4>
 <a href=#purpose>1. Purpose</a><br>
 <a href=#resources>2. Modes &amp; Resources</a><br>
-<a href=#options>3. Settings &amp; Handling</a><br>
-<a href=#limits>4. Limitations &amp; Known Bugs</a><br>
-<a href=#authors>5. Authors</a><br>
-<a href=#annex>6. Annex</a><br>
+<a href=#options>3. Handling</a><br>
+<a href=#options>5. Settings</a><br>
+<a href=#limits>5. Limitations &amp; Known Bugs</a><br>
+<a href=#authors>6. Authors</a><br>
+<a href=#annex>7. Annex</a><br>
 </h4>
 </p>
 
@@ -120,10 +121,7 @@ The main window of BNC shows a 'Top menu bar' section, a 'Settings' sections wit
 <p><u>Figure 5:</u> Sections on BNC's main window.</p>
 
 
-<p><a name="options"><h3>3. Settings &amp; Handling</h3></p>
-<p>
-This chapter describes how to handle BNC and how to set the program options. It explains the top menu bar, the processing options, the 'Streams' and 'Log' sections, and the bottom menu bar.
-</p>
+<p><a name="options"><h3>3. Handling</h3></p>
 
 <p>
 The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various configuration tabs to select a combination of input, processing and output options before you start the program ('Start'). Most configuration tabs are dedicated to a certain functionality of BNC. If the first option field on such a configuration tab is empty, the affected functionality is - apart from a few exceptions -  deactivated.</p>
@@ -135,162 +133,166 @@ As a default, configuration files for running BNC on Unix/Linux/Mac systems are 
 <p>
 The default file name 'BNC.ini' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac systems). Some configuration options can be changed on-the-fly. See annexed 'Configuration Example' for a complete set of configuration options. It is also possible to start and configure BNC via command line.
 </p>
+<p><a name="options"><h3>4. Settings</h3></p>
+<p>
+This chapter describes how to set the BNC program options. It explains the top menu bar, the processing options, the 'Streams' and 'Log' sections, and the bottom menu bar.
+</p>
 <p>
 <b>Top Menu Bar</b><br>
-3.1. <a href=#topmenu>Top Menu Bar</a><br>
-3.1.1 <a href=#file>File</a><br>
-3.1.2 <a href=#help>Help</a><br><br>
+4.1. <a href=#topmenu>Top Menu Bar</a><br>
+4.1.1 <a href=#file>File</a><br>
+4.1.2 <a href=#help>Help</a><br><br>
 <b>Settings Canvas</b><br>
-3.2. <a href=#network>Network</a><br>
-3.2.1 <a href=#proxy>Proxy</a><br>
-3.2.2 <a href=#ssl>SSL</a><br>
-3.3. <a href=#general>General</a><br>
-&nbsp; &nbsp; &nbsp; 3.3.1. <a href=#genlog>Logfile</a><br>
-&nbsp; &nbsp; &nbsp; 3.3.2. <a href=#genapp>Append Files</a><br>
-&nbsp; &nbsp; &nbsp; 3.3.3. <a href=#genconf>Reread Configuration</a><br>
-&nbsp; &nbsp; &nbsp; 3.3.4. <a href=#genstart>Auto Start</a><br>
-&nbsp; &nbsp; &nbsp; 3.3.5. <a href=#rawout>Raw Output File</a><br>
-3.4. <a href=#rinex>RINEX Observations</a><br>
-&nbsp; &nbsp; &nbsp; 3.4.1. <a href=#rnxname>File Names</a><br>
-&nbsp; &nbsp; &nbsp; 3.4.2. <a href=#rnxdir>Directory</a><br>
-&nbsp; &nbsp; &nbsp; 3.4.3. <a href=#rnxinterval>File Interval</a><br>
-&nbsp; &nbsp; &nbsp; 3.4.4. <a href=#rnxsample>Sampling</a><br>
-&nbsp; &nbsp; &nbsp; 3.4.5. <a href=#rnxskl>Skeleton Extension</a><br>
-&nbsp; &nbsp; &nbsp; 3.4.6. <a href=#rnxscript>Script</a><br>
-&nbsp; &nbsp; &nbsp; 3.4.7. <a href=#rnxvers>Version</a><br>
-3.5. <a href=#ephemeris>RINEX Ephemeris</a><br>
-&nbsp; &nbsp; &nbsp; 3.5.1. <a href=#ephdir>Directory</a><br>
-&nbsp; &nbsp; &nbsp; 3.5.2. <a href=#ephint>Interval</a><br>
-&nbsp; &nbsp; &nbsp; 3.5.3. <a href=#ephport>Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.5.4. <a href=#ephvers>Version</a><br>
-3.6. <a href=#reqc>RINEX Editing & QC</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.1 <a href=#reqcact>Action</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.2 <a href=#reqcedit>Set Edit Options</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.3 <a href=#reqcinput>Input Files</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.4 <a href=#reqcoutput>Output Files</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.5 <a href=#reqccommand>Command Line, No Window</a><br>
-3.7. <a href=#correct>Broadcast Corrections</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.1. <a href=#corrdir>Directory, ASCII</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.2. <a href=#corrint>Interval</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.3. <a href=#corrport>Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.4. <a href=#corrwait>Wait for Full Epoch</a><br>
-3.8. <a href=#syncout>Feed Engine</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.1. <a href=#syncport>Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.2. <a href=#syncwait>Wait for Full Epoch</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.3. <a href=#syncsample>Sampling</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.4. <a href=#syncfile>File</a><br>
-&nbsp; &nbsp; &nbsp; 3.8.5. <a href=#syncuport>Port (unsynchronized)</a><br>
-3.9. <a href=#serial>Serial Output</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.1. <a href=#sermount>Mountpoint</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.2. <a href=#serport>Port Name</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.3. <a href=#serbaud>Baud Rate</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.4. <a href=#serflow>Flow Control</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.5. <a href=#serparity>Parity</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.6. <a href=#serdata>Data Bits</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.7. <a href=#serstop>Stop Bits</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.8. <a href=#serauto>NMEA</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.9. <a href=#serfile>File</a><br>
-&nbsp; &nbsp; &nbsp; 3.9.10. <a href=#serheight>Height</a><br>
-3.10. <a href=#advnote>Outages</a><br>
-&nbsp; &nbsp; &nbsp; 3.10.1. <a href=#obsrate>Observation Rate</a><br>
-&nbsp; &nbsp; &nbsp; 3.10.2. <a href=#advfail>Failure Threshold</a><br>
-&nbsp; &nbsp; &nbsp; 3.10.3. <a href=#advreco>Recovery Threshold</a><br>
-&nbsp; &nbsp; &nbsp; 3.10.4. <a href=#advscript>Script</a><br>
-3.11. <a href=#misc>Miscellaneous</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.1. <a href=#miscmount>Mountpoint</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.2. <a href=#miscperf>Log Latency</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3. <a href=#miscscan>Scan RTCM</a><br>
-3.12. <a href=#pppclient>PPP Client</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.1 <a href=#pppmode>Mode & Mountpoints</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.1.1 <a href=#pppmodus>Mode</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.1.2 <a href=#pppobsmount>Obs Mountpoint</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.1.3 <a href=#pppcorrmount>Corr Mountpoint</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.2 <a href=#pppxyz>Marker Coordinates</a><br>
-&nbsp; &nbsp; &nbsp; 3.11.3 <a href=#pppneu>Antenna Excentricity</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.4 <a href=#pppoutput>NMEA & Plot Output</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.4.1 <a href=#pppnmeafile>NMEA File</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.4.2 <a href=#pppnmeaport>NMEA Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.4.3 <a href=#pppplot>PPP Plot</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.5 <a href=#ppppost>Post Processing</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.6 <a href=#ppprecant>Antennas</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.6.1 <a href=#pppantex>ANTEX File</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.6.2 <a href=#ppprecantenna>Antenna Name</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.6.3 <a href=#pppsatant>Apply Satellite Antenna Offsets</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.7 <a href=#pppopt>Basic Options</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.7.1 <a href=#pppphase>Use Phase Obs</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.7.2 <a href=#ppptropo>Estimate Tropo</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.7.3 <a href=#pppglo>Use GLONASS</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.7.4 <a href=#pppgal>Use Galileo</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.7.5 <a href=#pppsync>Sync Corr</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.7.6 <a href=#pppaverage>Averaging</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.7.7 <a href=#pppquick>Quick-Start</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.7.8 <a href=#pppgap>Maximal Solution Gap</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.8 <a href=#pppsigmas>Sigmas</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.8.1 <a href=#pppsigc>Code</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.8.2 <a href=#pppsigp>Phase</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.8.3 <a href=#pppsigxyzi>XYZ Init</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.8.4 <a href=#pppsigxyzn>XYZ White Noise</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.8.5 <a href=#pppsigtrpi>Tropo Init</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.8.6 <a href=#pppsigtrpn>Tropo White Noise</a><br>
-3.13. <a href=#combi>Combination</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.1 <a href=#combimounttab>Combination Table</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.1.1 <a href=#combiadd>Add Row, Delete</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.1.2 <a href=#combimethod>Method</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.1.3 <a href=#combimax>Maximal Residuum</a><br>
-3.14. <a href=#upclk>Upload (clk)</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.1 <a href=#upadd>Add, Delete Row</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.2 <a href=#uphost>Host, Port, Mountpoint, Password</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.3 <a href=#upsystem>System</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.4 <a href=#upcom>Center of Mass</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.5 <a href=#upsp3>SP3 File</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.6 <a href=#uprinex>RNX File</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.7 <a href=#upinter>Interval</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.8 <a href=#upclksmpl>Sampling (Clk)</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.9 <a href=#uporbsmpl>Sampling (Orb)</a><br>
-&nbsp; &nbsp; &nbsp; 3.14.10 <a href=#upcustom>Custom Trafo</a><br>
-3.15. <a href=#upeph>Upload (eph)</a><br>
-&nbsp; &nbsp; &nbsp; 3.15.1 <a href=#brdcserver>Host &amp; Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.15.2 <a href=#brdcmount>Mountpoint &amp; Password</a><br>
-&nbsp; &nbsp; &nbsp; 3.15.3 <a href=#brdcsmpl>Sampling</a><br><br>
+4.2. <a href=#network>Network</a><br>
+4.2.1 <a href=#proxy>Proxy</a><br>
+4.2.2 <a href=#ssl>SSL</a><br>
+4.3. <a href=#general>General</a><br>
+&nbsp; &nbsp; &nbsp; 4.3.1. <a href=#genlog>Logfile</a><br>
+&nbsp; &nbsp; &nbsp; 4.3.2. <a href=#genapp>Append Files</a><br>
+&nbsp; &nbsp; &nbsp; 4.3.3. <a href=#genconf>Reread Configuration</a><br>
+&nbsp; &nbsp; &nbsp; 4.3.4. <a href=#genstart>Auto Start</a><br>
+&nbsp; &nbsp; &nbsp; 4.3.5. <a href=#rawout>Raw Output File</a><br>
+4.4. <a href=#rinex>RINEX Observations</a><br>
+&nbsp; &nbsp; &nbsp; 4.4.1. <a href=#rnxname>File Names</a><br>
+&nbsp; &nbsp; &nbsp; 4.4.2. <a href=#rnxdir>Directory</a><br>
+&nbsp; &nbsp; &nbsp; 4.4.3. <a href=#rnxinterval>File Interval</a><br>
+&nbsp; &nbsp; &nbsp; 4.4.4. <a href=#rnxsample>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; 4.4.5. <a href=#rnxskl>Skeleton Extension</a><br>
+&nbsp; &nbsp; &nbsp; 4.4.6. <a href=#rnxscript>Script</a><br>
+&nbsp; &nbsp; &nbsp; 4.4.7. <a href=#rnxvers>Version</a><br>
+4.5. <a href=#ephemeris>RINEX Ephemeris</a><br>
+&nbsp; &nbsp; &nbsp; 4.5.1. <a href=#ephdir>Directory</a><br>
+&nbsp; &nbsp; &nbsp; 4.5.2. <a href=#ephint>Interval</a><br>
+&nbsp; &nbsp; &nbsp; 4.5.3. <a href=#ephport>Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.5.4. <a href=#ephvers>Version</a><br>
+4.6. <a href=#reqc>RINEX Editing & QC</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.1 <a href=#reqcact>Action</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.2 <a href=#reqcedit>Set Edit Options</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.3 <a href=#reqcinput>Input Files</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.4 <a href=#reqcoutput>Output Files</a><br>
+&nbsp; &nbsp; &nbsp; 4.6.5 <a href=#reqccommand>Command Line, No Window</a><br>
+4.7. <a href=#correct>Broadcast Corrections</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.1. <a href=#corrdir>Directory, ASCII</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.2. <a href=#corrint>Interval</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.3. <a href=#corrport>Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.7.4. <a href=#corrwait>Wait for Full Epoch</a><br>
+4.8. <a href=#syncout>Feed Engine</a><br>
+&nbsp; &nbsp; &nbsp; 4.8.1. <a href=#syncport>Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.8.2. <a href=#syncwait>Wait for Full Epoch</a><br>
+&nbsp; &nbsp; &nbsp; 4.8.3. <a href=#syncsample>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; 4.8.4. <a href=#syncfile>File</a><br>
+&nbsp; &nbsp; &nbsp; 4.8.5. <a href=#syncuport>Port (unsynchronized)</a><br>
+4.9. <a href=#serial>Serial Output</a><br>
+&nbsp; &nbsp; &nbsp; 4.9.1. <a href=#sermount>Mountpoint</a><br>
+&nbsp; &nbsp; &nbsp; 4.9.2. <a href=#serport>Port Name</a><br>
+&nbsp; &nbsp; &nbsp; 4.9.3. <a href=#serbaud>Baud Rate</a><br>
+&nbsp; &nbsp; &nbsp; 4.9.4. <a href=#serflow>Flow Control</a><br>
+&nbsp; &nbsp; &nbsp; 4.9.5. <a href=#serparity>Parity</a><br>
+&nbsp; &nbsp; &nbsp; 4.9.6. <a href=#serdata>Data Bits</a><br>
+&nbsp; &nbsp; &nbsp; 4.9.7. <a href=#serstop>Stop Bits</a><br>
+&nbsp; &nbsp; &nbsp; 4.9.8. <a href=#serauto>NMEA</a><br>
+&nbsp; &nbsp; &nbsp; 4.9.9. <a href=#serfile>File</a><br>
+&nbsp; &nbsp; &nbsp; 4.9.10. <a href=#serheight>Height</a><br>
+4.10. <a href=#advnote>Outages</a><br>
+&nbsp; &nbsp; &nbsp; 4.10.1. <a href=#obsrate>Observation Rate</a><br>
+&nbsp; &nbsp; &nbsp; 4.10.2. <a href=#advfail>Failure Threshold</a><br>
+&nbsp; &nbsp; &nbsp; 4.10.3. <a href=#advreco>Recovery Threshold</a><br>
+&nbsp; &nbsp; &nbsp; 4.10.4. <a href=#advscript>Script</a><br>
+4.11. <a href=#misc>Miscellaneous</a><br>
+&nbsp; &nbsp; &nbsp; 4.11.1. <a href=#miscmount>Mountpoint</a><br>
+&nbsp; &nbsp; &nbsp; 4.11.2. <a href=#miscperf>Log Latency</a><br>
+&nbsp; &nbsp; &nbsp; 4.11.3. <a href=#miscscan>Scan RTCM</a><br>
+4.12. <a href=#pppclient>PPP Client</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.1 <a href=#pppmode>Mode & Mountpoints</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.1.1 <a href=#pppmodus>Mode</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.1.2 <a href=#pppobsmount>Obs Mountpoint</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.1.3 <a href=#pppcorrmount>Corr Mountpoint</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.2 <a href=#pppxyz>Marker Coordinates</a><br>
+&nbsp; &nbsp; &nbsp; 4.11.3 <a href=#pppneu>Antenna Excentricity</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.4 <a href=#pppoutput>NMEA & Plot Output</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.4.1 <a href=#pppnmeafile>NMEA File</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.4.2 <a href=#pppnmeaport>NMEA Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.4.3 <a href=#pppplot>PPP Plot</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.5 <a href=#ppppost>Post Processing</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.6 <a href=#ppprecant>Antennas</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.6.1 <a href=#pppantex>ANTEX File</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.6.2 <a href=#ppprecantenna>Antenna Name</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.6.3 <a href=#pppsatant>Apply Satellite Antenna Offsets</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.7 <a href=#pppopt>Basic Options</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.7.1 <a href=#pppphase>Use Phase Obs</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.7.2 <a href=#ppptropo>Estimate Tropo</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.7.3 <a href=#pppglo>Use GLONASS</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.7.4 <a href=#pppgal>Use Galileo</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.7.5 <a href=#pppsync>Sync Corr</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.7.6 <a href=#pppaverage>Averaging</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.7.7 <a href=#pppquick>Quick-Start</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.7.8 <a href=#pppgap>Maximal Solution Gap</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.8 <a href=#pppsigmas>Sigmas</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.8.1 <a href=#pppsigc>Code</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.8.2 <a href=#pppsigp>Phase</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.8.3 <a href=#pppsigxyzi>XYZ Init</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.8.4 <a href=#pppsigxyzn>XYZ White Noise</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.8.5 <a href=#pppsigtrpi>Tropo Init</a><br>
+&nbsp; &nbsp; &nbsp; 4.12.8.6 <a href=#pppsigtrpn>Tropo White Noise</a><br>
+4.13. <a href=#combi>Combination</a><br>
+&nbsp; &nbsp; &nbsp; 4.13.1 <a href=#combimounttab>Combination Table</a><br>
+&nbsp; &nbsp; &nbsp; 4.13.1.1 <a href=#combiadd>Add Row, Delete</a><br>
+&nbsp; &nbsp; &nbsp; 4.13.1.2 <a href=#combimethod>Method</a><br>
+&nbsp; &nbsp; &nbsp; 4.13.1.3 <a href=#combimax>Maximal Residuum</a><br>
+4.14. <a href=#upclk>Upload (clk)</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.1 <a href=#upadd>Add, Delete Row</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.2 <a href=#uphost>Host, Port, Mountpoint, Password</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.3 <a href=#upsystem>System</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.4 <a href=#upcom>Center of Mass</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.5 <a href=#upsp3>SP3 File</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.6 <a href=#uprinex>RNX File</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.7 <a href=#upinter>Interval</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.8 <a href=#upclksmpl>Sampling (Clk)</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.9 <a href=#uporbsmpl>Sampling (Orb)</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.10 <a href=#upcustom>Custom Trafo</a><br>
+4.15. <a href=#upeph>Upload (eph)</a><br>
+&nbsp; &nbsp; &nbsp; 4.15.1 <a href=#brdcserver>Host &amp; Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.15.2 <a href=#brdcmount>Mountpoint &amp; Password</a><br>
+&nbsp; &nbsp; &nbsp; 4.15.3 <a href=#brdcsmpl>Sampling</a><br><br>
 <b>Streams Canvas</b><br>
-3.16. <a href=#streams>Streams</a><br>
-&nbsp; &nbsp; &nbsp; 3.16.1 <a href=#streamedit>Edit Streams</a><br>
-&nbsp; &nbsp; &nbsp; 3.16.2 <a href=#streamdelete>Delete Stream</a><br>
-&nbsp; &nbsp; &nbsp; 3.16.3 <a href=#streamconf>Reconfigure Streams On-the-fly</a><br><br>
+4.16. <a href=#streams>Streams</a><br>
+&nbsp; &nbsp; &nbsp; 4.16.1 <a href=#streamedit>Edit Streams</a><br>
+&nbsp; &nbsp; &nbsp; 4.16.2 <a href=#streamdelete>Delete Stream</a><br>
+&nbsp; &nbsp; &nbsp; 4.16.3 <a href=#streamconf>Reconfigure Streams On-the-fly</a><br><br>
 <b>Logging Canvas</b><br>
-3.17. <a href=#logs>Logging</a><br>
-&nbsp; &nbsp; &nbsp; 3.17.1 <a href=#logfile>Log</a><br>
-&nbsp; &nbsp; &nbsp; 3.17.2 <a href=#throughput>Throughput</a><br>
-&nbsp; &nbsp; &nbsp; 3.17.3 <a href=#latency>Latency</a><br>
-&nbsp; &nbsp; &nbsp; 3.17.4 <a href=#ppptab>PPP Plot</a><br><br>
+4.17. <a href=#logs>Logging</a><br>
+&nbsp; &nbsp; &nbsp; 4.17.1 <a href=#logfile>Log</a><br>
+&nbsp; &nbsp; &nbsp; 4.17.2 <a href=#throughput>Throughput</a><br>
+&nbsp; &nbsp; &nbsp; 4.17.3 <a href=#latency>Latency</a><br>
+&nbsp; &nbsp; &nbsp; 4.17.4 <a href=#ppptab>PPP Plot</a><br><br>
 <b>Bottom Menu Bar</b><br>
-3.18. <a href=#bottom>Bottom Menu Bar</a><br>
-&nbsp; &nbsp; &nbsp; 3.18.1. <a href=#streamadd>Add Stream - Coming from Caster</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.1 <a href=#streamhost>Caster Host and Port</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.2 <a href=#streamtable>Casters Table</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.3 <a href=#streamuser>User and Password</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.4 <a href=#gettable>Get Table</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.5 <a href=#ntripv>NTRIP Version</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.6 <a href=#map>Map</a><br>
-&nbsp; &nbsp; &nbsp; 3.18.2 <a href=#streamip>Add Stream - Coming from TCP/IP Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.18.3 <a href=#streamudp>Add Stream - Coming from UDP Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.18.4 <a href=#streamser>Add Stream - Coming from Serial Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.18.5 <a href=#start>Start</a><br>
-&nbsp; &nbsp; &nbsp; 3.18.6 <a href=#stop>Stop</a><br><br>
+4.18. <a href=#bottom>Bottom Menu Bar</a><br>
+&nbsp; &nbsp; &nbsp; 4.18.1. <a href=#streamadd>Add Stream - Coming from Caster</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 4.18.1.1 <a href=#streamhost>Caster Host and Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 4.18.1.2 <a href=#streamtable>Casters Table</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 4.18.1.3 <a href=#streamuser>User and Password</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 4.18.1.4 <a href=#gettable>Get Table</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 4.18.1.5 <a href=#ntripv>NTRIP Version</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 4.18.1.6 <a href=#map>Map</a><br>
+&nbsp; &nbsp; &nbsp; 4.18.2 <a href=#streamip>Add Stream - Coming from TCP/IP Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.18.3 <a href=#streamudp>Add Stream - Coming from UDP Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.18.4 <a href=#streamser>Add Stream - Coming from Serial Port</a><br>
+&nbsp; &nbsp; &nbsp; 4.18.5 <a href=#start>Start</a><br>
+&nbsp; &nbsp; &nbsp; 4.18.6 <a href=#stop>Stop</a><br><br>
 <b>Command Line</b><br>
-3.19. <a href=#cmd>Command Line Options</a><br>
-&nbsp; &nbsp; &nbsp; 3.19.1. <a href=#nw>No Window Mode</a><br>
-&nbsp; &nbsp; &nbsp; 3.19.2. <a href=#post>File Mode</a><br>
-&nbsp; &nbsp; &nbsp; 3.19.3. <a href=#conffile>Configuration File</a><br>
-&nbsp; &nbsp; &nbsp; 3.19.4. <a href=#confopt>Configuration Options</a><br>
+4.19. <a href=#cmd>Command Line Options</a><br>
+&nbsp; &nbsp; &nbsp; 4.19.1. <a href=#nw>No Window Mode</a><br>
+&nbsp; &nbsp; &nbsp; 4.19.2. <a href=#post>File Mode</a><br>
+&nbsp; &nbsp; &nbsp; 4.19.3. <a href=#conffile>Configuration File</a><br>
+&nbsp; &nbsp; &nbsp; 4.19.4. <a href=#confopt>Configuration Options</a><br>
 </p>
 
-<p><a name="topmenu"><h4>3.1. Top Menu Bar</h4></p>
+<p><a name="topmenu"><h4>4.1. Top Menu Bar</h4></p>
 <p>
 The top menu bar allows to select a font for the BNC windows, save configured options, or quit the program execution. It also provides access to a program documentation.
 </p>
 
-<p><a name="file"><h4>3.1.1 File</h4></p>
+<p><a name="file"><h4>4.1.1 File</h4></p>
 
 <p>
 The 'File' button lets you
@@ -306,7 +308,7 @@ When using 'Save &amp; Reread Configuration' while BNC is already processing dat
 </ul>
 </p>
 
-<p><a name="help"><h4>3.1.2 Help</h4></p>
+<p><a name="help"><h4>4.1.2 Help</h4></p>
 
 <p>
 The 'Help' button provides access to
@@ -328,42 +330,42 @@ Close the 'About BNC' window to continue working with BNC.
 BNC comes with a help system providing online information about its functionality and usage. Short descriptions are available for any widget. Focus to the relevant widget and press Shift+F1 to request help information. A help text appears immediately; it disappears as soon as the user does something else. The dialogs on some operating systems may provide a &quot;?&quot; button that users can click; they then click the relevant widget to pop up the help text.
 </p>
 
-<p><a name="network"><h4>3.2. Network</h4></p>
+<p><a name="network"><h4>4.2. Network</h4></p>
 <p>
 You may need to specify a proxy when running BNC in a protected network. You may also like to use the Transport Layer Security (TLS) and its predecessor, Secure Sockets Layer (SSL) cryptographic protocols for secure NTRIP communication over the Internet.
 </p>
-<p><a name="proxy"><h4>3.2.1 Proxy - Usage in a protected LAN</h4></p>
+<p><a name="proxy"><h4>4.2.1 Proxy - Usage in a protected LAN</h4></p>
 <p>
 If you are running BNC within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you don't know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p>
 <p>
 Note that IP streaming is often not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the NTRIP Broadcasters. If these are not possible, you might need to run BNC outside your LAN on a host that has unobstructed connection to the Internet.
 </p>
 
-<p><a name="ssl"><h4>3.2.2 SSL - Transport Layer Security</h4></p>
+<p><a name="ssl"><h4>4.2.2 SSL - Transport Layer Security</h4></p>
 <p>Communication with an NTRIP Broadcaster over SSL requires the exchange of client and/or server certificates. Specify the path to a directory where you save certificates on your system. You may like to check out <u>http://software.rtcm-ntrip.org/wiki/Certificates</u> for a list of known NTRIP Server certificates. Don't try communication via SSL if you are not sure whether this is supported by the involved NTRIP Broadcaster. </p>
 <p>SSL communication may involve queries coming from the NTRIP Broadcaster. Tick 'Ignore SSL authorization erros' if you don't want to be bothered with this. Note that SSL communication is usually done over port 443.</p>
 
-<p><a name="general"><h4>3.3. General</h4></p>
+<p><a name="general"><h4>4.3. General</h4></p>
 <p>
 The following defines general settings for BNC's logfile, file handling, reconfiguration on-the-fly, and auto-start.
 </p>
 
-<p><a name="genlog"><h4>3.3.1 Logfile - optional</h4></p>
+<p><a name="genlog"><h4>4.3.1 Logfile - optional</h4></p>
 <p>
 Records of BNC's activities are shown in the 'Log' tab on the bottom of the main window. These logs can be saved into a file when a valid path is specified in the 'Logfile (full path)' field. The logfile name will automatically be extended by a string '_YYMMDD' carrying the current date. This leads to series of daily logfiles when running BNC continuously for extended. Message logs cover the communication status between BNC and the NTRIP Broadcaster as well as problems that may occur in the communication link, stream availability, stream delay, stream conversion etc. All times are given in UTC. The default value for 'Logfile (full path)' is an empty option field, meaning that BNC logs will not saved into a file.
 </p>
 
-<p><a name="genapp"><h4>3.3.2 Append Files - optional</h4></p>
+<p><a name="genapp"><h4>4.3.2 Append Files - optional</h4></p>
 <p>
 When BNC is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append existing files following a restart of BNC, a system crash or when BNC crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far. Note that option 'Append files' affects all types of files created by BNC.
 </p> 
 
-<p><a name="genconf"><h4>3.3.3 Reread Configuration - optional</h4></p>
+<p><a name="genconf"><h4>4.3.3 Reread Configuration - optional</h4></p>
 <p>
 When operating BNC online in 'no window' mode (command line option -nw), some configuration options can nevertheless be changed on-the-fly without interrupting the running process. For that you force the program to reread parts of its configuration in pre-defined intervals from the disk. Select '1 min', '1 hour', or '1 day' to let BNC reread on-the-fly changeable configuration options every full minute, hour, or day. This lets in between edited options become effective without interrupting uninvolved threads. See annexed section 'Configuration Example' for a configuration file example and a list of on-the-fly changeable options.
 </p> 
 
-<p><a name="genstart"><h4>3.3.4 Auto Start - optional</h4></p>
+<p><a name="genstart"><h4>4.3.4 Auto Start - optional</h4></p>
 <p>
 You may like to auto-start BNC at startup time in window mode with pre-assigned configuration options. This may be required i.e. immediately after booting your system. Tick 'Auto start' to supersede the usage of the 'Start' button. Make sure that you maintain a link to BNC for that in your Autostart directory (Windows systems) or call BNC in a script below directory /etc/init.d (Unix/Linux/Mac systems).
 </p>
@@ -371,7 +373,7 @@ You may like to auto-start BNC at startup time in window mode with pre-assigned 
  See BNC's command line option -nw for an auto-start of BNC in 'no window' mode.
 </p>
 
-<p><a name="rawout"><h4>3.3.5 Raw Output File - optional</h4></p>
+<p><a name="rawout"><h4>4.3.5 Raw Output File - optional</h4></p>
 <p>
 BNC can save all data coming in through various streams in one daily file. The information is recorded in the specified 'Raw output file' in the received order and format. This feature allows a BNC user to run the PPP option offline with observations, Broadcast Corrections, and Broadcast Ephemeris being read from a previously saved file. It supports the offline repetition of a real-time situation for debugging purposes. It is not meant for post-processing.
 </p>
@@ -386,7 +388,7 @@ This example block header tells you that 67 bytes were saved in the data block f
 The default value for 'Raw output file' is an empty option field, meaning that BNC will not save all raw data into one single daily file.
 </p>
 
-<p><a name="rinex"><h4>3.4. RINEX Observations</h4></p>
+<p><a name="rinex"><h4>4.4. RINEX Observations</h4></p>
 <p>
 Observations will be converted to RINEX if they come in either RTCM Version 2 or RTCM Version 3 format. Depending on the RINEX version and incoming RTCM message types, the files generated by BNC may contain data from GPS, GLONASS, Galileo, SBAS, QZSS, and COMPASS. In case an observation type is listed in the RINEX header but the corresponding observation is unavailable, its value is set to zero '0.000'. Note that the 'RINEX TYPE' field in the RINEX Version 3 Observation file header is always set to 'M(MIXED)' or 'Mixed' even if the file only contains data from one system.
 </p> 
@@ -397,7 +399,7 @@ The screenshot below shows an example setup of BNC when converting streams to RI
 <p><img src="IMG/screenshot16.png"/></p>
 <p><u>Figure 6:</u> BNC translating incoming streams to 15 min RINEX Version 3 files.</p>
 
-<p><a name="rnxname"><h4>3.4.1 RINEX File Names</h4></p>
+<p><a name="rnxname"><h4>4.4.1 RINEX File Names</h4></p>
 <p>
 RINEX file names are derived by BNC from the first 4 characters of the corresponding stream's mountpoint (4Char Station ID). For example, data from mountpoints FRANKFURT and WETTZELL will have hourly RINEX Observation files named</p>
 <p>
@@ -428,22 +430,22 @@ FRAN{ddd}{h}{mm}.{yy}O
 where 'mm' is the starting minute within the hour.
 </p>
 
-<p><a name="rnxdir"><h4>3.4.2 Directory - optional</h4></p>
+<p><a name="rnxdir"><h4>4.4.2 Directory - optional</h4></p>
 <p>
 Here you can specify the path to where the RINEX Observation files will be stored. If the specified directory does not exist, BNC will not create RINEX Observation files. Default value for 'Directory' is an empty option field, meaning that no RINEX Observation files will be written.
 </p> 
 
-<p><a name="rnxinterval"><h4>3.4.3 File Interval - mandatory if 'Directory' is set</h4></p>
+<p><a name="rnxinterval"><h4>4.4.3 File Interval - mandatory if 'Directory' is set</h4></p>
 <p>
 Select the length of the RINEX Observation file generated. The default value is 15 minutes.
 </p> 
 
-<p><a name="rnxsample"><h4>3.4.4 Sampling - mandatory if 'Directory' is set </h4></p>
+<p><a name="rnxsample"><h4>4.4.4 Sampling - mandatory if 'Directory' is set </h4></p>
 <p>
 Select the RINEX Observation sampling interval in seconds. A value of zero '0' tells BNC to store all received epochs into RINEX. This is the default value.
 </p> 
 
-<p><a name="rnxskl"><h4>3.4.5 Skeleton Extension - optional</h4></p>
+<p><a name="rnxskl"><h4>4.4.5 Skeleton Extension - optional</h4></p>
 <p>
 Whenever BNC starts generating RINEX Observation files (and then once every day at midnight), it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. A HTTP link to a directory containing these skeleton files may be available through data field number 7 of the affected NET record in the source-table. See <u>http://www.epncb.oma.be:80/stations/log/skl/brus.skl</u> for an example of a public RINEX Version 2 header skeleton file for the Brussels EPN station. 
 </p>
@@ -494,7 +496,7 @@ BNC will complete this line and include it in the RINEX file header.</li>
 If neither a public nor a personal RINEX header skeleton file is available for BNC, a default header will be used.
 </p>
 
-<p><a name="rnxscript"><h4>3.4.6 Script - optional</h4></p>
+<p><a name="rnxscript"><h4>4.4.6 Script - optional</h4></p>
 <p>
 Whenever a RINEX Observation file is saved, you might want to compress copy or upload it immediately via FTP. BNC allows you to execute a script/batch file to carry out these operations. To do that specify the full path of the script/batch file here. BNC will pass the RINEX Observation file path to the script as a command line parameter (%1 on Windows systems, $1 on Unix/Linux/Mac systems).
 </p> 
@@ -505,12 +507,12 @@ The triggering event for calling the script or batch file is the end of a RINEX 
 As an alternative to initiating file uploads through BNC, you may like to call an upload script or batch file through your crontable or Task Scheduler (independent from BNC) once every one or two minutes after the end of each RINEX file 'Interval'.
 </p> 
 
-<p><a name="rnxvers"><h4>3.4.7 Version - optional</h4></p>
+<p><a name="rnxvers"><h4>4.4.7 Version - optional</h4></p>
 <p>
 The default format for RINEX Observation files is RINEX Version 2.11. Select 'Version 3' if you would like to save observations in RINEX Version 3 format.
 </p> 
 
-<p><a name="ephemeris"><h4>3.5. RINEX Ephemeris</h4></p>
+<p><a name="ephemeris"><h4>4.5. RINEX Ephemeris</h4></p>
 <p>
 Broadcast ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3 e.g. as message types 1019 (GPS) or 1020 (GLONASS) or 1045 (Galileo). The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BRDC' and the last character is
 </p>
@@ -523,17 +525,17 @@ Broadcast ephemeris can be saved as RINEX Navigation files when received via RTC
 Note that streams dedicated to carry Broadacst Ephemeris messages in RTCM Version 3 format in high repetition rates are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>.
 </p>
 
-<p><a name="ephdir"><h4>3.5.1 Directory - optional</h4></p>
+<p><a name="ephdir"><h4>4.5.1 Directory - optional</h4></p>
 <p>
 Specify a path for saving Broadcast Ephemeris data as RINEX Navigation files. If the specified directory does not exist, BNC will not create RINEX Navigation files. Default value for Ephemeris 'Directory' is an empty option field, meaning that no RINEX Navigation files will be created.
 </p> 
 
-<p><a name="ephint"><h4>3.5.2 Interval - mandatory if 'Directory' is set</h4></p>
+<p><a name="ephint"><h4>4.5.2 Interval - mandatory if 'Directory' is set</h4></p>
 <p>
 Select the length of the RINEX Navigation file generated. The default value is 1 day.
 </p> 
 
-<p><a name="ephport"><h4>3.5.3 Port - optional</h4></p>
+<p><a name="ephport"><h4>4.5.3 Port - optional</h4></p>
 <p>
 BNC can output Broadcast Ephemeris in RINEX Version 3 format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number to activate this function. The default is an empty option field, meaning that no ASCII ephemeris output via IP port is generated.
 </p>
@@ -541,7 +543,7 @@ BNC can output Broadcast Ephemeris in RINEX Version 3 format on your local host 
 The source code for BNC comes with an example perl script 'test_tcpip_client.pl' that allows you to read BNC's ASCII ephemeris output from the IP port.
 </p>
 
-<p><a name="ephvers"><h4>3.5.4 Version - optional</h4></p>
+<p><a name="ephvers"><h4>4.5.4 Version - optional</h4></p>
 <p>
 Default format for RINEX Navigation files containing Broadcast Ephemeris is RINEX Version 2.11. Select 'Version 3' if you want to save the ephemeris in RINEX Version 3 format.
 </p>
@@ -549,7 +551,7 @@ Default format for RINEX Navigation files containing Broadcast Ephemeris is RINE
 Note that this does not concern the Broadcast Ephemeris output through IP port which is always in RINEX Version 3 format.
 </p> 
 
-<p><a name="reqc"><h4>3.6. RINEX Editing & QC</h4></p>
+<p><a name="reqc"><h4>4.6. RINEX Editing & QC</h4></p>
 <p>
 Besides stream conversion from RTCM to RINEX, BNC allows editing RINEX files or concatenate their contents. RINEX observation and navigation files can be handled. BNC can also carry out a RINEX file contents quality check. In summary this functionality in BNC covers
 <ul>
@@ -559,7 +561,7 @@ Besides stream conversion from RTCM to RINEX, BNC allows editing RINEX files or 
 </ul>
 and hence follows UNAVCO's famous 'TEQC' program. The remarkable thing about BNC in this context is that it supports RINEX Version 3 under GNU General Public License.
 
-<p><a name="reqcact"><h4>3.6.1 Action - optional</h4></p>
+<p><a name="reqcact"><h4>4.6.1 Action - optional</h4></p>
 <p>Select an action. Options are 'Edit/Concatenate' and 'Analyze'.
 <ul>
 <li>Select 'Edit/Concatenate' if you want to edit RINEX file contents according to options specified under 'Set Edit Options' or if you want to concatenate several RINEX files.</li>
@@ -567,7 +569,7 @@ and hence follows UNAVCO's famous 'TEQC' program. The remarkable thing about BNC
 </ul>
 </p>
 
-<p><a name="reqcedit"><h4>3.6.2 Set Edit Options - mandatory if 'Edit/Concatenate' is set</h4></p>
+<p><a name="reqcedit"><h4>4.6.2 Set Edit Options - mandatory if 'Edit/Concatenate' is set</h4></p>
 <p>Once the 'Edit/Concatenate' action is selected, you have to 'Set Edit Options'. BNC lets you specify the RINEX version, sampling rate, begin and end of file and marker, antenna, receiver details.
 </p>
 <p>
@@ -582,7 +584,7 @@ When converting RINEX Version 2 to RINEX Version 3, the tracking mode or channel
 If you specify a 'New' but no 'Old' marker/antenna/receiver name, the corresponding data field in the emerging new RINEX file will be filled accordingly. If you in addition specify an 'Old' marker/antenna/receiver name, the corresponding data field in the emerging new RINEX file will only be filled accordingly where 'Old' specifications match existing file contents.
 </p>
 
-<p><a name="reqcinput"><h4>3.6.3 Input Files - mandatory if 'Action' is set</h4></p>
+<p><a name="reqcinput"><h4>4.6.3 Input Files - mandatory if 'Action' is set</h4></p>
 <p>
 Specify full path to input RINEX observation file(s), and<br> 
 specify full path to input RINEX navigation file(s).
@@ -593,7 +595,7 @@ specify full path to input RINEX navigation file(s).
 <p><img src="IMG/screenshot25.png"/></p>
 <p><u>Figure 7:</u> Example for RINEX file editing with BNC in post-processing mode.</p>
 
-<p><a name="reqcoutput"><h4>3.6.4 Output Files - mandatory if 'Action' is set</h4></p>
+<p><a name="reqcoutput"><h4>4.6.4 Output Files - mandatory if 'Action' is set</h4></p>
 <p>
 If 'Edit/Concatenate' is selected, specifying the a path to output RINEX observation file(s) and specifying a full path to output RINEX navigation file(s) is mandatory.</p> 
 
@@ -601,7 +603,7 @@ If 'Edit/Concatenate' is selected, specifying the a path to output RINEX observa
 If if 'Analyze' is selected, specifying logfile(s) to output analysis results is mandatory.<br> 
 </p> 
 
-<p><a name="reqccommand"><h4>3.6.5 Command Line, No Window - optional</h4></p>
+<p><a name="reqccommand"><h4>4.6.5 Command Line, No Window - optional</h4></p>
 <p>
 BNC applies options from the configuration file but allows updating every one of them on the command line while the contents of the configuration file remains unchanged, see section on 'Command Line Options'. The syntax for that looks as follows
 </p>
@@ -650,7 +652,7 @@ The following is a list of available keynames for '<u>R</u>INEX <u>E</u>diting &
 <tr><td>reqcNewReceiverName</td><td>New receiver name</td></tr>
 </table>
 
-<p><a name="correct"><h4>3.7. Broadcast Corrections</h4></p>
+<p><a name="correct"><h4>4.7. Broadcast Corrections</h4></p>
 <p>
 Differential GNSS and RTK operation using RTCM streams is currently based on corrections and/or raw measurements from single or multiple reference stations. This approach to differential positioning is using 'observation space' information. The representation with the RTCM standard can be called 'ObservationSpace Representation' (OSR). 
 </p>
@@ -832,17 +834,17 @@ Example:
 ...
 </pre>
 
-<p><a name="corrdir"><h4>3.7.1 Directory, ASCII - optional</h4></p>
+<p><a name="corrdir"><h4>4.7.1 Directory, ASCII - optional</h4></p>
 <p>
 Specify a directory for saving Broadcast Corrections in files. If the specified directory does not exist, BNC will not create Broadcast Correction files. Default value for Broadcast Corrections 'Directory' is an empty option field, meaning that no Broadcast Correction files will be created.
 </p>
 
-<p><a name="corrint"><h4>3.7.2 Interval - mandatory if 'Directory, ASCII' is set</h4></p>
+<p><a name="corrint"><h4>4.7.2 Interval - mandatory if 'Directory, ASCII' is set</h4></p>
 <p>
 Select the length of the Broadcast Correction files. The default value is 1 day.
 </p>
 
-<p><a name="corrport"><h4>3.7.3 Port - optional</h4></p>
+<p><a name="corrport"><h4>4.7.3 Port - optional</h4></p>
 <p>
 BNC can output epoch by epoch synchronized Broadcast Corrections in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Specify an IP port number to activate this function. The default is an empty option field, meaning that no Broadcast Correction output via IP port is generated.
 </p>
@@ -887,7 +889,7 @@ The following is an example output for streams from mountpoints RTCMSSR, CLK10 a
 The source code for BNC comes with an example perl script 'test_tcpip_client.pl' that allows you to read BNC's Broadcast Corrections from the IP port.
 </p>
 
-<p><a name="corrwait"><h4>3.7.4 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
+<p><a name="corrwait"><h4>4.7.4 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
 <p>
 When feeding a real-time GNSS network engine waiting epoch by epoch for synchronized Broadcast Corrections, BNC drops (only concerning IP port output) whatever is received later than 'Wait for full epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Broadcast Corrections stream and the delay acceptable by your application. A message such as &quot;COCK1: Correction overaged by 5 sec&quot; shows up in BNC's logfile if 'Wait for full epoch' is exceeded.
 </p>
@@ -895,7 +897,7 @@ When feeding a real-time GNSS network engine waiting epoch by epoch for synchron
 Specifying a value of '0' means that BNC immediately outputs all incoming Broadcast Ephemeris Corrections and does not drop any of them for latency reasons.
 </p>
 
-<p><a name="syncout"><h4>3.8. Feed Engine</h4></p>
+<p><a name="syncout"><h4>4.8. Feed Engine</h4></p>
 <p>
 BNC can generate synchronized or unsynchronized observations epoch by epoch from all stations and satellites to feed a real-time GNSS network engine. Observations can be streamed out through an IP port and/or saved in a local file. The output is always in plain ASCII format and comprises the following parameters:
 </p>
@@ -953,12 +955,12 @@ The following figure shows the screenshot of a BNC configuration where a number 
 <p><img src="IMG/screenshot12.png"/></p>
 <p><u>Figure 8:</u> Synchronized BNC output via IP port to feed a GNSS real-time engine.</p>
 
-<p><a name="syncport"><h4>3.8.1 Port - optional</h4></p>
+<p><a name="syncport"><h4>4.8.1 Port - optional</h4></p>
 <p>
 BNC can produce synchronized observations in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Synchronized means that BNC collects all data for any specific epoch which become available within a certain number of latency seconds (see 'Wait for Full Epoch' option). It then - epoch by epoch - outputs whatever has been received. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary synchronized output is generated.</p>
 </p>
 
-<p><a name="syncwait"><h4>3.8.2 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
+<p><a name="syncwait"><h4>4.8.2 Wait for Full Epoch - mandatory if 'Port' is set</h4></p>
 <p>
 When feeding a real-time GNSS network engine waiting for synchronized input epoch by epoch, BNC drops whatever is received later than 'Wait for full epoch' seconds. A value of 3 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming streams and the delay acceptable for your real-time GNSS product. Default value for 'Wait for full epoch' is 5 seconds.
 </p>
@@ -966,12 +968,12 @@ When feeding a real-time GNSS network engine waiting for synchronized input epoc
 Note that 'Wait for full epoch' does not affect the RINEX Observation file content. Observations received later than 'Wait for full epoch' seconds will still be included in the RINEX Observation files.
 </p> 
 
-<p><a name="syncsample"><h4>3.8.3 Sampling - mandatory if 'File' or 'Port' is set</h4></p>
+<p><a name="syncsample"><h4>4.8.3 Sampling - mandatory if 'File' or 'Port' is set</h4></p>
 <p>
 Select the synchronized observation output sampling interval in seconds. A value of zero '0' tells BNC to send/store all received epochs. This is the default value.
 </p>
 
-<p><a name="syncfile"><h4>3.8.4 File - optional</h4></p>
+<p><a name="syncfile"><h4>4.8.4 File - optional</h4></p>
 <p>
 Specifies the full path to a 'File' where synchronized observations are saved in plain ASCII format. The default value is an empty option field, meaning that no ASCII output file is created.
 </p>
@@ -979,19 +981,19 @@ Specifies the full path to a 'File' where synchronized observations are saved in
 Beware that the size of this file can rapidly increase depending on the number of incoming streams. This option is primarily meant for testing and evaluation.
 </p>
 
-<p><a name="syncuport"><h4>3.8.5 Port (unsynchronized) - optional</h4></p>
+<p><a name="syncuport"><h4>4.8.5 Port (unsynchronized) - optional</h4></p>
 <p>
 BNC can produce unsynchronized observations from all configured streams in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Unsynchronized means that BNC immediately forwards any received observation to the port. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary unsynchronized output is generated.</p>
 <p>
 
-<p><a name="serial"><h4>3.9. Serial Output</h4></p>
+<p><a name="serial"><h4>4.9. Serial Output</h4></p>
 <p>
 You may use BNC to feed a serial connected device like an GNSS receiver. For that an incoming streams can be forwarded to a serial port. The following figure shows the screenshot of an example situation where BNC pulls a VRS stream from an NTRIP Broadcaster to feed a serial connected rover. 
 </p>
 <p><img src="IMG/screenshot11.png"/></p>
 <p><u>Figure 9:</u> BNC pulling a VRS stream to feed a serial connected rover.</p>
 
-<p><a name="sermount"><h4>3.9.1 Mountpoint - optional</h4></p>
+<p><a name="sermount"><h4>4.9.1 Mountpoint - optional</h4></p>
 <p>
 Enter a 'Mountpoint' to forward its corresponding stream to a serial connected GNSS receiver.
 </p>
@@ -999,7 +1001,7 @@ Enter a 'Mountpoint' to forward its corresponding stream to a serial connected G
 When selecting one of the serial communication options listed below, make sure that you pick those configured to the serial connected receiver.
 </p>
 
-<p><a name="serport"><h4>3.9.2 Port Name - mandatory if 'Mountpoint' is set</h4></p>
+<p><a name="serport"><h4>4.9.2 Port Name - mandatory if 'Mountpoint' is set</h4></p>
 <p>
 Enter the serial 'Port name' selected on your host for communication with the serial connected receiver. Valid port names are
 </p>
@@ -1016,32 +1018,32 @@ SunOS/Solaris: /dev/ttya, /dev/ttyb
 Note that you must plug a serial cable in the port defined here before you start BNC.
 </p>
 
-<p><a name="serbaud"><h4>3.9.3 Baud Rate - mandatory if 'Mountpoint' is set</h4></p>
+<p><a name="serbaud"><h4>4.9.3 Baud Rate - mandatory if 'Mountpoint' is set</h4></p>
 <p>
 Select a 'Baud rate' for the serial output link. Note that using a high baud rate is recommended.
 </p>
 
-<p><a name="serflow"><h4>3.9.4 Flow Control - mandatory if 'Mountpoint' is set</h4></p>
+<p><a name="serflow"><h4>4.9.4 Flow Control - mandatory if 'Mountpoint' is set</h4></p>
 <p>
 Select a 'Flow control' for the serial output link. Note that your selection must equal the flow control configured to the serial connected device. Select 'OFF' if you don't know better.
 </p>
 
-<p><a name="serparity"><h4>3.9.5 Parity - mandatory if 'Mountpoint' is set</h4></p>
+<p><a name="serparity"><h4>4.9.5 Parity - mandatory if 'Mountpoint' is set</h4></p>
 <p>
 Select the 'Parity' for the serial output link. Note that parity is often set to 'NONE'.
 </p>
 
-<p><a name="serdata"><h4>3.9.6 Data Bits - mandatory if 'Mountpoint' is set</h4></p>
+<p><a name="serdata"><h4>4.9.6 Data Bits - mandatory if 'Mountpoint' is set</h4></p>
 <p>
 Select the number of 'Data bits' for the serial output link. Note that often '8' data bits are used.
 </p>
 
-<p><a name="serstop"><h4>3.9.7 Stop Bits - mandatory if 'Mountpoint' is set</h4></p>
+<p><a name="serstop"><h4>4.9.7 Stop Bits - mandatory if 'Mountpoint' is set</h4></p>
 <p>
 Select the number of 'Stop bits' for the serial output link. Note that often '1' stop bit is used.
 </p>
 
-<p><a name="serauto"><h4>3.9.8 NMEA - mandatory for VRS streams</h4></p>
+<p><a name="serauto"><h4>4.9.8 NMEA - mandatory for VRS streams</h4></p>
 <p>
 Select 'Auto' to automatically forward all NMEA-GGA messages coming from your serial connected GNSS receiver to the NTRIP Broadcaster and/or save them in a file.
 </p>
@@ -1052,10 +1054,10 @@ Forwarding valid NMEA-GGA messages to the NTRIP Broadcaster is required for rece
 In summary: select 'Manual' only when handling a VRS stream and your serial connected GNSS receiver doesn't generate NMEA-GGA messages. Select 'Auto' otherwise.
 </p>
 
-<p><a name="serfile"><h4>3.9.9 File - optional if 'Auto' NMEA is set</h4></p>
+<p><a name="serfile"><h4>4.9.9 File - optional if 'Auto' NMEA is set</h4></p>
 <p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved.
 </p>
-<p><a name="serheight"><h4>3.9.10 Height - mandatory if 'Manual' NMEA is set</h4></p>
+<p><a name="serheight"><h4>4.9.10 Height - mandatory if 'Manual' NMEA is set</h4></p>
 <p>
 Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an initial NMEA-GGA message. Latitude and longitude for that (editable) are taken from the broadcaster's source-table.
 </p>
@@ -1063,7 +1065,7 @@ Specify an approximate 'Height' above mean sea level in meter for your VRS to si
 This option concerns only 'Virtual Reference Stations' (VRS). Its setting is ignored in case of streams coming from physical reference stations.
 </p>
 
-<p><a name="advnote"><h4>3.10. Outages</h4></p>
+<p><a name="advnote"><h4>4.10. Outages</h4></p>
 
 <p>
 At any time an incoming stream might become unavailable or corrupted. In such cases, it is important that the BNC operator and/or the stream providers become aware of the situation so that necessary measures can be taken to restore the stream. Furthermore, continuous attempts to decode a corrupted stream can generate unnecessary workload for BNC. Outages and corruptions are handled by BNC as follows:
@@ -1078,12 +1080,12 @@ At any time an incoming stream might become unavailable or corrupted. In such ca
 Outage and corruption events are reported in the 'Log' tab. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilize BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
 </p>
 
-<p><a name="obsrate"><h4>3.10.1 Observation Rate - mandatory if 'Failure threshold', 'Recovery threshold' and 'Script' is set</h4></p>
+<p><a name="obsrate"><h4>4.10.1 Observation Rate - mandatory if 'Failure threshold', 'Recovery threshold' and 'Script' is set</h4></p>
 <p>
 BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough a priory estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want explicit information from BNC about stream outages and incoming streams that cannot be decoded.
 </p> 
 
-<p><a name="advfail"><h4>3.10.2 Failure Threshold - optional</h4></p>
+<p><a name="advfail"><h4>4.10.2 Failure Threshold - optional</h4></p>
 <p>
 Event 'Begin_Failure' will be reported if no data is received continuously for longer than the 'Failure threshold' time. Similarly, event 'Begin_Corrupted' will be reported when corrupted data is detected by the decoder continuously for longer than this 'Failure threshold' time. The default value is set to 15 minutes and is recommended so not to inundate user with too many event reports.
 </p>
@@ -1091,7 +1093,7 @@ Event 'Begin_Failure' will be reported if no data is received continuously for l
 Note that specifying a value of zero '0' for the 'Failure threshold' will force BNC to report any stream failure immediately. Note also that for using this function you need to specify the 'Observation rate'.
 </p>
 
-<p><a name="advreco"><h4>3.10.3 Recovery Threshold - optional</h4></p>
+<p><a name="advreco"><h4>4.10.3 Recovery Threshold - optional</h4></p>
 <p>
 Once a 'Begin_Failure' or 'Begin_Corrupted' event has been reported, BNC will check for when the stream again becomes available or uncorrupted. Event 'End_Failure' or 'End_Corrupted' will be reported as soon as valid observations are again detected continuously throughout the 'Recovery threshold' time span. The default value is set to 5 minutes and is recommended so not to innundate users with too many event reports.  
 </p>
@@ -1099,7 +1101,7 @@ Once a 'Begin_Failure' or 'Begin_Corrupted' event has been reported, BNC will ch
 Note that specifying a value of zero '0' for the 'Recovery threshold' will force BNC to report any stream recovery immediately. Note also that for using this function you need to specify the 'Observation rate'.
 </p>
 
-<p><a name="advscript"><h4>3.10.4 Script - optional </h4></p>
+<p><a name="advscript"><h4>4.10.4 Script - optional </h4></p>
 <p>
 As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected stream's mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (%1 and %2 on Windows systems or $1 and $2 on Unix/Linux/Mac systems) together with date and time information.
 </p>
@@ -1128,7 +1130,7 @@ Regards, BNC
 Note the sleep command in this script which causes the system to wait for a random period of up to 60 seconds before sending the email. This should avoids overloading your mail server in case of a simultaneous failure of many streams.
 </p> 
 
-<p><a name="misc"><h4>3.11. Miscellaneous</h4></p>
+<p><a name="misc"><h4>4.11. Miscellaneous</h4></p>
 <p>
 This section describes several miscellaneous options which can be applied for a single stream (mountpoint) or for all configured streams.
 </p>
@@ -1140,12 +1142,12 @@ The following figure shows RTCM message numbers contained in stream 'CONZ0' and 
 <p><u>Figure 10:</u> RTCM message numbers and latencies.</p>
 
 
-<p><a name="miscmount"><h4>3.11.1 Mountpoint - optional </h4></p>
+<p><a name="miscmount"><h4>4.11.1 Mountpoint - optional </h4></p>
 <p>
 Specify a mountpoint to apply one or several of the 'Miscellaneous' options to the corresponding stream. Enter 'ALL' if you want to apply these options to all configured streams. An empty option field (default) means that you don't want BNC to apply any of these options.
 </p>
 
-<p><a name="miscperf"><h4>3.11.2 Log Latency - optional </h4></p>
+<p><a name="miscperf"><h4>4.11.2 Log Latency - optional </h4></p>
 <p>
  BNC can average latencies per stream over a certain period of GPS time, the 'Log latency' interval. Mean latencies are calculated from the individual latencies of at most one (first incoming) observation or correction to Broadcast Ephemeris per second. The mean latencies are then saved in BNC's logfile. Note that computing correct latencies requires the clock of the host computer to be properly synchronized. Note further that the latencies available from the 'Latency' tab on the bottom of the main window represent individual latencies and not the mean latencies for the logfile.
 </p>
@@ -1173,7 +1175,7 @@ Select a 'Log latency' interval to activate this function or select the empty op
 </p>
 
 
-<p><a name="miscscan"><h4>3.11.3 Scan RTCM - optional</h4></p>
+<p><a name="miscscan"><h4>4.11.3 Scan RTCM - optional</h4></p>
 <p>
 When configuring a GNSS receiver for RTCM stream generation, the firmware's setup interface may not provide details about RTCM message types. As reliable information concerning stream contents should be available i.e. for NTRIP Broadcaster operators to maintain the broadcaster's source-table, BNC allows to scan RTCM streams for incoming message types and printout some of the contained meta-data. The idea for this option arose from 'InspectRTCM', a comprehensive stream analyzing tool written by D. Stoecker.
 </p>
@@ -1199,7 +1201,7 @@ Note that in RTCM Version 2 the message types 18 and 19 carry only the observabl
 <p>This option is primarily meant for testing and evaluation. Use it to figure out what exactly is produced by a specific GNSS receiver's configuration. An empty option field (default) means that you don't want BNC to print the message type numbers and antenna information carried in RTCM streams. 
 </p>
 
-<p><a name="pppclient"><h4>3.12. PPP Client</h4></p>
+<p><a name="pppclient"><h4>4.12. PPP Client</h4></p>
 <p>
 BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or code plus phase data in ionosphere free linear combinations P3 or L3. Besides pulling a stream of observations from a dual frequency receiver, this also
 <ul>
@@ -1316,25 +1318,25 @@ bnc.exe --conf c:\temp\BNC.ppp --file c:\temp\FFMJ1
 </ul>
 </p>
 
-<p><a name="pppmode"><h4>3.12.1 Mode & Mountpoints - optional</h4></p>
+<p><a name="pppmode"><h4>4.12.1 Mode & Mountpoints - optional</h4></p>
 <p>
 Specify the Point Positioning mode you want to apply and the mountpoints for observations and Broadcast Corrections.
 </p>
 
-<p><a name="pppmodus"><h4>3.12.1.1 Mode - optional</h4></p>
+<p><a name="pppmodus"><h4>4.12.1.1 Mode - optional</h4></p>
 <p>Choose between plain Single Point Positioning (SPP) and Precise Point Positioning (PPP) in 'Realtime' or 'Post-Processing' mode.</p>
 
-<p><a name="pppobsmount"><h4>3.12.1.2 Obs Mountpoint - optional</h4></p>
+<p><a name="pppobsmount"><h4>4.12.1.2 Obs Mountpoint - optional</h4></p>
 <p>
 Specify an 'Observations Mountpoint' from the list of selected 'Streams' you are pulling if you want BNC to derive coordinates for the affected rover position through a Point Positioning solution. 
 </p>
 
-<p><a name="pppcorrmount"><h4>3.12.1.3 Corr Mountpoint - optional</h4></p>
+<p><a name="pppcorrmount"><h4>4.12.1.3 Corr Mountpoint - optional</h4></p>
 <p>
 Specify a Broadcast Ephemeris 'Corrections Mountpoint' from the list of selected 'Streams' you are pulling if you want BNC to correct your positioning solution accordingly.
 </p>
 
-<p><a name="pppxyz"><h4>3.12.2 Marker Coordinates - optional</h4></p>
+<p><a name="pppxyz"><h4>4.12.2 Marker Coordinates - optional</h4></p>
 <p>
 Enter the reference coordinate components X,Y,Z of the receiver's position in meters if known. This option makes only sense for static observations. Default are empty option fields, meaning that the antenna's XYZ position is unknown. 
 </p>
@@ -1348,17 +1350,17 @@ Once XYZ coordinate components are defined, the 'PPP' line in BNC's logfile is e
 The parameters following the 'NEU' string provide Nort, East and Up components of the current coordinate displacement in meters.
 </p>
 
-<p><a name="pppneu"><h4>3.12.3 Antenna Excentricity - optional</h4></p>
+<p><a name="pppneu"><h4>4.12.3 Antenna Excentricity - optional</h4></p>
 <p>
 You may like to specify North, East and Up components of an antenna eccentricity which is the difference between a nearby marker position and the antenna phase center. If you do so BNC will produce coordinates referring to the marker position and not referring to the antenna phase center..
 </p>
 
-<p><a name="pppoutput"><h4>3.12.4 NMEA & Plot Output - optional</h4></p>
+<p><a name="pppoutput"><h4>4.12.4 NMEA & Plot Output - optional</h4></p>
 <p>
 BNC allows to output results from Precise Point Positioning in NMEA format. It can also plot a time series of North, East and UP displacements of coordinate components.
 </p>
 
-<p><a name="pppnmeafile"><h4>3.12.4.1 NMEA File - optional</h4></p>
+<p><a name="pppnmeafile"><h4>4.12.4.1 NMEA File - optional</h4></p>
 <p>
 The NMEA sentences generated about once per second are pairs of 
 <ul>
@@ -1373,7 +1375,7 @@ Specify the full path to a file where Point Positioning results are saved as NME
 Note that Tomoji Takasu has written a program called RTKPlot for visualizing NMEA strings. It is available from <u>http://gpspp.sakura.ne.jp/rtklib/rtklib.htm</u> and compatible with the NMEA output of BNC's 'PPP Client' option.
 </p>
 
-<p><a name="pppnmeaport"><h4>3.12.4.2 NMEA Port - optional</h4></p>
+<p><a name="pppnmeaport"><h4>4.12.4.2 NMEA Port - optional</h4></p>
 <p>
 Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'NMEA Port' is an empty option field, meaning that BNC does not provide NMEA messages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same. 
 </p>
@@ -1381,7 +1383,7 @@ Specify the IP port number of a local port where Point Positioning results becom
 NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World_Wind_Download</u>) can be used for real-time visualization of positions provided through BNC's NMEA IP output port. You need the 'GPS Tracker' plug-in available from <u>http://worldwindcentral.com/wiki/GPS_Tracker</u> for that. The 'Word Wind' is not meant for showing centimeter level details.
 </p>
 
-<p><a name="pppplot"><h4>3.12.4.3 PPP Plot - optional</h4></p>
+<p><a name="pppplot"><h4>4.12.4.3 PPP Plot - optional</h4></p>
 <p>
 PPP time series of North (red), East(green) and Up (blue) displacements will be plotted in the 'PPP Plot' tab when this option is ticked. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated XYZ coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.
 </p>
@@ -1389,19 +1391,19 @@ PPP time series of North (red), East(green) and Up (blue) displacements will be 
 Note that a PPP time series makes only sense for a stationary operated receiver.
 </p>
 
-<p><a name="ppppost"><h4>3.12.5 Post Processing - optional</h4></p>
+<p><a name="ppppost"><h4>4.12.5 Post Processing - optional</h4></p>
 	<p>When in 'Post-Processing mode<ul><li>specifying a RINEX Observation, a RINEX Navigation and a Broadcast Corrections file leads to a PPP solution.</li><li>specifying only a RINEX Observation and a RINEX Navigation file and no Broadcast Corrections file leads to a SPP solution.</ul></p>
 <p>BNC accepts RINEX Version 2 as well as RINEX Version 3 observation or navigation file formats. Files carrying Broadcast Corrections must have the format produced by BNC in the 'Broadcast Corrections' tab.
 <p>
 Post Processing PPP results can be saved in a specific output file.
 </p>
 
-<p><a name="ppprecant"><h4>3.12.6 Antennas - optional</h4></p>
+<p><a name="ppprecant"><h4>4.12.6 Antennas - optional</h4></p>
 <p>
 BNC allows to correct observations for antenna phase center offsets and variations.
 </p>
 
-<p><a name="pppantex"><h4>3.12.6.1 ANTEX File - optional</h4></p>
+<p><a name="pppantex"><h4>4.12.6.1 ANTEX File - optional</h4></p>
 <p>
 IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.
 </p>
@@ -1409,7 +1411,7 @@ IGS provides a file containing absolute phase center corrections for GNSS satell
 Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets and variations.
 </p>
 
-<p><a name="ppprecantenna"><h4>3.12.6.2 Receiver Antenna Name - optional if 'ANTEX File' is set</h4></p>
+<p><a name="ppprecantenna"><h4>4.12.6.2 Receiver Antenna Name - optional if 'ANTEX File' is set</h4></p>
 <p>
 Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Corrections for phase center variations are not yet applied by BNC. The specified name must consist of 20 characters. Add trailing blanks if the antenna name has less than 20 characters. Examples:
 <pre>
@@ -1422,7 +1424,7 @@ Specify the receiver's antenna name as defined in your ANTEX file. Observations 
 Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets.
 </p>
 
-<p><a name="pppsatant"><h4>3.12.6.3 Apply Satellite Antenna Offsets - optional if 'ANTEX File' is set</h4></p>
+<p><a name="pppsatant"><h4>4.12.6.3 Apply Satellite Antenna Offsets - optional if 'ANTEX File' is set</h4></p>
 <p>
 BNC allows correcting observations for satellite antenna phase center offsets. (This option is not yet implemented.)
 </p><p>
@@ -1432,16 +1434,16 @@ Satellite orbit and clock corrections refer to the satellite's antenna phase cen
 Default is to <u>not</u> correct observations for satellite antenna phase center offsets.
 </p>
 
-<p><a name="pppopt"><h4>3.12.7 Basic Options</h4></p>
+<p><a name="pppopt"><h4>4.12.7 Basic Options</h4></p>
 <p>BNC allows using different Point Positioning processing options depending on the capability of the involved receiver and the application in mind. It also allows introducing specific sigmas for code and phase observations as well as for reference coordinates and troposphere estimates. You may also like to carry out your PPP solution in Quick-Start mode or enforce BNC to restart a solution if the length of an outage exceeds a certain threshold.
 </p>
 
-<p><a name="pppphase"><h4>3.12.7.1 Use Phase Obs - optional</h4></p>
+<p><a name="pppphase"><h4>4.12.7.1 Use Phase Obs - optional</h4></p>
 <p>
 By default BNC applies a Point Positioning solution using an ionosphere free P3 linear combination of code observations. Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.
 </p>
 
-<p><a name="ppptropo"><h4>3.12.7.2 Estimate Tropo - optional</h4></p>
+<p><a name="ppptropo"><h4>4.12.7.2 Estimate Tropo - optional</h4></p>
 <p>
 BNC estimates the tropospheric delay according to equation
 <pre>
@@ -1453,17 +1455,17 @@ where T_apr is the a-priori tropospheric delay derived from Saastamoinen model.
 By default BNC does not estimate troposphere parameters. Tick 'Estimate tropo' to estimate troposphere parameters together with the coordinates and save T_apr and dT in BNC's log file.
 </p>
 
-<p><a name="pppglo"><h4>3.12.7.3 Use GLONASS - optional</h4></p>
+<p><a name="pppglo"><h4>4.12.7.3 Use GLONASS - optional</h4></p>
 <p>
 By default BNC does not process GLONASS but only GPS observations when in Point Positioning mode. Tick 'Use GLONASS' to use GLONASS observations in addition to GPS (and Galileo if specified) for estimating coordinates in Point Positioning mode.
 </p>
 
-<p><a name="pppgal"><h4>3.12.7.4 Use Galileo - optional</h4></p>
+<p><a name="pppgal"><h4>4.12.7.4 Use Galileo - optional</h4></p>
 <p>
 By default BNC does not process Galileo but only GPS observations when in Point Positioning mode. Tick 'Use Galileo' to use Galileo observations in addition to GPS (and GLONASS if specified) for estimating coordinates in Point Positioning mode.
 </p>
 
-<p><a name="pppsync"><h4>3.12.7.5 Sync Corr - optional</h4></p>
+<p><a name="pppsync"><h4>4.12.7.5 Sync Corr - optional</h4></p>
 <p>
 Zero value (or empty field) means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. Non-zero value 'Sync Corr' means that the epochs of data are buffered and the processing of each epoch is postponed till the satellite clock corrections not older than 'Sync Corr' are available. Specifying a value of half the update rate of the clock corrections as 'Sync Corr' (i.e. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of the update rate.
 </p>
@@ -1474,7 +1476,7 @@ Using observations in sync with the corrections can avoid a possible high freque
 Default is an empty option field, meaning that you want BNC to process observations immediately after their arrival through applying the latest received clock correction.
 </p>
 
-<p><a name="pppaverage"><h4>3.12.7.6 Averaging - optional if XYZ is set</h4></p>
+<p><a name="pppaverage"><h4>4.12.7.6 Averaging - optional if XYZ is set</h4></p>
 <p>
 Enter the length of a sliding time window in minutes. BNC will continuously output moving average values ns and their RMS as computed from those individual values obtained most recently throughout this period. RMS values presented for XYZ coordinates and tropospheric zenit path delays are bias reduced while RMS values for Nort/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string &quot;AVE-XYZ&quot; in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string &quot;AVE-NEU&quot; and averaged values for the tropospheric delays and their RMS are marked with string &quot;AVE-TRP&quot;. Example:
 </p>
@@ -1487,7 +1489,7 @@ Enter the length of a sliding time window in minutes. BNC will continuously outp
 Entering any positive value up to 1440 (24h mean value) is allowed. An empty option field (default) means that you don't want BNC to output moving average positions into the log file and the 'Log' section. Note that averaging positions makes only sense for a stationary receiver.
 </p>
 
-<p><a name="pppquick"><h4>3.12.7.7 Quick-Start - optional if XYZ is set</h4></p>
+<p><a name="pppquick"><h4>4.12.7.7 Quick-Start - optional if XYZ is set</h4></p>
 <p>
 Enter the lenght of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate. Constraining coordinate components is done in BNC through setting the 'XYZ White Noise' temporarily to zero.
 </p>
@@ -1503,7 +1505,7 @@ You may need to create your own reference coordinate through running BNC for an 
 <p><img src="IMG/screenshot22.png"/></p>
 <p><u>Figure 14:</u> BNC in 'Quick-Start' mode (PPP, Panel 2)</p>
 
-<p><a name="pppgap"><h4>3.12.7.8 Maximal Solution Gap - optional if Quick-Start is set</h4></p>
+<p><a name="pppgap"><h4>4.12.7.8 Maximal Solution Gap - optional if Quick-Start is set</h4></p>
 <p>
 Specify a 'Maximum Solution Gap' in seconds. Should the time span between two consecutive solutions exceed this limit, the algorithm returns into the Quick-Start mode and fixes the introduced reference coordinate for the specified Quick-Start period. A value of '120' seconds could be an appropriate choice.
 </p>
@@ -1511,12 +1513,12 @@ Specify a 'Maximum Solution Gap' in seconds. Should the time span between two co
 This option makes only sense for a stationary operated receiver where solution convergence can be enforced because a good approximation for the rover position is known. Default is an empty option field, meaning that you don't want BNC to return into the Quick-Start mode after failures caused i.e. by longer lasting outages.
 </p>
 
-<p><a name="pppsigmas"><h4>3.12.8 Sigmas</h4></p>
+<p><a name="pppsigmas"><h4>4.12.8 Sigmas</h4></p>
 <p>
 You may like to introduce specific sigmas for code and phase observations and for the estimation of troposphere parameters.
 </p>
 
-<p><a name="pppsigc"><h4>3.11.8.1 Code - mandatory if 'Use Phase Obs' is set</h4></p>
+<p><a name="pppsigc"><h4>4.11.8.1 Code - mandatory if 'Use Phase Obs' is set</h4></p>
 <p>
 When 'Use phase obs' is set in BNC, the PPP solution will be carried out using both, code and phase observations. A sigma of 5.0 m for code observations and a sigma of 0.02 m for phase observations (defaults) are used to combine both types of observations. As the convergence characteristic of a PPP solution can be influenced by the ratio of the sigmas for code and phase, you may like to introduce you own sigmas for code and phase observations which differ from the default values.
 <ul>
@@ -1528,32 +1530,32 @@ When 'Use phase obs' is set in BNC, the PPP solution will be carried out using b
 Specify a sigma for code observations. Default is 5.0 m.
 </p>
 
-<p><a name="pppsigp"><h4>3.12.8.2 Phase - mandatory if 'Use Phase Obs' is set</h4></p>
+<p><a name="pppsigp"><h4>4.12.8.2 Phase - mandatory if 'Use Phase Obs' is set</h4></p>
 <p>
 Specify a sigma for phase observations. Default is 0.02 m.
 </p>
 
-<p><a name="pppsigxyzi"><h4>3.12.8.3 XYZ Init - mandatory</h4></p>
+<p><a name="pppsigxyzi"><h4>4.12.8.3 XYZ Init - mandatory</h4></p>
 <p>
 Enter a sigma in meters for the initial XYZ coordinate components. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode.
 </p>
 
-<p><a name="pppsigxyzn"><h4>3.12.8.4 XYZ White Noise - mandatory</h4></p>
+<p><a name="pppsigxyzn"><h4>4.12.8.4 XYZ White Noise - mandatory</h4></p>
 <p>
 Enter a sigma in meters for the 'White Noise' of estimated XYZ coordinate components. A value of 100.0 (default) may be appropriate considering the potential movement of a rover.
 </p>
 
-<p><a name="pppsigtrpi"><h4>3.12.8.5 Tropo Init - mandatory if 'Estimate tropo' is set</h4></p>
+<p><a name="pppsigtrpi"><h4>4.12.8.5 Tropo Init - mandatory if 'Estimate tropo' is set</h4></p>
 <p>
 Enter a sigma in meters for the a-priory model based tropospheric delay estimation. A value of 0.1 (default) may be an appropriate choice.
 </p>
 
-<p><a name="pppsigtrpn"><h4>3.12.8.6 Tropo White Noise - mandatory if 'Estimate tropo' is set</h4></p>
+<p><a name="pppsigtrpn"><h4>4.12.8.6 Tropo White Noise - mandatory if 'Estimate tropo' is set</h4></p>
 <p>
 Enter a sigma in meters per second to describe the expected variation of the tropospheric effect. Supposing 1Hz observation data, a value of 3e-6 (default) would mean that the tropospheric effect may vary for 3600 * 3e-6 = 0.01 meters per hour.
 </p>
 
-<p><a name="combi"><h4>3.13. Combination</h4></p>
+<p><a name="combi"><h4>4.13. Combination</h4></p>
 <p>
 BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of Broadcast Corrections from various providers. It is so far only the satellite clock corrections which are combined while orbit corrections in the combination product as well as the product update rates are just taken over from one of the incoming Broadcast Correction streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach. The clock combination can be based either on a plain 'Single-Epoch' or on a 'Kalman' Filter approach.
 </p>
@@ -1617,7 +1619,7 @@ Note further that the combination procedure in BNC also - formally - works with 
 The part of BNC which enables the combination of orbit and clock corrections streams is not intended for publication under GNU General Public License (GPL). However, pre-compiled BNC binaries which support the 'Combination' option will be available for personal usage.
 </p>
 
-<p><a name="combimounttab"><h4>3.13.1 Combination Table - optional</h4></p>
+<p><a name="combimounttab"><h4>4.13.1 Combination Table - optional</h4></p>
 <p>
 Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadcast Corrections mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. The stream processing can already be started with only one corrections stream configured for combination.
 </p>
@@ -1630,7 +1632,7 @@ The sequence of entries in the 'Combination Table' is not of importance. Note th
 Default is an empty 'Combination Table' meaning that you don't want BNC to combine orbit and clock corrections streams.
 </p>
 
-<p><a name="combiadd"><h4>3.13.1.1 Add Row, Delete - optional</h4></p>
+<p><a name="combiadd"><h4>4.13.1.1 Add Row, Delete - optional</h4></p>
 <p>
 Hit 'Add Row' button to add another row to the 'Combination Table' or hit the 'Delete' button to delete the highlighted row(s).
 </p>
@@ -1649,18 +1651,18 @@ The following screenshots describe an example setup of BNC when combining Broadc
 <p><img src="IMG/screenshot23.png"/></p>
 <p><u>Figure 17:</u> 'INTERNAL' PPP with BNC using combined Broadcast Corrections stream.</p>
 
-<p><a name="combimethod"><h4>3.13.1.2 Method - mandatory if 'Combination Table' is populated</h4></p>
+<p><a name="combimethod"><h4>4.13.1.2 Method - mandatory if 'Combination Table' is populated</h4></p>
 <p>
 Select a clock combination method. Available options are Kalman 'Filter' and 'Single-Epoch. It is suggested to use the Kalman Filter approach in case the combined stream of Broadcast Corrections is intended for Precise Point Positioning support.
 </p>
 
-<p><a name="combimax"><h4>3.13.1.3 Maximal Residuum- mandatory if 'Combination Table' is populated</h4></p>
+<p><a name="combimax"><h4>4.13.1.3 Maximal Residuum- mandatory if 'Combination Table' is populated</h4></p>
 
 <p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p>
 </p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p>
 <p>Default is a 'Maximal Residuum' of 999.0 meters</p>
 
-<p><a name="upclk"><h4>3.14. Upload (clk)</h4></p>
+<p><a name="upclk"><h4>4.14. Upload (clk)</h4></p>
 <p>
 BNC can upload streams carrying orbit and clock corrections to Broadcast Ephemeris in radial, along-track and cross-track components if they are<ol type=a> 
 <li>
@@ -1747,14 +1749,14 @@ Note that each end of an epoch in the incoming stream is indicated by an ASCII s
 When using clocks from Broadcast Ephemeris (with or without applied corrections) or clocks from SP3 files, it may be important to understand that they are not corrected for the conventional periodic relativistic effect. Chapter 10 of the IERS Conventions 2003 mentions that the conventional periodic relativistic correction to the satellite clock (to be added to the broadcast clock) is computed as dt =  -2 (R * V) / c^2 where R *V is the scalar product of the satellite position and velocity and c is the speed of light. This can also be found in the GPS Interface Specification, IS-GPS-200, Revision D, 7 March 2006.
 </p>
 
-<p><a name="upadd"><h4>3.14.1 Add, Delete Row - optional</h4></p>
+<p><a name="upadd"><h4>4.14.1 Add, Delete Row - optional</h4></p>
 <p>Hit 'Add Row' button to add another row to the stream 'Upload Table' or hit the 'Delete' button to delete the highlighted row(s).
 </p>
 <p>
 Having an empty 'Upload Table' is default and means that you don't want BNC to upload orbit and clock correction streams to any NTRIP Broadcaster.
 </p>
 
-<p><a name="uphost"><h4>3.14.2 Host, Port, Mountpoint, Password - mandatory if 'Upload Table' entries specified</h4></p>
+<p><a name="uphost"><h4>4.14.2 Host, Port, Mountpoint, Password - mandatory if 'Upload Table' entries specified</h4></p>
 
 <p>Specify the domain name or IP number of an NTRIP Broadcaster for uploading the stream. Furthermore, specify the caster's listening IP port, an upload mountpoint and an upload password. Note that NTRIP Broadcasters are often configured to provide access on more than one port, usually port 80 and 2101. If you experience communication problems on port 80, you should try to use the alternative port(s).
 </p>
@@ -1765,7 +1767,7 @@ BNC uploads a stream to the Caster by referring to a dedicated mountpoint that h
 If 'Host', 'Port', 'Mountpoint' and 'Password' are set, the stream will be encoded in RTCM's 'State Space Representation' (SSR) messages and uploaded to the specified broadcaster following the NTRIP Version 1 transport protocol. 
 </p>
 
-<p><a name="upsystem"><h4>3.14.3 System - mandatory if 'Host' is set</h4></p>
+<p><a name="upsystem"><h4>4.14.3 System - mandatory if 'Host' is set</h4></p>
 <p>
 BNC allows to configure several Broadcast Correction streams for upload so that they refer to different reference systems and different NTRIP Broadcasters. You may use this functionality for parallel support of a backup NTRIP Broadcaster or for simultaneous support of several reference systems. Available options for referring clock and orbit corrections to specific target reference systems are
 <p>
@@ -1910,12 +1912,12 @@ To: 1995.4
 <u>Custom:</u> The default numbers shown as examples are those for a transformation from ITRF2005 to ETRF2000'.
 </p>
 
-<p><a name="upcom"><h4>3.14.4 Center of Mass - optional</h4></p>
+<p><a name="upcom"><h4>4.14.4 Center of Mass - optional</h4></p>
 <p>
 BNC allows to either refer Broadcast Corrections to the satellite's Center of Mass (CoM) or to the satellite's Antenna Phase Center (APC). By default corrections refer to APC. Tick 'Center of Mass' to refer uploaded corrections to CoM.
 </p>
 
-<p><a name="upsp3"><h4>3.14.5 SP3 File - optional</h4></p>
+<p><a name="upsp3"><h4>4.14.5 SP3 File - optional</h4></p>
 <p>Specify a path for saving the generated orbit corrections as SP3 orbit files. If the specified directory does not exist, BNC will not create SP3 orbit files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p>
 <p>
 Default is an empty option field meaning that you don't want BNC to save the uploaded stream contents in daily SP3 files.
@@ -1927,7 +1929,7 @@ As an SP3 file contents should be referred to the satellites Center of Mass (CoM
 The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'. Note that clocks in the SP3 orbit files are not corrected for the conventional periodic relativistic effect.
 </p>
 
-<p><a name="uprinex"><h4>3.14.6 RNX File - optional</h4></p>
+<p><a name="uprinex"><h4>4.14.6 RNX File - optional</h4></p>
 <p>
 The clock corrections generated by BNC for upload can be logged in Clock RINEX format. The file naming follows the RINEX convention.
 </p>
@@ -1938,18 +1940,18 @@ Specify a path for saving the generated clock corrections as Clock RINEX files. 
 Note further that clocks in the Clock RINEX files are not corrected for the conventional periodic relativistic effect.
 </p>
 
-<p><a name="upinter"><h4>3.14.7 Interval - mandatory if 'Upload Table' entries specified</h4></p>
+<p><a name="upinter"><h4>4.14.7 Interval - mandatory if 'Upload Table' entries specified</h4></p>
 <p>
 Select the length of Clock RINEX files and SP3 Orbit files. The default value is 1 day.
 </p>
 
-<p><a name="upclksmpl"><h4>3.14.8 Sampling (Clk) - mandatory if 'Upload Table' entries specified</h4></p>
+<p><a name="upclksmpl"><h4>4.14.8 Sampling (Clk) - mandatory if 'Upload Table' entries specified</h4></p>
 <p>Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into Clock RINEX files.</p>
 
-<p><a name="uporbsmpl"><h4>3.14.9 Sampling (Orb) - mandatory if 'Upload Table' entries specified</h4></p>
+<p><a name="uporbsmpl"><h4>4.14.9 Sampling (Orb) - mandatory if 'Upload Table' entries specified</h4></p>
 <p>Select the SP3 Orbit file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into SP3 Orbit files.</p>
 
-<p><a name="upcustom"><h4>3.14.10 Custom Trafo - optional if 'Upload Table' entries specified</h4></p>
+<p><a name="upcustom"><h4>4.14.10 Custom Trafo - optional if 'Upload Table' entries specified</h4></p>
 <p>Hit 'Custom Trafo' to specify your own 14 parameter Helmert Transformation instead of selecting a predefined transformation through 'System' button.</p>
 
 <p>
@@ -1958,12 +1960,12 @@ The following screenshot shows the encoding and uploading of a stream of precise
 <p><img src="IMG/screenshot26.png"/></p>
 <p><u>Figure 18:</u> Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an NTRIP Broadcaster.</p>
 
-<p><a name="upeph"><h4>3.15. Upload (eph) </h4></p>
+<p><a name="upeph"><h4>4.15. Upload (eph) </h4></p>
 <p>
 BNC can upload a stream carrying Broadcast Ephemeris in RTCM Version 3 format to an NTRIP Broadcaster.
 </p>
 
-<p><a name="brdcserver"><h4>3.15.1 Host &amp; Port - optional</h4></p>
+<p><a name="brdcserver"><h4>4.15.1 Host &amp; Port - optional</h4></p>
 <p>
 Specify the 'Host' IP name or number of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload Broadcast Ephemeris.
 </p>
@@ -1972,17 +1974,17 @@ Enter the NTRIP Broadcaster's IP 'Port' number for stream upload. Note that NTRI
 port 80 and 2101. If you experience communication problems on port 80, you should try to use the alternative port(s).
 </p>
 
-<p><a name="brdcmount"><h4>3.15.2 Mountpoint &amp; Password - mandatory if 'Host' is set</h4></p>
+<p><a name="brdcmount"><h4>4.15.2 Mountpoint &amp; Password - mandatory if 'Host' is set</h4></p>
 <p>
 BNC uploads a stream to the Caster by referring to a dedicated mountpoint that has been set by the Caster operator. Specify the mountpoint based on the details you received for your stream from the operator. It is often a four character ID (capital letters) plus an integer number.</p>
 <p>The stream upload may be protected through an upload 'Password'. Enter the password you received from the Caster operator along with the mountpoint(s).</p>
 </p>
 
-<p><a name="brdcsmpl"><h4>3.15.3 Sampling - mandatory if 'Host' is set</h4></p>
+<p><a name="brdcsmpl"><h4>4.15.3 Sampling - mandatory if 'Host' is set</h4></p>
 Select the Broadcast Ephemeris repetition interval in seconds. Defaut is '5' meaning that a complete set of Broadcast Ephemeris is uploaded every 5 seconds.
 </p>
 
-<p><a name="streams"><h4>3.16. Streams</h4></p>
+<p><a name="streams"><h4>4.16. Streams</h4></p>
 <p>
 Each stream on an NTRIP Broadcaster (and consequently on BNC) is defined using a unique source ID called mountpoint. An NTRIP Client like BNC access the desired data stream by referring to its mountpoint. Information about streams and their mountpoints is available through the source-table maintained by the NTRIP Broadcaster. Note that mountpoints could show up in BNC more than once when retrieving streams from several NTRIP Broadcasters.
 </p>
@@ -2003,7 +2005,7 @@ Streams selected for retrieval are listed under the 'Streams' canvas section on 
 </table>
 </p>
 
-<p><a name="streamedit"><h4>3.16.1 Edit Streams</h4></p>
+<p><a name="streamedit"><h4>4.16.1 Edit Streams</h4></p>
 <ul>
 <li>
 BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x' and 'RTNET'.
@@ -2018,11 +2020,11 @@ BNC can also retrieve streams from virtual reference stations (VRS). To initiate
 </li>
 </ul> 
 
-<p><a name="streamdelete"><h4>3.16.2 Delete Stream</h4></p>
+<p><a name="streamdelete"><h4>4.16.2 Delete Stream</h4></p>
 <p>
 To remove a stream from the 'Streams' canvas in the main window, highlight it by clicking on it and hit the 'Delete Stream' button. You can also remove multiple streams simultaneously by highlighting them using +Shift and +Ctrl.</p>
 
-<p><a name="streamconf"><h4>3.16.3 Reconfigure Streams On-the-fly</h4></p>
+<p><a name="streamconf"><h4>4.16.3 Reconfigure Streams On-the-fly</h4></p>
 <p>
 The streams selection can be changed on-the-fly without interrupting uninvolved threads in the running BNC process.
 </p>
@@ -2032,16 +2034,16 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 <u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option from disk at pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file become effective without terminating uninvolved threads. See annexed section 'Configuration Example' for a configuration file example and a list of other on-the-fly changeable options.
 </p>
 
-<p><a name="logs"><h4>3.17. Logging</h4></p>
+<p><a name="logs"><h4>4.17. Logging</h4></p>
 <p>
 A tabs section on the bottom of the main window provides online control of BNC's activities. Tabs are available to show the records saved in a logfile, for a plot to control the bandwidth consumption, for a plot showing stream latencies, and for time series plots of PPP results.
 </p>
-<p><a name="logfile"><h4>3.17.1 Log</h4></p>
+<p><a name="logfile"><h4>4.17.1 Log</h4></p>
 <p>
 Records of BNC's activities are shown in the 'Log' tab. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field.
 </p>
 
-<p><a name="throughput"><h4>3.17.2 Throughput</h4></p>
+<p><a name="throughput"><h4>4.17.2 Throughput</h4></p>
 <p>
 The bandwidth consumption per stream is shown in the 'Throughput' tab in bits per second (bps) or kilo bits per second (kbps). The following figure shows the bandwidth comsumption of incoming streams.
 </p>
@@ -2049,7 +2051,7 @@ The bandwidth consumption per stream is shown in the 'Throughput' tab in bits pe
 <p><img src="IMG/screenshot08.png"/></p>
 <p><u>Figure 19:</u> Bandwidth consumption of incoming streams.</p>
 
-<p><a name="latency"><h4>3.17.3 Latency</h4></p>
+<p><a name="latency"><h4>4.17.3 Latency</h4></p>
 <p>
 The latency of observations in each incoming stream is shown in the 'Latency' tab in milliseconds or seconds. Streams not carrying observations (i.e. those providing only Broadcast Ephemeris messages) or having an outage are not considered here and shown in red color. Note that the calculation of correct latencies requires the clock of the host computer to be properly synchronized. The next figure shows the latency of incoming streams.
 </p>
@@ -2057,7 +2059,7 @@ The latency of observations in each incoming stream is shown in the 'Latency' ta
 <p><img src="IMG/screenshot07.png"/></p>
 <p><u>Figure 20:</u> Latency of incoming streams.</p>
 
-<p><a name="ppptab"><h4>3.17.4 PPP Plot</h4></p>
+<p><a name="ppptab"><h4>4.17.4 PPP Plot</h4></p>
 <p>
 Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when a 'Origin' option is defined. Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate components. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. Note that it may take up to 30 seconds or more till the first PPP solutions becomes available. The following figure shows the screenshot of a PPP time series plot of North, East and Up coordinate components.
 </p>
@@ -2065,7 +2067,7 @@ Precise Point Positioning time series of North (red), East (green) and Up (blue)
 <p><img src="IMG/screenshot13.png"/></p>
 <p><u>Figure 21:</u> Time series plot of PPP session.</p>
 
-<p><a name="bottom"><h4>3.18. Bottom Menu Bar</h4></p>
+<p><a name="bottom"><h4>4.18. Bottom Menu Bar</h4></p>
 <p>
 The bottom menu bar allows to add or delete streams to BNC's configuration and to start or stop it. It also provides access to BNC's online help function. The 'Add Stream' button opens a window that allows user to select one of several input communication links, see figure below.
 </p>
@@ -2073,18 +2075,18 @@ The bottom menu bar allows to add or delete streams to BNC's configuration and t
 <p><img src="IMG/screenshot06.png"/></p>
 <p><u>Figure 22:</u> Steam input communication links.</p>
 
-<p><a name="streamadd"><h4>3.18.1 Add Stream - Coming from Caster</h4></p>
+<p><a name="streamadd"><h4>4.18.1 Add Stream - Coming from Caster</h4></p>
 
 <p>
 Button 'Add Stream' &gt; 'Coming from Caster' then opens a window that allows user to select data streams from an NTRIP Broadcaster according to their mountpoints and show a distribution map of offered streams.
 </p> 
 
-<p><a name="streamhost"><h4>3.18.1.1 Caster Host and Port - mandatory</h4></p>
+<p><a name="streamhost"><h4>4.18.1.1 Caster Host and Port - mandatory</h4></p>
 <p>
 Enter the NTRIP Broadcaster host IP and port number. Note that EUREF and IGS operate NTRIP Broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u> and <u>http://www.products.igs-ip.net/home</u>.
 </p> 
 
-<p><a name="streamtable"><h4>3.18.1.2 Casters Table - optional</h4></p>
+<p><a name="streamtable"><h4>4.18.1.2 Casters Table - optional</h4></p>
 <p>
 It may be that your are not sure about your NTRIP Broadcasters host and port number or you are interested in other broadcaster installations operated elsewhere. Hit 'Show' for a table of known broadcasters maintained at <u>www.rtcm-ntrip.org/home</u>. A window opens which allows to select a broadcaster for stream retrieval, see figure below.
 </p> 
@@ -2093,12 +2095,12 @@ It may be that your are not sure about your NTRIP Broadcasters host and port num
 
 <p><u>Figure 23:</u> Casters table.</p>
 
-<p><a name="streamuser"><h4>3.18.1.3 User and Password - mandatory for protected streams</h4></p>
+<p><a name="streamuser"><h4>4.18.1.3 User and Password - mandatory for protected streams</h4></p>
 <p>
 Some streams on NTRIP Broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP Broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/ntrip/registeruser</u> for access to protected streams on <u>www.euref-ip.net</u> or <u>www.igs-ip.net</u> or <u>products.igs-ip.net</u>.
 </p> 
 
-<p><a name="gettable"><h4>3.18.1.4 Get Table</h4></p>
+<p><a name="gettable"><h4>4.18.1.4 Get Table</h4></p>
 <p>
 Use the 'Get Table' button to download the source-table from the NTRIP Broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2, RTCM Version 3, or RTNET format. For access to observations, ephemeris or ephemeris corrections, an RTCM Version 2 streams must contain message types 18 and 19 or 20 and 21 while an RTCM Version 3 streams must contain
 <ul>
@@ -2120,7 +2122,7 @@ Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream'
 
 <p>Button 'Map' leads to the presentation of a map showing the distribution of streams offered through the downloaded source-table.</p>
 
-<p><a name="ntripv"><h4>3.18.1.5 NTRIP Version - mandatory</h4></p>
+<p><a name="ntripv"><h4>4.18.1.5 NTRIP Version - mandatory</h4></p>
 <p>
 Some limitations and deficiencies of the NTRIP Version 1 stream transport protocol are solved in NTRIP Version 2. Improvements mainly concern a full HTTP compatibility in view of requirements coming from proxy servers. Version 2 is backwards compatible to Version 1. Options implemented in BNC are:
 </p>
@@ -2142,14 +2144,14 @@ If NTRIP Version 2 is supported by the broadcaster:
 Select option '1' if you are not sure whether the broadcaster supports NTRIP Version 2.</li>
 </p>
 
-<p><a name="map"><h4>3.18.1.6 Map - optional</h4></p>
+<p><a name="map"><h4>4.18.1.6 Map - optional</h4></p>
 <p>
 Button 'Map' opens a window to show a distribution map of the casters' streams. You may like to zoom in or out using option 'Zoom +' or 'Zoom -'. You may also like to 'Clean' or 'Reset' a map or let it 'Fit' exactly to the current size of the window. Option 'Close' shuts the window.
 </p>
 <p><img src="IMG/screenshot24.png"/></p>
 <p><u>Figure 25:</u> Stream distribution map derived from NTRIP Broadcaster source-table.</p>
 
-<p><a name="streamip"><h4>3.18.2 Add Stream - Coming from TCP/IP Port</h4></p>
+<p><a name="streamip"><h4>4.18.2 Add Stream - Coming from TCP/IP Port</h4></p>
 <p>
 Button 'Add Stream' &gt; 'Coming from TCP/IP Port' allows to retrieve streams via TCP directly from an IP address without using the NTRIP transport protocol. For that you:
 <ul>
@@ -2168,7 +2170,7 @@ Streams directly received from a TCP/IP port show up with an 'N' for 'No NTRIP' 
 Note that this option works only if no proxy server is involved in the communication link.
 </p>
 
-<p><a name="streamudp"><h4>3.18.3 Add Stream - Coming from UDP Port</h4></p>
+<p><a name="streamudp"><h4>4.18.3 Add Stream - Coming from UDP Port</h4></p>
 <p>
 Button 'Add Stream' &gt; 'Coming from UDP Port' allows to pick up streams arriving directly at one of the local host's UDP ports without using the NTRIP transport protocol. For that you:
 <ul>
@@ -2183,7 +2185,7 @@ Button 'Add Stream' &gt; 'Coming from UDP Port' allows to pick up streams arrivi
 Streams directly received at a UDP port show up with a 'UN' for 'UDP, No NTRIP' in the 'Streams' canvas section on BNC's main window. Latitude and longitude are to be entered just for informal reasons.
 <p>
 
-<p><a name="streamser"><h4>3.18.4 Add Stream - Coming from Serial Port</h4></p>
+<p><a name="streamser"><h4>4.18.4 Add Stream - Coming from Serial Port</h4></p>
 <p>
 Button 'Add Stream' &gt; 'Coming from Serial Port' allows to retrieve streams from a GNSS receiver via serial port without using the NTRIP transport protocol. For that you:
 <ul>
@@ -2223,22 +2225,22 @@ The following figure shows a BNC example setup for pulling a stream via serial p
 <p><img src="IMG/screenshot15.png"/></p>
 <p><u>Figure 26:</u> BNC setup for pulling a stream via serial port.</p>
 
-<p><a name="start"><h4>3.18.5 Start</h4></p>
+<p><a name="start"><h4>4.18.5 Start</h4></p>
 <p>
 Hit 'Start' to start retrieving, decoding, and converting GNSS data streams in real-time. Note that 'Start' generally forces BNC to begin with fresh RINEX which might overwrite existing files when necessary unless the option 'Append files' is ticked.
 </p> 
 
-<p><a name="stop"><h4>3.18.6 Stop</h4></p>
+<p><a name="stop"><h4>4.18.6 Stop</h4></p>
 <p>
 Hit the 'Stop' button in order to stop BNC. 
 </p> 
 
-<p><a name="cmd"><h4>3.19. Command Line Options</h4></p>
+<p><a name="cmd"><h4>4.19. Command Line Options</h4></p>
 <p> 
 Command line options are available to run BNC in 'no window' mode or let it read data offline from one file or several files for debugging or post processing purposes. BNC will then use processing options from the configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration file name instead of using the default name 'BNC.ini'.
 </p> 
 
-<p><a name="nw"><h4>3.19.1 No Window Mode - optional</h4></p>
+<p><a name="nw"><h4>4.19.1 No Window Mode - optional</h4></p>
 <p>
 Apart from its regular windows mode, BNC can be started on all systems as a background/batch job with command line option '-nw'. BNC will then run in 'no window' mode, using processing options from its configuration file on disk. Terminate BNC using Windows Task Manager when running it in 'no window' mode on Windows systems.
 </p> 
@@ -2247,7 +2249,7 @@ Example:<br><br>
 bnc.exe -nw
 </p>
 
-<p><a name="post"><h4>3.19.2 File Mode - optional</h4></p>
+<p><a name="post"><h4>4.19.2 File Mode - optional</h4></p>
 <p>
 Although BNC is primarily a real-time online tool, for debugging purposes it can be run offline to read data from a file previously saved through option 'Raw output file'. Enter the following command line option for that
 </p>
@@ -2264,7 +2266,7 @@ Note that when running BNC offline, it will use options for file saving, interva
 <p>Note further that option '--file' forces BNC to appy the '-nw' option for running in 'no window' mode.
 </p> 
 
-<p><a name="conffile"><h4>3.19.3 Configuration File - optional</h4></p>
+<p><a name="conffile"><h4>4.19.3 Configuration File - optional</h4></p>
 The default configuration file name is 'BNC.ini'. You may change this name at startup time using the command line option '--conf &lt;<u>confFileName</u>&gt;'. This allows running several BNC jobs in parallel on the same host using different sets of configuration options. <u>confFileName</u> stands either for the full path to a configuration file or just for a file name. If you introduce only a filename, the corresponding file will be saved in the current working directory from where BNC is started.
 </p>
 <p>
@@ -2282,7 +2284,7 @@ open -a /Applications/bnc.app --args -conf /Users/tsyan/MyConfig.ini
 if the program is in /Applications and the configuration file 'MyConfig.ini' in /Users/tsyan.
 </p> 
 
-<p><a name="confopt"><h4>3.19.4 Configuration Options - optional</h4></p>
+<p><a name="confopt"><h4>4.19.4 Configuration Options - optional</h4></p>
 <p> 
 BNC applies options from the configuration file but allows updating every one of them on the command line while the contents of the configuration file remains unchanged. The command line syntax for that looks as follows
 </p>
@@ -2302,7 +2304,7 @@ Example:
 ./bnc --conf CONFIG.bnc --key proxyPort 8001 --key rnxIntr "1 day"
 </p> 
 
-<p><a name="limits"><h3>4. Limitations &amp; Known Bugs</h3></p>
+<p><a name="limits"><h3>5. Limitations &amp; Known Bugs</h3></p>
 <ul>
 <li>
 In Qt-based desktop environments (like KDE) on Unix/Linux platforms it may happen that you experience a crash of BNC at startup even when running the program in the background using the '-nw' option. This is a known bug most likely resulting from an incompatibility of Qt libraries in the environment and in BNC. Entering the command 'unset SESSION_MANAGER' before running BNC may help as a work-around. 
@@ -2328,7 +2330,7 @@ Once BNC has been started, many of its configuration options cannot be changed a
 </li>
 
 </ul>
-<p><a name="authors"><h3>5. Authors</h3></p>
+<p><a name="authors"><h3>6. Authors</h3></p>
 <p>
 The BKG Ntrip Client (BNC) Qt Graphic User Interface (GUI) has been developed for the Federal Agency for Cartography and Geodesy (BKG) by Leos Mervart, Czech Technical University Prague, Department of Geodesy. BNC includes the following GNU GPL software components: 
 <ul>
@@ -2353,7 +2355,7 @@ Jan Dousa, Geodetic Observatory Pecny, Czech Republic, provided a tool for drawi
 Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested synchronizing observations and clock corrections to reduce high frequency noise in PPP solutions.
 </p>
 
-<p><a name="annex"><h3>6. Annex</h3></p>
+<p><a name="annex"><h3>7. Annex</h3></p>
 <p>
 6.1. <a href=#history>Revision History</a><br>
 6.2. <a href=#rtcm>RTCM</a><br>
@@ -2365,7 +2367,7 @@ Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested synchron
 6.4. <a href=#links>Links</a><br>
 </p>
 
-<p><a name=history><h3>6.1 Revision History</h3></p>
+<p><a name=history><h4>7.1 Revision History</h3></p>
 <table>
 <tr></tr>
 
@@ -2509,7 +2511,7 @@ Source-table records of type NET contain the following data fields: 'identifiey'
 Source-table records of type CAS contain the following data fields: 'host', 'port', 'identifier', 'operator', 'nmea', 'country', 'latitude', 'longitude', 'misc'.
 </p>
 
-<p><a name="ntrip2"><h4>6.2.1 NTRIP Version 2</h4></p>
+<p><a name="ntrip2"><h4>7.2.1 NTRIP Version 2</h4></p>
 
 <p>
 The major changes of NTRIP Version 2 compared to Version 1.0 are:
@@ -2527,7 +2529,7 @@ The major changes of NTRIP Version 2 compared to Version 1.0 are:
 <p>NTRIP Version 2 allows to either communicate in TCP/IP mode or in RTSP/RTP mode or in UDP mode whereas Version 1 is limited to TCP/IP only. It furthermore allows using the Transport Layer Security (TLS) and its predecessor, Secure Sockets Layer (SSL) cryptographic protocols for secure NTRIP communication over the Internet.
 </p>
 
-<p><a name="rtcm2"><h4>6.2.3 RTCM Version 2</h4></p>
+<p><a name="rtcm2"><h4>7.2.3 RTCM Version 2</h4></p>
 <p>
 Transmitting GNSS carrier phase data can be done through RTCM Version 2 messages. Please note that only RTCM Version 2.2 and 2.3 streams may include GLONASS data. Messages that may be of some interest here are:
 </p>
@@ -2565,7 +2567,7 @@ Type 24 message carries the coordinates of the installed antenna's ARP in the GN
 </li>
 </ul>
 
-<p><a name="rtcm3"><h4>6.2.4 RTCM Version 3</h4></p>
+<p><a name="rtcm3"><h4>7.2.4 RTCM Version 3</h4></p>
 <p>
 RTCM Version 3 has been developed as a more efficient alternative to RTCM Version 2. Service providers and vendors have asked for a standard that would be more efficient, easy to use, and more easily adaptable to new situations. The main complaint was that the Version 2 parity scheme was wasteful of bandwidth. Another complaint was that the parity is not independent from word to word. Still another was that even with so many bits devoted to parity, the actual integrity of the message was not as high as it should be. Plus, 30-bit words are awkward to handle. The Version 3 standard is intended to correct these weaknesses.
 </p>
@@ -2639,7 +2641,7 @@ The following are so-called 'State Space Representation' (SSR) messages:
 </ul>
 </p>
 
-<p><a name="config"><h4>6.3. Configuration Example</h4></p>
+<p><a name="config"><h4>7.3. Configuration Example</h4></p>
 <p>
 The following table's left column is an example for the contents of a configuration file 'BNC.ini'. It enables the retrieval of an observations stream via NTRIP for the generation of 15 min RINEX files:
 </p>
@@ -2800,7 +2802,7 @@ Note that the following configuration options saved on disk can be changed/edite
 </ul>
 </p>
 
-<p><a name="links"><h3>6.4 Links</h3></p>
+<p><a name="links"><h4>7.4 Links</h3></p>
 <table>
 <tr></tr>
 <tr><td>NTRIP &nbsp;</td><td><u>http://igs.bkg.bund.de/ntrip/index</u></td></tr>
