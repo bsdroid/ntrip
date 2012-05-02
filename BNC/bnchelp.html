@@ -746,16 +746,18 @@ In case of RTCM message types 1057 or 1063 (see Annex) these parameters are foll
 </ul>
 </p>
 <p>
-Undefined parameters are set to zero &quot;0.000&quot;.<br>Example:
+Undefined parameters would be set to zero &quot;0.000&quot;.<br>Example:
 <pre>
 ...
-1057 0 1538 211151.0 G18     1      0.034    0.011   -0.064      0.000    0.000    0.000
-1057 0 1538 211151.0 G16    33     -0.005    0.194   -0.091      0.000    0.000    0.000
-1057 0 1538 211151.0 G22    50      0.008   -0.082   -0.001      0.000    0.000    0.000
+1057 0 1686 283200.0 G02    21      1.062   -0.791    1.070     -0.00025   -0.00031   -0.00005
+1057 0 1686 283200.0 G03    25      1.765   -2.438   -0.290     -0.00009   -0.00060    0.00028
+1057 0 1686 283200.0 G04    14      1.311   -0.862    0.334      0.00005   -0.00038   -0.00015
+
 ...
-1063 0 1538 211151.0 R09   111     -0.011   -0.014    0.005      0.000    0.000    0.000
-1063 0 1538 211151.0 R10    43      0.000   -0.009   -0.002      0.000    0.000    0.000
-1063 0 1538 211151.0 R21    75     -0.029    0.108    0.107      0.000    0.000    0.000
+1063 0 1686 283200.0 R01    39      0.347    1.976   -1.418      0.00048   -0.00091    0.00008
+1063 0 1686 283200.0 R02    39      0.624   -2.092   -0.155      0.00005   -0.00054    0.00053
+1063 0 1686 283200.0 R03    39      0.113    5.655   -1.540      0.00003   -0.00079   -0.00003
+1063 0 1686 283200.0 R05    39      0.237    1.426   -1.282      0.00054   -0.00020    0.00027
 ...
 </pre>
 <p>
@@ -1680,6 +1682,10 @@ Then, epoch by epoch:
 <li>Encode Broadcast Ephemeris clock and orbit corrections in RTCM Version 3 format. </li>
 <li>Upload corrections stream to NTRIP Broadcaster. </li>
 </ul>
+<p>
+The orbit and clock corrections to Broadcast Ephemeris are usually refered to the latest set of broadcast messages, which are generally also received in real-time by a GNSS rover. However, the use of the latest broadcast message is delayed for a period of 60 seconds, measured from the time of complete reception of ephemeris and clock parameters, in order to accommodate rover applications to obtain the same set of broadcast orbital and clock parameters. This procedure is recommended in the RTCM SSR standard.
+</p>
+</p>
 Because the encoding process may put a significant load on the communication link between BNC and the real-time GNSS engine, it is recommended to run both programs on the same host. However, doing so is not compulsory.
 </p>
 <p>
