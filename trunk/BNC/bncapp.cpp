@@ -47,6 +47,7 @@
 #include "bncrinex.h" 
 #include "bncsettings.h" 
 #include "bncversion.h" 
+#include "RTCM3/ephemeris.h" 
 
 #ifdef USE_COMBINATION
 #include "combination/bnccomb.h" 
