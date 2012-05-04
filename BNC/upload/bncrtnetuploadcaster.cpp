@@ -31,11 +31,15 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
                                  const QString& crdTrafo, bool  CoM, 
                                  const QString& sp3FileName,
                                  const QString& rnxFileName,
-                                 const QString& outFileName, int iRow) :
+                                 const QString& outFileName, 
+                                 int PID, int SID, int IOD, int iRow) :
   bncUploadCaster(mountpoint, outHost, outPort, password, iRow, 0) {
 
   _crdTrafo   = crdTrafo;
   _CoM        = CoM;
+  _PID        = PID;
+  _SID        = SID;
+  _IOD        = IOD;
 
   // Member that receives the ephemeris
   // ----------------------------------
@@ -255,9 +259,9 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   co.ClockDataSupplied = 1;
   co.OrbitDataSupplied = 1;
   co.SatRefDatum       = DATUM_ITRF;
-  co.SSRIOD            =   0;
-  co.SSRProviderID     = 256; // 256 .. BKG,  257 ... EUREF
-  co.SSRSolutionID     =   1;
+  co.SSRIOD            = _IOD;
+  co.SSRProviderID     = _PID; // 256 .. BKG,  257 ... EUREF
+  co.SSRSolutionID     = _SID;
   
   struct Bias bias;
   memset(&bias, 0, sizeof(bias));

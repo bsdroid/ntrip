@@ -525,21 +525,24 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   // Upload Results
   // -------------
-  _uploadTable = new QTableWidget(0,9);
-  _uploadTable->setHorizontalHeaderLabels(QString("Host, Port, Mount, Password, System, CoM, SP3 File, RNX File, bytes").split(","));
+  _uploadTable = new QTableWidget(0,12);
+  _uploadTable->setHorizontalHeaderLabels(QString("Host, Port, Mount, Password, System, CoM, SP3 File, RNX File, PID, SID, IOD, bytes").split(","));
   _uploadTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _uploadTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-  _uploadTable->horizontalHeader()->resizeSection(0,13*ww); 
-  _uploadTable->horizontalHeader()->resizeSection(1,5*ww); 
-  _uploadTable->horizontalHeader()->resizeSection(2,6*ww); 
-  _uploadTable->horizontalHeader()->resizeSection(3,8*ww); 
-  _uploadTable->horizontalHeader()->resizeSection(4,11*ww); 
-  _uploadTable->horizontalHeader()->resizeSection(5,4*ww); 
-  _uploadTable->horizontalHeader()->resizeSection(6,15*ww); 
-  _uploadTable->horizontalHeader()->resizeSection(7,15*ww); 
-  _uploadTable->horizontalHeader()->resizeSection(8,10*ww); 
+  _uploadTable->horizontalHeader()->resizeSection( 0,13*ww); 
+  _uploadTable->horizontalHeader()->resizeSection( 1, 5*ww); 
+  _uploadTable->horizontalHeader()->resizeSection( 2, 6*ww); 
+  _uploadTable->horizontalHeader()->resizeSection( 3, 8*ww); 
+  _uploadTable->horizontalHeader()->resizeSection( 4,11*ww); 
+  _uploadTable->horizontalHeader()->resizeSection( 5, 4*ww); 
+  _uploadTable->horizontalHeader()->resizeSection( 6,15*ww); 
+  _uploadTable->horizontalHeader()->resizeSection( 7,15*ww); 
+  _uploadTable->horizontalHeader()->resizeSection( 8, 4*ww); 
+  _uploadTable->horizontalHeader()->resizeSection( 9, 4*ww); 
+  _uploadTable->horizontalHeader()->resizeSection(10, 4*ww); 
+  _uploadTable->horizontalHeader()->resizeSection(11,12*ww); 
   _uploadTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-  _uploadTable->horizontalHeader()->setStretchLastSection(true);
+  ///  _uploadTable->horizontalHeader()->setStretchLastSection(true);
   _uploadTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
   connect(_uploadTable, SIGNAL(itemSelectionChanged()), 
@@ -2391,7 +2394,7 @@ void bncWindow::slotAddUploadRow() {
       QCheckBox* com = new QCheckBox();
       _uploadTable->setCellWidget(iRow, iCol, com);
     }
-    else if (iCol == 8) {
+    else if (iCol == 11) {
       bncTableItem* bncIt = new bncTableItem();
       bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
       _uploadTable->setItem(iRow, iCol, bncIt);
@@ -2424,7 +2427,7 @@ void bncWindow::slotDelUploadRow() {
   }
   for (int iRow = 0; iRow < _uploadTable->rowCount(); iRow++) {
     ((bncApp*)qApp)->_uploadTableItems[iRow] = 
-                                (bncTableItem*) _uploadTable->item(iRow, 8);
+                                (bncTableItem*) _uploadTable->item(iRow, 11);
   }
   nRows = _uploadTable->rowCount();
   if (nRows < 1) {
@@ -2474,7 +2477,7 @@ void bncWindow::populateUploadTable() {
         }
         _uploadTable->setCellWidget(iRow, iCol, com);
       }
-      else if (iCol == 8) {
+      else if (iCol == 11) {
         bncTableItem* bncIt = new bncTableItem();
         bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
         _uploadTable->setItem(iRow, iCol, bncIt);
