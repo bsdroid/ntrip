@@ -59,10 +59,23 @@ bncRtnetDecoder::bncRtnetDecoder() {
       ++iRow;
       int  outPort = hlp[1].toInt();
       bool CoM     = (hlp[5].toInt() == Qt::Checked);
+      int PID = 0;
+      if (hlp.size() > 8) {
+        PID = hlp[8].toInt();
+      }
+      int SID = 0;
+      if (hlp.size() > 9) {
+        SID = hlp[9].toInt();
+      }
+      int IOD = 0;
+      if (hlp.size() > 10) {
+        IOD = hlp[10].toInt();
+      }
       bncRtnetUploadCaster* newCaster = new bncRtnetUploadCaster(
                                                        hlp[2], hlp[0], outPort, 
                                                        hlp[3], hlp[4], CoM,
-                                                       hlp[6], hlp[7], "", iRow);
+                                                       hlp[6], hlp[7], "", 
+                                                       PID, SID, IOD, iRow);
       newCaster->start();
       _casters.push_back(newCaster);
     }
