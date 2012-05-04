@@ -255,6 +255,9 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   co.ClockDataSupplied = 1;
   co.OrbitDataSupplied = 1;
   co.SatRefDatum       = DATUM_ITRF;
+  co.SSRIOD            =   0;
+  co.SSRProviderID     = 256; // 256 .. BKG,  257 ... EUREF
+  co.SSRSolutionID     =   1;
   
   struct Bias bias;
   memset(&bias, 0, sizeof(bias));
