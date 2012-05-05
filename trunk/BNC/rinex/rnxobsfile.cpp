@@ -644,7 +644,7 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
 
 // Write Header
 ////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::writeHeader() {
+void t_rnxObsFile::writeHeader(const QMap<QString, QString>& txtMap) {
 
   bncApp* app = (bncApp*) qApp;
 
