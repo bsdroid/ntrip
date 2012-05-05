@@ -129,7 +129,7 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   grid->addWidget(new QLabel("Run By"),        ir, 0);
   grid->addWidget(_reqcRunBy,                  ir, 1);
   ++ir;
-  grid->addWidget(new QLabel("Comment"),       ir, 0);
+  grid->addWidget(new QLabel("Comment(s)"),    ir, 0);
   grid->addWidget(_reqcComment,                ir, 1, 1, 4);
   ++ir;
   grid->addWidget(new QLabel("Old"),           ir, 1, 1, 2, Qt::AlignCenter);
