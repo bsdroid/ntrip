@@ -648,12 +648,17 @@ void t_rnxObsFile::writeHeader(const QMap<QString, QString>& txtMap) {
 
   bncApp* app = (bncApp*) qApp;
 
-  QString runBy = app->userName();
+  QString     runBy = app->userName();
+  QStringList comments;
+
   QMapIterator<QString, QString> it(txtMap);
   while (it.hasNext()) {
     it.next();
-    if (it.key() == "RUN BY") {
+    if      (it.key() == "RUN BY") {
       runBy = it.value();
+    }
+    else if (it.key() == "COMMENT") {
+      comments = it.value().split(QChar('\n'), QString::SkipEmptyParts);
     }
   }
 
@@ -668,6 +673,11 @@ void t_rnxObsFile::writeHeader(const QMap<QString, QString>& txtMap) {
     .arg(currentDateAndTimeGPS().date().toString("dd-MMM-yyyy"), -20)
     .leftJustified(60)
            << "PGM / RUN BY / DATE\n";
+
+  QStringListIterator itCmnt(comments);
+  while (itCmnt.hasNext()) {
+    *_stream << itCmnt.next().leftJustified(60) << "COMMENT\n";
+  }
 
   *_stream << QString("%1")
     .arg(_header._markerName, -60)
