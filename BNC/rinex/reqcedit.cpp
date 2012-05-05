@@ -143,6 +143,9 @@ void t_reqcEdit::editObservations() {
       if (_begTime.valid() && _begTime > outObsFile.startTime()) {
         outObsFile.setStartTime(_begTime);
       }
+      if (_samplingRate > outObsFile.interval()) {
+        outObsFile.setInterval(_samplingRate);
+      }
       editRnxObsHeader(outObsFile);
       outObsFile.writeHeader();
     }
