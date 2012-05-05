@@ -54,6 +54,8 @@ class reqcDlg : public QDialog {
    QSpinBox*      _reqcSampling;
    QDateTimeEdit* _reqcStartDateTime;
    QDateTimeEdit* _reqcEndDateTime;
+   QLineEdit*     _reqcRunBy;
+   QLineEdit*     _reqcComment;
    QLineEdit*     _reqcOldMarkerName;
    QLineEdit*     _reqcNewMarkerName;
    QLineEdit*     _reqcOldAntennaName;
