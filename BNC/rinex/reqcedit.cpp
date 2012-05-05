@@ -148,7 +148,8 @@ void t_reqcEdit::editObservations() {
       }
       editRnxObsHeader(outObsFile);
       QMap<QString, QString> txtMap;
-      txtMap["RUN BY"] = "BKG";
+      txtMap["RUN BY"]  = "BKG";
+      txtMap["COMMENT"] = "First comment line\nSecond comment line";
       outObsFile.writeHeader(txtMap);
     }
     else {
