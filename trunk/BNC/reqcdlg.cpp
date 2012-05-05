@@ -127,7 +127,7 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   grid->addWidget(_reqcEndDateTime,            ir, 4);
   ++ir;
   grid->addWidget(new QLabel("Run By"),        ir, 0);
-  grid->addWidget(_reqcRunBy,                  ir, 1, 1, 2);
+  grid->addWidget(_reqcRunBy,                  ir, 1);
   ++ir;
   grid->addWidget(new QLabel("Comment"),       ir, 0);
   grid->addWidget(_reqcComment,                ir, 1, 1, 4);
