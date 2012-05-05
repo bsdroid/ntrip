@@ -102,7 +102,7 @@ Although BNC is mainly a real-time tool to be operated online, it can be run off
 <li>to simulate real-time observation situations for debugging purposes,</li>
 <li>for post-processing purposes.</li>
 </ul>
-Furthermore, apart from its regular window mode, BNC can be run as a batch/background job in a 'no window' mode using processing options from a previously saved configuration.
+Furthermore, apart from its regular window mode, BNC can be run as a batch/background job in a 'no window' mode using processing options from a previously saved configuration or from command line.
 </p>
 <p>
 Unless it runs offline, BNC
@@ -570,7 +570,7 @@ and hence follows UNAVCO's famous 'TEQC' program. The remarkable thing about BNC
 </p>
 
 <p><a name="reqcedit"><h4>4.6.2 Set Edit Options - mandatory if 'Edit/Concatenate' is set</h4></p>
-<p>Once the 'Edit/Concatenate' action is selected, you have to 'Set Edit Options'. BNC lets you specify the RINEX version, sampling rate, begin and end of file and marker, antenna, receiver details.
+<p>Once the 'Edit/Concatenate' action is selected, you have to 'Set Edit Options'. BNC lets you specify the RINEX version, sampling rate, begin and end of file, operator, comment lines, and marker, antenna, receiver details.
 </p>
 <p>
 When converting RINEX Version 2 to RINEX Version 3, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. When converting RINEX Version 3 to RINEX Version 2:
@@ -580,9 +580,14 @@ When converting RINEX Version 2 to RINEX Version 3, the tracking mode or channel
 <li>If several observations in RINEX Version 3 come with the same observation type, same band/frequency but different tracking modes, BNC uses only the one provided first for creating RINEX Version 2 while ignoring others.</li>
 </ul>
 </p>
+<p>Optionally you may specify a comment line text to be added to the emerging new RINEX file header. Any introduction of a newline through '\n' in this enforces the beginning of a further comment line. Comment line(s) will be added to the header after the 'PGM / RUN BY / DATE' record. Default is an empty option field meaning that no additional comment line is added to the RINEX header.</p>
+  <p>Specifying a 'RUN BY' string to be included in the emerging new RINEX file header is another option. Default is an empty option field meanig the operator's ID is automatically used as 'RUN BY' string.</p>
 <p>
 If you specify a 'New' but no 'Old' marker/antenna/receiver name, the corresponding data field in the emerging new RINEX file will be filled accordingly. If you in addition specify an 'Old' marker/antenna/receiver name, the corresponding data field in the emerging new RINEX file will only be filled accordingly where 'Old' specifications match existing file contents.
 </p>
+
+<p><img src="IMG/screenshot27.png"/></p>
+<p><u>Figure 7:</u> Example for 'RINEX Editing Options' window.</p>
 
 <p><a name="reqcinput"><h4>4.6.3 Input Files - mandatory if 'Action' is set</h4></p>
 <p>
@@ -591,10 +596,6 @@ specify full path to input RINEX navigation file(s).
 </p> 
 <p>When specifying several input files BNC will concatenate their contents.</p>
 
-</p>
-<p><img src="IMG/screenshot25.png"/></p>
-<p><u>Figure 7:</u> Example for RINEX file editing with BNC in post-processing mode.</p>
-
 <p><a name="reqcoutput"><h4>4.6.4 Output Files - mandatory if 'Action' is set</h4></p>
 <p>
 If 'Edit/Concatenate' is selected, specifying the a path to output RINEX observation file(s) and specifying a full path to output RINEX navigation file(s) is mandatory.</p> 
@@ -602,6 +603,9 @@ If 'Edit/Concatenate' is selected, specifying the a path to output RINEX observa
 <p>
 If if 'Analyze' is selected, specifying logfile(s) to output analysis results is mandatory.<br> 
 </p> 
+
+<p><img src="IMG/screenshot25.png"/></p>
+<p><u>Figure 7:</u> Example for RINEX file editing with BNC in post-processing mode.</p>
 
 <p><a name="reqccommand"><h4>4.6.5 Command Line, No Window - optional</h4></p>
 <p>
@@ -1955,7 +1959,7 @@ Select the length of Clock RINEX files and SP3 Orbit files. The default value is
 <p>Hit 'Custom Trafo' to specify your own 14 parameter Helmert Transformation instead of selecting a predefined transformation through 'System' button.</p>
 
 <p>
-The following screenshot shows the encoding and uploading of a stream of precise orbits and clocks coming from a real-time engine in 'RTNET' ASCII format. The stream is uploaded to NTRIP Broadcaster 'products.igs-ip.net'. It is referred to APC and IGS08. Uploaded data are locally saved in SP3 and Clock RINEX format. Required Broadcast Ephemeris are received via stream 'RTCM3EPH'.
+The following screenshot shows the encoding and uploading of a stream of precise orbits and clocks coming from a real-time engine in 'RTNET' ASCII format. The stream is uploaded to NTRIP Broadcaster 'products.igs-ip.net'. It is referred to APC and IGS08. Uploaded data are locally saved in SP3 and Clock RINEX format. Required Broadcast Ephemeris are received via stream 'RTCM3EPH'. The SSR Provider ID is set to 3. The SSR Solution ID is and the Issue of Date SSR are set to 1. 
 </p>
 <p><img src="IMG/screenshot26.png"/></p>
 <p><u>Figure 18:</u> Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an NTRIP Broadcaster.</p>
