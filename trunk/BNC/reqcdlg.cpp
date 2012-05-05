@@ -62,6 +62,8 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   _reqcStartDateTime->setDisplayFormat(timeFmtString);
   _reqcEndDateTime     = new QDateTimeEdit(this);
   _reqcEndDateTime->setDisplayFormat(timeFmtString);
+  _reqcRunBy           = new QLineEdit(this);
+  _reqcComment         = new QLineEdit(this);
   _reqcOldMarkerName   = new QLineEdit(this);
   _reqcNewMarkerName   = new QLineEdit(this);
   _reqcOldAntennaName  = new QLineEdit(this);
@@ -100,6 +102,8 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   else {
     _reqcEndDateTime->setDateTime(settings.value("reqcEndDateTime").toDateTime());
   }
+  _reqcRunBy->setText(settings.value("reqcRunBy").toString());
+  _reqcComment->setText(settings.value("reqcComment").toString());
   _reqcOldMarkerName->setText(settings.value("reqcOldMarkerName").toString());
   _reqcNewMarkerName->setText(settings.value("reqcNewMarkerName").toString());
   _reqcOldAntennaName->setText(settings.value("reqcOldAntennaName").toString());
@@ -121,6 +125,12 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   grid->addWidget(_reqcStartDateTime,          ir, 2);
   grid->addWidget(new QLabel("  End"),         ir, 3);
   grid->addWidget(_reqcEndDateTime,            ir, 4);
+  ++ir;
+  grid->addWidget(new QLabel("Run By"),        ir, 0);
+  grid->addWidget(_reqcRunBy,                  ir, 1, 1, 2);
+  ++ir;
+  grid->addWidget(new QLabel("Comment"),       ir, 0);
+  grid->addWidget(_reqcComment,                ir, 1, 1, 4);
   ++ir;
   grid->addWidget(new QLabel("Old"),           ir, 1, 1, 2, Qt::AlignCenter);
   grid->addWidget(new QLabel("New"),           ir, 3, 1, 2, Qt::AlignCenter);
@@ -219,6 +229,8 @@ void reqcDlg::saveOptions() {
   settings.setValue("reqcSampling"       , _reqcSampling->value());      
   settings.setValue("reqcStartDateTime"  , _reqcStartDateTime->dateTime().toString(Qt::ISODate)); 
   settings.setValue("reqcEndDateTime"    , _reqcEndDateTime->dateTime().toString(Qt::ISODate));   
+  settings.setValue("reqcRunBy"          , _reqcRunBy->text()); 
+  settings.setValue("reqcComment"        , _reqcComment->text()); 
   settings.setValue("reqcOldMarkerName"  , _reqcOldMarkerName->text()); 
   settings.setValue("reqcNewMarkerName"  , _reqcNewMarkerName->text()); 
   settings.setValue("reqcOldAntennaName" , _reqcOldAntennaName->text());
