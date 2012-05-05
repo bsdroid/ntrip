@@ -648,7 +648,7 @@ void t_rnxObsFile::writeHeader(const QMap<QString, QString>& txtMap) {
 
   bncApp* app = (bncApp*) qApp;
 
-  QString     runBy = app->userName();
+  QString     runBy = app->userName().trimmed().left(20);
   QStringList comments;
 
   QMapIterator<QString, QString> it(txtMap);
@@ -676,7 +676,7 @@ void t_rnxObsFile::writeHeader(const QMap<QString, QString>& txtMap) {
 
   QStringListIterator itCmnt(comments);
   while (itCmnt.hasNext()) {
-    *_stream << itCmnt.next().trimmed().leftJustified(60) << "COMMENT\n";
+    *_stream << itCmnt.next().trimmed().left(60).leftJustified(60) << "COMMENT\n";
   }
 
   *_stream << QString("%1")
