@@ -147,7 +147,9 @@ void t_reqcEdit::editObservations() {
         outObsFile.setInterval(_samplingRate);
       }
       editRnxObsHeader(outObsFile);
-      outObsFile.writeHeader();
+      QMap<QString, QString> txtMap;
+      txtMap["RUN BY"] = "BKG";
+      outObsFile.writeHeader(txtMap);
     }
     else {
       outObsFile.checkNewHeader(obsFile->header());

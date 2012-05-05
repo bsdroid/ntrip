@@ -648,6 +648,15 @@ void t_rnxObsFile::writeHeader(const QMap<QString, QString>& txtMap) {
 
   bncApp* app = (bncApp*) qApp;
 
+  QString runBy = app->userName();
+  QMapIterator<QString, QString> it(txtMap);
+  while (it.hasNext()) {
+    it.next();
+    if (it.key() == "RUN BY") {
+      runBy = it.value();
+    }
+  }
+
   *_stream << QString("%1           Observation data    Mixed")
     .arg(_header._version, 9, 'f', 2)
     .leftJustified(60)
@@ -655,7 +664,7 @@ void t_rnxObsFile::writeHeader(const QMap<QString, QString>& txtMap) {
 
   *_stream << QString("%1%2%3")
     .arg(app->pgmName(), -20)
-    .arg(app->userName(), -20)
+    .arg(runBy, -20)
     .arg(currentDateAndTimeGPS().date().toString("dd-MMM-yyyy"), -20)
     .leftJustified(60)
            << "PGM / RUN BY / DATE\n";
