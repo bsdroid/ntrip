@@ -147,9 +147,16 @@ void t_reqcEdit::editObservations() {
         outObsFile.setInterval(_samplingRate);
       }
       editRnxObsHeader(outObsFile);
+      bncSettings settings;
       QMap<QString, QString> txtMap;
-      txtMap["RUN BY"]  = "BKG";
-      txtMap["COMMENT"] = "First comment line\nSecond comment line";
+      QString runBy = settings.value("reqcRunBy").toString();
+      if (!runBy.isEmpty()) {
+        txtMap["RUN BY"]  = runBy;
+      }
+      QString comment = settings.value("reqcComment").toString();
+      if (!comment.isEmpty()) {
+        txtMap["COMMENT"]  = comment;
+      }
       outObsFile.writeHeader(txtMap);
     }
     else {
