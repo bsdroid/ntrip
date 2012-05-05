@@ -658,7 +658,7 @@ void t_rnxObsFile::writeHeader(const QMap<QString, QString>& txtMap) {
       runBy = it.value();
     }
     else if (it.key() == "COMMENT") {
-      comments = it.value().split(QChar('\n'), QString::SkipEmptyParts);
+      comments = it.value().split("\\n", QString::SkipEmptyParts);
     }
   }
 
@@ -676,7 +676,7 @@ void t_rnxObsFile::writeHeader(const QMap<QString, QString>& txtMap) {
 
   QStringListIterator itCmnt(comments);
   while (itCmnt.hasNext()) {
-    *_stream << itCmnt.next().leftJustified(60) << "COMMENT\n";
+    *_stream << itCmnt.next().trimmed().leftJustified(60) << "COMMENT\n";
   }
 
   *_stream << QString("%1")
