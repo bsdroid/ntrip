@@ -644,21 +644,23 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
 
 // Write Header
 ////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::writeHeader(const QMap<QString, QString>& txtMap) {
+void t_rnxObsFile::writeHeader(const QMap<QString, QString>* txtMap) {
 
   bncApp* app = (bncApp*) qApp;
 
   QString     runBy = app->userName();
   QStringList comments;
 
-  QMapIterator<QString, QString> it(txtMap);
-  while (it.hasNext()) {
-    it.next();
-    if      (it.key() == "RUN BY") {
-      runBy = it.value();
-    }
-    else if (it.key() == "COMMENT") {
-      comments = it.value().split("\\n", QString::SkipEmptyParts);
+  if (txtMap) {
+    QMapIterator<QString, QString> it(*txtMap);
+    while (it.hasNext()) {
+      it.next();
+      if      (it.key() == "RUN BY") {
+        runBy = it.value();
+      }
+      else if (it.key() == "COMMENT") {
+        comments = it.value().split("\\n", QString::SkipEmptyParts);
+      }
     }
   }
 
