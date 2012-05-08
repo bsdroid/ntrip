@@ -176,7 +176,7 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   _reqcNewAntennaName->setWhatsThis(tr("<p>Enter new antenna name.</p>"));
   _reqcOldReceiverName->setWhatsThis(tr("<p>Enter old receiver name.</p>"));
   _reqcNewReceiverName->setWhatsThis(tr("<p>Enter new receiver name.</p>"));
-  _reqcComment->setWhatsThis(tr("<p>Specifying a comment line text to be added to the emerging new RINEX file header is an option. Any introduction of newline specification '\\n' in this enforces the beginning of a further comment line. The  comment line(s) will be added to the header after the 'PGM/RUN BY/DATE' record.</p><p>Default is an empty option field meaning that no additional comment line is added to the RINEX header.</p>"));
+  _reqcComment->setWhatsThis(tr("<p>Specifying a comment line text to be added to the emerging new RINEX file header is an option. Any introduction of newline specification '\\n' in this enforces the beginning of a further comment line. The  comment line(s) will be added to the header after the 'PGM / RUN BY / DATE' record.</p><p>Default is an empty option field meaning that no additional comment line is added to the RINEX header.</p>"));
   _reqcRunBy->setWhatsThis(tr("<p>Specify a 'RUN BY' string to be included in the emerging new RINEX file header.</p><p>Default is an empty option field meanig the operator's user ID is used as 'RUN BY' string.</p>"));
 
 }
