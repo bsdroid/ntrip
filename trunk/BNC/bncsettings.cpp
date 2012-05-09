@@ -154,6 +154,8 @@ bncSettings::bncSettings() {
       setValue_p("reqcSampling",        "");
       setValue_p("reqcStartDateTime",   "");
       setValue_p("reqcEndDateTime",     "");
+      setValue_p("reqcRunBy",           "");
+      setValue_p("reqcComment",         "");
       setValue_p("reqcOldMarkerName",   "");
       setValue_p("reqcNewMarkerName",   "");
       setValue_p("reqcOldAntennaName",  "");
