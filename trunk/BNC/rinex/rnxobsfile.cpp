@@ -162,7 +162,7 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
         if (ii > 0 && ii % 9 == 0) {
           line = stream->readLine(); ++numLines;
           delete in;
-          in = new QTextStream(line.toAscii(), QIODevice::ReadOnly);
+          in = new QTextStream(line.left(60).toAscii(), QIODevice::ReadOnly);
         }
         QString hlp;
         *in >> hlp;
@@ -774,7 +774,7 @@ QStringList t_rnxObsFile::obsTypesStrings() {
     QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2.size(), 6);
     for (int ii = 0; ii < _header._obsTypesV2.size(); ii++) {
       QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2[ii], 6);   
-      if (ii > 0 && (ii % 8 == 0 || ii == _header._obsTypesV2.size()-1)) {
+      if ((ii+1) % 9 == 0 || ii == _header._obsTypesV2.size()-1) {
         strList.append(hlp.leftJustified(60) + "# / TYPES OF OBSERV\n");
         hlp = QString().leftJustified(6);
       }
@@ -790,7 +790,7 @@ QStringList t_rnxObsFile::obsTypesStrings() {
       QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(types.size(), 3);
       for (int ii = 0; ii < types.size(); ii++) {
         QTextStream(&hlp) << QString(" %1").arg(types[ii], -3);   
-        if (ii > 0 && (ii % 12 == 0 || ii == types.size()-1)) {
+        if ((ii+1) % 13 == 0 || ii == types.size()-1) {
           strList.append(hlp.leftJustified(60) + "SYS / # / OBS TYPES\n");
           hlp = QString().leftJustified(6);
         }
