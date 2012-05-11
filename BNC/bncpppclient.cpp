@@ -372,7 +372,7 @@ t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
 
   double dtRao = tt - cc->tRao;
   ColumnVector raoHlp = cc->rao + cc->dotRao * dtRao 
-                      + cc->dotDotRao * dtRao * dtRao;
+                      + 0.5 * cc->dotDotRao * dtRao * dtRao;
 
   if (raoHlp.norm_Frobenius() > 20.0) {
     return failure;
