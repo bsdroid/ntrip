@@ -193,8 +193,8 @@ void tides(const bncTime& time, ColumnVector& xyz) {
 
   // Love's Numbers
   // --------------
-  const double H2 = 0.6090;
-  const double L2 = 0.0852;
+  const double H2 = 0.6078;
+  const double L2 = 0.0847;
 
   // Tidal Displacement
   // ------------------
