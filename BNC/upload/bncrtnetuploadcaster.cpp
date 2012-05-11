@@ -77,7 +77,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
   // SP3 writer
   // ----------
   if (!sp3FileName.isEmpty()) {
-    _sp3 = new bncSP3(sp3FileName, intr, sampl);
+    _sp3 = new bncSP3(sp3FileName, intr, _samplOrb);
   }
   else {
     _sp3 = 0;
