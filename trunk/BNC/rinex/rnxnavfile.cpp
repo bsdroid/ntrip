@@ -206,7 +206,8 @@ t_eph* t_rnxNavFile::getNextEph(const bncTime& tt,
       vector<t_eph*>::iterator it = _ephs.begin();
       while (it != _ephs.end()) {
         t_eph* eph = *it;
-        if (eph->prn() == prn && eph->IOD() == iod) {
+        double dt = eph->TOC() - tt;
+        if (dt < 8*3600.0 && eph->prn() == prn && eph->IOD() == iod) {
           it = _ephs.erase(it);
           return eph;
         }
