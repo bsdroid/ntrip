@@ -430,6 +430,48 @@ t_irc bncPPPclient::cmpToT(t_satData* satData) {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::processFrontEpoch() {
 
+#ifdef BNC_DEBUG
+  QString msg = "List of Corrections\n";
+  QMapIterator<QString, t_corr*> itC(_corr);
+  while (itC.hasNext()) {
+    itC.next();
+    QString       src  = itC.key();
+    const t_corr* corr = itC.value();
+    msg += QString("%1 %2 %3 %4\n")
+      .arg(corr->prn)
+      .arg(corr->iod)
+      .arg(QString(corr->tClk.datestr().c_str()) + "_" + QString(corr->tClk.timestr().c_str()))
+      .arg(QString(corr->tRao.datestr().c_str()) + "_" + QString(corr->tRao.timestr().c_str()));
+  }
+
+  msg += "List of Ephemeris\n";
+  QMapIterator<QString, t_ephPair*> itE(_eph);
+  while (itE.hasNext()) {
+    itE.next();
+    QString          prn     = itE.key();
+    const t_ephPair* ephPair = itE.value();
+    if (ephPair->prev) {
+      msg += QString("%1 %2 %3 %4 %5\n")
+        .arg(prn)
+        .arg(ephPair->last->IOD())
+        .arg(QString(ephPair->last->TOC().datestr().c_str()) + "_" +
+             QString(ephPair->last->TOC().timestr().c_str()))
+        .arg(ephPair->prev->IOD())
+        .arg(QString(ephPair->prev->TOC().datestr().c_str()) + "_" +
+             QString(ephPair->prev->TOC().timestr().c_str()));
+    }
+    else {
+      msg += QString("%1 %2 %3\n")
+        .arg(prn)
+        .arg(ephPair->last->IOD())
+        .arg(QString(ephPair->last->TOC().datestr().c_str()) + "_" +
+             QString(ephPair->last->TOC().timestr().c_str()));
+    }
+  }
+
+  emit newMessage(msg.toAscii(), false);
+#endif // BNC_DEBUG
+
   // Data Pre-Processing
   // -------------------
   QMutableMapIterator<QString, t_satData*> it(_epoData.front()->satData);
