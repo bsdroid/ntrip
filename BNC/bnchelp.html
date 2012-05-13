@@ -153,7 +153,7 @@ Records of BNC's activities are shown in the 'Log' tab. The bandwidth consumptio
 <p>
 As a default, configuration files for running BNC on Unix/Linux/Mac systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration file name is 'BNC.ini'.</p>
 <p>
-The default file name 'BNC.ini' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac systems). Some configuration options can be changed on-the-fly. See annexed 'Configuration Example' for a complete set of configuration options. It is also possible to start and configure BNC via command line.
+The default file name 'BNC.ini' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac systems). Some configuration options can be changed on-the-fly. See annexed 'Configuration Examples' for a complete set of configuration options. It is also possible to start and configure BNC via command line.
 </p>
 <p><a name="optsettings"><h3>4. Settings</h3></p>
 <p>
@@ -323,7 +323,7 @@ The 'File' button lets you
 Use smaller font size if the BNC main window exceeds the size of your screen.
 </li> 
 <li> save selected options in configuration file.<br>
-When using 'Save &amp; Reread Configuration' while BNC is already processing data, some configuration options become immediately effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration Example' for a list of on-the-fly changeable configuration options.
+When using 'Save &amp; Reread Configuration' while BNC is already processing data, some configuration options become immediately effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration Examples' for a list of on-the-fly changeable configuration options.
 </li>
 <li> quit the BNC program.
 </li> 
@@ -384,7 +384,7 @@ When BNC is started, new files are created by default and any existing files wit
 
 <p><a name="genconf"><h4>4.3.3 Reread Configuration - optional</h4></p>
 <p>
-When operating BNC online in 'no window' mode (command line option -nw), some configuration options can nevertheless be changed on-the-fly without interrupting the running process. For that you force the program to reread parts of its configuration in pre-defined intervals from the disk. Select '1 min', '1 hour', or '1 day' to let BNC reread on-the-fly changeable configuration options every full minute, hour, or day. This lets in between edited options become effective without interrupting uninvolved threads. See annexed section 'Configuration Example' for a configuration file example and a list of on-the-fly changeable options.
+When operating BNC online in 'no window' mode (command line option -nw), some configuration options can nevertheless be changed on-the-fly without interrupting the running process. For that you force the program to reread parts of its configuration in pre-defined intervals from the disk. Select '1 min', '1 hour', or '1 day' to let BNC reread on-the-fly changeable configuration options every full minute, hour, or day. This lets in between edited options become effective without interrupting uninvolved threads. See annexed section 'Configuration Examples' for a configuration file example and a list of on-the-fly changeable options.
 </p> 
 
 <p><a name="genstart"><h4>4.3.4 Auto Start - optional</h4></p>
@@ -654,7 +654,7 @@ or:<br>
 </p>
 
 <p>
-The following is a list of available keynames for '<u>R</u>INEX <u>E</u>diting & <u>QC</u>' (short: REQC, pronounced 'rek') options and their meaning, cf. section 'Configuration Example':
+The following is a list of available keynames for '<u>R</u>INEX <u>E</u>diting & <u>QC</u>' (short: REQC, pronounced 'rek') options and their meaning, cf. section 'Configuration Examples':
 </p>
 
 <table>
@@ -1659,6 +1659,9 @@ The sequence of entries in the 'Combination Table' is not of importance. Note th
 <p>
 Default is an empty 'Combination Table' meaning that you don't want BNC to combine orbit and clock corrections streams.
 </p>
+<p>
+It is possible to specify only one Broadcast Ephemeris corrections stream in the 'Combination Table'. Instead of combining corrections from several sources BNC will then merge the single corrections stream with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format when specified accordingly under the 'Upload (clk)' tab.
+</p>
 
 <p><a name="combiadd"><h4>4.13.1.1 Add Row, Delete - optional</h4></p>
 <p>
@@ -1956,6 +1959,9 @@ As an SP3 file contents should be referred to the satellites Center of Mass (CoM
 <p>
 The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'. Note that clocks in the SP3 orbit files are not corrected for the conventional periodic relativistic effect.
 </p>
+<p>
+In case the 'Combination Table' contains only one Broadcast Corrections stream, BNC will merge that stream with Broadcast Ephemeris to save results in files specified here through SP3 and/or Clock RINEX file path. In such a case you have to define only the SP3 and Clock RINEX file path and no further options in the 'Upload (clk)' table.
+</p>
 
 <p><a name="uprinex"><h4>4.14.6 RNX File - optional</h4></p>
 <p>
@@ -2062,7 +2068,7 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 <p>
 <u>Window mode:</u> Hit 'Save &amp; Reread Configuration' while BNC is in window mode and already processing data to let changes of your streams selection immediately become effective.
 <p>
-<u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option from disk at pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file become effective without terminating uninvolved threads. See annexed section 'Configuration Example' for a configuration file example and a list of other on-the-fly changeable options.
+<u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option from disk at pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file become effective without terminating uninvolved threads. See annexed section 'Configuration Examples' for a configuration file example and a list of other on-the-fly changeable options.
 </p>
 
 <p><a name="logs"><h4>4.17. Logging</h4></p>
@@ -2369,7 +2375,7 @@ Once BNC has been started, many of its configuration options cannot be changed a
 &nbsp; &nbsp; &nbsp; 6.2.2 NTRIP <a href=#ntrip2>Version 2</a><br>
 &nbsp; &nbsp; &nbsp; 6.2.3 RTCM <a href=#rtcm2>Version 2</a><br>
 &nbsp; &nbsp; &nbsp; 6.2.4 RTCM <a href=#rtcm3>Version 3</a><br>
-6.3. <a href=#config>Configuration Example</a><br>
+6.3. <a href=#config>Configuration Examples</a><br>
 6.4. <a href=#links>Links</a>
 </p>
 
@@ -2647,7 +2653,97 @@ The following are so-called 'State Space Representation' (SSR) messages:
 </ul>
 </p>
 
-<p><a name="config"><h4>6.3. Configuration Example</h4></p>
+<p><a name="config"><h4>6.3. Configuration Examples</h4></p>
+
+<p>BNC comes with a number of configuration examples which can be used on all operating systems. There are two ways to start BNC using one of these files:
+<ul>
+<li> On graphical systems you may use the computer mouse to "drag" a configuration file icon and "drop" it on top of BNC's program icon.
+</li>
+<li> On non-graphical systems you may start BNC using a command line with the following option for a configuration file (example for Windows systems):<br>bnc.exe --conf <configFileName>
+</li>
+</ul>
+Presented example configuration files contain a user ID 'user' and a password 'pass' for accessing streams from various Ntrip broadcasters. Replace these account details by a the personal user ID and password you receive following an online registration through http://register.rtcm-ntrip.org.
+</p>
+<p>
+Note that the account for an Ntrip broadcaster is usually limited to pulling a certain maximum number of streams at the same time. As running some of the example configurations requires pulling several streams, it is suggested to make sure that you don't exceed your account's limits.
+</p>
+<p>
+Make also sure that directories which are part of the example configurations exist on your system or adjust the affected configuration according to your needs.
+</p>
+<p>
+Some BNC options require Antenna Phase Center variations as made available from IGS through so-called ANTEX files in directory 'ftp://igs.org/pub/station/general'. An example ANTEX file is also part of the BNC package for convenience.
+</p>
+<p>
+The example configurations assume that no proxy protects your host. Should a proxy be operated in front of BNC then you need to introduce its IP and port in the 'Network' tab.
+</p>
+
+<ol type=b>
+<li>File 'RinexObs.bnc'<br>
+The purpose of this configuration is to convert RTCM streams to RINEX observation files. The configuration pulls streams from several Ntrip broadcasters using differen Ntrip versions and generate 1sec/15min RINEX version 3 observation files. See http://igs.bkg.bund.de/ntrip/observations for observation stream resources.
+</li>
+<br>
+<li>File 'RinexEpn.bnc'<br>
+The purpose of this configuration if to convert RTCM streams to RINEX navigation files. The configuration pulls an RTCMv3 stream carrying broadcast ephemeris coming from the real-time EUREF and IGS network. It saves hourly RINEX version 3 navigation files. See http://igs.bkg.bund.de/ntrip/ephemeris for further real-time broadcast ephemeris resources.
+</li>
+<br>
+<li>File 'SSR.bnc'<br>
+The purpose of this configuration is to save broadcast ephemeris corrections from RTCM SSR messages in a plain ASCII format as hourl files. See <u>http://igs.bkg.bund.de/ntrip/orbits</u> for further real-time IGS or EUREF orbit/clock products.
+</li>
+<br>
+<li>File 'RinexConcat.bnc'<br>
+The purpose of this configuration is to concatenate RINEX version 3 files to produce a concatenated file and edit the marker name in the file header. The sampling rate is set to 30 seconds. See section 'RINEX Editing & QC' in the documentation for examples on how to call BNC from command line in 'no window' mode for RINEX file editing, concatenation and quality checks.
+</li>
+<br>
+<li>File 'RTK.bnc'<br>
+The purpose of this configuration is to feed a serial connected receiver with observations from a reference station for conventional RTK. The stream is scanned for RTCM messages. Message type numbers and latencies of incoming observation are reported in BNC's logfile.
+</li>
+<br>
+<li>File 'FeedEngine.bnc'<br>
+The purpose of this configuration is to feed a real-time GNSS engine with observations from a number of remote reference stations. The configuration pulls streams provided in various formats from different Ntrip broadcasters. Incoming observations are decoded, synchronized and output through a local IP port and saved into a file. Failure and recovery thresholds are specified to inform about outages.
+</li>
+<br>
+<li>File 'PPP.bnc'<br>
+The purpose of this configuration is Precise Point Positioning from observations of a rover receiver. The configuration reads RTCMv3 observations, a stream of orbit and clock correctors and a broadcast ephemeris stream. Positions are saved in the logfile.
+</li>
+<br>
+<li>File 'QuickStartPPP.bnc'<br>
+The purpose of this configuration is Precise Point Positioning in QuickStart mode from observations of a static receiver with precisely known position. The configuration reads RTCMv3 observations, orbit and clock correctors and a broadcast ephemeris stream. Positions are saved in NMEA format on disc and output through IP port for real-time visualization with tools like RTKNAVI.
+</li>
+<br>
+<li>File 'PPPPostProc.bnc<br>
+The purpose of this configuration is Precise Point Positioning in Post Processing mode. BNC reads a RINEX observation and a RINEX v3 navigation files and a broadcast corrections files. PPP processing otions are set in support of the QuickStart mode. The output is saved in a specific post processing logfile and contains the coordinates derived over time following the implemented PPP filter algorithm.
+</li>
+<br>
+<li>File 'Sp3PPP.bnc'<br>
+The purpose of this configuration is to produce SP3 files from a broadcast broadcast ephemeris stream and a stream carrying broadcast corrections.  The single broadcast corrections stream is formally introduced in BNC's combination option for the reason of producing the SP3 file. Pulling in addition observations from a reference station with precisely know coordinates allows a continuous quality check of the broadcast corrections through observing coordinate displacements from an 'INTERNAL' PPP solution.
+</li>
+<br>
+<li>File 'Sp3ETRF2000PPP.bnc'<br>
+This configuration equals the 'SP3PPP.bnc' configuration. However, it pulls the broadcast corrections stream 'EUREF01' which is refered to ETRF2000. Hence the SP3 file contains orbits refering to ETRF2000 and the 'INTERNAL' PPP solutions is compared to ETRF2000 coordinates.
+</li>
+<br>
+<li>File 'Upload.bnc'<br>
+The purpose of this configuration is to upload orbits and clocks coming from a real-time GNSS engine to an Ntrip broadcaster. For that the configuration reads precise orbits and clocks in RTNET format. It also reads a stream carrying broadcast ephemeris. BNC converts the orbits and clocks into broadcast corrections and encodes them in RTCMv3 SSR messages messages to uploads them to an Ntrip broadcaster. The broadcast corrections stream is refered to satellite Center of Mass (CoM) and IGS08. Orbits are saved on disk in SP3 format and clocks in clock RINEX format.
+</li>
+<br>
+<li>File 'UploadPPP.bnc'<br>
+This configuration equals the 'Upload.bnc' configuration. However, the broadcast ephemeris corrections are in addition used for an 'INTERNAL' PPP soltution based on observations from a static reference station with known precise coordinates.  This allows a continuous quality ckeck of the broadcast ephemeris corrections through observing coordinate displacements.
+</li>
+<br>
+<li>File 'Combi.bnc'<br>
+The purpose of this configuration is to pulls several streams carrying broadcast corrections and a broadcast ephemeris stream from an Ntrip broadcaster to produce a combined broadcast corrections stream. BNC encodes the combination product in RTCMv3 SSR messages and uploads it to an Ntrip broadcaster. The broadcast corrections stream is not refered to satellite Center of Mass (CoM). It is refered to IGS08. Orbits are saved in SP3 format and clocks in clock RINEX format.
+</li>
+<br>
+<li>File 'CombiPPP.bnc'<br>
+This configuration equals the 'Combi.bnc' configuration. However, the combined broadcast ephemeris corrections are in addition used for an 'INTERNAL' PPP solutions based on observations from a static reference station with known precise coordinates. This allows a continuous quality check of the combination product through observing coordinate displacements.
+</li>
+<br>
+<li>File 'UploadEph.bnc'<br>
+The purpose of this configuration is to pull a number of streams from reference stations to take out contained broadcast ephemeris messages. These are encoded then in a specific RTCMv3 stream which only provides broadcast ephemeris with an update rate of 5 seconds.
+</li>
+</ol>
+</p>
+
 <p>
 The following table's left column is an example for the contents of a configuration file 'BNC.ini'. It enables the retrieval of an observations stream via NTRIP for the generation of 15 min RINEX files:
 </p>
