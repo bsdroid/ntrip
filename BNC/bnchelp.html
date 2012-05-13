@@ -2714,12 +2714,12 @@ The purpose of this configuration is Precise Point Positioning in QuickStart mod
 The purpose of this configuration is Precise Point Positioning in Post Processing mode. BNC reads a RINEX observation and a RINEX v3 navigation files and a broadcast corrections files. PPP processing otions are set in support of the QuickStart mode. The output is saved in a specific post processing logfile and contains the coordinates derived over time following the implemented PPP filter algorithm.
 </li>
 <br>
-<li>File 'Sp3PPP.bnc'<br>
-The purpose of this configuration is to produce SP3 files from a broadcast broadcast ephemeris stream and a stream carrying broadcast corrections.  The single broadcast corrections stream is formally introduced in BNC's combination option for the reason of producing the SP3 file. Pulling in addition observations from a reference station with precisely know coordinates allows a continuous quality check of the broadcast corrections through observing coordinate displacements from an 'INTERNAL' PPP solution.
+<li>File 'Sp3.bnc'<br>
+The purpose of this configuraiton is to produce SP3 files from a Broadcast Ephemeris stream and a Broadcast Corrections stream. Note that this requires an ANTEX file because SP3 needs to be refered to CoM and not to APC.
 </li>
 <br>
 <li>File 'Sp3ETRF2000PPP.bnc'<br>
-This configuration equals the 'SP3PPP.bnc' configuration. However, it pulls the broadcast corrections stream 'EUREF01' which is refered to ETRF2000. Hence the SP3 file contains orbits refering to ETRF2000 and the 'INTERNAL' PPP solutions is compared to ETRF2000 coordinates.
+The purpose of this configuration is to produce SP3 files from a Broadcast Ephemeris stream and a stream carrying ETRF2000 Broadcast Corrections. The Broadcast Corrections stream is formally introduced in BNC's 'Combination' option which leads to an SP3 file containing orbits refering to ETRF2000. Pulling in addition observations from a reference station at precisely known ETRF2000 position allows to compare an 'INTERNAL' PPP solution with ETRF2000 reference coordinates.
 </li>
 <br>
 <li>File 'Upload.bnc'<br>
