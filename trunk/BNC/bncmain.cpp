@@ -94,9 +94,15 @@ int main(int argc, char *argv[]) {
     }
   }
 
+#ifdef Q_OS_MAC
+  if (argc== 3 && GUIenabled) {
+    confFileName = QString(argv[2]);
+  }
+#else
   if (argc == 2 && GUIenabled) {
     confFileName = QString(argv[1]);
   }
+#endif
 
   bncApp app(argc, argv, GUIenabled);
 
