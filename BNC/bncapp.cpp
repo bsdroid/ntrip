@@ -788,3 +788,15 @@ void bncApp::stopCombination() {
   _bncComb = 0;
 #endif
 }
+
+// Handling Events (virtual)
+////////////////////////////////////////////////////////////////////////////
+bool bncApp::event(QEvent* ev) {
+
+  if (ev->type() == QEvent::FileOpen) {
+    QString fileName = static_cast<QFileOpenEvent*>(ev)->file();
+    return true;
+  }
+    
+  return QApplication::event(ev);
+}
