@@ -2715,11 +2715,11 @@ The purpose of this configuration is Precise Point Positioning in Post Processin
 </li>
 <br>
 <li>File 'Sp3.bnc'<br>
-The purpose of this configuraiton is to produce SP3 files from a Broadcast Ephemeris stream and a Broadcast Corrections stream. Note that this requires an ANTEX file because SP3 needs to be refered to CoM and not to APC.
+The purpose of this configuraiton is to produce SP3 files from a Broadcast Ephemeris stream and a Broadcast Corrections stream. Note that this requires an ANTEX file because SP3 file contents should be refered to CoM.
 </li>
 <br>
 <li>File 'Sp3ETRF2000PPP.bnc'<br>
-The purpose of this configuration is to produce SP3 files from a Broadcast Ephemeris stream and a stream carrying ETRF2000 Broadcast Corrections. The Broadcast Corrections stream is formally introduced in BNC's 'Combination' option which leads to an SP3 file containing orbits refering to ETRF2000. Pulling in addition observations from a reference station at precisely known ETRF2000 position allows to compare an 'INTERNAL' PPP solution with ETRF2000 reference coordinates.
+The purpose of this configuration is to produce SP3 files from a Broadcast Ephemeris stream and a stream carrying ETRF2000 Broadcast Corrections. The Broadcast Corrections stream is formally introduced in BNC's 'Combination' option which leads to an SP3 file containing orbits refering also to ETRF2000. Pulling in addition observations from a reference station at precisely known ETRF2000 position allows to compare an 'INTERNAL' PPP solution with ETRF2000 reference coordinates.
 </li>
 <br>
 <li>File 'Upload.bnc'<br>
