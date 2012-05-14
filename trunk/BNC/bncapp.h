@@ -61,6 +61,8 @@ class bncApp : public QApplication {
     void stopCombination();
     const QString& pgmName() {return _pgmName;}
     const QString& userName() {return _userName;}
+  protected:
+    virtual bool event(QEvent* ev);
 
   public slots:
     void slotMessage(QByteArray msg, bool showOnScreen);
