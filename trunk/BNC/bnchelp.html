@@ -59,7 +59,7 @@ Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested synchron
 <li>retrieve real-time GNSS data streams available through NTRIP transport protocol,</li>
 <li>retrieve real-time GNSS data streams via TCP directly from an IP address without using the NTRIP transport protocol,</li>
 <li>retrieve real-time GNSS data streams from a local UDP or serial port without using the NTRIP transport protocol,</li>
-<li>generate high-rate RINEX Observation and Navigation files to support near real-time GNSS post-processing applications,</li>
+<li>generate high-rate RINEX Observation and Navigation files to support near real-time GNSS Post Processing applications,</li>
 <li>generate ephemeris and synchronized or unsynchronized observations epoch by epoch through an IP port to support real-time GNSS network engines,</li>
 <li>generate clock and orbit corrections to Broadcast Ephemeris through an IP port to support real-time Precise Point Positioning on GNSS rovers,</li>
 <li>generate synchronized or unsynchronized clock and orbit corrections to Broadcast Ephemeris epoch by epoch through an IP port to support the (outside) combination of such streams as coming simultaneously from various correction providers,</li>
@@ -122,7 +122,7 @@ The first of the following figures shows a flow chart of BNC connected to a GNSS
 Although BNC is mainly a real-time tool to be operated online, it can be run offline
 <ul>
 <li>to simulate real-time observation situations for debugging purposes,</li>
-<li>for post-processing purposes.</li>
+<li>for Post Processing purposes.</li>
 </ul>
 Furthermore, apart from its regular window mode, BNC can be run as a batch/background job in a 'no window' mode using processing options from a previously saved configuration or from command line.
 </p>
@@ -397,7 +397,7 @@ You may like to auto-start BNC at startup time in window mode with pre-assigned 
 
 <p><a name="rawout"><h4>4.3.5 Raw Output File - optional</h4></p>
 <p>
-BNC can save all data coming in through various streams in one daily file. The information is recorded in the specified 'Raw output file' in the received order and format. This feature allows a BNC user to run the PPP option offline with observations, Broadcast Corrections, and Broadcast Ephemeris being read from a previously saved file. It supports the offline repetition of a real-time situation for debugging purposes. It is not meant for post-processing.
+BNC can save all data coming in through various streams in one daily file. The information is recorded in the specified 'Raw output file' in the received order and format. This feature allows a BNC user to run the PPP option offline with observations, Broadcast Corrections, and Broadcast Ephemeris being read from a previously saved file. It supports the offline repetition of a real-time situation for debugging purposes. It is not meant for Post Processing.
 </p>
 <p>
 Data will be saved in blocks in the received format separated by ASCII time stamps like (example):
@@ -627,7 +627,7 @@ If if 'Analyze' is selected, specifying logfile(s) to output analysis results is
 </p> 
 
 <p><img src="IMG/screenshot25.png"/></p>
-<p><u>Figure 7:</u> Example for RINEX file editing with BNC in post-processing mode.</p>
+<p><u>Figure 7:</u> Example for RINEX file editing with BNC in Post Processing mode.</p>
 
 <p><a name="reqccommand"><h4>4.6.5 Command Line, No Window - optional</h4></p>
 <p>
@@ -2274,7 +2274,7 @@ Hit the 'Stop' button in order to stop BNC.
 
 <p><a name="cmd"><h4>4.19. Command Line Options</h4></p>
 <p> 
-Command line options are available to run BNC in 'no window' mode or let it read data offline from one file or several files for debugging or post processing purposes. BNC will then use processing options from the configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration file name instead of using the default name 'BNC.ini'.
+Command line options are available to run BNC in 'no window' mode or let it read data offline from one file or several files for debugging or Post Processing purposes. BNC will then use processing options from the configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration file name instead of using the default name 'BNC.ini'.
 </p> 
 
 <p><a name="nw"><h4>4.19.1 No Window Mode - optional</h4></p>
@@ -2440,7 +2440,7 @@ Once BNC has been started, many of its configuration options cannot be changed a
 
 <tr>
 <td>Jun 2010 &nbsp;</td><td>Version 2.1 &nbsp;</td>
-<td>[Bug] SSR GLONASS message generation<br> [Add] PPP in post-processing mode<br> [Mod] Update of SSR messages following draft dated 2010-04-12<br> [Mod] Generating error message when observation epoch is wrong</td>
+<td>[Bug] SSR GLONASS message generation<br> [Add] PPP in Post Processing mode<br> [Mod] Update of SSR messages following draft dated 2010-04-12<br> [Mod] Generating error message when observation epoch is wrong</td>
 </tr>
 
 <tr>
@@ -2679,11 +2679,11 @@ The example configurations assume that no proxy protects your host. Should a pro
 
 <ol type=b>
 <li>File 'RinexObs.bnc'<br>
-The purpose of this configuration is to convert RTCM streams to RINEX observation files. The configuration pulls streams from several Ntrip broadcasters using differen Ntrip versions and generate 1sec/15min RINEX version 3 observation files. See <u>http://igs.bkg.bund.de/ntrip/observations</u> for observation stream resources.
+The purpose of this configuration is to convert RTCM streams to RINEX observation files. The configuration pulls streams from several Ntrip broadcasters using differen Ntrip versions and generate 1sec/15min RINEX Version 3 observation files. See <u>http://igs.bkg.bund.de/ntrip/observations</u> for observation stream resources.
 </li>
 <br>
 <li>File 'RinexEpn.bnc'<br>
-The purpose of this configuration is to convert RTCM streams to RINEX navigation files. The configuration pulls an RTCM Version 3 stream carrying Broadcast Ephemeris coming from the real-time EUREF and IGS network. It saves hourly RINEX version 3 navigation files. See http://igs.bkg.bund.de/ntrip/ephemeris for further real-time Broadcast Ephemeris resources.
+The purpose of this configuration is to convert RTCM streams to RINEX navigation files. The configuration pulls an RTCM Version 3 stream carrying Broadcast Ephemeris coming from the real-time EUREF and IGS network. It saves hourly RINEX Version 3 navigation files. See http://igs.bkg.bund.de/ntrip/ephemeris for further real-time Broadcast Ephemeris resources.
 </li>
 <br>
 <li>File 'SSR.bnc'<br>
@@ -2691,7 +2691,7 @@ The purpose of this configuration is to save Broadcast Eorrections from RTCM SSR
 </li>
 <br>
 <li>File 'RinexConcat.bnc'<br>
-The purpose of this configuration is to concatenate RINEX version 3 files to produce a concatenated file and edit the marker name in the file header. The sampling rate is set to 30 seconds. See section 'RINEX Editing & QC' in the documentation for examples on how to call BNC from command line in 'no window' mode for RINEX file editing, concatenation and quality checks.
+The purpose of this configuration is to concatenate RINEX Version 3 files to produce a concatenated file and edit the marker name in the file header. The sampling rate is set to 30 seconds. See section 'RINEX Editing & QC' in the documentation for examples on how to call BNC from command line in 'no window' mode for RINEX file editing, concatenation and quality checks.
 </li>
 <br>
 <li>File 'RTK.bnc'<br>
@@ -2711,7 +2711,7 @@ The purpose of this configuration is Precise Point Positioning in QuickStart mod
 </li>
 <br>
 <li>File 'PPPPostProc.bnc<br>
-The purpose of this configuration is Precise Point Positioning in Post Processing mode. BNC reads a RINEX observation and a RINEX  Version 3 navigation files and a Broadcast Corrections files. PPP processing otions are set in support of the QuickStart mode. The output is saved in a specific post processing logfile and contains the coordinates derived over time following the implemented PPP filter algorithm.
+The purpose of this configuration is Precise Point Positioning in Post Processing mode. BNC reads a RINEX observation and a RINEX  Version 3 navigation files and a Broadcast Corrections files. PPP processing otions are set in support of the QuickStart mode. The output is saved in a specific Post Processing logfile and contains the coordinates derived over time following the implemented PPP filter algorithm.
 </li>
 <br>
 <li>File 'Sp3.bnc'<br>
