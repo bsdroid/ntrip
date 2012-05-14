@@ -2465,7 +2465,7 @@ void bncWindow::populateUploadTable() {
       else if (iCol == 4) {
         QComboBox* system = new QComboBox();
         system->setEditable(false);
-        system->addItems(QString("IGS08,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
+        system->addItems(QString(",IGS08,ETRF2000,NAD83,GDA94,SIRGAS95,SIRGAS2000,Custom").split(","));
         system->setFrame(false);
         system->setCurrentIndex(system->findText(hlp[iCol]));
         _uploadTable->setCellWidget(iRow, iCol, system);
