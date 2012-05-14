@@ -711,16 +711,14 @@ void bncApp::dumpCorrs(const QList<QString>& allCorrs) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncApp::setConfFileName(const QString& confFileName) {
-  if (_confFileName.isEmpty()) { // do it only once
-    if (confFileName.isEmpty()) {
-      _confFileName = QDir::homePath() + QDir::separator() 
-                    + ".config" + QDir::separator()
-                    + organizationName() + QDir::separator()
-                    + applicationName() + ".ini";
-    }
-    else {
-      _confFileName = confFileName;
-    }
+  if (confFileName.isEmpty()) {
+    _confFileName = QDir::homePath() + QDir::separator() 
+                  + ".config" + QDir::separator()
+                  + organizationName() + QDir::separator()
+                  + applicationName() + ".ini";
+  }
+  else {
+    _confFileName = confFileName;
   }
 }
 
@@ -795,7 +793,7 @@ void bncApp::stopCombination() {
 ////////////////////////////////////////////////////////////////////////////
 bool bncApp::event(QEvent* ev) {
 
-  if (ev->type() == QEvent::FileOpen) {
+  if (ev->type() == QEvent::FileOpen) {  // currently happens on Mac only
     QString fileName = static_cast<QFileOpenEvent*>(ev)->file();
     setConfFileName(fileName);
     return true;
