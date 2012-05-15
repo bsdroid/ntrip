@@ -576,11 +576,11 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   _uploadSamplSp3SpinBox = new QSpinBox;
   _uploadSamplSp3SpinBox->setMinimum(0);
-  _uploadSamplSp3SpinBox->setMaximum(60);
-  _uploadSamplSp3SpinBox->setSingleStep(5);
+  _uploadSamplSp3SpinBox->setMaximum(15);
+  _uploadSamplSp3SpinBox->setSingleStep(1);
   _uploadSamplSp3SpinBox->setMaximumWidth(9*ww);
   _uploadSamplSp3SpinBox->setValue(settings.value("uploadSamplSp3").toInt());
-  _uploadSamplSp3SpinBox->setSuffix(" sec");
+  _uploadSamplSp3SpinBox->setSuffix(" min");
 
   _uploadSamplClkRnxSpinBox = new QSpinBox;
   _uploadSamplClkRnxSpinBox->setMinimum(0);
@@ -1294,7 +1294,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _uploadSamplRtcmClkCorrSpinBox->setWhatsThis(tr("Select the Clock Correction sampling interval in seconds. A value of zero '0' tells BNC to upload all available samples."));
   _uploadSamplRtcmEphCorrSpinBox->setWhatsThis(tr("Select the Ephemeris Correction sampling interval in seconds. A value of zero '0' tells BNC to upload all available samples."));
   _uploadSamplClkRnxSpinBox->setWhatsThis(tr("Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into Clock RINEX files."));
-  _uploadSamplSp3SpinBox->setWhatsThis(tr("Select the SP3 orbit file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into SP3 orbit files."));
+  _uploadSamplSp3SpinBox->setWhatsThis(tr("Select the SP3 orbit file sampling interval in minutes. A value of zero '0' tells BNC to store all available samples into SP3 orbit files."));
   setUploadTrafoButton->setWhatsThis(tr("Hit 'Custom Trafo' to specify your own 14 parameter Helmert Transformation instead of selecting a predefined transformation through 'System' button."));
 
   _uploadEphHostLineEdit->setWhatsThis(tr("BNC can upload a Broadcast Ephemeris stream in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload Broadcast Ephemeris."));
