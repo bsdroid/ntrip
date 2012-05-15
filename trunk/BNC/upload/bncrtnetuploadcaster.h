@@ -23,7 +23,6 @@ class bncRtnetUploadCaster : public bncUploadCaster {
                   const QString& crdTrafo, bool  CoM, 
                   const QString& sp3FileName,
                   const QString& rnxFileName,
-                  const QString& outFileName,
                   int PID, int SID, int IOD, int iRow);
   void decodeRtnetStream(char* buffer, int bufLen);
  protected:
@@ -59,7 +58,6 @@ class bncRtnetUploadCaster : public bncUploadCaster {
   double         _sc;
   double         _scr;
   double         _t0;
-  bncoutf*       _outFile;
   bncClockRinex* _rnx;
   bncSP3*        _sp3;
   QMap<QString, t_eph*>* _usedEph;
