@@ -1280,7 +1280,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   addUploadRowButton->setWhatsThis(tr("Hit 'Add Row' button to add another line to the stream upload table."));
   delUploadRowButton->setWhatsThis(tr("Hit 'Del Row' button to delete the highlighted line from the stream upload table."));
   _uploadIntrComboBox->setWhatsThis(tr("Select the length of the SP3 and Clock RINEX files."));
-  _uploadSamplRtcmEphCorrSpinBox->setWhatsThis(tr("Select the Ephemeris Correction sampling interval in seconds. A value of zero '0' tells BNC to upload all available samples."));
+  _uploadSamplRtcmEphCorrSpinBox->setWhatsThis(tr("Select the stream's orbit correction sampling interval in seconds. A value of zero '0' tells BNC to upload all available samples."));
   _uploadSamplClkRnxSpinBox->setWhatsThis(tr("Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into Clock RINEX files."));
   _uploadSamplSp3SpinBox->setWhatsThis(tr("Select the SP3 orbit file sampling interval in minutes. A value of zero '0' tells BNC to store all available samples into SP3 orbit files."));
   setUploadTrafoButton->setWhatsThis(tr("Hit 'Custom Trafo' to specify your own 14 parameter Helmert Transformation instead of selecting a predefined transformation through 'System' button."));
