@@ -715,7 +715,7 @@ void bncApp::setConfFileName(const QString& confFileName) {
     _confFileName = QDir::homePath() + QDir::separator() 
                   + ".config" + QDir::separator()
                   + organizationName() + QDir::separator()
-                  + applicationName() + ".ini";
+                  + applicationName() + ".bnc";
   }
   else {
     _confFileName = confFileName;
