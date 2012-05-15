@@ -1116,17 +1116,17 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   connect(delUploadRowButton, SIGNAL(clicked()), this, SLOT(slotDelUploadRow()));
   connect(setUploadTrafoButton, SIGNAL(clicked()), this, SLOT(slotSetUploadTrafo()));
 
-  uploadHlpLayout->addWidget(addUploadRowButton,             0, 0);
-  uploadHlpLayout->addWidget(delUploadRowButton,             0, 1);
-  uploadHlpLayout->addWidget(new QLabel("Interval"),         0, 2, Qt::AlignRight);
-  uploadHlpLayout->addWidget(_uploadIntrComboBox,            0, 3);
-  uploadHlpLayout->addWidget(new QLabel("Sampling: Orb"),    0, 4, Qt::AlignRight);
-  uploadHlpLayout->addWidget(_uploadSamplRtcmEphCorrSpinBox, 0, 5);
-  uploadHlpLayout->addWidget(new QLabel("SP3"),              0, 6, Qt::AlignRight);
-  uploadHlpLayout->addWidget(_uploadSamplSp3SpinBox,         0, 7);
-  uploadHlpLayout->addWidget(new QLabel("RNX"),              0, 8, Qt::AlignRight);
-  uploadHlpLayout->addWidget(_uploadSamplClkRnxSpinBox,      0, 9);
-  uploadHlpLayout->addWidget(setUploadTrafoButton,           0,10);
+  uploadHlpLayout->addWidget(addUploadRowButton,                  0, 0);
+  uploadHlpLayout->addWidget(delUploadRowButton,                  0, 1);
+  uploadHlpLayout->addWidget(new QLabel("Interval"),              0, 2, Qt::AlignRight);
+  uploadHlpLayout->addWidget(_uploadIntrComboBox,                 0, 3);
+  uploadHlpLayout->addWidget(new QLabel("     Sampling:    Orb"), 0, 4, Qt::AlignRight);
+  uploadHlpLayout->addWidget(_uploadSamplRtcmEphCorrSpinBox,      0, 5);
+  uploadHlpLayout->addWidget(new QLabel("SP3"),                   0, 6, Qt::AlignRight);
+  uploadHlpLayout->addWidget(_uploadSamplSp3SpinBox,              0, 7);
+  uploadHlpLayout->addWidget(new QLabel("RNX"),                   0, 8, Qt::AlignRight);
+  uploadHlpLayout->addWidget(_uploadSamplClkRnxSpinBox,           0, 9);
+  uploadHlpLayout->addWidget(setUploadTrafoButton,                0,10);
 
   QBoxLayout* uploadLayout = new QBoxLayout(QBoxLayout::TopToBottom);
   populateUploadTable();
