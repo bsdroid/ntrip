@@ -151,9 +151,9 @@ The usual handling of BNC is that you first select a number of streams ('Add Str
 Records of BNC's activities are shown in the 'Log' tab. The bandwidth consumption per stream, the latency of incoming observations and a PPP time series for coordinates are shown in the 'Throughput', 'Latency' and 'PPP Plot' tabs of the main window.
 </p>
 <p>
-As a default, configuration files for running BNC on Unix/Linux/Mac systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration file name is 'BNC.ini'.</p>
+As a default, configuration files for running BNC on Unix/Linux/Mac systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration file name is 'BNC.bnc'.</p>
 <p>
-The default file name 'BNC.ini' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac systems). Some configuration options can be changed on-the-fly. See annexed 'Configuration Examples' for a complete set of configuration options. It is also possible to start and configure BNC via command line.
+The default file name 'BNC.bnc' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac systems). Some configuration options can be changed on-the-fly. See annexed 'Configuration Examples' for a complete set of configuration options. It is also possible to start and configure BNC via command line.
 </p>
 <p><a name="optsettings"><h3>4. Settings</h3></p>
 <p>
@@ -2274,7 +2274,7 @@ Hit the 'Stop' button in order to stop BNC.
 
 <p><a name="cmd"><h4>4.19. Command Line Options</h4></p>
 <p> 
-Command line options are available to run BNC in 'no window' mode or let it read data offline from one file or several files for debugging or Post Processing purposes. BNC will then use processing options from the configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration file name instead of using the default name 'BNC.ini'.
+Command line options are available to run BNC in 'no window' mode or let it read data offline from one file or several files for debugging or Post Processing purposes. BNC will then use processing options from the configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration file name instead of using the default name 'BNC.bnc'.
 </p> 
 
 <p><a name="nw"><h4>4.19.1 No Window Mode - optional</h4></p>
@@ -2304,21 +2304,21 @@ Note that when running BNC offline, it will use options for file saving, interva
 </p> 
 
 <p><a name="conffile"><h4>4.19.3 Configuration File - optional</h4></p>
-The default configuration file name is 'BNC.ini'. You may change this name at startup time using the command line option '--conf &lt;<u>confFileName</u>&gt;'. This allows running several BNC jobs in parallel on the same host using different sets of configuration options. <u>confFileName</u> stands either for the full path to a configuration file or just for a file name. If you introduce only a filename, the corresponding file will be saved in the current working directory from where BNC is started.
+The default configuration file name is 'BNC.bnc'. You may change this name at startup time using the command line option '--conf &lt;<u>confFileName</u>&gt;'. This allows running several BNC jobs in parallel on the same host using different sets of configuration options. <u>confFileName</u> stands either for the full path to a configuration file or just for a file name. If you introduce only a filename, the corresponding file will be saved in the current working directory from where BNC is started.
 </p>
 <p>
 Example:<br><br>
-./bnc --conf MyConfig.ini
+./bnc --conf MyConfig.bnc
 </p> 
 <p> 
-This leads to a BNC job using configuration file 'MyConfig.ini'. The configuration file will be saved in the current working directory.
+This leads to a BNC job using configuration file 'MyConfig.bnc'. The configuration file will be saved in the current working directory.
 </p> 
 <p> 
 On a Mac-OS X v10.6 (or higher) system the command line would be
 <br><br> 
-open -a /Applications/bnc.app --args -conf /Users/tsyan/MyConfig.ini
+open -a /Applications/bnc.app --args -conf /Users/tsyan/MyConfig.bnc
 <br><br>
-if the program is in /Applications and the configuration file 'MyConfig.ini' in /Users/tsyan.
+if the program is in /Applications and the configuration file 'MyConfig.bnc' in /Users/tsyan.
 </p> 
 
 <p><a name="confopt"><h4>4.19.4 Configuration Options - optional</h4></p>
@@ -2745,7 +2745,7 @@ The purpose of this configuration is to pull a number of streams from reference 
 </p>
 
 <p>
-The following table's left column is an example for the contents of a configuration file 'BNC.ini'. It enables the retrieval of an observations stream via NTRIP for the generation of 15 min RINEX files:
+The following table's left column is an example for the contents of a configuration file 'BNC.bnc'. It enables the retrieval of an observations stream via NTRIP for the generation of 15 min RINEX files:
 </p>
 <table>
 <tr></tr>
