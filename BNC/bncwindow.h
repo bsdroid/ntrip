@@ -232,7 +232,6 @@ class bncWindow : public QMainWindow {
 
     QTableWidget* _uploadTable;
     QComboBox*    _uploadIntrComboBox;
-    QSpinBox*     _uploadSamplRtcmClkCorrSpinBox;
     QSpinBox*     _uploadSamplRtcmEphCorrSpinBox;
     QSpinBox*     _uploadSamplSp3SpinBox;
     QSpinBox*     _uploadSamplClkRnxSpinBox;

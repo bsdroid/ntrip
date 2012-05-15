@@ -43,7 +43,7 @@ class bncRtnetUploadCaster : public bncUploadCaster {
   int            _PID;
   int            _SID;
   int            _IOD;
-  double         _samplOrb;
+  double         _samplRtcmEphCorr;
   double         _dx;
   double         _dy;
   double         _dz;

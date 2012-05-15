@@ -47,9 +47,12 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
 
   bncSettings settings;
   QString     intr  = settings.value("uploadIntr").toString();
-  int         sampl = settings.value("uploadSampl").toInt();
-  _samplOrb = settings.value("uploadSamplOrb").toDouble();
-  if (_samplOrb == 0.0) {
+
+  _samplRtcmEphCorr  = settings.value("uploadSamplRtcmEphCorr").toDouble();
+  double samplClkRnx = settings.value("uploadSamplClkRnx").toDouble();
+  double samplSp3    = settings.value("uploadSamplSp3").toDouble() * 60.0;
+
+  if (_samplRtcmEphCorr == 0.0) {
     _usedEph = 0;
   }
   else {
@@ -59,7 +62,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
   // Raw Output
   // ----------
   if (!outFileName.isEmpty()) {
-    _outFile = new bncoutf(outFileName, intr, sampl);
+    _outFile = new bncoutf(outFileName, intr, 0);
   }
   else {
     _outFile = 0;
@@ -68,7 +71,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
   // RINEX writer
   // ------------
   if (!rnxFileName.isEmpty()) {
-    _rnx = new bncClockRinex(rnxFileName, intr, sampl);
+    _rnx = new bncClockRinex(rnxFileName, intr, samplClkRnx);
   }
   else {
     _rnx = 0;
@@ -77,7 +80,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
   // SP3 writer
   // ----------
   if (!sp3FileName.isEmpty()) {
-    _sp3 = new bncSP3(sp3FileName, intr, _samplOrb);
+    _sp3 = new bncSP3(sp3FileName, intr, samplSp3);
   }
   else {
     _sp3 = 0;
@@ -297,7 +300,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       // Make sure the clock messages refer to same IOD as orbit messages
       // ----------------------------------------------------------------
       if (_usedEph) {
-        if (fmod(epoTime.gpssec(), _samplOrb) == 0.0) {
+        if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
           (*_usedEph)[prn] = eph;
         }
         else {
@@ -395,7 +398,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   // Orbit and Clock Corrections together
   // ------------------------------------
-  if (_samplOrb == 0.0) {
+  if (_samplRtcmEphCorr == 0.0) {
     if (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
@@ -410,7 +413,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   else {
     if (co.NumberOfGPSSat > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
-      if (fmod(epoTime.gpssec(), _samplOrb) == 0.0) {
+      if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
         int len1 = MakeClockOrbit(&co, COTYPE_GPSORBIT, 1, obuffer, sizeof(obuffer));
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
@@ -424,7 +427,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     }
     if (co.NumberOfGLONASSSat > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
-      if (fmod(epoTime.gpssec(), _samplOrb) == 0.0) {
+      if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
         int len1 = MakeClockOrbit(&co, COTYPE_GLONASSORBIT, 1, obuffer, sizeof(obuffer));
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
