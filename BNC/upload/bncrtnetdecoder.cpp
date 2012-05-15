@@ -74,7 +74,7 @@ bncRtnetDecoder::bncRtnetDecoder() {
       bncRtnetUploadCaster* newCaster = new bncRtnetUploadCaster(
                                                        hlp[2], hlp[0], outPort, 
                                                        hlp[3], hlp[4], CoM,
-                                                       hlp[6], hlp[7], "", 
+                                                       hlp[6], hlp[7], 
                                                        PID, SID, IOD, iRow);
       newCaster->start();
       _casters.push_back(newCaster);

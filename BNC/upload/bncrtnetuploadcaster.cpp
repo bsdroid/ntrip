@@ -31,7 +31,6 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
                                  const QString& crdTrafo, bool  CoM, 
                                  const QString& sp3FileName,
                                  const QString& rnxFileName,
-                                 const QString& outFileName, 
                                  int PID, int SID, int IOD, int iRow) :
   bncUploadCaster(mountpoint, outHost, outPort, password, iRow, 0) {
 
@@ -57,15 +56,6 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
   }
   else {
     _usedEph = new QMap<QString, t_eph*>;
-  }
-
-  // Raw Output
-  // ----------
-  if (!outFileName.isEmpty()) {
-    _outFile = new bncoutf(outFileName, intr, 0);
-  }
-  else {
-    _outFile = 0;
   }
 
   // RINEX writer
@@ -198,7 +188,6 @@ bncRtnetUploadCaster::~bncRtnetUploadCaster() {
   if (isRunning()) {
     wait();
   }
-  delete _outFile;
   delete _rnx;
   delete _sp3;
   delete _ephUser;
@@ -349,9 +338,6 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         QString outLine;
         processSatellite(eph, epoTime.gpsw(), epoTime.gpssec(), prn, 
                          xx, sd, outLine);
-        if (_outFile) {
-          _outFile->write(epoTime.gpsw(), epoTime.gpssec(), outLine);
-        }
       }
   
       struct Bias::BiasSat* biasSat = 0;
