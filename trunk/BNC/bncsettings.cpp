@@ -169,10 +169,9 @@ bncSettings::bncSettings() {
       // Upload (clk)
       setValue_p("uploadMountpointsOut","");
       setValue_p("uploadIntr",          "1 day");
-      setValue_p("uploadSamplRtcmClkCorr", "5");
       setValue_p("uploadSamplRtcmEphCorr", "0");
       setValue_p("uploadSamplSp3",         "1");
-      setValue_p("uploadSamplClkRnx",      "5");
+      setValue_p("uploadSamplClkRnx",     "10");
       setValue_p("trafo_dx",            "");
       setValue_p("trafo_dy",            "");
       setValue_p("trafo_dz",            "");

@@ -558,13 +558,6 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   if (ii != -1) {
     _uploadIntrComboBox->setCurrentIndex(ii);
   }
-  _uploadSamplRtcmClkCorrSpinBox = new QSpinBox;
-  _uploadSamplRtcmClkCorrSpinBox->setMinimum(5);
-  _uploadSamplRtcmClkCorrSpinBox->setMaximum(60);
-  _uploadSamplRtcmClkCorrSpinBox->setSingleStep(5);
-  _uploadSamplRtcmClkCorrSpinBox->setMaximumWidth(9*ww);
-  _uploadSamplRtcmClkCorrSpinBox->setValue(settings.value("uploadSamplRtcmClkCorr").toInt());
-  _uploadSamplRtcmClkCorrSpinBox->setSuffix(" sec");
 
   _uploadSamplRtcmEphCorrSpinBox = new QSpinBox;
   _uploadSamplRtcmEphCorrSpinBox->setMinimum(0);
@@ -593,14 +586,12 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   int iRowT = _uploadTable->rowCount();
   if (iRowT > 0) {
     enableWidget(true, _uploadIntrComboBox);
-    enableWidget(true, _uploadSamplRtcmClkCorrSpinBox);
     enableWidget(true, _uploadSamplRtcmEphCorrSpinBox);
     enableWidget(true, _uploadSamplSp3SpinBox);
     enableWidget(true, _uploadSamplClkRnxSpinBox);
   } 
   else {
     enableWidget(false, _uploadIntrComboBox);
-    enableWidget(false, _uploadSamplRtcmClkCorrSpinBox);
     enableWidget(false, _uploadSamplRtcmEphCorrSpinBox);
     enableWidget(false, _uploadSamplSp3SpinBox);
     enableWidget(false, _uploadSamplClkRnxSpinBox);
@@ -1129,15 +1120,13 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   uploadHlpLayout->addWidget(delUploadRowButton,             0, 1);
   uploadHlpLayout->addWidget(new QLabel("Interval"),         0, 2, Qt::AlignRight);
   uploadHlpLayout->addWidget(_uploadIntrComboBox,            0, 3);
-  uploadHlpLayout->addWidget(new QLabel("   Sampling: Clk"), 0, 4, Qt::AlignRight);
-  uploadHlpLayout->addWidget(_uploadSamplRtcmClkCorrSpinBox, 0, 5);
-  uploadHlpLayout->addWidget(new QLabel("Orb"),              0, 6, Qt::AlignRight);
-  uploadHlpLayout->addWidget(_uploadSamplRtcmEphCorrSpinBox, 0, 7);
-  uploadHlpLayout->addWidget(new QLabel("SP3"),              0, 8, Qt::AlignRight);
-  uploadHlpLayout->addWidget(_uploadSamplSp3SpinBox,         0, 9);
-  uploadHlpLayout->addWidget(new QLabel("RNX"),              0,10, Qt::AlignRight);
-  uploadHlpLayout->addWidget(_uploadSamplClkRnxSpinBox,      0,11);
-  uploadHlpLayout->addWidget(setUploadTrafoButton,           0,12);
+  uploadHlpLayout->addWidget(new QLabel("Sampling: Orb"),    0, 4, Qt::AlignRight);
+  uploadHlpLayout->addWidget(_uploadSamplRtcmEphCorrSpinBox, 0, 5);
+  uploadHlpLayout->addWidget(new QLabel("SP3"),              0, 6, Qt::AlignRight);
+  uploadHlpLayout->addWidget(_uploadSamplSp3SpinBox,         0, 7);
+  uploadHlpLayout->addWidget(new QLabel("RNX"),              0, 8, Qt::AlignRight);
+  uploadHlpLayout->addWidget(_uploadSamplClkRnxSpinBox,      0, 9);
+  uploadHlpLayout->addWidget(setUploadTrafoButton,           0,10);
 
   QBoxLayout* uploadLayout = new QBoxLayout(QBoxLayout::TopToBottom);
   populateUploadTable();
@@ -1291,7 +1280,6 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   addUploadRowButton->setWhatsThis(tr("Hit 'Add Row' button to add another line to the stream upload table."));
   delUploadRowButton->setWhatsThis(tr("Hit 'Del Row' button to delete the highlighted line from the stream upload table."));
   _uploadIntrComboBox->setWhatsThis(tr("Select the length of the SP3 and Clock RINEX files."));
-  _uploadSamplRtcmClkCorrSpinBox->setWhatsThis(tr("Select the Clock Correction sampling interval in seconds. A value of zero '0' tells BNC to upload all available samples."));
   _uploadSamplRtcmEphCorrSpinBox->setWhatsThis(tr("Select the Ephemeris Correction sampling interval in seconds. A value of zero '0' tells BNC to upload all available samples."));
   _uploadSamplClkRnxSpinBox->setWhatsThis(tr("Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into Clock RINEX files."));
   _uploadSamplSp3SpinBox->setWhatsThis(tr("Select the SP3 orbit file sampling interval in minutes. A value of zero '0' tells BNC to store all available samples into SP3 orbit files."));
@@ -1752,7 +1740,6 @@ void bncWindow::saveOptions() {
     settings.setValue("uploadMountpointsOut", "");
   }
   settings.setValue("uploadIntr",             _uploadIntrComboBox->currentText());
-  settings.setValue("uploadSamplRtcmClkCorr", _uploadSamplRtcmClkCorrSpinBox->value());
   settings.setValue("uploadSamplRtcmEphCorr", _uploadSamplRtcmEphCorrSpinBox->value());
   settings.setValue("uploadSamplSp3",         _uploadSamplSp3SpinBox->value());
   settings.setValue("uploadSamplClkRnx",      _uploadSamplClkRnxSpinBox->value());
@@ -2236,14 +2223,12 @@ void bncWindow::slotBncTextChanged(){
   int iRow = _uploadTable->rowCount();
   if (iRow > 0) {
     enableWidget(true, _uploadIntrComboBox);
-    enableWidget(true, _uploadSamplRtcmClkCorrSpinBox);
     enableWidget(true, _uploadSamplRtcmEphCorrSpinBox);
     enableWidget(true, _uploadSamplClkRnxSpinBox);
     enableWidget(true, _uploadSamplSp3SpinBox);
   } 
   else {
     enableWidget(false, _uploadIntrComboBox);
-    enableWidget(false, _uploadSamplRtcmClkCorrSpinBox);
     enableWidget(false, _uploadSamplRtcmEphCorrSpinBox);
     enableWidget(false, _uploadSamplClkRnxSpinBox);
     enableWidget(false, _uploadSamplSp3SpinBox);
@@ -2464,7 +2449,6 @@ void bncWindow::slotDelUploadRow() {
   nRows = _uploadTable->rowCount();
   if (nRows < 1) {
     enableWidget(false, _uploadIntrComboBox);
-    enableWidget(false, _uploadSamplRtcmClkCorrSpinBox);
     enableWidget(false, _uploadSamplRtcmEphCorrSpinBox);
     enableWidget(false, _uploadSamplSp3SpinBox);
     enableWidget(false, _uploadSamplClkRnxSpinBox);
