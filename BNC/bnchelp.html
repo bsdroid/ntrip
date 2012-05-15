@@ -269,9 +269,11 @@ This chapter describes how to set the BNC program options. It explains the top m
 &nbsp; &nbsp; &nbsp; 4.14.5 <a href=#upsp3>SP3 File</a><br>
 &nbsp; &nbsp; &nbsp; 4.14.6 <a href=#uprinex>RNX File</a><br>
 &nbsp; &nbsp; &nbsp; 4.14.7 <a href=#upinter>Interval</a><br>
-&nbsp; &nbsp; &nbsp; 4.14.8 <a href=#upclksmpl>Sampling (Clk)</a><br>
-&nbsp; &nbsp; &nbsp; 4.14.9 <a href=#uporbsmpl>Sampling (Orb)</a><br>
-&nbsp; &nbsp; &nbsp; 4.14.10 <a href=#upcustom>Custom Trafo</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.8 <a href=#upclksmpl>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.8.1 <a href=#upclkorb>orbits</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.8.2 <a href=#upclksp3>SP3</a><br>
+&nbsp; &nbsp; &nbsp; 4.14.8.3 <a href=#upclkrnx>RINEX </a><br>
+&nbsp; &nbsp; &nbsp; 4.14.9 <a href=#upcustom>Custom Trafo</a><br>
 4.15. <a href=#upeph>Upload (eph)</a><br>
 &nbsp; &nbsp; &nbsp; 4.15.1 <a href=#brdcserver>Host &amp; Port</a><br>
 &nbsp; &nbsp; &nbsp; 4.15.2 <a href=#brdcmount>Mountpoint &amp; Password</a><br>
@@ -1979,13 +1981,19 @@ Note further that clocks in the Clock RINEX files are not corrected for the conv
 Select the length of Clock RINEX files and SP3 Orbit files. The default value is 1 day.
 </p>
 
-<p><a name="upclksmpl"><h4>4.14.8 Sampling (Clk) - mandatory if 'Upload Table' entries specified</h4></p>
-<p>Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into Clock RINEX files.</p>
+<p><a name="upclksmpl"><h4>4.14.8 Sampling - mandatory if 'Upload Table' entries specified</h4></p>
+<p>BNC requires an orbit corrections sampling rate for the stream to be uploaded and sampling rates for SP3 and Clock RINEX files. The outgoing stream's clock correction sampling rate follows that of incoming corrections and is therefore nothing to be specified here.</p>
 
-<p><a name="uporbsmpl"><h4>4.14.9 Sampling (Orb) - mandatory if 'Upload Table' entries specified</h4></p>
-<p>Select the SP3 Orbit file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into SP3 Orbit files.</p>
+<p><a name="upclkorb"><h4>4.14.8.1 Orbits - mandatory if 'Upload Table' entries specified</h4></p>
+<p>Select the stream's orbit correction sampling interval in seconds. A value of 60 sec may be appropriate. A value of zero '0' tells BNC to upload all available samples.</p>
 
-<p><a name="upcustom"><h4>4.14.10 Custom Trafo - optional if 'Upload Table' entries specified</h4></p>
+<p><a name="upclksp3"><h4>4.14.8.2 SP3 - mandatory if 'SP3 File' is specified</h4></p>
+<p>Select the SP3 orbit file sampling interval in minutes. A value of 15 min may be appropriate. A value of zero '0' tells BNC to store all available samples into SP3 orbit files.</p>
+
+<p><a name="upclkrnx"><h4>4.14.8.3 RINEX - mandatory if 'RNX File' is specified</h4></p>
+<p>Select the Clock RINEX file sampling interval in seconds. A value of 10 sec may be appropriate. A value of zero '0' tells BNC to store all available samples into Clock RINEX files.</p>
+
+<p><a name="upcustom"><h4>4.14.9 Custom Trafo - optional if 'Upload Table' entries specified</h4></p>
 <p>Hit 'Custom Trafo' to specify your own 14 parameter Helmert Transformation instead of selecting a predefined transformation through 'System' button.</p>
 
 <p>
