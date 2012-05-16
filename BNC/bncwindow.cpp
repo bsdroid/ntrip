@@ -497,6 +497,14 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   
   _cmbMaxresLineEdit = new QLineEdit(settings.value("cmbMaxres").toString());
 
+  _cmbSamplSpinBox = new QSpinBox;
+  _cmbSamplSpinBox->setMinimum(0);
+  _cmbSamplSpinBox->setMaximum(60);
+  _cmbSamplSpinBox->setSingleStep(5);
+  _cmbSamplSpinBox->setMaximumWidth(9*ww);
+  _cmbSamplSpinBox->setValue(settings.value("cmbSampl").toInt());
+  _cmbSamplSpinBox->setSuffix(" sec");
+
   QPushButton* addCmbRowButton = new QPushButton("Add Row");
   QPushButton* delCmbRowButton = new QPushButton("Delete");
 
@@ -516,11 +524,13 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
     enableWidget(true, _cmbMethodComboBox);
     _cmbMaxresLineEdit->setStyleSheet("background-color: white");
     _cmbMaxresLineEdit->setEnabled(true);
+    _cmbSamplSpinBox->setEnabled(true);
   } 
   else {
     enableWidget(false, _cmbMethodComboBox);
     _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
     _cmbMaxresLineEdit->setEnabled(false);
+    _cmbSamplSpinBox->setEnabled(false);
   }
 
   // Upload Results
@@ -1099,8 +1109,8 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   cmbLayout->addWidget(new QLabel("    "),                                  3, 5);
   cmbLayout->addWidget(new QLabel("Maximal Residuum"),                      3, 6, Qt::AlignRight);
   cmbLayout->addWidget(_cmbMaxresLineEdit,                                  3, 7, Qt::AlignRight);
-  cmbLayout->addWidget(new QLabel("    "),                                  4, 0);
-  cmbLayout->addWidget(new QLabel("    "),                                  5, 0);
+  cmbLayout->addWidget(new QLabel("Sampling"),                              4, 0);
+  cmbLayout->addWidget(_cmbSamplSpinBox,                                    5, 0);
   cmbLayout->addWidget(new QLabel("    "),                                  6, 0);
 
   connect(addCmbRowButton, SIGNAL(clicked()), this, SLOT(slotAddCmbRow()));
@@ -1732,6 +1742,7 @@ void bncWindow::saveOptions() {
   }
   settings.setValue("cmbMethod", _cmbMethodComboBox->currentText());
   settings.setValue("cmbMaxres", _cmbMaxresLineEdit->text());
+  settings.setValue("cmbSampl",  _cmbSamplSpinBox->value());
 // Upload (clk)
   if (!uploadMountpointsOut.isEmpty()) {
     settings.setValue("uploadMountpointsOut", uploadMountpointsOut);
@@ -2210,11 +2221,13 @@ void bncWindow::slotBncTextChanged(){
       enableWidget(true, _cmbMethodComboBox);
       _cmbMaxresLineEdit->setStyleSheet("background-color: white");
       _cmbMaxresLineEdit->setEnabled(true);
+      _cmbSamplSpinBox->setEnabled(true);
     } 
     else {
       enableWidget(false, _cmbMethodComboBox);
       _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
       _cmbMaxresLineEdit->setEnabled(false);
+      _cmbSamplSpinBox->setEnabled(false);
     }
   }
 
@@ -2361,6 +2374,7 @@ void bncWindow::slotDelCmbRow() {
     enableWidget(false, _cmbMethodComboBox);
     _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
     _cmbMaxresLineEdit->setEnabled(false);
+    _cmbSamplSpinBox->setEnabled(false);
   }
 }
 
