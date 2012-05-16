@@ -481,8 +481,8 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _log = new QTextBrowser();
   _log->setReadOnly(true);
 
-  // Combination
-  // -----------
+  // Combine Corrections
+  // -------------------
   _cmbTable = new QTableWidget(0,3);
   _cmbTable->setHorizontalHeaderLabels(QString("Mountpoint, AC Name, Weight").split(","));
   _cmbTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -552,7 +552,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _uploadTable->horizontalHeader()->resizeSection(10, 4*ww); 
   _uploadTable->horizontalHeader()->resizeSection(11,12*ww); 
   _uploadTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-  ///  _uploadTable->horizontalHeader()->setStretchLastSection(true);
+  _uploadTable->horizontalHeader()->setStretchLastSection(true);
   _uploadTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
   connect(_uploadTable, SIGNAL(itemSelectionChanged()), 
@@ -657,10 +657,10 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _aogroup->addTab(pppgroup,tr("PPP (1)"));
   _aogroup->addTab(ppp2group,tr("PPP (2)"));
 #ifdef USE_COMBINATION
-  _aogroup->addTab(cmbgroup,tr("Combination"));
+  _aogroup->addTab(cmbgroup,tr("Combine Corrections"));
 #endif
-  _aogroup->addTab(uploadgroup,tr("Upload (clk)"));
-  _aogroup->addTab(uploadEphgroup,tr("Upload (eph)"));
+  _aogroup->addTab(uploadgroup,tr("Upload Corrections"));
+  _aogroup->addTab(uploadEphgroup,tr("Upload Ephemeris"));
 
   // Log Tab
   // -------
@@ -1092,8 +1092,8 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   connect(_reqcEditOptionButton, SIGNAL(clicked()), 
           this, SLOT(slotReqcEditOption()));
 
-  // Combination
-  // -----------
+  // Combine Corrections
+  // -------------------
   QGridLayout* cmbLayout = new QGridLayout;
 
   populateCmbTable();
@@ -1242,7 +1242,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _serialFileNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved.</p>"));
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
   _pppMountLineEdit->setWhatsThis(tr("<p>Specify an observations stream by its mountpoint from the 'Streams' list compiled below if you want BNC to estimate coordinates for the affected receiver position through a PPP solution. Example: 'FFMJ1'</p><p>Note that PPP in BNC requires to also pull a stream carrying RTCM Version 3 satellite orbit and clock corrections to Broadcast Ephemeris referring to the satellites' Antenna Phase Centers (APC). Stream CLK11 on NTRIP broadcaster products.igs-ip.net is an example.</p><p>Pulling in addition a third stream carrying Broadcast Ephemeris messages in high repetition rate is suggested if such messages are comeing from the receiver in low repetition rate or don't come at all from there.</p>"));
-  _pppCorrMountLineEdit->setWhatsThis(tr("<p>You must specify an orbit/clock Broadcast Ephemeris corrections stream by its mountpoint from the 'Streams' list below. Example: 'CLK10'</p><p>Note that BNC can produce an internal PPP solution from combined Broadcast Ephemeris corrections as specified under 'Combination' if you introduce keyword 'INTERNAL' as the corrections mountpoint.</p>"));
+  _pppCorrMountLineEdit->setWhatsThis(tr("<p>You must specify an orbit/clock Broadcast Ephemeris corrections stream by its mountpoint from the 'Streams' list below. Example: 'CLK10'</p><p>Note that BNC can produce an internal PPP solution from combined Broadcast Ephemeris corrections as specified under 'Combine Corrections' if you introduce keyword 'INTERNAL' as the corrections mountpoint.</p>"));
   _pppSPPComboBox->setWhatsThis(tr("<p>Choose between plain Single Point Positioning (SPP) and Precise Point Positioning (PPP) in 'Realtime' or 'Post-Processing' mode.</p><p>When in 'Post-Processing mode:<ul><li>Specifying a RINEX Observation, a RINEX Navigation and a Broadcast Correction file leads to a PPP solution.</li><li>Specifying only a RINEX Observation and a RINEX Navigation file and no Broadcast Correction file leads to a SPP solution.</ul></p>"));
   _reqcActionComboBox->setWhatsThis(tr("<p>BNC allows to edit or concatenate RINEX v2 or v3 files or to perform a quality check.</p><p>In this it follows UNAVCO's famous 'teqc' program.</p>"));
   _reqcEditOptionButton->setWhatsThis(tr("<p>Specify options for editing RINEX v2 or v3 files.</p>"));
@@ -1280,8 +1280,9 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _pppApplySatAntCheckBox->setWhatsThis(tr("<p>This option is not yet working.</p><p>Satellite orbit and clock corrections refer to the satellite's antenna phase centers and hence observations are actually <u>not</u> to be corrected for satellite antenna phase center offsets. However, you may like to tick 'Apply Offsets' to force BNC to correct observations for satellite antenna phase center offsets.</p><p>Default is to <u>not</u> correct observations for satellite antenna phase center offsets."));
   _cmbTable->setWhatsThis(tr("<p>BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors coming from various providers. Hit the 'Add Row' button, double click on the 'Mountpoint' field to enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter the weight to be applied for this stream in the combination.<ul><li>Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense there if the update rate of incoming clock corrections is i.e. 10 seconds.</li><li>Note also that you need to tick 'Use GLONASS' which is part ot the 'PPP (2)' panel in case you want to produce an GPS plus GLONASS combination.</li></ul></p><p>Note further that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p><p>The combination process requires Broadcast Ephemeris. Besides the orbit and clock corrections stream(s) BNC should therefore pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages.</p><p>It is possible to specify only one Broadcast Ephemeris corrections stream in the combination table. Instead of combining corrections BNC will then merge them with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format."));
   _cmbMaxresLineEdit->setWhatsThis(tr("<p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p></p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p><p>Default is a value of '999.0'.</p>"));
+  _cmbSamplSpinBox->setWhatsThis(tr("<p>Specify a combination sampling interval. Clock and orbit corrections will be produced following that interval. A value of 10 sec may be an appropriate choice.</p>"));
   _cmbMethodComboBox->setWhatsThis(tr("<p>Select a clock combination approach. Options are 'Single-Epoch' and Kalman 'Filter'. It is suggested to use the Kalman filter approach for the purpose of Precise Point Positioning.</p>"));
-  _uploadTable->setWhatsThis(tr("<p>BNC can upload clock and orbit corrections to broadcast ephemeris (Broadcast Corrections) in RTCM Version 3 SSR format. You may have a situation where clocks and orbits come from an external Real-time Network Engine (1) or a situation where clock and orbit corrections are combined within BNC (2).</p><p>(1) BNC identifies a stream as coming from a Real-time Network Engine if its format is specified as 'RTNET' and hence its decoder string in the 'Streams' canvas is 'RTNET'. It encodes and uploads that stream to the specified NTRIP broadcaster</p><p>(2) BNC understands that it is expected to encode and upload combined Broadcast Ephemeris corrections if you specify correction streams in the 'Combination' stream table.</p><p>Hit the 'Add Row' button, double click on the 'Host' field to enter the IP or URL of an NTRIP broadcaster and hit Enter. Then double click on the 'Port', 'Mount' and 'Password' fields to enter the NTRIP broadcaster IP port (default is 80), the mountpoint and the stream upload password. An empty 'Host' option field means that you don't want to upload corrections.</p><p>Select a target coordinate reference system (e.g. IGS08) for outgoing clock and orbit corrections.</p><p>By default orbit and clock corrections refer to Antenna Phase Center (APC). Tick 'CoM' to refer uploaded corrections to Center of Mass instead of APC.</p><p>Specify a path for saving the generated Broadcast Corrections plus Broadcast Ephemeris as SP3 orbit files. If the specified directory does not exist, BNC will not create SP3 orbit files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p><ul><li>As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while correctors are referred to the satellites Antenna Phase Center (APC), an offset has to be applied which is available from an IGS ANTEX file. You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save the stream contents in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs.</li></ul></p><p>Specify a path for saving the generated Broadcast Correction clocks plus Broadcast Ephemeris clocks as Clock RINEX files. If the specified directory does not exist, BNC will not create Clock RINEX files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.clk<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p><p>Specify finally an SSR Provider ID number, an SSR Solution ID number and an Issue of Data SSR number.</p><p>In case the 'Combination' table contains only one Broadcast Corrections stream, BNC will merge that stream with Broadcast Ephemeris to save results in files specified here through SP3 and/or Clock RINEX file path. In such a case you should define only the SP3 and Clock RINEX file path and no further options in the 'Upload (clk)' table.</p>"));
+  _uploadTable->setWhatsThis(tr("<p>BNC can upload clock and orbit corrections to broadcast ephemeris (Broadcast Corrections) in RTCM Version 3 SSR format. You may have a situation where clocks and orbits come from an external Real-time Network Engine (1) or a situation where clock and orbit corrections are combined within BNC (2).</p><p>(1) BNC identifies a stream as coming from a Real-time Network Engine if its format is specified as 'RTNET' and hence its decoder string in the 'Streams' canvas is 'RTNET'. It encodes and uploads that stream to the specified NTRIP broadcaster</p><p>(2) BNC understands that it is expected to encode and upload combined Broadcast Ephemeris corrections if you specify correction streams in the 'Combine Corrections' stream table.</p><p>Hit the 'Add Row' button, double click on the 'Host' field to enter the IP or URL of an NTRIP broadcaster and hit Enter. Then double click on the 'Port', 'Mount' and 'Password' fields to enter the NTRIP broadcaster IP port (default is 80), the mountpoint and the stream upload password. An empty 'Host' option field means that you don't want to upload corrections.</p><p>Select a target coordinate reference system (e.g. IGS08) for outgoing clock and orbit corrections.</p><p>By default orbit and clock corrections refer to Antenna Phase Center (APC). Tick 'CoM' to refer uploaded corrections to Center of Mass instead of APC.</p><p>Specify a path for saving the generated Broadcast Corrections plus Broadcast Ephemeris as SP3 orbit files. If the specified directory does not exist, BNC will not create SP3 orbit files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p><ul><li>As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while correctors are referred to the satellites Antenna Phase Center (APC), an offset has to be applied which is available from an IGS ANTEX file. You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save the stream contents in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs.</li></ul></p><p>Specify a path for saving the generated Broadcast Correction clocks plus Broadcast Ephemeris clocks as Clock RINEX files. If the specified directory does not exist, BNC will not create Clock RINEX files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.clk<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p><p>Specify finally an SSR Provider ID number, an SSR Solution ID number and an Issue of Data SSR number.</p><p>In case the 'Combine Corrections' table contains only one Broadcast Corrections stream, BNC will merge that stream with Broadcast Ephemeris to save results in files specified here through SP3 and/or Clock RINEX file path. In such a case you should define only the SP3 and Clock RINEX file path and no further options in the 'Upload Corrections' table.</p>"));
   _postObsFileChooser->setWhatsThis(tr("Full path to RINEX v2/v3 Observation file."));
   _postNavFileChooser->setWhatsThis(tr("Full path to RINEX v2/v3 Navigation file."));
   _postCorrFileChooser->setWhatsThis(tr("Full path to Broadcast Corrections file as previously saved with BNC in plain ASCII format."));
@@ -1734,7 +1735,7 @@ void bncWindow::saveOptions() {
   settings.setValue("reqcOutObsFile", _reqcOutObsLineEdit->text());
   settings.setValue("reqcOutNavFile", _reqcOutNavLineEdit->text());
   settings.setValue("reqcOutLogFile", _reqcOutLogLineEdit->text());
-// Combination
+// Combine Corrections
   if (!combineStreams.isEmpty()) {
     settings.setValue("combineStreams", combineStreams);
   }
@@ -1744,7 +1745,7 @@ void bncWindow::saveOptions() {
   settings.setValue("cmbMethod", _cmbMethodComboBox->currentText());
   settings.setValue("cmbMaxres", _cmbMaxresLineEdit->text());
   settings.setValue("cmbSampl",  _cmbSamplSpinBox->value());
-// Upload (clk)
+// Upload Corrections
   if (!uploadMountpointsOut.isEmpty()) {
     settings.setValue("uploadMountpointsOut", uploadMountpointsOut);
   }
@@ -1755,7 +1756,7 @@ void bncWindow::saveOptions() {
   settings.setValue("uploadSamplRtcmEphCorr", _uploadSamplRtcmEphCorrSpinBox->value());
   settings.setValue("uploadSamplSp3",         _uploadSamplSp3SpinBox->value());
   settings.setValue("uploadSamplClkRnx",      _uploadSamplClkRnxSpinBox->value());
-// Upload (eph)
+// Upload Ephemeris
   settings.setValue("uploadEphHost",      _uploadEphHostLineEdit->text());
   settings.setValue("uploadEphPort",      _uploadEphPortLineEdit->text());
   settings.setValue("uploadEphMountpoint",_uploadEphMountpointLineEdit->text());
@@ -2214,8 +2215,8 @@ void bncWindow::slotBncTextChanged(){
     }
   }
 
-  // Combination
-  // -----------
+  // Combine Corrections
+  // -------------------
   if (sender() == 0 || sender() == _cmbTable) {
     int iRow = _cmbTable->rowCount();
     if (iRow > 0) {
