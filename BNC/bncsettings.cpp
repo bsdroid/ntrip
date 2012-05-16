@@ -166,6 +166,7 @@ bncSettings::bncSettings() {
       setValue_p("combineStreams",      "");
       setValue_p("cmbMethod",           "");
       setValue_p("cmbMaxres",           "");
+      setValue_p("cmbSampl",          "10");
       // Upload (clk)
       setValue_p("uploadMountpointsOut","");
       setValue_p("uploadIntr",          "1 day");
