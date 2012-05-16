@@ -29,8 +29,6 @@
 #include "bncantex.h"
 #include "bnctides.h"
 
-const int moduloTime = 10;
-
 const double sig0_offAC    = 1000.0;
 const double sig0_offACSat =  100.0;
 const double sigP_offACSat =   0.01;
@@ -139,6 +137,11 @@ bncComb::bncComb() {
   bncSettings settings;
 
   QStringList combineStreams = settings.value("combineStreams").toStringList();
+
+  _cmbSampl = settings.value("cmbSampl").toInt();
+  if (_cmbSampl <= 0) {
+    _cmbSampl = 10;
+  }
 
   _masterMissingEpochs = 0;
 
@@ -328,7 +331,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Check Modulo Time
   // -----------------
-  if (int(newCorr->tClk.gpssec()) % moduloTime != 0.0) {
+  if (int(newCorr->tClk.gpssec()) % _cmbSampl != 0.0) {
     delete newCorr;
     return;
   }
@@ -367,7 +370,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   QListIterator<bncTime> itTime(_buffer.keys());
   while (itTime.hasNext()) {
     bncTime epoTime = itTime.next();
-    if (epoTime < newCorr->tClk - moduloTime) {
+    if (epoTime < newCorr->tClk - _cmbSampl) {
       _resTime = epoTime;
       processEpoch();
     }
