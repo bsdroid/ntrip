@@ -1109,9 +1109,10 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   cmbLayout->addWidget(new QLabel("    "),                                  3, 5);
   cmbLayout->addWidget(new QLabel("Maximal Residuum"),                      3, 6, Qt::AlignRight);
   cmbLayout->addWidget(_cmbMaxresLineEdit,                                  3, 7, Qt::AlignRight);
-  cmbLayout->addWidget(new QLabel("Sampling"),                              4, 0);
-  cmbLayout->addWidget(_cmbSamplSpinBox,                                    5, 0);
-  cmbLayout->addWidget(new QLabel("    "),                                  6, 0);
+  cmbLayout->addWidget(new QLabel("    "),                                  4, 5);
+  cmbLayout->addWidget(new QLabel("Sampling"),                              4, 6, Qt::AlignRight);
+  cmbLayout->addWidget(_cmbSamplSpinBox,                                    4, 7, Qt::AlignRight);
+  cmbLayout->addWidget(new QLabel("    "),                                  5, 0);
 
   connect(addCmbRowButton, SIGNAL(clicked()), this, SLOT(slotAddCmbRow()));
   connect(delCmbRowButton, SIGNAL(clicked()), this, SLOT(slotDelCmbRow()));
