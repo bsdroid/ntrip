@@ -107,6 +107,7 @@ class bncComb : public bncEphUser  {
   unsigned                _masterMissingEpochs;
   e_method                _method;
   bool                    _useGlonass;
+  int                     _cmbSampl;
   QMap<QString, cmbCorr*> _orbitCorrs;
 };
 
