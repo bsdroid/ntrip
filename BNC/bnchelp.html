@@ -256,13 +256,13 @@ This chapter describes how to set the BNC program options. It explains the top m
 &nbsp; &nbsp; &nbsp; 4.12.8.4 <a href=#pppsigxyzn>XYZ White Noise</a><br>
 &nbsp; &nbsp; &nbsp; 4.12.8.5 <a href=#pppsigtrpi>Tropo Init</a><br>
 &nbsp; &nbsp; &nbsp; 4.12.8.6 <a href=#pppsigtrpn>Tropo White Noise</a><br>
-4.13. <a href=#combi>Combination</a><br>
-&nbsp; &nbsp; &nbsp; 4.13.1 <a href=#combimounttab>Combination Table</a><br>
+4.13. <a href=#combi>Combine Corrections</a><br>
+&nbsp; &nbsp; &nbsp; 4.13.1 <a href=#combimounttab>Combine Corrections Table</a><br>
 &nbsp; &nbsp; &nbsp; 4.13.1.1 <a href=#combiadd>Add Row, Delete</a><br>
 &nbsp; &nbsp; &nbsp; 4.13.1.2 <a href=#combimethod>Method</a><br>
 &nbsp; &nbsp; &nbsp; 4.13.1.3 <a href=#combimax>Maximal Residuum</a><br>
 &nbsp; &nbsp; &nbsp; 4.13.1.4 <a href=#combismpl>Sampling</a><br>
-4.14. <a href=#upclk>Upload (clk)</a><br>
+4.14. <a href=#upclk>Upload Corrections</a><br>
 &nbsp; &nbsp; &nbsp; 4.14.1 <a href=#upadd>Add, Delete Row</a><br>
 &nbsp; &nbsp; &nbsp; 4.14.2 <a href=#uphost>Host, Port, Mountpoint, Password</a><br>
 &nbsp; &nbsp; &nbsp; 4.14.3 <a href=#upsystem>System</a><br>
@@ -275,7 +275,7 @@ This chapter describes how to set the BNC program options. It explains the top m
 &nbsp; &nbsp; &nbsp; 4.14.8.2 <a href=#upclksp3>SP3</a><br>
 &nbsp; &nbsp; &nbsp; 4.14.8.3 <a href=#upclkrnx>RINEX </a><br>
 &nbsp; &nbsp; &nbsp; 4.14.9 <a href=#upcustom>Custom Trafo</a><br>
-4.15. <a href=#upeph>Upload (eph)</a><br>
+4.15. <a href=#upeph>Upload Ephemeris</a><br>
 &nbsp; &nbsp; &nbsp; 4.15.1 <a href=#brdcserver>Host &amp; Port</a><br>
 &nbsp; &nbsp; &nbsp; 4.15.2 <a href=#brdcmount>Mountpoint &amp; Password</a><br>
 &nbsp; &nbsp; &nbsp; 4.15.3 <a href=#brdcsmpl>Sampling</a><br><br>
@@ -1586,7 +1586,7 @@ Enter a sigma in meters for the a-priory model based tropospheric delay estimati
 Enter a sigma in meters per second to describe the expected variation of the tropospheric effect. Supposing 1Hz observation data, a value of 3e-6 (default) would mean that the tropospheric effect may vary for 3600 * 3e-6 = 0.01 meters per hour.
 </p>
 
-<p><a name="combi"><h4>4.13. Combination</h4></p>
+<p><a name="combi"><h4>4.13. Combine Corrections</h4></p>
 <p>
 BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of Broadcast Corrections from various providers. It is so far only the satellite clock corrections which are combined while orbit corrections in the combination product as well as the product update rates are just taken over from one of the incoming Broadcast Correction streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach. The clock combination can be based either on a plain 'Single-Epoch' or on a 'Kalman' Filter approach.
 </p>
@@ -1598,7 +1598,7 @@ In the Kalman Filter approach satellite clocks estimated by individual Analyses 
 Removing the AC-dependent biases as well as possible is a major issue with clock combinations. Since they vary in time, it can be tricky to do this. Otherwise, there will be artificial jumps in the combined clock stream if one or more AC contributions drop out for certain epochs. Here the Kalman Filter approach is expected to do better than the Single-Epoch approach.
 </p>
 <p>
-In view of IGS real-time products, the 'Combination' functionality has been integrated in BNC because
+In view of IGS real-time products, the 'Combine Corrections' functionality has been integrated in BNC because
 <ul>
 <li>the software with its Graphic User Interface and wide range of supported Operation Systems represents a perfect platform to process many Broadcast Correction streams in parallel;</li>
 <li>outages of single AC product streams can be mitigated through merging several incoming streams into a combined product;</li>
@@ -1647,10 +1647,10 @@ Note that BNC can produce an internal PPP solution from combined Broadcast Corre
 Note further that the combination procedure in BNC also - formally - works with only one Broadcast Corrections stream specified for combination. 
 </p>
 <p>
-The part of BNC which enables the combination of orbit and clock corrections streams is not intended for publication under GNU General Public License (GPL). However, pre-compiled BNC binaries which support the 'Combination' option will be available for personal usage.
+The part of BNC which enables the combination of orbit and clock corrections streams is not intended for publication under GNU General Public License (GPL). However, pre-compiled BNC binaries which support the 'Combine Corrections' option will be available for personal usage.
 </p>
 
-<p><a name="combimounttab"><h4>4.13.1 Combination Table - optional</h4></p>
+<p><a name="combimounttab"><h4>4.13.1 Combine Corrections Table - optional</h4></p>
 <p>
 Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadcast Corrections mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. The stream processing can already be started with only one corrections stream configured for combination.
 </p>
@@ -1658,21 +1658,21 @@ Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadc
 Note that an appropriate 'Wait for full epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. To give an example: a value of '15' sec would make sense if the update rate of incoming clock corrections is 10 sec.
 </p>
 <p>
-The sequence of entries in the 'Combination Table' is not of importance. Note that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p>
+The sequence of entries in the 'Combine Corrections Table' is not of importance. Note that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p>
 <p>
-Default is an empty 'Combination Table' meaning that you don't want BNC to combine orbit and clock corrections streams.
+Default is an empty 'Combine Corrections Table' meaning that you don't want BNC to combine orbit and clock corrections streams.
 </p>
 <p>
-It is possible to specify only one Broadcast Ephemeris corrections stream in the 'Combination Table'. Instead of combining corrections from several sources BNC will then merge the single corrections stream with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format when specified accordingly under the 'Upload (clk)' tab.
+It is possible to specify only one Broadcast Ephemeris corrections stream in the 'Combine Corrections Table'. Instead of combining corrections from several sources BNC will then merge the single corrections stream with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format when specified accordingly under the 'Upload Corrections' tab.
 </p>
 
 <p><a name="combiadd"><h4>4.13.1.1 Add Row, Delete - optional</h4></p>
 <p>
-Hit 'Add Row' button to add another row to the 'Combination Table' or hit the 'Delete' button to delete the highlighted row(s).
+Hit 'Add Row' button to add another row to the 'Combine Corrections Table' or hit the 'Delete' button to delete the highlighted row(s).
 </p>
 
 <p>
-The following screenshots describe an example setup of BNC when combining Broadcast Correction streams and upload them to an NTRIP Broadcaster. Note that it requires specifying options under tabs 'Combination' and 'Upload (clk)'. The example uses the combination product to simultaneously carry out an 'INTERNAL' PPP solution in Quickstart mode which allows monitoring the quality of the combination product in the space domain. 
+The following screenshots describe an example setup of BNC when combining Broadcast Correction streams and upload them to an NTRIP Broadcaster. Note that it requires specifying options under tabs 'Combine Corrections' and 'Upload Corrections'. The example uses the combination product to simultaneously carry out an 'INTERNAL' PPP solution in Quickstart mode which allows monitoring the quality of the combination product in the space domain. 
 </p>
 
 <br>
@@ -1685,26 +1685,26 @@ The following screenshots describe an example setup of BNC when combining Broadc
 <p><img src="IMG/screenshot23.png"/></p>
 <p><u>Figure 17:</u> 'INTERNAL' PPP with BNC using combined Broadcast Corrections stream.</p>
 
-<p><a name="combimethod"><h4>4.13.1.2 Method - mandatory if 'Combination Table' is populated</h4></p>
+<p><a name="combimethod"><h4>4.13.1.2 Method - mandatory if 'Combine Corrections Table' is populated</h4></p>
 <p>
 Select a clock combination method. Available options are Kalman 'Filter' and 'Single-Epoch. It is suggested to use the Kalman Filter approach in case the combined stream of Broadcast Corrections is intended for Precise Point Positioning support.
 </p>
 
-<p><a name="combimax"><h4>4.13.1.3 Maximal Residuum - mandatory if 'Combination Table' is populated</h4></p>
+<p><a name="combimax"><h4>4.13.1.3 Maximal Residuum - mandatory if 'Combine Corrections Table' is populated</h4></p>
 
 <p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p>
 </p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p>
 <p>Default is a 'Maximal Residuum' of 999.0 meters</p>
 
-<p><a name="combismpl"><h4>4.13.1.4 Sampling - mandatory if 'Combination Table' is populated</h4></p>
+<p><a name="combismpl"><h4>4.13.1.4 Sampling - mandatory if 'Combine Corrections Table' is populated</h4></p>
 <p>Specify a combination sampling interval. Clock and orbit corrections will be produced following that interval. A value of 10 sec may be an appropriate choice.</p>
 
 
-<p><a name="upclk"><h4>4.14. Upload (clk)</h4></p>
+<p><a name="upclk"><h4>4.14. Upload Corrections</h4></p>
 <p>
 BNC can upload streams carrying orbit and clock corrections to Broadcast Ephemeris in radial, along-track and cross-track components if they are<ol type=a> 
 <li>
-either generated by BNC as a combination of several individual Broadcast Correction streams coming from an number of real-time Analysis Centers (ACs), see section 'Combination',</li>
+either generated by BNC as a combination of several individual Broadcast Correction streams coming from an number of real-time Analysis Centers (ACs), see section 'Combine Corrections',</li>
 <li>
 or generated by BNC because the program receives an ASCII stream of precise satellite orbits and clocks via IP port from a connected real-time GNSS engine. Such a stream would be expected in a plain ASCII format and the associated 'decoder' string would have to be 'RTNET'. </li>
 </ol>
@@ -1714,7 +1714,7 @@ The procedure taken by BNC to generate the clock and orbit corrections to Broadc
 </ul>
 Then, epoch by epoch: 
 <ul>
-<li>Continuously receive the best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS08 reference system. Receive them every epoch in plain ASCII format as provided by a real-time GNSS engine such as RTNet or generate them following a 'Combination' approach. </li>
+<li>Continuously receive the best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS08 reference system. Receive them every epoch in plain ASCII format as provided by a real-time GNSS engine such as RTNet or generate them following a combination approach. </li>
 <li>Calculate X,Y,Z coordinates from Broadcast Ephemeris orbits. </li>
 <li>Calculate differences dX,dY,dZ between Broadcast Ephemeris and IGS08 orbits. </li>
 <li>Transform these differences into radial, along-track and cross-track corrections to Broadcast Ephemeris orbits. </li>
@@ -1967,7 +1967,7 @@ As an SP3 file contents should be referred to the satellites Center of Mass (CoM
 The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'. Note that clocks in the SP3 orbit files are not corrected for the conventional periodic relativistic effect.
 </p>
 <p>
-In case the 'Combination Table' contains only one Broadcast Corrections stream, BNC will merge that stream with Broadcast Ephemeris to save results in files specified here through SP3 and/or Clock RINEX file path. In such a case you have to define only the SP3 and Clock RINEX file path and no further options in the 'Upload (clk)' table.
+In case the 'Combine Corrections Table' contains only one Broadcast Corrections stream, BNC will merge that stream with Broadcast Ephemeris to save results in files specified here through SP3 and/or Clock RINEX file path. In such a case you have to define only the SP3 and Clock RINEX file path and no further options in the 'Upload Corrections' table.
 </p>
 
 <p><a name="uprinex"><h4>4.14.6 RNX File - optional</h4></p>
@@ -2007,7 +2007,7 @@ The following screenshot shows the encoding and uploading of a stream of precise
 <p><img src="IMG/screenshot26.png"/></p>
 <p><u>Figure 18:</u> Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an NTRIP Broadcaster.</p>
 
-<p><a name="upeph"><h4>4.15. Upload (eph) </h4></p>
+<p><a name="upeph"><h4>4.15. Upload Ephemeris</h4></p>
 <p>
 BNC can upload a stream carrying Broadcast Ephemeris in RTCM Version 3 format to an NTRIP Broadcaster.
 </p>
@@ -2881,31 +2881,33 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>combineStreams=</td><td>Combination: List of correction streams</td></tr>
 <tr><td>cmbMethod=Filter</td><td>Combination: Approach</td></tr>
 <tr><td>cmbMaxres=</td><td>Combination: Clock outlier threshold</td></tr>
+<tr><td>cmbSampl=</td><td>Combination: Orbit and clock sampling</td></tr>
 
-<tr><td>uploadMountpointsOut=</td><td>Upload(clk): Upload streams</td></tr>
-<tr><td>uploadIntr=1 day</td><td>Upload(clk): File interval</td></tr>
-<tr><td>uploadSampl=5</td><td>Upload(clk): Clock sampling</td></tr>
-<tr><td>uploadSamplOrb=0</td><td>Upload(clk): Orbit sampling</td></tr>
-<tr><td>trafo_dx=</td><td>Upload(clk): Translation X</td></tr>
-<tr><td>trafo_dy=</td><td>Upload(clk): Translation Y</td></tr>
-<tr><td>trafo_dz=</td><td>Upload(clk): Translation Z</td></tr>
-<tr><td>trafo_dxr=</td><td>Upload(clk): Translation change X</td></tr>
-<tr><td>trafo_dyr=</td><td>Upload(clk): Translation change Y</td></tr>
-<tr><td>trafo_dzr=</td><td>Upload(clk): Translation change Z</td></tr>
-<tr><td>trafo_ox=</td><td>Upload(clk): Rotation X</td></tr>
-<tr><td>trafo_oy=</td><td>Upload(clk): Rotation Y</td></tr>
-<tr><td>trafo_oz=</td><td>Upload(clk): Rotation Z</td></tr>
-<tr><td>trafo_oxr=</td><td>Upload(clk): Rotation change X</td></tr>
-<tr><td>trafo_oyr=</td><td>Upload(clk): Rotation change Y</td></tr>
-<tr><td>trafo_ozr=</td><td>Upload(clk): Rotation change Z</td></tr>
-<tr><td>trafo_sc=</td><td>Upload(clk): Scale</td></tr>
-<tr><td>trafo_scr=</td><td>Upload(clk): Scale change</td></tr>
-<tr><td>trafo_t0=</td><td>Upload(clk): Reference year</td></tr>
-<tr><td>uploadEphHost=</td><td>Upload(eph): Host</td></tr>
-<tr><td>uploadEphPort=</td><td>Upload(eph): Port</td></tr>
-<tr><td>uploadEphMountpoint=</td><td>Upload(eph): Moutpoint</td></tr>
-<tr><td>uploadEphPassword=</td><td>Upload(eph): Password</td></tr>
-<tr><td>uploadEphSample=5</td><td>Upload(eph): Samplig</td></tr>
+<tr><td>uploadIntr=1 day</td><td>Upload Corrections: File interval</td></tr>
+<tr><td>uploadMountpointsOut=</td><td>Upload Corrections: Upload streams</td></tr>
+<tr><td>uploadSamplClkRnx=10</td><td>Upload Corrections: Clock sampling</td></tr>
+<tr><td>uploadSamplSp3=1</td><td>Upload Corrections: Orbit sampling</td></tr>
+<tr><td>uploadSamplRtcmEphCorr=0</td><td>Upload Corrections: Orbit sampling</td></tr>
+<tr><td>trafo_dx=</td><td>Upload Corrections: Translation X</td></tr>
+<tr><td>trafo_dy=</td><td>Upload Corrections: Translation Y</td></tr>
+<tr><td>trafo_dz=</td><td>Upload Corrections: Translation Z</td></tr>
+<tr><td>trafo_dxr=</td><td>Upload Corrections: Translation change X</td></tr>
+<tr><td>trafo_dyr=</td><td>Upload Corrections: Translation change Y</td></tr>
+<tr><td>trafo_dzr=</td><td>Upload Corrections: Translation change Z</td></tr>
+<tr><td>trafo_ox=</td><td>Upload Corrections: Rotation X</td></tr>
+<tr><td>trafo_oy=</td><td>Upload Corrections: Rotation Y</td></tr>
+<tr><td>trafo_oz=</td><td>Upload Corrections: Rotation Z</td></tr>
+<tr><td>trafo_oxr=</td><td>Upload Corrections: Rotation change X</td></tr>
+<tr><td>trafo_oyr=</td><td>Upload Corrections: Rotation change Y</td></tr>
+<tr><td>trafo_ozr=</td><td>Upload Corrections: Rotation change Z</td></tr>
+<tr><td>trafo_sc=</td><td>Upload Corrections: Scale</td></tr>
+<tr><td>trafo_scr=</td><td>Upload Corrections: Scale change</td></tr>
+<tr><td>trafo_t0=</td><td>Upload Corrections: Reference year</td></tr>
+<tr><td>uploadEphHost=</td><td>Upload Ephemeris: Host</td></tr>
+<tr><td>uploadEphPort=</td><td>Upload Ephemeris: Port</td></tr>
+<tr><td>uploadEphMountpoint=</td><td>Upload Ephemeris: Moutpoint</td></tr>
+<tr><td>uploadEphPassword=</td><td>Upload Ephemeris: Password</td></tr>
+<tr><td>uploadEphSample=5</td><td>Upload Ephemeris: Samplig</td></tr>
 </table>
 </p>
 <p>
