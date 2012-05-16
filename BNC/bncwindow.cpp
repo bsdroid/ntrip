@@ -498,9 +498,9 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _cmbMaxresLineEdit = new QLineEdit(settings.value("cmbMaxres").toString());
 
   _cmbSamplSpinBox = new QSpinBox;
-  _cmbSamplSpinBox->setMinimum(0);
+  _cmbSamplSpinBox->setMinimum(10);
   _cmbSamplSpinBox->setMaximum(60);
-  _cmbSamplSpinBox->setSingleStep(5);
+  _cmbSamplSpinBox->setSingleStep(10);
   _cmbSamplSpinBox->setMaximumWidth(9*ww);
   _cmbSamplSpinBox->setValue(settings.value("cmbSampl").toInt());
   _cmbSamplSpinBox->setSuffix(" sec");
