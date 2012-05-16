@@ -1142,7 +1142,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   QBoxLayout* uploadLayout = new QBoxLayout(QBoxLayout::TopToBottom);
   populateUploadTable();
 
-  uploadLayout->addWidget(new QLabel("Upload orbit/clock stream coming from Real-time Network Engine or upload orbit/clock combination stream."));
+  uploadLayout->addWidget(new QLabel("Upload RTCMv3 Broadcast Corrections to caster."));
   uploadLayout->addWidget(_uploadTable);
   uploadLayout->addLayout(uploadHlpLayout);
 
