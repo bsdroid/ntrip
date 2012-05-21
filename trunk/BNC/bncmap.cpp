@@ -1,10 +1,44 @@
-// ------------
-// author: jan dousa (jan.dousa@pecny.cz)
-// ------------
+// Part of BNC, a utility for retrieving decoding and
+// converting GNSS data streams from NTRIP broadcasters.
+//
+// Copyright (C) 2007
+// German Federal Agency for Cartography and Geodesy (BKG)
+// http://www.bkg.bund.de
+// Czech Technical University Prague, Department of Geodesy
+// http://www.fsv.cvut.cz
+//
+// Email: euref-ip@bkg.bund.de
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation, version 2.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+/* -------------------------------------------------------------------------
+ * BKG NTRIP Client
+ * -------------------------------------------------------------------------
+ *
+ * Class:      bncmap
+ *
+ * Purpose:    This class plots map from Ntrip source-table meta data
+ *
+ * Author:     J. Dousa, Pecny, Czech Republic
+ * Created:    21-may-2012
+ *
+ * Changes:
+ *
+ * -----------------------------------------------------------------------*/
  
 #include <iostream>
 #include "bncmap.h"
-
 
 // ------------
 bncMap::bncMap(QWidget* parent) : QDialog(parent)
@@ -179,8 +213,8 @@ void bncMap::slotFitFont()
   _mapScen->clear();
   slotCreateMap();
 
-  float fontsize  = _mapView->scale_rate();
-  float pointsize = _mapView->scale_rate();
+  float fontrate  = _mapView->scale_rate();
+  float pointrate = _mapView->scale_rate();
    
   QMapIterator<QString, QList<QVariant> >  it(_allNames);
   while( it.hasNext() ){  
@@ -195,22 +229,25 @@ void bncMap::slotFitFont()
      double basPT = tmp.at(2).toDouble();
      double basFT = tmp.at(3).toDouble();
      
-     float tmpPT = pointsize * basPT;
-     float tmpFT =  fontsize * basFT;
+     float tmpPT = pointrate * basPT;
+     float tmpFT =  fontrate * basFT;
      
-     QFont font(QFont("Arial", 2, 1));
+     if( fontrate > 1 ){
+       tmpPT = basPT;
+       tmpFT = basFT;
+     }
+     
+     QFont font(QFont("Arial",2));
            font.setPointSizeF( tmpFT );
+           font.setStretch(QFont::Unstretched);
+           font.setCapitalization(QFont::Capitalize);
 
      QGraphicsTextItem* nameItem = new QGraphicsTextItem( name );
      nameItem->setFont( font );
-     
-     if( floor(fontsize) < 1 ){
-       nameItem->setPos( la - 4.0 - floor(fontsize), fi - 5.0 - floor(fontsize) );
-     }else{
-       nameItem->setPos( la - 1.0 - floor(fontsize), fi - 4.0 - floor(fontsize) );
-     }
+    
+     nameItem->setPos( la - basFT, fi - basFT );
 
-     if( tmpPT < 0.25 ) tmpPT = 0.25;
+     if( tmpPT < 0.15 ) tmpPT = 0.15;
      pen.setWidthF(tmpPT);
 
     _mapScen->addItem( nameItem );
@@ -224,6 +261,7 @@ void bncMap::slotFitFont()
 void bncMap::slotZoomIn()
 {  
   _mapView->zoom( 1.2 );
+  slotFitFont();
 }
 
 
@@ -231,6 +269,7 @@ void bncMap::slotZoomIn()
 void bncMap::slotZoomOut()
 {  
   _mapView->zoom( 1/1.2 );
+  slotFitFont();
 }
 
 
@@ -251,7 +290,7 @@ void bncMap::slotNewPoint(QPointF point, QString name, QPen pen, double size)
     QList<QVariant> tmp;
     tmp << tmppoint      // QPoint
         << pen           // QPen
-        << size << 4.5;  // base pointsize, fontsize
+        << size << 4.5;  // base pointsize, fontrate
     _allNames.insert( name, tmp );
   }
 }
