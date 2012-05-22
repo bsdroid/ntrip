@@ -128,7 +128,6 @@ bncSettings::bncSettings() {
       setValue_p("postOutFile",         "");
       setValue_p("pppAntenna",          "");
       setValue_p("pppAntex",            "");
-      setValue_p("pppApplySatAnt",      "0");
       setValue_p("pppUsePhase",         "");
       setValue_p("pppEstTropo",         "");
       setValue_p("pppGLONASS",          "");

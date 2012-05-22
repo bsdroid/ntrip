@@ -414,10 +414,6 @@ bncWindow::bncWindow() {
   _pppPlotCoordinates->setCheckState(Qt::CheckState(
                                 settings.value("pppPlotCoordinates").toInt()));
 
-  _pppApplySatAntCheckBox = new QCheckBox();
-  _pppApplySatAntCheckBox->setCheckState(Qt::CheckState(
-                                settings.value("pppApplySatAnt").toInt()));
-
   connect(_pppMountLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
@@ -971,10 +967,6 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   ppp2Layout->addWidget(_pppAntennaLineEdit,                  ir, 5,1,3);
   ppp2Layout->addWidget(new QLabel("Antenna Name"),           ir, 8);
   ++ir;
-  ppp2Layout->addWidget(new QLabel("Antennas cont'd"),        ir, 0);
-  ppp2Layout->addWidget(_pppApplySatAntCheckBox,              ir, 1, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Apply Sat. Ant. Offsets"),ir, 2);
-  ++ir;
   ppp2Layout->addWidget(new QLabel("Basics"),                 ir, 0, 1, 5);
   ppp2Layout->addWidget(_pppUsePhaseCheckBox,                 ir, 1, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("Use phase obs"),          ir, 2);
@@ -1277,7 +1269,6 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
     "corrections not older than 'Sync Corr' seconds are available.<p>"));
   _pppAntexFileChooser->setWhatsThis(tr("<p>IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets and variations.</p>"));
   _pppAntennaLineEdit->setWhatsThis(tr("<p>Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Corrections for phase center variations are not yet applied by BNC. The specified name must consist of 20 characters. Add trailing blanks if the antenna name has less then 20 characters.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets.</p>"));
-  _pppApplySatAntCheckBox->setWhatsThis(tr("<p>This option is not yet working.</p><p>Satellite orbit and clock corrections refer to the satellite's antenna phase centers and hence observations are actually <u>not</u> to be corrected for satellite antenna phase center offsets. However, you may like to tick 'Apply Offsets' to force BNC to correct observations for satellite antenna phase center offsets.</p><p>Default is to <u>not</u> correct observations for satellite antenna phase center offsets."));
   _cmbTable->setWhatsThis(tr("<p>BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors coming from various providers. Hit the 'Add Row' button, double click on the 'Mountpoint' field to enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter the weight to be applied for this stream in the combination.<ul><li>Note that an appropriate 'Wait for full corr epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense there if the update rate of incoming clock corrections is i.e. 10 seconds.</li><li>Note also that you need to tick 'Use GLONASS' which is part ot the 'PPP (2)' panel in case you want to produce an GPS plus GLONASS combination.</li></ul></p><p>Note further that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p><p>The combination process requires Broadcast Ephemeris. Besides the orbit and clock corrections stream(s) BNC should therefore pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages.</p><p>It is possible to specify only one Broadcast Ephemeris corrections stream in the combination table. Instead of combining corrections BNC will then merge them with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format."));
   _cmbMaxresLineEdit->setWhatsThis(tr("<p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p></p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p><p>Default is a value of '999.0'.</p>"));
   _cmbSamplSpinBox->setWhatsThis(tr("<p>Specify a combination sampling interval. Clock and orbit corrections will be produced following that interval. A value of 10 sec may be an appropriate choice.</p>"));
@@ -1713,7 +1704,6 @@ void bncWindow::saveOptions() {
   settings.setValue("postOutFile",  _postOutLineEdit->text());
   settings.setValue("pppAntenna",      _pppAntennaLineEdit->text());
   settings.setValue("pppAntex",	       _pppAntexFileChooser->fileName());
-  settings.setValue("pppApplySatAnt", _pppApplySatAntCheckBox->checkState());
   settings.setValue("pppUsePhase", _pppUsePhaseCheckBox->checkState());
   settings.setValue("pppEstTropo", _pppEstTropoCheckBox->checkState());
   settings.setValue("pppGLONASS",  _pppGLONASSCheckBox->checkState());
@@ -2304,7 +2294,6 @@ void bncWindow::slotBncTextChanged(){
 
     bool enable4 = enable && !_pppAntexFileChooser->fileName().isEmpty();
     enableWidget(enable4, _pppAntennaLineEdit);
-    enableWidget(enable4, _pppApplySatAntCheckBox);
 
     bool enable5 = enable && _pppEstTropoCheckBox->isChecked();
     enableWidget(enable5, _pppSigTrp0);
