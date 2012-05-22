@@ -247,7 +247,6 @@ This chapter describes how to set the BNC program options. It explains the top m
 &nbsp; &nbsp; &nbsp; 3.12.6 <a href=#ppprecant>Antennas</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.6.1 <a href=#pppantex>ANTEX File</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.6.2 <a href=#ppprecantenna>Antenna Name</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.6.3 <a href=#pppsatant>Apply Satellite Antenna Offsets</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.7 <a href=#pppbasics>Basics</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.7.1 <a href=#pppphase>Use Phase Obs</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.7.2 <a href=#ppptropo>Estimate Tropo</a><br>
@@ -1497,16 +1496,6 @@ Specify the receiver's antenna name as defined in your ANTEX file. Observations 
 </p>
 <p>
 Default is an empty option field, meaning that you don't want to correct observations for antenna phase center offsets.
-</p>
-
-<p><a name="pppsatant"><h4>3.12.6.3 Apply Satellite Antenna Offsets - optional if 'ANTEX File' is set</h4></p>
-<p>
-BNC allows correcting observations for satellite antenna phase center offsets. (This option is not yet implemented.)
-</p><p>
-Satellite orbit and clock corrections refer to the satellite's antenna phase centers and hence observations are <u>not</u> to be corrected for satellite antenna phase center offsets. Tick 'Apply Sat. Ant. Offsets' to force BNC to correct observations for satellite antenna phase center offsets.
-</p>
-<p>
-Default is to <u>not</u> correct observations for satellite antenna phase center offsets.
 </p>
 
 <p><a name="pppbasics"><h4>3.12.7 Basics</h4></p>
