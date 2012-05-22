@@ -2323,9 +2323,9 @@ void bncWindow::slotBncTextChanged(){
     bool enable10 = _reqcActionComboBox->currentText() == "Edit/Concatenate";
     enableWidget(enable &&  enable10, _reqcEditOptionButton);
     enableWidget(enable,              _reqcObsFileChooser);
-    enableWidget(enable,              _reqcNavFileChooser);
+    enableWidget(false ,              _reqcNavFileChooser); // TODO
     enableWidget(enable &&  enable10, _reqcOutObsLineEdit);
-    enableWidget(enable &&  enable10, _reqcOutNavLineEdit);
+    enableWidget(false  &&  enable10, _reqcOutNavLineEdit); // TODO
     enableWidget(enable && !enable10, _reqcOutLogLineEdit);
   }
 
