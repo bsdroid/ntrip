@@ -1413,7 +1413,7 @@ Specify a Broadcast Ephemeris 'Corrections Mountpoint' from the list of selected
 Enter the reference coordinate XYZ of the receiver's position in meters if known. This option makes only sense for static observations. Default are empty option fields, meaning that the antenna's XYZ position is unknown. 
 </p>
 <p>
-Once XYZ coordinate components are defined, the 'PPP' line in BNC's logfile is extended by Nort, East and Up displacements to (example):
+Once a XYZ coordinate is defined, the 'PPP' line in BNC's logfile is extended by Nort, East and Up displacements to (example):
 </p>
 <pre>
 10-08-09 06:01:56 FFMJ1  PPP 06:02:09.0 11    4053457.628 +-  2.639     617729.438 +-  1.180    4869396.447 +-  1.921  NEU   -0.908   -0.571    1.629
@@ -1568,12 +1568,12 @@ Entering any positive value up to 1440 (24h mean value) is allowed. An empty opt
 
 <p><a name="pppquick"><h4>3.12.7.7 Quick-Start - optional if XYZ is set</h4></p>
 <p>
-Enter the lenght of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate. Constraining coordinate components is done in BNC through setting the 'XYZ White Noise' temporarily to zero.
+Enter the lenght of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate. Constraining coordinates is done in BNC through setting the 'XYZ White Noise' temporarily to zero.
 </p>
 <p>
-This so-called Quick-Start option allows the PPP solutions to rapidly converge after startup. It requires that the antenna remains unmoved on the know position throughout the defined period. A value of 120 (default) is likely to be an appropriate choice for 'Quick-Start'
+This so-called Quick-Start option allows the PPP solutions to rapidly converge after startup. It requires that the antenna remains unmoved on the know position throughout the defined period. A value of 60 is likely to be an appropriate choice for 'Quick-Start'. Default is an empty option field, meaning that you don't want BNC to start in 'Quick-Start' mode.
 <p>
-You may need to create your own reference coordinate through running BNC for an hour in normal mode before applying the Quick-Start option. Don't forget to introduce a realistic sigma 'XYZ Ini' according to the coordinate's precision.
+You may need to create your own reference coordinate through running BNC for an hour in normal mode before applying the 'Quick-Start' option. Don't forget to introduce a realistic sigma 'XYZ Ini' according to the coordinate's precision.
 </p>
 
 <p><img src="IMG/screenshot17.png"/></p>
@@ -1584,10 +1584,10 @@ You may need to create your own reference coordinate through running BNC for an 
 
 <p><a name="pppgap"><h4>3.12.7.8 Maximal Solution Gap - optional if Quick-Start is set</h4></p>
 <p>
-Specify a 'Maximum Solution Gap' in seconds. Should the time span between two consecutive solutions exceed this limit, the algorithm returns into the Quick-Start mode and fixes the introduced reference coordinate for the specified Quick-Start period. A value of '120' seconds could be an appropriate choice.
+Specify a 'Maximum Solution Gap' in seconds. Should the time span between two consecutive solutions exceed this limit, the algorithm returns into the 'Quick-Start' mode and fixes the introduced reference coordinate for the specified 'Quick-Start' period. A value of '60' seconds could be an appropriate choice.
 </p>
 <p>
-This option makes only sense for a stationary operated receiver where solution convergence can be enforced because a good approximation for the rover position is known. Default is an empty option field, meaning that you don't want BNC to return into the Quick-Start mode after failures caused i.e. by longer lasting outages.
+This option makes only sense for a stationary operated receiver where solution convergence can be enforced because a good approximation for the rover position is known. Default is an empty option field, meaning that you don't want BNC to return into the 'Quick-Start' mode after failures caused i.e. by longer lasting outages.
 </p>
 
 <p><a name="pppsigmas"><h4>3.12.8 Sigmas</h4></p>
@@ -1597,14 +1597,14 @@ You may like to introduce specific sigmas for code and phase observations and fo
 
 <p><a name="pppsigc"><h4>3.12.8.1 Code - mandatory if 'Use Phase Obs' is set</h4></p>
 <p>
-When 'Use phase obs' is set in BNC, the PPP solution will be carried out using both, code and phase observations. A sigma of 5.0 m for code observations and a sigma of 0.02 m for phase observations (defaults) are used to combine both types of observations. As the convergence characteristic of a PPP solution can be influenced by the ratio of the sigmas for code and phase, you may like to introduce you own sigmas for code and phase observations which differ from the default values.
+When 'Use phase obs' is set in BNC, the PPP solution will be carried out using both, code and phase observations. A sigma of 10.0 m for code observations and a sigma of 0.02 m for phase observations (defaults) are used to combine both types of observations. As the convergence characteristic of a PPP solution can be influenced by the ratio of the sigmas for code and phase, you may like to introduce you own sigmas for code and phase observations which differ from the default values.
 <ul>
-<li>Introducing a smaller sigma (higher accuracy) for code observations or a larger sigma for phase observations leads to better results shortly after program start. However, it may take more time till you finally get the best possible solutions.</li>
+<li>Introducing a smaller sigma (higher accuracy) for code observations or a larger sigma for phase observations leads to better results shortly after program start. However, it may take more time till you finally get the best possible solution.</li>
 <li>Introducing a larger sigma (lower accuracy) for code observations or a smaller sigma for phase observations may lead to less accurate results shortly after program start and thus a prolonged period of convergence but could provide better positions in the long run.</li>
 </ul>
 </p>
 <p>
-Specify a sigma for code observations. Default is 5.0 m.
+Specify a sigma for code observations. Default is 10.0 m.
 </p>
 
 <p><a name="pppsigp"><h4>3.12.8.2 Phase - mandatory if 'Use Phase Obs' is set</h4></p>
@@ -1614,12 +1614,12 @@ Specify a sigma for phase observations. Default is 0.02 m.
 
 <p><a name="pppsigxyzi"><h4>3.12.8.3 XYZ Init - mandatory</h4></p>
 <p>
-Enter a sigma in meters for the initial XYZ coordinate components. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode.
+Enter a sigma in meters for the initial XYZ coordinate. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode.
 </p>
 
 <p><a name="pppsigxyzn"><h4>3.12.8.4 XYZ White Noise - mandatory</h4></p>
 <p>
-Enter a sigma in meters for the 'White Noise' of estimated XYZ coordinate components. A value of 100.0 (default) may be appropriate considering the potential movement of a rover.
+Enter a sigma in meters for the 'White Noise' of estimated XYZ coordinate components. A value of 100.0 (default) may be appropriate when considering possible sudden movements of a rover.
 </p>
 
 <p><a name="pppsigtrpi"><h4>3.12.8.5 Tropo Init - mandatory if 'Estimate tropo' is set</h4></p>
@@ -1634,7 +1634,7 @@ Enter a sigma in meters per second to describe the expected variation of the tro
 
 <p><a name="combi"><h4>3.13. Combine Corrections</h4></p>
 <p>
-BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of Broadcast Corrections from various providers. It is so far only the satellite clock corrections which are combined while orbit corrections in the combination product as well as the product update rates are just taken over from one of the incoming Broadcast Correction streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach. The clock combination can be based either on a plain 'Single-Epoch' or on a 'Kalman' Filter approach.
+BNC allows to process several orbit and clock correction streams in real-time to produce, encode, upload and save a combination of Broadcast Corrections from various providers. It is so far only the satellite clock corrections which are combined while orbit corrections in the combination product as well as the product update rates are just taken over from one of the incoming Broadcast Correction streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach. The clock combination can be based either on a plain 'Single-Epoch' or on a 'Kalman' Filter approach.
 </p>
 <p>
 In the Kalman Filter approach satellite clocks estimated by individual Analyses Centers (ACs) are used as pseudo observations within the adjustment process. Each observation is modeled as a linear function (actually a simple sum) of three estimated parameters: AC specific offset, satellite specific offset common to all ACs, and the actual satellite clock correction which represents the result of the combination. These three parameter types differ in their statistical properties. The satellite clock offsets are assumed to be static parameters while AC specific and satellite specific offsets are stochastic parameters with appropriate white noise.
@@ -1646,33 +1646,33 @@ Removing the AC-dependent biases as well as possible is a major issue with clock
 <p>
 In view of IGS real-time products, the 'Combine Corrections' functionality has been integrated in BNC because
 <ul>
-<li>the software with its Graphic User Interface and wide range of supported Operation Systems represents a perfect platform to process many Broadcast Correction streams in parallel;</li>
+<li>the software with its Graphic User Interface and wide range of supported Operating Systems represents a perfect platform to process many Broadcast Correction streams in parallel;</li>
 <li>outages of single AC product streams can be mitigated through merging several incoming streams into a combined product;</li>
 <li>generating a combination product from several AC products allows detecting and rejecting outliers;</li> 
 <li>a Combination Center (CC) can operate BNC to globally disseminate a combination product via NTRIP broadcast;</li>
 <li>an individual AC could prefer to disseminate a stream combined from primary and backup IT resources to reduce outages;</li>
 <li>it enables a BNC PPP user to follow his own preference in combining streams from individual ACs for Precise Point Positioning;</li>
-<li>it allows an instantaneous quality control of the combination process not only in the time domain but also in the space domain; this can be done through direct application of the combination stream in a PPP solution even without prior stream upload to an NTRIP Broadcaster;</li>
-<li>it provides the means to output SP3 files containing precise orbit and clock information for further processing using other tools than BNC.</li>
+<li>it allows an instantaneous quality control of the combination process not only in the time domain but also in the space domain; this can be done through direct application of the combined stream in a PPP solution even without prior upload to an NTRIP Broadcaster;</li>
+<li>it provides the means to output SP3 and Clock RINEX files containing precise orbit and clock information for further processing using other tools than BNC.</li>
 </ul>
 </p>
 <p>
-Note that the combination process requires real-time access to Broadcast Ephemeris. So, in addition to the orbit and clock corrections streams BNC must pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages. Stream 'RTCM3EPH' on caster <u>products.igs-ip.net</u> is an example for that.
-</p>
-<p>
-A combination is carried out following a specified sampling interval. If incoming streams have different rates, only epochs that correspond to the sampling interval are used.
+Note that the combination process requires real-time access to Broadcast Ephemeris. So, in addition to the orbit and clock correction streams BNC must pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages. Stream 'RTCM3EPH' on caster <u>products.igs-ip.net</u> is an example for that.
 </p>
 <p>
 Note further that you need to tick the 'Use GLONASS' option which is part ot the 'PPP (2)' panel in case you want to produce an GPS plus GLONASS combination.
 </p>
 <p>
-With respect to IGS, it is important to understand that a major effect in the combination of GNSS orbit and clock corrections streams is the selection of ACs to include. It is likely that a combination product could be improved in accuracy by using only the best two or three ACs. However, with only a few  ACs to depend on, the reliability of the combination product could suffer and the risk of total failures increases. So there is an important tradeoff here that must be considered when selecting streams for a combination. The major strength of a combination product is its reliability and stable median performance which can be much better than that of any single AC product.
+A combination is carried out following a specified sampling interval. If incoming streams have different rates, only epochs that correspond to the sampling interval are used.
+</p>
+<p>
+With respect to IGS, it is important to understand that a major effect in the combination of GNSS orbit and clock correction streams is the selection of ACs to include. It is likely that a combination product could be improved in accuracy by using only the best two or three ACs. However, with only a few  ACs to depend on, the reliability of the combination product could suffer and the risk of total failures increases. So there is an important tradeoff here that must be considered when selecting streams for a combination. The major strength of a combination product is its reliability and stable median performance which can be much better than that of any single AC product.
 </p>
 <p>
 This comment applies in situations where we have a limited number of solutions to combine and their quality varies significantly. The situation may be different when the total number of ACs is larger and the range of AC variation is smaller. In that case, a standard full combination is probably the best. 
 </p>
 <p>
-The following recursive algorithm is used to detect orbit outliers in the Kalman Filter combination when corrections are provided by several ACs:
+The following recursive algorithm is used to detect orbit outliers in the Kalman Filter combination when Broadcast Corrections are provided by several ACs:
 <br>
 Step 1: We don't produce a combination for a certain satellite if only one AC provides corrections for it.
 <br>
@@ -1682,18 +1682,15 @@ Step 3: For each AC and satellite the 3D distance between individual and mean sa
 <br>
 Step 4: We find the greatest difference between AC specific and mean satellite positions.
 <br>
-Step 5: If that is less than 0.2 m the conclusion is that we don't have an outlier and can proceed to the next epoch.
+Step 5: If that is less than a threshold, the conclusion is that we don't have an outlier and can proceed to the next epoch.
 <br>
-Step 6: If that is greater 0.2 m then corrections of the affiliated AC are ignored for the affected epoch and the outlier detection restarts with step 1.
+Step 6: If that is greater than a threshold, then corrections of the affiliated AC are ignored for the affected epoch and the outlier detection restarts with step 1.
 </p>
 <p>
 Note that BNC can produce an internal PPP solution from combined Broadcast Corrections. For that you have to  specify the keyword 'INTERNAL' as 'Corrections Mounpoint' in the PPP (1) panel.
 </p>
 <p>
-Note further that the combination procedure in BNC also - formally - works with only one Broadcast Corrections stream specified for combination. 
-</p>
-<p>
-The part of BNC which enables the combination of orbit and clock corrections streams is not intended for publication under GNU General Public License (GPL). However, pre-compiled BNC binaries which support the 'Combine Corrections' option will be available for personal usage.
+The part of BNC which enables the combination of Broadcast Corrections is not intended for publication under GNU General Public License (GPL). However, pre-compiled BNC binaries which support the 'Combine Corrections' option are made available.
 </p>
 
 <p><a name="combimounttab"><h4>3.13.1 Combine Corrections Table - optional</h4></p>
@@ -1701,24 +1698,24 @@ The part of BNC which enables the combination of orbit and clock corrections str
 Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadcast Corrections mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. The stream processing can already be started with only one corrections stream configured for combination.
 </p>
 <p>
-Note that an appropriate 'Wait for full corr epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. To give an example: a value of '15' sec would make sense if the update rate of incoming clock corrections is 10 sec.
+Note that an appropriate 'Wait for full corr epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. To give an example: a value of 15 sec would make sense if the update rate of incoming clock corrections is 10 sec.
 </p>
 <p>
-The sequence of entries in the 'Combine Corrections Table' is not of importance. Note that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p>
+The sequence of entries in the 'Combine Corrections' table is not of importance. Note that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p>
 <p>
-Default is an empty 'Combine Corrections Table' meaning that you don't want BNC to combine orbit and clock corrections streams.
+Default is an empty 'Combine Corrections' table meaning that you don't want BNC to combine orbit and clock correction streams.
 </p>
 <p>
-It is possible to specify only one Broadcast Ephemeris corrections stream in the 'Combine Corrections Table'. Instead of combining corrections from several sources BNC will then merge the single corrections stream with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format when specified accordingly under the 'Upload Corrections' tab.
+It is possible to specify only one Broadcast Ephemeris corrections stream in the 'Combine Corrections' table. Instead of combining corrections from several sources BNC will then merge the single corrections stream with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format when specified accordingly under the 'Upload Corrections' tab.
 </p>
 
 <p><a name="combiadd"><h4>3.13.1.1 Add Row, Delete - optional</h4></p>
 <p>
-Hit 'Add Row' button to add another row to the 'Combine Corrections Table' or hit the 'Delete' button to delete the highlighted row(s).
+Hit 'Add Row' button to add another row to the 'Combine Corrections' table or hit the 'Delete' button to delete the highlighted row(s).
 </p>
 
 <p>
-The following screenshots describe an example setup of BNC when combining Broadcast Correction streams and upload them to an NTRIP Broadcaster. Note that it requires specifying options under tabs 'Combine Corrections' and 'Upload Corrections'. The example uses the combination product to simultaneously carry out an 'INTERNAL' PPP solution in Quickstart mode which allows monitoring the quality of the combination product in the space domain. 
+The following screenshots describe an example setup of BNC when combining Broadcast Correction streams and uploading them to an NTRIP Broadcaster. Note that it requires specifying options under tabs 'Combine Corrections' and 'Upload Corrections'. The example uses the combination product to simultaneously carry out an 'INTERNAL' PPP solution in 'Quick-Start' mode which allows monitoring the quality of the combination product in the space domain. 
 </p>
 
 <br>
@@ -1731,18 +1728,18 @@ The following screenshots describe an example setup of BNC when combining Broadc
 <p><img src="IMG/screenshot23.png"/></p>
 <p><u>Figure 17:</u> 'INTERNAL' PPP with BNC using combined Broadcast Corrections stream.</p>
 
-<p><a name="combimethod"><h4>3.13.1.2 Method - mandatory if 'Combine Corrections Table' is populated</h4></p>
+<p><a name="combimethod"><h4>3.13.1.2 Method - mandatory if 'Combine Corrections' table is populated</h4></p>
 <p>
-Select a clock combination method. Available options are Kalman 'Filter' and 'Single-Epoch. It is suggested to use the Kalman Filter approach in case the combined stream of Broadcast Corrections is intended for Precise Point Positioning support.
+Select a clock combination method. Available options are Kalman 'Filter' and 'Single-Epoch. It is suggested to use the Kalman Filter approach in case the combined stream of Broadcast Corrections is intended for Precise Point Positioning.
 </p>
 
-<p><a name="combimax"><h4>3.13.1.3 Maximal Residuum - mandatory if 'Combine Corrections Table' is populated</h4></p>
+<p><a name="combimax"><h4>3.13.1.3 Maximal Residuum - mandatory if 'Combine Corrections' table is populated</h4></p>
 
 <p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p>
 </p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p>
 <p>Default is a 'Maximal Residuum' of 999.0 meters</p>
 
-<p><a name="combismpl"><h4>3.13.1.4 Sampling - mandatory if 'Combine Corrections Table' is populated</h4></p>
+<p><a name="combismpl"><h4>3.13.1.4 Sampling - mandatory if 'Combine Corrections' table is populated</h4></p>
 <p>Specify a combination sampling interval. Clock and orbit corrections will be produced following that interval. A value of 10 sec may be an appropriate choice.</p>
 
 
@@ -1752,11 +1749,11 @@ BNC can upload streams carrying orbit and clock corrections to Broadcast Ephemer
 <li>
 either generated by BNC as a combination of several individual Broadcast Correction streams coming from an number of real-time Analysis Centers (ACs), see section 'Combine Corrections',</li>
 <li>
-or generated by BNC because the program receives an ASCII stream of precise satellite orbits and clocks via IP port from a connected real-time GNSS engine. Such a stream would be expected in a plain ASCII format and the associated 'decoder' string would have to be 'RTNET'. </li>
+or generated by BNC while the program receives an ASCII stream of precise satellite orbits and clocks via IP port from a connected real-time GNSS engine. Such a stream would be expected in a plain ASCII format and the associated 'decoder' string would have to be 'RTNET', see format description below. </li>
 </ol>
 The procedure taken by BNC to generate the clock and orbit corrections to Broadcast Ephemeris and upload them to an NTRIP Broadcaster is as follow:
 <ul>
-<li>Continuously receive up-to-date Broadcast Ephemeris carrying approximate orbits and clocks for all satellites. Read new Broadcast Ephemeris immediately whenever they become available. This information may come via a stream of RTCM messages generated from a BNC instance.</li>
+<li>Continuously receive up-to-date Broadcast Ephemeris carrying approximate orbits and clocks for all satellites. Read new Broadcast Ephemeris immediately whenever they become available. This information may come via a stream of RTCM messages generated from another BNC instance.</li>
 </ul>
 Then, epoch by epoch: 
 <ul>
@@ -1764,9 +1761,9 @@ Then, epoch by epoch:
 <li>Calculate XYZ coordinates from Broadcast Ephemeris orbits. </li>
 <li>Calculate differences dX,dY,dZ between Broadcast Ephemeris and IGS08 orbits. </li>
 <li>Transform these differences into radial, along-track and cross-track corrections to Broadcast Ephemeris orbits. </li>
-<li>Calculate corrections to Broadcast Ephemeris clocks as differences between Broadcast Ephemeris and IGS08 clocks. </li>
+<li>Calculate corrections to Broadcast Ephemeris clocks as differences between Broadcast Ephemeris clocks and IGS08 clocks. </li>
 <li>Encode Broadcast Ephemeris clock and orbit corrections in RTCM Version 3 format. </li>
-<li>Upload corrections stream to NTRIP Broadcaster. </li>
+<li>Upload Broadcast Corrections stream to NTRIP Broadcaster. </li>
 </ul>
 <p>
 The orbit and clock corrections to Broadcast Ephemeris are usually referred to the latest set of broadcast messages, which are generally also received in real-time by a GNSS rover. However, the use of the latest broadcast message is delayed for a period of 60 seconds, measured from the time of complete reception of ephemeris and clock parameters, in order to accommodate rover applications to obtain the same set of broadcast orbital and clock parameters. This procedure is recommended in the RTCM SSR standard.
@@ -2013,7 +2010,7 @@ As an SP3 file contents should be referred to the satellites Center of Mass (CoM
 The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'. Note that clocks in the SP3 orbit files are not corrected for the conventional periodic relativistic effect.
 </p>
 <p>
-In case the 'Combine Corrections Table' contains only one Broadcast Corrections stream, BNC will merge that stream with Broadcast Ephemeris to save results in files specified here through SP3 and/or Clock RINEX file path. In such a case you have to define only the SP3 and Clock RINEX file path and no further options in the 'Upload Corrections' table.
+In case the 'Combine Corrections' table contains only one Broadcast Corrections stream, BNC will merge that stream with Broadcast Ephemeris to save results in files specified here through SP3 and/or Clock RINEX file path. In such a case you have to define only the SP3 and Clock RINEX file path and no further options in the 'Upload Corrections' table.
 </p>
 
 <p><a name="uprinex"><h4>3.14.6 RNX File - optional</h4></p>
@@ -2766,11 +2763,11 @@ The purpose of this configuration is Precise Point Positioning from observations
 </li>
 <br>
 <li>File 'QuickStartPPP.bnc'<br>
-The purpose of this configuration is Precise Point Positioning in QuickStart mode from observations of a static receiver with precisely known position. The configuration reads RTCM Version 3 observations, orbit and clock correctors and a Broadcast Ephemeris stream. Positions are saved in NMEA format on disc and output through IP port for real-time visualization with tools like RTKNAVI.
+The purpose of this configuration is Precise Point Positioning in Quick-Start mode from observations of a static receiver with precisely known position. The configuration reads RTCM Version 3 observations, orbit and clock correctors and a Broadcast Ephemeris stream. Positions are saved in NMEA format on disc and output through IP port for real-time visualization with tools like RTKNAVI.
 </li>
 <br>
 <li>File 'PPPPostProc.bnc<br>
-The purpose of this configuration is Precise Point Positioning in Post Processing mode. BNC reads a RINEX Observation and a RINEX  Version 3 Navigation files and a Broadcast Corrections files. PPP processing otions are set in support of the QuickStart mode. The output is saved in a specific Post Processing logfile and contains the coordinates derived over time following the implemented PPP filter algorithm.
+The purpose of this configuration is Precise Point Positioning in Post Processing mode. BNC reads a RINEX Observation and a RINEX  Version 3 Navigation files and a Broadcast Corrections files. PPP processing otions are set in support of the Quick-Start mode. The output is saved in a specific Post Processing logfile and contains the coordinates derived over time following the implemented PPP filter algorithm.
 </li>
 <br>
 <li>File 'Sp3.bnc'<br>
