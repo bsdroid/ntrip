@@ -161,7 +161,6 @@ class bncWindow : public QMainWindow {
     QCheckBox* _pppGalileoCheckBox;
     QLineEdit* _pppAntennaLineEdit;
     qtFileChooser* _pppAntexFileChooser;
-    QCheckBox* _pppApplySatAntCheckBox;
 
     qtFileChooser* _postObsFileChooser;
     qtFileChooser* _postNavFileChooser;
