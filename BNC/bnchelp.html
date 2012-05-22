@@ -634,7 +634,7 @@ When converting RINEX Version 2 to RINEX Version 3, the tracking mode or channel
 <li>If several observations in RINEX Version 3 come with the same observation type and same band/frequency but different tracking modes, BNC uses only the one provided first for creating RINEX Version 2 while ignoring others.</li>
 </ul>
 </p>
-<p>Optionally you may specify a comment line text to be added to the emerging new RINEX file header. Any introduction of a newline through '\n' in this enforces the beginning of a further comment line. Comment line(s) will be added to the header immediately after the 'PGM / RUN BY / DATE' record. Default is an empty option field meaning that no additional comment line will be added to the RINEX header.</p>
+<p>Optionally you may specify a comment line text to be added to the emerging new RINEX file header. Any introduction of a newline through '\n' in this enforces the beginning of a further comment line. Comment line(s) will be added to the header immediately after the 'PGM / RUN BY / DATE' record. Default is an empty option field, meaning that no additional comment line will be added to the RINEX header.</p>
   <p>Specifying a 'RUN BY' string to be included in the emerging new RINEX file header is another option. Default is an empty option field meanig the operator's ID is automatically used as 'RUN BY' string.</p>
 <p>
 If you specify a 'New' but no 'Old' marker/antenna/receiver name, the corresponding data field in the emerging new RINEX file will be filled accordingly. If you in addition specify an 'Old' marker/antenna/receiver name, the corresponding data field in the emerging new RINEX file will only be filled accordingly where 'Old' specifications match existing file contents.
@@ -1485,7 +1485,7 @@ BNC allows to correct observations for antenna phase center offsets and variatio
 IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.
 </p>
 <p>
-Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets and variations.
+Default is an empty option field, meaning that you don't want to correct observations for antenna phase center offsets and variations.
 </p>
 
 <p><a name="ppprecantenna"><h4>3.12.6.2 Receiver Antenna Name - optional if 'ANTEX File' is set</h4></p>
@@ -1498,7 +1498,7 @@ Specify the receiver's antenna name as defined in your ANTEX file. Observations 
 </pre>
 </p>
 <p>
-Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets.
+Default is an empty option field, meaning that you don't want to correct observations for antenna phase center offsets.
 </p>
 
 <p><a name="pppsatant"><h4>3.12.6.3 Apply Satellite Antenna Offsets - optional if 'ANTEX File' is set</h4></p>
@@ -1842,8 +1842,8 @@ Having an empty 'Upload Table' is default and means that you don't want BNC to u
 <p>Specify the domain name or IP number of an NTRIP Broadcaster for uploading the stream. Furthermore, specify the caster's listening IP port, an upload mountpoint and an upload password. Note that NTRIP Broadcasters are often configured to provide access on more than one port, usually port 80 and 2101. If you experience communication problems on port 80, you should try to use the alternative port(s).
 </p>
 <p>
-BNC uploads a stream to the Caster by referring to a dedicated mountpoint that has been set by the Caster operator. Specify here the mountpoint based on the details you received for your stream from the operator. It is often a four character ID (capital letters) plus an integer number.</p>
-<p>The stream upload may be protected through an upload 'Password'. Enter the password you received from the Caster operator along with the mountpoint(s).</p>
+BNC uploads a stream to the NNTRIP Broadcaster by referring to a dedicated mountpoint that has been set by its operator. Specify here the mountpoint based on the details you received for your stream from the operator. It is often a four character ID (capital letters) plus an integer number.</p>
+<p>The stream upload may be protected through an upload 'Password'. Enter the password you received from the NTRIP Broadcaster operator along with the mountpoint(s).</p>
 <p>
 If 'Host', 'Port', 'Mountpoint' and 'Password' are set, the stream will be encoded in RTCM's 'State Space Representation' (SSR) messages and uploaded to the specified broadcaster following the NTRIP Version 1 transport protocol. 
 </p>
@@ -1867,7 +1867,7 @@ BNC allows to configure several Broadcast Correction streams for upload so that 
 BNC only transforms the original IGS08 <u>orbits</u> in the Broadcast Corrections stream to a target reference system while leaving the clocks unchanged. From a theoretical point of view this leads to inconsistencies between orbits and clocks and is therefore not allowed. However, it has been shown by Huisman et al. 2012 that as long as involved scale parameters are small enough, this way of transforming corrections stream contents only leads to height biases less than about one centimeter. With regards to the systems listed above, the approach has therefore been implemented in BNC for practical reasons.
 </p>
 <p>
-The transformation to GDA94 is an exception in this because it involves a ten times higher scale parameter compared to the other transformation implementations. Note that hence the resulting height biases for a BNC-transformed GDA94 corrections stream can increase up to about 10 centimeters.
+The transformation to <u>GDA94 is an exception</u> in this because it involves a ten times higher scale parameter compared to the other transformations. Note that hence the resulting height biases for a BNC-transformed GDA94 corrections stream can increase up to about 10 centimeters.
 </p>
 
 <p>
@@ -2001,7 +2001,7 @@ BNC allows to either refer Broadcast Corrections to the satellite's Center of Ma
 <p><a name="upsp3"><h4>3.14.5 SP3 File - optional</h4></p>
 <p>Specify a path for saving the generated orbit corrections as SP3 orbit files. If the specified directory does not exist, BNC will not create SP3 orbit files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p>
 <p>
-Default is an empty option field meaning that you don't want BNC to save the uploaded stream contents in daily SP3 files.
+Default is an empty option field, meaning that you don't want BNC to save the uploaded stream contents in daily SP3 files.
 </p>
 <p>
 As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while Broadcast Corrections are referred to the satellites APC, an offset has to be applied which is available from an IGS ANTEX file (see section 'ANTEX File'). You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save the stream contents in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs. 
@@ -2010,7 +2010,7 @@ As an SP3 file contents should be referred to the satellites Center of Mass (CoM
 The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'. Note that clocks in the SP3 orbit files are not corrected for the conventional periodic relativistic effect.
 </p>
 <p>
-In case the 'Combine Corrections' table contains only one Broadcast Corrections stream, BNC will merge that stream with Broadcast Ephemeris to save results in files specified here through SP3 and/or Clock RINEX file path. In such a case you have to define only the SP3 and Clock RINEX file path and no further options in the 'Upload Corrections' table.
+In case the 'Combine Corrections' table contains only one Broadcast Corrections stream, BNC will merge that stream with Broadcast Ephemeris to save results in files specified here through SP3 and/or Clock RINEX file path. In such a case you have to define only the SP3 and Clock RINEX file path and no further option in the 'Upload Corrections' table.
 </p>
 
 <p><a name="uprinex"><h4>3.14.6 RNX File - optional</h4></p>
@@ -2030,7 +2030,7 @@ Select the length of Clock RINEX files and SP3 Orbit files. The default value is
 </p>
 
 <p><a name="upclksmpl"><h4>3.14.8 Sampling - mandatory if 'Upload Table' entries specified</h4></p>
-<p>BNC requires an orbit corrections sampling interval for the stream to be uploaded and sampling interval for SP3 and Clock RINEX files. The outgoing stream's clock correction sampling interval follows that of incoming corrections and is therefore nothing to be specified here.</p>
+<p>BNC requires an orbit corrections sampling interval for the stream to be uploaded and sampling intervals for SP3 and Clock RINEX files. The outgoing stream's clock correction sampling interval follows that of incoming corrections and is therefore nothing to be specified here.</p>
 
 <p><a name="upclkorb"><h4>3.14.8.1 Orbits - mandatory if 'Upload Table' entries specified</h4></p>
 <p>Select the stream's orbit correction sampling interval in seconds. A value of 60 sec may be appropriate. A value of zero '0' tells BNC to upload all available samples.</p>
@@ -2066,8 +2066,8 @@ port 80 and 2101. If you experience communication problems on port 80, you shoul
 
 <p><a name="brdcmount"><h4>3.15.2 Mountpoint &amp; Password - mandatory if 'Host' is set</h4></p>
 <p>
-BNC uploads a stream to the Caster by referring to a dedicated mountpoint that has been set by the Caster operator. Specify the mountpoint based on the details you received for your stream from the operator. It is often a four character ID (capital letters) plus an integer number.</p>
-<p>The stream upload may be protected through an upload 'Password'. Enter the password you received from the Caster operator along with the mountpoint(s).</p>
+BNC uploads a stream to the NTRIP Broadcaster by referring to a dedicated mountpoint that has been set by its operator. Specify the mountpoint based on the details you received for your stream from the operator. It is often a four character ID (capital letters) plus an integer number.</p>
+<p>The stream upload may be protected through an upload 'Password'. Enter the password you received from the NTRIP Broadcaster operator along with the mountpoint.</p>
 </p>
 
 <p><a name="brdcsmpl"><h4>3.15.3 Sampling - mandatory if 'Host' is set</h4></p>
