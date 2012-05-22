@@ -2,7 +2,7 @@
 <h3>BKG Ntrip Client (BNC) Version 2.6 Manual</h3>
 
 <p>
-The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing real-time GNSS data streams from NTRIP Broadcasters like
+The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing real-time GNSS data streams. It has been developed within the framework of the IAG subcommission for Europe (EUREF) and the International GNSS Service (IGS). Although meant as a real-time tool, it comes with some Post Processing functionality. You may like to use it for data coming from NTRIP Broadcasters like
 </p>
 <p>
 <u>http://www.euref-ip.net/home</u>,<br>
@@ -10,20 +10,9 @@ The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding,
 <u>http://products.igs-ip.net/home</u>, or<br>
 <u>http://mgex.igs-ip.net/home</u>. 
 </p>
-<p>
-Although actually meant as a real-time tool, it comes with some limited  Post Processing functionality.
-</p>
 
 <p>
-BNC has been developed for the Federal Agency for Cartography and Geodesy (BKG) within the framework of the IAG subcommission for Europe (EUREF) and the International GNSS Service (IGS).
-</p>
-
-<p>
-BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, 32-bit Linux, 64-bit Linux (compiled under -m32 32-bit compatibility mode), Solaris, and Mac systems. We used the MinGW Version 4.4.0 compiler to create the Windows binary. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.7.3 are installed.
-</p>
-
-<p>
-Please ensure that you have installed the latest version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u>. Feel free to send us comments, suggestions, or bug reports to [euref-ip@bkg.bund.de] or [igs-ip@bkg.bund.de].
+BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, 32-bit Linux, 64-bit Linux (compiled under -m32 32-bit compatibility mode), Solaris, and Mac systems. We used the MinGW Version 4.4.0 compiler to create the Windows binary. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.7.3 are installed. Please ensure that you have installed the latest version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u> and feel free to send us your comments, suggestions or bug reports.
 </p>
 
 <p><b>Contents</b><br>
@@ -36,11 +25,23 @@ Please ensure that you have installed the latest version of BNC available from <
 
 <p>
 <b><a name="authors">Authors</b><br>
-The BKG Ntrip Client (BNC) Qt Graphic User Interface (GUI) has been developed for the Federal Agency for Cartography and Geodesy (BKG) by
+The BKG Ntrip Client (BNC) and its Qt Graphic User Interface (GUI) has been developed for
 </p>
 <p>
-Leos Mervart<br>
+Federal Agency for Cartography and Geodesy (BKG)<br>
+Georg Weber<br>
+Department of Geodesy<br>
+Frankfurt, Germany<br>
+[euref-ip@bkg.bund.de] or [igs-ip@bkg.bund.de]
+</p>
+
+<p>
+by
+</p>
+
+<p>
 Czech Technical University (CTU)<br>
+Leos Mervart<br>
 Department of Geodesy<br>
 Prague, Czech Republic
 </p>
@@ -51,13 +52,6 @@ BNC includes the following GNU GPL software components:
 <li> RTCM 3 decoder for standard messages and a RTCM 3 encoder & decoder for SSR messages, both written for BKG by Dirk Stoecker, Alberding GmbH, Schoenefeld, Germany</li>
 </ul>
 </p>
-<p>
-Georg Weber<br>
-Federal Agency for Cartography and Geodesy (BKG)<br>
-Department of Geodesy<br>
-Frankfurt, Germany<br>
-[euref-ip@bkg.bund.de] or<br>
-[igs-ip@bkg.bund.de]
 </p>
 
 <p>
@@ -1369,7 +1363,7 @@ These parameters are saved together with their standard deviation. The following
 </p>
 
 <p>
-Note that BNC's 'PPP' option can also be used offline either for for debugging or for Post Processing purposes. 
+Note that for debugging or Post Processing purposes BNC's 'PPP' functionality option can also be used offline. 
 <ul>
 <li>
 <u>Debugging:</u> Apply the 'File Mode' 'Command Line' option for that to read a file containing synchronized observations, orbit and clock correctors, and Broadcast Ephemeris. Such a file must be generated before using BNC's 'Raw output file' option. Example:<br>
@@ -1385,10 +1379,10 @@ bnc.exe --conf c:\temp\PPP.bnc --file c:\temp\FFMJ1
 </p>
 <ul>
 <li>BNC does correct for Solid Earth Tides and Phase Windup.</li>
-<li>Satellite Antenna Phase Center Offsets are not corrected because applied orbit/clock corrections are referred to the satellite's antenna phase center.</li>
-<li>Satellite Antenna Phase Center Variations are neglected because this is a small effect usually less than 2 centimeters.</li>
+<li>Satellite antenna phase center offsets are not corrected because applied orbit/clock corrections are referred to the satellite's antenna phase center.</li>
+<li>Satellite antenna phase center variations are neglected because this is a small effect usually less than 2 centimeters.</li>
 <li>Observations can be corrected for a Receiver Antenna Offset. Depending on whether or not this correction is applied, the estimated position is either that of the receiver's antenna phase center or that of the receiver's Antenna Reference Point.</li>
-<li>Receiver Antenna Phase Center Variations are not included in the model. The bias caused by this neglect depends on the receiver antenna type. For most antennas it is smaller than a few centimeters.</li>
+<li>Receiver antenna phase center variations are not included in the model. The bias caused by this neglect depends on the receiver antenna type. For most antennas it is smaller than a few centimeters.</li>
 <li>Ocean and atmospheric loading is neglected. Atmospheric loading is pretty small. Ocean loading is usually also a small effect but may reach up to about 10 centimeters for coastal stations.</li>
 <li>Rotational deformation due to polar motion (Polar Tides) is not corrected because this is a small effect usually less than 2 centimeters.</li>
 </ul>
@@ -1396,11 +1390,13 @@ bnc.exe --conf c:\temp\PPP.bnc --file c:\temp\FFMJ1
 
 <p><a name="pppmode"><h4>3.12.1 Mode & Mountpoints - optional</h4></p>
 <p>
-Specify the Point Positioning mode you want to apply and the mountpoints for observations and Broadcast Corrections. Options are 'Realtime-PPP', 'Realtime-SPP', and 'Post-Processing'.
+Specify the Point Positioning mode you want to apply and the mountpoints for observations and Broadcast Corrections.
 </p>
 
 <p><a name="pppmodus"><h4>3.12.1.1 Mode - optional</h4></p>
-<p>Choose between plain Single Point Positioning (SPP) and Precise Point Positioning (PPP) in 'Realtime' or 'Post-Processing' mode.</p>
+<p>
+Choose between plain Single Point Positioning (SPP) and Precise Point Positioning (PPP) in 'Realtime' or 'Post-Processing' mode. Options are 'Realtime-PPP', 'Realtime-SPP', and 'Post-Processing'.
+</p>
 
 <p><a name="pppobsmount"><h4>3.12.1.2 Obs Mountpoint - optional</h4></p>
 <p>
@@ -1414,7 +1410,7 @@ Specify a Broadcast Ephemeris 'Corrections Mountpoint' from the list of selected
 
 <p><a name="pppxyz"><h4>3.12.2 Marker Coordinates - optional</h4></p>
 <p>
-Enter the reference coordinate components X,Y,Z of the receiver's position in meters if known. This option makes only sense for static observations. Default are empty option fields, meaning that the antenna's XYZ position is unknown. 
+Enter the reference coordinate XYZ of the receiver's position in meters if known. This option makes only sense for static observations. Default are empty option fields, meaning that the antenna's XYZ position is unknown. 
 </p>
 <p>
 Once XYZ coordinate components are defined, the 'PPP' line in BNC's logfile is extended by Nort, East and Up displacements to (example):
@@ -1428,12 +1424,12 @@ The parameters following the 'NEU' string provide Nort, East and Up components o
 
 <p><a name="pppneu"><h4>3.12.3 Antenna Excentricity - optional</h4></p>
 <p>
-You may like to specify North, East and Up components of an antenna eccentricity which is the difference between a nearby marker position and the antenna phase center. If you do so BNC will produce coordinates referring to the marker position and not referring to the antenna phase center..
+You may like to specify North, East and Up components of an antenna eccentricity which is the difference between a nearby marker position and the antenna phase center. If you do so BNC will produce coordinates referring to the marker position and not referring to the antenna phase center.
 </p>
 
 <p><a name="pppoutput"><h4>3.12.4 NMEA & Plot Output - optional</h4></p>
 <p>
-BNC allows to output results from Precise Point Positioning in NMEA format. It can also plot a time series of North, East and UP displacements of coordinate components.
+BNC allows to output results from Precise Point Positioning in NMEA format. It can also plot a time series of North, East and UP displacements.
 </p>
 
 <p><a name="pppnmeafile"><h4>3.12.4.1 NMEA File - optional</h4></p>
@@ -1448,7 +1444,7 @@ The NMEA sentences generated about once per second are pairs of
 Specify the full path to a file where Point Positioning results are saved as NMEA messages. The default value for 'NMEA file' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
 </p>
 <p>
-Note that Tomoji Takasu has written a program called RTKPlot for visualizing NMEA strings. It is available from <u>http://gpspp.sakura.ne.jp/rtklib/rtklib.htm</u> and compatible with the NMEA output of BNC's 'PPP Client' option.
+Note that Tomoji Takasu has written a program called RTKPlot for visualizing NMEA strings. It is available from <u>http://gpspp.sakura.ne.jp/rtklib/rtklib.htm</u> and compatible with the NMEA file and port output of BNC's 'PPP' client option.
 </p>
 
 <p><a name="pppnmeaport"><h4>3.12.4.2 NMEA Port - optional</h4></p>
@@ -1456,7 +1452,7 @@ Note that Tomoji Takasu has written a program called RTKPlot for visualizing NME
 Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'NMEA Port' is an empty option field, meaning that BNC does not provide NMEA messages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same. 
 </p>
 <p>
-NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World_Wind_Download</u>) can be used for real-time visualization of positions provided through BNC's NMEA IP output port. You need the 'GPS Tracker' plug-in available from <u>http://worldwindcentral.com/wiki/GPS_Tracker</u> for that. The 'Word Wind' is not meant for showing centimeter level details.
+NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World_Wind_Download</u>) can be used for real-time visualization of positions provided through BNC's NMEA IP output port. You need the 'GPS Tracker' plug-in available from <u>http://worldwindcentral.com/wiki/GPS_Tracker</u> for that. The 'Word Wind' map resolution is not meant for showing centimeter level details.
 </p>
 
 <p><a name="pppplot"><h4>3.12.4.3 PPP Plot - optional</h4></p>
@@ -1468,8 +1464,13 @@ Note that a PPP time series makes only sense for a stationary operated receiver.
 </p>
 
 <p><a name="ppppost"><h4>3.12.5 Post Processing - optional</h4></p>
-	<p>When in 'Post-Processing mode<ul><li>specifying a RINEX Observation, a RINEX Navigation and a Broadcast Corrections file leads to a PPP solution.</li><li>specifying only a RINEX Observation and a RINEX Navigation file and no Broadcast Corrections file leads to a SPP solution.</ul></p>
-<p>BNC accepts RINEX Version 2 as well as RINEX Version 3 Observation or Navigation file formats. Files carrying Broadcast Corrections must have the format produced by BNC in the 'Broadcast Corrections' tab.
+<p>When in 'Post-Processing' mode
+<ul>
+<li>specifying a RINEX Observation, a RINEX Navigation and a Broadcast Corrections file leads to a PPP solution.</li>
+<li>specifying only a RINEX Observation and a RINEX Navigation file and no Broadcast Corrections file leads to a SPP solution.</li>
+</ul>
+</p>
+<p>BNC accepts RINEX Version 2 as well as RINEX Version 3 Observation or Navigation file formats. Files carrying Broadcast Corrections must have the format produced by BNC through the 'Broadcast Corrections' tab.
 <p>
 Post Processing PPP results can be saved in a specific output file.
 </p>
@@ -1528,7 +1529,7 @@ T(z) = T_apr(z) + dT / cos(z)
 where T_apr is the a-priori tropospheric delay derived from Saastamoinen model.
 </p>
 <p>
-By default BNC does not estimate troposphere parameters. Tick 'Estimate tropo' to estimate troposphere parameters together with the coordinates and save T_apr and dT in BNC's log file.
+By default BNC does not estimate troposphere parameters. Tick 'Estimate tropo' to estimate troposphere parameters together with the coordinates and save T_apr and dT/cos(z) in BNC's log file.
 </p>
 
 <p><a name="pppglo"><h4>3.12.7.3 Use GLONASS - optional</h4></p>
@@ -1543,7 +1544,7 @@ By default BNC does not process Galileo but only GPS observations when in Point 
 
 <p><a name="pppsync"><h4>3.12.7.5 Sync Corr - optional</h4></p>
 <p>
-Zero value (or empty field) means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. Non-zero value 'Sync Corr' means that the epochs of data are buffered and the processing of each epoch is postponed till the satellite clock corrections not older than 'Sync Corr' are available. Specifying a value of half the update rate of the clock corrections as 'Sync Corr' (i.e. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of the update rate.
+Zero value (or empty field) means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. Non-zero value 'Sync Corr' means that the epochs of data are buffered and the processing of each epoch is postponed till the satellite clock corrections not older than 'Sync Corr' are available. Specifying a value of half the update rate of the clock corrections as 'Sync Corr' (i.e. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of half of the update rate.
 </p>
 <p>
 Using observations in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing observations regardless of how late after a clock correction they were received. Note that applying the 'Sync Corr' option significantly reduces the PPP computation effort for BNC.
@@ -1554,7 +1555,7 @@ Default is an empty option field, meaning that you want BNC to process observati
 
 <p><a name="pppaverage"><h4>3.12.7.6 Averaging - optional if XYZ is set</h4></p>
 <p>
-Enter the length of a sliding time window in minutes. BNC will continuously output moving average values ns and their RMS as computed from those individual values obtained most recently throughout this period. RMS values presented for XYZ coordinates and tropospheric zenit path delays are bias reduced while RMS values for Nort/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string &quot;AVE-XYZ&quot; in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string &quot;AVE-NEU&quot; and averaged values for the tropospheric delays and their RMS are marked with string &quot;AVE-TRP&quot;. Example:
+Enter the length of a sliding time window in minutes. BNC will continuously output moving average values and their RMS as computed from those individual values obtained most recently throughout this period. RMS values presented for XYZ coordinates and tropospheric zenit path delays are bias reduced while RMS values for Nort/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string &quot;AVE-XYZ&quot; in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string &quot;AVE-NEU&quot; and averaged values for the tropospheric delays and their RMS are marked with string &quot;AVE-TRP&quot;. Example:
 </p>
 <pre>
 10-09-08 09:13:05 FFMJ1  AVE-XYZ 09:13:04.0   4053455.948 +-  0.284     617730.422 +-  0.504    4869397.692 +-  0.089
@@ -1759,8 +1760,8 @@ The procedure taken by BNC to generate the clock and orbit corrections to Broadc
 </ul>
 Then, epoch by epoch: 
 <ul>
-<li>Continuously receive the best available clock and orbit estimates for all satellites in X,Y,Z Earth-Centered-Earth-Fixed IGS08 reference system. Receive them every epoch in plain ASCII format as provided by a real-time GNSS engine such as RTNet or generate them following a combination approach. </li>
-<li>Calculate X,Y,Z coordinates from Broadcast Ephemeris orbits. </li>
+<li>Continuously receive the best available clock and orbit estimates for all satellites in XYZ Earth-Centered-Earth-Fixed IGS08 reference system. Receive them every epoch in plain ASCII format as provided by a real-time GNSS engine such as RTNet or generate them following a combination approach. </li>
+<li>Calculate XYZ coordinates from Broadcast Ephemeris orbits. </li>
 <li>Calculate differences dX,dY,dZ between Broadcast Ephemeris and IGS08 orbits. </li>
 <li>Transform these differences into radial, along-track and cross-track corrections to Broadcast Ephemeris orbits. </li>
 <li>Calculate corrections to Broadcast Ephemeris clocks as differences between Broadcast Ephemeris and IGS08 clocks. </li>
@@ -1787,14 +1788,14 @@ Below you find an example of precise clocks and orbits coming in ASCII format (n
 <p>
 <ul>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
-<li>X,Y,Z coordinates in Earth-Centered-Earth-Fixed system [km] at epoch T</li>
+<li>XYZ coordinates in Earth-Centered-Earth-Fixed system [km] at epoch T</li>
 <li>Satellite clock error [microsecond]</li>
 <li>Conventional periodic relativistic effect [microsecond]</li>
 <li>DX,DY,DZ [m] in Earth-Centered-Earth-Fixed system for translation CoM-&gt;APC</li>
 <li>Differential Code Bias P1C1 [m]</li>
 <li>Differential Code Bias P1P2 [m]</li>
 <li>Time increment dT [second]</li>
-<li>X,Y,Z coordinates in Earth-Centered-Earth-Fixed system [km] at epoch T+dT</li>
+<li>XYZ coordinates in Earth-Centered-Earth-Fixed system [km] at epoch T+dT</li>
 </ul>
 </p>
 Example for 'RTNET' stream format:
@@ -2006,7 +2007,7 @@ BNC allows to either refer Broadcast Corrections to the satellite's Center of Ma
 Default is an empty option field meaning that you don't want BNC to save the uploaded stream contents in daily SP3 files.
 </p>
 <p>
-As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while Broadcast Corrections are referred to the satellites Antenna Phase Center (APC), an offset has to be applied which is available from an IGS ANTEX file (see section 'ANTEX File'). You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save the stream contents in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs. 
+As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while Broadcast Corrections are referred to the satellites APC, an offset has to be applied which is available from an IGS ANTEX file (see section 'ANTEX File'). You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save the stream contents in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs. 
 </p>
 <p>
 The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'. Note that clocks in the SP3 orbit files are not corrected for the conventional periodic relativistic effect.
@@ -2729,7 +2730,7 @@ Note that the account for an Ntrip Broadcaster is usually limited to pulling a c
 Make also sure that directories which are part of the example configurations exist on your system or adjust the affected configuration according to your needs.
 </p>
 <p>
-Some BNC options require Antenna Phase Center variations as made available from IGS through so-called ANTEX files in directory <u>ftp://igs.org/pub/station/general</u>. An example ANTEX file is also part of the BNC package for convenience.
+Some BNC options require antenna phase center variations as made available from IGS through so-called ANTEX files in directory <u>ftp://igs.org/pub/station/general</u>. An example ANTEX file is also part of the BNC package for convenience.
 </p>
 <p>
 The example configurations assume that no proxy protects your host. Should a proxy be operated in front of BNC then you need to introduce its IP and port in the 'Network' tab.
