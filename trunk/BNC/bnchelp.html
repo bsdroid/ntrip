@@ -1444,7 +1444,7 @@ The NMEA sentences generated about once per second are pairs of
 Specify the full path to a file where Point Positioning results are saved as NMEA messages. The default value for 'NMEA file' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
 </p>
 <p>
-Note that Tomoji Takasu has written a program called RTKPlot for visualizing NMEA strings. It is available from <u>http://gpspp.sakura.ne.jp/rtklib/rtklib.htm</u> and compatible with the NMEA file and port output of BNC's 'PPP' client option.
+Note that Tomoji Takasu has written a program called RTKPLOT for visualizing NMEA strings. It is available from <u>http://gpspp.sakura.ne.jp/rtklib/rtklib.htm</u> and compatible with the NMEA file and port output of BNC's 'PPP' client option.
 </p>
 
 <p><a name="pppnmeaport"><h4>3.12.4.2 NMEA Port - optional</h4></p>
@@ -1779,7 +1779,7 @@ BNC requires GNSS clocks and orbits in the IGS Earth-Centered-Earth-Fixed (ECEF)
 </p>
 
 <p>
-Below you find an example of precise clocks and orbits coming in ASCII format (named 'RTNET' in this document) from a real-time GNSS engine. Each epoch starts with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records provide the following set of parameters for each satellite:
+Below you find an example of precise clocks and orbits coming in ASCII format (which is named 'RTNET' in this document) from a real-time GNSS engine. Each epoch starts with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records provide the following set of parameters for each satellite:
 </p>
 
 <p>
@@ -2590,7 +2590,7 @@ The major changes of NTRIP Version 2 compared to Version 1.0 are:
 <li>replaced non standard directives;</li>
 <li>chunked transfer encoding;</li>
 <li>improvements in header records;</li>
-<li>source-table filtering; and</li>
+<li>source-table filtering;</li>
 <li>RTSP communication.</li>
 </ul>
 
@@ -2599,7 +2599,7 @@ The major changes of NTRIP Version 2 compared to Version 1.0 are:
 
 <p><a name="rtcm2"><h4>5.2.3 RTCM Version 2</h4></p>
 <p>
-Transmitting GNSS carrier phase data can be done through RTCM Version 2 messages. Please note that only RTCM Version 2.2 and 2.3 streams may include GLONASS data. Messages that may be of some interest here are:
+Transmitting GNSS carrier phase data can be done through RTCM Version 2 messages. Please note that only RTCM Version 2.2 and 2.3 streams may include GLONASS data. Messages that may be of interest here are:
 </p>
 
 <ul>
@@ -2664,6 +2664,24 @@ RTCM Version 3 defines a number of message types. Messages that may be of intere
 </p>
 
 <p>
+The following are so-called 'State Space Representation' (SSR) messages:
+<ul>
+<li>Type 1057, GPS orbit corrections to Broadcast Ephemeris</li>
+<li>Type 1058, GPS clock corrections to Broadcast Ephemeris</li>
+<li>Type 1059, GPS code biases</li>
+<li>Type 1060, Combined orbit and clock corrections to GPS Broadcast Ephemeris</li>
+<li>Type 1061, GPS User Range Accuracy (URA)</li>
+<li>Type 1062, High-rate GPS clock corrections to Broadcast Ephemeris</li>
+<li>Type 1063, GLONASS orbit corrections to Broadcast Ephemeris</li>
+<li>Type 1064, GLONASS clock corrections to Broadcast Ephemeris</li>
+<li>Type 1065, GLONASS code biases</li>
+<li>Type 1066, Combined orbit and clock corrections to GLONASS Broadcast Ephemeris</li>
+<li>Type 1067, GLONASS User Range Accuracy (URA)</li>
+<li>Type 1068, High-rate GLONASS clock corrections to Broadcast Ephemeris</li>
+</ul>
+</p>
+
+<p>
 The following are proposed 'Multiple Signal Messages' (MSM) under discussion for standardization:
 <ul>
 <li>Type 1045, Galileo ephemeris.</li>
@@ -2691,31 +2709,13 @@ The following are proposed 'Multiple Signal Messages' (MSM) under discussion for
 </ul>
 </p>
 
-<p>
-The following are so-called 'State Space Representation' (SSR) messages:
-<ul>
-<li>Type 1057, GPS orbit corrections to Broadcast Ephemeris</li>
-<li>Type 1058, GPS clock corrections to Broadcast Ephemeris</li>
-<li>Type 1059, GPS code biases</li>
-<li>Type 1060, Combined orbit and clock corrections to GPS Broadcast Ephemeris</li>
-<li>Type 1061, GPS User Range Accuracy (URA)</li>
-<li>Type 1062, High-rate GPS clock corrections to Broadcast Ephemeris</li>
-<li>Type 1063, GLONASS orbit corrections to Broadcast Ephemeris</li>
-<li>Type 1064, GLONASS clock corrections to Broadcast Ephemeris</li>
-<li>Type 1065, GLONASS code biases</li>
-<li>Type 1066, Combined orbit and clock corrections to GLONASS Broadcast Ephemeris</li>
-<li>Type 1067, GLONASS User Range Accuracy (URA)</li>
-<li>Type 1068, High-rate GLONASS clock corrections to Broadcast Ephemeris</li>
-</ul>
-</p>
-
 <p><a name="config"><h4>5.3. Configuration Examples</h4></p>
 
 <p>BNC comes with a number of configuration examples which can be used on all operating systems. There are two ways to start BNC using one of these files:
 <ul>
 <li> On graphical systems you may use the computer mouse to 'drag' a configuration file icon and 'drop' it on top of BNC's program icon.
 </li>
-<li> On non-graphical systems you may start BNC using a command line with the following option for a configuration file (example for Windows systems):<br>bnc.exe --conf <configFileName>
+<li> On non-graphical systems you may start BNC using a command line with the following option for a configuration file (example for Windows systems):<br>bnc.exe --conf &lt;configFileName&gt;
 </li>
 </ul>
 Presented example configuration files contain a user ID 'user' and a password 'pass' for accessing streams from various Ntrip Broadcasters. Replace these account details by a the personal user ID and password you receive following an online registration through <u>http://register.rtcm-ntrip.org</u>.
@@ -2724,26 +2724,26 @@ Presented example configuration files contain a user ID 'user' and a password 'p
 Note that the account for an Ntrip Broadcaster is usually limited to pulling a certain maximum number of streams at the same time. As running some of the example configurations requires pulling several streams, it is suggested to make sure that you don't exceed your account's limits.
 </p>
 <p>
-Make also sure that directories which are part of the example configurations exist on your system or adjust the affected configuration according to your needs.
+Make also sure that directories which are part of the example configurations exist on your system or adjust the affected configuration options according to your needs.
 </p>
 <p>
-Some BNC options require antenna phase center variations as made available from IGS through so-called ANTEX files in directory <u>ftp://igs.org/pub/station/general</u>. An example ANTEX file is also part of the BNC package for convenience.
+Some BNC options require antenna phase center variations as made available from IGS through so-called ANTEX files at <u>ftp://igs.org/pub/station/general</u>. An example ANTEX file is also part of the BNC package for convenience.
 </p>
 <p>
-The example configurations assume that no proxy protects your host. Should a proxy be operated in front of BNC then you need to introduce its IP and port in the 'Network' tab.
+The example configurations assume that no proxy protects your BNC host. Should a proxy be operated in front of BNC then you need to introduce its IP and port in the 'Network' tab.
 </p>
 
 <ol type=b>
 <li>File 'RinexObs.bnc'<br>
-The purpose of this configuration is to convert RTCM streams to RINEX Observation files. The configuration pulls streams from several Ntrip Broadcasters using differen Ntrip versions and generate 1sec/15min RINEX Version 3 Observation files. See <u>http://igs.bkg.bund.de/ntrip/observations</u> for observation stream resources.
+The purpose of this configuration is to convert RTCM streams to RINEX Observation files. The configuration pulls streams from several Ntrip Broadcasters using different Ntrip versions and generate 15min 1Hz RINEX Version 3 Observation files. See <u>http://igs.bkg.bund.de/ntrip/observations</u> for observation stream resources.
 </li>
 <br>
-<li>File 'RinexEpn.bnc'<br>
-The purpose of this configuration is to convert RTCM streams to RINEX Navigation files. The configuration pulls an RTCM Version 3 stream carrying Broadcast Ephemeris coming from the real-time EUREF and IGS network. It saves hourly RINEX Version 3 Navigation files. See http://igs.bkg.bund.de/ntrip/ephemeris for further real-time Broadcast Ephemeris resources.
+<li>File 'RinexEph.bnc'<br>
+The purpose of this configuration is to convert RTCM streams to RINEX Navigation files. The configuration pulls an RTCM Version 3 stream carrying Broadcast Ephemeris coming from the real-time EUREF and IGS network. It saves hourly RINEX Version 3 Navigation files. See <u>http://igs.bkg.bund.de/ntrip/ephemeris</u> for further real-time Broadcast Ephemeris resources.
 </li>
 <br>
 <li>File 'SSR.bnc'<br>
-The purpose of this configuration is to save Broadcast Eorrections from RTCM SSR messages in a plain ASCII format as hourly files. See <u>http://igs.bkg.bund.de/ntrip/orbits</u> for further real-time IGS or EUREF orbit/clock products.
+The purpose of this configuration is to save Broadcast Corrections from RTCM SSR messages in a plain ASCII format as hourly files. See <u>http://igs.bkg.bund.de/ntrip/orbits</u> for further real-time IGS or EUREF orbit/clock products.
 </li>
 <br>
 <li>File 'RinexConcat.bnc'<br>
@@ -2759,15 +2759,15 @@ The purpose of this configuration is to feed a real-time GNSS engine with observ
 </li>
 <br>
 <li>File 'PPP.bnc'<br>
-The purpose of this configuration is Precise Point Positioning from observations of a rover receiver. The configuration reads RTCM Version 3 observations, a stream of orbit and clock correctors and a Broadcast Ephemeris stream. Positions are saved in the logfile.
+The purpose of this configuration is Precise Point Positioning from observations of a rover receiver. The configuration reads RTCM Version 3 observations, a stream of Broadcast Corrections and a Broadcast Ephemeris stream. Positions are saved in the logfile.
 </li>
 <br>
 <li>File 'QuickStartPPP.bnc'<br>
-The purpose of this configuration is Precise Point Positioning in Quick-Start mode from observations of a static receiver with precisely known position. The configuration reads RTCM Version 3 observations, orbit and clock correctors and a Broadcast Ephemeris stream. Positions are saved in NMEA format on disc and output through IP port for real-time visualization with tools like RTKNAVI.
+The purpose of this configuration is Precise Point Positioning in Quick-Start mode from observations of a static receiver with precisely known position. The configuration reads RTCM Version 3 observations, Broadcast Corrections and a Broadcast Ephemeris stream. Positions are saved in NMEA format on disc. Positions are also output through IP port for real-time visualization with tools like RTKPLOT.
 </li>
 <br>
 <li>File 'PPPPostProc.bnc<br>
-The purpose of this configuration is Precise Point Positioning in Post Processing mode. BNC reads a RINEX Observation and a RINEX  Version 3 Navigation files and a Broadcast Corrections files. PPP processing otions are set in support of the Quick-Start mode. The output is saved in a specific Post Processing logfile and contains the coordinates derived over time following the implemented PPP filter algorithm.
+The purpose of this configuration is Precise Point Positioning in Post Processing mode. BNC reads a RINEX Observation and a RINEX  Version 3 Navigation files and a Broadcast Corrections files. PPP processing otions are set to support the Quick-Start mode. The output is saved in a specific Post Processing logfile and contains the coordinates derived over time following the implemented PPP filter algorithm.
 </li>
 <br>
 <li>File 'Sp3.bnc'<br>
@@ -2775,19 +2775,19 @@ The purpose of this configuraiton is to produce SP3 files from a Broadcast Ephem
 </li>
 <br>
 <li>File 'Sp3ETRF2000PPP.bnc'<br>
-The purpose of this configuration is to produce SP3 files from a Broadcast Ephemeris stream and a stream carrying ETRF2000 Broadcast Corrections. The Broadcast Corrections stream is formally introduced in BNC's 'Combination' option. This all together leads to an SP3 file containing orbits referrd also to ETRF2000. Pulling in addition observations from a reference station at precisely known ETRF2000 position allows to compare an 'INTERNAL' PPP solution with ETRF2000 reference coordinates.
+The purpose of this configuration is to produce SP3 files from a Broadcast Ephemeris stream and a stream carrying ETRF2000 Broadcast Corrections. The Broadcast Corrections stream is formally introduced in BNC's 'Combine Corrections' table. This leads to an SP3 file containing orbits referred also to ETRF2000. Pulling in addition observations from a reference station at precisely known ETRF2000 position allows to compare an 'INTERNAL' PPP solution with ETRF2000 reference coordinates.
 </li>
 <br>
 <li>File 'Upload.bnc'<br>
-The purpose of this configuration is to upload orbits and clocks from a real-time GNSS engine to an Ntrip Broadcaster. For that the configuration reads precise orbits and clocks in RTNET format. It also reads a stream carrying Broadcast Ephemeris. BNC converts the orbits and clocks into Broadcast Corrections and encodes them in RTCM Version 3 SSR messages messages to uploads them to an Ntrip Broadcaster. The Broadcast Corrections stream is referred to satellite Center of Mass (CoM) and IGS08. Orbits are saved on disk in SP3 format and clocks in clock RINEX format.
+The purpose of this configuration is to upload orbits and clocks from a real-time GNSS engine to an Ntrip Broadcaster. For that the configuration reads precise orbits and clocks in RTNET format. It also reads a stream carrying Broadcast Ephemeris. BNC converts the orbits and clocks into Broadcast Corrections and encodes them in RTCM Version 3 SSR messages to uploads them to an Ntrip Broadcaster. The Broadcast Corrections stream is referred to satellite Antenna Phase Center (APC) and IGS08. Orbits are saved on disk in SP3 format and clocks in Clock RINEX format.
 </li>
 <br>
 <li>File 'UploadPPP.bnc'<br>
-This configuration equals the 'Upload.bnc' configuration. However, the Broadcast Corrections are in addition used for an 'INTERNAL' PPP soltution based on observations from a static reference station with known precise coordinates.  This allows a continuous quality ckeck of the Broadcast Corrections through observing coordinate displacements.
+This configuration equals the 'Upload.bnc' configuration. However, the Broadcast Corrections are in addition used for an 'INTERNAL' PPP soltution based on observations from a static reference station with known precise coordinates.  This allows a continuous quality check of the Broadcast Corrections through observing coordinate displacements.
 </li>
 <br>
 <li>File 'Combi.bnc'<br>
-The purpose of this configuration is to pulls several streams carrying Broadcast Corrections and a Broadcast Ephemeris stream from an Ntrip Broadcaster to produce a combined Broadcast Corrections stream. BNC encodes the combination product in RTCM Version 3 SSR messages and uploads it to an Ntrip Broadcaster. The Broadcast Corrections stream is not referred to satellite Center of Mass (CoM). It is referred to IGS08. Orbits are saved in SP3 format and clocks in clock RINEX format.
+The purpose of this configuration is to pull several streams carrying Broadcast Corrections and a Broadcast Ephemeris stream from an Ntrip Broadcaster to produce a combined Broadcast Corrections stream. BNC encodes the combination product in RTCM Version 3 SSR messages and uploads that to an Ntrip Broadcaster. The Broadcast Corrections stream is not referred to satellite Center of Mass (CoM). It is referred to IGS08. Orbits are saved in SP3 format and clocks in Clock RINEX format.
 </li>
 <br>
 <li>File 'CombiPPP.bnc'<br>
@@ -2795,80 +2795,80 @@ This configuration equals the 'Combi.bnc' configuration. However, the combined B
 </li>
 <br>
 <li>File 'UploadEph.bnc'<br>
-The purpose of this configuration is to pull a number of streams from reference stations to get hold of contained Broadcast Ephemeris messages. These are encoded then in a specific RTCM Version 3 stream which only provides Broadcast Ephemeris with an update rate of 5 seconds.
+The purpose of this configuration is to pull a number of streams from reference stations to get hold of contained Broadcast Ephemeris messages. These are encoded then in a RTCM Version 3 stream which only provides Broadcast Ephemeris with an update rate of 5 seconds.
 </li>
 </ol>
 </p>
 
 <p>
-The following table's left column is an example for the contents of a configuration file 'BNC.bnc'. It enables the retrieval of an observations stream via NTRIP for the generation of 15 min RINEX files:
+The following table's left column is a list options as contained in BNC's configuration files (default: BNC.bnc).
 </p>
 <table>
 <tr></tr>
 <tr><td><b>Option</b></td><td><b>Affiliation</b></td></tr>
 <tr><td>[General]</td><td>Settings: Group</td></tr>
-<tr><td>startTab=0</td><td>Internal: Top tab index</td></tr>
-<tr><td>statusTab=0</td><td>Internal: Bottom tab index</td></tr>
+<tr><td>startTab=</td><td>Internal: Top tab index</td></tr>
+<tr><td>statusTab=</td><td>Internal: Bottom tab index</td></tr>
 <tr><td>font=</td><td>Internal: Used font</td></tr>
-<tr><td>casterUrlList=http://user:pass@euref-ip:2101</td><td>Internal: Visited URLs</td></tr>
-<tr><td>mountPoints=//user:pass@www.euref-ip.net:2101<br>/ACOR0 RTCM_2.3 43.36 351.60 no 1</td><td>Add Streams: broadcaster:port/mountpoint</td></tr>
-<tr><td>ntripVersion=1</td><td>Add Stream: NTRIP Version</td></tr>
+<tr><td>casterUrlList=</td><td>Internal: Visited URLs</td></tr>
+<tr><td>mountPoints=</td><td>Add Streams: broadcaster:port/mountpoint</td></tr>
+<tr><td>ntripVersion=</td><td>Add Stream: NTRIP Version</td></tr>
 
 <tr><td>proxyHost=</td><td>Network: Proxy host</td></tr>
 <tr><td>proxyPort=</td><td>Network: Proxy port</td></tr>
 <tr><td>sslCaCertPath=</td><td>Network: Path to SSL certificates</td></tr>
 <tr><td>ignoreSslErrors=0</td><td>Network: Ignore ssl authorization errors</td></tr>
 
-<tr><td>logFile=/home/weber/bnc.log</td><td>General: Logfile (full path)</td></tr>
-<tr><td>rnxAppend=2</td><td>General: Append files</td></tr>
-<tr><td>onTheFlyInterval=1 day</td><td>General: Reread configuration</td></tr>
-<tr><td>autoStart=0</td><td>General: Auto start</td></tr>
+<tr><td>logFile=</td><td>General: Logfile (full path)</td></tr>
+<tr><td>rnxAppend=</td><td>General: Append files</td></tr>
+<tr><td>onTheFlyInterval=</td><td>General: Reread configuration</td></tr>
+<tr><td>autoStart=</td><td>General: Auto start</td></tr>
 <tr><td>rawOutFile=</td><td>General: Raw output file (full path)</td></tr>
 
-<tr><td>rnxPath=/home/user/rinex</td><td>RINEX Observations: Directory</td></tr>
-<tr><td>rnxIntr=15 min</td><td>RINEX Observations: Interval</td></tr>
-<tr><td>rnxSample=0</td><td>RINEX Observations: Sampling</td></tr>
+<tr><td>rnxPath=</td><td>RINEX Observations: Directory</td></tr>
+<tr><td>rnxIntr=</td><td>RINEX Observations: Interval</td></tr>
+<tr><td>rnxSample=</td><td>RINEX Observations: Sampling</td></tr>
 <tr><td>rnxSkel=</td><td>RINEX Observations: Skeleton extension</td></tr>
 <tr><td>rnxScript=</td><td>RINEX Observations: Uplod script</td></tr>
-<tr><td>rnxV3=0</td><td>RINEX Observation: Version 3</td></tr>
+<tr><td>rnxV3=</td><td>RINEX Observation: Version 3</td></tr>
 
 <tr><td>ephPath=</td><td>RINEX Ephemeris: Directory</td></tr>
-<tr><td>ephIntr=15 min</td><td>RINEX Ephemeris: Interval</td></tr>
+<tr><td>ephIntr=</td><td>RINEX Ephemeris: Interval</td></tr>
 <tr><td>outEphPort=</td><td>RINEX Ephemeris: Port</td></tr>
-<tr><td>ephV3=0</td><td>RINEX Ephemeris: Version 3</td></tr>
+<tr><td>ephV3=</td><td>RINEX Ephemeris: Version 3</td></tr>
 
 <tr><td>corrPath=</td><td>Broadcast Corrections: Directory, ASCII </td></tr>
-<tr><td>corrIntr=1 day</td><td>Broadcast Corrections: Interval</td></tr>
+<tr><td>corrIntr=</td><td>Broadcast Corrections: Interval</td></tr>
 <tr><td>corrPort=</td><td>Broadcast Corrections: Port</td></tr>
-<tr><td>corrTime=5</td><td>Broadcast Corrections: Wait for full corr epoch</td></tr>
+<tr><td>corrTime=</td><td>Broadcast Corrections: Wait for full corr epoch</td></tr>
 
 <tr><td>outPort=</td><td>Feed Engine: Port</td></tr>
-<tr><td>waitTime=5</td><td>Feed Engine: Wait for full obs epoch</td></tr>
-<tr><td>binSampl=0</td><td>Feed Engine: Sampling</td></tr>
+<tr><td>waitTime=</td><td>Feed Engine: Wait for full obs epoch</td></tr>
+<tr><td>binSampl=</td><td>Feed Engine: Sampling</td></tr>
 <tr><td>outFile=</td><td>Feed Engine: File (full path)</td></tr>
 <tr><td>outUPort=</td><td>Feed Engine: Port (unsynchronized)</td></tr>
 
 <tr><td>serialMountPoint=</td><td>Serial Output: Mountpoint</td></tr>
 <tr><td>serialPortName=</td><td>Serial Output: Port name</td></tr>
-<tr><td>serialBaudRate=9600</td><td>Serial Output: Baud rate</td></tr>
+<tr><td>serialBaudRate=</td><td>Serial Output: Baud rate</td></tr>
 <tr><td>serialFlowControl=</td><td>Serial Output: Flow control</td></tr>
-<tr><td>serialDataBits=8</td><td>Serial Output: Data bits</td></tr>
-<tr><td>serialParity=NONE</td><td>Serial Output: Parity</td></tr>
-<tr><td>serialStopBits=1</td><td>Serial Output: Stop bits</td></tr>
-<tr><td>serialAutoNMEA=Auto</td><td>Serial Output: NMEA</td></tr>
+<tr><td>serialDataBits=</td><td>Serial Output: Data bits</td></tr>
+<tr><td>serialParity=</td><td>Serial Output: Parity</td></tr>
+<tr><td>serialStopBits=</td><td>Serial Output: Stop bits</td></tr>
+<tr><td>serialAutoNMEA=</td><td>Serial Output: NMEA</td></tr>
 <tr><td>serialFileNMEA=</td><td>Serial Output: NMEA file name</td></tr>
 <tr><td>serialHeightNMEA=</td><td>Serial Output: Height</td></tr>
 
 <tr><td>obsRate=</td><td>Outages: Observation rate</td></tr>
-<tr><td>adviseFail=15</td><td>Outages: Failure threshold</td></tr>
-<tr><td>adviseReco=5</td><td>Outages: Recovery threshold</td></tr>
+<tr><td>adviseFail=</td><td>Outages: Failure threshold</td></tr>
+<tr><td>adviseReco=</td><td>Outages: Recovery threshold</td></tr>
 <tr><td>adviseScript=</td><td>Outages: Script (full path)</td></tr>
 
 <tr><td>miscMount=</td><td>Miscellaneous: Mountpoint</td></tr>
 <tr><td>perfIntr=</td><td>Miscellaneous: Log latency</td></tr>
-<tr><td>scanRTCM=0</td><td>Miscellaneous: Scan RTCM</td></tr>
+<tr><td>scanRTCM=</td><td>Miscellaneous: Scan RTCM</td></tr>
 
-<tr><td>pppSPP=PPP</td><td>PPP Client: PPP/SPP</td></tr>
+<tr><td>pppSPP=</td><td>PPP Client: PPP/SPP</td></tr>
 <tr><td>pppMount=</td><td>PPP Client: Observations Mountpoint</td></tr>
 <tr><td>pppCorrMount=</td><td>PPP Client: Corrections Mountpoint</td></tr>
 <tr><td>pppRefCrdX=</td><td>PPP Client: X coordinate of plot origin</td></tr>
@@ -2887,20 +2887,20 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>pppAntenna=</td><td>PPP Client: Antenna name</td></tr>
 <tr><td>pppAntex=</td><td>PPP Client: Path to ANTEX file</td></tr>
 <tr><td>pppApplySatAnt=</td><td>PPP Client: Apply sat antenna phase center Offset</td></tr>
-<tr><td>pppUsePhase=0</td><td>PPP Client: Use phase data </td></tr>
-<tr><td>pppEstTropo=0</td><td>PPP Client: Estimate troposphere</td></tr>
-<tr><td>pppGLONASS=0</td><td>PPP Client: Use GLONASS</td></tr>
-<tr><td>pppGalileo=0</td><td>PPP Client: Use Galileo</td></tr>
+<tr><td>pppUsePhase=</td><td>PPP Client: Use phase data </td></tr>
+<tr><td>pppEstTropo=</td><td>PPP Client: Estimate troposphere</td></tr>
+<tr><td>pppGLONASS=</td><td>PPP Client: Use GLONASS</td></tr>
+<tr><td>pppGalileo=</td><td>PPP Client: Use Galileo</td></tr>
 <tr><td>pppSync=</td><td>PPP Client: Sync observations and corrections</td></tr>
 <tr><td>pppAverage=</td><td>PPP Client: Lenght of time window for moving average</td></tr>
 <tr><td>pppQuickStart=200</td><td>PPP Client: Quick-Start period</td></tr>
 <tr><td>pppMaxSolGap=</td><td>PPP Client: Maximal Solution Gap</td></tr>
-<tr><td>pppSigmaCode=5.0</td><td>PPP Client: Sigma for Code observations</td></tr>
-<tr><td>pppSigmaPhase=0.02</td><td>PPP Client: Sigma for Phase observations</td></tr>
-<tr><td>pppSigmaCrd0=100.0</td><td>PPP Client: Sigma for initial XYZ coordinate</td></tr>
-<tr><td>pppSigmaCrdP=100.0</td><td>PPP Client: White noise for XYZ</td></tr>
-<tr><td>pppSigmaTrp0=0.1</td><td>PPP Client: Sigma for initial tropospheric delay</td></tr>
-<tr><td>pppSigmaTrpP=1e-6</td><td>PPP Client: White noise for tropospheric delay</td></tr>
+<tr><td>pppSigmaCode=</td><td>PPP Client: Sigma for Code observations</td></tr>
+<tr><td>pppSigmaPhase=</td><td>PPP Client: Sigma for Phase observations</td></tr>
+<tr><td>pppSigmaCrd0=</td><td>PPP Client: Sigma for initial XYZ coordinate</td></tr>
+<tr><td>pppSigmaCrdP=</td><td>PPP Client: White noise for XYZ</td></tr>
+<tr><td>pppSigmaTrp0=</td><td>PPP Client: Sigma for initial tropospheric delay</td></tr>
+<tr><td>pppSigmaTrpP=</td><td>PPP Client: White noise for tropospheric delay</td></tr>
 
 <tr><td>reqcAction=</td><td>Reqc: Action</td></tr>
 <tr><td>reqcObsFile=</td><td>Reqc: Observations file</td></tr>
@@ -2926,11 +2926,11 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>cmbMaxres=</td><td>Combination: Clock outlier threshold</td></tr>
 <tr><td>cmbSampl=</td><td>Combination: Orbit and clock sampling</td></tr>
 
-<tr><td>uploadIntr=1 day</td><td>Upload Corrections: File interval</td></tr>
+<tr><td>uploadIntr=</td><td>Upload Corrections: File interval</td></tr>
 <tr><td>uploadMountpointsOut=</td><td>Upload Corrections: Upload streams</td></tr>
-<tr><td>uploadSamplClkRnx=10</td><td>Upload Corrections: Clock sampling</td></tr>
-<tr><td>uploadSamplSp3=1</td><td>Upload Corrections: Orbit sampling</td></tr>
-<tr><td>uploadSamplRtcmEphCorr=0</td><td>Upload Corrections: Orbit sampling</td></tr>
+<tr><td>uploadSamplClkRnx=</td><td>Upload Corrections: Clock sampling</td></tr>
+<tr><td>uploadSamplSp3=</td><td>Upload Corrections: Orbit sampling</td></tr>
+<tr><td>uploadSamplRtcmEphCorr=</td><td>Upload Corrections: Orbit sampling</td></tr>
 <tr><td>trafo_dx=</td><td>Upload Corrections: Translation X</td></tr>
 <tr><td>trafo_dy=</td><td>Upload Corrections: Translation Y</td></tr>
 <tr><td>trafo_dz=</td><td>Upload Corrections: Translation Z</td></tr>
@@ -2950,7 +2950,7 @@ The following table's left column is an example for the contents of a configurat
 <tr><td>uploadEphPort=</td><td>Upload Ephemeris: Port</td></tr>
 <tr><td>uploadEphMountpoint=</td><td>Upload Ephemeris: Moutpoint</td></tr>
 <tr><td>uploadEphPassword=</td><td>Upload Ephemeris: Password</td></tr>
-<tr><td>uploadEphSample=5</td><td>Upload Ephemeris: Samplig</td></tr>
+<tr><td>uploadEphSample=</td><td>Upload Ephemeris: Samplig</td></tr>
 </table>
 </p>
 <p>
