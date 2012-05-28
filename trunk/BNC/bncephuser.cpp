@@ -237,10 +237,12 @@ t_irc t_corr::readLine(const QString& line) {
 
     tRao.set(GPSweek, GPSweeks);
 
-    dClk       = 0.0;
-    dotDClk    = 0.0;
-    dotDotDClk = 0.0;
-    tClk.reset();
+    if (tClk != tRao) {
+      dClk       = 0.0;
+      dotDClk    = 0.0;
+      dotDotDClk = 0.0;
+      tClk.reset();
+    }
   }
   else if ( messageType == COTYPE_GPSCLOCK    || 
             messageType == COTYPE_GLONASSCLOCK ) {
