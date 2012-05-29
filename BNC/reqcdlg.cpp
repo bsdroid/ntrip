@@ -167,15 +167,15 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(buttonLayout);
 
   _reqcRnxVersion->setWhatsThis(tr("<p>Select version number of emerging new RINEX file.</p><p>When converting RINEX Version 2 to RINEX Version 3, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. When converting RINEX Version 3 to RINEX Version 2<ul><li>C1P in RINEX Version 3 is mapped to P1 in RINEX Version 2</li><li>C2P in RINEX Version 3 is mapped to P2 in RINEX Version 2</li><li>If several observations in RINEX Version 3 come with the same observation type, same band/frequency but different tracking modes, BNC uses only the one provided first for creating RINEX Version 2 while ignoring others.</li></ul></p>"));
-  _reqcSampling->setWhatsThis(tr("<p>Select sampling rate of emerging new RINEX file.</p>"));
-  _reqcStartDateTime->setWhatsThis(tr("<p>Specify begin of emerging new RINEX file.</p>"));
-  _reqcEndDateTime->setWhatsThis(tr("<p>Specify end of emerging new RINEX file.</p>"));
-  _reqcOldMarkerName->setWhatsThis(tr("<p>Enter old marker name.</p>"));
-  _reqcNewMarkerName->setWhatsThis(tr("<p>Enter new marker name.</p>"));
-  _reqcOldAntennaName->setWhatsThis(tr("<p>Enter old antenna name.</p>"));
-  _reqcNewAntennaName->setWhatsThis(tr("<p>Enter new antenna name.</p>"));
-  _reqcOldReceiverName->setWhatsThis(tr("<p>Enter old receiver name.</p>"));
-  _reqcNewReceiverName->setWhatsThis(tr("<p>Enter new receiver name.</p>"));
+  _reqcSampling->setWhatsThis(tr("<p>Select sampling rate of emerging new RINEX observation file.</p>"));
+  _reqcStartDateTime->setWhatsThis(tr("<p>Specify begin of emerging new RINEX observation file.</p>"));
+  _reqcEndDateTime->setWhatsThis(tr("<p>Specify end of emerging new RINEX observation file.</p>"));
+  _reqcOldMarkerName->setWhatsThis(tr("<p>Enter old marker name in RINEX observation file.</p>"));
+  _reqcNewMarkerName->setWhatsThis(tr("<p>Enter new marker name in RINEX observation file.</p>"));
+  _reqcOldAntennaName->setWhatsThis(tr("<p>Enter old antenna name in RINEX observation file.</p>"));
+  _reqcNewAntennaName->setWhatsThis(tr("<p>Enter new antenna name in RINEX observation file.</p>"));
+  _reqcOldReceiverName->setWhatsThis(tr("<p>Enter old receiver name in RINEX observation file.</p>"));
+  _reqcNewReceiverName->setWhatsThis(tr("<p>Enter new receiver name in RINEX observation file.</p>"));
   _reqcComment->setWhatsThis(tr("<p>Specifying a comment line text to be added to the emerging new RINEX file header is an option. Any introduction of newline specification '\\n' in this enforces the beginning of a further comment line. The  comment line(s) will be added to the header after the 'PGM / RUN BY / DATE' record.</p><p>Default is an empty option field meaning that no additional comment line is added to the RINEX header.</p>"));
   _reqcRunBy->setWhatsThis(tr("<p>Specify a 'RUN BY' string to be included in the emerging new RINEX file header.</p><p>Default is an empty option field meanig the operator's user ID is used as 'RUN BY' string.</p>"));
 
