@@ -621,10 +621,10 @@ and hence follows UNAVCO's famous 'TEQC' program. The remarkable thing about BNC
 </p>
 
 <p><a name="reqcedit"><h4>3.6.2 Set Edit Options - mandatory if 'Edit/Concatenate' is set</h4></p>
-<p>Once the 'Edit/Concatenate' action is selected, you have to 'Set Edit Options'. BNC lets you specify the RINEX version, sampling interval, begin and end of file, operator, comment lines, and marker, antenna, receiver details.
+<p>Once the 'Edit/Concatenate' action is selected, you have to 'Set Edit Options'. BNC lets you specify the RINEX version, sampling interval, begin and end of file, operator, comment lines, and marker, antenna, receiver details. Note that sampling, begin/end and marker/antenna/receiver specification are only meaningful for RINEX Observation files.
 </p>
 <p>
-When converting RINEX Version 2 to RINEX Version 3, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. When converting RINEX Version 3 to RINEX Version 2:
+When converting RINEX Version 2 to RINEX Version 3 Observation files, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. When converting RINEX Version 3 to RINEX Version 2 Observation files:
 <ul>
 <li>C1P in RINEX Version 3 is mapped to P1 in RINEX Version 2</li>
 <li>C2P in RINEX Version 3 is mapped to P2 in RINEX Version 2</li>
@@ -634,7 +634,7 @@ When converting RINEX Version 2 to RINEX Version 3, the tracking mode or channel
 <p>Optionally you may specify a comment line text to be added to the emerging new RINEX file header. Any introduction of a newline through '\n' in this enforces the beginning of a further comment line. Comment line(s) will be added to the header immediately after the 'PGM / RUN BY / DATE' record. Default is an empty option field, meaning that no additional comment line will be added to the RINEX header.</p>
   <p>Specifying a 'RUN BY' string to be included in the emerging new RINEX file header is another option. Default is an empty option field meaning the operator's ID is automatically used as 'RUN BY' string.</p>
 <p>
-If you specify a 'New' but no 'Old' marker/antenna/receiver name, the corresponding data field in the emerging new RINEX file will be filled accordingly. If you in addition specify an 'Old' marker/antenna/receiver name, the corresponding data field in the emerging new RINEX file will only be filled accordingly where 'Old' specifications match existing file contents.
+If you specify a 'New' but no 'Old' marker/antenna/receiver name, the corresponding data field in the emerging new RINEX Observation file will be filled accordingly. If you in addition specify an 'Old' marker/antenna/receiver name, the corresponding data field in the emerging new RINEX Observation file will only be filled accordingly where 'Old' specifications match existing file contents.
 </p>
 
 <p><img src="IMG/screenshot27.png"/></p>
