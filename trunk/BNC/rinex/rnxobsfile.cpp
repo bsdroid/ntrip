@@ -672,7 +672,7 @@ void t_rnxObsFile::writeHeader(const QMap<QString, QString>* txtMap) {
   *_stream << QString("%1%2%3")
     .arg(app->pgmName(), -20)
     .arg(runBy.trimmed().left(20), -20)
-    .arg(currentDateAndTimeGPS().toString("yyyyMMdd hhmmss GPS"), -20)
+    .arg(QDateTime::currentDateTime().toUTC().toString("yyyyMMdd hhmmss UTC"), -20)
     .leftJustified(60)
            << "PGM / RUN BY / DATE\n";
 
