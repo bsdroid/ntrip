@@ -502,7 +502,7 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
   QString strV2 = eph.toString(2.11);
   QString strV3 = eph.toString(3.01);
 
-  printOutput(printFile, _ephStreamGPS, strV2, strV3);
+  printOutput(printFile, _ephStreamGlonass, strV2, strV3);
 }
 
 // Print One Galileo Ephemeris
@@ -515,7 +515,7 @@ void bncApp::printGalileoEph(galileoephemeris* ep, bool printFile) {
   QString strV2 = eph.toString(2.11);
   QString strV3 = eph.toString(3.01);
 
-  printOutput(printFile, _ephStreamGPS, strV2, strV3);
+  printOutput(printFile, _ephStreamGalileo, strV2, strV3);
 }
 
 // Output
