@@ -238,9 +238,25 @@ t_eph* t_rnxNavFile::getNextEph(const bncTime& tt,
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_rnxNavFile::writeHeader() {
+void t_rnxNavFile::writeHeader(const QMap<QString, QString>* txtMap) {
 
   bncApp* app = (bncApp*) qApp;
+
+  QString     runBy = app->userName();
+  QStringList comments;
+
+  if (txtMap) {
+    QMapIterator<QString, QString> it(*txtMap);
+    while (it.hasNext()) {
+      it.next();
+      if      (it.key() == "RUN BY") {
+        runBy = it.value();
+      }
+      else if (it.key() == "COMMENT") {
+        comments = it.value().split("\\n", QString::SkipEmptyParts);
+      }
+    }
+  }
 
   if (version() < 3.0) {
     *_stream << QString("%1           Navigation data")
@@ -257,8 +273,8 @@ void t_rnxNavFile::writeHeader() {
 
   *_stream << QString("%1%2%3")
     .arg(app->pgmName(), -20)
-    .arg(app->userName(), -20)
-    .arg(currentDateAndTimeGPS().date().toString("dd-MMM-yyyy"), -20)
+    .arg(runBy.trimmed().left(20), -20)
+    .arg(QDateTime::currentDateTime().toUTC().toString("yyyyMMdd hhmmss UTC"), -20)
     .leftJustified(60)
            << "PGM / RUN BY / DATE\n";
 
