@@ -877,10 +877,10 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
     }
 
     else if ( iLine == 7 ) {
-      if ( readDbl(line, pos[0], fieldLen, _TOT)         ||
-           readDbl(line, pos[1], fieldLen, _fitInterval) ) {
+      if ( readDbl(line, pos[0], fieldLen, _TOT) ) {
         return;
       }
+      readDbl(line, pos[1], fieldLen, _fitInterval); // _fitInterval optional
     }
   }
 
