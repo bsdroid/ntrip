@@ -278,6 +278,11 @@ void t_rnxNavFile::writeHeader(const QMap<QString, QString>* txtMap) {
     .leftJustified(60)
            << "PGM / RUN BY / DATE\n";
 
+  QStringListIterator itCmnt(comments);
+  while (itCmnt.hasNext()) {
+    *_stream << itCmnt.next().trimmed().left(60).leftJustified(60) << "COMMENT\n";
+  }
+
   *_stream << QString()
     .leftJustified(60)
            << "END OF HEADER\n";
