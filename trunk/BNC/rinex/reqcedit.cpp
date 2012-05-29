@@ -301,7 +301,17 @@ void t_reqcEdit::editEphemerides() {
   // ---------------------------------
   t_rnxNavFile outNavFile(_outNavFileName, t_rnxNavFile::output);
   outNavFile.setVersion(_rnxVersion);
-  outNavFile.writeHeader();
+  bncSettings settings;
+  QMap<QString, QString> txtMap;
+  QString runBy = settings.value("reqcRunBy").toString();
+  if (!runBy.isEmpty()) {
+    txtMap["RUN BY"]  = runBy;
+  }
+  QString comment = settings.value("reqcComment").toString();
+  if (!comment.isEmpty()) {
+    txtMap["COMMENT"]  = comment;
+  }
+  outNavFile.writeHeader(&txtMap);
 
   // Loop over all ephemerides
   // -------------------------
