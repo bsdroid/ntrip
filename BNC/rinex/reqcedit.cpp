@@ -45,6 +45,9 @@
 
 using namespace std;
 
+const double rnxV2 = 2.11;
+const double rnxV3 = 3.01;
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_reqcEdit::t_reqcEdit(QObject* parent) : QThread(parent) {
@@ -57,10 +60,10 @@ t_reqcEdit::t_reqcEdit(QObject* parent) : QThread(parent) {
   _outNavFileName = settings.value("reqcOutNavFile").toString();
   int version     = settings.value("reqcRnxVersion").toInt();
   if (version < 3) {
-    _rnxVersion = 2.11;
+    _rnxVersion = rnxV2;
   }
   else {
-    _rnxVersion = 3.01;
+    _rnxVersion = rnxV3;
   }
   _samplingRate   = settings.value("reqcSampling").toInt();
   _begTime        = bncTime(settings.value("reqcStartDateTime").toString().toAscii().data());
@@ -297,10 +300,33 @@ void t_reqcEdit::editEphemerides() {
   }
   qStableSort(_ephs.begin(), _ephs.end(), t_eph::earlierTime);
 
+  // Check Satellite Systems
+  // -----------------------
+  bool haveGPS     = false;
+  bool haveGlonass = false;
+  for (int ii = 0; ii < _ephs.size(); ii++) {
+    const t_eph* eph = _ephs[ii];
+    if      (eph->type() == t_eph::GPS) {
+      haveGPS = true;
+    }
+    else if (eph->type() == t_eph::GLONASS) {
+      haveGlonass = true;
+    }
+  }
+
   // Initialize output navigation file
   // ---------------------------------
   t_rnxNavFile outNavFile(_outNavFileName, t_rnxNavFile::output);
-  outNavFile.setVersion(_rnxVersion);
+
+  outNavFile.setGlonass(haveGlonass);
+
+  if (haveGPS && haveGlonass) {
+    outNavFile.setVersion(rnxV3);
+  }
+  else {
+    outNavFile.setVersion(_rnxVersion);
+  }
+
   bncSettings settings;
   QMap<QString, QString> txtMap;
   QString runBy = settings.value("reqcRunBy").toString();
@@ -311,15 +337,14 @@ void t_reqcEdit::editEphemerides() {
   if (!comment.isEmpty()) {
     txtMap["COMMENT"]  = comment;
   }
+
   outNavFile.writeHeader(&txtMap);
 
   // Loop over all ephemerides
   // -------------------------
   for (int ii = 0; ii < _ephs.size(); ii++) {
     const t_eph* eph = _ephs[ii];
-    if (eph->type() == t_eph::GPS || _rnxVersion >= 3.0) {
-      outNavFile.writeEph(eph);
-    }
+    outNavFile.writeEph(eph);
   }
 }
 

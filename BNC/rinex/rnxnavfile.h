@@ -57,6 +57,7 @@ class t_rnxNavFile {
   double version() const {return _header._version;}
   void   setVersion(double version) {_header._version = version;}
   bool   glonass() const {return _header._glonass;}
+  void   setGlonass(bool glo) {_header._glonass = glo;} 
   void   writeHeader(const QMap<QString, QString>* txtMap = 0);
   void   writeEph(const t_eph* eph);
 
