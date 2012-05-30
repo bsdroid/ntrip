@@ -273,7 +273,7 @@ void t_rnxNavFile::writeHeader(const QMap<QString, QString>* txtMap) {
              << "RINEX VERSION / TYPE\n";
   }
 
-  const QString fmtDate = (version() < 3.0) ? "dd-MM-yy hh:mm"
+  const QString fmtDate = (version() < 3.0) ? "dd-MMM-yy hh:mm"
                                             : "yyyyMMdd hhmmss UTC";
   *_stream << QString("%1%2%3")
     .arg(app->pgmName(), -20)
