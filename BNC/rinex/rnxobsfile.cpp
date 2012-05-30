@@ -669,10 +669,12 @@ void t_rnxObsFile::writeHeader(const QMap<QString, QString>* txtMap) {
     .leftJustified(60)
            << "RINEX VERSION / TYPE\n";
 
+  const QString fmtDate = (version() < 3.0) ? "dd-MMM-yy hh:mm"
+                                            : "yyyyMMdd hhmmss UTC";
   *_stream << QString("%1%2%3")
     .arg(app->pgmName(), -20)
     .arg(runBy.trimmed().left(20), -20)
-    .arg(QDateTime::currentDateTime().toUTC().toString("yyyyMMdd hhmmss UTC"), -20)
+    .arg(QDateTime::currentDateTime().toUTC().toString(fmtDate), -20)
     .leftJustified(60)
            << "PGM / RUN BY / DATE\n";
 
