@@ -259,7 +259,9 @@ void t_rnxNavFile::writeHeader(const QMap<QString, QString>* txtMap) {
   }
 
   if (version() < 3.0) {
-    *_stream << QString("%1           Navigation data")
+    const QString fmt = glonass() ? "%1           GLONASS navigation data" 
+                                  : "%1           Navigation data";
+    *_stream << QString(fmt)
       .arg(_header._version, 9, 'f', 2)
       .leftJustified(60)
              << "RINEX VERSION / TYPE\n";
