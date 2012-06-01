@@ -34,17 +34,20 @@ enum CodeType {
   CODETYPEGPS_L1_CA          = 0,
   CODETYPEGPS_L1_P           = 1,
   CODETYPEGPS_L1_Z           = 2,
+  /*CODETYPEGPS_L1_Y         = 3,
+  CODETYPEGPS_L1_M           = 4,*/
+  CODETYPEGPS_L2_CA          = 5,
   CODETYPEGPS_SEMI_CODELESS  = 6,
   CODETYPEGPS_L2_CM          = 7,
   CODETYPEGPS_L2_CL          = 8,
   CODETYPEGPS_L2_CML         = 9,
   CODETYPEGPS_L2_P           = 10,
   CODETYPEGPS_L2_Z           = 11,
-  CODETYPEGPS_L2_Y           = 12,
-  CODETYPEGPS_L2_M           = 13,
-  CODETYPEGPS_L2_I           = 14,
-  CODETYPEGPS_L2_Q           = 15,
-  CODETYPEGPS_L2_IQ          = 16,
+  /*CODETYPEGPS_L2_Y         = 12,
+  CODETYPEGPS_L2_M           = 13,*/
+  CODETYPEGPS_L5_I           = 14,
+  CODETYPEGPS_L5_Q           = 15,
+  /*CODETYPEGPS_L5_IQ          = 16,*/
 
   CODETYPEGLONASS_L1_CA      = 0,
   CODETYPEGLONASS_L1_P       = 1,
