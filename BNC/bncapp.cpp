@@ -222,6 +222,11 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
 
   gpsephemeris** ee = &_gpsEph[gpseph->satellite-1];
 
+  if ( *ee != 0 && 
+       gpseph->GPSweek == (*ee)->GPSweek && gpseph->TOC == (*ee)->TOC ) {
+    checkEphemeris(*ee, gpseph);
+  }
+
   if ( *ee == 0                         || 
        gpseph->GPSweek > (*ee)->GPSweek ||
        (gpseph->GPSweek == (*ee)->GPSweek && gpseph->TOC > (*ee)->TOC) ) {
@@ -800,4 +805,16 @@ bool bncApp::event(QEvent* ev) {
   }
     
   return QApplication::event(ev);
+}
+
+// Check Ephemeris Consistency
+////////////////////////////////////////////////////////////////////////////
+void bncApp::checkEphemeris(gpsephemeris* oldEph, gpsephemeris* newEph) {
+  if (oldEph->clock_bias      != newEph->clock_bias      ||
+      oldEph->clock_drift     != newEph->clock_drift     ||
+      oldEph->clock_driftrate != newEph->clock_driftrate) {
+    QString msg = currentDateAndTimeGPS().toString(Qt::ISODate) +
+                  QString(" %1 EPH DIFFERS\n").arg(oldEph->satellite);
+    messagePrivate(msg.toAscii());
+  }
 }
