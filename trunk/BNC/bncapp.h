@@ -93,6 +93,7 @@ class bncApp : public QApplication {
     void dumpCorrs();
     void dumpCorrs(const QList<QString>& allCorrs);
     void messagePrivate(const QByteArray& msg);
+    void checkEphemeris(gpsephemeris* oldEph, gpsephemeris* newEph);
 
     QFile*            _logFile;
     QTextStream*      _logStream;
