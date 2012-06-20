@@ -370,6 +370,9 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::slotReadMountPoints() {
 
+  bncSettings settings;
+  settings.reRead();
+
   readMountPoints();
 }
 
