@@ -1,38 +1,5 @@
 Todo's sorted by priority:
 
-BNS
-=========================
-(1) We often have small (~20...30 sec) outages in the CLK* streams. I dont
-know where this comes from. The situation can be checked through
-http://products.igs-ip.net/admin?mode=sources (ntrip:ntrip)
-(see column 'Connected for')
-
-(2) One would expect that a new ephemeris set always comes with a later validity
-time tag than a previously distributed ephemeris set. However, this is not always true.
-Sometimes new ephemeris sets come with a validity time tag which is earlier than the
-validity time tag of a previously distributed ephemeris set. This is something
-we should consider in BNS. Gerhard observed that we dont consider this right
-now. The consequence is that a satellite gets lost for PPP clients because
-they deal with another ephemeris set than the correctors provided by
-BNS.
-
-(3)
-Shall We add the following validity check to BNS and BNS for the GLONASS broadcast
-ephemeris messages?
-(a) If the time of validity differs by more than +/- 30 min from the time
-of reception, then the 1019/1020 messages are rejected.
-(b) However, if correcting the time of validity of such rejected 1019/1020
-message by exactly 3 hours leads to a new validity time within +/- 30 min of
-the reception time, then the broadcast ephemeris are nevertheless accepted.
-(c) The following is Gerhard's opinion:
-Die 1020 Message ist sauber definiert. Es gab zwar in der Anfangsphase
-hier und da Probleme mit einigen Implementation, die sind aber meines Wissens
-gelöst.  Ich halte es für sehr kritisch, eine 3-Stunden Differenz automatisch zu
-akzeptieren und vielleicht sogar zu korrigieren. 
-
-
-BNC
-=========================
 (1) Should we spend time to improve BNC's convergence? Should we follow a
 procedure like the one Oscar implemented? If not: Can we do something which
 helps a bit and does not involve too much work? Or should we better do nothing?
@@ -58,11 +25,7 @@ in elevation, or the 3-D precision of the coordinates being estimated falls
 below something like 25 cm (again, this will be a different threshold with
 different software).
 
-(2) Could we use the XYZ from 'Plot origion' to improve BNC's conversion when
-we start the program (supposed the user has good a-priori coordinates)?
-So far the introduced XYZ is only used for the plot.
-
-(3) NMEA GGA string is not fully compatible with the standard.
+(2) NMEA GGA string is not fully compatible with the standard.
 The following are observations by Tamas Horvath: 
 (a) Time tag should refer to UTC time and not GPS system time.
 (b) Time tag format is hhmmss.ss and not hhmmss.
@@ -74,10 +37,4 @@ autonomous GNSS and PPP.
 field is filled with 2.0 as a default value in BNC.
 (e) The Age of Differential GPS data field is not populated. I believe here the
 age of RTCM SSR data should be put.
-
-(4) BNC has a problem when the observation update rate is > 1Hz. Records get
-mixed then in the RINEX files. A 10 Hz stream to test the situation is 
-available from GFZ caster 139.17.3.112:4080 through stream A17H.
-
-(5) GW: Keep an eye on www.igs-ip.net/PENC0.
 
