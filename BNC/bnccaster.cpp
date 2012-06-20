@@ -366,9 +366,16 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
   }
 }
 
-// Reread configuration 
+// Reread configuration (private slot)
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::slotReadMountPoints() {
+
+  readMountPoints();
+}
+
+// Read Mountpoints
+////////////////////////////////////////////////////////////////////////////
+void bncCaster::readMountPoints() {
 
   bncSettings settings;
 

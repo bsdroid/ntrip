@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
     // --------------------------------
     if ( rawFileName.isEmpty() ) {
       app.setMode(bncApp::nonInteractive);
-      caster->slotReadMountPoints();
+      caster->readMountPoints();
       if (caster->numStations() == 0) {
         exit(0);
       }

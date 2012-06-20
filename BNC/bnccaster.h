@@ -41,10 +41,10 @@ class bncCaster : public QObject {
    ~bncCaster();
    void addGetThread(bncGetThread* getThread, bool noNewThread = false);
    int  numStations() const {return _staIDs.size();}
+   void readMountPoints();
 
  public slots:
    void newObs(QByteArray staID, bool firstObs, t_obs obs);
-   void slotReadMountPoints();
    void slotNewNMEAstr(QByteArray str);
 
  signals:
@@ -53,6 +53,7 @@ class bncCaster : public QObject {
    void newMessage(QByteArray msg, bool showOnScreen);
 
  private slots:
+   void slotReadMountPoints();
    void slotNewConnection();
    void slotNewUConnection();
    void slotNewNMEAConnection();

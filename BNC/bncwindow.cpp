@@ -1753,7 +1753,7 @@ void bncWindow::saveOptions() {
   settings.setValue("uploadEphPassword",  _uploadEphPasswordLineEdit->text());
   settings.setValue("uploadEphSample",    _uploadEphSampleSpinBox->value());
   if (_caster) {
-    _caster->slotReadMountPoints();
+    _caster->readMountPoints();
   }
 }
 
@@ -1837,7 +1837,7 @@ void bncWindow::startRealTime() {
     if (!anxfile.exists()) ((bncApp*)qApp)->slotMessage("Cannot find IGS ANTEX file", true);
   }
 
-  _caster->slotReadMountPoints();
+  _caster->readMountPoints();
 
   _casterEph = new bncEphUploadCaster();
   connect(_casterEph, SIGNAL(newBytes(QByteArray,double)), 
