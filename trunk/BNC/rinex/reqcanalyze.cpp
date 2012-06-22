@@ -135,9 +135,22 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         // TODO: set channel number
       }
 
+      QString prn = QString("%1%2").arg(obs.satSys)
+                                   .arg(obs.satNum, 2, 10, QChar('0'));
+      _satStat[prn].addObs(obs);
     }
 
   } // while (epo)
 
   _log->flush();
+}
+
+//  
+////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
+  if (currObs) {
+    delete prevObs;
+    prevObs = currObs;
+  }
+  currObs = new t_obs(obs);
 }
