@@ -113,5 +113,5 @@ void t_reqcAnalyze::run() {
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::analyzeFile(const t_rnxObsFile* rnxObsFile) {
-  cout << rnxObsFile->fileName().toAscii().data() << endl;
+  *_log << rnxObsFile->fileName().toAscii().data() << endl;
 }
