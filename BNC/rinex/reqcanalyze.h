@@ -49,6 +49,18 @@ Q_OBJECT
   virtual void run();
  
  private:
+  class t_anaObs {
+   public:
+    t_anaObs(const t_obs& obsIn) {
+      obs = obsIn;
+      M1  = 0.0;
+      M2  = 0.0;
+    }
+    t_obs  obs;
+    double M1;
+    double M2;
+  };
+
   class t_satStat {
    public:
     t_satStat() {
@@ -60,8 +72,8 @@ Q_OBJECT
       delete prevObs;
     }
     void addObs(const t_obs& obs);
-    t_obs* currObs;
-    t_obs* prevObs;
+    t_anaObs* currObs;
+    t_anaObs* prevObs;
   };
 
   void analyzeFile(t_rnxObsFile* obsFile);
@@ -74,6 +86,7 @@ Q_OBJECT
   QStringList              _navFileNames;
   QVector<t_eph*>          _ephs;
   QMap<QString, t_satStat> _satStat;
+  t_rnxObsFile::t_rnxEpo*  _currEpo;
 };
 
 #endif
