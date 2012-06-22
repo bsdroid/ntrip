@@ -275,6 +275,31 @@ void t_reqcEdit::applyLLI(const t_rnxObsFile* obsFile,
   _lli.clear();
 }
 
+/// Read All Ephemerides
+////////////////////////////////////////////////////////////////////////////
+void t_reqcEdit::readEphemerides(const QStringList& navFileNames,
+                                 QVector<t_eph*>& ephs) {
+
+  QStringListIterator it(navFileNames);
+  while (it.hasNext()) {
+    QString fileName = it.next();
+    if (fileName.indexOf('*') != -1 || fileName.indexOf('?') != -1) {
+      QFileInfo fileInfo(fileName);
+      QDir dir = fileInfo.dir();
+      QStringList filters; filters << fileInfo.fileName();
+      QListIterator<QFileInfo> it(dir.entryInfoList(filters));
+      while (it.hasNext()) {
+        QString filePath = it.next().filePath(); 
+        appendEphemerides(filePath, ephs);
+      }
+    }
+    else {
+      appendEphemerides(fileName, ephs);
+    }
+  }
+  qStableSort(ephs.begin(), ephs.end(), t_eph::earlierTime);
+}
+
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::editEphemerides() {
@@ -285,26 +310,7 @@ void t_reqcEdit::editEphemerides() {
     return;
   }
 
-  // Read All Ephemerides
-  // --------------------
-  QStringListIterator it(_navFileNames);
-  while (it.hasNext()) {
-    QString fileName = it.next();
-    if (fileName.indexOf('*') != -1 || fileName.indexOf('?') != -1) {
-      QFileInfo fileInfo(fileName);
-      QDir dir = fileInfo.dir();
-      QStringList filters; filters << fileInfo.fileName();
-      QListIterator<QFileInfo> it(dir.entryInfoList(filters));
-      while (it.hasNext()) {
-        QString filePath = it.next().filePath(); 
-        appendEphemerides(filePath);
-      }
-    }
-    else {
-      appendEphemerides(fileName);
-    }
-  }
-  qStableSort(_ephs.begin(), _ephs.end(), t_eph::earlierTime);
+  t_reqcEdit::readEphemerides(_navFileNames, _ephs);
 
   // Check Satellite Systems
   // -----------------------
@@ -356,14 +362,15 @@ void t_reqcEdit::editEphemerides() {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcEdit::appendEphemerides(const QString& fileName) {
+void t_reqcEdit::appendEphemerides(const QString& fileName,
+                                   QVector<t_eph*>& ephs) {
 
   t_rnxNavFile rnxNavFile(fileName, t_rnxNavFile::input);
   for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
     t_eph* eph   = rnxNavFile.ephs()[ii];
     bool   isNew = true;
-    for (int iOld = 0; iOld < _ephs.size(); iOld++) {
-      const t_eph* ephOld = _ephs[iOld];
+    for (int iOld = 0; iOld < ephs.size(); iOld++) {
+      const t_eph* ephOld = ephs[iOld];
       if (ephOld->prn() == eph->prn() && ephOld->TOC() == eph->TOC()) {
         isNew = false;
         break;
@@ -371,13 +378,13 @@ void t_reqcEdit::appendEphemerides(const QString& fileName) {
     }
     if (isNew) {
       if      (eph->type() == t_eph::GPS) {
-        _ephs.append(new t_ephGPS(*dynamic_cast<t_ephGPS*>(eph)));
+        ephs.append(new t_ephGPS(*dynamic_cast<t_ephGPS*>(eph)));
       }
       else if (eph->type() == t_eph::GLONASS) {
-        _ephs.append(new t_ephGlo(*dynamic_cast<t_ephGlo*>(eph)));
+        ephs.append(new t_ephGlo(*dynamic_cast<t_ephGlo*>(eph)));
       }
       else if (eph->type() == t_eph::Galileo) {
-        _ephs.append(new t_ephGal(*dynamic_cast<t_ephGal*>(eph)));
+        ephs.append(new t_ephGal(*dynamic_cast<t_ephGal*>(eph)));
       }
     }
   }
