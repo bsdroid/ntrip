@@ -28,6 +28,7 @@
 #include <QtCore>
 #include "rnxobsfile.h"
 #include "rnxnavfile.h"
+#include "RTCM/GPSDecoder.h"
 #include "RTCM3/ephemeris.h"
 
 class t_reqcAnalyze : public QThread {
@@ -48,16 +49,31 @@ Q_OBJECT
   virtual void run();
  
  private:
+  class t_satStat {
+   public:
+    t_satStat() {
+      currObs = 0;
+      prevObs = 0;
+    }
+    ~t_satStat() {
+      delete currObs;
+      delete prevObs;
+    }
+    void addObs(const t_obs& obs);
+    t_obs* currObs;
+    t_obs* prevObs;
+  };
+
   void analyzeFile(t_rnxObsFile* obsFile);
 
-  QString                _logFileName;
-  QFile*                 _logFile;
-  QTextStream*           _log;
-  QStringList            _obsFileNames;
-  QVector<t_rnxObsFile*> _rnxObsFiles;
-  QStringList            _navFileNames;
-  QVector<t_eph*>        _ephs;
-;
+  QString                  _logFileName;
+  QFile*                   _logFile;
+  QTextStream*             _log;
+  QStringList              _obsFileNames;
+  QVector<t_rnxObsFile*>   _rnxObsFiles;
+  QStringList              _navFileNames;
+  QVector<t_eph*>          _ephs;
+  QMap<QString, t_satStat> _satStat;
 };
 
 #endif

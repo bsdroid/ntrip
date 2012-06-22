@@ -125,6 +125,12 @@ void t_postProcessing::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
     }
     else if (type.indexOf("L1") == 0 && obs.L1C == 0.0) {
       obs.L1C = rnxSat.obs[iType];
+      if      (obs.slip_cnt_L1 < 0) {  // undefined value
+        obs.slip_cnt_L1 = 0;
+      }
+      else if (rnxSat.lli[iType] & 1) {
+        ++obs.slip_cnt_L1;
+      }
     }
     else if (type.indexOf("C2") == 0 && obs.C2  == 0.0) {
       obs.C2 = rnxSat.obs[iType];
@@ -134,6 +140,12 @@ void t_postProcessing::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
     }
     else if (type.indexOf("L2") == 0 && obs.L2C == 0.0) {
       obs.L2C = rnxSat.obs[iType];
+      if      (obs.slip_cnt_L2 < 0) {  // undefined value
+        obs.slip_cnt_L2 = 0;
+      }
+      else if (rnxSat.lli[iType] & 1) {
+        ++obs.slip_cnt_L2;
+      }
     }
   }
 }
