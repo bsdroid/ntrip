@@ -310,6 +310,8 @@ void t_reqcEdit::editEphemerides() {
     return;
   }
 
+  // Read Ephemerides
+  // ----------------
   t_reqcEdit::readEphemerides(_navFileNames, _ephs);
 
   // Check Satellite Systems
