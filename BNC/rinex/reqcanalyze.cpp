@@ -43,6 +43,7 @@
 #include "bncapp.h"
 #include "bncsettings.h"
 #include "reqcedit.h"
+#include "bncutils.h"
 
 using namespace std;
 
@@ -53,23 +54,48 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
   bncSettings settings;
 
   _obsFileNames = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
+  _logFileName  = settings.value("reqcOutLogFile").toString();
+  expandEnvVar(_logFileName);
+  _logFile = 0;
+  _log     = 0;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_reqcAnalyze::~t_reqcAnalyze() {
+  for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
+    delete _rnxObsFiles[ii];
+  }
+  for (int ii = 0; ii < _ephs.size(); ii++) {
+    delete _ephs[ii];
+  }
+  delete _log;     _log     = 0;
+  delete _logFile; _logFile = 0;
 }
 
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::run() {
 
+  // Open Log File
+  // -------------
+  _logFile = new QFile(_logFileName);
+  _logFile->open(QIODevice::WriteOnly | QIODevice::Text);
+  _log = new QTextStream();
+  _log->setDevice(_logFile);
+
+  // Initialize RINEX Observation Files
+  // ----------------------------------
   t_reqcEdit::initRnxObsFiles(_obsFileNames, _rnxObsFiles);
 
+  // Loop over all RINEX Files
+  // -------------------------
   for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
     analyzeFile(_rnxObsFiles[ii]);
   }
 
+  // Exit
+  // ----
   bncApp* app = (bncApp*) qApp;
   if ( app->mode() != bncApp::interactive) {
     app->exit(0);
