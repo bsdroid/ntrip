@@ -654,12 +654,12 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
     else {
       _out << setw(14) << setprecision(3) << obs.C1    << ' '  << ' '
            << setw(14) << setprecision(3) << obs.P1    << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.L1()  << lli1 << ' '
-           << setw(14) << setprecision(3) << obs.S1()  << ' '  << ' '
+           << setw(14) << setprecision(3) << obs.l1()  << lli1 << ' '
+           << setw(14) << setprecision(3) << obs.s1()  << ' '  << ' '
            << setw(14) << setprecision(3) << obs.C2    << ' '  << ' ' << endl
            << setw(14) << setprecision(3) << obs.P2    << ' '  << ' ' 
-           << setw(14) << setprecision(3) << obs.L2()  << lli2 << ' '
-           << setw(14) << setprecision(3) << obs.S2()  << endl;
+           << setw(14) << setprecision(3) << obs.l2()  << lli2 << ' '
+           << setw(14) << setprecision(3) << obs.s2()  << endl;
     }
   }
 

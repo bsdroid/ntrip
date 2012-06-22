@@ -70,10 +70,12 @@ class t_obs {
 
   ~t_obs() {}
 
-  double L1() const {return (L1P != 0.0 ? L1P : L1C);}
-  double L2() const {return (L2P != 0.0 ? L2P : L2C);}
-  double S1() const {return (L1P != 0.0 ? S1P : S1C);}
-  double S2() const {return (L2P != 0.0 ? S2P : S2C);}
+  double p1() const {return (P1  != 0.0 ? P1  : C1);}
+  double p2() const {return (P2  != 0.0 ? P2  : C2);}
+  double l1() const {return (L1P != 0.0 ? L1P : L1C);}
+  double l2() const {return (L2P != 0.0 ? L2P : L2C);}
+  double s1() const {return (L1P != 0.0 ? S1P : S1C);}
+  double s2() const {return (L2P != 0.0 ? S2P : S2C);}
 
   char   StatID[20+1]; // Station ID
   char   satSys;       // Satellite System ('G' or 'R')
