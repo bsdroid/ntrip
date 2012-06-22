@@ -42,6 +42,7 @@
 #include "reqcanalyze.h"
 #include "bncapp.h"
 #include "bncsettings.h"
+#include "reqcedit.h"
 
 using namespace std;
 
@@ -50,6 +51,8 @@ using namespace std;
 t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
 
   bncSettings settings;
+
+  _obsFileNames = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
 }
 
 // Destructor
@@ -61,7 +64,11 @@ t_reqcAnalyze::~t_reqcAnalyze() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::run() {
 
-  cout << "Reqc Analyze Running ..." << endl;
+  t_reqcEdit::initRnxObsFiles(_obsFileNames, _rnxObsFiles);
+
+  for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
+    analyzeFile(_rnxObsFiles[ii]);
+  }
 
   bncApp* app = (bncApp*) qApp;
   if ( app->mode() != bncApp::interactive) {
@@ -71,4 +78,10 @@ void t_reqcAnalyze::run() {
     emit finished();
     deleteLater();
   }
+}
+
+//  
+////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::analyzeFile(const t_rnxObsFile* rnxObsFile) {
+  cout << rnxObsFile->fileName().toAscii().data() << endl;
 }

@@ -46,6 +46,8 @@ Q_OBJECT
 
  public:
   virtual void run();
+  static void initRnxObsFiles(const QStringList& obsFileNames, 
+                              QVector<t_rnxObsFile*>& rnxObsFiles);
  
  private:
   void editObservations();

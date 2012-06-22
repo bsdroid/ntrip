@@ -2565,8 +2565,6 @@ void bncWindow::startPostProcessingReqc() {
   _runningPostProcessingReqc = true;
   enableStartStop();
   if (_reqcActionComboBox->currentText() == "Analyze") {
-    QMessageBox::information(this, "Information",
-                           "Analyze not yet implemented");
     t_reqcAnalyze* reqcAnalyze = new t_reqcAnalyze(this);
     connect(reqcAnalyze, SIGNAL(finished()), 
             this, SLOT(slotFinishedPostProcessingReqc()));
