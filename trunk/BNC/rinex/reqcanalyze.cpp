@@ -138,15 +138,34 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
       QString prn = QString("%1%2").arg(obs.satSys)
                                    .arg(obs.satNum, 2, 10, QChar('0'));
-      _satStat[prn].addObs(obs);
 
-      t_anaObs* anaObs = _satStat[prn].currObs;
-      _log->setRealNumberNotation(QTextStream::FixedNotation);
-      _log->setRealNumberPrecision(2);
-      *_log << prn << " " << anaObs->M1 << " " << anaObs->M2 << endl;
+      t_satStat& satStat = _satStat[prn];
+      satStat.addObs(obs);
     }
 
   } // while (_currEpo)
+
+  // Analyze the Multipath
+  // ---------------------
+  _log->setRealNumberNotation(QTextStream::FixedNotation);
+  _log->setRealNumberPrecision(2);
+
+  QMapIterator<QString, t_satStat> it(_satStat);
+  while (it.hasNext()) {
+    it.next();
+    QString          prn     = it.key();
+    const t_satStat& satStat = it.value();
+    if (satStat.MP1.size()) {
+      for (int ii = 0; ii < satStat.MP1.size(); ii++) {
+        *_log << "MP1 " << prn << " " << satStat.MP1[ii] << endl;
+      }
+    }
+    if (satStat.MP2.size()) {
+      for (int ii = 0; ii < satStat.MP2.size(); ii++) {
+        *_log << "MP2 " << prn << " " << satStat.MP2[ii] << endl;
+      }
+    }
+  }
 
   _log->flush();
 }
@@ -160,19 +179,22 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
   }
   currObs = new t_anaObs(obs);
 
-  if (obs.p1() != 0.0 && obs.p2() != 0.0 && 
-      obs.l1() != 0.0 && obs.l2() != 0.0) {
-
+  // Compute the Multipath
+  // ----------------------
+  if (obs.l1() != 0.0 && obs.l2() != 0.0) {
     double f1 = t_CST::f1(obs.satSys, obs.slotNum);
     double f2 = t_CST::f2(obs.satSys, obs.slotNum);
 
     double L1 = obs.l1() * t_CST::c / f1;
     double L2 = obs.l2() * t_CST::c / f2;
 
-    // Multipath linear combinations
-    // -----------------------------
-    currObs->M1 = obs.p1() - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
-
-    currObs->M2 = obs.p2() - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
+    if (obs.p1() != 0.0) {
+      currObs->M1 = obs.p1() - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
+      MP1 << currObs->M1;
+    }
+    if (obs.p2() != 0.0) {
+      currObs->M2 = obs.p2() - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
+      MP2 << currObs->M2;
+    }
   }
 }

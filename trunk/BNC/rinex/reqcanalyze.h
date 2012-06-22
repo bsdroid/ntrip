@@ -72,6 +72,8 @@ Q_OBJECT
       delete prevObs;
     }
     void addObs(const t_obs& obs);
+    QVector<double> MP1;
+    QVector<double> MP2;
     t_anaObs* currObs;
     t_anaObs* prevObs;
   };
