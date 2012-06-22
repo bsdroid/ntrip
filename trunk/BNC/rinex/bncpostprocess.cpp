@@ -101,6 +101,43 @@ void t_postProcessing::slotMessage(QByteArray msg, bool /* showOnScreen */) {
   }
 }
 
+// Set Observations from RINEX File
+////////////////////////////////////////////////////////////////////////////
+void t_postProcessing::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
+                                     const t_rnxObsFile::t_rnxEpo* epo, 
+                                     const t_rnxObsFile::t_rnxSat& rnxSat, 
+                                     t_obs& obs) {
+
+  strncpy(obs.StatID, rnxObsFile->markerName().toAscii().constData(),
+          sizeof(obs.StatID));
+  obs.satSys   = rnxSat.satSys;
+  obs.satNum   = rnxSat.satNum;
+  obs.GPSWeek  = epo->tt.gpsw();
+  obs.GPSWeeks = epo->tt.gpssec();
+  //// TODO: check RINEX Version 3 types
+  for (int iType = 0; iType < rnxObsFile->nTypes(obs.satSys); iType++) {
+    QByteArray type = rnxObsFile->obsType(obs.satSys,iType).toAscii();
+    if      (type.indexOf("C1") == 0 && obs.C1  == 0.0) {
+      obs.C1 = rnxSat.obs[iType];
+    }
+    else if (type.indexOf("P1") == 0 && obs.P1  == 0.0) {
+      obs.P1 = rnxSat.obs[iType];
+    }
+    else if (type.indexOf("L1") == 0 && obs.L1C == 0.0) {
+      obs.L1C = rnxSat.obs[iType];
+    }
+    else if (type.indexOf("C2") == 0 && obs.C2  == 0.0) {
+      obs.C2 = rnxSat.obs[iType];
+    }
+    else if (type.indexOf("P2") == 0 && obs.P2  == 0.0) {
+      obs.P2 = rnxSat.obs[iType];
+    }
+    else if (type.indexOf("L2") == 0 && obs.L2C == 0.0) {
+      obs.L2C = rnxSat.obs[iType];
+    }
+  }
+}
+
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_postProcessing::run() {
@@ -148,40 +185,15 @@ void t_postProcessing::run() {
     }
 
     for (unsigned iObs = 0; iObs < epo->rnxSat.size(); iObs++) {
-      bool obsOK = true;
+
       const t_rnxObsFile::t_rnxSat& rnxSat = epo->rnxSat[iObs];
+    
       t_obs obs;
-      strncpy(obs.StatID, _rnxObsFile->markerName().toAscii().constData(),
-              sizeof(obs.StatID));
-      obs.satSys   = rnxSat.satSys;
-      obs.satNum   = rnxSat.satNum;
-      obs.GPSWeek  = epo->tt.gpsw();
-      obs.GPSWeeks = epo->tt.gpssec();
-      //// TODO: check RINEX Version 3 types
-      for (int iType = 0; iType < _rnxObsFile->nTypes(obs.satSys); iType++) {
-        QByteArray type = _rnxObsFile->obsType(obs.satSys,iType).toAscii();
-        if      (type.indexOf("C1") == 0 && obs.C1  == 0.0) {
-          obs.C1 = rnxSat.obs[iType];
-        }
-        else if (type.indexOf("P1") == 0 && obs.P1  == 0.0) {
-          obs.P1 = rnxSat.obs[iType];
-        }
-        else if (type.indexOf("L1") == 0 && obs.L1C == 0.0) {
-          obs.L1C = rnxSat.obs[iType];
-        }
-        else if (type.indexOf("C2") == 0 && obs.C2  == 0.0) {
-          obs.C2 = rnxSat.obs[iType];
-        }
-        else if (type.indexOf("P2") == 0 && obs.P2  == 0.0) {
-          obs.P2 = rnxSat.obs[iType];
-        }
-        else if (type.indexOf("L2") == 0 && obs.L2C == 0.0) {
-          obs.L2C = rnxSat.obs[iType];
-        }
-      }
+      t_postProcessing::setObsFromRnx(_rnxObsFile, epo, rnxSat, obs);
 
       // Get Glonass Channel Number
       // -------------------------
+      bool obsOK = true;
       if (obs.satSys == 'R') {
         QString prn = QString("%1%2").arg(obs.satSys)
                                      .arg(obs.satNum, 2, 10, QChar('0'));
