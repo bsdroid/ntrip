@@ -155,21 +155,24 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
     it.next();
     QString          prn     = it.key();
     const t_satStat& satStat = it.value();
-
-    if (satStat.MP1.size() > 1) {
-      double mean = 0.0;
-      for (int ii = 0; ii < satStat.MP1.size(); ii++) {
-        mean += satStat.MP1[ii];
+  
+    for (int im = 1; im <= 2; im++) {
+      const QVector<double>& MP = (im == 1) ? satStat.MP1 : satStat.MP2;
+      if (MP.size() > 1) {
+        double mean = 0.0;
+        for (int ii = 0; ii < MP.size(); ii++) {
+          mean += MP[ii];
+        }
+        mean /= MP.size();
+        double stddev = 0.0;
+        for (int ii = 0; ii < MP.size(); ii++) {
+          double diff = MP[ii] - mean;
+          stddev += diff * diff;
+        }
+        double multipath = sqrt(stddev / (MP.size()-1));
+      
+        *_log << "MP" << im << " " << prn << " " << multipath << endl;
       }
-      mean /= satStat.MP1.size();
-      double stddev = 0.0;
-      for (int ii = 0; ii < satStat.MP1.size(); ii++) {
-        double diff = satStat.MP1[ii] - mean;
-        stddev += diff * diff;
-      }
-      double MP1 = sqrt(stddev / (satStat.MP1.size()-1));
-
-      *_log << "MP1 " << prn << " " << MP1 << endl;
     }
 
   }
