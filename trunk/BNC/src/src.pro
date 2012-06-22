@@ -30,7 +30,7 @@ release:MOC_DIR=.moc/release
 
 # Include Path
 # ------------
-INCLUDEPATH = . ./newmat ./RTCM3 ./RTCM3/clock_and_orbit ./RTCM3/rtcm3torinex
+INCLUDEPATH = . ../newmat ./RTCM3 ./RTCM3/clock_and_orbit ./RTCM3/rtcm3torinex
 
 HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bnccaster.h bncrinex.h bncapp.h bncutils.h   bnchlpdlg.h    \
@@ -60,10 +60,6 @@ HEADERS       += serial/qextserialbase.h serial/qextserialport.h
 unix:HEADERS  += serial/posix_qextserialport.h
 win32:HEADERS += serial/win_qextserialport.h
 
-HEADERS += newmat/controlw.h newmat/include.h newmat/myexcept.h  \
-           newmat/newmatap.h newmat/newmat.h newmat/newmatio.h   \
-           newmat/newmatrc.h newmat/newmatrm.h newmat/precisio.h
-
 SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bnccaster.cpp bncrinex.cpp bncapp.cpp bncutils.cpp          \
           bncconst.cpp bnchtml.cpp bnchlpdlg.cpp bnctableitem.cpp     \
@@ -91,15 +87,6 @@ SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
 SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp
 unix:SOURCES  += serial/posix_qextserialport.cpp
 win32:SOURCES += serial/win_qextserialport.cpp
-
-SOURCES += newmat/bandmat.cpp newmat/cholesky.cpp newmat/evalue.cpp  \
-           newmat/fft.cpp newmat/hholder.cpp newmat/jacobi.cpp       \
-           newmat/myexcept.cpp newmat/newfft.cpp newmat/newmat1.cpp  \
-           newmat/newmat2.cpp newmat/newmat3.cpp newmat/newmat4.cpp  \
-           newmat/newmat5.cpp newmat/newmat6.cpp newmat/newmat7.cpp  \
-           newmat/newmat8.cpp newmat/newmat9.cpp newmat/newmatex.cpp \
-           newmat/newmatrm.cpp newmat/nm_misc.cpp newmat/sort.cpp    \
-           newmat/submat.cpp newmat/svd.cpp
 
 RC_FILE = bnc.rc
 
