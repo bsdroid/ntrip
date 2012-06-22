@@ -53,11 +53,11 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
 
   bncSettings settings;
 
+  _logFileName  = settings.value("reqcOutLogFile").toString(); expandEnvVar(_logFileName);
+  _logFile      = 0;
+  _log          = 0;
   _obsFileNames = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
-  _logFileName  = settings.value("reqcOutLogFile").toString();
-  expandEnvVar(_logFileName);
-  _logFile = 0;
-  _log     = 0;
+  _navFileNames = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
 }
 
 // Destructor
@@ -87,6 +87,10 @@ void t_reqcAnalyze::run() {
   // Initialize RINEX Observation Files
   // ----------------------------------
   t_reqcEdit::initRnxObsFiles(_obsFileNames, _rnxObsFiles);
+
+  // Read Ephemerides
+  // ----------------
+  t_reqcEdit::readEphemerides(_navFileNames, _ephs);
 
   // Loop over all RINEX Files
   // -------------------------
