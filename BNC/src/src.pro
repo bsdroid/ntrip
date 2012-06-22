@@ -1,4 +1,6 @@
 
+TARGET = ../bnc
+
 # Switch to debug configuration
 # -----------------------------
 CONFIG -= debug
@@ -31,6 +33,10 @@ release:MOC_DIR=.moc/release
 # Include Path
 # ------------
 INCLUDEPATH = . ../newmat ./RTCM3 ./RTCM3/clock_and_orbit ./RTCM3/rtcm3torinex
+
+# Additional Libraries
+# --------------------
+LIBS += -L../newmat -lnewmat
 
 HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bnccaster.h bncrinex.h bncapp.h bncutils.h   bnchlpdlg.h    \
