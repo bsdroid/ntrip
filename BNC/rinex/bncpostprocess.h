@@ -27,21 +27,26 @@
 
 #include <QtCore>
 #include "bncconst.h"
+#include "rnxobsfile.h"
 extern "C" {
 #include "rtcm3torinex.h"
 }
 
 class t_pppOpt;
 class bncPPPclient;
-class t_rnxObsFile;
 class t_rnxNavFile;
 class t_corrFile;
+class t_obs;
 
 class t_postProcessing : public QThread {
 Q_OBJECT
  
  public:
   t_postProcessing(QObject* parent);
+  static void setObsFromRnx(const t_rnxObsFile* rnxObsFile,
+                            const t_rnxObsFile::t_rnxEpo* epo, 
+                            const t_rnxObsFile::t_rnxSat& rnxSat, 
+                            t_obs& obs);
 
  protected:
   ~t_postProcessing();
