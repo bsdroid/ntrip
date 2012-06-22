@@ -4,6 +4,8 @@ TARGET   = qwtpolar
 CONFIG  += qt qwt staticlib
 DEFINES += QWT_POLAR_NO_SVG
 
+INCLUDEPATH += ../qwt
+
 HEADERS += \
     qwt_polar_global.h \
     qwt_polar.h \
