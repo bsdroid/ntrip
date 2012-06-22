@@ -51,8 +51,12 @@ Q_OBJECT
   void analyzeFile(const t_rnxObsFile* rnxObsFile);
 
   QStringList            _obsFileNames;
-  QVector<t_rnxObsFile*> _rnxObsFiles;
   QString                _logFileName;
+  QFile*                 _logFile;
+  QTextStream*           _log;
+  QVector<t_rnxObsFile*> _rnxObsFiles;
+  QVector<t_eph*>        _ephs;
+;
 };
 
 #endif
