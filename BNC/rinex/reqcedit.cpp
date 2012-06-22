@@ -99,19 +99,12 @@ void t_reqcEdit::run() {
   }
 }
 
-//  
+// Initialize input observation files, sort them according to start time
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcEdit::editObservations() {
+void t_reqcEdit::initRnxObsFiles(const QStringList& obsFileNames, 
+                                 QVector<t_rnxObsFile*>& rnxObsFiles) {
 
-  // Easy Exit
-  // ---------
-  if (_obsFileNames.isEmpty() || _outObsFileName.isEmpty()) {
-    return;
-  }
-
-  // Initialize input observation files, sort them according to start time
-  // ---------------------------------------------------------------------
-  QStringListIterator it(_obsFileNames);
+  QStringListIterator it(obsFileNames);
   while (it.hasNext()) {
     QString fileName = it.next();
     if (fileName.indexOf('*') != -1 || fileName.indexOf('?') != -1) {
@@ -122,16 +115,29 @@ void t_reqcEdit::editObservations() {
       while (it.hasNext()) {
         QString filePath = it.next().filePath(); 
         t_rnxObsFile* rnxObsFile = new t_rnxObsFile(filePath, t_rnxObsFile::input);
-        _rnxObsFiles.append(rnxObsFile);
+        rnxObsFiles.append(rnxObsFile);
       }
     }
     else {
       t_rnxObsFile* rnxObsFile = new t_rnxObsFile(fileName, t_rnxObsFile::input);
-      _rnxObsFiles.append(rnxObsFile);
+      rnxObsFiles.append(rnxObsFile);
     }
   }
-  qStableSort(_rnxObsFiles.begin(), _rnxObsFiles.end(), 
+  qStableSort(rnxObsFiles.begin(), rnxObsFiles.end(), 
               t_rnxObsFile::earlierStartTime);
+}
+
+//  
+////////////////////////////////////////////////////////////////////////////
+void t_reqcEdit::editObservations() {
+
+  // Easy Exit
+  // ---------
+  if (_obsFileNames.isEmpty() || _outObsFileName.isEmpty()) {
+    return;
+  }
+
+  t_reqcEdit::initRnxObsFiles(_obsFileNames, _rnxObsFiles);
 
   // Initialize output observation file
   // ----------------------------------

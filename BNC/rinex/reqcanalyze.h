@@ -26,6 +26,9 @@
 #define REQCANALYZE_H
 
 #include <QtCore>
+#include "rnxobsfile.h"
+#include "rnxnavfile.h"
+#include "RTCM3/ephemeris.h"
 
 class t_reqcAnalyze : public QThread {
 Q_OBJECT
@@ -45,6 +48,11 @@ Q_OBJECT
   virtual void run();
  
  private:
+  void analyzeFile(const t_rnxObsFile* rnxObsFile);
+
+  QStringList            _obsFileNames;
+  QVector<t_rnxObsFile*> _rnxObsFiles;
+  QString                _logFileName;
 };
 
 #endif
