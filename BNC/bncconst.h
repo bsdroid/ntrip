@@ -28,17 +28,40 @@
 enum t_irc {failure = -1, success, fatal}; // return code
 
 class t_CST {
-  public:
-    static const double c;
-    static const double freq1; // GPS and Galileo E1 
-    static const double freq2; // GPS only           
-    static const double freq5; // GPS and Galileo E5a
-    static const double lambda1;
-    static const double lambda2;
-    static const double lambda5;
-    static const double omega;
-    static const double aell;
-    static const double fInv;
+ public:
+  static double f1(char satSys, int slotNum) {
+    if      (satSys == 'G' || satSys == 'E') {
+      return freq1;
+    }
+    else if (satSys == 'R') {
+      return 1602000000.0 + 562500.0 * slotNum; 
+    }
+    else {
+      return 0.0;
+    }
+  }
+  static double f2(char satSys, int slotNum) {
+    if      (satSys == 'G') {
+      return freq2;
+    }
+    else if (satSys == 'R') {
+      return 1246000000.0 + 437500.0 * slotNum;
+    }
+    else {
+      return 0.0;
+    }
+  }
+
+  static const double c;
+  static const double freq1; // GPS and Galileo E1 
+  static const double freq2; // GPS only           
+  static const double freq5; // GPS and Galileo E5a
+  static const double lambda1;
+  static const double lambda2;
+  static const double lambda5;
+  static const double omega;
+  static const double aell;
+  static const double fInv;
 };
 
 
