@@ -141,6 +141,8 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
       _satStat[prn].addObs(obs);
 
       t_anaObs* anaObs = _satStat[prn].currObs;
+      _log->setRealNumberNotation(QTextStream::FixedNotation);
+      _log->setRealNumberPrecision(2);
       *_log << prn << " " << anaObs->M1 << " " << anaObs->M2 << endl;
     }
 
