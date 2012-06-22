@@ -36,7 +36,8 @@ INCLUDEPATH = . ../newmat ./RTCM3 ./RTCM3/clock_and_orbit ./RTCM3/rtcm3torinex
 
 # Additional Libraries
 # --------------------
-LIBS += -L../newmat -lnewmat
+unix:LIBS  += -L../newmat -lnewmat
+win32:LIBS += -L../newmat/release -lnewmat
 
 HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bnccaster.h bncrinex.h bncapp.h bncutils.h   bnchlpdlg.h    \
