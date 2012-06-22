@@ -48,7 +48,7 @@ Q_OBJECT
   virtual void run();
  
  private:
-  void analyzeFile(const t_rnxObsFile* rnxObsFile);
+  void analyzeFile(t_rnxObsFile* obsFile);
 
   QString                _logFileName;
   QFile*                 _logFile;

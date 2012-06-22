@@ -112,8 +112,16 @@ void t_reqcAnalyze::run() {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::analyzeFile(const t_rnxObsFile* rnxObsFile) {
-  *_log << rnxObsFile->fileName().toAscii().data() << endl;
+void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
+
+  *_log << "Analyze File\n"
+        << "------------\n"
+        << obsFile->fileName().toAscii().data() << endl << endl;
+
+  t_rnxObsFile::t_rnxEpo* epo = 0;
+  while ( (epo = obsFile->nextEpoch()) != 0) {
+
+  }
 
   _log->flush();
 }
