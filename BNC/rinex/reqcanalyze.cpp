@@ -155,16 +155,23 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
     it.next();
     QString          prn     = it.key();
     const t_satStat& satStat = it.value();
-    if (satStat.MP1.size()) {
+
+    if (satStat.MP1.size() > 1) {
+      double mean = 0.0;
       for (int ii = 0; ii < satStat.MP1.size(); ii++) {
-        *_log << "MP1 " << prn << " " << satStat.MP1[ii] << endl;
+        mean += satStat.MP1[ii];
       }
-    }
-    if (satStat.MP2.size()) {
-      for (int ii = 0; ii < satStat.MP2.size(); ii++) {
-        *_log << "MP2 " << prn << " " << satStat.MP2[ii] << endl;
+      mean /= satStat.MP1.size();
+      double stddev = 0.0;
+      for (int ii = 0; ii < satStat.MP1.size(); ii++) {
+        double diff = satStat.MP1[ii] - mean;
+        stddev += diff * diff;
       }
+      double MP1 = sqrt(stddev / (satStat.MP1.size()-1));
+
+      *_log << "MP1 " << prn << " " << MP1 << endl;
     }
+
   }
 
   _log->flush();
