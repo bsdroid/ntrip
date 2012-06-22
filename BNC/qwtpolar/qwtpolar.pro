@@ -6,6 +6,9 @@ DEFINES += QWT_POLAR_NO_SVG
 
 INCLUDEPATH += ../qwt
 
+OBJECTS_DIR = .obj
+MOC_DIR     = .moc
+
 HEADERS += \
     qwt_polar_global.h \
     qwt_polar.h \
