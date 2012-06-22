@@ -44,6 +44,7 @@
 #include "bncsettings.h"
 #include "reqcedit.h"
 #include "bncutils.h"
+#include "bncpostprocess.h"
 
 using namespace std;
 
@@ -118,10 +119,25 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         << "------------\n"
         << obsFile->fileName().toAscii().data() << endl << endl;
 
+  // Loop over all Epochs
+  // --------------------
   t_rnxObsFile::t_rnxEpo* epo = 0;
   while ( (epo = obsFile->nextEpoch()) != 0) {
 
-  }
+    // Loop over all satellites
+    // ------------------------
+    for (unsigned iObs = 0; iObs < epo->rnxSat.size(); iObs++) {
+      const t_rnxObsFile::t_rnxSat& rnxSat = epo->rnxSat[iObs];
+      t_obs obs;
+      t_postProcessing::setObsFromRnx(obsFile, epo, rnxSat, obs);
+
+      if (obs.satSys == 'R') {
+        // TODO: set channel number
+      }
+
+    }
+
+  } // while (epo)
 
   _log->flush();
 }
