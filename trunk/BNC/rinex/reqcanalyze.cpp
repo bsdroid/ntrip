@@ -153,4 +153,8 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
     prevObs = currObs;
   }
   currObs = new t_obs(obs);
+
+  if (obs.p1() != 0.0 && obs.p2() != 0.0 && obs.l1() != 0.0 && obs.l2() != 0.0){
+
+  }
 }

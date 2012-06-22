@@ -193,8 +193,8 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   // ------------------------
   else if (obs.satSys == 'R') {
     if ( (obs.P1 || obs.C1) && (obs.P2 || obs.C2) && obs.l1() && obs.l2() ) {
-      double f1 = 1602000000.0 + 562500.0 * obs.slotNum; 
-      double f2 = 1246000000.0 + 437500.0 * obs.slotNum;
+      double f1 = t_CST::f1(obs.satSys, obs.slotNum); 
+      double f2 = t_CST::f1(obs.satSys, obs.slotNum); 
       double c1 =   f1 * f1 / (f1 * f1 - f2 * f2);
       double c2 = - f2 * f2 / (f1 * f1 - f2 * f2);
       if (obs.P1) {
