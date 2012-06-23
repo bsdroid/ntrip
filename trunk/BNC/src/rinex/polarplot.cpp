@@ -90,30 +90,29 @@ QwtPolarPlot(QwtText("Polar Plot"), parent) {
 
   // Grids, Axes
   // -----------
-  _grid = new QwtPolarGrid();
-  _grid->setPen(QPen(Qt::black));
+  QwtPolarGrid* grid = new QwtPolarGrid();
+  grid->setPen(QPen(Qt::black));
   for ( int scaleId = 0; scaleId < QwtPolar::ScaleCount; scaleId++ ) {
-    _grid->showGrid(scaleId);
+    grid->showGrid(scaleId);
   }
 
-  _grid->setAxisPen(QwtPolar::AxisAzimuth, QPen(Qt::black));
+  grid->setAxisPen(QwtPolar::AxisAzimuth, QPen(Qt::black));
 
-  _grid->showAxis(QwtPolar::AxisAzimuth, true);
-  _grid->showAxis(QwtPolar::AxisTop,     true);
-  _grid->showAxis(QwtPolar::AxisBottom,  false);
-  _grid->showAxis(QwtPolar::AxisLeft,    false);
-  _grid->showAxis(QwtPolar::AxisRight,   false);
+  grid->showAxis(QwtPolar::AxisAzimuth, true);
+  grid->showAxis(QwtPolar::AxisTop,     true);
+  grid->showAxis(QwtPolar::AxisBottom,  false);
+  grid->showAxis(QwtPolar::AxisLeft,    false);
+  grid->showAxis(QwtPolar::AxisRight,   false);
 
-  _grid->showGrid(QwtPolar::Azimuth, true);
-  _grid->showGrid(QwtPolar::Radius,  true);
+  grid->showGrid(QwtPolar::Azimuth, true);
+  grid->showGrid(QwtPolar::Radius,  true);
 
-  _grid->attach( this );
+  grid->attach(this);
 
   // Curves
   // ------
   QwtPolarCurve* curve = createCurve();
   curve->attach(this);
-  _curves << curve;
 
   // Legend
   // ------
