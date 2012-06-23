@@ -136,10 +136,8 @@ t_polarPlot::~t_polarPlot() {
 QwtPolarCurve* t_polarPlot::createCurve() const {
   const int numPoints = 200;
   QwtPolarCurve* curve = new QwtPolarCurve();
-  curve->setStyle(QwtPolarCurve::Lines);
-  curve->setTitle("Example Curve");
-  curve->setPen(QPen( Qt::yellow, 2));
-  curve->setSymbol(new QwtSymbol(QwtSymbol::Rect,
+  curve->setStyle(QwtPolarCurve::NoCurve);  // draw only symbols
+  curve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse,
                                  QBrush(Qt::cyan), QPen(Qt::white), 
                                  QSize(3, 3)));
   curve->setData(new SpiralData(zenithInterval, azimuthInterval, numPoints));
