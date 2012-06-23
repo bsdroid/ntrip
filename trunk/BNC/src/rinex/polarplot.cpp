@@ -22,6 +22,29 @@
 
 #include "polarplot.h"
 
+// Constructor
+////////////////////////////////////////////////////////////////////////////
+t_polarCurve::t_polarCurve() {
+}
+
+// Destructor (virtual)
+////////////////////////////////////////////////////////////////////////////
+t_polarCurve::~t_polarCurve() {
+}
+
+// drawSymbols (virtual)
+////////////////////////////////////////////////////////////////////////////
+void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol, 
+                               const QwtScaleMap& azimuthMap, 
+                               const QwtScaleMap& radialMap, 
+                               const QPointF& pole, int from, int to) const {
+  for (int ii = from; ii <= to; ii++) {
+    QwtPolarCurve::drawSymbols(painter, symbol, azimuthMap, 
+                               radialMap, pole, ii, ii);
+  }
+}
+
+
 const QwtInterval zenithInterval(0.0, 90.0);
 const QwtInterval azimuthInterval(0.0, 360.0);
 
@@ -107,7 +130,7 @@ QwtPolarPlot(QwtText("Polar Plot"), parent) {
 
   // Curves
   // ------
-  QwtPolarCurve* curve = createCurve();
+  t_polarCurve* curve = createCurve();
   curve->attach(this);
 }
 
@@ -118,9 +141,9 @@ t_polarPlot::~t_polarPlot() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-QwtPolarCurve* t_polarPlot::createCurve() const {
+t_polarCurve* t_polarPlot::createCurve() const {
   const int numPoints = 200;
-  QwtPolarCurve* curve = new QwtPolarCurve();
+  t_polarCurve* curve = new t_polarCurve();
   curve->setStyle(QwtPolarCurve::NoCurve);  // draw only symbols
   curve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse,
                                  QBrush(Qt::red), QPen(Qt::red), 
