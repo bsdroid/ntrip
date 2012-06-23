@@ -33,8 +33,7 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
   t_colorMap colorMap;
   for (int ii = from; ii <= to; ii++) {
     QwtSymbol ss(symbol);
-    const t_polarData*  polarData = reinterpret_cast<const t_polarData*>(data());
-    const t_polarPoint& point     = polarData->sample(ii);
+    const QwtPointPolar& point    = sample(ii);
     const QColor color = colorMap.color(QwtInterval(0.0, 1.0), point._value);
     ss.setBrush(QBrush(color));
     ss.setPen(QPen(color));
@@ -44,7 +43,7 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
 
 // Sample (virtual) - this is for testing only
 ////////////////////////////////////////////////////////////////////////////
-t_polarPoint t_polarData::sample(size_t ii) const {
+QwtPointPolar t_polarData::sample(size_t ii) const {
   const QwtInterval zenithInterval(0.0, 90.0);
   const QwtInterval azimuthInterval(0.0, 360.0 );
 
@@ -56,7 +55,10 @@ t_polarPoint t_polarData::sample(size_t ii) const {
 
   double value = static_cast<double>(ii) / _size;
 
-  return t_polarPoint(aa, rr, value); 
+  QwtPointPolar point(aa,rr);
+  point._value = value;
+
+  return point;
 }
 
 // 
@@ -69,7 +71,7 @@ t_polarCurve* t_polarPlot::createCurve() const {
                                  QBrush(Qt::red), QPen(Qt::red), 
                                  QSize(3, 3)));
   t_polarData* data = new t_polarData(numPoints);
-  curve->setData(reinterpret_cast<QwtSeriesData<QwtPointPolar>*>(data));
+  curve->setData(data);
   return curve;
 }
 

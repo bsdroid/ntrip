@@ -19,23 +19,12 @@ class t_polarCurve : public QwtPolarCurve {
 
 //
 //////////////////////////////////////////////////////////////////////////////
-class t_polarPoint : public QwtPointPolar {
- public:
-  t_polarPoint(double az, double zen, double value) : QwtPointPolar(az, zen) {
-    _value = value;
-  }
-  ~t_polarPoint() {}
-  double _value; // the third coordinate
-};
-
-//
-//////////////////////////////////////////////////////////////////////////////
-class t_polarData: public QwtSeriesData<t_polarPoint> {
+class t_polarData: public QwtSeriesData<QwtPointPolar> {
  public:
   t_polarData(size_t size) {
     _size = size;
   }
-  virtual t_polarPoint sample(size_t ii) const;
+  virtual QwtPointPolar sample(size_t ii) const;
   virtual size_t size() const {return _size;}
   virtual QRectF boundingRect() const {
     return d_boundingRect;
