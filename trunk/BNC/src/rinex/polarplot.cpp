@@ -41,9 +41,11 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
   for (int ii = from; ii <= to; ii++) {
     QwtSymbol ss(symbol);
     if (ii % 2 == 0) {
+      ss.setBrush(QBrush(Qt::red));
       ss.setPen(QPen(Qt::red));
     }
     else {
+      ss.setBrush(QBrush(Qt::blue));
       ss.setPen(QPen(Qt::blue));
     }
     QwtPolarCurve::drawSymbols(painter, ss, azimuthMap, radialMap, pole, ii,ii);
