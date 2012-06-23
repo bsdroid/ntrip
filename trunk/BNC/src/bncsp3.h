@@ -6,6 +6,7 @@
 #include <QtCore>
 
 #include "bncoutf.h"
+#include "bnctime.h"
 
 class bncSP3 : public bncoutf {
  public:
@@ -17,8 +18,7 @@ class bncSP3 : public bncoutf {
  private:
   virtual void writeHeader(const QDateTime& datTim);
   virtual void closeFile();
-  int    _lastGPSweek;
-  double _lastGPSweeks;
+  bncTime _lastEpoTime;
 };
 
 #endif

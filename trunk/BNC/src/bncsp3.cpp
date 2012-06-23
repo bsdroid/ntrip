@@ -27,9 +27,6 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncSP3::bncSP3(const QString& sklFileName, const QString& intr, int sampl) 
   : bncoutf(sklFileName, intr, sampl) {
-
-  _lastGPSweek  = 0;
-  _lastGPSweeks = 0.0;
 }
 
 // Destructor
@@ -44,16 +41,25 @@ t_irc bncSP3::write(int GPSweek, double GPSweeks, const QString& prn,
 
   if (reopen(GPSweek, GPSweeks) == success) {
 
-    if (_lastGPSweek != GPSweek || _lastGPSweeks != GPSweeks) {
-      _lastGPSweek  = GPSweek;
-      _lastGPSweeks = GPSweeks;
-    
-      QDateTime datTim = dateAndTimeFromGPSweek(GPSweek, GPSweeks);
-      double sec = fmod(GPSweeks, 60.0);
-    
-      _out << datTim.toString("*  yyyy MM dd hh mm").toAscii().data()
-           << setw(12) << setprecision(8) << sec << endl; 
+    bncTime epoTime(GPSweek, GPSweeks);
+
+    if (epoTime != _lastEpoTime) {
+
+      // Check the sampling interval (print empty epochs)
+      // ------------------------------------------------
+      if (_lastEpoTime.valid()) {
+        for (bncTime ep = _lastEpoTime +_sampl; ep < epoTime; ep = ep +_sampl) {
+          _out << "*  " << ep.datestr(' ') << ep.timestr(8, ' ') << endl;
+        }
+      }
+
+      // Print the new epoch 
+      // -------------------
+      _out << "*  " << epoTime.datestr(' ') << epoTime.timestr(8, ' ') << endl;
+
+      _lastEpoTime = epoTime;
     }
+
     _out << "P" << prn.toAscii().data()
          << setw(14) << setprecision(6) << xx(1) / 1000.0
          << setw(14) << setprecision(6) << xx(2) / 1000.0
