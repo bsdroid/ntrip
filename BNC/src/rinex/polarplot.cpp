@@ -18,11 +18,7 @@
 #include <qpen.h>
 #include <qwt_series_data.h>
 #include <qwt_symbol.h>
-#include <qwt_legend.h>
 #include <qwt_polar_grid.h>
-#include <qwt_polar_curve.h>
-#include <qwt_polar_marker.h>
-#include <qwt_scale_engine.h>
 
 #include "polarplot.h"
 
@@ -113,11 +109,6 @@ QwtPolarPlot(QwtText("Polar Plot"), parent) {
   // ------
   QwtPolarCurve* curve = createCurve();
   curve->attach(this);
-
-  // Legend
-  // ------
-  QwtLegend *legend = new QwtLegend;
-  insertLegend(legend,  QwtPolarPlot::BottomLegend);
 }
 
 // Destructor
