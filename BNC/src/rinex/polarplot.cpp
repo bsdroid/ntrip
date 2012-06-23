@@ -42,7 +42,7 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
   }
 }
 
-// Sample (virtual)
+// Sample (virtual) - this is for testing only
 ////////////////////////////////////////////////////////////////////////////
 t_polarPoint t_polarData::sample(size_t ii) const {
   const QwtInterval zenithInterval(0.0, 90.0);
@@ -54,7 +54,12 @@ t_polarPoint t_polarData::sample(size_t ii) const {
   const double stepR = zenithInterval.width() / _size;
   const double rr    = zenithInterval.minValue() + ii * stepR;
 
-  return t_polarPoint(aa, rr); 
+  double value = 0.0;
+  if (ii % 3 == 0) {
+    value = 1.0;
+  }
+
+  return t_polarPoint(aa, rr, value); 
 }
 
 // 
@@ -82,8 +87,8 @@ t_polarPlot::t_polarPlot(QWidget* parent) :
 
   // Scales
   // ------
-  setScale(QwtPolar::Radius, 0.0, 90.0);
-  setScale(QwtPolar::Azimuth, 360.0, 0, 30.0);
+  setScale(QwtPolar::Radius,    0.0, 90.0);
+  setScale(QwtPolar::Azimuth, 360.0,  0.0, 30.0);
 
   // Grids, Axes
   // -----------
