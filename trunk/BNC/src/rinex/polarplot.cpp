@@ -77,7 +77,7 @@ class SpiralData: public Data {
 t_polarPlot::t_polarPlot( QWidget *parent ) : 
 QwtPolarPlot(QwtText("Polar Plot"), parent) {
 
-  setPlotBackground(Qt::darkBlue);
+  setPlotBackground(Qt::white);
 
   // Scales
   // ------
@@ -88,26 +88,21 @@ QwtPolarPlot(QwtText("Polar Plot"), parent) {
            azimuthInterval.minValue(), azimuthInterval.maxValue(),
            azimuthInterval.width() / 12);
 
-  setScaleMaxMinor(QwtPolar::Azimuth, 2);
-
   // Grids, Axes
   // -----------
   _grid = new QwtPolarGrid();
-  _grid->setPen(QPen(Qt::white));
+  _grid->setPen(QPen(Qt::black));
   for ( int scaleId = 0; scaleId < QwtPolar::ScaleCount; scaleId++ ) {
-    _grid->showGrid( scaleId );
-    _grid->showMinorGrid( scaleId );
-    QPen minorPen( Qt::gray );
-    _grid->setMinorGridPen(scaleId, minorPen);
+    _grid->showGrid(scaleId);
   }
 
   _grid->setAxisPen(QwtPolar::AxisAzimuth, QPen(Qt::black));
 
-  _grid->showAxis(QwtPolar::AxisAzimuth, true );
-  _grid->showAxis(QwtPolar::AxisLeft,    false);
-  _grid->showAxis(QwtPolar::AxisRight,   true);
+  _grid->showAxis(QwtPolar::AxisAzimuth, true);
   _grid->showAxis(QwtPolar::AxisTop,     true);
   _grid->showAxis(QwtPolar::AxisBottom,  false);
+  _grid->showAxis(QwtPolar::AxisLeft,    false);
+  _grid->showAxis(QwtPolar::AxisRight,   false);
 
   _grid->showGrid(QwtPolar::Azimuth, true);
   _grid->showGrid(QwtPolar::Radius,  true);
@@ -138,7 +133,7 @@ QwtPolarCurve* t_polarPlot::createCurve() const {
   QwtPolarCurve* curve = new QwtPolarCurve();
   curve->setStyle(QwtPolarCurve::NoCurve);  // draw only symbols
   curve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse,
-                                 QBrush(Qt::cyan), QPen(Qt::white), 
+                                 QBrush(Qt::red), QPen(Qt::red), 
                                  QSize(3, 3)));
   curve->setData(new SpiralData(zenithInterval, azimuthInterval, numPoints));
   return curve;
