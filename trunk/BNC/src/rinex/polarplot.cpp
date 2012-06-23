@@ -126,6 +126,11 @@ QwtPolarPlot(QwtText("Polar Plot"), parent ) {
   insertLegend( legend,  QwtPolarPlot::BottomLegend );
 }
 
+// Destructor
+////////////////////////////////////////////////////////////////////////////
+t_polarPlot::~t_polarPlot() {
+}
+
 // 
 ////////////////////////////////////////////////////////////////////////////
 QwtPolarCurve* t_polarPlot::createCurve() const {
