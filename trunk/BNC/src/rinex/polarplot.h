@@ -22,9 +22,11 @@ class t_polarCurve : public QwtPolarCurve {
 //////////////////////////////////////////////////////////////////////////////
 class t_polarPoint : public QwtPointPolar {
  public:
- t_polarPoint(double azimuth, double zenith) : QwtPointPolar(azimuth, zenith) {}
+  t_polarPoint(double az, double zen, double value) : QwtPointPolar(az, zen) {
+    _value = value;
+  }
   ~t_polarPoint() {}
-  double zz; // the third coordinate
+  double _value; // the third coordinate
 };
 
 //
@@ -40,7 +42,7 @@ class t_polarData: public QwtSeriesData<t_polarPoint> {
     return d_boundingRect;
   }
  protected:
-  size_t      _size;
+  size_t _size;
 };
 
 //
