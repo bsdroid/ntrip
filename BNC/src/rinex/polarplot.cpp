@@ -30,7 +30,9 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
                                const QPointF& pole, int from, int to) const {
   for (int ii = from; ii <= to; ii++) {
     QwtSymbol ss(symbol);
-    if (ii % 2 == 0) {
+    t_polarData*        polarData = (t_polarData*) data();
+    const t_polarPoint& point     = polarData->sample(ii);
+    if (point._value == 1) {
       ss.setBrush(QBrush(Qt::red));
       ss.setPen(QPen(Qt::red));
     }
