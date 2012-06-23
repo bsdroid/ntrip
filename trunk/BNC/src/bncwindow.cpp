@@ -2544,8 +2544,10 @@ void bncWindow::startPostProcessingPPP() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFinishedPostProcessingPPP() {
   _runningPostProcessingPPP = false;
-  QMessageBox::information(this, "Information",
-                           "Post-Processing Thread Finished");
+  if (_reqcActionComboBox->currentText() != "Analyze") {
+    QMessageBox::information(this, "Information",
+                             "Post-Processing Thread Finished");
+  }
   _actStart->setText("Start");
   enableStartStop();
 }

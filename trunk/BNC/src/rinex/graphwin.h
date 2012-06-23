@@ -48,7 +48,8 @@ class t_graphWin : public QDialog {
 
   private:
    QPushButton* _buttonOK;
-   t_polarPlot* _polarPlot;
+   t_polarPlot* _plotMP1;
+   t_polarPlot* _plotMP2;
 };
 
 #endif

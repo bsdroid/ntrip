@@ -53,21 +53,31 @@ t_graphWin::t_graphWin(QWidget* parent) : QDialog(parent) {
   setWindowTitle(tr("Plot"));
 
   int ww = QFontMetrics(font()).width('w');
+  setMinimumSize(80*ww, 40*ww);
 
-  _polarPlot = new t_polarPlot(this);
+  // Multipath Plots
+  // ---------------
+  _plotMP1 = new t_polarPlot(this);
+  _plotMP2 = new t_polarPlot(this);
 
-  // Dialog Layout
-  // -------------
-  _buttonOK = new QPushButton(tr("OK / Save"), this);
+  // Buttons
+  // -------
+  _buttonOK = new QPushButton(tr("OK"), this);
+  _buttonOK->setMaximumWidth(10*ww);
   connect(_buttonOK, SIGNAL(clicked()), this, SLOT(slotOK()));
+
+  // Layout
+  // ------
+  QHBoxLayout* plotLayout = new QHBoxLayout;
+  plotLayout->addWidget(_plotMP1);
+  plotLayout->addWidget(_plotMP2);
 
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(_buttonOK);
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
-  mainLayout->addWidget(_polarPlot);
+  mainLayout->addLayout(plotLayout);
   mainLayout->addLayout(buttonLayout);
-
 }
 
 // Destructor
@@ -85,15 +95,5 @@ void t_graphWin::slotOK() {
 // Close Dialog gracefully
 ////////////////////////////////////////////////////////////////////////////
 void t_graphWin::closeEvent(QCloseEvent* event) {
-
-  int iRet = QMessageBox::question(this, "Close", "Close?", 
-                                   QMessageBox::Yes, QMessageBox::No,
-                                   QMessageBox::Cancel);
-
-  if      (iRet == QMessageBox::Cancel) {
-    event->ignore();
-    return;
-  }
-
   QDialog::closeEvent(event);
 }
