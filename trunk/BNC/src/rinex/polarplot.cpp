@@ -57,7 +57,7 @@ t_polarPoint t_polarData::sample(size_t ii) const {
   const double rr    = zenithInterval.minValue() + ii * stepR;
 
   double value = 0.0;
-  if (ii % 4 == 0) {
+  if (ii % 3 == 0) {
     value = 1.0;
   }
 
@@ -74,7 +74,7 @@ t_polarCurve* t_polarPlot::createCurve() const {
                                  QBrush(Qt::red), QPen(Qt::red), 
                                  QSize(3, 3)));
   QwtSeriesData<t_polarPoint>* data = new t_polarData(numPoints);
-  curve->setData((QwtSeriesData<QwtPointPolar>*) data);
+  curve->setData(reinterpret_cast<QwtSeriesData<QwtPointPolar>*>(data));
   return curve;
 }
 
