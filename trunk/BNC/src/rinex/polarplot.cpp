@@ -64,7 +64,7 @@ QwtPointPolar t_polarData::sample(size_t ii) const {
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_polarCurve* t_polarPlot::createCurve() const {
-  const int numPoints = 200;
+  const int numPoints = 1000;
   t_polarCurve* curve = new t_polarCurve();
   curve->setStyle(QwtPolarCurve::NoCurve);  // draw only symbols
   curve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse,
