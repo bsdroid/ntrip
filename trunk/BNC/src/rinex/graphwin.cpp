@@ -40,6 +40,7 @@
 
 #include "graphwin.h"
 #include "qwt_scale_widget.h"
+#include <qwt_scale_engine.h>
 
 using namespace std;
 
@@ -73,7 +74,12 @@ t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots) :
    title.setFont( font );
    _colorScale->setTitle( title );
 
-   _colorScale->setColorMap(QwtInterval(0.0, 1.0), new t_colorMap());
+   QwtInterval interval(0.0, 1.0);
+   _colorScale->setColorMap(interval, new t_colorMap());
+
+   QwtLinearScaleEngine scaleEngine;
+    _colorScale->setScaleDiv(scaleEngine.transformation(),
+      scaleEngine.divideScale(interval.minValue(), interval.maxValue(), 8, 5));
 
   // Layout
   // ------
