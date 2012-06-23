@@ -53,6 +53,8 @@ public:
 
     QwtPointPolar normalized() const;
 
+    double _value; // Change by LM
+
 private:
     double d_azimuth;
     double d_radius;
