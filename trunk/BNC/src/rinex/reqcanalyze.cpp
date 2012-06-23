@@ -84,7 +84,7 @@ t_reqcAnalyze::~t_reqcAnalyze() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::slotDisplayGraph() {
   if (((bncApp*) qApp)->mode() == bncApp::interactive) {
-    QVector<t_polarPlot*> plots;
+    QVector<QWidget*> plots;
     t_polarPlot* plotMP1 = new t_polarPlot(0); plots << plotMP1;
     t_polarPlot* plotMP2 = new t_polarPlot(0); plots << plotMP2;
     

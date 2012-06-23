@@ -28,14 +28,12 @@
 #include <QtCore>
 #include <QtGui>
 
-class t_polarPlot;
-
 class t_graphWin : public QDialog {
 
  Q_OBJECT
 
  public:
-  t_graphWin(QWidget* parent, const QVector<t_polarPlot*>& plots);
+  t_graphWin(QWidget* parent, const QVector<QWidget*>& plots);
   ~t_graphWin();
 
  signals:

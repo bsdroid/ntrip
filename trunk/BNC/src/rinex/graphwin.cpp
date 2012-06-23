@@ -39,13 +39,12 @@
  * -----------------------------------------------------------------------*/
 
 #include "graphwin.h"
-#include "polarplot.h"
 
 using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_graphWin::t_graphWin(QWidget* parent, const QVector<t_polarPlot*>& plots) :
+t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots) :
  QDialog(parent) {
 
   this->setAttribute(Qt::WA_DeleteOnClose);
