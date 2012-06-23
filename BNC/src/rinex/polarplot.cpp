@@ -22,16 +22,6 @@
 
 #include "polarplot.h"
 
-// Constructor
-////////////////////////////////////////////////////////////////////////////
-t_polarCurve::t_polarCurve() {
-}
-
-// Destructor (virtual)
-////////////////////////////////////////////////////////////////////////////
-t_polarCurve::~t_polarCurve() {
-}
-
 // Draw Symbols (virtual) - change symbol's color
 ////////////////////////////////////////////////////////////////////////////
 void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol, 
@@ -52,38 +42,39 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
   }
 }
 
-// Constructor
-////////////////////////////////////////////////////////////////////////////
-t_polarData::t_polarData(size_t size) {
-  _zenithInterval.setMinValue(0.0);
-  _zenithInterval.setMaxValue(90.0);
-  _azimuthInterval.setMinValue(0.0);
-  _azimuthInterval.setMaxValue(360.0);
-  _size = size;
-}
-
 // Sample (virtual)
 ////////////////////////////////////////////////////////////////////////////
 t_polarPoint t_polarData::sample(size_t ii) const {
-  const double stepA = 4 * _azimuthInterval.width() / _size;
-  const double aa    = _azimuthInterval.minValue() + ii * stepA;
+  const QwtInterval zenithInterval(0.0, 90.0);
+  const QwtInterval azimuthInterval(0.0, 360.0 );
 
-  const double stepR = _zenithInterval.width() / _size;
-  const double rr    = _zenithInterval.minValue() + ii * stepR;
+  const double stepA = 4 * azimuthInterval.width() / _size;
+  const double aa    = azimuthInterval.minValue() + ii * stepA;
+
+  const double stepR = zenithInterval.width() / _size;
+  const double rr    = zenithInterval.minValue() + ii * stepR;
 
   return t_polarPoint(aa, rr); 
 }
 
-// Bounding Box (virtual)
+// 
 ////////////////////////////////////////////////////////////////////////////
-QRectF t_polarData::boundingRect() const {
-  return d_boundingRect;
+t_polarCurve* t_polarPlot::createCurve() const {
+  const int numPoints = 200;
+  t_polarCurve* curve = new t_polarCurve();
+  curve->setStyle(QwtPolarCurve::NoCurve);  // draw only symbols
+  curve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse,
+                                 QBrush(Qt::red), QPen(Qt::red), 
+                                 QSize(3, 3)));
+  QwtSeriesData<t_polarPoint>* data = new t_polarData(numPoints);
+  curve->setData((QwtSeriesData<QwtPointPolar>*) data);
+  return curve;
 }
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_polarPlot::t_polarPlot( QWidget *parent ) : 
-QwtPolarPlot(QwtText("Polar Plot"), parent) {
+t_polarPlot::t_polarPlot(QWidget* parent) : 
+  QwtPolarPlot(QwtText("Polar Plot"), parent) {
 
   setPlotBackground(Qt::white);
 
@@ -121,21 +112,3 @@ QwtPolarPlot(QwtText("Polar Plot"), parent) {
   curve->attach(this);
 }
 
-// Destructor
-////////////////////////////////////////////////////////////////////////////
-t_polarPlot::~t_polarPlot() {
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-t_polarCurve* t_polarPlot::createCurve() const {
-  const int numPoints = 200;
-  t_polarCurve* curve = new t_polarCurve();
-  curve->setStyle(QwtPolarCurve::NoCurve);  // draw only symbols
-  curve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse,
-                                 QBrush(Qt::red), QPen(Qt::red), 
-                                 QSize(3, 3)));
-  QwtSeriesData<t_polarPoint>* data = new t_polarData(numPoints);
-  curve->setData((QwtSeriesData<QwtPointPolar>*) data);
-  return curve;
-}
