@@ -48,6 +48,8 @@ using namespace std;
 t_graphWin::t_graphWin(QWidget* parent, const QVector<t_polarPlot*>& plots) :
  QDialog(parent) {
 
+  this->setAttribute(Qt::WA_DeleteOnClose);
+
   setWindowTitle(tr("BNC Plot"));
 
   int ww = QFontMetrics(font()).width('w');

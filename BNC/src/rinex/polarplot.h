@@ -12,6 +12,7 @@ class t_polarPlot: public QwtPolarPlot {
 
  public:
   t_polarPlot(QWidget* = 0);
+  ~t_polarPlot();
 
  public slots:
 
