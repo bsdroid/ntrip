@@ -32,11 +32,12 @@ release:MOC_DIR=.moc/release
 
 # Include Path
 # ------------
-INCLUDEPATH = . ../newmat ./RTCM3 ./RTCM3/clock_and_orbit ./RTCM3/rtcm3torinex
+INCLUDEPATH = . ../newmat ./RTCM3 ./RTCM3/clock_and_orbit ./RTCM3/rtcm3torinex \
+              ../qwt ../qwtpolar
 
 # Additional Libraries
 # --------------------
-unix:LIBS  += -L../newmat -lnewmat
+unix:LIBS  += -L../newmat -lnewmat -L../qwt -L../qwtpolar -lqwtpolar -lqwt
 win32:LIBS += -L../newmat/release -lnewmat
 
 HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
@@ -110,10 +111,10 @@ exists(rinex/bncpostprocess.h) {
   HEADERS += rinex/bncpostprocess.h   rinex/rnxobsfile.h   \
              rinex/rnxnavfile.h       rinex/corrfile.h     \
              rinex/reqcedit.h         rinex/reqcanalyze.h  \
-             rinex/graphwin.h
+             rinex/graphwin.h         rinex/polarplot.h 
   SOURCES += rinex/bncpostprocess.cpp rinex/rnxobsfile.cpp \
              rinex/rnxnavfile.cpp     rinex/corrfile.cpp   \
              rinex/reqcedit.cpp       rinex/reqcanalyze.cpp \
-             rinex/graphwin.cpp
+             rinex/graphwin.cpp       rinex/polarplot.cpp
 }
 

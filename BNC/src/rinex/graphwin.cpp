@@ -41,6 +41,7 @@
 #include <iostream>
 
 #include "graphwin.h"
+#include "polarplot.h"
 
 using namespace std;
 
@@ -53,6 +54,8 @@ t_graphWin::t_graphWin(QWidget* parent) : QDialog(parent) {
 
   int ww = QFontMetrics(font()).width('w');
 
+  _polarPlot = new t_polarPlot(this);
+
   // Dialog Layout
   // -------------
   _buttonOK = new QPushButton(tr("OK / Save"), this);
@@ -62,6 +65,7 @@ t_graphWin::t_graphWin(QWidget* parent) : QDialog(parent) {
   buttonLayout->addWidget(_buttonOK);
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
+  mainLayout->addWidget(_polarPlot);
   mainLayout->addLayout(buttonLayout);
 
 }
