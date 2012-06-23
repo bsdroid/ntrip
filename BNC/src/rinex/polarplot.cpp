@@ -32,15 +32,21 @@ t_polarCurve::t_polarCurve() {
 t_polarCurve::~t_polarCurve() {
 }
 
-// drawSymbols (virtual)
+// Draw Symbols (virtual) - change symbol's color
 ////////////////////////////////////////////////////////////////////////////
 void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol, 
                                const QwtScaleMap& azimuthMap, 
                                const QwtScaleMap& radialMap, 
                                const QPointF& pole, int from, int to) const {
   for (int ii = from; ii <= to; ii++) {
-    QwtPolarCurve::drawSymbols(painter, symbol, azimuthMap, 
-                               radialMap, pole, ii, ii);
+    QwtSymbol ss(symbol);
+    if (ii % 2 == 0) {
+      ss.setPen(QPen(Qt::red));
+    }
+    else {
+      ss.setPen(QPen(Qt::blue));
+    }
+    QwtPolarCurve::drawSymbols(painter, ss, azimuthMap, radialMap, pole, ii,ii);
   }
 }
 
