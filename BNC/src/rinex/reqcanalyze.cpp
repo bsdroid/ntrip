@@ -45,6 +45,7 @@
 #include "reqcedit.h"
 #include "bncutils.h"
 #include "bncpostprocess.h"
+#include "graphwin.h"
 
 using namespace std;
 
@@ -61,6 +62,8 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
   _navFileNames = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
 
   _currEpo = 0;
+
+  connect(this, SIGNAL(displayGraph()), this, SLOT(slotDisplayGraph()));
 }
 
 // Destructor
@@ -74,6 +77,13 @@ t_reqcAnalyze::~t_reqcAnalyze() {
   }
   delete _log;     _log     = 0;
   delete _logFile; _logFile = 0;
+}
+
+//  
+////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::slotDisplayGraph() {
+  t_graphWin* graphWin = new t_graphWin(0);
+  graphWin->show();
 }
 
 //  
@@ -176,6 +186,8 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
     }
 
   }
+
+  emit displayGraph();
 
   _log->flush();
 }
