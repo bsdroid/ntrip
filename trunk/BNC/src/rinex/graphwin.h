@@ -28,6 +28,8 @@
 #include <QtCore>
 #include <QtGui>
 
+class t_polarPlot;
+
 class t_graphWin : public QDialog {
 
   Q_OBJECT
@@ -45,7 +47,8 @@ class t_graphWin : public QDialog {
     virtual void closeEvent(QCloseEvent *);
 
   private:
-   QPushButton*   _buttonOK;
+   QPushButton* _buttonOK;
+   t_polarPlot* _polarPlot;
 };
 
 #endif
