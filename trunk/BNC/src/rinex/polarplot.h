@@ -5,6 +5,8 @@
 #include <qwt_polar_plot.h>
 #include <qwt_polar_curve.h>
 
+//
+//////////////////////////////////////////////////////////////////////////////
 class t_polarCurve : public QwtPolarCurve {
  public:
   t_polarCurve();
@@ -16,6 +18,31 @@ class t_polarCurve : public QwtPolarCurve {
                              const QPointF& pole, int from, int to) const;
 };
 
+//
+//////////////////////////////////////////////////////////////////////////////
+class t_polarPoint : public QwtPointPolar {
+ public:
+ t_polarPoint(double azimuth, double zenith) : QwtPointPolar(azimuth, zenith) {}
+  ~t_polarPoint() {}
+  double zz; // the third coordinate
+};
+
+//
+//////////////////////////////////////////////////////////////////////////////
+class t_polarData: public QwtSeriesData<t_polarPoint> {
+ public:
+  t_polarData(size_t size);
+  virtual t_polarPoint sample(size_t ii) const;
+  virtual size_t size() const {return _size;}
+  virtual QRectF boundingRect() const;
+ protected:
+  QwtInterval _zenithInterval;
+  QwtInterval _azimuthInterval;
+  size_t      _size;
+};
+
+//
+//////////////////////////////////////////////////////////////////////////////
 class t_polarPlot: public QwtPolarPlot {
  Q_OBJECT
 
@@ -30,5 +57,3 @@ class t_polarPlot: public QwtPolarPlot {
 };
 
 #endif
-
-
