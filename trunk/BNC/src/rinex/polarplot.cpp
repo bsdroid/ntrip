@@ -78,7 +78,7 @@ class SpiralData: public Data {
 t_polarPlot::t_polarPlot( QWidget *parent ) : 
 QwtPolarPlot(QwtText("Polar Plot"), parent ) {
 
-  setAutoReplot(false);
+  ///  setAutoReplot(false);
   setPlotBackground(Qt::darkBlue);
 
   // Scales
