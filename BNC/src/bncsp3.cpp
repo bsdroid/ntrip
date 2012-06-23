@@ -47,7 +47,7 @@ t_irc bncSP3::write(int GPSweek, double GPSweeks, const QString& prn,
 
       // Check the sampling interval (print empty epochs)
       // ------------------------------------------------
-      if (_lastEpoTime.valid()) {
+      if (_lastEpoTime.valid() && _sampl > 0) {
         for (bncTime ep = _lastEpoTime +_sampl; ep < epoTime; ep = ep +_sampl) {
           _out << "*  " << ep.datestr(' ') << ' ' << ep.timestr(8, ' ') << endl;
         }
