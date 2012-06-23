@@ -39,6 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include "graphwin.h"
+#include "qwt_scale_widget.h"
 
 using namespace std;
 
@@ -60,12 +61,27 @@ t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots) :
   _buttonOK->setMaximumWidth(10*ww);
   connect(_buttonOK, SIGNAL(clicked()), this, SLOT(slotOK()));
 
+  // Color Scale
+  // -----------
+  _colorScale = new QwtScaleWidget( this );
+  _colorScale->setAlignment( QwtScaleDraw::RightScale );
+  _colorScale->setColorBarEnabled( true );
+
+   QwtText title( "Intensity" );
+   QFont font = _colorScale->font();
+   font.setBold( true );
+   title.setFont( font );
+   _colorScale->setTitle( title );
+
+   _colorScale->setColorMap(QwtInterval(0.0, 1.0), new t_colorMap());
+
   // Layout
   // ------
   QHBoxLayout* plotLayout = new QHBoxLayout;
   for (int ip = 0; ip < plots.size(); ip++) {
     plotLayout->addWidget(plots[ip]);
   }
+  plotLayout->addWidget(_colorScale);
 
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(_buttonOK);
