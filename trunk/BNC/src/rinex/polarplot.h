@@ -9,8 +9,8 @@
 //////////////////////////////////////////////////////////////////////////////
 class t_polarCurve : public QwtPolarCurve {
  public:
-  t_polarCurve();
-  virtual ~t_polarCurve();
+  t_polarCurve() {}
+  virtual ~t_polarCurve() {}
  protected:
    virtual void drawSymbols (QPainter* painter, const QwtSymbol& symbol, 
                              const QwtScaleMap& azimuthMap, 
@@ -31,13 +31,15 @@ class t_polarPoint : public QwtPointPolar {
 //////////////////////////////////////////////////////////////////////////////
 class t_polarData: public QwtSeriesData<t_polarPoint> {
  public:
-  t_polarData(size_t size);
+  t_polarData(size_t size) {
+    _size = size;
+  }
   virtual t_polarPoint sample(size_t ii) const;
   virtual size_t size() const {return _size;}
-  virtual QRectF boundingRect() const;
+  virtual QRectF boundingRect() const {
+    return d_boundingRect;
+  }
  protected:
-  QwtInterval _zenithInterval;
-  QwtInterval _azimuthInterval;
   size_t      _size;
 };
 
@@ -48,9 +50,6 @@ class t_polarPlot: public QwtPolarPlot {
 
  public:
   t_polarPlot(QWidget* = 0);
-  ~t_polarPlot();
-
- public slots:
 
  private:
   t_polarCurve* createCurve() const;
