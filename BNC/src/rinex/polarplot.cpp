@@ -52,52 +52,33 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
   }
 }
 
-
-const QwtInterval zenithInterval(0.0, 90.0);
-const QwtInterval azimuthInterval(0.0, 360.0);
-
-// Data Class
+// Constructor
 ////////////////////////////////////////////////////////////////////////////
-class Data: public QwtSeriesData<QwtPointPolar> {
- public:
-  Data(const QwtInterval &zenithInterval,
-       const QwtInterval &azimuthInterval, size_t size) :
-  _zenithInterval(zenithInterval), _azimuthInterval(azimuthInterval),
-  _size(size) {}
+t_polarData::t_polarData(size_t size) {
+  _zenithInterval.setMinValue(0.0);
+  _zenithInterval.setMaxValue(90.0);
+  _azimuthInterval.setMinValue(0.0);
+  _azimuthInterval.setMaxValue(360.0);
+  _size = size;
+}
 
-  virtual size_t size() const {return _size;}
-
- protected:
-  QwtInterval _zenithInterval;
-  QwtInterval _azimuthInterval;
-  size_t      _size;
-};
-
-// Spiral Data Class
+// Sample (virtual)
 ////////////////////////////////////////////////////////////////////////////
-class SpiralData: public Data {
- public:
-  SpiralData(const QwtInterval &zenithInterval,
-             const QwtInterval &azimuthInterval, size_t size) :
-  Data(zenithInterval, azimuthInterval, size) {}
+t_polarPoint t_polarData::sample(size_t ii) const {
+  const double stepA = 4 * _azimuthInterval.width() / _size;
+  const double aa    = _azimuthInterval.minValue() + ii * stepA;
 
-  virtual QwtPointPolar sample(size_t ii) const {
-    const double stepA = 4 * _azimuthInterval.width() / _size;
-    const double aa    = _azimuthInterval.minValue() + ii * stepA;
+  const double stepR = _zenithInterval.width() / _size;
+  const double rr    = _zenithInterval.minValue() + ii * stepR;
 
-    const double stepR = _zenithInterval.width() / _size;
-    const double rr    = _zenithInterval.minValue() + ii * stepR;
+  return t_polarPoint(aa, rr); 
+}
 
-    return QwtPointPolar(aa, rr); 
-  }
-
-  virtual QRectF boundingRect() const {
-    if (d_boundingRect.width() < 0.0) {
-      d_boundingRect = qwtBoundingRect(*this);
-    }
-    return d_boundingRect;
-  }
-};
+// Bounding Box (virtual)
+////////////////////////////////////////////////////////////////////////////
+QRectF t_polarData::boundingRect() const {
+  return d_boundingRect;
+}
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -110,12 +91,8 @@ QwtPolarPlot(QwtText("Polar Plot"), parent) {
 
   // Scales
   // ------
-  setScale(QwtPolar::Radius,
-           zenithInterval.minValue(), zenithInterval.maxValue());
-
-  setScale(QwtPolar::Azimuth,
-           azimuthInterval.maxValue(), azimuthInterval.minValue(),
-           azimuthInterval.width() / 12);
+  setScale(QwtPolar::Radius, 0.0, 90.0);
+  setScale(QwtPolar::Azimuth, 360.0, 0, 30.0);
 
   // Grids, Axes
   // -----------
@@ -158,6 +135,7 @@ t_polarCurve* t_polarPlot::createCurve() const {
   curve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse,
                                  QBrush(Qt::red), QPen(Qt::red), 
                                  QSize(3, 3)));
-  curve->setData(new SpiralData(zenithInterval, azimuthInterval, numPoints));
+  QwtSeriesData<t_polarPoint>* data = new t_polarData(numPoints);
+  curve->setData((QwtSeriesData<QwtPointPolar>*) data);
   return curve;
 }
