@@ -49,13 +49,13 @@ t_irc bncSP3::write(int GPSweek, double GPSweeks, const QString& prn,
       // ------------------------------------------------
       if (_lastEpoTime.valid()) {
         for (bncTime ep = _lastEpoTime +_sampl; ep < epoTime; ep = ep +_sampl) {
-          _out << "*  " << ep.datestr(' ') << ep.timestr(8, ' ') << endl;
+          _out << "*  " << ep.datestr(' ') << ' ' << ep.timestr(8, ' ') << endl;
         }
       }
 
       // Print the new epoch 
       // -------------------
-      _out << "*  " << epoTime.datestr(' ') << epoTime.timestr(8, ' ') << endl;
+      _out << "*  " << epoTime.datestr(' ') << ' ' << epoTime.timestr(8, ' ') << endl;
 
       _lastEpoTime = epoTime;
     }
