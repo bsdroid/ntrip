@@ -106,13 +106,15 @@ QwtPolarPlot(QwtText("Polar Plot"), parent) {
 
   setPlotBackground(Qt::white);
 
+  setAzimuthOrigin(M_PI/2.0);
+
   // Scales
   // ------
   setScale(QwtPolar::Radius,
            zenithInterval.minValue(), zenithInterval.maxValue());
 
   setScale(QwtPolar::Azimuth,
-           azimuthInterval.minValue(), azimuthInterval.maxValue(),
+           azimuthInterval.maxValue(), azimuthInterval.minValue(),
            azimuthInterval.width() / 12);
 
   // Grids, Axes
