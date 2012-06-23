@@ -42,8 +42,10 @@ Q_OBJECT
 
  signals:
   void finished();
+  void displayGraph();
    
- public slots:
+ private slots:
+  void slotDisplayGraph();
 
  public:
   virtual void run();
