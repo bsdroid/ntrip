@@ -19,21 +19,9 @@
 #include <qwt_series_data.h>
 #include <qwt_symbol.h>
 #include <qwt_polar_grid.h>
-#include <qwt_color_map.h>
+#include <qwt_scale_widget.h>
 
 #include "polarplot.h"
-
-class t_colorMap: public QwtLinearColorMap {
- public:
-  t_colorMap() : QwtLinearColorMap(Qt::darkBlue, Qt::yellow) {
-    addColorStop(0.05, Qt::blue);
-    addColorStop(0.30, Qt::cyan);
-    addColorStop(0.60, Qt::green);
-    addColorStop(0.98, Qt::red);
-  }
-};
-
-t_colorMap colorMap;
 
 // Draw Symbols (virtual) - change symbol's color
 ////////////////////////////////////////////////////////////////////////////
@@ -41,6 +29,7 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
                                const QwtScaleMap& azimuthMap, 
                                const QwtScaleMap& radialMap, 
                                const QPointF& pole, int from, int to) const {
+  t_colorMap colorMap;
   for (int ii = from; ii <= to; ii++) {
     QwtSymbol ss(symbol);
     const t_polarData*  polarData = reinterpret_cast<const t_polarData*>(data());
@@ -117,6 +106,12 @@ t_polarPlot::t_polarPlot(QWidget* parent) :
   grid->showGrid(QwtPolar::Radius,  true);
 
   grid->attach(this);
+
+  _colorMap = new t_colorMap();
+  QwtScaleWidget* colorScale = new QwtScaleWidget(this);
+  colorScale->setAlignment(QwtScaleDraw::RightScale);
+  colorScale->setColorBarEnabled(true);
+  colorScale->setColorMap(QwtInterval(0.0,1.0), _colorMap);
 
   // Curves
   // ------
