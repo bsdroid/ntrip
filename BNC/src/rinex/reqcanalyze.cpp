@@ -46,6 +46,7 @@
 #include "bncutils.h"
 #include "bncpostprocess.h"
 #include "graphwin.h"
+#include "polarplot.h"
 
 using namespace std;
 
@@ -82,7 +83,11 @@ t_reqcAnalyze::~t_reqcAnalyze() {
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::slotDisplayGraph() {
-  t_graphWin* graphWin = new t_graphWin(0);
+  QVector<t_polarPlot*> plots;
+  t_polarPlot* plotMP1 = new t_polarPlot(0); plots << plotMP1;
+  t_polarPlot* plotMP2 = new t_polarPlot(0); plots << plotMP2;
+
+  t_graphWin* graphWin = new t_graphWin(0, plots);
   graphWin->show();
 }
 

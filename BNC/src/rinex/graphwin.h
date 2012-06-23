@@ -32,24 +32,22 @@ class t_polarPlot;
 
 class t_graphWin : public QDialog {
 
-  Q_OBJECT
+ Q_OBJECT
 
-  public:
-    t_graphWin(QWidget* parent);
-    ~t_graphWin();
+ public:
+  t_graphWin(QWidget* parent, const QVector<t_polarPlot*>& plots);
+  ~t_graphWin();
 
-  signals:
+ signals:
 
-  private slots:
-    void slotOK();
+ private slots:
+  void slotOK();
 
-  protected:
-    virtual void closeEvent(QCloseEvent *);
+ protected:
+  virtual void closeEvent(QCloseEvent *);
 
-  private:
-   QPushButton* _buttonOK;
-   t_polarPlot* _plotMP1;
-   t_polarPlot* _plotMP2;
+ private:
+  QPushButton* _buttonOK;
 };
 
 #endif

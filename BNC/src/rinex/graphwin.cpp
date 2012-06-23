@@ -38,27 +38,20 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
-
 #include "graphwin.h"
 #include "polarplot.h"
 
 using namespace std;
 
-
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_graphWin::t_graphWin(QWidget* parent) : QDialog(parent) {
+t_graphWin::t_graphWin(QWidget* parent, const QVector<t_polarPlot*>& plots) :
+ QDialog(parent) {
 
-  setWindowTitle(tr("Plot"));
+  setWindowTitle(tr("BNC Plot"));
 
   int ww = QFontMetrics(font()).width('w');
-  setMinimumSize(80*ww, 40*ww);
-
-  // Multipath Plots
-  // ---------------
-  _plotMP1 = new t_polarPlot(this);
-  _plotMP2 = new t_polarPlot(this);
+  setMinimumSize(plots.size()*40*ww, 40*ww);
 
   // Buttons
   // -------
@@ -69,8 +62,9 @@ t_graphWin::t_graphWin(QWidget* parent) : QDialog(parent) {
   // Layout
   // ------
   QHBoxLayout* plotLayout = new QHBoxLayout;
-  plotLayout->addWidget(_plotMP1);
-  plotLayout->addWidget(_plotMP2);
+  for (int ip = 0; ip < plots.size(); ip++) {
+    plotLayout->addWidget(plots[ip]);
+  }
 
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(_buttonOK);
