@@ -109,9 +109,11 @@ exists(rinex/bncpostprocess.h) {
   DEFINES += USE_POSTPROCESSING
   HEADERS += rinex/bncpostprocess.h   rinex/rnxobsfile.h   \
              rinex/rnxnavfile.h       rinex/corrfile.h     \
-             rinex/reqcedit.h         rinex/reqcanalyze.h
+             rinex/reqcedit.h         rinex/reqcanalyze.h  \
+             rinex/graphwin.h
   SOURCES += rinex/bncpostprocess.cpp rinex/rnxobsfile.cpp \
              rinex/rnxnavfile.cpp     rinex/corrfile.cpp   \
-             rinex/reqcedit.cpp       rinex/reqcanalyze.cpp
+             rinex/reqcedit.cpp       rinex/reqcanalyze.cpp \
+             rinex/graphwin.cpp
 }
 
