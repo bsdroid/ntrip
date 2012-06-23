@@ -4,20 +4,6 @@
 
 #include <qwt_polar_plot.h>
 #include <qwt_polar_curve.h>
-#include <qwt_color_map.h>
-
-//
-//////////////////////////////////////////////////////////////////////////////
-class t_colorMap: public QwtLinearColorMap {
- public:
-  t_colorMap() : QwtLinearColorMap(Qt::darkBlue, Qt::yellow) {
-    addColorStop(0.05, Qt::blue);
-    addColorStop(0.30, Qt::cyan);
-    addColorStop(0.60, Qt::green);
-    addColorStop(0.98, Qt::red);
-  }
-};
-
 //
 //////////////////////////////////////////////////////////////////////////////
 class t_polarCurve : public QwtPolarCurve {
@@ -68,7 +54,6 @@ class t_polarPlot: public QwtPolarPlot {
 
  private:
   t_polarCurve* createCurve() const;
-  t_colorMap*   _colorMap;
 };
 
 #endif

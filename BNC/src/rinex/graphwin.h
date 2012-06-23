@@ -27,7 +27,24 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <qwt_color_map.h>
 
+class QwtScaleWidget;
+
+//
+//////////////////////////////////////////////////////////////////////////////
+class t_colorMap: public QwtLinearColorMap {
+ public:
+  t_colorMap() : QwtLinearColorMap(Qt::darkBlue, Qt::yellow) {
+    addColorStop(0.05, Qt::blue);
+    addColorStop(0.30, Qt::cyan);
+    addColorStop(0.60, Qt::green);
+    addColorStop(0.98, Qt::red);
+  }
+};
+
+//
+//////////////////////////////////////////////////////////////////////////////
 class t_graphWin : public QDialog {
 
  Q_OBJECT
@@ -45,7 +62,8 @@ class t_graphWin : public QDialog {
   virtual void closeEvent(QCloseEvent *);
 
  private:
-  QPushButton* _buttonOK;
+  QPushButton*    _buttonOK;
+  QwtScaleWidget* _colorScale;
 };
 
 #endif

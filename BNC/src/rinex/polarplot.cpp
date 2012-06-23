@@ -22,6 +22,7 @@
 #include <qwt_scale_widget.h>
 
 #include "polarplot.h"
+#include "graphwin.h"
 
 // Draw Symbols (virtual) - change symbol's color
 ////////////////////////////////////////////////////////////////////////////
@@ -106,12 +107,6 @@ t_polarPlot::t_polarPlot(QWidget* parent) :
   grid->showGrid(QwtPolar::Radius,  true);
 
   grid->attach(this);
-
-  _colorMap = new t_colorMap();
-  QwtScaleWidget* colorScale = new QwtScaleWidget(this);
-  colorScale->setAlignment(QwtScaleDraw::RightScale);
-  colorScale->setColorBarEnabled(true);
-  colorScale->setColorMap(QwtInterval(0.0,1.0), _colorMap);
 
   // Curves
   // ------
