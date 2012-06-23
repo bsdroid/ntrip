@@ -73,7 +73,7 @@ t_polarCurve* t_polarPlot::createCurve() const {
   curve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse,
                                  QBrush(Qt::red), QPen(Qt::red), 
                                  QSize(3, 3)));
-  QwtSeriesData<t_polarPoint>* data = new t_polarData(numPoints);
+  t_polarData* data = new t_polarData(numPoints);
   curve->setData(reinterpret_cast<QwtSeriesData<QwtPointPolar>*>(data));
   return curve;
 }
