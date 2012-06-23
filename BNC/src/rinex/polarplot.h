@@ -3,9 +3,7 @@
 #define POLARPLOT_H
 
 #include <qwt_polar_plot.h>
-
-class QwtPolarGrid;
-class QwtPolarCurve;
+#include <qwt_polar_curve.h>
 
 class t_polarPlot: public QwtPolarPlot {
  Q_OBJECT
@@ -18,8 +16,6 @@ class t_polarPlot: public QwtPolarPlot {
 
  private:
   QwtPolarCurve* createCurve() const;
-  QwtPolarGrid*           _grid;
-  QVector<QwtPolarCurve*> _curves;
 };
 
 #endif
