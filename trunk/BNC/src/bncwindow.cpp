@@ -2544,10 +2544,8 @@ void bncWindow::startPostProcessingPPP() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFinishedPostProcessingPPP() {
   _runningPostProcessingPPP = false;
-  if (_reqcActionComboBox->currentText() != "Analyze") {
-    QMessageBox::information(this, "Information",
-                             "Post-Processing Thread Finished");
-  }
+  QMessageBox::information(this, "Information",
+                           "Post-Processing Thread Finished");
   _actStart->setText("Start");
   enableStartStop();
 }
@@ -2588,8 +2586,10 @@ void bncWindow::startPostProcessingReqc() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFinishedPostProcessingReqc() {
   _runningPostProcessingReqc = false;
-  QMessageBox::information(this, "Information",
-                           "RINEX Processing Thread Finished");
+  if (_reqcActionComboBox->currentText() != "Analyze") {
+    QMessageBox::information(this, "Information",
+                             "RINEX Processing Thread Finished");
+  }
   enableStartStop();
 }
 
