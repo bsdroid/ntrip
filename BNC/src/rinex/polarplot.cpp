@@ -19,8 +19,21 @@
 #include <qwt_series_data.h>
 #include <qwt_symbol.h>
 #include <qwt_polar_grid.h>
+#include <qwt_color_map.h>
 
 #include "polarplot.h"
+
+class t_colorMap: public QwtLinearColorMap {
+ public:
+  t_colorMap() : QwtLinearColorMap(Qt::darkBlue, Qt::yellow) {
+    addColorStop(0.05, Qt::blue);
+    addColorStop(0.30, Qt::cyan);
+    addColorStop(0.60, Qt::green);
+    addColorStop(0.98, Qt::red);
+  }
+};
+
+t_colorMap colorMap;
 
 // Draw Symbols (virtual) - change symbol's color
 ////////////////////////////////////////////////////////////////////////////
@@ -32,14 +45,9 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
     QwtSymbol ss(symbol);
     const t_polarData*  polarData = reinterpret_cast<const t_polarData*>(data());
     const t_polarPoint& point     = polarData->sample(ii);
-    if (point._value == 1) {
-      ss.setBrush(QBrush(Qt::red));
-      ss.setPen(QPen(Qt::red));
-    }
-    else {
-      ss.setBrush(QBrush(Qt::blue));
-      ss.setPen(QPen(Qt::blue));
-    }
+    const QColor color = colorMap.color(QwtInterval(0.0, 1.0), point._value);
+    ss.setBrush(QBrush(color));
+    ss.setPen(QPen(color));
     QwtPolarCurve::drawSymbols(painter, ss, azimuthMap, radialMap, pole, ii,ii);
   }
 }
@@ -56,10 +64,7 @@ t_polarPoint t_polarData::sample(size_t ii) const {
   const double stepR = zenithInterval.width() / _size;
   const double rr    = zenithInterval.minValue() + ii * stepR;
 
-  double value = 0.0;
-  if (ii % 3 == 0) {
-    value = 1.0;
-  }
+  double value = static_cast<double>(ii) / _size;
 
   return t_polarPoint(aa, rr, value); 
 }
