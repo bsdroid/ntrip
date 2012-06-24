@@ -75,4 +75,8 @@ int readInt(const QString& str, int pos, int len, int& value);
 
 int readDbl(const QString& str, int pos, int len, double& value);
 
+void topos(double xRec, double yRec, double zRec, 
+           double xSat, double ySat, double zSat, 
+           double& rho, double& eleSat, double& azSat);
+
 #endif

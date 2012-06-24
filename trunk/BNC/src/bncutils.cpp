@@ -407,3 +407,34 @@ int readDbl(const QString& str, int pos, int len, double& value) {
   value = hlp.toDouble(&ok);
   return ok ? 0 : 1;
 }
+
+// Topocentrical Distance and Elevation
+////////////////////////////////////////////////////////////////////////////
+void topos(double xRec, double yRec, double zRec, 
+           double xSat, double ySat, double zSat, 
+           double& rho, double& eleSat, double& azSat) {
+
+  double dx[3];
+  dx[0] = xSat-xRec;
+  dx[1] = ySat-yRec;
+  dx[2] = zSat-zRec;
+
+  rho =  sqrt( dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2] ); 
+
+  double xyzRec[3];
+  xyzRec[0] = xRec;
+  xyzRec[1] = yRec;
+  xyzRec[2] = zRec;
+
+  double Ell[3];
+  double neu[3];
+  xyz2ell(xyzRec, Ell);
+  xyz2neu(Ell, dx, neu);
+
+  eleSat = acos( sqrt(neu[0]*neu[0] + neu[1]*neu[1]) / rho );
+  if (neu[2] < 0) {
+    eleSat *= -1.0;
+  }
+
+  azSat  = atan2(neu[1], neu[0]);
+}
