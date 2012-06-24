@@ -253,40 +253,47 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
                                      QVector<t_polarPoint*>* dataMP1, 
                                      QVector<t_polarPoint*>* dataMP2) {
 
-  int numVal = satStat.anaObs.size();
-  if (numVal < 2) {
-    return;
-  }
+  const int LENGTH = 60;  // number of epochs in one chunk
 
-  double mean1 = 0.0;
-  double mean2 = 0.0;
-  for (int ii = 0; ii < numVal; ii++) {
-    const t_anaObs* anaObs = satStat.anaObs[ii];
-    mean1 += anaObs->MP1;
-    mean2 += anaObs->MP2;
-  }
-  mean1 /= numVal;
-  mean2 /= numVal;
-  double stddev1 = 0.0;
-  double stddev2 = 0.0;
-  for (int ii = 0; ii < numVal; ii++) {
-    const t_anaObs* anaObs = satStat.anaObs[ii];
-    double diff1 = anaObs->MP1 - mean1;
-    double diff2 = anaObs->MP2 - mean2;
-    stddev1 += diff1 * diff1;
-    stddev2 += diff2 * diff2;
-    //// beg test
-    double bla = anaObs->zen/90.0;
-    (*dataMP1) << (new t_polarPoint(anaObs->az, anaObs->zen, bla));
-    (*dataMP2) << (new t_polarPoint(anaObs->az, anaObs->zen, bla));
-    //// end test
-  }
-  double MP1 = sqrt(stddev1 / (numVal-1));
-  double MP2 = sqrt(stddev2 / (numVal-1));
-        
-  _log->setRealNumberNotation(QTextStream::FixedNotation);
-  _log->setRealNumberPrecision(2);
+  int numEpo = satStat.anaObs.size();
 
-  *_log << "MP1 " << prn << " " << MP1 << endl;
-  *_log << "MP2 " << prn << " " << MP2 << endl;
+  for (int chunkStart = 0; chunkStart + LENGTH < numEpo; chunkStart += LENGTH) {
+
+    // Compute Mean
+    // ------------
+    double mean1 = 0.0;
+    double mean2 = 0.0;
+    for (int ii = 0; ii < LENGTH; ii++) {
+      int iEpo = chunkStart + ii;
+      const t_anaObs* anaObs = satStat.anaObs[iEpo];
+      mean1 += anaObs->MP1;
+      mean2 += anaObs->MP2;
+    }
+    mean1 /= LENGTH;
+    mean2 /= LENGTH;
+
+    // Compute Standard Deviation
+    // --------------------------
+    double stddev1 = 0.0;
+    double stddev2 = 0.0;
+    for (int ii = 0; ii < LENGTH; ii++) {
+      int iEpo = chunkStart + ii;
+      const t_anaObs* anaObs = satStat.anaObs[iEpo];
+      double diff1 = anaObs->MP1 - mean1;
+      double diff2 = anaObs->MP2 - mean2;
+      stddev1 += diff1 * diff1;
+      stddev2 += diff2 * diff2;
+    }
+    double MP1 = sqrt(stddev1 / (LENGTH-1));
+    double MP2 = sqrt(stddev2 / (LENGTH-1));
+
+    const t_anaObs* anaObs = satStat.anaObs[chunkStart];
+    (*dataMP1) << (new t_polarPoint(anaObs->az, anaObs->zen, MP1));
+    (*dataMP2) << (new t_polarPoint(anaObs->az, anaObs->zen, MP2));
+
+    _log->setRealNumberNotation(QTextStream::FixedNotation);
+    _log->setRealNumberPrecision(2);
+    *_log << "MP1 " << prn << " " << anaObs->az << " " << anaObs->zen << MP1 << endl;
+    *_log << "MP2 " << prn << " " << anaObs->az << " " << anaObs->zen << MP2 << endl;
+  }
 }
