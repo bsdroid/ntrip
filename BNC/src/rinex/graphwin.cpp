@@ -82,12 +82,13 @@ t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots) :
    _colorScale->setColorMap(interval, new t_colorMap());
 
    QwtLinearScaleEngine scaleEngine;
-    _colorScale->setScaleDiv(scaleEngine.transformation(),
+   _colorScale->setScaleDiv(scaleEngine.transformation(),
       scaleEngine.divideScale(interval.minValue(), interval.maxValue(), 8, 5));
 
   // Layout
   // ------
-  QHBoxLayout* plotLayout = new QHBoxLayout;
+  _canvas = new QWidget(this);
+  QHBoxLayout* plotLayout = new QHBoxLayout(_canvas);
   for (int ip = 0; ip < plots.size(); ip++) {
     plotLayout->addWidget(plots[ip]);
   }
@@ -98,7 +99,7 @@ t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots) :
   buttonLayout->addWidget(_buttonPrint);
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
-  mainLayout->addLayout(plotLayout);
+  mainLayout->addWidget(_canvas);
   mainLayout->addLayout(buttonLayout);
 }
 
@@ -132,14 +133,13 @@ void t_graphWin::slotPrint() {
   else {
     QPainter painter;
     painter.begin(&printer);
-    QWidget* prtWidget = this; // TODO: only a part of it?
-    double xscale = printer.pageRect().width()/double(prtWidget->width());
-    double yscale = printer.pageRect().height()/double(prtWidget->height());
+    double xscale = printer.pageRect().width()/double(_canvas->width());
+    double yscale = printer.pageRect().height()/double(_canvas->height());
     double scale  = qMin(xscale, yscale);
     painter.translate(printer.paperRect().x() + printer.pageRect().width()/2,
                       printer.paperRect().y() + printer.pageRect().height()/2);
     painter.scale(scale, scale);
     painter.translate(-width()/2, -height()/2);
-    prtWidget->render(&painter);
+    _canvas->render(&painter);
   }
 }
