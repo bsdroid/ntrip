@@ -55,13 +55,16 @@ Q_OBJECT
  private:
   class t_anaObs {
    public:
-    t_anaObs(const t_obs& obsIn) :
-      obs(obsIn), az(0.0), zen(0.0), MP1(0.0), MP2(0.0) {}
-    t_obs  obs;
-    double az;
-    double zen;
-    double MP1;
-    double MP2;
+    t_anaObs(int GPSWeek, double GPSWeeks) {
+      _GPSWeek  = GPSWeek;
+      _GPSWeeks = GPSWeeks;
+      _MP1      = 0.0;
+      _MP2      = 0.0;
+    }
+    int    _GPSWeek;
+    double _GPSWeeks;
+    double _MP1;
+    double _MP2;
   };
 
   class t_satStat {
@@ -72,12 +75,14 @@ Q_OBJECT
         delete anaObs[ii];
       }
     }
-    void addObs(const t_obs& obs, const t_eph* eph, const ColumnVector& xyz);
+    void addObs(const t_obs& obs);
     QVector<t_anaObs*> anaObs;
   };
 
   void analyzeFile(t_rnxObsFile* obsFile);
-  void analyzeMultipath(const QString& prn, const t_satStat& satStat,
+  void analyzeMultipath(const QString& prn, 
+                        const t_satStat& satStat,
+                        const ColumnVector& xyz,
                         QVector<t_polarPoint*>* dataMP1, 
                         QVector<t_polarPoint*>* dataMP2);
 

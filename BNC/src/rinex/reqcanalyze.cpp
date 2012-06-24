@@ -174,17 +174,9 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
       QString prn = QString("%1%2").arg(obs.satSys)
                                    .arg(obs.satNum, 2, 10, QChar('0'));
 
-      t_eph* eph = 0;
-      for (int ie = 0; ie < _ephs.size(); ie++) {
-        if (_ephs[ie]->prn() == prn) {
-          eph = _ephs[ie];
-          break;
-        }
-      }
-
       t_satStat& satStat = _satStat[prn];
 
-      satStat.addObs(obs, eph, xyz);
+      satStat.addObs(obs);
     }
 
   } // while (_currEpo)
@@ -199,7 +191,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
     it.next();
     QString          prn     = it.key();
     const t_satStat& satStat = it.value();
-    analyzeMultipath(prn, satStat, dataMP1, dataMP2);
+    analyzeMultipath(prn, satStat, xyz, dataMP1, dataMP2);
   }
 
   emit displayGraph(dataMP1, dataMP2);
@@ -209,10 +201,9 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs, const t_eph* eph, 
-                                      const ColumnVector& xyz) {
+void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) { 
 
-  t_anaObs* newObs = new t_anaObs(obs);
+  t_anaObs* newObs = new t_anaObs(obs.GPSWeek, obs.GPSWeeks);
   bool      okFlag = false;
 
   // Compute the Multipath
@@ -225,11 +216,11 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs, const t_eph* eph,
     double L2 = obs.l2() * t_CST::c / f2;
 
     if (obs.p1() != 0.0) {
-      newObs->MP1 = obs.p1() - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
+      newObs->_MP1 = obs.p1() - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
       okFlag = true;
     }
     if (obs.p2() != 0.0) {
-      newObs->MP2 = obs.p2() - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
+      newObs->_MP2 = obs.p2() - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
       okFlag = true;
     }
   }
@@ -241,20 +232,6 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs, const t_eph* eph,
   }
   else {
     delete newObs;
-    return;
-  }
-
-  // Compute the Azimuth and Zenith Distance
-  // ---------------------------------------
-  if (eph && xyz.size()) {
-    double xSat, ySat, zSat, clkSat;
-    eph->position(obs.GPSWeek, obs.GPSWeeks, xSat, ySat, zSat, clkSat);
-
-    double rho, eleSat, azSat;
-    topos(xyz(1), xyz(2), xyz(3), xSat, ySat, zSat, rho, eleSat, azSat);
-
-    newObs->az  = azSat * 180.0/M_PI;
-    newObs->zen = 90.0 - eleSat * 180.0/M_PI;
   }
 }
 
@@ -262,6 +239,7 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs, const t_eph* eph,
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::analyzeMultipath(const QString& prn, 
                                      const t_satStat& satStat,
+                                     const ColumnVector& xyz,
                                      QVector<t_polarPoint*>* dataMP1, 
                                      QVector<t_polarPoint*>* dataMP2) {
 
@@ -281,14 +259,14 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
     for (int ii = 0; ii < LENGTH; ii++) {
       int iEpo = chunkStart + ii;
       const t_anaObs* anaObs = satStat.anaObs[iEpo];
-      mean1 += anaObs->MP1;
-      mean2 += anaObs->MP2;
+      mean1 += anaObs->_MP1;
+      mean2 += anaObs->_MP2;
   
       // Check Slip
       // ----------
       if (ii > 0) {
-        double diff1 = anaObs->MP1 - satStat.anaObs[iEpo-1]->MP1;
-        double diff2 = anaObs->MP2 - satStat.anaObs[iEpo-1]->MP2;
+        double diff1 = anaObs->_MP1 - satStat.anaObs[iEpo-1]->_MP1;
+        double diff2 = anaObs->_MP2 - satStat.anaObs[iEpo-1]->_MP2;
         if (fabs(diff1) > SLIP || fabs(diff2) > SLIP) {
           slipFlag = true;
           break;
@@ -310,29 +288,56 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
     for (int ii = 0; ii < LENGTH; ii++) {
       int iEpo = chunkStart + ii;
       const t_anaObs* anaObs = satStat.anaObs[iEpo];
-      double diff1 = anaObs->MP1 - mean1;
-      double diff2 = anaObs->MP2 - mean2;
+      double diff1 = anaObs->_MP1 - mean1;
+      double diff2 = anaObs->_MP2 - mean2;
       stddev1 += diff1 * diff1;
       stddev2 += diff2 * diff2;
     }
     double MP1 = sqrt(stddev1 / (LENGTH-1));
     double MP2 = sqrt(stddev2 / (LENGTH-1));
 
+    const t_anaObs* anaObs0 = satStat.anaObs[chunkStart];
+
+    // Compute the Azimuth and Zenith Distance
+    // ---------------------------------------
+    double az  = 0.0;
+    double zen = 0.0;
+    if (xyz.size()) {
+      t_eph* eph = 0;
+      for (int ie = 0; ie < _ephs.size(); ie++) {
+        if (_ephs[ie]->prn() == prn) {
+          eph = _ephs[ie];
+          break;
+        }
+      }
+      
+      if (eph) {
+        double xSat, ySat, zSat, clkSat;
+        eph->position(anaObs0->_GPSWeek, anaObs0->_GPSWeeks, 
+                      xSat, ySat, zSat, clkSat);
+      
+        double rho, eleSat, azSat;
+        topos(xyz(1), xyz(2), xyz(3), xSat, ySat, zSat, rho, eleSat, azSat);
+      
+        az  = azSat * 180.0/M_PI;
+        zen = 90.0 - eleSat * 180.0/M_PI;
+      }
+    }
+
     // Add new Point
     // -------------
-    const t_anaObs* anaObs = satStat.anaObs[chunkStart];
-    (*dataMP1) << (new t_polarPoint(anaObs->az, anaObs->zen, MP1));
-    (*dataMP2) << (new t_polarPoint(anaObs->az, anaObs->zen, MP2));
+    (*dataMP1) << (new t_polarPoint(az, zen, MP1));
+    (*dataMP2) << (new t_polarPoint(az, zen, MP2));
 
     _log->setRealNumberNotation(QTextStream::FixedNotation);
 
     _log->setRealNumberPrecision(2);
-    *_log << "MP1 " << prn << " " << anaObs->az << " " << anaObs->zen << " ";
+    *_log << "MP1 " << prn << " " << az << " " << zen << " ";
     _log->setRealNumberPrecision(3);
     *_log << MP1 << endl;
 
     _log->setRealNumberPrecision(2);
-    *_log << "MP2 " << prn << " " << anaObs->az << " " << anaObs->zen << " ";
+    *_log << "MP2 " << prn << " " << az << " " << zen << " ";
     _log->setRealNumberPrecision(3);
     *_log << MP2 << endl;
   }
