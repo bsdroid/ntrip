@@ -36,10 +36,11 @@ class QwtScaleWidget;
 class t_colorMap: public QwtLinearColorMap {
  public:
   t_colorMap() : QwtLinearColorMap(Qt::darkBlue, Qt::yellow) {
-    addColorStop(0.05, Qt::blue);
-    addColorStop(0.30, Qt::cyan);
-    addColorStop(0.60, Qt::green);
-    addColorStop(0.98, Qt::red);
+    addColorStop(0.00, Qt::blue);
+    addColorStop(0.25, Qt::cyan);
+    addColorStop(0.50, Qt::green);
+    addColorStop(0.75, Qt::red);
+    addColorStop(1.00, Qt::yellow);
   }
 };
 
