@@ -44,10 +44,10 @@ Q_OBJECT
 
  signals:
   void finished();
-  void displayGraph();
+  void displayGraph(QVector<t_polarPoint*>*, QVector<t_polarPoint*>*);
    
  private slots:
-  void slotDisplayGraph();
+  void slotDisplayGraph(QVector<t_polarPoint*>*, QVector<t_polarPoint*>*);
 
  public:
   virtual void run();
@@ -72,7 +72,7 @@ Q_OBJECT
         delete anaObs[ii];
       }
     }
-    void addObs(const t_eph* eph, const t_obs& obs);
+    void addObs(const t_obs& obs, const t_eph* eph, const ColumnVector& xyz);
     QVector<t_anaObs*> anaObs;
   };
 
@@ -87,8 +87,6 @@ Q_OBJECT
   QVector<t_eph*>          _ephs;
   QMap<QString, t_satStat> _satStat;
   t_rnxObsFile::t_rnxEpo*  _currEpo;
-  QVector<t_polarPoint*>*  _dataMP1;
-  QVector<t_polarPoint*>*  _dataMP2;
 };
 
 #endif
