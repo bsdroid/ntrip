@@ -50,6 +50,8 @@
 
 using namespace std;
 
+const double SLIPTRESH = 5.0; // cycle-slip threshold (meters)
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
@@ -102,8 +104,9 @@ void t_reqcAnalyze::slotDisplayGraph(QVector<t_polarPoint*>* dataMP1,
         maxMP = mp;
       }
     }
-
-    qDebug() << maxMP;
+    if (maxMP > SLIPTRESH) {
+    }
+    
 
     QwtInterval scaleInterval(0.0, maxMP);
 
@@ -264,7 +267,6 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
                                      QVector<t_polarPoint*>* dataMP2) {
 
   const int    LENGTH = 10;  // number of epochs in one chunk
-  const double SLIP   = 5.0; // cycle-slip threshold
 
   int numEpo = satStat.anaObs.size();
 
@@ -287,7 +289,7 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
       if (ii > 0) {
         double diff1 = anaObs->_MP1 - satStat.anaObs[iEpo-1]->_MP1;
         double diff2 = anaObs->_MP2 - satStat.anaObs[iEpo-1]->_MP2;
-        if (fabs(diff1) > SLIP || fabs(diff2) > SLIP) {
+        if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
           slipFlag = true;
           break;
         }
