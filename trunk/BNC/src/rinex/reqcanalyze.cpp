@@ -261,7 +261,7 @@ void t_reqcAnalyze::t_satStat::addObs(const t_eph* eph, const t_obs& obs) {
   // Compute the Azimuth and Zenith Distance
   // ---------------------------------------
   if (eph) {
-    double xx, yy, zz, cc;
-    eph->position(obs.GPSWeek, obs.GPSWeeks, xx, yy, zz, cc);
+    double xSat, ySat, zSat, clkSat;
+    eph->position(obs.GPSWeek, obs.GPSWeeks, xSat, ySat, zSat, clkSat);
   }
 }
