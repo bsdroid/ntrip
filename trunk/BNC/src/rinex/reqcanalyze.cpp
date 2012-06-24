@@ -222,8 +222,9 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         stddev1 += diff1 * diff1;
         stddev2 += diff2 * diff2;
         //// beg test
-        (*dataMP1) << (new t_polarPoint(anaObs->az, anaObs->zen, 0.5));
-        (*dataMP2) << (new t_polarPoint(anaObs->az, anaObs->zen, 1.0));
+        double bla = anaObs->zen/90.0;
+        (*dataMP1) << (new t_polarPoint(anaObs->az, anaObs->zen, bla));
+        (*dataMP2) << (new t_polarPoint(anaObs->az, anaObs->zen, bla));
         //// end test
       }
       double MP1 = sqrt(stddev1 / (numVal-1));
