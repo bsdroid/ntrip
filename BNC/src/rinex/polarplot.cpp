@@ -33,46 +33,12 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
   t_colorMap colorMap;
   for (int ii = from; ii <= to; ii++) {
     QwtSymbol ss(symbol);
-    const QwtPointPolar& point    = sample(ii);
+    const QwtPointPolar& point = sample(ii);
     const QColor color = colorMap.color(QwtInterval(0.0, 1.0), point._value);
     ss.setBrush(QBrush(color));
     ss.setPen(QPen(color));
     QwtPolarCurve::drawSymbols(painter, ss, azimuthMap, radialMap, pole, ii,ii);
   }
-}
-
-// Sample (virtual) - this is for testing only
-////////////////////////////////////////////////////////////////////////////
-QwtPointPolar t_polarData::sample(size_t ii) const {
-  const QwtInterval zenithInterval(0.0, 90.0);
-  const QwtInterval azimuthInterval(0.0, 360.0 );
-
-  const double stepA = 4 * azimuthInterval.width() / _size;
-  const double aa    = azimuthInterval.minValue() + ii * stepA;
-
-  const double stepR = zenithInterval.width() / _size;
-  const double rr    = zenithInterval.minValue() + ii * stepR;
-
-  double value = static_cast<double>(ii) / _size;
-
-  QwtPointPolar point(aa,rr);
-  point._value = value;
-
-  return point;
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-t_polarCurve* t_polarPlot::createCurve() const {
-  const int numPoints = 1000;
-  t_polarCurve* curve = new t_polarCurve();
-  curve->setStyle(QwtPolarCurve::NoCurve);  // draw only symbols
-  curve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse,
-                                 QBrush(Qt::red), QPen(Qt::red), 
-                                 QSize(3, 3)));
-  t_polarData* data = new t_polarData(numPoints);
-  curve->setData(data);
-  return curve;
 }
 
 // Constructor
@@ -109,10 +75,17 @@ t_polarPlot::t_polarPlot(QWidget* parent) :
   grid->showGrid(QwtPolar::Radius,  true);
 
   grid->attach(this);
-
-  // Curves
-  // ------
-  t_polarCurve* curve = createCurve();
-  curve->attach(this);
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_polarPlot::addCurve(QVector<t_polarPoint*>* data) {
+  t_polarCurve* curve = new t_polarCurve();
+  curve->setStyle(QwtPolarCurve::NoCurve);  // draw only symbols
+  curve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse,
+                                 QBrush(Qt::red), QPen(Qt::red), 
+                                 QSize(3, 3)));
+  t_polarData* polarData = new t_polarData(data);
+  curve->setData(polarData);
+  curve->attach(this);
+}
