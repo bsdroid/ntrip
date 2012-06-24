@@ -58,9 +58,9 @@ t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots) :
 
   // Buttons
   // -------
-  _buttonOK = new QPushButton(tr("OK"), this);
-  _buttonOK->setMaximumWidth(10*ww);
-  connect(_buttonOK, SIGNAL(clicked()), this, SLOT(slotOK()));
+  _buttonClose = new QPushButton(tr("Close"), this);
+  _buttonClose->setMaximumWidth(10*ww);
+  connect(_buttonClose, SIGNAL(clicked()), this, SLOT(slotClose()));
 
   // Color Scale
   // -----------
@@ -90,7 +90,7 @@ t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots) :
   plotLayout->addWidget(_colorScale);
 
   QHBoxLayout* buttonLayout = new QHBoxLayout;
-  buttonLayout->addWidget(_buttonOK);
+  buttonLayout->addWidget(_buttonClose);
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   mainLayout->addLayout(plotLayout);
@@ -100,12 +100,11 @@ t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots) :
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_graphWin::~t_graphWin() {
-  delete _buttonOK;
 }
 
 // Accept the Options
 ////////////////////////////////////////////////////////////////////////////
-void t_graphWin::slotOK() {
+void t_graphWin::slotClose() {
   done(0);
 }
 
