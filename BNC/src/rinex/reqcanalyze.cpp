@@ -263,5 +263,14 @@ void t_reqcAnalyze::t_satStat::addObs(const t_eph* eph, const t_obs& obs) {
   if (eph) {
     double xSat, ySat, zSat, clkSat;
     eph->position(obs.GPSWeek, obs.GPSWeeks, xSat, ySat, zSat, clkSat);
+
+    //// beg test
+    double xRec = -3947762.7496;
+    double yRec =  3364399.8789;
+    double zRec =  3699428.5111;
+    //// end test
+   
+    double rho, eleSat, azSat;
+    topos(xRec, yRec, zRec, xSat, ySat, zSat, rho, eleSat, azSat);
   }
 }
