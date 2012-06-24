@@ -149,6 +149,8 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         << "------------\n"
         << obsFile->fileName().toAscii().data() << endl << endl;
 
+  _satStat.clear();
+
   // A priori Coordinates
   // --------------------
   ColumnVector xyz = obsFile->xyz();
