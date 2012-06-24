@@ -267,7 +267,7 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
                                      QVector<t_polarPoint*>* dataMP1, 
                                      QVector<t_polarPoint*>* dataMP2) {
 
-  const int    LENGTH = 10;  // number of epochs in one chunk
+  const int    LENGTH = 120;  // number of epochs in one chunk
 
   int numEpo = satStat.anaObs.size();
 
