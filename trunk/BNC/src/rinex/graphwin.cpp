@@ -62,6 +62,10 @@ t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots) :
   _buttonClose->setMaximumWidth(10*ww);
   connect(_buttonClose, SIGNAL(clicked()), this, SLOT(slotClose()));
 
+  _buttonPrint = new QPushButton(tr("Print"), this);
+  _buttonPrint->setMaximumWidth(10*ww);
+  connect(_buttonPrint, SIGNAL(clicked()), this, SLOT(slotPrint()));
+
   // Color Scale
   // -----------
   _colorScale = new QwtScaleWidget( this );
@@ -91,6 +95,7 @@ t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots) :
 
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(_buttonClose);
+  buttonLayout->addWidget(_buttonPrint);
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   mainLayout->addLayout(plotLayout);
@@ -112,4 +117,29 @@ void t_graphWin::slotClose() {
 ////////////////////////////////////////////////////////////////////////////
 void t_graphWin::closeEvent(QCloseEvent* event) {
   QDialog::closeEvent(event);
+}
+
+// Print the widget
+////////////////////////////////////////////////////////////////////////////
+void t_graphWin::slotPrint() {
+
+  QPrinter printer;
+  QPrintDialog* dialog = new QPrintDialog(&printer, this);
+  dialog->setWindowTitle(tr("Print Plot"));
+  if (dialog->exec() != QDialog::Accepted) {
+    return;
+  }
+  else {
+    QPainter painter;
+    painter.begin(&printer);
+    QWidget* prtWidget = this; // TODO: only a part of it?
+    double xscale = printer.pageRect().width()/double(prtWidget->width());
+    double yscale = printer.pageRect().height()/double(prtWidget->height());
+    double scale  = qMin(xscale, yscale);
+    painter.translate(printer.paperRect().x() + printer.pageRect().width()/2,
+                      printer.paperRect().y() + printer.pageRect().height()/2);
+    painter.scale(scale, scale);
+    painter.translate(-width()/2, -height()/2);
+    prtWidget->render(&painter);
+  }
 }
