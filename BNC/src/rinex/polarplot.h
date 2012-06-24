@@ -4,6 +4,7 @@
 
 #include <qwt_polar_plot.h>
 #include <qwt_polar_curve.h>
+
 //
 //////////////////////////////////////////////////////////////////////////////
 class t_polarCurve : public QwtPolarCurve {
@@ -11,21 +12,18 @@ class t_polarCurve : public QwtPolarCurve {
   t_polarCurve() {}
   virtual ~t_polarCurve() {}
  protected:
-   virtual void drawSymbols (QPainter* painter, const QwtSymbol& symbol, 
-                             const QwtScaleMap& azimuthMap, 
-                             const QwtScaleMap& radialMap, 
-                             const QPointF& pole, int from, int to) const;
+   virtual void drawSymbols(QPainter* painter, const QwtSymbol& symbol, 
+                            const QwtScaleMap& azimuthMap, 
+                            const QwtScaleMap& radialMap, 
+                            const QPointF& pole, int from, int to) const;
 };
 
 //
 //////////////////////////////////////////////////////////////////////////////
 class t_polarPoint {
  public:
-  t_polarPoint(double az, double zen, double value) {
-    _az    = az;
-    _zen   = zen;
-    _value = value;
-  }
+  t_polarPoint(double az, double zen, double value) : 
+               _az(az), _zen(zen), _value(value) {}
   double _az;
   double _zen;
   double _value;

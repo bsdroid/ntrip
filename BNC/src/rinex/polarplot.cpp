@@ -16,10 +16,8 @@
  * -----------------------------------------------------------------------*/
 
 #include <qpen.h>
-#include <qwt_series_data.h>
 #include <qwt_symbol.h>
 #include <qwt_polar_grid.h>
-#include <qwt_scale_widget.h>
 
 #include "polarplot.h"
 #include "graphwin.h"
