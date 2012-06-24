@@ -62,7 +62,7 @@ class t_polarPlot: public QwtPolarPlot {
  Q_OBJECT
 
  public:
-  t_polarPlot(QWidget* = 0);
+  t_polarPlot(const QwtText& title, QWidget* = 0);
   void addCurve(QVector<t_polarPoint*>* data);
 
  private:
