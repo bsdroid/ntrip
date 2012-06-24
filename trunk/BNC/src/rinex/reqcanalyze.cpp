@@ -213,7 +213,7 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs, const t_eph* eph,
                                       const ColumnVector& xyz) {
 
   t_anaObs* newObs = new t_anaObs(obs);
-  anaObs << newObs;
+  bool      okFlag = false;
 
   // Compute the Multipath
   // ----------------------
@@ -226,10 +226,22 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs, const t_eph* eph,
 
     if (obs.p1() != 0.0) {
       newObs->MP1 = obs.p1() - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
+      okFlag = true;
     }
     if (obs.p2() != 0.0) {
       newObs->MP2 = obs.p2() - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
+      okFlag = true;
     }
+  }
+
+  // Remember the Observation
+  // ------------------------
+  if (okFlag) {
+    anaObs << newObs;
+  }
+  else {
+    delete newObs;
+    return;
   }
 
   // Compute the Azimuth and Zenith Distance
