@@ -138,6 +138,7 @@ int main(int argc, char *argv[]) {
     app.setWindowIcon(QPixmap(":ntrip-logo.png"));
 
     bncWindow* bncWin = new bncWindow();
+    app.setMainWindow(bncWin);
     bncWin->show();
   }
 

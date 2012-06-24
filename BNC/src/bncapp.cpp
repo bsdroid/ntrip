@@ -119,6 +119,8 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
   }
 
   _bncPPPclient = 0;
+
+  _mainWindow = 0;
 }
 
 // Destructor

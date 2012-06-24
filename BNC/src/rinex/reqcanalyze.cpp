@@ -86,12 +86,13 @@ t_reqcAnalyze::~t_reqcAnalyze() {
 void t_reqcAnalyze::slotDisplayGraph(QVector<t_polarPoint*>* dataMP1, 
                                      QVector<t_polarPoint*>* dataMP2) {
 
-  if (((bncApp*) qApp)->mode() == bncApp::interactive) {
+  bncApp* app = dynamic_cast<bncApp*>(qApp);
+  if (app->mode() == bncApp::interactive) {
 
-    t_polarPlot* plotMP1 = new t_polarPlot(QwtText("MP1"), 0);
+    t_polarPlot* plotMP1 = new t_polarPlot(QwtText("MP1"), app->mainWindow());
     plotMP1->addCurve(dataMP1);
 
-    t_polarPlot* plotMP2 = new t_polarPlot(QwtText("MP2"), 0);
+    t_polarPlot* plotMP2 = new t_polarPlot(QwtText("MP2"), app->mainWindow());
     plotMP2->addCurve(dataMP2);
     
     QVector<QWidget*> plots;
@@ -100,7 +101,7 @@ void t_reqcAnalyze::slotDisplayGraph(QVector<t_polarPoint*>* dataMP1,
 
     t_graphWin* graphWin = new t_graphWin(0, plots);
 
-    graphWin->show();
+    graphWin->exec();
   }
 }
 

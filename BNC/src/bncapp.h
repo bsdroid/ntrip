@@ -61,6 +61,8 @@ class bncApp : public QApplication {
     void stopCombination();
     const QString& pgmName() {return _pgmName;}
     const QString& userName() {return _userName;}
+    QWidget* mainWindow() const {return _mainWindow;};
+    void setMainWindow(QWidget* mainWindow){_mainWindow = mainWindow;}
   protected:
     virtual bool event(QEvent* ev);
 
@@ -133,6 +135,7 @@ class bncApp : public QApplication {
     int                 _GLOFreq[PRN_GLONASS_NUM];
     bncComb*            _bncComb;
     e_mode              _mode;
+    QWidget*            _mainWindow;
  public:
     bncPPPclient*       _bncPPPclient;
     QMap<int, bncTableItem*> _uploadTableItems;
