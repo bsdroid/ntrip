@@ -84,11 +84,55 @@ t_reqcAnalyze::~t_reqcAnalyze() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::slotDisplayGraph() {
   if (((bncApp*) qApp)->mode() == bncApp::interactive) {
-    QVector<QWidget*> plots;
-    t_polarPlot* plotMP1 = new t_polarPlot(0); plots << plotMP1;
-    t_polarPlot* plotMP2 = new t_polarPlot(0); plots << plotMP2;
+
+    QVector<t_polarPoint*>* data1 = new QVector<t_polarPoint*>;
+
+    //// beg test
+    {    
+      const QwtInterval zenithInterval(0.0, 90.0);
+      const QwtInterval azimuthInterval(0.0, 360.0 );
+      const int    numPoints = 1000;
+      const double stepA     = 4 * azimuthInterval.width() / numPoints;
+      const double stepR     = zenithInterval.width() / numPoints;
+      for (int ii = 0; ii < numPoints; ii++) {
+        double aa = azimuthInterval.minValue() + ii * stepA;
+        double rr = zenithInterval.minValue() + ii * stepR;
+        double vv = static_cast<double>(ii) / numPoints;
+        (*data1) << (new t_polarPoint(aa, rr, vv));
+      }
+    }
+    //// end test 
+
+    t_polarPlot* plotMP1 = new t_polarPlot(0);
+    plotMP1->addCurve(data1);
+
+    QVector<t_polarPoint*>* data2 = new QVector<t_polarPoint*>;
+
+    //// beg test
+    {    
+      const QwtInterval zenithInterval(0.0, 90.0);
+      const QwtInterval azimuthInterval(0.0, 360.0 );
+      const int    numPoints = 1000;
+      const double stepA     = 4 * azimuthInterval.width() / numPoints;
+      const double stepR     = zenithInterval.width() / numPoints;
+      for (int ii = 0; ii < numPoints; ii++) {
+        double aa = azimuthInterval.minValue() + ii * stepA;
+        double rr = zenithInterval.minValue() + ii * stepR;
+        double vv = static_cast<double>(ii) / numPoints;
+        (*data2) << (new t_polarPoint(aa, rr, vv));
+      }
+    }
+    //// end test 
+
+    t_polarPlot* plotMP2 = new t_polarPlot(0);
+    plotMP2->addCurve(data2);
     
+    QVector<QWidget*> plots;
+    plots << plotMP1;
+    plots << plotMP2;
+
     t_graphWin* graphWin = new t_graphWin(0, plots);
+
     graphWin->show();
   }
 }
