@@ -31,6 +31,8 @@
 #include "RTCM/GPSDecoder.h"
 #include "RTCM3/ephemeris.h"
 
+class t_polarPoint;
+
 class t_reqcAnalyze : public QThread {
 Q_OBJECT
  
@@ -53,31 +55,25 @@ Q_OBJECT
  private:
   class t_anaObs {
    public:
-    t_anaObs(const t_obs& obsIn) {
-      obs = obsIn;
-      M1  = 0.0;
-      M2  = 0.0;
-    }
+    t_anaObs(const t_obs& obsIn) :
+      obs(obsIn), az(0.0), zen(0.0), MP1(0.0), MP2(0.0) {}
     t_obs  obs;
-    double M1;
-    double M2;
+    double az;
+    double zen;
+    double MP1;
+    double MP2;
   };
 
   class t_satStat {
    public:
-    t_satStat() {
-      currObs = 0;
-      prevObs = 0;
-    }
+    t_satStat() {}
     ~t_satStat() {
-      delete currObs;
-      delete prevObs;
+      for (int ii = 0; ii < anaObs.size(); ii++) {
+        delete anaObs[ii];
+      }
     }
-    void addObs(const t_obs& obs);
-    QVector<double> MP1;
-    QVector<double> MP2;
-    t_anaObs* currObs;
-    t_anaObs* prevObs;
+    void addObs(const t_eph* eph, const t_obs& obs);
+    QVector<t_anaObs*> anaObs;
   };
 
   void analyzeFile(t_rnxObsFile* obsFile);
@@ -91,6 +87,8 @@ Q_OBJECT
   QVector<t_eph*>          _ephs;
   QMap<QString, t_satStat> _satStat;
   t_rnxObsFile::t_rnxEpo*  _currEpo;
+  QVector<t_polarPoint*>*  _dataMP1;
+  QVector<t_polarPoint*>*  _dataMP2;
 };
 
 #endif

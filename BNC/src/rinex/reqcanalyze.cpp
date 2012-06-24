@@ -63,6 +63,8 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
   _navFileNames = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
 
   _currEpo = 0;
+  _dataMP1 = 0;
+  _dataMP2 = 0;
 
   connect(this, SIGNAL(displayGraph()), this, SLOT(slotDisplayGraph()));
 }
@@ -85,47 +87,13 @@ t_reqcAnalyze::~t_reqcAnalyze() {
 void t_reqcAnalyze::slotDisplayGraph() {
   if (((bncApp*) qApp)->mode() == bncApp::interactive) {
 
-    QVector<t_polarPoint*>* data1 = new QVector<t_polarPoint*>;
-
-    //// beg test
-    {    
-      const QwtInterval zenithInterval(0.0, 90.0);
-      const QwtInterval azimuthInterval(0.0, 360.0 );
-      const int    numPoints = 1000;
-      const double stepA     = 4 * azimuthInterval.width() / numPoints;
-      const double stepR     = zenithInterval.width() / numPoints;
-      for (int ii = 0; ii < numPoints; ii++) {
-        double aa = azimuthInterval.minValue() + ii * stepA;
-        double rr = zenithInterval.minValue() + ii * stepR;
-        double vv = static_cast<double>(ii) / numPoints;
-        (*data1) << (new t_polarPoint(aa, rr, vv));
-      }
-    }
-    //// end test 
-
     t_polarPlot* plotMP1 = new t_polarPlot(0);
-    plotMP1->addCurve(data1);
-
-    QVector<t_polarPoint*>* data2 = new QVector<t_polarPoint*>;
-
-    //// beg test
-    {    
-      const QwtInterval zenithInterval(0.0, 90.0);
-      const QwtInterval azimuthInterval(0.0, 360.0 );
-      const int    numPoints = 1000;
-      const double stepA     = 4 * azimuthInterval.width() / numPoints;
-      const double stepR     = zenithInterval.width() / numPoints;
-      for (int ii = 0; ii < numPoints; ii++) {
-        double aa = azimuthInterval.minValue() + ii * stepA;
-        double rr = zenithInterval.minValue() + ii * stepR;
-        double vv = static_cast<double>(ii) / numPoints;
-        (*data2) << (new t_polarPoint(aa, rr, vv));
-      }
-    }
-    //// end test 
+    plotMP1->addCurve(_dataMP1);
+    _dataMP1 = 0;
 
     t_polarPlot* plotMP2 = new t_polarPlot(0);
-    plotMP2->addCurve(data2);
+    plotMP2->addCurve(_dataMP2);
+    _dataMP2 = 0;
     
     QVector<QWidget*> plots;
     plots << plotMP1;
@@ -200,8 +168,17 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
       QString prn = QString("%1%2").arg(obs.satSys)
                                    .arg(obs.satNum, 2, 10, QChar('0'));
 
+      t_eph* eph = 0;
+      for (int ie = 0; ie < _ephs.size(); ie++) {
+        if (_ephs[ie]->prn() == prn) {
+          eph = _ephs[ie];
+          break;
+        }
+      }
+
       t_satStat& satStat = _satStat[prn];
-      satStat.addObs(obs);
+
+      satStat.addObs(eph, obs);
     }
 
   } // while (_currEpo)
@@ -211,31 +188,45 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   _log->setRealNumberNotation(QTextStream::FixedNotation);
   _log->setRealNumberPrecision(2);
 
+  delete _dataMP1; _dataMP1 = new QVector<t_polarPoint*>;
+  delete _dataMP2; _dataMP2 = new QVector<t_polarPoint*>;
+
   QMapIterator<QString, t_satStat> it(_satStat);
   while (it.hasNext()) {
     it.next();
     QString          prn     = it.key();
     const t_satStat& satStat = it.value();
   
-    for (int im = 1; im <= 2; im++) {
-      const QVector<double>& MP = (im == 1) ? satStat.MP1 : satStat.MP2;
-      if (MP.size() > 1) {
-        double mean = 0.0;
-        for (int ii = 0; ii < MP.size(); ii++) {
-          mean += MP[ii];
-        }
-        mean /= MP.size();
-        double stddev = 0.0;
-        for (int ii = 0; ii < MP.size(); ii++) {
-          double diff = MP[ii] - mean;
-          stddev += diff * diff;
-        }
-        double multipath = sqrt(stddev / (MP.size()-1));
-      
-        *_log << "MP" << im << " " << prn << " " << multipath << endl;
+    int numVal = satStat.anaObs.size();
+    if (numVal > 1) {
+      double mean1 = 0.0;
+      double mean2 = 0.0;
+      for (int ii = 0; ii < numVal; ii++) {
+        const t_anaObs* anaObs = satStat.anaObs[ii];
+        mean1 += anaObs->MP1;
+        mean2 += anaObs->MP2;
       }
+      mean1 /= numVal;
+      mean2 /= numVal;
+      double stddev1 = 0.0;
+      double stddev2 = 0.0;
+      for (int ii = 0; ii < numVal; ii++) {
+        const t_anaObs* anaObs = satStat.anaObs[ii];
+        double diff1 = anaObs->MP1 - mean1;
+        double diff2 = anaObs->MP2 - mean2;
+        stddev1 += diff1 * diff1;
+        stddev2 += diff2 * diff2;
+        //// beg test
+        (*_dataMP1) << (new t_polarPoint(anaObs->az, anaObs->zen, 0.5));
+        (*_dataMP2) << (new t_polarPoint(anaObs->az, anaObs->zen, 1.0));
+        //// end test
+      }
+      double MP1 = sqrt(stddev1 / (numVal-1));
+      double MP2 = sqrt(stddev2 / (numVal-1));
+        
+      *_log << "MP1 " << prn << " " << MP1 << endl;
+      *_log << "MP2 " << prn << " " << MP2 << endl;
     }
-
   }
 
   emit displayGraph();
@@ -245,12 +236,10 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
-  if (currObs) {
-    delete prevObs;
-    prevObs = currObs;
-  }
-  currObs = new t_anaObs(obs);
+void t_reqcAnalyze::t_satStat::addObs(const t_eph* eph, const t_obs& obs) {
+
+  t_anaObs* newObs = new t_anaObs(obs);
+  anaObs << newObs;
 
   // Compute the Multipath
   // ----------------------
@@ -262,12 +251,17 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
     double L2 = obs.l2() * t_CST::c / f2;
 
     if (obs.p1() != 0.0) {
-      currObs->M1 = obs.p1() - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
-      MP1 << currObs->M1;
+      newObs->MP1 = obs.p1() - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
     }
     if (obs.p2() != 0.0) {
-      currObs->M2 = obs.p2() - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
-      MP2 << currObs->M2;
+      newObs->MP2 = obs.p2() - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
     }
+  }
+
+  // Compute the Azimuth and Zenith Distance
+  // ---------------------------------------
+  if (eph) {
+    double xx, yy, zz, cc;
+    eph->position(obs.GPSWeek, obs.GPSWeeks, xx, yy, zz, cc);
   }
 }
