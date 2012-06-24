@@ -253,7 +253,8 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
                                      QVector<t_polarPoint*>* dataMP1, 
                                      QVector<t_polarPoint*>* dataMP2) {
 
-  const int LENGTH = 10;  // number of epochs in one chunk
+  const int    LENGTH = 10;  // number of epochs in one chunk
+  const double SLIP   = 5.0; // cycle-slip threshold
 
   int numEpo = satStat.anaObs.size();
 
@@ -261,14 +262,32 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
 
     // Compute Mean
     // ------------
-    double mean1 = 0.0;
-    double mean2 = 0.0;
+    bool   slipFlag = false;
+    double mean1    = 0.0;
+    double mean2    = 0.0;
+
     for (int ii = 0; ii < LENGTH; ii++) {
       int iEpo = chunkStart + ii;
       const t_anaObs* anaObs = satStat.anaObs[iEpo];
       mean1 += anaObs->MP1;
       mean2 += anaObs->MP2;
+  
+      // Check Slip
+      // ----------
+      if (ii > 0) {
+        double diff1 = anaObs->MP1 - satStat.anaObs[iEpo-1]->MP1;
+        double diff2 = anaObs->MP2 - satStat.anaObs[iEpo-1]->MP2;
+        if (fabs(diff1) > SLIP || fabs(diff2) > SLIP) {
+          slipFlag = true;
+          break;
+        }
+      }
     }
+
+    if (slipFlag) {
+      continue;
+    }
+
     mean1 /= LENGTH;
     mean2 /= LENGTH;
 
@@ -287,15 +306,22 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
     double MP1 = sqrt(stddev1 / (LENGTH-1));
     double MP2 = sqrt(stddev2 / (LENGTH-1));
 
+    // Add new Point
+    // -------------
     const t_anaObs* anaObs = satStat.anaObs[chunkStart];
     (*dataMP1) << (new t_polarPoint(anaObs->az, anaObs->zen, MP1));
     (*dataMP2) << (new t_polarPoint(anaObs->az, anaObs->zen, MP2));
 
     _log->setRealNumberNotation(QTextStream::FixedNotation);
+
     _log->setRealNumberPrecision(2);
-    *_log << "MP1 " << prn << " " << anaObs->az << " " << anaObs->zen << " "
-          << MP1 << endl;
-    *_log << "MP2 " << prn << " " << anaObs->az << " " << anaObs->zen << " " 
-          << MP2 << endl;
+    *_log << "MP1 " << prn << " " << anaObs->az << " " << anaObs->zen << " ";
+    _log->setRealNumberPrecision(3);
+    *_log << MP1 << endl;
+
+    _log->setRealNumberPrecision(2);
+    *_log << "MP2 " << prn << " " << anaObs->az << " " << anaObs->zen << " ";
+    _log->setRealNumberPrecision(3);
+    *_log << MP2 << endl;
   }
 }
