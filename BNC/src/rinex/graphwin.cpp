@@ -68,7 +68,7 @@ t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots) :
   _colorScale->setAlignment( QwtScaleDraw::RightScale );
   _colorScale->setColorBarEnabled( true );
 
-   QwtText title( "Intensity" );
+   QwtText title( "Meters" );
    QFont font = _colorScale->font();
    font.setBold( true );
    title.setFont( font );
