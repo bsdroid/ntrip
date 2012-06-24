@@ -63,10 +63,9 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
   _navFileNames = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
 
   _currEpo = 0;
-  _dataMP1 = 0;
-  _dataMP2 = 0;
 
-  connect(this, SIGNAL(displayGraph()), this, SLOT(slotDisplayGraph()));
+  connect(this, SIGNAL(displayGraph(QVector<t_polarPoint*>*, QVector<t_polarPoint*>*)), 
+          this, SLOT(slotDisplayGraph(QVector<t_polarPoint*>*, QVector<t_polarPoint*>*)));
 }
 
 // Destructor
@@ -84,16 +83,16 @@ t_reqcAnalyze::~t_reqcAnalyze() {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::slotDisplayGraph() {
+void t_reqcAnalyze::slotDisplayGraph(QVector<t_polarPoint*>* dataMP1, 
+                                     QVector<t_polarPoint*>* dataMP2) {
+
   if (((bncApp*) qApp)->mode() == bncApp::interactive) {
 
     t_polarPlot* plotMP1 = new t_polarPlot(0);
-    plotMP1->addCurve(_dataMP1);
-    _dataMP1 = 0;
+    plotMP1->addCurve(dataMP1);
 
     t_polarPlot* plotMP2 = new t_polarPlot(0);
-    plotMP2->addCurve(_dataMP2);
-    _dataMP2 = 0;
+    plotMP2->addCurve(dataMP2);
     
     QVector<QWidget*> plots;
     plots << plotMP1;
@@ -150,6 +149,10 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         << "------------\n"
         << obsFile->fileName().toAscii().data() << endl << endl;
 
+  // A priori Coordinates
+  // --------------------
+  ColumnVector xyz = obsFile->xyz();
+
   // Loop over all Epochs
   // --------------------
   while ( (_currEpo = obsFile->nextEpoch()) != 0) {
@@ -178,7 +181,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
       t_satStat& satStat = _satStat[prn];
 
-      satStat.addObs(eph, obs);
+      satStat.addObs(obs, eph, xyz);
     }
 
   } // while (_currEpo)
@@ -188,8 +191,8 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   _log->setRealNumberNotation(QTextStream::FixedNotation);
   _log->setRealNumberPrecision(2);
 
-  delete _dataMP1; _dataMP1 = new QVector<t_polarPoint*>;
-  delete _dataMP2; _dataMP2 = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>*  dataMP1 = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>*  dataMP2 = new QVector<t_polarPoint*>;
 
   QMapIterator<QString, t_satStat> it(_satStat);
   while (it.hasNext()) {
@@ -217,8 +220,8 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         stddev1 += diff1 * diff1;
         stddev2 += diff2 * diff2;
         //// beg test
-        (*_dataMP1) << (new t_polarPoint(anaObs->az, anaObs->zen, 0.5));
-        (*_dataMP2) << (new t_polarPoint(anaObs->az, anaObs->zen, 1.0));
+        (*dataMP1) << (new t_polarPoint(anaObs->az, anaObs->zen, 0.5));
+        (*dataMP2) << (new t_polarPoint(anaObs->az, anaObs->zen, 1.0));
         //// end test
       }
       double MP1 = sqrt(stddev1 / (numVal-1));
@@ -229,14 +232,15 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
     }
   }
 
-  emit displayGraph();
+  emit displayGraph(dataMP1, dataMP2);
 
   _log->flush();
 }
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::t_satStat::addObs(const t_eph* eph, const t_obs& obs) {
+void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs, const t_eph* eph, 
+                                      const ColumnVector& xyz) {
 
   t_anaObs* newObs = new t_anaObs(obs);
   anaObs << newObs;
@@ -260,18 +264,12 @@ void t_reqcAnalyze::t_satStat::addObs(const t_eph* eph, const t_obs& obs) {
 
   // Compute the Azimuth and Zenith Distance
   // ---------------------------------------
-  if (eph) {
+  if (eph && xyz.size()) {
     double xSat, ySat, zSat, clkSat;
     eph->position(obs.GPSWeek, obs.GPSWeeks, xSat, ySat, zSat, clkSat);
 
-    //// beg test
-    double xRec = -3947762.7496;
-    double yRec =  3364399.8789;
-    double zRec =  3699428.5111;
-    //// end test
-   
     double rho, eleSat, azSat;
-    topos(xRec, yRec, zRec, xSat, ySat, zSat, rho, eleSat, azSat);
+    topos(xyz(1), xyz(2), xyz(3), xSat, ySat, zSat, rho, eleSat, azSat);
 
     newObs->az  = azSat * 180.0/M_PI;
     newObs->zen = 90.0 - eleSat * 180.0/M_PI;
