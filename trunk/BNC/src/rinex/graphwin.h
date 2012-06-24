@@ -63,6 +63,7 @@ class t_graphWin : public QDialog {
   virtual void closeEvent(QCloseEvent *);
 
  private:
+  QWidget*        _canvas;
   QPushButton*    _buttonClose;
   QPushButton*    _buttonPrint;
   QwtScaleWidget* _colorScale;
