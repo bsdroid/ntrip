@@ -57,12 +57,14 @@ class t_graphWin : public QDialog {
 
  private slots:
   void slotClose();
+  void slotPrint();
 
  protected:
   virtual void closeEvent(QCloseEvent *);
 
  private:
   QPushButton*    _buttonClose;
+  QPushButton*    _buttonPrint;
   QwtScaleWidget* _colorScale;
 };
 
