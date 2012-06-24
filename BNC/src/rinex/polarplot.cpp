@@ -83,9 +83,8 @@ void t_polarPlot::addCurve(QVector<t_polarPoint*>* data) {
   t_polarCurve* curve = new t_polarCurve();
   curve->setScaleInterval(_scaleInterval);
   curve->setStyle(QwtPolarCurve::NoCurve);  // draw only symbols
-  curve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse,
-                                 QBrush(Qt::red), QPen(Qt::red), 
-                                 QSize(3, 3)));
+  curve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse, QBrush(Qt::red), 
+                                 QPen(Qt::red), QSize(2, 2)));
   t_polarData* polarData = new t_polarData(data);
   curve->setData(polarData);
   curve->attach(this);
