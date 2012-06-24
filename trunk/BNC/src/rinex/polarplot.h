@@ -11,11 +11,16 @@ class t_polarCurve : public QwtPolarCurve {
  public:
   t_polarCurve() {}
   virtual ~t_polarCurve() {}
+  void setScaleInterval(const QwtInterval& scaleInterval) {
+    _scaleInterval = scaleInterval;
+  }
  protected:
-   virtual void drawSymbols(QPainter* painter, const QwtSymbol& symbol, 
-                            const QwtScaleMap& azimuthMap, 
-                            const QwtScaleMap& radialMap, 
-                            const QPointF& pole, int from, int to) const;
+  virtual void drawSymbols(QPainter* painter, const QwtSymbol& symbol, 
+                           const QwtScaleMap& azimuthMap, 
+                           const QwtScaleMap& radialMap, 
+                           const QPointF& pole, int from, int to) const;
+ private:
+  QwtInterval _scaleInterval;
 };
 
 //
@@ -62,10 +67,12 @@ class t_polarPlot: public QwtPolarPlot {
  Q_OBJECT
 
  public:
-  t_polarPlot(const QwtText& title, QWidget* = 0);
+  t_polarPlot(const QwtText& title, const QwtInterval& scaleInterval,
+              QWidget* = 0);
   void addCurve(QVector<t_polarPoint*>* data);
 
  private:
+  QwtInterval _scaleInterval;
 };
 
 #endif
