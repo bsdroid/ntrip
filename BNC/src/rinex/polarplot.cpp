@@ -32,7 +32,7 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
   for (int ii = from; ii <= to; ii++) {
     QwtSymbol ss(symbol);
     const QwtPointPolar& point = sample(ii);
-    const QColor color = colorMap.color(QwtInterval(0.0, 1.0), point._value);
+    const QColor color = colorMap.color(_scaleInterval, point._value);
     ss.setBrush(QBrush(color));
     ss.setPen(QPen(color));
     QwtPolarCurve::drawSymbols(painter, ss, azimuthMap, radialMap, pole, ii,ii);
@@ -41,9 +41,10 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_polarPlot::t_polarPlot(const QwtText& title, QWidget* parent) : 
+t_polarPlot::t_polarPlot(const QwtText& title, const QwtInterval& scaleInterval,
+                         QWidget* parent) : QwtPolarPlot(title, parent) {
 
-  QwtPolarPlot(title, parent) {
+  _scaleInterval = scaleInterval;
 
   setPlotBackground(Qt::white);
 
@@ -80,6 +81,7 @@ t_polarPlot::t_polarPlot(const QwtText& title, QWidget* parent) :
 ////////////////////////////////////////////////////////////////////////////
 void t_polarPlot::addCurve(QVector<t_polarPoint*>* data) {
   t_polarCurve* curve = new t_polarCurve();
+  curve->setScaleInterval(_scaleInterval);
   curve->setStyle(QwtPolarCurve::NoCurve);  // draw only symbols
   curve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse,
                                  QBrush(Qt::red), QPen(Qt::red), 

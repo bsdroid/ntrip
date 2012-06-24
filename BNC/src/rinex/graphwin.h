@@ -37,9 +37,9 @@ class t_colorMap: public QwtLinearColorMap {
  public:
   t_colorMap() : QwtLinearColorMap(Qt::darkBlue, Qt::yellow) {
     addColorStop(0.05, Qt::blue);
-    addColorStop(0.30, Qt::cyan);
-    addColorStop(0.60, Qt::green);
-    addColorStop(0.98, Qt::red);
+//    addColorStop(0.30, Qt::cyan);
+//    addColorStop(0.60, Qt::green);
+    addColorStop(9.98, Qt::red);
   }
 };
 
@@ -50,7 +50,8 @@ class t_graphWin : public QDialog {
  Q_OBJECT
 
  public:
-  t_graphWin(QWidget* parent, const QVector<QWidget*>& plots);
+  t_graphWin(QWidget* parent, const QVector<QWidget*>& plots,
+             const QwtInterval scaleInterval);
   ~t_graphWin();
 
  signals:

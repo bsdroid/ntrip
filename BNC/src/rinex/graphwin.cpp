@@ -46,8 +46,8 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots) :
- QDialog(parent) {
+t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots,
+                       const QwtInterval scaleInterval) :  QDialog(parent) {
 
   this->setAttribute(Qt::WA_DeleteOnClose);
 
@@ -78,12 +78,13 @@ t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots) :
    title.setFont( font );
    _colorScale->setTitle( title );
 
-   QwtInterval interval(0.0, 1.0);
-   _colorScale->setColorMap(interval, new t_colorMap());
+   _colorScale->setColorMap(scaleInterval, new t_colorMap());
 
    QwtLinearScaleEngine scaleEngine;
    _colorScale->setScaleDiv(scaleEngine.transformation(),
-      scaleEngine.divideScale(interval.minValue(), interval.maxValue(), 8, 5));
+                            scaleEngine.divideScale(scaleInterval.minValue(), 
+                                                    scaleInterval.maxValue(), 
+                                                    8, 5));
 
   // Layout
   // ------
