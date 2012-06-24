@@ -146,8 +146,8 @@ void t_reqcAnalyze::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
-  *_log << "Analyze File\n"
-        << "------------\n"
+  *_log << "\nAnalyze File\n"
+        <<   "------------\n"
         << obsFile->fileName().toAscii().data() << endl << endl;
 
   _satStat.clear();
@@ -253,7 +253,7 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
                                      QVector<t_polarPoint*>* dataMP1, 
                                      QVector<t_polarPoint*>* dataMP2) {
 
-  const int LENGTH = 60;  // number of epochs in one chunk
+  const int LENGTH = 10;  // number of epochs in one chunk
 
   int numEpo = satStat.anaObs.size();
 
@@ -293,7 +293,9 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
 
     _log->setRealNumberNotation(QTextStream::FixedNotation);
     _log->setRealNumberPrecision(2);
-    *_log << "MP1 " << prn << " " << anaObs->az << " " << anaObs->zen << MP1 << endl;
-    *_log << "MP2 " << prn << " " << anaObs->az << " " << anaObs->zen << MP2 << endl;
+    *_log << "MP1 " << prn << " " << anaObs->az << " " << anaObs->zen << " "
+          << MP1 << endl;
+    *_log << "MP2 " << prn << " " << anaObs->az << " " << anaObs->zen << " " 
+          << MP2 << endl;
   }
 }
