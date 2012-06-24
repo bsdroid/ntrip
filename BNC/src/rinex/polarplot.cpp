@@ -41,8 +41,9 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_polarPlot::t_polarPlot(QWidget* parent) : 
-  QwtPolarPlot(QwtText("Polar Plot"), parent) {
+t_polarPlot::t_polarPlot(const QwtText& title, QWidget* parent) : 
+
+  QwtPolarPlot(title, parent) {
 
   setPlotBackground(Qt::white);
 

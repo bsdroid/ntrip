@@ -88,10 +88,10 @@ void t_reqcAnalyze::slotDisplayGraph(QVector<t_polarPoint*>* dataMP1,
 
   if (((bncApp*) qApp)->mode() == bncApp::interactive) {
 
-    t_polarPlot* plotMP1 = new t_polarPlot(0);
+    t_polarPlot* plotMP1 = new t_polarPlot(QwtText("MP1"), 0);
     plotMP1->addCurve(dataMP1);
 
-    t_polarPlot* plotMP2 = new t_polarPlot(0);
+    t_polarPlot* plotMP2 = new t_polarPlot(QwtText("MP2"), 0);
     plotMP2->addCurve(dataMP2);
     
     QVector<QWidget*> plots;
