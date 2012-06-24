@@ -272,5 +272,8 @@ void t_reqcAnalyze::t_satStat::addObs(const t_eph* eph, const t_obs& obs) {
    
     double rho, eleSat, azSat;
     topos(xRec, yRec, zRec, xSat, ySat, zSat, rho, eleSat, azSat);
+
+    newObs->az  = azSat * 180.0/M_PI;
+    newObs->zen = 90.0 - eleSat * 180.0/M_PI;
   }
 }
