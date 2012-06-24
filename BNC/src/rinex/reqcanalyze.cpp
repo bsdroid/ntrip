@@ -191,49 +191,15 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
   // Analyze the Multipath
   // ---------------------
-  _log->setRealNumberNotation(QTextStream::FixedNotation);
-  _log->setRealNumberPrecision(2);
-
-  QVector<t_polarPoint*>*  dataMP1 = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>*  dataMP2 = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataMP1 = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataMP2 = new QVector<t_polarPoint*>;
 
   QMapIterator<QString, t_satStat> it(_satStat);
   while (it.hasNext()) {
     it.next();
     QString          prn     = it.key();
     const t_satStat& satStat = it.value();
-  
-    int numVal = satStat.anaObs.size();
-    if (numVal > 1) {
-      double mean1 = 0.0;
-      double mean2 = 0.0;
-      for (int ii = 0; ii < numVal; ii++) {
-        const t_anaObs* anaObs = satStat.anaObs[ii];
-        mean1 += anaObs->MP1;
-        mean2 += anaObs->MP2;
-      }
-      mean1 /= numVal;
-      mean2 /= numVal;
-      double stddev1 = 0.0;
-      double stddev2 = 0.0;
-      for (int ii = 0; ii < numVal; ii++) {
-        const t_anaObs* anaObs = satStat.anaObs[ii];
-        double diff1 = anaObs->MP1 - mean1;
-        double diff2 = anaObs->MP2 - mean2;
-        stddev1 += diff1 * diff1;
-        stddev2 += diff2 * diff2;
-        //// beg test
-        double bla = anaObs->zen/90.0;
-        (*dataMP1) << (new t_polarPoint(anaObs->az, anaObs->zen, bla));
-        (*dataMP2) << (new t_polarPoint(anaObs->az, anaObs->zen, bla));
-        //// end test
-      }
-      double MP1 = sqrt(stddev1 / (numVal-1));
-      double MP2 = sqrt(stddev2 / (numVal-1));
-        
-      *_log << "MP1 " << prn << " " << MP1 << endl;
-      *_log << "MP2 " << prn << " " << MP2 << endl;
-    }
+    analyzeMultipath(prn, satStat, dataMP1, dataMP2);
   }
 
   emit displayGraph(dataMP1, dataMP2);
@@ -278,4 +244,49 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs, const t_eph* eph,
     newObs->az  = azSat * 180.0/M_PI;
     newObs->zen = 90.0 - eleSat * 180.0/M_PI;
   }
+}
+
+//  
+////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::analyzeMultipath(const QString& prn, 
+                                     const t_satStat& satStat,
+                                     QVector<t_polarPoint*>* dataMP1, 
+                                     QVector<t_polarPoint*>* dataMP2) {
+
+  int numVal = satStat.anaObs.size();
+  if (numVal < 2) {
+    return;
+  }
+
+  double mean1 = 0.0;
+  double mean2 = 0.0;
+  for (int ii = 0; ii < numVal; ii++) {
+    const t_anaObs* anaObs = satStat.anaObs[ii];
+    mean1 += anaObs->MP1;
+    mean2 += anaObs->MP2;
+  }
+  mean1 /= numVal;
+  mean2 /= numVal;
+  double stddev1 = 0.0;
+  double stddev2 = 0.0;
+  for (int ii = 0; ii < numVal; ii++) {
+    const t_anaObs* anaObs = satStat.anaObs[ii];
+    double diff1 = anaObs->MP1 - mean1;
+    double diff2 = anaObs->MP2 - mean2;
+    stddev1 += diff1 * diff1;
+    stddev2 += diff2 * diff2;
+    //// beg test
+    double bla = anaObs->zen/90.0;
+    (*dataMP1) << (new t_polarPoint(anaObs->az, anaObs->zen, bla));
+    (*dataMP2) << (new t_polarPoint(anaObs->az, anaObs->zen, bla));
+    //// end test
+  }
+  double MP1 = sqrt(stddev1 / (numVal-1));
+  double MP2 = sqrt(stddev2 / (numVal-1));
+        
+  _log->setRealNumberNotation(QTextStream::FixedNotation);
+  _log->setRealNumberPrecision(2);
+
+  *_log << "MP1 " << prn << " " << MP1 << endl;
+  *_log << "MP2 " << prn << " " << MP2 << endl;
 }
