@@ -77,6 +77,9 @@ Q_OBJECT
   };
 
   void analyzeFile(t_rnxObsFile* obsFile);
+  void analyzeMultipath(const QString& prn, const t_satStat& satStat,
+                        QVector<t_polarPoint*>* dataMP1, 
+                        QVector<t_polarPoint*>* dataMP2);
 
   QString                  _logFileName;
   QFile*                   _logFile;
