@@ -43,6 +43,7 @@ class t_polarData: public QwtSeriesData<QwtPointPolar> {
     for (int ii = 0; ii < _data->size(); ii++) {
       delete _data->at(ii);
     }
+    delete _data;
   }
   virtual QwtPointPolar sample(size_t ii) const {
     const t_polarPoint* point = _data->at(ii);
