@@ -158,7 +158,14 @@ void t_postProcessing::run() {
     return;
   }
   else {
-    _rnxObsFile = new t_rnxObsFile(_opt->obsFileName, t_rnxObsFile::input);
+    try {
+      _rnxObsFile = new t_rnxObsFile(_opt->obsFileName, t_rnxObsFile::input);
+    }
+    catch (...) {
+      emit finished();
+      deleteLater();
+      return;
+    }
     _rnxNavFile = new t_rnxNavFile(_opt->navFileName, t_rnxNavFile::input);
     _pppClient  = new bncPPPclient("POST", _opt, false);
 
