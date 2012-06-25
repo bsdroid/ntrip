@@ -39,6 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+#include <iomanip>
 #include "reqcanalyze.h"
 #include "bncapp.h"
 #include "bncsettings.h"
@@ -215,7 +216,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
     it.next();
     QString          prn     = it.key();
     const t_satStat& satStat = it.value();
-    analyzeMultipath(prn, satStat, xyz, dataMP1, dataMP2);
+    analyzeMultipath(prn, satStat, xyz, obsFile->interval(), dataMP1, dataMP2);
   }
 
   emit displayGraph(dataMP1, dataMP2);
@@ -242,6 +243,13 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
     if (obs.p1() != 0.0) {
       newObs->_MP1 = obs.p1() - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
       okFlag = true;
+
+      //// beg test
+      // cout.setf(ios::fixed);
+      // cout << obs.satSys << setw(2) << obs.satNum << " "
+      //      << setprecision(1) << obs.GPSWeeks << " " 
+      //      << setprecision(4) << newObs->_MP1 << endl;
+      //// end test
     }
     if (obs.p2() != 0.0) {
       newObs->_MP2 = obs.p2() - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
@@ -264,14 +272,15 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
 void t_reqcAnalyze::analyzeMultipath(const QString& prn, 
                                      const t_satStat& satStat,
                                      const ColumnVector& xyz,
+                                     double obsInterval,
                                      QVector<t_polarPoint*>* dataMP1, 
                                      QVector<t_polarPoint*>* dataMP2) {
 
-  const int    LENGTH = 120;  // number of epochs in one chunk
+  const int chunkStep =  30.0 / obsInterval; // chunk step (30 sec)  
+  const int numEpo    = 600.0 / obsInterval; // # epochs in one chunk (10 min)
 
-  int numEpo = satStat.anaObs.size();
-
-  for (int chunkStart = 0; chunkStart + LENGTH < numEpo; chunkStart += LENGTH) {
+  for (int chunkStart = 0; chunkStart + numEpo < satStat.anaObs.size();
+       chunkStart += chunkStep) {
 
     // Compute Mean
     // ------------
@@ -279,7 +288,7 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
     double mean1    = 0.0;
     double mean2    = 0.0;
 
-    for (int ii = 0; ii < LENGTH; ii++) {
+    for (int ii = 0; ii < numEpo; ii++) {
       int iEpo = chunkStart + ii;
       const t_anaObs* anaObs = satStat.anaObs[iEpo];
       mean1 += anaObs->_MP1;
@@ -301,14 +310,14 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
       continue;
     }
 
-    mean1 /= LENGTH;
-    mean2 /= LENGTH;
+    mean1 /= numEpo;
+    mean2 /= numEpo;
 
     // Compute Standard Deviation
     // --------------------------
     double stddev1 = 0.0;
     double stddev2 = 0.0;
-    for (int ii = 0; ii < LENGTH; ii++) {
+    for (int ii = 0; ii < numEpo; ii++) {
       int iEpo = chunkStart + ii;
       const t_anaObs* anaObs = satStat.anaObs[iEpo];
       double diff1 = anaObs->_MP1 - mean1;
@@ -316,8 +325,8 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
       stddev1 += diff1 * diff1;
       stddev2 += diff2 * diff2;
     }
-    double MP1 = sqrt(stddev1 / (LENGTH-1));
-    double MP2 = sqrt(stddev2 / (LENGTH-1));
+    double MP1 = sqrt(stddev1 / (numEpo-1));
+    double MP2 = sqrt(stddev2 / (numEpo-1));
 
     const t_anaObs* anaObs0 = satStat.anaObs[chunkStart];
 

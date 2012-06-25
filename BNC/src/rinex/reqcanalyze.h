@@ -83,6 +83,7 @@ Q_OBJECT
   void analyzeMultipath(const QString& prn, 
                         const t_satStat& satStat,
                         const ColumnVector& xyz,
+                        double obsInterval,
                         QVector<t_polarPoint*>* dataMP1, 
                         QVector<t_polarPoint*>* dataMP2);
 
