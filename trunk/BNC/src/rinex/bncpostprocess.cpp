@@ -162,6 +162,7 @@ void t_postProcessing::run() {
       _rnxObsFile = new t_rnxObsFile(_opt->obsFileName, t_rnxObsFile::input);
     }
     catch (...) {
+      delete _rnxObsFile; _rnxObsFile = 0;
       emit finished();
       deleteLater();
       return;
