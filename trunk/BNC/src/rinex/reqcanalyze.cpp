@@ -109,8 +109,11 @@ void t_reqcAnalyze::slotDisplayGraph(QVector<t_polarPoint*>* dataMP1,
       maxMP = SLIPTRESH;
     }
     
-    ///    QwtInterval scaleInterval(0.0, maxMP);
-    QwtInterval scaleInterval(0.0, 1.0);
+    //// beg test
+    maxMP = 2.0;
+    //// end test
+
+    QwtInterval scaleInterval(0.0, maxMP);
 
     t_polarPlot* plotMP1 = new t_polarPlot(QwtText("MP1"), scaleInterval,
                                            app->mainWindow());
