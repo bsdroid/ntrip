@@ -114,22 +114,25 @@ void t_reqcEdit::initRnxObsFiles(const QStringList& obsFileNames,
       QListIterator<QFileInfo> it(dir.entryInfoList(filters));
       while (it.hasNext()) {
         QString filePath = it.next().filePath(); 
+        t_rnxObsFile* rnxObsFile = 0;
         try {
-          t_rnxObsFile* rnxObsFile = new t_rnxObsFile(filePath, t_rnxObsFile::input);
+          rnxObsFile = new t_rnxObsFile(filePath, t_rnxObsFile::input);
           rnxObsFiles.append(rnxObsFile);
         }
         catch (...) {
-          cerr << "Error in rnxObsFile initialization" << endl;
+          delete rnxObsFile;
+          cerr << "Error in rnxObsFile " << filePath.toAscii().data() << endl;
         }
       }
     }
     else {
+      t_rnxObsFile* rnxObsFile = 0;
       try {
-        t_rnxObsFile* rnxObsFile = new t_rnxObsFile(fileName, t_rnxObsFile::input);
+        rnxObsFile = new t_rnxObsFile(fileName, t_rnxObsFile::input);
         rnxObsFiles.append(rnxObsFile);
       }
       catch (...) {
-        cerr << "Error in rnxObsFile initialization" << endl;
+        cerr << "Error in rnxObsFile " << fileName.toAscii().data() << endl;
       }
     }
   }
