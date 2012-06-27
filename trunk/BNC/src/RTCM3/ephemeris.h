@@ -80,6 +80,8 @@ class t_ephGPS : public t_eph {
 
   virtual int  RTCM3(unsigned char *);
 
+  double TGD() const {return _TGD;} // Timing Group Delay (P1-P2 DCB)
+
  private:
   double  _clock_bias;      // [s]    
   double  _clock_drift;     // [s/s]  
