@@ -259,11 +259,11 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                 obs.satNum = satID - PRN_GALILEO_START + 1;
               }
 
-              // WAAS
+              // SBAS
               // ----
-              else if (satID >= PRN_WAAS_START && satID <= PRN_WAAS_END) {
+              else if (satID >= PRN_SBAS_START && satID <= PRN_SBAS_END) {
                 obs.satSys = 'S';
-                obs.satNum = satID - PRN_WAAS_START + 20;
+                obs.satNum = satID - PRN_SBAS_START + 20;
               }
 
               // Giove A and B
@@ -271,6 +271,20 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               else if (satID >= PRN_GIOVE_START && satID <= PRN_GIOVE_END) {
                 obs.satSys = 'E';
                 obs.satNum = satID - PRN_GIOVE_START + PRN_GIOVE_OFFSET;
+              }
+
+              // QZSS
+              // -------------
+              else if (satID >= PRN_QZSS_START && satID <= PRN_QZSS_END) {
+                obs.satSys = 'J';
+                obs.satNum = satID - PRN_QZSS_START + 1;
+              }
+
+              // COMPASS
+              // -------------
+              else if (satID >= PRN_COMPASS_START && satID <= PRN_COMPASS_END) {
+                obs.satSys = 'C';
+                obs.satNum = satID - PRN_COMPASS_START + 1;
               }
 
               // Unknown System
