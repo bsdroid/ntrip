@@ -32,6 +32,7 @@ bncoutf::bncoutf(const QString& sklFileName, const QString& intr, int sampl) {
   _headerWritten = false;
   _sampl         = sampl;
   _intr          = intr;
+  _numSec        = 0;
 
   QFileInfo fileInfo(sklFileName);
   _path        = fileInfo.absolutePath() + QDir::separator();
@@ -81,13 +82,16 @@ QString bncoutf::epochStr(const QDateTime& datTim, const QString& intStr) {
         }
       }
     }
+    _numSec = 60 * step;
   }
   else if (intStr == "1 hour") {
     char ch = 'A' + datTim.time().hour();
     epoStr = QString("_") + ch;
+    _numSec = 3600;
   }
   else {
     epoStr = "";
+    _numSec = 86400;
   }
 
   return epoStr;
