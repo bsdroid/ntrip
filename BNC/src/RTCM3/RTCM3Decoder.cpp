@@ -346,7 +346,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                   // TODO: codetype[1] is e.g. 'W' or 'C' or 'P'
                   const char* codetype = gnssData.codetype[iSat][iEntry];
                   if (codetype) {
-                    // cout << prn.toAscii().data() << " " << codetype[1] << endl;
+                    cout << prn.toAscii().data() << " " << codetype << endl;
                   }
 
                   if      (iEntry == GNSSENTRY_C1DATA) {
