@@ -508,6 +508,8 @@ void bncRinex::writeHeader(const QByteArray& format, const QDateTime& datTim,
       _out << "       L2C D2C S2C                                          SYS / # / OBS TYPES" << endl;
       _out << "S    8 C1C L1C D1C S1C C1W L1W D1W S1W                      SYS / # / OBS TYPES" << endl;
       _out << "E    8 C1  L1  D1  S1  C5  L5  D5  S5                       SYS / # / OBS TYPES" << endl;
+      _out << "J   20 C1C L1C D1C S1C C1W L1W D1W S1W C2P L2P D2P S2P C2X  SYS / # / OBS TYPES" << endl;
+      _out << "       L2X D2X S2X C5  L5  D5  S5                           SYS / # / OBS TYPES" << endl;
     }
     else {
       _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
