@@ -94,7 +94,10 @@ void bncSP3::writeHeader(const QDateTime& datTim) {
   double dayfrac;
   mjdFromDateAndTime(datTim, mjd, dayfrac);
   
-  int numEpo = 96;
+  int numEpo = _numSec;
+  if (_sampl > 0) {
+    numEpo /= _sampl;
+  }
 
   _out << "#aP" << datTim.toString("yyyy MM dd hh mm").toAscii().data() 
        << setw(12) << setprecision(8) << sec
