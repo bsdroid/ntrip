@@ -19,6 +19,7 @@ class bncoutf {
   virtual void  closeFile();
   std::ofstream _out;
   int           _sampl;
+  int           _numSec;
 
  private:
   QString epochStr(const QDateTime& datTim, const QString& intStr);
