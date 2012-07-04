@@ -93,10 +93,12 @@ void bncSP3::writeHeader(const QDateTime& datTim) {
   int    mjd;
   double dayfrac;
   mjdFromDateAndTime(datTim, mjd, dayfrac);
+  
+  int numEpo = 96;
 
   _out << "#aP" << datTim.toString("yyyy MM dd hh mm").toAscii().data() 
        << setw(12) << setprecision(8) << sec
-       << "      96 ORBIT IGS08 HLM  IGS" << endl;
+       << " " << setw(7) << numEpo << " ORBIT IGS08 HLM  IGS" << endl;
 
   _out << "## " 
        << setw(4)  << GPSWeek
