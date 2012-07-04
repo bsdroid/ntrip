@@ -343,6 +343,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
                 if (df & gnssData.dataflags[iSat]) {
 
+                  // TODO: codetype[1] is e.g. 'W' or 'C' or 'P'
                   const char* codetype = gnssData.codetype[iSat][iEntry];
 
                   if      (iEntry == GNSSENTRY_C1DATA) {
