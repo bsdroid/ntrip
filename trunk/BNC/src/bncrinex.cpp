@@ -766,6 +766,10 @@ string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2,
         << setw(14) << setprecision(3) << obs.L1C << lli1 << ' '  // L1C
         << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '  // D1C
         << setw(14) << setprecision(3) << obs.S1C << ' '  << ' '  // S1C
+        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  // C1X
+        << setw(14) << setprecision(3) << obs.L1P << lli1 << ' '  // L1X
+        << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '  // D1X
+        << setw(14) << setprecision(3) << obs.S1P << ' '  << ' '  // S1X
         << setw(14) << setprecision(3) << obs.C2  << ' '  << ' '  // C2X
         << setw(14) << setprecision(3) << obs.L2C << lli2 << ' '  // L2X
         << setw(14) << setprecision(3) << obs.D2C << ' '  << ' '  // D2X
