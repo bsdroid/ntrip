@@ -66,6 +66,7 @@ class t_obs {
     slip_cnt_L1 = -1;
     slip_cnt_L2 = -1;
     slip_cnt_L5 = -1;
+    codetype    = 0;
   }
 
   ~t_obs() {}
@@ -117,6 +118,8 @@ class t_obs {
   int    slip_cnt_L1;  // L1 cumulative loss of continuity indicator (negative value = undefined)
   int    slip_cnt_L2;  // L2 cumulative loss of continuity indicator (negative value = undefined)
   int    slip_cnt_L5;  // L5 cumulative loss of continuity indicator (negative value = undefined)
+
+  const char* codetype;
 };
 
 class GPSDecoder {
