@@ -230,6 +230,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
               t_obs obs;
               int   satID = gnssData.satellites[iSat];
+              obs.codetype = gnssData.codetype[iSat];
 
               // GPS
               // ---
