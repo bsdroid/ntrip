@@ -34,6 +34,10 @@
 #include "bncconst.h"
 #include "bncrinex.h"
 
+extern "C" {
+#include "rtcm3torinex.h"
+}
+
 class t_obs {
  public:
   t_obs() {
@@ -43,26 +47,12 @@ class t_obs {
     slotNum     = 0;
     GPSWeek     = 0;
     GPSWeeks    = 0.0;
-    C1          = 0.0;
-    P1          = 0.0;
-    L1C         = 0.0;
-    D1C         = 0.0;
-    S1C         = 0.0;
-    L1P         = 0.0;
-    D1P         = 0.0;
-    S1P         = 0.0;
-    C2          = 0.0;
-    P2          = 0.0;
-    L2C         = 0.0;
-    D2C         = 0.0;
-    S2C         = 0.0;
-    L2P         = 0.0;
-    D2P         = 0.0;
-    S2P         = 0.0;
-    C5          = 0.0;
-    L5          = 0.0;
-    D5          = 0.0;
-    S5          = 0.0;
+    _dataflags  = 0;
+    _dataflags2 = 0;
+    for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; iEntry++) {
+      _measdata[iEntry] = 0.0;
+      _codetype[iEntry] = 0;
+    }
     slip_cnt_L1 = -1;
     slip_cnt_L2 = -1;
     slip_cnt_L5 = -1;
@@ -70,12 +60,18 @@ class t_obs {
 
   ~t_obs() {}
 
-  double p1() const {return (P1  != 0.0 ? P1  : C1);}
-  double p2() const {return (P2  != 0.0 ? P2  : C2);}
-  double l1() const {return (L1P != 0.0 ? L1P : L1C);}
-  double l2() const {return (L2P != 0.0 ? L2P : L2C);}
-  double s1() const {return (L1P != 0.0 ? S1P : S1C);}
-  double s2() const {return (L2P != 0.0 ? S2P : S2C);}
+  double c1() const;
+  double c2() const;
+  double c5() const;
+  double p1() const;
+  double p2() const;
+  double l1() const;
+  double l2() const;
+  double l5() const;
+  double s1() const;
+  double s2() const;
+  std::string entry2str(int iEntry) const;
+  int str2entry(const char* str) const;
 
   char   StatID[20+1]; // Station ID
   char   satSys;       // Satellite System ('G' or 'R')
@@ -84,39 +80,14 @@ class t_obs {
   int    GPSWeek;      // Week of GPS-Time
   double GPSWeeks;     // Second of Week (GPS-Time)
 
-  double C1;           // CA-code pseudorange (meters)
-  double L1C;          // L1 carrier phase (cycles)
-  double D1C;          // Doppler L1
-  double S1C;          // raw L1 signal strength
-  bool has1C() const {return C1 != 0.0 || L1C != 0.0 || D1C != 0.0 || S1C != 0.0;}
-
-  double P1;           // P1-code pseudorange (meters)
-  double L1P;          // L1 carrier phase (cycles)
-  double D1P;          // Doppler L1
-  double S1P;          // raw L1 signal strength
-  bool has1P() const {return P1 != 0.0 || L1P != 0.0 || D1P != 0.0 || S1P != 0.0;}
-
-  double C2;           // CA-code pseudorange (meters)
-  double L2C;          // L2 carrier phase (cycles)
-  double D2C;          // Doppler L2
-  double S2C;          // raw L2 signal strength
-  bool has2C() const {return C2 != 0.0 || L2C != 0.0 || D2C != 0.0 || S2C != 0.0;}
-
-  double P2;           // P2-code pseudorange (meters)
-  double L2P;          // L2 carrier phase (cycles)
-  double D2P;          // Doppler L2
-  double S2P;          // raw L2 signal strength
-  bool has2P() const {return P2 != 0.0 || L2P != 0.0 || D2P != 0.0 || S2P != 0.0;}
-
-  double C5;           // Pseudorange (meters)
-  double L5;           // L5 carrier phase (cycles)
-  double D5;           // Doppler L5
-  double S5;           // raw L5 signal strength
-  bool has5C() const {return C5 != 0.0 || L5 != 0.0 || D5 != 0.0 || S5 != 0.0;}
-
   int    slip_cnt_L1;  // L1 cumulative loss of continuity indicator (negative value = undefined)
   int    slip_cnt_L2;  // L2 cumulative loss of continuity indicator (negative value = undefined)
   int    slip_cnt_L5;  // L5 cumulative loss of continuity indicator (negative value = undefined)
+  
+  double             _measdata[GNSSENTRY_NUMBER];  // data fields */ 
+  unsigned long long _dataflags;                   // GNSSDF_xxx */
+  unsigned int       _dataflags2;                  // GNSSDF2_xxx */
+  const char*        _codetype[GNSSENTRY_NUMBER];
 };
 
 class GPSDecoder {

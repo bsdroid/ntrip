@@ -658,12 +658,12 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
     // RINEX Version 2
     // ---------------
     else {
-      _out << setw(14) << setprecision(3) << obs.C1    << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.P1    << ' '  << ' '
+      _out << setw(14) << setprecision(3) << obs.c1()  << ' '  << ' '
+           << setw(14) << setprecision(3) << obs.p1()  << ' '  << ' '
            << setw(14) << setprecision(3) << obs.l1()  << lli1 << ' '
            << setw(14) << setprecision(3) << obs.s1()  << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.C2    << ' '  << ' ' << endl
-           << setw(14) << setprecision(3) << obs.P2    << ' '  << ' ' 
+           << setw(14) << setprecision(3) << obs.c2()  << ' '  << ' ' << endl
+           << setw(14) << setprecision(3) << obs.p2()  << ' '  << ' ' 
            << setw(14) << setprecision(3) << obs.l2()  << lli2 << ' '
            << setw(14) << setprecision(3) << obs.s2()  << endl;
     }
@@ -701,90 +701,14 @@ string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2,
   str << obs.satSys 
       << setw(2) << setfill('0') << obs.satNum << setfill(' ');
 
-  if      (obs.satSys == 'G') { // GPS
-    str << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  // C1C
-        << setw(14) << setprecision(3) << obs.L1C << lli1 << ' '  // L1C
-        << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '  // D1C
-        << setw(14) << setprecision(3) << obs.S1C << ' '  << ' '  // S1C
-        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  // C1W
-        << setw(14) << setprecision(3) << obs.L1P << lli1 << ' '  // L1W
-        << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '  // D1W
-        << setw(14) << setprecision(3) << obs.S1P << ' '  << ' '  // S1W
-        << setw(14) << setprecision(3) << obs.P2  << ' '  << ' '  // C2P
-        << setw(14) << setprecision(3) << obs.L2P << lli2 << ' '  // L2P
-        << setw(14) << setprecision(3) << obs.D2P << ' '  << ' '  // D2P
-        << setw(14) << setprecision(3) << obs.S2P << ' '  << ' '  // S2P
-        << setw(14) << setprecision(3) << obs.C2  << ' '  << ' '  // C2X
-        << setw(14) << setprecision(3) << obs.L2C << lli2 << ' '  // L2X
-        << setw(14) << setprecision(3) << obs.D2C << ' '  << ' '  // D2X
-        << setw(14) << setprecision(3) << obs.S2C << ' '  << ' '  // S2X
-        << setw(14) << setprecision(3) << obs.C5  << ' '  << ' '  // C5 
-        << setw(14) << setprecision(3) << obs.L5  << lli5 << ' '  // L5 
-        << setw(14) << setprecision(3) << obs.D5  << ' '  << ' '  // D5 
-        << setw(14) << setprecision(3) << obs.S5;                 // S5 
+  for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; iEntry++) {
+    unsigned df = (1 << iEntry);
+    if (df & obs._dataflags) {
+      str << obs.entry2str(iEntry) << ' '
+          << setw(14) << setprecision(3) << obs._measdata[iEntry]  << ' ';
+    }
   }
-  else if (obs.satSys == 'R') { // Glonass
-    str << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  // C1C
-        << setw(14) << setprecision(3) << obs.L1C << lli1 << ' '  // L1C
-        << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '  // D1C
-        << setw(14) << setprecision(3) << obs.S1C << ' '  << ' '  // S1C
-        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  // C1P
-        << setw(14) << setprecision(3) << obs.L1P << lli1 << ' '  // L1P
-        << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '  // D1P
-        << setw(14) << setprecision(3) << obs.S1P << ' '  << ' '  // S1P
-        << setw(14) << setprecision(3) << obs.P2  << ' '  << ' '  // C2P
-        << setw(14) << setprecision(3) << obs.L2P << lli2 << ' '  // L2P
-        << setw(14) << setprecision(3) << obs.D2P << ' '  << ' '  // D2P
-        << setw(14) << setprecision(3) << obs.S2P << ' '  << ' '  // S2P
-        << setw(14) << setprecision(3) << obs.C2  << ' '  << ' '  // C2C
-        << setw(14) << setprecision(3) << obs.L2C << lli2 << ' '  // L2C
-        << setw(14) << setprecision(3) << obs.D2C << ' '  << ' '  // D2C
-        << setw(14) << setprecision(3) << obs.S2C;                // S2C
-  }
-  else if (obs.satSys == 'S') { // SBAS
-    str << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  // C1C
-        << setw(14) << setprecision(3) << obs.L1C << lli1 << ' '  // L1C
-        << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '  // D1C
-        << setw(14) << setprecision(3) << obs.S1C << ' '  << ' '  // S1C
-        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  // C1W
-        << setw(14) << setprecision(3) << obs.L1P << lli1 << ' '  // L1W
-        << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '  // D1W
-        << setw(14) << setprecision(3) << obs.S1P;                // S1W
-  }
-  else if (obs.satSys == 'E') { // Galileo
-    str << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  // C1
-        << setw(14) << setprecision(3) << obs.L1C << lli1 << ' '  // L1
-        << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '  // D1
-        << setw(14) << setprecision(3) << obs.S1C << ' '  << ' '  // S1
-        << setw(14) << setprecision(3) << obs.C5  << ' '  << ' '  // C5
-        << setw(14) << setprecision(3) << obs.L5  << lli5 << ' '  // L5
-        << setw(14) << setprecision(3) << obs.D5  << ' '  << ' '  // D5
-        << setw(14) << setprecision(3) << obs.S5;                 // S5
-  }
-  else if (obs.satSys == 'J') { // QZSS
-    str << setw(14) << setprecision(3) << obs.C1  << ' '  << ' '  // C1C
-        << setw(14) << setprecision(3) << obs.L1C << lli1 << ' '  // L1C
-        << setw(14) << setprecision(3) << obs.D1C << ' '  << ' '  // D1C
-        << setw(14) << setprecision(3) << obs.S1C << ' '  << ' '  // S1C
-        << setw(14) << setprecision(3) << obs.P1  << ' '  << ' '  // C1X
-        << setw(14) << setprecision(3) << obs.L1P << lli1 << ' '  // L1X
-        << setw(14) << setprecision(3) << obs.D1P << ' '  << ' '  // D1X
-        << setw(14) << setprecision(3) << obs.S1P << ' '  << ' '  // S1X
-        << setw(14) << setprecision(3) << obs.C2  << ' '  << ' '  // C2X
-        << setw(14) << setprecision(3) << obs.L2C << lli2 << ' '  // L2X
-        << setw(14) << setprecision(3) << obs.D2C << ' '  << ' '  // D2X
-        << setw(14) << setprecision(3) << obs.S2C << ' '  << ' '  // S2X
-        << setw(14) << setprecision(3) << obs.C5  << ' '  << ' '  // C5 
-        << setw(14) << setprecision(3) << obs.L5  << lli5 << ' '  // L5 
-        << setw(14) << setprecision(3) << obs.D5  << ' '  << ' '  // D5 
-        << setw(14) << setprecision(3) << obs.S5;                 // S5 
-  }
-  else if (obs.satSys == 'C') { // Compass
-    str << setw(14) << setprecision(3) << obs.C2  << ' '  << ' '  // C2I
-        << setw(14) << setprecision(3) << obs.L2C << lli2 << ' '  // L2I
-        << setw(14) << setprecision(3) << obs.D2C << ' '  << ' '  // D2I
-        << setw(14) << setprecision(3) << obs.S2C;                // S2I
-  }
+
   return str.str();
 }
 
@@ -818,117 +742,14 @@ string bncRinex::asciiSatLine(const t_obs& obs) {
     str << "   ";
   }
 
-  if      (obs.satSys == 'G') { // GPS
-    if (obs.has1C()) {
-      str << "  1C " 
-          << obsToStr(obs.C1)  << ' '  
-          << obsToStr(obs.L1C) << ' '
-          << obsToStr(obs.D1C) << ' '
-          << obsToStr(obs.S1C, 8, 3) << ' '
-          << setw(2)  << obs.slip_cnt_L1;
-    }
-    if (obs.has1P()) {
-      str << "  1W "
-          << obsToStr(obs.P1)  << ' '  
-          << obsToStr(obs.L1P) << ' '
-          << obsToStr(obs.D1P) << ' '
-          << obsToStr(obs.S1P, 8, 3) << ' '
-          << setw(2)  << obs.slip_cnt_L1;
-    }
-    if (obs.has2P()) {
-      str << "  2P "
-          << obsToStr(obs.P2)  << ' '
-          << obsToStr(obs.L2P) << ' '
-          << obsToStr(obs.D2P) << ' '
-          << obsToStr(obs.S2P, 8, 3) << ' '
-          << setw(2)  << obs.slip_cnt_L2;
-    }
-    if (obs.has2C()) {
-      str << "  2X "
-          << obsToStr(obs.C2)  << ' '  
-          << obsToStr(obs.L2C) << ' '
-          << obsToStr(obs.D2C) << ' ' 
-          << obsToStr(obs.S2C, 8, 3) << ' '
-          << setw(2)  << obs.slip_cnt_L2;
-    }
-    if (obs.has5C()) {
-      str << "  5C "
-          << obsToStr(obs.C5)  << ' '
-          << obsToStr(obs.L5)  << ' '
-          << obsToStr(obs.D5)  << ' '
-          << obsToStr(obs.S5, 8, 3)  << ' '
-          << setw(2)  << obs.slip_cnt_L5;
+  for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; iEntry++) {
+    unsigned df = (1 << iEntry);
+    if (df & obs._dataflags) {
+      str << obs.entry2str(iEntry) << ' '
+          << setw(14) << setprecision(3) << obs._measdata[iEntry]  << ' ';
+      // TODO: handle slip counters
     }
   }
-  else if (obs.satSys == 'R') { // Glonass
-    if (obs.has1C()) {
-      str << "  1C "
-          << obsToStr(obs.C1)  << ' '  
-          << obsToStr(obs.L1C) << ' '
-          << obsToStr(obs.D1C) << ' '
-          << obsToStr(obs.S1C, 8, 3) << ' '
-          << setw(2)  << obs.slip_cnt_L1;
-    }
-    if (obs.has1P()) {
-      str << "  1P "
-          << obsToStr(obs.P1)  << ' '  
-          << obsToStr(obs.L1P) << ' '
-          << obsToStr(obs.D1P) << ' '
-          << obsToStr(obs.S1P, 8, 3) << ' '
-          << setw(2)  << obs.slip_cnt_L1;
-    }
-    if (obs.has2P()) {
-      str << "  2P "
-          << obsToStr(obs.P2)  << ' '
-          << obsToStr(obs.L2P) << ' '
-          << obsToStr(obs.D2P) << ' '
-          << obsToStr(obs.S2P, 8, 3) << ' '
-          << setw(2)  << obs.slip_cnt_L2;
-    }
-    if (obs.has2C()) {
-      str << "  2C "
-          << obsToStr(obs.C2)  << ' '  
-          << obsToStr(obs.L2C) << ' '
-          << obsToStr(obs.D2C) << ' ' 
-          << obsToStr(obs.S2C, 8, 3) << ' '
-          << setw(2)  << obs.slip_cnt_L2;
-    }
-  }
-  else if (obs.satSys == 'S') { // SBAS
-    if (obs.has1C()) {
-      str << "  1C "
-          << obsToStr(obs.C1)  << ' '  
-          << obsToStr(obs.L1C) << ' '
-          << obsToStr(obs.D1C) << ' '
-          << obsToStr(obs.S1C, 8, 3) << ' '
-          << setw(2)  << obs.slip_cnt_L1;
-    }
-    if (obs.has1P()) {
-      str << "  1W "
-          << obsToStr(obs.P1)  << ' '  
-          << obsToStr(obs.L1P) << ' '
-          << obsToStr(obs.D1P) << ' '
-          << obsToStr(obs.S1P, 8, 3) << ' '
-          << setw(2)  << obs.slip_cnt_L1;
-    }
-  }
-  else if (obs.satSys == 'E') { // Galileo
-    if (obs.has1C()) {
-      str << " 1C "
-          << obsToStr(obs.C1)  << ' '  
-          << obsToStr(obs.L1C) << ' '
-          << obsToStr(obs.D1C) << ' '
-          << obsToStr(obs.S1C, 8, 3) << ' '
-          << setw(2)  << obs.slip_cnt_L1;
-    }
-    if (obs.has5C()) {
-      str << "  5C "
-          << obsToStr(obs.C5)  << ' '
-          << obsToStr(obs.L5)  << ' '
-          << obsToStr(obs.D5)  << ' '
-          << obsToStr(obs.S5, 8, 3)  << ' '
-          << setw(2)  << obs.slip_cnt_L5;
-    }
-  }
+
   return str.str();
 }

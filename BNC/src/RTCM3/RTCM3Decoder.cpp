@@ -335,81 +335,14 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                 obs.slip_cnt_L5 = _slip_cnt_L5[prn];
               }
 
+              obs._dataflags  = gnssData.dataflags[iSat];
+              obs._dataflags2 = gnssData.dataflags2[iSat];
+
               // Loop over all data types
               // ------------------------
               for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; ++iEntry) {
- 
-                unsigned df = (1 << iEntry);
-
-                if (df & gnssData.dataflags[iSat]) {
-
-                  // TODO: codetype[1] is e.g. 'W' or 'C' or 'P'
-                  const char* codetype = gnssData.codetype[iSat][iEntry];
-                  if (codetype) {
-                    // cout << prn.toAscii().data() << " " << codetype << endl;
-                  }
-
-                  if      (iEntry == GNSSENTRY_C1DATA) {
-                    obs.C1  = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_C2DATA) {
-                    obs.C2  = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_P1DATA) {
-                    obs.P1  = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_P2DATA) {
-                    obs.P2  = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_L1CDATA) {
-                    obs.L1C = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_L1PDATA) {
-                    obs.L1P = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_L2CDATA) {
-                    obs.L2C = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_L2PDATA) {
-                    obs.L2P = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_D1CDATA) {
-                    obs.D1C = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_D1PDATA) {
-                    obs.D1P = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_S1CDATA) {
-                    obs.S1C = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_S1PDATA) {
-                    obs.S1P = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_D2CDATA) {
-                    obs.D2C = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_D2PDATA) {
-                    obs.D2P = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_S2CDATA) {
-                    obs.S2C = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_S2PDATA) {
-                    obs.S2P = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_C5DATA) {
-                    obs.C5  = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_L5DATA) {
-                    obs.L5  = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_D5DATA) {
-                    obs.D5  = gnssData.measdata[iSat][iEntry];
-                  }
-                  else if (iEntry == GNSSENTRY_S5DATA) {
-                    obs.S5  = gnssData.measdata[iSat][iEntry];
-                  }
-                }
+                obs._measdata[iEntry] = gnssData.measdata[iSat][iEntry];
+                obs._codetype[iEntry] = gnssData.codetype[iSat][iEntry];
               }
               _obsList.push_back(obs);
             }
