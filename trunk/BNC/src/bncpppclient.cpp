@@ -159,22 +159,22 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   // Set Observations GPS
   // --------------------
   if      (obs.satSys == 'G') {
-    if ( (obs.P1 || obs.C1) && (obs.P2 || obs.C2) && obs.l1() && obs.l2() ) {
+    if ( (obs.p1() || obs.c1()) && (obs.p2() || obs.c2()) && obs.l1() && obs.l2() ) {
       double f1 = t_CST::freq1;
       double f2 = t_CST::freq2;
       double c1 =   f1 * f1 / (f1 * f1 - f2 * f2);
       double c2 = - f2 * f2 / (f1 * f1 - f2 * f2);
-      if (obs.P1) {
-        satData->P1 = obs.P1 + (bb ? bb->p1 : 0.0);
+      if (obs.p1()) {
+        satData->P1 = obs.p1() + (bb ? bb->p1 : 0.0);
       }
       else {
-        satData->P1 = obs.C1 + (bb ? bb->c1 : 0.0);
+        satData->P1 = obs.c1() + (bb ? bb->c1 : 0.0);
       }
-      if (obs.P2) {
-        satData->P2 = obs.P2 + (bb ? bb->p2 : 0.0);
+      if (obs.p2()) {
+        satData->P2 = obs.p2() + (bb ? bb->p2 : 0.0);
       }
       else {
-        satData->P2 = obs.C2;
+        satData->P2 = obs.c2();
       }
       satData->L1      = obs.l1() * t_CST::c / f1;
       satData->L2      = obs.l2() * t_CST::c / f2;
@@ -192,22 +192,22 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   // Set Observations GLONASS
   // ------------------------
   else if (obs.satSys == 'R') {
-    if ( (obs.P1 || obs.C1) && (obs.P2 || obs.C2) && obs.l1() && obs.l2() ) {
+    if ( (obs.p1() || obs.c1()) && (obs.p2() || obs.c2()) && obs.l1() && obs.l2() ) {
       double f1 = t_CST::f1(obs.satSys, obs.slotNum); 
       double f2 = t_CST::f2(obs.satSys, obs.slotNum); 
       double c1 =   f1 * f1 / (f1 * f1 - f2 * f2);
       double c2 = - f2 * f2 / (f1 * f1 - f2 * f2);
-      if (obs.P1) {
-        satData->P1 = obs.P1 + (bb ? bb->p1 : 0.0);
+      if (obs.p1()) {
+        satData->P1 = obs.p1() + (bb ? bb->p1 : 0.0);
       }
       else {
-        satData->P1 = obs.C1 + (bb ? bb->c1 : 0.0);
+        satData->P1 = obs.c1() + (bb ? bb->c1 : 0.0);
       }
-      if (obs.P2) {
-        satData->P2 = obs.P2 + (bb ? bb->p2 : 0.0);
+      if (obs.p2()) {
+        satData->P2 = obs.p2() + (bb ? bb->p2 : 0.0);
       }
       else {
-        satData->P2 = obs.C2;
+        satData->P2 = obs.c2();
       }
       satData->L1      = obs.l1() * t_CST::c / f1;
       satData->L2      = obs.l2() * t_CST::c / f2;
@@ -225,16 +225,16 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   // Set Observations Galileo
   // ------------------------
   else if (obs.satSys == 'E') {
-    if ( obs.C1 && obs.C5 && obs.l1() && obs.L5) {
+    if ( obs.c1() && obs.c5() && obs.l1() && obs.l5()) {
       double f1 = t_CST::freq1;
       double f5 = t_CST::freq5;
       double c1 =   f1 * f1 / (f1 * f1 - f5 * f5);
       double c5 = - f5 * f5 / (f1 * f1 - f5 * f5);
 
-      satData->P1      = obs.C1;
-      satData->P5      = obs.C5;
+      satData->P1      = obs.c1();
+      satData->P5      = obs.c5();
       satData->L1      = obs.l1() * t_CST::c / f1;
-      satData->L5      = obs.L5 * t_CST::c / f5;
+      satData->L5      = obs.l5() * t_CST::c / f5;
       satData->P3      = c1 * satData->P1 + c5 * satData->P5;
       satData->L3      = c1 * satData->L1 + c5 * satData->L5;
       satData->lambda3 = c1 * t_CST::c / f1 + c5 * t_CST::c / f5;

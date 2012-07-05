@@ -110,43 +110,17 @@ void t_postProcessing::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
 
   strncpy(obs.StatID, rnxObsFile->markerName().toAscii().constData(),
           sizeof(obs.StatID));
+
   obs.satSys   = rnxSat.satSys;
   obs.satNum   = rnxSat.satNum;
   obs.GPSWeek  = epo->tt.gpsw();
   obs.GPSWeeks = epo->tt.gpssec();
-  //// TODO: check RINEX Version 3 types
+
   for (int iType = 0; iType < rnxObsFile->nTypes(obs.satSys); iType++) {
     QByteArray type = rnxObsFile->obsType(obs.satSys,iType).toAscii();
-    if      (type.indexOf("C1") == 0 && obs.C1  == 0.0) {
-      obs.C1 = rnxSat.obs[iType];
-    }
-    else if (type.indexOf("P1") == 0 && obs.P1  == 0.0) {
-      obs.P1 = rnxSat.obs[iType];
-    }
-    else if (type.indexOf("L1") == 0 && obs.L1C == 0.0) {
-      obs.L1C = rnxSat.obs[iType];
-      if      (obs.slip_cnt_L1 < 0) {  // undefined value
-        obs.slip_cnt_L1 = 0;
-      }
-      else if (rnxSat.lli[iType] & 1) {
-        ++obs.slip_cnt_L1;
-      }
-    }
-    else if (type.indexOf("C2") == 0 && obs.C2  == 0.0) {
-      obs.C2 = rnxSat.obs[iType];
-    }
-    else if (type.indexOf("P2") == 0 && obs.P2  == 0.0) {
-      obs.P2 = rnxSat.obs[iType];
-    }
-    else if (type.indexOf("L2") == 0 && obs.L2C == 0.0) {
-      obs.L2C = rnxSat.obs[iType];
-      if      (obs.slip_cnt_L2 < 0) {  // undefined value
-        obs.slip_cnt_L2 = 0;
-      }
-      else if (rnxSat.lli[iType] & 1) {
-        ++obs.slip_cnt_L2;
-      }
-    }
+    int iEntry = obs.str2entry(type.data());
+    obs._measdata[iEntry] = rnxSat.obs[iType];
+    // TOOD: handle slip flags
   }
 }
 
