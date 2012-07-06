@@ -91,13 +91,22 @@ void GPSDecoder::setRinexReconnectFlag(bool flag) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-double t_obs::measdata(const QString& rnxStr) const {
+void t_obs::setMeasdata(const QString& rnxStr, double value) {
+  int iEntry = -1;
+  measdata(rnxStr, &iEntry);
+  if (iEntry != -1) {
+    _measdata[iEntry] = value;
+  }
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+double t_obs::measdata(const QString& rnxStr, int* iEntry) const {
+
+  if (iEntry) {
+    *iEntry = 0;
+  }
 
   return 0.0;
 }
   
-// 
-//////////////////////////////////////////////////////////////////////////////
-void t_obs::setMeasdata(const QString& rnxStr, double value) {
-
-}

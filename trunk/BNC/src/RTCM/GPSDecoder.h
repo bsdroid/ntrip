@@ -60,7 +60,7 @@ class t_obs {
 
   ~t_obs() {}
 
-  double measdata(const QString& rnxStr) const;
+  double measdata(const QString& rnxStr, int* iEntry = 0) const;
   void   setMeasdata(const QString& rnxStr, double value);
 
   char   StatID[20+1]; // Station ID
