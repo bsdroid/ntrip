@@ -693,14 +693,14 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
     // RINEX Version 2
     // ---------------
     else {
-      _out << setw(14) << setprecision(3) << obs.c1()  << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.p1()  << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.l1()  << lli1 << ' '
-           << setw(14) << setprecision(3) << obs.s1()  << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.c2()  << ' '  << ' ' << endl
-           << setw(14) << setprecision(3) << obs.p2()  << ' '  << ' ' 
-           << setw(14) << setprecision(3) << obs.l2()  << lli2 << ' '
-           << setw(14) << setprecision(3) << obs.s2()  << endl;
+      _out << setw(14) << setprecision(3) << obs.measdata("C1")  << ' '  << ' '
+           << setw(14) << setprecision(3) << obs.measdata("P1")  << ' '  << ' '
+           << setw(14) << setprecision(3) << obs.measdata("L1")  << lli1 << ' '
+           << setw(14) << setprecision(3) << obs.measdata("S1")  << ' '  << ' '
+           << setw(14) << setprecision(3) << obs.measdata("C2")  << ' '  << ' ' << endl
+           << setw(14) << setprecision(3) << obs.measdata("P2")  << ' '  << ' ' 
+           << setw(14) << setprecision(3) << obs.measdata("L2")  << lli2 << ' '
+           << setw(14) << setprecision(3) << obs.measdata("S2")  << endl;
     }
   }
 
@@ -726,7 +726,7 @@ void bncRinex::closeFile() {
   }
 }
 
-// One Line in RINEX v3 (static)
+// One Line in RINEX v3
 ////////////////////////////////////////////////////////////////////////////
 string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2, 
                               char lli5) {
@@ -736,12 +736,9 @@ string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2,
   str << obs.satSys 
       << setw(2) << setfill('0') << obs.satNum << setfill(' ');
 
-  for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; iEntry++) {
-    unsigned df = (1 << iEntry);
-    if (df & obs._dataflags) {
-      str << ' ' << obs.entry2str(iEntry) << ' ' << obs._codetype[iEntry] << ' '
-          << setw(14) << setprecision(3) << obs._measdata[iEntry]  << ' ';
-    }
+  const QVector<QString>& types = _rnxTypes[obs.satSys];
+  for (int ii = 0; ii < types.size(); ii++) {
+    str << setw(14) << setprecision(3) << obs.measdata(types[ii]) << ' ';
   }
 
   return str.str();
@@ -777,14 +774,78 @@ string bncRinex::asciiSatLine(const t_obs& obs) {
     str << "   ";
   }
 
-  for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; iEntry++) {
-    unsigned df = (1 << iEntry);
-    if (df & obs._dataflags) {
-      str << ' ' << obs.entry2str(iEntry) << ' '
-          << setw(14) << setprecision(3) << obs._measdata[iEntry]  << ' ';
-      // TODO: handle slip counters
-    }
+  if      (obs.satSys == 'G') { // GPS
+    str << "  1C " 
+        << obsToStr(obs.measdata("C1C")) << ' '  
+        << obsToStr(obs.measdata("L1C")) << ' '
+        << obsToStr(obs.measdata("D1C")) << ' '
+        << obsToStr(obs.measdata("S1C"), 8, 3) << ' '
+        << setw(2)  << obs.slip_cnt_L1;
+    str << "  1W "
+        << obsToStr(obs.measdata("C1W")) << ' '  
+        << obsToStr(obs.measdata("L1W")) << ' '
+        << obsToStr(obs.measdata("D1W")) << ' '
+        << obsToStr(obs.measdata("S1W"), 8, 3) << ' '
+        << setw(2)  << obs.slip_cnt_L1;
+    str << "  2P "
+        << obsToStr(obs.measdata("C2P")) << ' '
+        << obsToStr(obs.measdata("L2P")) << ' '
+        << obsToStr(obs.measdata("D2P")) << ' '
+        << obsToStr(obs.measdata("S2P"), 8, 3) << ' '
+        << setw(2)  << obs.slip_cnt_L2;
+    str << "  2X "
+        << obsToStr(obs.measdata("C2X")) << ' '  
+        << obsToStr(obs.measdata("L2X")) << ' '
+        << obsToStr(obs.measdata("D2X")) << ' ' 
+        << obsToStr(obs.measdata("S2X"), 8, 3) << ' '
+        << setw(2)  << obs.slip_cnt_L2;
+    str << "  5C "
+        << obsToStr(obs.measdata("C5")) << ' '
+        << obsToStr(obs.measdata("L5")) << ' '
+        << obsToStr(obs.measdata("D5")) << ' '
+        << obsToStr(obs.measdata("S5"), 8, 3) << ' '
+        << setw(2)  << obs.slip_cnt_L5;
   }
+  else if (obs.satSys == 'R') { // Glonass
+    str << "  1C "
+        << obsToStr(obs.measdata("C1C")) << ' '  
+        << obsToStr(obs.measdata("L1C")) << ' '
+        << obsToStr(obs.measdata("D1C")) << ' '
+        << obsToStr(obs.measdata("S1C"), 8, 3) << ' '
+        << setw(2)  << obs.slip_cnt_L1;
+    str << "  1P "
+        << obsToStr(obs.measdata("C1P")) << ' '  
+        << obsToStr(obs.measdata("L1P")) << ' '
+        << obsToStr(obs.measdata("D1P")) << ' '
+        << obsToStr(obs.measdata("S1P"), 8, 3) << ' '
+        << setw(2)  << obs.slip_cnt_L1;
+    str << "  2P "
+        << obsToStr(obs.measdata("C2P")) << ' '
+        << obsToStr(obs.measdata("L2P")) << ' '
+        << obsToStr(obs.measdata("D2P")) << ' '
+        << obsToStr(obs.measdata("S2P"), 8, 3) << ' '
+        << setw(2)  << obs.slip_cnt_L2;
+    str << "  2C "
+        << obsToStr(obs.measdata("C2C")) << ' '  
+        << obsToStr(obs.measdata("L2C")) << ' '
+        << obsToStr(obs.measdata("D2C")) << ' ' 
+        << obsToStr(obs.measdata("S2C"), 8, 3) << ' '
+        << setw(2)  << obs.slip_cnt_L2;
+  }
+  else if (obs.satSys == 'E') { // Galileo
+    str << " 1C "
+        << obsToStr(obs.measdata("C1")) << ' '  
+        << obsToStr(obs.measdata("L1")) << ' '
+        << obsToStr(obs.measdata("D1")) << ' '
+        << obsToStr(obs.measdata("S1"), 8, 3) << ' '
+        << setw(2)  << obs.slip_cnt_L1;
 
+    str << "  5C "
+        << obsToStr(obs.measdata("C5")) << ' '        
+        << obsToStr(obs.measdata("L5")) << ' '
+        << obsToStr(obs.measdata("D5")) << ' '
+        << obsToStr(obs.measdata("S5"), 8, 3) << ' '
+        << setw(2)  << obs.slip_cnt_L5;
+  }
   return str.str();
 }

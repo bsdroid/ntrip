@@ -147,11 +147,11 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 	  }		        
           obs.GPSWeek       = epochWeek;
           obs.GPSWeeks      = epochSecs;
-          obs._measdata[obs.str2entry("C1")] = _ObsBlock.rng_C1[iSat];
-          obs._measdata[obs.str2entry("P1")] = _ObsBlock.rng_P1[iSat];
-          obs._measdata[obs.str2entry("P2")] = _ObsBlock.rng_P2[iSat];
-          obs._measdata[obs.str2entry("L1")] = _ObsBlock.resolvedPhase_L1(iSat);
-          obs._measdata[obs.str2entry("L2")] = _ObsBlock.resolvedPhase_L2(iSat);
+          obs.setMeasdata("C1", _ObsBlock.rng_C1[iSat]);
+          obs.setMeasdata("P1", _ObsBlock.rng_P1[iSat]);
+          obs.setMeasdata("P2", _ObsBlock.rng_P2[iSat]);
+          obs.setMeasdata("L1", _ObsBlock.resolvedPhase_L1(iSat));
+          obs.setMeasdata("L2", _ObsBlock.resolvedPhase_L2(iSat));
 	  obs.slip_cnt_L1   = _ObsBlock.slip_L1[iSat];
 	  obs.slip_cnt_L2   = _ObsBlock.slip_L2[iSat];
 
@@ -367,24 +367,24 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
 	// ----------------------------
 	switch (ii) {
 	case 0: // --- L1 ---
-          new_obs->_measdata[new_obs->str2entry("L1")] = *obsVal / LAMBDA_1;
+          new_obs->setMeasdata("L1", *obsVal / LAMBDA_1);
 	  new_obs->slip_cnt_L1   = corr->lock1;
 	  break;
 	case 1: // --- L2 ---
-          new_obs->_measdata[new_obs->str2entry("L2")] = *obsVal / LAMBDA_2;
+          new_obs->setMeasdata("L2", *obsVal / LAMBDA_2);
 	  new_obs->slip_cnt_L2   = corr->lock2;
 	  break;
 	case 2: // --- C1 / P1 ---
 	  if ( corr->Pind1 )
-            new_obs->_measdata[new_obs->str2entry("P1")] = *obsVal;
+            new_obs->setMeasdata("P1", *obsVal);
 	  else
-            new_obs->_measdata[new_obs->str2entry("C1")] = *obsVal;
+            new_obs->setMeasdata("C1", *obsVal);
 	  break;
 	case 3: // --- C2 / P2 ---
 	  if ( corr->Pind2 )
-            new_obs->_measdata[new_obs->str2entry("P2")] = *obsVal;
+            new_obs->setMeasdata("P2", *obsVal);
 	  else
-            new_obs->_measdata[new_obs->str2entry("C2")] = *obsVal;
+            new_obs->setMeasdata("C2", *obsVal);
 	  break;
 	default:
 	  continue;
