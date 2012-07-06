@@ -60,18 +60,8 @@ class t_obs {
 
   ~t_obs() {}
 
-  double c1() const;
-  double c2() const;
-  double c5() const;
-  double p1() const;
-  double p2() const;
-  double l1() const;
-  double l2() const;
-  double l5() const;
-  double s1() const;
-  double s2() const;
-  std::string entry2str(int iEntry) const;
-  int str2entry(const char* str) const;
+  double measdata(const QString& rnxStr) const;
+  void   setMeasdata(const QString& rnxStr, double value);
 
   char   StatID[20+1]; // Station ID
   char   satSys;       // Satellite System ('G' or 'R')

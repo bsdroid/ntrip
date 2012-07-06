@@ -117,9 +117,8 @@ void t_postProcessing::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
   obs.GPSWeeks = epo->tt.gpssec();
 
   for (int iType = 0; iType < rnxObsFile->nTypes(obs.satSys); iType++) {
-    QByteArray type = rnxObsFile->obsType(obs.satSys,iType).toAscii();
-    int iEntry = obs.str2entry(type.data());
-    obs._measdata[iEntry] = rnxSat.obs[iType];
+    QString type = rnxObsFile->obsType(obs.satSys,iType).toAscii();
+    obs.setMeasdata(type, rnxSat.obs[iType]);
     // TOOD: handle slip flags
   }
 }
