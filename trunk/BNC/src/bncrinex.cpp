@@ -102,6 +102,35 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
   _approxPos[0] = _approxPos[1] = _approxPos[2] = 0.0;
 
   _samplingRate = settings.value("rnxSampl").toInt();
+
+  // Initialize RINEX v3 Types
+  // -------------------------
+  _rnxTypes['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
+                 << "C1W" << "L1W" << "D1W" << "S1W" 
+                 << "C2P" << "L2P" << "D2P" << "S2P" 
+                 << "C2X" << "L2X" << "D2X" << "S2X" 
+                 << "C5"  << "L5"  << "D5"  << "S5";
+
+  _rnxTypes['R'] << "C1C" << "L1C" << "D1C" << "S1C" 
+                 << "C1P" << "L1P" << "D1P" << "S1P" 
+                 << "C2P" << "L2P" << "D2P" << "S2P" 
+                 << "C2C" << "L2C" << "D2C" << "S2C";
+
+  _rnxTypes['S'] << "C1C" << "L1C" << "D1C" << "S1C" 
+                 << "C5I" << "L5I" << "D5I" << "S5I";
+
+  _rnxTypes['E'] << "C1"  << "L1"  << "D1"  << "S1"
+                 << "C5"  << "L5"  << "D5"  << "S5";
+
+  _rnxTypes['J'] << "C1C" << "L1C" << "D1C" << "S1C" 
+                 << "C1X" << "L1X" << "D1X" << "S1X" 
+                 << "C2X" << "L2X" << "D2X" << "S2X" 
+                 << "C5"  << "L5"  << "D5"  << "S5"
+                 << "C6"  << "L6"  << "D6"  << "S6";
+
+  _rnxTypes['C'] << "C2"  << "L2"  << "D2"  << "S2"
+                 << "C6"  << "L6"  << "D6"  << "S6"
+                 << "C7"  << "L7"  << "D7"  << "S7";
 }
 
 // Destructor
@@ -503,15 +532,21 @@ void bncRinex::writeHeader(const QByteArray& format, const QDateTime& datTim,
          << setw(14) << setprecision(4) << antennaNEU[2] 
          << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
     if (_rinexVers == 3) {
-      _out << "G   20 C1C L1C D1C S1C C1W L1W D1W S1W C2P L2P D2P S2P C2X  SYS / # / OBS TYPES" << endl;
-      _out << "       L2X D2X S2X C5  L5  D5  S5                           SYS / # / OBS TYPES" << endl;
-      _out << "R   16 C1C L1C D1C S1C C1P L1P D1P S1P C2P L2P D2P S2P C2C  SYS / # / OBS TYPES" << endl;
-      _out << "       L2C D2C S2C                                          SYS / # / OBS TYPES" << endl;
-      _out << "S    8 C1C L1C D1C S1C C1W L1W D1W S1W                      SYS / # / OBS TYPES" << endl;
-      _out << "E    8 C1  L1  D1  S1  C5  L5  D5  S5                       SYS / # / OBS TYPES" << endl;
-      _out << "J   16 C1C L1C D1C S1C C1X L1X D1X S1X C2X L2X D2X S2X C5   SYS / # / OBS TYPES" << endl;
-      _out << "       L5  D5  S5                                           SYS / # / OBS TYPES" << endl;
-      _out << "C    4 C2I L2I D2I S2I                                      SYS / # / OBS TYPES" << endl;
+      QMapIterator<char, QVector<QString> > it(_rnxTypes);
+      while (it.hasNext()) {
+        it.next();
+        char sys                      = it.key();
+        const QVector<QString>& types = it.value();
+        QString hlp;
+        QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(types.size(), 3);
+        for (int ii = 0; ii < types.size(); ii++) {
+          QTextStream(&hlp) << QString(" %1").arg(types[ii], -3);   
+          if ((ii+1) % 13 == 0 || ii == types.size()-1) {
+            _out << QString(hlp.leftJustified(60) + "SYS / # / OBS TYPES\n").toAscii().data();
+            hlp = QString().leftJustified(6);
+          }
+        }
+      }
     }
     else {
       _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
@@ -704,7 +739,7 @@ string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2,
   for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; iEntry++) {
     unsigned df = (1 << iEntry);
     if (df & obs._dataflags) {
-      str << obs.entry2str(iEntry) << ' '
+      str << ' ' << obs.entry2str(iEntry) << ' ' << obs._codetype[iEntry] << ' '
           << setw(14) << setprecision(3) << obs._measdata[iEntry]  << ' ';
     }
   }
@@ -745,7 +780,7 @@ string bncRinex::asciiSatLine(const t_obs& obs) {
   for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; iEntry++) {
     unsigned df = (1 << iEntry);
     if (df & obs._dataflags) {
-      str << obs.entry2str(iEntry) << ' '
+      str << ' ' << obs.entry2str(iEntry) << ' '
           << setw(14) << setprecision(3) << obs._measdata[iEntry]  << ' ';
       // TODO: handle slip counters
     }
