@@ -101,12 +101,68 @@ void t_obs::setMeasdata(const QString& rnxStr, double value) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-double t_obs::measdata(const QString& rnxStr, int* iEntry) const {
+double t_obs::measdata(const QString& rnxStr, int* p_iEntry) const {
 
-  if (iEntry) {
-    *iEntry = 0;
+  int iEntry = -1;
+
+  // TODO: this is a preliminary solution
+  // ------------------------------------
+  if      (rnxStr.indexOf("C1") == 0) {
+    iEntry = GNSSENTRY_C1DATA;
+  }
+  else if (rnxStr.indexOf("P1") == 0) {
+    iEntry = GNSSENTRY_P1DATA;
+  }
+  else if (rnxStr.indexOf("L1") == 0) {
+    iEntry = GNSSENTRY_L1CDATA;
+  }
+  else if (rnxStr.indexOf("D1") == 0) {
+    iEntry = GNSSENTRY_D1CDATA;
+  }
+  else if (rnxStr.indexOf("S1") == 0) {
+    iEntry = GNSSENTRY_S1CDATA;
+  }
+  else if (rnxStr.indexOf("C2") == 0) {
+    iEntry = GNSSENTRY_C2DATA;
+  }
+  else if (rnxStr.indexOf("P2") == 0) {
+    iEntry = GNSSENTRY_P2DATA;
+  }
+  else if (rnxStr.indexOf("L2") == 0) {
+    iEntry = GNSSENTRY_L2CDATA;
+  }
+  else if (rnxStr.indexOf("D2") == 0) {
+    iEntry = GNSSENTRY_D2CDATA;
+  }
+  else if (rnxStr.indexOf("S2") == 0) {
+    iEntry = GNSSENTRY_S2CDATA;
+  }
+  else if (rnxStr.indexOf("C5") == 0) {
+    iEntry = GNSSENTRY_C5DATA;
+  }
+  else if (rnxStr.indexOf("L5") == 0) {
+    iEntry = GNSSENTRY_L5DATA;
+  }
+  else if (rnxStr.indexOf("D5") == 0) {
+    iEntry = GNSSENTRY_D5DATA;
+  }
+  else if (rnxStr.indexOf("S5") == 0) {
+    iEntry = GNSSENTRY_S5DATA;
   }
 
-  return 0.0;
+  // Set iEntry pointer if required
+  // ------------------------------
+  if (p_iEntry) {
+    *p_iEntry = iEntry;
+  }
+
+  // Return the value if found
+  // -------------------------
+  if (iEntry != -1) {
+    return _measdata[iEntry];
+  }
+  else {
+    return 0.0;
+  }
 }
   
