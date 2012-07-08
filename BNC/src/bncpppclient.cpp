@@ -159,11 +159,11 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   // Set Observations GPS
   // --------------------
   if      (obs.satSys == 'G') {
-    double C1 = obs.measdata("C1", 2.0);
-    double P1 = obs.measdata("P1", 2.0);
-    double P2 = obs.measdata("P2", 2.0);
-    double L1 = obs.measdata("L1", 2.0);
-    double L2 = obs.measdata("L2", 2.0);
+    double C1 = obs.measdata("C1C", 3.0);
+    double P1 = obs.measdata("C1P", 3.0);
+    double P2 = obs.measdata("C2P", 3.0);
+    double L1 = obs.measdata("L1P", 3.0); if (L1 == 0.0) L1 = obs.measdata("L1C", 3.0);
+    double L2 = obs.measdata("L2P", 3.0); if (L2 == 0.0) L2 = obs.measdata("L2C", 3.0);
     if ( (C1 || P1) && P2 && L1 && L2 ) {
       double f1 = t_CST::freq1;
       double f2 = t_CST::freq2;
@@ -193,12 +193,12 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   // Set Observations GLONASS
   // ------------------------
   else if (obs.satSys == 'R') {
-    double C1 = obs.measdata("C1", 2.0);
-    double P1 = obs.measdata("P1", 2.0);
-    double C2 = obs.measdata("C2", 2.0);
-    double P2 = obs.measdata("P2", 2.0);
-    double L1 = obs.measdata("L1", 2.0);
-    double L2 = obs.measdata("L2", 2.0);
+    double C1 = obs.measdata("C1C", 3.0);
+    double P1 = obs.measdata("C1P", 3.0);
+    double C2 = obs.measdata("C2C", 3.0);
+    double P2 = obs.measdata("C2P", 3.0);
+    double L1 = obs.measdata("L1P", 3.0); if (L1 == 0.0) L1 = obs.measdata("L1C", 3.0);
+    double L2 = obs.measdata("L2P", 3.0); if (L2 == 0.0) L2 = obs.measdata("L2C", 3.0);
     if ( (P1 || C1) && (P2 || P2) && L1 && L2 ) {
       double f1 = t_CST::f1(obs.satSys, obs.slotNum); 
       double f2 = t_CST::f2(obs.satSys, obs.slotNum); 
