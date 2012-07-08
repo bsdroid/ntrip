@@ -158,6 +158,35 @@ double t_obs::measdata(const QString& rnxStr, int* p_iEntry) const {
     else if (rnxStr == "S2P") iEntry = GNSSENTRY_S2PDATA; 
   }
 
+  // Galileo
+  // -------
+  else if (satSys == 'E') {
+    if      (rnxStr == "C1") iEntry = GNSSENTRY_C1DATA;   
+    else if (rnxStr == "L1") iEntry = GNSSENTRY_L1CDATA;  
+    else if (rnxStr == "D1") iEntry = GNSSENTRY_D1CDATA;  
+    else if (rnxStr == "S1") iEntry = GNSSENTRY_S1CDATA;  
+
+    else if (rnxStr == "C5") iEntry = GNSSENTRY_C5DATA;   
+    else if (rnxStr == "L5") iEntry = GNSSENTRY_L5DATA;   
+    else if (rnxStr == "D5") iEntry = GNSSENTRY_D5DATA;   
+    else if (rnxStr == "S5") iEntry = GNSSENTRY_S5DATA;   
+    else if (rnxStr == "C6") iEntry = GNSSENTRY_C6DATA;   
+
+    else if (rnxStr == "L6") iEntry = GNSSENTRY_L6DATA;   
+    else if (rnxStr == "D6") iEntry = GNSSENTRY_D6DATA;   
+    else if (rnxStr == "S6") iEntry = GNSSENTRY_S6DATA;   
+
+    else if (rnxStr == "C7") iEntry = GNSSENTRY_C5BDATA;  
+    else if (rnxStr == "L7") iEntry = GNSSENTRY_L5BDATA;  
+    else if (rnxStr == "D7") iEntry = GNSSENTRY_D5BDATA;  
+    else if (rnxStr == "S7") iEntry = GNSSENTRY_S5BDATA;  
+
+    else if (rnxStr == "C8") iEntry = GNSSENTRY_C5ABDATA; 
+    else if (rnxStr == "L8") iEntry = GNSSENTRY_L5ABDATA; 
+    else if (rnxStr == "D8") iEntry = GNSSENTRY_D5ABDATA; 
+    else if (rnxStr == "S8") iEntry = GNSSENTRY_S5ABDATA; 
+  }
+
   // Set iEntry pointer if required
   // ------------------------------
   if (p_iEntry) {
