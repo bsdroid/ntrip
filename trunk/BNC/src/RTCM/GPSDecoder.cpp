@@ -118,7 +118,10 @@ int t_obs::iEntry(const QString& rnxStr, float rnxVers, bool nonEmpty) const {
     return iEntryV3(rnxStr);
   }
 
-  if (satSys == 'G' || satSys == 'R') {
+  if (satSys == 'E') {
+    return iEntryV3(rnxStr);
+  }
+  else {
     if      (rnxStr == "C1") return iEntryV3("C1C");
     else if (rnxStr == "P1") return iEntryV3("C1P");
     else if (rnxStr == "C2") return iEntryV3("C2C");
@@ -132,10 +135,6 @@ int t_obs::iEntry(const QString& rnxStr, float rnxVers, bool nonEmpty) const {
         return ie;
       }
     }
-  }
-
-  else {
-    return iEntryV3(rnxStr);
   }
 
   return -1;
