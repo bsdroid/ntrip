@@ -92,7 +92,7 @@ void GPSDecoder::setRinexReconnectFlag(bool flag) {
 // 
 //////////////////////////////////////////////////////////////////////////////
 void t_obs::setMeasdata(const QString& rnxStr, float rnxVers, double value) {
-  int ie = iEntry(rnxStr, rnxVers);
+  int ie = iEntry(rnxStr, rnxVers, false);
   if (ie != -1) {
     _measdata[ie] = value;
   }
@@ -101,7 +101,7 @@ void t_obs::setMeasdata(const QString& rnxStr, float rnxVers, double value) {
 // 
 //////////////////////////////////////////////////////////////////////////////
 double t_obs::measdata(const QString& rnxStr, float rnxVers) const {
-  int ie = iEntry(rnxStr, rnxVers);
+  int ie = iEntry(rnxStr, rnxVers, true);
   if (ie != -1) {
     return _measdata[ie];
   }
@@ -112,7 +112,7 @@ double t_obs::measdata(const QString& rnxStr, float rnxVers) const {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-int t_obs::iEntry(const QString& rnxStr, float rnxVers) const {
+int t_obs::iEntry(const QString& rnxStr, float rnxVers, bool nonEmpty) const {
   if (rnxVers >= 3.0) {
     return iEntryV3(rnxStr);
   }
@@ -126,7 +126,9 @@ int t_obs::iEntry(const QString& rnxStr, float rnxVers) const {
   for (int ii = 0; ii < chars.length(); ii++) {
     QString hlpStr = rnxStr + chars[ii];
     int ie = iEntryV3(hlpStr.trimmed());
-    if (ie != -1) return ie;
+    if (ie != -1 && (!nonEmpty || _measdata[ie] != 0.0)) {
+      return ie;
+    }
   }
 
   return -1;
