@@ -219,6 +219,23 @@ double t_obs::measdata(const QString& rnxStr, int* p_iEntry) const {
     else if (rnxStr == "S6" ) iEntry = GNSSENTRY_S6DATA;    
   }
 
+  // SBAS
+  else if (satSys == 'S') {
+    if      (rnxStr == "C1C") iEntry = GNSSENTRY_C1DATA;  
+    else if (rnxStr == "C1W") iEntry = GNSSENTRY_P1DATA;  
+    else if (rnxStr == "L1C") iEntry = GNSSENTRY_L1CDATA; 
+    else if (rnxStr == "L1W") iEntry = GNSSENTRY_L1PDATA; 
+    else if (rnxStr == "D1C") iEntry = GNSSENTRY_D1CDATA; 
+    else if (rnxStr == "D1W") iEntry = GNSSENTRY_D1PDATA; 
+    else if (rnxStr == "S1C") iEntry = GNSSENTRY_S1CDATA; 
+    else if (rnxStr == "S1W") iEntry = GNSSENTRY_S1PDATA; 
+
+    else if (rnxStr == "C5" ) iEntry = GNSSENTRY_C5DATA;  
+    else if (rnxStr == "L5" ) iEntry = GNSSENTRY_L5DATA;  
+    else if (rnxStr == "D5" ) iEntry = GNSSENTRY_D5DATA;  
+    else if (rnxStr == "S5" ) iEntry = GNSSENTRY_S5DATA;  
+  }
+
   // Set iEntry pointer if required
   // ------------------------------
   if (p_iEntry) {
