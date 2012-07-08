@@ -49,9 +49,9 @@ class t_obs {
     GPSWeeks    = 0.0;
     _dataflags  = 0;
     _dataflags2 = 0;
-    for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; iEntry++) {
-      _measdata[iEntry] = 0.0;
-      _codetype[iEntry] = 0;
+    for (int ie = 0; ie < GNSSENTRY_NUMBER; ie++) {
+      _measdata[ie] = 0.0;
+      _codetype[ie] = 0;
     }
     slip_cnt_L1 = -1;
     slip_cnt_L2 = -1;
@@ -60,8 +60,8 @@ class t_obs {
 
   ~t_obs() {}
 
-  double measdata(const QString& rnxStr, int* iEntry = 0) const;
-  void   setMeasdata(const QString& rnxStr, double value);
+  double measdata(const QString& rnxStr, float rnxVer) const;
+  void   setMeasdata(const QString& rnxStr, float rnxVer, double value);
 
   char   StatID[20+1]; // Station ID
   char   satSys;       // Satellite System ('G' or 'R')
@@ -78,6 +78,9 @@ class t_obs {
   unsigned long long _dataflags;                   // GNSSDF_xxx */
   unsigned int       _dataflags2;                  // GNSSDF2_xxx */
   const char*        _codetype[GNSSENTRY_NUMBER];
+
+ private:
+  int iEntry(const QString& rnxStr, float rnxVer) const;
 };
 
 class GPSDecoder {
