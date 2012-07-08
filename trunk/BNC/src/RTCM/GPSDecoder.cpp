@@ -220,6 +220,7 @@ double t_obs::measdata(const QString& rnxStr, int* p_iEntry) const {
   }
 
   // SBAS
+  // ----
   else if (satSys == 'S') {
     if      (rnxStr == "C1C") iEntry = GNSSENTRY_C1DATA;  
     else if (rnxStr == "C1W") iEntry = GNSSENTRY_P1DATA;  
@@ -234,6 +235,25 @@ double t_obs::measdata(const QString& rnxStr, int* p_iEntry) const {
     else if (rnxStr == "L5" ) iEntry = GNSSENTRY_L5DATA;  
     else if (rnxStr == "D5" ) iEntry = GNSSENTRY_D5DATA;  
     else if (rnxStr == "S5" ) iEntry = GNSSENTRY_S5DATA;  
+  }
+
+  // Compass
+  // -------
+  else if (satSys == 'C') {
+    if      (rnxStr == "C2I") iEntry = GNSSENTRY_CB1DATA;
+    else if (rnxStr == "L2I") iEntry = GNSSENTRY_LB1DATA;
+    else if (rnxStr == "D2I") iEntry = GNSSENTRY_DB1DATA;
+    else if (rnxStr == "S2I") iEntry = GNSSENTRY_SB1DATA;
+
+    else if (rnxStr == "C6I") iEntry = GNSSENTRY_CB3DATA;
+    else if (rnxStr == "L6I") iEntry = GNSSENTRY_LB3DATA;
+    else if (rnxStr == "D6I") iEntry = GNSSENTRY_DB3DATA;
+    else if (rnxStr == "S6I") iEntry = GNSSENTRY_SB3DATA;
+
+    else if (rnxStr == "C7I") iEntry = GNSSENTRY_CB2DATA;
+    else if (rnxStr == "L7I") iEntry = GNSSENTRY_LB2DATA;
+    else if (rnxStr == "D7I") iEntry = GNSSENTRY_DB2DATA;
+    else if (rnxStr == "S7I") iEntry = GNSSENTRY_SB2DATA;
   }
 
   // Set iEntry pointer if required
