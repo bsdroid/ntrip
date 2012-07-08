@@ -127,7 +127,7 @@ int t_obs::iEntry(const QString& rnxStr, float rnxVers, bool nonEmpty) const {
     else if (rnxStr == "C2") return iEntryV3("C2C");
     else if (rnxStr == "P2") return iEntryV3("C2P");
     
-    const QString chars = "PWCZI ";
+    const QString chars = "PWNCZI ";
     for (int ii = 0; ii < chars.length(); ii++) {
       QString hlpStr = rnxStr + chars[ii];
       int ie = iEntryV3(hlpStr.trimmed());
