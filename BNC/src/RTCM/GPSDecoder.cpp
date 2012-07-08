@@ -143,26 +143,26 @@ int t_obs::iEntryV3(const QString& rnxStr) const {
   // GPS
   // ---
   if (satSys == 'G') {
-    if      (rnxStr == "C1")                      retVal = GNSSENTRY_C1NDATA; 
-    else if (rnxStr == "C1C")                     retVal = GNSSENTRY_C1DATA;  
+    if      (rnxStr == "C1C")                     retVal = GNSSENTRY_C1DATA;  
     else if (rnxStr == "C1P" || rnxStr == "C1W")  retVal = GNSSENTRY_P1DATA;  
-    else if (rnxStr == "L1")                      retVal = GNSSENTRY_L1NDATA; 
+    else if (rnxStr == "C1N")                     retVal = GNSSENTRY_C1NDATA; 
     else if (rnxStr == "L1C")                     retVal = GNSSENTRY_L1CDATA; 
     else if (rnxStr == "L1P" || rnxStr == "L1W")  retVal = GNSSENTRY_L1PDATA; 
-    else if (rnxStr == "D1")                      retVal = GNSSENTRY_D1NDATA; 
+    else if (rnxStr == "L1N")                     retVal = GNSSENTRY_L1NDATA; 
     else if (rnxStr == "D1C")                     retVal = GNSSENTRY_D1CDATA; 
     else if (rnxStr == "D1P" || rnxStr == "D1W")  retVal = GNSSENTRY_D1PDATA; 
-    else if (rnxStr == "S1")                      retVal = GNSSENTRY_S1NDATA; 
+    else if (rnxStr == "D1N")                     retVal = GNSSENTRY_D1NDATA; 
     else if (rnxStr == "S1C")                     retVal = GNSSENTRY_S1CDATA; 
     else if (rnxStr == "S1P" || rnxStr == "S1W")  retVal = GNSSENTRY_S1PDATA; 
+    else if (rnxStr == "S1N")                     retVal = GNSSENTRY_S1NDATA; 
 
-    else if (rnxStr == "C2"  || rnxStr == "C2X")  retVal = GNSSENTRY_C2DATA;  
+    else if (rnxStr == "C2C" || rnxStr == "C2X")  retVal = GNSSENTRY_C2DATA;  
     else if (rnxStr == "C2P" || rnxStr == "C2W")  retVal = GNSSENTRY_P2DATA;  
-    else if (rnxStr == "L2"  || rnxStr == "L2X")  retVal = GNSSENTRY_L2CDATA; 
+    else if (rnxStr == "L2C" || rnxStr == "L2X")  retVal = GNSSENTRY_L2CDATA; 
     else if (rnxStr == "L2P" || rnxStr == "L2W")  retVal = GNSSENTRY_L2PDATA; 
-    else if (rnxStr == "D2"  || rnxStr == "D2X")  retVal = GNSSENTRY_D2CDATA; 
+    else if (rnxStr == "D2C" || rnxStr == "D2X")  retVal = GNSSENTRY_D2CDATA; 
     else if (rnxStr == "D2P" || rnxStr == "D2W")  retVal = GNSSENTRY_D2PDATA; 
-    else if (rnxStr == "S2"  || rnxStr == "S2X")  retVal = GNSSENTRY_S2CDATA; 
+    else if (rnxStr == "S2C" || rnxStr == "S2X")  retVal = GNSSENTRY_S2CDATA; 
     else if (rnxStr == "S2P" || rnxStr == "S2W")  retVal = GNSSENTRY_S2PDATA; 
 
     else if (rnxStr == "C5")                      retVal = GNSSENTRY_C5DATA;  
@@ -225,16 +225,16 @@ int t_obs::iEntryV3(const QString& rnxStr) const {
   // QZSS
   // ----
   else if (satSys == 'J') {
-    if      (rnxStr == "C1" ) retVal = GNSSENTRY_C1NDATA;   
+    if      (rnxStr == "C1N") retVal = GNSSENTRY_C1NDATA;   
     else if (rnxStr == "C1C") retVal = GNSSENTRY_C1DATA;    
     else if (rnxStr == "C1Z") retVal = GNSSENTRY_CSAIFDATA; 
-    else if (rnxStr == "L1" ) retVal = GNSSENTRY_L1NDATA;   
+    else if (rnxStr == "L1N") retVal = GNSSENTRY_L1NDATA;   
     else if (rnxStr == "L1C") retVal = GNSSENTRY_L1CDATA;   
     else if (rnxStr == "L1Z") retVal = GNSSENTRY_LSAIFDATA; 
-    else if (rnxStr == "D1" ) retVal = GNSSENTRY_D1NDATA;   
+    else if (rnxStr == "D1N") retVal = GNSSENTRY_D1NDATA;   
     else if (rnxStr == "D1C") retVal = GNSSENTRY_D1CDATA;   
     else if (rnxStr == "D1Z") retVal = GNSSENTRY_DSAIFDATA; 
-    else if (rnxStr == "S1" ) retVal = GNSSENTRY_S1NDATA;   
+    else if (rnxStr == "S1N") retVal = GNSSENTRY_S1NDATA;   
     else if (rnxStr == "S1C") retVal = GNSSENTRY_S1CDATA;   
     else if (rnxStr == "S1Z") retVal = GNSSENTRY_SSAIFDATA; 
 
