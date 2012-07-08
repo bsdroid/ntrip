@@ -736,7 +736,20 @@ string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2,
 
   const QVector<QString>& types = _rnxTypes[obs.satSys];
   for (int ii = 0; ii < types.size(); ii++) {
-    str << setw(14) << setprecision(3) << obs.measdata(types[ii], _rinexVers) << ' ';
+    str << setw(14) << setprecision(3) << obs.measdata(types[ii], _rinexVers);
+    if      (types[ii].indexOf("L1") == 0) {
+      str << lli1;
+    }
+    else if (types[ii].indexOf("L2") == 0) {
+      str << lli2;
+    }
+    else if (types[ii].indexOf("L5") == 0) {
+      str << lli5;
+    }
+    else {
+      str << ' ';
+    }
+    str << ' ';
   }
 
   return str.str();
