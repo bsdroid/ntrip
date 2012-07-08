@@ -107,8 +107,7 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
   // -------------------------
   _rnxTypes['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
                  << "C1W" << "L1W" << "D1W" << "S1W" 
-                 << "C2P" << "L2P" << "D2P" << "S2P" 
-                 << "C2X" << "L2X" << "D2X" << "S2X" 
+                 << "C2W" << "L2W" << "D2W" << "S2W" 
                  << "C5"  << "L5"  << "D5"  << "S5";
 
   _rnxTypes['R'] << "C1C" << "L1C" << "D1C" << "S1C" 

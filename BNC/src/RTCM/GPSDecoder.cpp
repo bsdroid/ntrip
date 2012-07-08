@@ -107,47 +107,31 @@ double t_obs::measdata(const QString& rnxStr, int* p_iEntry) const {
 
   // TODO: this is a preliminary solution
   // ------------------------------------
-  if      (rnxStr.indexOf("C1") == 0) {
-    iEntry = GNSSENTRY_C1DATA;
-  }
-  else if (rnxStr.indexOf("P1") == 0) {
-    iEntry = GNSSENTRY_P1DATA;
-  }
-  else if (rnxStr.indexOf("L1") == 0) {
-    iEntry = GNSSENTRY_L1CDATA;
-  }
-  else if (rnxStr.indexOf("D1") == 0) {
-    iEntry = GNSSENTRY_D1CDATA;
-  }
-  else if (rnxStr.indexOf("S1") == 0) {
-    iEntry = GNSSENTRY_S1CDATA;
-  }
-  else if (rnxStr.indexOf("C2") == 0) {
-    iEntry = GNSSENTRY_C2DATA;
-  }
-  else if (rnxStr.indexOf("P2") == 0) {
-    iEntry = GNSSENTRY_P2DATA;
-  }
-  else if (rnxStr.indexOf("L2") == 0) {
-    iEntry = GNSSENTRY_L2CDATA;
-  }
-  else if (rnxStr.indexOf("D2") == 0) {
-    iEntry = GNSSENTRY_D2CDATA;
-  }
-  else if (rnxStr.indexOf("S2") == 0) {
-    iEntry = GNSSENTRY_S2CDATA;
-  }
-  else if (rnxStr.indexOf("C5") == 0) {
-    iEntry = GNSSENTRY_C5DATA;
-  }
-  else if (rnxStr.indexOf("L5") == 0) {
-    iEntry = GNSSENTRY_L5DATA;
-  }
-  else if (rnxStr.indexOf("D5") == 0) {
-    iEntry = GNSSENTRY_D5DATA;
-  }
-  else if (rnxStr.indexOf("S5") == 0) {
-    iEntry = GNSSENTRY_S5DATA;
+  if (satSys == 'G') {
+    if      (rnxStr == "C1C") iEntry = GNSSENTRY_C1DATA;
+    else if (rnxStr == "L1C") iEntry = GNSSENTRY_L1CDATA; 
+    else if (rnxStr == "D1C") iEntry = GNSSENTRY_D1CDATA; 
+    else if (rnxStr == "S1C") iEntry = GNSSENTRY_S1CDATA; 
+    else if (rnxStr == "C1W") iEntry = GNSSENTRY_P1DATA;  
+    else if (rnxStr == "L1W") iEntry = GNSSENTRY_L1PDATA; 
+    else if (rnxStr == "D1W") iEntry = GNSSENTRY_D1PDATA; 
+    else if (rnxStr == "S1W") iEntry = GNSSENTRY_S1PDATA; 
+    else if (rnxStr == "C5" ) iEntry = GNSSENTRY_C5DATA;  
+    else if (rnxStr == "L5" ) iEntry = GNSSENTRY_L5DATA;  
+    else if (rnxStr == "D5" ) iEntry = GNSSENTRY_D5DATA;  
+    else if (rnxStr == "S5" ) iEntry = GNSSENTRY_S5DATA;  
+    else if (rnxStr == "C2W") iEntry = GNSSENTRY_P2DATA;  
+    else if (rnxStr == "L2W") iEntry = GNSSENTRY_L2PDATA; 
+    else if (rnxStr == "D2W") iEntry = GNSSENTRY_D2PDATA; 
+    else if (rnxStr == "S2W") iEntry = GNSSENTRY_S2PDATA; 
+    else if (rnxStr == "C2" ) iEntry = GNSSENTRY_C2DATA;  
+    else if (rnxStr == "L2" ) iEntry = GNSSENTRY_L2CDATA; 
+    else if (rnxStr == "D2" ) iEntry = GNSSENTRY_D2CDATA; 
+    else if (rnxStr == "S2" ) iEntry = GNSSENTRY_S2CDATA; 
+    else if (rnxStr == "C1" ) iEntry = GNSSENTRY_C1NDATA; 
+    else if (rnxStr == "L1" ) iEntry = GNSSENTRY_L1NDATA; 
+    else if (rnxStr == "D1" ) iEntry = GNSSENTRY_D1NDATA; 
+    else if (rnxStr == "S1" ) iEntry = GNSSENTRY_S1NDATA; 
   }
 
   // Set iEntry pointer if required
