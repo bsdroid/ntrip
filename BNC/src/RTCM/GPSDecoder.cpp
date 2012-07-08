@@ -105,8 +105,8 @@ double t_obs::measdata(const QString& rnxStr, int* p_iEntry) const {
 
   int iEntry = -1;
 
-  // TODO: this is a preliminary solution
-  // ------------------------------------
+  // GPS
+  // ---
   if (satSys == 'G') {
     if      (rnxStr == "C1")                      iEntry = GNSSENTRY_C1NDATA; 
     else if (rnxStr == "C1C")                     iEntry = GNSSENTRY_C1DATA;  
@@ -134,6 +134,28 @@ double t_obs::measdata(const QString& rnxStr, int* p_iEntry) const {
     else if (rnxStr == "D5")                      iEntry = GNSSENTRY_D5DATA;  
     else if (rnxStr == "L5")                      iEntry = GNSSENTRY_L5DATA;  
     else if (rnxStr == "S5")                      iEntry = GNSSENTRY_S5DATA;  
+  }
+
+  // Glonass
+  // -------
+  else if (satSys == 'R') {
+    if      (rnxStr == "C1C") iEntry = GNSSENTRY_C1DATA;  
+    else if (rnxStr == "C1P") iEntry = GNSSENTRY_P1DATA;  
+    else if (rnxStr == "L1C") iEntry = GNSSENTRY_L1CDATA; 
+    else if (rnxStr == "L1P") iEntry = GNSSENTRY_L1PDATA; 
+    else if (rnxStr == "D1C") iEntry = GNSSENTRY_D1CDATA; 
+    else if (rnxStr == "D1P") iEntry = GNSSENTRY_D1PDATA; 
+    else if (rnxStr == "S1C") iEntry = GNSSENTRY_S1CDATA; 
+    else if (rnxStr == "S1P") iEntry = GNSSENTRY_S1PDATA; 
+
+    else if (rnxStr == "C2C") iEntry = GNSSENTRY_C2DATA;  
+    else if (rnxStr == "C2P") iEntry = GNSSENTRY_P2DATA;  
+    else if (rnxStr == "L2C") iEntry = GNSSENTRY_L2CDATA; 
+    else if (rnxStr == "L2P") iEntry = GNSSENTRY_L2PDATA; 
+    else if (rnxStr == "D2C") iEntry = GNSSENTRY_D2CDATA; 
+    else if (rnxStr == "D2P") iEntry = GNSSENTRY_D2PDATA; 
+    else if (rnxStr == "S2C") iEntry = GNSSENTRY_S2CDATA; 
+    else if (rnxStr == "S2P") iEntry = GNSSENTRY_S2PDATA; 
   }
 
   // Set iEntry pointer if required
