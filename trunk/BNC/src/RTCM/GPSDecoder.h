@@ -80,7 +80,7 @@ class t_obs {
   const char*        _codetype[GNSSENTRY_NUMBER];
 
  private:
-  int iEntry(const QString& rnxStr, float rnxVer) const;
+  int iEntry(const QString& rnxStr, float rnxVer, bool nonEmpty) const;
   int iEntryV3(const QString& rnxStr) const;
 };
 
