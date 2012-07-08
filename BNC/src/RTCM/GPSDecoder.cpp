@@ -187,6 +187,38 @@ double t_obs::measdata(const QString& rnxStr, int* p_iEntry) const {
     else if (rnxStr == "S8") iEntry = GNSSENTRY_S5ABDATA; 
   }
 
+  // QZSS
+  // ----
+  else if (satSys == 'J') {
+    if      (rnxStr == "C1" ) iEntry = GNSSENTRY_C1NDATA;   
+    else if (rnxStr == "C1C") iEntry = GNSSENTRY_C1DATA;    
+    else if (rnxStr == "C1Z") iEntry = GNSSENTRY_CSAIFDATA; 
+    else if (rnxStr == "L1" ) iEntry = GNSSENTRY_L1NDATA;   
+    else if (rnxStr == "L1C") iEntry = GNSSENTRY_L1CDATA;   
+    else if (rnxStr == "L1Z") iEntry = GNSSENTRY_LSAIFDATA; 
+    else if (rnxStr == "D1" ) iEntry = GNSSENTRY_D1NDATA;   
+    else if (rnxStr == "D1C") iEntry = GNSSENTRY_D1CDATA;   
+    else if (rnxStr == "D1Z") iEntry = GNSSENTRY_DSAIFDATA; 
+    else if (rnxStr == "S1" ) iEntry = GNSSENTRY_S1NDATA;   
+    else if (rnxStr == "S1C") iEntry = GNSSENTRY_S1CDATA;   
+    else if (rnxStr == "S1Z") iEntry = GNSSENTRY_SSAIFDATA; 
+
+    else if (rnxStr == "C2" ) iEntry = GNSSENTRY_C2DATA;    
+    else if (rnxStr == "L2" ) iEntry = GNSSENTRY_L2CDATA;   
+    else if (rnxStr == "D2" ) iEntry = GNSSENTRY_D2CDATA;   
+    else if (rnxStr == "S2" ) iEntry = GNSSENTRY_S2CDATA;   
+
+    else if (rnxStr == "C5" ) iEntry = GNSSENTRY_C5DATA;    
+    else if (rnxStr == "L5" ) iEntry = GNSSENTRY_L5DATA;    
+    else if (rnxStr == "D5" ) iEntry = GNSSENTRY_D5DATA;    
+    else if (rnxStr == "S5" ) iEntry = GNSSENTRY_S5DATA;    
+
+    else if (rnxStr == "C6" ) iEntry = GNSSENTRY_C6DATA;    
+    else if (rnxStr == "D6" ) iEntry = GNSSENTRY_D6DATA;    
+    else if (rnxStr == "L6" ) iEntry = GNSSENTRY_L6DATA;    
+    else if (rnxStr == "S6" ) iEntry = GNSSENTRY_S6DATA;    
+  }
+
   // Set iEntry pointer if required
   // ------------------------------
   if (p_iEntry) {
