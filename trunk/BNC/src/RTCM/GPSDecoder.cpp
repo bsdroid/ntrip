@@ -122,7 +122,7 @@ int t_obs::iEntry(const QString& rnxStr, float rnxVers, bool nonEmpty) const {
   else if (rnxStr == "C2") return iEntryV3("C2C");
   else if (rnxStr == "P2") return iEntryV3("C2P");
 
-  const QString chars = "CPWZI ";
+  const QString chars = "PWCZI ";
   for (int ii = 0; ii < chars.length(); ii++) {
     QString hlpStr = rnxStr + chars[ii];
     int ie = iEntryV3(hlpStr.trimmed());
@@ -258,13 +258,13 @@ int t_obs::iEntryV3(const QString& rnxStr) const {
   // ----
   else if (satSys == 'S') {
     if      (rnxStr == "C1C") retVal = GNSSENTRY_C1DATA;  
-    else if (rnxStr == "C1W") retVal = GNSSENTRY_P1DATA;  
+    else if (rnxStr == "C1P") retVal = GNSSENTRY_P1DATA;  
     else if (rnxStr == "L1C") retVal = GNSSENTRY_L1CDATA; 
-    else if (rnxStr == "L1W") retVal = GNSSENTRY_L1PDATA; 
+    else if (rnxStr == "L1P") retVal = GNSSENTRY_L1PDATA; 
     else if (rnxStr == "D1C") retVal = GNSSENTRY_D1CDATA; 
-    else if (rnxStr == "D1W") retVal = GNSSENTRY_D1PDATA; 
+    else if (rnxStr == "D1P") retVal = GNSSENTRY_D1PDATA; 
     else if (rnxStr == "S1C") retVal = GNSSENTRY_S1CDATA; 
-    else if (rnxStr == "S1W") retVal = GNSSENTRY_S1PDATA; 
+    else if (rnxStr == "S1P") retVal = GNSSENTRY_S1PDATA; 
 
     else if (rnxStr == "C5" ) retVal = GNSSENTRY_C5DATA;  
     else if (rnxStr == "L5" ) retVal = GNSSENTRY_L5DATA;  
