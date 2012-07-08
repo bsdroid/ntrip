@@ -149,152 +149,140 @@ int t_obs::iEntryV3(const QString& rnxStr) const {
   // GPS
   // ---
   if (satSys == 'G') {
-    if      (rnxStr == "C1C")                     retVal = GNSSENTRY_C1DATA;  
-    else if (rnxStr == "C1P" || rnxStr == "C1W")  retVal = GNSSENTRY_P1DATA;  
-    else if (rnxStr == "C1N")                     retVal = GNSSENTRY_C1NDATA; 
-    else if (rnxStr == "L1C")                     retVal = GNSSENTRY_L1CDATA; 
-    else if (rnxStr == "L1P" || rnxStr == "L1W")  retVal = GNSSENTRY_L1PDATA; 
-    else if (rnxStr == "L1N")                     retVal = GNSSENTRY_L1NDATA; 
-    else if (rnxStr == "D1C")                     retVal = GNSSENTRY_D1CDATA; 
-    else if (rnxStr == "D1P" || rnxStr == "D1W")  retVal = GNSSENTRY_D1PDATA; 
-    else if (rnxStr == "D1N")                     retVal = GNSSENTRY_D1NDATA; 
-    else if (rnxStr == "S1C")                     retVal = GNSSENTRY_S1CDATA; 
-    else if (rnxStr == "S1P" || rnxStr == "S1W")  retVal = GNSSENTRY_S1PDATA; 
-    else if (rnxStr == "S1N")                     retVal = GNSSENTRY_S1NDATA; 
+    if      (rnxStr.indexOf(QRegExp("C1[CSLX]")) == 0) retVal = GNSSENTRY_C1DATA;  
+    else if (rnxStr.indexOf("C1") == 0)                retVal = GNSSENTRY_P1DATA; 
+    else if (rnxStr.indexOf(QRegExp("L1[CSLX]")) == 0) retVal = GNSSENTRY_L1CDATA; 
+    else if (rnxStr.indexOf("L1") == 0)                retVal = GNSSENTRY_L1PDATA; 
+    else if (rnxStr.indexOf(QRegExp("D1[CSLX]")) == 0) retVal = GNSSENTRY_D1CDATA; 
+    else if (rnxStr.indexOf("D1") == 0)                retVal = GNSSENTRY_D1PDATA; 
+    else if (rnxStr.indexOf(QRegExp("S1[CSLX]")) == 0) retVal = GNSSENTRY_S1CDATA; 
+    else if (rnxStr.indexOf("S1") == 0)                retVal = GNSSENTRY_S1PDATA; 
 
-    else if (rnxStr == "C2C" || rnxStr == "C2X")  retVal = GNSSENTRY_C2DATA;  
-    else if (rnxStr == "C2P" || rnxStr == "C2W")  retVal = GNSSENTRY_P2DATA;  
-    else if (rnxStr == "L2C" || rnxStr == "L2X")  retVal = GNSSENTRY_L2CDATA; 
-    else if (rnxStr == "L2P" || rnxStr == "L2W")  retVal = GNSSENTRY_L2PDATA; 
-    else if (rnxStr == "D2C" || rnxStr == "D2X")  retVal = GNSSENTRY_D2CDATA; 
-    else if (rnxStr == "D2P" || rnxStr == "D2W")  retVal = GNSSENTRY_D2PDATA; 
-    else if (rnxStr == "S2C" || rnxStr == "S2X")  retVal = GNSSENTRY_S2CDATA; 
-    else if (rnxStr == "S2P" || rnxStr == "S2W")  retVal = GNSSENTRY_S2PDATA; 
+    else if (rnxStr.indexOf(QRegExp("C2[CSLX]")) == 0) retVal = GNSSENTRY_C2DATA;  
+    else if (rnxStr.indexOf("C2") == 0)                retVal = GNSSENTRY_P2DATA; 
+    else if (rnxStr.indexOf(QRegExp("L2[CSLX]")) == 0) retVal = GNSSENTRY_L2CDATA; 
+    else if (rnxStr.indexOf("L2") == 0)                retVal = GNSSENTRY_L2PDATA; 
+    else if (rnxStr.indexOf(QRegExp("D2[CSLX]")) == 0) retVal = GNSSENTRY_D2CDATA; 
+    else if (rnxStr.indexOf("D2") == 0)                retVal = GNSSENTRY_D2PDATA; 
+    else if (rnxStr.indexOf(QRegExp("S2[CSLX]")) == 0) retVal = GNSSENTRY_S2CDATA; 
+    else if (rnxStr.indexOf("S2") == 0)                retVal = GNSSENTRY_S2PDATA; 
 
-    else if (rnxStr == "C5")                      retVal = GNSSENTRY_C5DATA;  
-    else if (rnxStr == "D5")                      retVal = GNSSENTRY_D5DATA;  
-    else if (rnxStr == "L5")                      retVal = GNSSENTRY_L5DATA;  
-    else if (rnxStr == "S5")                      retVal = GNSSENTRY_S5DATA;  
+    else if (rnxStr.indexOf("C5") == 0)                retVal = GNSSENTRY_C5DATA;  
+    else if (rnxStr.indexOf("D5") == 0)                retVal = GNSSENTRY_D5DATA;  
+    else if (rnxStr.indexOf("L5") == 0)                retVal = GNSSENTRY_L5DATA;  
+    else if (rnxStr.indexOf("S5") == 0)                retVal = GNSSENTRY_S5DATA;  
   }
 
   // Glonass
   // -------
   else if (satSys == 'R') {
-    if      (rnxStr == "C1C") retVal = GNSSENTRY_C1DATA;  
-    else if (rnxStr == "C1P") retVal = GNSSENTRY_P1DATA;  
-    else if (rnxStr == "L1C") retVal = GNSSENTRY_L1CDATA; 
-    else if (rnxStr == "L1P") retVal = GNSSENTRY_L1PDATA; 
-    else if (rnxStr == "D1C") retVal = GNSSENTRY_D1CDATA; 
-    else if (rnxStr == "D1P") retVal = GNSSENTRY_D1PDATA; 
-    else if (rnxStr == "S1C") retVal = GNSSENTRY_S1CDATA; 
-    else if (rnxStr == "S1P") retVal = GNSSENTRY_S1PDATA; 
+    if      (rnxStr == "C1C")           retVal = GNSSENTRY_C1DATA;  
+    else if (rnxStr.indexOf("C1") == 0) retVal = GNSSENTRY_P1DATA;  
+    else if (rnxStr == "L1C")           retVal = GNSSENTRY_L1CDATA; 
+    else if (rnxStr.indexOf("L1") == 0) retVal = GNSSENTRY_L1PDATA; 
+    else if (rnxStr == "D1C")           retVal = GNSSENTRY_D1CDATA; 
+    else if (rnxStr.indexOf("D1") == 0) retVal = GNSSENTRY_D1PDATA; 
+    else if (rnxStr == "S1C")           retVal = GNSSENTRY_S1CDATA; 
+    else if (rnxStr.indexOf("S1") == 0) retVal = GNSSENTRY_S1PDATA; 
 
-    else if (rnxStr == "C2C") retVal = GNSSENTRY_C2DATA;  
-    else if (rnxStr == "C2P") retVal = GNSSENTRY_P2DATA;  
-    else if (rnxStr == "L2C") retVal = GNSSENTRY_L2CDATA; 
-    else if (rnxStr == "L2P") retVal = GNSSENTRY_L2PDATA; 
-    else if (rnxStr == "D2C") retVal = GNSSENTRY_D2CDATA; 
-    else if (rnxStr == "D2P") retVal = GNSSENTRY_D2PDATA; 
-    else if (rnxStr == "S2C") retVal = GNSSENTRY_S2CDATA; 
-    else if (rnxStr == "S2P") retVal = GNSSENTRY_S2PDATA; 
+    else if (rnxStr == "C2C")           retVal = GNSSENTRY_C2DATA;  
+    else if (rnxStr.indexOf("C2") == 0) retVal = GNSSENTRY_P2DATA;  
+    else if (rnxStr == "L2C")           retVal = GNSSENTRY_L2CDATA; 
+    else if (rnxStr.indexOf("L2") == 0) retVal = GNSSENTRY_L2PDATA; 
+    else if (rnxStr == "D2C")           retVal = GNSSENTRY_D2CDATA; 
+    else if (rnxStr.indexOf("D2") == 0) retVal = GNSSENTRY_D2PDATA; 
+    else if (rnxStr == "S2C")           retVal = GNSSENTRY_S2CDATA; 
+    else if (rnxStr.indexOf("S2") == 0) retVal = GNSSENTRY_S2PDATA; 
   }
 
   // Galileo
   // -------
   else if (satSys == 'E') {
-    if      (rnxStr == "C1") retVal = GNSSENTRY_C1DATA;   
-    else if (rnxStr == "L1") retVal = GNSSENTRY_L1CDATA;  
-    else if (rnxStr == "D1") retVal = GNSSENTRY_D1CDATA;  
-    else if (rnxStr == "S1") retVal = GNSSENTRY_S1CDATA;  
+    if      (rnxStr.indexOf("C1") == 0)  retVal = GNSSENTRY_C1DATA;   
+    else if (rnxStr.indexOf("L1") == 0)  retVal = GNSSENTRY_L1CDATA;  
+    else if (rnxStr.indexOf("D1") == 0)  retVal = GNSSENTRY_D1CDATA;  
+    else if (rnxStr.indexOf("S1") == 0)  retVal = GNSSENTRY_S1CDATA;  
 
-    else if (rnxStr == "C5") retVal = GNSSENTRY_C5DATA;   
-    else if (rnxStr == "L5") retVal = GNSSENTRY_L5DATA;   
-    else if (rnxStr == "D5") retVal = GNSSENTRY_D5DATA;   
-    else if (rnxStr == "S5") retVal = GNSSENTRY_S5DATA;   
-    else if (rnxStr == "C6") retVal = GNSSENTRY_C6DATA;   
+    else if (rnxStr.indexOf("C5") == 0)  retVal = GNSSENTRY_C5DATA;   
+    else if (rnxStr.indexOf("L5") == 0)  retVal = GNSSENTRY_L5DATA;   
+    else if (rnxStr.indexOf("D5") == 0)  retVal = GNSSENTRY_D5DATA;   
+    else if (rnxStr.indexOf("S5") == 0)  retVal = GNSSENTRY_S5DATA;   
 
-    else if (rnxStr == "L6") retVal = GNSSENTRY_L6DATA;   
-    else if (rnxStr == "D6") retVal = GNSSENTRY_D6DATA;   
-    else if (rnxStr == "S6") retVal = GNSSENTRY_S6DATA;   
+    else if (rnxStr.indexOf("C6") == 0)  retVal = GNSSENTRY_C6DATA;   
+    else if (rnxStr.indexOf("L6") == 0)  retVal = GNSSENTRY_L6DATA;   
+    else if (rnxStr.indexOf("D6") == 0)  retVal = GNSSENTRY_D6DATA;   
+    else if (rnxStr.indexOf("S6") == 0)  retVal = GNSSENTRY_S6DATA;   
 
-    else if (rnxStr == "C7") retVal = GNSSENTRY_C5BDATA;  
-    else if (rnxStr == "L7") retVal = GNSSENTRY_L5BDATA;  
-    else if (rnxStr == "D7") retVal = GNSSENTRY_D5BDATA;  
-    else if (rnxStr == "S7") retVal = GNSSENTRY_S5BDATA;  
+    else if (rnxStr.indexOf("C7") == 0)  retVal = GNSSENTRY_C5BDATA;  
+    else if (rnxStr.indexOf("L7") == 0)  retVal = GNSSENTRY_L5BDATA;  
+    else if (rnxStr.indexOf("D7") == 0)  retVal = GNSSENTRY_D5BDATA;  
+    else if (rnxStr.indexOf("S7") == 0)  retVal = GNSSENTRY_S5BDATA;  
 
-    else if (rnxStr == "C8") retVal = GNSSENTRY_C5ABDATA; 
-    else if (rnxStr == "L8") retVal = GNSSENTRY_L5ABDATA; 
-    else if (rnxStr == "D8") retVal = GNSSENTRY_D5ABDATA; 
-    else if (rnxStr == "S8") retVal = GNSSENTRY_S5ABDATA; 
+    else if (rnxStr.indexOf("C8") == 0)  retVal = GNSSENTRY_C5ABDATA; 
+    else if (rnxStr.indexOf("L8") == 0)  retVal = GNSSENTRY_L5ABDATA; 
+    else if (rnxStr.indexOf("D8") == 0)  retVal = GNSSENTRY_D5ABDATA; 
+    else if (rnxStr.indexOf("S8") == 0)  retVal = GNSSENTRY_S5ABDATA; 
   }
 
   // QZSS
   // ----
   else if (satSys == 'J') {
-    if      (rnxStr == "C1N") retVal = GNSSENTRY_C1NDATA;   
-    else if (rnxStr == "C1C") retVal = GNSSENTRY_C1DATA;    
-    else if (rnxStr == "C1Z") retVal = GNSSENTRY_CSAIFDATA; 
-    else if (rnxStr == "L1N") retVal = GNSSENTRY_L1NDATA;   
-    else if (rnxStr == "L1C") retVal = GNSSENTRY_L1CDATA;   
-    else if (rnxStr == "L1Z") retVal = GNSSENTRY_LSAIFDATA; 
-    else if (rnxStr == "D1N") retVal = GNSSENTRY_D1NDATA;   
-    else if (rnxStr == "D1C") retVal = GNSSENTRY_D1CDATA;   
-    else if (rnxStr == "D1Z") retVal = GNSSENTRY_DSAIFDATA; 
-    else if (rnxStr == "S1N") retVal = GNSSENTRY_S1NDATA;   
-    else if (rnxStr == "S1C") retVal = GNSSENTRY_S1CDATA;   
-    else if (rnxStr == "S1Z") retVal = GNSSENTRY_SSAIFDATA; 
+    if      (rnxStr.indexOf("C1") == 0)  retVal = GNSSENTRY_C1DATA;   
+    else if (rnxStr.indexOf("L1") == 0)  retVal = GNSSENTRY_L1CDATA;  
+    else if (rnxStr.indexOf("D1") == 0)  retVal = GNSSENTRY_D1CDATA;  
+    else if (rnxStr.indexOf("S1") == 0)  retVal = GNSSENTRY_S1CDATA;  
 
-    else if (rnxStr == "C2" ) retVal = GNSSENTRY_C2DATA;    
-    else if (rnxStr == "L2" ) retVal = GNSSENTRY_L2CDATA;   
-    else if (rnxStr == "D2" ) retVal = GNSSENTRY_D2CDATA;   
-    else if (rnxStr == "S2" ) retVal = GNSSENTRY_S2CDATA;   
+    else if (rnxStr.indexOf("C2") == 0)  retVal = GNSSENTRY_C5BDATA;  
+    else if (rnxStr.indexOf("L2") == 0)  retVal = GNSSENTRY_L5BDATA;  
+    else if (rnxStr.indexOf("D2") == 0)  retVal = GNSSENTRY_D5BDATA;  
+    else if (rnxStr.indexOf("S2") == 0)  retVal = GNSSENTRY_S5BDATA;  
 
-    else if (rnxStr == "C5" ) retVal = GNSSENTRY_C5DATA;    
-    else if (rnxStr == "L5" ) retVal = GNSSENTRY_L5DATA;    
-    else if (rnxStr == "D5" ) retVal = GNSSENTRY_D5DATA;    
-    else if (rnxStr == "S5" ) retVal = GNSSENTRY_S5DATA;    
+    else if (rnxStr.indexOf("C5") == 0)  retVal = GNSSENTRY_C5DATA;   
+    else if (rnxStr.indexOf("L5") == 0)  retVal = GNSSENTRY_L5DATA;   
+    else if (rnxStr.indexOf("D5") == 0)  retVal = GNSSENTRY_D5DATA;   
+    else if (rnxStr.indexOf("S5") == 0)  retVal = GNSSENTRY_S5DATA;   
 
-    else if (rnxStr == "C6" ) retVal = GNSSENTRY_C6DATA;    
-    else if (rnxStr == "D6" ) retVal = GNSSENTRY_D6DATA;    
-    else if (rnxStr == "L6" ) retVal = GNSSENTRY_L6DATA;    
-    else if (rnxStr == "S6" ) retVal = GNSSENTRY_S6DATA;    
+    else if (rnxStr.indexOf("C6") == 0)  retVal = GNSSENTRY_C6DATA;   
+    else if (rnxStr.indexOf("L6") == 0)  retVal = GNSSENTRY_L6DATA;   
+    else if (rnxStr.indexOf("D6") == 0)  retVal = GNSSENTRY_D6DATA;   
+    else if (rnxStr.indexOf("S6") == 0)  retVal = GNSSENTRY_S6DATA;   
   }
 
   // SBAS
   // ----
   else if (satSys == 'S') {
-    if      (rnxStr == "C1C") retVal = GNSSENTRY_C1DATA;  
-    else if (rnxStr == "C1P") retVal = GNSSENTRY_P1DATA;  
-    else if (rnxStr == "L1C") retVal = GNSSENTRY_L1CDATA; 
-    else if (rnxStr == "L1P") retVal = GNSSENTRY_L1PDATA; 
-    else if (rnxStr == "D1C") retVal = GNSSENTRY_D1CDATA; 
-    else if (rnxStr == "D1P") retVal = GNSSENTRY_D1PDATA; 
-    else if (rnxStr == "S1C") retVal = GNSSENTRY_S1CDATA; 
-    else if (rnxStr == "S1P") retVal = GNSSENTRY_S1PDATA; 
+    if      (rnxStr == "C1C")           retVal = GNSSENTRY_C1DATA;  
+    else if (rnxStr.indexOf("C1") == 0) retVal = GNSSENTRY_P1DATA;  
+    else if (rnxStr == "L1C")           retVal = GNSSENTRY_L1CDATA; 
+    else if (rnxStr.indexOf("L1") == 0) retVal = GNSSENTRY_L1PDATA; 
+    else if (rnxStr == "D1C")           retVal = GNSSENTRY_D1CDATA; 
+    else if (rnxStr.indexOf("D1") == 0) retVal = GNSSENTRY_D1PDATA; 
+    else if (rnxStr == "S1C")           retVal = GNSSENTRY_S1CDATA; 
+    else if (rnxStr.indexOf("S1") == 0) retVal = GNSSENTRY_S1PDATA; 
 
-    else if (rnxStr == "C5" ) retVal = GNSSENTRY_C5DATA;  
-    else if (rnxStr == "L5" ) retVal = GNSSENTRY_L5DATA;  
-    else if (rnxStr == "D5" ) retVal = GNSSENTRY_D5DATA;  
-    else if (rnxStr == "S5" ) retVal = GNSSENTRY_S5DATA;  
+    else if (rnxStr.indexOf("C5") == 0)  retVal = GNSSENTRY_C5DATA;   
+    else if (rnxStr.indexOf("L5") == 0)  retVal = GNSSENTRY_L5DATA;   
+    else if (rnxStr.indexOf("D5") == 0)  retVal = GNSSENTRY_D5DATA;   
+    else if (rnxStr.indexOf("S5") == 0)  retVal = GNSSENTRY_S5DATA;   
   }
 
   // Compass
   // -------
   else if (satSys == 'C') {
-    if      (rnxStr == "C2I") retVal = GNSSENTRY_CB1DATA;
-    else if (rnxStr == "L2I") retVal = GNSSENTRY_LB1DATA;
-    else if (rnxStr == "D2I") retVal = GNSSENTRY_DB1DATA;
-    else if (rnxStr == "S2I") retVal = GNSSENTRY_SB1DATA;
+    if      (rnxStr.indexOf("C2") == 0) retVal = GNSSENTRY_CB1DATA;
+    else if (rnxStr.indexOf("L2") == 0) retVal = GNSSENTRY_LB1DATA;
+    else if (rnxStr.indexOf("D2") == 0) retVal = GNSSENTRY_DB1DATA;
+    else if (rnxStr.indexOf("S2") == 0) retVal = GNSSENTRY_SB1DATA;
 
-    else if (rnxStr == "C6I") retVal = GNSSENTRY_CB3DATA;
-    else if (rnxStr == "L6I") retVal = GNSSENTRY_LB3DATA;
-    else if (rnxStr == "D6I") retVal = GNSSENTRY_DB3DATA;
-    else if (rnxStr == "S6I") retVal = GNSSENTRY_SB3DATA;
+    else if (rnxStr.indexOf("C6") == 0) retVal = GNSSENTRY_CB3DATA;
+    else if (rnxStr.indexOf("L6") == 0) retVal = GNSSENTRY_LB3DATA;
+    else if (rnxStr.indexOf("D6") == 0) retVal = GNSSENTRY_DB3DATA;
+    else if (rnxStr.indexOf("S6") == 0) retVal = GNSSENTRY_SB3DATA;
 
-    else if (rnxStr == "C7I") retVal = GNSSENTRY_CB2DATA;
-    else if (rnxStr == "L7I") retVal = GNSSENTRY_LB2DATA;
-    else if (rnxStr == "D7I") retVal = GNSSENTRY_DB2DATA;
-    else if (rnxStr == "S7I") retVal = GNSSENTRY_SB2DATA;
+    else if (rnxStr.indexOf("C7") == 0) retVal = GNSSENTRY_CB2DATA;
+    else if (rnxStr.indexOf("L7") == 0) retVal = GNSSENTRY_LB2DATA;
+    else if (rnxStr.indexOf("D7") == 0) retVal = GNSSENTRY_DB2DATA;
+    else if (rnxStr.indexOf("S7") == 0) retVal = GNSSENTRY_SB2DATA;
   }
 
   return retVal;
