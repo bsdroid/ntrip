@@ -65,6 +65,7 @@ class bncRinex {
                     const QDateTime& datTimNom);
    void closeFile();
    t_irc downloadSkeleton();
+   void writeObsTypes();
 
    QByteArray    _statID;
    QByteArray    _fName;

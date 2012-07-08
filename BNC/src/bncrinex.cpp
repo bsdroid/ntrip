@@ -458,21 +458,7 @@ void bncRinex::writeHeader(const QByteArray& format, const QDateTime& datTim,
                 (line.indexOf("# / TYPES OF OBSERV") != -1 || 
                  line.indexOf("SYS / # / OBS TYPES") != -1) ) {
         typesOfObservationsWritten = true;
-        if (_rinexVers == 3) {
-          _out << "G   20 C1C L1C D1C S1C C1W L1W D1W S1W C2P L2P D2P S2P C2X  SYS / # / OBS TYPES" << endl;
-          _out << "       L2X D2X S2X C5  L5  D5  S5                           SYS / # / OBS TYPES" << endl;
-          _out << "R   16 C1C L1C D1C S1C C1P L1P D1P S1P C2P L2P D2P S2P C2C  SYS / # / OBS TYPES" << endl;
-          _out << "       L2C D2C S2C                                          SYS / # / OBS TYPES" << endl;
-          _out << "S    8 C1C L1C D1C S1C C1W L1W D1W S1W                      SYS / # / OBS TYPES" << endl;
-          _out << "E    8 C1  L1  D1  S1  C5  L5  D5  S5                       SYS / # / OBS TYPES" << endl;
-          _out << "J   16 C1C L1C D1C S1C C1X L1X D1X S1X C2X L2X D2X S2X C5   SYS / # / OBS TYPES" << endl;
-          _out << "       L5  D5  S5                                           SYS / # / OBS TYPES" << endl;
-          _out << "C    4 C2I L2I D2I S2I                                      SYS / # / OBS TYPES" << endl;
-        }
-        else { 
-          _out << "     8    C1    P1    L1    S1    C2    P2    L2    S2"
-                  "      # / TYPES OF OBSERV"  << endl;
-        }
+        writeObsTypes();
       }
       else if (line.indexOf("TIME OF FIRST OBS") != -1) {
         _out << datTim.toString("  yyyy    MM    dd"
@@ -535,27 +521,9 @@ void bncRinex::writeHeader(const QByteArray& format, const QDateTime& datTim,
          << setw(14) << setprecision(4) << antennaNEU[1]
          << setw(14) << setprecision(4) << antennaNEU[2] 
          << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
-    if (_rinexVers == 3) {
-      QMapIterator<char, QVector<QString> > it(_rnxTypes);
-      while (it.hasNext()) {
-        it.next();
-        char sys                      = it.key();
-        const QVector<QString>& types = it.value();
-        QString hlp;
-        QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(types.size(), 3);
-        for (int ii = 0; ii < types.size(); ii++) {
-          QTextStream(&hlp) << QString(" %1").arg(types[ii], -3);   
-          if ((ii+1) % 13 == 0 || ii == types.size()-1) {
-            _out << QString(hlp.leftJustified(60) + "SYS / # / OBS TYPES\n").toAscii().data();
-            hlp = QString().leftJustified(6);
-          }
-        }
-      }
-    }
-    else {
-      _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
-      _out << "     8    C1    P1    L1    S1    C2    P2    L2    S2      # / TYPES OF OBSERV"  << endl;
-    }
+        
+    writeObsTypes();
+
     _out << datTim.toString("  yyyy    MM    dd"
                                 "    hh    mm   ss.zzz0000").toAscii().data();
     _out << "     GPS         TIME OF FIRST OBS"    << endl;
@@ -571,6 +539,32 @@ void bncRinex::writeHeader(const QByteArray& format, const QDateTime& datTim,
   }
 
   _headerWritten = true;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncRinex::writeObsTypes() {
+  if (_rinexVers == 3) {
+    QMapIterator<char, QVector<QString> > it(_rnxTypes);
+    while (it.hasNext()) {
+      it.next();
+      char sys                      = it.key();
+      const QVector<QString>& types = it.value();
+      QString hlp;
+      QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(types.size(), 3);
+      for (int ii = 0; ii < types.size(); ii++) {
+        QTextStream(&hlp) << QString(" %1").arg(types[ii], -3);   
+        if ((ii+1) % 13 == 0 || ii == types.size()-1) {
+          _out << QString(hlp.leftJustified(60) + "SYS / # / OBS TYPES\n").toAscii().data();
+          hlp = QString().leftJustified(6);
+        }
+      }
+    }
+  }
+  else {
+    _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
+    _out << "     8    C1    P1    L1    S1    C2    P2    L2    S2      # / TYPES OF OBSERV"  << endl;
+  }
 }
 
 // Stores Observation into Internal Array
