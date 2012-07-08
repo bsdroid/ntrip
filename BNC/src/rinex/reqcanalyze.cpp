@@ -236,8 +236,8 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
 
   // Compute the Multipath
   // ----------------------
-  double L1 = obs.measdata("L1");
-  double L2 = obs.measdata("L2");
+  double L1 = obs.measdata("L1", 2.0);
+  double L2 = obs.measdata("L2", 2.0);
   if (L1 != 0.0 && L2 != 0.0) {
     double f1 = t_CST::f1(obs.satSys, obs.slotNum);
     double f2 = t_CST::f2(obs.satSys, obs.slotNum);
@@ -245,7 +245,7 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
     L1 = L1 * t_CST::c / f1;
     L2 = L2 * t_CST::c / f2;
 
-    double P1 = obs.measdata("P1");
+    double P1 = obs.measdata("P1", 2.0);
     if (P1 != 0.0) {
       newObs->_MP1 = P1 - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
       okFlag = true;
@@ -257,7 +257,7 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
       //      << setprecision(4) << newObs->_MP1 << endl;
       //// end test
     }
-    double P2 = obs.measdata("P2");
+    double P2 = obs.measdata("P2", 2.0);
     if (P2 != 0.0) {
       newObs->_MP2 = P2 - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
       okFlag = true;
