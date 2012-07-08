@@ -113,6 +113,28 @@ double t_obs::measdata(const QString& rnxStr, float rnxVers) const {
 // 
 //////////////////////////////////////////////////////////////////////////////
 int t_obs::iEntry(const QString& rnxStr, float rnxVers) const {
+  if (rnxVers >= 3.0) {
+    return iEntryV3(rnxStr);
+  }
+
+  if      (rnxStr == "C1") return iEntryV3("C1C");
+  else if (rnxStr == "P1") return iEntryV3("C1P");
+  else if (rnxStr == "C2") return iEntryV3("C2C");
+  else if (rnxStr == "P2") return iEntryV3("C2P");
+
+  const QString chars = "CPWZI ";
+  for (int ii = 0; ii < chars.length(); ii++) {
+    QString hlpStr = rnxStr + chars[ii];
+    int ie = iEntryV3(hlpStr.trimmed());
+    if (ie != -1) return ie;
+  }
+
+  return -1;
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+int t_obs::iEntryV3(const QString& rnxStr) const {
 
   int retVal = -1;
 
