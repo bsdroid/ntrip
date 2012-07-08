@@ -92,7 +92,7 @@ void GPSDecoder::setRinexReconnectFlag(bool flag) {
 // 
 //////////////////////////////////////////////////////////////////////////////
 void t_obs::setMeasdata(const QString& rnxStr, float rnxVers, double value) {
-  int ie = iEntry(rnxStr, rnxVers, false);
+  int ie = iEntry(rnxStr, rnxVers);
   if (ie != -1) {
     _measdata[ie] = value;
   }
@@ -101,7 +101,7 @@ void t_obs::setMeasdata(const QString& rnxStr, float rnxVers, double value) {
 // 
 //////////////////////////////////////////////////////////////////////////////
 double t_obs::measdata(const QString& rnxStr, float rnxVers) const {
-  int ie = iEntry(rnxStr, rnxVers, true);
+  int ie = iEntry(rnxStr, rnxVers);
   if (ie != -1) {
     return _measdata[ie];
   }
@@ -110,41 +110,19 @@ double t_obs::measdata(const QString& rnxStr, float rnxVers) const {
   }
 }
 
-// 
-//////////////////////////////////////////////////////////////////////////////
-int t_obs::iEntry(const QString& rnxStr, float rnxVers, bool nonEmpty) const {
-
-  if (rnxVers >= 3.0) {
-    return iEntryV3(rnxStr);
-  }
-
-  if (satSys == 'E') {
-    return iEntryV3(rnxStr);
-  }
-  else {
-    if      (rnxStr == "C1") return iEntryV3("C1C");
-    else if (rnxStr == "P1") return iEntryV3("C1P");
-    else if (rnxStr == "C2") return iEntryV3("C2C");
-    else if (rnxStr == "P2") return iEntryV3("C2P");
-    
-    const QString chars = "PWNCZI ";
-    for (int ii = 0; ii < chars.length(); ii++) {
-      QString hlpStr = rnxStr + chars[ii];
-      int ie = iEntryV3(hlpStr.trimmed());
-      if (ie != -1 && (!nonEmpty || _measdata[ie] != 0.0)) {
-        return ie;
-      }
-    }
-  }
-
-  return -1;
-}
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-int t_obs::iEntryV3(const QString& rnxStr) const {
+int t_obs::iEntry(QString rnxStr, float rnxVers) const {
 
   int retVal = -1;
+
+  if (rnxVers < 3.0) {
+    if      (rnxStr == "C1") rnxStr = "C1C";
+    else if (rnxStr == "P1") rnxStr = "C1P";
+    else if (rnxStr == "C2") rnxStr = "C2C";
+    else if (rnxStr == "P2") rnxStr = "C2P";
+  }
 
   // GPS
   // ---
@@ -260,10 +238,10 @@ int t_obs::iEntryV3(const QString& rnxStr) const {
     else if (rnxStr == "S1C")           retVal = GNSSENTRY_S1CDATA; 
     else if (rnxStr.indexOf("S1") == 0) retVal = GNSSENTRY_S1PDATA; 
 
-    else if (rnxStr.indexOf("C5") == 0)  retVal = GNSSENTRY_C5DATA;   
-    else if (rnxStr.indexOf("L5") == 0)  retVal = GNSSENTRY_L5DATA;   
-    else if (rnxStr.indexOf("D5") == 0)  retVal = GNSSENTRY_D5DATA;   
-    else if (rnxStr.indexOf("S5") == 0)  retVal = GNSSENTRY_S5DATA;   
+    else if (rnxStr.indexOf("C5") == 0) retVal = GNSSENTRY_C5DATA;   
+    else if (rnxStr.indexOf("L5") == 0) retVal = GNSSENTRY_L5DATA;   
+    else if (rnxStr.indexOf("D5") == 0) retVal = GNSSENTRY_D5DATA;   
+    else if (rnxStr.indexOf("S5") == 0) retVal = GNSSENTRY_S5DATA;   
   }
 
   // Compass
