@@ -105,16 +105,16 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
 
   // Initialize RINEX v3 Types
   // -------------------------
-  _rnxTypes['G'] << "C1C" << "C1P" << "L1C" << "L1P" 
-                 << "D1C" << "D1P" << "S1C" << "S1P"
-                 << "C2X" << "C2P" << "L2X" << "L2P" 
-                 << "D2X" << "D2P" << "S2X" << "S2P"
+  _rnxTypes['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
+                 << "C1P" << "L1P" << "D1P" << "S1P" 
+                 << "C2C" << "L2C" << "D2C" << "S2C" 
+                 << "C2P" << "L2P" << "D2P" << "S2P" 
                  << "C5"  << "D5"  << "L5"  << "S5";
 
-  _rnxTypes['R'] << "C1C" << "C1P" << "L1C" << "L1P" 
-                 << "D1C" << "D1P" << "S1C" << "S1P"
-                 << "C2C" << "C2P" << "L2C" << "L2P" 
-                 << "D2C" << "D2P" << "S2C" << "S2P";
+  _rnxTypes['R'] << "C1C" << "L1C" << "D1C" << "S1C" 
+                 << "C1P" << "L1P" << "D1P" << "S1P" 
+                 << "C2C" << "L2C" << "D2C" << "S2C"
+                 << "C2P" << "L2P" << "D2P" << "S2P";
 
   _rnxTypes['E'] << "C1" << "L1" << "D1" << "S1"
                  << "C5" << "L5" << "D5" << "S5" 
@@ -122,19 +122,17 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
                  << "C7" << "L7" << "D7" << "S7"
                  << "C8" << "L8" << "D8" << "S8";
 
-  _rnxTypes['J'] << "C1C" << "C1Z" << "L1C" << "L1Z" 
-                 << "D1C" << "D1Z" << "S1C" << "S1Z"
-                 << "C2"  << "L2"  << "D2"  << "S2"
-                 << "C5"  << "L5"  << "D5"  << "S5"
-                 << "C6"  << "D6"  << "L6"  << "S6";
+  _rnxTypes['J'] << "C1" << "L1" << "D1" << "S1" 
+                 << "C2" << "L2" << "D2" << "S2"
+                 << "C5" << "L5" << "D5" << "S5"
+                 << "C6" << "D6" << "L6" << "S6";
 
-  _rnxTypes['S'] << "C1C" << "C1W" << "L1C" << "L1W" 
-                 << "D1C" << "D1W" << "S1C" << "S1W"
-                 << "C5"  << "L5"  << "D5"  << "S5";
+  _rnxTypes['S'] << "C1" << "L1" << "D1" << "S1" 
+                 << "C5" << "L5" << "D5" << "S5";
 
-  _rnxTypes['C'] << "C2I" << "L2I" << "D2I" << "S2I"
-                 << "C6I" << "L6I" << "D6I" << "S6I"
-                 << "C7I" << "L7I" << "D7I" << "S7I";
+  _rnxTypes['C'] << "C2" << "L2" << "D2" << "S2"
+                 << "C6" << "L6" << "D6" << "S6"
+                 << "C7" << "L7" << "D7" << "S7";
 }
 
 // Destructor
