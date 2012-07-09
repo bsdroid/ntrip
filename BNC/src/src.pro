@@ -60,6 +60,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           RTCM/GPSDecoder.h RTCM/RTCM2.h RTCM/RTCM2Decoder.h          \
           RTCM/RTCM2_2021.h RTCM/rtcm_utils.h                         \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex/rtcm3torinex.h      \
+          RTCM3/rtcm3torinex/rtcm3torinexsupport.h                    \
           RTCM3/RTCM3coDecoder.h                                      \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.h                    \
           RTCM3/ephemeris.h RTCM3/timeutils.h                         \
