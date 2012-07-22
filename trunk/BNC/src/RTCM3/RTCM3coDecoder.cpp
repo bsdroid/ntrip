@@ -47,6 +47,7 @@
 #include "bncapp.h"
 #include "bncsettings.h"
 #include "rtcm3torinex.h"
+#include "bnctime.h"
 
 using namespace std;
 
@@ -72,6 +73,9 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
 
   connect(this, SIGNAL(newCorrLine(QString, QString, long)), 
           (bncApp*) qApp, SLOT(slotNewCorrLine(QString, QString, long)));
+
+  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+          (bncApp*) qApp, SLOT(slotMessage(const QByteArray,bool)));
 
   memset(&_co, 0, sizeof(_co));
   memset(&_bias, 0, sizeof(_bias));
@@ -216,12 +220,10 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         QStringList asciiLines = corrsToASCIIlines(GPSweek, _GPSweeks, 
                                                    _co, &_bias);
 
-        long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
-
         QStringListIterator it(asciiLines);
         while (it.hasNext()) {
           QString line = it.next();
-          printLine(line, coTime);
+          printLine(line, GPSweek, _GPSweeks);
         }
 
         retCode = success;
@@ -239,13 +241,29 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void RTCM3coDecoder::printLine(const QString& line, long coTime) {
+void RTCM3coDecoder::printLine(const QString& line, int GPSweek, 
+                               double GPSweeks) {
   if (_out) {
     *_out << line.toAscii().data() << endl;
     _out->flush();
   }
 
-  emit newCorrLine(line, _staID, coTime);
+  int    currWeek;
+  double currSec;
+  currentGPSWeeks(currWeek, currSec);
+  bncTime currTime(currWeek, currSec);
+
+  bncTime corrTime(GPSweek, GPSweeks);
+
+  double dt = currTime - corrTime;
+  const double MAXDT = 10 * 60.0;
+  if (fabs(dt) > MAXDT) {
+    emit newMessage("suspicious correction", false);
+  }
+  else {
+    long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
+    emit newCorrLine(line, _staID, coTime);
+  }
 }
 
 // 

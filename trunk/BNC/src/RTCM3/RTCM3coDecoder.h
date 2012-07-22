@@ -50,9 +50,10 @@ Q_OBJECT
                      std::ofstream*& out);
  signals:
   void newCorrLine(QString line, QString staID, long coTime);
+  void newMessage(QByteArray msg, bool showOnScreen);
 
  private:
-  void printLine(const QString& line, long coTime);
+  void printLine(const QString& line, int GPSweek, double GPSweeks);
   std::ofstream* _out;
   QString        _staID;
   QString        _fileNameSkl;
