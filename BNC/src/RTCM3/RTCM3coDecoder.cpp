@@ -258,7 +258,8 @@ void RTCM3coDecoder::printLine(const QString& line, int GPSweek,
   double dt = currTime - corrTime;
   const double MAXDT = 10 * 60.0;
   if (fabs(dt) > MAXDT) {
-    emit newMessage("suspicious correction", false);
+    emit newMessage("suspicious correction: " + _staID.toAscii() + " " 
+                    + line.toAscii(), false);
   }
   else {
     long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
