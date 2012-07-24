@@ -79,6 +79,8 @@ class t_obs {
   unsigned int       _dataflags2;                  // GNSSDF2_xxx */
   const char*        _codetype[GNSSENTRY_NUMBER];
 
+  QString rnxStr(int iEntry);
+
  private:
   int iEntry(QString rnxStr, float rnxVer) const;
 };
