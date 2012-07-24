@@ -44,9 +44,7 @@
 #include "GPSDecoder.h"
 #include "bncsettings.h"
 
-extern "C" {
 #include "rtcm3torinexsupport.h"
-}
 
 using namespace std;
 
