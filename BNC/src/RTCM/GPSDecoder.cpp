@@ -132,5 +132,14 @@ int t_obs::iEntry(QString rnxStr, float rnxVers) const {
 // 
 //////////////////////////////////////////////////////////////////////////////
 QString t_obs::rnxStr(int iEntry) {
-  
+  QString str(3,' ');
+  switch(iEntry & 3) {
+    case GNSSENTRY_CODE:    str[0] = 'C'; break;
+    case GNSSENTRY_PHASE:   str[0] = 'L'; break;
+    case GNSSENTRY_DOPPLER: str[0] = 'D'; break;
+    case GNSSENTRY_SNR:     str[0] = 'S'; break;
+  }
+  str[1] = _codetype[iEntry][0];
+  str[2] = _codetype[iEntry][1];
+  return str;
 }
