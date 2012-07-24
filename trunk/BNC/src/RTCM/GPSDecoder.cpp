@@ -139,7 +139,9 @@ QString t_obs::rnxStr(int iEntry) {
     case GNSSENTRY_DOPPLER: str[0] = 'D'; break;
     case GNSSENTRY_SNR:     str[0] = 'S'; break;
   }
-  str[1] = _codetype[iEntry][0];
-  str[2] = _codetype[iEntry][1];
-  return str;
+  if (_codetype[iEntry]) {
+    str[1] = _codetype[iEntry][0];
+    str[2] = _codetype[iEntry][1];
+  }
+  return str.trimmed();
 }
