@@ -45,6 +45,7 @@
 #include "bncsettings.h"
 
 extern "C" {
+#include "rtcm3torinex.h"
 #include "rtcm3torinexsupport.h"
 }
 
@@ -126,4 +127,10 @@ int t_obs::iEntry(QString rnxStr, float rnxVers) const {
   }
 
   return rrinex3codetoentry(rnxStr.toAscii().data());
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+QString t_obs::rnxStr(int iEntry) {
+  
 }
