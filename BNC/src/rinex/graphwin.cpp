@@ -142,14 +142,14 @@ void t_graphWin::slotPrint() {
     painter.scale(scale, scale);
     painter.translate(-width()/2, -height()/2);
     _canvas->render(&painter);
-
-    //// beg test
-    {
-      QImage image(_canvas->size(), QImage::Format_RGB32);
-      QPainter painter(&image);
-      _canvas->render(&painter);
-      image.save("test.png","PNG");
-    }
-    //// end test
   }
+}
+
+// Save the Widget as PNG Files
+////////////////////////////////////////////////////////////////////////////
+void t_graphWin::savePNG() {
+  QImage image(_canvas->size(), QImage::Format_RGB32);
+  QPainter painter(&image);
+  _canvas->render(&painter);
+  image.save("test.png","PNG");
 }
