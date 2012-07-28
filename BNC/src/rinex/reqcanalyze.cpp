@@ -129,11 +129,11 @@ void t_reqcAnalyze::slotDisplayGraph(QVector<t_polarPoint*>* dataMP1,
 
     t_graphWin* graphWin = new t_graphWin(0, plots, scaleInterval);
 
+    graphWin->show();
+
     //// beg test
     graphWin->savePNG();
     //// end test
-
-    graphWin->show();
   }
 }
 
