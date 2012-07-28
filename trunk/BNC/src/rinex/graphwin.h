@@ -55,6 +55,8 @@ class t_graphWin : public QDialog {
              const QwtInterval scaleInterval);
   ~t_graphWin();
 
+  void savePNG();
+
  signals:
 
  private slots:
