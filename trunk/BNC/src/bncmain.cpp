@@ -66,7 +66,7 @@ void catch_signal(int) {
 /////////////////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[]) {
 
-  bool       GUIenabled  = true;
+  bool       interactive  = true;
   QByteArray rawFileName;
   QString    confFileName;
 
@@ -81,30 +81,36 @@ int main(int argc, char *argv[]) {
       exit(0);
     }
     if (QRegExp("--?nw").exactMatch(argv[ii])) {
-      GUIenabled = false;
+      interactive = false;
     }
     if (ii + 1 < argc) {
       if (QRegExp("--?conf").exactMatch(argv[ii])) {
         confFileName = QString(argv[ii+1]);
       }
       if (QRegExp("--?file").exactMatch(argv[ii])) {
-        GUIenabled = false;
+        interactive = false;
         rawFileName = QByteArray(argv[ii+1]);
       }
     }
   }
 
 #ifdef Q_OS_MAC
-  if (argc== 3 && GUIenabled) {
+  if (argc== 3 && interactive) {
     confFileName = QString(argv[2]);
   }
 #else
-  if (argc == 2 && GUIenabled) {
+  if (argc == 2 && interactive) {
     confFileName = QString(argv[1]);
   }
 #endif
 
-  bncApp app(argc, argv, GUIenabled);
+#ifdef Q_WS_X11
+  bool useGUI = getenv("DISPLAY") != 0;
+#else
+  bool useGUI = true;
+#endif
+ 
+  bncApp app(argc, argv, useGUI);
 
   app.setApplicationName("BNC");
   app.setOrganizationName("BKG");
@@ -123,7 +129,7 @@ int main(int argc, char *argv[]) {
 
   // Interactive Mode - open the main window
   // ---------------------------------------
-  if (GUIenabled) {
+  if (interactive) {
 
     app.setMode(bncApp::interactive);
 
