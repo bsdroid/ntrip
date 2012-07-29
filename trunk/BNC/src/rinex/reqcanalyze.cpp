@@ -82,6 +82,10 @@ t_reqcAnalyze::~t_reqcAnalyze() {
   }
   delete _log;     _log     = 0;
   delete _logFile; _logFile = 0;
+  bncApp* app = (bncApp*) qApp;
+  if ( app->mode() != bncApp::interactive) {
+    app->exit(0);
+  }
 }
 
 //  
@@ -167,14 +171,8 @@ void t_reqcAnalyze::run() {
 
   // Exit
   // ----
-  bncApp* app = (bncApp*) qApp;
-  if ( app->mode() != bncApp::interactive) {
-    app->exit(0);
-  }
-  else {
-    emit finished();
-    deleteLater();
-  }
+  emit finished();
+  deleteLater();
 }
 
 //  
