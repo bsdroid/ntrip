@@ -46,12 +46,15 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_graphWin::t_graphWin(QWidget* parent, const QVector<QWidget*>& plots,
+t_graphWin::t_graphWin(QWidget* parent, const QString& fileName, 
+                       const QVector<QWidget*>& plots,
                        const QwtInterval scaleInterval) :  QDialog(parent) {
+
+  _fileName = fileName;
 
   this->setAttribute(Qt::WA_DeleteOnClose);
 
-  setWindowTitle(tr("BNC Plot"));
+  setWindowTitle("Multipath Analyses: " + _fileName);
 
   int ww = QFontMetrics(font()).width('w');
   setMinimumSize(plots.size()*40*ww, 40*ww);

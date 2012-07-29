@@ -51,8 +51,8 @@ class t_graphWin : public QDialog {
  Q_OBJECT
 
  public:
-  t_graphWin(QWidget* parent, const QVector<QWidget*>& plots,
-             const QwtInterval scaleInterval);
+  t_graphWin(QWidget* parent, const QString& fileName, 
+             const QVector<QWidget*>& plots, const QwtInterval scaleInterval);
   ~t_graphWin();
 
   void savePNG();
@@ -67,6 +67,7 @@ class t_graphWin : public QDialog {
   virtual void closeEvent(QCloseEvent *);
 
  private:
+  QString         _fileName;
   QWidget*        _canvas;
   QPushButton*    _buttonClose;
   QPushButton*    _buttonPrint;

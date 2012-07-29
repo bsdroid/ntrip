@@ -44,10 +44,12 @@ Q_OBJECT
 
  signals:
   void finished();
-  void displayGraph(QVector<t_polarPoint*>*, QVector<t_polarPoint*>*);
+  void displayGraph(const QString& fileName, QVector<t_polarPoint*>*, 
+                    QVector<t_polarPoint*>*);
    
  private slots:
-  void slotDisplayGraph(QVector<t_polarPoint*>*, QVector<t_polarPoint*>*);
+  void slotDisplayGraph(const QString& fileName, QVector<t_polarPoint*>*, 
+                        QVector<t_polarPoint*>*);
 
  public:
   virtual void run();
