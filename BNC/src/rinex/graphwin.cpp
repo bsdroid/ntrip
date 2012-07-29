@@ -157,5 +157,7 @@ void t_graphWin::savePNG(const QString& dirName) {
   QImage image(_canvas->size(), QImage::Format_RGB32);
   QPainter painter(&image);
   _canvas->render(&painter);
-  image.save("test.png","PNG");
+  QDir dir(dirName);
+  QString fileName = dir.path() + QDir::separator() + _fileName + ".png";
+  image.save(fileName,"PNG");
 }
