@@ -90,7 +90,7 @@ void t_reqcAnalyze::slotDisplayGraph(QVector<t_polarPoint*>* dataMP1,
                                      QVector<t_polarPoint*>* dataMP2) {
 
   bncApp* app = dynamic_cast<bncApp*>(qApp);
-  if (app->mode() == bncApp::interactive) {
+  if (app->GUIenabled()) {
 
     double maxMP = 0.0;
     for (int ii = 0; ii < dataMP1->size(); ii++) {
