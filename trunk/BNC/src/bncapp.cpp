@@ -60,6 +60,7 @@ using namespace std;
 bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) : 
   QApplication(argc, argv, GUIenabled) {
 
+  _GUIenabled  = GUIenabled;
   _logFileFlag = 0;
   _logFile     = 0;
   _logStream   = 0;
