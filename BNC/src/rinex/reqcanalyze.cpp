@@ -132,9 +132,11 @@ void t_reqcAnalyze::slotDisplayGraph(const QString& fileName,
 
     graphWin->show();
 
-    //// beg test
-    graphWin->savePNG();
-    //// end test
+    bncSettings settings;
+    QString dirName = settings.value("reqcPlotDir").toString();
+    if (!dirName.isEmpty()) {
+      graphWin->savePNG(dirName);
+    }
   }
 }
 

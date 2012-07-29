@@ -150,7 +150,10 @@ void t_graphWin::slotPrint() {
 
 // Save the Widget as PNG Files
 ////////////////////////////////////////////////////////////////////////////
-void t_graphWin::savePNG() {
+void t_graphWin::savePNG(const QString& dirName) {
+  if (dirName.isEmpty()) {
+    return;
+  }
   QImage image(_canvas->size(), QImage::Format_RGB32);
   QPainter painter(&image);
   _canvas->render(&painter);
