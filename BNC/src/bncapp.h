@@ -63,6 +63,7 @@ class bncApp : public QApplication {
     const QString& userName() {return _userName;}
     QWidget* mainWindow() const {return _mainWindow;};
     void setMainWindow(QWidget* mainWindow){_mainWindow = mainWindow;}
+    bool GUIenabled() const {return _GUIenabled;}
   protected:
     virtual bool event(QEvent* ev);
 
@@ -136,6 +137,7 @@ class bncApp : public QApplication {
     bncComb*            _bncComb;
     e_mode              _mode;
     QWidget*            _mainWindow;
+    bool                _GUIenabled;
  public:
     bncPPPclient*       _bncPPPclient;
     QMap<int, bncTableItem*> _uploadTableItems;

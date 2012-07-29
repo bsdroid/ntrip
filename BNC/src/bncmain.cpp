@@ -105,12 +105,12 @@ int main(int argc, char *argv[]) {
 #endif
 
 #ifdef Q_WS_X11
-  bool useGUI = getenv("DISPLAY") != 0;
+  bool GUIenabled = getenv("DISPLAY") != 0;
 #else
-  bool useGUI = true;
+  bool GUIenabled = true;
 #endif
  
-  bncApp app(argc, argv, useGUI);
+  bncApp app(argc, argv, GUIenabled);
 
   app.setApplicationName("BNC");
   app.setOrganizationName("BKG");
