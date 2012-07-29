@@ -67,8 +67,8 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
 
   _currEpo = 0;
 
-  connect(this, SIGNAL(displayGraph(QVector<t_polarPoint*>*, QVector<t_polarPoint*>*)), 
-          this, SLOT(slotDisplayGraph(QVector<t_polarPoint*>*, QVector<t_polarPoint*>*)));
+  connect(this, SIGNAL(displayGraph(const QString&, QVector<t_polarPoint*>*, QVector<t_polarPoint*>*)), 
+          this, SLOT(slotDisplayGraph(const QString&, QVector<t_polarPoint*>*, QVector<t_polarPoint*>*)));
 }
 
 // Destructor
@@ -86,7 +86,8 @@ t_reqcAnalyze::~t_reqcAnalyze() {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::slotDisplayGraph(QVector<t_polarPoint*>* dataMP1, 
+void t_reqcAnalyze::slotDisplayGraph(const QString& fileName, 
+                                     QVector<t_polarPoint*>* dataMP1, 
                                      QVector<t_polarPoint*>* dataMP2) {
 
   bncApp* app = dynamic_cast<bncApp*>(qApp);
@@ -127,7 +128,7 @@ void t_reqcAnalyze::slotDisplayGraph(QVector<t_polarPoint*>* dataMP1,
     plots << plotMP1;
     plots << plotMP2;
 
-    t_graphWin* graphWin = new t_graphWin(0, plots, scaleInterval);
+    t_graphWin* graphWin = new t_graphWin(0, fileName, plots, scaleInterval);
 
     graphWin->show();
 
@@ -226,7 +227,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
     analyzeMultipath(prn, satStat, xyz, obsFile->interval(), dataMP1, dataMP2);
   }
 
-  emit displayGraph(dataMP1, dataMP2);
+  emit displayGraph(obsFile->fileName(), dataMP1, dataMP2);
 
   _log->flush();
 }
