@@ -1050,6 +1050,11 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _reqcOutLogLineEdit->setMinimumWidth(15*ww);
   _reqcOutLogLineEdit->setMaximumWidth(15*ww);
 
+  _reqcPlotDirLineEdit = new QLineEdit(settings.value("reqcPlotDir").toString());
+  _reqcPlotDirLineEdit->setWhatsThis(tr("Specify the directory name for plots."));
+  _reqcPlotDirLineEdit->setMinimumWidth(15*ww);
+  _reqcPlotDirLineEdit->setMaximumWidth(15*ww);
+
   ir = 0;
   reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 20);
   ++ir;
@@ -1072,6 +1077,9 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   ++ir;
   reqcLayout->addWidget(_reqcOutLogLineEdit,                     ir, 1, Qt::AlignRight);
   reqcLayout->addWidget(new QLabel("Log"),                       ir, 2, Qt::AlignLeft);
+  ++ir;
+  reqcLayout->addWidget(new QLabel("Directory for Plots"),       ir, 0, Qt::AlignLeft);
+  reqcLayout->addWidget(_reqcPlotDirLineEdit,                    ir, 1, Qt::AlignRight);
   ++ir;
   reqcLayout->addWidget(new QLabel(""), ir, 1);
   reqcLayout->setRowStretch(ir, 999);
@@ -1725,6 +1733,7 @@ void bncWindow::saveOptions() {
   settings.setValue("reqcOutObsFile", _reqcOutObsLineEdit->text());
   settings.setValue("reqcOutNavFile", _reqcOutNavLineEdit->text());
   settings.setValue("reqcOutLogFile", _reqcOutLogLineEdit->text());
+  settings.setValue("reqcPlotDir",    _reqcPlotDirLineEdit->text());
 // Combine Corrections
   if (!combineStreams.isEmpty()) {
     settings.setValue("combineStreams", combineStreams);
@@ -2327,6 +2336,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable &&  enable10, _reqcOutObsLineEdit);
     enableWidget(enable &&  enable10, _reqcOutNavLineEdit);
     enableWidget(enable && !enable10, _reqcOutLogLineEdit);
+    enableWidget(enable && !enable10, _reqcPlotDirLineEdit);
   }
 
   enableStartStop();
