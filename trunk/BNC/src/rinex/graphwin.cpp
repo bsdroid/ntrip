@@ -54,7 +54,7 @@ t_graphWin::t_graphWin(QWidget* parent, const QString& fileName,
 
   this->setAttribute(Qt::WA_DeleteOnClose);
 
-  setWindowTitle("Multipath Analyses: " + _fileName);
+  setWindowTitle(_fileName);
 
   int ww = QFontMetrics(font()).width('w');
   setMinimumSize(plots.size()*40*ww, 40*ww);
@@ -158,6 +158,8 @@ void t_graphWin::savePNG(const QString& dirName) {
   QPainter painter(&image);
   _canvas->render(&painter);
   QDir dir(dirName);
-  QString fileName = dir.path() + QDir::separator() + _fileName + ".png";
+  QFileInfo fileInfo(_fileName);
+  QString fileName = dir.path() + QDir::separator()
+                   + fileInfo.completeBaseName() + ".png";
   image.save(fileName,"PNG");
 }
