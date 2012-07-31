@@ -154,6 +154,10 @@ The main window of BNC shows a 'Top menu bar' section, a 'Settings' sections wit
 <p><u>Figure 5:</u> Sections on BNC's main window.</p>
 
 <p>
+On all platforms running BNC requires graphics support even when using the program offline. Windows and Mac systems always support graphics. When using BNC in batch mode on Linux systems, you need to make sure that at least a virtual X-Server like 'Xvfb' is installed and the 'DISPLAY' variable is defined.
+</p>
+
+<p>
 The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various configuration tabs to select a combination of input, processing and output options before you start the program ('Start'). Most configuration tabs are dedicated to a certain functionality of BNC. If the first option field on such a configuration tab is empty, the affected functionality is - apart from a few exceptions -  deactivated.</p>
 
 Records of BNC's activities are shown in the 'Log' tab. The bandwidth consumption per stream, the latency of incoming observations and a PPP time series for coordinates are shown in the 'Throughput', 'Latency' and 'PPP Plot' tabs of the main window.
@@ -651,12 +655,12 @@ specify full path to input RINEX Navigation file(s).
 <p>
 If 'Edit/Concatenate' is selected, specifying the a path to output RINEX Observation file(s) and specifying a full path to output RINEX Navigation file(s) is mandatory.</p> 
 
+<p><img src="IMG/screenshot25.png"/></p>
+<p><u>Figure 8:</u> Example for RINEX file editing with BNC in Post Processing mode.</p>
+
 <p>
 If 'Analyze' is selected, specifying logfile(s) to output analysis results is mandatory.<br> 
 </p> 
-
-<p><img src="IMG/screenshot25.png"/></p>
-<p><u>Figure 8:</u> Example for RINEX file editing with BNC in Post Processing mode.</p>
 
 <p><img src="IMG/screenshot29.png"/></p>
 <p><u>Figure 9:</u> Example for RINEX quality check output with BNC in Post Processing mode. A multi-path analysis is presented in terms of a sky plot.</p>
@@ -2004,7 +2008,7 @@ In case the 'Combine Corrections' table contains only one Broadcast Corrections 
 </p>
 
 <p>
-Note that BNC outputs a complete list of 'Epoch Header Records' even if no 'Position and Clock Records' are available for certain epochs e.g. because of stream outages. Note further that the 'Number of Epochs' in the first SP3 header record may not be correct because that number is not available when the file is created.
+Note that BNC outputs a complete list of SP3 'Epoch Header Records' even if no 'Position and Clock Records' are available for certain epochs because of stream outages. Note further that the 'Number of Epochs' in the first SP3 header record may not be correct because that number is not available when the file is created. Depending on your processing software (e.g. Bernese GNSS Software, BSW) it could therefore be necessary to correct an incorrect 'Number of Epochs' in the file before you use in Post Processing. 
 </p>
 
 <p><a name="uprinex"><h4>3.14.6 RNX File - optional</h4></p>
@@ -2330,6 +2334,9 @@ Apart from its regular windows mode, BNC can be started on all systems as a batc
 Example:<br><br>
 bnc.exe -nw
 </p>
+<p>
+BNC requires graphics support even when started with the '-nw' option. Windows and Mac systems always support graphics. On Linux systems you may need to make sure that at least a virtual X-Server like 'Xvfb' is installed and the 'DISPLAY' variable is defined.
+</p>
 
 <p><a name="post"><h4>3.19.2 File Mode - optional</h4></p>
 <p>
@@ -2505,12 +2512,12 @@ Once BNC has been started, many of its configuration options cannot be changed a
 
 <tr>
 <td>May 2012 &nbsp;</td><td>Version 2.6 &nbsp;</td>
-<td>[ADD] Version 2.6 published</td>
+<td>[Add] Version 2.6 published</td>
 </tr>
 
 <tr>
-<td>Jul 2012 &nbsp;</td><td>Version 2.7 &nbsp;</td>
-<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting COMPASS and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added  <br> [Add] RINEX v2 and v3 quality check through multi-path analysis and sky plot</td>
+<td>Aug 2012 &nbsp;</td><td>Version 2.7 &nbsp;</td>
+<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting COMPASS and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX v2 and v3 quality check through multi-path analysis and sky plot<br> [Bug] Short periodic outages in PPP time series when operated when 'Sync Corr' set to zero<br> [Add] Version 2.7 published</td>
 </tr>
 
 </table>
