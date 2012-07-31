@@ -1078,7 +1078,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   reqcLayout->addWidget(_reqcOutLogLineEdit,                     ir, 1, Qt::AlignRight);
   reqcLayout->addWidget(new QLabel("Log"),                       ir, 2, Qt::AlignLeft);
   ++ir;
-  reqcLayout->addWidget(new QLabel("Directory for Plots"),       ir, 0, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("Directory for plots"),       ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcPlotDirLineEdit,                    ir, 1, Qt::AlignRight);
   ++ir;
   reqcLayout->addWidget(new QLabel(""), ir, 1);
