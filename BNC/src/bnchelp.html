@@ -326,7 +326,7 @@ This chapter describes how to set the BNC program options. It explains the top m
 
 <p><a name="topmenu"><h4>3.1. Top Menu Bar</h4></p>
 <p>
-The top menu bar allows to select a font for the BNC windows, save configured options, or quit the program execution. It also provides access to a program documentation.
+The top menu bar allows selecting a font for the BNC windows, save configured options, or quit the program execution. It also provides access to program documentation.
 </p>
 
 <p><a name="file"><h4>3.1.1 File</h4></p>
@@ -489,7 +489,7 @@ Select the RINEX Observation sampling interval in seconds. A value of zero '0' t
 Whenever BNC starts generating RINEX Observation files (and then once every day at midnight), it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. A HTTP link to a directory containing these skeleton files may be available through data field number 7 of the affected NET record in the source-table. See <u>http://www.epncb.oma.be:80/stations/log/skl/brus.skl</u> for an example of a public RINEX Version 2 header skeleton file for the Brussels EPN station. 
 </p>
 <p>
-However, sometimes public RINEX header skeleton files are not available, its contents is not up to date, or you need to put additional/optional records in the RINEX header. For that BNC allows using personal skeleton files that contain the header records you would like to include. You can derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the RINEX Observations 'Directory' with a 'Skeleton extension' suffix is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream.
+However, sometimes public RINEX header skeleton files are not available, thair contents is not up to date, or you need to put additional/optional records in the RINEX header. For that BNC allows using personal skeleton files that contain the header records you would like to include. You can derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the RINEX Observations 'Directory' with a 'Skeleton extension' suffix is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream.
 </p>
 <p>
 Examples for personal skeleton file name convention: RINEX Observation files for mountpoints WETTZELL, FRANKFURT and FRANCE (same 4Char Station ID), BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u> (same 4Char Station ID, identical mountpoint stings) would accept personal skeleton files named</p>
@@ -554,7 +554,7 @@ SITELOG dund_20070806.log                                   COMMENT
 
 <p><a name="rnxscript"><h4>3.4.6 Script - optional</h4></p>
 <p>
-Whenever a RINEX Observation file is saved, you might want to compress copy or upload it immediately via FTP. BNC allows you to execute a script/batch file to carry out these operations. To do that specify the full path of the script/batch file here. BNC will pass the RINEX Observation file path to the script as a command line parameter (%1 on Windows systems, $1 on Unix/Linux/Mac systems).
+Whenever a RINEX Observation file is saved, you might want to compress copy or upload it immediately via FTP. BNC allows you to execute a script/batch file to carry out these operations. To do that, specify the full path of the script/batch file here. BNC will pass the RINEX Observation file path to the script as a command line parameter (%1 on Windows systems, $1 on Unix/Linux/Mac systems).
 </p> 
 <p> 
 The triggering event for calling the script or batch file is the end of a RINEX Observation  file 'Interval'. If that is overridden by a stream outage, the triggering event is the stream reconnection.
@@ -578,7 +578,7 @@ Broadcast Ephemeris can be saved as RINEX Navigation files when received via RTC
 </ul> 
 
 <p>
-Note that streams dedicated to carry Broadacst Ephemeris messages in RTCM Version 3 format in high repetition rates are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>.
+Note that streams dedicated to carry Broadcast Ephemeris messages in RTCM Version 3 format in high repetition rates are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>.
 </p>
 
 <p><a name="ephdir"><h4>3.5.1 Directory - optional</h4></p>
@@ -1151,7 +1151,7 @@ This option concerns only 'Virtual Reference Stations' (VRS). Its setting is ign
 At any time an incoming stream might become unavailable or corrupted. In such cases, it is important that the BNC operator and/or the stream providers become aware of the situation so that necessary measures can be taken to restore the stream. Furthermore, continuous attempts to decode a corrupted stream can generate unnecessary workload for BNC. Outages and corruptions are handled by BNC as follows:
 </p>
 <p>
-<u>Stream outages:</u> BNC considers a connection to be broken when there are no incoming data detected for more than 20 seconds. When this occurs, BNC will attempt to reconnect at a decreasing rate. It will first try to reconnect with 1 second delay, and again in 2 seconds if the previous attempt failed. If the attempt is still unsuccessful, it will try to reconnect within 4 seconds after the previous attempt and so on. The wait time doubles each time with a maximum wait time of 256 seconds.
+<u>Stream outages:</u> BNC considers a connection to be broken when there are no incoming data detected for more than 20 seconds. When this occurs, BNC will attempt to reconnect at a decreasing rate. It will first try to reconnect with 1 second delay and again in 2 seconds if the previous attempt failed. If the attempt is still unsuccessful, it will try to reconnect within 4 seconds after the previous attempt and so on. The wait time doubles each time with a maximum wait time of 256 seconds.
 </p>
 <p>
 <u>Stream corruption:</u> Not all bits chunk transfers to BNC's internal decoders return valid observations. Sometimes several chunks might be needed before the next observation can be properly decoded. BNC buffers all the outputs (both valid and invalid) from the decoder for a short time span (size derived from the expected 'Observation rate') and then determines whether a stream is valid or corrupted.
@@ -1210,7 +1210,7 @@ Regards, BNC
 </pre>
 </p> 
 <p> 
-Note the sleep command in this script which causes the system to wait for a random period of up to 60 seconds before sending the email. This should avoids overloading your mail server in case of a simultaneous failure of many streams.
+Note the sleep command in this script which causes the system to wait for a random period of up to 60 seconds before sending the email. This should avoid overloading your mail server in case of a simultaneous failure of many streams.
 </p> 
 
 <p><a name="misc"><h4>3.11. Miscellaneous</h4></p>
@@ -1477,7 +1477,7 @@ NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World
 
 <p><a name="pppplot"><h4>3.12.4.3 PPP Plot - optional</h4></p>
 <p>
-PPP time series of North (red), East(green) and Up (blue) displacements will be plotted in the 'PPP Plot' tab when this option is ticked. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated XYZ coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.
+PPP time series of North (red), East (green) and Up (blue) displacements will be plotted in the 'PPP Plot' tab when this option is ticked. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated XYZ coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.
 </p>
 <p>
 Note that a PPP time series makes only sense for a stationary operated receiver.
@@ -1565,7 +1565,7 @@ Default is an empty option field, meaning that you want BNC to process observati
 
 <p><a name="pppaverage"><h4>3.12.7.6 Averaging - optional if XYZ is set</h4></p>
 <p>
-Enter the length of a sliding time window in minutes. BNC will continuously output moving average values and their RMS as computed from those individual values obtained most recently throughout this period. RMS values presented for XYZ coordinates and tropospheric zenit path delays are bias reduced while RMS values for North/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string &quot;AVE-XYZ&quot; in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string &quot;AVE-NEU&quot; and averaged values for the tropospheric delays and their RMS are marked with string &quot;AVE-TRP&quot;. Example:
+Enter the length of a sliding time window in minutes. BNC will continuously output moving average values and their RMS as computed from those individual values obtained most recently throughout this period. RMS values presented for XYZ coordinates and tropospheric zenith path delays are bias reduced while RMS values for North/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string &quot;AVE-XYZ&quot; in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string &quot;AVE-NEU&quot; and averaged values for the tropospheric delays and their RMS are marked with string &quot;AVE-TRP&quot;. Example:
 </p>
 <pre>
 10-09-08 09:13:05 FFMJ1  AVE-XYZ 09:13:04.0   4053455.948 +-  0.284     617730.422 +-  0.504    4869397.692 +-  0.089
@@ -1697,7 +1697,7 @@ Step 5: If that is less than a threshold, the conclusion is that we don't have a
 Step 6: If that is greater than a threshold, then corrections of the affiliated AC are ignored for the affected epoch and the outlier detection restarts with step 1.
 </p>
 <p>
-Note that BNC can produce an internal PPP solution from combined Broadcast Corrections. For that you have to  specify the keyword 'INTERNAL' as 'Corrections Mounpoint' in the PPP (1) panel.
+Note that BNC can produce an internal PPP solution from combined Broadcast Corrections. For that you have to  specify the keyword 'INTERNAL' as 'Corrections Mountpoint' in the PPP (1) panel.
 </p>
 <p>
 The part of BNC which enables the combination of Broadcast Corrections is not intended for publication under GNU General Public License (GPL). However, pre-compiled BNC binaries which support the 'Combine Corrections' option are made available.
@@ -2095,7 +2095,7 @@ Select the Broadcast Ephemeris repetition interval in seconds. Defaut is '5' mea
 
 <p><a name="streams"><h4>3.16. Streams</h4></p>
 <p>
-Each stream on an NTRIP Broadcaster (and consequently on BNC) is defined using a unique source ID called mountpoint. An NTRIP Client like BNC access the desired stream by referring to its mountpoint. Information about streams and their mountpoints is available through the source-table maintained by the NTRIP Broadcaster. Note that mountpoints could show up in BNC more than once when retrieving streams from several NTRIP Broadcasters.
+Each stream on an NTRIP Broadcaster (and consequently on BNC) is defined using a unique source ID called mountpoint. An NTRIP Client like BNC accesses the desired stream by referring to its mountpoint. Information about streams and their mountpoints is available through the source-table maintained by the NTRIP Broadcaster. Note that mountpoints could show up in BNC more than once when retrieving streams from several NTRIP Broadcasters.
 </p>
 
 <p>
@@ -2120,7 +2120,7 @@ Streams selected for retrieval are listed under the 'Streams' canvas on BNC's ma
 BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x' and 'RTNET'.
 </li>
 <li>
-In case you need to log the raw data as is, BNC allows users to by-pass its decoders and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'. The generated file names are created from the characters of the streams mountpoints plus two-digit numbers each for year, month, and day. Example: Setting the 'decoder' string for mountpoint WTZZ0 to 'ZERO' and running BNC on March 29, 2007 would save the raw data in a file named WTZZ0_070329.
+In case you need to log the raw data as is, BNC allows users to by-pass its decoders and directly save the input in daily log files. To do this, specify the decoder string as 'ZERO'. The generated file names are created from the characters of the streams mountpoints plus two-digit numbers each for year, month, and day. Example: Setting the 'decoder' string for mountpoint WTZZ0 to 'ZERO' and running BNC on March 29, 2007 would save the raw data in a file named WTZZ0_070329.
 </li>
 <li>
 BNC can also retrieve streams from virtual reference stations (VRS). To initiate these streams, an approximate rover position needs to be sent in NMEA format to the NTRIP Broadcaster. In return, a user-specific data stream is generated, typically by Network-RTK software. VRS streams are indicated by a 'yes' in the source-table as well as in the 'nmea' column on the 'Streams' canvas in BNC's main window. They are customized exactly to the latitude and longitude transmitted to the NTRIP Broadcaster via NMEA-GGA messages.
@@ -2154,7 +2154,7 @@ Records of BNC's activities are shown in the 'Log' tab. They can be saved into a
 
 <p><a name="throughput"><h4>3.17.2 Throughput</h4></p>
 <p>
-The bandwidth consumption per stream is shown in the 'Throughput' tab in bits per second (bps) or kilo bits per second (kbps). The following figure shows an example for the bandwidth comsumption of incoming streams.
+The bandwidth consumption per stream is shown in the 'Throughput' tab in bits per second (bps) or kilo bits per second (kbps). The following figure shows an example for the bandwidth consumption of incoming streams.
 </p>
 
 <p><img src="IMG/screenshot08.png"/></p>
@@ -2197,7 +2197,7 @@ Enter the NTRIP Broadcaster host IP and port number. Note that EUREF and IGS ope
 
 <p><a name="streamtable"><h4>3.18.1.2 Casters Table - optional</h4></p>
 <p>
-It may be that your are not sure about your NTRIP Broadcasters host and port number or you are interested in other broadcaster installations operated elsewhere. Hit 'Show' for a table of known broadcasters maintained at <u>www.rtcm-ntrip.org/home</u>. A window opens which allows to select a broadcaster for stream retrieval, see figure below.
+It may be that you are not sure about your NTRIP Broadcasters host and port number or you are interested in other broadcaster installations operated elsewhere. Hit 'Show' for a table of known broadcasters maintained at <u>www.rtcm-ntrip.org/home</u>. A window opens which allows selecting a broadcaster for stream retrieval, see figure below.
 </p> 
 </p>
 <p><img src="IMG/screenshot04.png"/></p>
@@ -2473,7 +2473,7 @@ Once BNC has been started, many of its configuration options cannot be changed a
 
 <tr>
 <td>Dec 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td>
-<td>[Mod] Fill blanc columns in RINEXv3 with 0.000<br> [Add] RTCMv3 decoder for clock and orbit corrections<br>[Add] Check RTCMv3 streams for incoming message types<br> [Add] Decode RTCMv2 message types 3, 20, 21, and 22<br> [Add] Loss of lock and lock time indicator<br> [Bug] Rounding error in RTCMv3 decoder concerning GLONASS height<br> [Mod] Accept GLONASS in RTCMv3 when transmitted first<br> [Add] Leap second 1 January 2009<br> [Add] Offline mode, read data from file<br> [Add] Output antenna descriptor, coordinates and eccentricities from RTCMv3<br> [Add] Reconfiguration on-the-fly<br> [Mod] Binary output of synchronized observations<br> [Add] Binary output of unsynchronized observations<br> [Bug] Fixed problem with joined RTCMv3 blocks</td>
+<td>[Mod] Fill blank columns in RINEXv3 with 0.000<br> [Add] RTCMv3 decoder for clock and orbit corrections<br>[Add] Check RTCMv3 streams for incoming message types<br> [Add] Decode RTCMv2 message types 3, 20, 21, and 22<br> [Add] Loss of lock and lock time indicator<br> [Bug] Rounding error in RTCMv3 decoder concerning GLONASS height<br> [Mod] Accept GLONASS in RTCMv3 when transmitted first<br> [Add] Leap second 1 January 2009<br> [Add] Offline mode, read data from file<br> [Add] Output antenna descriptor, coordinates and eccentricities from RTCMv3<br> [Add] Reconfiguration on-the-fly<br> [Mod] Binary output of synchronized observations<br> [Add] Binary output of unsynchronized observations<br> [Bug] Fixed problem with joined RTCMv3 blocks</td>
 </tr>
 
 <tr>
