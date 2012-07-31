@@ -204,7 +204,8 @@ This chapter describes how to set the BNC program options. It explains the top m
 &nbsp; &nbsp; &nbsp; 3.6.2 <a href=#reqcedit>Set Edit Options</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.3 <a href=#reqcinput>Input Files</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.4 <a href=#reqcoutput>Output Files</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.5 <a href=#reqccommand>Command Line, No Window</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.5 <a href=#reqcplots>Directory for Plots</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.6 <a href=#reqccommand>Command Line, No Window</a><br>
 3.7. <a href=#correct>Broadcast Corrections</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.1. <a href=#corrdir>Directory, ASCII</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.2. <a href=#corrint>Interval</a><br>
@@ -665,7 +666,11 @@ If 'Analyze' is selected, specifying logfile(s) to output analysis results is ma
 <p><img src="IMG/screenshot29.png"/></p>
 <p><u>Figure 9:</u> Example for RINEX quality check output with BNC in Post Processing mode. A multi-path analysis is presented in terms of a sky plot.</p>
 
-<p><a name="reqccommand"><h4>3.6.5 Command Line, No Window - optional</h4></p>
+<p><a name="reqcplots"><h4>3.6.5 Directory for Plots - optional if 'Action' is set</h4></p>
+<p>
+If 'Analyze' is selected, specifying the path to a directory where plot files will be saved is optional. File names will be composed from the RINEX input file name(s) plus suffix 'PNG' to indicate the plot file format in use. </p> 
+
+<p><a name="reqccommand"><h4>3.6.6 Command Line, No Window - optional</h4></p>
 <p>
 BNC applies options from the configuration file but allows updating every one of them on the command line while the contents of the configuration file remains unchanged, see section on 'Command Line Options'. The syntax for that looks as follows
 </p>
