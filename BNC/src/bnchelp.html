@@ -694,6 +694,16 @@ or:<br>
 --key reqcObsFile tlse\*
 </p>
 
+<p>The following Linux command line produces RINEX QC plots offline in 'no window' mode and saves them in directory '/home/user'. Introducing a dummy configuration file /dev/null makes sure that not configuration options previously saved on disc are used.</p>
+<p>
+/home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key reqcPlotDir /home/user --nw
+</p>
+<p></p>
+<p>The following Linux command line produces the same RINEX QC plots in interactive autoStart mode:</p>
+<p>
+/home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key --key startTab 4 --key autoStart 2
+</p>
+
 <p>
 The following is a list of available keynames for '<u>R</u>INEX <u>E</u>diting & <u>QC</u>' (short: REQC, pronounced 'rek') options and their meaning, cf. section 'Configuration Examples':
 </p>
@@ -2907,6 +2917,7 @@ The following table's left column is a list options as contained in BNC's config
 <tr><td>reqcNavFile=</td><td>Reqc: Navigation file</td></tr>
 <tr><td>reqcOutObsFile=</td><td>Reqc: Output observations file</td></tr>
 <tr><td>reqcOutNavFile=</td><td>Reqc: Output navigation file</td></tr>
+<tr><td>reqcPlotDir</td><td>Reqc: QC plots directory</td></tr>
 <tr><td>reqcOutLogFile=</td><td>Reqc: Output logfile</td></tr>
 <tr><td>reqcRnxVersion=</td><td>Reqc: RINEX version</td></tr>
 <tr><td>reqcSampling=</td><td>Reqc: RINEX sampling</td></tr>
