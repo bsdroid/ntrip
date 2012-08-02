@@ -154,7 +154,7 @@ The main window of BNC shows a 'Top menu bar' section, a 'Settings' sections wit
 <p><u>Figure 5:</u> Sections on BNC's main window.</p>
 
 <p>
-It is obvious that running BNC in interactive mode requires graphics support. However, graphics support is also required when producing plots in batch mode. Windows and Mac systems always support graphics. When using BNC in batch mode on Linux systems for producing plots, you need to make sure that at least a virtual X-Server like 'Xvfb' is installed and the 'DISPLAY' variable defined.
+Running BNC in interactive mode requires graphics support. This is also required in batch mode when producing plots. Windows and Mac systems always support graphics. However, when using BNC in batch mode on Linux systems for producing plots, you need to make sure that at least a virtual X-Server like 'Xvfb' is installed and the 'DISPLAY' variable defined.
 </p>
 
 <p>
@@ -664,7 +664,7 @@ If 'Analyze' is selected, specifying a 'Log' file to output analysis results is 
 </p> 
 
 <p><img src="IMG/screenshot29.png"/></p>
-<p><u>Figure 9:</u> Example for RINEX quality check output with BNC in Post Processing mode. A multi-path analysis is presented in terms of a sky plot.</p>
+<p><u>Figure 9:</u> Example for RINEX quality check output with BNC in Post Processing mode. A multipath analysis is presented in terms of a sky plot.</p>
 
 <p><a name="reqcplots"><h4>3.6.5 Directory for Plots - optional if 'Action' is set</h4></p>
 <p>
@@ -694,12 +694,12 @@ or:<br>
 --key reqcObsFile tlse\*
 </p>
 
-<p>The following Linux command line produces RINEX QC plots offline in 'no window' mode and saves them in directory '/home/user'. Introducing a dummy configuration file /dev/null makes sure that not configuration options previously saved on disc are used.</p>
+<p>The following Linux command line produces RINEX QC multipath plots offline in 'no window' mode and saves them in directory '/home/user'. Introducing a dummy configuration file /dev/null makes sure that no configuration options previously saved on disc are used:</p>
 <p>
 /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key reqcPlotDir /home/user --nw
 </p>
 <p></p>
-<p>The following Linux command line produces the same RINEX QC plots in interactive autoStart mode:</p>
+<p>The following Linux command line produces the same RINEX QC multipath plots in interactive autoStart mode:</p>
 <p>
 /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key --key startTab 4 --key autoStart 2
 </p>
@@ -715,7 +715,7 @@ The following is a list of available keynames for '<u>R</u>INEX <u>E</u>diting &
 <tr><td>reqcObsFile</td><td>RINEX Observation input file(s)</td></tr>
 <tr><td>reqcNavFile</td><td>RINEX Navigation input files(s)</td></tr>
 <tr><td>reqcOutObsFile</td><td>RINEX Observation output file</td></tr>
-<tr><td>reqcPlotDir</td><td>RINEX QC plots directory</td></tr>
+<tr><td>reqcPlotDir</td><td>RINEX QC multipath plot directory</td></tr>
 <tr><td>reqcOutNavFile</td><td>RINEX Navigation output file</td></tr>
 <tr><td>reqcOutLogFile</td><td>Logfile</td></tr>
 <tr><td>reqcRnxVersion</td><td>RINEX version of emerging new file</td></tr>
@@ -2351,8 +2351,25 @@ Example:<br><br>
 bnc.exe -nw
 </p>
 <p>
-It is obvious that BNC requires graphics support when started in interactive mode. However, it also requires graphics support when producing plots in batch mode (option -nw). Windows and Mac systems always support graphics. For producing plots in batch mode on Linux systems you need to make sure that at least a virtual X-Server like 'Xvfb' is installed and the 'DISPLAY' variable is defined.
+It is obvious that BNC requires graphics support when started in interactive mode. However, note that it also requires graphics support when producing plots in batch mode (option -nw). Windows and Mac systems always support graphics. For producing plots in batch mode on Linux systems you must make sure that at least a virtual X-Server such as 'Xvfb' is installed and the 'DISPLAY' variable properly defined. The following is a shell script executing BNC in batch mode which could be used via 'crontab':
 </p>
+<pre>
+#!/bin/bash
+
+# Save string localhost
+echo "localhost" > /home/user/hosts
+
+# Start virtual X-Server, save process ID
+/usr/bin/Xvfb :29 -auth /home/user/hosts -screen 0 1280x1024x8 &
+psID=`echo $!`
+
+# Define display, run BNC application
+export DISPLAY=localhost:29
+/home/user/BNC/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile ons12090.12o --key reqcNavFile brdc2090.12p --key reqcOutLogFile multi.txt --key reqcPlotDir /home/user --nw
+
+# BNC done, kill X-server process
+kill $psID
+</pre>
 
 <p><a name="post"><h4>3.19.2 File Mode - optional</h4></p>
 <p>
@@ -2533,7 +2550,7 @@ Once BNC has been started, many of its configuration options cannot be changed a
 
 <tr>
 <td>Aug 2012 &nbsp;</td><td>Version 2.7 &nbsp;</td>
-<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting COMPASS and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX v2 and v3 quality check through multi-path analysis and sky plot<br> [Bug] Short periodic outages in PPP time series when operated when 'Sync Corr' set to zero<br> [Add] Version 2.7 published</td>
+<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting COMPASS and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX v2 and v3 quality check through multipath analysis and sky plot<br> [Bug] Short periodic outages in PPP time series when operated when 'Sync Corr' set to zero<br> [Add] Version 2.7 published</td>
 </tr>
 
 </table>
