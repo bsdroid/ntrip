@@ -438,6 +438,10 @@ The screenshot below shows an example setup of BNC when converting streams to RI
 <p><img src="IMG/screenshot16.png"/></p>
 <p><u>Figure 6:</u> BNC translating incoming streams to 15 min RINEX Version 3 files.</p>
 
+<p>
+Converting RTCM streams to RINEX files requires a-priori information on observation types for specifying a complete RINEX header. Regarding the RINEX Version 2 file header BNC simply introduces all observation types defined in the Version 2 standard and later reports "0" for all observations which are not received. However, following this approach is not possible for RINEX Version 3 files from RTCM Version 3 MSM streams because of the huge number of observation types which might in principle show up. The intended solution for BNC is to start with RINEX Version 3 observation type records read from skeleton files (see section 'Skeleton Extension') and switch to a default selection of observation types when such skeleton file is not available.
+</p>
+
 <p><a name="rnxname"><h4>3.4.1 RINEX File Names</h4></p>
 <p>
 RINEX file names are derived by BNC from the first 4 characters of the corresponding stream's mountpoint (4Char Station ID). For example, data from mountpoints FRANKFURT and WETTZELL will have hourly RINEX Observation files named</p>
