@@ -47,11 +47,11 @@
 
 using namespace std;
 
-const QString t_rnxObsFile::t_rnxObsHeader::_emptyStr;
+const QString t_rnxObsHeader::_emptyStr;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_rnxObsFile::t_rnxObsHeader::t_rnxObsHeader() {
+t_rnxObsHeader::t_rnxObsHeader() {
   _antNEU.ReSize(3); _antNEU = 0.0;
   _antXYZ.ReSize(3); _antXYZ = 0.0;
   _antBSG.ReSize(3); _antBSG = 0.0;
@@ -66,12 +66,12 @@ t_rnxObsFile::t_rnxObsHeader::t_rnxObsHeader() {
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-t_rnxObsFile::t_rnxObsHeader::~t_rnxObsHeader() {
+t_rnxObsHeader::~t_rnxObsHeader() {
 }
 
 // Read Header
 ////////////////////////////////////////////////////////////////////////////
-t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
+t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
   int numLines = 0;
   while ( stream->status() == QTextStream::Ok && !stream->atEnd() ) {
     QString line = stream->readLine(); ++ numLines;
@@ -204,7 +204,7 @@ t_irc t_rnxObsFile::t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
 
 // Number of Observation Types (satellite-system specific)
 ////////////////////////////////////////////////////////////////////////////
-int t_rnxObsFile::t_rnxObsHeader::nTypes(char sys) const {
+int t_rnxObsHeader::nTypes(char sys) const {
   if (_version < 3.0) {
     return _obsTypesV2.size();
   }
@@ -220,7 +220,7 @@ int t_rnxObsFile::t_rnxObsHeader::nTypes(char sys) const {
 
 // Observation Type (satellite-system specific)
 ////////////////////////////////////////////////////////////////////////////
-const QString& t_rnxObsFile::t_rnxObsHeader::obsType(char sys, int index) const {
+const QString& t_rnxObsHeader::obsType(char sys, int index) const {
   if (_version < 3.0) {
     return _obsTypesV2.at(index);
   }

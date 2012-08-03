@@ -37,6 +37,38 @@
 
 #define MAXPRN_GPS 32
 
+class t_rnxObsHeader {
+ public:
+  t_rnxObsHeader();
+  ~t_rnxObsHeader();
+
+  t_irc           read(QTextStream* stream, int maxLines = 0);
+  int             nTypes(char sys) const;
+  const QString&  obsType(char sys, int index) const;
+
+  static const QString          _emptyStr;
+  float                         _version;
+  double                        _interval;
+  QString                       _antennaNumber;
+  QString                       _antennaName;
+  QString                       _markerName;
+  QString                       _markerNumber;
+  QString                       _observer;
+  QString                       _agency;
+  QString                       _receiverNumber;
+  QString                       _receiverType;
+  QString                       _receiverVersion;
+  ColumnVector                  _antNEU;
+  ColumnVector                  _antXYZ;
+  ColumnVector                  _antBSG;
+  ColumnVector                  _xyz;
+  QVector<QString>              _obsTypesV2;
+  QMap<char, QVector<QString> > _obsTypesV3;
+  int                           _wlFactorsL1[MAXPRN_GPS+1];
+  int                           _wlFactorsL2[MAXPRN_GPS+1];
+  bncTime                       _startTime;
+};
+
 class t_rnxObsFile {
  public:
 
@@ -98,46 +130,6 @@ class t_rnxObsFile {
     return iPrn <= MAXPRN_GPS ? _header._wlFactorsL2[iPrn] : 1;
   }
 
- protected:
-  t_rnxObsFile() {};
-  void openRead(const QString& fileName);
-  void openWrite(const QString& fileName);
-  void close();
-
- private: 
-  class t_rnxObsHeader {
-   public:
-    t_rnxObsHeader();
-    ~t_rnxObsHeader();
-
-    t_irc           read(QTextStream* stream, int maxLines = 0);
-    int             nTypes(char sys) const;
-    const QString&  obsType(char sys, int index) const;
- 
-    static const QString          _emptyStr;
-    float                         _version;
-    double                        _interval;
-    QString                       _antennaNumber;
-    QString                       _antennaName;
-    QString                       _markerName;
-    QString                       _markerNumber;
-    QString                       _observer;
-    QString                       _agency;
-    QString                       _receiverNumber;
-    QString                       _receiverType;
-    QString                       _receiverVersion;
-    ColumnVector                  _antNEU;
-    ColumnVector                  _antXYZ;
-    ColumnVector                  _antBSG;
-    ColumnVector                  _xyz;
-    QVector<QString>              _obsTypesV2;
-    QMap<char, QVector<QString> > _obsTypesV3;
-    int                           _wlFactorsL1[MAXPRN_GPS+1];
-    int                           _wlFactorsL2[MAXPRN_GPS+1];
-    bncTime                       _startTime;
-  };
-
- public:
   const t_rnxObsHeader& header() const {return _header;}
   void setHeader(const t_rnxObsHeader& header, double version);
   void checkNewHeader(const t_rnxObsHeader& header);
@@ -148,6 +140,10 @@ class t_rnxObsFile {
  private:
   enum e_trafo {trafoNone, trafo2to3, trafo3to2};
 
+  t_rnxObsFile() {};
+  void openRead(const QString& fileName);
+  void openWrite(const QString& fileName);
+  void close();
   void writeEpochV2(const t_rnxEpo* epo);
   void writeEpochV3(const t_rnxEpo* epo);
   t_rnxEpo* nextEpochV2();
