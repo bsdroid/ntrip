@@ -503,25 +503,9 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
     _slip_cnt_L2[prn]   = obs.slip_cnt_L2;
     _slip_cnt_L5[prn]   = obs.slip_cnt_L5;
 
-    // RINEX Version 3
-    // ---------------
-    if (_header._version >= 3.0) {
-      _out << rinexSatLine(obs, lli1, lli2, lli5); 
-      _out << endl;
-    }
-
-    // RINEX Version 2
-    // ---------------
-    else {
-      _out << setw(14) << setprecision(3) << obs.measdata("C1", _header._version)  << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.measdata("P1", _header._version)  << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.measdata("L1", _header._version)  << lli1 << ' '
-           << setw(14) << setprecision(3) << obs.measdata("S1", _header._version)  << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.measdata("C2", _header._version)  << ' '  << ' ' << endl
-           << setw(14) << setprecision(3) << obs.measdata("P2", _header._version)  << ' '  << ' ' 
-           << setw(14) << setprecision(3) << obs.measdata("L2", _header._version)  << lli2 << ' '
-           << setw(14) << setprecision(3) << obs.measdata("S2", _header._version)  << endl;
-    }
+    // Write the data
+    // --------------
+    _out << rinexSatLine(obs, lli1, lli2, lli5) << endl;
   }
 
   _out.flush();
@@ -553,10 +537,13 @@ string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2,
   ostringstream str;
   str.setf(ios::showpoint | ios::fixed);
 
-  str << obs.satSys 
-      << setw(2) << setfill('0') << obs.satNum << setfill(' ');
+  if (_header._version >= 3.0) {
+    str << obs.satSys 
+        << setw(2) << setfill('0') << obs.satNum << setfill(' ');
+  }
 
-  const QVector<QString>& types = _header._obsTypesV3[obs.satSys];
+  const QVector<QString>& types = (_header._version > 3.0) ?
+                          _header._obsTypesV3[obs.satSys] : _header._obsTypesV2;
   for (int ii = 0; ii < types.size(); ii++) {
     double value = obs.measdata(types[ii], _header._version);
     str << setw(14) << setprecision(3) << value;
