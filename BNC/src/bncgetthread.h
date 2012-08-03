@@ -130,6 +130,7 @@ class bncGetThread : public QThread {
 #ifdef PPP_DLL_INTERFACE
    t_dllInterface*            _dllInterface;
 #endif
+   QMap<char, QVector<QString> > _rnxTypes;
 };
 
 #endif

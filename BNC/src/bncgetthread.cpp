@@ -686,7 +686,7 @@ t_irc bncGetThread::tryReconnect() {
 //////////////////////////////////////////////////////////////////////////////
 void bncGetThread::scanRTCM() {
 
-  if (!decoder()) {
+  if ( !decoder() ) {
     return;
   }
 
@@ -697,21 +697,44 @@ void bncGetThread::scanRTCM() {
 
       // RTCM message types
       // ------------------
-      for (int ii = 0; ii <decoder()->_typeList.size(); ii++) {
+      for (int ii = 0; ii < decoder()->_typeList.size(); ii++) {
         QString type =  QString("%1 ").arg(decoder()->_typeList[ii]);
         emit(newMessage(_staID + ": Received message type " + type.toAscii(), true));
       }
   
+      // Check Observation Types
+      // -----------------------
+      for (int ii = 0; ii < decoder()->_obsList.size(); ii++) {
+        t_obs& obs = decoder()->_obsList[ii];
+        QVector<QString>& rnxTypes = _rnxTypes[obs.satSys];
+        bool allFound = true;
+        for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; iEntry++) {
+          if (obs._measdata[iEntry] != 0.0) {
+            if (rnxTypes.indexOf(obs.rnxStr(iEntry)) == -1) {
+              allFound = false;
+              rnxTypes << obs.rnxStr(iEntry);
+            }
+          }
+        }
+        if (!allFound) {
+          cout << "OBSTYPES: " << obs.satSys << "    ";
+          for (int iType = 0; iType < rnxTypes.size(); iType++) {
+            cout << rnxTypes[iType].toAscii().data() << " ";
+          }
+          cout << endl;
+        }
+      }
+
       // RTCMv3 antenna descriptor
       // -------------------------
-      for (int ii=0;ii<decoder()->_antType.size();ii++) {
+      for (int ii = 0; ii < decoder()->_antType.size(); ii++) {
         QString ant1 =  QString("%1 ").arg(decoder()->_antType[ii]);
         emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii(), true));
       }
 
       // RTCM Antenna Coordinates
       // ------------------------
-      for (int ii=0; ii <decoder()->_antList.size(); ii++) {
+      for (int ii=0; ii < decoder()->_antList.size(); ii++) {
         QByteArray antT;
         if      (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
           antT = "ARP";
