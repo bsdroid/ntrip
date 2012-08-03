@@ -39,21 +39,20 @@ class bncRinex {
             const QByteArray& latitude, const QByteArray& longitude,
             const QByteArray& nmea, const QByteArray& ntripVersion); 
    ~bncRinex();
+
+   int samplingRate() const {return _samplingRate;}
    void deepCopy(t_obs obs);
    void dumpEpoch(const QByteArray& format, long maxTime);
    void setReconnectFlag(bool flag){_reconnectFlag = flag;}
+
    static QString nextEpochStr(const QDateTime& datTim,
                                const QString& intStr, 
                                QDateTime* nextEpoch = 0);
-
-   int samplingRate() const {return _samplingRate;}
-
-   std::string rinexSatLine(const t_obs& obs, char lli1, char lli2, char lli5);
-
    static std::string asciiSatLine(const t_obs& obs);
-   static std::string obsToStr(double val, int width = 14, int precision = 3);
 
  private:
+   std::string rinexSatLine(const t_obs& obs, char lli1, char lli2, char lli5);
+   static std::string obsToStr(double val, int width = 14, int precision = 3);
    void resolveFileName(const QDateTime& datTim);
    void readSkeleton();
    void writeHeader(const QByteArray& format, const QDateTime& datTim, 
