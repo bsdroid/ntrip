@@ -717,11 +717,14 @@ void bncGetThread::scanRTCM() {
           }
         }
         if (!allFound) {
-          cout << "OBSTYPES: " << obs.satSys << "    ";
+          QString msg; 
+          QTextStream str(&msg);
+          str << obs.satSys << "    " << rnxTypes.size() << "  ";
           for (int iType = 0; iType < rnxTypes.size(); iType++) {
-            cout << rnxTypes[iType].toAscii().data() << " ";
+            str << rnxTypes[iType] << " ";
           }
-          cout << endl;
+          str << endl;
+          emit(newMessage(_staID + ": Observation Types: " + msg.toAscii(), true));
         }
       }
 
