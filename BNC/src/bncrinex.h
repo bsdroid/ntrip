@@ -29,6 +29,7 @@
 #include <fstream>
 
 #include "bncconst.h"
+#include "rinex/rnxobsfile.h"
 
 class t_obs;
 
@@ -65,13 +66,11 @@ class bncRinex {
                     const QDateTime& datTimNom);
    void closeFile();
    t_irc downloadSkeleton();
-   void writeObsTypes();
 
    QByteArray    _statID;
    QByteArray    _fName;
    QList<t_obs>  _obs;
    std::ofstream _out;
-   QStringList   _headerLines;
    bool          _headerWritten;
    QDateTime     _nextCloseEpoch;
    QString       _rnxScriptName;
@@ -86,8 +85,6 @@ class bncRinex {
    bool          _reconnectFlag;
    QDate         _skeletonDate;
    int           _rinexVers;
-   bool          _reloadTable;
-   bool          _reloadDone;
    double        _approxPos[3];
    int           _samplingRate;
 
@@ -96,6 +93,8 @@ class bncRinex {
    QMap<QString, int>  _slip_cnt_L5;
 
    QMap<char, QVector<QString> > _rnxTypes;
+
+   t_rnxObsHeader _header;
 };
 
 #endif
