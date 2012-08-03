@@ -92,8 +92,6 @@ class bncRinex {
    QMap<QString, int>  _slip_cnt_L2;
    QMap<QString, int>  _slip_cnt_L5;
 
-   QMap<char, QVector<QString> > _rnxTypes;
-
    t_rnxObsHeader _header;
 };
 
