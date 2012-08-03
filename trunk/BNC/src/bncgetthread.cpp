@@ -721,9 +721,8 @@ void bncGetThread::scanRTCM() {
           QTextStream str(&msg);
           str << obs.satSys << "    " << rnxTypes.size() << "  ";
           for (int iType = 0; iType < rnxTypes.size(); iType++) {
-            str << rnxTypes[iType] << " ";
+            str << " " << rnxTypes[iType];
           }
-          str << endl;
           emit(newMessage(_staID + ": Observation Types: " + msg.toAscii(), true));
         }
       }
