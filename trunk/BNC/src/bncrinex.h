@@ -40,7 +40,7 @@ class bncRinex {
             const QByteArray& nmea, const QByteArray& ntripVersion); 
    ~bncRinex();
 
-   int samplingRate() const {return _samplingRate;}
+   int  samplingRate() const {return _samplingRate;}
    void deepCopy(t_obs obs);
    void dumpEpoch(const QByteArray& format, long maxTime);
    void setReconnectFlag(bool flag){_reconnectFlag = flag;}
