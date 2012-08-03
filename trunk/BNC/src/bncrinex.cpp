@@ -475,6 +475,13 @@ void bncRinex::writeHeader(const QByteArray& format, const QDateTime& datTim,
           _out << line.toAscii().data() << endl;
         }
       }
+      else if (line.indexOf("END OF HEADER") != -1) {
+        if (!typesOfObservationsWritten) {
+          writeObsTypes();
+        }
+        _out << line.toAscii().data() << endl;
+        break;
+      }
       else {
         _out << line.toAscii().data() << endl;
       }
