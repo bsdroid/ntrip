@@ -530,7 +530,7 @@ void bncRinex::closeFile() {
   }
 }
 
-// One Line in RINEX v3
+// One Line in RINEX v2 or v3
 ////////////////////////////////////////////////////////////////////////////
 string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2, 
                               char lli5) {
