@@ -351,7 +351,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
 
 // Write RINEX Header
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::writeHeader(const QByteArray& format, const QDateTime& datTim, 
+void bncRinex::writeHeader(const QByteArray& format, 
                            const QDateTime& datTimNom) {
 
   bncSettings settings;
@@ -434,7 +434,8 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
   // Write RINEX Header
   // ------------------
   if (!_headerWritten) {
-    writeHeader(format, datTim, datTimNom);
+    _header._startTime.set(fObs.GPSWeek, fObs.GPSWeeks);
+    writeHeader(format, datTimNom);
   }
 
   double sec = double(datTim.time().second()) + fmod(fObs.GPSWeeks,1.0);
