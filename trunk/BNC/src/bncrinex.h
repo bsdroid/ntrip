@@ -48,12 +48,6 @@ class bncRinex {
 
    int samplingRate() const {return _samplingRate;}
 
-   void setApproxPos(double stax, double stay, double staz) {
-     _approxPos[0] = stax;
-     _approxPos[1] = stay;
-     _approxPos[2] = staz;
-   }
-
    std::string rinexSatLine(const t_obs& obs, char lli1, char lli2, char lli5);
 
    static std::string asciiSatLine(const t_obs& obs);
@@ -84,8 +78,6 @@ class bncRinex {
    QByteArray    _ntripVersion;
    bool          _reconnectFlag;
    QDate         _skeletonDate;
-   int           _rinexVers;
-   double        _approxPos[3];
    int           _samplingRate;
 
    QMap<QString, int>  _slip_cnt_L1;

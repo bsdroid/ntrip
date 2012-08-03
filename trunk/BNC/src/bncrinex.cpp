@@ -90,15 +90,6 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
   expandEnvVar(_userName);
   _userName = _userName.leftJustified(20, ' ', true);
 
-  if ( Qt::CheckState(settings.value("rnxV3").toInt()) == Qt::Checked) {
-    _rinexVers = 3;    
-  }
-  else {
-    _rinexVers = 2;
-  }
-
-  _approxPos[0] = _approxPos[1] = _approxPos[2] = 0.0;
-
   _samplingRate = settings.value("rnxSampl").toInt();
 
   // Initialize RINEX v3 Types
@@ -137,7 +128,7 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
 ////////////////////////////////////////////////////////////////////////////
 bncRinex::~bncRinex() {
   bncSettings settings;
-  if ((_rinexVers == 3) && ( Qt::CheckState(settings.value("rnxAppend").toInt()) != Qt::Checked) ) {
+  if ((_header._version >= 3.0) && ( Qt::CheckState(settings.value("rnxAppend").toInt()) != Qt::Checked) ) {
     _out << ">                              4  1" << endl;
     _out << "END OF FILE" << endl;
   }
@@ -235,6 +226,14 @@ void bncRinex::readSkeleton() {
       downloadSkeleton();
       _skeletonDate = currDate;
     }
+  }
+
+  bncSettings settings;
+  if ( Qt::CheckState(settings.value("rnxV3").toInt()) == Qt::Checked) {
+    _header._version = 3.01;    
+  }
+  else {
+    _header._version = 2.12;
   }
 }
 
@@ -437,7 +436,7 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
 
   // Epoch header line: RINEX Version 3
   // ----------------------------------
-  if (_rinexVers == 3) {
+  if (_header._version >= 3.0) {
     _out << datTim.toString("> yyyy MM dd hh mm ").toAscii().data()
          << setw(10) << setprecision(7) << sec
          << "  " << 0 << setw(3)  << dumpList.size() << endl;
@@ -501,7 +500,7 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
 
     // RINEX Version 3
     // ---------------
-    if (_rinexVers == 3) {
+    if (_header._version >= 3.0) {
       _out << rinexSatLine(obs, lli1, lli2, lli5); 
       _out << endl;
     }
@@ -509,14 +508,14 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
     // RINEX Version 2
     // ---------------
     else {
-      _out << setw(14) << setprecision(3) << obs.measdata("C1", _rinexVers)  << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.measdata("P1", _rinexVers)  << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.measdata("L1", _rinexVers)  << lli1 << ' '
-           << setw(14) << setprecision(3) << obs.measdata("S1", _rinexVers)  << ' '  << ' '
-           << setw(14) << setprecision(3) << obs.measdata("C2", _rinexVers)  << ' '  << ' ' << endl
-           << setw(14) << setprecision(3) << obs.measdata("P2", _rinexVers)  << ' '  << ' ' 
-           << setw(14) << setprecision(3) << obs.measdata("L2", _rinexVers)  << lli2 << ' '
-           << setw(14) << setprecision(3) << obs.measdata("S2", _rinexVers)  << endl;
+      _out << setw(14) << setprecision(3) << obs.measdata("C1", _header._version)  << ' '  << ' '
+           << setw(14) << setprecision(3) << obs.measdata("P1", _header._version)  << ' '  << ' '
+           << setw(14) << setprecision(3) << obs.measdata("L1", _header._version)  << lli1 << ' '
+           << setw(14) << setprecision(3) << obs.measdata("S1", _header._version)  << ' '  << ' '
+           << setw(14) << setprecision(3) << obs.measdata("C2", _header._version)  << ' '  << ' ' << endl
+           << setw(14) << setprecision(3) << obs.measdata("P2", _header._version)  << ' '  << ' ' 
+           << setw(14) << setprecision(3) << obs.measdata("L2", _header._version)  << lli2 << ' '
+           << setw(14) << setprecision(3) << obs.measdata("S2", _header._version)  << endl;
     }
   }
 
@@ -526,7 +525,7 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
 // Close the Old RINEX File
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::closeFile() {
-  if (_rinexVers == 3) {
+  if (_header._version == 3) {
     _out << ">                              4  1" << endl;
     _out << "END OF FILE" << endl;
   }
@@ -554,7 +553,7 @@ string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2,
 
   const QVector<QString>& types = _header._obsTypesV3[obs.satSys];
   for (int ii = 0; ii < types.size(); ii++) {
-    double value = obs.measdata(types[ii], _rinexVers);
+    double value = obs.measdata(types[ii], _header._version);
     str << setw(14) << setprecision(3) << value;
     if      (value != 0.0 && types[ii].indexOf("L1") == 0) {
       str << lli1 << ' ';
