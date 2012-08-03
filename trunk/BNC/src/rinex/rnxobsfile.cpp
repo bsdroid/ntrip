@@ -202,6 +202,130 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
   return success;
 }
 
+// Write Header
+////////////////////////////////////////////////////////////////////////////
+void t_rnxObsHeader::write(QTextStream* stream,
+                           const QMap<QString, QString>* txtMap) const {
+
+  bncApp* app = (bncApp*) qApp;
+
+  QString     runBy = app->userName();
+  QStringList comments;
+
+  if (txtMap) {
+    QMapIterator<QString, QString> it(*txtMap);
+    while (it.hasNext()) {
+      it.next();
+      if      (it.key() == "RUN BY") {
+        runBy = it.value();
+      }
+      else if (it.key() == "COMMENT") {
+        comments = it.value().split("\\n", QString::SkipEmptyParts);
+      }
+    }
+  }
+
+  *stream << QString("%1           Observation data    Mixed")
+    .arg(_version, 9, 'f', 2)
+    .leftJustified(60)
+           << "RINEX VERSION / TYPE\n";
+
+  const QString fmtDate = (_version < 3.0) ? "dd-MMM-yy hh:mm"
+                                                  : "yyyyMMdd hhmmss UTC";
+  *stream << QString("%1%2%3")
+    .arg(app->pgmName(), -20)
+    .arg(runBy.trimmed().left(20), -20)
+    .arg(QDateTime::currentDateTime().toUTC().toString(fmtDate), -20)
+    .leftJustified(60)
+           << "PGM / RUN BY / DATE\n";
+
+  QStringListIterator itCmnt(comments);
+  while (itCmnt.hasNext()) {
+    *stream << itCmnt.next().trimmed().left(60).leftJustified(60) << "COMMENT\n";
+  }
+
+  *stream << QString("%1")
+    .arg(_markerName, -60)
+    .leftJustified(60)
+           << "MARKER NAME\n";
+
+  if (!_markerNumber.isEmpty()) {
+    *stream << QString("%1")
+      .arg(_markerNumber, -20)
+      .leftJustified(60)
+             << "MARKER NUMBER\n";
+  }
+
+  *stream << QString("%1%2")
+    .arg(_observer, -20)
+    .arg(_agency,   -40)
+    .leftJustified(60)
+           << "OBSERVER / AGENCY\n";
+
+  *stream << QString("%1%2%3")
+    .arg(_receiverNumber,  -20)
+    .arg(_receiverType,    -20)
+    .arg(_receiverVersion, -20)
+    .leftJustified(60)
+           << "REC # / TYPE / VERS\n";
+
+  *stream << QString("%1%2")
+    .arg(_antennaNumber, -20)
+    .arg(_antennaName,   -20)
+    .leftJustified(60)
+           << "ANT # / TYPE\n";
+
+  *stream << QString("%1%2%3")
+    .arg(_xyz(1), 14, 'f', 4)
+    .arg(_xyz(2), 14, 'f', 4)
+    .arg(_xyz(3), 14, 'f', 4)
+    .leftJustified(60)
+           << "APPROX POSITION XYZ\n";
+
+  *stream << QString("%1%2%3")
+    .arg(_antNEU(3), 14, 'f', 4)
+    .arg(_antNEU(2), 14, 'f', 4)
+    .arg(_antNEU(1), 14, 'f', 4)
+    .leftJustified(60)
+           << "ANTENNA: DELTA H/E/N\n";
+
+  if (_version < 3.0) {
+    int defaultWlFact1 = _wlFactorsL1[1];
+    int defaultWlFact2 = _wlFactorsL2[1];  // TODO check all prns
+    *stream << QString("%1%2")
+      .arg(defaultWlFact1, 6)
+      .arg(defaultWlFact2, 6)
+      .leftJustified(60)
+             << "WAVELENGTH FACT L1/2\n";
+  }
+
+  *stream << obsTypesStrings().join("");
+
+  *stream << QString("%1")
+    .arg(_interval, 10, 'f', 3)
+    .leftJustified(60)
+           << "INTERVAL\n";
+
+  unsigned year, month, day, hour, min;
+  double sec;
+  _startTime.civil_date(year, month, day);
+  _startTime.civil_time(hour, min, sec);
+  *stream << QString("%1%2%3%4%5%6%7")
+    .arg(year, 6)
+    .arg(month, 6)
+    .arg(day, 6)
+    .arg(hour, 6)
+    .arg(min, 6)
+    .arg(sec, 13, 'f', 7)
+    .arg("GPS", 8)
+    .leftJustified(60)
+           << "TIME OF FIRST OBS\n";
+
+  *stream << QString()
+    .leftJustified(60)
+           << "END OF HEADER\n";
+}
+
 // Number of Observation Types (satellite-system specific)
 ////////////////////////////////////////////////////////////////////////////
 int t_rnxObsHeader::nTypes(char sys) const {
@@ -232,6 +356,44 @@ const QString& t_rnxObsHeader::obsType(char sys, int index) const {
       return _emptyStr;
     }
   }
+}
+
+// Write Observation Types
+////////////////////////////////////////////////////////////////////////////
+QStringList t_rnxObsHeader::obsTypesStrings() const {
+
+  QStringList strList;
+
+  if (_version < 3.0) {
+    QString hlp;
+    QTextStream(&hlp) << QString("%1").arg(_obsTypesV2.size(), 6);
+    for (int ii = 0; ii < _obsTypesV2.size(); ii++) {
+      QTextStream(&hlp) << QString("%1").arg(_obsTypesV2[ii], 6);   
+      if ((ii+1) % 9 == 0 || ii == _obsTypesV2.size()-1) {
+        strList.append(hlp.leftJustified(60) + "# / TYPES OF OBSERV\n");
+        hlp = QString().leftJustified(6);
+      }
+    }
+  }
+  else {
+    QMapIterator<char, QVector<QString> > it(_obsTypesV3);
+    while (it.hasNext()) {
+      it.next();
+      char sys                      = it.key();
+      const QVector<QString>& types = it.value();
+      QString hlp;
+      QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(types.size(), 3);
+      for (int ii = 0; ii < types.size(); ii++) {
+        QTextStream(&hlp) << QString(" %1").arg(types[ii], -3);   
+        if ((ii+1) % 13 == 0 || ii == types.size()-1) {
+          strList.append(hlp.leftJustified(60) + "SYS / # / OBS TYPES\n");
+          hlp = QString().leftJustified(6);
+        }
+      }
+    }
+  }
+
+  return strList;
 }
 
 // Constructor
@@ -642,167 +804,6 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
   }
 }
 
-// Write Header
-////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::writeHeader(const QMap<QString, QString>* txtMap) {
-
-  bncApp* app = (bncApp*) qApp;
-
-  QString     runBy = app->userName();
-  QStringList comments;
-
-  if (txtMap) {
-    QMapIterator<QString, QString> it(*txtMap);
-    while (it.hasNext()) {
-      it.next();
-      if      (it.key() == "RUN BY") {
-        runBy = it.value();
-      }
-      else if (it.key() == "COMMENT") {
-        comments = it.value().split("\\n", QString::SkipEmptyParts);
-      }
-    }
-  }
-
-  *_stream << QString("%1           Observation data    Mixed")
-    .arg(_header._version, 9, 'f', 2)
-    .leftJustified(60)
-           << "RINEX VERSION / TYPE\n";
-
-  const QString fmtDate = (version() < 3.0) ? "dd-MMM-yy hh:mm"
-                                            : "yyyyMMdd hhmmss UTC";
-  *_stream << QString("%1%2%3")
-    .arg(app->pgmName(), -20)
-    .arg(runBy.trimmed().left(20), -20)
-    .arg(QDateTime::currentDateTime().toUTC().toString(fmtDate), -20)
-    .leftJustified(60)
-           << "PGM / RUN BY / DATE\n";
-
-  QStringListIterator itCmnt(comments);
-  while (itCmnt.hasNext()) {
-    *_stream << itCmnt.next().trimmed().left(60).leftJustified(60) << "COMMENT\n";
-  }
-
-  *_stream << QString("%1")
-    .arg(_header._markerName, -60)
-    .leftJustified(60)
-           << "MARKER NAME\n";
-
-  if (!_header._markerNumber.isEmpty()) {
-    *_stream << QString("%1")
-      .arg(_header._markerNumber, -20)
-      .leftJustified(60)
-             << "MARKER NUMBER\n";
-  }
-
-  *_stream << QString("%1%2")
-    .arg(_header._observer, -20)
-    .arg(_header._agency,   -40)
-    .leftJustified(60)
-           << "OBSERVER / AGENCY\n";
-
-  *_stream << QString("%1%2%3")
-    .arg(_header._receiverNumber,  -20)
-    .arg(_header._receiverType,    -20)
-    .arg(_header._receiverVersion, -20)
-    .leftJustified(60)
-           << "REC # / TYPE / VERS\n";
-
-  *_stream << QString("%1%2")
-    .arg(_header._antennaNumber, -20)
-    .arg(_header._antennaName,   -20)
-    .leftJustified(60)
-           << "ANT # / TYPE\n";
-
-  *_stream << QString("%1%2%3")
-    .arg(_header._xyz(1), 14, 'f', 4)
-    .arg(_header._xyz(2), 14, 'f', 4)
-    .arg(_header._xyz(3), 14, 'f', 4)
-    .leftJustified(60)
-           << "APPROX POSITION XYZ\n";
-
-  *_stream << QString("%1%2%3")
-    .arg(_header._antNEU(3), 14, 'f', 4)
-    .arg(_header._antNEU(2), 14, 'f', 4)
-    .arg(_header._antNEU(1), 14, 'f', 4)
-    .leftJustified(60)
-           << "ANTENNA: DELTA H/E/N\n";
-
-  if (_header._version < 3.0) {
-    int defaultWlFact1 = _header._wlFactorsL1[1];
-    int defaultWlFact2 = _header._wlFactorsL2[1];  // TODO check all prns
-    *_stream << QString("%1%2")
-      .arg(defaultWlFact1, 6)
-      .arg(defaultWlFact2, 6)
-      .leftJustified(60)
-             << "WAVELENGTH FACT L1/2\n";
-  }
-
-  *_stream << obsTypesStrings().join("");
-
-  *_stream << QString("%1")
-    .arg(_header._interval, 10, 'f', 3)
-    .leftJustified(60)
-           << "INTERVAL\n";
-
-  unsigned year, month, day, hour, min;
-  double sec;
-  _header._startTime.civil_date(year, month, day);
-  _header._startTime.civil_time(hour, min, sec);
-  *_stream << QString("%1%2%3%4%5%6%7")
-    .arg(year, 6)
-    .arg(month, 6)
-    .arg(day, 6)
-    .arg(hour, 6)
-    .arg(min, 6)
-    .arg(sec, 13, 'f', 7)
-    .arg("GPS", 8)
-    .leftJustified(60)
-           << "TIME OF FIRST OBS\n";
-
-  *_stream << QString()
-    .leftJustified(60)
-           << "END OF HEADER\n";
-}
-
-// Write Observation Types
-////////////////////////////////////////////////////////////////////////////
-QStringList t_rnxObsFile::obsTypesStrings() {
-
-  QStringList strList;
-
-  if (_header._version < 3.0) {
-    QString hlp;
-    QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2.size(), 6);
-    for (int ii = 0; ii < _header._obsTypesV2.size(); ii++) {
-      QTextStream(&hlp) << QString("%1").arg(_header._obsTypesV2[ii], 6);   
-      if ((ii+1) % 9 == 0 || ii == _header._obsTypesV2.size()-1) {
-        strList.append(hlp.leftJustified(60) + "# / TYPES OF OBSERV\n");
-        hlp = QString().leftJustified(6);
-      }
-    }
-  }
-  else {
-    QMapIterator<char, QVector<QString> > it(_header._obsTypesV3);
-    while (it.hasNext()) {
-      it.next();
-      char sys                      = it.key();
-      const QVector<QString>& types = it.value();
-      QString hlp;
-      QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(types.size(), 3);
-      for (int ii = 0; ii < types.size(); ii++) {
-        QTextStream(&hlp) << QString(" %1").arg(types[ii], -3);   
-        if ((ii+1) % 13 == 0 || ii == types.size()-1) {
-          strList.append(hlp.leftJustified(60) + "SYS / # / OBS TYPES\n");
-          hlp = QString().leftJustified(6);
-        }
-      }
-    }
-  }
-
-  return strList;
-}
-
 // Write Data Epoch
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::writeEpoch(const t_rnxEpo* epo) {
@@ -1067,7 +1068,7 @@ void t_rnxObsFile::checkNewHeader(const t_rnxObsHeader& header) {
   }
 
   if (!same) {
-    QStringList strLst = obsTypesStrings();
+    QStringList strLst = _header.obsTypesStrings();
     int numBlanks = _header._version < 3.0 ? 26 : 29;
     *_stream << QString().leftJustified(numBlanks)
              << QString("  4%1\n").arg(strLst.size(), 3)

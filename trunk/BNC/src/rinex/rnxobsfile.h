@@ -45,6 +45,9 @@ class t_rnxObsHeader {
   t_irc           read(QTextStream* stream, int maxLines = 0);
   int             nTypes(char sys) const;
   const QString&  obsType(char sys, int index) const;
+  QStringList     obsTypesStrings() const;
+  void            write(QTextStream* stream,
+                        const QMap<QString, QString>* txtMap = 0) const;
 
   static const QString          _emptyStr;
   float                         _version;
@@ -133,9 +136,9 @@ class t_rnxObsFile {
   const t_rnxObsHeader& header() const {return _header;}
   void setHeader(const t_rnxObsHeader& header, double version);
   void checkNewHeader(const t_rnxObsHeader& header);
-  void writeHeader(const QMap<QString, QString>* txtMap = 0);
-  QStringList obsTypesStrings();
   void writeEpoch(const t_rnxEpo* epo);
+
+  QTextStream* stream() {return _stream;}
 
  private:
   enum e_trafo {trafoNone, trafo2to3, trafo3to2};

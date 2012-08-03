@@ -76,8 +76,6 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
   _ntripVersion  = ntripVersion;
   _headerWritten = false;
   _reconnectFlag = false;
-  _reloadTable   = false;
-  _reloadDone    = false;
 
   bncSettings settings;
   _rnxScriptName = settings.value("rnxScript").toString();
@@ -154,7 +152,7 @@ t_irc bncRinex::downloadSkeleton() {
 
   QStringList table;
   bncTableDlg::getFullTable(_ntripVersion, _mountPoint.host(), 
-                            _mountPoint.port(), table, _reloadTable);
+                            _mountPoint.port(), table, true);
   QString net;
   QStringListIterator it(table);
   while (it.hasNext()) {
@@ -205,51 +203,11 @@ t_irc bncRinex::downloadSkeleton() {
     QByteArray outData;
     query->waitForRequestResult(url, outData);
     if (query->status() == bncNetQuery::finished) {
-      _headerLines.clear();
-      bool firstLineRead = false;
+      irc = success;
       QTextStream in(outData);
-      QString line = in.readLine();
-      while ( !line.isNull() ) {
-        if (line.indexOf("MARKER NAME") != -1) {
-          irc = success;
-        }
-        if (line.indexOf("RINEX VERSION") != -1) {
-          if (_rinexVers == 3) {
-            _headerLines.append("     3.00           OBSERVATION DATA"
-                                "    M (MIXED)"
-                                "           RINEX VERSION / TYPE");
-          }
-          else {
-            _headerLines.append("     2.11           OBSERVATION DATA"
-                                "    M (MIXED)"
-                                "           RINEX VERSION / TYPE");
-          }
-          _headerLines.append("PGM / RUN BY / DATE");
-          firstLineRead = true;
-        }
-        else if (firstLineRead) {
-          if (line.indexOf("END OF HEADER") != -1) {
-            _headerLines.append("# / TYPES OF OBSERV");
-            if (_rinexVers == 2) {
-              _headerLines.append(
-                    QString("     1     1").leftJustified(60, ' ', true) +
-                    "WAVELENGTH FACT L1/2");
-            }
-            _headerLines.append("TIME OF FIRST OBS");
-            _headerLines.append( line );
-            break;
-          }
-          else {
-            _headerLines.append( line );
-          }
-        }
-        line = in.readLine();
-      }
-    } 
-    else {
-      delete query;
-      return failure;
+      _header.read(&in);
     }
+
     delete query;
   }
 
@@ -264,14 +222,8 @@ void bncRinex::readSkeleton() {
   // -------------------
   QFile skl(_sklName);
   if ( skl.exists() && skl.open(QIODevice::ReadOnly) ) {
-    _headerLines.clear();
     QTextStream in(&skl);
-    while ( !in.atEnd() ) {
-      _headerLines.append( in.readLine() );
-      if (_headerLines.last().indexOf("END OF HEADER") != -1) {
-        break;
-      }
-    }
+    _header.read(&in);
   }
 
   // Read downloaded file
@@ -280,20 +232,8 @@ void bncRinex::readSkeleton() {
             _ntripVersion != "S" ) {
     QDate currDate = currentDateAndTimeGPS().date();
     if ( !_skeletonDate.isValid() || _skeletonDate != currDate ) {
-      if ( downloadSkeleton() == success) {
-        _skeletonDate = currDate;
-        _reloadDone = false;
-      }
-      else {
-        if(!_reloadDone) {
-          _reloadTable = true;
-          if ( downloadSkeleton() == success) {
-            _skeletonDate = currDate;
-          }
-          _reloadTable = false;
-          _reloadDone = true;
-        }
-      }
+      downloadSkeleton();
+      _skeletonDate = currDate;
     }
   }
 }
@@ -435,141 +375,14 @@ void bncRinex::writeHeader(const QByteArray& format, const QDateTime& datTim,
   // Copy Skeleton Header
   // --------------------
   readSkeleton();
-  if (_headerLines.size() > 0) {
-    bool typesOfObservationsWritten = false;
-    QStringListIterator it(_headerLines);
-    while (it.hasNext()) {
-      QString line = it.next();
-      if      (line.indexOf("PGM / RUN BY / DATE") != -1) {
-        if (_rinexVers == 3) {
-          QString hlp = currentDateAndTimeGPS().toString("yyyyMMdd hhmmss UTC").leftJustified(20, ' ', true);
-          _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
-               << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
-        }
-        else {
-          QString hlp = currentDateAndTimeGPS().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
-          _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
-               << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
-        }
-      }
-      else if ( !typesOfObservationsWritten &&
-                (line.indexOf("# / TYPES OF OBSERV") != -1 || 
-                 line.indexOf("SYS / # / OBS TYPES") != -1) ) {
-        typesOfObservationsWritten = true;
-        writeObsTypes();
-      }
-      else if (line.indexOf("TIME OF FIRST OBS") != -1) {
-        _out << datTim.toString("  yyyy    MM    dd"
-                                "    hh    mm   ss.zzz0000").toAscii().data();
-        _out << "     GPS         TIME OF FIRST OBS"    << endl;
-        QString hlp = (format.left(6) + QString(" %1").arg(_mountPoint.host() + 
-                      _mountPoint.path())).leftJustified(60, ' ', true);
-        _out << hlp.toAscii().data() << "COMMENT" << endl;
-      }
-      else if (line.indexOf("MARKER NAME") != -1) {
-        if (_rinexVers == 3) {
-          _out << line.toAscii().data() << endl;
-          _out << setw(71) << "GEODETIC                                                    MARKER TYPE" << endl;
-        } 
-        else {
-          _out << line.toAscii().data() << endl;
-        }
-      }
-      else if (line.indexOf("END OF HEADER") != -1) {
-        if (!typesOfObservationsWritten) {
-          writeObsTypes();
-        }
-        _out << line.toAscii().data() << endl;
-        break;
-      }
-      else {
-        _out << line.toAscii().data() << endl;
-      }
-    }
-  }
 
-  // Write Dummy Header
-  // ------------------
-  else {
-    double antennaNEU[3]; antennaNEU[0] = antennaNEU[1] = antennaNEU[2] = 0.0;
-    
-    if (_rinexVers == 3) {
-      _out << "     3.00           OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE" << endl;
-      QString hlp = currentDateAndTimeGPS().toString("yyyyMMdd hhmmss UTC").leftJustified(20, ' ', true);
-      _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
-           << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
-    }
-    else {
-      _out << "     2.11           OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE" << endl;
-      QString hlp = currentDateAndTimeGPS().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
-      _out << _pgmName.toAscii().data() << _userName.toAscii().data() 
-           << hlp.toAscii().data() << "PGM / RUN BY / DATE" << endl;
-    }
-    _out.setf(ios::left);
-    _out << setw(60) << _statID.data()                               << "MARKER NAME"          << endl;
-    if (_rinexVers == 3) {
-      _out << setw(60) << "unknown"                                  << "MARKER TYPE      "    << endl;
-    }
-    _out << setw(60) << "unknown             unknown"                << "OBSERVER / AGENCY"    << endl;
-    _out << setw(20) << "unknown"    
-         << setw(20) << "unknown"
-         << setw(20) << "unknown"                                    << "REC # / TYPE / VERS"  << endl;
-    _out << setw(20) << "unknown"
-         << setw(20) << "unknown"
-         << setw(20) << " "                                          << "ANT # / TYPE"         << endl;
-    _out.unsetf(ios::left);
-    _out << setw(14) << setprecision(4) << _approxPos[0]
-         << setw(14) << setprecision(4) << _approxPos[1]
-         << setw(14) << setprecision(4) << _approxPos[2] 
-         << "                  "                                     << "APPROX POSITION XYZ"  << endl;
-    _out << setw(14) << setprecision(4) << antennaNEU[0]
-         << setw(14) << setprecision(4) << antennaNEU[1]
-         << setw(14) << setprecision(4) << antennaNEU[2] 
-         << "                  "                                     << "ANTENNA: DELTA H/E/N" << endl;
-        
-    writeObsTypes();
-
-    _out << datTim.toString("  yyyy    MM    dd"
-                                "    hh    mm   ss.zzz0000").toAscii().data();
-    _out << "     GPS         TIME OF FIRST OBS"    << endl;
-    QString hlp = (format.left(6) + QString(" %1").arg(_mountPoint.host() + 
-          _mountPoint.path())).leftJustified(60, ' ', true);
-    _out << hlp.toAscii().data() << "COMMENT" << endl;
-
-    if (_nmea == "yes") {
-    hlp = ("NMEA LAT=" + _latitude + " " + "LONG=" + _longitude).leftJustified(60, ' ',true);
-    _out << hlp.toAscii().data() << "COMMENT" << endl; }
-
-    _out << "                                                            END OF HEADER"        << endl;
-  }
+  QByteArray headerLines;
+  QTextStream outHlp(&headerLines);
+  _header.write(&outHlp);
+  outHlp.flush();
+  _out << headerLines.data();
 
   _headerWritten = true;
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncRinex::writeObsTypes() {
-  if (_rinexVers == 3) {
-    QMapIterator<char, QVector<QString> > it(_rnxTypes);
-    while (it.hasNext()) {
-      it.next();
-      char sys                      = it.key();
-      const QVector<QString>& types = it.value();
-      QString hlp;
-      QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(types.size(), 3);
-      for (int ii = 0; ii < types.size(); ii++) {
-        QTextStream(&hlp) << QString(" %1").arg(types[ii], -3);   
-        if ((ii+1) % 13 == 0 || ii == types.size()-1) {
-          _out << QString(hlp.leftJustified(60) + "SYS / # / OBS TYPES\n").toAscii().data();
-          hlp = QString().leftJustified(6);
-        }
-      }
-    }
-  }
-  else {
-    _out << "     1     1                                                WAVELENGTH FACT L1/2" << endl;
-    _out << "     8    C1    P1    L1    S1    C2    P2    L2    S2      # / TYPES OF OBSERV"  << endl;
-  }
 }
 
 // Stores Observation into Internal Array

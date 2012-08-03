@@ -36,7 +36,6 @@ const double sig0_clkSat   =  100.0;
 
 const double sigObs        =   0.05;
 
-const int MAXPRN_GPS     = 32;
 const int MAXPRN_GLONASS = 24;
 
 using namespace std;
