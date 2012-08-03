@@ -55,8 +55,7 @@ class bncRinex {
    static std::string obsToStr(double val, int width = 14, int precision = 3);
    void resolveFileName(const QDateTime& datTim);
    void readSkeleton();
-   void writeHeader(const QByteArray& format, const QDateTime& datTim, 
-                    const QDateTime& datTimNom);
+   void writeHeader(const QByteArray& format, const QDateTime& datTimNom);
    void closeFile();
    t_irc downloadSkeleton();
 
