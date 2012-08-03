@@ -103,34 +103,34 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
 
   // Initialize RINEX v3 Types
   // -------------------------
-  _rnxTypes['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
-                 << "C1P" << "L1P" << "D1P" << "S1P" 
-                 << "C2C" << "L2C" << "D2C" << "S2C" 
-                 << "C2P" << "L2P" << "D2P" << "S2P" 
-                 << "C5"  << "D5"  << "L5"  << "S5";
+  _header._obsTypesV3['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
+                           << "C1P" << "L1P" << "D1P" << "S1P" 
+                           << "C2C" << "L2C" << "D2C" << "S2C" 
+                           << "C2P" << "L2P" << "D2P" << "S2P" 
+                           << "C5"  << "D5"  << "L5"  << "S5";
 
-  _rnxTypes['R'] << "C1C" << "L1C" << "D1C" << "S1C" 
-                 << "C1P" << "L1P" << "D1P" << "S1P" 
-                 << "C2C" << "L2C" << "D2C" << "S2C"
-                 << "C2P" << "L2P" << "D2P" << "S2P";
+  _header._obsTypesV3['R'] << "C1C" << "L1C" << "D1C" << "S1C" 
+                           << "C1P" << "L1P" << "D1P" << "S1P" 
+                           << "C2C" << "L2C" << "D2C" << "S2C"
+                           << "C2P" << "L2P" << "D2P" << "S2P";
 
-  _rnxTypes['E'] << "C1" << "L1" << "D1" << "S1"
-                 << "C5" << "L5" << "D5" << "S5" 
-                 << "C6" << "L6" << "D6" << "S6"
-                 << "C7" << "L7" << "D7" << "S7"
-                 << "C8" << "L8" << "D8" << "S8";
+  _header._obsTypesV3['E'] << "C1" << "L1" << "D1" << "S1"
+                           << "C5" << "L5" << "D5" << "S5" 
+                           << "C6" << "L6" << "D6" << "S6"
+                           << "C7" << "L7" << "D7" << "S7"
+                           << "C8" << "L8" << "D8" << "S8";
 
-  _rnxTypes['J'] << "C1" << "L1" << "D1" << "S1" 
-                 << "C2" << "L2" << "D2" << "S2"
-                 << "C5" << "L5" << "D5" << "S5"
-                 << "C6" << "D6" << "L6" << "S6";
+  _header._obsTypesV3['J'] << "C1" << "L1" << "D1" << "S1" 
+                           << "C2" << "L2" << "D2" << "S2"
+                           << "C5" << "L5" << "D5" << "S5"
+                           << "C6" << "D6" << "L6" << "S6";
 
-  _rnxTypes['S'] << "C1" << "L1" << "D1" << "S1" 
-                 << "C5" << "L5" << "D5" << "S5";
+  _header._obsTypesV3['S'] << "C1" << "L1" << "D1" << "S1" 
+                           << "C5" << "L5" << "D5" << "S5";
 
-  _rnxTypes['C'] << "C2" << "L2" << "D2" << "S2"
-                 << "C6" << "L6" << "D6" << "S6"
-                 << "C7" << "L7" << "D7" << "S7";
+  _header._obsTypesV3['C'] << "C2" << "L2" << "D2" << "S2"
+                           << "C6" << "L6" << "D6" << "S6"
+                           << "C7" << "L7" << "D7" << "S7";
 }
 
 // Destructor
@@ -552,7 +552,7 @@ string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2,
   str << obs.satSys 
       << setw(2) << setfill('0') << obs.satNum << setfill(' ');
 
-  const QVector<QString>& types = _rnxTypes[obs.satSys];
+  const QVector<QString>& types = _header._obsTypesV3[obs.satSys];
   for (int ii = 0; ii < types.size(); ii++) {
     double value = obs.measdata(types[ii], _rinexVers);
     str << setw(14) << setprecision(3) << value;
