@@ -301,10 +301,12 @@ void t_rnxObsHeader::write(QTextStream* stream,
 
   *stream << obsTypesStrings().join("");
 
-  *stream << QString("%1")
-    .arg(_interval, 10, 'f', 3)
-    .leftJustified(60)
-           << "INTERVAL\n";
+  if (_interval > 0) {
+    *stream << QString("%1")
+      .arg(_interval, 10, 'f', 3)
+      .leftJustified(60)
+             << "INTERVAL\n";
+  }
 
   unsigned year, month, day, hour, min;
   double sec;

@@ -92,6 +92,11 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
 
   _samplingRate = settings.value("rnxSampl").toInt();
 
+  // Initialize RINEX v2 Types
+  // -------------------------
+  _header._obsTypesV2 << "C1" << "P1" << "L1" << "S1" 
+                      << "C2" << "P2" << "L2" << "S2";
+
   // Initialize RINEX v3 Types
   // -------------------------
   _header._obsTypesV3['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
