@@ -523,10 +523,10 @@ BNC will complete this line and include it in the RINEX file header.</li>
 <br>- &nbsp; APPROX POSITION XYZ
 <br>- &nbsp; ANTENNA: DELTA H/E/N
 <br>- &nbsp; WAVELENGTH FACT L1/2 (RINEX Version 2)</li>
-<br>- &nbsp; SYS / # / OBS TYPES (RINEX Version 3)</li>
+<br>- &nbsp; SYS / # / OBS TYPES (RINEX Version 3, will be ignored when writing Version 2 files)</li>
 <li>They may contain any other optional complete header record as defined in the RINEX documentation.</li>
 <li>They should then contain empty header records of type
-<br>- &nbsp; # / TYPES OF OBSERV (RINEX Version 2)
+<br>- &nbsp; # / TYPES OF OBSERV (RINEX Version 2, will be ignored when writing Version 3 files)
 <br>- &nbsp; TIME OF FIRST OBS
 <br>BNC will include these lines in the final RINEX file header together with an additional
 <br>- &nbsp; COMMENT 
