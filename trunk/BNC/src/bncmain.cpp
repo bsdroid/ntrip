@@ -87,9 +87,7 @@ int main(int argc, char* argv[]) {
     }
     if (QRegExp("--?display").exactMatch(argv[ii])) {
       displaySet = true;
-      if (QRegExp("--display").exactMatch(argv[ii])) {
-        strcpy(argv[ii], "-display");
-      }
+      strcpy(argv[ii], "-display"); // make it "-display" not "--display"
     }
     if (ii + 1 < argc) {
       if (QRegExp("--?conf").exactMatch(argv[ii])) {
