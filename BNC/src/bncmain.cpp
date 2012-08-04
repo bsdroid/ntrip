@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
     if (QRegExp("--?display").exactMatch(argv[ii])) {
       displaySet = true;
       if (QRegExp("--display").exactMatch(argv[ii])) {
-        argv[ii] = "-display";
+        strcpy(argv[ii], "-display");
       }
     }
     if (ii + 1 < argc) {
@@ -112,12 +112,7 @@ int main(int argc, char* argv[]) {
   }
 #endif
 
-#ifdef Q_WS_X11
-  bool GUIenabled = getenv("DISPLAY") != 0;
-#else
-  bool GUIenabled = true;
-#endif
- 
+  bool GUIenabled = interactive || displaySet;
   bncApp app(argc, argv, GUIenabled);
 
   app.setApplicationName("BNC");
