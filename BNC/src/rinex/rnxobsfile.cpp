@@ -113,6 +113,9 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       QTextStream in(value.toAscii(), QIODevice::ReadOnly);
       in >> _interval;
     }
+    else if (key == "COMMENT") {
+      _comments << line.mid(0,60).trimmed();
+    }
     else if (key == "WAVELENGTH FACT L1/2") {
       QTextStream in(value.toAscii(), QIODevice::ReadOnly);
       int wlFactL1 = 0;
