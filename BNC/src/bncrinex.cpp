@@ -379,10 +379,26 @@ void bncRinex::writeHeader(const QByteArray& format,
   // Copy Skeleton Header
   // --------------------
   readSkeleton();
+  if (_header._markerName.isEmpty()) {
+    _header._markerName = _statID;
+  }
+
+  // A few additional comments
+  // -------------------------
+  QMap<QString, QString> txtMap;
+  QStringList addComments;
+
+  addComments << format.left(6) + " " + _mountPoint.host() + _mountPoint.path();
+
+  if (_nmea == "yes") {
+    addComments << "NMEA LAT=" + _latitude + " " + "LONG=" + _longitude;
+  }
+
+  txtMap["COMMENT"] = addComments.join("\\n");
 
   QByteArray headerLines;
   QTextStream outHlp(&headerLines);
-  _header.write(&outHlp);
+  _header.write(&outHlp, &txtMap);
   outHlp.flush();
   _out << headerLines.data();
 
