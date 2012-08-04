@@ -64,13 +64,15 @@ void catch_signal(int) {
 
 // Main Program
 /////////////////////////////////////////////////////////////////////////////
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
 
   bool       interactive  = true;
+  bool       displaySet   = false;
   QByteArray rawFileName;
   QString    confFileName;
 
   QByteArray printHelp = "Usage: bnc --nw                       \n" 
+                         "           --display <XXX>            \n" 
                          "           --conf <confFileName>      \n" 
                          "           --file <rawFileName>       \n"
                          "           --key  <keyName> <keyValue>\n";
@@ -82,6 +84,12 @@ int main(int argc, char *argv[]) {
     }
     if (QRegExp("--?nw").exactMatch(argv[ii])) {
       interactive = false;
+    }
+    if (QRegExp("--?display").exactMatch(argv[ii])) {
+      displaySet = true;
+      if (QRegExp("--display").exactMatch(argv[ii])) {
+        argv[ii] = "-display";
+      }
     }
     if (ii + 1 < argc) {
       if (QRegExp("--?conf").exactMatch(argv[ii])) {
