@@ -209,8 +209,8 @@ void t_rnxObsHeader::write(QTextStream* stream,
 
   bncApp* app = (bncApp*) qApp;
 
+  QStringList newComments;
   QString     runBy = app->userName();
-  QStringList comments;
 
   if (txtMap) {
     QMapIterator<QString, QString> it(*txtMap);
@@ -220,7 +220,7 @@ void t_rnxObsHeader::write(QTextStream* stream,
         runBy = it.value();
       }
       else if (it.key() == "COMMENT") {
-        comments = it.value().split("\\n", QString::SkipEmptyParts);
+        newComments = it.value().split("\\n", QString::SkipEmptyParts);
       }
     }
   }
@@ -239,7 +239,7 @@ void t_rnxObsHeader::write(QTextStream* stream,
     .leftJustified(60)
            << "PGM / RUN BY / DATE\n";
 
-  QStringListIterator itCmnt(comments);
+  QStringListIterator itCmnt(_comments + newComments);
   while (itCmnt.hasNext()) {
     *stream << itCmnt.next().trimmed().left(60).leftJustified(60) << "COMMENT\n";
   }
