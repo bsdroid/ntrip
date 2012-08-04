@@ -61,6 +61,7 @@ class t_rnxObsHeader {
   QString                       _receiverNumber;
   QString                       _receiverType;
   QString                       _receiverVersion;
+  QStringList                   _comments;
   ColumnVector                  _antNEU;
   ColumnVector                  _antXYZ;
   ColumnVector                  _antBSG;
