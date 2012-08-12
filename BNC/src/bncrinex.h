@@ -54,7 +54,7 @@ class bncRinex {
    std::string rinexSatLine(const t_obs& obs, char lli1, char lli2, char lli5);
    static std::string obsToStr(double val, int width = 14, int precision = 3);
    void resolveFileName(const QDateTime& datTim);
-   void readSkeleton();
+   void readSkeleton(bool& obsTypesFound);
    void writeHeader(const QByteArray& format, const QDateTime& datTimNom);
    void closeFile();
    t_irc downloadSkeleton();

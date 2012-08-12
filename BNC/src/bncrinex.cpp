@@ -176,7 +176,7 @@ t_irc bncRinex::downloadSkeleton() {
 
 // Read Skeleton Header File
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::readSkeleton() {
+void bncRinex::readSkeleton(bool& obsTypesFound) {
 
   // Read the local file
   // -------------------
@@ -205,9 +205,14 @@ void bncRinex::readSkeleton() {
     _header._version = 2.12;
   }
 
+  obsTypesFound = true;
+
   // Default RINEX v2 Types
   // -------------------------
   if (_header._obsTypesV2.size() == 0) {
+    if (_header._version < 3.0) {
+      obsTypesFound = false;
+    }
     _header._obsTypesV2 << "C1" << "P1" << "L1" << "S1" 
                         << "C2" << "P2" << "L2" << "S2";
   }
@@ -215,6 +220,9 @@ void bncRinex::readSkeleton() {
   // Default RINEX v3 Types
   // -------------------------
   if (_header._obsTypesV3.size() == 0) {
+    if (_header._version >= 3.0) {
+      obsTypesFound = false;
+    }
     _header._obsTypesV3['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
                              << "C1P" << "L1P" << "D1P" << "S1P" 
                              << "C2C" << "L2C" << "D2C" << "S2C" 
@@ -382,7 +390,8 @@ void bncRinex::writeHeader(const QByteArray& format,
 
   // Copy Skeleton Header
   // --------------------
-  readSkeleton();
+  bool obsTypesFound;
+  readSkeleton(obsTypesFound);
   if (_header._markerName.isEmpty()) {
     _header._markerName = _statID;
   }
