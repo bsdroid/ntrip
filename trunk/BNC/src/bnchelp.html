@@ -154,7 +154,11 @@ The main window of BNC shows a 'Top menu bar' section, a 'Settings' sections wit
 <p><u>Figure 5:</u> Sections on BNC's main window.</p>
 
 <p>
-Running BNC in interactive mode requires graphics support. This is also required in batch mode when producing plots. Windows and Mac systems always support graphics. However, when using BNC in batch mode on Linux systems for producing plots, you need to make sure that at least a virtual X-Server like 'Xvfb' is installed and the 'DISPLAY' variable defined.
+Running BNC in interactive mode requires graphics support. This is also
+required in batch mode when producing plots. Windows and Mac systems always
+support graphics. However, when using BNC in batch mode on Linux systems for
+producing plots, you need to make sure that at least a virtual X-Server like
+'Xvfb' is installed and the '-display' command-line option is used.
 </p>
 
 <p>
@@ -2362,7 +2366,13 @@ Example:<br><br>
 bnc.exe -nw
 </p>
 <p>
-It is obvious that BNC requires graphics support when started in interactive mode. But, note that it also requires graphics support when producing plots in batch mode (option -nw). Windows and Mac systems always support graphics. For producing plots in batch mode on Linux systems you must make sure that at least a virtual X-Server such as 'Xvfb' is installed and the 'DISPLAY' variable properly defined. The following is an example shell script to execute BNC in batch mode for producing multipath plots from RINEX files. It could be used via 'crontab':
+It is obvious that BNC requires graphics support when started in interactive
+mode. But, note that it also requires graphics support when producing plots in
+batch mode (option -nw). Windows and Mac systems always support graphics. For
+producing plots in batch mode on Linux systems you must make sure that at
+least a virtual X-Server such as 'Xvfb' is installed and the '-display' option
+is used. The following is an example shell script to execute BNC in batch mode
+for producing multipath plots from RINEX files. It could be used via 'crontab':
 </p>
 <pre>
 #!/bin/bash
