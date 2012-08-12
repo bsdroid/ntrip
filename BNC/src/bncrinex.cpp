@@ -176,7 +176,7 @@ t_irc bncRinex::downloadSkeleton() {
 
 // Read Skeleton Header File
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::readSkeleton(bool& obsTypesFound) {
+void bncRinex::readSkeleton() {
 
   // Read the local file
   // -------------------
@@ -195,62 +195,6 @@ void bncRinex::readSkeleton(bool& obsTypesFound) {
       downloadSkeleton();
       _skeletonDate = currDate;
     }
-  }
-
-  bncSettings settings;
-  if ( Qt::CheckState(settings.value("rnxV3").toInt()) == Qt::Checked) {
-    _header._version = 3.01;    
-  }
-  else {
-    _header._version = 2.12;
-  }
-
-  obsTypesFound = true;
-
-  // Default RINEX v2 Types
-  // -------------------------
-  if (_header._obsTypesV2.size() == 0) {
-    if (_header._version < 3.0) {
-      obsTypesFound = false;
-    }
-    _header._obsTypesV2 << "C1" << "P1" << "L1" << "S1" 
-                        << "C2" << "P2" << "L2" << "S2";
-  }
-
-  // Default RINEX v3 Types
-  // -------------------------
-  if (_header._obsTypesV3.size() == 0) {
-    if (_header._version >= 3.0) {
-      obsTypesFound = false;
-    }
-    _header._obsTypesV3['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
-                             << "C1P" << "L1P" << "D1P" << "S1P" 
-                             << "C2C" << "L2C" << "D2C" << "S2C" 
-                             << "C2P" << "L2P" << "D2P" << "S2P" 
-                             << "C5"  << "D5"  << "L5"  << "S5";
-    
-    _header._obsTypesV3['R'] << "C1C" << "L1C" << "D1C" << "S1C" 
-                             << "C1P" << "L1P" << "D1P" << "S1P" 
-                             << "C2C" << "L2C" << "D2C" << "S2C"
-                             << "C2P" << "L2P" << "D2P" << "S2P";
-    
-    _header._obsTypesV3['E'] << "C1" << "L1" << "D1" << "S1"
-                             << "C5" << "L5" << "D5" << "S5" 
-                             << "C6" << "L6" << "D6" << "S6"
-                             << "C7" << "L7" << "D7" << "S7"
-                             << "C8" << "L8" << "D8" << "S8";
-    
-    _header._obsTypesV3['J'] << "C1" << "L1" << "D1" << "S1" 
-                             << "C2" << "L2" << "D2" << "S2"
-                             << "C5" << "L5" << "D5" << "S5"
-                             << "C6" << "D6" << "L6" << "S6";
-    
-    _header._obsTypesV3['S'] << "C1" << "L1" << "D1" << "S1" 
-                             << "C5" << "L5" << "D5" << "S5";
-    
-    _header._obsTypesV3['C'] << "C2" << "L2" << "D2" << "S2"
-                             << "C6" << "L6" << "D6" << "S6"
-                             << "C7" << "L7" << "D7" << "S7";
   }
 }
 
@@ -388,18 +332,74 @@ void bncRinex::writeHeader(const QByteArray& format,
   _out.open(_fName.data());
   _out.setf(ios::showpoint | ios::fixed);
 
-  // Copy Skeleton Header
+  // Read Skeleton Header
   // --------------------
-  bool obsTypesFound;
-  readSkeleton(obsTypesFound);
+  readSkeleton();
+
+  // Set RINEX Version
+  // -----------------
+  if ( Qt::CheckState(settings.value("rnxV3").toInt()) == Qt::Checked) {
+    _header._version = 3.01;    
+  }
+  else {
+    _header._version = 2.12;
+  }
+
+  // Set Marker Name
+  // ---------------
   if (_header._markerName.isEmpty()) {
     _header._markerName = _statID;
+  }
+
+  // Set Default RINEX v2 Types
+  // --------------------------
+  if (_header._obsTypesV2.size() == 0) {
+    if (_header._version < 3.0) {
+    }
+    _header._obsTypesV2 << "C1" << "P1" << "L1" << "S1" 
+                        << "C2" << "P2" << "L2" << "S2";
+  }
+
+  QStringList addComments;
+
+  // Set Default RINEX v3 Types
+  // ---------------------------
+  if (_header._obsTypesV3.size() == 0) {
+    if (_header._version >= 3.0) {
+    }
+    _header._obsTypesV3['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
+                             << "C1P" << "L1P" << "D1P" << "S1P" 
+                             << "C2C" << "L2C" << "D2C" << "S2C" 
+                             << "C2P" << "L2P" << "D2P" << "S2P" 
+                             << "C5"  << "D5"  << "L5"  << "S5";
+    
+    _header._obsTypesV3['R'] << "C1C" << "L1C" << "D1C" << "S1C" 
+                             << "C1P" << "L1P" << "D1P" << "S1P" 
+                             << "C2C" << "L2C" << "D2C" << "S2C"
+                             << "C2P" << "L2P" << "D2P" << "S2P";
+    
+    _header._obsTypesV3['E'] << "C1" << "L1" << "D1" << "S1"
+                             << "C5" << "L5" << "D5" << "S5" 
+                             << "C6" << "L6" << "D6" << "S6"
+                             << "C7" << "L7" << "D7" << "S7"
+                             << "C8" << "L8" << "D8" << "S8";
+    
+    _header._obsTypesV3['J'] << "C1" << "L1" << "D1" << "S1" 
+                             << "C2" << "L2" << "D2" << "S2"
+                             << "C5" << "L5" << "D5" << "S5"
+                             << "C6" << "D6" << "L6" << "S6";
+    
+    _header._obsTypesV3['S'] << "C1" << "L1" << "D1" << "S1" 
+                             << "C5" << "L5" << "D5" << "S5";
+    
+    _header._obsTypesV3['C'] << "C2" << "L2" << "D2" << "S2"
+                             << "C6" << "L6" << "D6" << "S6"
+                             << "C7" << "L7" << "D7" << "S7";
   }
 
   // A few additional comments
   // -------------------------
   QMap<QString, QString> txtMap;
-  QStringList addComments;
 
   addComments << format.left(6) + " " + _mountPoint.host() + _mountPoint.path();
 
