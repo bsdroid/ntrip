@@ -345,6 +345,15 @@ void bncRinex::writeHeader(const QByteArray& format,
     _header._version = 2.12;
   }
 
+  // A Few Additional Comments
+  // -------------------------
+  QStringList addComments;
+  addComments << format.left(6) + " " + _mountPoint.host() + _mountPoint.path();
+
+  if (_nmea == "yes") {
+    addComments << "NMEA LAT=" + _latitude + " " + "LONG=" + _longitude;
+  }
+
   // Set Marker Name
   // ---------------
   if (_header._markerName.isEmpty()) {
@@ -359,8 +368,6 @@ void bncRinex::writeHeader(const QByteArray& format,
     _header._obsTypesV2 << "C1" << "P1" << "L1" << "S1" 
                         << "C2" << "P2" << "L2" << "S2";
   }
-
-  QStringList addComments;
 
   // Set Default RINEX v3 Types
   // ---------------------------
@@ -397,21 +404,16 @@ void bncRinex::writeHeader(const QByteArray& format,
                              << "C7" << "L7" << "D7" << "S7";
   }
 
-  // A few additional comments
-  // -------------------------
-  QMap<QString, QString> txtMap;
-
-  addComments << format.left(6) + " " + _mountPoint.host() + _mountPoint.path();
-
-  if (_nmea == "yes") {
-    addComments << "NMEA LAT=" + _latitude + " " + "LONG=" + _longitude;
-  }
-
-  txtMap["COMMENT"] = addComments.join("\\n");
-
+  // Write the Header
+  // ----------------
   QByteArray headerLines;
   QTextStream outHlp(&headerLines);
+
+  QMap<QString, QString> txtMap;
+  txtMap["COMMENT"] = addComments.join("\\n");
+
   _header.write(&outHlp, &txtMap);
+
   outHlp.flush();
   _out << headerLines.data();
 
