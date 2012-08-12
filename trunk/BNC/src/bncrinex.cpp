@@ -363,9 +363,6 @@ void bncRinex::writeHeader(const QByteArray& format,
   // Set Default RINEX v2 Types
   // --------------------------
   if (_header._obsTypesV2.size() == 0) {
-    if (_header._version < 3.0) {
-      addComments << "default set of observation types used";
-    }
     _header._obsTypesV2 << "C1" << "P1" << "L1" << "S1" 
                         << "C2" << "P2" << "L2" << "S2";
   }
