@@ -1249,7 +1249,7 @@ This section describes several miscellaneous options which can be applied for a 
 </p>
 
 <p>
-The following figure shows RTCM message numbers contained in stream 'CONZ0' and the message latencies recorded every 10 seconds.
+The following figure shows RTCM message numbers and observation types contained in stream 'CONZ0' and the message latencies recorded every 10 seconds.
 </p>
 <p><img src="IMG/screenshot14.png"/></p>
 <p><u>Figure 12:</u> RTCM message numbers and latencies.</p>
@@ -1290,7 +1290,7 @@ Select a 'Log latency' interval to activate this function or select the empty op
 
 <p><a name="miscscan"><h4>3.11.3 Scan RTCM - optional</h4></p>
 <p>
-When configuring a GNSS receiver for RTCM stream generation, the firmware's setup interface may not provide details about RTCM message types. As reliable information concerning stream contents should be available i.e. for NTRIP Broadcaster operators to maintain the broadcaster's source-table, BNC allows to scan RTCM streams for incoming message types and printout some of the contained meta-data. The idea for this option arose from 'InspectRTCM', a comprehensive stream analyzing tool written by D. Stoecker.
+When configuring a GNSS receiver for RTCM stream generation, the firmware's setup interface may not provide details about RTCM message types observation types. As reliable information concerning stream contents should be available i.e. for NTRIP Broadcaster operators to maintain the broadcaster's source-table, BNC allows to scan RTCM streams for incoming message types and printout some of the contained meta-data. Contained observation types are also printed because such information is required a-priori to the conversion of RTCM Version 3 MSM streams to RINEX Version 3 files. The idea for this option arose from 'InspectRTCM', a comprehensive stream analyzing tool written by D. Stoecker.
 </p>
 <p>
 Tick 'Scan RTCM' to scan RTCM Version 2 or 3 streams and log all contained
@@ -1301,6 +1301,10 @@ Tick 'Scan RTCM' to scan RTCM Version 2 or 3 streams and log all contained
 <li>Antenna Phase Center (APC) coordinates</li>
 <li>Antenna height above marker</li>
 <li>Antenna descriptor.</li>
+</ul>
+In case of RTCM Version 3 MSM streams the output includes
+<ul>
+<li>RINEX Version 3 Observation Types</li>
 </ul>
 </p>
 
