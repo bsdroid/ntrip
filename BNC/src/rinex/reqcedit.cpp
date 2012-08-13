@@ -102,7 +102,9 @@ void t_reqcEdit::run() {
   // Log File Header
   // ---------------
   if (_log) {
+    *_log << QByteArray(78, '-') << endl;
     *_log << "Concatenation of RINEX Observation and/or Navigation Files\n";
+    *_log << QByteArray(78, '-') << endl;
     _log->flush();
   }
 
