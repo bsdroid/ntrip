@@ -112,6 +112,8 @@ void t_reqcEdit::run() {
           << app->pgmName() << endl;
     *_log << QByteArray("Run by").leftJustified(14) << ": "
           << app->userName() << endl;
+    *_log << QByteArray("Date").leftJustified(14) << ": "
+          << QDateTime::currentDateTime().toUTC().toString("yyyy-MM-dd hh:mm:ss") << endl;
 
     *_log << QByteArray(78, '-') << endl;
     _log->flush();
