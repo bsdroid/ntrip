@@ -151,9 +151,10 @@ void t_reqcAnalyze::run() {
   // Open Log File
   // -------------
   _logFile = new QFile(_logFileName);
-  _logFile->open(QIODevice::WriteOnly | QIODevice::Text);
-  _log = new QTextStream();
-  _log->setDevice(_logFile);
+  if (_logFile->open(QIODevice::WriteOnly | QIODevice::Text)) {
+    _log = new QTextStream();
+    _log->setDevice(_logFile);
+  }
 
   // Initialize RINEX Observation Files
   // ----------------------------------
@@ -179,9 +180,11 @@ void t_reqcAnalyze::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
-  *_log << "\nAnalyze File\n"
-        <<   "------------\n"
-        << obsFile->fileName().toAscii().data() << endl << endl;
+  if (_log) {
+    *_log << "\nAnalyze File\n"
+          <<   "------------\n"
+          << obsFile->fileName().toAscii().data() << endl << endl;
+  }
 
   _satStat.clear();
 
@@ -229,7 +232,9 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
   emit displayGraph(obsFile->fileName(), dataMP1, dataMP2);
 
-  _log->flush();
+  if (_log) {
+    _log->flush();
+  }
 }
 
 //  
@@ -373,16 +378,20 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
     (*dataMP1) << (new t_polarPoint(az, zen, MP1));
     (*dataMP2) << (new t_polarPoint(az, zen, MP2));
 
-    _log->setRealNumberNotation(QTextStream::FixedNotation);
+    if (_log) {
+      _log->setRealNumberNotation(QTextStream::FixedNotation);
 
-    _log->setRealNumberPrecision(2);
-    *_log << "MP1 " << prn << " " << az << " " << zen << " ";
-    _log->setRealNumberPrecision(3);
-    *_log << MP1 << endl;
+      _log->setRealNumberPrecision(2);
+      *_log << "MP1 " << prn << " " << az << " " << zen << " ";
+      _log->setRealNumberPrecision(3);
+      *_log << MP1 << endl;
 
-    _log->setRealNumberPrecision(2);
-    *_log << "MP2 " << prn << " " << az << " " << zen << " ";
-    _log->setRealNumberPrecision(3);
-    *_log << MP2 << endl;
+      _log->setRealNumberPrecision(2);
+      *_log << "MP2 " << prn << " " << az << " " << zen << " ";
+      _log->setRealNumberPrecision(3);
+      *_log << MP2 << endl;
+
+      _log->flush();
+    }
   }
 }
