@@ -371,7 +371,7 @@ void bncRinex::writeHeader(const QByteArray& format,
   // ---------------------------
   if (_header._obsTypesV3.size() == 0) {
     if (_header._version >= 3.0) {
-      addComments << "default set of observation types used";
+      addComments << "Default set of observation types used";
     }
     _header._obsTypesV3['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
                              << "C1P" << "L1P" << "D1P" << "S1P" 
