@@ -2335,7 +2335,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable,              _reqcNavFileChooser);
     enableWidget(enable &&  enable10, _reqcOutObsLineEdit);
     enableWidget(enable &&  enable10, _reqcOutNavLineEdit);
-    enableWidget(enable && !enable10, _reqcOutLogLineEdit);
+    enableWidget(enable,              _reqcOutLogLineEdit);
     enableWidget(enable && !enable10, _reqcPlotDirLineEdit);
   }
 
