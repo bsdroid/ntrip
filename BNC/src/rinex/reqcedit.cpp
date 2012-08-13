@@ -179,7 +179,7 @@ void t_reqcEdit::editObservations() {
       if (!comment.isEmpty()) {
         txtMap["COMMENT"]  = comment;
       }
-      obsFile->header().write(outObsFile.stream(), &txtMap);
+      outObsFile.header().write(outObsFile.stream(), &txtMap);
     }
     else {
       outObsFile.checkNewHeader(obsFile->header());
