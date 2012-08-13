@@ -102,8 +102,17 @@ void t_reqcEdit::run() {
   // Log File Header
   // ---------------
   if (_log) {
+    bncApp* app = (bncApp*) qApp;
+
     *_log << QByteArray(78, '-') << endl;
     *_log << "Concatenation of RINEX Observation and/or Navigation Files\n";
+    *_log << QByteArray(78, '-') << endl;
+
+    *_log << QByteArray("Program").leftJustified(14) << ": "
+          << app->pgmName() << endl;
+    *_log << QByteArray("Run by").leftJustified(14) << ": "
+          << app->userName() << endl;
+
     *_log << QByteArray(78, '-') << endl;
     _log->flush();
   }
