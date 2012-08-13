@@ -59,6 +59,9 @@ Q_OBJECT
   void rememberLLI(const t_rnxObsFile* obsFile, const t_rnxObsFile::t_rnxEpo* epo);
   void applyLLI(const t_rnxObsFile* obsFile, t_rnxObsFile::t_rnxEpo* epo);
 
+  QString                _logFileName;
+  QFile*                 _logFile;
+  QTextStream*           _log;
   QStringList            _obsFileNames;
   QVector<t_rnxObsFile*> _rnxObsFiles;
   QString                _outObsFileName;
