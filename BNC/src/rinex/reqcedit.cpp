@@ -114,6 +114,16 @@ void t_reqcEdit::run() {
           << app->userName() << endl;
     *_log << QByteArray("Date").leftJustified(14) << ": "
           << QDateTime::currentDateTime().toUTC().toString("yyyy-MM-dd hh:mm:ss") << endl;
+    *_log << QByteArray("RINEX Version").leftJustified(14) << ": "
+          << _rnxVersion << endl;
+    *_log << QByteArray("Sampling").leftJustified(14) << ": "
+          << _samplingRate << endl;
+    *_log << QByteArray("Start time").leftJustified(14) << ": "
+          << _begTime.datestr().c_str() << ' ' 
+          << _begTime.timestr(0).c_str() << endl;
+    *_log << QByteArray("End time").leftJustified(14) << ": "
+          << _endTime.datestr().c_str() << ' ' 
+          << _endTime.timestr(0).c_str() << endl;
 
     *_log << QByteArray(78, '-') << endl;
     _log->flush();
