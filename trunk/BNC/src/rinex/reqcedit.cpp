@@ -42,6 +42,7 @@
 #include "reqcedit.h"
 #include "bncapp.h"
 #include "bncsettings.h"
+#include "bncutils.h"
 
 using namespace std;
 
@@ -54,6 +55,9 @@ t_reqcEdit::t_reqcEdit(QObject* parent) : QThread(parent) {
 
   bncSettings settings;
 
+  _logFileName    = settings.value("reqcOutLogFile").toString(); expandEnvVar(_logFileName);
+  _logFile        = 0;
+  _log            = 0;
   _obsFileNames   = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
   _outObsFileName = settings.value("reqcOutObsFile").toString();
   _navFileNames   = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
@@ -79,16 +83,31 @@ t_reqcEdit::~t_reqcEdit() {
   for (int ii = 0; ii < _ephs.size(); ii++) {
     delete _ephs[ii];
   }
+  delete _log;     _log     = 0;
+  delete _logFile; _logFile = 0;
 }
 
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::run() {
  
+  // Open Log File
+  // -------------
+  _logFile = new QFile(_logFileName);
+  _logFile->open(QIODevice::WriteOnly | QIODevice::Text);
+  _log = new QTextStream();
+  _log->setDevice(_logFile);
+
+  // Handle Observation Files
+  // ------------------------
   editObservations();
 
+  // Handle Navigations Files
+  // ------------------------
   editEphemerides();
 
+  // Exit (thread)
+  // -------------
   bncApp* app = (bncApp*) qApp;
   if ( app->mode() != bncApp::interactive) {
     app->exit(0);
