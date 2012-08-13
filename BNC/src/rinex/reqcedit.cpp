@@ -218,6 +218,11 @@ void t_reqcEdit::editObservations() {
   // -------------------------------------
   for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
     t_rnxObsFile* obsFile = _rnxObsFiles[ii];
+    if (_log) {
+      *_log << "Processing File: " << obsFile->fileName() << "  start: " 
+            << obsFile->startTime().datestr().c_str() << ' ' 
+            << obsFile->startTime().timestr(0).c_str() << endl;
+    }
     if (ii == 0) {
       outObsFile.setHeader(obsFile->header(), _rnxVersion);
       if (_begTime.valid() && _begTime > outObsFile.startTime()) {
