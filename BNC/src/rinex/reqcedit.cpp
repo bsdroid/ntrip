@@ -108,22 +108,30 @@ void t_reqcEdit::run() {
     *_log << "Concatenation of RINEX Observation and/or Navigation Files\n";
     *_log << QByteArray(78, '-') << endl;
 
-    *_log << QByteArray("Program").leftJustified(14) << ": "
+    *_log << QByteArray("Program").leftJustified(15) << ": "
           << app->pgmName() << endl;
-    *_log << QByteArray("Run by").leftJustified(14) << ": "
+    *_log << QByteArray("Run by").leftJustified(15) << ": "
           << app->userName() << endl;
-    *_log << QByteArray("Date").leftJustified(14) << ": "
+    *_log << QByteArray("Date").leftJustified(15) << ": "
           << QDateTime::currentDateTime().toUTC().toString("yyyy-MM-dd hh:mm:ss") << endl;
-    *_log << QByteArray("RINEX Version").leftJustified(14) << ": "
+    *_log << QByteArray("RINEX Version").leftJustified(15) << ": "
           << _rnxVersion << endl;
-    *_log << QByteArray("Sampling").leftJustified(14) << ": "
+    *_log << QByteArray("Sampling").leftJustified(15) << ": "
           << _samplingRate << endl;
-    *_log << QByteArray("Start time").leftJustified(14) << ": "
+    *_log << QByteArray("Start time").leftJustified(15) << ": "
           << _begTime.datestr().c_str() << ' ' 
           << _begTime.timestr(0).c_str() << endl;
-    *_log << QByteArray("End time").leftJustified(14) << ": "
+    *_log << QByteArray("End time").leftJustified(15) << ": "
           << _endTime.datestr().c_str() << ' ' 
           << _endTime.timestr(0).c_str() << endl;
+    *_log << QByteArray("Input Obs Files").leftJustified(15) << ": "
+          << _obsFileNames.join(",") << endl;
+    *_log << QByteArray("Input Nav Files").leftJustified(15) << ": "
+          << _navFileNames.join(",") << endl;
+    *_log << QByteArray("Output Obs File").leftJustified(15) << ": "
+          << _outObsFileName << endl;
+    *_log << QByteArray("Output Nav File").leftJustified(15) << ": "
+          << _outNavFileName << endl;
 
     *_log << QByteArray(78, '-') << endl;
     _log->flush();
