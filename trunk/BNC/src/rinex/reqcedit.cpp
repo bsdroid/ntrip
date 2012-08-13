@@ -160,7 +160,8 @@ void t_reqcEdit::run() {
 // Initialize input observation files, sort them according to start time
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::initRnxObsFiles(const QStringList& obsFileNames, 
-                                 QVector<t_rnxObsFile*>& rnxObsFiles) {
+                                 QVector<t_rnxObsFile*>& rnxObsFiles,
+                                 QTextStream* log) {
 
   QStringListIterator it(obsFileNames);
   while (it.hasNext()) {
@@ -179,7 +180,9 @@ void t_reqcEdit::initRnxObsFiles(const QStringList& obsFileNames,
         }
         catch (...) {
           delete rnxObsFile;
-          cerr << "Error in rnxObsFile " << filePath.toAscii().data() << endl;
+          if (log) {
+            *log << "Error in rnxObsFile " << filePath.toAscii().data() << endl;
+          }
         }
       }
     }
@@ -190,7 +193,9 @@ void t_reqcEdit::initRnxObsFiles(const QStringList& obsFileNames,
         rnxObsFiles.append(rnxObsFile);
       }
       catch (...) {
-        cerr << "Error in rnxObsFile " << fileName.toAscii().data() << endl;
+        if (log) {
+          *log << "Error in rnxObsFile " << fileName.toAscii().data() << endl;
+        }
       }
     }
   }
@@ -208,7 +213,7 @@ void t_reqcEdit::editObservations() {
     return;
   }
 
-  t_reqcEdit::initRnxObsFiles(_obsFileNames, _rnxObsFiles);
+  t_reqcEdit::initRnxObsFiles(_obsFileNames, _rnxObsFiles, _log);
 
   // Initialize output observation file
   // ----------------------------------

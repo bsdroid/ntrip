@@ -47,7 +47,8 @@ Q_OBJECT
  public:
   virtual void run();
   static void initRnxObsFiles(const QStringList& obsFileNames, 
-                              QVector<t_rnxObsFile*>& rnxObsFiles);
+                              QVector<t_rnxObsFile*>& rnxObsFiles,
+                              QTextStream* log);
   static void readEphemerides(const QStringList& navFileNames,
                               QVector<t_eph*>& ephs);
   static void appendEphemerides(const QString& fileName, QVector<t_eph*>& ephs);
