@@ -94,9 +94,17 @@ void t_reqcEdit::run() {
   // Open Log File
   // -------------
   _logFile = new QFile(_logFileName);
-  _logFile->open(QIODevice::WriteOnly | QIODevice::Text);
-  _log = new QTextStream();
-  _log->setDevice(_logFile);
+  if (_logFile->open(QIODevice::WriteOnly | QIODevice::Text)) {
+    _log = new QTextStream();
+    _log->setDevice(_logFile);
+  }
+
+  // Log File Header
+  // ---------------
+  if (_log) {
+    *_log << "Concatenation of RINEX Observation and/or Navigation Files\n";
+    _log->flush();
+  }
 
   // Handle Observation Files
   // ------------------------
