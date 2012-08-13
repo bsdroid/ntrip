@@ -158,7 +158,7 @@ void t_reqcAnalyze::run() {
 
   // Initialize RINEX Observation Files
   // ----------------------------------
-  t_reqcEdit::initRnxObsFiles(_obsFileNames, _rnxObsFiles);
+  t_reqcEdit::initRnxObsFiles(_obsFileNames, _rnxObsFiles, _log);
 
   // Read Ephemerides
   // ----------------
