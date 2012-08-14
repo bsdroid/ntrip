@@ -1036,22 +1036,22 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _reqcNavFileChooser->setMaximumWidth(15*ww);
 
   _reqcOutObsLineEdit = new QLineEdit(settings.value("reqcOutObsFile").toString());
-  _reqcOutObsLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
+  _reqcOutObsLineEdit->setWhatsThis(tr("Specify the full path to a RINEX observation output file."));
   _reqcOutObsLineEdit->setMinimumWidth(15*ww);
   _reqcOutObsLineEdit->setMaximumWidth(15*ww);
 
   _reqcOutNavLineEdit = new QLineEdit(settings.value("reqcOutNavFile").toString());
-  _reqcOutNavLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
+  _reqcOutNavLineEdit->setWhatsThis(tr("Specify the full path to a RINEX navigation output file."));
   _reqcOutNavLineEdit->setMinimumWidth(15*ww);
   _reqcOutNavLineEdit->setMaximumWidth(15*ww);
 
   _reqcOutLogLineEdit = new QLineEdit(settings.value("reqcOutLogFile").toString());
-  _reqcOutLogLineEdit->setWhatsThis(tr("Specify the full path to an output file."));
+  _reqcOutLogLineEdit->setWhatsThis(tr("Specify the full path to a logfile."));
   _reqcOutLogLineEdit->setMinimumWidth(15*ww);
   _reqcOutLogLineEdit->setMaximumWidth(15*ww);
 
   _reqcPlotDirLineEdit = new QLineEdit(settings.value("reqcPlotDir").toString());
-  _reqcPlotDirLineEdit->setWhatsThis(tr("Specify the directory name for plots."));
+  _reqcPlotDirLineEdit->setWhatsThis(tr("Specify the directory name for saving plots."));
   _reqcPlotDirLineEdit->setMinimumWidth(15*ww);
   _reqcPlotDirLineEdit->setMaximumWidth(15*ww);
 
@@ -1244,7 +1244,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _pppMountLineEdit->setWhatsThis(tr("<p>Specify an observations stream by its mountpoint from the 'Streams' list compiled below if you want BNC to estimate coordinates for the affected receiver position through a PPP solution. Example: 'FFMJ1'</p><p>Note that PPP in BNC requires to also pull a stream carrying RTCM Version 3 satellite orbit and clock corrections to Broadcast Ephemeris referring to the satellites' Antenna Phase Centers (APC). Stream CLK11 on NTRIP broadcaster products.igs-ip.net is an example.</p><p>Pulling in addition a third stream carrying Broadcast Ephemeris messages in high repetition rate is suggested if such messages are comeing from the receiver in low repetition rate or don't come at all from there.</p>"));
   _pppCorrMountLineEdit->setWhatsThis(tr("<p>You must specify an orbit/clock Broadcast Ephemeris corrections stream by its mountpoint from the 'Streams' list below. Example: 'CLK10'</p><p>Note that BNC can produce an internal PPP solution from combined Broadcast Ephemeris corrections as specified under 'Combine Corrections' if you introduce keyword 'INTERNAL' as the corrections mountpoint.</p>"));
   _pppSPPComboBox->setWhatsThis(tr("<p>Choose between plain Single Point Positioning (SPP) and Precise Point Positioning (PPP) in 'Realtime' or 'Post-Processing' mode.</p><p>When in 'Post-Processing mode:<ul><li>Specifying a RINEX Observation, a RINEX Navigation and a Broadcast Correction file leads to a PPP solution.</li><li>Specifying only a RINEX Observation and a RINEX Navigation file and no Broadcast Correction file leads to a SPP solution.</ul></p>"));
-  _reqcActionComboBox->setWhatsThis(tr("<p>BNC allows to edit or concatenate RINEX v2 or v3 files or to perform a quality check.</p><p>In this it follows UNAVCO's famous 'teqc' program.</p>"));
+  _reqcActionComboBox->setWhatsThis(tr("<p>BNC allows to edit or concatenate RINEX v2 or v3 files or to perform a quality check following UNAVCO's famous 'teqc' program.</p>"));
   _reqcEditOptionButton->setWhatsThis(tr("<p>Specify options for editing RINEX v2 or v3 files.</p>"));
   _pppUsePhaseCheckBox->setWhatsThis(tr("<p>By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations.</p><p>Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.</p>"));
   _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
