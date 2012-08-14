@@ -260,21 +260,21 @@ void t_rnxObsHeader::write(QTextStream* stream,
   }
 
   *stream << QString("%1%2")
-    .arg(_observer.isEmpty() ? "unknown" : _observer, -20)
-    .arg(_agency.isEmpty()   ? "unknown" : _agency,   -40)
+    .arg(_observer, -20)
+    .arg(_agency,   -40)
     .leftJustified(60)
            << "OBSERVER / AGENCY\n";
 
   *stream << QString("%1%2%3")
-    .arg(_receiverNumber.isEmpty()  ? "unknown" : _receiverNumber,  -20)
-    .arg(_receiverType.isEmpty()    ? "unknown" : _receiverType,    -20)
-    .arg(_receiverVersion.isEmpty() ? "unknown" : _receiverVersion, -20)
+    .arg(_receiverNumber,  -20)
+    .arg(_receiverType,    -20)
+    .arg(_receiverVersion, -20)
     .leftJustified(60)
            << "REC # / TYPE / VERS\n";
 
   *stream << QString("%1%2")
-    .arg(_antennaNumber.isEmpty() ? "unknown" : _antennaNumber, -20)
-    .arg(_antennaName.isEmpty()   ? "unknown" : _antennaName,   -20)
+    .arg(_antennaNumber, -20)
+    .arg(_antennaName,   -20)
     .leftJustified(60)
            << "ANT # / TYPE\n";
 
