@@ -72,6 +72,7 @@ t_rnxObsHeader::~t_rnxObsHeader() {
 // Read Header
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
+  _comments.clear();
   int numLines = 0;
   while ( stream->status() == QTextStream::Ok && !stream->atEnd() ) {
     QString line = stream->readLine(); ++ numLines;
