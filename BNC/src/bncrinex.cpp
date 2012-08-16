@@ -358,6 +358,9 @@ void bncRinex::writeHeader(const QByteArray& format,
     _addComments.clear();
     _addComments << format.left(6) + " " 
                                    + _mountPoint.host() + _mountPoint.path();
+    if (_header._obsTypesV3.size() == 0 && _header._version >= 3.0) {
+      _addComments << "Default set of observation types used";
+    }
     if (_nmea == "yes") {
       _addComments << "NMEA LAT=" + _latitude + " " + "LONG=" + _longitude;
     }
@@ -379,9 +382,6 @@ void bncRinex::writeHeader(const QByteArray& format,
   // Set Default RINEX v3 Types
   // ---------------------------
   if (_header._obsTypesV3.size() == 0) {
-    if (skelRead && _header._version >= 3.0) {
-      _addComments << "Default set of observation types used";
-    }
     _header._obsTypesV3['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
                              << "C1P" << "L1P" << "D1P" << "S1P" 
                              << "C2C" << "L2C" << "D2C" << "S2C" 
