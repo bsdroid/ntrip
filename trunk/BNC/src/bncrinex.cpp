@@ -176,12 +176,15 @@ t_irc bncRinex::downloadSkeleton() {
 
 // Read Skeleton Header File
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::readSkeleton() {
+bool bncRinex::readSkeleton() {
+
+  bool readDone = false;
 
   // Read the local file
   // -------------------
   QFile skl(_sklName);
   if ( skl.exists() && skl.open(QIODevice::ReadOnly) ) {
+    readDone = true;
     QTextStream in(&skl);
     _header.read(&in);
   }
@@ -192,10 +195,14 @@ void bncRinex::readSkeleton() {
             _ntripVersion != "S" ) {
     QDate currDate = currentDateAndTimeGPS().date();
     if ( !_skeletonDate.isValid() || _skeletonDate != currDate ) {
-      downloadSkeleton();
+      if (downloadSkeleton() == success) {
+        readDone = true;
+      }
       _skeletonDate = currDate;
     }
   }
+
+  return readDone;
 }
 
 // Next File Epoch (static)
@@ -334,7 +341,7 @@ void bncRinex::writeHeader(const QByteArray& format,
 
   // Read Skeleton Header
   // --------------------
-  readSkeleton();
+  bool skelRead = readSkeleton();
 
   // Set RINEX Version
   // -----------------
@@ -347,11 +354,13 @@ void bncRinex::writeHeader(const QByteArray& format,
 
   // A Few Additional Comments
   // -------------------------
-  QStringList addComments;
-  addComments << format.left(6) + " " + _mountPoint.host() + _mountPoint.path();
-
-  if (_nmea == "yes") {
-    addComments << "NMEA LAT=" + _latitude + " " + "LONG=" + _longitude;
+  if (skelRead || _addComments.size() == 0) {
+    _addComments.clear();
+    _addComments << format.left(6) + " " 
+                                   + _mountPoint.host() + _mountPoint.path();
+    if (_nmea == "yes") {
+      _addComments << "NMEA LAT=" + _latitude + " " + "LONG=" + _longitude;
+    }
   }
 
   // Set Marker Name
@@ -370,8 +379,8 @@ void bncRinex::writeHeader(const QByteArray& format,
   // Set Default RINEX v3 Types
   // ---------------------------
   if (_header._obsTypesV3.size() == 0) {
-    if (_header._version >= 3.0) {
-      addComments << "Default set of observation types used";
+    if (skelRead && _header._version >= 3.0) {
+      _addComments << "Default set of observation types used";
     }
     _header._obsTypesV3['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
                              << "C1P" << "L1P" << "D1P" << "S1P" 
@@ -409,7 +418,7 @@ void bncRinex::writeHeader(const QByteArray& format,
   QTextStream outHlp(&headerLines);
 
   QMap<QString, QString> txtMap;
-  txtMap["COMMENT"] = addComments.join("\\n");
+  txtMap["COMMENT"] = _addComments.join("\\n");
 
   _header.write(&outHlp, &txtMap);
 
