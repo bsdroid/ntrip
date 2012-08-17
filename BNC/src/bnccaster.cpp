@@ -475,6 +475,10 @@ void bncCaster::readMountPoints() {
       _confInterval = 60;
       nextShotTime = QTime(currTime.hour(), currTime.minute()+1, 0);
     }
+    else if (settings.value("onTheFlyInterval").toString() == "5 min") {
+      _confInterval = 300;
+      nextShotTime = QTime(currTime.hour(), currTime.minute()+5, 0);
+    }
     else if (settings.value("onTheFlyInterval").toString() == "1 hour") {
       _confInterval = 3600;
       nextShotTime = QTime(currTime.hour()+1, 0, 0);
