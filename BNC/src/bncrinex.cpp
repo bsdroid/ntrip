@@ -164,6 +164,8 @@ t_irc bncRinex::downloadSkeleton() {
     query->waitForRequestResult(url, outData);
     if (query->status() == bncNetQuery::finished) {
       irc = success;
+      _header._obsTypesV2.clear();
+      _header._obsTypesV3.clear();
       QTextStream in(outData);
       _header.read(&in);
     }
@@ -185,6 +187,8 @@ bool bncRinex::readSkeleton() {
   QFile skl(_sklName);
   if ( skl.exists() && skl.open(QIODevice::ReadOnly) ) {
     readDone = true;
+    _header._obsTypesV2.clear();
+    _header._obsTypesV3.clear();
     QTextStream in(&skl);
     _header.read(&in);
   }
