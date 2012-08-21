@@ -196,6 +196,13 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
         double t1 = _tMin + (_pos[ii-1]->time - _pos[0]->time);
         double t2 = _tMin + (_pos[ii]->time   - _pos[0]->time);
 
+        // Audio alarm
+        // -----------
+        // if ( ii == _pos.size() -1) {
+        //   if (fabs(neu[ii-1][0]) > 0.10 || fabs(neu[ii-1][1]) > 0.10) {
+        //   QApplication::beep(); 
+        //   }
+        // }
 
         // dots
         // ----
