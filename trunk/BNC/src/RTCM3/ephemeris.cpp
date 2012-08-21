@@ -106,7 +106,7 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
   double n0 = sqrt(gmWGS/(a0*a0*a0));
 
   bncTime tt(GPSweek, GPSweeks);
-  double tk = tt - bncTime(_TOEweek, _TOEsec);
+  double tk = tt - bncTime(int(_TOEweek), _TOEsec);
 
   double n  = n0 + _Delta_n;
   double M  = _M0 + n*tk;
@@ -400,17 +400,17 @@ void t_ephGlo::set(const glonassephemeris* ee) {
     bool changed = false;
     if      (hTime - currentTime >  secPerDay/2.0) {
       changed = true;
-      tow -= secPerDay;
+      tow -= int(secPerDay);
       if (tow < 0) {
-        tow += secPerWeek;
+        tow += int(secPerWeek);
         ww  -= 1;
       }
     }
     else if (hTime - currentTime < -secPerDay/2.0) {
       changed = true;
-      tow += secPerDay;
+      tow += int(secPerDay);
       if (tow > secPerWeek) {
-        tow -= secPerWeek;
+        tow -= int(secPerWeek);
         ww  += 1;
       }
     }
