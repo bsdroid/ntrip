@@ -304,8 +304,8 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
                                      QVector<t_polarPoint*>* dataMP1, 
                                      QVector<t_polarPoint*>* dataMP2) {
 
-  const int chunkStep =  30.0 / obsInterval; // chunk step (30 sec)  
-  const int numEpo    = 600.0 / obsInterval; // # epochs in one chunk (10 min)
+  const int chunkStep = int( 30.0 / obsInterval); // chunk step (30 sec)  
+  const int numEpo    = int(600.0 / obsInterval); // # epochs in one chunk (10 min)
 
   for (int chunkStart = 0; chunkStart + numEpo < satStat.anaObs.size();
        chunkStart += chunkStep) {
