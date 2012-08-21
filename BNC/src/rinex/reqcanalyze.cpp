@@ -194,28 +194,39 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
   // Loop over all Epochs
   // --------------------
-  while ( (_currEpo = obsFile->nextEpoch()) != 0) {
-
-    // Loop over all satellites
-    // ------------------------
-    for (unsigned iObs = 0; iObs < _currEpo->rnxSat.size(); iObs++) {
-      const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iObs];
-      t_obs obs;
-      t_postProcessing::setObsFromRnx(obsFile, _currEpo, rnxSat, obs);
-
-      if (obs.satSys == 'R') {
-        continue; // TODO: set channel number
+  try {
+    while ( (_currEpo = obsFile->nextEpoch()) != 0) {
+  
+      // Loop over all satellites
+      // ------------------------
+      for (unsigned iObs = 0; iObs < _currEpo->rnxSat.size(); iObs++) {
+        const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iObs];
+        t_obs obs;
+        t_postProcessing::setObsFromRnx(obsFile, _currEpo, rnxSat, obs);
+  
+        if (obs.satSys == 'R') {
+          continue; // TODO: set channel number
+        }
+  
+        QString prn = QString("%1%2").arg(obs.satSys)
+                                     .arg(obs.satNum, 2, 10, QChar('0'));
+  
+        t_satStat& satStat = _satStat[prn];
+  
+        satStat.addObs(obs);
       }
-
-      QString prn = QString("%1%2").arg(obs.satSys)
-                                   .arg(obs.satNum, 2, 10, QChar('0'));
-
-      t_satStat& satStat = _satStat[prn];
-
-      satStat.addObs(obs);
+  
+    } // while (_currEpo)
+  }
+  catch (QString str) {
+    if (_log) {
+      *_log << "Exception " << str << endl;
     }
-
-  } // while (_currEpo)
+    else {
+      qDebug() << str;    
+    }
+    return;
+  }
 
   // Analyze the Multipath
   // ---------------------
