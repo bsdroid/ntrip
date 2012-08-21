@@ -48,8 +48,8 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
   QString     intr  = settings.value("uploadIntr").toString();
 
   _samplRtcmEphCorr  = settings.value("uploadSamplRtcmEphCorr").toDouble();
-  double samplClkRnx = settings.value("uploadSamplClkRnx").toDouble();
-  double samplSp3    = settings.value("uploadSamplSp3").toDouble() * 60.0;
+  int samplClkRnx = settings.value("uploadSamplClkRnx").toInt();
+  int samplSp3    = settings.value("uploadSamplSp3").toInt() * 60;
 
   if (_samplRtcmEphCorr == 0.0) {
     _usedEph = 0;
