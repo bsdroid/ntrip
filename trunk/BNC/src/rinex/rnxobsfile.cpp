@@ -489,7 +489,10 @@ void t_rnxObsFile::close() {
 
 // Handle Special Epoch Flag
 ////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::handleEpochFlag(int flag, const QString& line) {
+void t_rnxObsFile::handleEpochFlag(int flag, const QString& line, 
+                                   bool& headerReRead) {
+
+  headerReRead = false;
 
   // Power Failure
   // -------------
@@ -514,6 +517,7 @@ void t_rnxObsFile::handleEpochFlag(int flag, const QString& line) {
       readInt(line, 32, 3, numLines);
     }
     _header.read(_stream, numLines);
+    headerReRead = true;
   }
 
   // Unhandled Flag
@@ -552,8 +556,11 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
     int flag = 0;
     readInt(line, 31, 1, flag);
     if (flag > 0) {
-      handleEpochFlag(flag, line);
-      continue;
+      bool headerReRead = false;
+      handleEpochFlag(flag, line, headerReRead);
+      if (headerReRead) {
+        continue;
+      }
     }
 
     QTextStream in(line.mid(1).toAscii(), QIODevice::ReadOnly);
@@ -621,8 +628,11 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
     int flag = 0;
     readInt(line, 28, 1, flag);
     if (flag > 0) {
-      handleEpochFlag(flag, line);
-      continue;
+      bool headerReRead = false;
+      handleEpochFlag(flag, line, headerReRead);
+      if (headerReRead) {
+        continue;
+      }
     }
 
     QTextStream in(line.toAscii(), QIODevice::ReadOnly);
