@@ -152,7 +152,7 @@ class t_rnxObsFile {
   void writeEpochV3(const t_rnxEpo* epo);
   t_rnxEpo* nextEpochV2();
   t_rnxEpo* nextEpochV3();
-  void handleEpochFlag(int flag, const QString& line);
+  void handleEpochFlag(int flag, const QString& line, bool& headerReRead);
 
   QString type2to3(char sys, const QString& typeV2);
   QString type3to2(const QString& typeV3);
