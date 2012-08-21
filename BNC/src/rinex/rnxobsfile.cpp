@@ -667,6 +667,9 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
       }
 
       _currEpo.rnxSat[iSat].satSys = line.toAscii()[pos];
+      if (_currEpo.rnxSat[iSat].satSys == ' ') {
+        _currEpo.rnxSat[iSat].satSys = 'G';
+      }
       readInt(line, pos + 1, 2, _currEpo.rnxSat[iSat].satNum);
 
       pos += 3;
