@@ -253,22 +253,33 @@ void t_reqcEdit::editObservations() {
       outObsFile.checkNewHeader(obsFile->header());
     }
     t_rnxObsFile::t_rnxEpo* epo = 0;
-    while ( (epo = obsFile->nextEpoch()) != 0) {
-      if (_begTime.valid() && epo->tt < _begTime) {
-        continue;
+    try {
+      while ( (epo = obsFile->nextEpoch()) != 0) {
+        if (_begTime.valid() && epo->tt < _begTime) {
+          continue;
+        }
+        if (_endTime.valid() && epo->tt > _endTime) {
+          break;
+        }
+      
+        if (_samplingRate == 0 || 
+            fmod(round(epo->tt.gpssec()), _samplingRate) == 0) {
+          applyLLI(obsFile, epo);
+          outObsFile.writeEpoch(epo);
+        }
+        else {
+          rememberLLI(obsFile, epo);
+        }
       }
-      if (_endTime.valid() && epo->tt > _endTime) {
-        break;
-      }
-    
-      if (_samplingRate == 0 || 
-          fmod(round(epo->tt.gpssec()), _samplingRate) == 0) {
-        applyLLI(obsFile, epo);
-        outObsFile.writeEpoch(epo);
+    }
+    catch (QString str) {
+      if (_log) {
+        *_log << "Exception " << str << endl;
       }
       else {
-        rememberLLI(obsFile, epo);
+        qDebug() << str;    
       }
+      return;
     }
   }
 }
