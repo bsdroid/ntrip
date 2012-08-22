@@ -378,6 +378,7 @@ bncWindow::bncWindow() {
   _pppAverageLineEdit    = new QLineEdit(settings.value("pppAverage").toString());
   _pppQuickStartLineEdit = new QLineEdit(settings.value("pppQuickStart").toString());
   _pppMaxSolGapLineEdit  = new QLineEdit(settings.value("pppMaxSolGap").toString());
+  _pppAudioResponseLineEdit  = new QLineEdit(settings.value("pppAudioResponse").toString());
   _pppRefCrdXLineEdit    = new QLineEdit(settings.value("pppRefCrdX").toString());
   _pppRefCrdYLineEdit    = new QLineEdit(settings.value("pppRefCrdY").toString());
   _pppRefCrdZLineEdit    = new QLineEdit(settings.value("pppRefCrdZ").toString());
@@ -886,6 +887,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _pppAverageLineEdit->setMaximumWidth(6*ww);
   _pppQuickStartLineEdit->setMaximumWidth(6*ww);
   _pppMaxSolGapLineEdit->setMaximumWidth(6*ww);
+  _pppAudioResponseLineEdit->setMaximumWidth(6*ww);
   _pppRefCrdXLineEdit->setMaximumWidth(10*ww);
   _pppRefCrdYLineEdit->setMaximumWidth(10*ww);
   _pppRefCrdZLineEdit->setMaximumWidth(10*ww);
@@ -986,6 +988,10 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   ppp2Layout->addWidget(new QLabel("Quick-Start (sec)    "),  ir, 6);  
   ppp2Layout->addWidget(_pppMaxSolGapLineEdit,                ir, 7, Qt::AlignRight);
   ppp2Layout->addWidget(new QLabel("Max Sol. Gap (sec)"),     ir, 8);  
+  ++ir;
+  ppp2Layout->addWidget(new QLabel("Basics cont'd"),          ir, 0);  
+  ppp2Layout->addWidget(_pppAudioResponseLineEdit,            ir, 1, Qt::AlignRight);
+  ppp2Layout->addWidget(new QLabel("Audio response (m)"),     ir, 2);  
   ++ir;
   ppp2Layout->addWidget(new QLabel("Sigmas"),                 ir, 0);
   ppp2Layout->addWidget(_pppSigCLineEdit,                     ir, 1, Qt::AlignRight);
@@ -1256,6 +1262,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _pppSigCLineEdit->setWhatsThis(tr("<p>Enter a sigma for your code observations in meters.</p><p>The higher the sigma you enter, the less the contribution of code observations to a PPP solution based on a combination of code and phase data. 5.0 (default) is likely to be an appropriate choice.</p>"));
   _pppQuickStartLineEdit->setWhatsThis(tr("<p>Enter the lenght of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate as introduced above and adjust a sigma 'XYZ Ini' according to the coordinate's precision. Fixing the coordinate is done in BNC through setting the 'Sigma XYZ Noise' you define below temporarily to zero.</p><p>This so-called Quick-Start option allows the PPP solution to rapidly converge. It requires that the antenna remains unmoved on the know position throughout the startup period.</p><p>A value of 120 is likely to be an appropriate choice for 'Quick-Start'. Default is an empty option field, meaning that you don't want BNC to operate in Quick-Start mode.</p>"));
   _pppMaxSolGapLineEdit->setWhatsThis(tr("<p>Specify a 'Maximum Solution Gap' in seconds. Should the time span between two consecutive solutions exceed this limit, the algorithm returns into Quick-Start mode and fixes the introduced reference coordinate for the specified period. A value of '60' seconds could be an appropriate choice.</p><p>This option makes only sense for a stationary operated receiver where solution convergence can be enforced because a good approximation for the rover position is known. Default is an empty option field, meaning that you don't want BNC to return into the Quick-Start mode after failures caused i.e. by longer lasting outages.</p>"));
+  _pppAudioResponseLineEdit->setWhatsThis(tr("<p>Specify an 'Audio response' threshold in meters. A beep is produced by BNC whenever a horizontal PPP coordinate component differs by more than the threshold value from the marker coordinate.</p><p>Default is an empty option field, meaning that you don't want BNC to produce alarm signals.</p>"));
   _pppSigPLineEdit->setWhatsThis(tr("<p>Enter a sigma for your phase observations in meters.</p><p>The higher the sigma you enter, the less the contribution of phase observations to a PPP solutions based on a combination of code and phase data. 0.02 (default) is likely to be an appropriate choice.</p>"));
   _pppAverageLineEdit->setWhatsThis(tr("<p>Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions computed from those individual positions obtained most recently throughout this period.</p><p>An empty option field (default) means that you don't want BNC to output moving average positions.</p>"));
   _pppSigCrd0->setWhatsThis(tr("<p>Enter a sigma in meters for the initial XYZ coordinate componentes. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode."));
@@ -1720,6 +1727,7 @@ void bncWindow::saveOptions() {
   settings.setValue("pppAverage",  _pppAverageLineEdit->text());
   settings.setValue("pppQuickStart", _pppQuickStartLineEdit->text());
   settings.setValue("pppMaxSolGap",  _pppMaxSolGapLineEdit->text());
+  settings.setValue("pppAudioResponse",  _pppAudioResponseLineEdit->text());
   settings.setValue("pppSigmaCode",_pppSigCLineEdit->text());
   settings.setValue("pppSigmaPhase",_pppSigPLineEdit->text());
   settings.setValue("pppSigCrd0",_pppSigCrd0->text());
@@ -2300,6 +2308,7 @@ void bncWindow::slotBncTextChanged(){
 
     bool enable3 = enable2 && !_pppQuickStartLineEdit->text().isEmpty();
     enableWidget(enable3, _pppMaxSolGapLineEdit);
+    enableWidget(enable3, _pppAudioResponseLineEdit);
 
     bool enable4 = enable && !_pppAntexFileChooser->fileName().isEmpty();
     enableWidget(enable4, _pppAntennaLineEdit);
