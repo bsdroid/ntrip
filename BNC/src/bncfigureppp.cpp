@@ -89,7 +89,7 @@ void bncFigurePPP::reset() {
     _pppAudioResponse = settings.value("pppAudioResponse").toDouble();
     }
   else {
-    _pppAudioResponse = 1e7;
+    _pppAudioResponse = 0.0;
   }
 
   _pppMount = settings.value("pppMount").toString();
@@ -211,9 +211,11 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
         // Audio response
         // --------------
-        if ( ii == _pos.size() -1) {
-          if (fabs(neu[ii-1][0]) > _pppAudioResponse || fabs(neu[ii-1][1]) > _pppAudioResponse) {
-          QApplication::beep(); 
+        if ( ii == _pos.size()-1) {
+          if ( _pppAudioResponse > 0.0 &&
+               (fabs(neu[ii-1][0]) > _pppAudioResponse || 
+                fabs(neu[ii-1][1]) > _pppAudioResponse) ) {
+            QApplication::beep();
           }
         }
 
