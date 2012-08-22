@@ -81,6 +81,19 @@ void bncFigurePPP::reset() {
     _xyzRef[2] = 0.0;
   }
 
+  if (settings.value("pppRefCrdX").toString() != "" &&
+      settings.value("pppRefCrdY").toString() != "" &&
+      settings.value("pppRefCrdZ").toString() != "" &&
+      settings.value("pppQuickStart").toString() != "" &&
+      settings.value("pppAudioResponse").toString() != "" ) {
+    _pppAudioResponse = settings.value("pppAudioResponse").toDouble();
+    }
+  else {
+    _pppAudioResponse = 1e7;
+  }
+
+  _pppMount = settings.value("pppMount").toString();
+
   for (int ii = 0; ii < _pos.size(); ++ii) {
     delete _pos[ii];
   }
@@ -196,13 +209,13 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
         double t1 = _tMin + (_pos[ii-1]->time - _pos[0]->time);
         double t2 = _tMin + (_pos[ii]->time   - _pos[0]->time);
 
-        // Audio alarm
-        // -----------
-        // if ( ii == _pos.size() -1) {
-        //   if (fabs(neu[ii-1][0]) > 0.10 || fabs(neu[ii-1][1]) > 0.10) {
-        //   QApplication::beep(); 
-        //   }
-        // }
+        // Audio response
+        // --------------
+        if ( ii == _pos.size() -1) {
+          if (fabs(neu[ii-1][0]) > _pppAudioResponse || fabs(neu[ii-1][1]) > _pppAudioResponse) {
+          QApplication::beep(); 
+          }
+        }
 
         // dots
         // ----
@@ -283,10 +296,11 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
       // Start Time
       // ----------
       _startTime.civil_time(hour, minute, second);
-      QString startStr = QString("Start %1:%2:%3")
+      QString startStr = QString("%4 Start %1:%2:%3")
                               .arg(hour,   2, 10, QChar('0'))
                               .arg(minute, 2, 10, QChar('0'))
-                              .arg(int(second), 2, 10, QChar('0'));
+                              .arg(int(second), 2, 10, QChar('0'))
+                              .arg(_pppMount);
       painter.setPen(QColor(Qt::black));
       painter.drawText(0, ww, pntP.x() + 16*ww, pntP.x(),
                        Qt::AlignRight, startStr);
