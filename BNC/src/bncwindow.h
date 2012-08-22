@@ -148,6 +148,7 @@ class bncWindow : public QMainWindow {
     QLineEdit* _pppAverageLineEdit;
     QLineEdit* _pppQuickStartLineEdit;
     QLineEdit* _pppMaxSolGapLineEdit;
+    QLineEdit* _pppAudioResponseLineEdit;
     QLineEdit* _pppRefCrdXLineEdit;
     QLineEdit* _pppRefCrdYLineEdit;
     QLineEdit* _pppRefCrdZLineEdit;
