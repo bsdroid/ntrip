@@ -268,6 +268,7 @@ This chapter describes how to set the BNC program options. It explains the top m
 &nbsp; &nbsp; &nbsp; 3.12.7.6 <a href=#pppaverage>Averaging</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.7.7 <a href=#pppquick>Quick-Start</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.7.8 <a href=#pppgap>Maximal Solution Gap</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.7.9 <a href=#pppaudio>Audio Response</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.8 <a href=#pppsigmas>Sigmas</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.8.1 <a href=#pppsigc>Code</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.8.2 <a href=#pppsigp>Phase</a><br>
@@ -1632,6 +1633,14 @@ Specify a 'Maximum Solution Gap' in seconds. Should the time span between two co
 </p>
 <p>
 This option makes only sense for a stationary operated receiver where solution convergence can be enforced because a good approximation for the rover position is known. Default is an empty option field, meaning that you don't want BNC to return into the 'Quick-Start' mode after failures caused i.e. by longer lasting outages.
+</p>
+
+<p><a name="pppaudio"><h4>3.12.7.9 Audio Response - optional if Quick-Start is set</h4></p>
+<p>
+For natural hazard prediction and monitoring it may be appropriate to generate audio alerts. For that you can specify an 'Audio response' threshold in meters. A beep is produced by BNC whenever a horizontal PPP coordinate component differs by more than the threshold value from the specified marker coordinate.
+</p>
+<p>
+Default is an empty option field, meaning that you don't want BNC to produce acoustic warning signals.
 </p>
 
 <p><a name="pppsigmas"><h4>3.12.8 Sigmas</h4></p>
