@@ -151,6 +151,7 @@ void bncSettings::reRead() {
     setValue_p("pppAverage",          "");
     setValue_p("pppQuickStart",       "");
     setValue_p("pppMaxSolGap",        "");
+    setValue_p("pppAudioResponse",    "");
     setValue_p("pppSigmaCode",        "10.0");
     setValue_p("pppSigmaPhase",       "0.02");
     setValue_p("pppSigCrd0",          "100.0");
