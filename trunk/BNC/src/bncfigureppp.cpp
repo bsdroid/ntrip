@@ -304,7 +304,7 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
                               .arg(int(second), 2, 10, QChar('0'))
                               .arg(_pppMount);
       painter.setPen(QColor(Qt::black));
-      painter.drawText(0, ww, pntP.x() + 16*ww, pntP.x(),
+      painter.drawText(0, ww, pntP.x() + 21*ww, pntP.x(),
                        Qt::AlignRight, startStr);
     }
   }
