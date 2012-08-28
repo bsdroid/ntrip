@@ -291,6 +291,19 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
     }
   }
 
+  // Signal-to-Noise
+  // ---------------
+  double S1 = obs.measdata("S1", 3.0);
+  if (S1 != 0.0) {
+    newObs->_SNR1 = S1;
+    okFlag = true;
+  }
+  double S2 = obs.measdata("S2", 3.0);
+  if (S2 != 0.0) {
+    newObs->_SNR2 = S2;
+    okFlag = true;
+  }
+
   // Remember the Observation
   // ------------------------
   if (okFlag) {
