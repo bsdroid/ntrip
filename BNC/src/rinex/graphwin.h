@@ -56,7 +56,7 @@ class t_graphWin : public QDialog {
              const QwtInterval scaleInterval);
   ~t_graphWin();
 
-  void savePNG(const QString& dirName);
+  void savePNG(const QString& dirName, QByteArray ext);
 
  signals:
 

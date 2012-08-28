@@ -154,7 +154,8 @@ void t_reqcAnalyze::slotDisplayGraph(const QString& fileName,
     bncSettings settings;
     QString dirName = settings.value("reqcPlotDir").toString();
     if (!dirName.isEmpty()) {
-      graphWin->savePNG(dirName);
+      QByteArray ext = scaleTitle.isEmpty() ? "_SNR.png" : "_MP.png";
+      graphWin->savePNG(dirName, ext);
     }
   }
 }
