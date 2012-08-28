@@ -119,7 +119,7 @@ void t_reqcAnalyze::slotDisplayGraph(const QString& fileName,
           }
         }
       }
-      if (data1) {
+      if (data2) {
         for (int ii = 0; ii < data2->size(); ii++) {
           double mp = data2->at(ii)->_value;
           if (maxValue < mp) {
@@ -138,7 +138,7 @@ void t_reqcAnalyze::slotDisplayGraph(const QString& fileName,
       plot1->addCurve(data1);
       plots << plot1;
     }
-    if (data1) {
+    if (data2) {
       t_polarPlot* plot2 = new t_polarPlot(QwtText(title2), scaleInterval,
                                            app->mainWindow());
       plot2->addCurve(data2);
