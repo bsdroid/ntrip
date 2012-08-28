@@ -72,13 +72,13 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
                                     QVector<t_polarPoint*>*, 
                                     const QByteArray&,
                                     QVector<t_polarPoint*>*,
-                                    double)), 
+                                    const QByteArray&, double)), 
           this, SLOT(slotDisplayGraph(const QString&, 
                                       const QByteArray&,
                                       QVector<t_polarPoint*>*, 
                                       const QByteArray&,
                                       QVector<t_polarPoint*>*,
-                                      double)));
+                                      const QByteArray&, double)));
 }
 
 // Destructor
@@ -105,6 +105,7 @@ void t_reqcAnalyze::slotDisplayGraph(const QString& fileName,
                                      QVector<t_polarPoint*>* data1, 
                                      const QByteArray& title2,
                                      QVector<t_polarPoint*>* data2,
+                                     const QByteArray& scaleTitle,
                                      double maxValue) {
 
   bncApp* app = dynamic_cast<bncApp*>(qApp);
@@ -145,7 +146,8 @@ void t_reqcAnalyze::slotDisplayGraph(const QString& fileName,
       plots << plot2;
     }
 
-    t_graphWin* graphWin = new t_graphWin(0, fileName, plots, scaleInterval);
+    t_graphWin* graphWin = new t_graphWin(0, fileName, plots, 
+                                          scaleTitle, scaleInterval);
 
     graphWin->show();
 
@@ -257,8 +259,10 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
                            dataMP1, dataMP2, dataSNR1, dataSNR2);
   }
 
-  emit displayGraph(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 2.0);
-  emit displayGraph(obsFile->fileName(), "SNR11", dataSNR1, "SNR2", dataSNR2, 9.0);
+  emit displayGraph(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 
+                    "Meters", 2.0);
+  emit displayGraph(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, 
+                    "", 9.0);
 
   if (_log) {
     _log->flush();

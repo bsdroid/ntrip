@@ -49,7 +49,7 @@ Q_OBJECT
                     QVector<t_polarPoint*>*, 
                     const QByteArray&, 
                     QVector<t_polarPoint*>*,
-                    double);
+                    const QByteArray&, double);
    
  private slots:
   void slotDisplayGraph(const QString& fileName, 
@@ -57,7 +57,7 @@ Q_OBJECT
                         QVector<t_polarPoint*>* data1, 
                         const QByteArray& title2, 
                         QVector<t_polarPoint*>* data2,
-                        double maxValue);
+                        const QByteArray& scaleTitle, double maxValue);
 
  public:
   virtual void run();
