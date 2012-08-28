@@ -243,18 +243,22 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
   // Analyze the Multipath
   // ---------------------
-  QVector<t_polarPoint*>* dataMP1 = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>* dataMP2 = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataMP1  = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataMP2  = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataSNR1 = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataSNR2 = new QVector<t_polarPoint*>;
 
   QMapIterator<QString, t_satStat> it(_satStat);
   while (it.hasNext()) {
     it.next();
     QString          prn     = it.key();
     const t_satStat& satStat = it.value();
-    analyzeMultipath(prn, satStat, xyz, obsFile->interval(), dataMP1, dataMP2);
+    analyzeMultipathAndSNR(prn, satStat, xyz, obsFile->interval(), 
+                           dataMP1, dataMP2, dataSNR1, dataSNR2);
   }
 
   emit displayGraph(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 2.0);
+  emit displayGraph(obsFile->fileName(), "SNR11", dataSNR1, "SNR2", dataSNR2, 9.0);
 
   if (_log) {
     _log->flush();
@@ -340,12 +344,14 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::analyzeMultipath(const QString& prn, 
-                                     const t_satStat& satStat,
-                                     const ColumnVector& xyz,
-                                     double obsInterval,
-                                     QVector<t_polarPoint*>* dataMP1, 
-                                     QVector<t_polarPoint*>* dataMP2) {
+void t_reqcAnalyze::analyzeMultipathAndSNR(const QString& prn, 
+                                           const t_satStat& satStat,
+                                           const ColumnVector& xyz,
+                                           double obsInterval,
+                                           QVector<t_polarPoint*>* dataMP1, 
+                                           QVector<t_polarPoint*>* dataMP2,
+                                           QVector<t_polarPoint*>* dataSNR1, 
+                                           QVector<t_polarPoint*>* dataSNR2) {
 
   const int chunkStep = int( 30.0 / obsInterval); // chunk step (30 sec)  
   const int numEpo    = int(600.0 / obsInterval); // # epochs in one chunk (10 min)
@@ -358,12 +364,18 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
     bool   slipFlag = false;
     double mean1    = 0.0;
     double mean2    = 0.0;
+    double SNR1     = 0.0;
+    double SNR2     = 0.0;
+
 
     for (int ii = 0; ii < numEpo; ii++) {
       int iEpo = chunkStart + ii;
       const t_anaObs* anaObs = satStat.anaObs[iEpo];
       mean1 += anaObs->_MP1;
       mean2 += anaObs->_MP2;
+
+      SNR1 = anaObs->_SNR1;
+      SNR2 = anaObs->_SNR2;
   
       // Check Slip
       // ----------
@@ -429,8 +441,10 @@ void t_reqcAnalyze::analyzeMultipath(const QString& prn,
 
     // Add new Point
     // -------------
-    (*dataMP1) << (new t_polarPoint(az, zen, MP1));
-    (*dataMP2) << (new t_polarPoint(az, zen, MP2));
+    (*dataMP1)  << (new t_polarPoint(az, zen, MP1));
+    (*dataMP2)  << (new t_polarPoint(az, zen, MP2));
+    (*dataSNR1) << (new t_polarPoint(az, zen, SNR1));
+    (*dataSNR2) << (new t_polarPoint(az, zen, SNR2));
 
     if (_log) {
       _log->setRealNumberNotation(QTextStream::FixedNotation);
