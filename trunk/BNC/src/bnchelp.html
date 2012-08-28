@@ -695,7 +695,7 @@ If 'Analyze' is selected, specifying a 'Log' file to output analysis results is 
 </p> 
 
 <p><img src="IMG/screenshot29.png"/></p>
-<p><u>Figure 9:</u> Example for RINEX quality check output with BNC in Post Processing mode. A multipath analysis is presented in terms of a sky plot.</p>
+<p><u>Figure 9:</u> Example for RINEX quality check output with BNC in Post Processing mode. A multipath and a signal-to-noise ratio analysis are presented in terms a sky plot.</p>
 
 <p><a name="reqcplots"><h4>3.6.5 Directory for Plots - optional if 'Action' is set</h4></p>
 <p>
@@ -725,12 +725,12 @@ or:<br>
 --key reqcObsFile tlse\*
 </p>
 
-<p>The following Linux command line produces RINEX QC multipath plots offline in 'no window' mode and saves them in directory '/home/user'. Introducing a dummy configuration file /dev/null makes sure that no configuration options previously saved on disc are used:</p>
+<p>The following Linux command line produces RINEX QC multipath and signal-to-noise ratio plots offline in 'no window' mode and saves them in directory '/home/user'. Introducing a dummy configuration file /dev/null makes sure that no configuration options previously saved on disc are used:</p>
 <p>
 /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key reqcPlotDir /home/user --nw
 </p>
 <p></p>
-<p>The following Linux command line produces the same RINEX QC multipath plots in interactive autoStart mode:</p>
+<p>The following Linux command line produces the same RINEX QC multipath and signal-to-noise ratio plots in interactive autoStart mode:</p>
 <p>
 /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key --key startTab 4 --key autoStart 2
 </p>
@@ -746,7 +746,7 @@ The following is a list of available keynames for '<u>R</u>INEX <u>E</u>diting &
 <tr><td>reqcObsFile</td><td>RINEX Observation input file(s)</td></tr>
 <tr><td>reqcNavFile</td><td>RINEX Navigation input files(s)</td></tr>
 <tr><td>reqcOutObsFile</td><td>RINEX Observation output file</td></tr>
-<tr><td>reqcPlotDir</td><td>RINEX QC multipath plot directory</td></tr>
+<tr><td>reqcPlotDir</td><td>RINEX QC plot directory</td></tr>
 <tr><td>reqcOutNavFile</td><td>RINEX Navigation output file</td></tr>
 <tr><td>reqcOutLogFile</td><td>Logfile</td></tr>
 <tr><td>reqcRnxVersion</td><td>RINEX version of emerging new file</td></tr>
@@ -2400,7 +2400,8 @@ batch mode (option -nw). Windows and Mac systems always support graphics. For
 producing plots in batch mode on Linux systems you must make sure that at
 least a virtual X-Server such as 'Xvfb' is installed and the '-display' option
 is used. The following is an example shell script to execute BNC in batch mode
-for producing multipath plots from RINEX files. It could be used via 'crontab':
+for producing multipath and signal-to-noise ratio plots from RINEX files. It
+could be used via 'crontab':
 </p>
 <pre>
 #!/bin/bash
@@ -2598,7 +2599,7 @@ Once BNC has been started, many of its configuration options cannot be changed a
 
 <tr>
 <td>Aug 2012 &nbsp;</td><td>Version 2.7 &nbsp;</td>
-<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting COMPASS and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX v2 and v3 quality check through multipath analysis and sky plot<br> [Bug] Short periodic outages in PPP time series when operated when 'Sync Corr' set to zero<br> |Add] Log observation types contained in RTCM Version 3 MSM streams<br> [Add] Reading RINEX v3 observation type header records from RINEX skeleton files<br> [Add] Logfile for RINEX file editing and concatenation<br>[Add] Save PNG plot files on disk<br> [Add] Version 2.7 published</td>
+<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting COMPASS and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX v2 and v3 quality check through multipath analysis and sky plot<br> [Add] Signal-to-noise sky plot<br> [Bug] Short periodic outages in PPP time series when operated when 'Sync Corr' set to zero<br> |Add] Log observation types contained in RTCM Version 3 MSM streams<br> [Add] Reading RINEX v3 observation type header records from RINEX skeleton files<br> [Add] Logfile for RINEX file editing and concatenation<br>[Add] Save PNG plot files on disk<br> [Add] Version 2.7 published</td>
 </tr>
 
 </table>
