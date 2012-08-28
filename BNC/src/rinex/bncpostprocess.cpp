@@ -119,6 +119,15 @@ void t_postProcessing::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
   for (int iType = 0; iType < rnxObsFile->nTypes(obs.satSys); iType++) {
     QString type = rnxObsFile->obsType(obs.satSys,iType).toAscii();
     obs.setMeasdata(type, rnxObsFile->version(), rnxSat.obs[iType]);
+    if      (type.indexOf("L1") == 0) {
+      obs.snrL1 = rnxSat.snr[iType];
+    }
+    else if (type.indexOf("L2") == 0) {
+      obs.snrL2 = rnxSat.snr[iType];
+    }
+    else if (type.indexOf("L5") == 0) {
+      obs.snrL5 = rnxSat.snr[iType];
+    }
     // TOOD: handle slip flags
   }
 }
