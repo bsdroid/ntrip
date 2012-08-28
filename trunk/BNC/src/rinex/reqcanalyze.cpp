@@ -283,13 +283,6 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
     if (P1 != 0.0) {
       newObs->_MP1 = P1 - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
       okFlag = true;
-
-      //// beg test
-      // cout.setf(ios::fixed);
-      // cout << obs.satSys << setw(2) << obs.satNum << " "
-      //      << setprecision(1) << obs.GPSWeeks << " " 
-      //      << setprecision(4) << newObs->_MP1 << endl;
-      //// end test
     }
     double P2 = obs.measdata("C2", 3.0);
     if (P2 != 0.0) {

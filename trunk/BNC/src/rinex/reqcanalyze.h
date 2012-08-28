@@ -70,11 +70,15 @@ Q_OBJECT
       _GPSWeeks = GPSWeeks;
       _MP1      = 0.0;
       _MP2      = 0.0;
+      _SNR1     = 0.0;
+      _SNR2     = 0.0;
     }
     int    _GPSWeek;
     double _GPSWeeks;
     double _MP1;
     double _MP2;
+    double _SNR1;
+    double _SNR2;
   };
 
   class t_satStat {
