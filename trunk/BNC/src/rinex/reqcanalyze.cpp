@@ -295,13 +295,37 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
   // ---------------
   double S1 = obs.measdata("S1", 3.0);
   if (S1 != 0.0) {
-    newObs->_SNR1 = S1;
+    newObs->_SNR1 = floor(S1/6);
+    if (newObs->_SNR1 > 9.0) {
+      newObs->_SNR1 = 9.0; 
+    }
+    if (newObs->_SNR1 < 1.0) {
+      newObs->_SNR1 = 1.0;
+    }
     okFlag = true;
+  }
+  else {
+    if (obs.snrL1 > 0) {
+      newObs->_SNR1 = obs.snrL1;
+      okFlag = true;
+    }
   }
   double S2 = obs.measdata("S2", 3.0);
   if (S2 != 0.0) {
-    newObs->_SNR2 = S2;
+    newObs->_SNR2 = floor(S2/6);
+    if (newObs->_SNR2 > 9.0) {
+      newObs->_SNR2 = 9.0; 
+    }
+    if (newObs->_SNR2 < 1.0) {
+      newObs->_SNR2 = 1.0;
+    }
     okFlag = true;
+  }
+  else {
+    if (obs.snrL2 > 0) {
+      newObs->_SNR2 = obs.snrL2;
+      okFlag = true;
+    }
   }
 
   // Remember the Observation
