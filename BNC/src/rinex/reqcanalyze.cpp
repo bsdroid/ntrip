@@ -114,17 +114,17 @@ void t_reqcAnalyze::slotDisplayGraph(const QString& fileName,
     if (maxValue == 0.0) {
       if (data1) {
         for (int ii = 0; ii < data1->size(); ii++) {
-          double mp = data1->at(ii)->_value;
-          if (maxValue < mp) {
-            maxValue = mp;
+          double val = data1->at(ii)->_value;
+          if (maxValue < val) {
+            maxValue = val;
           }
         }
       }
       if (data2) {
         for (int ii = 0; ii < data2->size(); ii++) {
-          double mp = data2->at(ii)->_value;
-          if (maxValue < mp) {
-            maxValue = mp;
+          double val = data2->at(ii)->_value;
+          if (maxValue < val) {
+            maxValue = val;
           }
         }
       }
@@ -379,8 +379,12 @@ void t_reqcAnalyze::analyzeMultipathAndSNR(const QString& prn,
       mean1 += anaObs->_MP1;
       mean2 += anaObs->_MP2;
 
-      SNR1 = anaObs->_SNR1;
-      SNR2 = anaObs->_SNR2;
+      if ( anaObs->_SNR1 > 0 && (SNR1 == 0 || SNR1 > anaObs->_SNR1) ) {
+        SNR1 = anaObs->_SNR1;
+      }
+      if ( anaObs->_SNR2 > 0 && (SNR2 == 0 || SNR2 > anaObs->_SNR2) ) {
+        SNR2 = anaObs->_SNR2;
+      }
   
       // Check Slip
       // ----------
