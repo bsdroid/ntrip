@@ -56,6 +56,9 @@ class t_obs {
     slip_cnt_L1 = -1;
     slip_cnt_L2 = -1;
     slip_cnt_L5 = -1;
+    snrL1 = 0;
+    snrL2 = 0;
+    snrL5 = 0;
   }
 
   ~t_obs() {}
@@ -73,6 +76,10 @@ class t_obs {
   int    slip_cnt_L1;  // L1 cumulative loss of continuity indicator (negative value = undefined)
   int    slip_cnt_L2;  // L2 cumulative loss of continuity indicator (negative value = undefined)
   int    slip_cnt_L5;  // L5 cumulative loss of continuity indicator (negative value = undefined)
+
+  int    snrL1;  // signal-to-noise ratio mapped to <1,9>
+  int    snrL2;  // s = int(floor(SNR/6)); if (s > 9) s = 9; if (s < 1) s = 1;
+  int    snrL5;
   
   double             _measdata[GNSSENTRY_NUMBER];  // data fields */ 
   unsigned long long _dataflags;                   // GNSSDF_xxx */
