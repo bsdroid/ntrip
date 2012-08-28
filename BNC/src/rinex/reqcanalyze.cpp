@@ -67,8 +67,18 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
 
   _currEpo = 0;
 
-  connect(this, SIGNAL(displayGraph(const QString&, QVector<t_polarPoint*>*, QVector<t_polarPoint*>*)), 
-          this, SLOT(slotDisplayGraph(const QString&, QVector<t_polarPoint*>*, QVector<t_polarPoint*>*)));
+  connect(this, SIGNAL(displayGraph(const QString&, 
+                                    const QByteArray&,
+                                    QVector<t_polarPoint*>*, 
+                                    const QByteArray&,
+                                    QVector<t_polarPoint*>*,
+                                    double)), 
+          this, SLOT(slotDisplayGraph(const QString&, 
+                                      const QByteArray&,
+                                      QVector<t_polarPoint*>*, 
+                                      const QByteArray&,
+                                      QVector<t_polarPoint*>*,
+                                      double)));
 }
 
 // Destructor
@@ -91,46 +101,49 @@ t_reqcAnalyze::~t_reqcAnalyze() {
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::slotDisplayGraph(const QString& fileName, 
-                                     QVector<t_polarPoint*>* dataMP1, 
-                                     QVector<t_polarPoint*>* dataMP2) {
+                                     const QByteArray& title1,
+                                     QVector<t_polarPoint*>* data1, 
+                                     const QByteArray& title2,
+                                     QVector<t_polarPoint*>* data2,
+                                     double maxValue) {
 
   bncApp* app = dynamic_cast<bncApp*>(qApp);
   if (app->GUIenabled()) {
 
-    double maxMP = 0.0;
-    for (int ii = 0; ii < dataMP1->size(); ii++) {
-      double mp = dataMP1->at(ii)->_value;
-      if (maxMP < mp) {
-        maxMP = mp;
+    if (maxValue == 0.0) {
+      if (data1) {
+        for (int ii = 0; ii < data1->size(); ii++) {
+          double mp = data1->at(ii)->_value;
+          if (maxValue < mp) {
+            maxValue = mp;
+          }
+        }
+      }
+      if (data1) {
+        for (int ii = 0; ii < data2->size(); ii++) {
+          double mp = data2->at(ii)->_value;
+          if (maxValue < mp) {
+            maxValue = mp;
+          }
+        }
       }
     }
-    for (int ii = 0; ii < dataMP2->size(); ii++) {
-      double mp = dataMP2->at(ii)->_value;
-      if (maxMP < mp) {
-        maxMP = mp;
-      }
-    }
-    if (maxMP > SLIPTRESH) {
-      maxMP = SLIPTRESH;
-    }
     
-    //// beg test
-    maxMP = 2.0;
-    //// end test
+    QwtInterval scaleInterval(0.0, maxValue);
 
-    QwtInterval scaleInterval(0.0, maxMP);
-
-    t_polarPlot* plotMP1 = new t_polarPlot(QwtText("MP1"), scaleInterval,
-                                           app->mainWindow());
-    plotMP1->addCurve(dataMP1);
-
-    t_polarPlot* plotMP2 = new t_polarPlot(QwtText("MP2"), scaleInterval,
-                                           app->mainWindow());
-    plotMP2->addCurve(dataMP2);
-    
     QVector<QWidget*> plots;
-    plots << plotMP1;
-    plots << plotMP2;
+    if (data1) {
+      t_polarPlot* plot1 = new t_polarPlot(QwtText(title1), scaleInterval,
+                                          app->mainWindow());
+      plot1->addCurve(data1);
+      plots << plot1;
+    }
+    if (data1) {
+      t_polarPlot* plot2 = new t_polarPlot(QwtText(title2), scaleInterval,
+                                           app->mainWindow());
+      plot2->addCurve(data2);
+      plots << plot2;
+    }
 
     t_graphWin* graphWin = new t_graphWin(0, fileName, plots, scaleInterval);
 
@@ -241,7 +254,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
     analyzeMultipath(prn, satStat, xyz, obsFile->interval(), dataMP1, dataMP2);
   }
 
-  emit displayGraph(obsFile->fileName(), dataMP1, dataMP2);
+  emit displayGraph(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 2.0);
 
   if (_log) {
     _log->flush();
