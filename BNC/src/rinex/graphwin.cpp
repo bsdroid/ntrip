@@ -48,6 +48,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 t_graphWin::t_graphWin(QWidget* parent, const QString& fileName, 
                        const QVector<QWidget*>& plots,
+                       const QByteArray& scaleTitle,
                        const QwtInterval scaleInterval) :  QDialog(parent) {
 
   _fileName = fileName;
@@ -75,7 +76,7 @@ t_graphWin::t_graphWin(QWidget* parent, const QString& fileName,
   _colorScale->setAlignment( QwtScaleDraw::RightScale );
   _colorScale->setColorBarEnabled( true );
 
-   QwtText title( "Meters" );
+   QwtText title(scaleTitle);
    QFont font = _colorScale->font();
    font.setBold( true );
    title.setFont( font );
