@@ -38,10 +38,12 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include "graphwin.h"
-#include "qwt_scale_widget.h"
+#include <qwt_scale_widget.h>
 #include <qwt_scale_engine.h>
 #include <qwt_plot_renderer.h>
+
+#include "graphwin.h"
+#include "bncsettings.h"
 
 using namespace std;
 
