@@ -40,6 +40,10 @@
 
 #include <iostream>
 #include <iomanip>
+
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+
 #include "reqcanalyze.h"
 #include "bncapp.h"
 #include "bncsettings.h"
@@ -508,23 +512,21 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
                                      const QByteArray& title,
                                      QMap<QString, QVector<int> >* prnAvail){
 
-  qDebug() << fileName << title;
+  if (dynamic_cast<bncApp*>(qApp)->GUIenabled()) {
 
-  QMapIterator<QString, QVector<int> > it(*prnAvail);
-  while (it.hasNext()) {
-    it.next();
-    const QString&      prn    = it.key();
-    const QVector<int>& epochs = it.value();
-    qDebug() << prn << epochs.size();
-  }
+    QwtPlot* plot = new QwtPlot();
 
-  bncApp* app = dynamic_cast<bncApp*>(qApp);
-  if (app->GUIenabled()) {
+    int iC = 0;
+    QMapIterator<QString, QVector<int> > it(*prnAvail);
+    while (it.hasNext()) {
+      it.next();
+      const QString&      prn    = it.key();
+      const QVector<int>& epochs = it.value();
+    }
 
     QVector<QWidget*> plots;
-
+    plots << plot;
     t_graphWin* graphWin = new t_graphWin(0, fileName, plots, 0, 0);
-
     graphWin->show();
 
     bncSettings settings;
