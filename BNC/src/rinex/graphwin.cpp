@@ -48,8 +48,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 t_graphWin::t_graphWin(QWidget* parent, const QString& fileName, 
                        const QVector<QWidget*>& plots,
-                       const QByteArray& scaleTitle,
-                       const QwtInterval scaleInterval) :  QDialog(parent) {
+                       const QByteArray* scaleTitle,
+                       const QwtInterval* scaleInterval) :  QDialog(parent) {
 
   _fileName = fileName;
 
@@ -72,23 +72,28 @@ t_graphWin::t_graphWin(QWidget* parent, const QString& fileName,
 
   // Color Scale
   // -----------
-  _colorScale = new QwtScaleWidget( this );
-  _colorScale->setAlignment( QwtScaleDraw::RightScale );
-  _colorScale->setColorBarEnabled( true );
-
-   QwtText title(scaleTitle);
-   QFont font = _colorScale->font();
-   font.setBold( true );
-   title.setFont( font );
-   _colorScale->setTitle( title );
-
-   _colorScale->setColorMap(scaleInterval, new t_colorMap());
-
-   QwtLinearScaleEngine scaleEngine;
-   _colorScale->setScaleDiv(scaleEngine.transformation(),
-                            scaleEngine.divideScale(scaleInterval.minValue(), 
-                                                    scaleInterval.maxValue(), 
-                                                    8, 5));
+  if (scaleTitle && scaleInterval) {
+    _colorScale = new QwtScaleWidget( this );
+    _colorScale->setAlignment( QwtScaleDraw::RightScale );
+    _colorScale->setColorBarEnabled( true );
+    
+     QwtText title(*scaleTitle);
+     QFont font = _colorScale->font();
+     font.setBold( true );
+     title.setFont( font );
+     _colorScale->setTitle( title );
+    
+     _colorScale->setColorMap(*scaleInterval, new t_colorMap());
+    
+     QwtLinearScaleEngine scaleEngine;
+     _colorScale->setScaleDiv(scaleEngine.transformation(),
+                              scaleEngine.divideScale(scaleInterval->minValue(),
+                                                      scaleInterval->maxValue(),
+                                                      8, 5));
+  }
+  else {
+    _colorScale = 0;
+  }
 
   // Layout
   // ------
@@ -97,7 +102,9 @@ t_graphWin::t_graphWin(QWidget* parent, const QString& fileName,
   for (int ip = 0; ip < plots.size(); ip++) {
     plotLayout->addWidget(plots[ip]);
   }
-  plotLayout->addWidget(_colorScale);
+  if (_colorScale) {
+    plotLayout->addWidget(_colorScale);
+  }
 
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(_buttonClose);
