@@ -1,9 +1,6 @@
 
-#include <qwt_scale_engine.h>
 #include <qwt_symbol.h>
 #include <qwt_plot_curve.h>
-#include <qwt_plot_grid.h>
-#include <qwt_legend.h>
 
 #include "availplot.h"
 #include "reqcanalyze.h"
@@ -13,19 +10,6 @@ t_availPlot::t_availPlot(QWidget* parent,
 : QwtPlot(parent) {
 
   setCanvasBackground(QColor(Qt::white));
-
-  // Legend
-  // ------
-  QwtLegend* legend = new QwtLegend;
-  insertLegend(legend, QwtPlot::RightLegend);
-
-
-    // grid 
-    QwtPlotGrid *grid = new QwtPlotGrid;
-    grid->enableXMin(true);
-    grid->setMajPen(QPen(Qt::gray, 0, Qt::DotLine));
-    grid->setMinPen(QPen(Qt::gray, 0 , Qt::DotLine));
-    grid->attach(this);
 
   // Axes
   // ----
@@ -56,7 +40,6 @@ t_availPlot::t_availPlot(QWidget* parent,
     QwtPlotCurve* curve = new QwtPlotCurve(prn);
     curve->setSymbol( symbol );
     curve->setStyle( QwtPlotCurve::NoCurve );
-    curve->setLegendAttribute( QwtPlotCurve::LegendShowSymbol );
     curve->setXAxis(QwtPlot::xBottom);
     curve->setYAxis(QwtPlot::yLeft);
     curve->setSamples(xData, yData, epochs.size());
