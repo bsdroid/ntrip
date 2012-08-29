@@ -52,8 +52,8 @@ class t_graphWin : public QDialog {
 
  public:
   t_graphWin(QWidget* parent, const QString& fileName, 
-             const QVector<QWidget*>& plots, const QByteArray& scaleTitle,
-             const QwtInterval scaleInterval);
+             const QVector<QWidget*>& plots, const QByteArray* scaleTitle,
+             const QwtInterval* scaleInterval);
   ~t_graphWin();
 
   void savePNG(const QString& dirName, QByteArray ext);

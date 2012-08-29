@@ -155,7 +155,7 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
     }
 
     t_graphWin* graphWin = new t_graphWin(0, fileName, plots, 
-                                          scaleTitle, scaleInterval);
+                                          &scaleTitle, &scaleInterval);
 
     graphWin->show();
 
@@ -425,6 +425,8 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
       }
     }
 
+    dataL1 << int(firstEpoch.gpssec());
+
     if (slipFlag) {
       continue;
     }
@@ -482,8 +484,6 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
     (*dataSNR1) << (new t_polarPoint(az, zen, SNR1));
     (*dataSNR2) << (new t_polarPoint(az, zen, SNR2));
 
-    dataL1 << int(firstEpoch.gpssec());
-
     if (_log) {
       _log->setRealNumberNotation(QTextStream::FixedNotation);
 
@@ -508,4 +508,30 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
                                      const QByteArray& title,
                                      QMap<QString, QVector<int> >* prnAvail){
 
+  qDebug() << fileName << title;
+
+  QMapIterator<QString, QVector<int> > it(*prnAvail);
+  while (it.hasNext()) {
+    it.next();
+    const QString&      prn    = it.key();
+    const QVector<int>& epochs = it.value();
+    qDebug() << prn << epochs.size();
+  }
+
+  bncApp* app = dynamic_cast<bncApp*>(qApp);
+  if (app->GUIenabled()) {
+
+    QVector<QWidget*> plots;
+
+    t_graphWin* graphWin = new t_graphWin(0, fileName, plots, 0, 0);
+
+    graphWin->show();
+
+    bncSettings settings;
+    QString dirName = settings.value("reqcPlotDir").toString();
+    if (!dirName.isEmpty()) {
+      QByteArray ext = "_AVAIL.png";
+      graphWin->savePNG(dirName, ext);
+    }
+  }
 }
