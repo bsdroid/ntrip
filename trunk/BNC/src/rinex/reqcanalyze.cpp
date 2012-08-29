@@ -281,7 +281,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, 
                   "", 9.0);
 
-  emit dspAvailPlot(obsFile->fileName(), "Availability L1", availL1);
+  /////  emit dspAvailPlot(obsFile->fileName(), "Availability L1", availL1);
 
   if (_log) {
     _log->flush();
