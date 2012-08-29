@@ -83,13 +83,8 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
                                     QVector<t_polarPoint*>*,
                                     const QByteArray&, double)));
 
-  connect(this, SIGNAL(dspAvailPlot(const QString&, 
-                                    const QByteArray&,
-                                    QMap<QString, QVector<int> >*)),
-          this, SLOT(slotDspAvailPlot(const QString&, 
-                                      const QByteArray&,
-                                      QMap<QString, QVector<int> >*)));
-
+  connect(this, SIGNAL(dspAvailPlot(const QString&, const QByteArray&)),
+          this, SLOT(slotDspAvailPlot(const QString&, const QByteArray&)));
 }
 
 // Destructor
@@ -213,7 +208,8 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
           << obsFile->fileName().toAscii().data() << endl << endl;
   }
 
-  _satStat.clear();
+  _allObsMap.clear();
+  _availDataMap.clear();
 
   // A priori Coordinates
   // --------------------
@@ -238,9 +234,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         QString prn = QString("%1%2").arg(obs.satSys)
                                      .arg(obs.satNum, 2, 10, QChar('0'));
   
-        t_satStat& satStat = _satStat[prn];
-  
-        satStat.addObs(obs);
+        _allObsMap[prn].addObs(obs);
       }
   
     } // while (_currEpo)
@@ -261,17 +255,13 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   QVector<t_polarPoint*>*       dataMP2  = new QVector<t_polarPoint*>;
   QVector<t_polarPoint*>*       dataSNR1 = new QVector<t_polarPoint*>;
   QVector<t_polarPoint*>*       dataSNR2 = new QVector<t_polarPoint*>;
-  QMap<QString, QVector<int> >* availL1  = new QMap<QString, QVector<int> >;
 
-
-  QMapIterator<QString, t_satStat> it(_satStat);
+  QMutableMapIterator<QString, t_allObs> it(_allObsMap);
   while (it.hasNext()) {
     it.next();
-    QString          prn     = it.key();
-    const t_satStat& satStat = it.value();
-    QVector<int>&    dataL1  = (*availL1)[prn];
-    preparePlotData(prn, satStat, xyz, obsFile->interval(), 
-                    dataMP1, dataMP2, dataSNR1, dataSNR2, dataL1);
+    QString    prn     = it.key();
+    preparePlotData(prn, xyz, obsFile->interval(), 
+                    dataMP1, dataMP2, dataSNR1, dataSNR2);
   }
 
   emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 
@@ -280,7 +270,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, 
                   "", 9.0);
 
-  emit dspAvailPlot(obsFile->fileName(), "Availability L1", availL1);
+  emit dspAvailPlot(obsFile->fileName(), "Availability L1");
 
   if (_log) {
     _log->flush();
@@ -289,9 +279,9 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) { 
+void t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) { 
 
-  t_anaObs* newObs = new t_anaObs(obs.GPSWeek, obs.GPSWeeks);
+  t_oneObs* newObs = new t_oneObs(obs.GPSWeek, obs.GPSWeeks);
   bool      okFlag = false;
 
   // Compute the Multipath
@@ -363,7 +353,7 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
   // Remember the Observation
   // ------------------------
   if (okFlag) {
-    anaObs << newObs;
+    _oneObsVec << newObs;
   }
   else {
     delete newObs;
@@ -372,20 +362,19 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::preparePlotData(const QString& prn, 
-                                    const t_satStat& satStat,
-                                    const ColumnVector& xyz,
+void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
                                     double obsInterval,
                                     QVector<t_polarPoint*>* dataMP1, 
                                     QVector<t_polarPoint*>* dataMP2,
                                     QVector<t_polarPoint*>* dataSNR1, 
-                                    QVector<t_polarPoint*>* dataSNR2,
-                                    QVector<int>&           dataL1) {
+                                    QVector<t_polarPoint*>* dataSNR2) {
 
   const int chunkStep = int( 30.0 / obsInterval); // chunk step (30 sec)  
   const int numEpo    = int(600.0 / obsInterval); // # epochs in one chunk (10 min)
 
-  for (int chunkStart = 0; chunkStart + numEpo < satStat.anaObs.size();
+  t_allObs& allObs = _allObsMap[prn];
+
+  for (int chunkStart = 0; chunkStart + numEpo < allObs._oneObsVec.size();
        chunkStart += chunkStep) {
 
     bncTime firstEpoch;
@@ -400,35 +389,34 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 
     for (int ii = 0; ii < numEpo; ii++) {
       int iEpo = chunkStart + ii;
-      const t_anaObs* anaObs = satStat.anaObs[iEpo];
+      const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
 
       if (ii == 0) {
-        firstEpoch.set(anaObs->_GPSWeek, anaObs->_GPSWeeks);
+        bncTime epoTime(oneObs->_GPSWeek, oneObs->_GPSWeeks);
+        _availDataMap[prn]._epoL1 << epoTime.mjddec();
       }
 
-      mean1 += anaObs->_MP1;
-      mean2 += anaObs->_MP2;
+      mean1 += oneObs->_MP1;
+      mean2 += oneObs->_MP2;
 
-      if ( anaObs->_SNR1 > 0 && (SNR1 == 0 || SNR1 > anaObs->_SNR1) ) {
-        SNR1 = anaObs->_SNR1;
+      if ( oneObs->_SNR1 > 0 && (SNR1 == 0 || SNR1 > oneObs->_SNR1) ) {
+        SNR1 = oneObs->_SNR1;
       }
-      if ( anaObs->_SNR2 > 0 && (SNR2 == 0 || SNR2 > anaObs->_SNR2) ) {
-        SNR2 = anaObs->_SNR2;
+      if ( oneObs->_SNR2 > 0 && (SNR2 == 0 || SNR2 > oneObs->_SNR2) ) {
+        SNR2 = oneObs->_SNR2;
       }
   
       // Check Slip
       // ----------
       if (ii > 0) {
-        double diff1 = anaObs->_MP1 - satStat.anaObs[iEpo-1]->_MP1;
-        double diff2 = anaObs->_MP2 - satStat.anaObs[iEpo-1]->_MP2;
+        double diff1 = oneObs->_MP1 - allObs._oneObsVec[iEpo-1]->_MP1;
+        double diff2 = oneObs->_MP2 - allObs._oneObsVec[iEpo-1]->_MP2;
         if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
           slipFlag = true;
           break;
         }
       }
     }
-
-    dataL1 << int(firstEpoch.gpssec());
 
     if (slipFlag) {
       continue;
@@ -443,16 +431,16 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
     double stddev2 = 0.0;
     for (int ii = 0; ii < numEpo; ii++) {
       int iEpo = chunkStart + ii;
-      const t_anaObs* anaObs = satStat.anaObs[iEpo];
-      double diff1 = anaObs->_MP1 - mean1;
-      double diff2 = anaObs->_MP2 - mean2;
+      const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
+      double diff1 = oneObs->_MP1 - mean1;
+      double diff2 = oneObs->_MP2 - mean2;
       stddev1 += diff1 * diff1;
       stddev2 += diff2 * diff2;
     }
     double MP1 = sqrt(stddev1 / (numEpo-1));
     double MP2 = sqrt(stddev2 / (numEpo-1));
 
-    const t_anaObs* anaObs0 = satStat.anaObs[chunkStart];
+    const t_oneObs* oneObs0 = allObs._oneObsVec[chunkStart];
 
     // Compute the Azimuth and Zenith Distance
     // ---------------------------------------
@@ -469,7 +457,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
       
       if (eph) {
         double xSat, ySat, zSat, clkSat;
-        eph->position(anaObs0->_GPSWeek, anaObs0->_GPSWeeks, 
+        eph->position(oneObs0->_GPSWeek, oneObs0->_GPSWeeks, 
                       xSat, ySat, zSat, clkSat);
       
         double rho, eleSat, azSat;
@@ -508,12 +496,12 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, 
-                                     const QByteArray& title,
-                                     QMap<QString, QVector<int> >* prnAvail){
+                                     const QByteArray& title) {
 
   if (dynamic_cast<bncApp*>(qApp)->GUIenabled()) {
 
-    t_availPlot* plot = new t_availPlot(0, prnAvail);
+    t_availPlot* plot = new t_availPlot(0, &_availDataMap);
+    plot->setTitle(title);
 
     QVector<QWidget*> plots;
     plots << plot;

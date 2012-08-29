@@ -6,12 +6,11 @@
 #include <qwt_legend.h>
 
 #include "availplot.h"
+#include "reqcanalyze.h"
 
 t_availPlot::t_availPlot(QWidget* parent, 
-                         QMap<QString, QVector<int> >* prnAvail) 
+                        QMap<QString, t_availData>* availDataMap) 
 : QwtPlot(parent) {
-
-  setTitle("Availability Plot");  
 
   setCanvasBackground(QColor(Qt::white));
 
@@ -36,12 +35,13 @@ t_availPlot::t_availPlot(QWidget* parent,
   // Curves
   // ------
   int iC = 0;
-  QMapIterator<QString, QVector<int> > it(*prnAvail);
+  QMapIterator<QString, t_availData > it(*availDataMap);
   while (it.hasNext()) {
     it.next();
     ++iC;
-    const QString&      prn    = it.key();
-    const QVector<int>& epochs = it.value();
+    const QString&         prn       = it.key();
+    const t_availData&     availData = it.value();
+    const QVector<double>& epochs    = availData._epoL1;
 
     double xData[epochs.size()];
     double yData[epochs.size()];
