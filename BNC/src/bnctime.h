@@ -14,6 +14,7 @@ class bncTime {
   bncTime& set(int year, int month, int day, int hour, int min, double sec);
   bncTime& set(int year, int month, int day, double daysec);
   bncTime& setmjd(double daysec, int mjd);
+  bncTime& setmjd(double mjddec);
 
   void         reset() {_mjd = 0; _sec = 0;}
   unsigned int mjd()    const;
