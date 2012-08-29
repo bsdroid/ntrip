@@ -40,6 +40,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <qwt_plot_renderer.h>
 
 #include "reqcanalyze.h"
 #include "bncapp.h"
@@ -165,7 +166,7 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
     QString dirName = settings.value("reqcPlotDir").toString();
     if (!dirName.isEmpty()) {
       QByteArray ext = scaleTitle.isEmpty() ? "_SNR.png" : "_MP.png";
-      graphWin->savePNG(dirName, ext, 0);
+      graphWin->savePNG(dirName, ext);
     }
   }
 }
@@ -523,7 +524,7 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
     QString dirName = settings.value("reqcPlotDir").toString();
     if (!dirName.isEmpty()) {
       QByteArray ext = "_AVAIL.png";
-      graphWin->savePNG(dirName, ext, plot);
+      graphWin->savePNG(dirName, ext);
     }
   }
 }
