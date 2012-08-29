@@ -33,6 +33,11 @@
 
 class t_polarPoint;
 
+class t_availData {
+ public:
+  QVector<double> _epoL1;
+};
+
 class t_reqcAnalyze : public QThread {
 Q_OBJECT
  
@@ -51,8 +56,7 @@ Q_OBJECT
                   QVector<t_polarPoint*>*,
                   const QByteArray&, double);
 
-  void dspAvailPlot(const QString&, const QByteArray&,
-                    QMap<QString, QVector<int> >*);
+  void dspAvailPlot(const QString&, const QByteArray&);
    
  private slots:
   void slotDspSkyPlot(const QString& fileName, 
@@ -62,16 +66,15 @@ Q_OBJECT
                       QVector<t_polarPoint*>* data2,
                       const QByteArray& scaleTitle, double maxValue);
 
-  void slotDspAvailPlot(const QString& fileName, const QByteArray& title,
-                        QMap<QString, QVector<int> >* prnAvail);
+  void slotDspAvailPlot(const QString& fileName, const QByteArray& title);
 
  public:
   virtual void run();
  
  private:
-  class t_anaObs {
+  class t_oneObs {
    public:
-    t_anaObs(int GPSWeek, double GPSWeeks) {
+    t_oneObs(int GPSWeek, double GPSWeeks) {
       _GPSWeek  = GPSWeek;
       _GPSWeeks = GPSWeeks;
       _hasL1    = false;
@@ -91,36 +94,36 @@ Q_OBJECT
     double _SNR2;
   };
 
-  class t_satStat {
+  class t_allObs {
    public:
-    t_satStat() {}
-    ~t_satStat() {
-      for (int ii = 0; ii < anaObs.size(); ii++) {
-        delete anaObs[ii];
+    t_allObs() {}
+    ~t_allObs() {
+      for (int ii = 0; ii < _oneObsVec.size(); ii++) {
+        delete _oneObsVec[ii];
       }
     }
     void addObs(const t_obs& obs);
-    QVector<t_anaObs*> anaObs;
+    QVector<t_oneObs*> _oneObsVec;
   };
 
   void analyzeFile(t_rnxObsFile* obsFile);
-  void preparePlotData(const QString& prn, const t_satStat& satStat,
-                       const ColumnVector& xyz, double obsInterval,
+  void preparePlotData(const QString& prn, const ColumnVector& xyz, 
+                       double obsInterval,
                        QVector<t_polarPoint*>* dataMP1, 
                        QVector<t_polarPoint*>* dataMP2,
                        QVector<t_polarPoint*>* dataSNR1, 
-                       QVector<t_polarPoint*>* dataSNR2,
-                       QVector<int>&           dataL1);
+                       QVector<t_polarPoint*>* dataSNR2);
 
-  QString                  _logFileName;
-  QFile*                   _logFile;
-  QTextStream*             _log;
-  QStringList              _obsFileNames;
-  QVector<t_rnxObsFile*>   _rnxObsFiles;
-  QStringList              _navFileNames;
-  QVector<t_eph*>          _ephs;
-  QMap<QString, t_satStat> _satStat;
-  t_rnxObsFile::t_rnxEpo*  _currEpo;
+  QString                    _logFileName;
+  QFile*                     _logFile;
+  QTextStream*               _log;
+  QStringList                _obsFileNames;
+  QVector<t_rnxObsFile*>     _rnxObsFiles;
+  QStringList                _navFileNames;
+  QVector<t_eph*>            _ephs;
+  t_rnxObsFile::t_rnxEpo*    _currEpo;
+  QMap<QString, t_allObs>    _allObsMap;
+  QMap<QString, t_availData> _availDataMap;
 };
 
 #endif
