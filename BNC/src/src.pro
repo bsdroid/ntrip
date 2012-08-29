@@ -114,10 +114,12 @@ exists(rinex/bncpostprocess.h) {
   HEADERS += rinex/bncpostprocess.h   rinex/rnxobsfile.h   \
              rinex/rnxnavfile.h       rinex/corrfile.h     \
              rinex/reqcedit.h         rinex/reqcanalyze.h  \
-             rinex/graphwin.h         rinex/polarplot.h 
+             rinex/graphwin.h         rinex/polarplot.h    \
+             rinex/availplot.h
   SOURCES += rinex/bncpostprocess.cpp rinex/rnxobsfile.cpp \
              rinex/rnxnavfile.cpp     rinex/corrfile.cpp   \
              rinex/reqcedit.cpp       rinex/reqcanalyze.cpp \
-             rinex/graphwin.cpp       rinex/polarplot.cpp
+             rinex/graphwin.cpp       rinex/polarplot.cpp   \
+             rinex/availplot.cpp
 }
 

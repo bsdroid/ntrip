@@ -28,6 +28,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <qwt_color_map.h>
+#include <qwt_plot.h>
 
 class QwtScaleWidget;
 
@@ -56,7 +57,7 @@ class t_graphWin : public QDialog {
              const QwtInterval* scaleInterval);
   ~t_graphWin();
 
-  void savePNG(const QString& dirName, QByteArray ext);
+  void savePNG(const QString& dirName, QByteArray ext, QwtPlot* plot);
 
  signals:
 

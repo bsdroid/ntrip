@@ -41,6 +41,7 @@
 #include "graphwin.h"
 #include "qwt_scale_widget.h"
 #include <qwt_scale_engine.h>
+#include <qwt_plot_renderer.h>
 
 using namespace std;
 
@@ -158,13 +159,12 @@ void t_graphWin::slotPrint() {
 
 // Save the Widget as PNG Files
 ////////////////////////////////////////////////////////////////////////////
-void t_graphWin::savePNG(const QString& dirName, QByteArray ext) {
+void t_graphWin::savePNG(const QString& dirName, QByteArray ext,
+                         QwtPlot* plot) {
   if (dirName.isEmpty()) {
     return;
   }
-  QImage image(_canvas->size(), QImage::Format_RGB32);
-  QPainter painter(&image);
-  _canvas->render(&painter);
+
   QDir dir(dirName);
   QFileInfo fileInfo(_fileName);
   if (ext.isEmpty()) {
@@ -172,5 +172,17 @@ void t_graphWin::savePNG(const QString& dirName, QByteArray ext) {
   }
   QString fileName = dir.path() + QDir::separator()
                    + fileInfo.completeBaseName() + ext;
-  image.save(fileName,"PNG");
+
+  if (plot) {        
+    QwtPlotRenderer renderer;
+    renderer.setDiscardFlag(QwtPlotRenderer::DiscardBackground, false);
+    renderer.setLayoutFlag(QwtPlotRenderer::KeepFrames, true);
+    renderer.renderDocument(plot, fileName, QSizeF(300, 200), 85);
+  }
+  else {
+    QImage image(_canvas->size(), QImage::Format_RGB32);
+    QPainter painter(&image);
+    _canvas->render(&painter);
+    image.save(fileName,"PNG");
+  }
 }
