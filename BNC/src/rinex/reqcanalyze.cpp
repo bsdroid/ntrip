@@ -43,6 +43,7 @@
 
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
+#include <qwt_symbol.h>
 
 #include "reqcanalyze.h"
 #include "bncapp.h"
@@ -281,7 +282,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, 
                   "", 9.0);
 
-  /////  emit dspAvailPlot(obsFile->fileName(), "Availability L1", availL1);
+  emit dspAvailPlot(obsFile->fileName(), "Availability L1", availL1);
 
   if (_log) {
     _log->flush();
@@ -520,8 +521,23 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
     QMapIterator<QString, QVector<int> > it(*prnAvail);
     while (it.hasNext()) {
       it.next();
+      ++iC;
       const QString&      prn    = it.key();
       const QVector<int>& epochs = it.value();
+
+      QVector<QPointF> samples;
+      for (int ii = 0; ii < epochs.size(); ii++) {
+        samples << QPointF(epochs[ii], iC);
+      }
+
+      QwtPlotCurve* curve = new QwtPlotCurve(prn);
+      curve->setStyle( QwtPlotCurve::NoCurve );
+      QwtSymbol* symbol = new QwtSymbol( QwtSymbol::XCross );
+      symbol->setSize( 4 );
+      curve->setSymbol( symbol );
+      curve->setLegendAttribute( QwtPlotCurve::LegendShowSymbol );
+      curve->setSamples(samples);
+      curve->attach(plot);
     }
 
     QVector<QWidget*> plots;
