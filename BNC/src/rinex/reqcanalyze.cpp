@@ -67,18 +67,26 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
 
   _currEpo = 0;
 
-  connect(this, SIGNAL(displayGraph(const QString&, 
+  connect(this, SIGNAL(dspSkyPlot(const QString&, 
+                                  const QByteArray&,
+                                  QVector<t_polarPoint*>*, 
+                                  const QByteArray&,
+                                  QVector<t_polarPoint*>*,
+                                  const QByteArray&, double)), 
+          this, SLOT(slotDspSkyPlot(const QString&, 
                                     const QByteArray&,
                                     QVector<t_polarPoint*>*, 
                                     const QByteArray&,
                                     QVector<t_polarPoint*>*,
-                                    const QByteArray&, double)), 
-          this, SLOT(slotDisplayGraph(const QString&, 
+                                    const QByteArray&, double)));
+
+  connect(this, SIGNAL(dspAvailPlot(const QString&, 
+                                    const QByteArray&,
+                                    QMap<QString, QVector<int> >*)),
+          this, SLOT(slotDspAvailPlot(const QString&, 
                                       const QByteArray&,
-                                      QVector<t_polarPoint*>*, 
-                                      const QByteArray&,
-                                      QVector<t_polarPoint*>*,
-                                      const QByteArray&, double)));
+                                      QMap<QString, QVector<int> >*)));
+
 }
 
 // Destructor
@@ -100,13 +108,13 @@ t_reqcAnalyze::~t_reqcAnalyze() {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::slotDisplayGraph(const QString& fileName, 
-                                     const QByteArray& title1,
-                                     QVector<t_polarPoint*>* data1, 
-                                     const QByteArray& title2,
-                                     QVector<t_polarPoint*>* data2,
-                                     const QByteArray& scaleTitle,
-                                     double maxValue) {
+void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName, 
+                                   const QByteArray& title1,
+                                   QVector<t_polarPoint*>* data1, 
+                                   const QByteArray& title2,
+                                   QVector<t_polarPoint*>* data2,
+                                   const QByteArray& scaleTitle,
+                                   double maxValue) {
 
   bncApp* app = dynamic_cast<bncApp*>(qApp);
   if (app->GUIenabled()) {
@@ -246,24 +254,30 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
   // Analyze the Multipath
   // ---------------------
-  QVector<t_polarPoint*>* dataMP1  = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>* dataMP2  = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>* dataSNR1 = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>* dataSNR2 = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>*       dataMP1  = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>*       dataMP2  = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>*       dataSNR1 = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>*       dataSNR2 = new QVector<t_polarPoint*>;
+  QMap<QString, QVector<int> >* availL1  = new QMap<QString, QVector<int> >;
+
 
   QMapIterator<QString, t_satStat> it(_satStat);
   while (it.hasNext()) {
     it.next();
     QString          prn     = it.key();
     const t_satStat& satStat = it.value();
-    analyzeMultipathAndSNR(prn, satStat, xyz, obsFile->interval(), 
-                           dataMP1, dataMP2, dataSNR1, dataSNR2);
+    QVector<int>&    dataL1  = (*availL1)[prn];
+    preparePlotData(prn, satStat, xyz, obsFile->interval(), 
+                    dataMP1, dataMP2, dataSNR1, dataSNR2, dataL1);
   }
 
-  emit displayGraph(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 
-                    "Meters", 2.0);
-  emit displayGraph(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, 
-                    "", 9.0);
+  emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 
+                  "Meters", 2.0);
+
+  emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, 
+                  "", 9.0);
+
+  emit dspAvailPlot(obsFile->fileName(), "Availability L1", availL1);
 
   if (_log) {
     _log->flush();
@@ -355,20 +369,23 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::analyzeMultipathAndSNR(const QString& prn, 
-                                           const t_satStat& satStat,
-                                           const ColumnVector& xyz,
-                                           double obsInterval,
-                                           QVector<t_polarPoint*>* dataMP1, 
-                                           QVector<t_polarPoint*>* dataMP2,
-                                           QVector<t_polarPoint*>* dataSNR1, 
-                                           QVector<t_polarPoint*>* dataSNR2) {
+void t_reqcAnalyze::preparePlotData(const QString& prn, 
+                                    const t_satStat& satStat,
+                                    const ColumnVector& xyz,
+                                    double obsInterval,
+                                    QVector<t_polarPoint*>* dataMP1, 
+                                    QVector<t_polarPoint*>* dataMP2,
+                                    QVector<t_polarPoint*>* dataSNR1, 
+                                    QVector<t_polarPoint*>* dataSNR2,
+                                    QVector<int>&           dataL1) {
 
   const int chunkStep = int( 30.0 / obsInterval); // chunk step (30 sec)  
   const int numEpo    = int(600.0 / obsInterval); // # epochs in one chunk (10 min)
 
   for (int chunkStart = 0; chunkStart + numEpo < satStat.anaObs.size();
        chunkStart += chunkStep) {
+
+    bncTime firstEpoch;
 
     // Compute Mean
     // ------------
@@ -378,10 +395,14 @@ void t_reqcAnalyze::analyzeMultipathAndSNR(const QString& prn,
     double SNR1     = 0.0;
     double SNR2     = 0.0;
 
-
     for (int ii = 0; ii < numEpo; ii++) {
       int iEpo = chunkStart + ii;
       const t_anaObs* anaObs = satStat.anaObs[iEpo];
+
+      if (ii == 0) {
+        firstEpoch.set(anaObs->_GPSWeek, anaObs->_GPSWeeks);
+      }
+
       mean1 += anaObs->_MP1;
       mean2 += anaObs->_MP2;
 
@@ -461,6 +482,8 @@ void t_reqcAnalyze::analyzeMultipathAndSNR(const QString& prn,
     (*dataSNR1) << (new t_polarPoint(az, zen, SNR1));
     (*dataSNR2) << (new t_polarPoint(az, zen, SNR2));
 
+    dataL1 << int(firstEpoch.gpssec());
+
     if (_log) {
       _log->setRealNumberNotation(QTextStream::FixedNotation);
 
@@ -477,4 +500,12 @@ void t_reqcAnalyze::analyzeMultipathAndSNR(const QString& prn,
       _log->flush();
     }
   }
+}
+
+//  
+////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, 
+                                     const QByteArray& title,
+                                     QMap<QString, QVector<int> >* prnAvail){
+
 }
