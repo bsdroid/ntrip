@@ -68,6 +68,14 @@ bncTime& bncTime::setmjd(double daysec, int mjd) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
+bncTime& bncTime::setmjd(double mjddec) {
+  _mjd = static_cast<unsigned int>(mjddec);
+  _sec = (mjddec - _mjd)*86400.0;
+  return *this;
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
 unsigned int bncTime::mjd() const {
   return _mjd;
 }

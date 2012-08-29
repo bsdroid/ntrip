@@ -1,10 +1,25 @@
 
 #include <qwt_symbol.h>
 #include <qwt_plot_curve.h>
+#include <qwt_scale_draw.h>
+#include <qwt_text.h>
 
 #include "availplot.h"
 #include "reqcanalyze.h"
 
+//
+//////////////////////////////////////////////////////////////////////////////
+class t_scaleDraw : public QwtScaleDraw {
+ public:
+  t_scaleDraw() {}
+  virtual QwtText label(double mjd) const {
+    bncTime epoTime; epoTime.setmjd(mjd);
+    return QwtText(epoTime.timestr(0,':').c_str());
+  }
+};
+
+//
+//////////////////////////////////////////////////////////////////////////////
 t_availPlot::t_availPlot(QWidget* parent, 
                         QMap<QString, t_availData>* availDataMap) 
 : QwtPlot(parent) {
@@ -13,7 +28,10 @@ t_availPlot::t_availPlot(QWidget* parent,
 
   // Axes
   // ----
-  setAxisTitle(QwtPlot::xBottom, "Epoch");
+  setAxisScaleDraw(QwtPlot::xBottom, new t_scaleDraw());
+  setAxisLabelRotation(QwtPlot::xBottom, -50.0);
+  setAxisLabelAlignment(QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom);
+
   setAxisTitle(QwtPlot::yLeft, "PRN");
 
   // Curves
