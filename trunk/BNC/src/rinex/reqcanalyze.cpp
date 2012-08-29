@@ -280,7 +280,13 @@ void t_reqcAnalyze::t_satStat::addObs(const t_obs& obs) {
   // Compute the Multipath
   // ----------------------
   double L1 = obs.measdata("L1", 3.0);
+  if (L1 != 0) {
+    newObs->_hasL1 = true;
+  }
   double L2 = obs.measdata("L2", 3.0);
+  if (L2 != 0) {
+    newObs->_hasL2 = true;
+  }
   if (L1 != 0.0 && L2 != 0.0) {
     double f1 = t_CST::f1(obs.satSys, obs.slotNum);
     double f2 = t_CST::f2(obs.satSys, obs.slotNum);
