@@ -40,7 +40,7 @@ t_availPlot::t_availPlot(QWidget* parent,
   // Axes
   // ----
   setAxisScaleDraw(QwtPlot::xBottom, new t_scaleDrawTime());
-  setAxisLabelRotation(QwtPlot::xBottom, -50.0);
+  setAxisLabelRotation(QwtPlot::xBottom, -10.0);
   setAxisLabelAlignment(QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom);
 
   t_scaleDrawPrn* scaleDrawPrn = new t_scaleDrawPrn();
@@ -80,8 +80,10 @@ t_availPlot::t_availPlot(QWidget* parent,
   
   QList<double> ticks[QwtScaleDiv::NTickTypes];
   QList<double> &majorTicks = ticks[QwtScaleDiv::MajorTick];
-  for (int iPrn = 1; iPrn <= 32; iPrn++) {
-    majorTicks << iPrn;
+  QMapIterator<int, QString> itT(scaleDrawPrn->_yLabels);
+  while (itT.hasNext()) {
+    itT.next();
+    majorTicks << double(itT.key());
   }
   QwtScaleDiv yScaleDiv(majorTicks.first()-0.5, majorTicks.last()+0.5, ticks );
   setAxisScaleDiv(QwtPlot::yLeft, yScaleDiv);
