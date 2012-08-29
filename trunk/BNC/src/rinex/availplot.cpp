@@ -9,9 +9,9 @@
 
 //
 //////////////////////////////////////////////////////////////////////////////
-class t_scaleDraw : public QwtScaleDraw {
+class t_scaleDrawTime : public QwtScaleDraw {
  public:
-  t_scaleDraw() {}
+  t_scaleDrawTime() {}
   virtual QwtText label(double mjd) const {
     bncTime epoTime; epoTime.setmjd(mjd);
     return QwtText(epoTime.timestr(0,':').c_str());
@@ -19,6 +19,17 @@ class t_scaleDraw : public QwtScaleDraw {
 };
 
 //
+//////////////////////////////////////////////////////////////////////////////
+class t_scaleDrawPrn : public QwtScaleDraw {
+ public:
+  t_scaleDrawPrn() {}
+  virtual QwtText label(double iPrn) const {
+    return _yLabels[iPrn];
+  }
+  QMap<int, QString> _yLabels;
+};
+
+// Constructor
 //////////////////////////////////////////////////////////////////////////////
 t_availPlot::t_availPlot(QWidget* parent, 
                         QMap<QString, t_availData>* availDataMap) 
@@ -28,11 +39,12 @@ t_availPlot::t_availPlot(QWidget* parent,
 
   // Axes
   // ----
-  setAxisScaleDraw(QwtPlot::xBottom, new t_scaleDraw());
+  setAxisScaleDraw(QwtPlot::xBottom, new t_scaleDrawTime());
   setAxisLabelRotation(QwtPlot::xBottom, -50.0);
   setAxisLabelAlignment(QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom);
 
-  setAxisTitle(QwtPlot::yLeft, "PRN");
+  t_scaleDrawPrn* scaleDrawPrn = new t_scaleDrawPrn();
+  setAxisScaleDraw(QwtPlot::yLeft, scaleDrawPrn);
 
   // Curves
   // ------
@@ -44,6 +56,8 @@ t_availPlot::t_availPlot(QWidget* parent,
     const QString&         prn       = it.key();
     const t_availData&     availData = it.value();
     const QVector<double>& epochs    = availData._epoL1;
+
+    scaleDrawPrn->_yLabels[iC] = prn;
 
     double xData[epochs.size()];
     double yData[epochs.size()];
