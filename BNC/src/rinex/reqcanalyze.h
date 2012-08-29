@@ -68,6 +68,8 @@ Q_OBJECT
     t_anaObs(int GPSWeek, double GPSWeeks) {
       _GPSWeek  = GPSWeek;
       _GPSWeeks = GPSWeeks;
+      _hasL1    = false;
+      _hasL2    = false;
       _MP1      = 0.0;
       _MP2      = 0.0;
       _SNR1     = 0.0;
@@ -75,6 +77,8 @@ Q_OBJECT
     }
     int    _GPSWeek;
     double _GPSWeeks;
+    bool   _hasL1;
+    bool   _hasL2;
     double _MP1;
     double _MP2;
     double _SNR1;
