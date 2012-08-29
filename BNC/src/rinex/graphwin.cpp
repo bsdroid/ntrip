@@ -139,8 +139,6 @@ void t_graphWin::closeEvent(QCloseEvent* event) {
 ////////////////////////////////////////////////////////////////////////////
 void t_graphWin::slotPrint() {
 
-  savePNG("./", ".PNG");
-
   QPrinter printer;
   QPrintDialog* dialog = new QPrintDialog(&printer, this);
   dialog->setWindowTitle(tr("Print Plot"));
