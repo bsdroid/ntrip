@@ -62,5 +62,7 @@ t_availPlot::t_availPlot(QWidget* parent,
     curve->setSamples(xData, yData, epochs.size());
     curve->attach(this);
   }
+
+  replot();
 }
 
