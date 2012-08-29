@@ -41,10 +41,6 @@
 #include <iostream>
 #include <iomanip>
 
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
-#include <qwt_symbol.h>
-
 #include "reqcanalyze.h"
 #include "bncapp.h"
 #include "bncsettings.h"
@@ -53,6 +49,7 @@
 #include "bncpostprocess.h"
 #include "graphwin.h"
 #include "polarplot.h"
+#include "availplot.h"
 
 using namespace std;
 
@@ -168,7 +165,7 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
     QString dirName = settings.value("reqcPlotDir").toString();
     if (!dirName.isEmpty()) {
       QByteArray ext = scaleTitle.isEmpty() ? "_SNR.png" : "_MP.png";
-      graphWin->savePNG(dirName, ext);
+      graphWin->savePNG(dirName, ext, 0);
     }
   }
 }
@@ -515,30 +512,7 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
 
   if (dynamic_cast<bncApp*>(qApp)->GUIenabled()) {
 
-    QwtPlot* plot = new QwtPlot();
-
-    int iC = 0;
-    QMapIterator<QString, QVector<int> > it(*prnAvail);
-    while (it.hasNext()) {
-      it.next();
-      ++iC;
-      const QString&      prn    = it.key();
-      const QVector<int>& epochs = it.value();
-
-      QVector<QPointF> samples;
-      for (int ii = 0; ii < epochs.size(); ii++) {
-        samples << QPointF(epochs[ii], iC);
-      }
-
-      QwtPlotCurve* curve = new QwtPlotCurve(prn);
-      curve->setStyle( QwtPlotCurve::NoCurve );
-      QwtSymbol* symbol = new QwtSymbol( QwtSymbol::XCross );
-      symbol->setSize( 4 );
-      curve->setSymbol( symbol );
-      curve->setLegendAttribute( QwtPlotCurve::LegendShowSymbol );
-      curve->setSamples(samples);
-      curve->attach(plot);
-    }
+    t_availPlot* plot = new t_availPlot(0, prnAvail);
 
     QVector<QWidget*> plots;
     plots << plot;
@@ -549,7 +523,7 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
     QString dirName = settings.value("reqcPlotDir").toString();
     if (!dirName.isEmpty()) {
       QByteArray ext = "_AVAIL.png";
-      graphWin->savePNG(dirName, ext);
+      graphWin->savePNG(dirName, ext, plot);
     }
   }
 }
