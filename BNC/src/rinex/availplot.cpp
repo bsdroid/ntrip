@@ -77,6 +77,14 @@ t_availPlot::t_availPlot(QWidget* parent,
     curve->setSamples(xData, yData, epochs.size());
     curve->attach(this);
   }
+  
+  QList<double> ticks[QwtScaleDiv::NTickTypes];
+  QList<double> &majorTicks = ticks[QwtScaleDiv::MajorTick];
+  for (int iPrn = 1; iPrn <= 32; iPrn++) {
+    majorTicks << iPrn;
+  }
+  QwtScaleDiv yScaleDiv(majorTicks.first()-0.5, majorTicks.last()+0.5, ticks );
+  setAxisScaleDiv(QwtPlot::yLeft, yScaleDiv);
 
   // Important !!!
   // -------------
