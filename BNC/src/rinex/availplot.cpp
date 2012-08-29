@@ -63,6 +63,8 @@ t_availPlot::t_availPlot(QWidget* parent,
     curve->attach(this);
   }
 
+  // Important !!!
+  // -------------
   replot();
 }
 
