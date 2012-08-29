@@ -725,7 +725,7 @@ or:<br>
 --key reqcObsFile tlse\*
 </p>
 
-<p>The following Linux command line produces RINEX QC multipath and signal-to-noise ratio plots offline in 'no window' mode and saves them in directory '/home/user'. Introducing a dummy configuration file /dev/null makes sure that no configuration options previously saved on disc are used:</p>
+<p>The following Linux command line produces RINEX QC multipath (see Estey and Meertens 1999) and signal-to-noise ratio plots offline in 'no window' mode and saves them in directory '/home/user'. Introducing a dummy configuration file /dev/null makes sure that no configuration options previously saved on disc are used:</p>
 <p>
 /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key reqcPlotDir /home/user --nw
 </p>
@@ -3098,6 +3098,8 @@ Note that the following configuration options saved on disk can be changed/edite
 <tr><td>Weber, G. and L. Mervart </td><td>Real-time Combination of GNSS Orbit and Clock Correction Streams Using a Kalman Filter Approach, ION GNSS 2010.</td></tr>
 
 <tr><td>Huisman, L., P. Teunissen and C. Hu </td><td>GNSS Precise Point Positioning in Regional Reference Frames Using Real-time Broadcast Corrections, Journal of Applied Geodesy, Vol. 6, pp15-23, 2012.</td></tr>
+
+<tr><td>Louis H. Estey and Charles M. Meertens</td><td>TEQC: The Multi-Purpose Toolkit for GPS/GLONASS Data, GPS Solutions, Vol. 3, No. 1, pp. 42-49, 1999.</td></tr>
 
 </table>
 
