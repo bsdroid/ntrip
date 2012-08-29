@@ -44,20 +44,26 @@ Q_OBJECT
 
  signals:
   void finished();
-  void displayGraph(const QString& fileName, 
-                    const QByteArray&, 
-                    QVector<t_polarPoint*>*, 
-                    const QByteArray&, 
-                    QVector<t_polarPoint*>*,
-                    const QByteArray&, double);
+  void dspSkyPlot(const QString&, 
+                  const QByteArray&, 
+                  QVector<t_polarPoint*>*, 
+                  const QByteArray&, 
+                  QVector<t_polarPoint*>*,
+                  const QByteArray&, double);
+
+  void dspAvailPlot(const QString&, const QByteArray&,
+                    QMap<QString, QVector<int> >*);
    
  private slots:
-  void slotDisplayGraph(const QString& fileName, 
-                        const QByteArray& title1, 
-                        QVector<t_polarPoint*>* data1, 
-                        const QByteArray& title2, 
-                        QVector<t_polarPoint*>* data2,
-                        const QByteArray& scaleTitle, double maxValue);
+  void slotDspSkyPlot(const QString& fileName, 
+                      const QByteArray& title1, 
+                      QVector<t_polarPoint*>* data1, 
+                      const QByteArray& title2, 
+                      QVector<t_polarPoint*>* data2,
+                      const QByteArray& scaleTitle, double maxValue);
+
+  void slotDspAvailPlot(const QString& fileName, const QByteArray& title,
+                        QMap<QString, QVector<int> >* prnAvail);
 
  public:
   virtual void run();
@@ -98,14 +104,13 @@ Q_OBJECT
   };
 
   void analyzeFile(t_rnxObsFile* obsFile);
-  void analyzeMultipathAndSNR(const QString& prn, 
-                              const t_satStat& satStat,
-                              const ColumnVector& xyz,
-                              double obsInterval,
-                              QVector<t_polarPoint*>* dataMP1, 
-                              QVector<t_polarPoint*>* dataMP2,
-                              QVector<t_polarPoint*>* dataSNR1, 
-                              QVector<t_polarPoint*>* dataSNR2);
+  void preparePlotData(const QString& prn, const t_satStat& satStat,
+                       const ColumnVector& xyz, double obsInterval,
+                       QVector<t_polarPoint*>* dataMP1, 
+                       QVector<t_polarPoint*>* dataMP2,
+                       QVector<t_polarPoint*>* dataSNR1, 
+                       QVector<t_polarPoint*>* dataSNR2,
+                       QVector<int>&           dataL1);
 
   QString                  _logFileName;
   QFile*                   _logFile;
