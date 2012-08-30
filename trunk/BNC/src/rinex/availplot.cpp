@@ -48,9 +48,9 @@ t_availPlot::t_availPlot(QWidget* parent,
   // Symbols
   // -------
   QwtSymbol* symbolGreen = new QwtSymbol(QwtSymbol::Rect, QBrush(Qt::green),
-                                         QPen(Qt::green), QSize(4,4));
+                                         QPen(Qt::green), QSize(2,2));
   QwtSymbol* symbolBlue  = new QwtSymbol(QwtSymbol::Rect, QBrush(Qt::blue),
-                                         QPen(Qt::blue), QSize(4,4));
+                                         QPen(Qt::blue), QSize(2,2));
  
   // Curves
   // ------
@@ -68,9 +68,19 @@ t_availPlot::t_availPlot(QWidget* parent,
 
     // L1 ok Curve
     // -----------
-    const QVector<double>& xData = availData._L1ok;
-    QVector<double>        yData(xData.size(), double(iC)+eps);
-    addCurve(prn, symbolGreen, xData, yData);
+    if (availData._L1ok.size()) {
+      const QVector<double>& xData = availData._L1ok;
+      QVector<double>        yData(xData.size(), double(iC)+eps);
+      addCurve(prn, symbolGreen, xData, yData);
+    }
+
+    // L2 ok Curve
+    // -----------
+    if (availData._L2ok.size()) {
+      const QVector<double>& xData = availData._L2ok;
+      QVector<double>        yData(xData.size(), double(iC)-eps);
+      addCurve(prn, symbolGreen, xData, yData);
+    }
   }
   
   QList<double> ticks[QwtScaleDiv::NTickTypes];
