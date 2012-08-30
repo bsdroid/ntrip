@@ -374,20 +374,20 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
 
   t_allObs& allObs = _allObsMap[prn];
 
-  bncTime currTime;
-  bncTime prevTime;
-
+  // Loop over all Chunks of Data
+  // ----------------------------
   for (int chunkStart = 0; chunkStart + numEpo < allObs._oneObsVec.size();
        chunkStart += chunkStep) {
 
-
-    // Compute Mean
-    // ------------
+    // Chunk-Speicific Variables 
+    // -------------------------
+    bncTime currTime;
+    bncTime prevTime;
     bncTime chunkStartTime;
     bool    availL1  = false;
     bool    availL2  = false;
-    bool    missL1   = false;
-    bool    missL2   = false;
+    bool    gapL1    = false;
+    bool    gapL2    = false;
     bool    slipFlag = false;
     double  meanMP1  = 0.0;
     double  meanMP2  = 0.0;
@@ -396,6 +396,8 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
     double  aziDeg   = 0.0;
     double  zenDeg   = 0.0;
 
+    // Loop over all Epochs within one Chunk of Data
+    // ---------------------------------------------
     for (int ii = 0; ii < numEpo; ii++) {
       int iEpo = chunkStart + ii;
       const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
@@ -432,13 +434,12 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
 
       // Check Interval
       // --------------
-      double dt = 0.0;
       if (prevTime.valid()) {
-        dt = currTime - prevTime;
-      }
-      if (dt != obsInterval) {
-        missL1 = true;
-        missL2 = true;
+        double dt = currTime - prevTime;
+        if (dt != obsInterval) {
+          gapL1 = true;
+          gapL2 = true;
+        }
       }
       prevTime = currTime;
 
@@ -448,13 +449,13 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
         availL1 = true;
       }
       else {
-        missL1 = true;
+        gapL1 = true;
       }
       if (oneObs->_hasL2) {
         availL2 = true;
       }
       else {
-        missL2 = true;
+        gapL2 = true;
       }
 
       // Check Minimal Signal-to-Noise Ratio
@@ -482,8 +483,28 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
 
     // Availability Plot Data
     // ----------------------
+    double mjd = chunkStartTime.mjddec();
     if (availL1) {
-      _availDataMap[prn]._epoL1 << chunkStartTime.mjddec();
+      if      (slipFlag) {
+        _availDataMap[prn]._L1slip << mjd;
+      }
+      else if (gapL1) {
+        _availDataMap[prn]._L1gap << mjd;
+      }
+      else {
+        _availDataMap[prn]._L1ok << mjd;
+      }
+    }
+    if (availL2) {
+      if      (slipFlag) {
+        _availDataMap[prn]._L2slip << mjd;
+      }
+      else if (gapL2) {
+        _availDataMap[prn]._L2gap << mjd;
+      }
+      else {
+        _availDataMap[prn]._L2ok << mjd;
+      }
     }
 
     // Signal-to-Noise Ration Plot Data

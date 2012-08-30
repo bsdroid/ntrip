@@ -35,7 +35,12 @@ class t_polarPoint;
 
 class t_availData {
  public:
-  QVector<double> _epoL1;
+  QVector<double> _L1ok;
+  QVector<double> _L2ok;
+  QVector<double> _L1slip;
+  QVector<double> _L2slip;
+  QVector<double> _L1gap;
+  QVector<double> _L2gap;
 };
 
 class t_reqcAnalyze : public QThread {

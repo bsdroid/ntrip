@@ -55,7 +55,7 @@ t_availPlot::t_availPlot(QWidget* parent,
     ++iC;
     const QString&         prn       = it.key();
     const t_availData&     availData = it.value();
-    const QVector<double>& epochs    = availData._epoL1;
+    const QVector<double>& epochs    = availData._L1ok;
 
     scaleDrawPrn->_yLabels[iC] = prn;
 
