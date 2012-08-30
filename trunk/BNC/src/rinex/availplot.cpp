@@ -55,26 +55,21 @@ t_availPlot::t_availPlot(QWidget* parent,
     ++iC;
     const QString&         prn       = it.key();
     const t_availData&     availData = it.value();
-    const QVector<double>& epochs    = availData._L1ok;
 
     scaleDrawPrn->_yLabels[iC] = prn;
 
-    double xData[epochs.size()];
-    double yData[epochs.size()];
-    for (int ii = 0; ii < epochs.size(); ii++) {
-      xData[ii] = epochs[ii];
-      yData[ii] = iC;
-    }
-
+    // L1 ok Curve
+    // -----------
     QwtSymbol* symbol = new QwtSymbol( QwtSymbol::XCross );
-    symbol->setSize( 4 );
-
+    symbol->setSize(4);
     QwtPlotCurve* curve = new QwtPlotCurve(prn);
-    curve->setSymbol( symbol );
-    curve->setStyle( QwtPlotCurve::NoCurve );
+    curve->setSymbol(symbol);
+    curve->setStyle(QwtPlotCurve::NoCurve);
     curve->setXAxis(QwtPlot::xBottom);
     curve->setYAxis(QwtPlot::yLeft);
-    curve->setSamples(xData, yData, epochs.size());
+    const QVector<double>& xData = availData._L1ok;
+    QVector<double>        yData(xData.size(), double(iC));
+    curve->setSamples(xData, yData);
     curve->attach(this);
   }
   
