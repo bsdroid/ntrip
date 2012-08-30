@@ -228,7 +228,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         t_postProcessing::setObsFromRnx(obsFile, _currEpo, rnxSat, obs);
   
         if (obs.satSys == 'R') {
-          continue; // TODO: set channel number
+          // TODO: set channel number
         }
   
         QString prn = QString("%1%2").arg(obs.satSys)
@@ -374,38 +374,98 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
 
   t_allObs& allObs = _allObsMap[prn];
 
+  bncTime currTime;
+  bncTime prevTime;
+
   for (int chunkStart = 0; chunkStart + numEpo < allObs._oneObsVec.size();
        chunkStart += chunkStep) {
 
-    bncTime firstEpoch;
 
     // Compute Mean
     // ------------
-    bool   slipFlag = false;
-    double mean1    = 0.0;
-    double mean2    = 0.0;
-    double SNR1     = 0.0;
-    double SNR2     = 0.0;
+    bncTime chunkStartTime;
+    bool    availL1  = false;
+    bool    availL2  = false;
+    bool    missL1   = false;
+    bool    missL2   = false;
+    bool    slipFlag = false;
+    double  meanMP1  = 0.0;
+    double  meanMP2  = 0.0;
+    double  minSNR1  = 0.0;
+    double  minSNR2  = 0.0;
+    double  aziDeg   = 0.0;
+    double  zenDeg   = 0.0;
 
     for (int ii = 0; ii < numEpo; ii++) {
       int iEpo = chunkStart + ii;
       const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
 
+      currTime.set(oneObs->_GPSWeek, oneObs->_GPSWeeks);
+
+      // Compute the Azimuth and Zenith Distance
+      // ---------------------------------------
       if (ii == 0) {
-        bncTime epoTime(oneObs->_GPSWeek, oneObs->_GPSWeeks);
-        _availDataMap[prn]._epoL1 << epoTime.mjddec();
+        chunkStartTime = currTime;
+
+        if (xyz.size()) {
+          t_eph* eph = 0;
+          for (int ie = 0; ie < _ephs.size(); ie++) {
+            if (_ephs[ie]->prn() == prn) {
+              eph = _ephs[ie];
+              break;
+            }
+          }
+          
+          if (eph) {
+            double xSat, ySat, zSat, clkSat;
+            eph->position(oneObs->_GPSWeek, oneObs->_GPSWeeks, 
+                          xSat, ySat, zSat, clkSat);
+          
+            double rho, eleSat, azSat;
+            topos(xyz(1), xyz(2), xyz(3), xSat, ySat, zSat, rho, eleSat, azSat);
+          
+            aziDeg = azSat * 180.0/M_PI;
+            zenDeg = 90.0 - eleSat * 180.0/M_PI;
+          }
+        }
       }
 
-      mean1 += oneObs->_MP1;
-      mean2 += oneObs->_MP2;
+      // Check Interval
+      // --------------
+      double dt = 0.0;
+      if (prevTime.valid()) {
+        dt = currTime - prevTime;
+      }
+      if (dt != obsInterval) {
+        missL1 = true;
+        missL2 = true;
+      }
+      prevTime = currTime;
 
-      if ( oneObs->_SNR1 > 0 && (SNR1 == 0 || SNR1 > oneObs->_SNR1) ) {
-        SNR1 = oneObs->_SNR1;
+      // Check L1 and L2 availability
+      // ----------------------------
+      if (oneObs->_hasL1) {
+        availL1 = true;
       }
-      if ( oneObs->_SNR2 > 0 && (SNR2 == 0 || SNR2 > oneObs->_SNR2) ) {
-        SNR2 = oneObs->_SNR2;
+      else {
+        missL1 = true;
       }
-  
+      if (oneObs->_hasL2) {
+        availL2 = true;
+      }
+      else {
+        missL2 = true;
+      }
+
+      // Check Minimal Signal-to-Noise Ratio
+      // -----------------------------------
+      if ( oneObs->_SNR1 > 0 && (minSNR1 == 0 || minSNR1 > oneObs->_SNR1) ) {
+        minSNR1 = oneObs->_SNR1;
+      }
+      if ( oneObs->_SNR2 > 0 && (minSNR2 == 0 || minSNR2 > oneObs->_SNR2) ) {
+        minSNR2 = oneObs->_SNR2;
+      }
+
       // Check Slip
       // ----------
       if (ii > 0) {
@@ -413,82 +473,43 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
         double diff2 = oneObs->_MP2 - allObs._oneObsVec[iEpo-1]->_MP2;
         if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
           slipFlag = true;
-          break;
         }
       }
+
+      meanMP1 += oneObs->_MP1;
+      meanMP2 += oneObs->_MP2;
     }
 
-    if (slipFlag) {
-      continue;
+    // Availability Plot Data
+    // ----------------------
+    if (availL1) {
+      _availDataMap[prn]._epoL1 << chunkStartTime.mjddec();
     }
 
-    mean1 /= numEpo;
-    mean2 /= numEpo;
+    // Signal-to-Noise Ration Plot Data
+    // --------------------------------
+    (*dataSNR1) << (new t_polarPoint(aziDeg, zenDeg, minSNR1));
+    (*dataSNR2) << (new t_polarPoint(aziDeg, zenDeg, minSNR2));
 
-    // Compute Standard Deviation
-    // --------------------------
-    double stddev1 = 0.0;
-    double stddev2 = 0.0;
-    for (int ii = 0; ii < numEpo; ii++) {
-      int iEpo = chunkStart + ii;
-      const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
-      double diff1 = oneObs->_MP1 - mean1;
-      double diff2 = oneObs->_MP2 - mean2;
-      stddev1 += diff1 * diff1;
-      stddev2 += diff2 * diff2;
-    }
-    double MP1 = sqrt(stddev1 / (numEpo-1));
-    double MP2 = sqrt(stddev2 / (numEpo-1));
-
-    const t_oneObs* oneObs0 = allObs._oneObsVec[chunkStart];
-
-    // Compute the Azimuth and Zenith Distance
-    // ---------------------------------------
-    double az  = 0.0;
-    double zen = 0.0;
-    if (xyz.size()) {
-      t_eph* eph = 0;
-      for (int ie = 0; ie < _ephs.size(); ie++) {
-        if (_ephs[ie]->prn() == prn) {
-          eph = _ephs[ie];
-          break;
-        }
+    // Compute the Multipath
+    // ---------------------
+    if (!slipFlag) {
+      meanMP1 /= numEpo;
+      meanMP2 /= numEpo;
+      double MP1 = 0.0;
+      double MP2 = 0.0;
+      for (int ii = 0; ii < numEpo; ii++) {
+        int iEpo = chunkStart + ii;
+        const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
+        double diff1 = oneObs->_MP1 - meanMP1;
+        double diff2 = oneObs->_MP2 - meanMP2;
+        MP1 += diff1 * diff1;
+        MP2 += diff2 * diff2;
       }
-      
-      if (eph) {
-        double xSat, ySat, zSat, clkSat;
-        eph->position(oneObs0->_GPSWeek, oneObs0->_GPSWeeks, 
-                      xSat, ySat, zSat, clkSat);
-      
-        double rho, eleSat, azSat;
-        topos(xyz(1), xyz(2), xyz(3), xSat, ySat, zSat, rho, eleSat, azSat);
-      
-        az  = azSat * 180.0/M_PI;
-        zen = 90.0 - eleSat * 180.0/M_PI;
-      }
-    }
-
-    // Add new Point
-    // -------------
-    (*dataMP1)  << (new t_polarPoint(az, zen, MP1));
-    (*dataMP2)  << (new t_polarPoint(az, zen, MP2));
-    (*dataSNR1) << (new t_polarPoint(az, zen, SNR1));
-    (*dataSNR2) << (new t_polarPoint(az, zen, SNR2));
-
-    if (_log) {
-      _log->setRealNumberNotation(QTextStream::FixedNotation);
-
-      _log->setRealNumberPrecision(2);
-      *_log << "MP1 " << prn << " " << az << " " << zen << " ";
-      _log->setRealNumberPrecision(3);
-      *_log << MP1 << endl;
-
-      _log->setRealNumberPrecision(2);
-      *_log << "MP2 " << prn << " " << az << " " << zen << " ";
-      _log->setRealNumberPrecision(3);
-      *_log << MP2 << endl;
-
-      _log->flush();
+      MP1 = sqrt(MP1 / (numEpo-1));
+      MP2 = sqrt(MP2 / (numEpo-1));
+      (*dataMP1)  << (new t_polarPoint(aziDeg, zenDeg, MP1));
+      (*dataMP2)  << (new t_polarPoint(aziDeg, zenDeg, MP2));
     }
   }
 }
