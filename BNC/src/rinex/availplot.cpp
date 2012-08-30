@@ -50,6 +50,8 @@ t_availPlot::t_availPlot(QWidget* parent,
   // -------
   QwtSymbol* symbolGreen = new QwtSymbol(QwtSymbol::Rect, QBrush(Qt::green),
                                          QPen(Qt::green), QSize(4,4));
+  QwtSymbol* symbolBlue  = new QwtSymbol(QwtSymbol::Rect, QBrush(Qt::blue),
+                                         QPen(Qt::blue), QSize(4,4));
  
   // Curves
   // ------
