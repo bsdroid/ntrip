@@ -46,6 +46,11 @@ t_availPlot::t_availPlot(QWidget* parent,
   t_scaleDrawPrn* scaleDrawPrn = new t_scaleDrawPrn();
   setAxisScaleDraw(QwtPlot::yLeft, scaleDrawPrn);
 
+  // Symbols
+  // -------
+  QwtSymbol* symbolGreen = new QwtSymbol(QwtSymbol::Rect, QBrush(Qt::green),
+                                         QPen(Qt::green), QSize(4,4));
+ 
   // Curves
   // ------
   int iC = 0;
@@ -58,17 +63,17 @@ t_availPlot::t_availPlot(QWidget* parent,
 
     scaleDrawPrn->_yLabels[iC] = prn;
 
+    double eps = 0.1;
+
     // L1 ok Curve
     // -----------
-    QwtSymbol* symbol = new QwtSymbol( QwtSymbol::XCross );
-    symbol->setSize(4);
     QwtPlotCurve* curve = new QwtPlotCurve(prn);
-    curve->setSymbol(symbol);
+    curve->setSymbol(symbolGreen);
     curve->setStyle(QwtPlotCurve::NoCurve);
     curve->setXAxis(QwtPlot::xBottom);
     curve->setYAxis(QwtPlot::yLeft);
     const QVector<double>& xData = availData._L1ok;
-    QVector<double>        yData(xData.size(), double(iC));
+    QVector<double>        yData(xData.size(), double(iC)+eps);
     curve->setSamples(xData, yData);
     curve->attach(this);
   }
