@@ -47,6 +47,8 @@ t_availPlot::t_availPlot(QWidget* parent,
 
   // Symbols
   // -------
+  QwtSymbol* symbolRed   = new QwtSymbol(QwtSymbol::Rect, QBrush(Qt::red),
+                                         QPen(Qt::red), QSize(2,2));
   QwtSymbol* symbolGreen = new QwtSymbol(QwtSymbol::Rect, QBrush(Qt::green),
                                          QPen(Qt::green), QSize(2,2));
   QwtSymbol* symbolBlue  = new QwtSymbol(QwtSymbol::Rect, QBrush(Qt::blue),
@@ -80,6 +82,38 @@ t_availPlot::t_availPlot(QWidget* parent,
       const QVector<double>& xData = availData._L2ok;
       QVector<double>        yData(xData.size(), double(iC)-eps);
       addCurve(prn, symbolGreen, xData, yData);
+    }
+
+    // L1 gaps Curve
+    // -------------
+    if (availData._L1gap.size()) {
+      const QVector<double>& xData = availData._L1gap;
+      QVector<double>        yData(xData.size(), double(iC)+eps);
+      addCurve(prn, symbolBlue, xData, yData);
+    }
+
+    // L2 gaps Curve
+    // -------------
+    if (availData._L2gap.size()) {
+      const QVector<double>& xData = availData._L2gap;
+      QVector<double>        yData(xData.size(), double(iC)-eps);
+      addCurve(prn, symbolBlue, xData, yData);
+    }
+
+    // L1 slips Curve
+    // --------------
+    if (availData._L1slip.size()) {
+      const QVector<double>& xData = availData._L1slip;
+      QVector<double>        yData(xData.size(), double(iC)+eps);
+      addCurve(prn, symbolRed, xData, yData);
+    }
+
+    // L2 slips Curve
+    // --------------
+    if (availData._L2slip.size()) {
+      const QVector<double>& xData = availData._L2slip;
+      QVector<double>        yData(xData.size(), double(iC)-eps);
+      addCurve(prn, symbolRed, xData, yData);
     }
   }
   
