@@ -1,5 +1,4 @@
 
-#include <qwt_symbol.h>
 #include <qwt_plot_curve.h>
 #include <qwt_scale_draw.h>
 #include <qwt_text.h>
@@ -69,15 +68,9 @@ t_availPlot::t_availPlot(QWidget* parent,
 
     // L1 ok Curve
     // -----------
-    QwtPlotCurve* curve = new QwtPlotCurve(prn);
-    curve->setSymbol(symbolGreen);
-    curve->setStyle(QwtPlotCurve::NoCurve);
-    curve->setXAxis(QwtPlot::xBottom);
-    curve->setYAxis(QwtPlot::yLeft);
     const QVector<double>& xData = availData._L1ok;
     QVector<double>        yData(xData.size(), double(iC)+eps);
-    curve->setSamples(xData, yData);
-    curve->attach(this);
+    addCurve(prn, symbolGreen, xData, yData);
   }
   
   QList<double> ticks[QwtScaleDiv::NTickTypes];
@@ -95,3 +88,16 @@ t_availPlot::t_availPlot(QWidget* parent,
   replot();
 }
 
+// Add Curve
+//////////////////////////////////////////////////////////////////////////////
+void t_availPlot::addCurve(const QString& name, const QwtSymbol* symbol,
+                           const QVector<double>& xData,
+                           const QVector<double>& yData) {
+  QwtPlotCurve* curve = new QwtPlotCurve(name);
+  curve->setSymbol(symbol);
+  curve->setStyle(QwtPlotCurve::NoCurve);
+  curve->setXAxis(QwtPlot::xBottom);
+  curve->setYAxis(QwtPlot::yLeft);
+  curve->setSamples(xData, yData);
+  curve->attach(this);
+}
