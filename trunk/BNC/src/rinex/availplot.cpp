@@ -47,12 +47,15 @@ t_availPlot::t_availPlot(QWidget* parent,
 
   // Symbols
   // -------
-  QwtSymbol* symbolRed   = new QwtSymbol(QwtSymbol::Rect, QBrush(Qt::red),
-                                         QPen(Qt::red), QSize(2,2));
-  QwtSymbol* symbolGreen = new QwtSymbol(QwtSymbol::Rect, QBrush(Qt::green),
-                                         QPen(Qt::green), QSize(2,2));
-  QwtSymbol* symbolBlue  = new QwtSymbol(QwtSymbol::Rect, QBrush(Qt::blue),
-                                         QPen(Qt::blue), QSize(2,2));
+  QColor red(220,20,60);
+  QColor green(150,200,50);
+  QColor blue(60,100,200);
+  QwtSymbol* symbolRed   = new QwtSymbol(QwtSymbol::Rect, QBrush(red),
+                                         QPen(red), QSize(1,1));
+  QwtSymbol* symbolGreen = new QwtSymbol(QwtSymbol::Rect, QBrush(green),
+                                         QPen(green), QSize(1,1));
+  QwtSymbol* symbolBlue  = new QwtSymbol(QwtSymbol::Rect, QBrush(blue),
+                                         QPen(blue), QSize(1,1));
  
   // Curves
   // ------
