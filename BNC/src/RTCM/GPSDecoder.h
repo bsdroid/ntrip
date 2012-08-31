@@ -59,6 +59,9 @@ class t_obs {
     snrL1 = 0;
     snrL2 = 0;
     snrL5 = 0;
+    slipL1 = false;
+    slipL2 = false;
+    slipL5 = false;
   }
 
   ~t_obs() {}
@@ -80,6 +83,10 @@ class t_obs {
   int    snrL1;  // signal-to-noise ratio mapped to <1,9>
   int    snrL2;  // s = int(floor(SNR/6)); if (s > 9) s = 9; if (s < 1) s = 1;
   int    snrL5;
+
+  bool   slipL1;
+  bool   slipL2;
+  bool   slipL5;
   
   double             _measdata[GNSSENTRY_NUMBER];  // data fields */ 
   unsigned long long _dataflags;                   // GNSSDF_xxx */
