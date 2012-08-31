@@ -1,7 +1,7 @@
 
-#include <qwt_plot_curve.h>
 #include <qwt_scale_draw.h>
 #include <qwt_text.h>
+#include <qwt_legend.h>
 
 #include "availplot.h"
 #include "reqcanalyze.h"
@@ -56,6 +56,11 @@ t_availPlot::t_availPlot(QWidget* parent,
                                          QPen(green), QSize(1,1));
   QwtSymbol* symbolBlue  = new QwtSymbol(QwtSymbol::Rect, QBrush(blue),
                                          QPen(blue), QSize(1,1));
+
+  // Legend
+  // ------
+  QwtLegend* legend = new QwtLegend;
+  insertLegend(legend, QwtPlot::RightLegend);
  
   // Curves
   // ------
@@ -76,7 +81,8 @@ t_availPlot::t_availPlot(QWidget* parent,
     if (availData._L1ok.size()) {
       const QVector<double>& xData = availData._L1ok;
       QVector<double>        yData(xData.size(), double(iC)+eps);
-      addCurve(prn, symbolGreen, xData, yData);
+      QwtPlotCurve* curve = addCurve(prn, symbolGreen, xData, yData);
+      curve->setItemAttribute(QwtPlotItem::Legend, false);
     }
 
     // L2 ok Curve
@@ -84,7 +90,8 @@ t_availPlot::t_availPlot(QWidget* parent,
     if (availData._L2ok.size()) {
       const QVector<double>& xData = availData._L2ok;
       QVector<double>        yData(xData.size(), double(iC)-eps);
-      addCurve(prn, symbolGreen, xData, yData);
+      QwtPlotCurve* curve = addCurve(prn, symbolGreen, xData, yData);
+      curve->setItemAttribute(QwtPlotItem::Legend, false);
     }
 
     // L1 gaps Curve
@@ -92,7 +99,8 @@ t_availPlot::t_availPlot(QWidget* parent,
     if (availData._L1gap.size()) {
       const QVector<double>& xData = availData._L1gap;
       QVector<double>        yData(xData.size(), double(iC)+eps);
-      addCurve(prn, symbolBlue, xData, yData);
+      QwtPlotCurve* curve = addCurve(prn, symbolBlue, xData, yData);
+      curve->setItemAttribute(QwtPlotItem::Legend, false);
     }
 
     // L2 gaps Curve
@@ -100,7 +108,8 @@ t_availPlot::t_availPlot(QWidget* parent,
     if (availData._L2gap.size()) {
       const QVector<double>& xData = availData._L2gap;
       QVector<double>        yData(xData.size(), double(iC)-eps);
-      addCurve(prn, symbolBlue, xData, yData);
+      QwtPlotCurve* curve = addCurve(prn, symbolBlue, xData, yData);
+      curve->setItemAttribute(QwtPlotItem::Legend, false);
     }
 
     // L1 slips Curve
@@ -108,7 +117,8 @@ t_availPlot::t_availPlot(QWidget* parent,
     if (availData._L1slip.size()) {
       const QVector<double>& xData = availData._L1slip;
       QVector<double>        yData(xData.size(), double(iC)+eps);
-      addCurve(prn, symbolRed, xData, yData);
+      QwtPlotCurve* curve = addCurve(prn, symbolRed, xData, yData);
+      curve->setItemAttribute(QwtPlotItem::Legend, false);
     }
 
     // L2 slips Curve
@@ -116,7 +126,8 @@ t_availPlot::t_availPlot(QWidget* parent,
     if (availData._L2slip.size()) {
       const QVector<double>& xData = availData._L2slip;
       QVector<double>        yData(xData.size(), double(iC)-eps);
-      addCurve(prn, symbolRed, xData, yData);
+      QwtPlotCurve* curve = addCurve(prn, symbolRed, xData, yData);
+      curve->setItemAttribute(QwtPlotItem::Legend, false);
     }
   }
   
@@ -137,9 +148,10 @@ t_availPlot::t_availPlot(QWidget* parent,
 
 // Add Curve
 //////////////////////////////////////////////////////////////////////////////
-void t_availPlot::addCurve(const QString& name, const QwtSymbol* symbol,
-                           const QVector<double>& xData,
-                           const QVector<double>& yData) {
+QwtPlotCurve* t_availPlot::addCurve(const QString& name, 
+                                    const QwtSymbol* symbol,
+                                    const QVector<double>& xData,
+                                    const QVector<double>& yData) {
   QwtPlotCurve* curve = new QwtPlotCurve(name);
   curve->setSymbol(symbol);
   curve->setStyle(QwtPlotCurve::NoCurve);
@@ -147,4 +159,5 @@ void t_availPlot::addCurve(const QString& name, const QwtSymbol* symbol,
   curve->setYAxis(QwtPlot::yLeft);
   curve->setSamples(xData, yData);
   curve->attach(this);
+  return curve;
 }
