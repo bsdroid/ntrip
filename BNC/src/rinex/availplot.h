@@ -15,7 +15,7 @@ public:
   t_availPlot(QWidget* parent, QMap<QString, t_availData>* availDataMap);
 
 private:
-  QwtPlotCurve* addCurve(const QString& name, const QwtSymbol* symbol,
+  QwtPlotCurve* addCurve(const QString& name, const QwtSymbol& symbol,
                          const QVector<double>& xData, 
                          const QVector<double>& yData);
 };
