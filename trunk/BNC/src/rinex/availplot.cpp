@@ -61,6 +61,12 @@ t_availPlot::t_availPlot(QWidget* parent,
   // ------
   QwtLegend* legend = new QwtLegend;
   insertLegend(legend, QwtPlot::RightLegend);
+
+  QVector<double> xData0(0);
+  QVector<double> yData0(0);
+  addCurve("OK  ", symbolGreen, xData0, yData0);
+  addCurve("Gap ", symbolBlue,  xData0, yData0);
+  addCurve("Slip", symbolRed,   xData0, yData0);
  
   // Curves
   // ------
