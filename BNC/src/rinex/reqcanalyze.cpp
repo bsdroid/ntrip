@@ -387,17 +387,19 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
     bncTime currTime;
     bncTime prevTime;
     bncTime chunkStartTime;
-    bool    availL1  = false;
-    bool    availL2  = false;
-    bool    gapL1    = false;
-    bool    gapL2    = false;
-    bool    slipFlag = false;
-    double  meanMP1  = 0.0;
-    double  meanMP2  = 0.0;
-    double  minSNR1  = 0.0;
-    double  minSNR2  = 0.0;
-    double  aziDeg   = 0.0;
-    double  zenDeg   = 0.0;
+    bool    availL1 = false;
+    bool    availL2 = false;
+    bool    gapL1   = false;
+    bool    gapL2   = false;
+    bool    slipL1  = false;
+    bool    slipL2  = false;
+    bool    slipMP  = false;
+    double  meanMP1 = 0.0;
+    double  meanMP2 = 0.0;
+    double  minSNR1 = 0.0;
+    double  minSNR2 = 0.0;
+    double  aziDeg  = 0.0;
+    double  zenDeg  = 0.0;
 
     // Loop over all Epochs within one Chunk of Data
     // ---------------------------------------------
@@ -470,13 +472,22 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
         minSNR2 = oneObs->_SNR2;
       }
 
-      // Check Slip
-      // ----------
+      // Check Slip Flags
+      // ----------------
+      if (oneObs->_slipL1) {
+        slipL1 = true;
+      }
+      if (oneObs->_slipL2) {
+        slipL2 = true;
+      }
+
+      // Check Slip Threshold
+      // --------------------
       if (ii > 0) {
         double diff1 = oneObs->_MP1 - allObs._oneObsVec[iEpo-1]->_MP1;
         double diff2 = oneObs->_MP2 - allObs._oneObsVec[iEpo-1]->_MP2;
         if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
-          slipFlag = true;
+          slipMP = true;
         }
       }
 
@@ -488,7 +499,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
     // ----------------------
     double mjd = chunkStartTime.mjddec();
     if (availL1) {
-      if      (slipFlag) {
+      if      (slipL1) {
         _availDataMap[prn]._L1slip << mjd;
       }
       else if (gapL1) {
@@ -499,7 +510,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
       }
     }
     if (availL2) {
-      if      (slipFlag) {
+      if      (slipL2) {
         _availDataMap[prn]._L2slip << mjd;
       }
       else if (gapL2) {
@@ -517,7 +528,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
 
     // Compute the Multipath
     // ---------------------
-    if (!slipFlag) {
+    if (!slipMP) {
       meanMP1 /= numEpo;
       meanMP2 /= numEpo;
       double MP1 = 0.0;
