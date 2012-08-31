@@ -50,9 +50,9 @@ t_availPlot::t_availPlot(QWidget* parent,
   QColor red(220,20,60);
   QColor green(150,200,50);
   QColor blue(60,100,200);
-  QwtSymbol symbRed(QwtSymbol::Rect, QBrush(red), QPen(red), QSize(2,2));
-  QwtSymbol symbGreen(QwtSymbol::Rect, QBrush(green), QPen(green), QSize(2,2));
-  QwtSymbol symbBlue (QwtSymbol::Rect, QBrush(blue), QPen(blue), QSize(2,2));
+  QwtSymbol symbRed(QwtSymbol::Rect, QBrush(red), QPen(red), QSize(2,1));
+  QwtSymbol symbGreen(QwtSymbol::Rect, QBrush(green), QPen(green), QSize(2,1));
+  QwtSymbol symbBlue (QwtSymbol::Rect, QBrush(blue), QPen(blue), QSize(2,1));
 
   // Legend
   // ------
