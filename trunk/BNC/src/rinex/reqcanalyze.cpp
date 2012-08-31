@@ -270,7 +270,10 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, 
                   "", 9.0);
 
-  emit dspAvailPlot(obsFile->fileName(), "Availability L1&L2");
+  QFileInfo  fileInfo(obsFile->fileName());
+  QByteArray title = fileInfo.fileName().toAscii();
+
+  emit dspAvailPlot(obsFile->fileName(), title);
 
   if (_log) {
     _log->flush();
