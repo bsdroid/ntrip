@@ -287,8 +287,8 @@ void t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) {
   t_oneObs* newObs = new t_oneObs(obs.GPSWeek, obs.GPSWeeks);
   bool      okFlag = false;
 
-  // Compute the Multipath
-  // ----------------------
+  // Availability and Slip Flags
+  // ---------------------------
   double L1 = obs.measdata("L1", 3.0);
   if (L1 != 0) {
     newObs->_hasL1 = true;
@@ -297,6 +297,15 @@ void t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) {
   if (L2 != 0) {
     newObs->_hasL2 = true;
   }
+  if (obs.slipL1) {
+    newObs->_slipL1 = true;
+  }
+  if (obs.slipL2) {
+    newObs->_slipL2 = true;
+  }
+
+  // Compute the Multipath
+  // ----------------------
   if (L1 != 0.0 && L2 != 0.0) {
     double f1 = t_CST::f1(obs.satSys, obs.slotNum);
     double f2 = t_CST::f2(obs.satSys, obs.slotNum);
