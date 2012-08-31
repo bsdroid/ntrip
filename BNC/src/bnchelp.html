@@ -645,8 +645,16 @@ Besides stream conversion from RTCM to RINEX, BNC allows editing RINEX files or 
 <li>Stream <u>T</u>ranslation</li>
 <li>File <u>E</u>diting and concatenation</li>
 <li>File <u>Q</b></u>uality <u>C</u>heck</li>
+<ul>
+<li>Multipath analysis sky plots (see Estey and Meertens 1999)</li>
+<li>Signal-to-Noise sky plots</li>
+<li>Satellite availability plots</li>
+</ul>
 </ul>
 and hence follows UNAVCO's famous 'TEQC' program. The remarkable thing about BNC in this context is that it supports RINEX Version 3 under GNU General Public License.
+</p>
+<p><img src="IMG/screenshot30.png"/></p>
+<p><u>Figure 7:</u>Example for satellite availability plot.</p>
 
 <p><a name="reqcact"><h4>3.6.1 Action - optional</h4></p>
 <p>Select an action. Options are 'Edit/Concatenate' and 'Analyze'.
@@ -674,7 +682,7 @@ If you specify a 'New' but no 'Old' marker/antenna/receiver name, the correspond
 </p>
 
 <p><img src="IMG/screenshot27.png"/></p>
-<p><u>Figure 7:</u> Example for 'RINEX Editing Options' window.</p>
+<p><u>Figure 8:</u> Example for 'RINEX Editing Options' window.</p>
 
 <p><a name="reqcinput"><h4>3.6.3 Input Files - mandatory if 'Action' is set</h4></p>
 <p>
@@ -688,14 +696,14 @@ specify full path to input RINEX Navigation file(s).
 If 'Edit/Concatenate' is selected, specifying the a path to output RINEX Observation file(s) and specifying a full path to output RINEX Navigation file(s) is mandatory.</p> 
 
 <p><img src="IMG/screenshot25.png"/></p>
-<p><u>Figure 8:</u> Example for RINEX file editing with BNC in Post Processing mode.</p>
+<p><u>Figure 9:</u> Example for RINEX file editing with BNC in Post Processing mode.</p>
 
 <p>
 If 'Analyze' is selected, specifying a 'Log' file to output analysis results is mandatory.<br> 
 </p> 
 
 <p><img src="IMG/screenshot29.png"/></p>
-<p><u>Figure 9:</u> Example for RINEX quality check output with BNC in Post Processing mode. A multipath and a signal-to-noise ratio analysis are presented in terms of a sky plot.</p>
+<p><u>Figure 10:</u> Example for RINEX quality check output with BNC in Post Processing mode. A multipath and a signal-to-noise ratio analysis are presented in terms of a sky plot.</p>
 
 <p><a name="reqcplots"><h4>3.6.5 Directory for Plots - optional if 'Action' is set</h4></p>
 <p>
@@ -725,12 +733,12 @@ or:<br>
 --key reqcObsFile tlse\*
 </p>
 
-<p>The following Linux command line produces RINEX QC multipath (see Estey and Meertens 1999) and signal-to-noise ratio plots offline in 'no window' mode and saves them in directory '/home/user'. Introducing a dummy configuration file /dev/null makes sure that no configuration options previously saved on disc are used:</p>
+<p>The following Linux command line produces RINEX QC plots (see Estey and Meertens 1999) offline in 'no window' mode and saves them in directory '/home/user'. Introducing a dummy configuration file /dev/null makes sure that no configuration options previously saved on disc are used:</p>
 <p>
 /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key reqcPlotDir /home/user --nw
 </p>
 <p></p>
-<p>The following Linux command line produces the same RINEX QC multipath and signal-to-noise ratio plots in interactive autoStart mode:</p>
+<p>The following Linux command line produces the same RINEX QC plots in interactive autoStart mode:</p>
 <p>
 /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key --key startTab 4 --key autoStart 2
 </p>
@@ -1064,7 +1072,7 @@ Note that any socket connection of an application to BNC's synchronized or unsyn
 The following figure shows the screenshot of a BNC configuration where a number of streams is pulled from different NTRIP Broadcasters to feed a GNSS engine via IP port output.
 </p>
 <p><img src="IMG/screenshot12.png"/></p>
-<p><u>Figure 10:</u> Synchronized BNC output via IP port to feed a GNSS real-time engine.</p>
+<p><u>Figure 11:</u> Synchronized BNC output via IP port to feed a GNSS real-time engine.</p>
 
 <p><a name="syncport"><h4>3.8.1 Port - optional</h4></p>
 <p>
@@ -1102,7 +1110,7 @@ BNC can produce unsynchronized observations from all configured streams in ASCII
 You may use BNC to feed a serial connected device like a GNSS receiver. For that an incoming stream can be forwarded to a serial port. The following figure shows the screenshot of an example situation where BNC pulls a VRS stream from an NTRIP Broadcaster to feed a serial connected RTK rover. 
 </p>
 <p><img src="IMG/screenshot11.png"/></p>
-<p><u>Figure 11:</u> BNC pulling a VRS stream to feed a serial connected RTK rover.</p>
+<p><u>Figure 12:</u> BNC pulling a VRS stream to feed a serial connected RTK rover.</p>
 
 <p><a name="sermount"><h4>3.9.1 Mountpoint - optional</h4></p>
 <p>
@@ -1253,7 +1261,7 @@ This section describes several miscellaneous options which can be applied for a 
 The following figure shows RTCM message numbers and observation types contained in stream 'CUT07' and the message latencies recorded every 2 seconds.
 </p>
 <p><img src="IMG/screenshot14.png"/></p>
-<p><u>Figure 12:</u> RTCM message numbers, latencies and observation types.</p>
+<p><u>Figure 13:</u> RTCM message numbers, latencies and observation types.</p>
 
 
 <p><a name="miscmount"><h4>3.11.1 Mountpoint - optional </h4></p>
@@ -1332,10 +1340,10 @@ The following figure provides the screenshot of an example PPP session with BNC.
 </p>
 
 <p><img src="IMG/screenshot03.png"/></p>
-<p><u>Figure 13:</u> Precise Point Positioning with BNC, PPP Panel 1.</p>
+<p><u>Figure 14:</u> Precise Point Positioning with BNC, PPP Panel 1.</p>
 
 <p><img src="IMG/screenshot18.png"/></p>
-<p><u>Figure 14:</u> Precise Point Positioning with BNC, PPP Panel 2.</p>
+<p><u>Figure 15:</u> Precise Point Positioning with BNC, PPP Panel 2.</p>
 
 <p>
 PPP results are shown in the 'Log' tab on the bottom of BNC's main window. Depending on the processing options, the following values are shown about once per second (example):
@@ -1622,10 +1630,10 @@ You may need to create your own reference coordinate through running BNC for an 
 </p>
 
 <p><img src="IMG/screenshot17.png"/></p>
-<p><u>Figure 15:</u> BNC in 'Quick-Start' mode (PPP, Panel 1)</p>
+<p><u>Figure 16:</u> BNC in 'Quick-Start' mode (PPP, Panel 1)</p>
 
 <p><img src="IMG/screenshot22.png"/></p>
-<p><u>Figure 16:</u> BNC in 'Quick-Start' mode (PPP, Panel 2)</p>
+<p><u>Figure 17:</u> BNC in 'Quick-Start' mode (PPP, Panel 2)</p>
 
 <p><a name="pppgap"><h4>3.12.7.8 Maximal Solution Gap - optional if Quick-Start is set</h4></p>
 <p>
@@ -1773,13 +1781,13 @@ The following screenshots describe an example setup of BNC when combining Broadc
 
 <br>
 <p><img src="IMG/screenshot20.png"/></p>
-<p><u>Figure 17:</u> BNC combining Broadcast Correction streams.</p>
+<p><u>Figure 18:</u> BNC combining Broadcast Correction streams.</p>
 <p><br></p>
 <p><img src="IMG/screenshot21.png"/></p>
-<p><u>Figure 18:</u> BNC uploading the combined Broadcast Corrections stream.</p>
+<p><u>Figure 19:</u> BNC uploading the combined Broadcast Corrections stream.</p>
 <p></p>
 <p><img src="IMG/screenshot23.png"/></p>
-<p><u>Figure 19:</u> 'INTERNAL' PPP with BNC using combined Broadcast Corrections stream.</p>
+<p><u>Figure 20:</u> 'INTERNAL' PPP with BNC using combined Broadcast Corrections stream.</p>
 
 <p><a name="combimethod"><h4>3.13.1.2 Method - mandatory if 'Combine Corrections' table is populated</h4></p>
 <p>
@@ -2107,7 +2115,7 @@ Select the length of Clock RINEX files and SP3 Orbit files. The default value is
 The following screenshot shows the encoding and uploading of a stream of precise orbits and clocks coming from a real-time engine in 'RTNET' ASCII format. The stream is uploaded to NTRIP Broadcaster 'products.igs-ip.net'. It is referred to APC and IGS08. Uploaded data are locally saved in SP3 and Clock RINEX format. The SSR Provider ID is set to 3. The SSR Solution ID is and the Issue of Data SSR are set to 1. Required Broadcast Ephemeris are received via stream 'RTCM3EPH'. 
 </p>
 <p><img src="IMG/screenshot26.png"/></p>
-<p><u>Figure 20:</u> Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an NTRIP Broadcaster.</p>
+<p><u>Figure 21:</u> Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an NTRIP Broadcaster.</p>
 
 <p><a name="upeph"><h4>3.15. Upload Ephemeris</h4></p>
 <p>
@@ -2134,7 +2142,7 @@ Select the Broadcast Ephemeris repetition interval in seconds. Defaut is '5' mea
 </p>
 
 <p><img src="IMG/screenshot28.png"/></p>
-<p><u>Figure 21:</u> Producing a Broadcast Ephemeris stream from navigation messages of globally distributed RTCM streams and uploading them in RTCM Version 3 format to an NTRIP Broadcaster.</p>
+<p><u>Figure 22:</u> Producing a Broadcast Ephemeris stream from navigation messages of globally distributed RTCM streams and uploading them in RTCM Version 3 format to an NTRIP Broadcaster.</p>
 
 <p><a name="streams"><h4>3.16. Streams</h4></p>
 <p>
@@ -2201,7 +2209,7 @@ The bandwidth consumption per stream is shown in the 'Throughput' tab in bits pe
 </p>
 
 <p><img src="IMG/screenshot08.png"/></p>
-<p><u>Figure 22:</u> Bandwidth consumption of incoming streams.</p>
+<p><u>Figure 23:</u> Bandwidth consumption of incoming streams.</p>
 
 <p><a name="latency"><h4>3.17.3 Latency</h4></p>
 <p>
@@ -2209,7 +2217,7 @@ The latency of observations in each incoming stream is shown in the 'Latency' ta
 </p>
 
 <p><img src="IMG/screenshot07.png"/></p>
-<p><u>Figure 23:</u> Latency of incoming streams.</p>
+<p><u>Figure 24:</u> Latency of incoming streams.</p>
 
 <p><a name="ppptab"><h4>3.17.4 PPP Plot</h4></p>
 <p>
@@ -2217,7 +2225,7 @@ Precise Point Positioning time series of North (red), East (green) and Up (blue)
 </p>
 
 <p><img src="IMG/screenshot13.png"/></p>
-<p><u>Figure 24:</u> Time series plot of PPP session.</p>
+<p><u>Figure 25:</u> Time series plot of PPP session.</p>
 
 <p><a name="bottom"><h4>3.18. Bottom Menu Bar</h4></p>
 <p>
@@ -2225,7 +2233,7 @@ The bottom menu bar allows to add or delete streams to BNC's configuration and t
 </p>
 
 <p><img src="IMG/screenshot06.png"/></p>
-<p><u>Figure 25:</u> Steam input communication links.</p>
+<p><u>Figure 26:</u> Steam input communication links.</p>
 
 <p><a name="streamadd"><h4>3.18.1 Add Stream - Coming from Caster</h4></p>
 
@@ -2245,7 +2253,7 @@ It may be that you are not sure about your NTRIP Broadcasters host and port numb
 </p>
 <p><img src="IMG/screenshot04.png"/></p>
 
-<p><u>Figure 26:</u> Casters table.</p>
+<p><u>Figure 27:</u> Casters table.</p>
 
 <p><a name="streamuser"><h4>3.18.1.3 User and Password - mandatory for protected streams</h4></p>
 <p>
@@ -2263,7 +2271,7 @@ The contents of data field 'nmea' tells you whether a stream retrieval needs to 
 Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream' and repeat the process again to retrieve streams from different casters.
 </p> 
 <p><img src="IMG/screenshot05.png"/></p>
-<p><u>Figure 27:</u> Broadcaster source-table.</p>
+<p><u>Figure 28:</u> Broadcaster source-table.</p>
 
 <p>Button 'Map' leads to the presentation of a map showing the distribution of streams offered through the downloaded source-table.</p>
 
@@ -2294,7 +2302,7 @@ Select option '1' if you are not sure whether the broadcaster supports NTRIP Ver
 Button 'Map' opens a window to show a distribution map of the caster's streams. You may like to zoom in or out using option 'Zoom +' or 'Zoom -'. You may also like to 'Clean' or 'Reset' a map or let it 'Fit' exactly to the current size of the window. Option 'Close' shuts the window.
 </p>
 <p><img src="IMG/screenshot24.png"/></p>
-<p><u>Figure 28:</u> Stream distribution map derived from NTRIP Broadcaster source-table.</p>
+<p><u>Figure 29:</u> Stream distribution map derived from NTRIP Broadcaster source-table.</p>
 
 <p><a name="streamip"><h4>3.18.2 Add Stream - Coming from TCP/IP Port</h4></p>
 <p>
@@ -2368,7 +2376,7 @@ Streams received from a serial connected GNSS receiver show up with an 'S' (for 
 The following figure shows a BNC example setup for pulling a stream via serial port on a Linux operating system.
 </p>
 <p><img src="IMG/screenshot15.png"/></p>
-<p><u>Figure 29:</u> BNC setup for pulling a stream via serial port.</p>
+<p><u>Figure 30:</u> BNC setup for pulling a stream via serial port.</p>
 
 <p><a name="start"><h4>3.18.5 Start</h4></p>
 <p>
@@ -2400,8 +2408,7 @@ batch mode (option -nw). Windows and Mac systems always support graphics. For
 producing plots in batch mode on Linux systems you must make sure that at
 least a virtual X-Server such as 'Xvfb' is installed and the '-display' option
 is used. The following is an example shell script to execute BNC in batch mode
-for producing multipath and signal-to-noise ratio plots from RINEX files. It
-could be used via 'crontab':
+for producing QC plots from RINEX files. It could be used via 'crontab':
 </p>
 <pre>
 #!/bin/bash
@@ -2599,7 +2606,7 @@ Once BNC has been started, many of its configuration options cannot be changed a
 
 <tr>
 <td>Aug 2012 &nbsp;</td><td>Version 2.7 &nbsp;</td>
-<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting COMPASS and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX v2 and v3 quality check through multipath analysis and sky plot<br> [Add] Signal-to-noise sky plot<br> [Bug] Short periodic outages in PPP time series when operated when 'Sync Corr' set to zero<br> |Add] Log observation types contained in RTCM Version 3 MSM streams<br> [Add] Reading RINEX v3 observation type header records from RINEX skeleton files<br> [Add] Logfile for RINEX file editing and concatenation<br>[Add] Save PNG plot files on disk<br> [Add] Version 2.7 published</td>
+<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting COMPASS and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX QC through multipath analysis sky plot<br> [Add] RINEX QC through signal-to-noise sky plot<br> [Add] RINEX QC through satellite availability plot<br> [Bug] Short periodic outages in PPP time series when operated when 'Sync Corr' set to zero<br> |Add] Log observation types contained in RTCM Version 3 MSM streams<br> [Add] Reading RINEX v3 observation type header records from RINEX skeleton files<br> [Add] Logfile for RINEX file editing and concatenation<br>[Add] Save PNG plot files on disk<br> [Add] Version 2.7 published</td>
 </tr>
 
 </table>
