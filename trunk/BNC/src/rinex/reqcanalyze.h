@@ -84,6 +84,8 @@ Q_OBJECT
       _GPSWeeks = GPSWeeks;
       _hasL1    = false;
       _hasL2    = false;
+      _slipL1   = false;
+      _slipL2   = false;
       _MP1      = 0.0;
       _MP2      = 0.0;
       _SNR1     = 0.0;
@@ -93,6 +95,8 @@ Q_OBJECT
     double _GPSWeeks;
     bool   _hasL1;
     bool   _hasL2;
+    bool   _slipL1;
+    bool   _slipL2;
     double _MP1;
     double _MP2;
     double _SNR1;
