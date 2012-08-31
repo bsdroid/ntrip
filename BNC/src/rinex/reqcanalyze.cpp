@@ -160,7 +160,7 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
     bncSettings settings;
     QString dirName = settings.value("reqcPlotDir").toString();
     if (!dirName.isEmpty()) {
-      QByteArray ext = scaleTitle.isEmpty() ? "_SNR.png" : "_MP.png";
+      QByteArray ext = scaleTitle.isEmpty() ? "_S.png" : "_M.png";
       graphWin->savePNG(dirName, ext);
     }
   }
@@ -556,7 +556,7 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
     bncSettings settings;
     QString dirName = settings.value("reqcPlotDir").toString();
     if (!dirName.isEmpty()) {
-      QByteArray ext = "_AVAIL.png";
+      QByteArray ext = "_A.png";
       graphWin->savePNG(dirName, ext);
     }
   }
