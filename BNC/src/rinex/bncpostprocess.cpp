@@ -121,15 +121,15 @@ void t_postProcessing::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
     obs.setMeasdata(type, rnxObsFile->version(), rnxSat.obs[iType]);
     if      (type.indexOf("L1") == 0) {
       obs.snrL1  = rnxSat.snr[iType];
-      obs.slipL1 = (rnxSat.lli[iType] != 0);
+      obs.slipL1 = (rnxSat.lli[iType] & 1);
     }
     else if (type.indexOf("L2") == 0) {
       obs.snrL2  = rnxSat.snr[iType];
-      obs.slipL2 = (rnxSat.lli[iType] != 0);
+      obs.slipL2 = (rnxSat.lli[iType] & 1);
     }
     else if (type.indexOf("L5") == 0) {
       obs.snrL5  = rnxSat.snr[iType];
-      obs.slipL5 = (rnxSat.lli[iType] != 0);
+      obs.slipL5 = (rnxSat.lli[iType] & 1);
     }
   }
 }
