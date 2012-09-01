@@ -324,7 +324,7 @@ void bncTableDlg::slotGetTable() {
 void bncTableDlg::slotShowMap() {
 
   t_bncMap* bncMap = new t_bncMap(this);
-  bncMap->setGeometry( x(), int(y()+height()*1.3), 880, 440 );
+  bncMap->setGeometry( x(), int(y()+height()*1.3), 800, 600 );
 
   connect(this, SIGNAL(newPoint(const QString&, double, double)),
           bncMap, SLOT(slotNewPoint(const QString&, double, double)));
