@@ -15,40 +15,39 @@
 
 // Constructor
 /////////////////////////////////////////////////////////////////////////////
-bncMap::bncMap(QWidget* parent) : QDialog(parent) {
+t_bncMap::t_bncMap(QWidget* parent) : QDialog(parent) {
 
-  QwtPlot* plot = new QwtPlot();
+  _mapPlot = new QwtPlot();
 
-  (void)new QwtPlotPanner(plot->canvas());
-  (void)new QwtPlotMagnifier(plot->canvas());
+  (void)new QwtPlotPanner(_mapPlot->canvas());
+  (void)new QwtPlotMagnifier(_mapPlot->canvas());
 
-  plot->canvas()->setFocusPolicy(Qt::WheelFocus);
+  _mapPlot->canvas()->setFocusPolicy(Qt::WheelFocus);
 
-  QRectF rect(-180.0, -90.0, 360.0, 180.0);
-
-  QwtPlotSvgItem* map = new QwtPlotSvgItem();
-  map->loadFile(rect, ":world.svg");
-  map->attach(plot);
-
-  //// beg test
-  for (int ii = -180; ii <= 180; ii += 60) {
-    for (int jj = -80; jj <= 80;   jj += 40) {
-      QwtPlotMarker* marker = new QwtPlotMarker();
-      marker->setValue(ii,jj);
-      marker->setLabel(QwtText("TXT"));
-      marker->setItemAttribute(QwtPlotItem::AutoScale, false);
-      marker->attach(plot);
-    }
-  }
-  //// end test
+  QwtPlotSvgItem* mapItem = new QwtPlotSvgItem();
+  mapItem->loadFile(QRectF(-180.0, -90.0, 360.0, 180.0), ":world.svg");
+  mapItem->attach(_mapPlot);
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
-  mainLayout->addWidget(plot);
+  mainLayout->addWidget(_mapPlot);
 
-  plot->replot();
+  _mapPlot->replot();
 }
 
 // Destructor
 /////////////////////////////////////////////////////////////////////////////
-bncMap::~bncMap(){ 
+t_bncMap::~t_bncMap() { 
+  delete _mapPlot;
 }
+
+// 
+/////////////////////////////////////////////////////////////////////////////
+void t_bncMap::slotNewPoint(QPointF point, QString name, QPen, double) {
+  QwtPlotMarker* marker = new QwtPlotMarker();
+  marker->setValue(point.x(), point.y());
+  marker->setLabel(QwtText(name));
+  marker->attach(_mapPlot);
+}
+
+
+

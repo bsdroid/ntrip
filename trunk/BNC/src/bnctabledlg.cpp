@@ -323,33 +323,21 @@ void bncTableDlg::slotGetTable() {
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::slotShowMap() {
 
-  bncMap* winMap = new bncMap(this);
-  winMap->setGeometry( x(), int(y()+height()*1.3), 880, 440 );
+  t_bncMap* bncMap = new t_bncMap(this);
+  bncMap->setGeometry( x(), int(y()+height()*1.3), 880, 440 );
 
   connect(this, SIGNAL(newPoint(QPointF, QString, QPen, double)),
-	  winMap, SLOT(slotNewPoint(QPointF, QString, QPen, double)));
-      
-  connect(this, SIGNAL(fitMap()),
-	  winMap, SLOT(slotFitMap() ));
-   
-  connect(this, SIGNAL(fitFont()),
-	  winMap, SLOT(slotFitFont() ));
+	  bncMap, SLOT(slotNewPoint(QPointF, QString, QPen, double)));
       
   _buttonMap->setEnabled(false);
   showSourceTable();
-  winMap->exec();
+  bncMap->exec();
   _buttonMap->setEnabled(true);
 
   disconnect(this, SIGNAL(newPoint(QPointF, QString, QPen, double)),
-	     winMap, SLOT(slotNewPoint(QPointF, QString, QPen, double)));
+	     bncMap, SLOT(slotNewPoint(QPointF, QString, QPen, double)));
    
-  disconnect(this, SIGNAL(fitMap()),
- 	     winMap, SLOT(slotFitMap() ));
-   
-  disconnect(this, SIGNAL(fitFont()),
-  	     winMap, SLOT(slotFitFont() ));
-      
-  delete winMap;
+  delete bncMap;
 }
 
 // Show world map
