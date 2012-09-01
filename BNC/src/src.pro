@@ -53,7 +53,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bncserialport.h bncnetquerys.h bncfigure.h                  \ 
           bncfigurelate.h bncpppclient.h bncversion.h                 \ 
           bancroft.h bncmodel.h bncfigureppp.h bncrawfile.h           \ 
-          bnctides.h bncmap_svg.h bncantex.h                          \
+          bnctides.h bncmap.h bncantex.h                              \
           bncephuser.h bncoutf.h bncclockrinex.h bncsp3.h             \
           bncbytescounter.h bncsslconfig.h reqcdlg.h                  \
           upload/bncrtnetdecoder.h upload/bncuploadcaster.h           \
