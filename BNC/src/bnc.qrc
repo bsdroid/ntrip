@@ -5,6 +5,7 @@
     <file>bnchelp.html</file>
     <file>bncabout.html</file>
     <file>worldmap.dat</file>
+    <file>world.svg</file>
 </qresource>
 <qresource>
     <file>IMG/screenshot01.png</file>

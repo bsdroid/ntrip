@@ -1,4 +1,6 @@
 
+QT += svg
+
 TARGET = ../bnc
 
 # Switch to debug configuration
