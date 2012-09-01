@@ -14,7 +14,7 @@ class t_bncMap : public QDialog {
   ~t_bncMap();
    
  public slots:
-  void slotNewPoint(QPointF, QString, QPen, double);
+  void slotNewPoint(const QString& name, double latDeg, double lonDeg);
    
  private:
   QwtPlot* _mapPlot;

@@ -42,9 +42,9 @@ t_bncMap::~t_bncMap() {
 
 // 
 /////////////////////////////////////////////////////////////////////////////
-void t_bncMap::slotNewPoint(QPointF point, QString name, QPen, double) {
+void t_bncMap::slotNewPoint(const QString& name, double latDeg, double lonDeg) {
   QwtPlotMarker* marker = new QwtPlotMarker();
-  marker->setValue(point.x(), point.y());
+  marker->setValue(lonDeg, latDeg);
   marker->setLabel(QwtText(name));
   marker->attach(_mapPlot);
 }
