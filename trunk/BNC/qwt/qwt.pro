@@ -1,9 +1,11 @@
 
+
 TEMPLATE  = lib
 TARGET    = qwt
 CONFIG   += staticlib
 
-DEFINES += QWT_NO_SVG
+###DEFINES += QWT_NO_SVG
+QT += svg
 
 OBJECTS_DIR = .obj
 MOC_DIR     = .moc
@@ -70,7 +72,8 @@ HEADERS += \
     qwt_matrix_raster_data.h \
     qwt_sampling_thread.h \
     qwt_series_data.h \
-    qwt_scale_widget.h 
+    qwt_scale_widget.h \
+    qwt_plot_svgitem.h
 
 SOURCES += \
     qwt_abstract_scale_draw.cpp \
@@ -132,4 +135,5 @@ SOURCES += \
     qwt_matrix_raster_data.cpp \
     qwt_sampling_thread.cpp \
     qwt_series_data.cpp \
-    qwt_scale_widget.cpp 
+    qwt_scale_widget.cpp \
+    qwt_plot_svgitem.cpp
