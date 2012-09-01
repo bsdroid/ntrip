@@ -8,6 +8,7 @@
 #include <qwt_plot_marker.h>
 #include <qwt_plot_canvas.h>
 #include <qwt_plot_panner.h>
+#include <qwt_plot_zoomer.h>
 #include <qwt_plot_magnifier.h>
 #include <qwt_plot_renderer.h>
 
@@ -21,8 +22,12 @@ t_bncMap::t_bncMap(QWidget* parent) : QDialog(parent) {
   // --------------------------------------------
   _mapPlot = new QwtPlot();
 
-  (void)new QwtPlotPanner(_mapPlot->canvas());
-  (void)new QwtPlotMagnifier(_mapPlot->canvas());
+  _mapPlot->setAxisScale(QwtPlot::xBottom, -180.0, 180.0);
+  _mapPlot->setAxisScale(QwtPlot::yLeft,    -90.0,  90.0);
+
+  //  (void)new QwtPlotPanner(_mapPlot->canvas());
+  //  (void)new QwtPlotMagnifier(_mapPlot->canvas());
+  (void)new QwtPlotZoomer(_mapPlot->canvas());
 
   _mapPlot->canvas()->setFocusPolicy(Qt::WheelFocus);
 
