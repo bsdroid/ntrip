@@ -326,45 +326,31 @@ void bncTableDlg::slotShowMap() {
   t_bncMap* bncMap = new t_bncMap(this);
   bncMap->setGeometry( x(), int(y()+height()*1.3), 880, 440 );
 
-  connect(this, SIGNAL(newPoint(QPointF, QString, QPen, double)),
-	  bncMap, SLOT(slotNewPoint(QPointF, QString, QPen, double)));
+  connect(this, SIGNAL(newPoint(const QString&, double, double)),
+          bncMap, SLOT(slotNewPoint(const QString&, double, double)));
       
   _buttonMap->setEnabled(false);
   showSourceTable();
   bncMap->exec();
   _buttonMap->setEnabled(true);
-
-  disconnect(this, SIGNAL(newPoint(QPointF, QString, QPen, double)),
-	     bncMap, SLOT(slotNewPoint(QPointF, QString, QPen, double)));
-   
   delete bncMap;
 }
 
 // Show world map
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::showSourceTable() {
-
-  for( int i = 0; i < _allLines.size(); i++ ){
-	
-    if( _allLines.at(i).startsWith("STR") == true ){
-	     
-       QStringList tmp = _allLines.at(i).split(';');
-       if( tmp.size() > 0 ){
-		  
-	 QPointF point;
-    	         point.setY( tmp.at(9).toDouble() );
-                 point.setX( tmp.at(10).toDouble() );
-
-	 QString site = tmp.at(1);
-	         site.resize(4);
-
-         emit newPoint(point, site, QPen(QBrush(QColor(0,0,255,200)), 1.5), 1.5 );
-       }
-     }
-   }
-   emit fitMap();
+  for(int i = 0; i < _allLines.size(); i++) {
+    if (_allLines.at(i).startsWith("STR") == true){
+      QStringList tmp = _allLines.at(i).split(';');
+      if (tmp.size() > 0) {
+        double  latDeg = tmp.at(9).toDouble();
+        double  lonDeg = tmp.at(10).toDouble();
+        QString name   = tmp.at(1);
+        emit newPoint(name, latDeg, lonDeg);
+      }
+    }
+  }
 }
-
 
 // Select slot
 ////////////////////////////////////////////////////////////////////////////
@@ -399,15 +385,12 @@ void bncTableDlg::select() {
         url.setPath(item->text());
         mountPoints->push_back(url.toString() + " " + format + " " + latitude
                         + " " + longitude + " " + nmea + " " + ntripVersion);
-	 
+         
         site.resize(4);
-	emit newPoint(QPointF(longitude.toDouble(),latitude.toDouble()), site,
-		      QPen(QBrush(QColor(255,0,0,200)), 3.0), 3.0 );
       }
     }
   }
   emit newMountPoints(mountPoints);
-  emit fitFont();
 }
 
 // User changed the selection of mountPoints
