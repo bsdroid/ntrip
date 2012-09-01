@@ -331,9 +331,8 @@ void bncTableDlg::slotShowMap() {
       
   _buttonMap->setEnabled(false);
   showSourceTable();
-  bncMap->exec();
+  bncMap->show();
   _buttonMap->setEnabled(true);
-  delete bncMap;
 }
 
 // Show world map
