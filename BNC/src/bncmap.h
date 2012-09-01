@@ -15,9 +15,18 @@ class t_bncMap : public QDialog {
    
  public slots:
   void slotNewPoint(const QString& name, double latDeg, double lonDeg);
-   
+
+ private slots:
+  void slotClose();
+  void slotPrint();
+
+ protected:
+  virtual void closeEvent(QCloseEvent *);
+
  private:
-  QwtPlot* _mapPlot;
+  QwtPlot*     _mapPlot;
+  QPushButton* _buttonClose;
+  QPushButton* _buttonPrint;
 };
 
 #endif
