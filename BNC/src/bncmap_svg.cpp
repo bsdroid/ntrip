@@ -1,6 +1,7 @@
 
 #include <QtSvg>
 
+#include <qwt_symbol.h>
 #include <qwt_plot.h>
 #include <qwt_plot_svgitem.h>
 #include <qwt_plot_curve.h>
@@ -8,7 +9,7 @@
 #include <qwt_plot_canvas.h>
 #include <qwt_plot_panner.h>
 #include <qwt_plot_magnifier.h>
-#include <qwt_symbol.h>
+#include <qwt_plot_renderer.h>
 
 #include "bncmap.h"
 
@@ -94,11 +95,14 @@ void t_bncMap::slotPrint() {
 
   QPrinter printer;
   QPrintDialog* dialog = new QPrintDialog(&printer, this);
-  dialog->setWindowTitle(tr("Print Plot"));
+  dialog->setWindowTitle(tr("Print Map"));
   if (dialog->exec() != QDialog::Accepted) {
     return;
   }
   else {
-    qDebug() << "Print Map";
+    QwtPlotRenderer renderer;
+    renderer.setDiscardFlag(QwtPlotRenderer::DiscardBackground, false);
+    renderer.setLayoutFlag(QwtPlotRenderer::KeepFrames, true);
+    renderer.renderTo(_mapPlot, printer);
   }
 }
