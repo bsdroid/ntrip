@@ -506,27 +506,27 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
 
     // Availability Plot Data
     // ----------------------
-    double mjd = chunkStartTime.mjddec();
+    double mjdX24 = chunkStartTime.mjddec() * 24.0;
     if (availL1) {
       if      (slipL1) {
-        _availDataMap[prn]._L1slip << mjd;
+        _availDataMap[prn]._L1slip << mjdX24;
       }
       else if (gapL1) {
-        _availDataMap[prn]._L1gap << mjd;
+        _availDataMap[prn]._L1gap << mjdX24;
       }
       else {
-        _availDataMap[prn]._L1ok << mjd;
+        _availDataMap[prn]._L1ok << mjdX24;
       }
     }
     if (availL2) {
       if      (slipL2) {
-        _availDataMap[prn]._L2slip << mjd;
+        _availDataMap[prn]._L2slip << mjdX24;
       }
       else if (gapL2) {
-        _availDataMap[prn]._L2gap << mjd;
+        _availDataMap[prn]._L2gap << mjdX24;
       }
       else {
-        _availDataMap[prn]._L2ok << mjd;
+        _availDataMap[prn]._L2ok << mjdX24;
       }
     }
 

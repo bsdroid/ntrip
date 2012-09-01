@@ -11,8 +11,8 @@
 class t_scaleDrawTime : public QwtScaleDraw {
  public:
   t_scaleDrawTime() {}
-  virtual QwtText label(double mjd) const {
-    bncTime epoTime; epoTime.setmjd(mjd);
+  virtual QwtText label(double mjdX24) const {
+    bncTime epoTime; epoTime.setmjd(mjdX24/24.0);
     return QwtText(epoTime.timestr(0,':').c_str());
   }
 };
