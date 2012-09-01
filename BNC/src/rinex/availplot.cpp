@@ -45,6 +45,12 @@ t_availPlot::t_availPlot(QWidget* parent,
   t_scaleDrawPrn* scaleDrawPrn = new t_scaleDrawPrn();
   setAxisScaleDraw(QwtPlot::yLeft, scaleDrawPrn);
 
+  // Smaller Font for y-Axis
+  // -----------------------
+  QFont yFont = axisFont(QwtPlot::yLeft);
+  yFont.setPointSize(yFont.pointSize()/2);
+  setAxisFont(QwtPlot::yLeft, yFont);
+
   // Symbols
   // -------
   QColor red(220,20,60);
