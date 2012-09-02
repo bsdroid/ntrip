@@ -71,6 +71,9 @@ t_bncMap::~t_bncMap() {
 // 
 /////////////////////////////////////////////////////////////////////////////
 void t_bncMap::slotNewPoint(const QString& name, double latDeg, double lonDeg) {
+
+  if (lonDeg > 180.0) lonDeg -= 360.0;
+
   QColor red(220,20,60);
   QwtSymbol* symbol = new QwtSymbol(QwtSymbol::Rect, QBrush(red), 
                                     QPen(red), QSize(2,2));
