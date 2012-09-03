@@ -2608,7 +2608,7 @@ Once BNC has been started, many of its configuration options cannot be changed a
 
 <tr>
 <td>Aug 2012 &nbsp;</td><td>Version 2.7 &nbsp;</td>
-<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting COMPASS and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX QC through multipath analysis sky plot<br> [Add] RINEX QC through signal-to-noise sky plot<br> [Add] RINEX QC through satellite availability plot<br> [Bug] Short periodic outages in PPP time series when operated when 'Sync Corr' set to zero<br> |Add] Log observation types contained in RTCM Version 3 MSM streams<br> [Add] Reading RINEX v3 observation type header records from RINEX skeleton files<br> [Add] Logfile for RINEX file editing and concatenation<br>[Add] Save PNG plot files on disk<br> [Add] Version 2.7 published</td>
+<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting COMPASS and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX QC through multipath analysis sky plot<br> [Add] RINEX QC through signal-to-noise sky plot<br> [Add] RINEX QC through satellite availability plot<br> [Bug] Short periodic outages in PPP time series when operated when 'Sync Corr' set to zero<br> |Add] Log observation types contained in RTCM Version 3 MSM streams<br> [Add] Reading RINEX v3 observation type header records from RINEX skeleton files<br> [Add] Logfile for RINEX file editing and concatenation<br>[Add] Save PNG plot files on disk<br> [Mod] Plot stream distribution from NTRIP Broadcaster source-table<br> [Add] Version 2.7 published</td>
 </tr>
 
 </table>
@@ -2821,10 +2821,10 @@ The following are proposed 'Multiple Signal Messages' (MSM) under discussion for
 <li> On non-graphical systems you may start BNC using a command line with the following option for a configuration file (example for Windows systems):<br>bnc.exe --conf &lt;configFileName&gt;
 </li>
 </ul>
-Presented example configuration files contain a user ID 'user' and a password 'pass' for accessing streams from various Ntrip Broadcasters. Replace these account details by a the personal user ID and password you receive following an online registration through <u>http://register.rtcm-ntrip.org</u>.
+Presented example configuration files contain a user ID 'user' and a password 'pass' for accessing streams from various NTRIP Broadcasters. Replace these account details by a the personal user ID and password you receive following an online registration through <u>http://register.rtcm-ntrip.org</u>.
 </p>
 <p>
-Note that the account for an Ntrip Broadcaster is usually limited to pulling a certain maximum number of streams at the same time. As running some of the example configurations requires pulling several streams, it is suggested to make sure that you don't exceed your account's limits.
+Note that the account for an NTRIP Broadcaster is usually limited to pulling a certain maximum number of streams at the same time. As running some of the example configurations requires pulling several streams, it is suggested to make sure that you don't exceed your account's limits.
 </p>
 <p>
 Make also sure that directories which are part of the example configurations exist on your system or adjust the affected configuration options according to your needs.
@@ -2838,7 +2838,7 @@ The example configurations assume that no proxy protects your BNC host. Should a
 
 <ol type=b>
 <li>File 'RinexObs.bnc'<br>
-The purpose of this configuration is to convert RTCM streams to RINEX Observation files. The configuration pulls streams from several Ntrip Broadcasters using different Ntrip versions and generate 15min 1Hz RINEX Version 3 Observation files. See <u>http://igs.bkg.bund.de/ntrip/observations</u> for observation stream resources.
+The purpose of this configuration is to convert RTCM streams to RINEX Observation files. The configuration pulls streams from several NTRIP Broadcasters using different Ntrip versions and generate 15min 1Hz RINEX Version 3 Observation files. See <u>http://igs.bkg.bund.de/ntrip/observations</u> for observation stream resources.
 </li>
 <br>
 <li>File 'RinexEph.bnc'<br>
@@ -2858,7 +2858,7 @@ The purpose of this configuration is to feed a serial connected receiver with ob
 </li>
 <br>
 <li>File 'FeedEngine.bnc'<br>
-The purpose of this configuration is to feed a real-time GNSS engine with observations from a number of remote reference stations. The configuration pulls streams provided in various formats from different Ntrip Broadcasters. Incoming observations are decoded, synchronized and output through a local IP port and saved into a file. Failure and recovery thresholds are specified to inform about outages.
+The purpose of this configuration is to feed a real-time GNSS engine with observations from a number of remote reference stations. The configuration pulls streams provided in various formats from different NTRIP Broadcasters. Incoming observations are decoded, synchronized and output through a local IP port and saved into a file. Failure and recovery thresholds are specified to inform about outages.
 </li>
 <br>
 <li>File 'PPP.bnc'<br>
@@ -2886,7 +2886,7 @@ The purpose of this configuration is to produce SP3 files from a Broadcast Ephem
 </li>
 <br>
 <li>File 'Upload.bnc'<br>
-The purpose of this configuration is to upload orbits and clocks from a real-time GNSS engine to an Ntrip Broadcaster. For that the configuration reads precise orbits and clocks in RTNET format. It also reads a stream carrying Broadcast Ephemeris. BNC converts the orbits and clocks into Broadcast Corrections and encodes them in RTCM Version 3 SSR messages to uploads them to an Ntrip Broadcaster. The Broadcast Corrections stream is referred to satellite Antenna Phase Center (APC) and IGS08. Orbits are saved on disk in SP3 format and clocks in Clock RINEX format.
+The purpose of this configuration is to upload orbits and clocks from a real-time GNSS engine to an NTRIP Broadcaster. For that the configuration reads precise orbits and clocks in RTNET format. It also reads a stream carrying Broadcast Ephemeris. BNC converts the orbits and clocks into Broadcast Corrections and encodes them in RTCM Version 3 SSR messages to uploads them to an NTRIP Broadcaster. The Broadcast Corrections stream is referred to satellite Antenna Phase Center (APC) and IGS08. Orbits are saved on disk in SP3 format and clocks in Clock RINEX format.
 </li>
 <br>
 <li>File 'UploadPPP.bnc'<br>
@@ -2894,7 +2894,7 @@ This configuration equals the 'Upload.bnc' configuration. However, the Broadcast
 </li>
 <br>
 <li>File 'Combi.bnc'<br>
-The purpose of this configuration is to pull several streams carrying Broadcast Corrections and a Broadcast Ephemeris stream from an Ntrip Broadcaster to produce a combined Broadcast Corrections stream. BNC encodes the combination product in RTCM Version 3 SSR messages and uploads that to an Ntrip Broadcaster. The Broadcast Corrections stream is not referred to satellite Center of Mass (CoM). It is referred to IGS08. Orbits are saved in SP3 format and clocks in Clock RINEX format.
+The purpose of this configuration is to pull several streams carrying Broadcast Corrections and a Broadcast Ephemeris stream from an NTRIP Broadcaster to produce a combined Broadcast Corrections stream. BNC encodes the combination product in RTCM Version 3 SSR messages and uploads that to an NTRIP Broadcaster. The Broadcast Corrections stream is not referred to satellite Center of Mass (CoM). It is referred to IGS08. Orbits are saved in SP3 format and clocks in Clock RINEX format.
 </li>
 <br>
 <li>File 'CombiPPP.bnc'<br>
