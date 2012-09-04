@@ -62,6 +62,7 @@
 #include "upload/bncephuploadcaster.h"
 #include "qtfilechooser.h"
 #include "reqcdlg.h"
+#include "bncmap.h"
 #ifdef USE_POSTPROCESSING
 #  include "rinex/bncpostprocess.h"
 #  include "rinex/reqcedit.h"
@@ -124,6 +125,9 @@ bncWindow::bncWindow() {
   _actDeleteMountPoints = new QAction(tr("&Delete Stream"),this);
   connect(_actDeleteMountPoints, SIGNAL(triggered()), SLOT(slotDeleteMountPoints()));
   _actDeleteMountPoints->setEnabled(false);
+
+  _actMap = new QAction(tr("&Map"),this);
+  connect(_actMap, SIGNAL(triggered()), SLOT(slotMap()));
 
   _actStart = new QAction(tr("Sta&rt"),this);
   connect(_actStart, SIGNAL(triggered()), SLOT(slotStart()));
@@ -2035,6 +2039,7 @@ void bncWindow::AddToolbar() {
   toolBar->setMovable(false);
   toolBar->addAction(_actAddMountPoints);
   toolBar->addAction(_actDeleteMountPoints);
+  toolBar->addAction(_actMap);
   toolBar->addAction(_actStart);
   toolBar->addAction(_actStop);
   toolBar->addWidget(new QLabel("                                           "));
@@ -2658,4 +2663,13 @@ void bncWindow::enableStartStop() {
       }
     }
   }
+}
+
+// Show Map
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotMap() {
+  saveOptions();
+  t_bncMap* bncMap = new t_bncMap(this);
+  bncMap->setGeometry( x(), int(y()+height()*1.3), 800, 600 );
+  bncMap->show();
 }
