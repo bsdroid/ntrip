@@ -2671,6 +2671,7 @@ void bncWindow::slotMap() {
   saveOptions();
   t_bncMap* bncMap = new t_bncMap(this);
   bncMap->setGeometry( x(), int(y()+height()*1.3), 800, 600 );
+  bncMap->setWindowTitle("Selected Mountpoints");
 
   bncSettings settings;
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
