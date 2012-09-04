@@ -2671,5 +2671,17 @@ void bncWindow::slotMap() {
   saveOptions();
   t_bncMap* bncMap = new t_bncMap(this);
   bncMap->setGeometry( x(), int(y()+height()*1.3), 800, 600 );
+
+  bncSettings settings;
+  QListIterator<QString> it(settings.value("mountPoints").toStringList());
+  while (it.hasNext()) {
+    QStringList hlp = it.next().split(" ");
+    if (hlp.size() < 5) continue;
+    QUrl   url(hlp[0]);
+    double latDeg = hlp[2].toDouble();
+    double lonDeg = hlp[3].toDouble();
+    qDebug() << url << latDeg << lonDeg;
+  }
+
   bncMap->show();
 }
