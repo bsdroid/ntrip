@@ -2680,7 +2680,7 @@ void bncWindow::slotMap() {
     QUrl   url(hlp[0]);
     double latDeg = hlp[2].toDouble();
     double lonDeg = hlp[3].toDouble();
-    qDebug() << url << latDeg << lonDeg;
+    bncMap->slotNewPoint(QFileInfo(url.path()).fileName(), latDeg, lonDeg);
   }
 
   bncMap->show();
