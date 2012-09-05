@@ -312,18 +312,21 @@ This chapter describes how to set the BNC program options. It explains the top m
 &nbsp; &nbsp; &nbsp; 3.17.4 <a href=#ppptab>PPP Plot</a><br><br>
 <b>Bottom Menu Bar</b><br>
 3.18. <a href=#bottom>Bottom Menu Bar</a><br>
-&nbsp; &nbsp; &nbsp; 4.18.1. <a href=#streamadd>Add Stream - Coming from Caster</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.1 <a href=#streamhost>Caster Host and Port</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.2 <a href=#streamtable>Casters Table</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.3 <a href=#streamuser>User and Password</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.4 <a href=#gettable>Get Table</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.5 <a href=#ntripv>NTRIP Version</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.6 <a href=#map>Map</a><br>
-&nbsp; &nbsp; &nbsp; 3.18.2 <a href=#streamip>Add Stream - Coming from TCP/IP Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.18.3 <a href=#streamudp>Add Stream - Coming from UDP Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.18.4 <a href=#streamser>Add Stream - Coming from Serial Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.18.5 <a href=#start>Start</a><br>
-&nbsp; &nbsp; &nbsp; 3.18.6 <a href=#stop>Stop</a><br><br>
+&nbsp; &nbsp; &nbsp; 3.18.1. <a href=#streamadd>Add Stream</a><br>
+&nbsp; &nbsp; &nbsp; 3.18.1.1 <a href=#streamcaster>Add Stream - Coming from Caster</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.1.1 <a href=#streamhost>Caster Host and Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.1.2 <a href=#streamtable>Casters Table</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.1.3 <a href=#streamuser>User and Password</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.1.4 <a href=#gettable>Get Table</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.1.5 <a href=#ntripv>NTRIP Version</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.18.1.1.6 <a href=#castermap>Map</a><br>
+&nbsp; &nbsp; &nbsp; 3.18.1.2 <a href=#streamip>Add Stream - Coming from TCP/IP Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.18.1.3 <a href=#streamudp>Add Stream - Coming from UDP Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.18.1.4 <a href=#streamser>Add Stream - Coming from Serial Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.18.2. <a href=#streamsdelete>Delete Stream</a><br>
+&nbsp; &nbsp; &nbsp; 3.18.3. <a href=#streamsmap>Map</a><br>
+&nbsp; &nbsp; &nbsp; 3.18.4 <a href=#start>Start</a><br>
+&nbsp; &nbsp; &nbsp; 3.18.5 <a href=#stop>Stop</a><br><br>
 <b>Command Line</b><br>
 3.19. <a href=#cmd>Command Line Options</a><br>
 &nbsp; &nbsp; &nbsp; 3.19.1. <a href=#nw>No Window Mode</a><br>
@@ -2235,18 +2238,23 @@ The bottom menu bar allows to add or delete streams to BNC's configuration and t
 <p><img src="IMG/screenshot06.png"/></p>
 <p><u>Figure 26:</u> Steam input communication links.</p>
 
-<p><a name="streamadd"><h4>3.18.1 Add Stream - Coming from Caster</h4></p>
+<p><a name="streamadd"><h4>3.18.1 Add Stream</h4></p>
+<p>
+Button 'Add Stream' allows you to pull streams either from an NTRIP Broadcaster or from a TCP/IP port, a UPD port, or a serial port.
+</p>
+
+<p><a name="streamcaster"><h4>3.18.1.1 Add Stream - Coming from Caster</h4></p>
 
 <p>
 Button 'Add Stream' &gt; 'Coming from Caster' then opens a window that allows user to select data streams from an NTRIP Broadcaster according to their mountpoints and show a distribution map of offered streams.
 </p> 
 
-<p><a name="streamhost"><h4>3.18.1.1 Caster Host and Port - mandatory</h4></p>
+<p><a name="streamhost"><h4>3.18.1.1.1 Caster Host and Port - mandatory</h4></p>
 <p>
 Enter the NTRIP Broadcaster host IP and port number. Note that EUREF and IGS operate NTRIP Broadcasters at <u>http://www.euref-ip.net/home</u>, <u>http://www.igs-ip.net/home</u>, <u>http://www.products.igs-ip.net/home</u> and <u>http://mgex.igs-ip.net/home</u>.
 </p> 
 
-<p><a name="streamtable"><h4>3.18.1.2 Casters Table - optional</h4></p>
+<p><a name="streamtable"><h4>3.18.1.1.2 Casters Table - optional</h4></p>
 <p>
 It may be that you are not sure about your NTRIP Broadcasters host and port number or you are interested in other broadcaster installations operated elsewhere. Hit 'Show' for a table of known broadcasters maintained at <u>www.rtcm-ntrip.org/home</u>. A window opens which allows selecting a broadcaster for stream retrieval, see figure below.
 </p> 
@@ -2255,12 +2263,12 @@ It may be that you are not sure about your NTRIP Broadcasters host and port numb
 
 <p><u>Figure 27:</u> Casters table.</p>
 
-<p><a name="streamuser"><h4>3.18.1.3 User and Password - mandatory for protected streams</h4></p>
+<p><a name="streamuser"><h4>3.18.1.1.3 User and Password - mandatory for protected streams</h4></p>
 <p>
 Some streams on NTRIP Broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP Broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/ntrip/registeruser</u> for access to protected streams from EUREF and IGS.
 </p> 
 
-<p><a name="gettable"><h4>3.18.1.4 Get Table</h4></p>
+<p><a name="gettable"><h4>3.18.1.1.4 Get Table</h4></p>
 <p>
 Use the 'Get Table' button to download the source-table from the NTRIP Broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2, RTCM Version 3, or RTNET format. For access to observations, Broadcast Ephemeris and Broadcast Corrections in RTCM format streams must contain a selection of appropriate message types as listed in the Annex, cf. data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3 streams containing message types 1019 (GPS) and 1020 (GLONASS) and 1045 (Galileo) are required. Select your streams line by line, use +Shift and +Ctrl when necessary. The figure below provides an example source-table.
 </p> 
@@ -2273,9 +2281,7 @@ Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream'
 <p><img src="IMG/screenshot05.png"/></p>
 <p><u>Figure 28:</u> Broadcaster source-table.</p>
 
-<p>Button 'Map' leads to the presentation of a map showing the distribution of streams offered through the downloaded source-table.</p>
-
-<p><a name="ntripv"><h4>3.18.1.5 NTRIP Version - mandatory</h4></p>
+<p><a name="ntripv"><h4>3.18.1.1.5 NTRIP Version - mandatory</h4></p>
 <p>
 Some limitations and deficiencies of the NTRIP Version 1 stream transport protocol are solved in NTRIP Version 2. Improvements mainly concern a full HTTP compatibility in view of requirements coming from proxy servers. Version 2 is backwards compatible to Version 1. Options implemented in BNC are:
 </p>
@@ -2297,16 +2303,15 @@ If NTRIP Version 2 is supported by the broadcaster:
 Select option '1' if you are not sure whether the broadcaster supports NTRIP Version 2.</li>
 </p>
 
-<p><a name="map"><h4>3.18.1.6 Map - optional</h4></p>
+<p><a name="castermap"><h4>3.18.1.1.6 Map - optional</h4></p>
 <p>
-Button 'Map' opens a window to show a distribution map of the caster's
-streams. You may like to zoom in or out using mouse (left button: draw a
-rectangle to zoom, right button: zoom out, middle button: zoom back)
+Button 'Map' opens a window to show a distribution map of the caster's streams. You may like to zoom in or out using the mouse. Left button: draw a rectangle to zoom, right button: zoom out, middle button: zoom back.
 </p>
+
 <p><img src="IMG/screenshot24.png"/></p>
 <p><u>Figure 29:</u> Stream distribution map derived from NTRIP Broadcaster source-table.</p>
 
-<p><a name="streamip"><h4>3.18.2 Add Stream - Coming from TCP/IP Port</h4></p>
+<p><a name="streamip"><h4>3.18.1.2 Add Stream - Coming from TCP/IP Port</h4></p>
 <p>
 Button 'Add Stream' &gt; 'Coming from TCP/IP Port' allows to retrieve streams via TCP directly from an IP address without using the NTRIP transport protocol. For that you:
 <ul>
@@ -2325,7 +2330,7 @@ Streams directly received from a TCP/IP port show up with an 'N' for 'No NTRIP' 
 Note that this option works only if no proxy server is involved in the communication link.
 </p>
 
-<p><a name="streamudp"><h4>3.18.3 Add Stream - Coming from UDP Port</h4></p>
+<p><a name="streamudp"><h4>3.18.1.3 Add Stream - Coming from UDP Port</h4></p>
 <p>
 Button 'Add Stream' &gt; 'Coming from UDP Port' allows to pick up streams arriving directly at one of the local host's UDP ports without using the NTRIP transport protocol. For that you:
 <ul>
@@ -2340,7 +2345,7 @@ Button 'Add Stream' &gt; 'Coming from UDP Port' allows to pick up streams arrivi
 Streams directly received at a UDP port show up with a 'UN' for 'UDP, No NTRIP' in the 'Streams' canvas section on BNC's main window. Latitude and longitude are to be entered just for informal reasons.
 <p>
 
-<p><a name="streamser"><h4>3.18.4 Add Stream - Coming from Serial Port</h4></p>
+<p><a name="streamser"><h4>3.18.1.4 Add Stream - Coming from Serial Port</h4></p>
 <p>
 Button 'Add Stream' &gt; 'Coming from Serial Port' allows to retrieve streams from a GNSS receiver via serial port without using the NTRIP transport protocol. For that you:
 <ul>
@@ -2380,12 +2385,22 @@ The following figure shows a BNC example setup for pulling a stream via serial p
 <p><img src="IMG/screenshot15.png"/></p>
 <p><u>Figure 30:</u> BNC setup for pulling a stream via serial port.</p>
 
-<p><a name="start"><h4>3.18.5 Start</h4></p>
+<p><a name="streamsdelete"><h4>3.18.2 Delete Stream</h4></p>
+<p>
+Button 'Delete Stream' allows you to delete streams previously selected for retrieval as listed under the 'Streams' canvas on BNC's main window.
+</p>
+
+<p><a name="streamsmap"><h4>3.18.3 Map</h4></p>
+<p>
+Button 'Map' opens a window to show a distribution map of the streams selected for retrieval as listed under the 'Streams' canvas. You may like to zoom in or out using the mouse. Left button: draw a rectangle to zoom, right button: zoom out, middle button: zoom back.
+</p>
+
+<p><a name="start"><h4>3.18.4 Start</h4></p>
 <p>
 Hit 'Start' to start retrieving, decoding or converting GNSS data streams in real-time. Note that 'Start' generally forces BNC to begin with fresh RINEX which might overwrite existing files when necessary unless the option 'Append files' is ticked.
 </p> 
 
-<p><a name="stop"><h4>3.18.6 Stop</h4></p>
+<p><a name="stop"><h4>3.18.5 Stop</h4></p>
 <p>
 Hit the 'Stop' button in order to stop BNC. 
 </p> 
@@ -2608,7 +2623,7 @@ Once BNC has been started, many of its configuration options cannot be changed a
 
 <tr>
 <td>Aug 2012 &nbsp;</td><td>Version 2.7 &nbsp;</td>
-<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting COMPASS and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX QC through multipath analysis sky plot<br> [Add] RINEX QC through signal-to-noise sky plot<br> [Add] RINEX QC through satellite availability plot<br> [Bug] Short periodic outages in PPP time series when operated when 'Sync Corr' set to zero<br> |Add] Log observation types contained in RTCM Version 3 MSM streams<br> [Add] Reading RINEX v3 observation type header records from RINEX skeleton files<br> [Add] Logfile for RINEX file editing and concatenation<br>[Add] Save PNG plot files on disk<br> [Mod] Plot stream distribution map from NTRIP Broadcaster source-table<br> [Add] Version 2.7 published</td>
+<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting COMPASS and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX QC through multipath analysis sky plot<br> [Add] RINEX QC through signal-to-noise sky plot<br> [Add] RINEX QC through satellite availability plot<br> [Bug] Short periodic outages in PPP time series when operated when 'Sync Corr' set to zero<br> |Add] Log observation types contained in RTCM Version 3 MSM streams<br> [Add] Reading RINEX v3 observation type header records from RINEX skeleton files<br> [Add] Logfile for RINEX file editing and concatenation<br>[Add] Save PNG plot files on disk<br> [Mod] Plot stream distribution map from NTRIP Broadcaster source-table<br> [Add] Plot stream distribution map from selected sources<br> [Add] Version 2.7 published</td>
 </tr>
 
 </table>
