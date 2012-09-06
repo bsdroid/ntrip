@@ -1314,6 +1314,13 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _uploadEphSampleSpinBox->setWhatsThis(tr("Select the Broadcast Ephemeris sampling interval in seconds. Defaut is '5' meaning that a complete set of Broadcast Ephemeris is uploaded every 5 seconds."));
   _uploadEphBytesCounter->setWhatsThis(tr("BNC shows the amount of data uploaded through this stream."));
 
+  _actDeleteMountPoints->setWhatsThis(tr("<p>Delete stream(s) from selection presented in the 'Streams' canvas.</p>"));
+  _actAddMountPoints->setWhatsThis(tr("<p>Add stream(s) to selection presented in the 'Streams' canvas.</p>"));
+  _actMap->setWhatsThis(tr("<p> Draw distribution map of stream selection presented in the 'Streams' canvas.</p>")); 
+  _actStart->setWhatsThis(tr("<p> Start running BNC.</p>"));
+  _actStop->setWhatsThis(tr("<p> Stop running BNC.</p>"));
+// Weber
+
   // Enable/Disable all Widgets
   // --------------------------
   slotBncTextChanged();
