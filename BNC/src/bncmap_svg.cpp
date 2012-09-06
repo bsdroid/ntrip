@@ -169,7 +169,8 @@ void t_bncMap::showEvent(QShowEvent* event) {
   double width  = _maxPointLon - _minPointLon;
   double height = _maxPointLat - _minPointLat;
   if (width > 0 && height > 0) {
-    QRectF rect(_minPointLon, _minPointLat, width, height);
+    double eps = 2.0;
+    QRectF rect(_minPointLon-eps, _minPointLat-eps, width+2*eps, height+2*eps);
     _mapPlotZoomer->zoom(rect);
   }
   QDialog::showEvent(event);
