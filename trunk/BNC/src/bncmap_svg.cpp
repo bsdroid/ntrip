@@ -46,9 +46,7 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_marker.h>
 #include <qwt_plot_canvas.h>
-#include <qwt_plot_panner.h>
 #include <qwt_plot_zoomer.h>
-#include <qwt_plot_magnifier.h>
 #include <qwt_plot_renderer.h>
 
 #include "bncmap.h"
@@ -64,9 +62,7 @@ t_bncMap::t_bncMap(QWidget* parent) : QDialog(parent) {
   _mapPlot->setAxisScale(QwtPlot::xBottom, -180.0, 180.0);
   _mapPlot->setAxisScale(QwtPlot::yLeft,    -90.0,  90.0);
 
-  //  (void)new QwtPlotPanner(_mapPlot->canvas());
-  //  (void)new QwtPlotMagnifier(_mapPlot->canvas());
-  (void)new QwtPlotZoomer(_mapPlot->canvas());
+  _mapPlotZoomer = new QwtPlotZoomer(_mapPlot->canvas());
 
   _mapPlot->canvas()->setFocusPolicy(Qt::WheelFocus);
 
@@ -96,6 +92,13 @@ t_bncMap::t_bncMap(QWidget* parent) : QDialog(parent) {
   mainLayout->addWidget(_mapPlot);
   mainLayout->addLayout(buttonLayout);
 
+  // Minimal and Maximal Coordinates
+  // -------------------------------
+  _minPointLat = 0.0;
+  _maxPointLat = 0.0;
+  _minPointLon = 0.0;
+  _maxPointLon = 0.0;
+
   // Important
   // ---------
   _mapPlot->replot();
@@ -122,6 +125,30 @@ void t_bncMap::slotNewPoint(const QString& name, double latDeg, double lonDeg) {
   marker->setLabel(QwtText(name.left(4)));
   marker->setSymbol(symbol);
   marker->attach(_mapPlot);
+
+  // Remeber minimal and maximal coordinates
+  // ---------------------------------------
+  if (_minPointLat == 0.0 && _maxPointLat == 0.0 &&
+      _minPointLon == 0.0 && _maxPointLon == 0.0) {
+    _minPointLat = latDeg;
+    _maxPointLat = latDeg;
+    _minPointLon = lonDeg;
+    _maxPointLon = lonDeg;
+  }
+  else {
+    if      (_maxPointLat < latDeg) {
+      _maxPointLat = latDeg;
+    }
+    else if (_minPointLat > latDeg) {
+      _minPointLat = latDeg;
+    }
+    if      (_maxPointLon < lonDeg) {
+      _maxPointLon = lonDeg;
+    }
+    else if (_minPointLon > lonDeg) {
+      _minPointLon = lonDeg;
+    }
+  }
 }
 
 // Close
@@ -134,6 +161,19 @@ void t_bncMap::slotClose() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bncMap::closeEvent(QCloseEvent* event) {
   QDialog::closeEvent(event);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_bncMap::showEvent(QShowEvent* event) {
+  double width  = _maxPointLon - _minPointLon;
+  double height = _maxPointLat - _minPointLat;
+  if (width > 0 && height > 0) {
+    QRectF rect(_minPointLon, _minPointLat, width, height);
+    qDebug() << rect;
+    _mapPlotZoomer->zoom(rect);
+  }
+  QDialog::showEvent(event);
 }
 
 // Print the widget

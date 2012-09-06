@@ -28,6 +28,7 @@
 #include <QtGui>
 
 class QwtPlot;
+class QwtPlotZoomer;
 
 class t_bncMap : public QDialog {
  Q_OBJECT
@@ -45,11 +46,17 @@ class t_bncMap : public QDialog {
 
  protected:
   virtual void closeEvent(QCloseEvent *);
+  virtual void showEvent(QShowEvent *);
 
  private:
-  QwtPlot*     _mapPlot;
-  QPushButton* _buttonClose;
-  QPushButton* _buttonPrint;
+  QwtPlot*       _mapPlot;
+  QwtPlotZoomer* _mapPlotZoomer;
+  QPushButton*   _buttonClose;
+  QPushButton*   _buttonPrint;
+  double         _minPointLat;
+  double         _maxPointLat;
+  double         _minPointLon;
+  double         _maxPointLon;
 };
 
 #endif
