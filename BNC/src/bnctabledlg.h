@@ -64,7 +64,6 @@ class bncTableDlg : public QDialog {
 
   signals:
     void newMountPoints(QStringList* mountPoints);
-    void newPoint(const QString& name, double latDeg, double lonDeg);
 
   private slots:
     virtual void select();
@@ -78,7 +77,6 @@ class bncTableDlg : public QDialog {
 
   private:
     void addUrl(const QUrl& url);
-    void showSourceTable();
     QComboBox*   _casterHostComboBox;
     QLineEdit*   _casterPortLineEdit;
     QLineEdit*   _casterUserLineEdit;

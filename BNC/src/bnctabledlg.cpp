@@ -324,31 +324,22 @@ void bncTableDlg::slotGetTable() {
 void bncTableDlg::slotShowMap() {
 
   t_bncMap* bncMap = new t_bncMap(this);
+
   bncMap->setGeometry( x(), int(y()+height()*1.3), 800, 600 );
 
-  connect(this, SIGNAL(newPoint(const QString&, double, double)),
-          bncMap, SLOT(slotNewPoint(const QString&, double, double)));
-      
-  _buttonMap->setEnabled(false);
-  showSourceTable();
-  bncMap->show();
-  _buttonMap->setEnabled(true);
-}
-
-// Show world map
-////////////////////////////////////////////////////////////////////////////
-void bncTableDlg::showSourceTable() {
-  for(int i = 0; i < _allLines.size(); i++) {
-    if (_allLines.at(i).startsWith("STR") == true){
-      QStringList tmp = _allLines.at(i).split(';');
-      if (tmp.size() > 0) {
+  for (int ii = 0; ii < _allLines.size(); ii++) {
+    if (_allLines.at(ii).startsWith("STR") == true) {
+      QStringList tmp = _allLines.at(ii).split(';');
+      if (tmp.size() > 10) {
         double  latDeg = tmp.at(9).toDouble();
         double  lonDeg = tmp.at(10).toDouble();
         QString name   = tmp.at(1);
-        emit newPoint(name, latDeg, lonDeg);
+        bncMap->slotNewPoint(name, latDeg, lonDeg);
       }
     }
   }
+
+  bncMap->show();
 }
 
 // Select slot
