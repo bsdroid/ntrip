@@ -121,8 +121,17 @@ void t_bncMap::slotNewPoint(const QString& name, double latDeg, double lonDeg) {
                                     QPen(red), QSize(2,2));
   QwtPlotMarker* marker = new QwtPlotMarker();
   marker->setValue(lonDeg, latDeg);
-  marker->setLabelAlignment(Qt::AlignRight);
-  marker->setLabel(QwtText(name.left(4)));
+  if (lonDeg > 170.0) {
+    marker->setLabelAlignment(Qt::AlignLeft);
+  }
+  else {
+    marker->setLabelAlignment(Qt::AlignRight);
+  }
+  QwtText text(name.left(4));
+  QFont   font = text.font();
+  font.setPointSize(font.pointSize()*0.8);
+  text.setFont(font);
+  marker->setLabel(text);
   marker->setSymbol(symbol);
   marker->attach(_mapPlot);
 
@@ -170,21 +179,15 @@ void t_bncMap::showEvent(QShowEvent* event) {
   double height = _maxPointLat - _minPointLat;
   if (width > 0 && height > 0) {
     double eps = 0.1;
-    double epsLon = eps*(_maxPointLon - _minPointLon);
-    double epsLat = eps*(_maxPointLat - _minPointLat);
-    double minLon = _minPointLon - epsLon;
-    double minLat = _minPointLat - epsLat;
-    double widthExt = width + 2*epsLon;
-    double heightExt = height + 2*epsLat;
-    if (minLon < -180.) minLon = -180.;
-    if (minLat <  -90.) minLat =  -90.;
-    if (widthExt > 360.) widthExt = 360.;
-    if (heightExt > 180.) heightExt = 180.;
-    if (widthExt > 270. || heightExt > 135.) {
-      QRectF rect(-180.,-90.,360.,180.);
-      _mapPlotZoomer->zoom(rect);
-    } 
-    else {
+    double epsLon    = eps * (_maxPointLon - _minPointLon);
+    double epsLat    = eps * (_maxPointLat - _minPointLat);
+    double widthExt  = width  + 2 * epsLon;
+    double heightExt = height + 2 * epsLat;
+    double minLon    = _minPointLon - epsLon;
+    double minLat    = _minPointLat - epsLat;
+    if (minLon < -180.) minLon = -180.0;
+    if (minLat <  -90.) minLat =  -90.0;
+    if (widthExt < 270.0 && heightExt < 135.0) {
       QRectF rect(minLon, minLat, widthExt, heightExt);
       _mapPlotZoomer->zoom(rect);
     }
