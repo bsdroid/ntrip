@@ -26,9 +26,9 @@
  * BKG NTRIP Client
  * -------------------------------------------------------------------------
  *
- * Class:      t_zenPlot
+ * Class:      t_elePlot
  *
- * Purpose:    Plot with satellite zenith distances
+ * Purpose:    Plot satellite elevations
  *
  * Author:     L. Mervart
  *
@@ -42,7 +42,7 @@
 #include <qwt_text.h>
 #include <qwt_legend.h>
 
-#include "zenplot.h"
+#include "eleplot.h"
 #include "reqcanalyze.h"
 
 //
@@ -58,7 +58,7 @@ class t_scaleDrawTime : public QwtScaleDraw {
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_zenPlot::t_zenPlot(QWidget* parent, QMap<QString, t_availData>* availDataMap) 
+t_elePlot::t_elePlot(QWidget* parent, QMap<QString, t_availData>* availDataMap) 
 : QwtPlot(parent) {
 
   setCanvasBackground(QColor(Qt::white));
@@ -69,21 +69,6 @@ t_zenPlot::t_zenPlot(QWidget* parent, QMap<QString, t_availData>* availDataMap)
   setAxisLabelRotation(QwtPlot::xBottom, -10.0);
   setAxisLabelAlignment(QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom);
   setAxisScale(QwtPlot::yLeft, 0.0, 90.0);
-
-  // Smaller Font for y-Axis
-  // -----------------------
-  QFont yFont = axisFont(QwtPlot::yLeft);
-  yFont.setPointSize(yFont.pointSize()/2);
-  setAxisFont(QwtPlot::yLeft, yFont);
-
-  // Symbols
-  // -------
-  QColor red(220,20,60);
-  QColor green(150,200,50);
-  QColor blue(60,100,200);
-  QwtSymbol symbRed(QwtSymbol::Rect, QBrush(red), QPen(red), QSize(2,1));
-  QwtSymbol symbGreen(QwtSymbol::Rect, QBrush(green), QPen(green), QSize(2,1));
-  QwtSymbol symbBlue (QwtSymbol::Rect, QBrush(blue), QPen(blue), QSize(2,1));
 
   // Legend
   // ------
@@ -103,9 +88,11 @@ t_zenPlot::t_zenPlot(QWidget* parent, QMap<QString, t_availData>* availDataMap)
     // Draw one curve
     // --------------
     if (availData._L1ok.size()) {
-      const QVector<double>& xData = availData._zenTim;
-      const QVector<double>& yData = availData._zenDeg;
-      addCurve(prn, symbGreen, xData, yData);
+      const QVector<double>& xData = availData._eleTim;
+      const QVector<double>& yData = availData._eleDeg;
+      QColor    color(qrand() % 255, qrand() % 255, qrand() % 255);
+      QwtSymbol symbol(QwtSymbol::Rect, QBrush(color), QPen(color), QSize(1,1));
+      addCurve(prn, symbol, xData, yData);
     }
   }
   
@@ -116,7 +103,7 @@ t_zenPlot::t_zenPlot(QWidget* parent, QMap<QString, t_availData>* availDataMap)
 
 // Add Curve
 //////////////////////////////////////////////////////////////////////////////
-QwtPlotCurve* t_zenPlot::addCurve(const QString& name, 
+QwtPlotCurve* t_elePlot::addCurve(const QString& name, 
                                     const QwtSymbol& symbol,
                                     const QVector<double>& xData,
                                     const QVector<double>& yData) {

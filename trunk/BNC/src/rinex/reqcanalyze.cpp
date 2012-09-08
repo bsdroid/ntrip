@@ -51,7 +51,7 @@
 #include "graphwin.h"
 #include "polarplot.h"
 #include "availplot.h"
-#include "zenplot.h"
+#include "eleplot.h"
 
 using namespace std;
 
@@ -533,8 +533,8 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
       }
     }
     if (zenFlag) {
-      _availDataMap[prn]._zenTim << mjdX24;
-      _availDataMap[prn]._zenDeg << zenDeg;
+      _availDataMap[prn]._eleTim << mjdX24;
+      _availDataMap[prn]._eleDeg << 90.0 - zenDeg;
     }
 
     // Signal-to-Noise Ration Plot Data
@@ -575,7 +575,7 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
     t_availPlot* plotA = new t_availPlot(0, &_availDataMap);
     plotA->setTitle(title);
 
-    t_zenPlot* plotZ = new t_zenPlot(0, &_availDataMap);
+    t_elePlot* plotZ = new t_elePlot(0, &_availDataMap);
     plotZ->setTitle(title);
 
     QVector<QWidget*> plots;

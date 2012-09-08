@@ -1,5 +1,5 @@
-#ifndef ZENPLOT_H
-#define ZENPLOT_H
+#ifndef ELEPLOT_H
+#define ELEPLOT_H
 
 #include <QtCore>
 #include <qwt_plot.h>
@@ -8,11 +8,11 @@
 
 class t_availData;
 
-class t_zenPlot: public QwtPlot {
+class t_elePlot: public QwtPlot {
  Q_OBJECT
 
 public:
-  t_zenPlot(QWidget* parent, QMap<QString, t_availData>* availDataMap);
+  t_elePlot(QWidget* parent, QMap<QString, t_availData>* availDataMap);
 
 private:
   QwtPlotCurve* addCurve(const QString& name, const QwtSymbol& symbol,
