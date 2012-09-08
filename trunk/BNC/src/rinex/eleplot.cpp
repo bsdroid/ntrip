@@ -77,22 +77,25 @@ t_elePlot::t_elePlot(QWidget* parent, QMap<QString, t_availData>* availDataMap)
 
   // Curves
   // ------
-  int iC = 0;
-  QMapIterator<QString, t_availData > it(*availDataMap);
-  while (it.hasNext()) {
-    it.next();
-    ++iC;
-    const QString&     prn       = it.key();
-    const t_availData& availData = it.value();
-
-    // Draw one curve
-    // --------------
-    if (availData._eleTim.size()) {
-      const QVector<double>& xData = availData._eleTim;
-      const QVector<double>& yData = availData._eleDeg;
-      QColor    color(qrand() % 255, qrand() % 255, qrand() % 255);
-      QwtSymbol symbol(QwtSymbol::Rect, QBrush(color), QPen(color), QSize(1,1));
-      addCurve(prn, symbol, xData, yData);
+  int numCurves = availDataMap->size();
+  if (numCurves > 0) {
+    int iC = 0;
+    QMapIterator<QString, t_availData > it(*availDataMap);
+    while (it.hasNext()) {
+      it.next();
+      ++iC;
+      const QString&     prn       = it.key();
+      const t_availData& availData = it.value();
+    
+      // Draw one curve
+      // --------------
+      if (availData._eleTim.size()) {
+        const QVector<double>& xData = availData._eleTim;
+        const QVector<double>& yData = availData._eleDeg;
+        QColor color = QColor::fromHsv((iC-1)*(359.0/numCurves), 255, 255);
+        QwtSymbol symbol(QwtSymbol::Rect, QBrush(color), QPen(color), QSize(1,1));
+        addCurve(prn, symbol, xData, yData);
+      }
     }
   }
   
