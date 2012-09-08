@@ -87,7 +87,7 @@ t_elePlot::t_elePlot(QWidget* parent, QMap<QString, t_availData>* availDataMap)
 
     // Draw one curve
     // --------------
-    if (availData._L1ok.size()) {
+    if (availData._eleTim.size()) {
       const QVector<double>& xData = availData._eleTim;
       const QVector<double>& yData = availData._eleDeg;
       QColor    color(qrand() % 255, qrand() % 255, qrand() % 255);
