@@ -209,3 +209,9 @@ QwtPlotCurve* t_availPlot::addCurve(const QString& name,
   curve->attach(this);
   return curve;
 }
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+void t_availPlot::setNumSat(const QVector<double>& _numSatTim, 
+                            const QVector<double>& _numSat) {
+}
