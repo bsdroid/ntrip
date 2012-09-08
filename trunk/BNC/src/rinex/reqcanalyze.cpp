@@ -51,6 +51,7 @@
 #include "graphwin.h"
 #include "polarplot.h"
 #include "availplot.h"
+#include "zenplot.h"
 
 using namespace std;
 
@@ -409,6 +410,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
     double  minSNR2 = 0.0;
     double  aziDeg  = 0.0;
     double  zenDeg  = 0.0;
+    bool    zenFlag = false;
 
     // Loop over all Epochs within one Chunk of Data
     // ---------------------------------------------
@@ -442,6 +444,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
           
             aziDeg = azSat * 180.0/M_PI;
             zenDeg = 90.0 - eleSat * 180.0/M_PI;
+            zenFlag = true;
           }
         }
       }
@@ -529,6 +532,10 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
         _availDataMap[prn]._L2ok << mjdX24;
       }
     }
+    if (zenFlag) {
+      _availDataMap[prn]._zenTim << mjdX24;
+      _availDataMap[prn]._zenDeg << zenDeg;
+    }
 
     // Signal-to-Noise Ration Plot Data
     // --------------------------------
@@ -565,11 +572,14 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
 
   if (dynamic_cast<bncApp*>(qApp)->GUIenabled()) {
 
-    t_availPlot* plot = new t_availPlot(0, &_availDataMap);
-    plot->setTitle(title);
+    t_availPlot* plotA = new t_availPlot(0, &_availDataMap);
+    plotA->setTitle(title);
+
+    t_zenPlot* plotZ = new t_zenPlot(0, &_availDataMap);
+    plotZ->setTitle(title);
 
     QVector<QWidget*> plots;
-    plots << plot;
+    plots << plotA << plotZ;
     t_graphWin* graphWin = new t_graphWin(0, fileName, plots, 0, 0);
     graphWin->show();
 
