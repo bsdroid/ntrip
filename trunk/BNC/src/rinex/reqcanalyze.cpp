@@ -231,6 +231,10 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         numSat = _currEpo->rnxSat.size();
       }
       if ( (iEpo % step) == 0 ) {
+        if (_numSatTim.size() > 0) {
+          _numSatTim << _numSatTim.last();
+          _numSat    << numSat;
+        }
         _numSatTim << _currEpo->tt.mjddec() * 24.0;
         _numSat    << numSat;
         numSat = 0;
