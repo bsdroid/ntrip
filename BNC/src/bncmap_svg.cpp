@@ -178,6 +178,9 @@ void t_bncMap::showEvent(QShowEvent* event) {
   double width  = _maxPointLon - _minPointLon;
   double height = _maxPointLat - _minPointLat;
   if (width > 0 && height > 0) {
+
+    // Extend plot area by 10 percent
+    // ------------------------------
     double eps = 0.1;
     double epsLon    = eps * (_maxPointLon - _minPointLon);
     double epsLat    = eps * (_maxPointLat - _minPointLat);
@@ -185,10 +188,34 @@ void t_bncMap::showEvent(QShowEvent* event) {
     double heightExt = height + 2 * epsLat;
     double minLon    = _minPointLon - epsLon;
     double minLat    = _minPointLat - epsLat;
-    if (minLon < -180.) minLon = -180.0;
-    if (minLat <  -90.) minLat =  -90.0;
-    if (widthExt < 270.0 && heightExt < 135.0) {
-      QRectF rect(minLon, minLat, widthExt, heightExt);
+
+    // Keep lat/lon relations
+    // ----------------------
+    double widthBorder = widthExt;
+    double heightBorder = heightExt;
+    double scale = widthExt/heightExt/2.;
+    if ( scale < 1.) {
+      widthBorder = widthExt / scale;
+      minLon = minLon - (widthBorder - widthExt)/2.;
+    }
+    else {
+      heightBorder = heightExt * scale;
+      minLat = minLat - (heightBorder - heightExt)/2.;
+    }
+
+    // Borders shall not exceed min or max values
+    // ------------------------------------------
+    if (minLon < -180.) minLon = -180.;
+    if (minLat <  -90.) minLat =  -90.;
+    double maxLat = minLat + heightBorder;
+    if ( maxLat >  90) minLat = minLat - (maxLat -  90.);
+    double maxLon = minLon + widthBorder;
+    if ( maxLon > 180) minLon = minLon - (maxLon - 180.);
+
+    // Area large enough to justify world map
+    // --------------------------------------
+    if (widthBorder < 270.0 && heightBorder < 135.0) {
+      QRectF rect(minLon, minLat, widthBorder, heightBorder);
       _mapPlotZoomer->zoom(rect);
     }
   }
