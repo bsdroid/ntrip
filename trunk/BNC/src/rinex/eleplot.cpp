@@ -41,6 +41,7 @@
 #include <qwt_scale_draw.h>
 #include <qwt_text.h>
 #include <qwt_legend.h>
+#include <qwt_plot_marker.h>
 
 #include "eleplot.h"
 #include "reqcanalyze.h"
@@ -117,5 +118,17 @@ QwtPlotCurve* t_elePlot::addCurve(const QString& name,
   curve->setYAxis(QwtPlot::yLeft);
   curve->setSamples(xData, yData);
   curve->attach(this);
+
+  if (xData.size() > 0 && yData.size() > 0) {
+    QwtPlotMarker* marker = new QwtPlotMarker();
+    int ii = xData.size() / 2;
+    marker->setValue(xData[ii], yData[ii]);
+    QwtText text(name);
+    text.setColor(symbol.pen().color());
+    marker->setLabel(text);
+    marker->setLabelAlignment(Qt::AlignTop);
+    marker->attach(this);
+  }
+
   return curve;
 }
