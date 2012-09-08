@@ -68,6 +68,7 @@ t_zenPlot::t_zenPlot(QWidget* parent, QMap<QString, t_availData>* availDataMap)
   setAxisScaleDraw(QwtPlot::xBottom, new t_scaleDrawTime());
   setAxisLabelRotation(QwtPlot::xBottom, -10.0);
   setAxisLabelAlignment(QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom);
+  setAxisScale(QwtPlot::yLeft, 0.0, 90.0);
 
   // Smaller Font for y-Axis
   // -----------------------
