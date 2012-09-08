@@ -214,4 +214,9 @@ QwtPlotCurve* t_availPlot::addCurve(const QString& name,
 //////////////////////////////////////////////////////////////////////////////
 void t_availPlot::setNumSat(const QVector<double>& _numSatTim, 
                             const QVector<double>& _numSat) {
+  QwtPlotCurve* curve = new QwtPlotCurve("# sat");
+  curve->setXAxis(QwtPlot::xBottom);
+  curve->setYAxis(QwtPlot::yRight);
+  curve->setSamples(_numSatTim, _numSat);
+  curve->attach(this);
 }
