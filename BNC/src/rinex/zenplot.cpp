@@ -56,17 +56,6 @@ class t_scaleDrawTime : public QwtScaleDraw {
   }
 };
 
-//
-//////////////////////////////////////////////////////////////////////////////
-class t_scaleDrawPrn : public QwtScaleDraw {
- public:
-  t_scaleDrawPrn() {}
-  virtual QwtText label(double iPrn) const {
-    return _yLabels[iPrn];
-  }
-  QMap<int, QString> _yLabels;
-};
-
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
 t_zenPlot::t_zenPlot(QWidget* parent, QMap<QString, t_availData>* availDataMap) 
@@ -79,9 +68,6 @@ t_zenPlot::t_zenPlot(QWidget* parent, QMap<QString, t_availData>* availDataMap)
   setAxisScaleDraw(QwtPlot::xBottom, new t_scaleDrawTime());
   setAxisLabelRotation(QwtPlot::xBottom, -10.0);
   setAxisLabelAlignment(QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom);
-
-  t_scaleDrawPrn* scaleDrawPrn = new t_scaleDrawPrn();
-  setAxisScaleDraw(QwtPlot::yLeft, scaleDrawPrn);
 
   // Smaller Font for y-Axis
   // -----------------------
@@ -113,8 +99,6 @@ t_zenPlot::t_zenPlot(QWidget* parent, QMap<QString, t_availData>* availDataMap)
     const QString&     prn       = it.key();
     const t_availData& availData = it.value();
 
-    scaleDrawPrn->_yLabels[iC] = prn;
-
     // Draw one curve
     // --------------
     if (availData._L1ok.size()) {
@@ -124,16 +108,6 @@ t_zenPlot::t_zenPlot(QWidget* parent, QMap<QString, t_availData>* availDataMap)
     }
   }
   
-  QList<double> ticks[QwtScaleDiv::NTickTypes];
-  QList<double> &majorTicks = ticks[QwtScaleDiv::MajorTick];
-  QMapIterator<int, QString> itT(scaleDrawPrn->_yLabels);
-  while (itT.hasNext()) {
-    itT.next();
-    majorTicks << double(itT.key());
-  }
-  QwtScaleDiv yScaleDiv(majorTicks.first()-0.5, majorTicks.last()+0.5, ticks );
-  setAxisScaleDiv(QwtPlot::yLeft, yScaleDiv);
-
   // Important !!!
   // -------------
   replot();
