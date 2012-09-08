@@ -219,27 +219,8 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   // Loop over all Epochs
   // --------------------
   try {
-    int       iEpo = 0;
-    const int step = int( 30.0 / obsFile->interval());
-    unsigned  numSat = 0;
-    _numSat.clear();
-    _numSatTim.clear();
     while ( (_currEpo = obsFile->nextEpoch()) != 0) {
   
-      ++iEpo;
-      if (numSat < _currEpo->rnxSat.size()) {
-        numSat = _currEpo->rnxSat.size();
-      }
-      if ( (iEpo % step) == 0 ) {
-        if (_numSatTim.size() > 0) {
-          _numSatTim << _numSatTim.last();
-          _numSat    << numSat;
-        }
-        _numSatTim << _currEpo->tt.mjddec() * 24.0;
-        _numSat    << numSat;
-        numSat = 0;
-      }
-
       // Loop over all satellites
       // ------------------------
       for (unsigned iObs = 0; iObs < _currEpo->rnxSat.size(); iObs++) {
@@ -592,7 +573,6 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
   if (dynamic_cast<bncApp*>(qApp)->GUIenabled()) {
 
     t_availPlot* plotA = new t_availPlot(0, &_availDataMap);
-    plotA->setNumSat(_numSatTim, _numSat);
     plotA->setTitle(title);
 
     t_elePlot* plotZ = new t_elePlot(0, &_availDataMap);

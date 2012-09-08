@@ -13,8 +13,6 @@ class t_availPlot: public QwtPlot {
 
 public:
   t_availPlot(QWidget* parent, QMap<QString, t_availData>* availDataMap);
-  void setNumSat(const QVector<double>& _numSatTim, 
-                 const QVector<double>& _numSat);
 
 private:
   QwtPlotCurve* addCurve(const QString& name, const QwtSymbol& symbol,
