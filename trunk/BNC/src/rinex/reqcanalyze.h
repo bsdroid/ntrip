@@ -135,6 +135,8 @@ Q_OBJECT
   t_rnxObsFile::t_rnxEpo*    _currEpo;
   QMap<QString, t_allObs>    _allObsMap;
   QMap<QString, t_availData> _availDataMap;
+  QVector<double>            _numSat;
+  QVector<double>            _numSatTim;
 };
 
 #endif
