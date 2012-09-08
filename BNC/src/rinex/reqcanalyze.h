@@ -41,6 +41,8 @@ class t_availData {
   QVector<double> _L2slip;
   QVector<double> _L1gap;
   QVector<double> _L2gap;
+  QVector<double> _zenDeg;
+  QVector<double> _zenTim;
 };
 
 class t_reqcAnalyze : public QThread {
