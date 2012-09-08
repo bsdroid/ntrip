@@ -581,6 +581,10 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
     QVector<QWidget*> plots;
     plots << plotA << plotZ;
     t_graphWin* graphWin = new t_graphWin(0, fileName, plots, 0, 0);
+
+    int ww = QFontMetrics(graphWin->font()).width('w');
+    graphWin->setMinimumSize(120*ww, 40*ww);
+
     graphWin->show();
 
     bncSettings settings;
