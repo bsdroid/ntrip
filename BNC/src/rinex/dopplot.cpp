@@ -69,7 +69,6 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
   setAxisScaleDraw(QwtPlot::xBottom, new t_scaleDrawTime());
   setAxisLabelRotation(QwtPlot::xBottom, -10.0);
   setAxisLabelAlignment(QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom);
-  setAxisScale(QwtPlot::yLeft, 0.0, 90.0);
 
   // Legend
   // ------
@@ -78,6 +77,9 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
 
   // Curves
   // ------
+  if (obsStat) {
+    addCurve("# Sat", obsStat->_mjdX24, obsStat->_numSat);
+  }
   
   // Important !!!
   // -------------
@@ -87,27 +89,14 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
 // Add Curve
 //////////////////////////////////////////////////////////////////////////////
 QwtPlotCurve* t_dopPlot::addCurve(const QString& name, 
-                                    const QwtSymbol& symbol,
-                                    const QVector<double>& xData,
-                                    const QVector<double>& yData) {
+                                  const QVector<double>& xData,
+                                  const QVector<double>& yData) {
+
   QwtPlotCurve* curve = new QwtPlotCurve(name);
-  curve->setSymbol(new QwtSymbol(symbol));
-  curve->setStyle(QwtPlotCurve::NoCurve);
   curve->setXAxis(QwtPlot::xBottom);
   curve->setYAxis(QwtPlot::yLeft);
   curve->setSamples(xData, yData);
   curve->attach(this);
-
-  if (xData.size() > 0 && yData.size() > 0) {
-    QwtPlotMarker* marker = new QwtPlotMarker();
-    int ii = xData.size() / 2;
-    marker->setValue(xData[ii], yData[ii]);
-    QwtText text(name);
-    text.setColor(symbol.pen().color());
-    marker->setLabel(text);
-    marker->setLabelAlignment(Qt::AlignTop);
-    marker->attach(this);
-  }
 
   return curve;
 }

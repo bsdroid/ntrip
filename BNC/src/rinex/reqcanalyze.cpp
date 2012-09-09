@@ -220,6 +220,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   // Loop over all Epochs
   // --------------------
   try {
+    unsigned iEpo = 0;
     while ( (_currEpo = obsFile->nextEpoch()) != 0) {
   
       // Loop over all satellites
@@ -237,6 +238,8 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
                                      .arg(obs.satNum, 2, 10, QChar('0'));
   
         _allObsMap[prn].addObs(obs);
+
+        prepareObsStat(iEpo, obsFile->interval());
       }
   
     } // while (_currEpo)
@@ -259,13 +262,11 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   QVector<t_polarPoint*>*       dataSNR2 = new QVector<t_polarPoint*>;
 
   QMutableMapIterator<QString, t_allObs> it(_allObsMap);
-  bool firstPrn = true;
   while (it.hasNext()) {
     it.next();
     QString    prn     = it.key();
     preparePlotData(prn, xyz, obsFile->interval(), 
-                    dataMP1, dataMP2, dataSNR1, dataSNR2, firstPrn);
-    firstPrn = false;
+                    dataMP1, dataMP2, dataSNR1, dataSNR2);
   }
 
   emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 
@@ -378,33 +379,39 @@ void t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::prepareObsStat(unsigned iEpo, double obsInterval) {
+  const int numEpo = int(600.0 / obsInterval); // # epochs in one chunk (10 min)
+  if (iEpo % numEpo == 0) {
+    _obsStat._mjdX24 << _currEpo->tt.mjddec() * 24.0;
+    _obsStat._numSat << _currEpo->rnxSat.size();
+  }
+}
+
+//  
+////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
                                     double obsInterval,
                                     QVector<t_polarPoint*>* dataMP1, 
                                     QVector<t_polarPoint*>* dataMP2,
                                     QVector<t_polarPoint*>* dataSNR1, 
-                                    QVector<t_polarPoint*>* dataSNR2,
-                                    bool firstPrn) {
+                                    QVector<t_polarPoint*>* dataSNR2) {
 
   const int chunkStep = int( 30.0 / obsInterval); // chunk step (30 sec)  
   const int numEpo    = int(600.0 / obsInterval); // # epochs in one chunk (10 min)
 
   t_allObs& allObs = _allObsMap[prn];
 
-  if (firstPrn) {
-    _obsStat.reset();
-  }
-
   // Loop over all Chunks of Data
   // ----------------------------
   for (int chunkStart = 0; chunkStart + numEpo < allObs._oneObsVec.size();
        chunkStart += chunkStep) {
 
-    // Chunk-Speicific Variables 
-    // -------------------------
+    // Chunk-Specific Variables 
+    // ------------------------
     bncTime currTime;
     bncTime prevTime;
     bncTime chunkStartTime;
+    double  mjdX24  = 0.0;
     bool    availL1 = false;
     bool    availL2 = false;
     bool    gapL1   = false;
@@ -432,6 +439,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
       // ---------------------------------------
       if (ii == 0) {
         chunkStartTime = currTime;
+        mjdX24 = chunkStartTime.mjddec() * 24.0;
 
         if (xyz.size()) {
           t_eph* eph = 0;
@@ -456,7 +464,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
           }
         }
       }
-
+ 
       // Check Interval
       // --------------
       if (prevTime.valid()) {
@@ -517,7 +525,6 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
 
     // Availability Plot Data
     // ----------------------
-    double mjdX24 = chunkStartTime.mjddec() * 24.0;
     if (availL1) {
       if      (slipL1) {
         _availDataMap[prn]._L1slip << mjdX24;
