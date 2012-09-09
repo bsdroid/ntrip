@@ -48,12 +48,14 @@ class t_availData {
 class t_prnStat {
  public:
   t_prnStat() {
-    _numObs   = 0;
-    _numSlips = 0;
-    _numGaps  = 0;
+    _numObs          = 0;
+    _numSlipsFlagged = 0;
+    _numSlipsFound   = 0;
+    _numGaps         = 0;
   }
   int _numObs;
-  int _numSlips;
+  int _numSlipsFlagged;
+  int _numSlipsFound;
   int _numGaps;
 };
 
