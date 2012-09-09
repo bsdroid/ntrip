@@ -239,10 +239,11 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   
         _allObsMap[prn].addObs(obs);
 
-        prepareObsStat(iEpo, obsFile->interval());
-        iEpo++;
       }
   
+      prepareObsStat(iEpo, obsFile->interval());
+      iEpo++;
+
     } // while (_currEpo)
   }
   catch (QString str) {
