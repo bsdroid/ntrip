@@ -137,7 +137,8 @@ Q_OBJECT
                        QVector<t_polarPoint*>* dataMP1, 
                        QVector<t_polarPoint*>* dataMP2,
                        QVector<t_polarPoint*>* dataSNR1, 
-                       QVector<t_polarPoint*>* dataSNR2, bool firstPrn);
+                       QVector<t_polarPoint*>* dataSNR2);
+  void prepareObsStat(unsigned iEpo, double obsInterval);
 
   QString                    _logFileName;
   QFile*                     _logFile;
