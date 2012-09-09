@@ -145,7 +145,7 @@ Q_OBJECT
         delete _oneObsVec[ii];
       }
     }
-    void addObs(const t_obs& obs);
+    t_irc addObs(const t_obs& obs);
     QVector<t_oneObs*> _oneObsVec;
   };
 

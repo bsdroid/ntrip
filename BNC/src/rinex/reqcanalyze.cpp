@@ -246,9 +246,14 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         QString prn = QString("%1%2").arg(obs.satSys)
                                      .arg(obs.satNum, 2, 10, QChar('0'));
   
-        _allObsMap[prn].addObs(obs);
+        t_irc irc = _allObsMap[prn].addObs(obs);
 
-        _obsStat._prnStat[prn]._numObs += 1;
+        if (irc == success) {
+          const t_oneObs* newObs = _allObsMap[prn]._oneObsVec.last();
+          if (newObs->_hasL1 && newObs->_hasL2) {
+            _obsStat._prnStat[prn]._numObs += 1;
+          }
+        }
       }
   
       prepareObsStat(iEpo, obsFile->interval(), xyzSta);
@@ -297,7 +302,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) { 
+t_irc t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) { 
 
   t_oneObs* newObs = new t_oneObs(obs.GPSWeek, obs.GPSWeeks);
   bool      okFlag = false;
@@ -381,9 +386,11 @@ void t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) {
   // ------------------------
   if (okFlag) {
     _oneObsVec << newObs;
+    return success;
   }
   else {
     delete newObs;
+    return failure;
   }
 }
 
