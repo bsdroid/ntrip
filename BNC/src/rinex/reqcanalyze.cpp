@@ -276,6 +276,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
     else {
       qDebug() << str;    
     }
+    _mutex.unlock();
     return;
   }
 
