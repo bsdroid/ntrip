@@ -78,8 +78,18 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
   // Curves
   // ------
   if (obsStat) {
-    addCurve("# Sat", obsStat->_mjdX24, obsStat->_numSat);
-    addCurve("PDOP",  obsStat->_mjdX24, obsStat->_PDOP);
+
+    QwtPlotCurve* curveNumSat = new QwtPlotCurve("# Sat");
+    curveNumSat->setXAxis(QwtPlot::xBottom);
+    curveNumSat->setYAxis(QwtPlot::yRight);
+    curveNumSat->setSamples(obsStat->_mjdX24, obsStat->_numSat);
+    curveNumSat->attach(this);
+
+    QwtPlotCurve* curvePDOP = new QwtPlotCurve("PDOP");
+    curvePDOP->setXAxis(QwtPlot::xBottom);
+    curvePDOP->setYAxis(QwtPlot::yLeft);
+    curvePDOP->setSamples(obsStat->_mjdX24, obsStat->_PDOP);
+    curvePDOP->attach(this);
   }
   
   // Important !!!
@@ -87,17 +97,3 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
   replot();
 }
 
-// Add Curve
-//////////////////////////////////////////////////////////////////////////////
-QwtPlotCurve* t_dopPlot::addCurve(const QString& name, 
-                                  const QVector<double>& xData,
-                                  const QVector<double>& yData) {
-
-  QwtPlotCurve* curve = new QwtPlotCurve(name);
-  curve->setXAxis(QwtPlot::xBottom);
-  curve->setYAxis(QwtPlot::yLeft);
-  curve->setSamples(xData, yData);
-  curve->attach(this);
-
-  return curve;
-}
