@@ -45,18 +45,39 @@ class t_availData {
   QVector<double> _eleTim;
 };
 
+class t_prnStat {
+ public:
+  t_prnStat() {
+    _numObs   = 0;
+    _numSlips = 0;
+    _numGaps  = 0;
+  }
+  int _numObs;
+  int _numSlips;
+  int _numGaps;
+};
+
 class t_obsStat {
  public:
   void reset() {
     _mjdX24.clear();
     _numSat.clear();
     _PDOP.clear();
-    _GDOP.clear();
+    _prnStat.clear();
   }
   QVector<double> _mjdX24;
   QVector<double> _numSat;
   QVector<double> _PDOP;
-  QVector<double> _GDOP;
+  bncTime         _startTime;
+  bncTime         _endTime;
+  QString         _antennaNumber;
+  QString         _antennaName;
+  QString         _markerName;
+  QString         _markerNumber;
+  QString         _receiverNumber;
+  QString         _receiverType;
+  QString         _receiverVersion;
+  QMap<QString, t_prnStat> _prnStat;
 };
 
 class t_reqcAnalyze : public QThread {
