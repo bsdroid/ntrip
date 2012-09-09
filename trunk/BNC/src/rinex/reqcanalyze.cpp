@@ -204,7 +204,9 @@ void t_reqcAnalyze::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
-  _mutex.lock();
+  if (dynamic_cast<bncApp*>(qApp)->GUIenabled()) {
+    _mutex.lock();
+  }
 
   if (_log) {
     *_log << "\nAnalyze File\n"
@@ -273,7 +275,9 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
     else {
       qDebug() << str;    
     }
-    _mutex.unlock();
+    if (dynamic_cast<bncApp*>(qApp)->GUIenabled()) {
+      _mutex.unlock();
+    }
     return;
   }
 
@@ -629,10 +633,10 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, 
                                      const QByteArray& title) {
 
-  _mutex.unlock();
-  QMutexLocker locker(&_mutex);
-
   if (dynamic_cast<bncApp*>(qApp)->GUIenabled()) {
+
+    _mutex.unlock();
+    QMutexLocker locker(&_mutex);
 
     t_availPlot* plotA = new t_availPlot(0, &_availDataMap);
     plotA->setTitle(title);
