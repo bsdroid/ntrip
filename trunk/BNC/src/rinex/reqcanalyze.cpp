@@ -207,7 +207,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   if (_log) {
     *_log << "\nAnalyze File\n"
           <<   "------------\n"
-          << "File:        " << obsFile->fileName().toAscii().data() << endl;
+          << "File:            " << obsFile->fileName().toAscii().data() << endl;
   }
 
   _allObsMap.clear();
@@ -254,7 +254,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
             _obsStat._prnStat[prn]._numObs += 1;
           }
           if (newObs->_slipL1 && newObs->_slipL2) {
-            _obsStat._prnStat[prn]._numSlips += 1;
+            _obsStat._prnStat[prn]._numSlipsFlagged += 1;
           }
         }
       }
@@ -569,7 +569,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
       if (slipMP) {
         slipL1 = true;
         slipL2 = true;
-        _obsStat._prnStat[prn]._numSlips += 1;
+        _obsStat._prnStat[prn]._numSlipsFound += 1;
       } 
       else {
         MP1 = sqrt(MP1 / (numEpo-1));
@@ -716,46 +716,49 @@ void t_reqcAnalyze::printReport(QVector<t_polarPoint*>* dataMP1,
     return;
   }
 
-  *_log << "Marker name: " << _obsStat._markerName   << endl 
-        << "Receiver:    " << _obsStat._receiverType << endl
-        << "Antenna:     " << _obsStat._antennaName  << endl
-        << "Start time:  " << _obsStat._startTime.datestr().c_str() << ' '
-                           << _obsStat._startTime.timestr().c_str() << endl
-        << "End time:    " << _obsStat._endTime.datestr().c_str() << ' '
-                           << _obsStat._endTime.timestr().c_str() << endl
-        << "Interval:    " << _obsStat._interval << endl
-        << "# Sat.:      " << _obsStat._prnStat.size() << endl;
+  *_log << "Marker name:     " << _obsStat._markerName   << endl 
+        << "Receiver:        " << _obsStat._receiverType << endl
+        << "Antenna:         " << _obsStat._antennaName  << endl
+        << "Start time:      " << _obsStat._startTime.datestr().c_str() << ' '
+                               << _obsStat._startTime.timestr().c_str() << endl
+        << "End time:        " << _obsStat._endTime.datestr().c_str() << ' '
+                               << _obsStat._endTime.timestr().c_str() << endl
+        << "Interval:        " << _obsStat._interval << endl
+        << "# Sat.:          " << _obsStat._prnStat.size() << endl;
 
-  int numObs   = 0;
-  int numSlips = 0;
+  int numObs          = 0;
+  int numSlipsFlagged = 0;
+  int numSlipsFound   = 0;
   QMapIterator<QString, t_prnStat> it(_obsStat._prnStat);
   while (it.hasNext()) {
     it.next();
     const t_prnStat& prnStat = it.value();
-    numObs   += prnStat._numObs;
-    numSlips += prnStat._numSlips;
+    numObs          += prnStat._numObs;
+    numSlipsFlagged += prnStat._numSlipsFlagged;
+    numSlipsFound   += prnStat._numSlipsFound;
   }
-  *_log << "# Obs.:      " << numObs   << endl
-        << "# Slips:     " << numSlips << endl;
+  *_log << "# Obs.:          " << numObs          << endl
+        << "# Slips (file):  " << numSlipsFlagged << endl
+        << "# Slips (found): " << numSlipsFound   << endl;
 
   for (int kk = 1; kk <= 4; kk++) {
     QVector<t_polarPoint*>* data = 0;
     QString text;
     if      (kk == 1) {
       data = dataMP1;
-      text = "Mean MP1:    ";
+      text = "Mean MP1:        ";
     }
     else if (kk == 2) {
       data = dataMP2;
-      text = "Mean MP2:    ";
+      text = "Mean MP2:        ";
     }
     else if (kk == 3) {
       data = dataSNR1;
-      text = "Mean SNR1:   ";
+      text = "Mean SNR1:       ";
     }
     else if (kk == 4) {
       data = dataSNR2;
-      text = "Mean SNR2:   ";
+      text = "Mean SNR2:       ";
     }
     double mean = 0.0;
     for (int ii = 0; ii < data->size(); ii++) {
