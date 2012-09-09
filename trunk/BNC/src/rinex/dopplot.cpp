@@ -71,10 +71,22 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
   setAxisLabelAlignment(QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom);
 
   enableAxis(QwtPlot::yRight);
-  setAxisTitle(QwtPlot::yLeft,  "# Sat");
-  setAxisTitle(QwtPlot::yRight, "PDOP");
-  setAxisScale(QwtPlot::yLeft,  0,  20);
+
+  QwtText textPDOP("PDOP");
+  QFont   fontPDOP = textPDOP.font();
+  fontPDOP.setPointSize(fontPDOP.pointSize()*0.8);
+  textPDOP.setFont(fontPDOP);
+  textPDOP.setColor(Qt::red);
+  setAxisTitle(QwtPlot::yRight, textPDOP);
   setAxisScale(QwtPlot::yRight, 0,   6);
+
+  QwtText textNumSat("# Sat");
+  QFont   fontNumSat = textNumSat.font();
+  fontNumSat.setPointSize(fontNumSat.pointSize()*0.8);
+  textNumSat.setFont(fontNumSat);
+  textNumSat.setColor(Qt::blue);
+  setAxisTitle(QwtPlot::yLeft,  textNumSat);
+  setAxisScale(QwtPlot::yLeft,  0,  20);
 
   // Legend
   // ------
@@ -85,18 +97,18 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
   // ------
   if (obsStat) {
 
-    QwtPlotCurve* curveNumSat = new QwtPlotCurve("# Sat");
+    QwtPlotCurve* curveNumSat = new QwtPlotCurve(textNumSat);
     curveNumSat->setXAxis(QwtPlot::xBottom);
     curveNumSat->setYAxis(QwtPlot::yLeft);
     curveNumSat->setSamples(obsStat->_mjdX24, obsStat->_numSat);
-    curveNumSat->setPen(QPen(Qt::blue));
+    curveNumSat->setPen(QPen(textNumSat.color()));
     curveNumSat->attach(this);
 
-    QwtPlotCurve* curvePDOP = new QwtPlotCurve("PDOP");
+    QwtPlotCurve* curvePDOP = new QwtPlotCurve(textPDOP);
     curvePDOP->setXAxis(QwtPlot::xBottom);
     curvePDOP->setYAxis(QwtPlot::yRight);
     curvePDOP->setSamples(obsStat->_mjdX24, obsStat->_PDOP);
-    curvePDOP->setPen(QPen(Qt::red));
+    curvePDOP->setPen(QPen(textPDOP.color()));
     curvePDOP->attach(this);
   }
   
