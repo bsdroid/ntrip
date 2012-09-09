@@ -132,13 +132,15 @@ Q_OBJECT
   };
 
   void analyzeFile(t_rnxObsFile* obsFile);
-  void preparePlotData(const QString& prn, const ColumnVector& xyz, 
+  void preparePlotData(const QString& prn, const ColumnVector& xyzSta, 
                        double obsInterval,
                        QVector<t_polarPoint*>* dataMP1, 
                        QVector<t_polarPoint*>* dataMP2,
                        QVector<t_polarPoint*>* dataSNR1, 
                        QVector<t_polarPoint*>* dataSNR2);
-  void prepareObsStat(unsigned iEpo, double obsInterval);
+  void prepareObsStat(unsigned iEpo, double obsInterval,
+                      const ColumnVector& xyzSta);
+  double cmpDOP(const ColumnVector& xyzSta) const;
 
   QString                    _logFileName;
   QFile*                     _logFile;

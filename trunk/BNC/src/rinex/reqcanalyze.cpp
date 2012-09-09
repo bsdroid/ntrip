@@ -215,7 +215,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
   // A priori Coordinates
   // --------------------
-  ColumnVector xyz = obsFile->xyz();
+  ColumnVector xyzSta = obsFile->xyz();
 
   // Loop over all Epochs
   // --------------------
@@ -241,7 +241,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
       }
   
-      prepareObsStat(iEpo, obsFile->interval());
+      prepareObsStat(iEpo, obsFile->interval(), xyzSta);
       iEpo++;
 
     } // while (_currEpo)
@@ -267,7 +267,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   while (it.hasNext()) {
     it.next();
     QString    prn     = it.key();
-    preparePlotData(prn, xyz, obsFile->interval(), 
+    preparePlotData(prn, xyzSta, obsFile->interval(), 
                     dataMP1, dataMP2, dataSNR1, dataSNR2);
   }
 
@@ -381,7 +381,8 @@ void t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::prepareObsStat(unsigned iEpo, double obsInterval) {
+void t_reqcAnalyze::prepareObsStat(unsigned iEpo, double obsInterval,
+                                   const ColumnVector& xyzSta) {
   const int sampl = int(30.0 / obsInterval);
   if (iEpo % sampl == 0) {
     double mjdX24 = _currEpo->tt.mjddec() * 24.0;
@@ -396,7 +397,8 @@ void t_reqcAnalyze::prepareObsStat(unsigned iEpo, double obsInterval) {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
+void t_reqcAnalyze::preparePlotData(const QString& prn, 
+                                    const ColumnVector& xyzSta,
                                     double obsInterval,
                                     QVector<t_polarPoint*>* dataMP1, 
                                     QVector<t_polarPoint*>* dataMP2,
@@ -448,7 +450,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
         chunkStartTime = currTime;
         mjdX24 = chunkStartTime.mjddec() * 24.0;
 
-        if (xyz.size()) {
+        if (xyzSta.size()) {
           t_eph* eph = 0;
           for (int ie = 0; ie < _ephs.size(); ie++) {
             if (_ephs[ie]->prn() == prn) {
@@ -463,7 +465,8 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
                           xSat, ySat, zSat, clkSat);
           
             double rho, eleSat, azSat;
-            topos(xyz(1), xyz(2), xyz(3), xSat, ySat, zSat, rho, eleSat, azSat);
+            topos(xyzSta(1), xyzSta(2), xyzSta(3), 
+                  xSat, ySat, zSat, rho, eleSat, azSat);
           
             aziDeg = azSat * 180.0/M_PI;
             zenDeg = 90.0 - eleSat * 180.0/M_PI;
@@ -617,4 +620,49 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
       graphWin->savePNG(dirName, ext);
     }
   }
+}
+
+// Compute Dilution of Precision
+////////////////////////////////////////////////////////////////////////////
+double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
+
+  if (xyzSta.size() != 3) {
+    return 0.0;
+  }
+
+  unsigned nSat = _currEpo->rnxSat.size();
+
+  if (nSat < 4) {
+    return 0.0;
+  }
+
+  Matrix AA(nSat, 4);
+
+  unsigned nSatUsed = 0;
+  for (unsigned iSat = 0; iSat < nSat; iSat++) {
+
+    const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iSat];
+
+    QString prn = QString("%1%2").arg(rnxSat.satSys)
+                                 .arg(rnxSat.satNum, 2, 10, QChar('0'));
+
+    t_eph* eph = 0;
+    for (int ie = 0; ie < _ephs.size(); ie++) {
+      if (_ephs[ie]->prn() == prn) {
+        eph = _ephs[ie];
+        break;
+      }
+    }
+    if (eph) {
+      ++nSatUsed;
+      ColumnVector xSat(3);
+      double clkSat;
+      eph->position(_currEpo->tt.gpsw(), _currEpo->tt.gpssec(), 
+                    xSat(1), xSat(2), xSat(3), clkSat);
+      ColumnVector dx = xSat - xyzSta;
+    }
+
+  }
+
+  return 0.0;
 }
