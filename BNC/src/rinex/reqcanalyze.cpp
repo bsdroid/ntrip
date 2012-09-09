@@ -253,6 +253,9 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
           if (newObs->_hasL1 && newObs->_hasL2) {
             _obsStat._prnStat[prn]._numObs += 1;
           }
+          if (newObs->_slipL1 && newObs->_slipL2) {
+            _obsStat._prnStat[prn]._numSlips += 1;
+          }
         }
       }
   
@@ -716,14 +719,17 @@ void t_reqcAnalyze::printReport() {
         << "Interval:    " << _obsStat._interval << endl
         << "# Sat.:      " << _obsStat._prnStat.size() << endl;
 
-  int numObs = 0;
+  int numObs   = 0;
+  int numSlips = 0;
   QMapIterator<QString, t_prnStat> it(_obsStat._prnStat);
   while (it.hasNext()) {
     it.next();
     const t_prnStat& prnStat = it.value();
-    numObs += prnStat._numObs;
+    numObs   += prnStat._numObs;
+    numSlips += prnStat._numSlips;
   }
-  *_log << "# Obs.:      " << numObs << endl;
+  *_log << "# Obs.:      " << numObs   << endl
+        << "# Slips:     " << numSlips << endl;
 
   _log->flush();
 }
