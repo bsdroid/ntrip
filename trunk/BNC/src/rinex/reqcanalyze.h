@@ -45,6 +45,14 @@ class t_availData {
   QVector<double> _eleTim;
 };
 
+class t_obsStat {
+ public:
+  QVector<double> _mjdX24;
+  QVector<double> _numSat;
+  QVector<double> _PDOP;
+  QVector<double> _GDOP;
+};
+
 class t_reqcAnalyze : public QThread {
 Q_OBJECT
  
@@ -135,8 +143,7 @@ Q_OBJECT
   t_rnxObsFile::t_rnxEpo*    _currEpo;
   QMap<QString, t_allObs>    _allObsMap;
   QMap<QString, t_availData> _availDataMap;
-  QVector<double>            _numSat;
-  QVector<double>            _numSatTim;
+  t_obsStat                  _obsStat;
 };
 
 #endif
