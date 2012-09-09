@@ -47,6 +47,12 @@ class t_availData {
 
 class t_obsStat {
  public:
+  void reset() {
+    _mjdX24.clear();
+    _numSat.clear();
+    _PDOP.clear();
+    _GDOP.clear();
+  }
   QVector<double> _mjdX24;
   QVector<double> _numSat;
   QVector<double> _PDOP;
@@ -131,7 +137,7 @@ Q_OBJECT
                        QVector<t_polarPoint*>* dataMP1, 
                        QVector<t_polarPoint*>* dataMP2,
                        QVector<t_polarPoint*>* dataSNR1, 
-                       QVector<t_polarPoint*>* dataSNR2);
+                       QVector<t_polarPoint*>* dataSNR2, bool firstPrn);
 
   QString                    _logFileName;
   QFile*                     _logFile;

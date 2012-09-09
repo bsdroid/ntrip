@@ -259,11 +259,13 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   QVector<t_polarPoint*>*       dataSNR2 = new QVector<t_polarPoint*>;
 
   QMutableMapIterator<QString, t_allObs> it(_allObsMap);
+  bool firstPrn = true;
   while (it.hasNext()) {
     it.next();
     QString    prn     = it.key();
     preparePlotData(prn, xyz, obsFile->interval(), 
-                    dataMP1, dataMP2, dataSNR1, dataSNR2);
+                    dataMP1, dataMP2, dataSNR1, dataSNR2, firstPrn);
+    firstPrn = false;
   }
 
   emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 
@@ -381,12 +383,17 @@ void t_reqcAnalyze::preparePlotData(const QString& prn, const ColumnVector& xyz,
                                     QVector<t_polarPoint*>* dataMP1, 
                                     QVector<t_polarPoint*>* dataMP2,
                                     QVector<t_polarPoint*>* dataSNR1, 
-                                    QVector<t_polarPoint*>* dataSNR2) {
+                                    QVector<t_polarPoint*>* dataSNR2,
+                                    bool firstPrn) {
 
   const int chunkStep = int( 30.0 / obsInterval); // chunk step (30 sec)  
   const int numEpo    = int(600.0 / obsInterval); // # epochs in one chunk (10 min)
 
   t_allObs& allObs = _allObsMap[prn];
+
+  if (firstPrn) {
+    _obsStat.reset();
+  }
 
   // Loop over all Chunks of Data
   // ----------------------------
