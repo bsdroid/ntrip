@@ -74,7 +74,7 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
   setAxisTitle(QwtPlot::yLeft,  "# Sat");
   setAxisTitle(QwtPlot::yRight, "PDOP");
   setAxisScale(QwtPlot::yLeft,  0,  20);
-  setAxisScale(QwtPlot::yRight, 0,  10);
+  setAxisScale(QwtPlot::yRight, 0,   6);
 
   // Legend
   // ------
@@ -89,12 +89,14 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
     curveNumSat->setXAxis(QwtPlot::xBottom);
     curveNumSat->setYAxis(QwtPlot::yLeft);
     curveNumSat->setSamples(obsStat->_mjdX24, obsStat->_numSat);
+    curveNumSat->setPen(QPen(Qt::blue));
     curveNumSat->attach(this);
 
     QwtPlotCurve* curvePDOP = new QwtPlotCurve("PDOP");
     curvePDOP->setXAxis(QwtPlot::xBottom);
     curvePDOP->setYAxis(QwtPlot::yRight);
     curvePDOP->setSamples(obsStat->_mjdX24, obsStat->_PDOP);
+    curvePDOP->setPen(QPen(Qt::red));
     curvePDOP->attach(this);
   }
   
