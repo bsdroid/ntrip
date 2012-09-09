@@ -240,6 +240,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         _allObsMap[prn].addObs(obs);
 
         prepareObsStat(iEpo, obsFile->interval());
+        iEpo++;
       }
   
     } // while (_currEpo)
@@ -382,7 +383,12 @@ void t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) {
 void t_reqcAnalyze::prepareObsStat(unsigned iEpo, double obsInterval) {
   const int numEpo = int(600.0 / obsInterval); // # epochs in one chunk (10 min)
   if (iEpo % numEpo == 0) {
-    _obsStat._mjdX24 << _currEpo->tt.mjddec() * 24.0;
+    double mjdX24 = _currEpo->tt.mjddec() * 24.0;
+    if (iEpo != 0) {
+      _obsStat._mjdX24 << mjdX24;
+      _obsStat._numSat << _obsStat._numSat.last();
+    }
+    _obsStat._mjdX24 << mjdX24;
     _obsStat._numSat << _currEpo->rnxSat.size();
   }
 }
