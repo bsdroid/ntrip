@@ -576,10 +576,11 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
     plotA->setTitle(title);
 
     t_elePlot* plotZ = new t_elePlot(0, &_availDataMap);
-    plotZ->setTitle(title);
+
+    t_elePlot* plotD = new t_elePlot(0, &_availDataMap);
 
     QVector<QWidget*> plots;
-    plots << plotA << plotZ;
+    plots << plotA << plotZ << plotD;
     t_graphWin* graphWin = new t_graphWin(0, fileName, plots, 0, 0);
 
     int ww = QFontMetrics(graphWin->font()).width('w');
