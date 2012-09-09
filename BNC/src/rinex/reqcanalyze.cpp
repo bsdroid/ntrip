@@ -248,6 +248,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   
         _allObsMap[prn].addObs(obs);
 
+        _obsStat._prnStat[prn]._numObs += 1;
       }
   
       prepareObsStat(iEpo, obsFile->interval(), xyzSta);
