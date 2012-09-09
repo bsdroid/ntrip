@@ -56,7 +56,7 @@
 
 using namespace std;
 
-const double SLIPTRESH = 5.0; // cycle-slip threshold (meters)
+const double SLIPTRESH = 10.0; // cycle-slip threshold (meters)
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -544,36 +544,39 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 
     // Compute the Multipath
     // ---------------------
-    bool slipMP = false;
-    meanMP1 /= numEpo;
-    meanMP2 /= numEpo;
-    double MP1 = 0.0;
-    double MP2 = 0.0;
-    for (int ii = 0; ii < numEpo; ii++) {
-      int iEpo = chunkStart + ii;
-      const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
-      double diff1 = oneObs->_MP1 - meanMP1;
-      double diff2 = oneObs->_MP2 - meanMP2;
-
-      // Check Slip Threshold
-      // --------------------
-      if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
-        slipMP = true;
-        break;
+    if (prn[0] != 'R') { // TODO
+      bool slipMP = false;
+      meanMP1 /= numEpo;
+      meanMP2 /= numEpo;
+      double MP1 = 0.0;
+      double MP2 = 0.0;
+      for (int ii = 0; ii < numEpo; ii++) {
+        int iEpo = chunkStart + ii;
+        const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
+        double diff1 = oneObs->_MP1 - meanMP1;
+        double diff2 = oneObs->_MP2 - meanMP2;
+      
+        // Check Slip Threshold
+        // --------------------
+        if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
+          slipMP = true;
+          break;
+        }
+      
+        MP1 += diff1 * diff1;
+        MP2 += diff2 * diff2;
       }
-
-      MP1 += diff1 * diff1;
-      MP2 += diff2 * diff2;
-    }
-    if (slipMP) {
-      slipL1 = true;
-      slipL2 = true;
-    } 
-    else {
-      MP1 = sqrt(MP1 / (numEpo-1));
-      MP2 = sqrt(MP2 / (numEpo-1));
-      (*dataMP1)  << (new t_polarPoint(aziDeg, zenDeg, MP1));
-      (*dataMP2)  << (new t_polarPoint(aziDeg, zenDeg, MP2));
+      if (slipMP) {
+        slipL1 = true;
+        slipL2 = true;
+        _obsStat._prnStat[prn]._numSlips += 1;
+      } 
+      else {
+        MP1 = sqrt(MP1 / (numEpo-1));
+        MP2 = sqrt(MP2 / (numEpo-1));
+        (*dataMP1)  << (new t_polarPoint(aziDeg, zenDeg, MP1));
+        (*dataMP2)  << (new t_polarPoint(aziDeg, zenDeg, MP2));
+      }
     }
 
     // Availability Plot Data
