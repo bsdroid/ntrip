@@ -70,13 +70,10 @@ class t_obsStat {
   QVector<double> _PDOP;
   bncTime         _startTime;
   bncTime         _endTime;
-  QString         _antennaNumber;
   QString         _antennaName;
   QString         _markerName;
-  QString         _markerNumber;
-  QString         _receiverNumber;
   QString         _receiverType;
-  QString         _receiverVersion;
+  double          _interval;
   QMap<QString, t_prnStat> _prnStat;
 };
 

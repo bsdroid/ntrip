@@ -222,6 +222,15 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   try {
     unsigned iEpo = 0;
     while ( (_currEpo = obsFile->nextEpoch()) != 0) {
+
+      if (iEpo == 0) {
+        _obsStat._startTime    = _currEpo->tt;
+        _obsStat._antennaName  = obsFile->antennaName();
+        _obsStat._markerName   = obsFile->markerName();
+        _obsStat._receiverType = obsFile->receiverType();
+        _obsStat._interval     = obsFile->interval();
+      }
+      _obsStat._endTime = _currEpo->tt;
   
       // Loop over all satellites
       // ------------------------
