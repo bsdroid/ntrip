@@ -101,12 +101,22 @@ t_graphWin::t_graphWin(QWidget* parent, const QString& fileName,
   // Layout
   // ------
   _canvas = new QWidget(this);
-  QHBoxLayout* plotLayout = new QHBoxLayout(_canvas);
-  for (int ip = 0; ip < plots.size(); ip++) {
-    plotLayout->addWidget(plots[ip]);
+  if (plots.size() != 3) {
+    QHBoxLayout* plotLayout = new QHBoxLayout(_canvas);
+    for (int ip = 0; ip < plots.size(); ip++) {
+      plotLayout->addWidget(plots[ip]);
+    }
+    if (_colorScale) {
+      plotLayout->addWidget(_colorScale);
+    }
   }
-  if (_colorScale) {
-    plotLayout->addWidget(_colorScale);
+  else {
+    QHBoxLayout* plotLayout = new QHBoxLayout(_canvas);
+    plotLayout->addWidget(plots[0]);
+    QVBoxLayout* hlpLayout = new QVBoxLayout;
+    hlpLayout->addWidget(plots[1]);
+    hlpLayout->addWidget(plots[2]);
+    plotLayout->addLayout(hlpLayout);
   }
 
   QHBoxLayout* buttonLayout = new QHBoxLayout;
