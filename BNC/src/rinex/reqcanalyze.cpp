@@ -733,5 +733,33 @@ void t_reqcAnalyze::printReport(QVector<t_polarPoint*>* dataMP1,
   *_log << "# Obs.:      " << numObs   << endl
         << "# Slips:     " << numSlips << endl;
 
+  for (int kk = 1; kk <= 4; kk++) {
+    QVector<t_polarPoint*>* data = 0;
+    QString text;
+    if      (kk == 1) {
+      data = dataMP1;
+      text = "Mean MP1:    ";
+    }
+    else if (kk == 2) {
+      data = dataMP2;
+      text = "Mean MP2:    ";
+    }
+    else if (kk == 3) {
+      data = dataSNR1;
+      text = "Mean SNR1:   ";
+    }
+    else if (kk == 4) {
+      data = dataSNR2;
+      text = "Mean SNR2:   ";
+    }
+    double mean = 0.0;
+    for (int ii = 0; ii < data->size(); ii++) {
+      const t_polarPoint* point = data->at(ii);
+      mean += point->_value;
+    }
+    mean /= data->size();
+    *_log << text << mean << endl;
+  }
+
   _log->flush();
 }
