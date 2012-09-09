@@ -295,18 +295,16 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
                     dataMP1, dataMP2, dataSNR1, dataSNR2);
   }
 
-  emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 
-                  "Meters", 2.0);
-
-  emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, 
-                  "", 9.0);
+  printReport(dataMP1, dataMP2, dataSNR1, dataSNR2);
 
   QFileInfo  fileInfo(obsFile->fileName());
   QByteArray title = fileInfo.fileName().toAscii();
 
+  emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 
+                  "Meters", 2.0);
+  emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, 
+                  "", 9.0);
   emit dspAvailPlot(obsFile->fileName(), title);
-
-  printReport(dataMP1, dataMP2, dataSNR1, dataSNR2);
 }
 
 //  
