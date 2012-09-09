@@ -151,6 +151,13 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _buttonSelect = new QPushButton(tr("Select"), this);
   connect(_buttonSelect, SIGNAL(clicked()), this, SLOT(select()));
 
+  // WhatsThis
+  // ---------
+  _buttonMap->setWhatsThis(tr("<p>Draw distribution map of streams in downloaded caster source-table.</p>"));
+  _buttonGet->setWhatsThis(tr("<p>Download source-table from specified caster.</p>"));
+  _buttonClose->setWhatsThis(tr("<p>Close window.</p>"));
+  _buttonSelect->setWhatsThis(tr("<p>Select streams highlighted in downloaded source-table.</p>"));
+
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(_buttonWhatsThis);
   buttonLayout->addStretch(1);
@@ -172,6 +179,7 @@ bncTableDlg::~bncTableDlg() {
   bncSettings settings;
   settings.setValue("ntripVersion", _ntripVersionComboBox->currentText());
   delete _ntripVersionComboBox;
+  delete _buttonMap;
   delete _buttonGet;
   delete _buttonClose;
   delete _buttonSelect;
