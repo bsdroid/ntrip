@@ -70,6 +70,12 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
   setAxisLabelRotation(QwtPlot::xBottom, -10.0);
   setAxisLabelAlignment(QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom);
 
+  enableAxis(QwtPlot::yRight);
+  setAxisTitle(QwtPlot::yLeft,  "# Sat");
+  setAxisTitle(QwtPlot::yRight, "PDOP");
+  setAxisScale(QwtPlot::yLeft,  0,  20);
+  setAxisScale(QwtPlot::yRight, 0,  10);
+
   // Legend
   // ------
   QwtLegend* legend = new QwtLegend;
@@ -81,13 +87,13 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
 
     QwtPlotCurve* curveNumSat = new QwtPlotCurve("# Sat");
     curveNumSat->setXAxis(QwtPlot::xBottom);
-    curveNumSat->setYAxis(QwtPlot::yRight);
+    curveNumSat->setYAxis(QwtPlot::yLeft);
     curveNumSat->setSamples(obsStat->_mjdX24, obsStat->_numSat);
     curveNumSat->attach(this);
 
     QwtPlotCurve* curvePDOP = new QwtPlotCurve("PDOP");
     curvePDOP->setXAxis(QwtPlot::xBottom);
-    curvePDOP->setYAxis(QwtPlot::yLeft);
+    curvePDOP->setYAxis(QwtPlot::yRight);
     curvePDOP->setSamples(obsStat->_mjdX24, obsStat->_PDOP);
     curvePDOP->attach(this);
   }
