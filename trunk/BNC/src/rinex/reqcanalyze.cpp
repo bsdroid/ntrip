@@ -568,7 +568,8 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
     if (slipMP) {
       slipL1 = true;
       slipL2 = true;
-    } else {
+    } 
+    else {
       MP1 = sqrt(MP1 / (numEpo-1));
       MP2 = sqrt(MP2 / (numEpo-1));
       (*dataMP1)  << (new t_polarPoint(aziDeg, zenDeg, MP1));
