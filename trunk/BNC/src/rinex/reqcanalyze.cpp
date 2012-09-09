@@ -207,7 +207,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   if (_log) {
     *_log << "\nAnalyze File\n"
           <<   "------------\n"
-          << obsFile->fileName().toAscii().data() << endl << endl;
+          << "File:        " << obsFile->fileName().toAscii().data() << endl;
   }
 
   _allObsMap.clear();
@@ -702,7 +702,9 @@ void t_reqcAnalyze::printReport() {
         << "Receiver:    " << _obsStat._receiverType << endl
         << "Antenna:     " << _obsStat._antennaName  << endl
         << "Start time:  " << _obsStat._startTime.datestr().c_str() << ' '
-                           << _obsStat._startTime.timestr().c_str() << endl;
+                           << _obsStat._startTime.timestr().c_str() << endl
+        << "End time:    " << _obsStat._endTime.datestr().c_str() << ' '
+                           << _obsStat._endTime.timestr().c_str() << endl;
 
   _log->flush();
 }
