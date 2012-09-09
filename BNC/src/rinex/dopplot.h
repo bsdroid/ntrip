@@ -15,9 +15,6 @@ public:
   t_dopPlot(QWidget* parent, t_obsStat* obsStat);
 
 private:
-  QwtPlotCurve* addCurve(const QString& name,
-                         const QVector<double>& xData, 
-                         const QVector<double>& yData);
 };
 
 #endif
