@@ -79,6 +79,7 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
   // ------
   if (obsStat) {
     addCurve("# Sat", obsStat->_mjdX24, obsStat->_numSat);
+    addCurve("PDOP",  obsStat->_mjdX24, obsStat->_PDOP);
   }
   
   // Important !!!
