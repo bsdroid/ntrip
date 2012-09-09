@@ -116,9 +116,6 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
                                    const QByteArray& scaleTitle,
                                    double maxValue) {
 
-  _mutex.unlock();
-  QMutexLocker locker(&_mutex);
-
   bncApp* app = dynamic_cast<bncApp*>(qApp);
   if (app->GUIenabled()) {
 
