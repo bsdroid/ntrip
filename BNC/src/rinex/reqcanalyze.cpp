@@ -52,6 +52,7 @@
 #include "polarplot.h"
 #include "availplot.h"
 #include "eleplot.h"
+#include "dopplot.h"
 
 using namespace std;
 
@@ -577,7 +578,7 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
 
     t_elePlot* plotZ = new t_elePlot(0, &_availDataMap);
 
-    t_elePlot* plotD = new t_elePlot(0, &_availDataMap);
+    t_dopPlot* plotD = new t_dopPlot(0, &_obsStat);
 
     QVector<QWidget*> plots;
     plots << plotA << plotZ << plotD;
