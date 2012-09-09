@@ -159,7 +159,10 @@ Q_OBJECT
   void prepareObsStat(unsigned iEpo, double obsInterval,
                       const ColumnVector& xyzSta);
   double cmpDOP(const ColumnVector& xyzSta) const;
-  void printReport();
+  void printReport(QVector<t_polarPoint*>* dataMP1, 
+                   QVector<t_polarPoint*>* dataMP2,
+                   QVector<t_polarPoint*>* dataSNR1, 
+                   QVector<t_polarPoint*>* dataSNR2);
 
   QString                    _logFileName;
   QFile*                     _logFile;

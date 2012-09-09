@@ -300,7 +300,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
   emit dspAvailPlot(obsFile->fileName(), title);
 
-  printReport();
+  printReport(dataMP1, dataMP2, dataSNR1, dataSNR2);
 }
 
 //  
@@ -703,8 +703,10 @@ double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
 
 // Finish the report
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::printReport() {
-
+void t_reqcAnalyze::printReport(QVector<t_polarPoint*>* dataMP1,
+                                QVector<t_polarPoint*>* dataMP2,
+                                QVector<t_polarPoint*>* dataSNR1,
+                                QVector<t_polarPoint*>* dataSNR2) {
   if (!_log) {
     return;
   }
