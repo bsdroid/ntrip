@@ -159,6 +159,7 @@ Q_OBJECT
   void prepareObsStat(unsigned iEpo, double obsInterval,
                       const ColumnVector& xyzSta);
   double cmpDOP(const ColumnVector& xyzSta) const;
+  void printReport();
 
   QString                    _logFileName;
   QFile*                     _logFile;

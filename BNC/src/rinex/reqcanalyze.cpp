@@ -291,9 +291,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
   emit dspAvailPlot(obsFile->fileName(), title);
 
-  if (_log) {
-    _log->flush();
-  }
+  printReport();
 }
 
 //  
@@ -690,4 +688,21 @@ double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
   QQ = QQ.i();
 
   return sqrt(QQ.trace());
+}
+
+// Finish the report
+////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::printReport() {
+
+  if (!_log) {
+    return;
+  }
+
+  *_log << "Marker name: " << _obsStat._markerName   << endl 
+        << "Receiver:    " << _obsStat._receiverType << endl
+        << "Antenna:     " << _obsStat._antennaName  << endl
+        << "Start time:  " << _obsStat._startTime.datestr().c_str() << ' '
+                           << _obsStat._startTime.timestr().c_str() << endl;
+
+  _log->flush();
 }
