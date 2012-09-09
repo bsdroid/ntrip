@@ -662,9 +662,23 @@ double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
       eph->position(_currEpo->tt.gpsw(), _currEpo->tt.gpssec(), 
                     xSat(1), xSat(2), xSat(3), clkSat);
       ColumnVector dx = xSat - xyzSta;
+      double rho = dx.norm_Frobenius();
+      AA(nSatUsed,1) = dx(1) / rho;
+      AA(nSatUsed,2) = dx(2) / rho;
+      AA(nSatUsed,3) = dx(3) / rho;
+      AA(nSatUsed,4) = 1.0;
     }
-
   }
 
-  return 0.0;
+  if (nSatUsed < 4) {
+    return 0.0;
+  }
+
+  AA = AA.Rows(1, nSatUsed);
+
+  SymmetricMatrix QQ; 
+  QQ << AA.t() * AA;
+  QQ = QQ.i();
+
+  return sqrt(QQ.trace());
 }
