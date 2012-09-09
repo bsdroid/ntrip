@@ -26,6 +26,7 @@
 #define BNCMAP_H
 
 #include <QtGui>
+#include <QWhatsThis>
 
 class QwtPlot;
 class QwtPlotZoomer;
@@ -43,6 +44,7 @@ class t_bncMap : public QDialog {
  private slots:
   void slotClose();
   void slotPrint();
+  void slotWhatsThis();
 
  protected:
   virtual void closeEvent(QCloseEvent *);
@@ -53,10 +55,12 @@ class t_bncMap : public QDialog {
   QwtPlotZoomer* _mapPlotZoomer;
   QPushButton*   _buttonClose;
   QPushButton*   _buttonPrint;
+  QPushButton*   _buttonWhatsThis;
   double         _minPointLat;
   double         _maxPointLat;
   double         _minPointLon;
   double         _maxPointLon;
+
 };
 
 #endif
