@@ -447,7 +447,6 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
     bool    gapL2   = false;
     bool    slipL1  = false;
     bool    slipL2  = false;
-    bool    slipMP  = false;
     double  meanMP1 = 0.0;
     double  meanMP2 = 0.0;
     double  minSNR1 = 0.0;
@@ -539,18 +538,41 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
         slipL2 = true;
       }
 
-      // Check Slip Threshold
-      // --------------------
-      if (ii > 0) {
-        double diff1 = oneObs->_MP1 - allObs._oneObsVec[iEpo-1]->_MP1;
-        double diff2 = oneObs->_MP2 - allObs._oneObsVec[iEpo-1]->_MP2;
-        if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
-          slipMP = true;
-        }
-      }
-
       meanMP1 += oneObs->_MP1;
       meanMP2 += oneObs->_MP2;
+    }
+
+    // Compute the Multipath
+    // ---------------------
+    bool slipMP = false;
+    meanMP1 /= numEpo;
+    meanMP2 /= numEpo;
+    double MP1 = 0.0;
+    double MP2 = 0.0;
+    for (int ii = 0; ii < numEpo; ii++) {
+      int iEpo = chunkStart + ii;
+      const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
+      double diff1 = oneObs->_MP1 - meanMP1;
+      double diff2 = oneObs->_MP2 - meanMP2;
+
+      // Check Slip Threshold
+      // --------------------
+      if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
+        slipMP = true;
+        break;
+      }
+
+      MP1 += diff1 * diff1;
+      MP2 += diff2 * diff2;
+    }
+    if (slipMP) {
+      slipL1 = true;
+      slipL2 = true;
+    } else {
+      MP1 = sqrt(MP1 / (numEpo-1));
+      MP2 = sqrt(MP2 / (numEpo-1));
+      (*dataMP1)  << (new t_polarPoint(aziDeg, zenDeg, MP1));
+      (*dataMP2)  << (new t_polarPoint(aziDeg, zenDeg, MP2));
     }
 
     // Availability Plot Data
@@ -586,27 +608,6 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
     // --------------------------------
     (*dataSNR1) << (new t_polarPoint(aziDeg, zenDeg, minSNR1));
     (*dataSNR2) << (new t_polarPoint(aziDeg, zenDeg, minSNR2));
-
-    // Compute the Multipath
-    // ---------------------
-    if (!slipMP) {
-      meanMP1 /= numEpo;
-      meanMP2 /= numEpo;
-      double MP1 = 0.0;
-      double MP2 = 0.0;
-      for (int ii = 0; ii < numEpo; ii++) {
-        int iEpo = chunkStart + ii;
-        const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
-        double diff1 = oneObs->_MP1 - meanMP1;
-        double diff2 = oneObs->_MP2 - meanMP2;
-        MP1 += diff1 * diff1;
-        MP2 += diff2 * diff2;
-      }
-      MP1 = sqrt(MP1 / (numEpo-1));
-      MP2 = sqrt(MP2 / (numEpo-1));
-      (*dataMP1)  << (new t_polarPoint(aziDeg, zenDeg, MP1));
-      (*dataMP2)  << (new t_polarPoint(aziDeg, zenDeg, MP2));
-    }
   }
 }
 
