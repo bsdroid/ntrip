@@ -432,8 +432,13 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 
   // Loop over all Chunks of Data
   // ----------------------------
+  bool slipFound = false;
   for (int chunkStart = 0; chunkStart + numEpo < allObs._oneObsVec.size();
        chunkStart += chunkStep) {
+
+    if (chunkStart == 0) {
+      slipFound = false;
+    }
 
     // Chunk-Specific Variables 
     // ------------------------
@@ -569,7 +574,10 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
       if (slipMP) {
         slipL1 = true;
         slipL2 = true;
-        _obsStat._prnStat[prn]._numSlipsFound += 1;
+        if (!slipFound) {
+          slipFound = true;
+          _obsStat._prnStat[prn]._numSlipsFound += 1;
+        }
       } 
       else {
         MP1 = sqrt(MP1 / (numEpo-1));
