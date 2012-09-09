@@ -436,7 +436,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
   for (int chunkStart = 0; chunkStart + numEpo < allObs._oneObsVec.size();
        chunkStart += chunkStep) {
 
-    if (chunkStart == 0) {
+    if (chunkStart * chunkStep == numEpo) {
       slipFound = false;
     }
 
