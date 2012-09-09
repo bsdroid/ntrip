@@ -116,6 +116,9 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
                                    const QByteArray& scaleTitle,
                                    double maxValue) {
 
+  _mutex.unlock();
+  QMutexLocker locker(&_mutex);
+
   bncApp* app = dynamic_cast<bncApp*>(qApp);
   if (app->GUIenabled()) {
 
@@ -203,6 +206,8 @@ void t_reqcAnalyze::run() {
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
+
+  _mutex.lock();
 
   if (_log) {
     *_log << "\nAnalyze File\n"
@@ -627,6 +632,9 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, 
                                      const QByteArray& title) {
+
+  _mutex.unlock();
+  QMutexLocker locker(&_mutex);
 
   if (dynamic_cast<bncApp*>(qApp)->GUIenabled()) {
 

@@ -177,6 +177,7 @@ Q_OBJECT
   QMap<QString, t_allObs>    _allObsMap;
   QMap<QString, t_availData> _availDataMap;
   t_obsStat                  _obsStat;
+  QMutex                     _mutex;
 };
 
 #endif
