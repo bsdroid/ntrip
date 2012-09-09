@@ -82,15 +82,26 @@ t_bncMap::t_bncMap(QWidget* parent) : QDialog(parent) {
   _buttonPrint->setMaximumWidth(10*ww);
   connect(_buttonPrint, SIGNAL(clicked()), this, SLOT(slotPrint()));
 
+  _buttonWhatsThis = new QPushButton(tr("Help=Shift+F1"), this);
+  _buttonWhatsThis->setMaximumWidth(10*ww);
+  connect(_buttonWhatsThis, SIGNAL(clicked()), this, SLOT(slotWhatsThis()));
+
   // Layout
   // ------
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(_buttonClose);
   buttonLayout->addWidget(_buttonPrint);
+  buttonLayout->addWidget(_buttonWhatsThis);
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   mainLayout->addWidget(_mapPlot);
   mainLayout->addLayout(buttonLayout);
+
+  // WhatsThis
+  // ---------
+  _buttonClose->setWhatsThis(tr("<p>Close window.</p>"));
+  _buttonPrint->setWhatsThis(tr("<p>Print stream distribution map.</p>"));
+//  _mapPlot->setWhatsThis(tr("<p>Stream distribution map. Use the mouse to zoom in or out.</p><p>Left button: Draw rectangle to zoom in.<br>Right button: Zoom out.<br>Middle button: Zoom back.</p>"));
 
   // Minimal and Maximal Coordinates
   // -------------------------------
@@ -108,6 +119,7 @@ t_bncMap::t_bncMap(QWidget* parent) : QDialog(parent) {
 /////////////////////////////////////////////////////////////////////////////
 t_bncMap::~t_bncMap() { 
   delete _mapPlot;
+  delete _buttonWhatsThis;
 }
 
 // 
@@ -239,3 +251,10 @@ void t_bncMap::slotPrint() {
     renderer.renderTo(_mapPlot, printer);
   }
 }
+
+// Whats This Help
+////////////////////////////////////////////////////////////////////////////
+void t_bncMap::slotWhatsThis() {
+QWhatsThis::enterWhatsThisMode();
+}
+
