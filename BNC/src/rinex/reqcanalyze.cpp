@@ -704,7 +704,9 @@ void t_reqcAnalyze::printReport() {
         << "Start time:  " << _obsStat._startTime.datestr().c_str() << ' '
                            << _obsStat._startTime.timestr().c_str() << endl
         << "End time:    " << _obsStat._endTime.datestr().c_str() << ' '
-                           << _obsStat._endTime.timestr().c_str() << endl;
+                           << _obsStat._endTime.timestr().c_str() << endl
+        << "Interval:    " << _obsStat._interval << endl
+        << "# Sat.:      " << _obsStat._prnStat.size() << endl;
 
   _log->flush();
 }
