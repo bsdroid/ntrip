@@ -389,9 +389,11 @@ void t_reqcAnalyze::prepareObsStat(unsigned iEpo, double obsInterval,
     if (iEpo != 0) {
       _obsStat._mjdX24 << mjdX24;
       _obsStat._numSat << _obsStat._numSat.last();
+      _obsStat._PDOP   << _obsStat._PDOP.last();
     }
     _obsStat._mjdX24 << mjdX24;
     _obsStat._numSat << _currEpo->rnxSat.size();
+    _obsStat._PDOP   << cmpDOP(xyzSta);
   }
 }
 
