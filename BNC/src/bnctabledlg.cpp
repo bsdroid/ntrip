@@ -156,7 +156,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _buttonMap->setWhatsThis(tr("<p>Draw distribution map of streams in downloaded caster source-table.</p>"));
   _buttonGet->setWhatsThis(tr("<p>Download source-table from specified caster.</p>"));
   _buttonClose->setWhatsThis(tr("<p>Close window.</p>"));
-  _buttonSelect->setWhatsThis(tr("<p>Select streams highlighted in downloaded source-table.</p>"));
+  _buttonSelect->setWhatsThis(tr("<p>Select streams highlighted in downloaded source-table for processing.</p>"));
 
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(_buttonWhatsThis);
