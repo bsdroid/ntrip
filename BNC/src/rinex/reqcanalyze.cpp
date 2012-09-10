@@ -280,10 +280,10 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
   // Analyze the Multipath
   // ---------------------
-  QVector<t_polarPoint*>*       dataMP1  = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>*       dataMP2  = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>*       dataSNR1 = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>*       dataSNR2 = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataMP1  = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataMP2  = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataSNR1 = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataSNR2 = new QVector<t_polarPoint*>;
 
   QMutableMapIterator<QString, t_allObs> it(_allObsMap);
   while (it.hasNext()) {
@@ -295,14 +295,36 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
   printReport(dataMP1, dataMP2, dataSNR1, dataSNR2);
 
-  QFileInfo  fileInfo(obsFile->fileName());
-  QByteArray title = fileInfo.fileName().toAscii();
-
-  emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 
-                  "Meters", 2.0);
-  emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, 
-                  "", 9.0);
-  emit dspAvailPlot(obsFile->fileName(), title);
+  // Show the plots
+  // --------------
+  if (dynamic_cast<bncApp*>(qApp)->GUIenabled()) {
+    QFileInfo  fileInfo(obsFile->fileName());
+    QByteArray title = fileInfo.fileName().toAscii();
+    emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 
+                    "Meters", 2.0);
+    emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, 
+                    "", 9.0);
+    emit dspAvailPlot(obsFile->fileName(), title);
+  }
+  else {
+    for (int ii = 0; ii < dataMP1->size(); ii++) {
+      delete dataMP1->at(ii);
+    }
+    delete dataMP1;
+    for (int ii = 0; ii < dataMP2->size(); ii++) {
+      delete dataMP2->at(ii);
+    }
+    delete dataMP2;
+    for (int ii = 0; ii < dataSNR1->size(); ii++) {
+      delete dataSNR1->at(ii);
+    }
+    delete dataSNR1;
+    for (int ii = 0; ii < dataSNR2->size(); ii++) {
+      delete dataSNR2->at(ii);
+    }
+    delete dataSNR2;
+    _mutex.unlock();
+  }
 }
 
 //  
