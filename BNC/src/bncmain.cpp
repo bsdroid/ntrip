@@ -67,7 +67,11 @@ void catch_signal(int) {
 int main(int argc, char* argv[]) {
 
   bool       interactive  = true;
+#ifdef WIN32
+  bool       displaySet   = true;
+#else
   bool       displaySet   = false;
+#endif
   QByteArray rawFileName;
   QString    confFileName;
 
