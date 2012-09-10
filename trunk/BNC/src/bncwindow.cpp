@@ -1316,7 +1316,8 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   _actDeleteMountPoints->setWhatsThis(tr("<p>Delete stream(s) from selection presented in the 'Streams' canvas.</p>"));
   _actAddMountPoints->setWhatsThis(tr("<p>Add stream(s) to selection presented in the 'Streams' canvas.</p>"));
-  _actMap->setWhatsThis(tr("<p> Draw distribution map of stream selection presented in the 'Streams' canvas.</p>")); 
+  _actMap->setWhatsThis(tr("<p> Draw distribution map of stream selection presented in the 'Streams' canvas. Use the mouse to zoom in or out.</p><p>Left button: Draw rectangle to zoom in.<br>Right button: Zoom out.<br>Middle button: Zoom back.</p>")); 
+
   _actStart->setWhatsThis(tr("<p> Start running BNC.</p>"));
   _actStop->setWhatsThis(tr("<p> Stop running BNC.</p>"));
 // Weber
