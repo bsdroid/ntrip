@@ -204,9 +204,7 @@ void t_reqcAnalyze::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
-  if (dynamic_cast<bncApp*>(qApp)->GUIenabled()) {
-    _mutex.lock();
-  }
+  _mutex.lock();
 
   if (_log) {
     *_log << "\nAnalyze File\n"
@@ -275,9 +273,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
     else {
       qDebug() << str;    
     }
-    if (dynamic_cast<bncApp*>(qApp)->GUIenabled()) {
-      _mutex.unlock();
-    }
+    _mutex.unlock();
     return;
   }
 
@@ -634,10 +630,6 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
                                      const QByteArray& title) {
 
   if (dynamic_cast<bncApp*>(qApp)->GUIenabled()) {
-
-    _mutex.unlock();
-    QMutexLocker locker(&_mutex);
-
     t_availPlot* plotA = new t_availPlot(0, &_availDataMap);
     plotA->setTitle(title);
 
@@ -661,6 +653,7 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
       graphWin->savePNG(dirName, ext);
     }
   }
+  _mutex.unlock();
 }
 
 // Compute Dilution of Precision
