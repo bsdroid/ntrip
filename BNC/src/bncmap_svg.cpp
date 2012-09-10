@@ -101,7 +101,6 @@ t_bncMap::t_bncMap(QWidget* parent) : QDialog(parent) {
   // ---------
   _buttonClose->setWhatsThis(tr("<p>Close window.</p>"));
   _buttonPrint->setWhatsThis(tr("<p>Print stream distribution map.</p>"));
-//  _mapPlot->setWhatsThis(tr("<p>Stream distribution map. Use the mouse to zoom in or out.</p><p>Left button: Draw rectangle to zoom in.<br>Right button: Zoom out.<br>Middle button: Zoom back.</p>"));
 
   // Minimal and Maximal Coordinates
   // -------------------------------
