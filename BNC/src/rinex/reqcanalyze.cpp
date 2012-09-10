@@ -214,6 +214,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
   _allObsMap.clear();
   _availDataMap.clear();
+  _obsStat.reset();
 
   // A priori Coordinates
   // --------------------
