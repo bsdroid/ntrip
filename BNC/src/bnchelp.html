@@ -100,13 +100,23 @@ BNC supports decoding the following GNSS stream formats and message types:
 <li>RTCM Version 2 message types for GPS and GLONASS observations, </li> 
 <li>RTCM Version 3 'conventional' message types for observations and Broadcast Ephemeris for GPS, GLONASS, SBAS, Galileo, COMPASS and QZSS,</li>
 <li>RTCM Version 3 'State Space Representation' (SSR) messages for GPS, GLONASS and Galileo,</li>
-<li>Drafted RTCM Version 3 'Multiple Signal Messages' (MSM) and 'High Precision Multiple Signal Messages' (HP MSM),</li>
 <li>RTNET, a plain ASCII format defined within BNC to receive orbits and clock from a serving GNSS engine.
 </ul>
-Note that up to now basic QZSS support follows a draft for RTCM MSM messages agreed by JAXA, BKG and DLR. Support of certain extra QZSS messages and support of  COMPASS so far only follows an internal agreement between BKG and DLR.
 </p>
+
 <p>
-Furthermore, BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
+Note that up to now decoding RTCM Version 3 'Multiple Signal Messages' (MSM) and 'High Precision Multiple Signal Messages' (HP MSM) in BNC for
+<ul>
+<li>GPS, GLONASS and Galileo follows the latest RTCM draft,</li>
+<li>QZSS follows a JAXA proposal,</li>
+<li>X tracking mode follows an agreement between BKG, Alberding and DLR,</li>
+<li>COMPASS follows an agreement between BKG, Alberding and DLR,</li>
+<li>SBAS follows an agreement between BKG, Alberding and DLR.</li>
+</ul>
+</p>
+
+<p>
+Note further that BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
 </p>
 
 <p>
