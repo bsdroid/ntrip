@@ -86,7 +86,15 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
   textNumSat.setFont(fontNumSat);
   textNumSat.setColor(Qt::blue);
   setAxisTitle(QwtPlot::yLeft,  textNumSat);
-  setAxisScale(QwtPlot::yLeft,  0,  20);
+  double maxNumSat = 20.0;
+  if (obsStat) {
+    for (int ii = 0; ii < obsStat->_numSat.size(); ii++) {
+      if (maxNumSat < obsStat->_numSat[ii]) {
+        maxNumSat = obsStat->_numSat[ii] + 5;
+      } 
+    }
+  }
+  setAxisScale(QwtPlot::yLeft,  0,  maxNumSat);
 
   // Legend
   // ------
