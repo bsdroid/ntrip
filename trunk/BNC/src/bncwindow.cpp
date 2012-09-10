@@ -2677,7 +2677,7 @@ void bncWindow::enableStartStop() {
 void bncWindow::slotMap() {
   saveOptions();
   t_bncMap* bncMap = new t_bncMap(this);
-  bncMap->setGeometry( x(), int(y()+height()*1.3), 800, 600 );
+  bncMap->setMinimumSize(800, 600);
   bncMap->setWindowTitle("Selected Mountpoints");
 
   bncSettings settings;

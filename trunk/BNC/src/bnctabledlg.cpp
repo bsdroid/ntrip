@@ -333,7 +333,7 @@ void bncTableDlg::slotShowMap() {
 
   t_bncMap* bncMap = new t_bncMap(this);
 
-  bncMap->setGeometry( x(), int(y()+height()*1.3), 800, 600 );
+  bncMap->setMinimumSize(800, 600);
 
   for (int ii = 0; ii < _allLines.size(); ii++) {
     if (_allLines.at(ii).startsWith("STR") == true) {
