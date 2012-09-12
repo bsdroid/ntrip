@@ -202,17 +202,16 @@ BNC maintains configuration options at three different levels:
 <li>Configuration file, disk level</li>
 </ol>
 <p>
-Configuration options are usually specified using GUI input fields (1) after launching BNC. After hitting the 'Start' button configuration options are brought to BNC's working memory (2) allowing the program to beginn its operation. Hitting the 'Stop' button ends data processing and the user finally terminates BNC through 'File'->'Quit' which saves processing options in a configuration file to disk (3). It may be important to understand that:
+Configuration options are usually specified using GUI input fields (1) after launching BNC. When hitting the 'Start' button, configuration options are transferred one level down to BNC's working memory (2) allowing the program to beginn its operation. Pushing the 'Stop' button ends data processing so that the user can finally terminate BNC through 'File'->'Quit'->'Save Options' which saves processing options in a configuration file to disk (3). It is important to understand that:
 <ul>
-<li>Data processing in BNC is always using the configuration options from the working memory (2).</li>
-<li>Hence changing configuration options at GUI level (1) while BNC is already processing data does not influence a running configuration.</li>
-<li>Changing configuration options at disk level (3) while BNC is already processing data does usually also not influence a running configuration. Exceptions are:</li>
+<li>Data processing in BNC generally uses configuration options from the working memory (2).</li>
+<li>Hence changing configuration options at GUI level (1) while BNC is already processing data does not influence a running job.</li>
+<li>Editing configuration options at disk level (3) while BNC is already processing data does also not influence a running job. However, there are two exceptions which enforce BNC to update certain options on-the-fly:</li>
 <ul>
 <li>Pushing the 'Save & Reread Configuration' button.</li>
-<li>Specify the 'Reread configuration' option which is part of the 'General' tab.</li>
-<li></li>
+<li>Specifying the 'Reread configuration' option which lets BNC reread its configuration at pre-defined intervals.</li>
 </ul>
-<li>A certain BNC configuration can be started in 'no window' mode even without configuration file if configuration options for the working memory (2) are provided via command line.</li>
+<li>A certain BNC configuration can be started in 'no window' mode from scratch without any configuration file at all if configuration options for the working memory (2) are provided via command line.</li>
 </ul>
 </p>
 
