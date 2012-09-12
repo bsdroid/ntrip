@@ -192,6 +192,30 @@ The default file name 'BNC.bnc' can be changed and the file contents can easily 
 <p><img src="IMG/screenshot31.png"/></p>
 <p><u>Figure 6:</u> Management of configuration options in BNC.</p>
 
+<p>
+BNC maintains configuration options at three different levels:
+</p>
+
+<ol type=b>
+<li>GUI, input fields level</li>
+<li>Working memory level</li>
+<li>Configuration file, disk level</li>
+</ol>
+<p>
+Configuration options are usually specified using GUI input fields (1) after launching BNC. After hitting the 'Start' button configuration options are brought to BNC's working memory (2) allowing the program to beginn its operation. Hitting the 'Stop' button ends data processing and the user finally terminates BNC through 'File'->'Quit' which saves processing options in a configuration file to disk (3). It may be important to understand that:
+<ul>
+<li>Data processing in BNC is always using the configuration options from the working memory (2).</li>
+<li>Hence changing configuration options at GUI level (1) while BNC is already processing data does not influence a running configuration.</li>
+<li>Changing configuration options at disk level (3) while BNC is already processing data does usually also not influence a running configuration. Exceptions are:</li>
+<ul>
+<li>Pushing the 'Save & Reread Configuration' button.</li>
+<li>Specify the 'Reread configuration' option which is part of the 'General' tab.</li>
+<li></li>
+</ul>
+<li>A certain BNC configuration can be started in 'no window' mode even without configuration file if configuration options for the working memory (2) are provided via command line.</li>
+</ul>
+</p>
+
 <p><a name="optsettings"><h3>3. Settings</h3></p>
 <p>
 This chapter describes how to set the BNC program options. It explains the top menu bar, the processing options, the 'Streams' and 'Log' sections, and the bottom menu bar.
