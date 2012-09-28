@@ -249,6 +249,15 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
 
   QMutexLocker locker(&_mutex);
 
+  // Check wrong Ephemerides
+  // -----------------------
+  if (glonasseph->x_pos == 0.0 && 
+      glonasseph->y_pos == 0.0 && 
+      glonasseph->z_pos == 0.0) {
+    delete glonasseph;
+    return;
+  } 
+
   glonassephemeris copy_glonasseph = *glonasseph;
   emit newEphGlonass(copy_glonasseph);
 
