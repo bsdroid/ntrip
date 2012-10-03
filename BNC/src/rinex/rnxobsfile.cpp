@@ -1088,9 +1088,13 @@ void t_rnxObsFile::checkNewHeader(const t_rnxObsHeader& header) {
 
   if (!same) {
     QStringList strLst = _header.obsTypesStrings();
-    int numBlanks = _header._version < 3.0 ? 26 : 29;
-    *_stream << QString().leftJustified(numBlanks)
-             << QString("  4%1\n").arg(strLst.size(), 3)
+    if (_header._version < 3.0) {
+      *_stream << QString().leftJustified(26);
+    }
+    else {
+      *_stream << '>' << QString().leftJustified(28);
+    }
+    *_stream << QString("  4%1\n").arg(strLst.size(), 3)
              << strLst.join("");
   }
 }
