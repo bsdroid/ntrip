@@ -589,6 +589,9 @@ string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2,
   const QVector<QString>& types = (_header._version > 3.0) ?
                           _header._obsTypesV3[obs.satSys] : _header._obsTypesV2;
   for (int ii = 0; ii < types.size(); ii++) {
+    if (_header._version < 3.0 && ii > 0 && ii % 5 == 0) {
+      str << endl;
+    }
     double value = obs.measdata(types[ii], _header._version);
     str << setw(14) << setprecision(3) << value;
     if      (value != 0.0 && types[ii].indexOf("L1") == 0) {
