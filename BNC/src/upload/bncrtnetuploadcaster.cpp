@@ -262,11 +262,38 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   
   // Default Update Interval
   // -----------------------
-  int clkUpdInterval = 5;
-  int ephUpdInterval = (_samplRtcmEphCorr != 0.0 ? int(_samplRtcmEphCorr) : 5);
+  int clkUpdInd = 2;         // 5 sec
+  int ephUpdInd = clkUpdInd; // default
+  if      (_samplRtcmEphCorr ==  10.0) {
+    ephUpdInd = 3;
+  }
+  else if (_samplRtcmEphCorr ==  15.0) {
+    ephUpdInd = 4;
+  }
+  else if (_samplRtcmEphCorr ==  30.0) {
+    ephUpdInd = 5;
+  }
+  else if (_samplRtcmEphCorr ==  60.0) {
+    ephUpdInd = 6;
+  }
+  else if (_samplRtcmEphCorr == 120.0) {
+    ephUpdInd = 7;
+  }
+  else if (_samplRtcmEphCorr == 240.0) {
+    ephUpdInd = 8;
+  }
+  else if (_samplRtcmEphCorr == 300.0) {
+    ephUpdInd = 9;
+  }
+  else if (_samplRtcmEphCorr == 600.0) {
+    ephUpdInd = 10;
+  }
+  else if (_samplRtcmEphCorr == 900.0) {
+    ephUpdInd = 11;
+  }
 
-  co.UpdateInterval   = clkUpdInterval;
-  bias.UpdateInterval = clkUpdInterval;
+  co.UpdateInterval   = clkUpdInd;
+  bias.UpdateInterval = clkUpdInd;
 
   for (int ii = 1; ii < lines.size(); ii++) {
  
@@ -408,9 +435,9 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     if (co.NumberOfGPSSat > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
-        co.UpdateInterval = ephUpdInterval;
+        co.UpdateInterval = ephUpdInd;
         int len1 = MakeClockOrbit(&co, COTYPE_GPSORBIT, 1, obuffer, sizeof(obuffer));
-        co.UpdateInterval = clkUpdInterval;
+        co.UpdateInterval = clkUpdInd;
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
@@ -424,9 +451,9 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     if (co.NumberOfGLONASSSat > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
-        co.UpdateInterval = ephUpdInterval;
+        co.UpdateInterval = ephUpdInd;
         int len1 = MakeClockOrbit(&co, COTYPE_GLONASSORBIT, 1, obuffer, sizeof(obuffer));
-        co.UpdateInterval = clkUpdInterval;
+        co.UpdateInterval = clkUpdInd;
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
