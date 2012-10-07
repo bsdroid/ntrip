@@ -260,6 +260,14 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   bias.GPSEpochTime     = co.GPSEpochTime;
   bias.GLONASSEpochTime = co.GLONASSEpochTime;
   
+  // Default Update Interval
+  // -----------------------
+  int clkUpdInterval = 5;
+  int ephUpdInterval = (_samplRtcmEphCorr != 0.0 ? int(_samplRtcmEphCorr) : 5);
+
+  co.UpdateInterval   = clkUpdInterval;
+  bias.UpdateInterval = clkUpdInterval;
+
   for (int ii = 1; ii < lines.size(); ii++) {
  
     QString      prn;
@@ -400,7 +408,9 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     if (co.NumberOfGPSSat > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
+        co.UpdateInterval = ephUpdInterval;
         int len1 = MakeClockOrbit(&co, COTYPE_GPSORBIT, 1, obuffer, sizeof(obuffer));
+        co.UpdateInterval = clkUpdInterval;
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
@@ -414,7 +424,9 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     if (co.NumberOfGLONASSSat > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
+        co.UpdateInterval = ephUpdInterval;
         int len1 = MakeClockOrbit(&co, COTYPE_GLONASSORBIT, 1, obuffer, sizeof(obuffer));
+        co.UpdateInterval = clkUpdInterval;
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
