@@ -353,7 +353,7 @@ void bncRinex::writeHeader(const QByteArray& format,
     _header._version = 3.01;    
   }
   else {
-    _header._version = 2.12;
+    _header._version = 2.11;
   }
 
   // A Few Additional Comments
