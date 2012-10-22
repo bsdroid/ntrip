@@ -62,8 +62,8 @@
 #include "bncsettings.h"
 #include "latencychecker.h"
 #include "bncpppclient.h"
-#ifdef PPP_DLL_INTERFACE
-#include "dllinterface.h"
+#ifdef RTROVER_INTERFACE
+#include "RTRover/bncrtrover.h"
 #endif
 #include "upload/bncrtnetdecoder.h"
 #include "RTCM/RTCM2Decoder.h"
@@ -132,8 +132,8 @@ void bncGetThread::initialize() {
   _query         = 0;
   _nextSleep     = 0;
   _PPPclient     = 0;
-#ifdef PPP_DLL_INTERFACE
-  _dllInterface  = 0;
+#ifdef RTROVER_INTERFACE
+  _bncRtrover    = 0;
 #endif
   _miscMount     = settings.value("miscMount").toString();
   _decoder   = 0;
@@ -344,8 +344,8 @@ t_irc bncGetThread::initDecoder() {
             this, SIGNAL(newPosition(bncTime, double, double, double)));
     connect(_PPPclient, SIGNAL(newNMEAstr(QByteArray)), 
             this,       SIGNAL(newNMEAstr(QByteArray)));
-#ifdef PPP_DLL_INTERFACE
-    _dllInterface = new t_dllInterface();
+#ifdef RTROVER_INTERFACE
+    _bncRtrover = new t_bncRtrover();
 #endif
   }
 #endif
@@ -378,8 +378,8 @@ bncGetThread::~bncGetThread() {
     _query->deleteLater();
   }
   delete _PPPclient;
-#ifdef PPP_DLL_INTERFACE
-    delete _dllInterface;
+#ifdef RTROVER_INTERFACE
+    delete _bncRtrover;
 #endif
   if (_rawFile) {
     QMapIterator<QString, GPSDecoder*> it(_decodersRaw);
@@ -562,8 +562,8 @@ void bncGetThread::run() {
 #ifndef MLS_SOFTWARE
         if (_PPPclient && _staID == _PPPclient->staID()) {
           _PPPclient->putNewObs(obs);
-#ifdef PPP_DLL_INTERFACE
-          _dllInterface->putNewObs(obs);
+#ifdef RTROVER_INTERFACE
+          _bncRtrover->putNewObs(obs);
 #endif
         }
 #endif

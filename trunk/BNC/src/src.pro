@@ -127,3 +127,14 @@ exists(rinex/bncpostprocess.h) {
              rinex/dopplot.cpp
 }
 
+# Link to a 3rd-part library (test)
+# ---------------------------------
+# use_RTRover = true
+
+equals(use_RTRover, true) {
+  DEFINES += RTROVER_INTERFACE
+  HEADERS += RTRover/bncrtrover.h
+  SOURCES += RTRover/bncrtrover.cpp
+  LIBS    += -L RTRover -l RTRover
+}  
+
