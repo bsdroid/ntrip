@@ -1,17 +1,17 @@
-#ifndef DLLINTERFACE_H
-#define DLLINTERFACE_H
+#ifndef BNCRTROVER_H
+#define BNCRTROVER_H
 
 #include <vector>
 
 #include "RTCM/GPSDecoder.h"
 #include "bncephuser.h"
 
-class t_dllInterface : QObject {
+class t_bncRtrover : QObject {
  Q_OBJECT
 
  public:
-  t_dllInterface();
-  ~t_dllInterface();
+  t_bncRtrover();
+  ~t_bncRtrover();
   void putNewObs(const t_obs& pp);
 
  public slots:
