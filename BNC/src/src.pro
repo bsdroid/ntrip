@@ -135,6 +135,6 @@ equals(use_RTRover, true) {
   DEFINES += RTROVER_INTERFACE
   HEADERS += RTRover/bncrtrover.h
   SOURCES += RTRover/bncrtrover.cpp
-  LIBS    += -L RTRover -l RTRover
+  LIBS    += -LRTRover -lRTRover
 }  
 
