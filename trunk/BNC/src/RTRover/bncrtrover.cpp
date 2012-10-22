@@ -23,6 +23,8 @@ t_bncRtrover::t_bncRtrover() {
 
   // Define Input Options
   // --------------------
+  rtrover_opt opt;
+  rtrover_setOptions(&opt);
 
   // Connect to BNC Signals
   // ----------------------
@@ -54,6 +56,41 @@ t_bncRtrover::~t_bncRtrover() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bncRtrover::slotNewEphGPS(gpsephemeris gpseph) {
   QMutexLocker locker(&_mutex);
+
+  bncTime toc(gpseph.GPSweek, gpseph.TOC);
+  bncTime toe(gpseph.GPSweek, gpseph.TOE);
+
+  rtrover_ephGPS eph;
+  eph._satellite._system = 'G';
+  eph._satellite._number = gpseph.satellite;
+  eph._TOC._mjd          = toc.mjd();
+  eph._TOC._sec          = toc.daysec();
+  eph._TOE._mjd          = toe.mjd();
+  eph._TOE._sec          = toe.daysec();
+  eph._IODE              = gpseph.IODE;
+  eph._IODC              = gpseph.IODC;
+  eph._clock_bias        = gpseph.clock_bias;
+  eph._clock_drift       = gpseph.clock_drift;
+  eph._clock_driftrate   = gpseph.clock_driftrate;
+  eph._Crs               = gpseph.Crs;
+  eph._Delta_n           = gpseph.Delta_n;
+  eph._M0                = gpseph.M0;
+  eph._Cuc               = gpseph.Cuc;
+  eph._e                 = gpseph.e;
+  eph._Cus               = gpseph.Cus;
+  eph._sqrt_A            = gpseph.sqrt_A;
+  eph._Cic               = gpseph.Cic;
+  eph._OMEGA0            = gpseph.OMEGA0;
+  eph._Cis               = gpseph.Cis;
+  eph._i0                = gpseph.i0;
+  eph._Crc               = gpseph.Crc;
+  eph._omega             = gpseph.omega;
+  eph._OMEGADOT          = gpseph.OMEGADOT;
+  eph._IDOT              = gpseph.IDOT;
+  eph._TGD               = gpseph.TGD;
+  eph._health            = gpseph.SVhealth;
+
+  rtrover_putGPSEphemeris(&eph);
 }
 
 // 
@@ -70,6 +107,10 @@ void t_bncRtrover::slotNewEphGlonass(glonassephemeris gloeph) {
   int towGPS = gloeph.GPSTOW; 
   updatetime(&wwGPS, &towGPS, gloeph.tb*1000, 0);  // Moscow -> GPS
   bncTime tGPS(wwGPS,towGPS);
+
+  rtrover_ephGlo eph;
+
+  rtrover_putGloEphemeris(&eph);
 }
   
 // 
