@@ -109,6 +109,25 @@ void t_bncRtrover::slotNewEphGlonass(glonassephemeris gloeph) {
   bncTime tGPS(wwGPS,towGPS);
 
   rtrover_ephGlo eph;
+  eph._satellite._system  = 'R';
+  eph._satellite._number  = gloeph.almanac_number;
+  eph._timeUTC._mjd       = tUTC.mjd();
+  eph._timeUTC._sec       = tUTC.daysec();
+  eph._gps_utc            = int(tGPS-tUTC);
+  eph._E                  = gloeph.E;
+  eph._tau                = gloeph.tau;
+  eph._gamma              = gloeph.gamma;
+  eph._x_pos              = gloeph.x_pos;
+  eph._x_velocity         = gloeph.x_velocity;
+  eph._x_acceleration     = gloeph.x_acceleration;
+  eph._y_pos              = gloeph.y_pos;
+  eph._y_velocity         = gloeph.y_velocity;
+  eph._y_acceleration     = gloeph.y_acceleration;
+  eph._z_pos              = gloeph.z_pos;
+  eph._z_velocity         = gloeph.z_velocity;
+  eph._z_acceleration     = gloeph.z_acceleration;
+  eph._health             = 0; // TODO ?
+  eph._frequency_number   = gloeph.frequency_number;
 
   rtrover_putGloEphemeris(&eph);
 }
