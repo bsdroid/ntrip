@@ -55,6 +55,10 @@ void t_bncRtrover::run() {
 
   connect(((bncApp*)qApp), SIGNAL(newEphGalileo(galileoephemeris)),
           this, SLOT(slotNewEphGalileo(galileoephemeris)));
+ 
+  // Start processing loop
+  // ---------------------
+  QThread::exec();
 }
 
 // 
@@ -229,4 +233,12 @@ void t_bncRtrover::slotNewObs(QByteArray staID, bool firstObs, t_obs obsIn) {
 
   t_obs newObs(obsIn);
   _epoch.push_back(newObs);
+
+  int numSatRover = 1;
+  rtrover_satObs satObsRover[numSatRover];
+  for (int ii = 0; ii < numSatRover; ii++) {
+ 
+  }
+  rtrover_output output;
+  rtrover_processEpoch(numSatRover, satObsRover, 0, 0, &output);
 }
