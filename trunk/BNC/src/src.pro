@@ -136,5 +136,6 @@ equals(use_RTRover, true) {
   HEADERS += RTRover/bncrtrover.h
   SOURCES += RTRover/bncrtrover.cpp
   LIBS    += -LRTRover -lRTRover
+  unix:LIBS += -Wl,-rpath,$$PWD/RTRover
 }  
 
