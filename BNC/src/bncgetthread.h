@@ -40,9 +40,6 @@
 class QextSerialPort;
 class latencyChecker;
 class bncPPPclient;
-#ifdef RTROVER_INTERFACE
-class t_bncRtrover;
-#endif
 
 class bncGetThread : public QThread {
  Q_OBJECT
@@ -127,9 +124,6 @@ class bncGetThread : public QThread {
    bncPPPclient*              _PPPclient;
    bool                       _rawOutput;
    QMap<QString, long>        _prnLastEpo;
-#ifdef RTROVER_INTERFACE
-   t_bncRtrover*              _bncRtrover;
-#endif
    QMap<char, QVector<QString> > _rnxTypes;
 };
 

@@ -32,6 +32,9 @@
 #include "RTCM/GPSDecoder.h"
 
 class bncGetThread;
+#ifdef RTROVER_INTERFACE
+ class t_bncRtrover;
+#endif
 
 class bncCaster : public QObject {
  Q_OBJECT
@@ -80,6 +83,9 @@ class bncCaster : public QObject {
    long                     _waitTime;
    QMutex                   _mutex;
    int                      _confInterval;
+#ifdef RTROVER_INTERFACE
+   t_bncRtrover*            _bncRtrover;
+#endif
 };
 
 #endif

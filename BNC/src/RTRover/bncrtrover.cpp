@@ -13,8 +13,24 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_bncRtrover::t_bncRtrover() {
+t_bncRtrover::t_bncRtrover() : QThread(0) {
 
+}
+
+// Destructor
+////////////////////////////////////////////////////////////////////////////
+t_bncRtrover::~t_bncRtrover() {
+  QMapIterator<QString, t_corr*> ic(_corr);
+  while (ic.hasNext()) {
+    ic.next();
+    delete ic.value();
+  }
+  rtrover_destroy();
+}
+
+// Run (virtual)
+////////////////////////////////////////////////////////////////////////////
+void t_bncRtrover::run() {
   bncSettings settings;
 
   // Processed Station, Corrections Source
@@ -39,17 +55,6 @@ t_bncRtrover::t_bncRtrover() {
 
   connect(((bncApp*)qApp), SIGNAL(newEphGalileo(galileoephemeris)),
           this, SLOT(slotNewEphGalileo(galileoephemeris)));
-}
-
-// Destructor
-////////////////////////////////////////////////////////////////////////////
-t_bncRtrover::~t_bncRtrover() {
-  QMapIterator<QString, t_corr*> ic(_corr);
-  while (ic.hasNext()) {
-    ic.next();
-    delete ic.value();
-  }
-  rtrover_destroy();
 }
 
 // 
@@ -200,7 +205,7 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void t_bncRtrover::putNewObs(const t_obs& obsIn) {
+void t_bncRtrover::slotNewObs(QByteArray staID, bool firstObs, t_obs obsIn) {
   QMutexLocker locker(&_mutex);
 
   bncTime obsTime(obsIn.GPSWeek, obsIn.GPSWeeks);
