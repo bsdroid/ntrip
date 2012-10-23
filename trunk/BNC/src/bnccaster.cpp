@@ -159,6 +159,10 @@ bncCaster::~bncCaster() {
   delete _nmeaServer;
   delete _nmeaSockets;
   delete _epochs;
+#ifdef RTROVER_INTERFACE
+  _bncRtrover->quit();
+  _bncRtrover->deleteLater();
+#endif
 }
 
 // New Observations
