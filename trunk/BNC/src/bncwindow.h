@@ -255,5 +255,19 @@ class bncWindow : public QMainWindow {
     bool _runningRealTime;
     bool _runningPostProcessingPPP;
     bool _runningPostProcessingReqc;
+
+#ifdef RTROVER_INTERFACE
+    QComboBox* _rtroverModeComboBox;
+    QLineEdit* _rtroverRoverMountLineEdit;
+    QLineEdit* _rtroverCorrMountLineEdit;
+    QLineEdit* _rtroverBaseMountLineEdit;
+    QLineEdit* _rtroverRoverRefCrdXLineEdit;
+    QLineEdit* _rtroverRoverRefCrdYLineEdit;
+    QLineEdit* _rtroverRoverRefCrdZLineEdit;
+    QLineEdit* _rtroverBaseRefCrdXLineEdit;
+    QLineEdit* _rtroverBaseRefCrdYLineEdit;
+    QLineEdit* _rtroverBaseCrdZLineEdit;
+    QLineEdit* _rtroverOutputLineEdit;
+#endif
 };
 #endif

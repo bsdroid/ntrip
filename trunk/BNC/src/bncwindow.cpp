@@ -1188,6 +1188,72 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   connect(_uploadEphHostLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
+#ifdef RTROVER_INTERFACE
+  QWidget* rtroverGroup = new QWidget();
+  _aogroup->addTab(rtroverGroup,tr("RTRover"));
+  QGridLayout* rtroverLayout = new QGridLayout();
+
+  _rtroverModeComboBox = new QComboBox();
+
+  _rtroverModeComboBox->setEditable(false);
+  _rtroverModeComboBox->addItems(QString(",PPP,SPP,RTK").split(","));
+  ik = _rtroverModeComboBox->findText(settings.value("rtroverMode").toString());
+  if (ik != -1) {
+    _rtroverModeComboBox->setCurrentIndex(ik);
+  }
+  _rtroverModeComboBox->setMinimumWidth(10*ww); 
+
+  _rtroverRoverMountLineEdit   = new QLineEdit(settings.value("rtroverRoverMount").toString());
+  _rtroverRoverMountLineEdit->setMaximumWidth(8*ww);
+  _rtroverCorrMountLineEdit    = new QLineEdit(settings.value("rtroverCorrMount").toString());
+  _rtroverCorrMountLineEdit->setMaximumWidth(8*ww);
+  _rtroverBaseMountLineEdit    = new QLineEdit(settings.value("rtroverBaseMount").toString());
+  _rtroverBaseMountLineEdit->setMaximumWidth(8*ww);
+  _rtroverRoverRefCrdXLineEdit = new QLineEdit(settings.value("rtroverRoverRefCrdX").toString());
+  _rtroverRoverRefCrdYLineEdit = new QLineEdit(settings.value("rtroverRoverRefCrdY").toString());
+  _rtroverRoverRefCrdZLineEdit = new QLineEdit(settings.value("rtroverRoverRefCrdZ").toString());
+  _rtroverBaseRefCrdXLineEdit  = new QLineEdit(settings.value("rtroverBaseRefCrdX").toString());
+  _rtroverBaseRefCrdYLineEdit  = new QLineEdit(settings.value("rtroverBaseRefCrdY").toString());
+  _rtroverBaseCrdZLineEdit     = new QLineEdit(settings.value("rtroverBaseRefCrdZ").toString());
+  _rtroverOutputLineEdit       = new QLineEdit(settings.value("rtroverOutput").toString());  
+
+  ir = 0;
+  rtroverLayout->addWidget(new QLabel("Real-Time Rover"), ir, 0, 1, 2, Qt::AlignLeft);
+  ++ir;
+  rtroverLayout->addWidget(new QLabel("Mode & mountpoints"),ir, 0, Qt::AlignLeft);
+  rtroverLayout->addWidget(_rtroverModeComboBox,            ir, 1, Qt::AlignRight);
+  rtroverLayout->addWidget(_rtroverRoverMountLineEdit,      ir, 3, Qt::AlignRight);
+  rtroverLayout->addWidget(new QLabel("Rover"),             ir, 4, Qt::AlignLeft);
+  rtroverLayout->addWidget(_rtroverCorrMountLineEdit,       ir, 5, Qt::AlignRight);
+  rtroverLayout->addWidget(new QLabel("Corr."),             ir, 6, Qt::AlignLeft);
+  rtroverLayout->addWidget(_rtroverBaseMountLineEdit,       ir, 7, Qt::AlignRight);
+  rtroverLayout->addWidget(new QLabel("Base"),              ir, 8, Qt::AlignLeft);
+  ++ir;
+  rtroverLayout->addWidget(new QLabel("Rover coordinates"), ir, 0, Qt::AlignLeft);
+  rtroverLayout->addWidget(_rtroverRoverRefCrdXLineEdit,    ir, 1, Qt::AlignRight);
+  rtroverLayout->addWidget(new QLabel("X     "),            ir, 2, Qt::AlignLeft);
+  rtroverLayout->addWidget(_rtroverRoverRefCrdYLineEdit,    ir, 3, Qt::AlignRight);
+  rtroverLayout->addWidget(new QLabel("Y"),                 ir, 4, Qt::AlignLeft);
+  rtroverLayout->addWidget(_rtroverRoverRefCrdZLineEdit,    ir, 5, Qt::AlignRight);
+  rtroverLayout->addWidget(new QLabel("Z"),                 ir, 6, Qt::AlignLeft);
+  ++ir;
+  rtroverLayout->addWidget(new QLabel("Base coordinates"),  ir, 0, Qt::AlignLeft);
+  rtroverLayout->addWidget(_rtroverBaseRefCrdXLineEdit,     ir, 1, Qt::AlignRight);
+  rtroverLayout->addWidget(new QLabel("X     "),            ir, 2, Qt::AlignLeft);
+  rtroverLayout->addWidget(_rtroverBaseRefCrdYLineEdit,     ir, 3, Qt::AlignRight);
+  rtroverLayout->addWidget(new QLabel("Y"),                 ir, 4, Qt::AlignLeft);
+  rtroverLayout->addWidget(_rtroverBaseCrdZLineEdit,        ir, 5, Qt::AlignRight);
+  rtroverLayout->addWidget(new QLabel("Z"),                 ir, 6, Qt::AlignLeft);
+  ++ir;
+  rtroverLayout->addWidget(new QLabel("Output"),            ir, 0, Qt::AlignLeft);
+  rtroverLayout->addWidget(_rtroverOutputLineEdit,          ir, 1, Qt::AlignRight);
+  ++ir;
+  rtroverLayout->addWidget(new QLabel(""), ir, 1);
+  rtroverLayout->setRowStretch(ir, 999);
+
+  rtroverGroup->setLayout(rtroverLayout);
+#endif
+
   // Main Layout
   // -----------
   QGridLayout* mLayout = new QGridLayout;
@@ -1781,6 +1847,21 @@ void bncWindow::saveOptions() {
   settings.setValue("uploadEphMountpoint",_uploadEphMountpointLineEdit->text());
   settings.setValue("uploadEphPassword",  _uploadEphPasswordLineEdit->text());
   settings.setValue("uploadEphSample",    _uploadEphSampleSpinBox->value());
+
+#ifdef RTROVER_INTERFACE
+  settings.setValue("rtroverMode",         _rtroverModeComboBox->currentText());
+  settings.setValue("rtroverRoverMount",   _rtroverRoverMountLineEdit->text());
+  settings.setValue("rtroverCorrMount",    _rtroverCorrMountLineEdit->text());
+  settings.setValue("rtroverBaseMount",    _rtroverBaseMountLineEdit->text());
+  settings.setValue("rtroverRoverRefCrdX", _rtroverRoverRefCrdXLineEdit->text());
+  settings.setValue("rtroverRoverRefCrdY", _rtroverRoverRefCrdYLineEdit->text());
+  settings.setValue("rtroverRoverRefCrdZ", _rtroverRoverRefCrdZLineEdit->text());
+  settings.setValue("rtroverBaseRefCrdX",  _rtroverBaseRefCrdXLineEdit->text());
+  settings.setValue("rtroverBaseRefCrdY",  _rtroverBaseRefCrdYLineEdit->text());
+  settings.setValue("rtroverBaseRefCrdZ",  _rtroverBaseCrdZLineEdit->text());
+  settings.setValue("rtroverOutput",       _rtroverOutputLineEdit->text());  
+#endif
+
   if (_caster) {
     _caster->readMountPoints();
   }
