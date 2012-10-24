@@ -39,6 +39,7 @@ void t_bncRtrover::run() {
   // Define Input Options
   // --------------------
   rtrover_opt opt;
+
   opt._roverName = strdup(_roverMount.data());
   opt._baseName  = strdup(_baseMount.data());
   opt._xyzAprRover[0] = settings.value("rtroverRoverRefCrdX").toDouble();
@@ -49,7 +50,11 @@ void t_bncRtrover::run() {
   opt._xyzAprBase[2]  = settings.value("rtroverBaseRefCrdZ").toDouble();
   opt._sigmaPhase = 0.002; // TODO
   opt._sigmaCode  = 2.0;   // TODO
+
   rtrover_setOptions(&opt);
+
+  free(opt._roverName);
+  free(opt._baseName);
 
   // Connect to BNC Signals
   // ----------------------
@@ -210,9 +215,12 @@ void t_bncRtrover::slotNewObs(QByteArray staID, bool /* firstObs */, t_obs obsIn
   for (int ii = 0; ii < numSatRover; ii++) {
  
   }
+
   rtrover_output output;
   rtrover_processEpoch(numSatRover, satObsRover, 0, 0, &output);
 
   _outputFile.write(output._log);
   _outputFile.flush();
+
+  rtrover_freeOutput(&output);
 }
