@@ -2,6 +2,7 @@
 #define BNCRTROVER_H
 
 #include <vector>
+#include <queue>
 
 #include "RTCM/GPSDecoder.h"
 #include "bncephuser.h"
@@ -22,10 +23,19 @@ class t_bncRtrover : public QThread {
   void slotNewObs(QByteArray staID, bool firstObs, t_obs obs);
 
  private:
-  QMutex                 _mutex;
-  QString                _pppCorrMount;
-  QMap<QString, t_corr*> _corr;
-  std::vector<t_obs>     _epoch; 
+  class t_epoData {
+   public:
+    bncTime            _time;
+    std::vector<t_obs> _obsRover; 
+    std::vector<t_obs> _obsBase; 
+  };
+  QMutex                _mutex;
+  QByteArray            _mode;
+  QFile                 _outputFile;
+  QByteArray            _roverMount;
+  QByteArray            _baseMount;
+  QByteArray            _corrMount;
+  std::queue<t_epoData> _epochs;
 };
 
 #endif

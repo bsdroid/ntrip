@@ -14,17 +14,11 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_bncRtrover::t_bncRtrover() : QThread(0) {
-
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_bncRtrover::~t_bncRtrover() {
-  QMapIterator<QString, t_corr*> ic(_corr);
-  while (ic.hasNext()) {
-    ic.next();
-    delete ic.value();
-  }
   rtrover_destroy();
 }
 
@@ -33,13 +27,28 @@ t_bncRtrover::~t_bncRtrover() {
 void t_bncRtrover::run() {
   bncSettings settings;
 
-  // Processed Station, Corrections Source
-  // -------------------------------------
-  _pppCorrMount = settings.value("pppCorrMount").toString();
+  // User Options
+  // ------------
+  _mode       = settings.value("rtroverMode").toByteArray();
+  _roverMount = settings.value("rtroverRoverMount").toByteArray();
+  _baseMount  = settings.value("rtroverBaseMount").toByteArray();
+  _corrMount  = settings.value("rtroverCorrMount").toByteArray();
+  _outputFile.setFileName(settings.value("rtroverOutput").toString());
+  _outputFile.open(QIODevice::WriteOnly | QIODevice::Text);
 
   // Define Input Options
   // --------------------
   rtrover_opt opt;
+  opt._roverName = strdup(_roverMount.data());
+  opt._baseName  = strdup(_baseMount.data());
+  opt._xyzAprRover[0] = settings.value("rtroverRoverRefCrdX").toDouble();
+  opt._xyzAprRover[1] = settings.value("rtroverRoverRefCrdY").toDouble();
+  opt._xyzAprRover[2] = settings.value("rtroverRoverRefCrdZ").toDouble();
+  opt._xyzAprBase[0]  = settings.value("rtroverBaseRefCrdX").toDouble();
+  opt._xyzAprBase[1]  = settings.value("rtroverBaseRefCrdY").toDouble();
+  opt._xyzAprBase[2]  = settings.value("rtroverBaseRefCrdZ").toDouble();
+  opt._sigmaPhase = 0.002; // TODO
+  opt._sigmaCode  = 2.0;   // TODO
   rtrover_setOptions(&opt);
 
   // Connect to BNC Signals
@@ -154,15 +163,13 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
 
   // Check the Mountpoint (source of corrections)
   // --------------------------------------------
-  if (!_pppCorrMount.isEmpty()) {
-    QMutableListIterator<QString> itm(corrList);
-    while (itm.hasNext()) {
-      QStringList hlp = itm.next().split(" ");
-      if (hlp.size() > 0) {
-        QString mountpoint = hlp[hlp.size()-1];
-        if (mountpoint != _pppCorrMount) {
-          itm.remove();     
-        }
+  QMutableListIterator<QString> itm(corrList);
+  while (itm.hasNext()) {
+    QStringList hlp = itm.next().split(" ");
+    if (hlp.size() > 0) {
+      QString mountpoint = hlp[hlp.size()-1];
+      if (mountpoint != _corrMount) {
+        itm.remove();     
       }
     }
   }
@@ -184,56 +191,20 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
     in >> messageType >> updateInterval >> GPSweek >> GPSweeks >> prn;
 
     if ( t_corr::relevantMessageType(messageType) ) {
-      t_corr* cc = 0;
-      if (_corr.contains(prn)) {
-        cc = _corr.value(prn); 
-      }
-      else {
-        cc = new t_corr();
-        _corr[prn] = cc;
-      }
-
-      cc->readLine(line);
-    }
-  }
-
-  QMapIterator<QString, t_corr*> ic(_corr);
-  while (ic.hasNext()) {
-    ic.next();
-    t_corr* cc = ic.value();
-    if (cc->ready()) {
-
     }
   }
 }
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void t_bncRtrover::slotNewObs(QByteArray staID, bool firstObs, t_obs obsIn) {
+void t_bncRtrover::slotNewObs(QByteArray staID, bool /* firstObs */, t_obs obsIn) {
   QMutexLocker locker(&_mutex);
 
-  bncTime obsTime(obsIn.GPSWeek, obsIn.GPSWeeks);
-
-  if (_epoch.size() != 0) {
-    bncTime epoTime(_epoch[0].GPSWeek, _epoch[0].GPSWeeks);
-    if (epoTime != obsTime) {
-      ////      const GPSS::gpcObs* allObs[_epoch.size()];
-      for (unsigned iObs = 0; iObs < _epoch.size(); iObs++) {
-        t_obs& obs = _epoch[iObs];
-
-      }
-
-//      for (unsigned iObs = 0; iObs < _epoch.size(); iObs++) {
-//        delete allObs[iObs];
-//      }
-
-      _epoch.clear();
-    }
+  if (staID != _roverMount && staID != _baseMount) {
+    return;
   }
 
-  t_obs newObs(obsIn);
-  _epoch.push_back(newObs);
-
+  bncTime obsTime(obsIn.GPSWeek, obsIn.GPSWeeks);
   int numSatRover = 1;
   rtrover_satObs satObsRover[numSatRover];
   for (int ii = 0; ii < numSatRover; ii++) {
@@ -241,4 +212,7 @@ void t_bncRtrover::slotNewObs(QByteArray staID, bool firstObs, t_obs obsIn) {
   }
   rtrover_output output;
   rtrover_processEpoch(numSatRover, satObsRover, 0, 0, &output);
+
+  _outputFile.write(output._log);
+  _outputFile.flush();
 }
