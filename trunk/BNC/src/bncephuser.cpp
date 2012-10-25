@@ -194,7 +194,6 @@ t_irc t_corr::readLine(const QString& line) {
 
   QTextStream in(line.toAscii());
 
-  int     messageType;
   in >> messageType;
 
   if (!relevantMessageType(messageType)) {
