@@ -166,37 +166,66 @@ void t_bncRtrover::slotNewEphGalileo(galileoephemeris /* galeph */) {
 void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
   QMutexLocker locker(&_mutex);
 
-  // Check the Mountpoint (source of corrections)
-  // --------------------------------------------
-  QMutableListIterator<QString> itm(corrList);
-  while (itm.hasNext()) {
-    QStringList hlp = itm.next().split(" ");
-    if (hlp.size() > 0) {
-      QString mountpoint = hlp[hlp.size()-1];
-      if (mountpoint != _corrMount) {
-        itm.remove();     
-      }
-    }
-  }
-
   if (corrList.size() == 0) {
     return;
   }
+
+  int numOrbCorr = 0;
+  int numClkCorr = 0;
+
+  rtrover_orbCorr orbCorr[corrList.size()];
+  rtrover_clkCorr clkCorr[corrList.size()];
 
   QListIterator<QString> it(corrList);
   while (it.hasNext()) {
     QString line = it.next();
 
-    QTextStream in(&line);
-    int     messageType;
-    int     updateInterval;
-    int     GPSweek;
-    double  GPSweeks;
-    QString prn;
-    in >> messageType >> updateInterval >> GPSweek >> GPSweeks >> prn;
-
-    if ( t_corr::relevantMessageType(messageType) ) {
+    // Check the Mountpoint
+    // --------------------
+    QStringList hlp = line.split(" ");
+    if (hlp.size() > 0) {
+      QString mountpoint = hlp[hlp.size()-1];
+      if (mountpoint != _corrMount) {
+        continue;
+      }
     }
+
+    t_corr corr;
+    if (corr.readLine(line) == success) {
+
+      if (corr.messageType == COTYPE_GPSCOMBINED     || 
+          corr.messageType == COTYPE_GLONASSCOMBINED ||
+          corr.messageType == COTYPE_GPSORBIT        ||
+          corr.messageType == COTYPE_GLONASSORBIT    ) {
+        ++numOrbCorr;
+        rtrover_orbCorr& orbC = orbCorr[numOrbCorr-1];
+        //  rtrover_satellite _satellite; ///< satellite 
+        //  unsigned short    _iod;       ///< issue of data
+        //  rtrover_time      _time;      ///< correction reference time
+        //  double*           _rao;       ///< radial, along-track, and out-of-plane correction components
+        
+      }
+
+      if (corr.messageType == COTYPE_GPSCOMBINED     || 
+          corr.messageType == COTYPE_GLONASSCOMBINED ||
+          corr.messageType == COTYPE_GPSCLOCK        ||
+          corr.messageType == COTYPE_GLONASSCLOCK    ) {
+        ++numClkCorr;
+        rtrover_clkCorr& clkC = clkCorr[numClkCorr-1];
+        //  rtrover_satellite _satellite; ///< satellite 
+        //  unsigned short    _iod;       ///< issue of data
+        //  rtrover_time      _time;      ///< correction reference time
+        //  double            _dClk;      ///< clock correction 
+  
+      }
+    }
+  }
+  
+  if (numOrbCorr > 0) {
+    rtrover_putOrbCorrections(numOrbCorr, orbCorr);
+  }
+  if (numClkCorr > 0) {
+    rtrover_putClkCorrections(numClkCorr, clkCorr);
   }
 }
 
