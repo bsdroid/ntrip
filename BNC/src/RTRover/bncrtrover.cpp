@@ -199,11 +199,16 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
           corr.messageType == COTYPE_GLONASSORBIT    ) {
         ++numOrbCorr;
         rtrover_orbCorr& orbC = orbCorr[numOrbCorr-1];
-        //  rtrover_satellite _satellite; ///< satellite 
-        //  unsigned short    _iod;       ///< issue of data
-        //  rtrover_time      _time;      ///< correction reference time
-        //  double*           _rao;       ///< radial, along-track, and out-of-plane correction components
-        
+        orbC._satellite._system = corr.prn.toAscii()[0];
+        orbC._satellite._number = corr.prn.mid(1).toInt();
+        orbC._iod               = corr.iod;
+        orbC._time._mjd         = corr.tRao.mjd();
+        orbC._time._sec         = corr.tRao.daysec();
+        for (int ii = 0; ii < 3; ii++) {
+          orbC._rao[ii]       = corr.rao[ii];
+          orbC._dotRao[ii]    = corr.dotRao[ii];
+          orbC._dotDotRao[ii] = corr.dotDotRao[ii];
+        }
       }
 
       if (corr.messageType == COTYPE_GPSCOMBINED     || 
@@ -212,11 +217,14 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
           corr.messageType == COTYPE_GLONASSCLOCK    ) {
         ++numClkCorr;
         rtrover_clkCorr& clkC = clkCorr[numClkCorr-1];
-        //  rtrover_satellite _satellite; ///< satellite 
-        //  unsigned short    _iod;       ///< issue of data
-        //  rtrover_time      _time;      ///< correction reference time
-        //  double            _dClk;      ///< clock correction 
-  
+        clkC._satellite._system = corr.prn.toAscii()[0];
+        clkC._satellite._number = corr.prn.mid(1).toInt();
+        clkC._iod               = corr.iod;
+        clkC._time._mjd         = corr.tClk.mjd();
+        clkC._time._sec         = corr.tClk.daysec();
+        clkC._dClk              = corr.dClk;
+        clkC._dotDClk           = corr.dotDClk;
+        clkC._dotDotDClk        = corr.dotDotDClk;
       }
     }
   }
