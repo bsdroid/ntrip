@@ -382,12 +382,22 @@ void t_bncRtrover::slotNewObs(QByteArray staID, bool /* firstObs */, t_obs obsIn
   // Process single epoch
   // --------------------
   rtrover_output output;
-  rtrover_processEpoch(numSatRover, satObsRover, 0, 0, &output);
+  rtrover_processEpoch(numSatRover, satObsRover, numSatBase, satObsBase, &output);
 
-  // Write and free output
+  // Write output
   // ---------------------
   _outputFile.write(output._log);
   _outputFile.flush();
 
+  // Free memory
+  // -----------
   rtrover_freeOutput(&output);
+  for (int ii = 0; ii < numSatRover; ii++) {
+    rtrover_satObs& satObs = satObsRover[ii];
+    delete [] satObs._obs;
+  }
+  for (int ii = 0; ii < numSatBase; ii++) {
+    rtrover_satObs& satObs = satObsBase[ii];
+    delete [] satObs._obs;
+  }
 }
