@@ -243,10 +243,32 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
 void copyObs(const t_obs& obsBnc, rtrover_satObs& satObs) {
   satObs._satellite._system = obsBnc.satSys;
   satObs._satellite._number = obsBnc.satNum;
-  cout << obsBnc.satSys << setw(2) << obsBnc.satNum << endl;
+  QMap<QByteArray, rtrover_obs> allObs;
   for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; ++iEntry) {
-    cout << iEntry << " " << obsBnc._measdata[iEntry] << " "
-         << obsBnc.rnxStr(iEntry).toAscii().data() << endl;
+    if (obsBnc._measdata[iEntry] != 0.0) {
+      QByteArray rnxStr = obsBnc.rnxStr(iEntry).toAscii();
+      if (rnxStr.length() == 3) {
+        QByteArray codeType = rnxStr.mid(1);
+        if (!allObs.contains(codeType)) {
+          allObs[codeType]._code    = 0.0;
+          allObs[codeType]._phase   = 0.0;
+          allObs[codeType]._doppler = 0.0;
+          allObs[codeType]._snr     = 0.0;
+        }
+        if      (rnxStr[0] == 'C') {
+          allObs[codeType]._code    = obsBnc._measdata[iEntry];
+        }
+        else if (rnxStr[0] == 'L') {
+          allObs[codeType]._phase   = obsBnc._measdata[iEntry];
+        }
+        else if (rnxStr[0] == 'D') {
+          allObs[codeType]._doppler = obsBnc._measdata[iEntry];
+        }
+        else if (rnxStr[0] == 'S') {
+          allObs[codeType]._snr     = obsBnc._measdata[iEntry];
+        }
+      }
+    }
   }
 }
 
