@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <iomanip>
 #include <string.h>
 
 #include "bncrtrover.h"
@@ -240,7 +241,13 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
 // Auxiliary function - copy observation data
 ////////////////////////////////////////////////////////////////////////////
 void copyObs(const t_obs& obsBnc, rtrover_satObs& satObs) {
-
+  satObs._satellite._system = obsBnc.satSys;
+  satObs._satellite._number = obsBnc.satNum;
+  cout << obsBnc.satSys << setw(2) << obsBnc.satNum << endl;
+  for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; ++iEntry) {
+    cout << iEntry << " " << obsBnc._measdata[iEntry] << " "
+         << obsBnc.rnxStr(iEntry).toAscii().data() << endl;
+  }
 }
 
 //
@@ -290,6 +297,7 @@ void t_bncRtrover::slotNewObs(QByteArray staID, bool /* firstObs */, t_obs obsIn
   if (_epochs.size() > 1) {
     dt = _epochs.back()->_time - _epochs.front()->_time;
   }
+  cout << "dt = " << dt << endl;
   if (dt < WAITTIME) {
     return;
   }
@@ -300,6 +308,7 @@ void t_bncRtrover::slotNewObs(QByteArray staID, bool /* firstObs */, t_obs obsIn
   _epochs.erase(_epochs.begin());
 
   int numSatRover = frontEpoData->_obsRover.size();
+  cout << "numSatRover = " << numSatRover << endl;
   rtrover_satObs satObsRover[numSatRover];
   for (int ii = 0; ii < numSatRover; ii++) {
     const t_obs& obsBnc = frontEpoData->_obsRover[ii];
@@ -309,6 +318,7 @@ void t_bncRtrover::slotNewObs(QByteArray staID, bool /* firstObs */, t_obs obsIn
 
   int numSatBase = frontEpoData->_obsBase.size();
   rtrover_satObs satObsBase[numSatBase];
+  cout << "numSatBase = " << numSatBase << endl;
   for (int ii = 0; ii < numSatBase; ii++) {
     const t_obs& obsBnc = frontEpoData->_obsBase[ii];
     rtrover_satObs& satObs = satObsBase[ii];
