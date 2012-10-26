@@ -131,7 +131,7 @@ int t_obs::iEntry(QString rnxStr, float rnxVers) const {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-QString t_obs::rnxStr(int iEntry) {
+QString t_obs::rnxStr(int iEntry) const {
   QString str(3,' ');
   switch(iEntry & 3) {
     case GNSSENTRY_CODE:    str[0] = 'C'; break;
