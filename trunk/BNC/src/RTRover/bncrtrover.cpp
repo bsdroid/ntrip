@@ -250,10 +250,12 @@ void copyObs(const t_obs& obsBnc, rtrover_satObs& satObs) {
       if (rnxStr.length() == 3) {
         QByteArray codeType = rnxStr.mid(1);
         if (!allObs.contains(codeType)) {
-          allObs[codeType]._code    = 0.0;
-          allObs[codeType]._phase   = 0.0;
-          allObs[codeType]._doppler = 0.0;
-          allObs[codeType]._snr     = 0.0;
+          allObs[codeType]._rnxType[0] = codeType[0];
+          allObs[codeType]._rnxType[1] = codeType[1];
+          allObs[codeType]._code       = 0.0;
+          allObs[codeType]._phase      = 0.0;
+          allObs[codeType]._doppler    = 0.0;
+          allObs[codeType]._snr        = 0.0;
         }
         if      (rnxStr[0] == 'C') {
           allObs[codeType]._code    = obsBnc._measdata[iEntry];
