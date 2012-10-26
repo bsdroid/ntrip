@@ -241,8 +241,12 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
 // Auxiliary function - copy observation data
 ////////////////////////////////////////////////////////////////////////////
 void copyObs(const t_obs& obsBnc, rtrover_satObs& satObs) {
+  bncTime obsTime(obsBnc.GPSWeek, obsBnc.GPSWeeks);
   satObs._satellite._system = obsBnc.satSys;
   satObs._satellite._number = obsBnc.satNum;
+  satObs._time._mjd  = obsTime.mjd();
+  satObs._time._sec  = obsTime.daysec();
+  satObs._slotNumber = obsBnc.slotNum;
   QMap<QByteArray, rtrover_obs> allObs;
   for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; ++iEntry) {
     if (obsBnc._measdata[iEntry] != 0.0) {
@@ -250,12 +254,14 @@ void copyObs(const t_obs& obsBnc, rtrover_satObs& satObs) {
       if (rnxStr.length() == 3) {
         QByteArray codeType = rnxStr.mid(1);
         if (!allObs.contains(codeType)) {
-          allObs[codeType]._rnxType[0] = codeType[0];
-          allObs[codeType]._rnxType[1] = codeType[1];
-          allObs[codeType]._code       = 0.0;
-          allObs[codeType]._phase      = 0.0;
-          allObs[codeType]._doppler    = 0.0;
-          allObs[codeType]._snr        = 0.0;
+          allObs[codeType]._rnxType[0]  = codeType[0];
+          allObs[codeType]._rnxType[1]  = codeType[1];
+          allObs[codeType]._code        = 0.0;
+          allObs[codeType]._phase       = 0.0;
+          allObs[codeType]._doppler     = 0.0;
+          allObs[codeType]._snr         = 0.0;
+          allObs[codeType]._slip        = false;
+          allObs[codeType]._slipCounter = -1;
         }
         if      (rnxStr[0] == 'C') {
           allObs[codeType]._code    = obsBnc._measdata[iEntry];
@@ -321,7 +327,6 @@ void t_bncRtrover::slotNewObs(QByteArray staID, bool /* firstObs */, t_obs obsIn
   if (_epochs.size() > 1) {
     dt = _epochs.back()->_time - _epochs.front()->_time;
   }
-  cout << "dt = " << dt << endl;
   if (dt < WAITTIME) {
     return;
   }
@@ -332,7 +337,6 @@ void t_bncRtrover::slotNewObs(QByteArray staID, bool /* firstObs */, t_obs obsIn
   _epochs.erase(_epochs.begin());
 
   int numSatRover = frontEpoData->_obsRover.size();
-  cout << "numSatRover = " << numSatRover << endl;
   rtrover_satObs satObsRover[numSatRover];
   for (int ii = 0; ii < numSatRover; ii++) {
     const t_obs& obsBnc = frontEpoData->_obsRover[ii];
@@ -342,7 +346,6 @@ void t_bncRtrover::slotNewObs(QByteArray staID, bool /* firstObs */, t_obs obsIn
 
   int numSatBase = frontEpoData->_obsBase.size();
   rtrover_satObs satObsBase[numSatBase];
-  cout << "numSatBase = " << numSatBase << endl;
   for (int ii = 0; ii < numSatBase; ii++) {
     const t_obs& obsBnc = frontEpoData->_obsBase[ii];
     rtrover_satObs& satObs = satObsBase[ii];
