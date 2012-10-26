@@ -240,24 +240,29 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
 // Auxiliary function - copy observation data
 ////////////////////////////////////////////////////////////////////////////
 void copyObs(const t_obs& obsBnc, rtrover_satObs& satObs) {
+
   bncTime obsTime(obsBnc.GPSWeek, obsBnc.GPSWeeks);
   satObs._satellite._system = obsBnc.satSys;
   satObs._satellite._number = obsBnc.satNum;
   satObs._time._mjd  = obsTime.mjd();
   satObs._time._sec  = obsTime.daysec();
   satObs._slotNumber = obsBnc.slotNum;
+
   QMap<QByteArray, rtrover_obs> allObs;
   for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; ++iEntry) {
     if (obsBnc._measdata[iEntry] != 0.0) {
       QByteArray rnxStr = obsBnc.rnxStr(iEntry).toAscii();
       if (rnxStr.length() == 3) {
         QByteArray codeType = rnxStr.mid(1);
-        if (!allObs.contains(codeType)) {
-          rtrover_initObs(&allObs[codeType]);
-          allObs[codeType]._rnxType[0]  = codeType[0];
-          allObs[codeType]._rnxType[1]  = codeType[1];
-        }
+
+        bool existed = allObs.contains(codeType);
         rtrover_obs& currObs = allObs[codeType];
+        if (!existed) {
+          rtrover_initObs(&currObs);
+          currObs._rnxType[0] = codeType[0];
+          currObs._rnxType[1] = codeType[1];
+        }
+
         if      (rnxStr[0] == 'C') {
           currObs._code         = obsBnc._measdata[iEntry];
           currObs._codeValid    = true;
@@ -288,6 +293,15 @@ void copyObs(const t_obs& obsBnc, rtrover_satObs& satObs) {
         }
       }
     }
+  }
+  satObs._numObs = allObs.size();
+  satObs._obs    = new rtrover_obs[satObs._numObs];
+  int iObs = 1;
+  QMapIterator<QByteArray, rtrover_obs> it(allObs);
+  while (it.hasNext()) {
+    it.next();
+    ++iObs;
+    satObs._obs[iObs] = it.value();
   }
 }
 
