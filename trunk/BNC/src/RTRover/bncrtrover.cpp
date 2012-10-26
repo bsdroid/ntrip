@@ -40,6 +40,7 @@ void t_bncRtrover::run() {
   // Define Input Options
   // --------------------
   rtrover_opt opt;
+  rtrover_initOptions(&opt);
 
   opt._roverName = strdup(_roverMount.data());
   opt._baseName  = strdup(_baseMount.data());
@@ -49,8 +50,6 @@ void t_bncRtrover::run() {
   opt._xyzAprBase[0]  = settings.value("rtroverBaseRefCrdX").toDouble();
   opt._xyzAprBase[1]  = settings.value("rtroverBaseRefCrdY").toDouble();
   opt._xyzAprBase[2]  = settings.value("rtroverBaseRefCrdZ").toDouble();
-  opt._sigmaPhase = 0.002; // TODO
-  opt._sigmaCode  = 2.0;   // TODO
 
   rtrover_setOptions(&opt);
 
@@ -254,14 +253,9 @@ void copyObs(const t_obs& obsBnc, rtrover_satObs& satObs) {
       if (rnxStr.length() == 3) {
         QByteArray codeType = rnxStr.mid(1);
         if (!allObs.contains(codeType)) {
+          rtrover_initObs(&allObs[codeType]);
           allObs[codeType]._rnxType[0]  = codeType[0];
           allObs[codeType]._rnxType[1]  = codeType[1];
-          allObs[codeType]._code        = 0.0;
-          allObs[codeType]._phase       = 0.0;
-          allObs[codeType]._doppler     = 0.0;
-          allObs[codeType]._snr         = 0.0;
-          allObs[codeType]._slip        = false;
-          allObs[codeType]._slipCounter = -1;
         }
         if      (rnxStr[0] == 'C') {
           allObs[codeType]._code    = obsBnc._measdata[iEntry];
