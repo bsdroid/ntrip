@@ -296,7 +296,7 @@ void copyObs(const t_obs& obsBnc, rtrover_satObs& satObs) {
   }
   satObs._numObs = allObs.size();
   satObs._obs    = new rtrover_obs[satObs._numObs];
-  int iObs = 1;
+  int iObs = -1;
   QMapIterator<QByteArray, rtrover_obs> it(allObs);
   while (it.hasNext()) {
     it.next();
