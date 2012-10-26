@@ -257,17 +257,34 @@ void copyObs(const t_obs& obsBnc, rtrover_satObs& satObs) {
           allObs[codeType]._rnxType[0]  = codeType[0];
           allObs[codeType]._rnxType[1]  = codeType[1];
         }
+        rtrover_obs& currObs = allObs[codeType];
         if      (rnxStr[0] == 'C') {
-          allObs[codeType]._code    = obsBnc._measdata[iEntry];
+          currObs._code         = obsBnc._measdata[iEntry];
+          currObs._codeValid    = true;
         }
         else if (rnxStr[0] == 'L') {
-          allObs[codeType]._phase   = obsBnc._measdata[iEntry];
+          currObs._phase        = obsBnc._measdata[iEntry];
+          currObs._phaseValid   = true;
+          if      (codeType[0] == '1') {
+            currObs._slip        = obsBnc.slipL1;
+            currObs._slipCounter = obsBnc.slip_cnt_L1;
+          }
+          else if (codeType[0] == '2') {
+            currObs._slip        = obsBnc.slipL2;
+            currObs._slipCounter = obsBnc.slip_cnt_L2;
+          }
+          else if (codeType[0] == '5') {
+            currObs._slip        = obsBnc.slipL5;
+            currObs._slipCounter = obsBnc.slip_cnt_L5;
+          }
         }
         else if (rnxStr[0] == 'D') {
-          allObs[codeType]._doppler = obsBnc._measdata[iEntry];
+          currObs._doppler      = obsBnc._measdata[iEntry];
+          currObs._dopplerValid = true;
         }
         else if (rnxStr[0] == 'S') {
-          allObs[codeType]._snr     = obsBnc._measdata[iEntry];
+          currObs._snr          = obsBnc._measdata[iEntry];
+          currObs._snrValid     = true;
         }
       }
     }
