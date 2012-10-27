@@ -267,3 +267,85 @@ t_irc t_corr::readLine(const QString& line) {
 
   return success;
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+t_irc t_bias::readLine(const QString& line) {
+
+  if (line[0] == '!') {
+    return failure;
+  }
+
+  QTextStream in(line.toAscii());
+
+  int messageType;
+  in >> messageType;
+
+  if (messageType != BTYPE_GPS && messageType != BTYPE_GLONASS) {
+    return failure;
+  }
+
+  int     updateInterval;
+  int     GPSweek;
+  double  GPSweeks;
+  int     numBiases;
+  in >> updateInterval >> GPSweek >> GPSweeks >> _prn >> numBiases;
+  
+  _time.set(GPSweek, GPSweeks);
+
+  for (int ii = 0; ii < numBiases; ii++) {
+    int    bType;
+    double bValue;
+    in >> bType >> bValue;
+    if      (bType == CODETYPEGPS_L1_CA) {
+      _value["1C"] = bValue;
+    }
+    else if (bType == CODETYPEGPS_L1_P) {
+      _value["1P"] = bValue;
+    }
+    else if (bType == CODETYPEGPS_L1_Z) {
+      _value["1W"] = bValue;
+    }
+    else if (bType == CODETYPEGPS_L2_CA) {
+      _value["2C"] = bValue;
+    }
+    else if (bType == CODETYPEGPS_SEMI_CODELESS) {
+      _value["2N"] = bValue;
+    }
+    else if (bType == CODETYPEGPS_L2_CM) {
+      _value["2M"] = bValue;
+    }
+    else if (bType == CODETYPEGPS_L2_CL) {
+      _value["2L"] = bValue;
+    }
+    else if (bType == CODETYPEGPS_L2_CML) {
+      _value["2X"] = bValue;
+    }
+    else if (bType == CODETYPEGPS_L2_P) {
+      _value["2P"] = bValue;
+    }
+    else if (bType == CODETYPEGPS_L2_Z) {
+      _value["2W"] = bValue;
+    }
+    else if (bType == CODETYPEGPS_L5_I) {
+      _value["5I"] = bValue;
+    }
+    else if (bType == CODETYPEGPS_L5_Q) {
+      _value["5Q"] = bValue;
+    }
+    else if (bType == CODETYPEGLONASS_L1_CA) {
+      _value["1C"] = bValue;
+    }
+    else if (bType == CODETYPEGLONASS_L1_P) {
+      _value["1P"] = bValue;
+    }
+    else if (bType == CODETYPEGLONASS_L2_CA) {
+      _value["2C"] = bValue;
+    }
+    else if (bType == CODETYPEGLONASS_L2_P) {
+      _value["2P"] = bValue;
+    }
+  }
+
+  return success;
+}

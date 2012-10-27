@@ -86,6 +86,24 @@ class t_corr {
   const t_eph* eph;
 };
 
+class t_bias {
+ public:
+  t_bias() {}
+  ~t_bias() {}
+  t_irc readLine(const QString& line);
+  double value(const QByteArray& rnxStr) const {
+    if (_value.contains(rnxStr)) {
+      return _value[rnxStr];
+    }
+    else {
+      return 0.0;
+    }
+  }
+  QString                  _prn;
+  bncTime                  _time;
+  QMap<QByteArray, double> _value;
+};
+
 class bncEphUser : public QObject {
  Q_OBJECT
 

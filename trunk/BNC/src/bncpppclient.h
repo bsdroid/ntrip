@@ -36,6 +36,14 @@ class t_satData {
  public:
   t_satData() {
     obsIndex = 0;
+    P1 = 0.0;
+    P2 = 0.0;
+    P5 = 0.0;
+    P3 = 0.0;
+    L1 = 0.0;
+    L2 = 0.0;
+    L5 = 0.0;
+    L3 = 0.0;
   }
   ~t_satData() {}
   bncTime      tt;
@@ -102,19 +110,6 @@ class t_epoData {
 
   bncTime                   tt;
   QMap<QString, t_satData*> satData;
-};
-
-class t_bias {
- public:
-  t_bias() {
-    p1 = 0.0;
-    p2 = 0.0;
-    c1 = 0.0;
-  }
-  bncTime tt;
-  double  p1;
-  double  p2;
-  double  c1;
 };
 
 class bncPPPclient : public bncEphUser {
