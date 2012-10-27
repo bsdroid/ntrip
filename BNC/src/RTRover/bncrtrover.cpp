@@ -238,7 +238,12 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
     if (bias.readLine(line) == success) {
       ++numBiases;
       rtrover_codeBiases& codeBiases = biases[numBiases-1];
-      codeBiases._biases = new rtrover_bias[bias._value.size()];
+      codeBiases._satellite._system = bias._prn.toAscii()[0];
+      codeBiases._satellite._number = bias._prn.mid(1).toInt();
+      codeBiases._time._mjd = bias._time.mjd();
+      codeBiases._time._sec = bias._time.daysec();
+      codeBiases._numBiases = bias._value.size();
+      codeBiases._biases = new rtrover_bias[codeBiases._numBiases];
       int iBias = -1;
       QMapIterator<QByteArray, double> it(bias._value);
       while (it.hasNext()) {
