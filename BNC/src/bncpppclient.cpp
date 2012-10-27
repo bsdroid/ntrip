@@ -161,25 +161,25 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   if      (obs.satSys == 'G' || obs.satSys == 'R') {
     const QByteArray preferedTypes("WPC");
     for (int ii = preferedTypes.length()-1; ii >= 0; ii--) {
-      double p1 = obs.measdata("C1" + preferedTypes[ii], 3.0);
+      double p1 = obs.measdata(QByteArray("C1") + preferedTypes[ii], 3.0);
       if (p1 != 0.0) {
         satData->P1 = p1;
         if (bb) {
-          satData->P1 += bb->value("1" + preferedTypes[ii]);
+          satData->P1 += bb->value(QByteArray("1") + preferedTypes[ii]);
         }
       } 
-      double p2 = obs.measdata("C2" + preferedTypes[ii], 3.0);
+      double p2 = obs.measdata(QByteArray("C2") + preferedTypes[ii], 3.0);
       if (p2 != 0.0) {
         satData->P2 = p2;
         if (bb) {
-          satData->P1 += bb->value("2" + preferedTypes[ii]);
+          satData->P1 += bb->value(QByteArray("2") + preferedTypes[ii]);
         }
       } 
-      double l1 = obs.measdata("L1" + preferedTypes[ii], 3.0);
+      double l1 = obs.measdata(QByteArray("L1") + preferedTypes[ii], 3.0);
       if (l1 != 0.0) {
         satData->L1 = l1;
       } 
-      double l2 = obs.measdata("L2" + preferedTypes[ii], 3.0);
+      double l2 = obs.measdata(QByteArray("L2") + preferedTypes[ii], 3.0);
       if (l2 != 0.0) {
         satData->L2 = l2;
       } 
