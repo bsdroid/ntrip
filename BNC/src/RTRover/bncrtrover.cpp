@@ -172,9 +172,11 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
 
   int numOrbCorr = 0;
   int numClkCorr = 0;
+  int numBiases  = 0;
 
-  rtrover_orbCorr orbCorr[corrList.size()];
-  rtrover_clkCorr clkCorr[corrList.size()];
+  rtrover_orbCorr    orbCorr[corrList.size()];
+  rtrover_clkCorr    clkCorr[corrList.size()];
+  rtrover_codeBiases biases[corrList.size()];
 
   QListIterator<QString> it(corrList);
   while (it.hasNext()) {
@@ -190,6 +192,8 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
       }
     }
 
+    // Orbit and clock corrections
+    // ---------------------------
     t_corr corr;
     if (corr.readLine(line) == success) {
 
@@ -227,13 +231,43 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
         clkC._dotDotDClk        = corr.dotDotDClk;
       }
     }
+
+    // Code Biases
+    // -----------
+    t_bias bias;
+    if (bias.readLine(line) == success) {
+      ++numBiases;
+      rtrover_codeBiases& codeBiases = biases[numBiases-1];
+      codeBiases._biases = new rtrover_bias[bias._value.size()];
+      int iBias = -1;
+      QMapIterator<QByteArray, double> it(bias._value);
+      while (it.hasNext()) {
+        it.next();
+        ++iBias;
+        rtrover_bias& singleBias = codeBiases._biases[iBias];
+        singleBias._rnxType[0] = it.key()[0];
+        singleBias._rnxType[1] = it.key()[1];
+        singleBias._value      = it.value();
+      }
+    }
   }
-  
+
+  // Pass Corrections and Biases to client library
+  // ---------------------------------------------
   if (numOrbCorr > 0) {
     rtrover_putOrbCorrections(numOrbCorr, orbCorr);
   }
   if (numClkCorr > 0) {
     rtrover_putClkCorrections(numClkCorr, clkCorr);
+  }
+  if (numBiases > 0) {
+    rtrover_putBiases(numBiases, biases);
+  }
+
+  // Clean the memory
+  // ----------------
+  for (int ii = 0; ii < numBiases; ii++) {
+    delete [] biases[ii]._biases;
   }
 }
 
