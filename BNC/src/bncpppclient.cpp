@@ -161,29 +161,48 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   if      (obs.satSys == 'G' || obs.satSys == 'R') {
     const QByteArray preferedTypes("WPC");
     for (int ii = preferedTypes.length()-1; ii >= 0; ii--) {
-      double p1 = obs.measdata(QByteArray("C1") + preferedTypes[ii], 3.0);
-      if (p1 != 0.0) {
-        satData->P1 = p1;
-        if (bb) {
-          satData->P1 += bb->value(QByteArray("1") + preferedTypes[ii]);
+      for (int iPhase = 0; iPhase <= 1; iPhase++) {
+        for (int iFreq = 1; iFreq <= 2; iFreq++) {
+
+          char rnxStr[3];
+          double* p_value = 0;
+          if      (iPhase == 0 && iFreq == 1) {
+            rnxStr[0] = 'C';
+            rnxStr[1] = '1';
+            p_value = &satData->P1;
+          }
+          else if (iPhase == 0 && iFreq == 2) {
+            rnxStr[0] = 'C';
+            rnxStr[1] = '2';
+            p_value = &satData->P2;
+          }
+          else if (iPhase == 1 && iFreq == 1) {
+            rnxStr[0] = 'L';
+            rnxStr[1] = '1';
+            p_value = &satData->L1;
+          }
+          else if (iPhase == 1 && iFreq == 2) {
+            rnxStr[0] = 'L';
+            rnxStr[1] = '2';
+            p_value = &satData->L2;
+          }
+
+          rnxStr[2] = preferedTypes[ii];
+
+          double measdata = obs.measdata(rnxStr, 3.0);
+          if (measdata != 0.0) {
+            *p_value = measdata;
+            if (rnxStr[0] == 'C' && bb) {
+              char biasStr[2];
+              biasStr[0] = rnxStr[1];
+              biasStr[1] = rnxStr[2];
+              *p_value += bb->value(biasStr);
+            }
+          }
         }
-      } 
-      double p2 = obs.measdata(QByteArray("C2") + preferedTypes[ii], 3.0);
-      if (p2 != 0.0) {
-        satData->P2 = p2;
-        if (bb) {
-          satData->P1 += bb->value(QByteArray("2") + preferedTypes[ii]);
-        }
-      } 
-      double l1 = obs.measdata(QByteArray("L1") + preferedTypes[ii], 3.0);
-      if (l1 != 0.0) {
-        satData->L1 = l1;
-      } 
-      double l2 = obs.measdata(QByteArray("L2") + preferedTypes[ii], 3.0);
-      if (l2 != 0.0) {
-        satData->L2 = l2;
-      } 
+      }
     }
+
     if (satData->P1 != 0.0 && satData->P2 != 0.0 && 
         satData->L1 != 0.0 && satData->L2 != 0.0 ) {
       double f1 = t_CST::f1(obs.satSys, obs.slotNum);
