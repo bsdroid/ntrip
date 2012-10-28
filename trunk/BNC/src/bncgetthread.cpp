@@ -329,7 +329,8 @@ t_irc bncGetThread::initDecoder() {
   // ----------------------
 #ifndef MLS_SOFTWARE
   bncSettings settings;
-  if (settings.value("pppMount").toString() == _staID) {
+  if (!settings.value("pppSPP").toString().isEmpty() && 
+      settings.value("pppMount").toString() == _staID) {
     _PPPclient = new bncPPPclient(_staID);
     bncApp* app = (bncApp*) qApp;
     app->_bncPPPclient = _PPPclient;
