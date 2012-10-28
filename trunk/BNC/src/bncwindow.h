@@ -267,6 +267,15 @@ class bncWindow : public QMainWindow {
     QLineEdit* _rtroverBaseRefCrdXLineEdit;
     QLineEdit* _rtroverBaseRefCrdYLineEdit;
     QLineEdit* _rtroverBaseCrdZLineEdit;
+    QLineEdit* _rtroverRoverDNLineEdit;
+    QLineEdit* _rtroverRoverDELineEdit;
+    QLineEdit* _rtroverRoverDULineEdit;
+    QLineEdit* _rtroverBaseDNLineEdit;
+    QLineEdit* _rtroverBaseDELineEdit;
+    QLineEdit* _rtroverBaseDULineEdit;
+    QLineEdit* _rtroverRoverAntennaLineEdit;
+    QLineEdit* _rtroverBaseAntennaLineEdit;
+    qtFileChooser* _rtroverAntexFileChooser;
     QLineEdit* _rtroverOutputLineEdit;
 #endif
 };
