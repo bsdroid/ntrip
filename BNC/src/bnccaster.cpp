@@ -134,8 +134,13 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
   _lastDumpSec  = 0; 
   _confInterval = -1;
 #ifdef RTROVER_INTERFACE
+  if (!settings.value("rtroverMode").toString().isEmpty()) {
     _bncRtrover = new t_bncRtrover();
     _bncRtrover->start();
+  }
+  else {
+    _bncRtrover = 0;
+  }
 #endif
 }
 
@@ -160,8 +165,10 @@ bncCaster::~bncCaster() {
   delete _nmeaSockets;
   delete _epochs;
 #ifdef RTROVER_INTERFACE
-  _bncRtrover->quit();
-  _bncRtrover->deleteLater();
+  if (_bncRtrover) {
+    _bncRtrover->quit();
+    _bncRtrover->deleteLater();
+  }
 #endif
 }
 
@@ -279,8 +286,10 @@ void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
           this,      SLOT(newObs(QByteArray, bool, t_obs)));
 
 #ifdef RTROVER_INTERFACE
-  connect(getThread, SIGNAL(newObs(QByteArray, bool, t_obs)),
-          _bncRtrover, SLOT(slotNewObs(QByteArray, bool, t_obs)));
+  if (_bncRtrover) {
+    connect(getThread, SIGNAL(newObs(QByteArray, bool, t_obs)),
+            _bncRtrover, SLOT(slotNewObs(QByteArray, bool, t_obs)));
+  }
 #endif
 
   connect(getThread, SIGNAL(getThreadFinished(QByteArray)), 
