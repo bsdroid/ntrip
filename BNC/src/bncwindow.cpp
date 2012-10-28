@@ -1196,7 +1196,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _rtroverModeComboBox = new QComboBox();
 
   _rtroverModeComboBox->setEditable(false);
-  _rtroverModeComboBox->addItems(QString(",PPP,SPP,RTK").split(","));
+  _rtroverModeComboBox->addItems(QString(",PPP_DF,SPP_DF,PPP_SF,SPP_SF,PPP_AR,RTK,PPP_FTTF").split(","));
   ik = _rtroverModeComboBox->findText(settings.value("rtroverMode").toString());
   if (ik != -1) {
     _rtroverModeComboBox->setCurrentIndex(ik);
@@ -1896,6 +1896,15 @@ void bncWindow::saveOptions() {
   settings.setValue("rtroverBaseRefCrdX",  _rtroverBaseRefCrdXLineEdit->text());
   settings.setValue("rtroverBaseRefCrdY",  _rtroverBaseRefCrdYLineEdit->text());
   settings.setValue("rtroverBaseRefCrdZ",  _rtroverBaseCrdZLineEdit->text());
+  settings.setValue("rtroverRoverDN",      _rtroverRoverDNLineEdit->text());
+  settings.setValue("rtroverRoverDE",      _rtroverRoverDELineEdit->text());
+  settings.setValue("rtroverRoverDU",      _rtroverRoverDULineEdit->text());
+  settings.setValue("rtroverBaseDN",       _rtroverBaseDNLineEdit->text());
+  settings.setValue("rtroverBaseDE",       _rtroverBaseDELineEdit->text());
+  settings.setValue("rtroverBaseDU",       _rtroverBaseDULineEdit->text());
+  settings.setValue("rtroverRoverAntenna", _rtroverRoverAntennaLineEdit->text());
+  settings.setValue("rtroverBaseAntenna",  _rtroverBaseAntennaLineEdit->text());
+  settings.setValue("rtroverAntex",        _rtroverAntexFileChooser->fileName());
   settings.setValue("rtroverOutput",       _rtroverOutputLineEdit->text());  
 #endif
 
