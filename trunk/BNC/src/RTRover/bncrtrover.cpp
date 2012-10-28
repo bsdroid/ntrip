@@ -42,19 +42,53 @@ void t_bncRtrover::run() {
   rtrover_opt opt;
   rtrover_initOptions(&opt);
 
-  opt._roverName = strdup(_roverMount.data());
-  opt._baseName  = strdup(_baseMount.data());
+  if      (_mode == "PPP_DF") {
+    opt._mode = mode_PPP_DF;
+  }
+  else if (_mode == "SPP_DF") {
+    opt._mode = mode_SPP_DF;
+  }
+  else if (_mode == "PPP_SF") {
+    opt._mode = mode_PPP_SF;
+  }
+  else if (_mode == "SPP_SF") {
+    opt._mode = mode_SPP_SF;
+  }
+  else if (_mode == "PPP_AR") {
+    opt._mode = mode_PPP_AR;
+  }
+  else if (_mode == "RTK") {
+    opt._mode = mode_RTK;
+  }
+  else if (_mode == "PPP_FTTF") {
+    opt._mode = mode_PPP_FTTF;
+  }
+  opt._roverName      = strdup(_roverMount.data());
+  opt._baseName       = strdup(_baseMount.data());
+  opt._antNameRover   = strdup(settings.value("rtroverRoverAntenna").toByteArray().data());
+  opt._antNameBase    = strdup(settings.value("rtroverBaseAntenna").toByteArray().data());
+  opt._antexFileName  = strdup(settings.value("rtroverAntex").toByteArray().data());
   opt._xyzAprRover[0] = settings.value("rtroverRoverRefCrdX").toDouble();
   opt._xyzAprRover[1] = settings.value("rtroverRoverRefCrdY").toDouble();
   opt._xyzAprRover[2] = settings.value("rtroverRoverRefCrdZ").toDouble();
   opt._xyzAprBase[0]  = settings.value("rtroverBaseRefCrdX").toDouble();
   opt._xyzAprBase[1]  = settings.value("rtroverBaseRefCrdY").toDouble();
   opt._xyzAprBase[2]  = settings.value("rtroverBaseRefCrdZ").toDouble();
+  opt._neuEccRover[0] = settings.value("rtroverRoverDN").toDouble();
+  opt._neuEccRover[1] = settings.value("rtroverRoverDE").toDouble();
+  opt._neuEccRover[2] = settings.value("rtroverRoverDU").toDouble();
+  opt._neuEccBase[0]  = settings.value("rtroverBaseDN").toDouble();
+  opt._neuEccBase[1]  = settings.value("rtroverBaseDE").toDouble();
+  opt._neuEccBase[2]  = settings.value("rtroverBaseDU").toDouble();
+  opt._logLevel       = 2;
 
   rtrover_setOptions(&opt);
 
   free(opt._roverName);
   free(opt._baseName);
+  free(opt._antNameRover);
+  free(opt._antNameBase);
+  free(opt._antexFileName);
 
   // Connect to BNC Signals
   // ----------------------
