@@ -63,11 +63,17 @@ void t_bncRtrover::run() {
   else if (_mode == "PPP_FTTF") {
     opt._mode = mode_PPP_FTTF;
   }
-  opt._roverName      = strdup(_roverMount.data());
-  opt._baseName       = strdup(_baseMount.data());
-  opt._antNameRover   = strdup(settings.value("rtroverRoverAntenna").toByteArray().data());
-  opt._antNameBase    = strdup(settings.value("rtroverBaseAntenna").toByteArray().data());
-  opt._antexFileName  = strdup(settings.value("rtroverAntex").toByteArray().data());
+
+  QByteArray antNameRover  = settings.value("rtroverRoverAntenna").toByteArray();
+  QByteArray antNameBase   = settings.value("rtroverBaseAntenna").toByteArray();
+  QByteArray antexFileName = settings.value("rtroverAntex").toByteArray();
+
+  if (!_roverMount.isEmpty())   opt._roverName     = _roverMount.data();
+  if (!_baseMount.isEmpty())    opt._baseName      = _baseMount.data();
+  if (!antNameRover.isEmpty())  opt._antNameRover  = antNameRover.data();
+  if (!antNameBase.isEmpty())   opt._antNameBase   = antNameBase.data();
+  if (!antexFileName.isEmpty()) opt._antexFileName = antexFileName.data();
+
   opt._xyzAprRover[0] = settings.value("rtroverRoverRefCrdX").toDouble();
   opt._xyzAprRover[1] = settings.value("rtroverRoverRefCrdY").toDouble();
   opt._xyzAprRover[2] = settings.value("rtroverRoverRefCrdZ").toDouble();
@@ -83,12 +89,6 @@ void t_bncRtrover::run() {
   opt._logLevel       = 2;
 
   rtrover_setOptions(&opt);
-
-  free(opt._roverName);
-  free(opt._baseName);
-  free(opt._antNameRover);
-  free(opt._antNameBase);
-  free(opt._antexFileName);
 
   // Connect to BNC Signals
   // ----------------------
