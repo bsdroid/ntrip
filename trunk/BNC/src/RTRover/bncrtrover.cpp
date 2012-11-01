@@ -208,9 +208,9 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
   int numClkCorr = 0;
   int numBiases  = 0;
 
-  rtrover_orbCorr    orbCorr[corrList.size()];
-  rtrover_clkCorr    clkCorr[corrList.size()];
-  rtrover_codeBiases biases[corrList.size()];
+  rtrover_orbCorr   orbCorr[corrList.size()];
+  rtrover_clkCorr   clkCorr[corrList.size()];
+  rtrover_satBiases biases[corrList.size()];
 
   QListIterator<QString> it(corrList);
   while (it.hasNext()) {
@@ -271,19 +271,19 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
     t_bias bias;
     if (bias.readLine(line) == success) {
       ++numBiases;
-      rtrover_codeBiases& codeBiases = biases[numBiases-1];
-      codeBiases._satellite._system = bias._prn.toAscii()[0];
-      codeBiases._satellite._number = bias._prn.mid(1).toInt();
-      codeBiases._time._mjd = bias._time.mjd();
-      codeBiases._time._sec = bias._time.daysec();
-      codeBiases._numBiases = bias._value.size();
-      codeBiases._biases = new rtrover_bias[codeBiases._numBiases];
+      rtrover_satBiases& satBiases = biases[numBiases-1];
+      satBiases._satellite._system = bias._prn.toAscii()[0];
+      satBiases._satellite._number = bias._prn.mid(1).toInt();
+      satBiases._time._mjd = bias._time.mjd();
+      satBiases._time._sec = bias._time.daysec();
+      satBiases._numBiases = bias._value.size();
+      satBiases._biases = new rtrover_bias[satBiases._numBiases];
       int iBias = -1;
       QMapIterator<QByteArray, double> it(bias._value);
       while (it.hasNext()) {
         it.next();
         ++iBias;
-        rtrover_bias& singleBias = codeBiases._biases[iBias];
+        rtrover_bias& singleBias = satBiases._biases[iBias];
         singleBias._rnxType[0] = it.key()[0];
         singleBias._rnxType[1] = it.key()[1];
         singleBias._value      = it.value();
