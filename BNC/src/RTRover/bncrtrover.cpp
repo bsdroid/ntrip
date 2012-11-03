@@ -284,9 +284,10 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
         it.next();
         ++iBias;
         rtrover_bias& singleBias = satBiases._biases[iBias];
-        singleBias._rnxType[0] = it.key()[0];
-        singleBias._rnxType[1] = it.key()[1];
-        singleBias._value      = it.value();
+        singleBias._rnxType3ch[0] = 'C';
+        singleBias._rnxType3ch[1] = it.key()[0];
+        singleBias._rnxType3ch[2] = it.key()[1];
+        singleBias._value         = it.value();
       }
     }
   }
@@ -332,8 +333,8 @@ void copyObs(const t_obs& obsBnc, rtrover_satObs& satObs) {
         rtrover_obs& currObs = allObs[codeType];
         if (!existed) {
           rtrover_initObs(&currObs);
-          currObs._rnxType[0] = codeType[0];
-          currObs._rnxType[1] = codeType[1];
+          currObs._rnxType2ch[0] = codeType[0];
+          currObs._rnxType2ch[1] = codeType[1];
         }
 
         if      (rnxStr[0] == 'C') {
