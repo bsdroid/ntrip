@@ -159,8 +159,8 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   // Set Observations GPS and Glonass
   // --------------------------------
   if      (obs.satSys == 'G' || obs.satSys == 'R') {
-    const QByteArray preferedTypes("WPC");
-    for (int ii = preferedTypes.length()-1; ii >= 0; ii--) {
+    const QByteArray preferredTypes("WPC");
+    for (int ii = preferredTypes.length()-1; ii >= 0; ii--) {
       for (int iPhase = 0; iPhase <= 1; iPhase++) {
         for (int iFreq = 1; iFreq <= 2; iFreq++) {
 
@@ -187,7 +187,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
             p_value = &satData->L2;
           }
 
-          rnxStr[2] = preferedTypes[ii];
+          rnxStr[2] = preferredTypes[ii];
 
           double measdata = obs.measdata(rnxStr, 3.0);
           if (measdata != 0.0) {
