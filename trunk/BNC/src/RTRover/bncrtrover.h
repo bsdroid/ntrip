@@ -34,6 +34,7 @@ class t_bncRtrover : public QThread {
   QByteArray              _roverMount;
   QByteArray              _baseMount;
   QByteArray              _corrMount;
+  QMap<QString, int>      _IODs;
   std::vector<t_epoData*> _epochs;
 };
 
