@@ -235,6 +235,9 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
           corr.messageType == COTYPE_GLONASSCOMBINED ||
           corr.messageType == COTYPE_GPSORBIT        ||
           corr.messageType == COTYPE_GLONASSORBIT    ) {
+
+        _IODs[corr.prn] = corr.iod; // remember iod;
+
         ++numOrbCorr;
         rtrover_orbCorr& orbC = orbCorr[numOrbCorr-1];
         orbC._satellite._system = corr.prn.toAscii()[0];
@@ -257,7 +260,12 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
         rtrover_clkCorr& clkC = clkCorr[numClkCorr-1];
         clkC._satellite._system = corr.prn.toAscii()[0];
         clkC._satellite._number = corr.prn.mid(1).toInt();
-        clkC._iod               = corr.iod;
+        if (_IODs.contains(corr.prn)) {
+          clkC._iod = _IODs[corr.prn];
+        }
+        else {
+          clkC._iod = 0;
+        }
         clkC._time._mjd         = corr.tClk.mjd();
         clkC._time._sec         = corr.tClk.daysec();
         clkC._dClk              = corr.dClk;
