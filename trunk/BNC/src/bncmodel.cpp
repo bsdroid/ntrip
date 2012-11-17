@@ -209,8 +209,13 @@ void bncModel::reset() {
 
   Tracer tracer("bncModel::reset");
 
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    delete _params[iPar-1];
+  double lastTrp = 0.0;
+  for (int ii = 0; ii < _params.size(); ii++) {
+    bncParam* pp = _params[ii];
+    if (pp->type == bncParam::TROPO) {
+      lastTrp = pp->xx;
+    }
+    delete pp;
   }
   _params.clear();
 
@@ -220,7 +225,9 @@ void bncModel::reset() {
   _params.push_back(new bncParam(bncParam::CRD_Z,  ++nextPar, ""));
   _params.push_back(new bncParam(bncParam::RECCLK, ++nextPar, ""));
   if (_opt->estTropo) {
-    _params.push_back(new bncParam(bncParam::TROPO, ++nextPar, ""));
+    bncParam* pp = new bncParam(bncParam::TROPO, ++nextPar, "");
+    pp->xx = lastTrp;
+    _params.push_back(pp);
   }
   if (_opt->useGalileo) {
     _params.push_back(new bncParam(bncParam::GALILEO_OFFSET, ++nextPar, ""));
