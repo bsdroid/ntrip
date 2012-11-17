@@ -225,9 +225,7 @@ void bncModel::reset() {
   _params.push_back(new bncParam(bncParam::CRD_Z,  ++nextPar, ""));
   _params.push_back(new bncParam(bncParam::RECCLK, ++nextPar, ""));
   if (_opt->estTropo) {
-    bncParam* pp = new bncParam(bncParam::TROPO, ++nextPar, "");
-    pp->xx = lastTrp;
-    _params.push_back(pp);
+    _params.push_back(new bncParam(bncParam::TROPO, ++nextPar, ""));
   }
   if (_opt->useGalileo) {
     _params.push_back(new bncParam(bncParam::GALILEO_OFFSET, ++nextPar, ""));
@@ -246,6 +244,7 @@ void bncModel::reset() {
     }
     else if (pp->type == bncParam::TROPO) {
       _QQ(iPar,iPar) = _opt->sigTrp0 * _opt->sigTrp0; 
+      pp->xx = lastTrp;
     }
     else if (pp->type == bncParam::GALILEO_OFFSET) {
       _QQ(iPar,iPar) = _opt->sigGalileoOffset0 * _opt->sigGalileoOffset0; 
