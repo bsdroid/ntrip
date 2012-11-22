@@ -33,7 +33,7 @@ class bncRtnetUploadCaster : public bncUploadCaster {
                         const ColumnVector& xx, 
                         struct ClockOrbit::SatData* sd,
                         QString& outLine);
-  void crdTrafo(int GPSWeek, ColumnVector& xyz);
+  void crdTrafo(int GPSWeek, ColumnVector& xyz, double& dc);
 
   bncEphUser*    _ephUser;
   QString        _rtnetStreamBuffer;
