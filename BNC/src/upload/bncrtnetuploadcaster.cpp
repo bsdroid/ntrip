@@ -527,16 +527,17 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
       xyz(2) += xx(7);
       xyz(3) += xx(8);
     }
-    
+
+    double dc = 0.0;    
     if (_crdTrafo != "IGS08") {
-      crdTrafo(GPSweek12, xyz);
+      crdTrafo(GPSweek12, xyz, dc);
     }
     
     ColumnVector dx = xB.Rows(1,3) - xyz ;
     
     if (ii == 1) {
       XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw);
-      dClk = (xx(4) + xx(5) - xB(4)) * 299792458.0;
+      dClk = (xx(4) + xx(5) - xB(4) + dc) * t_CST::c;
     }
     else {
       XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw2);
@@ -569,7 +570,12 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
 
 // Transform Coordinates
 ////////////////////////////////////////////////////////////////////////////
-void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz) {
+void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz, 
+                                    double& dc) {
+
+  // Clock Correction 
+  // ----------------
+  dc = 0.0; // TODO
 
   // Current epoch minus 2000.0 in years
   // ------------------------------------
