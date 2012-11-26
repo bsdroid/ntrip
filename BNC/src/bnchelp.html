@@ -10,7 +10,7 @@ The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding,
 </p>
 
 <p>
-BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, 32-bit Linux, 64-bit Linux (compiled under -m32 32-bit compatibility mode), Solaris, and Mac systems. We used the MinGW Version 4.4.0 compiler to create the Windows binary. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.7.3 are installed. Please ensure that you have installed the latest version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u> and feel free to send us your comments, suggestions or bug reports.
+BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, 32-bit Linux, 64-bit Linux (compiled under -m32 32-bit compatibility mode), Solaris, and Mac OS X systems. We used the MinGW Version 4.4.0 compiler to create the Windows binary. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.7.3 are installed. Please ensure that you have installed the latest version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u> and feel free to send us your comments, suggestions or bug reports.
 </p>
 
 <p><b>Contents</b><br>
@@ -47,7 +47,7 @@ Prague, Czech Republic
 BNC includes the following GNU GPL software components: 
 <ul>
 <li> RTCM 2 decoder, written by Oliver Montenbruck, German Space Operations Center, DLR, Oberpfaffenhofen, Germany</li> 
-<li> RTCM 3 decoder for conventional ans MSM observation messages and a RTCM 3 encoder & decoder for SSR messages, both written for BKG by Dirk Stoecker, Alberding GmbH, Schoenefeld, Germany</li>
+<li> RTCM 3 decoder for conventional and MSM observation messages and a RTCM 3 encoder & decoder for SSR messages, both written for BKG by Dirk Stoecker, Alberding GmbH, Schoenefeld, Germany</li>
 </ul>
 </p>
 <p>
@@ -56,7 +56,7 @@ Note that some figures presented in this documentation show screenshots from ear
 
 <p>
 <b>Acknowledgements</b><br>
-Earlier versions of BNC's Help Contents have been proofread by Thomas Yan, University of New South Wales, Australia. He also provides builds of BNC for Mac systems.<br>
+Earlier versions of BNC's Help Contents have been proofread by Thomas Yan, NSW Land and Property Information, Australia. He also provides builds of BNC for Mac OS X systems.<br>
 Scott Glazier, OmniSTAR Australia has been helpful in finding BNC's bugs.<br>
 James Perlt, BKG, helped fixing bugs and redesigned BNC's main window.<br>
 Andre Hauschild, German Space Operations Center, DLR, revised the RTCM Version 2 decoder.<br>
@@ -170,7 +170,7 @@ The main window of BNC shows a 'Top menu bar' section, a 'Settings' sections wit
 
 <p>
 Running BNC in interactive mode requires graphics support. This is also
-required in batch mode when producing plots. Windows and Mac systems always
+required in batch mode when producing plots. Windows and Mac OS X systems always
 support graphics. However, when using BNC in batch mode on Linux systems for
 producing plots, you need to make sure that at least a virtual X-Server like
 'Xvfb' is installed and the '-display' command-line option is used.
@@ -184,9 +184,9 @@ Records of BNC's activities are shown in the 'Log' tab. The bandwidth consumptio
 
 <p><a name="optconfig"><h3>2.1 Configuration Management</h3></p>
 <p>
-As a default, configuration files for running BNC on Unix/Linux/Mac systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration file name is 'BNC.bnc'.</p>
+As a default, configuration files for running BNC on Unix/Linux/Mac OS X systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration file name is 'BNC.bnc'.</p>
 <p>
-The default file name 'BNC.bnc' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac systems). Some configuration options can be changed on-the-fly. See annexed 'Configuration Examples' for a complete set of configuration options. It is also possible to start and configure BNC via command line.
+The default file name 'BNC.bnc' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac OS X systems). Some configuration options can be changed on-the-fly. See annexed 'Configuration Examples' for a complete set of configuration options. It is also possible to start and configure BNC via command line.
 </p>
 
 <p>
@@ -460,7 +460,7 @@ When operating BNC online in 'no window' mode (command line option -nw), some co
 
 <p><a name="genstart"><h4>3.3.4 Auto Start - optional</h4></p>
 <p>
-You may like to auto-start BNC at startup time in window mode with pre-assigned configuration options. This may be required i.e. immediately after booting your system. Tick 'Auto start' to supersede the usage of the 'Start' button. Make sure that you maintain a link to BNC for that in your Autostart directory (Windows systems) or call BNC in a script below directory /etc/init.d (Unix/Linux/Mac systems).
+You may like to auto-start BNC at startup time in window mode with pre-assigned configuration options. This may be required i.e. immediately after booting your system. Tick 'Auto start' to supersede the usage of the 'Start' button. Make sure that you maintain a link to BNC for that in your Autostart directory (Windows systems) or call BNC in a script below directory /etc/init.d (Unix/Linux/Mac OS X systems).
 </p>
 <p>
  See BNC's command line option -nw for an auto-start of BNC in 'no window' mode.
@@ -633,7 +633,7 @@ SITELOG dund_20070806.log                                   COMMENT
 
 <p><a name="rnxscript"><h4>3.4.6 Script - optional</h4></p>
 <p>
-Whenever a RINEX Observation file is saved, you might want to compress copy or upload it immediately via FTP. BNC allows you to execute a script/batch file to carry out these operations. To do that, specify the full path of the script/batch file here. BNC will pass the RINEX Observation file path to the script as a command line parameter (%1 on Windows systems, $1 on Unix/Linux/Mac systems).
+Whenever a RINEX Observation file is saved, you might want to compress copy or upload it immediately via FTP. BNC allows you to execute a script/batch file to carry out these operations. To do that, specify the full path of the script/batch file here. BNC will pass the RINEX Observation file path to the script as a command line parameter (%1 on Windows systems, $1 on Unix/Linux/Mac OS X systems).
 </p> 
 <p> 
 The triggering event for calling the script or batch file is the end of a RINEX Observation  file 'Interval'. If that is overridden by a stream outage, the triggering event is the stream reconnection.
@@ -1293,7 +1293,7 @@ Note that specifying a value of zero '0' for the 'Recovery threshold' will force
 
 <p><a name="advscript"><h4>3.10.4 Script - optional </h4></p>
 <p>
-As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected stream's mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (%1 and %2 on Windows systems or $1 and $2 on Unix/Linux/Mac systems) together with date and time information.
+As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected stream's mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (%1 and %2 on Windows systems or $1 and $2 on Unix/Linux/Mac OS X systems) together with date and time information.
 </p>
 <p>
 Leave the 'Script' field empty if you do not wish to use this option. An invalid path will also disable this option.
@@ -1306,7 +1306,7 @@ FFMJ0 End_Outage 08-02-21 11:36:02 Begin was 08-02-21 09:25:59
 </pre>
 </p>
 <p>
-Sample script for Unix/Linux/Mac systems:
+Sample script for Unix/Linux/Mac OS X systems:
 </p>
 <pre>
 #!/bin/bash
@@ -2489,7 +2489,7 @@ bnc.exe -nw
 <p>
 It is obvious that BNC requires graphics support when started in interactive
 mode. But, note that it also requires graphics support when producing plots in
-batch mode (option -nw). Windows and Mac systems always support graphics. For
+batch mode (option -nw). Windows and Mac OS X systems always support graphics. For
 producing plots in batch mode on Linux systems you must make sure that at
 least a virtual X-Server such as 'Xvfb' is installed and the '-display' option
 is used. The following is an example shell script to execute BNC in batch mode
@@ -2581,6 +2581,10 @@ EUREF as well as IGS adhere to an open data policy. Streams are made available t
 <li>
 Once BNC has been started, many of its configuration options cannot be changed as long as it is stopped. See chapter 'Reread Configuration' for on-the-fly configuration exceptions.
 </li>
+<li>
+Drag and drop of configuration file is currently not supported on Mac OS X.
+</li>
+
 </ul>
 
 <p><a name="annex"><h3>5. Annex</h3></p>
@@ -2626,7 +2630,7 @@ Once BNC has been started, many of its configuration options cannot be changed a
 
 <tr>
 <td>Apr 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td>
-<td>[Add] Handle ephemeris from RTCM Version 3 streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Monitor stream failure/recovery and latency<br> [Mod] Redesign of main window<br> [Bug] Freezing of About window on Mac systems<br> [Bug] Fixed problem with PRN 32 in RTCMv2 decoder<br> [Bug] Fix for Trimble 4000SSI receivers in RTCMv2 decoder<br> [Mod] Major revision of input buffer in RTCMv2 decoder</td>
+<td>[Add] Handle ephemeris from RTCM Version 3 streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Monitor stream failure/recovery and latency<br> [Mod] Redesign of main window<br> [Bug] Freezing of About window on Mac OS X<br> [Bug] Fixed problem with PRN 32 in RTCMv2 decoder<br> [Bug] Fix for Trimble 4000SSI receivers in RTCMv2 decoder<br> [Mod] Major revision of input buffer in RTCMv2 decoder</td>
 </tr>
 
 <tr>
