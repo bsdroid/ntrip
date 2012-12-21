@@ -129,7 +129,7 @@ exists(rinex/bncpostprocess.h) {
 
 # Link to a 3rd-part library (test)
 # ---------------------------------
-use_RTRover = true
+# use_RTRover = true
 
 equals(use_RTRover, true) {
   DEFINES += RTROVER_INTERFACE
