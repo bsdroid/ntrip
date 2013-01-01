@@ -94,7 +94,7 @@ void bncUploadCaster::run() {
       }
     }
     if (_rate == 0) {
-      sleep(1);
+      msleep(100); //sleep 0.1 sec
     }
     else {
       sleep(_rate);
