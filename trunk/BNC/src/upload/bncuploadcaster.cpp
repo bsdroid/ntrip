@@ -36,8 +36,8 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   _sOpenTrial    = 0;
   _iRow          = iRow;
   _rate          = rate;
-  if      (_rate < 5) {
-    _rate = 5;
+  if      (_rate < 0) {
+    _rate = 0;
   }
   else if (_rate > 60) {
     _rate = 60;
@@ -88,10 +88,17 @@ void bncUploadCaster::run() {
         _outSocket->write(_outBuffer);
         _outSocket->flush();
         emit newBytes(_mountpoint.toAscii(), _outBuffer.size());
-        _outBuffer.clear();
+        if (_rate == 0) {
+          _outBuffer.clear();
+        }
       }
     }
-    sleep(_rate);
+    if (_rate == 0) {
+      sleep(1);
+    }
+    else {
+      sleep(_rate);
+    }
   }
 }
 
