@@ -243,6 +243,8 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   in >> hlp >> year >> month >> day >> hour >> min >> sec;
   bncTime epoTime; epoTime.set( year, month, day, hour, min, sec);
 
+  emit(newMessage("decodeRtnetStream: " + lines[0].toAscii(), false));
+
   struct ClockOrbit co;
   memset(&co, 0, sizeof(co));
   co.GPSEpochTime      = static_cast<int>(epoTime.gpssec());
@@ -476,9 +478,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     }
   }
 
-  if (hlpBufferCo.size() > 0) {
-    _outBuffer = hlpBufferCo + hlpBufferBias;
-  }
+  _outBuffer += hlpBufferCo + hlpBufferBias;
 }
 
 // 

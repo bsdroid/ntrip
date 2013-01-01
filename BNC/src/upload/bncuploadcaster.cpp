@@ -84,9 +84,12 @@ void bncUploadCaster::run() {
     open();
     if (_outSocket && _outSocket->state() == QAbstractSocket::ConnectedState) {
       QMutexLocker locker(&_mutex);
-      _outSocket->write(_outBuffer);
-      _outSocket->flush();
-      emit newBytes(_mountpoint.toAscii(), _outBuffer.size());
+      if (_outBuffer.size() > 0) {
+        _outSocket->write(_outBuffer);
+        _outSocket->flush();
+        emit newBytes(_mountpoint.toAscii(), _outBuffer.size());
+        _outBuffer.clear();
+      }
     }
     sleep(_rate);
   }
