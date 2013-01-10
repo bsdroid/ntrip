@@ -656,12 +656,22 @@ string bncRinex::asciiSatLine(const t_obs& obs) {
         << obsToStr(obs.measdata("D1P", rnxVers)) << ' '
         << obsToStr(obs.measdata("S1P", rnxVers), 8, 3) << ' '
         << setw(2)  << obs.slip_cnt_L1;
-    str << "  2P "
-        << obsToStr(obs.measdata("C2P", rnxVers)) << ' '
-        << obsToStr(obs.measdata("L2P", rnxVers)) << ' '
-        << obsToStr(obs.measdata("D2P", rnxVers)) << ' '
-        << obsToStr(obs.measdata("S2P", rnxVers), 8, 3) << ' '
-        << setw(2)  << obs.slip_cnt_L2;
+    if      (obs.measdata("C2P", rnxVers) != 0.0) {
+      str << "  2P "
+          << obsToStr(obs.measdata("C2P", rnxVers)) << ' '
+          << obsToStr(obs.measdata("L2P", rnxVers)) << ' '
+          << obsToStr(obs.measdata("D2P", rnxVers)) << ' '
+          << obsToStr(obs.measdata("S2P", rnxVers), 8, 3) << ' '
+          << setw(2)  << obs.slip_cnt_L2;
+    }
+    else if (obs.measdata("C2C", rnxVers) != 0.0) {
+      str << "  2X "
+          << obsToStr(obs.measdata("C2C", rnxVers)) << ' '
+          << obsToStr(obs.measdata("L2C", rnxVers)) << ' '
+          << obsToStr(obs.measdata("D2C", rnxVers)) << ' '
+          << obsToStr(obs.measdata("S2C", rnxVers), 8, 3) << ' '
+          << setw(2)  << obs.slip_cnt_L2;
+    }
     str << "  5C "
         << obsToStr(obs.measdata("C5", rnxVers)) << ' '
         << obsToStr(obs.measdata("L5", rnxVers)) << ' '
