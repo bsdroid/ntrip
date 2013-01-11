@@ -737,7 +737,7 @@ If you specify a 'New' but no 'Old' marker/antenna/receiver name, the correspond
 Specify full path to input RINEX Observation file(s), and<br> 
 specify full path to input RINEX Navigation file(s).
 </p> 
-<p>When specifying several input files BNC will concatenate their contents.</p>
+<p>When specifying several input files BNC will concatenate their contents. Note that you may specify several RINEX Version 2 Navigation files for GPS and GLONASS.</p>
 
 <p><a name="reqcoutput"><h4>3.6.4 Output Files - mandatory if 'Action' is set</h4></p>
 <p>
@@ -1095,7 +1095,7 @@ BNC can generate synchronized or unsynchronized observations epoch by epoch from
 StationID | GPSWeek | GPSWeekSec | PRN, G=GPS, R=GLO | SlotNumber (if GLO) | Band/Frequency & trackingMode | Code | Phase | Doppler |  SNR  | SlipCount | ....
 </p>
 <p>
-In case an observation is not available, its value is set to zero '0.000'.
+In case an observation is not available, its value is set to zero '0.0'.
 </p>
 <p>Note on 'SlipCount':<br>
 It is the current understanding of BNC's authors that different slip counts could be referred to different phase measurements (i.e. L1C and L1P). The 'loss-of-lock' flags in RINEX are an example for making such kind of information available per phase measurement. However, it looks like we do have only one slip count in RTCM Version 3 for all phase measurements. As it could be that a receiver generates different slip counts for different phase measurements, we output one slip count per phase measurement to a listening real-time GNSS network engine.
