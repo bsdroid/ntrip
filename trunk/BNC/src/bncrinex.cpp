@@ -665,7 +665,7 @@ string bncRinex::asciiSatLine(const t_obs& obs) {
           << setw(2)  << obs.slip_cnt_L2;
     }
     else if (obs.measdata("C2C", rnxVers) != 0.0) {
-      str << "  2X "
+      str << "  2C "
           << obsToStr(obs.measdata("C2C", rnxVers)) << ' '
           << obsToStr(obs.measdata("L2C", rnxVers)) << ' '
           << obsToStr(obs.measdata("D2C", rnxVers)) << ' '
