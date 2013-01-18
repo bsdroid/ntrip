@@ -471,12 +471,13 @@ void bncComb::processEpoch() {
 
   // If Master not present, switch to another one
   // --------------------------------------------
+  const unsigned switchMasterAfterGap = 1;
   if (masterPresent) {
     _masterMissingEpochs = 0;
   }
   else {
     ++_masterMissingEpochs;
-    if (_masterMissingEpochs < 10) {
+    if (_masterMissingEpochs < switchMasterAfterGap) {
       out << "Missing Master, Epoch skipped" << endl;
       _buffer.remove(_resTime);
       emit newMessage(_log, false);
