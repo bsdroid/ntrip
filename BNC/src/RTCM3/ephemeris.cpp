@@ -1170,9 +1170,9 @@ QString t_ephGal::toString(double version) const {
 
   out << QString(fmt)
     .arg(_IDOT,    19, 'e', 12)
-    .arg("",       19, QChar(' '))
+    .arg(0.0,      19, 'e', 12)
     .arg(_TOEweek, 19, 'e', 12)
-    .arg("",       19, QChar(' '));
+    .arg(0.0,      19, 'e', 12);
 
   out << QString(fmt)
     .arg(_SISA,     19, 'e', 12)
