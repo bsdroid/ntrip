@@ -991,9 +991,119 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_ephGal::t_ephGal(float /* rnxVersion */, const QStringList& /* lines */) {
+t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
+
+  const int nLines = 8;
 
   _ok = false;
+
+  if (lines.size() != nLines) {
+    return;
+  }
+
+  // RINEX Format
+  // ------------
+  int fieldLen = 19;
+
+  int pos[4];
+  pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
+  pos[1] = pos[0] + fieldLen;
+  pos[2] = pos[1] + fieldLen;
+  pos[3] = pos[2] + fieldLen;
+
+  // Read eight lines
+  // ----------------
+  for (int iLine = 0; iLine < nLines; iLine++) {
+    QString line = lines[iLine];
+
+    if      ( iLine == 0 ) {
+      QTextStream in(line.left(pos[1]).toAscii());
+
+      int    year, month, day, hour, min;
+      double sec;
+      
+      in >> _prn >> year >> month >> day >> hour >> min >> sec;
+
+      if (_prn.at(0) != 'E') {
+        _prn = QString("E%1").arg(_prn.toInt(), 2, 10, QLatin1Char('0'));
+      }
+   
+      if      (year <  80) {
+        year += 2000;
+      }
+      else if (year < 100) {
+        year += 1900;
+      }
+
+      _TOC.set(year, month, day, hour, min, sec);
+
+      if ( readDbl(line, pos[1], fieldLen, _clock_bias     ) ||
+           readDbl(line, pos[2], fieldLen, _clock_drift    ) ||
+           readDbl(line, pos[3], fieldLen, _clock_driftrate) ) {
+        return;
+      }
+    }
+
+    else if      ( iLine == 1 ) {
+      if ( readDbl(line, pos[0], fieldLen, _IODnav ) ||
+           readDbl(line, pos[1], fieldLen, _Crs    ) ||
+           readDbl(line, pos[2], fieldLen, _Delta_n) ||
+           readDbl(line, pos[3], fieldLen, _M0     ) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 2 ) {
+      if ( readDbl(line, pos[0], fieldLen, _Cuc   ) ||
+           readDbl(line, pos[1], fieldLen, _e     ) ||
+           readDbl(line, pos[2], fieldLen, _Cus   ) ||
+           readDbl(line, pos[3], fieldLen, _sqrt_A) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 3 ) {
+      if ( readDbl(line, pos[0], fieldLen, _TOEsec)  ||
+           readDbl(line, pos[1], fieldLen, _Cic   )  ||
+           readDbl(line, pos[2], fieldLen, _OMEGA0)  ||
+           readDbl(line, pos[3], fieldLen, _Cis   ) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 4 ) {
+      if ( readDbl(line, pos[0], fieldLen, _i0      ) ||
+           readDbl(line, pos[1], fieldLen, _Crc     ) ||
+           readDbl(line, pos[2], fieldLen, _omega   ) ||
+           readDbl(line, pos[3], fieldLen, _OMEGADOT) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 5 ) {
+      if ( readDbl(line, pos[0], fieldLen, _IDOT    ) ||
+           readDbl(line, pos[2], fieldLen, _TOEweek) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 6 ) {
+      if ( readDbl(line, pos[0], fieldLen, _SISA    ) ||
+           readDbl(line, pos[1], fieldLen, _E5aHS   ) ||
+           readDbl(line, pos[2], fieldLen, _BGD_1_5A) ||
+           readDbl(line, pos[3], fieldLen, _BGD_1_5B) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 7 ) {
+      if ( readDbl(line, pos[0], fieldLen, _TOT) ) {
+        return;
+      }
+    }
+  }
+
+  _ok = true;
 }
 
 // 
