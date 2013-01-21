@@ -593,14 +593,19 @@ BNC will complete this line and include it in the RINEX file header.</li>
 <br>- &nbsp; WAVELENGTH FACT L1/2 (RINEX Version 2)</li>
 <br>- &nbsp; SYS / # / OBS TYPES (RINEX Version 3, will be ignored when writing Version 2 files)</li>
 <li>They may contain any other optional complete header record as defined in the RINEX documentation.</li>
-<li>They should then contain empty header records of type
-<br>- &nbsp; # / TYPES OF OBSERV (RINEX Version 2, will be ignored when writing Version 3 files)
-<br>- &nbsp; TIME OF FIRST OBS
+<li>They should also contain an empty header records of type
+<br>- &nbsp; # / TYPES OF OBSERV (only RINEX Version 2, will be ignored when writing RINEX Version 3 files)
 <br>BNC will include these lines in the final RINEX file header together with an additional
 <br>- &nbsp; COMMENT 
 <br>line describing the source of the stream.</li>
+
+
 <li>They should finally contain an empty header record of type
 <br>- &nbsp; END OF HEADER (last record)</li>
+
+<li>They must not contain a header record of type</li>
+<br>- &nbsp; TIME OF FIRST OBS
+
 </ul>
 <p>
 If neither a public nor a personal RINEX header skeleton file is available for BNC, a default header will be used.
@@ -2700,7 +2705,7 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 
 <tr>
 <td>Jan 2013 &nbsp;</td><td>Version 2.8 &nbsp;</td>
-<td>[Mod] Started work on new version in Sep 2012<br> [Bug] Epoch special event flag in RINEX concatenation<br> [Bug] Limit RINEX v2 records length to 80 characters<br> [Bug] SSR message update interval indicator<br> [Bug] Fixed SSR stream encoding and upload</td>
+<td>[Mod] Started work on new version in Sep 2012<br> [Bug] Epoch special event flag in RINEX concatenation<br> [Bug] Limit RINEX v2 records length to 80 characters<br> [Bug] SSR message update interval indicator<br> [Bug] Fixed SSR stream encoding and upload<br> [Add] Concatenate RINEX v3 navigation files containing Galileo ephemeris</td>
 </tr>
 
 </table>
