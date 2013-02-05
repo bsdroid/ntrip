@@ -128,7 +128,7 @@ BNC supports decoding the following GNSS stream formats and message types:
 Note that while BNC decodes RTCM's MSM and HP MSM messages for GPS, GLONASS and Galileo, the implemented decoding of
 <ul>
 <li>QZSS follows a JAXA proposal;</li>
-<li>BeiDou and SBAS follows an agreement between BKG, Alberding and DLR.</li>
+<li>BeiDou and SBAS follow an agreement between BKG, Alberding and DLR.</li>
 </ul>
 </p>
 
@@ -1100,7 +1100,7 @@ The source code for BNC comes with an example perl script 'test_tcpip_client.pl'
 
 <p><a name="corrwait"><h4>3.7.4 Wait for Full Corr Epoch - mandatory if 'Port' is set</h4></p>
 <p>
-When feeding a real-time GNSS network engine (see 'Feed Engine') waiting epoch by epoch for synchronized Broadcast Corrections, or when you 'Combine Corrections' BNC drops (only concerning IP port output) whatever is received later than 'Wait for full corr epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Broadcast Corrections stream and the delay acceptable by your application. A message such as &quot;COCK1: Correction overaged by 5 sec&quot; shows up in BNC's logfile if 'Wait for full corr epoch' is exceeded.
+When feeding a real-time GNSS network engine (see 'Feed Engine') waiting epoch by epoch for synchronized Broadcast Corrections, or when you 'Combine Corrections' BNC drops (only concerning IP port output) whatever is received later than 'Wait for full corr epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Broadcast Corrections stream and the delay acceptable by your application. A message such as &quot;COCK1: Correction over aged by 5 sec&quot; shows up in BNC's logfile if 'Wait for full corr epoch' is exceeded.
 </p>
 <p>
 Specifying a value of '0' means that BNC immediately outputs all incoming Broadcast Ephemeris Corrections and does not drop any of them for latency reasons.
@@ -1563,7 +1563,7 @@ Specify a Broadcast Ephemeris 'Corrections Mountpoint' from the list of selected
 
 <p><a name="pppxyz"><h4>3.12.2 Marker Coordinates - optional</h4></p>
 <p>
-Enter the reference coordinate XYZ of the receiver's position in meters if known. This option makes only sense for static observations. Default are empty option fields, meaning that the antenna's XYZ position is unknown. 
+Enter the reference coordinate XYZ of the receiver's position in meters if known. This option makes only sense for static observations. Defaults are empty option fields, meaning that the antenna's XYZ position is unknown. 
 </p>
 <p>
 Once a XYZ coordinate is defined, the 'PPP' line in BNC's logfile is extended by North, East and Up displacements to (example):
@@ -1797,21 +1797,21 @@ Removing the AC-dependent biases as well as possible is a major issue with clock
 <p>
 In view of IGS real-time products, the 'Combine Corrections' functionality has been integrated in BNC because
 <ul>
-<li>the software with its Graphic User Interface and wide range of supported Operating Systems represents a perfect platform to process many Broadcast Correction streams in parallel;</li>
-<li>outages of single AC product streams can be mitigated through merging several incoming streams into a combined product;</li>
-<li>generating a combination product from several AC products allows detecting and rejecting outliers;</li> 
-<li>a Combination Center (CC) can operate BNC to globally disseminate a combination product via NTRIP broadcast;</li>
-<li>an individual AC could prefer to disseminate a stream combined from primary and backup IT resources to reduce outages;</li>
-<li>it enables a BNC PPP user to follow his own preference in combining streams from individual ACs for Precise Point Positioning;</li>
-<li>it allows an instantaneous quality control of the combination process not only in the time domain but also in the space domain; this can be done through direct application of the combined stream in a PPP solution even without prior upload to an NTRIP Broadcaster;</li>
-<li>it provides the means to output SP3 and Clock RINEX files containing precise orbit and clock information for further processing using other tools than BNC.</li>
+<li>The software with its Graphic User Interface and wide range of supported Operating Systems represents a perfect platform to process many Broadcast Correction streams in parallel;</li>
+<li>Outages of single AC product streams can be mitigated through merging several incoming streams into a combined product;</li>
+<li>Generating a combination product from several AC products allows detecting and rejecting outliers;</li> 
+<li>A Combination Center (CC) can operate BNC to globally disseminate a combination product via NTRIP broadcast;</li>
+<li>An individual AC could prefer to disseminate a stream combined from primary and backup IT resources to reduce outages;</li>
+<li>It enables a BNC PPP user to follow his own preference in combining streams from individual ACs for Precise Point Positioning;</li>
+<li>It allows an instantaneous quality control of the combination process not only in the time domain but also in the space domain; this can be done through direct application of the combined stream in a PPP solution even without prior upload to an NTRIP Broadcaster;</li>
+<li>It provides the means to output SP3 and Clock RINEX files containing precise orbit and clock information for further processing using other tools than BNC.</li>
 </ul>
 </p>
 <p>
 Note that the combination process requires real-time access to Broadcast Ephemeris. So, in addition to the orbit and clock correction streams BNC must pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages. Stream 'RTCM3EPH' on caster <u>products.igs-ip.net</u> is an example for that.
 </p>
 <p>
-Note further that you need to tick the 'Use GLONASS' option which is part ot the 'PPP (2)' panel in case you want to produce an GPS plus GLONASS combination.
+Note further that you need to tick the 'Use GLONASS' option which is part of the 'PPP (2)' panel in case you want to produce an GPS plus GLONASS combination.
 </p>
 <p>
 A combination is carried out following a specified sampling interval. If incoming streams have different rates, only epochs that correspond to the sampling interval are used.
@@ -1891,7 +1891,7 @@ Select a clock combination method. Available options are Kalman 'Filter' and 'Si
 <p>Default is a 'Maximal Residuum' of 999.0 meters</p>
 
 <p><a name="combismpl"><h4>3.13.1.4 Sampling - mandatory if 'Combine Corrections' table is populated</h4></p>
-<p>Specify a combination sampling interval. orbit and clock corrections will be produced following that interval. A value of 10 sec may be an appropriate choice.</p>
+<p>Specify a combination sampling interval. Orbit and clock corrections will be produced following that interval. A value of 10 sec may be an appropriate choice.</p>
 
 
 <p><a name="upclk"><h4>3.14. Upload Corrections</h4></p>
@@ -2001,7 +2001,7 @@ If 'Host', 'Port', 'Mountpoint' and 'Password' are set, the stream will be encod
 
 <p><a name="upsystem"><h4>3.14.3 System - mandatory if 'Host' is set</h4></p>
 <p>
-BNC allows to configure several Broadcast Correction streams for upload so that they refer to different reference systems and different NTRIP Broadcasters. You may use this functionality for parallel support of a backup NTRIP Broadcaster or for simultaneous support of several reference systems. Available options for referring orbit and clock corrections to specific target reference systems are
+BNC allows configuring several Broadcast Correction streams for upload so that they refer to different reference systems and different NTRIP Broadcasters. You may use this functionality for parallel support of a backup NTRIP Broadcaster or for simultaneous support of several reference systems. Available options for referring orbit and clock corrections to specific target reference systems are
 <p>
 <ul>
 <li>IGS08 which stands for the GNSS-based IGS realization of the International Terrestrial Reference Frame 2008 (ITRF2008), and</li>
@@ -2146,7 +2146,7 @@ To: 1995.4
 
 <p><a name="upcom"><h4>3.14.4 Center of Mass - optional</h4></p>
 <p>
-BNC allows to either refer Broadcast Corrections to the satellite's Center of Mass (CoM) or to the satellite's Antenna Phase Center (APC). By default corrections refer to APC. Tick 'Center of Mass' to refer uploaded corrections to CoM.
+BNC allows to either referring Broadcast Corrections to the satellite's Center of Mass (CoM) or to the satellite's Antenna Phase Center (APC). By default corrections refer to APC. Tick 'Center of Mass' to refer uploaded corrections to CoM.
 </p>
 
 <p><a name="upsp3"><h4>3.14.5 SP3 File - optional</h4></p>
@@ -2228,7 +2228,7 @@ BNC uploads a stream to the NTRIP Broadcaster by referring to a dedicated mountp
 </p>
 
 <p><a name="brdcsmpl"><h4>3.15.3 Sampling - mandatory if 'Host' is set</h4></p>
-Select the Broadcast Ephemeris repetition interval in seconds. Defaut is '5' meaning that a complete set of Broadcast Ephemeris is uploaded every 5 seconds.
+Select the Broadcast Ephemeris repetition interval in seconds. Default is '5' meaning that a complete set of Broadcast Ephemeris is uploaded every 5 seconds.
 </p>
 
 <p><img src="IMG/screenshot28.png"/></p>
@@ -3016,7 +3016,7 @@ The purpose of this configuration is to feed a serial connected receiver with ob
 </li><br>
 
 <li>File 'FeedEngine.bnc'<br>
-The purpose of this configuration is to feed a real-time GNSS engine with observations from a remote reference stations. The configuration pulls a single streams from an NTRIP Broadcasters. It would of course be possible to pull several streams from differenc casters. Incoming observations are decoded, synchronized and output through a local IP port and saved into a file. Failure and recovery thresholds are specified to inform about outages. 
+The purpose of this configuration is to feed a real-time GNSS engine with observations from a remote reference stations. The configuration pulls a single stream from an NTRIP Broadcasters. It would of course be possible to pull several streams from different casters. Incoming observations are decoded, synchronized and output through a local IP port and saved into a file. Failure and recovery thresholds are specified to inform about outages. 
 </li><br>
 
 <li>File 'PPP.bnc'<br>
@@ -3024,31 +3024,31 @@ The purpose of this configuration is Precise Point Positioning from observations
 </li><br>
 
 <li>File 'PPPQuickStart.bnc'<br>
-The purpose of this configuration is Precise Point Positioning in Quick-Start mode from observations of a static receiver with precisely known position. The configuration reads RTCM Version 3 observations, Broadcast Corrections and a Broadcast Ephemeris stream. Positions are saved in NMEA format on disc. Positions are also output through IP port for real-time visualization with tools like RTKPLOT. POsitions are also saved in the logfile.
+The purpose of this configuration is Precise Point Positioning in Quick-Start mode from observations of a static receiver with precisely known position. The configuration reads RTCM Version 3 observations, Broadcast Corrections and a Broadcast Ephemeris stream. Positions are saved in NMEA format on disc. Positions are also output through IP port for real-time visualization with tools like RTKPLOT. Positions are also saved in the logfile.
 </li><br>
 
 <li>File 'PPPPostProc.bnc'<br>
-The purpose of this configuration is Precise Point Positioning in Post Processing mode. BNC reads a RINEX Observation and a RINEX Version 3 Navigation files and a Broadcast Corrections files. PPP processing otions are set to support the Quick-Start mode. The output is saved in a specific Post Processing logfile and contains the coordinates derived over time following the implemented PPP filter algorithm. 
+The purpose of this configuration is Precise Point Positioning in Post Processing mode. BNC reads a RINEX Observation and a RINEX Version 3 Navigation files and a Broadcast Corrections files. PPP processing options are set to support the Quick-Start mode. The output is saved in a specific Post Processing logfile and contains the coordinates derived over time following the implemented PPP filter algorithm. 
 </li><br>
 
 <li>File 'SPPQuickStartGal.bnc'<br>
-The purpose of this configuration is Single Point Positioning in Quick-Start mode from observations of a static receiver with precisely known position. The configuration uses GPS, GLONASS and Galileo observertions and a Broadcast Ephemeris stream.
+The purpose of this configuration is Single Point Positioning in Quick-Start mode from observations of a static receiver with precisely known position. The configuration uses GPS, GLONASS and Galileo observations and a Broadcast Ephemeris stream.
 </li><br>
 
 <li>File 'Sp3.bnc'<br>
-The purpose of this configuraiton is to produce SP3 files from a Broadcast Ephemeris stream and a Broadcast Corrections stream. The Broadcast Corrections stream is formally introduced in BNC's 'Combine Corrections' table. Note that producing SP3 requires an ANTEX file because SP3 file contents should be referred to CoM. 
+The purpose of this configuration is to produce SP3 files from a Broadcast Ephemeris stream and a Broadcast Corrections stream. The Broadcast Corrections stream is formally introduced in BNC's 'Combine Corrections' table. Note that producing SP3 requires an ANTEX file because SP3 file contents should be referred to CoM. 
 </li><br>
  
 <li>File 'Sp3ETRF2000PPP.bnc'<br>
-The purpose of this configuration is to produce SP3 files from a Broadcast Ephemeris stream and a stream carrying ETRF2000 Broadcast Corrections. The Broadcast Corrections stream is formally introduced in BNC's 'Combine Corrections' table. This leads to an SP3 file containing orbits referred also to ETRF2000. Pulling in addition observations from a reference station at precisely known ETRF2000 position allows to compare an 'INTERNAL' PPP solution with ETRF2000 reference coordinates. 
+The purpose of this configuration is to produce SP3 files from a Broadcast Ephemeris stream and a stream carrying ETRF2000 Broadcast Corrections. The Broadcast Corrections stream is formally introduced in BNC's 'Combine Corrections' table. This leads to an SP3 file containing orbits referred also to ETRF2000. Pulling in addition observations from a reference station at precisely known ETRF2000 position allows comparing an 'INTERNAL' PPP solution with ETRF2000 reference coordinates. 
 </li><br>
 
 <li>File 'Upload.bnc'<br>
-The purpose of this configuration is to upload orbits and clocks from a real-time GNSS engine to an NTRIP Broadcaster. For that the configuration reads precise orbits and clocks in RTNET format. It also reads a stream carrying Broadcast Ephemeris. BNC converts the orbits and clocks into Broadcast Corrections and encodes them in RTCM Version 3 SSR messages to uploads them to an NTRIP Broadcaster. The Broadcast Corrections stream is referred to satellite Antenna Phase Center (APC) and IGS08. Orbits are saved on disk in SP3 format and clocks in Clock RINEX format. 
+The purpose of this configuration is to upload orbits and clocks from a real-time GNSS engine to an NTRIP Broadcaster. For that the configuration reads precise orbits and clocks in RTNET format. It also reads a stream carrying Broadcast Ephemeris. BNC converts the orbits and clocks into Broadcast Corrections and encodes them in RTCM Version 3 SSR messages to upload them to an NTRIP Broadcaster. The Broadcast Corrections stream is referred to satellite Antenna Phase Center (APC) and IGS08. Orbits are saved on disk in SP3 format and clocks in Clock RINEX format. 
 </li><br>
 
 <li>File 'UploadPPP.bnc'<br>
-This configuration equals the 'Upload.bnc' configuration. However, the Broadcast Corrections are in addition used for an 'INTERNAL' PPP soltution based on observations from a static reference station with known precise coordinates. This allows a continuous quality check of the Broadcast Corrections through observing coordinate displacements.
+This configuration equals the 'Upload.bnc' configuration. However, the Broadcast Corrections are in addition used for an 'INTERNAL' PPP solution based on observations from a static reference station with known precise coordinates. This allows a continuous quality check of the Broadcast Corrections through observing coordinate displacements.
 </li><br>
  
 <li>File 'Combi.bnc'<br>
