@@ -156,7 +156,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     else {                 // OK or MESSAGEFOLLOWS
       _buffer = _buffer.mid(bytesused);
 
-      if ( irc == GCOBR_OK && 
+      if ( (irc == GCOBR_OK          || irc == GCOBR_MESSAGEFOLLOWS ) && 
            (_co.NumberOfGPSSat   > 0 || _co.NumberOfGLONASSSat   > 0 ||
             _bias.NumberOfGPSSat > 0 || _bias.NumberOfGLONASSSat > 0) ) {
 
