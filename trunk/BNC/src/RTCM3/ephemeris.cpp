@@ -374,7 +374,7 @@ int t_ephGlo::IOD() const {
 
 // Set Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_ephGlo::set(const glonassephemeris* ee) {
+void t_ephGlo::set(const glonassephemeris* ee, bool& timeChanged) {
 
   _receptDateTime = currentDateAndTimeGPS();
 
@@ -386,6 +386,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
 
   // Check the day once more 
   // -----------------------
+  timeChanged = false;
   {
     const double secPerDay  = 24 * 3600.0;
     const double secPerWeek = 7 * secPerDay;
@@ -397,9 +398,8 @@ void t_ephGlo::set(const glonassephemeris* ee) {
     bncTime currentTime(currentWeek, currentSec);
     bncTime hTime(ww, (double) tow);
 
-    bool changed = false;
     if      (hTime - currentTime >  secPerDay/2.0) {
-      changed = true;
+      timeChanged = true;
       tow -= int(secPerDay);
       if (tow < 0) {
         tow += int(secPerWeek);
@@ -407,7 +407,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
       }
     }
     else if (hTime - currentTime < -secPerDay/2.0) {
-      changed = true;
+      timeChanged = true;
       tow += int(secPerDay);
       if (tow > secPerWeek) {
         tow -= int(secPerWeek);
@@ -415,7 +415,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
       }
     }
 
-    if (changed && ((bncApp*) qApp)->mode() == bncApp::batchPostProcessing) {
+    if (timeChanged && ((bncApp*) qApp)->mode() == bncApp::batchPostProcessing) {
       bncTime newHTime(ww, (double) tow);
       cout << "GLONASS " << ee->almanac_number <<  " Time Changed at " 
            << currentTime.datestr()         << " " << currentTime.timestr() 

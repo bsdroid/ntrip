@@ -110,16 +110,29 @@ void bncEphUser::slotNewEphGlonass(glonassephemeris gloeph) {
     t_ephGlo* eLast = static_cast<t_ephGlo*>(_eph.value(prn)->last);
     bncTime toc(ww, tow);
     if (eLast->TOC() < toc) {
-      delete static_cast<t_ephGlo*>(_eph.value(prn)->prev);
-      _eph.value(prn)->prev = _eph.value(prn)->last;
-      _eph.value(prn)->last = new t_ephGlo();
-      static_cast<t_ephGlo*>(_eph.value(prn)->last)->set(&gloeph);
+      t_ephGlo* ephGlo = new t_ephGlo();
+      bool timeChanged;
+      ephGlo->set(&gloeph, timeChanged);
+      if (timeChanged) {
+        delete ephGlo;
+      }
+      else {
+        delete static_cast<t_ephGlo*>(_eph.value(prn)->prev);
+        _eph.value(prn)->prev = _eph.value(prn)->last;
+        _eph.value(prn)->last = ephGlo;
+      }
     }
   }
   else {
     t_ephGlo* eLast = new t_ephGlo();
-    eLast->set(&gloeph);
-    _eph.insert(prn, new t_ephPair(eLast));
+    bool timeChanged;
+    eLast->set(&gloeph, timeChanged);
+    if (timeChanged) {
+      delete eLast;
+    }
+    else {
+      _eph.insert(prn, new t_ephPair(eLast));
+    }
   }
   ephBufferChanged();
 }
