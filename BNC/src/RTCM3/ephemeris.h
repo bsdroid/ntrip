@@ -140,7 +140,7 @@ class t_ephGlo : public t_eph {
 
   virtual int  RTCM3(unsigned char *);
 
-  void set(const glonassephemeris* ee);
+  void set(const glonassephemeris* ee, bool& timeChanged);
 
   int  slotNum() const {return int(_frequency_number);}
 
