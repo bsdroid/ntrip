@@ -1,6 +1,0 @@
-.cvsignore
-.obj
-.moc
-Makefile
-bns
-qrc_bns.cpp
