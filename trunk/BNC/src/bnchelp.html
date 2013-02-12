@@ -2018,7 +2018,7 @@ BNC allows configuring several Broadcast Correction streams for upload so that t
 BNC only transforms the original IGS08 <u>orbits</u> in the Broadcast Corrections stream to a target reference system while leaving the clocks unchanged. From a theoretical point of view this leads to inconsistencies between orbits and clocks and is therefore not allowed. However, it has been shown by Huisman et al. 2012 that as long as involved scale parameters are small enough, this way of transforming corrections stream contents only leads to height biases less than about one centimeter. With regards to the systems listed above, the approach has therefore been implemented in BNC for practical reasons.
 </p>
 <p>
-The transformation to <u>GDA94 is an exception</u> in this because it involves a ten times higher scale parameter compared to the other transformations. Note that hence the resulting height biases for a BNC-transformed GDA94 corrections stream can increase up to about 10 centimeters.
+The transformation to <u>GDA94 is an exception</u> in this because - compared to other transformations - it involves a ten times larger scale parameter. Therefore and in addition to the implemented orbit transformation, clocks are corrected proportional to topocentric distances between a representative mean Australian surface position and GNSS satellite positions. Hence the height bias resulting from the application of a BNC-transformed GDA94 correction stream is also expected to not exceed one centimeter.
 </p>
 
 <p>
