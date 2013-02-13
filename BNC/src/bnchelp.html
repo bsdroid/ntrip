@@ -2001,7 +2001,7 @@ If 'Host', 'Port', 'Mountpoint' and 'Password' are set, the stream will be encod
 
 <p><a name="upsystem"><h4>3.14.3 System - mandatory if 'Host' is set</h4></p>
 <p>
-BNC allows configuring several Broadcast Correction streams for upload so that they refer to different reference systems and different NTRIP Broadcasters. You may use this functionality for parallel support of a backup NTRIP Broadcaster or for simultaneous support of several reference systems. Available options for referring orbit and clock corrections to specific target reference systems are
+BNC allows configuring several Broadcast Correction streams for upload so that they refer to different reference systems and different NTRIP Broadcasters. You may use this functionality for parallel support of a backup NTRIP Broadcaster or for simultaneous support of various regional reference systems. Available options for transforming orbit and clock corrections to specific target reference systems are
 <p>
 <ul>
 <li>IGS08 which stands for the GNSS-based IGS realization of the International Terrestrial Reference Frame 2008 (ITRF2008), and</li>
@@ -2015,10 +2015,16 @@ BNC allows configuring several Broadcast Correction streams for upload so that t
 </p>
 
 <p>
-BNC only transforms the original IGS08 <u>orbits</u> in the Broadcast Corrections stream to a target reference system while leaving the clocks unchanged. From a theoretical point of view this leads to inconsistencies between orbits and clocks and is therefore not allowed. However, it has been shown by Huisman et al. 2012 that as long as involved scale parameters are small enough, this way of transforming corrections stream contents only leads to height biases less than about one centimeter. With regards to the systems listed above, the approach has therefore been implemented in BNC for practical reasons.
+Because a mathematically strict transformation to a regional reference system is not possible in BNC when a significant scale factor is involved, the program follows an approximate solution. While <u>orbits</u> are transformed in full accordance with given equations, transformed <u>clocks</u> are derived through applying correction term
+</p>
+<pre>
+dC = (s - 1) / s * &rho; / c
+</pre>
+<p>
+where s is the transformation scale, c is the speed of light, and &rho; are the topocentric distance between an (approximate) center of the transformation's validity area and the satellite. 
 </p>
 <p>
-The transformation to <u>GDA94 is an exception</u> in this because - compared to other transformations - it involves a ten times larger scale parameter. Therefore and in addition to the implemented orbit transformation, clocks are corrected proportional to topocentric distances between a representative mean Australian surface position and GNSS satellite positions. Hence the height bias resulting from the application of a BNC-transformed GDA94 correction stream is also expected to not exceed one centimeter.
+From a theoretical point of view this kind of approximation leads to inconsistencies between orbits and clocks and is therefore not allowed. However, it has been proved that resulting errors in Precise Point Positioning are on millimeter level for horizontal components and below the one centimeter for height components. 
 </p>
 
 <p>
