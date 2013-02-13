@@ -591,25 +591,45 @@ void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
 
   double sc = 1.0 + _sc * 1e-9 + dt * _scr * 1e-9;
 
-  // Clock correction due to heavy scale in GDA94 transformation
-  // -----------------------------------------------------------
-  if (_crdTrafo != "GDA94") {
-    dc = 0.0;
-  }
-  else {
+  // Specify approximate center of area
+  // ----------------------------------
+  ColumnVector meanSta(3);
 
-    // Spefify mean of Australia (here: GDA94 coordinates of site ALIC)
-    // ----------------------------------------------------------------
-    ColumnVector meanSta(3);
-    meanSta(1) = -4052051.767;
-    meanSta(2) =  4212836.197;
-    meanSta(3) = -2545106.022;
-
-    // Correction proportional to topocentric distance to satellites
-    // -------------------------------------------------------------
-    double rho = (xyz - meanSta).norm_Frobenius();
-    dc = rho * (sc - 1.0) / t_CST::c;
+  if      (_crdTrafo == "ETRF2000") {
+    meanSta(1) =  3661090.0;
+    meanSta(2) =   845230.0;
+    meanSta(3) =  5136850.0;
   }
+  else if (_crdTrafo == "NAD83") {
+    meanSta(1) = -1092950.0;
+    meanSta(2) = -4383600.0;
+    meanSta(3) =  4487420.0;
+  }
+  else if (_crdTrafo == "GDA94") {
+    meanSta(1) = -4052050.0;
+    meanSta(2) =  4212840.0;
+    meanSta(3) = -2545110.0;
+  }
+  else if (_crdTrafo == "SIRGAS2000") {
+    meanSta(1) =  3740860.0;
+    meanSta(2) = -4964290.0;
+    meanSta(3) = -1425420.0;
+  }
+  else if (_crdTrafo == "SIRGAS95") {
+    meanSta(1) =  3135390.0;
+    meanSta(2) = -5017670.0;
+    meanSta(3) = -2374440.0;
+  }
+  else if (_crdTrafo == "Custom") {
+    meanSta(1) =        0.0; // TODO
+    meanSta(2) =        0.0; // TODO
+    meanSta(3) =        0.0; // TODO
+  }
+
+  // Clock correction proportional to topocentric distance to satellites
+  // -------------------------------------------------------------------
+  double rho = (xyz - meanSta).norm_Frobenius();
+  dc = rho * (sc - 1.0) / t_CST::c;
 
   Matrix rMat(3,3);
   rMat(1,1) = 1.0;
