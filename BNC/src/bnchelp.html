@@ -78,6 +78,9 @@ Jan Dousa, Geodetic Observatory Pecny, Czech Republic, helped with fixing bugs.
 <li>
 Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested synchronizing observations and clock corrections to reduce high frequency noise in PPP solutions.
 </li>
+<li>
+Lennard Huisman, Kadaster Netherlands, and Rolf Dach, Astronomical Institute University of Bern, assisted in handling satellite clocks in transformations from ITRF to regional reference frames.
+</li>
 </ul>
 </p>
 
@@ -2015,7 +2018,7 @@ BNC allows configuring several Broadcast Correction streams for upload so that t
 </p>
 
 <p>
-Because a mathematically strict transformation to a regional reference system is not possible on the BNC server side when a significant scale factor is involved, the program follows an approximate solution. While <u>orbits</u> are transformed in full accordance with given equations, a transformed <u>clock</u> is derived through applying correction term
+Because a mathematically strict transformation to a regional reference system is not possible on the BNC server side when a scale factor is involved, the program follows an approximate solution. While <u>orbits</u> are transformed in full accordance with given equations, a transformed <u>clock</u> is derived through applying correction term
 </p>
 <pre>
 dC = (s - 1) / s * &rho; / c
