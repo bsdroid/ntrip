@@ -629,7 +629,7 @@ void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
   // Clock correction proportional to topocentric distance to satellites
   // -------------------------------------------------------------------
   double rho = (xyz - meanSta).norm_Frobenius();
-  dc = rho * (sc - 1.0) / t_CST::c;
+  dc = rho * (sc - 1.0) / sc / t_CST::c;
 
   Matrix rMat(3,3);
   rMat(1,1) = 1.0;
