@@ -352,10 +352,8 @@ t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
                               ColumnVector& xc, ColumnVector& vv) {
 
   double dtRao = tt - cc->tRao;
-//  ColumnVector raoHlp = cc->rao + cc->dotRao * dtRao 
-//                      + 0.5 * cc->dotDotRao * dtRao * dtRao;
-
-  ColumnVector raoHlp = cc->rao;
+  ColumnVector raoHlp = cc->rao + cc->dotRao * dtRao 
+                      + 0.5 * cc->dotDotRao * dtRao * dtRao;
 
   if (raoHlp.norm_Frobenius() > 20.0) {
     return failure;
