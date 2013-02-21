@@ -489,71 +489,57 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
                                        struct ClockOrbit::SatData* sd,
                                        QString& outLine) {
 
-  const double secPerWeek = 7.0 * 86400.0;
-
-  ColumnVector rsw(3);
-  ColumnVector rsw2(3);
-  double dClk;
-
-  for (int ii = 1; ii <= 2; ++ii) {
-
-    int    GPSweek12  = GPSweek;
-    double GPSweeks12 = GPSweeks;
-    if (ii == 2) {
-      GPSweeks12 += xx(11);
-      if (GPSweeks12 > secPerWeek) {
-        GPSweek12  += 1;
-        GPSweeks12 -= secPerWeek;
-      }
-    }
-
-    ColumnVector xB(4);
-    ColumnVector vv(3);
-
-    eph->position(GPSweek12, GPSweeks12, xB.data(), vv.data());
-    
-    ColumnVector xyz;
-    if (ii == 1) {
-      xyz = xx.Rows(1,3);
-    }
-    else {
-      xyz = xx.Rows(12,14);
-    }
-    
-    // Correction Center of Mass -> Antenna Phase Center
-    // -------------------------------------------------
-    if (! _CoM) {
-      xyz(1) += xx(6);
-      xyz(2) += xx(7);
-      xyz(3) += xx(8);
-    }
-
-    double dc = 0.0;    
-    if (_crdTrafo != "IGS08") {
-      crdTrafo(GPSweek12, xyz, dc);
-    }
-    
-    ColumnVector dx = xB.Rows(1,3) - xyz ;
-    
-    if (ii == 1) {
-      XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw);
-      dClk = (xx(4) + xx(5) - xB(4) + dc) * t_CST::c;
-    }
-    else {
-      XYZ_to_RSW(xB.Rows(1,3), vv, dx, rsw2);
-    }
+  // Broadcast Position and Velocity
+  // -------------------------------
+  ColumnVector xB(4);
+  ColumnVector vB(3);
+  eph->position(GPSweek, GPSweeks, xB.data(), vB.data());
+  
+  // Precise Position and Velocity
+  // -----------------------------
+  ColumnVector xP = xx.Rows(1,3);
+  ColumnVector vP = (xx.Rows(12,14) - xx.Rows(1,3)) / xx(11);
+  
+  // Correction Center of Mass -> Antenna Phase Center
+  // -------------------------------------------------
+  if (! _CoM) {
+    xP(1) += xx(6);
+    xP(2) += xx(7);
+    xP(3) += xx(8);
   }
 
+  double dc = 0.0;    
+  if (_crdTrafo != "IGS08") {
+    crdTrafo(GPSweek, xP, dc);
+  }
+  
+  // Difference in xyz
+  // -----------------
+  ColumnVector dx = xB.Rows(1,3) - xP;
+  ColumnVector dv = vB           - vP;
+  
+  // Difference in RSW
+  // -----------------
+  ColumnVector rsw(3);
+  XYZ_to_RSW(xB.Rows(1,3), vB, dx, rsw);
+
+  ColumnVector dotRsw(3);
+  XYZ_to_RSW(xB.Rows(1,3), vB, dv, dotRsw);
+
+  // Clock Correction
+  // ----------------
+  double dClk = (xx(4) + xx(5) - xB(4) + dc) * t_CST::c;
+
   if (sd) {
-    sd->ID                    = prn.mid(1).toInt();
-    sd->IOD                   = eph->IOD();
-    sd->Clock.DeltaA0         = dClk;
-    sd->Orbit.DeltaRadial     = rsw(1);
-    sd->Orbit.DeltaAlongTrack = rsw(2);
-    sd->Orbit.DeltaCrossTrack = rsw(3);
-    sd->Orbit.DotDeltaRadial     = (rsw2(1) - rsw(1)) / xx(11);
-    sd->Orbit.DotDeltaAlongTrack = (rsw2(2) - rsw(2)) / xx(11);
-    sd->Orbit.DotDeltaCrossTrack = (rsw2(3) - rsw(3)) / xx(11);
+    sd->ID                       = prn.mid(1).toInt();
+    sd->IOD                      = eph->IOD();
+    sd->Clock.DeltaA0            = dClk;
+    sd->Orbit.DeltaRadial        = rsw(1);
+    sd->Orbit.DeltaAlongTrack    = rsw(2);
+    sd->Orbit.DeltaCrossTrack    = rsw(3);
+    sd->Orbit.DotDeltaRadial     = dotRsw(1);
+    sd->Orbit.DotDeltaAlongTrack = dotRsw(2);
+    sd->Orbit.DotDeltaCrossTrack = dotRsw(3);
   }
 
   outLine.sprintf("%d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n", 
