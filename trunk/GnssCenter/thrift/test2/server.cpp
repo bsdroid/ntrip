@@ -86,6 +86,11 @@ int main(int argc, char **argv) {
 
   while (true) {
     cout << "sleep ..." << endl;
+    if (CONNECTION) {
+      string answ;
+      cout << "CONNECTION " << endl;
+      CONNECTION->_service->answer(answ, "How are you?");
+    }
     sleep(1);
   }
 
