@@ -15,9 +15,9 @@ using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
 
-class myServiceHandler : virtual public myServiceIf {
+class myService : virtual public myServiceIf {
  public:
-  myServiceHandler() {}
+  myService() {}
   void answer(std::string& answ, const std::string& question) {
     // implemented on the client-side only
   }
@@ -26,9 +26,10 @@ class myServiceHandler : virtual public myServiceIf {
 class myProcessorFactory : virtual public TProcessorFactory {
  public:
   myProcessorFactory() {};
-  shared_ptr<TProcessor> getProcessor(const TConnectionInfo& info) {
-    shared_ptr<myServiceHandler> handler(new myServiceHandler());
-    shared_ptr<TProcessor>       processor(new myServiceProcessor(handler));
+  shared_ptr<TProcessor>   getProcessor(const TConnectionInfo& info) {
+    shared_ptr<myService>  service(new myService());
+    shared_ptr<TProcessor> processor(new myServiceProcessor(service));
+    cout << "connection " << endl;
     return processor;
   }
 };
