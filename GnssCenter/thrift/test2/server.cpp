@@ -34,6 +34,8 @@ class t_connection {
   shared_ptr<TTransport> _transport;
 };
 
+shared_ptr<t_connection> CONNECTION;
+
 class myProcessorFactory : public TProcessorFactory {
  public:
   myProcessorFactory() {};
@@ -41,13 +43,13 @@ class myProcessorFactory : public TProcessorFactory {
     shared_ptr<myService>  service(new myService());
     shared_ptr<TProcessor> processor(new myServiceProcessor(service));
     cout << "connection " << endl;
-    
-    t_connection connection;
-    connection._service     = service;
-    connection._processor   = processor;
-    connection._protocolInp = info.input;
-    connection._protocolOut = info.output;
-    connection._transport   = info.transport;
+
+    shared_ptr<t_connection> connection(new t_connection);
+    connection->_service     = service;
+    connection->_processor   = processor;
+    connection->_protocolInp = info.input;
+    connection->_protocolOut = info.output;
+    connection->_transport   = info.transport;
    
     return processor;
   }
