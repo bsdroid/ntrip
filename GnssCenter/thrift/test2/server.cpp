@@ -23,13 +23,30 @@ class myService : virtual public myServiceIf {
   }
 };
 
-class myProcessorFactory : virtual public TProcessorFactory {
+class t_connection {
+ public:
+  shared_ptr<myService>  _service;
+  shared_ptr<TProcessor> _processor;
+  shared_ptr<TProtocol>  _protocolInp;
+  shared_ptr<TProtocol>  _protocolOut;
+  shared_ptr<TTransport> _transport;
+};
+
+class myProcessorFactory : public TProcessorFactory {
  public:
   myProcessorFactory() {};
   shared_ptr<TProcessor>   getProcessor(const TConnectionInfo& info) {
     shared_ptr<myService>  service(new myService());
     shared_ptr<TProcessor> processor(new myServiceProcessor(service));
     cout << "connection " << endl;
+    
+    t_connection connection;
+    connection._service     = service;
+    connection._processor   = processor;
+    connection._protocolInp = info.input;
+    connection._protocolOut = info.output;
+    connection._transport   = info.transport;
+   
     return processor;
   }
 };
