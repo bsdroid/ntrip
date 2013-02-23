@@ -18,17 +18,8 @@ using namespace apache::thrift::transport;
 using namespace apache::thrift::server;
 using namespace apache::thrift::concurrency;
 
-class myService : virtual public myServiceIf {
- public:
-  myService() {}
-  void answer(const std::string& question) {
-    // implemented on the client-side only
-  }
-};
-
 class t_connection {
  public:
-  shared_ptr<myService>       _service;
   shared_ptr<myServiceClient> _client;
   shared_ptr<TProcessor>      _processor;
   shared_ptr<TProtocol>       _protocolInp;
@@ -43,12 +34,11 @@ class myProcessorFactory : public TProcessorFactory {
   myProcessorFactory() {};
   shared_ptr<TProcessor>   getProcessor(const TConnectionInfo& info) {
     shared_ptr<myServiceClient> client(new myServiceClient(info.output));
-    shared_ptr<myService>       service(new myService());
-    shared_ptr<TProcessor>      processor(new myServiceProcessor(service));
-    cout << "connection " << endl;
+    shared_ptr<TProcessor>      processor(new myServiceProcessor(client));
+
+    cout << "new connection " << endl;
 
     CONNECTION.reset(new t_connection);   
-    CONNECTION->_service     = service;
     CONNECTION->_client      = client;
     CONNECTION->_processor   = processor;
     CONNECTION->_protocolInp = info.input;
@@ -85,15 +75,15 @@ int main(int argc, char **argv) {
   shared_ptr<Thread> thread = threadFactory->newThread(serverThread);
   thread->start();
 
-  cout << "server thread started" << endl;
-
-  while (true) {
-    cout << "sleep ..." << endl;
-    if (CONNECTION) {
-      cout << "CONNECTION " << endl;
-      CONNECTION->_client->answer("How are you?");
+  try {
+    while (true) {
+      if (CONNECTION) {
+        CONNECTION->_client->answer("How are you?");
+      }
+      sleep(1);
     }
-    sleep(1);
+  } catch (TException& exc) {
+    cout << "Exception: " << exc.what() << endl;
   }
 
   return 0;
