@@ -5,6 +5,7 @@
 #include <thrift/server/TThreadedServer.h>
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
+#include <thrift/concurrency/Thread.h>
 
 #include "gen-cpp/myService.h"
 
@@ -14,6 +15,7 @@ using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
+using namespace ::apache::thrift::concurrency;
 
 class myService : virtual public myServiceIf {
  public:
@@ -51,17 +53,30 @@ class myProcessorFactory : public TProcessorFactory {
   }
 };
 
+class t_serverThread : public Runnable {
+ public:
+  t_serverThread() {}
+  void run() {
+    int port = 9090;
+    shared_ptr<TServerSocket>      serverTransport(new TServerSocket(port));
+    shared_ptr<myProcessorFactory> processorFactory(new myProcessorFactory());
+    shared_ptr<TTransportFactory>  transportFactory(new TBufferedTransportFactory());
+    shared_ptr<TProtocolFactory>   protocolFactory(new TBinaryProtocolFactory());
+
+    TThreadedServer server(processorFactory, serverTransport,
+                           transportFactory, protocolFactory);
+    server.serve();
+  }
+};
+
 int main(int argc, char **argv) {
-  int port = 9090;
-  shared_ptr<TServerSocket>      serverTransport(new TServerSocket(port));
-  shared_ptr<myProcessorFactory> processorFactory(new myProcessorFactory());
-  shared_ptr<TTransportFactory>  transportFactory(new TBufferedTransportFactory());
-  shared_ptr<TProtocolFactory>   protocolFactory(new TBinaryProtocolFactory());
 
-  TThreadedServer server(processorFactory, serverTransport,
-                         transportFactory, protocolFactory);
+  t_serverThread serverThread;
+  serverThread.run();
 
-  server.serve();
+  while (true) {
+    sleep(1);
+  }
 
   return 0;
 }
