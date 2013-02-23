@@ -12,9 +12,9 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-class myServiceHandler : virtual public myServiceIf {
+class myService : virtual public myServiceIf {
  public:
-  myServiceHandler() {}
+  myService() {}
   void answer(std::string& answ, const std::string& question) {
     cout << "Server asks: " << question << endl;
     answ = "I am well, thanks.";
@@ -24,12 +24,12 @@ class myServiceHandler : virtual public myServiceIf {
 
 int main(int argc, char** argv) {
   int port = 9090;
-  shared_ptr<TSocket>          socket(new TSocket("localhost", port));
-  shared_ptr<TTransport>       transport(new TBufferedTransport(socket));
-  shared_ptr<TProtocol>        protocol(new TBinaryProtocol(transport));
+  shared_ptr<TSocket>    socket(new TSocket("localhost", port));
+  shared_ptr<TTransport> transport(new TBufferedTransport(socket));
+  shared_ptr<TProtocol>  protocol(new TBinaryProtocol(transport));
 
-  shared_ptr<myServiceHandler> handler(new myServiceHandler());
-  shared_ptr<TProcessor>       processor(new myServiceProcessor(handler));
+  shared_ptr<myService>  service(new myService());
+  shared_ptr<TProcessor> processor(new myServiceProcessor(service));
 
   try {
     transport->open();
