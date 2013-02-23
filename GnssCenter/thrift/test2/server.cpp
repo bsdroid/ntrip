@@ -6,16 +6,17 @@
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/concurrency/Thread.h>
+#include <thrift/concurrency/PosixThreadFactory.h>
 
 #include "gen-cpp/myService.h"
 
 using namespace std;
 using namespace boost;
-using namespace ::apache::thrift;
-using namespace ::apache::thrift::protocol;
-using namespace ::apache::thrift::transport;
-using namespace ::apache::thrift::server;
-using namespace ::apache::thrift::concurrency;
+using namespace apache::thrift;
+using namespace apache::thrift::protocol;
+using namespace apache::thrift::transport;
+using namespace apache::thrift::server;
+using namespace apache::thrift::concurrency;
 
 class myService : virtual public myServiceIf {
  public:
@@ -44,20 +45,21 @@ class myProcessorFactory : public TProcessorFactory {
     shared_ptr<TProcessor> processor(new myServiceProcessor(service));
     cout << "connection " << endl;
 
-    shared_ptr<t_connection> connection(new t_connection);
-    connection->_service     = service;
-    connection->_processor   = processor;
-    connection->_protocolInp = info.input;
-    connection->_protocolOut = info.output;
-    connection->_transport   = info.transport;
+    CONNECTION.reset(new t_connection);   
+    CONNECTION->_service     = service;
+    CONNECTION->_processor   = processor;
+    CONNECTION->_protocolInp = info.input;
+    CONNECTION->_protocolOut = info.output;
+    CONNECTION->_transport   = info.transport;
    
     return processor;
   }
 };
 
-class t_serverThread : public Runnable {
+class t_serverThread : public apache::thrift::concurrency::Runnable {
  public:
   t_serverThread() {}
+  ~t_serverThread() {}
   void run() {
     int port = 9090;
     shared_ptr<TServerSocket>      serverTransport(new TServerSocket(port));
@@ -68,15 +70,22 @@ class t_serverThread : public Runnable {
     TThreadedServer server(processorFactory, serverTransport,
                            transportFactory, protocolFactory);
     server.serve();
-  }
+  }   
 };
 
 int main(int argc, char **argv) {
 
-  t_serverThread serverThread;
-  serverThread.run();
+  shared_ptr<PosixThreadFactory> threadFactory(new PosixThreadFactory);
+
+  shared_ptr<t_serverThread> serverThread(new t_serverThread);  
+
+  shared_ptr<Thread> thread = threadFactory->newThread(serverThread);
+  thread->start();
+
+  cout << "server thread started" << endl;
 
   while (true) {
+    cout << "sleep ..." << endl;
     sleep(1);
   }
 
