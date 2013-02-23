@@ -28,11 +28,12 @@ class myService : virtual public myServiceIf {
 
 class t_connection {
  public:
-  shared_ptr<myService>  _service;
-  shared_ptr<TProcessor> _processor;
-  shared_ptr<TProtocol>  _protocolInp;
-  shared_ptr<TProtocol>  _protocolOut;
-  shared_ptr<TTransport> _transport;
+  shared_ptr<myService>       _service;
+  shared_ptr<myServiceClient> _client;
+  shared_ptr<TProcessor>      _processor;
+  shared_ptr<TProtocol>       _protocolInp;
+  shared_ptr<TProtocol>       _protocolOut;
+  shared_ptr<TTransport>      _transport;
 };
 
 shared_ptr<t_connection> CONNECTION;
@@ -41,12 +42,14 @@ class myProcessorFactory : public TProcessorFactory {
  public:
   myProcessorFactory() {};
   shared_ptr<TProcessor>   getProcessor(const TConnectionInfo& info) {
-    shared_ptr<myService>  service(new myService());
-    shared_ptr<TProcessor> processor(new myServiceProcessor(service));
+    shared_ptr<myServiceClient> client(new myServiceClient(info.output));
+    shared_ptr<myService>       service(new myService());
+    shared_ptr<TProcessor>      processor(new myServiceProcessor(service));
     cout << "connection " << endl;
 
     CONNECTION.reset(new t_connection);   
     CONNECTION->_service     = service;
+    CONNECTION->_client      = client;
     CONNECTION->_processor   = processor;
     CONNECTION->_protocolInp = info.input;
     CONNECTION->_protocolOut = info.output;
@@ -89,7 +92,7 @@ int main(int argc, char **argv) {
     if (CONNECTION) {
       string answ;
       cout << "CONNECTION " << endl;
-      CONNECTION->_service->answer(answ, "How are you?");
+      CONNECTION->_client->answer(answ, "How are you?");
     }
     sleep(1);
   }
