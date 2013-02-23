@@ -23,10 +23,10 @@ gen-cpp: myservice.thrift
 	$(CXX) -Wall $(DEFS) $(INC) -c $< -o $@
 
 server: server.o $(GEN_OBJ)
-	$(CXX) $^ -o $@ -L$(LIB_DIR) -lthrift 
+	$(CXX) $^ -o $@ -L$(LIB_DIR) -lthrift
 
 client: client.o $(GEN_OBJ)
-	$(CXX) $^ -o $@ -L$(LIB_DIR) -lthrift 
+	$(CXX) $^ -o $@ -L$(LIB_DIR) -lthrift
 
 clean:
 	$(RM) *.o server client
