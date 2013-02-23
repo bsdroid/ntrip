@@ -7,6 +7,7 @@
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/concurrency/Thread.h>
 #include <thrift/concurrency/PosixThreadFactory.h>
+#include <thrift/concurrency/Mutex.h>
 
 #include "gen-cpp/myService.h"
 
@@ -27,12 +28,16 @@ class t_connection {
   shared_ptr<TTransport>      _transport;
 };
 
+Mutex MUTEX;
 shared_ptr<t_connection> CONNECTION;
 
 class myProcessorFactory : public TProcessorFactory {
  public:
   myProcessorFactory() {};
   shared_ptr<TProcessor>   getProcessor(const TConnectionInfo& info) {
+
+    Guard m(MUTEX);
+
     shared_ptr<myServiceClient> client(new myServiceClient(info.output));
     shared_ptr<TProcessor>      processor(new myServiceProcessor(client));
 
@@ -77,8 +82,11 @@ int main(int argc, char **argv) {
 
   try {
     while (true) {
-      if (CONNECTION) {
-        CONNECTION->_client->answer("How are you?");
+      {
+        Guard m(MUTEX);
+        if (CONNECTION) {
+          CONNECTION->_client->answer("How are you?");
+        }
       }
       sleep(1);
     }
