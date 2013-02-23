@@ -21,7 +21,7 @@ using namespace apache::thrift::concurrency;
 class myService : virtual public myServiceIf {
  public:
   myService() {}
-  void answer(std::string& answ, const std::string& question) {
+  void answer(const std::string& question) {
     // implemented on the client-side only
   }
 };
@@ -90,9 +90,8 @@ int main(int argc, char **argv) {
   while (true) {
     cout << "sleep ..." << endl;
     if (CONNECTION) {
-      string answ;
       cout << "CONNECTION " << endl;
-      CONNECTION->_client->answer(answ, "How are you?");
+      CONNECTION->_client->answer("How are you?");
     }
     sleep(1);
   }
