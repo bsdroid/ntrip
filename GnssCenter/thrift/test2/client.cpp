@@ -15,9 +15,8 @@ using namespace apache::thrift::transport;
 class myService : virtual public myServiceIf {
  public:
   myService() {}
-  void answer(std::string& answ, const std::string& question) {
+  void answer(const std::string& question) {
     cout << "Server asks: " << question << endl;
-    answ = "I am well, thanks.";
   }
 
 };

@@ -1,4 +1,4 @@
 
 service myService {
-   string answer(1:string question)
+  oneway void answer(1:string question)
 }
