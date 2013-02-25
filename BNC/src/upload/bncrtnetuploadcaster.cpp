@@ -130,15 +130,15 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _t0  =     1994.0;
   }
   else if (_crdTrafo == "SIRGAS2000") {
-    _dx  =   -0.0051;
-    _dy  =   -0.0065;
-    _dz  =   -0.0099;
+    _dx  =    0.0020;
+    _dy  =    0.0041;
+    _dz  =    0.0039;
     _dxr =    0.0000;
     _dyr =    0.0000;
     _dzr =    0.0000;
-    _ox  =  0.000150;
-    _oy  =  0.000020;
-    _oz  =  0.000021;
+    _ox  =  0.000170;
+    _oy  = -0.000030;
+    _oz  =  0.000070;
     _oxr =  0.000000;
     _oyr =  0.000000;
     _ozr =  0.000000;
