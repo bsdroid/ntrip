@@ -582,29 +582,29 @@ void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
   ColumnVector meanSta(3);
 
   if      (_crdTrafo == "ETRF2000") {
-    meanSta(1) =  3661090.0;
-    meanSta(2) =   845230.0;
-    meanSta(3) =  5136850.0;
+    meanSta(1) =  3546469.0
+    meanSta(2) =   818691.0
+    meanSta(3) =  4974928.0
   }
   else if (_crdTrafo == "NAD83") {
-    meanSta(1) = -1092950.0;
-    meanSta(2) = -4383600.0;
-    meanSta(3) =  4487420.0;
+    meanSta(1) = -1058828.0
+    meanSta(2) = -4246462.0
+    meanSta(3) =  4345888.0
   }
   else if (_crdTrafo == "GDA94") {
-    meanSta(1) = -4052050.0;
-    meanSta(2) =  4212840.0;
-    meanSta(3) = -2545110.0;
+    meanSta(1) = -3922258.0
+    meanSta(2) =  4077104.0
+    meanSta(3) = -2474514.0
   }
   else if (_crdTrafo == "SIRGAS2000") {
-    meanSta(1) =  3740860.0;
-    meanSta(2) = -4964290.0;
-    meanSta(3) = -1425420.0;
+    meanSta(1) =  3623491.0
+    meanSta(2) = -4808741.0
+    meanSta(3) = -1380545.0
   }
   else if (_crdTrafo == "SIRGAS95") {
-    meanSta(1) =  3135390.0;
-    meanSta(2) = -5017670.0;
-    meanSta(3) = -2374440.0;
+    meanSta(1) =  3037030.0
+    meanSta(2) = -4860492.0
+    meanSta(3) = -2299635.0
   }
   else if (_crdTrafo == "Custom") {
     meanSta(1) =        0.0; // TODO
