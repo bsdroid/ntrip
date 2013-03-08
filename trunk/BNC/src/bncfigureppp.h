@@ -56,6 +56,8 @@ class bncFigurePPP : public QWidget {
   QVector<pppPos*> _pos;
   bncTime          _startTime;
   QString          _pppMount;
+  QString          _pppCorrMount;
+  QString          _pppSPP;
   double           _neuMax;
   double           _tMin;
   double           _pppAudioResponse;
