@@ -93,6 +93,8 @@ void bncFigurePPP::reset() {
   }
 
   _pppMount = settings.value("pppMount").toString();
+  _pppCorrMount = settings.value("pppCorrMount").toString();
+  _pppSPP = settings.value("pppSPP").toString();
 
   for (int ii = 0; ii < _pos.size(); ++ii) {
     delete _pos[ii];
@@ -297,15 +299,36 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
       // Start Time
       // ----------
+
       _startTime.civil_time(hour, minute, second);
-      QString startStr = QString("%4 Start %1:%2:%3")
+
+      if (_pppSPP == "Realtime-PPP") {
+
+      QString startStr = QString("%1 %2 Start %3:%4:%5")
+                              .arg(_pppMount)
+                              .arg(_pppCorrMount)
                               .arg(hour,   2, 10, QChar('0'))
                               .arg(minute, 2, 10, QChar('0'))
-                              .arg(int(second), 2, 10, QChar('0'))
-                              .arg(_pppMount);
+                              .arg(int(second), 2, 10, QChar('0'));
       painter.setPen(QColor(Qt::black));
       painter.drawText(0, ww, pntP.x() + 21*ww, pntP.x(),
-                       Qt::AlignRight, startStr);
+                       Qt::AlignRight, startStr);                 
+                                     }
+
+      if (_pppSPP == "Realtime-SPP") {
+
+      QString startStr = QString("%1 Start %2:%3:%4")
+                              .arg(_pppMount)
+                              .arg(hour,   2, 10, QChar('0'))
+                              .arg(minute, 2, 10, QChar('0'))
+                              .arg(int(second), 2, 10, QChar('0'));
+      painter.setPen(QColor(Qt::black));
+      painter.drawText(0, ww, pntP.x() + 21*ww, pntP.x(),
+                       Qt::AlignRight, startStr);                 
+                                     }
+
+
+
     }
   }
 }
