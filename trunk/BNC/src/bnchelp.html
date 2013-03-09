@@ -872,7 +872,7 @@ Differential GNSS and RTK operation using RTCM streams is currently based on cor
 An alternative to the observation space approach is the so called 'sate space' approach. The principle here is to provide information on individual error sources. It can be called 'State Space Representation' (SSR). For a rover position, state space information concerning precise satellite clocks, orbits, ionosphere, troposphere et cetera can be converted into observation space and used to correct the rover observables for more accurate positioning. Alternatively the state information can directly be used in the rover's processing or adjustment model. 
 </p>
 <p>
-RTCM has developed Version 3 messages to transport satellite orbit and clock corrections in real-time. The current set of SSR messages concerns:
+RTCM has developed Version 3 messages to transport satellite orbit and clock corrections in real-time. Note that corrections refer to satellite Antenna Phase Centers (APC). The current set of SSR messages concerns:
 <ul>
 <li>Orbit corrections to Broadcast Ephemeris</li>
 <li>Clock corrections to Broadcast Ephemeris</li>
@@ -1561,7 +1561,7 @@ Specify an 'Observations Mountpoint' from the list of selected 'Streams' you are
 
 <p><a name="pppcorrmount"><h4>3.12.1.3 Corr Mountpoint - optional</h4></p>
 <p>
-Specify a Broadcast Ephemeris 'Corrections Mountpoint' from the list of selected 'Streams' you are pulling if you want BNC to correct your positioning solution accordingly.
+Specify a Broadcast Ephemeris 'Corrections Mountpoint' from the list of selected 'Streams' you are pulling if you want BNC to correct your positioning solution accordingly. Not that the stream's corrections must refer to the satellite Antenna Phase Center (APC).
 </p>
 
 <p><a name="pppxyz"><h4>3.12.2 Marker Coordinates - optional</h4></p>
@@ -1788,7 +1788,7 @@ Enter a sigma in meters per second to describe the expected variation of the tro
 
 <p><a name="combi"><h4>3.13. Combine Corrections</h4></p>
 <p>
-BNC allows processing several orbit and clock correction streams in real-time to produce, encode, upload and save a combination of Broadcast Corrections from various providers. It is so far only the satellite clock corrections which are combined while orbit corrections in the combination product as well as the product update rates are just taken over from one of the incoming Broadcast Correction streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach. The clock combination can be based either on a plain 'Single-Epoch' or on a 'Kalman' Filter approach.
+BNC allows processing several orbit and clock correction streams in real-time to produce, encode, upload and save a combination of Broadcast Corrections from various providers. All corrections must refer to satellite Antenna Phase Centers (APC). It is so far only the satellite clock corrections which are combined while orbit corrections in the combination product as well as the product update rates are just taken over from one of the incoming Broadcast Correction streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach. The clock combination can be based either on a plain 'Single-Epoch' or on a 'Kalman' Filter approach.
 </p>
 <p>
 In the Kalman Filter approach satellite clocks estimated by individual Analyses Centers (ACs) are used as pseudo observations within the adjustment process. Each observation is modeled as a linear function (actually a simple sum) of three estimated parameters: AC specific offset, satellite specific offset common to all ACs, and the actual satellite clock correction which represents the result of the combination. These three parameter types differ in their statistical properties. The satellite clock offsets are assumed to be static parameters while AC specific and satellite specific offsets are stochastic parameters with appropriate white noise.
@@ -1849,7 +1849,7 @@ The part of BNC which enables the combination of Broadcast Corrections is not in
 
 <p><a name="combimounttab"><h4>3.13.1 Combine Corrections Table - optional</h4></p>
 <p>
-Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadcast Corrections mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. The stream processing can already be started with only one corrections stream configured for combination.
+Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadcast Corrections mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the Antenna Phase Center (APC) related stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. The stream processing can already be started with only one corrections stream configured for combination.
 </p>
 <p>
 Note that an appropriate 'Wait for full corr epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. To give an example: a value of 15 sec would make sense if the update rate of incoming clock corrections is 10 sec.
