@@ -679,86 +679,77 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
 
     double dT = 60.0;
 
-    for (int iTime = 1; iTime <= 2; iTime++) {
-
-      bncTime time12 = (iTime == 1) ? _resTime : _resTime + dT;
-
-      ColumnVector xc(4);
-      ColumnVector vv(3);
-      corr->eph->position(time12.gpsw(), time12.gpssec(), 
-                          xc.data(), vv.data());
-      bncPPPclient::applyCorr(time12, corr, xc, vv);
-      
-      // Relativistic Correction
-      // -----------------------
-      double relCorr = - 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
-      xc(4) -= relCorr;
-      
-      // Code Biases
-      // -----------
-      double dcbP1C1 = 0.0;
-      double dcbP1P2 = 0.0;
-      
-      // Correction Phase Center --> CoM
-      // -------------------------------
-      ColumnVector dx(3); dx = 0.0;
-      if (_antex) {
-        double Mjd = time12.mjd() + time12.daysec()/86400.0;
-        if (_antex->satCoMcorrection(corr->prn, Mjd, xc.Rows(1,3), dx) == success) {
-          xc(1) -= dx(1);
-          xc(2) -= dx(2);
-          xc(3) -= dx(3);
-        }
-        else {
-          cout << "antenna not found" << endl;
-        }
-      }
-      
-      if (iTime == 1) {
-        out << 'P' << corr->prn.toAscii().data()
-            << setw(14) << setprecision(6) << xc(1) / 1000.0
-            << setw(14) << setprecision(6) << xc(2) / 1000.0
-            << setw(14) << setprecision(6) << xc(3) / 1000.0
-            << setw(14) << setprecision(6) << xc(4) * 1e6
-            << setw(14) << setprecision(6) << relCorr * 1e6
-            << setw(8)  << setprecision(3) << dx(1)
-            << setw(8)  << setprecision(3) << dx(2)
-            << setw(8)  << setprecision(3) << dx(3)
-            << setw(8)  << setprecision(3) << dcbP1C1
-            << setw(8)  << setprecision(3) << dcbP1P2
-            << setw(6)  << setprecision(1) << dT;
-
-        QString line;
-        int messageType = COTYPE_GPSCOMBINED;
-        int updateInt   = 0;
-        line.sprintf("%d %d %d %.1f %s"
-                     "   %3d"
-                     "   %8.3f %8.3f %8.3f %8.3f"
-                     "   %10.5f %10.5f %10.5f %10.5f"
-                     "   %10.5f  %10.5f %10.5f %10.5f INTERNAL",
-                     messageType, updateInt, time12.gpsw(), time12.gpssec(),
-                     corr->prn.toAscii().data(),
-                     corr->iod,
-                     corr->dClk * t_CST::c,
-                     corr->rao[0],
-                     corr->rao[1],
-                     corr->rao[2],
-                     corr->dotDClk * t_CST::c,
-                     corr->dotRao[0],
-                     corr->dotRao[1],
-                     corr->dotRao[2],
-                     corr->dotDotDClk * t_CST::c,
-                     corr->dotDotRao[0],
-                     corr->dotDotRao[1],
-                     corr->dotDotRao[2]);
-        corrLines << line;
+    ColumnVector xc(4);
+    ColumnVector vv(3);
+    corr->eph->position(_resTime.gpsw(), _resTime.gpssec(), 
+                        xc.data(), vv.data());
+    bncPPPclient::applyCorr(_resTime, corr, xc, vv);
+    
+    // Relativistic Correction
+    // -----------------------
+    double relCorr = - 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
+    xc(4) -= relCorr;
+    
+    // Code Biases
+    // -----------
+    double dcbP1C1 = 0.0;
+    double dcbP1P2 = 0.0;
+    
+    // Correction Phase Center --> CoM
+    // -------------------------------
+    ColumnVector dx(3); dx = 0.0;
+    if (_antex) {
+      double Mjd = _resTime.mjd() + _resTime.daysec()/86400.0;
+      if (_antex->satCoMcorrection(corr->prn, Mjd, xc.Rows(1,3), dx) == success) {
+        xc(1) -= dx(1);
+        xc(2) -= dx(2);
+        xc(3) -= dx(3);
       }
       else {
-        out << setw(14) << setprecision(6) << xc(1) / 1000.0
-            << setw(14) << setprecision(6) << xc(2) / 1000.0
-            << setw(14) << setprecision(6) << xc(3) / 1000.0 << endl;
+        cout << "antenna not found" << endl;
       }
     }
+    
+    out << 'P' << corr->prn.toAscii().data()
+        << setw(14) << setprecision(6) << xc(1) / 1000.0
+        << setw(14) << setprecision(6) << xc(2) / 1000.0
+        << setw(14) << setprecision(6) << xc(3) / 1000.0
+        << setw(14) << setprecision(6) << xc(4) * 1e6
+        << setw(14) << setprecision(6) << relCorr * 1e6
+        << setw(8)  << setprecision(3) << dx(1)
+        << setw(8)  << setprecision(3) << dx(2)
+        << setw(8)  << setprecision(3) << dx(3)
+        << setw(8)  << setprecision(3) << dcbP1C1
+        << setw(8)  << setprecision(3) << dcbP1P2
+        << setw(6)  << setprecision(1) << dT
+        << setw(14) << setprecision(6) << (xc(1) + vv(1) * dT) / 1000.0
+        << setw(14) << setprecision(6) << (xc(2) + vv(2) * dT) / 1000.0
+        << setw(14) << setprecision(6) << (xc(3) + vv(3) * dT) / 1000.0 << endl;
+
+    QString line;
+    int messageType = COTYPE_GPSCOMBINED;
+    int updateInt   = 0;
+    line.sprintf("%d %d %d %.1f %s"
+                 "   %3d"
+                 "   %8.3f %8.3f %8.3f %8.3f"
+                 "   %10.5f %10.5f %10.5f %10.5f"
+                 "   %10.5f  %10.5f %10.5f %10.5f INTERNAL",
+                 messageType, updateInt, _resTime.gpsw(), _resTime.gpssec(),
+                 corr->prn.toAscii().data(),
+                 corr->iod,
+                 corr->dClk * t_CST::c,
+                 corr->rao[0],
+                 corr->rao[1],
+                 corr->rao[2],
+                 corr->dotDClk * t_CST::c,
+                 corr->dotRao[0],
+                 corr->dotRao[1],
+                 corr->dotRao[2],
+                 corr->dotDotDClk * t_CST::c,
+                 corr->dotDotRao[0],
+                 corr->dotDotRao[1],
+                 corr->dotDotRao[2]);
+    corrLines << line;
 
     delete corr;
   }
