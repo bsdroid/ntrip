@@ -352,6 +352,9 @@ t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
                               ColumnVector& xc, ColumnVector& vv) {
 
   double dtRao = tt - cc->tRao;
+
+  // Position
+  // --------
   ColumnVector raoHlp = cc->rao + cc->dotRao * dtRao 
                       + 0.5 * cc->dotDotRao * dtRao * dtRao;
 
@@ -365,6 +368,18 @@ t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
   xc[1] -= dx[1];
   xc[2] -= dx[2];
 
+  // Velocity
+  // --------
+  ColumnVector dotRaoHlp = cc->dotRao + cc->dotDotRao * dtRao;
+
+  ColumnVector dv(3);
+  RSW_to_XYZ(xc.Rows(1,3), vv, dotRaoHlp, dv);
+  vv[0] -= dv[0];
+  vv[1] -= dv[1];
+  vv[2] -= dv[2];
+
+  // Clocks
+  // ------
   double dtClk = tt - cc->tClk;
 
   xc[3] += cc->dClk + cc->dotDClk * dtClk + cc->dotDotDClk * dtClk * dtClk
