@@ -304,14 +304,14 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
       if (_pppSPP == "Realtime-PPP") {
 
-      QString startStr = QString("%1 %2 Start %3:%4:%5")
+      QString startStr = QString("%1 & %2, Start %3:%4:%5")
                               .arg(_pppMount)
                               .arg(_pppCorrMount)
                               .arg(hour,   2, 10, QChar('0'))
                               .arg(minute, 2, 10, QChar('0'))
                               .arg(int(second), 2, 10, QChar('0'));
       painter.setPen(QColor(Qt::black));
-      painter.drawText(0, ww, pntP.x() + 21*ww, pntP.x(),
+      painter.drawText(0, ww, pntP.x() + 31*ww, pntP.x(),
                        Qt::AlignRight, startStr);                 
                                      }
 
