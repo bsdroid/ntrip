@@ -1007,10 +1007,10 @@ co->Sat[pos].Clock.DeltaA2);
     for(i = 0; i < nums; ++i)
     {
       G_GLONASS_SATELLITE_ID(id)
-      for(pos = CLOCKORBIT_NUMGPS; pos < b->NumberOfGLONASSSat && b->Sat[pos].ID != id; ++pos)
+      for(pos = CLOCKORBIT_NUMGPS; pos < CLOCKORBIT_NUMGPS+b->NumberOfGLONASSSat && b->Sat[pos].ID != id; ++pos)
         ;
       if(pos >= CLOCKORBIT_NUMGPS+CLOCKORBIT_NUMGLONASS) return GCOBR_DATAMISMATCH;
-      else if(pos == b->NumberOfGLONASSSat) ++b->NumberOfGLONASSSat;
+      else if(pos == CLOCKORBIT_NUMGPS+b->NumberOfGLONASSSat) ++b->NumberOfGLONASSSat;
       b->Sat[pos].ID = id;
 
       G_NO_OF_CODE_BIASES(b->Sat[pos].NumberOfCodeBiases)
