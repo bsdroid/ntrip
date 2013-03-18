@@ -88,12 +88,13 @@ void bncUploadCaster::run() {
         _outSocket->write(_outBuffer);
         _outSocket->flush();
         emit newBytes(_mountpoint.toAscii(), _outBuffer.size());
-        if (_rate == 0) {
-          _outBuffer.clear();
-        }
       }
     }
     if (_rate == 0) {
+      {
+        QMutexLocker locker(&_mutex);
+        _outBuffer.clear();
+      }
       msleep(100); //sleep 0.1 sec
     }
     else {
