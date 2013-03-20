@@ -635,90 +635,36 @@ string bncRinex::asciiSatLine(const t_obs& obs) {
   str << obs.satSys << setw(2) << setfill('0') << obs.satNum << setfill(' ');
 
   if (obs.satSys == 'R') { // Glonass
-    str << ' ' << setw(2) << obs.slotNum;
+    str << ' ' << setw(2) << obs.slotNum << ' ';
   }
   else {
-    str << "   ";
+    str << "    ";
   }
 
   float rnxVers = 3.0;
 
-  if      (obs.satSys == 'G') { // GPS
-    str << "  1C " 
-        << obsToStr(obs.measdata("C1C", rnxVers)) << ' '  
-        << obsToStr(obs.measdata("L1C", rnxVers)) << ' '
-        << obsToStr(obs.measdata("D1C", rnxVers)) << ' '
-        << obsToStr(obs.measdata("S1C", rnxVers), 8, 3) << ' '
-        << setw(2)  << obs.slip_cnt_L1;
-    str << "  1P " 
-        << obsToStr(obs.measdata("C1P", rnxVers)) << ' '  
-        << obsToStr(obs.measdata("L1P", rnxVers)) << ' '
-        << obsToStr(obs.measdata("D1P", rnxVers)) << ' '
-        << obsToStr(obs.measdata("S1P", rnxVers), 8, 3) << ' '
-        << setw(2)  << obs.slip_cnt_L1;
-    if      (obs.measdata("C2P", rnxVers) != 0.0) {
-      str << "  2P "
-          << obsToStr(obs.measdata("C2P", rnxVers)) << ' '
-          << obsToStr(obs.measdata("L2P", rnxVers)) << ' '
-          << obsToStr(obs.measdata("D2P", rnxVers)) << ' '
-          << obsToStr(obs.measdata("S2P", rnxVers), 8, 3) << ' '
-          << setw(2)  << obs.slip_cnt_L2;
+  for (int ie = 0; ie < GNSSENTRY_NUMBER; ie++) {
+    QString rnxStr = obs.rnxStr(ie);
+    if (rnxStr.length() >= 2 && (rnxStr[0] == 'C' || rnxStr[0] == 'L')) {
+      double  data   = obs.measdata(rnxStr, rnxVers);
+      if (data != 0) {
+        str << ' ' << rnxStr.toAscii().data() << ' ' << obsToStr(data);
+        if (rnxStr[0] == 'L') {
+          int slipCnt = 0;
+          if      (rnxStr[1] == '1') {
+            slipCnt = obs.slip_cnt_L1;
+          }
+          else if (rnxStr[1] == '2') {
+            slipCnt = obs.slip_cnt_L2;
+          }
+          else if (rnxStr[1] == '5') {
+            slipCnt = obs.slip_cnt_L5;
+          }
+          str << ' ' << setw(2)  << slipCnt;
+        }
+      }
     }
-    else if (obs.measdata("C2C", rnxVers) != 0.0) {
-      str << "  2C "
-          << obsToStr(obs.measdata("C2C", rnxVers)) << ' '
-          << obsToStr(obs.measdata("L2C", rnxVers)) << ' '
-          << obsToStr(obs.measdata("D2C", rnxVers)) << ' '
-          << obsToStr(obs.measdata("S2C", rnxVers), 8, 3) << ' '
-          << setw(2)  << obs.slip_cnt_L2;
-    }
-    str << "  5C "
-        << obsToStr(obs.measdata("C5", rnxVers)) << ' '
-        << obsToStr(obs.measdata("L5", rnxVers)) << ' '
-        << obsToStr(obs.measdata("D5", rnxVers)) << ' '
-        << obsToStr(obs.measdata("S5", rnxVers), 8, 3) << ' '
-        << setw(2)  << obs.slip_cnt_L5;
   }
-  else if (obs.satSys == 'R') { // Glonass
-    str << "  1C "
-        << obsToStr(obs.measdata("C1C", rnxVers)) << ' '  
-        << obsToStr(obs.measdata("L1C", rnxVers)) << ' '
-        << obsToStr(obs.measdata("D1C", rnxVers)) << ' '
-        << obsToStr(obs.measdata("S1C", rnxVers), 8, 3) << ' '
-        << setw(2)  << obs.slip_cnt_L1;
-    str << "  1P "
-        << obsToStr(obs.measdata("C1P", rnxVers)) << ' '  
-        << obsToStr(obs.measdata("L1P", rnxVers)) << ' '
-        << obsToStr(obs.measdata("D1P", rnxVers)) << ' '
-        << obsToStr(obs.measdata("S1P", rnxVers), 8, 3) << ' '
-        << setw(2)  << obs.slip_cnt_L1;
-    str << "  2P "
-        << obsToStr(obs.measdata("C2P", rnxVers)) << ' '
-        << obsToStr(obs.measdata("L2P", rnxVers)) << ' '
-        << obsToStr(obs.measdata("D2P", rnxVers)) << ' '
-        << obsToStr(obs.measdata("S2P", rnxVers), 8, 3) << ' '
-        << setw(2)  << obs.slip_cnt_L2;
-    str << "  2C "
-        << obsToStr(obs.measdata("C2C", rnxVers)) << ' '  
-        << obsToStr(obs.measdata("L2C", rnxVers)) << ' '
-        << obsToStr(obs.measdata("D2C", rnxVers)) << ' ' 
-        << obsToStr(obs.measdata("S2C", rnxVers), 8, 3) << ' '
-        << setw(2)  << obs.slip_cnt_L2;
-  }
-  else if (obs.satSys == 'E') { // Galileo
-    str << " 1C "
-        << obsToStr(obs.measdata("C1", rnxVers)) << ' '  
-        << obsToStr(obs.measdata("L1", rnxVers)) << ' '
-        << obsToStr(obs.measdata("D1", rnxVers)) << ' '
-        << obsToStr(obs.measdata("S1", rnxVers), 8, 3) << ' '
-        << setw(2)  << obs.slip_cnt_L1;
 
-    str << "  5C "
-        << obsToStr(obs.measdata("C5", rnxVers)) << ' '        
-        << obsToStr(obs.measdata("L5", rnxVers)) << ' '
-        << obsToStr(obs.measdata("D5", rnxVers)) << ' '
-        << obsToStr(obs.measdata("S5", rnxVers), 8, 3) << ' '
-        << setw(2)  << obs.slip_cnt_L5;
-  }
   return str.str();
 }
