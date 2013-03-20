@@ -677,55 +677,40 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
     it.next();
     t_corr* corr = it.value();
 
-    double dT = 60.0;
-
     ColumnVector xc(4);
     ColumnVector vv(3);
     corr->eph->position(_resTime.gpsw(), _resTime.gpssec(), 
                         xc.data(), vv.data());
     bncPPPclient::applyCorr(_resTime, corr, xc, vv);
     
-    // Relativistic Correction
-    // -----------------------
-    double relCorr = - 2.0 * DotProduct(xc.Rows(1,3),vv) / t_CST::c / t_CST::c;
-    xc(4) -= relCorr;
-    
-    // Code Biases
-    // -----------
-    double dcbP1C1 = 0.0;
-    double dcbP1P2 = 0.0;
-    
     // Correction Phase Center --> CoM
     // -------------------------------
     ColumnVector dx(3); dx = 0.0;
     if (_antex) {
       double Mjd = _resTime.mjd() + _resTime.daysec()/86400.0;
-      if (_antex->satCoMcorrection(corr->prn, Mjd, xc.Rows(1,3), dx) == success) {
-        xc(1) -= dx(1);
-        xc(2) -= dx(2);
-        xc(3) -= dx(3);
-      }
-      else {
+      if (_antex->satCoMcorrection(corr->prn, Mjd, xc.Rows(1,3), dx) != success) {
+        dx = 0;
         cout << "antenna not found" << endl;
       }
     }
     
-    out << 'P' << corr->prn.toAscii().data()
-        << setw(14) << setprecision(6) << xc(1) / 1000.0
-        << setw(14) << setprecision(6) << xc(2) / 1000.0
-        << setw(14) << setprecision(6) << xc(3) / 1000.0
-        << setw(14) << setprecision(6) << xc(4) * 1e6
-        << setw(14) << setprecision(6) << relCorr * 1e6
-        << setw(8)  << setprecision(3) << dx(1)
-        << setw(8)  << setprecision(3) << dx(2)
-        << setw(8)  << setprecision(3) << dx(3)
-        << setw(8)  << setprecision(3) << dcbP1C1
-        << setw(8)  << setprecision(3) << dcbP1P2
-        << setw(6)  << setprecision(1) << dT
-        << setw(14) << setprecision(6) << (xc(1) + vv(1) * dT) / 1000.0
-        << setw(14) << setprecision(6) << (xc(2) + vv(2) * dT) / 1000.0
-        << setw(14) << setprecision(6) << (xc(3) + vv(3) * dT) / 1000.0 << endl;
-
+    out << corr->prn.toAscii().data()
+        << " APC 3 " 
+        << setw(15) << setprecision(4) << xc(1)
+        << setw(15) << setprecision(4) << xc(2)
+        << setw(15) << setprecision(4) << xc(3)
+        << " Clk 1 "
+        << setw(15) << setprecision(4) << xc(4) * t_CST::c
+        << " Vel 3 " 
+        << setw(15) << setprecision(4) << vv(1)
+        << setw(15) << setprecision(4) << vv(2)
+        << setw(15) << setprecision(4) << vv(3)
+        << " CoM 3 " 
+        << setw(15) << setprecision(4) << xc(1) - dx(1)
+        << setw(15) << setprecision(4) << xc(2) - dx(2)
+        << setw(15) << setprecision(4) << xc(3) - dx(2)
+        << endl;
+ 
     QString line;
     int messageType = COTYPE_GPSCOMBINED;
     int updateInt   = 0;
