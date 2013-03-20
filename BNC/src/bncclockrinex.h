@@ -12,7 +12,7 @@ class bncClockRinex : public bncoutf {
   bncClockRinex(const QString& sklFileName, const QString& intr, int sampl);
   virtual ~bncClockRinex();
   virtual t_irc write(int GPSweek, double GPSweeks, const QString& prn, 
-                      const ColumnVector& xx);
+                      double sp3Clk);
 
  private:
   virtual void writeHeader(const QDateTime& datTim);

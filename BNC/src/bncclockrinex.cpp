@@ -39,7 +39,7 @@ bncClockRinex::~bncClockRinex() {
 // Write One Epoch
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncClockRinex::write(int GPSweek, double GPSweeks, const QString& prn, 
-                   const ColumnVector& xx) {
+                           double sp3Clk) {
 
   if (reopen(GPSweek, GPSweeks) == success) {
 
@@ -50,7 +50,7 @@ t_irc bncClockRinex::write(int GPSweek, double GPSweeks, const QString& prn,
            << datTim.toString("  yyyy MM dd hh mm").toAscii().data()
            << fixed      << setw(10) << setprecision(6)  << sec 
            << "  1   "
-           << scientific << setw(19) << setprecision(12) << xx(4) << endl;
+           << scientific << setw(19) << setprecision(12) << sp3Clk << endl;
 
     return success;
   }
