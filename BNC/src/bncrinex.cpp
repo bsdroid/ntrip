@@ -647,7 +647,7 @@ string bncRinex::asciiSatLine(const t_obs& obs) {
     QString rnxStr = obs.rnxStr(ie);
     if (rnxStr.length() >= 2) {
       double data = obs.measdata(rnxStr, rnxVers);
-      if (data != 0) {
+      if (data != 0.0) {
         int width = (rnxStr[0] == 'S') ? 8 : 14;
         int prec  = 3;
         str << ' ' << rnxStr.toAscii().data() 
