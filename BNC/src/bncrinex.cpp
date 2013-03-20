@@ -645,10 +645,13 @@ string bncRinex::asciiSatLine(const t_obs& obs) {
 
   for (int ie = 0; ie < GNSSENTRY_NUMBER; ie++) {
     QString rnxStr = obs.rnxStr(ie);
-    if (rnxStr.length() >= 2 && (rnxStr[0] == 'C' || rnxStr[0] == 'L')) {
-      double  data   = obs.measdata(rnxStr, rnxVers);
+    if (rnxStr.length() >= 2) {
+      double data = obs.measdata(rnxStr, rnxVers);
       if (data != 0) {
-        str << ' ' << rnxStr.toAscii().data() << ' ' << obsToStr(data);
+        int width = (rnxStr[0] == 'S') ? 8 : 14;
+        int prec  = 3;
+        str << ' ' << rnxStr.toAscii().data() 
+            << ' ' << obsToStr(data, width, prec);
         if (rnxStr[0] == 'L') {
           int slipCnt = 0;
           if      (rnxStr[1] == '1') {
