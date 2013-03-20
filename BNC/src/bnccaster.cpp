@@ -337,61 +337,58 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
 
   for (long sec = minTime; sec <= maxTime; sec++) {
 
-    QList<t_obs> allObs = _epochs->values(sec);
+    if ( (_out || _sockets) && 
+         (_samplingRate == 0 || sec % _samplingRate == 0) ) {
 
-    bool firstEpoLine = true;
+      QList<t_obs> allObs = _epochs->values(sec);
+      
+      QListIterator<t_obs> it(allObs);
+      bool firstObs = true;
+      while (it.hasNext()) {
+        const t_obs& obs = it.next();
 
-    QListIterator<t_obs> it(allObs);
-    while (it.hasNext()) {
-      const t_obs& obs = it.next();
+        ostringstream oStr;
+        oStr.setf(ios::showpoint | ios::fixed);
+        if (firstObs) { 
+          firstObs = false;
+          oStr << "> " << obs.GPSWeek << ' ' 
+               << setprecision(7) << obs.GPSWeeks << endl;;
+        }
+        oStr << obs.StatID << ' ' << bncRinex::asciiSatLine(obs) << endl;
+        if (!it.hasNext()) { 
+          oStr << endl;
+        }
+        string hlpStr = oStr.str();
 
-      if (_samplingRate == 0 || sec % _samplingRate == 0) {
+        // Output into the File
+        // --------------------
+        if (_out) {
+          *_out << hlpStr.c_str();
+          _out->flush();
+        }
 
-        if (_out || _sockets) {
-          ostringstream oStr;
-          oStr.setf(ios::showpoint | ios::fixed);
-          if (firstEpoLine) {
-            firstEpoLine = false;
-            oStr << "> " << obs.GPSWeek << ' ' 
-                 << setprecision(7) << obs.GPSWeeks << endl;;
-          }
-          oStr << obs.StatID << ' ' << bncRinex::asciiSatLine(obs) << endl;
-          if (!it.hasNext()) { 
-            oStr << endl;
-          }
-          string hlpStr = oStr.str();
-
-          // Output into the File
-          // --------------------
-          if (_out) {
-            *_out << hlpStr.c_str();
-            _out->flush();
-          }
-
-          // Output into the socket
-          // ----------------------
-          if (_sockets) {
-            QMutableListIterator<QTcpSocket*> is(*_sockets);
-            while (is.hasNext()) {
-              QTcpSocket* sock = is.next();
-              if (sock->state() == QAbstractSocket::ConnectedState) {
-                int numBytes = hlpStr.length(); 
-                if (myWrite(sock, hlpStr.c_str(), numBytes) != numBytes) {
-                  delete sock;
-                  is.remove();
-                }
-              }
-              else if (sock->state() != QAbstractSocket::ConnectingState) {
+        // Output into the socket
+        // ----------------------
+        if (_sockets) {
+          QMutableListIterator<QTcpSocket*> is(*_sockets);
+          while (is.hasNext()) {
+            QTcpSocket* sock = is.next();
+            if (sock->state() == QAbstractSocket::ConnectedState) {
+              int numBytes = hlpStr.length(); 
+              if (myWrite(sock, hlpStr.c_str(), numBytes) != numBytes) {
                 delete sock;
                 is.remove();
               }
             }
+            else if (sock->state() != QAbstractSocket::ConnectingState) {
+              delete sock;
+              is.remove();
+            }
           }
         }
       }
-
-      _epochs->remove(sec);
     }
+    _epochs->remove(sec);
   }
 }
 
