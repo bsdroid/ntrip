@@ -13,7 +13,7 @@ class bncSP3 : public bncoutf {
   bncSP3(const QString& sklFileName, const QString& intr, int sampl);
   virtual ~bncSP3();
   t_irc write(int GPSweek, double GPSweeks, const QString& prn, 
-              const ColumnVector& xx);
+              const ColumnVector& xCoM, double sp3Clk);
 
  private:
   virtual void writeHeader(const QDateTime& datTim);

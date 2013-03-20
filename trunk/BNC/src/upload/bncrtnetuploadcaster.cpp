@@ -300,14 +300,14 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   for (int ii = 1; ii < lines.size(); ii++) {
  
     QString      prn;
-    ColumnVector xx(14); xx = 0.0;
+    ColumnVector rtnAPC;
+    ColumnVector rtnVel;
+    ColumnVector rtnCoM;
+    double       rtnClk;
   
     QTextStream in(lines[ii].toAscii());
 
     in >> prn;
-    if (prn[0] == 'P') {
-      prn.remove(0,1);
-    }
 
     t_eph* eph = 0;
     const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(prn);
@@ -346,22 +346,35 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
     if (eph) {
 
-      in >> xx(1) >> xx(2) >> xx(3) >> xx(4) >> xx(5) 
-         >> xx(6) >> xx(7) >> xx(8) >> xx(9) >> xx(10)
-         >> xx(11) >> xx(12) >> xx(13) >> xx(14);
-      xx(1) *= 1e3;          // x-crd
-      xx(2) *= 1e3;          // y-crd
-      xx(3) *= 1e3;          // z-crd
-      xx(4) *= 1e-6;         // clk
-      xx(5) *= 1e-6;         // rel. corr.
-                             // xx(6), xx(7), xx(8) ... PhaseCent - CoM
-                             // xx(9)  ... P1-C1 DCB in meters
-                             // xx(10) ... P1-P2 DCB in meters
-                             // xx(11) ... dT
-      xx(12) *= 1e3;         // x-crd at time + dT
-      xx(13) *= 1e3;         // y-crd at time + dT
-      xx(14) *= 1e3;         // z-crd at time + dT
-  
+      while (true) {
+        QString key;
+        int     numVal = 0;
+        in >> key >> numVal;
+        if (in.status() != QTextStream::Ok) {
+          break;
+        }
+        if       (key == "APC") {
+          rtnAPC.ReSize(3);
+          in >> rtnAPC[0] >> rtnAPC[1] >> rtnAPC[2];
+        }
+        else if (key == "Clk") {
+          in >> rtnClk;
+        }
+        else if (key == "Vel") {
+          rtnVel.ReSize(3);
+          in >> rtnVel[0] >> rtnVel[1] >> rtnVel[2];
+        }
+        else if (key == "CoM") {
+          rtnCoM.ReSize(3);
+          in >> rtnCoM[0] >> rtnCoM[1] >> rtnCoM[2];
+        }
+        else {
+          for (int ii = 0; ii < numVal; ii++) {
+            double dummy;
+            in >> dummy;
+          }
+        }
+      }  
       struct ClockOrbit::SatData* sd = 0;
       if      (prn[0] == 'G') {
         sd = co.Sat + co.NumberOfGPSSat;
@@ -374,7 +387,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       if (sd) {
         QString outLine;
         processSatellite(eph, epoTime.gpsw(), epoTime.gpssec(), prn, 
-                         xx, sd, outLine);
+                         rtnAPC, rtnClk, rtnVel, rtnCoM, sd, outLine);
       }
   
       struct Bias::BiasSat* biasSat = 0;
@@ -389,29 +402,35 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   
       // Coefficient of Ionosphere-Free LC
       // ---------------------------------
-      const static double a_L1_GPS =  2.54572778;
-      const static double a_L2_GPS = -1.54572778;
-      const static double a_L1_Glo =  2.53125000;
-      const static double a_L2_Glo = -1.53125000;
+      // const static double a_L1_GPS =  2.54572778;
+      // const static double a_L2_GPS = -1.54572778;
+      // const static double a_L1_Glo =  2.53125000;
+      // const static double a_L2_Glo = -1.53125000;
   
       if (biasSat) {
         biasSat->ID = prn.mid(1).toInt();
         biasSat->NumberOfCodeBiases = 3;
         if      (prn[0] == 'G') {
           biasSat->Biases[0].Type = CODETYPEGPS_L1_Z;
-          biasSat->Biases[0].Bias = - a_L2_GPS * xx(10);
+          // biasSat->Biases[0].Bias = - a_L2_GPS * xx(10);
+          biasSat->Biases[0].Bias = 0.0;
           biasSat->Biases[1].Type = CODETYPEGPS_L1_CA;
-          biasSat->Biases[1].Bias = - a_L2_GPS * xx(10) + xx(9);
+          // biasSat->Biases[1].Bias = - a_L2_GPS * xx(10) + xx(9);
+          biasSat->Biases[1].Bias = 0.0;
           biasSat->Biases[2].Type = CODETYPEGPS_L2_Z;
-          biasSat->Biases[2].Bias = a_L1_GPS * xx(10);
+          // biasSat->Biases[2].Bias = a_L1_GPS * xx(10);
+          biasSat->Biases[2].Bias = 0.0;
         }
         else if (prn[0] == 'R') {
           biasSat->Biases[0].Type = CODETYPEGLONASS_L1_P;
-          biasSat->Biases[0].Bias = - a_L2_Glo * xx(10);
+          // biasSat->Biases[0].Bias = - a_L2_Glo * xx(10);
+          biasSat->Biases[0].Bias = 0.0;
           biasSat->Biases[1].Type = CODETYPEGLONASS_L1_CA;
-          biasSat->Biases[1].Bias = - a_L2_Glo * xx(10) + xx(9);
+          // biasSat->Biases[1].Bias = - a_L2_Glo * xx(10) + xx(9);
+          biasSat->Biases[1].Bias = 0.0;
           biasSat->Biases[2].Type = CODETYPEGLONASS_L2_P;
-          biasSat->Biases[2].Bias = a_L1_Glo * xx(10);
+          // biasSat->Biases[2].Bias = a_L1_Glo * xx(10);
+          biasSat->Biases[2].Bias = 0.0;
         }
       }
     }
@@ -484,10 +503,13 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek, 
-                                       double GPSweeks, const QString& prn, 
-                                       const ColumnVector& xx, 
-                                       struct ClockOrbit::SatData* sd,
-                                       QString& outLine) {
+                                            double GPSweeks, const QString& prn,
+                                            const ColumnVector& rtnAPC,
+                                            double rtnClk,
+                                            const ColumnVector& rtnVel,
+                                            const ColumnVector& rtnCoM,
+                                            struct ClockOrbit::SatData* sd,
+                                            QString& outLine) {
 
   // Broadcast Position and Velocity
   // -------------------------------
@@ -495,18 +517,9 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
   ColumnVector vB(3);
   eph->position(GPSweek, GPSweeks, xB.data(), vB.data());
   
-  // Precise Position and Velocity
-  // -----------------------------
-  ColumnVector xP = xx.Rows(1,3);
-  ColumnVector vP = (xx.Rows(12,14) - xx.Rows(1,3)) / xx(11);
-  
-  // Correction Center of Mass -> Antenna Phase Center
-  // -------------------------------------------------
-  if (! _CoM) {
-    xP(1) += xx(6);
-    xP(2) += xx(7);
-    xP(3) += xx(8);
-  }
+  // Precise Position
+  // ----------------
+  ColumnVector xP = _CoM ? rtnCoM : rtnAPC;
 
   double dc = 0.0;    
   if (_crdTrafo != "IGS08") {
@@ -516,7 +529,7 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
   // Difference in xyz
   // -----------------
   ColumnVector dx = xB.Rows(1,3) - xP;
-  ColumnVector dv = vB           - vP;
+  ColumnVector dv = vB           - rtnVel;
   
   // Difference in RSW
   // -----------------
@@ -528,7 +541,7 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
 
   // Clock Correction
   // ----------------
-  double dClk = (xx(4) + xx(5) - xB(4) + dc) * t_CST::c;
+  double dClk = rtnClk - (xB(4) - dc) * t_CST::c;
 
   if (sd) {
     sd->ID                       = prn.mid(1).toInt();
@@ -546,11 +559,14 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
                   GPSweek, GPSweeks, eph->prn().toAscii().data(),
                   eph->IOD(), dClk, rsw(1), rsw(2), rsw(3));
 
+  double relativity = -2.0 * DotProduct(xP, rtnVel) / t_CST::c;
+  double sp3Clk = (rtnClk - relativity) / t_CST::c;  // in seconds
+
   if (_rnx) {
-    _rnx->write(GPSweek, GPSweeks, prn, xx);
+    _rnx->write(GPSweek, GPSweeks, prn, sp3Clk);
   }
   if (_sp3) {
-    _sp3->write(GPSweek, GPSweeks, prn, xx);
+    _sp3->write(GPSweek, GPSweeks, prn, rtnCoM, sp3Clk);
   }
 }
 
