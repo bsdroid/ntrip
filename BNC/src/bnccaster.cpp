@@ -339,6 +339,8 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
 
     QList<t_obs> allObs = _epochs->values(sec);
 
+    bool firstEpoLine = true;
+
     QListIterator<t_obs> it(allObs);
     while (it.hasNext()) {
       const t_obs& obs = it.next();
@@ -348,10 +350,12 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
         if (_out || _sockets) {
           ostringstream oStr;
           oStr.setf(ios::showpoint | ios::fixed);
-          oStr << obs.StatID                                        << " " 
-               << obs.GPSWeek                                       << " "
-               << setprecision(7) << obs.GPSWeeks                   << " "
-               << bncRinex::asciiSatLine(obs) << endl;
+          if (firstEpoLine) {
+            firstEpoLine = false;
+            oStr << "> " << obs.GPSWeek << ' ' 
+                 << setprecision(7) << obs.GPSWeeks << endl;;
+          }
+          oStr << obs.StatID << ' ' << bncRinex::asciiSatLine(obs) << endl;
           if (!it.hasNext()) { 
             oStr << endl;
           }
