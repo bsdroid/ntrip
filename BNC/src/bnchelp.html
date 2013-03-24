@@ -1114,11 +1114,11 @@ Specifying a value of '0' means that BNC immediately outputs all incoming Broadc
 BNC can generate synchronized or unsynchronized observations epoch by epoch from all stations and satellites to feed a real-time GNSS network engine. Observations can be streamed out through an IP port and/or saved in a local file. The output is always in plain ASCII format.
 </p>
 <p>
-Any epoch in the output begins with a line containing the GPS week number and the seconds within the GPS week. Following lines begin wiht the mountpoint string of the stream which provides the observations followed by a satellite ID and - in case of GLONASS - a channel number. Observation types are specified by the three character observation code defined in RINEX Version 3. In case of phase observations a Slip Count is added which is set to "-1" if it is not set. The end of an epoch in indicated by an empty line.
+Any epoch in the output begins with a line containing the GPS week number and the seconds within the GPS week. Following lines begin with the mountpoint string of the stream which provides the observations followed by a satellite ID and - in case of GLONASS - a channel number. Observation types are specified by the three character observation code defined in RINEX Version 3. In case of phase observations a Slip Count is added which is put to "-1" if it is not set. The end of an epoch in indicated by an empty line.
 </p>
 
-<p>Note on 'SlipCount':<br>
-It is the current understanding of BNC's authors that different slip counts could be referred to different phase measurements (i.e. L1C and L1P). The 'loss-of-lock' flags in RINEX are an example for making such kind of information available per phase measurement. However, it looks like we do have only one slip count in RTCM Version 3 for all phase measurements. As it could be that a receiver generates different slip counts for different phase measurements, we output one slip count per phase measurement to a listening real-time GNSS network engine.
+<p>Note on 'Slip Count':<br>
+It is the current understanding of BNC's authors that different Slip Counts could be referred to different phase measurements (i.e. L1C and L1P). The 'loss-of-lock' flags in RINEX are an example for making such kind of information available per phase measurement. However, it looks like we do have only one Slip Count in RTCM Version 3 for all phase measurements. As it could be that a receiver generates different Slip Counts for different phase measurements, we output one Slip Count per phase measurement to a listening real-time GNSS network engine.
 </p>
 
 <p>
@@ -1961,14 +1961,13 @@ Because the encoding process may put a significant load on the communication lin
 The usual handling of BNC when uploading a stream with Broadcast Corrections is that you first specify Broadcast Ephemeris and Broadcast Correction streams. You then specify an NTRIP Broadcaster for stream upload before you start the program. 
 </p>
 <p>
-BNC requires GNSS orbits and clocks in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and in a specific ASCII format. The orbits and clocks must not contain the conventional periodic relativistic effect. They may be provided by a real-time GNSS engine such as RTNet. The sampling interval for data transmission should not exceed 15 sec. Note that otherwise tools involved in IP streaming such as NTRIP Broadcasters or NTRIP Clients may respond with a timeout.
+BNC requires GNSS orbits and clocks in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and in a specific ASCII format. The orbits and clocks may be provided by a real-time GNSS engine such as RTNet. The sampling interval for data transmission should not exceed 15 sec. Note that otherwise tools involved in IP streaming such as NTRIP Broadcasters or NTRIP Clients may respond with a timeout. 
 </p>
-
 <p>
-Below you find an example of precise orbits and clocks coming in ASCII format (which is named 'RTNET' in this document) from a real-time GNSS engine. Each epoch begins with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records provide the following set of parameters for each satellite:
+Below you find an example of precise orbits and clocks coming in ASCII format (named 'RTNET' in this document) from a real-time GNSS engine. Each epoch begins with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records provide the following set of parameters for each satellite: 
+</p>
 <p>
-<p>
-&lt;SatelliteID&gt; &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt; &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt; ... weber
+&lt;SatelliteID&gt; &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt; &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt; ...
 &nbsp;
 </p>
 <p>
@@ -1979,7 +1978,7 @@ The following keys and values are currently specified in BNC:
 <tr><td>APC</td><td>Satellite Antenna Phase Center coordinates in meters</td></tr>
 <tr><td>Clk</td><td>Satellite clock correction in meters, relativistic correction applied like in broadcast clocks</td></tr>
 <tr><td>Vel</td><td>Satellite velocity in meters per second</td></tr>
-<tr><td>CoM</td><td>Satellite Centen of Mass coordinates in meters</td></tr>
+<tr><td>CoM</td><td>Satellite Center of Mass coordinates in meters</td></tr>
 </table>
 </p>
 
@@ -2019,7 +2018,7 @@ G03 APC 3   13839675.6507  11698495.4721 -19993819.1341 Clk 1      55007.9600 Ve
 </pre>
 </p>
 <p>
-Note that each end of an epoch in the incoming stream is indicated by an ASCII string 'EOE' (for End Of Epoch).
+Note that the end of an epoch in the incoming stream is indicated by an ASCII string 'EOE' (for End Of Epoch).
 </p>
 <p>
 When using clocks from Broadcast Ephemeris (with or without applied corrections) or clocks from SP3 files, it may be important to understand that they are not corrected for the conventional periodic relativistic effect. Chapter 10 of the IERS Conventions 2003 mentions that the conventional periodic relativistic correction to the satellite clock (to be added to the broadcast clock) is computed as dt =  -2 (R * V) / c^2 where R *V is the scalar product of the satellite position and velocity and c is the speed of light. This can also be found in the GPS Interface Specification, IS-GPS-200, Revision D, 7 March 2006.
@@ -2774,7 +2773,7 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 
 <tr>
 <td>Mar 2013 &nbsp;</td><td>Version 2.9 &nbsp;</td>
-<td>[Add] Started work on new version in Mar 2013<br>[Bug] SSR stream upload buffering disabled<br>[Mod] Format for feeding a connected engine<br>[Mod] RTNET format for receiving data from a connected engine</td>
+<td>[Add] Started work on new version in Mar 2013<br>[Bug] SSR stream upload buffering disabled<br>[Mod] Format for feeding a connected GNSS engine<br>[Mod] RTNET format for receiving data from a connected GNSS engine</td>
 </tr>
 
 </table>
