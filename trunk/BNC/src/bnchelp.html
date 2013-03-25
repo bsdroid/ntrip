@@ -1964,7 +1964,8 @@ The usual handling of BNC when uploading a stream with Broadcast Corrections is 
 BNC requires GNSS orbits and clocks in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and in a specific ASCII format. The orbits and clocks may be provided by a real-time GNSS engine such as RTNet. The sampling interval for data transmission should not exceed 15 sec. Note that otherwise tools involved in IP streaming such as NTRIP Broadcasters or NTRIP Clients may respond with a timeout. 
 </p>
 <p>
-Below you find an example of precise orbits and clocks coming in ASCII format (named 'RTNET' in this document) from a real-time GNSS engine. Each epoch begins with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records provide the following set of parameters for each satellite: 
+<u>'RTNET' Stream Format</u><br>
+Below you find an example of precise orbits and clocks coming in ASCII format - named 'RTNET' in this document - from a real-time GNSS engine. Each epoch begins with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records provide the following set of parameters for each satellite: 
 </p>
 <p>
 &lt;SatelliteID&gt; &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt; &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt; ...
