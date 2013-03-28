@@ -14,6 +14,7 @@ class t_inpEdit : public QTabWidget {
   t_inpEdit();
   ~t_inpEdit();
   void setInputFile(const QString&);
+  virtual void setVisible(bool visible);
  private:
   void readFile();
   QString                   _fileName;
