@@ -20,7 +20,7 @@
 #include "mdiarea.h" 
 #include "plugininterface.h" 
 #include "map/svgmap.h"
-#include "inpedit/inpfile.h"
+#include "inpedit/inpedit.h"
 
 using namespace std;
 using namespace GnssCenter;
@@ -125,8 +125,9 @@ void t_mainWin::slotSaveOptions() {
 void t_mainWin::slotEditInput() {
   QString fileName = QFileDialog::getOpenFileName(this);
   if (!fileName.isEmpty()) {
-    t_inpFile* inpFile = new t_inpFile(fileName);
-    QMdiSubWindow* win = _mdi->addSubWindow(inpFile);
+    t_inpEdit* inpEdit = new t_inpEdit();
+    inpEdit->setInputFile(fileName);
+    QMdiSubWindow* win = _mdi->addSubWindow(inpEdit);
     win->show();
   }
 }
