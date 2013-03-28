@@ -3,7 +3,7 @@
 TEMPLATE  = lib
 TARGET    = qwt
 CONFIG   += debug
-DESTDIR              = ../main/plugins
+DESTDIR              = ../plugins
 
 ###DEFINES += QWT_NO_SVG
 QT += svg
