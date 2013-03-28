@@ -133,6 +133,8 @@ void t_mainWin::slotSaveOptions() {
 ////////////////////////////////////////////////////////////////////////////
 void t_mainWin::slotStartPlugin() {
   qDebug() << "slotStartPlugin" << sender();
+  t_pluginAction* action = dynamic_cast<t_pluginAction*>(sender());
+  qDebug() << "Action" << action;
 //  t_svgMap* svgMap = new t_svgMap();
 //  QMdiSubWindow* win = _mdi->addSubWindow(svgMap);
 //  win->show();
