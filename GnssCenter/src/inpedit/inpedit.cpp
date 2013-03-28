@@ -22,6 +22,8 @@
 using namespace std;
 using namespace GnssCenter;
 
+Q_EXPORT_PLUGIN2(GnssCenter_inpEdit, GnssCenter::t_inpEdit)
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_inpEdit::t_inpEdit() : QTabWidget(), t_pluginInterface() {
