@@ -12,9 +12,9 @@ release:MOC_DIR     = .moc/release
 
 INCLUDEPATH += ../qwt
 
-LIBS  += -L../qwt     -lqwt
 LIBS  += -L../inpedit -lGnssCenter_inpEdit
 LIBS  += -L../svgmap  -lGnssCenter_svgMap
+LIBS  += -L../qwt     -lqwt
 
 HEADERS +=              app.h       mdiarea.h   \
            settings.h   mainwin.h   plugininterface.h
