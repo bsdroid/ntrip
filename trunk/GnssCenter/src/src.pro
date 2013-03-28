@@ -22,12 +22,15 @@ SOURCES += GnssCenter.cpp app.cpp     mdiarea.cpp \
            settings.cpp   mainwin.cpp
 
 exists(map) {
-  HEADERS   += map/svgmap.h
-  SOURCES   += map/svgmap.cpp
-  RESOURCES += map/svgmap.qrc
+  INCLUDEPATH += map
+  HEADERS     += map/svgmap.h
+  SOURCES     += map/svgmap.cpp
+  RESOURCES   += map/svgmap.qrc
 }
 
 exists(inpedit) {
+  INCLUDEPATH += inpedit
+
   HEADERS += inpedit/keyword.h   inpedit/panel.h      inpedit/inpfile.h   \
              inpedit/selwin.h    inpedit/lineedit.h   inpedit/uniline.h
 
