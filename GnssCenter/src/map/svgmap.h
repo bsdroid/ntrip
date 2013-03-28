@@ -12,7 +12,7 @@ namespace GnssCenter {
 
 class t_svgMap : public QDialog, public t_pluginInterface {
  Q_OBJECT
- Q_INTERFACES(t_pluginInterface)
+ Q_INTERFACES(GnssCenter::t_pluginInterface)
     
  public:
   t_svgMap();

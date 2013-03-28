@@ -1,7 +1,7 @@
 #ifndef GnssCenter_PLUGININTERFACE_H
 #define GnssCenter_PLUGININTERFACE_H
 
-#include <QtCore>
+#include <QtPlugin>
 
 namespace GnssCenter {
 
@@ -14,5 +14,7 @@ class t_pluginInterface {
 };
 
 } // namespace GnssCenter
+
+Q_DECLARE_INTERFACE(GnssCenter::t_pluginInterface, "GnssCenter_pluginInterface")
 
 #endif
