@@ -40,13 +40,13 @@ t_mainWin::t_mainWin(QWidget* parent, Qt::WindowFlags flags) :
   foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
     QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
     QObject* object = loader.instance();
-    qDebug() << fileName << object;
-
+    qDebug() << pluginsDir.absoluteFilePath(fileName) << object;
     if (object) {
-      t_pluginInterface* plugin = qobject_cast<t_pluginInterface*>(object);
+      t_pluginFactoryInterface* plugin = qobject_cast<t_pluginFactoryInterface*>(object);
       qDebug() << "Plugin: " << plugin;  
       if (plugin) {
-        plugin->show();
+        t_pluginInterface* widget = plugin->create();
+        widget->show();
       }
     }
   }
