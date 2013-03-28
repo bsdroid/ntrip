@@ -132,10 +132,9 @@ void t_mainWin::slotSaveOptions() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_mainWin::slotStartPlugin() {
-  qDebug() << "slotStartPlugin" << sender();
   t_pluginAction* action = dynamic_cast<t_pluginAction*>(sender());
-  qDebug() << "Action" << action;
   QWidget* widget = action->_factIface->create();
+  widget->setMinimumSize(500, 300);
   QMdiSubWindow* subWindow = _mdi->addSubWindow((QWidget*) widget);
   subWindow->show();
 }
