@@ -18,7 +18,6 @@
 #include "mainwin.h" 
 #include "settings.h" 
 #include "mdiarea.h" 
-#include "plugininterface.h" 
 
 using namespace std;
 using namespace GnssCenter;
@@ -30,6 +29,10 @@ t_mainWin::t_mainWin(QWidget* parent, Qt::WindowFlags flags) :
 
   _mdi = new t_mdiArea(0);
   setCentralWidget(_mdi);
+
+  createMenu();
+  createToolBar();
+  createStatusBar();
 
   // Handle Plugins
   // --------------
@@ -53,9 +56,6 @@ t_mainWin::t_mainWin(QWidget* parent, Qt::WindowFlags flags) :
     }
   }
 
-  createMenu();
-  createToolBar();
-  createStatusBar();
 }
 
 // Destructor
@@ -91,12 +91,6 @@ void t_mainWin::createMenu() {
   _actQuit  = new QAction(tr("&Quit"),this);
   connect(_actQuit, SIGNAL(triggered()), SLOT(close()));
 
-  _actEditInput = new QAction(tr("&Edit Input File"),this);
-  connect(_actEditInput, SIGNAL(triggered()), SLOT(slotEditInput()));
-
-  _actMap = new QAction(tr("Show &Map"),this);
-  connect(_actMap, SIGNAL(triggered()), SLOT(slotMap()));
-
   _actHelp = new QAction(tr("&Help Contents"),this);
   connect(_actHelp, SIGNAL(triggered()), SLOT(slotHelp()));
 
@@ -112,9 +106,7 @@ void t_mainWin::createMenu() {
   _menuFile->addSeparator();
   _menuFile->addAction(_actQuit);
 
-  _menuNew = menuBar()->addMenu(tr("&New"));
-  _menuNew->addAction(_actEditInput);
-  _menuNew->addAction(_actMap);
+  _menuPlugins = menuBar()->addMenu(tr("&Plugins"));
 
   _menuHlp = menuBar()->addMenu(tr("&Help"));
   _menuHlp->addAction(_actHelp);
@@ -140,21 +132,9 @@ void t_mainWin::slotSaveOptions() {
   settings.sync();
 }
 
-// Edit RTNet Input File
+// 
 ////////////////////////////////////////////////////////////////////////////
-void t_mainWin::slotEditInput() {
-//  QString fileName = QFileDialog::getOpenFileName(this);
-//  if (!fileName.isEmpty()) {
-//    t_inpEdit* inpEdit = new t_inpEdit();
-//    inpEdit->setInputFile(fileName);
-//    QMdiSubWindow* win = _mdi->addSubWindow(inpEdit);
-//    win->show();
-//  }
-}
-
-// Edit RTNet Input File
-////////////////////////////////////////////////////////////////////////////
-void t_mainWin::slotMap() {
+void t_mainWin::slotStartPlugin() {
 //  t_svgMap* svgMap = new t_svgMap();
 //  QMdiSubWindow* win = _mdi->addSubWindow(svgMap);
 //  win->show();

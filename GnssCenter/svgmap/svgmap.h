@@ -48,7 +48,8 @@ class t_svgMapFactory : public QObject, public t_pluginFactoryInterface {
  Q_OBJECT
  Q_INTERFACES(GnssCenter::t_pluginFactoryInterface)
  public:
-  t_pluginInterface* create() {return new t_svgMap();} 
+  virtual t_pluginInterface* create() {return new t_svgMap();} 
+  virtual QString getName() const {return QString("Map");}
 };
 
 } // namespace GnssCenter
