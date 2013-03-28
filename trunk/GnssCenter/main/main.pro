@@ -12,28 +12,13 @@ release:MOC_DIR     = .moc/release
 
 INCLUDEPATH += ../qwt
 
-unix:LIBS  += -L../qwt -lqwt
-win32:LIBS += -L../qwt/release -lqwt
+LIBS  += -L../qwt     -lqwt
+LIBS  += -L../inpedit -lGnssCenter_inpEdit
+LIBS  += -L../svgmap  -lGnssCenter_svgMap
 
-HEADERS +=                app.h       mdiarea.h   \
-           settings.h     mainwin.h   plugininterface.h
+HEADERS +=              app.h       mdiarea.h   \
+           settings.h   mainwin.h   plugininterface.h
 
-SOURCES += GnssCenter.cpp app.cpp     mdiarea.cpp \
-           settings.cpp   mainwin.cpp
+SOURCES += main.cpp     app.cpp     mdiarea.cpp \
+           settings.cpp mainwin.cpp
 
-exists(map) {
-  INCLUDEPATH += map
-  HEADERS     += map/svgmap.h
-  SOURCES     += map/svgmap.cpp
-  RESOURCES   += map/svgmap.qrc
-}
-
-exists(inpedit) {
-  INCLUDEPATH += inpedit
-
-  HEADERS += inpedit/keyword.h   inpedit/panel.h      inpedit/inpedit.h   \
-             inpedit/selwin.h    inpedit/lineedit.h   inpedit/uniline.h
-
-  SOURCES += inpedit/keyword.cpp inpedit/panel.cpp    inpedit/inpedit.cpp \
-             inpedit/selwin.cpp  inpedit/lineedit.cpp inpedit/uniline.cpp
-}
