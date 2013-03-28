@@ -18,9 +18,6 @@
 
 using namespace GnssCenter;
 
-Q_IMPORT_PLUGIN(GnssCenter_inpEdit)
-Q_IMPORT_PLUGIN(GnssCenter_svgMap)
-
 // Main Program
 /////////////////////////////////////////////////////////////////////////////
 int main(int argc, char* argv[]) {
