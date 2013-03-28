@@ -20,7 +20,7 @@
 #include "uniline.h"
 
 using namespace std;
-using namespace RTGUI;
+using namespace GnssCenter;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////

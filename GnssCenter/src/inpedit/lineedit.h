@@ -1,9 +1,9 @@
-#ifndef RTGUI_LINEEDIT_H
-#define RTGUI_LINEEDIT_H
+#ifndef GnssCenter_LINEEDIT_H
+#define GnssCenter_LINEEDIT_H
 
 #include <QtGui>
 
-namespace RTGUI {
+namespace GnssCenter {
 
 class t_lineEdit : public QLineEdit {
   Q_OBJECT
@@ -14,6 +14,6 @@ class t_lineEdit : public QLineEdit {
   private:
 };
 
-} // namespace RTGUI
+} // namespace GnssCenter
 
 #endif

@@ -1,9 +1,9 @@
-#ifndef RTGUI_KEYWORD_H
-#define RTGUI_KEYWORD_H
+#ifndef GnssCenter_KEYWORD_H
+#define GnssCenter_KEYWORD_H
 
 #include <QtGui>
 
-namespace RTGUI {
+namespace GnssCenter {
 
 class t_keyword {
  public:
@@ -26,6 +26,6 @@ class t_keyword {
   QWidget*    _widget;
 };
 
-} // namespace RTGUI
+} // namespace GnssCenter
 
 #endif

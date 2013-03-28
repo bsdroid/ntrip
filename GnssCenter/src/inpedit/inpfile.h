@@ -1,9 +1,9 @@
-#ifndef RTGUI_INPFILE_H
-#define RTGUI_INPFILE_H
+#ifndef GnssCenter_INPFILE_H
+#define GnssCenter_INPFILE_H
 
 #include <QtGui>
 
-namespace RTGUI {
+namespace GnssCenter {
 
 class t_keyword;
 class t_panel;
@@ -19,7 +19,7 @@ class t_inpFile : public QTabWidget {
   QMap<QString, t_keyword*> _keywords;
 };
 
-} // namespace RTGUI
+} // namespace GnssCenter
 
 #endif
 
