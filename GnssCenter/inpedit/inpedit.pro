@@ -1,7 +1,7 @@
 
 TEMPLATE             = lib
 CONFIG              += plugin static debug
-TARGET               = $$qtLibraryTarget(GnssCenter_inpEdit)
+TARGET               = $$qtLibraryTarget(gnsscenter_inpedit)
 INCLUDEPATH         += ../main
 
 debug:OBJECTS_DIR   = .obj/debug

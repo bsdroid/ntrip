@@ -1,6 +1,7 @@
 
 TEMPLATE     = app
 TARGET       = ../GnssCenter
+QTPLUGIN    += gnsscenter_inpedit gnsscenter_svgmap
 QT          += svg
 CONFIG      += debug
 
@@ -11,8 +12,8 @@ release:MOC_DIR     = .moc/release
 
 INCLUDEPATH += ../qwt
 
-LIBS  += -L../inpedit -lGnssCenter_inpEdit
-LIBS  += -L../svgmap  -lGnssCenter_svgMap
+LIBS  += -L../inpedit -lgnsscenter_inpedit
+LIBS  += -L../svgmap  -lgnsscenter_svgmap
 LIBS  += -L../qwt     -lqwt
 
 HEADERS +=              app.h       mdiarea.h   \

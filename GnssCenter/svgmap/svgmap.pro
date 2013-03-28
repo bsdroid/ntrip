@@ -1,7 +1,7 @@
 
 TEMPLATE             = lib
 CONFIG              += plugin static debug
-TARGET               = $$qtLibraryTarget(GnssCenter_svgMap)
+TARGET               = $$qtLibraryTarget(gnsscenter_svgmap)
 QT                  += svg
 INCLUDEPATH         += ../qwt ../main
 
