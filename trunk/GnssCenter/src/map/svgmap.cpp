@@ -31,6 +31,8 @@
 using namespace std;
 using namespace GnssCenter;
 
+///Q_EXPORT_PLUGIN2(svgMap, t_svgMap)
+
 // Constructor
 /////////////////////////////////////////////////////////////////////////////
 t_svgMap::t_svgMap() : QDialog(), t_pluginInterface() {
