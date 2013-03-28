@@ -18,7 +18,7 @@
 #include "mainwin.h" 
 #include "settings.h" 
 #include "mdiarea.h" 
-#include "svgmap.h"
+#include "map/svgmap.h"
 #include "inpedit/inpfile.h"
 
 using namespace std;
