@@ -33,7 +33,7 @@ using namespace GnssCenter;
 
 // Constructor
 /////////////////////////////////////////////////////////////////////////////
-t_svgMap::t_svgMap(QWidget* parent) : QDialog(parent) {
+t_svgMap::t_svgMap(QWidget* parent) : QDialog(parent), t_pluginInterface() {
 
   // Map in Scalable Vector Graphics (svg) Format
   // --------------------------------------------

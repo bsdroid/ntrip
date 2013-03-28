@@ -1,15 +1,13 @@
 #ifndef GnssCenter_PLUGININTERFACE_H
 #define GnssCenter_PLUGININTERFACE_H
 
-#include <QtGui>
+#include <QtCore>
 
 namespace GnssCenter {
 
-class t_pluginInterface : public QWidget {
-    
+class t_pluginInterface {
  public:
-  t_pluginInterface(const QString& fileName = QString());
-  virtual ~t_pluginInterface() = 0;
+  virtual ~t_pluginInterface() {}
   virtual bool expectInputFile() const = 0;
 };
 
