@@ -9,6 +9,8 @@ class t_pluginInterface {
  public:
   virtual ~t_pluginInterface() {}
   virtual bool expectInputFile() const = 0;
+  virtual void setInputFile(const QString& fileName) = 0;
+  virtual void show() = 0;
 };
 
 } // namespace GnssCenter
