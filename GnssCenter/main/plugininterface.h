@@ -1,18 +1,14 @@
 #ifndef GnssCenter_PLUGININTERFACE_H
 #define GnssCenter_PLUGININTERFACE_H
 
+#include <QtGui>
 #include <QtPlugin>
 
 namespace GnssCenter {
 
-class t_pluginInterface {
- public:
-  virtual void show() = 0;
-};
-
 class t_pluginFactoryInterface {
  public:
-  virtual t_pluginInterface* create() = 0;
+  virtual QWidget* create() = 0;
   virtual QString getName() const = 0;
 };
 

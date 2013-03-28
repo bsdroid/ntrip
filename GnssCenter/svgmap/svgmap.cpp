@@ -35,7 +35,7 @@ Q_EXPORT_PLUGIN2(gnsscenter_svgmap, GnssCenter::t_svgMapFactory)
 
 // Constructor
 /////////////////////////////////////////////////////////////////////////////
-t_svgMap::t_svgMap() : QDialog(), t_pluginInterface() {
+t_svgMap::t_svgMap() : QDialog() {
 
   // Map in Scalable Vector Graphics (svg) Format
   // --------------------------------------------

@@ -10,14 +10,11 @@ class QwtPlotZoomer;
 
 namespace GnssCenter {
 
-class t_svgMap : public QDialog, public t_pluginInterface {
+class t_svgMap : public QDialog {
  Q_OBJECT
  public:
   t_svgMap();
   ~t_svgMap();
-  virtual bool expectInputFile() const {return false;}
-  virtual void setInputFile(const QString&) {}
-  virtual void show() {QDialog::show();}   
 
  public slots:
   void slotNewPoint(const QString& name, double latDeg, double lonDeg);
@@ -48,7 +45,7 @@ class t_svgMapFactory : public QObject, public t_pluginFactoryInterface {
  Q_OBJECT
  Q_INTERFACES(GnssCenter::t_pluginFactoryInterface)
  public:
-  virtual t_pluginInterface* create() {return new t_svgMap();} 
+  virtual QWidget* create() {return new t_svgMap();} 
   virtual QString getName() const {return QString("Map");}
 };
 
