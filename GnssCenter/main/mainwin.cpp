@@ -45,8 +45,10 @@ t_mainWin::t_mainWin(QWidget* parent, Qt::WindowFlags flags) :
       t_pluginFactoryInterface* plugin = qobject_cast<t_pluginFactoryInterface*>(object);
       qDebug() << "Plugin: " << plugin;  
       if (plugin) {
-        t_pluginInterface* widget = plugin->create();
-        widget->show();
+        for (int ii = 1; ii <= 2; ii++) {
+          t_pluginInterface* widget = plugin->create();
+          widget->show();
+        }
       }
     }
   }
