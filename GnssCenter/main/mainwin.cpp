@@ -19,8 +19,6 @@
 #include "settings.h" 
 #include "mdiarea.h" 
 #include "plugininterface.h" 
-#include "map/svgmap.h"
-#include "inpedit/inpedit.h"
 
 using namespace std;
 using namespace GnssCenter;
@@ -129,21 +127,21 @@ void t_mainWin::slotSaveOptions() {
 // Edit RTNet Input File
 ////////////////////////////////////////////////////////////////////////////
 void t_mainWin::slotEditInput() {
-  QString fileName = QFileDialog::getOpenFileName(this);
-  if (!fileName.isEmpty()) {
-    t_inpEdit* inpEdit = new t_inpEdit();
-    inpEdit->setInputFile(fileName);
-    QMdiSubWindow* win = _mdi->addSubWindow(inpEdit);
-    win->show();
-  }
+//  QString fileName = QFileDialog::getOpenFileName(this);
+//  if (!fileName.isEmpty()) {
+//    t_inpEdit* inpEdit = new t_inpEdit();
+//    inpEdit->setInputFile(fileName);
+//    QMdiSubWindow* win = _mdi->addSubWindow(inpEdit);
+//    win->show();
+//  }
 }
 
 // Edit RTNet Input File
 ////////////////////////////////////////////////////////////////////////////
 void t_mainWin::slotMap() {
-  t_svgMap* svgMap = new t_svgMap();
-  QMdiSubWindow* win = _mdi->addSubWindow(svgMap);
-  win->show();
+//  t_svgMap* svgMap = new t_svgMap();
+//  QMdiSubWindow* win = _mdi->addSubWindow(svgMap);
+//  win->show();
 }
 
 // Help Window
