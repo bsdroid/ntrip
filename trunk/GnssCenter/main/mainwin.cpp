@@ -34,8 +34,8 @@ t_mainWin::t_mainWin(QWidget* parent, Qt::WindowFlags flags) :
   // Handle Plugins
   // --------------
   QDir pluginsDir = QDir(qApp->applicationDirPath());
-
-  qDebug() << pluginsDir;
+  
+  pluginsDir.cd("plugins");
 
   foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
     QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
