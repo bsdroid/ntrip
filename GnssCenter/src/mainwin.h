@@ -1,9 +1,9 @@
-#ifndef RTGUI_MAINWIN_H
-#define RTGUI_MAINWIN_H
+#ifndef GnssCenter_MAINWIN_H
+#define GnssCenter_MAINWIN_H
 
 #include <QtGui>
 
-namespace RTGUI {
+namespace GnssCenter {
 
 class t_mdiArea;
 
@@ -48,6 +48,6 @@ class t_mainWin : public QMainWindow {
   QToolBar*  _editToolBar;
 };
 
-}  // namespace RTGUI
+}  // namespace GnssCenter
 
 #endif

@@ -18,7 +18,7 @@
 #include "mdiarea.h"
 
 using namespace std;
-using namespace RTGUI;
+using namespace GnssCenter;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////

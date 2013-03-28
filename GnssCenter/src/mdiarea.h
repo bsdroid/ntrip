@@ -1,9 +1,9 @@
-#ifndef RTGUI_MDIAREA_H
-#define RTGUI_MDIAREA_H
+#ifndef GnssCenter_MDIAREA_H
+#define GnssCenter_MDIAREA_H
 
 #include <QtGui>
 
-namespace RTGUI {
+namespace GnssCenter {
 
 class t_mdiArea : public QMdiArea {
  Q_OBJECT
@@ -12,6 +12,6 @@ class t_mdiArea : public QMdiArea {
   virtual ~t_mdiArea();
 };
 
-} // namespace RTGUI
+} // namespace GnssCenter
 
 #endif

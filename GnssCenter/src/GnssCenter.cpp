@@ -16,7 +16,7 @@
 #include "app.h"
 #include "mainwin.h"
 
-using namespace RTGUI;
+using namespace GnssCenter;
 
 // Main Program
 /////////////////////////////////////////////////////////////////////////////

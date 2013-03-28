@@ -1,9 +1,9 @@
-#ifndef RTGUI_APP_H
-#define RTGUI_APP_H
+#ifndef GnssCenter_APP_H
+#define GnssCenter_APP_H
 
 #include <QtGui>
 
-namespace RTGUI {
+namespace GnssCenter {
 
 class t_app : public QApplication {
   Q_OBJECT
@@ -22,7 +22,7 @@ class t_app : public QApplication {
   QSettings::SettingsMap _settings;
 };
 
-} // namespace RTGUI
+} // namespace GnssCenter
 
 #endif
 
