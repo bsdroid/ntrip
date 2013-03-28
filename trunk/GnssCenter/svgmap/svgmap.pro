@@ -3,10 +3,10 @@ TEMPLATE             = lib
 CONFIG              += plugin static
 TARGET               = $$qtLibraryTarget(GnssCenter_svgMap)
 QT                  += svg
-INCLUDEPATH         += ../../qwt ../
+INCLUDEPATH         += ../qwt ../main
 
-unix:LIBS  += -L../../qwt -lqwt
-win32:LIBS += -L../../qwt/release -lqwt
+##unix:LIBS  += -L../../qwt -lqwt
+##win32:LIBS += -L../../qwt/release -lqwt
 
 debug:OBJECTS_DIR   = .obj/debug
 debug:MOC_DIR       = .moc/debug
