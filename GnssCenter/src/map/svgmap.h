@@ -12,9 +12,10 @@ namespace GnssCenter {
 
 class t_svgMap : public QDialog, public t_pluginInterface {
  Q_OBJECT
+ Q_INTERFACES(t_pluginInterface)
     
  public:
-  t_svgMap(QWidget* parent = 0);
+  t_svgMap();
   ~t_svgMap();
   virtual bool expectInputFile() const {return false;}
   virtual void setInputFile(const QString&) {}
