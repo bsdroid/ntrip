@@ -23,9 +23,6 @@
 using namespace std;
 using namespace GnssCenter;
 
-Q_IMPORT_PLUGIN(GnssCenter_inpEdit)
-Q_IMPORT_PLUGIN(GnssCenter_svgMap)
-
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_mainWin::t_mainWin(QWidget* parent, Qt::WindowFlags flags) : 

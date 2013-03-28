@@ -22,7 +22,7 @@
 using namespace std;
 using namespace GnssCenter;
 
-Q_EXPORT_PLUGIN2(GnssCenter_inpEdit, GnssCenter::t_inpEdit)
+Q_EXPORT_PLUGIN2(gnsscenter_inpedit, GnssCenter::t_inpEdit)
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
