@@ -27,7 +27,7 @@ exists(map) {
   RESOURCES += map/svgmap.qrc
 }
 
-exists(input) {
+exists(inpedit) {
   HEADERS += inpedit/keyword.h   inpedit/panel.h      inpedit/inpfile.h   \
              inpedit/selwin.h    inpedit/lineedit.h   inpedit/uniline.h
 
