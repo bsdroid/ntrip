@@ -31,7 +31,7 @@
 using namespace std;
 using namespace GnssCenter;
 
-Q_EXPORT_PLUGIN2(gnsscenter_svgmap, GnssCenter::t_svgMap)
+Q_EXPORT_PLUGIN2(gnsscenter_svgmap, GnssCenter::t_svgMapFactory)
 
 // Constructor
 /////////////////////////////////////////////////////////////////////////////

@@ -12,8 +12,6 @@ namespace GnssCenter {
 
 class t_svgMap : public QDialog, public t_pluginInterface {
  Q_OBJECT
- Q_INTERFACES(GnssCenter::t_pluginInterface)
-    
  public:
   t_svgMap();
   ~t_svgMap();
@@ -44,6 +42,13 @@ class t_svgMap : public QDialog, public t_pluginInterface {
   double         _minPointLon;
   double         _maxPointLon;
 
+};
+
+class t_svgMapFactory : public QObject, public t_pluginFactoryInterface {
+ Q_OBJECT
+ Q_INTERFACES(GnssCenter::t_pluginFactoryInterface)
+ public:
+  t_pluginInterface* create() {return new t_svgMap();} 
 };
 
 } // namespace GnssCenter
