@@ -31,9 +31,9 @@ exists(map) {
 exists(inpedit) {
   INCLUDEPATH += inpedit
 
-  HEADERS += inpedit/keyword.h   inpedit/panel.h      inpedit/inpfile.h   \
+  HEADERS += inpedit/keyword.h   inpedit/panel.h      inpedit/inpedit.h   \
              inpedit/selwin.h    inpedit/lineedit.h   inpedit/uniline.h
 
-  SOURCES += inpedit/keyword.cpp inpedit/panel.cpp    inpedit/inpfile.cpp \
+  SOURCES += inpedit/keyword.cpp inpedit/panel.cpp    inpedit/inpedit.cpp \
              inpedit/selwin.cpp  inpedit/lineedit.cpp inpedit/uniline.cpp
 }

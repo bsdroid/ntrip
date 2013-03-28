@@ -3,7 +3,7 @@
  * RTNet GUI
  * -------------------------------------------------------------------------
  *
- * Class:      t_inpFile
+ * Class:      t_inpEdit
  *
  * Purpose:    RTNet Input File
  *
@@ -15,7 +15,7 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include "inpfile.h" 
+#include "inpedit.h" 
 #include "keyword.h" 
 #include "panel.h" 
 
@@ -24,14 +24,12 @@ using namespace GnssCenter;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_inpFile::t_inpFile(const QString& fileName) : QTabWidget(0) {
-  _fileName = fileName;
-  readFile();
+t_inpEdit::t_inpEdit() : QTabWidget(), t_pluginInterface() {
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-t_inpFile::~t_inpFile() {
+t_inpEdit::~t_inpEdit() {
   QMapIterator<QString, t_keyword*> it(_keywords); 
   while (it.hasNext()) {
     it.next();
@@ -41,7 +39,14 @@ t_inpFile::~t_inpFile() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_inpFile::readFile() {
+void t_inpEdit::setInputFile(const QString& fileName) {
+  _fileName = fileName;
+  readFile();
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_inpEdit::readFile() {
 
   QFile file(_fileName);
   file.open(QIODevice::ReadOnly | QIODevice::Text);
