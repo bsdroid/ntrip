@@ -19,7 +19,7 @@
 #include "settings.h"
 #include "app.h"
 
-using namespace RTGUI;
+using namespace GnssCenter;
 
 QMutex t_settings::_mutex;  // static mutex 
 

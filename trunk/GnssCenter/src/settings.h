@@ -1,9 +1,9 @@
-#ifndef RTGUI_SETTINGS_H
-#define RTGUI_SETTINGS_H
+#ifndef GnssCenter_SETTINGS_H
+#define GnssCenter_SETTINGS_H
 
 #include <QMutex>
 
-namespace RTGUI {
+namespace GnssCenter {
 
 class t_app;
 
@@ -23,6 +23,6 @@ class t_settings {
   static QMutex _mutex;
 };
 
-} // namespace RTGUI
+} // namespace GnssCenter
 
 #endif

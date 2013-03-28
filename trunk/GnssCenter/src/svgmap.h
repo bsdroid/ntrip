@@ -1,5 +1,5 @@
-#ifndef RTGUI_SVGMAP_H
-#define RTGUI_SVGMAP_H
+#ifndef GnssCenter_SVGMAP_H
+#define GnssCenter_SVGMAP_H
 
 #include <QtGui>
 #include <QWhatsThis>
@@ -7,7 +7,7 @@
 class QwtPlot;
 class QwtPlotZoomer;
 
-namespace RTGUI {
+namespace GnssCenter {
 
 class t_svgMap : public QDialog {
  Q_OBJECT
@@ -41,6 +41,6 @@ class t_svgMap : public QDialog {
 
 };
 
-} // namespace RTGUI
+} // namespace GnssCenter
 
 #endif
