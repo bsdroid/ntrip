@@ -43,15 +43,12 @@ t_mainWin::t_mainWin(QWidget* parent, Qt::WindowFlags flags) :
   foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
     QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
     QObject* object = loader.instance();
-    qDebug() << pluginsDir.absoluteFilePath(fileName) << object;
     if (object) {
       t_pluginFactoryInterface* plugin = qobject_cast<t_pluginFactoryInterface*>(object);
-      qDebug() << "Plugin: " << plugin;  
       if (plugin) {
-        for (int ii = 1; ii <= 2; ii++) {
-          t_pluginInterface* widget = plugin->create();
-          widget->show();
-        }
+        t_pluginAction* action = new t_pluginAction(this, plugin);
+        _menuPlugins->addAction(action);
+        connect(action, SIGNAL(triggered()), SLOT(slotStartPlugin()));
       }
     }
   }
@@ -82,35 +79,35 @@ void t_mainWin::createMenu() {
 
   // Create Actions
   // --------------
-  _actFontSel = new QAction(tr("Select &Font"),this);
-  connect(_actFontSel, SIGNAL(triggered()), SLOT(slotFontSel()));
+  QAction* actFontSel = new QAction(tr("Select &Font"),this);
+  connect(actFontSel, SIGNAL(triggered()), SLOT(slotFontSel()));
 
-  _actSaveOpt = new QAction(tr("&Save && Reread Configuration"),this);
-  connect(_actSaveOpt, SIGNAL(triggered()), SLOT(slotSaveOptions()));
+  QAction* actSaveOpt = new QAction(tr("&Save && Reread Configuration"),this);
+  connect(actSaveOpt, SIGNAL(triggered()), SLOT(slotSaveOptions()));
 
-  _actQuit  = new QAction(tr("&Quit"),this);
-  connect(_actQuit, SIGNAL(triggered()), SLOT(close()));
+  QAction* actQuit  = new QAction(tr("&Quit"),this);
+  connect(actQuit, SIGNAL(triggered()), SLOT(close()));
 
-  _actHelp = new QAction(tr("&Help Contents"),this);
-  connect(_actHelp, SIGNAL(triggered()), SLOT(slotHelp()));
+  QAction* actHelp = new QAction(tr("&Help Contents"),this);
+  connect(actHelp, SIGNAL(triggered()), SLOT(slotHelp()));
 
-  _actAbout = new QAction(tr("&About"),this);
-  connect(_actAbout, SIGNAL(triggered()), SLOT(slotAbout()));
+  QAction* actAbout = new QAction(tr("&About"),this);
+  connect(actAbout, SIGNAL(triggered()), SLOT(slotAbout()));
 
   // Create Menu
   // -----------
   _menuFile = menuBar()->addMenu(tr("&File"));
-  _menuFile->addAction(_actFontSel);
+  _menuFile->addAction(actFontSel);
   _menuFile->addSeparator();
-  _menuFile->addAction(_actSaveOpt);
+  _menuFile->addAction(actSaveOpt);
   _menuFile->addSeparator();
-  _menuFile->addAction(_actQuit);
+  _menuFile->addAction(actQuit);
 
   _menuPlugins = menuBar()->addMenu(tr("&Plugins"));
 
   _menuHlp = menuBar()->addMenu(tr("&Help"));
-  _menuHlp->addAction(_actHelp);
-  _menuHlp->addAction(_actAbout);
+  _menuHlp->addAction(actHelp);
+  _menuHlp->addAction(actAbout);
 }
 
 // Select Fonts
@@ -135,6 +132,7 @@ void t_mainWin::slotSaveOptions() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_mainWin::slotStartPlugin() {
+  qDebug() << "slotStartPlugin" << sender();
 //  t_svgMap* svgMap = new t_svgMap();
 //  QMdiSubWindow* win = _mdi->addSubWindow(svgMap);
 //  win->show();

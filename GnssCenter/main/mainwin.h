@@ -43,12 +43,6 @@ class t_mainWin : public QMainWindow {
   QMenu*     _menuPlugins;
   QMenu*     _menuHlp;
 
-  QAction*   _actFontSel;
-  QAction*   _actSaveOpt;
-  QAction*   _actQuit;
-  QAction*   _actHelp;
-  QAction*   _actAbout;
-
   QToolBar*  _fileToolBar;
   QToolBar*  _editToolBar;
 };
