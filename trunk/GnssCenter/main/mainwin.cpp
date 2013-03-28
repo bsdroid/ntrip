@@ -31,10 +31,16 @@ t_mainWin::t_mainWin(QWidget* parent, Qt::WindowFlags flags) :
   _mdi = new t_mdiArea(0);
   setCentralWidget(_mdi);
 
-  // Handle Static Plugins
-  // ---------------------
-  qDebug() << "Number of static plugins: " << QPluginLoader::staticInstances().size();
-  foreach (QObject* plugin, QPluginLoader::staticInstances()) {
+  // Handle Plugins
+  // --------------
+  QDir pluginsDir = QDir(qApp->applicationDirPath());
+
+  qDebug() << pluginsDir;
+
+  foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
+    QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
+    QObject* plugin = loader.instance();
+    qDebug() << fileName << plugin;
   }
 
   createMenu();
