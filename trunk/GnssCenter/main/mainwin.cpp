@@ -39,8 +39,13 @@ t_mainWin::t_mainWin(QWidget* parent, Qt::WindowFlags flags) :
 
   foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
     QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
-    QObject* plugin = loader.instance();
-    qDebug() << fileName << plugin;
+    QObject* object = loader.instance();
+    qDebug() << fileName << object;
+
+    if (object) {
+      t_pluginInterface* plugin = qobject_cast<t_pluginInterface*>(object);
+      qDebug() << "Plugin: " << plugin;  
+    }
   }
 
   createMenu();
