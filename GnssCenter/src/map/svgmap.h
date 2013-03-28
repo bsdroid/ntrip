@@ -3,18 +3,20 @@
 
 #include <QtGui>
 #include <QWhatsThis>
+#include "plugininterface.h"
 
 class QwtPlot;
 class QwtPlotZoomer;
 
 namespace GnssCenter {
 
-class t_svgMap : public QDialog {
+class t_svgMap : public QDialog, public t_pluginInterface {
  Q_OBJECT
     
  public:
   t_svgMap(QWidget* parent = 0);
   ~t_svgMap();
+  bool expectInputFile() const {return false;}
    
  public slots:
   void slotNewPoint(const QString& name, double latDeg, double lonDeg);

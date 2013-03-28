@@ -135,7 +135,6 @@ void t_mainWin::slotEditInput() {
 ////////////////////////////////////////////////////////////////////////////
 void t_mainWin::slotMap() {
   t_svgMap* svgMap = new t_svgMap();
-  svgMap->setMinimumSize(600, 400);
   QMdiSubWindow* win = _mdi->addSubWindow(svgMap);
   win->show();
 }
