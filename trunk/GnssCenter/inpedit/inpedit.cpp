@@ -26,7 +26,7 @@ Q_EXPORT_PLUGIN2(gnsscenter_inpedit, GnssCenter::t_inpEditFactory)
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_inpEdit::t_inpEdit() : QTabWidget(), t_pluginInterface() {
+t_inpEdit::t_inpEdit() : QTabWidget() {
 }
 
 // Destructor

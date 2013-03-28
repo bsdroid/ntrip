@@ -135,9 +135,9 @@ void t_mainWin::slotStartPlugin() {
   qDebug() << "slotStartPlugin" << sender();
   t_pluginAction* action = dynamic_cast<t_pluginAction*>(sender());
   qDebug() << "Action" << action;
-  t_pluginInterface* widget = action->_factIface->create();
-//  QMdiSubWindow* win = _mdi->addSubWindow(svgMap);
-  widget->show();
+  QWidget* widget = action->_factIface->create();
+  QMdiSubWindow* subWindow = _mdi->addSubWindow((QWidget*) widget);
+  subWindow->show();
 }
 
 // Help Window
