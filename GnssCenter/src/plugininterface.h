@@ -10,6 +10,7 @@ class t_pluginInterface : public QWidget {
  public:
   t_pluginInterface(const QString& fileName = QString());
   virtual ~t_pluginInterface() = 0;
+  virtual bool expectInputFile() const = 0;
 };
 
 } // namespace GnssCenter

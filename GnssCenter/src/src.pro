@@ -16,7 +16,7 @@ unix:LIBS  += -L../qwt -lqwt
 win32:LIBS += -L../qwt/release -lqwt
 
 HEADERS +=                app.h       mdiarea.h   \
-           settings.h     mainwin.h
+           settings.h     mainwin.h   plugininterface.h
 
 SOURCES += GnssCenter.cpp app.cpp     mdiarea.cpp \
            settings.cpp   mainwin.cpp
