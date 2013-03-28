@@ -1,9 +1,9 @@
-#ifndef RTGUI_PANEL_H
-#define RTGUI_PANEL_H
+#ifndef GnssCenter_PANEL_H
+#define GnssCenter_PANEL_H
 
 #include <QtGui>
 
-namespace RTGUI {
+namespace GnssCenter {
 
 class t_keyword;
 
@@ -25,6 +25,6 @@ class t_panel : public QScrollArea {
   QMap<QString, t_keyword*>* _keywords;
 };
 
-} // namespace RTGUI
+} // namespace GnssCenter
 
 #endif

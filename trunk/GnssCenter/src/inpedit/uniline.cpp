@@ -19,7 +19,7 @@
 #include "keyword.h"
 
 using namespace std;
-using namespace RTGUI;
+using namespace GnssCenter;
 
 static const char* plus_xpm[] = {
 "16 16 2 1",

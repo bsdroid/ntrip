@@ -1,9 +1,9 @@
-#ifndef RTGUI_UNILINE_H
-#define RTGUI_UNILINE_H
+#ifndef GnssCenter_UNILINE_H
+#define GnssCenter_UNILINE_H
 
 #include <QtGui>
 
-namespace RTGUI {
+namespace GnssCenter {
 
 class t_keyword;
 
@@ -22,6 +22,6 @@ class t_uniLine : public QTableWidget {
   const t_keyword* _keyword;
 };
 
-} // namespace RTGUI
+} // namespace GnssCenter
 
 #endif

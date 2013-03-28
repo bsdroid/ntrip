@@ -1,9 +1,9 @@
-#ifndef RTGUI_SELWIN_H
-#define RTGUI_SELWIN_H
+#ifndef GnssCenter_SELWIN_H
+#define GnssCenter_SELWIN_H
 
 #include <QtGui>
 
-namespace RTGUI {
+namespace GnssCenter {
 
 class t_selWin : public QWidget {
   Q_OBJECT
@@ -37,6 +37,6 @@ class t_selWin : public QWidget {
    Mode         _mode;
 };
 
-} // namespace RTGUI
+} // namespace GnssCenter
 
 #endif
