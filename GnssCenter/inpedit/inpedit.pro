@@ -1,6 +1,6 @@
 
 TEMPLATE             = lib
-CONFIG              += plugin static
+CONFIG              += plugin static debug
 TARGET               = $$qtLibraryTarget(GnssCenter_inpEdit)
 INCLUDEPATH         += ../main
 
