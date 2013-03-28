@@ -45,6 +45,9 @@ t_mainWin::t_mainWin(QWidget* parent, Qt::WindowFlags flags) :
     if (object) {
       t_pluginInterface* plugin = qobject_cast<t_pluginInterface*>(object);
       qDebug() << "Plugin: " << plugin;  
+      if (plugin) {
+        plugin->show();
+      }
     }
   }
 
