@@ -18,6 +18,7 @@
 #include "mainwin.h" 
 #include "settings.h" 
 #include "mdiarea.h" 
+#include "plugininterface.h" 
 #include "map/svgmap.h"
 #include "inpedit/inpfile.h"
 
