@@ -1,7 +1,6 @@
 
 TEMPLATE     = app
 TARGET       = ../GnssCenter
-
 QT          += svg
 CONFIG      += debug
 
