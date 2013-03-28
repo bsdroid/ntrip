@@ -13,6 +13,7 @@ class t_pluginInterface {
 class t_pluginFactoryInterface {
  public:
   virtual t_pluginInterface* create() = 0;
+  virtual QString getName() const = 0;
 };
 
 } // namespace GnssCenter

@@ -26,7 +26,8 @@ class t_inpEditFactory : public QObject, public t_pluginFactoryInterface {
  Q_OBJECT
  Q_INTERFACES(GnssCenter::t_pluginFactoryInterface)
  public:
-  t_pluginInterface* create() {return new t_inpEdit();} 
+  virtual t_pluginInterface* create() {return new t_inpEdit();} 
+  virtual QString getName() const {return QString("Edit Input");}
 };
 
 } // namespace GnssCenter

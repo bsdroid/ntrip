@@ -2,10 +2,18 @@
 #define GnssCenter_MAINWIN_H
 
 #include <QtGui>
+#include "plugininterface.h" 
 
 namespace GnssCenter {
 
 class t_mdiArea;
+
+class t_pluginAction : public QAction {
+ public:
+  t_pluginAction(QObject* parent, t_pluginFactoryInterface* factIface) :
+                QAction(factIface->getName(), parent), _factIface(factIface) {}
+  t_pluginFactoryInterface* _factIface;
+};
 
 class t_mainWin : public QMainWindow {
  Q_OBJECT
@@ -17,8 +25,7 @@ class t_mainWin : public QMainWindow {
  private slots:
   void slotFontSel();
   void slotSaveOptions();
-  void slotEditInput();
-  void slotMap();
+  void slotStartPlugin();
   void slotHelp();
   void slotAbout();
 
@@ -33,14 +40,12 @@ class t_mainWin : public QMainWindow {
   t_mdiArea* _mdi;
 
   QMenu*     _menuFile;
-  QMenu*     _menuNew;
+  QMenu*     _menuPlugins;
   QMenu*     _menuHlp;
 
   QAction*   _actFontSel;
   QAction*   _actSaveOpt;
   QAction*   _actQuit;
-  QAction*   _actEditInput;
-  QAction*   _actMap;
   QAction*   _actHelp;
   QAction*   _actAbout;
 
