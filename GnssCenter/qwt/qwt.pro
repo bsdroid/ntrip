@@ -2,6 +2,7 @@
 
 TEMPLATE  = lib
 TARGET    = qwt
+CONFIG   += staticlib 
 CONFIG   += debug
 
 ###DEFINES += QWT_NO_SVG
