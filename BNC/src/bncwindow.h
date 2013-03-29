@@ -279,4 +279,16 @@ class bncWindow : public QMainWindow {
     QLineEdit* _rtroverOutputLineEdit;
 #endif
 };
+
+#ifdef GNSSCENTER_PLUGIN
+#include "plugininterface.h"
+class t_bncFactory : public QObject, public GnssCenter::t_pluginFactoryInterface {
+ Q_OBJECT
+ Q_INTERFACES(GnssCenter::t_pluginFactoryInterface)
+ public:
+  virtual QWidget* create() {return new bncWindow();} 
+  virtual QString getName() const {return QString("BNC");}
+};
+#endif
+
 #endif
