@@ -71,6 +71,10 @@
 
 using namespace std;
 
+#ifdef GNSSCENTER_PLUGIN
+Q_EXPORT_PLUGIN2(gnsscenter_bnc, t_bncFactory)
+#endif
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::bncWindow() {
