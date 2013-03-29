@@ -26,7 +26,12 @@ QMutex bncSettings::_mutex;  // static mutex
 bncSettings::bncSettings() {
   QMutexLocker locker(&_mutex);
 
+#ifdef GNSSCENTER_PLUGIN
+  _bncApp = 0;
+  return;
+#else
   _bncApp = static_cast<bncApp*>(qApp);
+#endif
 
   // First fill the options
   // ---------------------- 
@@ -219,7 +224,7 @@ QVariant bncSettings::value(const QString& key,
                             const QVariant& defaultValue) const {
   QMutexLocker locker(&_mutex);
 
-  if (_bncApp->_settings.contains(key)) {
+  if (_bncApp && _bncApp->_settings.contains(key)) {
     return _bncApp->_settings[key];
   }
   else {
