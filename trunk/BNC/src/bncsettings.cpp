@@ -46,6 +46,10 @@ void bncSettings::reRead() {
 
   QSettings settings(BNC_CORE->confFileName(), QSettings::IniFormat);
 
+#ifdef GNSSCENTER_PLUGIN
+  settings.beginGroup("BNC");
+#endif
+
   // Read from File
   // --------------
   if (settings.allKeys().size() > 0) {
@@ -209,6 +213,9 @@ void bncSettings::reRead() {
     setValue_p("uploadEphPassword",   "");
     setValue_p("uploadEphSample",     "5");
   }
+#ifdef GNSSCENTER_PLUGIN
+  settings.endGroup();
+#endif
 }
 
 // 
@@ -252,9 +259,15 @@ void bncSettings::sync() {
   QSettings settings(BNC_CORE->confFileName(), QSettings::IniFormat);
   settings.clear();
   QMapIterator<QString, QVariant> it(BNC_CORE->_settings);
+#ifdef GNSSCENTER_PLUGIN
+  settings.beginGroup("BNC");
+#endif
   while (it.hasNext()) {
     it.next();
     settings.setValue(it.key(), it.value());
   }
+#ifdef GNSSCENTER_PLUGIN
+  settings.endGroup();
+#endif
   settings.sync();
 }
