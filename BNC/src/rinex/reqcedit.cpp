@@ -145,7 +145,7 @@ void t_reqcEdit::run() {
 
   // Exit (thread)
   // -------------
-  if (BNC_CORE->mode() != t_pgmCore::interactive) {
+  if (BNC_CORE->mode() != t_bncCore::interactive) {
     qApp->exit(0);
   }
   else {

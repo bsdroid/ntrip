@@ -35,7 +35,7 @@ class bncComb;
 class bncPPPclient;
 class bncTableItem;
 
-class t_pgmCore : public QObject {
+class t_bncCore : public QObject {
   Q_OBJECT
 
     friend class bncSettings;
@@ -43,8 +43,8 @@ class t_pgmCore : public QObject {
 
   public:
     enum e_mode {interactive, nonInteractive, batchPostProcessing};
-    t_pgmCore(int& argc, char* argv[], bool GUIenabled);
-    virtual ~t_pgmCore();  
+    t_bncCore(int& argc, char* argv[], bool GUIenabled);
+    virtual ~t_bncCore();  
     e_mode mode() const {return _mode;}
     void   setMode(e_mode mode) {_mode = mode;}
     void setPort(int port);
@@ -141,6 +141,6 @@ class t_pgmCore : public QObject {
     QMap<int, bncTableItem*> _uploadTableItems;
 };
 
-extern t_pgmCore* BNC_CORE;
+extern t_bncCore* BNC_CORE;
 
 #endif

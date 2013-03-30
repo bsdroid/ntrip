@@ -221,7 +221,7 @@ void t_postProcessing::run() {
     }
   }
 
-  if (BNC_CORE->mode() != t_pgmCore::interactive) {
+  if (BNC_CORE->mode() != t_bncCore::interactive) {
     qApp->exit(0);
   }
   else {
