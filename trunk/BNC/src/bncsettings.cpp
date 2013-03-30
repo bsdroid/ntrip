@@ -28,7 +28,7 @@ bncSettings::bncSettings() {
 
   // First fill the options
   // ---------------------- 
-  if (PGM_CORE->_settings.size() == 0) {
+  if (BNC_CORE->_settings.size() == 0) {
     reRead();
   }
 }
@@ -42,9 +42,9 @@ bncSettings::~bncSettings() {
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::reRead() {
 
-  PGM_CORE->_settings.clear();
+  BNC_CORE->_settings.clear();
 
-  QSettings settings(PGM_CORE->confFileName(), QSettings::IniFormat);
+  QSettings settings(BNC_CORE->confFileName(), QSettings::IniFormat);
 
   // Read from File
   // --------------
@@ -52,7 +52,7 @@ void bncSettings::reRead() {
     QStringListIterator it(settings.allKeys());
     while (it.hasNext()) {
       QString key = it.next();
-      PGM_CORE->_settings[key] = settings.value(key);
+      BNC_CORE->_settings[key] = settings.value(key);
     }
   }
 
@@ -217,8 +217,8 @@ QVariant bncSettings::value(const QString& key,
                             const QVariant& defaultValue) const {
   QMutexLocker locker(&_mutex);
 
-  if (PGM_CORE->_settings.contains(key)) {
-    return PGM_CORE->_settings[key];
+  if (BNC_CORE->_settings.contains(key)) {
+    return BNC_CORE->_settings[key];
   }
   else {
     return defaultValue;
@@ -235,23 +235,23 @@ void bncSettings::setValue(const QString &key, const QVariant& value) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::setValue_p(const QString &key, const QVariant& value) {
-  PGM_CORE->_settings[key] = value;
+  BNC_CORE->_settings[key] = value;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::remove(const QString& key ) {
   QMutexLocker locker(&_mutex);
-  PGM_CORE->_settings.remove(key);
+  BNC_CORE->_settings.remove(key);
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::sync() {
   QMutexLocker locker(&_mutex);
-  QSettings settings(PGM_CORE->confFileName(), QSettings::IniFormat);
+  QSettings settings(BNC_CORE->confFileName(), QSettings::IniFormat);
   settings.clear();
-  QMapIterator<QString, QVariant> it(PGM_CORE->_settings);
+  QMapIterator<QString, QVariant> it(BNC_CORE->_settings);
   while (it.hasNext()) {
     it.next();
     settings.setValue(it.key(), it.value());

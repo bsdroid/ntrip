@@ -21,13 +21,13 @@ using namespace std;
 
 // Global Variable
 ////////////////////////////////////////////////////////////////////////////
-t_pgmCore* PGM_CORE = 0;
+t_pgmCore* BNC_CORE = 0;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_app::t_app(int& argc, char* argv[], bool GUIenabled) : 
   QApplication(argc, argv, GUIenabled) {
-  PGM_CORE = new t_pgmCore(argc, argv, GUIenabled);
+  BNC_CORE = new t_pgmCore(argc, argv, GUIenabled);
 }
 
 // Destructor
@@ -42,7 +42,7 @@ bool t_app::event(QEvent* ev) {
 
   if (ev->type() == QEvent::FileOpen) {  // currently happens on Mac only
     QString fileName = static_cast<QFileOpenEvent*>(ev)->file();
-    PGM_CORE->setConfFileName(fileName);
+    BNC_CORE->setConfFileName(fileName);
     return true;
   }
     

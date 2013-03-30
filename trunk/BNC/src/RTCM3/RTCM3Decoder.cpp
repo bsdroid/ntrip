@@ -74,11 +74,11 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID, bncRawFile* rawFile) :
   _checkMountPoint = settings.value("miscMount").toString();
 
   connect(this, SIGNAL(newGPSEph(gpsephemeris*)), 
-          PGM_CORE, SLOT(slotNewGPSEph(gpsephemeris*)));
+          BNC_CORE, SLOT(slotNewGPSEph(gpsephemeris*)));
   connect(this, SIGNAL(newGlonassEph(glonassephemeris*)), 
-          PGM_CORE, SLOT(slotNewGlonassEph(glonassephemeris*)));
+          BNC_CORE, SLOT(slotNewGlonassEph(glonassephemeris*)));
   connect(this, SIGNAL(newGalileoEph(galileoephemeris*)), 
-          PGM_CORE, SLOT(slotNewGalileoEph(galileoephemeris*)));
+          BNC_CORE, SLOT(slotNewGalileoEph(galileoephemeris*)));
 
   // Mode can be either observations or corrections
   // ----------------------------------------------
@@ -148,7 +148,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
   // Get Glonass Slot Numbers from Global Array
   // ------------------------------------------
-  PGM_CORE->getGlonassSlotNums(parser.GLOFreq);
+  BNC_CORE->getGlonassSlotNums(parser.GLOFreq);
 
   // Remaining part decodes the Observations
   // ---------------------------------------
@@ -376,7 +376,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
   }
 
   if (decoded) {
-    PGM_CORE->storeGlonassSlotNums(parser.GLOFreq);
+    BNC_CORE->storeGlonassSlotNums(parser.GLOFreq);
     return success;
   }
   else {

@@ -141,6 +141,6 @@ class t_pgmCore : public QObject {
     QMap<int, bncTableItem*> _uploadTableItems;
 };
 
-extern t_pgmCore* PGM_CORE;
+extern t_pgmCore* BNC_CORE;
 
 #endif

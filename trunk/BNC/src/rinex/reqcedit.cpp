@@ -107,9 +107,9 @@ void t_reqcEdit::run() {
     *_log << QByteArray(78, '-') << endl;
 
     *_log << QByteArray("Program").leftJustified(15) << ": "
-          << PGM_CORE->pgmName() << endl;
+          << BNC_CORE->pgmName() << endl;
     *_log << QByteArray("Run by").leftJustified(15) << ": "
-          << PGM_CORE->userName() << endl;
+          << BNC_CORE->userName() << endl;
     *_log << QByteArray("Date").leftJustified(15) << ": "
           << QDateTime::currentDateTime().toUTC().toString("yyyy-MM-dd hh:mm:ss") << endl;
     *_log << QByteArray("RINEX Version").leftJustified(15) << ": "
@@ -145,7 +145,7 @@ void t_reqcEdit::run() {
 
   // Exit (thread)
   // -------------
-  if (PGM_CORE->mode() != t_pgmCore::interactive) {
+  if (BNC_CORE->mode() != t_pgmCore::interactive) {
     qApp->exit(0);
   }
   else {

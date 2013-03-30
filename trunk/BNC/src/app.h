@@ -16,7 +16,7 @@ class t_app : public QApplication {
   t_pgmCore* _pgmCore;
 };
 
-extern t_pgmCore* PGM_CORE;
+extern t_pgmCore* BNC_CORE;
 
 #endif
 

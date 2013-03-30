@@ -90,8 +90,8 @@ void currentGPSWeeks(int& week, double& sec) {
 
   QDateTime currDateTimeGPS;
 
-  if ( PGM_CORE->_currentDateAndTimeGPS ) {
-    currDateTimeGPS = *(PGM_CORE->_currentDateAndTimeGPS);
+  if ( BNC_CORE->_currentDateAndTimeGPS ) {
+    currDateTimeGPS = *(BNC_CORE->_currentDateAndTimeGPS);
   }
   else {
     currDateTimeGPS = QDateTime::currentDateTime().toUTC();
@@ -115,8 +115,8 @@ void currentGPSWeeks(int& week, double& sec) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 QDateTime currentDateAndTimeGPS() {
-  if ( PGM_CORE->_currentDateAndTimeGPS ) {
-    return *(PGM_CORE->_currentDateAndTimeGPS);
+  if ( BNC_CORE->_currentDateAndTimeGPS ) {
+    return *(BNC_CORE->_currentDateAndTimeGPS);
   }
   else {
     int    GPSWeek;

@@ -121,7 +121,7 @@ int main(int argc, char* argv[]) {
   app.setApplicationName("BNC");
   app.setOrganizationName("BKG");
   app.setOrganizationDomain("www.bkg.bund.de");
-  PGM_CORE->setConfFileName( confFileName );
+  BNC_CORE->setConfFileName( confFileName );
 
   bncSettings settings;
 
@@ -137,7 +137,7 @@ int main(int argc, char* argv[]) {
   // ---------------------------------------
   if (interactive) {
 
-    PGM_CORE->setMode(t_pgmCore::interactive);
+    BNC_CORE->setMode(t_pgmCore::interactive);
 
     QString fontString = settings.value("font").toString();
     if ( !fontString.isEmpty() ) {
@@ -150,7 +150,7 @@ int main(int argc, char* argv[]) {
     app.setWindowIcon(QPixmap(":ntrip-logo.png"));
 
     bncWindow* bncWin = new bncWindow();
-    PGM_CORE->setMainWindow(bncWin);
+    BNC_CORE->setMainWindow(bncWin);
     bncWin->show();
   }
 
@@ -159,7 +159,7 @@ int main(int argc, char* argv[]) {
   // Post-Processing PPP
   // -------------------
   else if (settings.value("pppSPP").toString() == "Post-Processing") {
-    PGM_CORE->setMode(t_pgmCore::batchPostProcessing);
+    BNC_CORE->setMode(t_pgmCore::batchPostProcessing);
     t_postProcessing* postProcessing = new t_postProcessing(0);
     postProcessing->start();
   }
@@ -167,7 +167,7 @@ int main(int argc, char* argv[]) {
   // Post-Processing reqc edit
   // -------------------------
   else if (settings.value("reqcAction").toString() == "Edit/Concatenate") {
-    PGM_CORE->setMode(t_pgmCore::batchPostProcessing);
+    BNC_CORE->setMode(t_pgmCore::batchPostProcessing);
     t_reqcEdit* reqcEdit = new t_reqcEdit(0);
     reqcEdit->start();
   }
@@ -175,7 +175,7 @@ int main(int argc, char* argv[]) {
   // Post-Processing reqc analyze
   // ----------------------------
   else if (settings.value("reqcAction").toString() == "Analyze") {
-    PGM_CORE->setMode(t_pgmCore::batchPostProcessing);
+    BNC_CORE->setMode(t_pgmCore::batchPostProcessing);
     t_reqcAnalyze* reqcAnalyze = new t_reqcAnalyze(0);
     reqcAnalyze->start();
   }
@@ -193,19 +193,19 @@ int main(int argc, char* argv[]) {
     bncCaster* caster = new bncCaster(settings.value("outFile").toString(),
                                       settings.value("outPort").toInt());
     
-    PGM_CORE->setCaster(caster);
-    PGM_CORE->setPort(settings.value("outEphPort").toInt());
-    PGM_CORE->setPortCorr(settings.value("corrPort").toInt());
-    PGM_CORE->initCombination();
+    BNC_CORE->setCaster(caster);
+    BNC_CORE->setPort(settings.value("outEphPort").toInt());
+    BNC_CORE->setPortCorr(settings.value("corrPort").toInt());
+    BNC_CORE->initCombination();
     
-    PGM_CORE->connect(caster, SIGNAL(getThreadsFinished()), &app, SLOT(quit()));
+    BNC_CORE->connect(caster, SIGNAL(getThreadsFinished()), &app, SLOT(quit()));
     
-    PGM_CORE->slotMessage("========== Start BNC v" BNCVERSION " =========", true);
+    BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION " =========", true);
     
     // Normal case - data from Internet
     // --------------------------------
     if ( rawFileName.isEmpty() ) {
-      PGM_CORE->setMode(t_pgmCore::nonInteractive);
+      BNC_CORE->setMode(t_pgmCore::nonInteractive);
       caster->readMountPoints();
       if (caster->numStations() == 0) {
         exit(0);
@@ -215,7 +215,7 @@ int main(int argc, char* argv[]) {
     // Special case - data from file
     // -----------------------------
     else {
-      PGM_CORE->setMode(t_pgmCore::batchPostProcessing);
+      BNC_CORE->setMode(t_pgmCore::batchPostProcessing);
       bncRawFile*   rawFile   = new bncRawFile(rawFileName, "", 
                                                bncRawFile::input);
       bncGetThread* getThread = new bncGetThread(rawFile);

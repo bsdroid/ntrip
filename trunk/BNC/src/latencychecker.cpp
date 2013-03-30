@@ -60,7 +60,7 @@ latencyChecker::latencyChecker(QByteArray staID) {
   _staID = staID;
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          PGM_CORE, SLOT(slotMessage(const QByteArray,bool)));
+          BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   bncSettings settings;
 

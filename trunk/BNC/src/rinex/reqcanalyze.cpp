@@ -100,7 +100,7 @@ t_reqcAnalyze::~t_reqcAnalyze() {
   }
   delete _log;     _log     = 0;
   delete _logFile; _logFile = 0;
-  if (PGM_CORE->mode() != t_pgmCore::interactive) {
+  if (BNC_CORE->mode() != t_pgmCore::interactive) {
     qApp->exit(0);
   }
 }
@@ -115,7 +115,7 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
                                    const QByteArray& scaleTitle,
                                    double maxValue) {
 
-  if (PGM_CORE->GUIenabled()) {
+  if (BNC_CORE->GUIenabled()) {
 
     if (maxValue == 0.0) {
       if (data1) {
@@ -141,13 +141,13 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
     QVector<QWidget*> plots;
     if (data1) {
       t_polarPlot* plot1 = new t_polarPlot(QwtText(title1), scaleInterval,
-                                          PGM_CORE->mainWindow());
+                                          BNC_CORE->mainWindow());
       plot1->addCurve(data1);
       plots << plot1;
     }
     if (data2) {
       t_polarPlot* plot2 = new t_polarPlot(QwtText(title2), scaleInterval,
-                                           PGM_CORE->mainWindow());
+                                           BNC_CORE->mainWindow());
       plot2->addCurve(data2);
       plots << plot2;
     }
@@ -295,7 +295,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
   // Show the plots
   // --------------
-  if (PGM_CORE->GUIenabled()) {
+  if (BNC_CORE->GUIenabled()) {
     QFileInfo  fileInfo(obsFile->fileName());
     QByteArray title = fileInfo.fileName().toAscii();
     emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 
@@ -650,7 +650,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, 
                                      const QByteArray& title) {
 
-  if (PGM_CORE->GUIenabled()) {
+  if (BNC_CORE->GUIenabled()) {
     t_availPlot* plotA = new t_availPlot(0, &_availDataMap);
     plotA->setTitle(title);
 

@@ -46,7 +46,7 @@ hassDecoder::hassDecoder(const QString& staID) {
   _GPSweeks = -1.0;
 
   connect(this, SIGNAL(newCorrLine(QString, QString, long)), 
-          PGM_CORE, SLOT(slotNewCorrLine(QString, QString, long)));
+          BNC_CORE, SLOT(slotNewCorrLine(QString, QString, long)));
 }
 
 // Destructor

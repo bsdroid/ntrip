@@ -100,7 +100,7 @@ bncWindow::bncWindow() {
 
   setWindowTitle(tr("BKG Ntrip Client (BNC) Version " BNCVERSION));
 
-  connect(PGM_CORE, SIGNAL(newMessage(QByteArray,bool)), 
+  connect(BNC_CORE, SIGNAL(newMessage(QByteArray,bool)), 
           this, SLOT(slotWindowMessage(QByteArray,bool)));
 
   // Create Actions
@@ -1920,7 +1920,7 @@ void bncWindow::saveOptions() {
 // All get slots terminated
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotGetThreadsFinished() {
-  PGM_CORE->slotMessage("All Get Threads Terminated", true);
+  BNC_CORE->slotMessage("All Get Threads Terminated", true);
   delete _caster;    _caster    = 0;
   delete _casterEph; _casterEph = 0;
   _runningRealTime = false;
@@ -1956,9 +1956,9 @@ void bncWindow::startRealTime() {
   _caster = new bncCaster(_outFileLineEdit->text(), 
                           _outPortLineEdit->text().toInt());
 
-  PGM_CORE->setPort(_outEphPortLineEdit->text().toInt());
-  PGM_CORE->setPortCorr(_corrPortLineEdit->text().toInt());
-  PGM_CORE->initCombination();
+  BNC_CORE->setPort(_outEphPortLineEdit->text().toInt());
+  BNC_CORE->setPortCorr(_corrPortLineEdit->text().toInt());
+  BNC_CORE->initCombination();
 
   connect(_caster, SIGNAL(getThreadsFinished()), 
           this, SLOT(slotGetThreadsFinished()));
@@ -1966,35 +1966,35 @@ void bncWindow::startRealTime() {
   connect (_caster, SIGNAL(mountPointsRead(QList<bncGetThread*>)), 
            this, SLOT(slotMountPointsRead(QList<bncGetThread*>)));
 
-  PGM_CORE->slotMessage("========== Start BNC v" BNCVERSION " =========", true);
+  BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION " =========", true);
 
   bncSettings settings;
 
   QDir rnxdir(settings.value("rnxPath").toString());
-  if (!rnxdir.exists()) PGM_CORE->slotMessage("Cannot find RINEX Observations directory", true);
+  if (!rnxdir.exists()) BNC_CORE->slotMessage("Cannot find RINEX Observations directory", true);
 
   QString rnx_file = settings.value("rnxScript").toString();
   if ( !rnx_file.isEmpty() ) {
     QFile rnxfile(settings.value("rnxScript").toString());
-    if (!rnxfile.exists()) PGM_CORE->slotMessage("Cannot find RINEX Observations script", true);
+    if (!rnxfile.exists()) BNC_CORE->slotMessage("Cannot find RINEX Observations script", true);
   }
 
   QDir ephdir(settings.value("ephPath").toString());
-  if (!ephdir.exists()) PGM_CORE->slotMessage("Cannot find RINEX Ephemeris directory", true);
+  if (!ephdir.exists()) BNC_CORE->slotMessage("Cannot find RINEX Ephemeris directory", true);
 
   QDir corrdir(settings.value("corrPath").toString());
-  if (!corrdir.exists()) PGM_CORE->slotMessage("Cannot find Broadcast Corrections directory", true);
+  if (!corrdir.exists()) BNC_CORE->slotMessage("Cannot find Broadcast Corrections directory", true);
 
   QString advise_file = settings.value("adviseScript").toString();
   if ( !advise_file.isEmpty() ) {
     QFile advisefile(settings.value("adviseScript").toString());
-    if (!advisefile.exists()) PGM_CORE->slotMessage("Cannot find Outages script", true);
+    if (!advisefile.exists()) BNC_CORE->slotMessage("Cannot find Outages script", true);
   }
 
   QString ant_file = settings.value("pppAntex").toString();
   if ( !ant_file.isEmpty() ) {
     QFile anxfile(settings.value("pppAntex").toString());
-    if (!anxfile.exists()) PGM_CORE->slotMessage("Cannot find IGS ANTEX file", true);
+    if (!anxfile.exists()) BNC_CORE->slotMessage("Cannot find IGS ANTEX file", true);
   }
 
   _caster->readMountPoints();
@@ -2011,7 +2011,7 @@ void bncWindow::slotStop() {
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
-    PGM_CORE->stopCombination();
+    BNC_CORE->stopCombination();
     delete _caster;    _caster    = 0;
     delete _casterEph; _casterEph = 0;
     _runningRealTime = false;
@@ -2583,7 +2583,7 @@ void bncWindow::slotAddUploadRow() {
       bncTableItem* bncIt = new bncTableItem();
       bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
       _uploadTable->setItem(iRow, iCol, bncIt);
-      PGM_CORE->_uploadTableItems[iRow] = bncIt;
+      BNC_CORE->_uploadTableItems[iRow] = bncIt;
     }
     else {
       _uploadTable->setItem(iRow, iCol, new QTableWidgetItem(""));
@@ -2594,7 +2594,7 @@ void bncWindow::slotAddUploadRow() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotDelUploadRow() {
-  PGM_CORE->_uploadTableItems.clear();
+  BNC_CORE->_uploadTableItems.clear();
   int nRows = _uploadTable->rowCount();
   bool flg[nRows];
   for (int iRow = 0; iRow < nRows; iRow++) {
@@ -2611,7 +2611,7 @@ void bncWindow::slotDelUploadRow() {
     }
   }
   for (int iRow = 0; iRow < _uploadTable->rowCount(); iRow++) {
-    PGM_CORE->_uploadTableItems[iRow] = 
+    BNC_CORE->_uploadTableItems[iRow] = 
                                 (bncTableItem*) _uploadTable->item(iRow, 11);
   }
   nRows = _uploadTable->rowCount();
@@ -2667,7 +2667,7 @@ void bncWindow::populateUploadTable() {
         bncTableItem* bncIt = new bncTableItem();
         bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
         _uploadTable->setItem(iRow, iCol, bncIt);
-        PGM_CORE->_uploadTableItems[iRow] = bncIt;
+        BNC_CORE->_uploadTableItems[iRow] = bncIt;
       }
       else {
         _uploadTable->setItem(iRow, iCol, new QTableWidgetItem(hlp[iCol]));

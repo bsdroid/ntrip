@@ -162,7 +162,7 @@ bncComb::bncComb() {
   _rtnetDecoder = 0;
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          PGM_CORE, SLOT(slotMessage(const QByteArray,bool)));
+          BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   // Combination Method
   // ------------------
@@ -749,8 +749,8 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
 
   // Optionally send new Corrections to PPP
   // --------------------------------------
-  if (PGM_CORE->_bncPPPclient) {
-    PGM_CORE->_bncPPPclient->slotNewCorrections(corrLines);
+  if (BNC_CORE->_bncPPPclient) {
+    BNC_CORE->_bncPPPclient->slotNewCorrections(corrLines);
   }
 }
 
