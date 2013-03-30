@@ -33,7 +33,6 @@ t_app::t_app(int& argc, char* argv[], bool GUIenabled) :
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_app::~t_app() {
-  delete _pgmCore;
 }
 
 // Handling Events (virtual)
