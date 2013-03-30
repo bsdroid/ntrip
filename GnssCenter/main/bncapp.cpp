@@ -1,0 +1,1 @@
+../../BNC/src/bncapp.cpp
