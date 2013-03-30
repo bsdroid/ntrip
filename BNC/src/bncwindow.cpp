@@ -73,11 +73,16 @@ using namespace std;
 
 #ifdef GNSSCENTER_PLUGIN
 Q_EXPORT_PLUGIN2(gnsscenter_bnc, t_bncFactory)
+t_bncCore* BNC_CORE = 0;
 #endif
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::bncWindow() {
+
+#ifdef GNSSCENTER_PLUGIN
+  BNC_CORE = new t_bncCore(true);
+#endif
 
   _caster    = 0;
   _casterEph = 0;
