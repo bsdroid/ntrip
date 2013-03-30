@@ -49,7 +49,7 @@
 #include <QString>
 
 #include "bncrinex.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncutils.h"
 #include "bncconst.h"
 #include "bnctabledlg.h"

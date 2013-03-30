@@ -40,7 +40,7 @@
 
 #include <iostream>
 #include "reqcedit.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncsettings.h"
 #include "bncutils.h"
 

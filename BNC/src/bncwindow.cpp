@@ -42,7 +42,7 @@
 
 #include <unistd.h>
 #include "bncwindow.h" 
-#include "bncapp.h" 
+#include "bnccore.h" 
 #include "bncgetthread.h" 
 #include "bnctabledlg.h" 
 #include "bncipport.h" 

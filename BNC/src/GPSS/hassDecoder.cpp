@@ -18,7 +18,7 @@
 #include <iostream>
 
 #include "hassDecoder.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bnctime.h"
 #include "bncutils.h"
 #include "bncsettings.h"

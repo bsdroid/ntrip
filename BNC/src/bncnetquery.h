@@ -3,7 +3,7 @@
 
 #include <QtNetwork>
 #include "bncconst.h"
-#include "bncapp.h"
+#include "bnccore.h"
 
 class bncNetQuery : public QObject {
  Q_OBJECT

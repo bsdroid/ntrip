@@ -47,7 +47,7 @@
 #include "RTCM3Decoder.h"
 #include "../RTCM/rtcm_utils.h"
 #include "bncconst.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncutils.h"
 #include "bncsettings.h" 
 

@@ -15,7 +15,7 @@
  * -----------------------------------------------------------------------*/
 
 #include "app.h" 
-#include "bncapp.h"
+#include "bnccore.h"
 
 using namespace std;
 

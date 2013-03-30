@@ -45,7 +45,7 @@
 #include <iostream>
 
 #include "app.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncwindow.h"
 #include "bncsettings.h"
 #include "bncversion.h"

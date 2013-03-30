@@ -16,7 +16,7 @@
  * -----------------------------------------------------------------------*/
 
 #include "gpssDecoder.h"
-#include "bncapp.h"
+#include "bnccore.h"
 
 using namespace std;
 

@@ -43,7 +43,7 @@
 #include <sstream>
 
 #include "bncpppclient.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncutils.h"
 #include "bncconst.h"
 #include "bncmodel.h"

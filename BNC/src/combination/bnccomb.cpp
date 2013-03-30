@@ -19,7 +19,7 @@
 #include <sstream>
 
 #include "bnccomb.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "upload/bncrtnetdecoder.h"
 #include "bncsettings.h"
 #include "bncmodel.h"

@@ -10,7 +10,7 @@
 #include "bncutils.h"
 #include "timeutils.h"
 #include "bnctime.h"
-#include "bncapp.h"
+#include "bnccore.h"
 
 using namespace std;
 

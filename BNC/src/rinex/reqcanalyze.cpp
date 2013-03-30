@@ -43,7 +43,7 @@
 #include <qwt_plot_renderer.h>
 
 #include "reqcanalyze.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncsettings.h"
 #include "reqcedit.h"
 #include "bncutils.h"

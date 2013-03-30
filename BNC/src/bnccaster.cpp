@@ -46,7 +46,7 @@
 
 #include "bnccaster.h"
 #include "bncrinex.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncgetthread.h"
 #include "bncutils.h"
 #include "bncsettings.h"
