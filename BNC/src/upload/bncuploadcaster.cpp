@@ -45,11 +45,11 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   _isToBeDeleted = false;
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          PGM_CORE, SLOT(slotMessage(const QByteArray,bool)));
+          BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
-  if (PGM_CORE->_uploadTableItems.find(_iRow) != PGM_CORE->_uploadTableItems.end()){
+  if (BNC_CORE->_uploadTableItems.find(_iRow) != BNC_CORE->_uploadTableItems.end()){
     connect(this, SIGNAL(newBytes(QByteArray,double)), 
-            PGM_CORE->_uploadTableItems.value(iRow), 
+            BNC_CORE->_uploadTableItems.value(iRow), 
             SLOT(slotNewBytes(const QByteArray,double)));
   }
 }

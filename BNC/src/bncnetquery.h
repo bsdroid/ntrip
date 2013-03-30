@@ -13,7 +13,7 @@ class bncNetQuery : public QObject {
 
   bncNetQuery() {
     connect(this,     SIGNAL(newMessage(QByteArray,bool)), 
-            PGM_CORE, SLOT(slotMessage(const QByteArray,bool)));
+            BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
   }
   virtual ~bncNetQuery() {}
   

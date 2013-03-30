@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "bncrtrover.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncsettings.h" 
 #include "bnctime.h" 
 
@@ -92,16 +92,16 @@ void t_bncRtrover::run() {
 
   // Connect to BNC Signals
   // ----------------------
-  connect(PGM_CORE, SIGNAL(newCorrections(QList<QString>)),
+  connect(BNC_CORE, SIGNAL(newCorrections(QList<QString>)),
           this, SLOT(slotNewCorrections(QList<QString>)));
 
-  connect(PGM_CORE, SIGNAL(newEphGPS(gpsephemeris)),
+  connect(BNC_CORE, SIGNAL(newEphGPS(gpsephemeris)),
           this, SLOT(slotNewEphGPS(gpsephemeris)));
 
-  connect(PGM_CORE, SIGNAL(newEphGlonass(glonassephemeris)),
+  connect(BNC_CORE, SIGNAL(newEphGlonass(glonassephemeris)),
           this, SLOT(slotNewEphGlonass(glonassephemeris)));
 
-  connect(PGM_CORE, SIGNAL(newEphGalileo(galileoephemeris)),
+  connect(BNC_CORE, SIGNAL(newEphGalileo(galileoephemeris)),
           this, SLOT(slotNewEphGalileo(galileoephemeris)));
  
   // Start processing loop

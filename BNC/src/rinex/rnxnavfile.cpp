@@ -240,7 +240,7 @@ t_eph* t_rnxNavFile::getNextEph(const bncTime& tt,
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxNavFile::writeHeader(const QMap<QString, QString>* txtMap) {
 
-  QString     runBy = PGM_CORE->userName();
+  QString     runBy = BNC_CORE->userName();
   QStringList comments;
 
   if (txtMap) {
@@ -274,7 +274,7 @@ void t_rnxNavFile::writeHeader(const QMap<QString, QString>* txtMap) {
   const QString fmtDate = (version() < 3.0) ? "dd-MMM-yy hh:mm"
                                             : "yyyyMMdd hhmmss UTC";
   *_stream << QString("%1%2%3")
-    .arg(PGM_CORE->pgmName(), -20)
+    .arg(BNC_CORE->pgmName(), -20)
     .arg(runBy.trimmed().left(20), -20)
     .arg(QDateTime::currentDateTime().toUTC().toString(fmtDate), -20)
     .leftJustified(60)
