@@ -44,7 +44,7 @@ win32:LIBS += -L../newmat/release -L../qwt/release -L../qwtpolar/release \
               -lnewmat -lqwtpolar -lqwt
 
 HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
-          bnccaster.h bncrinex.h bncapp.h bncutils.h   bnchlpdlg.h    \
+          bnccaster.h bncrinex.h bnccore.h bncutils.h   bnchlpdlg.h   \
           bncconst.h bnchtml.h bnctableitem.h bnczerodecoder.h        \
           bncnetquery.h bncnetqueryv1.h bncnetqueryv2.h               \
           bncnetqueryrtp.h bncsettings.h latencychecker.h             \
@@ -74,7 +74,7 @@ unix:HEADERS  += serial/posix_qextserialport.h
 win32:HEADERS += serial/win_qextserialport.h
 
 SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
-          bnccaster.cpp bncrinex.cpp bncapp.cpp bncutils.cpp          \
+          bnccaster.cpp bncrinex.cpp bnccore.cpp bncutils.cpp         \
           bncconst.cpp bnchtml.cpp bnchlpdlg.cpp bnctableitem.cpp     \
           bnczerodecoder.cpp bncnetqueryv1.cpp bncnetqueryv2.cpp      \
           bncnetqueryrtp.cpp bncsettings.cpp latencychecker.cpp       \
