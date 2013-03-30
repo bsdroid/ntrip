@@ -57,7 +57,7 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_bncCore::t_bncCore(int& argc, char* argv[], bool GUIenabled) {
+t_bncCore::t_bncCore(bool GUIenabled) {
   _GUIenabled  = GUIenabled;
   _logFileFlag = 0;
   _logFile     = 0;
