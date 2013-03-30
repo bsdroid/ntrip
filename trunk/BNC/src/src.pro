@@ -6,6 +6,6 @@ CONFIG += release
 
 include(src.pri)
 
-HEADERS += app.h
+HEADERS +=         app.h
 
-SOURCES += app.cpp
+SOURCES += bncmain app.cpp
