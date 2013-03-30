@@ -27,7 +27,7 @@ t_bncCore* BNC_CORE = 0;
 ////////////////////////////////////////////////////////////////////////////
 t_app::t_app(int& argc, char* argv[], bool GUIenabled) : 
   QApplication(argc, argv, GUIenabled) {
-  BNC_CORE = new t_bncCore(argc, argv, GUIenabled);
+  BNC_CORE = new t_bncCore(GUIenabled);
 }
 
 // Destructor

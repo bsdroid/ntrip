@@ -43,7 +43,7 @@ class t_bncCore : public QObject {
 
   public:
     enum e_mode {interactive, nonInteractive, batchPostProcessing};
-    t_bncCore(int& argc, char* argv[], bool GUIenabled);
+    t_bncCore(bool GUIenabled);
     virtual ~t_bncCore();  
     e_mode mode() const {return _mode;}
     void   setMode(e_mode mode) {_mode = mode;}
