@@ -64,7 +64,7 @@ HEADERS       += serial/qextserialbase.h serial/qextserialport.h
 unix:HEADERS  += serial/posix_qextserialport.h
 win32:HEADERS += serial/win_qextserialport.h
 
-SOURCES = bncmain.cpp bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
+SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bnccaster.cpp bncrinex.cpp bnccore.cpp bncutils.cpp         \
           bncconst.cpp bnchtml.cpp bnchlpdlg.cpp bnctableitem.cpp     \
           bnczerodecoder.cpp bncnetqueryv1.cpp bncnetqueryv2.cpp      \
