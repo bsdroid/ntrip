@@ -82,6 +82,7 @@ bncWindow::bncWindow() {
 
 #ifdef GNSSCENTER_PLUGIN
   BNC_CORE = new t_bncCore(true);
+  BNC_CORE->setConfFileName("");
 #endif
 
   _caster    = 0;
