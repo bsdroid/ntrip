@@ -35,7 +35,7 @@ class bncComb;
 class bncPPPclient;
 class bncTableItem;
 
-class bncApp : public QApplication {
+class t_pgmCore : public QObject {
   Q_OBJECT
 
     friend class bncSettings;
@@ -43,8 +43,8 @@ class bncApp : public QApplication {
 
   public:
     enum e_mode {interactive, nonInteractive, batchPostProcessing};
-    bncApp(int& argc, char* argv[], bool GUIenabled);
-    virtual ~bncApp();  
+    t_pgmCore(int& argc, char* argv[], bool GUIenabled);
+    virtual ~t_pgmCore();  
     e_mode mode() const {return _mode;}
     void   setMode(e_mode mode) {_mode = mode;}
     void setPort(int port);
@@ -64,8 +64,6 @@ class bncApp : public QApplication {
     QWidget* mainWindow() const {return _mainWindow;};
     void setMainWindow(QWidget* mainWindow){_mainWindow = mainWindow;}
     bool GUIenabled() const {return _GUIenabled;}
-  protected:
-    virtual bool event(QEvent* ev);
 
   public slots:
     void slotMessage(QByteArray msg, bool showOnScreen);
@@ -142,4 +140,7 @@ class bncApp : public QApplication {
     bncPPPclient*       _bncPPPclient;
     QMap<int, bncTableItem*> _uploadTableItems;
 };
+
+extern t_pgmCore* PGM_CORE;
+
 #endif

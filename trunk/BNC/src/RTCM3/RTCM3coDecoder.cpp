@@ -72,10 +72,10 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
   _GPSweeks = -1.0;
 
   connect(this, SIGNAL(newCorrLine(QString, QString, long)), 
-          (bncApp*) qApp, SLOT(slotNewCorrLine(QString, QString, long)));
+          PGM_CORE, SLOT(slotNewCorrLine(QString, QString, long)));
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          (bncApp*) qApp, SLOT(slotMessage(const QByteArray,bool)));
+          PGM_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   memset(&_co, 0, sizeof(_co));
   memset(&_bias, 0, sizeof(_bias));

@@ -102,16 +102,14 @@ void t_reqcEdit::run() {
   // Log File Header
   // ---------------
   if (_log) {
-    bncApp* app = (bncApp*) qApp;
-
     *_log << QByteArray(78, '-') << endl;
     *_log << "Concatenation of RINEX Observation and/or Navigation Files\n";
     *_log << QByteArray(78, '-') << endl;
 
     *_log << QByteArray("Program").leftJustified(15) << ": "
-          << app->pgmName() << endl;
+          << PGM_CORE->pgmName() << endl;
     *_log << QByteArray("Run by").leftJustified(15) << ": "
-          << app->userName() << endl;
+          << PGM_CORE->userName() << endl;
     *_log << QByteArray("Date").leftJustified(15) << ": "
           << QDateTime::currentDateTime().toUTC().toString("yyyy-MM-dd hh:mm:ss") << endl;
     *_log << QByteArray("RINEX Version").leftJustified(15) << ": "
@@ -147,9 +145,8 @@ void t_reqcEdit::run() {
 
   // Exit (thread)
   // -------------
-  bncApp* app = (bncApp*) qApp;
-  if ( app->mode() != bncApp::interactive) {
-    app->exit(0);
+  if (PGM_CORE->mode() != t_pgmCore::interactive) {
+    qApp->exit(0);
   }
   else {
     emit finished();

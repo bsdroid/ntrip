@@ -26,7 +26,7 @@
  * BKG NTRIP Client
  * -------------------------------------------------------------------------
  *
- * Class:      bncApp
+ * Class:      t_pgmCore
  *
  * Purpose:    This class implements the main application
  *
@@ -57,9 +57,7 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) : 
-  QApplication(argc, argv, GUIenabled) {
-
+t_pgmCore::t_pgmCore(int& argc, char* argv[], bool GUIenabled) {
   _GUIenabled  = GUIenabled;
   _logFileFlag = 0;
   _logFile     = 0;
@@ -126,7 +124,7 @@ bncApp::bncApp(int& argc, char* argv[], bool GUIenabled) :
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-bncApp::~bncApp() {
+t_pgmCore::~t_pgmCore() {
   delete _logStream;
   delete _logFile;
   delete _ephStreamGPS;
@@ -162,7 +160,7 @@ bncApp::~bncApp() {
 
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::slotMessage(QByteArray msg, bool showOnScreen) {
+void t_pgmCore::slotMessage(QByteArray msg, bool showOnScreen) {
 
   QMutexLocker locker(&_mutexMessage);
 
@@ -172,7 +170,7 @@ void bncApp::slotMessage(QByteArray msg, bool showOnScreen) {
 
 // Write a Program Message (private, no lock)
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::messagePrivate(const QByteArray& msg) {
+void t_pgmCore::messagePrivate(const QByteArray& msg) {
 
   // First time resolve the log file name
   // ------------------------------------
@@ -214,7 +212,7 @@ void bncApp::messagePrivate(const QByteArray& msg) {
 
 // New GPS Ephemeris 
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
+void t_pgmCore::slotNewGPSEph(gpsephemeris* gpseph) {
 
   QMutexLocker locker(&_mutex);
 
@@ -245,7 +243,7 @@ void bncApp::slotNewGPSEph(gpsephemeris* gpseph) {
     
 // New Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
+void t_pgmCore::slotNewGlonassEph(glonassephemeris* glonasseph) {
 
   QMutexLocker locker(&_mutex);
 
@@ -291,7 +289,7 @@ void bncApp::slotNewGlonassEph(glonassephemeris* glonasseph) {
 
 // New Galileo Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::slotNewGalileoEph(galileoephemeris* galileoeph) {
+void t_pgmCore::slotNewGalileoEph(galileoephemeris* galileoeph) {
 
   QMutexLocker locker(&_mutex);
 
@@ -326,7 +324,7 @@ void bncApp::slotNewGalileoEph(galileoephemeris* galileoeph) {
 
 // Print Header of the output File(s)
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::printEphHeader() {
+void t_pgmCore::printEphHeader() {
 
   bncSettings settings;
 
@@ -498,7 +496,7 @@ void bncApp::printEphHeader() {
 
 // Print One GPS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
+void t_pgmCore::printGPSEph(gpsephemeris* ep, bool printFile) {
 
   t_ephGPS eph;
   eph.set(ep);
@@ -511,7 +509,7 @@ void bncApp::printGPSEph(gpsephemeris* ep, bool printFile) {
 
 // Print One Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
+void t_pgmCore::printGlonassEph(glonassephemeris* ep, bool printFile) {
 
   t_ephGlo eph;
   bool timeChanged;
@@ -525,7 +523,7 @@ void bncApp::printGlonassEph(glonassephemeris* ep, bool printFile) {
 
 // Print One Galileo Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::printGalileoEph(galileoephemeris* ep, bool printFile) {
+void t_pgmCore::printGalileoEph(galileoephemeris* ep, bool printFile) {
 
   t_ephGal eph;
   eph.set(ep);
@@ -538,7 +536,7 @@ void bncApp::printGalileoEph(galileoephemeris* ep, bool printFile) {
 
 // Output
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::printOutput(bool printFile, QTextStream* stream,
+void t_pgmCore::printOutput(bool printFile, QTextStream* stream,
                          const QString& strV2, const QString& strV3) {
 
   // Output into file
@@ -575,13 +573,13 @@ void bncApp::printOutput(bool printFile, QTextStream* stream,
 
 // Set Port Number
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::setPort(int port) {
+void t_pgmCore::setPort(int port) {
   _port = port;
   if (_port != 0) {
     delete _server;
     _server = new QTcpServer;
     if ( !_server->listen(QHostAddress::Any, _port) ) {
-      slotMessage("bncApp: Cannot listen on ephemeris port", true);
+      slotMessage("t_pgmCore: Cannot listen on ephemeris port", true);
     }
     connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
     delete _sockets;
@@ -591,13 +589,13 @@ void bncApp::setPort(int port) {
 
 // Set Port Number
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::setPortCorr(int port) {
+void t_pgmCore::setPortCorr(int port) {
   _portCorr = port;
   if (_portCorr != 0) {
     delete _serverCorr;
     _serverCorr = new QTcpServer;
     if ( !_serverCorr->listen(QHostAddress::Any, _portCorr) ) {
-      slotMessage("bncApp: Cannot listen on correction port", true);
+      slotMessage("t_pgmCore: Cannot listen on correction port", true);
     }
     connect(_serverCorr, SIGNAL(newConnection()), this, SLOT(slotNewConnectionCorr()));
     delete _socketsCorr;
@@ -607,27 +605,27 @@ void bncApp::setPortCorr(int port) {
 
 // New Connection
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::slotNewConnection() {
+void t_pgmCore::slotNewConnection() {
   _sockets->push_back( _server->nextPendingConnection() );
 }
 
 // New Connection
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::slotNewConnectionCorr() {
+void t_pgmCore::slotNewConnectionCorr() {
   _socketsCorr->push_back( _serverCorr->nextPendingConnection() );
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::slotQuit() {
-  cout << "bncApp::slotQuit" << endl;
+void t_pgmCore::slotQuit() {
+  cout << "t_pgmCore::slotQuit" << endl;
   delete _caster;
-  quit();
+  qApp->quit();
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
+void t_pgmCore::slotNewCorrLine(QString line, QString staID, long coTime) {
 
   QMutexLocker locker(&_mutex);
 
@@ -679,7 +677,7 @@ void bncApp::slotNewCorrLine(QString line, QString staID, long coTime) {
 
 // Dump Complete Correction Epochs
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::dumpCorrs(long minTime, long maxTime) {
+void t_pgmCore::dumpCorrs(long minTime, long maxTime) {
   for (long sec = minTime; sec <= maxTime; sec++) {
     QList<QString> allCorrs = _corrs->values(sec);
     dumpCorrs(allCorrs);
@@ -689,7 +687,7 @@ void bncApp::dumpCorrs(long minTime, long maxTime) {
 
 // Dump all corrections
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::dumpCorrs() {
+void t_pgmCore::dumpCorrs() {
   QList<QString> allCorrs;
   QMutableMapIterator<long, QString> it(*_corrs);
   while (it.hasNext()) {
@@ -701,7 +699,7 @@ void bncApp::dumpCorrs() {
 
 // Dump List of Corrections 
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::dumpCorrs(const QList<QString>& allCorrs) {
+void t_pgmCore::dumpCorrs(const QList<QString>& allCorrs) {
   emit newCorrections(allCorrs);
   if (_socketsCorr) {
     QListIterator<QString> it(allCorrs);
@@ -728,12 +726,12 @@ void bncApp::dumpCorrs(const QList<QString>& allCorrs) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::setConfFileName(const QString& confFileName) {
+void t_pgmCore::setConfFileName(const QString& confFileName) {
   if (confFileName.isEmpty()) {
     _confFileName = QDir::homePath() + QDir::separator() 
                   + ".config" + QDir::separator()
-                  + organizationName() + QDir::separator()
-                  + applicationName() + ".bnc";
+                  + qApp->organizationName() + QDir::separator()
+                  + qApp->applicationName() + ".bnc";
   }
   else {
     _confFileName = confFileName;
@@ -742,7 +740,7 @@ void bncApp::setConfFileName(const QString& confFileName) {
 
 // Raw Output
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::writeRawData(const QByteArray& data, const QByteArray& staID,
+void t_pgmCore::writeRawData(const QByteArray& data, const QByteArray& staID,
                           const QByteArray& format) {
 
   QMutexLocker locker(&_mutex);
@@ -762,7 +760,7 @@ void bncApp::writeRawData(const QByteArray& data, const QByteArray& staID,
 
 // Get Glonass Slot Numbers from Global Array
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::getGlonassSlotNums(int GLOFreq[]) {
+void t_pgmCore::getGlonassSlotNums(int GLOFreq[]) {
 
   QMutexLocker locker(&_mutex);
 
@@ -775,7 +773,7 @@ void bncApp::getGlonassSlotNums(int GLOFreq[]) {
 
 // Store Glonass Slot Numbers to Global Array
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::storeGlonassSlotNums(const int GLOFreq[]) {
+void t_pgmCore::storeGlonassSlotNums(const int GLOFreq[]) {
 
   QMutexLocker locker(&_mutex);
 
@@ -788,7 +786,7 @@ void bncApp::storeGlonassSlotNums(const int GLOFreq[]) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::initCombination() {
+void t_pgmCore::initCombination() {
 #ifdef USE_COMBINATION
   _bncComb = new bncComb();
   if (_bncComb->nStreams() < 1) {
@@ -800,29 +798,16 @@ void bncApp::initCombination() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::stopCombination() {
+void t_pgmCore::stopCombination() {
 #ifdef USE_COMBINATION
   delete _bncComb;
   _bncComb = 0;
 #endif
 }
 
-// Handling Events (virtual)
-////////////////////////////////////////////////////////////////////////////
-bool bncApp::event(QEvent* ev) {
-
-  if (ev->type() == QEvent::FileOpen) {  // currently happens on Mac only
-    QString fileName = static_cast<QFileOpenEvent*>(ev)->file();
-    setConfFileName(fileName);
-    return true;
-  }
-    
-  return QApplication::event(ev);
-}
-
 // Check Ephemeris Consistency
 ////////////////////////////////////////////////////////////////////////////
-void bncApp::checkEphemeris(gpsephemeris* oldEph, gpsephemeris* newEph) {
+void t_pgmCore::checkEphemeris(gpsephemeris* oldEph, gpsephemeris* newEph) {
   if (oldEph->clock_bias      != newEph->clock_bias      ||
       oldEph->clock_drift     != newEph->clock_drift     ||
       oldEph->clock_driftrate != newEph->clock_driftrate) {

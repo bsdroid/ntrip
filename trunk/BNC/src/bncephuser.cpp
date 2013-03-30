@@ -50,13 +50,13 @@ using namespace std;
 bncEphUser::bncEphUser(bool connectSlots) {
 
   if (connectSlots) {
-    connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
+    connect(PGM_CORE, SIGNAL(newEphGPS(gpsephemeris)),
             this, SLOT(slotNewEphGPS(gpsephemeris)), Qt::DirectConnection);
     
-    connect(((bncApp*)qApp), SIGNAL(newEphGlonass(glonassephemeris)),
+    connect(PGM_CORE, SIGNAL(newEphGlonass(glonassephemeris)),
             this, SLOT(slotNewEphGlonass(glonassephemeris)), Qt::DirectConnection);
     
-    connect(((bncApp*)qApp), SIGNAL(newEphGalileo(galileoephemeris)),
+    connect(PGM_CORE, SIGNAL(newEphGalileo(galileoephemeris)),
             this, SLOT(slotNewEphGalileo(galileoephemeris)), Qt::DirectConnection);
   }
 }

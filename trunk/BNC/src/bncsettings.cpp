@@ -26,16 +26,9 @@ QMutex bncSettings::_mutex;  // static mutex
 bncSettings::bncSettings() {
   QMutexLocker locker(&_mutex);
 
-#ifdef GNSSCENTER_PLUGIN
-  _bncApp = 0;
-  return;
-#else
-  _bncApp = static_cast<bncApp*>(qApp);
-#endif
-
   // First fill the options
   // ---------------------- 
-  if (_bncApp->_settings.size() == 0) {
+  if (PGM_CORE->_settings.size() == 0) {
     reRead();
   }
 }
@@ -49,9 +42,9 @@ bncSettings::~bncSettings() {
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::reRead() {
 
-  _bncApp->_settings.clear();
+  PGM_CORE->_settings.clear();
 
-  QSettings settings(_bncApp->confFileName(), QSettings::IniFormat);
+  QSettings settings(PGM_CORE->confFileName(), QSettings::IniFormat);
 
   // Read from File
   // --------------
@@ -59,7 +52,7 @@ void bncSettings::reRead() {
     QStringListIterator it(settings.allKeys());
     while (it.hasNext()) {
       QString key = it.next();
-      _bncApp->_settings[key] = settings.value(key);
+      PGM_CORE->_settings[key] = settings.value(key);
     }
   }
 
@@ -224,8 +217,8 @@ QVariant bncSettings::value(const QString& key,
                             const QVariant& defaultValue) const {
   QMutexLocker locker(&_mutex);
 
-  if (_bncApp && _bncApp->_settings.contains(key)) {
-    return _bncApp->_settings[key];
+  if (PGM_CORE->_settings.contains(key)) {
+    return PGM_CORE->_settings[key];
   }
   else {
     return defaultValue;
@@ -242,23 +235,23 @@ void bncSettings::setValue(const QString &key, const QVariant& value) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::setValue_p(const QString &key, const QVariant& value) {
-  _bncApp->_settings[key] = value;
+  PGM_CORE->_settings[key] = value;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::remove(const QString& key ) {
   QMutexLocker locker(&_mutex);
-  _bncApp->_settings.remove(key);
+  PGM_CORE->_settings.remove(key);
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::sync() {
   QMutexLocker locker(&_mutex);
-  QSettings settings(_bncApp->confFileName(), QSettings::IniFormat);
+  QSettings settings(PGM_CORE->confFileName(), QSettings::IniFormat);
   settings.clear();
-  QMapIterator<QString, QVariant> it(_bncApp->_settings);
+  QMapIterator<QString, QVariant> it(PGM_CORE->_settings);
   while (it.hasNext()) {
     it.next();
     settings.setValue(it.key(), it.value());

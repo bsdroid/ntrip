@@ -97,7 +97,7 @@ void t_postProcessing::slotMessage(QByteArray msg, bool /* showOnScreen */) {
     _outStream->flush();
   }
   else {
-    ((bncApp*) qApp)->slotMessage(msg, false);
+    PGM_CORE->slotMessage(msg, false);
   }
 }
 
@@ -221,9 +221,8 @@ void t_postProcessing::run() {
     }
   }
 
-  bncApp* app = (bncApp*) qApp;
-  if ( app->mode() != bncApp::interactive) {
-    app->exit(0);
+  if (PGM_CORE->mode() != t_pgmCore::interactive) {
+    qApp->exit(0);
   }
   else {
     emit finished();

@@ -211,10 +211,8 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
 void t_rnxObsHeader::write(QTextStream* stream,
                            const QMap<QString, QString>* txtMap) const {
 
-  bncApp* app = (bncApp*) qApp;
-
   QStringList newComments;
-  QString     runBy = app->userName();
+  QString     runBy = PGM_CORE->userName();
 
   if (txtMap) {
     QMapIterator<QString, QString> it(*txtMap);
@@ -237,7 +235,7 @@ void t_rnxObsHeader::write(QTextStream* stream,
   const QString fmtDate = (_version < 3.0) ? "dd-MMM-yy hh:mm"
                                                   : "yyyyMMdd hhmmss UTC";
   *stream << QString("%1%2%3")
-    .arg(app->pgmName(), -20)
+    .arg(PGM_CORE->pgmName(), -20)
     .arg(runBy.trimmed().left(20), -20)
     .arg(QDateTime::currentDateTime().toUTC().toString(fmtDate), -20)
     .leftJustified(60)

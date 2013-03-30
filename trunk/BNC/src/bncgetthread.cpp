@@ -120,10 +120,8 @@ void bncGetThread::initialize() {
 
   setTerminationEnabled(true);
 
-  bncApp* app = (bncApp*) qApp;
-
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          app, SLOT(slotMessage(const QByteArray,bool)));
+          PGM_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   _isToBeDeleted = false;
   _query         = 0;
@@ -332,8 +330,7 @@ t_irc bncGetThread::initDecoder() {
   if (!settings.value("pppSPP").toString().isEmpty() && 
       settings.value("pppMount").toString() == _staID) {
     _PPPclient = new bncPPPclient(_staID);
-    bncApp* app = (bncApp*) qApp;
-    app->_bncPPPclient = _PPPclient;
+    PGM_CORE->_bncPPPclient = _PPPclient;
     qRegisterMetaType<bncTime>("bncTime");
     connect(_PPPclient, SIGNAL(newPosition(bncTime, double, double, double)), 
             this, SIGNAL(newPosition(bncTime, double, double, double)));
@@ -442,7 +439,7 @@ void bncGetThread::run() {
 
         if (data.isEmpty()) {
           cout << "no more data" << endl;
-          ((bncApp*) qApp)->stopCombination();
+          PGM_CORE->stopCombination();
           QThread::exit(0);
           delete this;
           ::exit(0);
@@ -467,8 +464,7 @@ void bncGetThread::run() {
       // Output Data
       // -----------
       if (_rawOutput) {
-        bncApp* app = (bncApp*) qApp;
-        app->writeRawData(data, _staID, _format); 
+        PGM_CORE->writeRawData(data, _staID, _format); 
       }
 
       if (_serialPort) {

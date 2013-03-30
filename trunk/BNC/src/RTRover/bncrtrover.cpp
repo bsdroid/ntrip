@@ -92,16 +92,16 @@ void t_bncRtrover::run() {
 
   // Connect to BNC Signals
   // ----------------------
-  connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
+  connect(PGM_CORE, SIGNAL(newCorrections(QList<QString>)),
           this, SLOT(slotNewCorrections(QList<QString>)));
 
-  connect(((bncApp*)qApp), SIGNAL(newEphGPS(gpsephemeris)),
+  connect(PGM_CORE, SIGNAL(newEphGPS(gpsephemeris)),
           this, SLOT(slotNewEphGPS(gpsephemeris)));
 
-  connect(((bncApp*)qApp), SIGNAL(newEphGlonass(glonassephemeris)),
+  connect(PGM_CORE, SIGNAL(newEphGlonass(glonassephemeris)),
           this, SLOT(slotNewEphGlonass(glonassephemeris)));
 
-  connect(((bncApp*)qApp), SIGNAL(newEphGalileo(galileoephemeris)),
+  connect(PGM_CORE, SIGNAL(newEphGalileo(galileoephemeris)),
           this, SLOT(slotNewEphGalileo(galileoephemeris)));
  
   // Start processing loop
