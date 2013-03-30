@@ -26,7 +26,7 @@
  * BKG NTRIP Client
  * -------------------------------------------------------------------------
  *
- * Class:      t_pgmCore
+ * Class:      t_bncCore
  *
  * Purpose:    This class implements the main application
  *
@@ -57,7 +57,7 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_pgmCore::t_pgmCore(int& argc, char* argv[], bool GUIenabled) {
+t_bncCore::t_bncCore(int& argc, char* argv[], bool GUIenabled) {
   _GUIenabled  = GUIenabled;
   _logFileFlag = 0;
   _logFile     = 0;
@@ -124,7 +124,7 @@ t_pgmCore::t_pgmCore(int& argc, char* argv[], bool GUIenabled) {
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-t_pgmCore::~t_pgmCore() {
+t_bncCore::~t_bncCore() {
   delete _logStream;
   delete _logFile;
   delete _ephStreamGPS;
@@ -160,7 +160,7 @@ t_pgmCore::~t_pgmCore() {
 
 // Write a Program Message
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::slotMessage(QByteArray msg, bool showOnScreen) {
+void t_bncCore::slotMessage(QByteArray msg, bool showOnScreen) {
 
   QMutexLocker locker(&_mutexMessage);
 
@@ -170,7 +170,7 @@ void t_pgmCore::slotMessage(QByteArray msg, bool showOnScreen) {
 
 // Write a Program Message (private, no lock)
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::messagePrivate(const QByteArray& msg) {
+void t_bncCore::messagePrivate(const QByteArray& msg) {
 
   // First time resolve the log file name
   // ------------------------------------
@@ -212,7 +212,7 @@ void t_pgmCore::messagePrivate(const QByteArray& msg) {
 
 // New GPS Ephemeris 
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::slotNewGPSEph(gpsephemeris* gpseph) {
+void t_bncCore::slotNewGPSEph(gpsephemeris* gpseph) {
 
   QMutexLocker locker(&_mutex);
 
@@ -243,7 +243,7 @@ void t_pgmCore::slotNewGPSEph(gpsephemeris* gpseph) {
     
 // New Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::slotNewGlonassEph(glonassephemeris* glonasseph) {
+void t_bncCore::slotNewGlonassEph(glonassephemeris* glonasseph) {
 
   QMutexLocker locker(&_mutex);
 
@@ -289,7 +289,7 @@ void t_pgmCore::slotNewGlonassEph(glonassephemeris* glonasseph) {
 
 // New Galileo Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::slotNewGalileoEph(galileoephemeris* galileoeph) {
+void t_bncCore::slotNewGalileoEph(galileoephemeris* galileoeph) {
 
   QMutexLocker locker(&_mutex);
 
@@ -324,7 +324,7 @@ void t_pgmCore::slotNewGalileoEph(galileoephemeris* galileoeph) {
 
 // Print Header of the output File(s)
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::printEphHeader() {
+void t_bncCore::printEphHeader() {
 
   bncSettings settings;
 
@@ -496,7 +496,7 @@ void t_pgmCore::printEphHeader() {
 
 // Print One GPS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::printGPSEph(gpsephemeris* ep, bool printFile) {
+void t_bncCore::printGPSEph(gpsephemeris* ep, bool printFile) {
 
   t_ephGPS eph;
   eph.set(ep);
@@ -509,7 +509,7 @@ void t_pgmCore::printGPSEph(gpsephemeris* ep, bool printFile) {
 
 // Print One Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::printGlonassEph(glonassephemeris* ep, bool printFile) {
+void t_bncCore::printGlonassEph(glonassephemeris* ep, bool printFile) {
 
   t_ephGlo eph;
   bool timeChanged;
@@ -523,7 +523,7 @@ void t_pgmCore::printGlonassEph(glonassephemeris* ep, bool printFile) {
 
 // Print One Galileo Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::printGalileoEph(galileoephemeris* ep, bool printFile) {
+void t_bncCore::printGalileoEph(galileoephemeris* ep, bool printFile) {
 
   t_ephGal eph;
   eph.set(ep);
@@ -536,7 +536,7 @@ void t_pgmCore::printGalileoEph(galileoephemeris* ep, bool printFile) {
 
 // Output
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::printOutput(bool printFile, QTextStream* stream,
+void t_bncCore::printOutput(bool printFile, QTextStream* stream,
                          const QString& strV2, const QString& strV3) {
 
   // Output into file
@@ -573,13 +573,13 @@ void t_pgmCore::printOutput(bool printFile, QTextStream* stream,
 
 // Set Port Number
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::setPort(int port) {
+void t_bncCore::setPort(int port) {
   _port = port;
   if (_port != 0) {
     delete _server;
     _server = new QTcpServer;
     if ( !_server->listen(QHostAddress::Any, _port) ) {
-      slotMessage("t_pgmCore: Cannot listen on ephemeris port", true);
+      slotMessage("t_bncCore: Cannot listen on ephemeris port", true);
     }
     connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
     delete _sockets;
@@ -589,13 +589,13 @@ void t_pgmCore::setPort(int port) {
 
 // Set Port Number
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::setPortCorr(int port) {
+void t_bncCore::setPortCorr(int port) {
   _portCorr = port;
   if (_portCorr != 0) {
     delete _serverCorr;
     _serverCorr = new QTcpServer;
     if ( !_serverCorr->listen(QHostAddress::Any, _portCorr) ) {
-      slotMessage("t_pgmCore: Cannot listen on correction port", true);
+      slotMessage("t_bncCore: Cannot listen on correction port", true);
     }
     connect(_serverCorr, SIGNAL(newConnection()), this, SLOT(slotNewConnectionCorr()));
     delete _socketsCorr;
@@ -605,27 +605,27 @@ void t_pgmCore::setPortCorr(int port) {
 
 // New Connection
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::slotNewConnection() {
+void t_bncCore::slotNewConnection() {
   _sockets->push_back( _server->nextPendingConnection() );
 }
 
 // New Connection
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::slotNewConnectionCorr() {
+void t_bncCore::slotNewConnectionCorr() {
   _socketsCorr->push_back( _serverCorr->nextPendingConnection() );
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::slotQuit() {
-  cout << "t_pgmCore::slotQuit" << endl;
+void t_bncCore::slotQuit() {
+  cout << "t_bncCore::slotQuit" << endl;
   delete _caster;
   qApp->quit();
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::slotNewCorrLine(QString line, QString staID, long coTime) {
+void t_bncCore::slotNewCorrLine(QString line, QString staID, long coTime) {
 
   QMutexLocker locker(&_mutex);
 
@@ -677,7 +677,7 @@ void t_pgmCore::slotNewCorrLine(QString line, QString staID, long coTime) {
 
 // Dump Complete Correction Epochs
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::dumpCorrs(long minTime, long maxTime) {
+void t_bncCore::dumpCorrs(long minTime, long maxTime) {
   for (long sec = minTime; sec <= maxTime; sec++) {
     QList<QString> allCorrs = _corrs->values(sec);
     dumpCorrs(allCorrs);
@@ -687,7 +687,7 @@ void t_pgmCore::dumpCorrs(long minTime, long maxTime) {
 
 // Dump all corrections
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::dumpCorrs() {
+void t_bncCore::dumpCorrs() {
   QList<QString> allCorrs;
   QMutableMapIterator<long, QString> it(*_corrs);
   while (it.hasNext()) {
@@ -699,7 +699,7 @@ void t_pgmCore::dumpCorrs() {
 
 // Dump List of Corrections 
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::dumpCorrs(const QList<QString>& allCorrs) {
+void t_bncCore::dumpCorrs(const QList<QString>& allCorrs) {
   emit newCorrections(allCorrs);
   if (_socketsCorr) {
     QListIterator<QString> it(allCorrs);
@@ -726,7 +726,7 @@ void t_pgmCore::dumpCorrs(const QList<QString>& allCorrs) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::setConfFileName(const QString& confFileName) {
+void t_bncCore::setConfFileName(const QString& confFileName) {
   if (confFileName.isEmpty()) {
     _confFileName = QDir::homePath() + QDir::separator() 
                   + ".config" + QDir::separator()
@@ -740,7 +740,7 @@ void t_pgmCore::setConfFileName(const QString& confFileName) {
 
 // Raw Output
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::writeRawData(const QByteArray& data, const QByteArray& staID,
+void t_bncCore::writeRawData(const QByteArray& data, const QByteArray& staID,
                           const QByteArray& format) {
 
   QMutexLocker locker(&_mutex);
@@ -760,7 +760,7 @@ void t_pgmCore::writeRawData(const QByteArray& data, const QByteArray& staID,
 
 // Get Glonass Slot Numbers from Global Array
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::getGlonassSlotNums(int GLOFreq[]) {
+void t_bncCore::getGlonassSlotNums(int GLOFreq[]) {
 
   QMutexLocker locker(&_mutex);
 
@@ -773,7 +773,7 @@ void t_pgmCore::getGlonassSlotNums(int GLOFreq[]) {
 
 // Store Glonass Slot Numbers to Global Array
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::storeGlonassSlotNums(const int GLOFreq[]) {
+void t_bncCore::storeGlonassSlotNums(const int GLOFreq[]) {
 
   QMutexLocker locker(&_mutex);
 
@@ -786,7 +786,7 @@ void t_pgmCore::storeGlonassSlotNums(const int GLOFreq[]) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::initCombination() {
+void t_bncCore::initCombination() {
 #ifdef USE_COMBINATION
   _bncComb = new bncComb();
   if (_bncComb->nStreams() < 1) {
@@ -798,7 +798,7 @@ void t_pgmCore::initCombination() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::stopCombination() {
+void t_bncCore::stopCombination() {
 #ifdef USE_COMBINATION
   delete _bncComb;
   _bncComb = 0;
@@ -807,7 +807,7 @@ void t_pgmCore::stopCombination() {
 
 // Check Ephemeris Consistency
 ////////////////////////////////////////////////////////////////////////////
-void t_pgmCore::checkEphemeris(gpsephemeris* oldEph, gpsephemeris* newEph) {
+void t_bncCore::checkEphemeris(gpsephemeris* oldEph, gpsephemeris* newEph) {
   if (oldEph->clock_bias      != newEph->clock_bias      ||
       oldEph->clock_drift     != newEph->clock_drift     ||
       oldEph->clock_driftrate != newEph->clock_driftrate) {

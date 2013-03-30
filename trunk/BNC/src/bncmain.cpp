@@ -137,7 +137,7 @@ int main(int argc, char* argv[]) {
   // ---------------------------------------
   if (interactive) {
 
-    BNC_CORE->setMode(t_pgmCore::interactive);
+    BNC_CORE->setMode(t_bncCore::interactive);
 
     QString fontString = settings.value("font").toString();
     if ( !fontString.isEmpty() ) {
@@ -159,7 +159,7 @@ int main(int argc, char* argv[]) {
   // Post-Processing PPP
   // -------------------
   else if (settings.value("pppSPP").toString() == "Post-Processing") {
-    BNC_CORE->setMode(t_pgmCore::batchPostProcessing);
+    BNC_CORE->setMode(t_bncCore::batchPostProcessing);
     t_postProcessing* postProcessing = new t_postProcessing(0);
     postProcessing->start();
   }
@@ -167,7 +167,7 @@ int main(int argc, char* argv[]) {
   // Post-Processing reqc edit
   // -------------------------
   else if (settings.value("reqcAction").toString() == "Edit/Concatenate") {
-    BNC_CORE->setMode(t_pgmCore::batchPostProcessing);
+    BNC_CORE->setMode(t_bncCore::batchPostProcessing);
     t_reqcEdit* reqcEdit = new t_reqcEdit(0);
     reqcEdit->start();
   }
@@ -175,7 +175,7 @@ int main(int argc, char* argv[]) {
   // Post-Processing reqc analyze
   // ----------------------------
   else if (settings.value("reqcAction").toString() == "Analyze") {
-    BNC_CORE->setMode(t_pgmCore::batchPostProcessing);
+    BNC_CORE->setMode(t_bncCore::batchPostProcessing);
     t_reqcAnalyze* reqcAnalyze = new t_reqcAnalyze(0);
     reqcAnalyze->start();
   }
@@ -205,7 +205,7 @@ int main(int argc, char* argv[]) {
     // Normal case - data from Internet
     // --------------------------------
     if ( rawFileName.isEmpty() ) {
-      BNC_CORE->setMode(t_pgmCore::nonInteractive);
+      BNC_CORE->setMode(t_bncCore::nonInteractive);
       caster->readMountPoints();
       if (caster->numStations() == 0) {
         exit(0);
@@ -215,7 +215,7 @@ int main(int argc, char* argv[]) {
     // Special case - data from file
     // -----------------------------
     else {
-      BNC_CORE->setMode(t_pgmCore::batchPostProcessing);
+      BNC_CORE->setMode(t_bncCore::batchPostProcessing);
       bncRawFile*   rawFile   = new bncRawFile(rawFileName, "", 
                                                bncRawFile::input);
       bncGetThread* getThread = new bncGetThread(rawFile);

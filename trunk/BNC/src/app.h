@@ -3,8 +3,6 @@
 
 #include <QtGui>
 
-class t_pgmCore;
-
 class t_app : public QApplication {
  Q_OBJECT
  public:
@@ -13,7 +11,6 @@ class t_app : public QApplication {
  protected:
   virtual bool event(QEvent* ev);
  private:
-  t_pgmCore* _pgmCore;
 };
 
 #endif

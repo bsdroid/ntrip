@@ -100,7 +100,7 @@ t_reqcAnalyze::~t_reqcAnalyze() {
   }
   delete _log;     _log     = 0;
   delete _logFile; _logFile = 0;
-  if (BNC_CORE->mode() != t_pgmCore::interactive) {
+  if (BNC_CORE->mode() != t_bncCore::interactive) {
     qApp->exit(0);
   }
 }
