@@ -59,9 +59,8 @@ latencyChecker::latencyChecker(QByteArray staID) {
 
   _staID = staID;
 
-  bncApp* app = (bncApp*) qApp;
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          app, SLOT(slotMessage(const QByteArray,bool)));
+          PGM_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   bncSettings settings;
 

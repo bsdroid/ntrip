@@ -64,7 +64,7 @@ bncCaster::bncCaster(const QString& outFileName, int port) {
   bncSettings settings;
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          (bncApp*) qApp, SLOT(slotMessage(const QByteArray,bool)));
+          PGM_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   if ( !outFileName.isEmpty() ) {
     QString lName = outFileName;
@@ -482,7 +482,7 @@ void bncCaster::readMountPoints() {
 
   emit mountPointsRead(_threads);
   emit( newMessage(QString("Configuration read: "
-                           + ((bncApp*) qApp)->confFileName()
+                           + PGM_CORE->confFileName()
                            + ", %1 stream(s)")
                             .arg(_threads.count()).toAscii(), true) );
 

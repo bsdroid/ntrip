@@ -50,7 +50,7 @@ unsigned short cal_crc(unsigned char *buf, int num) {
 ////////////////////////////////////////////////////////////////////////////
 gpssDecoder::gpssDecoder() : GPSDecoder() {
   connect(this, SIGNAL(newGPSEph(gpsephemeris*)), 
-          (bncApp*) qApp, SLOT(slotNewGPSEph(gpsephemeris*)));
+          PGM_CORE, SLOT(slotNewGPSEph(gpsephemeris*)));
 }
 
 // Destructor

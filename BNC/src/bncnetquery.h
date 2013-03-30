@@ -12,8 +12,8 @@ class bncNetQuery : public QObject {
   enum queryStatus {init, running, finished, error};
 
   bncNetQuery() {
-    connect(this,           SIGNAL(newMessage(QByteArray,bool)), 
-            (bncApp*) qApp, SLOT(slotMessage(const QByteArray,bool)));
+    connect(this,     SIGNAL(newMessage(QByteArray,bool)), 
+            PGM_CORE, SLOT(slotMessage(const QByteArray,bool)));
   }
   virtual ~bncNetQuery() {}
   

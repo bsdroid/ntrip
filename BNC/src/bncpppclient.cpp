@@ -71,9 +71,9 @@ bncPPPclient::bncPPPclient(QByteArray staID, t_pppOpt* opt, bool connectSlots) :
 
   if (connectSlots) {
     connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-            ((bncApp*)qApp), SLOT(slotMessage(const QByteArray,bool)));
+            PGM_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
-    connect(((bncApp*)qApp), SIGNAL(newCorrections(QList<QString>)),
+    connect(PGM_CORE, SIGNAL(newCorrections(QList<QString>)),
             this, SLOT(slotNewCorrections(QList<QString>)));
   }
 }

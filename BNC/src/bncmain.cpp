@@ -44,6 +44,7 @@
 #include <QFile>
 #include <iostream>
 
+#include "app.h"
 #include "bncapp.h"
 #include "bncwindow.h"
 #include "bncsettings.h"
@@ -115,12 +116,12 @@ int main(int argc, char* argv[]) {
 #endif
 
   bool GUIenabled = interactive || displaySet;
-  bncApp app(argc, argv, GUIenabled);
+  t_app app(argc, argv, GUIenabled);
 
   app.setApplicationName("BNC");
   app.setOrganizationName("BKG");
   app.setOrganizationDomain("www.bkg.bund.de");
-  app.setConfFileName( confFileName );
+  PGM_CORE->setConfFileName( confFileName );
 
   bncSettings settings;
 
@@ -136,7 +137,7 @@ int main(int argc, char* argv[]) {
   // ---------------------------------------
   if (interactive) {
 
-    app.setMode(bncApp::interactive);
+    PGM_CORE->setMode(t_pgmCore::interactive);
 
     QString fontString = settings.value("font").toString();
     if ( !fontString.isEmpty() ) {
@@ -149,7 +150,7 @@ int main(int argc, char* argv[]) {
     app.setWindowIcon(QPixmap(":ntrip-logo.png"));
 
     bncWindow* bncWin = new bncWindow();
-    app.setMainWindow(bncWin);
+    PGM_CORE->setMainWindow(bncWin);
     bncWin->show();
   }
 
@@ -158,7 +159,7 @@ int main(int argc, char* argv[]) {
   // Post-Processing PPP
   // -------------------
   else if (settings.value("pppSPP").toString() == "Post-Processing") {
-    app.setMode(bncApp::batchPostProcessing);
+    PGM_CORE->setMode(t_pgmCore::batchPostProcessing);
     t_postProcessing* postProcessing = new t_postProcessing(0);
     postProcessing->start();
   }
@@ -166,7 +167,7 @@ int main(int argc, char* argv[]) {
   // Post-Processing reqc edit
   // -------------------------
   else if (settings.value("reqcAction").toString() == "Edit/Concatenate") {
-    app.setMode(bncApp::batchPostProcessing);
+    PGM_CORE->setMode(t_pgmCore::batchPostProcessing);
     t_reqcEdit* reqcEdit = new t_reqcEdit(0);
     reqcEdit->start();
   }
@@ -174,7 +175,7 @@ int main(int argc, char* argv[]) {
   // Post-Processing reqc analyze
   // ----------------------------
   else if (settings.value("reqcAction").toString() == "Analyze") {
-    app.setMode(bncApp::batchPostProcessing);
+    PGM_CORE->setMode(t_pgmCore::batchPostProcessing);
     t_reqcAnalyze* reqcAnalyze = new t_reqcAnalyze(0);
     reqcAnalyze->start();
   }
@@ -192,19 +193,19 @@ int main(int argc, char* argv[]) {
     bncCaster* caster = new bncCaster(settings.value("outFile").toString(),
                                       settings.value("outPort").toInt());
     
-    app.setCaster(caster);
-    app.setPort(settings.value("outEphPort").toInt());
-    app.setPortCorr(settings.value("corrPort").toInt());
-    app.initCombination();
+    PGM_CORE->setCaster(caster);
+    PGM_CORE->setPort(settings.value("outEphPort").toInt());
+    PGM_CORE->setPortCorr(settings.value("corrPort").toInt());
+    PGM_CORE->initCombination();
     
-    app.connect(caster, SIGNAL(getThreadsFinished()), &app, SLOT(quit()));
+    PGM_CORE->connect(caster, SIGNAL(getThreadsFinished()), &app, SLOT(quit()));
     
-    ((bncApp*)qApp)->slotMessage("========== Start BNC v" BNCVERSION " =========", true);
+    PGM_CORE->slotMessage("========== Start BNC v" BNCVERSION " =========", true);
     
     // Normal case - data from Internet
     // --------------------------------
     if ( rawFileName.isEmpty() ) {
-      app.setMode(bncApp::nonInteractive);
+      PGM_CORE->setMode(t_pgmCore::nonInteractive);
       caster->readMountPoints();
       if (caster->numStations() == 0) {
         exit(0);
@@ -214,7 +215,7 @@ int main(int argc, char* argv[]) {
     // Special case - data from file
     // -----------------------------
     else {
-      app.setMode(bncApp::batchPostProcessing);
+      PGM_CORE->setMode(t_pgmCore::batchPostProcessing);
       bncRawFile*   rawFile   = new bncRawFile(rawFileName, "", 
                                                bncRawFile::input);
       bncGetThread* getThread = new bncGetThread(rawFile);

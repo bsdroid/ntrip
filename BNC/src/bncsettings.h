@@ -3,8 +3,6 @@
 
 #include <QMutex>
 
-class bncApp;
-
 class bncSettings {
  public:
   bncSettings();
@@ -17,7 +15,6 @@ class bncSettings {
   void sync();
  private:
   void setValue_p(const QString &key, const QVariant& value);
-  bncApp*       _bncApp;
   static QMutex _mutex;
 };
 

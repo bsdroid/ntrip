@@ -44,13 +44,12 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   }
   _isToBeDeleted = false;
 
-  bncApp* app = (bncApp*) qApp;
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-          app, SLOT(slotMessage(const QByteArray,bool)));
+          PGM_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
-  if (app->_uploadTableItems.find(_iRow) != app->_uploadTableItems.end()){
+  if (PGM_CORE->_uploadTableItems.find(_iRow) != PGM_CORE->_uploadTableItems.end()){
     connect(this, SIGNAL(newBytes(QByteArray,double)), 
-            app->_uploadTableItems.value(iRow), 
+            PGM_CORE->_uploadTableItems.value(iRow), 
             SLOT(slotNewBytes(const QByteArray,double)));
   }
 }
