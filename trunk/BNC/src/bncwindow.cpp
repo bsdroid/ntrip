@@ -81,6 +81,9 @@ t_bncCore* BNC_CORE = 0;
 bncWindow::bncWindow() {
 
 #ifdef GNSSCENTER_PLUGIN
+  if (BNC_CORE != 0) {
+    QMessageBox::critical(this, "Caution", "Only one BNC allowed");
+  }
   BNC_CORE = new t_bncCore(true);
   BNC_CORE->setConfFileName("");
 #endif
@@ -2040,6 +2043,11 @@ void bncWindow::closeEvent(QCloseEvent* event) {
   else if (iRet == QMessageBox::Yes) {
     slotSaveOptions();
   }
+
+#ifdef GNSSCENTER_PLUGIN
+  delete BNC_CORE;
+  BNC_CORE = 0;
+#endif
 
   QMainWindow::closeEvent(event);
 }
