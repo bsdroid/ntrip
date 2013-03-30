@@ -23,6 +23,9 @@ using namespace GnssCenter;
 int main(int argc, char* argv[]) {
 
   t_app app(argc, argv, true);
+  app.setApplicationName("GnssCenter");
+  app.setOrganizationName("BKG");
+  app.setOrganizationDomain("www.bkg.bund.de");
 
   t_mainWin* mainWin = new t_mainWin();
   mainWin->show();
