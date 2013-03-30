@@ -47,7 +47,7 @@
 #endif
 
 #include "latencychecker.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncutils.h"
 #include "bncsettings.h"
 

@@ -43,7 +43,7 @@
 #include <sstream>
 #include "rnxobsfile.h"
 #include "bncutils.h"
-#include "bncapp.h"
+#include "bnccore.h"
 
 using namespace std;
 

@@ -40,7 +40,7 @@
 
 #include <iostream>
 #include "bncpostprocess.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncsettings.h"
 #include "pppopt.h"
 #include "bncpppclient.h"

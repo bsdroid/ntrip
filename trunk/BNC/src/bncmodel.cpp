@@ -45,7 +45,7 @@
 
 #include "bncmodel.h"
 #include "bncpppclient.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncpppclient.h"
 #include "bancroft.h"
 #include "bncutils.h"

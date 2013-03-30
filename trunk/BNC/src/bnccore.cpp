@@ -42,7 +42,7 @@
 #include <QMessageBox>
 #include <cmath>
 
-#include "bncapp.h" 
+#include "bnccore.h" 
 #include "bncutils.h" 
 #include "bncrinex.h" 
 #include "bncsettings.h" 

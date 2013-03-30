@@ -17,7 +17,7 @@
 #include <QSettings>
 
 #include "bncsettings.h"
-#include "bncapp.h"
+#include "bnccore.h"
 
 QMutex bncSettings::_mutex;  // static mutex 
 

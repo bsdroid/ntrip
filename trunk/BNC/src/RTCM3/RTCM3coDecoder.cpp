@@ -44,7 +44,7 @@
 #include "RTCM3coDecoder.h"
 #include "bncutils.h"
 #include "bncrinex.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncsettings.h"
 #include "rtcm3torinex.h"
 #include "bnctime.h"

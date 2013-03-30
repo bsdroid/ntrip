@@ -41,7 +41,7 @@
 #include <iostream>
 #include <newmatio.h>
 #include "rnxnavfile.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncutils.h"
 #include "RTCM3/ephemeris.h"
 

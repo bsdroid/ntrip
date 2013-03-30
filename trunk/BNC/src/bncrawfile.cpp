@@ -39,7 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include "bncrawfile.h" 
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncutils.h"
 #include "bncsettings.h"
 

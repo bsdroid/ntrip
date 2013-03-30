@@ -17,7 +17,7 @@
 #include <math.h>
 #include "bncuploadcaster.h" 
 #include "bncversion.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bnctableitem.h"
 
 using namespace std;

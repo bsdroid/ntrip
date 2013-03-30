@@ -49,7 +49,7 @@
 
 #include "bncgetthread.h"
 #include "bnctabledlg.h"
-#include "bncapp.h"
+#include "bnccore.h"
 #include "bncutils.h"
 #include "bnczerodecoder.h"
 #include "bncnetqueryv0.h"
