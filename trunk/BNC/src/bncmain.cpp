@@ -121,6 +121,8 @@ int main(int argc, char* argv[]) {
   app.setApplicationName("BNC");
   app.setOrganizationName("BKG");
   app.setOrganizationDomain("www.bkg.bund.de");
+
+  BNC_CORE->setGUIenabled(GUIenabled);
   BNC_CORE->setConfFileName( confFileName );
 
   bncSettings settings;

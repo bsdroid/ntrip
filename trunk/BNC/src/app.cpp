@@ -19,15 +19,9 @@
 
 using namespace std;
 
-// Global Variable
-////////////////////////////////////////////////////////////////////////////
-t_bncCore* BNC_CORE = 0;
-
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_app::t_app(int& argc, char* argv[], bool GUIenabled) : 
-  QApplication(argc, argv, GUIenabled) {
-  BNC_CORE = new t_bncCore(GUIenabled);
+t_app::t_app(int& argc, char* argv[], bool GUIenabled) : QApplication(argc, argv, GUIenabled) {
 }
 
 // Destructor

@@ -73,20 +73,11 @@ using namespace std;
 
 #ifdef GNSSCENTER_PLUGIN
 Q_EXPORT_PLUGIN2(gnsscenter_bnc, t_bncFactory)
-t_bncCore* BNC_CORE = 0;
 #endif
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::bncWindow() {
-
-#ifdef GNSSCENTER_PLUGIN
-  if (BNC_CORE != 0) {
-    QMessageBox::critical(this, "Caution", "Only one BNC allowed");
-  }
-  BNC_CORE = new t_bncCore(true);
-  BNC_CORE->setConfFileName("");
-#endif
 
   _caster    = 0;
   _casterEph = 0;
@@ -2043,11 +2034,6 @@ void bncWindow::closeEvent(QCloseEvent* event) {
   else if (iRet == QMessageBox::Yes) {
     slotSaveOptions();
   }
-
-#ifdef GNSSCENTER_PLUGIN
-  delete BNC_CORE;
-  BNC_CORE = 0;
-#endif
 
   QMainWindow::closeEvent(event);
 }
