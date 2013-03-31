@@ -43,10 +43,11 @@ class t_bncCore : public QObject {
 
   public:
     enum e_mode {interactive, nonInteractive, batchPostProcessing};
-    t_bncCore(bool GUIenabled);
+    t_bncCore();
     virtual ~t_bncCore();  
     e_mode mode() const {return _mode;}
-    void   setMode(e_mode mode) {_mode = mode;}
+    void setGUIenabled(bool GUIenabled) {_GUIenabled = GUIenabled;}
+    void setMode(e_mode mode) {_mode = mode;}
     void setPort(int port);
     void setPortCorr(int port);
     void setCaster(bncCaster* caster) {_caster = caster;}
@@ -141,6 +142,8 @@ class t_bncCore : public QObject {
     QMap<int, bncTableItem*> _uploadTableItems;
 };
 
-extern t_bncCore* BNC_CORE;
+t_bncCore& bncCoreInstance();
+
+#define BNC_CORE (&bncCoreInstance())
 
 #endif

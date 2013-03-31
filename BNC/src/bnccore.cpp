@@ -55,10 +55,17 @@
 
 using namespace std;
 
+// Singleton 
+////////////////////////////////////////////////////////////////////////////
+t_bncCore& bncCoreInstance() {
+  static t_bncCore _bncCore;
+  return _bncCore;
+}
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_bncCore::t_bncCore(bool GUIenabled) {
-  _GUIenabled  = GUIenabled;
+t_bncCore::t_bncCore() {
+  _GUIenabled  = true;
   _logFileFlag = 0;
   _logFile     = 0;
   _logStream   = 0;
