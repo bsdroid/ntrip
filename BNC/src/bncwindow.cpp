@@ -79,6 +79,10 @@ Q_EXPORT_PLUGIN2(gnsscenter_bnc, t_bncFactory)
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::bncWindow() {
 
+#ifdef GNSSCENTER_PLUGIN
+  BNC_CORE->setConfFileName("");
+#endif
+
   _caster    = 0;
   _casterEph = 0;
 
