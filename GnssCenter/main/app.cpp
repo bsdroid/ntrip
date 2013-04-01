@@ -43,3 +43,9 @@ void t_app::setConfFileName(const QString& confFileName) {
     _confFileName = confFileName;
   }
 }
+
+//  
+////////////////////////////////////////////////////////////////////////////
+void t_app::slotMessage(QByteArray msg) {
+  qDebug() << msg;
+}
