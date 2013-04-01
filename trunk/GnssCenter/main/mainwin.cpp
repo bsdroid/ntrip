@@ -18,6 +18,7 @@
 #include "mainwin.h" 
 #include "settings.h" 
 #include "mdiarea.h" 
+#include "app.h" 
 
 using namespace std;
 using namespace GnssCenter;
@@ -134,6 +135,14 @@ void t_mainWin::slotSaveOptions() {
 void t_mainWin::slotStartPlugin() {
   t_pluginAction* action = dynamic_cast<t_pluginAction*>(sender());
   QWidget* widget = action->_factIface->create();
+  t_app* app = dynamic_cast<t_app*>(qApp);
+  if (app) {
+    const QMetaObject* metaObj = widget->metaObject();
+    QByteArray bncMessageName = QMetaObject::normalizedSignature("bncMessage(QByteArray)");
+    if (metaObj->indexOfSignal(bncMessageName) != -1) {
+      connect(widget, SIGNAL(bncMessage(QByteArray)), app, SLOT(slotMessage(QByteArray)));
+    }
+  }
   widget->setMinimumSize(500, 300);
   QMdiSubWindow* subWindow = _mdi->addSubWindow((QWidget*) widget);
   subWindow->show();
