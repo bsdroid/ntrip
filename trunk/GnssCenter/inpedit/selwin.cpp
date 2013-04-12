@@ -78,11 +78,11 @@ const QStringList& t_selWin::fileNames() const {
 // 
 ////////////////////////////////////////////////////////////////////////////////
 void t_selWin::slotTextChanged() {
-  _fileNames.clear();
-  if (!_lineEdit->text().isEmpty()) {
-    _fileNames << _lineEdit->text();
-  }
-  emit fileNameChanged();
+//  _fileNames.clear();
+//  if (!_lineEdit->text().isEmpty()) {
+//    _fileNames << _lineEdit->text();
+//  }
+//  emit fileNameChanged();
 }
 
 // 
