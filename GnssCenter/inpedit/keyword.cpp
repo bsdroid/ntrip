@@ -126,7 +126,12 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
     _widget = new t_selWin();
   }
   else if (widgetType == "spinbox") {
-    _widget = new QSpinBox();
+    QSpinBox* spinBox = new QSpinBox();
+    QStringList rangeStr = _desc.value("range").split(QRegExp("\\s"), QString::SkipEmptyParts);
+    if (rangeStr.size() >= 1) spinBox->setMinimum(rangeStr[0].toInt());
+    if (rangeStr.size() >= 2) spinBox->setMaximum(rangeStr[1].toInt());
+    if (rangeStr.size() >= 3) spinBox->setSingleStep(rangeStr[2].toInt());
+    _widget = spinBox;
   }
   else if (widgetType == "uniline") {
     _widget = new t_uniLine(fldMask, this);
