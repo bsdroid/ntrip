@@ -116,7 +116,11 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
     _widget = lineEdit;
   }
   else if (widgetType == "radiobutton") {
-    _widget = new QRadioButton();
+    QRadioButton* radButt = new QRadioButton();
+    if (_values.size() && _values[0] == "1") {
+      radButt->setChecked(true);
+    }
+    _widget = radButt;
   }
   else if (widgetType == "selwin") {
     _widget = new t_selWin();
