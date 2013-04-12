@@ -5,8 +5,6 @@
 
 namespace GnssCenter {
 
-class t_keyword;
-
 class t_uniLine : public QTableWidget {
   Q_OBJECT
 
