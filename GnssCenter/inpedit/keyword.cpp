@@ -127,10 +127,15 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
     _widget = radButt;
   }
   else if (widgetType == "selwin") {
-    t_selWin* selWin = new t_selWin();
-    if (_origValues.size()) {
-      selWin->setFileName(_origValues[0]);
+    t_selWin::Mode mode = t_selWin::File;
+    if      (_desc.value("seldir") == "true") {
+      mode = t_selWin::Directory;
     }
+    else if (_desc.value("maxfiles").toInt() > 1) {
+      mode = t_selWin::Files;
+    }
+    t_selWin* selWin = new t_selWin(mode);
+    selWin->setFileNames(_origValues);
     _widget = selWin;
   }
   else if (widgetType == "spinbox") {
@@ -193,6 +198,7 @@ QStringList t_keyword::values() const {
   }
   else if (widgetType == "selwin") {
     t_selWin* selWin = static_cast<t_selWin*>(_widget);
+    values << selWin->fileNames();
   }
   else if (widgetType == "spinbox") {
     QSpinBox* spinBox = static_cast<QSpinBox*>(_widget);
