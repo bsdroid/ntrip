@@ -13,7 +13,6 @@ class t_tabWidget : public QTabWidget {
   t_tabWidget();
   ~t_tabWidget();
   void setInputFile(const QString&);
-  virtual void setVisible(bool visible);
  private:
   void readFile();
   QString                   _fileName;
