@@ -123,7 +123,11 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
     _widget = radButt;
   }
   else if (widgetType == "selwin") {
-    _widget = new t_selWin();
+    t_selWin* selWin = new t_selWin();
+    if (_values.size()) {
+      selWin->setFileName(_values[0]);
+    }
+    _widget = selWin;
   }
   else if (widgetType == "spinbox") {
     QSpinBox* spinBox = new QSpinBox();
