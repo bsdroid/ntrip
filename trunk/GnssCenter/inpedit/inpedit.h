@@ -11,9 +11,12 @@ class t_keyword;
 class t_panel;
 
 class t_inpEdit : public QMainWindow {
+ Q_OBJECT
  public:
   t_inpEdit();
   ~t_inpEdit();
+ private slots:
+  void slotOpenFile();
  private:
   t_tabWidget* _tabWidget;
 };
