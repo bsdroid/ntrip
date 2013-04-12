@@ -15,6 +15,7 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
 #include "tabwidget.h" 
 #include "keyword.h" 
 #include "panel.h" 
@@ -48,6 +49,8 @@ void t_tabWidget::setInputFile(const QString& fileName) {
 ////////////////////////////////////////////////////////////////////////////
 void t_tabWidget::readFile() {
 
+  _staticLines.clear();
+
   QFile file(_fileName);
   file.open(QIODevice::ReadOnly | QIODevice::Text);
   QTextStream inStream(&file);
@@ -60,13 +63,14 @@ void t_tabWidget::readFile() {
     // Skip Comments and empty Lines
     // -----------------------------
     if      (line.isEmpty() || line[0] == '!') {
+      _staticLines << line;
       continue;
     }
 
     // Read Panels
     // -----------
     else if (line[0] == '#' && line.indexOf("BEGIN_PANEL") != -1) {
-      t_panel* panel = new t_panel(line, inStream, &_keywords);
+      t_panel* panel = new t_panel(line, inStream, &_keywords, _staticLines);
       if (panel->ok()) {
         ++iPanel;
         addTab(panel, QString("Panel %1").arg(iPanel));
@@ -79,7 +83,7 @@ void t_tabWidget::readFile() {
     // Read Keywords
     // -------------
     else {
-      t_keyword* keyword = new t_keyword(line, inStream);
+      t_keyword* keyword = new t_keyword(line, inStream, _staticLines);
       if (keyword->ok()) {
         _keywords[keyword->name()] = keyword;
       }
@@ -88,4 +92,10 @@ void t_tabWidget::readFile() {
       }
     }
   }
+
+  //// beg test
+  for (int ii = 0; ii < _staticLines.size(); ii++) {
+    cout << _staticLines[ii].toAscii().data() << endl;
+  }
+  //// end test
 }

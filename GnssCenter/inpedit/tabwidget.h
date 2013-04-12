@@ -17,6 +17,7 @@ class t_tabWidget : public QTabWidget {
   void readFile();
   QString                   _fileName;
   QMap<QString, t_keyword*> _keywords;
+  QStringList               _staticLines;
 };
 
 } // namespace GnssCenter

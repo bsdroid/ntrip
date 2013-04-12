@@ -25,7 +25,8 @@ using namespace GnssCenter;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_panel::t_panel(const QString& line, QTextStream& inStream,
-          QMap<QString, t_keyword*>* keywords) : QScrollArea(0) {
+                 QMap<QString, t_keyword*>* keywords,
+                 QStringList& staticLines) : QScrollArea(0) {
 
   _keywords = keywords;
 
@@ -43,7 +44,7 @@ t_panel::t_panel(const QString& line, QTextStream& inStream,
 
   this->setWidget(_page);
 
-  read(line, inStream);
+  read(line, inStream, staticLines);
 
   setWidgetResizable(true);
 }
@@ -55,10 +56,12 @@ t_panel::~t_panel() {
 
 // Read Panel
 ////////////////////////////////////////////////////////////////////////////
-void t_panel::read(QString line, QTextStream& inStream) {
+void t_panel::read(QString line, QTextStream& inStream, QStringList& staticLines) {
+  staticLines << line;
   int iRow = -1;
   while (inStream.status() == QTextStream::Ok && !inStream.atEnd()) {
     line = inStream.readLine().trimmed();
+    staticLines << line;
     if  (line.isEmpty() || line.indexOf("END_PANEL") != -1) {
       break;
     }
