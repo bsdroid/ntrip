@@ -160,11 +160,11 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
 ////////////////////////////////////////////////////////////////////////////
 QStringList t_keyword::values() const {
 
-  QStringList values;
-
   if (_widget == 0) {
-    // TODO: exception
+    return _origValues;
   }
+
+  QStringList values;
 
   QString widgetType = _desc.value("widget");
 
