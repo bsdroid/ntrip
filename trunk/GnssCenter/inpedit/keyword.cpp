@@ -147,3 +147,10 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
 
   return _widget;
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+QStringList t_keyword::values() const {
+  return _origValues;
+}
+

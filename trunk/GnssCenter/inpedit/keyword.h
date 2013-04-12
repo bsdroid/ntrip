@@ -13,7 +13,7 @@ class t_keyword {
   const QString& name() const {return _name;}
   bool ok() const {return _ok;}
   QWidget* createWidget(const QString& fldMask);
-  const QStringList& values() const;
+  QStringList values() const;
 
  private:
   bool                   _ok;
