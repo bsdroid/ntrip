@@ -40,11 +40,11 @@ t_keyword::t_keyword(QString line, QTextStream& inStream, QStringList& staticLin
     _ok = true;
 
     if      (numVal == 1) {
-      _values.append(in.readLine().trimmed());
+      _origValues.append(in.readLine().trimmed());
     }
     else if (numVal > 1) {
       for (int ii = 0; ii < numVal; ii++) {
-        _values.append(inStream.readLine().trimmed());
+        _origValues.append(inStream.readLine().trimmed());
       }
     }
 
@@ -75,7 +75,7 @@ t_keyword::t_keyword(QString line, QTextStream& inStream, QStringList& staticLin
 
     // Remove leading and trailing double-quotes
     // -----------------------------------------
-    _values.replaceInStrings(QRegExp("^\\s*\"|\"\\s*$"), QString());
+    _origValues.replaceInStrings(QRegExp("^\\s*\"|\"\\s*$"), QString());
   }
 }
 
@@ -96,7 +96,7 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
 
   if      (widgetType == "checkbox") {
     QCheckBox* chBox = new QCheckBox(); 
-    if (_values.size() && _values[0] == "1") {
+    if (_origValues.size() && _origValues[0] == "1") {
       chBox->setChecked(true);
     }
     _widget = chBox;
@@ -104,8 +104,8 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
   else if (widgetType == "combobox") {
     QComboBox* cmbBox = new QComboBox();
     cmbBox->addItems(_desc.value("cards").split(QRegExp("\\s"), QString::SkipEmptyParts));
-    if (_values.size()) {
-      int index = cmbBox->findText(_values[0]);
+    if (_origValues.size()) {
+      int index = cmbBox->findText(_origValues[0]);
       if (index != -1) {
         cmbBox->setCurrentIndex(index);
       }
@@ -114,22 +114,22 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
   }
   else if (widgetType == "lineedit") {
     t_lineEdit* lineEdit = new t_lineEdit();
-    if (_values.size()) {
-      lineEdit->setText(_values[0]);
+    if (_origValues.size()) {
+      lineEdit->setText(_origValues[0]);
     }
     _widget = lineEdit;
   }
   else if (widgetType == "radiobutton") {
     QRadioButton* radButt = new QRadioButton();
-    if (_values.size() && _values[0] == "1") {
+    if (_origValues.size() && _origValues[0] == "1") {
       radButt->setChecked(true);
     }
     _widget = radButt;
   }
   else if (widgetType == "selwin") {
     t_selWin* selWin = new t_selWin();
-    if (_values.size()) {
-      selWin->setFileName(_values[0]);
+    if (_origValues.size()) {
+      selWin->setFileName(_origValues[0]);
     }
     _widget = selWin;
   }
