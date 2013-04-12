@@ -203,7 +203,9 @@ QStringList t_keyword::values() const {
       for (int iCol = 0; iCol < uniLine->columnCount()-2; iCol++) {
         QTableWidgetItem* item = uniLine->item(iRow, iCol);
         if (item) {
-          rowStr += item->text() + ' ';
+          if (iCol != 0) rowStr += " \"";
+          rowStr += item->text().trimmed();
+          if (iCol != uniLine->columnCount()-3) rowStr += '\"';
         }
       }
       values << rowStr;
