@@ -65,6 +65,7 @@ t_keyword::t_keyword(QString line, QTextStream& inStream) {
           }
           QString descKey = rx.cap(1).trimmed();
           QString descVal = rx.cap(2).trimmed();
+          _desc[descKey]  = descVal;
           if (descKey == "widget") {
             if      (descVal == "checkbox") {
               _type = checkbox;
@@ -112,10 +113,15 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
   }
 
   if      (_type == checkbox) {
-    _widget = new QCheckBox(); 
+    QCheckBox* chBox = new QCheckBox(); 
+    if (_values.size() && _values[0] == "1") {
+      chBox->setChecked(true);
+    }
+    _widget = chBox;
   }
   else if (_type == combobox) {
-    _widget = new QComboBox();
+    QComboBox* cmbBox = new QComboBox();
+    _widget = cmbBox;
   }
   else if (_type == lineedit) {
     t_lineEdit* lineEdit = new t_lineEdit();
