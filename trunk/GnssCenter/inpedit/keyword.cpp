@@ -198,6 +198,16 @@ QStringList t_keyword::values() const {
   }
   else if (widgetType == "uniline") {
     t_uniLine* uniLine = static_cast<t_uniLine*>(_widget);
+    for (int iRow = 0; iRow < uniLine->rowCount(); iRow++) {
+      QString rowStr;
+      for (int iCol = 0; iCol < uniLine->columnCount()-2; iCol++) {
+        QTableWidgetItem* item = uniLine->item(iRow, iCol);
+        if (item) {
+          rowStr += item->text() + ' ';
+        }
+      }
+      values << rowStr;
+    }
   }
 
   return values;
