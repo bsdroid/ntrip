@@ -27,12 +27,23 @@ Q_EXPORT_PLUGIN2(gnsscenter_inpedit, GnssCenter::t_inpEditFactory)
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_inpEdit::t_inpEdit() : QMainWindow() {
+
   _tabWidget = new t_tabWidget();
   setCentralWidget(_tabWidget);
-  _tabWidget->setVisible(true);
+ 
+  QMenu*   menuFile = menuBar()->addMenu(tr("&File"));
+  QAction* actOpenFile = new QAction(tr("&Open"), this);
+  connect(actOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
+  menuFile->addAction(actOpenFile);
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_inpEdit::~t_inpEdit() {
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_inpEdit::slotOpenFile() {
+  qDebug() << "slotOpenFile";
 }
