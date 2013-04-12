@@ -25,7 +25,7 @@ using namespace GnssCenter;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_keyword::t_keyword(QString line, QTextStream& inStream) {
+t_keyword::t_keyword(QString line, QTextStream& inStream, QStringList& staticLines) {
 
   _ok     = false;
   _widget = 0;  // do not delete (it is owned by layout)
@@ -33,6 +33,8 @@ t_keyword::t_keyword(QString line, QTextStream& inStream) {
   int numVal = 0;
   QTextStream in(line.toAscii(), QIODevice::ReadOnly);
   in >> _name >> numVal;
+
+  staticLines << _name;
 
   if (!_name.isEmpty()) {
     _ok = true;
@@ -48,6 +50,7 @@ t_keyword::t_keyword(QString line, QTextStream& inStream) {
 
     while (inStream.status() == QTextStream::Ok && !inStream.atEnd()) {
       line = inStream.readLine().trimmed();
+      staticLines << line;
       if      (line.isEmpty()) {
         break;
       }

@@ -7,7 +7,7 @@ namespace GnssCenter {
 
 class t_keyword {
  public:
-  t_keyword(QString line, QTextStream& inStream);
+  t_keyword(QString line, QTextStream& inStream, QStringList& staticLines);
   ~t_keyword();
 
   const QString& name() const {return _name;}
