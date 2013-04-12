@@ -28,7 +28,6 @@ using namespace GnssCenter;
 t_keyword::t_keyword(QString line, QTextStream& inStream) {
 
   _ok     = false;
-  _type   = e_type_max;
   _widget = 0;  // do not delete (it is owned by layout)
 
   int numVal = 0;
@@ -66,29 +65,6 @@ t_keyword::t_keyword(QString line, QTextStream& inStream) {
           QString descKey = rx.cap(1).trimmed();
           QString descVal = rx.cap(2).trimmed();
           _desc[descKey]  = descVal;
-          if (descKey == "widget") {
-            if      (descVal == "checkbox") {
-              _type = checkbox;
-            }
-            else if (descVal == "combobox") {
-              _type = combobox;
-            }
-            else if (descVal == "lineedit") {
-              _type = lineedit;
-            }
-            else if (descVal == "radiobutton") {
-              _type = radiobutton;
-            }
-            else if (descVal == "selwin") {
-              _type = selwin;
-            }
-            else if (descVal == "spinbox") {
-              _type = spinbox;
-            }
-            else if (descVal == "uniline") {
-              _type = uniline;
-            }
-          }
         }
       }
     }
@@ -112,34 +88,36 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
     // TODO: exception
   }
 
-  if      (_type == checkbox) {
+  QString widgetType = _desc.value("widget");
+
+  if      (widgetType == "checkbox") {
     QCheckBox* chBox = new QCheckBox(); 
     if (_values.size() && _values[0] == "1") {
       chBox->setChecked(true);
     }
     _widget = chBox;
   }
-  else if (_type == combobox) {
+  else if (widgetType == "combobox") {
     QComboBox* cmbBox = new QComboBox();
     _widget = cmbBox;
   }
-  else if (_type == lineedit) {
+  else if (widgetType == "lineedit") {
     t_lineEdit* lineEdit = new t_lineEdit();
     if (_values.size()) {
       lineEdit->setText(_values[0]);
     }
     _widget = lineEdit;
   }
-  else if (_type == radiobutton) {
+  else if (widgetType == "radiobutton") {
     _widget = new QRadioButton();
   }
-  else if (_type == selwin) {
+  else if (widgetType == "selwin") {
     _widget = new t_selWin();
   }
-  else if (_type == spinbox) {
+  else if (widgetType == "spinbox") {
     _widget = new QSpinBox();
   }
-  else if (_type == uniline) {
+  else if (widgetType == "uniline") {
     _widget = new t_uniLine(fldMask, this);
   }
 
