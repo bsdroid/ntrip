@@ -97,6 +97,24 @@ void t_tabWidget::writeInputFile(const QString& fileName) {
   }
   QTextStream out(&file);
   for (int ii = 0; ii < _staticLines.size(); ii++) {
-    out << _staticLines[ii] << '\n';
+    QString tLine = _staticLines[ii].trimmed();
+    if (tLine.isEmpty() || tLine[0] == '!' || tLine[0] == '#') {
+      out << _staticLines[ii] << '\n';
+    }
+    else {
+      if (_keywords.contains(tLine)) {
+        const t_keyword* keyword = _keywords[tLine];
+        if (keyword) {
+          const QStringList& values = keyword->values();
+          out << tLine << ' ' << values.size();
+          if (values.size() != 1) {
+            out << '\n';
+          }
+          for (int ii = 0; ii < values.size(); ii++) {
+            out << "  \"" << values[ii] << "\"\n"; 
+          }
+        }
+      }
+    }
   }
 }
