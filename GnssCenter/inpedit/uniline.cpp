@@ -16,7 +16,6 @@
  * -----------------------------------------------------------------------*/
 
 #include "uniline.h"
-#include "keyword.h"
 
 using namespace std;
 using namespace GnssCenter;
