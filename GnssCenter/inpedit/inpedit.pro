@@ -10,8 +10,10 @@ debug:MOC_DIR       = .moc/debug
 release:OBJECTS_DIR = .obj/release
 release:MOC_DIR     = .moc/release
 
-HEADERS = keyword.h   panel.h      inpedit.h   \
-          selwin.h    lineedit.h   uniline.h
+HEADERS = keyword.h     panel.h      inpedit.h   \
+          selwin.h      lineedit.h   uniline.h   \
+          tabwidget.h
 
-SOURCES = keyword.cpp panel.cpp    inpedit.cpp \
-          selwin.cpp  lineedit.cpp uniline.cpp
+SOURCES = keyword.cpp   panel.cpp    inpedit.cpp \
+          selwin.cpp    lineedit.cpp uniline.cpp \
+          tabwidget.cpp
