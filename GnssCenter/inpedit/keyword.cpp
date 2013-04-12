@@ -142,7 +142,7 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
     _widget = spinBox;
   }
   else if (widgetType == "uniline") {
-    _widget = new t_uniLine(fldMask, this);
+    _widget = new t_uniLine(fldMask, _origValues);
   }
 
   return _widget;

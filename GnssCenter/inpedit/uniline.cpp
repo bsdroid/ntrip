@@ -65,16 +65,13 @@ static const char* minus_xpm[] = {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////
-t_uniLine::t_uniLine(const QString& fldMask, const t_keyword* keyword,
+t_uniLine::t_uniLine(const QString& fldMask, const QStringList& values,
                      QWidget* parent) : QTableWidget(parent) {
 
   static const QPixmap plusXPM(plus_xpm);
   static const QPixmap minusXPM(minus_xpm);
   static const QIcon   plusIcon(plusXPM);
   static const QIcon   minusIcon(minusXPM);
-
-  _keyword = keyword;
-  const QStringList& values = _keyword->values();
 
   setRowCount(values.size());
   
