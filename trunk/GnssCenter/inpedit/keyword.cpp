@@ -49,8 +49,9 @@ t_keyword::t_keyword(QString line, QTextStream& inStream, QStringList& staticLin
     }
 
     while (inStream.status() == QTextStream::Ok && !inStream.atEnd()) {
-      line = inStream.readLine().trimmed();
+      line = inStream.readLine();
       staticLines << line;
+      line = line.trimmed();
       if      (line.isEmpty()) {
         break;
       }
