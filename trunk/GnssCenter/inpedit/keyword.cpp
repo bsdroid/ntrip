@@ -151,6 +151,37 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 QStringList t_keyword::values() const {
-  return _origValues;
+
+  QStringList values;
+
+  if (_widget == 0) {
+    // TODO: exception
+  }
+
+  QString widgetType = _desc.value("widget");
+
+  if      (widgetType == "checkbox") {
+    QCheckBox* chBox = static_cast<QCheckBox*>(_widget); 
+  }
+  else if (widgetType == "combobox") {
+    QComboBox* cmbBox = static_cast<QComboBox*>(_widget);
+  }
+  else if (widgetType == "lineedit") {
+    t_lineEdit* lineEdit = static_cast<t_lineEdit*>(_widget);
+  }
+  else if (widgetType == "radiobutton") {
+    QRadioButton* radButt = static_cast<QRadioButton*>(_widget);
+  }
+  else if (widgetType == "selwin") {
+    t_selWin* selWin = static_cast<t_selWin*>(_widget);
+  }
+  else if (widgetType == "spinbox") {
+    QSpinBox* spinBox = static_cast<QSpinBox*>(_widget);
+  }
+  else if (widgetType == "uniline") {
+    t_uniLine* uniLine = static_cast<t_uniLine*>(_widget);
+  }
+
+  return values;
 }
 
