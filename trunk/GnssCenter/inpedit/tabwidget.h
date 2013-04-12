@@ -12,9 +12,9 @@ class t_tabWidget : public QTabWidget {
  public:
   t_tabWidget();
   ~t_tabWidget();
-  void setInputFile(const QString&);
+  void readInputFile(const QString&);
+  void writeInputFile(const QString&);
  private:
-  void readFile();
   QString                   _fileName;
   QMap<QString, t_keyword*> _keywords;
   QStringList               _staticLines;

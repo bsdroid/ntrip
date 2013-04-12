@@ -32,9 +32,14 @@ t_inpEdit::t_inpEdit() : QMainWindow() {
   setCentralWidget(_tabWidget);
  
   QMenu*   menuFile = menuBar()->addMenu(tr("&File"));
+
   QAction* actOpenFile = new QAction(tr("&Open"), this);
   connect(actOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
   menuFile->addAction(actOpenFile);
+
+  QAction* actSaveFile = new QAction(tr("&Save"), this);
+  connect(actSaveFile, SIGNAL(triggered()), this, SLOT(slotSaveFile()));
+  menuFile->addAction(actSaveFile);
 }
 
 // Destructor
@@ -47,6 +52,15 @@ t_inpEdit::~t_inpEdit() {
 void t_inpEdit::slotOpenFile() {
   QString fileName = QFileDialog::getOpenFileName(this);
   if (!fileName.isEmpty()) {
-    _tabWidget->setInputFile(fileName);
+    _tabWidget->readInputFile(fileName);
+  }
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_inpEdit::slotSaveFile() {
+  QString fileName = QFileDialog::getSaveFileName(this);
+  if (!fileName.isEmpty()) {
+    _tabWidget->writeInputFile(fileName);
   }
 }

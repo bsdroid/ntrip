@@ -17,6 +17,7 @@ class t_inpEdit : public QMainWindow {
   ~t_inpEdit();
  private slots:
   void slotOpenFile();
+  void slotSaveFile();
  private:
   t_tabWidget* _tabWidget;
 };

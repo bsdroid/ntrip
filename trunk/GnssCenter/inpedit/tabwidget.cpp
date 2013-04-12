@@ -40,14 +40,9 @@ t_tabWidget::~t_tabWidget() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_tabWidget::setInputFile(const QString& fileName) {
-  _fileName = fileName;
-  readFile();
-}
+void t_tabWidget::readInputFile(const QString& fileName) {
 
-// 
-////////////////////////////////////////////////////////////////////////////
-void t_tabWidget::readFile() {
+  _fileName = fileName;
 
   _staticLines.clear();
 
@@ -92,10 +87,12 @@ void t_tabWidget::readFile() {
       }
     }
   }
+}
 
-  //// beg test
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_tabWidget::writeInputFile(const QString& fileName) {
   for (int ii = 0; ii < _staticLines.size(); ii++) {
     cout << _staticLines[ii].toAscii().data() << endl;
   }
-  //// end test
 }
