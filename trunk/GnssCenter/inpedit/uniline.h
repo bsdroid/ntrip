@@ -11,7 +11,7 @@ class t_uniLine : public QTableWidget {
   Q_OBJECT
 
  public:
-  t_uniLine(const QString& fldMask, const t_keyword* keyword, 
+  t_uniLine(const QString& fldMask, const QStringList& values, 
             QWidget* parent = 0);
   ~t_uniLine();
 
@@ -19,7 +19,6 @@ class t_uniLine : public QTableWidget {
   void slotItemClicked(QTableWidgetItem* item);
 
  private:
-  const t_keyword* _keyword;
 };
 
 } // namespace GnssCenter
