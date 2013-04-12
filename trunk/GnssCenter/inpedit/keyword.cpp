@@ -162,15 +162,29 @@ QStringList t_keyword::values() const {
 
   if      (widgetType == "checkbox") {
     QCheckBox* chBox = static_cast<QCheckBox*>(_widget); 
+    if (chBox->isChecked()) {
+      values << "1";
+    }
+    else {
+      values << "0";
+    }
   }
   else if (widgetType == "combobox") {
     QComboBox* cmbBox = static_cast<QComboBox*>(_widget);
+    values << cmbBox->currentText();
   }
   else if (widgetType == "lineedit") {
     t_lineEdit* lineEdit = static_cast<t_lineEdit*>(_widget);
+    values << lineEdit->text();
   }
   else if (widgetType == "radiobutton") {
     QRadioButton* radButt = static_cast<QRadioButton*>(_widget);
+    if (radButt->isChecked()) {
+      values << "1";
+    }
+    else {
+      values << "0";
+    }
   }
   else if (widgetType == "selwin") {
     t_selWin* selWin = static_cast<t_selWin*>(_widget);
