@@ -15,7 +15,6 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
 #include "tabwidget.h" 
 #include "keyword.h" 
 #include "panel.h" 
@@ -92,7 +91,12 @@ void t_tabWidget::readInputFile(const QString& fileName) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_tabWidget::writeInputFile(const QString& fileName) {
+  QFile file(fileName);
+  if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    return;
+  }
+  QTextStream out(&file);
   for (int ii = 0; ii < _staticLines.size(); ii++) {
-    cout << _staticLines[ii].toAscii().data() << endl;
+    out << _staticLines[ii] << '\n';
   }
 }
