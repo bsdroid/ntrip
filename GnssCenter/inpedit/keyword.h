@@ -19,11 +19,12 @@ class t_keyword {
   const QStringList& values() const {return _values;}
 
  private:
-  bool        _ok;
-  QString     _name;
-  QStringList _values;
-  e_type      _type;
-  QWidget*    _widget;
+  bool                   _ok;
+  QString                _name;
+  QStringList            _values;
+  e_type                 _type;
+  QWidget*               _widget;
+  QMap<QString, QString> _desc;
 };
 
 } // namespace GnssCenter
