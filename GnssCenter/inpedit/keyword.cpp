@@ -99,6 +99,13 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
   }
   else if (widgetType == "combobox") {
     QComboBox* cmbBox = new QComboBox();
+    cmbBox->addItems(_desc.value("cards").split(QRegExp("\\s"), QString::SkipEmptyParts));
+    if (_values.size()) {
+      int index = cmbBox->findText(_values[0]);
+      if (index != -1) {
+        cmbBox->setCurrentIndex(index);
+      }
+    }
     _widget = cmbBox;
   }
   else if (widgetType == "lineedit") {
