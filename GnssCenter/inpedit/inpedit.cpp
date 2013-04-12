@@ -45,5 +45,8 @@ t_inpEdit::~t_inpEdit() {
 //
 ////////////////////////////////////////////////////////////////////////////
 void t_inpEdit::slotOpenFile() {
-  qDebug() << "slotOpenFile";
+  QString fileName = QFileDialog::getOpenFileName(this);
+  if (!fileName.isEmpty()) {
+    _tabWidget->setInputFile(fileName);
+  }
 }

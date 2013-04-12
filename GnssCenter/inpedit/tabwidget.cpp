@@ -39,15 +39,6 @@ t_tabWidget::~t_tabWidget() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_tabWidget::setVisible(bool visible) {
-  if (visible) {
-    setInputFile("RTNET.INP");
-  }
-  QTabWidget::setVisible(visible);
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
 void t_tabWidget::setInputFile(const QString& fileName) {
   _fileName = fileName;
   readFile();
