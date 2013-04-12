@@ -89,6 +89,9 @@ t_uniLine::t_uniLine(const QString& fldMask, const QStringList& values,
     for (int iCol = 0; iCol < txt.size(); iCol++) {    
       setItem(iRow, iCol, new QTableWidgetItem(txt.at(iCol).trimmed()));
     }
+    for (int iCol = txt.size(); iCol < columnCount()-2; iCol++) {    
+      setItem(iRow, iCol, new QTableWidgetItem(""));
+    }
     setItem(iRow, columnCount()-2, new QTableWidgetItem(plusIcon, QString()));
     setItem(iRow, columnCount()-1, new QTableWidgetItem(minusIcon, QString()));
   }
