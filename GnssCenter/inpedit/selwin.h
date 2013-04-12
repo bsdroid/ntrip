@@ -19,10 +19,10 @@ class t_selWin : public QWidget {
   void setFileNames(const QStringList& fileNames);
 
   signals:
-   void fileNameChanged();
+   void fileNamesChanged();
 
   private slots:
-   void slotTextChanged();
+   void slotTextEdited();
    void slotChooseFile();
 
   private:
