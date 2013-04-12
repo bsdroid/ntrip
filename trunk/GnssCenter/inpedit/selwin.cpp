@@ -32,8 +32,8 @@ t_selWin::t_selWin(t_selWin::Mode mode, QWidget* parent) : QWidget(parent) {
   _lineEdit = new QLineEdit(this);
   layout->addWidget(_lineEdit);
 
-  connect(_lineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(slotTextChanged()));
+  connect(_lineEdit, SIGNAL(textEdited(const QString &)),
+          this, SLOT(slotTextEdited()));
 
   _button = new QPushButton("...", this);
   _button->setFixedWidth(_button->fontMetrics().width(" ... "));
@@ -77,12 +77,12 @@ const QStringList& t_selWin::fileNames() const {
 
 // 
 ////////////////////////////////////////////////////////////////////////////////
-void t_selWin::slotTextChanged() {
-//  _fileNames.clear();
-//  if (!_lineEdit->text().isEmpty()) {
-//    _fileNames << _lineEdit->text();
-//  }
-//  emit fileNameChanged();
+void t_selWin::slotTextEdited() {
+  _fileNames.clear();
+  if (!_lineEdit->text().isEmpty()) {
+    _fileNames << _lineEdit->text();
+  }
+  emit fileNamesChanged();
 }
 
 // 
@@ -93,14 +93,14 @@ void t_selWin::slotChooseFile() {
     if (!fileName.isEmpty()) {
       _fileNames.clear();
       _fileNames << fileName;
-      emit fileNameChanged();
+      emit fileNamesChanged();
    }
   }
   else if (mode() == Files) {
     QStringList fileNames = QFileDialog::getOpenFileNames(this);
     if (fileNames.size()) {
       _fileNames = fileNames;
-      emit fileNameChanged();
+      emit fileNamesChanged();
     }
   }
   else {
@@ -108,7 +108,7 @@ void t_selWin::slotChooseFile() {
     if (!dirName.isEmpty()) {
       _fileNames.clear();
       _fileNames << dirName;
-      emit fileNameChanged();
+      emit fileNamesChanged();
     }
   }
   setLineEditText();
