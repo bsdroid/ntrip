@@ -3,22 +3,19 @@
 
 #include <QtGui>
 #include "plugininterface.h"
+#include "tabwidget.h"
 
 namespace GnssCenter {
 
 class t_keyword;
 class t_panel;
 
-class t_inpEdit : public QTabWidget {
+class t_inpEdit : public QMainWindow {
  public:
   t_inpEdit();
   ~t_inpEdit();
-  void setInputFile(const QString&);
-  virtual void setVisible(bool visible);
  private:
-  void readFile();
-  QString                   _fileName;
-  QMap<QString, t_keyword*> _keywords;
+  t_tabWidget* _tabWidget;
 };
 
 class t_inpEditFactory : public QObject, public t_pluginFactoryInterface {
