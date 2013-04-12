@@ -22,8 +22,9 @@ using namespace GnssCenter;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////
-t_selWin::t_selWin(QWidget* parent, t_selWin::Mode mode) : 
-  QWidget(parent), _mode(mode) {
+t_selWin::t_selWin(t_selWin::Mode mode, QWidget* parent) : QWidget(parent) {
+
+  _mode = mode;
 
   QHBoxLayout* layout = new QHBoxLayout( this );
   layout->setMargin(0);
@@ -32,13 +33,13 @@ t_selWin::t_selWin(QWidget* parent, t_selWin::Mode mode) :
   layout->addWidget(_lineEdit);
 
   connect(_lineEdit, SIGNAL(textChanged(const QString &)),
-          this, SIGNAL(fileNameChanged(const QString &)));
+          this, SLOT(slotTextChanged()));
 
   _button = new QPushButton("...", this);
   _button->setFixedWidth(_button->fontMetrics().width(" ... "));
   layout->addWidget(_button);
 
-  connect(_button, SIGNAL(clicked()), this, SLOT(chooseFile()));
+  connect(_button, SIGNAL(clicked()), this, SLOT(slotChooseFile()));
   setFocusProxy(_lineEdit);
 }
 
@@ -49,33 +50,67 @@ t_selWin::~t_selWin() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////////
-void t_selWin::setFileName(const QString& fileName) {
-  _lineEdit->setText(fileName);
+void t_selWin::setFileNames(const QStringList& fileNames) {
+  _fileNames = fileNames;
+  setLineEditText();
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////////
-QString t_selWin::fileName() const {
-  return _lineEdit->text();
+void t_selWin::setLineEditText() {
+  if      (_fileNames.size() == 0) {
+    _lineEdit->setText("");
+  }
+  else if (_fileNames.size() == 1) {
+    _lineEdit->setText(_fileNames[0]);
+  }
+  else if (_fileNames.size() > 1) {
+    _lineEdit->setText(QString("SELECTED (%1 FILES)").arg(_fileNames.size()));
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////////
-void t_selWin::chooseFile() {
-  QString fileName;
+const QStringList& t_selWin::fileNames() const {
+  return _fileNames;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////////
+void t_selWin::slotTextChanged() {
+  _fileNames.clear();
+  if (!_lineEdit->text().isEmpty()) {
+    _fileNames << _lineEdit->text();
+  }
+  emit fileNameChanged();
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////////
+void t_selWin::slotChooseFile() {
   if      (mode() == File) {
-    fileName = QFileDialog::getOpenFileName(this);
+    QString fileName = QFileDialog::getOpenFileName(this);
+    if (!fileName.isEmpty()) {
+      _fileNames.clear();
+      _fileNames << fileName;
+      emit fileNameChanged();
+   }
   }
   else if (mode() == Files) {
     QStringList fileNames = QFileDialog::getOpenFileNames(this);
-    fileName = fileNames.join(",");
+    if (fileNames.size()) {
+      _fileNames = fileNames;
+      emit fileNameChanged();
+    }
   }
   else {
-    fileName = QFileDialog::getExistingDirectory(this);
+   QString dirName = QFileDialog::getExistingDirectory(this);
+    if (!dirName.isEmpty()) {
+      _fileNames.clear();
+      _fileNames << dirName;
+      emit fileNameChanged();
+    }
   }
-
-  if (!fileName.isEmpty()) {
-    _lineEdit->setText(fileName);
-    emit fileNameChanged(fileName);
-  }
+  setLineEditText();
 }
+
