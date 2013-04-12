@@ -191,6 +191,7 @@ QStringList t_keyword::values() const {
   }
   else if (widgetType == "spinbox") {
     QSpinBox* spinBox = static_cast<QSpinBox*>(_widget);
+    values << QString("%1").arg(spinBox->value());
   }
   else if (widgetType == "uniline") {
     t_uniLine* uniLine = static_cast<t_uniLine*>(_widget);
