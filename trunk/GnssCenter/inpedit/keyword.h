@@ -13,12 +13,12 @@ class t_keyword {
   const QString& name() const {return _name;}
   bool ok() const {return _ok;}
   QWidget* createWidget(const QString& fldMask);
-  const QStringList& values() const {return _values;}
+  const QStringList& values() const;
 
  private:
   bool                   _ok;
   QString                _name;
-  QStringList            _values;
+  QStringList            _origValues;
   QWidget*               _widget;
   QMap<QString, QString> _desc;
 };
