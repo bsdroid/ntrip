@@ -139,6 +139,9 @@ QWidget* t_keyword::createWidget(const QString& fldMask) {
     if (rangeStr.size() >= 1) spinBox->setMinimum(rangeStr[0].toInt());
     if (rangeStr.size() >= 2) spinBox->setMaximum(rangeStr[1].toInt());
     if (rangeStr.size() >= 3) spinBox->setSingleStep(rangeStr[2].toInt());
+    if (_origValues.size()) {
+      spinBox->setValue(_origValues[0].toInt());
+    }
     _widget = spinBox;
   }
   else if (widgetType == "uniline") {
