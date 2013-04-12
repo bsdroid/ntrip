@@ -178,7 +178,9 @@ QStringList t_keyword::values() const {
   }
   else if (widgetType == "lineedit") {
     t_lineEdit* lineEdit = static_cast<t_lineEdit*>(_widget);
-    values << lineEdit->text();
+    if (!lineEdit->text().isEmpty()) {
+      values << lineEdit->text();
+    }
   }
   else if (widgetType == "radiobutton") {
     QRadioButton* radButt = static_cast<QRadioButton*>(_widget);
