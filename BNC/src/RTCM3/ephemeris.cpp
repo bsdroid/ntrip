@@ -415,7 +415,7 @@ void t_ephGlo::set(const glonassephemeris* ee, bool& timeChanged) {
       }
     }
 
-    if (timeChanged && BNC_CORE->mode() == t_bncCore::batchPostProcessing) {
+    if (false && timeChanged && BNC_CORE->mode() == t_bncCore::batchPostProcessing) {
       bncTime newHTime(ww, (double) tow);
       cout << "GLONASS " << ee->almanac_number <<  " Time Changed at " 
            << currentTime.datestr()         << " " << currentTime.timestr() 
