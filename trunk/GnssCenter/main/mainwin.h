@@ -43,8 +43,7 @@ class t_mainWin : public QMainWindow {
   QMenu*     _menuPlugins;
   QMenu*     _menuHlp;
 
-  QToolBar*  _fileToolBar;
-  QToolBar*  _editToolBar;
+  QToolBar*  _toolBar;
 };
 
 }  // namespace GnssCenter
