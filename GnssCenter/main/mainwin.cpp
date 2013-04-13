@@ -64,14 +64,15 @@ t_mainWin::~t_mainWin() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_mainWin::createToolBar() {
-  _fileToolBar = addToolBar(tr("File"));
-  _editToolBar = addToolBar(tr("Edit"));
+  _toolBar = new QToolBar("Tool Bar", this);
+  _toolBar->addWidget(new QLabel("Tool Bar"));
+  addToolBar(Qt::BottomToolBarArea, _toolBar);
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_mainWin::createStatusBar() {
-  statusBar()->showMessage(tr("Ready"));
+  statusBar()->addPermanentWidget(new QLabel("Status Bar"));
 }
 
 // 
