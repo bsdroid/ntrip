@@ -690,7 +690,7 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
       double Mjd = _resTime.mjd() + _resTime.daysec()/86400.0;
       if (_antex->satCoMcorrection(corr->prn, Mjd, xc.Rows(1,3), dx) != success) {
         dx = 0;
-        cout << "antenna not found" << endl;
+        cout << "antenna not found " << corr->prn.toAscii().data() << endl;
       }
     }
     
