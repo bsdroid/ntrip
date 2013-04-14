@@ -45,6 +45,8 @@ hassDecoder::hassDecoder(const QString& staID) {
   _out      = 0;
   _GPSweeks = -1.0;
 
+  qRegisterMetaType<bncTime>("bncTime");
+
   connect(this, SIGNAL(newCorrLine(QString, QString, bncTime)), 
           BNC_CORE, SLOT(slotNewCorrLine(QString, QString, bncTime)));
 }
