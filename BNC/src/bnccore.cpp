@@ -648,8 +648,8 @@ void t_bncCore::slotNewCorrLine(QString line, QString staID, bncTime coTime) {
     _waitCoTime = 0.0;
   }
 
-  // First time, set the _lastDumpSec immediately
-  // --------------------------------------------
+  // First time, set the _lastCorrDumpTime
+  // -------------------------------------
   if (!_lastCorrDumpTime.valid()) {
     _lastCorrDumpTime = coTime - 1.0;
   }
