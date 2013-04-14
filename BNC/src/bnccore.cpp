@@ -650,17 +650,17 @@ void t_bncCore::slotNewCorrLine(QString line, QString staID, bncTime coTime) {
 
   // First time, set the _lastDumpSec immediately
   // --------------------------------------------
-  if (!_lastDumpCoSec.valid()) {
-    _lastDumpCoSec = coTime - 1.0;
+  if (!_lastCorrDumpTime.valid()) {
+    _lastCorrDumpTime = coTime - 1.0;
   }
 
   // An old correction - throw it away
   // ---------------------------------
-  if (_waitCoTime > 0.0 && coTime <= _lastDumpCoSec) {
+  if (_waitCoTime > 0.0 && coTime <= _lastCorrDumpTime) {
     ///    if (!_bncComb) {
       QString line = staID + ": Correction for one sat neglected because overaged by " +
                       QString().sprintf(" %f sec",
-                      _lastDumpCoSec - coTime + _waitCoTime);
+                      _lastCorrDumpTime - coTime + _waitCoTime);
       messagePrivate(line.toAscii());
       emit( newMessage(line.toAscii(), true) );
       ///    }
@@ -674,19 +674,24 @@ void t_bncCore::slotNewCorrLine(QString line, QString staID, bncTime coTime) {
   if      (_waitCoTime == 0.0) {
     dumpCorrs();
   }
-  else if (coTime - _waitCoTime > _lastDumpCoSec) {
-    dumpCorrs(_lastDumpCoSec + 1, coTime - _waitCoTime);
-    _lastDumpCoSec = coTime - _waitCoTime;
+  else if (coTime - _waitCoTime > _lastCorrDumpTime) {
+    dumpCorrs(_lastCorrDumpTime + 1, coTime - _waitCoTime);
+    _lastCorrDumpTime = coTime - _waitCoTime;
   }
 }
 
 // Dump Complete Correction Epochs
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::dumpCorrs(bncTime minTime, bncTime maxTime) {
-  for (bncTime sec = minTime; sec <= maxTime; sec = sec + 1.0) {
-    QList<QString> allCorrs = _corrs->values(sec);
-    dumpCorrs(allCorrs);
-    _corrs->remove(sec);
+  QList<QString> allCorrs;
+  QMutableMapIterator<bncTime, QString> it(*_corrs);
+  while (it.hasNext()) {
+    it.next();
+    const bncTime& corrTime = it.key();
+    if (minTime <= corrTime && corrTime <= maxTime) {
+      allCorrs << it.value();
+      it.remove();
+    }
   }
 }
 

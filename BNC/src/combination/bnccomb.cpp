@@ -338,6 +338,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   // Delete old corrections
   // ----------------------
   if (_resTime.valid() && newCorr->tClk <= _resTime) {
+    emit newMessage("bncComb: old correction: " + newCorr->prn.toAscii(), true);
     delete newCorr;
     return;
   }
