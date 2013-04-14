@@ -126,7 +126,7 @@ class t_bncCore : public QObject {
     QTcpServer*         _serverNMEA;
     QList<QTcpSocket*>* _socketsNMEA;
     bncCaster*          _caster;
-    bncTime             _lastDumpCoSec;
+    bncTime             _lastCorrDumpTime;
     double              _waitCoTime;
     QMultiMap<bncTime, QString>* _corrs;
     QString             _confFileName;
