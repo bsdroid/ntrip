@@ -693,6 +693,7 @@ void t_bncCore::dumpCorrs(bncTime minTime, bncTime maxTime) {
       it.remove();
     }
   }
+  dumpCorrs(allCorrs);
 }
 
 // Dump all corrections
