@@ -49,7 +49,7 @@ Q_OBJECT
   static void reopen(const QString& fileNameSkl, QString& fileName,
                      std::ofstream*& out);
  signals:
-  void newCorrLine(QString line, QString staID, long coTime);
+  void newCorrLine(QString line, QString staID, bncTime coTime);
   void newMessage(QByteArray msg, bool showOnScreen);
 
  private:

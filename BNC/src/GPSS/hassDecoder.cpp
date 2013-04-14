@@ -45,8 +45,8 @@ hassDecoder::hassDecoder(const QString& staID) {
   _out      = 0;
   _GPSweeks = -1.0;
 
-  connect(this, SIGNAL(newCorrLine(QString, QString, long)), 
-          BNC_CORE, SLOT(slotNewCorrLine(QString, QString, long)));
+  connect(this, SIGNAL(newCorrLine(QString, QString, bncTime)), 
+          BNC_CORE, SLOT(slotNewCorrLine(QString, QString, bncTime)));
 }
 
 // Destructor
@@ -91,11 +91,9 @@ t_irc hassDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
     // Correction Time
     // ---------------
-    bncTime tt; 
-    tt.setmjd(daySec, mjd);
+    bncTime coTime; coTime.setmjd(daySec, mjd);
 
-    _GPSweeks = tt.gpssec();
-    long coTime = tt.gpsw() * 7*24*3600 + long(floor(_GPSweeks+0.5));
+    _GPSweeks = coTime.gpssec();
 
     // Transform Correction
     // --------------------
@@ -117,7 +115,7 @@ t_irc hassDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
 
     ColumnVector xc(4);
     ColumnVector vv(3);
-    eph->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
+    eph->position(coTime.gpsw(), coTime.gpssec(), xc.data(), vv.data());
 
     ColumnVector rao(3);
     XYZ_to_RSW(xc.Rows(1,3), vv, dx,     rao);
@@ -145,7 +143,7 @@ t_irc hassDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
                      "   %8.3f %8.3f %8.3f %8.3f"
                      "   %10.5f %10.5f %10.5f %10.5f"
                      "   %10.5f",
-                     messageType, updateInterval, tt.gpsw(), _GPSweeks,
+                     messageType, updateInterval, coTime.gpsw(), _GPSweeks,
                      prn.toAscii().data(), IOD, 
                      dClk, rao[0], rao[1], rao[2],
                      0.0, dotRao[0], dotRao[1], dotRao[2], 0.0);

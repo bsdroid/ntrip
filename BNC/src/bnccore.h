@@ -71,7 +71,7 @@ class t_bncCore : public QObject {
     void slotNewGPSEph(gpsephemeris* gpseph);
     void slotNewGlonassEph(glonassephemeris* glonasseph);
     void slotNewGalileoEph(galileoephemeris* galileoeph);
-    void slotNewCorrLine(QString line, QString staID, long coTime);
+    void slotNewCorrLine(QString line, QString staID, bncTime coTime);
     void slotQuit();
 
   signals:
@@ -91,7 +91,7 @@ class t_bncCore : public QObject {
     void printGalileoEph(galileoephemeris* ep, bool printFile);
     void printOutput(bool printFile, QTextStream* stream, 
                      const QString& strV2, const QString& strV3);
-    void dumpCorrs(long minTime, long maxTime);
+    void dumpCorrs(bncTime minTime, bncTime maxTime);
     void dumpCorrs();
     void dumpCorrs(const QList<QString>& allCorrs);
     void messagePrivate(const QByteArray& msg);
@@ -126,9 +126,9 @@ class t_bncCore : public QObject {
     QTcpServer*         _serverNMEA;
     QList<QTcpSocket*>* _socketsNMEA;
     bncCaster*          _caster;
-    long                _lastDumpCoSec;
-    long                _waitCoTime;
-    QMultiMap<long, QString>* _corrs;
+    bncTime             _lastDumpCoSec;
+    double              _waitCoTime;
+    QMultiMap<bncTime, QString>* _corrs;
     QString             _confFileName;
     QDate               _fileDate;
     bncRawFile*         _rawFile;
