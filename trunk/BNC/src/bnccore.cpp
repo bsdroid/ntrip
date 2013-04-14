@@ -114,9 +114,7 @@ t_bncCore::t_bncCore() {
   expandEnvVar(_userName);
   _userName = _userName.leftJustified(20, ' ', true);
 
-  _lastDumpCoSec = 0;
-
-  _corrs = new QMultiMap<long, QString>;
+  _corrs = new QMultiMap<bncTime, QString>;
 
   _currentDateAndTimeGPS = 0;
 
@@ -632,7 +630,7 @@ void t_bncCore::slotQuit() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::slotNewCorrLine(QString line, QString staID, long coTime) {
+void t_bncCore::slotNewCorrLine(QString line, QString staID, bncTime coTime) {
 
   QMutexLocker locker(&_mutex);
 
@@ -645,27 +643,27 @@ void t_bncCore::slotNewCorrLine(QString line, QString staID, long coTime) {
 #endif
 
   bncSettings settings;
-  _waitCoTime = settings.value("corrTime").toInt();
-  if (_waitCoTime < 0) {
-    _waitCoTime = 0;
+  _waitCoTime = settings.value("corrTime").toDouble();
+  if (_waitCoTime < 0.0) {
+    _waitCoTime = 0.0;
   }
 
   // First time, set the _lastDumpSec immediately
   // --------------------------------------------
-  if (_lastDumpCoSec == 0) {
-    _lastDumpCoSec = coTime - 1;
+  if (!_lastDumpCoSec.valid()) {
+    _lastDumpCoSec = coTime - 1.0;
   }
 
   // An old correction - throw it away
   // ---------------------------------
-  if (_waitCoTime > 0 && coTime <= _lastDumpCoSec) {
-    if (!_bncComb) {
+  if (_waitCoTime > 0.0 && coTime <= _lastDumpCoSec) {
+    ///    if (!_bncComb) {
       QString line = staID + ": Correction for one sat neglected because overaged by " +
-                      QString().sprintf(" %ld sec",
+                      QString().sprintf(" %f sec",
                       _lastDumpCoSec - coTime + _waitCoTime);
       messagePrivate(line.toAscii());
       emit( newMessage(line.toAscii(), true) );
-    }
+      ///    }
     return;
   }
 
@@ -673,7 +671,7 @@ void t_bncCore::slotNewCorrLine(QString line, QString staID, long coTime) {
 
   // Dump Corrections
   // ----------------
-  if      (_waitCoTime == 0) {
+  if      (_waitCoTime == 0.0) {
     dumpCorrs();
   }
   else if (coTime - _waitCoTime > _lastDumpCoSec) {
@@ -684,8 +682,8 @@ void t_bncCore::slotNewCorrLine(QString line, QString staID, long coTime) {
 
 // Dump Complete Correction Epochs
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::dumpCorrs(long minTime, long maxTime) {
-  for (long sec = minTime; sec <= maxTime; sec++) {
+void t_bncCore::dumpCorrs(bncTime minTime, bncTime maxTime) {
+  for (bncTime sec = minTime; sec <= maxTime; sec = sec + 1.0) {
     QList<QString> allCorrs = _corrs->values(sec);
     dumpCorrs(allCorrs);
     _corrs->remove(sec);
@@ -696,7 +694,7 @@ void t_bncCore::dumpCorrs(long minTime, long maxTime) {
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::dumpCorrs() {
   QList<QString> allCorrs;
-  QMutableMapIterator<long, QString> it(*_corrs);
+  QMutableMapIterator<bncTime, QString> it(*_corrs);
   while (it.hasNext()) {
     allCorrs << it.next().value();
     it.remove();

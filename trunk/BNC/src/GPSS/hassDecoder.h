@@ -15,7 +15,7 @@ Q_OBJECT
   virtual t_irc Decode(char* data, int dataLen, std::vector<std::string>& errmsg);
 
  signals:
-  void newCorrLine(QString line, QString staID, long coTime);
+  void newCorrLine(QString line, QString staID, bncTime coTime);
 
  private:
   std::ofstream* _out;

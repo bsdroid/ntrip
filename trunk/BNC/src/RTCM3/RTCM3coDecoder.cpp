@@ -71,8 +71,8 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
   _out      = 0;
   _GPSweeks = -1.0;
 
-  connect(this, SIGNAL(newCorrLine(QString, QString, long)), 
-          BNC_CORE, SLOT(slotNewCorrLine(QString, QString, long)));
+  connect(this, SIGNAL(newCorrLine(QString, QString, bncTime)), 
+          BNC_CORE, SLOT(slotNewCorrLine(QString, QString, bncTime)));
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
@@ -253,16 +253,15 @@ void RTCM3coDecoder::printLine(const QString& line, int GPSweek,
   currentGPSWeeks(currWeek, currSec);
   bncTime currTime(currWeek, currSec);
 
-  bncTime corrTime(GPSweek, GPSweeks);
+  bncTime coTime(GPSweek, GPSweeks);
 
-  double dt = currTime - corrTime;
+  double dt = currTime - coTime;
   const double MAXDT = 10 * 60.0;
   if (fabs(dt) > MAXDT) {
     emit newMessage("suspicious correction: " + _staID.toAscii() + " " 
                     + line.toAscii(), false);
   }
   else {
-    long coTime = GPSweek * 7*24*3600 + long(floor(_GPSweeks+0.5));
     emit newCorrLine(line, _staID, coTime);
   }
 }
