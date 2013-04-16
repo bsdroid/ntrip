@@ -295,7 +295,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   cmbCorr* newCorr = new cmbCorr();
   newCorr->acName = acName;
   if (!newCorr->readLine(line) == success) {
-    emit newMessage("bncComb: cannot read correction: " + staID.toAscii() + " " + line.toAscii(), true);
+    ///    emit newMessage("bncComb: cannot read correction: " + staID.toAscii() + " " + line.toAscii(), true);
     delete newCorr;
     return;
   }
