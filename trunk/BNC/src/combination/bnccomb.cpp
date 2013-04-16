@@ -295,7 +295,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   cmbCorr* newCorr = new cmbCorr();
   newCorr->acName = acName;
   if (!newCorr->readLine(line) == success) {
-    emit newMessage("bncComb: cannot read correction", true);
+    emit newMessage("bncComb: cannot read correction: " + line.toAscii(), true);
     delete newCorr;
     return;
   }
@@ -332,7 +332,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   // Check Modulo Time
   // -----------------
   if (int(newCorr->tClk.gpssec()) % _cmbSampl != 0.0) {
-    emit newMessage("bncComb: correction out of sampling rate "  + newCorr->prn.toAscii(), true);
+    emit newMessage("bncComb: correction out of sampling rate "  + line.toAscii(), true);
     delete newCorr;
     return;
   }
@@ -340,7 +340,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   // Delete old corrections
   // ----------------------
   if (_resTime.valid() && newCorr->tClk <= _resTime) {
-    emit newMessage("bncComb: old correction: " + newCorr->prn.toAscii(), true);
+    emit newMessage("bncComb: old correction: " + line.toAscii(), true);
     delete newCorr;
     return;
   }
@@ -348,7 +348,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   // Check the Ephemeris
   //--------------------
   if (_eph.find(newCorr->prn) == _eph.end()) {
-    emit newMessage("bncComb: eph not found (1) "  + newCorr->prn.toAscii(), true);
+    emit newMessage("bncComb: eph not found (1) "  + line.toAscii(), true);
     delete newCorr;
     return;
   }
@@ -363,7 +363,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
       switchToLastEph(lastEph, newCorr);
     }
     else {
-      emit newMessage("bncComb: eph not found (2) "  + newCorr->prn.toAscii(), true);
+      emit newMessage("bncComb: eph not found (2) "  + line.toAscii(), true);
       delete newCorr;
       return;
     }
