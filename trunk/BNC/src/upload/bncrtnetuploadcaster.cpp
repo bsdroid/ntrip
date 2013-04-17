@@ -34,6 +34,19 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
                                  int PID, int SID, int IOD, int iRow) :
   bncUploadCaster(mountpoint, outHost, outPort, password, iRow, 0) {
 
+  if (!outHost.isEmpty()) {
+    _casterID += outHost;
+  }
+  if (!crdTrafo.isEmpty()) {
+    _casterID += " " + crdTrafo;
+  }
+  if (!sp3FileName.isEmpty()) {
+    _casterID += " " + sp3FileName;
+  }
+  if (!rnxFileName.isEmpty()) {
+    _casterID += " " + rnxFileName;
+  }
+
   _crdTrafo   = crdTrafo;
   _CoM        = CoM;
   _PID        = PID;
@@ -243,7 +256,8 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   in >> hlp >> year >> month >> day >> hour >> min >> sec;
   bncTime epoTime; epoTime.set( year, month, day, hour, min, sec);
 
-  emit(newMessage("decodeRtnetStream: " + lines[0].toAscii(), false));
+  emit(newMessage("bncRtnetUploadCaster (" + _casterID.toAscii() + ") decode " 
+                  + lines[0].toAscii(), false));
 
   struct ClockOrbit co;
   memset(&co, 0, sizeof(co));
