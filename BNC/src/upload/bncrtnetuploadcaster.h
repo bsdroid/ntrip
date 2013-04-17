@@ -38,6 +38,7 @@ class bncRtnetUploadCaster : public bncUploadCaster {
                         QString& outLine);
   void crdTrafo(int GPSWeek, ColumnVector& xyz, double& dc);
 
+  QString        _casterID;
   bncEphUser*    _ephUser;
   QString        _rtnetStreamBuffer;
   QString        _crdTrafo;
