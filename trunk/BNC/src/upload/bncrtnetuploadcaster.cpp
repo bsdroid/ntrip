@@ -258,7 +258,8 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   emit(newMessage("bncRtnetUploadCaster: decode " + 
                   QByteArray(epoTime.datestr().c_str()) + " " +
-                  QByteArray(epoTime.timestr().c_str()) + _casterID.toAscii(), false));
+                  QByteArray(epoTime.timestr().c_str()) + " " + 
+                  _casterID.toAscii(), false));
 
   struct ClockOrbit co;
   memset(&co, 0, sizeof(co));
