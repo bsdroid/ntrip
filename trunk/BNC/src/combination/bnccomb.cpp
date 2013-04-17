@@ -295,7 +295,6 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   cmbCorr* newCorr = new cmbCorr();
   newCorr->acName = acName;
   if (!newCorr->readLine(line) == success) {
-    ///    emit newMessage("bncComb: cannot read correction: " + staID.toAscii() + " " + line.toAscii(), true);
     delete newCorr;
     return;
   }
@@ -332,7 +331,6 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   // Check Modulo Time
   // -----------------
   if (int(newCorr->tClk.gpssec()) % _cmbSampl != 0.0) {
-    emit newMessage("bncComb: correction out of sampling rate "  + staID.toAscii() + " " + line.toAscii(), true);
     delete newCorr;
     return;
   }
@@ -348,7 +346,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   // Check the Ephemeris
   //--------------------
   if (_eph.find(newCorr->prn) == _eph.end()) {
-    emit newMessage("bncComb: eph not found (1) "  + staID.toAscii() + " " + line.toAscii(), true);
+    emit newMessage("bncComb: eph not found "  + newCorr->prn.toAscii(), true);
     delete newCorr;
     return;
   }
@@ -363,7 +361,8 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
       switchToLastEph(lastEph, newCorr);
     }
     else {
-      emit newMessage("bncComb: eph not found (2) "  + staID.toAscii() + " " + line.toAscii(), true);
+      emit newMessage("bncComb: eph not found "  + newCorr->prn.toAscii() + 
+                      QString(" %1").arg(newCorr->iod).toAscii(), true);
       delete newCorr;
       return;
     }
@@ -371,10 +370,11 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Process previous Epoch(s)
   // -------------------------
+  const double waitTime = 1.5 * _cmbSampl;
   QListIterator<bncTime> itTime(_buffer.keys());
   while (itTime.hasNext()) {
     bncTime epoTime = itTime.next();
-    if (epoTime < newCorr->tClk - _cmbSampl) {
+    if (epoTime < newCorr->tClk - waitTime) {
       _resTime = epoTime;
       processEpoch();
     }
