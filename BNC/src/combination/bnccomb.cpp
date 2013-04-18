@@ -370,7 +370,7 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
 
   // Process previous Epoch(s)
   // -------------------------
-  const double waitTime = 1.5 * _cmbSampl;
+  const double waitTime = 1.0 * _cmbSampl;
   QListIterator<bncTime> itTime(_buffer.keys());
   while (itTime.hasNext()) {
     bncTime epoTime = itTime.next();
