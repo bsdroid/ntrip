@@ -517,8 +517,7 @@ void t_bncCore::printGPSEph(gpsephemeris* ep, bool printFile) {
 void t_bncCore::printGlonassEph(glonassephemeris* ep, bool printFile) {
 
   t_ephGlo eph;
-  bool timeChanged;
-  eph.set(ep, timeChanged);
+  eph.set(ep);
 
   QString strV2 = eph.toString(2.11);
   QString strV3 = eph.toString(3.01);

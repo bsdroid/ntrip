@@ -374,7 +374,7 @@ int t_ephGlo::IOD() const {
 
 // Set Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_ephGlo::set(const glonassephemeris* ee, bool& timeChanged) {
+void t_ephGlo::set(const glonassephemeris* ee) {
 
   _receptDateTime = currentDateAndTimeGPS();
 
@@ -386,7 +386,7 @@ void t_ephGlo::set(const glonassephemeris* ee, bool& timeChanged) {
 
   // Check the day once more 
   // -----------------------
-  timeChanged = false;
+  bool timeChanged = false;
   {
     const double secPerDay  = 24 * 3600.0;
     const double secPerWeek = 7 * secPerDay;
