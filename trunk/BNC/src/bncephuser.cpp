@@ -76,24 +76,26 @@ bncEphUser::~bncEphUser() {
 void bncEphUser::slotNewEphGPS(gpsephemeris gpseph) {
   QMutexLocker locker(&_mutex);
 
-  QString prn = QString("G%1").arg(gpseph.satellite, 2, 10, QChar('0'));
+  t_ephGPS* eNew = new t_ephGPS(); eNew->set(&gpseph);
+
+  const QString& prn = eNew->prn();
 
   if (_eph.contains(prn)) {
     t_ephGPS* eLast = static_cast<t_ephGPS*>(_eph.value(prn)->last);
-    bncTime toc(gpseph.GPSweek, gpseph.TOC);
-    if (eLast->TOC() < toc) {
-      delete static_cast<t_ephGPS*>(_eph.value(prn)->prev);
+    if (eNew->isNewerThan(eLast)) {
+      delete _eph.value(prn)->prev;
       _eph.value(prn)->prev = _eph.value(prn)->last;
-      _eph.value(prn)->last = new t_ephGPS();
-      static_cast<t_ephGPS*>(_eph.value(prn)->last)->set(&gpseph);
+      _eph.value(prn)->last = eNew;
+      ephBufferChanged();
+    }
+    else {
+      delete eNew;
     }
   }
   else {
-    t_ephGPS* eLast = new t_ephGPS();
-    eLast->set(&gpseph);
-    _eph.insert(prn, new t_ephPair(eLast));
+    _eph.insert(prn, new t_ephPair(eNew));
+    ephBufferChanged();
   }
-  ephBufferChanged();
 }
 
 // 
@@ -101,40 +103,26 @@ void bncEphUser::slotNewEphGPS(gpsephemeris gpseph) {
 void bncEphUser::slotNewEphGlonass(glonassephemeris gloeph) {
   QMutexLocker locker(&_mutex);
 
-  QString prn = QString("R%1").arg(gloeph.almanac_number, 2, 10, QChar('0'));
+  t_ephGlo* eNew = new t_ephGlo(); eNew->set(&gloeph);
+
+  const QString& prn = eNew->prn();
 
   if (_eph.contains(prn)) {
-    int ww  = gloeph.GPSWeek;
-    int tow = gloeph.GPSTOW; 
-    updatetime(&ww, &tow, gloeph.tb*1000, 0);  // Moscow -> GPS
     t_ephGlo* eLast = static_cast<t_ephGlo*>(_eph.value(prn)->last);
-    bncTime toc(ww, tow);
-    if (eLast->TOC() < toc) {
-      t_ephGlo* ephGlo = new t_ephGlo();
-      bool timeChanged;
-      ephGlo->set(&gloeph, timeChanged);
-      if (timeChanged) {
-        delete ephGlo;
-      }
-      else {
-        delete static_cast<t_ephGlo*>(_eph.value(prn)->prev);
-        _eph.value(prn)->prev = _eph.value(prn)->last;
-        _eph.value(prn)->last = ephGlo;
-      }
+    if (eNew->isNewerThan(eLast)) {
+      delete _eph.value(prn)->prev;
+      _eph.value(prn)->prev = _eph.value(prn)->last;
+      _eph.value(prn)->last = eNew;
+      ephBufferChanged();
+    }
+    else {
+      delete eNew;
     }
   }
   else {
-    t_ephGlo* eLast = new t_ephGlo();
-    bool timeChanged;
-    eLast->set(&gloeph, timeChanged);
-    if (timeChanged) {
-      delete eLast;
-    }
-    else {
-      _eph.insert(prn, new t_ephPair(eLast));
-    }
+    _eph.insert(prn, new t_ephPair(eNew));
+    ephBufferChanged();
   }
-  ephBufferChanged();
 }
 
 // 
