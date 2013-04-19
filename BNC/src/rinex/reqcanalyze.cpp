@@ -338,7 +338,7 @@ t_irc t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) {
   if (L1 != 0) {
     newObs->_hasL1 = true;
   }
-  double L2 = obs.measdata("L2", 3.0);
+  double L2 = obs.satSys == 'E' ? obs.measdata("L5", 3.0) : obs.measdata("L2", 3.0);;
   if (L2 != 0) {
     newObs->_hasL2 = true;
   }
@@ -353,7 +353,7 @@ t_irc t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) {
   // ----------------------
   if (L1 != 0.0 && L2 != 0.0) {
     double f1 = t_CST::f1(obs.satSys, obs.slotNum);
-    double f2 = t_CST::f2(obs.satSys, obs.slotNum);
+    double f2 = obs.satSys == 'E' ? t_CST::freq5 : t_CST::f2(obs.satSys, obs.slotNum);
 
     L1 = L1 * t_CST::c / f1;
     L2 = L2 * t_CST::c / f2;
@@ -363,7 +363,7 @@ t_irc t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) {
       newObs->_MP1 = P1 - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
       okFlag = true;
     }
-    double P2 = obs.measdata("C2", 3.0);
+    double P2 = obs.satSys == 'E' ? obs.measdata("C5", 3.0) : obs.measdata("C2", 3.0);
     if (P2 != 0.0) {
       newObs->_MP2 = P2 - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
       okFlag = true;
@@ -389,7 +389,7 @@ t_irc t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) {
       okFlag = true;
     }
   }
-  double S2 = obs.measdata("S2", 3.0);
+  double S2 = obs.satSys == 'E' ? obs.measdata("S5", 3.0) : obs.measdata("S2", 3.0);
   if (S2 != 0.0) {
     newObs->_SNR2 = floor(S2/6);
     if (newObs->_SNR2 > 9.0) {
