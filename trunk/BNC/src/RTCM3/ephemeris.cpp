@@ -579,7 +579,8 @@ void t_ephGal::set(const galileoephemeris* ee) {
   _Cus      = ee->Cus;
   _sqrt_A   = ee->sqrt_A;
 
-  _TOEsec   = ee->TOE;
+  _TOEsec   = _TOC.gpssec();
+  ////  _TOEsec   = ee->TOE;  //// TODO: 
   _Cic      = ee->Cic;
   _OMEGA0   = ee->OMEGA0;
   _Cis      = ee->Cis;
