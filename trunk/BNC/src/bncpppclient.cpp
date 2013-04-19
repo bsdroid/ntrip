@@ -318,7 +318,7 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
 
   if (_eph.contains(prn)) {
 
-    if (_opt->pppMode) {
+    if (_opt->pppMode && prn[0] != 'E') {
       if (_corr.contains(prn)) {
         t_corr* cc = _corr.value(prn);
         if (cc->ready() && tt - cc->tClk < MAXAGE) {
