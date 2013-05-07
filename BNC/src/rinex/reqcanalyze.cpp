@@ -676,8 +676,8 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
       _availDataMap[prn]._eleDeg << 90.0 - zenDeg;
     }
 
-    // Signal-to-Noise Ration Plot Data
-    // --------------------------------
+    // Signal-to-Noise Ratio Plot Data
+    // -------------------------------
     if ( (prn[0] == 'G' && plotGPS           ) ||
          (prn[0] == 'R' && plotGlo && slotSet) ||
          (prn[0] == 'E' && plotGal           ) ) {
