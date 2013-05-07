@@ -1073,6 +1073,14 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _reqcPlotDirLineEdit->setMinimumWidth(15*ww);
   _reqcPlotDirLineEdit->setMaximumWidth(15*ww);
 
+  _reqcSkyPlotSystems = new QComboBox();
+  _reqcSkyPlotSystems->setEditable(false);
+  _reqcSkyPlotSystems->addItems(QString("ALL,GPS,GLONASS,Galileo").split(","));
+  ik = _reqcSkyPlotSystems->findText(settings.value("reqcSkyPlotSystems").toString());
+  if (ik != -1) {
+    _reqcSkyPlotSystems->setCurrentIndex(ik);
+  }
+
   ir = 0;
   reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 20);
   ++ir;
@@ -1098,6 +1106,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   ++ir;
   reqcLayout->addWidget(new QLabel("Directory for plots"),       ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcPlotDirLineEdit,                    ir, 1, Qt::AlignRight);
+  reqcLayout->addWidget(_reqcSkyPlotSystems,                     ir, 2, Qt::AlignRight);
   ++ir;
   reqcLayout->addWidget(new QLabel(""), ir, 1);
   reqcLayout->setRowStretch(ir, 999);
@@ -1865,6 +1874,7 @@ void bncWindow::saveOptions() {
   settings.setValue("reqcOutNavFile", _reqcOutNavLineEdit->text());
   settings.setValue("reqcOutLogFile", _reqcOutLogLineEdit->text());
   settings.setValue("reqcPlotDir",    _reqcPlotDirLineEdit->text());
+  settings.setValue("reqcSkyPlotSystems", _reqcSkyPlotSystems->currentText());
 // Combine Corrections
   if (!combineStreams.isEmpty()) {
     settings.setValue("combineStreams", combineStreams);
@@ -2494,6 +2504,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable &&  enable10, _reqcOutNavLineEdit);
     enableWidget(enable,              _reqcOutLogLineEdit);
     enableWidget(enable && !enable10, _reqcPlotDirLineEdit);
+    enableWidget(enable && !enable10, _reqcSkyPlotSystems);
   }
 
   enableStartStop();
