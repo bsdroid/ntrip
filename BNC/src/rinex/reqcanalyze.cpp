@@ -678,9 +678,9 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 
     // Signal-to-Noise Ratio Plot Data
     // -------------------------------
-    if ( (prn[0] == 'G' && plotGPS           ) ||
-         (prn[0] == 'R' && plotGlo && slotSet) ||
-         (prn[0] == 'E' && plotGal           ) ) {
+    if ( (prn[0] == 'G' && plotGPS) ||
+         (prn[0] == 'R' && plotGlo) ||
+         (prn[0] == 'E' && plotGal) ) {
       (*dataSNR1) << (new t_polarPoint(aziDeg, zenDeg, minSNR1));
       (*dataSNR2) << (new t_polarPoint(aziDeg, zenDeg, minSNR2));
     }
