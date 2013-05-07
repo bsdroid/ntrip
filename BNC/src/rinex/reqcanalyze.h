@@ -126,6 +126,7 @@ Q_OBJECT
       _MP2      = 0.0;
       _SNR1     = 0.0;
       _SNR2     = 0.0;
+      _slotSet  = false;
     }
     int    _GPSWeek;
     double _GPSWeeks;
@@ -137,6 +138,7 @@ Q_OBJECT
     double _MP2;
     double _SNR1;
     double _SNR2;
+    bool   _slotSet;
   };
 
   class t_allObs {

@@ -240,17 +240,29 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         t_obs obs;
         t_postProcessing::setObsFromRnx(obsFile, _currEpo, rnxSat, obs);
   
-        if (obs.satSys == 'R') {
-          // TODO: set channel number
-        }
-  
         QString prn = QString("%1%2").arg(obs.satSys)
                                      .arg(obs.satNum, 2, 10, QChar('0'));
+  
+        t_ephGlo* ephGlo = 0;
+        if (obs.satSys == 'R') {
+          for (int ie = 0; ie < _ephs.size(); ie++) {
+            if (_ephs[ie]->prn() == prn) {
+              ephGlo = dynamic_cast<t_ephGlo*>(_ephs[ie]);
+              break;
+            }
+          }
+          if (ephGlo) {
+            obs.slotNum = ephGlo->slotNum();
+          }
+        }
   
         t_irc irc = _allObsMap[prn].addObs(obs);
 
         if (irc == success) {
-          const t_oneObs* newObs = _allObsMap[prn]._oneObsVec.last();
+          t_oneObs* newObs = _allObsMap[prn]._oneObsVec.last();
+          if (ephGlo) {
+            newObs->_slotSet = true;
+          }
           if (newObs->_hasL1 && newObs->_hasL2) {
             _obsStat._prnStat[prn]._numObs += 1;
           }
@@ -484,9 +496,13 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 
     // Loop over all Epochs within one Chunk of Data
     // ---------------------------------------------
+    bool slotSet = false;
     for (int ii = 0; ii < numEpo; ii++) {
       int iEpo = chunkStart + ii;
       const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
+      if (oneObs->_slotSet) {
+        slotSet = true;
+      }
 
       currTime.set(oneObs->_GPSWeek, oneObs->_GPSWeeks);
 
@@ -571,7 +587,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 
     // Compute the Multipath
     // ---------------------
-    if (prn[0] != 'R') { // TODO
+    if (prn[0] != 'R' || slotSet) {
       bool slipMP = false;
       meanMP1 /= numEpo;
       meanMP2 /= numEpo;
