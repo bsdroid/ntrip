@@ -464,6 +464,26 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 
   t_allObs& allObs = _allObsMap[prn];
 
+  bncSettings settings;
+  QString reqSkyPlotSystems = settings.value("reqcSkyPlotSystems").toString();
+  bool plotGPS = false;
+  bool plotGlo = false;
+  bool plotGal = false;
+  if      (reqSkyPlotSystems == "GPS") {
+    plotGPS = true;
+  }
+  else if (reqSkyPlotSystems == "GLONASS") {
+    plotGlo = true;
+  }
+  else if (reqSkyPlotSystems == "Galileo") {
+    plotGal = true;
+  }
+  else {
+    plotGPS = true;
+    plotGlo = true;
+    plotGal = true;
+  }
+
   // Loop over all Chunks of Data
   // ----------------------------
   bool slipFound = false;
@@ -587,7 +607,9 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 
     // Compute the Multipath
     // ---------------------
-    if (prn[0] != 'R' || slotSet) {
+    if ( (prn[0] == 'G' && plotGPS           ) ||
+         (prn[0] == 'R' && plotGlo && slotSet) ||
+         (prn[0] == 'E' && plotGal           ) ) {
       bool slipMP = false;
       meanMP1 /= numEpo;
       meanMP2 /= numEpo;
@@ -656,8 +678,12 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 
     // Signal-to-Noise Ration Plot Data
     // --------------------------------
-    (*dataSNR1) << (new t_polarPoint(aziDeg, zenDeg, minSNR1));
-    (*dataSNR2) << (new t_polarPoint(aziDeg, zenDeg, minSNR2));
+    if ( (prn[0] == 'G' && plotGPS           ) ||
+         (prn[0] == 'R' && plotGlo && slotSet) ||
+         (prn[0] == 'E' && plotGal           ) ) {
+      (*dataSNR1) << (new t_polarPoint(aziDeg, zenDeg, minSNR1));
+      (*dataSNR2) << (new t_polarPoint(aziDeg, zenDeg, minSNR2));
+    }
   }
 }
 
