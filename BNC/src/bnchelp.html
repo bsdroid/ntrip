@@ -717,7 +717,7 @@ Besides stream conversion from RTCM to RINEX, BNC allows editing RINEX files or 
 <li>File <u>Q</b></u>uality <u>C</u>heck</li>
 <ul>
 <li>Multipath analysis sky plots (see Estey and Meertens 1999)</li>
-<li>Signal-to-Noise sky plots</li>
+<li>Signal-to-noise ratio sky plots</li>
 <li>Satellite availability plots</li>
 <li>Satellite elevation plots</li>
 <li>PDOP plots</li>
@@ -736,7 +736,7 @@ and hence follows UNAVCO's famous 'TEQC' program. The remarkable thing about BNC
 
 <p><a name="reqcgnss"><h4>3.6.2 Sky Plots for - mandatory if 'Action' is set to 'Analyze'</h4></p>
 
-<p>Once the 'Analyze' action is selected, you have to specify the GNSS system(s) whoes observations you want to analyze for multipath and Signal-to-Noise sky plots. Possible options are 'ALL', 'GPS', 'GLONASS', and 'Galileo'. Default is 'ALL', meaning that observations from all GNSS will be analyzed.
+<p>Once the 'Analyze' action is selected, you have to specify the GNSS system(s) whoes observations you want to analyze for multipath and signal-to-noise ratio sky plots. Possible options are 'ALL', 'GPS', 'GLONASS', and 'Galileo'. Default is 'ALL', meaning that observations from all GNSS will be analyzed.
 </p>
 
 <p><a name="reqcedit"><h4>3.6.3 Set Edit Options - mandatory if 'Edit/Concatenate' is set</h4></p>
@@ -2771,7 +2771,7 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 
 <tr>
 <td>Sep 2012 &nbsp;</td><td>Version 2.7 &nbsp;</td>
-<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting BeiDou and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX QC through multipath analysis sky plot<br> [Add] RINEX QC through signal-to-noise sky plot<br> [Add] RINEX QC through satellite availability plot<br> [Add] RINEX QC through satellite elevation plot<br> [Add RINEX QC through PDOP plot<br> [Bug] Short periodic outages in PPP time series when operated when 'Sync Corr' set to zero<br> |Add] Log observation types contained in RTCM Version 3 MSM streams<br> [Add] Reading RINEX v3 observation type header records from RINEX skeleton files<br> [Add] Logfile for RINEX file editing and concatenation<br>[Add] Save PNG plot files on disk<br> [Mod] Plot stream distribution map from NTRIP Broadcaster source-table<br> [Add] Plot stream distribution map from selected sources<br> [Add] Version 2.7 published</td>
+<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting BeiDou and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX QC through multipath analysis sky plot<br> [Add] RINEX QC through signal-to-noise ratio sky plot<br> [Add] RINEX QC through satellite availability plot<br> [Add] RINEX QC through satellite elevation plot<br> [Add RINEX QC through PDOP plot<br> [Bug] Short periodic outages in PPP time series when operated when 'Sync Corr' set to zero<br> |Add] Log observation types contained in RTCM Version 3 MSM streams<br> [Add] Reading RINEX v3 observation type header records from RINEX skeleton files<br> [Add] Logfile for RINEX file editing and concatenation<br>[Add] Save PNG plot files on disk<br> [Mod] Plot stream distribution map from NTRIP Broadcaster source-table<br> [Add] Plot stream distribution map from selected sources<br> [Add] Version 2.7 published</td>
 </tr>
 
 <tr>
@@ -2898,17 +2898,17 @@ RTCM Version 3 has been developed as a more efficient alternative to RTCM Versio
 RTCM Version 3 defines a number of message types. Messages that may be of interest here are:
 <ul>
 <li>Type 1001, GPS L1 code and phase.</li>
-<li>Type 1002, GPS L1 code and phase and ambiguities and carrier to noise ratio.</li>
+<li>Type 1002, GPS L1 code and phase and ambiguities and carrier-to-noise ratio.</li>
 <li>Type 1003, GPS L1 and L2 code and phase.</li>
-<li>Type 1004, GPS L1 and L2 code and phase and ambiguities and carrier to noise ratio.</li>
+<li>Type 1004, GPS L1 and L2 code and phase and ambiguities and carrier-to-noise ratio.</li>
 <li>Type 1005, Station coordinates XYZ for antenna reference point.</li>
 <li>Type 1006, Station coordinates XYZ for antenna reference point and antenna height.</li>
 <li>Type 1007, Antenna descriptor and ID.</li>
 <li>Type 1008, Antenna serial number.</li>
 <li>Type 1009, GLONASS L1 code and phase.</li>
-<li>Type 1010, GLONASS L1 code and phase and ambiguities and carrier to noise ratio.</li>
+<li>Type 1010, GLONASS L1 code and phase and ambiguities and carrier-to-noise ratio.</li>
 <li>Type 1011, GLONASS L1 and L2 code and phase.</li>
-<li>Type 1012, GLONASS L1 and L2 code and phase and ambiguities and carrier to noise ratio.</li>
+<li>Type 1012, GLONASS L1 and L2 code and phase and ambiguities and carrier-to-noise ratio.</li>
 <li>Type 1013, Modified julian date, leap second, configured message types and interval.</li>
 <li>Type 1014 and 1017, Network RTK (MAK) messages.</li>
 <li>Type 1019, GPS ephemeris.</li>
