@@ -62,6 +62,8 @@ class t_pppOpt {
   bool    estTropo;
   bool    useGlonass;
   bool    useGalileo;
+  double  sigGlonassOffset0;
+  double  sigGlonassOffsetP;
   double  sigGalileoOffset0;
   double  sigGalileoOffsetP;
   double  sigAmb0;

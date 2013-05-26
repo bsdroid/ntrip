@@ -40,7 +40,8 @@ class bncPPPclient;
 
 class bncParam {
  public:
-  enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK, TROPO, AMB_L3, GALILEO_OFFSET};
+  enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK, TROPO, AMB_L3, 
+                GLONASS_OFFSET, GALILEO_OFFSET};
   bncParam(parType typeIn, int indexIn, const QString& prn);
   ~bncParam();
   double partial(t_satData* satData, bool phase);
@@ -69,6 +70,15 @@ class bncModel {
     for (int ii = 0; ii < _params.size(); ++ii) {
       bncParam* pp = _params[ii];
       if (pp->type == bncParam::TROPO) {
+        return pp->xx;
+      }
+    }
+    return 0.0;
+  }
+  double Glonass_offset() const {
+    for (int ii = 0; ii < _params.size(); ++ii) {
+      bncParam* pp = _params[ii];
+      if (pp->type == bncParam::GLONASS_OFFSET) {
         return pp->xx;
       }
     }

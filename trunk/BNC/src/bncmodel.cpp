@@ -109,6 +109,17 @@ double bncParam::partial(t_satData* satData, bool phase) {
     return 1.0 / sin(satData->eleSat); 
   }
 
+  // Glonass Offset
+  // --------------
+  else if (type == GLONASS_OFFSET) {
+    if (satData->prn[0] == 'R') {
+      return 1.0;
+    }
+    else {
+      return 0.0;
+    }
+  }
+
   // Galileo Offset
   // --------------
   else if (type == GALILEO_OFFSET) {
@@ -227,6 +238,9 @@ void bncModel::reset() {
   if (_opt->estTropo) {
     _params.push_back(new bncParam(bncParam::TROPO, ++nextPar, ""));
   }
+  if (_opt->useGlonass) {
+    _params.push_back(new bncParam(bncParam::GLONASS_OFFSET, ++nextPar, ""));
+  }
   if (_opt->useGalileo) {
     _params.push_back(new bncParam(bncParam::GALILEO_OFFSET, ++nextPar, ""));
   }
@@ -245,6 +259,9 @@ void bncModel::reset() {
     else if (pp->type == bncParam::TROPO) {
       _QQ(iPar,iPar) = _opt->sigTrp0 * _opt->sigTrp0; 
       pp->xx = lastTrp;
+    }
+    else if (pp->type == bncParam::GLONASS_OFFSET) {
+      _QQ(iPar,iPar) = _opt->sigGlonassOffset0 * _opt->sigGlonassOffset0; 
     }
     else if (pp->type == bncParam::GALILEO_OFFSET) {
       _QQ(iPar,iPar) = _opt->sigGalileoOffset0 * _opt->sigGalileoOffset0; 
@@ -333,7 +350,10 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
   }
 
   double offset = 0.0;
-  if (satData->prn[0] == 'E') {
+  if      (satData->prn[0] == 'R') {
+    offset = Glonass_offset();
+  }
+  else if (satData->prn[0] == 'E') {
     offset = Galileo_offset();
   }
 
@@ -482,6 +502,12 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
         _QQ(iPar,iPar) += _opt->sigTrpP * _opt->sigTrpP;
       }
     
+      // Glonass Offset
+      // --------------
+      else if (pp->type == bncParam::GLONASS_OFFSET) {
+        _QQ(iPar,iPar) += _opt->sigGlonassOffsetP * _opt->sigGlonassOffsetP;
+      }
+
       // Galileo Offset
       // --------------
       else if (pp->type == bncParam::GALILEO_OFFSET) {
@@ -620,8 +646,13 @@ t_irc bncModel::update(t_epoData* epoData) {
            << sqrt(_QQ(par->index,par->index));
       newPos->xnt[6] = aprTrp + par->xx;
     }
+    else if (par->type == bncParam::GLONASS_OFFSET) {
+      strB << "\n    offGlo  = " << setw(10) << setprecision(3) << par->xx 
+           << " +- " << setw(6) << setprecision(3) 
+           << sqrt(_QQ(par->index,par->index));
+    }
     else if (par->type == bncParam::GALILEO_OFFSET) {
-      strB << "\n    offset  = " << setw(10) << setprecision(3) << par->xx 
+      strB << "\n    offGal  = " << setw(10) << setprecision(3) << par->xx 
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
     }
