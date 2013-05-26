@@ -106,6 +106,8 @@ t_pppOpt::t_pppOpt() {
   if (!refCrdSet()) quickStart = 0.0;
   if (!pppMode)     corrSync   = 0.0;
 
+  sigGlonassOffset0 = 1000.0;
+  sigGlonassOffsetP =    0.0;
   sigGalileoOffset0 = 1000.0;
   sigGalileoOffsetP =    0.0;
   sigClk0           = 1000.0;
