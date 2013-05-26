@@ -505,7 +505,17 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
       // Glonass Offset
       // --------------
       else if (pp->type == bncParam::GLONASS_OFFSET) {
-        _QQ(iPar,iPar) += _opt->sigGlonassOffsetP * _opt->sigGlonassOffsetP;
+        bool epoSpec = true;
+        if (epoSpec) {
+          pp->xx = 0.0;
+          for (int jj = 1; jj <= _params.size(); jj++) {
+            _QQ(iPar, jj) = 0.0;
+          }
+          _QQ(iPar,iPar) = _opt->sigGlonassOffset0 * _opt->sigGlonassOffset0;
+        }
+        else {
+          _QQ(iPar,iPar) += _opt->sigGlonassOffsetP * _opt->sigGlonassOffsetP;
+        }
       }
 
       // Galileo Offset
