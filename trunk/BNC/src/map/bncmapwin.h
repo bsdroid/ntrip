@@ -38,10 +38,11 @@ class bncMapWin : public QDialog {
  signals:
 
  public slots:
-  void slotGotoLocation();
+  void slotGotoLocation(double lat, double lon);
 
  private slots:
   void slotInitMap(bool isOk);
+  void slotTest();
 
  private:
   void loadHtmlPage();
