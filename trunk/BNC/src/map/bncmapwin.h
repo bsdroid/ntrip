@@ -38,6 +38,7 @@ class bncMapWin : public QDialog {
  signals:
 
  public slots:
+  void slotGotoLocation();
 
  private slots:
   void slotInitMap(bool isOk);
@@ -45,6 +46,8 @@ class bncMapWin : public QDialog {
  private:
   void loadHtmlPage();
   QWebView* _webView;
+  double    _currLat;
+  double    _currLon;
 };
 
 #endif

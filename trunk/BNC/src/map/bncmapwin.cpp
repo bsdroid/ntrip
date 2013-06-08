@@ -62,6 +62,12 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
   setLayout(dlgLayout);
   resize(60*ww, 60*ww);
   show();
+
+  _currLat = 50.090956; // BKG
+  _currLon =  8.663283; // BKG
+  //// beg test
+  slotGotoLocation();
+  //// end test
 }
 
 // Destructor
@@ -91,16 +97,18 @@ void bncMapWin::slotInitMap(bool isOk) {
   if (!isOk) {
     return;
   }
-  double lat = 50.090956; // BKG
-  double lon =  8.663283; // BKG
-  QString location = QString("%1, %2").arg(lat,0,'f',8).arg(lon,0,'f',8);
+  QString location = QString("%1, %2").arg(_currLat,0,'f',8).arg(_currLon,0,'f',8);
   _webView->page()->mainFrame()->evaluateJavaScript(QString("initialize( %1 )").arg(location));
+}
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncMapWin::slotGotoLocation() {
+  QString location = QString("%1, %2").arg(_currLat,0,'f',8).arg(_currLon,0,'f',8);
+  _webView->page()->mainFrame()->evaluateJavaScript(QString("gotoLocation( %1 )").arg(location));
   //// beg test
-  for (unsigned ii = 1; ii < 100; ii++) {
-    double latHlp = lat + ii / 10000.0;
-    double lonHlp = lon + ii / 10000.0;
-    QString locationHlp = QString("%1, %2").arg(latHlp,0,'f',8).arg(lonHlp,0,'f',8);
-  }
+  _currLat += 0.0001;
+  _currLon += 0.0001;
+  QTimer::singleShot(1000, this, SLOT(slotGotoLocation()));
   //// end test
 }
