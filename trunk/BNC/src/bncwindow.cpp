@@ -97,6 +97,8 @@ bncWindow::bncWindow() {
   _pppSPPComboBox     = 0; // necessary for enableStartStop()
   _reqcActionComboBox = 0; // necessary for enableStartStop()
 
+  _mapWin = 0;
+
   int ww = QFontMetrics(this->font()).width('w');
   
   static const QStringList labels = QString("account, Streams:   resource loader / mountpoint, decoder, lat, long, nmea, ntrip, bytes").split(",");
@@ -2851,6 +2853,8 @@ void bncWindow::slotMapMountPoints() {
 // Show Map
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotMapPPP() {
-  bncMapWin* mapWin = new bncMapWin(this);
-  mapWin->show();
+  if (!_mapWin) {
+    _mapWin = new bncMapWin(this);
+  }
+  _mapWin->show();
 }
