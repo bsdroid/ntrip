@@ -26,7 +26,7 @@
 #define BNCMAPWIN_H
 
 #include <QtGui>
-#include <QWebView>
+#include <QtWebKit>
 
 class bncMapWin : public QDialog {
  Q_OBJECT
@@ -38,6 +38,9 @@ class bncMapWin : public QDialog {
  signals:
 
  public slots:
+
+ private slots:
+  void slotInitMap(bool isOk);
 
  private:
   void loadHtmlPage();
