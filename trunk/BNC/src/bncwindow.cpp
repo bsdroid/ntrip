@@ -63,6 +63,7 @@
 #include "qtfilechooser.h"
 #include "reqcdlg.h"
 #include "bncmap.h"
+#include "map/bncmapwin.h"
 #ifdef USE_POSTPROCESSING
 #  include "rinex/bncpostprocess.h"
 #  include "rinex/reqcedit.h"
@@ -134,8 +135,11 @@ bncWindow::bncWindow() {
   connect(_actDeleteMountPoints, SIGNAL(triggered()), SLOT(slotDeleteMountPoints()));
   _actDeleteMountPoints->setEnabled(false);
 
-  _actMap = new QAction(tr("&Map"),this);
-  connect(_actMap, SIGNAL(triggered()), SLOT(slotMap()));
+  _actMapMountPoints = new QAction(tr("&Map (MP)"),this);
+  connect(_actMapMountPoints, SIGNAL(triggered()), SLOT(slotMapMountPoints()));
+
+  _actMapPPP = new QAction(tr("&Map (PPP)"),this);
+  connect(_actMapPPP, SIGNAL(triggered()), SLOT(slotMapPPP()));
 
   _actStart = new QAction(tr("Sta&rt"),this);
   connect(_actStart, SIGNAL(triggered()), SLOT(slotStart()));
@@ -1438,7 +1442,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   _actDeleteMountPoints->setWhatsThis(tr("<p>Delete stream(s) from selection presented in the 'Streams' canvas.</p>"));
   _actAddMountPoints->setWhatsThis(tr("<p>Add stream(s) to selection presented in the 'Streams' canvas.</p>"));
-  _actMap->setWhatsThis(tr("<p> Draw distribution map of stream selection presented in the 'Streams' canvas. Use the mouse to zoom in or out.</p><p>Left button: Draw rectangle to zoom in.<br>Right button: Zoom out.<br>Middle button: Zoom back.</p>")); 
+  _actMapMountPoints->setWhatsThis(tr("<p> Draw distribution map of stream selection presented in the 'Streams' canvas. Use the mouse to zoom in or out.</p><p>Left button: Draw rectangle to zoom in.<br>Right button: Zoom out.<br>Middle button: Zoom back.</p>")); 
 
   _actStart->setWhatsThis(tr("<p> Start running BNC.</p>"));
   _actStop->setWhatsThis(tr("<p> Stop running BNC.</p>"));
@@ -2194,7 +2198,8 @@ void bncWindow::AddToolbar() {
   toolBar->setMovable(false);
   toolBar->addAction(_actAddMountPoints);
   toolBar->addAction(_actDeleteMountPoints);
-  toolBar->addAction(_actMap);
+  toolBar->addAction(_actMapMountPoints);
+  toolBar->addAction(_actMapPPP);
   toolBar->addAction(_actStart);
   toolBar->addAction(_actStop);
   toolBar->addWidget(new QLabel("                                           "));
@@ -2823,7 +2828,7 @@ void bncWindow::enableStartStop() {
 
 // Show Map
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotMap() {
+void bncWindow::slotMapMountPoints() {
   saveOptions();
   t_bncMap* bncMap = new t_bncMap(this);
   bncMap->setMinimumSize(800, 600);
@@ -2841,4 +2846,11 @@ void bncWindow::slotMap() {
   }
 
   bncMap->show();
+}
+
+// Show Map
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotMapPPP() {
+  bncMapWin* mapWin = new bncMapWin(this);
+  mapWin->show();
 }
