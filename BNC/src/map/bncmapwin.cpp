@@ -91,6 +91,14 @@ void bncMapWin::slotInitMap(bool isOk) {
   if (!isOk) {
     return;
   }
-  QString location("50.090956, 8.663283"); // BKG
+  double lat = 50.090956; // BKG
+  double lon =  8.663283; // BKG
+  QString location = QString("%1, %2").arg(lat).arg(lon);
   _webView->page()->mainFrame()->evaluateJavaScript(QString("initialize( %1 )").arg(location));
+
+  //// beg test
+  for (unsigned ii = 1; ii < 100; ii++) {
+
+  }
+  //// end test
 }
