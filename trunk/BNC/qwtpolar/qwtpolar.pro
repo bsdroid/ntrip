@@ -2,6 +2,8 @@
 TEMPLATE = lib
 TARGET   = qwtpolar
 CONFIG  += qt qwt staticlib
+CONFIG -= debug
+CONFIG += release
 DEFINES += QWT_POLAR_NO_SVG
 
 INCLUDEPATH += ../qwt
