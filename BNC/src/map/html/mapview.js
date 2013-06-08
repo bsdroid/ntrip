@@ -16,7 +16,7 @@ function initialize(lat, lon) {
   marker = new google.maps.Marker({
     map:       map,
     position:  new google.maps.LatLng(lat, lon),
-    //  icon: jsonObj.icon
+    // icon:   "qrc:///map/html/crosshair.png"
   });
 }
 
