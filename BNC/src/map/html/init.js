@@ -8,7 +8,7 @@ function initialize(x, y)
 {
     var myOptions = {
         center: new google.maps.LatLng(x, y),
-        zoom: 8,
+        zoom: 17,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         panControl: true
     };
