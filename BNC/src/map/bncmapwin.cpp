@@ -75,6 +75,7 @@ void bncMapWin::loadHtmlPage() {
 
   QFile htmlFile(":/map/html/index.html");
   if (!htmlFile.open(QFile::ReadOnly)) {
+    qDebug() << "bncMapWin:: cannot open index.html";
     return;
   }
 
@@ -87,10 +88,9 @@ void bncMapWin::loadHtmlPage() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncMapWin::slotInitMap(bool isOk) {
-  qDebug() << "slotInitMap";
   if (!isOk) {
     return;
   }
-  QString location("-34.397, 150.644");
+  QString location("50.090956, 8.663283"); // BKG
   _webView->page()->mainFrame()->evaluateJavaScript(QString("initialize( %1 )").arg(location));
 }
