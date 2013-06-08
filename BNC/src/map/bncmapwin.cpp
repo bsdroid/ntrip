@@ -62,14 +62,15 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
 
   // Test
   // ----
-  QPushButton* testButton = new QPushButton(tr("Test"));
-  testButton->setMaximumWidth(10*ww);
-  connect(testButton,  SIGNAL(clicked()), this, SLOT(slotTest()));
+  _mode = mode_ppp;
+  _testButton = new QPushButton(tr("Start Test"));
+  _testButton->setMaximumWidth(10*ww);
+  connect(_testButton,  SIGNAL(clicked()), this, SLOT(slotTest()));
 
   // Layout
   // ------
   QHBoxLayout* buttonLayout = new QHBoxLayout;
-  buttonLayout->addWidget(testButton);
+  buttonLayout->addWidget(_testButton);
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   mainLayout->addWidget(_webView);
@@ -124,8 +125,23 @@ void bncMapWin::slotGotoLocation(double lat, double lon) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncMapWin::slotTest() {
-  _currLat += 0.00001;
-  _currLon += 0.00001;
-  slotGotoLocation(_currLat, _currLon);
-  QTimer::singleShot(100, this, SLOT(slotTest()));
+
+  if (sender() == _testButton) {
+    if (_mode == mode_ppp) {
+      _mode = mode_test;
+      _testButton->setText(tr("Stop Test"));
+    }
+    else {
+      _mode = mode_ppp;
+      _testButton->setText(tr("Start Test"));
+      return;
+    }
+  }
+   
+  if (_mode == mode_test) {
+    _currLat += 0.00001;
+    _currLon += 0.00001;
+    slotGotoLocation(_currLat, _currLon);
+    QTimer::singleShot(100, this, SLOT(slotTest()));
+  }
 }
