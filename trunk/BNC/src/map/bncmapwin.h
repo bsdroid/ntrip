@@ -40,6 +40,7 @@ class bncMapWin : public QDialog {
  public slots:
 
  private:
+  void loadHtmlPage();
   QWebView* _webView;
 };
 

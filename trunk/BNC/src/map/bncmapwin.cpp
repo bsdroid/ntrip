@@ -49,7 +49,9 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
   setWindowTitle("Map View");
 
   _webView = new QWebView(this);
-  _webView->load(QUrl("http://igs.bkg.bund.de/ntrip/ppp#Scene6"));
+  ///  _webView->load(QUrl("http://igs.bkg.bund.de/ntrip/ppp#Scene6"));
+  loadHtmlPage();
+
   _webView->show();  
 
   QVBoxLayout* dlgLayout = new QVBoxLayout;
@@ -63,5 +65,20 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncMapWin::~bncMapWin() {
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncMapWin::loadHtmlPage() {
+
+  QFile htmlFile(":/map/html/index.html");
+  if (!htmlFile.open(QFile::ReadOnly)) {
+    return;
+  }
+
+  QTextStream stream(&htmlFile);
+  QString html = stream.readAll();
+
+  _webView->setHtml(html);
 }
 
