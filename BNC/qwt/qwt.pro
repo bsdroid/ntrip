@@ -4,6 +4,9 @@ TEMPLATE  = lib
 TARGET    = qwt
 CONFIG   += staticlib
 
+CONFIG -= debug
+CONFIG += release
+
 ###DEFINES += QWT_NO_SVG
 QT += svg
 
