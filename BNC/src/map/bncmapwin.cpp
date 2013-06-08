@@ -107,8 +107,8 @@ void bncMapWin::slotGotoLocation() {
   QString location = QString("%1, %2").arg(_currLat,0,'f',8).arg(_currLon,0,'f',8);
   _webView->page()->mainFrame()->evaluateJavaScript(QString("gotoLocation( %1 )").arg(location));
   //// beg test
-  _currLat += 0.0001;
-  _currLon += 0.0001;
-  QTimer::singleShot(1000, this, SLOT(slotGotoLocation()));
+  _currLat += 0.00001;
+  _currLon += 0.00001;
+  QTimer::singleShot(100, this, SLOT(slotGotoLocation()));
   //// end test
 }
