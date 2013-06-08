@@ -5,7 +5,7 @@ win32:DEFINES += _TTY_WIN_
 
 RESOURCES += bnc.qrc
 
-QT += svg
+QT += svg webkit
 
 unix:QMAKE_CFLAGS_RELEASE   -= -O2
 unix:QMAKE_CXXFLAGS_RELEASE -= -O2
@@ -58,7 +58,8 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           RTCM3/RTCM3coDecoder.h                                      \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.h                    \
           RTCM3/ephemeris.h RTCM3/timeutils.h                         \
-          GPSS/gpssDecoder.h GPSS/hassDecoder.h
+          GPSS/gpssDecoder.h GPSS/hassDecoder.h                       \
+          map/bncmapwin.h
 
 HEADERS       += serial/qextserialbase.h serial/qextserialport.h
 unix:HEADERS  += serial/posix_qextserialport.h
@@ -87,7 +88,8 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           RTCM3/RTCM3coDecoder.cpp                                    \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.c                    \
           RTCM3/ephemeris.cpp RTCM3/timeutils.cpp                     \
-          GPSS/gpssDecoder.cpp GPSS/hassDecoder.cpp
+          GPSS/gpssDecoder.cpp GPSS/hassDecoder.cpp                   \
+          map/bncmapwin.cpp
 
 SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp
 unix:SOURCES  += serial/posix_qextserialport.cpp
