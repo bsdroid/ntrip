@@ -75,7 +75,8 @@ class bncWindow : public QMainWindow {
     void slotFontSel();
     void slotSaveOptions();
     void slotAddMountPoints();
-    void slotMap();
+    void slotMapMountPoints();
+    void slotMapPPP();
     void slotStart();
     void slotFinishedPostProcessingPPP();
     void slotFinishedPostProcessingReqc();
@@ -115,7 +116,8 @@ class bncWindow : public QMainWindow {
     QAction*   _actFontSel;
     QAction*   _actSaveOpt;
     QAction*   _actQuit; 
-    QAction*   _actMap;
+    QAction*   _actMapMountPoints;
+    QAction*   _actMapPPP;
     QAction*   _actStart;
     QAction*   _actStop;
     QAction*   _actAddMountPoints;
