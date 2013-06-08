@@ -40,4 +40,9 @@
     <file>IMG/screenshot30.png</file>
     <file>IMG/screenshot31.png</file>
 </qresource>
+<qresource>
+    <file>map/html/index.html</file>
+    <file>map/html/init.js</file>
+    <file>map/html/tools.js</file>
+</qresource>
 </RCC>
