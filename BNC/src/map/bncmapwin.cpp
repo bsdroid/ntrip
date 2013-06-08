@@ -49,6 +49,8 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
   setWindowTitle("Map View");
 
   _webView = new QWebView(this);
+  connect(_webView, SIGNAL(loadFinished(bool)), this, SLOT(slotInitMap(bool)));
+
   ///  _webView->load(QUrl("http://igs.bkg.bund.de/ntrip/ppp#Scene6"));
   loadHtmlPage();
 
@@ -82,3 +84,13 @@ void bncMapWin::loadHtmlPage() {
   _webView->setHtml(html);
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncMapWin::slotInitMap(bool isOk) {
+  qDebug() << "slotInitMap";
+  if (!isOk) {
+    return;
+  }
+  QString location("-34.397, 150.644");
+  _webView->page()->mainFrame()->evaluateJavaScript(QString("initialize( %1 )").arg(location));
+}
