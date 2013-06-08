@@ -49,7 +49,7 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
   setWindowTitle("Map View");
 
   _webView = new QWebView(this);
-  _webView->load(QUrl("http://www.idnes.cz/"));
+  _webView->load(QUrl("http://igs.bkg.bund.de/ntrip/ppp#Scene6"));
   _webView->show();  
 
   QVBoxLayout* dlgLayout = new QVBoxLayout;
