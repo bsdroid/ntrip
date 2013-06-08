@@ -46,28 +46,39 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
 
   const int ww = QFontMetrics(font()).width('w');
 
-  setWindowTitle("Map View");
+  setWindowTitle("BNC: Map View");
+
+  // BKG Coordinates
+  // ---------------
+  _currLat = 50.090956;
+  _currLon =  8.663283;
 
   _webView = new QWebView(this);
   connect(_webView, SIGNAL(loadFinished(bool)), this, SLOT(slotInitMap(bool)));
 
-  ///  _webView->load(QUrl("http://igs.bkg.bund.de/ntrip/ppp#Scene6"));
   loadHtmlPage();
 
   _webView->show();  
 
-  QVBoxLayout* dlgLayout = new QVBoxLayout;
-  dlgLayout->addWidget(_webView);
+  // Test
+  // ----
+  QPushButton* testButton = new QPushButton(tr("Test"));
+  testButton->setMaximumWidth(10*ww);
+  connect(testButton,  SIGNAL(clicked()), this, SLOT(slotTest()));
 
-  setLayout(dlgLayout);
+  // Layout
+  // ------
+  QHBoxLayout* buttonLayout = new QHBoxLayout;
+  buttonLayout->addWidget(testButton);
+
+  QVBoxLayout* mainLayout = new QVBoxLayout(this);
+  mainLayout->addWidget(_webView);
+  mainLayout->addLayout(buttonLayout);
+
+  setLayout(mainLayout);
   resize(60*ww, 60*ww);
-  show();
 
-  _currLat = 50.090956; // BKG
-  _currLon =  8.663283; // BKG
-  //// beg test
-  slotGotoLocation();
-  //// end test
+  show();
 }
 
 // Destructor
@@ -103,12 +114,18 @@ void bncMapWin::slotInitMap(bool isOk) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncMapWin::slotGotoLocation() {
+void bncMapWin::slotGotoLocation(double lat, double lon) {
+  _currLat = lat;
+  _currLon = lon;
   QString location = QString("%1, %2").arg(_currLat,0,'f',8).arg(_currLon,0,'f',8);
   _webView->page()->mainFrame()->evaluateJavaScript(QString("gotoLocation( %1 )").arg(location));
-  //// beg test
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncMapWin::slotTest() {
   _currLat += 0.00001;
   _currLon += 0.00001;
-  QTimer::singleShot(100, this, SLOT(slotGotoLocation()));
-  //// end test
+  slotGotoLocation(_currLat, _currLon);
+  QTimer::singleShot(100, this, SLOT(slotTest()));
 }
