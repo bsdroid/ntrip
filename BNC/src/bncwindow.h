@@ -52,6 +52,7 @@ class bncFigurePPP;
 class bncBytesCounter;
 class bncEphUploadCaster;
 class qtFileChooser;
+class bncMapWin;
 
 class bncWindow : public QMainWindow {
   Q_OBJECT
@@ -258,6 +259,8 @@ class bncWindow : public QMainWindow {
     bool _runningRealTime;
     bool _runningPostProcessingPPP;
     bool _runningPostProcessingReqc;
+
+    bncMapWin* _mapWin;
 
 #ifdef RTROVER_INTERFACE
     QComboBox* _rtroverModeComboBox;
