@@ -133,4 +133,4 @@ equals(use_RTRover, true) {
   unix:LIBS += -Wl,-rpath,$$PWD/RTRover
 }  
 
-OTHER_FILES += map/html/index.html map/html/init.js map/html/tools.js
+OTHER_FILES += map/html/index.html map/html/mapview.js
