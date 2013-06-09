@@ -63,7 +63,9 @@
 #include "qtfilechooser.h"
 #include "reqcdlg.h"
 #include "bncmap.h"
-#include "map/bncmapwin.h"
+#ifdef QT_WEBKIT
+#  include "map/bncmapwin.h"
+#endif
 #ifdef USE_POSTPROCESSING
 #  include "rinex/bncpostprocess.h"
 #  include "rinex/reqcedit.h"
@@ -2853,8 +2855,13 @@ void bncWindow::slotMapMountPoints() {
 // Show Map
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotMapPPP() {
+#ifdef QT_WEBKIT
   if (!_mapWin) {
     _mapWin = new bncMapWin(this);
   }
   _mapWin->show();
+#else
+  QMessageBox::information(this, "Information",
+                           "Qt Library compiled without QtWebKit");
+#endif
 }
