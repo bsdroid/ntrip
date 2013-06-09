@@ -24,7 +24,16 @@
         var zoom           = 15; 
  
         map.addLayer(mapnik);
-        map.setCenter(position, zoom );
+
+        var markers = new OpenLayers.Layer.Markers("Markers");
+        var size   = new OpenLayers.Size(40,40);
+        var offset = new OpenLayers.Pixel(size.w/2, size.h/2);
+        var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png',size,offset);
+        markers.addMarker(new OpenLayers.Marker(position, icon));
+        
+        map.addLayer(markers);
+
+        map.setCenter(position, zoom);
       }
     </script>
 
