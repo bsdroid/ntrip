@@ -15,7 +15,10 @@
 
     <script>
       function initialize(lat, lon) {
-        map                = new OpenLayers.Map("basicMap");
+        map = new OpenLayers.Map("basicMap",
+                                 {controls:[
+                                  new OpenLayers.Control.Navigation(),
+                                  new OpenLayers.Control.PanZoomBar()]});
 
         var mapnik         = new OpenLayers.Layer.OSM();
         var fromProjection = new OpenLayers.Projection("EPSG:4326");   // WGS 1984
@@ -26,9 +29,10 @@
         map.addLayer(mapnik);
 
         var markers = new OpenLayers.Layer.Markers("Markers");
-        var size   = new OpenLayers.Size(40,40);
-        var offset = new OpenLayers.Pixel(-size.w/2, -size.h/2);
-        var icon = new OpenLayers.Icon('../html/crosshair.png', size, offset);
+        var size    = new OpenLayers.Size(40,40);
+        var offset  = new OpenLayers.Pixel(-size.w/2, -size.h/2);
+        var icon    = new OpenLayers.Icon('../html/crosshair.png', size, offset);
+
         markers.addMarker(new OpenLayers.Marker(position, icon));
         
         map.addLayer(markers);
