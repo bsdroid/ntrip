@@ -27,6 +27,7 @@
 
 #include <QtGui>
 #include <QtWebKit>
+#include "bnctime.h"
 
 class bncMapWin : public QDialog {
  Q_OBJECT
@@ -38,7 +39,7 @@ class bncMapWin : public QDialog {
  signals:
 
  public slots:
-  void slotGotoLocation(double lat, double lon);
+  void slotNewPosition(bncTime time, double xx, double yy, double zz);
 
  private slots:
   void slotInitMap(bool isOk);
@@ -47,6 +48,7 @@ class bncMapWin : public QDialog {
  private:
   enum e_mode {mode_test, mode_ppp};
   void loadHtmlPage();
+  void gotoLocation(double lat, double lon);
   QWebView*    _webView;
   QPushButton* _testButton;
   double       _currLat;
