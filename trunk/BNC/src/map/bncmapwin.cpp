@@ -28,7 +28,7 @@
  *
  * Class:      bncMapWin
  *
- * Purpose:    Displays the help
+ * Purpose:    Displays the Google Map
  *
  * Author:     L. Mervart
  *
@@ -39,6 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include "map/bncmapwin.h"
+#include "bncutils.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -148,6 +149,12 @@ void bncMapWin::slotTest() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncMapWin::slotNewPosition(bncTime time, double xx, double yy, double zz) {
-
+void bncMapWin::slotNewPosition(bncTime /* time */, double xx, double yy, double zz) {
+  double xyz[3]; 
+  xyz[0] = xx;
+  xyz[1] = yy;
+  xyz[2] = zz;
+  double ell[3];
+  xyz2ell(xyz, ell);
+  gotoLocation(ell[0]*180.0/M_PI, ell[1]*180.0/M_PI);
 }
