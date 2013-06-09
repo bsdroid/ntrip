@@ -2172,14 +2172,14 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
                   _bncFigurePPP, 
                   SLOT(slotNewPosition(bncTime, double, double, double)));
         }
-
+#ifdef QT_WEBKIT
         if (_mapWin) {
           disconnect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
                      _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
           connect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
                   _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
         }
-
+#endif
         break;
       }
     }
