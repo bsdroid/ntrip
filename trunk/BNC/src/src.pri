@@ -133,8 +133,9 @@ equals(use_RTRover, true) {
 
 contains(DEFINES, QT_WEBKIT) {
   message("Configured with QtWebKit")
-  HEADERS += map/bncmapwin.h
-  SOURCES += map/bncmapwin.cpp
+  QT          += webkit
+  HEADERS     += map/bncmapwin.h
+  SOURCES     += map/bncmapwin.cpp
   OTHER_FILES += map/html/index.html map/html/mapview.js
 }
 else {
