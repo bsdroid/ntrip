@@ -115,7 +115,7 @@ void bncMapWin::slotInitMap(bool isOk) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncMapWin::slotGotoLocation(double lat, double lon) {
+void bncMapWin::gotoLocation(double lat, double lon) {
   _currLat = lat;
   _currLon = lon;
   QString location = QString("%1, %2").arg(_currLat,0,'f',8).arg(_currLon,0,'f',8);
@@ -141,7 +141,13 @@ void bncMapWin::slotTest() {
   if (_mode == mode_test) {
     _currLat += 0.00001;
     _currLon += 0.00001;
-    slotGotoLocation(_currLat, _currLon);
+    gotoLocation(_currLat, _currLon);
     QTimer::singleShot(100, this, SLOT(slotTest()));
   }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncMapWin::slotNewPosition(bncTime time, double xx, double yy, double zz) {
+
 }

@@ -2136,6 +2136,8 @@ void bncWindow::slotWhatsThis() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
+  _threads = threads;
+
   _bncFigure->updateMountPoints();
   _bncFigureLate->updateMountPoints();
 
@@ -2170,6 +2172,14 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
                   _bncFigurePPP, 
                   SLOT(slotNewPosition(bncTime, double, double, double)));
         }
+
+        if (_mapWin) {
+          disconnect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
+                     _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
+          connect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
+                  _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
+        }
+
         break;
       }
     }
@@ -2858,6 +2868,12 @@ void bncWindow::slotMapPPP() {
 #ifdef QT_WEBKIT
   if (!_mapWin) {
     _mapWin = new bncMapWin(this);
+    QListIterator<bncGetThread*> it(_threads);
+    while (it.hasNext()) {
+      bncGetThread* thread = it.next();
+      connect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
+              _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
+    }
   }
   _mapWin->show();
 #else

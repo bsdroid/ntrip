@@ -260,7 +260,8 @@ class bncWindow : public QMainWindow {
     bool _runningPostProcessingPPP;
     bool _runningPostProcessingReqc;
 
-    bncMapWin* _mapWin;
+    bncMapWin*           _mapWin;
+    QList<bncGetThread*> _threads;
 
 #ifdef RTROVER_INTERFACE
     QComboBox* _rtroverModeComboBox;
