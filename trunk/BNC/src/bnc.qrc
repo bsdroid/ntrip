@@ -42,6 +42,7 @@
 </qresource>
 <qresource>
     <file>map/html/index.html</file>
+    <file>map/html/index_osm.html</file>
     <file>map/html/mapview.js</file>
     <file>map/html/crosshair.png</file>
 </qresource>
