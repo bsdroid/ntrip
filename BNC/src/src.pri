@@ -135,7 +135,7 @@ equals(use_RTRover, true) {
 # Check QtWebKit Library Existence
 # --------------------------------
 win32 {
-  exists("$$[QT_INSTALL_LIBS]/QtWebKit4.dll") {
+  exists("$$[QT_INSTALL_BINS]/QtWebKit4.dll") {
     DEFINES += QT_WEBKIT
   }
 }
