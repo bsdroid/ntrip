@@ -164,7 +164,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
       for (int iPhase = 0; iPhase <= 1; iPhase++) {
         for (int iFreq = 1; iFreq <= 2; iFreq++) {
 
-          char rnxStr[3];
+          char rnxStr[4]; rnxStr[3] = '\0';
           double* p_value = 0;
           if      (iPhase == 0 && iFreq == 1) {
             rnxStr[0] = 'C';
@@ -193,9 +193,10 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
           if (measdata != 0.0) {
             *p_value = measdata;
             if (rnxStr[0] == 'C' && bb) {
-              char biasStr[2];
+              char biasStr[3];
               biasStr[0] = rnxStr[1];
               biasStr[1] = rnxStr[2];
+              biasStr[2] = '\0';
               *p_value += bb->value(biasStr);
             }
           }
