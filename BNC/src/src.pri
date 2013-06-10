@@ -151,7 +151,7 @@ contains(DEFINES, QT_WEBKIT) {
   QT          += webkit
   HEADERS     += map/bncmapwin.h
   SOURCES     += map/bncmapwin.cpp
-  OTHER_FILES += map/html/index.html map/html/mapview.js
+  OTHER_FILES += map/html/index.html map/html/mapview.js map/html/index_osm.html
 }
 else {
   message("No QtWebKit")
