@@ -131,6 +131,21 @@ equals(use_RTRover, true) {
   unix:LIBS += -Wl,-rpath,$$PWD/RTRover
 }  
 
+
+# Check QtWebKit Library Existence
+# --------------------------------
+win32 {
+  exists("$$[QT_INSTALL_LIBS]/QtWebKit4.dll") {
+    DEFINES += QT_WEBKIT
+  }
+}
+
+unix {
+  exists("$$[QT_INSTALL_LIBS]/libQtWebKit.so") {
+    DEFINES += QT_WEBKIT
+  }
+}
+
 contains(DEFINES, QT_WEBKIT) {
   message("Configured with QtWebKit")
   QT          += webkit
@@ -141,4 +156,3 @@ contains(DEFINES, QT_WEBKIT) {
 else {
   message("No QtWebKit")
 }
-
