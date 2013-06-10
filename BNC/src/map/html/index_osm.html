@@ -16,6 +16,7 @@
     <script>
       var map;
       var markers;
+      var marker;
       var icon;  
       var fromProjection;
       var toProjection;
@@ -39,8 +40,8 @@
 
         icon    = new OpenLayers.Icon("qrc:///map/html/crosshair.png", size, offset);
         markers = new OpenLayers.Layer.Markers("Markers");
-
-        markers.addMarker(new OpenLayers.Marker(position, icon));
+        marker  = new OpenLayers.Marker(position, icon);
+        markers.addMarker(marker);
         
         map.addLayer(markers);
 
@@ -50,6 +51,9 @@
       function gotoLocation(lat, lon) {
         var position = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
         map.setCenter(position);
+        markers.removeMarker(marker);
+        marker = new OpenLayers.Marker(position, icon);
+        markers.addMarker(marker);
       }
 
     </script>
