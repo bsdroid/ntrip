@@ -14,24 +14,31 @@
     <script src="http://openlayers.org/api/OpenLayers.js" ></script>
 
     <script>
+      var map;
+      var markers;
+      var icon;  
+      var fromProjection;
+      var toProjection;
+
       function initialize(lat, lon) {
         map = new OpenLayers.Map("basicMap",
                                  {controls:[
                                   new OpenLayers.Control.Navigation(),
                                   new OpenLayers.Control.PanZoomBar()]});
+        fromProjection = new OpenLayers.Projection("EPSG:4326");   // WGS 1984
+        toProjection   = new OpenLayers.Projection("EPSG:900913"); // Spherical Mercator
 
-        var mapnik         = new OpenLayers.Layer.OSM();
-        var fromProjection = new OpenLayers.Projection("EPSG:4326");   // WGS 1984
-        var toProjection   = new OpenLayers.Projection("EPSG:900913"); // Spherical Mercator
-        var position       = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
-        var zoom           = 15; 
+        var mapnik   = new OpenLayers.Layer.OSM();
+        var position = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
+        var zoom     = 15; 
  
         map.addLayer(mapnik);
 
-        var markers = new OpenLayers.Layer.Markers("Markers");
         var size    = new OpenLayers.Size(40,40);
         var offset  = new OpenLayers.Pixel(-size.w/2, -size.h/2);
-        var icon    = new OpenLayers.Icon('../html/crosshair.png', size, offset);
+
+        icon    = new OpenLayers.Icon('crosshair.png', size, offset);
+        markers = new OpenLayers.Layer.Markers("Markers");
 
         markers.addMarker(new OpenLayers.Marker(position, icon));
         
@@ -39,6 +46,12 @@
 
         map.setCenter(position, zoom);
       }
+
+      function gotoLocation(lat, lon) {
+        var position = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
+        map.setCenter(position);
+      }
+
     </script>
 
   </head>
