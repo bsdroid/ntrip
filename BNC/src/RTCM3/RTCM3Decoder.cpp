@@ -75,8 +75,8 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID, bncRawFile* rawFile) :
 
   connect(this, SIGNAL(newGPSEph(gpsephemeris*)), 
           BNC_CORE, SLOT(slotNewGPSEph(gpsephemeris*)));
-  connect(this, SIGNAL(newGlonassEph(glonassephemeris*)), 
-          BNC_CORE, SLOT(slotNewGlonassEph(glonassephemeris*)));
+  connect(this, SIGNAL(newGlonassEph(glonassephemeris*, const QString&)), 
+          BNC_CORE, SLOT(slotNewGlonassEph(glonassephemeris*, const QString&)));
   connect(this, SIGNAL(newGalileoEph(galileoephemeris*)), 
           BNC_CORE, SLOT(slotNewGalileoEph(galileoephemeris*)));
 
@@ -358,7 +358,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           // -----------------
           else if (rr == 1020) {
             decoded = true;
-            emit newGlonassEph(new glonassephemeris(parser.ephemerisGLONASS));
+            emit newGlonassEph(new glonassephemeris(parser.ephemerisGLONASS), _staID);
           }
 
           // Galileo Ephemeris

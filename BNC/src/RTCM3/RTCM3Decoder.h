@@ -48,7 +48,7 @@ Q_OBJECT
  signals:
   void newMessage(QByteArray msg,bool showOnScreen);
   void newGPSEph(gpsephemeris* gpseph);
-  void newGlonassEph(glonassephemeris* glonasseph);
+  void newGlonassEph(glonassephemeris* glonasseph, const QString& staID);
   void newGalileoEph(galileoephemeris* galileoeph);
 
  private:
