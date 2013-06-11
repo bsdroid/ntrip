@@ -248,7 +248,7 @@ void t_bncCore::slotNewGPSEph(gpsephemeris* gpseph) {
     
 // New Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::slotNewGlonassEph(glonassephemeris* glonasseph) {
+void t_bncCore::slotNewGlonassEph(glonassephemeris* glonasseph, const QString& staID) {
 
   QMutexLocker locker(&_mutex);
 
@@ -284,10 +284,10 @@ void t_bncCore::slotNewGlonassEph(glonassephemeris* glonasseph) {
        (wwNew == wwOld && towNew > towOld) ) {
     delete *ee;
     *ee = glonasseph;
-    printGlonassEph(glonasseph, true);
+    printGlonassEph(glonasseph, true, staID);
   }
   else {
-    printGlonassEph(glonasseph, false);
+    printGlonassEph(glonasseph, false, staID);
     delete glonasseph;
   }
 }
@@ -514,13 +514,18 @@ void t_bncCore::printGPSEph(gpsephemeris* ep, bool printFile) {
 
 // Print One Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::printGlonassEph(glonassephemeris* ep, bool printFile) {
+void t_bncCore::printGlonassEph(glonassephemeris* ep, bool printFile, const QString& staID) {
 
   t_ephGlo eph;
   eph.set(ep);
 
   QString strV2 = eph.toString(2.11);
   QString strV3 = eph.toString(3.01);
+
+  //// beg test Dirk
+  //// cout << staID.toAscii().data() << endl
+  ////      << strV3.toAscii().data() << endl;
+  //// end test Dirk
 
   printOutput(printFile, _ephStreamGlonass, strV2, strV3);
 }

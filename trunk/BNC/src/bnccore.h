@@ -69,7 +69,7 @@ class t_bncCore : public QObject {
   public slots:
     void slotMessage(QByteArray msg, bool showOnScreen);
     void slotNewGPSEph(gpsephemeris* gpseph);
-    void slotNewGlonassEph(glonassephemeris* glonasseph);
+    void slotNewGlonassEph(glonassephemeris* glonasseph, const QString& staID);
     void slotNewGalileoEph(galileoephemeris* galileoeph);
     void slotNewCorrLine(QString line, QString staID, bncTime coTime);
     void slotQuit();
@@ -87,7 +87,7 @@ class t_bncCore : public QObject {
   private:
     void printEphHeader();
     void printGPSEph(gpsephemeris* ep, bool printFile);
-    void printGlonassEph(glonassephemeris* ep, bool printFile);
+    void printGlonassEph(glonassephemeris* ep, bool printFile, const QString& staID);
     void printGalileoEph(galileoephemeris* ep, bool printFile);
     void printOutput(bool printFile, QTextStream* stream, 
                      const QString& strV2, const QString& strV3);
