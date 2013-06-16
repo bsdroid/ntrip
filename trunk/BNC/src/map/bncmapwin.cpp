@@ -92,9 +92,9 @@ bncMapWin::~bncMapWin() {
 ////////////////////////////////////////////////////////////////////////////
 void bncMapWin::loadHtmlPage() {
 
-  QFile htmlFile(":/map/html/index.html");
+  QFile htmlFile(":/map/map_gm.html");
   if (!htmlFile.open(QFile::ReadOnly)) {
-    qDebug() << "bncMapWin:: cannot open index.html";
+    qDebug() << "bncMapWin:: cannot open html file";
     return;
   }
 
