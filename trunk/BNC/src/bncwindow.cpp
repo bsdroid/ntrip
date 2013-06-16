@@ -2936,6 +2936,7 @@ void bncWindow::slotMapMountPoints() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotMapPPP() {
 #ifdef QT_WEBKIT
+  saveOptions();
   if (!_mapWin) {
     _mapWin = new bncMapWin(this);
     QListIterator<bncGetThread*> it(_threads);
