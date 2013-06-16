@@ -140,11 +140,8 @@ bncWindow::bncWindow() {
   connect(_actDeleteMountPoints, SIGNAL(triggered()), SLOT(slotDeleteMountPoints()));
   _actDeleteMountPoints->setEnabled(false);
 
-  _actMapMountPoints = new QAction(tr("&Map (MP)"),this);
+  _actMapMountPoints = new QAction(tr("Streams &Map"),this);
   connect(_actMapMountPoints, SIGNAL(triggered()), SLOT(slotMapMountPoints()));
-
-  _actMapPPP = new QAction(tr("&Map (PPP)"),this);
-  connect(_actMapPPP, SIGNAL(triggered()), SLOT(slotMapPPP()));
 
   _actStart = new QAction(tr("Sta&rt"),this);
   connect(_actStart, SIGNAL(triggered()), SLOT(slotStart()));
@@ -658,6 +655,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   QWidget* sergroup = new QWidget();
   QWidget* pppgroup = new QWidget();
   QWidget* ppp2group = new QWidget();
+  QWidget* ppp3group = new QWidget();
   QWidget* reqcgroup = new QWidget();
   QWidget* cmbgroup = new QWidget();
   QWidget* uploadgroup = new QWidget();
@@ -674,6 +672,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _aogroup->addTab(rgroup,tr("Miscellaneous"));
   _aogroup->addTab(pppgroup,tr("PPP (1)"));
   _aogroup->addTab(ppp2group,tr("PPP (2)"));
+  _aogroup->addTab(ppp3group,tr("PPP (3)"));
 #ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combine Corrections"));
 #endif
@@ -961,8 +960,6 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   pppLayout->addWidget(new QLabel("NMEA File"),         ir, 2, Qt::AlignLeft);
   pppLayout->addWidget(_pppNMEAPortLineEdit,            ir, 3, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("NMEA Port"),         ir, 4, Qt::AlignLeft);
-  pppLayout->addWidget(_pppPlotCoordinates,             ir, 5, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("PPP Plot"),          ir, 6, Qt::AlignLeft);
   ++ir;
   pppLayout->addWidget(new QLabel("Post-processing"),   ir, 0, Qt::AlignLeft);
   pppLayout->addWidget(_postObsFileChooser,             ir, 1, Qt::AlignRight);
@@ -1033,6 +1030,24 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   ppp2Layout->addWidget(new QLabel(""),                       ir, 0);
 
   ppp2group->setLayout(ppp2Layout);
+
+  // PPP Client (third panel)
+  // ------------------------
+  QGridLayout* ppp3Layout = new QGridLayout;
+  ppp3Layout->setColumnMinimumWidth(0,14*ww);
+  ir = 0;
+  ppp3Layout->addWidget(new QLabel("Precise Point Positioning, Panel 3."), ir, 0, 1, 10);
+  ++ir;
+  ppp3Layout->addWidget(_pppPlotCoordinates,     ir, 0, Qt::AlignRight);
+  ppp3Layout->addWidget(new QLabel("PPP Plot"),  ir, 1, Qt::AlignLeft);
+
+  ++ir;
+  _mapWinButton = new QPushButton;
+  _mapWinButton->setText("Google / Open Source Map");
+  connect(_mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
+  ppp3Layout->addWidget(_mapWinButton,           ir, 0, Qt::AlignLeft);
+
+  ppp3group->setLayout(ppp3Layout);
 
   // Reqc Processing
   // ---------------
@@ -2214,7 +2229,6 @@ void bncWindow::AddToolbar() {
   toolBar->addAction(_actAddMountPoints);
   toolBar->addAction(_actDeleteMountPoints);
   toolBar->addAction(_actMapMountPoints);
-  toolBar->addAction(_actMapPPP);
   toolBar->addAction(_actStart);
   toolBar->addAction(_actStop);
   toolBar->addWidget(new QLabel("                                           "));

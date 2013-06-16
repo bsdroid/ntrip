@@ -119,7 +119,6 @@ class bncWindow : public QMainWindow {
     QAction*   _actSaveOpt;
     QAction*   _actQuit; 
     QAction*   _actMapMountPoints;
-    QAction*   _actMapPPP;
     QAction*   _actStart;
     QAction*   _actStop;
     QAction*   _actAddMountPoints;
@@ -262,6 +261,7 @@ class bncWindow : public QMainWindow {
     bool _runningPostProcessingReqc;
     t_postProcessing* _postProcessing;
 
+    QPushButton*         _mapWinButton;
     bncMapWin*           _mapWin;
     QList<bncGetThread*> _threads;
 
