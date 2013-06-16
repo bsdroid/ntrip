@@ -429,10 +429,6 @@ bncWindow::bncWindow() {
   _pppGalileoCheckBox->setCheckState(Qt::CheckState(
                                     settings.value("pppGalileo").toInt()));
 
-  _pppPlotCoordinates = new QCheckBox();
-  _pppPlotCoordinates->setCheckState(Qt::CheckState(
-                                settings.value("pppPlotCoordinates").toInt()));
-
   connect(_pppMountLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
@@ -1038,6 +1034,8 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   ppp3Layout->addSpacing(ww);
 
   QHBoxLayout* ppp3LayoutHlp1 = new QHBoxLayout;
+  _pppPlotCoordinates = new QCheckBox();
+  _pppPlotCoordinates->setCheckState(Qt::CheckState(settings.value("pppPlotCoordinates").toInt()));
   ppp3LayoutHlp1->addWidget(new QLabel("PPP Plot"));
   ppp3LayoutHlp1->addWidget(_pppPlotCoordinates);
   ppp3LayoutHlp1->addStretch();
@@ -1053,10 +1051,12 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   ppp3LayoutHlp2->addSpacing(5*ww);
 
   _gmRadioButton  = new QRadioButton;
+  _gmRadioButton->setChecked(!settings.value("useOsmMap").toBool());
   ppp3LayoutHlp2->addWidget(new QLabel("Google"));
   ppp3LayoutHlp2->addWidget(_gmRadioButton);
 
   _osmRadioButton = new QRadioButton;
+  _osmRadioButton->setChecked(settings.value("useOsmMap").toBool());
   ppp3LayoutHlp2->addWidget(new QLabel("OSM"));
   ppp3LayoutHlp2->addWidget(_osmRadioButton);
 
