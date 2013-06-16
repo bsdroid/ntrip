@@ -163,6 +163,7 @@ void t_postProcessing::run() {
 
     connect(_pppClient, SIGNAL(newMessage(QByteArray,bool)), 
             this, SLOT(slotMessage(const QByteArray,bool)));
+    qRegisterMetaType<bncTime>("bncTime");
     connect(_pppClient, SIGNAL(newPosition(bncTime, double, double, double)), 
             this, SIGNAL(newPosition(bncTime, double, double, double)));
   }
