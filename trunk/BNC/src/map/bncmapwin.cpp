@@ -49,10 +49,10 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
 
   setWindowTitle("BNC: Map View");
 
-  // BKG Coordinates
-  // ---------------
-  _currLat = 50.090956;
-  _currLon =  8.663283;
+  // Current Coordinates
+  // -------------------
+  _currLat = 50.09057949; // BKG latitude
+  _currLon =  8.66496871; // BKG longitude
 
   _webView = new QWebView(this);
   connect(_webView, SIGNAL(loadFinished(bool)), this, SLOT(slotInitMap(bool)));
@@ -65,7 +65,6 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
 
   // Layout
   // ------
-
   QHBoxLayout* statusLayout = new QHBoxLayout;
   statusLayout->addWidget(_statusLabel);
 
