@@ -124,8 +124,8 @@ void bncMapWin::gotoLocation(double lat, double lon) {
   deg2DMS(lon, lonDeg, lonMin, lonSec);
 
   QString lblStr=QString("Latitude: %1 %2 %3    Longitude: %4 %5 %6")
-                         .arg(latDeg).arg(latMin).arg(latSec,0,'f',2)
-                         .arg(lonDeg).arg(lonMin).arg(lonSec,0,'f',2);
+                         .arg(latDeg).arg(latMin).arg(latSec,0,'f',4)
+                         .arg(lonDeg).arg(lonMin).arg(lonSec,0,'f',4);
   _statusLabel->setText(lblStr);
 
   QString location = QString("%1, %2").arg(_currLat,0,'f',8).arg(_currLon,0,'f',8);
