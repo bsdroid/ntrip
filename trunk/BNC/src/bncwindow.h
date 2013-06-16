@@ -53,6 +53,7 @@ class bncBytesCounter;
 class bncEphUploadCaster;
 class qtFileChooser;
 class bncMapWin;
+class t_postProcessing;
 
 class bncWindow : public QMainWindow {
   Q_OBJECT
@@ -259,6 +260,7 @@ class bncWindow : public QMainWindow {
     bool _runningRealTime;
     bool _runningPostProcessingPPP;
     bool _runningPostProcessingReqc;
+    t_postProcessing* _postProcessing;
 
     bncMapWin*           _mapWin;
     QList<bncGetThread*> _threads;

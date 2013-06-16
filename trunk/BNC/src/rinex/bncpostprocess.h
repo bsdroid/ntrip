@@ -48,12 +48,12 @@ Q_OBJECT
                             const t_rnxObsFile::t_rnxSat& rnxSat, 
                             t_obs& obs);
 
- protected:
   ~t_postProcessing();
 
  signals:
   void progress(int);
   void finished();
+  void newPosition(bncTime time, double x, double y, double z);
    
  public slots:
   void slotMessage(QByteArray msg, bool showOnScreen);

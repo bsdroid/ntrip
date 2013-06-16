@@ -163,6 +163,8 @@ void t_postProcessing::run() {
 
     connect(_pppClient, SIGNAL(newMessage(QByteArray,bool)), 
             this, SLOT(slotMessage(const QByteArray,bool)));
+    connect(_pppClient, SIGNAL(newPosition(bncTime, double, double, double)), 
+            this, SIGNAL(newPosition(bncTime, double, double, double)));
   }
 
   // Read/Process Observations

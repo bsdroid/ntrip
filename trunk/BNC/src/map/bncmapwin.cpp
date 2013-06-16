@@ -157,4 +157,5 @@ void bncMapWin::slotNewPosition(bncTime /* time */, double xx, double yy, double
   double ell[3];
   xyz2ell(xyz, ell);
   gotoLocation(ell[0]*180.0/M_PI, ell[1]*180.0/M_PI);
+  qDebug() << ell[0]*180.0/M_PI << ell[1]*180.0/M_PI;
 }

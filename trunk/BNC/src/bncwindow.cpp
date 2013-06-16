@@ -95,6 +95,7 @@ bncWindow::bncWindow() {
   _runningRealTime           = false;
   _runningPostProcessingPPP  = false;
   _runningPostProcessingReqc = false;
+  _postProcessing            = 0;
 
   _pppSPPComboBox     = 0; // necessary for enableStartStop()
   _reqcActionComboBox = 0; // necessary for enableStartStop()
@@ -2728,11 +2729,23 @@ void bncWindow::startPostProcessingPPP() {
   _actStart->setText("0 Epochs");
   enableStartStop();
 
-  t_postProcessing* postProcessing = new t_postProcessing(this);
-  connect(postProcessing, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessingPPP()));
-  connect(postProcessing, SIGNAL(progress(int)), this, SLOT(slotPostProgress(int)));
+  delete _postProcessing;
+  _postProcessing = new t_postProcessing(this);
+  connect(_postProcessing, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessingPPP()));
+  connect(_postProcessing, SIGNAL(progress(int)), this, SLOT(slotPostProgress(int)));
+  bncSettings settings;
+  if ( Qt::CheckState(settings.value("pppPlotCoordinates").toInt()) == Qt::Checked) {
+    connect(_postProcessing, SIGNAL(newPosition(bncTime, double, double, double)),
+            _bncFigurePPP, SLOT(slotNewPosition(bncTime, double, double, double)));
+  }
+#ifdef QT_WEBKIT
+  if (_mapWin) {
+    connect(_postProcessing, SIGNAL(newPosition(bncTime, double, double, double)),
+            _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
+  }
+#endif
 
-  postProcessing->start();
+  _postProcessing->start();
 #else
   QMessageBox::information(this, "Information",
                            "Post-Processing Not Permitted");
@@ -2872,6 +2885,10 @@ void bncWindow::slotMapPPP() {
     while (it.hasNext()) {
       bncGetThread* thread = it.next();
       connect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
+              _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
+    }
+    if (_postProcessing) {
+      connect(_postProcessing, SIGNAL(newPosition(bncTime, double, double, double)),
               _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
     }
   }
