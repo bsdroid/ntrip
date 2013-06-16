@@ -1052,11 +1052,11 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   ppp3LayoutHlp2->addSpacing(5*ww);
 
-  QRadioButton* _gmRadioButton  = new QRadioButton;
+  _gmRadioButton  = new QRadioButton;
   ppp3LayoutHlp2->addWidget(new QLabel("Google"));
   ppp3LayoutHlp2->addWidget(_gmRadioButton);
 
-  QRadioButton* _osmRadioButton = new QRadioButton;
+  _osmRadioButton = new QRadioButton;
   ppp3LayoutHlp2->addWidget(new QLabel("OSM"));
   ppp3LayoutHlp2->addWidget(_osmRadioButton);
 
