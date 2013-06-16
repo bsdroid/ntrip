@@ -114,8 +114,21 @@ void bncMapWin::slotInitMap(bool isOk) {
 void bncMapWin::gotoLocation(double lat, double lon) {
   _currLat = lat;
   _currLon = lon;
+
+  int    latDeg, latMin;
+  double latSec;
+  deg2DMS(lat, latDeg, latMin, latSec);
+
+  int    lonDeg, lonMin;
+  double lonSec;
+  deg2DMS(lon, lonDeg, lonMin, lonSec);
+
+  QString lblStr=QString("Latitude: %1 %2 %3    Longitude: %4 %5 %6")
+                         .arg(latDeg).arg(latMin).arg(latSec,0,'f',2)
+                         .arg(lonDeg).arg(lonMin).arg(lonSec,0,'f',2);
+  _statusLabel->setText(lblStr);
+
   QString location = QString("%1, %2").arg(_currLat,0,'f',8).arg(_currLon,0,'f',8);
-  _statusLabel->setText(location);
   _webView->page()->mainFrame()->evaluateJavaScript(QString("gotoLocation( %1 )").arg(location));
 }
 

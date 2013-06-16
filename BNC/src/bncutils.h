@@ -79,4 +79,6 @@ void topos(double xRec, double yRec, double zRec,
            double xSat, double ySat, double zSat, 
            double& rho, double& eleSat, double& azSat);
 
+void deg2DMS(double decDeg, int& deg, int& min, double& sec);
+
 #endif
