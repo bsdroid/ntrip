@@ -61,21 +61,17 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
 
   _webView->show();  
 
-  // Test
-  // ----
-  _mode = mode_ppp;
-  _testButton = new QPushButton(tr("Start Test"));
-  _testButton->setMaximumWidth(10*ww);
-  connect(_testButton,  SIGNAL(clicked()), this, SLOT(slotTest()));
+  _statusLabel = new QLabel;
 
   // Layout
   // ------
-  QHBoxLayout* buttonLayout = new QHBoxLayout;
-  buttonLayout->addWidget(_testButton);
+
+  QHBoxLayout* statusLayout = new QHBoxLayout;
+  statusLayout->addWidget(_statusLabel);
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   mainLayout->addWidget(_webView);
-  mainLayout->addLayout(buttonLayout);
+  mainLayout->addLayout(statusLayout);
 
   setLayout(mainLayout);
   resize(60*ww, 60*ww);
@@ -120,31 +116,8 @@ void bncMapWin::gotoLocation(double lat, double lon) {
   _currLat = lat;
   _currLon = lon;
   QString location = QString("%1, %2").arg(_currLat,0,'f',8).arg(_currLon,0,'f',8);
+  _statusLabel->setText(location);
   _webView->page()->mainFrame()->evaluateJavaScript(QString("gotoLocation( %1 )").arg(location));
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncMapWin::slotTest() {
-
-  if (sender() == _testButton) {
-    if (_mode == mode_ppp) {
-      _mode = mode_test;
-      _testButton->setText(tr("Stop Test"));
-    }
-    else {
-      _mode = mode_ppp;
-      _testButton->setText(tr("Start Test"));
-      return;
-    }
-  }
-   
-  if (_mode == mode_test) {
-    _currLat += 0.00001;
-    _currLon += 0.00001;
-    gotoLocation(_currLat, _currLon);
-    QTimer::singleShot(100, this, SLOT(slotTest()));
-  }
 }
 
 // 
