@@ -1067,6 +1067,13 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   ppp3LayoutHlp2->addWidget(new QLabel("Trace"));
   ppp3LayoutHlp2->addWidget(_mapWinTraceCheckBox);
 
+  ppp3LayoutHlp2->addSpacing(5*ww);
+
+  _mapSpeedSlider = new QSlider;
+  _mapSpeedSlider->setOrientation(Qt::Horizontal);
+  ppp3LayoutHlp2->addWidget(new QLabel("Speed"));
+  ppp3LayoutHlp2->addWidget(_mapSpeedSlider);
+
   ppp3LayoutHlp2->addStretch();
   ppp3Layout->addLayout(ppp3LayoutHlp2);
 
