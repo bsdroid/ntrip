@@ -39,6 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include "map/bncmapwin.h"
+#include "bncsettings.h"
 #include "bncutils.h"
 
 // Constructor
@@ -87,7 +88,15 @@ bncMapWin::~bncMapWin() {
 ////////////////////////////////////////////////////////////////////////////
 void bncMapWin::loadHtmlPage() {
 
-  QFile htmlFile(":/map/map_gm.html");
+  bncSettings settings;
+
+  QFile htmlFile;
+  if (settings.value("useOsmMap").toBool()) {
+    htmlFile.setFileName(":/map/map_osm.html");
+  }
+  else {
+    htmlFile.setFileName(":/map/map_gm.html");
+  }
   if (!htmlFile.open(QFile::ReadOnly)) {
     qDebug() << "bncMapWin:: cannot open html file";
     return;
