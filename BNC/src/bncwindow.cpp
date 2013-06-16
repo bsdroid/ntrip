@@ -1071,6 +1071,10 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   _mapSpeedSlider = new QSlider;
   _mapSpeedSlider->setOrientation(Qt::Horizontal);
+  _mapSpeedSlider->setRange(1, 10);
+  int speed = settings.value("mapSpeed").toInt();
+  if (speed == 0) speed = _mapSpeedSlider->maximum();
+  _mapSpeedSlider->setSliderPosition(speed);
   ppp3LayoutHlp2->addWidget(new QLabel("Speed"));
   ppp3LayoutHlp2->addWidget(_mapSpeedSlider);
 
@@ -1904,6 +1908,7 @@ void bncWindow::saveOptions() {
   settings.setValue("pppPlotCoordinates", _pppPlotCoordinates->checkState());
   settings.setValue("useOsmMap",          _osmRadioButton->isChecked());
   settings.setValue("mapWinTrace",        _mapWinTraceCheckBox->checkState());
+  settings.setValue("mapSpeed",           _mapSpeedSlider->value());
   settings.setValue("postObsFile",  _postObsFileChooser->fileName());
   settings.setValue("postNavFile",  _postNavFileChooser->fileName());
   settings.setValue("postCorrFile", _postCorrFileChooser->fileName());
@@ -2522,6 +2527,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _gmRadioButton);
     enableWidget(enable, _osmRadioButton);
     enableWidget(enable, _mapWinTraceCheckBox);
+    enableWidget(enable, _mapSpeedSlider);
     enableWidget(enable, _pppEstTropoCheckBox);
 //  enableWidget(enable, _pppGLONASSCheckBox);
     enableWidget(enable, _pppGalileoCheckBox);
