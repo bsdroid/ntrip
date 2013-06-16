@@ -1035,24 +1035,37 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   // ------------------------
   QVBoxLayout* ppp3Layout = new QVBoxLayout;
   ppp3Layout->addWidget(new QLabel("Precise Point Positioning, Panel 3."));
+  ppp3Layout->addSpacing(ww);
 
   QHBoxLayout* ppp3LayoutHlp1 = new QHBoxLayout;
   ppp3LayoutHlp1->addWidget(new QLabel("PPP Plot"));
   ppp3LayoutHlp1->addWidget(_pppPlotCoordinates);
   ppp3LayoutHlp1->addStretch();
   ppp3Layout->addLayout(ppp3LayoutHlp1);
+  ppp3Layout->addSpacing(ww);
 
   QHBoxLayout* ppp3LayoutHlp2 = new QHBoxLayout;
   _mapWinButton = new QPushButton;
   _mapWinButton->setText("Google / Open Street Map");
-  QRadioButton* _gmRadioButton  = new QRadioButton;
-  QRadioButton* _osmRadioButton = new QRadioButton;
   connect(_mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
   ppp3LayoutHlp2->addWidget(_mapWinButton);
-  ppp3LayoutHlp2->addWidget(_gmRadioButton);
+
+  ppp3LayoutHlp2->addSpacing(5*ww);
+
+  QRadioButton* _gmRadioButton  = new QRadioButton;
   ppp3LayoutHlp2->addWidget(new QLabel("Google"));
-  ppp3LayoutHlp2->addWidget(_osmRadioButton);
+  ppp3LayoutHlp2->addWidget(_gmRadioButton);
+
+  QRadioButton* _osmRadioButton = new QRadioButton;
   ppp3LayoutHlp2->addWidget(new QLabel("OSM"));
+  ppp3LayoutHlp2->addWidget(_osmRadioButton);
+
+  ppp3LayoutHlp2->addSpacing(5*ww);
+
+  _mapWinTraceCheckBox = new QCheckBox;
+  ppp3LayoutHlp2->addWidget(new QLabel("Trace"));
+  ppp3LayoutHlp2->addWidget(_mapWinTraceCheckBox);
+
   ppp3LayoutHlp2->addStretch();
   ppp3Layout->addLayout(ppp3LayoutHlp2);
 
