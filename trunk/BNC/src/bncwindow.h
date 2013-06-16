@@ -262,6 +262,9 @@ class bncWindow : public QMainWindow {
     t_postProcessing* _postProcessing;
 
     QPushButton*         _mapWinButton;
+    QRadioButton*        _gmRadioButton;
+    QRadioButton*        _osmRadioButton;
+    QCheckBox*           _mapWinTraceCheckBox;
     bncMapWin*           _mapWin;
     QList<bncGetThread*> _threads;
 
