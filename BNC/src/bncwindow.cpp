@@ -2729,7 +2729,6 @@ void bncWindow::startPostProcessingPPP() {
   _actStart->setText("0 Epochs");
   enableStartStop();
 
-  delete _postProcessing;
   _postProcessing = new t_postProcessing(this);
   connect(_postProcessing, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessingPPP()));
   connect(_postProcessing, SIGNAL(progress(int)), this, SLOT(slotPostProgress(int)));
@@ -2756,6 +2755,7 @@ void bncWindow::startPostProcessingPPP() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFinishedPostProcessingPPP() {
   _runningPostProcessingPPP = false;
+  _postProcessing           = 0;
   QMessageBox::information(this, "Information",
                            "Post-Processing Thread Finished");
   _actStart->setText("Start");
