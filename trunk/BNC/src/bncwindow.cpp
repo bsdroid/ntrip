@@ -1063,6 +1063,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   ppp3LayoutHlp2->addSpacing(5*ww);
 
   _mapWinTraceCheckBox = new QCheckBox;
+  _mapWinTraceCheckBox->setCheckState(Qt::CheckState(settings.value("mapWinTrace").toInt()));
   ppp3LayoutHlp2->addWidget(new QLabel("Trace"));
   ppp3LayoutHlp2->addWidget(_mapWinTraceCheckBox);
 
