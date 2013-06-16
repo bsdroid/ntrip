@@ -139,6 +139,9 @@ void bncSettings::reRead() {
     setValue_p("nmeaFile",            "");
     setValue_p("nmeaPort",            "");
     setValue_p("pppPlotCoordinates",  "");
+    setValue_p("useOsmMap",           false);
+    setValue_p("mapWinTrace",         Qt::Checked);
+    setValue_p("mapSpeed",            0);
     setValue_p("postObsFile",         "");
     setValue_p("postNavFile",         "");
     setValue_p("postCorrFile",        "");
