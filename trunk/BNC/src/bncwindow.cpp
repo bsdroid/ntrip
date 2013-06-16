@@ -1033,31 +1033,30 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   // PPP Client (third panel)
   // ------------------------
-  QGridLayout* ppp3Layout = new QGridLayout;
-  ppp3Layout->setColumnMinimumWidth(0,2*ww);
-  ir = 0;
-  ppp3Layout->addWidget(new QLabel("Precise Point Positioning, Panel 3."), ir, 0, 1, 10);
-  ++ir;
-  ppp3Layout->addWidget(new QLabel("dN/dE/dH Plot"), ir, 0, Qt::AlignLeft);
-  ppp3Layout->addWidget(_pppPlotCoordinates,         ir, 1, Qt::AlignLeft);
-  ++ir; ++ir;
+  QVBoxLayout* ppp3Layout = new QVBoxLayout;
+  ppp3Layout->addWidget(new QLabel("Precise Point Positioning, Panel 3."));
+
+  QHBoxLayout* ppp3LayoutHlp1 = new QHBoxLayout;
+  ppp3LayoutHlp1->addWidget(new QLabel("PPP Plot"));
+  ppp3LayoutHlp1->addWidget(_pppPlotCoordinates);
+  ppp3LayoutHlp1->addStretch();
+  ppp3Layout->addLayout(ppp3LayoutHlp1);
+
+  QHBoxLayout* ppp3LayoutHlp2 = new QHBoxLayout;
   _mapWinButton = new QPushButton;
   _mapWinButton->setText("Google / Open Street Map");
   QRadioButton* _gmRadioButton  = new QRadioButton;
   QRadioButton* _osmRadioButton = new QRadioButton;
   connect(_mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
-  ppp3Layout->addWidget(_mapWinButton,        ir, 0, 1, 2, Qt::AlignLeft);
-  ppp3Layout->addWidget(_gmRadioButton,       ir, 3, Qt::AlignRight);
-  ppp3Layout->addWidget(new QLabel("Google"), ir, 4, Qt::AlignLeft);
-  ppp3Layout->addWidget(_osmRadioButton,      ir, 5, Qt::AlignRight);
-  ppp3Layout->addWidget(new QLabel("OSM"),    ir, 6, Qt::AlignLeft);
-  ++ir;
-  pLayout->addWidget(new QLabel(" "),         ir, 0);
-  ++ir;
-  pLayout->addWidget(new QLabel(" "),         ir, 0);
-  ++ir;
-  pLayout->addWidget(new QLabel(" "),         ir, 0);
+  ppp3LayoutHlp2->addWidget(_mapWinButton);
+  ppp3LayoutHlp2->addWidget(_gmRadioButton);
+  ppp3LayoutHlp2->addWidget(new QLabel("Google"));
+  ppp3LayoutHlp2->addWidget(_osmRadioButton);
+  ppp3LayoutHlp2->addWidget(new QLabel("OSM"));
+  ppp3LayoutHlp2->addStretch();
+  ppp3Layout->addLayout(ppp3LayoutHlp2);
 
+  ppp3Layout->addStretch();
   ppp3group->setLayout(ppp3Layout);
 
   // Reqc Processing
