@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html>
+
+  <head>
+    <title>BNC OpenStreetMap View</title>
+    <style type="text/css">
+      html, body, #basicMap {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+      }
+    </style>
+
+    <script src="http://openlayers.org/api/OpenLayers.js" ></script>
+
+    <script>
+      var map;
+      var markers;
+      var marker;
+      var icon;  
+      var fromProjection;
+      var toProjection;
+
+      function initialize(lat, lon) {
+        map = new OpenLayers.Map("basicMap",
+                                 {controls:[
+                                  new OpenLayers.Control.Navigation(),
+                                  new OpenLayers.Control.PanZoomBar()]});
+        fromProjection = new OpenLayers.Projection("EPSG:4326");   // WGS 1984
+        toProjection   = new OpenLayers.Projection("EPSG:900913"); // Spherical Mercator
+
+        var mapnik   = new OpenLayers.Layer.OSM();
+        var position = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
+        var zoom     = 15; 
+ 
+        map.addLayer(mapnik);
+
+        var size    = new OpenLayers.Size(40,40);
+        var offset  = new OpenLayers.Pixel(-size.w/2, -size.h/2);
+
+        icon    = new OpenLayers.Icon("qrc:///map/html/crosshair.png", size, offset);
+        markers = new OpenLayers.Layer.Markers("Markers");
+        marker  = new OpenLayers.Marker(position, icon);
+        markers.addMarker(marker);
+        
+        map.addLayer(markers);
+
+        map.setCenter(position, zoom);
+      }
+
+      function gotoLocation(lat, lon) {
+        var position = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
+        map.setCenter(position);
+        markers.removeMarker(marker);
+        marker = new OpenLayers.Marker(position, icon);
+        markers.addMarker(marker);
+      }
+
+    </script>
+
+  </head>
+
+  <body>
+    <div id="basicMap"></div>
+  </body>
+
+</html>
