@@ -1895,6 +1895,8 @@ void bncWindow::saveOptions() {
   settings.setValue("nmeaFile",    _pppNMEALineEdit->text());
   settings.setValue("nmeaPort",    _pppNMEAPortLineEdit->text());
   settings.setValue("pppPlotCoordinates", _pppPlotCoordinates->checkState());
+  settings.setValue("useOsmMap",          _osmRadioButton->isChecked());
+  settings.setValue("mapWinTrace",        _mapWinTraceCheckBox->checkState());
   settings.setValue("postObsFile",  _postObsFileChooser->fileName());
   settings.setValue("postNavFile",  _postNavFileChooser->fileName());
   settings.setValue("postCorrFile", _postCorrFileChooser->fileName());
@@ -2509,6 +2511,10 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _pppRefdULineEdit);
     enableWidget(enable, _pppUsePhaseCheckBox);
     enableWidget(enable, _pppPlotCoordinates);
+    enableWidget(enable, _mapWinButton);
+    enableWidget(enable, _gmRadioButton);
+    enableWidget(enable, _osmRadioButton);
+    enableWidget(enable, _mapWinTraceCheckBox);
     enableWidget(enable, _pppEstTropoCheckBox);
 //  enableWidget(enable, _pppGLONASSCheckBox);
     enableWidget(enable, _pppGalileoCheckBox);
