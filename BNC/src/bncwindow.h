@@ -265,6 +265,7 @@ class bncWindow : public QMainWindow {
     QRadioButton*        _gmRadioButton;
     QRadioButton*        _osmRadioButton;
     QCheckBox*           _mapWinTraceCheckBox;
+    QSlider*             _mapSpeedSlider;
     bncMapWin*           _mapWin;
     QList<bncGetThread*> _threads;
 
