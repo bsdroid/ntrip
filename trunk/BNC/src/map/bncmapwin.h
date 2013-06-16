@@ -43,17 +43,14 @@ class bncMapWin : public QDialog {
 
  private slots:
   void slotInitMap(bool isOk);
-  void slotTest();
 
  private:
-  enum e_mode {mode_test, mode_ppp};
   void loadHtmlPage();
   void gotoLocation(double lat, double lon);
-  QWebView*    _webView;
-  QPushButton* _testButton;
-  double       _currLat;
-  double       _currLon;
-  e_mode       _mode;
+  QWebView* _webView;
+  QLabel*   _statusLabel;
+  double    _currLat;
+  double    _currLon;
 };
 
 #endif
