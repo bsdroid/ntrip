@@ -41,9 +41,8 @@
     <file>IMG/screenshot31.png</file>
 </qresource>
 <qresource>
-    <file>map/html/index.html</file>
-    <file>map/html/index_osm.html</file>
-    <file>map/html/mapview.js</file>
-    <file>map/html/crosshair.png</file>
+    <file>map/map_gm.html</file>
+    <file>map/map_osm.html</file>
+    <file>map/crosshair.png</file>
 </qresource>
 </RCC>
