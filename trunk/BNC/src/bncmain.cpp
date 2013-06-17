@@ -162,7 +162,7 @@ int main(int argc, char* argv[]) {
   // -------------------
   else if (settings.value("pppSPP").toString() == "Post-Processing") {
     BNC_CORE->setMode(t_bncCore::batchPostProcessing);
-    t_postProcessing* postProcessing = new t_postProcessing(0);
+    t_postProcessing* postProcessing = new t_postProcessing(0, 0, 0);
     postProcessing->start();
   }
 

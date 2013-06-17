@@ -2793,7 +2793,7 @@ void bncWindow::startPostProcessingPPP() {
   _actStart->setText("0 Epochs");
   enableStartStop();
 
-  _postProcessing = new t_postProcessing(this, _mapSpeedSlider->maximum());
+  _postProcessing = new t_postProcessing(this, _mapSpeedSlider->maximum(), _mapSpeedSlider->value());
   connect(_postProcessing, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessingPPP()));
   connect(_postProcessing, SIGNAL(progress(int)), this, SLOT(slotPostProgress(int)));
   connect(_mapSpeedSlider, SIGNAL(valueChanged(int)), _postProcessing, SLOT(slotSetSpeed(int)));
