@@ -2508,7 +2508,8 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _pppQuickStartLineEdit
      || sender() == _pppEstTropoCheckBox
      || sender() == _pppUsePhaseCheckBox    
-     || sender() == _pppAntexFileChooser ) {
+     || sender() == _pppAntexFileChooser 
+     || sender() == _mapWin) {
 
     enable = !_pppSPPComboBox->currentText().isEmpty();
     if (enable) {
@@ -2978,6 +2979,7 @@ void bncWindow::slotMapPPP() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotMapPPPClosed() {
 #ifdef QT_WEBKIT
+  slotBncTextChanged();
   if (_mapWin) {
     QListIterator<bncGetThread*> it(_threads);
     while (it.hasNext()) {
@@ -2990,10 +2992,5 @@ void bncWindow::slotMapPPPClosed() {
     _mapWin->deleteLater();
     _mapWin = 0;
   }
-  enableWidget(true, _mapWinButton);
-  enableWidget(true, _gmRadioButton);
-  enableWidget(true, _osmRadioButton);
-  enableWidget(true, _mapWinTraceCheckBox);
-  enableWidget(true, _mapSpeedSlider);
 #endif
 }
