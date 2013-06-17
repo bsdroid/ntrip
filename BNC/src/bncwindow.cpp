@@ -2937,6 +2937,11 @@ void bncWindow::slotMapMountPoints() {
 void bncWindow::slotMapPPP() {
 #ifdef QT_WEBKIT
   saveOptions();
+  enableWidget(false, _mapWinButton);
+  enableWidget(false, _gmRadioButton);
+  enableWidget(false, _osmRadioButton);
+  enableWidget(false, _mapWinTraceCheckBox);
+  enableWidget(false, _mapSpeedSlider);
   if (!_mapWin) {
     _mapWin = new bncMapWin(this);
     connect(_mapWin, SIGNAL(mapClosed()), this, SLOT(slotMapPPPClosed()));
@@ -2962,8 +2967,8 @@ void bncWindow::slotMapPPP() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotMapPPPClosed() {
 #ifdef QT_WEBKIT
-  qDebug() << "slotMapPPPClosed";
   delete _mapWin;
   _mapWin = 0;
+  slotBncTextChanged();
 #endif
 }
