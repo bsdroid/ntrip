@@ -2939,6 +2939,7 @@ void bncWindow::slotMapPPP() {
   saveOptions();
   if (!_mapWin) {
     _mapWin = new bncMapWin(this);
+    connect(_mapWin, SIGNAL(mapClosed()), this, SLOT(slotMapPPPClosed()));
     QListIterator<bncGetThread*> it(_threads);
     while (it.hasNext()) {
       bncGetThread* thread = it.next();
@@ -2954,5 +2955,15 @@ void bncWindow::slotMapPPP() {
 #else
   QMessageBox::information(this, "Information",
                            "Qt Library compiled without QtWebKit");
+#endif
+}
+
+// Show Map
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotMapPPPClosed() {
+#ifdef QT_WEBKIT
+  qDebug() << "slotMapPPPClosed";
+  delete _mapWin;
+  _mapWin = 0;
 #endif
 }
