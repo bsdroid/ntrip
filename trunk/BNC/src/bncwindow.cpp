@@ -2815,7 +2815,11 @@ void bncWindow::startPostProcessingPPP() {
 // Post-Processing PPP Finished
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFinishedPostProcessingPPP() {
+  if (_mapWin) {
+    _postProcessing->disconnect(_mapWin);
+  }
   _runningPostProcessingPPP = false;
+  delete _postProcessing;
   _postProcessing           = 0;
   QMessageBox::information(this, "Information",
                            "Post-Processing Thread Finished");
