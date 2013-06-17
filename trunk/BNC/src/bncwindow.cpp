@@ -2113,6 +2113,10 @@ void bncWindow::closeEvent(QCloseEvent* event) {
     slotSaveOptions();
   }
 
+  if (_postProcessing) {
+    _postProcessing->terminate();
+  }
+
   QMainWindow::closeEvent(event);
 }
 

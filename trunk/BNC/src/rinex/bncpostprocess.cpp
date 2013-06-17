@@ -60,6 +60,7 @@ t_postProcessing::t_postProcessing(QObject* parent) : QThread(parent) {
   _rnxNavFile = 0;
   _corrFile   = 0;
   _pppClient  = 0;
+  _isToBeDeleted = false;
 
   bncSettings settings;
 
@@ -80,6 +81,7 @@ t_postProcessing::t_postProcessing(QObject* parent) : QThread(parent) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_postProcessing::~t_postProcessing() {
+  qDebug() << "~t_postProcessing";
   delete _pppClient;
   delete _rnxNavFile;
   delete _rnxObsFile;
@@ -131,6 +133,15 @@ void t_postProcessing::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
       obs.snrL5  = rnxSat.snr[iType];
       obs.slipL5 = (rnxSat.lli[iType] & 1);
     }
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_postProcessing::terminate() {
+  _isToBeDeleted = true;
+  if (!isRunning()) {
+    delete this;
   }
 }
 
@@ -192,6 +203,11 @@ void t_postProcessing::run() {
     }
 
     for (unsigned iObs = 0; iObs < epo->rnxSat.size(); iObs++) {
+      if (_isToBeDeleted) {
+        QThread::exit(0);
+        this->deleteLater();
+        return;
+      }
 
       const t_rnxObsFile::t_rnxSat& rnxSat = epo->rnxSat[iObs];
     
