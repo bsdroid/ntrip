@@ -13,18 +13,20 @@
     <script>
       var map;
       var marker;
+      var zoom;
       
       function initialize(lat, lon) {
       
         var myOptions = {
           center:     new google.maps.LatLng(lat, lon),
-          zoom:       17,
+          zoom:       3,
           mapTypeId:  google.maps.MapTypeId.SATELLITE,
           panControl: true
         };
       
-        map    = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-      
+        map  = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+        zoom = 0;       
+
         var image = new google.maps.MarkerImage("qrc:///map/crosshair.png",
                                                 null, 
                                                 null,
@@ -39,6 +41,10 @@
       }
       
       function gotoLocation(lat, lon) {
+        if (zoom == 0) {
+          zoom = 17;
+          map.setZoom(zoom);
+        }
         var position = new google.maps.LatLng(lat, lon);
         map.setCenter(position);
         marker.setPosition(position);
