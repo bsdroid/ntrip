@@ -2531,7 +2531,6 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _gmRadioButton);
     enableWidget(enable, _osmRadioButton);
     enableWidget(enable, _mapWinTraceCheckBox);
-    enableWidget(enable, _mapSpeedSlider);
     enableWidget(enable, _pppEstTropoCheckBox);
 //  enableWidget(enable, _pppGLONASSCheckBox);
     enableWidget(enable, _pppGalileoCheckBox);
@@ -2572,6 +2571,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable9, _postNavFileChooser);
     enableWidget(enable9, _postCorrFileChooser);
     enableWidget(enable9, _postOutLineEdit);
+    enableWidget(enable9, _mapSpeedSlider);
 
     bool enable10 = !_pppSPPComboBox->currentText().isEmpty() && !enable9;
     enableWidget(enable10, _pppMountLineEdit);
