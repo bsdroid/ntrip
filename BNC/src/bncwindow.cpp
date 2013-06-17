@@ -2815,9 +2815,11 @@ void bncWindow::startPostProcessingPPP() {
 // Post-Processing PPP Finished
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFinishedPostProcessingPPP() {
+#ifdef QT_WEBKIT
   if (_mapWin) {
     _postProcessing->disconnect(_mapWin);
   }
+#endif
   _runningPostProcessingPPP = false;
   delete _postProcessing;
   _postProcessing           = 0;
