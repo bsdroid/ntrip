@@ -2511,7 +2511,11 @@ void bncWindow::slotBncTextChanged(){
      || sender() == _pppEstTropoCheckBox
      || sender() == _pppUsePhaseCheckBox    
      || sender() == _pppAntexFileChooser 
-     || sender() == _mapWin) {
+#ifdef QT_WEBKIT
+     || sender() == _mapWin
+#endif
+     ) {
+
 
     enable = !_pppSPPComboBox->currentText().isEmpty();
     if (enable) {
