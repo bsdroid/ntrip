@@ -125,6 +125,10 @@ void bncMapWin::slotInitMap(bool isOk) {
 void bncMapWin::gotoLocation(double lat, double lon) {
   _currLat = lat;
   _currLon = lon;
+  //// beg test
+  // _currLat += 0.00001;
+  // _currLon += 0.00001;
+  //// end test
 
   int    latDeg, latMin;
   double latSec;
