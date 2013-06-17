@@ -42,7 +42,7 @@ class t_postProcessing : public QThread {
 Q_OBJECT
  
  public:
-  t_postProcessing(QObject* parent);
+  t_postProcessing(QObject* parent, int maxSpeed = 0);
   static void setObsFromRnx(const t_rnxObsFile* rnxObsFile,
                             const t_rnxObsFile::t_rnxEpo* epo, 
                             const t_rnxObsFile::t_rnxSat& rnxSat, 
@@ -57,6 +57,7 @@ Q_OBJECT
    
  public slots:
   void slotMessage(QByteArray msg, bool showOnScreen);
+  void slotSetSpeed(int speed);
 
  public:
   virtual void run();
@@ -71,6 +72,7 @@ Q_OBJECT
   QFile*        _outFile;
   QTextStream*  _outStream;
   bool          _isToBeDeleted;
+  int           _maxSpeed;
 };
 
 #endif

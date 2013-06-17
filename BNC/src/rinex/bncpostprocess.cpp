@@ -54,7 +54,9 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_postProcessing::t_postProcessing(QObject* parent) : QThread(parent) {
+t_postProcessing::t_postProcessing(QObject* parent, int maxSpeed) : QThread(parent) {
+
+  _maxSpeed   = maxSpeed;
   _opt        = new t_pppOpt();
   _rnxObsFile = 0;
   _rnxNavFile = 0;
@@ -244,4 +246,10 @@ void t_postProcessing::run() {
     emit finished();
     deleteLater();
   }
+}
+
+//  
+////////////////////////////////////////////////////////////////////////////
+void t_postProcessing::slotSetSpeed(int speed) {
+  qDebug() << "speed" << speed;
 }
