@@ -2986,7 +2986,7 @@ void bncWindow::slotMapPPPClosed() {
     if (_postProcessing) {
       _postProcessing->disconnect(_mapWin);
     }
-    delete _mapWin;
+    _mapWin->deleteLater();
     _mapWin = 0;
   }
   slotBncTextChanged();
