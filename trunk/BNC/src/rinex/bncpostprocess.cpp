@@ -207,6 +207,10 @@ void t_postProcessing::run() {
 
       if (_maxSpeed != 0) {
         QMutexLocker locker(&_mutex);
+        if (_speed < _maxSpeed) {
+          double sleepTime = 0.01 * _maxSpeed / _speed;
+          msleep(sleepTime*1.e3);
+        }
       }
 
       if (_isToBeDeleted) {
