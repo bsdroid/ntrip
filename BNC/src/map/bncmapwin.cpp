@@ -114,7 +114,9 @@ void bncMapWin::slotInitMap(bool isOk) {
   if (!isOk) {
     return;
   }
-  QString location = QString("%1, %2").arg(_currLat,0,'f',8).arg(_currLon,0,'f',8);
+  bncSettings settings;
+  int useTrace = (Qt::CheckState(settings.value("mapWinTrace").toInt()) == Qt::Checked) ? 1 : 0;
+  QString location = QString("%1, %2, %3").arg(_currLat,0,'f',8).arg(_currLon,0,'f',8).arg(useTrace);
   _webView->page()->mainFrame()->evaluateJavaScript(QString("initialize( %1 )").arg(location));
 }
 
