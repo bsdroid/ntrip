@@ -64,6 +64,10 @@
         markers.removeMarker(marker);
         marker = new OpenLayers.Marker(position, icon);
         markers.addMarker(marker);
+        if (useTrace == 1) {
+          var trace = new OpenLayers.Marker(position);
+          markers.addMarker(trace);
+        }
       }
 
     </script>
