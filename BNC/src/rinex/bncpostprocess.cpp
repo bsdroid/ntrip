@@ -81,7 +81,6 @@ t_postProcessing::t_postProcessing(QObject* parent) : QThread(parent) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_postProcessing::~t_postProcessing() {
-  qDebug() << "~t_postProcessing";
   delete _pppClient;
   delete _rnxNavFile;
   delete _rnxObsFile;
