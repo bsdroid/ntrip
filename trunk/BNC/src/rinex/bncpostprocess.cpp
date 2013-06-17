@@ -187,6 +187,14 @@ void t_postProcessing::run() {
   while ( (epo = _rnxObsFile->nextEpoch()) != 0 ) {
     ++nEpo;
 
+    if (_maxSpeed != 0) {
+      QMutexLocker locker(&_mutex);
+      if (_speed < _maxSpeed) {
+        double sleepTime = 0.02 * _maxSpeed / _speed;
+        msleep(sleepTime*1.e3);
+      }
+    }
+
     // Get Corrections
     // ---------------
     if (_corrFile) {
@@ -204,14 +212,6 @@ void t_postProcessing::run() {
     }
 
     for (unsigned iObs = 0; iObs < epo->rnxSat.size(); iObs++) {
-
-      if (_maxSpeed != 0) {
-        QMutexLocker locker(&_mutex);
-        if (_speed < _maxSpeed) {
-          double sleepTime = 0.01 * _maxSpeed / _speed;
-          msleep(sleepTime*1.e3);
-        }
-      }
 
       if (_isToBeDeleted) {
         QThread::exit(0);
