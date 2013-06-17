@@ -2793,9 +2793,10 @@ void bncWindow::startPostProcessingPPP() {
   _actStart->setText("0 Epochs");
   enableStartStop();
 
-  _postProcessing = new t_postProcessing(this);
+  _postProcessing = new t_postProcessing(this, _mapSpeedSlider->maximum());
   connect(_postProcessing, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessingPPP()));
   connect(_postProcessing, SIGNAL(progress(int)), this, SLOT(slotPostProgress(int)));
+  connect(_mapSpeedSlider, SIGNAL(valueChanged(int)), _postProcessing, SLOT(slotSetSpeed(int)));
   bncSettings settings;
   if ( Qt::CheckState(settings.value("pppPlotCoordinates").toInt()) == Qt::Checked) {
     _bncFigurePPP->reset();
@@ -2955,7 +2956,6 @@ void bncWindow::slotMapPPP() {
   enableWidget(false, _gmRadioButton);
   enableWidget(false, _osmRadioButton);
   enableWidget(false, _mapWinTraceCheckBox);
-  enableWidget(false, _mapSpeedSlider);
   if (!_mapWin) {
     _mapWin = new bncMapWin(this);
     connect(_mapWin, SIGNAL(mapClosed()), this, SLOT(slotMapPPPClosed()));
