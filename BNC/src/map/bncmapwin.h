@@ -37,12 +37,16 @@ class bncMapWin : public QDialog {
   ~bncMapWin();
 
  signals:
+  void mapClosed(); 
 
  public slots:
   void slotNewPosition(bncTime time, double xx, double yy, double zz);
 
  private slots:
   void slotInitMap(bool isOk);
+
+ protected:
+  virtual void closeEvent(QCloseEvent *);
 
  private:
   void loadHtmlPage();
