@@ -2795,6 +2795,7 @@ void bncWindow::startPostProcessingPPP() {
   connect(_postProcessing, SIGNAL(progress(int)), this, SLOT(slotPostProgress(int)));
   bncSettings settings;
   if ( Qt::CheckState(settings.value("pppPlotCoordinates").toInt()) == Qt::Checked) {
+    _bncFigurePPP->reset();
     connect(_postProcessing, SIGNAL(newPosition(bncTime, double, double, double)),
             _bncFigurePPP, SLOT(slotNewPosition(bncTime, double, double, double)));
   }
