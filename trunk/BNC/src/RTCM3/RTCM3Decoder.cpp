@@ -356,7 +356,8 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     
           // GLONASS Ephemeris
           // -----------------
-          else if (rr == 1020) {
+          else if (rr == 1020 && parser.ephemerisGLONASS.almanac_number >= 1
+          && parser.ephemerisGLONASS.almanac_number <= PRN_GLONASS_NUM) {
             decoded = true;
             emit newGlonassEph(new glonassephemeris(parser.ephemerisGLONASS), _staID);
           }
