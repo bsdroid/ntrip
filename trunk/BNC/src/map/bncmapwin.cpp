@@ -152,3 +152,10 @@ void bncMapWin::slotNewPosition(bncTime /* time */, double xx, double yy, double
   xyz2ell(xyz, ell);
   gotoLocation(ell[0]*180.0/M_PI, ell[1]*180.0/M_PI);
 }
+
+// Close Dialog gracefully
+////////////////////////////////////////////////////////////////////////////
+void bncMapWin::closeEvent(QCloseEvent* event) {
+  emit mapClosed();
+  QDialog::closeEvent(event);
+}
