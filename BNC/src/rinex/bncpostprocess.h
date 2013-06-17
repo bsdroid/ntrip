@@ -60,6 +60,7 @@ Q_OBJECT
 
  public:
   virtual void run();
+  void terminate();
  
  private:
   t_pppOpt*     _opt;
@@ -69,6 +70,7 @@ Q_OBJECT
   t_corrFile*   _corrFile;
   QFile*        _outFile;
   QTextStream*  _outStream;
+  bool          _isToBeDeleted;
 };
 
 #endif
