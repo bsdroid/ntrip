@@ -1071,9 +1071,9 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   _mapSpeedSlider = new QSlider;
   _mapSpeedSlider->setOrientation(Qt::Horizontal);
-  _mapSpeedSlider->setRange(1, 10);
+  _mapSpeedSlider->setRange(1, 100);
   _mapSpeedSlider->setTickPosition(QSlider::TicksBelow);
-  _mapSpeedSlider->setTickInterval(1);
+  _mapSpeedSlider->setTickInterval(10);
   int speed = settings.value("mapSpeed").toInt();
   if (speed == 0) speed = _mapSpeedSlider->maximum();
   _mapSpeedSlider->setSliderPosition(speed);
