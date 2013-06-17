@@ -2967,8 +2967,18 @@ void bncWindow::slotMapPPP() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotMapPPPClosed() {
 #ifdef QT_WEBKIT
-  delete _mapWin;
-  _mapWin = 0;
+  if (_mapWin) {
+    QListIterator<bncGetThread*> it(_threads);
+    while (it.hasNext()) {
+      bncGetThread* thread = it.next();
+      thread->disconnect(_mapWin);
+    }
+    if (_postProcessing) {
+      _postProcessing->disconnect(_mapWin);
+    }
+    delete _mapWin;
+    _mapWin = 0;
+  }
   slotBncTextChanged();
 #endif
 }
