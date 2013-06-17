@@ -20,18 +20,22 @@
       var icon;  
       var fromProjection;
       var toProjection;
+      var useTrace;
+      var zoom;
 
-      function initialize(lat, lon) {
+      function initialize(lat, lon, trace) {
+        useTrace = trace;
+
         map = new OpenLayers.Map("basicMap",
                                  {controls:[
                                   new OpenLayers.Control.Navigation(),
                                   new OpenLayers.Control.PanZoomBar()]});
         fromProjection = new OpenLayers.Projection("EPSG:4326");   // WGS 1984
         toProjection   = new OpenLayers.Projection("EPSG:900913"); // Spherical Mercator
+        zoom           = 0; 
 
         var mapnik   = new OpenLayers.Layer.OSM();
         var position = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
-        var zoom     = 15; 
  
         map.addLayer(mapnik);
 
@@ -45,12 +49,18 @@
         
         map.addLayer(markers);
 
-        map.setCenter(position, zoom);
+        map.setCenter(position, 3);
       }
 
       function gotoLocation(lat, lon) {
         var position = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
-        map.setCenter(position);
+        if (zoom == 0) {
+          zoom = 15;
+          map.setCenter(position, zoom);
+        }
+        else {
+          map.setCenter(position);
+        }
         markers.removeMarker(marker);
         marker = new OpenLayers.Marker(position, icon);
         markers.addMarker(marker);
