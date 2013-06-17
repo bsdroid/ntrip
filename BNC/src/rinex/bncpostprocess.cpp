@@ -158,7 +158,6 @@ void t_postProcessing::run() {
     catch (...) {
       delete _rnxObsFile; _rnxObsFile = 0;
       emit finished();
-      deleteLater();
       return;
     }
     _rnxNavFile = new t_rnxNavFile(_opt->navFileName, t_rnxNavFile::input);
@@ -204,7 +203,6 @@ void t_postProcessing::run() {
     for (unsigned iObs = 0; iObs < epo->rnxSat.size(); iObs++) {
       if (_isToBeDeleted) {
         QThread::exit(0);
-        this->deleteLater();
         return;
       }
 
