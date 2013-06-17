@@ -54,9 +54,10 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_postProcessing::t_postProcessing(QObject* parent, int maxSpeed) : QThread(parent) {
+t_postProcessing::t_postProcessing(QObject* parent, int maxSpeed, int speed) : QThread(parent) {
 
   _maxSpeed   = maxSpeed;
+  _speed      = speed;
   _opt        = new t_pppOpt();
   _rnxObsFile = 0;
   _rnxNavFile = 0;
@@ -203,6 +204,11 @@ void t_postProcessing::run() {
     }
 
     for (unsigned iObs = 0; iObs < epo->rnxSat.size(); iObs++) {
+
+      if (_maxSpeed != 0) {
+        QMutexLocker locker(&_mutex);
+      }
+
       if (_isToBeDeleted) {
         QThread::exit(0);
         return;
@@ -251,5 +257,6 @@ void t_postProcessing::run() {
 //  
 ////////////////////////////////////////////////////////////////////////////
 void t_postProcessing::slotSetSpeed(int speed) {
-  qDebug() << "speed" << speed;
+  QMutexLocker locker(&_mutex);
+  _speed = speed;
 }
