@@ -18,6 +18,7 @@
       var markers;
       var marker;
       var icon;  
+      var traceIcon;
       var fromProjection;
       var toProjection;
       var useTrace;
@@ -41,8 +42,12 @@
 
         var size    = new OpenLayers.Size(40,40);
         var offset  = new OpenLayers.Pixel(-size.w/2, -size.h/2);
+        icon        = new OpenLayers.Icon("qrc:///map/crosshair.png", size, offset);
 
-        icon    = new OpenLayers.Icon("qrc:///map/crosshair.png", size, offset);
+        var sizeT   = new OpenLayers.Size(4,4);
+        var offsetT = new OpenLayers.Pixel(-sizeT.w/2, -sizeT.h/2);
+        traceIcon   = new OpenLayers.Icon("qrc:///map/reddot.png", sizeT, offsetT);
+
         markers = new OpenLayers.Layer.Markers("Markers");
         marker  = new OpenLayers.Marker(position, icon);
         markers.addMarker(marker);
@@ -65,7 +70,7 @@
         marker = new OpenLayers.Marker(position, icon);
         markers.addMarker(marker);
         if (useTrace == 1) {
-          var trace = new OpenLayers.Marker(position);
+          var trace = new OpenLayers.Marker(position, traceIcon);
           markers.addMarker(trace);
         }
       }
