@@ -2989,6 +2989,10 @@ void bncWindow::slotMapPPPClosed() {
     _mapWin->deleteLater();
     _mapWin = 0;
   }
-  slotBncTextChanged();
+  enableWidget(true, _mapWinButton);
+  enableWidget(true, _gmRadioButton);
+  enableWidget(true, _osmRadioButton);
+  enableWidget(true, _mapWinTraceCheckBox);
+  enableWidget(true, _mapSpeedSlider);
 #endif
 }
