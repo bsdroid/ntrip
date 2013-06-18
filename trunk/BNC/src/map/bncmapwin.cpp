@@ -58,6 +58,16 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
   _webView = new QWebView(this);
   connect(_webView, SIGNAL(loadFinished(bool)), this, SLOT(slotInitMap(bool)));
 
+  // Proxy Settings
+  // --------------
+  bncSettings settings;
+  QString proxyHost = settings.value("proxyHost").toString();
+  int     proxyPort = settings.value("proxyPort").toInt();
+  if (!proxyHost.isEmpty()) {
+    QNetworkProxy proxy(QNetworkProxy::HttpProxy, proxyHost, proxyPort);
+    _webView->page()->networkAccessManager()->setProxy(proxy);
+  }
+
   loadHtmlPage();
 
   _webView->show();  
