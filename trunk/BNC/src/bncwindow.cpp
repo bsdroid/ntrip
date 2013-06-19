@@ -1044,7 +1044,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   QHBoxLayout* ppp3LayoutHlp2 = new QHBoxLayout;
   _mapWinButton = new QPushButton;
-  _mapWinButton->setText("Google / Open Street Map");
+  _mapWinButton->setText("Open Trace Map");
   connect(_mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
   ppp3LayoutHlp2->addWidget(_mapWinButton);
 
@@ -1444,6 +1444,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _pppGLONASSCheckBox->setWhatsThis(tr("<p>By default BNC does not use GLONASS observations in PPP mode.</p><p>Tick 'Use GLONASS' for adding GLONASS observations to GPS and Galileo (optional) in a PPP solution.</p>"));
   _pppGalileoCheckBox->setWhatsThis(tr("<p>By default BNC does not use Galileo observations in PPP mode.</p><p>Tick 'Use Galileo' for adding Galileo observations to GPS and GLONASS (optional) in a PPP solution.</p>"));
   _pppPlotCoordinates->setWhatsThis(tr("<p>BNC will plot PPP results in the 'PPP Plot' tab as North (red), East (green) and Up (blue) displacements when this option is selected. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.</p><p>Note that a PPP time series makes only sense for a stationary operated receiver."));
+  _mapWinButton->setWhatsThis(tr("<p>You make like to trace your rover position using Google Maps or Open Street Map as a background map. Trace plots can be produced with BNC in 'Realtime-PPP', 'Realtime-SPP' and 'Post-Processing' mode.</p><p>The 'Open Trace Map' button to opens a windows showing a map according to specified options.</p><p>When in 'Post-Processing' mode you should not forget to specify a proxy under the 'Network' tab if that is operated in front of BNC."));
   _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
   _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
   _pppSigCLineEdit->setWhatsThis(tr("<p>Enter a sigma for your code observations in meters.</p><p>The higher the sigma you enter, the less the contribution of code observations to a PPP solution based on a combination of code and phase data. 5.0 (default) is likely to be an appropriate choice.</p>"));
