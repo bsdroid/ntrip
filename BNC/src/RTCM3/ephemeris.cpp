@@ -93,7 +93,7 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
 
 
   static const double omegaEarth = 7292115.1467e-11;
-  static const double gmWGS      = 398.6005e12;
+  static const double gmGRS      = 398.6005e12;
 
   memset(xc, 0, 4*sizeof(double));
   memset(vv, 0, 3*sizeof(double));
@@ -103,7 +103,7 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
     return;
   }
 
-  double n0 = sqrt(gmWGS/(a0*a0*a0));
+  double n0 = sqrt(gmGRS/(a0*a0*a0));
 
   bncTime tt(GPSweek, GPSweeks);
   double tk = tt - bncTime(int(_TOEweek), _TOEsec);
@@ -300,14 +300,14 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv,
 
   // Acceleration 
   // ------------
-  static const double GM    = 398.60044e12;
+  static const double gmWGS = 398.60044e12;
   static const double AE    = 6378136.0;
   static const double OMEGA = 7292115.e-11;
   static const double C20   = -1082.6257e-6;
 
   double rho = rr.norm_Frobenius();
-  double t1  = -GM/(rho*rho*rho);
-  double t2  = 3.0/2.0 * C20 * (GM*AE*AE) / (rho*rho*rho*rho*rho);
+  double t1  = -gmWGS/(rho*rho*rho);
+  double t2  = 3.0/2.0 * C20 * (gmWGS*AE*AE) / (rho*rho*rho*rho*rho);
   double t3  = OMEGA * OMEGA;
   double t4  = 2.0 * OMEGA;
   double z2  = rr(3) * rr(3);
@@ -610,7 +610,7 @@ void t_ephGal::position(int GPSweek, double GPSweeks,
                         double* vv) const {
 
   static const double omegaEarth = 7292115.1467e-11;
-  static const double gmWGS      = 398.6005e12;
+  static const double gmWGS = 398.60044e12;
 
   memset(xc, 0, 4*sizeof(double));
   memset(vv, 0, 3*sizeof(double));
