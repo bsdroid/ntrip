@@ -45,5 +45,6 @@
     <file>map/map_osm.html</file>
     <file>map/crosshair.png</file>
     <file>map/reddot.png</file>
+    <file>map/yellowdot.png</file>
 </qresource>
 </RCC>
