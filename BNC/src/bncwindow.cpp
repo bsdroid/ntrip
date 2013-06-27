@@ -1044,7 +1044,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   QHBoxLayout* ppp3LayoutHlp2 = new QHBoxLayout;
   _mapWinButton = new QPushButton;
-  _mapWinButton->setText("Open Trace Map");
+  _mapWinButton->setText("Track Plot");
   connect(_mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
   ppp3LayoutHlp2->addWidget(_mapWinButton);
 
