@@ -1846,7 +1846,7 @@ Note that a PPP time series makes only sense for a stationary operated receiver.
 
 <p><a name="ppptracepos"><h4>3.12.10 Track Plot</h4></p>
 <p>
-You make like to track your rover position using Google Maps or Open StreetMap as a background map. Track plots can be produced with BNC in 'Realtime-PPP', 'Realtime-SPP' and 'Post-Processing' PPP mode.
+You make like to track your rover position using Google Maps or Open StreetMap as a background map. Track maps can be produced with BNC in 'Realtime-PPP', 'Realtime-SPP' and 'Post-Processing' PPP mode.
 </p>
 <p>
 When in 'Post-Processing' mode you should not forget to specify a proxy under the 'Network' tab if that is operated in front of BNC.
@@ -1856,22 +1856,22 @@ When in 'Post-Processing' mode you should not forget to specify a proxy under th
 <p><img src="IMG/screenshot32.png"/></p>
 <p><u>Figure 19:</u> Track of positions from BNC with Google Maps in the background.</p>
 
-<p><a name="pppmap"><h4>3.12.10.1 Open Track Plot - optional</h4></p>
+<p><a name="pppmap"><h4>3.12.10.1 Open Track Map - optional</h4></p>
 <p>
-The 'Track Plot' button opens a windows showing a map according to options specified below.
+The 'Open Track Map' button opens a windows showing a map according to options specified below.
 </p>
 
-<p><a name="pppmaptype"><h4>3.12.10.2 Google / OSM - mandatory before pushing 'Track Plot'</h4></p>
+<p><a name="pppmaptype"><h4>3.12.10.2 Google/OSM - mandatory before pushing 'Open Track Map'</h4></p>
 <p>
 Specify either 'Google' or 'OSM' as the background for your rover positions.
 </p>
 
-<p><a name="ppptrace"><h4>3.12.10.3 Trace - mandatory before pushing 'Track Plot'</h4></p>
+<p><a name="ppptrace"><h4>3.12.10.3 Trace - mandatory before pushing 'Open Track Map'</h4></p>
 <p>
 Hit 'Trace' to plot each position as a single dot on the map. 
 </p>
 
-<p><a name="pppspeed"><h4>3.12.10.4 Speed - mandatory before pushing 'Trace Plot'</h4></p>
+<p><a name="pppspeed"><h4>3.12.10.4 Speed - mandatory before pushing 'Open Track Map'</h4></p>
 <p>
 With BNC in PPP post-processing mode you can specify the speed of computations as appropriate for visualization. Note that you can adjust 'Speed' on-the-fly while BNC is processing your observatins.
 </p>
@@ -3145,7 +3145,7 @@ The purpose of this configuration is Precise Point Positioning in Post Processin
 </li><br>
 
 <li>File 'PPPGoogleMaps.bnc'<br>
-The purpose of this configuration is to track BNC's point positioning solution using Google Maps or Open StreetMap as background. BNC reads a RINEX Observation file and a RINEX Navigation file to carry out a 'Standard Point Positioning' solution in post-processing mode. Although this is not a real-time application it requires the BNC host to be connected to the Internet. Specify a computation speed, then hit button 'Track Plot' to open the track map, then hit 'Start' to visualize receiver positions on top of GM/OSM maps.
+The purpose of this configuration is to track BNC's point positioning solution using Google Maps or Open StreetMap as background. BNC reads a RINEX Observation file and a RINEX Navigation file to carry out a 'Standard Point Positioning' solution in post-processing mode. Although this is not a real-time application it requires the BNC host to be connected to the Internet. Specify a computation speed, then hit button 'Open Track Map' to open the track map, then hit 'Start' to visualize receiver positions on top of GM/OSM maps.
 </li><br>
 
 <li>File 'SPPQuickStartGal.bnc'<br>
