@@ -14,12 +14,11 @@
       var map;
       var marker;
       var zoom;
-      var useTrace;
+      var dotSize;
       var traceIcon;
       
-      function initialize(lat, lon, trace) {
-      
-        useTrace = trace;
+      function initialize(lat, lon, mapWinSize) {
+        dotSize = mapWinSize;
 
         var myOptions = {
           center:     new google.maps.LatLng(lat, lon),
@@ -42,7 +41,7 @@
                                                 null, 
                                                 null,
                                                 new google.maps.Point(1, 1),
-                                                new google.maps.Size(2, 2)
+                                                new google.maps.Size(dotSize, dotSize)
                                                );
 
         marker = new google.maps.Marker({
@@ -61,7 +60,7 @@
         map.setCenter(position);
         marker.setPosition(position);
 
-        if (useTrace == 1) {
+        if (dotSize > 0) {
           var trace = new google.maps.Marker({
             map:      map,
             position: position,
