@@ -21,11 +21,11 @@
       var traceIcon;
       var fromProjection;
       var toProjection;
-      var useTrace;
+      var dotSize;
       var zoom;
 
-      function initialize(lat, lon, trace) {
-        useTrace = trace;
+      function initialize(lat, lon, mapWinSize) {
+        dotSize = mapWinSize;
 
         map = new OpenLayers.Map("basicMap",
                                  {controls:[
@@ -44,7 +44,7 @@
         var offset  = new OpenLayers.Pixel(-size.w/2, -size.h/2);
         icon        = new OpenLayers.Icon("qrc:///map/crosshair.png", size, offset);
 
-        var sizeT   = new OpenLayers.Size(2,2);
+        var sizeT   = new OpenLayers.Size(dotSize,dotSize);
         var offsetT = new OpenLayers.Pixel(-sizeT.w/2, -13);
         traceIcon   = new OpenLayers.Icon("qrc:///map/reddot.png", sizeT, offsetT);
 
@@ -69,7 +69,7 @@
         markers.removeMarker(marker);
         marker = new OpenLayers.Marker(position, icon);
         markers.addMarker(marker);
-        if (useTrace == 1) {
+        if (dotSize > 0) {
           var trace = new OpenLayers.Marker(position, traceIcon.clone());
           markers.addMarker(trace);
         }
