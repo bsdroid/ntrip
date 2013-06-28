@@ -1064,10 +1064,10 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   ppp3LayoutHlp2->addSpacing(5*ww);
 
-  _mapWinTraceCheckBox = new QCheckBox;
-  _mapWinTraceCheckBox->setCheckState(Qt::CheckState(settings.value("mapWinTrace").toInt()));
-  ppp3LayoutHlp2->addWidget(new QLabel("Trace"));
-  ppp3LayoutHlp2->addWidget(_mapWinTraceCheckBox);
+  _mapWinDotSizeLineEdit  = new QLineEdit(settings.value("mapWinDotSize").toString());
+  ppp3LayoutHlp2->addWidget(new QLabel("Dot Size"));
+  _mapWinDotSizeLineEdit->setMaximumWidth(9*ww);
+  ppp3LayoutHlp2->addWidget(_mapWinDotSizeLineEdit);
 
   ppp3LayoutHlp2->addSpacing(5*ww);
 
@@ -1449,7 +1449,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _mapWinButton->setWhatsThis(tr("<p>You make like to track your rover position using Google Maps or Open Street Map as a background map. Track plots can be produced with BNC in 'Realtime-PPP', 'Realtime-SPP' and 'Post-Processing' mode.</p><p>The 'Open Track Map' button opens a windows showing a map according to specified options.</p><p>When in 'Post-Processing' mode you should not forget to specify a proxy under the 'Network' tab if that is operated in front of BNC."));
   _gmRadioButton->setWhatsThis(tr("<p>Specify Google Maps as the background for your rover positions."));
   _osmRadioButton->setWhatsThis(tr("<p>Specify Open Street Map as the background for your rover positions."));
-  _mapWinTraceCheckBox->setWhatsThis(tr("<p>Hit 'Trace' to plot each position as a single dot on the map."));
+  _mapWinDotSizeLineEdit->setWhatsThis(tr("<p>Specify the size of dots in pixels showing the rover positions. </p><p>A dot size of '3' may be appropriate. An empty option field or size of '0' would mean that you don't want BNC to show the rover track.</p>"));
   _mapSpeedSlider->setWhatsThis(tr("<p>With BNC in PPP post-processing mode you can specify the speed of computations as appropriate for visualization. Note that you can adjust 'Speed' on-the-fly while BNC is already processing your observations."));
   _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
   _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
@@ -1916,7 +1916,7 @@ void bncWindow::saveOptions() {
   settings.setValue("nmeaPort",    _pppNMEAPortLineEdit->text());
   settings.setValue("pppPlotCoordinates", _pppPlotCoordinates->checkState());
   settings.setValue("useOsmMap",          _osmRadioButton->isChecked());
-  settings.setValue("mapWinTrace",        _mapWinTraceCheckBox->checkState());
+  settings.setValue("mapWinDotSize",      _mapWinDotSizeLineEdit->text());
   settings.setValue("mapSpeed",           _mapSpeedSlider->value());
   settings.setValue("postObsFile",  _postObsFileChooser->fileName());
   settings.setValue("postNavFile",  _postNavFileChooser->fileName());
@@ -2544,7 +2544,6 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _mapWinButton);
     enableWidget(enable, _gmRadioButton);
     enableWidget(enable, _osmRadioButton);
-    enableWidget(enable, _mapWinTraceCheckBox);
     enableWidget(enable, _pppEstTropoCheckBox);
 //  enableWidget(enable, _pppGLONASSCheckBox);
     enableWidget(enable, _pppGalileoCheckBox);
@@ -2966,7 +2965,6 @@ void bncWindow::slotMapPPP() {
   enableWidget(false, _mapWinButton);
   enableWidget(false, _gmRadioButton);
   enableWidget(false, _osmRadioButton);
-  enableWidget(false, _mapWinTraceCheckBox);
   if (!_mapWin) {
     _mapWin = new bncMapWin(this);
     connect(_mapWin, SIGNAL(mapClosed()), this, SLOT(slotMapPPPClosed()));
