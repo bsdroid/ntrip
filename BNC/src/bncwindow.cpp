@@ -1036,7 +1036,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   QHBoxLayout* ppp3LayoutHlp1 = new QHBoxLayout;
   _pppPlotCoordinates = new QCheckBox();
   _pppPlotCoordinates->setCheckState(Qt::CheckState(settings.value("pppPlotCoordinates").toInt()));
-  ppp3LayoutHlp1->addWidget(new QLabel("PPP Plot         "));
+  ppp3LayoutHlp1->addWidget(new QLabel("PPP Plot           "));
   ppp3LayoutHlp1->addWidget(_pppPlotCoordinates);
   ppp3LayoutHlp1->addWidget(new QLabel("Nort-East-Up Time Series"));
   ppp3LayoutHlp1->addStretch();
@@ -1044,13 +1044,13 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   ppp3Layout->addSpacing(ww);
 
   QHBoxLayout* ppp3LayoutHlp2 = new QHBoxLayout;
-  ppp3LayoutHlp2->addWidget(new QLabel("Track Plot       "));
+  ppp3LayoutHlp2->addWidget(new QLabel("Track Plot         "));
   _mapWinButton = new QPushButton;
   _mapWinButton->setText("Open Map");
   connect(_mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
   ppp3LayoutHlp2->addWidget(_mapWinButton);
 
-  ppp3LayoutHlp2->addSpacing(5*ww);
+  ppp3LayoutHlp2->addSpacing(1*ww);
 
   _gmRadioButton  = new QRadioButton;
   _gmRadioButton->setChecked(!settings.value("useOsmMap").toBool());
@@ -1062,14 +1062,26 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   ppp3LayoutHlp2->addWidget(new QLabel("OSM"));
   ppp3LayoutHlp2->addWidget(_osmRadioButton);
 
-  ppp3LayoutHlp2->addSpacing(5*ww);
+  ppp3LayoutHlp2->addSpacing(3*ww);
 
   _mapWinDotSizeLineEdit  = new QLineEdit(settings.value("mapWinDotSize").toString());
   ppp3LayoutHlp2->addWidget(new QLabel("Dot Size"));
-  _mapWinDotSizeLineEdit->setMaximumWidth(9*ww);
+  _mapWinDotSizeLineEdit->setMaximumWidth(5*ww);
   ppp3LayoutHlp2->addWidget(_mapWinDotSizeLineEdit);
 
-  ppp3LayoutHlp2->addSpacing(5*ww);
+  ppp3LayoutHlp2->addSpacing(3*ww);
+
+  _mapWinDotColorComboBox = new QComboBox();
+  ppp3LayoutHlp2->addWidget(new QLabel("Dot Color"));
+  _mapWinDotColorComboBox->setEditable(false);
+  _mapWinDotColorComboBox->addItems(QString("red,yellow").split(","));
+  ii = _mapWinDotColorComboBox->findText(settings.value("mapWinDotColor").toString());
+  if (ii != -1) {
+    _mapWinDotColorComboBox->setCurrentIndex(ii);
+  }
+  ppp3LayoutHlp2->addWidget(_mapWinDotColorComboBox);
+
+  ppp3LayoutHlp2->addSpacing(3*ww);
 
   _mapSpeedSlider = new QSlider;
   _mapSpeedSlider->setOrientation(Qt::Horizontal);
@@ -1450,6 +1462,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _gmRadioButton->setWhatsThis(tr("<p>Specify Google Maps as the background for your rover positions."));
   _osmRadioButton->setWhatsThis(tr("<p>Specify Open Street Map as the background for your rover positions."));
   _mapWinDotSizeLineEdit->setWhatsThis(tr("<p>Specify the size of dots showing the rover positions.</p><p>A dot size of '3' may be appropriate. The maximum possible dot size is '10'. An empty option field or a size of '0' would mean that you don't want BNC to show the rover's track on the map.</p>"));
+  _mapWinDotColorComboBox->setWhatsThis(tr("<p>Specify the color of dots showing the rover track.</p>"));
   _mapSpeedSlider->setWhatsThis(tr("<p>With BNC in PPP post-processing mode you can specify the speed of computations as appropriate for visualization. Note that you can adjust 'Speed' on-the-fly while BNC is already processing your observations."));
   _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
   _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
@@ -1917,6 +1930,7 @@ void bncWindow::saveOptions() {
   settings.setValue("pppPlotCoordinates", _pppPlotCoordinates->checkState());
   settings.setValue("useOsmMap",          _osmRadioButton->isChecked());
   settings.setValue("mapWinDotSize",      _mapWinDotSizeLineEdit->text());
+  settings.setValue("mapWinDotColor",     _mapWinDotColorComboBox->currentText());
   settings.setValue("mapSpeed",           _mapSpeedSlider->value());
   settings.setValue("postObsFile",  _postObsFileChooser->fileName());
   settings.setValue("postNavFile",  _postNavFileChooser->fileName());
@@ -2543,6 +2557,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _pppPlotCoordinates);
     enableWidget(enable, _mapWinButton);
     enableWidget(enable, _mapWinDotSizeLineEdit);
+    enableWidget(enable, _mapWinDotColorComboBox);
     enableWidget(enable, _gmRadioButton);
     enableWidget(enable, _osmRadioButton);
     enableWidget(enable, _pppEstTropoCheckBox);
@@ -2967,6 +2982,7 @@ void bncWindow::slotMapPPP() {
   enableWidget(false, _gmRadioButton);
   enableWidget(false, _osmRadioButton);
   enableWidget(false, _mapWinDotSizeLineEdit);
+  enableWidget(false, _mapWinDotColorComboBox);
 
   if (!_mapWin) {
     _mapWin = new bncMapWin(this);
