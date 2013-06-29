@@ -140,7 +140,8 @@ void bncSettings::reRead() {
     setValue_p("nmeaPort",            "");
     setValue_p("pppPlotCoordinates",  "");
     setValue_p("useOsmMap",           false);
-    setValue_p("mapWinTrace",         Qt::Checked);
+    setValue_p("mapWinDotSize",       "");
+    setValue_p("mapWinDotColor",      "red");
     setValue_p("mapSpeed",            0);
     setValue_p("postObsFile",         "");
     setValue_p("postNavFile",         "");
