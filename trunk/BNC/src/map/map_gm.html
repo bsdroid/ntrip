@@ -19,6 +19,7 @@
       
       function initialize(lat, lon, mapWinSize) {
         dotSize = mapWinSize;
+	if (dotSize > 10) dotSize = 10;
 
         var myOptions = {
           center:     new google.maps.LatLng(lat, lon),
