@@ -125,10 +125,12 @@ void bncMapWin::slotInitMap(bool isOk) {
     return;
   }
   bncSettings settings;
-//int useTrace = (Qt::CheckState(settings.value("mapWinTrace").toInt()) == Qt::Checked) ? 1 : 0;
   int mapWinDotSize = settings.value("mapWinDotSize").toInt();
-//QString location = QString("%1, %2, %3").arg(_currLat,0,'f',8).arg(_currLon,0,'f',8).arg(useTrace);
-  QString location = QString("%1, %2, %3").arg(_currLat,0,'f',8).arg(_currLon,0,'f',8).arg(mapWinDotSize);
+  int mapWinDotColor = 1;
+  if (settings.value("mapWinDotColor").toString() == "yellow") {
+    mapWinDotColor = 2;
+  }
+  QString location = QString("%1, %2, %3, %4").arg(_currLat,0,'f',8).arg(_currLon,0,'f',8).arg(mapWinDotSize).arg(mapWinDotColor);
   _webView->page()->mainFrame()->evaluateJavaScript(QString("initialize( %1 )").arg(location));
 }
 
