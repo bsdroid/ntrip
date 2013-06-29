@@ -345,10 +345,11 @@ This chapter describes how to set the BNC program options. It explains the top m
 &nbsp; &nbsp; &nbsp; 3.12.8.6 <a href=#pppsigtrpn>Tropo White Noise</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.9 <a href=#pppplots>PPP Plot</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.10 <a href=#ppptracepos>Track Plot</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.10.1 <a href=#pppmap>Open Track Plot</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.10.1 <a href=#pppmap>Open Map</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.10.2 <a href=#pppmaptype>Google/OSM</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.10.3 <a href=#ppptrace>Trace</a><br>
-&nbsp; &nbsp; &nbsp; 3.12.10.4 <a href=#pppspeed>Speed</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.10.3 <a href=#pppdot>Dot Size</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.10.4 <a href=#pppcolor>Dot Color</a><br>
+&nbsp; &nbsp; &nbsp; 3.12.10.5 <a href=#pppspeed>Speed</a><br>
 
 3.13. <a href=#combi>Combine Corrections</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.1 <a href=#combimounttab>Combine Corrections Table</a><br>
@@ -1856,22 +1857,27 @@ When in 'Post-Processing' mode you should not forget to specify a proxy under th
 <p><img src="IMG/screenshot32.png"/></p>
 <p><u>Figure 19:</u> Track of positions from BNC with Google Maps in the background.</p>
 
-<p><a name="pppmap"><h4>3.12.10.1 Open Track Map - optional</h4></p>
+<p><a name="pppmap"><h4>3.12.10.1 Open Map - optional</h4></p>
 <p>
-The 'Open Track Map' button opens a windows showing a map according to options specified below.
+The 'Open Map' button opens a windows showing a map according to options specified below.
 </p>
 
-<p><a name="pppmaptype"><h4>3.12.10.2 Google/OSM - mandatory before pushing 'Open Track Map'</h4></p>
+<p><a name="pppmaptype"><h4>3.12.10.2 Google/OSM - mandatory before pushing 'Open Map'</h4></p>
 <p>
 Specify either 'Google' or 'OSM' as the background for your rover positions.
 </p>
 
-<p><a name="ppptrace"><h4>3.12.10.3 Trace - mandatory before pushing 'Open Track Map'</h4></p>
+<p><a name="pppdot"><h4>3.12.10.3 Dot Size - mandatory before pushing 'Open Map'</h4></p>
 <p>
-Hit 'Trace' to plot each position as a single dot on the map. 
+Specify the size of dots showing the rover position. A dot size of '3' may be appropriate. The maximum possible dot size is '10'. An empty option field or a size of '0' would mean that you don't want BNC to show the rover's track on the map.
 </p>
 
-<p><a name="pppspeed"><h4>3.12.10.4 Speed - mandatory before pushing 'Open Track Map'</h4></p>
+<p><a name="pppcolor"><h4>3.12.10.4 Dot Color - mandatory before pushing 'Open Map'</h4></p>
+<p>
+Specify the color of dots showing the rover track.
+</p>
+
+<p><a name="pppspeed"><h4>3.12.10.5 Speed - mandatory before pushing 'Open Map'</h4></p>
 <p>
 With BNC in PPP post-processing mode you can specify the speed of computations as appropriate for visualization. Note that you can adjust 'Speed' on-the-fly while BNC is processing your observatins.
 </p>
