@@ -26,6 +26,7 @@
 
       function initialize(lat, lon, mapWinSize) {
         dotSize = mapWinSize;
+        if (dotSize > 10) dotSize = 10;
 
         map = new OpenLayers.Map("basicMap",
                                  {controls:[
