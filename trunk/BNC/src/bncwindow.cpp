@@ -1046,7 +1046,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   QHBoxLayout* ppp3LayoutHlp2 = new QHBoxLayout;
   ppp3LayoutHlp2->addWidget(new QLabel("Track Plot       "));
   _mapWinButton = new QPushButton;
-  _mapWinButton->setText("Open Track Map");
+  _mapWinButton->setText("Open Map");
   connect(_mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
   ppp3LayoutHlp2->addWidget(_mapWinButton);
 
@@ -2542,6 +2542,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _pppUsePhaseCheckBox);
     enableWidget(enable, _pppPlotCoordinates);
     enableWidget(enable, _mapWinButton);
+    enableWidget(enable, _mapWinDotSizeLineEdit);
     enableWidget(enable, _gmRadioButton);
     enableWidget(enable, _osmRadioButton);
     enableWidget(enable, _pppEstTropoCheckBox);
@@ -2965,6 +2966,8 @@ void bncWindow::slotMapPPP() {
   enableWidget(false, _mapWinButton);
   enableWidget(false, _gmRadioButton);
   enableWidget(false, _osmRadioButton);
+  enableWidget(false, _mapWinDotSizeLineEdit);
+
   if (!_mapWin) {
     _mapWin = new bncMapWin(this);
     connect(_mapWin, SIGNAL(mapClosed()), this, SLOT(slotMapPPPClosed()));
