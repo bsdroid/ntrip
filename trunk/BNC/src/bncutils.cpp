@@ -447,3 +447,20 @@ void deg2DMS(double decDeg, int& deg, int& min, double& sec) {
   min =       static_cast<int>((decDeg - deg)*60);
   sec =       (decDeg - deg - min/60.0) * 3600.0;
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+QString fortranFormat(double value, int width, int prec) {
+  int    expo = value == 0.0 ? 0 : log10(fabs(value));
+  double mant = value == 0.0 ? 0 : value / pow(10, expo);
+  if (fabs(mant) >= 1.0) {
+    mant /= 10.0;
+    expo += 1;
+  }
+  if (expo >= 0) {
+    return QString("%1e+%2").arg(mant, width-4, 'f', prec).arg(expo,  2, 10, QChar('0'));
+  }
+  else {
+    return QString("%1e-%2").arg(mant, width-4, 'f', prec).arg(-expo, 2, 10, QChar('0'));
+  }
+}
