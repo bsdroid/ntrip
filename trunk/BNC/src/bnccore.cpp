@@ -523,8 +523,8 @@ void t_bncCore::printGlonassEph(glonassephemeris* ep, bool printFile, const QStr
   QString strV3 = eph.toString(3.01);
 
   //// beg test Dirk
-  //// cout << staID.toAscii().data() << endl
-  ////      << strV3.toAscii().data() << endl;
+  // QString hlp = strV2.replace('\n', ' ');
+  // cout << hlp.toAscii().data() << ' ' << staID.toAscii().data() << endl;
   //// end test Dirk
 
   printOutput(printFile, _ephStreamGlonass, strV2, strV3);
