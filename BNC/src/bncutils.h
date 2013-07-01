@@ -81,4 +81,6 @@ void topos(double xRec, double yRec, double zRec,
 
 void deg2DMS(double decDeg, int& deg, int& min, double& sec);
 
+QString fortranFormat(double value, int width, int prec);
+
 #endif
