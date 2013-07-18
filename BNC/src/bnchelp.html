@@ -2833,12 +2833,12 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 
 <tr>
 <td>Mar 2013 &nbsp;</td><td>Version 2.8 &nbsp;</td>
-<td>[Mod] Started work on new version in Sep 2012<br> [Bug] Epoch special event flag in RINEX concatenation<br> [Bug] Limit RINEX v2 records length to 80 characters<br> [Bug] SSR message update interval indicator<br> [Bug] Fixed SSR stream encoding and upload<br> [Add] Concatenate RINEX v3 navigation files containing Galileo ephemeris<br> [Mod] Plausibility check of GLONASS ephemeris<br> [Add] Correcting clocks for scale factor involved in transformation<br> [Mod] Orbit/clock interpolation in SSR stream encoding and upload to caster<br> [Add] Version 2.8 publisched</td>
+<td>[Mod] Started work on new version in Sep 2012<br> [Bug] Epoch special event flag in RINEX concatenation<br> [Bug] Limit RINEX v2 records length to 80 characters<br> [Bug] SSR message update interval indicator<br> [Bug] Fixed SSR stream encoding and upload<br> [Add] Concatenate RINEX v3 navigation files containing Galileo ephemeris<br> [Mod] Plausibility check of GLONASS ephemeris<br> [Add] Correcting clocks for scale factor involved in transformation<br> [Mod] Orbit/clock interpolation in SSR stream encoding and upload to caster<br> [Add] Version 2.8 published</td>
 </tr>
 
 <tr>
 <td>Jul 2013 &nbsp;</td><td>Version 2.9 &nbsp;</td>
-<td>[Add] Started work on new version in Mar 2013<br>[Bug] SSR stream upload buffering disabled<br>[Mod] Format for feeding a connected GNSS engine<br>[Mod] RTNET format for receiving data from a connected GNSS engine<br>[Add] Include Galileo in SPP<br>[Add] RINEX QC multipath an SNR skyplots for GLONASS and Galileo<br>[Add] Bias estimation for GLONASS clocks in PPP<br>[Add] Trace positions on GM or OSM maps</td>
+<td>[Add] Started work on new version in Mar 2013<br>[Bug] SSR stream upload buffering disabled<br>[Mod] Format for feeding a connected GNSS engine<br>[Mod] RTNET format for receiving data from a connected GNSS engine<br>[Add] Include Galileo in SPP<br>[Add] RINEX QC multipath an SNR skyplots for GLONASS and Galileo<br>[Add] Bias estimation for GLONASS clocks in PPP<br>[Add] Trace positions on GM or OSM maps<br>[Add] Version 2.9 published</td>
 </tr>
 
 </table>
@@ -2970,15 +2970,9 @@ RTCM Version 3 defines a number of message types. Messages that may be of intere
 <li>Type 1014 and 1017, Network RTK (MAK) messages.</li>
 <li>Type 1019, GPS ephemeris.</li>
 <li>Type 1020, GLONASS ephemeris.</li>
+<li>Type 1045, Galileo ephemeris.</li>
 <li>Type 4088 and 4095, Proprietary messages.
 </li>
-</ul>
-</p>
-
-<p>
-The following is a proposed Galileo Navigation Message under discussion for standardization:
-<ul>
-<li>Type 1045, Galileo ephemeris.</li>
 </ul>
 </p>
 
@@ -3023,7 +3017,14 @@ The following are so-called 'Multiple Signal Messages' (MSM):
 <li>Type 1094, Full Galileo pseudo-ranges and carrier phases plus signal strength</li>
 <li>Type 1095, Full Galileo pseudo-ranges, carrier phases, Doppler and signal strength</li>
 <li>Type 1096, Full Galileo pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
-<li>Type 1097, Full Galileo pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)</li>
+<li>Type 1097, Full Galileo pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)<br><br></li>
+<li>Type 1121, Compact BeiDou pseudo-ranges</li>
+<li>Type 1122, Compact BeiDou carrier phases</li>
+<li>Type 1123, Compact BeiDou pseudo-ranges and carrier phases</li>
+<li>Type 1124, Full BeiDou pseudo-ranges and carrier phases plus signal strength</li>
+<li>Type 1125, Full BeiDou pseudo-ranges, carrier phases, Doppler and signal strength</li>
+<li>Type 1126, Full BeiDou pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
+<li>Type 1127, Full BeiDou pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)</li>
 </ul>
 </p>
 
@@ -3044,13 +3045,6 @@ The following are proposed 'Multiple Signal Messages' (MSM) under discussion for
 <li>Type 1115, Full QZSS pseudo-ranges, carrier phases, Doppler and signal strength</li>
 <li>Type 1116, Full QZSS pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
 <li>Type 1117, Full QZSS pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)<br><br></li>
-<li>Type 1121, Compact BeiDou pseudo-ranges</li>
-<li>Type 1122, Compact BeiDou carrier phases</li>
-<li>Type 1123, Compact BeiDou pseudo-ranges and carrier phases</li>
-<li>Type 1124, Full BeiDou pseudo-ranges and carrier phases plus signal strength</li>
-<li>Type 1125, Full BeiDou pseudo-ranges, carrier phases, Doppler and signal strength</li>
-<li>Type 1126, Full BeiDou pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
-<li>Type 1127, Full BeiDou pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)</li>
 </ul>
 </p>
 
