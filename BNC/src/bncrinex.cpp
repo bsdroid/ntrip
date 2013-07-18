@@ -481,6 +481,19 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
     writeHeader(format, datTimNom);
   }
 
+  // Check whether observation types available
+  // -----------------------------------------
+  QMutableListIterator<t_obs> mItDump(dumpList);
+  while (mItDump.hasNext()) {
+    t_obs& obs = mItDump.next();
+    if (!_header._obsTypesV3.contains(obs.satSys) && !_header._obsTypesV3.contains(obs.satSys)) {
+      mItDump.remove();
+    }
+  }
+  if (dumpList.isEmpty()) {
+    return;
+  }
+
   double sec = double(datTim.time().second()) + fmod(fObs.GPSWeeks,1.0);
 
   // Epoch header line: RINEX Version 3
