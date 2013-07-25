@@ -146,6 +146,12 @@ unix {
   }
 }
 
+macx {
+  exists("$$[QT_INSTALL_LIBS]/QtWebKit.framework") { 
+    DEFINES += QT_WEBKIT
+  }
+}
+
 contains(DEFINES, QT_WEBKIT) {
   message("Configured with QtWebKit")
   QT          += webkit
