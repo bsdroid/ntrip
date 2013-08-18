@@ -705,9 +705,6 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
                 xc(1)-dx(1), xc(2)-dx(2), xc(3)-dx(3));
     outLines += hlp;
 
-    qDebug() << corr->prn << xc(1) << xc(2) << xc(3) << xc(4)*t_CST::c
-	     << vv(1) << vv(2) << vv(3) << dx(1) << dx(2) << dx(3);
- 
     QString line;
     int messageType = COTYPE_GPSCOMBINED;
     int updateInt   = 0;
