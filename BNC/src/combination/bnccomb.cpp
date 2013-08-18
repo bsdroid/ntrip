@@ -660,22 +660,16 @@ void bncComb::printResults(QTextStream& out,
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
 
-  ostringstream out; out.setf(std::ios::fixed);
-  QStringList   corrLines;
+  QString     outLines;
+  QStringList corrLines;
 
   unsigned year, month, day, hour, minute;
   double   sec;
   _resTime.civil_date(year, month, day);
   _resTime.civil_time(hour, minute, sec);
 
-  out << "*  " 
-      << setw(4)  << year   << " " 
-      << setw(2)  << month  << " " 
-      << setw(2)  << day    << " " 
-      << setw(2)  << hour   << " " 
-      << setw(2)  << minute << " " 
-      << setw(12) << setprecision(8) << sec << " "
-      << endl; 
+  outLines.sprintf("*  %4d %2d %2d %d %d %12.8f\n", 
+                   year, month, day, hour, minute, sec);
 
   QMapIterator<QString, t_corr*> it(resCorr);
   while (it.hasNext()) {
@@ -699,22 +693,20 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
       }
     }
     
-    out << corr->prn.toAscii().data()
-        << " APC 3 " 
-        << setw(15) << setprecision(4) << xc(1)
-        << setw(15) << setprecision(4) << xc(2)
-        << setw(15) << setprecision(4) << xc(3)
-        << " Clk 1 "
-        << setw(15) << setprecision(4) << xc(4) * t_CST::c
-        << " Vel 3 " 
-        << setw(15) << setprecision(4) << vv(1)
-        << setw(15) << setprecision(4) << vv(2)
-        << setw(15) << setprecision(4) << vv(3)
-        << " CoM 3 " 
-        << setw(15) << setprecision(4) << xc(1) - dx(1)
-        << setw(15) << setprecision(4) << xc(2) - dx(2)
-        << setw(15) << setprecision(4) << xc(3) - dx(2)
-        << endl;
+    outLines += corr->prn;
+    QString hlp;
+    hlp.sprintf(" APC 3 %15.4f %15.4f %15.4f"
+                " Clk 1 %15.4f"
+                " Vel 3 %15.4f %15.4f %15.4f"
+                " CoM 3 %15.4f %15.4f %15.4f\n",
+                xc(1), xc(2), xc(3), 
+                xc(4)*t_CST::c, 
+                vv(1), vv(2), vv(3),
+                xc(1)-dx(1), xc(2)-dx(2), xc(3)-dx(3));
+    outLines += hlp;
+
+    qDebug() << corr->prn << xc(1) << xc(2) << xc(3) << xc(4)*t_CST::c
+	     << vv(1) << vv(2) << vv(3) << dx(1) << dx(2) << dx(3);
  
     QString line;
     int messageType = COTYPE_GPSCOMBINED;
@@ -743,14 +735,15 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
 
     delete corr;
   }
-  out << "EOE" << endl; // End Of Epoch flag
+
+  outLines += "EOE\n"; // End Of Epoch flag
 
   if (!_rtnetDecoder) {
     _rtnetDecoder = new bncRtnetDecoder();
   }
 
   vector<string> errmsg;
-  _rtnetDecoder->Decode((char*) out.str().data(), out.str().size(), errmsg);
+  _rtnetDecoder->Decode(outLines.toAscii().data(), outLines.length(), errmsg);
 
   // Optionally send new Corrections to PPP
   // --------------------------------------
