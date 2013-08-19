@@ -655,6 +655,11 @@ void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
     meanSta(2) = -5017670.0;
     meanSta(3) = -2374440.0;
   }
+  else if (_crdTrafo == "DREF91") {
+    meanSta(1) =  3959579.0;
+    meanSta(2) =   721719.0;
+    meanSta(3) =  4931539.0;
+  }
   else if (_crdTrafo == "Custom") {
     meanSta(1) =        0.0; // TODO
     meanSta(2) =        0.0; // TODO
