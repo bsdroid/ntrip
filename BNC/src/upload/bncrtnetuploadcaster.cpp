@@ -176,7 +176,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _scr =     0.000;
     _t0  =    0000.0;
   }
-  elso if (_crdTrafo == "DREF91") {
+  else if (_crdTrafo == "DREF91") {
     _dx  =   -0.0118;
     _dy  =    0.1432;
     _dz  =   -0.1117;
