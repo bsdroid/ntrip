@@ -176,6 +176,23 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _scr =     0.000;
     _t0  =    0000.0;
   }
+  elso if (_crdTrafo == "DREF91") {
+    _dx  =   -0.0118;
+    _dy  =    0.1432;
+    _dz  =   -0.1117;
+    _dxr =    0.0001;
+    _dyr =    0.0001;
+    _dzr =   -0.0018;
+    _ox  =  0.003291;
+    _oy  =  0.006190;
+    _oz  = -0.011012;
+    _oxr =  0.000081;
+    _oyr =  0.000490;
+    _ozr = -0.000792;
+    _sc  =     12.24;
+    _scr =      0.08;
+    _t0  =    2000.0;
+  }
   else if (_crdTrafo == "Custom") {
     _dx  = settings.value("trafo_dx").toDouble();
     _dy  = settings.value("trafo_dy").toDouble();
