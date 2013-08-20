@@ -122,7 +122,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _oyr =  0.00075744;
     _ozr =  0.00005133;
     _sc  =     1.71504;
-    _scr =    -0.05133;
+    _scr =    -0.10201;
     _t0  =      1997.0;
   }
   else if (_crdTrafo == "GDA94") {
