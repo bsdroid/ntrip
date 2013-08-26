@@ -139,10 +139,12 @@ int t_obs::iEntry(QString rnxStr, float rnxVers) const {
       else if (rnxStr[0] == 'S') {
         return ie + GNSSENTRY_SNR;
       }
+      else {
+        return -1;
+      }
     }
   }
   return -1;
-  ////  return rrinex3codetoentry(rnxStr.toAscii().data());
 }
 
 // 
