@@ -46,7 +46,6 @@
 
 extern "C" {
 #include "rtcm3torinex.h"
-#include "rtcm3torinexsupport.h"
 }
 
 using namespace std;
@@ -126,7 +125,24 @@ int t_obs::iEntry(QString rnxStr, float rnxVers) const {
     else if (rnxStr == "P2") rnxStr = "C2P";
   }
 
-  return rrinex3codetoentry(rnxStr.toAscii().data());
+  for (int ie = 0; ie <  GNSSENTRY_NUMBER; ie++) {
+    if (rnxStr.mid(1) == QString(_codetype[ie])) {
+      if      (rnxStr[0] == 'C') {
+        return ie + GNSSENTRY_CODE;
+      }
+      else if (rnxStr[0] == 'L') {
+        return ie + GNSSENTRY_PHASE;
+      }
+      else if (rnxStr[0] == 'D') {
+        return ie + GNSSENTRY_DOPPLER;
+      }
+      else if (rnxStr[0] == 'S') {
+        return ie + GNSSENTRY_SNR;
+      }
+    }
+  }
+  return -1;
+  ////  return rrinex3codetoentry(rnxStr.toAscii().data());
 }
 
 // 

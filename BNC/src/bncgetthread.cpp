@@ -695,6 +695,10 @@ void bncGetThread::scanRTCM() {
             if (rnxTypes.indexOf(obs.rnxStr(iEntry)) == -1) {
               allFound = false;
               rnxTypes << obs.rnxStr(iEntry);
+              //// beg test
+              qDebug() << iEntry << obs.satSys << obs.rnxStr(iEntry) 
+                       << obs.measdata(obs.rnxStr(iEntry), 3.01);
+              //// end test
             }
           }
         }
