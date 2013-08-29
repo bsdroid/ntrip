@@ -162,7 +162,13 @@ int t_obs::iEntry(QString rnxStr, float rnxVers) const {
     default:
     case 'P': case 'W': case 'Y': res += GNSSENTRY_TYPEP2; break;
     case 'C': case 'S': case 'L': case 'X': res += GNSSENTRY_TYPEC2; break;
-    case 'I': res += GNSSENTRY_TYPEC5B; break;
+    case 'I': 
+      if (satSys == 'C') {
+        res += GNSSENTRY_TYPEC2;
+      }
+      else {
+        res += GNSSENTRY_TYPEC5B;
+      }
     }
     break;
   case '5':
