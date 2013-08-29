@@ -126,7 +126,7 @@ int t_obs::iEntry(QString rnxStr, float rnxVers) const {
   }
 
   for (int ie = 0; ie <  GNSSENTRY_NUMBER; ie++) {
-    if (rnxStr.mid(1) == QString(_codetype[ie])) {
+    if (rnxStr.mid(1) == _codetype[ie]) {
       if      (rnxStr[0] == 'C') {
         return ie + GNSSENTRY_CODE;
       }
@@ -157,7 +157,7 @@ QString t_obs::rnxStr(int iEntry) const {
     case GNSSENTRY_DOPPLER: str[0] = 'D'; break;
     case GNSSENTRY_SNR:     str[0] = 'S'; break;
   }
-  if (_codetype[iEntry]) {
+  if (!_codetype[iEntry].isEmpty()) {
     str[1] = _codetype[iEntry][0];
     str[2] = _codetype[iEntry][1];
   }
