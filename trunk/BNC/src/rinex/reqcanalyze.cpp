@@ -784,6 +784,7 @@ void t_reqcAnalyze::printReport(QVector<t_polarPoint*>* dataMP1,
                                 QVector<t_polarPoint*>* dataMP2,
                                 QVector<t_polarPoint*>* dataSNR1,
                                 QVector<t_polarPoint*>* dataSNR2) {
+
   if (!_log) {
     return;
   }
