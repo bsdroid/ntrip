@@ -95,11 +95,54 @@ void GPSDecoder::setRinexReconnectFlag(bool flag) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-void t_obs::setMeasdata(const QString& rnxStr, float rnxVers, double value) {
-  int ie = iEntry(rnxStr, rnxVers);
-  if (ie != -1) {
-    _measdata[ie] = value;
+void t_obs::setMeasdata(QString rnxStr, float rnxVers, double value) {
+
+  if (rnxVers < 3.0) {
+    if      (rnxStr == "C1") rnxStr = "C1C";
+    else if (rnxStr == "P1") rnxStr = "C1P";
+    else if (rnxStr == "C2") rnxStr = "C2C";
+    else if (rnxStr == "P2") rnxStr = "C2P";
   }
+
+  int ie = 0;
+  switch(rnxStr[0].toAscii()) {
+  case 'C': ie += GNSSENTRY_CODE;    break;
+  case 'L': ie += GNSSENTRY_PHASE;   break;
+  case 'D': ie += GNSSENTRY_DOPPLER; break;
+  case 'S': ie += GNSSENTRY_SNR;     break;
+  default: return;
+  }
+  switch(rnxStr[1].toAscii()) {
+  case '1':
+    switch(rnxStr[2].toAscii()) {
+    default:
+    case 'C':                     ie += GNSSENTRY_TYPEC1;    break;
+    case 'P': case 'W': case 'Y': ie += GNSSENTRY_TYPEP1;    break;
+    case 'A': case 'B':
+    case 'S': case 'L': case 'X': ie += GNSSENTRY_TYPEC1;    break;
+    case 'Z':                     ie += GNSSENTRY_TYPECSAIF; break;
+    }
+    break;
+  case '2':
+    switch(rnxStr[2].toAscii()) {
+    default:
+    case 'P': case 'W': case 'Y':           ie += GNSSENTRY_TYPEP2;  break;
+    case 'C': case 'S': case 'L': case 'X': ie += GNSSENTRY_TYPEC2;  break;
+    case 'I':                               ie += GNSSENTRY_TYPEC5B; break;
+    }
+    break;
+  case '5':
+    ie += GNSSENTRY_TYPEC5;   break;
+  case '6':
+    ie += GNSSENTRY_TYPEC6;   break;
+  case '7':
+    ie += GNSSENTRY_TYPEC5B;  break;
+  case '8':
+    ie += GNSSENTRY_TYPEC5AB; break;
+  }
+
+  _codetype[ie] = rnxStr.mid(1);
+  _measdata[ie] = value;
 }
 
 // 

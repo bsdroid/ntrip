@@ -66,7 +66,7 @@ class t_obs {
   ~t_obs() {}
 
   double measdata(const QString& rnxStr, float rnxVer) const;
-  void   setMeasdata(const QString& rnxStr, float rnxVer, double value);
+  void   setMeasdata(QString rnxStr, float rnxVer, double value);
 
   char   StatID[20+1]; // Station ID
   char   satSys;       // Satellite System ('G' or 'R')
