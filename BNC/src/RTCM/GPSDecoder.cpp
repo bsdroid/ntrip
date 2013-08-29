@@ -192,10 +192,10 @@ int t_obs::iEntry(QString rnxStr, float rnxVers) const {
     if      (rnxStr.length() < 3) {
       res += GNSSENTRY_TYPEP2;
     }
-    else if (QString("PWY").indexOf(rnxStr[2]) != -1) {
+    else if (QString("PWY").indexOf(rnxStr[2])  != -1) {
       res += GNSSENTRY_TYPEP2;
     }
-    else if (QString("CSLX").indexOf(rnxStr[2])    != -1) {
+    else if (QString("CSLX").indexOf(rnxStr[2]) != -1) {
       res += GNSSENTRY_TYPEC2;
     }
     else if (rnxStr[2] == 'I') {
