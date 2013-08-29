@@ -126,69 +126,6 @@ double t_obs::measdata(const QString& rnxStr, float rnxVers) const {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-int t_obs::iEntry(QString rnxStr, float rnxVers) const {
-  if (rnxVers < 3.0) {
-    if      (rnxStr == "C1") rnxStr = "C1C";
-    else if (rnxStr == "P1") rnxStr = "C1P";
-    else if (rnxStr == "C2") rnxStr = "C2C";
-    else if (rnxStr == "P2") rnxStr = "C2P";
-  }
-  int res = 0;
-  switch(rnxStr[0].toAscii())
-  {
-  case 'C': res += GNSSENTRY_CODE; break;
-  case 'L': res += GNSSENTRY_PHASE; break;
-  case 'D': res += GNSSENTRY_DOPPLER; break;
-  case 'S': res += GNSSENTRY_SNR; break;
-  default:
-    return -1;
-  }
-  switch(rnxStr[1].toAscii())
-  {
-  case '1':
-    switch(rnxStr[2].toAscii())
-    {
-    default:
-    case 'C': res += GNSSENTRY_TYPEC1; break;
-    case 'P': case'W': case 'Y': res += GNSSENTRY_TYPEP1; break;
-    case 'A': case'B':
-    case 'S': case'L': case 'X': res += GNSSENTRY_TYPEC1; break;
-    case 'Z': res += GNSSENTRY_TYPECSAIF; break;
-    }
-    break;
-  case '2':
-    switch(rnxStr[2].toAscii())
-    {
-    default:
-    case 'P': case 'W': case 'Y': res += GNSSENTRY_TYPEP2; break;
-    case 'C': case 'S': case 'L': case 'X': res += GNSSENTRY_TYPEC2; break;
-    case 'I': 
-      if (satSys == 'C') {
-        res += GNSSENTRY_TYPEC2;
-      }
-      else {
-        res += GNSSENTRY_TYPEC5B;
-      }
-    }
-    break;
-  case '5':
-    res += GNSSENTRY_TYPEC5;
-    break;
-  case '6':
-    res += GNSSENTRY_TYPEC6;
-    break;
-  case '7':
-    res += GNSSENTRY_TYPEC5B;
-    break;
-  case '8':
-    res += GNSSENTRY_TYPEC5AB;
-    break;
-  }
-  return res;
-}
-
-// 
-//////////////////////////////////////////////////////////////////////////////
 QString t_obs::rnxStr(int iEntry) const {
   QString str(3,' ');
   switch(iEntry & 3) {
@@ -199,4 +136,95 @@ QString t_obs::rnxStr(int iEntry) const {
   }
   str += _codetype[iEntry];
   return str.trimmed();
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+int t_obs::iEntry(QString rnxStr, float rnxVers) const {
+
+  if (rnxVers < 3.0) {
+    if      (rnxStr == "C1") rnxStr = "C1C";
+    else if (rnxStr == "P1") rnxStr = "C1P";
+    else if (rnxStr == "C2") rnxStr = "C2C";
+    else if (rnxStr == "P2") rnxStr = "C2P";
+  }
+
+  int res = 0;
+
+  // Observation Type (Code, Phase, Doppler, SNR)
+  // --------------------------------------------
+  if      (rnxStr[0] == 'C') {
+    res += GNSSENTRY_CODE;
+  }
+  else if (rnxStr[0] == 'L') {
+    res += GNSSENTRY_PHASE;
+  }
+  else if (rnxStr[0] == 'D') {
+    res += GNSSENTRY_DOPPLER;
+  }
+  else if (rnxStr[0] == 'S') {
+    res += GNSSENTRY_SNR;
+  }
+  else {
+    return -1;
+  }
+
+  // Frequency
+  // ---------
+  if      (rnxStr[1] == '1') {
+    if      (rnxStr.length() < 3) {
+      res += GNSSENTRY_TYPEC1;
+    }
+    else if (QString("ABCSLX").indexOf(rnxStr[2]) != -1) {
+      res += GNSSENTRY_TYPEC1;
+    }
+    else if (QString("PWY").indexOf(rnxStr[2])    != -1) {
+      res += GNSSENTRY_TYPEP1;
+    }
+    else if (rnxStr[2] == 'Z') {
+      res += GNSSENTRY_TYPECSAIF;
+    }
+    else {
+      return -1;
+    }
+  }
+  else if (rnxStr[1] == '2') {
+    if      (rnxStr.length() < 3) {
+      res += GNSSENTRY_TYPEP2;
+    }
+    else if (QString("PWY").indexOf(rnxStr[2]) != -1) {
+      res += GNSSENTRY_TYPEP2;
+    }
+    else if (QString("CSLX").indexOf(rnxStr[2])    != -1) {
+      res += GNSSENTRY_TYPEC2;
+    }
+    else if (rnxStr[2] == 'I') {
+      if (satSys == 'C') {
+        res += GNSSENTRY_TYPEC2;
+      }
+      else {
+        res += GNSSENTRY_TYPEC5B;
+      }
+    }
+    else {
+      return -1;
+    }
+  }
+  else if (rnxStr[1] == '5') {
+    res += GNSSENTRY_TYPEC5;
+  }
+  else if (rnxStr[1] == '6') {
+    res += GNSSENTRY_TYPEC6;
+  }
+  else if (rnxStr[1] == '7') {
+    res += GNSSENTRY_TYPEC5B;
+  }
+  else if (rnxStr[1] == '8') {
+    res += GNSSENTRY_TYPEC5AB;
+  }
+  else {
+    return -1;
+  }
+
+  return res;
 }
