@@ -51,7 +51,6 @@ class t_obs {
     _dataflags2 = 0;
     for (int ie = 0; ie < GNSSENTRY_NUMBER; ie++) {
       _measdata[ie] = 0.0;
-      _codetype[ie] = 0;
     }
     slip_cnt_L1 = -1;
     slip_cnt_L2 = -1;
@@ -91,7 +90,7 @@ class t_obs {
   double             _measdata[GNSSENTRY_NUMBER];  // data fields */ 
   unsigned long long _dataflags;                   // GNSSDF_xxx */
   unsigned int       _dataflags2;                  // GNSSDF2_xxx */
-  const char*        _codetype[GNSSENTRY_NUMBER];
+  QString            _codetype[GNSSENTRY_NUMBER];
 
   QString rnxStr(int iEntry) const;
 
