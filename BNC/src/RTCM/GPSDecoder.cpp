@@ -188,7 +188,7 @@ int t_obs::iEntry(QString rnxStr, float rnxVers) const {
       res += GNSSENTRY_TYPECSAIF;
     }
     else if (rnxStr[2] == 'X') {
-      if (satSys == 'C') {
+      if (satSys == 'C' || satSys == 'E') {
         res += GNSSENTRY_TYPEC1;
       }
       else {
@@ -209,7 +209,15 @@ int t_obs::iEntry(QString rnxStr, float rnxVers) const {
     else if (QString("CSLX").indexOf(rnxStr[2]) != -1) {
       res += GNSSENTRY_TYPEC2;
     }
-    else if (QString("IQ").indexOf(rnxStr[2]) != -1) {
+    else if (rnxStr[2] == 'I') {
+      if (satSys == 'C') {
+        res += GNSSENTRY_TYPEC1;  // Compass: RINEX 3.01 "2I" corresponds to "1I" RINEX 3.02
+      }
+      else {
+        res += GNSSENTRY_TYPEC2;
+      }
+    }
+    else if (rnxStr[2] == 'Q') {
       res += GNSSENTRY_TYPEC2;
     }
     else {

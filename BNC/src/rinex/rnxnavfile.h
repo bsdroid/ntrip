@@ -38,6 +38,8 @@ class t_rnxNavFile {
 
  public:
   enum e_inpOut {input, output};
+  static const double defaultRnxNavVersion2 = 2.11;
+  static const double defaultRnxNavVersion3 = 3.01;
 
  private:
   class t_rnxNavHeader {

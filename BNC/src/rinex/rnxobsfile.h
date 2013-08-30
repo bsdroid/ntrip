@@ -39,6 +39,9 @@
 
 class t_rnxObsHeader {
  public:
+  static const double defaultRnxObsVersion2 = 2.11;
+  static const double defaultRnxObsVersion3 = 3.02;
+
   t_rnxObsHeader();
   ~t_rnxObsHeader();
 
