@@ -175,14 +175,25 @@ int t_obs::iEntry(QString rnxStr, float rnxVers) const {
     if      (rnxStr.length() < 3) {
       res += GNSSENTRY_TYPEC1;
     }
-    else if (QString("ABCSLX").indexOf(rnxStr[2]) != -1) {
+    else if (QString("ABCIQ").indexOf(rnxStr[2]) != -1) {
       res += GNSSENTRY_TYPEC1;
+    }
+    else if (QString("SL").indexOf(rnxStr[2]) != -1) {
+      res += GNSSENTRY_TYPEC1N;
     }
     else if (QString("PWY").indexOf(rnxStr[2])    != -1) {
       res += GNSSENTRY_TYPEP1;
     }
     else if (rnxStr[2] == 'Z') {
       res += GNSSENTRY_TYPECSAIF;
+    }
+    else if (rnxStr[2] == 'X') {
+      if (satSys == 'C') {
+        res += GNSSENTRY_TYPEC1;
+      }
+      else {
+        res += GNSSENTRY_TYPEC1N;
+      }
     }
     else {
       return -1;
@@ -198,13 +209,8 @@ int t_obs::iEntry(QString rnxStr, float rnxVers) const {
     else if (QString("CSLX").indexOf(rnxStr[2]) != -1) {
       res += GNSSENTRY_TYPEC2;
     }
-    else if (rnxStr[2] == 'I') {
-      if (satSys == 'C') {
-        res += GNSSENTRY_TYPEC2;
-      }
-      else {
-        res += GNSSENTRY_TYPEC5B;
-      }
+    else if (QString("IQ").indexOf(rnxStr[2]) != -1) {
+      res += GNSSENTRY_TYPEC2;
     }
     else {
       return -1;
