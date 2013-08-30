@@ -48,6 +48,8 @@
 #include "bncsettings.h" 
 #include "bncversion.h" 
 #include "RTCM3/ephemeris.h" 
+#include "rinex/rnxobsfile.h" 
+#include "rinex/rnxnavfile.h" 
 
 #ifdef USE_COMBINATION
 #include "combination/bnccomb.h" 
@@ -463,8 +465,8 @@ void t_bncCore::printEphHeader() {
     else if (_rinexVers == 2) {
       if (! (appendFlagGPS & QIODevice::Append)) {
         QString line;
-        line.sprintf(
-          "%9.2f%11sN: GPS NAV DATA%25sRINEX VERSION / TYPE\n", 2.10, "", "");
+        line.sprintf("%9.2f%11sN: GPS NAV DATA%25sRINEX VERSION / TYPE\n",
+                     t_rnxNavFile::defaultRnxNavVersion2, "", "");
         *_ephStreamGPS << line;
          
         QString hlp = currentDateAndTimeGPS().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
@@ -480,8 +482,8 @@ void t_bncCore::printEphHeader() {
       }
       if (! (appendFlagGlonass & QIODevice::Append)) {
         QString line;
-        line.sprintf(
-          "%9.2f%11sG: GLONASS NAV DATA%21sRINEX VERSION / TYPE\n",2.10,"","");
+        line.sprintf("%9.2f%11sG: GLONASS NAV DATA%21sRINEX VERSION / TYPE\n",
+                     t_rnxNavFile::defaultRnxNavVersion2, "", "");
         *_ephStreamGlonass << line;
         
         QString hlp = currentDateAndTimeGPS().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
@@ -506,21 +508,21 @@ void t_bncCore::printGPSEph(gpsephemeris* ep, bool printFile) {
   t_ephGPS eph;
   eph.set(ep);
 
-  QString strV2 = eph.toString(2.11);
-  QString strV3 = eph.toString(3.01);
+  QString strV2 = eph.toString(t_rnxNavFile::defaultRnxNavVersion2);
+  QString strV3 = eph.toString(t_rnxObsHeader::defaultRnxObsVersion3);
 
   printOutput(printFile, _ephStreamGPS, strV2, strV3);
 }
 
 // Print One Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::printGlonassEph(glonassephemeris* ep, bool printFile, const QString& staID) {
+void t_bncCore::printGlonassEph(glonassephemeris* ep, bool printFile, const QString& /* staID */) {
 
   t_ephGlo eph;
   eph.set(ep);
 
-  QString strV2 = eph.toString(2.11);
-  QString strV3 = eph.toString(3.01);
+  QString strV2 = eph.toString(t_rnxNavFile::defaultRnxNavVersion2);
+  QString strV3 = eph.toString(t_rnxObsHeader::defaultRnxObsVersion3);
 
   //// beg test Dirk
   // QString hlp = strV2;
@@ -537,8 +539,8 @@ void t_bncCore::printGalileoEph(galileoephemeris* ep, bool printFile) {
   t_ephGal eph;
   eph.set(ep);
 
-  QString strV2 = eph.toString(2.11);
-  QString strV3 = eph.toString(3.01);
+  QString strV2 = eph.toString(t_rnxNavFile::defaultRnxNavVersion2);
+  QString strV3 = eph.toString(t_rnxObsHeader::defaultRnxObsVersion3);
 
   printOutput(printFile, _ephStreamGalileo, strV2, strV3);
 }
