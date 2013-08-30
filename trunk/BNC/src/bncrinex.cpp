@@ -350,10 +350,10 @@ void bncRinex::writeHeader(const QByteArray& format,
   // Set RINEX Version
   // -----------------
   if ( Qt::CheckState(settings.value("rnxV3").toInt()) == Qt::Checked) {
-    _header._version = 3.01;    
+    _header._version = t_rnxObsHeader::defaultRnxObsVersion3;
   }
   else {
-    _header._version = 2.11;
+    _header._version = t_rnxObsHeader::defaultRnxObsVersion2;
   }
 
   // A Few Additional Comments
