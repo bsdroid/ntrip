@@ -43,11 +43,10 @@
 #include "bnccore.h"
 #include "bncsettings.h"
 #include "bncutils.h"
+#include "rnxobsfile.h"
+#include "rnxnavfile.h"
 
 using namespace std;
-
-const double rnxV2 = 2.11;
-const double rnxV3 = 3.01;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -64,10 +63,10 @@ t_reqcEdit::t_reqcEdit(QObject* parent) : QThread(parent) {
   _outNavFileName = settings.value("reqcOutNavFile").toString();
   int version     = settings.value("reqcRnxVersion").toInt();
   if (version < 3) {
-    _rnxVersion = rnxV2;
+    _rnxVersion = t_rnxObsHeader::defaultRnxObsVersion2;
   }
   else {
-    _rnxVersion = rnxV3;
+    _rnxVersion = t_rnxObsHeader::defaultRnxObsVersion3;
   }
   _samplingRate   = settings.value("reqcSampling").toInt();
   _begTime        = bncTime(settings.value("reqcStartDateTime").toString().toAscii().data());
@@ -423,11 +422,11 @@ void t_reqcEdit::editEphemerides() {
 
   outNavFile.setGlonass(haveGlonass);
 
-  if (haveGPS && haveGlonass) {
-    outNavFile.setVersion(rnxV3);
+  if ( (haveGPS && haveGlonass) || _rnxVersion >= 3.0) {
+    outNavFile.setVersion(t_rnxNavFile::defaultRnxNavVersion3);
   }
   else {
-    outNavFile.setVersion(_rnxVersion);
+    outNavFile.setVersion(t_rnxNavFile::defaultRnxNavVersion2);
   }
 
   bncSettings settings;
