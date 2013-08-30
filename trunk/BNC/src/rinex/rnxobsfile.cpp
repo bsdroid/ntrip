@@ -720,11 +720,11 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
   }
   else if (version >= 3.0) {
     _trafo           = trafo2to3;
-    _header._version = 3.01;
+    _header._version = t_rnxObsHeader::defaultRnxObsVersion3;
   }
   else {
     _trafo           = trafo3to2;
-    _header._version = 2.11;
+    _header._version = t_rnxObsHeader::defaultRnxObsVersion2;
   }
 
   _header._interval        = header._interval;    
