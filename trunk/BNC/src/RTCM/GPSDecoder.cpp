@@ -127,7 +127,7 @@ double t_obs::measdata(const QString& rnxStr, float rnxVers) const {
 // 
 //////////////////////////////////////////////////////////////////////////////
 QString t_obs::rnxStr(int iEntry) const {
-  QString str(3,' ');
+  QString str(1,' ');
   switch(iEntry & 3) {
     case GNSSENTRY_CODE:    str[0] = 'C'; break;
     case GNSSENTRY_PHASE:   str[0] = 'L'; break;
