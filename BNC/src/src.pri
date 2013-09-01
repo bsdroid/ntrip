@@ -119,7 +119,10 @@ exists(rinex/bncpostprocess.h) {
 
 # Link to a 3rd-part library (test)
 # ---------------------------------
-# use_RTRover = true
+exists("../../RTRover/self_build/libRTRover.so") {
+  message("Configured with RTRover")
+  use_RTRover = true
+}
 
 equals(use_RTRover, true) {
   DEFINES += RTROVER_INTERFACE
