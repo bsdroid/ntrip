@@ -656,17 +656,17 @@ void t_bncCore::slotNewCorrLine(QString line, QString staID, bncTime coTime) {
 
   // First time, set the _lastCorrDumpTime
   // -------------------------------------
-  if (!_lastCorrDumpTime.valid()) {
-    _lastCorrDumpTime = coTime - 1.0;
+  if (!_lastCorrDumpTime[staID].valid()) {
+    _lastCorrDumpTime[staID] = coTime - 1.0;
   }
 
   // An old correction - throw it away
   // ---------------------------------
-  if (_waitCoTime > 0.0 && coTime <= _lastCorrDumpTime) {
+  if (_waitCoTime > 0.0 && coTime <= _lastCorrDumpTime[staID]) {
     if (!_bncComb) {
       QString line = staID + ": Correction for one sat neglected because overaged by " +
                       QString().sprintf(" %f sec",
-                      _lastCorrDumpTime - coTime + _waitCoTime);
+                      _lastCorrDumpTime[staID] - coTime + _waitCoTime);
       messagePrivate(line.toAscii());
       emit( newMessage(line.toAscii(), true) );
     }
@@ -680,9 +680,9 @@ void t_bncCore::slotNewCorrLine(QString line, QString staID, bncTime coTime) {
   if      (_waitCoTime == 0.0) {
     dumpCorrs();
   }
-  else if (coTime - _waitCoTime > _lastCorrDumpTime) {
-    dumpCorrs(_lastCorrDumpTime + 1, coTime - _waitCoTime);
-    _lastCorrDumpTime = coTime - _waitCoTime;
+  else if (coTime - _waitCoTime > _lastCorrDumpTime[staID]) {
+    dumpCorrs(_lastCorrDumpTime[staID] + 1, coTime - _waitCoTime);
+    _lastCorrDumpTime[staID] = coTime - _waitCoTime;
   }
 }
 
