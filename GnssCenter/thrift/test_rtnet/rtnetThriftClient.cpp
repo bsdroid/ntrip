@@ -1,7 +1,10 @@
 
 #include <iomanip>
+#include <sstream>
 #include <vector>
+#include <map>
 #include <string>
+#include <getopt.h>
 
 #include <transport/TSocket.h>
 #include <transport/TBufferTransports.h>
@@ -36,11 +39,46 @@ class RtnetClientHandler : public RtnetDataIf {
   void handleEpochResults(const RtnetEpoch& epoch) {}
 };
 
+// Read Command-line Options
+////////////////////////////////////////////////////////////////////////////////
+void parseCmdLine(int argc, char* argv[], map<string, string>& OPT) {
+
+  static struct option longOptions[] = {
+    {"host", required_argument, 0, 'h'},
+    {"port", required_argument, 0, 'p'},
+  };
+
+  while (true) {
+    int index = 0;
+    int iarg = getopt_long(argc, argv, "h:p:", longOptions, &index);
+    if (iarg == -1) {
+      break;
+    }
+    if (optarg) {
+      OPT[longOptions[index].name] = string(optarg);
+    }
+    else {
+      OPT[longOptions[index].name] = "y";
+    }
+  }
+}
+
 // Program
 //////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv) {
 
-  shared_ptr<TSocket>     socket(new TSocket("localhost", 6666));
+  // Parse Input Options
+  // -------------------
+  map<string, string> OPT;
+  parseCmdLine(argc, argv, OPT);
+  if (OPT.find("port") == OPT.end()) {
+    cerr << "usage: rtnetThriftClient [--host <host>] --port <port>" << endl;
+    return 1;
+  }
+  string host = OPT.find("host") == OPT.end() ? "localhost" : OPT["host"];
+  int    port; istringstream(OPT["port"]) >> port;
+
+  shared_ptr<TSocket>     socket(new TSocket(host, port));
   shared_ptr<TTransport>  transport(new TBufferedTransport(socket)); 
   shared_ptr<TProtocol>   protocol(new TBinaryProtocol(transport));
   shared_ptr<RtnetDataIf> dataHandler(new RtnetClientHandler());
