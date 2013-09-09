@@ -17,36 +17,27 @@ using namespace com::gpssolutions::rtnet;
 using namespace std;
 using namespace boost;
 
+// Handler Class Definition
+//////////////////////////////////////////////////////////////////////////////
 class RtnetClientHandler : public RtnetDataIf {
  public:
   RtnetClientHandler() {}
   ~RtnetClientHandler() {}
+
   void startDataStream() {}
   void registerRtnet(const RtnetInformation& info) {}
   void handleZDAmb(const vector<ZDAmb>& ambList) {}
   void handleDDAmbresBaselines(const vector<DDAmbresBaseline>& ambList) {}
+  void handleSatelliteXYZ(const vector< SatelliteXYZ>& svXYZList);
   void handleStationInfo(const vector<StationInfo>& stationList) {}
   void handleStationAuxInfo(const vector<StationAuxInfo>& stationAuxList) {}
   void handleDGPSCorr(const vector<DGPSCorr>& dgpsList) {}
   void handleSatelliteClock(const vector<SatelliteClock>& svList) {}
   void handleEpochResults(const RtnetEpoch& epoch) {}
-
-  void handleSatelliteXYZ(const vector< SatelliteXYZ>& svXYZList);
 };
 
-void RtnetClientHandler::
-handleSatelliteXYZ(const vector<SatelliteXYZ>& svXYZList) {
-  cout.setf(ios::fixed);
-  for (unsigned ii = 0; ii < svXYZList.size(); ii++) {
-    const SatelliteXYZ& sat = svXYZList[ii];
-    cout << unsigned(sat.ID) << ' '
-         << setprecision(3) << sat.xyz.x << ' '
-         << setprecision(3) << sat.xyz.y << ' '
-         << setprecision(3) << sat.xyz.z << endl;
-  }
-  cout << endl;
-}
-
+// Program
+//////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv) {
 
   shared_ptr<TSocket>     socket(new TSocket("localhost", 6666));
@@ -73,3 +64,19 @@ int main(int argc, char **argv) {
 
   return 0;
 }
+
+// Handle Satellite Positions
+//////////////////////////////////////////////////////////////////////////////
+void RtnetClientHandler::
+handleSatelliteXYZ(const vector<SatelliteXYZ>& svXYZList) {
+  cout.setf(ios::fixed);
+  for (unsigned ii = 0; ii < svXYZList.size(); ii++) {
+    const SatelliteXYZ& sat = svXYZList[ii];
+    cout << unsigned(sat.ID) << ' '
+         << setprecision(3) << sat.xyz.x << ' '
+         << setprecision(3) << sat.xyz.y << ' '
+         << setprecision(3) << sat.xyz.z << endl;
+  }
+  cout << endl;
+}
+
