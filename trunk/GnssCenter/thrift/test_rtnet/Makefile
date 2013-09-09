@@ -6,7 +6,7 @@ DEFS       = -DHAVE_INTTYPES_H -DHAVE_NETINET_IN_H
 
 INC = -I$(THRIFT_DIR) -I$(BOOST_DIR)
 
-GEN_SRC = client.cpp \
+GEN_SRC = rtnetThriftClient.cpp \
           gen-cpp/RtnetData.cpp \
           gen-cpp/rtnet_constants.cpp gen-cpp/rtnet_types.cpp \
           gen-cpp/rtnet_data_constants.cpp gen-cpp/rtnet_data_types.cpp
@@ -15,7 +15,7 @@ GEN_OBJ = $(patsubst %.cpp,%.o, $(GEN_SRC))
 
 .PHONY: all clean
 
-all: gen-cpp client
+all: gen-cpp rtnetThriftClient
 
 gen-cpp: rtnet.thrift
 	thrift -r -gen cpp rtnet.thrift
@@ -23,11 +23,11 @@ gen-cpp: rtnet.thrift
 %.o: %.cpp
 	$(CXX) -Wall -DHAVE_INTTYPES_H -DHAVE_NETINET_IN_H $(INC) -c $< -o $@
 
-## client: client.o $(GEN_OBJ)
+## rtnetThriftClient: rtnetThriftClient.o $(GEN_OBJ)
 ## 	$(CXX) $^ -o $@ -L/usr/local/lib -lthrift 
 
-client: client.o $(GEN_OBJ)
+rtnetThriftClient: rtnetThriftClient.o $(GEN_OBJ)
 	$(CXX) $^ -o $@ /usr/local/lib/libthrift.a
 
 clean:
-	$(RM) *.o gen-cpp/*.o client
+	$(RM) *.o gen-cpp/*.o rtnetThriftClient
