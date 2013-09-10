@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <QThread>
+#include <QMetaType>
 
 #include <transport/TSocket.h>
 #include <transport/TBufferTransports.h>
@@ -13,9 +14,26 @@
 
 using namespace com::gpssolutions::rtnet;
 
-// Handler Class Definition
-//////////////////////////////////////////////////////////////////////////////
-class t_thriftClient : public com::gpssolutions::rtnet::RtnetDataIf, public QThread {
+class t_thriftResult {
+ public:
+  t_thriftResult() {
+    _nGPS = 0;
+    _nGLO = 0;
+    _x    = 0.0;
+    _y    = 0.0;
+    _z    = 0.0;
+  }
+  ~t_thriftResult() {}
+  std::string _name;
+  int         _nGPS;  
+  int         _nGLO;
+  double      _x;
+  double      _y;
+  double      _z;
+};
+
+class t_thriftClient : public QThread, public com::gpssolutions::rtnet::RtnetDataIf {
+ Q_OBJECT
  public:
   t_thriftClient();
   ~t_thriftClient();
@@ -32,6 +50,9 @@ class t_thriftClient : public com::gpssolutions::rtnet::RtnetDataIf, public QThr
   void handleDGPSCorr(const std::vector<DGPSCorr>& dgpsList) {}
   void handleSatelliteClock(const std::vector<SatelliteClock>& svList) {}
   void handleEpochResults(const RtnetEpoch& epoch);
+
+ signals:
+  void newThriftResult(t_thriftResult);
 
  private:
 
