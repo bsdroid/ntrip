@@ -7,6 +7,7 @@
 
 class QwtPlot;
 class QwtPlotZoomer;
+class t_thriftClient;
 
 namespace GnssCenter {
 
@@ -29,16 +30,17 @@ class t_map_stations : public QDialog {
   virtual void showEvent(QShowEvent *);
 
  private:
-  QwtPlot*       _mapPlot;
-  QwtPlotZoomer* _mapPlotZoomer;
-  QPushButton*   _buttonClose;
-  QPushButton*   _buttonPrint;
-  QPushButton*   _buttonWhatsThis;
-  double         _minPointLat;
-  double         _maxPointLat;
-  double         _minPointLon;
-  double         _maxPointLon;
+  QwtPlot*        _mapPlot;
+  QwtPlotZoomer*  _mapPlotZoomer;
+  QPushButton*    _buttonClose;
+  QPushButton*    _buttonPrint;
+  QPushButton*    _buttonWhatsThis;
+  double          _minPointLat;
+  double          _maxPointLat;
+  double          _minPointLon;
+  double          _maxPointLon;
 
+  t_thriftClient* _thriftClinent;
 };
 
 class t_map_stationsFactory : public QObject, public t_pluginFactoryInterface {
@@ -46,7 +48,7 @@ class t_map_stationsFactory : public QObject, public t_pluginFactoryInterface {
  Q_INTERFACES(GnssCenter::t_pluginFactoryInterface)
  public:
   virtual QWidget* create() {return new t_map_stations();} 
-  virtual QString getName() const {return QString("Map");}
+  virtual QString getName() const {return QString("Map of Stations");}
 };
 
 } // namespace GnssCenter

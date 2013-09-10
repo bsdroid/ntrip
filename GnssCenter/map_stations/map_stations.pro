@@ -7,6 +7,9 @@ INCLUDEPATH         += ../qwt ../main
 DESTDIR              = ../plugins
 LIBS                 = -L../qwt -lqwt
 
+INCLUDEPATH         += /usr/local/include/thrift
+DEFINES             += HAVE_INTTYPES_H HAVE_NETINET_IN_H
+
 debug:OBJECTS_DIR   = .obj/debug
 debug:MOC_DIR       = .moc/debug
 release:OBJECTS_DIR = .obj/release
@@ -18,8 +21,10 @@ thrift.depends  = rtnet.thrift rtnet_data.thrift
 QMAKE_EXTRA_TARGETS += thrift
 PRE_TARGETDEPS      += gen-cpp
 
-HEADERS   = map_stations.h
+HEADERS   = map_stations.h \
+            thriftclient.h 
 
-SOURCES   = map_stations.cpp
+SOURCES   = map_stations.cpp \
+            thriftclient.cpp
 
 RESOURCES = map_stations.qrc
