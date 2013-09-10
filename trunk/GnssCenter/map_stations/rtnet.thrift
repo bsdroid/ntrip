@@ -1,0 +1,1 @@
+/home/mervart/gpss_src/thrift/rtnet.thrift
