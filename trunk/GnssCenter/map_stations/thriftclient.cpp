@@ -17,6 +17,7 @@ using namespace boost;
 //////////////////////////////////////////////////////////////////////////////
 t_thriftClient::t_thriftClient() {
   _stop = false;
+  qRegisterMetaType<t_thriftResult>("t_thriftResult");
 }
 
 // Destructor
@@ -85,13 +86,19 @@ void t_thriftClient::
 handleEpochResults(const RtnetEpoch& epoch) {
   for (unsigned ii = 0; ii < epoch.stationResultList.size(); ii++) {
     const StationResults& staRes = epoch.stationResultList[ii];
-    cout << staRes.stationName << ' '
-         << (int) staRes.nsv_gps_used << ' ' << (int) staRes.nsv_glonass_used << ' ';
+    t_thriftResult result;
+    
+    result._name = staRes.stationName;
+    result._nGPS = staRes.nsv_gps_used;
+    result._nGLO = staRes.nsv_glonass_used;
     if (_stationCrd.find(staRes.stationName) != _stationCrd.end()) {
-      cout << _stationCrd[staRes.stationName]._x << ' '
-           << _stationCrd[staRes.stationName]._y << ' '
-           << _stationCrd[staRes.stationName]._z;
+      result._x = _stationCrd[staRes.stationName]._x;
+      result._y = _stationCrd[staRes.stationName]._y;
+      result._z = _stationCrd[staRes.stationName]._z;
     }
-    cout << endl;
+
+    emit newThriftResult(result);
+
+    cout << result._name << ' ' << result._nGPS << ' ' << result._nGLO << endl;
   }
 }

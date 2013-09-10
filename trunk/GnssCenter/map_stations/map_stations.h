@@ -4,6 +4,7 @@
 #include <QtGui>
 #include <QWhatsThis>
 #include "plugininterface.h"
+#include "thriftclient.h"
 
 class QwtPlot;
 class QwtPlotZoomer;
@@ -19,6 +20,7 @@ class t_map_stations : public QDialog {
 
  public slots:
   void slotNewPoint(const QString& name, double latDeg, double lonDeg);
+  void slotNewThriftResult(t_thriftResult);
 
  private slots:
   void slotClose();
