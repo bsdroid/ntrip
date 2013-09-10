@@ -21,6 +21,7 @@ thrift.depends  = rtnet.thrift rtnet_data.thrift
 
 QMAKE_EXTRA_TARGETS += thrift
 PRE_TARGETDEPS      += gen-cpp
+LIBS                += -lthrift
 
 HEADERS   = map_stations.h \
             thriftclient.h 
