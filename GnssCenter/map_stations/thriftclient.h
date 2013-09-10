@@ -4,7 +4,6 @@
 #include <string>
 #include <map>
 #include <QThread>
-#include <QMetaType>
 
 #include <transport/TSocket.h>
 #include <transport/TBufferTransports.h>
@@ -13,6 +12,10 @@
 #include "gen-cpp/RtnetData.h"
 
 using namespace com::gpssolutions::rtnet;
+
+namespace GnssCenter {
+  class t_map_stations;
+}
 
 class t_thriftResult {
  public:
@@ -32,27 +35,23 @@ class t_thriftResult {
   double      _z;
 };
 
-class t_thriftClient : public QThread, public com::gpssolutions::rtnet::RtnetDataIf {
- Q_OBJECT
+class t_thriftClient : public QThread, public RtnetDataIf {
  public:
-  t_thriftClient();
+  t_thriftClient(GnssCenter::t_map_stations* parent);
   ~t_thriftClient();
   virtual void run();
   void stop() {_stop = true;}
 
   void startDataStream() {}
-  void registerRtnet(const RtnetInformation& info) {}
-  void handleZDAmb(const std::vector<ZDAmb>& ambList) {}
-  void handleDDAmbresBaselines(const std::vector<DDAmbresBaseline>& ambList) {}
+  void registerRtnet(const RtnetInformation&) {}
+  void handleZDAmb(const std::vector<ZDAmb>&) {}
+  void handleDDAmbresBaselines(const std::vector<DDAmbresBaseline>&) {}
   void handleSatelliteXYZ(const std::vector<SatelliteXYZ>& svXYZList);
   void handleStationInfo(const std::vector<StationInfo>& stationList);
-  void handleStationAuxInfo(const std::vector<StationAuxInfo>& stationAuxList) {}
-  void handleDGPSCorr(const std::vector<DGPSCorr>& dgpsList) {}
-  void handleSatelliteClock(const std::vector<SatelliteClock>& svList) {}
+  void handleStationAuxInfo(const std::vector<StationAuxInfo>&) {}
+  void handleDGPSCorr(const std::vector<DGPSCorr>&) {}
+  void handleSatelliteClock(const std::vector<SatelliteClock>&) {}
   void handleEpochResults(const RtnetEpoch& epoch);
-
- signals:
-  void newThriftResult(t_thriftResult);
 
  private:
 
@@ -63,8 +62,9 @@ class t_thriftClient : public QThread, public com::gpssolutions::rtnet::RtnetDat
     double _z;
   };
 
+  GnssCenter::t_map_stations*         _parent;
   std::map<std::string, t_stationCrd> _stationCrd;
-  bool _stop;
+  bool                                _stop;
 };
 
 #endif

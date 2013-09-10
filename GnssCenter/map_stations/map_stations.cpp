@@ -27,6 +27,7 @@
 #include <qwt_plot_renderer.h>
 
 #include "map_stations.h"
+#include "thriftclient.h"
 
 using namespace std;
 using namespace GnssCenter;
@@ -97,9 +98,7 @@ t_map_stations::t_map_stations() : QDialog() {
 
   // Thrift Client;
   // --------------
-  _thriftClient = new t_thriftClient;
-  connect(_thriftClient, SIGNAL(newThriftResult(t_thriftResult)),
-          this, SLOT(slotNewThriftResult(t_thriftResult)));
+  _thriftClient = new t_thriftClient(this);
   _thriftClient->start();
 }
 
@@ -163,10 +162,10 @@ void t_map_stations::slotNewPoint(const QString& name, double latDeg, double lon
 
 // 
 /////////////////////////////////////////////////////////////////////////////
-void t_map_stations::slotNewThriftResult(t_thriftResult result) {
-  cout << result._name << ' ' 
-       << result._nGPS << ' ' << result._nGLO << ' '
-       << result._x << ' ' << result._y << ' ' << result._z << endl;
+void t_map_stations::slotNewThriftResult(t_thriftResult* result) {
+  cout << result->_name << ' ' 
+       << result->_nGPS << ' ' << result->_nGLO << ' '
+       << result->_x << ' ' << result->_y << ' ' << result->_z << endl;
 }
 
 // Close
