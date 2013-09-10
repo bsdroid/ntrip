@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "thriftclient.h"
+#include "map_stations.h"
 
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
@@ -15,9 +16,9 @@ using namespace boost;
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_thriftClient::t_thriftClient() {
-  _stop = false;
-  qRegisterMetaType<t_thriftResult>("t_thriftResult");
+t_thriftClient::t_thriftClient(GnssCenter::t_map_stations* parent) {
+  _stop   = false;
+  _parent = parent;
 }
 
 // Destructor
@@ -35,7 +36,7 @@ void t_thriftClient::run() {
   shared_ptr<TSocket>     socket(new TSocket(host, port));
   shared_ptr<TTransport>  transport(new TBufferedTransport(socket)); 
   shared_ptr<TProtocol>   protocol(new TBinaryProtocol(transport));
-  shared_ptr<RtnetDataIf> dataHandler(new t_thriftClient());
+  shared_ptr<RtnetDataIf> dataHandler(new t_thriftClient(_parent));
   shared_ptr<TProcessor>  processor(new RtnetDataProcessor(dataHandler));
 
   try {
@@ -96,9 +97,6 @@ handleEpochResults(const RtnetEpoch& epoch) {
       result._y = _stationCrd[staRes.stationName]._y;
       result._z = _stationCrd[staRes.stationName]._z;
     }
-
-    emit newThriftResult(result);
-
-    cout << result._name << ' ' << result._nGPS << ' ' << result._nGLO << endl;
+    _parent->slotNewThriftResult(&result);
   }
 }
