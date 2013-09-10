@@ -16,13 +16,12 @@ using namespace boost;
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
 t_thriftClient::t_thriftClient() {
-
+  _stop = false;
 }
 
 // Destructor
 //////////////////////////////////////////////////////////////////////////////
 t_thriftClient::~t_thriftClient() {
-
 }
 
 // Run (virtual)
@@ -40,7 +39,7 @@ void t_thriftClient::run() {
 
   try {
     transport->open();
-    while (processor->process(protocol,protocol,0)) {}
+    while (!_stop && processor->process(protocol,protocol,0)) {}
     transport->close();
   } 
   catch (TException& e) {
@@ -49,6 +48,8 @@ void t_thriftClient::run() {
   catch (...) {
     cerr << "Unknown exception" << endl;
   }
+  this->terminate();
+  this->deleteLater();
 }
 
 // Handle Satellite Positions

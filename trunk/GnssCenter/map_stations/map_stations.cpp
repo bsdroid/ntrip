@@ -106,6 +106,7 @@ t_map_stations::t_map_stations() : QDialog() {
 t_map_stations::~t_map_stations() { 
   delete _mapPlot;
   delete _buttonWhatsThis;
+  _thriftClient->stop();
 }
 
 // 

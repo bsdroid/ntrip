@@ -20,6 +20,7 @@ class t_thriftClient : public com::gpssolutions::rtnet::RtnetDataIf, public QThr
   t_thriftClient();
   ~t_thriftClient();
   virtual void run();
+  void stop() {_stop = true;}
 
   void startDataStream() {}
   void registerRtnet(const RtnetInformation& info) {}
@@ -42,6 +43,7 @@ class t_thriftClient : public com::gpssolutions::rtnet::RtnetDataIf, public QThr
   };
 
   std::map<std::string, t_stationCrd> _stationCrd;
+  bool _stop;
 };
 
 #endif
