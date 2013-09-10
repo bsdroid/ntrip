@@ -15,7 +15,7 @@ using namespace com::gpssolutions::rtnet;
 
 // Handler Class Definition
 //////////////////////////////////////////////////////////////////////////////
-class t_thriftClient : public com::gpssolutions::rtnet::RtnetDataIf, QThread {
+class t_thriftClient : public com::gpssolutions::rtnet::RtnetDataIf, public QThread {
  public:
   t_thriftClient();
   ~t_thriftClient();
