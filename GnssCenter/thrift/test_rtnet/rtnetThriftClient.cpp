@@ -133,11 +133,9 @@ void RtnetClientHandler::
 handleStationInfo(const vector<StationInfo>& stationList) {
   for (unsigned ii = 0; ii < stationList.size(); ii++) {
     const StationInfo& staInfo = stationList[ii];
-    if (_stationCrd.find(staInfo.ID) == _stationCrd.end()) {
-      _stationCrd[staInfo.ID]._x = staInfo.xyz.x;
-      _stationCrd[staInfo.ID]._y = staInfo.xyz.y;
-      _stationCrd[staInfo.ID]._z = staInfo.xyz.z;
-    }
+    _stationCrd[staInfo.ID]._x = staInfo.xyz.x;
+    _stationCrd[staInfo.ID]._y = staInfo.xyz.y;
+    _stationCrd[staInfo.ID]._z = staInfo.xyz.z;
   }
 }
 
