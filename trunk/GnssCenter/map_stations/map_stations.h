@@ -1,5 +1,5 @@
-#ifndef GnssCenter_SVGMAP_H
-#define GnssCenter_SVGMAP_H
+#ifndef GnssCenter_MAP_STATIONS_H
+#define GnssCenter_MAP_STATIONS_H
 
 #include <QtGui>
 #include <QWhatsThis>
@@ -10,11 +10,11 @@ class QwtPlotZoomer;
 
 namespace GnssCenter {
 
-class t_svgMap : public QDialog {
+class t_map_stations : public QDialog {
  Q_OBJECT
  public:
-  t_svgMap();
-  ~t_svgMap();
+  t_map_stations();
+  ~t_map_stations();
 
  public slots:
   void slotNewPoint(const QString& name, double latDeg, double lonDeg);
@@ -41,11 +41,11 @@ class t_svgMap : public QDialog {
 
 };
 
-class t_svgMapFactory : public QObject, public t_pluginFactoryInterface {
+class t_map_stationsFactory : public QObject, public t_pluginFactoryInterface {
  Q_OBJECT
  Q_INTERFACES(GnssCenter::t_pluginFactoryInterface)
  public:
-  virtual QWidget* create() {return new t_svgMap();} 
+  virtual QWidget* create() {return new t_map_stations();} 
   virtual QString getName() const {return QString("Map");}
 };
 

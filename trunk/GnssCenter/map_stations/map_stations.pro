@@ -1,7 +1,7 @@
 
 TEMPLATE             = lib
 CONFIG              += plugin debug
-TARGET               = $$qtLibraryTarget(gnsscenter_svgmap)
+TARGET               = $$qtLibraryTarget(gnsscenter_map_stations)
 QT                  += svg
 INCLUDEPATH         += ../qwt ../main
 DESTDIR              = ../plugins
@@ -18,8 +18,8 @@ thrift.depends  = rtnet.thrift rtnet_data.thrift
 QMAKE_EXTRA_TARGETS += thrift
 PRE_TARGETDEPS      += gen-cpp
 
-HEADERS   = svgmap.h
+HEADERS   = map_stations.h
 
-SOURCES   = svgmap.cpp
+SOURCES   = map_stations.cpp
 
-RESOURCES = svgmap.qrc
+RESOURCES = map_stations.qrc

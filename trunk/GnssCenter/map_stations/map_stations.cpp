@@ -3,7 +3,7 @@
  * RTNet GUI
  * -------------------------------------------------------------------------
  *
- * Class:      t_svgMap
+ * Class:      t_map_stations
  *
  * Purpose:    Plot map of stations/satellites
  *
@@ -26,16 +26,16 @@
 #include <qwt_plot_zoomer.h>
 #include <qwt_plot_renderer.h>
 
-#include "svgmap.h"
+#include "map_stations.h"
 
 using namespace std;
 using namespace GnssCenter;
 
-Q_EXPORT_PLUGIN2(gnsscenter_svgmap, GnssCenter::t_svgMapFactory)
+Q_EXPORT_PLUGIN2(gnsscenter_map_stations, GnssCenter::t_map_stationsFactory)
 
 // Constructor
 /////////////////////////////////////////////////////////////////////////////
-t_svgMap::t_svgMap() : QDialog() {
+t_map_stations::t_map_stations() : QDialog() {
 
   // Map in Scalable Vector Graphics (svg) Format
   // --------------------------------------------
@@ -98,14 +98,14 @@ t_svgMap::t_svgMap() : QDialog() {
 
 // Destructor
 /////////////////////////////////////////////////////////////////////////////
-t_svgMap::~t_svgMap() { 
+t_map_stations::~t_map_stations() { 
   delete _mapPlot;
   delete _buttonWhatsThis;
 }
 
 // 
 /////////////////////////////////////////////////////////////////////////////
-void t_svgMap::slotNewPoint(const QString& name, double latDeg, double lonDeg) {
+void t_map_stations::slotNewPoint(const QString& name, double latDeg, double lonDeg) {
 
   if (lonDeg > 180.0) lonDeg -= 360.0;
 
@@ -155,19 +155,19 @@ void t_svgMap::slotNewPoint(const QString& name, double latDeg, double lonDeg) {
 
 // Close
 ////////////////////////////////////////////////////////////////////////////
-void t_svgMap::slotClose() {
+void t_map_stations::slotClose() {
   done(0);
 }
 
 // Close Dialog gracefully
 ////////////////////////////////////////////////////////////////////////////
-void t_svgMap::closeEvent(QCloseEvent* event) {
+void t_map_stations::closeEvent(QCloseEvent* event) {
   QDialog::closeEvent(event);
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_svgMap::showEvent(QShowEvent* event) {
+void t_map_stations::showEvent(QShowEvent* event) {
   double width  = _maxPointLon - _minPointLon;
   double height = _maxPointLat - _minPointLat;
   if (width > 0 && height > 0) {
@@ -217,7 +217,7 @@ void t_svgMap::showEvent(QShowEvent* event) {
 
 // Print the widget
 ////////////////////////////////////////////////////////////////////////////
-void t_svgMap::slotPrint() {
+void t_map_stations::slotPrint() {
 
   QPrinter printer;
   QPrintDialog* dialog = new QPrintDialog(&printer, this);
@@ -235,7 +235,7 @@ void t_svgMap::slotPrint() {
 
 // Whats This Help
 ////////////////////////////////////////////////////////////////////////////
-void t_svgMap::slotWhatsThis() {
+void t_map_stations::slotWhatsThis() {
   QWhatsThis::enterWhatsThisMode();
 }
 
