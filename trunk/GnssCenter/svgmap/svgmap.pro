@@ -12,6 +12,12 @@ debug:MOC_DIR       = .moc/debug
 release:OBJECTS_DIR = .obj/release
 release:MOC_DIR     = .moc/release
 
+thrift.target   = gen-cpp
+thrift.commands = "thrift -r -gen cpp rtnet.thrift"
+thrift.depends  = rtnet.thrift rtnet_data.thrift
+QMAKE_EXTRA_TARGETS += thrift
+PRE_TARGETDEPS      += gen-cpp
+
 HEADERS   = svgmap.h
 
 SOURCES   = svgmap.cpp
