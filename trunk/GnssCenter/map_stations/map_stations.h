@@ -40,7 +40,7 @@ class t_map_stations : public QDialog {
   double          _minPointLon;
   double          _maxPointLon;
 
-  t_thriftClient* _thriftClinent;
+  t_thriftClient* _thriftClient;
 };
 
 class t_map_stationsFactory : public QObject, public t_pluginFactoryInterface {

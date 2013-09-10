@@ -95,6 +95,10 @@ t_map_stations::t_map_stations() : QDialog() {
   // Important
   // ---------
   _mapPlot->replot();
+
+  // Thrift Client;
+  _thriftClient = new t_thriftClient;
+  _thriftClient->start();
 }
 
 // Destructor
