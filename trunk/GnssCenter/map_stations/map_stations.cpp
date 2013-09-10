@@ -27,6 +27,7 @@
 #include <qwt_plot_renderer.h>
 
 #include "map_stations.h"
+#include "thriftclient.h"
 
 using namespace std;
 using namespace GnssCenter;
