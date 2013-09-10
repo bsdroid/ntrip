@@ -36,7 +36,7 @@ class RtnetClientHandler : public RtnetDataIf {
   void handleStationAuxInfo(const vector<StationAuxInfo>& stationAuxList) {}
   void handleDGPSCorr(const vector<DGPSCorr>& dgpsList) {}
   void handleSatelliteClock(const vector<SatelliteClock>& svList) {}
-  void handleEpochResults(const RtnetEpoch& epoch) {}
+  void handleEpochResults(const RtnetEpoch& epoch);
 };
 
 // Read Command-line Options
@@ -109,12 +109,22 @@ void RtnetClientHandler::
 handleSatelliteXYZ(const vector<SatelliteXYZ>& svXYZList) {
   cout.setf(ios::fixed);
   for (unsigned ii = 0; ii < svXYZList.size(); ii++) {
-    const SatelliteXYZ& sat = svXYZList[ii];
-    cout << unsigned(sat.ID) << ' '
-         << setprecision(3) << sat.xyz.x << ' '
-         << setprecision(3) << sat.xyz.y << ' '
-         << setprecision(3) << sat.xyz.z << endl;
+//    const SatelliteXYZ& sat = svXYZList[ii];
+//    cout << unsigned(sat.ID) << ' '
+//         << setprecision(3) << sat.xyz.x << ' '
+//         << setprecision(3) << sat.xyz.y << ' '
+//         << setprecision(3) << sat.xyz.z << endl;
   }
-  cout << endl;
+//  cout << endl;
 }
 
+// Handle Eoch Results
+//////////////////////////////////////////////////////////////////////////////
+void RtnetClientHandler::
+handleEpochResults(const RtnetEpoch& epoch) {
+  for (unsigned ii = 0; ii < epoch.stationResultList.size(); ii++) {
+    const StationResults& staRes = epoch.stationResultList[ii];
+    cout << staRes.stationName << ' '
+         << (int) staRes.nsv_gps_used << ' ' << (int) staRes.nsv_glonass_used << endl;
+  }
+}
