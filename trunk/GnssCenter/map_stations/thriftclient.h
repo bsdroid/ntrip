@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <QThread>
 
 #include <transport/TSocket.h>
 #include <transport/TBufferTransports.h>
@@ -14,10 +15,11 @@ using namespace com::gpssolutions::rtnet;
 
 // Handler Class Definition
 //////////////////////////////////////////////////////////////////////////////
-class t_thriftClient : public com::gpssolutions::rtnet::RtnetDataIf {
+class t_thriftClient : public com::gpssolutions::rtnet::RtnetDataIf, QThread {
  public:
-  t_thriftClient() {}
-  ~t_thriftClient() {}
+  t_thriftClient();
+  ~t_thriftClient();
+  virtual void run();
 
   void startDataStream() {}
   void registerRtnet(const RtnetInformation& info) {}
