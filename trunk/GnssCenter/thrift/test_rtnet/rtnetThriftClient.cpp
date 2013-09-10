@@ -20,6 +20,15 @@ using namespace com::gpssolutions::rtnet;
 using namespace std;
 using namespace boost;
 
+class t_stationCrd {
+ public:
+  double _x;
+  double _y;
+  double _z;
+};
+
+map<string, t_stationCrd> _stationCrd;
+
 // Handler Class Definition
 //////////////////////////////////////////////////////////////////////////////
 class RtnetClientHandler : public RtnetDataIf {
@@ -32,7 +41,7 @@ class RtnetClientHandler : public RtnetDataIf {
   void handleZDAmb(const vector<ZDAmb>& ambList) {}
   void handleDDAmbresBaselines(const vector<DDAmbresBaseline>& ambList) {}
   void handleSatelliteXYZ(const vector< SatelliteXYZ>& svXYZList);
-  void handleStationInfo(const vector<StationInfo>& stationList) {}
+  void handleStationInfo(const vector<StationInfo>& stationList);
   void handleStationAuxInfo(const vector<StationAuxInfo>& stationAuxList) {}
   void handleDGPSCorr(const vector<DGPSCorr>& dgpsList) {}
   void handleSatelliteClock(const vector<SatelliteClock>& svList) {}
@@ -118,6 +127,20 @@ handleSatelliteXYZ(const vector<SatelliteXYZ>& svXYZList) {
 //  cout << endl;
 }
 
+// Handle Station Info
+//////////////////////////////////////////////////////////////////////////////
+void RtnetClientHandler::
+handleStationInfo(const vector<StationInfo>& stationList) {
+  for (unsigned ii = 0; ii < stationList.size(); ii++) {
+    const StationInfo& staInfo = stationList[ii];
+    if (_stationCrd.find(staInfo.ID) == _stationCrd.end()) {
+      _stationCrd[staInfo.ID]._x = staInfo.xyz.x;
+      _stationCrd[staInfo.ID]._y = staInfo.xyz.y;
+      _stationCrd[staInfo.ID]._z = staInfo.xyz.z;
+    }
+  }
+}
+
 // Handle Eoch Results
 //////////////////////////////////////////////////////////////////////////////
 void RtnetClientHandler::
@@ -125,6 +148,12 @@ handleEpochResults(const RtnetEpoch& epoch) {
   for (unsigned ii = 0; ii < epoch.stationResultList.size(); ii++) {
     const StationResults& staRes = epoch.stationResultList[ii];
     cout << staRes.stationName << ' '
-         << (int) staRes.nsv_gps_used << ' ' << (int) staRes.nsv_glonass_used << endl;
+         << (int) staRes.nsv_gps_used << ' ' << (int) staRes.nsv_glonass_used << ' ';
+    if (_stationCrd.find(staRes.stationName) != _stationCrd.end()) {
+      cout << _stationCrd[staRes.stationName]._x << ' '
+           << _stationCrd[staRes.stationName]._y << ' '
+           << _stationCrd[staRes.stationName]._z;
+    }
+    cout << endl;
   }
 }
