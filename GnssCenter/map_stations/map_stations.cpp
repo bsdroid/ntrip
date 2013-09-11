@@ -15,6 +15,7 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
 #include <QtSvg>
 
 #include <qwt_symbol.h>
