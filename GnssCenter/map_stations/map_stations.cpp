@@ -139,8 +139,8 @@ void t_map_stations::slotPlotResults() {
       if (xyz2ell(xyz, ell) == success) {
         double latDeg = ell[0] * 180.0 / M_PI;
         double lonDeg = ell[1] * 180.0 / M_PI;
-        t_worldPlot::t_point* point  = new t_worldPlot::t_point(result->_name.c_str(), 
-                                                                latDeg, lonDeg);
+        QString str = QString().sprintf("%d/%d", result->_nGPS, result->_nGLO);
+        t_worldPlot::t_point* point  = new t_worldPlot::t_point(str, latDeg, lonDeg);
         points.append(point);
       }
     }
