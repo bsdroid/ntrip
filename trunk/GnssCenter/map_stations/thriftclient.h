@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <QThread>
+#include <QMutex>
 
 #include <transport/TSocket.h>
 #include <transport/TBufferTransports.h>
@@ -66,9 +67,13 @@ class t_thriftClient : public QThread {
   t_thriftClient(GnssCenter::t_map_stations* parent);
   ~t_thriftClient();
   virtual void run();
-  void stop() {_stop = true;}
+  void stop() {
+    QMutexLocker locker(&_mutex);
+    _stop = true;
+  }
 
  private:
+  QMutex                      _mutex;
   GnssCenter::t_map_stations* _parent;
   bool                        _stop;
 };

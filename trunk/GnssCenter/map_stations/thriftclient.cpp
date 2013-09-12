@@ -42,7 +42,15 @@ void t_thriftClient::run() {
 
   try {
     transport->open();
-    while (!_stop && processor->process(protocol,protocol,0)) {}
+    while (true) {
+      {
+        QMutexLocker locker(&_mutex);
+        if (_stop) {
+          break;
+        }
+      }
+      processor->process(protocol,protocol,0);
+    }
     transport->close();
   } 
   catch (TException& e) {
