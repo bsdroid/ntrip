@@ -49,9 +49,14 @@ t_map_stations::t_map_stations() : QMainWindow() {
   // --------
   QToolBar* toolBar = new QToolBar("t_map_stations_ToolBar");
   addToolBar(Qt::BottomToolBarArea, toolBar);
+
   QAction* actStartThrift = new QAction("Start Thrift", 0);
   toolBar->addAction(actStartThrift);
   connect(actStartThrift, SIGNAL(triggered()), this, SLOT(slotStartThrift()));
+
+  QAction* actStopThrift = new QAction("Stop Thrift", 0);
+  toolBar->addAction(actStopThrift);
+  connect(actStopThrift, SIGNAL(triggered()), this, SLOT(slotStopThrift()));
 
   // Thrift Client;
   // --------------
@@ -91,6 +96,15 @@ void t_map_stations::slotStartThrift() {
 
 // 
 /////////////////////////////////////////////////////////////////////////////
+void t_map_stations::slotStopThrift() {
+  if (_thriftClient && _thriftClient->isRunning()) {
+    _thriftClient->stopAndDestroy();
+    _thriftClient = 0;
+  }
+}
+
+// 
+/////////////////////////////////////////////////////////////////////////////
 void t_map_stations::putThriftResults(std::vector<t_thriftResult*>* results) {
   QMutexLocker locker(&_mutex);
   if (_results) {
@@ -117,5 +131,7 @@ void t_map_stations::slotPlotResults() {
     }
   }
   // end test
-  QTimer::singleShot(1000, this, SLOT(slotPlotResults()));
+  if (_thriftClient) {
+    QTimer::singleShot(1000, this, SLOT(slotPlotResults()));
+  }
 }
