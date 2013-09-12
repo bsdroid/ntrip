@@ -24,9 +24,11 @@ PRE_TARGETDEPS      += gen-cpp
 LIBS                += -lthrift
 
 HEADERS   = map_stations.h \
+            worldplot.h    \
             thriftclient.h 
 
 SOURCES   = map_stations.cpp \
+            worldplot.cpp    \
             thriftclient.cpp \
             gen-cpp/RtnetData.cpp \
             gen-cpp/rtnet_constants.cpp gen-cpp/rtnet_types.cpp \

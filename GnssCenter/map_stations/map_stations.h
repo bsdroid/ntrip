@@ -5,43 +5,26 @@
 #include <QWhatsThis>
 #include "plugininterface.h"
 
-class QwtPlot;
-class QwtPlotZoomer;
+namespace GnssCenter {
+class t_worldPlot;
+}
+
 class t_thriftClient;
 class t_thriftResult;
 
 namespace GnssCenter {
 
-class t_map_stations : public QDialog {
+class t_map_stations : public QMainWindow {
  Q_OBJECT
  public:
   t_map_stations();
   ~t_map_stations();
 
  public slots:
-  void slotNewPoint(const QString& name, double latDeg, double lonDeg);
   void slotNewThriftResult(t_thriftResult*);
 
- private slots:
-  void slotClose();
-  void slotPrint();
-  void slotWhatsThis();
-
- protected:
-  virtual void closeEvent(QCloseEvent *);
-  virtual void showEvent(QShowEvent *);
-
  private:
-  QwtPlot*        _mapPlot;
-  QwtPlotZoomer*  _mapPlotZoomer;
-  QPushButton*    _buttonClose;
-  QPushButton*    _buttonPrint;
-  QPushButton*    _buttonWhatsThis;
-  double          _minPointLat;
-  double          _maxPointLat;
-  double          _minPointLon;
-  double          _maxPointLon;
-
+  t_worldPlot*    _plot;
   t_thriftClient* _thriftClient;
 };
 
