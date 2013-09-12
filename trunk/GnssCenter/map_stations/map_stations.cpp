@@ -122,17 +122,21 @@ void t_map_stations::putThriftResults(std::vector<t_thriftResult*>* results) {
 /////////////////////////////////////////////////////////////////////////////
 void t_map_stations::slotPlotResults() {
   QMutexLocker locker(&_mutex);
-  // beg test
+
   if (_results) {
+    QList<t_worldPlot::t_point*> points;
     for (unsigned ii = 0; ii < _results->size(); ii++) {
       const t_thriftResult* result = _results->at(ii);
-      cout << result->_name << ' ' 
-           << result->_nGPS << ' ' << result->_nGLO << ' '
-           << result->_x << ' ' << result->_y << ' ' << result->_z << endl;
+      t_worldPlot::t_point* point  = new t_worldPlot::t_point(result->_name.c_str(), 
+                                                              50.0+ii, 15.0+2*ii);
+//      cout << result->_name << ' ' 
+//           << result->_nGPS << ' ' << result->_nGLO << ' '
+//           << result->_x << ' ' << result->_y << ' ' << result->_z << endl;
+      points.append(point);
     }
+    _plot->slotNewPoints(points);
   }
-  ///  _plot->slotNewPoint("AAAA", 50.0, 15.0);
-  // end test
+
   if (_thriftClient) {
     QTimer::singleShot(1000, this, SLOT(slotPlotResults()));
   }
