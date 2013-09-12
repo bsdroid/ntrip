@@ -49,7 +49,9 @@ void t_thriftClient::run() {
           break;
         }
       }
-      processor->process(protocol,protocol,0);
+      if (processor->process(protocol,protocol,0) == 0) {
+        break;
+      }
     }
     transport->close();
   } 
