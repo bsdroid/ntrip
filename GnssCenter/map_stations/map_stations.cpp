@@ -80,6 +80,7 @@ void t_map_stations::slotStartThrift() {
   if (!_thriftClient) {
     _thriftClient = new t_thriftClient(this);
     _thriftClient->start();
+    slotPlotResults();
   }
   //// beg test
   else {
@@ -91,6 +92,7 @@ void t_map_stations::slotStartThrift() {
 // 
 /////////////////////////////////////////////////////////////////////////////
 void t_map_stations::putThriftResults(std::vector<t_thriftResult*>* results) {
+  QMutexLocker locker(&_mutex);
   if (_results) {
     while (!_results->empty()) {
       delete _results->back();
@@ -99,12 +101,21 @@ void t_map_stations::putThriftResults(std::vector<t_thriftResult*>* results) {
     delete _results;
   }
   _results = results;
+}
+
+// 
+/////////////////////////////////////////////////////////////////////////////
+void t_map_stations::slotPlotResults() {
+  QMutexLocker locker(&_mutex);
   // beg test
-  for (unsigned ii = 0; ii < _results->size(); ii++) {
-    const t_thriftResult* result = _results->at(ii);
-    cout << result->_name << ' ' 
-         << result->_nGPS << ' ' << result->_nGLO << ' '
-         << result->_x << ' ' << result->_y << ' ' << result->_z << endl;
+  if (_results) {
+    for (unsigned ii = 0; ii < _results->size(); ii++) {
+      const t_thriftResult* result = _results->at(ii);
+      cout << result->_name << ' ' 
+           << result->_nGPS << ' ' << result->_nGLO << ' '
+           << result->_x << ' ' << result->_y << ' ' << result->_z << endl;
+    }
   }
   // end test
+  QTimer::singleShot(1000, this, SLOT(slotPlotResults()));
 }
