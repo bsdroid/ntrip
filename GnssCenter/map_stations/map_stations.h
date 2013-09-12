@@ -23,6 +23,9 @@ class t_map_stations : public QMainWindow {
  public slots:
   void slotNewThriftResult(t_thriftResult*);
 
+ private slots:
+  void slotStartThrift();
+
  private:
   t_worldPlot*    _plot;
   t_thriftClient* _thriftClient;
