@@ -48,13 +48,6 @@ t_worldPlot::t_worldPlot() : QwtPlot() {
   mapItem->loadFile(QRectF(-180.0, -90.0, 360.0, 180.0), ":world.svg");
   mapItem->attach(this);
 
-  // Minimal and Maximal Coordinates
-  // -------------------------------
-  _minPointLat = 0.0;
-  _maxPointLat = 0.0;
-  _minPointLon = 0.0;
-  _maxPointLon = 0.0;
-
   // Important
   // ---------
   this->replot();
@@ -89,80 +82,7 @@ void t_worldPlot::slotNewPoint(const QString& name, double latDeg, double lonDeg
   marker->setLabel(text);
   marker->setSymbol(symbol);
   marker->attach(this);
-
-  // Remeber minimal and maximal coordinates
-  // ---------------------------------------
-  if (_minPointLat == 0.0 && _maxPointLat == 0.0 &&
-      _minPointLon == 0.0 && _maxPointLon == 0.0) {
-    _minPointLat = latDeg;
-    _maxPointLat = latDeg;
-    _minPointLon = lonDeg;
-    _maxPointLon = lonDeg;
-  }
-  else {
-    if      (_maxPointLat < latDeg) {
-      _maxPointLat = latDeg;
-    }
-    else if (_minPointLat > latDeg) {
-      _minPointLat = latDeg;
-    }
-    if      (_maxPointLon < lonDeg) {
-      _maxPointLon = lonDeg;
-    }
-    else if (_minPointLon > lonDeg) {
-      _minPointLon = lonDeg;
-    }
-  }
 }
-
-//// 
-//////////////////////////////////////////////////////////////////////////////
-//void t_worldPlot::showEvent(QShowEvent* event) {
-//  double width  = _maxPointLon - _minPointLon;
-//  double height = _maxPointLat - _minPointLat;
-//  if (width > 0 && height > 0) {
-//
-//    // Extend plot area by 10 percent
-//    // ------------------------------
-//    double eps = 0.1;
-//    double epsLon    = eps * (_maxPointLon - _minPointLon);
-//    double epsLat    = eps * (_maxPointLat - _minPointLat);
-//    double widthExt  = width  + 2 * epsLon;
-//    double heightExt = height + 2 * epsLat;
-//    double minLon    = _minPointLon - epsLon;
-//    double minLat    = _minPointLat - epsLat;
-//
-//    // Keep lat/lon relations
-//    // ----------------------
-//    double widthBorder = widthExt;
-//    double heightBorder = heightExt;
-//    double scale = widthExt/heightExt/2.;
-//    if ( scale < 1.) {
-//      widthBorder = widthExt / scale;
-//      minLon = minLon - (widthBorder - widthExt)/2.;
-//    }
-//    else {
-//      heightBorder = heightExt * scale;
-//      minLat = minLat - (heightBorder - heightExt)/2.;
-//    }
-//
-//    // Borders shall not exceed min or max values
-//    // ------------------------------------------
-//    if (minLon < -180.) minLon = -180.;
-//    if (minLat <  -90.) minLat =  -90.;
-//    double maxLat = minLat + heightBorder;
-//    if ( maxLat >  90) minLat = minLat - (maxLat -  90.);
-//    double maxLon = minLon + widthBorder;
-//    if ( maxLon > 180) minLon = minLon - (maxLon - 180.);
-//
-//    // Area large enough to justify world map
-//    // --------------------------------------
-//    if (widthBorder < 270.0 && heightBorder < 135.0) {
-//      QRectF rect(minLon, minLat, widthBorder, heightBorder);
-//      _zoomer->zoom(rect);
-//    }
-//  }
-//}
 
 // Print the widget
 ////////////////////////////////////////////////////////////////////////////
