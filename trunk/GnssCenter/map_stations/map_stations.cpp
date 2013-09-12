@@ -45,18 +45,35 @@ t_map_stations::t_map_stations() : QMainWindow() {
   _plot = new t_worldPlot();
   setCentralWidget(_plot);
 
+  // Tool Bar
+  // --------
+  QToolBar* toolBar = new QToolBar("t_map_stations_ToolBar");
+  addToolBar(Qt::BottomToolBarArea, toolBar);
+  QAction* actStartThrift = new QAction("Start Thrift", 0);
+  toolBar->addAction(actStartThrift);
+  connect(actStartThrift, SIGNAL(triggered()), this, SLOT(slotStartThrift()));
+
   // Thrift Client;
   // --------------
-  _thriftClient = new t_thriftClient(this);
-  _thriftClient->start();
+  _thriftClient = 0;
 }
 
 // Destructor
 /////////////////////////////////////////////////////////////////////////////
-t_map_stations::~t_map_stations() { 
-  _thriftClient->stop();
+t_map_stations::~t_map_stations() {
+  if (_thriftClient) { 
+    _thriftClient->stop();
+  }
 }
 
+// 
+/////////////////////////////////////////////////////////////////////////////
+void t_map_stations::slotStartThrift() {
+  if (!_thriftClient) {
+    _thriftClient = new t_thriftClient(this);
+    _thriftClient->start();
+  }
+}
 
 // 
 /////////////////////////////////////////////////////////////////////////////
