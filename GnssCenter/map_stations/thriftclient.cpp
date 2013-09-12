@@ -61,8 +61,6 @@ void t_thriftClient::run() {
   catch (...) {
     cerr << "Unknown exception" << endl;
   }
-  this->terminate();
-  this->deleteLater();
 }
 
 // Constructor

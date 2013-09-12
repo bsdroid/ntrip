@@ -25,6 +25,7 @@ class t_map_stations : public QMainWindow {
  private slots:
   void slotStartThrift();
   void slotStopThrift();
+  void slotThriftFinished();
   void slotPlotResults();
 
  private:

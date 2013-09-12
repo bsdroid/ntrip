@@ -67,9 +67,7 @@ t_map_stations::t_map_stations() : QMainWindow() {
 // Destructor
 /////////////////////////////////////////////////////////////////////////////
 t_map_stations::~t_map_stations() {
-  if (_thriftClient) { 
-    _thriftClient->stopAndDestroy();
-  }
+  slotStopThrift();
   if (_results) {
     while (!_results->empty()) {
       delete _results->back();
@@ -84,6 +82,7 @@ t_map_stations::~t_map_stations() {
 void t_map_stations::slotStartThrift() {
   if (!_thriftClient) {
     _thriftClient = new t_thriftClient(this);
+    connect(_thriftClient, SIGNAL(finished()), this, SLOT(slotThriftFinished()));
     _thriftClient->start();
     slotPlotResults();
   }
@@ -97,10 +96,19 @@ void t_map_stations::slotStartThrift() {
 // 
 /////////////////////////////////////////////////////////////////////////////
 void t_map_stations::slotStopThrift() {
-  if (_thriftClient && _thriftClient->isRunning()) {
-    _thriftClient->stopAndDestroy();
+  qDebug() << "slotStopThrift" << _thriftClient;
+  if (_thriftClient) {
+    _thriftClient->stop();
     _thriftClient = 0;
   }
+}
+
+// 
+/////////////////////////////////////////////////////////////////////////////
+void t_map_stations::slotThriftFinished() {
+  qDebug() << "slotThriftFinished" << _thriftClient;
+  sender()->deleteLater();
+  _thriftClient = 0;
 }
 
 // 
