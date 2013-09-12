@@ -37,7 +37,7 @@ void t_thriftClient::run() {
   shared_ptr<TSocket>     socket(new TSocket(host, port));
   shared_ptr<TTransport>  transport(new TBufferedTransport(socket)); 
   shared_ptr<TProtocol>   protocol(new TBinaryProtocol(transport));
-  shared_ptr<RtnetDataIf> dataHandler(new t_thriftClient(_parent));
+  shared_ptr<RtnetDataIf> dataHandler(new t_thriftHandler(_parent));
   shared_ptr<TProcessor>  processor(new RtnetDataProcessor(dataHandler));
 
   try {
@@ -55,9 +55,20 @@ void t_thriftClient::run() {
   this->deleteLater();
 }
 
+// Constructor
+//////////////////////////////////////////////////////////////////////////////
+t_thriftHandler::t_thriftHandler(GnssCenter::t_map_stations* parent) {
+  _parent = parent;
+}
+
+// Destructor
+//////////////////////////////////////////////////////////////////////////////
+t_thriftHandler::~t_thriftHandler() {
+}
+
 // Handle Satellite Positions
 //////////////////////////////////////////////////////////////////////////////
-void t_thriftClient::
+void t_thriftHandler::
 handleSatelliteXYZ(const vector<SatelliteXYZ>& svXYZList) {
   cout.setf(ios::fixed);
   for (unsigned ii = 0; ii < svXYZList.size(); ii++) {
@@ -72,7 +83,7 @@ handleSatelliteXYZ(const vector<SatelliteXYZ>& svXYZList) {
 
 // Handle Station Info
 //////////////////////////////////////////////////////////////////////////////
-void t_thriftClient::
+void t_thriftHandler::
 handleStationInfo(const vector<StationInfo>& stationList) {
   for (unsigned ii = 0; ii < stationList.size(); ii++) {
     const StationInfo& staInfo = stationList[ii];
@@ -82,9 +93,9 @@ handleStationInfo(const vector<StationInfo>& stationList) {
   }
 }
 
-// Handle Eoch Results
+// Handle Epoch Results
 //////////////////////////////////////////////////////////////////////////////
-void t_thriftClient::
+void t_thriftHandler::
 handleEpochResults(const RtnetEpoch& epoch) {
   for (unsigned ii = 0; ii < epoch.stationResultList.size(); ii++) {
     const StationResults& staRes = epoch.stationResultList[ii];

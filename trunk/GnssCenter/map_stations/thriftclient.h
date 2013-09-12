@@ -35,13 +35,11 @@ class t_thriftResult {
   double      _z;
 };
 
-class t_thriftClient : public QThread, public RtnetDataIf {
- public:
-  t_thriftClient(GnssCenter::t_map_stations* parent);
-  ~t_thriftClient();
-  virtual void run();
-  void stop() {_stop = true;}
 
+class t_thriftHandler : public RtnetDataIf {
+ public:
+  t_thriftHandler(GnssCenter::t_map_stations* parent);
+  ~t_thriftHandler();
   void startDataStream() {}
   void registerRtnet(const RtnetInformation&) {}
   void handleZDAmb(const std::vector<ZDAmb>&) {}
@@ -52,19 +50,27 @@ class t_thriftClient : public QThread, public RtnetDataIf {
   void handleDGPSCorr(const std::vector<DGPSCorr>&) {}
   void handleSatelliteClock(const std::vector<SatelliteClock>&) {}
   void handleEpochResults(const RtnetEpoch& epoch);
-
  private:
-
   class t_stationCrd {
    public:
     double _x;
     double _y;
     double _z;
   };
-
   GnssCenter::t_map_stations*         _parent;
   std::map<std::string, t_stationCrd> _stationCrd;
-  bool                                _stop;
+};
+
+class t_thriftClient : public QThread {
+ public:
+  t_thriftClient(GnssCenter::t_map_stations* parent);
+  ~t_thriftClient();
+  virtual void run();
+  void stop() {_stop = true;}
+
+ private:
+  GnssCenter::t_map_stations* _parent;
+  bool                        _stop;
 };
 
 #endif
