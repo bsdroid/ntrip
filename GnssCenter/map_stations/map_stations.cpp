@@ -28,6 +28,7 @@
 #include <qwt_plot_renderer.h>
 
 #include "map_stations.h"
+#include "utils.h"
 #include "worldplot.h"
 #include "thriftclient.h"
 
@@ -127,12 +128,21 @@ void t_map_stations::slotPlotResults() {
     QList<t_worldPlot::t_point*> points;
     for (unsigned ii = 0; ii < _results->size(); ii++) {
       const t_thriftResult* result = _results->at(ii);
-      t_worldPlot::t_point* point  = new t_worldPlot::t_point(result->_name.c_str(), 
-                                                              50.0+ii, 15.0+2*ii);
-//      cout << result->_name << ' ' 
-//           << result->_nGPS << ' ' << result->_nGLO << ' '
-//           << result->_x << ' ' << result->_y << ' ' << result->_z << endl;
-      points.append(point);
+
+      double xyz[3]; 
+      xyz[0] = result->_x;
+      xyz[1] = result->_y;
+      xyz[2] = result->_z;
+    
+      double ell[3];
+
+      if (xyz2ell(xyz, ell) == success) {
+        double latDeg = ell[0] * 180.0 / M_PI;
+        double lonDeg = ell[1] * 180.0 / M_PI;
+        t_worldPlot::t_point* point  = new t_worldPlot::t_point(result->_name.c_str(), 
+                                                                latDeg, lonDeg);
+        points.append(point);
+      }
     }
     _plot->slotNewPoints(points);
   }
