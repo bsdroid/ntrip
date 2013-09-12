@@ -73,6 +73,11 @@ void t_map_stations::slotStartThrift() {
     _thriftClient = new t_thriftClient(this);
     _thriftClient->start();
   }
+  //// beg test
+  else {
+    _plot->slotNewPoint("AAAA", 50.0, 15.0);
+  }
+  //// end test
 }
 
 // 
