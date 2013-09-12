@@ -86,11 +86,6 @@ void t_map_stations::slotStartThrift() {
     _thriftClient->start();
     slotPlotResults();
   }
-  //// beg test
-  else {
-    _plot->slotNewPoint("AAAA", 50.0, 15.0);
-  }
-  //// end test
 }
 
 // 
@@ -136,6 +131,7 @@ void t_map_stations::slotPlotResults() {
            << result->_x << ' ' << result->_y << ' ' << result->_z << endl;
     }
   }
+  _plot->slotNewPoint("AAAA", 50.0, 15.0);
   // end test
   if (_thriftClient) {
     QTimer::singleShot(1000, this, SLOT(slotPlotResults()));
