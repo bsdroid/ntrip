@@ -145,6 +145,11 @@ void t_map_stations::slotPlotResults() {
       }
     }
     _plot->slotNewPoints(points);
+
+    QListIterator<t_worldPlot::t_point*> it(points);
+    while (it.hasNext()) {
+      delete it.next();
+    }
   }
 
   if (_thriftClient) {
