@@ -19,10 +19,6 @@ class t_worldPlot : public QwtPlot {
 
  private:
   QwtPlotZoomer* _zoomer;
-  double         _minPointLat;
-  double         _maxPointLat;
-  double         _minPointLon;
-  double         _maxPointLon;
 };
 
 } // namespace GnssCenter
