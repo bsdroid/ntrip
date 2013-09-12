@@ -96,7 +96,6 @@ void t_map_stations::slotStartThrift() {
 // 
 /////////////////////////////////////////////////////////////////////////////
 void t_map_stations::slotStopThrift() {
-  qDebug() << "slotStopThrift" << _thriftClient;
   if (_thriftClient) {
     _thriftClient->stop();
     _thriftClient = 0;
@@ -106,7 +105,6 @@ void t_map_stations::slotStopThrift() {
 // 
 /////////////////////////////////////////////////////////////////////////////
 void t_map_stations::slotThriftFinished() {
-  qDebug() << "slotThriftFinished" << _thriftClient;
   sender()->deleteLater();
   _thriftClient = 0;
 }
