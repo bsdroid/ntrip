@@ -24,8 +24,10 @@ class t_map_stations : public QMainWindow {
 
  private slots:
   void slotStartThrift();
+  void slotPlotResults();
 
  private:
+  QMutex                        _mutex;
   t_worldPlot*                  _plot;
   t_thriftClient*               _thriftClient;
   std::vector<t_thriftResult*>* _results;
