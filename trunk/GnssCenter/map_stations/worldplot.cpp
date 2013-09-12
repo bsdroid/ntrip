@@ -60,28 +60,45 @@ t_worldPlot::~t_worldPlot() {
 
 // 
 /////////////////////////////////////////////////////////////////////////////
-void t_worldPlot::slotNewPoint(const QString& name, double latDeg, double lonDeg) {
+void t_worldPlot::slotNewPoints(const QList<t_point*>& points) {
 
-  if (lonDeg > 180.0) lonDeg -= 360.0;
+  // Remove old markers
+  // ------------------
+  QListIterator<QwtPlotMarker*> im(_markers);
+  while (im.hasNext()) {
+    QwtPlotMarker* marker = im.next();
+    marker->detach();
+    delete marker;
+  }
+  _markers.clear();
 
   QColor red(220,20,60);
-  QwtSymbol* symbol = new QwtSymbol(QwtSymbol::Rect, QBrush(red), 
-                                    QPen(red), QSize(2,2));
-  QwtPlotMarker* marker = new QwtPlotMarker();
-  marker->setValue(lonDeg, latDeg);
-  if (lonDeg > 170.0) {
-    marker->setLabelAlignment(Qt::AlignLeft);
+
+  QListIterator<t_point*> ip(points);
+  while (ip.hasNext()) {
+    t_point* point = ip.next();
+
+    if (point->_lonDeg > 180.0) point->_lonDeg -= 360.0;
+  
+    QwtSymbol* symbol = new QwtSymbol(QwtSymbol::Rect, QBrush(red), 
+                                      QPen(red), QSize(2,2));
+    QwtPlotMarker* marker = new QwtPlotMarker();
+    marker->setValue(point->_lonDeg, point->_latDeg);
+    if (point->_lonDeg > 170.0) {
+      marker->setLabelAlignment(Qt::AlignLeft);
+    }
+    else {
+      marker->setLabelAlignment(Qt::AlignRight);
+    }
+    QwtText text(point->_name.left(4));
+    QFont   font = text.font();
+    font.setPointSize(font.pointSize()*0.8);
+    text.setFont(font);
+    marker->setLabel(text);
+    marker->setSymbol(symbol);
+    marker->attach(this);
+    _markers.append(marker);
   }
-  else {
-    marker->setLabelAlignment(Qt::AlignRight);
-  }
-  QwtText text(name.left(4));
-  QFont   font = text.font();
-  font.setPointSize(font.pointSize()*0.8);
-  text.setFont(font);
-  marker->setLabel(text);
-  marker->setSymbol(symbol);
-  marker->attach(this);
 
   replot();
 }

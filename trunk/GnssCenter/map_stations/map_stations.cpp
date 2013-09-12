@@ -131,7 +131,7 @@ void t_map_stations::slotPlotResults() {
            << result->_x << ' ' << result->_y << ' ' << result->_z << endl;
     }
   }
-  _plot->slotNewPoint("AAAA", 50.0, 15.0);
+  ///  _plot->slotNewPoint("AAAA", 50.0, 15.0);
   // end test
   if (_thriftClient) {
     QTimer::singleShot(1000, this, SLOT(slotPlotResults()));
