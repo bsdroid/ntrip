@@ -56,6 +56,7 @@ t_map_stations::t_map_stations() : QMainWindow() {
   // Thrift Client;
   // --------------
   _thriftClient = 0;
+  _results      = 0;
 }
 
 // Destructor
@@ -82,8 +83,21 @@ void t_map_stations::slotStartThrift() {
 
 // 
 /////////////////////////////////////////////////////////////////////////////
-void t_map_stations::slotNewThriftResult(t_thriftResult* result) {
-  cout << result->_name << ' ' 
-       << result->_nGPS << ' ' << result->_nGLO << ' '
-       << result->_x << ' ' << result->_y << ' ' << result->_z << endl;
+void t_map_stations::putThriftResults(std::vector<t_thriftResult*>* results) {
+  if (_results) {
+    while (!_results->empty()) {
+      delete _results->back();
+      _results->pop_back();
+    }
+    delete _results;
+  }
+  _results = results;
+  // beg test
+  for (unsigned ii = 0; ii < _results->size(); ii++) {
+    const t_thriftResult* result = _results->at(ii);
+    cout << result->_name << ' ' 
+         << result->_nGPS << ' ' << result->_nGLO << ' '
+         << result->_x << ' ' << result->_y << ' ' << result->_z << endl;
+  }
+  // end test
 }

@@ -20,15 +20,15 @@ class t_map_stations : public QMainWindow {
   t_map_stations();
   ~t_map_stations();
 
- public slots:
-  void slotNewThriftResult(t_thriftResult*);
+  void putThriftResults(std::vector<t_thriftResult*>* results);
 
  private slots:
   void slotStartThrift();
 
  private:
-  t_worldPlot*    _plot;
-  t_thriftClient* _thriftClient;
+  t_worldPlot*                  _plot;
+  t_thriftClient*               _thriftClient;
+  std::vector<t_thriftResult*>* _results;
 };
 
 class t_map_stationsFactory : public QObject, public t_pluginFactoryInterface {

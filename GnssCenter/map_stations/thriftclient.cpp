@@ -107,18 +107,19 @@ handleStationInfo(const vector<StationInfo>& stationList) {
 //////////////////////////////////////////////////////////////////////////////
 void t_thriftHandler::
 handleEpochResults(const RtnetEpoch& epoch) {
+  vector<t_thriftResult*>* results = new vector<t_thriftResult*>;
   for (unsigned ii = 0; ii < epoch.stationResultList.size(); ii++) {
     const StationResults& staRes = epoch.stationResultList[ii];
-    t_thriftResult result;
-    
-    result._name = staRes.stationName;
-    result._nGPS = staRes.nsv_gps_used;
-    result._nGLO = staRes.nsv_glonass_used;
+    t_thriftResult* res = new t_thriftResult;
+    res->_name = staRes.stationName;
+    res->_nGPS = staRes.nsv_gps_used;
+    res->_nGLO = staRes.nsv_glonass_used;
     if (_stationCrd.find(staRes.stationName) != _stationCrd.end()) {
-      result._x = _stationCrd[staRes.stationName]._x;
-      result._y = _stationCrd[staRes.stationName]._y;
-      result._z = _stationCrd[staRes.stationName]._z;
+      res->_x = _stationCrd[staRes.stationName]._x;
+      res->_y = _stationCrd[staRes.stationName]._y;
+      res->_z = _stationCrd[staRes.stationName]._z;
     }
-    _parent->slotNewThriftResult(&result);
+    results->push_back(res);
   }
+  _parent->putThriftResults(results);
 }
