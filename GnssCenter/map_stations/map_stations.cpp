@@ -63,7 +63,14 @@ t_map_stations::t_map_stations() : QMainWindow() {
 /////////////////////////////////////////////////////////////////////////////
 t_map_stations::~t_map_stations() {
   if (_thriftClient) { 
-    _thriftClient->stop();
+    _thriftClient->stopAndDestroy();
+  }
+  if (_results) {
+    while (!_results->empty()) {
+      delete _results->back();
+      _results->pop_back();
+    }
+    delete _results;
   }
 }
 

@@ -67,7 +67,7 @@ class t_thriftClient : public QThread {
   t_thriftClient(GnssCenter::t_map_stations* parent);
   ~t_thriftClient();
   virtual void run();
-  void stop() {
+  void stopAndDestroy() {
     QMutexLocker locker(&_mutex);
     _stop = true;
   }
