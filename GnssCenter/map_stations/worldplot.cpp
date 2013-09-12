@@ -82,6 +82,8 @@ void t_worldPlot::slotNewPoint(const QString& name, double latDeg, double lonDeg
   marker->setLabel(text);
   marker->setSymbol(symbol);
   marker->attach(this);
+
+  replot();
 }
 
 // Print the widget
