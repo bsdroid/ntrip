@@ -41,10 +41,13 @@ Q_EXPORT_PLUGIN2(gnsscenter_monitor, t_monitorFactory)
 /////////////////////////////////////////////////////////////////////////////
 t_monitor::t_monitor() : QMainWindow() {
 
+  _tabWidget = new QTabWidget();
+  setCentralWidget(_tabWidget);
+
   // World Plot
   // ----------
   _plot = new t_worldPlot();
-  setCentralWidget(_plot);
+  _tabWidget->addTab(_plot, "Stations");
 
   // Tool Bar
   // --------
