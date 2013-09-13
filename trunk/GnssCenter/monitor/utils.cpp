@@ -8,7 +8,7 @@ using namespace GnssCenter;
 
 // Rectangular Coordinates -> Ellipsoidal Coordinates
 ////////////////////////////////////////////////////////////////////////////
-t_irc xyz2ell(const double* XYZ, double* Ell) {
+t_CST::t_irc t_utils::xyz2ell(const double* XYZ, double* Ell) {
 
   const double bell = t_CST::aell*(1.0-1.0/t_CST::fInv) ;
   const double e2   = (t_CST::aell*t_CST::aell-bell*bell)/(t_CST::aell*t_CST::aell) ;
@@ -36,16 +36,16 @@ t_irc xyz2ell(const double* XYZ, double* Ell) {
     Ell[2] = ss/cos(Ell[0])-nn ;
     Ell[0] = atan(zps/(1.0-e2*nn/(nn+Ell[2]))) ;
     if ( fabs(phiOld-Ell[0]) <= 1.0e-11 && fabs(hOld-Ell[2]) <= 1.0e-5 ) {
-      return success;
+      return t_CST::success;
     }
   }
 
-  return failure;
+  return t_CST::failure;
 }
 
 // Rectangular Coordinates -> North, East, Up Components
 ////////////////////////////////////////////////////////////////////////////
-void xyz2neu(const double* Ell, const double* xyz, double* neu) {
+void t_utils::xyz2neu(const double* Ell, const double* xyz, double* neu) {
 
   double sinPhi = sin(Ell[0]);
   double cosPhi = cos(Ell[0]);
@@ -66,7 +66,7 @@ void xyz2neu(const double* Ell, const double* xyz, double* neu) {
 
 // North, East, Up Components -> Rectangular Coordinates
 ////////////////////////////////////////////////////////////////////////////
-void neu2xyz(const double* Ell, const double* neu, double* xyz) {
+void t_utils::neu2xyz(const double* Ell, const double* neu, double* xyz) {
 
   double sinPhi = sin(Ell[0]);
   double cosPhi = cos(Ell[0]);

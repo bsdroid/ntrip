@@ -139,7 +139,7 @@ void t_monitor::slotPlotResults() {
     
       double ell[3];
 
-      if (xyz2ell(xyz, ell) == success) {
+      if (t_utils::xyz2ell(xyz, ell) == t_CST::success) {
         double latDeg = ell[0] * 180.0 / M_PI;
         double lonDeg = ell[1] * 180.0 / M_PI;
         QString str = QString().sprintf("%d/%d", result->_nGPS, result->_nGLO);
