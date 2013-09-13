@@ -15,9 +15,11 @@ using namespace com::gpssolutions::rtnet;
 using namespace std;
 using namespace boost;
 
+using namespace GnssCenter;
+
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_thriftClient::t_thriftClient(GnssCenter::t_monitor* parent) {
+t_thriftClient::t_thriftClient(t_monitor* parent) {
   _stop   = false;
   _parent = parent;
 }
@@ -65,7 +67,7 @@ void t_thriftClient::run() {
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_thriftHandler::t_thriftHandler(GnssCenter::t_monitor* parent) {
+t_thriftHandler::t_thriftHandler(t_monitor* parent) {
   _parent = parent;
 }
 

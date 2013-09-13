@@ -6,11 +6,10 @@
 #include "plugininterface.h"
 
 namespace GnssCenter {
-class t_worldPlot;
+  class t_worldPlot;
+  class t_thriftClient;
+  class t_thriftResult;
 }
-
-class t_thriftClient;
-class t_thriftResult;
 
 namespace GnssCenter {
 
