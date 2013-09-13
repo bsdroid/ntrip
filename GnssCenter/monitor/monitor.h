@@ -29,6 +29,7 @@ class t_monitor : public QMainWindow {
 
  private:
   QMutex                        _mutex;
+  QTabWidget*                   _tabWidget;
   t_worldPlot*                  _plot;
   t_thriftClient*               _thriftClient;
   std::vector<t_thriftResult*>* _results;
