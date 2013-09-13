@@ -1,11 +1,11 @@
 
 /* -------------------------------------------------------------------------
- * RTNet GUI
+ * RTNet Monitor
  * -------------------------------------------------------------------------
  *
- * Class:      t_map_stations
+ * Class:      t_monitor
  *
- * Purpose:    Plot map of stations/satellites
+ * Purpose:    Real-Time Monitoring of RTNet
  *
  * Author:     L. Mervart
  *
@@ -27,7 +27,7 @@
 #include <qwt_plot_zoomer.h>
 #include <qwt_plot_renderer.h>
 
-#include "map_stations.h"
+#include "monitor.h"
 #include "utils.h"
 #include "worldplot.h"
 #include "thriftclient.h"
@@ -35,11 +35,11 @@
 using namespace std;
 using namespace GnssCenter;
 
-Q_EXPORT_PLUGIN2(gnsscenter_map_stations, GnssCenter::t_map_stationsFactory)
+Q_EXPORT_PLUGIN2(gnsscenter_monitor, GnssCenter::t_monitorFactory)
 
 // Constructor
 /////////////////////////////////////////////////////////////////////////////
-t_map_stations::t_map_stations() : QMainWindow() {
+t_monitor::t_monitor() : QMainWindow() {
 
   // World Plot
   // ----------
@@ -48,7 +48,7 @@ t_map_stations::t_map_stations() : QMainWindow() {
 
   // Tool Bar
   // --------
-  QToolBar* toolBar = new QToolBar("t_map_stations_ToolBar");
+  QToolBar* toolBar = new QToolBar("t_monitor_ToolBar");
   addToolBar(Qt::BottomToolBarArea, toolBar);
 
   QAction* actStartThrift = new QAction("Start Thrift", 0);
@@ -67,7 +67,7 @@ t_map_stations::t_map_stations() : QMainWindow() {
 
 // Destructor
 /////////////////////////////////////////////////////////////////////////////
-t_map_stations::~t_map_stations() {
+t_monitor::~t_monitor() {
   slotStopThrift();
   if (_results) {
     while (!_results->empty()) {
@@ -80,7 +80,7 @@ t_map_stations::~t_map_stations() {
 
 // 
 /////////////////////////////////////////////////////////////////////////////
-void t_map_stations::slotStartThrift() {
+void t_monitor::slotStartThrift() {
   if (!_thriftClient) {
     _thriftClient = new t_thriftClient(this);
     connect(_thriftClient, SIGNAL(finished()), this, SLOT(slotThriftFinished()));
@@ -91,7 +91,7 @@ void t_map_stations::slotStartThrift() {
 
 // 
 /////////////////////////////////////////////////////////////////////////////
-void t_map_stations::slotStopThrift() {
+void t_monitor::slotStopThrift() {
   if (_thriftClient) {
     _thriftClient->stop();
     _thriftClient = 0;
@@ -100,14 +100,14 @@ void t_map_stations::slotStopThrift() {
 
 // 
 /////////////////////////////////////////////////////////////////////////////
-void t_map_stations::slotThriftFinished() {
+void t_monitor::slotThriftFinished() {
   sender()->deleteLater();
   _thriftClient = 0;
 }
 
 // 
 /////////////////////////////////////////////////////////////////////////////
-void t_map_stations::putThriftResults(std::vector<t_thriftResult*>* results) {
+void t_monitor::putThriftResults(std::vector<t_thriftResult*>* results) {
   QMutexLocker locker(&_mutex);
   if (_results) {
     while (!_results->empty()) {
@@ -121,7 +121,7 @@ void t_map_stations::putThriftResults(std::vector<t_thriftResult*>* results) {
 
 // 
 /////////////////////////////////////////////////////////////////////////////
-void t_map_stations::slotPlotResults() {
+void t_monitor::slotPlotResults() {
   QMutexLocker locker(&_mutex);
 
   if (_results) {
