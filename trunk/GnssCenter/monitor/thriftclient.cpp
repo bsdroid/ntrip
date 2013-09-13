@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "thriftclient.h"
-#include "map_stations.h"
+#include "monitor.h"
 
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
@@ -17,7 +17,7 @@ using namespace boost;
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_thriftClient::t_thriftClient(GnssCenter::t_map_stations* parent) {
+t_thriftClient::t_thriftClient(GnssCenter::t_monitor* parent) {
   _stop   = false;
   _parent = parent;
 }
@@ -65,7 +65,7 @@ void t_thriftClient::run() {
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_thriftHandler::t_thriftHandler(GnssCenter::t_map_stations* parent) {
+t_thriftHandler::t_thriftHandler(GnssCenter::t_monitor* parent) {
   _parent = parent;
 }
 
