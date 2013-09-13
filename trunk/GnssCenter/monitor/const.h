@@ -1,6 +1,8 @@
 #ifndef CONST_H
 #define CONST_H
 
+namespace GnssCenter {
+
 enum t_irc {failure = -1, success, fatal}; // return code
 
 class t_CST {
@@ -9,5 +11,6 @@ class t_CST {
   static const double fInv;
 };
 
+} // namespace GnssCenter
 
 #endif

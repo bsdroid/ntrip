@@ -35,7 +35,7 @@
 using namespace std;
 using namespace GnssCenter;
 
-Q_EXPORT_PLUGIN2(gnsscenter_monitor, GnssCenter::t_monitorFactory)
+Q_EXPORT_PLUGIN2(gnsscenter_monitor, t_monitorFactory)
 
 // Constructor
 /////////////////////////////////////////////////////////////////////////////

@@ -18,6 +18,8 @@ namespace GnssCenter {
   class t_monitor;
 }
 
+namespace GnssCenter {
+
 class t_thriftResult {
  public:
   t_thriftResult() {
@@ -38,7 +40,7 @@ class t_thriftResult {
 
 class t_thriftHandler : public RtnetDataIf {
  public:
-  t_thriftHandler(GnssCenter::t_monitor* parent);
+  t_thriftHandler(t_monitor* parent);
   ~t_thriftHandler();
   void startDataStream() {}
   void registerRtnet(const RtnetInformation&) {}
@@ -57,13 +59,13 @@ class t_thriftHandler : public RtnetDataIf {
     double _y;
     double _z;
   };
-  GnssCenter::t_monitor*              _parent;
+  t_monitor*              _parent;
   std::map<std::string, t_stationCrd> _stationCrd;
 };
 
 class t_thriftClient : public QThread {
  public:
-  t_thriftClient(GnssCenter::t_monitor* parent);
+  t_thriftClient(t_monitor* parent);
   ~t_thriftClient();
   virtual void run();
   void stop() {
@@ -72,9 +74,11 @@ class t_thriftClient : public QThread {
   }
 
  private:
-  QMutex                 _mutex;
-  GnssCenter::t_monitor* _parent;
-  bool                   _stop;
+  QMutex     _mutex;
+  t_monitor* _parent;
+  bool       _stop;
 };
+
+} // namespace GnssCenter
 
 #endif
