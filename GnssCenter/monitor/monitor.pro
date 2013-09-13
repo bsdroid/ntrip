@@ -1,7 +1,7 @@
 
 TEMPLATE             = lib
 CONFIG              += plugin debug
-TARGET               = $$qtLibraryTarget(gnsscenter_map_stations)
+TARGET               = $$qtLibraryTarget(gnsscenter_monitor)
 QT                  += svg
 INCLUDEPATH         += ../qwt ../main
 DESTDIR              = ../plugins
@@ -23,13 +23,13 @@ QMAKE_EXTRA_TARGETS += thrift
 PRE_TARGETDEPS      += gen-cpp
 LIBS                += -lthrift
 
-HEADERS   = map_stations.h \
+HEADERS   = monitor.h      \
             utils.h        \
             const.h        \
             worldplot.h    \
             thriftclient.h 
 
-SOURCES   = map_stations.cpp \
+SOURCES   = monitor.cpp      \
             utils.cpp        \
             const.cpp        \
             worldplot.cpp    \
@@ -39,4 +39,4 @@ SOURCES   = map_stations.cpp \
             gen-cpp/rtnet_data_constants.cpp gen-cpp/rtnet_data_types.cpp
 
 
-RESOURCES = map_stations.qrc
+RESOURCES = monitor.qrc
