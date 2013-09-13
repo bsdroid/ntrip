@@ -15,7 +15,7 @@
 using namespace com::gpssolutions::rtnet;
 
 namespace GnssCenter {
-  class t_map_stations;
+  class t_monitor;
 }
 
 class t_thriftResult {
@@ -36,10 +36,9 @@ class t_thriftResult {
   double      _z;
 };
 
-
 class t_thriftHandler : public RtnetDataIf {
  public:
-  t_thriftHandler(GnssCenter::t_map_stations* parent);
+  t_thriftHandler(GnssCenter::t_monitor* parent);
   ~t_thriftHandler();
   void startDataStream() {}
   void registerRtnet(const RtnetInformation&) {}
@@ -58,13 +57,13 @@ class t_thriftHandler : public RtnetDataIf {
     double _y;
     double _z;
   };
-  GnssCenter::t_map_stations*         _parent;
+  GnssCenter::t_monitor*              _parent;
   std::map<std::string, t_stationCrd> _stationCrd;
 };
 
 class t_thriftClient : public QThread {
  public:
-  t_thriftClient(GnssCenter::t_map_stations* parent);
+  t_thriftClient(GnssCenter::t_monitor* parent);
   ~t_thriftClient();
   virtual void run();
   void stop() {
@@ -73,9 +72,9 @@ class t_thriftClient : public QThread {
   }
 
  private:
-  QMutex                      _mutex;
-  GnssCenter::t_map_stations* _parent;
-  bool                        _stop;
+  QMutex                 _mutex;
+  GnssCenter::t_monitor* _parent;
+  bool                   _stop;
 };
 
 #endif
