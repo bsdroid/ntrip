@@ -25,10 +25,11 @@ QMutex t_settings::_mutex;  // static mutex
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_settings::t_settings() {
+t_settings::t_settings(const QString& groupName) {
   QMutexLocker locker(&_mutex);
 
-  _app = static_cast<t_app*>(qApp);
+  _groupName = groupName;
+  _app       = static_cast<t_app*>(qApp);
 
   // First fill the options
   // ---------------------- 
@@ -109,18 +110,4 @@ void t_settings::sync() {
     settings.setValue(it.key(), it.value());
   }
   settings.sync();
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void t_settings::beginGroup(const QString& groupName) {
-  QMutexLocker locker(&_mutex);
-  _groupName = groupName;
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void t_settings::endGroup() {
-  QMutexLocker locker(&_mutex);
-  _groupName.clear();
 }
