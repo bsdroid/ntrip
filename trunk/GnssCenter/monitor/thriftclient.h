@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <QString>
 #include <QThread>
 #include <QMutex>
 
@@ -65,7 +66,7 @@ class t_thriftHandler : public RtnetDataIf {
 
 class t_thriftClient : public QThread {
  public:
-  t_thriftClient(t_monitor* parent);
+  t_thriftClient(t_monitor* parent, const QString& host, int port);
   ~t_thriftClient();
   virtual void run();
   void stop() {
@@ -74,9 +75,11 @@ class t_thriftClient : public QThread {
   }
 
  private:
-  QMutex     _mutex;
-  t_monitor* _parent;
-  bool       _stop;
+  QMutex      _mutex;
+  std::string _host;
+  int         _port;
+  t_monitor*  _parent;
+  bool        _stop;
 };
 
 } // namespace GnssCenter
