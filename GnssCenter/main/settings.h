@@ -9,15 +9,13 @@ class t_app;
 
 class t_settings {
  public:
-  t_settings();
+  t_settings(const QString& groupName = QString());
   ~t_settings();
   QVariant value(const QString& key, 
                  const QVariant& defaultValue = QVariant()) const;
   void setValue(const QString &key, const QVariant& value);
   void remove(const QString& key );
   void sync();
-  void beginGroup(const QString& groupName);
-  void endGroup();
  private:
   void reRead();
   t_app*        _app;
