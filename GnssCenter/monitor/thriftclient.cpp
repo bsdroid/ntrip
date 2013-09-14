@@ -19,9 +19,11 @@ using namespace GnssCenter;
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_thriftClient::t_thriftClient(t_monitor* parent) {
+t_thriftClient::t_thriftClient(t_monitor* parent, const QString& host, int port) {
   _stop   = false;
   _parent = parent;
+  _host   = host.toAscii().data();
+  _port   = port;
 }
 
 // Destructor

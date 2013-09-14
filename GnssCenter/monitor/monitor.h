@@ -13,6 +13,8 @@ namespace GnssCenter {
 
 namespace GnssCenter {
 
+const static QString pluginName = "RTNet Monitor";
+
 class t_monitor : public QMainWindow {
  Q_OBJECT
  public:
@@ -40,7 +42,7 @@ class t_monitorFactory : public QObject, public t_pluginFactoryInterface {
  Q_INTERFACES(GnssCenter::t_pluginFactoryInterface)
  public:
   virtual QWidget* create() {return new t_monitor();} 
-  virtual QString getName() const {return QString("RTNet Monitor");}
+  virtual QString getName() const {return pluginName;}
 };
 
 } // namespace GnssCenter

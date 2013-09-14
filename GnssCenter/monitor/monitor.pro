@@ -34,6 +34,7 @@ SOURCES   = monitor.cpp      \
             const.cpp        \
             worldplot.cpp    \
             thriftclient.cpp \
+            ../main/settings.cpp \
             gen-cpp/RtnetData.cpp \
             gen-cpp/rtnet_constants.cpp gen-cpp/rtnet_types.cpp \
             gen-cpp/rtnet_data_constants.cpp gen-cpp/rtnet_data_types.cpp

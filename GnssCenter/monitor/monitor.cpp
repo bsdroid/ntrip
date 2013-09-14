@@ -31,6 +31,7 @@
 #include "utils.h"
 #include "worldplot.h"
 #include "thriftclient.h"
+#include "settings.h"
 
 using namespace std;
 using namespace GnssCenter;
@@ -62,6 +63,15 @@ t_monitor::t_monitor() : QMainWindow() {
   toolBar->addAction(actStopThrift);
   connect(actStopThrift, SIGNAL(triggered()), this, SLOT(slotStopThrift()));
 
+  // Host and Port
+  // -------------
+  t_settings settings;
+  settings.beginGroup(pluginName);
+  settings.setValue("host", "rtnet.rtcm-ntrip.org");
+  settings.setValue("port", 7777);
+  settings.endGroup();
+  settings.sync();
+
   // Thrift Client;
   // --------------
   _thriftClient = 0;
@@ -85,7 +95,12 @@ t_monitor::~t_monitor() {
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::slotStartThrift() {
   if (!_thriftClient) {
-    _thriftClient = new t_thriftClient(this);
+    t_settings settings;
+    settings.beginGroup(pluginName);
+    QString host = settings.value("host").toString();
+    int     port = settings.value("port").toInt();
+    settings.endGroup();
+    _thriftClient = new t_thriftClient(this, host, port);
     connect(_thriftClient, SIGNAL(finished()), this, SLOT(slotThriftFinished()));
     _thriftClient->start();
     slotPlotResults();

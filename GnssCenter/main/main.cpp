@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
   app.setApplicationName("GnssCenter");
   app.setOrganizationName("BKG");
   app.setOrganizationDomain("www.bkg.bund.de");
+  app.setConfFileName("");
 
   t_mainWin* mainWin = new t_mainWin();
   mainWin->show();

@@ -72,9 +72,9 @@ void t_settings::reRead() {
 QVariant t_settings::value(const QString& key,
                             const QVariant& defaultValue) const {
   QMutexLocker locker(&_mutex);
-
-  if (_app->_settings.contains(key)) {
-    return _app->_settings[key];
+  QString fullKey = _groupName.isEmpty() ? key : _groupName + '/' + key;
+  if (_app->_settings.contains(fullKey)) {
+    return _app->_settings[fullKey];
   }
   else {
     return defaultValue;
@@ -85,20 +85,16 @@ QVariant t_settings::value(const QString& key,
 ////////////////////////////////////////////////////////////////////////////
 void t_settings::setValue(const QString &key, const QVariant& value) {
   QMutexLocker locker(&_mutex);
-  setValue_p(key, value);
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void t_settings::setValue_p(const QString &key, const QVariant& value) {
-  _app->_settings[key] = value;
+  QString fullKey = _groupName.isEmpty() ? key : _groupName + '/' + key;
+  _app->_settings[fullKey] = value;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_settings::remove(const QString& key ) {
   QMutexLocker locker(&_mutex);
-  _app->_settings.remove(key);
+  QString fullKey = _groupName.isEmpty() ? key : _groupName + '/' + key;
+  _app->_settings.remove(fullKey);
 }
 
 // 
@@ -113,4 +109,18 @@ void t_settings::sync() {
     settings.setValue(it.key(), it.value());
   }
   settings.sync();
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_settings::beginGroup(const QString& groupName) {
+  QMutexLocker locker(&_mutex);
+  _groupName = groupName;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_settings::endGroup() {
+  QMutexLocker locker(&_mutex);
+  _groupName.clear();
 }

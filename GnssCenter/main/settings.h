@@ -15,11 +15,13 @@ class t_settings {
                  const QVariant& defaultValue = QVariant()) const;
   void setValue(const QString &key, const QVariant& value);
   void remove(const QString& key );
-  void reRead();
   void sync();
+  void beginGroup(const QString& groupName);
+  void endGroup();
  private:
-  void          setValue_p(const QString &key, const QVariant& value);
+  void reRead();
   t_app*        _app;
+  QString       _groupName;
   static QMutex _mutex;
 };
 
