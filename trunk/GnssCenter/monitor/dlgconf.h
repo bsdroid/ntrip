@@ -12,6 +12,8 @@ class t_dlgConf : public QDialog {
   t_dlgConf(QWidget* parent);
   ~t_dlgConf();
  private:
+  QLineEdit* _hostLineEdit;
+  QLineEdit* _portLineEdit;
 };
 
 } // namespace GnssCenter

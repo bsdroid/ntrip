@@ -26,6 +26,15 @@ using namespace GnssCenter;
 /////////////////////////////////////////////////////////////////////////////
 t_dlgConf::t_dlgConf(QWidget* parent) : QDialog(parent) {
 
+  _hostLineEdit = new QLineEdit;
+  _portLineEdit = new QLineEdit;
+
+  QFormLayout* formLayout = new QFormLayout;
+  formLayout->addRow("Host:", _hostLineEdit);
+  formLayout->addRow("Port:", _portLineEdit);
+
+  setLayout(formLayout);
+
   t_settings settings(pluginName);
   settings.setValue("host", "rtnet.rtcm-ntrip.org");
   settings.setValue("port", 7777);
