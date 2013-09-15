@@ -11,6 +11,8 @@ class t_dlgConf : public QDialog {
  public:
   t_dlgConf(QWidget* parent);
   ~t_dlgConf();
+ public slots:
+  virtual void accept();
  private:
   QLineEdit* _hostLineEdit;
   QLineEdit* _portLineEdit;
