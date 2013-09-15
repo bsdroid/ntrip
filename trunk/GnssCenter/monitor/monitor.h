@@ -30,6 +30,7 @@ class t_monitor : public QMainWindow {
   void slotPlotResults();
 
  private:
+  void setTitle();
   QMutex                        _mutex;
   QTabWidget*                   _tabWidget;
   QAction*                      _actConfig;

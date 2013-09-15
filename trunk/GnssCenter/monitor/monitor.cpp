@@ -68,9 +68,9 @@ t_monitor::t_monitor() : QMainWindow() {
   toolBar->addAction(_actStopThrift);
   connect(_actStopThrift, SIGNAL(triggered()), this, SLOT(slotStopThrift()));
 
-  // Host and Port
-  // -------------
-  t_settings settings(pluginName);
+  // Window title
+  // ------------
+  setTitle();
 
   // Thrift Client;
   // --------------
@@ -91,11 +91,21 @@ t_monitor::~t_monitor() {
   }
 }
 
+// Set title
+/////////////////////////////////////////////////////////////////////////////
+void t_monitor::setTitle() {
+  t_settings settings(pluginName);
+  QString host = settings.value("host").toString();
+  QString port = settings.value("port").toString();
+  setWindowTitle(QString(pluginName) + ": " + host + ':' + port);
+}
+
 // 
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::slotConfig() {
   t_dlgConf dlg(this);
   dlg.exec();
+  setTitle();
 }
 
 // 
