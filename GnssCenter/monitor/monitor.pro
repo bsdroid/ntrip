@@ -16,8 +16,8 @@ release:OBJECTS_DIR = .obj/release
 release:MOC_DIR     = .moc/release
 
 thrift.target   = gen-cpp
-thrift.commands = "thrift -r -gen cpp rtnet.thrift"
-thrift.depends  = rtnet.thrift rtnet_data.thrift
+thrift.commands = "thrift -r -gen cpp $(THRIFT_DIR)/rtnet.thrift"
+thrift.depends  = $(THRIFT_DIR)/rtnet.thrift $(THRIFT_DIR)/rtnet_data.thrift
 
 QMAKE_EXTRA_TARGETS += thrift
 PRE_TARGETDEPS      += gen-cpp
