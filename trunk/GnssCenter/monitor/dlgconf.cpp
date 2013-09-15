@@ -26,8 +26,10 @@ using namespace GnssCenter;
 /////////////////////////////////////////////////////////////////////////////
 t_dlgConf::t_dlgConf(QWidget* parent) : QDialog(parent) {
 
-  _hostLineEdit = new QLineEdit;
-  _portLineEdit = new QLineEdit;
+  t_settings settings(pluginName);
+
+  _hostLineEdit = new QLineEdit(settings.value("host").toString(), this);
+  _portLineEdit = new QLineEdit(settings.value("port").toString(), this);
 
 
   QFormLayout* formLayout = new QFormLayout;
@@ -48,12 +50,6 @@ t_dlgConf::t_dlgConf(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(formLayout);
   mainLayout->addLayout(buttonLayout);
   setLayout(mainLayout);
-
-  t_settings settings(pluginName);
-  settings.setValue("host", "rtnet.rtcm-ntrip.org");
-  settings.setValue("port", 7777);
-  settings.sync();
-
 }
 
 // Destructor
@@ -64,6 +60,8 @@ t_dlgConf::~t_dlgConf() {
 // Accept (virtual slot)
 /////////////////////////////////////////////////////////////////////////////
 void t_dlgConf::accept() {
-  qDebug() << "accept hovno";
+  t_settings settings(pluginName);
+  settings.setValue("host", _hostLineEdit->text());
+  settings.setValue("port", _portLineEdit->text());
 }
 
