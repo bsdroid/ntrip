@@ -71,9 +71,6 @@ t_monitor::t_monitor() : QMainWindow() {
   // Host and Port
   // -------------
   t_settings settings(pluginName);
-  settings.setValue("host", "rtnet.rtcm-ntrip.org");
-  settings.setValue("port", 7777);
-  settings.sync();
 
   // Thrift Client;
   // --------------

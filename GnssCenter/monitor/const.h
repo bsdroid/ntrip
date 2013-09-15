@@ -3,6 +3,8 @@
 
 namespace GnssCenter {
 
+static const char pluginName[] = "RTNet Monitor";
+
 class t_CST {
  public:
   enum t_irc {failure = -1, success, fatal}; // return code
