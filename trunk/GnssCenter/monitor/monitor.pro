@@ -24,12 +24,14 @@ PRE_TARGETDEPS      += gen-cpp
 LIBS                += -lthrift
 
 HEADERS   = monitor.h      \
+            dlgconf.h      \
             utils.h        \
             const.h        \
             worldplot.h    \
             thriftclient.h 
 
 SOURCES   = monitor.cpp      \
+            dlgconf.cpp      \
             utils.cpp        \
             const.cpp        \
             worldplot.cpp    \
