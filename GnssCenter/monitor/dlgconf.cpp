@@ -35,7 +35,11 @@ t_dlgConf::t_dlgConf(QWidget* parent) : QDialog(parent) {
   formLayout->addRow("Port:", _portLineEdit);
 
   QPushButton* cancelButton = new QPushButton("Cancel", this);
-  QPushButton* okButton     = new QPushButton("OK", this);
+  connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+
+  QPushButton* okButton = new QPushButton("OK", this);
+  connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
+
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(cancelButton);
   buttonLayout->addWidget(okButton);
@@ -55,5 +59,11 @@ t_dlgConf::t_dlgConf(QWidget* parent) : QDialog(parent) {
 // Destructor
 /////////////////////////////////////////////////////////////////////////////
 t_dlgConf::~t_dlgConf() {
+}
+
+// Accept (virtual slot)
+/////////////////////////////////////////////////////////////////////////////
+void t_dlgConf::accept() {
+  qDebug() << "accept hovno";
 }
 
