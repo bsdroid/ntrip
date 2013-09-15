@@ -35,10 +35,7 @@ t_thriftClient::~t_thriftClient() {
 //////////////////////////////////////////////////////////////////////////////
 void t_thriftClient::run() {
 
-  string host = "rtnet.rtcm-ntrip.org";
-  int    port = 7777;
-
-  shared_ptr<TSocket>     socket(new TSocket(host, port));
+  shared_ptr<TSocket>     socket(new TSocket(_host, _port));
   shared_ptr<TTransport>  transport(new TBufferedTransport(socket)); 
   shared_ptr<TProtocol>   protocol(new TBinaryProtocol(transport));
   shared_ptr<RtnetDataIf> dataHandler(new t_thriftHandler(_parent));
