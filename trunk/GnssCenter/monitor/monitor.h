@@ -24,6 +24,7 @@ class t_monitor : public QMainWindow {
   void putThriftResults(std::vector<t_thriftResult*>* results);
 
  private slots:
+  void slotConfig();
   void slotStartThrift();
   void slotStopThrift();
   void slotThriftFinished();
@@ -32,6 +33,9 @@ class t_monitor : public QMainWindow {
  private:
   QMutex                        _mutex;
   QTabWidget*                   _tabWidget;
+  QAction*                      _actConfig;
+  QAction*                      _actStartThrift;
+  QAction*                      _actStopThrift;
   t_worldPlot*                  _plot;
   t_thriftClient*               _thriftClient;
   std::vector<t_thriftResult*>* _results;

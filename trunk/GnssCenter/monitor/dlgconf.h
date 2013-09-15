@@ -8,7 +8,7 @@ namespace GnssCenter {
 class t_dlgConf : public QDialog {
  Q_OBJECT
  public:
-  t_dlgConf();
+  t_dlgConf(QWidget* parent);
   ~t_dlgConf();
  private:
 };
