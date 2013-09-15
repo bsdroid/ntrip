@@ -63,5 +63,6 @@ void t_dlgConf::accept() {
   t_settings settings(pluginName);
   settings.setValue("host", _hostLineEdit->text());
   settings.setValue("port", _portLineEdit->text());
+  QDialog::accept();
 }
 
