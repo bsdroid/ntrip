@@ -28,6 +28,7 @@
 #include <qwt_plot_renderer.h>
 
 #include "monitor.h"
+#include "dlgconf.h"
 #include "utils.h"
 #include "worldplot.h"
 #include "thriftclient.h"
@@ -55,13 +56,17 @@ t_monitor::t_monitor() : QMainWindow() {
   QToolBar* toolBar = new QToolBar("t_monitor_ToolBar");
   addToolBar(Qt::BottomToolBarArea, toolBar);
 
-  QAction* actStartThrift = new QAction("Start Thrift", 0);
-  toolBar->addAction(actStartThrift);
-  connect(actStartThrift, SIGNAL(triggered()), this, SLOT(slotStartThrift()));
+  _actConfig = new QAction("Config", 0);
+  toolBar->addAction(_actConfig);
+  connect(_actConfig, SIGNAL(triggered()), this, SLOT(slotConfig()));
 
-  QAction* actStopThrift = new QAction("Stop Thrift", 0);
-  toolBar->addAction(actStopThrift);
-  connect(actStopThrift, SIGNAL(triggered()), this, SLOT(slotStopThrift()));
+  _actStartThrift = new QAction("Start", 0);
+  toolBar->addAction(_actStartThrift);
+  connect(_actStartThrift, SIGNAL(triggered()), this, SLOT(slotStartThrift()));
+
+  _actStopThrift = new QAction("Stop", 0);
+  toolBar->addAction(_actStopThrift);
+  connect(_actStopThrift, SIGNAL(triggered()), this, SLOT(slotStopThrift()));
 
   // Host and Port
   // -------------
@@ -87,6 +92,13 @@ t_monitor::~t_monitor() {
     }
     delete _results;
   }
+}
+
+// 
+/////////////////////////////////////////////////////////////////////////////
+void t_monitor::slotConfig() {
+  t_dlgConf dlg(this);
+  dlg.exec();
 }
 
 // 

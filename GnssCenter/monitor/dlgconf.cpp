@@ -23,7 +23,7 @@ using namespace GnssCenter;
 
 // Constructor
 /////////////////////////////////////////////////////////////////////////////
-t_dlgConf::t_dlgConf() : QDialog() {
+t_dlgConf::t_dlgConf(QWidget* parent) : QDialog(parent) {
 }
 
 // Destructor
