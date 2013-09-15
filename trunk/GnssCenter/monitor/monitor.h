@@ -4,6 +4,7 @@
 #include <QtGui>
 #include <QWhatsThis>
 #include "plugininterface.h"
+#include "const.h"
 
 namespace GnssCenter {
   class t_worldPlot;
@@ -12,8 +13,6 @@ namespace GnssCenter {
 }
 
 namespace GnssCenter {
-
-const static QString pluginName = "RTNet Monitor";
 
 class t_monitor : public QMainWindow {
  Q_OBJECT

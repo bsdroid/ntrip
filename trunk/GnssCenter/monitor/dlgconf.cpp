@@ -17,6 +17,7 @@
 
 #include "dlgconf.h"
 #include "settings.h"
+#include "const.h"
 
 using namespace std;
 using namespace GnssCenter;
@@ -24,6 +25,12 @@ using namespace GnssCenter;
 // Constructor
 /////////////////////////////////////////////////////////////////////////////
 t_dlgConf::t_dlgConf(QWidget* parent) : QDialog(parent) {
+
+  t_settings settings(pluginName);
+  settings.setValue("host", "rtnet.rtcm-ntrip.org");
+  settings.setValue("port", 7777);
+  settings.sync();
+
 }
 
 // Destructor

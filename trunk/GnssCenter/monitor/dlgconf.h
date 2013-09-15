@@ -2,6 +2,7 @@
 #define GnssCenter_DLGCONF_H
 
 #include <QtGui>
+#include "const.h"
 
 namespace GnssCenter {
 
