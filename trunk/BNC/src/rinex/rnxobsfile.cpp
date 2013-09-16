@@ -506,7 +506,7 @@ void t_rnxObsFile::handleEpochFlag(int flag, const QString& line,
 
   // Re-Read Header
   // -------------- 
-  else if (flag == 3 || flag == 4) {
+  else if (flag == 3 || flag == 4 || flag == 5) {
     int numLines = 0;
     if (version() < 3.0) {
       readInt(line, 29, 3, numLines);
@@ -514,8 +514,15 @@ void t_rnxObsFile::handleEpochFlag(int flag, const QString& line,
     else {
       readInt(line, 32, 3, numLines);
     }
-    _header.read(_stream, numLines);
-    headerReRead = true;
+    if (flag == 3 || flag == 4) {
+      _header.read(_stream, numLines);
+      headerReRead = true;
+    }
+    else {
+      for (int ii = 0; ii < numLines; ii++) {
+        _stream->readLine();
+      }
+    }
   }
 
   // Unhandled Flag
