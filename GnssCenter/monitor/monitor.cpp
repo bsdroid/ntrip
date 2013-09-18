@@ -284,7 +284,16 @@ void t_monitor::plotSatellites() {
         double latDeg = ell[0] * 180.0 / M_PI;
         double lonDeg = ell[1] * 180.0 / M_PI;
         QString str   = sat->_prn.c_str();
-        QColor color = Qt::darkBlue;
+        QColor color;
+        if      (str[0] == 'G') {
+          color = Qt::darkBlue;
+        }
+        else if (str[0] == 'R') {
+          color = Qt::darkGreen;
+        }
+        else {
+          color = Qt::black;
+        }
         t_worldPlot::t_point* point  = new t_worldPlot::t_point(color, str, latDeg, lonDeg);
         points.append(point);
       }
