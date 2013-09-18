@@ -98,8 +98,9 @@ handleSatelliteXYZ(const vector<SatelliteXYZ>& svXYZList) {
     satellite->_x   = sat.xyz.x;
     satellite->_y   = sat.xyz.y;
     satellite->_z   = sat.xyz.z;
-    cout << satellite->_prn << ' ' << satellite->_x << endl;
+    satellites->push_back(satellite);
   }
+  _parent->putThriftSatellites(satellites);
 }
 
 // Handle Station Info
