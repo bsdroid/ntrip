@@ -75,6 +75,7 @@ t_monitor::t_monitor() : QMainWindow() {
   // --------------
   _thriftClient = 0;
   _results      = 0;
+  _satellites   = 0;
 
   // Read Settings, Set Title, Enable/Disable Actions
   // ------------------------------------------------
@@ -93,6 +94,13 @@ t_monitor::~t_monitor() {
       _results->pop_back();
     }
     delete _results;
+  }
+  if (_satellites) {
+    while (!_satellites->empty()) {
+      delete _satellites->back();
+      _satellites->pop_back();
+    }
+    delete _satellites;
   }
 }
 
@@ -162,7 +170,7 @@ void t_monitor::slotStartThrift() {
     connect(_thriftClient, SIGNAL(finished()), this, SLOT(slotThriftFinished()));
     connect(_thriftClient, SIGNAL(message(QByteArray)), this, SLOT(slotMessage(QByteArray)));
     _thriftClient->start();
-    slotPlotResults();
+    slotPlot();
   }
   enableActions();
 }
@@ -201,9 +209,32 @@ void t_monitor::putThriftResults(std::vector<t_thriftResult*>* results) {
 
 // 
 /////////////////////////////////////////////////////////////////////////////
-void t_monitor::slotPlotResults() {
+void t_monitor::putThriftSatellites(std::vector<t_thriftSatellite*>* satellites) {
   QMutexLocker locker(&_mutex);
+  if (_satellites) {
+    while (!_satellites->empty()) {
+      delete _satellites->back();
+      _satellites->pop_back();
+    }
+    delete _satellites;
+  }
+  _satellites = satellites;
+}
 
+// 
+/////////////////////////////////////////////////////////////////////////////
+void t_monitor::slotPlot() {
+  QMutexLocker locker(&_mutex);
+  plotResults();
+  plotSatellites();
+  if (_thriftClient) {
+    QTimer::singleShot(1000, this, SLOT(slotPlotResults()));
+  }
+}
+
+// 
+/////////////////////////////////////////////////////////////////////////////
+void t_monitor::plotResults() {
   if (_results) {
     QList<t_worldPlot::t_point*> points;
     for (unsigned ii = 0; ii < _results->size(); ii++) {
@@ -231,8 +262,11 @@ void t_monitor::slotPlotResults() {
       delete it.next();
     }
   }
+}
 
-  if (_thriftClient) {
-    QTimer::singleShot(1000, this, SLOT(slotPlotResults()));
+// 
+/////////////////////////////////////////////////////////////////////////////
+void t_monitor::plotSatellites() {
+  if (_satellites) {
   }
 }
