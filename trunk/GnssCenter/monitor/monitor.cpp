@@ -251,7 +251,8 @@ void t_monitor::plotResults() {
         double latDeg = ell[0] * 180.0 / M_PI;
         double lonDeg = ell[1] * 180.0 / M_PI;
         QString str = QString().sprintf("%d/%d", result->_nGPS, result->_nGLO);
-        t_worldPlot::t_point* point  = new t_worldPlot::t_point(str, latDeg, lonDeg);
+        QColor color = result->_nGPS >= 4 ? Qt::black : Qt::red;
+        t_worldPlot::t_point* point  = new t_worldPlot::t_point(color, str, latDeg, lonDeg);
         points.append(point);
       }
     }
@@ -283,7 +284,8 @@ void t_monitor::plotSatellites() {
         double latDeg = ell[0] * 180.0 / M_PI;
         double lonDeg = ell[1] * 180.0 / M_PI;
         QString str   = sat->_prn.c_str();
-        t_worldPlot::t_point* point  = new t_worldPlot::t_point(str, latDeg, lonDeg);
+        QColor color = Qt::darkBlue;
+        t_worldPlot::t_point* point  = new t_worldPlot::t_point(color, str, latDeg, lonDeg);
         points.append(point);
       }
     }
