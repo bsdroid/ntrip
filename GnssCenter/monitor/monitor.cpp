@@ -96,8 +96,11 @@ t_monitor::~t_monitor() {
 void t_monitor::setTitle() {
   t_settings settings(pluginName);
   QString host = settings.value("host").toString();
+  if (host.isEmpty()) {
+    host = "localhost";
+  }
   QString port = settings.value("port").toString();
-  setWindowTitle(QString(pluginName) + ": " + host + ':' + port);
+  setWindowTitle(QString(pluginName) + "   " + host + ':' + port);
 }
 
 // 
@@ -114,7 +117,10 @@ void t_monitor::slotStartThrift() {
   if (!_thriftClient) {
     t_settings settings(pluginName);
     QString host = settings.value("host").toString();
-    int     port = settings.value("port").toInt();
+    if (host.isEmpty()) {
+      host = "localhost";
+    }
+    int port = settings.value("port").toInt();
     _thriftClient = new t_thriftClient(this, host, port);
     connect(_thriftClient, SIGNAL(finished()), this, SLOT(slotThriftFinished()));
     _thriftClient->start();
