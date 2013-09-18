@@ -334,7 +334,13 @@ void copyObs(const t_obs& obsBnc, rtrover_satObs& satObs) {
   for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; ++iEntry) {
     if (obsBnc._measdata[iEntry] != 0.0) {
       QByteArray rnxStr = obsBnc.rnxStr(iEntry).toAscii();
-      if (rnxStr.length() == 3) {
+      if (rnxStr.length() >= 2) {
+        if      (rnxStr == "L1") {
+          rnxStr = "L1C";
+        }
+        else if (rnxStr == "L2") {
+          rnxStr = "L2P";
+        }
         QByteArray codeType = rnxStr.mid(1);
 
         bool existed = allObs.contains(codeType);
