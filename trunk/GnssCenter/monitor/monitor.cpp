@@ -123,7 +123,7 @@ void t_monitor::enableActions() {
     _actStartThrift->setEnabled(false);
     _actStopThrift->setEnabled(false);
   }
-  else if (_thriftClient && _thriftClient->isRunning()) {
+  else if (_thriftClient) {
     _actConfig->setEnabled(false);
     _actStartThrift->setEnabled(false);
     _actStopThrift->setEnabled(true);
