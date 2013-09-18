@@ -155,6 +155,8 @@ void t_monitor::slotStopThrift() {
 // 
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::slotThriftFinished() {
+  _actConfig->setEnabled(true);
+  _actStartThrift->setEnabled(true);
   sender()->deleteLater();
   _thriftClient = 0;
 }
