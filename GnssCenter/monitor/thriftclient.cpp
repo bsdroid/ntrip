@@ -93,11 +93,12 @@ handleSatelliteXYZ(const vector<SatelliteXYZ>& svXYZList) {
       case (ConstellationType::COMPASS): ch = 'C'; break;
     }
     char prn[3];
-    sprintf(prn, "%c%2d", ch, sat.ID);
+    sprintf(prn, "%c%2.2d", ch, sat.ID);
     satellite->_prn = prn;
     satellite->_x   = sat.xyz.x;
     satellite->_y   = sat.xyz.y;
     satellite->_z   = sat.xyz.z;
+    cout << satellite->_prn << ' ' << satellite->_x << endl;
   }
 }
 
