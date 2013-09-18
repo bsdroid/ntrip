@@ -28,7 +28,11 @@ t_dlgConf::t_dlgConf(QWidget* parent) : QDialog(parent) {
 
   t_settings settings(pluginName);
 
-  _hostLineEdit = new QLineEdit(settings.value("host").toString(), this);
+  QString host = settings.value("host").toString();
+  if (host.isEmpty()) {
+    host = "localhost";
+  }
+  _hostLineEdit = new QLineEdit(host, this);
   _portLineEdit = new QLineEdit(settings.value("port").toString(), this);
 
 
@@ -61,7 +65,11 @@ t_dlgConf::~t_dlgConf() {
 /////////////////////////////////////////////////////////////////////////////
 void t_dlgConf::accept() {
   t_settings settings(pluginName);
-  settings.setValue("host", _hostLineEdit->text());
+  QString host = _hostLineEdit->text();
+  if (host.isEmpty()) {
+    host = "localhost";
+  }
+  settings.setValue("host", host);
   settings.setValue("port", _portLineEdit->text());
   QDialog::accept();
 }
