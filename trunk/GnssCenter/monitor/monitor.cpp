@@ -287,7 +287,7 @@ void t_monitor::plotSatellites() {
         points.append(point);
       }
     }
-    _plotStations->slotNewPoints(points);
+    _plotSatellites->slotNewPoints(points);
 
     QListIterator<t_worldPlot::t_point*> it(points);
     while (it.hasNext()) {
