@@ -97,7 +97,7 @@ t_monitor::~t_monitor() {
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::readSettings() {
   t_settings settings(pluginName);
-  _host = settings.value("host").toString();
+  _host = settings.value("host").toString().trimmed();
   if (_host.isEmpty()) {
     _host = "localhost";
   }
