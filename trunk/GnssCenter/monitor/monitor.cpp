@@ -46,10 +46,13 @@ t_monitor::t_monitor() : QMainWindow() {
   _tabWidget = new QTabWidget();
   setCentralWidget(_tabWidget);
 
-  // World Plot
-  // ----------
-  _plot = new t_worldPlot();
-  _tabWidget->addTab(_plot, "Stations");
+  // World Plots
+  // -----------
+  _plotStations = new t_worldPlot();
+  _tabWidget->addTab(_plotStations, "Stations");
+
+  _plotSatellites = new t_worldPlot();
+  _tabWidget->addTab(_plotSatellites, "Satellites");
 
   // Tool Bar
   // --------
@@ -221,7 +224,7 @@ void t_monitor::slotPlotResults() {
         points.append(point);
       }
     }
-    _plot->slotNewPoints(points);
+    _plotStations->slotNewPoints(points);
 
     QListIterator<t_worldPlot::t_point*> it(points);
     while (it.hasNext()) {

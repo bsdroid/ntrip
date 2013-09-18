@@ -39,10 +39,11 @@ class t_monitor : public QMainWindow {
   QAction*                      _actConfig;
   QAction*                      _actStartThrift;
   QAction*                      _actStopThrift;
-  t_worldPlot*                  _plot;
   QString                       _host;
   QString                       _port;
   t_thriftClient*               _thriftClient;
+  t_worldPlot*                  _plotStations;
+  t_worldPlot*                  _plotSatellites;
   std::vector<t_thriftResult*>* _results;
 };
 
