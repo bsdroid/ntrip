@@ -148,7 +148,7 @@ void t_monitor::slotConfig() {
 // 
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::slotMessage(QByteArray msg) {
-
+  QMessageBox::information(this, "Message", msg);
 }
 
 // 
