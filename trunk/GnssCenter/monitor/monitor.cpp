@@ -268,9 +268,30 @@ void t_monitor::plotResults() {
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::plotSatellites() {
   if (_satellites) {
+    QList<t_worldPlot::t_point*> points;
     for (unsigned ii = 0; ii < _satellites->size(); ii++) {
       const t_thriftSatellite* sat = _satellites->at(ii);
-      qDebug() << sat->_prn.c_str();
+
+      double xyz[3]; 
+      xyz[0] = sat->_x;
+      xyz[1] = sat->_y;
+      xyz[2] = sat->_z;
+    
+      double ell[3];
+
+      if (t_utils::xyz2ell(xyz, ell) == t_CST::success) {
+        double latDeg = ell[0] * 180.0 / M_PI;
+        double lonDeg = ell[1] * 180.0 / M_PI;
+        QString str   = sat->_prn.c_str();
+        t_worldPlot::t_point* point  = new t_worldPlot::t_point(str, latDeg, lonDeg);
+        points.append(point);
+      }
+    }
+    _plotStations->slotNewPoints(points);
+
+    QListIterator<t_worldPlot::t_point*> it(points);
+    while (it.hasNext()) {
+      delete it.next();
     }
   }
 }
