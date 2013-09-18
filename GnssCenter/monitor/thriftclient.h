@@ -39,6 +39,14 @@ class t_thriftResult {
   double      _z;
 };
 
+class t_thriftSatellite {
+ public:
+  std::string _prn;
+  double      _x;
+  double      _y;
+  double      _z;
+};
+
 class t_thriftHandler : public RtnetDataIf {
  public:
   t_thriftHandler(t_monitor* parent);

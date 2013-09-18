@@ -79,13 +79,24 @@ t_thriftHandler::~t_thriftHandler() {
 //////////////////////////////////////////////////////////////////////////////
 void t_thriftHandler::
 handleSatelliteXYZ(const vector<SatelliteXYZ>& svXYZList) {
-//  for (unsigned ii = 0; ii < svXYZList.size(); ii++) {
-//    const SatelliteXYZ& sat = svXYZList[ii];
-//    cout << unsigned(sat.ID) << ' '
-//         << setprecision(3) << sat.xyz.x << ' '
-//         << setprecision(3) << sat.xyz.y << ' '
-//         << setprecision(3) << sat.xyz.z << endl;
-//  }
+  vector<t_thriftSatellite*>* satellites = new vector<t_thriftSatellite*>;
+  for (unsigned ii = 0; ii < svXYZList.size(); ii++) {
+    const SatelliteXYZ& sat = svXYZList[ii];
+    t_thriftSatellite* satellite = new t_thriftSatellite;
+    satellite->_x = sat.xyz.x;
+    satellite->_y = sat.xyz.y;
+    satellite->_z = sat.xyz.z;
+    char ch;
+    switch(sat.constellation) {
+      case (ConstellationType::GPS):     ch = 'G'; break;
+      case (ConstellationType::GLONASS): ch = 'R'; break;
+      case (ConstellationType::SBAS):    ch = 'S'; break;
+      case (ConstellationType::GALILEO): ch = 'E'; break;
+      case (ConstellationType::QZSS):    ch = 'J'; break;
+      case (ConstellationType::COMPASS): ch = 'C'; break;
+    }
+    cout << unsigned(sat.ID) << endl;
+  }
 }
 
 // Handle Station Info
