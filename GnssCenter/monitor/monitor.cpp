@@ -228,7 +228,7 @@ void t_monitor::slotPlot() {
   plotResults();
   plotSatellites();
   if (_thriftClient) {
-    QTimer::singleShot(1000, this, SLOT(slotPlotResults()));
+    QTimer::singleShot(1000, this, SLOT(slotPlot()));
   }
 }
 
@@ -268,5 +268,9 @@ void t_monitor::plotResults() {
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::plotSatellites() {
   if (_satellites) {
+    for (unsigned ii = 0; ii < _satellites->size(); ii++) {
+      const t_thriftSatellite* sat = _satellites->at(ii);
+      qDebug() << sat->_prn.c_str();
+    }
   }
 }
