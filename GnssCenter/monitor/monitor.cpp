@@ -148,31 +148,31 @@ void t_monitor::slotConfig() {
 // 
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::slotStartThrift() {
-  enableActions();
   if (!_thriftClient) {
     _thriftClient = new t_thriftClient(this, _host, _port.toInt());
     connect(_thriftClient, SIGNAL(finished()), this, SLOT(slotThriftFinished()));
     _thriftClient->start();
     slotPlotResults();
   }
+  enableActions();
 }
 
 // 
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::slotStopThrift() {
-  enableActions();
   if (_thriftClient) {
     _thriftClient->stop();
     _thriftClient = 0;
   }
+  enableActions();
 }
 
 // 
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::slotThriftFinished() {
-  enableActions();
   sender()->deleteLater();
   _thriftClient = 0;
+  enableActions();
 }
 
 // 
