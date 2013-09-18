@@ -16,12 +16,14 @@ class t_worldPlot : public QwtPlot {
   
   class t_point {
    public:
-    t_point(const QString& name, double latDeg, double lonDeg) {
+    t_point(const QColor& color, const QString& name, double latDeg, double lonDeg) {
+      _color  = color;
       _name   = name;
       _latDeg = latDeg;
       _lonDeg = lonDeg;
     }
     ~t_point() {}
+    QColor  _color;
     QString _name;
     double  _latDeg;
     double  _lonDeg;
