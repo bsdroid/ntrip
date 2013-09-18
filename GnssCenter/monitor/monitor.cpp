@@ -118,9 +118,21 @@ void t_monitor::setTitle() {
 // Enable/Disable Actions
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::enableActions() {
-  _actConfig->setEnabled(true);
-  _actStartThrift->setEnabled(true);
-  _actStopThrift->setEnabled(true);
+  if      (_port.isEmpty()) {
+    _actConfig->setEnabled(true);
+    _actStartThrift->setEnabled(false);
+    _actStopThrift->setEnabled(false);
+  }
+  else if (_thriftClient && _thriftClient->isRunning()) {
+    _actConfig->setEnabled(false);
+    _actStartThrift->setEnabled(false);
+    _actStopThrift->setEnabled(true);
+  }
+  else {
+    _actConfig->setEnabled(true);
+    _actStartThrift->setEnabled(true);
+    _actStopThrift->setEnabled(false);
+  }
 }
 
 // 
