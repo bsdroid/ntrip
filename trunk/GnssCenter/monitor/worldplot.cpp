@@ -72,7 +72,7 @@ void t_worldPlot::slotNewPoints(const QList<t_point*>& points) {
   }
   _markers.clear();
 
-  QColor red(220,20,60);
+  QColor color(220,20,60);
 
   QListIterator<t_point*> ip(points);
   while (ip.hasNext()) {
@@ -80,8 +80,8 @@ void t_worldPlot::slotNewPoints(const QList<t_point*>& points) {
 
     if (point->_lonDeg > 180.0) point->_lonDeg -= 360.0;
   
-    QwtSymbol* symbol = new QwtSymbol(QwtSymbol::Rect, QBrush(red), 
-                                      QPen(red), QSize(2,2));
+    QwtSymbol* symbol = new QwtSymbol(QwtSymbol::Rect, QBrush(color), 
+                                      QPen(color), QSize(2,2));
     QwtPlotMarker* marker = new QwtPlotMarker();
     marker->setValue(point->_lonDeg, point->_latDeg);
     if (point->_lonDeg > 170.0) {
@@ -94,6 +94,7 @@ void t_worldPlot::slotNewPoints(const QList<t_point*>& points) {
     QFont   font = text.font();
     font.setPointSize(font.pointSize()*0.8);
     text.setFont(font);
+    text.setColor(color);
     marker->setLabel(text);
     marker->setSymbol(symbol);
     marker->attach(this);
