@@ -107,7 +107,7 @@ void t_monitor::setTitle() {
   }
   else {
     _actStartThrift->setEnabled(true);
-    _actStopThrift->setEnabled(true);
+    _actStopThrift->setEnabled(false);
     setWindowTitle(QString(pluginName) + "   " + host + ':' + port);
   }
 }
