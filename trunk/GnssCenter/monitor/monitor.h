@@ -28,6 +28,7 @@ class t_monitor : public QMainWindow {
   void slotStopThrift();
   void slotThriftFinished();
   void slotPlotResults();
+  void slotMessage(QByteArray msg);
 
  private:
   void readSettings();
