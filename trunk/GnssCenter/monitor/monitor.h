@@ -30,13 +30,17 @@ class t_monitor : public QMainWindow {
   void slotPlotResults();
 
  private:
+  void readSettings();
   void setTitle();
+  void enableActions();
   QMutex                        _mutex;
   QTabWidget*                   _tabWidget;
   QAction*                      _actConfig;
   QAction*                      _actStartThrift;
   QAction*                      _actStopThrift;
   t_worldPlot*                  _plot;
+  QString                       _host;
+  QString                       _port;
   t_thriftClient*               _thriftClient;
   std::vector<t_thriftResult*>* _results;
 };
