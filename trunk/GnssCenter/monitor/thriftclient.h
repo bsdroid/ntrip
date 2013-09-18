@@ -65,6 +65,7 @@ class t_thriftHandler : public RtnetDataIf {
 };
 
 class t_thriftClient : public QThread {
+ Q_OBJECT
  public:
   t_thriftClient(t_monitor* parent, const QString& host, int port);
   ~t_thriftClient();
@@ -73,7 +74,8 @@ class t_thriftClient : public QThread {
     QMutexLocker locker(&_mutex);
     _stop = true;
   }
-
+ signals:
+  void message(QByteArray msg);
  private:
   QMutex      _mutex;
   std::string _host;
