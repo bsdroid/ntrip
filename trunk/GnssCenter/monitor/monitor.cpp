@@ -123,10 +123,10 @@ void t_monitor::slotConfig() {
 // 
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::slotStartThrift() {
+  _actConfig->setEnabled(false);
+  _actStartThrift->setEnabled(false);
+  _actStopThrift->setEnabled(true);
   if (!_thriftClient) {
-    _actConfig->setEnabled(false);
-    _actStartThrift->setEnabled(false);
-    _actStopThrift->setEnabled(true);
     t_settings settings(pluginName);
     QString host = settings.value("host").toString();
     if (host.isEmpty()) {
@@ -143,10 +143,8 @@ void t_monitor::slotStartThrift() {
 // 
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::slotStopThrift() {
+  _actStopThrift->setEnabled(false);
   if (_thriftClient) {
-    _actConfig->setEnabled(true);
-    _actStartThrift->setEnabled(true);
-    _actStopThrift->setEnabled(false);
     _thriftClient->stop();
     _thriftClient = 0;
   }
@@ -157,6 +155,7 @@ void t_monitor::slotStopThrift() {
 void t_monitor::slotThriftFinished() {
   _actConfig->setEnabled(true);
   _actStartThrift->setEnabled(true);
+  _actStopThrift->setEnabled(false);
   sender()->deleteLater();
   _thriftClient = 0;
 }
