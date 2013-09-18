@@ -83,9 +83,6 @@ handleSatelliteXYZ(const vector<SatelliteXYZ>& svXYZList) {
   for (unsigned ii = 0; ii < svXYZList.size(); ii++) {
     const SatelliteXYZ& sat = svXYZList[ii];
     t_thriftSatellite* satellite = new t_thriftSatellite;
-    satellite->_x = sat.xyz.x;
-    satellite->_y = sat.xyz.y;
-    satellite->_z = sat.xyz.z;
     char ch;
     switch(sat.constellation) {
       case (ConstellationType::GPS):     ch = 'G'; break;
@@ -95,7 +92,12 @@ handleSatelliteXYZ(const vector<SatelliteXYZ>& svXYZList) {
       case (ConstellationType::QZSS):    ch = 'J'; break;
       case (ConstellationType::COMPASS): ch = 'C'; break;
     }
-    cout << unsigned(sat.ID) << endl;
+    char prn[3];
+    sprintf(prn, "%c%2d", ch, sat.ID);
+    satellite->_prn = prn;
+    satellite->_x   = sat.xyz.x;
+    satellite->_y   = sat.xyz.y;
+    satellite->_z   = sat.xyz.z;
   }
 }
 
