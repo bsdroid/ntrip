@@ -100,7 +100,16 @@ void t_monitor::setTitle() {
     host = "localhost";
   }
   QString port = settings.value("port").toString();
-  setWindowTitle(QString(pluginName) + "   " + host + ':' + port);
+  if (port.isEmpty()) {
+    setWindowTitle(QString(pluginName));
+    _actStartThrift->setEnabled(false);
+    _actStopThrift->setEnabled(false);
+  }
+  else {
+    _actStartThrift->setEnabled(true);
+    _actStopThrift->setEnabled(true);
+    setWindowTitle(QString(pluginName) + "   " + host + ':' + port);
+  }
 }
 
 // 
@@ -115,6 +124,9 @@ void t_monitor::slotConfig() {
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::slotStartThrift() {
   if (!_thriftClient) {
+    _actConfig->setEnabled(false);
+    _actStartThrift->setEnabled(false);
+    _actStopThrift->setEnabled(true);
     t_settings settings(pluginName);
     QString host = settings.value("host").toString();
     if (host.isEmpty()) {
@@ -132,6 +144,9 @@ void t_monitor::slotStartThrift() {
 /////////////////////////////////////////////////////////////////////////////
 void t_monitor::slotStopThrift() {
   if (_thriftClient) {
+    _actConfig->setEnabled(true);
+    _actStartThrift->setEnabled(true);
+    _actStopThrift->setEnabled(false);
     _thriftClient->stop();
     _thriftClient = 0;
   }
