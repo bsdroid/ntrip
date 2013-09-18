@@ -147,10 +147,17 @@ void t_monitor::slotConfig() {
 
 // 
 /////////////////////////////////////////////////////////////////////////////
+void t_monitor::slotMessage(QByteArray msg) {
+
+}
+
+// 
+/////////////////////////////////////////////////////////////////////////////
 void t_monitor::slotStartThrift() {
   if (!_thriftClient) {
     _thriftClient = new t_thriftClient(this, _host, _port.toInt());
     connect(_thriftClient, SIGNAL(finished()), this, SLOT(slotThriftFinished()));
+    connect(_thriftClient, SIGNAL(message(QByteArray)), this, SLOT(slotMessage(QByteArray)));
     _thriftClient->start();
     slotPlotResults();
   }
