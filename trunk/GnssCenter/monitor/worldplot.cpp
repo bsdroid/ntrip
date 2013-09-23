@@ -88,7 +88,7 @@ void t_worldPlot::slotNewPoints(const QList<t_point*>& points) {
     else {
       marker->setLabelAlignment(Qt::AlignRight);
     }
-    QwtText text(point->_name.left(4));
+    QwtText text(point->_name);
     QFont   font = text.font();
     font.setPointSize(font.pointSize()*0.8);
     text.setFont(font);
