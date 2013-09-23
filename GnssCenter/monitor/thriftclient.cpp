@@ -144,7 +144,10 @@ handleEpochResults(const RtnetEpoch& epoch) {
     for (unsigned is = 0; is < staRes.svPosList.size(); is++) {
       const SatelliteEleAzi& sat = staRes.svPosList[is];
       string prn = id2prn(sat.constellation, sat.ID);
-      res->_prns.push_back(prn);
+      const double eleMask = 10.0;
+      if (sat.elevation > eleMask) {
+        res->_prns.push_back(prn);
+      }
     }
 
     results->push_back(res);
