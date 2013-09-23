@@ -17,6 +17,24 @@ using namespace boost;
 
 using namespace GnssCenter;
 
+// Auxiliary Function
+//////////////////////////////////////////////////////////////////////////////
+string id2prn(ConstellationType::type constellation, int ID) {
+  char ch;
+  switch(constellation) {
+    case (ConstellationType::GPS):     ch =  'G'; break;
+    case (ConstellationType::GLONASS): ch =  'R'; break;
+    case (ConstellationType::SBAS):    ch =  'S'; break;
+    case (ConstellationType::GALILEO): ch =  'E'; break;
+    case (ConstellationType::QZSS):    ch =  'J'; break;
+    case (ConstellationType::COMPASS): ch =  'C'; break;
+    default: return "";
+  }
+  char prn[3];
+  sprintf(prn, "%c%2.2d", ch, ID);
+  return string(prn);
+}
+
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
 t_thriftClient::t_thriftClient(t_monitor* parent, const QString& host, int port) {
@@ -83,18 +101,7 @@ handleSatelliteXYZ(const vector<SatelliteXYZ>& svXYZList) {
   for (unsigned ii = 0; ii < svXYZList.size(); ii++) {
     const SatelliteXYZ& sat = svXYZList[ii];
     t_thriftSatellite* satellite = new t_thriftSatellite;
-    char ch;
-    switch(sat.constellation) {
-      case (ConstellationType::GPS):     ch = 'G'; break;
-      case (ConstellationType::GLONASS): ch = 'R'; break;
-      case (ConstellationType::SBAS):    ch = 'S'; break;
-      case (ConstellationType::GALILEO): ch = 'E'; break;
-      case (ConstellationType::QZSS):    ch = 'J'; break;
-      case (ConstellationType::COMPASS): ch = 'C'; break;
-    }
-    char prn[3];
-    sprintf(prn, "%c%2.2d", ch, sat.ID);
-    satellite->_prn = prn;
+    satellite->_prn = id2prn(sat.constellation, sat.ID);
     satellite->_x   = sat.xyz.x;
     satellite->_y   = sat.xyz.y;
     satellite->_z   = sat.xyz.z;
@@ -122,6 +129,12 @@ handleEpochResults(const RtnetEpoch& epoch) {
   vector<t_thriftResult*>* results = new vector<t_thriftResult*>;
   for (unsigned ii = 0; ii < epoch.stationResultList.size(); ii++) {
     const StationResults& staRes = epoch.stationResultList[ii];
+
+    for (unsigned is = 0; is < staRes.svPosList.size(); is++) {
+      const SatelliteEleAzi& sat = staRes.svPosList[is];
+      string prn = id2prn(sat.constellation, sat.ID);
+    }
+
     t_thriftResult* res = new t_thriftResult;
     res->_name = staRes.stationName;
     res->_nGPS = staRes.nsv_gps_used;
