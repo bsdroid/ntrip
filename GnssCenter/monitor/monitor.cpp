@@ -250,7 +250,8 @@ void t_monitor::plotResults() {
       if (t_utils::xyz2ell(xyz, ell) == t_CST::success) {
         double latDeg = ell[0] * 180.0 / M_PI;
         double lonDeg = ell[1] * 180.0 / M_PI;
-        QString str = QString().sprintf("%d/%d", result->_nGPS, result->_nGLO);
+        QString str = QString(result->_name.c_str()) + 
+                      QString().sprintf("\n%d/%d", result->_nGPS, result->_nGLO);
         QColor color = result->_nGPS >= 4 ? Qt::black : Qt::red;
         t_worldPlot::t_point* point  = new t_worldPlot::t_point(color, str, latDeg, lonDeg);
         points.append(point);
