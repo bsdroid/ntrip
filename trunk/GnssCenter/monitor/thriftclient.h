@@ -31,12 +31,13 @@ class t_thriftResult {
     _z    = 0.0;
   }
   ~t_thriftResult() {}
-  std::string _name;
-  int         _nGPS;  
-  int         _nGLO;
-  double      _x;
-  double      _y;
-  double      _z;
+  std::string              _name;
+  int                      _nGPS;  
+  int                      _nGLO;
+  double                   _x;
+  double                   _y;
+  double                   _z;
+  std::vector<std::string> _prns;
 };
 
 class t_thriftSatellite {
