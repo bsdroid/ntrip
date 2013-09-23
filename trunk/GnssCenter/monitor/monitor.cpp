@@ -302,10 +302,8 @@ void t_monitor::plotSatellites() {
           int numSta = 0;
           for (unsigned jj = 0; jj < _results->size(); jj++) {
             const t_thriftResult* result = _results->at(jj);
-            for (unsigned is = 0; is < result->_prns.size(); is++) {
-              if (result->_prns[is] == sat->_prn) {
-                numSta += 1;
-              }
+            if (result->_prns.find(sat->_prn) != result->_prns.end()) {
+              numSta += 1;
             }
           }
           str += QString().sprintf("\n%d", numSta);
