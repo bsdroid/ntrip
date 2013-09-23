@@ -284,7 +284,9 @@ void t_monitor::plotSatellites() {
       if (t_utils::xyz2ell(xyz, ell) == t_CST::success) {
         double latDeg = ell[0] * 180.0 / M_PI;
         double lonDeg = ell[1] * 180.0 / M_PI;
+
         QString str   = sat->_prn.c_str();
+
         QColor color;
         if      (str[0] == 'G') {
           color = Qt::darkBlue;
@@ -295,6 +297,23 @@ void t_monitor::plotSatellites() {
         else {
           color = Qt::black;
         }
+
+        if (_results) {
+          int numSta = 0;
+          for (unsigned jj = 0; jj < _results->size(); jj++) {
+            const t_thriftResult* result = _results->at(jj);
+            for (unsigned is = 0; is < result->_prns.size(); is++) {
+              if (result->_prns[is] == sat->_prn) {
+                numSta += 1;
+              }
+            }
+          }
+          str += QString().sprintf("\n%d", numSta);
+          if (numSta < 4) {
+            color = Qt::red;
+          }
+        }
+
         t_worldPlot::t_point* point  = new t_worldPlot::t_point(color, str, latDeg, lonDeg);
         points.append(point);
       }
