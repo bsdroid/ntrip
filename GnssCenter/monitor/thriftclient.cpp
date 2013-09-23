@@ -130,12 +130,8 @@ handleEpochResults(const RtnetEpoch& epoch) {
   for (unsigned ii = 0; ii < epoch.stationResultList.size(); ii++) {
     const StationResults& staRes = epoch.stationResultList[ii];
 
-    for (unsigned is = 0; is < staRes.svPosList.size(); is++) {
-      const SatelliteEleAzi& sat = staRes.svPosList[is];
-      string prn = id2prn(sat.constellation, sat.ID);
-    }
-
     t_thriftResult* res = new t_thriftResult;
+
     res->_name = staRes.stationName;
     res->_nGPS = staRes.nsv_gps_used;
     res->_nGLO = staRes.nsv_glonass_used;
@@ -144,6 +140,13 @@ handleEpochResults(const RtnetEpoch& epoch) {
       res->_y = _stationCrd[staRes.stationName]._y;
       res->_z = _stationCrd[staRes.stationName]._z;
     }
+
+    for (unsigned is = 0; is < staRes.svPosList.size(); is++) {
+      const SatelliteEleAzi& sat = staRes.svPosList[is];
+      string prn = id2prn(sat.constellation, sat.ID);
+      res->_prns.push_back(prn);
+    }
+
     results->push_back(res);
   }
   _parent->putThriftResults(results);
