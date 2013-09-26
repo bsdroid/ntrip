@@ -8,6 +8,7 @@ DESTDIR              = ../plugins
 LIBS                 = -L../qwt -lqwt
 
 INCLUDEPATH         += /usr/local/include/thrift
+INCLUDEPATH         += /usr/include/thrift
 DEFINES             += HAVE_INTTYPES_H HAVE_NETINET_IN_H
 
 debug:OBJECTS_DIR   = .obj/debug
