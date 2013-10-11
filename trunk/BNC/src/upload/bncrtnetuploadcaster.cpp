@@ -452,79 +452,79 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
-            if (it.key() == "1C") {
+            if      (it.key() == "1C") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L1_CA;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "1C") {
+            else if (it.key() == "1C") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L1_CA;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "1P") {
+            else if (it.key() == "1P") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L1_P;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "1W") {
+            else if (it.key() == "1W") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L1_Z;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "2C") {
+            else if (it.key() == "2C") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_CA;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "2D") {
+            else if (it.key() == "2D") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_SEMI_CODELESS;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "2S") {
+            else if (it.key() == "2S") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_CM;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "2L") {
+            else if (it.key() == "2L") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_CL;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "2X") {
+            else if (it.key() == "2X") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_CML;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "2P") {
+            else if (it.key() == "2P") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_P;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "2Z") {
+            else if (it.key() == "2Z") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_Z;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "5I") {
+            else if (it.key() == "5I") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L5_I;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "5Q") {
+            else if (it.key() == "5Q") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L5_Q;
@@ -536,25 +536,25 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
-            if (it.key() == "1C") {
+            if      (it.key() == "1C") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGLONASS_L1_CA;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "1P") {
+            else if (it.key() == "1P") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGLONASS_L1_P;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "2C") {
+            else if (it.key() == "2C") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGLONASS_L2_CA;
               biasSat->Biases[ii].Bias = it.value();
             }
-            if (it.key() == "2P") {
+            else if (it.key() == "2P") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGLONASS_L2_P;
