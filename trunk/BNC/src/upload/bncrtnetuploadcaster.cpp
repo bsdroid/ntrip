@@ -379,6 +379,8 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
     if (eph) {
 
+      QMap<QString, double> codeBiases;
+
       while (true) {
         QString key;
         int     numVal = 0;
@@ -400,6 +402,14 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         else if (key == "CoM") {
           rtnCoM.ReSize(3);
           in >> rtnCoM[0] >> rtnCoM[1] >> rtnCoM[2];
+        }
+        else if (key == "CodeBias") {
+          for (int ii = 0; ii < numVal; ii++) {
+            QString type;
+            double  value;
+            in >> type >> value;
+            codeBiases[type] = value;
+          }
         }
         else {
           for (int ii = 0; ii < numVal; ii++) {
@@ -433,37 +443,124 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         ++bias.NumberOfGLONASSSat;
       }
   
-      // Coefficient of Ionosphere-Free LC
-      // ---------------------------------
-      // const static double a_L1_GPS =  2.54572778;
-      // const static double a_L2_GPS = -1.54572778;
-      // const static double a_L1_Glo =  2.53125000;
-      // const static double a_L2_Glo = -1.53125000;
-  
+      // Code Biases
+      // -----------
       if (biasSat) {
         biasSat->ID = prn.mid(1).toInt();
-        biasSat->NumberOfCodeBiases = 3;
+        biasSat->NumberOfCodeBiases = 0;
         if      (prn[0] == 'G') {
-          biasSat->Biases[0].Type = CODETYPEGPS_L1_Z;
-          // biasSat->Biases[0].Bias = - a_L2_GPS * xx(10);
-          biasSat->Biases[0].Bias = 0.0;
-          biasSat->Biases[1].Type = CODETYPEGPS_L1_CA;
-          // biasSat->Biases[1].Bias = - a_L2_GPS * xx(10) + xx(9);
-          biasSat->Biases[1].Bias = 0.0;
-          biasSat->Biases[2].Type = CODETYPEGPS_L2_Z;
-          // biasSat->Biases[2].Bias = a_L1_GPS * xx(10);
-          biasSat->Biases[2].Bias = 0.0;
+          QMapIterator<QString, double> it(codeBiases);
+          while (it.hasNext()) {
+            it.next();
+            if (it.key() == "1C") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L1_CA;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "1C") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L1_CA;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "1P") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L1_P;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "1W") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L1_Z;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "2C") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L2_CA;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "2D") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_SEMI_CODELESS;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "2S") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L2_CM;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "2L") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L2_CL;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "2X") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L2_CML;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "2P") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L2_P;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "2Z") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L2_Z;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "5I") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L5_I;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "5Q") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L5_Q;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+          }
         }
         else if (prn[0] == 'R') {
-          biasSat->Biases[0].Type = CODETYPEGLONASS_L1_P;
-          // biasSat->Biases[0].Bias = - a_L2_Glo * xx(10);
-          biasSat->Biases[0].Bias = 0.0;
-          biasSat->Biases[1].Type = CODETYPEGLONASS_L1_CA;
-          // biasSat->Biases[1].Bias = - a_L2_Glo * xx(10) + xx(9);
-          biasSat->Biases[1].Bias = 0.0;
-          biasSat->Biases[2].Type = CODETYPEGLONASS_L2_P;
-          // biasSat->Biases[2].Bias = a_L1_Glo * xx(10);
-          biasSat->Biases[2].Bias = 0.0;
+          QMapIterator<QString, double> it(codeBiases);
+          while (it.hasNext()) {
+            it.next();
+            if (it.key() == "1C") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGLONASS_L1_CA;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "1P") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGLONASS_L1_P;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "2C") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGLONASS_L2_CA;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            if (it.key() == "2P") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGLONASS_L2_P;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+          }
         }
       }
     }
