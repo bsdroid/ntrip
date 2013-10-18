@@ -512,7 +512,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_P;
               biasSat->Biases[ii].Bias = it.value();
             }
-            else if (it.key() == "2Z") {
+            else if (it.key() == "2W") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_Z;
