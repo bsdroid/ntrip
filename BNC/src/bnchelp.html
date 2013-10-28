@@ -1959,7 +1959,7 @@ The sequence of entries in the 'Combine Corrections' table is not of importance.
 Default is an empty 'Combine Corrections' table meaning that you don't want BNC to combine orbit and clock correction streams.
 </p>
 <p>
-It is possible to specify only one Broadcast Ephemeris corrections stream in the 'Combine Corrections' table. Instead of combining corrections from several sources, BNC will then merge the single corrections stream with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format when specified accordingly under the 'Upload Corrections' tab. Note that in such a BNC application you must not pull more than one Broadcast Ephemeris corrections stream.
+It is possible to specify only one Broadcast Ephemeris corrections stream in the 'Combine Corrections' table. Instead of combining corrections from several sources, BNC will then merge the single corrections stream with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format when specified accordingly under the 'Upload Corrections' tab. Note that in such a BNC application you must not pull more than one Broadcast Ephemeris corrections stream even if a second stream would provide the same corrections from a backup caster.
 </p>
 
 <p><a name="combiadd"><h4>3.13.1.1 Add Row, Delete - optional</h4></p>
@@ -2871,7 +2871,7 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 
 <tr>
 <td>Oct 2013 &nbsp;</td><td>Version 2.10 &nbsp;</td>
-<td>[Add] Started work on new version in Aug 2013<br>[Bug] Clock RINEX und SP3 file generation on Windows systems<br>[Bug] Broadcast Ephemeris generation<br>[Add] Transformation ITRF2008 to NAD83 and DREF91<br>[Add] CodeBias added to RTNet stream format</td>
+<td>[Add] Started work on new version in Aug 2013<br>[Bug] Clock RINEX und SP3 file generation on Windows systems<br>[Bug] Broadcast Ephemeris generation<br>[Add] Transformation ITRF2008 to NAD83 and DREF91<br>[Add] CodeBias added to RTNet stream format<br>[Fix] Big in GPS L2 in 'Feed Engine' output</td>
 </tr>
 
 </table>
