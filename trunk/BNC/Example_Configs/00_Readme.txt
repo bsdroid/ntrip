@@ -211,5 +211,5 @@ The purpose of this example is to provide an empty configuration file for BNC
 which only contains the default settings.
 
 Georg Weber, BKG
-Frankfurt, August 2013
+Frankfurt, November 2013
 igs-ip@bkg.bund.de
