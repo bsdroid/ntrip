@@ -411,7 +411,7 @@ void bncRinex::writeHeader(const QByteArray& format,
     _header._obsTypesV3['S'] << "C1" << "L1" << "D1" << "S1" 
                              << "C5" << "L5" << "D5" << "S5";
     
-    _header._obsTypesV3['C'] << "C2" << "L2" << "D2" << "S2"
+    _header._obsTypesV3['C'] << "C1" << "L1" << "D1" << "S1"
                              << "C6" << "L6" << "D6" << "S6"
                              << "C7" << "L7" << "D7" << "S7";
   }
