@@ -201,7 +201,7 @@ int t_obs::iEntry(QString rnxStr, float rnxVers) const {
   }
   else if (rnxStr[1] == '2') {
     if      (rnxStr.length() < 3) {
-      res += GNSSENTRY_TYPEP2;
+      res += GNSSENTRY_TYPEC2;
     }
     else if (QString("PWY").indexOf(rnxStr[2])  != -1) {
       res += GNSSENTRY_TYPEP2;
