@@ -2054,8 +2054,7 @@ void bncWindow::startRealTime() {
 
   enableStartStop();
 
-  _caster = new bncCaster(_outFileLineEdit->text(), 
-                          _outPortLineEdit->text().toInt());
+  _caster = new bncCaster();
 
   BNC_CORE->setPort(_outEphPortLineEdit->text().toInt());
   BNC_CORE->setPortCorr(_corrPortLineEdit->text().toInt());
