@@ -329,18 +329,17 @@ void bncRinex::writeHeader(const QByteArray& format,
 
   // Append to existing file and return
   // ----------------------------------
-  if ( QFile::exists(_fName) ) {
-    if (_reconnectFlag ||
-        Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
-      _out.open(_fName.data(), ios::app);
-      _out.setf(ios::showpoint | ios::fixed);
-      _headerWritten = true;
-      _reconnectFlag = false;
-      return;
-    }
+  if ( QFile::exists(_fName) &&
+       (_reconnectFlag || Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) ) {
+    _out.open(_fName.data(), ios::app);
+    _out.setf(ios::showpoint | ios::fixed);
+    _headerWritten = true;
+    _reconnectFlag = false;
+  }
+  else {
+    _out.open(_fName.data());
   }
 
-  _out.open(_fName.data());
   _out.setf(ios::showpoint | ios::fixed);
 
   // Read Skeleton Header
@@ -427,7 +426,10 @@ void bncRinex::writeHeader(const QByteArray& format,
   _header.write(&outHlp, &txtMap);
 
   outHlp.flush();
-  _out << headerLines.data();
+
+  if (!_headerWritten) {
+    _out << headerLines.data();
+  }
 
   _headerWritten = true;
 }
