@@ -676,7 +676,7 @@ string bncRinex::asciiSatLine(const t_obs& obs) {
           else if (rnxStr[1] == '5') {
             slipCnt = obs.slip_cnt_L5;
           }
-          str << ' ' << setw(2)  << slipCnt;
+          str << ' ' << setw(3)  << slipCnt;
         }
       }
     }
