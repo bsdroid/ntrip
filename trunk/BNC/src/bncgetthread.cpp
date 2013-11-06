@@ -44,6 +44,7 @@
 
 #include <QFile>
 #include <QTextStream>
+#include <QMutex>
 #include <QtNetwork>
 #include <QTime>
 
@@ -497,7 +498,9 @@ void bncGetThread::run() {
       // Loop over all observations (observations output)
       // ------------------------------------------------
       QListIterator<t_obs> it(decoder()->_obsList);
-      bool firstObs = true;
+
+      QList<t_obs> obsListHlp;
+
       while (it.hasNext()) {
         const t_obs& obs = it.next();
 
@@ -549,14 +552,17 @@ void bncGetThread::run() {
           _PPPclient->putNewObs(obs);
         }
 #endif
-
-        // Emit new observation signal
-        // ---------------------------
-        if (!_isToBeDeleted) {
-          emit newObs(_staID, firstObs, obs);
-        }
-        firstObs = false;
+        // Save observations
+        // -----------------
+        obsListHlp.append(obs);
       }
+
+      // Emit signal
+      // -----------
+      if (!_isToBeDeleted && obsListHlp.size() > 0) {
+        emit newObs(_staID, obsListHlp);
+      }
+
       decoder()->_obsList.clear();
     }
     catch (Exception& exc) {

@@ -174,76 +174,81 @@ bncCaster::~bncCaster() {
 
 // New Observations
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::newObs(const QByteArray staID, bool firstObs, t_obs obs) {
+void bncCaster::slotNewObs(const QByteArray staID, QList<t_obs> obsList) {
 
   QMutexLocker locker(&_mutex);
 
-  long iSec    = long(floor(obs.GPSWeeks+0.5));
-  long newTime = obs.GPSWeek * 7*24*3600 + iSec;
+  long newTime = 0;
+  QMutableListIterator<t_obs> it(obsList);
+  while (it.hasNext()) {
 
-  // Rename the Station
-  // ------------------
-  strncpy(obs.StatID, staID.constData(),sizeof(obs.StatID));
-  obs.StatID[sizeof(obs.StatID)-1] = '\0';
+    t_obs& obs = it.next();
 
-  // Output into the socket
-  // ----------------------
-  if (_uSockets) {
-
-    ostringstream oStr;
-    oStr.setf(ios::showpoint | ios::fixed);
-    oStr << obs.StatID                                        << " " 
-         << obs.GPSWeek                                       << " "
-         << setprecision(7) << obs.GPSWeeks                   << " "
-         << bncRinex::asciiSatLine(obs) << endl;
-
-    string hlpStr = oStr.str();
-
-    QMutableListIterator<QTcpSocket*> is(*_uSockets);
-    while (is.hasNext()) {
-      QTcpSocket* sock = is.next();
-      if (sock->state() == QAbstractSocket::ConnectedState) {
-        int numBytes = hlpStr.length();
-        if (myWrite(sock, hlpStr.c_str(), numBytes) != numBytes) {
+    long iSec    = long(floor(obs.GPSWeeks+0.5));
+    newTime = obs.GPSWeek * 7*24*3600 + iSec;
+    
+    // Rename the Station
+    // ------------------
+    strncpy(obs.StatID, staID.constData(),sizeof(obs.StatID));
+    obs.StatID[sizeof(obs.StatID)-1] = '\0';
+    
+    // Output into the socket
+    // ----------------------
+    if (_uSockets) {
+    
+      ostringstream oStr;
+      oStr.setf(ios::showpoint | ios::fixed);
+      oStr << obs.StatID                                        << " " 
+           << obs.GPSWeek                                       << " "
+           << setprecision(7) << obs.GPSWeeks                   << " "
+           << bncRinex::asciiSatLine(obs) << endl;
+    
+      string hlpStr = oStr.str();
+    
+      QMutableListIterator<QTcpSocket*> is(*_uSockets);
+      while (is.hasNext()) {
+        QTcpSocket* sock = is.next();
+        if (sock->state() == QAbstractSocket::ConnectedState) {
+          int numBytes = hlpStr.length();
+          if (myWrite(sock, hlpStr.c_str(), numBytes) != numBytes) {
+            delete sock;
+            is.remove();
+          }
+        }
+        else if (sock->state() != QAbstractSocket::ConnectingState) {
           delete sock;
           is.remove();
         }
       }
-      else if (sock->state() != QAbstractSocket::ConnectingState) {
-        delete sock;
-        is.remove();
-      }
     }
-  }
-
-  // First time, set the _lastDumpSec immediately
-  // --------------------------------------------
-  if (_lastDumpSec == 0) {
-    _lastDumpSec = newTime - 1;
-  }
-
-  // An old observation - throw it away
-  // ----------------------------------
-  if (newTime <= _lastDumpSec) {
-    if (firstObs) {
+    
+    // First time, set the _lastDumpSec immediately
+    // --------------------------------------------
+    if (_lastDumpSec == 0) {
+      _lastDumpSec = newTime - 1;
+    }
+    
+    // An old observation - throw it away
+    // ----------------------------------
+    if (newTime <= _lastDumpSec) {
       bncSettings settings;
       if ( !settings.value("outFile").toString().isEmpty() || 
            !settings.value("outPort").toString().isEmpty() ) { 
-
-	QTime enomtime = QTime(0,0,0).addSecs(iSec);
-
+    
+        QTime enomtime = QTime(0,0,0).addSecs(iSec);
+    
         emit( newMessage(QString("%1: Old epoch %2 (%3) thrown away")
-			 .arg(staID.data()).arg(iSec)
-			 .arg(enomtime.toString("HH:mm:ss"))
-			 .toAscii(), true) );
+        		 .arg(staID.data()).arg(iSec)
+        		 .arg(enomtime.toString("HH:mm:ss"))
+        		 .toAscii(), true) );
       }
+      return;
     }
-    return;
+    
+    // Save the observation
+    // --------------------
+    _epochs->insert(newTime, obs);
   }
-
-  // Save the observation
-  // --------------------
-  _epochs->insert(newTime, obs);
 
   // Dump Epochs
   // -----------
@@ -278,17 +283,18 @@ void bncCaster::slotNewNMEAConnection() {
 void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
 
   qRegisterMetaType<t_obs>("t_obs");
+  qRegisterMetaType< QList<t_obs> >("QList<t_obs>");
   qRegisterMetaType<gpsephemeris>("gpsephemeris");
   qRegisterMetaType<glonassephemeris>("glonassephemeris");
   qRegisterMetaType<galileoephemeris>("galileoephemeris");
 
-  connect(getThread, SIGNAL(newObs(QByteArray, bool, t_obs)),
-          this,      SLOT(newObs(QByteArray, bool, t_obs)));
+  connect(getThread, SIGNAL(newObs(QByteArray, QList<t_obs>)),
+          this,      SLOT(slotNewObs(QByteArray, QList<t_obs>)));
 
 #ifdef RTROVER_INTERFACE
   if (_bncRtrover) {
-    connect(getThread, SIGNAL(newObs(QByteArray, bool, t_obs)),
-            _bncRtrover, SLOT(slotNewObs(QByteArray, bool, t_obs)));
+    connect(getThread, SIGNAL(newObs(QByteArray, QList<t_obs>)),
+            _bncRtrover, SLOT(slotNewObs(QByteArray, QList<t_obs>)));
   }
 #endif
 
