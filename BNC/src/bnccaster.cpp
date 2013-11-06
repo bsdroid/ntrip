@@ -178,14 +178,14 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_obs> obsList) {
 
   QMutexLocker locker(&_mutex);
 
-  long newTime = 0;
+  unsigned index = 0;
   QMutableListIterator<t_obs> it(obsList);
   while (it.hasNext()) {
-
+    ++index;
     t_obs& obs = it.next();
 
     long iSec    = long(floor(obs.GPSWeeks+0.5));
-    newTime = obs.GPSWeek * 7*24*3600 + iSec;
+    long newTime = obs.GPSWeek * 7*24*3600 + iSec;
     
     // Rename the Station
     // ------------------
@@ -231,30 +231,32 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_obs> obsList) {
     // An old observation - throw it away
     // ----------------------------------
     if (newTime <= _lastDumpSec) {
-      bncSettings settings;
-      if ( !settings.value("outFile").toString().isEmpty() || 
-           !settings.value("outPort").toString().isEmpty() ) { 
+      if (index == 1) {
+        bncSettings settings;
+        if ( !settings.value("outFile").toString().isEmpty() || 
+             !settings.value("outPort").toString().isEmpty() ) { 
     
-        QTime enomtime = QTime(0,0,0).addSecs(iSec);
+          QTime enomtime = QTime(0,0,0).addSecs(iSec);
     
-        emit( newMessage(QString("%1: Old epoch %2 (%3) thrown away")
-        		 .arg(staID.data()).arg(iSec)
-        		 .arg(enomtime.toString("HH:mm:ss"))
-        		 .toAscii(), true) );
+          emit( newMessage(QString("%1: Old epoch %2 (%3) thrown away")
+          		   .arg(staID.data()).arg(iSec)
+        		   .arg(enomtime.toString("HH:mm:ss"))
+        		   .toAscii(), true) );
+        }
       }
-      return;
+      continue;
     }
     
     // Save the observation
     // --------------------
     _epochs->insert(newTime, obs);
-  }
 
-  // Dump Epochs
-  // -----------
-  if (newTime - _waitTime > _lastDumpSec) {
-    dumpEpochs(_lastDumpSec + 1, newTime - _waitTime);
-    _lastDumpSec = newTime - _waitTime;
+    // Dump Epochs
+    // -----------
+    if (newTime - _waitTime > _lastDumpSec) {
+      dumpEpochs(_lastDumpSec + 1, newTime - _waitTime);
+      _lastDumpSec = newTime - _waitTime;
+    }
   }
 }
 
