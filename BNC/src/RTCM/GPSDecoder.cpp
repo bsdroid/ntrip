@@ -104,7 +104,7 @@ void t_obs::setMeasdata(QString rnxStr, float rnxVers, double value) {
     else if (rnxStr == "P2") rnxStr = "C2P";
   }
 
-  int ie = iEntry(rnxStr, rnxVers);
+  int ie = iEntry(rnxStr);
 
   if (ie != -1) {
     _codetype[ie] = rnxStr.mid(1);
@@ -115,13 +115,27 @@ void t_obs::setMeasdata(QString rnxStr, float rnxVers, double value) {
 // 
 //////////////////////////////////////////////////////////////////////////////
 double t_obs::measdata(const QString& rnxStr, float rnxVers) const {
-  int ie = iEntry(rnxStr, rnxVers);
-  if (ie != -1) {
-    return _measdata[ie];
+  
+  int maxTrial = 1;
+  if (rnxVers < 3.0 && rnxStr.length() == 2) {
+    maxTrial = 3;
   }
-  else {
-    return 0.0;
+    
+  for (int iTrial = 1; iTrial <= maxTrial; iTrial++) {
+    QString rnxStrHlp = rnxStr;
+    if      (iTrial == 2) {
+      rnxStrHlp += 'C'; 
+    }
+    else if (iTrial == 3) {
+      rnxStrHlp += 'P'; 
+    }
+    int ie = iEntry(rnxStrHlp);
+    if (ie != -1 && _measdata[ie] != 0.0) {
+      return _measdata[ie];
+    }
   }
+  
+  return 0.0;
 }
 
 // 
@@ -140,14 +154,7 @@ QString t_obs::rnxStr(int iEntry) const {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-int t_obs::iEntry(QString rnxStr, float rnxVers) const {
-
-  if (rnxVers < 3.0) {
-    if      (rnxStr == "C1") rnxStr = "C1C";
-    else if (rnxStr == "P1") rnxStr = "C1P";
-    else if (rnxStr == "C2") rnxStr = "C2C";
-    else if (rnxStr == "P2") rnxStr = "C2P";
-  }
+int t_obs::iEntry(QString rnxStr) const {
 
   int res = 0;
 
