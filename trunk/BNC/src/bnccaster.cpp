@@ -59,32 +59,18 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncCaster::bncCaster(const QString& outFileName, int port) {
+bncCaster::bncCaster() {
 
   bncSettings settings;
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
-  if ( !outFileName.isEmpty() ) {
-    QString lName = outFileName;
-    expandEnvVar(lName);
-    _outFile = new QFile(lName); 
-    if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
-      _outFile->open(QIODevice::WriteOnly | QIODevice::Append);
-    }
-    else {
-      _outFile->open(QIODevice::WriteOnly);
-    }
-    _out = new QTextStream(_outFile);
-    _out->setRealNumberNotation(QTextStream::FixedNotation);
-  }
-  else {
-    _outFile = 0;
-    _out     = 0;
-  }
+  _outFile = 0;
+  _out     = 0;
+  reopenOutFile();
 
-  _port = port;
+  _port = settings.value("outPort").toInt();
 
   if (_port != 0) {
     _server = new QTcpServer;
@@ -177,6 +163,8 @@ bncCaster::~bncCaster() {
 void bncCaster::slotNewObs(const QByteArray staID, QList<t_obs> obsList) {
 
   QMutexLocker locker(&_mutex);
+
+  reopenOutFile();
 
   unsigned index = 0;
   QMutableListIterator<t_obs> it(obsList);
@@ -560,3 +548,33 @@ void bncCaster::slotNewNMEAstr(QByteArray str) {
     }
   }
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncCaster::reopenOutFile() {
+
+  bncSettings settings;
+
+  QString outFileName = settings.value("outFile").toString();
+  if ( !outFileName.isEmpty() ) {
+    expandEnvVar(outFileName);
+    if (!_outFile || _outFile->fileName() != outFileName) {
+      delete _out;
+      delete _outFile;
+      _outFile = new QFile(outFileName); 
+      if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
+        _outFile->open(QIODevice::WriteOnly | QIODevice::Append);
+      }
+      else {
+        _outFile->open(QIODevice::WriteOnly);
+      }
+      _out = new QTextStream(_outFile);
+      _out->setRealNumberNotation(QTextStream::FixedNotation);
+    }
+  }
+  else {
+    delete _out;     _out     = 0;
+    delete _outFile; _outFile = 0;
+  }
+}
+

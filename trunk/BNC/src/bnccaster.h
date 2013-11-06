@@ -40,7 +40,7 @@ class bncCaster : public QObject {
  Q_OBJECT
 
  public:
-   bncCaster(const QString& outFileName, int port);
+   bncCaster();
    ~bncCaster();
    void addGetThread(bncGetThread* getThread, bool noNewThread = false);
    int  numStations() const {return _staIDs.size();}
@@ -65,6 +65,7 @@ class bncCaster : public QObject {
  private:
    void dumpEpochs(long minTime, long maxTime);
    static int myWrite(QTcpSocket* sock, const char* buf, int bufLen);
+   void reopenOutFile();
 
    QFile*                   _outFile;
    int                      _port;

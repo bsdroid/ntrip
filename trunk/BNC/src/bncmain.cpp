@@ -192,8 +192,7 @@ int main(int argc, char* argv[]) {
 
     bncEphUploadCaster* casterEph = new bncEphUploadCaster(); (void) casterEph;
     
-    bncCaster* caster = new bncCaster(settings.value("outFile").toString(),
-                                      settings.value("outPort").toInt());
+    bncCaster* caster = new bncCaster();
     
     BNC_CORE->setCaster(caster);
     BNC_CORE->setPort(settings.value("outEphPort").toInt());
