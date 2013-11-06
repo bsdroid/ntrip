@@ -198,9 +198,9 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_obs> obsList) {
     
       ostringstream oStr;
       oStr.setf(ios::showpoint | ios::fixed);
-      oStr << obs.StatID                                        << " " 
-           << obs.GPSWeek                                       << " "
-           << setprecision(7) << obs.GPSWeeks                   << " "
+      oStr << obs.StatID                                  << " " 
+           << setw(4)  << obs.GPSWeek                     << " "
+           << setw(14) << setprecision(7) << obs.GPSWeeks << " "
            << bncRinex::asciiSatLine(obs) << endl;
     
       string hlpStr = oStr.str();
