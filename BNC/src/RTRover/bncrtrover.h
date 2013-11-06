@@ -19,7 +19,7 @@ class t_bncRtrover : public QThread {
   void slotNewEphGlonass(glonassephemeris gloeph);
   void slotNewEphGalileo(galileoephemeris galeph);
   void slotNewCorrections(QList<QString> corrList);
-  void slotNewObs(QByteArray staID, bool firstObs, t_obs obs);
+  void slotNewObs(QByteArray staID, QList<t_obs> obsList);
 
  private:
   class t_epoData {
