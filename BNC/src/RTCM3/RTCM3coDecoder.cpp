@@ -345,8 +345,7 @@ QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
       else if ( co.messageType == COTYPE_GPSCLOCK     || 
                 co.messageType == COTYPE_GLONASSCLOCK ) {
         QString line;
-        line.sprintf("   %3d   %8.3f   %10.5f   %10.5f",
-                     co.Sat[ii].IOD, 
+        line.sprintf("   %8.3f   %10.5f   %10.5f",
                      co.Sat[ii].Clock.DeltaA0,
                      co.Sat[ii].Clock.DeltaA1,
                      co.Sat[ii].Clock.DeltaA2);
