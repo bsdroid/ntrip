@@ -1279,11 +1279,12 @@ QString t_ephGal::toString(double version) const {
     .arg(_omega,    19, 'e', 12)
     .arg(_OMEGADOT, 19, 'e', 12);
 
+  int dataSource = 0;
   out << QString(fmt)
-    .arg(_IDOT,    19, 'e', 12)
-    .arg(0.0,      19, 'e', 12)
-    .arg(_TOEweek, 19, 'e', 12)
-    .arg(0.0,      19, 'e', 12);
+    .arg(_IDOT,              19, 'e', 12)
+    .arg(double(dataSource), 19, 'e', 12)
+    .arg(_TOEweek,           19, 'e', 12)
+    .arg(0.0,                19, 'e', 12);
 
   out << QString(fmt)
     .arg(_SISA,     19, 'e', 12)
