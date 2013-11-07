@@ -1017,13 +1017,13 @@ Example:
 </p>
 <pre>
 ...
-1058 0 1538 211151.0 G18     0      1.846       0.000    0.000
-1058 0 1538 211151.0 G16     0      0.376       0.000    0.000
-1058 0 1538 211151.0 G22     0      2.727       0.000    0.000
+1058 0 1538 211151.0 G18     1.846       0.000    0.000
+1058 0 1538 211151.0 G16     0.376       0.000    0.000
+1058 0 1538 211151.0 G22     2.727       0.000    0.000
 ...
-1064 0 1538 211151.0 R08     0      8.956       0.000    0.000
-1064 0 1538 211151.0 R07     0     14.457       0.000    0.000
-1064 0 1538 211151.0 R23     0      6.436       0.000    0.000
+1064 0 1538 211151.0 R08     8.956       0.000    0.000
+1064 0 1538 211151.0 R07    14.457       0.000    0.000
+1064 0 1538 211151.0 R23     6.436       0.000    0.000
 ...
 </pre>
 </p>
@@ -1101,9 +1101,9 @@ The following is an example output for streams from mountpoints RTCMSSR, CLK10 a
 1057 0 1538 211151.0 G16    33     -0.005    0.194   -0.091    0.000    0.000    0.000 RTCMSSR
 1057 0 1538 211151.0 G22    50      0.008   -0.082   -0.001    0.000    0.000    0.000 RTCMSSR
 ...
-1058 0 1538 211151.0 G18     0      1.846    0.000 RTCMSSR
-1058 0 1538 211151.0 G16     0      0.376    0.000 RTCMSSR
-1058 0 1538 211151.0 G22     0      2.727    0.000 RTCMSSR
+1058 0 1538 211151.0 G18     1.846    0.000 RTCMSSR
+1058 0 1538 211151.0 G16     0.376    0.000 RTCMSSR
+1058 0 1538 211151.0 G22     2.727    0.000 RTCMSSR
 ...
 1059 0 1538 211151.0 G18 2 0   -0.010 11   -0.750 RTCMSSR
 1059 0 1538 211151.0 G16 2 0   -0.040 11   -0.430 RTCMSSR
@@ -1113,9 +1113,9 @@ The following is an example output for streams from mountpoints RTCMSSR, CLK10 a
 1063 0 1538 211151.0 R10    43      0.000   -0.009   -0.002    0.0000    0.000    0.000 RTCMSSR
 1063 0 1538 211151.0 R21    75     -0.029    0.108    0.107    0.0000    0.000    0.000 RTCMSSR
 ...
-1064 0 1538 211151.0 R08     0      8.956    0.000 RTCMSSR
-1064 0 1538 211151.0 R07     0     14.457    0.000 RTCMSSR
-1064 0 1538 211151.0 R23     0      6.436    0.000 RTCMSSR
+1064 0 1538 211151.0 R08     8.956    0.000 RTCMSSR
+1064 0 1538 211151.0 R07    14.457    0.000 RTCMSSR
+1064 0 1538 211151.0 R23     6.436    0.000 RTCMSSR
 ...
 1066 0 1538 211610.0 R24    27      0.846      1.805   13.095    6.102    0.000    0.000    0.000    0.000    0.000 CLK11
 1066 0 1538 211610.0 R23    27      6.277      2.853    4.181    1.304    0.000    0.000    0.000    0.000    0.000 CLK11
@@ -1219,6 +1219,7 @@ CUT07 C11     C6I   24441668.156 L6I  103420723.118  0 S6I   45.125 C7I   244416
 <p>
 The source code for BNC comes with a perl script called 'test_tcpip_client.pl' that allows you to read BNC's (synchronized or unsynchronized) ASCII observation output from the IP port and print it on standard output.
 </p>
+
 <p>
 Note that any socket connection of an application to BNC's synchronized or unsynchronized observations ports is recorded in the 'Log' tab on the bottom of the main window together with a connection counter, resulting in log records like 'New client connection on sync/usync port: # 1'.
 </p>
@@ -1231,7 +1232,7 @@ The following figure shows the screenshot of a BNC configuration where a number 
 
 <p><a name="syncport"><h4>3.8.1 Port - optional</h4></p>
 <p>
-BNC can produce synchronized observations in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Synchronized means that BNC collects all observation data for any specific epoch which become available within a certain number of latency seconds (see 'Wait for Full Obs Epoch' option). It then - epoch by epoch - outputs whatever has been received. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary synchronized output is generated.</p>
+BNC can produce synchronized observations in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Synchronized means that BNC collects all observation data for any specific epoch which become available within a certain number of latency seconds (see 'Wait for Full Obs Epoch' option). It then - epoch by epoch - outputs whatever has been received. The output comes blockwise per stream. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary synchronized output is generated.</p>
 </p>
 
 <p><a name="syncwait"><h4>3.8.2 Wait for Full Obs Epoch - mandatory if 'Port' is set</h4></p>
@@ -1249,16 +1250,16 @@ Select the synchronized observation output sampling interval in seconds. A value
 
 <p><a name="syncfile"><h4>3.8.4 File - optional</h4></p>
 <p>
-Specify the full path to a 'File' where synchronized observations are saved in plain ASCII format. The default value is an empty option field, meaning that no ASCII output file is created.
+Specify the full path to a 'File' where synchronized observations are saved in plain ASCII format. The default value is an empty option field, meaning that no ASCII output file is created. 
 </p>
 <p>
-Beware that the size of this file can rapidly increase depending on the number of incoming streams. This option is primarily meant for testing and evaluation.
+Beware that the size of this file can rapidly increase depending on the number of incoming streams. The name of the file can be changed on-the-fly, to prevent it becoming too large. This option is primarily meant for testing and evaluation.
 </p>
 
 <p><a name="syncuport"><h4>3.8.5 Port (unsynchronized) - optional</h4></p>
 <p>
-BNC can produce unsynchronized observations from all configured streams in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Unsynchronized means that BNC immediately forwards any received observation to the port. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no unsynchronized output is generated.</p>
-<p>
+BNC can produce unsynchronized observations from all configured streams in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Unsynchronized means that BNC immediately forwards any received observation to the port. Nevertheless, the output comes blockwise per stream. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no unsynchronized output is generated.
+</p>
 
 <p><a name="serial"><h4>3.9. Serial Output</h4></p>
 <p>
@@ -2871,7 +2872,7 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 
 <tr>
 <td>Nov 2013 &nbsp;</td><td>Version 2.10 &nbsp;</td>
-<td>[Add] Started work on new version in Aug 2013<br>[Bug] Clock RINEX und SP3 file generation on Windows systems<br>[Bug] Broadcast Ephemeris generation<br>[Add] Transformation ITRF2008 to NAD83 and DREF91<br>[Add] CodeBias added to RTNet stream format<br>[Bug] GPS L2 in 'Feed Engine' output<br>[Mod] Made C1 in BeiDou default observation type instead of C2</td>
+<td>[Add] Started work on new version in Aug 2013<br>[Bug] Clock RINEX und SP3 file generation on Windows systems<br>[Bug] Broadcast Ephemeris generation<br>[Add] Transformation ITRF2008 to NAD83 and DREF91<br>[Add] CodeBias added to RTNet stream format<br>[Bug] GPS L2 in 'Feed Engine' output<br>[Mod] Made C1 in BeiDou default observation type instead of C2<br>[Add] Feed engine output sorted per stream<br>[Add] Feed engine output file name change on-the-fly<br>[Add] 'Append files' option for RINEX observation files<br>[Mod] Broadcast Corrections ASCII file output for message 1058 and 1064 modified<br>[Bug] GPS L2 phase data in RINEX2</td>
 </tr>
 
 </table>
@@ -3382,6 +3383,7 @@ Note that the following configuration options saved on disk can be changed/edite
 <li>'mountPoints' to change the selection of streams to be processed, see section 'Streams';</li>
 <li>'waitTime' to change the 'Wait for full obs epoch' option, see section 'Feed Engine';</li>
 <li>'binSampl' to change the 'Sampling' option, see section 'Feed Engine'.</li>
+<li>'outFile' to change the 'File' name where synchronized observations are saved in plain ASCII format.</li> 
 </ul>
 </p>
 <p>
