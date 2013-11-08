@@ -1232,7 +1232,7 @@ The following figure shows the screenshot of a BNC configuration where a number 
 
 <p><a name="syncport"><h4>3.8.1 Port - optional</h4></p>
 <p>
-BNC can produce synchronized observations in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Synchronized means that BNC collects all observation data for any specific epoch which become available within a certain number of latency seconds (see 'Wait for Full Obs Epoch' option). It then - epoch by epoch - outputs whatever has been received. The output comes blockwise per stream. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary synchronized output is generated.</p>
+BNC can produce synchronized observations in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Synchronized means that BNC collects all observation data for any specific epoch which become available within a certain number of latency seconds (see 'Wait for Full Obs Epoch' option). It then - epoch by epoch - outputs whatever has been received. The output comes block wise per stream. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary synchronized output is generated.</p>
 </p>
 
 <p><a name="syncwait"><h4>3.8.2 Wait for Full Obs Epoch - mandatory if 'Port' is set</h4></p>
@@ -1258,7 +1258,7 @@ Beware that the size of this file can rapidly increase depending on the number o
 
 <p><a name="syncuport"><h4>3.8.5 Port (unsynchronized) - optional</h4></p>
 <p>
-BNC can produce unsynchronized observations from all configured streams in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Unsynchronized means that BNC immediately forwards any received observation to the port. Nevertheless, the output comes blockwise per stream. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no unsynchronized output is generated.
+BNC can produce unsynchronized observations from all configured streams in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Unsynchronized means that BNC immediately forwards any received observation to the port. Nevertheless, the output comes block wise per stream. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no unsynchronized output is generated.
 </p>
 
 <p><a name="serial"><h4>3.9. Serial Output</h4></p>
