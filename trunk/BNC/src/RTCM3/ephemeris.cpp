@@ -1284,9 +1284,11 @@ QString t_ephGal::toString(double version) const {
   int dataSource = 0;
   if      ( (_flags & GALEPHF_INAV) == GALEPHF_INAV ) {
     dataSource |= (1<<0);
+    dataSource |= (1<<9);
   }
   else if ( (_flags & GALEPHF_FNAV) == GALEPHF_FNAV ) {
     dataSource |= (1<<1);
+    dataSource |= (1<<8);
   }
   out << QString(fmt)
     .arg(_IDOT,              19, 'e', 12)
