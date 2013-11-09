@@ -595,6 +595,7 @@ void t_ephGal::set(const galileoephemeris* ee) {
 
   _SISA     = ee->SISA;
   _E5aHS    = ee->E5aHS;
+  _E5bHS    = ee->E5bHS;
   _BGD_1_5A = ee->BGD_1_5A;
   _BGD_1_5B = ee->BGD_1_5B;
 
@@ -707,7 +708,9 @@ int t_ephGal::RTCM3(unsigned char *buffer) {
   unsigned char *startbuffer = buffer;
   buffer= buffer+3;
 
-  GALILEOADDBITS(12, /*inav ? 1046 :*/ 1045)
+  bool inav = ( (_flags & GALEPHF_INAV) == GALEPHF_INAV );
+
+  GALILEOADDBITS(12, inav ? 1046 : 1045)
   GALILEOADDBITS(6, _prn.right((_prn.length()-1)).toInt())
   GALILEOADDBITS(12, _TOC.gpsw())
   GALILEOADDBITS(10, _IODnav)
@@ -742,22 +745,22 @@ int t_ephGal::RTCM3(unsigned char *buffer) {
   /static_cast<double>(1<<13))
   GALILEOADDBITSFLOAT(10, _BGD_1_5A, 1.0/static_cast<double>(1<<30)
   /static_cast<double>(1<<2))
-  /*if(inav)
+  if(inav)
   {
     GALILEOADDBITSFLOAT(10, _BGD_1_5B, 1.0/static_cast<double>(1<<30)
     /static_cast<double>(1<<2))
-    GALILEOADDBITS(2, _E5bHS)
-    GALILEOADDBITS(1, flags & MNFGALEPHF_E5BDINVALID)
+    GALILEOADDBITS(2, static_cast<int>(_E5bHS))
+    GALILEOADDBITS(1, _flags & GALEPHF_E5BDINVALID)
   }
-  else*/
+  else
   {
-    GALILEOADDBITS(2, _E5aHS)
-    GALILEOADDBITS(1, /*flags & MNFGALEPHF_E5ADINVALID*/0)
+    GALILEOADDBITS(2, static_cast<int>(_E5aHS))
+    GALILEOADDBITS(1, _flags & GALEPHF_E5ADINVALID)
   }
   _TOEsec = 0.9999E9;
   GALILEOADDBITS(20, _TOEsec)
 
-  GALILEOADDBITS(/*inav ? 1 :*/ 3, 0) /* fill up */
+  GALILEOADDBITS(inav ? 1 : 3, 0)
 
   startbuffer[0]=0xD3;
   startbuffer[1]=(size >> 8);
