@@ -600,6 +600,8 @@ void t_ephGal::set(const galileoephemeris* ee) {
 
   _TOT      = 0.9999e9;
 
+  _flags    = ee->flags;
+
   _ok = true;
 }
 
@@ -1280,6 +1282,12 @@ QString t_ephGal::toString(double version) const {
     .arg(_OMEGADOT, 19, 'e', 12);
 
   int dataSource = 0;
+  if      ( (_flags & GALEPHF_INAV) == GALEPHF_INAV ) {
+    dataSource |= (1<<0);
+  }
+  else if ( (_flags & GALEPHF_FNAV) == GALEPHF_FNAV ) {
+    dataSource |= (1<<1);
+  }
   out << QString(fmt)
     .arg(_IDOT,              19, 'e', 12)
     .arg(double(dataSource), 19, 'e', 12)
