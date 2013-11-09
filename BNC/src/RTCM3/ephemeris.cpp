@@ -1285,13 +1285,16 @@ QString t_ephGal::toString(double version) const {
     .arg(_OMEGADOT, 19, 'e', 12);
 
   int dataSource = 0;
+  double HS = 0.0;
   if      ( (_flags & GALEPHF_INAV) == GALEPHF_INAV ) {
     dataSource |= (1<<0);
     dataSource |= (1<<9);
+    HS = _E5bHS;
   }
   else if ( (_flags & GALEPHF_FNAV) == GALEPHF_FNAV ) {
     dataSource |= (1<<1);
     dataSource |= (1<<8);
+    HS = _E5aHS;
   }
   out << QString(fmt)
     .arg(_IDOT,              19, 'e', 12)
@@ -1301,7 +1304,7 @@ QString t_ephGal::toString(double version) const {
 
   out << QString(fmt)
     .arg(_SISA,     19, 'e', 12)
-    .arg(_E5aHS,    19, 'e', 12)
+    .arg(HS,        19, 'e', 12)
     .arg(_BGD_1_5A, 19, 'e', 12)
     .arg(_BGD_1_5B, 19, 'e', 12);
 
