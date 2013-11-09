@@ -228,6 +228,8 @@ class t_ephGal : public t_eph {
   double  _BGD_1_5B;         //  group delay [s] 
 
   double _TOT;               // [s]
+
+  int    _flags;
 };
 
 #endif
