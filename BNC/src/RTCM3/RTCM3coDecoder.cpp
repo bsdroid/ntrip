@@ -357,8 +357,7 @@ QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
       else if ( co.messageType == COTYPE_GPSURA     || 
                 co.messageType == COTYPE_GLONASSURA ) {
         QString line;
-        line.sprintf("   %3d   %f",
-                     co.Sat[ii].IOD, co.Sat[ii].UserRangeAccuracy);
+        line.sprintf("   %f", co.Sat[ii].UserRangeAccuracy);
         retLines << linePart+line;
       }
 
@@ -367,8 +366,7 @@ QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
       else if ( co.messageType == COTYPE_GPSHR     || 
                 co.messageType == COTYPE_GLONASSHR ) {
         QString line;
-        line.sprintf("   %3d   %8.3f",
-                     co.Sat[ii].IOD, co.Sat[ii].hrclock);
+        line.sprintf("   %8.3f", co.Sat[ii].hrclock);
         retLines << linePart+line;
       }
     }
