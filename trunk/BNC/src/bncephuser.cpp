@@ -246,11 +246,10 @@ t_irc t_corr::readLine(const QString& line) {
   }
   else if ( messageType == COTYPE_GPSCLOCK    || 
             messageType == COTYPE_GLONASSCLOCK ) {
-    int dummyIOD;
     dClk       = 0.0;
     dotDClk    = 0.0;
     dotDotDClk = 0.0;
-    in >> dummyIOD >> dClk >> dotDClk >> dotDotDClk;
+    in >> dClk >> dotDClk >> dotDotDClk;
     dClk       /= t_CST::c;
     dotDClk    /= t_CST::c;
     dotDotDClk /= t_CST::c;
@@ -260,8 +259,7 @@ t_irc t_corr::readLine(const QString& line) {
   else if ( messageType == COTYPE_GPSHR    ||
             messageType == COTYPE_GLONASSHR ) {
     if (tRao.valid() && tClk.valid()) {
-      int dummyIOD;
-      in >> dummyIOD >> hrClk;
+      in >> hrClk;
       hrClk /= t_CST::c; 
     }
   }
