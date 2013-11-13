@@ -364,7 +364,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
           // Galileo Ephemeris
           // -----------------
-          else if (rr == 1045) {
+          else if (rr == 1045 || rr == 1046) {
             decoded = true;
             emit newGalileoEph(new galileoephemeris(parser.ephemerisGALILEO));
           }
