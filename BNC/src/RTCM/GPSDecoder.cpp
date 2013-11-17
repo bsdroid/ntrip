@@ -116,25 +116,20 @@ void t_obs::setMeasdata(QString rnxStr, float rnxVers, double value) {
 //////////////////////////////////////////////////////////////////////////////
 double t_obs::measdata(const QString& rnxStr, float rnxVers) const {
   
-  int maxTrial = 1;
-  if (rnxVers < 3.0 && rnxStr.length() == 2) {
-    maxTrial = 3;
+  QString rnxStr_l = rnxStr;
+
+  if (rnxVers < 3.0) {
+    if      (rnxStr_l == "C1") rnxStr_l = "C1C";
+    else if (rnxStr_l == "P1") rnxStr_l = "C1P";
+    else if (rnxStr_l == "C2") rnxStr_l = "C2C";
+    else if (rnxStr_l == "P2") rnxStr_l = "C2P";
   }
-    
-  for (int iTrial = 1; iTrial <= maxTrial; iTrial++) {
-    QString rnxStrHlp = rnxStr;
-    if      (iTrial == 2) {
-      rnxStrHlp += 'C'; 
-    }
-    else if (iTrial == 3) {
-      rnxStrHlp += 'P'; 
-    }
-    int ie = iEntry(rnxStrHlp);
-    if (ie != -1 && _measdata[ie] != 0.0) {
-      return _measdata[ie];
-    }
+
+  int ie = iEntry(rnxStr_l);
+  if (ie != -1) {
+    return _measdata[ie];
   }
-  
+
   return 0.0;
 }
 
@@ -208,7 +203,7 @@ int t_obs::iEntry(QString rnxStr) const {
   }
   else if (rnxStr[1] == '2') {
     if      (rnxStr.length() < 3) {
-      res += GNSSENTRY_TYPEP2;
+      res += GNSSENTRY_TYPEC2;
     }
     else if (QString("PWY").indexOf(rnxStr[2])  != -1) {
       res += GNSSENTRY_TYPEP2;
