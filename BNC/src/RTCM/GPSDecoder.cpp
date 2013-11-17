@@ -114,18 +114,17 @@ void t_obs::setMeasdata(QString rnxStr, float rnxVers, double value) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-double t_obs::measdata(const QString& rnxStr, float rnxVers) const {
+double t_obs::measdata(QString rnxStr, float rnxVers) const {
   
-  QString rnxStr_l = rnxStr;
-
   if (rnxVers < 3.0) {
-    if      (rnxStr_l == "C1") rnxStr_l = "C1C";
-    else if (rnxStr_l == "P1") rnxStr_l = "C1P";
-    else if (rnxStr_l == "C2") rnxStr_l = "C2C";
-    else if (rnxStr_l == "P2") rnxStr_l = "C2P";
+    if      (rnxStr == "C1") rnxStr = "C1C";
+    else if (rnxStr == "P1") rnxStr = "C1P";
+    else if (rnxStr == "C2") rnxStr = "C2C";
+    else if (rnxStr == "P2") rnxStr = "C2P";
   }
 
-  int ie = iEntry(rnxStr_l);
+  int ie = iEntry(rnxStr);
+
   if (ie != -1) {
     return _measdata[ie];
   }
