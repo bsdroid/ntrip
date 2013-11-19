@@ -95,7 +95,7 @@ class t_obs {
   QString rnxStr(int iEntry) const;
 
  private:
-  int iEntry(QString rnxStr) const;
+  int iEntry(QString rnxStr, float rnxVers, bool cmode=false) const;
 };
 
 class GPSDecoder {

@@ -96,15 +96,7 @@ void GPSDecoder::setRinexReconnectFlag(bool flag) {
 // 
 //////////////////////////////////////////////////////////////////////////////
 void t_obs::setMeasdata(QString rnxStr, float rnxVers, double value) {
-
-  if (rnxVers < 3.0) {
-    if      (rnxStr == "C1") rnxStr = "C1C";
-    else if (rnxStr == "P1") rnxStr = "C1P";
-    else if (rnxStr == "C2") rnxStr = "C2C";
-    else if (rnxStr == "P2") rnxStr = "C2P";
-  }
-
-  int ie = iEntry(rnxStr);
+  int ie = iEntry(rnxStr, rnxVers);
 
   if (ie != -1) {
     _codetype[ie] = rnxStr.mid(1);
@@ -115,15 +107,7 @@ void t_obs::setMeasdata(QString rnxStr, float rnxVers, double value) {
 // 
 //////////////////////////////////////////////////////////////////////////////
 double t_obs::measdata(QString rnxStr, float rnxVers) const {
-  
-  if (rnxVers < 3.0) {
-    if      (rnxStr == "C1") rnxStr = "C1C";
-    else if (rnxStr == "P1") rnxStr = "C1P";
-    else if (rnxStr == "C2") rnxStr = "C2C";
-    else if (rnxStr == "P2") rnxStr = "C2P";
-  }
-
-  int ie = iEntry(rnxStr);
+  int ie = iEntry(rnxStr, rnxVers);
 
   if (ie != -1) {
     return _measdata[ie];
@@ -148,9 +132,32 @@ QString t_obs::rnxStr(int iEntry) const {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-int t_obs::iEntry(QString rnxStr) const {
+int t_obs::iEntry(QString rnxStr, float rnxVers, bool cmode) const {
 
   int res = 0;
+  bool tryagain = false;
+  QString rnxStrOrig = rnxStr;
+  
+  if (rnxVers < 3.0) {
+    if      (rnxStr == "C1") rnxStr = "C1C";
+    else if (rnxStr == "P1") rnxStr = "C1P";
+    else if (rnxStr == "C2") rnxStr = "C2C";
+    else if (rnxStr == "P2") rnxStr = "C2P";
+    if(cmode)
+    {
+      if      (rnxStr == "S1") rnxStr = "S1C";
+      else if (rnxStr == "L1") rnxStr = "L1C";
+      else if (rnxStr == "S2") rnxStr = "S2C";
+      else if (rnxStr == "L2") rnxStr = "L2C";
+    }
+    else
+    {
+      if      (rnxStr == "S1") {rnxStr = "S1P"; tryagain = true; }
+      else if (rnxStr == "L1") {rnxStr = "L1P"; tryagain = true; }
+      else if (rnxStr == "S2") {rnxStr = "S2P"; tryagain = true; }
+      else if (rnxStr == "L2") {rnxStr = "L2P"; tryagain = true; }
+    }
+  }
 
   // Observation Type (Code, Phase, Doppler, SNR)
   // --------------------------------------------
@@ -240,6 +247,10 @@ int t_obs::iEntry(QString rnxStr) const {
   else {
     return -1;
   }
+
+  /* Note: We prefer P over C for Lx or Sx (i.e. we first try for P values) */
+  if(_codetype[res].isEmpty() && tryagain)
+    res = iEntry(rnxStrOrig, rnxVers, true);
 
   return res;
 }
