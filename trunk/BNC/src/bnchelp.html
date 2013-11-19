@@ -682,7 +682,7 @@ The default format for RINEX Observation files is RINEX Version 2.11. Select 'Ve
 
 <p><a name="ephemeris"><h4>3.5. RINEX Ephemeris</h4></p>
 <p>
-Broadcast Ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3 e.g. as message types 1019 (GPS) or 1020 (GLONASS) or 1045 (Galileo). The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BRDC' and the last character is
+Broadcast Ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3 e.g. as message types 1019 (GPS) or 1020 (GLONASS) or 1045 and 1046 (Galileo). The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BRDC' and the last character is
 </p>
 <ul>
 <li>'N' or 'G' for GPS or GLONASS ephemeris in two separate RINEX Version 2.11 Navigation files, or</li>
@@ -1488,7 +1488,7 @@ Note that in RTCM Version 2 the message types 18 and 19 carry only the observabl
 BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or code plus phase data in ionosphere free linear combinations P3 or L3. Besides pulling a stream of observations from a dual frequency receiver, this also
 <ul>
 <li>requires pulling in addition a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of RTCM Version 3 'State Space Representation' (SSR) messages. Note that for BNC these Broadcast Corrections need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream 'CLK11' on NTRIP Broadcaster 'products.igs-ip.net:2101' is an example.</li>
-<li>may require pulling a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019, 1020, and 1045. This is a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream 'RTCM3EPH' on caster 'products.igs-ip.net:2101' is an example.</li>
+<li>may require pulling a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019, 1020, 1045 and 1046. This is a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream 'RTCM3EPH' on caster 'products.igs-ip.net:2101' is an example.</li>
 </ul>
 </p>
 <p>
@@ -2500,7 +2500,7 @@ Some streams on NTRIP Broadcasters may be restricted. Enter a valid 'User' ID an
 
 <p><a name="gettable"><h4>3.18.1.1.4 Get Table</h4></p>
 <p>
-Use the 'Get Table' button to download the source-table from the NTRIP Broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2, RTCM Version 3, or RTNET format. For access to observations, Broadcast Ephemeris and Broadcast Corrections in RTCM format streams must contain a selection of appropriate message types as listed in the Annex, cf. data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3 streams containing message types 1019 (GPS) and 1020 (GLONASS) and 1045 (Galileo) are required. Select your streams line by line, use +Shift and +Ctrl when necessary. The figure below provides an example source-table.
+Use the 'Get Table' button to download the source-table from the NTRIP Broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2, RTCM Version 3, or RTNET format. For access to observations, Broadcast Ephemeris and Broadcast Corrections in RTCM format streams must contain a selection of appropriate message types as listed in the Annex, cf. data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3 streams containing message types 1019 (GPS) and 1020 (GLONASS) and 1045, 1046 (Galileo) are required. Select your streams line by line, use +Shift and +Ctrl when necessary. The figure below provides an example source-table.
 </p> 
 <p>
 The contents of data field 'nmea' tells you whether a stream retrieval needs to be initiated by BNC through sending an NMEA-GGA message carrying approximate position coordinates (virtual reference station).
@@ -2872,7 +2872,7 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 
 <tr>
 <td>Nov 2013 &nbsp;</td><td>Version 2.10 &nbsp;</td>
-<td>[Add] Started work on new version in Aug 2013<br>[Bug] Clock RINEX und SP3 file generation on Windows systems<br>[Bug] Broadcast Ephemeris generation<br>[Add] Transformation ITRF2008 to NAD83 and DREF91<br>[Add] CodeBias added to RTNet stream format<br>[Bug] GPS L2 in 'Feed Engine' output<br>[Mod] Made C1 in BeiDou default observation type instead of C2<br>[Add] Feed engine output sorted per stream<br>[Add] Feed engine output file name change on-the-fly<br>[Add] 'Append files' option for RINEX observation files<br>[Mod] Broadcast Corrections ASCII file output for message 1058 and 1064 modified<br>[Bug] GPS L2 phase data in RINEX2<br>[Bug] GLONASS frequency numbers<br>[Add] Galileo Broadcast Ephemeris message 1046</td>
+<td>[Add] Started work on new version in Aug 2013<br>[Bug] Clock RINEX und SP3 file generation on Windows systems<br>[Bug] Broadcast Ephemeris generation<br>[Add] Transformation ITRF2008 to NAD83 and DREF91<br>[Add] CodeBias added to RTNet stream format<br>[Bug] GPS L2 in 'Feed Engine' output<br>[Mod] Made C1 in BeiDou default observation type instead of C2<br>[Add] Feed engine output sorted per stream<br>[Add] Feed engine output file name change on-the-fly<br>[Add] 'Append files' option for RINEX observation files<br>[Mod] Broadcast Corrections ASCII file output for message 1058 and 1064 modified<br>[Bug] GPS L2 phase data in RINEX2<br>[Bug] GLONASS frequency numbers<br>[Add] RTCMv3 Galileo Broadcast Ephemeris message 1046</td>
 </tr>
 
 </table>
@@ -3004,7 +3004,8 @@ RTCM Version 3 defines a number of message types. Messages that may be of intere
 <li>Type 1014 and 1017, Network RTK (MAK) messages.</li>
 <li>Type 1019, GPS ephemeris.</li>
 <li>Type 1020, GLONASS ephemeris.</li>
-<li>Type 1045, Galileo ephemeris.</li>
+<li>Type 1045, Galileo F/NAV ephemeris.</li>
+<li>Type 1046, Galileo I/NAV ephemeris.</li>
 <li>Type 4088 and 4095, Proprietary messages.
 </li>
 </ul>
