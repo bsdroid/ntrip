@@ -79,7 +79,7 @@ real-time EUREF and IGS networks. It saves hourly RINEX Version 3 Navigation
 files. See http://igs.bkg.bund.de/ntrip/ephemeris for further real-time 
 Broadcast Ephemeris resources. 
 
-3. File 'SSR.bnc'
+3. File 'BrdcCorr.bnc'
 The purpose of this configuration is to save Broadcast Corrections from RTCM 
 SSR messages in a plain ASCII format as hourly files. See 
 http://igs.bkg.bund.de/ntrip/orbits for further real-time IGS or EUREF 
