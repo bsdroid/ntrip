@@ -132,11 +132,7 @@ BNC supports decoding the following GNSS stream formats and message types:
 </p>
 
 <p>
-Note that while BNC decodes RTCM's MSM and HP MSM messages for GPS, GLONASS, Galileo and BeiDou, the implemented decoding of
-<ul>
-<li>QZSS follows a JAXA proposal;</li>
-<li>SBAS follows an agreement between BKG, Alberding and DLR.</li>
-</ul>
+Note that while BNC decodes RTCM's MSM and HP MSM messages for GPS, GLONASS, Galileo, BeiDou, and QZSS, the implemented decoding of SBAS follows an internal agreement between BKG, Alberding and DLR.
 </p>
 
 <p>
@@ -3059,7 +3055,15 @@ The following are so-called 'Multiple Signal Messages' (MSM):
 <li>Type 1124, Full BeiDou pseudo-ranges and carrier phases plus signal strength</li>
 <li>Type 1125, Full BeiDou pseudo-ranges, carrier phases, Doppler and signal strength</li>
 <li>Type 1126, Full BeiDou pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
-<li>Type 1127, Full BeiDou pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)</li>
+<li>Type 1127, Full BeiDou pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)<br><br></li>
+<li>Type 1111, Compact QZSS pseudo-ranges</li>
+<li>Type 1112, Compact QZSS carrier phases</li>
+<li>Type 1113, Compact QZSS pseudo-ranges and carrier phases</li>
+<li>Type 1114, Full QZSS pseudo-ranges and carrier phases plus signal strength</li>
+<li>Type 1115, Full QZSS pseudo-ranges, carrier phases, Doppler and signal strength</li>
+<li>Type 1116, Full QZSS pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
+<li>Type 1117, Full QZSS pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)<br><br></li>
+
 </ul>
 </p>
 
@@ -3073,13 +3077,6 @@ The following are proposed 'Multiple Signal Messages' (MSM) under discussion for
 <li>Type 1105, Full SBAS pseudo-ranges, carrier phases, Doppler and signal strength</li>
 <li>Type 1106, Full SBAS pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
 <li>Type 1107, Full SBAS pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)<br><br></li>
-<li>Type 1111, Compact QZSS pseudo-ranges</li>
-<li>Type 1112, Compact QZSS carrier phases</li>
-<li>Type 1113, Compact QZSS pseudo-ranges and carrier phases</li>
-<li>Type 1114, Full QZSS pseudo-ranges and carrier phases plus signal strength</li>
-<li>Type 1115, Full QZSS pseudo-ranges, carrier phases, Doppler and signal strength</li>
-<li>Type 1116, Full QZSS pseudo-ranges and carrier phases plus signal strength (high resolution)</li>
-<li>Type 1117, Full QZSS pseudo-ranges, carrier phases, Doppler and signal strength (high resolution)<br><br></li>
 </ul>
 </p>
 
