@@ -152,18 +152,6 @@ class bncPPPclient : public bncEphUser {
     int slipCntL5;
   };
 
-  class t_providerID {
-   public:
-    t_providerID() {
-      streamID[0] = -1;
-      streamID[1] = -1;
-      streamID[2] = -1;
-      reset       = false;
-    }
-    int  streamID[3];
-    bool reset;
-  };
-
   t_irc getSatPos(const bncTime& tt, const QString& prn, 
                   ColumnVector& xc, ColumnVector& vv);
   void processEpochs();
@@ -180,7 +168,7 @@ class bncPPPclient : public bncEphUser {
   std::queue<t_epoData*>  _epoData;
   bncModel*               _model;
   QMap<QString, slipInfo> _slips;
-  t_providerID            _providerID;
+  int                     _streamID[3];
 };
 
 #endif

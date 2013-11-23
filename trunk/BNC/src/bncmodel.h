@@ -98,9 +98,10 @@ class bncModel {
                      const DiagonalMatrix& PP, 
                      SymmetricMatrix& QQ, ColumnVector& dx);
 
+  void reset();
+
  private:
   t_irc cmpBancroft(t_epoData* epoData);
-  void   reset();
   void   cmpEle(t_satData* satData);
   void   addAmb(t_satData* satData);
   void   addObs(int iPhase, unsigned& iObs, t_satData* satData,
