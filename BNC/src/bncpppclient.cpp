@@ -294,6 +294,7 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
         _corr[prn] = cc;
       }
       cc->readLine(line);
+      checkProviderID(cc);
       _corr_tt = cc->tClk;
     }
     else if ( messageType == BTYPE_GPS || messageType == BTYPE_GLONASS ) { 
@@ -524,5 +525,27 @@ void bncPPPclient::processEpochs() {
     else {
       return;
     }
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncPPPclient::checkProviderID(const t_corr* corr) {
+
+  bool alreadySet = false;
+  bool different  = false;
+
+  for (unsigned ii = 0; ii < 3; ii++) {
+    if (_providerID.streamID[ii] != -1) {
+      alreadySet = true;
+    }
+    if (_providerID.streamID[ii] != corr->streamID[ii]) {
+      different = true;
+    }
+    _providerID.streamID[ii] = corr->streamID[ii];
+  }
+    
+  if (alreadySet && different) {
+    _providerID.reset = true;
   }
 }
