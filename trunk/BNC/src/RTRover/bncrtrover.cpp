@@ -248,7 +248,6 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
         for (int ii = 0; ii < 3; ii++) {
           orbC._rao[ii]       = corr.rao[ii];
           orbC._dotRao[ii]    = corr.dotRao[ii];
-          orbC._dotDotRao[ii] = corr.dotDotRao[ii];
         }
       }
 

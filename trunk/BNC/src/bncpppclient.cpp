@@ -356,8 +356,7 @@ t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
 
   // Position
   // --------
-  ColumnVector raoHlp = cc->rao + cc->dotRao * dtRao 
-                      + 0.5 * cc->dotDotRao * dtRao * dtRao;
+  ColumnVector raoHlp = cc->rao + cc->dotRao * dtRao;
 
   if (raoHlp.norm_Frobenius() > 20.0) {
     return failure;
@@ -371,7 +370,7 @@ t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc,
 
   // Velocity
   // --------
-  ColumnVector dotRaoHlp = cc->dotRao + cc->dotDotRao * dtRao;
+  ColumnVector dotRaoHlp = cc->dotRao;
 
   ColumnVector dv(3);
   RSW_to_XYZ(xc.Rows(1,3), vv, dotRaoHlp, dv);

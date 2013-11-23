@@ -41,7 +41,6 @@ class t_corr {
   t_corr() {
     rao.ReSize(3);       
     dotRao.ReSize(3);    
-    dotDotRao.ReSize(3); 
     messageType = 0;
     iod         = 0;
     dClk        = 0.0;
@@ -50,7 +49,6 @@ class t_corr {
     hrClk       = 0.0;
     rao         = 0.0;
     dotRao      = 0.0;
-    dotDotRao   = 0.0;
     eph         = 0;
     streamID[0] = 0;
     streamID[0] = 0;
@@ -85,7 +83,6 @@ class t_corr {
   double       hrClk;
   ColumnVector rao;
   ColumnVector dotRao;
-  ColumnVector dotDotRao;
   const t_eph* eph;
   int          streamID[3];
 };
