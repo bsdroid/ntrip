@@ -308,7 +308,8 @@ QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
         line.sprintf("   %3d"
                      "   %8.3f %8.3f %8.3f %8.3f"
                      "   %10.5f %10.5f %10.5f %10.5f"
-                     "   %10.5f",
+                     "   %10.5f"
+                     "   %5d %2d %2d",
                      co.Sat[ii].IOD, 
                      co.Sat[ii].Clock.DeltaA0,
                      co.Sat[ii].Orbit.DeltaRadial, 
@@ -318,7 +319,8 @@ QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
                      co.Sat[ii].Orbit.DotDeltaRadial, 
                      co.Sat[ii].Orbit.DotDeltaAlongTrack,
                      co.Sat[ii].Orbit.DotDeltaCrossTrack,
-                     co.Sat[ii].Clock.DeltaA2);
+                     co.Sat[ii].Clock.DeltaA2,
+                     co.SSRProviderID, co.SSRSolutionID, co.SSRIOD);
         retLines << linePart+line;
       }
 
@@ -329,14 +331,16 @@ QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
         QString line;
         line.sprintf("   %3d"
                      "   %8.3f %8.3f %8.3f"
-                     "   %10.5f %10.5f %10.5f",
+                     "   %10.5f %10.5f %10.5f"
+                     "   %5d %2d %2d",
                      co.Sat[ii].IOD, 
                      co.Sat[ii].Orbit.DeltaRadial, 
                      co.Sat[ii].Orbit.DeltaAlongTrack,
                      co.Sat[ii].Orbit.DeltaCrossTrack,
                      co.Sat[ii].Orbit.DotDeltaRadial, 
                      co.Sat[ii].Orbit.DotDeltaAlongTrack,
-                     co.Sat[ii].Orbit.DotDeltaCrossTrack);
+                     co.Sat[ii].Orbit.DotDeltaCrossTrack,
+                     co.SSRProviderID, co.SSRSolutionID, co.SSRIOD);
         retLines << linePart+line;
       }
 
