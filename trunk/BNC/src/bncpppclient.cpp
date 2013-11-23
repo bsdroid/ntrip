@@ -552,6 +552,7 @@ void bncPPPclient::checkProviderID(const t_corr* corr) {
   }
     
   if (alreadySet && different) {
-    _model->reset();
+    delete _model;
+    _model = new bncModel(this);
   }
 }
