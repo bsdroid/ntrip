@@ -535,10 +535,6 @@ void bncPPPclient::checkProviderID(const t_corr* corr) {
   bool alreadySet = false;
   bool different  = false;
 
-  qDebug() << _providerID.streamID[0] << corr->streamID[0]
-           << _providerID.streamID[1] << corr->streamID[1]
-           << _providerID.streamID[2] << corr->streamID[2];
-
   for (unsigned ii = 0; ii < 3; ii++) {
     if (_providerID.streamID[ii] != -1) {
       alreadySet = true;
@@ -554,6 +550,4 @@ void bncPPPclient::checkProviderID(const t_corr* corr) {
   if (alreadySet && different) {
     _providerID.reset = true;
   }
-
-  qDebug() << _providerID.reset;
 }
