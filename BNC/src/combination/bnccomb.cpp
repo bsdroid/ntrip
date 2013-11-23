@@ -715,8 +715,7 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
                  "   %3d"
                  "   %8.3f %8.3f %8.3f %8.3f"
                  "   %10.5f %10.5f %10.5f %10.5f"
-                 "   %10.5f  %10.5f %10.5f %10.5f"
-                 "   %5d %2d %2d INTERNAL",
+                 "   %10.5f   %5d %2d %2d INTERNAL",
                  messageType, updateInt, _resTime.gpsw(), _resTime.gpssec(),
                  corr->prn.toAscii().data(),
                  corr->iod,
@@ -729,9 +728,6 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
                  corr->dotRao[1],
                  corr->dotRao[2],
                  corr->dotDotDClk * t_CST::c,
-                 corr->dotDotRao[0],
-                 corr->dotDotRao[1],
-                 corr->dotDotRao[2],
                  SSRProviderID, SSRSolutionID, SSRIOD);
     corrLines << line;
 
@@ -1136,7 +1132,6 @@ t_irc bncComb::mergeOrbitCorr(const cmbCorr* orbitCorr, cmbCorr* clkCorr) {
   clkCorr->tRao      = orbitCorr->tRao;
   clkCorr->rao       = orbitCorr->rao;
   clkCorr->dotRao    = orbitCorr->dotRao;
-  clkCorr->dotDotRao = orbitCorr->dotDotRao;
 
   return success;
 }

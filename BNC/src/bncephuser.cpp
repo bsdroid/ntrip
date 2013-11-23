@@ -210,15 +210,13 @@ t_irc t_corr::readLine(const QString& line) {
             messageType == COTYPE_GLONASSCOMBINED ) {
     rao.ReSize(3);       rao       = 0.0;
     dotRao.ReSize(3);    dotRao    = 0.0;
-    dotDotRao.ReSize(3); dotDotRao = 0.0;
     dClk       = 0.0;
     dotDClk    = 0.0;
     dotDotDClk = 0.0;
     in >> iod 
        >> dClk       >> rao[0]       >> rao[1]       >> rao[2]
        >> dotDClk    >> dotRao[0]    >> dotRao[1]    >> dotRao[2]
-       >> dotDotDClk >> dotDotRao[0] >> dotDotRao[1] >> dotDotRao[2]
-       >> streamID[0]  >> streamID[1]  >> streamID[2];
+       >> dotDotDClk >> streamID[0]  >> streamID[1]  >> streamID[2];
 
     dClk       /= t_CST::c;
     dotDClk    /= t_CST::c;
@@ -231,11 +229,9 @@ t_irc t_corr::readLine(const QString& line) {
             messageType == COTYPE_GLONASSORBIT ) {
     rao.ReSize(3);       rao       = 0.0;
     dotRao.ReSize(3);    dotRao    = 0.0;
-    dotDotRao.ReSize(3); dotDotRao = 0.0;
     in >> iod 
        >> rao[0]       >> rao[1]       >> rao[2]
        >> dotRao[0]    >> dotRao[1]    >> dotRao[2]
-       >> dotDotRao[0] >> dotDotRao[1] >> dotDotRao[2]
        >> streamID[0]  >> streamID[1]  >> streamID[2];
 
     tRao.set(GPSweek, GPSweeks);
