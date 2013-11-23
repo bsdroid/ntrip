@@ -52,6 +52,9 @@ class t_corr {
     dotRao      = 0.0;
     dotDotRao   = 0.0;
     eph         = 0;
+    streamID[0] = 0;
+    streamID[0] = 0;
+    streamID[0] = 0;
   }
   
   ~t_corr() {}
@@ -84,6 +87,7 @@ class t_corr {
   ColumnVector dotRao;
   ColumnVector dotDotRao;
   const t_eph* eph;
+  int          streamID[3];
 };
 
 class t_bias {
