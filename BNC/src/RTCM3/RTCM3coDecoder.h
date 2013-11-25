@@ -51,6 +51,7 @@ Q_OBJECT
  signals:
   void newCorrLine(QString line, QString staID, bncTime coTime);
   void newMessage(QByteArray msg, bool showOnScreen);
+  void providerIDChanged(QString staID);
 
  private:
   void printLine(const QString& line, int GPSweek, double GPSweeks);
