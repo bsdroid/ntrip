@@ -951,7 +951,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   pppLayout->addWidget(_pppRefdULineEdit,                  ir, 5, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("dU"),                   ir, 6, Qt::AlignLeft);
   ++ir;
-  pppLayout->addWidget(new QLabel("NMEA & plot output"),ir, 0, Qt::AlignLeft);
+  pppLayout->addWidget(new QLabel("NMEA output"),       ir, 0, Qt::AlignLeft);
   pppLayout->addWidget(_pppNMEALineEdit,                ir, 1, Qt::AlignRight);
   pppLayout->addWidget(new QLabel("NMEA File"),         ir, 2, Qt::AlignLeft);
   pppLayout->addWidget(_pppNMEAPortLineEdit,            ir, 3, Qt::AlignRight);
