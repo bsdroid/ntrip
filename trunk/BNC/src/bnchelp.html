@@ -3,17 +3,19 @@
 
 <p>
 The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing real-time GNSS data streams. It has been developed within the framework of the IAG sub-commission for Europe (EUREF) and the International GNSS Service (IGS). Although meant as a real-time tool, it comes with some Post Processing functionality. You may like to use it for data coming from NTRIP Broadcasters like
-<u>http://www.euref-ip.net/home</u>,
-<u>http://www.igs-ip.net/home</u>,
-<u>http://products.igs-ip.net/home</u>, or
-<u>http://mgex.igs-ip.net/home</u>. 
+<ul>
+<li><u>http://www.euref-ip.net/home</u>,</li>
+<li><u>http://www.igs-ip.net/home</u>,</li>
+<li><u>http://products.igs-ip.net/home</u>, or</li>
+<li><u>http://mgex.igs-ip.net/home</u>. </li>
+</ul>
 </p>
 
 <p>
-BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, Linux, Solaris, and Mac OS X systems. We used the MinGW Version 4.4.0 compiler to create the Windows binaries. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.7.3 or any later version are installed. Please ensure that you have installed the latest version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u>. Note that static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace positions using Google Map (GM) or Open StreetMap (OSM). However, GM/OSM usage requires the QtWebKit library which can only be part of BNC builds from <u>shared</u> libraries. So, using a shared libray BNC build requires that you first install your own shared library of Qt. The 'README.txt' file which comes with the BNC source code describes how to install Qt on Windows, Linux and Mac systems.
+BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, Linux, and Mac OS X systems. We used the MinGW Version 4.4.0 compiler to create the Windows binaries. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.7.3 or any later version are installed. Please ensure that you allways use the latest version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u>. Note that static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace positions using Google Map (GM) or Open StreetMap (OSM). However, GM/OSM usage requires the QtWebKit library which can only be part of BNC builds from <u>shared</u> libraries. Using a shared libray BNC build requires that you first install your own shared Qt library. The 'README.txt' file which comes with the BNC source code describes how to install Qt on Windows, Linux and Mac systems.
 </p>
 <p>
-Feel free to send us your comments, suggestions or bug reports. Any contribution will be appreciated.
+Feel free to send us your comments, suggestions or bug reports. Your contribution would be appreciated.
 </p>
 
 <p><b>Contents</b><br>
@@ -54,7 +56,7 @@ BNC includes the following GNU GPL software components:
 </ul>
 </p>
 <p>
-Note that some figures presented in this documentation show screenshots from earlier versions of BNC. If so then there was either no relevant change in the presented contents or no change at all.
+Note that some figures presented in this documentation show screenshots from earlier versions of BNC. If so then there is either no relevant change compared to the current appearance of BNC or no change at all.
 </p>
 
 <p>
@@ -64,10 +66,10 @@ Note that some figures presented in this documentation show screenshots from ear
 Thomas Yan, Australian NSW Land and Property Information, proofread earlier versions of BNC's Help Contents. He also provides builds of BNC for Mac OS X systems.
 </li>
 <li>
-Scott Glazier, OmniSTAR Australia, has been helpful in finding BNC bugs.
+Scott Glazier, OmniSTAR Australia, has been helpful in finding BNC bugs in version 1.5.
 </li>
 <li>
-James Perlt, BKG, helped fixing bugs and redesigned BNC's main window.
+James Perlt, BKG, helped fixing bugs and redesigned BNC's main window in version 1.5.
 </li>
 <li>
 Andre Hauschild, German Space Operations Center, DLR, revised the RTCM Version 2 decoder.
@@ -76,7 +78,7 @@ Andre Hauschild, German Space Operations Center, DLR, revised the RTCM Version 2
 Zdenek Lukes, Czech Technical University Prague, Department of Geodesy, extended the RTCM Version 2 decoder to handle message types 3, 20, 21, and 22 and added the loss of lock indicator.
 </li>
 <li>
-Jan Dousa, Geodetic Observatory Pecny, Czech Republic, helped with fixing bugs.
+Jan Dousa, Geodetic Observatory Pecny, Czech Republic, helped with fixing bugs in version 2.5.
 </li>
 <li>
 Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested synchronizing observations and clock corrections to reduce high frequency noise in PPP solutions.
@@ -94,7 +96,7 @@ Lennard Huisman, Kadaster Netherlands, and Rolf Dach, Astronomical Institute Uni
 <li>Retrieve real-time GNSS data streams available through NTRIP transport protocol;</li>
 <li>Retrieve real-time GNSS data streams via TCP directly from an IP address without using the NTRIP transport protocol;</li>
 <li>Retrieve real-time GNSS data streams from a local UDP or serial port without using the NTRIP transport protocol;</li>
-<li>Generate high-rate RINEX Observation and Navigation files to support near real-time GNSS Post Processing applications;</li>
+<li>Generate RINEX Observation and Navigation files to support near real-time GNSS Post Processing applications;</li>
 <li>Generate ephemeris and synchronized or unsynchronized observations epoch by epoch through an IP port to support real-time GNSS network engines;</li>
 <li>Generate orbit and clock corrections to Broadcast Ephemeris through an IP port to support real-time Precise Point Positioning on GNSS rovers;</li>
 <li>Generate synchronized or unsynchronized orbit and clock corrections to Broadcast Ephemeris epoch by epoch through an IP port to support the (outside) combination of such streams as coming simultaneously from various correction providers;</li>
@@ -124,9 +126,9 @@ BNC supports decoding the following GNSS stream formats and message types:
 <p>
 <ul>
 <li>RTCM Version 2 message types for GPS and GLONASS observations; </li> 
-<li>RTCM Version 3 'conventional' message types for observations and Broadcast Ephemeris for GPS, GLONASS and Galileo (draft);</li>
+<li>RTCM Version 3 'conventional' message types for observations and Broadcast Ephemeris for GPS and GLONASS;</li>
 <li>RTCM Version 3 'State Space Representation' (SSR) messages for GPS and GLONASS;</li>
-<li>RTCM Version 3 'Multiple Signal Messages' (MSM) and 'High Precision Multiple Signal Messages' (HP MSM) including X-type observations for GPS, GLONASS and Galileo;</li>
+<li>RTCM Version 3 'Multiple Signal Messages' (MSM) and 'High Precision Multiple Signal Messages' (HP MSM) including X-type observations for GPS, GLONASS, Galileo, BeiDou, QZSS, and SBAS (draft);</li>
 <li>RTNET, a plain ASCII format defined within BNC to receive orbits and clocks from a serving GNSS engine.
 </ul>
 </p>
@@ -136,14 +138,14 @@ Note that while BNC decodes RTCM's MSM and HP MSM messages for GPS, GLONASS, Gal
 </p>
 
 <p>
-Note also that BNC allows to by-pass its decoding and conversion algorithms, leave whatever is received untouched and save it in files.
+Note also that BNC allows to by-pass its decoding and conversion algorithms for incoming streams, leave whatever is received untouched and save it in files.
 </p>
 
 <p>
 The first of the following figures shows a flow chart of BNC connected to a GNSS receiver providing observations via serial or TCP communication link for the purpose of Precise Point Positioning. The second figure shows the conversion of RTCM streams to RINEX files. The third figure shows a flow chart of BNC feeding a real-time GNSS engine which estimates precise orbits and clocks. BNC is used in this scenario to encode correctors to RTCM Version 3 and upload them to an NTRIP Broadcaster. The fourth figure shows BNC combining several Broadcast Correction streams to disseminate the combination product while saving results in SP3 and Clock RINEX files.
 </p>
 <p><img src="IMG/screenshot10.png"/></p>
-<p><u>Figure 1:</u> Flowchart, BNC connected to a GNSS receiver for Precise Point Positioning.</p>
+<p><u>Figure 1:</u> Flowchart, BNC connected to a GNSS rover for Precise Point Positioning.</p>
 
 <p>
 </p>
@@ -1150,67 +1152,62 @@ It is the current understanding of BNC's authors that different Slip Counts coul
 <p>
 The following is an output example which presents observations from BeiDou, SBAS, Galileo, QZSS, GLONASS and GPS satellites as collected through streams UNBS7 and CUT07:
 <pre>
-> 1732 593302.0000000
-UNBS7 C14     C7I   25052046.546 L7I  100874271.744  0 D7I       1486.532 S7I   46.500
-UNBS7 S38     C1C   39122425.353 L1C  205589229.175 -1 D1C         86.305 S1C   44.750
-UNBS7 S35     C1C   40790275.076 L1C  214353819.664 16 D1C         86.396 S1C   40.000
-UNBS7 S33     C1C   38444117.173 L1C  202025092.065 16 D1C        146.701 S1C   42.000
-UNBS7 S20     C1C   39361772.796 L1C  206847552.895 -1 D1C         81.035 S1C   39.500
-UNBS7 R24 -3  C1C   22718781.328 L1C  121275028.082 -1 D1C       3442.434 S1C   46.000 C2C   22718787.496 L2C   94325035.777 -1 D2C       2677.455 S2C   39.500 C2P   22718787.023 L2P   94325035.786 -1 D2P       2677.328 S2P   39.750
-UNBS7 R23 -2  C1C   22423222.452 L1C  119739364.426 16 D1C        429.909 S1C   46.750 C2C   22423230.235 L2C   93130629.910 -1 D2C        334.321 S2C   44.000 C2P   22423229.861 L2P   93130630.899 -1 D2P        334.416 S2P   42.750
-UNBS7 R22  6  C1C   24329473.162 L1C  130283179.927 10 D1C      -2789.020 S1C   38.250 C2C   24329479.274 L2C  101331552.779 10 D2C      -2169.209 S2C   30.750 C2P   24329479.101 L2P  101331552.861 10 D2P      -2169.287 S2P   32.500
-UNBS7 R15  5  C1C   20871814.352 L1C  111729327.604 -1 D1C       2285.734 S1C   47.000 C2C   20871821.926 L2C   86900608.285 -1 D2C       1777.801 S2C   47.000 C2P   20871821.312 L2P   86900608.292 -1 D2P       1777.743 S2P   47.000
-UNBS7 G32     C1C   22269376.201 L1C  117025713.468 -1 D1C       -895.284 S1C   47.500 C1W   22269375.437 S1W   35.500 C2W   22269376.328 L2W   91188879.803 -1 D2W       -697.623 S2W   35.500
-UNBS7 G31     C1C   20329833.770 L1C  106833781.981 -1 D1C       -234.551 S1C   51.000 C2L   20329831.962 L2L   83246841.788 -1 D2L       -182.773 S2L   48.500 C1W   20329833.694 S1W   44.500 C2W   20329832.346 L2W   83246841.786 -1 D2W       -182.768 S2W   44.500
-UNBS7 G30     C1C   21209171.329 L1C  111454457.690 -1 D1C       2716.975 S1C   50.000 C1W   21209170.435 S1W   39.000 C2W   21209171.093 L2W   86847652.883 -1 D2W       2117.122 S2W   39.000
-UNBS7 G29     C1C   22801055.880 L1C  119820804.004 -1 D1C       1368.562 S1C   45.500 C2L   22801056.654 L2L   93366882.194 -1 D2L       1066.392 S2L   40.000 C1W   22801055.755 S1W   30.250 C2W   22801056.554 L2W   93366882.205 -1 D2W       1066.414 S2W   30.250
-UNBS7 G25     C1C   23013893.698 L1C  120939208.651 -1 D1C      -3105.851 S1C   44.250 C2L   23013897.434 L2L   94238034.169 -1 D2L      -2420.224 S2L   41.500 C1W   23013893.198 S1W   29.250 C2W   23013898.030 L2W   94238292.170 -1 D2W      -2420.137 S2W   29.250 C5Q   23013898.880 L5Q   90311704.304 -1 D5Q      -2319.279 S5Q   46.250
-UNBS7 G23     C1C   24711598.869 L1C  129860912.236 15 D1C       3635.708 S1C   44.500 C1W   24711598.302 S1W   25.500 C2W   24711599.100 L2W  101189889.915 -1 D2W       2833.013 S2W   25.500
-UNBS7 G20     C1C   22693412.509 L1C  119254789.031 -1 D1C        345.848 S1C   44.500 C1W   22693411.651 S1W   30.250 C2W   22693412.822 L2W   92925615.674 -1 D2W        269.495 S2W   30.250
-UNBS7 G16     C1C   23353606.131 L1C  122723608.709 15 D1C       3777.040 S1C   44.000 C1W   23353605.488 S1W   25.500 C2W   23353607.090 L2W   95629319.017 -1 D2W       2943.136 S2W   25.500
-UNBS7 G14     C1C   22184760.935 L1C  116582179.095 15 D1C      -2720.563 S1C   46.000 C1W   22184760.444 S1W   30.750 C2W   22184760.626 L2W   90842916.546 -1 D2W      -2119.922 S2W   30.750
-CUT07 C30     C6I   23552328.090 L6I   99658188.910  0 S6I   41.875 C7I   23552339.168 L7I   94836018.626  0 S7I   41.875
-CUT07 C13     C6I   26550829.789 L6I  112344714.991  0 S6I   38.500 C7I   26550838.289 L7I  106908681.113  0 S7I   37.312
-CUT07 C11     C6I   24441732.656 L6I  103420995.512  0 S6I   45.500 C7I   24441741.211 L7I   98416843.099  0 S7I   45.875
-CUT07 C10     C6I   36878536.836 L6I  156044795.610  0 S6I   48.188 C7I   36878545.391 L7I  148494240.588  0 S7I   46.812
-CUT07 C09     C6I   38776716.851 L6I  164077362.627  0 S6I   42.812 C7I   38776726.929 L7I  156138136.444  0 S7I   44.312
-CUT07 C08     C6I   37904174.730 L6I  160384993.342  0 S6I   44.812 C7I   37904182.937 L7I  152624453.741  0 S7I   44.875
-CUT07 C07     C6I   36491034.918 L6I  154405738.912  0 S6I   49.812 C7I   36491042.773 L7I  146934558.057  0 S7I   49.375
-CUT07 C06     C6I   39838468.129 L6I  168569233.545  0 S6I   38.688 C7I   39838475.922 L7I  160412657.495  0 S7I   38.312
-CUT07 C05     C6I   39489041.449 L6I  167090530.921  0 S6I   39.000 C7I   39489046.664 L7I  159005505.607  0 S7I   39.188
-CUT07 C04     C6I   38503753.496 L6I  162921979.975  0 S6I   43.188 C7I   38503758.770 L7I  155038658.931  0 S7I   42.375
-CUT07 C03     C6I   36740707.453 L6I  155461583.445  0 S6I   49.125 C7I   36740711.731 L7I  147939248.283  0 S7I   48.375
-CUT07 C02     C6I   38014807.625 L6I  160853150.858  0 S6I   43.812 C7I   38014810.320 L7I  153069938.765  0 S7I   44.000
-CUT07 C01     C6I   37257719.649 L6I  157649701.045  0 S6I   46.188 C7I   37257724.105 L7I  150021495.952  0 S7I   47.875
-CUT07 J01     C1C   43881526.609 L1C  230598490.131 -1 D1C        -44.758 S1C   34.125 C2X   43881530.754 L2X  179687612.756 -1 S2X   35.375 C5X   43881536.680 L5X  172200662.527 -1 S5X   40.375 C6L   43881525.555 L6L  187174573.616  0 S6L   29.875 C1Z   43881519.262 L1Z  230598986.947 -1 S1Z   32.875 C1X   43881528.066 L1X  230598490.127 -1 S1X   38.000
-CUT07 S37     C1C   37602298.469 L1C  197602164.710 -1 D1C        168.586 S1C   41.812
-CUT07 S29     C1C   37367280.766 L1C  196366452.064 16 D1C        172.070 S1C   42.625
-CUT07 S28     C1C   37813587.344 L1C  198711737.222 16 D1C        162.395 S1C   42.125
-CUT07 S27     C1C   39891507.890 L1C  209631339.001 16 D1C        168.379 S1C   35.500
-CUT07 E20     C5X   25169051.723 L5X   98768754.234 -1 S5X   49.188 C7X   25169049.472 L7X  101345326.261  0 S7X   48.625 C8X   25169050.110 L8X  100573783.320  0 S8X   53.500
-CUT07 E19     C5X   28361979.223 L5X  111299065.507 -1 S5X   35.625 C7X   28361977.535 L7X  114202519.202  0 S7X   34.000 C8X   28361978.015 L8X  113333091.535  0 S8X   38.875
-CUT07 R21  0  C1C   23802964.055 L1C  127196451.213 -1 D1C       3981.018 S1C   37.375 C2C   23802966.360 L2C   98929650.279 -1 S2C   31.875 C1P   23802962.137 L1P  127196451.240 -1 S1P   36.000 C2P   23802966.555 L2P   98929650.279 -1 S2P   32.000
-CUT07 R20  5  C1C   22343638.078 L1C  119607514.243 -1 D1C       2865.940 S1C   41.000 C2C   22343644.137 L2C   93028226.213 -1 S2C   41.500 C1P   22343638.156 L1P  119607514.262 -1 S1P   39.188 C2P   22343643.864 L2P   93028226.216 -1 S2P   41.375
-CUT07 R19  1  C1C   22867512.133 L1C  122239323.823 -1 D1C       -128.617 S1C   45.625 C2C   22867513.149 L2C   95076008.606 -1 S2C   40.000 C1P   22867511.508 L1P  122239322.823 -1 S1P   43.875 C2P   22867513.578 L2P   95075804.758 -1 S2P   39.875
-CUT07 R09 -2  C1C   23348341.930 L1C  124678720.439 -1 D1C      -2371.129 S1C   43.125 C2C   23348346.816 L2C   96972337.490 -1 S2C   38.625 C1P   23348342.359 L1P  124678720.448 -1 S1P   41.875 C2P   23348347.949 L2P   96972021.497 -1 S2P   37.312
-CUT07 R08  6  C1C   19789643.508 L1C  105973418.989 16 D1C      -1646.246 S1C   54.125 C2C   19789644.758 L2C   82423770.486 16 S2C   49.812 C1P   19789642.058 L1P  105973418.998 16 S1P   52.125 C2P   19789645.188 L2P   82423770.483 16 S2P   48.875
-CUT07 G28     C1C   19876464.688 L1C  104452182.303 14 D1C       -925.301 S1C   50.375 C2W   19876465.715 L2W   81391310.427 14 S2W   43.812
-CUT07 G26     C1C   21228880.773 L1C  111558728.212 -1 D1C       2146.406 S1C   50.812 C2W   21228883.324 L2W   86928571.609 -1 S2W   42.375
-CUT07 G24     C1C   25532167.125 L1C  134172129.977 14 D1C       2546.594 S1C   32.812 C2X   25532172.324 L2X  104550408.875 -1 S2X   36.375 C2W   25532171.199 L2W  104549682.856 -1 S2W   13.875 C5X   25532177.137 L5X  100194136.711 -1 S5X   42.375
-CUT07 G17     C1C   22982846.906 L1C  120775586.132 -1 D1C       3266.969 S1C   44.875 C2X   22982849.821 L2X   94111331.364 -1 S2X   42.312 C2W   22982850.219 L2W   94111214.362 -1 S2W   31.375
-CUT07 G15     C1C   23470338.258 L1C  123337157.406 -1 D1C       3415.176 S1C   45.125 C2X   23470340.996 L2X   96106783.651 -1 S2X   42.312 C2W   23470341.101 L2W   96107522.655 -1 S2W   29.312
-CUT07 G10     C1C   23714849.813 L1C  124621860.377 15 D1C      -3319.340 S1C   40.500 C2W   23714854.707 L2W   97107942.926 14 S2W   22.500
-CUT07 G09     C1C   21719005.391 L1C  114134798.755 -1 D1C       1004.351 S1C   49.500 C2W   21719007.297 L2W   88936209.534 -1 S2W   40.188
-CUT07 G08     C1C   22413796.969 L1C  117784586.324 -1 D1C      -1906.422 S1C   45.500 C2W   22413801.219 L2W   91780776.741 -1 S2W   33.688
-CUT07 G07     C1C   24328207.219 L1C  127845525.401 -1 D1C      -2184.074 S1C   42.000 C2X   24328209.020 L2X   99619834.161 -1 S2X   37.375 C2W   24328209.770 L2W   99619888.148 -1 S2W   23.188
-CUT07 G05     C1C   21955999.242 L1C  115378829.111 15 D1C      -1707.133 S1C   48.688 C2X   21956001.395 L2X   89906678.277 14 S2X   46.125 C2W   21956001.617 L2W   89906678.279 14 S2W   38.625
+> 1768 124003.0000000
+BRUX7 C09     C1I   39216013.767 L1I  204207406.208   2 D1I      -1043.207 S1I   42.500 C7I   39216013.579 L7I  157906195.465   0 D7I       -806.619 S7I   44.500
+BRUX7 C05     C1I   40374333.685 L1I  210239174.792  -1 D1I         18.610 S1I   36.500 C7I   40374334.132 L7I  162570196.780   0 D7I         14.276 S7I   38.500
+BRUX7 E20     C1C   23622665.422 L1C  124137907.382  -1 D1C       -893.463 S1C   48.250 C5Q   23622669.338 L5Q   92700622.614  -1 D5Q       -667.162 S5Q   49.250 C7Q   23622665.604 L7Q   95119044.071   0 D7Q       -684.563 S7Q   49.500 C8Q   23622666.936 L8Q   93910128.847   0 D8Q       -675.851 S8Q   52.250
+BRUX7 E19     C1C   24358947.135 L1C  128007214.913   2 D1C       1700.514 S1C   48.500 C5Q   24358951.520 L5Q   95589236.262  -1 D5Q       1269.851 S5Q   50.750 C7Q   24358947.428 L7Q   98083609.510   0 D7Q       1302.970 S7Q   50.500 C8Q   24358949.002 L8Q   96837054.392   0 D8Q       1286.410 S8Q   53.750
+BRUX7 E12     C1C   23314950.148 L1C  122520430.345  -1 D1C        537.129 S1C   46.750 C5Q   23314951.893 L5Q   91492366.449  -1 D5Q        401.120 S5Q   50.750 C7Q   23314948.311 L7Q   93879942.617   0 D7Q        411.567 S7Q   51.750 C8Q   23314949.478 L8Q   92685897.039   0 D8Q        406.335 S8Q   54.250
+BRUX7 E11     C1C   25900911.264 L1C  136110079.636   2 D1C       2361.637 S1C   40.250 C5Q   25900913.307 L5Q  101640873.099  -1 D5Q       1763.637 S5Q   44.750 C7Q   25900910.472 L7Q  104292466.310   0 D7Q       1809.616 S7Q   45.500 C8Q   25900911.349 L8Q  102966650.209   0 D8Q       1786.625 S8Q   48.250
+BRUX7 R24  2  C1C   23784398.387 L1C  127185337.633  -1 D1C      -3665.272 S1C   42.500 C2C   23784403.313 L2C   98921928.370  -1 D2C      -2850.668 S2C   38.500 C2P   23784403.654 L2P   98921930.382  -1 D2P      -2850.831 S2P   39.000
+BRUX7 R18 -3  C1C   19978315.785 L1C  106645490.401   2 D1C       1971.526 S1C   50.000 C2C   19978320.310 L2C   82946560.725  -1 D2C       1533.500 S2C   48.500 C2P   19978320.697 L2P   82946862.730  -1 D2P       1533.482 S2P   49.000
+BRUX7 R17  4  C1C   19749654.983 L1C  105683864.378  -1 D1C      -1474.402 S1C   52.500 C2C   19749657.078 L2C   82198564.734  -1 D2C      -1146.744 S2C   50.750 C2P   19749657.073 L2P   82198588.737  -1 D2P      -1146.734 S2P   51.500
+...
+...
+BRUX7 R01  1  C1C   22169939.093 L1C  118510471.935   2 D1C      -3455.517 S1C   46.250 C2C   22169945.849 L2C   92174815.522  -1 D2C      -2687.553 S2C   39.750 C2P   22169948.332 L2P   92174815.533  -1 D2P      -2687.420 S2P   39.750
+BRUX7 G32     C1C   24854756.537 L1C  130612337.909  -1 D1C       4015.415 S1C   38.750 C1W   24854755.907 S1W   14.500 C2W   24854761.499 L2W  101776034.995  -1 D2W       3128.868 S2W   14.500
+BRUX7 G27     C1C   20609278.568 L1C  108301880.363  -1 D1C      -1489.871 S1C   51.750 C2L   20609280.400 L2L   84391138.752  -1 D2L      -1160.950 S2L   51.250 C1W   20609278.224 S1W   46.000 C2W   20609280.251 L2W   84391085.753  -1 D2W      -1160.937 S2W   46.000 C5Q   20609281.557 L5Q   80874942.702  -1 D5Q      -1112.573 S5Q   56.500
+BRUX7 G22     C1C   21132013.776 L1C  111048915.150   1 D1C       -728.755 S1C   50.250 C1W   21132012.802 S1W   43.000 C2W   21132010.857 L2W   86531637.369   1 D2W       -567.860 S2W   43.000
+...
+...
+BRUX7 G09     C1C   24572835.223 L1C  129130939.707   1 D1C      -1711.676 S1C   29.000
+BRUX7 G08     C1C   24461057.848 L1C  128544277.352   1 D1C       -980.232 S1C   33.000
+BRUX7 G06     C1C   21289369.405 L1C  111875762.746   1 D1C      -2200.498 S1C   48.500 C1W   21289368.940 S1W   38.750 C2W   21289369.966 L2W   87176179.615   1 D2W      -1714.670 S2W   38.750
+BRUX7 G03     C1C   20035216.366 L1C  105286100.092   1 D1C      -1274.075 S1C   52.000 C1W   20035215.790 S1W   43.500 C2W   20035216.271 L2W   82040893.360   1 D2W       -992.781 S2W   43.500
+BRUX7 G01     C1C   24008529.961 L1C  126165060.514   1 D1C       3258.640 S1C   33.750 C2L   24008535.389 L2L   98310442.230   1 D2L       2539.826 S2L   29.000 C5Q   24008537.261 L5Q   94215087.245   1 D5Q       2433.873 S5Q   38.250
+CUT07 C14     C1I   25789735.828 L1I  134294741.980   2 D1I       2247.598 S1I   37.688 C6I   25789728.832 L6I  109125500.260   0 S6I   40.812 C7I   25789739.067 L7I  103845239.974   0 S7I   41.188
+CUT07 C13     C1I   27082007.852 L1I  141023685.184   2 D1I       2328.723 S1I   34.500 C6I   27082007.301 L6I  114592607.127   0 S6I   35.688 C7I   27082018.359 L7I  109047804.538   0 S7I   35.500
+...
+...
+CUT07 C02     C1I   38216348.258 L1I  199002786.312   2 D1I         73.598 S1I   37.688 C6I   38216340.851 L6I  161705399.161   0 S6I   43.125 C7I   38216345.051 L7I  153881396.303   0 S7I   43.625
+CUT07 C01     C1I   37487507.125 L1I  195206593.273   2 D1I         56.406 S1I   43.188 C6I   37487494.207 L6I  158621915.867   0 S6I   45.500 C7I   37487499.168 L7I  150946047.864   0 S7I   46.688
+CUT07 J01     C1C   37871359.625 L1C  199015767.536   2 D1C       2491.887 S1C   47.688 C2X   37871366.406 L2X  155076817.438  -1 S2X   45.125 C5X   37871372.801 L5X  148615280.381  -1 S5X   50.875 C6L   37871361.316 L6L  161538624.714   0 S6L   47.625 C1Z   37871351.867 L1Z  199015757.658   2 S1Z   45.375 C1X   37871360.312 L1X  199015753.534   2 S1X   48.875
+CUT07 S37     C1C   37819960.735 L1C  198744531.970  -1 D1C         94.469 S1C   42.188
+CUT07 S29     C1C   37566364.406 L1C  197411912.527   2 D1C         95.785 S1C   42.188
+CUT07 S28     C1C   38013061.031 L1C  199759991.980  -1 D1C         95.191 S1C   43.688
+CUT07 S27     C1C   40049796.703 L1C  210462606.892   2 D1C         95.527 S1C   37.125
+CUT07 R24  2  C1C   23316082.867 L1C  124682415.975   2 D1C       2972.121 S1C   42.875 C2C   23316094.324 L2C   96975292.927  -1 S2C   40.125 C1P   23316083.414 L1P  124682478.010   2 S1P   41.125 C2P   23316094.402 L2P   96975292.954  -1 S2P   39.625
+CUT07 R23  3  C1C   20279374.531 L1C  108481479.308  -1 D1C        692.941 S1C   53.500 C2C   20279382.469 L2C   84374946.137  -1 S2C   50.625 C1P   20279374.141 L1P  108481779.316  -1 S1P   51.500 C2P   20279382.898 L2P   84374782.134  -1 S2P   48.812
+CUT07 R22 -3  C1C   20777797.109 L1C  110913080.549  -1 D1C      -2384.313 S1C   53.125 C2C   20777803.520 L2C   86265791.465  -1 S2C   47.812 C1P   20777797.539 L1P  110913080.544  -1 S1P   51.375 C2P   20777804.305 L2P   86265644.469  -1 S2P   46.500
+...
+...
+CUT07 G31     C1C   23095978.320 L1C  121369634.205   1 D1C       2959.375 S1C   42.688 C2X   23095984.398 L2X   94573751.156   1 S2X   42.125 C2W   23095984.680 L2W   94573660.162   1 S2W   29.688
+CUT07 G29     C1C   20694585.227 L1C  108751130.898   1 D1C        362.144 S1C   52.375 C2X   20694590.426 L2X   84740785.256   1 S2X   50.312 C2W   20694590.355 L2W   84741402.262   1 S2W   44.812
+...
+...
+CUT07 G10     C1C   25997617.258 L1C  136618523.602   1 D1C       -123.551 S1C   36.688
+CUT07 G05     C1C   24479995.523 L1C  128643093.324   1 D1C       1775.445 S1C   41.875 C2X   24480004.883 L2X  100241393.820   1 S2X   39.000 C2W   24480004.168 L2W  100241393.815   1 S2W   22.625
+CUT07 G02     C1C   22635179.234 L1C  118949254.475   1 D1C      -2881.695 S1C   43.812 C2W   22635182.664 L2W   92687782.829   1 S2W   31.875
 
-> 1732 593303.0000000
-CUT07 C30     C6I   23551839.488 L6I   99656121.652  0 S6I   42.375 C7I   23551850.508 L7I   94834051.391  0 S7I   42.188
-CUT07 C13     C6I   26551402.223 L6I  112347137.247  0 S6I   38.688 C7I   26551410.664 L7I  106910986.173  0 S7I   37.875
-CUT07 C11     C6I   24441668.156 L6I  103420723.118  0 S6I   45.125 C7I   24441676.477 L7I   98416583.891  0 S7I   45.688
+> 1768 124004.0000000
+CUT07 C14     C1I   25789304.320 L1I  134292494.346   3 D1I       2247.492 S1I   37.875 C6I   25789296.797 L6I  109123673.870   0 S6I   40.812 C7I   25789306.973 L7I  103843501.964   0 S7I   40.625
+CUT07 C13     C1I   27081560.469 L1I  141021356.337   3 D1I       2328.863 S1I   35.000 C6I   27081560.094 L6I  114590714.765   0 S6I   36.312 C7I   27081571.563 L7I  109046003.739   0 S7I   35.688
+CUT07 C11     C1I   24860417.594 L1I  129454278.393   3 D1I      -2268.137 S1I   44.375 C6I   24860407.668 L6I  105191925.373   0 S6I   45.500 C7I   24860417.317 L7I  100102070.297   0 S7I   45.000
 ...
 ...
+
+
+
 </pre>
 <p>
 The source code for BNC comes with a perl script called 'test_tcpip_client.pl' that allows you to read BNC's (synchronized or unsynchronized) ASCII observation output from the IP port and print it on standard output.
@@ -1520,60 +1517,74 @@ These parameters are saved together with their standard deviation. The following
 </p>
 <p>
 <pre>
-10-12-06 18:10:50 Single Point Positioning of Epoch 18:10:48.0
+13-11-25 11:07:04 Single Point Positioning of Epoch 11:07:01.0
 --------------------------------------------------------------
-18:10:48.0 RES G04   L3    0.0165   P3   -0.1250
-18:10:48.0 RES G11   L3    0.0150   P3    0.7904
-18:10:48.0 RES G13   L3    0.0533   P3    0.4854
-18:10:48.0 RES G17   L3   -0.0277   P3    1.2920
-18:10:48.0 RES G20   L3   -0.0860   P3   -0.1186
-18:10:48.0 RES G23   L3    0.0491   P3   -0.1052
-18:10:48.0 RES G31   L3    0.0095   P3   -3.2929
-18:10:48.0 RES G32   L3    0.0183   P3   -3.8800
-18:10:48.0 RES R05   L3   -0.0077
-18:10:48.0 RES R06   L3    0.0223
-18:10:48.0 RES R15   L3   -0.0020
-18:10:48.0 RES R16   L3    0.0156
-18:10:48.0 RES R20   L3   -0.0247
-18:10:48.0 RES R21   L3    0.0014
-18:10:48.0 RES R22   L3   -0.0072
-18:10:48.0 RES E52   L3   -0.0475   P3   -0.1628
-18:10:48.0 RES G04   L3    0.0166   P3   -0.1250
-18:10:48.0 RES G11   L3    0.0154   P3    0.7910
-18:10:48.0 RES G13   L3    0.0535   P3    0.4855
-18:10:48.0 RES G17   L3   -0.0272   P3    1.2925
-18:10:48.0 RES G20   L3   -0.0861   P3   -0.1188
-18:10:48.0 RES G23   L3    0.0489   P3   -0.1055
-18:10:48.0 RES G31   L3    0.0094   P3   -3.2930
-18:10:48.0 RES G32   L3    0.0183   P3   -3.8800
-18:10:48.0 RES R05   L3   -0.0079
-18:10:48.0 RES R06   L3    0.0223
-18:10:48.0 RES R15   L3   -0.0020
-18:10:48.0 RES R16   L3    0.0160
-18:10:48.0 RES R20   L3   -0.0242
-18:10:48.0 RES R21   L3    0.0016
-18:10:48.0 RES R22   L3   -0.0072
-18:10:48.0 RES E52   L3   -0.0474   P3    0.1385
 
-    clk     =  64394.754 +-  0.045
-    trp     =   2.185 +0.391 +-  0.001
-    offset  =   -415.400 +-  0.137
-    amb G17 =     11.942 +-  0.045
-    amb G23 =    248.892 +-  0.044
-    amb G31 =    254.200 +-  0.045
-    amb G11 =    -12.098 +-  0.044
-    amb G20 =   -367.765 +-  0.044
-    amb G04 =    259.588 +-  0.044
-    amb E52 =      6.124 +-  0.130
-    amb G32 =    201.496 +-  0.045
-    amb G13 =   -265.658 +-  0.044
-    amb R22 =   -106.246 +-  0.044
-    amb R21 =   -119.605 +-  0.045
-    amb R06 =     41.328 +-  0.044
-    amb R15 =    163.453 +-  0.044
-    amb R20 =   -532.746 +-  0.045
-    amb R05 =   -106.603 +-  0.044
-    amb R16 =   -107.830 +-  0.044
+11:07:01.0 RES E12   P3   -0.0206
+11:07:01.0 RES E19   P3   -1.4706
+11:07:01.0 RES E20   P3    1.1018
+11:07:01.0 RES G01   P3   -0.3704
+11:07:01.0 RES G03   P3   -0.2806
+11:07:01.0 RES G06   P3    0.3635
+11:07:01.0 RES G11   P3    0.1940
+11:07:01.0 RES G14   P3    0.0357
+11:07:01.0 RES G18   P3   -2.1105
+11:07:01.0 RES G19   P3    0.4660
+11:07:01.0 RES G22   P3    1.9451
+11:07:01.0 RES G27   P3   -0.7073
+11:07:01.0 RES G28   P3   -0.3382
+11:07:01.0 RES G32   P3    0.5999
+11:07:01.0 RES E12   L3    0.0204
+11:07:01.0 RES E19   L3   -0.0152
+11:07:01.0 RES E20   L3   -0.0119
+11:07:01.0 RES G01   L3   -0.0055
+11:07:01.0 RES G03   L3    0.0172
+11:07:01.0 RES G06   L3   -0.0144
+11:07:01.0 RES G11   L3    0.0140
+11:07:01.0 RES G14   L3    0.0258
+11:07:01.0 RES G18   L3    0.0192
+11:07:01.0 RES G19   L3   -0.0004
+11:07:01.0 RES G22   L3   -0.0272
+11:07:01.0 RES G27   L3   -0.0022
+11:07:01.0 RES G28   L3   -0.0040
+11:07:01.0 RES G32   L3   -0.0130
+11:07:01.0 RES R02   L3   -0.0576
+11:07:01.0 RES R03   L3   -0.0054
+11:07:01.0 RES R09   L3    0.0168
+11:07:01.0 RES R10   L3   -0.0339
+11:07:01.0 RES R17   L3    0.0122
+11:07:01.0 RES R18   L3    0.0593
+
+    clk     =     -8.985 +-  0.513
+    trp     =   2.184 -0.032 +-  0.002
+    offGlo  =      0.175 +- 32.547
+    offGal  =      4.711 +-  1.057
+    amb E20 =    286.385 +-  0.925   nEpo = 914
+    amb G01 =   -121.366 +-  0.513   nEpo = 914
+    amb G18 =     -9.270 +-  0.513   nEpo = 914
+    amb G32 =   -132.475 +-  0.513   nEpo = 914
+    amb G27 =    -32.002 +-  0.513   nEpo = 640
+    amb G14 =     45.672 +-  0.513   nEpo = 608
+    amb E19 =    126.492 +-  0.925   nEpo = 360
+    amb R03 =    -91.230 +- 32.551   nEpo = 360
+    amb R09 =     29.258 +- 32.551   nEpo = 340
+    amb G22 =   -113.167 +-  0.513   nEpo = 335
+    amb E12 =   -122.721 +-  0.925   nEpo = 313
+    amb G06 =     17.432 +-  0.513   nEpo = 303
+    amb G11 =   -182.885 +-  0.513   nEpo = 279
+    amb R10 =   -268.896 +- 32.551   nEpo = 202
+    amb R02 =    198.251 +- 32.551   nEpo = 185
+    amb G28 =     26.367 +-  0.513   nEpo = 94
+    amb R17 =     30.320 +- 32.551   nEpo = 86
+    amb R18 =   -256.708 +- 32.551   nEpo = 86
+    amb G19 =     32.690 +-  0.513   nEpo = 71
+    amb G03 =    137.912 +-  0.513   nEpo = 47
+
+13-11-25 11:07:04 WTZ27  PPP 11:07:01.0 20    4075534.903 +-  0.019     931822.501 +-  0.015    4801609.005 +-  0.024  NEU    0.055    0.063   -0.146
+
+13-11-25 11:07:04 WTZ27  AVE-XYZ 11:07:01.0   4075534.918 +-  0.008     931822.503 +-  0.003    4801608.994 +-  0.014
+13-11-25 11:07:04 WTZ27  AVE-NEU 11:07:01.0         0.035 +-  0.010          0.062 +-  0.002         -0.145 +-  0.012
+13-11-25 11:07:04 WTZ27  AVE-TRP 11:07:01.0         2.150 +-  0.002
 </pre>
 </p>
 
@@ -1601,6 +1612,9 @@ bnc.exe --conf c:\temp\PPP.bnc --file c:\temp\FFMJ1
 <li>Ocean and atmospheric loading is neglected. Atmospheric loading is pretty small. Ocean loading is usually also a small effect but may reach up to about 10 centimeters for coastal stations.</li>
 <li>Rotational deformation due to polar motion (Polar Tides) is not corrected because this is a small effect usually less than 2 centimeters.</li>
 </ul>
+</p>
+<p>
+The provider of an orbit/clock corrections stream may switch with his service at any time from a duty to a backup server installation. This shall be noted in the SSR stream through a change of the Issue Of Data (IOD SSR) parameter. The PPP option in BNC will immediately reset all ambiguities in such a situation.
 </p>
 
 <p><a name="pppmode"><h4>3.12.1 Mode & Mountpoints - optional</h4></p>
@@ -3402,6 +3416,7 @@ Note that the following configuration options saved on disk can be changed/edite
 <tr><td>IGS-IP NTRIP Broadcaster &nbsp;</td><td><u>http://www.igs-ip.net/home</u></td></tr>
 <tr><td>IGS products NTRIP Broadcaster &nbsp;</td><td><u>http://products.igs-ip.net/home</u></td></tr>
 <tr><td>IGS M-GEX NTRIP Broadcaster &nbsp;</td><td><u>http://mgex.igs-ip.net/home</u></td></tr>
+<tr><td>IGS Central Bureau NTRIP Broadcaster &nbsp;</td><td><u>http://rt.igs.org</u></td></tr>
 <tr><td>IGS Real-time Service &nbsp;</td><td><u>http://rts.igs.org</u></td></tr>
 <tr><td>Distribution of IGS-IP streams &nbsp;</td><td><u>http://www.igs.oma.be/real_time/</u></td></tr>
 <tr><td>Completeness and latency of IGS-IP data &nbsp;</td><td><u>http://www.igs.oma.be/highrate/</u></td></tr>
@@ -3416,6 +3431,8 @@ Note that the following configuration options saved on disk can be changed/edite
 <table>
 <tr><td><b>Publications</b></td></tr>
 
+<tr><td>Louis H. Estey and Charles M. Meertens</td><td>TEQC: The Multi-Purpose Toolkit for GPS/GLONASS Data, GPS Solutions, Vol. 3, No. 1, pp. 42-49, 1999.</td></tr>
+
 <tr><td>Weber, G., D. Dettmering, H. Gebhard and R. Kalafus </td><td>Networked Transport of RTCM via Internet Protocol (Ntrip), IP-Streaming for Real-Time GNSS Applications, ION GNSS 2005.</td></tr>
 
 <tr><td>Weber, G, L. Mervart, Z. Lukes, C. Rocken and J. Dousa </td><td>Real-time Clock and Orbit Corrections for Improved Point Positioning via NTRIP, ION GNSS 2007.</td></tr>
@@ -3428,7 +3445,6 @@ Note that the following configuration options saved on disk can be changed/edite
 
 <tr><td>Huisman, L., P. Teunissen and C. Hu </td><td>GNSS Precise Point Positioning in Regional Reference Frames Using Real-time Broadcast Corrections, Journal of Applied Geodesy, Vol. 6, pp15-23, 2012.</td></tr>
 
-<tr><td>Louis H. Estey and Charles M. Meertens</td><td>TEQC: The Multi-Purpose Toolkit for GPS/GLONASS Data, GPS Solutions, Vol. 3, No. 1, pp. 42-49, 1999.</td></tr>
 
 </table>
 
