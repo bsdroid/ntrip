@@ -532,11 +532,11 @@ void bncPPPclient::processEpochs() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::slotProviderIDChanged(QString staID) {
+void bncPPPclient::slotProviderIDChanged(QString mountPoint) {
   QMutexLocker locker(&_mutex);
 
-  if (staID != _opt->pppCorrMount) {
+  if (mountPoint != _opt->pppCorrMount) {
     return;
   }
-  emit newMessage("bncPPPclient: Provider Changed\n", true);
+  emit newMessage("bncPPPclient " + _staID + ": Provider Changed: " + mountPoint.toAscii() + "\n", true);
 }
