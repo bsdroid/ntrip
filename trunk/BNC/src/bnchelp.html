@@ -221,9 +221,11 @@ BNC maintains configuration options at three different levels:
 
 <p><img src="IMG/screenshot31.png"/></p>
 <p><u>Figure 6:</u> Management of configuration options in BNC:<br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Left: BNC in graphics mode where active configuration options are introduced through GUI input fields and finally saved on disk.<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Left: BNC in graphics mode where active configuration options are introduced through<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; GUI input fields and finally saved on disk.<br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Middle: BNC in 'no window' mode where active configuration options are read from disk.<br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Right: BNC in 'no window' mode without configuration file where default configuration options can be replaced via command line options.</p>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Right: BNC in 'no window' mode without configuration file where default configuration<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; options can be replaced via command line options.</p>
 
 <p>
 Configuration options are usually specified using GUI input fields (1) after launching BNC. When hitting the 'Start' button, configuration options are transferred one level down to become BNC's active configuration (2) allowing the program to begin its operation. Pushing the 'Stop' button ends data processing so that the user can finally terminate BNC through 'File'->'Quit'->'Save Options' which saves processing options in a configuration file to disk (3). It is important to understand that:
@@ -232,7 +234,7 @@ Configuration options are usually specified using GUI input fields (1) after lau
 <li>Hence changing configuration options at GUI level (1) while BNC is already processing data does not influence a running job.</li>
 <li>Editing configuration options at disk level (3) while BNC is already processing data does also not influence a running job. However, there are two exceptions which force BNC to update certain active options on-the-fly:</li>
 <ul>
-<li>Pushing the 'Save & Reread Configuration' button lets BNC immediately reread its configuration from disk.</li>
+<li>Pushing the 'Reread & Save Configuration' button lets BNC immediately reread its configuration from GUI input fields to make them active configuration options. Then BNC saves them on disk.</li>
 <li>Specifying the 'Reread configuration' option lets BNC reread its configuration from disk at pre-defined intervals.</li>
 </ul>
 <li>A certain BNC configuration can be started in 'no window' mode from scratch without any configuration file if options for the active configuration level (2) are provided via command line.</li>
@@ -421,8 +423,8 @@ The 'File' button lets you
 <li> select an appropriate font.<br>
 Use smaller font size if the BNC main window exceeds the size of your screen.
 </li> 
-<li> save selected options in configuration file.<br>
-When using 'Save &amp; Reread Configuration' while BNC is already processing data, some configuration options become immediately effective on-the-fly without interrupting uninvolved threads. See annexed section 'Configuration Examples' for a list of on-the-fly changeable configuration options.
+<li> reread and save selected options in configuration file.<br>
+When using 'Reread &amp; Save Configuration' while BNC is already processing data, some configuration options become immediately effective on-the-fly without interrupting uninvolved threads while all of them are saved on disk. See annexed section 'Configuration Examples' for a list of on-the-fly changeable configuration options.
 </li>
 <li> quit the BNC program.
 </li> 
@@ -540,7 +542,7 @@ The screenshot below shows an example setup of BNC when converting streams to RI
 
 <p><a name="rnxname"><h4>3.4.1 RINEX File Names</h4></p>
 <p>
-RINEX file names are derived by BNC from the first 4 characters of the corresponding stream's mountpoint (4Char Station ID). For example, data from mountpoints FRANKFURT and WETTZELL will have hourly RINEX Observation files named</p>
+RINEX file names in BNC follow the convention of RINEX Version 2.11. So far BNC does not support extended file names as defined in RINEX Version 3.02. File names are derived by BNC from the first 4 characters of the corresponding stream's mountpoint (4Char Station ID). For example, data from mountpoints FRANKFURT and WETTZELL will have hourly RINEX Observation files named</p>
 <p>
 FRAN{ddd}{h}.{yy}O<br>
 WETT{ddd}{h}.{yy}O
@@ -1139,7 +1141,7 @@ Specifying a value of '0' means that BNC immediately outputs all incoming Broadc
 
 <p><a name="syncout"><h4>3.8. Feed Engine</h4></p>
 <p>
-BNC can generate synchronized or unsynchronized observations epoch by epoch from all stations and satellites to feed a real-time GNSS network engine. Observations can be streamed out through an IP port and/or saved in a local file. The output is always in plain ASCII format.
+BNC can generate synchronized or unsynchronized observations epoch by epoch from all stations and satellites to feed a real-time GNSS network engine. Observations can be streamed out through an IP port and/or saved in a local file. The output is always in plain ASCII format and sorted per incoming stream.
 </p>
 <p>
 Any epoch in the output begins with a line containing the GPS week number and the seconds within the GPS week. Following lines begin with the mountpoint string of the stream which provides the observations followed by a satellite ID and - in case of GLONASS - a channel number. Observation types are specified by the three character observation code defined in RINEX Version 3. In case of phase observations a Slip Count is added which is put to "-1" if it is not set. The end of an epoch in indicated by an empty line.
@@ -1246,7 +1248,7 @@ Select the synchronized observation output sampling interval in seconds. A value
 Specify the full path to a 'File' where synchronized observations are saved in plain ASCII format. The default value is an empty option field, meaning that no ASCII output file is created. 
 </p>
 <p>
-Beware that the size of this file can rapidly increase depending on the number of incoming streams. The name of the file can be changed on-the-fly, to prevent it becoming too large. This option is primarily meant for testing and evaluation.
+Beware that the size of this file can rapidly increase depending on the number of incoming streams. The name of the file can be changed on-the-fly, to prevent it from becoming too large. This option is primarily meant for testing and evaluation.
 </p>
 
 <p><a name="syncuport"><h4>3.8.5 Port (unsynchronized) - optional</h4></p>
@@ -1656,9 +1658,12 @@ The parameters following the 'NEU' string provide North, East and Up components 
 You may like to specify North, East and Up components of an antenna eccentricity which is the difference between a nearby marker position and the antenna phase center. If you do so BNC will produce coordinates referring to the marker position and not referring to the antenna phase center.
 </p>
 
-<p><a name="pppoutput"><h4>3.12.4 NMEA & Plot Output - optional</h4></p>
+<p><a name="pppoutput"><h4>3.12.4 NMEA Output - optional</h4></p>
 <p>
-BNC allows to output results from Precise Point Positioning in NMEA format. It can also plot a time series of North, East and UP displacements.
+BNC allows to output results from Precise Point Positioning in NMEA format. 
+</p>
+<p>
+Note that Tomoji Takasu has written a program called RTKPLOT for visualizing NMEA strings. It is available from <u>http://www.rtklib.com</u> and compatible with the NMEA file and port output of BNC's 'PPP' client option.
 </p>
 
 <p><a name="pppnmeafile"><h4>3.12.4.1 NMEA File - optional</h4></p>
@@ -1671,9 +1676,6 @@ The NMEA sentences generated about once per second are pairs of
 </p>
 <p>
 Specify the full path to a file where Point Positioning results are saved as NMEA messages. The default value for 'NMEA file' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
-</p>
-<p>
-Note that Tomoji Takasu has written a program called RTKPLOT for visualizing NMEA strings. It is available from <u>http://gpspp.sakura.ne.jp/rtklib/rtklib.htm</u> and compatible with the NMEA file and port output of BNC's 'PPP' client option.
 </p>
 
 <p><a name="pppnmeaport"><h4>3.12.4.2 NMEA Port - optional</h4></p>
@@ -2432,7 +2434,7 @@ To remove a stream from the 'Streams' canvas in the main window, highlight it by
 The streams selection can be changed on-the-fly without interrupting uninvolved threads in the running BNC process.
 </p>
 <p>
-<u>Window mode:</u> Hit 'Save &amp; Reread Configuration' while BNC is in window mode and already processing data to let changes of your streams selection immediately become effective.
+<u>Window mode:</u> Hit 'Reread &amp; Save Configuration' while BNC is in window mode and already processing data to let changes of your streams selection immediately become effective.
 <p>
 <u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option from disk at pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file become effective without terminating uninvolved threads. See annexed section 'Configuration Examples' for a configuration file example and a list of other on-the-fly changeable options.
 </p>
@@ -2748,7 +2750,7 @@ Using RTCM Version 2, BNC will only handle message types 18 and 19 or 20 and 21 
 BNC's 'Get Table' function only shows the STR records of a source-table. You can use an Internet browser to download the full source-table contents of any NTRIP Broadcaster by simply entering its URL in the form of <u>http://host:port</u>. Data field number 8 in the NET records may provide information about where to register for an NTRIP Broadcaster account.
 </li>
 <li>
-EUREF as well as IGS adhere to an open data policy. Streams are made available through NTRIP Broadcasters at <u>www.euref-ip.net</u>, <u>www.igs-ip.net</u> and <u>products.igs-ip.net</u> free of charge to anyone for any purpose. There is no indication up until now how many users will need to be supported simultaneously. The given situation may develop in such a way that it might become difficult to serve all registered users at the same times. In cases where limited resources on the NTRIP Broadcaster side (software restrictions, bandwidth limitation etc.) dictates, first priority in stream provision will be given to stream providers followed by re-broadcasting activities and real-time analysis centers while access to others might be temporarily denied.
+EUREF as well as IGS adhere to an open data policy. Streams are made available through NTRIP Broadcasters at <u>www.euref-ip.net</u>, <u>www.igs-ip.net</u>, <u>products.igs-ip.net</u>, and <u>mgex.igs-ip.net</u> free of charge to anyone for any purpose. There is no indication up until now how many users will need to be supported simultaneously. The given situation may develop in such a way that it might become difficult to serve all registered users at the same times. In cases where limited resources on the NTRIP Broadcaster side (software restrictions, bandwidth limitation etc.) dictates, first priority in stream provision will be given to stream providers followed by re-broadcasting activities and real-time analysis centers while access to others might be temporarily denied.
 </li>
 <li>
 Once BNC has been started, many of its configuration options cannot be changed as long as it is stopped. See chapter 'Reread Configuration' for on-the-fly configuration exceptions.
