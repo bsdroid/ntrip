@@ -833,3 +833,4 @@ void t_bncCore::checkEphemeris(gpsephemeris* oldEph, gpsephemeris* newEph) {
     messagePrivate(msg.toAscii());
   }
 }
+

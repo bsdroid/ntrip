@@ -132,6 +132,7 @@ class bncPPPclient : public bncEphUser {
 
  public slots:
   void slotNewCorrections(QList<QString> corrList);
+  void slotProviderIDChanged(QString staID);
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);

@@ -76,6 +76,9 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
   connect(this, SIGNAL(newCorrLine(QString, QString, bncTime)), 
           BNC_CORE, SLOT(slotNewCorrLine(QString, QString, bncTime)));
 
+  connect(this, SIGNAL(providerIDChanged(QString)), 
+          BNC_CORE, SIGNAL(providerIDChanged(QString)));
+
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
@@ -445,6 +448,7 @@ void RTCM3coDecoder::checkProviderID() {
   }
     
   if (alreadySet && different) {
+    emit providerIDChanged(_staID);
     emit newMessage("RTCM3coDecoder: Provider Changed\n", true);
   }
 }

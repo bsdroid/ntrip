@@ -75,6 +75,9 @@ bncPPPclient::bncPPPclient(QByteArray staID, t_pppOpt* opt, bool connectSlots) :
 
     connect(BNC_CORE, SIGNAL(newCorrections(QList<QString>)),
             this, SLOT(slotNewCorrections(QList<QString>)));
+
+    connect(BNC_CORE, SIGNAL(providerIDChanged(QString)),
+            this, SLOT(slotProviderIDChanged(QString)));
   }
 }
 
@@ -527,3 +530,13 @@ void bncPPPclient::processEpochs() {
   }
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncPPPclient::slotProviderIDChanged(QString staID) {
+  QMutexLocker locker(&_mutex);
+
+  if (staID != _opt->pppCorrMount) {
+    return;
+  }
+  emit newMessage("bncPPPclient: Provider Changed\n", true);
+}
