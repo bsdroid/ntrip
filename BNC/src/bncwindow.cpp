@@ -127,7 +127,7 @@ bncWindow::bncWindow() {
   _actFontSel = new QAction(tr("Select &Font"),this);
   connect(_actFontSel, SIGNAL(triggered()), SLOT(slotFontSel()));
 
-  _actSaveOpt = new QAction(tr("&Save && Reread Configuration"),this);
+  _actSaveOpt = new QAction(tr("&Reread && Save Configuration"),this);
   connect(_actSaveOpt, SIGNAL(triggered()), SLOT(slotSaveOptions()));
 
   _actQuit  = new QAction(tr("&Quit"),this);
@@ -140,7 +140,7 @@ bncWindow::bncWindow() {
   connect(_actDeleteMountPoints, SIGNAL(triggered()), SLOT(slotDeleteMountPoints()));
   _actDeleteMountPoints->setEnabled(false);
 
-  _actMapMountPoints = new QAction(tr("Streams &Map"),this);
+  _actMapMountPoints = new QAction(tr("&Map"),this);
   connect(_actMapMountPoints, SIGNAL(triggered()), SLOT(slotMapMountPoints()));
 
   _actStart = new QAction(tr("Sta&rt"),this);
