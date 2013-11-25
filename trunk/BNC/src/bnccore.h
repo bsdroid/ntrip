@@ -80,7 +80,7 @@ class t_bncCore : public QObject {
     void newEphGlonass(glonassephemeris glonasseph);
     void newEphGalileo(galileoephemeris galileoeph);
     void newCorrections(QList<QString>);
-    void providerIDChanged(QString staID);
+    void providerIDChanged(QString);
     
  private slots:
    void slotNewConnection();
