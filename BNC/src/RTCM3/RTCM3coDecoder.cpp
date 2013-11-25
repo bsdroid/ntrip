@@ -81,6 +81,10 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
 
   memset(&_co, 0, sizeof(_co));
   memset(&_bias, 0, sizeof(_bias));
+
+  _providerID[0] = -1;
+  _providerID[1] = -1;
+  _providerID[2] = -1;
 }
 
 // Destructor
@@ -219,6 +223,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           _GPSweeks = weekDay * 86400.0 + GPSDaySec;
         }
 
+        checkProviderID();
+
         QStringList asciiLines = corrsToASCIIlines(GPSweek, _GPSweeks, 
                                                    _co, &_bias);
 
@@ -308,8 +314,7 @@ QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
         line.sprintf("   %3d"
                      "   %8.3f %8.3f %8.3f %8.3f"
                      "   %10.5f %10.5f %10.5f %10.5f"
-                     "   %10.5f"
-                     "   %5d %2d %2d",
+                     "   %10.5f",
                      co.Sat[ii].IOD, 
                      co.Sat[ii].Clock.DeltaA0,
                      co.Sat[ii].Orbit.DeltaRadial, 
@@ -319,8 +324,7 @@ QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
                      co.Sat[ii].Orbit.DotDeltaRadial, 
                      co.Sat[ii].Orbit.DotDeltaAlongTrack,
                      co.Sat[ii].Orbit.DotDeltaCrossTrack,
-                     co.Sat[ii].Clock.DeltaA2,
-                     co.SSRProviderID, co.SSRSolutionID, co.SSRIOD);
+                     co.Sat[ii].Clock.DeltaA2);
         retLines << linePart+line;
       }
 
@@ -331,16 +335,14 @@ QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
         QString line;
         line.sprintf("   %3d"
                      "   %8.3f %8.3f %8.3f"
-                     "   %10.5f %10.5f %10.5f"
-                     "   %5d %2d %2d",
+                     "   %10.5f %10.5f %10.5f",
                      co.Sat[ii].IOD, 
                      co.Sat[ii].Orbit.DeltaRadial, 
                      co.Sat[ii].Orbit.DeltaAlongTrack,
                      co.Sat[ii].Orbit.DeltaCrossTrack,
                      co.Sat[ii].Orbit.DotDeltaRadial, 
                      co.Sat[ii].Orbit.DotDeltaAlongTrack,
-                     co.Sat[ii].Orbit.DotDeltaCrossTrack,
-                     co.SSRProviderID, co.SSRSolutionID, co.SSRIOD);
+                     co.Sat[ii].Orbit.DotDeltaCrossTrack);
         retLines << linePart+line;
       }
 
@@ -414,4 +416,35 @@ QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
   }
 
   return retLines;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void RTCM3coDecoder::checkProviderID() {
+
+  if (_co.SSRProviderID == 0 && _co.SSRSolutionID == 0 && _co.SSRIOD == 0) {
+    return;
+  }
+
+  int newProviderID[3];
+  newProviderID[0] = _co.SSRProviderID;
+  newProviderID[1] = _co.SSRSolutionID;
+  newProviderID[2] = _co.SSRIOD;
+
+  bool alreadySet = false;
+  bool different  = false;
+
+  for (unsigned ii = 0; ii < 3; ii++) {
+    if (_providerID[ii] != -1) {
+      alreadySet = true;
+    }
+    if (_providerID[ii] != newProviderID[ii]) {
+      different = true;
+    }
+    _providerID[ii] = newProviderID[ii];
+  }
+    
+  if (alreadySet && different) {
+    emit newMessage("RTCM3coDecoder: Provider Changed\n", true);
+  }
 }

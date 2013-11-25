@@ -708,14 +708,11 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
     QString line;
     int messageType   = COTYPE_GPSCOMBINED;
     int updateInt     = 0;
-    int SSRProviderID = 0;
-    int SSRSolutionID = 0;
-    int SSRIOD        = 0;
     line.sprintf("%d %d %d %.1f %s"
                  "   %3d"
                  "   %8.3f %8.3f %8.3f %8.3f"
                  "   %10.5f %10.5f %10.5f %10.5f"
-                 "   %10.5f   %5d %2d %2d INTERNAL",
+                 "   %10.5f INTERNAL",
                  messageType, updateInt, _resTime.gpsw(), _resTime.gpssec(),
                  corr->prn.toAscii().data(),
                  corr->iod,
@@ -727,8 +724,7 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
                  corr->dotRao[0],
                  corr->dotRao[1],
                  corr->dotRao[2],
-                 corr->dotDotDClk * t_CST::c,
-                 SSRProviderID, SSRSolutionID, SSRIOD);
+                 corr->dotDotDClk * t_CST::c);
     corrLines << line;
 
     delete corr;

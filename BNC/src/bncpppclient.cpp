@@ -69,10 +69,6 @@ bncPPPclient::bncPPPclient(QByteArray staID, t_pppOpt* opt, bool connectSlots) :
 
   _model = new bncModel(this);
 
-  _streamID[0] = -1;
-  _streamID[1] = -1;
-  _streamID[2] = -1;
-
   if (connectSlots) {
     connect(this, SIGNAL(newMessage(QByteArray,bool)), 
             BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
@@ -298,7 +294,6 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
         _corr[prn] = cc;
       }
       cc->readLine(line);
-      checkProviderID(cc);
       _corr_tt = cc->tClk;
     }
     else if ( messageType == BTYPE_GPS || messageType == BTYPE_GLONASS ) { 
@@ -532,27 +527,3 @@ void bncPPPclient::processEpochs() {
   }
 }
 
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::checkProviderID(const t_corr* corr) {
-
-  bool alreadySet = false;
-  bool different  = false;
-
-  for (unsigned ii = 0; ii < 3; ii++) {
-    if (_streamID[ii] != -1) {
-      alreadySet = true;
-    }
-    if (corr->streamID[ii] != -1) {
-      if (_streamID[ii] != corr->streamID[ii]) {
-        different = true;
-      }
-      _streamID[ii] = corr->streamID[ii];
-    }
-  }
-    
-  if (alreadySet && different) {
-    delete _model;
-    _model = new bncModel(this);
-  }
-}

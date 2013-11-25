@@ -157,7 +157,6 @@ class bncPPPclient : public bncEphUser {
   void processEpochs();
   void processFrontEpoch();
   t_irc cmpToT(t_satData* satData);
-  void checkProviderID(const t_corr* corr);
 
   t_pppOpt*               _opt;
   bool                    _optOwner;
@@ -168,7 +167,6 @@ class bncPPPclient : public bncEphUser {
   std::queue<t_epoData*>  _epoData;
   bncModel*               _model;
   QMap<QString, slipInfo> _slips;
-  int                     _streamID[3];
 };
 
 #endif

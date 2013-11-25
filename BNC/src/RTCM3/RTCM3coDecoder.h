@@ -54,6 +54,7 @@ Q_OBJECT
 
  private:
   void printLine(const QString& line, int GPSweek, double GPSweeks);
+  void checkProviderID();
   std::ofstream* _out;
   QString        _staID;
   QString        _fileNameSkl;
@@ -62,6 +63,7 @@ Q_OBJECT
   double         _GPSweeks;
   ClockOrbit     _co;
   Bias           _bias;
+  int            _providerID[3];
 };
 
 #endif

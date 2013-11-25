@@ -140,21 +140,15 @@ t_irc hassDecoder::Decode(char* data, int dataLen, vector<string>& errmsg) {
       messageType = COTYPE_GLONASSCOMBINED;
     }
 
-    int SSRProviderID = 0;
-    int SSRSolutionID = 0;
-    int SSRIOD        = 0;
-
     corrLine.sprintf("%d %d %d %.1f %s"
                      "   %3d"
                      "   %8.3f %8.3f %8.3f %8.3f"
                      "   %10.5f %10.5f %10.5f %10.5f"
-                     "   %10.5f"
-                     "   %5d %2d %2d",
+                     "   %10.5f",
                      messageType, updateInterval, coTime.gpsw(), _GPSweeks,
                      prn.toAscii().data(), IOD, 
                      dClk, rao[0], rao[1], rao[2],
-                     0.0, dotRao[0], dotRao[1], dotRao[2], 0.0,
-                     SSRProviderID, SSRSolutionID, SSRIOD);
+                     0.0, dotRao[0], dotRao[1], dotRao[2], 0.0);
 
     RTCM3coDecoder::reopen(_fileNameSkl, _fileName, _out);    
     if (_out) {
