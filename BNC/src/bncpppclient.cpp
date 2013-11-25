@@ -539,4 +539,26 @@ void bncPPPclient::slotProviderIDChanged(QString mountPoint) {
     return;
   }
   emit newMessage("bncPPPclient " + _staID + ": Provider Changed: " + mountPoint.toAscii() + "\n", true);
+
+  delete _model;
+  _model = new bncModel(this);
+
+  while (!_epoData.empty()) {
+    delete _epoData.front();
+    _epoData.pop();
+  }
+
+  QMapIterator<QString, t_corr*> ic(_corr);
+  while (ic.hasNext()) {
+    ic.next();
+    delete ic.value();
+  }
+  _corr.clear();
+ 
+  QMapIterator<QString, t_bias*> ib(_bias);
+  while (ib.hasNext()) {
+    ib.next();
+    delete ib.value();
+  }
+  _bias.clear();
 }
