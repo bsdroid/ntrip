@@ -1161,12 +1161,12 @@ void bncComb::slotProviderIDChanged(QString mountPoint) {
   while (itTime.hasNext()) {
     bncTime epoTime = itTime.next();
     QVector<cmbCorr*>& corrVec = _buffer[epoTime].corrs;
-
-    QVectorIterator<cmbCorr*> it(corrVec);
+    QMutableVectorIterator<cmbCorr*> it(corrVec);
     while (it.hasNext()) {
       cmbCorr* corr = it.next();
       if (acName == corr->acName) {
-
+        delete corr;
+        it.remove();
       }
     }
   }
