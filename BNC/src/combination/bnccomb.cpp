@@ -1170,4 +1170,18 @@ void bncComb::slotProviderIDChanged(QString mountPoint) {
       }
     }
   }
+
+  // Reset Satellite Offsets
+  // -----------------------
+  if (_method == filter) {
+    for (int iPar = 1; iPar <= _params.size(); iPar++) {
+      cmbParam* pp = _params[iPar-1];
+      if (pp->AC == acName && pp->type == cmbParam::offACSat) {
+        pp->xx = 0.0;
+        _QQ.Row(iPar)    = 0.0;
+        _QQ.Column(iPar) = 0.0;
+        _QQ(iPar,iPar) = pp->sig0 * pp->sig0;
+      }
+    }
+  }
 }
