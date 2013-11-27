@@ -12,7 +12,7 @@ The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding,
 </p>
 
 <p>
-BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, Linux, and Mac OS X systems. We used the MinGW Version 4.4.0 compiler to create the Windows binaries. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.7.3 or any later version are installed. Please ensure that you allways use the latest version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u>. Note that static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace positions using Google Map (GM) or Open StreetMap (OSM). However, GM/OSM usage requires the QtWebKit library which can only be part of BNC builds from <u>shared</u> libraries. Using a shared libray BNC build requires that you first install your own shared Qt library. The 'README.txt' file which comes with the BNC source code describes how to install Qt on Windows, Linux and Mac systems.
+BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, Linux, and Mac OS X systems. We used the MinGW Version 4.4.0 compiler to create the Windows binaries. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.7.3 or any later version are installed. Please ensure that you always use the latest version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u>. Note that static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace positions using Google Map (GM) or Open StreetMap (OSM). However, GM/OSM usage requires the QtWebKit library which can only be part of BNC builds from <u>shared</u> libraries. Using a shared library BNC build requires that you first install your own shared Qt library. The 'README.txt' file which comes with the BNC source code describes how to install Qt on Windows, Linux and Mac systems.
 </p>
 <p>
 Feel free to send us your comments, suggestions or bug reports. Your contribution would be appreciated.
@@ -747,7 +747,7 @@ and hence follows UNAVCO's famous 'TEQC' program. The remarkable thing about BNC
 
 <p><a name="reqcgnss"><h4>3.6.2 Sky Plots - mandatory if 'Action' is set to 'Analyze'</h4></p>
 
-<p>Once the 'Analyze' action is selected, you have to specify the GNSS system(s) whoes observations you want to analyze for multipath and signal-to-noise ratio sky plots. Possible options are 'ALL', 'GPS', 'GLONASS', and 'Galileo'. Default is 'ALL', meaning that observations from all GNSS will be analyzed.
+<p>Once the 'Analyze' action is selected, you have to specify the GNSS system(s) whose observations you want to analyze for multipath and signal-to-noise ratio sky plots. Possible options are 'ALL', 'GPS', 'GLONASS', and 'Galileo'. Default is 'ALL', meaning that observations from all GNSS will be analyzed.
 </p>
 
 <p>
@@ -865,7 +865,7 @@ or:<br>
 </p>
 
 <p>
-The following is a list of available keynames for '<u>R</u>INEX <u>E</u>diting & <u>QC</u>' (short: REQC, pronounced 'rek') options and their meaning, cf. section 'Configuration Examples':
+The following is a list of available key names for '<u>R</u>INEX <u>E</u>diting & <u>QC</u>' (short: REQC, pronounced 'rek') options and their meaning, cf. section 'Configuration Examples':
 </p>
 
 <table>
@@ -879,7 +879,7 @@ The following is a list of available keynames for '<u>R</u>INEX <u>E</u>diting &
 <tr><td>reqcOutNavFile</td><td>RINEX Navigation output file</td></tr>
 <tr><td>reqcOutLogFile</td><td>Logfile</td></tr>
 <tr><td>reqcPlotDir</td><td>Plot file directory</td></tr>
-<tr><td>reqcSkyPlotSystem</td><td>GNSS system spedificaion</td></tr>
+<tr><td>reqcSkyPlotSystem</td><td>GNSS system specification</td></tr>
 <tr><td>reqcRnxVersion</td><td>RINEX version of emerging new file</td></tr>
 <tr><td>reqcSampling</td><td>Sampling interval of emerging new RINEX file</td></tr>
 <tr><td>reqcStartDateTime</td><td>Begin of emerging new RINEX file</td></tr>
@@ -1689,8 +1689,8 @@ NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World
 <p><a name="ppppost"><h4>3.12.5 Post Processing - optional</h4></p>
 <p>When in 'Post-Processing' mode
 <ul>
-<li>specifying a RINEX Observation, a RINEX Navigation and a Broadcast Corrections file leads to a PPP solution.</li>
-<li>specifying only a RINEX Observation and a RINEX Navigation file and no Broadcast Corrections file leads to a SPP solution.</li>
+<li>Specifying a RINEX Observation, a RINEX Navigation and a Broadcast Corrections file leads to a PPP solution.</li>
+<li>Specifying only a RINEX Observation and a RINEX Navigation file and no Broadcast Corrections file leads to a SPP solution.</li>
 </ul>
 </p>
 <p>BNC accepts RINEX Version 2 as well as RINEX Version 3 Observation or Navigation file formats. Files carrying Broadcast Corrections must have the format produced by BNC through the 'Broadcast Corrections' tab.
@@ -2150,7 +2150,7 @@ dC = (s - 1) / s * &rho; / c
 where s is the transformation scale, c is the speed of light, and &rho; are the topocentric distance between an (approximate) center of the transformation's validity area and the satellite. 
 </p>
 <p>
-From a theoretical point of view this kind of approximation leads to inconsistencies between orbits and clocks and is therefore not allowed. However, it has been proved that resulting errors in Precise Point Positioning are on millimeter level for horizontal components and below the one centimeter for height components. The Australian GDA94 transformation with its comparatively large scale parameter is an exception in this as descrepancies may reach up to two centimeters there.
+From a theoretical point of view this kind of approximation leads to inconsistencies between orbits and clocks and is therefore not allowed. However, it has been proved that resulting errors in Precise Point Positioning are on millimeter level for horizontal components and below the one centimeter for height components. The Australian GDA94 transformation with its comparatively large scale parameter is an exception in this as discrepancies may reach up to two centimeters there.
 </p>
 
 <p>
@@ -2181,7 +2181,7 @@ To: 2000.0
 </p>
 
 <p>
-<u>NAD83:</u> Formulas for the transformation 'ITRF2008-&gt;NAD83' are taken from from 'Chris Pearson, Richard Snay 2013: Introducing HTDP 3.1 to transform coordinates across time and spatial reference frames', GPS Solutions, January 2013, Volume 17, Issue 1, pp 1-15.
+<u>NAD83:</u> Formulas for the transformation 'ITRF2008-&gt;NAD83' are taken from 'Chris Pearson, Richard Snay 2013: Introducing HTDP 3.1 to transform coordinates across time and spatial reference frames', GPS Solutions, January 2013, Volume 17, Issue 1, pp 1-15.
 </p>
 <p>
 <pre>
@@ -2879,7 +2879,7 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 
 <tr>
 <td>Jul 2013 &nbsp;</td><td>Version 2.9 &nbsp;</td>
-<td>[Add] Started work on new version in Mar 2013<br>[Bug] SSR stream upload buffering disabled<br>[Mod] Format for feeding a connected GNSS engine<br>[Mod] RTNET format for receiving data from a connected GNSS engine<br>[Add] Include Galileo in SPP<br>[Add] RINEX QC multipath an SNR skyplots for GLONASS and Galileo<br>[Add] Bias estimation for GLONASS clocks in PPP<br>[Add] Trace positions on GM or OSM maps<br>[Add] Version 2.9 published</td>
+<td>[Add] Started work on new version in Mar 2013<br>[Bug] SSR stream upload buffering disabled<br>[Mod] Format for feeding a connected GNSS engine<br>[Mod] RTNET format for receiving data from a connected GNSS engine<br>[Add] Include Galileo in SPP<br>[Add] RINEX QC multipath an SNR sky plots for GLONASS and Galileo<br>[Add] Bias estimation for GLONASS clocks in PPP<br>[Add] Trace positions on GM or OSM maps<br>[Add] Version 2.9 published</td>
 </tr>
 
 <tr>
@@ -2952,7 +2952,7 @@ The major changes of NTRIP Version 2 compared to Version 1.0 are:
 <li>RTSP communication.</li>
 </ul>
 
-<p>NTRIP Version 2 allows to either communicate in TCP/IP mode or in RTSP/RTP mode or in UDP mode whereas Version 1 is limited to TCP/IP only. It furthermore allows using the Transport Layer Security (TLS) and its predecessor, Secure Sockets Layer (SSL) cryptographic protocols for secure NTRIP communication over the Internet.
+<p>NTRIP Version 2 allows to either communicating in TCP/IP mode or in RTSP/RTP mode or in UDP mode whereas Version 1 is limited to TCP/IP only. It furthermore allows using the Transport Layer Security (TLS) and its predecessor, Secure Sockets Layer (SSL) cryptographic protocols for secure NTRIP communication over the Internet.
 </p>
 
 <p><a name="rtcm2"><h4>5.2.3 RTCM Version 2</h4></p>
@@ -3359,7 +3359,7 @@ The following table's left column is a list options as contained in BNC's config
 <tr><td>reqcRnxVersion=</td><td>Reqc: RINEX version</td></tr>
 <tr><td>reqcRunBy=</td><td>Reqc: Operators name</td></tr>
 <tr><td>reqcSampling=</td><td>Reqc: RINEX sampling</td></tr>
-<tr><td>reqcSkyPlotSystem=</td><td>Reqc: GNSS system spedificaion</td></tr>
+<tr><td>reqcSkyPlotSystem=</td><td>Reqc: GNSS system specification</td></tr>
 <tr><td>reqcStartDateTime=</td><td>Reqc: Start time</td></tr>
 
 <tr><td>combineStreams=</td><td>Combination: List of correction streams</td></tr>
