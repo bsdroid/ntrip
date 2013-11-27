@@ -37,6 +37,9 @@ class bncComb : public bncEphUser  {
   void processCorrLine(const QString& staID, const QString& line);
   int  nStreams() const {return _ACs.size();}
 
+ public slots:
+  void slotProviderIDChanged(QString mountPoint);
+
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
 

@@ -164,6 +164,9 @@ bncComb::bncComb() {
   connect(this, SIGNAL(newMessage(QByteArray,bool)), 
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
+  connect(BNC_CORE, SIGNAL(providerIDChanged(QString)),
+          this, SLOT(slotProviderIDChanged(QString)));
+
   // Combination Method
   // ------------------
   if (settings.value("cmbMethod").toString() == "Single-Epoch") {
@@ -1130,4 +1133,41 @@ t_irc bncComb::mergeOrbitCorr(const cmbCorr* orbitCorr, cmbCorr* clkCorr) {
   clkCorr->dotRao    = orbitCorr->dotRao;
 
   return success;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncComb::slotProviderIDChanged(QString mountPoint) {
+  QMutexLocker locker(&_mutex);
+
+  // Find the AC Name
+  // ----------------
+  QString acName;
+  QListIterator<cmbAC*> icAC(_ACs);
+  while (icAC.hasNext()) {
+    cmbAC* AC = icAC.next();
+    if (AC->mountPoint == mountPoint) {
+      acName = AC->name;
+      break;
+    }
+  }
+  if (acName.isEmpty()) {
+    return;
+  }
+
+  // Remove all corrections of the corresponding AC
+  // ----------------------------------------------
+  QListIterator<bncTime> itTime(_buffer.keys());
+  while (itTime.hasNext()) {
+    bncTime epoTime = itTime.next();
+    QVector<cmbCorr*>& corrVec = _buffer[epoTime].corrs;
+
+    QVectorIterator<cmbCorr*> it(corrVec);
+    while (it.hasNext()) {
+      cmbCorr* corr = it.next();
+      if (acName == corr->acName) {
+
+      }
+    }
+  }
 }
