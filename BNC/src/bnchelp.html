@@ -1904,7 +1904,7 @@ BNC allows processing several orbit and clock correction streams in real-time to
 </p>
 <p>
 In the Kalman Filter approach satellite clocks estimated by individual Analyses Centers (ACs) are used as pseudo observations within the adjustment process. Each observation is modeled as a linear function (actually a simple sum) of three estimated parameters: AC specific offset, satellite specific offset common to all ACs, and the actual satellite clock correction which represents the result of the combination. These three parameter types differ in their statistical properties. The satellite clock offsets are assumed to be static parameters while AC specific and satellite specific offsets are stochastic parameters with appropriate white noise.
- The solution is regularized by a set of minimal constraints. After a change of one of the values 'SSR Provider ID', 'SSR Solution ID', or 'IOD SSR' the satellite clock offsets belonging to the corresponding analysis center are reset n adjustment.
+ The solution is regularized by a set of minimal constraints. After a change of one of the values 'SSR Provider ID', 'SSR Solution ID', or 'IOD SSR' the satellite clock offsets belonging to the corresponding analysis center are reset in adjustment.
 </p>
 <p>
 Removing the AC-dependent biases as well as possible is a major issue with clock combinations. Since they vary in time, it can be tricky to do this. Otherwise, there will be artificial jumps in the combined clock stream if one or more AC contributions drop out for certain epochs. Here the Kalman Filter approach is expected to do better than the Single-Epoch approach.
