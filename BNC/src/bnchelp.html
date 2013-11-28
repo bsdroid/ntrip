@@ -1904,7 +1904,7 @@ BNC allows processing several orbit and clock correction streams in real-time to
 </p>
 <p>
 In the Kalman Filter approach satellite clocks estimated by individual Analyses Centers (ACs) are used as pseudo observations within the adjustment process. Each observation is modeled as a linear function (actually a simple sum) of three estimated parameters: AC specific offset, satellite specific offset common to all ACs, and the actual satellite clock correction which represents the result of the combination. These three parameter types differ in their statistical properties. The satellite clock offsets are assumed to be static parameters while AC specific and satellite specific offsets are stochastic parameters with appropriate white noise.
- The solution is regularized by a set of minimal constraints.
+ The solution is regularized by a set of minimal constraints. After a change of one of the values 'SSR Provider ID', 'SSR Solution ID', or 'IOD SSR' the satellite clock offsets belonging to the corresponding analysis center are reset n adjustment.
 </p>
 <p>
 Removing the AC-dependent biases as well as possible is a major issue with clock combinations. Since they vary in time, it can be tricky to do this. Otherwise, there will be artificial jumps in the combined clock stream if one or more AC contributions drop out for certain epochs. Here the Kalman Filter approach is expected to do better than the Single-Epoch approach.
@@ -2884,7 +2884,7 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 
 <tr>
 <td>Dec 2013 &nbsp;</td><td>Version 2.10 &nbsp;</td>
-<td>[Add] Started work on new version in Aug 2013<br>[Bug] Clock RINEX und SP3 file generation on Windows systems<br>[Bug] Broadcast Ephemeris generation<br>[Add] Transformation ITRF2008 to NAD83 and DREF91<br>[Add] CodeBias added to RTNet stream format<br>[Bug] GPS L2 in 'Feed Engine' output<br>[Mod] Made C1 in BeiDou default observation type instead of C2<br>[Add] Feed engine output sorted per stream<br>[Add] Feed engine output file name change on-the-fly<br>[Add] 'Append files' option for RINEX observation files<br>[Mod] Broadcast Corrections ASCII file output for message 1058 and 1064 modified<br>[Bug] GPS L2 phase data in RINEX2<br>[Bug] GLONASS frequency numbers<br>[Add] RTCMv3 Galileo Broadcast Ephemeris message 1046<br>[Add] Reset ambiguities in PPP when orbit/clock correction IDs change<br>[Add] Version 2.10 published</td>
+<td>[Add] Started work on new version in Aug 2013<br>[Bug] Clock RINEX und SP3 file generation on Windows systems<br>[Bug] Broadcast Ephemeris generation<br>[Add] Transformation ITRF2008 to NAD83 and DREF91<br>[Add] CodeBias added to RTNet stream format<br>[Bug] GPS L2 in 'Feed Engine' output<br>[Mod] Made C1 in BeiDou default observation type instead of C2<br>[Add] Feed engine output sorted per stream<br>[Add] Feed engine output file name change on-the-fly<br>[Add] 'Append files' option for RINEX observation files<br>[Mod] Broadcast Corrections ASCII file output for message 1058 and 1064 modified<br>[Bug] GPS L2 phase data in RINEX2<br>[Bug] GLONASS frequency numbers<br>[Add] RTCMv3 Galileo Broadcast Ephemeris message 1046<br>[Add] Reset ambiguities in PPP when orbit/clock correction IDs change<br>[Add] Satellite clock offsets are reset in adjustment for combination when orbit/clock correction IDs change<br>[Add] Version 2.10 published</td>
 </tr>
 
 </table>
