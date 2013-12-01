@@ -447,50 +447,57 @@ void t_bncRtrover::slotNewObs(QByteArray staID, QList<t_obs> obsList) {
     if (dt < WAITTIME) {
       continue;
     }
+
+    processFrontEpoch();
+  }
+}
     
-    // Copy observations into rtrover_satObs structures
-    // ------------------------------------------------
-    t_epoData* frontEpoData = _epochs.front();
-    _epochs.erase(_epochs.begin());
-    
-    int numSatRover = frontEpoData->_obsRover.size();
-    rtrover_satObs satObsRover[numSatRover];
-    for (int ii = 0; ii < numSatRover; ii++) {
-      const t_obs& obsBnc = frontEpoData->_obsRover[ii];
-      rtrover_satObs& satObs = satObsRover[ii];
-      copyObs(obsBnc, satObs);
-    }
-    
-    int numSatBase = frontEpoData->_obsBase.size();
-    rtrover_satObs satObsBase[numSatBase];
-    for (int ii = 0; ii < numSatBase; ii++) {
-      const t_obs& obsBnc = frontEpoData->_obsBase[ii];
-      rtrover_satObs& satObs = satObsBase[ii];
-      copyObs(obsBnc, satObs);
-    }
-    
-    delete frontEpoData;
-    
-    // Process single epoch
-    // --------------------
-    rtrover_output output;
-    rtrover_processEpoch(numSatRover, satObsRover, numSatBase, satObsBase, &output);
-    
-    // Write output
-    // ---------------------
-    _outputFile.write(output._log);
-    _outputFile.flush();
-    
-    // Free memory
-    // -----------
-    rtrover_freeOutput(&output);
-    for (int ii = 0; ii < numSatRover; ii++) {
-      rtrover_satObs& satObs = satObsRover[ii];
-      delete [] satObs._obs;
-    }
-    for (int ii = 0; ii < numSatBase; ii++) {
-      rtrover_satObs& satObs = satObsBase[ii];
-      delete [] satObs._obs;
-    }
+//
+////////////////////////////////////////////////////////////////////////////
+void t_bncRtrover::processFrontEpoch() {
+
+  // Copy observations into rtrover_satObs structures
+  // ------------------------------------------------
+  t_epoData* frontEpoData = _epochs.front();
+  _epochs.erase(_epochs.begin());
+  
+  int numSatRover = frontEpoData->_obsRover.size();
+  rtrover_satObs satObsRover[numSatRover];
+  for (int ii = 0; ii < numSatRover; ii++) {
+    const t_obs& obsBnc = frontEpoData->_obsRover[ii];
+    rtrover_satObs& satObs = satObsRover[ii];
+    copyObs(obsBnc, satObs);
+  }
+  
+  int numSatBase = frontEpoData->_obsBase.size();
+  rtrover_satObs satObsBase[numSatBase];
+  for (int ii = 0; ii < numSatBase; ii++) {
+    const t_obs& obsBnc = frontEpoData->_obsBase[ii];
+    rtrover_satObs& satObs = satObsBase[ii];
+    copyObs(obsBnc, satObs);
+  }
+  
+  delete frontEpoData;
+  
+  // Process single epoch
+  // --------------------
+  rtrover_output output;
+  rtrover_processEpoch(numSatRover, satObsRover, numSatBase, satObsBase, &output);
+  
+  // Write output
+  // ---------------------
+  _outputFile.write(output._log);
+  _outputFile.flush();
+  
+  // Free memory
+  // -----------
+  rtrover_freeOutput(&output);
+  for (int ii = 0; ii < numSatRover; ii++) {
+    rtrover_satObs& satObs = satObsRover[ii];
+    delete [] satObs._obs;
+  }
+  for (int ii = 0; ii < numSatBase; ii++) {
+    rtrover_satObs& satObs = satObsBase[ii];
+    delete [] satObs._obs;
   }
 }

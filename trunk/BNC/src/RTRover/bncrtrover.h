@@ -28,6 +28,7 @@ class t_bncRtrover : public QThread {
     std::vector<t_obs> _obsRover; 
     std::vector<t_obs> _obsBase; 
   };
+  void processFrontEpoch();
   QMutex                  _mutex;
   QByteArray              _mode;
   QFile                   _outputFile;
