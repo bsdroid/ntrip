@@ -401,6 +401,8 @@ void t_bncRtrover::slotNewObs(QByteArray staID, QList<t_obs> obsList) {
     return;
   }
 
+  // Store Observations into epochs
+  // ------------------------------
   QListIterator<t_obs> it(obsList);
   while (it.hasNext()) {
 
@@ -436,19 +438,19 @@ void t_bncRtrover::slotNewObs(QByteArray staID, QList<t_obs> obsList) {
     else if (staID == _baseMount) {
       epoData->_obsBase.push_back(obsIn);
     }
+  }
     
-    // Wait for observations
-    // ---------------------
+  // Process Epochs
+  // --------------
+  while (_epochs.size() > 1) {
     const double WAITTIME = 5.0;
-    double dt = 0.0;
-    if (_epochs.size() > 1) {
-      dt = _epochs.back()->_time - _epochs.front()->_time;
+    double dt = _epochs.back()->_time - _epochs.front()->_time;
+    if (dt > WAITTIME) {
+      processFrontEpoch();
     }
-    if (dt < WAITTIME) {
-      continue;
+    else {
+      break;
     }
-
-    processFrontEpoch();
   }
 }
     
@@ -468,7 +470,7 @@ void t_bncRtrover::processFrontEpoch() {
     rtrover_satObs& satObs = satObsRover[ii];
     copyObs(obsBnc, satObs);
   }
-  
+
   int numSatBase = frontEpoData->_obsBase.size();
   rtrover_satObs satObsBase[numSatBase];
   for (int ii = 0; ii < numSatBase; ii++) {
