@@ -424,7 +424,7 @@ void t_bncRtrover::slotNewObs(QByteArray staID, QList<t_obs> obsList) {
         _epochs.push_back(epoData);
       }
       else {
-        return;
+        continue;
       } 
     }
     
@@ -445,7 +445,7 @@ void t_bncRtrover::slotNewObs(QByteArray staID, QList<t_obs> obsList) {
       dt = _epochs.back()->_time - _epochs.front()->_time;
     }
     if (dt < WAITTIME) {
-      return;
+      continue;
     }
     
     // Copy observations into rtrover_satObs structures
