@@ -141,7 +141,7 @@ solution using Google Maps or Open StreetMap as background. BNC reads a
 RINEX Observation file and a RINEX Navigation file to carry out a
 'Standard Point Positioning' solution in post-processing mode. Although 
 this is not a real-time application it requires the BNC host to be connected
-to the Internet. Specify a computation speed, then hit button 'Open Track Map'
+to the Internet. Specify a computation speed, then hit button 'Open Map'
 to open the track map, then hit 'Start' to visualize receiver positions
 on top of GM/OSM maps.
 
