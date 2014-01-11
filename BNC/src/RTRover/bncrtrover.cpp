@@ -328,7 +328,6 @@ void copyObs(const t_obs& obsBnc, rtrover_satObs& satObs) {
   satObs._satellite._number = obsBnc.satNum;
   satObs._time._mjd  = obsTime.mjd();
   satObs._time._sec  = obsTime.daysec();
-  satObs._slotNumber = obsBnc.slotNum;
 
   QMap<QByteArray, rtrover_obs> allObs;
   for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; ++iEntry) {
