@@ -30,13 +30,13 @@
 \newcommand{\dspfrac}{\displaystyle\frac}
 \newcommand{\nl}{\\[4mm]}
 
-\title{GNSS-Auswertung in Echtzeit}
+\title{Processing GNSS Data in Real-Time}
 
 \author{Leo\v{s} Mervart}
 
-\institute{TU Prag}
+\institute{TU Prague}
 
-\date{Frankfurt, Januar 2014}
+\date{Frankfurt, January 2014}
 
 % \AtBeginSection[]
 % {
@@ -57,37 +57,67 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-  \frametitle{Table of Contents}
-  \tableofcontents
+\frametitle{Medieval Times of GNSS (personal memories)}
+
+\begin{description}
+\item[1991] Prof. Gerhard Beutler became the director of the Astronomical Institute, University of
+  Berne. The so-called Bernese GPS Software started to be used for (post-processing) analyzes of
+  GNSS data.
+\item[1992] LM started his PhD study at AIUB.
+\item[1992] Center for Orbit Determination in Europe (consortium of AIUB, Swisstopo, BKG, IGN, and
+  IAPG/TUM) established. Roughly at that time LM met Dr. Georg Weber for the first time.
+\item[1993] International GPS Service formally recognized by the IAG.
+\item[1994] IGS began providing GPS orbits and other products routinely (January, 1).
+\item[1995] GPS declared fully operational.
+\end{description}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{PPP NB}
-\subsection{Principles}
 
 \begin{frame}
-\frametitle{Principles of PPP NB (Non-Bias) Service}
-\framesubtitle{Observation Equations}
+\frametitle{CODE-Related Works in 1990's}
 
-The PPP~NB is based on the processing of the ionosphere-free linear combination of phase
-observations
-\be
-L^{ij}_3 = \varrho^{ij} - c\delta^{ij} + T^{ij} + \bar{N}^{ij}_3 ~,
-\ee 
-where the ambiguity term is given by
-\be
-\bar{N}^{ij}_3 =  N^{ij}_3 - l^{ij}_3 
-              = \frac{c\;f_2}{f^2_1-f^2_2}\;(n^{ij}_1-n^{ij}_2) + \lambda_3\;n^{ij}_1 - l^{ij}_3 
-\ee
-and the ionosphere-free linear combination of code observations
-\be
-P^{ij}_3 = \varrho^{ij} - c\delta^{ij} + T^{ij} + p^{ij}_3 ~,
-\ee
-where the code bias $p^{ij}_3$ is the linear combination of biases
-$p^{ij}_1,p^{ij}_2$
+\begin{itemize}
+\item The Bernese GPS Software was the primary tool for CODE analyzes (Fortran~77).
+\item IGS reference network was sparse.
+\item Real-time data transmission limited (Internet was still young, TCP/IP widely accepted 1989).
+\item CPU power of then computers was limited (VAX/VMS OS used at AIUB).
+\end{itemize}
+
+In 1990's high precision GPS analyzes were almost exclusively performed in post-processing mode.
+The typical precise application of GPS at that time was the processing of a network of static
+GPS-only receivers for the estimation of station coordinates.
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Tempora mutantur (and maybe ``nos mutamur in illis'')}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{}
+
+\end{frame}
 
 \end{document}
