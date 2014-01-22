@@ -139,8 +139,8 @@ In GNSS-world it means:
 \begin{frame}
 \frametitle{Nihil novi sub sole}
 
-Each GNSS-application is based on processing code and/or phase observations that may be expressed
-as 
+Each GNSS-application is based on processing code and/or phase observations
+\vspace*{-3mm}
   \begin{eqnarray*}
   P^i & = & \varrho^i + c\;\delta - c\;\delta^i + T^i + I^i + b_P              \\
   L^i & = & \varrho^i + c\;\delta - c\;\delta^i + T^i - I^i + b^i
@@ -157,20 +157,11 @@ as
   $b^i$                \> is the phase bias (including initial
                           phase ambiguity).
   \end{tabbing}
-
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-
 Observation equations reveal what information can be gained from processing GNSS data:
 \begin{itemize}
 \item geometry (receiver positions, satellite orbits), and
 \item state of atmosphere (both dispersive and non-dispersive part)
 \end{itemize}
-
 The observation equations also show that, in principle, GNSS is an
 \textcolor{blue!90}{interferometric} technique -- precise results are actually always relative.
 
@@ -180,6 +171,20 @@ The observation equations also show that, in principle, GNSS is an
 
 \begin{frame}
 \frametitle{Challenges of Real-Time GNSS Application}
+\begin{itemize}
+\item Reliable data links have to been established (between rover station and a reference station,
+  between receivers and processing center, or between processing center and DGPS correction
+  provider).
+\item Suitable algorithms for the parameter adjustment have to be used (filter techniques instead
+  of classical least-squares).
+\item Software tools for handling real-time data (Fortran is not the best language for that).
+\item Fast CPUs.
+\end{itemize}
+
+As said above -- GNSS is an interferometric technique. Processing of a single station cannot give
+precise results. However, data of reference station(s) can be replaced by the so-called corrections
+(DGPS corrections, precise-point positioning etc.) These techniques are particularly suited for
+real-time applications because the amount of data being transferred can be considerably reduced.
 
 \end{frame}
 
