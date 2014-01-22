@@ -421,7 +421,6 @@ $p^{ij}_1,p^{ij}_2$
 
 \begin{frame}
 \frametitle{Principles of PPP Service}
-\framesubtitle{Code Biases}
 
 Apart from the orbit corrections (will be discussed later) the server has to provide the
 value $c\delta^{ij}$. That is sufficient for a client processing phase observations only. 
@@ -446,25 +445,24 @@ addition to phase observations) is minor only.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Principles of PPP Service}
-\framesubtitle{Handling Code Biases}
+\frametitle{PPP of Moving Receiver by BNC}
+  \begin{center}
+    \includegraphics[width=0.6\textwidth,angle=0]{screenshot32.png}
+  \end{center}
+\end{frame}
 
-In order to avoid the necessity to disseminate the code biases $p^{ij}_3$ and still guarantee that
-the client may decently use the code observations we adopted the following approach:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Denoting the code bias estimated by a server at epoch $t_0$ by $\bar{p}^{ij}_3 = p^{ij}_3(t_0)$ we
-modify the satellite clock corrections as follows:
-\be
-c\bar\delta^{ij} = c\delta^{ij} - \bar{p}^{ij}_3
-\ee
-and disseminate $c\bar\delta^{ij}$ instead of $c\delta^{ij}$. This modification has no effect on
-the processing of phase observations at the client-side (the constant difference is absorb by
-estimated ambiguities). For the processing of code observations it has the benefit that the client
-does not see the code bias $p^{ij}_3$ but only 
-\bdm
-\bar{p}^{ij}_3-p^{ij}_3
-\edm
-and we try to keep the difference $\bar{p}^{ij}_3-p^{ij}_3$ lower than a selected threshold.
+\begin{frame}
+\frametitle{PPP - Server-Side}
+
+\includegraphics[width=0.8\textwidth,angle=0]{igs_map.png}
+
+\vspace*{-2cm}
+
+\hspace*{2cm}
+\includegraphics[width=0.8\textwidth,angle=0]{bnc_rtnet_flow.png}
+
 
 \end{frame}
 
