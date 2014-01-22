@@ -508,6 +508,38 @@ addition to phase observations) is minor only.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
+  \frametitle{Combination using Kalman filtering}
+  The combination is performed in two steps
+  \begin{itemize}
+  \item[1.] The satellite clock corrections that refer to different broadcast
+    messages (different IODs) are modified in such a way that they all refer
+    to common broadcast clock value (common IOD is that of the selected
+    ``master'' analysis center).
+  \item[2.] The corrections are used as pseudo-observations for Kalman filter
+    using the following model (observation equation):
+    \begin{displaymath}
+    c_a^s = c^s + o_a + o_a^s
+    \end{displaymath}
+    where
+    \begin{tabbing}
+    $c_a^s$ ~~ \= is the clock correction for satellite s estimated by \\
+               \> the analysis center a, \\
+    $c^s$      \> is the resulting (combined) clock correction for 
+                  satellite s, \\
+    $o_a$      \> is the AC-specific offset 
+                  (common for all satellites), and \\
+    $o_a^s$      \> is the satellite and AC-specific offset.
+    \end{tabbing}
+  \end{itemize}
+  The three types of unknown parameters $c^s$, $o_a$, $o_a^s$ differ in their
+  stochastic properties: the parameters $c^s$ and $o_a$ are considered to be
+  epoch-specific while the satellite and AC-specific offset $o_a^s$ is assumed
+  to be a static parameter.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
 \frametitle{PPP -- Server-Side}
   \begin{center}
     \includegraphics[width=0.9\textwidth,angle=0]{combination_1.png}
@@ -561,170 +593,285 @@ addition to phase observations) is minor only.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{PPP AR}
-\subsection{Principles}
-
 \begin{frame}
-\frametitle{Principles of PPP with Ambiguity Resolution}
-\framesubtitle{Observation Equations}
-
-The PPPAR is in principle based on the processing the following two types of single-difference
-observations: \\
-The ionosphere-free linear combination
-\be\label{obs_IF}
-L^{ij}_3 = \varrho^{ij} - c\delta^{ij} + T^{ij} + \bar{N}^{ij}_3 ~,
-\ee 
-where the ambiguity term is given by
-\be\label{amb_N3}
-\bar{N}^{ij}_3 =  N^{ij}_3 - l^{ij}_3 
-              = \frac{c\;f_2}{f^2_1-f^2_2}\;(n^{ij}_1-n^{ij}_2) + \lambda_3\;n^{ij}_1 - l^{ij}_3 
-\ee
-and the Melbourne-W\"{u}bbena linear combination
-\be\label{obs_MW}
-L^{ij}_w = \lambda_5\;n^{ij}_5 - l^{ij}_w
-\ee
-the uncalibrated bias $l^{ij}_3$ is the corresponding linear combination of biases
-$l^{ij}_1,l^{ij}_2$, the uncalibrated bias $l^{ij}_w$ is the corresponding linear combination of
-biases $p^{ij}_1,p^{ij}_2,l^{ij}_1,l^{ij}_2$.
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Parameters provided by Server}
-
-\begin{frame}
-\frametitle{Principles of PPP with Ambiguity Resolution}
-\framesubtitle{Parameters provided by Server}
-In addition to orbit corrections, the server(s) has(have) to provide the values
-\bdm
-c\delta^{ij} ~,~  l^{ij}_w ~,~ l^{ij}_3 ~~~ \mb{or} ~~~~ (c\delta^{ij} + l^{ij}_3) ~,~ l^{ij}_w
-\edm
-Corrections $l^{ij}_w,l^{ij}_3$ depend on the set of fixed single-difference ambiguities on the
-server-side. This set of fixed ambiguities is not unique - it depends on the constraints applied on
-the ambiguities. 
-
-There is a difference between correction $l^{ij}_w$ and the narrow-lane correction $l^{ij}_3$. The
-wide-lane correction $l^{ij}_w$ depends {\em only} on the ambiguities estimated at the
-server-side. The narrow-lane correction $l^{ij}_3$ depends on the ambiguities and {\em also} on the
-satellite clock corrections $\delta^{ij}$ estimated at the server-side.
-
+  \frametitle{Principle of our PPP-RTK Algorithm}
+  For a dual-band GPS receiver, the observation equations may read as
+  \begin{eqnarray*}
+  P^i & = & \varrho^i + c\;\delta - c\;\delta^i + T^i + b_P              \\
+  L^i & = & \varrho^i + c\;\delta - c\;\delta^i + T^i + b^i
+  \end{eqnarray*}
+  where
+  \begin{tabbing}
+  $P^i$, $L^i$ ~~~~~~~ \= are the ionosphere-free code and phase measurements, \\ 
+  $\varrho^i$          \> is the travel distance between the satellite 
+                          and the receiver,                               \\
+  $\delta$, $\delta^i$ \> are the receiver and satellite clock errors,    \\
+  $T^i$                \> is the tropospheric delay,                      \\
+  $b_P$                \> is the code bias, and                           \\
+  $b^i$                \> is the phase bias (including initial
+                          phase ambiguity).
+  \end{tabbing}
+  The single-difference bias $b^{ij} = b^i - b^j$ is given by
+  \begin{displaymath}
+  b^{ij} = \displaystyle\frac{\lambda_5-\lambda_3}{2}\;(n_5^{ij} + b_5^{ij})
+              + \lambda_3\;(n_1^{ij} + b_1^{ij}) 
+  \end{displaymath}
+   where
+  \begin{tabbing}
+  $n_1^{ij}$, $n_5^{ij}$ ~~~~ \= are the narrow-lane and wide-lane integer ambiguities \\
+  $b_1^{ij}$                 \> is the narrow-lane (receiver-independent) SD bias \\
+  $b_5^{ij}$                 \> is the wide-lane (receiver-independent) SD bias
+  \end{tabbing}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Principles of PPP with Ambiguity Resolution}
-\framesubtitle{How many servers?}
-All three corrections
-\bdm
-c\delta^{ij} ~~~  l^{ij}_w ~~~ l^{ij}_3
-\edm
-may be estimated together by a single server run (in which case the $c\delta^{ij}$ and $l^{ij}_3$
-are indistinguishable and are combined into $c\delta^{ij}+l^{ij}_3$) Or, each of them may be
-estimated by a separate server run.
-
-\vspace*{2mm}
-Current approach:
-\begin{itemize}
-\item PPPNB server: estimates $c\delta^{ij}$
-\item PPPAR server: uses $c\delta^{ij}$ from PPPNB server and estimates $l^{ij}_w,l^{ij}_3$
-\end{itemize}
-
-\vspace*{2mm}
-Advantages: PPPAR corrections are compatible with PPPNB corrections (the client may decide between
-PPP and PPPAR).
-
-\vspace*{2mm}
-Disadvantages: additional delay
-
-\vspace*{2mm}
-An alternative approach to consider: separate server run for $l^{ij}_w$.
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{Principles of PPP with Ambiguity Resolution}
-\framesubtitle{How to disseminate the corrections?}
-
-\begin{enumerate}
-\item The corrections are valid (accurate) on the single- (between satellites) difference
-  level but it is more practical to send the zero-difference (satellite-specific) corrections.
-\item The corrections are specific for the observation types used for their estimation - e.g. if
-  the C/A code on the first carrier and the P-code on the second carrier have been used at the
-  server side, the client can use the $l^{ij}_w$ correction only if it uses the same two types of
-  code observations.
-\end{enumerate}
-
-The corrections $l^{ij}_w,l^{ij}_3$ are actually the combinations of the phase (and in case of
-$l^{ij}_w$ also code) biases:
-\begin{eqnarray*}
-l^{ij}_w & = & \frac{1}{f_1-f_2} \bigl( f_1~l^{ij}_1 - f_2~l^{ij}_2 \bigr) -
-  \frac{1}{f_1+f_2} \bigl( f_1~p^{ij}_1 + f_2~p^{ij}_2 \bigr) ~
-\\
-l^{ij}_3 & = & \frac{1}{f^2_1-f^2_2} \bigl( f^2_1~l^{ij}_1 - f^2_2~l^{ij}_2 \bigr)
-\end{eqnarray*}
-RTCM suggests to send $p^{ij}_1,p^{ij}_2,l^{ij}_1,l^{ij}_2$ directly ...
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{Principles of PPP with Ambiguity Resolution}
-\framesubtitle{How to disseminate the corrections (continuation)?}
-
-In principle there are altogether 5 values which can be sent by server(s):
-\bdm
-c\delta^{ij},p^{ij}_1,p^{ij}_2,l^{ij}_1,l^{ij}_2
-\edm
-PPPNB server estimates the $c\delta^{ij}$ and the ionosphere-free
-linear combination of the code biases
-\bdm
-p^{ij}_3 =  \frac{1}{f^2_1-f^2_2} \bigl( f^2_1~p^{ij}_1 - f^2_2~p^{ij}_2 \bigr)
-\edm
-PPPAR server estimates the $l^{ij}_w$ and $l^{ij}_3$. Assuming that we know the differential code
-bias
-\bdm
-d^{ij}_{p1p2} = p^{ij}_1 - p^{ij}_2
-\edm
-The four values
-\bdm
-p^{ij}_3 ~~~ l^{ij}_w ~~~~ l^{ij}_3 ~~~~ d^{ij}_{p1p2}
-\edm
-can be converted into four biases
-$p^{ij}_1,p^{ij}_2,l^{ij}_1,l^{ij}_2$. 
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-  \frametitle{Precise Point Positioning with PPP (cont.)}
-  BNC provides a good framework for the PPP client (observations, orbits, and
-  corrections stand for disposal). 
-
-  Main reasons for the PPP module in BNC have been:
+  \frametitle{Principle of our PPP-RTK Algorithm (cont.)}
+  Receiver-independent single-difference biases $b_1^{ij}$ and $b_5^{ij}$ have 
+  to be estimated on the server-side.
   \begin{itemize}
-  \item monitoring the quality of incoming data streams (primarily the PPP
-    corrections) 
-  \item providing a simple easy-to-use tool for the basic PPP positioning 
+  \item Narrow-lane bias $b_1^{ij}$ may be combined with satellite clock
+    corrections $\Longrightarrow$ \textbf{modified satellite clock corrections.}
+  \item Wide-lane bias have to be transmitted from the server to the client
+    (this bias is stable in time and can thus be transmitted in lower rate).
   \end{itemize}
 
-  The PPP facility in BNC is provided in the hope that it will be useful.
+  On the client-side the biases $b_1^{ij}$ and $b_5^{ij}$ are used as known
+  quantities. It allows fixing the integer ambiguities $n_5^{ij}$ and
+  $n_1^{ij}$. The technique is called Precise Point Positioning with Ambiguity
+  Resolution (PPP~AR) or PPP~RTK, or zero-difference ambiguity
+  fixing (the latter term not fully correct because the ambiguities are
+  actually being fixed on single-difference level).
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Performance}
+  \begin{center}
+    \includegraphics[width=0.75\textwidth]{kir0.png}
+  \end{center}
+  \vspace*{-5mm}
+  \begin{block}{Standard deviations (N,E,U)}
+  \vspace*{3mm}
+  \begin{small}
+  \hspace*{2cm}
+  \begin{tabular}{l|ccc|ccc}
+  \mbox{} & \multicolumn{3}{c|}{10-60 min} & \multicolumn{3}{c}{30-60 min} \\
+  float & 0.034 & 0.026 & 0.026         & 0.010 & 0.009 & 0.011  \\
+  fix   & 0.007 & 0.003 & 0.016         & 0.007 & 0.003 & 0.012
+  \end{tabular}
+  \end{small}
+  \end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Challenges}
+  PPP~RTK works and provides mm-accuracy results, what is this symposium
+  about?
+
+  \pause
+  There are still both principal and technical problems and challenges:
   \begin{itemize}
-  \item The mathematical model of observations and the adjustment algorithm are
-    implemented in such a way that they are (according to our best knowledge)
-    correct without any shortcomings, however,
-  \item we have preferred simplicity to transcendence, and
-  \item the list of options the BNC users can select is limited.
-  \item[$\Rightarrow$] Commercial PPP clients may outperform BNC in some
-    aspects.
+  \item Principal problems:
+    \begin{itemize}
+    \item Convergence time: PPP~RTK in the form outlined above provides
+      accuracy similar (or even slightly better) to RTK but the convergence
+      time is longer.
+    \item There is a degradation in accuracy with the age of corrections.
+    \item Glonass ambiguity resolution: is it possible to resolve Glonass
+      ambiguities? (yes, it is possible but it implicates introducing new
+      parameters - does it really improve the results?)
+    \item ...
+    \end{itemize}
+  \item Technical problems:
+    \begin{itemize}
+    \item Availability of data in real time (reference network, high-precision
+          satellite orbits).
+    \item Very high CPU requirements on the server-side.
+    \item Solution robustness on the server-side 
+          (problems with reliable DD ambiguity resolution). 
+    \item ...
+    \end{itemize}
   \end{itemize}
-  We believe in a possible good coexistence of the commercial software and
-  open source software.
-\end {frame}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Challenges (cont.)}
+  \begin{block}{Longer convergence time}
+  In case of a standard RTK the very short convergence time is being achieved
+  thanks to the combined DD ambiguity resolution on both $L_1$ and $L_2$ when
+  the differential ionospheric bias can either be neglected (short baselines)
+  or its influence is mitigated (stochastic ionosphere estimation with
+  constraints).
+
+  On the contrary, the outlined PPP~RTK algorithm is in principle based on
+  processing single (ionosphere-free) linear combination and resolving only
+  one set of (narrow-lane) initial phase ambiguities.
+  \end{block}
+  \begin{block}{Possible solutions}
+  \begin{itemize}
+  \item third carrier
+  \item multiple GNSS (Glonass ambiguity resolution?)
+  \item processing original carriers (instead of ionosphere-free linear
+    combination) and modeling the ionosphere?
+  \item ?
+  \end{itemize}
+  \end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Challenges (cont.)}
+  \begin{block}{Age of corrections 0 s}
+  \begin{center}
+    \includegraphics[width=0.6\textwidth]{age1.png}
+  \end{center}
+  \end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Challenges (cont.)}
+  \begin{block}{Age of corrections up to 35 s}
+  \begin{center}
+    \includegraphics[width=0.6\textwidth]{age2.png}
+  \end{center}
+  \end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Real-Time Data Availability}
+  \framesubtitle{IGS network: very good global coverage:}
+  \vspace*{-5.5cm}
+  \begin{center}
+    \includegraphics[width=0.9\textwidth]{map.pdf}
+  \end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Real-Time Data Availability (cont.)}
+  \begin{tabular}{cc}
+  \includegraphics[width=0.4\textwidth]{100A_lat.png} &
+  \includegraphics[width=0.4\textwidth]{101A_lat.png} \\
+  \includegraphics[width=0.4\textwidth]{102A_lat.png} &
+  \includegraphics[width=0.4\textwidth]{104A_lat.png}
+  \end{tabular}
+
+  Gaps in reference network data may degrade the PPP~RTK server performance
+  considerably!
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Technical issues}
+  \begin{block}{CPU-requirements on the server-side}
+  Processing a global reference network is a very CPU-intensive
+  task. Numerically stable forms of the Kalman filter (square-root, UDU
+  factorization etc.) require very fast hardware. 
+
+  Possible solutions:
+  \begin{itemize}
+  \item Processing optimization (estimating various kinds of parameters in 
+        different rates)
+  \item Parallel processing 
+  \item Advanced hardware (GPS Solutions uses GPU-accelerated library)
+  \end{itemize}
+  \end{block}
+  \begin{block}{Reliable DD ambiguity resolution on the server-side}
+  Reliable double-difference ambiguity resolution on the server-side remains
+  the crucial issue of the PPP~RTK technique.
+  \end{block}
+  \begin{block}{Dissemination of PPP~RTK corrections}
+  \begin{itemize}
+  \item data links
+  \item formats (standardization?)
+  \item optimization of correction rates (bandwidth)
+  \end{itemize}
+  \end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Satellite orbits}
+
+  Predicted part of the IGS ultra-rapid orbits (available in real-time) is
+  sometimes not sufficient for the processing of a global reference network
+  (with narrow-lane ambiguity resolution). We have been forced to implement
+  the real-time orbit determination capability in our main processing tool
+  RTNet (Real-Time Network software).
+  \begin{center}
+    \includegraphics[width=0.75\textwidth]{rtnet_pod.png}
+  \end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Regional versus global PPP~RTK services} 
+  Currently we are routinely running both regional and global PPP~RTK service
+  demonstrators in real-time (some of the results will be shown below).
+  \begin{itemize}
+  \item in principal there is no difference between a global and regional
+    service as far as the data processing, algorithms etc. is concerned
+  \item global PPP~RTK service has at least the following two advantages
+     \begin{itemize}
+     \item[1.] a single correction stream can serve all users
+     \item[2.] all satellites are tracked permanently (helps ambiguity 
+               resolution)
+     \end{itemize}
+  \item global PPP~RTK service is much more challenging (data availability,
+    CPU-requirements on the server-side, DD ambiguity resolution on long
+    baselines, the highest requirements for the accuracy of the satellite
+    orbits)
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Services monitoring} 
+  Reliable, production-quality PPP~RTK service requires sophisticated
+  monitoring tools.
+  \begin{tabular}{cc}
+  \includegraphics[width=0.6\textwidth]{monitor1.png} & \\[-1.5cm]
+  & \hspace*{-3cm} \includegraphics[width=0.6\textwidth]{monitor2.png}
+  \end{tabular}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Results}
+  \begin{center}
+    \includegraphics[width=0.9\textwidth]{tsunami.pdf}
+  \end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Results (cont.)}
+  \begin{center}
+    \includegraphics[width=0.9\textwidth]{nrcan.png}
+  \end{center}
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
