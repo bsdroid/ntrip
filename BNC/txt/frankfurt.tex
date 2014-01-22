@@ -6,6 +6,7 @@
 
 \usepackage{longtable}
 \usepackage{tabu}
+\usepackage{subeqnar}
 
 \newcommand{\ul}{\underline}
 \newcommand{\be}{\begin{equation}}
@@ -14,8 +15,8 @@
 \newcommand{\edm}{\end{displaymath}}
 \newcommand{\bea}{\begin{eqnarray}}
 \newcommand{\eea}{\end{eqnarray}}
-\newcommand{\bsea}{\begin{subeqnarray}}
-\newcommand{\esea}{\end{subeqnarray}}
+\newcommand{\bsea}{\begin{subeqnarray*}}
+\newcommand{\esea}{\end{subeqnarray*}}
 \newcommand{\mb}[1]{\mbox{#1}}
 \newcommand{\mc}[3]{\multicolumn{#1}{#2}{#3}}
 \newcommand{\bm}[1]{\mbox{\bf #1}}
@@ -186,6 +187,113 @@ precise results. However, data of reference station(s) can be replaced by the so
 (DGPS corrections, precise-point positioning etc.) These techniques are particularly suited for
 real-time applications because the amount of data being transferred can be considerably reduced.
 
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Kalman Filter}
+
+\begin{small}
+
+State vectors $\bmm{x}$ at two subsequent epochs are
+related to each other by the following linear equation:
+\bdm
+\bmm{x}(n) = \bmm{\Phi}\; \bmm{x}(n-1) + \bmm{\Gamma}\;\bmm{w}(n)~,
+\edm
+where $\Phi$ and $\Gamma$ are known matrices and {\em white noise} $\bmm{w}(n)$ is a random
+vector with the following statistical properties:
+\bsea
+E(\bmm{w})                  & = & \bmm{0}                           \\
+E(\bmm{w}(n)\;\bmm{w}^T(m)) & = & \bmm{0} ~~ \mbox{for $m \neq n$}  \\
+E(\bmm{w}(n)\;\bmm{w^T}(n)) & = & \bm{Q}_s(n) ~.
+\esea
+
+Observations $\bmm{l}(n)$ and the state vector $\bmm{x}(n)$ are related to
+each other by the linearized {\em observation equations} of form
+\bdm \label{eq:KF:obseqn}
+ \bmm{l}(n) = \bm{A}\;\bmm{x}(n) + \bmm{v}(n) ~ ,
+\edm
+where $\bm{A}$ is a known matrix (the so-called {\em first-design matrix}) and
+$\bmm{v}(n)$ is a vector of random errors with the following properties:
+\bsea\label{eq:KF:resid}
+E(\bmm{v})                  & = & \bmm{0} \\
+E(\bmm{v}(n)\;\bmm{v}^T(m)) & = & \bmm{0} ~~ \mbox{for $m \neq n$}  \\
+E(\bmm{v}(n)\;\bmm{v^T}(n)) & = & \bm{Q}_l(n) ~.
+\esea
+
+\end{small}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Classical KF Form}
+
+Minimum Mean Square Error (MMSE) estimate $\widehat{\bmm{x}}(n)$ of vector
+$\bmm{x}(n)$ meets the condition
+$E\left((\bmm{x} - \widehat{\bmm{x}})(\bmm{x} - \widehat{\bmm{x}})^T\right) =
+\mbox{min}$ and is given by
+\begin{subeqnarray}\label{eq:KF:prediction}
+ \widehat{\bmm{x}}^-(n) & = & \bmm{\Phi} \widehat{\bmm{x}}(n-1)         \\
+ \bm{Q}^-(n)            & = & \bmm{\Phi} \bm{Q}(n-1) \bmm{\Phi}^T + 
+                          \bmm{\Gamma} \bm{Q}_s(n) \bmm{\Gamma}^T   
+\end{subeqnarray}
+\begin{subeqnarray}\label{eq:KF:update}
+ \widehat{\bmm{x}}(n)   & = & \widehat{\bmm{x}}^-(n) + 
+                              \bm{K}\left(\bmm{l} - 
+                              \bm{A}\widehat{\bmm{x}}(n-1)\right) \\
+ \bm{Q}(n)              & = & \bm{Q}^-(n) - \bm{K}\bm{A}\bm{Q}^-(n) ~,
+\end{subeqnarray}
+where
+\bdm \label{eq:KF:KandH}
+ \bm{K} = \bm{Q}^-(n)\bm{A}^T\bm{H}^{-1}, \quad
+ \bm{H} = \bm{Q}_l(n) + \bm{A}\bm{Q}^-(n)\bm{A}^T ~.
+\edm
+Equations (\ref{eq:KF:prediction}) are called {\em prediction}, 
+equations (\ref{eq:KF:update}) are called {\em update} step of Kalman filter.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Square-Root Filter} \label{sec:SRF}
+\begin{small}
+Algorithms based on equations (\ref{eq:KF:prediction}) and
+(\ref{eq:KF:update}) may suffer from numerical instabilities that are primarily
+caused by the subtraction in (\ref{eq:KF:update}b). This deficiency may be
+overcome by the so-called {\em square-root} formulation of the Kalman filter
+that is based on the so-called {\em QR-Decomposition}. Assuming the 
+Cholesky decompositions
+\be \label{eq:SRF:defsym}
+  \bm{Q}(n)   = \bm{S}^{T} \bm{S}  , \quad
+  \bm{Q}_l(n) = \bm{S}^T_l \bm{S}_l,  \quad
+  \bm{Q}^-(n) = \bm{S}^{-T}\bm{S}^- 
+\ee
+we can create the following block matrix and its QR-Decomposition:
+\be \label{eq:SRF:main}
+ \left(\begin{array}{ll} 
+   \bm{S}_l         & \bm{0} \\
+  \bm{S}^-\bm{A}^T  & \bm{S}^-
+ \end{array}\right)
+=
+ N \left(\begin{array}{cc} 
+    \bm{X}     & \bm{Y} \\
+    \bm{0}     & \bm{Z}
+   \end{array}\right) ~ .
+\ee
+It can be easily verified that 
+\bsea\label{eq:SRF:HK}
+ \bm{H}    & = & \bm{X}^T\bm{X}   \\
+ \bm{K}^T  & = & \bm{X}^{-1}\bm{Y}\\
+ \bm{S}    & = & \bm{Z}           \\
+ \bm{Q}(n) & = & \bm{Z}^T\bm{Z} ~ .
+\esea
+State vector $\widehat{\bmm{x}}(n)$ is computed in a usual way using the
+equation (\ref{eq:KF:update}a).
+\end{small}
 \end{frame}
 
 \end{document}
