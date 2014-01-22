@@ -1,0 +1,93 @@
+
+\documentclass[10pt]{beamer}
+\usetheme{umbc2}
+\useinnertheme{umbcboxes}
+\setbeamercolor{umbcboxes}{bg=violet!12,fg=black}
+
+\usepackage{longtable}
+\usepackage{tabu}
+
+\newcommand{\ul}{\underline}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\bdm}{\begin{displaymath}}
+\newcommand{\edm}{\end{displaymath}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\bsea}{\begin{subeqnarray}}
+\newcommand{\esea}{\end{subeqnarray}}
+\newcommand{\mb}[1]{\mbox{#1}}
+\newcommand{\mc}[3]{\multicolumn{#1}{#2}{#3}}
+\newcommand{\bm}[1]{\mbox{\bf #1}}
+\newcommand{\bmm}[1]{\mbox{\boldmath$#1$\unboldmath}}
+\newcommand{\bmell}{\bmm\ell}
+\newcommand{\hateps}{\widehat{\bmm\varepsilon}}
+\newcommand{\graybox}[1]{\psboxit{box .9 setgray fill}{\fbox{#1}}}
+\newcommand{\mdeg}[1]{\mbox{$#1^{\mbox{\scriptsize o}}$}}
+\newcommand{\dd}{\mbox{\footnotesize{$\nabla \! \Delta$}}}
+\newcommand{\p}{\partial\,}
+\renewcommand{\d}{\mbox{d}}
+\newcommand{\dspfrac}{\displaystyle\frac}
+\newcommand{\nl}{\\[4mm]}
+
+\title{GNSS-Auswertung in Echtzeit}
+
+\author{Leo\v{s} Mervart}
+
+\institute{TU Prag}
+
+\date{Frankfurt, Januar 2014}
+
+% \AtBeginSection[]
+% {
+%   \begin{frame}
+%     \frametitle{Table of Contents}
+%     \tableofcontents[currentsection]
+%   \end{frame}
+% }
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Table of Contents}
+  \tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{PPP NB}
+\subsection{Principles}
+
+\begin{frame}
+\frametitle{Principles of PPP NB (Non-Bias) Service}
+\framesubtitle{Observation Equations}
+
+The PPP~NB is based on the processing of the ionosphere-free linear combination of phase
+observations
+\be
+L^{ij}_3 = \varrho^{ij} - c\delta^{ij} + T^{ij} + \bar{N}^{ij}_3 ~,
+\ee 
+where the ambiguity term is given by
+\be
+\bar{N}^{ij}_3 =  N^{ij}_3 - l^{ij}_3 
+              = \frac{c\;f_2}{f^2_1-f^2_2}\;(n^{ij}_1-n^{ij}_2) + \lambda_3\;n^{ij}_1 - l^{ij}_3 
+\ee
+and the ionosphere-free linear combination of code observations
+\be
+P^{ij}_3 = \varrho^{ij} - c\delta^{ij} + T^{ij} + p^{ij}_3 ~,
+\ee
+where the code bias $p^{ij}_3$ is the linear combination of biases
+$p^{ij}_1,p^{ij}_2$
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
