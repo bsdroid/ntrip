@@ -192,7 +192,7 @@ real-time applications because the amount of data being transferred can be consi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Kalman Filter}
+\frametitle{Algorithms -- Kalman Filter}
 
 \begin{small}
 
@@ -294,6 +294,44 @@ It can be easily verified that
 State vector $\widehat{\bmm{x}}(n)$ is computed in a usual way using the
 equation (\ref{eq:KF:update}a).
 \end{small}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Data Transfer -- NTRIP}
+
+In order to be useful data have to be provided in a well-defined \textcolor{blue}{format}.
+RTCM (Radio Technical Commission for Maritime Services) messages are widely used for GNSS data in
+real-time. 
+
+\vspace*{5mm}
+
+In addition to a format the so-called \textcolor{blue}{protocol} has to be defined. Using a given
+protocol the data user communicates with the data provider.
+
+For GNSS data, the so-called \textcolor{blue}{NTRIP} streaming protocol is used.
+\begin{itemize}
+\item NTRIP stands for Networked Transport of RTCM via Internet Protocol.
+\item NTRIP is in principle a layer on top of TCP/IP.
+\item NTRIP has been developed at BKG (together with TU Dortmund).
+\item NTRIP is capable of handling hundreds of data streams simultaneously delivering the data
+to thousands of users.
+\item NTRIP is world-wide accepted.
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{NTRIP}
+
+Efficiency of data transfer using NTRIP is achieved thanks to the GNSS Internet Radio /
+IP-Streaming architecture:
+
+\includegraphics[width=0.7\textwidth,angle=0]{ntrip.png}
+
 \end{frame}
 
 \end{document}
