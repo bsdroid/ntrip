@@ -109,21 +109,71 @@ GPS-only receivers for the estimation of station coordinates.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{}
+\frametitle{O tempora! O mores!}
+
+\begin{itemize}
+\item people want more and more \ldots
+\item everybody wants everything immediately \ldots
+\item \hspace*{2cm} and, of course, free of charge \ldots
+\end{itemize}
+\vspace*{5mm}
+In GNSS-world it means:
+\begin{itemize}
+\item There are many new kinds of GNSS applications - positioning is becoming just one of many
+  purposes of GNSS usage.
+\item Many results of GNSS processing are required in real-time (or, at least, with very small
+  delay).
+\item GPS is not the only positioning system. Other GNSS are being established (for practical but
+  also for political reasons).
+\item People are used that many GNSS services are available free of charge (but the development and
+  maintenance has to be funded). 
+\end{itemize}
+
+\begin{block}{But \ldots}
+\end{block}
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{}
+\frametitle{Nihil novi sub sole}
+
+Each GNSS-application is based on processing code and/or phase observations that may be expressed
+as 
+  \begin{eqnarray*}
+  P^i & = & \varrho^i + c\;\delta - c\;\delta^i + T^i + I^i + b_P              \\
+  L^i & = & \varrho^i + c\;\delta - c\;\delta^i + T^i - I^i + b^i
+  \end{eqnarray*}
+  where
+  \begin{tabbing}
+  $P^i$, $L^i$ ~~~~~~~ \= are the code and phase measurements, \\ 
+  $\varrho^i$          \> is the travel distance between the satellite 
+                          and the receiver,                               \\
+  $\delta$, $\delta^i$ \> are the receiver and satellite clock errors,    \\
+  $I^i$                \> is the ionospheric delay,                       \\
+  $T^i$                \> is the tropospheric delay,                      \\
+  $b_P$                \> is the code bias, and                           \\
+  $b^i$                \> is the phase bias (including initial
+                          phase ambiguity).
+  \end{tabbing}
+
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{}
+
+Observation equations reveal what information can be gained from processing GNSS data:
+\begin{itemize}
+\item geometry (receiver positions, satellite orbits), and
+\item state of atmosphere (both dispersive and non-dispersive part)
+\end{itemize}
+
+The observation equations also show that, in principle, GNSS is an
+\textcolor{blue!90}{interferometric} technique -- precise results are actually always relative.
+
 
 \end{frame}
 
