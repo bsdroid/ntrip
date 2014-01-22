@@ -350,13 +350,6 @@ Ntrip Client}.
   \item approximately 90 \% is C++, 10 \% standard C
   \item BNC uses a few third-party pieces of software (first of all the RTCM
     decoders/encoders and a matrix algebra library)
-  \item Qt library is used for
-    \begin{itemize}
-    \item[1.] GUI,
-    \item[2.] networking,
-    \item[3.] threads,
-    \item[4.] containers, streams, files, ...
-    \end{itemize} 
   \end{itemize}
 
   \begin{block}{BNC is intended to be}
@@ -367,49 +360,10 @@ Ntrip Client}.
   \item useful (at least a little bit ...)
   \end{itemize}
   \end{block}
-\end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-  \frametitle{BNC source code}
-  Algorithms used in BNC are intended to be
-  \begin{itemize}
-  \item correct, but
-  \item as simple as possible
-  \end{itemize}
-  \begin{center}
-    \hspace*{3cm} \includegraphics[width=0.65\textwidth,angle=0]{kalman.png}
-  \end{center}
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-  \begin{block}{svn archive}
-  BNC source code may be downloaded from the svn archive using a command
-  \begin{itemize}
-  \item[A)] {\tt svn co http://software.rtcm-ntrip.org/svn/trunk/BNC} 
-  \end{itemize}
-  or
-  \begin{itemize}
-  \item[B)] {\tt svn co https://software.rtcm-ntrip.org/svn/trunk/BNC}
-  \end{itemize}
-  Option A) is a read-only access. Option B) is for the developers (read-write
-  access). When the source code is downloaded using the {\tt https} (secure
-  protocol) currently two additional sub-directories are retrieved:
-  \begin{itemize}
-  \item combination
-  \item rinex
-  \end{itemize}
-  The sub-directory ``combination'' contains the source code of the BNC module
-  that performs the combination of PPP corrections streams provided by several
-  analysis centers (more about the combination algorithms below).
-
-  The sub-directory ``rinex'' contains the module for the post-processing PPP
-  client that uses the RINEX files as input (this directory is not yet made
-  public because it is still under development).
+  \begin{block}{BNC is not only an NTRIP client \ldots}
   \end{block}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
