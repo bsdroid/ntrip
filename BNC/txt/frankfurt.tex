@@ -396,6 +396,220 @@ Ntrip Client}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
+\frametitle{Principles of Precise Point Positioning}
+\framesubtitle{Observation Equations}
+
+The PPP is based on the processing of the ionosphere-free linear combination of phase
+observations
+\be
+L^{ij}_3 = \varrho^{ij} - c\delta^{ij} + T^{ij} + \bar{N}^{ij}_3 ~,
+\ee 
+where the ambiguity term is given by
+\be
+\bar{N}^{ij}_3 =  N^{ij}_3 - l^{ij}_3 
+              = \frac{c\;f_2}{f^2_1-f^2_2}\;(n^{ij}_1-n^{ij}_2) + \lambda_3\;n^{ij}_1 - l^{ij}_3 
+\ee
+and (optionally) the ionosphere-free linear combination of code observations
+\be
+P^{ij}_3 = \varrho^{ij} - c\delta^{ij} + T^{ij} + p^{ij}_3 ~,
+\ee
+where the code bias $p^{ij}_3$ is the linear combination of biases
+$p^{ij}_1,p^{ij}_2$
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Principles of PPP Service}
+\framesubtitle{Code Biases}
+
+Apart from the orbit corrections (will be discussed later) the server has to provide the
+value $c\delta^{ij}$. That is sufficient for a client processing phase observations only. 
+
+Using the code observations on the client-side is not mandatory. After an initial convergence
+period (tens of minutes) there is almost no difference between a phase-only client and the client
+that uses also the code observations. However, correct utilization of accurate code observations
+improves the positioning results during the convergence period.
+
+Client which processes code observations either
+\begin{enumerate}
+\item has to know the value $p^{ij}_3$ (the value must be provided by the server -- the most
+  correct approach), or
+\item has to estimate terms $p^{ij}_3$, or
+\item neglect the bias (de-weight the code observations -- not fully correct).
+\end{enumerate}
+Options (2) and (3) mean that the benefit of using the code observations on the client-side (in
+addition to phase observations) is minor only. 
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Principles of PPP Service}
+\framesubtitle{Handling Code Biases}
+
+In order to avoid the necessity to disseminate the code biases $p^{ij}_3$ and still guarantee that
+the client may decently use the code observations we adopted the following approach:
+
+Denoting the code bias estimated by a server at epoch $t_0$ by $\bar{p}^{ij}_3 = p^{ij}_3(t_0)$ we
+modify the satellite clock corrections as follows:
+\be
+c\bar\delta^{ij} = c\delta^{ij} - \bar{p}^{ij}_3
+\ee
+and disseminate $c\bar\delta^{ij}$ instead of $c\delta^{ij}$. This modification has no effect on
+the processing of phase observations at the client-side (the constant difference is absorb by
+estimated ambiguities). For the processing of code observations it has the benefit that the client
+does not see the code bias $p^{ij}_3$ but only 
+\bdm
+\bar{p}^{ij}_3-p^{ij}_3
+\edm
+and we try to keep the difference $\bar{p}^{ij}_3-p^{ij}_3$ lower than a selected threshold.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{PPP AR}
+\subsection{Principles}
+
+\begin{frame}
+\frametitle{Principles of PPP with Ambiguity Resolution}
+\framesubtitle{Observation Equations}
+
+The PPPAR is in principle based on the processing the following two types of single-difference
+observations: \\
+The ionosphere-free linear combination
+\be\label{obs_IF}
+L^{ij}_3 = \varrho^{ij} - c\delta^{ij} + T^{ij} + \bar{N}^{ij}_3 ~,
+\ee 
+where the ambiguity term is given by
+\be\label{amb_N3}
+\bar{N}^{ij}_3 =  N^{ij}_3 - l^{ij}_3 
+              = \frac{c\;f_2}{f^2_1-f^2_2}\;(n^{ij}_1-n^{ij}_2) + \lambda_3\;n^{ij}_1 - l^{ij}_3 
+\ee
+and the Melbourne-W\"{u}bbena linear combination
+\be\label{obs_MW}
+L^{ij}_w = \lambda_5\;n^{ij}_5 - l^{ij}_w
+\ee
+the uncalibrated bias $l^{ij}_3$ is the corresponding linear combination of biases
+$l^{ij}_1,l^{ij}_2$, the uncalibrated bias $l^{ij}_w$ is the corresponding linear combination of
+biases $p^{ij}_1,p^{ij}_2,l^{ij}_1,l^{ij}_2$.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Parameters provided by Server}
+
+\begin{frame}
+\frametitle{Principles of PPP with Ambiguity Resolution}
+\framesubtitle{Parameters provided by Server}
+In addition to orbit corrections, the server(s) has(have) to provide the values
+\bdm
+c\delta^{ij} ~,~  l^{ij}_w ~,~ l^{ij}_3 ~~~ \mb{or} ~~~~ (c\delta^{ij} + l^{ij}_3) ~,~ l^{ij}_w
+\edm
+Corrections $l^{ij}_w,l^{ij}_3$ depend on the set of fixed single-difference ambiguities on the
+server-side. This set of fixed ambiguities is not unique - it depends on the constraints applied on
+the ambiguities. 
+
+There is a difference between correction $l^{ij}_w$ and the narrow-lane correction $l^{ij}_3$. The
+wide-lane correction $l^{ij}_w$ depends {\em only} on the ambiguities estimated at the
+server-side. The narrow-lane correction $l^{ij}_3$ depends on the ambiguities and {\em also} on the
+satellite clock corrections $\delta^{ij}$ estimated at the server-side.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Principles of PPP with Ambiguity Resolution}
+\framesubtitle{How many servers?}
+All three corrections
+\bdm
+c\delta^{ij} ~~~  l^{ij}_w ~~~ l^{ij}_3
+\edm
+may be estimated together by a single server run (in which case the $c\delta^{ij}$ and $l^{ij}_3$
+are indistinguishable and are combined into $c\delta^{ij}+l^{ij}_3$) Or, each of them may be
+estimated by a separate server run.
+
+\vspace*{2mm}
+Current approach:
+\begin{itemize}
+\item PPPNB server: estimates $c\delta^{ij}$
+\item PPPAR server: uses $c\delta^{ij}$ from PPPNB server and estimates $l^{ij}_w,l^{ij}_3$
+\end{itemize}
+
+\vspace*{2mm}
+Advantages: PPPAR corrections are compatible with PPPNB corrections (the client may decide between
+PPP and PPPAR).
+
+\vspace*{2mm}
+Disadvantages: additional delay
+
+\vspace*{2mm}
+An alternative approach to consider: separate server run for $l^{ij}_w$.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Principles of PPP with Ambiguity Resolution}
+\framesubtitle{How to disseminate the corrections?}
+
+\begin{enumerate}
+\item The corrections are valid (accurate) on the single- (between satellites) difference
+  level but it is more practical to send the zero-difference (satellite-specific) corrections.
+\item The corrections are specific for the observation types used for their estimation - e.g. if
+  the C/A code on the first carrier and the P-code on the second carrier have been used at the
+  server side, the client can use the $l^{ij}_w$ correction only if it uses the same two types of
+  code observations.
+\end{enumerate}
+
+The corrections $l^{ij}_w,l^{ij}_3$ are actually the combinations of the phase (and in case of
+$l^{ij}_w$ also code) biases:
+\begin{eqnarray*}
+l^{ij}_w & = & \frac{1}{f_1-f_2} \bigl( f_1~l^{ij}_1 - f_2~l^{ij}_2 \bigr) -
+  \frac{1}{f_1+f_2} \bigl( f_1~p^{ij}_1 + f_2~p^{ij}_2 \bigr) ~
+\\
+l^{ij}_3 & = & \frac{1}{f^2_1-f^2_2} \bigl( f^2_1~l^{ij}_1 - f^2_2~l^{ij}_2 \bigr)
+\end{eqnarray*}
+RTCM suggests to send $p^{ij}_1,p^{ij}_2,l^{ij}_1,l^{ij}_2$ directly ...
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Principles of PPP with Ambiguity Resolution}
+\framesubtitle{How to disseminate the corrections (continuation)?}
+
+In principle there are altogether 5 values which can be sent by server(s):
+\bdm
+c\delta^{ij},p^{ij}_1,p^{ij}_2,l^{ij}_1,l^{ij}_2
+\edm
+PPPNB server estimates the $c\delta^{ij}$ and the ionosphere-free
+linear combination of the code biases
+\bdm
+p^{ij}_3 =  \frac{1}{f^2_1-f^2_2} \bigl( f^2_1~p^{ij}_1 - f^2_2~p^{ij}_2 \bigr)
+\edm
+PPPAR server estimates the $l^{ij}_w$ and $l^{ij}_3$. Assuming that we know the differential code
+bias
+\bdm
+d^{ij}_{p1p2} = p^{ij}_1 - p^{ij}_2
+\edm
+The four values
+\bdm
+p^{ij}_3 ~~~ l^{ij}_w ~~~~ l^{ij}_3 ~~~~ d^{ij}_{p1p2}
+\edm
+can be converted into four biases
+$p^{ij}_1,p^{ij}_2,l^{ij}_1,l^{ij}_2$. 
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
   \frametitle{Precise Point Positioning with PPP (cont.)}
   BNC provides a good framework for the PPP client (observations, orbits, and
   corrections stand for disposal). 
