@@ -345,7 +345,125 @@ An important reason why NTRIP has been widely accepted is that BKG provided high
 license software tools for its usage. One of these tools is the so-called \textcolor{blue}{BKG
 Ntrip Client}.
 
+  \begin{itemize}
+  \item BNC source consists currently of approximately 50.000 lines of code 
+  \item approximately 90 \% is C++, 10 \% standard C
+  \item BNC uses a few third-party pieces of software (first of all the RTCM
+    decoders/encoders and a matrix algebra library)
+  \item Qt library is used for
+    \begin{itemize}
+    \item[1.] GUI,
+    \item[2.] networking,
+    \item[3.] threads,
+    \item[4.] containers, streams, files, ...
+    \end{itemize} 
+  \end{itemize}
 
+  \begin{block}{BNC is intended to be}
+  \begin{itemize}
+  \item user-friendly
+  \item cross-platform
+  \item easily modifiable (by students, GNSS beginners)
+  \item useful (at least a little bit ...)
+  \end{itemize}
+  \end{block}
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{BNC source code}
+  Algorithms used in BNC are intended to be
+  \begin{itemize}
+  \item correct, but
+  \item as simple as possible
+  \end{itemize}
+  \begin{center}
+    \hspace*{3cm} \includegraphics[width=0.65\textwidth,angle=0]{kalman.png}
+  \end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \begin{block}{svn archive}
+  BNC source code may be downloaded from the svn archive using a command
+  \begin{itemize}
+  \item[A)] {\tt svn co http://software.rtcm-ntrip.org/svn/trunk/BNC} 
+  \end{itemize}
+  or
+  \begin{itemize}
+  \item[B)] {\tt svn co https://software.rtcm-ntrip.org/svn/trunk/BNC}
+  \end{itemize}
+  Option A) is a read-only access. Option B) is for the developers (read-write
+  access). When the source code is downloaded using the {\tt https} (secure
+  protocol) currently two additional sub-directories are retrieved:
+  \begin{itemize}
+  \item combination
+  \item rinex
+  \end{itemize}
+  The sub-directory ``combination'' contains the source code of the BNC module
+  that performs the combination of PPP corrections streams provided by several
+  analysis centers (more about the combination algorithms below).
+
+  The sub-directory ``rinex'' contains the module for the post-processing PPP
+  client that uses the RINEX files as input (this directory is not yet made
+  public because it is still under development).
+  \end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Precise Point Positioning with PPP}
+  \begin{center}
+    \includegraphics[width=0.9\textwidth,angle=0]{ppp1.png}
+  \end{center}
+\end {frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Precise Point Positioning with PPP (cont.)}
+  BNC provides a good framework for the PPP client (observations, orbits, and
+  corrections stand for disposal). 
+
+  Main reasons for the PPP module in BNC have been:
+  \begin{itemize}
+  \item monitoring the quality of incoming data streams (primarily the PPP
+    corrections) 
+  \item providing a simple easy-to-use tool for the basic PPP positioning 
+  \end{itemize}
+
+  The PPP facility in BNC is provided in the hope that it will be useful.
+  \begin{itemize}
+  \item The mathematical model of observations and the adjustment algorithm are
+    implemented in such a way that they are (according to our best knowledge)
+    correct without any shortcomings, however,
+  \item we have preferred simplicity to transcendence, and
+  \item the list of options the BNC users can select is limited.
+  \item[$\Rightarrow$] Commercial PPP clients may outperform BNC in some
+    aspects.
+  \end{itemize}
+  We believe in a possible good coexistence of the commercial software and
+  open source software.
+\end {frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{PPP Options}
+  \begin{itemize}
+  \item single station, SPP or PPP
+  \item real-time or post-processing
+  \item processing of code and phase ionosphere-free combinations, GPS,
+    Glonass, and Galileo
+  \end{itemize}
+  \begin{center}
+    \includegraphics[width=0.9\textwidth,angle=0]{ppp_opt1.png} \\[2mm]
+    \includegraphics[width=0.9\textwidth,angle=0]{ppp_opt2.png}
+  \end{center}
+\end {frame}
+
 
 \end{document}
