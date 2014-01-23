@@ -393,6 +393,15 @@ Ntrip Client}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
+\frametitle{PPP -- Server-Side}
+  \begin{center}
+    \includegraphics[width=0.9\textwidth,angle=0]{bnc_feed.png}
+  \end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
   \frametitle{Data QC in BNC}
   \begin{center}
     \includegraphics[width=0.9\textwidth,angle=0]{bnc_qc2.png}
@@ -503,15 +512,6 @@ addition to phase observations) is minor only.
 \hspace*{2cm}
 \includegraphics[width=0.8\textwidth,angle=0]{bnc_rtnet_flow.png}
 
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{PPP -- Server-Side}
-  \begin{center}
-    \includegraphics[width=0.9\textwidth,angle=0]{bnc_feed.png}
-  \end{center}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -642,7 +642,7 @@ addition to phase observations) is minor only.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-  \frametitle{Principle of our PPP-RTK Algorithm}
+  \frametitle{PPP with Ambiguity Resolution (PPPAR or PPP-RTK)}
   For a dual-band GPS receiver, the observation equations may read as
   \begin{eqnarray*}
   P^i & = & \varrho^i + c\;\delta - c\;\delta^i + T^i + b_P              \\
@@ -675,7 +675,7 @@ addition to phase observations) is minor only.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-  \frametitle{Principle of our PPP-RTK Algorithm (cont.)}
+  \frametitle{PPPAR Algorithm (cont.)}
   Receiver-independent single-difference biases $b_1^{ij}$ and $b_5^{ij}$ have 
   to be estimated on the server-side.
   \begin{itemize}
@@ -922,9 +922,8 @@ addition to phase observations) is minor only.
 
 \begin{frame}
   \frametitle{New Project - GNSS Center}
-  \begin{center}
-    \includegraphics[width=0.9\textwidth]{gnsscenter.png}
-  \end{center}
+\hspace*{-5mm}
+    \includegraphics[height=0.8\textheight]{gnsscenter.png}
 \end{frame}
 
 \end{document}
