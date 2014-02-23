@@ -360,6 +360,7 @@ bncWindow::bncWindow() {
   // Miscellaneous Options
   // ---------------------
   _miscMountLineEdit  = new QLineEdit(settings.value("miscMount").toString());
+  _miscPortLineEdit   = new QLineEdit(settings.value("miscPort").toString());
   _perfIntrComboBox   = new QComboBox();
   _perfIntrComboBox->setEditable(false);
   _perfIntrComboBox->addItems(QString(",2 sec, 10 sec,1 min,5 min,15 min,1 hour,6 hours,1 day").split(","));
@@ -877,6 +878,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   QGridLayout* rLayout = new QGridLayout;
   rLayout->setColumnMinimumWidth(0,14*ww);
   _perfIntrComboBox->setMaximumWidth(9*ww);
+  _miscPortLineEdit->setMaximumWidth(9*ww);
 
   rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for numbers of message types and antenna information."),0, 0,1,30);
   rLayout->addWidget(new QLabel("Mountpoint"),                    1, 0);
@@ -885,7 +887,8 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   rLayout->addWidget(_perfIntrComboBox,                           2, 1);
   rLayout->addWidget(new QLabel("Scan RTCM"),                     3, 0);
   rLayout->addWidget(_scanRTCMCheckBox,                           3, 1);
-  rLayout->addWidget(new QLabel(" "),                             4, 0);
+  rLayout->addWidget(new QLabel("Port"),                          4, 0);
+  rLayout->addWidget(_miscPortLineEdit,                           4, 1);
   rLayout->addWidget(new QLabel(" "),                             5, 0);
   rLayout->addWidget(new QLabel(" "),                             6, 0);
   rgroup->setLayout(rLayout);
@@ -1437,6 +1440,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _ephV3CheckBox->setWhatsThis(tr("The default format for output of RINEX Navigation data containing Broadcast Ephemeris is RINEX Version 2. Select 'Version 3' if you want to output the ephemeris in RINEX Version 3 format."));
   _rnxV3CheckBox->setWhatsThis(tr("The default format for RINEX Observation files is RINEX Version 2. Select 'Version 3' if you want to save the observations in RINEX Version 3 format."));
   _miscMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint to apply any of the options shown below. Enter 'ALL' if you want to apply these options to all configured streams.</p><p>An empty option field (default) means that you don't want BNC to apply any of these options.</p>"));
+  _miscPortLineEdit->setWhatsThis(tr("BNC can output an incoming stream on your local host through an IP port. Specify a port number here to activate this function."));
   _scanRTCMCheckBox->setWhatsThis(tr("<p>Tick 'Scan RTCM' to log the numbers of incomming message types as well as contained antenna coordinates, antenna heigt, and antenna descriptor.</p><p>In case of RTCM Version 3 MSM streams, BNC will also log contained RINEX Version 3 observation types.</p>."));
   _serialMountPointLineEdit->setWhatsThis(tr("<p>Enter a 'Mountpoint' to forward the corresponding stream to a serial connected receiver.</p>"));
   _serialPortNameLineEdit->setWhatsThis(tr("<p>Enter the serial 'Port name' selected for communication with your serial connected receiver. Valid port names are</p><pre>Windows:       COM1, COM2<br>Linux:         /dev/ttyS0, /dev/ttyS1<br>FreeBSD:       /dev/ttyd0, /dev/ttyd1<br>Digital Unix:  /dev/tty01, /dev/tty02<br>HP-UX:         /dev/tty1p0, /dev/tty2p0<br>SGI/IRIX:      /dev/ttyf1, /dev/ttyf2<br>SunOS/Solaris: /dev/ttya, /dev/ttyb</pre><p>Note that you must plug a serial cable in the port defined here before you start BNC.</p>"));
@@ -1913,6 +1917,7 @@ void bncWindow::saveOptions() {
   settings.setValue("adviseScript",_adviseScriptLineEdit->text());
 // Miscellaneous 
   settings.setValue("miscMount",   _miscMountLineEdit->text());
+  settings.setValue("miscPort",    _miscPortLineEdit->text());
   settings.setValue("perfIntr",    _perfIntrComboBox->currentText());
   settings.setValue("scanRTCM",    _scanRTCMCheckBox->checkState());
 // PPPP
@@ -2453,6 +2458,7 @@ void bncWindow::slotBncTextChanged(){
     enable = !_miscMountLineEdit->text().isEmpty();
     enableWidget(enable, _perfIntrComboBox);
     enableWidget(enable, _scanRTCMCheckBox);
+    enableWidget(enable, _miscPortLineEdit);
   }
 
   // Enable/disable Broadcast Ephemerides
