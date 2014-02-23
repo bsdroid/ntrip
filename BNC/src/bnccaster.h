@@ -49,6 +49,7 @@ class bncCaster : public QObject {
  public slots:
    void slotNewObs(QByteArray staID, QList<t_obs> obsList);
    void slotNewNMEAstr(QByteArray str);
+   void slotNewMiscConnection();
 
  signals:
    void mountPointsRead(QList<bncGetThread*>);
@@ -65,6 +66,7 @@ class bncCaster : public QObject {
  private:
    void dumpEpochs(long minTime, long maxTime);
    static int myWrite(QTcpSocket* sock, const char* buf, int bufLen);
+   static int myMiscWrite(QTcpSocket* sock, const char* buf, int bufLen);
    void reopenOutFile();
 
    QFile*                   _outFile;
@@ -84,6 +86,10 @@ class bncCaster : public QObject {
    long                     _waitTime;
    QMutex                   _mutex;
    int                      _confInterval;
+   QString                  _miscMount;
+   int                      _miscPort;
+   QTcpServer*              _miscServer;
+   QList<QTcpSocket*>*      _miscSockets;
 #ifdef RTROVER_INTERFACE
    t_bncRtrover*            _bncRtrover;
 #endif
