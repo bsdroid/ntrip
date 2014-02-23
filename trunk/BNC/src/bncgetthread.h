@@ -91,8 +91,10 @@ class bncGetThread : public QThread {
 
  private slots:
    void slotSerialReadyRead();
+   void slotNewMiscConnection();
 
  private:
+   static int myMiscWrite(QTcpSocket* sock, const char* buf, int bufLen);
    enum t_serialNMEA {NO_NMEA, MANUAL_NMEA, AUTO_NMEA};
    t_irc        initDecoder();
    GPSDecoder* decoder();
@@ -114,6 +116,7 @@ class bncGetThread : public QThread {
    QByteArray                 _ntripVersion;
    int                        _nextSleep;
    int                        _iMount;
+   int                        _miscPort;
    bncRawFile*                _rawFile;
    QextSerialPort*            _serialPort;
    bool                       _isToBeDeleted;
@@ -125,6 +128,8 @@ class bncGetThread : public QThread {
    bool                       _rawOutput;
    QMap<QString, long>        _prnLastEpo;
    QMap<char, QVector<QString> > _rnxTypes;
+   QTcpServer*                _miscServer;
+   QList<QTcpSocket*>*        _miscSockets;
 };
 
 #endif
