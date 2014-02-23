@@ -312,6 +312,7 @@ This chapter describes how to set the BNC program options. It explains the top m
 &nbsp; &nbsp; &nbsp; 3.11.1. <a href=#miscmount>Mountpoint</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2. <a href=#miscperf>Log Latency</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.3. <a href=#miscscan>Scan RTCM</a><br>
+&nbsp; &nbsp; &nbsp; 3.11.4. <a href=#miscport>Port</a><br>
 3.12. <a href=#pppclient>PPP Client</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1 <a href=#pppmode>Mode & Mountpoints</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.1.1 <a href=#pppmodus>Mode</a><br>
@@ -1477,6 +1478,16 @@ Note that in RTCM Version 2 the message types 18 and 19 carry only the observabl
 </p>
 <p>This option is primarily meant for testing and evaluation. Use it to figure out what exactly is produced by a specific GNSS receiver's configuration. An empty option field (default) means that you don't want BNC to print the message type numbers and antenna information carried in RTCM streams. 
 </p>
+
+
+<p><a name="miscport"><h4>3.11.4 Port - optional</h4></p>
+<p>
+BNC can output the stream related to the above specified 'Mountpoint' on your local host through a TCP/IP port. Enter a port number to activate this function. The stream contents remains untouched. BNC does not decode or reformat the data. This option does not work when specifying keyword 'ALL' as 'Mountpoint' because you can't apply this option to all configured streams at once but only to one specific stream.
+</p>
+<p>
+ An empty option field (default) means that you don't want BNC to apply the TCP/IP port output option.
+</p>
+
 
 <p><a name="pppclient"><h4>3.12. PPP Client</h4></p>
 <p>
@@ -2888,8 +2899,8 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 </tr>
 
 <tr>
-<td>Dec 2013 &nbsp;</td><td>Version 2.11 &nbsp;</td>
-<td>[Add] Started work on new version in Dec 2013</td>
+<td>Feb 2014 &nbsp;</td><td>Version 2.11 &nbsp;</td>
+<td>[Add] Started work on new version in Dec 2013<br>[Add] Raw stream output through TCP/IP port</td>
 </tr>
 
 </table>
