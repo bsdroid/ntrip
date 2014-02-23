@@ -126,6 +126,7 @@ void bncSettings::reRead() {
     setValue_p("miscMount",           "");  
     setValue_p("perfIntr",            "");
     setValue_p("scanRTCM",            "0");
+    setValue_p("miscPort",            "");  
     // PPP
     setValue_p("pppSPP",              "");
     setValue_p("pppMount",            "");
