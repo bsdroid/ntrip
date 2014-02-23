@@ -1482,7 +1482,10 @@ Note that in RTCM Version 2 the message types 18 and 19 carry only the observabl
 
 <p><a name="miscport"><h4>3.11.4 Port - optional</h4></p>
 <p>
-BNC can output the stream related to the above specified 'Mountpoint' on your local host through a TCP/IP port. Enter a port number to activate this function. The stream contents remains untouched. BNC does not decode or reformat the data. This option does not work when specifying keyword 'ALL' as 'Mountpoint' because you can't apply this option to all configured streams at once but only to one specific stream.
+BNC can output streams related to the above specified 'Mountpoint' on your local host through a TCP/IP port. Enter a port number to activate this function. The stream contents remains untouched. BNC does not decode or reformat the data.
+</p>
+<p>
+Be careful when keyword 'ALL' is specified as 'Mountpoint' for involving all incoming streams together because the affiliation of data  to certain streams gets lost in the output.
 </p>
 <p>
  An empty option field (default) means that you don't want BNC to apply the TCP/IP port output option.
