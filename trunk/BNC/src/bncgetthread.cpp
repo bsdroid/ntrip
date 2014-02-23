@@ -103,7 +103,6 @@ bncGetThread::bncGetThread(const QUrl& mountPoint,
   _ntripVersion = ntripVersion;
 
   bncSettings settings;
-
   if (!settings.value("rawOutFile").toString().isEmpty()) {
     _rawOutput = true;
   } else {
@@ -131,22 +130,6 @@ void bncGetThread::initialize() {
   _PPPclient     = 0;
   _miscMount     = settings.value("miscMount").toString();
   _decoder   = 0;
-
-  // Miscellaneous output port  // Georg
-  // -------------------------
-  _miscPort = settings.value("miscPort").toInt();
-  if (_miscPort != 0) {
-    _miscServer = new QTcpServer;
-    if ( !_miscServer->listen(QHostAddress::Any, _miscPort) ) {
-      emit newMessage("bncgetthread: Cannot listen on Miscellaneous Output Port", true);
-    }
-    connect(_miscServer, SIGNAL(newConnection()), this, SLOT(slotNewMiscConnection()));
-    _miscSockets = new QList<QTcpSocket*>;
-  }
-  else {
-    _miscServer  = 0;
-    _miscSockets = 0;
-  }
 
   // Serial Port
   // -----------
@@ -399,8 +382,6 @@ bncGetThread::~bncGetThread() {
   delete _serialOutFile;
   delete _serialPort;
   delete _latencyChecker;
-  delete _miscServer;
-  delete _miscSockets;
   emit getThreadFinished(_staID);
 }
 
@@ -491,26 +472,7 @@ void bncGetThread::run() {
         slotSerialReadyRead();
         _serialPort->write(data);
       }
-
-      // Output into the Miscellaneous socket // Georg
-      // ------------------------------------
-      if (_miscSockets && _miscMount != "ALL") {
-        QMutableListIterator<QTcpSocket*> is(*_miscSockets);
-        while (is.hasNext()) {
-          QTcpSocket* sock = is.next();
-          if (sock->state() == QAbstractSocket::ConnectedState) {
-            if (myMiscWrite(sock, data, nBytes) != nBytes) {
-              delete sock;
-              is.remove();
-            }       
-          }       
-          else if (sock->state() != QAbstractSocket::ConnectingState) {
-            delete sock;
-            is.remove();
-          }       
-        }       
-      } 
-
+      
       // Decode Data
       // -----------
       vector<string> errmsg;
@@ -708,26 +670,6 @@ t_irc bncGetThread::tryReconnect() {
   return success;
 }
 
-// New Connection // Georg
-////////////////////////////////////////////////////////////////////////////
-void bncGetThread::slotNewMiscConnection() {
-  _miscSockets->push_back( _miscServer->nextPendingConnection() );
-  emit( newMessage(QString("New client connection on Miscellaneous Output Port: # %1")
-                   .arg(_miscSockets->size()).toAscii(), true) );
-}
-
-// Write buffer // Georg
-////////////////////////////////////////////////////////////////////////////
-int bncGetThread::myMiscWrite(QTcpSocket* sock, const char* buf, int bufLen) {
-  sock->write(buf, bufLen);
-  for (int ii = 1; ii <= 10; ii++) {
-    if (sock->waitForBytesWritten(10)) {  // wait 10 ms
-      return bufLen;
-    }
-  }
-  return -1;
-}
-
 // RTCM scan output
 //////////////////////////////////////////////////////////////////////////////
 void bncGetThread::scanRTCM() {
@@ -864,4 +806,3 @@ void bncGetThread::slotSerialReadyRead() {
     }
   }
 }
-
