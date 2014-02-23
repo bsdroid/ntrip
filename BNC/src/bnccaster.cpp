@@ -129,7 +129,7 @@ bncCaster::bncCaster() {
   }
 #endif
 
-  // Miscellaneous output port  // Georg
+  // Miscellaneous output port
   // -------------------------
   _miscMount = settings.value("miscMount").toString();
   _miscPort  = settings.value("miscPort").toInt();
@@ -600,7 +600,7 @@ void bncCaster::reopenOutFile() {
   }
 }
 
-// Output into the Miscellaneous socket // Georg
+// Output into the Miscellaneous socket
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::slotNewRawData(QByteArray staID, QByteArray data) {
   if (_miscSockets && (_miscMount == "ALL" || _miscMount == staID)) {
@@ -609,10 +609,6 @@ void bncCaster::slotNewRawData(QByteArray staID, QByteArray data) {
       QTcpSocket* sock = is.next();
       if (sock->state() == QAbstractSocket::ConnectedState) {
         sock->write(data);
-//        if (myMiscWrite(sock, data, nBytes) != nBytes) {
-//          delete sock;
-//          is.remove();
-//        }       
       }       
       else if (sock->state() != QAbstractSocket::ConnectingState) {
         delete sock;
@@ -622,7 +618,7 @@ void bncCaster::slotNewRawData(QByteArray staID, QByteArray data) {
   } 
 }
 
-// New Connection // Georg
+// New Connection
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::slotNewMiscConnection() {
   _miscSockets->push_back( _miscServer->nextPendingConnection() );
