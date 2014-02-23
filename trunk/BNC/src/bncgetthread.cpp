@@ -460,6 +460,7 @@ void bncGetThread::run() {
       }
       else {
         emit newBytes(_staID, nBytes);
+        emit newRawData(_staID, data);
       }
 
       // Output Data

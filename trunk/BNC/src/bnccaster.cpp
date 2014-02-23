@@ -300,6 +300,9 @@ void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
   connect(getThread, SIGNAL(newObs(QByteArray, QList<t_obs>)),
           this,      SLOT(slotNewObs(QByteArray, QList<t_obs>)));
 
+  connect(getThread, SIGNAL(newRawData(QByteArray, QByteArray)),
+          this,      SLOT(slotNewRawData(QByteArray, QByteArray)));
+
 #ifdef RTROVER_INTERFACE
   if (_bncRtrover) {
     connect(getThread, SIGNAL(newObs(QByteArray, QList<t_obs>)),
@@ -597,25 +600,27 @@ void bncCaster::reopenOutFile() {
   }
 }
 
-//      // Output into the Miscellaneous socket // Georg
-//      // ------------------------------------
-//      if (_miscSockets && _miscMount != "ALL") {
-//        QMutableListIterator<QTcpSocket*> is(*_miscSockets);
-//        while (is.hasNext()) {
-//          QTcpSocket* sock = is.next();
-//          if (sock->state() == QAbstractSocket::ConnectedState) {
-//            if (myMiscWrite(sock, data, nBytes) != nBytes) {
-//              delete sock;
-//              is.remove();
-//            }       
-//          }       
-//          else if (sock->state() != QAbstractSocket::ConnectingState) {
-//            delete sock;
-//            is.remove();
-//          }       
+// Output into the Miscellaneous socket // Georg
+////////////////////////////////////////////////////////////////////////////
+void bncCaster::slotNewRawData(QByteArray staID, QByteArray data) {
+  if (_miscSockets && (_miscMount == "ALL" || _miscMount == staID)) {
+    QMutableListIterator<QTcpSocket*> is(*_miscSockets);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->state() == QAbstractSocket::ConnectedState) {
+        sock->write(data);
+//        if (myMiscWrite(sock, data, nBytes) != nBytes) {
+//          delete sock;
+//          is.remove();
 //        }       
-//      } 
-
+      }       
+      else if (sock->state() != QAbstractSocket::ConnectingState) {
+        delete sock;
+        is.remove();
+      }       
+    }       
+  } 
+}
 
 // New Connection // Georg
 ////////////////////////////////////////////////////////////////////////////
@@ -624,16 +629,3 @@ void bncCaster::slotNewMiscConnection() {
   emit( newMessage(QString("New client connection on Miscellaneous Output Port: # %1")
                    .arg(_miscSockets->size()).toAscii(), true) );
 }
-
-// Write buffer // Georg
-////////////////////////////////////////////////////////////////////////////
-int bncCaster::myMiscWrite(QTcpSocket* sock, const char* buf, int bufLen) {
-  sock->write(buf, bufLen);
-  for (int ii = 1; ii <= 10; ii++) {
-    if (sock->waitForBytesWritten(10)) {  // wait 10 ms
-      return bufLen;
-    }
-  }
-  return -1;
-}
-
