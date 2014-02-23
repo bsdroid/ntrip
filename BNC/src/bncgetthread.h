@@ -76,6 +76,7 @@ class bncGetThread : public QThread {
 
  signals:
    void newBytes(QByteArray staID, double nbyte);
+   void newRawData(QByteArray staID, QByteArray data);
    void newLatency(QByteArray staID, double clate);
    void newObs(QByteArray staID, QList<t_obs> obsList);
    void newAntCrd(QByteArray staID, double xx, double yy, double zz, 

@@ -48,6 +48,7 @@ class bncCaster : public QObject {
 
  public slots:
    void slotNewObs(QByteArray staID, QList<t_obs> obsList);
+   void slotNewRawData(QByteArray staID, QByteArray data);
    void slotNewNMEAstr(QByteArray str);
    void slotNewMiscConnection();
 
@@ -66,7 +67,6 @@ class bncCaster : public QObject {
  private:
    void dumpEpochs(long minTime, long maxTime);
    static int myWrite(QTcpSocket* sock, const char* buf, int bufLen);
-   static int myMiscWrite(QTcpSocket* sock, const char* buf, int bufLen);
    void reopenOutFile();
 
    QFile*                   _outFile;
