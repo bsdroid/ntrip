@@ -141,6 +141,7 @@ class bncWindow : public QMainWindow {
     QLineEdit* _ephPathLineEdit;
     QLineEdit* _corrPathLineEdit;
     QLineEdit* _miscMountLineEdit;
+    QLineEdit* _miscPortLineEdit;
     QLineEdit* _pppMountLineEdit;
     QLineEdit* _pppCorrMountLineEdit;
     QLineEdit* _pppNMEALineEdit;
