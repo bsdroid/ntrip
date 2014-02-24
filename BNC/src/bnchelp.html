@@ -138,7 +138,7 @@ Note that while BNC decodes RTCM's MSM and HP MSM messages for GPS, GLONASS, Gal
 </p>
 
 <p>
-Note also that BNC allows to by-pass its decoding and conversion algorithms for incoming streams, leave whatever is received untouched and save it in files.
+Note also that BNC allows to by-pass its decoding and conversion algorithms for incoming streams, leave whatever is received untouched to save it in files or output it through local TCP/IP port.
 </p>
 
 <p>
@@ -1482,7 +1482,7 @@ Note that in RTCM Version 2 the message types 18 and 19 carry only the observabl
 
 <p><a name="miscport"><h4>3.11.4 Port - optional</h4></p>
 <p>
-BNC can output streams related to the above specified 'Mountpoint' on your local host through a TCP/IP port. Enter a port number to activate this function. The stream contents remains untouched. BNC does not decode or reformat the data.
+BNC can output streams related to the above specified 'Mountpoint' through a TCP/IP port of your local host. Enter a port number to activate this function. The stream contents remains untouched. BNC does not decode or reformat the data.
 </p>
 <p>
 Be careful when keyword 'ALL' is specified as 'Mountpoint' for involving all incoming streams together because the affiliation of data  to certain streams gets lost in the output.
