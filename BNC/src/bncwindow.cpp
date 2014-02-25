@@ -880,7 +880,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _perfIntrComboBox->setMaximumWidth(9*ww);
   _miscPortLineEdit->setMaximumWidth(9*ww);
 
-  rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for numbers of message types and antenna information."),0, 0,1,30);
+  rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for message types and antenna information or output raw data through TCP/IP port."),0, 0,1,30);
   rLayout->addWidget(new QLabel("Mountpoint"),                    1, 0);
   rLayout->addWidget(_miscMountLineEdit,                          1, 1, 1,7);
   rLayout->addWidget(new QLabel("Log latency"),                   2, 0);
