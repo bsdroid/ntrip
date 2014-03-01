@@ -677,6 +677,8 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
     sd->ID                       = prn.mid(1).toInt();
     sd->IOD                      = eph->IOD();
     sd->Clock.DeltaA0            = dClk;
+    sd->Clock.DeltaA1            = 0.0; // TODO
+    sd->Clock.DeltaA2            = 0.0; // TODO
     sd->Orbit.DeltaRadial        = rsw(1);
     sd->Orbit.DeltaAlongTrack    = rsw(2);
     sd->Orbit.DeltaCrossTrack    = rsw(3);
