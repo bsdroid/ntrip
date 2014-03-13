@@ -908,9 +908,9 @@ void bncModel::kalman(const Matrix& AA, const ColumnVector& ll,
 
   Tracer tracer("bncModel::kalman");
 
-  int nObs = AA.Nrows();
   int nPar = AA.Ncols();
-
+#if 1
+  int nObs = AA.Nrows();
   UpperTriangularMatrix SS = Cholesky(QQ).t();
 
   Matrix SA = SS*AA.t();
@@ -936,6 +936,17 @@ void bncModel::kalman(const Matrix& AA, const ColumnVector& ll,
 
   dx = KT.t() * ll;
   QQ << (SS.t() * SS);
+#else
+  DiagonalMatrix        Ql = PP.i();
+  Matrix                DD = QQ * AA.t();
+  SymmetricMatrix       SM(nPar); SM << AA * DD + Ql; 
+  UpperTriangularMatrix UU = Cholesky(SM).t();
+  UpperTriangularMatrix Ui = UU.i();
+  Matrix                EE = DD * Ui;
+  Matrix                KK = EE * Ui.t();
+  QQ << QQ - EE * EE.t();
+  dx = KK * ll;
+#endif
 }
 
 // Phase Wind-Up Correction
