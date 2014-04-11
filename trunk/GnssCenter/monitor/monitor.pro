@@ -16,7 +16,7 @@ debug:MOC_DIR       = .moc/debug
 release:OBJECTS_DIR = .obj/release
 release:MOC_DIR     = .moc/release
 
-thrift.target   = gen-cpp
+thrift.target   = gen-cpp/RtnetData.cpp
 thrift.commands = "thrift -r -gen cpp $(THRIFT_DIR)/rtnet.thrift"
 thrift.depends  = $(THRIFT_DIR)/rtnet.thrift $(THRIFT_DIR)/rtnet_data.thrift
 
