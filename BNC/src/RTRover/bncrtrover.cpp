@@ -245,9 +245,10 @@ void t_bncRtrover::slotNewCorrections(QList<QString> corrList) {
         orbC._iod               = corr.iod;
         orbC._time._mjd         = corr.tRao.mjd();
         orbC._time._sec         = corr.tRao.daysec();
+        orbC._system            = 'R';
         for (int ii = 0; ii < 3; ii++) {
-          orbC._rao[ii]       = corr.rao[ii];
-          orbC._dotRao[ii]    = corr.dotRao[ii];
+          orbC._xr[ii]       = corr.rao[ii];
+          orbC._dotXr[ii]    = corr.dotRao[ii];
         }
       }
 
