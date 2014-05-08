@@ -10,12 +10,12 @@
  *
  * Created:    29-Mar-2011
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
 #include <math.h>
-#include "bncrtnetuploadcaster.h" 
+#include "bncrtnetuploadcaster.h"
 #include "bncsettings.h"
 #include "bncephuser.h"
 #include "bncclockrinex.h"
@@ -27,8 +27,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
                                  const QString& outHost, int outPort,
-                                 const QString& password, 
-                                 const QString& crdTrafo, bool  CoM, 
+                                 const QString& password,
+                                 const QString& crdTrafo, bool  CoM,
                                  const QString& sp3FileName,
                                  const QString& rnxFileName,
                                  int PID, int SID, int IOD, int iRow) :
@@ -155,7 +155,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _oxr =  0.000000;
     _oyr =  0.000000;
     _ozr =  0.000000;
-    _sc  =     0.000;
+    _sc  =    -1.000;
     _scr =     0.000;
     _t0  =    0000.0;
   }
@@ -224,10 +224,10 @@ bncRtnetUploadCaster::~bncRtnetUploadCaster() {
   delete _usedEph;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
-                                        
+
   QMutexLocker locker(&_mutex);
 
   // Append to internal buffer
@@ -273,9 +273,9 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   in >> hlp >> year >> month >> day >> hour >> min >> sec;
   bncTime epoTime; epoTime.set( year, month, day, hour, min, sec);
 
-  emit(newMessage("bncRtnetUploadCaster: decode " + 
+  emit(newMessage("bncRtnetUploadCaster: decode " +
                   QByteArray(epoTime.datestr().c_str()) + " " +
-                  QByteArray(epoTime.timestr().c_str()) + " " + 
+                  QByteArray(epoTime.timestr().c_str()) + " " +
                   _casterID.toAscii(), false));
 
   struct ClockOrbit co;
@@ -289,12 +289,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   co.SSRIOD            = _IOD;
   co.SSRProviderID     = _PID; // 256 .. BKG,  257 ... EUREF
   co.SSRSolutionID     = _SID;
-  
+
   struct Bias bias;
   memset(&bias, 0, sizeof(bias));
   bias.GPSEpochTime     = co.GPSEpochTime;
   bias.GLONASSEpochTime = co.GLONASSEpochTime;
-  
+
   // Default Update Interval
   // -----------------------
   int clkUpdInd = 2;         // 5 sec
@@ -331,13 +331,13 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   bias.UpdateInterval = clkUpdInd;
 
   for (int ii = 1; ii < lines.size(); ii++) {
- 
+
     QString      prn;
     ColumnVector rtnAPC;
     ColumnVector rtnVel;
     ColumnVector rtnCoM;
     double       rtnClk;
-  
+
     QTextStream in(lines[ii].toAscii());
 
     in >> prn;
@@ -417,7 +417,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             in >> dummy;
           }
         }
-      }  
+      }
       struct ClockOrbit::SatData* sd = 0;
       if      (prn[0] == 'G') {
         sd = co.Sat + co.NumberOfGPSSat;
@@ -429,10 +429,10 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       }
       if (sd) {
         QString outLine;
-        processSatellite(eph, epoTime.gpsw(), epoTime.gpssec(), prn, 
+        processSatellite(eph, epoTime.gpsw(), epoTime.gpssec(), prn,
                          rtnAPC, rtnClk, rtnVel, rtnCoM, sd, outLine);
       }
-  
+
       struct Bias::BiasSat* biasSat = 0;
       if      (prn[0] == 'G') {
         biasSat = bias.Sat + bias.NumberOfGPSSat;
@@ -442,7 +442,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         biasSat = bias.Sat + CLOCKORBIT_NUMGPS + bias.NumberOfGLONASSSat;
         ++bias.NumberOfGLONASSSat;
       }
-  
+
       // Code Biases
       // -----------
       if (biasSat) {
@@ -566,7 +566,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     }
   }
 
-  QByteArray hlpBufferCo;  
+  QByteArray hlpBufferCo;
 
   // Orbit and Clock Corrections together
   // ------------------------------------
@@ -615,10 +615,10 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       }
     }
   }
-  
+
   // Biases
   // ------
-  QByteArray hlpBufferBias;  
+  QByteArray hlpBufferBias;
   if (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
     int len = MakeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
@@ -630,9 +630,9 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   _outBuffer += hlpBufferCo + hlpBufferBias;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
-void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek, 
+void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
                                             double GPSweeks, const QString& prn,
                                             const ColumnVector& rtnAPC,
                                             double rtnClk,
@@ -646,21 +646,21 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
   ColumnVector xB(4);
   ColumnVector vB(3);
   eph->position(GPSweek, GPSweeks, xB.data(), vB.data());
-  
+
   // Precise Position
   // ----------------
   ColumnVector xP = _CoM ? rtnCoM : rtnAPC;
 
-  double dc = 0.0;    
+  double dc = 0.0;
   if (_crdTrafo != "IGS08") {
     crdTrafo(GPSweek, xP, dc);
   }
-  
+
   // Difference in xyz
   // -----------------
   ColumnVector dx = xB.Rows(1,3) - xP;
   ColumnVector dv = vB           - rtnVel;
-  
+
   // Difference in RSW
   // -----------------
   ColumnVector rsw(3);
@@ -687,7 +687,7 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
     sd->Orbit.DotDeltaCrossTrack = dotRsw(3);
   }
 
-  outLine.sprintf("%d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n", 
+  outLine.sprintf("%d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n",
                   GPSweek, GPSweeks, eph->prn().toAscii().data(),
                   eph->IOD(), dClk, rsw(1), rsw(2), rsw(3));
 
@@ -704,7 +704,7 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
 
 // Transform Coordinates
 ////////////////////////////////////////////////////////////////////////////
-void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz, 
+void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
                                     double& dc) {
 
   // Current epoch minus 2000.0 in years
