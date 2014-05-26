@@ -45,7 +45,7 @@ Q_OBJECT
   virtual int corrGPSEpochTime() const {return (int) _GPSweeks;}
 
   static QStringList corrsToASCIIlines(int GPSweek, double GPSweeks, 
-                                       const ClockOrbit& co, const Bias* bias);
+                                       const ClockOrbit& co, const CodeBias* bias);
   static void reopen(const QString& fileNameSkl, QString& fileName,
                      std::ofstream*& out);
  signals:
@@ -63,7 +63,7 @@ Q_OBJECT
   QByteArray     _buffer;
   double         _GPSweeks;
   ClockOrbit     _co;
-  Bias           _bias;
+  CodeBias       _bias;
   int            _providerID[3];
 };
 
