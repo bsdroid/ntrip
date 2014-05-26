@@ -280,20 +280,20 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   struct ClockOrbit co;
   memset(&co, 0, sizeof(co));
-  co.GPSEpochTime      = static_cast<int>(epoTime.gpssec());
-  co.GLONASSEpochTime  = static_cast<int>(fmod(epoTime.gpssec(), 86400.0))
+  co.EpochTime[CLOCKORBIT_SATGPS]     = static_cast<int>(epoTime.gpssec());
+  co.EpochTime[CLOCKORBIT_SATGLONASS] = static_cast<int>(fmod(epoTime.gpssec(), 86400.0))
                        + 3 * 3600 - gnumleap(year, month, day);
-  co.ClockDataSupplied = 1;
-  co.OrbitDataSupplied = 1;
+  co.Supplied[COBOFS_CLOCK] = 1;
+  co.Supplied[COBOFS_ORBIT] = 1;
   co.SatRefDatum       = DATUM_ITRF;
   co.SSRIOD            = _IOD;
   co.SSRProviderID     = _PID; // 256 .. BKG,  257 ... EUREF
   co.SSRSolutionID     = _SID;
 
-  struct Bias bias;
+  struct CodeBias bias;
   memset(&bias, 0, sizeof(bias));
-  bias.GPSEpochTime     = co.GPSEpochTime;
-  bias.GLONASSEpochTime = co.GLONASSEpochTime;
+  bias.EpochTime[CLOCKORBIT_SATGPS]     = co.EpochTime[CLOCKORBIT_SATGPS];
+  bias.EpochTime[CLOCKORBIT_SATGLONASS] = co.EpochTime[CLOCKORBIT_SATGLONASS];
 
   // Default Update Interval
   // -----------------------
@@ -420,12 +420,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       }
       struct ClockOrbit::SatData* sd = 0;
       if      (prn[0] == 'G') {
-        sd = co.Sat + co.NumberOfGPSSat;
-        ++co.NumberOfGPSSat;
+        sd = co.Sat + co.NumberOfSat[CLOCKORBIT_SATGPS];
+        ++co.NumberOfSat[CLOCKORBIT_SATGPS];
       }
       else if (prn[0] == 'R') {
-        sd = co.Sat + CLOCKORBIT_NUMGPS + co.NumberOfGLONASSSat;
-        ++co.NumberOfGLONASSSat;
+        sd = co.Sat + CLOCKORBIT_NUMGPS + co.NumberOfSat[CLOCKORBIT_SATGLONASS];
+        ++co.NumberOfSat[CLOCKORBIT_SATGLONASS];
       }
       if (sd) {
         QString outLine;
@@ -433,14 +433,14 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
                          rtnAPC, rtnClk, rtnVel, rtnCoM, sd, outLine);
       }
 
-      struct Bias::BiasSat* biasSat = 0;
+      struct CodeBias::BiasSat* biasSat = 0;
       if      (prn[0] == 'G') {
-        biasSat = bias.Sat + bias.NumberOfGPSSat;
-        ++bias.NumberOfGPSSat;
+        biasSat = bias.Sat + bias.NumberOfSat[CLOCKORBIT_SATGPS];
+        ++bias.NumberOfSat[CLOCKORBIT_SATGPS];
       }
       else if (prn[0] == 'R') {
-        biasSat = bias.Sat + CLOCKORBIT_NUMGPS + bias.NumberOfGLONASSSat;
-        ++bias.NumberOfGLONASSSat;
+        biasSat = bias.Sat + CLOCKORBIT_NUMGPS + bias.NumberOfSat[CLOCKORBIT_SATGLONASS];
+        ++bias.NumberOfSat[CLOCKORBIT_SATGLONASS];
       }
 
       // Code Biases
@@ -571,7 +571,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   // Orbit and Clock Corrections together
   // ------------------------------------
   if (_samplRtcmEphCorr == 0.0) {
-    if (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) {
+    if (co.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
       if (len > 0) {
@@ -583,7 +583,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   // Orbit and Clock Corrections separately
   // --------------------------------------
   else {
-    if (co.NumberOfGPSSat > 0) {
+    if (co.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
         co.UpdateInterval = ephUpdInd;
@@ -593,13 +593,13 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
       }
-      int mmsg = (co.NumberOfGLONASSSat > 0) ? 1 : 0;
+      int mmsg = (co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) ? 1 : 0;
       int len2 = MakeClockOrbit(&co, COTYPE_GPSCLOCK, mmsg, obuffer, sizeof(obuffer));
       if (len2 > 0) {
         hlpBufferCo += QByteArray(obuffer, len2);
       }
     }
-    if (co.NumberOfGLONASSSat > 0) {
+    if (co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
         co.UpdateInterval = ephUpdInd;
@@ -619,9 +619,9 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   // Biases
   // ------
   QByteArray hlpBufferBias;
-  if (bias.NumberOfGPSSat > 0 || bias.NumberOfGLONASSSat > 0) {
+  if (bias.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || bias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
-    int len = MakeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+    int len = MakeCodeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
     if (len > 0) {
       hlpBufferBias = QByteArray(obuffer, len);
     }
