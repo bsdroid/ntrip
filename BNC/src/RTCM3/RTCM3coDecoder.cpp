@@ -148,7 +148,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     struct ClockOrbit co_sav;
     memcpy(&co_sav, &_co, sizeof(co_sav)); // save state
 
-    GCOB_RETURN irc = GetClockOrbitBias(&_co, &_bias, _buffer.data(),
+    GCOB_RETURN irc = GetSSR(&_co, &_bias, 0, 0, _buffer.data(),
                                         _buffer.size(), &bytesused);
 
     if      (irc <= -30) { // not enough data - restore state and exit loop
@@ -166,8 +166,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
       _buffer = _buffer.mid(bytesused);
 
       if ( (irc == GCOBR_OK          || irc == GCOBR_MESSAGEFOLLOWS ) && 
-           (_co.NumberOfGPSSat   > 0 || _co.NumberOfGLONASSSat   > 0 ||
-            _bias.NumberOfGPSSat > 0 || _bias.NumberOfGLONASSSat > 0) ) {
+           (_co.NumberOfSat[CLOCKORBIT_SATGPS]   > 0 || _co.NumberOfSat[CLOCKORBIT_SATGLONASS]   > 0 ||
+            _bias.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || _bias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) ) {
 
         reopen(_fileNameSkl, _fileName, _out);
 
@@ -179,9 +179,9 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
         // Correction Epoch from GPSEpochTime
         // ----------------------------------
-        if (_co.NumberOfGPSSat > 0 || _bias.NumberOfGPSSat > 0) {
-          int GPSEpochTime = (_co.NumberOfGPSSat > 0) ? 
-                             _co.GPSEpochTime : _bias.GPSEpochTime;
+        if (_co.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || _bias.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
+          int GPSEpochTime = (_co.NumberOfSat[CLOCKORBIT_SATGPS] > 0) ? 
+                             _co.EpochTime[CLOCKORBIT_SATGPS] : _bias.EpochTime[CLOCKORBIT_SATGPS];
           if      (GPSweeksHlp > GPSEpochTime + 86400.0) {
             GPSweek += 1;
           }
@@ -193,9 +193,9 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
         // Correction Epoch from Glonass Epoch
         // -----------------------------------
-        else if (_co.NumberOfGLONASSSat > 0 || _bias.NumberOfGLONASSSat > 0){
-          int GLONASSEpochTime = (_co.NumberOfGLONASSSat > 0) ? 
-                              _co.GLONASSEpochTime : _bias.GLONASSEpochTime;
+        else if (_co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0 || _bias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0){
+          int GLONASSEpochTime = (_co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) ? 
+                              _co.EpochTime[CLOCKORBIT_SATGLONASS] : _bias.EpochTime[CLOCKORBIT_SATGLONASS];
 
           // Second of day (GPS time) from Glonass Epoch
           // -------------------------------------------
@@ -281,21 +281,21 @@ void RTCM3coDecoder::printLine(const QString& line, int GPSweek,
 ////////////////////////////////////////////////////////////////////////////
 QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
                                               const ClockOrbit& co,
-                                              const Bias* bias) {
+                                              const CodeBias* bias) {
 
   QStringList retLines;
 
   // Loop over all satellites (GPS and Glonass)
   // ------------------------------------------
-  if (co.NumberOfGPSSat > 0 || co.NumberOfGLONASSSat > 0) {
+  if (co.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
     QString line1;
     line1.sprintf("! Orbits/Clocks: %d GPS %d Glonass",
-                  co.NumberOfGPSSat, co.NumberOfGLONASSSat);
+                  co.NumberOfSat[CLOCKORBIT_SATGPS], co.NumberOfSat[CLOCKORBIT_SATGLONASS]);
     retLines << line1;
   }
-  for (int ii = 0; ii < CLOCKORBIT_NUMGPS+co.NumberOfGLONASSSat; ii++) {
+  for (int ii = 0; ii < CLOCKORBIT_NUMGPS+co.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
     char sysCh = ' ';
-    if      (ii < co.NumberOfGPSSat) {
+    if      (ii < co.NumberOfSat[CLOCKORBIT_SATGPS]) {
       sysCh = 'G';
     }
     else if (ii >= CLOCKORBIT_NUMGPS) {
@@ -384,16 +384,16 @@ QStringList RTCM3coDecoder::corrsToASCIIlines(int GPSweek, double GPSweeks,
   // Loop over all satellites (GPS and Glonass)
   // ------------------------------------------
   if (bias) {
-    if (bias->NumberOfGPSSat > 0 || bias->NumberOfGLONASSSat > 0) {
+    if (bias->NumberOfSat[CLOCKORBIT_SATGPS] > 0 || bias->NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
       QString line1;
       line1.sprintf("! Biases: %d GPS %d Glonass",
-                    bias->NumberOfGPSSat, bias->NumberOfGLONASSSat);
+                    bias->NumberOfSat[CLOCKORBIT_SATGPS], bias->NumberOfSat[CLOCKORBIT_SATGLONASS]);
       retLines << line1;
     }
-    for (int ii = 0; ii < CLOCKORBIT_NUMGPS + bias->NumberOfGLONASSSat; ii++) {
+    for (int ii = 0; ii < CLOCKORBIT_NUMGPS + bias->NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
       char sysCh = ' ';
       int messageType;
-      if      (ii < bias->NumberOfGPSSat) {
+      if      (ii < bias->NumberOfSat[CLOCKORBIT_SATGPS]) {
         sysCh = 'G';
         messageType = BTYPE_GPS;
       }
