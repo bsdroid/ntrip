@@ -28,7 +28,7 @@ void printCodeBiasDiff(const char* filename, struct CodeBias* codeBias1,
 
 int main(void) {
 	enum COR_SATSYSTEM sys;
-	char* inputFile = "ss1_cocb_data/CLK801330.14C";
+	char* inputFile = "ssr1_cocb_data/CLK801330.14C";
 	for (sys = GPS; sys <= BDS; ++sys) {
 		char *outFilenameRaw, *outFilenameDbg;
 	    enum COR_SATSYSTEM CLOCKORBIT_SATGNSS = sys;
@@ -65,15 +65,14 @@ int main(void) {
 			CLOCKORBIT_OFFSETGNSS = CLOCKORBIT_OFFSETBDS;
 			break;
 		}
-		char commandRaw[100], commandDbg[100];
-		sprintf(commandRaw, "rm %s", outFilenameRaw); system(commandRaw);
-		sprintf(commandDbg, "rm %s", outFilenameDbg); system(commandDbg);
+		unlink(outFilenameRaw);
+		unlink(outFilenameDbg);
 		FILE *asciiSsr, *f;
 		size_t len = 0;
 		char *buffer = 0, type = satSYS[sys];
 		asciiSsr = fopen(inputFile, "r");
 		if (asciiSsr == NULL) {
-			fprintf(stderr, "ERROR: open file%s \n", inputFile);
+			fprintf(stderr, "ERROR: open file %s\n", inputFile);
 			return 0;
 		}
 		while (getline(&buffer, &len, asciiSsr) > 0) { //fprintf(stderr, "line: %s", buffer);
