@@ -183,7 +183,7 @@ int main(void) {
 						continue;
 					cbType[0] = CODETYPEGLONASS_L1_CA;
 					cbType[1] = CODETYPEGLONASS_L1_P;
-					cbType[1] = CODETYPEGLONASS_L2_CA;
+					cbType[2] = CODETYPEGLONASS_L2_CA;
 					break;
 				case GAL:
 					cbType[0] = CODETYPEGALILEO_E1_A;
