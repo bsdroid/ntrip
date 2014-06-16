@@ -468,6 +468,7 @@ int moremessagesfollow, char *buffer, size_t size)
         T_GLONASS_EPOCH_TIME(co->EpochTime[s])
         break;
       }
+      T_SSR_UPDATE_INTERVAL(co->UpdateInterval)
       T_MULTIPLE_MESSAGE_INDICATOR(moremessagesfollow ? 1 : 0)
       T_SSR_IOD(co->SSRIOD)
       T_SSR_PROVIDER_ID(co->SSRProviderID)
@@ -1150,6 +1151,7 @@ fprintf(stderr, "type %d size %d\n",type,sizeofrtcmblock);
           G_GLONASS_EPOCH_TIME(co->EpochTime[s], co->NumberOfSat[s])
           break;
         }
+        G_SSR_UPDATE_INTERVAL(co->UpdateInterval)
         G_MULTIPLE_MESSAGE_INDICATOR(mmi)
         G_SSR_IOD(co->SSRIOD)
         G_SSR_PROVIDER_ID(co->SSRProviderID)
