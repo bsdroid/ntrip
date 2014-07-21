@@ -280,9 +280,10 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   struct ClockOrbit co;
   memset(&co, 0, sizeof(co));
-  co.EpochTime[CLOCKORBIT_SATGPS]     = static_cast<int>(epoTime.gpssec());
-  co.EpochTime[CLOCKORBIT_SATGLONASS] = static_cast<int>(fmod(epoTime.gpssec(), 86400.0))
-                       + 3 * 3600 - gnumleap(year, month, day);
+  co.EpochTime[CLOCKORBIT_SATGPS] = static_cast<int>(epoTime.gpssec());
+  double gt = epoTime.gpssec() + 3 * 3600 - gnumleap(year, month, day);
+  co.EpochTime[CLOCKORBIT_SATGLONASS] = static_cast<int>(fmod(gt, 86400.0));
+
   co.Supplied[COBOFS_CLOCK] = 1;
   co.Supplied[COBOFS_ORBIT] = 1;
   co.SatRefDatum       = DATUM_ITRF;
