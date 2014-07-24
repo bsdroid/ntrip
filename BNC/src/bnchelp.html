@@ -2360,7 +2360,32 @@ Select the length of Clock RINEX files and SP3 Orbit files. The default value is
 <p>Select the stream's orbit correction sampling interval in seconds. A value of 60 sec may be appropriate.</p>
 <p> A value of zero '0' tells BNC to upload all orbit correction samples coming in from the real-time GNSS engine along with the clock correction samples to produce combined orbit and clock corrections to Broadcast Ephemeris (1060 for GPS, 1066 for GLONASS).
 </p>
-
+<p>
+Configuration examples:
+</p>
+Let us suppose an real-time network engine supporting BNC <u>every 5 seconds</u> with GPS Broadcast Corrections for orbits, clocks and code biases in 'RTNET' stream format.
+<ul>
+<li>With 'Sampling Orb' set to '0'  BNC would produce</li>
+<ul>
+<li>Every 5 seconds a 1059 message for GPS code biases,</li>
+<li>Every 5 seconds a 1060 message for combined orbit and clock corrections to GPS Broadcast Ephemeris.</li>
+</ul>
+<br>
+<li>With 'Sampling Orb' set to '5' BNC would produce</li>
+<ul> 
+<li>Every 5 seconds a 1057 message for GPS orbit corrections to Broadcast Ephemeris,</li>
+<li>Every 5 seconds a 1058 message for GPS clock corrections to Broadcast Ephemeris,</li>
+<li>Every 5 seconds a 1059 message for GPS code biases.</li>
+</ul>
+<br>
+<li>With 'Sampling Orb' set to '10' BNC would produce</li>
+<ul> 
+<li>Every 10 seconds a 1057 message for GPS orbit corrections to Broadcast Ephemeris,</li>
+<li>Every 5 seconds a 1058 message for GPS clock corrections to Broadcast Ephemeris,</li>
+<li>Every 5 seconds a 1059 message for GPS code biases.</li>
+</ul>
+</ul>
+Note that only when specifying a value of zereo '0' (default) for 'Sampling Orb', BNC produces <u>combined</u> orbit and clock correction messages.
 <p><a name="upclksp3"><h4>3.14.8.2 SP3 - mandatory if 'SP3 File' is specified</h4></p>
 <p>Select the SP3 orbit file sampling interval in minutes. A value of 15 min may be appropriate. A value of zero '0' tells BNC to store all available samples into SP3 orbit files.</p>
 
