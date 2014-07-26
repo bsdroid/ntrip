@@ -272,28 +272,6 @@ class bncWindow : public QMainWindow {
     bncMapWin*           _mapWin;
     QList<bncGetThread*> _threads;
 
-#ifdef RTROVER_INTERFACE
-    QComboBox* _rtroverModeComboBox;
-    QLineEdit* _rtroverRoverMountLineEdit;
-    QLineEdit* _rtroverCorrMountLineEdit;
-    QLineEdit* _rtroverBaseMountLineEdit;
-    QLineEdit* _rtroverRoverRefCrdXLineEdit;
-    QLineEdit* _rtroverRoverRefCrdYLineEdit;
-    QLineEdit* _rtroverRoverRefCrdZLineEdit;
-    QLineEdit* _rtroverBaseRefCrdXLineEdit;
-    QLineEdit* _rtroverBaseRefCrdYLineEdit;
-    QLineEdit* _rtroverBaseCrdZLineEdit;
-    QLineEdit* _rtroverRoverDNLineEdit;
-    QLineEdit* _rtroverRoverDELineEdit;
-    QLineEdit* _rtroverRoverDULineEdit;
-    QLineEdit* _rtroverBaseDNLineEdit;
-    QLineEdit* _rtroverBaseDELineEdit;
-    QLineEdit* _rtroverBaseDULineEdit;
-    QLineEdit* _rtroverRoverAntennaLineEdit;
-    QLineEdit* _rtroverBaseAntennaLineEdit;
-    qtFileChooser* _rtroverAntexFileChooser;
-    QLineEdit* _rtroverOutputLineEdit;
-#endif
 };
 
 #ifdef GNSSCENTER_PLUGIN
