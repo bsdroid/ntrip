@@ -51,9 +51,6 @@
 #include "bncutils.h"
 #include "bncsettings.h"
 #include "RTCM/GPSDecoder.h"
-#ifdef RTROVER_INTERFACE
-#  include "RTRover/bncrtrover.h"
-#endif
 
 using namespace std;
 
@@ -119,15 +116,6 @@ bncCaster::bncCaster() {
   _waitTime     = settings.value("waitTime").toInt();
   _lastDumpSec  = 0; 
   _confInterval = -1;
-#ifdef RTROVER_INTERFACE
-  if (!settings.value("rtroverMode").toString().isEmpty()) {
-    _bncRtrover = new t_bncRtrover();
-    _bncRtrover->start();
-  }
-  else {
-    _bncRtrover = 0;
-  }
-#endif
 
   // Miscellaneous output port
   // -------------------------
@@ -167,12 +155,6 @@ bncCaster::~bncCaster() {
   delete _nmeaServer;
   delete _nmeaSockets;
   delete _epochs;
-#ifdef RTROVER_INTERFACE
-  if (_bncRtrover) {
-    _bncRtrover->quit();
-    _bncRtrover->deleteLater();
-  }
-#endif
   delete _miscServer;
   delete _miscSockets;
 }
@@ -302,13 +284,6 @@ void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
 
   connect(getThread, SIGNAL(newRawData(QByteArray, QByteArray)),
           this,      SLOT(slotNewRawData(QByteArray, QByteArray)));
-
-#ifdef RTROVER_INTERFACE
-  if (_bncRtrover) {
-    connect(getThread, SIGNAL(newObs(QByteArray, QList<t_obs>)),
-            _bncRtrover, SLOT(slotNewObs(QByteArray, QList<t_obs>)));
-  }
-#endif
 
   connect(getThread, SIGNAL(getThreadFinished(QByteArray)), 
           this, SLOT(slotGetThreadFinished(QByteArray)));
