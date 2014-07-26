@@ -117,22 +117,6 @@ exists(rinex/bncpostprocess.h) {
              rinex/dopplot.cpp
 }
 
-# Link to a 3rd-part library (test)
-# ---------------------------------
-exists("../../RTRover/self_build/libRTRover.so") {
-  message("Configured with RTRover")
-  use_RTRover = true
-}
-
-equals(use_RTRover, true) {
-  DEFINES += RTROVER_INTERFACE
-  HEADERS += RTRover/bncrtrover.h
-  SOURCES += RTRover/bncrtrover.cpp
-  LIBS    += -LRTRover -lRTRover
-  unix:LIBS += -Wl,-rpath,$$PWD/RTRover
-}  
-
-
 # Check QtWebKit Library Existence
 # --------------------------------
 win32 {
