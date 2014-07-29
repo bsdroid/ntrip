@@ -80,6 +80,28 @@ Q_EXPORT_PLUGIN2(gnsscenter_bnc, t_bncFactory)
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
+t_pppWidgets::t_pppWidgets() {
+  _dataSource   = new QComboBox();    
+  _rinexObs     = new qtFileChooser();
+  _rinexNav     = new qtFileChooser();
+  _corrHostPort = new QLineEdit();      
+  _corrFile     = new qtFileChooser();  
+  _crdFile      = new qtFileChooser();
+  _antexFile    = new qtFileChooser();
+  _logFile      = new QLineEdit();    
+  _nmeaFile     = new QLineEdit();    
+  _nmeaPort     = new QLineEdit();    
+  _staTable     = new QTableWidget();
+  _lcGPS        = new QComboBox();    
+  _lcGLONASS    = new QComboBox();    
+  _lcGalileo    = new QComboBox();    
+  _sigmaC1      = new QLineEdit();    
+  _sigmaC2      = new QLineEdit();    
+  _corrWaitTime = new QSpinBox();     
+}
+
+// Constructor
+////////////////////////////////////////////////////////////////////////////
 bncWindow::bncWindow() {
 
 #ifdef GNSSCENTER_PLUGIN
@@ -653,6 +675,8 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   QWidget* pppgroup = new QWidget();
   QWidget* ppp2group = new QWidget();
   QWidget* ppp3group = new QWidget();
+  QWidget* pppGroup1 = new QWidget();
+  QWidget* pppGroup2 = new QWidget();
   QWidget* reqcgroup = new QWidget();
   QWidget* cmbgroup = new QWidget();
   QWidget* uploadgroup = new QWidget();
@@ -670,6 +694,10 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   _aogroup->addTab(pppgroup,tr("PPP (1)"));
   _aogroup->addTab(ppp2group,tr("PPP (2)"));
   _aogroup->addTab(ppp3group,tr("PPP (3)"));
+  
+  _aogroup->addTab(pppGroup1,tr("PPP NEW (1)"));
+  _aogroup->addTab(pppGroup2,tr("PPP NEW (2)"));
+
 #ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combine Corrections"));
 #endif
@@ -1102,6 +1130,20 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   ppp3Layout->addStretch();
   ppp3group->setLayout(ppp3Layout);
+
+  // PPP NEW
+  // -------
+  QGridLayout* pppLayout1 = new QGridLayout();
+  ir = 0;
+  pppLayout1->addWidget(new QLabel("<b>Precise Point Positioning</b>"), ir, 0, 1, 7, Qt::AlignLeft);
+
+  pppGroup1->setLayout(pppLayout1);
+
+  QGridLayout* pppLayout2 = new QGridLayout();
+  ir = 0;
+  pppLayout2->addWidget(new QLabel("<b>Precise Point Positioning</b>"), ir, 0, 1, 7, Qt::AlignLeft);
+
+  pppGroup2->setLayout(pppLayout2);
 
   // Reqc Processing
   // ---------------
