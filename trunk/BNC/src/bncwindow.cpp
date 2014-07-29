@@ -1971,6 +1971,8 @@ void bncWindow::saveOptions() {
   if (_caster) {
     _caster->readMountPoints();
   }
+
+  _pppWidgets.saveOptions();
 }
 
 // All get slots terminated
