@@ -95,8 +95,8 @@ t_pppWidgets::t_pppWidgets() {
   _lcGPS        = new QComboBox();    
   _lcGLONASS    = new QComboBox();    
   _lcGalileo    = new QComboBox();    
-  _sigmaC1      = new QLineEdit();    
-  _sigmaC2      = new QLineEdit();    
+  _sigmaC1      = new QLineEdit();
+  _sigmaL1      = new QLineEdit();    
   _corrWaitTime = new QSpinBox();     
 }
 
@@ -677,6 +677,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   QWidget* ppp3group = new QWidget();
   QWidget* pppGroup1 = new QWidget();
   QWidget* pppGroup2 = new QWidget();
+  QWidget* pppGroup3 = new QWidget();
   QWidget* reqcgroup = new QWidget();
   QWidget* cmbgroup = new QWidget();
   QWidget* uploadgroup = new QWidget();
@@ -697,6 +698,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   
   _aogroup->addTab(pppGroup1,tr("PPP NEW (1)"));
   _aogroup->addTab(pppGroup2,tr("PPP NEW (2)"));
+  _aogroup->addTab(pppGroup3,tr("PPP NEW (3)"));
 
 #ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combine Corrections"));
@@ -1173,6 +1175,29 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   pppLayout2->addWidget(_pppWidgets._staTable, 99);
 
   pppGroup2->setLayout(pppLayout2);
+
+  QGridLayout* pppLayout3 = new QGridLayout();
+  ir = 0;
+  pppLayout3->addWidget(new QLabel("<b>Precise Point Positioning</b>"), ir, 0, 1, 7, Qt::AlignLeft);
+  ++ir;     
+  pppLayout3->addWidget(new QLabel("GPS LCs"),              ir, 0, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._lcGPS,                 ir, 1);
+  pppLayout3->addItem(new QSpacerItem(4*ww, 0),             ir, 2);
+  pppLayout3->addWidget(new QLabel("Sigma C1"),             ir, 3, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._sigmaC1,               ir, 4); _pppWidgets._sigmaC1->setMaximumWidth(8*ww);
+  pppLayout3->addWidget(new QLabel("Sigma L1"),             ir, 5, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._sigmaL1,               ir, 6); _pppWidgets._sigmaL1->setMaximumWidth(8*ww);
+  ++ir;
+  pppLayout3->addWidget(new QLabel("GLONASS LCs"),          ir, 0, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._lcGLONASS,             ir, 1);
+  ++ir;
+  pppLayout3->addWidget(new QLabel("Galileo LCs"),          ir, 0, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._lcGalileo,             ir, 1);
+  ++ir;
+  pppLayout3->addWidget(new QLabel("Wait for corrections"), ir, 0, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._corrWaitTime,          ir, 1);
+
+  pppGroup3->setLayout(pppLayout3);
 
   // Reqc Processing
   // ---------------

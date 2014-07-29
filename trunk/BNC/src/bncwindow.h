@@ -73,7 +73,7 @@ class t_pppWidgets {
   QComboBox*     _lcGLONASS;
   QComboBox*     _lcGalileo;
   QLineEdit*     _sigmaC1;
-  QLineEdit*     _sigmaC2;
+  QLineEdit*     _sigmaL1;
   QSpinBox*      _corrWaitTime;
 };
 
