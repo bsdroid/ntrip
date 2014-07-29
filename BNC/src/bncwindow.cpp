@@ -1178,7 +1178,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   QGridLayout* pppLayout3 = new QGridLayout();
   ir = 0;
-  pppLayout3->addWidget(new QLabel("<b>Precise Point Positioning</b>"), ir, 0, 1, 7, Qt::AlignLeft);
+  pppLayout3->addWidget(new QLabel("<b>Precise Point Positioning</b>"), ir, 0, 1, 2, Qt::AlignLeft);
   ++ir;     
   pppLayout3->addWidget(new QLabel("GPS LCs"),              ir, 0, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._lcGPS,                 ir, 1);
@@ -1196,6 +1196,8 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   ++ir;
   pppLayout3->addWidget(new QLabel("Wait for corrections"), ir, 0, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._corrWaitTime,          ir, 1);
+  ++ir;
+  pppLayout3->addWidget(new QLabel(""),                     ir, 0);
 
   pppGroup3->setLayout(pppLayout3);
 
