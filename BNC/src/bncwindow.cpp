@@ -1168,9 +1168,9 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 
   pppGroup1->setLayout(pppLayout1);
 
-  QGridLayout* pppLayout2 = new QGridLayout();
-  ir = 0;
-  pppLayout2->addWidget(new QLabel("<b>Precise Point Positioning</b>"), ir, 0, 1, 7, Qt::AlignLeft);
+  QVBoxLayout* pppLayout2 = new QVBoxLayout();
+  pppLayout2->addWidget(new QLabel("<b>Precise Point Positioning</b>"));
+  pppLayout2->addWidget(_pppWidgets._staTable, 99);
 
   pppGroup2->setLayout(pppLayout2);
 
