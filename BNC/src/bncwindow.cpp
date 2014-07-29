@@ -80,28 +80,6 @@ Q_EXPORT_PLUGIN2(gnsscenter_bnc, t_bncFactory)
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_pppWidgets::t_pppWidgets() {
-  _dataSource   = new QComboBox();    
-  _rinexObs     = new qtFileChooser();
-  _rinexNav     = new qtFileChooser();
-  _corrHostPort = new QLineEdit();      
-  _corrFile     = new qtFileChooser();  
-  _crdFile      = new qtFileChooser();
-  _antexFile    = new qtFileChooser();
-  _logFile      = new QLineEdit();    
-  _nmeaFile     = new QLineEdit();    
-  _nmeaPort     = new QLineEdit();    
-  _staTable     = new QTableWidget();
-  _lcGPS        = new QComboBox();    
-  _lcGLONASS    = new QComboBox();    
-  _lcGalileo    = new QComboBox();    
-  _sigmaC1      = new QLineEdit();
-  _sigmaL1      = new QLineEdit();    
-  _corrWaitTime = new QSpinBox();     
-}
-
-// Constructor
-////////////////////////////////////////////////////////////////////////////
 bncWindow::bncWindow() {
 
 #ifdef GNSSCENTER_PLUGIN

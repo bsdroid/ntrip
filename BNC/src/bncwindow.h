@@ -30,6 +30,7 @@
 
 #include "bncgetthread.h"
 #include "bnccaster.h"
+#include "PPP/pppwidgets.h"
 
 class bncAboutDlg : public QDialog {
   Q_OBJECT
@@ -54,28 +55,6 @@ class bncEphUploadCaster;
 class qtFileChooser;
 class bncMapWin;
 class t_postProcessing;
-
-class t_pppWidgets {
- public:
-  t_pppWidgets();
-  QComboBox*     _dataSource;
-  qtFileChooser* _rinexObs;
-  qtFileChooser* _rinexNav;
-  QLineEdit*     _corrHostPort;  
-  qtFileChooser* _corrFile;  
-  qtFileChooser* _crdFile;
-  qtFileChooser* _antexFile;
-  QLineEdit*     _logFile;
-  QLineEdit*     _nmeaFile;
-  QLineEdit*     _nmeaPort;
-  QTableWidget*  _staTable;
-  QComboBox*     _lcGPS;
-  QComboBox*     _lcGLONASS;
-  QComboBox*     _lcGalileo;
-  QLineEdit*     _sigmaC1;
-  QLineEdit*     _sigmaL1;
-  QSpinBox*      _corrWaitTime;
-};
 
 class bncWindow : public QMainWindow {
   Q_OBJECT
