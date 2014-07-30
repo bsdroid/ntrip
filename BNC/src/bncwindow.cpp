@@ -1154,6 +1154,8 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   QHBoxLayout* pppLayout2sub = new QHBoxLayout();
   pppLayout2sub->addWidget(_pppWidgets._addStaButton);
   pppLayout2sub->addWidget(_pppWidgets._delStaButton);
+  pppLayout2sub->addStretch(99);
+ 
   pppLayout2->addLayout(pppLayout2sub);
 
   pppGroup2->setLayout(pppLayout2);
