@@ -1115,7 +1115,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   // -------
   QGridLayout* pppLayout1 = new QGridLayout();
   ir = 0;
-  pppLayout1->addWidget(new QLabel("<b>Precise Point Positioning</b>"), ir, 0, 1, 7, Qt::AlignLeft);
+  pppLayout1->addWidget(new QLabel("<b>Precise Point Positioning (Input and Output)</b>"), ir, 0, 1, 7, Qt::AlignLeft);
   ++ir;     
   pppLayout1->addWidget(new QLabel("Data Source"),        ir, 0, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._dataSource,          ir, 1);
@@ -1149,14 +1149,14 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   pppGroup1->setLayout(pppLayout1);
 
   QVBoxLayout* pppLayout2 = new QVBoxLayout();
-  pppLayout2->addWidget(new QLabel("<b>Precise Point Positioning</b>"));
+  pppLayout2->addWidget(new QLabel("<b>Precise Point Positioning (Processed Stations)</b>"));
   pppLayout2->addWidget(_pppWidgets._staTable, 99);
 
   pppGroup2->setLayout(pppLayout2);
 
   QGridLayout* pppLayout3 = new QGridLayout();
   ir = 0;
-  pppLayout3->addWidget(new QLabel("<b>Precise Point Positioning</b>"), ir, 0, 1, 2, Qt::AlignLeft);
+  pppLayout3->addWidget(new QLabel("<b>Precise Point Positioning (Options)</b>"), ir, 0, 1, 2, Qt::AlignLeft);
   ++ir;     
   pppLayout3->addWidget(new QLabel("GPS LCs"),              ir, 0, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._lcGPS,                 ir, 1);
