@@ -1151,6 +1151,10 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
   QVBoxLayout* pppLayout2 = new QVBoxLayout();
   pppLayout2->addWidget(new QLabel("<b>Precise Point Positioning (Processed Stations)</b>"));
   pppLayout2->addWidget(_pppWidgets._staTable, 99);
+  QHBoxLayout* pppLayout2sub = new QHBoxLayout();
+  pppLayout2sub->addWidget(_pppWidgets._addStaButton);
+  pppLayout2sub->addWidget(_pppWidgets._delStaButton);
+  pppLayout2->addLayout(pppLayout2sub);
 
   pppGroup2->setLayout(pppLayout2);
 
