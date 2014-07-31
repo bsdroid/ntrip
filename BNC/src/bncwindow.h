@@ -259,7 +259,7 @@ class bncWindow : public QMainWindow {
     QSpinBox*        _uploadEphSampleSpinBox;
     bncBytesCounter* _uploadEphBytesCounter;
 
-    bncCaster* _caster;
+    QSharedPointer<bncCaster> _caster;
 
     bncEphUploadCaster* _casterEph;
 
