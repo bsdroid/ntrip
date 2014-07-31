@@ -51,6 +51,7 @@ class t_bncCore : public QObject {
     void setPort(int port);
     void setPortCorr(int port);
     void setCaster(bncCaster* caster) {_caster = caster;}
+    const bncCaster* caster() const {return _caster;}
     QDateTime* _currentDateAndTimeGPS;
     void setConfFileName(const QString& confFileName);
     QString confFileName() const {return _confFileName;}

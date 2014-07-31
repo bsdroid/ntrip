@@ -53,6 +53,7 @@ class bncCaster : public QObject {
    void mountPointsRead(QList<bncGetThread*>);
    void getThreadsFinished();   
    void newMessage(QByteArray msg, bool showOnScreen);
+   void newObs(QByteArray staID, QList<t_obs> obsList);
 
  private slots:
    void slotReadMountPoints();
