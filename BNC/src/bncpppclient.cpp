@@ -73,8 +73,8 @@ bncPPPclient::bncPPPclient(QByteArray staID, t_pppOpt* opt, bool connectSlots) :
     connect(this, SIGNAL(newMessage(QByteArray,bool)), 
             BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
-    connect(BNC_CORE, SIGNAL(newCorrections(QList<QString>)),
-            this, SLOT(slotNewCorrections(QList<QString>)));
+    connect(BNC_CORE, SIGNAL(newCorrections(QStringList)),
+            this, SLOT(slotNewCorrections(QStringList)));
 
     connect(BNC_CORE, SIGNAL(providerIDChanged(QString)),
             this, SLOT(slotProviderIDChanged(QString)));
@@ -253,7 +253,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
+void bncPPPclient::slotNewCorrections(QStringList corrList) {
   QMutexLocker locker(&_mutex);
 
   // Check the Mountpoint (source of corrections)

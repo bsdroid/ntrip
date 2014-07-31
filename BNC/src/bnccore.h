@@ -80,7 +80,7 @@ class t_bncCore : public QObject {
     void newEphGPS(gpsephemeris gpseph);
     void newEphGlonass(glonassephemeris glonasseph);
     void newEphGalileo(galileoephemeris galileoeph);
-    void newCorrections(QList<QString>);
+    void newCorrections(QStringList);
     void providerIDChanged(QString);
     
  private slots:
@@ -95,7 +95,7 @@ class t_bncCore : public QObject {
                      const QString& strV2, const QString& strV3);
     void dumpCorrs(bncTime minTime, bncTime maxTime);
     void dumpCorrs();
-    void dumpCorrs(const QList<QString>& allCorrs);
+    void dumpCorrs(const QStringList& allCorrs);
     void messagePrivate(const QByteArray& msg);
     void checkEphemeris(gpsephemeris* oldEph, gpsephemeris* newEph);
 
