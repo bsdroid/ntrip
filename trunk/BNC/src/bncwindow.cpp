@@ -1526,7 +1526,7 @@ bncWindow::bncWindow() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::~bncWindow() {
-  _caster.clear();
+  _caster.clear(); BNC_CORE->deleteCaster();
   delete _casterEph;
   delete _pppMain;
 }
@@ -1989,7 +1989,7 @@ void bncWindow::saveOptions() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotGetThreadsFinished() {
   BNC_CORE->slotMessage("All Get Threads Terminated", true);
-  _caster.clear();
+  _caster.clear(); BNC_CORE->deleteCaster();
   delete _casterEph; _casterEph = 0;
   _runningRealTime = false;
 }
@@ -2086,7 +2086,7 @@ void bncWindow::slotStop() {
       _pppMain->stop();
     }
     BNC_CORE->stopCombination();
-    _caster.clear();
+    _caster.clear(); BNC_CORE->deleteCaster();
     delete _casterEph; _casterEph = 0;
     _runningRealTime = false;
     enableStartStop();
