@@ -50,9 +50,8 @@ class t_bncCore : public QObject {
     void setMode(e_mode mode) {_mode = mode;}
     void setPort(int port);
     void setPortCorr(int port);
-    void setCaster(QSharedPointer<bncCaster> caster) {_caster = caster;}
-    void deleteCaster() {_caster.clear();}
-    QSharedPointer<bncCaster> caster() const {return _caster;}
+    void setCaster(bncCaster* caster) {_caster = caster;}
+    const bncCaster* caster() const {return _caster;}
     QDateTime* _currentDateAndTimeGPS;
     void setConfFileName(const QString& confFileName);
     QString confFileName() const {return _confFileName;}
@@ -128,7 +127,7 @@ class t_bncCore : public QObject {
     int                 _portNMEA;
     QTcpServer*         _serverNMEA;
     QList<QTcpSocket*>* _socketsNMEA;
-    QSharedPointer<bncCaster> _caster;
+    bncCaster*          _caster;
     QMap<QString, bncTime> _lastCorrDumpTime;
     double              _waitCoTime;
     QMultiMap<bncTime, QString>* _corrs;

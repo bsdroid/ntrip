@@ -192,14 +192,14 @@ int main(int argc, char* argv[]) {
 
     bncEphUploadCaster* casterEph = new bncEphUploadCaster(); (void) casterEph;
     
-    QSharedPointer<bncCaster> caster(new bncCaster());
+    bncCaster* caster = new bncCaster();
     
     BNC_CORE->setCaster(caster);
     BNC_CORE->setPort(settings.value("outEphPort").toInt());
     BNC_CORE->setPortCorr(settings.value("corrPort").toInt());
     BNC_CORE->initCombination();
     
-    BNC_CORE->connect(caster.data(), SIGNAL(getThreadsFinished()), &app, SLOT(quit()));
+    BNC_CORE->connect(caster, SIGNAL(getThreadsFinished()), &app, SLOT(quit()));
     
     BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION " =========", true);
     
