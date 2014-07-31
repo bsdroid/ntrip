@@ -39,7 +39,7 @@ class t_corrFile : public QObject {
   const QMap<QString, int>& corrIODs() const {return _corrIODs;}
 
  signals:
-  void newCorrections(QList<QString>);
+  void newCorrections(QStringList);
 
  private:
   bool stopRead(const bncTime& tt);

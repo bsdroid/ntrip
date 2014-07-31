@@ -70,7 +70,7 @@ void t_corrFile::syncRead(const bncTime& tt) {
     return;
   }
 
-  QList<QString> corrs;
+  QStringList corrs;
 
   if (!_lastLine.isEmpty()) {
     corrs << _lastLine;

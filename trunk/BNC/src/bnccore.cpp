@@ -689,7 +689,7 @@ void t_bncCore::slotNewCorrLine(QString line, QString staID, bncTime coTime) {
 // Dump Complete Correction Epochs
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::dumpCorrs(bncTime minTime, bncTime maxTime) {
-  QList<QString> allCorrs;
+  QStringList allCorrs;
   QMutableMapIterator<bncTime, QString> it(*_corrs);
   while (it.hasNext()) {
     it.next();
@@ -705,7 +705,7 @@ void t_bncCore::dumpCorrs(bncTime minTime, bncTime maxTime) {
 // Dump all corrections
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::dumpCorrs() {
-  QList<QString> allCorrs;
+  QStringList allCorrs;
   QMutableMapIterator<bncTime, QString> it(*_corrs);
   while (it.hasNext()) {
     allCorrs << it.next().value();
@@ -716,7 +716,7 @@ void t_bncCore::dumpCorrs() {
 
 // Dump List of Corrections 
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::dumpCorrs(const QList<QString>& allCorrs) {
+void t_bncCore::dumpCorrs(const QStringList& allCorrs) {
   emit newCorrections(allCorrs);
   if (_socketsCorr) {
     QListIterator<QString> it(allCorrs);
