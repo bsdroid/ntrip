@@ -89,7 +89,6 @@ bncWindow::bncWindow() {
   BNC_CORE->setConfFileName("");
 #endif
 
-  _caster    = 0;
   _casterEph = 0;
 
   _bncFigure = new bncFigure(this);
@@ -1527,7 +1526,7 @@ bncWindow::bncWindow() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::~bncWindow() {
-  delete _caster;
+  _caster.clear();
   delete _casterEph;
   delete _pppMain;
 }
@@ -1990,7 +1989,7 @@ void bncWindow::saveOptions() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotGetThreadsFinished() {
   BNC_CORE->slotMessage("All Get Threads Terminated", true);
-  delete _caster;    _caster    = 0;
+  _caster.clear();
   delete _casterEph; _casterEph = 0;
   _runningRealTime = false;
 }
@@ -2025,17 +2024,17 @@ void bncWindow::startRealTime() {
 
   enableStartStop();
 
-  _caster = new bncCaster();
+  _caster = QSharedPointer<bncCaster>(new bncCaster());
 
   BNC_CORE->setCaster(_caster);
   BNC_CORE->setPort(_outEphPortLineEdit->text().toInt());
   BNC_CORE->setPortCorr(_corrPortLineEdit->text().toInt());
   BNC_CORE->initCombination();
 
-  connect(_caster, SIGNAL(getThreadsFinished()), 
+  connect(_caster.data(), SIGNAL(getThreadsFinished()), 
           this, SLOT(slotGetThreadsFinished()));
 
-  connect (_caster, SIGNAL(mountPointsRead(QList<bncGetThread*>)), 
+  connect (_caster.data(), SIGNAL(mountPointsRead(QList<bncGetThread*>)), 
            this, SLOT(slotMountPointsRead(QList<bncGetThread*>)));
 
   BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION " =========", true);
@@ -2087,7 +2086,7 @@ void bncWindow::slotStop() {
       _pppMain->stop();
     }
     BNC_CORE->stopCombination();
-    delete _caster;    _caster    = 0;
+    _caster.clear();
     delete _casterEph; _casterEph = 0;
     _runningRealTime = false;
     enableStartStop();

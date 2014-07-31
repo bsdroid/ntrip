@@ -71,7 +71,6 @@ t_bncCore::t_bncCore() {
   _logFileFlag = 0;
   _logFile     = 0;
   _logStream   = 0;
-  _caster      = 0;
   _rawFile     = 0;
 #ifdef USE_COMBINATION
   _bncComb     = 0;
@@ -630,7 +629,7 @@ void t_bncCore::slotNewConnectionCorr() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotQuit() {
   cout << "t_bncCore::slotQuit" << endl;
-  delete _caster;
+  _caster.clear();
   qApp->quit();
 }
 
