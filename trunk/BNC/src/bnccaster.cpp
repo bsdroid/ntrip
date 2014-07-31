@@ -282,6 +282,9 @@ void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
   connect(getThread, SIGNAL(newObs(QByteArray, QList<t_obs>)),
           this,      SLOT(slotNewObs(QByteArray, QList<t_obs>)));
 
+  connect(getThread, SIGNAL(newObs(QByteArray, QList<t_obs>)),
+          this,      SIGNAL(slotNewObs(QByteArray, QList<t_obs>)));
+
   connect(getThread, SIGNAL(newRawData(QByteArray, QByteArray)),
           this,      SLOT(slotNewRawData(QByteArray, QByteArray)));
 
