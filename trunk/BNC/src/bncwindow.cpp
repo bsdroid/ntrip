@@ -72,6 +72,9 @@
 #  include "rinex/reqcanalyze.h"
 #endif
 
+#include "PPP/pppMain.h"
+
+using namespace BNC;
 using namespace std;
 
 #ifdef GNSSCENTER_PLUGIN
@@ -96,6 +99,7 @@ bncWindow::bncWindow() {
   _runningPostProcessingPPP  = false;
   _runningPostProcessingReqc = false;
   _postProcessing            = 0;
+  _pppMain                   = new t_pppMain();
 
   _pppSPPComboBox     = 0; // necessary for enableStartStop()
   _reqcActionComboBox = 0; // necessary for enableStartStop()
@@ -480,7 +484,7 @@ bncWindow::bncWindow() {
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
   _mountPointsTable->horizontalHeader()->setStretchLastSection(true);
   _mountPointsTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-_mountPointsTable->setHorizontalHeaderLabels(labels);
+  _mountPointsTable->setHorizontalHeaderLabels(labels);
   _mountPointsTable->setGridStyle(Qt::NoPen);
   _mountPointsTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   _mountPointsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -1525,6 +1529,7 @@ _mountPointsTable->setHorizontalHeaderLabels(labels);
 bncWindow::~bncWindow() {
   delete _caster;
   delete _casterEph;
+  delete _pppMain;
 }
 
 // 
@@ -2003,6 +2008,9 @@ void bncWindow::slotStart() {
   else {
     startRealTime();
   }
+  if (_pppMain) {
+    _pppMain->start();
+  }
 }
 
 // Start Real-Time (Retrieve Data etc.)
@@ -2100,6 +2108,10 @@ void bncWindow::closeEvent(QCloseEvent* event) {
 
   if (_postProcessing) {
     _postProcessing->terminate();
+  }
+
+  if (_pppMain) {
+    _pppMain->stop();
   }
 
   QMainWindow::closeEvent(event);
