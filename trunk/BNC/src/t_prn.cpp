@@ -4,7 +4,6 @@
 
 #include "t_prn.h"
 
-using namespace BNC;
 using namespace std;
 
 // 
@@ -89,7 +88,7 @@ t_prn::operator unsigned() const {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-istream& GPSS::operator >> (istream& in, t_prn& prn) {
+istream& operator >> (istream& in, t_prn& prn) {
   string str;
   in >> str;
   if (str.length() == 1 && !isdigit(str[0])) {
