@@ -49,7 +49,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bncephuser.h bncoutf.h bncclockrinex.h bncsp3.h             \
           bncbytescounter.h bncsslconfig.h reqcdlg.h                  \
           upload/bncrtnetdecoder.h upload/bncuploadcaster.h           \
-          ephemeris.h timeutils.h                                     \
+          ephemeris.h timeutils.h t_prn.h                             \
           upload/bncrtnetuploadcaster.h upload/bnccustomtrafo.h       \
           upload/bncephuploadcaster.h bnccomb.h qtfilechooser.h       \
           GPSDecoder.h      RTCM/RTCM2.h RTCM/RTCM2Decoder.h          \
@@ -58,7 +58,9 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           RTCM3/RTCM3coDecoder.h                                      \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.h                    \
           PPP/pppwidgets.h PPP/options.h PPP/pppMain.h                \
-          PPP/pppThread.h PPP/pppClient.h
+          PPP/pppThread.h PPP/pppClient.h                             \
+          PPP/obspool.h PPP/station.h PPP/filter.h PPP/ephpool.h      \
+          PPP/satobs.h PPP/satbias.h 
 
 HEADERS       += serial/qextserialbase.h serial/qextserialport.h
 unix:HEADERS  += serial/posix_qextserialport.h
@@ -77,7 +79,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bnctides.cpp bncmap_svg.cpp bncantex.cpp                    \
           bncephuser.cpp bncoutf.cpp bncclockrinex.cpp bncsp3.cpp     \
           bncbytescounter.cpp bncsslconfig.cpp reqcdlg.cpp            \
-          ephemeris.cpp timeutils.cpp                                 \
+          ephemeris.cpp timeutils.cpp t_prn.cpp                       \
           upload/bncrtnetdecoder.cpp upload/bncuploadcaster.cpp       \
           upload/bncrtnetuploadcaster.cpp upload/bnccustomtrafo.cpp   \
           upload/bncephuploadcaster.cpp qtfilechooser.cpp             \
@@ -87,7 +89,9 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           RTCM3/RTCM3coDecoder.cpp                                    \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.c                    \
           PPP/pppwidgets.cpp PPP/options.cpp PPP/pppMain.cpp          \
-          PPP/pppThread.cpp PPP/pppClient.cpp
+          PPP/pppThread.cpp PPP/pppClient.cpp                         \
+          PPP/obspool.cpp PPP/station.cpp PPP/filter.cpp PPP/ephpool.cpp \
+          PPP/satobs.cpp PPP/satbias.cpp
 
 SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp
 unix:SOURCES  += serial/posix_qextserialport.cpp
