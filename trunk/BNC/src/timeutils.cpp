@@ -15,10 +15,6 @@
 
 #include <math.h>
 
-#ifndef NO_CVS_HEADER
-static const char *const cvsid = "$Header: /home/cvs/cvsroot/gpss_src/cpp/src/common/rtgnss/timeutils.cpp,v 1.1 2007/04/02 16:30:26 cvs Exp $";
-#endif
-
 double djul(long jj, long mm, double tt) {
   long    ii, kk;
   double  djul ;
