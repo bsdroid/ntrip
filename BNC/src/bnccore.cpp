@@ -47,7 +47,7 @@
 #include "bncrinex.h" 
 #include "bncsettings.h" 
 #include "bncversion.h" 
-#include "RTCM3/ephemeris.h" 
+#include "ephemeris.h" 
 #include "rinex/rnxobsfile.h" 
 #include "rinex/rnxnavfile.h" 
 

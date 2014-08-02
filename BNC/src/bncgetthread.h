@@ -30,7 +30,7 @@
 #include <QDateTime>
 #include <QFile>
 
-#include "RTCM/GPSDecoder.h"
+#include "GPSDecoder.h"
 #include "rtcm3torinex.h"
 #include "bncconst.h"
 #include "bncnetquery.h"

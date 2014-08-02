@@ -27,7 +27,7 @@
 
 #include <fstream>
 #include <QtCore>
-#include "RTCM/GPSDecoder.h"
+#include "GPSDecoder.h"
 
 class bncZeroDecoder: public GPSDecoder {
  public:

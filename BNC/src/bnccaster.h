@@ -29,7 +29,7 @@
 #include <QtNetwork>
 #include <QMultiMap>
 
-#include "RTCM/GPSDecoder.h"
+#include "GPSDecoder.h"
 
 class bncGetThread;
 

@@ -28,8 +28,8 @@
 #include <QtCore>
 #include "rnxobsfile.h"
 #include "rnxnavfile.h"
-#include "RTCM/GPSDecoder.h"
-#include "RTCM3/ephemeris.h"
+#include "GPSDecoder.h"
+#include "ephemeris.h"
 
 class t_polarPoint;
 

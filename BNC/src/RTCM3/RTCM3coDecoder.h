@@ -30,7 +30,7 @@
 #include <QtCore>
 #include <QtNetwork>
 
-#include "RTCM/GPSDecoder.h"
+#include "GPSDecoder.h"
 
 extern "C" {
 #include "clock_orbit_rtcm.h"

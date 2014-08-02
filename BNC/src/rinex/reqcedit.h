@@ -28,7 +28,7 @@
 #include <QtCore>
 #include "rnxobsfile.h"
 #include "rnxnavfile.h"
-#include "RTCM3/ephemeris.h"
+#include "ephemeris.h"
 
 class t_reqcEdit : public QThread {
 Q_OBJECT

@@ -30,7 +30,7 @@
 
 #include "bncconst.h"
 #include "bnctime.h"
-#include "RTCM3/ephemeris.h"
+#include "ephemeris.h"
 
 extern "C" {
 #include "clock_orbit_rtcm.h"

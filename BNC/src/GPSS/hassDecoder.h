@@ -5,7 +5,7 @@
 #include <QtCore>
 
 #include "bncephuser.h"
-#include "RTCM/GPSDecoder.h"
+#include "GPSDecoder.h"
 
 class hassDecoder : public bncEphUser, public GPSDecoder {
 Q_OBJECT
