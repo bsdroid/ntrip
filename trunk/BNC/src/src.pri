@@ -49,14 +49,14 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bncephuser.h bncoutf.h bncclockrinex.h bncsp3.h             \
           bncbytescounter.h bncsslconfig.h reqcdlg.h                  \
           upload/bncrtnetdecoder.h upload/bncuploadcaster.h           \
+          ephemeris.h timeutils.h                                     \
           upload/bncrtnetuploadcaster.h upload/bnccustomtrafo.h       \
           upload/bncephuploadcaster.h bnccomb.h qtfilechooser.h       \
-          RTCM/GPSDecoder.h RTCM/RTCM2.h RTCM/RTCM2Decoder.h          \
+          GPSDecoder.h      RTCM/RTCM2.h RTCM/RTCM2Decoder.h          \
           RTCM/RTCM2_2021.h RTCM/rtcm_utils.h                         \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex/rtcm3torinex.h      \
           RTCM3/RTCM3coDecoder.h                                      \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.h                    \
-          RTCM3/ephemeris.h RTCM3/timeutils.h                         \
           GPSS/gpssDecoder.h GPSS/hassDecoder.h                       \
           PPP/pppwidgets.h PPP/options.h PPP/pppMain.h                \
           PPP/pppThread.h
@@ -78,15 +78,15 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bnctides.cpp bncmap_svg.cpp bncantex.cpp                    \
           bncephuser.cpp bncoutf.cpp bncclockrinex.cpp bncsp3.cpp     \
           bncbytescounter.cpp bncsslconfig.cpp reqcdlg.cpp            \
+          ephemeris.cpp timeutils.cpp                                 \
           upload/bncrtnetdecoder.cpp upload/bncuploadcaster.cpp       \
           upload/bncrtnetuploadcaster.cpp upload/bnccustomtrafo.cpp   \
           upload/bncephuploadcaster.cpp qtfilechooser.cpp             \
-          RTCM/GPSDecoder.cpp RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp    \
+          GPSDecoder.cpp      RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp    \
           RTCM/RTCM2_2021.cpp RTCM/rtcm_utils.cpp                     \
           RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex/rtcm3torinex.c    \
           RTCM3/RTCM3coDecoder.cpp                                    \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.c                    \
-          RTCM3/ephemeris.cpp RTCM3/timeutils.cpp                     \
           GPSS/gpssDecoder.cpp GPSS/hassDecoder.cpp                   \
           PPP/pppwidgets.cpp PPP/options.cpp PPP/pppMain.cpp          \
           PPP/pppThread.cpp

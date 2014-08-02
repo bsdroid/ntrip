@@ -27,7 +27,7 @@
 
 #include <queue>
 #include "bncephuser.h"
-#include "RTCM/GPSDecoder.h"
+#include "GPSDecoder.h"
 
 class bncModel;
 class t_pppOpt;

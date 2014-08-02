@@ -50,7 +50,7 @@
 #include "bncgetthread.h"
 #include "bncutils.h"
 #include "bncsettings.h"
-#include "RTCM/GPSDecoder.h"
+#include "GPSDecoder.h"
 
 using namespace std;
 

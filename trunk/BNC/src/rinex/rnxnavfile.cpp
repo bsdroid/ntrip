@@ -43,7 +43,7 @@
 #include "rnxnavfile.h"
 #include "bnccore.h"
 #include "bncutils.h"
-#include "RTCM3/ephemeris.h"
+#include "ephemeris.h"
 
 using namespace std;
 

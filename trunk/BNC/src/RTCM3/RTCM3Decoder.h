@@ -28,8 +28,7 @@
 #include <QtCore>
 #include <map>
 
-#include "../RTCM/GPSDecoder.h"
-#include "../RTCM/GPSDecoder.h"
+#include "GPSDecoder.h"
 #include "RTCM3coDecoder.h"
 #include "bncrawfile.h"
 

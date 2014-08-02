@@ -27,7 +27,7 @@
 
 #include <QDateTime>
 
-#include "RTCM/GPSDecoder.h"
+#include "GPSDecoder.h"
 
 class latencyChecker : public QObject {
 Q_OBJECT

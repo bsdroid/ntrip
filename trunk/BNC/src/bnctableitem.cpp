@@ -40,7 +40,7 @@
 
 #include "bnctableitem.h"
 #include "bncgetthread.h"
-#include "RTCM/GPSDecoder.h"
+#include "GPSDecoder.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////

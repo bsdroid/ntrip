@@ -28,7 +28,7 @@
 #include <fstream>
 #include <QtCore>
 #include "bncrtnetuploadcaster.h"
-#include "RTCM/GPSDecoder.h"
+#include "GPSDecoder.h"
 
 class bncRtnetDecoder: public GPSDecoder {
  public:
