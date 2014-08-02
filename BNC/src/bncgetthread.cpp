@@ -66,8 +66,6 @@
 #include "upload/bncrtnetdecoder.h"
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
-#include "GPSS/gpssDecoder.h"
-#include "GPSS/hassDecoder.h"
 #include "serial/qextserialport.h"
 
 using namespace std;
@@ -293,10 +291,6 @@ t_irc bncGetThread::initDecoder() {
     connect((RTCM3Decoder*) newDecoder, SIGNAL(newMessage(QByteArray,bool)), 
             this, SIGNAL(newMessage(QByteArray,bool)));
   }
-  else if (_format.indexOf("GPSS") != -1 || _format.indexOf("BNC") != -1) {
-    emit(newMessage(_staID + ": Get Data in GPSS format", true));
-    _decoder = new gpssDecoder();
-  }
   else if (_format.indexOf("ZERO") != -1) {
     emit(newMessage(_staID + ": Get data in original format", true));
     _decoder = new bncZeroDecoder(_staID);
@@ -304,10 +298,6 @@ t_irc bncGetThread::initDecoder() {
   else if (_format.indexOf("RTNET") != -1) {
     emit(newMessage(_staID + ": Get data in RTNet format", true));
     _decoder = new bncRtnetDecoder();
-  }
-  else if (_format.indexOf("HASS2ASCII") != -1) {
-    emit(newMessage(_staID + ": Get data in HASS2ASCII format", true));
-    _decoder = new hassDecoder(_staID);
   }
   else {
     emit(newMessage(_staID + ": Unknown data format " + _format, true));
@@ -512,7 +502,7 @@ void bncGetThread::run() {
 
         // Check observation epoch
         // -----------------------
-        if (!_rawFile && !dynamic_cast<gpssDecoder*>(decoder())) {
+        if (!_rawFile) {
           int    week;
           double sec;
           currentGPSWeeks(week, sec);

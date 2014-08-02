@@ -57,7 +57,6 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex/rtcm3torinex.h      \
           RTCM3/RTCM3coDecoder.h                                      \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.h                    \
-          GPSS/gpssDecoder.h GPSS/hassDecoder.h                       \
           PPP/pppwidgets.h PPP/options.h PPP/pppMain.h                \
           PPP/pppThread.h
 
@@ -87,7 +86,6 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex/rtcm3torinex.c    \
           RTCM3/RTCM3coDecoder.cpp                                    \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.c                    \
-          GPSS/gpssDecoder.cpp GPSS/hassDecoder.cpp                   \
           PPP/pppwidgets.cpp PPP/options.cpp PPP/pppMain.cpp          \
           PPP/pppThread.cpp
 
