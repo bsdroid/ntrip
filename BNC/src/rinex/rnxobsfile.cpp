@@ -58,7 +58,7 @@ t_rnxObsHeader::t_rnxObsHeader() {
   _xyz.ReSize(3);    _xyz    = 0.0;
   _version  = 0.0;
   _interval = 0.0;
-  for (unsigned iPrn = 1; iPrn <= MAXPRN_GPS; iPrn++) {
+  for (unsigned iPrn = 1; iPrn <= t_prn::MAXPRN_GPS; iPrn++) {
     _wlFactorsL1[iPrn] = 1;
     _wlFactorsL2[iPrn] = 1;
   }
@@ -124,7 +124,7 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       int numSat   = 0;
       in >> wlFactL1 >> wlFactL2 >> numSat;
       if (numSat == 0) {
-        for (unsigned iPrn = 1; iPrn <= MAXPRN_GPS; iPrn++) {
+        for (unsigned iPrn = 1; iPrn <= t_prn::MAXPRN_GPS; iPrn++) {
           _wlFactorsL1[iPrn] = wlFactL1;
           _wlFactorsL2[iPrn] = wlFactL2;
         }
@@ -749,7 +749,7 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version) {
   _header._receiverType    = header._receiverType;   
   _header._receiverVersion = header._receiverVersion;
 
-  for (unsigned iPrn = 1; iPrn <= MAXPRN_GPS; iPrn++) {
+  for (unsigned iPrn = 1; iPrn <= t_prn::MAXPRN_GPS; iPrn++) {
     _header._wlFactorsL1[iPrn] =  header._wlFactorsL1[iPrn]; 
     _header._wlFactorsL2[iPrn] =  header._wlFactorsL2[iPrn]; 
   }

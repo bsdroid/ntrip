@@ -32,6 +32,7 @@
 
 class bncAntex {
  public:
+  bncAntex(const char* fileName);
   bncAntex();
   ~bncAntex();
   t_irc readFile(const QString& fileName);  

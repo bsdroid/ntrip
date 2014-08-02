@@ -27,6 +27,7 @@ class bncTime {
   void         civil_time (unsigned int& hour, unsigned int& min,
                            double& sec) const;
   bool         valid() const {return _mjd != 0 || _sec != 0.0;}
+  bool         undef() const {return !valid();}
   bool         operator==(const bncTime &time1) const;
   bool         operator!=(const bncTime &time1) const;
   bool         operator<(const bncTime &time1) const;
@@ -36,9 +37,11 @@ class bncTime {
   double       operator-(const bncTime &time1) const;
   bncTime      operator-(double sec) const;
   bncTime      operator+(double sec) const;
+  bncTime&     operator+=(double sec);
 
   std::string timestr(unsigned numdec = 3, char sep = ':') const;  
   std::string datestr(char sep = '-') const;  
+  operator std::string() const;
 
  private:
   unsigned int _mjd;

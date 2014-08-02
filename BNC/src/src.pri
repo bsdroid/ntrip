@@ -58,7 +58,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           RTCM3/RTCM3coDecoder.h                                      \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.h                    \
           PPP/pppwidgets.h PPP/options.h PPP/pppMain.h                \
-          PPP/pppThread.h
+          PPP/pppThread.h PPP/pppClient.h
 
 HEADERS       += serial/qextserialbase.h serial/qextserialport.h
 unix:HEADERS  += serial/posix_qextserialport.h
@@ -87,7 +87,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           RTCM3/RTCM3coDecoder.cpp                                    \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.c                    \
           PPP/pppwidgets.cpp PPP/options.cpp PPP/pppMain.cpp          \
-          PPP/pppThread.cpp
+          PPP/pppThread.cpp PPP/pppClient.cpp
 
 SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp
 unix:SOURCES  += serial/posix_qextserialport.cpp

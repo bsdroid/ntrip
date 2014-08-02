@@ -34,8 +34,7 @@
 #include "newmat.h"
 #include "bncconst.h"
 #include "bnctime.h"
-
-#define MAXPRN_GPS 32
+#include "t_prn.h"
 
 class t_rnxObsHeader {
  public:
@@ -71,8 +70,8 @@ class t_rnxObsHeader {
   ColumnVector                  _xyz;
   QVector<QString>              _obsTypesV2;
   QMap<char, QVector<QString> > _obsTypesV3;
-  int                           _wlFactorsL1[MAXPRN_GPS+1];
-  int                           _wlFactorsL2[MAXPRN_GPS+1];
+  int                           _wlFactorsL1[t_prn::MAXPRN_GPS+1];
+  int                           _wlFactorsL2[t_prn::MAXPRN_GPS+1];
   bncTime                       _startTime;
 };
 
@@ -131,10 +130,10 @@ class t_rnxObsFile {
 
   t_rnxEpo* nextEpoch(); 
   int wlFactorL1(unsigned iPrn) {
-    return iPrn <= MAXPRN_GPS ? _header._wlFactorsL1[iPrn] : 1;
+    return iPrn <= t_prn::MAXPRN_GPS ? _header._wlFactorsL1[iPrn] : 1;
   }
   int wlFactorL2(unsigned iPrn) {
-    return iPrn <= MAXPRN_GPS ? _header._wlFactorsL2[iPrn] : 1;
+    return iPrn <= t_prn::MAXPRN_GPS ? _header._wlFactorsL2[iPrn] : 1;
   }
 
   const t_rnxObsHeader& header() const {return _header;}

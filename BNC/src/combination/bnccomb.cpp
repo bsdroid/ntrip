@@ -28,6 +28,7 @@
 #include "bncsp3.h"
 #include "bncantex.h"
 #include "bnctides.h"
+#include "t_prn.h"
 
 const double sig0_offAC    = 1000.0;
 const double sig0_offACSat =  100.0;
@@ -35,8 +36,6 @@ const double sigP_offACSat =   0.01;
 const double sig0_clkSat   =  100.0;
 
 const double sigObs        =   0.05;
-
-const int MAXPRN_GLONASS = 24;
 
 using namespace std;
 
@@ -193,26 +192,26 @@ bncComb::bncComb() {
     while (it.hasNext()) {
       cmbAC* AC = it.next();
       _params.push_back(new cmbParam(cmbParam::offACgps, ++nextPar, AC->name, ""));
-      for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
+      for (int iGps = 1; iGps <= t_prn::MAXPRN_GPS; iGps++) {
         QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
         _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar, 
                                        AC->name, prn));
       }
       if (_useGlonass) {
         _params.push_back(new cmbParam(cmbParam::offACglo, ++nextPar, AC->name, ""));
-        for (int iGlo = 1; iGlo <= MAXPRN_GLONASS; iGlo++) {
+        for (int iGlo = 1; iGlo <= t_prn::MAXPRN_GLONASS; iGlo++) {
           QString prn = QString("R%1").arg(iGlo, 2, 10, QChar('0'));
           _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar, 
                                          AC->name, prn));
         }
       }
     }
-    for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
+    for (int iGps = 1; iGps <= t_prn::MAXPRN_GPS; iGps++) {
       QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
       _params.push_back(new cmbParam(cmbParam::clkSat, ++nextPar, "", prn));
     }
     if (_useGlonass) {
-      for (int iGlo = 1; iGlo <= MAXPRN_GLONASS; iGlo++) {
+      for (int iGlo = 1; iGlo <= t_prn::MAXPRN_GLONASS; iGlo++) {
         QString prn = QString("R%1").arg(iGlo, 2, 10, QChar('0'));
         _params.push_back(new cmbParam(cmbParam::clkSat, ++nextPar, "", prn));
       }
@@ -762,12 +761,12 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
     return failure;
   }
 
-  int MAXPRN = MAXPRN_GPS;
+  int maxSat = t_prn::MAXPRN_GPS;
 //  if (_useGlonass) {
-//    MAXPRN = MAXPRN_GPS + MAXPRN_GLONASS;
+//    maxSat = t_prn::MAXPRN_GPS + t_prn::MAXPRN_GLONASS;
 //  }
 
-  const int nCon = (_method == filter) ? 1 + MAXPRN : 0;
+  const int nCon = (_method == filter) ? 1 + maxSat : 0;
 
   AA.ReSize(nObs+nCon, nPar);  AA = 0.0;
   ll.ReSize(nObs+nCon);        ll = 0.0;
@@ -807,7 +806,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
       }
     }
     int iCond = 1;
-    for (int iGps = 1; iGps <= MAXPRN_GPS; iGps++) {
+    for (int iGps = 1; iGps <= t_prn::MAXPRN_GPS; iGps++) {
       QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
       ++iCond;
       PP(nObs+iCond) = Ph;
@@ -821,7 +820,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
       }
     }
 //    if (_useGlonass) {
-//      for (int iGlo = 1; iGlo <= MAXPRN_GLONASS; iGlo++) {
+//      for (int iGlo = 1; iGlo <= t_prn::MAXPRN_GLONASS; iGlo++) {
 //        QString prn = QString("R%1").arg(iGlo, 2, 10, QChar('0'));
 //        ++iCond;
 //        PP(nObs+iCond) = Ph;
