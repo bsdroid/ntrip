@@ -11,7 +11,9 @@
 #include "timeutils.h"
 #include "bnctime.h"
 #include "bnccore.h"
+#include "PPP/ppp.h"
 
+using namespace BNC;
 using namespace std;
 
 // Returns CRC24
@@ -29,6 +31,41 @@ static unsigned long CRC24(long size, const unsigned char *buf) {
     }
   }
   return crc;
+}
+
+// Constructor
+////////////////////////////////////////////////////////////////////////////
+t_eph::t_eph() {
+  _ok      = false;
+  _orbCorr = 0;
+  _clkCorr = 0;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_eph::setOrbCorr(const BNC::t_orbCorr* orbCorr) {
+  delete _orbCorr; 
+  _orbCorr = new t_orbCorr(*orbCorr);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_eph::setClkCorr(const BNC::t_clkCorr* clkCorr) {
+  delete _clkCorr; 
+  _clkCorr = new t_clkCorr(*clkCorr);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc,
+                    ColumnVector& vv, bool noCorr) const {
+  xc.ReSize(4);
+  vv.ReSize(3);
+  position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
+  if (!noCorr) {
+    throw "t_eph::getCrd: not yet implemented";
+  }
+  return success;
 }
 
 // Set GPS Satellite Position
