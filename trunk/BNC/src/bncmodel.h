@@ -98,6 +98,8 @@ class bncModel {
                      const DiagonalMatrix& PP, 
                      SymmetricMatrix& QQ, ColumnVector& dx);
 
+  static double delay_saast(const ColumnVector& xyz, double Ele);
+
  private:
   void   reset();
   t_irc  cmpBancroft(t_epoData* epoData);
@@ -112,7 +114,6 @@ class bncModel {
                     QString& prnGPS, QString& prnGlo,  
                     double& maxResGPS, double& maxResGlo); 
   double cmpValue(t_satData* satData, bool phase);
-  double delay_saast(double Ele);
   void   predict(int iPhase, t_epoData* epoData);
   t_irc  update_p(t_epoData* epoData);
   QString outlierDetection(int iPhase, const ColumnVector& vv,
