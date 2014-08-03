@@ -67,6 +67,8 @@ void covariXYZ_NEU(const SymmetricMatrix& Qxyz, const double* Ell,
 void covariNEU_XYZ(const SymmetricMatrix& Qneu, const double* Ell, 
                    SymmetricMatrix& Qxyz);
 
+double nint(double val);
+
 ColumnVector rungeKutta4(double xi, const ColumnVector& yi, double dx,
                          double* acc,
 	    ColumnVector (*der)(double x, const ColumnVector& y, double* acc));

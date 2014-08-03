@@ -284,6 +284,12 @@ void neu2xyz(const double* Ell, const double* neu, double* xyz) {
            + sinPhi        * neu[2];
 }
 
+// Round to nearest integer
+////////////////////////////////////////////////////////////////////////////
+double nint(double val) {
+  return ((val < 0.0) ? -floor(fabs(val)+0.5) : floor(val+0.5));
+}
+
 // Jacobian XYZ --> NEU 
 ////////////////////////////////////////////////////////////////////////////
 void jacobiXYZ_NEU(const double* Ell, Matrix& jacobi) {
