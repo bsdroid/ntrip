@@ -284,6 +284,83 @@ void neu2xyz(const double* Ell, const double* neu, double* xyz) {
            + sinPhi        * neu[2];
 }
 
+// Jacobian XYZ --> NEU 
+////////////////////////////////////////////////////////////////////////////
+void jacobiXYZ_NEU(const double* Ell, Matrix& jacobi) {
+
+  Tracer tracer("jacobiXYZ_NEU");
+
+  double sinPhi = sin(Ell[0]);
+  double cosPhi = cos(Ell[0]);
+  double sinLam = sin(Ell[1]);
+  double cosLam = cos(Ell[1]);
+
+  jacobi(1,1) = - sinPhi * cosLam;
+  jacobi(1,2) = - sinPhi * sinLam;
+  jacobi(1,3) =   cosPhi;
+                           
+  jacobi(2,1) = - sinLam;        
+  jacobi(2,2) =   cosLam;
+  jacobi(2,3) =   0.0;          
+                           
+  jacobi(3,1) = cosPhi * cosLam; 
+  jacobi(3,2) = cosPhi * sinLam; 
+  jacobi(3,3) = sinPhi;
+}
+
+// Jacobian Ell --> XYZ
+////////////////////////////////////////////////////////////////////////////
+void jacobiEll_XYZ(const double* Ell, Matrix& jacobi) {
+
+  Tracer tracer("jacobiEll_XYZ");
+
+  double sinPhi = sin(Ell[0]);
+  double cosPhi = cos(Ell[0]);
+  double sinLam = sin(Ell[1]);
+  double cosLam = cos(Ell[1]);
+  double hh     = Ell[2];
+
+  double bell =  t_CST::aell*(1.0-1.0/t_CST::fInv);
+  double e2   = (t_CST::aell*t_CST::aell-bell*bell)/(t_CST::aell*t_CST::aell) ;
+  double nn   =  t_CST::aell/sqrt(1.0-e2*sinPhi*sinPhi) ;
+
+  jacobi(1,1) = -(nn+hh) * sinPhi * cosLam;
+  jacobi(1,2) = -(nn+hh) * cosPhi * sinLam;
+  jacobi(1,3) = cosPhi * cosLam;
+
+  jacobi(2,1) = -(nn+hh) * sinPhi * sinLam;
+  jacobi(2,2) =  (nn+hh) * cosPhi * cosLam;
+  jacobi(2,3) = cosPhi * sinLam;
+
+  jacobi(3,1) = (nn*(1.0-e2)+hh) * cosPhi;
+  jacobi(3,2) = 0.0;
+  jacobi(3,3) = sinPhi;
+} 
+
+// Covariance Matrix in NEU
+////////////////////////////////////////////////////////////////////////////
+void covariXYZ_NEU(const SymmetricMatrix& QQxyz, const double* Ell, 
+                   SymmetricMatrix& Qneu) {
+
+  Tracer tracer("covariXYZ_NEU");
+
+  Matrix CC(3,3);
+  jacobiXYZ_NEU(Ell, CC);
+  Qneu << CC * QQxyz * CC.t();
+}
+
+// Covariance Matrix in XYZ
+////////////////////////////////////////////////////////////////////////////
+void covariNEU_XYZ(const SymmetricMatrix& QQneu, const double* Ell, 
+                   SymmetricMatrix& Qxyz) {
+
+  Tracer tracer("covariNEU_XYZ");
+
+  Matrix CC(3,3);
+  jacobiXYZ_NEU(Ell, CC);
+  Qxyz << CC.t() * QQneu * CC;
+}
+
 // Fourth order Runge-Kutta numerical integrator for ODEs
 ////////////////////////////////////////////////////////////////////////////
 ColumnVector rungeKutta4(

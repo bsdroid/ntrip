@@ -57,6 +57,16 @@ void xyz2neu(const double* Ell, const double* xyz, double* neu);
 
 void neu2xyz(const double* Ell, const double* neu, double* xyz);
 
+void jacobiXYZ_NEU(const double* Ell, Matrix& jacobi);
+
+void jacobiEll_XYZ(const double* Ell, Matrix& jacobi);
+
+void covariXYZ_NEU(const SymmetricMatrix& Qxyz, const double* Ell, 
+                   SymmetricMatrix& Qneu);
+
+void covariNEU_XYZ(const SymmetricMatrix& Qneu, const double* Ell, 
+                   SymmetricMatrix& Qxyz);
+
 ColumnVector rungeKutta4(double xi, const ColumnVector& yi, double dx,
                          double* acc,
 	    ColumnVector (*der)(double x, const ColumnVector& y, double* acc));
