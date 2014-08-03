@@ -341,7 +341,7 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
 
   satData->rho = (satData->xx - xRec).norm_Frobenius();
 
-  double tropDelay = delay_saast(satData->eleSat) + 
+  double tropDelay = delay_saast(xRec, satData->eleSat) + 
                      trp() / sin(satData->eleSat);
 
   double wind = 0.0;
@@ -384,16 +384,12 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
 
 // Tropospheric Model (Saastamoinen)
 ////////////////////////////////////////////////////////////////////////////
-double bncModel::delay_saast(double Ele) {
+double bncModel::delay_saast(const ColumnVector& xyz, double Ele) {
 
   Tracer tracer("bncModel::delay_saast");
 
-  double xyz[3]; 
-  xyz[0] = x();
-  xyz[1] = y();
-  xyz[2] = z();
   double ell[3]; 
-  xyz2ell(xyz, ell);
+  xyz2ell(xyz.data(), ell);
   double height = ell[2];
 
   double pp =  1013.25 * pow(1.0 - 2.26e-5 * height, 5.225);
@@ -648,7 +644,8 @@ t_irc bncModel::update(t_epoData* epoData) {
            << "   nEpo = " << par->numEpo;
     }
     else if (par->type == bncParam::TROPO) {
-      double aprTrp = delay_saast(M_PI/2.0);
+      ColumnVector xyz(3); xyz(1) = x(); xyz(2) = y(); xyz(3) = z();
+      double aprTrp = delay_saast(xyz, M_PI/2.0);
       strB << "\n    trp     = " << par->prn.toAscii().data()
            << setw(7) << setprecision(3) << aprTrp << " "
            << setw(6) << setprecision(3) << showpos << par->xx << noshowpos
