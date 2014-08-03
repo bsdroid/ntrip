@@ -197,6 +197,21 @@ double bncTime::operator-(const bncTime &time1) const {
   }
 }
 
+bncTime& bncTime::operator+=(double sec) {
+  _sec+=sec;
+
+  while ( _sec >= 86400 ) {
+    _sec-=86400;
+    _mjd++;
+  }
+  while ( _sec < 0 ) {
+    _sec+=86400;
+    _mjd--;
+  }
+
+  return *this;
+}
+
 // 
 //////////////////////////////////////////////////////////////////////////////
 void bncTime::civil_date (unsigned int& year, unsigned int& month,
@@ -274,6 +289,12 @@ string bncTime::datestr(char sep) const {
   if (sep) str << sep;
   str << setw(2)  << day;
   return str.str();
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+bncTime::operator string() const {
+  return datestr() + '_' + timestr();
 }
 
 // 
