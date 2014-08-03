@@ -256,7 +256,7 @@ t_irc bncAntex::satCoMcorrection(const QString& prn, double Mjd,
 
 // Phase Center Offset (Receiver Antenna and GPS only)
 ////////////////////////////////////////////////////////////////////////////
-double bncAntex::pco(const QString& antName, double eleSat, bool& found) {
+double bncAntex::pco(const QString& antName, double eleSat, bool& found) const {
 
   static const double f1 = t_CST::freq1;
   static const double f2 = t_CST::freq2;
@@ -278,4 +278,11 @@ double bncAntex::pco(const QString& antName, double eleSat, bool& found) {
   }
 
   return 0.0;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+double bncAntex::rcvCorr(BNC::t_frequency::type /* frqType */, const std::string& antName,
+               double eleSat, bool& found) const {
+  return pco(QString(antName.c_str()), eleSat, found);
 }

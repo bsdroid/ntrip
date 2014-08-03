@@ -39,7 +39,7 @@ class bncAntex {
   ~bncAntex();
   t_irc readFile(const QString& fileName);  
   void print() const;
-  double pco(const QString& antName, double eleSat, bool& found);
+  double pco(const QString& antName, double eleSat, bool& found) const;
   double rcvCorr(BNC::t_frequency::type frqType, const std::string& antName,
                  double eleSat, bool& found) const;
   t_irc  satCoMcorrection(const QString& prn, double Mjd, 
