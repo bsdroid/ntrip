@@ -6,8 +6,14 @@
 #include <stdio.h>
 #include <string>
 #include "bnctime.h"
+#include "bncconst.h"
 extern "C" {
 #include "rtcm3torinex.h"
+}
+
+namespace BNC {
+  class t_orbCorr;
+  class t_clkCorr;
 }
 
 class t_eph {
@@ -15,7 +21,7 @@ class t_eph {
 
   enum e_type {unknown, GPS, GLONASS, Galileo};
 
-  t_eph() {_ok = false;}
+  t_eph();
   virtual ~t_eph() {};
 
   static bool earlierTime(const t_eph* eph1, const t_eph* eph2) {
@@ -35,6 +41,7 @@ class t_eph {
     return earlierTime(eph, this);
   }
   QString prn() const {return _prn;}
+  char system() const {return _prn[0].toAscii();}
   const QDateTime& receptDateTime() const {return _receptDateTime;}
 
   void position(int GPSweek, double GPSweeks, 
@@ -49,14 +56,22 @@ class t_eph {
     cc = tmp_xx[3];
   }
 
+  t_irc getCrd(const bncTime& tt, ColumnVector& xc,
+               ColumnVector& vv, bool noCorr = false) const;
+  void setOrbCorr(const BNC::t_orbCorr* orbCorr);
+  void setClkCorr(const BNC::t_clkCorr* clkCorr);
+  virtual int slotNum() const {return 0;}
+
   static QString rinexDateStr(const bncTime& tt, const QString& prn,
                               double version);
 
  protected:  
-  QString   _prn;
-  bncTime   _TOC;
-  QDateTime _receptDateTime;
-  bool      _ok;
+  QString         _prn;
+  bncTime         _TOC;
+  QDateTime       _receptDateTime;
+  bool            _ok;
+  BNC::t_orbCorr* _orbCorr;
+  BNC::t_clkCorr* _clkCorr;
 };
 
 
@@ -142,7 +157,7 @@ class t_ephGlo : public t_eph {
 
   void set(const glonassephemeris* ee);
 
-  int  slotNum() const {return int(_frequency_number);}
+  virtual int slotNum() const {return int(_frequency_number);}
 
  private:
   static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv,
