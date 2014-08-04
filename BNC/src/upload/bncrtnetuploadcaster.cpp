@@ -689,7 +689,7 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
   }
 
   outLine.sprintf("%d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n",
-                  GPSweek, GPSweeks, eph->prn().toAscii().data(),
+                  GPSweek, GPSweeks, eph->prn().toString().c_str(),
                   eph->IOD(), dClk, rsw(1), rsw(2), rsw(3));
 
   double relativity = -2.0 * DotProduct(xP, rtnVel) / t_CST::c;

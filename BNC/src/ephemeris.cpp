@@ -74,7 +74,7 @@ void t_ephGPS::set(const gpsephemeris* ee) {
 
   _receptDateTime = currentDateAndTimeGPS();
 
-  _prn = QString("G%1").arg(ee->satellite, 2, 10, QChar('0'));
+  _prn.set('G', ee->satellite);
 
   _TOC.set(ee->GPSweek, ee->TOC);
   _clock_bias      = ee->clock_bias;
@@ -275,7 +275,7 @@ int t_ephGPS::RTCM3(unsigned char *buffer) {
   }
 
   GPSADDBITS(12, 1019)
-  GPSADDBITS(6,_prn.right((_prn.length()-1)).toInt())
+  GPSADDBITS(6,_prn.number())
   GPSADDBITS(10, _TOC.gpsw())
   GPSADDBITS(4, _ura)
   GPSADDBITS(2,_L2Codes)
@@ -415,7 +415,7 @@ void t_ephGlo::set(const glonassephemeris* ee) {
 
   _receptDateTime = currentDateAndTimeGPS();
 
-  _prn = QString("R%1").arg(ee->almanac_number, 2, 10, QChar('0'));
+  _prn.set('R', ee->almanac_number);
 
   int ww  = ee->GPSWeek;
   int tow = ee->GPSTOW; 
@@ -540,7 +540,7 @@ int t_ephGlo::RTCM3(unsigned char *buffer)
   buffer= buffer+3;
 
   GLONASSADDBITS(12, 1020)
-  GLONASSADDBITS(6, _prn.right((_prn.length()-1)).toInt())
+  GLONASSADDBITS(6, _prn.number())
   GLONASSADDBITS(5, 7+_frequency_number)
   GLONASSADDBITS(1, 0)
   GLONASSADDBITS(1, 0)
@@ -599,7 +599,7 @@ void t_ephGal::set(const galileoephemeris* ee) {
 
   _receptDateTime = currentDateAndTimeGPS();
 
-  _prn = QString("E%1").arg(ee->satellite, 2, 10, QChar('0'));
+  _prn.set('E', ee->satellite);
 
   _TOC.set(ee->Week, ee->TOC);
   _clock_bias      = ee->clock_bias;
@@ -748,7 +748,7 @@ int t_ephGal::RTCM3(unsigned char *buffer) {
   bool inav = ( (_flags & GALEPHF_INAV) == GALEPHF_INAV );
 
   GALILEOADDBITS(12, inav ? 1046 : 1045)
-  GALILEOADDBITS(6, _prn.right((_prn.length()-1)).toInt())
+  GALILEOADDBITS(6, _prn.number())
   GALILEOADDBITS(12, _TOC.gpsw())
   GALILEOADDBITS(10, _IODnav)
   GALILEOADDBITS(8, _SISA)
@@ -843,12 +843,15 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
       int    year, month, day, hour, min;
       double sec;
       
-      in >> _prn >> year >> month >> day >> hour >> min >> sec;
-
-      if (_prn.at(0) != 'G') {
-        _prn = QString("G%1").arg(_prn.toInt(), 2, 10, QLatin1Char('0'));
+      QString prnStr;
+      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
+      if (prnStr.at(0) == 'G') {
+        _prn.set('G', prnStr.mid(1).toInt());
       }
-   
+      else {
+        _prn.set('G', prnStr.toInt());
+      }
+
       if      (year <  80) {
         year += 2000;
       }
@@ -963,12 +966,15 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
       int    year, month, day, hour, min;
       double sec;
       
-      in >> _prn >> year >> month >> day >> hour >> min >> sec;
-
-      if (_prn.at(0) != 'R') {
-        _prn = QString("R%1").arg(_prn.toInt(), 2, 10, QLatin1Char('0'));
+      QString prnStr;
+      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
+      if (prnStr.at(0) == 'R') {
+        _prn.set('R', prnStr.mid(1).toInt());
       }
-   
+      else {
+        _prn.set('R', prnStr.toInt());
+      }
+
       if      (year <  80) {
         year += 2000;
       }
@@ -1065,12 +1071,15 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
       int    year, month, day, hour, min;
       double sec;
       
-      in >> _prn >> year >> month >> day >> hour >> min >> sec;
-
-      if (_prn.at(0) != 'E') {
-        _prn = QString("E%1").arg(_prn.toInt(), 2, 10, QLatin1Char('0'));
+      QString prnStr;
+      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
+      if (prnStr.at(0) == 'E') {
+        _prn.set('E', prnStr.mid(1).toInt());
       }
-   
+      else {
+        _prn.set('E', prnStr.toInt());
+      }
+
       if      (year <  80) {
         year += 2000;
       }
@@ -1151,8 +1160,14 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-QString t_eph::rinexDateStr(const bncTime& tt, const QString& prn,
-                            double version) {
+QString t_eph::rinexDateStr(const bncTime& tt, const t_prn& prn, double version) {
+  QString prnStr(prn.toString().c_str());
+  return rinexDateStr(tt, prnStr, version);
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+QString t_eph::rinexDateStr(const bncTime& tt, const QString& prnStr, double version) {
 
   QString datStr;
   
@@ -1164,7 +1179,7 @@ QString t_eph::rinexDateStr(const bncTime& tt, const QString& prn,
   QTextStream out(&datStr);
 
   if (version < 3.0) {
-    QString prnHlp = prn.mid(1,2); if (prnHlp[0] == '0') prnHlp[0] = ' ';
+    QString prnHlp = prnStr.mid(1,2); if (prnHlp[0] == '0') prnHlp[0] = ' ';
     out << prnHlp << QString(" %1 %2 %3 %4 %5%6")
       .arg(year % 100, 2, 10, QChar('0'))
       .arg(month,      2)
@@ -1174,7 +1189,7 @@ QString t_eph::rinexDateStr(const bncTime& tt, const QString& prn,
       .arg(sec, 5, 'f',1);
   }
   else {
-    out << prn << QString(" %1 %2 %3 %4 %5 %6")
+    out << prnStr << QString(" %1 %2 %3 %4 %5 %6")
       .arg(year,     4)
       .arg(month,    2, 10, QChar('0'))
       .arg(day,      2, 10, QChar('0'))
