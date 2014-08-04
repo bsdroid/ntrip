@@ -58,11 +58,11 @@ void t_eph::setClkCorr(const BNC::t_clkCorr* clkCorr) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc,
-                    ColumnVector& vv, bool noCorr) const {
+                    ColumnVector& vv, bool useCorr) const {
   xc.ReSize(4);
   vv.ReSize(3);
   position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
-  if (!noCorr) {
+  if (useCorr) {
     throw "t_eph::getCrd: not yet implemented";
   }
   return success;

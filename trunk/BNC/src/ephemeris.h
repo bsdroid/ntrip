@@ -57,7 +57,7 @@ class t_eph {
   }
 
   t_irc getCrd(const bncTime& tt, ColumnVector& xc,
-               ColumnVector& vv, bool noCorr = false) const;
+               ColumnVector& vv, bool useCorr) const;
   void setOrbCorr(const BNC::t_orbCorr* orbCorr);
   void setClkCorr(const BNC::t_clkCorr* clkCorr);
   virtual int slotNum() const {return 0;}
