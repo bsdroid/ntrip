@@ -7,6 +7,7 @@
 #include <string>
 #include "bnctime.h"
 #include "bncconst.h"
+#include "t_prn.h"
 extern "C" {
 #include "rtcm3torinex.h"
 }
@@ -40,8 +41,7 @@ class t_eph {
   bool isNewerThan(const t_eph* eph) const {
     return earlierTime(eph, this);
   }
-  QString prn() const {return _prn;}
-  char system() const {return _prn[0].toAscii();}
+  t_prn prn() const {return _prn;}
   const QDateTime& receptDateTime() const {return _receptDateTime;}
 
   void position(int GPSweek, double GPSweeks, 
@@ -62,11 +62,14 @@ class t_eph {
   void setClkCorr(const BNC::t_clkCorr* clkCorr);
   virtual int slotNum() const {return 0;}
 
-  static QString rinexDateStr(const bncTime& tt, const QString& prn,
+  static QString rinexDateStr(const bncTime& tt, const t_prn& prn,
+                              double version);
+
+  static QString rinexDateStr(const bncTime& tt, const QString& prnStr,
                               double version);
 
  protected:  
-  QString         _prn;
+  t_prn           _prn;
   bncTime         _TOC;
   QDateTime       _receptDateTime;
   bool            _ok;

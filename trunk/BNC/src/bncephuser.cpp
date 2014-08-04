@@ -78,7 +78,7 @@ void bncEphUser::slotNewEphGPS(gpsephemeris gpseph) {
 
   t_ephGPS* eNew = new t_ephGPS(); eNew->set(&gpseph);
 
-  const QString& prn = eNew->prn();
+  QString prn(eNew->prn().toString().c_str());
 
   if (_eph.contains(prn)) {
     t_ephGPS* eLast = static_cast<t_ephGPS*>(_eph.value(prn)->last);
@@ -105,7 +105,7 @@ void bncEphUser::slotNewEphGlonass(glonassephemeris gloeph) {
 
   t_ephGlo* eNew = new t_ephGlo(); eNew->set(&gloeph);
 
-  const QString& prn = eNew->prn();
+  QString prn(eNew->prn().toString().c_str());
 
   if (_eph.contains(prn)) {
     t_ephGlo* eLast = static_cast<t_ephGlo*>(_eph.value(prn)->last);
@@ -160,7 +160,7 @@ t_irc bncEphUser::putNewEph(t_eph* newEph) {
     return failure;
   }
 
-  QString prn = newEph->prn();
+  QString prn(newEph->prn().toString().c_str());
 
   t_irc irc = failure;
 

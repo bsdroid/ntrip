@@ -246,7 +246,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         t_ephGlo* ephGlo = 0;
         if (obs.satSys == 'R') {
           for (int ie = 0; ie < _ephs.size(); ie++) {
-            if (_ephs[ie]->prn() == prn) {
+            if (QString(_ephs[ie]->prn().toString().c_str()) == prn) {
               ephGlo = dynamic_cast<t_ephGlo*>(_ephs[ie]);
               break;
             }
@@ -535,7 +535,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
         if (xyzSta.size()) {
           t_eph* eph = 0;
           for (int ie = 0; ie < _ephs.size(); ie++) {
-            if (_ephs[ie]->prn() == prn) {
+            if (QString(_ephs[ie]->prn().toString().c_str()) == prn) {
               eph = _ephs[ie];
               break;
             }
@@ -745,7 +745,7 @@ double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
 
     t_eph* eph = 0;
     for (int ie = 0; ie < _ephs.size(); ie++) {
-      if (_ephs[ie]->prn() == prn) {
+      if (QString(_ephs[ie]->prn().toString().c_str()) == prn) {
         eph = _ephs[ie];
         break;
       }
