@@ -388,6 +388,10 @@ double bncModel::delay_saast(const ColumnVector& xyz, double Ele) {
 
   Tracer tracer("bncModel::delay_saast");
 
+  if (xyz[0] == 0.0 && xyz[1] == 0.0 && xyz[2] == 0.0) {
+    return 0.0;
+  }
+
   double ell[3]; 
   xyz2ell(xyz.data(), ell);
   double height = ell[2];
