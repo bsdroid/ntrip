@@ -345,7 +345,7 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
 
   satData->rho = (satData->xx - xRec).norm_Frobenius();
 
-  double tropDelay = delay_saast(xRec, satData->eleSat) + 
+  double tropDelay = t_tropo::delay_saast(xRec, satData->eleSat) + 
                      trp() / sin(satData->eleSat);
 
   double wind = 0.0;
@@ -384,47 +384,6 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
 
   return satData->rho + phaseCenter + antennaOffset + clk() 
                       + offset - satData->clk + tropDelay + wind;
-}
-
-// Tropospheric Model (Saastamoinen)
-////////////////////////////////////////////////////////////////////////////
-double bncModel::delay_saast(const ColumnVector& xyz, double Ele) {
-
-  Tracer tracer("bncModel::delay_saast");
-
-  if (xyz[0] == 0.0 && xyz[1] == 0.0 && xyz[2] == 0.0) {
-    return 0.0;
-  }
-
-  double ell[3]; 
-  xyz2ell(xyz.data(), ell);
-  double height = ell[2];
-
-  double pp =  1013.25 * pow(1.0 - 2.26e-5 * height, 5.225);
-  double TT =  18.0 - height * 0.0065 + 273.15;
-  double hh =  50.0 * exp(-6.396e-4 * height);
-  double ee =  hh / 100.0 * exp(-37.2465 + 0.213166*TT - 0.000256908*TT*TT);
-
-  double h_km = height / 1000.0;
-  
-  if (h_km < 0.0) h_km = 0.0;
-  if (h_km > 5.0) h_km = 5.0;
-  int    ii   = int(h_km + 1);
-  double href = ii - 1;
-  
-  double bCor[6]; 
-  bCor[0] = 1.156;
-  bCor[1] = 1.006;
-  bCor[2] = 0.874;
-  bCor[3] = 0.757;
-  bCor[4] = 0.654;
-  bCor[5] = 0.563;
-  
-  double BB = bCor[ii-1] + (bCor[ii]-bCor[ii-1]) * (h_km - href);
-  
-  double zen  = M_PI/2.0 - Ele;
-
-  return (0.002277/cos(zen)) * (pp + ((1255.0/TT)+0.05)*ee - BB*(tan(zen)*tan(zen)));
 }
 
 // Prediction Step of the Filter
@@ -653,7 +612,7 @@ t_irc bncModel::update(t_epoData* epoData) {
     }
     else if (par->type == bncParam::TROPO) {
       ColumnVector xyz(3); xyz(1) = x(); xyz(2) = y(); xyz(3) = z();
-      double aprTrp = delay_saast(xyz, M_PI/2.0);
+      double aprTrp = t_tropo::delay_saast(xyz, M_PI/2.0);
       strB << "\n    trp     = " << par->prn.toAscii().data()
            << setw(7) << setprecision(3) << aprTrp << " "
            << setw(6) << setprecision(3) << showpos << par->xx << noshowpos

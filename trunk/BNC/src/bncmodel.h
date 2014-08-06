@@ -97,8 +97,6 @@ class bncModel {
     return 0.0;
   }
 
-  static double delay_saast(const ColumnVector& xyz, double Ele);
-
  private:
   void   reset();
   t_irc  cmpBancroft(t_epoData* epoData);
