@@ -57,11 +57,11 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex/rtcm3torinex.h      \
           RTCM3/RTCM3coDecoder.h                                      \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.h                    \
-          PPP/pppwidgets.h PPP/options.h PPP/pppMain.h                \
-          PPP/pppThread.h PPP/pppClient.h                             \
-          PPP/obspool.h PPP/station.h PPP/filter.h PPP/ephpool.h      \
-          PPP/satobs.h PPP/satbias.h PPP/parlist.h        \
-          PPP/pppModel.h
+          PPP/pppInclude.h   PPP/pppOptions.h   PPP/pppMain.h         \
+          PPP/pppWidgets.h   pppThread.h        PPP/pppClient.h       \
+          PPP/pppObsPool.h   PPP/pppStation.h   PPP/pppFilter.h       \
+          PPP/pppEphPool.h   PPP/pppModel.h     PPP/pppParlist.h      \
+          PPP/pppSatBias.h   PPP/satobs.h 
 
 HEADERS       += serial/qextserialbase.h serial/qextserialport.h
 unix:HEADERS  += serial/posix_qextserialport.h
@@ -89,11 +89,11 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex/rtcm3torinex.c    \
           RTCM3/RTCM3coDecoder.cpp                                    \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.c                    \
-          PPP/pppwidgets.cpp PPP/options.cpp PPP/pppMain.cpp          \
-          PPP/pppThread.cpp PPP/pppClient.cpp                         \
-          PPP/obspool.cpp PPP/station.cpp PPP/filter.cpp PPP/ephpool.cpp \
-          PPP/satobs.cpp PPP/satbias.cpp PPP/parlist.cpp  \
-          PPP/pppModel.cpp
+                             PPP/pppOptions.cpp PPP/pppMain.cpp       \
+          PPP/pppWidgets.cpp pppThread.cpp      PPP/pppClient.cpp     \
+          PPP/pppObsPool.cpp PPP/pppStation.cpp PPP/pppFilter.cpp     \
+          PPP/pppEphPool.cpp PPP/pppModel.cpp   PPP/pppParlist.cpp    \
+          PPP/pppSatBias.cpp PPP/satobs.cpp
 
 SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp
 unix:SOURCES  += serial/posix_qextserialport.cpp
