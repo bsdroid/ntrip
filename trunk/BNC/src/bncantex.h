@@ -30,7 +30,7 @@
 #include <newmat.h>
 #include "bncconst.h"
 #include "bnctime.h"
-#include "PPP/ppp.h"
+#include "PPP/pppInclude.h"
 
 class bncAntex {
  public:

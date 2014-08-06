@@ -11,7 +11,7 @@
 #include "timeutils.h"
 #include "bnctime.h"
 #include "bnccore.h"
-#include "PPP/ppp.h"
+#include "PPP/pppInclude.h"
 
 using namespace BNC;
 using namespace std;
