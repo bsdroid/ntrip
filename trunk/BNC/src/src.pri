@@ -60,7 +60,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           PPP/pppwidgets.h PPP/options.h PPP/pppMain.h                \
           PPP/pppThread.h PPP/pppClient.h                             \
           PPP/obspool.h PPP/station.h PPP/filter.h PPP/ephpool.h      \
-          PPP/satobs.h PPP/satbias.h PPP/parlist.h PPP/windup.h       \
+          PPP/satobs.h PPP/satbias.h PPP/parlist.h        \
           PPP/pppModel.h
 
 HEADERS       += serial/qextserialbase.h serial/qextserialport.h
@@ -92,7 +92,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           PPP/pppwidgets.cpp PPP/options.cpp PPP/pppMain.cpp          \
           PPP/pppThread.cpp PPP/pppClient.cpp                         \
           PPP/obspool.cpp PPP/station.cpp PPP/filter.cpp PPP/ephpool.cpp \
-          PPP/satobs.cpp PPP/satbias.cpp PPP/parlist.cpp PPP/windup.cpp \
+          PPP/satobs.cpp PPP/satbias.cpp PPP/parlist.cpp  \
           PPP/pppModel.cpp
 
 SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp
