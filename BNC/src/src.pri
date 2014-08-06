@@ -58,7 +58,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           RTCM3/RTCM3coDecoder.h                                      \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.h                    \
           PPP/pppInclude.h   PPP/pppOptions.h   PPP/pppMain.h         \
-          PPP/pppWidgets.h   pppThread.h        PPP/pppClient.h       \
+          PPP/pppWidgets.h   PPP/pppThread.h    PPP/pppClient.h       \
           PPP/pppObsPool.h   PPP/pppStation.h   PPP/pppFilter.h       \
           PPP/pppEphPool.h   PPP/pppModel.h     PPP/pppParlist.h      \
           PPP/pppSatBias.h   PPP/satobs.h 
@@ -90,7 +90,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           RTCM3/RTCM3coDecoder.cpp                                    \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.c                    \
                              PPP/pppOptions.cpp PPP/pppMain.cpp       \
-          PPP/pppWidgets.cpp pppThread.cpp      PPP/pppClient.cpp     \
+          PPP/pppWidgets.cpp PPP/pppThread.cpp  PPP/pppClient.cpp     \
           PPP/pppObsPool.cpp PPP/pppStation.cpp PPP/pppFilter.cpp     \
           PPP/pppEphPool.cpp PPP/pppModel.cpp   PPP/pppParlist.cpp    \
           PPP/pppSatBias.cpp PPP/satobs.cpp
