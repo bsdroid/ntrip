@@ -905,55 +905,6 @@ void bncModel::writeNMEAstr(const QString& nmStr) {
   _pppClient->emitNewNMEAstr(outStr.toAscii());
 }
 
-//
-//////////////////////////////////////////////////////////////////////////////
-void bncModel::kalman(const Matrix& AA, const ColumnVector& ll, 
-                      const DiagonalMatrix& PP, 
-                      SymmetricMatrix& QQ, ColumnVector& dx) {
-
-  Tracer tracer("bncModel::kalman");
-
-  int nPar = AA.Ncols();
-#if 1
-  int nObs = AA.Nrows();
-  UpperTriangularMatrix SS = Cholesky(QQ).t();
-
-  Matrix SA = SS*AA.t();
-  Matrix SRF(nObs+nPar, nObs+nPar); SRF = 0;
-  for (int ii = 1; ii <= nObs; ++ii) {
-    SRF(ii,ii) = 1.0 / sqrt(PP(ii,ii));
-  }
-
-  SRF.SubMatrix   (nObs+1, nObs+nPar, 1, nObs) = SA;
-  SRF.SymSubMatrix(nObs+1, nObs+nPar)          = SS;
-  
-  UpperTriangularMatrix UU;
-  QRZ(SRF, UU);
-  
-  SS = UU.SymSubMatrix(nObs+1, nObs+nPar);
-  UpperTriangularMatrix SH_rt = UU.SymSubMatrix(1, nObs);
-  Matrix YY  = UU.SubMatrix(1, nObs, nObs+1, nObs+nPar);
-  
-  UpperTriangularMatrix SHi = SH_rt.i();
-  
-  Matrix KT  = SHi * YY; 
-  SymmetricMatrix Hi; Hi << SHi * SHi.t();
-
-  dx = KT.t() * ll;
-  QQ << (SS.t() * SS);
-#else
-  DiagonalMatrix        Ql = PP.i();
-  Matrix                DD = QQ * AA.t();
-  SymmetricMatrix       SM(nPar); SM << AA * DD + Ql; 
-  UpperTriangularMatrix UU = Cholesky(SM).t();
-  UpperTriangularMatrix Ui = UU.i();
-  Matrix                EE = DD * Ui;
-  Matrix                KK = EE * Ui.t();
-  QQ << QQ - EE * EE.t();
-  dx = KK * ll;
-#endif
-}
-
 // Phase Wind-Up Correction
 ///////////////////////////////////////////////////////////////////////////
 double bncModel::windUp(const QString& prn, const ColumnVector& rSat,

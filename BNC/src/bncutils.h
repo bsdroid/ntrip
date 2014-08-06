@@ -33,66 +33,69 @@
 #include <newmat.h>
 #include <bncconst.h>
 
-void expandEnvVar(QString& str);
+void         expandEnvVar(QString& str);
 
-QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks);
+QDateTime    dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks);
 
-void currentGPSWeeks(int& week, double& sec);
+void         currentGPSWeeks(int& week, double& sec);
 
-QDateTime currentDateAndTimeGPS();
+QDateTime    currentDateAndTimeGPS();
 
-QByteArray ggaString(const QByteArray& latitude, 
-                     const QByteArray& longitude,
-                     const QByteArray& height);
+QByteArray   ggaString(const QByteArray& latitude, const QByteArray& longitude,
+                       const QByteArray& height);
 
-void RSW_to_XYZ(const ColumnVector& rr, const ColumnVector& vv,
-                const ColumnVector& rsw, ColumnVector& xyz);
+void         RSW_to_XYZ(const ColumnVector& rr, const ColumnVector& vv,
+                        const ColumnVector& rsw, ColumnVector& xyz);
 
-void XYZ_to_RSW(const ColumnVector& rr, const ColumnVector& vv,
-                const ColumnVector& xyz, ColumnVector& rsw);
+void         XYZ_to_RSW(const ColumnVector& rr, const ColumnVector& vv,
+                        const ColumnVector& xyz, ColumnVector& rsw);
 
-t_irc xyz2ell(const double* XYZ, double* Ell);
+t_irc        xyz2ell(const double* XYZ, double* Ell);
 
-void xyz2neu(const double* Ell, const double* xyz, double* neu);
+void         xyz2neu(const double* Ell, const double* xyz, double* neu);
 
-void neu2xyz(const double* Ell, const double* neu, double* xyz);
+void         neu2xyz(const double* Ell, const double* neu, double* xyz);
 
-void jacobiXYZ_NEU(const double* Ell, Matrix& jacobi);
+void         jacobiXYZ_NEU(const double* Ell, Matrix& jacobi);
 
-void jacobiEll_XYZ(const double* Ell, Matrix& jacobi);
+void         jacobiEll_XYZ(const double* Ell, Matrix& jacobi);
 
-void covariXYZ_NEU(const SymmetricMatrix& Qxyz, const double* Ell, 
-                   SymmetricMatrix& Qneu);
+void         covariXYZ_NEU(const SymmetricMatrix& Qxyz, const double* Ell, 
+                           SymmetricMatrix& Qneu);
 
-void covariNEU_XYZ(const SymmetricMatrix& Qneu, const double* Ell, 
-                   SymmetricMatrix& Qxyz);
+void         covariNEU_XYZ(const SymmetricMatrix& Qneu, const double* Ell, 
+                           SymmetricMatrix& Qxyz);
 
-double nint(double val);
+double       Frac(double x);
 
-ColumnVector rungeKutta4(double xi, const ColumnVector& yi, double dx,
-                         double* acc,
-	    ColumnVector (*der)(double x, const ColumnVector& y, double* acc));
+double       Modulo(double x, double y);
 
-void GPSweekFromDateAndTime(const QDateTime& dateTime, 
-                            int& GPSWeek, double& GPSWeeks);
+double       nint(double val);
 
-void GPSweekFromYMDhms(int year, int month, int day, int hour, int min,
-                       double sec, int& GPSWeek, double& GPSWeeks);
+ColumnVector rungeKutta4(double xi, const ColumnVector& yi, double dx, double* acc, 
+                         ColumnVector (*der)(double x, const ColumnVector& y, double* acc));
 
-void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac);
+void         GPSweekFromDateAndTime(const QDateTime& dateTime, int& GPSWeek, double& GPSWeeks);
 
-bool findInVector(const std::vector<QString>& vv, const QString& str);
+void         GPSweekFromYMDhms(int year, int month, int day, int hour, int min, double sec, 
+                               int& GPSWeek, double& GPSWeeks);
 
-int readInt(const QString& str, int pos, int len, int& value);
+void         mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac);
 
-int readDbl(const QString& str, int pos, int len, double& value);
+bool         findInVector(const std::vector<QString>& vv, const QString& str);
 
-void topos(double xRec, double yRec, double zRec, 
-           double xSat, double ySat, double zSat, 
-           double& rho, double& eleSat, double& azSat);
+int          readInt(const QString& str, int pos, int len, int& value);
 
-void deg2DMS(double decDeg, int& deg, int& min, double& sec);
+int          readDbl(const QString& str, int pos, int len, double& value);
 
-QString fortranFormat(double value, int width, int prec);
+void         topos(double xRec, double yRec, double zRec, double xSat, double ySat, double zSat, 
+                   double& rho, double& eleSat, double& azSat);
+
+void         deg2DMS(double decDeg, int& deg, int& min, double& sec);
+
+QString      fortranFormat(double value, int width, int prec);
+
+void         kalman(const Matrix& AA, const ColumnVector& ll, const DiagonalMatrix& PP, 
+                    SymmetricMatrix& QQ, ColumnVector& dx);
 
 #endif

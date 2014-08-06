@@ -46,6 +46,8 @@
 #include <QStringList>
 #include <QDateTime>
 
+#include <newmatap.h>
+
 #include "bncutils.h"
 #include "bnccore.h"
 
@@ -282,6 +284,18 @@ void neu2xyz(const double* Ell, const double* neu, double* xyz) {
 
   xyz[2] = + cosPhi        * neu[0]
            + sinPhi        * neu[2];
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+double Frac (double x) {
+  return x-floor(x); 
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+double Modulo (double x, double y) { 
+  return y*Frac(x/y); 
 }
 
 // Round to nearest integer
@@ -547,3 +561,40 @@ QString fortranFormat(double value, int width, int prec) {
     return QString("%1e-%2").arg(mant, width-4, 'f', prec).arg(-expo, 2, 10, QChar('0'));
   }
 }
+
+//
+//////////////////////////////////////////////////////////////////////////////
+void kalman(const Matrix& AA, const ColumnVector& ll, const DiagonalMatrix& PP, 
+            SymmetricMatrix& QQ, ColumnVector& dx) {
+
+  Tracer tracer("kalman");
+
+  int nPar = AA.Ncols();
+  int nObs = AA.Nrows();
+  UpperTriangularMatrix SS = Cholesky(QQ).t();
+
+  Matrix SA = SS*AA.t();
+  Matrix SRF(nObs+nPar, nObs+nPar); SRF = 0;
+  for (int ii = 1; ii <= nObs; ++ii) {
+    SRF(ii,ii) = 1.0 / sqrt(PP(ii,ii));
+  }
+
+  SRF.SubMatrix   (nObs+1, nObs+nPar, 1, nObs) = SA;
+  SRF.SymSubMatrix(nObs+1, nObs+nPar)          = SS;
+  
+  UpperTriangularMatrix UU;
+  QRZ(SRF, UU);
+  
+  SS = UU.SymSubMatrix(nObs+1, nObs+nPar);
+  UpperTriangularMatrix SH_rt = UU.SymSubMatrix(1, nObs);
+  Matrix YY  = UU.SubMatrix(1, nObs, nObs+1, nObs+nPar);
+  
+  UpperTriangularMatrix SHi = SH_rt.i();
+  
+  Matrix KT  = SHi * YY; 
+  SymmetricMatrix Hi; Hi << SHi * SHi.t();
+
+  dx = KT.t() * ll;
+  QQ << (SS.t() * SS);
+}
+
