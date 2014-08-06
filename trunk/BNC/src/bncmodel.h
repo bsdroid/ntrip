@@ -97,10 +97,6 @@ class bncModel {
     return 0.0;
   }
 
-  static void kalman(const Matrix& AA, const ColumnVector& ll, 
-                     const DiagonalMatrix& PP, 
-                     SymmetricMatrix& QQ, ColumnVector& dx);
-
   static double delay_saast(const ColumnVector& xyz, double Ele);
 
  private:
