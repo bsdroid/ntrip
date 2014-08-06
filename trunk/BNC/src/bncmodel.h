@@ -37,7 +37,9 @@ class t_satData;
 class bncAntex;
 class t_pppOpt;
 class bncPPPclient;
+namespace BNC {
 class t_tides;
+}
 
 class bncParam {
  public:
@@ -164,7 +166,7 @@ class bncModel {
   QStringList           _outlierGPS;
   QStringList           _outlierGlo;
   bncAntex*             _antex;
-  t_tides*              _tides;
+  BNC::t_tides*         _tides;
 };
 
 #endif
