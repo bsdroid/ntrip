@@ -15,6 +15,7 @@ class t_prn {
   ~t_prn() {}; 
 
   void        set(char system, int number) {_system = system; _number = number;} 
+  void        set(const std::string& str);
 
   char        system() const {return _system;}
   int         number() const {return _number;}
@@ -35,8 +36,6 @@ class t_prn {
   friend std::istream& operator >> (std::istream& in, t_prn& prn);
 
  private:
-  void setValue(const std::string& str);
-  void setValue(char system, unsigned prn);
   char _system;
   int  _number;
 };

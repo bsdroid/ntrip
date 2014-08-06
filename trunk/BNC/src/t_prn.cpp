@@ -28,7 +28,7 @@ string t_prn::toString() const {
 
 // Set from string
 ////////////////////////////////////////////////////////////////////////////
-void t_prn::setValue(const std::string& str) {
+void t_prn::set(const std::string& str) {
   unsigned    prn    = 0;
   char        system = '\x0';
   const char* number = 0;
@@ -41,42 +41,20 @@ void t_prn::setValue(const std::string& str) {
     number = str.c_str();
   }
   else {
-    throw "t_prn::setValue: wrong satellite ID: " + str;
+    throw "t_prn::set: wrong satellite ID: " + str;
   }
 
   char* tmpc = 0;
   prn = strtol(number, &tmpc, 10);
   if ( tmpc == number || *tmpc != '\x0' ) {
-    throw "t_prn::setValue: wrong satellite ID: " + str;
+    throw "t_prn::set: wrong satellite ID: " + str;
   }
 
   try {
-    this->setValue(system, prn);
+    this->set(system, prn);
   }
   catch (string exc) {
-    throw "t_prn::setValue: wrong satellite ID: " + str;
-  }
-}
-
-void t_prn::setValue(char system, unsigned prn) {
-  _system = system;
-  _number = prn;
-  int maxprn = 0;
-  switch (system) {
-  case 'G': 
-    maxprn = MAXPRN_GPS;     
-    break;
-  case 'R': 
-    maxprn = MAXPRN_GLONASS;    
-    break;
-  default: 
-    throw "t_prn::setValue: wrong satellite system identifier"; 
-    break;
-  }
-  if (_number > maxprn) {
-    ostringstream msg;
-    msg << "wrong satellite ID, system ID: " << system << " number: " << prn;
-    throw "t_prn::setValue: " + msg.str();
+    throw "t_prn::set: wrong satellite ID: " + str;
   }
 }
 
@@ -96,6 +74,6 @@ istream& operator >> (istream& in, t_prn& prn) {
     in >> str2;
     str += str2;
   }
-  prn.setValue(str);
+  prn.set(str);
   return in;
 }
