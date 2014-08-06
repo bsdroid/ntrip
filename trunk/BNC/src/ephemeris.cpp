@@ -11,6 +11,7 @@
 #include "timeutils.h"
 #include "bnctime.h"
 #include "bnccore.h"
+#include "bncutils.h"
 #include "PPP/pppInclude.h"
 
 using namespace std;
@@ -62,7 +63,23 @@ t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc,
   vv.ReSize(3);
   position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
   if (useCorr) {
-    throw "t_eph::getCrd: not yet implemented";
+    if (_orbCorr && _clkCorr) {
+      ColumnVector xr = _orbCorr->getX(tt); 
+      ColumnVector dx(3);
+      if (_orbCorr->_system == 'R') {
+        RSW_to_XYZ(xc.Rows(1,3), vv.Rows(1,3), xr, dx);
+      }
+      else {
+        dx = xr;
+      }
+      xc[0] -= dx[0];
+      xc[1] -= dx[1];
+      xc[2] -= dx[2];
+      xc[3] += _clkCorr->getClk(tt);
+    }
+    else {
+      return failure;
+    }
   }
   return success;
 }
