@@ -44,7 +44,6 @@
 #include "bncantex.h"
 #include "PPP/pppModel.h"
 
-using namespace BNC;
 using namespace std;
 
 // Constructor
@@ -236,7 +235,7 @@ t_irc bncAntex::satCoMcorrection(const QString& prn, double Mjd,
     ColumnVector sz = -xSat;
     sz /= sqrt(DotProduct(sz,sz));
 
-    ColumnVector xSun = t_astro::Sun(Mjd);
+    ColumnVector xSun = BNC_PPP::t_astro::Sun(Mjd);
     xSun /= sqrt(DotProduct(xSun,xSun));
   
     ColumnVector sy = crossproduct(sz, xSun);
@@ -283,7 +282,7 @@ double bncAntex::pco(const QString& antName, double eleSat, bool& found) const {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-double bncAntex::rcvCorr(BNC::t_frequency::type /* frqType */, const std::string& antName,
+double bncAntex::rcvCorr(BNC_PPP::t_frequency::type /* frqType */, const std::string& antName,
                double eleSat, bool& found) const {
   return pco(QString(antName.c_str()), eleSat, found);
 }
