@@ -27,7 +27,6 @@
 #include "bncpppclient.h"
 #include "bncsp3.h"
 #include "bncantex.h"
-#include "bnctides.h"
 #include "t_prn.h"
 
 const double sig0_offAC    = 1000.0;

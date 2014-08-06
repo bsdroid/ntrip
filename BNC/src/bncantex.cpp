@@ -44,6 +44,7 @@
 #include "bncantex.h"
 #include "PPP/pppModel.h"
 
+using namespace BNC;
 using namespace std;
 
 // Constructor
