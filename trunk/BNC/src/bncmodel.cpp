@@ -53,7 +53,6 @@
 #include "bncantex.h"
 #include "pppopt.h"
 
-using namespace BNC;
 using namespace std;
 
 const unsigned MINOBS                = 5;
@@ -187,7 +186,7 @@ bncModel::bncModel(bncPPPclient* pppClient) {
     }
   }
 
-  _tides = new t_tides;
+  _tides = new BNC_PPP::t_tides;
 
   // Bancroft Coordinates
   // --------------------
@@ -345,7 +344,7 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
 
   satData->rho = (satData->xx - xRec).norm_Frobenius();
 
-  double tropDelay = t_tropo::delay_saast(xRec, satData->eleSat) + 
+  double tropDelay = BNC_PPP::t_tropo::delay_saast(xRec, satData->eleSat) + 
                      trp() / sin(satData->eleSat);
 
   double wind = 0.0;
@@ -612,7 +611,7 @@ t_irc bncModel::update(t_epoData* epoData) {
     }
     else if (par->type == bncParam::TROPO) {
       ColumnVector xyz(3); xyz(1) = x(); xyz(2) = y(); xyz(3) = z();
-      double aprTrp = t_tropo::delay_saast(xyz, M_PI/2.0);
+      double aprTrp = BNC_PPP::t_tropo::delay_saast(xyz, M_PI/2.0);
       strB << "\n    trp     = " << par->prn.toAscii().data()
            << setw(7) << setprecision(3) << aprTrp << " "
            << setw(6) << setprecision(3) << showpos << par->xx << noshowpos
@@ -893,7 +892,7 @@ double bncModel::windUp(const QString& prn, const ColumnVector& rSat,
     // -------------------------------------
     ColumnVector sz = -rSat / rSat.norm_Frobenius();
 
-    ColumnVector xSun = t_astro::Sun(Mjd);
+    ColumnVector xSun = BNC_PPP::t_astro::Sun(Mjd);
     xSun /= xSun.norm_Frobenius();
 
     ColumnVector sy = crossproduct(sz, xSun);

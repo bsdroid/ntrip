@@ -13,7 +13,6 @@
 #include "bnccore.h"
 #include "PPP/pppInclude.h"
 
-using namespace BNC;
 using namespace std;
 
 // Returns CRC24
@@ -43,16 +42,16 @@ t_eph::t_eph() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_eph::setOrbCorr(const BNC::t_orbCorr* orbCorr) {
+void t_eph::setOrbCorr(const BNC_PPP::t_orbCorr* orbCorr) {
   delete _orbCorr; 
-  _orbCorr = new t_orbCorr(*orbCorr);
+  _orbCorr = new BNC_PPP::t_orbCorr(*orbCorr);
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_eph::setClkCorr(const BNC::t_clkCorr* clkCorr) {
+void t_eph::setClkCorr(const BNC_PPP::t_clkCorr* clkCorr) {
   delete _clkCorr; 
-  _clkCorr = new t_clkCorr(*clkCorr);
+  _clkCorr = new BNC_PPP::t_clkCorr(*clkCorr);
 }
 
 // 

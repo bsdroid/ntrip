@@ -12,7 +12,7 @@ extern "C" {
 #include "rtcm3torinex.h"
 }
 
-namespace BNC {
+namespace BNC_PPP {
   class t_orbCorr;
   class t_clkCorr;
 }
@@ -58,8 +58,8 @@ class t_eph {
 
   t_irc getCrd(const bncTime& tt, ColumnVector& xc,
                ColumnVector& vv, bool useCorr) const;
-  void setOrbCorr(const BNC::t_orbCorr* orbCorr);
-  void setClkCorr(const BNC::t_clkCorr* clkCorr);
+  void setOrbCorr(const BNC_PPP::t_orbCorr* orbCorr);
+  void setClkCorr(const BNC_PPP::t_clkCorr* clkCorr);
   virtual int slotNum() const {return 0;}
 
   static QString rinexDateStr(const bncTime& tt, const t_prn& prn,
@@ -73,8 +73,8 @@ class t_eph {
   bncTime         _TOC;
   QDateTime       _receptDateTime;
   bool            _ok;
-  BNC::t_orbCorr* _orbCorr;
-  BNC::t_clkCorr* _clkCorr;
+  BNC_PPP::t_orbCorr* _orbCorr;
+  BNC_PPP::t_clkCorr* _clkCorr;
 };
 
 

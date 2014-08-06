@@ -74,7 +74,6 @@
 
 #include "PPP/pppMain.h"
 
-using namespace BNC;
 using namespace std;
 
 #ifdef GNSSCENTER_PLUGIN
@@ -99,7 +98,7 @@ bncWindow::bncWindow() {
   _runningPostProcessingPPP  = false;
   _runningPostProcessingReqc = false;
   _postProcessing            = 0;
-  _pppMain                   = new t_pppMain();
+  _pppMain                   = new BNC_PPP::t_pppMain();
 
   _pppSPPComboBox     = 0; // necessary for enableStartStop()
   _reqcActionComboBox = 0; // necessary for enableStartStop()

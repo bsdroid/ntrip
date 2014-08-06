@@ -56,7 +56,7 @@ class qtFileChooser;
 class bncMapWin;
 class t_postProcessing;
 
-namespace BNC {
+namespace BNC_PPP {
 class t_pppMain;
 }
 
@@ -277,7 +277,7 @@ class bncWindow : public QMainWindow {
     QList<bncGetThread*> _threads;
 
     t_pppWidgets         _pppWidgets;
-    BNC::t_pppMain*      _pppMain;
+    BNC_PPP::t_pppMain*  _pppMain;
 };
 
 #ifdef GNSSCENTER_PLUGIN
