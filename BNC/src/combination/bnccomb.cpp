@@ -191,26 +191,26 @@ bncComb::bncComb() {
     while (it.hasNext()) {
       cmbAC* AC = it.next();
       _params.push_back(new cmbParam(cmbParam::offACgps, ++nextPar, AC->name, ""));
-      for (int iGps = 1; iGps <= t_prn::MAXPRN_GPS; iGps++) {
+      for (unsigned iGps = 1; iGps <= t_prn::MAXPRN_GPS; iGps++) {
         QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
         _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar, 
                                        AC->name, prn));
       }
       if (_useGlonass) {
         _params.push_back(new cmbParam(cmbParam::offACglo, ++nextPar, AC->name, ""));
-        for (int iGlo = 1; iGlo <= t_prn::MAXPRN_GLONASS; iGlo++) {
+        for (unsigned iGlo = 1; iGlo <= t_prn::MAXPRN_GLONASS; iGlo++) {
           QString prn = QString("R%1").arg(iGlo, 2, 10, QChar('0'));
           _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar, 
                                          AC->name, prn));
         }
       }
     }
-    for (int iGps = 1; iGps <= t_prn::MAXPRN_GPS; iGps++) {
+    for (unsigned iGps = 1; iGps <= t_prn::MAXPRN_GPS; iGps++) {
       QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
       _params.push_back(new cmbParam(cmbParam::clkSat, ++nextPar, "", prn));
     }
     if (_useGlonass) {
-      for (int iGlo = 1; iGlo <= t_prn::MAXPRN_GLONASS; iGlo++) {
+      for (unsigned iGlo = 1; iGlo <= t_prn::MAXPRN_GLONASS; iGlo++) {
         QString prn = QString("R%1").arg(iGlo, 2, 10, QChar('0'));
         _params.push_back(new cmbParam(cmbParam::clkSat, ++nextPar, "", prn));
       }
@@ -593,7 +593,7 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
       return failure;
     }
 
-    bncModel::kalman(AA, ll, PP, _QQ, dx);
+    kalman(AA, ll, PP, _QQ, dx);
     ColumnVector vv = ll - AA * dx;
 
     int     maxResIndex;
@@ -805,7 +805,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
       }
     }
     int iCond = 1;
-    for (int iGps = 1; iGps <= t_prn::MAXPRN_GPS; iGps++) {
+    for (unsigned iGps = 1; iGps <= t_prn::MAXPRN_GPS; iGps++) {
       QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
       ++iCond;
       PP(nObs+iCond) = Ph;
