@@ -45,7 +45,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bncserialport.h bncnetquerys.h bncfigure.h                  \ 
           bncfigurelate.h bncpppclient.h bncversion.h                 \ 
           bancroft.h bncmodel.h bncfigureppp.h bncrawfile.h           \ 
-          bnctides.h bncmap.h bncantex.h                              \
+          bncmap.h bncantex.h                              \
           bncephuser.h bncoutf.h bncclockrinex.h bncsp3.h             \
           bncbytescounter.h bncsslconfig.h reqcdlg.h                  \
           upload/bncrtnetdecoder.h upload/bncuploadcaster.h           \
@@ -60,7 +60,8 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           PPP/pppwidgets.h PPP/options.h PPP/pppMain.h                \
           PPP/pppThread.h PPP/pppClient.h                             \
           PPP/obspool.h PPP/station.h PPP/filter.h PPP/ephpool.h      \
-          PPP/satobs.h PPP/satbias.h PPP/parlist.h PPP/windup.h
+          PPP/satobs.h PPP/satbias.h PPP/parlist.h PPP/windup.h       \
+          PPP/pppModel.h
 
 HEADERS       += serial/qextserialbase.h serial/qextserialport.h
 unix:HEADERS  += serial/posix_qextserialport.h
@@ -76,7 +77,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bncserialport.cpp bncnetquerys.cpp bncfigure.cpp            \
           bncfigurelate.cpp bncpppclient.cpp bnctime.cpp              \
           bancroft.cpp bncmodel.cpp bncfigureppp.cpp bncrawfile.cpp   \
-          bnctides.cpp bncmap_svg.cpp bncantex.cpp                    \
+          bncmap_svg.cpp bncantex.cpp                    \
           bncephuser.cpp bncoutf.cpp bncclockrinex.cpp bncsp3.cpp     \
           bncbytescounter.cpp bncsslconfig.cpp reqcdlg.cpp            \
           ephemeris.cpp timeutils.cpp t_prn.cpp                       \
@@ -91,7 +92,8 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           PPP/pppwidgets.cpp PPP/options.cpp PPP/pppMain.cpp          \
           PPP/pppThread.cpp PPP/pppClient.cpp                         \
           PPP/obspool.cpp PPP/station.cpp PPP/filter.cpp PPP/ephpool.cpp \
-          PPP/satobs.cpp PPP/satbias.cpp PPP/parlist.cpp PPP/windup.cpp
+          PPP/satobs.cpp PPP/satbias.cpp PPP/parlist.cpp PPP/windup.cpp \
+          PPP/pppModel.cpp
 
 SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp
 unix:SOURCES  += serial/posix_qextserialport.cpp
