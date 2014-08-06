@@ -42,7 +42,7 @@
 #include <newmatio.h>
 
 #include "bncantex.h"
-#include "bnctides.h"
+#include "PPP/pppModel.h"
 
 using namespace std;
 
@@ -235,7 +235,7 @@ t_irc bncAntex::satCoMcorrection(const QString& prn, double Mjd,
     ColumnVector sz = -xSat;
     sz /= sqrt(DotProduct(sz,sz));
 
-    ColumnVector xSun = Sun(Mjd);
+    ColumnVector xSun = t_astro::Sun(Mjd);
     xSun /= sqrt(DotProduct(xSun,xSun));
   
     ColumnVector sy = crossproduct(sz, xSun);

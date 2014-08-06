@@ -49,7 +49,7 @@
 #include "bncpppclient.h"
 #include "bancroft.h"
 #include "bncutils.h"
-#include "bnctides.h"
+#include "PPP/pppModel.h"
 #include "bncantex.h"
 #include "pppopt.h"
 
@@ -186,6 +186,8 @@ bncModel::bncModel(bncPPPclient* pppClient) {
     }
   }
 
+  _tides = new t_tides;
+
   // Bancroft Coordinates
   // --------------------
   _xcBanc.ReSize(4);  _xcBanc  = 0.0;
@@ -212,6 +214,7 @@ bncModel::~bncModel() {
     delete _params_sav[iPar-1];
   }
   delete _epoData_sav;
+  delete _tides;
 }
 
 // Reset Parameters and Variance-Covariance Matrix
@@ -337,7 +340,7 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
   xRec(2) = y() * cos(dPhi) + x() * sin(dPhi); 
   xRec(3) = z();
 
-  tides(_time, xRec);
+  xRec += _tides->displacement(_time, xRec);
 
   satData->rho = (satData->xx - xRec).norm_Frobenius();
 
@@ -979,7 +982,7 @@ double bncModel::windUp(const QString& prn, const ColumnVector& rSat,
     // -------------------------------------
     ColumnVector sz = -rSat / rSat.norm_Frobenius();
 
-    ColumnVector xSun = Sun(Mjd);
+    ColumnVector xSun = t_astro::Sun(Mjd);
     xSun /= xSun.norm_Frobenius();
 
     ColumnVector sy = crossproduct(sz, xSun);
