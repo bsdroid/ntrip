@@ -135,9 +135,7 @@ QByteArray bncRawFile::readChunk(){
     if (!line.isEmpty()) {
       QStringList lst  = line.split(' ');
       
-      delete BNC_CORE->_currentDateAndTimeGPS;
-      BNC_CORE->_currentDateAndTimeGPS = 
-        new QDateTime(QDateTime::fromString(lst.value(0), Qt::ISODate));
+      BNC_CORE->setDateAndTimeGPS(QDateTime(QDateTime::fromString(lst.value(0), Qt::ISODate)));
       
       _staID  = lst.value(1).toAscii();
       _format = lst.value(2).toAscii();
