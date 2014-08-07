@@ -137,6 +137,7 @@ class t_ephGPS : public t_eph {
 };
 
 class t_ephGlo : public t_eph {
+ friend class t_ephEncoder;
  public:
   t_ephGlo() { _xv.ReSize(6); }
   t_ephGlo(float rnxVersion, const QStringList& lines);
@@ -167,7 +168,7 @@ class t_ephGlo : public t_eph {
   double  _gps_utc;
   double  _tau;              // [s]      
   double  _gamma;            //          
-  double  _tki;              // message frame time
+  mutable double  _tki;      // message frame time
 
   double  _x_pos;            // [km]     
   double  _x_velocity;       // [km/s]   
@@ -186,6 +187,7 @@ class t_ephGlo : public t_eph {
 };
 
 class t_ephGal : public t_eph {
+ friend class t_ephEncoder;
  public:
   t_ephGal() { }
   t_ephGal(float rnxVersion, const QStringList& lines);
