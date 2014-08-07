@@ -18,6 +18,7 @@
 #include <math.h>
 #include "bncephuploadcaster.h" 
 #include "bncsettings.h"
+#include "RTCM3/ephEncoder.h"
 
 using namespace std;
 
@@ -65,7 +66,19 @@ void bncEphUploadCaster::ephBufferChanged() {
 
       t_eph* eph = it.value()->last;
       unsigned char Array[80];
-      int size = eph->RTCM3(Array);
+      int size = 0;
+      t_ephGPS* ephGPS = dynamic_cast<t_ephGPS*>(eph);
+      t_ephGlo* ephGlo = dynamic_cast<t_ephGlo*>(eph);
+      t_ephGal* ephGal = dynamic_cast<t_ephGal*>(eph);
+      if (ephGPS) {
+        size = t_ephEncoder::RTCM3(*ephGPS, Array);
+      }
+      else if (ephGlo) {
+        size = t_ephEncoder::RTCM3(*ephGlo, Array);
+      }
+      else if (ephGal) {
+        size = t_ephEncoder::RTCM3(*ephGal, Array);
+      }
       if (size > 0) {
         outBuffer += QByteArray((char*) Array, size);
       }
