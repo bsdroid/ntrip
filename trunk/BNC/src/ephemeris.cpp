@@ -63,7 +63,6 @@ t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc,
       xc[2] -= dx[2];
 
       double dtC = tt - _clkCorr->_time;
-      cout << "AGE " << dtO << ' ' << dtC << endl;
       xc[3] += _clkCorr->_dClk + _clkCorr->_dotDClk * dtC + _clkCorr->_dotDotDClk * dtC * dtC;
     }
     else {
