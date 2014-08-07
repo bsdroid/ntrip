@@ -118,7 +118,7 @@ t_bncCore::t_bncCore() {
 
   _corrs = new QMultiMap<bncTime, QString>;
 
-  _currentDateAndTimeGPS = 0;
+  _dateAndTimeGPS = 0;
 
   for (int ii = 0; ii < PRN_GLONASS_NUM; ++ii) {
     _GLOFreq[ii] = 0;
@@ -156,7 +156,7 @@ t_bncCore::~t_bncCore() {
 
   delete _corrs;
 
-  delete _currentDateAndTimeGPS;
+  delete _dateAndTimeGPS;
 
   delete _rawFile;
 
@@ -834,3 +834,35 @@ void t_bncCore::checkEphemeris(gpsephemeris* oldEph, gpsephemeris* newEph) {
   }
 }
 
+
+//
+////////////////////////////////////////////////////////////////////////////
+bool t_bncCore::dateAndTimeGPSSet() const {
+  QMutexLocker locker(&_mutexDateAndTimeGPS);
+  if (_dateAndTimeGPS) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+QDateTime t_bncCore::dateAndTimeGPS() const {
+  QMutexLocker locker(&_mutexDateAndTimeGPS);
+  if (_dateAndTimeGPS) {
+    return *_dateAndTimeGPS;
+  }
+  else {
+    return QDateTime();
+  }
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_bncCore::setDateAndTimeGPS(QDateTime dateTime) {
+  QMutexLocker locker(&_mutexDateAndTimeGPS);
+  delete _dateAndTimeGPS;
+  _dateAndTimeGPS = new QDateTime(dateTime);
+}

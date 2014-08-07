@@ -52,7 +52,9 @@ class t_bncCore : public QObject {
     void setPortCorr(int port);
     void setCaster(bncCaster* caster) {_caster = caster;}
     const bncCaster* caster() const {return _caster;}
-    QDateTime* _currentDateAndTimeGPS;
+    bool      dateAndTimeGPSSet() const;
+    QDateTime dateAndTimeGPS() const;
+    void      setDateAndTimeGPS(QDateTime dateTime);
     void setConfFileName(const QString& confFileName);
     QString confFileName() const {return _confFileName;}
     void writeRawData(const QByteArray& data, const QByteArray& staID,
@@ -139,6 +141,8 @@ class t_bncCore : public QObject {
     e_mode              _mode;
     QWidget*            _mainWindow;
     bool                _GUIenabled;
+    QDateTime*          _dateAndTimeGPS;
+    mutable QMutex      _mutexDateAndTimeGPS;
  public:
     bncPPPclient*       _bncPPPclient;
     QMap<int, bncTableItem*> _uploadTableItems;
