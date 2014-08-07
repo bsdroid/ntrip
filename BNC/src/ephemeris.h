@@ -19,7 +19,6 @@ namespace BNC_PPP {
 
 class t_eph {
  public:
-
   enum e_type {unknown, GPS, GLONASS, Galileo};
 
   t_eph();
@@ -34,7 +33,6 @@ class t_eph {
   virtual void position(int GPSweek, double GPSweeks, 
                         double* xc, double* vv) const = 0;
   virtual int  IOD() const = 0;
-  virtual int  RTCM3(unsigned char *) = 0;
 
   bool ok() const {return _ok;}
   bncTime TOC() const {return _TOC;}
@@ -79,6 +77,7 @@ class t_eph {
 
 
 class t_ephGPS : public t_eph {
+ friend class t_ephEncoder;
  public:
   t_ephGPS() { }
   t_ephGPS(float rnxVersion, const QStringList& lines);
@@ -95,8 +94,6 @@ class t_ephGPS : public t_eph {
                         double* vv) const;
 
   virtual int  IOD() const { return static_cast<int>(_IODC); }
-
-  virtual int  RTCM3(unsigned char *);
 
   double TGD() const {return _TGD;} // Timing Group Delay (P1-P2 DCB)
 
@@ -130,7 +127,7 @@ class t_ephGPS : public t_eph {
   double  _TOEweek;
   double  _L2PFlag;         // L2 P data flag
 
-  double  _ura;             // SV accuracy
+  mutable double  _ura;             // SV accuracy
   double  _health;          // SV health
   double  _TGD;             // [s]    
   double  _IODC;            
@@ -155,8 +152,6 @@ class t_ephGlo : public t_eph {
                         double* vv) const;
 
   virtual int  IOD() const;
-
-  virtual int  RTCM3(unsigned char *);
 
   void set(const glonassephemeris* ee);
 
@@ -207,8 +202,6 @@ class t_ephGal : public t_eph {
                         double* vv) const;
 
   virtual int  IOD() const { return static_cast<int>(_IODnav); }
-
-  virtual int  RTCM3(unsigned char *);
 
  private:
   double  _clock_bias;       //  [s]    

@@ -55,7 +55,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           GPSDecoder.h      RTCM/RTCM2.h RTCM/RTCM2Decoder.h          \
           RTCM/RTCM2_2021.h RTCM/rtcm_utils.h                         \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex/rtcm3torinex.h      \
-          RTCM3/RTCM3coDecoder.h                                      \
+          RTCM3/RTCM3coDecoder.h RTCM3/ephEncoder.h                   \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.h                    \
           PPP/pppInclude.h   PPP/pppOptions.h   PPP/pppMain.h         \
           PPP/pppWidgets.h   PPP/pppThread.h    PPP/pppClient.h       \
@@ -87,7 +87,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           GPSDecoder.cpp      RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp    \
           RTCM/RTCM2_2021.cpp RTCM/rtcm_utils.cpp                     \
           RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex/rtcm3torinex.c    \
-          RTCM3/RTCM3coDecoder.cpp                                    \
+          RTCM3/RTCM3coDecoder.cpp RTCM3/ephEncoder.cpp               \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.c                    \
                              PPP/pppOptions.cpp PPP/pppMain.cpp       \
           PPP/pppWidgets.cpp PPP/pppThread.cpp  PPP/pppClient.cpp     \
