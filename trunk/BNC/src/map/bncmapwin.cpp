@@ -163,13 +163,9 @@ void bncMapWin::gotoLocation(double lat, double lon) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncMapWin::slotNewPosition(bncTime /* time */, double xx, double yy, double zz) {
-  double xyz[3]; 
-  xyz[0] = xx;
-  xyz[1] = yy;
-  xyz[2] = zz;
+void bncMapWin::slotNewPosition(bncTime /* time */, QVector<double> xx) {
   double ell[3];
-  xyz2ell(xyz, ell);
+  xyz2ell(xx.data(), ell);
   gotoLocation(ell[0]*180.0/M_PI, ell[1]*180.0/M_PI);
 }
 

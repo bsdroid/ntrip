@@ -40,7 +40,7 @@ class bncMapWin : public QDialog {
   void mapClosed(); 
 
  public slots:
-  void slotNewPosition(bncTime time, double xx, double yy, double zz);
+  void slotNewPosition(bncTime time, QVector<double> xx);
 
  private slots:
   void slotInitMap(bool isOk);

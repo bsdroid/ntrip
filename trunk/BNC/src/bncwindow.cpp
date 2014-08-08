@@ -93,8 +93,8 @@ bncWindow::bncWindow() {
   _bncFigure     = new bncFigure(this);
   _bncFigureLate = new bncFigureLate(this);
   _bncFigurePPP  = new bncFigurePPP(this);
-  connect(BNC_CORE, SIGNAL(newPosition(bncTime, double, double, double)),
-          _bncFigurePPP, SLOT(slotNewPosition(bncTime, double, double, double)));
+  connect(BNC_CORE, SIGNAL(newPosition(bncTime, QVector<double>)),
+          _bncFigurePPP, SLOT(slotNewPosition(bncTime, QVector<double>)));
   _runningRealTime           = false;
   _runningPostProcessingReqc = false;
   _pppMain                   = new BNC_PPP::t_pppMain();
@@ -2481,8 +2481,8 @@ void bncWindow::slotMapPPP() {
   if (!_mapWin) {
     _mapWin = new bncMapWin(this);
     connect(_mapWin, SIGNAL(mapClosed()), this, SLOT(slotMapPPPClosed()));
-    connect(BNC_CORE, SIGNAL(newPosition(bncTime, double, double, double)),
-            _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
+    connect(BNC_CORE, SIGNAL(newPosition(bncTime, QVector<double>)),
+            _mapWin, SLOT(slotNewPosition(bncTime, QVector<double>)));
   }
   _mapWin->show();
 #else
