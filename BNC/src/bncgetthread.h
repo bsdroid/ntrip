@@ -39,7 +39,6 @@
 
 class QextSerialPort;
 class latencyChecker;
-class bncPPPclient;
 
 class bncGetThread : public QThread {
  Q_OBJECT
@@ -122,7 +121,6 @@ class bncGetThread : public QThread {
    QString                    _miscMount;
    QFile*                     _serialOutFile;
    t_serialNMEA               _serialNMEA;
-   bncPPPclient*              _PPPclient;
    bool                       _rawOutput;
    QMap<QString, long>        _prnLastEpo;
    QMap<char, QVector<QString> > _rnxTypes;
