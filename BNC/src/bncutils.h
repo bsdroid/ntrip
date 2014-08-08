@@ -96,6 +96,6 @@ void         deg2DMS(double decDeg, int& deg, int& min, double& sec);
 QString      fortranFormat(double value, int width, int prec);
 
 void         kalman(const Matrix& AA, const ColumnVector& ll, const DiagonalMatrix& PP, 
-                    SymmetricMatrix& QQ, ColumnVector& dx);
+                    SymmetricMatrix& QQ, ColumnVector& xx);
 
 #endif
