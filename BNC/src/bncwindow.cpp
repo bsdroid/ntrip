@@ -2083,7 +2083,7 @@ void bncWindow::slotStop() {
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
     if (_pppMain) {
-      _pppMain->stop();
+      _pppMain->slotStop();
     }
     BNC_CORE->stopCombination();
     delete _caster;    _caster    = 0; BNC_CORE->setCaster(0);
@@ -2114,7 +2114,7 @@ void bncWindow::closeEvent(QCloseEvent* event) {
   }
 
   if (_pppMain) {
-    _pppMain->stop();
+    _pppMain->slotStop();
   }
 
   QMainWindow::closeEvent(event);
