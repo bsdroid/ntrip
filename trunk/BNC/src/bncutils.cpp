@@ -565,7 +565,7 @@ QString fortranFormat(double value, int width, int prec) {
 //
 //////////////////////////////////////////////////////////////////////////////
 void kalman(const Matrix& AA, const ColumnVector& ll, const DiagonalMatrix& PP, 
-            SymmetricMatrix& QQ, ColumnVector& dx) {
+            SymmetricMatrix& QQ, ColumnVector& xx) {
 
   Tracer tracer("kalman");
 
@@ -594,7 +594,7 @@ void kalman(const Matrix& AA, const ColumnVector& ll, const DiagonalMatrix& PP,
   Matrix KT  = SHi * YY; 
   SymmetricMatrix Hi; Hi << SHi * SHi.t();
 
-  dx = KT.t() * ll;
+  xx += KT.t() * (ll - AA * xx);
   QQ << (SS.t() * SS);
 }
 
