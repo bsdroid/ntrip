@@ -51,7 +51,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           upload/bncrtnetdecoder.h upload/bncuploadcaster.h           \
           ephemeris.h t_prn.h                                         \
           upload/bncrtnetuploadcaster.h upload/bnccustomtrafo.h       \
-          upload/bncephuploadcaster.h bnccomb.h qtfilechooser.h       \
+          upload/bncephuploadcaster.h qtfilechooser.h                 \
           GPSDecoder.h      RTCM/RTCM2.h RTCM/RTCM2Decoder.h          \
           RTCM/RTCM2_2021.h RTCM/rtcm_utils.h                         \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex/rtcm3torinex.h      \
