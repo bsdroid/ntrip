@@ -577,6 +577,7 @@ bncWindow::bncWindow() {
   _aogroup->addTab(pppGroup1,tr("PPP (1)"));
   _aogroup->addTab(pppGroup2,tr("PPP (2)"));
   _aogroup->addTab(pppGroup3,tr("PPP (3)"));
+  _aogroup->addTab(pppGroup4,tr("PPP (4)"));
 
 #ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combine Corrections"));
