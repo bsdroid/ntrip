@@ -50,10 +50,8 @@
 #include "bncsettings.h"
 #include "bncversion.h"
 #include "upload/bncephuploadcaster.h"
-#ifdef USE_POSTPROCESSING
-#  include "rinex/reqcedit.h"
-#  include "rinex/reqcanalyze.h"
-#endif
+#include "rinex/reqcedit.h"
+#include "rinex/reqcanalyze.h"
 #include "PPP/pppMain.h"
 
 using namespace std;
@@ -156,8 +154,6 @@ int main(int argc, char* argv[]) {
     bncWin->show();
   }
 
-#ifdef USE_POSTPROCESSING
-
   // Post-Processing reqc edit
   // -------------------------
   else if (settings.value("reqcAction").toString() == "Edit/Concatenate") {
@@ -173,8 +169,6 @@ int main(int argc, char* argv[]) {
     t_reqcAnalyze* reqcAnalyze = new t_reqcAnalyze(0);
     reqcAnalyze->start();
   }
-
-#endif
 
   // Non-Interactive (data gathering)
   // --------------------------------

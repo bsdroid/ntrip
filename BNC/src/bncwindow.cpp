@@ -63,15 +63,12 @@
 #include "qtfilechooser.h"
 #include "reqcdlg.h"
 #include "bncmap.h"
+#include "rinex/reqcedit.h"
+#include "rinex/reqcanalyze.h"
+#include "PPP/pppMain.h"
 #ifdef QT_WEBKIT
 #  include "map/bncmapwin.h"
 #endif
-#ifdef USE_POSTPROCESSING
-#  include "rinex/reqcedit.h"
-#  include "rinex/reqcanalyze.h"
-#endif
-
-#include "PPP/pppMain.h"
 
 using namespace std;
 
@@ -2376,7 +2373,6 @@ void bncWindow::slotPostProgress(int nEpo) {
 // Start Post-Processing Reqc
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::startPostProcessingReqc() {
-#ifdef USE_POSTPROCESSING
   _runningPostProcessingReqc = true;
   enableStartStop();
   if (_reqcActionComboBox->currentText() == "Analyze") {
@@ -2391,10 +2387,6 @@ void bncWindow::startPostProcessingReqc() {
             this, SLOT(slotFinishedPostProcessingReqc()));
     reqcEdit->start();
   }
-#else
-  QMessageBox::information(this, "Information",
-                           "Post-Processing Not Permitted");
-#endif
 }
 
 // Post-Processing Reqc Finished
