@@ -61,7 +61,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           PPP/pppWidgets.h   PPP/pppThread.h    PPP/pppClient.h       \
           PPP/pppObsPool.h   PPP/pppStation.h   PPP/pppFilter.h       \
           PPP/pppEphPool.h   PPP/pppModel.h     PPP/pppParlist.h      \
-          PPP/pppSatObs.h    PPP/pppRunRealTime.h
+          PPP/pppSatObs.h    PPP/pppRun.h
 
 HEADERS       += serial/qextserialbase.h serial/qextserialport.h
 unix:HEADERS  += serial/posix_qextserialport.h
@@ -93,7 +93,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           PPP/pppWidgets.cpp PPP/pppThread.cpp  PPP/pppClient.cpp     \
           PPP/pppObsPool.cpp PPP/pppStation.cpp PPP/pppFilter.cpp     \
           PPP/pppEphPool.cpp PPP/pppModel.cpp   PPP/pppParlist.cpp    \
-          PPP/pppSatObs.cpp  PPP/pppRunRealTime.cpp
+          PPP/pppSatObs.cpp  PPP/pppRun.cpp
 
 SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp
 unix:SOURCES  += serial/posix_qextserialport.cpp

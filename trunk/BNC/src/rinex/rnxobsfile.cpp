@@ -1103,3 +1103,37 @@ void t_rnxObsFile::checkNewHeader(const t_rnxObsHeader& header) {
              << strLst.join("");
   }
 }
+
+// Set Observations from RINEX File
+////////////////////////////////////////////////////////////////////////////
+void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
+                                 const t_rnxObsFile::t_rnxEpo* epo, 
+                                 const t_rnxObsFile::t_rnxSat& rnxSat, 
+                                 t_obs& obs) {
+
+  strncpy(obs.StatID, rnxObsFile->markerName().toAscii().constData(),
+          sizeof(obs.StatID));
+
+  obs.satSys   = rnxSat.satSys;
+  obs.satNum   = rnxSat.satNum;
+  obs.GPSWeek  = epo->tt.gpsw();
+  obs.GPSWeeks = epo->tt.gpssec();
+
+  for (int iType = 0; iType < rnxObsFile->nTypes(obs.satSys); iType++) {
+    QString type = rnxObsFile->obsType(obs.satSys,iType).toAscii();
+    obs.setMeasdata(type, rnxObsFile->version(), rnxSat.obs[iType]);
+    if      (type.indexOf("L1") == 0) {
+      obs.snrL1  = rnxSat.snr[iType];
+      obs.slipL1 = (rnxSat.lli[iType] & 1);
+    }
+    else if (type.indexOf("L2") == 0) {
+      obs.snrL2  = rnxSat.snr[iType];
+      obs.slipL2 = (rnxSat.lli[iType] & 1);
+    }
+    else if (type.indexOf("L5") == 0) {
+      obs.snrL5  = rnxSat.snr[iType];
+      obs.slipL5 = (rnxSat.lli[iType] & 1);
+    }
+  }
+}
+
