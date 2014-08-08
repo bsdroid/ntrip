@@ -75,7 +75,6 @@ friend class bncSettings;
   void slotNewGlonassEph(glonassephemeris* glonasseph, const QString& staID);
   void slotNewGalileoEph(galileoephemeris* galileoeph);
   void slotNewCorrLine(QString line, QString staID, bncTime coTime);
-  void slotNewPosition(bncTime time, double x, double y, double z);
   void slotQuit();
 
  signals:

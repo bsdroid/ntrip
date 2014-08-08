@@ -626,12 +626,6 @@ void t_bncCore::slotNewConnectionCorr() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::slotNewPosition(bncTime time, double x, double y, double z) {
-  emit newPosition(time, x, y, z);
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotQuit() {
   cout << "t_bncCore::slotQuit" << endl;
   delete _caster; _caster = 0;
