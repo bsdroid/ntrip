@@ -28,15 +28,17 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <QList>
-#include <QStringList>
+
+#include <QtCore>
 
 #include "bncconst.h"
-#include "bncrinex.h"
+#include "bnctime.h"
 
 extern "C" {
 #include "rtcm3torinex.h"
 }
+
+class bncRinex;
 
 class t_obs {
  public:
@@ -101,8 +103,7 @@ class t_obs {
 class GPSDecoder {
  public:
   GPSDecoder();
-
-  virtual ~GPSDecoder() {delete _rnx;}
+  virtual ~GPSDecoder();
 
   virtual t_irc Decode(char* buffer, int bufLen, 
                        std::vector<std::string>& errmsg) = 0;
