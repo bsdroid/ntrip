@@ -35,6 +35,7 @@
 #include "bncconst.h"
 #include "bnctime.h"
 #include "t_prn.h"
+#include "GPSDecoder.h"
 
 class t_rnxObsHeader {
  public:
@@ -142,6 +143,11 @@ class t_rnxObsFile {
   void writeEpoch(const t_rnxEpo* epo);
 
   QTextStream* stream() {return _stream;}
+
+  static void setObsFromRnx(const t_rnxObsFile* rnxObsFile,
+                            const t_rnxObsFile::t_rnxEpo* epo, 
+                            const t_rnxObsFile::t_rnxSat& rnxSat, 
+                            t_obs& obs);
 
  private:
   enum e_trafo {trafoNone, trafo2to3, trafo3to2};

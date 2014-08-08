@@ -168,11 +168,6 @@ Q_OBJECT
                    QVector<t_polarPoint*>* dataSNR1, 
                    QVector<t_polarPoint*>* dataSNR2);
 
-  void setObsFromRnx(const t_rnxObsFile* rnxObsFile,
-                     const t_rnxObsFile::t_rnxEpo* epo, 
-                    const t_rnxObsFile::t_rnxSat& rnxSat, 
-                    t_obs& obs);
-
   QString                    _logFileName;
   QFile*                     _logFile;
   QTextStream*               _log;
