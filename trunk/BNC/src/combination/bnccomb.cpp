@@ -22,9 +22,7 @@
 #include "bnccore.h"
 #include "upload/bncrtnetdecoder.h"
 #include "bncsettings.h"
-#include "bncmodel.h"
 #include "bncutils.h"
-#include "bncpppclient.h"
 #include "bncsp3.h"
 #include "bncantex.h"
 #include "t_prn.h"
@@ -681,7 +679,6 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
     ColumnVector vv(3);
     corr->eph->position(_resTime.gpsw(), _resTime.gpssec(), 
                         xc.data(), vv.data());
-    bncPPPclient::applyCorr(_resTime, corr, xc, vv);
     
     // Correction Phase Center --> CoM
     // -------------------------------
@@ -740,11 +737,9 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
   vector<string> errmsg;
   _rtnetDecoder->Decode(outLines.toAscii().data(), outLines.length(), errmsg);
 
-  // Optionally send new Corrections to PPP
-  // --------------------------------------
-  if (BNC_CORE->_bncPPPclient) {
-    BNC_CORE->_bncPPPclient->slotNewCorrections(corrLines);
-  }
+  // Send new Corrections to PPP etc.
+  // --------------------------------
+  emit newCorrections(corrLines);
 }
 
 // Create First Design Matrix and Vector of Measurements

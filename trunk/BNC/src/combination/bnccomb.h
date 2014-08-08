@@ -42,6 +42,7 @@ class bncComb : public bncEphUser  {
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
+  void newCorrections(QStringList);
 
  private:
 

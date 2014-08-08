@@ -62,7 +62,6 @@
 #include "bncnetquerys.h"
 #include "bncsettings.h"
 #include "latencychecker.h"
-#include "bncpppclient.h"
 #include "upload/bncrtnetdecoder.h"
 #include "RTCM/RTCM2Decoder.h"
 #include "RTCM3/RTCM3Decoder.h"
@@ -125,7 +124,6 @@ void bncGetThread::initialize() {
   _isToBeDeleted = false;
   _query         = 0;
   _nextSleep     = 0;
-  _PPPclient     = 0;
   _miscMount     = settings.value("miscMount").toString();
   _decoder   = 0;
 
@@ -314,22 +312,6 @@ t_irc bncGetThread::initDecoder() {
     _decodersRaw[_staID] = _decoder;
   }
 
-  // Initialize PPP Client?
-  // ----------------------
-#ifndef MLS_SOFTWARE
-  bncSettings settings;
-  if (!settings.value("pppSPP").toString().isEmpty() && 
-      settings.value("pppMount").toString() == _staID) {
-    _PPPclient = new bncPPPclient(_staID);
-    BNC_CORE->_bncPPPclient = _PPPclient;
-    qRegisterMetaType<bncTime>("bncTime");
-    connect(_PPPclient, SIGNAL(newPosition(bncTime, double, double, double)), 
-            this, SIGNAL(newPosition(bncTime, double, double, double)));
-    connect(_PPPclient, SIGNAL(newNMEAstr(QByteArray)), 
-            this,       SIGNAL(newNMEAstr(QByteArray)));
-  }
-#endif
-
   return success;
 }
 
@@ -357,7 +339,6 @@ bncGetThread::~bncGetThread() {
     _query->stop();
     _query->deleteLater();
   }
-  delete _PPPclient;
   if (_rawFile) {
     QMapIterator<QString, GPSDecoder*> it(_decodersRaw);
     while (it.hasNext()) {
@@ -536,13 +517,6 @@ void bncGetThread::run() {
 
         decoder()->dumpRinexEpoch(obs, _format);
 
-        // PPP Client
-        // ----------
-#ifndef MLS_SOFTWARE
-        if (_PPPclient && _staID == _PPPclient->staID()) {
-          _PPPclient->putNewObs(obs);
-        }
-#endif
         // Save observations
         // -----------------
         obsListHlp.append(obs);

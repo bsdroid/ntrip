@@ -54,7 +54,6 @@ class bncBytesCounter;
 class bncEphUploadCaster;
 class qtFileChooser;
 class bncMapWin;
-class t_postProcessing;
 
 namespace BNC_PPP {
 class t_pppMain;
@@ -111,7 +110,6 @@ class bncWindow : public QMainWindow {
     void populateUploadTable();
     void enableWidget(bool enable, QWidget* widget);
     void startRealTime();
-    void startPostProcessingPPP();
     void startPostProcessingReqc();
     void enableStartStop();
 
@@ -147,39 +145,6 @@ class bncWindow : public QMainWindow {
     QLineEdit* _corrPathLineEdit;
     QLineEdit* _miscMountLineEdit;
     QLineEdit* _miscPortLineEdit;
-    QLineEdit* _pppMountLineEdit;
-    QLineEdit* _pppCorrMountLineEdit;
-    QLineEdit* _pppNMEALineEdit;
-    QLineEdit* _pppNMEAPortLineEdit;
-    QLineEdit* _pppSigCLineEdit;
-    QLineEdit* _pppSigPLineEdit;
-    QLineEdit* _pppSigCrd0;
-    QLineEdit* _pppSigCrdP;
-    QLineEdit* _pppSigTrp0;
-    QLineEdit* _pppSigTrpP;
-    QLineEdit* _pppSync;
-    QLineEdit* _pppAverageLineEdit;
-    QLineEdit* _pppQuickStartLineEdit;
-    QLineEdit* _pppMaxSolGapLineEdit;
-    QLineEdit* _pppAudioResponseLineEdit;
-    QLineEdit* _pppRefCrdXLineEdit;
-    QLineEdit* _pppRefCrdYLineEdit;
-    QLineEdit* _pppRefCrdZLineEdit;
-    QLineEdit* _pppRefdNLineEdit;
-    QLineEdit* _pppRefdELineEdit;
-    QLineEdit* _pppRefdULineEdit;
-    QCheckBox* _pppPlotCoordinates;
-    QCheckBox* _pppUsePhaseCheckBox;
-    QCheckBox* _pppEstTropoCheckBox;
-    QCheckBox* _pppGLONASSCheckBox;
-    QCheckBox* _pppGalileoCheckBox;
-    QLineEdit* _pppAntennaLineEdit;
-    qtFileChooser* _pppAntexFileChooser;
-
-    qtFileChooser* _postObsFileChooser;
-    qtFileChooser* _postNavFileChooser;
-    qtFileChooser* _postCorrFileChooser;
-    QLineEdit*     _postOutLineEdit;
 
     QComboBox*     _reqcActionComboBox;
     QPushButton*   _reqcEditOptionButton;
@@ -197,7 +162,6 @@ class bncWindow : public QMainWindow {
     QLineEdit* _rnxScrpLineEdit;
     QLineEdit* _logFileLineEdit;
     QLineEdit* _rawOutFileLineEdit;
-    QComboBox* _pppSPPComboBox;
     QComboBox* _rnxIntrComboBox;
     QComboBox* _ephIntrComboBox;
     QComboBox* _corrIntrComboBox;
@@ -264,16 +228,16 @@ class bncWindow : public QMainWindow {
 
     bool _realTimeRunning;
     bool _runningRealTime;
-    bool _runningPostProcessingPPP;
     bool _runningPostProcessingReqc;
-    t_postProcessing* _postProcessing;
 
     QPushButton*         _mapWinButton;
     QRadioButton*        _gmRadioButton;
+    QCheckBox*           _pppPlotCoordinates;
     QRadioButton*        _osmRadioButton;
     QComboBox*           _mapWinDotColorComboBox;
     QSlider*             _mapSpeedSlider;
     bncMapWin*           _mapWin;
+
     QList<bncGetThread*> _threads;
 
     t_pppWidgets         _pppWidgets;

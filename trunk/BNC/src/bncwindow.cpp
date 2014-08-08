@@ -67,7 +67,6 @@
 #  include "map/bncmapwin.h"
 #endif
 #ifdef USE_POSTPROCESSING
-#  include "rinex/bncpostprocess.h"
 #  include "rinex/reqcedit.h"
 #  include "rinex/reqcanalyze.h"
 #endif
@@ -95,13 +94,9 @@ bncWindow::bncWindow() {
   _bncFigureLate = new bncFigureLate(this);
   _bncFigurePPP = new bncFigurePPP(this);
   _runningRealTime           = false;
-  _runningPostProcessingPPP  = false;
   _runningPostProcessingReqc = false;
-  _postProcessing            = 0;
   _pppMain                   = new BNC_PPP::t_pppMain();
-
-  _pppSPPComboBox     = 0; // necessary for enableStartStop()
-  _reqcActionComboBox = 0; // necessary for enableStartStop()
+  _reqcActionComboBox        = 0; // necessary for enableStartStop()
 
   _mapWin = 0;
 
@@ -378,98 +373,6 @@ bncWindow::bncWindow() {
   connect(_miscMountLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
-  // PPP Options
-  // -----------
-  _pppMountLineEdit      = new QLineEdit(settings.value("pppMount").toString());
-  _pppMountLineEdit->setMaximumWidth(8*ww);
-  _pppCorrMountLineEdit  = new QLineEdit(settings.value("pppCorrMount").toString());
-  _pppMountLineEdit->setMinimumWidth(8*ww);
-  _pppCorrMountLineEdit->setMinimumWidth(8*ww);
-  _pppCorrMountLineEdit->setMaximumWidth(8*ww);
-  _pppNMEALineEdit       = new QLineEdit(settings.value("nmeaFile").toString());
-  _pppNMEALineEdit->setMinimumWidth(15*ww);
-  _pppNMEAPortLineEdit   = new QLineEdit(settings.value("nmeaPort").toString());
-  _pppNMEAPortLineEdit->setMaximumWidth(8*ww);
-  _pppNMEAPortLineEdit->setMinimumWidth(8*ww);
-  _pppSigCLineEdit       = new QLineEdit(settings.value("pppSigmaCode").toString());
-  _pppSigPLineEdit       = new QLineEdit(settings.value("pppSigmaPhase").toString());
-  _pppSigCrd0            = new QLineEdit(settings.value("pppSigCrd0").toString());
-  _pppSigCrdP            = new QLineEdit(settings.value("pppSigCrdP").toString());
-  _pppSigTrp0            = new QLineEdit(settings.value("pppSigTrp0").toString());
-  _pppSigTrpP            = new QLineEdit(settings.value("pppSigTrpP").toString());
-  _pppAverageLineEdit    = new QLineEdit(settings.value("pppAverage").toString());
-  _pppQuickStartLineEdit = new QLineEdit(settings.value("pppQuickStart").toString());
-  _pppMaxSolGapLineEdit  = new QLineEdit(settings.value("pppMaxSolGap").toString());
-  _pppAudioResponseLineEdit  = new QLineEdit(settings.value("pppAudioResponse").toString());
-  _pppRefCrdXLineEdit    = new QLineEdit(settings.value("pppRefCrdX").toString());
-  _pppRefCrdYLineEdit    = new QLineEdit(settings.value("pppRefCrdY").toString());
-  _pppRefCrdZLineEdit    = new QLineEdit(settings.value("pppRefCrdZ").toString());
-  _pppRefdNLineEdit      = new QLineEdit(settings.value("pppRefdN").toString());
-  _pppRefdELineEdit      = new QLineEdit(settings.value("pppRefdE").toString());
-  _pppRefdULineEdit      = new QLineEdit(settings.value("pppRefdU").toString());
-  _pppSync               = new QLineEdit(settings.value("pppSync").toString());
-  _pppAntexFileChooser   = new qtFileChooser;
-  _pppAntexFileChooser->setMinimumWidth(12*ww);
-  _pppAntennaLineEdit    = new QLineEdit(settings.value("pppAntenna").toString());
-  _pppAntexFileChooser->setFileName(settings.value("pppAntex").toString());
-
-  _pppSPPComboBox = new QComboBox();
-  _pppSPPComboBox->setEditable(false);
-  _pppSPPComboBox->addItems(QString(",Realtime-PPP,Realtime-SPP,Post-Processing").split(","));
-  int ik = _pppSPPComboBox->findText(settings.value("pppSPP").toString());
-  if (ik != -1) {
-    _pppSPPComboBox->setCurrentIndex(ik);
-  }
-  _pppUsePhaseCheckBox = new QCheckBox();
-  _pppUsePhaseCheckBox->setCheckState(Qt::CheckState(
-                                      settings.value("pppUsePhase").toInt()));
-  _pppEstTropoCheckBox = new QCheckBox();
-  _pppEstTropoCheckBox->setCheckState(Qt::CheckState(
-                                      settings.value("pppEstTropo").toInt()));
-  _pppGLONASSCheckBox = new QCheckBox();
-  _pppGLONASSCheckBox->setCheckState(Qt::CheckState(
-                                    settings.value("pppGLONASS").toInt()));
-  _pppGalileoCheckBox = new QCheckBox();
-  _pppGalileoCheckBox->setCheckState(Qt::CheckState(
-                                    settings.value("pppGalileo").toInt()));
-
-  connect(_pppMountLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
-
-  connect(_pppCorrMountLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
-
-  connect(_pppUsePhaseCheckBox, SIGNAL(stateChanged(int)),
-          this, SLOT(slotBncTextChanged()));
-
-  connect(_pppRefCrdXLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
-  connect(_pppRefCrdYLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
-  connect(_pppRefCrdZLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
-  connect(_pppRefdNLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
-  connect(_pppRefdELineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
-  connect(_pppRefdULineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
-
-  connect(_pppEstTropoCheckBox, SIGNAL(stateChanged(int)),
-          this, SLOT(slotBncTextChanged()));
-
-  connect(_pppSync, SIGNAL(textChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
-
-  connect(_pppSPPComboBox, SIGNAL(currentIndexChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
-
-  connect(_pppAntexFileChooser, SIGNAL(fileNameChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
-
-  connect(_pppQuickStartLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
-
   // Streams
   // -------
   _mountPointsTable   = new QTableWidget(0,8);
@@ -653,12 +556,10 @@ bncWindow::bncWindow() {
   QWidget* ogroup = new QWidget();
   QWidget* rgroup = new QWidget();
   QWidget* sergroup = new QWidget();
-  QWidget* pppgroup = new QWidget();
-  QWidget* ppp2group = new QWidget();
-  QWidget* ppp3group = new QWidget();
   QWidget* pppGroup1 = new QWidget();
   QWidget* pppGroup2 = new QWidget();
   QWidget* pppGroup3 = new QWidget();
+  QWidget* pppGroup4 = new QWidget();
   QWidget* reqcgroup = new QWidget();
   QWidget* cmbgroup = new QWidget();
   QWidget* uploadgroup = new QWidget();
@@ -673,13 +574,9 @@ bncWindow::bncWindow() {
   _aogroup->addTab(sergroup,tr("Serial Output"));
   _aogroup->addTab(agroup,tr("Outages"));
   _aogroup->addTab(rgroup,tr("Miscellaneous"));
-  _aogroup->addTab(pppgroup,tr("PPP (1)"));
-  _aogroup->addTab(ppp2group,tr("PPP (2)"));
-  _aogroup->addTab(ppp3group,tr("PPP (3)"));
-  
-  _aogroup->addTab(pppGroup1,tr("PPP NEW (1)"));
-  _aogroup->addTab(pppGroup2,tr("PPP NEW (2)"));
-  _aogroup->addTab(pppGroup3,tr("PPP NEW (3)"));
+  _aogroup->addTab(pppGroup1,tr("PPP (1)"));
+  _aogroup->addTab(pppGroup2,tr("PPP (2)"));
+  _aogroup->addTab(pppGroup3,tr("PPP (3)"));
 
 #ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combine Corrections"));
@@ -904,220 +801,10 @@ bncWindow::bncWindow() {
   rLayout->addWidget(new QLabel(" "),                             6, 0);
   rgroup->setLayout(rLayout);
 
-  // PPP Client
-  // ----------
-  QGridLayout* pppLayout = new QGridLayout;
-  pppLayout->setColumnMinimumWidth(0,14*ww);
-  _pppSigCLineEdit->setMaximumWidth(6*ww);
-  _pppSigPLineEdit->setMaximumWidth(6*ww);
-  _pppSigCrd0->setMaximumWidth(6*ww);
-  _pppSigCrdP->setMaximumWidth(6*ww);
-  _pppSigTrp0->setMaximumWidth(6*ww);
-  _pppSigTrpP->setMaximumWidth(6*ww);
-  _pppAverageLineEdit->setMaximumWidth(6*ww);
-  _pppQuickStartLineEdit->setMaximumWidth(6*ww);
-  _pppMaxSolGapLineEdit->setMaximumWidth(6*ww);
-  _pppAudioResponseLineEdit->setMaximumWidth(6*ww);
-  _pppRefCrdXLineEdit->setMaximumWidth(10*ww);
-  _pppRefCrdYLineEdit->setMaximumWidth(10*ww);
-  _pppRefCrdZLineEdit->setMaximumWidth(10*ww);
-  _pppRefdNLineEdit->setMaximumWidth(6*ww);
-  _pppRefdELineEdit->setMaximumWidth(6*ww);
-  _pppRefdULineEdit->setMaximumWidth(6*ww);
-  _pppSync->setMaximumWidth(6*ww);
-  _pppSPPComboBox->setMinimumWidth(15*ww); 
-
-  _postObsFileChooser = new qtFileChooser;
-  _postObsFileChooser->setFileName(settings.value("postObsFile").toString());
-  _postObsFileChooser->setMinimumWidth(15*ww);
-  _postNavFileChooser = new qtFileChooser;
-  _postNavFileChooser->setFileName(settings.value("postNavFile").toString());
-  _postNavFileChooser->setMinimumWidth(15*ww);
-  _postCorrFileChooser = new qtFileChooser;
-  _postCorrFileChooser->setFileName(settings.value("postCorrFile").toString());
-  _postCorrFileChooser->setMinimumWidth(15*ww);
-  _postOutLineEdit = new QLineEdit(settings.value("postOutFile").toString());
-  _postOutLineEdit->setMinimumWidth(15*ww);
-
-  int ir = 0;
-  pppLayout->addWidget(new QLabel("Precise Point Positioning, Panel 1."), ir, 0, 1, 2, Qt::AlignLeft);
-  ++ir;
-  pppLayout->addWidget(new QLabel("Mode & mountpoints"),ir, 0, Qt::AlignLeft);
-  pppLayout->addWidget(_pppSPPComboBox,                 ir, 1, Qt::AlignRight);
-  pppLayout->addWidget(_pppMountLineEdit,               ir, 3, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Obs."),              ir, 4, Qt::AlignLeft);
-  pppLayout->addWidget(_pppCorrMountLineEdit,           ir, 5, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Corr."),             ir, 6, Qt::AlignLeft);
-  ++ir;
-  pppLayout->addWidget(new QLabel("Marker coordinates"), ir, 0, Qt::AlignLeft);
-  pppLayout->addWidget(_pppRefCrdXLineEdit,              ir, 1, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("X     "),             ir, 2, Qt::AlignLeft);
-  pppLayout->addWidget(_pppRefCrdYLineEdit,              ir, 3, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Y"),                  ir, 4, Qt::AlignLeft);
-  pppLayout->addWidget(_pppRefCrdZLineEdit,              ir, 5, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Z"),                  ir, 6, Qt::AlignLeft);
-  ++ir;
-  pppLayout->addWidget(new QLabel("Antenna excentricity"), ir, 0, Qt::AlignLeft);
-  pppLayout->addWidget(_pppRefdNLineEdit,                  ir, 1, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("dN"),                   ir, 2, Qt::AlignLeft);
-  pppLayout->addWidget(_pppRefdELineEdit,                  ir, 3, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("dE"),                   ir, 4, Qt::AlignLeft);
-  pppLayout->addWidget(_pppRefdULineEdit,                  ir, 5, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("dU"),                   ir, 6, Qt::AlignLeft);
-  ++ir;
-  pppLayout->addWidget(new QLabel("NMEA output"),       ir, 0, Qt::AlignLeft);
-  pppLayout->addWidget(_pppNMEALineEdit,                ir, 1, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("NMEA File"),         ir, 2, Qt::AlignLeft);
-  pppLayout->addWidget(_pppNMEAPortLineEdit,            ir, 3, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("NMEA Port"),         ir, 4, Qt::AlignLeft);
-  ++ir;
-  pppLayout->addWidget(new QLabel("Post-processing"),   ir, 0, Qt::AlignLeft);
-  pppLayout->addWidget(_postObsFileChooser,             ir, 1, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Obs    "),           ir, 2, Qt::AlignLeft);
-  pppLayout->addWidget(_postNavFileChooser,             ir, 3, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Nav   "),            ir, 4, Qt::AlignLeft);
-  ++ir;
-  pppLayout->addWidget(_postCorrFileChooser,            ir, 1, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Corr"),              ir, 2, Qt::AlignLeft);
-  pppLayout->addWidget(_postOutLineEdit,                ir, 3, Qt::AlignRight);
-  pppLayout->addWidget(new QLabel("Log (full path)"),   ir, 4, Qt::AlignLeft);
-
-  pppgroup->setLayout(pppLayout);
-
-  // PPP Client (second panel)
-  // -------------------------
-  QGridLayout* ppp2Layout = new QGridLayout;
-  ppp2Layout->setColumnMinimumWidth(0,14*ww);
-  ir = 0;
-  ppp2Layout->addWidget(new QLabel("Precise Point Positioning, Panel 2."), ir, 0, 1, 10);
-  ++ir;
-  ppp2Layout->addWidget(new QLabel("Antennas"),               ir, 0);
-  ppp2Layout->addWidget(_pppAntexFileChooser,                 ir, 1,1,3);
-  ppp2Layout->addWidget(new QLabel("ANTEX File"),             ir, 4);
-  ppp2Layout->addWidget(_pppAntennaLineEdit,                  ir, 5,1,3);
-  ppp2Layout->addWidget(new QLabel("Antenna Name"),           ir, 8);
-  ++ir;
-  ppp2Layout->addWidget(new QLabel("Basics"),                 ir, 0, 1, 5);
-  ppp2Layout->addWidget(_pppUsePhaseCheckBox,                 ir, 1, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Use phase obs"),          ir, 2);
-  ppp2Layout->addWidget(_pppEstTropoCheckBox,                 ir, 3, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Estimate tropo"),         ir, 4);
-  ppp2Layout->addWidget(_pppGLONASSCheckBox,                  ir, 5, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Use GLONASS"),            ir, 6);
-  ppp2Layout->addWidget(_pppGalileoCheckBox,                  ir, 7, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Use Galileo     "),       ir, 8);
-  ++ir;
-  ppp2Layout->addWidget(new QLabel("Basics cont'd"),          ir, 0);  
-  ppp2Layout->addWidget(_pppSync,                             ir, 1);
-  ppp2Layout->addWidget(new QLabel("Sync Corr (sec)     "),   ir, 2);
-  ppp2Layout->addWidget(_pppAverageLineEdit,                  ir, 3, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Averaging (min)") ,       ir, 4);
-  ppp2Layout->addWidget(_pppQuickStartLineEdit,               ir, 5, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Quick-Start (sec)    "),  ir, 6);  
-  ppp2Layout->addWidget(_pppMaxSolGapLineEdit,                ir, 7, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Max Sol. Gap (sec)"),     ir, 8);  
-  ++ir;
-  ppp2Layout->addWidget(new QLabel("Basics cont'd"),          ir, 0);  
-  ppp2Layout->addWidget(_pppAudioResponseLineEdit,            ir, 1, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Audio response (m)"),     ir, 2);  
-  ++ir;
-  ppp2Layout->addWidget(new QLabel("Sigmas"),                 ir, 0);
-  ppp2Layout->addWidget(_pppSigCLineEdit,                     ir, 1, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Code"),                   ir, 2);
-  ppp2Layout->addWidget(_pppSigPLineEdit,                     ir, 3);
-  ppp2Layout->addWidget(new QLabel("Phase"),                  ir, 4);
-  ++ir;
-  ppp2Layout->addWidget(new QLabel("Sigmas cont'd"),          ir, 0);
-  ppp2Layout->addWidget(_pppSigCrd0,                          ir, 1, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("XYZ Init "),              ir, 2);
-  ppp2Layout->addWidget(_pppSigCrdP,                          ir, 3, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("XYZ White Noise    "),    ir, 4);
-  ppp2Layout->addWidget(_pppSigTrp0,                          ir, 5, Qt::AlignRight);
-  ppp2Layout->addWidget(new QLabel("Tropo Init        "),     ir, 6);
-  ppp2Layout->addWidget(_pppSigTrpP,                          ir, 7);
-  ppp2Layout->addWidget(new QLabel("Tropo White Noise"),      ir, 8);
-  ++ir;
-  ppp2Layout->addWidget(new QLabel(""),                       ir, 0);
-
-  ppp2group->setLayout(ppp2Layout);
-
-  // PPP Client (third panel)
-  // ------------------------
-  QVBoxLayout* ppp3Layout = new QVBoxLayout;
-  ppp3Layout->addWidget(new QLabel("Precise Point Positioning, Panel 3."));
-  ppp3Layout->addSpacing(ww);
-
-  QHBoxLayout* ppp3LayoutHlp1 = new QHBoxLayout;
-  _pppPlotCoordinates = new QCheckBox();
-  _pppPlotCoordinates->setCheckState(Qt::CheckState(settings.value("pppPlotCoordinates").toInt()));
-  ppp3LayoutHlp1->addWidget(new QLabel("PPP Plot           "));
-  ppp3LayoutHlp1->addWidget(_pppPlotCoordinates);
-  ppp3LayoutHlp1->addWidget(new QLabel("Nort-East-Up Time Series"));
-  ppp3LayoutHlp1->addStretch();
-  ppp3Layout->addLayout(ppp3LayoutHlp1);
-  ppp3Layout->addSpacing(ww);
-
-  QHBoxLayout* ppp3LayoutHlp2 = new QHBoxLayout;
-  ppp3LayoutHlp2->addWidget(new QLabel("Track Plot         "));
-  _mapWinButton = new QPushButton;
-  _mapWinButton->setText("Open Map");
-  connect(_mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
-  ppp3LayoutHlp2->addWidget(_mapWinButton);
-
-  ppp3LayoutHlp2->addSpacing(1*ww);
-
-  _gmRadioButton  = new QRadioButton;
-  _gmRadioButton->setChecked(!settings.value("useOsmMap").toBool());
-  ppp3LayoutHlp2->addWidget(new QLabel("Google"));
-  ppp3LayoutHlp2->addWidget(_gmRadioButton);
-
-  _osmRadioButton = new QRadioButton;
-  _osmRadioButton->setChecked(settings.value("useOsmMap").toBool());
-  ppp3LayoutHlp2->addWidget(new QLabel("OSM"));
-  ppp3LayoutHlp2->addWidget(_osmRadioButton);
-
-  ppp3LayoutHlp2->addSpacing(3*ww);
-
-  _mapWinDotSizeLineEdit  = new QLineEdit(settings.value("mapWinDotSize").toString());
-  ppp3LayoutHlp2->addWidget(new QLabel("Dot Size"));
-  _mapWinDotSizeLineEdit->setMaximumWidth(5*ww);
-  ppp3LayoutHlp2->addWidget(_mapWinDotSizeLineEdit);
-
-  ppp3LayoutHlp2->addSpacing(3*ww);
-
-  _mapWinDotColorComboBox = new QComboBox();
-  ppp3LayoutHlp2->addWidget(new QLabel("Dot Color"));
-  _mapWinDotColorComboBox->setEditable(false);
-  _mapWinDotColorComboBox->addItems(QString("red,yellow").split(","));
-  ii = _mapWinDotColorComboBox->findText(settings.value("mapWinDotColor").toString());
-  if (ii != -1) {
-    _mapWinDotColorComboBox->setCurrentIndex(ii);
-  }
-  ppp3LayoutHlp2->addWidget(_mapWinDotColorComboBox);
-
-  ppp3LayoutHlp2->addSpacing(3*ww);
-
-  _mapSpeedSlider = new QSlider;
-  _mapSpeedSlider->setOrientation(Qt::Horizontal);
-  _mapSpeedSlider->setRange(1, 100);
-  _mapSpeedSlider->setTickPosition(QSlider::TicksBelow);
-  _mapSpeedSlider->setTickInterval(10);
-  int speed = settings.value("mapSpeed").toInt();
-  if (speed == 0) speed = _mapSpeedSlider->maximum();
-  _mapSpeedSlider->setSliderPosition(speed);
-  ppp3LayoutHlp2->addWidget(new QLabel("Speed"));
-  ppp3LayoutHlp2->addWidget(_mapSpeedSlider);
-
-  ppp3LayoutHlp2->addStretch();
-  ppp3Layout->addLayout(ppp3LayoutHlp2);
-
-  ppp3Layout->addStretch();
-  ppp3group->setLayout(ppp3Layout);
-
-  // PPP NEW
-  // -------
+  // PPP
+  // ---
   QGridLayout* pppLayout1 = new QGridLayout();
-  ir = 0;
+  int ir = 0;
   pppLayout1->addWidget(new QLabel("<b>Precise Point Positioning (Input and Output)</b>"), ir, 0, 1, 7, Qt::AlignLeft);
   ++ir;     
   pppLayout1->addWidget(new QLabel("Data Source"),        ir, 0, Qt::AlignLeft);
@@ -1188,12 +875,84 @@ bncWindow::bncWindow() {
 
   pppGroup3->setLayout(pppLayout3);
 
+  // ------------------------
+  QVBoxLayout* pppLayout4 = new QVBoxLayout;
+  pppLayout4->addWidget(new QLabel("Precise Point Positioning, Panel 3."));
+  pppLayout4->addSpacing(ww);
+
+  QHBoxLayout* pppLayout4Hlp1 = new QHBoxLayout;
+  _pppPlotCoordinates = new QCheckBox();
+  _pppPlotCoordinates->setCheckState(Qt::CheckState(settings.value("pppPlotCoordinates").toInt()));
+  pppLayout4Hlp1->addWidget(new QLabel("PPP Plot           "));
+  pppLayout4Hlp1->addWidget(_pppPlotCoordinates);
+  pppLayout4Hlp1->addWidget(new QLabel("Nort-East-Up Time Series"));
+  pppLayout4Hlp1->addStretch();
+  pppLayout4->addLayout(pppLayout4Hlp1);
+  pppLayout4->addSpacing(ww);
+
+  QHBoxLayout* pppLayout4Hlp2 = new QHBoxLayout;
+  pppLayout4Hlp2->addWidget(new QLabel("Track Plot         "));
+  _mapWinButton = new QPushButton;
+  _mapWinButton->setText("Open Map");
+  connect(_mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
+  pppLayout4Hlp2->addWidget(_mapWinButton);
+
+  pppLayout4Hlp2->addSpacing(1*ww);
+
+  _gmRadioButton  = new QRadioButton;
+  _gmRadioButton->setChecked(!settings.value("useOsmMap").toBool());
+  pppLayout4Hlp2->addWidget(new QLabel("Google"));
+  pppLayout4Hlp2->addWidget(_gmRadioButton);
+
+  _osmRadioButton = new QRadioButton;
+  _osmRadioButton->setChecked(settings.value("useOsmMap").toBool());
+  pppLayout4Hlp2->addWidget(new QLabel("OSM"));
+  pppLayout4Hlp2->addWidget(_osmRadioButton);
+
+  pppLayout4Hlp2->addSpacing(3*ww);
+
+  _mapWinDotSizeLineEdit  = new QLineEdit(settings.value("mapWinDotSize").toString());
+  pppLayout4Hlp2->addWidget(new QLabel("Dot Size"));
+  _mapWinDotSizeLineEdit->setMaximumWidth(5*ww);
+  pppLayout4Hlp2->addWidget(_mapWinDotSizeLineEdit);
+
+  pppLayout4Hlp2->addSpacing(3*ww);
+
+  _mapWinDotColorComboBox = new QComboBox();
+  pppLayout4Hlp2->addWidget(new QLabel("Dot Color"));
+  _mapWinDotColorComboBox->setEditable(false);
+  _mapWinDotColorComboBox->addItems(QString("red,yellow").split(","));
+  ii = _mapWinDotColorComboBox->findText(settings.value("mapWinDotColor").toString());
+  if (ii != -1) {
+    _mapWinDotColorComboBox->setCurrentIndex(ii);
+  }
+  pppLayout4Hlp2->addWidget(_mapWinDotColorComboBox);
+
+  pppLayout4Hlp2->addSpacing(3*ww);
+
+  _mapSpeedSlider = new QSlider;
+  _mapSpeedSlider->setOrientation(Qt::Horizontal);
+  _mapSpeedSlider->setRange(1, 100);
+  _mapSpeedSlider->setTickPosition(QSlider::TicksBelow);
+  _mapSpeedSlider->setTickInterval(10);
+  int speed = settings.value("mapSpeed").toInt();
+  if (speed == 0) speed = _mapSpeedSlider->maximum();
+  _mapSpeedSlider->setSliderPosition(speed);
+  pppLayout4Hlp2->addWidget(new QLabel("Speed"));
+  pppLayout4Hlp2->addWidget(_mapSpeedSlider);
+
+  pppLayout4Hlp2->addStretch();
+  pppLayout4->addLayout(pppLayout4Hlp2);
+
+  pppLayout4->addStretch();
+  pppGroup4->setLayout(pppLayout4);
+
   // Reqc Processing
   // ---------------
   _reqcActionComboBox = new QComboBox();
   _reqcActionComboBox->setEditable(false);
   _reqcActionComboBox->addItems(QString(",Edit/Concatenate,Analyze").split(","));
-  ik = _reqcActionComboBox->findText(settings.value("reqcAction").toString());
+  int ik = _reqcActionComboBox->findText(settings.value("reqcAction").toString());
   if (ik != -1) {
     _reqcActionComboBox->setCurrentIndex(ik);
   }
@@ -1402,7 +1161,6 @@ bncWindow::bncWindow() {
   _rnxAppendCheckBox->setWhatsThis(tr("<p>When BNC is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append already existing files following a restart of BNC, a system crash or when BNC crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far.</p>"));
   _autoStartCheckBox->setWhatsThis(tr("<p>Tick 'Auto start' for auto-start of BNC at startup time in window mode with preassigned processing options.</p>"));
   _rawOutFileLineEdit->setWhatsThis(tr("<p>Save all data coming in through various streams in the received order and format in one file.</p>"));
- 
   _onTheFlyComboBox->setWhatsThis(tr("<p>When operating BNC online in 'no window' mode, some configuration parameters can be changed on-the-fly without interrupting the running process. For that BNC rereads parts of its configuration in pre-defined intervals.<p></p>Select '1 min', '5 min', '1 hour', or '1 day' to force BNC to reread its configuration every full minute, hour, or day and let in between edited configuration options become effective on-the-fly without terminating uninvolved threads.</p><p>Note that when operating BNC in window mode, on-the-fly changeable configuration options become effective immediately through 'Save & Reread Configuration'.</p>"));
   _rnxIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Observation file.</p>"));
   _ephIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Navigation file.</p>"));
@@ -1434,58 +1192,20 @@ bncWindow::bncWindow() {
   _serialAutoNMEAComboBox->setWhatsThis(tr("<p>Select 'Auto' to automatically forward NMEA-GGA messages coming from your serial connected receiver to the NTRIP broadcaster and/or save them in a file.</p><p>Select 'Manual' only when handling a VRS stream and your serial connected receiver doesn't generate NMEA-GGA messages.</p>"));
   _serialFileNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved.</p>"));
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
-  _pppMountLineEdit->setWhatsThis(tr("<p>Specify an observations stream by its mountpoint from the 'Streams' list compiled below if you want BNC to estimate coordinates for the affected receiver position through a PPP solution. Example: 'FFMJ1'</p><p>Note that PPP in BNC requires to also pull a stream carrying RTCM Version 3 satellite orbit and clock corrections to Broadcast Ephemeris referring to the satellites' Antenna Phase Centers (APC). Stream CLK11 on NTRIP broadcaster products.igs-ip.net is an example.</p><p>Pulling in addition a third stream carrying Broadcast Ephemeris messages in high repetition rate is suggested if such messages are comeing from the receiver in low repetition rate or don't come at all from there.</p>"));
-  _pppCorrMountLineEdit->setWhatsThis(tr("<p>You must specify an orbit/clock Broadcast Ephemeris corrections stream by its mountpoint from the 'Streams' list below. Example: 'CLK10'. Corrections must refer to satellite Antenna Phase Centers (APC).</p><p>Note that BNC can produce an internal PPP solution from combined Broadcast Ephemeris corrections as specified under 'Combine Corrections' if you introduce keyword 'INTERNAL' as the corrections mountpoint.</p>"));
-  _pppSPPComboBox->setWhatsThis(tr("<p>Choose between plain Single Point Positioning (SPP) and Precise Point Positioning (PPP) in 'Realtime' or 'Post-Processing' mode.</p><p>When in 'Post-Processing mode:<ul><li>Specifying a RINEX Observation, a RINEX Navigation and a Broadcast Correction file leads to a PPP solution.</li><li>Specifying only a RINEX Observation and a RINEX Navigation file and no Broadcast Correction file leads to a SPP solution.</ul></p>"));
   _reqcActionComboBox->setWhatsThis(tr("<p>BNC allows to edit or concatenate RINEX v2 or v3 files or to perform a quality check following UNAVCO's famous 'teqc' program.</p>"));
   _reqcEditOptionButton->setWhatsThis(tr("<p>Specify options for editing RINEX v2 or v3 files.</p>"));
-  _pppUsePhaseCheckBox->setWhatsThis(tr("<p>By default BNC applies a PPP solution using an ionosphere free P3 linear combination of code observations.</p><p>Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.</p>"));
-  _pppEstTropoCheckBox->setWhatsThis(tr("<p>By default BNC does not introduce troposphere parameters when estimating coordinates.</p><p>Tick 'Estimate tropo' to introduce troposphere parameters when estimating coordinates.</p>"));
-  _pppGLONASSCheckBox->setWhatsThis(tr("<p>By default BNC does not use GLONASS observations in PPP mode.</p><p>Tick 'Use GLONASS' for adding GLONASS observations to GPS and Galileo (optional) in a PPP solution.</p>"));
-  _pppGalileoCheckBox->setWhatsThis(tr("<p>By default BNC does not use Galileo observations in PPP mode.</p><p>Tick 'Use Galileo' for adding Galileo observations to GPS and GLONASS (optional) in a PPP solution.</p>"));
-  _pppPlotCoordinates->setWhatsThis(tr("<p>BNC will plot PPP results in the 'PPP Plot' tab as North (red), East (green) and Up (blue) displacements when this option is selected. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.</p><p>Note that a PPP time series makes only sense for a stationary operated receiver."));
   _mapWinButton->setWhatsThis(tr("<p>You make like to track your rover position using Google Maps or Open Street Map as a background map. Track plots can be produced with BNC in 'Realtime-PPP', 'Realtime-SPP' and 'Post-Processing' mode.</p><p>The 'Open Map' button opens a windows showing a map according to specified options.</p><p>When in 'Post-Processing' mode you should not forget to specify a proxy under the 'Network' tab if that is operated in front of BNC."));
   _gmRadioButton->setWhatsThis(tr("<p>Specify Google Maps as the background for your rover positions."));
   _osmRadioButton->setWhatsThis(tr("<p>Specify Open Street Map as the background for your rover positions."));
   _mapWinDotSizeLineEdit->setWhatsThis(tr("<p>Specify the size of dots showing the rover positions.</p><p>A dot size of '3' may be appropriate. The maximum possible dot size is '10'. An empty option field or a size of '0' would mean that you don't want BNC to show the rover's track on the map.</p>"));
   _mapWinDotColorComboBox->setWhatsThis(tr("<p>Specify the color of dots showing the rover track.</p>"));
   _mapSpeedSlider->setWhatsThis(tr("<p>With BNC in PPP post-processing mode you can specify the speed of computations as appropriate for visualization. Note that you can adjust 'Speed' on-the-fly while BNC is already processing your observations."));
-  _pppNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where PPP results are saved as NMEA messages.</p>"));
-  _pppNMEAPortLineEdit->setWhatsThis(tr("<p>Specify an IP port number to output PPP results as NMEA messages through an IP port.</p>"));
-  _pppSigCLineEdit->setWhatsThis(tr("<p>Enter a sigma for your code observations in meters.</p><p>The higher the sigma you enter, the less the contribution of code observations to a PPP solution based on a combination of code and phase data. 5.0 (default) is likely to be an appropriate choice.</p>"));
-  _pppQuickStartLineEdit->setWhatsThis(tr("<p>Enter the lenght of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate as introduced above and adjust a sigma 'XYZ Ini' according to the coordinate's precision. Fixing the coordinate is done in BNC through setting the 'Sigma XYZ Noise' you define below temporarily to zero.</p><p>This so-called Quick-Start option allows the PPP solution to rapidly converge. It requires that the antenna remains unmoved on the know position throughout the startup period.</p><p>A value of 120 is likely to be an appropriate choice for 'Quick-Start'. Default is an empty option field, meaning that you don't want BNC to operate in Quick-Start mode.</p>"));
-  _pppMaxSolGapLineEdit->setWhatsThis(tr("<p>Specify a 'Maximum Solution Gap' in seconds. Should the time span between two consecutive solutions exceed this limit, the algorithm returns into Quick-Start mode and fixes the introduced reference coordinate for the specified period. A value of '60' seconds could be an appropriate choice.</p><p>This option makes only sense for a stationary operated receiver where solution convergence can be enforced because a good approximation for the rover position is known. Default is an empty option field, meaning that you don't want BNC to return into the Quick-Start mode after failures caused i.e. by longer lasting outages.</p>"));
-  _pppAudioResponseLineEdit->setWhatsThis(tr("<p>Specify an 'Audio response' threshold in meters. A beep is produced by BNC whenever a horizontal PPP coordinate component differs by more than the threshold value from the marker coordinate.</p><p>Default is an empty option field, meaning that you don't want BNC to produce alarm signals.</p>"));
-  _pppSigPLineEdit->setWhatsThis(tr("<p>Enter a sigma for your phase observations in meters.</p><p>The higher the sigma you enter, the less the contribution of phase observations to a PPP solutions based on a combination of code and phase data. 0.02 (default) is likely to be an appropriate choice.</p>"));
-  _pppAverageLineEdit->setWhatsThis(tr("<p>Enter the length of a sliding time window in minutes. BNC will continuously output moving average positions computed from those individual positions obtained most recently throughout this period.</p><p>An empty option field (default) means that you don't want BNC to output moving average positions.</p>"));
-  _pppSigCrd0->setWhatsThis(tr("<p>Enter a sigma in meters for the initial XYZ coordinate componentes. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode."));
-  _pppSigCrdP->setWhatsThis(tr("<p>Enter a sigma in meters for the white noise of estimated XYZ coordinate components. A value of 100.0 (default) may be appropriate considering the potential movement of a rover position.</p>"));
-  _pppSigTrp0->setWhatsThis(tr("<p>Enter a sigma in meters for the a-priory model based tropospheric delay estimation. A value of 0.1 (default) may be an appropriate choice.</p>"));
-  _pppSigTrpP->setWhatsThis(tr("<p>Enter a sigma in meters per second to describe the expected variation of the tropospheric effect.</p><p>Supposing 1Hz observation data, a value of 3e-6 (default) would mean that the tropospheric effect may vary for 3600 * 3e-6 = 0.01 meters per hour.</p>"));
-  _pppRefCrdXLineEdit->setWhatsThis(tr("<p>Enter reference coordinate X of the receiver's position.</p><p>This option only makes sense in static observation conditions.</p>"));
-  _pppRefCrdYLineEdit->setWhatsThis(tr("<p>Enter reference coordinate Y of the receiver's position.</p><p>This option only makes sens in static observation conditions.</p>"));
-  _pppRefCrdZLineEdit->setWhatsThis(tr("<p>Enter reference coordinate Z of the receiver's position.</p><p>This option only makes sens in static observation conditions.</p>"));
-  _pppRefdNLineEdit->setWhatsThis(tr("<p>Enter north antenna excentricity.</p>"));
-  _pppRefdELineEdit->setWhatsThis(tr("<p>Enter east antenna excentricity.</p>"));
-  _pppRefdULineEdit->setWhatsThis(tr("<p>Enter up antenna excentricity.</p>"));
   _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when the corresponting option is selected above. Values are either referred to an XYZ reference coordinate (if specified) or referred to the first estimated set of coordinate compoments. The sliding PPP time series window covers the period of the latest 5 minutes."));
-  _pppSync->setWhatsThis(tr(
-    "<p> Zero value (or empty field, default) means that BNC processes each epoch of data "
-    "immediately after its arrival using satellite clock corrections available at "
-    "that time.</p><p> Non-zero value 'Sync Corr' (i.e. 5) means that the epochs of data "
-    "are buffered and the processing of each epoch is postponed till the satellite clock "
-    "corrections not older than 'Sync Corr' seconds are available.<p>"));
-  _pppAntexFileChooser->setWhatsThis(tr("<p>IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets and variations.</p>"));
-  _pppAntennaLineEdit->setWhatsThis(tr("<p>Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Corrections for phase center variations are not yet applied by BNC. The specified name must consist of 20 characters. Add trailing blanks if the antenna name has less then 20 characters.</p><p>Default is an empty option field meaning that you don't want to correct observations for antenna phase center offsets.</p>"));
   _cmbTable->setWhatsThis(tr("<p>BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors coming from various providers. Hit the 'Add Row' button, double click on the 'Mountpoint' field to enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter the weight to be applied for this stream in the combination.<ul><li>Note that an appropriate 'Wait for full corr epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense there if the update rate of incoming clock corrections is i.e. 10 seconds.</li><li>Note also that you need to tick 'Use GLONASS' which is part ot the 'PPP (2)' panel in case you want to produce an GPS plus GLONASS combination.</li></ul></p><p>Note further that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p><p>The combination process requires Broadcast Ephemeris. Besides the orbit and clock corrections stream(s) BNC should therefore pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages.</p><p>It is possible to specify only one Broadcast Ephemeris corrections stream in the combination table. Instead of combining corrections BNC will then merge them with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format."));
   _cmbMaxresLineEdit->setWhatsThis(tr("<p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p></p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p><p>Default is a value of '999.0'.</p>"));
   _cmbSamplSpinBox->setWhatsThis(tr("<p>Specify a combination sampling interval. Clock and orbit corrections will be produced following that interval. A value of 10 sec may be an appropriate choice.</p>"));
   _cmbMethodComboBox->setWhatsThis(tr("<p>Select a clock combination approach. Options are 'Single-Epoch' and Kalman 'Filter'. It is suggested to use the Kalman filter approach for the purpose of Precise Point Positioning.</p>"));
   _uploadTable->setWhatsThis(tr("<p>BNC can upload clock and orbit corrections to broadcast ephemeris (Broadcast Corrections) in RTCM Version 3 SSR format. You may have a situation where clocks and orbits come from an external Real-time Network Engine (1) or a situation where clock and orbit corrections are combined within BNC (2).</p><p>(1) BNC identifies a stream as coming from a Real-time Network Engine if its format is specified as 'RTNET' and hence its decoder string in the 'Streams' canvas is 'RTNET'. It encodes and uploads that stream to the specified NTRIP broadcaster</p><p>(2) BNC understands that it is expected to encode and upload combined Broadcast Ephemeris corrections if you specify correction streams in the 'Combine Corrections' stream table.</p><p>Hit the 'Add Row' button, double click on the 'Host' field to enter the IP or URL of an NTRIP broadcaster and hit Enter. Then double click on the 'Port', 'Mount' and 'Password' fields to enter the NTRIP broadcaster IP port (default is 80), the mountpoint and the stream upload password. An empty 'Host' option field means that you don't want to upload corrections.</p><p>Select a target coordinate reference system (e.g. IGS08) for outgoing clock and orbit corrections.</p><p>By default orbit and clock corrections refer to Antenna Phase Center (APC). Tick 'CoM' to refer uploaded corrections to Center of Mass instead of APC.</p><p>Specify a path for saving the generated Broadcast Corrections plus Broadcast Ephemeris as SP3 orbit files. If the specified directory does not exist, BNC will not create SP3 orbit files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p><ul><li>As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while correctors are referred to the satellites Antenna Phase Center (APC), an offset has to be applied which is available from an IGS ANTEX file. You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save the stream contents in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs.</li></ul></p><p>Specify a path for saving the generated Broadcast Correction clocks plus Broadcast Ephemeris clocks as Clock RINEX files. If the specified directory does not exist, BNC will not create Clock RINEX files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.clk<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p><p>Specify finally an SSR Provider ID number, an SSR Solution ID number and an Issue of Data SSR number.</p><p>In case the 'Combine Corrections' table contains only one Broadcast Corrections stream, BNC will merge that stream with Broadcast Ephemeris to save results in files specified here through SP3 and/or Clock RINEX file path. In such a case you should define only the SP3 and Clock RINEX file path and no further options in the 'Upload Corrections' table.</p>"));
-  _postObsFileChooser->setWhatsThis(tr("Full path to RINEX v2/v3 Observation file."));
-  _postNavFileChooser->setWhatsThis(tr("Full path to RINEX v2/v3 Navigation file."));
-  _postCorrFileChooser->setWhatsThis(tr("Full path to Broadcast Corrections file as previously saved with BNC in plain ASCII format."));
-  _postOutLineEdit->setWhatsThis(tr("Full path to file with post processing PPP results. "));
   addCmbRowButton->setWhatsThis(tr("Hit 'Add Row' button to add another line to the mountpoints table."));
   delCmbRowButton->setWhatsThis(tr("Hit 'Delete' button to delete the highlighted line from the mountpoints table."));
   addUploadRowButton->setWhatsThis(tr("Hit 'Add Row' button to add another line to the stream upload table."));
@@ -1495,18 +1215,15 @@ bncWindow::bncWindow() {
   _uploadSamplClkRnxSpinBox->setWhatsThis(tr("Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into Clock RINEX files."));
   _uploadSamplSp3SpinBox->setWhatsThis(tr("Select the SP3 orbit file sampling interval in minutes. A value of zero '0' tells BNC to store all available samples into SP3 orbit files."));
   setUploadTrafoButton->setWhatsThis(tr("Hit 'Custom Trafo' to specify your own 14 parameter Helmert Transformation instead of selecting a predefined transformation through 'System' button."));
-
   _uploadEphHostLineEdit->setWhatsThis(tr("BNC can upload a Broadcast Ephemeris stream in RTCM Version 3 format. Specify the host IP of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload Broadcast Ephemeris."));
   _uploadEphPortLineEdit->setWhatsThis(tr("Specify the IP port of an NTRIP Broadcaster to upload the stream. Default is port 80."));
   _uploadEphMountpointLineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an NTRIP Broadcaster."));
   _uploadEphPasswordLineEdit->setWhatsThis(tr("Specify the stream upload password protecting the mounpoint on an NTRIP Broadcaster."));
   _uploadEphSampleSpinBox->setWhatsThis(tr("Select the Broadcast Ephemeris sampling interval in seconds. Defaut is '5' meaning that a complete set of Broadcast Ephemeris is uploaded every 5 seconds."));
   _uploadEphBytesCounter->setWhatsThis(tr("BNC shows the amount of data uploaded through this stream."));
-
   _actDeleteMountPoints->setWhatsThis(tr("<p>Delete stream(s) from selection presented in the 'Streams' canvas.</p>"));
   _actAddMountPoints->setWhatsThis(tr("<p>Add stream(s) to selection presented in the 'Streams' canvas.</p>"));
   _actMapMountPoints->setWhatsThis(tr("<p> Draw distribution map of stream selection presented in the 'Streams' canvas. Use the mouse to zoom in or out.</p><p>Left button: Draw rectangle to zoom in.<br>Right button: Zoom out.<br>Middle button: Zoom back.</p>")); 
-
   _actStart->setWhatsThis(tr("<p> Start running BNC.</p>"));
   _actStop->setWhatsThis(tr("<p> Stop running BNC.</p>"));
 // Weber
@@ -1903,44 +1620,11 @@ void bncWindow::saveOptions() {
   settings.setValue("miscPort",    _miscPortLineEdit->text());
   settings.setValue("perfIntr",    _perfIntrComboBox->currentText());
   settings.setValue("scanRTCM",    _scanRTCMCheckBox->checkState());
-// PPPP
-  settings.setValue("pppSPP",      _pppSPPComboBox->currentText());
-  settings.setValue("pppMount",    _pppMountLineEdit->text());
-  settings.setValue("pppCorrMount",_pppCorrMountLineEdit->text());
-  settings.setValue("pppRefCrdX",  _pppRefCrdXLineEdit->text());
-  settings.setValue("pppRefCrdY",  _pppRefCrdYLineEdit->text());
-  settings.setValue("pppRefCrdZ",  _pppRefCrdZLineEdit->text());
-  settings.setValue("pppRefdN",  _pppRefdNLineEdit->text());
-  settings.setValue("pppRefdE",  _pppRefdELineEdit->text());
-  settings.setValue("pppRefdU",  _pppRefdULineEdit->text());
-  settings.setValue("nmeaFile",    _pppNMEALineEdit->text());
-  settings.setValue("nmeaPort",    _pppNMEAPortLineEdit->text());
   settings.setValue("pppPlotCoordinates", _pppPlotCoordinates->checkState());
   settings.setValue("useOsmMap",          _osmRadioButton->isChecked());
   settings.setValue("mapWinDotSize",      _mapWinDotSizeLineEdit->text());
   settings.setValue("mapWinDotColor",     _mapWinDotColorComboBox->currentText());
   settings.setValue("mapSpeed",           _mapSpeedSlider->value());
-  settings.setValue("postObsFile",  _postObsFileChooser->fileName());
-  settings.setValue("postNavFile",  _postNavFileChooser->fileName());
-  settings.setValue("postCorrFile", _postCorrFileChooser->fileName());
-  settings.setValue("postOutFile",  _postOutLineEdit->text());
-  settings.setValue("pppAntenna",      _pppAntennaLineEdit->text());
-  settings.setValue("pppAntex",	       _pppAntexFileChooser->fileName());
-  settings.setValue("pppUsePhase", _pppUsePhaseCheckBox->checkState());
-  settings.setValue("pppEstTropo", _pppEstTropoCheckBox->checkState());
-  settings.setValue("pppGLONASS",  _pppGLONASSCheckBox->checkState());
-  settings.setValue("pppGalileo",  _pppGalileoCheckBox->checkState());
-  settings.setValue("pppSync",     _pppSync->text());
-  settings.setValue("pppAverage",  _pppAverageLineEdit->text());
-  settings.setValue("pppQuickStart", _pppQuickStartLineEdit->text());
-  settings.setValue("pppMaxSolGap",  _pppMaxSolGapLineEdit->text());
-  settings.setValue("pppAudioResponse",  _pppAudioResponseLineEdit->text());
-  settings.setValue("pppSigmaCode",_pppSigCLineEdit->text());
-  settings.setValue("pppSigmaPhase",_pppSigPLineEdit->text());
-  settings.setValue("pppSigCrd0",_pppSigCrd0->text());
-  settings.setValue("pppSigCrdP",_pppSigCrdP->text());
-  settings.setValue("pppSigTrp0",_pppSigTrp0->text());
-  settings.setValue("pppSigTrpP",_pppSigTrpP->text());
 // Reqc
   settings.setValue("reqcAction",     _reqcActionComboBox->currentText());
   settings.setValue("reqcObsFile",    _reqcObsFileChooser->fileName());
@@ -1998,10 +1682,7 @@ void bncWindow::slotGetThreadsFinished() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotStart() {
   saveOptions();
-  if      ( _pppSPPComboBox->currentText() == "Post-Processing" ) {
-    startPostProcessingPPP();
-  }
-  else if ( !_reqcActionComboBox->currentText().isEmpty() ) {
+  if ( !_reqcActionComboBox->currentText().isEmpty() ) {
     startPostProcessingReqc();
   }
   else {
@@ -2107,10 +1788,6 @@ void bncWindow::closeEvent(QCloseEvent* event) {
   }
   else if (iRet == QMessageBox::Yes) {
     slotSaveOptions();
-  }
-
-  if (_postProcessing) {
-    _postProcessing->terminate();
   }
 
   if (_pppMain) {
@@ -2493,97 +2170,8 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(false, _uploadSamplSp3SpinBox);
   }
 
-  // PPP Client
-  // ----------
-  if (sender() == 0 
-     || sender() == _pppMountLineEdit 
-     || sender() == _pppCorrMountLineEdit 
-     || sender() == _pppRefCrdXLineEdit 
-     || sender() == _pppRefCrdYLineEdit 
-     || sender() == _pppRefCrdZLineEdit 
-     || sender() == _pppRefdNLineEdit 
-     || sender() == _pppRefdELineEdit 
-     || sender() == _pppRefdULineEdit 
-     || sender() == _pppSync 
-     || sender() == _pppSPPComboBox
-     || sender() == _pppQuickStartLineEdit
-     || sender() == _pppEstTropoCheckBox
-     || sender() == _pppUsePhaseCheckBox    
-     || sender() == _pppAntexFileChooser 
-#ifdef QT_WEBKIT
-     || sender() == _mapWin
-#endif
-     ) {
-
-
-    enable = !_pppSPPComboBox->currentText().isEmpty();
-    if (enable) {
-      enable = (!_pppMountLineEdit->text().isEmpty() && !_pppCorrMountLineEdit->text().isEmpty()) ||
-               (!_pppMountLineEdit->text().isEmpty() && _pppSPPComboBox->currentText() == "Realtime-SPP")  ||
-               (_pppSPPComboBox->currentText() == "Post-Processing");
-    } 
-
-    enableWidget(enable, _pppNMEALineEdit);
-    enableWidget(enable, _pppNMEAPortLineEdit);
-    enableWidget(enable, _pppRefCrdXLineEdit);
-    enableWidget(enable, _pppRefCrdYLineEdit);
-    enableWidget(enable, _pppRefCrdZLineEdit);
-    enableWidget(enable, _pppRefdNLineEdit);
-    enableWidget(enable, _pppRefdELineEdit);
-    enableWidget(enable, _pppRefdULineEdit);
-    enableWidget(enable, _pppUsePhaseCheckBox);
-    enableWidget(enable, _pppPlotCoordinates);
-    enableWidget(enable, _mapWinButton);
-    enableWidget(enable, _mapWinDotSizeLineEdit);
-    enableWidget(enable, _mapWinDotColorComboBox);
-    enableWidget(enable, _gmRadioButton);
-    enableWidget(enable, _osmRadioButton);
-    enableWidget(enable, _pppEstTropoCheckBox);
-//  enableWidget(enable, _pppGLONASSCheckBox);
-    enableWidget(enable, _pppGalileoCheckBox);
-//  enableWidget(enable, _pppAntexFileChooser);
-    enableWidget(enable, _pppSigCLineEdit);
-    enableWidget(enable, _pppSigCrd0);
-    enableWidget(enable, _pppSigCrdP);
-
-    bool enable2 = enable && !_pppRefCrdXLineEdit->text().isEmpty() &&
-                             !_pppRefCrdYLineEdit->text().isEmpty() &&
-                             !_pppRefCrdZLineEdit->text().isEmpty();
-
-    enableWidget(enable2, _pppAverageLineEdit);
-    enableWidget(enable2, _pppQuickStartLineEdit);
-
-    bool enable3 = enable2 && !_pppQuickStartLineEdit->text().isEmpty();
-    enableWidget(enable3, _pppMaxSolGapLineEdit);
-    enableWidget(enable3, _pppAudioResponseLineEdit);
-
-    bool enable4 = enable && !_pppAntexFileChooser->fileName().isEmpty();
-    enableWidget(enable4, _pppAntennaLineEdit);
-
-    bool enable5 = enable && _pppEstTropoCheckBox->isChecked();
-    enableWidget(enable5, _pppSigTrp0);
-    enableWidget(enable5, _pppSigTrpP);
-
-    bool enable6 = enable && _pppUsePhaseCheckBox->isChecked();
-    enableWidget(enable6, _pppSigPLineEdit);
-
-    bool enable7 = enable && _pppSPPComboBox->currentText() == "Realtime-PPP";
-    enableWidget(enable7, _pppSync);
-
-    bool enable8 = _pppSPPComboBox->currentText() == "Realtime-PPP";
-    enableWidget(enable8, _pppCorrMountLineEdit);
-
-    bool enable9 = _pppSPPComboBox->currentText() == "Post-Processing";
-    enableWidget(enable9, _postObsFileChooser);
-    enableWidget(enable9, _postNavFileChooser);
-    enableWidget(enable9, _postCorrFileChooser);
-    enableWidget(enable9, _postOutLineEdit);
-    enableWidget(enable9, _mapSpeedSlider);
-
-    bool enable10 = !_pppSPPComboBox->currentText().isEmpty() && !enable9;
-    enableWidget(enable10, _pppMountLineEdit);
-  }
-
+  // QC
+  // --
   if (sender() == 0 || sender() == _reqcActionComboBox) {
     enable = !_reqcActionComboBox->currentText().isEmpty();
     bool enable10 = _reqcActionComboBox->currentText() == "Edit/Concatenate";
@@ -2789,55 +2377,6 @@ void bncWindow::slotSetUploadTrafo() {
   delete dlg;
 }
 
-// Start Post-Processing PPP
-////////////////////////////////////////////////////////////////////////////
-void bncWindow::startPostProcessingPPP() {
-#ifdef USE_POSTPROCESSING
-  _runningPostProcessingPPP = true;
-  _actStart->setText("0 Epochs");
-  enableStartStop();
-
-  _postProcessing = new t_postProcessing(this, _mapSpeedSlider->maximum(), _mapSpeedSlider->value());
-  connect(_postProcessing, SIGNAL(finished()), this, SLOT(slotFinishedPostProcessingPPP()));
-  connect(_postProcessing, SIGNAL(progress(int)), this, SLOT(slotPostProgress(int)));
-  connect(_mapSpeedSlider, SIGNAL(valueChanged(int)), _postProcessing, SLOT(slotSetSpeed(int)));
-  bncSettings settings;
-  if ( Qt::CheckState(settings.value("pppPlotCoordinates").toInt()) == Qt::Checked) {
-    _bncFigurePPP->reset();
-    connect(_postProcessing, SIGNAL(newPosition(bncTime, double, double, double)),
-            _bncFigurePPP, SLOT(slotNewPosition(bncTime, double, double, double)));
-  }
-#ifdef QT_WEBKIT
-  if (_mapWin) {
-    connect(_postProcessing, SIGNAL(newPosition(bncTime, double, double, double)),
-            _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
-  }
-#endif
-
-  _postProcessing->start();
-#else
-  QMessageBox::information(this, "Information",
-                           "Post-Processing Not Permitted");
-#endif
-}
-
-// Post-Processing PPP Finished
-////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotFinishedPostProcessingPPP() {
-#ifdef QT_WEBKIT
-  if (_mapWin) {
-    _postProcessing->disconnect(_mapWin);
-  }
-#endif
-  _runningPostProcessingPPP = false;
-  delete _postProcessing;
-  _postProcessing           = 0;
-  QMessageBox::information(this, "Information",
-                           "Post-Processing Thread Finished");
-  _actStart->setText("Start");
-  enableStartStop();
-}
-
 // Progress Bar Change
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotPostProgress(int nEpo) {
@@ -2894,16 +2433,7 @@ void bncWindow::slotReqcEditOption() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::enableStartStop() {
 
-  if      ( _pppSPPComboBox && _pppSPPComboBox->currentText() == "Post-Processing" ) {
-    if (_runningPostProcessingPPP) {
-      _actStart->setEnabled(false);
-    }
-    else {
-      _actStart->setEnabled(true);
-    }
-    _actStop->setEnabled(false);
-  }
-  else if ( _reqcActionComboBox && !_reqcActionComboBox->currentText().isEmpty() ) {
+  if ( _reqcActionComboBox && !_reqcActionComboBox->currentText().isEmpty() ) {
     if (_runningPostProcessingReqc) {
       _actStart->setEnabled(false);
     }
@@ -2971,10 +2501,6 @@ void bncWindow::slotMapPPP() {
       connect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
               _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
     }
-    if (_postProcessing) {
-      connect(_postProcessing, SIGNAL(newPosition(bncTime, double, double, double)),
-              _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
-    }
   }
   _mapWin->show();
 #else
@@ -2993,9 +2519,6 @@ void bncWindow::slotMapPPPClosed() {
     while (it.hasNext()) {
       bncGetThread* thread = it.next();
       thread->disconnect(_mapWin);
-    }
-    if (_postProcessing) {
-      _postProcessing->disconnect(_mapWin);
     }
     _mapWin->deleteLater();
     _mapWin = 0;

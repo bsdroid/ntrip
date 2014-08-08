@@ -59,9 +59,9 @@ using namespace std;
 
 // Singleton 
 ////////////////////////////////////////////////////////////////////////////
-t_bncCore& bncCoreInstance() {
+t_bncCore* t_bncCore::instance() {
   static t_bncCore _bncCore;
-  return _bncCore;
+  return &_bncCore;
 }
 
 // Constructor
@@ -123,8 +123,6 @@ t_bncCore::t_bncCore() {
   for (int ii = 0; ii < PRN_GLONASS_NUM; ++ii) {
     _GLOFreq[ii] = 0;
   }
-
-  _bncPPPclient = 0;
 
   _mainWindow = 0;
 }
