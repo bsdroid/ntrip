@@ -478,7 +478,9 @@ void GPSweekFromYMDhms(int year, int month, int day, int hour, int min,
 
   double mjd = djul(year, month, day);
 
-  jdgp(mjd, GPSWeeks, GPSWeek);
+  long GPSWeek_long;
+  jdgp(mjd, GPSWeeks, GPSWeek_long);
+  GPSWeek = GPSWeek_long;
   GPSWeeks += hour * 3600.0 + min * 60.0 + sec;  
 }
 
