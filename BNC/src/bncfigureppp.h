@@ -47,7 +47,7 @@ class bncFigurePPP : public QWidget {
   class pppPos {
    public:
     bncTime time;
-    double  xyz[3];
+    double  neu[3];
   };
 
   QPoint pltPoint(double tt, double yy);
@@ -55,15 +55,10 @@ class bncFigurePPP : public QWidget {
   QMutex           _mutex;
   QVector<pppPos*> _pos;
   bncTime          _startTime;
-  QString          _pppMount;
-  QString          _pppCorrMount;
-  QString          _pppSPP;
   double           _neuMax;
   double           _tMin;
-  double           _pppAudioResponse;
   int              _width;
   int              _height;
-  double           _xyzRef[3];
 };
 
 #endif
