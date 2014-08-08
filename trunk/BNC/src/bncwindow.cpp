@@ -879,7 +879,7 @@ bncWindow::bncWindow() {
 
   // ------------------------
   QVBoxLayout* pppLayout4 = new QVBoxLayout;
-  pppLayout4->addWidget(new QLabel("Precise Point Positioning, Panel 3."));
+  pppLayout4->addWidget(new QLabel("<b>Precise Point Positioning (Plots)</b>"));
   pppLayout4->addSpacing(ww);
 
   QHBoxLayout* pppLayout4Hlp1 = new QHBoxLayout;
