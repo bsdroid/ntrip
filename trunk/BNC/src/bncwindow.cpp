@@ -883,10 +883,8 @@ bncWindow::bncWindow() {
   pppLayout4->addSpacing(ww);
 
   QHBoxLayout* pppLayout4Hlp1 = new QHBoxLayout;
-  _pppPlotCoordinates = new QCheckBox();
-  _pppPlotCoordinates->setCheckState(Qt::CheckState(settings.value("pppPlotCoordinates").toInt()));
   pppLayout4Hlp1->addWidget(new QLabel("PPP Plot           "));
-  pppLayout4Hlp1->addWidget(_pppPlotCoordinates);
+  pppLayout4Hlp1->addWidget(_pppWidgets._plotCoordinates);
   pppLayout4Hlp1->addWidget(new QLabel("Nort-East-Up Time Series"));
   pppLayout4Hlp1->addStretch();
   pppLayout4->addLayout(pppLayout4Hlp1);
@@ -894,54 +892,30 @@ bncWindow::bncWindow() {
 
   QHBoxLayout* pppLayout4Hlp2 = new QHBoxLayout;
   pppLayout4Hlp2->addWidget(new QLabel("Track Plot         "));
-  _mapWinButton = new QPushButton;
-  _mapWinButton->setText("Open Map");
-  connect(_mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
-  pppLayout4Hlp2->addWidget(_mapWinButton);
+  connect(_pppWidgets._mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
+  pppLayout4Hlp2->addWidget(_pppWidgets._mapWinButton);
 
   pppLayout4Hlp2->addSpacing(1*ww);
 
-  _gmRadioButton  = new QRadioButton;
-  _gmRadioButton->setChecked(!settings.value("useOsmMap").toBool());
   pppLayout4Hlp2->addWidget(new QLabel("Google"));
-  pppLayout4Hlp2->addWidget(_gmRadioButton);
+  pppLayout4Hlp2->addWidget(_pppWidgets._gmRadioButton);
 
-  _osmRadioButton = new QRadioButton;
-  _osmRadioButton->setChecked(settings.value("useOsmMap").toBool());
   pppLayout4Hlp2->addWidget(new QLabel("OSM"));
-  pppLayout4Hlp2->addWidget(_osmRadioButton);
+  pppLayout4Hlp2->addWidget(_pppWidgets._osmRadioButton);
 
   pppLayout4Hlp2->addSpacing(3*ww);
 
-  _mapWinDotSizeLineEdit  = new QLineEdit(settings.value("mapWinDotSize").toString());
-  pppLayout4Hlp2->addWidget(new QLabel("Dot Size"));
-  _mapWinDotSizeLineEdit->setMaximumWidth(5*ww);
-  pppLayout4Hlp2->addWidget(_mapWinDotSizeLineEdit);
+  _pppWidgets._mapWinDotSizeLineEdit->setMaximumWidth(5*ww);
+  pppLayout4Hlp2->addWidget(_pppWidgets._mapWinDotSizeLineEdit);
 
   pppLayout4Hlp2->addSpacing(3*ww);
 
-  _mapWinDotColorComboBox = new QComboBox();
-  pppLayout4Hlp2->addWidget(new QLabel("Dot Color"));
-  _mapWinDotColorComboBox->setEditable(false);
-  _mapWinDotColorComboBox->addItems(QString("red,yellow").split(","));
-  ii = _mapWinDotColorComboBox->findText(settings.value("mapWinDotColor").toString());
-  if (ii != -1) {
-    _mapWinDotColorComboBox->setCurrentIndex(ii);
-  }
-  pppLayout4Hlp2->addWidget(_mapWinDotColorComboBox);
+  pppLayout4Hlp2->addWidget(_pppWidgets._mapWinDotColorComboBox);
 
   pppLayout4Hlp2->addSpacing(3*ww);
 
-  _mapSpeedSlider = new QSlider;
-  _mapSpeedSlider->setOrientation(Qt::Horizontal);
-  _mapSpeedSlider->setRange(1, 100);
-  _mapSpeedSlider->setTickPosition(QSlider::TicksBelow);
-  _mapSpeedSlider->setTickInterval(10);
-  int speed = settings.value("mapSpeed").toInt();
-  if (speed == 0) speed = _mapSpeedSlider->maximum();
-  _mapSpeedSlider->setSliderPosition(speed);
   pppLayout4Hlp2->addWidget(new QLabel("Speed"));
-  pppLayout4Hlp2->addWidget(_mapSpeedSlider);
+  pppLayout4Hlp2->addWidget(_pppWidgets._mapSpeedSlider);
 
   pppLayout4Hlp2->addStretch();
   pppLayout4->addLayout(pppLayout4Hlp2);
@@ -1196,12 +1170,6 @@ bncWindow::bncWindow() {
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an inital NMEA-GGA message.</p><p>The setting of this option is ignored in case of streams coming from physical reference stations.</p>"));
   _reqcActionComboBox->setWhatsThis(tr("<p>BNC allows to edit or concatenate RINEX v2 or v3 files or to perform a quality check following UNAVCO's famous 'teqc' program.</p>"));
   _reqcEditOptionButton->setWhatsThis(tr("<p>Specify options for editing RINEX v2 or v3 files.</p>"));
-  _mapWinButton->setWhatsThis(tr("<p>You make like to track your rover position using Google Maps or Open Street Map as a background map. Track plots can be produced with BNC in 'Realtime-PPP', 'Realtime-SPP' and 'Post-Processing' mode.</p><p>The 'Open Map' button opens a windows showing a map according to specified options.</p><p>When in 'Post-Processing' mode you should not forget to specify a proxy under the 'Network' tab if that is operated in front of BNC."));
-  _gmRadioButton->setWhatsThis(tr("<p>Specify Google Maps as the background for your rover positions."));
-  _osmRadioButton->setWhatsThis(tr("<p>Specify Open Street Map as the background for your rover positions."));
-  _mapWinDotSizeLineEdit->setWhatsThis(tr("<p>Specify the size of dots showing the rover positions.</p><p>A dot size of '3' may be appropriate. The maximum possible dot size is '10'. An empty option field or a size of '0' would mean that you don't want BNC to show the rover's track on the map.</p>"));
-  _mapWinDotColorComboBox->setWhatsThis(tr("<p>Specify the color of dots showing the rover track.</p>"));
-  _mapSpeedSlider->setWhatsThis(tr("<p>With BNC in PPP post-processing mode you can specify the speed of computations as appropriate for visualization. Note that you can adjust 'Speed' on-the-fly while BNC is already processing your observations."));
   _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when the corresponting option is selected above. Values are either referred to an XYZ reference coordinate (if specified) or referred to the first estimated set of coordinate compoments. The sliding PPP time series window covers the period of the latest 5 minutes."));
   _cmbTable->setWhatsThis(tr("<p>BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors coming from various providers. Hit the 'Add Row' button, double click on the 'Mountpoint' field to enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter the weight to be applied for this stream in the combination.<ul><li>Note that an appropriate 'Wait for full corr epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense there if the update rate of incoming clock corrections is i.e. 10 seconds.</li><li>Note also that you need to tick 'Use GLONASS' which is part ot the 'PPP (2)' panel in case you want to produce an GPS plus GLONASS combination.</li></ul></p><p>Note further that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p><p>The combination process requires Broadcast Ephemeris. Besides the orbit and clock corrections stream(s) BNC should therefore pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages.</p><p>It is possible to specify only one Broadcast Ephemeris corrections stream in the combination table. Instead of combining corrections BNC will then merge them with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format."));
   _cmbMaxresLineEdit->setWhatsThis(tr("<p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p></p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p><p>Default is a value of '999.0'.</p>"));
@@ -1622,11 +1590,6 @@ void bncWindow::saveOptions() {
   settings.setValue("miscPort",    _miscPortLineEdit->text());
   settings.setValue("perfIntr",    _perfIntrComboBox->currentText());
   settings.setValue("scanRTCM",    _scanRTCMCheckBox->checkState());
-  settings.setValue("pppPlotCoordinates", _pppPlotCoordinates->checkState());
-  settings.setValue("useOsmMap",          _osmRadioButton->isChecked());
-  settings.setValue("mapWinDotSize",      _mapWinDotSizeLineEdit->text());
-  settings.setValue("mapWinDotColor",     _mapWinDotColorComboBox->currentText());
-  settings.setValue("mapSpeed",           _mapSpeedSlider->value());
 // Reqc
   settings.setValue("reqcAction",     _reqcActionComboBox->currentText());
   settings.setValue("reqcObsFile",    _reqcObsFileChooser->fileName());
@@ -2466,11 +2429,11 @@ void bncWindow::slotMapMountPoints() {
 void bncWindow::slotMapPPP() {
 #ifdef QT_WEBKIT
   saveOptions();
-  enableWidget(false, _mapWinButton);
-  enableWidget(false, _gmRadioButton);
-  enableWidget(false, _osmRadioButton);
-  enableWidget(false, _mapWinDotSizeLineEdit);
-  enableWidget(false, _mapWinDotColorComboBox);
+  enableWidget(false, _pppWidgets._mapWinButton);
+  enableWidget(false, _pppWidgets._gmRadioButton);
+  enableWidget(false, _pppWidgets._osmRadioButton);
+  enableWidget(false, _pppWidgets._mapWinDotSizeLineEdit);
+  enableWidget(false, _pppWidgets._mapWinDotColorComboBox);
 
   if (!_mapWin) {
     _mapWin = new bncMapWin(this);
