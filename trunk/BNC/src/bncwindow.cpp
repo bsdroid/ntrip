@@ -87,6 +87,8 @@ bncWindow::bncWindow() {
   BNC_CORE->setConfFileName("");
 #endif
 
+  qRegisterMetaType< QVector<double> >("QVector<double>");
+
   _caster    = 0;
   _casterEph = 0;
 
