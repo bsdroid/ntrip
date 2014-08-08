@@ -217,8 +217,6 @@ int main(int argc, char* argv[]) {
       bncRawFile*   rawFile   = new bncRawFile(rawFileName, "", 
                                                bncRawFile::input);
       bncGetThread* getThread = new bncGetThread(rawFile);
-      QObject::connect(getThread, SIGNAL(finished()), 
-                       pppMain, SLOT(slotStop()), Qt::BlockingQueuedConnection);
       caster->addGetThread(getThread, true);
     }
   }
