@@ -43,6 +43,7 @@
 
 #include "GPSDecoder.h"
 #include "bncsettings.h"
+#include "bncrinex.h"
 
 extern "C" {
 #include "rtcm3torinex.h"
@@ -54,6 +55,12 @@ using namespace std;
 //////////////////////////////////////////////////////////////////////////////
 GPSDecoder::GPSDecoder() {
   _rnx = 0;
+}
+
+// Destructor
+//////////////////////////////////////////////////////////////////////////////
+GPSDecoder::~GPSDecoder() {
+  delete _rnx;
 }
 
 // Initialize RINEX Writer

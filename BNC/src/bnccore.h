@@ -27,6 +27,7 @@
 
 #include <QtGui>
 
+#include "bnctime.h"
 #include "bnccaster.h"
 #include "bncrawfile.h"
 #include "RTCM3/RTCM3Decoder.h"

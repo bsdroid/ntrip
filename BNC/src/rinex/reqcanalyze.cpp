@@ -237,7 +237,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
       for (unsigned iObs = 0; iObs < _currEpo->rnxSat.size(); iObs++) {
         const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iObs];
         t_obs obs;
-        setObsFromRnx(obsFile, _currEpo, rnxSat, obs);
+        t_rnxObsFile::setObsFromRnx(obsFile, _currEpo, rnxSat, obs);
   
         QString prn = QString("%1%2").arg(obs.satSys)
                                      .arg(obs.satNum, 2, 10, QChar('0'));
