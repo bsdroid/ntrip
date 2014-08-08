@@ -83,8 +83,6 @@ class bncGetThread : public QThread {
    void newMessage(QByteArray msg, bool showOnScreen);
    void newRTCMMessage(QByteArray staID, int msgID);
    void getThreadFinished(QByteArray staID);
-   void newPosition(bncTime time, double x, double y, double z);
-   void newNMEAstr(QByteArray str);
 
  public:
    virtual void run();

@@ -90,9 +90,11 @@ bncWindow::bncWindow() {
   _caster    = 0;
   _casterEph = 0;
 
-  _bncFigure = new bncFigure(this);
+  _bncFigure     = new bncFigure(this);
   _bncFigureLate = new bncFigureLate(this);
-  _bncFigurePPP = new bncFigurePPP(this);
+  _bncFigurePPP  = new bncFigurePPP(this);
+  connect(BNC_CORE, SIGNAL(newPosition(bncTime, double, double, double)),
+          _bncFigurePPP, SLOT(slotNewPosition(bncTime, double, double, double)));
   _runningRealTime           = false;
   _runningPostProcessingReqc = false;
   _pppMain                   = new BNC_PPP::t_pppMain();
@@ -1899,23 +1901,6 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
                    _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
         connect(thread, SIGNAL(newLatency(QByteArray, double)),
                 _bncFigureLate, SLOT(slotNewLatency(QByteArray, double)));
-        if ( Qt::CheckState(settings.value("pppPlotCoordinates").toInt()) == Qt::Checked) {
-          disconnect(thread, 
-                     SIGNAL(newPosition(bncTime, double, double, double)),
-                     _bncFigurePPP, 
-                     SLOT(slotNewPosition(bncTime, double, double, double)));
-          connect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
-                  _bncFigurePPP, 
-                  SLOT(slotNewPosition(bncTime, double, double, double)));
-        }
-#ifdef QT_WEBKIT
-        if (_mapWin) {
-          disconnect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
-                     _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
-          connect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
-                  _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
-        }
-#endif
         break;
       }
     }
@@ -2496,12 +2481,8 @@ void bncWindow::slotMapPPP() {
   if (!_mapWin) {
     _mapWin = new bncMapWin(this);
     connect(_mapWin, SIGNAL(mapClosed()), this, SLOT(slotMapPPPClosed()));
-    QListIterator<bncGetThread*> it(_threads);
-    while (it.hasNext()) {
-      bncGetThread* thread = it.next();
-      connect(thread, SIGNAL(newPosition(bncTime, double, double, double)),
-              _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
-    }
+    connect(BNC_CORE, SIGNAL(newPosition(bncTime, double, double, double)),
+            _mapWin, SLOT(slotNewPosition(bncTime, double, double, double)));
   }
   _mapWin->show();
 #else
