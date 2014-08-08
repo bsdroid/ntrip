@@ -883,7 +883,8 @@ bncWindow::bncWindow() {
   pppLayout4->addSpacing(ww);
 
   QHBoxLayout* pppLayout4Hlp1 = new QHBoxLayout;
-  pppLayout4Hlp1->addWidget(new QLabel("PPP Plot           "));
+  pppLayout4Hlp1->addWidget(new QLabel("PPP Station "));
+  _pppWidgets._plotCoordinates->setMaximumWidth(8*ww);
   pppLayout4Hlp1->addWidget(_pppWidgets._plotCoordinates);
   pppLayout4Hlp1->addWidget(new QLabel("Nort-East-Up Time Series"));
   pppLayout4Hlp1->addStretch();
@@ -2452,7 +2453,11 @@ void bncWindow::slotMapPPP() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotMapPPPClosed() {
 #ifdef QT_WEBKIT
-  slotBncTextChanged();
+  enableWidget(true, _pppWidgets._mapWinButton);
+  enableWidget(true, _pppWidgets._gmRadioButton);
+  enableWidget(true, _pppWidgets._osmRadioButton);
+  enableWidget(true, _pppWidgets._mapWinDotSizeLineEdit);
+  enableWidget(true, _pppWidgets._mapWinDotColorComboBox);
   if (_mapWin) {
     QListIterator<bncGetThread*> it(_threads);
     while (it.hasNext()) {
