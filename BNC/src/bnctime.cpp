@@ -7,7 +7,7 @@
 #include <iomanip>
 
 #include "bnctime.h"
-#include "timeutils.h"
+#include "bncutils.h"
 
 using namespace std;
 
