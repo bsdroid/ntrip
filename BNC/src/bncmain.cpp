@@ -51,7 +51,6 @@
 #include "bncversion.h"
 #include "upload/bncephuploadcaster.h"
 #ifdef USE_POSTPROCESSING
-#  include "rinex/bncpostprocess.h"
 #  include "rinex/reqcedit.h"
 #  include "rinex/reqcanalyze.h"
 #endif
@@ -159,17 +158,9 @@ int main(int argc, char* argv[]) {
 
 #ifdef USE_POSTPROCESSING
 
-  // Post-Processing PPP
-  // -------------------
-  else if (settings.value("pppSPP").toString() == "Post-Processing") {
-    BNC_CORE->setMode(t_bncCore::batchPostProcessing);
-    t_postProcessing* postProcessing = new t_postProcessing(0, 0, 0);
-    postProcessing->start();
-  }
-
   // Post-Processing reqc edit
   // -------------------------
-  else if (settings.value("reqcAction").toString() == "Edit/Concatenate") {
+  if (settings.value("reqcAction").toString() == "Edit/Concatenate") {
     BNC_CORE->setMode(t_bncCore::batchPostProcessing);
     t_reqcEdit* reqcEdit = new t_reqcEdit(0);
     reqcEdit->start();

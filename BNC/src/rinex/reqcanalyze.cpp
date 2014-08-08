@@ -47,7 +47,6 @@
 #include "bncsettings.h"
 #include "reqcedit.h"
 #include "bncutils.h"
-#include "bncpostprocess.h"
 #include "graphwin.h"
 #include "polarplot.h"
 #include "availplot.h"
@@ -57,6 +56,39 @@
 using namespace std;
 
 const double SLIPTRESH = 10.0; // cycle-slip threshold (meters)
+
+// Set Observations from RINEX File
+////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
+                                  const t_rnxObsFile::t_rnxEpo* epo, 
+                                  const t_rnxObsFile::t_rnxSat& rnxSat, 
+                                  t_obs& obs) {
+
+  strncpy(obs.StatID, rnxObsFile->markerName().toAscii().constData(),
+          sizeof(obs.StatID));
+
+  obs.satSys   = rnxSat.satSys;
+  obs.satNum   = rnxSat.satNum;
+  obs.GPSWeek  = epo->tt.gpsw();
+  obs.GPSWeeks = epo->tt.gpssec();
+
+  for (int iType = 0; iType < rnxObsFile->nTypes(obs.satSys); iType++) {
+    QString type = rnxObsFile->obsType(obs.satSys,iType).toAscii();
+    obs.setMeasdata(type, rnxObsFile->version(), rnxSat.obs[iType]);
+    if      (type.indexOf("L1") == 0) {
+      obs.snrL1  = rnxSat.snr[iType];
+      obs.slipL1 = (rnxSat.lli[iType] & 1);
+    }
+    else if (type.indexOf("L2") == 0) {
+      obs.snrL2  = rnxSat.snr[iType];
+      obs.slipL2 = (rnxSat.lli[iType] & 1);
+    }
+    else if (type.indexOf("L5") == 0) {
+      obs.snrL5  = rnxSat.snr[iType];
+      obs.slipL5 = (rnxSat.lli[iType] & 1);
+    }
+  }
+}
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -238,7 +270,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
       for (unsigned iObs = 0; iObs < _currEpo->rnxSat.size(); iObs++) {
         const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iObs];
         t_obs obs;
-        t_postProcessing::setObsFromRnx(obsFile, _currEpo, rnxSat, obs);
+        setObsFromRnx(obsFile, _currEpo, rnxSat, obs);
   
         QString prn = QString("%1%2").arg(obs.satSys)
                                      .arg(obs.satNum, 2, 10, QChar('0'));

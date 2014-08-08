@@ -85,7 +85,6 @@ class bncWindow : public QMainWindow {
     void slotMapPPP();
     void slotMapPPPClosed();
     void slotStart();
-    void slotFinishedPostProcessingPPP();
     void slotFinishedPostProcessingReqc();
     void slotStop();
     void slotNewMountPoints(QStringList* mountPoints);
