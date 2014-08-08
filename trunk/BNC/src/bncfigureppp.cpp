@@ -65,42 +65,10 @@ bncFigurePPP::~bncFigurePPP() {
 ////////////////////////////////////////////////////////////////////////////
 void bncFigurePPP::reset() {
   QMutexLocker locker(&_mutex);
-
-  bncSettings settings;
-
-  if (settings.value("pppRefCrdX").toString() != "" &&
-      settings.value("pppRefCrdY").toString() != "" &&
-      settings.value("pppRefCrdZ").toString() != "") {
-    _xyzRef[0] = settings.value("pppRefCrdX").toDouble();
-    _xyzRef[1] = settings.value("pppRefCrdY").toDouble();
-    _xyzRef[2] = settings.value("pppRefCrdZ").toDouble();
-  }
-  else {
-    _xyzRef[0] = 0.0;
-    _xyzRef[1] = 0.0;
-    _xyzRef[2] = 0.0;
-  }
-
-  if (settings.value("pppRefCrdX").toString() != "" &&
-      settings.value("pppRefCrdY").toString() != "" &&
-      settings.value("pppRefCrdZ").toString() != "" &&
-      settings.value("pppQuickStart").toString() != "" &&
-      settings.value("pppAudioResponse").toString() != "" ) {
-    _pppAudioResponse = settings.value("pppAudioResponse").toDouble();
-    }
-  else {
-    _pppAudioResponse = 0.0;
-  }
-
-  _pppMount = settings.value("pppMount").toString();
-  _pppCorrMount = settings.value("pppCorrMount").toString();
-  _pppSPP = settings.value("pppSPP").toString();
-
   for (int ii = 0; ii < _pos.size(); ++ii) {
     delete _pos[ii];
   }
   _pos.clear();
-
   update();
 }
 
@@ -113,9 +81,9 @@ void bncFigurePPP::slotNewPosition(bncTime time, QVector<double> xx){
   pppPos* newPos = new pppPos;
 
   newPos->time   = time;
-  newPos->xyz[0] = xx.data()[0];
-  newPos->xyz[1] = xx.data()[1];
-  newPos->xyz[2] = xx.data()[2];
+  newPos->neu[0] = xx.data()[3];
+  newPos->neu[1] = xx.data()[4];
+  newPos->neu[2] = xx.data()[5];
 
   _pos.push_back(newPos);
 
@@ -168,27 +136,13 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
   if (_pos.size() > 1) {
     _tMin   = _pos[0]->time.gpssec();
 
-    // Reference Coordinates
-    // ---------------------
-    if (_xyzRef[0] == 0.0 && _xyzRef[1] == 0.0  && _xyzRef[2] == 0.0) {
-      _xyzRef[0] = _pos[0]->xyz[0];
-      _xyzRef[1] = _pos[0]->xyz[1];
-      _xyzRef[2] = _pos[0]->xyz[2];
-    }
-    double ellRef[3];
-    xyz2ell(_xyzRef, ellRef);
-
     // North, East and Up differences wrt Reference Coordinates
     // --------------------------------------------------------
     _neuMax = 0.0;
     double neu[_pos.size()][3];
     for (int ii = 0; ii < _pos.size(); ++ii) {
-      double dXYZ[3];
       for (int ic = 0; ic < 3; ++ic) {
-        dXYZ[ic] = _pos[ii]->xyz[ic] - _xyzRef[ic];
-      }
-      xyz2neu(ellRef, dXYZ, neu[ii]);
-      for (int ic = 0; ic < 3; ++ic) {
+        neu[ii][ic] = _pos[ii]->neu[ic];
         if (fabs(neu[ii][ic]) > _neuMax) {
           _neuMax = fabs(neu[ii][ic]);
         }
@@ -210,16 +164,6 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
       for (int ii = 1; ii < _pos.size(); ++ii) {
         double t1 = _tMin + (_pos[ii-1]->time - _pos[0]->time);
         double t2 = _tMin + (_pos[ii]->time   - _pos[0]->time);
-
-        // Audio response
-        // --------------
-        if ( ii == _pos.size()-1) {
-          if ( _pppAudioResponse > 0.0 &&
-               (fabs(neu[ii-1][0]) > _pppAudioResponse || 
-                fabs(neu[ii-1][1]) > _pppAudioResponse) ) {
-            QApplication::beep();
-          }
-        }
 
         // dots
         // ----
@@ -299,36 +243,9 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
 
       // Start Time
       // ----------
-
-      _startTime.civil_time(hour, minute, second);
-
-      if (_pppSPP == "Realtime-PPP") {
-
-      QString startStr = QString("%1 & %2, Start %3:%4:%5")
-                              .arg(_pppMount)
-                              .arg(_pppCorrMount)
-                              .arg(hour,   2, 10, QChar('0'))
-                              .arg(minute, 2, 10, QChar('0'))
-                              .arg(int(second), 2, 10, QChar('0'));
+      QString startStr = QString(_startTime.timestr().c_str());
       painter.setPen(QColor(Qt::black));
-      painter.drawText(0, ww, pntP.x() + 31*ww, pntP.x(),
-                       Qt::AlignRight, startStr);                 
-                                     }
-
-      if (_pppSPP == "Realtime-SPP") {
-
-      QString startStr = QString("%1 Start %2:%3:%4")
-                              .arg(_pppMount)
-                              .arg(hour,   2, 10, QChar('0'))
-                              .arg(minute, 2, 10, QChar('0'))
-                              .arg(int(second), 2, 10, QChar('0'));
-      painter.setPen(QColor(Qt::black));
-      painter.drawText(0, ww, pntP.x() + 21*ww, pntP.x(),
-                       Qt::AlignRight, startStr);                 
-                                     }
-
-
-
+      painter.drawText(0, ww, pntP.x() + 31*ww, pntP.x(), Qt::AlignRight, startStr);
     }
   }
 }
