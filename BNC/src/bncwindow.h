@@ -131,7 +131,6 @@ class bncWindow : public QMainWindow {
 
     QLineEdit* _proxyHostLineEdit;
     QLineEdit* _proxyPortLineEdit;
-    QLineEdit* _mapWinDotSizeLineEdit;
     QLineEdit* _sslCaCertPathLineEdit;
     QCheckBox* _ignoreSslErrorsCheckBox;
     QLineEdit* _outFileLineEdit;
@@ -229,12 +228,6 @@ class bncWindow : public QMainWindow {
     bool _runningRealTime;
     bool _runningPostProcessingReqc;
 
-    QPushButton*         _mapWinButton;
-    QRadioButton*        _gmRadioButton;
-    QCheckBox*           _pppPlotCoordinates;
-    QRadioButton*        _osmRadioButton;
-    QComboBox*           _mapWinDotColorComboBox;
-    QSlider*             _mapSpeedSlider;
     bncMapWin*           _mapWin;
 
     QList<bncGetThread*> _threads;
