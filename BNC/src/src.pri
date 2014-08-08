@@ -49,7 +49,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bncephuser.h bncoutf.h bncclockrinex.h bncsp3.h             \
           bncbytescounter.h bncsslconfig.h reqcdlg.h                  \
           upload/bncrtnetdecoder.h upload/bncuploadcaster.h           \
-          ephemeris.h timeutils.h t_prn.h                             \
+          ephemeris.h t_prn.h                                         \
           upload/bncrtnetuploadcaster.h upload/bnccustomtrafo.h       \
           upload/bncephuploadcaster.h bnccomb.h qtfilechooser.h       \
           GPSDecoder.h      RTCM/RTCM2.h RTCM/RTCM2Decoder.h          \
@@ -57,6 +57,12 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex/rtcm3torinex.h      \
           RTCM3/RTCM3coDecoder.h RTCM3/ephEncoder.h                   \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.h                    \
+          rinex/rnxobsfile.h                                          \
+          rinex/rnxnavfile.h       rinex/corrfile.h                   \
+          rinex/reqcedit.h         rinex/reqcanalyze.h                \
+          rinex/graphwin.h         rinex/polarplot.h                  \
+          rinex/availplot.h        rinex/eleplot.h                    \
+          rinex/dopplot.h                                             \
           PPP/pppInclude.h   PPP/pppOptions.h   PPP/pppMain.h         \
           PPP/pppWidgets.h   PPP/pppThread.h    PPP/pppClient.h       \
           PPP/pppObsPool.h   PPP/pppStation.h   PPP/pppFilter.h       \
@@ -80,7 +86,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bncmap_svg.cpp bncantex.cpp                                 \
           bncephuser.cpp bncoutf.cpp bncclockrinex.cpp bncsp3.cpp     \
           bncbytescounter.cpp bncsslconfig.cpp reqcdlg.cpp            \
-          ephemeris.cpp timeutils.cpp t_prn.cpp                       \
+          ephemeris.cpp t_prn.cpp                                     \
           upload/bncrtnetdecoder.cpp upload/bncuploadcaster.cpp       \
           upload/bncrtnetuploadcaster.cpp upload/bnccustomtrafo.cpp   \
           upload/bncephuploadcaster.cpp qtfilechooser.cpp             \
@@ -89,6 +95,12 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex/rtcm3torinex.c    \
           RTCM3/RTCM3coDecoder.cpp RTCM3/ephEncoder.cpp               \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.c                    \
+          rinex/rnxobsfile.cpp                                        \
+          rinex/rnxnavfile.cpp     rinex/corrfile.cpp                 \
+          rinex/reqcedit.cpp       rinex/reqcanalyze.cpp              \
+          rinex/graphwin.cpp       rinex/polarplot.cpp                \
+          rinex/availplot.cpp      rinex/eleplot.cpp                  \
+          rinex/dopplot.cpp                                           \
                              PPP/pppOptions.cpp PPP/pppMain.cpp       \
           PPP/pppWidgets.cpp PPP/pppThread.cpp  PPP/pppClient.cpp     \
           PPP/pppObsPool.cpp PPP/pppStation.cpp PPP/pppFilter.cpp     \
@@ -107,22 +119,6 @@ exists(combination/bnccomb.h) {
   DEFINES += USE_COMBINATION
   HEADERS += combination/bnccomb.h
   SOURCES += combination/bnccomb.cpp
-}
-
-exists(rinex/rnxobsfile.h) {
-  DEFINES += USE_POSTPROCESSING
-  HEADERS += rinex/rnxobsfile.h                            \
-             rinex/rnxnavfile.h       rinex/corrfile.h     \
-             rinex/reqcedit.h         rinex/reqcanalyze.h  \
-             rinex/graphwin.h         rinex/polarplot.h    \
-             rinex/availplot.h        rinex/eleplot.h      \
-             rinex/dopplot.h
-  SOURCES += rinex/rnxobsfile.cpp                           \
-             rinex/rnxnavfile.cpp     rinex/corrfile.cpp    \
-             rinex/reqcedit.cpp       rinex/reqcanalyze.cpp \
-             rinex/graphwin.cpp       rinex/polarplot.cpp   \
-             rinex/availplot.cpp      rinex/eleplot.cpp     \
-             rinex/dopplot.cpp
 }
 
 # Check QtWebKit Library Existence
