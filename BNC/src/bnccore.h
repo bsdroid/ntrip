@@ -84,7 +84,7 @@ friend class bncSettings;
   void newEphGalileo(galileoephemeris galileoeph);
   void newCorrections(QStringList);
   void providerIDChanged(QString);
-  void newPosition(bncTime time, double x, double y, double z);
+  void newPosition(bncTime time, QVector<double> xx);
     
  private slots:
   void slotNewConnection();

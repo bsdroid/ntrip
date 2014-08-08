@@ -106,16 +106,16 @@ void bncFigurePPP::reset() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncFigurePPP::slotNewPosition(bncTime time, double x, double y, double z){
+void bncFigurePPP::slotNewPosition(bncTime time, QVector<double> xx){
 
   QMutexLocker locker(&_mutex);
 
   pppPos* newPos = new pppPos;
 
   newPos->time   = time;
-  newPos->xyz[0] = x;
-  newPos->xyz[1] = y;
-  newPos->xyz[2] = z;
+  newPos->xyz[0] = xx.data()[0];
+  newPos->xyz[1] = xx.data()[1];
+  newPos->xyz[2] = xx.data()[2];
 
   _pos.push_back(newPos);
 
