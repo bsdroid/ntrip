@@ -43,9 +43,9 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bncipport.h bncnetqueryv0.h bncnetqueryudp.h                \ 
           bncnetqueryudp0.h bncudpport.h bnctime.h pppopt.h           \ 
           bncserialport.h bncnetquerys.h bncfigure.h                  \ 
-          bncfigurelate.h bncpppclient.h bncversion.h                 \ 
-          bancroft.h bncmodel.h bncfigureppp.h bncrawfile.h           \ 
-          bncmap.h bncantex.h                              \
+          bncfigurelate.h bncversion.h                                \ 
+          bancroft.h bncfigureppp.h bncrawfile.h                      \ 
+          bncmap.h bncantex.h                                         \
           bncephuser.h bncoutf.h bncclockrinex.h bncsp3.h             \
           bncbytescounter.h bncsslconfig.h reqcdlg.h                  \
           upload/bncrtnetdecoder.h upload/bncuploadcaster.h           \
@@ -61,7 +61,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           PPP/pppWidgets.h   PPP/pppThread.h    PPP/pppClient.h       \
           PPP/pppObsPool.h   PPP/pppStation.h   PPP/pppFilter.h       \
           PPP/pppEphPool.h   PPP/pppModel.h     PPP/pppParlist.h      \
-          PPP/pppSatObs.h 
+          PPP/pppSatObs.h    PPP/pppRunRealTime.h
 
 HEADERS       += serial/qextserialbase.h serial/qextserialport.h
 unix:HEADERS  += serial/posix_qextserialport.h
@@ -75,9 +75,9 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bncipport.cpp bncnetqueryv0.cpp bncnetqueryudp.cpp          \
           bncnetqueryudp0.cpp bncudpport.cpp pppopt.cpp               \
           bncserialport.cpp bncnetquerys.cpp bncfigure.cpp            \
-          bncfigurelate.cpp bncpppclient.cpp bnctime.cpp              \
-          bancroft.cpp bncmodel.cpp bncfigureppp.cpp bncrawfile.cpp   \
-          bncmap_svg.cpp bncantex.cpp                    \
+          bncfigurelate.cpp bnctime.cpp                               \
+          bancroft.cpp bncfigureppp.cpp bncrawfile.cpp                \
+          bncmap_svg.cpp bncantex.cpp                                 \
           bncephuser.cpp bncoutf.cpp bncclockrinex.cpp bncsp3.cpp     \
           bncbytescounter.cpp bncsslconfig.cpp reqcdlg.cpp            \
           ephemeris.cpp timeutils.cpp t_prn.cpp                       \
@@ -93,7 +93,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           PPP/pppWidgets.cpp PPP/pppThread.cpp  PPP/pppClient.cpp     \
           PPP/pppObsPool.cpp PPP/pppStation.cpp PPP/pppFilter.cpp     \
           PPP/pppEphPool.cpp PPP/pppModel.cpp   PPP/pppParlist.cpp    \
-          PPP/pppSatObs.cpp
+          PPP/pppSatObs.cpp  PPP/pppRunRealTime.cpp
 
 SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp
 unix:SOURCES  += serial/posix_qextserialport.cpp
@@ -111,13 +111,13 @@ exists(combination/bnccomb.h) {
 
 exists(rinex/bncpostprocess.h) {
   DEFINES += USE_POSTPROCESSING
-  HEADERS += rinex/bncpostprocess.h   rinex/rnxobsfile.h   \
+  HEADERS += rinex/rnxobsfile.h                            \
              rinex/rnxnavfile.h       rinex/corrfile.h     \
              rinex/reqcedit.h         rinex/reqcanalyze.h  \
              rinex/graphwin.h         rinex/polarplot.h    \
              rinex/availplot.h        rinex/eleplot.h      \
              rinex/dopplot.h
-  SOURCES += rinex/bncpostprocess.cpp rinex/rnxobsfile.cpp  \
+  SOURCES += rinex/rnxobsfile.cpp                           \
              rinex/rnxnavfile.cpp     rinex/corrfile.cpp    \
              rinex/reqcedit.cpp       rinex/reqcanalyze.cpp \
              rinex/graphwin.cpp       rinex/polarplot.cpp   \
