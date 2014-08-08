@@ -591,6 +591,7 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
       return failure;
     }
 
+    dx = 0.0;
     kalman(AA, ll, PP, _QQ, dx);
     ColumnVector vv = ll - AA * dx;
 
