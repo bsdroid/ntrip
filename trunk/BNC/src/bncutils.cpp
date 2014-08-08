@@ -402,11 +402,10 @@ ColumnVector rungeKutta4(
   
   return yf;
 }
-
 // 
 ////////////////////////////////////////////////////////////////////////////
-double djul(int jj, int mm, double tt) {
-  int    ii, kk;
+double djul(long jj, long mm, double tt) {
+  long    ii, kk;
   double  djul ;
   if( mm <= 2 ) {
     jj = jj - 1;
@@ -421,14 +420,40 @@ double djul(int jj, int mm, double tt) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void jdgp(double tjul, double & second, int & nweek) {
+double gpjd(double second, int nweek) {
+  double deltat;
+  deltat = nweek*7.0 + second/86400.0 ;
+  return( 44244.0 + deltat) ;
+} 
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void jdgp(double tjul, double & second, long & nweek) {
   double      deltat;
   deltat = tjul - 44244.0 ;
-  // current gps week
-  nweek = (int) floor(deltat/7.0);
-  // seconds past midnight of last weekend
+  nweek = (long) floor(deltat/7.0);
   second = (deltat - (nweek)*7.0)*86400.0;
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void jmt(double djul, long& jj, long& mm, double& dd) {
+  long   ih, ih1, ih2 ;
+  double t1, t2,  t3, t4;
+  t1  = 1.0 + djul - fmod( djul, 1.0 ) + 2400000.0;
+  t4  = fmod( djul, 1.0 );
+  ih  = long( (t1 - 1867216.25)/36524.25 );
+  t2  = t1 + 1 + ih - ih/4;
+  t3  = t2 - 1720995.0;
+  ih1 = long( (t3 - 122.1)/365.25 );
+  t1  = 365.25*ih1 - fmod( 365.25*ih1, 1.0 );
+  ih2 = long( (t3 - t1)/30.6001 );
+  dd  = t3 - t1 - (int)( 30.6001*ih2 ) + t4;
+  mm  = ih2 - 1;
+  if ( ih2 > 13 ) mm = ih2 - 13;
+  jj  = ih1;
+  if ( mm <= 2 ) jj = jj + 1;
+} 
 
 // 
 ////////////////////////////////////////////////////////////////////////////
