@@ -160,7 +160,7 @@ int main(int argc, char* argv[]) {
 
   // Post-Processing reqc edit
   // -------------------------
-  if (settings.value("reqcAction").toString() == "Edit/Concatenate") {
+  else if (settings.value("reqcAction").toString() == "Edit/Concatenate") {
     BNC_CORE->setMode(t_bncCore::batchPostProcessing);
     t_reqcEdit* reqcEdit = new t_reqcEdit(0);
     reqcEdit->start();
