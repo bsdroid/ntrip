@@ -44,7 +44,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bncnetqueryudp0.h bncudpport.h bnctime.h                    \ 
           bncserialport.h bncnetquerys.h bncfigure.h                  \ 
           bncfigurelate.h bncversion.h                                \ 
-          bancroft.h bncfigureppp.h bncrawfile.h                      \ 
+          bncfigureppp.h bncrawfile.h                                 \ 
           bncmap.h bncantex.h                                         \
           bncephuser.h bncoutf.h bncclockrinex.h bncsp3.h             \
           bncbytescounter.h bncsslconfig.h reqcdlg.h                  \
@@ -76,7 +76,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bncnetqueryudp0.cpp bncudpport.cpp                          \
           bncserialport.cpp bncnetquerys.cpp bncfigure.cpp            \
           bncfigurelate.cpp bnctime.cpp                               \
-          bancroft.cpp bncfigureppp.cpp bncrawfile.cpp                \
+          bncfigureppp.cpp bncrawfile.cpp                             \
           bncmap_svg.cpp bncantex.cpp                                 \
           bncephuser.cpp bncoutf.cpp bncclockrinex.cpp bncsp3.cpp     \
           bncbytescounter.cpp bncsslconfig.cpp reqcdlg.cpp            \
