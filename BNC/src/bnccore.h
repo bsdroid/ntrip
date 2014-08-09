@@ -70,7 +70,8 @@ friend class bncSettings;
   QWidget* mainWindow() const {return _mainWindow;};
   void setMainWindow(QWidget* mainWindow){_mainWindow = mainWindow;}
   bool GUIenabled() const {return _GUIenabled;}
-  BNC_PPP::t_pppMain* pppMain() {return _pppMain;}
+  void startPPP();
+  void stopPPP();
 
   QMap<int, bncTableItem*> _uploadTableItems;
 

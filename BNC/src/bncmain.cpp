@@ -52,7 +52,6 @@
 #include "upload/bncephuploadcaster.h"
 #include "rinex/reqcedit.h"
 #include "rinex/reqcanalyze.h"
-#include "PPP/pppMain.h"
 
 using namespace std;
 
@@ -191,7 +190,7 @@ int main(int argc, char* argv[]) {
 
     // PPP Client(s) (in separate threads)
     // -----------------------------------    
-    BNC_CORE->pppMain()->start();
+    BNC_CORE->startPPP();
 
     // Normal case - data from Internet
     // --------------------------------
