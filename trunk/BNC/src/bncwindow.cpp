@@ -96,7 +96,6 @@ bncWindow::bncWindow() {
           _bncFigurePPP, SLOT(slotNewPosition(bncTime, QVector<double>)));
   _runningRealTime           = false;
   _runningPostProcessingReqc = false;
-  _pppMain                   = new BNC_PPP::t_pppMain();
   _reqcActionComboBox        = 0; // necessary for enableStartStop()
 
   _mapWin = 0;
@@ -1216,7 +1215,6 @@ bncWindow::bncWindow() {
 bncWindow::~bncWindow() {
   delete _caster; BNC_CORE->setCaster(0);
   delete _casterEph;
-  delete _pppMain;
 }
 
 // 
@@ -1654,9 +1652,7 @@ void bncWindow::slotStart() {
   else {
     startRealTime();
   }
-  if (_pppMain) {
-    _pppMain->start();
-  }
+  BNC_CORE->pppMain()->start();
 }
 
 // Start Real-Time (Retrieve Data etc.)
@@ -1729,9 +1725,7 @@ void bncWindow::slotStop() {
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
-    if (_pppMain) {
-      _pppMain->slotStop();
-    }
+    BNC_CORE->pppMain()->slotStop();
     BNC_CORE->stopCombination();
     delete _caster;    _caster    = 0; BNC_CORE->setCaster(0);
     delete _casterEph; _casterEph = 0;
@@ -1756,9 +1750,7 @@ void bncWindow::closeEvent(QCloseEvent* event) {
     slotSaveOptions();
   }
 
-  if (_pppMain) {
-    _pppMain->slotStop();
-  }
+  BNC_CORE->pppMain()->slotStop();
 
   QMainWindow::closeEvent(event);
 }

@@ -34,6 +34,9 @@
 
 class bncComb;
 class bncTableItem;
+namespace BNC_PPP {
+  class t_pppMain;
+}
 
 class t_bncCore : public QObject {
 Q_OBJECT
@@ -67,6 +70,7 @@ friend class bncSettings;
   QWidget* mainWindow() const {return _mainWindow;};
   void setMainWindow(QWidget* mainWindow){_mainWindow = mainWindow;}
   bool GUIenabled() const {return _GUIenabled;}
+  BNC_PPP::t_pppMain* pppMain() {return _pppMain;}
 
   QMap<int, bncTableItem*> _uploadTableItems;
 
@@ -147,6 +151,7 @@ friend class bncSettings;
   bool                _GUIenabled;
   QDateTime*          _dateAndTimeGPS;
   mutable QMutex      _mutexDateAndTimeGPS;
+  BNC_PPP::t_pppMain* _pppMain;
 };
 
 #define BNC_CORE (t_bncCore::instance())

@@ -191,8 +191,7 @@ int main(int argc, char* argv[]) {
 
     // PPP Client(s) (in separate threads)
     // -----------------------------------    
-    BNC_PPP::t_pppMain* pppMain = new BNC_PPP::t_pppMain();
-    pppMain->start();
+    BNC_CORE->pppMain()->start();
 
     // Normal case - data from Internet
     // --------------------------------
