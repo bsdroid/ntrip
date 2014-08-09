@@ -128,6 +128,7 @@ t_bncCore::t_bncCore() {
   _mainWindow = 0;
 
   _pppMain = new BNC_PPP::t_pppMain();
+  qRegisterMetaType< QVector<double> >("QVector<double>");
 }
 
 // Destructor
