@@ -409,13 +409,13 @@ void bncGetThread::run() {
         _format = _rawFile->format();
         _staID  = _rawFile->staID();
 
+        QCoreApplication::processEvents();
+
         if (data.isEmpty()) {
           cout << "no more data" << endl;
           BNC_CORE->stopCombination();
           BNC_CORE->stopPPP();
-          emit finished();
-          this->deleteLater();
-          return;
+          ::exit(0);
         }
       }
       qint64 nBytes = data.size();
