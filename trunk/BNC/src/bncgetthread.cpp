@@ -412,7 +412,7 @@ void bncGetThread::run() {
         if (data.isEmpty()) {
           cout << "no more data" << endl;
           BNC_CORE->stopCombination();
-          BNC_CORE->pppMain()->deleteLater();
+          BNC_CORE->stopPPP();
           emit finished();
           this->deleteLater();
           return;

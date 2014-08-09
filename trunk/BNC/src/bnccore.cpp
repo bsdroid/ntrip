@@ -867,3 +867,15 @@ void t_bncCore::setDateAndTimeGPS(QDateTime dateTime) {
   delete _dateAndTimeGPS;
   _dateAndTimeGPS = new QDateTime(dateTime);
 }
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_bncCore::startPPP() {
+  _pppMain->start();
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_bncCore::stopPPP() {
+  _pppMain->stop();
+}

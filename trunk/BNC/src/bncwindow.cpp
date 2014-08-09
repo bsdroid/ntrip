@@ -65,7 +65,6 @@
 #include "bncmap.h"
 #include "rinex/reqcedit.h"
 #include "rinex/reqcanalyze.h"
-#include "PPP/pppMain.h"
 #ifdef QT_WEBKIT
 #  include "map/bncmapwin.h"
 #endif
@@ -1652,7 +1651,7 @@ void bncWindow::slotStart() {
   else {
     startRealTime();
   }
-  BNC_CORE->pppMain()->start();
+  BNC_CORE->startPPP();
 }
 
 // Start Real-Time (Retrieve Data etc.)
@@ -1725,7 +1724,7 @@ void bncWindow::slotStop() {
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
-    BNC_CORE->pppMain()->slotStop();
+    BNC_CORE->stopPPP();
     BNC_CORE->stopCombination();
     delete _caster;    _caster    = 0; BNC_CORE->setCaster(0);
     delete _casterEph; _casterEph = 0;
@@ -1750,7 +1749,7 @@ void bncWindow::closeEvent(QCloseEvent* event) {
     slotSaveOptions();
   }
 
-  BNC_CORE->pppMain()->slotStop();
+  BNC_CORE->stopPPP();
 
   QMainWindow::closeEvent(event);
 }
