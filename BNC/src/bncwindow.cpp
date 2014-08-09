@@ -1649,7 +1649,7 @@ void bncWindow::slotStart() {
   else {
     startRealTime();
   }
-  BNC_CORE->startPPP();
+  BNC_CORE->startPPP(true);
 }
 
 // Start Real-Time (Retrieve Data etc.)

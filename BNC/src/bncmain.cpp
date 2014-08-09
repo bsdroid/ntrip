@@ -188,14 +188,12 @@ int main(int argc, char* argv[]) {
     
     BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION " =========", true);
 
-    // PPP Client(s) (in separate threads)
-    // -----------------------------------    
-    BNC_CORE->startPPP();
-
     // Normal case - data from Internet
     // --------------------------------
     if ( rawFileName.isEmpty() ) {
       BNC_CORE->setMode(t_bncCore::nonInteractive);
+      BNC_CORE->startPPP(true);
+
       caster->readMountPoints();
       if (caster->numStations() == 0) {
         exit(0);
@@ -206,8 +204,9 @@ int main(int argc, char* argv[]) {
     // -----------------------------
     else {
       BNC_CORE->setMode(t_bncCore::batchPostProcessing);
-      bncRawFile*   rawFile   = new bncRawFile(rawFileName, "", 
-                                               bncRawFile::input);
+      BNC_CORE->startPPP(false);
+
+      bncRawFile*   rawFile   = new bncRawFile(rawFileName, "", bncRawFile::input);
       bncGetThread* getThread = new bncGetThread(rawFile);
       caster->addGetThread(getThread, true);
     }
