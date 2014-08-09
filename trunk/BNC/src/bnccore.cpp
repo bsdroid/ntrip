@@ -878,5 +878,5 @@ void t_bncCore::startPPP() {
 //
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::stopPPP() {
-  emit quitPPP();
+  _pppMain->stop();
 }
