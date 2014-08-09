@@ -50,6 +50,7 @@
 #include "ephemeris.h" 
 #include "rinex/rnxobsfile.h" 
 #include "rinex/rnxnavfile.h" 
+#include "PPP/pppMain.h"
 
 #ifdef USE_COMBINATION
 #include "combination/bnccomb.h" 
@@ -125,6 +126,8 @@ t_bncCore::t_bncCore() {
   }
 
   _mainWindow = 0;
+
+  _pppMain = new BNC_PPP::t_pppMain();
 }
 
 // Destructor
