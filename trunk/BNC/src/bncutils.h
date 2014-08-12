@@ -106,4 +106,6 @@ void         jdgp(double tjul, double & second, long & nweek);
 
 void         jmt (double djul, long& jj, long& mm, double& dd);
 
+void         stripWhiteSpace(std::string& str);
+
 #endif
