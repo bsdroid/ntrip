@@ -70,6 +70,19 @@ void expandEnvVar(QString& str) {
 
 }
 
+// Strip White Space
+////////////////////////////////////////////////////////////////////////////
+void stripWhiteSpace(string& str) {
+  if (!str.empty()) {
+    string::size_type beg = str.find_first_not_of(" \t\f\n\r\v");
+    string::size_type end = str.find_last_not_of(" \t\f\n\r\v");
+    if (beg > str.max_size())
+      str.erase();
+    else
+      str = str.substr(beg, end-beg+1);
+  }
+}
+
 // 
 ////////////////////////////////////////////////////////////////////////////
 QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks) {
