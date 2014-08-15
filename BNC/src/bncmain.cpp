@@ -169,6 +169,13 @@ int main(int argc, char* argv[]) {
     reqcAnalyze->start();
   }
 
+  // Post-Processing PPP 
+  // -------------------
+  else if (settings.value("PPP/dataSource").toString() == "RINEX Files") {
+    BNC_CORE->setMode(t_bncCore::batchPostProcessing);
+    BNC_CORE->startPPP(true);
+  }
+
   // Non-Interactive (data gathering)
   // --------------------------------
   else {
