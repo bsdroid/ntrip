@@ -220,9 +220,9 @@ class bncWindow : public QMainWindow {
     bncCaster*          _caster;
     bncEphUploadCaster* _casterEph;
 
-    bool _realTimeRunning;
     bool _runningRealTime;
     bool _runningPostProcessingReqc;
+    bool _runningPostProcessingPPP;
 
     bncMapWin*           _mapWin;
 
