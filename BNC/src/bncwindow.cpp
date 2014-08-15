@@ -93,7 +93,6 @@ bncWindow::bncWindow() {
           _bncFigurePPP, SLOT(slotNewPosition(bncTime, QVector<double>)));
   _runningRealTime           = false;
   _runningPostProcessingReqc = false;
-  _runningPostProcessingPPP  = false;
   _reqcActionComboBox        = 0; // necessary for enableStartStop()
 
   _mapWin = 0;
@@ -1645,7 +1644,6 @@ void bncWindow::slotGetThreadsFinished() {
 void bncWindow::slotStart() {
   saveOptions();
   if      ( _pppWidgets._dataSource->currentText() == "RINEX Files") {
-    _runningPostProcessingPPP = true;
     _actStart->setEnabled(false);
     BNC_CORE->startPPP(false);
     _actStart->setEnabled(true);

@@ -222,7 +222,6 @@ class bncWindow : public QMainWindow {
 
     bool _runningRealTime;
     bool _runningPostProcessingReqc;
-    bool _runningPostProcessingPPP;
 
     bncMapWin*           _mapWin;
 
