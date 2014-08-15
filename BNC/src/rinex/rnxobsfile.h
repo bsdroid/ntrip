@@ -149,6 +149,9 @@ class t_rnxObsFile {
                             const t_rnxObsFile::t_rnxSat& rnxSat, 
                             t_obs& obs);
 
+  static QString type2to3(char sys, const QString& typeV2);
+  static QString type3to2(const QString& typeV3);
+
  private:
   enum e_trafo {trafoNone, trafo2to3, trafo3to2};
 
@@ -161,9 +164,6 @@ class t_rnxObsFile {
   t_rnxEpo* nextEpochV2();
   t_rnxEpo* nextEpochV3();
   void handleEpochFlag(int flag, const QString& line, bool& headerReRead);
-
-  QString type2to3(char sys, const QString& typeV2);
-  QString type3to2(const QString& typeV3);
 
   QMap<char, QMap<int, int> > _indexMap2to3;
   QMap<char, QMap<int, int> > _indexMap3to2;
