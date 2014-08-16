@@ -173,7 +173,7 @@ int main(int argc, char* argv[]) {
   // -------------------
   else if (settings.value("PPP/dataSource").toString() == "RINEX Files") {
     BNC_CORE->setMode(t_bncCore::batchPostProcessing);
-    BNC_CORE->startPPP(true);
+    BNC_CORE->startPPP();
   }
 
   // Non-Interactive (data gathering)
@@ -199,7 +199,7 @@ int main(int argc, char* argv[]) {
     // --------------------------------
     if ( rawFileName.isEmpty() ) {
       BNC_CORE->setMode(t_bncCore::nonInteractive);
-      BNC_CORE->startPPP(true);
+      BNC_CORE->startPPP();
 
       caster->readMountPoints();
       if (caster->numStations() == 0) {
@@ -211,7 +211,7 @@ int main(int argc, char* argv[]) {
     // -----------------------------
     else {
       BNC_CORE->setMode(t_bncCore::batchPostProcessing);
-      BNC_CORE->startPPP(true);
+      BNC_CORE->startPPP();
 
       bncRawFile*   rawFile   = new bncRawFile(rawFileName, "", bncRawFile::input);
       bncGetThread* getThread = new bncGetThread(rawFile);

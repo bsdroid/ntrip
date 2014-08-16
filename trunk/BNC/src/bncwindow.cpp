@@ -1649,14 +1649,14 @@ void bncWindow::slotGetThreadsFinished() {
 void bncWindow::slotStart() {
   saveOptions();
   if      ( _pppWidgets._dataSource->currentText() == "RINEX Files") {
-    BNC_CORE->startPPP(true);
+    BNC_CORE->startPPP();
   }
   else if ( !_reqcActionComboBox->currentText().isEmpty() ) {
     startPostProcessingReqc();
   }
   else {
     startRealTime();
-    BNC_CORE->startPPP(true);
+    BNC_CORE->startPPP();
   }
 }
 
