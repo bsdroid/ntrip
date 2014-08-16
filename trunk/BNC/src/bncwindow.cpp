@@ -89,8 +89,12 @@ bncWindow::bncWindow() {
   _bncFigure     = new bncFigure(this);
   _bncFigureLate = new bncFigureLate(this);
   _bncFigurePPP  = new bncFigurePPP(this);
+
   connect(BNC_CORE, SIGNAL(newPosition(bncTime, QVector<double>)),
           _bncFigurePPP, SLOT(slotNewPosition(bncTime, QVector<double>)));
+
+  connect(BNC_CORE, SIGNAL(progressRnxPPP(int)), this, SLOT(slotPostProgress(int)));
+
   _runningRealTime           = false;
   _runningPostProcessingReqc = false;
   _reqcActionComboBox        = 0; // necessary for enableStartStop()
