@@ -74,9 +74,14 @@ void bncFigurePPP::reset() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncFigurePPP::slotNewPosition(bncTime time, QVector<double> xx){
+void bncFigurePPP::slotNewPosition(QByteArray staID, bncTime time, QVector<double> xx){
 
   QMutexLocker locker(&_mutex);
+
+  bncSettings settings;
+  if (settings.value("PPP/plotCoordinates").toByteArray() != staID) {
+    return;
+  }
 
   pppPos* newPos = new pppPos;
 
