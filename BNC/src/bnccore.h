@@ -91,6 +91,8 @@ friend class bncSettings;
   void newCorrections(QStringList);
   void providerIDChanged(QString);
   void newPosition(bncTime time, QVector<double> xx);
+  void progressRnxPPP(int);
+  void finishedRnxPPP();
     
  private slots:
   void slotNewConnection();
