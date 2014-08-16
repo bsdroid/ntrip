@@ -872,8 +872,8 @@ void t_bncCore::setDateAndTimeGPS(QDateTime dateTime) {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::startPPP(bool ownThread) {
-  _pppMain->start(ownThread);
+void t_bncCore::startPPP() {
+  _pppMain->start();
 }
 
 //
