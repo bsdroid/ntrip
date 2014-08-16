@@ -93,6 +93,7 @@ friend class bncSettings;
   void newPosition(bncTime time, QVector<double> xx);
   void progressRnxPPP(int);
   void finishedRnxPPP();
+  void mapSpeedSliderChanged(int);
     
  private slots:
   void slotNewConnection();
