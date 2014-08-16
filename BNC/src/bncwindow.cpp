@@ -398,8 +398,11 @@ bncWindow::bncWindow() {
           SLOT(slotSelectionChanged()));
   populateMountPointsTable();
 
-  _log = new QTextBrowser();
+  _log = new QTextEdit();
   _log->setReadOnly(true);
+  QFont msFont(""); msFont.setStyleHint(QFont::TypeWriter); // default monospace font
+  _log->setFont(msFont);
+  _log->document()->setMaximumBlockCount(1000);
 
   // Combine Corrections
   // -------------------
@@ -1774,21 +1777,9 @@ void bncWindow::slotSelectionChanged() {
 // Display Program Messages 
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotWindowMessage(const QByteArray msg, bool showOnScreen) {
-
-#ifdef DEBUG_RTCM2_2021  
-  const int maxBufferSize = 1000;
-#else
-  const int maxBufferSize = 10000;
-#endif
-
-  if (! showOnScreen ) {
-    return;
+  if (showOnScreen ) {
+    _log->append(QDateTime::currentDateTime().toUTC().toString("yy-MM-dd hh:mm:ss ") + msg + '\n');
   }
- 
-  QString txt = _log->toPlainText() + "\n" + 
-     QDateTime::currentDateTime().toUTC().toString("yy-MM-dd hh:mm:ss ") + msg;
-  _log->clear();
-  _log->append(txt.right(maxBufferSize));
 }  
 
 // About Message
