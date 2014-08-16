@@ -211,7 +211,7 @@ int main(int argc, char* argv[]) {
     // -----------------------------
     else {
       BNC_CORE->setMode(t_bncCore::batchPostProcessing);
-      BNC_CORE->startPPP(false);
+      BNC_CORE->startPPP(true);
 
       bncRawFile*   rawFile   = new bncRawFile(rawFileName, "", bncRawFile::input);
       bncGetThread* getThread = new bncGetThread(rawFile);
