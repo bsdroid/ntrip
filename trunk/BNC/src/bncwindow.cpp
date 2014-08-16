@@ -94,6 +94,7 @@ bncWindow::bncWindow() {
           _bncFigurePPP, SLOT(slotNewPosition(bncTime, QVector<double>)));
 
   connect(BNC_CORE, SIGNAL(progressRnxPPP(int)), this, SLOT(slotPostProgress(int)));
+  connect(BNC_CORE, SIGNAL(finishedRnxPPP()), this, SLOT(slotFinishedRnxPPP()));
 
   _runningRealTime           = false;
   _runningPostProcessingReqc = false;
@@ -2358,6 +2359,14 @@ void bncWindow::slotFinishedPostProcessingReqc() {
                              "RINEX Processing Thread Finished");
   }
   enableStartStop();
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotFinishedRnxPPP() {
+  if (_actStart) {
+    _actStart->setText(tr("Sta&rt"));
+  }
 }
 
 // Edit teqc-like editing options

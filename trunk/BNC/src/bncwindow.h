@@ -67,7 +67,6 @@ class bncWindow : public QMainWindow {
   public slots:  
     void slotMountPointsRead(QList<bncGetThread*>);
     void slotBncTextChanged();
-    void slotPostProgress(int);
 
   private slots:
     void slotWindowMessage(const QByteArray msg, bool showOnScreen);
@@ -81,7 +80,6 @@ class bncWindow : public QMainWindow {
     void slotMapPPP();
     void slotMapPPPClosed();
     void slotStart();
-    void slotFinishedPostProcessingReqc();
     void slotStop();
     void slotNewMountPoints(QStringList* mountPoints);
     void slotDeleteMountPoints();
@@ -94,6 +92,9 @@ class bncWindow : public QMainWindow {
     void slotDelUploadRow();
     void slotSetUploadTrafo();
     void slotReqcEditOption();
+    void slotFinishedPostProcessingReqc();
+    void slotPostProgress(int);
+    void slotFinishedRnxPPP();
 
   protected:
     virtual void closeEvent(QCloseEvent *);
