@@ -90,7 +90,7 @@ friend class bncSettings;
   void newEphGalileo(galileoephemeris galileoeph);
   void newCorrections(QStringList);
   void providerIDChanged(QString);
-  void newPosition(bncTime time, QVector<double> xx);
+  void newPosition(QByteArray staID, bncTime time, QVector<double> xx);
   void progressRnxPPP(int);
   void finishedRnxPPP();
   void mapSpeedSliderChanged(int);

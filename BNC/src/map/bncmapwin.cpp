@@ -163,7 +163,7 @@ void bncMapWin::gotoLocation(double lat, double lon) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncMapWin::slotNewPosition(bncTime /* time */, QVector<double> xx) {
+void bncMapWin::slotNewPosition(QByteArray /* staID */, bncTime /* time */, QVector<double> xx) {
   double ell[3];
   xyz2ell(xx.data(), ell);
   gotoLocation(ell[0]*180.0/M_PI, ell[1]*180.0/M_PI);
