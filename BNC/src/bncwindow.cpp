@@ -840,7 +840,7 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(new QLabel("NMEA File"),          ir, 4, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._nmeaFile,            ir, 5);
   pppLayout1->addWidget(new QLabel("Port"),               ir, 6, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._nmeaPort,            ir, 7);
+  pppLayout1->addWidget(_pppWidgets._nmeaPort,            ir, 7); _pppWidgets._nmeaPort->setMaximumWidth(8*ww);
 
   pppGroup1->setLayout(pppLayout1);
 
@@ -870,12 +870,27 @@ bncWindow::bncWindow() {
   ++ir;
   pppLayout3->addWidget(new QLabel("GLONASS LCs"),          ir, 0, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._lcGLONASS,             ir, 1);
+  pppLayout3->addWidget(new QLabel("Max Res C1"),           ir, 3, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._maxResC1,              ir, 4); _pppWidgets._maxResC1->setMaximumWidth(8*ww);
+  pppLayout3->addWidget(new QLabel("Max Res L1"),           ir, 5, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._maxResL1,              ir, 6); _pppWidgets._maxResL1->setMaximumWidth(8*ww);
   ++ir;
   pppLayout3->addWidget(new QLabel("Galileo LCs"),          ir, 0, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._lcGalileo,             ir, 1);
+  pppLayout3->addWidget(new QLabel("Ele Wgt Code"),         ir, 3, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._eleWgtCode,            ir, 4);
+  pppLayout3->addWidget(new QLabel("Ele Wgt Phase"),        ir, 5, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._eleWgtPhase,           ir, 6);
   ++ir;
   pppLayout3->addWidget(new QLabel("Wait for corrections"), ir, 0, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._corrWaitTime,          ir, 1);
+  pppLayout3->addWidget(new QLabel("Min # of Obs"),         ir, 3, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._minObs,                ir, 4);
+  pppLayout3->addWidget(new QLabel("Min Elevation"),        ir, 5, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._minEle,                ir, 6);
+  ++ir;
+  pppLayout3->addWidget(new QLabel("Seeding (seconcs)"),    ir, 0, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._seedingTime,           ir, 1);
   ++ir;
   pppLayout3->addWidget(new QLabel(""),                     ir, 0);
 
