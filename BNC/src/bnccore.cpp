@@ -880,4 +880,5 @@ void t_bncCore::startPPP() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::stopPPP() {
   _pppMain->stop();
+  emit stopRinexPPP();
 }

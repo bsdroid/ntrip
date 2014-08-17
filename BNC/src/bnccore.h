@@ -94,6 +94,7 @@ friend class bncSettings;
   void progressRnxPPP(int);
   void finishedRnxPPP();
   void mapSpeedSliderChanged(int);
+  void stopRinexPPP();
     
  private slots:
   void slotNewConnection();
