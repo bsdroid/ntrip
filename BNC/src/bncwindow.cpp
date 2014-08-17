@@ -842,6 +842,8 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(new QLabel("Port"),               ir, 6, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._nmeaPort,            ir, 7); _pppWidgets._nmeaPort->setMaximumWidth(8*ww);
 
+  pppLayout1->addItem(new QSpacerItem(4*ww, 0),           ir, 8);
+
   pppGroup1->setLayout(pppLayout1);
 
   QVBoxLayout* pppLayout2 = new QVBoxLayout();
