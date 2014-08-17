@@ -108,7 +108,7 @@ bncWindow::bncWindow() {
   
   static const QStringList labels = QString("account, Streams:   resource loader / mountpoint, decoder, lat, long, nmea, ntrip, bytes").split(",");
 
-  setMinimumSize(85*ww, 65*ww);
+  setMinimumSize(100*ww, 70*ww);
 
   setWindowTitle(tr("BKG Ntrip Client (BNC) Version " BNCVERSION));
 
