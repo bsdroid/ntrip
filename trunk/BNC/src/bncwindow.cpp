@@ -2380,7 +2380,7 @@ void bncWindow::slotReqcEditOption() {
 void bncWindow::enableStartStop() {
   if ( running() ) {
     _actStart->setEnabled(false);
-    if (_runningPPP) {
+    if (_runningRealTime || _runningPPP) {
       _actStop->setEnabled(true);
     }
   }
