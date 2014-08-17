@@ -903,19 +903,19 @@ bncWindow::bncWindow() {
   pppLayout4Hlp2->addSpacing(1*ww);
 
   pppLayout4Hlp2->addWidget(new QLabel("Google"));
-  pppLayout4Hlp2->addWidget(_pppWidgets._gmRadioButton);
+  pppLayout4Hlp2->addWidget(_pppWidgets._useGoogleMap);
 
   pppLayout4Hlp2->addWidget(new QLabel("OSM"));
-  pppLayout4Hlp2->addWidget(_pppWidgets._osmRadioButton);
+  pppLayout4Hlp2->addWidget(_pppWidgets._useOpenStreetMap);
 
   pppLayout4Hlp2->addSpacing(3*ww);
 
-  _pppWidgets._mapWinDotSizeLineEdit->setMaximumWidth(5*ww);
-  pppLayout4Hlp2->addWidget(_pppWidgets._mapWinDotSizeLineEdit);
+  _pppWidgets._mapWinDotSize->setMaximumWidth(5*ww);
+  pppLayout4Hlp2->addWidget(_pppWidgets._mapWinDotSize);
 
   pppLayout4Hlp2->addSpacing(3*ww);
 
-  pppLayout4Hlp2->addWidget(_pppWidgets._mapWinDotColorComboBox);
+  pppLayout4Hlp2->addWidget(_pppWidgets._mapWinDotColor);
 
   pppLayout4Hlp2->addSpacing(3*ww);
 
@@ -2427,10 +2427,10 @@ void bncWindow::slotMapPPP() {
 #ifdef QT_WEBKIT
   saveOptions();
   enableWidget(false, _pppWidgets._mapWinButton);
-  enableWidget(false, _pppWidgets._gmRadioButton);
-  enableWidget(false, _pppWidgets._osmRadioButton);
-  enableWidget(false, _pppWidgets._mapWinDotSizeLineEdit);
-  enableWidget(false, _pppWidgets._mapWinDotColorComboBox);
+  enableWidget(false, _pppWidgets._useGoogleMap);
+  enableWidget(false, _pppWidgets._useOpenStreetMap);
+  enableWidget(false, _pppWidgets._mapWinDotSize);
+  enableWidget(false, _pppWidgets._mapWinDotColor);
 
   if (!_mapWin) {
     _mapWin = new bncMapWin(this);
@@ -2450,10 +2450,10 @@ void bncWindow::slotMapPPP() {
 void bncWindow::slotMapPPPClosed() {
 #ifdef QT_WEBKIT
   enableWidget(true, _pppWidgets._mapWinButton);
-  enableWidget(true, _pppWidgets._gmRadioButton);
-  enableWidget(true, _pppWidgets._osmRadioButton);
-  enableWidget(true, _pppWidgets._mapWinDotSizeLineEdit);
-  enableWidget(true, _pppWidgets._mapWinDotColorComboBox);
+  enableWidget(true, _pppWidgets._useGoogleMap);
+  enableWidget(true, _pppWidgets._useOpenStreetMap);
+  enableWidget(true, _pppWidgets._mapWinDotSize);
+  enableWidget(true, _pppWidgets._mapWinDotColor);
   if (_mapWin) {
     QListIterator<bncGetThread*> it(_threads);
     while (it.hasNext()) {
