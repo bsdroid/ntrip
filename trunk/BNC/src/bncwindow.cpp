@@ -2362,6 +2362,7 @@ void bncWindow::slotPostProcessingFinished() {
   _runningPPP  = false;
   _runningEdit = false;
   _runningQC   = false;
+  _actStart->setText(tr("Sta&rt"));
   enableStartStop();
 }
 
