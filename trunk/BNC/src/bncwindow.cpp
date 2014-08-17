@@ -1814,7 +1814,7 @@ void bncWindow::slotSelectionChanged() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotWindowMessage(const QByteArray msg, bool showOnScreen) {
   if (showOnScreen ) {
-    _log->append(QDateTime::currentDateTime().toUTC().toString("yy-MM-dd hh:mm:ss ") + msg + '\n');
+    _log->append(QDateTime::currentDateTime().toUTC().toString("yy-MM-dd hh:mm:ss ") + msg);
   }
 }  
 
