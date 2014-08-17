@@ -823,7 +823,7 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(_pppWidgets._rinexNav,            ir, 4, 1, 2);
   ++ir;
   pppLayout1->addWidget(new QLabel("Corrections"),        ir, 0, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._corrMount,           ir, 1);
+  pppLayout1->addWidget(_pppWidgets._corrMount,           ir, 1); _pppWidgets._corrMount->setMaximumWidth(8*ww);
   pppLayout1->addWidget(new QLabel("Corrections"),        ir, 3, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._corrFile,            ir, 4, 1, 2);
   ++ir;
