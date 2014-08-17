@@ -93,12 +93,14 @@ bncWindow::bncWindow() {
   connect(BNC_CORE, SIGNAL(newPosition(QByteArray, bncTime, QVector<double>)),
           _bncFigurePPP, SLOT(slotNewPosition(QByteArray, bncTime, QVector<double>)));
 
-  connect(BNC_CORE, SIGNAL(progressRnxPPP(int)), this, SLOT(slotPostProgress(int)));
-  connect(BNC_CORE, SIGNAL(finishedRnxPPP()), this, SLOT(slotFinishedRnxPPP()));
+  connect(BNC_CORE, SIGNAL(progressRnxPPP(int)), this, SLOT(slotPostProcessingProgress(int)));
+  connect(BNC_CORE, SIGNAL(finishedRnxPPP()),    this, SLOT(slotPostProcessingFinished()));
 
-  _runningRealTime           = false;
-  _runningPostProcessingReqc = false;
-  _reqcActionComboBox        = 0; // necessary for enableStartStop()
+  _runningRealTime    = false;
+  _runningPPP         = false;
+  _runningEdit        = false;
+  _runningQC          = false;
+  _reqcActionComboBox = 0; // necessary for enableStartStop()
 
   _mapWin = 0;
 
@@ -1671,10 +1673,24 @@ void bncWindow::slotGetThreadsFinished() {
 void bncWindow::slotStart() {
   saveOptions();
   if      ( _pppWidgets._dataSource->currentText() == "RINEX Files") {
+    _runningPPP = true;
+    enableStartStop();
     BNC_CORE->startPPP();
   }
   else if ( !_reqcActionComboBox->currentText().isEmpty() ) {
-    startPostProcessingReqc();
+    if (_reqcActionComboBox->currentText() == "Analyze") {
+      _runningQC = true;
+      t_reqcAnalyze* reqcAnalyze = new t_reqcAnalyze(this);
+      connect(reqcAnalyze, SIGNAL(finished()), this, SLOT(slotPostProcessingFinished()));
+      reqcAnalyze->start();
+    }
+    else {
+      _runningEdit = true;
+      t_reqcEdit* reqcEdit = new t_reqcEdit(this);
+      connect(reqcEdit, SIGNAL(finished()), this, SLOT(slotPostProcessingFinished()));
+      reqcEdit->start();
+    }
+    enableStartStop();
   }
   else {
     startRealTime();
@@ -1748,7 +1764,7 @@ void bncWindow::startRealTime() {
 // Retrieve Data
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotStop() {
-  int iRet = QMessageBox::question(this, "Stop", "Stop retrieving data?", 
+  int iRet = QMessageBox::question(this, "Stop", "Stop retrieving/processing data?", 
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
@@ -1757,6 +1773,7 @@ void bncWindow::slotStop() {
     delete _caster;    _caster    = 0; BNC_CORE->setCaster(0);
     delete _casterEph; _casterEph = 0;
     _runningRealTime = false;
+    _runningPPP      = false;
     enableStartStop();
   }
 }
@@ -2335,48 +2352,17 @@ void bncWindow::slotSetUploadTrafo() {
 
 // Progress Bar Change
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotPostProgress(int nEpo) {
-  if (_actStart) {
-    _actStart->setText(QString("%1 Epochs").arg(nEpo));
-  }
-}
-
-// Start Post-Processing Reqc
-////////////////////////////////////////////////////////////////////////////
-void bncWindow::startPostProcessingReqc() {
-  _runningPostProcessingReqc = true;
-  enableStartStop();
-  if (_reqcActionComboBox->currentText() == "Analyze") {
-    t_reqcAnalyze* reqcAnalyze = new t_reqcAnalyze(this);
-    connect(reqcAnalyze, SIGNAL(finished()), 
-            this, SLOT(slotFinishedPostProcessingReqc()));
-    reqcAnalyze->start();
-  }
-  else {
-    t_reqcEdit* reqcEdit = new t_reqcEdit(this);
-    connect(reqcEdit, SIGNAL(finished()), 
-            this, SLOT(slotFinishedPostProcessingReqc()));
-    reqcEdit->start();
-  }
+void bncWindow::slotPostProcessingProgress(int nEpo) {
+  _actStart->setText(QString("%1 Epochs").arg(nEpo));
 }
 
 // Post-Processing Reqc Finished
 ////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotFinishedPostProcessingReqc() {
-  _runningPostProcessingReqc = false;
-  if (_reqcActionComboBox->currentText() != "Analyze") {
-    QMessageBox::information(this, "Information",
-                             "RINEX Processing Thread Finished");
-  }
+void bncWindow::slotPostProcessingFinished() {
+  _runningPPP  = false;
+  _runningEdit = false;
+  _runningQC   = false;
   enableStartStop();
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotFinishedRnxPPP() {
-  if (_actStart) {
-    _actStart->setText(tr("Sta&rt"));
-  }
 }
 
 // Edit teqc-like editing options
@@ -2391,30 +2377,15 @@ void bncWindow::slotReqcEditOption() {
 // Enable/Disable Start and Stop Buttons
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::enableStartStop() {
-
-  if ( _reqcActionComboBox && !_reqcActionComboBox->currentText().isEmpty() ) {
-    if (_runningPostProcessingReqc) {
-      _actStart->setEnabled(false);
-    }
-    else {
-      _actStart->setEnabled(true);
-    }
-    _actStop->setEnabled(false);
-  }
-  else {
-    if (_runningRealTime) {
-      _actStart->setEnabled(false);
+  if ( running() ) {
+    _actStart->setEnabled(false);
+    if (_runningPPP) {
       _actStop->setEnabled(true);
     }
-    else {
-      _actStop->setEnabled(false);
-      if (_mountPointsTable->rowCount() == 0) {
-        _actStart->setEnabled(false);
-      }
-      else {
-        _actStart->setEnabled(true);
-      }
-    }
+  }
+  else {
+    _actStart->setEnabled(true);
+    _actStop->setEnabled(false);
   }
 }
 
