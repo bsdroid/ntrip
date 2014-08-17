@@ -92,9 +92,8 @@ class bncWindow : public QMainWindow {
     void slotDelUploadRow();
     void slotSetUploadTrafo();
     void slotReqcEditOption();
-    void slotFinishedPostProcessingReqc();
-    void slotPostProgress(int);
-    void slotFinishedRnxPPP();
+    void slotPostProcessingFinished();
+    void slotPostProcessingProgress(int);
 
   protected:
     virtual void closeEvent(QCloseEvent *);
@@ -106,7 +105,6 @@ class bncWindow : public QMainWindow {
     void populateUploadTable();
     void enableWidget(bool enable, QWidget* widget);
     void startRealTime();
-    void startPostProcessingReqc();
     void enableStartStop();
 
     QMenu*     _menuHlp;
@@ -222,7 +220,11 @@ class bncWindow : public QMainWindow {
     bncEphUploadCaster* _casterEph;
 
     bool _runningRealTime;
-    bool _runningPostProcessingReqc;
+    bool _runningPPP;
+    bool _runningEdit;
+    bool _runningQC;
+
+    bool running() {return _runningRealTime || _runningPPP || _runningEdit || _runningQC;}
 
     bncMapWin*           _mapWin;
 
