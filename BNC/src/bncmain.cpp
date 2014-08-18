@@ -172,6 +172,8 @@ int main(int argc, char* argv[]) {
   // Post-Processing PPP 
   // -------------------
   else if (settings.value("PPP/dataSource").toString() == "RINEX Files") {
+    bncCaster* caster = new bncCaster();
+    BNC_CORE->setCaster(caster);
     BNC_CORE->setMode(t_bncCore::batchPostProcessing);
     BNC_CORE->startPPP();
   }

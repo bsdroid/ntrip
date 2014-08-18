@@ -97,6 +97,7 @@ bncCaster::bncCaster() {
   }
 
   int nmeaPort = settings.value("PPP/nmeaPort").toInt();
+  cout << "nmeaPort = " << nmeaPort << endl;
   if (nmeaPort != 0) {
     _nmeaServer = new QTcpServer;
     if ( !_nmeaServer->listen(QHostAddress::Any, nmeaPort) ) {
