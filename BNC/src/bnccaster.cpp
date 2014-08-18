@@ -96,7 +96,7 @@ bncCaster::bncCaster() {
     _uSockets = 0;
   }
 
-  int nmeaPort = settings.value("nmeaPort").toInt();
+  int nmeaPort = settings.value("PPP/nmeaPort").toInt();
   if (nmeaPort != 0) {
     _nmeaServer = new QTcpServer;
     if ( !_nmeaServer->listen(QHostAddress::Any, nmeaPort) ) {
