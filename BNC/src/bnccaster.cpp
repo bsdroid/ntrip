@@ -103,6 +103,8 @@ bncCaster::bncCaster() {
       emit newMessage("bncCaster: Cannot listen on port", true);
     }
     connect(_nmeaServer, SIGNAL(newConnection()), this, SLOT(slotNewNMEAConnection()));
+    connect(BNC_CORE, SIGNAL(newNMEAstr(QByteArray, QByteArray)), 
+            this,     SLOT(slotNewNMEAstr(QByteArray, QByteArray)));
     _nmeaSockets = new QList<QTcpSocket*>;
   }
   else {
@@ -290,9 +292,6 @@ void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
 
   connect(getThread, SIGNAL(getThreadFinished(QByteArray)), 
           this, SLOT(slotGetThreadFinished(QByteArray)));
-
-  connect(BNC_CORE, SIGNAL(newNMEAstr(QByteArray, QByteArray)), 
-          this,     SLOT(slotNewNMEAstr(QByteArray, QByteArray)));
 
   _staIDs.push_back(getThread->staID());
   _threads.push_back(getThread);
