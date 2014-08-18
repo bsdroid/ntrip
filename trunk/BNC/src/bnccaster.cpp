@@ -97,7 +97,6 @@ bncCaster::bncCaster() {
   }
 
   int nmeaPort = settings.value("PPP/nmeaPort").toInt();
-  cout << "nmeaPort = " << nmeaPort << endl;
   if (nmeaPort != 0) {
     _nmeaServer = new QTcpServer;
     if ( !_nmeaServer->listen(QHostAddress::Any, nmeaPort) ) {
@@ -292,7 +291,8 @@ void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
   connect(getThread, SIGNAL(getThreadFinished(QByteArray)), 
           this, SLOT(slotGetThreadFinished(QByteArray)));
 
-  connect(BNC_CORE, SIGNAL(newNMEAstr(QByteArray)), this, SLOT(slotNewNMEAstr(QByteArray)));
+  connect(BNC_CORE, SIGNAL(newNMEAstr(QByteArray, QByteArray)), 
+          this,     SLOT(slotNewNMEAstr(QByteArray, QByteArray)));
 
   _staIDs.push_back(getThread->staID());
   _threads.push_back(getThread);
@@ -533,7 +533,7 @@ int bncCaster::myWrite(QTcpSocket* sock, const char* buf, int bufLen) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::slotNewNMEAstr(QByteArray str) {
+void bncCaster::slotNewNMEAstr(QByteArray staID, QByteArray str) {
   if (_nmeaSockets) {
     QMutableListIterator<QTcpSocket*> is(*_nmeaSockets);
     while (is.hasNext()) {
