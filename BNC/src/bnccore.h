@@ -91,6 +91,7 @@ friend class bncSettings;
   void newCorrections(QStringList);
   void providerIDChanged(QString);
   void newPosition(QByteArray staID, bncTime time, QVector<double> xx);
+  void newNMEAstr(QByteArray staID, QByteArray str);
   void progressRnxPPP(int);
   void finishedRnxPPP();
   void mapSpeedSliderChanged(int);

@@ -291,8 +291,7 @@ void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
   connect(getThread, SIGNAL(getThreadFinished(QByteArray)), 
           this, SLOT(slotGetThreadFinished(QByteArray)));
 
-  connect(getThread, SIGNAL(newNMEAstr(QByteArray)), 
-          this, SLOT(slotNewNMEAstr(QByteArray)));
+  connect(BNC_CORE, SIGNAL(newNMEAstr(QByteArray)), this, SLOT(slotNewNMEAstr(QByteArray)));
 
   _staIDs.push_back(getThread->staID());
   _threads.push_back(getThread);
