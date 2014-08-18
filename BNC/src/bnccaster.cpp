@@ -533,7 +533,7 @@ int bncCaster::myWrite(QTcpSocket* sock, const char* buf, int bufLen) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::slotNewNMEAstr(QByteArray staID, QByteArray str) {
+void bncCaster::slotNewNMEAstr(QByteArray /* staID */, QByteArray str) {
   if (_nmeaSockets) {
     QMutableListIterator<QTcpSocket*> is(*_nmeaSockets);
     while (is.hasNext()) {
