@@ -46,7 +46,7 @@ class bncCaster : public QObject {
  public slots:
    void slotNewObs(QByteArray staID, QList<t_obs> obsList);
    void slotNewRawData(QByteArray staID, QByteArray data);
-   void slotNewNMEAstr(QByteArray str);
+   void slotNewNMEAstr(QByteArray staID, QByteArray str);
    void slotNewMiscConnection();
 
  signals:
