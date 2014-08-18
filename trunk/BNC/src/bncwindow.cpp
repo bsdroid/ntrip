@@ -1675,6 +1675,7 @@ void bncWindow::slotStart() {
   if      ( _pppWidgets._dataSource->currentText() == "RINEX Files") {
     _runningPPP = true;
     enableStartStop();
+    _caster = new bncCaster(); BNC_CORE->setCaster(_caster);
     BNC_CORE->startPPP();
   }
   else if ( !_reqcActionComboBox->currentText().isEmpty() ) {
@@ -2359,6 +2360,7 @@ void bncWindow::slotPostProcessingProgress(int nEpo) {
 // Post-Processing Reqc Finished
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotPostProcessingFinished() {
+  delete _caster; _caster = 0; BNC_CORE->setCaster(0);
   _runningPPP  = false;
   _runningEdit = false;
   _runningQC   = false;
