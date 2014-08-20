@@ -30,7 +30,6 @@
 #include <newmat.h>
 #include "bncconst.h"
 #include "bnctime.h"
-#include "PPP/pppInclude.h"
 
 class bncAntex {
  public:
@@ -40,8 +39,7 @@ class bncAntex {
   t_irc readFile(const QString& fileName);  
   void print() const;
   double pco(const QString& antName, double eleSat, bool& found) const;
-  double rcvCorr(BNC_PPP::t_frequency::type frqType, const std::string& antName,
-                 double eleSat, bool& found) const;
+  double rcvCorr(const std::string& antName, double eleSat, bool& found) const;
   t_irc  satCoMcorrection(const QString& prn, double Mjd, 
                           const ColumnVector& xSat, ColumnVector& dx);
 
