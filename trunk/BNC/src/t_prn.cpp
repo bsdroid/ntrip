@@ -15,6 +15,9 @@ int t_prn::toInt() const {
   else if (_system == 'R') {
     return MAXPRN_GPS + _number;
   }
+  else if (_system == 'E') {
+    return MAXPRN_GPS + MAXPRN_GLONASS + _number;
+  }
   return 0;
 }
 
@@ -32,7 +35,7 @@ void t_prn::set(const std::string& str) {
   unsigned    prn    = 0;
   char        system = '\x0';
   const char* number = 0;
-  if      ( str[0] == 'G' || str[0] == 'R') {
+  if      ( str[0] == 'G' || str[0] == 'R' || str[0] == 'E') {
     system = str[0];
     number = str.c_str() + 1;
   }
