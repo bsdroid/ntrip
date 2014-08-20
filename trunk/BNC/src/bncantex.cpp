@@ -282,7 +282,6 @@ double bncAntex::pco(const QString& antName, double eleSat, bool& found) const {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-double bncAntex::rcvCorr(BNC_PPP::t_frequency::type /* frqType */, const std::string& antName,
-               double eleSat, bool& found) const {
+double bncAntex::rcvCorr(const std::string& antName, double eleSat, bool& found) const {
   return pco(QString(antName.c_str()), eleSat, found);
 }
