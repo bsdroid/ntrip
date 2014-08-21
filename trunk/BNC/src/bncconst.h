@@ -22,43 +22,44 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+#include <string>
+
 #ifndef BNCCONST_H
 #define BNCCONST_H
 
 enum t_irc {failure = -1, success, fatal}; // return code
 
+class t_frequency {
+ public:
+  enum type {dummy = 0, G1, G2, G5, R1, R2, 
+                        E1, // E1  / 1575.42          
+                        E5, // E5a / 1176.45          
+                        E7, // E5b / 1207.140         
+                        E8, // E5(E5a+E5b) / 1191.795 
+                        E6, // E6  / 1278.75          
+             max};
+
+  static std::string toString(type tt) {
+    if      (tt == G1) return "G1";
+    else if (tt == G2) return "G2";
+    else if (tt == G5) return "G5";
+    else if (tt == R1) return "R1";
+    else if (tt == R2) return "R2";
+    else if (tt == E1) return "E1";
+    else if (tt == E5) return "E5";
+    else if (tt == E6) return "E6";
+    else if (tt == E7) return "E7";
+    else if (tt == E8) return "E8";
+    return std::string();
+  }
+};
+
 class t_CST {
  public:
-  static double f1(char satSys, int slotNum) {
-    if      (satSys == 'G' || satSys == 'E') {
-      return freq1;
-    }
-    else if (satSys == 'R') {
-      return 1602000000.0 + 562500.0 * slotNum; 
-    }
-    else {
-      return 0.0;
-    }
-  }
-  static double f2(char satSys, int slotNum) {
-    if      (satSys == 'G') {
-      return freq2;
-    }
-    else if (satSys == 'R') {
-      return 1246000000.0 + 437500.0 * slotNum;
-    }
-    else {
-      return 0.0;
-    }
-  }
+  static double freq(t_frequency::type fType, int slotNum);
+  static double lambda(t_frequency::type fType, int slotNum);
 
   static const double c;
-  static const double freq1; // GPS and Galileo E1 
-  static const double freq2; // GPS only           
-  static const double freq5; // GPS and Galileo E5a
-  static const double lambda1;
-  static const double lambda2;
-  static const double lambda5;
   static const double omega;
   static const double aell;
   static const double fInv;

@@ -24,13 +24,33 @@
 
 #include "bncconst.h"
 
-const double t_CST::c       = 299792458.0;
-const double t_CST::freq1   = 1575420000.0; // GPS and Galileo E1
-const double t_CST::freq2   = 1227600000.0; // GPS only
-const double t_CST::freq5   = 1176450000.0; // GPS and Galileo E5a
-const double t_CST::lambda1 = c / freq1;
-const double t_CST::lambda2 = c / freq2;
-const double t_CST::lambda5 = c / freq5;
-const double t_CST::omega   = 7292115.1467e-11;
-const double t_CST::aell    = 6378137.000;
-const double t_CST::fInv    = 298.2572236;
+const double t_CST::c     = 299792458.0;
+const double t_CST::omega = 7292115.1467e-11;
+const double t_CST::aell  = 6378137.000;
+const double t_CST::fInv  = 298.2572236;
+
+//
+//////////////////////////////////////////////////////////////////////////////
+double t_CST::freq(t_frequency::type fType, int slotNum) {
+  switch (fType) {
+  case t_frequency::G1:    return 1575420000.0;
+  case t_frequency::G2:    return 1227600000.0;
+  case t_frequency::G5:    return 1176450000.0;
+  case t_frequency::E1:    return 1575420000.0;
+  case t_frequency::E5:    return 1176450000.0;
+  case t_frequency::E7:    return 1207140000.0;
+  case t_frequency::E8:    return 1191795000.0;
+  case t_frequency::E6:    return 1278750000.0;
+  case t_frequency::R1:    return 1602000000.0 + 562500.0 * slotNum;
+  case t_frequency::R2:    return 1246000000.0 + 437500.0 * slotNum;
+  case t_frequency::dummy:
+  case t_frequency::max:   return 0.0;
+  }
+  return 0.0;
+}
+
+//
+//////////////////////////////////////////////////////////////////////////////
+double t_CST::lambda(t_frequency::type fType, int slotNum) {
+  return c / freq(fType, slotNum);
+}
