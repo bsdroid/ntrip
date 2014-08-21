@@ -258,8 +258,8 @@ t_irc bncAntex::satCoMcorrection(const QString& prn, double Mjd,
 ////////////////////////////////////////////////////////////////////////////
 double bncAntex::pco(const QString& antName, double eleSat, bool& found) const {
 
-  static const double f1 = t_CST::freq1;
-  static const double f2 = t_CST::freq2;
+  static const double f1 = t_CST::freq(t_frequency::G1, 0);
+  static const double f2 = t_CST::freq(t_frequency::G2, 0);
   static const double c1 =   f1 * f1 / (f1 * f1 - f2 * f2);
   static const double c2 = - f2 * f2 / (f1 * f1 - f2 * f2);
 

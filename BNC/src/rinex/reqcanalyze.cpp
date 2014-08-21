@@ -363,8 +363,20 @@ t_irc t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) {
   // Compute the Multipath
   // ----------------------
   if (L1 != 0.0 && L2 != 0.0) {
-    double f1 = t_CST::f1(obs.satSys, obs.slotNum);
-    double f2 = obs.satSys == 'E' ? t_CST::freq5 : t_CST::f2(obs.satSys, obs.slotNum);
+    double f1 = 0.0;
+    double f2 = 0.0;
+    if      (obs.satSys == 'G') {
+      f1 = t_CST::freq(t_frequency::G1, 0);
+      f2 = t_CST::freq(t_frequency::G2, 0);
+    }
+    else if (obs.satSys == 'R') {
+      f1 = t_CST::freq(t_frequency::R1, obs.slotNum);
+      f2 = t_CST::freq(t_frequency::R2, obs.slotNum);
+    }
+    else if (obs.satSys == 'E') {
+      f1 = t_CST::freq(t_frequency::E1, 0);
+      f2 = t_CST::freq(t_frequency::E5, 0);
+    }
 
     L1 = L1 * t_CST::c / f1;
     L2 = L2 * t_CST::c / f2;
