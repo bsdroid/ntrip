@@ -126,6 +126,7 @@ exists(PPP) {
 }
 else {
   INCLUDEPATH += PPP_free
+  DEFINES += USE_PPP_FREE
   HEADERS += PPP_free/pppClient.h
   SOURCES += PPP_free/pppClient.cpp
 }
