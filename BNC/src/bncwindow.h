@@ -30,7 +30,7 @@
 
 #include "bncgetthread.h"
 #include "bnccaster.h"
-#include "PPP/pppWidgets.h"
+#include "pppWidgets.h"
 
 class bncAboutDlg : public QDialog {
   Q_OBJECT
