@@ -52,7 +52,8 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           ephemeris.h t_prn.h                                         \
           upload/bncrtnetuploadcaster.h upload/bnccustomtrafo.h       \
           upload/bncephuploadcaster.h qtfilechooser.h                 \
-          GPSDecoder.h      RTCM/RTCM2.h RTCM/RTCM2Decoder.h          \
+          GPSDecoder.h pppWidgets.h                                   \
+          RTCM/RTCM2.h RTCM/RTCM2Decoder.h                            \
           RTCM/RTCM2_2021.h RTCM/rtcm_utils.h                         \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex/rtcm3torinex.h      \
           RTCM3/RTCM3coDecoder.h RTCM3/ephEncoder.h                   \
@@ -85,7 +86,8 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           upload/bncrtnetdecoder.cpp upload/bncuploadcaster.cpp       \
           upload/bncrtnetuploadcaster.cpp upload/bnccustomtrafo.cpp   \
           upload/bncephuploadcaster.cpp qtfilechooser.cpp             \
-          GPSDecoder.cpp      RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp    \
+          GPSDecoder.cpp pppWidgets.cpp                               \
+          RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp                        \
           RTCM/RTCM2_2021.cpp RTCM/rtcm_utils.cpp                     \
           RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex/rtcm3torinex.c    \
           RTCM3/RTCM3coDecoder.cpp RTCM3/ephEncoder.cpp               \
@@ -114,7 +116,7 @@ exists(combination/bnccomb.h) {
 exists(PPP) {
   DEFINES += USE_PPP
   HEADERS += PPP/pppInclude.h   PPP/pppOptions.h   PPP/pppMain.h     \
-             PPP/pppWidgets.h   PPP/pppThread.h    PPP/pppClient.h   \
+             PPP/pppThread.h    PPP/pppClient.h   \
              PPP/pppObsPool.h   PPP/pppStation.h   PPP/pppFilter.h   \
              PPP/pppEphPool.h   PPP/pppModel.h     PPP/pppParlist.h  \
              PPP/pppSatObs.h    PPP/pppRun.h       PPP/pppCrdFile.h
