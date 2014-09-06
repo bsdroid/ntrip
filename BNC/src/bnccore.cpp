@@ -50,10 +50,7 @@
 #include "ephemeris.h" 
 #include "rinex/rnxobsfile.h" 
 #include "rinex/rnxnavfile.h" 
-
-#ifdef USE_PPP
-#  include "PPP/pppMain.h"
-#endif
+#include "PPP/pppMain.h"
 
 #ifdef USE_COMBINATION
 #  include "combination/bnccomb.h" 
@@ -130,9 +127,7 @@ t_bncCore::t_bncCore() {
 
   _mainWindow = 0;
 
-#ifdef USE_PPP
   _pppMain = new BNC_PPP::t_pppMain();
-#endif
   qRegisterMetaType< QVector<double> >("QVector<double>");
   qRegisterMetaType<bncTime>("bncTime");
 }
@@ -878,16 +873,12 @@ void t_bncCore::setDateAndTimeGPS(QDateTime dateTime) {
 //
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::startPPP() {
-#ifdef USE_PPP
   _pppMain->start();
-#endif
 }
 
 //
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::stopPPP() {
-#ifdef USE_PPP
   _pppMain->stop();
   emit stopRinexPPP();
-#endif
 }
