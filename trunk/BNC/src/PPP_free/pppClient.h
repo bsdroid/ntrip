@@ -28,17 +28,6 @@ class t_pppClient {
   static t_pppClient* instance();
 
  private:
-  void initOutput(t_output* output);
-  void finish(t_irc irc);
-  void clearObs();
-  t_irc prepareObs(const std::vector<t_satObs*>& satObs,
-                   std::vector<t_pppSatObs*>& obsVector, bncTime& epoTime);
-  t_irc cmpModel(t_pppStation* station, const ColumnVector& xyzc,
-                 std::vector<t_pppSatObs*>& obsVector);
-  t_irc cmpBancroft(const bncTime& epoTime, std::vector<t_pppSatObs*>& obsVector, 
-                    ColumnVector& xyzc, bool print);
-  double cmpOffGG(std::vector<t_pppSatObs*>& obsVector);
-
   std::ostringstream*       _log; 
   t_pppOptions*             _opt; 
 };

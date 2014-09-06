@@ -48,13 +48,9 @@
 #include <stdexcept>
 
 #include "pppClient.h"
-#include "pppEphPool.h"
-#include "pppObsPool.h"
 #include "bncconst.h"
 #include "bncutils.h"
-#include "pppStation.h"
 #include "bncantex.h"
-#include "pppFilter.h"
 
 using namespace BNC_PPP;
 using namespace std;
