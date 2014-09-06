@@ -40,7 +40,7 @@
 
 #include <iostream>
 
-#include "PPP/pppWidgets.h"
+#include "pppWidgets.h"
 #include "qtfilechooser.h"
 #include "bncsettings.h"
 #include "bnccore.h"
