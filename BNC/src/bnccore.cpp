@@ -50,7 +50,7 @@
 #include "ephemeris.h" 
 #include "rinex/rnxobsfile.h" 
 #include "rinex/rnxnavfile.h" 
-#include "PPP/pppMain.h"
+#include "pppMain.h"
 
 #ifdef USE_COMBINATION
 #  include "combination/bnccomb.h" 

@@ -116,6 +116,7 @@ exists(combination/bnccomb.h) {
 }
 
 exists(PPPxx) {
+  INCLUDEPATH += PPP
   HEADERS += PPP/pppClient.h    PPP/pppObsPool.h   PPP/pppEphPool.h   \
              PPP/pppStation.h   PPP/pppFilter.h    PPP/pppParlist.h   \
              PPP/pppSatObs.h           
@@ -124,6 +125,7 @@ exists(PPPxx) {
              PPP/pppSatObs.cpp      
 }
 else {
+  INCLUDEPATH += PPP_free
   HEADERS += PPP_free/pppClient.h
   SOURCES += PPP_free/pppClient.cpp
 }
