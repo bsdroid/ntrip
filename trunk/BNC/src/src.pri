@@ -52,7 +52,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           ephemeris.h t_prn.h                                         \
           upload/bncrtnetuploadcaster.h upload/bnccustomtrafo.h       \
           upload/bncephuploadcaster.h qtfilechooser.h                 \
-          GPSDecoder.h pppWidgets.h pppWidgets.h                      \
+          GPSDecoder.h pppWidgets.h pppModel.h                        \
           RTCM/RTCM2.h RTCM/RTCM2Decoder.h                            \
           RTCM/RTCM2_2021.h RTCM/rtcm_utils.h                         \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex/rtcm3torinex.h      \
@@ -121,7 +121,7 @@ exists(PPP) {
              PPP/pppEphPool.h   PPP/pppParlist.h  \
              PPP/pppSatObs.h    PPP/pppRun.h       PPP/pppCrdFile.h
   SOURCES +=                    PPP/pppOptions.cpp PPP/pppMain.cpp    \
-             PPP/pppWidgets.cpp PPP/pppThread.cpp  PPP/pppClient.cpp  \
+             PPP/pppThread.cpp  PPP/pppClient.cpp  \
              PPP/pppObsPool.cpp PPP/pppStation.cpp PPP/pppFilter.cpp  \
              PPP/pppEphPool.cpp PPP/pppParlist.cpp \
              PPP/pppSatObs.cpp  PPP/pppRun.cpp     PPP/pppCrdFile.cpp
