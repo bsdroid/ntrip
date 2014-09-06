@@ -53,6 +53,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           upload/bncrtnetuploadcaster.h upload/bnccustomtrafo.h       \
           upload/bncephuploadcaster.h qtfilechooser.h                 \
           GPSDecoder.h pppInclude.h pppWidgets.h pppModel.h           \
+          pppMain.h pppRun.h pppOptions.h pppCrdFile.h pppThread.h    \
           RTCM/RTCM2.h RTCM/RTCM2Decoder.h                            \
           RTCM/RTCM2_2021.h RTCM/rtcm_utils.h                         \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex/rtcm3torinex.h      \
@@ -87,6 +88,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           upload/bncrtnetuploadcaster.cpp upload/bnccustomtrafo.cpp   \
           upload/bncephuploadcaster.cpp qtfilechooser.cpp             \
           GPSDecoder.cpp pppWidgets.cpp pppModel.cpp                  \
+          pppMain.cpp pppRun.cpp pppOptions.cpp pppCrdFile.cpp pppThread.cpp \
           RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp                        \
           RTCM/RTCM2_2021.cpp RTCM/rtcm_utils.cpp                     \
           RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex/rtcm3torinex.c    \
@@ -113,18 +115,14 @@ exists(combination/bnccomb.h) {
   SOURCES += combination/bnccomb.cpp
 }
 
-exists(PPP) {
+exists(PPPxx) {
   DEFINES += USE_PPP
-  HEADERS += PPP/pppOptions.h   PPP/pppMain.h     \
-             PPP/pppThread.h    PPP/pppClient.h   \
-             PPP/pppObsPool.h   PPP/pppStation.h   PPP/pppFilter.h   \
-             PPP/pppEphPool.h   PPP/pppParlist.h  \
-             PPP/pppSatObs.h    PPP/pppRun.h       PPP/pppCrdFile.h
-  SOURCES +=                    PPP/pppOptions.cpp PPP/pppMain.cpp    \
-             PPP/pppThread.cpp  PPP/pppClient.cpp  \
-             PPP/pppObsPool.cpp PPP/pppStation.cpp PPP/pppFilter.cpp  \
-             PPP/pppEphPool.cpp PPP/pppParlist.cpp \
-             PPP/pppSatObs.cpp  PPP/pppRun.cpp     PPP/pppCrdFile.cpp
+  HEADERS += PPP/pppClient.h    PPP/pppObsPool.h   PPP/pppEphPool.h   \
+             PPP/pppStation.h   PPP/pppFilter.h    PPP/pppParlist.h   \
+             PPP/pppSatObs.h           
+  SOURCES += PPP/pppClient.cpp  PPP/pppObsPool.cpp PPP/pppEphPool.cpp \
+             PPP/pppStation.cpp PPP/pppFilter.cpp  PPP/pppParlist.cpp \
+             PPP/pppSatObs.cpp      
 }
 
 # Check QtWebKit Library Existence
