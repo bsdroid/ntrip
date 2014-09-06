@@ -42,7 +42,7 @@
 #include <newmatio.h>
 
 #include "bncantex.h"
-#include "PPP/pppModel.h"
+#include "pppModel.h"
 
 using namespace std;
 
