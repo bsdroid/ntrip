@@ -52,7 +52,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           ephemeris.h t_prn.h                                         \
           upload/bncrtnetuploadcaster.h upload/bnccustomtrafo.h       \
           upload/bncephuploadcaster.h qtfilechooser.h                 \
-          GPSDecoder.h pppWidgets.h                                   \
+          GPSDecoder.h pppWidgets.h pppWidgets.h                      \
           RTCM/RTCM2.h RTCM/RTCM2Decoder.h                            \
           RTCM/RTCM2_2021.h RTCM/rtcm_utils.h                         \
           RTCM3/RTCM3Decoder.h RTCM3/rtcm3torinex/rtcm3torinex.h      \
@@ -86,7 +86,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           upload/bncrtnetdecoder.cpp upload/bncuploadcaster.cpp       \
           upload/bncrtnetuploadcaster.cpp upload/bnccustomtrafo.cpp   \
           upload/bncephuploadcaster.cpp qtfilechooser.cpp             \
-          GPSDecoder.cpp pppWidgets.cpp                               \
+          GPSDecoder.cpp pppWidgets.cpp pppModel.cpp                  \
           RTCM/RTCM2.cpp RTCM/RTCM2Decoder.cpp                        \
           RTCM/RTCM2_2021.cpp RTCM/rtcm_utils.cpp                     \
           RTCM3/RTCM3Decoder.cpp RTCM3/rtcm3torinex/rtcm3torinex.c    \
@@ -118,12 +118,12 @@ exists(PPP) {
   HEADERS += PPP/pppInclude.h   PPP/pppOptions.h   PPP/pppMain.h     \
              PPP/pppThread.h    PPP/pppClient.h   \
              PPP/pppObsPool.h   PPP/pppStation.h   PPP/pppFilter.h   \
-             PPP/pppEphPool.h   PPP/pppModel.h     PPP/pppParlist.h  \
+             PPP/pppEphPool.h   PPP/pppParlist.h  \
              PPP/pppSatObs.h    PPP/pppRun.h       PPP/pppCrdFile.h
   SOURCES +=                    PPP/pppOptions.cpp PPP/pppMain.cpp    \
              PPP/pppWidgets.cpp PPP/pppThread.cpp  PPP/pppClient.cpp  \
              PPP/pppObsPool.cpp PPP/pppStation.cpp PPP/pppFilter.cpp  \
-             PPP/pppEphPool.cpp PPP/pppModel.cpp   PPP/pppParlist.cpp \
+             PPP/pppEphPool.cpp PPP/pppParlist.cpp \
              PPP/pppSatObs.cpp  PPP/pppRun.cpp     PPP/pppCrdFile.cpp
 }
 
