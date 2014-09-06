@@ -62,12 +62,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           rinex/reqcedit.h         rinex/reqcanalyze.h                \
           rinex/graphwin.h         rinex/polarplot.h                  \
           rinex/availplot.h        rinex/eleplot.h                    \
-          rinex/dopplot.h                                             \
-          PPP/pppInclude.h   PPP/pppOptions.h   PPP/pppMain.h         \
-          PPP/pppWidgets.h   PPP/pppThread.h    PPP/pppClient.h       \
-          PPP/pppObsPool.h   PPP/pppStation.h   PPP/pppFilter.h       \
-          PPP/pppEphPool.h   PPP/pppModel.h     PPP/pppParlist.h      \
-          PPP/pppSatObs.h    PPP/pppRun.h       PPP/pppCrdFile.h
+          rinex/dopplot.h
 
 HEADERS       += serial/qextserialbase.h serial/qextserialport.h
 unix:HEADERS  += serial/posix_qextserialport.h
@@ -100,12 +95,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           rinex/reqcedit.cpp       rinex/reqcanalyze.cpp              \
           rinex/graphwin.cpp       rinex/polarplot.cpp                \
           rinex/availplot.cpp      rinex/eleplot.cpp                  \
-          rinex/dopplot.cpp                                           \
-                             PPP/pppOptions.cpp PPP/pppMain.cpp       \
-          PPP/pppWidgets.cpp PPP/pppThread.cpp  PPP/pppClient.cpp     \
-          PPP/pppObsPool.cpp PPP/pppStation.cpp PPP/pppFilter.cpp     \
-          PPP/pppEphPool.cpp PPP/pppModel.cpp   PPP/pppParlist.cpp    \
-          PPP/pppSatObs.cpp  PPP/pppRun.cpp     PPP/pppCrdFile.cpp
+          rinex/dopplot.cpp
 
 SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp
 unix:SOURCES  += serial/posix_qextserialport.cpp
@@ -119,6 +109,20 @@ exists(combination/bnccomb.h) {
   DEFINES += USE_COMBINATION
   HEADERS += combination/bnccomb.h
   SOURCES += combination/bnccomb.cpp
+}
+
+exists(PPP) {
+  DEFINES += USE_PPP
+  HEADERS += PPP/pppInclude.h   PPP/pppOptions.h   PPP/pppMain.h     \
+             PPP/pppWidgets.h   PPP/pppThread.h    PPP/pppClient.h   \
+             PPP/pppObsPool.h   PPP/pppStation.h   PPP/pppFilter.h   \
+             PPP/pppEphPool.h   PPP/pppModel.h     PPP/pppParlist.h  \
+             PPP/pppSatObs.h    PPP/pppRun.h       PPP/pppCrdFile.h
+  SOURCES +=                    PPP/pppOptions.cpp PPP/pppMain.cpp    \
+             PPP/pppWidgets.cpp PPP/pppThread.cpp  PPP/pppClient.cpp  \
+             PPP/pppObsPool.cpp PPP/pppStation.cpp PPP/pppFilter.cpp  \
+             PPP/pppEphPool.cpp PPP/pppModel.cpp   PPP/pppParlist.cpp \
+             PPP/pppSatObs.cpp  PPP/pppRun.cpp     PPP/pppCrdFile.cpp
 }
 
 # Check QtWebKit Library Existence
