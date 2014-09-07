@@ -284,36 +284,16 @@ void bncPPPclient::putNewCorrections(QList<QString> corrList) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn, 
                               ColumnVector& xc, ColumnVector& vv) {
-
-  const double MAXAGE = 120.0;
-
   if (_eph.contains(prn)) {
-
-    if (_opt->useOrbClkCorr() && prn[0] != 'E') {
-      if (_corr.contains(prn)) {
-        t_corr* cc = _corr.value(prn);
-        if (cc->ready() && tt - cc->tClk < MAXAGE) {
-          t_eph*  eLast = _eph.value(prn)->last;
-          t_eph*  ePrev = _eph.value(prn)->prev;
-	  if      (eLast && eLast->IOD() == cc->iod) {
-            eLast->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
-            return applyCorr(tt, cc, xc, vv);
-          }
-	  else if (ePrev && ePrev->IOD() == cc->iod) {
-            ePrev->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
-            return applyCorr(tt, cc, xc, vv);
-          }
-	}
-      }
+    t_eph* eLast = _eph.value(prn)->last;
+    t_eph* ePrev = _eph.value(prn)->prev;
+    if      (eLast && eLast->getCrd(tt, xc, vv, _opt->useOrbClkCorr()) == success) {
+      return success;
     }
-
-    else {
-      t_eph* ee = _eph.value(prn)->last;
-      ee->position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
+    else if (ePrev && ePrev->getCrd(tt, xc, vv, _opt->useOrbClkCorr()) == success) {
       return success;
     }
   }
-
   return failure;
 }
 
