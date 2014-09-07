@@ -154,7 +154,7 @@ void bncPPPclient::processEpoch(const vector<t_satObs*>& satObs, t_output* outpu
     output->_error = true;
   }
 
-  output->_log         = LOG.str();  
+  output->_log = LOG.str();  
 }
 
 //
@@ -183,6 +183,7 @@ void bncPPPclient::putNewObs(t_satData* satData) {
       satData->L3      = a1 * satData->L1 + a2 * satData->L2;
       satData->lambda3 = a1 * t_CST::c / f1 + a2 * t_CST::c / f2;
       _epoData->satData[satData->prn] = satData;
+      _epoData->tt = satData->tt;
     }
     else {
       delete satData;
@@ -202,6 +203,7 @@ void bncPPPclient::putNewObs(t_satData* satData) {
       satData->L3      = a1 * satData->L1 + a5 * satData->L5;
       satData->lambda3 = a1 * t_CST::c / f1 + a5 * t_CST::c / f5;
       _epoData->satData[satData->prn] = satData;
+      _epoData->tt = satData->tt;
     }
     else {
       delete satData;
