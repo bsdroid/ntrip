@@ -40,8 +40,9 @@
 
 #include <iomanip>
 #include <cmath>
-#include <newmatio.h>
 #include <sstream>
+#include <newmatio.h>
+#include <newmatap.h>
 
 #include "pppFilter.h"
 #include "pppClient.h"
