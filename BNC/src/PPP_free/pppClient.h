@@ -6,8 +6,7 @@
 #include "pppInclude.h"
 #include "ephemeris.h"
 #include "pppOptions.h"
-
-class bncAntex;
+#include "bncpppclient.h"
 
 namespace BNC_PPP {
 
@@ -22,20 +21,17 @@ class t_pppClient {
   void putBiases(const std::vector<t_satBias*>& satBias);   
   void processEpoch(const std::vector<t_satObs*>& satObs, t_output* output);
 
-  std::ostringstream& log() {return *_log;}
-  const t_pppOptions* opt() const {return _opt;}
-
   static t_pppClient* instance();
+  std::ostringstream& log() {return *_log;}
 
  private:
-  std::ostringstream*       _log; 
-  t_pppOptions*             _opt; 
+  std::ostringstream* _log; 
+  t_pppOptions*       _opt;
+  bncPPPclient*       _client;
 };
 
 }; // namespace BNC_PPP
 
-#define PPP_CLIENT (BNC_PPP::t_pppClient::instance())
-#define LOG        (BNC_PPP::t_pppClient::instance()->log())
-#define OPT        (BNC_PPP::t_pppClient::instance()->opt())
+#define LOG (BNC_PPP::t_pppClient::instance()->log())
 
 #endif
