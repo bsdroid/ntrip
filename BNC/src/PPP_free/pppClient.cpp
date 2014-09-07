@@ -1,4 +1,3 @@
-
 // Part of BNC, a utility for retrieving decoding and
 // converting GNSS data streams from NTRIP broadcasters.
 //
@@ -27,59 +26,221 @@
  * BKG NTRIP Client
  * -------------------------------------------------------------------------
  *
- * Class:      t_pppClient
+ * Class:      bncPPPclient
  *
- * Purpose:    PPP Client processing starts here
+ * Purpose:    Precise Point Positioning
  *
  * Author:     L. Mervart
  *
- * Created:    29-Jul-2014
+ * Created:    21-Nov-2009
  *
  * Changes:    
  *
  * -----------------------------------------------------------------------*/
 
-#include <QThreadStorage>
-
-#include <iostream>
+#include <newmatio.h>
 #include <iomanip>
-#include <stdlib.h>
-#include <string.h>
-#include <stdexcept>
+#include <sstream>
 
-#include "pppClient.h"
-#include "bncconst.h"
+#include "bncpppclient.h"
+#include "bnccore.h"
 #include "bncutils.h"
-#include "bncantex.h"
+#include "bncconst.h"
+#include "bncmodel.h"
+#include "pppOptions.h"
+#include "pppClient.h"
 
 using namespace BNC_PPP;
 using namespace std;
 
 // Global variable holding thread-specific pointers
 //////////////////////////////////////////////////////////////////////////////
-t_pppClient* PPP_CLIENT = 0;
+bncPPPclient* PPP_CLIENT = 0;
 
 // Static function returning thread-specific pointer
 //////////////////////////////////////////////////////////////////////////////
-t_pppClient* t_pppClient::instance() {
+bncPPPclient* t_pppClient::instance() {
   return PPP_CLIENT;
 }
 
 // Constructor
-//////////////////////////////////////////////////////////////////////////////
-t_pppClient::t_pppClient(const t_pppOptions* opt) {
+////////////////////////////////////////////////////////////////////////////
+bncPPPclient::bncPPPclient(const t_pppOptions* opt) : bncEphUser(false) {
+
   _opt       = new t_pppOptions(*opt);
-  _log       = new ostringstream();
-  _client    = new bncPPPclient(QByteArray(_opt->_roverName.c_str()), _opt);
+  _staID     = QByteArray(_opt->_roverName.c_str())
+  _model     = new bncModel(this);
+  _epoData   = new t_epoData();
   PPP_CLIENT = this;
 }
 
 // Destructor
-//////////////////////////////////////////////////////////////////////////////
-t_pppClient::~t_pppClient() {
-  delete _log;
+////////////////////////////////////////////////////////////////////////////
+bncPPPclient::~bncPPPclient() {
+  _epoData->clear();
+
+  QMapIterator<QString, t_corr*> ic(_corr);
+  while (ic.hasNext()) {
+    ic.next();
+    delete ic.value();
+  }
+
+  QMapIterator<QString, t_bias*> ib(_bias);
+  while (ib.hasNext()) {
+    ib.next();
+    delete ib.value();
+  }
+
+  delete _model;
+  delete _epoData;
   delete _opt;
-  delete _client;
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void bncPPPclient::processEpoch(const vector<t_satObs*>& satObs, t_output* output) {
+  QMutexLocker locker(&_mutex);
+  
+  // Convert and store observations
+  // ------------------------------
+  _epoData->clear();
+  for (unsigned ii = 0; ii < satObs.size(); ii++) {
+    const t_satObs* obs     = satObs[ii]; 
+    t_satData*      satData = new t_satData();
+
+    if (_epoData->tt.undef()) {
+      _epoData->tt = obs->_time;
+    }
+
+    satData->tt       = obs->_time;
+    satData->prn      = QString(obs->_prn.toString().c_str());
+    satData->slipFlag = false;
+    satData->P1       = 0.0;
+    satData->P2       = 0.0;
+    satData->P5       = 0.0;
+    satData->L1       = 0.0;
+    satData->L2       = 0.0;
+    satData->L5       = 0.0;
+    for (unsigned ifrq = 0; ifrq < obs->_obs.size(); ifrq++) {
+      t_frqObs* frqObs = obs->_obs[ifrq];
+      if      (frqObs->_rnxType2ch[0] == '1') {
+        if (frqObs->_codeValid)  satData->P1       = frqObs->_code;
+        if (frqObs->_phaseValid) satData->L1       = frqObs->_phase;
+        if (frqObs->_slip)       satData->slipFlag = true;
+      }
+      else if (frqObs->_rnxType2ch[0] == '2') {
+        if (frqObs->_codeValid)  satData->P2       = frqObs->_code;
+        if (frqObs->_phaseValid) satData->L2       = frqObs->_phase;
+        if (frqObs->_slip)       satData->slipFlag = true;
+      }
+      else if (frqObs->_rnxType2ch[0] == '5') {
+        if (frqObs->_codeValid)  satData->P5       = frqObs->_code;
+        if (frqObs->_phaseValid) satData->L5       = frqObs->_phase;
+        if (frqObs->_slip)       satData->slipFlag = true;
+      }
+    }
+    putNewObs(satData);
+  }
+
+  // Data Pre-Processing
+  // -------------------
+  QMutableMapIterator<QString, t_satData*> it(_epoData->satData);
+  while (it.hasNext()) {
+    it.next();
+    QString    prn     = it.key();
+    t_satData* satData = it.value();
+
+    if (cmpToT(satData) != success) {
+      delete satData;
+      it.remove();
+      continue;
+    }
+  }
+
+  // Filter Solution
+  // ---------------
+  if (_model->update(_epoData) == success) {
+    output->_error = false;
+    output->_epoTime     = _model->time();
+    output->_xyzRover[0] = _model->x();
+    output->_xyzRover[1] = _model->y();
+    output->_xyzRover[2] = _model->z();
+    output->_numSat      = 0;
+    output->_pDop        = 0.0;
+  }
+  else {
+    output->_error = true;
+  }
+
+  output->_log = LOG.str();  
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void bncPPPclient::putNewObs(t_satData* satData) {
+
+  // Set Observations GPS and Glonass
+  // --------------------------------
+  if      (satData->system() == 'G' || satData->system() == 'R') {
+    if (satData->P1 != 0.0 && satData->P2 != 0.0 && 
+        satData->L1 != 0.0 && satData->L2 != 0.0 ) {
+
+      int channel = 0;
+      if (satData->system() == 'R') {
+//        cerr << "not yet implemented" << endl;
+//        exit(0);
+      }
+
+      t_frequency::type fType1 = t_lc::toFreq(satData->system(), t_lc::l1);
+      t_frequency::type fType2 = t_lc::toFreq(satData->system(), t_lc::l2);
+      double f1 = t_CST::freq(fType1, channel);
+      double f2 = t_CST::freq(fType2, channel);
+      double a1 =   f1 * f1 / (f1 * f1 - f2 * f2);
+      double a2 = - f2 * f2 / (f1 * f1 - f2 * f2);
+      satData->L1      = satData->L1 * t_CST::c / f1;
+      satData->L2      = satData->L2 * t_CST::c / f2;
+      satData->P3      = a1 * satData->P1 + a2 * satData->P2;
+      satData->L3      = a1 * satData->L1 + a2 * satData->L2;
+      satData->lambda3 = a1 * t_CST::c / f1 + a2 * t_CST::c / f2;
+      _epoData->satData[satData->prn] = satData;
+    }
+    else {
+      delete satData;
+    }
+  }
+
+  // Set Observations Galileo
+  // ------------------------
+  else if (satData->system() == 'E') {
+    if (satData->P1 != 0.0 && satData->P5 != 0.0 && 
+        satData->L1 != 0.0 && satData->L5 != 0.0 ) {
+      double f1 = t_CST::freq(t_frequency::E1, 0);
+      double f5 = t_CST::freq(t_frequency::E5, 0);
+      double a1 =   f1 * f1 / (f1 * f1 - f5 * f5);
+      double a5 = - f5 * f5 / (f1 * f1 - f5 * f5);
+      satData->L1      = satData->L1 * t_CST::c / f1;
+      satData->L5      = satData->L5 * t_CST::c / f5;
+      satData->P3      = a1 * satData->P1 + a5 * satData->P5;
+      satData->L3      = a1 * satData->L1 + a5 * satData->L5;
+      satData->lambda3 = a1 * t_CST::c / f1 + a5 * t_CST::c / f5;
+      _epoData->satData[satData->prn] = satData;
+    }
+    else {
+      delete satData;
+    }
+  }
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncPPPclient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
+  QMutexLocker locker(&_mutex);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncPPPclient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
+  QMutexLocker locker(&_mutex);
 }
 
 // 
@@ -89,36 +250,64 @@ void t_pppClient::putEphemeris(const t_eph* eph) {
   const t_ephGlo* ephGlo = dynamic_cast<const t_ephGlo*>(eph);
   const t_ephGal* ephGal = dynamic_cast<const t_ephGal*>(eph);
   if      (ephGPS) {
-    _client->putNewEph(new t_ephGPS(*ephGPS));
+    putNewEph(new t_ephGPS(*ephGPS));
   }
   else if (ephGlo) {
-    _client->putNewEph(new t_ephGlo(*ephGlo));
+    putNewEph(new t_ephGlo(*ephGlo));
   }
   else if (ephGal) {
-    _client->putNewEph(new t_ephGal(*ephGal));
+    putNewEph(new t_ephGal(*ephGal));
   }
 }
 
-// 
-//////////////////////////////////////////////////////////////////////////////
-void t_pppClient::putOrbCorrections(const vector<t_orbCorr*>& corr) {
-  _client->putOrbCorrections(corr);
+// Satellite Position
+////////////////////////////////////////////////////////////////////////////
+t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn, 
+                              ColumnVector& xc, ColumnVector& vv) {
+  if (_eph.contains(prn)) {
+    t_eph* eLast = _eph.value(prn)->last;
+    t_eph* ePrev = _eph.value(prn)->prev;
+    if      (eLast && eLast->getCrd(tt, xc, vv, _opt->useOrbClkCorr()) == success) {
+      return success;
+    }
+    else if (ePrev && ePrev->getCrd(tt, xc, vv, _opt->useOrbClkCorr()) == success) {
+      return success;
+    }
+  }
+  return failure;
 }
 
-// 
-//////////////////////////////////////////////////////////////////////////////
-void t_pppClient::putClkCorrections(const vector<t_clkCorr*>& corr) {
-  _client->putClkCorrections(corr);
-}
+// Correct Time of Transmission
+////////////////////////////////////////////////////////////////////////////
+t_irc bncPPPclient::cmpToT(t_satData* satData) {
 
-// 
-//////////////////////////////////////////////////////////////////////////////
-void t_pppClient::putBiases(const vector<t_satBias*>& biases) {
-}
+  double prange = satData->P3;
+  if (prange == 0.0) {
+    return failure;
+  }
 
-// 
-//////////////////////////////////////////////////////////////////////////////
-void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output) {
-  _client->processEpoch(satObs, output);
+  double clkSat = 0.0;
+  for (int ii = 1; ii <= 10; ii++) {
+
+    bncTime ToT = satData->tt - prange / t_CST::c - clkSat;
+
+    ColumnVector xc(4);
+    ColumnVector vv(3);
+    if (getSatPos(ToT, satData->prn, xc, vv) != success) {
+      return failure;
+    }
+
+    double clkSatOld = clkSat;
+    clkSat = xc(4);
+
+    if ( fabs(clkSat-clkSatOld) * t_CST::c < 1.e-4 ) {
+      satData->xx      = xc.Rows(1,3);
+      satData->vv      = vv;
+      satData->clk     = clkSat * t_CST::c;
+      return success;
+    } 
+  }
+
+  return failure;
 }
 

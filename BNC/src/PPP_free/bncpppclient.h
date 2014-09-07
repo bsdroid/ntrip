@@ -27,8 +27,6 @@
 
 #include <vector>
 #include "bncephuser.h"
-#include "GPSDecoder.h"
-
 
 namespace BNC_PPP {
   
@@ -40,42 +38,32 @@ class t_epoData;
 class t_output;
 class t_orbCorr;
 class t_clkCorr;
+class t_satBias;
 
 class bncPPPclient : public bncEphUser {
  public:
-  bncPPPclient(QByteArray staID, const t_pppOptions* opt);
+  bncPPPclient(const t_pppOptions* opt);
   ~bncPPPclient();
-  void                processEpoch(const std::vector<t_satObs*>& satObs, t_output* output);
-  void                putOrbCorrections(const std::vector<t_orbCorr*>& corr); 
-  void                putClkCorrections(const std::vector<t_clkCorr*>& corr); 
-  QByteArray          staID() const {return _staID;}
-  const t_pppOptions* opt() const {return _opt;}
+  void                 processEpoch(const std::vector<t_satObs*>& satObs, t_output* output);
+  void                 putEphemeris(const t_eph* eph);                  
+  void                 putOrbCorrections(const std::vector<t_orbCorr*>& corr); 
+  void                 putClkCorrections(const std::vector<t_clkCorr*>& corr); 
+  void                 putBiases(const std::vector<t_satBias*>& satBias);   
+  QByteArray           staID() const {return _staID;}
+  const t_pppOptions*  opt() const {return _opt;}
+  static bncPPPclient* instance();
+  std::ostringstream&  log() {return *_log;}
 
  private:
-  class slipInfo {
-   public:
-    slipInfo() {
-      slipCntL1 = -1;
-      slipCntL2 = -1;
-      slipCntL5 = -1;
-    }
-    ~slipInfo(){}
-    int slipCntL1;
-    int slipCntL2;
-    int slipCntL5;
-  };
-
   t_irc getSatPos(const bncTime& tt, const QString& prn, ColumnVector& xc, ColumnVector& vv);
   void  putNewObs(t_satData* satData);
   t_irc cmpToT(t_satData* satData);
 
-  const t_pppOptions*     _opt;
-  QByteArray              _staID;
-  QMap<QString, t_corr*>  _corr;
-  bncTime                 _corr_tt;
-  QMap<QString, t_bias*>  _bias;
-  t_epoData*              _epoData;
-  bncModel*               _model;
+  t_pppOptions*       _opt;
+  QByteArray          _staID;
+  t_epoData*          _epoData;
+  bncModel*           _model;
+  std::ostringstream* _log; 
 };
 
 class t_satData {
@@ -160,5 +148,7 @@ class t_epoData {
 };
 
 }
+
+#define LOG (BNC_PPP::t_pppClient::instance()->log())
 
 #endif

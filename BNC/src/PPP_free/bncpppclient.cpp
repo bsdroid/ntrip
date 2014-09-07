@@ -53,14 +53,25 @@
 using namespace BNC_PPP;
 using namespace std;
 
+// Global variable holding thread-specific pointers
+//////////////////////////////////////////////////////////////////////////////
+bncPPPclient* PPP_CLIENT = 0;
+
+// Static function returning thread-specific pointer
+//////////////////////////////////////////////////////////////////////////////
+bncPPPclient* t_pppClient::instance() {
+  return PPP_CLIENT;
+}
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncPPPclient::bncPPPclient(QByteArray staID, const t_pppOptions* opt) : bncEphUser(false) {
+bncPPPclient::bncPPPclient(const t_pppOptions* opt) : bncEphUser(false) {
 
-  _opt     = opt;
-  _staID   = staID;
-  _model   = new bncModel(this);
-  _epoData = new t_epoData();
+  _opt       = new t_pppOptions(*opt);
+  _staID     = QByteArray(_opt->_roverName.c_str())
+  _model     = new bncModel(this);
+  _epoData   = new t_epoData();
+  PPP_CLIENT = this;
 }
 
 // Destructor
@@ -81,6 +92,8 @@ bncPPPclient::~bncPPPclient() {
   }
 
   delete _model;
+  delete _epoData;
+  delete _opt;
 }
 
 //
@@ -228,6 +241,23 @@ void bncPPPclient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
   QMutexLocker locker(&_mutex);
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+void t_pppClient::putEphemeris(const t_eph* eph) {
+  const t_ephGPS* ephGPS = dynamic_cast<const t_ephGPS*>(eph);
+  const t_ephGlo* ephGlo = dynamic_cast<const t_ephGlo*>(eph);
+  const t_ephGal* ephGal = dynamic_cast<const t_ephGal*>(eph);
+  if      (ephGPS) {
+    putNewEph(new t_ephGPS(*ephGPS));
+  }
+  else if (ephGlo) {
+    putNewEph(new t_ephGlo(*ephGlo));
+  }
+  else if (ephGal) {
+    putNewEph(new t_ephGal(*ephGal));
+  }
 }
 
 // Satellite Position
