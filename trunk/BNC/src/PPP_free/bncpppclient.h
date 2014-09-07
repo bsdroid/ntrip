@@ -36,12 +36,13 @@ class bncModel;
 class t_pppOptions;
 class t_satData;
 class t_epoData;
+class t_output;
 
 class bncPPPclient : public bncEphUser {
  public:
   bncPPPclient(QByteArray staID, const t_pppOptions* opt);
   ~bncPPPclient();
-  void                putNewObs(const t_obs& pp);
+  void                putNewObs(const t_obs& pp, t_output* output);
   void                putNewCorrections(QList<QString> corrList);
   QByteArray          staID() const {return _staID;}
   const t_pppOptions* opt() const {return _opt;}
@@ -61,8 +62,8 @@ class bncPPPclient : public bncEphUser {
   };
 
   t_irc getSatPos(const bncTime& tt, const QString& prn, ColumnVector& xc, ColumnVector& vv);
-  void processEpochs();
-  void processFrontEpoch();
+  void processEpochs(t_output* output);
+  void processFrontEpoch(t_output* output);
   t_irc cmpToT(t_satData* satData);
   static t_irc applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, ColumnVector& vv);
 

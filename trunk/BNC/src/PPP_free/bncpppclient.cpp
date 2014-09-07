@@ -83,7 +83,7 @@ bncPPPclient::~bncPPPclient() {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::putNewObs(const t_obs& obs) {
+void bncPPPclient::putNewObs(const t_obs& obs, t_output* output) {
   QMutexLocker locker(&_mutex);
 
   if      (obs.satSys == 'R') {
@@ -131,7 +131,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
     _epoData.back()->tt = satData->tt;
   }
   else if (satData->tt != _epoData.back()->tt) {
-    processEpochs();
+    processEpochs(output);
     _epoData.push(new t_epoData());
     _epoData.back()->tt = satData->tt;
   }
@@ -406,7 +406,7 @@ t_irc bncPPPclient::cmpToT(t_satData* satData) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::processFrontEpoch() {
+void bncPPPclient::processFrontEpoch(t_output* output) {
 
 #ifdef BNC_DEBUG
   QString msg = "List of Corrections\n";
@@ -474,7 +474,7 @@ void bncPPPclient::processFrontEpoch() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::processEpochs() {
+void bncPPPclient::processEpochs(t_output* output) {
 
   // Make sure the buffer does not grow beyond any limit
   // ---------------------------------------------------
@@ -499,7 +499,7 @@ void bncPPPclient::processEpochs() {
     // Process the front epoch
     // -----------------------
     if (_opt->_corrWaitTime == 0.0 || frontEpoData->tt - _corr_tt >= _opt->_corrWaitTime) {
-      processFrontEpoch();
+      processFrontEpoch(output);
       delete _epoData.front();
       _epoData.pop();
     }
