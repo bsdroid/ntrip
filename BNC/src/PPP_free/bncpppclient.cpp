@@ -54,38 +54,16 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncPPPclient::bncPPPclient(QByteArray staID, t_pppOptions* opt, bool connectSlots) :
-  bncEphUser(connectSlots) {
+bncPPPclient::bncPPPclient(QByteArray staID, t_pppOptions* opt) : bncEphUser(false) {
 
-  if (opt) {
-    _opt      = opt;
-    _optOwner = false;
-  }
-  else {
-    _opt      = new t_pppOptions();
-    _optOwner = true;
-  }
-
+  _opt   = opt;
   _staID = staID;
-
   _model = new bncModel(this);
-
-  if (connectSlots) {
-    connect(this, SIGNAL(newMessage(QByteArray,bool)), 
-            BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
-
-    connect(BNC_CORE, SIGNAL(newCorrections(QList<QString>)),
-            this, SLOT(slotNewCorrections(QList<QString>)));
-
-    connect(BNC_CORE, SIGNAL(providerIDChanged(QString)),
-            this, SLOT(slotProviderIDChanged(QString)));
-  }
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncPPPclient::~bncPPPclient() {
-  delete _model;
   while (!_epoData.empty()) {
     delete _epoData.front();
     _epoData.pop();
@@ -100,9 +78,7 @@ bncPPPclient::~bncPPPclient() {
     ib.next();
     delete ib.value();
   }
-  if (_optOwner) {
-    delete _opt;
-  }
+  delete _model;
 }
 
 //
@@ -256,7 +232,7 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
+void bncPPPclient::putNewCorrections(QList<QString> corrList) {
   QMutexLocker locker(&_mutex);
 
   // Check the Mountpoint (source of corrections)
@@ -471,7 +447,7 @@ void bncPPPclient::processFrontEpoch() {
     }
   }
 
-  emit newMessage(msg.toAscii(), false);
+  LOG << msg.toAscii() << endl;
 #endif // BNC_DEBUG
 
   // Data Pre-Processing
@@ -492,7 +468,7 @@ void bncPPPclient::processFrontEpoch() {
   // Filter Solution
   // ---------------
   if (_model->update(_epoData.front()) == success) {
-    emit newPosition(_model->time(), _model->x(), _model->y(), _model->z());
+    ///    emit newPosition(_model->time(), _model->x(), _model->y(), _model->z());
   }
 }
 
@@ -531,37 +507,4 @@ void bncPPPclient::processEpochs() {
       return;
     }
   }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::slotProviderIDChanged(QString mountPoint) {
-  QMutexLocker locker(&_mutex);
-
-  if (mountPoint != QString(_opt->_corrMount.c_str())) {
-    return;
-  }
-  emit newMessage("bncPPPclient " + _staID + ": Provider Changed: " + mountPoint.toAscii() + "\n", true);
-
-  delete _model;
-  _model = new bncModel(this);
-
-  while (!_epoData.empty()) {
-    delete _epoData.front();
-    _epoData.pop();
-  }
-
-  QMapIterator<QString, t_corr*> ic(_corr);
-  while (ic.hasNext()) {
-    ic.next();
-    delete ic.value();
-  }
-  _corr.clear();
- 
-  QMapIterator<QString, t_bias*> ib(_bias);
-  while (ib.hasNext()) {
-    ib.next();
-    delete ib.value();
-  }
-  _bias.clear();
 }

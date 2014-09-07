@@ -116,31 +116,17 @@ class t_epoData {
 };
 
 class bncPPPclient : public bncEphUser {
- Q_OBJECT
-
  public:
-  bncPPPclient(QByteArray staID, t_pppOptions* opt = 0, bool connectSlots = true);
+  bncPPPclient(QByteArray staID, t_pppOptions* opt);
   ~bncPPPclient();
-  void putNewObs(const t_obs& pp);
-  static t_irc applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, 
-                         ColumnVector& vv);
-  QByteArray staID() const {return _staID;}
+  void                putNewObs(const t_obs& pp);
+  void                putNewCorrections(QList<QString> corrList);
+
+  QByteArray          staID() const {return _staID;}
   const t_pppOptions* opt() const {return _opt;}
-  void emitNewMessage(QByteArray msg, bool showOnScreen) {
-    emit newMessage(msg, showOnScreen);
-  }
-  void emitNewNMEAstr(QByteArray str) {
-    emit newNMEAstr(str);
-  }
 
- public slots:
-  void slotNewCorrections(QList<QString> corrList);
-  void slotProviderIDChanged(QString mountPoint);
+  static t_irc applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, ColumnVector& vv);
 
- signals:
-  void newMessage(QByteArray msg, bool showOnScreen);
-  void newPosition(bncTime time, double x, double y, double z);
-  void newNMEAstr(QByteArray str);
 
  private:
   class slipInfo {
@@ -162,8 +148,7 @@ class bncPPPclient : public bncEphUser {
   void processFrontEpoch();
   t_irc cmpToT(t_satData* satData);
 
-  t_pppOptions*           _opt;
-  bool                    _optOwner;
+  const t_pppOptions*     _opt;
   QByteArray              _staID;
   QMap<QString, t_corr*>  _corr;
   bncTime                 _corr_tt;
