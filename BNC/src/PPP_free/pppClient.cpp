@@ -159,7 +159,8 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
     output->_error = true;
   }
 
-  output->_log = LOG.str();  
+  output->_log = _log->str();
+  delete _log; _log = new ostringstream();
 }
 
 //
