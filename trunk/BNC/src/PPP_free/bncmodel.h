@@ -40,6 +40,7 @@ class bncPPPclient;
 class t_pppOptions;
 class t_epoData;
 class t_satData;
+class t_tides;
 
 class bncParam {
  public:
@@ -162,6 +163,7 @@ class bncModel {
   QStringList           _outlierGPS;
   QStringList           _outlierGlo;
   bncAntex*             _antex;
+  t_tides*              _tides;
 };
 
 }

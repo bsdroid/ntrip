@@ -51,6 +51,7 @@
 #include "bncutils.h"
 #include "bncantex.h"
 #include "pppOptions.h"
+#include "pppModel.h"
 
 using namespace BNC_PPP;
 using namespace std;
@@ -155,16 +156,13 @@ bncModel::bncModel(bncPPPclient* pppClient) {
   _staID     = pppClient->staID();
   _opt       = pppClient->opt();
 
+  _tides     = new t_tides();
+
   // Antenna Name, ANTEX File
   // ------------------------
   _antex = 0;
-  if (!_opt->antexFile.isEmpty()) {
-    _antex = new bncAntex();
-    if (_antex->readFile(_opt->antexFile) != success) {
-      _pppClient->emitNewMessage("wrong ANTEX file", true);
-      delete _antex;
-      _antex = 0;
-    }
+  if (!_opt->_antexFileName.empty()) {
+    _antex = new bncAntex(_opt->_antexFileName.c_str());
   }
 
   // Bancroft Coordinates
@@ -180,6 +178,7 @@ bncModel::bncModel(bncPPPclient* pppClient) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncModel::~bncModel() {
+  delete _tides;
   for (int ii = 0; ii < _posAverage.size(); ++ii) { 
     delete _posAverage[ii]; 
   }
@@ -214,13 +213,13 @@ void bncModel::reset() {
   _params.push_back(new bncParam(bncParam::CRD_Y,  ++nextPar, ""));
   _params.push_back(new bncParam(bncParam::CRD_Z,  ++nextPar, ""));
   _params.push_back(new bncParam(bncParam::RECCLK, ++nextPar, ""));
-  if (_opt->estTropo) {
+  if (_opt->estTrp()) {
     _params.push_back(new bncParam(bncParam::TROPO, ++nextPar, ""));
   }
-  if (_opt->useGlonass) {
+  if (_opt->useSystem('R')) {
     _params.push_back(new bncParam(bncParam::GLONASS_OFFSET, ++nextPar, ""));
   }
-  if (_opt->useGalileo) {
+  if (_opt->useSystem('E')) {
     _params.push_back(new bncParam(bncParam::GALILEO_OFFSET, ++nextPar, ""));
   }
 
@@ -230,20 +229,20 @@ void bncModel::reset() {
     bncParam* pp = _params[iPar-1];
     pp->xx = 0.0;
     if      (pp->isCrd()) {
-      _QQ(iPar,iPar) = _opt->sigCrd0 * _opt->sigCrd0; 
+      _QQ(iPar,iPar) = _opt->_aprSigCrd(1) * _opt->_aprSigCrd(1); 
     }
     else if (pp->type == bncParam::RECCLK) {
-      _QQ(iPar,iPar) = _opt->sigClk0 * _opt->sigClk0; 
+      _QQ(iPar,iPar) = _opt->_noiseClk * _opt->_noiseClk; 
     }
     else if (pp->type == bncParam::TROPO) {
-      _QQ(iPar,iPar) = _opt->sigTrp0 * _opt->sigTrp0; 
+      _QQ(iPar,iPar) = _opt->_aprSigTrp * _opt->_aprSigTrp; 
       pp->xx = lastTrp;
     }
     else if (pp->type == bncParam::GLONASS_OFFSET) {
-      _QQ(iPar,iPar) = _opt->sigGlonassOffset0 * _opt->sigGlonassOffset0; 
+      _QQ(iPar,iPar) = 1000.0 * 1000.0;
     }
     else if (pp->type == bncParam::GALILEO_OFFSET) {
-      _QQ(iPar,iPar) = _opt->sigGalileoOffset0 * _opt->sigGalileoOffset0; 
+      _QQ(iPar,iPar) = 1000.0 * 1000.0;
     }
   }
 }
@@ -316,7 +315,7 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
   xRec(2) = y() * cos(dPhi) + x() * sin(dPhi); 
   xRec(3) = z();
 
-  tides(_time, xRec);
+  xRec += _tides->displacement(_time, xRec);
 
   satData->rho = (satData->xx - xRec).norm_Frobenius();
 
