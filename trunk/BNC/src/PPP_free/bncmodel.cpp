@@ -589,7 +589,7 @@ t_irc bncModel::update(t_epoData* epoData) {
   // Outlier Detection Loop
   // ----------------------
   if (update_p(epoData) != success) {
-    _pppClient->emitNewMessage(_log, false);
+    LOG << _log.data() << endl;
     return failure;
   }
 
@@ -641,7 +641,7 @@ t_irc bncModel::update(t_epoData* epoData) {
   }
   strB << '\n';
   _log += strB.str().c_str();
-  _pppClient->emitNewMessage(_log, false);
+  LOG << _log.data() << endl;
 
   // Final Message (both log file and screen)
   // ----------------------------------------
@@ -674,7 +674,7 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   }
 
-  _pppClient->emitNewMessage(QByteArray(strC.str().c_str()), true);
+  LOG << strC.str() << endl;
 
   delete newPos;
 
