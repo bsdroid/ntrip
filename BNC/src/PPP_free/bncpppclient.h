@@ -127,6 +127,7 @@ class t_epoData {
       delete it.value();
     }
     satData.clear();
+    tt.reset();
   }
 
   void deepCopy(const t_epoData* from) {
