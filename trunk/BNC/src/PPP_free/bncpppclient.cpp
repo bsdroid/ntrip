@@ -94,6 +94,11 @@ void bncPPPclient::processEpoch(const vector<t_satObs*>& satObs, t_output* outpu
   for (unsigned ii = 0; ii < satObs.size(); ii++) {
     const t_satObs* obs     = satObs[ii]; 
     t_satData*      satData = new t_satData();
+
+    if (_epoData->tt.undef()) {
+      _epoData->tt = obs->_time;
+    }
+
     satData->tt       = obs->_time;
     satData->prn      = QString(obs->_prn.toString().c_str());
     satData->slipFlag = false;
@@ -179,11 +184,12 @@ void bncPPPclient::putNewObs(t_satData* satData) {
       double f2 = t_CST::freq(fType2, channel);
       double a1 =   f1 * f1 / (f1 * f1 - f2 * f2);
       double a2 = - f2 * f2 / (f1 * f1 - f2 * f2);
+      satData->L1      = satData->L1 * t_CST::c / f1;
+      satData->L2      = satData->L2 * t_CST::c / f2;
       satData->P3      = a1 * satData->P1 + a2 * satData->P2;
       satData->L3      = a1 * satData->L1 + a2 * satData->L2;
       satData->lambda3 = a1 * t_CST::c / f1 + a2 * t_CST::c / f2;
       _epoData->satData[satData->prn] = satData;
-      _epoData->tt = satData->tt;
     }
     else {
       delete satData;
@@ -199,11 +205,12 @@ void bncPPPclient::putNewObs(t_satData* satData) {
       double f5 = t_CST::freq(t_frequency::E5, 0);
       double a1 =   f1 * f1 / (f1 * f1 - f5 * f5);
       double a5 = - f5 * f5 / (f1 * f1 - f5 * f5);
+      satData->L1      = satData->L1 * t_CST::c / f1;
+      satData->L5      = satData->L5 * t_CST::c / f5;
       satData->P3      = a1 * satData->P1 + a5 * satData->P5;
       satData->L3      = a1 * satData->L1 + a5 * satData->L5;
       satData->lambda3 = a1 * t_CST::c / f1 + a5 * t_CST::c / f5;
       _epoData->satData[satData->prn] = satData;
-      _epoData->tt = satData->tt;
     }
     else {
       delete satData;
