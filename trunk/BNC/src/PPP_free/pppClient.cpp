@@ -117,14 +117,44 @@ void t_pppClient::putBiases(const vector<t_satBias*>& biases) {
 // 
 //////////////////////////////////////////////////////////////////////////////
 void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output) {
+
   output->_numSat = 0;
   output->_pDop   = 0.0;
   output->_error  = false;
   output->_log.clear();
 
   for (unsigned ii = 0; ii < satObs.size(); ii++) {
-    t_obs pp;
-    _client->putNewObs(pp, output);
+    const t_satObs* obs     = satObs[ii]; 
+    t_satData*      satData = new t_satData();
+    satData->tt       = obs->_time;
+    satData->prn      = obs->_prn;
+    satData->slipFlag = false;
+    satData->P1       = 0.0;
+    satData->P2       = 0.0;
+    satData->P5       = 0.0;
+    satData->L1       = 0.0;
+    satData->L2       = 0.0;
+    satData->L5       = 0.0;
+    for (unsigned ifrq = 0; ifrq < obs->_obs.size(); ifrq++) {
+      t_frqObs* frqObs = obs->_obs[ifrq];
+      if      (frqObs->_rnxType2ch[0] == '1') {
+        if (frqObs->_codeValid)  satData->P1       = frqObs->_code;
+        if (frqObs->_phaseValid) satData->L1       = frqObs->_phase;
+        if (frqObs->_slip)       satData->slipFlag = true;
+      }
+      else if (frqObs->_rnxType2ch[0] == '2') {
+        if (frqObs->_codeValid)  satData->P2       = frqObs->_code;
+        if (frqObs->_phaseValid) satData->L2       = frqObs->_phase;
+        if (frqObs->_slip)       satData->slipFlag = true;
+      }
+      else if (frqObs->_rnxType2ch[0] == '5') {
+        if (frqObs->_codeValid)  satData->P5       = frqObs->_code;
+        if (frqObs->_phaseValid) satData->L5       = frqObs->_phase;
+        if (frqObs->_slip)       satData->slipFlag = true;
+      }
+    }
+
+    //    _client->putNewObs(pp, output);
   }
   output->_log = _log->str();  
 }
