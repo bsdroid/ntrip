@@ -133,6 +133,8 @@ class bncModel {
   t_irc selectSatellites(const QString& lastOutlierPrn, 
                          QMap<QString, t_satData*>& satData);
 
+  void bancroft(const Matrix& BBpass, ColumnVector& pos);
+
   class pppPos {
    public:
     pppPos() {
