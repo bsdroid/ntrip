@@ -500,7 +500,7 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
 
   // Add New Ambiguities if necessary
   // --------------------------------
-  if (_opt->usePhase) {
+  if (_opt->ambLCs('G').size() || _opt->ambLCs('R').size() || _opt->ambLCs('E').size()) {
 
     // Make a copy of QQ and xx, set parameter indices
     // -----------------------------------------------
@@ -558,7 +558,7 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
     for (int ii = 1; ii <= nPar; ii++) {
       bncParam* par = _params[ii-1];
       if (par->index_old == 0) {
-        _QQ(par->index, par->index) = _opt->sigAmb0 * _opt->sigAmb0;
+        _QQ(par->index, par->index) = _opt->_aprSigAmb * _opt->_aprSigAmb;
       }
       par->index_old = par->index;
     }
@@ -575,7 +575,7 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   _time = epoData->tt; // current epoch time
 
-  if (_opt->pppMode) {
+  if (_opt->useOrbClkCorr()) {
     _log += "Precise Point Positioning of Epoch " 
           + QByteArray(_time.timestr(1).c_str()) +
           "\n---------------------------------------------------------------\n";
@@ -658,13 +658,13 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   // NEU Output
   // ----------
-  if (_opt->refCrdSet()) {
-    newPos->xnt[0] = x() - _opt->refCrd[0];
-    newPos->xnt[1] = y() - _opt->refCrd[1];
-    newPos->xnt[2] = z() - _opt->refCrd[2];
+  if (_opt->xyzAprRoverSet()) {
+    newPos->xnt[0] = x() - _opt->_xyzAprRover[0];
+    newPos->xnt[1] = y() - _opt->_xyzAprRover[1];
+    newPos->xnt[2] = z() - _opt->_xyzAprRover[2];
 
     double ellRef[3];
-    xyz2ell(_opt->refCrd, ellRef);
+    xyz2ell(_opt->_xyzAprRover.data(), ellRef);
     xyz2neu(ellRef, newPos->xnt, &newPos->xnt[3]);
 
     strC << "  NEU "
@@ -676,85 +676,7 @@ t_irc bncModel::update(t_epoData* epoData) {
 
   _pppClient->emitNewMessage(QByteArray(strC.str().c_str()), true);
 
-  if (_opt->pppAverage == 0.0) {
-    delete newPos;
-  }
-  else {
-  
-   _posAverage.push_back(newPos); 
-
-    // Compute the Mean
-    // ----------------
-    ColumnVector mean(7); mean = 0.0;
-
-    QMutableVectorIterator<pppPos*> it(_posAverage);
-    while (it.hasNext()) {
-      pppPos* pp = it.next();
-      if ( (epoData->tt - pp->time) >= _opt->pppAverage ) {
-        delete pp;
-        it.remove();
-      }
-      else {
-        for (int ii = 0; ii < 7; ++ii) {
-          mean[ii] += pp->xnt[ii];
-        }
-      }
-    }
-
-    int nn = _posAverage.size();
-
-    if (nn > 0) {
-
-      mean /= nn;
-      
-      // Compute the Deviation
-      // ---------------------
-      ColumnVector std(7); std = 0.0;
-      QVectorIterator<pppPos*> it2(_posAverage);
-      while (it2.hasNext()) {
-        pppPos* pp = it2.next();
-        for (int ii = 0; ii < 7; ++ii) {
-          std[ii] += (pp->xnt[ii] - mean[ii]) * (pp->xnt[ii] - mean[ii]);
-        }
-      }
-      for (int ii = 0; ii < 7; ++ii) {
-        std[ii] = sqrt(std[ii] / nn);
-      }
-
-      if (_opt->refCrdSet()) {
-        ostringstream strD; strD.setf(ios::fixed);
-        strD << _staID.data() << "  AVE-XYZ " 
-             << epoData->tt.timestr(1) << " "
-             << setw(13) << setprecision(3) << mean[0] + _opt->refCrd[0] << " +- "
-             << setw(6)  << setprecision(3) << std[0]   << " "
-             << setw(14) << setprecision(3) << mean[1] + _opt->refCrd[1] << " +- "
-             << setw(6)  << setprecision(3) << std[1]   << " "
-             << setw(14) << setprecision(3) << mean[2] + _opt->refCrd[2] << " +- "
-             << setw(6)  << setprecision(3) << std[2];
-        _pppClient->emitNewMessage(QByteArray(strD.str().c_str()), true);
-
-        ostringstream strE; strE.setf(ios::fixed);
-        strE << _staID.data() << "  AVE-NEU " 
-             << epoData->tt.timestr(1) << " "
-             << setw(13) << setprecision(3) << mean[3]  << " +- "
-             << setw(6)  << setprecision(3) << std[3]   << " "
-             << setw(14) << setprecision(3) << mean[4]  << " +- "
-             << setw(6)  << setprecision(3) << std[4]   << " "
-             << setw(14) << setprecision(3) << mean[5]  << " +- "
-             << setw(6)  << setprecision(3) << std[5];
-        _pppClient->emitNewMessage(QByteArray(strE.str().c_str()), true);
-
-        if (_opt->estTropo) {
-          ostringstream strF; strF.setf(ios::fixed);
-          strF << _staID.data() << "  AVE-TRP " 
-               << epoData->tt.timestr(1) << " "
-               << setw(13) << setprecision(3) << mean[6]  << " +- "
-               << setw(6)  << setprecision(3) << std[6]   << endl;
-          _pppClient->emitNewMessage(QByteArray(strF.str().c_str()), true);
-        }
-      }
-    }
-  }
+  delete newPos;
 
   _lastTimeOK = _time; // remember time of last successful update
   return success;
