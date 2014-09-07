@@ -200,6 +200,11 @@ ColumnVector t_astro::Moon(double Mjd_TT) {
 ////////////////////////////////////////////////////////////////////////////
 ColumnVector t_tides::displacement(const bncTime& time, const ColumnVector& xyz) {
 
+  if (time.undef()) {
+    ColumnVector dX(3); dX = 0.0;
+    return dX;
+  }
+
   double Mjd = time.mjd() + time.daysec() / 86400.0;
 
   if (Mjd != _lastMjd) {
