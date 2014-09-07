@@ -44,6 +44,7 @@
 #include <sstream>
 
 #include "bncmodel.h"
+#include "pppClient.h"
 #include "bncpppclient.h"
 #include "bnccore.h"
 #include "bncpppclient.h"
@@ -338,23 +339,20 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
   double phaseCenter = 0.0;
   if (_antex) { 
     bool found;
-    phaseCenter = _antex->pco(_opt->antennaName, satData->eleSat, found);
+    phaseCenter = _antex->pco(QString(_opt->_antNameRover.c_str()), satData->eleSat, found);
     if (!found) {
-      _pppClient->emitNewMessage("ANTEX: antenna >" 
-                      + _opt->antennaName.toAscii() + "< not found", true);
+      LOG << "ANTEX: antenna >" << _opt->_antNameRover << "< not found\n";
     }
   }
 
   double antennaOffset = 0.0;
-  if (_opt->antEccSet()) {
-    double cosa = cos(satData->azSat);
-    double sina = sin(satData->azSat);
-    double cose = cos(satData->eleSat);
-    double sine = sin(satData->eleSat);
-    antennaOffset = -_opt->antEccNEU[0] * cosa*cose 
-                    -_opt->antEccNEU[1] * sina*cose 
-                    -_opt->antEccNEU[2] * sine;
-  }
+  double cosa = cos(satData->azSat);
+  double sina = sin(satData->azSat);
+  double cose = cos(satData->eleSat);
+  double sine = sin(satData->eleSat);
+  antennaOffset = -_opt->_neuEccRover(1) * cosa*cose 
+                  -_opt->_neuEccRover(2) * sina*cose 
+                  -_opt->_neuEccRover(3) * sine;
 
   return satData->rho + phaseCenter + antennaOffset + clk() 
                       + offset - satData->clk + tropDelay + wind;
@@ -409,8 +407,10 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
 
   if (iPhase == 0) {
 
+    const double maxSolGap = 0.0;
+
     bool firstCrd = false;
-    if (!_lastTimeOK.valid() || (_opt->maxSolGap > 0 && _time - _lastTimeOK > _opt->maxSolGap)) {
+    if (!_lastTimeOK.valid() || (maxSolGap > 0.0 && _time - _lastTimeOK > maxSolGap)) {
       firstCrd = true;
       _startTime = epoData->tt;
       reset();
@@ -418,8 +418,8 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
     
     // Use different white noise for Quick-Start mode
     // ----------------------------------------------
-    double sigCrdP_used = _opt->sigCrdP;
-    if ( _opt->quickStart > 0.0 && _opt->quickStart > (epoData->tt - _startTime) ) {
+    double sigCrdP_used = _opt->_noiseCrd(1);
+    if ( _opt->_seedingTime > 0.0 && _opt->_seedingTime > (epoData->tt - _startTime) ) {
       sigCrdP_used   = 0.0;
     }
 
@@ -432,8 +432,8 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
       // -----------
       if      (pp->type == bncParam::CRD_X) {
         if (firstCrd) {
-          if (_opt->refCrdSet()) {
-            pp->xx = _opt->refCrd[0];
+          if (_opt->xyzAprRoverSet()) {
+            pp->xx = _opt->_xyzAprRover[0];
           }
           else {
             pp->xx = _xcBanc(1);
@@ -443,8 +443,8 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
       }
       else if (pp->type == bncParam::CRD_Y) {
         if (firstCrd) {
-          if (_opt->refCrdSet()) {
-            pp->xx = _opt->refCrd[1];
+          if (_opt->xyzAprRoverSet()) {
+            pp->xx = _opt->_xyzAprRover[1];
           }
           else {
             pp->xx = _xcBanc(2);
@@ -454,8 +454,8 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
       }
       else if (pp->type == bncParam::CRD_Z) {
         if (firstCrd) {
-          if (_opt->refCrdSet()) {
-            pp->xx = _opt->refCrd[2];
+          if (_opt->xyzAprRoverSet()) {
+            pp->xx = _opt->_xyzAprRover[2];
           }
           else {
             pp->xx = _xcBanc(3);
@@ -471,35 +471,29 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
         for (int jj = 1; jj <= _params.size(); jj++) {
           _QQ(iPar, jj) = 0.0;
         }
-        _QQ(iPar,iPar) = _opt->sigClk0 * _opt->sigClk0;
+        _QQ(iPar,iPar) = _opt->_noiseClk * _opt->_noiseClk;
       }
     
       // Tropospheric Delay
       // ------------------
       else if (pp->type == bncParam::TROPO) {
-        _QQ(iPar,iPar) += _opt->sigTrpP * _opt->sigTrpP;
+        _QQ(iPar,iPar) += _opt->_noiseTrp * _opt->_noiseTrp;
       }
     
       // Glonass Offset
       // --------------
       else if (pp->type == bncParam::GLONASS_OFFSET) {
-        bool epoSpec = true;
-        if (epoSpec) {
-          pp->xx = 0.0;
-          for (int jj = 1; jj <= _params.size(); jj++) {
-            _QQ(iPar, jj) = 0.0;
-          }
-          _QQ(iPar,iPar) = _opt->sigGlonassOffset0 * _opt->sigGlonassOffset0;
+        pp->xx = 0.0;
+        for (int jj = 1; jj <= _params.size(); jj++) {
+          _QQ(iPar, jj) = 0.0;
         }
-        else {
-          _QQ(iPar,iPar) += _opt->sigGlonassOffsetP * _opt->sigGlonassOffsetP;
-        }
+        _QQ(iPar,iPar) = 1000.0 * 1000.0;
       }
 
       // Galileo Offset
       // --------------
       else if (pp->type == bncParam::GALILEO_OFFSET) {
-        _QQ(iPar,iPar) += _opt->sigGalileoOffsetP * _opt->sigGalileoOffsetP;
+        _QQ(iPar,iPar) += 0.1 * 0.1;
       }
     }
   }
