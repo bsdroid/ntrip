@@ -42,7 +42,7 @@ class bncPPPclient : public bncEphUser {
  public:
   bncPPPclient(QByteArray staID, const t_pppOptions* opt);
   ~bncPPPclient();
-  void                putNewObs(const t_obs& pp, t_output* output);
+  void                putNewObs(t_satData* satData, t_output* output);
   void                putNewCorrections(QList<QString> corrList);
   QByteArray          staID() const {return _staID;}
   const t_pppOptions* opt() const {return _opt;}
@@ -74,7 +74,6 @@ class bncPPPclient : public bncEphUser {
   QMap<QString, t_bias*>  _bias;
   std::queue<t_epoData*>  _epoData;
   bncModel*               _model;
-  QMap<QString, slipInfo> _slips;
 };
 
 class t_satData {
