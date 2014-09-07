@@ -26,7 +26,7 @@
  * BKG NTRIP Client
  * -------------------------------------------------------------------------
  *
- * Class:      bncPPPclient
+ * Class:      t_pppClient
  *
  * Purpose:    Precise Point Positioning
  *
@@ -55,17 +55,17 @@ using namespace std;
 
 // Global variable holding thread-specific pointers
 //////////////////////////////////////////////////////////////////////////////
-bncPPPclient* PPP_CLIENT = 0;
+t_pppClient* PPP_CLIENT = 0;
 
 // Static function returning thread-specific pointer
 //////////////////////////////////////////////////////////////////////////////
-bncPPPclient* t_pppClient::instance() {
+t_pppClient* t_pppClient::instance() {
   return PPP_CLIENT;
 }
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncPPPclient::bncPPPclient(const t_pppOptions* opt) : bncEphUser(false) {
+t_pppClient::t_pppClient(const t_pppOptions* opt) : bncEphUser(false) {
 
   _opt       = new t_pppOptions(*opt);
   _staID     = QByteArray(_opt->_roverName.c_str())
@@ -76,7 +76,7 @@ bncPPPclient::bncPPPclient(const t_pppOptions* opt) : bncEphUser(false) {
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-bncPPPclient::~bncPPPclient() {
+t_pppClient::~t_pppClient() {
   _epoData->clear();
 
   QMapIterator<QString, t_corr*> ic(_corr);
@@ -98,7 +98,7 @@ bncPPPclient::~bncPPPclient() {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::processEpoch(const vector<t_satObs*>& satObs, t_output* output) {
+void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output) {
   QMutexLocker locker(&_mutex);
   
   // Convert and store observations
@@ -177,7 +177,7 @@ void bncPPPclient::processEpoch(const vector<t_satObs*>& satObs, t_output* outpu
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::putNewObs(t_satData* satData) {
+void t_pppClient::putNewObs(t_satData* satData) {
 
   // Set Observations GPS and Glonass
   // --------------------------------
@@ -233,13 +233,13 @@ void bncPPPclient::putNewObs(t_satData* satData) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
+void t_pppClient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
   QMutexLocker locker(&_mutex);
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
+void t_pppClient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
   QMutexLocker locker(&_mutex);
 }
 
@@ -262,7 +262,7 @@ void t_pppClient::putEphemeris(const t_eph* eph) {
 
 // Satellite Position
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn, 
+t_irc t_pppClient::getSatPos(const bncTime& tt, const QString& prn, 
                               ColumnVector& xc, ColumnVector& vv) {
   if (_eph.contains(prn)) {
     t_eph* eLast = _eph.value(prn)->last;
@@ -279,7 +279,7 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
 
 // Correct Time of Transmission
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncPPPclient::cmpToT(t_satData* satData) {
+t_irc t_pppClient::cmpToT(t_satData* satData) {
 
   double prange = satData->P3;
   if (prange == 0.0) {

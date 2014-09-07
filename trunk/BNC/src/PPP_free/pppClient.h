@@ -40,19 +40,19 @@ class t_orbCorr;
 class t_clkCorr;
 class t_satBias;
 
-class bncPPPclient : public bncEphUser {
+class t_pppClient : public bncEphUser {
  public:
-  bncPPPclient(const t_pppOptions* opt);
-  ~bncPPPclient();
-  void                 processEpoch(const std::vector<t_satObs*>& satObs, t_output* output);
-  void                 putEphemeris(const t_eph* eph);                  
-  void                 putOrbCorrections(const std::vector<t_orbCorr*>& corr); 
-  void                 putClkCorrections(const std::vector<t_clkCorr*>& corr); 
-  void                 putBiases(const std::vector<t_satBias*>& satBias);   
-  QByteArray           staID() const {return _staID;}
-  const t_pppOptions*  opt() const {return _opt;}
-  static bncPPPclient* instance();
-  std::ostringstream&  log() {return *_log;}
+  t_pppClient(const t_pppOptions* opt);
+  ~t_pppClient();
+  void                processEpoch(const std::vector<t_satObs*>& satObs, t_output* output);
+  void                putEphemeris(const t_eph* eph);                  
+  void                putOrbCorrections(const std::vector<t_orbCorr*>& corr); 
+  void                putClkCorrections(const std::vector<t_clkCorr*>& corr); 
+  void                putBiases(const std::vector<t_satBias*>& satBias);   
+  QByteArray          staID() const {return _staID;}
+  const t_pppOptions* opt() const {return _opt;}
+  static t_pppClient* instance();
+  std::ostringstream& log() {return *_log;}
 
  private:
   t_irc getSatPos(const bncTime& tt, const QString& prn, ColumnVector& xc, ColumnVector& vv);
