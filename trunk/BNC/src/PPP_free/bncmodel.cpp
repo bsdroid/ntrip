@@ -49,9 +49,8 @@
 #include "bncpppclient.h"
 #include "bancroft.h"
 #include "bncutils.h"
-#include "bnctides.h"
 #include "bncantex.h"
-#include "pppopt.h"
+#include "pppOptions.h"
 
 using namespace BNC_PPP;
 using namespace std;
@@ -156,25 +155,6 @@ bncModel::bncModel(bncPPPclient* pppClient) {
   _staID     = pppClient->staID();
   _opt       = pppClient->opt();
 
-  // NMEA Output
-  // -----------
-  if (_opt->nmeaFile.isEmpty()) {
-    _nmeaFile   = 0;
-    _nmeaStream = 0;
-  }
-  else {
-    QString hlpName = _opt->nmeaFile; expandEnvVar(hlpName);
-    _nmeaFile = new QFile(hlpName);
-    if (_opt->rnxAppend) {
-      _nmeaFile->open(QIODevice::WriteOnly | QIODevice::Append);
-    }
-    else {
-      _nmeaFile->open(QIODevice::WriteOnly);
-    }
-    _nmeaStream = new QTextStream();
-    _nmeaStream->setDevice(_nmeaFile);
-  }
-
   // Antenna Name, ANTEX File
   // ------------------------
   _antex = 0;
@@ -200,8 +180,6 @@ bncModel::bncModel(bncPPPclient* pppClient) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncModel::~bncModel() {
-  delete _nmeaStream;
-  delete _nmeaFile;
   for (int ii = 0; ii < _posAverage.size(); ++ii) { 
     delete _posAverage[ii]; 
   }
@@ -785,62 +763,6 @@ t_irc bncModel::update(t_epoData* epoData) {
     }
   }
 
-  // NMEA Output
-  // -----------
-  double xyz[3]; 
-  xyz[0] = x();
-  xyz[1] = y();
-  xyz[2] = z();
-  double ell[3]; 
-  xyz2ell(xyz, ell);
-  double phiDeg = ell[0] * 180 / M_PI;
-  double lamDeg = ell[1] * 180 / M_PI;
-
-  char phiCh = 'N';
-  if (phiDeg < 0) {
-    phiDeg = -phiDeg;
-    phiCh  =  'S';
-  }   
-  char lamCh = 'E';
-  if (lamDeg < 0) {
-    lamDeg = -lamDeg;
-    lamCh  =  'W';
-  }   
-
-  string datestr = epoData->tt.datestr(0); // yyyymmdd
-  ostringstream strRMC;
-  strRMC.setf(ios::fixed);
-  strRMC << "GPRMC," 
-         << epoData->tt.timestr(0,0) << ",A,"
-         << setw(2) << setfill('0') << int(phiDeg) 
-         << setw(6) << setprecision(3) << setfill('0') 
-         << fmod(60*phiDeg,60) << ',' << phiCh << ','
-         << setw(3) << setfill('0') << int(lamDeg) 
-         << setw(6) << setprecision(3) << setfill('0') 
-         << fmod(60*lamDeg,60) << ',' << lamCh << ",,,"
-         << datestr[6] << datestr[7] << datestr[4] << datestr[5]
-         << datestr[2] << datestr[3] << ",,";
-
-  writeNMEAstr(QString(strRMC.str().c_str()));
-
-  double dop = 2.0; // TODO 
-
-  ostringstream strGGA;
-  strGGA.setf(ios::fixed);
-  strGGA << "GPGGA," 
-         << epoData->tt.timestr(0,0) << ','
-         << setw(2) << setfill('0') << int(phiDeg) 
-         << setw(10) << setprecision(7) << setfill('0') 
-         << fmod(60*phiDeg,60) << ',' << phiCh << ','
-         << setw(3) << setfill('0') << int(lamDeg) 
-         << setw(10) << setprecision(7) << setfill('0') 
-         << fmod(60*lamDeg,60) << ',' << lamCh 
-         << ",1," << setw(2) << setfill('0') << epoData->sizeAll() << ','
-         << setw(3) << setprecision(1) << dop << ','
-         << setprecision(3) << ell[2] << ",M,0.0,M,,";
-                 
-  writeNMEAstr(QString(strGGA.str().c_str()));
-
   _lastTimeOK = _time; // remember time of last successful update
   return success;
 }
@@ -879,28 +801,6 @@ QString bncModel::outlierDetection(int iPhase, const ColumnVector& vv,
   return QString();
 }
 
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncModel::writeNMEAstr(const QString& nmStr) {
-
-  Tracer tracer("bncModel::writeNMEAstr");
-
-  unsigned char XOR = 0;
-  for (int ii = 0; ii < nmStr.length(); ii++) {
-    XOR ^= (unsigned char) nmStr[ii].toAscii();
-  }
-
-  QString outStr = '$' + nmStr 
-                       + QString("*%1\n").arg(int(XOR), 0, 16).toUpper();
-  
-  if (_nmeaStream) {
-    *_nmeaStream << outStr;
-    _nmeaStream->flush();
-  }
-
-  _pppClient->emitNewNMEAstr(outStr.toAscii());
-}
-
 //
 //////////////////////////////////////////////////////////////////////////////
 void bncModel::kalman(const Matrix& AA, const ColumnVector& ll, 
@@ -910,7 +810,6 @@ void bncModel::kalman(const Matrix& AA, const ColumnVector& ll,
   Tracer tracer("bncModel::kalman");
 
   int nPar = AA.Ncols();
-#if 1
   int nObs = AA.Nrows();
   UpperTriangularMatrix SS = Cholesky(QQ).t();
 
@@ -937,17 +836,6 @@ void bncModel::kalman(const Matrix& AA, const ColumnVector& ll,
 
   dx = KT.t() * ll;
   QQ << (SS.t() * SS);
-#else
-  DiagonalMatrix        Ql = PP.i();
-  Matrix                DD = QQ * AA.t();
-  SymmetricMatrix       SM(nPar); SM << AA * DD + Ql; 
-  UpperTriangularMatrix UU = Cholesky(SM).t();
-  UpperTriangularMatrix Ui = UU.i();
-  Matrix                EE = DD * Ui;
-  Matrix                KK = EE * Ui.t();
-  QQ << QQ - EE * EE.t();
-  dx = KK * ll;
-#endif
 }
 
 // Phase Wind-Up Correction
