@@ -42,13 +42,11 @@
 #include <iomanip>
 #include <sstream>
 
-#include "bncpppclient.h"
-#include "bnccore.h"
+#include "pppClient.h"
+#include "pppOptions.h"
 #include "bncutils.h"
 #include "bncconst.h"
 #include "bncmodel.h"
-#include "pppOptions.h"
-#include "pppClient.h"
 
 using namespace BNC_PPP;
 using namespace std;
@@ -68,29 +66,15 @@ t_pppClient* t_pppClient::instance() {
 t_pppClient::t_pppClient(const t_pppOptions* opt) : bncEphUser(false) {
 
   _opt       = new t_pppOptions(*opt);
-  _staID     = QByteArray(_opt->_roverName.c_str())
   _model     = new bncModel(this);
   _epoData   = new t_epoData();
+  _staID     = QByteArray(_opt->_roverName.c_str());
   PPP_CLIENT = this;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_pppClient::~t_pppClient() {
-  _epoData->clear();
-
-  QMapIterator<QString, t_corr*> ic(_corr);
-  while (ic.hasNext()) {
-    ic.next();
-    delete ic.value();
-  }
-
-  QMapIterator<QString, t_bias*> ib(_bias);
-  while (ib.hasNext()) {
-    ib.next();
-    delete ib.value();
-  }
-
   delete _model;
   delete _epoData;
   delete _opt;
@@ -241,6 +225,11 @@ void t_pppClient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
 ////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
   QMutexLocker locker(&_mutex);
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+void t_pppClient::putBiases(const std::vector<t_satBias*>& /* satBias */) {
 }
 
 // 

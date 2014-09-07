@@ -45,9 +45,6 @@
 
 #include "bncmodel.h"
 #include "pppClient.h"
-#include "bncpppclient.h"
-#include "bnccore.h"
-#include "bncpppclient.h"
 #include "bancroft.h"
 #include "bncutils.h"
 #include "bncantex.h"
@@ -151,7 +148,7 @@ double bncParam::partial(t_satData* satData, bool phase) {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncModel::bncModel(bncPPPclient* pppClient) {
+bncModel::bncModel(t_pppClient* pppClient) {
 
   _pppClient = pppClient;
   _staID     = pppClient->staID();
