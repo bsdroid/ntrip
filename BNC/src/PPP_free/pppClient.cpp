@@ -53,12 +53,12 @@ using namespace std;
 
 // Global variable holding thread-specific pointers
 //////////////////////////////////////////////////////////////////////////////
-t_pppClient* PPP_CLIENT = 0;
+QThreadStorage<t_pppClient*> CLIENTS;
 
 // Static function returning thread-specific pointer
 //////////////////////////////////////////////////////////////////////////////
 t_pppClient* t_pppClient::instance() {
-  return PPP_CLIENT;
+  return CLIENTS.localData();
 }
 
 // Constructor
@@ -70,7 +70,8 @@ t_pppClient::t_pppClient(const t_pppOptions* opt) : bncEphUser(false) {
   _epoData   = new t_epoData();
   _log       = new ostringstream();
   _staID     = QByteArray(_opt->_roverName.c_str());
-  PPP_CLIENT = this;
+
+  CLIENTS.setLocalData(this);  // CLIENTS takes ownership over "this"
 }
 
 // Destructor
