@@ -126,9 +126,8 @@ exists(PPP) {
 }
 else {
   INCLUDEPATH += PPP_free
-  DEFINES += USE_PPP_FREE
-  HEADERS += PPP_free/pppClient.h   PPP_free/bncmodel.h   PPP_free/bancroft.h
-  SOURCES += PPP_free/pppClient.cpp PPP_free/bncmodel.cpp PPP_free/bancroft.cpp
+  HEADERS += PPP_free/pppClient.h   PPP_free/pppFilter.h
+  SOURCES += PPP_free/pppClient.cpp PPP_free/pppFilter.cpp
 }
 
 # Check QtWebKit Library Existence
